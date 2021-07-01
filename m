@@ -2,96 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 380D63B9064
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 12:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD293B9066
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 12:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235938AbhGAKRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 06:17:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:50478 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235864AbhGAKRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 06:17:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C6243D6E;
-        Thu,  1 Jul 2021 03:15:20 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A4E383F718;
-        Thu,  1 Jul 2021 03:15:19 -0700 (PDT)
-Subject: Re: [PATCH v2] drm/panfrost:report the full raw fault information
- instead
-To:     Chunyou Tang <tangchunyou@163.com>
-Cc:     tomeu.vizoso@collabora.com, airlied@linux.ie,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        alyssa.rosenzweig@collabora.com,
-        ChunyouTang <tangchunyou@icubecorp.cn>
-References: <20210617062054.1864-1-tangchunyou@163.com>
- <2dcbb36a-b550-4c9d-cff8-73ca4b5abb11@arm.com>
- <20210619111852.00003e52@163.com>
- <23f675e9-698d-840d-104f-33aa594dcb96@arm.com>
- <20210622094000.00004f7e@163.com>
- <04bc1306-f8a3-2e3c-b55d-030d1448fad2@arm.com>
- <20210625174937.0000183f@163.com>
- <14b2a3c8-4bc2-c8f9-627b-9ac5840cad11@arm.com>
- <20210629110453.00007ace@163.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <3fe0e553-ac73-0d97-4404-c597fd4993a0@arm.com>
-Date:   Thu, 1 Jul 2021 11:15:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235995AbhGAKSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 06:18:18 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:52018 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235864AbhGAKSR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 06:18:17 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0799A1C0B77; Thu,  1 Jul 2021 12:15:46 +0200 (CEST)
+Date:   Thu, 1 Jul 2021 12:15:45 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Maxime Ripard <maxime@cerno.tech>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>
+Subject: Re: [PATCH 5.10 016/101] drm/vc4: hdmi: Make sure the controller is
+ powered in detect
+Message-ID: <20210701101545.GA2423@amd>
+References: <20210628142607.32218-1-sashal@kernel.org>
+ <20210628142607.32218-17-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210629110453.00007ace@163.com>
-Content-Type: text/plain; charset=gb18030
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="cNdxnHkX5QqsyA0e"
+Content-Disposition: inline
+In-Reply-To: <20210628142607.32218-17-sashal@kernel.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/06/2021 04:04, Chunyou Tang wrote:
-> Hi Steve,
-> 	thinks for your reply.
-> 	I set the pte in arm_lpae_prot_to_pte(),
-> ***********************************************************************
-> 	/*
-> 	 * Also Mali has its own notions of shareability wherein its
-> Inner
-> 	 * domain covers the cores within the GPU, and its Outer domain
-> is
-> 	 * "outside the GPU" (i.e. either the Inner or System domain in
-> CPU
-> 	 * terms, depending on coherency).
-> 	 */
-> 	if (prot & IOMMU_CACHE && data->iop.fmt != ARM_MALI_LPAE)
-> 		pte |= ARM_LPAE_PTE_SH_IS;
-> 	else
-> 		pte |= ARM_LPAE_PTE_SH_OS;
-> ***********************************************************************
-> I set pte |= ARM_LPAE_PTE_SH_NS.
-> 
-> 	If I set pte to ARM_LPAE_PTE_SH_OS or
-> 	ARM_LPAE_PTE_SH_IS,whether I use singel core GPU or multi core
-> 	GPU,it will occur GPU Fault.
-> 	if I set pte to ARM_LPAE_PTE_SH_NS,whether I use singel core
-> 	GPU or multi core GPU,it will not occur GPU Fault.
 
-Hi,
+--cNdxnHkX5QqsyA0e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So this is a difference between Panfrost and kbase. Panfrost (well
-technically the IOMMU framework) enables the inner-shareable bit for all
-memory, whereas kbase only enables it for some memory types (the
-BASE_MEM_COHERENT_LOCAL flag in the UABI controls it). However this
-should only be a performance/power difference (and AFAIK probably an
-irrelevant one) and it's definitely required that "inner shareable"
-(i.e. within the GPU) works for communication between the different
-units of the GPU.
+Hi!
 
-You didn't answer my previous question:
+> [ Upstream commit 9984d6664ce9dcbbc713962539eaf7636ea246c2 ]
+>=20
+> If the HPD GPIO is not available and drm_probe_ddc fails, we end up
+> reading the HDMI_HOTPLUG register, but the controller might be powered
+> off resulting in a CPU hang. Make sure we have the power domain and the
+> HSM clock powered during the detect cycle to prevent the hang from
+> happening.
 
-> Is this device working with the kbase/DDK proprietary driver?
+If the WARN_ON ever triggers, we'll get unbalance on pm usage
+counts. This should use pm_runtime_get_sync().
 
-What you are describing sounds like a hardware integration issue, so it
-would be good to check that the hardware is working with the proprietary
-driver to rule that out. And perhaps there is something in the kbase for
-this device that is setting a chicken bit to 'fix' the coherency?
+Plus, we don't really need to duplicate code at function exit.
 
-Steve
+Signed-off-by: Pavel Machek <pavel@denx.de>
+
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -146,6 +146,8 @@ vc4_hdmi_connector_detect(struct drm_connector *conne=
+ctor, bool force)
+>  	struct vc4_hdmi *vc4_hdmi =3D connector_to_vc4_hdmi(connector);
+>  	bool connected =3D false;
+> =20
+> +	WARN_ON(pm_runtime_resume_and_get(&vc4_hdmi->pdev->dev));
+> +
+>  	if (vc4_hdmi->hpd_gpio) {
+>  		if (gpio_get_value_cansleep(vc4_hdmi->hpd_gpio) ^
+>  		    vc4_hdmi->hpd_active_low)
+> @@ -167,10 +169,12 @@ vc4_hdmi_connector_detect(struct drm_connector *con=
+nector, bool force)
+>  			}
+>  		}
+> =20
+> +		pm_runtime_put(&vc4_hdmi->pdev->dev);
+>  		return connector_status_connected;
+>  	}
+> =20
+>  	cec_phys_addr_invalidate(vc4_hdmi->cec_adap);
+> +	pm_runtime_put(&vc4_hdmi->pdev->dev);
+>  	return connector_status_disconnected;
+>  }
+> =20
+
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 88a8cb840cd5..3b145f9f6c87 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -146,7 +146,7 @@ vc4_hdmi_connector_detect(struct drm_connector *connect=
+or, bool force)
+ 	struct vc4_hdmi *vc4_hdmi =3D connector_to_vc4_hdmi(connector);
+ 	bool connected =3D false;
+=20
+-	WARN_ON(pm_runtime_resume_and_get(&vc4_hdmi->pdev->dev));
++	WARN_ON(pm_runtime_get_sync(&vc4_hdmi->pdev->dev));
+=20
+ 	if (vc4_hdmi->hpd_gpio) {
+ 		if (gpio_get_value_cansleep(vc4_hdmi->hpd_gpio) ^
+@@ -168,12 +168,9 @@ vc4_hdmi_connector_detect(struct drm_connector *connec=
+tor, bool force)
+ 				kfree(edid);
+ 			}
+ 		}
++	} else
++		cec_phys_addr_invalidate(vc4_hdmi->cec_adap);
+=20
+-		pm_runtime_put(&vc4_hdmi->pdev->dev);
+-		return connector_status_connected;
+-	}
+-
+-	cec_phys_addr_invalidate(vc4_hdmi->cec_adap);
+ 	pm_runtime_put(&vc4_hdmi->pdev->dev);
+ 	return connector_status_disconnected;
+ }
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--cNdxnHkX5QqsyA0e
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmDdldEACgkQMOfwapXb+vIb9QCfUP/sNuiKsPVgcDxuC12gwWlu
++WYAoIkNG4hIPlFRo7RZH+jpQ/g2LyDN
+=3ydh
+-----END PGP SIGNATURE-----
+
+--cNdxnHkX5QqsyA0e--
