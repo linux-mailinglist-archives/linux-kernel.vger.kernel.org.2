@@ -2,155 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB383B8EF6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07143B8EFD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235449AbhGAImO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 04:42:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43763 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235356AbhGAImN (ORCPT
+        id S235489AbhGAIno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 04:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235356AbhGAInn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 04:42:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625128783;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u9jAbsencUUDdK5AITgRqpk4mB/AMqBStj1da/54uyc=;
-        b=f96rBK/TT4CLe0Q34bDYMJ2tHFBcg5r9qNK/eNwZgO5R3Tggat82bH4DFuKrE9pXKlK35z
-        VTNVateNQ+qMhXZN3jy2gFT3wWFnPLOQH7peWeeDTM4cksadIIVagLvQv7PyBMOvawutVd
-        nASmf6R9qjaGeTNfmoUzzSMxS8VOg3A=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-UuPCW9mWP9aMSAYALqx_jA-1; Thu, 01 Jul 2021 04:39:41 -0400
-X-MC-Unique: UuPCW9mWP9aMSAYALqx_jA-1
-Received: by mail-ed1-f72.google.com with SMTP id cn11-20020a0564020cabb0290396d773d4c7so2338316edb.18
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 01:39:41 -0700 (PDT)
+        Thu, 1 Jul 2021 04:43:43 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF51C0617A8
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 01:41:13 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id w11so7414101ljh.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 01:41:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=94oP0rsAT+ayytaK2fzZltuXE6U/Q4mr4HlOcI5ZZUc=;
+        b=IYfWYr+Ll1UHRSBEQLgPnx0M/OFTM1LsCjadsw0+P1P68+KYnrpVzB9D0/zTj9eTDY
+         n1sST4eb5nWLIAUz/KUoAO7T9Rz22Xb4TEvo8pHlUXDZhtrw9kF4ndiBAHSvYuo3qjyi
+         qeoha0gJyPVepVX2k8QfzsjvcJFw0paxkGH4g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u9jAbsencUUDdK5AITgRqpk4mB/AMqBStj1da/54uyc=;
-        b=oo/ZE5QDogREGuFYTxgtWzLl6KpGmlv68qopUaE71KB3w/I5/bZvHrTKiNHF+6suo8
-         0M9r0tzaQ3e8y/4k6X8aquQUJUafQad18RPdSeOBcEnnf7uxHeafmqUfdGzKnwccnj+L
-         o3fZQ1DAK36/bkH2GN9wpJESliXeHnw2nJhnJuqOd5OsPGNJZJu70+UYSgs15PVOuUTP
-         Yql9D0SnqbYSb+XlfeuH4j1FKftfpFZ7Z+vJuGom/bApzOQmevysZNKZYVioaH+Zvc9o
-         I2FAuX9xmgjHsuXDCTYk1aYLxyHtQwDl01bD7COU4JGKVBrNJU7Ld+a/w8QDgHRPxtNb
-         fTmg==
-X-Gm-Message-State: AOAM533N+pMHiVVLihltYI22apgCYYC3A1AD1SdrUeQhSt05H5u9t4t3
-        LvQqXnHsruBBsPPL/SHw2uEP9uroEaqKUuVZtGuOvHXTOOgGcDr5IVfQbpGLhPfJETz1fZePtuK
-        2vxIWaprRNy4u2MUGoGith6dz
-X-Received: by 2002:a05:6402:176f:: with SMTP id da15mr51597390edb.334.1625128780805;
-        Thu, 01 Jul 2021 01:39:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwjM9KkxtshOjO1NdUjE9y5FxAxm9cYgDU4y0IKWEB3WTjlpt1wyNiLoAcJdRJ2Lm+4zJaUzQ==
-X-Received: by 2002:a05:6402:176f:: with SMTP id da15mr51597374edb.334.1625128780670;
-        Thu, 01 Jul 2021 01:39:40 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id q5sm10322484ejc.117.2021.07.01.01.39.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Jul 2021 01:39:40 -0700 (PDT)
-Subject: Re: [PATCH 2/4] MFD: intel_pmt: Remove OOBMSM device
-To:     david.e.box@linux.intel.com, Lee Jones <lee.jones@linaro.org>
-Cc:     mgross@linux.intel.com, bhelgaas@google.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <20210617215408.1412409-1-david.e.box@linux.intel.com>
- <20210617215408.1412409-3-david.e.box@linux.intel.com>
- <YNxENGGctLXmifzj@dell>
- <f590ee871d0527a12b307f1494cb4c8a91c5e3c2.camel@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <e734a968-818a-380d-0ae5-fee41b3db246@redhat.com>
-Date:   Thu, 1 Jul 2021 10:39:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=94oP0rsAT+ayytaK2fzZltuXE6U/Q4mr4HlOcI5ZZUc=;
+        b=ir/5mfjKWOqrcKztzffqxVetpRsXNxIDHlyQExhB5fEPX1OF5k+Jm1DXlxOPfT/vlZ
+         w8+QeGzjtJJO+NSGaFi6806Td6+fIM4iqokdPKk6BXgwNn6K0rmDl5Xvv40g2SkG2yWT
+         kVAAXU+bKHxX3WKCt80XUZMANYVYNWILb+kZcgPSPdvy4eLjpziaJI8u69XmPQoiSndn
+         AJoOL+khrg9tiVNG8wQkowCyi4+h3Mb1wbulAK8Elu3nx5KNT4c9HbRcKOptOPshmY+W
+         4tFJgk3TUV6QExQQeT7ZZbAm+3jrI7Zcy8+dctdbnYx8VcEcW2EFGwOGlp8+M2MrVYPP
+         16EA==
+X-Gm-Message-State: AOAM530GVHjjKBC9mQrOmzHOftwuCRAh0JeqB066XEtB0GeFooyXzmE1
+        OA157DtUTR7WmLRVkHm77SCRFWRXt8Z7BZRzYq1Qgw==
+X-Google-Smtp-Source: ABdhPJwIdOfvGf0L+sdqDn+8ax6dglU62QnDYlxOrENc/AZUpEnZMm4CzLSj2dG+W2SfU2waOpppkNuVrFn+raLvkGw=
+X-Received: by 2002:a05:651c:32e:: with SMTP id b14mr11049376ljp.251.1625128871805;
+ Thu, 01 Jul 2021 01:41:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f590ee871d0527a12b307f1494cb4c8a91c5e3c2.camel@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210701080955.2660294-1-hsinyi@chromium.org>
+In-Reply-To: <20210701080955.2660294-1-hsinyi@chromium.org>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Thu, 1 Jul 2021 16:41:01 +0800
+Message-ID: <CAGXv+5Ecbttkw1AAG5KofoR1oDW-ot68BL1OR=Jpiii8v8DTyw@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: mediatek: Fix fallback behavior for bias_set_combo
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Sean Wang <sean.wang@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        zhiyong.tao@mediatek.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Jul 1, 2021 at 4:10 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> Some pin doesn't support PUPD register, if it fails and fallbacks with
+> bias_set_combo case, it will call mtk_pinconf_bias_set_pupd_r1_r0() to
+> modify the PUPD pin again.
+>
+> Since the general bias set are either PU/PD or PULLSEL/PULLEN, try
+> bias_set or bias_set_rev1 for the other fallback case. If the pin
+> doesn't support neither PU/PD nor PULLSEL/PULLEN, it will return
+> -ENOTSUPP.
+>
+> Fixes: 81bd1579b43e ("pinctrl: mediatek: Fix fallback call path")
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
-On 6/30/21 11:11 PM, David E. Box wrote:
-> On Wed, 2021-06-30 at 11:15 +0100, Lee Jones wrote:
->> On Thu, 17 Jun 2021, David E. Box wrote:
->>
->>> Unlike the other devices in intel_pmt, the Out of Band Management
->>> Services
->>> Module (OOBMSM) is actually not a PMT dedicated device. It can also
->>> be used
->>> to describe non-PMT capabilities. Like PMT, these capabilities are
->>> also
->>> enumerated using PCIe Vendor Specific registers in config space. In
->>> order
->>> to better support these devices without the confusion of a
->>> dependency on
->>> MFD_INTEL_PMT, remove the OOBMSM device from intel_pmt so that it
->>> can be
->>> later placed in its own driver. Since much of the same code will be
->>> used by
->>> intel_pmt and the new driver, create a new file with symbols to be
->>> used by
->>> both.
->>>
->>> While performing this split we need to also handle the creation of
->>> platform
->>> devices for the non-PMT capabilities. Currently PMT devices are
->>> named by
->>> their capability (e.g. pmt_telemetry). Instead, generically name
->>> them by
->>> their capability ID (e.g. intel_extnd_cap_2). This allows the IDs
->>> to be
->>> created automatically.  However, to ensure that unsupported devices
->>> aren't
->>> created, use an allow list to specify supported capabilities.
->>>
->>> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
->>> ---
->>>  MAINTAINERS                                |   1 +
->>>  drivers/mfd/Kconfig                        |   4 +
->>>  drivers/mfd/Makefile                       |   1 +
->>>  drivers/mfd/intel_extended_caps.c          | 208
->>> +++++++++++++++++++++
->>
->> Please consider moving this <whatever this is> out to either
->> drivers/pci or drivers/platform/x86.
-> 
-> None of the cell drivers are in MFD, only the PCI drivers from which
-> the cells are created. I understood that these should be in MFD. But
-> moving it to drivers/platform/x86 would be fine with me. That keeps the
-> code together in the same subsystem. Comment from Hans or Andy? 
-
-I'm fine with moving everything to drivers/platform/x86, but AFAIK
-usually the actual code which has the MFD cells and creates the
-child devices usually lives under drivers/mfd
-
-Regards,
-
-Hans
-
-
-
-> 
->>
->> I suggest Andy should also be on Cc.
->>
->>>  drivers/mfd/intel_extended_caps.h          |  40 ++++
->>>  drivers/mfd/intel_pmt.c                    | 198 ++---------------
->>> ---
->>>  drivers/platform/x86/intel_pmt_crashlog.c  |   2 +-
->>>  drivers/platform/x86/intel_pmt_telemetry.c |   2 +-
->>>  8 files changed, 270 insertions(+), 186 deletions(-)
->>>  create mode 100644 drivers/mfd/intel_extended_caps.c
->>>  create mode 100644 drivers/mfd/intel_extended_caps.h
->>
-> 
-> 
-
+Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
