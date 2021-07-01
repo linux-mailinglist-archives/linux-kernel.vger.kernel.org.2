@@ -2,94 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2665E3B94D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B799E3B94DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhGAQsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 12:48:20 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:41495 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbhGAQsS (ORCPT
+        id S230002AbhGAQua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 12:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhGAQu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 12:48:18 -0400
-Received: by mail-ot1-f41.google.com with SMTP id m6-20020a9d1d060000b029044e2d8e855eso7132199otm.8;
-        Thu, 01 Jul 2021 09:45:47 -0700 (PDT)
+        Thu, 1 Jul 2021 12:50:28 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610F6C061764
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 09:47:58 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id g19so11811059ybe.11
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 09:47:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4uRX24voOSIDHbQVqER+usC3/rZFKIdOkp91h4ZSrVY=;
+        b=wNv96Uk4ixkMdGS08FR6eNSn1+75uPwjjyujZSdLdrshgiTFabz+nFm6vgNi/szhvd
+         +xagmlbUnOdSVGceT95RYANUi4wlb2LzZ48UiY4ksVAJxg/uf5ehYw5nqWpef0IU3XDZ
+         8AaxkxJWm/1ywM/gXU10cydNW4004FMs3XZss0AliCdAW1Ggj8fRqRnjEO1z6ywUumgE
+         7QeI6ESsXo/ANTJ8YaAZJeTmnna3P37obJQOM7ig+tBPPPvekr1ysRJ5zocmpzJUGtQ8
+         qGRgXvzB10dXdfYOvRybHo5uA8ZOvMM5CUETxC4n0UPoITd7zOv+eP+t9qCXGGrJi4d/
+         ONVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tg55kCy9BnkaIPndB0hyuKuJD9G9ni7AlPPZSuQ9v3w=;
-        b=uFe1QGQNN+hWCZqMZBI0l9dnXY3+F4ht0UMtQw7UfsTHIXhBhLQQbxcbLIYpegjvD6
-         pxNu0hz2UfyOk8hpgnDCm9ZD8PSCk3hro/s5U0+cm0j5iPG1qoXbLguQZo3dQAJiHqny
-         4RkuXw3gMOtRYuMJnL1AJbO4CDN0xkCXYI0zoxXTAFrEYTZubv18CXr4ef1WUr1d0ggy
-         V/w+kamiLtqbpyL0H9Z8lkP/BLzYMr8czJyV2kbql5+/0wtLwbXgyTD1Is9/X21wu1wQ
-         i5GOaeZ7uRgcnCPQYEWPwmsgrnSLw6PTCDtjmcsND0rkVTl+Iqi9ryBpizl2YcnBW4bU
-         qq4g==
-X-Gm-Message-State: AOAM533vkw0EooG9faXX6pxkwZ31NjT16zi1xni+CrpDOnd7eLYpvQO8
-        kAnwHHvZeUhFp79Sgr2MtOPMribOOJvnVGF4KyU=
-X-Google-Smtp-Source: ABdhPJzJRnn4f+Vbn+ymJy286bml0QkXr0HrBOpFwNgfZMUVbXSNYFoo4KA1Pu2nyMOx8volQGLdwbVBVNuW2BqDwWI=
-X-Received: by 2002:a9d:674b:: with SMTP id w11mr775865otm.260.1625157947244;
- Thu, 01 Jul 2021 09:45:47 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4uRX24voOSIDHbQVqER+usC3/rZFKIdOkp91h4ZSrVY=;
+        b=t67YHDUz2cVC2tIUFR/MbvfUWNWzj8n35Bpa1ed3hISSAFQRHUbxQzRoCZVT9CkDHE
+         ugxBy5GxRJQoIpVbl2oua/KYQLBCo7McQKL+BpiAQmEUJN5Lh54N31WlTY65t7Nn7mmQ
+         dsPPI6NFfjd2gNtC3TkZ/C4p2eVE3GwwYcPlRsofCUNeCmLtOFH2n1eP63yXA2OKsy5t
+         x4GsrA41Xe0Frexj7rnTrBet9yDDhlFv4OqKFgeB9YvYkRPRFYhh4sxx/wDe2d436LFR
+         SLu8B23jckxbjmws0fZGOMJnA7PiEl5SNMLiwi1IICvREJvkiwSqb8Ad1c0ZYy41i+xG
+         cbxQ==
+X-Gm-Message-State: AOAM531EucIWJobYmqDyuNu3mRF6EtaypEZYv12VlIdYQ/EBalzMhHks
+        rtAclLp5PQWDCpUaTg1uNmVrLKDg7FpYlSV0OPbcYg==
+X-Google-Smtp-Source: ABdhPJzkWZZbFz/VJ5E1EUZradgQPO2i8YfdsXttHAc41DvpXCWy/FDNZQQSKkWTqW+GLPA7yOiPl3BbfaxRc0Cqd98=
+X-Received: by 2002:a25:abc3:: with SMTP id v61mr909197ybi.366.1625158077677;
+ Thu, 01 Jul 2021 09:47:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210701004538.23483-1-mark-pk.tsai@mediatek.com>
-In-Reply-To: <20210701004538.23483-1-mark-pk.tsai@mediatek.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 1 Jul 2021 18:45:36 +0200
-Message-ID: <CAJZ5v0gtWRpbpL82Nh9VpkXQfOqMXAC08nNmEovHq_=xdwN=mA@mail.gmail.com>
-Subject: Re: [PATCH] PM: sleep: use ktime_us_delta in initcall_debug_report()
-To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>, yj.chiang@mediatek.com
+References: <20210701152825.265729-1-jglisse@redhat.com>
+In-Reply-To: <20210701152825.265729-1-jglisse@redhat.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 1 Jul 2021 18:47:47 +0200
+Message-ID: <CAMpxmJX_3eu+8Oxg2UgiifwD=qwJYM3-qCqwxseM1mnLbn5fJA@mail.gmail.com>
+Subject: Re: [PATCH] misc: eeprom: at24: Always append device id even if label
+ property is set.
+To:     =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Diego Santa Cruz <Diego.SantaCruz@spinetix.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        "Stable # 4 . 20+" <stable@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Alexander Fomichev <fomichev.ru@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 2:45 AM Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
+On Thu, Jul 1, 2021 at 5:28 PM <jglisse@redhat.com> wrote:
 >
-> usecs is no more used after trace_device_pm_report_time replaced
-> by device_pm_callback_start/end in the below change.
+> From: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
 >
-> commit e8bca479c3f2 ("PM / sleep: trace events for device PM callbacks")
+> We need to append device id even if eeprom have a label property set as s=
+ome
+> platform can have multiple eeproms with same label and we can not registe=
+r
+> each of those with same label. Failing to register those eeproms trigger
+> cascade failures on such platform (system is no longer working).
 >
-> Use ktime_us_delta to make the debug log more precise instead of
-> nsecs >> 10.
+> This fix regression on such platform introduced with 4e302c3b568e
 >
-> Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+> Signed-off-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> Cc: Diego Santa Cruz <Diego.SantaCruz@spinetix.com>
+> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Cc: Jon Hunter <jonathanh@nvidia.com>
+> Cc: stable@vger.kernel.org
+> Cc: linux-i2c@vger.kernel.org
 > ---
->  drivers/base/power/main.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+>  drivers/misc/eeprom/at24.c | 17 +++++++----------
+>  1 file changed, 7 insertions(+), 10 deletions(-)
 >
-> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-> index f893c3c5af07..d568772152c2 100644
-> --- a/drivers/base/power/main.c
-> +++ b/drivers/base/power/main.c
-> @@ -220,16 +220,13 @@ static void initcall_debug_report(struct device *dev, ktime_t calltime,
->                                   void *cb, int error)
->  {
->         ktime_t rettime;
-> -       s64 nsecs;
+> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+> index 7a6f01ace78a..305ffad131a2 100644
+> --- a/drivers/misc/eeprom/at24.c
+> +++ b/drivers/misc/eeprom/at24.c
+> @@ -714,23 +714,20 @@ static int at24_probe(struct i2c_client *client)
+>         }
 >
->         if (!pm_print_times_enabled)
->                 return;
+>         /*
+> -        * If the 'label' property is not present for the AT24 EEPROM,
+> -        * then nvmem_config.id is initialised to NVMEM_DEVID_AUTO,
+> -        * and this will append the 'devid' to the name of the NVMEM
+> -        * device. This is purely legacy and the AT24 driver has always
+> -        * defaulted to this. However, if the 'label' property is
+> -        * present then this means that the name is specified by the
+> -        * firmware and this name should be used verbatim and so it is
+> -        * not necessary to append the 'devid'.
+> +        * We initialize nvmem_config.id to NVMEM_DEVID_AUTO even if the
+> +        * label property is set as some platform can have multiple eepro=
+ms
+> +        * with same label and we can not register each of those with sam=
+e
+> +        * label. Failing to register those eeproms trigger cascade failu=
+re
+> +        * on such platform.
+>          */
+> +       nvmem_config.id =3D NVMEM_DEVID_AUTO;
+> +
+>         if (device_property_present(dev, "label")) {
+> -               nvmem_config.id =3D NVMEM_DEVID_NONE;
+>                 err =3D device_property_read_string(dev, "label",
+>                                                   &nvmem_config.name);
+>                 if (err)
+>                         return err;
+>         } else {
+> -               nvmem_config.id =3D NVMEM_DEVID_AUTO;
+>                 nvmem_config.name =3D dev_name(dev);
+>         }
 >
->         rettime = ktime_get();
-> -       nsecs = (s64) ktime_to_ns(ktime_sub(rettime, calltime));
-> -
->         dev_info(dev, "%pS returned %d after %Ld usecs\n", cb, error,
-> -                (unsigned long long)nsecs >> 10);
-> +                (unsigned long long)ktime_us_delta(rettime, calltime));
->  }
->
->  /**
 > --
+> 2.31.1
+>
 
-Applied as 5.14-rc1 material with some edits in the subject and
-changelog, thanks!
+Cc'ing Alexander Fomichev who reported this issue first.
+
+This is the second time someone raises this problem so it seems that
+this change really broke many existing systems. I will apply this
+patch and send it for stable.
+
+Bart
