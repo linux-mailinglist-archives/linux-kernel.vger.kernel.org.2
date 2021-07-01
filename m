@@ -2,97 +2,375 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95093B9644
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 20:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE14E3B9648
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 20:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbhGAS5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 14:57:39 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:49036 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233505AbhGAS5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 14:57:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625165707; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=KHgqtWCUqBAcSdEPitK4LKTrMWMcbdMy+WpPKXHyE30=;
- b=Z9/XoDkMMheDj++XBz6NlE81bM+rfMdpIswPRpOks/vliWWGdaIDB/HUcfjiTux0uCXuScHa
- HDMZ/FpolZTleM04zgzZ1aw6SDk7gKYB/gAFT3xqOEEu3AwBqRuTe9yfOCFPAYE088Zp2NzV
- weSikVZg1TtzHjYtUTWJlqt6dhg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60de0f8aec0b18a745079611 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Jul 2021 18:55:06
- GMT
-Sender: okukatla=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8498FC43460; Thu,  1 Jul 2021 18:55:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: okukatla)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 58071C433D3;
-        Thu,  1 Jul 2021 18:55:04 +0000 (UTC)
+        id S233923AbhGAS5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 14:57:47 -0400
+Received: from mail-il1-f178.google.com ([209.85.166.178]:46927 "EHLO
+        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233723AbhGAS5q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 14:57:46 -0400
+Received: by mail-il1-f178.google.com with SMTP id t12so7362121ile.13;
+        Thu, 01 Jul 2021 11:55:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AjIdIvaKWs/g3YQH2y/9gcvEvxeRXnLIJy5WplUdJ10=;
+        b=bjIyfNy1nA99HYTyO/yiS7CRNUiwoMQoje9Bbf83RS3uBYpq5Ujl/n/1ZyJj/p/dP4
+         eXyC24qwKi90Z01+NPOee/ZYC2liXAY6fQGBkdamIM6wa0HYYqIqFqOcZeMzasznSQeF
+         Qoxa3ZO0c+Gu4kkWohRkxBnS/xLHUt6tnHaxOUEkQppxN40hRMJK+TyZAAGcCK/BOakH
+         GqViGW6DXI2QDgaVGVstMCvrAzDMclvNal9Yw48L06oIUChaD9NU1WhlSiCMLjJg6AoB
+         KpTdPcbDq/3Fe8XOODLxWeAU+mKt0aUBj5eDzqG/iDUpUDU3LYrY1uzVx8cslx0WeKnC
+         tpfw==
+X-Gm-Message-State: AOAM532/+bPl85OUUgt9BDol4e1lHVlplra+dwsTdl8emFjUc/KC2It3
+        8SVCgymWxoMawVAhqLq1bw==
+X-Google-Smtp-Source: ABdhPJwR2HQJJlZDFXRkP5IbkhozwMMQL8sc0gfhmj6y5COI1lXIuBJo2mO4kcKvs+Ld3Z1dYQ+rlw==
+X-Received: by 2002:a92:d246:: with SMTP id v6mr583454ilg.191.1625165715216;
+        Thu, 01 Jul 2021 11:55:15 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id z3sm368840ior.14.2021.07.01.11.55.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 11:55:13 -0700 (PDT)
+Received: (nullmailer pid 2729152 invoked by uid 1000);
+        Thu, 01 Jul 2021 18:55:09 -0000
+Date:   Thu, 1 Jul 2021 12:55:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v3 11/11] media: dt-bindings: Convert Cadence CSI2RX
+ binding to YAML
+Message-ID: <20210701185509.GA2653882@robh.at.kernel.org>
+References: <20210624192200.22559-1-p.yadav@ti.com>
+ <20210624192200.22559-12-p.yadav@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 02 Jul 2021 00:25:04 +0530
-From:   okukatla@codeaurora.org
-To:     Mike Tipton <mdtipton@codeaurora.org>
-Cc:     djakov@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
-        saravanak@google.com, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mdtipton=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH 2/4] interconnect: Always call pre_aggregate before
- aggregate
-In-Reply-To: <20210625212839.24155-3-mdtipton@codeaurora.org>
-References: <20210625212839.24155-1-mdtipton@codeaurora.org>
- <20210625212839.24155-3-mdtipton@codeaurora.org>
-Message-ID: <000574efe90897c1738299cfba4fea7d@codeaurora.org>
-X-Sender: okukatla@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624192200.22559-12-p.yadav@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-26 02:58, Mike Tipton wrote:
-> The pre_aggregate callback isn't called in all cases before calling
-> aggregate. Add the missing calls so providers can rely on consistent
-> framework behavior.
+On Fri, Jun 25, 2021 at 12:52:00AM +0530, Pratyush Yadav wrote:
+> Convert the Cadence CSI2RX binding to use YAML schema.
 > 
-> Fixes: d3703b3e255f ("interconnect: Aggregate before setting initial 
-> bandwidth")
-> Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> 
 > ---
->  drivers/interconnect/core.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
-> index 945121e18b5c..cfd54c90a6bb 100644
-> --- a/drivers/interconnect/core.c
-> +++ b/drivers/interconnect/core.c
-> @@ -973,9 +973,12 @@ void icc_node_add(struct icc_node *node, struct
-> icc_provider *provider)
->  	}
->  	node->avg_bw = node->init_avg;
->  	node->peak_bw = node->init_peak;
-> -	if (provider->aggregate)
-> +	if (provider->aggregate) {
-> +		if (provider->pre_aggregate)
-> +			provider->pre_aggregate(node);
-nit: we can invoke pre_aggregate() out side of if (qcom_icc_aggregate).
+> Changes in v3:
+> - Add compatible: contains: const: cdns,csi2rx to allow SoC specific
+>   compatible.
+> - Add more constraints for data-lanes property.
+> 
+> Changes in v2:
+> - New in v2.
+> 
+>  .../devicetree/bindings/media/cdns,csi2rx.txt | 100 -----------
+>  .../bindings/media/cdns,csi2rx.yaml           | 169 ++++++++++++++++++
+>  2 files changed, 169 insertions(+), 100 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.txt
+>  create mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/cdns,csi2rx.txt b/Documentation/devicetree/bindings/media/cdns,csi2rx.txt
+> deleted file mode 100644
+> index 6b02a0657ad9..000000000000
+> --- a/Documentation/devicetree/bindings/media/cdns,csi2rx.txt
+> +++ /dev/null
+> @@ -1,100 +0,0 @@
+> -Cadence MIPI-CSI2 RX controller
+> -===============================
+> -
+> -The Cadence MIPI-CSI2 RX controller is a CSI-2 bridge supporting up to 4 CSI
+> -lanes in input, and 4 different pixel streams in output.
+> -
+> -Required properties:
+> -  - compatible: must be set to "cdns,csi2rx" and an SoC-specific compatible
+> -  - reg: base address and size of the memory mapped region
+> -  - clocks: phandles to the clocks driving the controller
+> -  - clock-names: must contain:
+> -    * sys_clk: main clock
+> -    * p_clk: register bank clock
+> -    * pixel_if[0-3]_clk: pixel stream output clock, one for each stream
+> -                         implemented in hardware, between 0 and 3
+> -
+> -Optional properties:
+> -  - phys: phandle to the external D-PHY, phy-names must be provided
+> -  - phy-names: must contain "dphy", if the implementation uses an
+> -               external D-PHY
+> -
+> -Required subnodes:
+> -  - ports: A ports node with one port child node per device input and output
+> -           port, in accordance with the video interface bindings defined in
+> -           Documentation/devicetree/bindings/media/video-interfaces.txt. The
+> -           port nodes are numbered as follows:
+> -
+> -           Port Description
+> -           -----------------------------
+> -           0    CSI-2 input
+> -           1    Stream 0 output
+> -           2    Stream 1 output
+> -           3    Stream 2 output
+> -           4    Stream 3 output
+> -
+> -           The stream output port nodes are optional if they are not
+> -           connected to anything at the hardware level or implemented
+> -           in the design.Since there is only one endpoint per port,
+> -           the endpoints are not numbered.
+> -
+> -
+> -Example:
+> -
+> -csi2rx: csi-bridge@0d060000 {
+> -	compatible = "cdns,csi2rx";
+> -	reg = <0x0d060000 0x1000>;
+> -	clocks = <&byteclock>, <&byteclock>
+> -		 <&coreclock>, <&coreclock>,
+> -		 <&coreclock>, <&coreclock>;
+> -	clock-names = "sys_clk", "p_clk",
+> -		      "pixel_if0_clk", "pixel_if1_clk",
+> -		      "pixel_if2_clk", "pixel_if3_clk";
+> -
+> -	ports {
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -
+> -		port@0 {
+> -			reg = <0>;
+> -
+> -			csi2rx_in_sensor: endpoint {
+> -				remote-endpoint = <&sensor_out_csi2rx>;
+> -				clock-lanes = <0>;
+> -				data-lanes = <1 2>;
+> -			};
+> -		};
+> -
+> -		port@1 {
+> -			reg = <1>;
+> -
+> -			csi2rx_out_grabber0: endpoint {
+> -				remote-endpoint = <&grabber0_in_csi2rx>;
+> -			};
+> -		};
+> -
+> -		port@2 {
+> -			reg = <2>;
+> -
+> -			csi2rx_out_grabber1: endpoint {
+> -				remote-endpoint = <&grabber1_in_csi2rx>;
+> -			};
+> -		};
+> -
+> -		port@3 {
+> -			reg = <3>;
+> -
+> -			csi2rx_out_grabber2: endpoint {
+> -				remote-endpoint = <&grabber2_in_csi2rx>;
+> -			};
+> -		};
+> -
+> -		port@4 {
+> -			reg = <4>;
+> -
+> -			csi2rx_out_grabber3: endpoint {
+> -				remote-endpoint = <&grabber3_in_csi2rx>;
+> -			};
+> -		};
+> -	};
+> -};
+> diff --git a/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml b/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
+> new file mode 100644
+> index 000000000000..8e42c9fdaaa3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
+> @@ -0,0 +1,169 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/cdns,csi2rx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Cadence MIPI-CSI2 RX controller
+> +
+> +description: |
+> +  The Cadence MIPI-CSI2 RX controller is a CSI-2 bridge supporting up to 4 CSI
+> +  lanes in input, and 4 different pixel streams in output.
+> +
+> +maintainers:
+> +  - Pratyush Yadav <p.yadav@ti.com>
+> +
+> +properties:
+> +  compatible:
+> +    contains:
+> +      const: cdns,csi2rx
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 3
+> +    maxItems: 6
+> +
+> +  clock-names:
+> +    minItems: 3
+> +    maxItems: 6
 
->  		provider->aggregate(node, 0, node->init_avg, node->init_peak,
->  				    &node->avg_bw, &node->peak_bw);
-> +	}
->  	provider->set(node, node);
->  	node->avg_bw = 0;
->  	node->peak_bw = 0;
+maxItems can be dropped here. Implied by items length.
+
+> +    items:
+> +      - const: sys_clk # main clock
+> +      - const: p_clk # register bank clock
+> +      - const: pixel_if0_clk # pixel stream 0 output clock
+> +      - const: pixel_if1_clk # pixel stream 1 output clock
+> +      - const: pixel_if2_clk # pixel stream 2 output clock
+> +      - const: pixel_if3_clk # pixel stream 3 output clock
+> +
+> +  phys:
+> +    maxItems: 1
+> +    description: phandle to the external D-PHY
+> +
+> +  phy-names:
+> +    items:
+> +      - const: dphy
+> +
+> +  ports:
+> +    $ref: /schemas/graph.yaml#/properties/ports
+> +
+> +    properties:
+> +      port@0:
+> +        $ref: /schemas/graph.yaml#/$defs/port-base
+> +        unevaluatedProperties: false
+> +        description: CSI-2 input
+> +
+> +        properties:
+> +          endpoint:
+> +            $ref: video-interfaces.yaml#
+> +            unevaluatedProperties: false
+> +
+> +            properties:
+> +              clock-lanes:
+> +                maxItems: 1
+> +
+> +              data-lanes:
+> +                $ref: /schemas/types.yaml#/definitions/uint32-array
+
+Don't need a type here.
+
+> +                minItems: 1
+> +                maxItems: 4
+> +                uniqueItems: true
+
+uniqueItems should be added in video-interfaces.yaml.
+
+> +                items:
+> +                  maximum: 4
+> +
+> +            required:
+> +              - clock-lanes
+> +              - data-lanes
+> +
+> +      port@1:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: Stream 0 output
+> +
+> +      port@2:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: Stream 1 output
+> +
+> +      port@3:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: Stream 2 output
+> +
+> +      port@4:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: Stream 3 output
+> +
+> +    required:
+> +      - port@0
+> +
+> +
+> +dependencies:
+> +  phys: [ 'phy-names' ]
+> +  phy-names: [ 'phys' ]
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    csi2rx: csi-bridge@d060000 {
+> +      compatible = "cdns,csi2rx";
+> +      reg = <0x0d060000 0x1000>;
+> +      clocks = <&byteclock>, <&byteclock>,
+> +        <&coreclock>, <&coreclock>,
+> +        <&coreclock>, <&coreclock>;
+> +      clock-names = "sys_clk", "p_clk",
+> +              "pixel_if0_clk", "pixel_if1_clk",
+> +              "pixel_if2_clk", "pixel_if3_clk";
+> +      phys = <&dphy0>;
+> +      phy-names = "dphy";
+> +
+> +      ports {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        port@0 {
+> +          reg = <0>;
+> +
+> +          csi2rx_in_sensor: endpoint {
+> +            remote-endpoint = <&sensor_out_csi2rx>;
+> +            clock-lanes = <0>;
+> +            data-lanes = <1 2>;
+> +          };
+> +        };
+> +
+> +        port@1 {
+> +          reg = <1>;
+> +
+> +          csi2rx_out_grabber0: endpoint {
+> +            remote-endpoint = <&grabber0_in_csi2rx>;
+> +          };
+> +        };
+> +
+> +        port@2 {
+> +          reg = <2>;
+> +
+> +          csi2rx_out_grabber1: endpoint {
+> +            remote-endpoint = <&grabber1_in_csi2rx>;
+> +          };
+> +        };
+> +
+> +        port@3 {
+> +          reg = <3>;
+> +
+> +          csi2rx_out_grabber2: endpoint {
+> +            remote-endpoint = <&grabber2_in_csi2rx>;
+> +          };
+> +        };
+> +
+> +        port@4 {
+> +          reg = <4>;
+> +
+> +          csi2rx_out_grabber3: endpoint {
+> +            remote-endpoint = <&grabber3_in_csi2rx>;
+> +          };
+> +        };
+> +      };
+> +    };
+> -- 
+> 2.30.0
+> 
+> 
