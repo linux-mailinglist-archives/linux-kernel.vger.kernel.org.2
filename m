@@ -2,72 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0DE3B9420
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F21CB3B9428
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233721AbhGAPmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 11:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233478AbhGAPmf (ORCPT
+        id S233778AbhGAPnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 11:43:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51740 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233478AbhGAPnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 11:42:35 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C954BC061762;
-        Thu,  1 Jul 2021 08:40:03 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id g8-20020a1c9d080000b02901f13dd1672aso4479808wme.0;
-        Thu, 01 Jul 2021 08:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3d1/y8CJLKCSBr4EsHmH8zFaiN252FdPYFFuHvdt5Fo=;
-        b=FQxikW28LOSxCdBf1R+ZchUmn3KM+B4UEWA2qzea9w88sCbE7MBH9Ua1TlXXMXsads
-         It/c2J09TJXMLUdRjfkVvsIDAIgnS4/AS9p/LVEe4GT1AlzYu/4fOJfyMSim7elf/Gu3
-         uJXKVeCXM3vlKFySzzOE+IlYnzedp7xVK+MOCUA+FvtcZxeOcvCpOZp39sUQT8rt7wgP
-         /EvqdKecQHNQy6VMTRHKwBOwvt4tJ6vrreYDkK/hDv3+NxIQ6jFsAH+J7VfXdo35sXff
-         HJsy1/Kc/mecrayYcFlTHbkRLQaoZ4VWl4GfvXQTjKnqcOqG2HZeewjcKxazQEdnBKHd
-         l8oA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3d1/y8CJLKCSBr4EsHmH8zFaiN252FdPYFFuHvdt5Fo=;
-        b=p+X/HAaNEwMxtlw+djflajaR+UXzF5fgMyx6owD7Kt5TsElYQN8q68h8JdtuUBNwap
-         KXeK5rUzXAvxeUTOdjP6rukwfdk+JxNDNR5SXLH8I5nRR5mWn+YpNc7ZjxErhHlZs+rW
-         4PO0U3nsrNTSsXJ/ZlpngJAEk9eBdJ8fY2gAk2aOGCf+loiBzya5scZThVESH8VH9WIx
-         qpVjM324xs/4t5w1tSXFBu7M+otv57NV4gvq/oWUdre4LV+liiXeZcVzdKYqmEOYBqIg
-         Q0oNqEq0FOxIoKXMgz3mT/gqZBFOXB8X83Tm0aRec1u6CGABIPDrk/XhvFqi23zXkGuE
-         2EPA==
-X-Gm-Message-State: AOAM530Syxip2tfpm6u+vjflgrGaOvgAHREbx1A9Q2rx95lRPFYZ7klE
-        89oVcNwy6xygy5g3m5y0LIQOzuyD/Gdkr9Kn
-X-Google-Smtp-Source: ABdhPJze4y1nxUKbHZgfaeBsmoEpGymAtQlSNHz0caBy6Jh2JtyYsOKk+Q5n7yvWRiwswrNvhK/MyQ==
-X-Received: by 2002:a7b:c0d6:: with SMTP id s22mr11409797wmh.52.1625154002407;
-        Thu, 01 Jul 2021 08:40:02 -0700 (PDT)
-Received: from allarkin.tlv.csb ([176.230.197.111])
-        by smtp.googlemail.com with ESMTPSA id x17sm414260wrn.62.2021.07.01.08.40.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 08:40:01 -0700 (PDT)
-From:   Alexander Larkin <avlarkin82@gmail.com>
-To:     yepeilin.cs@gmail.com
-Cc:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, avlarkin82@gmail.com
-Subject: Re: maybe similar bug exists for HCI_EV_INQUIRY_RESULT* like [Linux-kernel-mentees] [PATCH v2] net/bluetooth: slab-out-of-bounds read in hci_extended_inquiry_result_evt()
-Date:   Thu,  1 Jul 2021 18:39:36 +0300
-Message-Id: <20210701153936.2954886-1-avlarkin82@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200709130224.214204-1-yepeilin.cs@gmail.com>
-References: <20200709130224.214204-1-yepeilin.cs@gmail.com>
+        Thu, 1 Jul 2021 11:43:40 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A491022891;
+        Thu,  1 Jul 2021 15:41:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625154068; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=upovNwSZjv8f/iecsKALo/k8SCqL9R0LoxKlal4MHxw=;
+        b=b4fYRKsHielTGsj+p0iJjnZfPn8+LTBhqB6ZyhTEUT9lDbF2wSVPpn6+4aTMKANIhTHdkw
+        VgRt3j0/5duL08x9ABYMvZv+/vYaznkIaqmekSXYgQUAC+25fSOuVe1nsIuJwvXQ4zTv5z
+        8mX/m1WcA9MsMHqfBDrh25S2ifLzPi8=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 1D66011CD5;
+        Thu,  1 Jul 2021 15:41:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625154068; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=upovNwSZjv8f/iecsKALo/k8SCqL9R0LoxKlal4MHxw=;
+        b=b4fYRKsHielTGsj+p0iJjnZfPn8+LTBhqB6ZyhTEUT9lDbF2wSVPpn6+4aTMKANIhTHdkw
+        VgRt3j0/5duL08x9ABYMvZv+/vYaznkIaqmekSXYgQUAC+25fSOuVe1nsIuJwvXQ4zTv5z
+        8mX/m1WcA9MsMHqfBDrh25S2ifLzPi8=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id lUxpBRTi3WAOFwAALh3uQQ
+        (envelope-from <jgross@suse.com>); Thu, 01 Jul 2021 15:41:08 +0000
+From:   Juergen Gross <jgross@suse.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu
+Subject: [PATCH 0/6] x86/kvm: add boot parameters for max vcpu configs
+Date:   Thu,  1 Jul 2021 17:40:59 +0200
+Message-Id: <20210701154105.23215-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the net/bluetooth/hci_event.c , maybe similar bug could be inside
-hci_inquiry_result_with_rssi_evt() that is HCI_EV_INQUIRY_RESULT_WITH_RSSI
-and inside hci_inquiry_result_evt() that is HCI_EV_INQUIRY_RESULT. 
+In order to be able to have a single kernel for supporting even huge
+numbers of vcpus per guest some arrays should be sized dynamically.
+
+The easiest way to do that is to add boot parameters for the maximum
+number of vcpus and the highest supported vcpu-id overwriting the
+normal default.
+
+This patch series is doing that for x86. The same scheme can be easily
+adapted to other architectures, but I don't want to do that in the
+first iteration.
+
+In the long term I'd suggest to have a per-guest setting of the two
+parameters allowing to spare some memory for smaller guests. OTOH this
+would require new ioctl()s and respective qemu modifications, so I let
+those away for now.
+
+I've tested the series not to break normal guest operation and the new
+parameters to be effective on x86. For Arm64 I did a compile test only.
+
+Juergen Gross (6):
+  x86/kvm: fix vcpu-id indexed array sizes
+  x86/kvm: remove non-x86 stuff from arch/x86/kvm/ioapic.h
+  x86/kvm: add boot parameter for maximum vcpu-id
+  x86/kvm: introduce per cpu vcpu masks
+  kvm: allocate vcpu pointer array separately
+  x86/kvm: add boot parameter for setting max number of vcpus per guest
+
+ .../admin-guide/kernel-parameters.txt         | 18 +++++++
+ arch/arm64/kvm/arm.c                          | 28 +++++++++--
+ arch/x86/include/asm/kvm_host.h               | 22 ++++++---
+ arch/x86/kvm/hyperv.c                         | 25 +++++++---
+ arch/x86/kvm/ioapic.c                         | 14 +++++-
+ arch/x86/kvm/ioapic.h                         |  8 +--
+ arch/x86/kvm/irq_comm.c                       |  9 +++-
+ arch/x86/kvm/x86.c                            | 49 ++++++++++++++++++-
+ include/linux/kvm_host.h                      | 17 ++++++-
+ 9 files changed, 160 insertions(+), 30 deletions(-)
+
+-- 
+2.26.2
+
