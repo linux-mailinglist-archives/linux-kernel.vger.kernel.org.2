@@ -2,122 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3BEB3B9298
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68023B929A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbhGAODR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:03:17 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:9317 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231342AbhGAODQ (ORCPT
+        id S232430AbhGAOEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:04:05 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:52047 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S231342AbhGAOEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:03:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1625148030;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=jdajgCtb8y8FBueJJb4PCu1MS3sUAvqVQcmmtwiQ4ug=;
-    b=gcansIWQTjqc6gmrNeOZs+66+/NogM4f4GQaBp4cbqd8X2/zV0RgJIClWznE1pKz4b
-    kdS9cJCdP1DSLg/YzZrn6Zg3kWARrKMVq+HdnKATfTXXRkPaKCYzkd1LMDtbimHLdjMp
-    ktzcwGvchwnz25Yrx4nxzwGLlWQz6IV53oOZnjnOmMFNNnzLtwg0r9qCqsaUNh6BY+X9
-    gqu8SuCWaogGucQEo3LGVNVI1l4G+4yCetQNVf+fSgJZt0kX1BIGu3q7tdcVq2LXSWfI
-    vVoH05kMF7exnkFDdOoPkmRgOzxWoUigvq2leuJDUvPMIndOrZeMtk9Yh5Q0GKcxkJK7
-    SaqA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1mfYzBGHXH7F/39n3sa"
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 47.28.1 DYNA|AUTH)
-    with ESMTPSA id h06665x61E0U64w
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 1 Jul 2021 16:00:30 +0200 (CEST)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     Tony Lindgren <tony@atomide.com>, gg@slimlogic.co.uk,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
-        peter.ujfalusi@gmail.com,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, kernel@pyra-handheld.com,
-        devicetree@vger.kernel.org,
-        "H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: [PATCH v2] omap5-board-common: remove not physically existing vdds_1v8_main fixed-regulator
-Date:   Thu,  1 Jul 2021 16:00:22 +0200
-Message-Id: <e836d5d98b028bdbb8805bcf79489e0df28add6c.1625148021.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 1 Jul 2021 10:04:02 -0400
+Received: (qmail 772620 invoked by uid 1000); 1 Jul 2021 10:01:31 -0400
+Date:   Thu, 1 Jul 2021 10:01:31 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Claudiu.Beznea@microchip.com
+Cc:     gregkh@linuxfoundation.org, Nicolas.Ferre@microchip.com,
+        alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com,
+        Cristian.Birsan@microchip.com, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: host: ohci-at91: suspend/resume ports after/before
+ OHCI accesses
+Message-ID: <20210701140131.GA772273@rowland.harvard.edu>
+References: <20210623135915.GB491169@rowland.harvard.edu>
+ <a5c68849-a48c-5224-7ba3-1ad44e0d9874@microchip.com>
+ <20210623141907.GC491169@rowland.harvard.edu>
+ <8bff20a7-8eb8-276a-086e-f1729fbbdbe4@microchip.com>
+ <20210623164148.GC499969@rowland.harvard.edu>
+ <f03ccb09-4b5e-4db7-2cf0-375d53234099@microchip.com>
+ <20210624132304.GA528247@rowland.harvard.edu>
+ <856493cd-9d53-24b3-8e8b-c3c366f282bd@microchip.com>
+ <20210630182137.GA743974@rowland.harvard.edu>
+ <6a33e55d-b101-cda2-7f53-ce6e5e6ace93@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a33e55d-b101-cda2-7f53-ce6e5e6ace93@microchip.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This device tree include file describes a fixed-regulator
-connecting smps7_reg output (1.8V) to some 1.8V rail and
-consumers (vdds_1v8_main).
+On Thu, Jul 01, 2021 at 05:45:50AM +0000, Claudiu.Beznea@microchip.com wrote:
+> On 30.06.2021 21:21, Alan Stern wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > On Wed, Jun 30, 2021 at 02:46:47PM +0000, Claudiu.Beznea@microchip.com wrote:
+> >> On 24.06.2021 16:23, Alan Stern wrote:
+> >>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> >>>
+> >>> On Thu, Jun 24, 2021 at 06:40:25AM +0000, Claudiu.Beznea@microchip.com wrote:
+> >>>> On 23.06.2021 19:41, Alan Stern wrote:
+> >>>>> Are there any systems beside the SAMA7G5 and others you tested which
+> >>>>> might be affected by this patch?  Do they all work pretty much the
+> >>>>> same way?  (I want to make sure no others will be adversely affected
+> >>>>> by this change.)
+> >>>>
+> >>>> I tested it on SAMA7G5, SAMA5D2 and SAM9X60. I tested the suspend/resume
+> >>>> to/from mem. On SAMA5D2 and SAM9X60 there is no clock provided by
+> >>>> transceiver A to OHCI. I encountered no issues on tested systems. These IPs
+> >>>> are also present on SAMA5D3 and SAMA5D4 systems which I haven't tested as I
+> >>>> expect to behave as SAMA5D2 (as the clocking scheme is the same with
+> >>>> SAMA5D2). I can also try it on a SAMA5D3 (I don't have a SAMA5D4 with me at
+> >>>> the moment), tough, just to be sure nothing is broken there too.
+> >>>
+> >>> That doesn't answer my question.  I asked if there were any systems
+> >>> which might be affected by your patch, and you listed a bunch of
+> >>> systems that _aren't_ affected (that is, they continue to work
+> >>> properly).
+> >>
+> >> I wrongly understood the initial question.
+> >>
+> >>>
+> >>> What systems might run into trouble with this patch?
+> >>
+> >> These are all I haven't tested and might be affected:
+> >> AT91RM9200,
+> >> SAM9260,
+> >> SAM9261,
+> >> SAM9263,
+> >> SAM9N12,
+> >> SAM9X35,
+> >> SAM9G45.
+> >>
+> >> The last two (SAM9X35 and SAM9G45) have the same clocking scheme with
+> >> SAMA5D2 (which I tested). For the rest of them I cannot find the clocking
+> >> scheme in datasheet and don't have them to test (at least at the moment).
+> > 
+> > I see.  That seems reasonable; the others are probably the same as the
+> > ones you tested.
+> > 
+> > Did you ever answer the question that Nicolas raised back on June 9 in:
+> > 
+> >         https://marc.info/?l=linux-usb&m=162324242003349&w=2
+> 
+> Not directly. I replied previously in this thread "For run-time control
+> (via ohci_at91_hub_control()), I agree with you that
+> the current implemented approach is not healthy (taking into account the
+> clock scheme above) and the fact that we do force the ports suspend on
+> ohci_at91_hub_control()". Nicolas was referring to ohci_at91_port_suspend()
+> calls in ohci_at91_hub_control() so I agreed with him that work might need
+> to be done also for this function.
 
-This regulator does not physically exist.
+All right.  I guess this is the best that can be done at this time.
 
-I assume it was introduced as a wrapper around smps7_reg
-to provide a speaking signal name "vdds_1v8_main" as label.
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
 
-This fixed-regulator without real function was not an issue
-in driver code until
+Greg KH may not have the original patch still in his queue.  And in any 
+case he'll probably ask you to resubmit it after the current merge 
+window ends.
 
-  Commit 98e48cd9283d ("regulator: core: resolve supply for boot-on/always-on regulators")
-
-introduced a new check for regulator initialization which
-makes Palmas regulator registration fail:
-
-[    5.407712] ldo1: supplied by vsys_cobra
-[    5.412748] ldo2: supplied by vsys_cobra
-[    5.417603] palmas-pmic 48070000.i2c:palmas@48:palmas_pmic: failed to register 48070000.i2c:palmas@48:palmas_pmic regulator
-
-The reason is that the supply-chain of regulators is too
-long and goes from ldo3 through the virtual vdds_1v8_main
-regulator and then back to smps7. This adds a cross-dependency
-of probing Palmas regulators and the fixed-regulator which
-leads to probe deferral by the new check and is no longer
-resolved.
-
-Since we do not control what device tree files including this
-one reference (either &vdds_1v8_main or &smps7_reg or both)
-we keep both labels for smps7 for compatibility.
-
-Fixes: 98e48cd9283d ("regulator: core: resolve supply for boot-on/always-on regulators")
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
- arch/arm/boot/dts/omap5-board-common.dtsi | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
-
-diff --git a/arch/arm/boot/dts/omap5-board-common.dtsi b/arch/arm/boot/dts/omap5-board-common.dtsi
-index d8f13626cfd1..3a8f10231475 100644
---- a/arch/arm/boot/dts/omap5-board-common.dtsi
-+++ b/arch/arm/boot/dts/omap5-board-common.dtsi
-@@ -30,14 +30,6 @@ vsys_cobra: fixedregulator-vsys_cobra {
- 		regulator-max-microvolt = <5000000>;
- 	};
- 
--	vdds_1v8_main: fixedregulator-vdds_1v8_main {
--		compatible = "regulator-fixed";
--		regulator-name = "vdds_1v8_main";
--		vin-supply = <&smps7_reg>;
--		regulator-min-microvolt = <1800000>;
--		regulator-max-microvolt = <1800000>;
--	};
--
- 	vmmcsd_fixed: fixedregulator-mmcsd {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vmmcsd_fixed";
-@@ -487,6 +479,7 @@ smps6_reg: smps6 {
- 					regulator-boot-on;
- 				};
- 
-+				vdds_1v8_main:
- 				smps7_reg: smps7 {
- 					/* VDDS_1v8_OMAP over VDDS_1v8_MAIN */
- 					regulator-name = "smps7";
--- 
-2.31.1
-
+Alan Stern
