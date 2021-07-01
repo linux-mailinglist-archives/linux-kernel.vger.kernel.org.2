@@ -2,106 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E223B908A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 12:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B4B3B908D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 12:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236042AbhGAKgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 06:36:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:50958 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235300AbhGAKgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 06:36:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79C9AD6E;
-        Thu,  1 Jul 2021 03:34:16 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D7B223F718;
-        Thu,  1 Jul 2021 03:34:12 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 11:34:06 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Peter Hilber <peter.hilber@opensynergy.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        virtio-dev@lists.oasis-open.org, sudeep.holla@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
-        igor.skalkin@opensynergy.com, alex.bennee@linaro.org,
-        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
-        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
-        Andriy.Tryshnivskyy@opensynergy.com
-Subject: Re: [PATCH v4 14/16] firmware: arm_scmi: Add virtio transport
-Message-ID: <20210701103406.GE17807@e120937-lin>
-References: <20210611165937.701-1-cristian.marussi@arm.com>
- <20210611165937.701-15-cristian.marussi@arm.com>
- <ccc64935-08fa-d1a3-fc21-227c9d05fe24@opensynergy.com>
+        id S236061AbhGAKhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 06:37:22 -0400
+Received: from outbound-smtp20.blacknight.com ([46.22.139.247]:40135 "EHLO
+        outbound-smtp20.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235300AbhGAKhV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 06:37:21 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp20.blacknight.com (Postfix) with ESMTPS id 2FA531C3FF5
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 11:34:50 +0100 (IST)
+Received: (qmail 25466 invoked from network); 1 Jul 2021 10:34:50 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 1 Jul 2021 10:34:49 -0000
+Date:   Thu, 1 Jul 2021 11:34:48 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Sachin Sant <sachinp@linux.vnet.ibm.com>
+Cc:     Odin Ugedal <odin@uged.al>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sched/fair: Ensure _sum and _avg values stay consistent
+Message-ID: <20210701103448.GL3840@techsingularity.net>
+References: <20210624111815.57937-1-odin@uged.al>
+ <E16E71B3-E941-4522-AFF1-ABDF918FED19@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <ccc64935-08fa-d1a3-fc21-227c9d05fe24@opensynergy.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <E16E71B3-E941-4522-AFF1-ABDF918FED19@linux.vnet.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Jul 01, 2021 at 10:43:07AM +0200, Peter Hilber wrote:
-> On 11.06.21 18:59, Cristian Marussi wrote:
+On Thu, Jul 01, 2021 at 03:17:16PM +0530, Sachin Sant wrote:
 > 
-> <snip>
 > 
-> > +static struct virtio_driver virtio_scmi_driver = {
-> > +	.driver.name = "scmi-virtio",
-> > +	.driver.owner = THIS_MODULE,
-> > +	.feature_table = features,
-> > +	.feature_table_size = ARRAY_SIZE(features),
-> > +	.id_table = id_table,
-> > +	.probe = scmi_vio_probe,
-> > +	.remove = scmi_vio_remove,
-> > +};
-> > +
-> 
-> It might be good to also check for the VIRTIO_F_VERSION_1 feature bit in the
-> optional .validate op (not yet implemented above), as some other devices do
-> (quoting virtio-snd in the following):
-> 
-
-Ah, thanks for pointing that out, I'll do because indeed in my hackish
-emulation test-setup I forgot to emulate that bit and everything fall
-flat.
-
-> > /**
-> >  * virtsnd_validate() - Validate if the device can be started.
-> >  * @vdev: VirtIO parent device.
-> >  *
-> >  * Context: Any context.
-> >  * Return: 0 on success, -EINVAL on failure.
-> >  */
-> > static int virtsnd_validate(struct virtio_device *vdev)
-> > {
-> 
-> <snip>
-> 
+> > On 24-Jun-2021, at 4:48 PM, Odin Ugedal <odin@uged.al> wrote:
 > > 
-> > 	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1)) {
-> > 		dev_err(&vdev->dev,
-> > 			"device does not comply with spec version 1.x\n");
-> > 		return -EINVAL;
-> > 	}
+> > The _sum and _avg values are in general sync together with the PELT
+> > divider. They are however not always completely in perfect sync,
+> > resulting in situations where _sum gets to zero while _avg stays
+> > positive. Such situations are undesirable.
 > > 
-> 
-> <snip>
-> 
+> > This comes from the fact that PELT will increase period_contrib, also
+> > increasing the PELT divider, without updating _sum and _avg values to
+> > stay in perfect sync where (_sum == _avg * divider). However, such PELT
+> > change will never lower _sum, making it impossible to end up in a
+> > situation where _sum is zero and _avg is not.
 > > 
-> > static struct virtio_driver virtsnd_driver = {
-> > 	.driver.name = KBUILD_MODNAME,
-> > 	.driver.owner = THIS_MODULE,
-> > 	.id_table = id_table,
-> > 	.validate = virtsnd_validate,
+> > Therefore, we need to ensure that when subtracting load outside PELT,
+> > that when _sum is zero, _avg is also set to zero. This occurs when
+> > (_sum < _avg * divider), and the subtracted (_avg * divider) is bigger
+> > or equal to the current _sum, while the subtracted _avg is smaller than
+> > the current _avg.
+> > 
+> > Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > Signed-off-by: Odin Ugedal <odin@uged.al>
 > 
-> (end of virtio-snd quote)
+> Hello Odin, Vincent,
+> 
+> The issue of kernel warning(during boot) seen on Power sever, reported few days back is not completely fixed.
+> I am able to recreate this issue with latest 5.13 kernel(which has this fix)
+> 
+> # git log --oneline kernel/sched/fair.c
+> a6eaf3850cb1 Merge tag 'sched-urgent-2021-06-30' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+> 54a728dc5e4f Merge tag 'sched-core-2021-06-28' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+> 1c35b07e6d39 sched/fair: Ensure _sum and _avg values stay consistent  <<==
+> 
 
-Thanks,
-Cristian
+What was HEAD when you checked this? 1c35b07e6d39 was merged in the
+5.14-rc1 merge window so would not be in 5.13.
 
+# git log v5.13..origin/master --pretty=one | grep 1c35b07e
+1c35b07e6d3986474e5635be566e7bc79d97c64d sched/fair: Ensure _sum and _avg values stay consistent
+
+It's not tagged for stable and lacks a Fixes: tag so I don't think
+it'll be automatically picked up for 5.13-stable unless Odin sends it
+to stable@vger.kernel.org.
+
+-- 
+Mel Gorman
+SUSE Labs
