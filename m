@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C69E3B8C83
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 05:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 864D73B8C85
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 05:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238739AbhGADEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 23:04:20 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:52792 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238647AbhGADEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 23:04:15 -0400
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxj0MRMN1gsBQbAA--.31546S4;
-        Thu, 01 Jul 2021 11:01:39 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7 3/3] dt-bindings: mips: Add Loongson-2K1000 reset support
-Date:   Thu,  1 Jul 2021 11:01:37 +0800
-Message-Id: <20210701030137.10566-3-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210701030137.10566-1-zhangqing@loongson.cn>
-References: <20210701030137.10566-1-zhangqing@loongson.cn>
+        id S238718AbhGADGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 23:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238056AbhGADGI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 23:06:08 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC211C061756;
+        Wed, 30 Jun 2021 20:03:38 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id d1-20020a4ad3410000b029024c4d2ea72aso1200791oos.4;
+        Wed, 30 Jun 2021 20:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=miX+HUGNry9LPmmE01qiRM28/4hRXxW/rSyq1X5RMvA=;
+        b=rrcLIpMYDVHo8YMMCg+C5g3Y2pyHlfkH9Yasw0GfBTJIJG5VkNl/+aT2dHxvcG0KsZ
+         58ARZrBU4ydpsDCtR+e6MwvgQ08Y4ibgDTktIZ6qHftwV2zNobAZm0Ke0KvdEBDdjJeA
+         FHi5esfucH4d0STJBO/p9uYNtDeepR4HxMhnAO9G50xqtpMaHe1BQZJim6ZRYeaxZBBO
+         5kRB5Tb5rDsvbJJzpnY68MmDDr1K4Gm+PicNXhDZHyx58gvPWIoraS5uflsiArm/o70G
+         4W+fctfsQQVHlRXh8/PsKiaQdBuom0cXbMOnGCwKcxokZ/O5i/M++eR3WO81Sz17gBBN
+         e1Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=miX+HUGNry9LPmmE01qiRM28/4hRXxW/rSyq1X5RMvA=;
+        b=sszzhreMmEWVS9BKM3YqLNH/5aODVbHrKDlwJZDdp0AKdkUdl4xztsWR16pBr9W1Lf
+         3Cn8X0Ij5hcMISSC1C4DFvy5L52S395euWAogXAdVFQEMWqsmYGUmKJOrLtLjzUU34yh
+         bkzCzcrPJ/v66Tw7IQuHc9JsbGgLbQTjNUiEF79abLCQfltJKhDA7j2RrynqGn7CmUOT
+         1B3KDfpACiBIs0VVsPRFzvDHSpDDKz3aFxXDR8pHd8lqCxZYT5rfoQwxHTGDbIaqnxg/
+         zvkmb/YBrYn328eq+H2CHy9k7fvx1FrmgK2h3V7JNUjOF+UJA+uxBAlsaB3HXvr/f8up
+         A+Wg==
+X-Gm-Message-State: AOAM5310yDFof1QcZkkijPdaXWMc4Gj3rMlaI+NXN+be9URDnOUu5Txj
+        FhYTvoiCOmTY3heDpoQ4baY=
+X-Google-Smtp-Source: ABdhPJxNS3uM9ZSKZcUsFOgGvl15CC7VjYn6u1n4W3yLMranX1a/tzUlEv8HZdfoRQfVP/XaZUYLaA==
+X-Received: by 2002:a4a:cb06:: with SMTP id r6mr11136256ooq.15.1625108618137;
+        Wed, 30 Jun 2021 20:03:38 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.38])
+        by smtp.googlemail.com with ESMTPSA id c34sm5236974otu.42.2021.06.30.20.03.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Jun 2021 20:03:37 -0700 (PDT)
+Subject: Re: [PATCH] net: ipv6: don't generate link-local address in any
+ addr_gen_mode
+To:     Rocco Yue <rocco.yue@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
+        Rocco.Yue@gmail.com, chao.song@mediatek.com,
+        kuohong.wang@mediatek.com, zhuoliang.zhang@mediatek.com
+References: <20210701015940.29726-1-rocco.yue@mediatek.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <3c0e5c52-4204-ae1e-526a-5f3a5c9738c2@gmail.com>
+Date:   Wed, 30 Jun 2021 21:03:35 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxj0MRMN1gsBQbAA--.31546S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxJF15tFW5Gr1xWw1rtFy7Wrg_yoW8Gw43p3
-        ZxC3W7Kr4F9F13uwsxKFy8AF1rZr9aya4xXF47twnrt3s8Ga1Yvw1ak3Z8ZF17GFy8XFW7
-        XFZ7WFWUKa4Ikw7anT9S1TB71UUUUj7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUQ2b7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF
-        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcV
-        CY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280
-        aVCY1x0267AKxVW0oVCq3wAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8w
-        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE
-        14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262kKe7
-        AKxVWUAVWUtwCY02Avz4vE14v_Gr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-        Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
-        cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8V
-        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E
-        14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU3BTYUUUUU
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+In-Reply-To: <20210701015940.29726-1-rocco.yue@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch the DT binding to a YAML schema to enable the DT validation.
+On 6/30/21 7:59 PM, Rocco Yue wrote:
+> This patch provides an ipv6 proc file named
+> "disable_gen_linklocal_addr", its absolute path is as follows:
+> "/proc/sys/net/ipv6/conf/<iface>/disable_gen_linklocal_addr".
+> 
+> When the "disable_gen_linklocal_addr" value of a device is 1,
+> it means that this device does not need the Linux kernel to
+> automatically generate the ipv6 link-local address no matter
+> which IN6_ADDR_GEN_MODE is used.
+> 
 
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
-
-v6-v7:
-Add yaml file
----
- .../bindings/mips/loongson/ls2k-reset.yaml    | 38 +++++++++++++++++++
- 1 file changed, 38 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
-
-diff --git a/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml b/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
-new file mode 100644
-index 000000000000..6016ea756ccd
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
-@@ -0,0 +1,38 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/mips/loongson/ls2k-reset.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Loongson 2K1000 PM Controller
-+
-+maintainers:
-+  - Qing Zhang <zhangqing@loongson.cn>
-+
-+description: |
-+  This controller can be found in Loongson-2K1000 Soc systems.
-+
-+properties:
-+  compatible:
-+    const: loongson,ls2k-pm
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    bus {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+        pm: power-controller@1fe07000 {
-+            compatible = "loongson,ls2k-pm";
-+            reg = <0 0x1fe07000 0 0x422>;
-+        };
-+    };
-+...
--- 
-2.31.0
-
+doesn't this duplicate addr_gen_mode == 1 == IN6_ADDR_GEN_MODE_NONE?
