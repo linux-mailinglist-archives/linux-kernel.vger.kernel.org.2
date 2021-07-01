@@ -2,94 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119F83B92DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900EC3B92E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbhGAOJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:09:06 -0400
-Received: from mail-il1-f171.google.com ([209.85.166.171]:42962 "EHLO
-        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232523AbhGAOJB (ORCPT
+        id S233051AbhGAOJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232491AbhGAOJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:09:01 -0400
-Received: by mail-il1-f171.google.com with SMTP id h3so6455487ilc.9;
-        Thu, 01 Jul 2021 07:06:31 -0700 (PDT)
+        Thu, 1 Jul 2021 10:09:47 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4096C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 07:07:16 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id t3so7415769oic.5
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 07:07:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/LvpeMiTx+++tobKvgMd8tiu03gqF3LE74eGjSIVJmM=;
+        b=cG4bqq9KDzrE+dj3GFUS1LQbZj0AdrOX1WfFneE90DHNbcdGVC6/hFFLG9qlWGzW40
+         yukj07M/SLCeVwyBsRFJUIXUKd5+sC9SZjs7VIn+EUN+wOjVazmWEZxtGIgUlp+2Krqo
+         dHXbmmE/Lbl3wfIzbqtFdRgC+IfWQ6GHL9y+q/0AL0yJXlwJJi1R//K6M0EZQP9rELmI
+         peHS+l+ZsMSP92FpCw/NM5wq7kVBQYi8ooxbVWkIUKx7mzZzNGMMmW4rFXWQw7Y2tR7J
+         NBC9z6/0O0Vvy5rarcNfWPW0CUn/rD308wAwfkM3tPJP74zlRYGpfi9FbJjvLtMmmczr
+         Iziw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yLHmmEj2mk4rdkuTrjRuXZd3VO0v+sUNL5ijm6xbTJE=;
-        b=bgm6N8ydga2V1U4nyi3MnGzf0h/Ca72rRgtTSOFxhcb65ubGJDvL/V5pT3XR3pcbY8
-         GzyAkEkK/u0YAVeeTL6LRAnxSEqkX+VT42YKt2zmpQM+EldE++mlbNfTWHZYTqXK/Wza
-         1Lvr3ExkLNTEg78f8cEc5mfr8jc75//8J+tlVjVdpomsSh2MMezF2x+VvJrST9vNsznO
-         Wl4wJ5GtUUb5u4ePNIO64/cSlYcI4hJlmNTEzBYkODsYHjJlEdJnc4mAXNyYXEr2M48p
-         AagyDYz99BLg6UMpXPM0oeesjYz7QHcSQgzIUvT2gFfB/05v7qrwyOMig5XwTr9GeYDK
-         inyA==
-X-Gm-Message-State: AOAM5312F/ALMCarVjA+X3zHoMRa5tBTX0vPAX0ZNi8/rmvjy04KTG9c
-        YIDIZL6t/PaWMLhWM+jQvw==
-X-Google-Smtp-Source: ABdhPJzM92Q/jJWim96ayyFCopdaorRNbcbr+6aTWu/nFJcw1tUY8oAEYBHv/5i+4sfTgTRR1g4Ijw==
-X-Received: by 2002:a05:6e02:1d16:: with SMTP id i22mr13367772ila.300.1625148390793;
-        Thu, 01 Jul 2021 07:06:30 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id o10sm26672ilc.75.2021.07.01.07.06.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 07:06:29 -0700 (PDT)
-Received: (nullmailer pid 2285450 invoked by uid 1000);
-        Thu, 01 Jul 2021 14:06:23 -0000
-Date:   Thu, 1 Jul 2021 08:06:23 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     "Paul J. Murphy" <paul.j.murphy@intel.com>,
-        linux-renesas-soc@vger.kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Fix 'unevaluatedProperties' errors in DT
- graph users
-Message-ID: <20210701140623.GA2285366@robh.at.kernel.org>
-References: <20210623164344.2571043-1-robh@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/LvpeMiTx+++tobKvgMd8tiu03gqF3LE74eGjSIVJmM=;
+        b=WsouBBIC2zHtpyylsNonlOWlR+W0aFYvspreXIsIypFl1G//zKyIRQnfhPbSdJU9K3
+         gJIlZgDj93n22WnBP+NPRbV6BSJPdGJEh7L5aG4U32hU7TOb2YWlxiuCDtM3eZRDhDBZ
+         9PFZLxfoxPUCbCiiB909DaDowObbAdwlCszPUidqS3H0tqkkRWCKwXtAdAgqHzj6QbBN
+         TkF89nMs86bAzVQNOm+Qnjs3yLOdZe+hji2OLOWT7veP8klOwwmVpWYaOW2enzCxW9dM
+         Uzy2hx4dMLYBxiEqkA4+qDZG/gBGaMGWCUpBHbAMpSaXUGEH17obzFTZKtgprTp7TbP6
+         XsVQ==
+X-Gm-Message-State: AOAM53285xv5utbBrmnSSGhx8Ute5KJdNndfQjmprTXctuqOyxw9hxDN
+        NOOtkaexXBUnEQADKpcjGM3zkUeU29ZdBNEq+ek=
+X-Google-Smtp-Source: ABdhPJy/Bb2nAAYxH99GQ22ZYraHDbrq4Lv/WhfkE3YsXG7MGaxPKGpRgwHVefcnoe12zrB+8vhQEZsXjPcz7bZ5a/Q=
+X-Received: by 2002:aca:3446:: with SMTP id b67mr19352551oia.120.1625148436388;
+ Thu, 01 Jul 2021 07:07:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210623164344.2571043-1-robh@kernel.org>
+References: <nycvar.YFH.7.76.2106241319430.18969@cbobk.fhfr.pm> <nycvar.YFH.7.76.2107011030030.18969@cbobk.fhfr.pm>
+In-Reply-To: <nycvar.YFH.7.76.2107011030030.18969@cbobk.fhfr.pm>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 1 Jul 2021 10:07:05 -0400
+Message-ID: <CADnq5_N_v5YGxSE6szz5dAajbO0VV032Xp2YTrO6c-qr7ft62g@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: Fix resource leak on probe error path
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Vojtech Pavlik <vojtech@ucw.cz>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Jun 2021 10:43:44 -0600, Rob Herring wrote:
-> In testing out under development json-schema 2020-12 support, there's a
-> few issues with 'unevaluatedProperties' and the graph schema. If
-> 'graph.yaml#/properties/port' is used, then neither the port nor the
-> endpoint(s) can have additional properties. 'graph.yaml#/$defs/port-base'
-> needs to be used instead.
-> 
-> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: "Paul J. Murphy" <paul.j.murphy@intel.com>
-> Cc: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> Cc: "Niklas Söderlund" <niklas.soderlund@ragnatech.se>
-> Cc: Krzysztof Kozlowski <krzk@kernel.org>
-> Cc: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linux-renesas-soc@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../devicetree/bindings/display/bridge/lontium,lt8912b.yaml    | 3 ++-
->  Documentation/devicetree/bindings/media/i2c/imx258.yaml        | 2 +-
->  Documentation/devicetree/bindings/media/i2c/ovti,ov5648.yaml   | 2 +-
->  Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml   | 2 +-
->  Documentation/devicetree/bindings/media/i2c/sony,imx334.yaml   | 2 +-
->  Documentation/devicetree/bindings/media/renesas,vin.yaml       | 3 ++-
->  6 files changed, 8 insertions(+), 6 deletions(-)
-> 
+Applied.  Thanks!
 
-Applied, thanks!
+Alex
+
+On Thu, Jul 1, 2021 at 4:32 AM Jiri Kosina <jikos@kernel.org> wrote:
+>
+> On Thu, 24 Jun 2021, Jiri Kosina wrote:
+>
+> > From: Jiri Kosina <jkosina@suse.cz>
+> >
+> > This reverts commit 4192f7b5768912ceda82be2f83c87ea7181f9980.
+> >
+> > It is not true (as stated in the reverted commit changelog) that we never
+> > unmap the BAR on failure; it actually does happen properly on
+> > amdgpu_driver_load_kms() -> amdgpu_driver_unload_kms() ->
+> > amdgpu_device_fini() error path.
+> >
+> > What's worse, this commit actually completely breaks resource freeing on
+> > probe failure (like e.g. failure to load microcode), as
+> > amdgpu_driver_unload_kms() notices adev->rmmio being NULL and bails too
+> > early, leaving all the resources that'd normally be freed in
+> > amdgpu_acpi_fini() and amdgpu_device_fini() still hanging around, leading
+> > to all sorts of oopses when someone tries to, for example, access the
+> > sysfs and procfs resources which are still around while the driver is
+> > gone.
+> >
+> > Fixes: 4192f7b57689 ("drm/amdgpu: unmap register bar on device init failure")
+> > Reported-by: Vojtech Pavlik <vojtech@ucw.cz>
+> > Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+>
+> Friendly ping on this one (as it's easily triggerable in the wild by just
+> missing proper firwmare).
+>
+> Thanks.
+>
+> > ---
+> >  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 8 ++------
+> >  1 file changed, 2 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> > index 57ec108b5972..0f1c0e17a587 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> > @@ -3414,13 +3414,13 @@ int amdgpu_device_init(struct amdgpu_device *adev,
+> >       r = amdgpu_device_get_job_timeout_settings(adev);
+> >       if (r) {
+> >               dev_err(adev->dev, "invalid lockup_timeout parameter syntax\n");
+> > -             goto failed_unmap;
+> > +             return r;
+> >       }
+> >
+> >       /* early init functions */
+> >       r = amdgpu_device_ip_early_init(adev);
+> >       if (r)
+> > -             goto failed_unmap;
+> > +             return r;
+> >
+> >       /* doorbell bar mapping and doorbell index init*/
+> >       amdgpu_device_doorbell_init(adev);
+> > @@ -3646,10 +3646,6 @@ int amdgpu_device_init(struct amdgpu_device *adev,
+> >  failed:
+> >       amdgpu_vf_error_trans_all(adev);
+> >
+> > -failed_unmap:
+> > -     iounmap(adev->rmmio);
+> > -     adev->rmmio = NULL;
+> > -
+> >       return r;
+> >  }
+> >
+> > --
+> > 2.12.3
+> >
+> >
+>
+> --
+> Jiri Kosina
+> SUSE Labs
+>
