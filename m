@@ -2,257 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD623B93C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2193B93C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233227AbhGAPPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 11:15:44 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14080 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232401AbhGAPPn (ORCPT
+        id S233301AbhGAPRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 11:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232401AbhGAPRR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 11:15:43 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161F3M3R074080;
-        Thu, 1 Jul 2021 11:13:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=o6sjIctjt7BX/yqIK0J+0FCm/WXAnRnhVUuq1iEhWdc=;
- b=Isz/32a6DWyLYA99YIsNDo9dsf6PIgMtfaHrc8Z+uCGB1fQPBaR86JDeA0uFFJBH3iFz
- LiqfXgIQTj6QuNnlt6jveyKcpc+5xPNBQ8H3D8ojqVrIRHkJjQf9C4QqlX8yGxYf9DaN
- EpMG38Mng4Fng1e5bku2EVpfK4BOlw01XIWvrCeYLTh9EOedj664f7OtM7aAjneuajHZ
- TUzymlz/XTOvfvYQCtY4PrN1TqCOYYRqomBJMOoZkXWTG0NC5RH+bcNPxQoZZpCgrJu1
- /GsiIMhi+oOVeahw59ICc0sNrBGjzSRN70JlIGqbocbdd0xzB9MU5YQvwAB/oDoYfNkf Zw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39hdyfvnvv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 11:13:10 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 161F3UIk074820;
-        Thu, 1 Jul 2021 11:13:10 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39hdyfvnvj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 11:13:10 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 161FBrS6017718;
-        Thu, 1 Jul 2021 15:13:09 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma02wdc.us.ibm.com with ESMTP id 39duve3p1j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 15:13:09 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 161FD8we29425928
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 1 Jul 2021 15:13:08 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3038E78068;
-        Thu,  1 Jul 2021 15:13:08 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1C5C778064;
-        Thu,  1 Jul 2021 15:13:07 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.163.230])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  1 Jul 2021 15:13:06 +0000 (GMT)
-Subject: Re: [PATCH v6 2/2] s390/vfio-ap: r/w lock for PQAP interception
- handler function pointer
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210621155714.1198545-1-akrowiak@linux.ibm.com>
- <20210621155714.1198545-3-akrowiak@linux.ibm.com>
-Message-ID: <51311ce0-51e5-3d26-a621-afa820cee085@linux.ibm.com>
-Date:   Thu, 1 Jul 2021 11:13:06 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 1 Jul 2021 11:17:17 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9201CC061764
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 08:14:46 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id k8so8962834lja.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 08:14:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q7SjopVfMaoe2w1JGzt6b1vmcs3L6pEjOQkXiBAboM4=;
+        b=jARjQAjpT1Pteq9LIloPJ12XXwl3ru2QtvI5Xyczm8P1DnqizCjMAl6CGFsaVZSQXW
+         UH4Hu60KYVYF33Hpi9nO6zdgMaS+2YIGUXKBSPFlxAdHDHMhRuR4rzAD4t/vYAhqfwhf
+         UuK0ki44hCoY3jV9pO5abEx/wbgBBDgqCPPKi4atuI3TRAuzGOsLwAaKRUd77/2Pcred
+         YVpKBTYxixUj/pefHVMp8kWpL0P4HpitZPWHiGgF1LhzQjm07sbXNVX6+8HvXimBvaEG
+         iEPQ4+NHYEmpPXAdTc1NIJ5fflduLSi3PXyvmNoIBxgKI6+557v4NSvF/kNgoR/siOvB
+         ZHOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q7SjopVfMaoe2w1JGzt6b1vmcs3L6pEjOQkXiBAboM4=;
+        b=VqvG+Zw7e1S/qZPBEybFRZrxAbrlAFVIQhoLFqlG115Pf5rgCLdlJWHTNajUKfMnwA
+         SS6v26b/zG1DAzhMW8bEhu69EOAAo87sAQnGuWtRBzzEG65UG2n+vxjyyyiUvIeTTTxk
+         s4LIWOxF6GH9ilQqo0NP1eLV+0FTRc0NfS1tPJAuxWP96+EhrESdkK3w6fdavvOR8dLE
+         ek3sgatIzJ1sV3J6JhDMVoYxexfEpC2kJ7dAV227GzhTWY6Klmgzqv5ym2Ypm3sTGaZl
+         Mn2PMm9BWHu4/Afq7hljTf4zU8pNuQYBz1p8or7laH6RgGcKJxl86PyAs1w6z/5kfD61
+         8b1w==
+X-Gm-Message-State: AOAM531q/RHMMRGEg8fZmb712liANnjqdmA3DqqsShamiZgys7+IU7cN
+        YkdaFPuhkirkTYS9gWfWFbfEPsv+RaeXyUdAeXmlHw==
+X-Google-Smtp-Source: ABdhPJxC4w3fPVooBAMn4WWUnwrS5E6in2N7SPbQK1SBNtse+qOq2rotFBO6pLxfWd1Qv0cPwWy3J+dvg9FTY5HP/+4=
+X-Received: by 2002:a2e:b4ce:: with SMTP id r14mr70353ljm.76.1625152484773;
+ Thu, 01 Jul 2021 08:14:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210621155714.1198545-3-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: r-a5BFyYvVy4CfPQpuU6rT-iEsS4Mpsr
-X-Proofpoint-ORIG-GUID: TxS2Lp52CQyCPvi7BIYsXAcPIugwr9yd
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-01_08:2021-07-01,2021-07-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- mlxscore=0 priorityscore=1501 suspectscore=0 bulkscore=0 impostorscore=0
- clxscore=1015 phishscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107010092
+References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
+ <20210611101540.3379937-3-dmitry.baryshkov@linaro.org> <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
+ <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
+ <CAPDyKFoMC_7kJx_Wb4LKgxvRCoqHYFtwsJ2b7Cr4OvjA94DtHg@mail.gmail.com>
+ <YMjNaM0z+OzhAeO/@yoga> <CAPDyKFo_eNwEx5rryg3bHt_-pxBeeYfVrUZuTOHoL-x94LBwDA@mail.gmail.com>
+ <c6e99362-56c1-f2bd-7170-7b001e0f96fe@linaro.org> <YNs3q0HI1WKrKOXx@yoga>
+ <CAPDyKFqSwPn7wUXB9mayT78hshDFBK+DO7cqbmZRjXNAJDQfZw@mail.gmail.com> <CAA8EJpoOFyFh8vp4Q5w0DMT7-1MrN930gQiv6dk-Mu05B2dT3Q@mail.gmail.com>
+In-Reply-To: <CAA8EJpoOFyFh8vp4Q5w0DMT7-1MrN930gQiv6dk-Mu05B2dT3Q@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 1 Jul 2021 17:14:07 +0200
+Message-ID: <CAPDyKFrC-ibr1bOKndS0_NirW=B5E1CetB3OwgS9jfQadAQWjg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/21/21 11:57 AM, Tony Krowiak wrote:
-> The function pointer to the interception handler for the PQAP instruction
-> can get changed during the interception process. Let's add a
-> semaphore to struct kvm_s390_crypto to control read/write access to the
-> function pointer contained therein.
+On Thu, 1 Jul 2021 at 13:01, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
 >
-> The semaphore must be locked for write access by the vfio_ap device driver
-> when notified that the KVM pointer has been set or cleared. It must be
-> locked for read access by the interception framework when the PQAP
-> instruction is intercepted.
+> On Thu, 1 Jul 2021 at 13:07, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> >
+> > On Tue, 29 Jun 2021 at 17:09, Bjorn Andersson
+> > <bjorn.andersson@linaro.org> wrote:
+> > >
+> > > On Mon 28 Jun 14:55 CDT 2021, Dmitry Baryshkov wrote:
+> > >
+> > > > Hi,
+> > > >
+> > > > On 17/06/2021 12:07, Ulf Hansson wrote:
+> > > > > + Rajendra
+> > > > >
+> > > > > On Tue, 15 Jun 2021 at 17:55, Bjorn Andersson
+> > > > > <bjorn.andersson@linaro.org> wrote:
+> > > [..]
+> > > > > > But I am unable to find a way for the gdsc driver to get hold of the
+> > > > > > struct generic_pm_domain of the resources exposed by the rpmhpd driver.
+> > > > >
+> > > > > You don't need a handle to the struct generic_pm_domain, to assign a
+> > > > > parent/child domain. Instead you can use of_genpd_add_subdomain(),
+> > > > > which takes two "struct of_phandle_args*" corresponding to the
+> > > > > parent/child device nodes of the genpd providers and then let genpd
+> > > > > internally do the look up.
+> > > >
+> > > [..]
+> > > >
+> > > > I think I'd need this function anyway for the gdsc code. During gdsc_init()
+> > > > we check gdsc status and this requires register access (and thus powering on
+> > > > the parent domain) before the gdsc is registered itself as a power domain.
+> > > >
+> > >
+> > > But this is a register access in the dispcc block, which is the context
+> > > that our gdsc_init() operates. So describing that MMCX is the
+> > > power-domain for dispcc should ensure that the power-domain is enabled.
+> >
+> > Right.
+> >
+> > As a note, when we assign a child domain to a parent domain, via
+> > of_genpd_add_subdomain() for example - and the child domain has been
+> > powered on, this requires the parent domain to be turned on as well.
 >
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Cc: stable@vger.kernel.org
-> ---
->   arch/s390/include/asm/kvm_host.h      |  8 +++-----
->   arch/s390/kvm/kvm-s390.c              |  1 +
->   arch/s390/kvm/priv.c                  | 10 ++++++----
->   drivers/s390/crypto/vfio_ap_ops.c     | 23 +++++++++++++++++------
->   drivers/s390/crypto/vfio_ap_private.h |  2 +-
->   5 files changed, 28 insertions(+), 16 deletions(-)
+> Most probably we should also teach genpd code to call pm_runtime
+> functions on respective devices when the genpd is powered on or off.
+> For now I had to do this manually.
+
+No, that's not the way it works or should work for that matter.
+
+It's the runtime PM status of the devices that are attached to a
+genpd, that controls whether a genpd should be powered on/off.
+Additionally, if there is a child domain powered on, then its parent
+needs to be powered on too and so forth.
+
 >
-> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-> index 8925f3969478..36441669ffba 100644
-> --- a/arch/s390/include/asm/kvm_host.h
-> +++ b/arch/s390/include/asm/kvm_host.h
-> @@ -803,14 +803,12 @@ struct kvm_s390_cpu_model {
->   	unsigned short ibc;
->   };
->   
-> -struct kvm_s390_module_hook {
-> -	int (*hook)(struct kvm_vcpu *vcpu);
-> -	struct module *owner;
-> -};
-> +typedef int (*crypto_hook)(struct kvm_vcpu *vcpu);
->   
->   struct kvm_s390_crypto {
->   	struct kvm_s390_crypto_cb *crycb;
-> -	struct kvm_s390_module_hook *pqap_hook;
-> +	struct rw_semaphore pqap_hook_rwsem;
-> +	crypto_hook *pqap_hook;
->   	__u32 crycbd;
->   	__u8 aes_kw;
->   	__u8 dea_kw;
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 1296fc10f80c..418d910df569 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -2606,6 +2606,7 @@ static void kvm_s390_crypto_init(struct kvm *kvm)
->   {
->   	kvm->arch.crypto.crycb = &kvm->arch.sie_page2->crycb;
->   	kvm_s390_set_crycb_format(kvm);
-> +	init_rwsem(&kvm->arch.crypto.pqap_hook_rwsem);
->   
->   	if (!test_kvm_facility(kvm, 76))
->   		return;
-> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
-> index 9928f785c677..6bed9406c1f3 100644
-> --- a/arch/s390/kvm/priv.c
-> +++ b/arch/s390/kvm/priv.c
-> @@ -610,6 +610,7 @@ static int handle_io_inst(struct kvm_vcpu *vcpu)
->   static int handle_pqap(struct kvm_vcpu *vcpu)
->   {
->   	struct ap_queue_status status = {};
-> +	crypto_hook pqap_hook;
->   	unsigned long reg0;
->   	int ret;
->   	uint8_t fc;
-> @@ -657,15 +658,16 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
->   	 * Verify that the hook callback is registered, lock the owner
->   	 * and call the hook.
->   	 */
-> +	down_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
->   	if (vcpu->kvm->arch.crypto.pqap_hook) {
-> -		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
-> -			return -EOPNOTSUPP;
-> -		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
-> -		module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
-> +		pqap_hook = *vcpu->kvm->arch.crypto.pqap_hook;
-> +		ret = pqap_hook(vcpu);
->   		if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
->   			kvm_s390_set_psw_cc(vcpu, 3);
-> +		up_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
->   		return ret;
->   	}
-> +	up_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
->   	/*
->   	 * A vfio_driver must register a hook.
->   	 * No hook means no driver to enable the SIE CRYCB and no queues.
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 122c85c22469..742277bc8d1c 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -352,8 +352,7 @@ static int vfio_ap_mdev_create(struct mdev_device *mdev)
->   	vfio_ap_matrix_init(&matrix_dev->info, &matrix_mdev->matrix);
->   	init_waitqueue_head(&matrix_mdev->wait_for_kvm);
->   	mdev_set_drvdata(mdev, matrix_mdev);
-> -	matrix_mdev->pqap_hook.hook = handle_pqap;
-> -	matrix_mdev->pqap_hook.owner = THIS_MODULE;
-> +	matrix_mdev->pqap_hook = handle_pqap;
->   	mutex_lock(&matrix_dev->lock);
->   	list_add(&matrix_mdev->node, &matrix_dev->mdev_list);
->   	mutex_unlock(&matrix_dev->lock);
-> @@ -1115,15 +1114,20 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
->   		}
->   
->   		kvm_get_kvm(kvm);
-> +		matrix_mdev->kvm = kvm;
->   		matrix_mdev->kvm_busy = true;
->   		mutex_unlock(&matrix_dev->lock);
-> +
-> +		down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> +		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
+> >
+> > >
+> > > We do however need to make sure that dispcc doesn't hog its
+> > > power-domain, and that any register accesses in runtime is done with the
+> > > parenting power-domain enabled. E.g. the clock framework wraps all
+> > > operations in pm_runtime_get/put(), but I don't see anything in the
+> > > gnepd code for this.
+> > >
+> > >
+> > > And for gcc I'm worried that we might have some GDSCs that are parented
+> > > by CX and some by MX, but I do still think that the register accesses
+> > > are only related to one of these.
+> > >
+> > > But this seems like a continuation of the special case in dispcc, so I
+> > > think we should be able to focus on getting that right before we attempt
+> > > the general case (and I don't know if we have a need for this today).
+> > >
+> > > Regards,
+> > > Bjorn
+> >
+> > Unfortunately, I didn't understand all the above things.
+> >
+> > In any case, please tell me if there is anything else that blocks you
+> > from moving forward with the power domain conversion? I am happy to
+> > help.
+>
+> Patch series was submitted:
+> https://lore.kernel.org/linux-arm-msm/20210630133149.3204290-1-dmitry.baryshkov@linaro.org/
 
-Setting the hook using a field in matrix_mdev while not
-holding the matrix_dev->lock opens us up to a possible race
-condition.
+Okay, I will have a look over there. Thanks!
 
-> +		up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> +
->   		kvm_arch_crypto_set_masks(kvm,
->   					  matrix_mdev->matrix.apm,
->   					  matrix_mdev->matrix.aqm,
->   					  matrix_mdev->matrix.adm);
-> +
->   		mutex_lock(&matrix_dev->lock);
-> -		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
-> -		matrix_mdev->kvm = kvm;
->   		matrix_mdev->kvm_busy = false;
->   		wake_up_all(&matrix_mdev->wait_for_kvm);
->   	}
-> @@ -1189,10 +1193,17 @@ static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
->   	if (matrix_mdev->kvm) {
->   		matrix_mdev->kvm_busy = true;
->   		mutex_unlock(&matrix_dev->lock);
-> -		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> +
-> +		if (matrix_mdev->kvm->arch.crypto.crycbd) {
-> +			down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> +			matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> +			up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> +
-> +			kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> +		}
-> +
->   		mutex_lock(&matrix_dev->lock);
->   		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-> -		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
->   		kvm_put_kvm(matrix_mdev->kvm);
->   		matrix_mdev->kvm = NULL;
->   		matrix_mdev->kvm_busy = false;
-> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-> index f82a6396acae..e12218e5a629 100644
-> --- a/drivers/s390/crypto/vfio_ap_private.h
-> +++ b/drivers/s390/crypto/vfio_ap_private.h
-> @@ -86,7 +86,7 @@ struct ap_matrix_mdev {
->   	bool kvm_busy;
->   	wait_queue_head_t wait_for_kvm;
->   	struct kvm *kvm;
-> -	struct kvm_s390_module_hook pqap_hook;
-> +	crypto_hook pqap_hook;
->   	struct mdev_device *mdev;
->   };
->   
-
+Kind regards
+Uffe
