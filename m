@@ -2,133 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461773B982B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 23:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCB23B982D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 23:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234342AbhGAVcu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 1 Jul 2021 17:32:50 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:56374 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhGAVct (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 17:32:49 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lz4GH-00CpMw-6s; Thu, 01 Jul 2021 15:30:17 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:51248 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lz4GG-00BSx2-16; Thu, 01 Jul 2021 15:30:16 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     =?utf-8?B?6raM7Jik7ZuI?= <ohoono.kwon@samsung.com>
-Cc:     "mingo\@kernel.org" <mingo@kernel.org>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "christian.brauner\@ubuntu.com" <christian.brauner@ubuntu.com>,
-        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
-        "ohkwon1043\@gmail.com" <ohkwon1043@gmail.com>,
-        "linux-fsdevel\@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <CGME20210701133458epcms1p68e9eb9bd0eee8903ba26679a37d9d960@epcms1p6>
-        <20210701133458epcms1p68e9eb9bd0eee8903ba26679a37d9d960@epcms1p6>
-Date:   Thu, 01 Jul 2021 16:30:08 -0500
-In-Reply-To: <20210701133458epcms1p68e9eb9bd0eee8903ba26679a37d9d960@epcms1p6>
-        (=?utf-8?B?Iuq2jOyYpO2biCIncw==?= message of "Thu, 01 Jul 2021 22:34:58
- +0900")
-Message-ID: <8735sxoh7j.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
+        id S234361AbhGAVdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 17:33:53 -0400
+Received: from mail-dm6nam12on2083.outbound.protection.outlook.com ([40.107.243.83]:1377
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229934AbhGAVdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 17:33:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ETshHoFndtDv6V4gFjSeVAwm4dPANRvFgcsYL+7vVrF321hCsqXHKwOuu4PGIOomMs3dS1Q+MigzzmL6sQZzYa1RTAFM+x4OGIKncXOlq2hcgrkcHgTcQRVXdGXynB82MoT1Gcp47VbsCFW9T6IUtCqrKqORZR2KhQD1l1v04Z8KJtKr0sl5hXChe7SaI6OyYuxkBxeZL9vpJ5VvqhEqBniPn97yDVXS45KIQyhcfJICGIhUzYAKTBPRUc7q+NL5EzO5SZFKlokneaO00vAg1+3CoJS595PULe28q+saYiq46sblpQL5f8nMy+kd/IsIpDqvWkniArtkMVkhe30l7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qBUn49rJ4maEU9a7c1qceoFNuDhKiveibJfeh1SoBN8=;
+ b=XsPN0UME8ftG04NeSgdBOhvZVu30LtBFuwYzAQLhMSGaBTd/6nY9w3nbsL3CVxpF91XiYT46DIPW3LH1TOV+fiMw2OVca4t/lA8BuecHHtF8M15P0U3lX+0rSSLdd/r3Oku8FMujYf5RJ//cfV3u2MEtGJsPiDXhqcZxFDEh+57VzVjo8CLt2yjcqpBzNZROHCUvi88sF5emb5NwBgFF558/zyoRNvhb38K2UeeD9jE75jpoHx4xNmewin17TksRiUqbnJDSr7llm6vfMVkw+IlLxQEsMKvFKrAmaHVCjlROsltRWy5m8lAVTOc/5/cVLy2q8VsZzJSnMU1gZvxxQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qBUn49rJ4maEU9a7c1qceoFNuDhKiveibJfeh1SoBN8=;
+ b=IqCeStXgnYP9Ta8yk939KgqQer+DQ/2IQnp+vYDmhYibZTiW1w0DvlXzuzl5aFPqgqJ3hygtMxCUZxYQk3JZ7HzE6Jz16r2HUZULdfcb0hr+ptlcBFJRyMCc4fhXy9mS95eayvZtWpBnN68Tv3h9SgmxI3S0zJ0xDrBo3qLbDbI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12)
+ by BN9PR12MB5100.namprd12.prod.outlook.com (2603:10b6:408:119::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Thu, 1 Jul
+ 2021 21:31:18 +0000
+Received: from BN9PR12MB5129.namprd12.prod.outlook.com
+ ([fe80::3c78:e58b:fba7:b8dd]) by BN9PR12MB5129.namprd12.prod.outlook.com
+ ([fe80::3c78:e58b:fba7:b8dd%6]) with mapi id 15.20.4264.026; Thu, 1 Jul 2021
+ 21:31:18 +0000
+Subject: Re: [git pull] drm for 5.14-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Airlie <airlied@gmail.com>,
+        Philip Yang <Philip.Yang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CAPM=9tzR4BqTtamrTy4T_XV7E0fUNyduaVtH5zAi=sqwX_3udg@mail.gmail.com>
+ <CAHk-=whgcN6MEyZBgK3UZRw=vwd1CAAK9+rafmZ2vsOiGpsMSA@mail.gmail.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Message-ID: <b45c99c9-02f9-7e97-7a98-71388a2a1bbd@amd.com>
+Date:   Thu, 1 Jul 2021 17:31:15 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <CAHk-=whgcN6MEyZBgK3UZRw=vwd1CAAK9+rafmZ2vsOiGpsMSA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-XM-SPF: eid=1lz4GG-00BSx2-16;;;mid=<8735sxoh7j.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+smKkMX3KmnngliXe32SDrbemFpTMFVKU=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XM_B_Unicode
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4877]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: =?ISO-8859-1?Q?;=ea=b6=8c=ec=98=a4=ed=9b=88 <ohoono.kwon@samsung.com>?=
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 524 ms - load_scoreonly_sql: 0.11 (0.0%),
-        signal_user_changed: 9 (1.6%), b_tie_ro: 7 (1.4%), parse: 1.07 (0.2%),
-        extract_message_metadata: 12 (2.3%), get_uri_detail_list: 1.31 (0.2%),
-        tests_pri_-1000: 6 (1.1%), tests_pri_-950: 1.34 (0.3%),
-        tests_pri_-900: 1.13 (0.2%), tests_pri_-90: 50 (9.5%), check_bayes: 48
-        (9.2%), b_tokenize: 7 (1.3%), b_tok_get_all: 5 (1.0%), b_comp_prob:
-        2.2 (0.4%), b_tok_touch_all: 31 (5.9%), b_finish: 0.72 (0.1%),
-        tests_pri_0: 257 (49.1%), check_dkim_signature: 0.53 (0.1%),
-        check_dkim_adsp: 3.2 (0.6%), poll_dns_idle: 164 (31.2%), tests_pri_10:
-        2.2 (0.4%), tests_pri_500: 182 (34.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] connector: send event on write to /proc/[pid]/comm
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [142.186.84.51]
+X-ClientProxiedBy: YT1PR01CA0068.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2d::7) To BN9PR12MB5129.namprd12.prod.outlook.com
+ (2603:10b6:408:136::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.100] (142.186.84.51) by YT1PR01CA0068.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Thu, 1 Jul 2021 21:31:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3f6dbfb0-c9e8-4fc9-3cb4-08d93cd78fd4
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5100:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN9PR12MB5100C3A55C065FF1976E955792009@BN9PR12MB5100.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BFMpFOJIEjkO0LUGms3mG8x/BwX9sJnd37GIYCBd0A2ugIn2R0wpiNnY4JhfXMhIR8KPtJEj+sg1cIUhsj/31elljaqyE0mMn7DSpl2PdbUkViHKlfIzLLM8uL4eon/K6JFtHss3PdHXaapjuS1L2L/ff7ztOhcSXrhsA+pd7YM9G54TEa5FVRJz9KB2mU2tEOV7RFky/FrkUmuigRpnU4QDYHauTXG83vQgvkv0mwy0H3dgfsMNHzUvJcAXbqsdTAXue8CIN/p8uUP9JxqfrPWx56RnoygeKFjRlgx9R9NrX+uQT2LydACJ81djgyMdGsXrADbg1V0lW1yKe4DBvWGowPARdlhcct9PbsI9qh1yhR768J+n1qlYwjtFf0uG+s39X7UIPJwfCxQ93DoPB1xybbrhIXfNtSsLTVp4srqQG/5pPlntp/QSTB38zePg/C0kCy3JTFgulyHw2okw84wmAjacp0NVL4hCRd7k3Ofs2C9ZHfFOZ3VuGVq/U2dInwdl1AEbw5rCuv4wcb8mkFv1m3It08DuC3vtKEsUdiUB8h9/HnZDMUKq1m65TrVtMKLnZ3Egulp8VlP9bV6RaO16WYVCG2eMKfjYSiWh5GxTiMM1SawTtLbb0TvBFC6u44DvWznHj6EjTmcN1Y82d0gOwQ/usFzptnFpgb4GD4z7LOKA8S9jS6rO2fC2EPFkrC6N3Bv1vRCkh8aVXal06VWgCijILJIrrH5TeQBkOt9UYgGSITIEMYrJBTFQvVhd
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5129.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(136003)(396003)(366004)(66946007)(6636002)(2616005)(956004)(31686004)(83380400001)(66476007)(66556008)(44832011)(8936002)(5660300002)(53546011)(8676002)(26005)(4326008)(186003)(2906002)(6486002)(16526019)(36756003)(478600001)(31696002)(54906003)(110136005)(38100700002)(16576012)(86362001)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b0NpaDRsbWtTYUV0SHhuT3U3OU1RVkNyUk5Td1ppQnFheWJSaDlPQVdGQmxJ?=
+ =?utf-8?B?U0IrNmxhUlpYamZQT0h5TFhMWGVrVk9wOFdFSmNWWDExdTVuWlViSjZCZEtL?=
+ =?utf-8?B?THhQeHZ0TjQvZWl5d1B3N1NNN3VpcVZZaG5VbGNWL0dnVzdrcFhDdWFYeWVh?=
+ =?utf-8?B?aEoxeGYzZ0NuRGZOUjcyOHZiOFB0NFU4OTJGYUcrMTVKaDFyUFhLMGd3eEli?=
+ =?utf-8?B?WGxhNjZNL1BDekgzSkVZTm1CaHJaVE1xMS9iZEpBYzZudVduUTF4TE0yVWxF?=
+ =?utf-8?B?MzZJNld3NzNyVXozQ0lpTWpOM0p6dXpZaUJIRko4b2hvekRlY1hDcS9sbDVR?=
+ =?utf-8?B?Q1RTQ1VROWgzUlhRdk0rZVpBSnh5c3ZyaE51S2hsN1BaYXNWK0NtcXN5Tkw2?=
+ =?utf-8?B?eWNqV1V4N0NKQ1JQeWxKNzQ1NGRUdXh0QVBLZUZiTk5OdXI3MGk0akdRREZG?=
+ =?utf-8?B?NmlnZjZKMFJoVmNBZk9zUDI4QWhja0ladVRzUE1HS0czZjJlNUc1N2hQUHpq?=
+ =?utf-8?B?NVBNMnR4VHRDTU9uVmFEM1BZdCtJcnp3UWhxRGlJT05ZUWVkTy9DTkZlMUE5?=
+ =?utf-8?B?akhVbk9QbEdVcVR0Mk9iUWZOZXE0RnJ4dnZ5UlZUdkhkTnFuMXllcjUwaW5p?=
+ =?utf-8?B?QWxhdWc3SWN2VEh1NkpRcTMweC9heDJRL2tsVkJSZUlKUVM3NlZjVzdIRmds?=
+ =?utf-8?B?aUVEdy9SZ2poakRNaTJpdUIvczdCRkxqczBBOUpDcWZlSnNnYnVsM2RPMEh2?=
+ =?utf-8?B?ZmhOT2JFbW5GWjA1WGRLb1ZGVkFOWStRdnI1QVB2ckxGcS8wRlFhMkVNNzYr?=
+ =?utf-8?B?MDBWS0s4bEUzYlZ2OGFYTHJNNEF4RjVRRmcwRVplQWdOcUVGR1BmTUgxc2pY?=
+ =?utf-8?B?eDVRNEd5WEZYQytNN3hUVlRka212cWFVMStYbW5DMElGTUR5TmdRNWhIQjMx?=
+ =?utf-8?B?N3N0KytBcCtnejJtUExOQkdERnJveWFtK2pYcEg0R0Q2dTZyMlFDMEFxcmpX?=
+ =?utf-8?B?MmtUWUFzVTlGRW91bERIR2wzWmEzWU9HaGs2aCtjNjBUL2o2eThyWlJnbUJH?=
+ =?utf-8?B?Z2FmQ1JWcFhnWTRjbWpFZm9UMG42bWllcDRXVTUvQVBNeDVKdEVvbllNakt0?=
+ =?utf-8?B?YVROS2NHaDkyQ29QSHJmQ2lOaUVSOVJNN1NHSUNWWTE2WGFPUFV0WU1qS2lm?=
+ =?utf-8?B?bmVTNkVpcDZ0Z0lORm9VK1Jhc0J0dHV6VTlHMi9iaFFnT3ZhanpHT0Vac29y?=
+ =?utf-8?B?TWFEdUUvZGZJTWlxVkhuMUZYWE5wWCsyY0NQVnNhc0FvNUR4VnNubGsxVWlz?=
+ =?utf-8?B?YzkvdnB5TXFLMDlCUEtrSDA1R1pCWmErWXV0bTJVNUJ2N1pYcm5wZFdIWTgw?=
+ =?utf-8?B?eHg2cko3Z0JPVGZTTW8xVkY0bFFKa2VNbWhIOWdQVXJKSlYzVlJNRGlqaCtI?=
+ =?utf-8?B?Y00rK1ZWN01MMnY0Vy9zeXZpMTJ6SlY0eUY1cFo2Rmkvd2dDcUI3V2RJcW50?=
+ =?utf-8?B?bUFMck9OMm55VHJHQ0VSbDV6cVdsc2VFTHRUMWlwazZhVElNTjVKcDFPaGpW?=
+ =?utf-8?B?UVJkR05ucld6STRQWnRaVEpEeHN4VkNYNkpDemt5T1FTaTI1QUptRkp0cW9V?=
+ =?utf-8?B?bm9aNGs1U2dTang1NUh0Q09ENW1Ec2ZoUFNVTXNYcFpRYVNFc3Z6NUNkL2or?=
+ =?utf-8?B?bVJTeGpjQ1J3UHQrS3M5YzJNL0ZaUXM4TENCQXlqWFpwdHRvMjQySEYzYnVI?=
+ =?utf-8?Q?xbTWdovwyimrnMkmGIxR9Lwk7IBg/L2/BRxcyt4?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f6dbfb0-c9e8-4fc9-3cb4-08d93cd78fd4
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5129.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2021 21:31:18.2742
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: k8yibwuQ6CZ2RtzBGgwgdLjdOTnPvkfMaG3NqkW6RH2e89SQ30tgqRjD9sV5swQPMqInLn8w1pO5c2X6B+i0aw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-권오훈 <ohoono.kwon@samsung.com> writes:
-
-> While comm change event via prctl has been reported to proc connector by
-> 'commit f786ecba4158 ("connector: add comm change event report to proc
-> connector")', connector listeners were missing comm changes by explicit
-> writes on /proc/[pid]/comm.
+Am 2021-07-01 um 4:15 p.m. schrieb Linus Torvalds:
+> On Wed, Jun 30, 2021 at 9:34 PM Dave Airlie <airlied@gmail.com> wrote:
+>> Hi Linus,
+>>
+>> This is the main drm pull request for 5.14-rc1.
+>>
+>> I've done a test pull into your current tree, and hit two conflicts
+>> (one in vc4, one in amdgpu), both seem pretty trivial, the amdgpu one
+>> is recent and sfr sent out a resolution for it today.
+> Well, the resolutions may be trivial, but the conflict made me look at
+> the code, and it's buggy.
 >
-> Let explicit writes on /proc/[pid]/comm report to proc connector.
-
-Is connector really useful?  I am under the impression that connector
-did not get much if any real uptake of users.
-
-I know the impression that connector is not used and that there
-are generally better mechanisms for what it provides has led to
-connector not getting any namespace support.  Similarly bugs
-like the one you just have found persist.
-
-If connector is actually useful then it is worth fixing little things
-like this.  But if no one is really using connector I suspect a better
-patch direction would be to start figuring out how to deprecate and
-remove connector.
-
-Eric
-
-
-> Signed-off-by: Ohhoon Kwon <ohoono.kwon@samsung.com>
-> ---
->  fs/proc/base.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> Commit 04d8d73dbcbe ("drm/amdgpu: add common HMM get pages function")
+> is broken. It made the code do
 >
-> diff --git a/fs/proc/base.c b/fs/proc/base.c
-> index 9cbd915025ad..3e1e6b56aa96 100644
-> --- a/fs/proc/base.c
-> +++ b/fs/proc/base.c
-> @@ -95,6 +95,7 @@
->  #include <linux/posix-timers.h>
->  #include <linux/time_namespace.h>
->  #include <linux/resctrl.h>
-> +#include <linux/cn_proc.h>
->  #include <trace/events/oom.h>
->  #include "internal.h"
->  #include "fd.h"
-> @@ -1674,8 +1675,10 @@ static ssize_t comm_write(struct file *file, const char __user *buf,
->  	if (!p)
->  		return -ESRCH;
->  
-> -	if (same_thread_group(current, p))
-> +	if (same_thread_group(current, p)) {
->  		set_task_comm(p, buffer);
-> +		proc_comm_connector(p);
-> +	}
->  	else
->  		count = -EINVAL;
+>         mmap_read_lock(mm);
+>         vma = find_vma(mm, start);
+>         mmap_read_unlock(mm);
+>
+> and then it *uses* that "vma" after it has dropped the lock.
+>
+> That's a big no-no - once you've dropped the lock, the vma contents
+> simply aren't reliable any more. That mapping could now be unmapped
+> and removed at any time.
+>
+> Now, the conflict actually made one of the uses go away (switching to
+> vma_lookup() means that the subsequent code no longer needs to look at
+> "vm_start" to verify we're actually _inside_ the vma), but it still
+> checks for vma->vm_file afterwards.
+>
+> So those locking changes in commit 04d8d73dbcbe are completely bogus.
+>
+> I tried to fix up that bug while handling the conflict, but who knows
+> what else similar is going on elsewhere.
+>
+> So I would ask people to
+>
+>  (a) verify that I didn't make things worse as I fixed things up (note
+> how I had to change the last argument to amdgpu_hmm_range_get_pages()
+> from false to true etc).
+>
+>  (b) go and look at their vma lookup code: you can't just look up a
+> vma under the lock, and then drop the lock, and then think things stay
+> stable.
+>
+> In particular for that (b) case: it is *NOT* enough to look up
+> vma->vm_file inside the lock and cache that. No - if the test is about
+> "no backing file before looking up pages", then you have to *keep*
+> holding the lock until after you've actually looked up the pages!
+>
+> Because otherwise any test for "vma->vm_file" is entirely pointless,
+> for the same reason it's buggy to even look at it after dropping the
+> lock: because once you've dropped the lock, the thing you just tested
+> for might not be true any more.
+>
+> So no, it's not valid to do
+>
+>     bool has_file = vma && vma->vm_file;
+>
+> and then drop the lock, because you don't use 'vma' any more as a
+> pointer, and then use 'has_file' outside the lock. Because after
+> you've dropped the lock, 'has_file' is now meaningless.
+>
+> So it's not just about "you can't look at vma->vm_file after dropping
+> the lock". It's more fundamental than that. Any *decision* you make
+> based on the vma is entirely pointless and moot after the lock is
+> dropped!
+>
+> Did I fix it up correctly? Who knows. The code makes more sense to me
+> now and seems valid. But I really *really* want to stress how locking
+> is important.
+
+Thank you for the fix and the explanation. Your fix looks correct. I
+also double-checked all other uses of find_vma in the amdgpu driver.
+They all hold the mmap lock correctly.
+
+Two comments:
+
+With this fix, we could remove the bool mmap_locked parameter from
+amdgpu_hmm_range_get_pages because it always gets called with the lock
+held now.
+
+You're now holding the mmap lock from the vma_lookup until
+hmm_range_fault is done. This ensures that the result of the
+vma->vm_file check remains valid. This was broken even before our commit
+04d8d73dbcbe ("drm/amdgpu: add common HMM get pages function").
+
+
+>
+> You also can't just unlock in the middle of an operation - even if you
+> then take the lock *again* later (as amdgpu_hmm_range_get_pages() then
+> did), the fact that you unlocked in the middle means that all the
+> earlier tests you did are simply no longer valid when you re-take the
+> lock.
+
+I agree completely. I catch a lot of locking bugs in code review. I
+probably missed this one because I wasn't paying enough attention to
+what was being protected by the mmap_read_lock in this case.
+
+Regards,
+  Felix
+
+
+>
+>                  Linus
