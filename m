@@ -2,135 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F773B9970
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 01:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB003B9979
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 01:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234278AbhGAXgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 19:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41708 "EHLO
+        id S234335AbhGAXqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 19:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234163AbhGAXgX (ORCPT
+        with ESMTP id S234063AbhGAXqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 19:36:23 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86950C061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 16:33:51 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d12so7421114pfj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 16:33:51 -0700 (PDT)
+        Thu, 1 Jul 2021 19:46:23 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB263C061762;
+        Thu,  1 Jul 2021 16:43:51 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id k10so14778033lfv.13;
+        Thu, 01 Jul 2021 16:43:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=E9l07IxNSgJt9CE4ED2nK8dEUQ3zKcbJc06F5p86Rl0=;
-        b=WXM//DJ7dgD9d1YB/uTZEMX3MY/V5Eu+twkQEQL781kragkKcNi2bOA6j93goQnqYp
-         jFHqB26a3oOOWHT2vLzGWq22EX+cNBvt2qdyvq9Xza53ZHAYzXcJxga4oQPtxyt2cUWa
-         iKiRm4CCaWru4XLN2F1kB/cpEq4vmDgJdTMf/lP9yTXEMOGvK7ftLa8Lg33yYrHLPuT/
-         o8XWR5hHYuMjnjuQQA8YV07yXY0y3v6TaFubMUIuHBJ6vKgRQCnevRivEHFIZLs4zja7
-         CMrdG5Wc4IUK6fDdLzGShdGLDlmN/cYj78987h6riqIMIkxlV2lc/tyNroW0Q8wUYK8R
-         nWUQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GxmceOXlSx//Z7AXWshXZETJTGUmHRmXWRqvH0CzuXQ=;
+        b=JvIypy2z9SDBnwZ4f3wpB2JNJWN+WoyyQ2FKe3wp1MlfN2Rr7TwZ8DBy6fec4zP2V8
+         af8F0t5uAxkeK+vQoDqaq6fVwLgPKE0E6UL5IDEYvnaDu5EiVGYNsWdre8xPury6ACe5
+         xCp+TA43FMxkFpK1kHtxYWMNBeZKk+eJVH26ERWzc7Xy6hF3qvWmtq+1nKTEKQCHQY3I
+         9o9SyhNWQe31BcQ6lhluLWO4BYiYkr6fWf8UIoKcgr+kCaA9YUN9d7YOaUxz6SU4XSh1
+         zID/5Bd6Lh5hhDYcQShw31k/zIYox+pVciSPGRYT8pyuXAjNnc+/HjYJnDsJjvIAmXvz
+         VO5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=E9l07IxNSgJt9CE4ED2nK8dEUQ3zKcbJc06F5p86Rl0=;
-        b=ezAS7VIid0TPM+DgMvNNxcpod7wjDyPMgwab7Z9OYM3yLjCZ4JQB++J6t+5wSG75+W
-         mhHqcmCTx/RR1ilNEK6zC8lwE/jHSxmvnjjNi+sov/qXDbaZLGq4WkTThGHbjVn/xYRr
-         EGFZxrKD4F/KyG94o6CDWZ31Mi0QoOwsMXDBNjmMyuAsJjvrPCivjE1I3d7rHf6k7lXW
-         LBUstR50ueFnqSs+LoK6Nd6gzToj+e2DdTv/IgicRKPBAjO4V+2tP5wY/we6w+Qwb9jN
-         OKLabKpT3j1Jr0dbZ8tKENpVqO1MUwi6Oqh5PWRrQheClHv1ZSizIIdq+CdvSVUhQP16
-         LRHA==
-X-Gm-Message-State: AOAM530xVAFBE0cJhSsxMd9NJfxQT9/AW8DGKl526b7dvWDbQoy03YJv
-        lTBI+euMpEVuVr7V/ct+WDfLisYMajw=
-X-Google-Smtp-Source: ABdhPJwuEFJMXX59NVCwP/IQqF26qKU01Z8lRqUlF9oF2HT0FrBzCyw7C5SpJOQoR8lvpKmzkIB93g==
-X-Received: by 2002:a63:5c04:: with SMTP id q4mr1989071pgb.127.1625182431071;
-        Thu, 01 Jul 2021 16:33:51 -0700 (PDT)
-Received: from localhost ([118.209.250.144])
-        by smtp.gmail.com with ESMTPSA id j3sm1157167pfe.98.2021.07.01.16.33.49
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GxmceOXlSx//Z7AXWshXZETJTGUmHRmXWRqvH0CzuXQ=;
+        b=mb7ECcHnJC/IC24fp268h/X6X1gQHzVn1smlO6oveg550bHZWvbx6NcgxDcv+OSG85
+         ex/E95qYTwm1/W7XfzHz3mvmCWs+mc/IY3I2TKvfjvTSdH9QGSx3Jk+tFhLO/53CBaFN
+         StrJs1ucb/oAtA5OQdS9Aeq7aCOKT9iOegmFkG+iQ91UdqJRX7qUQhn3o6qSbg4mVN3I
+         0SDKzAhVCkUoPr2njq1ozUCXYjyhLW0Ke0fYP/Rhf0Pt1rrDYtZygE3srW2U7ONRRkEN
+         rZ0FmgrGA7OsQVOIfjBhOCCe9jxY2FWJSxRX1tBiGHGK5h/fSbfg0lE1i9oD3xfx875M
+         oeYw==
+X-Gm-Message-State: AOAM531fY03MlIodKuQq9GaiEJyOXyfnCh/EytgHmRj03uqDHFgjHCJP
+        gANm2qRBGT+aVO5BS2vX59s=
+X-Google-Smtp-Source: ABdhPJww81eLXSEUQEKQ4zGmxQndbDRbQvxhqYQpJSQB6vXHcAEwqkwiWSdaIqhn9IYO4qqkgQVz6Q==
+X-Received: by 2002:a05:6512:30d:: with SMTP id t13mr1609874lfp.14.1625183030356;
+        Thu, 01 Jul 2021 16:43:50 -0700 (PDT)
+Received: from localhost.localdomain (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
+        by smtp.gmail.com with ESMTPSA id e23sm60743lfq.221.2021.07.01.16.43.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 16:33:50 -0700 (PDT)
-Date:   Fri, 02 Jul 2021 09:33:45 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH] nohz: nohz idle balancing per node
-To:     Mel Gorman <mgorman@suse.de>, Peter Zijlstra <peterz@infradead.org>
-Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ben Segall <bsegall@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <20210701055323.2199175-1-npiggin@gmail.com>
-        <YN2Wav1CSVq+6cS+@hirez.programming.kicks-ass.net>
-        <20210701131139.GD3772@suse.de>
-In-Reply-To: <20210701131139.GD3772@suse.de>
+        Thu, 01 Jul 2021 16:43:50 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v2 00/12] Add OTG mode support to Tegra USB PHY, SMB347 and Nexus 7
+Date:   Fri,  2 Jul 2021 02:43:05 +0300
+Message-Id: <20210701234317.26393-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Message-Id: <1625181736.w1x011tuds.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Mel Gorman's message of July 1, 2021 11:11 pm:
-> On Thu, Jul 01, 2021 at 12:18:18PM +0200, Peter Zijlstra wrote:
->> On Thu, Jul 01, 2021 at 03:53:23PM +1000, Nicholas Piggin wrote:
->> > Currently a single nohz idle CPU is designated to perform balancing on
->> > behalf of all other nohz idle CPUs in the system. Implement a per node
->> > nohz balancer to minimize cross-node memory accesses and runqueue lock
->> > acquisitions.
->> >=20
->> > On a 4 node system, this improves performance by 9.3% on a 'pgbench -N=
-'
->> > with 32 clients/jobs (which is about where throughput maxes out due to
->> > IO and contention in postgres).
->>=20
->> Hmm, Suresh tried something like this around 2010 and then we ran into
->> trouble that when once node went completely idle and another node was
->> fully busy, the completely idle node would not run ILB and the node
->> would forever stay idle.
->>=20
->=20
-> An effect like that *might* be visible at
-> https://beta.suse.com/private/mgorman/melt/v5.13/3-perf-test/sched/sched-=
-nohznuma-v1r1/html/network-tbench/hardy2/
-> at the CPU usage heatmaps ordered by topology at the very bottom of
-> the page.
->=20
-> The heatmap covers all client counts so there are "blocks" of activity fo=
-r
-> each client count tested. The third block is for 8 thread counts so a nod=
-e
-> is not fully busy yet.
+Hi,
 
-I'm not sure what I'm looking at. Where are these blocks? Along the x=20
-axis?
+This series adds USB OTG mode support to the NVIDIA Tegra USB PHY driver,
+SMB347 charger driver and Nexus 7 tablet.
 
-> However, with the vanilla kernel, there is some
-> load on each node but with the patch all the load is on one node. This
-> did not happen on the two other test machines so the observation is not
-> reliable and could be a total coincidence.
+Changelog:
 
-tbench is pretty finicky so it could be.
+v2: - The PHY's interrupt is now enabled from PHY's set_wakeup() callback.
+      It prevents getting a spurious interrupt during the CI driver probe
+      time.
 
->=20
-> That said, there were some gains but large losses depending on the client
-> count across the 3 machines for tbench which is a concern. Other results,
-> like pgbench mentioned in the changelog, will not complete until tomorrow
-> to see if it is a general pattern or tbench-specific.
->=20
-> https://beta.suse.com/private/mgorman/melt/v5.13/3-perf-test/sched/sched-=
-nohznuma-v1r1/html/network-tbench/bing2/
-> https://beta.suse.com/private/mgorman/melt/v5.13/3-perf-test/sched/sched-=
-nohznuma-v1r1/html/network-tbench/hardy2/
-> https://beta.suse.com/private/mgorman/melt/v5.13/3-perf-test/sched/sched-=
-nohznuma-v1r1/html/network-tbench/marvin2/
+Dmitry Osipenko (12):
+  dt-bindings: phy: tegra20-usb-phy: Convert to schema
+  dt-bindings: phy: tegra20-usb-phy: Document properties needed for OTG
+    mode
+  soc/tegra: pmc: Expose USB regmap to all SoCs
+  usb: phy: tegra: Support OTG mode programming
+  usb: otg-fsm: Fix hrtimer list corruption
+  dt-bindings: power: supply: smb347-charger: Document USB VBUS
+    regulator
+  power: supply: smb347-charger: Make smb347_set_writable() IRQ-safe
+  power: supply: smb347-charger: Remove caching of charger state
+  power: supply: smb347-charger: Implement USB VBUS regulator
+  arm64: tegra132: Add new properties to USB PHY device-tree node
+  ARM: tegra: Add new properties to USB PHY device-tree nodes
+  ARM: tegra: nexus7: Enable USB OTG mode
 
-All 2-node. How many runs does it do at each clinet count? There's a big=20
-regression at one clinet with one of them, but the other two have small=20
-gains.
+ .../bindings/phy/nvidia,tegra20-usb-phy.txt   |  74 ----
+ .../bindings/phy/nvidia,tegra20-usb-phy.yaml  | 377 ++++++++++++++++++
+ .../power/supply/summit,smb347-charger.yaml   |  28 ++
+ arch/arm/boot/dts/tegra114.dtsi               |   6 +
+ arch/arm/boot/dts/tegra124.dtsi               |   9 +
+ arch/arm/boot/dts/tegra20.dtsi                |   9 +
+ .../tegra30-asus-nexus7-grouper-common.dtsi   |  25 +-
+ arch/arm/boot/dts/tegra30.dtsi                |   9 +
+ arch/arm64/boot/dts/nvidia/tegra132.dtsi      |   9 +
+ drivers/power/supply/Kconfig                  |   1 +
+ drivers/power/supply/smb347-charger.c         | 259 +++++++++++-
+ drivers/soc/tegra/pmc.c                       |   6 +-
+ drivers/usb/common/usb-otg-fsm.c              |   6 +-
+ drivers/usb/phy/phy-tegra-usb.c               | 202 +++++++++-
+ .../dt-bindings/power/summit,smb347-charger.h |   4 +
+ include/linux/usb/otg-fsm.h                   |   1 +
+ include/linux/usb/tegra_usb_phy.h             |   5 +
+ 17 files changed, 926 insertions(+), 104 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.yaml
 
-Thanks,
-Nick
+-- 
+2.30.2
+
