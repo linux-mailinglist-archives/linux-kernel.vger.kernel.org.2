@@ -2,161 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CE63B9845
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 23:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDBD3B984B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 23:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234311AbhGAVoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 17:44:00 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:58272 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhGAVn6 (ORCPT
+        id S234152AbhGAVqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 17:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhGAVqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 17:43:58 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lz4R2-00CqTz-JP; Thu, 01 Jul 2021 15:41:24 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:51614 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lz4R1-00CJeQ-F2; Thu, 01 Jul 2021 15:41:24 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Marco Elver <elver@google.com>
-Cc:     peterz@infradead.org, tglx@linutronix.de, mingo@kernel.org,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
-        omosnace@redhat.com, serge@hallyn.com,
-        linux-security-module@vger.kernel.org, stable@vger.kernel.org,
-        Dmitry Vyukov <dvyukov@google.com>
-References: <20210701083842.580466-1-elver@google.com>
-Date:   Thu, 01 Jul 2021 16:41:15 -0500
-In-Reply-To: <20210701083842.580466-1-elver@google.com> (Marco Elver's message
-        of "Thu, 1 Jul 2021 10:38:43 +0200")
-Message-ID: <87h7hdn24k.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 1 Jul 2021 17:46:05 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53802C061764;
+        Thu,  1 Jul 2021 14:43:33 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id r14-20020a4ad4ce0000b029024b4146e2f5so1974291oos.1;
+        Thu, 01 Jul 2021 14:43:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=K75TMc833Hnb3K5ewk2HbYnNKfUBgfQkkOxc24B6DT4=;
+        b=vRn3yfZ8+4E3qWPjdUGgXR4HGXqqJ/qUjMGAP90AWTjVl4wnA56aTtxKvjPBaEblBR
+         Es4GusU8pQmCTnG+WX/Mv/E7S101G3hjV3ItxdZxBH0LhD4o7soKHJ7teiB3E+MyjehB
+         sHs+E6RqYyy3k9Xzm5G6UnHs6Cz/TREKSRYXsh/36rgR96RDs03QvZla92C+7hYDtiP9
+         65QR7z5S5HoTdKgGs1UzU+b0UJmPX5YLdE6J8Hq6BHuI4A1dcujApZaYwvdQ/7xIACzN
+         LLJB/MNz4gmQux0TLWXkhjUgvmQTNzkNqwYzDMyyfV6y0VjFv81B9jrN+dos290NIzX7
+         WXdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K75TMc833Hnb3K5ewk2HbYnNKfUBgfQkkOxc24B6DT4=;
+        b=K1k/KdBJlq1dc3EpzkKxhVkRf53gGXjtUpys6Dyt/zlL8t6CQEYObv6PoVWDRo73/O
+         WUmDQFTrKee+N4Ij1oIpDIZFaEDv5hATeM0nY+vQKsy9KPz4Xoc/0d6WIYQz0sMuM94z
+         z7XmjdOl1der4+QSIKIiIAgNE/PofwD4fyWcUzi+kOXYABS3hfbTMdIsd1QAA/qlzqEX
+         UWqFpeJs2atCRVBcPA9N1CHiGBQ81Vqku/OIG5pojxGB0JFzsEcrk83rI0R88j8tayT2
+         VqW1GWWfzs9/8sRWlbZnj3g8ml3HdjFSysA99wCC9I5uP09xVa1fP3C8XmHNGcj3tGt4
+         7iLw==
+X-Gm-Message-State: AOAM532jSDfbEauaZTPDk2akzf6Jr4s4CByYTfJqDpr5ZK3yz10LGEb9
+        IVSiIAiwHQX2a7yRxp75q9o=
+X-Google-Smtp-Source: ABdhPJzIRrjoijEn1koxIO+9bmtEXdAF29WNwuReepWnxaWoHI0uNMwp+/TA2WeEqF2v5v+xIFiLXw==
+X-Received: by 2002:a4a:8241:: with SMTP id t1mr1609090oog.13.1625175812601;
+        Thu, 01 Jul 2021 14:43:32 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e18sm252459oiw.27.2021.07.01.14.43.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Jul 2021 14:43:31 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v3 2/3] clk: divider: Switch from .round_rate to
+ .determine_rate by default
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
+        khilman@baylibre.com, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210627223959.188139-1-martin.blumenstingl@googlemail.com>
+ <20210627223959.188139-3-martin.blumenstingl@googlemail.com>
+ <20210701202540.GA1085600@roeck-us.net>
+ <CAFBinCC2KB-_pOenpWPknCuHV+CCjhP5hqukSkwD3qwRe6OtQw@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <7a06cfaf-4cae-5c4c-edff-16d6406a1b6c@roeck-us.net>
+Date:   Thu, 1 Jul 2021 14:43:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lz4R1-00CJeQ-F2;;;mid=<87h7hdn24k.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+7+SbuL4vTLyI6IaqmY8TWPh1qYr3dYsI=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4941]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Marco Elver <elver@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 503 ms - load_scoreonly_sql: 0.08 (0.0%),
-        signal_user_changed: 11 (2.3%), b_tie_ro: 10 (1.9%), parse: 1.23
-        (0.2%), extract_message_metadata: 4.7 (0.9%), get_uri_detail_list: 2.0
-        (0.4%), tests_pri_-1000: 4.4 (0.9%), tests_pri_-950: 1.34 (0.3%),
-        tests_pri_-900: 1.09 (0.2%), tests_pri_-90: 129 (25.7%), check_bayes:
-        128 (25.4%), b_tokenize: 9 (1.8%), b_tok_get_all: 9 (1.8%),
-        b_comp_prob: 2.8 (0.5%), b_tok_touch_all: 104 (20.7%), b_finish: 0.82
-        (0.2%), tests_pri_0: 327 (65.0%), check_dkim_signature: 0.92 (0.2%),
-        check_dkim_adsp: 2.7 (0.5%), poll_dns_idle: 0.74 (0.1%), tests_pri_10:
-        2.2 (0.4%), tests_pri_500: 12 (2.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v2] perf: Require CAP_KILL if sigtrap is requested
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <CAFBinCC2KB-_pOenpWPknCuHV+CCjhP5hqukSkwD3qwRe6OtQw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marco Elver <elver@google.com> writes:
+On 7/1/21 1:57 PM, Martin Blumenstingl wrote:
+> Hi Guenter,
+> 
+> On Thu, Jul 1, 2021 at 10:25 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> [...]
+>> [    0.000000] [<c07be330>] (clk_core_determine_round_nolock) from [<c07c5480>] (clk_core_set_rate_nolock+0x184/0x294)
+>> [    0.000000] [<c07c5480>] (clk_core_set_rate_nolock) from [<c07c55c0>] (clk_set_rate+0x30/0x64)
+>> [    0.000000] [<c07c55c0>] (clk_set_rate) from [<c163c310>] (imx6ul_clocks_init+0x2798/0x2a44)
+>> [    0.000000] [<c163c310>] (imx6ul_clocks_init) from [<c162a4e4>] (of_clk_init+0x180/0x26c)
+>> [    0.000000] [<c162a4e4>] (of_clk_init) from [<c1604d34>] (time_init+0x20/0x30)
+>> [    0.000000] [<c1604d34>] (time_init) from [<c1600e0c>] (start_kernel+0x4c8/0x6cc)
+>> [    0.000000] [<c1600e0c>] (start_kernel) from [<00000000>] (0x0)
+>> [    0.000000] Code: bad PC value
+>> [    0.000000] ---[ end trace 7009a0f298fd39e9 ]---
+>> [    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
+>>
+>> Bisct points to this patch as culprit. Reverting it fixes the problem.
+> sorry for breaking imx6 - and at the same time: thanks for reporting this!
+> 
+> Do you have some additional information about this crash (which clock
+> this relates to, file and line number, etc.)?
+> I am struggling to understand the cause of this NULL dereference
+> My patch doesn't change the clk_core_determine_round_nolock()
+> implementation and the new determine_rate code-path (inside that
+> function) doesn't seem to be more fragile in terms of NULL values
+> compared to the round_rate code-path.
+> Instead I think it's more likely that the problem is somewhere within
+> clk_divider_determine_rate() (or in any helper function it uses), but
+> that doesn't show up in the trace
+> 
+> I don't have any imx6 board myself and so far I am unable to reproduce
+> this crash on any hardware I have.
+> However, if it's a problem in my clk-divider.c changes then I'd like
+> to find the cause (ASAP) because possibly more SoCs may be broken...
+> 
 
-> If perf_event_open() is called with another task as target and
-> perf_event_attr::sigtrap is set, and the target task's user does not
-> match the calling user, also require the CAP_KILL capability.
->
-> Otherwise, with the CAP_PERFMON capability alone it would be possible
-> for a user to send SIGTRAP signals via perf events to another user's
-> tasks. This could potentially result in those tasks being terminated if
-> they cannot handle SIGTRAP signals.
->
-> Note: The check complements the existing capability check, but is not
-> supposed to supersede the ptrace_may_access() check. At a high level we
-> now have:
->
-> 	capable of CAP_PERFMON and (CAP_KILL if sigtrap)
-> 		OR
-> 	ptrace_may_access() // also checks for same thread-group and uid
+I don't have such a board either. The problem shows up in my qemu boot tests. See
+https://kerneltests.org/builders/qemu-arm-v7-next/builds/38/steps/qemubuildcommand/logs/stdio
+for an example. The problem reproduces with qemu's mcimx6ul-evk and sabrelite
+emulations.
 
-Is there anyway we could have a comment that makes the required
-capability checks clear?
-
-Basically I see an inlined version of kill_ok_by_cred being implemented
-without the comments on why the various pieces make sense.
-
-Certainly ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS) should not
-be a check to allow writing/changing a task.  It needs to be
-PTRACE_MODE_ATTACH_REALCREDS, like /proc/self/mem uses.
-
-Now in practice I think your patch probably has the proper checks in
-place for sending a signal but it is far from clear.
-
-Eric
-
-
-> Fixes: 97ba62b27867 ("perf: Add support for SIGTRAP on perf events")
-> Cc: <stable@vger.kernel.org> # 5.13+
-> Reported-by: Dmitry Vyukov <dvyukov@google.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
-> v2:
-> * Drop kill_capable() and just check CAP_KILL (reported by Ondrej Mosnacek).
-> * Use ns_capable(__task_cred(task)->user_ns, CAP_KILL) to check for
->   capability in target task's ns (reported by Ondrej Mosnacek).
-> ---
->  kernel/events/core.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index fe88d6eea3c2..43c99695dc3f 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -12152,10 +12152,23 @@ SYSCALL_DEFINE5(perf_event_open,
->  	}
->  
->  	if (task) {
-> +		bool is_capable;
-> +
->  		err = down_read_interruptible(&task->signal->exec_update_lock);
->  		if (err)
->  			goto err_file;
->  
-> +		is_capable = perfmon_capable();
-> +		if (attr.sigtrap) {
-> +			/*
-> +			 * perf_event_attr::sigtrap sends signals to the other
-> +			 * task. Require the current task to have CAP_KILL.
-> +			 */
-> +			rcu_read_lock();
-> +			is_capable &= ns_capable(__task_cred(task)->user_ns, CAP_KILL);
-> +			rcu_read_unlock();
-> +		}
-> +
->  		/*
->  		 * Preserve ptrace permission check for backwards compatibility.
->  		 *
-> @@ -12165,7 +12178,7 @@ SYSCALL_DEFINE5(perf_event_open,
->  		 * perf_event_exit_task() that could imply).
->  		 */
->  		err = -EACCES;
-> -		if (!perfmon_capable() && !ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS))
-> +		if (!is_capable && !ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS))
->  			goto err_cred;
->  	}
+Guenter
