@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C783B9552
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CDE3B9557
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233074AbhGARSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 13:18:10 -0400
-Received: from mga12.intel.com ([192.55.52.136]:59747 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232516AbhGARSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 13:18:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="188262483"
-X-IronPort-AV: E=Sophos;i="5.83,315,1616482800"; 
-   d="scan'208";a="188262483"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 10:15:32 -0700
-X-IronPort-AV: E=Sophos;i="5.83,315,1616482800"; 
-   d="scan'208";a="626442990"
-Received: from acismesi-mobl1.amr.corp.intel.com (HELO [10.252.131.1]) ([10.252.131.1])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 10:15:31 -0700
-Subject: Re: [PATCH 1/3] x86/setup: always reserve the first 1M of RAM
-To:     Mike Rapoport <rppt@kernel.org>, x86@kernel.org
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andy Shevchenko <andy@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Dave Young <dyoung@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lianbo Jiang <lijiang@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-References: <20210601075354.5149-1-rppt@kernel.org>
- <20210601075354.5149-2-rppt@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <cc655618-9e30-9377-4fcf-c967707b4b0b@intel.com>
-Date:   Thu, 1 Jul 2021 10:15:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210601075354.5149-2-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S232081AbhGARVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 13:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229949AbhGARVR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 13:21:17 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A93C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 10:18:45 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id u8so9173245wrq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 10:18:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=ZjbYHcTVSHQtbbwfJxfmq7wLQhURDlEsagZ7G5mEEw8=;
+        b=QOntgaZBzm35HQoxrL0Hlu6Za5AbHLosR4q6dIUJahIj+XKH0wicCeLSFIERG895Tn
+         afY4J4zLSH7uf75hshcMEeAHkb4SKSDqPtemdFT6anhOv0NEeJAaZUPB1xR29dGPjnZ7
+         mIHTgo9qtN/gMXxS1efKuHFTrENQMyZz4DPbi9452kNkge7jYkpsuOAeXkFvflA8DQMZ
+         aZS19Efgm8AayM9jcaaBYaRVWaJyyb/WQtPcR4yVBBKz76zStqv/8MRPB15w6p8HGuua
+         +qMzW6A/GMnkx7k8SSydoNKFTMyXlKQ06jbEMcyUMfHIJdOt190yLNHZD9T1NXQThRqT
+         faGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZjbYHcTVSHQtbbwfJxfmq7wLQhURDlEsagZ7G5mEEw8=;
+        b=cohQbuxwAK0MusvzcnfH7ZeuFF/rWLYBQ8FkvXdgmpCMxqNzrZhOITlZWrY/4Bq6JT
+         VTGZt67ZucyT8H+b6rtcR+pl18aQAs4kW2tZgyUB/6cmKsPV+oaDSOCZXruXwhByj1Kd
+         4mdn+ljIF+hyy2ILID9tK3/DrvnazZNV087Br0cFf9i0UmAUVwk4LxSpDZDO95NlXllA
+         VHqLOYREluKFkGWtcQpWbHaXnfXsXBp/y83unns/vY4SgfqIqYX5M54R9yjCmt7BKiOO
+         dvXmALoflL3Y0UpjaELWtupTYgbzqY2G8zuk2uvSENUHwNYje7f60tL1JhotN05Vf9nv
+         VQCg==
+X-Gm-Message-State: AOAM53366S++qxg1XrRsvqZa7T+8NPTHhmKPK1fb4PomQmt5WUvV7Y0I
+        Z+VHEh/++YKtsLPavIyTtF8Gjw==
+X-Google-Smtp-Source: ABdhPJzpCsMYhenI42CSvHZgnuQ1REmnRM16tprVCQMadEdgKEPMztYXplKST1/ta5VUf50Sc1mxAA==
+X-Received: by 2002:adf:cf09:: with SMTP id o9mr306168wrj.40.1625159924385;
+        Thu, 01 Jul 2021 10:18:44 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:f:6020:613c:1766:3718:552d])
+        by smtp.gmail.com with ESMTPSA id u15sm10021828wmq.48.2021.07.01.10.18.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 10:18:43 -0700 (PDT)
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
+        odin@uged.al, sachinp@linux.vnet.ibm.com
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH] sched/fair: Sync load_sum with load_avg after dequeue
+Date:   Thu,  1 Jul 2021 19:18:37 +0200
+Message-Id: <20210701171837.32156-1-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/1/21 12:53 AM, Mike Rapoport wrote:
-> There are BIOSes that are known to corrupt the memory under 1M, or more
-> precisely under 640K because the memory above 640K is anyway reserved for
-> the EGA/VGA frame buffer and BIOS.
+commit 9e077b52d86a ("sched/pelt: Check that *_avg are null when *_sum are")
+reported some inconsitencies between *_avg and *_sum.
 
-Should there have been a Cc: stable@ on this?
+commit 1c35b07e6d39 ("sched/fair: Ensure _sum and _avg values stay consistent")
+fixed some but one remains when dequeuing load.
 
-Seems like the kind of thing we'd want backported.
+sync the cfs's load_sum with its load_avg after dequeuing the load of a
+sched_entity.
+
+Fixes: 9e077b52d86a ("sched/pelt: Check that *_avg are null when *_sum are")
+Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+---
+
+I have been able to trigger a WARN on my system even with the patch
+listed above. This patch fixes it.
+Sachin could you test that it also fixes yours ?
+
+kernel/sched/fair.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 11d22943753f..48fc7dfc2f66 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3037,8 +3037,9 @@ enqueue_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ static inline void
+ dequeue_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ {
++	u32 divider = get_pelt_divider(&se->avg);
+ 	sub_positive(&cfs_rq->avg.load_avg, se->avg.load_avg);
+-	sub_positive(&cfs_rq->avg.load_sum, se_weight(se) * se->avg.load_sum);
++	cfs_rq->avg.load_sum = cfs_rq->avg.load_avg * divider;
+ }
+ #else
+ static inline void
+-- 
+2.17.1
+
