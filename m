@@ -2,189 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB8D3B8E70
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 09:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78763B8E74
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 09:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234992AbhGAH7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 03:59:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24088 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234576AbhGAH7M (ORCPT
+        id S235036AbhGAH7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 03:59:23 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:35840 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234576AbhGAH7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 03:59:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625126202;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=y9jC4b7qIauKiDKeodtcEhNEX/AsDIdv8KzKy1Dzuxw=;
-        b=SpdWqlALj8EjDOFOZxuuQldnlA/APwNi8XCTsejjfFjMPxRW4KEJ51IrZnY/sVb/cr94hj
-        FNQ4DwwgmreuH11eovv2V/cMJZY0mBrgCbJv2ICvGmnQkdSoNYVVU1fSGzCgRvKWVLqUN+
-        /A05GVwqrwuM6VtV5E6F/HLhlvk2OLw=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-164-77zsN0cPOsGrlp3eZJ-X1g-1; Thu, 01 Jul 2021 03:56:36 -0400
-X-MC-Unique: 77zsN0cPOsGrlp3eZJ-X1g-1
-Received: by mail-yb1-f198.google.com with SMTP id f125-20020a2538830000b02905572a385ae5so7622525yba.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 00:56:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y9jC4b7qIauKiDKeodtcEhNEX/AsDIdv8KzKy1Dzuxw=;
-        b=Xu84RqX7EZltct/5tV321dbYJ8QzmAv4R0Y3gp6fd/uv4uCp6FtvswLE1sPbT9KXpS
-         wmJq+nowfSbEb72sNHTafYtkrNUGdfQc5jKSGV1jOlwXQtfdNcofISpY9BjDi17vwGAL
-         jxWRWYeyWtQdEVg+yHax4urdr8seGnTtP2exNNSsQJ4lefsAqPpx3XKasJoaiIgVLLFN
-         pJ2NvEoaVEb9TZz5g6+0rZFO0uc7W4WISunhPeC01JpEIA/FNHP58HS/igqapmvNAAQU
-         /nLfxvn1+pE8SoElA7eTle43eMzml+buD1pVBZd4/Z7kvGzpkIZOvVk54G6oTvZ/iAI+
-         g+rQ==
-X-Gm-Message-State: AOAM530MG38kQyRruw3/YjsiaiA4h50Zlzb9NVEjlzV/tHuDJilAjpwg
-        k5v4eC18d+yYO5Veh/z55JSmDNS3muw00uGKFSR200ZXvguPwCygUXxATDfVGiRDyjzQhnZlwzo
-        nKPR20+sqlRK4vkZlJzU85TwZ9FgUcJMgvLtc10Ay
-X-Received: by 2002:a25:25cd:: with SMTP id l196mr30064764ybl.226.1625126195760;
-        Thu, 01 Jul 2021 00:56:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwhPXcp42Yx4urqJfd9LZAdGfNWJBwrNYSLZiudcUu4WDls6Vx/hfj0G8n4kD5VMmS7msKxmZOvEyI/CJLBvT8=
-X-Received: by 2002:a25:25cd:: with SMTP id l196mr30064748ybl.226.1625126195525;
- Thu, 01 Jul 2021 00:56:35 -0700 (PDT)
+        Thu, 1 Jul 2021 03:59:22 -0400
+Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 934C5268;
+        Thu,  1 Jul 2021 09:56:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1625126210;
+        bh=OUq9GBiPDtjNM+swD089evHPI06hAwe6Nt9Ejeorm30=;
+        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
+        b=YjRwa97Z3iLVpB+4HmRq0pA6EfqwdhKWIHaER8wTcRt9SIC3F1HZbdGVo8x46aZuq
+         M8PSU1CDj2KaWbW+BPJYi1kyehbJxWKhRp1Vb9Gxv7Q4A+3GpGLjf43Gh7CpDL1WzB
+         nUk3K5HTKIBh6+aHtg9duHm527JISCJv++hWQCyY=
+To:     Pratyush Yadav <p.yadav@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>, Benoit Parrot <bparrot@ti.com>,
+        Bert Vermeulen <bert@biot.com>,
+        Dikshita Agarwal <dikshita@codeaurora.org>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Helen Koike <helen.koike@collabora.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Martina Krasteva <martinax.krasteva@intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Mirela Rabulea <mirela.rabulea@nxp.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Qiushi Wu <wu000273@umn.edu>, Raag Jadav <raagjadav@gmail.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+References: <20210624192200.22559-1-p.yadav@ti.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH v3 00/11] CSI2RX support on J721E
+Message-ID: <dd3b13ec-a883-5b22-47ce-d6e591b674aa@ideasonboard.com>
+Date:   Thu, 1 Jul 2021 10:56:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210630093709.3612997-1-elver@google.com> <CAFqZXNtaHyKjcOmh4_5AUfm0mek6Zx0V1TvN8BwHNK9Q7T3D8w@mail.gmail.com>
- <YNxmyRYcs/R/8zry@elver.google.com>
-In-Reply-To: <YNxmyRYcs/R/8zry@elver.google.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Thu, 1 Jul 2021 09:56:24 +0200
-Message-ID: <CAFqZXNsABvdcR4MPYS+o+SEpqtaU1FrUkmP8bv+1czvcv_3ADQ@mail.gmail.com>
-Subject: Re: [PATCH] perf: Require CAP_KILL if sigtrap is requested
-To:     Marco Elver <elver@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, kasan-dev@googlegroups.com,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Eric Biederman <ebiederm@xmission.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210624192200.22559-1-p.yadav@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 2:43 PM Marco Elver <elver@google.com> wrote:
-> On Wed, Jun 30, 2021 at 01:13PM +0200, Ondrej Mosnacek wrote:
-> > On Wed, Jun 30, 2021 at 11:38 AM Marco Elver <elver@google.com> wrote:
-> [...]
-> > > +static inline bool kill_capable(void)
-> > > +{
-> > > +       return capable(CAP_KILL) || capable(CAP_SYS_ADMIN);
-> >
-> > Is it really necessary to fall back to CAP_SYS_ADMIN here? CAP_PERFMON
-> > and CAP_BPF have been split off from CAP_SYS_ADMIN recently, so they
-> > have it for backwards compatibility. You are adding a new restriction
-> > for a very specific action, so I don't think the fallback is needed.
->
-> That means someone having CAP_SYS_ADMIN, but not CAP_KILL, can't perform
-> the desired action. Is this what you'd like?
+Hi Pratyush,
 
-AFAIK, such user wouldn't be allowed to directly send a signal to a
-different process either. So I think it makes more sense to be
-consistent with the existing/main CAP_KILL usage rather than with the
-CAP_PERFMON usage (which has its own reason to have that fallback).
+On 24/06/2021 22:21, Pratyush Yadav wrote:
+> Hi,
+> 
+> This series adds support for CSI2 capture on J721E. It includes some
+> fixes to the Cadence CSI2RX driver, adds runtime PM support to OV5640
+> driver, and finally adds the TI CSI2RX wrapper driver.
+> 
+> This series used to include the DPHY and DMA engine patches as well, but
+> they have been split off to facilitate easier merging. Patch 3 is
+> build-dependent on the DPHY series [0].
+> 
+> The DMA engine patch [1] can go in any order since that is only a run
+> time dependency. Things probably won't work without it but it will still
+> build fine.
+> 
+> Tested on TI's J721E with OV5640 sensor.
 
-I'm not the authority on capabilities nor the perf subsystem, it just
-didn't seem quite right to me so I wanted to raise the concern.
-Hopefully someone wiser than me will speak up if I talk nonsense :)
+I applied these (csi-2 rx, phy, dma-engine) to linux-media/master, and added dts changes to add the csi2-rx. When sending the series, can you also push the branch you use for testing, as the posted patches do not include everything needed?
 
-> If so, I'll just remove the wrapper, and call capable(CAP_KILL)
-> directly.
->
-> > > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > > index fe88d6eea3c2..1ab4bc867531 100644
-> > > --- a/kernel/events/core.c
-> > > +++ b/kernel/events/core.c
-> > > @@ -12152,10 +12152,21 @@ SYSCALL_DEFINE5(perf_event_open,
-> > >         }
-> > >
-> > >         if (task) {
-> > > +               bool is_capable;
-> > > +
-> > >                 err = down_read_interruptible(&task->signal->exec_update_lock);
-> > >                 if (err)
-> > >                         goto err_file;
-> > >
-> > > +               is_capable = perfmon_capable();
-> > > +               if (attr.sigtrap) {
-> > > +                       /*
-> > > +                        * perf_event_attr::sigtrap sends signals to the other
-> > > +                        * task. Require the current task to have CAP_KILL.
-> > > +                        */
-> > > +                       is_capable &= kill_capable();
-> >
-> > Is it necessary to do all this dance just to call perfmon_capable()
-> > first? Couldn't this be simply:
-> >
-> > err = -EPERM;
-> > if (attr.sigtrap && !capable(CAP_KILL))
-> >         goto err_cred;
->
-> Not so much about perfmon_capable() but about the ptrace_may_access()
-> check. The condition here is supposed to be:
->
->         want CAP_PERFMON and (CAP_KILL if sigtrap)
->                 OR
->         want ptrace access (which includes a check for same thread-group and uid)
->
-> If we did what you propose, then the ptrace check is effectively ignored
-> if attr.sigtrap, and that's not what we want.
->
-> There are lots of other ways of writing the same thing, but it should
-> also remain readable and sticking it all into the same condition is not
-> readable.
+Here are some notes from quick tests:
 
-Ah, I see, I missed that semantic difference... So ptrace_may_access()
-implies that the process doesn't need CAP_KILL to send a signal to the
-task, that makes sense.
+Capture works, but the fps is ~28.98. I would expect it to be closer to 30. Are the clocks configured correctly?
 
-In that case I'm fine with this part as it is.
+When I load the modules, I get:
 
-> > Also, looking at kill_ok_by_cred() in kernel/signal.c, would it
-> > perhaps be more appropriate to do
-> > ns_capable(__task_cred(task)->user_ns, CAP_KILL) instead? (There might
-> > also need to be some careful locking around getting the target task's
-> > creds - I'm not sure...)
->
-> That might make sense. AFAIK, the locking is already in place via
-> exec_update_lock. Let me investigate.
->
-> > > +               }
-> > > +
-> > >                 /*
-> > >                  * Preserve ptrace permission check for backwards compatibility.
-> > >                  *
-> > > @@ -12165,7 +12176,7 @@ SYSCALL_DEFINE5(perf_event_open,
-> > >                  * perf_event_exit_task() that could imply).
-> > >                  */
-> > >                 err = -EACCES;
-> >
-> > BTW, shouldn't this (and several other such cases in this file...)
-> > actually be EPERM, as is the norm for capability checks?
->
-> I'm not a perf maintainer, so I can't give you a definitive answer.
-> But, this would change the ABI, so I don't think it's realistic to
-> request this change at this point unfortunately.
+[  237.322258] platform 4504000.csi-bridge: Fixing up cyclic dependency with 9-003c
 
-Indeed... I worry it will make troubleshooting SELinux/capability
-errors more confusing, but I agree it would be a potentially risky
-change to fix it :/
+I get a warning from DMA-API debug:
 
---
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
+[  298.774236] ------------[ cut here ]------------
+[  298.779109] DMA-API: ti-udma 31150000.dma-controller: mapping sg segment longer than device claims to support [len=1900544] [max=65536]
+[  298.791331] WARNING: CPU: 1 PID: 605 at kernel/dma/debug.c:1172 debug_dma_map_sg+0x304/0x390
+[  298.799764] Modules linked in: ov5640 j721e_csi2rx cdns_csi2rx cdns_dphy v4l2_fwnode v4l2_async tidss ti_tfp410 tc358767 display_connector cdns_mhdp8546 panel_simple
+  drm_kms_helper drm drm_panel_orientation_quirks cfbfillrect cfbimgblt cfbcopyarea phy_j721e_wiz phy_cadence_torrent
+[  298.824656] CPU: 1 PID: 605 Comm: cam-mplex.py Not tainted 5.13.0-rc4-00417-g3331992006e9 #3
+[  298.833079] Hardware name: Texas Instruments K3 J721E SoC (DT)
+[  298.838900] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+[  298.844895] pc : debug_dma_map_sg+0x304/0x390
+[  298.849245] lr : debug_dma_map_sg+0x304/0x390
+[  298.853593] sp : ffff800014dcf730
+[  298.856899] x29: ffff800014dcf730 x28: ffff00080154a880 x27: ffffffffffffffff
+[  298.864032] x26: 0000000000000000 x25: 0000000000000002 x24: 0000000000000001
+[  298.871164] x23: ffff80001163abe0 x22: 0000000000000000 x21: 0000000000000001
+[  298.878295] x20: ffff000801fa3010 x19: ffff000807585300 x18: 0000000000000000
+[  298.885426] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000030
+[  298.892558] x14: 6e61687420726567 x13: 6e6f6c20746e656d x12: ffff800011a91578
+[  298.899689] x11: 00000000000c0000 x10: ffff8000116b18f8 x9 : ffff8000100eabe0
+[  298.906820] x8 : ffff8000116598f8 x7 : ffff8000116b18f8 x6 : 0000000000000001
+[  298.913951] x5 : 0000000000000001 x4 : 0000000000000001 x3 : ffff800011260000
+[  298.921082] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00080673b000
+[  298.928214] Call trace:
+[  298.930653]  debug_dma_map_sg+0x304/0x390
+[  298.934655]  dma_map_sg_attrs+0x70/0xb0
+[  298.938487]  drm_gem_map_dma_buf+0x6c/0xf0 [drm]
+[  298.943185]  __map_dma_buf+0x28/0x80
+[  298.946756]  dma_buf_map_attachment+0xe4/0x220
+[  298.951191]  vb2_dc_map_dmabuf+0x3c/0x150
+[  298.955194]  __prepare_dmabuf+0x1dc/0x514
+[  298.959197]  __buf_prepare+0x1a0/0x25c
+[  298.962938]  vb2_core_qbuf+0x3d4/0x72c
+[  298.966679]  vb2_qbuf+0x9c/0xf4
+[  298.969814]  vb2_ioctl_qbuf+0x68/0x7c
+[  298.973468]  v4l_qbuf+0x54/0x70
+[  298.976603]  __video_do_ioctl+0x194/0x400
+[  298.980603]  video_usercopy+0x374/0xa14
+[  298.984431]  video_ioctl2+0x24/0x4c
+[  298.987912]  v4l2_ioctl+0x4c/0x70
+[  298.991222]  __arm64_sys_ioctl+0xb4/0xfc
+[  298.995138]  invoke_syscall+0x50/0x120
+[  298.998885]  el0_svc_common.constprop.0+0x68/0x104
+[  299.003667]  do_el0_svc+0x30/0x9c
+[  299.006976]  el0_svc+0x2c/0x54
+[  299.010025]  el0_sync_handler+0x1a8/0x1ac
+[  299.014025]  el0_sync+0x198/0x1c0
+[  299.017333] irq event stamp: 98582
+[  299.020727] hardirqs last  enabled at (98581): [<ffff8000100ec2bc>] console_unlock+0x53c/0x6b4
+[  299.029325] hardirqs last disabled at (98582): [<ffff800010be4bd4>] el1_dbg+0x24/0xa0
+[  299.037144] softirqs last  enabled at (98568): [<ffff800010010ba0>] __do_softirq+0x500/0x6bc
+[  299.045565] softirqs last disabled at (98413): [<ffff80001005d504>] __irq_exit_rcu+0x1d4/0x1e0
+[  299.054164] ---[ end trace bfe019acb2a9a04f ]---
+
+I get a warning from media graph walk:
+
+[  299.066357] WARNING: CPU: 1 PID: 605 at drivers/media/mc/mc-entity.c:343 media_graph_walk_next+0x268/0x2cc
+[  299.076005] Modules linked in: ov5640 j721e_csi2rx cdns_csi2rx cdns_dphy v4l2_fwnode v4l2_async tidss ti_tfp410 tc358767 display_connector cdns_mhdp8546 panel_simple
+  drm_kms_helper drm drm_panel_orientation_quirks cfbfillrect cfbimgblt cfbcopyarea phy_j721e_wiz phy_cadence_torrent
+[  299.100889] CPU: 1 PID: 605 Comm: cam-mplex.py Tainted: G        W         5.13.0-rc4-00417-g3331992006e9 #3
+[  299.110698] Hardware name: Texas Instruments K3 J721E SoC (DT)
+[  299.116518] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+[  299.122513] pc : media_graph_walk_next+0x268/0x2cc
+[  299.127295] lr : media_graph_walk_next+0x264/0x2cc
+[  299.132076] sp : ffff800014dcfa40
+[  299.135382] x29: ffff800014dcfa40 x28: 0000000000000000 x27: 0000000040045612
+[  299.142514] x26: 0000000000000001 x25: ffff800010d890f0 x24: ffff0008055c8148
+[  299.149645] x23: ffff0008055c8148 x22: ffff80001182bc40 x21: ffff80001163e2e8
+[  299.156776] x20: ffff80001182bbd0 x19: ffff0008055c8cb8 x18: 0000000000000000
+[  299.163907] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000028
+[  299.171037] x14: 0000000000000002 x13: 0000000000007e6f x12: 0000000000000002
+[  299.178169] x11: 0000000000040464 x10: 00000000916d3a5c x9 : ffff8000093110c0
+[  299.185301] x8 : ffff000807583d88 x7 : 0000000000000000 x6 : ffff00080673b900
+[  299.192431] x5 : 000000000000000a x4 : ffff000807583d80 x3 : ffff800011260000
+[  299.199562] x2 : 00000000000000c0 x1 : 00000000000000c0 x0 : 0000000000000000
+[  299.206693] Call trace:
+[  299.209133]  media_graph_walk_next+0x268/0x2cc
+[  299.213568]  ti_csi2rx_start_streaming+0xe0/0x5c8 [j721e_csi2rx]
+[  299.219569]  vb2_start_streaming+0x70/0x160
+[  299.223745]  vb2_core_streamon+0x9c/0x1a0
+[  299.227745]  vb2_ioctl_streamon+0x68/0xbc
+[  299.231747]  v4l_streamon+0x30/0x40
+[  299.235230]  __video_do_ioctl+0x194/0x400
+[  299.239230]  video_usercopy+0x374/0xa14
+[  299.243058]  video_ioctl2+0x24/0x4c
+[  299.246539]  v4l2_ioctl+0x4c/0x70
+[  299.249847]  __arm64_sys_ioctl+0xb4/0xfc
+[  299.253764]  invoke_syscall+0x50/0x120
+[  299.257508]  el0_svc_common.constprop.0+0x68/0x104
+[  299.262291]  do_el0_svc+0x30/0x9c
+[  299.265599]  el0_svc+0x2c/0x54
+[  299.268648]  el0_sync_handler+0x1a8/0x1ac
+[  299.272647]  el0_sync+0x198/0x1c0
+[  299.275956] irq event stamp: 98754
+[  299.279349] hardirqs last  enabled at (98753): [<ffff800010bf216c>] _raw_spin_unlock_irqrestore+0x9c/0xc0
+[  299.288900] hardirqs last disabled at (98754): [<ffff800010be4bd4>] el1_dbg+0x24/0xa0
+[  299.296716] softirqs last  enabled at (98606): [<ffff800010010ba0>] __do_softirq+0x500/0x6bc
+[  299.305138] softirqs last disabled at (98585): [<ffff80001005d504>] __irq_exit_rcu+0x1d4/0x1e0
+
+Unloading the modules gives me:
+
+ERROR:   Unhandled External Abort received on 0x80000001 from S-EL1
+ERROR:   exception reason=0 syndrome=0xbf000000
+Unhandled Exception from EL1
+x0             = 0x0000000000000000
+x1             = 0xffff00080564c000
+x2             = 0xffff800014314000
+x3             = 0xffff800011260000
+x4             = 0x0000000000000001
+x5             = 0x0000000000000001
+x6             = 0x0000000000000001
+x7             = 0x0000000000000000
+x8             = 0xffff8000118870c0
+x9             = 0xffff800010bf2140
+x10            = 0x000000008260a2b7
+x11            = 0x00000000000c821c
+x12            = 0xffff800011a91578
+x13            = 0x0000000000008b8e
+x14            = 0x0000000000000006
+x15            = 0x0000000000000028
+x16            = 0x0000000000000000
+x17            = 0x0000000000000000
+x18            = 0x00000000fffffffb
+x19            = 0xffff00080634cc00
+x20            = 0x0000000000000000
+x21            = 0xffff0008051eed00
+x22            = 0xffff00080555f010
+x23            = 0xffff00080555f000
+x24            = 0xffff8000092e0058
+x25            = 0x0000000000000047
+x26            = 0xffff8000116d71d8
+x27            = 0xffff8000092e0350
+x28            = 0xffff8000092e0148
+x29            = 0xffff800014d2f850
+x30            = 0xffff8000092b0430
+scr_el3        = 0x000000000000073d
+sctlr_el3      = 0x0000000030cd183f
+cptr_el3       = 0x0000000000000000
+tcr_el3        = 0x0000000080803520
+daif           = 0x00000000000002c0
+mair_el3       = 0x00000000004404ff
+spsr_el3       = 0x0000000000000005
+elr_el3        = 0xffff8000092b0440
+ttbr0_el3      = 0x0000000070010b00
+esr_el3        = 0x00000000bf000000
+far_el3        = 0x0000000000000000
+spsr_el1       = 0x0000000060000005
+elr_el1        = 0xffff800010be5e10
+spsr_abt       = 0x0000000000000000
+spsr_und       = 0x0000000000000000
+spsr_irq       = 0x0000000000000000
+spsr_fiq       = 0x0000000000000000
+sctlr_el1      = 0x0000000034d4d91d
+actlr_el1      = 0x0000000000000000
+cpacr_el1      = 0x0000000000300000
+csselr_el1     = 0x0000000000000000
+sp_el1         = 0xffff800014d2f850
+esr_el1        = 0x0000000056000000
+ttbr0_el1      = 0x00000008826e4a00
+ttbr1_el1      = 0x076a000083180000
+mair_el1       = 0x000c0400bb44ffff
+amair_el1      = 0x0000000000000000
+tcr_el1        = 0x00000034f5d07590
+tpidr_el1      = 0xffff80086e790000
+tpidr_el0      = 0x0000ffff980d6920
+tpidrro_el0    = 0x0000000000000000
+par_el1        = 0x0000000000000000
+mpidr_el1      = 0x0000000080000001
+afsr0_el1      = 0x0000000000000000
+afsr1_el1      = 0x0000000000000000
+contextidr_el1 = 0x0000000000000000
+vbar_el1       = 0xffff800010011000
+cntp_ctl_el0   = 0x0000000000000005
+cntp_cval_el0  = 0x000000294b786efd
+cntv_ctl_el0   = 0x0000000000000000
+cntv_cval_el0  = 0x0000000000000000
+cntkctl_el1    = 0x00000000000000d6
+sp_el0         = 0x000000007000abd0
+isr_el1        = 0x0000000000000040
+dacr32_el2     = 0x0000000000000000
+ifsr32_el2     = 0x0000000000000000
+cpuectlr_el1   = 0x0000001b00000040
+cpumerrsr_el1  = 0x0000000000000000
+l2merrsr_el1   = 0x0000000000000000
+
+  Tomi
+
 
