@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A31E3B91D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 14:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669B23B91EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236488AbhGAM5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 08:57:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236366AbhGAM5J (ORCPT
+        id S236392AbhGANCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 09:02:54 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3338 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236535AbhGAM6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 08:57:09 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7668BC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 05:54:38 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so6463206otl.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 05:54:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ki9YLtCfQTGb7pej90Hp/SMduHeqHAJeUuadkg/p5L4=;
-        b=s3n2fzzLNhl+Pbqbh0ngHQxfy01ZkHQnyaNLJo/HLUru6FGx7hXzu5+0i6mGL3vC6W
-         EwaWvSOTW1bWmFrQK9GJmJC5mK8qKGpKd82bplpKhjurGUXTkTBra2zy7YoyTvxXsMdT
-         +vvV6gIWlzzUwesN4RkmVIqgSU2V0IQNeO4KXjzepNERqmPxiJH13oHglCFb96ZOf5fT
-         GgAuwr7EW4CwHnjS4P+cRufJrS1N+tSoh6VVCgXrS/7BGiFsEwfrLINC9XcnJtJm0un8
-         cff+FG44MBUhSi0Oo6vY8VMyLRFttxXbDGANQGabvqPPfnO54krYawYQYitBDnQn45yn
-         oO0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=ki9YLtCfQTGb7pej90Hp/SMduHeqHAJeUuadkg/p5L4=;
-        b=OCfhhnn9xzA86kFHWxq0tObuOr+jHMdyhKrXPalRcrUPNiRVRrDXoMe8r8/6dUsVRX
-         ekImnrLheRJaE6ZYQM5voT/WLgrhnv3ZII6piVC9/P+kisR3Eyex+znoL/KBhjUnCDGH
-         RFgFvvMRdE48t06M+Le+KEBXKEPj492aUZL2Qcb8O+Y8yG272h8KThQjwjAjpcrek64P
-         LD/Uvg+VLaLQ2ZlNEagWUao1Ko9TTepjkf7//663RgQwRq2mlcIf0ngMpcnf8FwvsN5Y
-         ywelnbTPi598w2xMVdtDmwBKuHcXICxAvRzGNJ1SDf7WP78dU2Op+kpOQu8571qM1o1H
-         YnRw==
-X-Gm-Message-State: AOAM533bSRIH7h9OVNUoBPLLvbL4Ydi/tx0g2dFg7KRW3iHVpo20sfFH
-        bWoRSIX9dFab4dPguGHaisb9dkQyow==
-X-Google-Smtp-Source: ABdhPJxl+F7Gc0AYbf9HXcFQqyvOQetib16gmTVy73GLRr7aAkyPgpcvNKBJyVggtX7F7LKjaF/Qnw==
-X-Received: by 2002:a9d:4c08:: with SMTP id l8mr3538972otf.149.1625144077782;
-        Thu, 01 Jul 2021 05:54:37 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.156.158])
-        by smtp.gmail.com with ESMTPSA id q203sm3631578oig.1.2021.07.01.05.54.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 05:54:36 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from t560.minyard.net (unknown [IPv6:2001:470:b8f6:1b:2948:9e00:9282:8e98])
-        by serve.minyard.net (Postfix) with ESMTPA id 6E05718010F;
-        Thu,  1 Jul 2021 12:54:35 +0000 (UTC)
-From:   minyard@acm.org
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Corey Minyard <cminyard@mvista.com>
-Subject: [PATCH] oom_kill: oom_score_adj broken for processes with small memory usage
-Date:   Thu,  1 Jul 2021 07:54:30 -0500
-Message-Id: <20210701125430.836308-1-minyard@acm.org>
+        Thu, 1 Jul 2021 08:58:44 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GFycR2XlZz6L7Vn;
+        Thu,  1 Jul 2021 20:45:43 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 1 Jul 2021 14:56:10 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <paul@paul-moore.com>
+CC:     <stephen.smalley.work@gmail.com>, <prsriva02@gmail.com>,
+        <tusharsu@linux.microsoft.com>, <nramas@linux.microsoft.com>,
+        <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v2 0/3] ima: Provide more info about buffer measurement
+Date:   Thu, 1 Jul 2021 14:55:49 +0200
+Message-ID: <20210701125552.2958008-1-roberto.sassu@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.63.22]
+X-ClientProxiedBy: lhreml749-chm.china.huawei.com (10.201.108.199) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corey Minyard <cminyard@mvista.com>
+This patch set provides more information about buffer measurement.
 
-If you have a process with less than 1000 totalpages, the calculation:
+First, it introduces the new function ima_get_current_hash_algo(), to
+obtain the algorithm used to calculate the buffer digest (patch 1).
 
-  adj = (long)p->signal->oom_score_adj;
-  ...
-  adj *= totalpages / 1000;
+Second, it changes the type of return value of ima_measure_critical_data()
+and process_buffer_measurement() from void to int, to signal to the callers
+whether or not the buffer has been measured, or just the digest has been
+calculated and written to the supplied location (patch 2).
 
-will always result in adj being zero no matter what oom_score_adj is,
-which could result in the wrong process being picked for killing.
+Lastly, it adds two new parameters to the functions above ('digest' and
+'digest_len'), so that those functions can write the buffer digest to the
+location supplied by the callers (patch 3).
 
-Fix by adding 1000 to totalpages before dividing.
+This patch set replaces the patch 'ima: Add digest, algo, measured
+parameters to ima_measure_critical_data()' in:
 
-Signed-off-by: Corey Minyard <cminyard@mvista.com>
----
-I ran across this trying to diagnose another problem where I set up a
-cgroup with a small amount of memory and couldn't get a test program to
-work right.
+https://lore.kernel.org/linux-integrity/20210625165614.2284243-1-roberto.sassu@huawei.com/
 
-I'm not sure this is quite right, to keep closer to the current behavior
-you could do:
+Changelog
 
-	if (totalpages >= 1000)
-		adj *= totalpages / 1000;
+v1:
+- add digest_len parameter to ima_measure_critical_data() and
+  process_buffer_measurement() (suggested by Lakshmi)
+- fix doc formatting issues
 
-but that would map 0-1999 to the same value.  But this at least shows
-the issue.  I can provide a test program the shows the issue, but I
-think it's pretty obvious from the code.
+Huawei Digest Lists patch set:
+- introduce ima_get_current_hash_algo() (suggested by Mimi)
+- remove algo and measured parameters from ima_measure_critical_data() and
+  process_buffer_measurement() (suggested by Mimi)
+- return an integer from ima_measure_critical_data() and
+  process_buffer_measurement() (suggested by Mimi)
+- correctly check when process_buffer_measurement() should return earlier
 
- mm/oom_kill.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Roberto Sassu (3):
+  ima: Introduce ima_get_current_hash_algo()
+  ima: Return int in the functions to measure a buffer
+  ima: Add digest and digest_len params to the functions to measure a
+    buffer
 
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index eefd3f5fde46..4ae0b6193bcd 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -233,8 +233,11 @@ long oom_badness(struct task_struct *p, unsigned long totalpages)
- 		mm_pgtables_bytes(p->mm) / PAGE_SIZE;
- 	task_unlock(p);
- 
--	/* Normalize to oom_score_adj units */
--	adj *= totalpages / 1000;
-+	/*
-+	 * Normalize to oom_score_adj units.  You should never
-+	 * multiply by zero here, or oom_score_adj will not work.
-+	 */
-+	adj *= (totalpages + 1000) / 1000;
- 	points += adj;
- 
- 	return points;
+ include/linux/ima.h                          | 23 ++++--
+ security/integrity/ima/ima.h                 | 10 +--
+ security/integrity/ima/ima_appraise.c        |  6 +-
+ security/integrity/ima/ima_asymmetric_keys.c |  6 +-
+ security/integrity/ima/ima_init.c            |  6 +-
+ security/integrity/ima/ima_main.c            | 73 ++++++++++++++------
+ security/integrity/ima/ima_queue_keys.c      | 15 ++--
+ security/selinux/ima.c                       | 11 +--
+ 8 files changed, 100 insertions(+), 50 deletions(-)
+
 -- 
 2.25.1
 
