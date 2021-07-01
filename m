@@ -2,215 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2A33B9358
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22B73B9367
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234103AbhGAOba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:31:30 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59804 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231698AbhGAOb3 (ORCPT
+        id S232841AbhGAOgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:36:44 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:19028 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231698AbhGAOgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:31:29 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161EStVv048609;
-        Thu, 1 Jul 2021 10:28:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=0dbB2p9crVKU9Dil6C/b6hHgLiPWCUpCbq3fmaFy7wY=;
- b=cAUCLoaOU5Ajmaly3/4qFMeyl/0d9Q2T7/9EPptHRrQAO58ccUY2NvKI3CmjWl8XkVVt
- +qCwT9Bo3AEfII1DeuugKvgxiDwc6SIftB83Aswrv39DC4YJlikq8/elPOoGydbQap8r
- Pw6L4f9DF2ksscgUiHsx35EcOssTnUG5734Kn5ZAVn/yTfi7HFyEvWij2d0tmafF8GbE
- EX0rbq7fHhfG3RtAm/m3K/Z+aU+0jH/mVCWmGe1EfOPp4CO4kja+RLCDe5prVv3n+fJE
- ER8j/wFMpj4fTofac5SaNBWjdjZfIVL9N0ZAr5TXIVwc8l/AUeqSq77SmL2jhaoXmLC3 jQ== 
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39hf9h8f44-1
+        Thu, 1 Jul 2021 10:36:43 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161EXA0w005722;
+        Thu, 1 Jul 2021 16:33:59 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=BhacU+lUcpiJxSRqEHPfs3juLAD8wYNzsOIExMYFlNI=;
+ b=uT4sNdWhFcCrsvUggYyxpZUa4XISOwSPRl85zFMLZGaPGo+ELFn76pSh4j8Ceho443tv
+ Nt+F0xD/qTbeTSC3mXqMKWpXsPzmn14TCVyRJbCK/h1aoWuORrBMsgXkB9JvID5CDpzo
+ 8doYEsCedyCkvfAX0Spw9Z3hwmRFsUfXFc8aoh18N5ofq3U/8179x4sntnCdM19NjvW4
+ O/6cVPnX4MGwSAwswpPzLFT0nc5ULvllF1oNWO7ZQgEPSf5oPWiEBnpfsXB6kmB6hw8W
+ J0KDpeYeW16XVvRw+AnqG9ZApGQrZv5x12Z3NE307ayj7bI8wawAGdL3fyVWMq9/xpMW 1Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 39h7yj6tm3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 10:28:56 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 161EBoEi023517;
-        Thu, 1 Jul 2021 14:28:54 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma02wdc.us.ibm.com with ESMTP id 39duve2ewd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 14:28:54 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 161ESr3F40305096
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 1 Jul 2021 14:28:53 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2AB1D78070;
-        Thu,  1 Jul 2021 14:28:53 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9C7FE7805F;
-        Thu,  1 Jul 2021 14:28:52 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.163.230])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  1 Jul 2021 14:28:52 +0000 (GMT)
-Subject: Re: [PATCH] s390/vfio-ap: do not use open locks during
- VFIO_GROUP_NOTIFY_SET_KVM notification
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        Jason Gunthorpe <jgg@nvidia.com>
-References: <20210625220758.80365-1-akrowiak@linux.ibm.com>
- <20210628222923.21a257c8.pasic@linux.ibm.com>
- <25edecce-0795-3b00-a155-bfcc8499f1be@linux.ibm.com>
- <20210701003941.685c524c.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <8b742188-d8a2-cf4e-e9de-0ca6f3d829b3@linux.ibm.com>
-Date:   Thu, 1 Jul 2021 10:28:52 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 01 Jul 2021 16:33:59 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E53D610002A;
+        Thu,  1 Jul 2021 16:33:56 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CF93F22D62D;
+        Thu,  1 Jul 2021 16:33:56 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 1 Jul 2021 16:33:56
+ +0200
+From:   Yann Gautier <yann.gautier@foss.st.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        Yann Gautier <yann.gautier@foss.st.com>,
+        <linux-mmc@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mmc: mmci: stm32: check when the voltage switch procedure should be done
+Date:   Thu, 1 Jul 2021 16:33:53 +0200
+Message-ID: <20210701143353.13188-1-yann.gautier@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210701003941.685c524c.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: T38m7f7PXam7t7_GdRiTfjnfInv8HYDw
-X-Proofpoint-ORIG-GUID: T38m7f7PXam7t7_GdRiTfjnfInv8HYDw
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-07-01_08:2021-07-01,2021-07-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 suspectscore=0 mlxscore=0 malwarescore=0 clxscore=1015
- mlxlogscore=999 adultscore=0 spamscore=0 lowpriorityscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107010088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Christophe Kerello <christophe.kerello@foss.st.com>
 
+If the card has not been power cycled, it may still be using 1.8V
+signaling. This situation is detected in mmc_sd_init_card function and
+should be handled in mmci stm32 variant.
+The host->pwr_reg variable is also correctly protected with spin locks.
 
-On 6/30/21 6:39 PM, Halil Pasic wrote:
-> On Wed, 30 Jun 2021 10:31:22 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> On 6/28/21 4:29 PM, Halil Pasic wrote:
->>> On Fri, 25 Jun 2021 18:07:58 -0400
->>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->>>
->>> What is a suitable base for this patch. I've tried the usual suspects,
->>> but none of them worked.
->> I discovered what the problem is here. The patch is based on our
->> master branch along with the two pre-requisite patches that were
->> recently reviewed and are currently being merged. The two patches
->> of which I speak are:
->> * [PATCH v6 1/2] s390/vfio-ap: clean up mdev resources when remove
->> callback invoked
->>      Message ID: <20210621155714.1198545-2-akrowiak@linux.ibm.com>
->>
->> * [PATCH v6 2/2] s390/vfio-ap: r/w lock for PQAP interception handler
->> function pointer
->>      <20210621155714.1198545-3-akrowiak@linux.ibm.com>
->>
->> I probably should have included those along with this one.
-> Either that, or state in the cover letter that those are prerequisites.
->
->>>   
->>>> The fix to resolve a lockdep splat while handling the
->>>> VFIO_GROUP_NOTIFY_SET_KVM event introduced a kvm_busy flag indicating that
->>>> the vfio_ap device driver is busy setting or unsetting the KVM pointer.
->>>> A wait queue was employed to allow functions requiring access to the KVM
->>>> pointer to wait for the kvm_busy flag to be cleared. For the duration of
->>>> the wait period, the mdev lock was unlocked then acquired again after the
->>>> kvm_busy flag was cleared. This got rid of the lockdep report, but didn't
->>>> really resolve the problem.
->>> Can you please elaborate on the last point. You mean that we can have
->>> circular locking even after 0cc00c8d4050, but instead of getting stuck in
->>> on a lock we will get stuck on wait_event_cmd()? If that is it, please
->>> state it clearly in the description, and if you can to it in the short
->>> description.
+Fixes: 94b94a93e355 ("mmc: mmci_sdmmc: Implement signal voltage callbacks")
 
-I created this patch in response to Jason G's review comments I copied
-below. He did not mention anything about getting stuck in a 
-wait_event_cmd(),
-so you may want to ask him about that. To answer your
-question, I don't see how we can get stuck in a wait_event_cmd() unless
-one of the functions that set the matrix_mdev->kvm_busy flag does not
-complete for some reason.
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
+---
+ drivers/mmc/host/mmci_stm32_sdmmc.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-You asked for me to elaborate on the last point in the preceding paragraph;
-I did so in my response to your comments/question above.
-
->>>    
->> This patch was in response to the following review comments made by Jason
->> Gunthorpe:
->>
->> * Message ID: <20210525162927.GC1002214@nvidia.com>
->>      "... the kvm_busy should be replaced by a proper rwsem,
->>       don't try to open code locks like that - it just defeats lockdep
->>       analysis".
->>
->> * Message ID: <20210527112433.GX1002214@nvidia.com>
->>      "Usually when people start open coding locks it is often
->>      because lockdep complained. Open coding a lock makes
->>      lockdep stop because the lockdep code
->>      is removed, but it doesn't fix anything. The kvm_busy
->>      should be replaced by a proper rwsem, don't try to
->>      open code locks like that - it just defeats lockdep
->>      analysis."
->>
->> I will paraphrase and include the information from Jason's
->> comments in the description.
->>
-> This does not answer my questions.
-
-See above.
-
->
-> I'm in favor of Jason's proposal, because it is much easier to
-> comprehend simple rwsem protected than a mutex + wait_queue dance.
-
-That is a matter of opinion. I have no trouble understanding
-the "mutex + wait_queue dance", but then again, I wrote the
-code, so maybe that is why.
-
->   
->
-> I think Jason was talking about open coding locks in general.
-
-That may be so, but his comments were in support of his
-statement that the  mutex + wait_queue did not resolve
-the issue reported vai the lockdep splat because it turned
-off lockdep.
-
-> I don't
-> consider it as proof of commit 0cc00c8d4050 not doing what it
-> advertised.
-
-I think I agree with this statement. Maybe I misunderstood what
-Jason meant by "open coding locks like that". Since that comment
-directly related to replacing the kvm->busy, I assumed that he
-was referring to the "mutex + wait_queue dance" as you called it.
-I probably should have probed deeper to discern exactly what
-Jason meant by "open coding locks". I took Jason at his word
-that "the kvm->busy ... just defeats lockdep analysis" because
-I don't have deep knowledge about lockdep.
-
-Even if the kvm->busy does defeat lockdep analysis, I still believe
-it fixes the problem for which commit 0cc00c8d4050 was created.
-If we don't hold the matrix_dev->lock while the kvm->lock is held
-during update of the guest's matrix, lockdep does not report a
-problem. That is proven by the tests of this patch.
-
-If commit 0cc00c8d4050 does in fact resolve the issue for which
-it was created, then there really is no need for this patch. It
-certainly would reduce the amount of change that will be required
-to integrate this patch with the "s390/vfio-ap: dynamic configuration
-support" patch series currently under review.
-
-> You can add a Suggested-by tag if you like, but you should
-> be able to tell us what is the merit of your patch.
-
-The patch removes the matrix_mdev->kvm_busy flag and the
-wait_queue. The reason for removing them was because, as
-Jason stated, "the kvm->busy ... just defeats lockdep analysis".
-
->
-> Regards,
-> Halil
->
+diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
+index 51db30acf4dc..fdaa11f92fe6 100644
+--- a/drivers/mmc/host/mmci_stm32_sdmmc.c
++++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
+@@ -479,8 +479,9 @@ static int sdmmc_post_sig_volt_switch(struct mmci_host *host,
+ 	u32 status;
+ 	int ret = 0;
+ 
+-	if (ios->signal_voltage == MMC_SIGNAL_VOLTAGE_180) {
+-		spin_lock_irqsave(&host->lock, flags);
++	spin_lock_irqsave(&host->lock, flags);
++	if (ios->signal_voltage == MMC_SIGNAL_VOLTAGE_180 &&
++	    host->pwr_reg & MCI_STM32_VSWITCHEN) {
+ 		mmci_write_pwrreg(host, host->pwr_reg | MCI_STM32_VSWITCH);
+ 		spin_unlock_irqrestore(&host->lock, flags);
+ 
+@@ -492,9 +493,11 @@ static int sdmmc_post_sig_volt_switch(struct mmci_host *host,
+ 
+ 		writel_relaxed(MCI_STM32_VSWENDC | MCI_STM32_CKSTOPC,
+ 			       host->base + MMCICLEAR);
++		spin_lock_irqsave(&host->lock, flags);
+ 		mmci_write_pwrreg(host, host->pwr_reg &
+ 				  ~(MCI_STM32_VSWITCHEN | MCI_STM32_VSWITCH));
+ 	}
++	spin_unlock_irqrestore(&host->lock, flags);
+ 
+ 	return ret;
+ }
+-- 
+2.17.1
 
