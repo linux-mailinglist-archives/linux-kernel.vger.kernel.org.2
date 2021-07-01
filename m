@@ -2,126 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7656D3B8CA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 05:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDCA43B8CA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 05:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbhGADeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 23:34:03 -0400
-Received: from mail-io1-f48.google.com ([209.85.166.48]:42612 "EHLO
-        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232364AbhGADeC (ORCPT
+        id S233727AbhGADeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 23:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233374AbhGADeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 23:34:02 -0400
-Received: by mail-io1-f48.google.com with SMTP id v3so5783236ioq.9;
-        Wed, 30 Jun 2021 20:31:32 -0700 (PDT)
+        Wed, 30 Jun 2021 23:34:08 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2F1C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 20:31:38 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso3064930pjp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 20:31:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=msZY6pO+uLvRbTqbuVyF3DQrdahNkZ8jVvJDp5dVU3s=;
+        b=DYKvQ6hZpOoZDvD8UDMBrBXvj+pxsgmW3L8DgiIrg3yjTPzheEaj2URbWltPbYnlhF
+         cMbju10ohY2XQOMER+ugw4oHnlLdwvVG1Ow1DrqtNOgJgfu4ogeqLcklLzYVttd179wQ
+         VUzghQin/AzmkWCJde+c8VruTozdzCzrHQC8s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eP6Cb6SR36f3Izzbq0TD9Y6/0eZ5UtSs7iCbORNH1ik=;
-        b=Vd5jkcFYVa62NmcfjAf9WFC/FwThR+3VvRtS3uwwzMwRgB+AjWu3brakhTu0AaM/Sg
-         oDmndtzMTxGCD45ovHTxV1EwM5YD8LLb6nCgIULzn0o001boe+Yo0gid3tyNfZmG7vAY
-         6BMJfuRGjyV5DxIzeHvMSqsuyeVlFkuA320oeU23BYzXEtcriyshY8jQJs1hKNEiG/Po
-         n8fiF2MgGd/cxFKf05LG3xx0SH7HVBWMnucTjc7BzLdZ9PfeYhKD6LyUJF/GX4zGUtKi
-         aqvV6WBFkFDxIzwriCE7YGvdYon0ah8s+eSO2Gfnn3AVSOZp+iokoF7/a8YNaXjo6J8y
-         pmEg==
-X-Gm-Message-State: AOAM533Hpcvjg1rYEPWelFeUnfeQtnipkFgUtS2Scik0XCVTV2NiDzCs
-        089njBZsnTgUMl7NXHXwzeo=
-X-Google-Smtp-Source: ABdhPJz+DBDY7WDARv2zW5IBatLkP+vwAPpscScC7O5hpYti5ftDt9FkUD8Ecr43RZugnSq2NZxrpg==
-X-Received: by 2002:a5d:88c6:: with SMTP id i6mr10501446iol.75.1625110291776;
-        Wed, 30 Jun 2021 20:31:31 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id j3sm7857406ilo.0.2021.06.30.20.31.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 20:31:31 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 03:31:30 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux-foundation.org>,
-        Ingo Molnar <mingo@elte.hu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- percpu tree
-Message-ID: <YN03Ej89koHxICKQ@google.com>
-References: <20210607183312.7dec0330@canb.auug.org.au>
- <20210701132316.01b6252a@canb.auug.org.au>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=msZY6pO+uLvRbTqbuVyF3DQrdahNkZ8jVvJDp5dVU3s=;
+        b=SW6ZnfjGGhKHH7k8b6qS8ucpIbZAkXqrzzqjuyYQ/yoTCsiqBIGX1OtaTy/1VPaGg6
+         zldQoqEgWQbP391ZxYisC5sg3GkNKkax7ewnMlOfh2BN7FKkfukAkNFvdKNId0Dv6+SE
+         5de5i4ArZeOjFCUwsEcNXPntNdVonnH1pKMUAj5Qm2kA0FqUrmOkwYgfs57//pMsqmOR
+         W8mylViNpgwS8XCKHVLTeXlJEIX+wP/fOgi/uErQrqxdo0ur6/kijCLJSnKzveBA0A7h
+         bRc7rbaPwAqk5j7iTVc026Q47377YdOdXFr9U+PmRH6/V2rL5qeS1w+LiF3wHqbieEwr
+         e74g==
+X-Gm-Message-State: AOAM53198uSV3cCjs+SFgtx2lWY8hqWn23NhSAfcTQAe1UUw9G0dYz6d
+        x2uknHRIwF9U1sQWsgMabm2PaA==
+X-Google-Smtp-Source: ABdhPJyanoqZrCB0SBzIK5zDm2qE63p7f/l1im/uldvXoZUM091XEExr7njiU/Wrt3I965MfX2PXvw==
+X-Received: by 2002:a17:902:8484:b029:101:7016:fb7b with SMTP id c4-20020a1709028484b02901017016fb7bmr34305896plo.23.1625110297157;
+        Wed, 30 Jun 2021 20:31:37 -0700 (PDT)
+Received: from localhost ([2401:fa00:95:205:9ab6:fd5:daf0:6742])
+        by smtp.gmail.com with UTF8SMTPSA id y7sm24143599pfy.153.2021.06.30.20.31.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Jun 2021 20:31:36 -0700 (PDT)
+From:   Claire Chang <tientzu@chromium.org>
+To:     konrad.wilk@oracle.com, hch@lst.de, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, Will Deacon <will@kernel.org>,
+        sstabellini@kernel.org
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org, Nicolas Boichat <drinkcat@chromium.org>,
+        Claire Chang <tientzu@chromium.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v4] swiotlb: fix implicit debugfs declarations
+Date:   Thu,  1 Jul 2021 11:31:30 +0800
+Message-Id: <20210701033130.82308-1-tientzu@chromium.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210701132316.01b6252a@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Factor out the debugfs bits from rmem_swiotlb_device_init() into a separate
+rmem_swiotlb_debugfs_init() to fix the implicit debugfs declarations.
 
-On Thu, Jul 01, 2021 at 01:23:16PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> On Mon, 7 Jun 2021 18:33:12 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Today's linux-next merge of the akpm-current tree got a conflict in:
-> > 
-> >   mm/memcontrol.c
-> > 
-> > between commit:
-> > 
-> >   0f0cace35fa6 ("mm, memcg: mark cgroup_memory_nosocket, nokmem and noswap as __ro_after_init")
-> > 
-> > from the percpu tree and commits:
-> > 
-> >   dfe14954c6e4 ("mm: memcg/slab: don't create kmalloc-cg caches with cgroup.memory=nokmem")
-> >   3fd971b13287 ("mm-memcg-slab-create-a-new-set-of-kmalloc-cg-n-caches-v5")
-> >   53270d6d0c1f ("mm-memcg-slab-create-a-new-set-of-kmalloc-cg-n-caches-v5-fix")
-> > 
-> > from the akpm-current tree.
-> > 
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> > 
-> > Andrew, you may want to look at commit
-> > 
-> >   4d5c8aedc8aa ("mm, memcg: introduce mem_cgroup_kmem_disabled()")
-> > 
-> > from the percpu tree.
-> > 
-> > -- 
-> > Cheers,
-> > Stephen Rothwell
-> > 
-> > diff --cc mm/memcontrol.c
-> > index 3c1641c67122,b9a6db6a7d4f..000000000000
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@@ -80,10 -80,10 +80,10 @@@ struct mem_cgroup *root_mem_cgroup __re
-> >   DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
-> >   
-> >   /* Socket memory accounting disabled? */
-> >  -static bool cgroup_memory_nosocket;
-> >  +static bool cgroup_memory_nosocket __ro_after_init;
-> >   
-> >   /* Kernel memory accounting disabled? */
-> > - static bool cgroup_memory_nokmem __ro_after_init;
-> >  -bool cgroup_memory_nokmem;
-> > ++bool cgroup_memory_nokmem __ro_after_init;
-> >   
-> >   /* Whether the swap controller is active */
-> >   #ifdef CONFIG_MEMCG_SWAP
-> 
-> This is now a conflict between the percpu tree and Linus' tree.
-> 
+Fixes: 461021875c50 ("swiotlb: Add restricted DMA pool initialization")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Claire Chang <tientzu@chromium.org>
+---
+ kernel/dma/swiotlb.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
-Yeah I'm aware. I'm planning on sending my PR tomorrow mentioning it. I
-also have an example merge up in percpu#for-5.14-merge for Linus.
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 0ffbaae9fba2..b7f76bca89bf 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -712,6 +712,21 @@ late_initcall(swiotlb_create_default_debugfs);
+ #endif
+ 
+ #ifdef CONFIG_DMA_RESTRICTED_POOL
++
++#ifdef CONFIG_DEBUG_FS
++static void rmem_swiotlb_debugfs_init(struct reserved_mem *rmem)
++{
++	struct io_tlb_mem *mem = rmem->priv;
++
++	mem->debugfs = debugfs_create_dir(rmem->name, debugfs_dir);
++	swiotlb_create_debugfs_files(mem);
++}
++#else
++static void rmem_swiotlb_debugfs_init(struct reserved_mem *rmem)
++{
++}
++#endif
++
+ struct page *swiotlb_alloc(struct device *dev, size_t size)
+ {
+ 	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
+@@ -766,11 +781,7 @@ static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
+ 
+ 		rmem->priv = mem;
+ 
+-		if (IS_ENABLED(CONFIG_DEBUG_FS)) {
+-			mem->debugfs =
+-				debugfs_create_dir(rmem->name, debugfs_dir);
+-			swiotlb_create_debugfs_files(mem);
+-		}
++		rmem_swiotlb_debugfs_init(rmem);
+ 	}
+ 
+ 	dev->dma_io_tlb_mem = mem;
+-- 
+2.32.0.93.g670b81a890-goog
 
-Thanks,
-Dennis
