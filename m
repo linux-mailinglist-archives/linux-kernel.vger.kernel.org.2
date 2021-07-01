@@ -2,132 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074073B8EBB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546133B8EBF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235171AbhGAITx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 04:19:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
+        id S235117AbhGAIVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 04:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234635AbhGAITw (ORCPT
+        with ESMTP id S234635AbhGAIVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 04:19:52 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25BB8C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 01:17:22 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id i17so5566084ilj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 01:17:22 -0700 (PDT)
+        Thu, 1 Jul 2021 04:21:22 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46B8C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 01:18:52 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id g3so4556166iok.12
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 01:18:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZPJEazgT8i7Ze/1+I4QL68xCucF/zfMT9D/43T7Sq7I=;
-        b=eIuw41F0BAJ8wZkYA7NmWG/a8NvDrb5h9iqkfqcjmpGkl/23FMw8J7Ddj9eVatEvys
-         AoP58ePyZW3f0WQGlVP7tZ+GTN1aMpG5o6+yWSvSyM6xCrylQ4c2APXO+83w5VAPBAam
-         D3eJF2DxiH9OAojoqbOikr6m89a2MkLHFh8SM=
+        bh=zcqmISKA385xJp8CFiTuVeDu3WrYH5PsOS49vQZ/pew=;
+        b=cOT520El7XXRvTn25OoIWz/UuqkPPkjH3NCMXTGBAJiK759W02pE6ZmxipH8ekHlOD
+         8Gd1ZOX7RHeXN4gSt6FL33Wn5c/aGHzHO0mkyQ/NF/mlB/E5rgugbbKsjah61GLchFif
+         B2WZTKNvY7CE7sF6IMsmXtD7GWjmOhTwWlJc3jy/HbvUssQgn9OP6pxN0q/FM4pJv9P3
+         z0cDiteltn9YAgcxyAfZoXoBGE2lWr50Bv81ncJh0zHz7IqUpGPmimxalaeCZsodoZQv
+         BibkjSrV8Hql4voUtxnW1kG/YNITEBEKbw2zuyQTPuFsuwHoF8HtSa/vj0RUrUzoAfEh
+         4wJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZPJEazgT8i7Ze/1+I4QL68xCucF/zfMT9D/43T7Sq7I=;
-        b=liERAVfozMQa7Rj+nNYyGGCvetLksX2m8Paj9MGjXhZFPfJzKzShueeWbqll0YA1T8
-         klB4lm3wTz1gbp7iyvJybF695ozLjM+/Vs9j9Z7swnX4H2QhwHKzQJJyuubmJznF+RlE
-         bxx41j/CmZMr8GAJlqnvAh3G7ZOgd87G2t5lHiwuKzkgokwymxN3gbARx6jc8jBT8rxk
-         oX+eAaNax0UTuqm5D2/zWcVR2zyfn4XuUKaahGx+K26f4nGMvY1Jqaqg8kYIorCw19e1
-         1DilQ1qfk8TaV8w3HyX5w9J5SskuJaqzYEVGKZI6MX+KPI52FpLRBFhtU0VnMIx+aWAx
-         TpFQ==
-X-Gm-Message-State: AOAM530S2aV1xQwI5OnaV3Apg6dEVhipBxudcymRKn47AdzzZ6PWU/Hs
-        /zp4ZLa8EgpNQAzCRwRLUcWYwI0P+184wAyH9XxrVw==
-X-Google-Smtp-Source: ABdhPJwmnKoA/8qGsvpQQRjfODUVGXnl9M4fCr7IxwXSfSMzbjrRBsW5KWu1USnvrPEASRrj8N2+BmSLssdrm+61XM8=
-X-Received: by 2002:a92:7b07:: with SMTP id w7mr29093529ilc.308.1625127441220;
- Thu, 01 Jul 2021 01:17:21 -0700 (PDT)
+        bh=zcqmISKA385xJp8CFiTuVeDu3WrYH5PsOS49vQZ/pew=;
+        b=KnHFvMkqlvfgSIot9u5GbxHq+fmZ1bXt8VKpVTI92keBTRnzMXKHbMq7X/kjmcvh5B
+         tGUJfwj7b3MQ9DF9JxgEBWHP2K2jLQ5Cto5qyHW/aR2vTX2fphhxBvz9E2PpVfIs7BHe
+         lS8GQ2/YAJ3VJKkSLGj6kvKbBfGfcVgbjRVa1+UxDCFxpszLteISmXL/+kLjD5yd+ZU9
+         HuHLnHNGUxT2JPWOwrAuhuXXoQksbFcz4k8gQX9icFV2kQsyY1R4kNtNIKQWce0QP7J8
+         zYRsq97Jor/u0bEOofNfSD3F2tzkmOPfX3balU0mrORqgzV4546ck5nZ5NFpx4TR1Dma
+         DkXw==
+X-Gm-Message-State: AOAM531eROyvAF6QEWV6jr8ZMrBBVldTLzTzUDPW0AGzgQAJeWQWizis
+        /24Yo584OD/1sAKQoSLYQVgJG5NU7Xb6atO8I4wBhg==
+X-Google-Smtp-Source: ABdhPJzmsnRMNW+KNup7I1VJI/YfR1e2GJIR0KKq4TLG+YhJixWVxDnVg2IoL06uSBTngabU9pU8RCSDCUxhnTlwheM=
+X-Received: by 2002:a02:ca4a:: with SMTP id i10mr12479094jal.141.1625127531023;
+ Thu, 01 Jul 2021 01:18:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210701065439.2527790-1-hsinyi@chromium.org> <CAGXv+5GNkqHOxv9zXoa3yLh5_FXGUARqXd82W00CBTnHS_BFPw@mail.gmail.com>
-In-Reply-To: <CAGXv+5GNkqHOxv9zXoa3yLh5_FXGUARqXd82W00CBTnHS_BFPw@mail.gmail.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Thu, 1 Jul 2021 16:16:55 +0800
-Message-ID: <CAJMQK-gsJRwBGg7DBwWbozpmj-oZ1RsETQtwarRpeFkk2qjGJQ@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: mediatek: Fix fallback behavior for bias_set_combo
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Sean Wang <sean.wang@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        zhiyong.tao@mediatek.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-gpio@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <20210202135002.4024825-1-jackmanb@google.com> <YNiadhIbJBBPeOr6@krava>
+ <CA+i-1C0DAr5ecAOV06_fqeCooic4AF=71ur63HJ6ddbj9ceDpQ@mail.gmail.com>
+ <YNspwB8ejUeRIVxt@krava> <YNtEcjYvSvk8uknO@krava> <CA+i-1C3RDT1Y=A7rAitfbrUUDXxCJeXJLw1oABBCpBubm5De6A@mail.gmail.com>
+ <YNtNMSSZh3LTp2we@krava> <YNuL442y2yn5RRdc@krava> <CA+i-1C1-7O5EYHZcDtgQaDVrRW+gEQ1WOtiNDZ19NKXUQ_ZLtw@mail.gmail.com>
+ <YNxmwZGtnqiXGnF0@krava>
+In-Reply-To: <YNxmwZGtnqiXGnF0@krava>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Thu, 1 Jul 2021 10:18:39 +0200
+Message-ID: <CA+i-1C2-MGe0BziQc8t4ry3mj45W0ULVrGsU+uQw9952tFZ1nA@mail.gmail.com>
+Subject: Re: [BUG soft lockup] Re: [PATCH bpf-next v3] bpf: Propagate stack
+ bounds to registers in atomics w/ BPF_FETCH
+To:     Jiri Olsa <jolsa@redhat.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 3:21 PM Chen-Yu Tsai <wenst@chromium.org> wrote:
+On Wed, 30 Jun 2021 at 14:42, Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> On Thu, Jul 1, 2021 at 2:55 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> On Wed, Jun 30, 2021 at 12:34:58PM +0200, Brendan Jackman wrote:
+> > On Tue, 29 Jun 2021 at 23:09, Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > On Tue, Jun 29, 2021 at 06:41:24PM +0200, Jiri Olsa wrote:
+> > > > On Tue, Jun 29, 2021 at 06:25:33PM +0200, Brendan Jackman wrote:
+> > > > > On Tue, 29 Jun 2021 at 18:04, Jiri Olsa <jolsa@redhat.com> wrote:
+> > > > > > On Tue, Jun 29, 2021 at 04:10:12PM +0200, Jiri Olsa wrote:
+> > > > > > > On Mon, Jun 28, 2021 at 11:21:42AM +0200, Brendan Jackman wrote:
 > >
-> > Some pin doesn't support PUPD register, if it fails and fallbacks with
-> > bias_set_combo case, it will call mtk_pinconf_bias_set_pupd_r1_r0() to
-> > modify the PUPD pin again.
+> > > > > > > > atomics in .imm). Any idea if this test was ever passing on PowerPC?
+> > > > > > > >
+> > > > > > >
+> > > > > > > hum, I guess not.. will check
+> > > > > >
+> > > > > > nope, it locks up the same:
+> > > > >
+> > > > > Do you mean it locks up at commit 91c960b0056 too?
 > >
-> > Since the general bias set are either PU/PD or PULLSEL/PULLEN, try
-> > bias_set or bias_set_rev1 for this fallback case.
+> > Sorry I was being stupid here - the test didn't exist at this commit
 > >
-> > Fixes: 81bd1579b43e ("pinctrl: mediatek: Fix fallback call path")
-> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> > ---
-> >  drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > > > I tried this one:
+> > > >   37086bfdc737 bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH
+> > > >
+> > > > I will check also 91c960b0056, but I think it's the new test issue
 > >
-> > diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-> > index 5b3b048725cc8..0cdff487836fa 100644
-> > --- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-> > +++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-> > @@ -926,9 +926,12 @@ int mtk_pinconf_adv_pull_set(struct mtk_pinctrl *hw,
-> >                         if (err)
-> >                                 return err;
-> >                 } else if (hw->soc->bias_set_combo) {
-> > -                       err = hw->soc->bias_set_combo(hw, desc, pullup, arg);
-> > -                       if (err)
-> > -                               return err;
-> > +                       err = mtk_pinconf_bias_set_rev1(hw, desc, pullup);
-> > +                       if (err) {
-> > +                               err = mtk_pinconf_bias_set(hw, desc, pullup);
-> > +                               if (err)
-> > +                                       return err;
+> > So yeah hard to say whether this was broken on PowerPC all along. How
+> > hard is it for me to get set up to reproduce the failure? Is there a
+> > rootfs I can download, and some instructions for running a PowerPC
+> > QEMU VM? If so if you can also share your config and I'll take a look.
+> >
+> > If it's not as simple as that, I'll stare at the code for a while and
+> > see if anything jumps out.
+> >
 >
-> You don't need to nest this. If mtk_pinconf_bias_set_rev1() succeeds,
-> err would be 0 and the following if blocks would all be skipped. So:
->
-> err = mtk_pinconf_bias_set_rev1();
-> if (err)
->         err = mtk_pinconf_bias_set();
-> if (err)
->         return err;
->
-> Moreover, maybe you should rework the test for hw->soc->bias_set_combo,
-> as it is no longer relevant to the code within the if block?
->
+> I have latest fedora ppc server and compile/install latest bpf-next tree
+> I think it will be reproduced also on vm, I attached my config
 
-Thanks for the comments. It's addressed in v2.
+OK, getting set up to boot a PowerPC QEMU isn't practical here unless
+someone's got commands I can copy-paste (suspect it will need .config
+hacking too). Looks like you need to build a proper bootloader, and
+boot an installer disk.
 
-We can try PU/PD and PULLSEL/PULLEN even for pins that don't support
-them (eg. mt6797). They will return -ENOTSUPP in
-mtk_hw_pin_field_lookup() so won't break current testing logic.
+Looked at the code for a bit but nothing jumped out. It seems like the
+verifier is seeing a BPF_ADD | BPF_FETCH, which means it doesn't
+detect an infinite loop, but then we lose the BPF_FETCH flag somewhere
+between do_check in verifier.c and bpf_jit_build_body in
+bpf_jit_comp64.c. That would explain why we don't get the "eBPF filter
+atomic op code %02x (@%d) unsupported", and would also explain the
+lockup because a normal atomic add without fetch would leave BPF R1
+unchanged.
 
->
-> ChenYu
->
-> > +                       }
-> >                 } else {
-> >                         return -ENOTSUPP;
-> >                 }
-> > --
-> > 2.32.0.93.g670b81a890-goog
-> >
-> >
-> > _______________________________________________
-> > Linux-mediatek mailing list
-> > Linux-mediatek@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-mediatek
+We should be able to confirm that theory by disassembling the JITted
+code that gets hexdumped by bpf_jit_dump when bpf_jit_enable is set to
+2... at least for PowerPC 32-bit... maybe you could paste those lines
+into the 64-bit version too? Here's some notes I made for
+disassembling the hexdump on x86, I guess you'd just need to change
+the objdump flags:
+
+-- 
+
+- Enable console JIT output:
+```shell
+echo 2 > /proc/sys/net/core/bpf_jit_enable
+```
+- Load & run the program of interest.
+- Copy the hex code from the kernel console to `/tmp/jit.txt`. Here's what a
+short program looks like. This includes a line of context - don't paste the
+`flen=` line.
+```
+[ 79.381020] flen=8 proglen=54 pass=4 image=000000001af6f390
+from=test_verifier pid=258
+[ 79.389568] JIT code: 00000000: 0f 1f 44 00 00 66 90 55 48 89 e5 48 81 ec 08 00
+[ 79.397411] JIT code: 00000010: 00 00 48 c7 45 f8 64 00 00 00 bf 04 00 00 00 48
+[ 79.405965] JIT code: 00000020: f7 df f0 48 29 7d f8 8b 45 f8 48 83 f8 60 74 02
+[ 79.414719] JIT code: 00000030: c9 c3 31 c0 eb fa
+```
+- This incantation will split out and decode the hex, then disassemble the
+result:
+```shell
+cat /tmp/jit.txt | cut -d: -f2- | xxd -r >/tmp/obj && objdump -D -b
+binary -m i386:x86-64 /tmp/obj
+```
+
+--
+
+Sandipan, Naveen, do you know of anything in the PowerPC code that
+might be leading us to drop the BPF_FETCH flag from the atomic
+instruction in tools/testing/selftests/bpf/verifier/atomic_bounds.c?
