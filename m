@@ -2,133 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793433B9488
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993373B948B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232413AbhGAQMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 12:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56048 "EHLO
+        id S232477AbhGAQQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 12:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231698AbhGAQMl (ORCPT
+        with ESMTP id S229664AbhGAQQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 12:12:41 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D6FC061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 09:10:11 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id df12so9202911edb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 09:10:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=KJHVWYvb3k7oZOehoarqx2Vy0pWj8RrFR/FEJGc4l1A=;
-        b=dUncOJ8GCTdzk0LJjO/SqR55/4b3pByJWB18EPR8UlLceTqgSE01uQ5WsX/y7qUkHj
-         CgG8dJ5PoxRfgcm1hG6WLhHi+sk1Z9GbtjPx+Pq+2nWEdnwADPzQspu9Ax/XDUbncdeI
-         jQo5XD4rcyrWSwhxW1q3b56R7Ig7fTBY/9nmPXgDNERZ2dBZ3UWwf9mB5MKuVfgbVuYn
-         znArPd2qGb54QfJ/ngXaBoEdd/PmsGGudQ5FFIYFvAoP9A9c+2TKXR7DJfYzj1NFR4Og
-         FVxITFHWND/4k6Zl7qxEambeQzsUMtxfuSgImRKEFS9NjvE1KpOJK+h1nad8C8cR9pOQ
-         3OHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KJHVWYvb3k7oZOehoarqx2Vy0pWj8RrFR/FEJGc4l1A=;
-        b=Bwz4oBxkLjGMi2flaBYJC84VBZRk52nfyApEW1nQyFFcluOVs5+pW9zlIqJieU2jcO
-         7+D9b3fCeAhU12qOyMo7xZpWeD5k+rd9dgejb7ONpgEuov1bJqeYAk0eIMOMUacP1rfg
-         5oFqpeIsapYhrqZ1V7cZ1IpoiCzSkUIFVJJ+bbCjkDREQtNdu3PnCZ2zBgyO/l5LzpPO
-         AMrZOqhpraw32GLMPqhxPUW2g5CQIWp1BRvdzEfJN6XMxisYvpuENawNpK1kTSw3+xmm
-         OSxipgCy1zRYqje86xNXz7qORooGnM9ZCLJVIau2idtkBODpoE+25eVoPHvaiUFPeDLj
-         5fjA==
-X-Gm-Message-State: AOAM532ZEZDZhFvqyHQeLYTStg18Apq3kdcqwoJtCuAYvpsh/sqICgaT
-        OHwYaw3vMx/XSWoszvr/qDQ=
-X-Google-Smtp-Source: ABdhPJyafyBWNMS6rfxXY8dHPzcvOaB0CVWij73xTuOjVb2ljHBwMYB5qE1/P3i+58ibozSQ2j+i5w==
-X-Received: by 2002:a05:6402:35cf:: with SMTP id z15mr817962edc.208.1625155809777;
-        Thu, 01 Jul 2021 09:10:09 -0700 (PDT)
-Received: from linux.local (host-80-181-152-252.retail.telecomitalia.it. [80.181.152.252])
-        by smtp.gmail.com with ESMTPSA id yc11sm87424ejb.109.2021.07.01.09.10.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 09:10:09 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Laight <David.Laight@aculab.com>
-Subject: Re: [PATCH] staging: rtl8188eu: Replace a custom function with crc32_le()
-Date:   Thu, 01 Jul 2021 18:10:08 +0200
-Message-ID: <1769059.L4xhdxBWhX@linux.local>
-In-Reply-To: <190cf86a4b8a40d2b672327e26cceace@AcuMS.aculab.com>
-References: <20210701133809.26534-1-fmdefrancesco@gmail.com> <2058378.BL2Rai63ie@linux.local> <190cf86a4b8a40d2b672327e26cceace@AcuMS.aculab.com>
+        Thu, 1 Jul 2021 12:16:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AD6C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 09:13:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SDYozNhStxAiY5qNPydI3RWJmmOM1sqq31q5Qa3cOzY=; b=Tl/in+5MjOSyzhrg3caYBLA1QJ
+        pXqrzT+tleAKq2Y4y7XL4dVmnkVIScDKePPTW3vdoRJdHPHjJb769SAKleZLc4wW7yamWj+4NQA80
+        DVWwjfIyCmLoFQ11nAAjl+jeLZZw6qV8y6bhUcZqeAKmSfhMDOMQYRl7Q/IBk4yJMdCGP3L7SiAf2
+        KWbZJYTXEvICDdBMBas+KnibM/3KKTuAH4qgZET5MoqFBiZBtvA3Bph5L83/fPTVOCZ2I6VNMnxSN
+        4zkKnNwjjiEN9fAFZ3355o167BAz0K69PgoriDeblma8xsO5vi7dXgAM/LXaTC/PcQ4pxwq5Kyz7D
+        aOy75pvA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lyzII-006kbX-TP; Thu, 01 Jul 2021 16:12:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E69E3300067;
+        Thu,  1 Jul 2021 18:12:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C481920198B95; Thu,  1 Jul 2021 18:12:00 +0200 (CEST)
+Date:   Thu, 1 Jul 2021 18:12:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        matthias.bgg@gmail.com, Minchan Kim <minchan@google.com>,
+        Tim Murray <timmurray@google.com>,
+        YT Chang <yt.chang@mediatek.com>,
+        Wenju Xu =?utf-8?B?KOiuuOaWh+S4vik=?= <wenju.xu@mediatek.com>,
+        Jonathan JMChen =?utf-8?B?KOmZs+WutuaYjik=?= 
+        <jonathan.jmchen@mediatek.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        kernel-team <kernel-team@android.com>,
+        SH Chen <show-hong.chen@mediatek.com>
+Subject: Re: [PATCH v2 1/1] psi: stop relying on timer_pending for poll_work
+ rescheduling
+Message-ID: <YN3pUNgpBjn42f8s@hirez.programming.kicks-ass.net>
+References: <20210630205151.137001-1-surenb@google.com>
+ <YN2DsLlE+WtxK6K9@hirez.programming.kicks-ass.net>
+ <CAJuCfpF=Ty4ruiKQQweVoF6Ojx8P8LxvUBxp1TmMFo2W1xNWfg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpF=Ty4ruiKQQweVoF6Ojx8P8LxvUBxp1TmMFo2W1xNWfg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, July 1, 2021 5:54:49 PM CEST David Laight wrote:
-> From: Fabio M. De Francesco
+On Thu, Jul 01, 2021 at 09:09:25AM -0700, Suren Baghdasaryan wrote:
+> On Thu, Jul 1, 2021 at 1:59 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Wed, Jun 30, 2021 at 01:51:51PM -0700, Suren Baghdasaryan wrote:
+> > > +     /* cmpxchg should be called even when !force to set poll_scheduled */
+> > > +     if (atomic_cmpxchg(&group->poll_scheduled, 0, 1) && !force)
+> > >               return;
+> >
+> > Why is that a cmpxchg() ?
 > 
-> > Sent: 01 July 2021 16:24
-> > 
-> > On Thursday, July 1, 2021 4:52:08 PM CEST David Laight wrote:
-> > 
-> > > From: Fabio M. De Francesco
-> > >
-> > >
-> > >
-> > > > Sent: 01 July 2021 14:38
-> > > >
-> > > >
-> > > >
-> > > > Use crc32_le in place of the custom getcrc32. This change makes GCC
-> > > > to warn about incorrect castings to the restricted type __le32, but
-> > > > they can be safely ignored because crc32_le calculates bitwise
-> > > > little-endian Ethernet AUTODIN II CRC32.
-> > >
-> > >
-> > >
-> > > ...
-> > >
-> > >
-> > >
-> > > > -					*((__le32 *)crc) =
-> > 
-> > getcrc32(payload, length);/* modified by Amy*/
-> > 
-> > > > +					*((__le32 *)crc) =
-> > 
-> > ~crc32_le(~0, payload, length);
-> > 
-> > >
-> > >
-> > > Haven't we been round this before?
-> > >
-> > >
-> > 
-> > No, I don't think so. At least, not you and I.
-> > 
-> 
-> 
-> That was rt1872 this is rtl8188 but I think it is the same crap.
->
-Perhaps it is the same crap... However, the patch is in accordance to one of 
-the two solution that Al Viro wrote about.
+> We want to set poll_scheduled and proceed with rescheduling the timer
+> unless it's already scheduled, so cmpxchg helps us to make that
+> decision atomically. Or did I misunderstand your question?
 
-I think I'll leave the patch as is and wait for the final review by Greg K-H.
-
-Thanks,
-
-Fabio
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 
-1PT, UK
-> Registration No: 1397386 (Wales)
-
-
-
-
+What's wrong with: atomic_xchg(&group->poll_scheduled, 1) ?
