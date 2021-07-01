@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B883B8DD1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 08:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7E23B8DD2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 08:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234342AbhGAGmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 02:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231962AbhGAGmQ (ORCPT
+        id S234349AbhGAGpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 02:45:04 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48120 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231962AbhGAGpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 02:42:16 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE24C061756;
-        Wed, 30 Jun 2021 23:39:46 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 1D10822205;
-        Thu,  1 Jul 2021 08:39:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1625121582;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Thu, 1 Jul 2021 02:45:01 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 070441FF6E;
+        Thu,  1 Jul 2021 06:42:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625121750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kUQLL6Y7TeJ+8tLLPFCF8HC2GZgPhSFHdHVkUkxeCUY=;
-        b=Zr1qZiN2J8wIoXFgX0jLOhT8V2L7JefaDIGmnzs2YO1Gy7MyfPn85MP2ENIDUPhtsaIIyU
-        FGTKJktpDu1wg4aGgMJ4yM0GfaFiCMGqYiVvwR4bQip6yzHxzrKgomZz5oYxVyBANg2Iqb
-        wgBNnm8nIFPaJAvKXlM4Z3xQji+SYcw=
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 01 Jul 2021 08:39:40 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Fu Wei <tekkamanninja@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
-        Huan Feng <huan.feng@starfivetech.com>
-Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO
- driver
-In-Reply-To: <20210701002037.912625-3-drew@beagleboard.org>
-References: <20210701002037.912625-1-drew@beagleboard.org>
- <20210701002037.912625-3-drew@beagleboard.org>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <8c59105d32a9936f8806501ecd20e044@walle.cc>
-X-Sender: michael@walle.cc
+        bh=KtelaqLMZmtclzBeoimXKnTe1oTnMdqDN5TlnIFlVW8=;
+        b=KdFHoZGCMe9HXSWQ+Ueu7EeeCClOVfmRhLGBZHxmfC40n2lQs6+dzQTvrxXcZWFEqRUaW6
+        I/3tr9ExwW7Ys5VD7SXWfmKyyz5bcfSg7FLFMBzPkfs+SiK+D7IAyWIr3JRHo1qGm2hJaJ
+        QDjDZd2xrniL8Ag+DhAeOMev6zb8Snk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625121750;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KtelaqLMZmtclzBeoimXKnTe1oTnMdqDN5TlnIFlVW8=;
+        b=Eu5QeTwGswGHbPSQl3rgEb1fKisroKw3focJPikqP4vuOUrUrtaKm9ACOg8Og+qr32hZVU
+        dxjO/2xHJoJXQyCw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id DB897A3B83;
+        Thu,  1 Jul 2021 06:42:29 +0000 (UTC)
+Date:   Thu, 01 Jul 2021 08:42:29 +0200
+Message-ID: <s5hmtr6ilgq.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Andy Chi <andy.chi@canonical.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Kailang Yang <kailang@realtek.com>,
+        Jeremy Szu <jeremy.szu@canonical.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Sami Loone <sami@loone.fi>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook 450 G8
+In-Reply-To: <20210629082902.408881-1-andy.chi@canonical.com>
+References: <20210629082902.408881-1-andy.chi@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Drew,
-
-Am 2021-07-01 02:20, schrieb Drew Fustini:
-> Add GPIO driver for the StarFive JH7100 SoC [1] used on the
-> BeagleV Starlight JH7100 board [2].
+On Tue, 29 Jun 2021 10:28:57 +0200,
+Andy Chi wrote:
 > 
-> [1] https://github.com/starfive-tech/beaglev_doc/
-> [2] https://github.com/beagleboard/beaglev-starlight
+> The HP ProBook 450 G8 using ALC236 codec which using 0x02 to
+> control mute LED and 0x01 to control micmute LED.
+> Therefore, add a quirk to make it works.
 > 
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> Signed-off-by: Andy Chi <andy.chi@canonical.com>
 
-Could this driver use GPIO_REGMAP and REGMAP_IRQ? See
-drivers/gpio/gpio-sl28cpld.c for an example.
+The patch series (at least the patch 2) doesn't seem cleanly
+applicable via git-am.  Could you check your MUA setup?
 
--michael
+
+thanks,
+
+Takashi
