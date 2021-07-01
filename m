@@ -2,171 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5023B8D84
+	by mail.lfdr.de (Postfix) with ESMTP id B6CFE3B8D85
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 07:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234104AbhGAFzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 01:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
+        id S234236AbhGAF4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 01:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbhGAFzr (ORCPT
+        with ESMTP id S229777AbhGAF4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 01:55:47 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B74C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 22:53:16 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id k10so9564369lfv.13
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 22:53:16 -0700 (PDT)
+        Thu, 1 Jul 2021 01:56:07 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BD3C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 22:53:36 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id a7so5137787pga.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 22:53:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nTQU7wEFq6JVSvSTnTKC7ide9Twk5SOoZt3/8VCj47g=;
-        b=Zr+6zTRsDmGZAuTZgQ/HaZ1YLyqlzYuLKGv6ZwnVJr60ilZ+fOSmvkTum5b76Tm0Wo
-         FfZVraNlLQERuIEPTZVNRUNxaK5jUlh60YPSv+bKw5rL3FdwUkCwla+slBSoeNvrDJaG
-         fgiU7G5/Kb6z+bjFW5CBFTcZMTgvOQHpC6qeGYjXqcQjC3wv/1D1RJFJjKNGJhoNHg2s
-         miGwSnyyTkP5/FShOITqeNffihR1p88tzp4udypF8dxqa4eeIuD9n+GMo6H1QfKHRWZ5
-         L3I02TzE3jKO+alRfPHN1BkV+nTUW0/fjGVwOL85K1BipfLLlU9kF7F670PgidnYxCts
-         ePXQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nnc8SGC3tFxZ59O88HilSk7TnH2ERKA2KVLoI2ZMWOw=;
+        b=dEGPgMpevdPfdKdTQcztcFf/wvUQ/HKxhFOdxEbD76FhCxUvIakbx/PteHv83AweS4
+         1xiVaHVLDzCrH7UtHFruOC+ZXfqoh7R3OCwIEhe4hKs0bhVPo1u0Pj8KXWjpZPEu/NK0
+         2Kc01t/xtDnsrOTVKDf7FKqkMhEJhLti7Dpo090Z3HtsIg+6izjwtbLotJswGJw/My9K
+         TmcvdLradB3cg2XWlYO86+qyQCHWjuM1+mw3T0+bxmVS0rV4euvFmTMQgp4fEePkGFoe
+         A6WDo8P8JrklN/mSkcO6l4qiVNZ22+SwlRKvXujf8SdYxzrzkEHPVFkQnlCgk9kJYhYR
+         lG0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nTQU7wEFq6JVSvSTnTKC7ide9Twk5SOoZt3/8VCj47g=;
-        b=ExSYijaNbcXTZGgHvRlzFnABu62pB42lVyZt3BiRhJK20rT5yYdjjVmZBViKF1wZ4y
-         iumT9Zvk3Zhu7AQrz/zzqJ166Yss6FRBtKn5btM0vWcD4CAcIaT+ECtYEx3Dt7nssWKx
-         4oEo52wSDPMifMVCCFzz1lCH1htyTCxrQh0J3b0/fLzZLj8CrBanJ9QdQwOhhzjBaHwJ
-         W3dc7CWgmRNVG9/6vUrSxCDhVaPr9Dl6FL4SHOPGjOcMWhUNEzHT16VDPdfLA5/mnQ7f
-         EXBAxnq+7oxwB90PSnBwfC95tEcDyLoPVedK5LpgBvrCIDUbdmupS4EXX5n/shNY8pac
-         NK4Q==
-X-Gm-Message-State: AOAM531dLDd/zCi9LH2D5+Kn4+rDt55SHpyZieC1RsR/2eAKZWxAz+tr
-        fXBowM8BQb6F0ncw8hhro9+obATt5r5Qh1le2gU=
-X-Google-Smtp-Source: ABdhPJz7BhP5K9G0zeAIH4CU8KZ0/vKDwBWFwVLt3Ay7aSmqDTW4JhuZckbx04fBH9geMOrb2AtJlgTi4QZsZ1Yq+yU=
-X-Received: by 2002:a05:6512:32c9:: with SMTP id f9mr25914900lfg.638.1625118795090;
- Wed, 30 Jun 2021 22:53:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nnc8SGC3tFxZ59O88HilSk7TnH2ERKA2KVLoI2ZMWOw=;
+        b=sAlGO5b7mfqb9Us2sEYzF6WpVrpuxJWJPvMn+4TeB8u3SIYYSBOESA098soM1vj7Qi
+         e3uBRMChk1/gJZP90Bds5EjkU0Q1eZlzcuRzDY6MPpIVZ41pMzOZf71pJVyvXkv71svu
+         nukRhpSUg80cyGZ3y9VuasaZNPwdjqkgssv/hDVWvo6n3ZhA/JabuDJW7GTqsF0SV/o3
+         8CXId2bMQrghhIdeQPGnoeIXZiuxznAh1aoZee6BWipWbrbofmYX9FyHfKpS2Zef4cky
+         tXr59vFMpSi58qyHjBcw1IqvS7saqSupK4X4XmO6jXOh+O4KAgY7EOKLrG6YfMB8fyh2
+         4NLw==
+X-Gm-Message-State: AOAM532nsOukMlll2HalTwxD/7CeNhT2LwsyQzIHhwBiTz3W++HVq0xT
+        KDFNwbvfp5paWm417il+THs058ggXXU=
+X-Google-Smtp-Source: ABdhPJwqtWtNhuR8Sfp+40nYDz5VlMjLAYjyD8rGd/YwtSvin7ysMx3VEBB5IJJ+MVH6Lno99pkg2w==
+X-Received: by 2002:a05:6a00:1496:b029:308:29bc:6d4d with SMTP id v22-20020a056a001496b029030829bc6d4dmr37478652pfu.14.1625118815690;
+        Wed, 30 Jun 2021 22:53:35 -0700 (PDT)
+Received: from bobo.ibm.com (220-244-87-52.tpgi.com.au. [220.244.87.52])
+        by smtp.gmail.com with ESMTPSA id 20sm24005661pfi.170.2021.06.30.22.53.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 22:53:34 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Subject: [PATCH] nohz: nohz idle balancing per node
+Date:   Thu,  1 Jul 2021 15:53:23 +1000
+Message-Id: <20210701055323.2199175-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-References: <1625111646-3955-1-git-send-email-u0084500@gmail.com> <CAFRkauCNf6fP8zAz+0gY_Vzb_wCtVyYqLjw8s1T+t2s=bR0RQw@mail.gmail.com>
-In-Reply-To: <CAFRkauCNf6fP8zAz+0gY_Vzb_wCtVyYqLjw8s1T+t2s=bR0RQw@mail.gmail.com>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Thu, 1 Jul 2021 13:53:03 +0800
-Message-ID: <CADiBU3_dCNvZRwewiztB0UGFvDz3g5sw-q+95sg9akqte1YJsA@mail.gmail.com>
-Subject: Re: [PATCH] regulator: rt5033: Use linear ranges to map all voltage selection
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ChiYuan Huang <cy_huang@richtek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Axel Lin <axel.lin@ingics.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=881=E6=97=A5 =
-=E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8812:41=E5=AF=AB=E9=81=93=EF=BC=9A
->
->
->
-> cy_huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=881=E6=97=A5=
- =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8811:54=E5=AF=AB=E9=81=93=EF=BC=9A
->>
->> From: ChiYuan Huang <cy_huang@richtek.com>
->>
->> Instead of linear mapping, Use linear range to map all voltage selection=
-.
->>
->> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
->> ---
->> Even though commit 6549c46af855 ("regulator: rt5033: Fix n_voltages sett=
-ings for BUCK and LDO")
->> can fix the linear mapping to the correct min/max voltage
->> But there're still non-step ranges for the reserved value.
->>
->> To use the linear range can fix it for mapping all voltage selection.
->> ---
->>  drivers/regulator/rt5033-regulator.c | 23 +++++++++++++++--------
->>  1 file changed, 15 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/regulator/rt5033-regulator.c b/drivers/regulator/rt=
-5033-regulator.c
->> index 0e73116..2ff607c 100644
->> --- a/drivers/regulator/rt5033-regulator.c
->> +++ b/drivers/regulator/rt5033-regulator.c
->> @@ -13,6 +13,16 @@
->>  #include <linux/mfd/rt5033-private.h>
->>  #include <linux/regulator/of_regulator.h>
->>
->> +static const struct linear_range rt5033_buck_ranges[] =3D {
->> +       REGULATOR_LINEAR_RANGE(1000000, 0, 20, 100000),
->> +       REGULATOR_LINEAR_RANGE(3000000, 21, 31, 0),
->> +};
->> +
->> +static const struct linear_range rt5033_ldo_ranges[] =3D {
->> +       REGULATOR_LINEAR_RANGE(1200000, 0, 18, 100000),
->> +       REGULATOR_LINEAR_RANGE(3000000, 19, 31, 0),
->> +};
->> +
->>  static const struct regulator_ops rt5033_safe_ldo_ops =3D {
->>         .is_enabled             =3D regulator_is_enabled_regmap,
->>         .enable                 =3D regulator_enable_regmap,
->> @@ -24,8 +34,7 @@ static const struct regulator_ops rt5033_buck_ops =3D =
-{
->>         .is_enabled             =3D regulator_is_enabled_regmap,
->>         .enable                 =3D regulator_enable_regmap,
->>         .disable                =3D regulator_disable_regmap,
->> -       .list_voltage           =3D regulator_list_voltage_linear,
->> -       .map_voltage            =3D regulator_map_voltage_linear,
->> +       .list_voltage           =3D regulator_list_voltage_linear_range,
->>         .get_voltage_sel        =3D regulator_get_voltage_sel_regmap,
->>         .set_voltage_sel        =3D regulator_set_voltage_sel_regmap,
->>  };
->> @@ -39,9 +48,8 @@ static const struct regulator_desc rt5033_supported_re=
-gulators[] =3D {
->>                 .ops            =3D &rt5033_buck_ops,
->>                 .type           =3D REGULATOR_VOLTAGE,
->>                 .owner          =3D THIS_MODULE,
->> -               .n_voltages     =3D RT5033_REGULATOR_BUCK_VOLTAGE_STEP_N=
-UM,
->> -               .min_uV         =3D RT5033_REGULATOR_BUCK_VOLTAGE_MIN,
->> -               .uV_step        =3D RT5033_REGULATOR_BUCK_VOLTAGE_STEP,
->> +               .linear_ranges  =3D rt5033_buck_ranges,
->> +               .n_linear_ranges =3D ARRAY_SIZE(rt5033_buck_ranges),
->>
->
-> If you want to use linear range here, you need to change RT5033_REGULATOR=
-_BUCK_VOLTAGE_STEP_NUM back to 32
-> rather than delete the .n_voltages setting.
+Currently a single nohz idle CPU is designated to perform balancing on
+behalf of all other nohz idle CPUs in the system. Implement a per node
+nohz balancer to minimize cross-node memory accesses and runqueue lock
+acquisitions.
 
-Sorry, I really forget the N_VOLTAGES.
->
-> I'm fifty-fifty about the change because I don't see any benefit with con=
-verting to linear range (even though in theory it's correct).
-> The voltage of all entries in the second linear range is the *same* as th=
-e latest selector of the first linear range.
-> When the regulator core to choose the best selector, it will always selec=
-t the latest selector of the first linear range if it meets the requested r=
-ange anyway.
-> (Because the entries in the second linear range are not *better*, it's ju=
-st the same.)
->
-> If the initial version is this driver is using linear range then it's fin=
-e.
-> But given the initial version is using linear so when I fix the n_voltage=
-s setting I decide to not change it to linear range.
-> This makes it easier to fix older versions if necessary.
-> (I'm not sure if linear range is available in some old kernel versions, t=
-he initial version of this driver was committed in 2014).
->
->
-From the regulator register in probe, it will get the current voltage
-from the IC.
-If the vout sel is not is over N_VOLTAGES, it will return the error number.
+On a 4 node system, this improves performance by 9.3% on a 'pgbench -N'
+with 32 clients/jobs (which is about where throughput maxes out due to
+IO and contention in postgres).
 
-But as I think it's the side effect to change the vout step num.
-To use the linear range is just to guarantee all vout sel range are include=
-d.
+Performance consistency and drop-off after peak is much improved:
 
-That's my initial thoughts.
-> Regards,
-> Axel
->
+https://user-images.githubusercontent.com/19833002/124070985-0e923a80-da82-11eb-81c8-6788be27dfdb.png
+
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+---
+ kernel/sched/core.c |  3 ++
+ kernel/sched/fair.c | 90 +++++++++++++++++++++++++++++++--------------
+ 2 files changed, 65 insertions(+), 28 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index cf16f8fda9a6..52681f11e98c 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9067,6 +9067,9 @@ void __init sched_init(void)
+ 	 */
+ 	init_idle(current, smp_processor_id());
+ 
++	/* Must run before init_sched_fair_class(), which tests housekeeping */
++	housekeeping_init();
++
+ 	calc_load_update = jiffies + LOAD_FREQ;
+ 
+ #ifdef CONFIG_SMP
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index fb469b26b00a..832f8673bba1 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5722,13 +5722,27 @@ DEFINE_PER_CPU(cpumask_var_t, select_idle_mask);
+ 
+ #ifdef CONFIG_NO_HZ_COMMON
+ 
+-static struct {
++struct nohz {
+ 	cpumask_var_t idle_cpus_mask;
+ 	atomic_t nr_cpus;
+ 	int has_blocked;		/* Idle CPUS has blocked load */
+ 	unsigned long next_balance;     /* in jiffy units */
+ 	unsigned long next_blocked;	/* Next update of blocked load in jiffies */
+-} nohz ____cacheline_aligned;
++} ____cacheline_aligned;
++
++static struct nohz **nohz_nodes __ro_after_init;
++
++static struct nohz *get_nohz(void)
++{
++#ifdef CONFIG_CPU_ISOLATION
++	/*
++	 * May not have a house keeping CPU per node, do global idle balancing.
++	 */
++	if (static_branch_unlikely(&housekeeping_overridden))
++		return nohz_nodes[0];
++#endif
++	return nohz_nodes[numa_node_id()];
++}
+ 
+ #endif /* CONFIG_NO_HZ_COMMON */
+ 
+@@ -10217,7 +10231,7 @@ static inline int find_new_ilb(void)
+ {
+ 	int ilb;
+ 
+-	for_each_cpu_and(ilb, nohz.idle_cpus_mask,
++	for_each_cpu_and(ilb, get_nohz()->idle_cpus_mask,
+ 			      housekeeping_cpumask(HK_FLAG_MISC)) {
+ 
+ 		if (ilb == smp_processor_id())
+@@ -10243,7 +10257,7 @@ static void kick_ilb(unsigned int flags)
+ 	 * not if we only update stats.
+ 	 */
+ 	if (flags & NOHZ_BALANCE_KICK)
+-		nohz.next_balance = jiffies+1;
++		get_nohz()->next_balance = jiffies+1;
+ 
+ 	ilb_cpu = find_new_ilb();
+ 
+@@ -10291,14 +10305,14 @@ static void nohz_balancer_kick(struct rq *rq)
+ 	 * None are in tickless mode and hence no need for NOHZ idle load
+ 	 * balancing.
+ 	 */
+-	if (likely(!atomic_read(&nohz.nr_cpus)))
++	if (likely(!atomic_read(&get_nohz()->nr_cpus)))
+ 		return;
+ 
+-	if (READ_ONCE(nohz.has_blocked) &&
+-	    time_after(now, READ_ONCE(nohz.next_blocked)))
++	if (READ_ONCE(get_nohz()->has_blocked) &&
++	    time_after(now, READ_ONCE(get_nohz()->next_blocked)))
+ 		flags = NOHZ_STATS_KICK;
+ 
+-	if (time_before(now, nohz.next_balance))
++	if (time_before(now, get_nohz()->next_balance))
+ 		goto out;
+ 
+ 	if (rq->nr_running >= 2) {
+@@ -10328,7 +10342,7 @@ static void nohz_balancer_kick(struct rq *rq)
+ 		 * currently idle; in which case, kick the ILB to move tasks
+ 		 * around.
+ 		 */
+-		for_each_cpu_and(i, sched_domain_span(sd), nohz.idle_cpus_mask) {
++		for_each_cpu_and(i, sched_domain_span(sd), get_nohz()->idle_cpus_mask) {
+ 			if (sched_asym_prefer(i, cpu)) {
+ 				flags = NOHZ_KICK_MASK;
+ 				goto unlock;
+@@ -10405,8 +10419,8 @@ void nohz_balance_exit_idle(struct rq *rq)
+ 		return;
+ 
+ 	rq->nohz_tick_stopped = 0;
+-	cpumask_clear_cpu(rq->cpu, nohz.idle_cpus_mask);
+-	atomic_dec(&nohz.nr_cpus);
++	cpumask_clear_cpu(rq->cpu, get_nohz()->idle_cpus_mask);
++	atomic_dec(&get_nohz()->nr_cpus);
+ 
+ 	set_cpu_sd_state_busy(rq->cpu);
+ }
+@@ -10467,8 +10481,8 @@ void nohz_balance_enter_idle(int cpu)
+ 
+ 	rq->nohz_tick_stopped = 1;
+ 
+-	cpumask_set_cpu(cpu, nohz.idle_cpus_mask);
+-	atomic_inc(&nohz.nr_cpus);
++	cpumask_set_cpu(cpu, get_nohz()->idle_cpus_mask);
++	atomic_inc(&get_nohz()->nr_cpus);
+ 
+ 	/*
+ 	 * Ensures that if nohz_idle_balance() fails to observe our
+@@ -10484,7 +10498,7 @@ void nohz_balance_enter_idle(int cpu)
+ 	 * Each time a cpu enter idle, we assume that it has blocked load and
+ 	 * enable the periodic update of the load of idle cpus
+ 	 */
+-	WRITE_ONCE(nohz.has_blocked, 1);
++	WRITE_ONCE(get_nohz()->has_blocked, 1);
+ }
+ 
+ static bool update_nohz_stats(struct rq *rq)
+@@ -10494,7 +10508,7 @@ static bool update_nohz_stats(struct rq *rq)
+ 	if (!rq->has_blocked_load)
+ 		return false;
+ 
+-	if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
++	if (!cpumask_test_cpu(cpu, get_nohz()->idle_cpus_mask))
+ 		return false;
+ 
+ 	if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_tick)))
+@@ -10532,7 +10546,7 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 	 * setting the flag, we are sure to not clear the state and not
+ 	 * check the load of an idle cpu.
+ 	 */
+-	WRITE_ONCE(nohz.has_blocked, 0);
++	WRITE_ONCE(get_nohz()->has_blocked, 0);
+ 
+ 	/*
+ 	 * Ensures that if we miss the CPU, we must see the has_blocked
+@@ -10544,10 +10558,7 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 	 * Start with the next CPU after this_cpu so we will end with this_cpu and let a
+ 	 * chance for other idle cpu to pull load.
+ 	 */
+-	for_each_cpu_wrap(balance_cpu,  nohz.idle_cpus_mask, this_cpu+1) {
+-		if (!idle_cpu(balance_cpu))
+-			continue;
+-
++	for_each_cpu_wrap(balance_cpu,  get_nohz()->idle_cpus_mask, this_cpu+1) {
+ 		/*
+ 		 * If this CPU gets work to do, stop the load balancing
+ 		 * work being done for other CPUs. Next load
+@@ -10558,6 +10569,9 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 			goto abort;
+ 		}
+ 
++		if (!idle_cpu(balance_cpu))
++			continue;
++
+ 		rq = cpu_rq(balance_cpu);
+ 
+ 		has_blocked_load |= update_nohz_stats(rq);
+@@ -10589,15 +10603,15 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 	 * updated.
+ 	 */
+ 	if (likely(update_next_balance))
+-		nohz.next_balance = next_balance;
++		get_nohz()->next_balance = next_balance;
+ 
+-	WRITE_ONCE(nohz.next_blocked,
++	WRITE_ONCE(get_nohz()->next_blocked,
+ 		now + msecs_to_jiffies(LOAD_AVG_PERIOD));
+ 
+ abort:
+ 	/* There is still blocked load, enable periodic update */
+ 	if (has_blocked_load)
+-		WRITE_ONCE(nohz.has_blocked, 1);
++		WRITE_ONCE(get_nohz()->has_blocked, 1);
+ }
+ 
+ /*
+@@ -10655,8 +10669,8 @@ static void nohz_newidle_balance(struct rq *this_rq)
+ 		return;
+ 
+ 	/* Don't need to update blocked load of idle CPUs*/
+-	if (!READ_ONCE(nohz.has_blocked) ||
+-	    time_before(jiffies, READ_ONCE(nohz.next_blocked)))
++	if (!READ_ONCE(get_nohz()->has_blocked) ||
++	    time_before(jiffies, READ_ONCE(get_nohz()->next_blocked)))
+ 		return;
+ 
+ 	/*
+@@ -11573,9 +11587,29 @@ __init void init_sched_fair_class(void)
+ 	open_softirq(SCHED_SOFTIRQ, run_rebalance_domains);
+ 
+ #ifdef CONFIG_NO_HZ_COMMON
+-	nohz.next_balance = jiffies;
+-	nohz.next_blocked = jiffies;
+-	zalloc_cpumask_var(&nohz.idle_cpus_mask, GFP_NOWAIT);
++	if (static_branch_unlikely(&housekeeping_overridden)) {
++		struct nohz *nohz;
++
++		nohz_nodes = kcalloc(1, sizeof(struct nohz *), GFP_NOWAIT);
++		nohz = kmalloc(sizeof(struct nohz), GFP_NOWAIT);
++		nohz->next_balance = jiffies;
++		nohz->next_blocked = jiffies;
++		zalloc_cpumask_var(&nohz->idle_cpus_mask, GFP_NOWAIT);
++		nohz_nodes[0] = nohz;
++	} else {
++		int n;
++
++		nohz_nodes = kcalloc(nr_node_ids, sizeof(struct nohz *), GFP_NOWAIT);
++		for_each_node(n) {
++			struct nohz *nohz;
++
++			nohz = kmalloc_node(sizeof(struct nohz), GFP_NOWAIT, n);
++			nohz->next_balance = jiffies;
++			nohz->next_blocked = jiffies;
++			zalloc_cpumask_var_node(&nohz->idle_cpus_mask, GFP_NOWAIT, n);
++			nohz_nodes[n] = nohz;
++		}
++	}
+ #endif
+ #endif /* SMP */
+ 
+-- 
+2.23.0
+
