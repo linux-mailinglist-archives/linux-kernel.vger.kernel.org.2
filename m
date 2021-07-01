@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882273B94A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E74AF3B94A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbhGAQ1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 12:27:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229664AbhGAQ1t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 12:27:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7841B61002;
-        Thu,  1 Jul 2021 16:25:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625156718;
-        bh=ZmaGe0iXayTRZaJF/nPOquGquNqVUil8wsuyblDFl4Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jddlJiix0SdqH9jrizHCWh/mUHvPmjro7TrFB/wNP+yEcUs4kxSTzDTgefVuyIY5H
-         KYhUHwtDSs5yH15LLMiQyCm5NbkIHk/qQQ6jeRu5nxsBZwlofCb/XTXOqu4rUgv0Gg
-         FPTRGgplyRrD/3cN919VbqYW+aJNMrCnAum5uWYwyKBXRZg/CqGAh0ex9yNSnA+cK3
-         pQ/ywFH8kBBDuQPoYAT5eA80cBZcs75oPEws5tYmvXbnEOBCxaLfYmK1pHSWT353Eb
-         CH9MSaD5uko4gYVJ3WmCLnZJHbBA3qTaIAYmtwN3SaFuiQuRU9e0z7Ep/1TpHj/Ge0
-         gk1L5zbFlFCKQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2D55140B1A; Thu,  1 Jul 2021 13:25:14 -0300 (-03)
-Date:   Thu, 1 Jul 2021 13:25:14 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <James.Clark@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Denis Nikitin <denik@google.com>
-Subject: Re: [PATCH v2 2/3] perf cs-etm: Remove callback
- cs_etm_find_snapshot()
-Message-ID: <YN3sas8tWPfWjFqE@kernel.org>
-References: <20210701093537.90759-1-leo.yan@linaro.org>
- <20210701093537.90759-3-leo.yan@linaro.org>
+        id S232661AbhGAQas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 12:30:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229978AbhGAQas (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 12:30:48 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987A1C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 09:28:16 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id g5so11737185ybu.10
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 09:28:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jW9usmzYUneRtmPUUy8bPkIeD350ID0dCtIjd2wQbSQ=;
+        b=nga6WacM6U52NLeH8VpfecsBjtdk02B2lXY37A1ANhERVcUSRWNPMz6NXXu3ZdKE2t
+         xVdbc72ukqInAh1x/3KFXIMHUYfoIQKKBdL5KGYy0xhPAcebSQShwob41BY4D1Y+cTke
+         5j+IUh/1pu6ZaG5EcbEY0GNJ1EzcNVHbGBcKsftVHSHci4uVb1b+eHBeodvZP7Y9DF1+
+         5lIgo6o4dzQFlw/x0ArhoVmeEtpr69uDijMGs04kDukeJ9JE1CrWJ+giAqa3DLFGsNA0
+         e04uxDISEgnhuWQN7/fF6LoZ7Y7vhbH4HdHYWrTH3RkJLs0GWQvkbimBCcGOqeVPdFOL
+         JZDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jW9usmzYUneRtmPUUy8bPkIeD350ID0dCtIjd2wQbSQ=;
+        b=EQfTE6RcPa3kfIknxIo274F9pZ6nR4y5N3voA6ImsOWjjYYPT3t+NmBLNgKFJLvpni
+         DHkops92muN0/wO1ny90lZTa3tdWdJmpmzBdxCO/BH7LBDMWND6pwLBmgRPh8QrfGDk+
+         wRD2PzLLD7i2hK9nA5uejHfVMUR45oBX5LEpVGwzRt+q/lj1rxWm1+DCje4Qy3IqU3Br
+         kagGE1wBMgJ2L3axbdtOpAAAZqK0wjIwhltirAy5xByd4Y3ySp79xgCwTl7A8Oicwk/S
+         afNbe3HHInQvgHl+d4Bnn3Q6+tKwWm+/ecTQRH7hqI9IX1qQBwF4JkucTPdgCEwtrxXj
+         06OA==
+X-Gm-Message-State: AOAM532QLQnY1Zg+ox1W8B9/lJZjlzsZJ+27iz2yMNVeZz3Iy0klg7Gd
+        SJjsXXiKXr7TjUuh6CrblgoRjtBlbPWP+o1iXpR7vQ==
+X-Google-Smtp-Source: ABdhPJxJ105tQZtXJ2g6qDlXmogBaYsJLcJDXxQ5kncWGkCRYNQNcvRP9rBXNCvVZ0sAPG97Vogi4w7B9zdX140PCKE=
+X-Received: by 2002:a25:2e49:: with SMTP id b9mr836477ybn.250.1625156895472;
+ Thu, 01 Jul 2021 09:28:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210701093537.90759-3-leo.yan@linaro.org>
-X-Url:  http://acmel.wordpress.com
+References: <20210630205151.137001-1-surenb@google.com> <YN2DsLlE+WtxK6K9@hirez.programming.kicks-ass.net>
+ <CAJuCfpF=Ty4ruiKQQweVoF6Ojx8P8LxvUBxp1TmMFo2W1xNWfg@mail.gmail.com> <YN3pUNgpBjn42f8s@hirez.programming.kicks-ass.net>
+In-Reply-To: <YN3pUNgpBjn42f8s@hirez.programming.kicks-ass.net>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 1 Jul 2021 09:28:04 -0700
+Message-ID: <CAJuCfpFKDhcgjU=MGsz+JuetrWvYCe0EL3FMp91zopH+8T=mMQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] psi: stop relying on timer_pending for poll_work rescheduling
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        matthias.bgg@gmail.com, Minchan Kim <minchan@google.com>,
+        Tim Murray <timmurray@google.com>,
+        YT Chang <yt.chang@mediatek.com>,
+        =?UTF-8?B?V2VuanUgWHUgKOiuuOaWh+S4vik=?= <wenju.xu@mediatek.com>,
+        =?UTF-8?B?Sm9uYXRoYW4gSk1DaGVuICjpmbPlrrbmmI4p?= 
+        <jonathan.jmchen@mediatek.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        kernel-team <kernel-team@android.com>,
+        SH Chen <show-hong.chen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 01, 2021 at 05:35:36PM +0800, Leo Yan escreveu:
-> The callback cs_etm_find_snapshot() is invoked for snapshot mode, its
-> main purpose is to find the correct AUX trace data and returns "head"
-> and "old" (we can call "old" as "old head") to the caller, the caller
-> __auxtrace_mmap__read() uses these two pointers to decide the AUX trace
-> data size.
-> 
-> This patch removes cs_etm_find_snapshot() with below reasons:
-> 
-> - The first thing in cs_etm_find_snapshot() is to check if the head has
->   wrapped around, if it is not, directly bails out.  The checking is
->   pointless, this is because the "head" and "old" pointers both are
->   monotonical increasing so they never wrap around.
-> 
-> - cs_etm_find_snapshot() adjusts the "head" and "old" pointers and
->   assumes the AUX ring buffer is fully filled with the hardware trace
->   data, so it always subtracts the difference "mm->len" from "head" to
->   get "old".  Let's imagine the snapshot is taken in very short
->   interval, the tracers only fill a small chunk of the trace data into
->   the AUX ring buffer, in this case, it's wrongly to copy the whole the
->   AUX ring buffer to perf file.
-> 
-> - As the "head" and "old" pointers are monotonically increased, the
->   function __auxtrace_mmap__read() handles these two pointers properly.
->   It calculates the reminders for these two pointers, and the size is
->   clamped to be never more than "snapshot_size".  We can simply reply on
->   the function __auxtrace_mmap__read() to calculate the correct result
->   for data copying, it's not necessary to add Arm CoreSight specific
->   callback.
+On Thu, Jul 1, 2021 at 9:12 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Jul 01, 2021 at 09:09:25AM -0700, Suren Baghdasaryan wrote:
+> > On Thu, Jul 1, 2021 at 1:59 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Wed, Jun 30, 2021 at 01:51:51PM -0700, Suren Baghdasaryan wrote:
+> > > > +     /* cmpxchg should be called even when !force to set poll_scheduled */
+> > > > +     if (atomic_cmpxchg(&group->poll_scheduled, 0, 1) && !force)
+> > > >               return;
+> > >
+> > > Why is that a cmpxchg() ?
+> >
+> > We want to set poll_scheduled and proceed with rescheduling the timer
+> > unless it's already scheduled, so cmpxchg helps us to make that
+> > decision atomically. Or did I misunderstand your question?
+>
+> What's wrong with: atomic_xchg(&group->poll_scheduled, 1) ?
 
-Thanks, applied.
+Yes, since poll_scheduled can be only 0 or 1 atomic_xchg should work
+fine here. Functionally equivalent but I assume atomic_xchg() is more
+efficient due to no comparison.
+Will respin v3 if the rest looks ok.
 
-- Arnaldo
-
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
