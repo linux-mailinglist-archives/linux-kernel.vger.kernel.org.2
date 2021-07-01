@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C4F3B9381
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638E23B9382
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232521AbhGAOnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:43:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbhGAOnv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:43:51 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8CAC061764;
-        Thu,  1 Jul 2021 07:41:20 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id df12so8796032edb.2;
-        Thu, 01 Jul 2021 07:41:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=AvF+6Thjc7VS3d+lH/xoSpjcWaqN37c3IWH+gDSK5LE=;
-        b=b25zxcDyLu1iUJc6dO4ans9rCu/b5OwLrgjWCInEg2cFxRJDk0vwYmxXLiTe0E4zdA
-         MJ3wLBe0PRmgqcmjhjolXhI9GoDJrCagKYEm6g1A2Kz7TVOTlCe0VE+C9Z0W9hmKWYEx
-         12MwmnvHKrlJHOaCNNBJAmMMAqMkns+LgZnYOSt7b4zeGt1SSJ1GCg437LqysbDtAbvq
-         QH4nvZ4PJdu367gTTj88J1EIJEOVOm1cOtTc9wDSQz/owet6wQSxaH+pW/pF82V5Vuqi
-         Mko7+/liayHEcpCg3yYutTAlcaVo7R6bXh+qpjwavy1VkYAippICanszMPLiY6wlRrzb
-         xC1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=AvF+6Thjc7VS3d+lH/xoSpjcWaqN37c3IWH+gDSK5LE=;
-        b=b6nV8OffUlJhze2dTzmwS/q5jvvVsg0AJEuZ/Mug+HU04VVsvqnzlMKXOtTJRIjCWF
-         ANvIpYrBIv2FlIQSI2F+dtjF8f0JTEIbOg3CvtBd3tBxY0j02PvNKWpyIh+Gt+eyLfg0
-         ucFMYCFZnK9/eCGy8dZrDEnmZmB1/7IzNiCINIukJXB2xk0Zo8lUq3Tt9cf7nV7iOqts
-         4+prsa1xAj7Nk0SB0t/jYlkI5QYrDwOs5uxwSFbsywtiKLJ3YsdhDrG8JvWRnZplgXgP
-         jrjlthgV11i9ZYdTVYnNoAAvXLPW/JEDUa1LXF4iq6OeZ22yKjthk90tc/cBPXeOdMeM
-         fPVQ==
-X-Gm-Message-State: AOAM533aH1Y2H6b7JyXS2ZavcgcaY1XNRAOqCZ41QDIeHCwHHUlLnPpI
-        xAESINnDhO6Et2T9mEHpjiYmmeVnNNsShA==
-X-Google-Smtp-Source: ABdhPJw+7B3axxOsOx75pV9gDw2Bqed7PttXMKPft6o0SQ5cklKiVayLhjUPf/7+qX9RUvRJzGKFmg==
-X-Received: by 2002:a05:6402:2681:: with SMTP id w1mr181454edd.275.1625150479387;
-        Thu, 01 Jul 2021 07:41:19 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id a8sm2239ejx.99.2021.07.01.07.41.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 01 Jul 2021 07:41:19 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm64: dts: rockchip: remove ddc-i2c-scl-* properties from rk3318-a95x-z2.dts
-Date:   Thu,  1 Jul 2021 16:41:10 +0200
-Message-Id: <20210701144110.12333-2-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210701144110.12333-1-jbx6244@gmail.com>
-References: <20210701144110.12333-1-jbx6244@gmail.com>
+        id S232749AbhGAOoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:44:14 -0400
+Received: from mga14.intel.com ([192.55.52.115]:16341 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232405AbhGAOoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 10:44:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="208363977"
+X-IronPort-AV: E=Sophos;i="5.83,314,1616482800"; 
+   d="scan'208";a="208363977"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 07:41:42 -0700
+X-IronPort-AV: E=Sophos;i="5.83,314,1616482800"; 
+   d="scan'208";a="626391409"
+Received: from acismesi-mobl1.amr.corp.intel.com (HELO [10.252.131.1]) ([10.252.131.1])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 07:41:42 -0700
+Subject: Re: [PATCH v3 1/2] x86/ioremap: fix the pfn calculation mistake in
+ __ioremap_check_ram()
+To:     Yaohui Wang <yaohuiwang@linux.alibaba.com>,
+        dave.hansen@linux.intel.com, tglx@linutronix.de
+Cc:     luto@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
+        luoben@linux.alibaba.com, Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <20210621123419.2976-1-yaohuiwang@linux.alibaba.com>
+ <20210621123419.2976-2-yaohuiwang@linux.alibaba.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <94a38542-b639-37e4-1b53-29b59c5ea655@intel.com>
+Date:   Thu, 1 Jul 2021 07:41:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210621123419.2976-2-yaohuiwang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ddc-i2c-scl-* properties in the hdmi node are
-not in use in the mainline kernel, so remove them.
+On 6/21/21 5:34 AM, Yaohui Wang wrote:
+> For example, suppose memory range [phys_addr ~ phys_addr + PAGE_SIZE - 1]
+> is a normal RAM page. ioremap(phys_addr, PAGE_SIZE - 1) will succeed
+> (but it should not) because the pfn wrapping prevents this page to be
+> checked whether it touches non-ioremappable resources.
 
-Reported-by: Alex Bee <knaerzche@gmail.com>
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts | 2 --
- 1 file changed, 2 deletions(-)
+I would have expected such a scenario to get caught by this check:
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts b/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts
-index d41f786b2..43c928ac9 100644
---- a/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts
-@@ -193,8 +193,6 @@
- };
- 
- &hdmi {
--	ddc-i2c-scl-high-time-ns = <9625>;
--	ddc-i2c-scl-low-time-ns = <10000>;
- 	status = "okay";
- };
- 
--- 
-2.11.0
+	if ((res->flags & IORESOURCE_SYSTEM_RAM) != IORESOURCE_SYSTEM_RAM)
+		return false;
 
+Was this issue found by inspection, or is it causing an actual problem
+in practice?
+
+Also, it would be really nice to include the original authors when you
+send Fixes: for patches.  BTW, scripts/get_maintainer.pl would have done
+this for you.  I've added Tom and Brijesh.  Please cc them in the future.
