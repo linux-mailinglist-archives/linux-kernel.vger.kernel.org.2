@@ -2,126 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16DB3B9356
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2A33B9358
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbhGAObX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:31:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:55110 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231698AbhGAObW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:31:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86090D6E;
-        Thu,  1 Jul 2021 07:28:51 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 87BD63F718;
-        Thu,  1 Jul 2021 07:28:49 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>
-Subject: Re: [PATCH v2 1/2] sched/topology: Skip updating masks for non-online nodes
-In-Reply-To: <20210701041552.112072-2-srikar@linux.vnet.ibm.com>
-References: <20210701041552.112072-1-srikar@linux.vnet.ibm.com> <20210701041552.112072-2-srikar@linux.vnet.ibm.com>
-Date:   Thu, 01 Jul 2021 15:28:45 +0100
-Message-ID: <875yxu85wi.mognet@arm.com>
+        id S234103AbhGAOba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:31:30 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59804 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231698AbhGAOb3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 10:31:29 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161EStVv048609;
+        Thu, 1 Jul 2021 10:28:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=0dbB2p9crVKU9Dil6C/b6hHgLiPWCUpCbq3fmaFy7wY=;
+ b=cAUCLoaOU5Ajmaly3/4qFMeyl/0d9Q2T7/9EPptHRrQAO58ccUY2NvKI3CmjWl8XkVVt
+ +qCwT9Bo3AEfII1DeuugKvgxiDwc6SIftB83Aswrv39DC4YJlikq8/elPOoGydbQap8r
+ Pw6L4f9DF2ksscgUiHsx35EcOssTnUG5734Kn5ZAVn/yTfi7HFyEvWij2d0tmafF8GbE
+ EX0rbq7fHhfG3RtAm/m3K/Z+aU+0jH/mVCWmGe1EfOPp4CO4kja+RLCDe5prVv3n+fJE
+ ER8j/wFMpj4fTofac5SaNBWjdjZfIVL9N0ZAr5TXIVwc8l/AUeqSq77SmL2jhaoXmLC3 jQ== 
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39hf9h8f44-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Jul 2021 10:28:56 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 161EBoEi023517;
+        Thu, 1 Jul 2021 14:28:54 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma02wdc.us.ibm.com with ESMTP id 39duve2ewd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Jul 2021 14:28:54 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 161ESr3F40305096
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 1 Jul 2021 14:28:53 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2AB1D78070;
+        Thu,  1 Jul 2021 14:28:53 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9C7FE7805F;
+        Thu,  1 Jul 2021 14:28:52 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.163.230])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  1 Jul 2021 14:28:52 +0000 (GMT)
+Subject: Re: [PATCH] s390/vfio-ap: do not use open locks during
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        Jason Gunthorpe <jgg@nvidia.com>
+References: <20210625220758.80365-1-akrowiak@linux.ibm.com>
+ <20210628222923.21a257c8.pasic@linux.ibm.com>
+ <25edecce-0795-3b00-a155-bfcc8499f1be@linux.ibm.com>
+ <20210701003941.685c524c.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <8b742188-d8a2-cf4e-e9de-0ca6f3d829b3@linux.ibm.com>
+Date:   Thu, 1 Jul 2021 10:28:52 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210701003941.685c524c.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: T38m7f7PXam7t7_GdRiTfjnfInv8HYDw
+X-Proofpoint-ORIG-GUID: T38m7f7PXam7t7_GdRiTfjnfInv8HYDw
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-01_08:2021-07-01,2021-07-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 suspectscore=0 mlxscore=0 malwarescore=0 clxscore=1015
+ mlxlogscore=999 adultscore=0 spamscore=0 lowpriorityscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107010088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/07/21 09:45, Srikar Dronamraju wrote:
-> @@ -1891,12 +1894,30 @@ void sched_init_numa(void)
->  void sched_domains_numa_masks_set(unsigned int cpu)
->  {
->       int node = cpu_to_node(cpu);
-> -	int i, j;
-> +	int i, j, empty;
+
+
+On 6/30/21 6:39 PM, Halil Pasic wrote:
+> On Wed, 30 Jun 2021 10:31:22 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 >
-> +	empty = cpumask_empty(sched_domains_numa_masks[0][node]);
->       for (i = 0; i < sched_domains_numa_levels; i++) {
->               for (j = 0; j < nr_node_ids; j++) {
-> -			if (node_distance(j, node) <= sched_domains_numa_distance[i])
-> +			if (!node_online(j))
-> +				continue;
-> +
-> +			if (node_distance(j, node) <= sched_domains_numa_distance[i]) {
->                               cpumask_set_cpu(cpu, sched_domains_numa_masks[i][j]);
-> +
-> +				/*
-> +				 * We skip updating numa_masks for offline
-> +				 * nodes. However now that the node is
-> +				 * finally online, CPUs that were added
-> +				 * earlier, should now be accommodated into
-> +				 * newly oneline node's numa mask.
-> +				 */
-> +				if (node != j && empty) {
-> +					cpumask_or(sched_domains_numa_masks[i][node],
-> +							sched_domains_numa_masks[i][node],
-> +							sched_domains_numa_masks[0][j]);
-> +				}
-> +			}
+>> On 6/28/21 4:29 PM, Halil Pasic wrote:
+>>> On Fri, 25 Jun 2021 18:07:58 -0400
+>>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>>>
+>>> What is a suitable base for this patch. I've tried the usual suspects,
+>>> but none of them worked.
+>> I discovered what the problem is here. The patch is based on our
+>> master branch along with the two pre-requisite patches that were
+>> recently reviewed and are currently being merged. The two patches
+>> of which I speak are:
+>> * [PATCH v6 1/2] s390/vfio-ap: clean up mdev resources when remove
+>> callback invoked
+>>      Message ID: <20210621155714.1198545-2-akrowiak@linux.ibm.com>
+>>
+>> * [PATCH v6 2/2] s390/vfio-ap: r/w lock for PQAP interception handler
+>> function pointer
+>>      <20210621155714.1198545-3-akrowiak@linux.ibm.com>
+>>
+>> I probably should have included those along with this one.
+> Either that, or state in the cover letter that those are prerequisites.
+>
+>>>   
+>>>> The fix to resolve a lockdep splat while handling the
+>>>> VFIO_GROUP_NOTIFY_SET_KVM event introduced a kvm_busy flag indicating that
+>>>> the vfio_ap device driver is busy setting or unsetting the KVM pointer.
+>>>> A wait queue was employed to allow functions requiring access to the KVM
+>>>> pointer to wait for the kvm_busy flag to be cleared. For the duration of
+>>>> the wait period, the mdev lock was unlocked then acquired again after the
+>>>> kvm_busy flag was cleared. This got rid of the lockdep report, but didn't
+>>>> really resolve the problem.
+>>> Can you please elaborate on the last point. You mean that we can have
+>>> circular locking even after 0cc00c8d4050, but instead of getting stuck in
+>>> on a lock we will get stuck on wait_event_cmd()? If that is it, please
+>>> state it clearly in the description, and if you can to it in the short
+>>> description.
 
-Hmph, so we're playing games with masks of offline nodes - is that really
-necessary? Your modification of sched_init_numa() still scans all of the
-nodes (regardless of their online status) to build the distance map, and
-that is never updated (sched_init_numa() is pretty much an __init
-function).
+I created this patch in response to Jason G's review comments I copied
+below. He did not mention anything about getting stuck in a 
+wait_event_cmd(),
+so you may want to ask him about that. To answer your
+question, I don't see how we can get stuck in a wait_event_cmd() unless
+one of the functions that set the matrix_mdev->kvm_busy flag does not
+complete for some reason.
 
-So AFAICT this is all to cope with topology_span_sane() not applying
-'cpu_map' to its masks. That seemed fine to me back when I wrote it, but in
-light of having bogus distance values for offline nodes, not so much...
+You asked for me to elaborate on the last point in the preceding paragraph;
+I did so in my response to your comments/question above.
 
-What about the below instead?
+>>>    
+>> This patch was in response to the following review comments made by Jason
+>> Gunthorpe:
+>>
+>> * Message ID: <20210525162927.GC1002214@nvidia.com>
+>>      "... the kvm_busy should be replaced by a proper rwsem,
+>>       don't try to open code locks like that - it just defeats lockdep
+>>       analysis".
+>>
+>> * Message ID: <20210527112433.GX1002214@nvidia.com>
+>>      "Usually when people start open coding locks it is often
+>>      because lockdep complained. Open coding a lock makes
+>>      lockdep stop because the lockdep code
+>>      is removed, but it doesn't fix anything. The kvm_busy
+>>      should be replaced by a proper rwsem, don't try to
+>>      open code locks like that - it just defeats lockdep
+>>      analysis."
+>>
+>> I will paraphrase and include the information from Jason's
+>> comments in the description.
+>>
+> This does not answer my questions.
 
----
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index b77ad49dc14f..c2d9caad4aa6 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -2075,6 +2075,7 @@ static struct sched_domain *build_sched_domain(struct sched_domain_topology_leve
- static bool topology_span_sane(struct sched_domain_topology_level *tl,
- 			      const struct cpumask *cpu_map, int cpu)
- {
-+	struct cpumask *intersect = sched_domains_tmpmask;
- 	int i;
- 
- 	/* NUMA levels are allowed to overlap */
-@@ -2090,14 +2091,17 @@ static bool topology_span_sane(struct sched_domain_topology_level *tl,
- 	for_each_cpu(i, cpu_map) {
- 		if (i == cpu)
- 			continue;
-+
- 		/*
--		 * We should 'and' all those masks with 'cpu_map' to exactly
--		 * match the topology we're about to build, but that can only
--		 * remove CPUs, which only lessens our ability to detect
--		 * overlaps
-+		 * We shouldn't have to bother with cpu_map here, unfortunately
-+		 * some architectures (powerpc says hello) have to deal with
-+		 * offline NUMA nodes reporting bogus distance values. This can
-+		 * lead to funky NODE domain spans, but since those are offline
-+		 * we can mask them out.
- 		 */
-+		cpumask_and(intersect, tl->mask(cpu), tl->mask(i));
- 		if (!cpumask_equal(tl->mask(cpu), tl->mask(i)) &&
--		    cpumask_intersects(tl->mask(cpu), tl->mask(i)))
-+		    cpumask_intersects(intersect, cpu_map))
- 			return false;
- 	}
- 
+See above.
+
+>
+> I'm in favor of Jason's proposal, because it is much easier to
+> comprehend simple rwsem protected than a mutex + wait_queue dance.
+
+That is a matter of opinion. I have no trouble understanding
+the "mutex + wait_queue dance", but then again, I wrote the
+code, so maybe that is why.
+
+>   
+>
+> I think Jason was talking about open coding locks in general.
+
+That may be so, but his comments were in support of his
+statement that the  mutex + wait_queue did not resolve
+the issue reported vai the lockdep splat because it turned
+off lockdep.
+
+> I don't
+> consider it as proof of commit 0cc00c8d4050 not doing what it
+> advertised.
+
+I think I agree with this statement. Maybe I misunderstood what
+Jason meant by "open coding locks like that". Since that comment
+directly related to replacing the kvm->busy, I assumed that he
+was referring to the "mutex + wait_queue dance" as you called it.
+I probably should have probed deeper to discern exactly what
+Jason meant by "open coding locks". I took Jason at his word
+that "the kvm->busy ... just defeats lockdep analysis" because
+I don't have deep knowledge about lockdep.
+
+Even if the kvm->busy does defeat lockdep analysis, I still believe
+it fixes the problem for which commit 0cc00c8d4050 was created.
+If we don't hold the matrix_dev->lock while the kvm->lock is held
+during update of the guest's matrix, lockdep does not report a
+problem. That is proven by the tests of this patch.
+
+If commit 0cc00c8d4050 does in fact resolve the issue for which
+it was created, then there really is no need for this patch. It
+certainly would reduce the amount of change that will be required
+to integrate this patch with the "s390/vfio-ap: dynamic configuration
+support" patch series currently under review.
+
+> You can add a Suggested-by tag if you like, but you should
+> be able to tell us what is the merit of your patch.
+
+The patch removes the matrix_mdev->kvm_busy flag and the
+wait_queue. The reason for removing them was because, as
+Jason stated, "the kvm->busy ... just defeats lockdep analysis".
+
+>
+> Regards,
+> Halil
+>
+
