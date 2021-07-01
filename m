@@ -2,228 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AAD53B9304
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148213B9308
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbhGAOSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:18:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55102 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232618AbhGAOSc (ORCPT
+        id S232802AbhGAOU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:20:57 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:18222 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231844AbhGAOU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:18:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625148961;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BQuBNqnXtrucufI+PPJzux6WeHo7CQIrHe9vbJeS+xA=;
-        b=J6tRCSLO6ooW/jEfdM7ooq9LIvCpGQIYvPsDzh3Z8fGTtEor1mU6vtiVHyHBE+91omJmmY
-        kzlwIjqW79kXfG319Q5JFUlrIc+6VgwgGa7hZ0kYIyw7Pgr9l84hXaCruOQ6owOoGXkZwH
-        txYxxWPC9vN9sKfR6QeWd160V/AXdVo=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-8F-erN-YPweywPmMybxmtw-1; Thu, 01 Jul 2021 10:15:53 -0400
-X-MC-Unique: 8F-erN-YPweywPmMybxmtw-1
-Received: by mail-ed1-f72.google.com with SMTP id n13-20020a05640206cdb029039589a2a771so3174880edy.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 07:15:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BQuBNqnXtrucufI+PPJzux6WeHo7CQIrHe9vbJeS+xA=;
-        b=eYRxYNAo7ICnuQUi4D69fXPHa2jYJg8SuPYSQKH/rGWbWCfbeyn35ahZ3DD9F/e7W7
-         Ehc/7zK7TyiDmbkHQrGBQOIUhV4Qx717afA3KwRym2XJnEzzoGiLfNp1Xovj/lOeEwWL
-         MGNUEgvP3aFSJA1SOwmUBrIeHCnGl9a93xFyfjbBk/NYDBuevZ+zLn5ZDgEW4ybWmwHJ
-         6bNpJCoYrHK0qjcq1dmvnDw473iffepkv6lRFv5V4To+XsjTGmz31LeblgJuLvfgZERn
-         Ujup+wbbmP1odnzX/B2rgaf1pGUX8Tb8THPGlZUS3+z8Z85bGJoPgy/bViOng1XPxzjP
-         NL4Q==
-X-Gm-Message-State: AOAM531wA5CpEgZ+5ZknNMPWBAnusMNsrGyQynvOeZhygQubmwsVvkZM
-        jpGIAfwRUo7Iz6Xa4z0kch8wbByV7d7jU1C0Ko9/p7on8Wp/W3cZCJHDOHtU9HArNTuziES8fEl
-        9qbQoOzYN/nDgO/D9fLrvOY+2
-X-Received: by 2002:a17:906:7315:: with SMTP id di21mr10130851ejc.511.1625148950310;
-        Thu, 01 Jul 2021 07:15:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx8+fZHlQYTx1lHxW02w5jBxsLJMZbpyGox4k3DzlqokvEZ8C1gtgGk7SsPHAZnCXYXlibLVQ==
-X-Received: by 2002:a17:906:7315:: with SMTP id di21mr10130826ejc.511.1625148950118;
-        Thu, 01 Jul 2021 07:15:50 -0700 (PDT)
-Received: from krava ([185.153.78.55])
-        by smtp.gmail.com with ESMTPSA id cd4sm10870515ejb.104.2021.07.01.07.15.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 07:15:49 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 16:15:45 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Cc:     Brendan Jackman <jackmanb@google.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Florent Revest <revest@chromium.org>
-Subject: Re: [BUG soft lockup] Re: [PATCH bpf-next v3] bpf: Propagate stack
- bounds to registers in atomics w/ BPF_FETCH
-Message-ID: <YN3OEbjzxPgCWN0v@krava>
-References: <CA+i-1C0DAr5ecAOV06_fqeCooic4AF=71ur63HJ6ddbj9ceDpQ@mail.gmail.com>
- <YNspwB8ejUeRIVxt@krava>
- <YNtEcjYvSvk8uknO@krava>
- <CA+i-1C3RDT1Y=A7rAitfbrUUDXxCJeXJLw1oABBCpBubm5De6A@mail.gmail.com>
- <YNtNMSSZh3LTp2we@krava>
- <YNuL442y2yn5RRdc@krava>
- <CA+i-1C1-7O5EYHZcDtgQaDVrRW+gEQ1WOtiNDZ19NKXUQ_ZLtw@mail.gmail.com>
- <YNxmwZGtnqiXGnF0@krava>
- <CA+i-1C2-MGe0BziQc8t4ry3mj45W0ULVrGsU+uQw9952tFZ1nA@mail.gmail.com>
- <1625133383.8r6ttp782l.naveen@linux.ibm.com>
+        Thu, 1 Jul 2021 10:20:56 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161E8Tsj025039;
+        Thu, 1 Jul 2021 10:18:26 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 39gsqmv6pn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Jul 2021 10:18:25 -0400
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 161EIOWh031548
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 1 Jul 2021 10:18:24 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Thu, 1 Jul 2021
+ 10:18:23 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
+ Transport; Thu, 1 Jul 2021 10:18:23 -0400
+Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.128])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 161EILp4015832;
+        Thu, 1 Jul 2021 10:18:21 -0400
+From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jic23@kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>
+CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Subject: [PATCH v3] dt-bindings: iio: frequency: add adrf6780 doc
+Date:   Thu, 1 Jul 2021 17:16:48 +0300
+Message-ID: <20210701141648.131776-1-antoniu.miclaus@analog.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1625133383.8r6ttp782l.naveen@linux.ibm.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: 1MwEL1OgORHUxPKqp7F5GwnVUPKs7hUg
+X-Proofpoint-ORIG-GUID: 1MwEL1OgORHUxPKqp7F5GwnVUPKs7hUg
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-01_08:2021-07-01,2021-07-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
+ adultscore=1 impostorscore=0 spamscore=0 mlxlogscore=999
+ priorityscore=1501 suspectscore=0 bulkscore=0 mlxscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107010088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 04:32:03PM +0530, Naveen N. Rao wrote:
-> Hi Brendan, Hi Jiri,
-> 
-> 
-> Brendan Jackman wrote:
-> > On Wed, 30 Jun 2021 at 14:42, Jiri Olsa <jolsa@redhat.com> wrote:
-> > > 
-> > > On Wed, Jun 30, 2021 at 12:34:58PM +0200, Brendan Jackman wrote:
-> > > > On Tue, 29 Jun 2021 at 23:09, Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > >
-> > > > > On Tue, Jun 29, 2021 at 06:41:24PM +0200, Jiri Olsa wrote:
-> > > > > > On Tue, Jun 29, 2021 at 06:25:33PM +0200, Brendan Jackman wrote:
-> > > > > > > On Tue, 29 Jun 2021 at 18:04, Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > > > > > On Tue, Jun 29, 2021 at 04:10:12PM +0200, Jiri Olsa wrote:
-> > > > > > > > > On Mon, Jun 28, 2021 at 11:21:42AM +0200, Brendan Jackman wrote:
-> > > >
-> > > > > > > > > > atomics in .imm). Any idea if this test was ever passing on PowerPC?
-> > > > > > > > > >
-> > > > > > > > >
-> > > > > > > > > hum, I guess not.. will check
-> > > > > > > >
-> > > > > > > > nope, it locks up the same:
-> > > > > > >
-> > > > > > > Do you mean it locks up at commit 91c960b0056 too?
-> > > >
-> > > > Sorry I was being stupid here - the test didn't exist at this commit
-> > > >
-> > > > > > I tried this one:
-> > > > > >   37086bfdc737 bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH
-> > > > > >
-> > > > > > I will check also 91c960b0056, but I think it's the new test issue
-> > > >
-> > > > So yeah hard to say whether this was broken on PowerPC all along. How
-> > > > hard is it for me to get set up to reproduce the failure? Is there a
-> > > > rootfs I can download, and some instructions for running a PowerPC
-> > > > QEMU VM? If so if you can also share your config and I'll take a look.
-> > > >
-> > > > If it's not as simple as that, I'll stare at the code for a while and
-> > > > see if anything jumps out.
-> > > >
-> > > 
-> > > I have latest fedora ppc server and compile/install latest bpf-next tree
-> > > I think it will be reproduced also on vm, I attached my config
-> > 
-> > OK, getting set up to boot a PowerPC QEMU isn't practical here unless
-> > someone's got commands I can copy-paste (suspect it will need .config
-> > hacking too). Looks like you need to build a proper bootloader, and
-> > boot an installer disk.
-> 
-> There are some notes put up here, though we can do better:
-> https://github.com/linuxppc/wiki/wiki/Booting-with-Qemu
-> 
-> If you are familiar with ubuntu/fedora cloud images (and cloud-init), you
-> should be able to grab one of the ppc64le images and boot it in qemu:
-> https://cloud-images.ubuntu.com/releases/hirsute/release/
-> https://alt.fedoraproject.org/alt/
-> 
-> > 
-> > Looked at the code for a bit but nothing jumped out. It seems like the
-> > verifier is seeing a BPF_ADD | BPF_FETCH, which means it doesn't
-> > detect an infinite loop, but then we lose the BPF_FETCH flag somewhere
-> > between do_check in verifier.c and bpf_jit_build_body in
-> > bpf_jit_comp64.c. That would explain why we don't get the "eBPF filter
-> > atomic op code %02x (@%d) unsupported", and would also explain the
-> > lockup because a normal atomic add without fetch would leave BPF R1
-> > unchanged.
-> > 
-> > We should be able to confirm that theory by disassembling the JITted
-> > code that gets hexdumped by bpf_jit_dump when bpf_jit_enable is set to
-> > 2... at least for PowerPC 32-bit... maybe you could paste those lines
-> > into the 64-bit version too? Here's some notes I made for
-> > disassembling the hexdump on x86, I guess you'd just need to change
-> > the objdump flags:
-> > 
-> > -- 
-> > 
-> > - Enable console JIT output:
-> > ```shell
-> > echo 2 > /proc/sys/net/core/bpf_jit_enable
-> > ```
-> > - Load & run the program of interest.
-> > - Copy the hex code from the kernel console to `/tmp/jit.txt`. Here's what a
-> > short program looks like. This includes a line of context - don't paste the
-> > `flen=` line.
-> > ```
-> > [ 79.381020] flen=8 proglen=54 pass=4 image=000000001af6f390
-> > from=test_verifier pid=258
-> > [ 79.389568] JIT code: 00000000: 0f 1f 44 00 00 66 90 55 48 89 e5 48 81 ec 08 00
-> > [ 79.397411] JIT code: 00000010: 00 00 48 c7 45 f8 64 00 00 00 bf 04 00 00 00 48
-> > [ 79.405965] JIT code: 00000020: f7 df f0 48 29 7d f8 8b 45 f8 48 83 f8 60 74 02
-> > [ 79.414719] JIT code: 00000030: c9 c3 31 c0 eb fa
-> > ```
-> > - This incantation will split out and decode the hex, then disassemble the
-> > result:
-> > ```shell
-> > cat /tmp/jit.txt | cut -d: -f2- | xxd -r >/tmp/obj && objdump -D -b
-> > binary -m i386:x86-64 /tmp/obj
-> > ```
-> > 
-> > --
-> > 
-> > Sandipan, Naveen, do you know of anything in the PowerPC code that
-> > might be leading us to drop the BPF_FETCH flag from the atomic
-> > instruction in tools/testing/selftests/bpf/verifier/atomic_bounds.c?
-> 
-> Yes, I think I just found the issue. We aren't looking at the correct BPF
-> instruction when checking the IMM value.
+Add device tree bindings for the ADRF6780 Upconverter.
 
-great, nice catch! :-) that fixes it for me.. 
+Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+---
+v3: remove `adi,parity-en` from example after latest changes in v2 
+ .../bindings/iio/frequency/adi,adrf6780.yaml  | 122 ++++++++++++++++++
+ 1 file changed, 122 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
 
-Tested-by: Jiri Olsa <jolsa@redhat.com>
-
-thanks,
-jirka
-
-> 
-> 
-> --- a/arch/powerpc/net/bpf_jit_comp64.c
-> +++ b/arch/powerpc/net/bpf_jit_comp64.c
-> @@ -673,7 +673,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->                 * BPF_STX ATOMIC (atomic ops)
->                 */
->                case BPF_STX | BPF_ATOMIC | BPF_W:
-> -                       if (insn->imm != BPF_ADD) {
-> +                       if (insn[i].imm != BPF_ADD) {
->                                pr_err_ratelimited(
->                                        "eBPF filter atomic op code %02x (@%d) unsupported\n",
->                                        code, i);
-> @@ -695,7 +695,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->                        PPC_BCC_SHORT(COND_NE, tmp_idx);
->                        break;
->                case BPF_STX | BPF_ATOMIC | BPF_DW:
-> -                       if (insn->imm != BPF_ADD) {
-> +                       if (insn[i].imm != BPF_ADD) {
->                                pr_err_ratelimited(
->                                        "eBPF filter atomic op code %02x (@%d) unsupported\n",
->                                        code, i);
-> 
-> 
-> 
-> Thanks,
-> Naveen
-> 
+diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
+new file mode 100644
+index 000000000000..b191d98bf778
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
+@@ -0,0 +1,122 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/frequency/adi,adrf6780.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ADRF6780 Microwave Upconverter
++
++maintainers:
++- Antoniu Miclaus <antoniu.miclaus@analog.com>
++
++description: |
++   wideband, microwave upconverter optimized for point to point microwave
++   radio designs operating in the 5.9 GHz to 23.6 GHz frequency range.
++   https://www.analog.com/en/products/adrf6780.html
++
++properties:
++  compatible:
++    enum:
++      - adi,adrf6780
++
++  reg:
++    maxItems: 1
++
++  spi-max-frequency:
++    maximum: 1000000
++
++  clocks:
++    description:
++      Definition of the external clock (see clock/clock-bindings.txt)
++    minItems: 1
++
++  clock-names:
++    description:
++      Must be "lo_in"
++    maxItems: 1
++
++  clock-output-names:
++    maxItems: 1
++
++  adi,vga-buff-en:
++    description:
++      VGA Buffer Enable.
++    type: boolean
++
++  adi,lo-buff-en:
++    description:
++      LO Buffer Enable.
++    type: boolean
++
++  adi,if-mode-en:
++    description:
++      IF Mode Enable.
++    type: boolean
++
++  adi,iq-mode-en:
++    description:
++      IQ Mode Enable.
++    type: boolean
++
++  adi,lo-x2-en:
++    description:
++      LO x2 Enable.
++    type: boolean
++
++  adi,lo-ppf-en:
++    description:
++      LO x1 Enable.
++    type: boolean
++
++  adi,lo-en:
++    description:
++      LO Enable.
++    type: boolean
++
++  adi,uc-bias-en:
++    description:
++      UC Bias Enable.
++    type: boolean
++
++  adi,lo-sideband:
++    description:
++      Switch to the Other LO Sideband.
++    type: boolean
++
++  adi,vdet-out-en:
++    description:
++      VDET Output Select Enable.
++    type: boolean
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++  '#clock-cells':
++    const: 0
++
++required:
++- compatible
++- reg
++- clocks
++- clock-names
++
++additionalProperties: false
++
++examples:
++- |
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      adrf6780@0{
++        compatible = "adi,adrf6780";
++        reg = <0>;
++        spi-max-frequency = <1000000>;
++        clocks = <&adrf6780_lo>;
++        clock-names = "lo_in";
++      };
++    };
++...
++
+-- 
+2.32.0
 
