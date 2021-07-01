@@ -2,138 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617D73B8BCA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 03:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFDF3B8BD6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 03:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237176AbhGABlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 21:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237174AbhGABlF (ORCPT
+        id S238465AbhGABx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 21:53:29 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:17348 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238452AbhGABx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 21:41:05 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0590DC0617A8;
-        Wed, 30 Jun 2021 18:38:36 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id i6so4495570pfq.1;
-        Wed, 30 Jun 2021 18:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=AhIcCAsU0JMuAgIY80aubo73YLuVRNjzuPIRJkjz91M=;
-        b=IYHpeVN0i0Jm/bwU3HHeloREaBl4e4LKoMR5Xlvgz+FYeCIgpuKaDI0UbnxFwrXWKI
-         j4SMMdS+mREd6NdhWXN4DMfYATZM6gXfXWDCSZ15NUrNq+rIGWLA9f4vOIi9Rtcoooe5
-         8vl3GRuI87J0OPIQS9Jyk6EE9jEifIQvTgOPkx7XrxzkxXM7VKlmcuhOek9S5/9z/DH6
-         4gzM8swCRghNJi3MdJlN3fpE2uV5G0piyiZBjouU7Tw6JFQ9tblKL+GDb8yeK3CirjSP
-         Eu2r0hiIH1pkS8V3R6FQjPlAW2isV+6LTyWW0fQtwa1IVxvAqYyx975iO5DaKPkBq+jI
-         mBNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=AhIcCAsU0JMuAgIY80aubo73YLuVRNjzuPIRJkjz91M=;
-        b=A1AaVAiybPaSqdQK7XZkpum4e2JlLRrIW9al9KySopIiCPewkfO+OhVEJRsn6BPjF2
-         6HQMXnS9R4F5/LUw6N1Jse47cMVWLz+1ZA/fd8Oa0boPfwDLnVarEIiSJvovIDqVOr1o
-         rD6Q0BBY4Ip1AYKYWm1GhUilM6lprRl3QP1MCfm584RFgdQViaLhAAbXTqWI1iKLo6oY
-         IMH/Co7TCQZHpr2zzoIh/AFSjv0fIhWrbRuAKppaKVvX2wWX22AG3vOdQEwshyvrdPYb
-         cnTmBzyNW8vVfCzc32aTP4/DsyLap55Al84WoVdZ2bQfZBhCnGWTuAO8wk9w9UyFbDbs
-         5kUA==
-X-Gm-Message-State: AOAM533iF8beOH+U2MiAggvXLoqaV3WxTiAw9Ba2ae4O8UEXPgFVUkVa
-        bRFTC7rnTfXC0Q/w9oRKKaE=
-X-Google-Smtp-Source: ABdhPJxb22qiES2bjC3lmrAzp8vd/ZbGrtgz3sMO4d0wi7AFKNinogUy5VXKvI5QBzM5lqVKGdtdbA==
-X-Received: by 2002:a05:6a00:6:b029:305:4ab6:90ba with SMTP id h6-20020a056a000006b02903054ab690bamr26296699pfk.1.1625103515221;
-        Wed, 30 Jun 2021 18:38:35 -0700 (PDT)
-Received: from localhost.localdomain ([150.109.127.35])
-        by smtp.gmail.com with ESMTPSA id 194sm837936pfy.51.2021.06.30.18.38.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 30 Jun 2021 18:38:34 -0700 (PDT)
-From:   Bing Fan <hptsfb@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5] arm pl011 serial: support multi-irq request
-Date:   Thu,  1 Jul 2021 09:38:32 +0800
-Message-Id: <1625103512-30182-1-git-send-email-hptsfb@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        Wed, 30 Jun 2021 21:53:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625104258; h=Content-Transfer-Encoding: Mime-Version:
+ Content-Type: References: In-Reply-To: Date: Cc: To: From: Subject:
+ Message-ID: Sender; bh=O3dYctqNkA2iDLlLNcFRYr4tGQrg3CF6yd9KGFfYv5s=; b=nQ1X2aEvsFFPV6lePWyzCfTRlUa8uhv+revXn2xSTDO+OUdHJRM2gSqi8375jh+KPnUjeQI/
+ XcIMqugrfUZtSan73Ewzhr5yxNRm+ZCp9T5H2pFfPIQrL94RXLTepBtgyh/w/sEcEaiYEyTG
+ dg5I4R00kk1p1UKV1kb/OPRBRSE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60dd1f6f3a8b6d0a450185f9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Jul 2021 01:50:39
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D42A2C43146; Thu,  1 Jul 2021 01:50:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hemantk-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AE199C43143;
+        Thu,  1 Jul 2021 01:50:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AE199C43143
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Message-ID: <1625104231.10055.19.camel@codeaurora.org>
+Subject: Re: [PATCH v3 1/2] bus: mhi: Fix pm_state conversion to string
+From:   Hemant Kumar <hemantk@codeaurora.org>
+To:     Paul Davey <paul.davey@alliedtelesis.co.nz>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 30 Jun 2021 18:50:31 -0700
+In-Reply-To: <20210629035357.11091-2-paul.davey@alliedtelesis.co.nz>
+References: <20210629035357.11091-1-paul.davey@alliedtelesis.co.nz>
+         <20210629035357.11091-2-paul.davey@alliedtelesis.co.nz>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.18.5.2-0ubuntu3.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bing Fan <tombinfan@tencent.com>
+On Tue, 2021-06-29 at 15:53 +1200, Paul Davey wrote:
+> On big endian architectures the mhi debugfs files which report pm
+> state
+> give "Invalid State" for all states.  This is caused by using
+> find_last_bit which takes an unsigned long* while the state is passed
+> in
+> as an enum mhi_pm_state which will be of int size.
+> 
+> Fix by using __fls to pass the value of state instead of
+> find_last_bit.
+> 
+> Signed-off-by: Paul Davey <paul.davey@alliedtelesis.co.nz>
 
-In order to make pl011 work better, multiple interrupts are
-required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
-at the same time, pl011 to GIC does not merge the interrupt
-lines(each serial-interrupt corresponding to different GIC hardware
-interrupt), so need to enable and request multiple gic interrupt
-numbers in the driver.
-
-Signed-off-by: Bing Fan <tombinfan@tencent.com>
----
- drivers/tty/serial/amba-pl011.c | 34 ++++++++++++++++++++++++++++++---
- 1 file changed, 31 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-index 78682c12156a..7bfe8efcc787 100644
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -1701,11 +1701,39 @@ static void pl011_write_lcr_h(struct uart_amba_port *uap, unsigned int lcr_h)
- 	}
- }
- 
-+static void pl011_release_irq(struct uart_amba_port *uap, unsigned int max_cnt)
-+{
-+	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
-+	int i;
-+
-+	for (i = 0; i < max_cnt; i++)
-+		if (amba_dev->irq[i])
-+			free_irq(amba_dev->irq[i], uap);
-+}
-+
- static int pl011_allocate_irq(struct uart_amba_port *uap)
- {
-+	int ret = 0;
-+	int i;
-+	unsigned int virq;
-+	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
-+
- 	pl011_write(uap->im, uap, REG_IMSC);
- 
--	return request_irq(uap->port.irq, pl011_int, IRQF_SHARED, "uart-pl011", uap);
-+	for (i = 0; i < AMBA_NR_IRQS; i++) {
-+		virq = amba_dev->irq[i];
-+		if (virq == 0)
-+			break;
-+
-+		ret = request_irq(virq, pl011_int, IRQF_SHARED, dev_name(&amba_dev->dev), uap);
-+		if (ret) {
-+			dev_err(uap->port.dev, "request %u interrupt failed\n", virq);
-+			pl011_release_irq(uap, i - 1);
-+			break;
-+		}
-+	}
-+
-+	return ret;
- }
- 
- /*
-@@ -1864,7 +1892,7 @@ static void pl011_shutdown(struct uart_port *port)
- 
- 	pl011_dma_shutdown(uap);
- 
--	free_irq(uap->port.irq, uap);
-+	pl011_release_irq(uap, AMBA_NR_IRQS);
- 
- 	pl011_disable_uart(uap);
- 
-@@ -1894,7 +1922,7 @@ static void sbsa_uart_shutdown(struct uart_port *port)
- 
- 	pl011_disable_interrupts(uap);
- 
--	free_irq(uap->port.irq, uap);
-+	pl011_release_irq(uap, AMBA_NR_IRQS);
- 
- 	if (uap->port.ops->flush_buffer)
- 		uap->port.ops->flush_buffer(port);
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 -- 
-2.17.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 
