@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458333B8F24
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07DC83B8F2A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235651AbhGAIzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 04:55:03 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:55451 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235444AbhGAIzD (ORCPT
+        id S235534AbhGAI4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 04:56:25 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:40196 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235356AbhGAI4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 04:55:03 -0400
-X-UUID: 6c2bb18e6e534c00ad876bd29950ce95-20210701
-X-UUID: 6c2bb18e6e534c00ad876bd29950ce95-20210701
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 873094388; Thu, 01 Jul 2021 16:52:31 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 1 Jul 2021 16:52:29 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 1 Jul 2021 16:52:29 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <nathan@kernel.org>
-CC:     <clang-built-linux@googlegroups.com>, <keescook@chromium.org>,
-        <lecopzer.chen@mediatek.com>, <linux-kbuild@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <masahiroy@kernel.org>,
-        <michal.lkml@markovi.net>, <samitolvanen@google.com>,
-        <yj.chiang@mediatek.com>
-Subject: Re: [PATCH 1/2] Kbuild: lto: add make-version macros
-Date:   Thu, 1 Jul 2021 16:52:29 +0800
-Message-ID: <20210701085229.32761-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <fdcb8b80-00dd-dd59-1283-836736d4a773@kernel.org>
-References: <fdcb8b80-00dd-dd59-1283-836736d4a773@kernel.org>
+        Thu, 1 Jul 2021 04:56:24 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 42A071FF89;
+        Thu,  1 Jul 2021 08:53:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625129633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1vF2/tUeigGHShFzpwWnyhn7/519y4b+MZEDcnfKWyk=;
+        b=pdygm30JjyW50AuQxLQcCxCaOpXnX4AjOkPrbJ9da+LTne0nA5V6Oz1jLu190Ts5Lb5sfr
+        JFd4zb2WCDpobzmi/45XdD0NPpI82fhdcyS013gH61nrBl6HJOlNgHsa7ZShOt6s4o2jIC
+        GuSHsiw/jOANYSvOIl246jzKverxMSA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625129633;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1vF2/tUeigGHShFzpwWnyhn7/519y4b+MZEDcnfKWyk=;
+        b=PkBX/Ues/1hYa+jmjKAaV0aZ5hZsURjYXGu8azsVVDc7WquohTQCfDL6UvHwZEeVI4zKks
+        Zwd0MfALwYXmR4AQ==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id D3C2FA3B8A;
+        Thu,  1 Jul 2021 08:53:52 +0000 (UTC)
+Date:   Thu, 1 Jul 2021 10:53:52 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Peter Zijlstra <peterz@infradead.org>
+cc:     jpoimboe@redhat.com, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, joro@8bytes.org,
+        boris.ostrovsky@oracle.com, jgross@suse.com, x86@kernel.org,
+        mbenes@suse.com, rostedt@goodmis.org, dvyukov@google.com,
+        elver@google.com, Andi Kleen <andi@firstfloor.org>
+Subject: Re: [PATCH v2 02/24] objtool: Introduce CFI hash
+In-Reply-To: <YN1+VkWmKyIk4zlo@hirez.programming.kicks-ass.net>
+Message-ID: <alpine.LSU.2.21.2107011041240.3003@pobox.suse.cz>
+References: <20210624094059.886075998@infradead.org> <20210624095147.756759107@infradead.org> <alpine.LSU.2.21.2106301431120.32505@pobox.suse.cz> <YN1+VkWmKyIk4zlo@hirez.programming.kicks-ass.net>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hi Lecopzer,
-> 
-> On 6/30/2021 5:14 AM, Lecopzer Chen wrote:
-> > To check the GNU make version. Used by the LTO Kconfig.
+> > > +++ b/tools/objtool/orc_gen.c
+> > > @@ -13,13 +13,19 @@
+> > >  #include <objtool/warn.h>
+> > >  #include <objtool/endianness.h>
+> > >  
+> > > -static int init_orc_entry(struct orc_entry *orc, struct cfi_state *cfi)
+> > > +static int init_orc_entry(struct orc_entry *orc, struct cfi_state *cfi,
+> > > +			  struct instruction *insn)
+> > >  {
+> > > -	struct instruction *insn = container_of(cfi, struct instruction, cfi);
+> > >  	struct cfi_reg *bp = &cfi->regs[CFI_BP];
+> > >  
+> > >  	memset(orc, 0, sizeof(*orc));
+> > >  
+> > > +	if (!cfi) {
+> > > +		orc->end = 0;
+> > > +		orc->sp_reg = ORC_REG_UNDEFINED;
+> > > +		return 0;
+> > > +	}
+> > > +
 > > 
-> > LTO with MODVERSION will fail in generating correct CRC because
-> > the makefile rule doesn't work for make with version 3.8X.[1]
-> > 
-> > Thus we need to check make version during selecting on LTO Kconfig.
-> > The MAKE_VERSION_INT means MAKE_VERSION in canonical digits integer and
-> > implemnted by imitating CLANG_VERSION.
+> > This looks strange. You access cfi a couple of lines earlier (bp cfi_reg 
+> > initialization).
 > 
-> implemented
+> That's a relative address compute, it doesn't actually dereference the
+> pointer.
 
-Thanks!
+Right, I misread the line.
+ 
+> > Is it even possible to have cfi == NULL here? The second call site below 
+> > has a check and the first one should not happen (insn->cfip should be 
+> > always set if I am not missing something).
 > 
-> > 
-> > [1] https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/
-> > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> > ---
-> >   Makefile                |  2 +-
-> >   init/Kconfig            |  4 ++++
-> >   scripts/Kconfig.include |  3 +++
-> >   scripts/make-version.sh | 13 +++++++++++++
-> >   4 files changed, 21 insertions(+), 1 deletion(-)
-> >   create mode 100755 scripts/make-version.sh
-> > 
-> > diff --git a/Makefile b/Makefile
-> > index 88888fff4c62..2402745b2ba9 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -516,7 +516,7 @@ CLANG_FLAGS :=
-> >   
-> >   export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS CROSS_COMPILE LD CC
-> >   export CPP AR NM STRIP OBJCOPY OBJDUMP READELF PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL
-> > -export PERL PYTHON3 CHECK CHECKFLAGS MAKE UTS_MACHINE HOSTCXX
-> > +export PERL PYTHON3 CHECK CHECKFLAGS MAKE MAKE_VERSION UTS_MACHINE HOSTCXX
-> >   export KGZIP KBZIP2 KLZOP LZMA LZ4 XZ ZSTD
-> >   export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
-> >   
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index a61c92066c2e..9f2b71fdf23e 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -83,6 +83,10 @@ config TOOLS_SUPPORT_RELR
-> >   config CC_HAS_ASM_INLINE
-> >   	def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
-> >   
-> > +config MAKE_VERSION_INT
-> 
-> It might be cleaner to make this "config MAKE_VERSION". It will not 
-> conflict with the builtin MAKE_VERSION because this is really 
-> CONFIG_MAKE_VERSION, which is how MAKE_VERSION will be handled in Kconfig.
+> I can happen for instructions that are not visited, like NOP fillers
+> between functions. Remove the check and try to build a file :-)
 
-Okat, thanks, I'll try and fix it in patch v2.
-> 
-> > +	int
-> > +	default $(make-version)
-> > +
-> >   config CONSTRUCTORS
-> >   	bool
-> >   
-> > diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
-> > index 0496efd6e117..f956953d0236 100644
-> > --- a/scripts/Kconfig.include
-> > +++ b/scripts/Kconfig.include
-> > @@ -63,3 +63,6 @@ ld-version := $(shell,set -- $(ld-info) && echo $2)
-> >   cc-option-bit = $(if-success,$(CC) -Werror $(1) -E -x c /dev/null -o /dev/null,$(1))
-> >   m32-flag := $(cc-option-bit,-m32)
-> >   m64-flag := $(cc-option-bit,-m64)
-> > +
-> > +# Get the GNU make version with a canonical digit.
-> > +make-version := $(shell,$(srctree)/scripts/make-version.sh $(MAKE_VERSION))
-> 
-> It might be better for this to just be used directly by "config 
-> MAKE_VERSION":
-> 
-> config MAKE_VERSION
-> 	int
-> 	default $(shell,$(srctree)/scripts/make-version.sh $(MAKE_VERSION))
+Doh, I should have done that. Of course there must be unvisited 
+instructions. Sorry for the noise.
 
-Sure, I'll fix in patch v2, thank you.
-
-> 
-> > diff --git a/scripts/make-version.sh b/scripts/make-version.sh
-> > new file mode 100755
-> > index 000000000000..ce5af96696cc
-> > --- /dev/null
-> > +++ b/scripts/make-version.sh
-> > @@ -0,0 +1,13 @@
-> > +#!/bin/sh
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +#
-> > +# Print the linker name and its version in a 5 or 6-digit form.
-> > +
-> > +set -e
-> > +
-> > +# Convert the version string x.y.z to a canonical 5 or 6-digit form.
-> > +IFS=.
-> > +set -- $1
-> > +
-> > +# If the 2nd or 3rd field is missing, fill it with a zero.
-> > +echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
-> > 
+Miroslav
