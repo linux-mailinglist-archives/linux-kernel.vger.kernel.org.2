@@ -2,90 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12A23B8C63
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 04:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1903B8C64
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 04:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238627AbhGAClA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 22:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238056AbhGACk7 (ORCPT
+        id S238635AbhGACqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 22:46:18 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5948 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238056AbhGACqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 22:40:59 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6E5C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 19:38:29 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so3007518pjo.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 19:38:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DuvFY1gPxxozd7qXy5qfSaZHOIKcOMsMpJnnW/JJ+sI=;
-        b=KZPgT5/AWPP1IKKRemRHaymL0E9XMI+s0sy4ZnF6fvxcQ3UNafR9ONvDi/27k/Afj9
-         Uq2fpzi69JdTlF1Kh4y6Qy833grEW2xOo0MNt3wuu3/TtfsYBBQaVIoc+dBGelTcDY0b
-         Jkgm4yD1ewl82bVW59EPJoCiQWFjTcuZJJ5043FvvaM3dJIMuGao0fxElA3XmShPNbK0
-         OtwvhIFMTChxOhWbjR8a0zgCTWkPVE7OWaLkgCcvfxVw4Kw4wxPMyQmR9dtjvpw9tryQ
-         kilHELsI6MrhJfNnyJjfHoOLvbzwi3vsJh41EOi8YhmLGoiMC7sV9TffN15P2Js1La79
-         4ruQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=DuvFY1gPxxozd7qXy5qfSaZHOIKcOMsMpJnnW/JJ+sI=;
-        b=bEJrzBSP2OcdIMTbMeJG88drNPOKZwgsJ0FCk4IkxcaXxxn6CHeElTcRoaTqc0kNn/
-         b7G3Q2h7XAi/OTwIvYT1w7KE1Mm39NnWCO9R+4xUieX4grml7eQSnt7fpu6uRdo1FRNv
-         7QtbLLAdXe1LhjzBxYBUzy1ph/p5Gxzm+3iFZdhskLI2Fno8n/ar09pu927jdYBtYI/k
-         liFcBxU4sETHFqliX/gjJh/ZSIV1gri08tWZbHAlYxQqGbEvgB5oYh5twWVZ/dIo3Uo/
-         xf39B8qhY+STdjeRTUMrkmJM4D17bBwpw5Mz8+1Ipy9Ff1wjKaSDrurkUrYDJy8EdSCn
-         32aQ==
-X-Gm-Message-State: AOAM531gQ0MuT3bTNzIUwGkIfLMhuNWKrgyoYSOSjod6ows+9hwZz9+J
-        agZW6O19A2IaKdmDz7SmHx+vGQ==
-X-Google-Smtp-Source: ABdhPJxGRwxXtTva/zQTzn2UIFqbxvTX+jXNDe1uu/VCt2rAXg0/eU01kj2QcxTbgulC46mwzwgzaQ==
-X-Received: by 2002:a17:90a:6605:: with SMTP id l5mr42070512pjj.168.1625107108942;
-        Wed, 30 Jun 2021 19:38:28 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id g4sm23225456pfu.134.2021.06.30.19.38.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 19:38:28 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 19:38:28 -0700 (PDT)
-X-Google-Original-Date: Wed, 30 Jun 2021 19:38:04 PDT (-0700)
-Subject:     Re: [PATCH -next v2] riscv: Enable KFENCE for riscv64
-In-Reply-To: <CANpmjNMh9ef30N6LfTrKaAVFR5iKPt_pkKr9p4Ly=-BD7GbTQQ@mail.gmail.com>
-CC:     liushixin2@huawei.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, glider@google.com, dvyukov@google.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     elver@google.com
-Message-ID: <mhng-d63a7488-73a5-451e-9bf8-52ded7f2e15c@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Wed, 30 Jun 2021 22:46:17 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GFj9z5cS6z76Rp;
+        Thu,  1 Jul 2021 10:40:23 +0800 (CST)
+Received: from [10.174.178.36] (10.174.178.36) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 1 Jul 2021 10:43:45 +0800
+Subject: Re: [Phishing Risk] [External] [PATCH 2/3] mm/zsmalloc.c: combine two
+ atomic ops in zs_pool_dec_isolated()
+To:     Muchun Song <songmuchun@bytedance.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>, <ngupta@vflare.org>,
+        <senozhatsky@chromium.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+References: <20210624123930.1769093-1-linmiaohe@huawei.com>
+ <20210624123930.1769093-3-linmiaohe@huawei.com>
+ <CAMZfGtUNtR3ZPv4m5bBCGdE5GuMR5Bw18_n7YzqB4s6QHyV+Pg@mail.gmail.com>
+ <1b38b33f-316e-1816-216f-9923f612ceb6@huawei.com>
+ <CAMZfGtXnYxumuNau2rvk+ivPEa-ows0KD4EWFBjCiM6e_iagtg@mail.gmail.com>
+ <01117bc0-53b1-d81a-a4d8-2a1dbe5dcd94@huawei.com>
+ <97fdc2f3-6757-7ca1-6323-02b618b85894@huawei.com>
+ <CAMZfGtUq72KULin=9onhf=7o5XwzR79E7QBdgg+ny1gYQGRvzw@mail.gmail.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <1b85c741-59ea-e3a0-5b58-08ea6e8bfbbc@huawei.com>
+Date:   Thu, 1 Jul 2021 10:43:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAMZfGtUq72KULin=9onhf=7o5XwzR79E7QBdgg+ny1gYQGRvzw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.36]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 02:11:53 PDT (-0700), elver@google.com wrote:
-> On Tue, 15 Jun 2021 at 04:35, Liu Shixin <liushixin2@huawei.com> wrote:
->> Add architecture specific implementation details for KFENCE and enable
->> KFENCE for the riscv64 architecture. In particular, this implements the
->> required interface in <asm/kfence.h>.
+On 2021/6/25 18:40, Muchun Song wrote:
+> On Fri, Jun 25, 2021 at 5:32 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
 >>
->> KFENCE requires that attributes for pages from its memory pool can
->> individually be set. Therefore, force the kfence pool to be mapped at
->> page granularity.
+>> On 2021/6/25 16:46, Miaohe Lin wrote:
+>>> On 2021/6/25 15:29, Muchun Song wrote:
+>>>> On Fri, Jun 25, 2021 at 2:32 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>>>>>
+>>>>> On 2021/6/25 13:01, Muchun Song wrote:
+>>>>>> On Thu, Jun 24, 2021 at 8:40 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>>>>>>>
+>>>>>>> atomic_long_dec_and_test() is equivalent to atomic_long_dec() and
+>>>>>>> atomic_long_read() == 0. Use it to make code more succinct.
+>>>>>>
+>>>>>> Actually, they are not equal. atomic_long_dec_and_test implies a
+>>>>>> full memory barrier around it but atomic_long_dec and atomic_long_read
+>>>>>> don't.
+>>>>>>
+>>>>>
+>>>>> Many thanks for comment. They are indeed not completely equal as you said.
+>>>>> What I mean is they can do the same things we want in this specified context.
+>>>>> Thanks again.
+>>>>
+>>>> I don't think so. Using individual operations can eliminate memory barriers.
+>>>> We will pay for the barrier if we use atomic_long_dec_and_test here.
+>>>
+>>> The combination of atomic_long_dec and atomic_long_read usecase is rare and looks somehow
+>>> weird. I think it's worth to do this with the cost of barrier.
+>>>
 >>
->> Testing this patch using the testcases in kfence_test.c and all passed.
+>> It seems there is race between zs_pool_dec_isolated and zs_unregister_migration if pool->destroying
+>> is reordered before the atomic_long_dec and atomic_long_read ops. So this memory barrier is necessary:
 >>
->> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
->> Acked-by: Marco Elver <elver@google.com>
->> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->
-> I can't see this in -next yet. It would be nice if riscv64 could get
-> KFENCE support.
+>> zs_pool_dec_isolated                            zs_unregister_migration
+>>   pool->destroying != true
+>>                                                   pool->destroying = true;
+>>                                                   smp_mb();
+>>                                                   wait_for_isolated_drain
+>>                                                     wait_event with atomic_long_read(&pool->isolated_pages) != 0
+>>   atomic_long_dec(&pool->isolated_pages);
+>>   atomic_long_read(&pool->isolated_pages) == 0
+> 
+> I am not familiar with zsmalloc. So I do not know whether the race
+> that you mentioned above exists. But If it exists, the fix also does
+> not make sense to me. If there should be inserted a smp_mb between
+> atomic_long_dec and atomic_long_read, you should insert
+> smp_mb__after_atomic instead of using atomic_long_dec_and_test.
+> Because smp_mb__after_atomic can be optimized on certain architecture
+> (e.g. x86_64).
+> 
 
-Thanks, this is on for-next.  I'm just doing a boot test with 
-CONFIG_KFENCE=y (and whatever that turns on for defconfig), let me know 
-if there's anything more interesting to test on the KFENCE side of 
-things.
+Sorry for the delay.
+
+I think there is two options:
+
+atomic_long_dec(&pool->isolated_pages);
+smp_mb__after_atomic
+atomic_long_read(&pool->isolated_pages) == 0
+
+We have two atomic ops with one smp_mb.
+
+vs
+
+atomic_long_dec_and_test while implies __smp_mb__before_atomic + atomic_long_ops + smp_mb__after_atomic.
+
+We have one atomic ops with two smp_mb.
+
+I think either one works but prefer later one. What do you think?
+
+Thanks.
+
+> Thanks.
+> 
+>>
+>> Thus wake_up_all is missed.
+>> And the comment in zs_pool_dec_isolated() said:
+>> /*
+>>  * There's no possibility of racing, since wait_for_isolated_drain()
+>>  * checks the isolated count under &class->lock after enqueuing
+>>  * on migration_wait.
+>>  */
+>>
+>> But I found &class->lock is indeed not acquired for wait_for_isolated_drain(). So I think the above race
+>> is possible. Does this make senses for you ?
+>> Thanks.
+>>
+>>>>
+>>>>>
+>>>>>> That RMW operations that have a return value is equal to the following.
+>>>>>>
+>>>>>> smp_mb__before_atomic()
+>>>>>> non-RMW operations or RMW operations that have no return value
+>>>>>> smp_mb__after_atomic()
+>>>>>>
+>>>>>> Thanks.
+>>>>>>
+>>>>>>>
+>>>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>>>>> ---
+>>>>>>>  mm/zsmalloc.c | 3 +--
+>>>>>>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+>>>>>>> index 1476289b619f..0b4b23740d78 100644
+>>>>>>> --- a/mm/zsmalloc.c
+>>>>>>> +++ b/mm/zsmalloc.c
+>>>>>>> @@ -1828,13 +1828,12 @@ static void putback_zspage_deferred(struct zs_pool *pool,
+>>>>>>>  static inline void zs_pool_dec_isolated(struct zs_pool *pool)
+>>>>>>>  {
+>>>>>>>         VM_BUG_ON(atomic_long_read(&pool->isolated_pages) <= 0);
+>>>>>>> -       atomic_long_dec(&pool->isolated_pages);
+>>>>>>>         /*
+>>>>>>>          * There's no possibility of racing, since wait_for_isolated_drain()
+>>>>>>>          * checks the isolated count under &class->lock after enqueuing
+>>>>>>>          * on migration_wait.
+>>>>>>>          */
+>>>>>>> -       if (atomic_long_read(&pool->isolated_pages) == 0 && pool->destroying)
+>>>>>>> +       if (atomic_long_dec_and_test(&pool->isolated_pages) && pool->destroying)
+>>>>>>>                 wake_up_all(&pool->migration_wait);
+>>>>>>>  }
+>>>>>>>
+>>>>>>> --
+>>>>>>> 2.23.0
+>>>>>>>
+>>>>>> .
+>>>>>>
+>>>>>
+>>>> .
+>>>>
+>>>
+>>
+> .
+> 
+
