@@ -2,137 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625963B939B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDDC3B93A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhGAPA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 11:00:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:55674 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232463AbhGAPAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 11:00:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 84241D6E;
-        Thu,  1 Jul 2021 07:57:54 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 166463F5A1;
-        Thu,  1 Jul 2021 07:57:52 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 15:57:50 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
-        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v3 1/3] sched: Fix UCLAMP_FLAG_IDLE setting
-Message-ID: <20210701145750.7mqat4ehja7ikbtc@e107158-lin.cambridge.arm.com>
-References: <20210623123441.592348-1-qperret@google.com>
- <20210623123441.592348-2-qperret@google.com>
- <20210630145848.htb7pnwsl2gao77x@e107158-lin.cambridge.arm.com>
- <YNyRisb3bNhDR0Rh@google.com>
- <YN2T1qnalRUKNcXt@google.com>
- <20210701110803.2lka3eaoukbb6b4p@e107158-lin.cambridge.arm.com>
- <YN24bLOthLd6RIpF@google.com>
+        id S233283AbhGAPCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 11:02:15 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57061 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233009AbhGAPCN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 11:02:13 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 161ExTM8001736
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 1 Jul 2021 10:59:30 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id CD4D415C3CE1; Thu,  1 Jul 2021 10:59:29 -0400 (EDT)
+Date:   Thu, 1 Jul 2021 10:59:29 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jack@suse.cz
+Subject: Re: [PATCH RFC v2] ext4:fix warning in mark_buffer_dirty as IO error
+ when mount with errors=continue
+Message-ID: <YN3YURikQ5SdEFLs@mit.edu>
+References: <20210615090537.3423231-1-yebin10@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YN24bLOthLd6RIpF@google.com>
+In-Reply-To: <20210615090537.3423231-1-yebin10@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/01/21 12:43, Quentin Perret wrote:
-> On Thursday 01 Jul 2021 at 12:08:03 (+0100), Qais Yousef wrote:
-> > On 07/01/21 10:07, Quentin Perret wrote:
-> > > On Wednesday 30 Jun 2021 at 15:45:14 (+0000), Quentin Perret wrote:
-> > > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > > > index b094da4c5fea..c0b999a8062a 100644
-> > > > --- a/kernel/sched/core.c
-> > > > +++ b/kernel/sched/core.c
-> > > > @@ -980,7 +980,6 @@ static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
-> > > >         if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
-> > > >                 return;
-> > > > 
-> > > > -       rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
-> > > >         WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
-> > > >  }
-> > > > 
-> > > > @@ -1253,6 +1252,10 @@ static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
-> > > > 
-> > > >         for_each_clamp_id(clamp_id)
-> > > >                 uclamp_rq_inc_id(rq, p, clamp_id);
-> > > > +
-> > > > +       /* Reset clamp idle holding when there is one RUNNABLE task */
-> > > > +       if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
-> > > > +               rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
-> > > >  }
-> > > > 
-> > > >  static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
-> > > > @@ -1300,6 +1303,13 @@ uclamp_update_active(struct task_struct *p, enum uclamp_id clamp_id)
-> > > >         if (p->uclamp[clamp_id].active) {
-> > > >                 uclamp_rq_dec_id(rq, p, clamp_id);
-> > > >                 uclamp_rq_inc_id(rq, p, clamp_id);
-> > > > +
-> > > > +               /*
-> > > > +                * Make sure to clear the idle flag if we've transiently reached
-> > > > +                * 0 uclamp active tasks on the rq.
-> > > > +                */
-> > > > +               if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
-> > > > +                       rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
-> > > 
-> > > Bah, now that I had coffee I realize this has the exact same problem.
-> > > Let me look at this again ...
-> > 
-> > Hehe uclamp has this effect. It's all obvious, until it's not :-)
-> 
-> Indeed ... :)
-> 
-> > Yes this needs to be out of the loop.
-> 
-> Right or maybe we can just check that uclamp_id == UCLAMP_MAX here and
-> we should be good to go? That is, what about the below?
+Thanks, applied.  I reworded the commit description a bit, putting the
+explanation first, and cleaning up the text a bit to make it more
+readable:
 
-Wouldn't it be better to do this from uclamp_idle_reset() then?
+commit 558d6450c7755aa005d89021204b6cdcae5e848f
+Author: Ye Bin <yebin10@huawei.com>
+Date:   Tue Jun 15 17:05:37 2021 +0800
 
-Thanks
+    ext4: fix WARN_ON_ONCE(!buffer_uptodate) after an error writing the superblock
+    
+    If a writeback of the superblock fails with an I/O error, the buffer
+    is marked not uptodate.  However, this can cause a WARN_ON to trigger
+    when we attempt to write superblock a second time.  (Which might
+    succeed this time, for cerrtain types of block devices such as iSCSI
+    devices over a flaky network.)
+    
+    Try to detect this case in flush_stashed_error_work(), and also change
+    __ext4_handle_dirty_metadata() so we always set the uptodate flag, not
+    just in the nojournal case.
+    
+    Before this commit, this problem can be repliciated via:
+    
+    1. dmsetup  create dust1 --table  '0 2097152 dust /dev/sdc 0 4096'
+    2. mount  /dev/mapper/dust1  /home/test
+    3. dmsetup message dust1 0 addbadblock 0 10
+    4. cd /home/test
+    5. echo "XXXXXXX" > t
+    
+    After a few seconds, we got following warning:
 
---
-Qais Yousef
-
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index b094da4c5fea..8e9b8106a0df 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -980,7 +980,6 @@ static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
->         if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
->                 return;
-> 
-> -       rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
->         WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
->  }
-> 
-> @@ -1253,6 +1252,10 @@ static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
-> 
->         for_each_clamp_id(clamp_id)
->                 uclamp_rq_inc_id(rq, p, clamp_id);
-> +
-> +       /* Reset clamp idle holding when there is one RUNNABLE task */
-> +       if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
-> +               rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
->  }
-> 
->  static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
-> @@ -1300,6 +1303,13 @@ uclamp_update_active(struct task_struct *p, enum uclamp_id clamp_id)
->         if (p->uclamp[clamp_id].active) {
->                 uclamp_rq_dec_id(rq, p, clamp_id);
->                 uclamp_rq_inc_id(rq, p, clamp_id);
-> +
-> +               /*
-> +                * Make sure to clear the idle flag if we've transiently reached
-> +                * 0 active tasks on rq.
-> +                */
-> +               if (clamp_id == MAX && rq->uclamp_flags & UCLAMP_FLAG_IDLE)
-> +                       rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
->         }
-> 
->         task_rq_unlock(rq, p, &rf);
+    ... <rest of commit description was unchanged, and omitted here>
