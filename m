@@ -2,375 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE14E3B9648
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 20:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15EA3B9651
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 21:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233923AbhGAS5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 14:57:47 -0400
-Received: from mail-il1-f178.google.com ([209.85.166.178]:46927 "EHLO
-        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233723AbhGAS5q (ORCPT
+        id S233996AbhGATDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 15:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233327AbhGATDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 14:57:46 -0400
-Received: by mail-il1-f178.google.com with SMTP id t12so7362121ile.13;
-        Thu, 01 Jul 2021 11:55:15 -0700 (PDT)
+        Thu, 1 Jul 2021 15:03:42 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18685C061762;
+        Thu,  1 Jul 2021 12:01:11 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id h4so7001143pgp.5;
+        Thu, 01 Jul 2021 12:01:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zuuuKETYTTaSFfx3LmdO74kAIcVPtY1K3CKJhQJ0z4Q=;
+        b=f3AxasF9oZPjccbYZnsq+cyvBw/7hU0StYGfkeCJEqFBTQ5l9K0Uuf9UU7bipsqBoF
+         fwBGIp0+4UYd8GMNzxv6AoGqjgr1JEpESfEFFJIleh3LLGU5t1mwDsv537lFDWqeRVxq
+         kd01C4JDm79TUWQfK+rF3iyf5M1eg/CouVAoV/TPTBOCPzuIJHsjdtSFSzEffA8Awwll
+         Ne34IcLUkbu1dq+aj/RLCd5OZIOwtD94r5F1Z6sFHEQY4FdtDEyxBn8B6t8abHIC+FzL
+         47kYp2SH2wOsDv0V6DaTk+O/uncf3l/i0VO8kHzt4gPCZb6ixLeiwS0bJvwBHy3J+3g9
+         NIAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AjIdIvaKWs/g3YQH2y/9gcvEvxeRXnLIJy5WplUdJ10=;
-        b=bjIyfNy1nA99HYTyO/yiS7CRNUiwoMQoje9Bbf83RS3uBYpq5Ujl/n/1ZyJj/p/dP4
-         eXyC24qwKi90Z01+NPOee/ZYC2liXAY6fQGBkdamIM6wa0HYYqIqFqOcZeMzasznSQeF
-         Qoxa3ZO0c+Gu4kkWohRkxBnS/xLHUt6tnHaxOUEkQppxN40hRMJK+TyZAAGcCK/BOakH
-         GqViGW6DXI2QDgaVGVstMCvrAzDMclvNal9Yw48L06oIUChaD9NU1WhlSiCMLjJg6AoB
-         KpTdPcbDq/3Fe8XOODLxWeAU+mKt0aUBj5eDzqG/iDUpUDU3LYrY1uzVx8cslx0WeKnC
-         tpfw==
-X-Gm-Message-State: AOAM532/+bPl85OUUgt9BDol4e1lHVlplra+dwsTdl8emFjUc/KC2It3
-        8SVCgymWxoMawVAhqLq1bw==
-X-Google-Smtp-Source: ABdhPJwR2HQJJlZDFXRkP5IbkhozwMMQL8sc0gfhmj6y5COI1lXIuBJo2mO4kcKvs+Ld3Z1dYQ+rlw==
-X-Received: by 2002:a92:d246:: with SMTP id v6mr583454ilg.191.1625165715216;
-        Thu, 01 Jul 2021 11:55:15 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id z3sm368840ior.14.2021.07.01.11.55.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 11:55:13 -0700 (PDT)
-Received: (nullmailer pid 2729152 invoked by uid 1000);
-        Thu, 01 Jul 2021 18:55:09 -0000
-Date:   Thu, 1 Jul 2021 12:55:09 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v3 11/11] media: dt-bindings: Convert Cadence CSI2RX
- binding to YAML
-Message-ID: <20210701185509.GA2653882@robh.at.kernel.org>
-References: <20210624192200.22559-1-p.yadav@ti.com>
- <20210624192200.22559-12-p.yadav@ti.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zuuuKETYTTaSFfx3LmdO74kAIcVPtY1K3CKJhQJ0z4Q=;
+        b=Osm986opySeHCNJa59X4AoRYwWmf7q1SgnhIB2Qhu4CyaRXE/vO+sKsseHZju4Bk3s
+         dPtYP8/zghTwFUG6exll9BZ/wOZDShETc151GCktbohX0ddlHeDzgPhfBNGY+h+ojqYJ
+         W1R2YI48y1i57sXDZtWofFtDwVjxoqjQzbouAnDmebgSEg0Qf+NkExgy7Jfy9yKnpeGG
+         XmdqzuWvqd0NLaRa9AHJTDwe7AxgCMDtGrcEr6i/wuLl2D6vu+XpkUH/xiCDh03z6pTq
+         qCUccMoCJHm93XxAf1j+TUDVz1+eKa3roSEoEhaJDTBfnZMusJh7uF+XkI3iHXJbJKLY
+         vvkA==
+X-Gm-Message-State: AOAM5320UUi+pvoe8uAQepcwJWsqNSxo+CBjlj7GZng7OkwR9uV9UrUL
+        PA1fMG4L1rvWR9r8fUYzy+ohYA7jDCqk4g==
+X-Google-Smtp-Source: ABdhPJz/eUSEWo0QVh5j7rnqa8Zby+3Kv0kHgJgigDcoRLfXSRVvqtrOiWWBdN9Ifr1MQ4y2KfB7Dw==
+X-Received: by 2002:aa7:9ed1:0:b029:2f2:fb20:bac3 with SMTP id r17-20020aa79ed10000b02902f2fb20bac3mr1474827pfq.6.1625166070073;
+        Thu, 01 Jul 2021 12:01:10 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id i18sm761753pfa.37.2021.07.01.12.01.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Jul 2021 12:01:09 -0700 (PDT)
+Subject: Re: [PATCH net-next v1 1/1] net: usb: asix: ax88772: suspend PHY on
+ driver probe
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20210629044305.32322-1-o.rempel@pengutronix.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <931f10ca-2d81-8264-950c-8d29c18a7b35@gmail.com>
+Date:   Thu, 1 Jul 2021 12:01:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624192200.22559-12-p.yadav@ti.com>
+In-Reply-To: <20210629044305.32322-1-o.rempel@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 12:52:00AM +0530, Pratyush Yadav wrote:
-> Convert the Cadence CSI2RX binding to use YAML schema.
+On 6/28/21 9:43 PM, Oleksij Rempel wrote:
+> After probe/bind sequence is the PHY in active state, even if interface
+> is stopped. As result, on some systems like Samsung Exynos5250 SoC based Arndale
+> board, the ASIX PHY will be able to negotiate the link but fail to
+> transmit the data.
 > 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> To handle it, suspend the PHY on probe.
+
+Very unusual, could not the PHY be attached/connected to a ndo_open()
+time like what most drivers do?
+
 > 
+> Fixes: e532a096be0e ("net: usb: asix: ax88772: add phylib support")
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 > ---
+>  drivers/net/usb/asix_devices.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Changes in v3:
-> - Add compatible: contains: const: cdns,csi2rx to allow SoC specific
->   compatible.
-> - Add more constraints for data-lanes property.
+> diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
+> index aec97b021a73..2c115216420a 100644
+> --- a/drivers/net/usb/asix_devices.c
+> +++ b/drivers/net/usb/asix_devices.c
+> @@ -701,6 +701,7 @@ static int ax88772_init_phy(struct usbnet *dev)
+>  		return ret;
+>  	}
+>  
+> +	phy_suspend(priv->phydev);
+>  	priv->phydev->mac_managed_pm = 1;
+>  
+>  	phy_attached_info(priv->phydev);
 > 
-> Changes in v2:
-> - New in v2.
-> 
->  .../devicetree/bindings/media/cdns,csi2rx.txt | 100 -----------
->  .../bindings/media/cdns,csi2rx.yaml           | 169 ++++++++++++++++++
->  2 files changed, 169 insertions(+), 100 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.txt
->  create mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/cdns,csi2rx.txt b/Documentation/devicetree/bindings/media/cdns,csi2rx.txt
-> deleted file mode 100644
-> index 6b02a0657ad9..000000000000
-> --- a/Documentation/devicetree/bindings/media/cdns,csi2rx.txt
-> +++ /dev/null
-> @@ -1,100 +0,0 @@
-> -Cadence MIPI-CSI2 RX controller
-> -===============================
-> -
-> -The Cadence MIPI-CSI2 RX controller is a CSI-2 bridge supporting up to 4 CSI
-> -lanes in input, and 4 different pixel streams in output.
-> -
-> -Required properties:
-> -  - compatible: must be set to "cdns,csi2rx" and an SoC-specific compatible
-> -  - reg: base address and size of the memory mapped region
-> -  - clocks: phandles to the clocks driving the controller
-> -  - clock-names: must contain:
-> -    * sys_clk: main clock
-> -    * p_clk: register bank clock
-> -    * pixel_if[0-3]_clk: pixel stream output clock, one for each stream
-> -                         implemented in hardware, between 0 and 3
-> -
-> -Optional properties:
-> -  - phys: phandle to the external D-PHY, phy-names must be provided
-> -  - phy-names: must contain "dphy", if the implementation uses an
-> -               external D-PHY
-> -
-> -Required subnodes:
-> -  - ports: A ports node with one port child node per device input and output
-> -           port, in accordance with the video interface bindings defined in
-> -           Documentation/devicetree/bindings/media/video-interfaces.txt. The
-> -           port nodes are numbered as follows:
-> -
-> -           Port Description
-> -           -----------------------------
-> -           0    CSI-2 input
-> -           1    Stream 0 output
-> -           2    Stream 1 output
-> -           3    Stream 2 output
-> -           4    Stream 3 output
-> -
-> -           The stream output port nodes are optional if they are not
-> -           connected to anything at the hardware level or implemented
-> -           in the design.Since there is only one endpoint per port,
-> -           the endpoints are not numbered.
-> -
-> -
-> -Example:
-> -
-> -csi2rx: csi-bridge@0d060000 {
-> -	compatible = "cdns,csi2rx";
-> -	reg = <0x0d060000 0x1000>;
-> -	clocks = <&byteclock>, <&byteclock>
-> -		 <&coreclock>, <&coreclock>,
-> -		 <&coreclock>, <&coreclock>;
-> -	clock-names = "sys_clk", "p_clk",
-> -		      "pixel_if0_clk", "pixel_if1_clk",
-> -		      "pixel_if2_clk", "pixel_if3_clk";
-> -
-> -	ports {
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -
-> -		port@0 {
-> -			reg = <0>;
-> -
-> -			csi2rx_in_sensor: endpoint {
-> -				remote-endpoint = <&sensor_out_csi2rx>;
-> -				clock-lanes = <0>;
-> -				data-lanes = <1 2>;
-> -			};
-> -		};
-> -
-> -		port@1 {
-> -			reg = <1>;
-> -
-> -			csi2rx_out_grabber0: endpoint {
-> -				remote-endpoint = <&grabber0_in_csi2rx>;
-> -			};
-> -		};
-> -
-> -		port@2 {
-> -			reg = <2>;
-> -
-> -			csi2rx_out_grabber1: endpoint {
-> -				remote-endpoint = <&grabber1_in_csi2rx>;
-> -			};
-> -		};
-> -
-> -		port@3 {
-> -			reg = <3>;
-> -
-> -			csi2rx_out_grabber2: endpoint {
-> -				remote-endpoint = <&grabber2_in_csi2rx>;
-> -			};
-> -		};
-> -
-> -		port@4 {
-> -			reg = <4>;
-> -
-> -			csi2rx_out_grabber3: endpoint {
-> -				remote-endpoint = <&grabber3_in_csi2rx>;
-> -			};
-> -		};
-> -	};
-> -};
-> diff --git a/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml b/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
-> new file mode 100644
-> index 000000000000..8e42c9fdaaa3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
-> @@ -0,0 +1,169 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/cdns,csi2rx.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Cadence MIPI-CSI2 RX controller
-> +
-> +description: |
-> +  The Cadence MIPI-CSI2 RX controller is a CSI-2 bridge supporting up to 4 CSI
-> +  lanes in input, and 4 different pixel streams in output.
-> +
-> +maintainers:
-> +  - Pratyush Yadav <p.yadav@ti.com>
-> +
-> +properties:
-> +  compatible:
-> +    contains:
-> +      const: cdns,csi2rx
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 3
-> +    maxItems: 6
-> +
-> +  clock-names:
-> +    minItems: 3
-> +    maxItems: 6
 
-maxItems can be dropped here. Implied by items length.
 
-> +    items:
-> +      - const: sys_clk # main clock
-> +      - const: p_clk # register bank clock
-> +      - const: pixel_if0_clk # pixel stream 0 output clock
-> +      - const: pixel_if1_clk # pixel stream 1 output clock
-> +      - const: pixel_if2_clk # pixel stream 2 output clock
-> +      - const: pixel_if3_clk # pixel stream 3 output clock
-> +
-> +  phys:
-> +    maxItems: 1
-> +    description: phandle to the external D-PHY
-> +
-> +  phy-names:
-> +    items:
-> +      - const: dphy
-> +
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +    properties:
-> +      port@0:
-> +        $ref: /schemas/graph.yaml#/$defs/port-base
-> +        unevaluatedProperties: false
-> +        description: CSI-2 input
-> +
-> +        properties:
-> +          endpoint:
-> +            $ref: video-interfaces.yaml#
-> +            unevaluatedProperties: false
-> +
-> +            properties:
-> +              clock-lanes:
-> +                maxItems: 1
-> +
-> +              data-lanes:
-> +                $ref: /schemas/types.yaml#/definitions/uint32-array
-
-Don't need a type here.
-
-> +                minItems: 1
-> +                maxItems: 4
-> +                uniqueItems: true
-
-uniqueItems should be added in video-interfaces.yaml.
-
-> +                items:
-> +                  maximum: 4
-> +
-> +            required:
-> +              - clock-lanes
-> +              - data-lanes
-> +
-> +      port@1:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: Stream 0 output
-> +
-> +      port@2:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: Stream 1 output
-> +
-> +      port@3:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: Stream 2 output
-> +
-> +      port@4:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: Stream 3 output
-> +
-> +    required:
-> +      - port@0
-> +
-> +
-> +dependencies:
-> +  phys: [ 'phy-names' ]
-> +  phy-names: [ 'phys' ]
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    csi2rx: csi-bridge@d060000 {
-> +      compatible = "cdns,csi2rx";
-> +      reg = <0x0d060000 0x1000>;
-> +      clocks = <&byteclock>, <&byteclock>,
-> +        <&coreclock>, <&coreclock>,
-> +        <&coreclock>, <&coreclock>;
-> +      clock-names = "sys_clk", "p_clk",
-> +              "pixel_if0_clk", "pixel_if1_clk",
-> +              "pixel_if2_clk", "pixel_if3_clk";
-> +      phys = <&dphy0>;
-> +      phy-names = "dphy";
-> +
-> +      ports {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        port@0 {
-> +          reg = <0>;
-> +
-> +          csi2rx_in_sensor: endpoint {
-> +            remote-endpoint = <&sensor_out_csi2rx>;
-> +            clock-lanes = <0>;
-> +            data-lanes = <1 2>;
-> +          };
-> +        };
-> +
-> +        port@1 {
-> +          reg = <1>;
-> +
-> +          csi2rx_out_grabber0: endpoint {
-> +            remote-endpoint = <&grabber0_in_csi2rx>;
-> +          };
-> +        };
-> +
-> +        port@2 {
-> +          reg = <2>;
-> +
-> +          csi2rx_out_grabber1: endpoint {
-> +            remote-endpoint = <&grabber1_in_csi2rx>;
-> +          };
-> +        };
-> +
-> +        port@3 {
-> +          reg = <3>;
-> +
-> +          csi2rx_out_grabber2: endpoint {
-> +            remote-endpoint = <&grabber2_in_csi2rx>;
-> +          };
-> +        };
-> +
-> +        port@4 {
-> +          reg = <4>;
-> +
-> +          csi2rx_out_grabber3: endpoint {
-> +            remote-endpoint = <&grabber3_in_csi2rx>;
-> +          };
-> +        };
-> +      };
-> +    };
-> -- 
-> 2.30.0
-> 
-> 
+-- 
+Florian
