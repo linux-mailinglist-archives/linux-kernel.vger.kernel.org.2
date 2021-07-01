@@ -2,105 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D03C3B924F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E7E3B925B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbhGANeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 09:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48522 "EHLO
+        id S231536AbhGANgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 09:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhGANeZ (ORCPT
+        with ESMTP id S230005AbhGANgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 09:34:25 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A72C061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 06:31:54 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id bg14so10396682ejb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 06:31:54 -0700 (PDT)
+        Thu, 1 Jul 2021 09:36:43 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD76AC061764
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 06:34:11 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id u14so6069321pga.11
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 06:34:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F9xHPQXfeX85p/WzrKNX5asqql2B/nD64WETM/hhNus=;
-        b=rPkrb7S1fk4T3qkJ10Ep2j4MR6kgQaC6BsJseApFIwDMzhwuu3VfF4W+PMn+D6OOsj
-         leSkEpTvERGV5xLo8VbBUsUr6mDM5rt1doaDh50MTc0uzsUlN3zRbh2OYSSAHBJiN6li
-         bdQWhTsymoM6+mvoXx3OTtT4O61r1hWcjpzftezV2yOqO0RfmEfAX5YUEsKJs5htq92G
-         PAQJrU/eJlCnP6y154lnlyQfgEYTmc87dxS+SyvZO3Cl9jM1WBBTv2ljPQLxX5FHDlcc
-         pCiiqVPZIQkb+xQuzE49/flY/F7wWvZhXhUebyqm5a0zD+rEBDd72pM6O3vUDjN392Wt
-         D2fg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SnACoHGHKKSUmroSwFVGCmNRDhzoxlH9nVuiVepkb1o=;
+        b=zCKVemtDZL3ehp7PWxjcfKDxDN51pmQ2ck1pts0xLqfsFeTIRas88OmbvMIzA4dFvo
+         M8C2rBowwV3bq02pJRqrx6XT6BjR29xCvuV7POzUMI64aKMRWLZ+0Zq3ucUE2jumf6iy
+         S1rBKYMUWmMh68QFry//g+ZREkHkE1VYaIXTNCg2D4LXneXuiYJExU7IVu5QXgDJGeqa
+         xccvbodoy4FwRziHM0OglEbzyC9lFbIW1M8fV1Yjwhn/Mjk3aSY8bxsyTzx33X/h3z57
+         AM/7uqC+nxvidyVV7fcMPb0xf5Oek8z+h27/YJPhcxOXeaX1PUr5tXsxCm5NUlkwx1b+
+         7Lfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F9xHPQXfeX85p/WzrKNX5asqql2B/nD64WETM/hhNus=;
-        b=UE9UKUtWFPOmS006DknTH6+zxgZK3dls0yLxQT1/6cNThic4I/VwEYOV75N1OGq22v
-         tk/almGqRU59WIOPT2kHbi1eXbERvyhfUsczkOJeU9r18CEhgtpi5Ex9rB9dWS5XNktb
-         XR3g2Eg0T/uD8tIJKvjG9XURuEjCAKxKGp6MRh+crQ1E8etUgDwVqT4rFbbdrS8g/uws
-         8G9xjt949B8KsV3HTgeSsgoxiawUbz6HnsjY1ojQ/lvzAm9pC32oxFXlyodHDAPgue5Q
-         XnSotUzqeInAlw9anw4lvfxGOeRhinwApPkp2IBTV1wj6iR02zFlHjAZQiM1HoltJ9vW
-         8i2g==
-X-Gm-Message-State: AOAM533nSsdBSBYgftNVahUlYDIzKpczmiZeY6j+EFvK6bgUsKS1LYDK
-        tuBuyhc/ComIMmoWv1Fn2oxjR35fwxDVg4/IV1U=
-X-Google-Smtp-Source: ABdhPJwAB9zNDvwIwLlvuGpl2XmkQHgjogSwTqCGj4FJ6uy6ez3lXb60hBmJa9obZ737ErpszWY/M6A6HyDbpv+9BfA=
-X-Received: by 2002:a17:907:9f0:: with SMTP id ce16mr42484016ejc.126.1625146312962;
- Thu, 01 Jul 2021 06:31:52 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SnACoHGHKKSUmroSwFVGCmNRDhzoxlH9nVuiVepkb1o=;
+        b=sYiI9F67Y3I5CKI4xK2ZCd/wsFNRMYWZfpvG2Wg6qz0OMZYYsvGkbjaXZPCs+SDlgY
+         Nqrk64WditdmBPbQlWdRkEEd0vgyczJ4RnaCqUuC11PywznGDdwzSU+kgxkmgaF5GG1g
+         HXR0NWhzjoWLKXMw+JB1fZUAdG+XcKXnh7i/A34cV4rb1xoewSgBszacYuP/MgFjHLl4
+         sRBJGO7DwRoBWpaqcQJ2s4BD7Px8RN1IStnbjihjTcQlIA43Y+tk6tEkb+yph6SUZzYb
+         s5ndGESy9FaRAUFq14YlWUhkplUM8TVUnLybTbY14nFWcOWE6cUUJofetG2zSKvoUXK/
+         DV2A==
+X-Gm-Message-State: AOAM532GXe3pdjc+NTRI0r5Qrx6S5FILkT6/5PJXNfdjO0gW1yFfgChx
+        MKRefzV1NeJ4VH/HWOaxtipwyQ==
+X-Google-Smtp-Source: ABdhPJykFDVO5eAJi3DVkcgV0nKVtx9Poi5lkDhj2P0Tz4JkhKgYevSdgvCDB7Pae/1N5b7+cy/IBw==
+X-Received: by 2002:a62:4e96:0:b029:305:a36c:fc6 with SMTP id c144-20020a624e960000b0290305a36c0fc6mr35402pfb.70.1625146451190;
+        Thu, 01 Jul 2021 06:34:11 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([103.207.71.35])
+        by smtp.gmail.com with ESMTPSA id gl17sm10080799pjb.13.2021.07.01.06.34.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 06:34:10 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 21:34:04 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     acme@kernel.org, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org, al.grant@arm.com,
+        branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        Mike Leach <mike.leach@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf cs-etm: Delay decode of non-timeless data until
+ cs_etm__flush_events()
+Message-ID: <20210701133404.GB91264@leoy-ThinkPad-X240s>
+References: <20210609130421.13934-1-james.clark@arm.com>
 MIME-Version: 1.0
-References: <20210630134943.20781-1-yee.lee@mediatek.com> <20210630134943.20781-2-yee.lee@mediatek.com>
- <YNzCVxmMtZ1Kc6XA@elver.google.com>
-In-Reply-To: <YNzCVxmMtZ1Kc6XA@elver.google.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Thu, 1 Jul 2021 16:31:42 +0300
-Message-ID: <CA+fCnZcPXLZxCVAk2Cmhfvov9KNGxALQuWun_yKf0O+q=rbnfQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] kasan: Add memzero init for unaligned size under
- SLUB debug
-To:     Marco Elver <elver@google.com>, yee.lee@mediatek.com
-Cc:     wsd_upstream@mediatek.com,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:KASAN" <kasan-dev@googlegroups.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609130421.13934-1-james.clark@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 10:13 PM Marco Elver <elver@google.com> wrote:
->
-> > +     if (IS_ENABLED(CONFIG_SLUB_DEBUG) && init && ((unsigned long)size & KASAN_GRANULE_MASK)) {
-> > +             init = false;
-> > +             memzero_explicit((void *)addr, size);
-> > +     }
-> >       size = round_up(size, KASAN_GRANULE_SIZE);
-> >
-> >       hw_set_mem_tag_range((void *)addr, size, tag, init);
->
-> I think this solution might be fine for now, as I don't see an easy way
-> to do this without some major refactor to use kmem_cache_debug_flags().
->
-> However, I think there's an intermediate solution where we only check
-> the static-key 'slub_debug_enabled' though. Because I've checked, and
-> various major distros _do_ enabled CONFIG_SLUB_DEBUG. But the static
-> branch just makes sure there's no performance overhead.
->
-> Checking the static branch requires including mm/slab.h into
-> mm/kasan/kasan.h, which we currently don't do and perhaps wanted to
-> avoid. Although I don't see a reason there, because there's no circular
-> dependency even if we did.
+On Wed, Jun 09, 2021 at 04:04:20PM +0300, James Clark wrote:
+> Currently, timeless mode starts the decode on PERF_RECORD_EXIT, and
+> non-timeless mode starts decoding on the fist PERF_RECORD_AUX record.
+> 
+> This can cause the "data has no samples!" error if the first
+> PERF_RECORD_AUX record comes before the first (or any relevant)
+> PERF_RECORD_MMAP2 record because the mmaps are required by the decoder
+> to access the binary data.
+> 
+> This change pushes the start of non-timeless decoding to the very end of
+> parsing the file. The PERF_RECORD_EXIT event can't be used because it
+> might not exist in system-wide or snapshot modes.
+> 
+> I have not been able to find the exact cause for the events to be
+> intermittently in the wrong order in the basic scenario:
+> 
+> 	perf record -e cs_etm/@tmc_etr0/u top
+> 
+> But it can be made to happen every time with the --delay option. This is
+> because "enable_on_exec" is disabled, which causes tracing to start
+> before the process to be launched is exec'd. For example:
+> 
+> 	perf record -e cs_etm/@tmc_etr0/u --delay=1 top
+> 	perf report -D | grep 'AUX\|MAP'
+> 
+> 	0 16714475632740 0x520 [0x40]: PERF_RECORD_AUX offset: 0 size: 0x30 flags: 0 []
+> 	0 16714476494960 0x5d0 [0x40]: PERF_RECORD_AUX offset: 0x30 size: 0x30 flags: 0 []
+> 	0 16714478208900 0x660 [0x40]: PERF_RECORD_AUX offset: 0x60 size: 0x30 flags: 0 []
+> 	4294967295 16714478293340 0x700 [0x70]: PERF_RECORD_MMAP2 8712/8712: [0x557a460000(0x54000) @ 0 00:17 5329258 0]: r-xp /usr/bin/top
+> 	4294967295 16714478353020 0x770 [0x88]: PERF_RECORD_MMAP2 8712/8712: [0x7f86f72000(0x34000) @ 0 00:17 5214354 0]: r-xp /usr/lib/aarch64-linux-gnu/ld-2.31.so
+> 
+> Another scenario in which decoding from the first aux record fails is a
+> workload that forks. Although the aux record comes after 'bash', it
+> comes before 'top', which is what we are interested in. For example:
+> 
+> 	perf record -e cs_etm/@tmc_etr0/u -- bash -c top
+> 	perf report -D | grep 'AUX\|MAP'
+> 
+> 	4294967295 16853946421300 0x510 [0x70]: PERF_RECORD_MMAP2 8723/8723: [0x558f280000(0x142000) @ 0 00:17 5213953 0]: r-xp /usr/bin/bash
+> 	4294967295 16853946543560 0x580 [0x88]: PERF_RECORD_MMAP2 8723/8723: [0x7fbba6e000(0x34000) @ 0 00:17 5214354 0]: r-xp /usr/lib/aarch64-linux-gnu/ld-2.31.so
+> 	4294967295 16853946628420 0x608 [0x68]: PERF_RECORD_MMAP2 8723/8723: [0x7fbba9e000(0x1000) @ 0 00:00 0 0]: r-xp [vdso]
+> 	0 16853947067300 0x690 [0x40]: PERF_RECORD_AUX offset: 0 size: 0x3a60 flags: 0 []
+> 	...
+> 	0 16853966602580 0x1758 [0x40]: PERF_RECORD_AUX offset: 0xc2470 size: 0x30 flags: 0 []
+> 	4294967295 16853967119860 0x1818 [0x70]: PERF_RECORD_MMAP2 8723/8723: [0x5559e70000(0x54000) @ 0 00:17 5329258 0]: r-xp /usr/bin/top
+> 	4294967295 16853967181620 0x1888 [0x88]: PERF_RECORD_MMAP2 8723/8723: [0x7f9ed06000(0x34000) @ 0 00:17 5214354 0]: r-xp /usr/lib/aarch64-linux-gnu/ld-2.31.so
+> 	4294967295 16853967237180 0x1910 [0x68]: PERF_RECORD_MMAP2 8723/8723: [0x7f9ed36000(0x1000) @ 0 00:00 0 0]: r-xp [vdso]
+> 
+> A third scenario is when the majority of time is spent in a shared
+> library that is not loaded at startup. For example a dynamically loaded
+> plugin.
+> 
+> Testing
+> =======
+> 
+> Testing was done by checking if any samples that are present in the
+> old output are missing from the new output. Timestamps must be
+> stripped out with awk because now they are set to the last AUX sample,
+> rather than the first:
+> 
+> 	./perf script $4 | awk '!($4="")' > new.script
+> 	./perf-default script $4 | awk '!($4="")' > default.script
+> 	comm -13 <(sort -u new.script) <(sort -u default.script)
+> 
+> Testing showed that the new output is a superset of the old. When lines
+> appear in the comm output, it is not because they are missing but
+> because [unknown] is now resolved to sensible locations. For example
+> last putp branch here now resolves to libtinfo, so it's not missing
+> from the output, but is actually improved:
+> 
+> Old:
+> 	top 305 [001]  1 branches:uH: 402830 _init+0x30 (/usr/bin/top.procps) => 404a1c [unknown] (/usr/bin/top.procps)
+> 	top 305 [001]  1 branches:uH: 404a20 [unknown] (/usr/bin/top.procps) => 402970 putp@plt+0x0 (/usr/bin/top.procps)
+> 	top 305 [001]  1 branches:uH: 40297c putp@plt+0xc (/usr/bin/top.procps) => 0 [unknown] ([unknown])
+> New:
+> 	top 305 [001]  1 branches:uH: 402830 _init+0x30 (/usr/bin/top.procps) => 404a1c [unknown] (/usr/bin/top.procps)
+> 	top 305 [001]  1 branches:uH: 404a20 [unknown] (/usr/bin/top.procps) => 402970 putp@plt+0x0 (/usr/bin/top.procps)
+> 	top 305 [001]  1 branches:uH: 40297c putp@plt+0xc (/usr/bin/top.procps) => 7f8ab39208 putp+0x0 (/lib/libtinfo.so.5.9)
+> 
+> In the following two modes, decoding now works and the "data has no
+> samples!" error is not displayed any more:
+> 
+> 	perf record -e cs_etm/@tmc_etr0/u -- bash -c top
+> 	perf record -e cs_etm/@tmc_etr0/u --delay=1 top
+> 
+> In snapshot mode, there is also an improvement to decoding. Previously
+> samples for the 'kill' process that was used to send SIGUSR2 were
+> completely missing, because the process hadn't started yet. But now
+> there are additional samples present:
+> 
+> 	perf record -e cs_etm/@tmc_etr0/u --snapshot -a
+> 	perf script
+> 
+> 		stress 19380 [003] 161627.938153:    1000000    instructions:uH:      aaaabb612fb4 [unknown] (/usr/bin/stress)
+> 		  kill 19644 [000] 161627.938153:    1000000    instructions:uH:      ffffae0ef210 [unknown] (/lib/aarch64-linux-gnu/ld-2.27.so)
+> 		stress 19380 [003] 161627.938153:    1000000    instructions:uH:      ffff9e754d40 random_r+0x20 (/lib/aarch64-linux-gnu/libc-2.27.so)
+> 
+> Also tested was the round trip of 'perf inject' followed by 'perf
+> report' which has the same differences and improvements.
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-Most likely this won't be a problem. We already include ../slab.h into
-many mm/kasan/*.c files.
+Excellent work, James!  I learned several things from it :)
 
-> Andrey, any opinion?
+I went through the testing cases one by one, have verified all
+elaborated cases (but I don't verify injection cases):
 
-I like this approach. Easy to implement and is better than checking
-only CONFIG_SLUB_DEBUG.
-
-Thanks, Marco!
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
+Tested-by: Leo Yan <leo.yan@linaro.org>
