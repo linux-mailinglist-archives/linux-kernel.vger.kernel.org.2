@@ -2,222 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2958A3B99CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 01:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B93B3B99D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 01:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234376AbhGAX6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 19:58:36 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:41754 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234063AbhGAX6f (ORCPT
+        id S234386AbhGBACC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 20:02:02 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:53114 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234063AbhGBACB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 19:58:35 -0400
-Date:   Thu, 01 Jul 2021 23:55:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1625183728; bh=vHKTUFhjrBhE16qbi5KjG4YoGMyuu2TJDAhJMIvSDHc=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=ZWl1K/duuR6AkGbFqdy6cxxNtf7pKljObHGE4X/oR6EYdDyUwWCwF2Ff/bEdjc9nX
-         ef/FbVZ++YU88xuXpiILi13tx+OleonACFBno8YKNjjiKfNTD0zGi/qFQzQvSjRHyJ
-         4ZWqP8fqn77rZH37BgnXHbwSt20DAWMhVpdgLvjTOQhfS9WlQ6UZmhaeYxxxmLJZP9
-         rHo2jA5qUmZnHl6/dCDgriCLD8rKyIsu1vFt8y2qlUhsd/OgtjpZ2oaMhsJRzv1aO+
-         vzPRrkg/9OdFkwIV2Pk3+FSTQ1/RAtbrOfbUMHwDRlq54u89NrK8RoJsrvDeWwfvIO
-         ewHvePbW8p0tQ==
-To:     John Wood <john.wood@gmx.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Arnd Bergmann <arnd@arndb.de>, Andi Kleen <ak@linux.intel.com>,
-        valdis.kletnieks@vt.edu,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v8 3/8] security/brute: Detect a brute force attack
-Message-ID: <20210701234807.50453-1-alobakin@pm.me>
-MIME-Version: 1.0
+        Thu, 1 Jul 2021 20:02:01 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161NvMPG017740;
+        Thu, 1 Jul 2021 23:59:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=12fCPRs/iEnUCy+4VQFt+IQ98olDsSRfNbqXLIn5x00=;
+ b=JY/kASLybdN8SA3NXiMWsSYR/DcVnpzyfkItvPLh1H2lask9IpWRwREnL7u/QSg9wJRv
+ BUZZjM5jv0Z3rL4LmZ64X/NVkd8UGWEUU6RDzbTsglDmDPUPQQrkpDvq7AtNZQM4dy2E
+ Njk83f8VecAAhIS8xgdRUZCAyy9dPzx+WTiY995F9/oRpLHPDWjeqwBiKG/ykP8eR4tZ
+ u81JRZ4SfWw7qDSuFKKf1ifY58yWE6sRhmWGFl9fIqJRqjZRVqbTaeDVGh+J0V9ca85R
+ 7WO5/ytEPOL0axd77S3CFfnktfnQSvXn2WxcpqwONypsLTBHrys2b3YamjkFWWhNAUPb ew== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39grmaujjq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 01 Jul 2021 23:59:19 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 161NtxRn117237;
+        Thu, 1 Jul 2021 23:59:18 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2047.outbound.protection.outlook.com [104.47.74.47])
+        by aserp3020.oracle.com with ESMTP id 39dv2bg9h4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 01 Jul 2021 23:59:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AyY1qcToclvZytnXYHM596/UkuDraExF0/k1oZLWslS19+nsRRYUNim9S6aDDgIOmL9utdTW64JV9GtZ1Wf3nyhLtk8wkXsjvCvW6T9XnhdHDZYTjfuJ5PiA5DpORF2ouRsUOmqBP9dbcN7fX2n5o84NF1mlM0F19IpwoOr2UenF5J8/f93Ek8ke3opMGdMAGkt/cnUNxtOLVy9wu6Qx03LXfCl6kLQZOGJ0u7/y11D0Pp/hVYeqMsNCvMFU6qz9Y7dilCvZK4cJsyIBoFYLmoGa2NSi6Z8Fa9xx/YQWd18hvpJfpTNAhCx0G13lbbaBYDZHv+Bt5R8uTxj55YeKRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=12fCPRs/iEnUCy+4VQFt+IQ98olDsSRfNbqXLIn5x00=;
+ b=jGcRkYkjU7k+60/Z0sF+pJ878HiW+OGUYITJBrspKX/a4NxZtit0RcE8xhTCexX66Z3v0HPS/ad51AiNP/lXvUk9nRdVnERJ83+w7Vl73XHIUuOZmbedTH9UqtTHIa+zxivURzj94MfxCHfdpkmia74ZOA2KPuLCPtIyJC2255RLPsAKK4Qm5hv/89dVYa0AIhsAo3momN0gxgjOjbmGJqdxeZdtLBeAUp0YXg4f26JwPrEHu5m7F9O36jxXSdnmhqG1tNt8GUbu+JIscexQKX1IsjQeiiV3EkjhGoqM/4fmrLj/+V1mOcwuOoY1k0/ak+F/1BhkgFEZ+cqLJMmKLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=12fCPRs/iEnUCy+4VQFt+IQ98olDsSRfNbqXLIn5x00=;
+ b=UsTF+J9mdRSLY6SyHYJ+QgikWSjGDzBhA7TGJYJuMNd7kBBB37Z7Ow/osgBMHqJLYZ2ST+lGj10Lq6b8e29DK5w6St6FaTv6mfhSa4RP7IgyqWxfxra5k7shJrAqC7xpNziJr1jh9vV/cqo4bGgzz8e7EpjodEnjr51GxOSw4lg=
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=oracle.com;
+Received: from DM6PR10MB3577.namprd10.prod.outlook.com (2603:10b6:5:152::16)
+ by DM6PR10MB2858.namprd10.prod.outlook.com (2603:10b6:5:65::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Thu, 1 Jul
+ 2021 23:59:16 +0000
+Received: from DM6PR10MB3577.namprd10.prod.outlook.com
+ ([fe80::31a2:972b:6d8e:7398]) by DM6PR10MB3577.namprd10.prod.outlook.com
+ ([fe80::31a2:972b:6d8e:7398%7]) with mapi id 15.20.4287.024; Thu, 1 Jul 2021
+ 23:59:16 +0000
+Subject: Re: [PATCH 2/3] kernel/fork, cred.c: allow copy_process to take user
+From:   michael.christie@oracle.com
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, mst@redhat.com,
+        sgarzare@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
+        christian@brauner.io, akpm@linux-foundation.org,
+        peterz@infradead.org
+References: <20210624030804.4932-1-michael.christie@oracle.com>
+ <20210624030804.4932-3-michael.christie@oracle.com>
+ <20210629130450.tvrweqy7z2hlwsbh@wittgenstein>
+ <6927dc85-6f8d-c1f5-f92d-9bcd36cce2bb@oracle.com>
+Message-ID: <2cbbebab-e9cf-0833-c0de-31eb3ba6cd5e@oracle.com>
+Date:   Thu, 1 Jul 2021 18:59:13 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+In-Reply-To: <6927dc85-6f8d-c1f5-f92d-9bcd36cce2bb@oracle.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [73.88.28.6]
+X-ClientProxiedBy: DM5PR19CA0043.namprd19.prod.outlook.com
+ (2603:10b6:3:9a::29) To DM6PR10MB3577.namprd10.prod.outlook.com
+ (2603:10b6:5:152::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [20.15.0.3] (73.88.28.6) by DM5PR19CA0043.namprd19.prod.outlook.com (2603:10b6:3:9a::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23 via Frontend Transport; Thu, 1 Jul 2021 23:59:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9c459adc-2768-40d1-96e0-08d93cec3b2c
+X-MS-TrafficTypeDiagnostic: DM6PR10MB2858:
+X-Microsoft-Antispam-PRVS: <DM6PR10MB285885E3DB790681E5A375C8F1009@DM6PR10MB2858.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UZfrBaiprb1aXkwRGwosUscknCMjYr5SPWfU5mJ6Ojr50D+u2Vcmuc6sQKW2RLgO660Ec/418gqU3ii6LPgxF5iFyTSurVEfXluVAPl4+26BUcd+3hBdJ7waX2g8D7Q+744JqTh2/PQyd7wwi5tAF8pH7tMWMNCZyaa+G59ZerqW+teG0+w12wS5kNwnYg7MSk2Hof2+HQYTfiT3Tf9UcyJyMUG0rYejrBVqFR5OS86tAgN2vxb+gNF71IA+2WiNW27xPA5vh9K/P6ZfvbuibOiK+S74f8cEk8GDIFsh+zrHI0AHTLYPYgLWvE7sWjUoIhnEpstiO0nqdNclKHmqGRo+LX2GC1cT3mDnwHsUJfgURCTOKXgb1Gc9LATT4M2oqFCGiKGjbTnqHPFousHZrfxMeEPqnhuTZIslVWrtfctthJiVvqU684VwBojdonXxjbVDIDCkSD6nJ8FxSNIpQJDF+LFdi6i27MfSlou6Mzvl0Lf67P528rHp2sLywQVx+XpF+7JdEknbbJrNPwO72rx+yxR/OXAr0MS5VAqcRgIwMTYqGiRyBQY6OnlIOyP/yrALWUS9yMVFHifrlEqPONKMBJaJPJxqHKjpKaMLlDh1njwpXawczfM+0rUB2LpmsByVSPmH063eMdPWtzDjMWicL9IkBkOwskKI1vUt/aL5NZyIcdVnvMbCJZRrfeRrVWL7t0/5JeMWt7g+X26+w2Oi/QVkYgagZN1WvxjZGNM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3577.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(39860400002)(346002)(396003)(316002)(2906002)(16576012)(36756003)(6916009)(6706004)(38100700002)(16526019)(8936002)(66946007)(9686003)(31686004)(66476007)(8676002)(66556008)(31696002)(5660300002)(53546011)(83380400001)(478600001)(6486002)(4326008)(7416002)(26005)(86362001)(2616005)(186003)(956004)(78286007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VnBOV3pic3I2NFMwUWg1UmN4eXJocEt2VU9hU0RicE56YUFuZlRtL25oYlhJ?=
+ =?utf-8?B?dHZ3eXZrSllNQVd0UEFvY1RVNEFlRmNVUFFob1RCUnBiN2VsMGlUQnZIWlJC?=
+ =?utf-8?B?dWY2d2NaU0NTUE82YWl4MmxCZjJ1NTBFMHJza2cwME9RZ2k1QTVVSkJMMnAz?=
+ =?utf-8?B?d3FBWHJWVlNKd3NXakxlT01XOEx4SytiL042c0N4Mm1XYjZYbXNtMVllS1N1?=
+ =?utf-8?B?blhTWHZwQXdWL01PT0k3bXgxTUJuVHd6c0NIZlJtK01XcElpWHpDZzlaMEFa?=
+ =?utf-8?B?YzRPbk40OUlQVjZHNEJUTlpsaHJidHorT0JFVGx6Yk1xU2FkaVdBQ2swWlZk?=
+ =?utf-8?B?SWNyREpCdmRIOWg1Tm43ZExQVC9DeUZTaWxyMEhzdmlFNzBuRVFyZnlGNTVD?=
+ =?utf-8?B?WTlDdmVsR1ZtdmEvdjJoTGFRQzh2MS9hSFo2K0QwekR6OHVwdFFjV1ZFZUlK?=
+ =?utf-8?B?d1JSMkk1NS91ckw2WW5POWoveFoyY0E2bzcyNmtJL0N5Ty81akljRmF6K0k3?=
+ =?utf-8?B?dHpHMWRucU1Ic1pwOUZwWExiM29RY1cxTkdCQVZxNXA5bHVKbVU0Q2ZrZDM5?=
+ =?utf-8?B?dFFYWXR2dkx0aSswK3FMNFdaclVJZFJCcVVLT3ZMMm5GejcvdHJiQlJ1VGpP?=
+ =?utf-8?B?RzBKQnAzUzlHQ002WktVekhXREYzK3Rzd0JONnEwQ1VNVXlZM2NubHlSWnZI?=
+ =?utf-8?B?YU5ZRC9SNnZ4Sk1zMjA3czdzMHdXSXpqcllEeWY3UU9lNGRpMEpUeDBYNzVk?=
+ =?utf-8?B?V28vYUF5UTRpKzA3RmNoYkU0MWplRkh4VXYxdVdldmlRaGtKVnlKRW5NZDRT?=
+ =?utf-8?B?dWlKN0N0ZG1hRDhrV1JkR0hXK0FucmllNXorWTZPQTZXMjRvc05vK1h4aksy?=
+ =?utf-8?B?MU9kRnJYQzhTTndBNjYrMEpINlI4dThVSmNVbS9IdDZZWEJ0RXlaOGxHVVR4?=
+ =?utf-8?B?dzlCSGJwVWFGSXpTUFpwVTlXT1F5V1JEUEdndnVwa2pFcVQ4RjBvMm5zQlc0?=
+ =?utf-8?B?QjFaTXZHVVlXRGMwTXdkSHdQOUZ6dldQSHI5b3FvQVBJVENKcjk0YTlFdkQy?=
+ =?utf-8?B?c1FoVi9KT3pyeGp5ajdCSUxnam5SalBlN3kyakc0SGEzazdYbzMrWElPL2My?=
+ =?utf-8?B?NTkzc1hNUmVlcGY2V2E4L0FjRDF4UzdWSkZVcXRoVlVaM2NoeUpkMXBISnpL?=
+ =?utf-8?B?SzVSazN3ei9iMzY2VXZzRHRZamNoZ0djQ1N5blpTMnp2d29oaHlyeGFqK3ZH?=
+ =?utf-8?B?UGRmZ0FuOFZkdEtCai9YaVdJMlBtZU1PSGJ4N3RNYUd0eVIvemhTODlYbHRh?=
+ =?utf-8?B?bW9BL0lMdEY2VGpHbUxqTmVtS2IvT0N1UjdCdDZJay8xaGtRNUhwTmZuZjlE?=
+ =?utf-8?B?NzN0SzZUZUEyUWFRakxxZktzc214YWl6QUZrTEpzYXVXemZuQ1dVRnVqMm5l?=
+ =?utf-8?B?b05rajlLZkFvYWY0eit6UEd2MGwvYXE1NHBGdWZ2MTI5eU1EYmU5aElYT3dF?=
+ =?utf-8?B?eVhBMlR1OWRJajIvMHdxbGxqT2FHcUdJcnlVMStqY21JOXRXbjdzNXJiWFRQ?=
+ =?utf-8?B?dU1rNEx0MENBUHpVcUIxRzV3RnpYdm5kbk4yYjBmRGJ2bTBtcWlQZFNtT005?=
+ =?utf-8?B?SVdoZlhKdUVVclk1USthWTAxcm1ya2NmMVdVN1N6VDd0a3RKM0UwS21Tbi83?=
+ =?utf-8?B?SHhnWEZ6MUtITUZ5MmVMQmpMTXd1dnRIemRzVkZVM3gyUzI4NVVTaytINjg5?=
+ =?utf-8?Q?NbnOqplIcjLyqIlnn9SwqqvyMkfq5Hb2s4r3YXV?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c459adc-2768-40d1-96e0-08d93cec3b2c
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3577.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2021 23:59:16.0197
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HOqjT6TLiTnuZ/VJSfQmFFBXpp/Tk+f0niWnX3A1JLBSONJwYBvGNROtmnEco+/T2+vCTBZvAfAshvlmNDw+Q9NyCsm6M0WAGdusQ9EmR1c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB2858
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10032 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 adultscore=0
+ malwarescore=0 mlxlogscore=999 suspectscore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107010139
+X-Proofpoint-GUID: IXf0dmWglPwdVPOzyCuxmWYGIQ0PGV4a
+X-Proofpoint-ORIG-GUID: IXf0dmWglPwdVPOzyCuxmWYGIQ0PGV4a
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 6/29/21 11:53 AM, Mike Christie wrote:
+> On 6/29/21 8:04 AM, Christian Brauner wrote:
+>> On Wed, Jun 23, 2021 at 10:08:03PM -0500, Mike Christie wrote:
+>>> This allows kthread to pass copy_process the user we want to check for the
+>>> RLIMIT_NPROC limit for and also charge for the new process. It will be used
+>>> by vhost where userspace has that driver create threads but the kthreadd
+>>> thread is checked/charged.
+>>>
+>>> Signed-off-by: Mike Christie <michael.christie@oracle.com>
+>>> ---
+>>>  include/linux/cred.h |  3 ++-
+>>>  kernel/cred.c        |  7 ++++---
+>>>  kernel/fork.c        | 12 +++++++-----
+>>>  3 files changed, 13 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/include/linux/cred.h b/include/linux/cred.h
+>>> index 14971322e1a0..9a2c1398cdd4 100644
+>>> --- a/include/linux/cred.h
+>>> +++ b/include/linux/cred.h
+>>> @@ -153,7 +153,8 @@ struct cred {
+>>>  
+>>>  extern void __put_cred(struct cred *);
+>>>  extern void exit_creds(struct task_struct *);
+>>> -extern int copy_creds(struct task_struct *, unsigned long);
+>>> +extern int copy_creds(struct task_struct *, unsigned long,
+>>> +		      struct user_struct *);
+>>>  extern const struct cred *get_task_cred(struct task_struct *);
+>>>  extern struct cred *cred_alloc_blank(void);
+>>>  extern struct cred *prepare_creds(void);
+>>> diff --git a/kernel/cred.c b/kernel/cred.c
+>>> index e1d274cd741b..e006aafa8f05 100644
+>>> --- a/kernel/cred.c
+>>> +++ b/kernel/cred.c
+>>> @@ -330,7 +330,8 @@ struct cred *prepare_exec_creds(void)
+>>>   * The new process gets the current process's subjective credentials as its
+>>>   * objective and subjective credentials
+>>>   */
+>>> -int copy_creds(struct task_struct *p, unsigned long clone_flags)
+>>> +int copy_creds(struct task_struct *p, unsigned long clone_flags,
+>>> +	       struct user_struct *user)
+>>>  {
+>>>  	struct cred *new;
+>>>  	int ret;
+>>> @@ -351,7 +352,7 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
+>>>  		kdebug("share_creds(%p{%d,%d})",
+>>>  		       p->cred, atomic_read(&p->cred->usage),
+>>>  		       read_cred_subscribers(p->cred));
+>>> -		atomic_inc(&p->cred->user->processes);
+>>> +		atomic_inc(&user->processes);
+>>
+>> Hey Mike,
+>>
+>> This won't work anymore since this has moved into ucounts. So in v5.14
+>> atomic_inc(&p->cred->user->processes);
+>> will have been replaced by
+>> inc_rlimit_ucounts(task_ucounts(p), UCOUNT_RLIMIT_NPROC, 1);
+>>
+> Will do.
+> 
+>> From what I can see from your code vhost will always create this kthread
+>> for current. So you could e.g. add an internal flag/bitfield entry to
+>> struct kernel_clone_args that you can use to tell copy_creds() that you
+>> want to charge this thread against current's process limit.
+> 
+> If I understood you, I don't think a flag/bit will work. When vhost does
+> a kthread call we do kthread_create -> __kthread_create_on_node. This creates
+> a tmp kthread_create_info struct and adds it to the kthread_create_list list.
+> It then wakes up the kthreadd thread. kthreadd will then loop over the list,
+> and do the:
+> 
+> kernel_thread -> kernel_clone -> copy_process ->  copy_creds
+> 
+> So copy_creds sees current == kthreadd.
+> 
+> I think I would have to add a task_struct pointer to kernel_clone_args
+> and kthread_create_info. If copy_creds sees kernel_clone_args->user_task
+> then it would use that.
 
-From: John Wood <john.wood@gmx.com>
-Date: Sat, 5 Jun 2021 17:04:00 +0200
+One question/clarification. For 5.14, I could pass in the struct task_struct
+or struct ucounts (in a previous mail I wrote user_struct).
 
-> For a correct management of a fork brute force attack it is necessary to
-> track all the information related to the application crashes. To do so,
-> use the extended attributes (xattr) of the executable files and define a
-> statistical data structure to hold all the necessary information shared
-> by all the fork hierarchy processes. This info is the number of crashes,
-> the last crash timestamp and the crash period's moving average.
->
-> The same can be achieved using a pointer to the fork hierarchy
-> statistical data held by the task_struct structure. But this has an
-> important drawback: a brute force attack that happens through the execve
-> system call losts the faults info since these statistics are freed when
-> the fork hierarchy disappears. Using this method makes not possible to
-> manage this attack type that can be successfully treated using extended
-> attributes.
->
-> Also, to avoid false positives during the attack detection it is
-> necessary to narrow the possible cases. So, only the following scenarios
-> are taken into account:
->
-> 1.- Launching (fork()/exec()) a setuid/setgid process repeatedly until a
->     desirable memory layout is got (e.g. Stack Clash).
-> 2.- Connecting to an exec()ing network daemon (e.g. xinetd) repeatedly
->     until a desirable memory layout is got (e.g. what CTFs do for simple
->     network service).
-> 3.- Launching processes without exec() (e.g. Android Zygote) and
->     exposing state to attack a sibling.
-> 4.- Connecting to a fork()ing network daemon (e.g. apache) repeatedly
->     until the previously shared memory layout of all the other children
->     is exposed (e.g. kind of related to HeartBleed).
->
-> In each case, a privilege boundary has been crossed:
->
-> Case 1: setuid/setgid process
-> Case 2: network to local
-> Case 3: privilege changes
-> Case 4: network to local
->
-> To mark that a privilege boundary has been crossed it is only necessary
-> to create a new stats for the executable file via the extended attribute
-> and only if it has no previous statistical data. This is done using four
-> different LSM hooks, one per privilege boundary:
->
-> setuid/setgid process --> bprm_creds_from_file hook (based on secureexec
->                           flag).
-> network to local -------> socket_accept hook (taking into account only
->                           external connections).
-> privilege changes ------> task_fix_setuid and task_fix_setgid hooks.
->
-> To detect a brute force attack it is necessary that the executable file
-> statistics be updated in every fatal crash and the most important data
-> to update is the application crash period. To do so, use the new
-> "task_fatal_signal" LSM hook added in a previous step.
->
-> The application crash period must be a value that is not prone to change
-> due to spurious data and follows the real crash period. So, to compute
-> it, the exponential moving average (EMA) is used.
->
-> Based on the updated statistics two different attacks can be handled. A
-> slow brute force attack that is detected if the maximum number of faults
-> per fork hierarchy is reached and a fast brute force attack that is
-> detected if the application crash period falls below a certain
-> threshold.
->
-> Moreover, only the signals delivered by the kernel are taken into
-> account with the exception of the SIGABRT signal since the latter is
-> used by glibc for stack canary, malloc, etc failures, which may indicate
-> that a mitigation has been triggered.
->
-> Signed-off-by: John Wood <john.wood@gmx.com>
->
-> <snip>
->
-> +static int brute_get_xattr_stats(struct dentry *dentry, struct inode *in=
-ode,
-> +=09=09=09=09 struct brute_stats *stats)
-> +{
-> +=09int rc;
-> +=09struct brute_raw_stats raw_stats;
-> +
-> +=09rc =3D __vfs_getxattr(dentry, inode, XATTR_NAME_BRUTE, &raw_stats,
-> +=09=09=09    sizeof(raw_stats));
-> +=09if (rc < 0)
-> +=09=09return rc;
-> +
-> +=09stats->faults =3D le32_to_cpu(raw_stats.faults);
-> +=09stats->nsecs =3D le64_to_cpu(raw_stats.nsecs);
-> +=09stats->period =3D le64_to_cpu(raw_stats.period);
-> +=09stats->flags =3D raw_stats.flags;
-> +=09return 0;
-> +}
->
-> <snip>
->
-> +static int brute_task_execve(struct linux_binprm *bprm, struct file *fil=
-e)
-> +{
-> +=09struct dentry *dentry =3D file_dentry(bprm->file);
-> +=09struct inode *inode =3D file_inode(bprm->file);
-> +=09struct brute_stats stats;
-> +=09int rc;
-> +
-> +=09inode_lock(inode);
-> +=09rc =3D brute_get_xattr_stats(dentry, inode, &stats);
-> +=09if (WARN_ON_ONCE(rc && rc !=3D -ENODATA))
-> +=09=09goto unlock;
+I could also just have vhost.c do inc_rlimit_ucounts and is_ucounts_overlimit
+directly.
 
-I think I caught a problem here. Have you tested this with
-initramfs?
-
-According to init/do_mount.c's
-init_rootfs()/rootfs_init_fs_context(), when `root=3D` cmdline
-parameter is not empty, kernel creates rootfs of type ramfs
-(tmpfs otherwise).
-The thing about ramfs is that it doesn't support xattrs.
-
-I'm running this v8 on a regular PC with initramfs and having
-`root=3D` in cmdline, and Brute doesn't allow the kernel to run
-any init processes (/init, /sbin/init, ...) with err =3D=3D -95
-(-EOPNOTSUPP) -- I'm getting a
-
-WARNING: CPU: 0 PID: 173 at brute_task_execve+0x15d/0x200
-<snip>
-Failed to execute /init (error -95)
-
-and so on (and a panic at the end).
-
-If I omit `root=3D` from cmdline, then the kernel runs init process
-just fine -- I guess because initramfs is then placed inside tmpfs
-with xattr support.
-
-As for me, this ramfs/tmpfs selection based on `root=3D` presence
-is ridiculous and I don't see or know any reasons behind that.
-But that's another story, and ramfs might be not the only one
-system without xattr support.
-I think Brute should have a fallback here, e.g. it could simply
-ignore files from xattr-incapable filesystems instead of such
-WARNING splats and stuff.
-
-> +
-> +=09if (rc =3D=3D -ENODATA && bprm->secureexec) {
-> +=09=09brute_reset_stats(&stats);
-> +=09=09rc =3D brute_set_xattr_stats(dentry, inode, &stats);
-> +=09=09if (WARN_ON_ONCE(rc))
-> +=09=09=09goto unlock;
-> +=09}
-> +
-> +=09rc =3D 0;
-> +unlock:
-> +=09inode_unlock(inode);
-> +=09return rc;
-> +}
-> +
->
-> <snip>
-
-Thanks,
-Al
 
