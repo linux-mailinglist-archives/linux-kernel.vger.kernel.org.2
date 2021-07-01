@@ -2,130 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96ABE3B8EA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DBA3B8E8A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235322AbhGAIIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 04:08:46 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:13117 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235211AbhGAIIk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 04:08:40 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 01 Jul 2021 01:06:10 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 01 Jul 2021 01:06:08 -0700
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 01 Jul 2021 13:36:08 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 85CBC21A36; Thu,  1 Jul 2021 13:36:07 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v2 5/7] venus: vdec: set work route to fw
-Date:   Thu,  1 Jul 2021 13:35:34 +0530
-Message-Id: <1625126736-16266-6-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1625126736-16266-1-git-send-email-dikshita@codeaurora.org>
-References: <1625126736-16266-1-git-send-email-dikshita@codeaurora.org>
+        id S234985AbhGAIIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 04:08:10 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:37090 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234833AbhGAIIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 04:08:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1625126739;
+  x=1656662739;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=b6eCm58koRg2hleF5/VCtCv9ol4aOKs+jQNpqEcbUro=;
+  b=nllmc62HzJuZfl2rPt0+SArbeY+FLIEIpMbrj3nEihtYfLuDa/D14E7t
+   n2khWFzFwY7JbcDEYdYOAb55r16QYdo6Kha28EKnleGrSRnzTJN7YdKWi
+   xyt/niXvJHf1ZD6Y2LfkDPeXg81sWTX8fKta77DdhjOrCVNO0EaeNVihz
+   9DdZDuPiRBkpj2XRR19kWLdfVhplvkKtAna4Wn/rzMB8q08gm8oBz6Y7H
+   ukXXXAkOaqAkruy/tyywi/1zAbbyddu8HQkFo0ZcgD0LlhkB3bQBvhtli
+   c8DqNKauUyuxKIthJvaMItJ2LRDKOFfLMsMD4WpPcZiXHE2nHxrQggweC
+   A==;
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+CC:     <kernel@axis.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] mmc: dw_mmc: Add data CRC error injection
+Date:   Thu, 1 Jul 2021 10:05:34 +0200
+Message-ID: <20210701080534.23138-1-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set work route to FW based on num of vpp pipes.
+This driver has had problems when handling data errors.  Add fault
+injection support so that the abort handling can be easily triggered and
+regression-tested.  A hrtimer is used to indicate a data CRC error at
+various points during the data transfer.
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+Note that for the recent problem with hangs in the case of some data CRC
+errors, a udelay(10) inserted at the start of send_stop_abort() greatly
+helped in triggering the error, but I've not included this as part of
+the fault injection support since it seemed too specific.
+
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
 ---
- drivers/media/platform/qcom/venus/hfi_cmds.c   |  7 +++++++
- drivers/media/platform/qcom/venus/hfi_helper.h |  5 +++++
- drivers/media/platform/qcom/venus/vdec.c       | 22 ++++++++++++++++++++++
- 3 files changed, 34 insertions(+)
 
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-index 11a8347..837fb80 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-@@ -1290,6 +1290,13 @@ pkt_session_set_property_6xx(struct hfi_session_set_property_pkt *pkt,
- 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*color);
- 		break;
- 	}
-+	case HFI_PROPERTY_PARAM_WORK_ROUTE: {
-+		struct hfi_video_work_route *in = pdata, *wr = prop_data;
-+
-+		wr->video_work_route = in->video_work_route;
-+		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*wr);
-+		break;
-+	}
- 	default:
- 		return pkt_session_set_property_4xx(pkt, cookie, ptype, pdata);
- 	}
-diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
-index 63cd347..185c302 100644
---- a/drivers/media/platform/qcom/venus/hfi_helper.h
-+++ b/drivers/media/platform/qcom/venus/hfi_helper.h
-@@ -451,6 +451,7 @@
- #define HFI_PROPERTY_PARAM_MVC_BUFFER_LAYOUT			0x100f
- #define HFI_PROPERTY_PARAM_MAX_SESSIONS_SUPPORTED		0x1010
- #define HFI_PROPERTY_PARAM_WORK_MODE				0x1015
-+#define HFI_PROPERTY_PARAM_WORK_ROUTE				0x1017
+Notes:
+    v2: Add missing includes.
+
+ drivers/mmc/host/dw_mmc.c | 73 +++++++++++++++++++++++++++++++++++++++
+ drivers/mmc/host/dw_mmc.h |  7 ++++
+ 2 files changed, 80 insertions(+)
+
+diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+index d333130d1531..dbbb94e6ff4b 100644
+--- a/drivers/mmc/host/dw_mmc.c
++++ b/drivers/mmc/host/dw_mmc.c
+@@ -17,9 +17,11 @@
+ #include <linux/interrupt.h>
+ #include <linux/iopoll.h>
+ #include <linux/ioport.h>
++#include <linux/ktime.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
++#include <linux/prandom.h>
+ #include <linux/seq_file.h>
+ #include <linux/slab.h>
+ #include <linux/stat.h>
+@@ -181,6 +183,9 @@ static void dw_mci_init_debugfs(struct dw_mci_slot *slot)
+ 			   &host->pending_events);
+ 	debugfs_create_xul("completed_events", S_IRUSR, root,
+ 			   &host->completed_events);
++#ifdef CONFIG_FAULT_INJECTION
++	fault_create_debugfs_attr("fail_data_crc", root, &host->fail_data_crc);
++#endif
+ }
+ #endif /* defined(CONFIG_DEBUG_FS) */
  
- /*
-  * HFI_PROPERTY_CONFIG_COMMON_START
-@@ -864,6 +865,10 @@ struct hfi_video_work_mode {
- 	u32 video_work_mode;
+@@ -1788,6 +1793,68 @@ static const struct mmc_host_ops dw_mci_ops = {
+ 	.prepare_hs400_tuning	= dw_mci_prepare_hs400_tuning,
  };
  
-+struct hfi_video_work_route {
-+	u32 video_work_route;
-+};
-+
- struct hfi_h264_vui_timing_info {
- 	u32 enable;
- 	u32 fixed_framerate;
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index ddb7cd3..892be8d 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -653,6 +653,24 @@ static int vdec_set_properties(struct venus_inst *inst)
- 	return 0;
- }
- 
-+static int vdec_set_work_route(struct venus_inst *inst)
++#ifdef CONFIG_FAULT_INJECTION
++static enum hrtimer_restart dw_mci_fault_timer(struct hrtimer *t)
 +{
-+	struct hfi_video_work_route wr;
-+	u32 ptype;
-+	int ret;
++	struct dw_mci *host = container_of(t, struct dw_mci, fault_timer);
++	unsigned long flags;
 +
-+	if(!IS_V6(inst->core))
-+		return 0;
++	spin_lock_irqsave(&host->irq_lock, flags);
 +
-+	wr.video_work_route = inst->core->res->num_vpp_pipes;
++	if (!host->data_status)
++		host->data_status = SDMMC_INT_DCRC;
++	set_bit(EVENT_DATA_ERROR, &host->pending_events);
++	tasklet_schedule(&host->tasklet);
 +
-+	ptype = HFI_PROPERTY_PARAM_WORK_ROUTE;
-+	ret = hfi_session_set_property(inst, ptype, &wr);
-+	if (ret)
-+		return ret;
-+	return 0;
++	spin_unlock_irqrestore(&host->irq_lock, flags);
++
++	return HRTIMER_NORESTART;
 +}
 +
- #define is_ubwc_fmt(fmt) (!!((fmt) & HFI_COLOR_FORMAT_UBWC_BASE))
- 
- static int vdec_output_conf(struct venus_inst *inst)
-@@ -1039,6 +1057,10 @@ static int vdec_start_output(struct venus_inst *inst)
- 	if (ret)
- 		return ret;
- 
-+	ret = vdec_set_work_route(inst);
-+	if (ret)
-+		return ret;
++static void dw_mci_start_fault_timer(struct dw_mci *host)
++{
++	struct mmc_data *data = host->data;
 +
- 	ret = vdec_output_conf(inst);
- 	if (ret)
- 		return ret;
++	if (!data || data->blocks <= 1)
++		return;
++
++	if (!should_fail(&host->fail_data_crc, 1))
++		return;
++
++	/*
++	 * Try to inject the error at random points during the data transfer.
++	 */
++	hrtimer_start(&host->fault_timer,
++		      ms_to_ktime(prandom_u32() % 25),
++		      HRTIMER_MODE_REL);
++}
++
++static void dw_mci_stop_fault_timer(struct dw_mci *host)
++{
++	hrtimer_cancel(&host->fault_timer);
++}
++
++static void dw_mci_init_fault(struct dw_mci *host)
++{
++	host->fail_data_crc = (struct fault_attr) FAULT_ATTR_INITIALIZER;
++
++	hrtimer_init(&host->fault_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++	host->fault_timer.function = dw_mci_fault_timer;
++}
++#else
++static void dw_mci_init_fault(struct dw_mci *host)
++{
++}
++
++static void dw_mci_start_fault_timer(struct dw_mci *host)
++{
++}
++
++static void dw_mci_stop_fault_timer(struct dw_mci *host)
++{
++}
++#endif
++
+ static void dw_mci_request_end(struct dw_mci *host, struct mmc_request *mrq)
+ 	__releases(&host->lock)
+ 	__acquires(&host->lock)
+@@ -2102,6 +2169,7 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
+ 				break;
+ 			}
+ 
++			dw_mci_stop_fault_timer(host);
+ 			host->data = NULL;
+ 			set_bit(EVENT_DATA_COMPLETE, &host->completed_events);
+ 			err = dw_mci_data_complete(host, data);
+@@ -2151,6 +2219,7 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
+ 			if (mrq->cmd->error && mrq->data)
+ 				dw_mci_reset(host);
+ 
++			dw_mci_stop_fault_timer(host);
+ 			host->cmd = NULL;
+ 			host->data = NULL;
+ 
+@@ -2600,6 +2669,8 @@ static void dw_mci_cmd_interrupt(struct dw_mci *host, u32 status)
+ 
+ 	set_bit(EVENT_CMD_COMPLETE, &host->pending_events);
+ 	tasklet_schedule(&host->tasklet);
++
++	dw_mci_start_fault_timer(host);
+ }
+ 
+ static void dw_mci_handle_cd(struct dw_mci *host)
+@@ -3223,6 +3294,8 @@ int dw_mci_probe(struct dw_mci *host)
+ 	spin_lock_init(&host->irq_lock);
+ 	INIT_LIST_HEAD(&host->queue);
+ 
++	dw_mci_init_fault(host);
++
+ 	/*
+ 	 * Get the host data width - this assumes that HCON has been set with
+ 	 * the correct values.
+diff --git a/drivers/mmc/host/dw_mmc.h b/drivers/mmc/host/dw_mmc.h
+index da5923a92e60..ce05d81477d9 100644
+--- a/drivers/mmc/host/dw_mmc.h
++++ b/drivers/mmc/host/dw_mmc.h
+@@ -14,6 +14,8 @@
+ #include <linux/mmc/core.h>
+ #include <linux/dmaengine.h>
+ #include <linux/reset.h>
++#include <linux/fault-inject.h>
++#include <linux/hrtimer.h>
+ #include <linux/interrupt.h>
+ 
+ enum dw_mci_state {
+@@ -230,6 +232,11 @@ struct dw_mci {
+ 	struct timer_list       cmd11_timer;
+ 	struct timer_list       cto_timer;
+ 	struct timer_list       dto_timer;
++
++#ifdef CONFIG_FAULT_INJECTION
++	struct fault_attr	fail_data_crc;
++	struct hrtimer		fault_timer;
++#endif
+ };
+ 
+ /* DMA ops for Internal/External DMAC interface */
 -- 
-2.7.4
+2.28.0
 
