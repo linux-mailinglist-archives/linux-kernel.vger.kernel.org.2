@@ -2,129 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4323B9191
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 14:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952923B9196
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 14:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236383AbhGAMYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 08:24:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55198 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236289AbhGAMYR (ORCPT
+        id S236421AbhGAM24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 08:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236332AbhGAM2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 08:24:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625142106;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mHPdWsmZjYMcOFxuAOaWqzMzWtt526mcpijNnuosC6g=;
-        b=Y5y1poNlbSIPr0+h+gcN+2IXEsNoae2UA4l6ovjGaID318C9jtP0rPL8LUNqjwbYAg7Rxc
-        aaOSB/mp1pDZgePRiXtFk6TX2q0MWMSbw94shnt1HOK2eKdfebMcLAJZBTqvFNq1F3oz5H
-        v3uN8PdmgDlKzafQmLqG49Up6L/wFn4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-XQkEeQaKPiyVPK6UtYTz9Q-1; Thu, 01 Jul 2021 08:21:43 -0400
-X-MC-Unique: XQkEeQaKPiyVPK6UtYTz9Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB8EC343CE;
-        Thu,  1 Jul 2021 12:21:41 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-113-118.rdu2.redhat.com [10.10.113.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A9945DA61;
-        Thu,  1 Jul 2021 12:21:36 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 2EAC522054F; Thu,  1 Jul 2021 08:21:36 -0400 (EDT)
-Date:   Thu, 1 Jul 2021 08:21:36 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Daniel Walsh <dwalsh@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "Schaufler, Casey" <casey.schaufler@intel.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Thu, 1 Jul 2021 08:28:54 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F90C0617AD
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 05:26:23 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id t15so4629472wry.11
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 05:26:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=kssr4gmtp/IYFhUj7wTF1rAC75pSE7knZqtnbVaCSJQ=;
+        b=bNldtXZX7OEsU7hC/ydIj5dZEObpyOXouxDSTP89Bgkm87aVhs+/bm1l7KCWSLfxUY
+         +63/2TYNUoS4zfmhz64+zcyhyR+i9yXH910ON0rNU4Y1WQDxQ98gafnnx+XnYp5CfkpB
+         tPmkpwU9vwlTeed7La9IgctWwoV91OfNryWv1O+tXb5Yj1aV1adqxcVoJDmjl/xjuldP
+         O4vUhCVi2hOqheVzxcJTz8Ff1BTOJo6PF4iVhEbkB263lHY0zM9xJx+UKUXZGTKVJKrI
+         Q/QPQqUu2EjkDt8Uakc7DwKgz6a3KEa/n5ZGqhBiC89+fLOCB64xhrzqQPEDj3ntuqle
+         fY8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=kssr4gmtp/IYFhUj7wTF1rAC75pSE7knZqtnbVaCSJQ=;
+        b=pT/7UVz5Ikt4dMPTEAtfRxjJKixh+3mxax0YfL4QghXxxo17ByVJqPKQakOY00CAhn
+         +RuCJPlLCafTj4HQliOwJ4wgFCE0uKsQwfCbwzlnMXh0tbBSTehu1w0JZ1aNFXzQAoNL
+         fEEi7FDehBnFUs9QzQfgC0f9P5z2Kf2HCsY7gyNiCKfzVtZWGp8ncrFQxYV5ZXm/1b9E
+         +CDLa+ALxQRvdT/S2xIeHpYBYS0mlKEjICS3Xp6PLGxWpIEeJiLVH37XqewtZPbBzqDp
+         8uOf6W3PPoLWmj+25qgKVlqIr5xzlueAgY8jMOzCgtcRfP4NUGr44F3PTdxdJrbRf/Od
+         M7vA==
+X-Gm-Message-State: AOAM531xFpkMl+aoxJRyhP3Gl1Ziw3lw/fT738VpM65VLliDLwpI0BKO
+        p7TeFlCPdRv4HHUFiFtUrff8Jg==
+X-Google-Smtp-Source: ABdhPJzBdFnxTWsk0egKHVdT1n4WauRyT1kSgT/Hb+MvhoTby5kBqrcZY9ZsQQ6/vghoUeShvliqvA==
+X-Received: by 2002:a5d:564c:: with SMTP id j12mr46200631wrw.37.1625142382388;
+        Thu, 01 Jul 2021 05:26:22 -0700 (PDT)
+Received: from dell ([109.180.115.217])
+        by smtp.gmail.com with ESMTPSA id n18sm4392386wms.3.2021.07.01.05.26.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 05:26:21 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 13:26:19 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        "david.e.box@linux.intel.com" <david.e.box@linux.intel.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
-        "berrange@redhat.com" <berrange@redhat.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
- files if caller has CAP_SYS_RESOURCE
-Message-ID: <20210701122136.GA159380@redhat.com>
-References: <20210629152007.GC5231@redhat.com>
- <78663f5c-d2fd-747a-48e3-0c5fd8b40332@schaufler-ca.com>
- <20210629173530.GD5231@redhat.com>
- <f4992b3a-a939-5bc4-a5da-0ce8913bd569@redhat.com>
- <YNvvLIv16jY8mfP8@mit.edu>
- <YNwmXOqT7LgbeVPn@work-vm>
- <YNyECw/1FzDCW3G8@mit.edu>
- <YNyHVhGPe1bFAt+C@work-vm>
- <YNzNLTxflKbDi8W2@mit.edu>
- <YN2BYXv79PswrN2E@work-vm>
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH 2/4] MFD: intel_pmt: Remove OOBMSM device
+Message-ID: <YN20a95YllXYUwjG@dell>
+References: <20210617215408.1412409-1-david.e.box@linux.intel.com>
+ <20210617215408.1412409-3-david.e.box@linux.intel.com>
+ <YNxENGGctLXmifzj@dell>
+ <f590ee871d0527a12b307f1494cb4c8a91c5e3c2.camel@linux.intel.com>
+ <e734a968-818a-380d-0ae5-fee41b3db246@redhat.com>
+ <YN2lmdDAOaykCvHK@dell>
+ <CAHp75Vfn6GKSj6USUPEWiPdhWRYcJbirqhU6aOeB4gruekmocg@mail.gmail.com>
+ <YN2vwT+7sVRvz8iS@dell>
+ <CAHp75VdmnRJKSBZ8dmU=7XsGOZ-wX6EpZhtC3X6JEE0mz-UJNg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YN2BYXv79PswrN2E@work-vm>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VdmnRJKSBZ8dmU=7XsGOZ-wX6EpZhtC3X6JEE0mz-UJNg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 09:48:33AM +0100, Dr. David Alan Gilbert wrote:
-> * Theodore Ts'o (tytso@mit.edu) wrote:
-> > On Wed, Jun 30, 2021 at 04:01:42PM +0100, Dr. David Alan Gilbert wrote:
-> > > 
-> > > Even if you fix symlinks, I don't think it fixes device nodes or
-> > > anything else where the permissions bitmap isn't purely used as the
-> > > permissions on the inode.
-> > 
-> > I think we're making a mountain out of a molehill.  Again, very few
-> > people are using quota these days.  And if you give someone write
-> > access to a 8TB disk, do you really care if they can "steal" 32k worth
-> > of space (which is the maximum size of an xattr, enforced by the VFS).
-> > 
-> > OK, but what about character mode devices?  First of all, most users
-> > don't have access to huge number of devices, but let's assume
-> > something absurd.  Let's say that a user has write access to *1024*
-> > devices.  (My /dev has 233 character mode devices, and I have write
-> > access to well under a dozen.)
-> > 
-> > An 8TB disk costs about $200.  So how much of the "stolen" quota space
-> > are we talking about, assuming the user has access to 1024 devices,
-> > and the file system actually supports a 32k xattr.
-> > 
-> >     32k * 1024 * $200 / 8TB / (1024*1024*1024) = $0.000763 = 0.0763 cents
-> > 
-> > A 2TB SSD is less around $180, so even if we calculate the prices
-> > based on SSD space, we're still talking about a quarter of a penny.
-> > 
-> > Why are we worrying about this?
-> 
-> I'm not worrying about storage cost, but we would need to define what
-> the rules are on who can write and change a user.* xattr on a device
-> node.  It doesn't feel sane to make it anyone who can write to the
-> device; then everyone can start leaving droppings on /dev/null.
+On Thu, 01 Jul 2021, Andy Shevchenko wrote:
 
-Looks like tmpfs/devtmpfs might not support setting user.* xattrs. So
-devices nodes there should not be a problem.
-
-# touch /dev/foo.txt
-# setfattr -n "user.foo" -v "bar" /dev/foo.txt
-setfattr: /dev/foo.txt: Operation not supported
-
-Vivek
-
+> On Thursday, July 1, 2021, Lee Jones <lee.jones@linaro.org> wrote:
 > 
-> The other evilness I can imagine, is if there's a 32k limit on xattrs on
-> a node, an evil user could write almost 32k of junk to the node
-> and then break the next login that tries to add an acl or breaks the
-> next relabel.
-> 
-> Dave
-> 
-> > 						- Ted
-> > 
-> -- 
-> Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-> 
+> > On Thu, 01 Jul 2021, Andy Shevchenko wrote:
+> >
+> > > On Thursday, July 1, 2021, Lee Jones <lee.jones@linaro.org> wrote:
+> > >
+> > > > On Thu, 01 Jul 2021, Hans de Goede wrote:
+> > > >
+> > > > > Hi,
+> > > > >
+> > > > > On 6/30/21 11:11 PM, David E. Box wrote:
+> > > > > > On Wed, 2021-06-30 at 11:15 +0100, Lee Jones wrote:
+> > > > > >> On Thu, 17 Jun 2021, David E. Box wrote:
+> > > > > >>
+> > > > > >>> Unlike the other devices in intel_pmt, the Out of Band Management
+> > > > > >>> Services
+> > > > > >>> Module (OOBMSM) is actually not a PMT dedicated device. It can
+> > also
+> > > > > >>> be used
+> > > > > >>> to describe non-PMT capabilities. Like PMT, these capabilities
+> > are
+> > > > > >>> also
+> > > > > >>> enumerated using PCIe Vendor Specific registers in config space.
+> > In
+> > > > > >>> order
+> > > > > >>> to better support these devices without the confusion of a
+> > > > > >>> dependency on
+> > > > > >>> MFD_INTEL_PMT, remove the OOBMSM device from intel_pmt so that it
+> > > > > >>> can be
+> > > > > >>> later placed in its own driver. Since much of the same code will
+> > be
+> > > > > >>> used by
+> > > > > >>> intel_pmt and the new driver, create a new file with symbols to
+> > be
+> > > > > >>> used by
+> > > > > >>> both.
+> > > > > >>>
+> > > > > >>> While performing this split we need to also handle the creation
+> > of
+> > > > > >>> platform
+> > > > > >>> devices for the non-PMT capabilities. Currently PMT devices are
+> > > > > >>> named by
+> > > > > >>> their capability (e.g. pmt_telemetry). Instead, generically name
+> > > > > >>> them by
+> > > > > >>> their capability ID (e.g. intel_extnd_cap_2). This allows the IDs
+> > > > > >>> to be
+> > > > > >>> created automatically.  However, to ensure that unsupported
+> > devices
+> > > > > >>> aren't
+> > > > > >>> created, use an allow list to specify supported capabilities.
+> > > > > >>>
+> > > > > >>> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > > > > >>> ---
+> > > > > >>>  MAINTAINERS                                |   1 +
+> > > > > >>>  drivers/mfd/Kconfig                        |   4 +
+> > > > > >>>  drivers/mfd/Makefile                       |   1 +
+> > > > > >>>  drivers/mfd/intel_extended_caps.c          | 208
+> > > > > >>> +++++++++++++++++++++
+> > > > > >>
+> > > > > >> Please consider moving this <whatever this is> out to either
+> > > > > >> drivers/pci or drivers/platform/x86.
+> > > > > >
+> > > > > > None of the cell drivers are in MFD, only the PCI drivers from
+> > which
+> > > > > > the cells are created. I understood that these should be in MFD.
+> > But
+> > > > > > moving it to drivers/platform/x86 would be fine with me. That
+> > keeps the
+> > > > > > code together in the same subsystem. Comment from Hans or Andy?
+> > > > >
+> > > > > I'm fine with moving everything to drivers/platform/x86, but AFAIK
+> > > > > usually the actual code which has the MFD cells and creates the
+> > > > > child devices usually lives under drivers/mfd
+> > > >
+> > > > Correct.  It must.
+> > >
+> > > It’s definitely not the first time you are talking about, but it may be
+> > the
+> > > first time I asked why it’s not enforced overall. Last time I have
+> > checked
+> > > it was like 5-7 MFD uses outside the MFD folder. Are you going to fix
+> > that?
+> >
+> > Because I can't NACK patches that weren't sent to me. :)
+> >
+> >
+> Hint: you may add regexp match to the maintainers database and you will see
+> them more often
 
+Good idea.  I'll add it to my TODO.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
