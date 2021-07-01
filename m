@@ -2,80 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B2D3B8F5E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 11:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C523B8F66
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 11:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235612AbhGAJGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 05:06:11 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:10232 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235067AbhGAJGJ (ORCPT
+        id S235684AbhGAJHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 05:07:01 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:3658 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235067AbhGAJHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 05:06:09 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GFsZ03QBWz1BRLr;
-        Thu,  1 Jul 2021 16:58:16 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 1 Jul 2021 17:03:33 +0800
-Received: from [10.67.102.67] (10.67.102.67) by dggemi759-chm.china.huawei.com
- (10.1.198.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 1 Jul
- 2021 17:03:32 +0800
-Subject: Re: [PATCH net-next 3/3] net: hns3: add support for link diagnosis
- info in debugfs
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
-        <lipeng321@huawei.com>
-References: <1624545405-37050-1-git-send-email-huangguangbin2@huawei.com>
- <1624545405-37050-4-git-send-email-huangguangbin2@huawei.com>
- <20210624122517.7c8cb329@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   "huangguangbin (A)" <huangguangbin2@huawei.com>
-Message-ID: <08395721-4ca1-9913-19fd-4d8ec7e41e4b@huawei.com>
-Date:   Thu, 1 Jul 2021 17:03:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Thu, 1 Jul 2021 05:07:00 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16193GPo018054;
+        Thu, 1 Jul 2021 11:04:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=PuCgOMVS+k9BdyTGiSWcQ42Ozxz0XMx82mro7FoPaW0=;
+ b=r5apYu81ioi0MukLfvhpZ3bS2I5fl0+xuml7HRydVg7OKOkrvbjFyZXCyEh5BNTJhEB0
+ SDYK2QSZIz4usYoPBXekIXT2UnL7G8y3KV1lm+mLzcqEzAjt3Oa6qgPwj/dAv0SFOX1P
+ sPyE0FJNp6e7J2gBkcI19IkjByf9pViDhr6XBut9ootxo3h9OctFmZaZ+RiSH+u18ejw
+ O9L+kfm8RdI9oWwi9K47zC0sbk7mXVxax0tHILysgPpRp+pVxEMva7fx97t2XWKuNBBx
+ PPgaROttSyxSQCYAyRfuEpJ5DFiGL95zE1YOPeBaBjo3lh8X15cOLo5iPLBVMgwd5JzO hg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 39h9qe8j4d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Jul 2021 11:04:23 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8E4E810002A;
+        Thu,  1 Jul 2021 11:04:22 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 705702138C8;
+        Thu,  1 Jul 2021 11:04:22 +0200 (CEST)
+Received: from localhost (10.75.127.47) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 1 Jul 2021 11:04:21
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <julien.massot@iot.bzh>, <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v3 0/4] rpmsg: char: introduce the rpmsg-raw channel
+Date:   Thu, 1 Jul 2021 11:04:09 +0200
+Message-ID: <20210701090413.3104-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210624122517.7c8cb329@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.67]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-01_06:2021-06-30,2021-07-01 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Purpose:
+  Allow the remote processor to instantiate a /dev/rpmsgX interface relying on the NS announcement
+  of the "rpmsg-raw" service.
+  This patchet is extracted from  the series [1] with rework to add rpmsg_create_default_ept helper.
+
+  
+Aim:
+  There is no generic sysfs interface based on RPMsg that allows a user application to communicate
+  with a remote processor in a simple way.
+  The rpmsg_char dev solves a part of this problem by allowing an endpoint to be created on the
+  local side. But it does not take advantage of the NS announcement mechanism implemented for some
+  backends such as the virtio backend. So it is not possible to probe it from  a remote initiative.
+  Extending the char rpmsg device to support NS announcement makes the rpmsg_char more generic.
+  By announcing a "rpmg-raw" service, the firmware of a remote processor will be able to
+  instantiate a /dev/rpmsgX interface providing to the user application a basic link to communicate
+  with it without any knowledge of the rpmsg protocol.
+
+Implementation details:
+  - Register a rpmsg driver for the rpmsg_char driver, associated to the "rpmsg-raw" channel service.
+  - In case of rpmsg char device instantiated by the rpmsg bus (on NS announcement) manage the 
+    channel default endpoint to ensure a stable default endpoint address, for communication with 
+    the remote processor.
+
+delta vs V2 [2]:
+- Fix typos.
+- Suppress useless check on eptdev->rpdev, in rpmsg_eptdev_ioctl.
+- Add the Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>.
+
+How to test it:
+  - This series can be applied on git/andersson/remoteproc.git for-next branch (7486f29e5e60)
+    + the "Restructure the rpmsg char to decorrelate the control part" series[3]
+
+[1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=475217
+[2] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=505873
+[3] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=483793
 
 
-On 2021/6/25 3:25, Jakub Kicinski wrote:
-> On Thu, 24 Jun 2021 22:36:45 +0800 Guangbin Huang wrote:
->> In order to know reason why link down, add a debugfs file
->> "link_diagnosis_info" to get link faults from firmware, and each bit
->> represents one kind of fault.
->>
->> usage example:
->> $ cat link_diagnosis_info
->> Reference clock lost
-> 
-> Please use ethtool->get_link_ext_state instead.
-> .
-> 
-Hi Jakub, I have a question to consult you.
-Some fault information in our patch are not existed in current ethtool extended
-link states, for examples:
-"Serdes reference clock lost"
-"Serdes analog loss of signal"
-"SFP tx is disabled"
-"PHY power down"
-"Remote fault"
 
-Do you think these fault information can be added to ethtool extended link states?
+Arnaud Pouliquen (4):
+  rpmsg: Introduce rpmsg_create_default_ept function
+  rpmsg: char: Introduce __rpmsg_chrdev_create_eptdev function
+  rpmsg: char: Add possibility to use default endpoint of the rpmsg
+    device.
+  rpmsg: char: Introduce the "rpmsg-raw" channel
 
-Thanks,
-Guangbin
-.
+ drivers/rpmsg/rpmsg_char.c | 120 ++++++++++++++++++++++++++++++++++---
+ drivers/rpmsg/rpmsg_core.c |  51 ++++++++++++++++
+ include/linux/rpmsg.h      |  13 ++++
+ 3 files changed, 175 insertions(+), 9 deletions(-)
+
+-- 
+2.17.1
 
