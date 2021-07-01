@@ -2,96 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDDE3B94AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B433B94B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbhGAQb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 12:31:57 -0400
-Received: from mga06.intel.com ([134.134.136.31]:4062 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230125AbhGAQb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 12:31:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="269695346"
-X-IronPort-AV: E=Sophos;i="5.83,314,1616482800"; 
-   d="scan'208";a="269695346"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 09:29:25 -0700
-X-IronPort-AV: E=Sophos;i="5.83,314,1616482800"; 
-   d="scan'208";a="626427284"
-Received: from acismesi-mobl1.amr.corp.intel.com (HELO [10.252.131.1]) ([10.252.131.1])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 09:29:25 -0700
-Subject: Re: [PATCH v3 2/2] kernel/resource: fix boundary judgment issues in
- find_next_iomem_res() and __walk_iomem_res_desc()
-To:     Yaohui Wang <yaohuiwang@linux.alibaba.com>,
-        dave.hansen@linux.intel.com, tglx@linutronix.de
-Cc:     luto@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
-        luoben@linux.alibaba.com
-References: <20210621123419.2976-1-yaohuiwang@linux.alibaba.com>
- <20210621123419.2976-3-yaohuiwang@linux.alibaba.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <ff01e0a6-eed0-9a9a-8161-ac35cd4f948a@intel.com>
-Date:   Thu, 1 Jul 2021 09:29:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232165AbhGAQgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 12:36:48 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37668 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhGAQgr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 12:36:47 -0400
+Received: from 111-240-144-27.dynamic-ip.hinet.net ([111.240.144.27] helo=localhost.localdomain)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <chris.chiu@canonical.com>)
+        id 1lyzdj-0000i1-Tp; Thu, 01 Jul 2021 16:34:12 +0000
+From:   chris.chiu@canonical.com
+To:     Jes.Sorensen@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, code@reto-schneider.ch
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chris Chiu <chris.chiu@canonical.com>
+Subject: [PATCH] rtl8xxxu: disable interrupt_in transfer for 8188cu and 8192cu
+Date:   Fri,  2 Jul 2021 00:33:54 +0800
+Message-Id: <20210701163354.118403-1-chris.chiu@canonical.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210621123419.2976-3-yaohuiwang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/21/21 5:34 AM, Yaohui Wang wrote:
-> Memory resources are described with the start address and the inclusive
-> end address, which means for a resource with 1 byte length the start
-> address is the same as the end address.
+From: Chris Chiu <chris.chiu@canonical.com>
 
-Is it just me or does this little "feature" of the resource code
-continue to bite us over and over?
+There will be crazy numbers of interrupts triggered by 8188cu and
+8192cu module, around 8000~10000 interrupts per second, on the usb
+host controller. Compare with the vendor driver source code, it's
+mapping to the configuration CONFIG_USB_INTERRUPT_IN_PIPE and it is
+disabled by default.
 
-It might be some time for some unit tests for kernel/resource.c.
+Since the interrupt transfer is neither used for TX/RX nor H2C
+commands. Disable it to avoid the confusing interrupts for the
+8188cu and 8192cu module which I only have for verification.
+
+Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+---
+ drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+index 03c6ed7efe06..6a3dfa71b27f 100644
+--- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
++++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+@@ -1670,7 +1670,7 @@ static int rtl8xxxu_identify_chip(struct rtl8xxxu_priv *priv)
+ 			priv->rf_paths = 2;
+ 			priv->rx_paths = 2;
+ 			priv->tx_paths = 2;
+-			priv->usb_interrupts = 1;
++			priv->usb_interrupts = 0;
+ 			priv->rtl_chip = RTL8192C;
+ 		}
+ 		priv->has_wifi = 1;
+@@ -1680,7 +1680,7 @@ static int rtl8xxxu_identify_chip(struct rtl8xxxu_priv *priv)
+ 		priv->rx_paths = 1;
+ 		priv->tx_paths = 1;
+ 		priv->rtl_chip = RTL8188C;
+-		priv->usb_interrupts = 1;
++		priv->usb_interrupts = 0;
+ 		priv->has_wifi = 1;
+ 	}
+ 
+-- 
+2.20.1
+
