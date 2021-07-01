@@ -2,81 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FDC3B92A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1FD43B92B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232727AbhGAOFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:05:35 -0400
-Received: from mail-io1-f42.google.com ([209.85.166.42]:40702 "EHLO
-        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232827AbhGAOFd (ORCPT
+        id S233153AbhGAOGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:06:02 -0400
+Received: from mail-il1-f182.google.com ([209.85.166.182]:42528 "EHLO
+        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232301AbhGAOF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:05:33 -0400
-Received: by mail-io1-f42.google.com with SMTP id l5so7618248iok.7;
-        Thu, 01 Jul 2021 07:03:02 -0700 (PDT)
+        Thu, 1 Jul 2021 10:05:56 -0400
+Received: by mail-il1-f182.google.com with SMTP id h3so6445226ilc.9;
+        Thu, 01 Jul 2021 07:03:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=UcGsYoboToTMhhq99sLHVgR7kDyS6L2KqvCfhnRDDM0=;
-        b=W9AvaaMS8dJlqzBNf7oQ7reXgnv3T83WQOtdNjRgX57HgNZxi3ItpOIZccAItTAgQ1
-         qe8A5Zdxshqi2e6zGmZkU/E1ajH40RIko+siiKLA9lQx/kkJqVWTLMrSrHtFKpPmJw0W
-         pyQ9R6rKwHMsDJXGIFKm0VXGhutVuTDqyG3Q5MTufDg4fZnPB7B95EC5HzuK7n2+BVAJ
-         y+T6k1pxiBvKxcU7BiDlt+AMiii13WWrLMwmWs1TNcBCtH8shGnGNU6EYmmy6IWN/oW1
-         wgzONHbYAOT7G5YFRGcRkp/T3yaouLpxl5YpUgmSJDxE7sqGTOpBmqQ00fuQI0eKn533
-         s/wg==
-X-Gm-Message-State: AOAM530UTHj+zNe89LR0nJlzcVwDrqhHXd4STD3SqayjaelO85kmlbpF
-        cbTUWKHh451ROyPJwrlpLsbhShhrKw==
-X-Google-Smtp-Source: ABdhPJxJk5BSMp+3ZujDe2uG20xKYmB9NoQEedsUGUAOdURlUY0ojNyY+yn9NBjzeaJ+CB+8MsHFvQ==
-X-Received: by 2002:a02:380c:: with SMTP id b12mr64155jaa.98.1625148180433;
-        Thu, 01 Jul 2021 07:03:00 -0700 (PDT)
+        bh=q6V1bQKgW8jeniUJHT1MFd3WQxyJ/wQdQVc94HD3gJI=;
+        b=HDFnoZqtSUCcObIAAehg7xHQaK6Ltz15Uxy3S3zIFS+7AbAAyXjiPhStyLAxmDwUaD
+         RGJJiVcHknB+OkeKt124nyEmD7DGm6nCYXhZhzAo5a0404A7DBWF2UOmAYugfKumoUz0
+         GQOkmr4a2y4z19HKv9WjqQYHx1yx+elq7C1Q1nFjaMlmQFYYazCkMz10zgC4pW0xW0cX
+         LLPhu4BFFODS0tSbVLbIC73KF1rtdymGr0Kb5kwSoINQjtniYRrTnEokun/3H/dI2BS3
+         uvzrkLW3eSYCkxyVMHlWeXyAhnqGPhVtQsn4pJKHtxVnscSAPkEUc0BIzPfN55M4Wwlf
+         hi4g==
+X-Gm-Message-State: AOAM5311m58QGJWRTBWjX/vUiDjcvA86YrlpafSxaj7U6bMVQe4iH+o3
+        jipQn3DSV7y7ZyP13NwVRtgV3V3ZbA==
+X-Google-Smtp-Source: ABdhPJzIkDIlCQJ8GeJQTjtlHVYRBooLDL/7i+YEHKrOVvDPVyUxazhSmOHAwIgMSyO9Z3+/VEsIBQ==
+X-Received: by 2002:a92:660f:: with SMTP id a15mr32101268ilc.182.1625148205231;
+        Thu, 01 Jul 2021 07:03:25 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id s9sm32255ilt.44.2021.07.01.07.02.57
+        by smtp.gmail.com with ESMTPSA id m19sm29120ilj.52.2021.07.01.07.03.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 07:02:59 -0700 (PDT)
-Received: (nullmailer pid 2278700 invoked by uid 1000);
+        Thu, 01 Jul 2021 07:03:24 -0700 (PDT)
+Received: (nullmailer pid 2278710 invoked by uid 1000);
         Thu, 01 Jul 2021 14:02:43 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Axel Lin <axel.lin@ingics.com>, devicetree@vger.kernel.org,
-        mauro.chehab@huawei.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com
-In-Reply-To: <8d871e2ccc544d11959c16d8312dbf03dd01b1c8.1624962269.git.mchehab+huawei@kernel.org>
-References: <cover.1624962269.git.mchehab+huawei@kernel.org> <8d871e2ccc544d11959c16d8312dbf03dd01b1c8.1624962269.git.mchehab+huawei@kernel.org>
-Subject: Re: [PATCH v10 3/5] mfd: hi6421-spmi-pmic: move driver from staging
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20210701030137.10566-3-zhangqing@loongson.cn>
+References: <20210701030137.10566-1-zhangqing@loongson.cn> <20210701030137.10566-3-zhangqing@loongson.cn>
+Subject: Re: [PATCH v7 3/3] dt-bindings: mips: Add Loongson-2K1000 reset support
 Date:   Thu, 01 Jul 2021 08:02:43 -0600
-Message-Id: <1625148163.537612.2278699.nullmailer@robh.at.kernel.org>
+Message-Id: <1625148163.589811.2278709.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Jun 2021 12:31:29 +0200, Mauro Carvalho Chehab wrote:
-> This driver is ready for mainstream. So, move it out of staging.
+On Thu, 01 Jul 2021 11:01:37 +0800, Qing Zhang wrote:
+> Switch the DT binding to a YAML schema to enable the DT validation.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
 > ---
->  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 134 ++++++++++++++++++
->  MAINTAINERS                                   |   7 +
->  drivers/mfd/Kconfig                           |  16 +++
->  drivers/mfd/Makefile                          |   1 +
->  drivers/mfd/hi6421-spmi-pmic.c                |  66 +++++++++
->  drivers/staging/Kconfig                       |   2 -
->  drivers/staging/Makefile                      |   1 -
->  drivers/staging/hikey9xx/Kconfig              |  19 ---
->  drivers/staging/hikey9xx/Makefile             |   3 -
->  drivers/staging/hikey9xx/TODO                 |   5 -
->  drivers/staging/hikey9xx/hi6421-spmi-pmic.c   |  66 ---------
->  .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 134 ------------------
->  12 files changed, 224 insertions(+), 230 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
->  create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
->  delete mode 100644 drivers/staging/hikey9xx/Kconfig
->  delete mode 100644 drivers/staging/hikey9xx/Makefile
->  delete mode 100644 drivers/staging/hikey9xx/TODO
->  delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
->  delete mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+> 
+> v6-v7:
+> Add yaml file
+> ---
+>  .../bindings/mips/loongson/ls2k-reset.yaml    | 38 +++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -85,10 +71,11 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.example.dt.yaml:0:0: /example-0/pmic@0: failed to match any schema with compatible: ['hisilicon,hi6421-spmi']
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.example.dt.yaml: power-controller@1fe07000: '#power-domain-cells' is a required property
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/power-domain.yaml
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1498291
+See https://patchwork.ozlabs.org/patch/1499207
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
