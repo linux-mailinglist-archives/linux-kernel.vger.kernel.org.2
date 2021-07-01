@@ -2,172 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E3A3B928E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA323B9294
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbhGAN7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 09:59:22 -0400
-Received: from elvis.franken.de ([193.175.24.41]:33889 "EHLO elvis.franken.de"
+        id S232414AbhGAOCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:02:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232335AbhGAN7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 09:59:21 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lyxBR-0000bH-00; Thu, 01 Jul 2021 15:56:49 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id DD147C0755; Thu,  1 Jul 2021 15:56:41 +0200 (CEST)
-Date:   Thu, 1 Jul 2021 15:56:41 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     torvalds@linux-foundation.org
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] MIPS changes for v5.14
-Message-ID: <20210701135641.GA6868@alpha.franken.de>
+        id S231342AbhGAOCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 10:02:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70AF5613EF;
+        Thu,  1 Jul 2021 13:59:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625147990;
+        bh=7yIdbx5G0asNF47kyLGub6yCdbe55aWTfmtrPq+WZHw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=KCKxL/USD4qbC3q797R4dfrTjrmgnqjqtI4cG9TGAb7e9udh2QPQifLboVBxJ/swd
+         rFJtdJuj9GBU0p3dUCtB/ph+kDMhtfa+wPoaAHerFD/9lgeuL3us5IElOmrcOQyLyY
+         wwesIvzNZtIL+6PJt7EkBbxO3lm7vMbtnT+aksVq3vtLxfB8SiOKhNxYun7U8KdRxj
+         x54HlAQUVWM/4tUUtthtHuiU+7HPFin12M8FGtyt211TjTd2Wd76VZf9ecBq+eplFE
+         UgFua6rQPEg78rLwXg10P7aWJLQAp2/G6aEFC6M6ftCAT/+a1jrMaIn3Cr9FrIkfF2
+         xME9arZwlo11w==
+Date:   Thu, 1 Jul 2021 08:59:49 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
+ clocks gated
+Message-ID: <20210701135949.GA51123@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <51276875-658e-e6fe-5433-b5d795b253ff@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+On Thu, Jul 01, 2021 at 12:09:58AM +0200, Javier Martinez Canillas wrote:
+> On 6/30/21 10:30 PM, Bjorn Helgaas wrote:
+> > On Wed, Jun 30, 2021 at 09:59:58PM +0200, Javier Martinez Canillas wrote:
+> 
+> [snip]
+> 
+> >> But maybe you can also add a paragraph that mentions the
+> >> CONFIG_DEBUG_SHIRQ option and shared interrupts? That way, other
+> >> driver authors could know that by enabling this an underlying
+> >> problem might be exposed for them to fix.
+> > 
+> > Good idea, thanks!  I added this; is it something like what you
+> > had in mind?
+> 
+> Thanks a lot for doing this rewording. I just have a small nit for
+> the text.
+> 
+> >     Found by enabling CONFIG_DEBUG_SHIRQ, which calls the IRQ
+> >     handler when it is being unregistered.  An error during the
+> >     probe path might cause this unregistration and IRQ handler
+> >     execution before the device or data structure init has
+> >     finished.
+> 
+> The IRQ handler is not called when unregistered, but it is called
+> when another handler for the shared IRQ is unregistered. In this
+> particular driver, both a "pcie-sys" and "pcie-client" handlers are
+> registered, then an error leads to "pcie-sys" being unregistered and
+> the handler for "pcie-client" being called.
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+Is this really true?  I think that would mean CONFIG_DEBUG_SHIRQ would
+not find this kind of bug unless we actually registered two or more
+handlers for the shared IRQ, but it's still a bug even only one
+handler is registered.
 
-are available in the Git repository at:
+Looking at __free_irq() [1], my impression is that "action" is what
+we're removing and action->handler() is the IRQ handler we call when
+CONFIG_DEBUG_SHIRQ, so it doesn't look like it's calling the remaining
+handlers after removing one of them.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.14
+> So maybe the following instead?
+> 
+>     Found by enabling CONFIG_DEBUG_SHIRQ, which calls the IRQ
+>     handlers when a handler for the shared IRQ is unregistered. An
+>     error during the probe path might cause this unregistration and
+>     handler execution before the device or data structure init has
+>     finished.
 
-for you to fetch changes up to cf02ce742f09188272bcc8b0e62d789eb671fc4c:
-
-  MIPS: Fix PKMAP with 32-bit MIPS huge page support (2021-06-30 14:41:32 +0200)
-
-----------------------------------------------------------------
-- added support for OpeneEmbed SOM9331 board
-- Ingenic fixes/improvments
-- other fixes and cleanups
-
-----------------------------------------------------------------
-Bibo Mao (1):
-      hugetlb: clear huge pte during flush function on mips platform
-
-Geert Uytterhoeven (1):
-      MIPS: SEAD3: Correct Ethernet node name
-
-Huacai Chen (1):
-      MIPS: Loongson64: Remove a "set but not used" variable
-
-Huang Pei (1):
-      MIPS: add PMD table accounting into MIPS'pmd_alloc_one
-
-Masahiro Yamada (2):
-      mips: syscalls: define syscall offsets directly in <asm/unistd.h>
-      mips: syscalls: use pattern rules to generate syscall headers
-
-Mike Rapoport (1):
-      MIPS: Octeon: drop dependency on CONFIG_HOLES_IN_ZONE
-
-Nick Desaulniers (1):
-      MIPS: set mips32r5 for virt extensions
-
-Oleksij Rempel (3):
-      dt-bindings: vendor-prefixes: Add an entry for OpenEmbed
-      MIPS: ath79: ar9331: Add OpeneEmbed SOM9331 Board
-      MIPS: ath79: ar9331: add pause property for the MAC <> switch link
-
-Paul Cercueil (9):
-      MIPS: mm: XBurst CPU requires sync after DMA
-      MIPS: boot: Support specifying UART port on Ingenic SoCs
-      MIPS: cpu-probe: Fix FPU detection on Ingenic JZ4760(B)
-      MIPS: Kconfig: ingenic: Ensure MACH_INGENIC_GENERIC selects all SoCs
-      MIPS: ingenic: Select CPU_SUPPORTS_CPUFREQ && MIPS_EXTERNAL_TIMER
-      MIPS: ingenic: jz4780: Fix I2C nodes to match DT doc
-      MIPS: ingenic: gcw0: Set codec to cap-less mode for FM radio
-      MIPS: ingenic: rs90: Add dedicated VRAM memory region
-      MIPS: MT extensions are not available on MIPS32r1
-
-Tiezhu Yang (2):
-      MIPS: Loongson64: Update loongson3_defconfig
-      MIPS: Loongson64: Make some functions static in smp.c
-
-Tom Rix (1):
-      MIPS: Loongson64: fix spelling of SPDX tag
-
-Wei Li (1):
-      MIPS: Fix PKMAP with 32-bit MIPS huge page support
-
-Xiaochuan Mao (1):
-      MIPS:DTS:Correct device id of pcie for Loongnon-2K
-
-Yang Yingliang (1):
-      MIPS: OCTEON: octeon-usb: Use devm_platform_get_and_ioremap_resource()
-
-Youling Tang (1):
-      MIPS: Loongson64: Fix build error 'secondary_kexec_args' undeclared under !SMP
-
-zhanglianjie (1):
-      MIPS: loongsoon64: Reserve memory below starting pfn to prevent Oops
-
-zhaoxiao (5):
-      mips: dts: loongson: fix DTC unit name warnings
-      mips: dts: loongson: fix DTC unit name warnings
-      mips: dts: loongson: fix DTC unit name warnings
-      mips: dts: loongson: fix DTC unit name warnings
-      mips: dts: loongson: fix DTC unit name warnings
-
-zhouchuangao (1):
-      mips/kvm: Use BUG_ON instead of if condition followed by BUG
-
-周琰杰 (Zhou Yanjie) (5):
-      MIPS: X1830: Respect cell count of common properties.
-      dt-bindings: clock: Add documentation for MAC PHY control bindings.
-      MIPS: Ingenic: Add MAC syscon nodes for Ingenic SoCs.
-      MIPS: CI20: Reduce clocksource to 750 kHz.
-      MIPS: CI20: Add second percpu timer for SMP.
-
- .../devicetree/bindings/clock/ingenic,cgu.yaml     |   2 +
- .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
- arch/mips/Kconfig                                  |   7 +-
- arch/mips/Kconfig.debug                            |   8 ++
- arch/mips/boot/compressed/uart-16550.c             |   4 +-
- arch/mips/boot/dts/ingenic/ci20.dts                |  24 +++--
- arch/mips/boot/dts/ingenic/gcw0.dts                |   5 +-
- arch/mips/boot/dts/ingenic/jz4780.dtsi             |  10 +-
- arch/mips/boot/dts/ingenic/rs90.dts                |  14 +++
- arch/mips/boot/dts/ingenic/x1000.dtsi              |   7 ++
- arch/mips/boot/dts/ingenic/x1830.dtsi              |  16 ++-
- arch/mips/boot/dts/loongson/Makefile               |   2 +-
- arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi |  18 ++--
- .../boot/dts/loongson/loongson64g-package.dtsi     |   4 +-
- .../boot/dts/loongson/loongson64v_4core_virtio.dts |   2 +-
- arch/mips/boot/dts/loongson/ls7a-pch.dtsi          |   2 +-
- arch/mips/boot/dts/loongson/rs780e-pch.dtsi        |   2 +-
- arch/mips/boot/dts/mti/sead3.dts                   |   2 +-
- arch/mips/boot/dts/qca/Makefile                    |   1 +
- arch/mips/boot/dts/qca/ar9331.dtsi                 |   2 +
- .../dts/qca/ar9331_openembed_som9331_board.dts     | 110 +++++++++++++++++++++
- arch/mips/cavium-octeon/octeon-usb.c               |   9 +-
- arch/mips/configs/loongson3_defconfig              |  12 +--
- arch/mips/include/asm/cpu-features.h               |   4 +-
- arch/mips/include/asm/highmem.h                    |   2 +-
- arch/mips/include/asm/hugetlb.h                    |   8 +-
- arch/mips/include/asm/mipsregs.h                   |   8 +-
- arch/mips/include/asm/pgalloc.h                    |  10 +-
- arch/mips/include/asm/unistd.h                     |   4 +
- arch/mips/ingenic/Kconfig                          |   2 +
- arch/mips/kernel/cpu-probe.c                       |   5 +
- arch/mips/kernel/syscalls/Makefile                 |  34 +------
- arch/mips/kernel/syscalls/syscallnr.sh             |   2 -
- arch/mips/kvm/tlb.c                                |   3 +-
- arch/mips/loongson64/env.c                         |   3 +-
- arch/mips/loongson64/numa.c                        |   3 +
- arch/mips/loongson64/reset.c                       |   5 +-
- arch/mips/loongson64/smp.c                         |  10 +-
- arch/mips/mm/dma-noncoherent.c                     |   1 +
- 39 files changed, 254 insertions(+), 115 deletions(-)
- create mode 100644 arch/mips/boot/dts/qca/ar9331_openembed_som9331_board.dts
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/irq/manage.c?id=v5.13#n1805
