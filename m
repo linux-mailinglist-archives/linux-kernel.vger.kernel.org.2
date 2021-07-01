@@ -2,58 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8653B9391
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4122C3B9394
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbhGAOxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbhGAOw7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:52:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD75C061762;
-        Thu,  1 Jul 2021 07:50:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JKzt46NlE/OClzyqd5L8qkhPno3gsENpKKVZIXqgBLM=; b=r7T6GbpghOx3fktE2bmkIi2N1q
-        /rVRSO+kYNfI4KG2tzsa3J5i72e5Pz2ms7+WokBMFUwRJdvrIco/3tsDe/yZeECiRAFtHxzA49+pO
-        Gc/6PNHWuV9Pn3o2iye7dcpr+7dkgcrfrFJW39KUGHs/n4DpWv2051zcmB7D219ICwjmCN3cKDVR1
-        nXCMbfU4gDQW+ZQkcgniKXqlg8yRwYM/M4PnG3Cas89djZVw2TuH3lwNzhWJGHJyZ/Z+uI9RaltO2
-        TlQ2Z3XEPTPcWE9EZ1bQrMlID8fN5G6DpD6qZMEsaYhBNXAzk8ph2mx3YPWals1DkUm5/Pd+x8roo
-        4soZ3raQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lyy0l-006fTq-1V; Thu, 01 Jul 2021 14:49:59 +0000
-Date:   Thu, 1 Jul 2021 15:49:51 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     bvanassche@acm.org, jejb@linux.ibm.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        kernel@puri.sm, stern@rowland.harvard.edu
-Subject: Re: [PATCH v5 2/3] scsi: sd: send REQUEST SENSE for
- BLIST_MEDIA_CHANGE devices in runtime_resume()
-Message-ID: <YN3WD4Vem5Zx8Dvq@infradead.org>
-References: <20210630084453.186764-1-martin.kepplinger@puri.sm>
- <20210630084453.186764-3-martin.kepplinger@puri.sm>
+        id S232988AbhGAOyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:54:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232413AbhGAOyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 10:54:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C23F56141F;
+        Thu,  1 Jul 2021 14:51:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625151109;
+        bh=OoCFtaHtPZONNovcwjiQpsNtvKfywEXzvUyvki/4k+A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JDhaqLVqC4BotbIH8uTP3vsF/rd/qk2RLHv4c/haxKk1LsIYriF4ZZGm9VPntRjzT
+         J2V0vXMPgAIILb1H2mvt6GLRHWSJHswehtqD3GgTy0xl2B31rdBN8+8+Sp7EsRdluS
+         yW2Tuyefd13aE/Dezctt3HyyuJGRhpusdj4kTti6Xbbb0QZrGVLKjACHdhi/97pReX
+         u3Q2c83zO7fgz8pkd//g0yrn+NseB4f7qYy2VIjPm/K03rhYN5GPcSHk/WMaZHUTBi
+         vPrsItfB3KHIEzN1DrIcy17lu+sGE8RFW+saGohzR8SDwg6RAhTHbFGbCetmC8aeEA
+         7CLXiMrywT43Q==
+Received: by mail-qk1-f173.google.com with SMTP id b2so6226138qka.7;
+        Thu, 01 Jul 2021 07:51:49 -0700 (PDT)
+X-Gm-Message-State: AOAM533Esh+JwzIxnFSOfB6XkjFdHAVrhQTGU48/NfF2P9rmzKEghMqV
+        zz0mfa6Qeehvh1FEcUEL0EWhhfUWTu3HCHXVyA==
+X-Google-Smtp-Source: ABdhPJz1kSVMinw4yLjZ5WWPryE2wCRPjUk7fQZ5mVkY49e+ymIDPafKp9nM007EgQA1pjT2NxXixg440TSkB6+nsE4=
+X-Received: by 2002:a05:620a:1487:: with SMTP id w7mr421397qkj.128.1625151109003;
+ Thu, 01 Jul 2021 07:51:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210630084453.186764-3-martin.kepplinger@puri.sm>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <CGME20210701140328epcms1p85149318b6c18fa18b3c7c8e966c14db0@epcms1p7>
+ <20210701141049epcms1p774955cc32210584be5aca8f1b3126e9c@epcms1p7>
+In-Reply-To: <20210701141049epcms1p774955cc32210584be5aca8f1b3126e9c@epcms1p7>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 1 Jul 2021 08:51:37 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqL6LP+ksJSffTF8UU=m=u_aHLucq76HYyUio9_qDH9EdQ@mail.gmail.com>
+Message-ID: <CAL_JsqL6LP+ksJSffTF8UU=m=u_aHLucq76HYyUio9_qDH9EdQ@mail.gmail.com>
+Subject: Re: [PATCH] of: of_reserved_mem: match memblock_free with memblock_reserve
+To:     ohoono.kwon@samsung.com
+Cc:     "frowand.list@gmail.com" <frowand.list@gmail.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "ohkwon1043@gmail.com" <ohkwon1043@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 10:44:52AM +0200, Martin Kepplinger wrote:
-> +	struct scsi_disk *sdkp = dev_get_drvdata(dev);
-> +	struct scsi_device *sdp = sdkp->device;
-> +	int timeout, res;
-> +
-> +	timeout = sdp->request_queue->rq_timeout * SD_FLUSH_TIMEOUT_MULTIPLIER;
+On Thu, Jul 1, 2021 at 8:10 AM =EA=B6=8C=EC=98=A4=ED=9B=88 <ohoono.kwon@sam=
+sung.com> wrote:
+>
+> When __reserved_mem_init_node called from fdt_init_reserved_mem fails,
+>
+> we try to undo __reserved_mem_alloc_size to prevent memory leak.
+>
+> 'commit d0b8ed47e83a ("of: reserved_mem: fix reserve memory leak")'
 
-Is REQUEST SENSE reqlly a so slow operation on these devices that
-we need to override the timeout?
+Your patch is corrupted and not plain text.
+
+In any case, I believe this issue has already been fixed. Check the
+latest kernel tree(s).
+
+>
+> Meanwhile, __reserved_mem_alloc_size calls
+>
+> early_init_dt_alloc_reserved_memory_arch to allocate memory,
+>
+> which calls
+>
+> 1) memblock_remove when rmem is declared nomap,
+>
+> 2) memblock_reserve, otherwise.
+>
+>
+>
+> static int __init early_init_dt_alloc_reserved_memory_arch(
+>
+> ...
+>
+>         if (nomap)
+>
+>                 return memblock_remove(base, size);
+>
+>
+>
+>         return memblock_reserve(base, size);
+>
+> }
+>
+>
+>
+> Therefore the proper undo-logic should be as follows:
+>
+> 1) memblock_add when rmem is declared nomap,
+>
+> 2) memblock_free, otherwise.
+>
+>
+>
+> Match the undo functions for readability.
+>
+>
+>
+> Signed-off-by: Ohhoon Kwon <ohoono.kwon@samsung.com>
+>
+> ---
+>
+>  drivers/of/of_reserved_mem.c | 3 ++-
+>
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+>
+>
+> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+>
+> index 15e2417974d6..2279e1b55d1d 100644
+>
+> --- a/drivers/of/of_reserved_mem.c
+>
+> +++ b/drivers/of/of_reserved_mem.c
+>
+> @@ -273,9 +273,10 @@ void __init fdt_init_reserved_mem(void)
+>
+>                          if (err !=3D 0 && err !=3D -ENOENT) {
+>
+>                                  pr_info("node %s compatible matching fai=
+l\n",
+>
+>                                          rmem->name);
+>
+> -                                memblock_free(rmem->base, rmem->size);
+>
+>                                  if (nomap)
+>
+>                                          memblock_add(rmem->base, rmem->s=
+ize);
+>
+> +                                else
+>
+> +                                        memblock_free(rmem->base, rmem->=
+size);
+>
+>                          }
+>
+>                  }
+>
+>          }
+>
+> --
+>
+> 2.17.1
+>
+>
+>
+>
+>
+>
