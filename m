@@ -2,141 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8003B3B96E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2737B3B96EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233119AbhGAUI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 16:08:29 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:42528 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231726AbhGAUI3 (ORCPT
+        id S233876AbhGAUI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 16:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233774AbhGAUIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 16:08:29 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:48706)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lz2wf-0051gb-7p; Thu, 01 Jul 2021 14:05:57 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:48610 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lz2we-00BEc1-3d; Thu, 01 Jul 2021 14:05:56 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexey Gladkov <legion@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>
-References: <87fsx1vcr9.fsf@disp2133>
-        <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
-        <87czs4u0rm.fsf@disp2133>
-        <CAHk-=wgs5+3MLjG_hsQcKdamOcTsJLsk47tV12FfD_0f2h47Rg@mail.gmail.com>
-        <87mtr8sjvr.fsf@disp2133> <87a6n8simq.fsf@disp2133>
-        <20210701164144.u2dod4g2obfj4kit@example.org>
-Date:   Thu, 01 Jul 2021 15:05:18 -0500
-In-Reply-To: <20210701164144.u2dod4g2obfj4kit@example.org> (Alexey Gladkov's
-        message of "Thu, 1 Jul 2021 18:41:44 +0200")
-Message-ID: <87o8blol4x.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lz2we-00BEc1-3d;;;mid=<87o8blol4x.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX186RRMiCoq2i2iZsr93Lu2GAzZej0SbQoQ=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XMSubMetaSxObfu_03,
-        XMSubMetaSx_00 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.2042]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Alexey Gladkov <legion@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 485 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 8 (1.7%), b_tie_ro: 7 (1.5%), parse: 1.39 (0.3%),
-        extract_message_metadata: 22 (4.5%), get_uri_detail_list: 2.7 (0.6%),
-        tests_pri_-1000: 17 (3.5%), tests_pri_-950: 1.18 (0.2%),
-        tests_pri_-900: 0.99 (0.2%), tests_pri_-90: 71 (14.7%), check_bayes:
-        70 (14.4%), b_tokenize: 6 (1.3%), b_tok_get_all: 5 (1.1%),
-        b_comp_prob: 2.0 (0.4%), b_tok_touch_all: 53 (10.8%), b_finish: 0.94
-        (0.2%), tests_pri_0: 341 (70.2%), check_dkim_signature: 0.52 (0.1%),
-        check_dkim_adsp: 8 (1.6%), poll_dns_idle: 0.73 (0.1%), tests_pri_10:
-        2.6 (0.5%), tests_pri_500: 16 (3.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [GIT PULL] ucounts: Count rlimits in each user namespace
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+        Thu, 1 Jul 2021 16:08:55 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834B5C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 13:06:23 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id d24-20020a05620a1378b02903b477b3922bso721706qkl.11
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 13:06:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Zm3VMH16iGKr7rpa1UnB4+yqcdqybw2ZiN/OuZmenR0=;
+        b=rjmNK8L6t1QnCy05qXiWRCzBMnT7LO5Qv33Nix7wHo1LC/Yi4OI3FBgZfUFm0azIvF
+         uTom4hnh6KdA3gb1DTWnKLbn+k1Al3oTBLWsdB68EdPrZmtyis1WLwTuipHLmaA28NtW
+         KmVN4Xox1vJQ/kcuexkboK+83m2bqx/+pLsf8VOPH03Yq4mlNLCJ6cEJR0589xbCV2Pl
+         YiGCAdyGirIFi4kl8LuBUyjU14MJy8VWumFfDMhYVXJuJBff88RFpBm02n5uAurIK9Xg
+         8DK64WdOAYcaj+s75mfM9/hrabPtwDQxLRYlSdQEiI29eLjlj2UY6czl8sNdfy+ue9TT
+         UTuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Zm3VMH16iGKr7rpa1UnB4+yqcdqybw2ZiN/OuZmenR0=;
+        b=GPdSbvSPaoGw8BPq4nSxJmpgldj+d6NXZVyGha7oCWjJVj4LZvwJkIC3/7AtJ9icN9
+         ApZiiXn0Ts1yUhqq6aho1HK63Gidzx2Pc5dWRCj66b0jjMZoWN2yMTt6hGpvTGIJ0rYA
+         HqTfJ0WhkRzYwRgG39U7QPQUu8mvkdfREeHQKeGdU5ILS5JkwTFSw/hW6aUmUPVqiddq
+         +PlDYQ8yjh/ubPsj8KFI7ineuSgjxRBI8dGTRpPjijO7Qd/jjR5tgXMTiOMabMHfp1YE
+         psNBxoGojxvLwXKFPQrd17a84eZAvP8qbeXoVEU2ObMuFTkNDNGP9nzobBGwTDzFgTEE
+         w2kA==
+X-Gm-Message-State: AOAM531SkBQCgaKwlQ22ukYt3yLCxdxMsTcMTk2/rd0qm1oY7493i/6Q
+        i9RwOKr8ILbXDxTeoHAxEkCyLpO2cho/iA==
+X-Google-Smtp-Source: ABdhPJyRzyYf+smvmr8BOc/VQwHIxtG/UtnR/gtz6WquYYVYLA5f5ltAf6CNYpHP6jsAO4BBQUigZVl2QAEJeQ==
+X-Received: from abdulras.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:41e1])
+ (user=abdulras job=sendgmr) by 2002:a05:6214:76c:: with SMTP id
+ f12mr1644705qvz.3.1625169982626; Thu, 01 Jul 2021 13:06:22 -0700 (PDT)
+Date:   Thu,  1 Jul 2021 20:05:47 +0000
+Message-Id: <20210701200547.355742-1-abdulras@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH] riscv: allow building the kernel with medany and lld
+From:   Saleem Abdulrasool <abdulras@google.com>
+To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        clang-built-linux@googlegroups.com,
+        Saleem Abdulrasool <abdulras@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey Gladkov <legion@kernel.org> writes:
+The current implementation of the `__rt_sigaction` reference computed an
+absolute offset relative to the mapped base of the VDSO.  While this can
+be handled in the medlow model, the medany model cannot handle this as
+it is meant to be position independent.  The current implementation
+relied on the BFD linker relaxing the pc-relative relocation into an
+absolute relocation as it was a near-zero address allowing it to be
+referenced relative to `zero`.  The constant offsets relative to the
+image base should be just that - constants.  However, this takes a
+slightly more tricky approach of rebasing the address against the text
+base (`PAGE_OFFSET`) and then accounting for the image base at runtime
+to allow us to compute the VDSO relative address for the stub function.
+This allows the symbolic resolution to remain within the range of the
+pc-relative relocation, allowing the kernel to build with LLVM/lld.
 
-> On Tue, Jun 29, 2021 at 12:09:01PM -0500, Eric W. Biederman wrote:
->> ebiederm@xmission.com (Eric W. Biederman) writes:
->> 
->> > Linus Torvalds <torvalds@linux-foundation.org> writes:
->> >
->> >> On Tue, Jun 29, 2021 at 8:52 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->> >>>
->> >>> Linus Torvalds <torvalds@linux-foundation.org> writes:
->> >>>
->> >>> > Why the "sigpending < LONG_MAX" test in that
->> >>> >
->> >>> >         if (override_rlimit || (sigpending < LONG_MAX && sigpending <=
->> >>> > task_rlimit(t, RLIMIT_SIGPENDING))) {
->> >>> > thing?
->> >>>
->> >>> On second look that sigpending < LONG_MAX check is necessary.  When
->> >>> inc_rlimit_ucounts detects a problem it returns LONG_MAX.
->> >>
->> >> I saw that, but _without_ that test you'd be left with just that
->> >>
->> >>     sigpending <= task_rlimit(t, RLIMIT_SIGPENDING)
->> >>
->> >> and if task_rlimit() is LONG_MAX, then that means "no limits", so it is all ok.
->> >
->> > It means no limits locally.  The creator of your user namespace might
->> > have had a limit which you are also bound by.
->> >
->> > The other possibility is that inc_rlimits_ucounts caused a sigpending
->> > counter to overflow.  In which case we need to fail and run
->> > dec_rlimit_ucounts to keep the counter from staying overflowed.
->> >
->> > So I don't see a clever way to avoid the sigpending < LONG_MAX  test.
->> 
->> Hmm.  I take that back.  There is a simple clever way to satisfy all of
->> the tests.
->> 
->> - sigpending < LONG_MAX && sigpending <= task_rlimit(t, RLIMIT_SIGPENDING)
->> + sigpending < task_rlimit(t, RLIMIT_SIGPENDING)
->> 
->> That would just need a small comment to explain the subtleties.  
->
-> Is it because user.sigpending was atomic_t before this patch ?
+Thanks to Palmer Dabbelt for his assistance with this!
 
-Apologies I was wrong.
+Signed-off-by: Saleem Abdulrasool <abdulras@google.com>
+---
+ arch/riscv/include/asm/vdso.h   | 2 +-
+ arch/riscv/kernel/vdso/Makefile | 2 +-
+ arch/riscv/kernel/vdso/so2s.sh  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-The replacement of "<=" with "<" is correct for the case where
-"task_rlimit(t, RLIMIT_SIGPENDING) == LONG_MAX".
-
-Unfortunately off by one for all other values of
-"task_rlimit(t, RLIMIT_SIGPENDING)".
-
-It completely breaks things for the case where RLIMIT_SIGPENDING == 1,
-where no signals are allowed to be queued.  Today allowing 1 queued
-signal with a single task and a sender that does not send a second
-signal until the first is consumed will work reliably.
-
-That was just a brain fart on my part.
-
-Eric
+diff --git a/arch/riscv/include/asm/vdso.h b/arch/riscv/include/asm/vdso.h
+index 1453a2f563bc..1240d3790abf 100644
+--- a/arch/riscv/include/asm/vdso.h
++++ b/arch/riscv/include/asm/vdso.h
+@@ -26,7 +26,7 @@ struct vdso_data {
+ #define VDSO_SYMBOL(base, name)							\
+ ({										\
+ 	extern const char __vdso_##name[];					\
+-	(void __user *)((unsigned long)(base) + __vdso_##name);			\
++	(void __user *)((unsigned long)(base) + __vdso_##name - PAGE_OFFSET);	\
+ })
+ 
+ asmlinkage long sys_riscv_flush_icache(uintptr_t, uintptr_t, uintptr_t);
+diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+index 24d936c147cd..384f1cc8e044 100644
+--- a/arch/riscv/kernel/vdso/Makefile
++++ b/arch/riscv/kernel/vdso/Makefile
+@@ -68,7 +68,7 @@ quiet_cmd_vdsold = VDSOLD  $@
+ # Extracts symbol offsets from the VDSO, converting them into an assembly file
+ # that contains the same symbols at the same offsets.
+ quiet_cmd_so2s = SO2S    $@
+-      cmd_so2s = $(NM) -D $< | $(srctree)/$(src)/so2s.sh > $@
++      cmd_so2s = $(NM) -D $< | $(srctree)/$(src)/so2s.sh $(CONFIG_PAGE_OFFSET) > $@
+ 
+ # install commands for the unstripped file
+ quiet_cmd_vdso_install = INSTALL $@
+diff --git a/arch/riscv/kernel/vdso/so2s.sh b/arch/riscv/kernel/vdso/so2s.sh
+index e64cb6d9440e..9e5afc2fcc07 100755
+--- a/arch/riscv/kernel/vdso/so2s.sh
++++ b/arch/riscv/kernel/vdso/so2s.sh
+@@ -2,5 +2,5 @@
+ # SPDX-License-Identifier: GPL-2.0+
+ # Copyright 2020 Palmer Dabbelt <palmerdabbelt@google.com>
+ 
+-sed 's!\([0-9a-f]*\) T \([a-z0-9_]*\)\(@@LINUX_4.15\)*!.global \2\n.set \2,0x\1!' \
++sed 's!\([0-9a-f]*\) T \([a-z0-9_]*\)\(@@LINUX_4.15\)*!.global \2\n.set \2,'${1}'+0x\1!' \
+ | grep '^\.'
+-- 
+2.32.0.93.g670b81a890-goog
 
