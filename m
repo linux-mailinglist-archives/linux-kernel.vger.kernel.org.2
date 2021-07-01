@@ -2,82 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2449E3B97CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F13F3B97CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234134AbhGAUxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 16:53:38 -0400
-Received: from mail-io1-f44.google.com ([209.85.166.44]:40927 "EHLO
-        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233360AbhGAUxg (ORCPT
+        id S234274AbhGAUxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 16:53:43 -0400
+Received: from mail-il1-f180.google.com ([209.85.166.180]:44600 "EHLO
+        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234175AbhGAUxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 16:53:36 -0400
-Received: by mail-io1-f44.google.com with SMTP id l5so9177899iok.7;
-        Thu, 01 Jul 2021 13:51:05 -0700 (PDT)
+        Thu, 1 Jul 2021 16:53:41 -0400
+Received: by mail-il1-f180.google.com with SMTP id f12so1425558ils.11;
+        Thu, 01 Jul 2021 13:51:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=ElQvPrtlr+vILqrNaZxPBeuhknfgODN1ny7c82yzT7E=;
-        b=dZy6I5PiLnXs7d8TD5wJg1CBX1380RtVbRuiJbGINUr0WrTS0bjReh6snZV/Y+0B2K
-         JnmLOh+3KvdVgmmvO673yTvV5x85Us/AHpkEGE8wIXv1SBwIlpv5pdIaSV2/qQ42PzYh
-         etf81HhzH8R/spMH5m4YNeyfHbq0Z8qS6gj3lsULLG3aZvVZ5I9srJqn36TAMvIOvjYa
-         A+od71bHE1k9DMmM2PsT4KEqcabS9CxVS44PMxmynX5nG8HwVKbszB9mmi7tfdvJjry1
-         1BTRFIoKxeJ1dwSb0ZxWNsY3laiVC31RQFOjaS3xkbCBsvaVWIdMX3YnpUh0nBouSi17
-         IRaA==
-X-Gm-Message-State: AOAM533BZXYMQmAkNcCReqj7dqrhzv7cOimQXbHsDwJqs9lRMwlzRChJ
-        Wd7QvTGZriVC+CMsg1F3Cg==
-X-Google-Smtp-Source: ABdhPJyjKYy73Eil7FpXnQ9zRI78HLbl7FC6k6aOPzcKdVkZO4vA9Rvtx4yBISfLj506tf27oyAp1Q==
-X-Received: by 2002:a02:caad:: with SMTP id e13mr1454038jap.129.1625172665091;
-        Thu, 01 Jul 2021 13:51:05 -0700 (PDT)
+        bh=NipVMUD4AP/oBRzH6hOs82IXgQLck6ND+VgxW1x2fao=;
+        b=i23w40X6FN9c5rysQXeuO8heCsudGMZYXWlUufHc5ROUleIo7yagWCU/OWSyW0uZtQ
+         G8IjebUgxT0BuvqPon6wq3gkXDXp3xP5x8nQ8eWiCafWT0XF7uOEgrN6v0i/mtq3eHUG
+         jy/zRNjfw+AIX9XWVQN8fcO3TTXRUXTb8XKzn+s6VxPMJf+QVhmkHoKhBA+n65ArHrY1
+         1HFiKnIoBHYr1jYknfczOMEArRK+ZtwivAqNKI3qfuJgDIIa/xY8Ee/cO48pgcWDsfkv
+         vDQiZlriTC4s91DlZaYZCI2qCho2AJyEv+73TsQLR8xAzMkGBnVvq6/2pBFySzIfe6oq
+         bgFQ==
+X-Gm-Message-State: AOAM5330udU6VRjQ69oF74Ec540ZnXBlrvtiJEf8IblRckPBk/v7W80E
+        xVHNPEWjSkh9AHLB4Xpy9Q==
+X-Google-Smtp-Source: ABdhPJz1a6iDLhND1/k7nuQxxOfbn+7VdVawF4rSi9HdKdgHYo4uOWS4JwsVA3R8V5i/1llhr06LWQ==
+X-Received: by 2002:a92:d209:: with SMTP id y9mr923348ily.143.1625172668561;
+        Thu, 01 Jul 2021 13:51:08 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id c26sm516637ioc.6.2021.07.01.13.51.03
+        by smtp.gmail.com with ESMTPSA id d10sm597106ilc.71.2021.07.01.13.51.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 13:51:04 -0700 (PDT)
-Received: (nullmailer pid 2908604 invoked by uid 1000);
+        Thu, 01 Jul 2021 13:51:07 -0700 (PDT)
+Received: (nullmailer pid 2908607 invoked by uid 1000);
         Thu, 01 Jul 2021 20:51:01 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Qing Zhang <zhangqing@loongson.cn>
-Cc:     devicetree@vger.kernel.org,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-In-Reply-To: <20210701131400.4699-3-zhangqing@loongson.cn>
-References: <20210701131400.4699-1-zhangqing@loongson.cn> <20210701131400.4699-3-zhangqing@loongson.cn>
-Subject: Re: [PATCH v8 3/3] dt-bindings: mips: Add Loongson-2K1000 reset support
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, jic23@kernel.org, robh+dt@kernel.org
+In-Reply-To: <20210701141648.131776-1-antoniu.miclaus@analog.com>
+References: <20210701141648.131776-1-antoniu.miclaus@analog.com>
+Subject: Re: [PATCH v3] dt-bindings: iio: frequency: add adrf6780 doc
 Date:   Thu, 01 Jul 2021 14:51:01 -0600
-Message-Id: <1625172661.957991.2908603.nullmailer@robh.at.kernel.org>
+Message-Id: <1625172661.975476.2908606.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 01 Jul 2021 21:14:00 +0800, Qing Zhang wrote:
-> Switch the DT binding to a YAML schema to enable the DT validation.
+On Thu, 01 Jul 2021 17:16:48 +0300, Antoniu Miclaus wrote:
+> Add device tree bindings for the ADRF6780 Upconverter.
 > 
-> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 > ---
-> 
-> v7-v8:
-> No change
-> ---
->  .../bindings/mips/loongson/ls2k-reset.yaml    | 38 +++++++++++++++++++
->  1 file changed, 38 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
+> v3: remove `adi,parity-en` from example after latest changes in v2
+>  .../bindings/iio/frequency/adi,adrf6780.yaml  | 122 ++++++++++++++++++
+>  1 file changed, 122 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
+./Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml:10:1: [warning] wrong indentation: expected 2 but found 0 (indentation)
+./Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml:101:1: [warning] wrong indentation: expected 2 but found 0 (indentation)
+./Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml:109:1: [warning] wrong indentation: expected 2 but found 0 (indentation)
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.example.dt.yaml: power-controller@1fe07000: '#power-domain-cells' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/power-domain.yaml
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1499533
+See https://patchwork.ozlabs.org/patch/1499584
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
