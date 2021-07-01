@@ -2,148 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EBB3B9100
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 13:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56063B9106
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 13:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236185AbhGALNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 07:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236040AbhGALNU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 07:13:20 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C4BC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 04:10:49 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d9so3790254qtx.8
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 04:10:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=loo3kxtDTTKC5s2MMEWFo7j8wTG4bg5yCpaYGdH8riY=;
-        b=Ek+morMnKxr0IV041StrTMph3Ms98f/s+qhTrKHFgygi1QAMr7nn++UO9QLFp4dE9B
-         p/prz+R+xBmWyFkrp8mXr2t350qhMREoJ1bdpAM6XUqhoAZh/5krtmLhiJ45SpIvpj61
-         z3SSlK9y54f5um8x/hpUUnWVKeGmP8HHw2v0p6T4hHYYJ4YIfgtzjG7mUFZgbd1rcfWB
-         4jCMw4l+ZaJQayVgzrAOjRHylQr5mWprbDaV32cHu5vSXdorIaumQ7JavjWF0dqLOFjW
-         nRzXBd4ruI6KP9PFNL24mqUr2Si2g2NNPyDZsD0sO6JceRci17h2G0Sa0mP4/POzDuqP
-         x5bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=loo3kxtDTTKC5s2MMEWFo7j8wTG4bg5yCpaYGdH8riY=;
-        b=FFEi7NVcBsX1SN5ihAo2zAvAww8NhBswNjFAR8IhF4jvuKBEl5Vrw3wBNNm86oWF6O
-         7kNK5N/cBF7H2NPH/c5/3P0Kq2CPEh29TAFWV5CnE5lUZUX1MYj/dD9+Fxe6bkxjpkta
-         QVolgAUHCn/S5DxxixH/6A74NrpiF9ENedRMJsqlj0mXBr9CgjCt+NAjDs2CCEkiiT1W
-         d7uP0q86kaHB76u/qkJU3vakooIeAeuaULXXeQMrAY1zTbYxv+l8mqjko13XO7ANEfMT
-         /bHXjBiptfWjKYQVpj2AocQhZzdx+AlysxaM3jlYAYOt6m5RrjcajpxFZQ3rZxB44M6u
-         XdBw==
-X-Gm-Message-State: AOAM5339vIB9b8hPHXzd4VFWfCgnwnDgqEGVjw+KiZZcuBNnB9UObNl7
-        +mUjPBLbf95f2kH2xD7uKEc8WfN5PiE+LQLPdgoqFg==
-X-Google-Smtp-Source: ABdhPJw/0EamXfh/j7t+H+mp9gUQT3O1bYWaR8eKuAXnrbZHBpWA+38NZ9XojzrSggr5XtoZYkUoTznKcMVHZnCIyYo=
-X-Received: by 2002:a05:622a:15cc:: with SMTP id d12mr35964132qty.67.1625137848606;
- Thu, 01 Jul 2021 04:10:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <0000000000009e7f6405c60dbe3b@google.com>
-In-Reply-To: <0000000000009e7f6405c60dbe3b@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 1 Jul 2021 13:10:37 +0200
-Message-ID: <CACT4Y+ZY4sOXQ0F5cumzpwo2V8TLN+kDAj=eAYWX4f5sqg993w@mail.gmail.com>
-Subject: Re: [syzbot] upstream test error: BUG: sleeping function called from
- invalid context in stack_depot_save
-To:     syzbot <syzbot+e45919db2eab5e837646@syzkaller.appspotmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S236131AbhGALTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 07:19:44 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:52718 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236040AbhGALTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 07:19:42 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GFwfG1JNGzBDd1;
+        Thu,  1 Jul 2021 13:17:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 9iG8UJUbAIoV; Thu,  1 Jul 2021 13:17:10 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GFwfG0R6KzBDb6;
+        Thu,  1 Jul 2021 13:17:10 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D7A078B8F9;
+        Thu,  1 Jul 2021 13:17:09 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id rl1aU70ZKTna; Thu,  1 Jul 2021 13:17:09 +0200 (CEST)
+Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1B9F18B903;
+        Thu,  1 Jul 2021 13:17:09 +0200 (CEST)
+Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id BFD336627F; Thu,  1 Jul 2021 11:17:08 +0000 (UTC)
+Message-Id: <024bb05105050f704743a0083fe3548702be5706.1625138205.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/mm: Fix lockup on kernel exec fault
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu,  1 Jul 2021 11:17:08 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 1:00 PM syzbot
-<syzbot+e45919db2eab5e837646@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    dbe69e43 Merge tag 'net-next-5.14' of git://git.kernel.org..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1216d478300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=47e4697be2f5b985
-> dashboard link: https://syzkaller.appspot.com/bug?extid=e45919db2eab5e837646
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+e45919db2eab5e837646@syzkaller.appspotmail.com
+The powerpc kernel is not prepared to handle exec faults from kernel.
+Especially, the function is_exec_fault() will return 'false' when an
+exec fault is taken by kernel, because the check is based on reading
+current->thread.regs->trap which contains the trap from user.
 
-+kasan-dev@ for for stack_depot_save warning
+For instance, when provoking a LKDTM EXEC_USERSPACE test,
+current->thread.regs->trap is set to SYSCALL trap (0xc00), and
+the fault taken by the kernel is not seen as an exec fault by
+set_access_flags_filter().
 
-> BUG: sleeping function called from invalid context at mm/page_alloc.c:5179
-> in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 8436, name: syz-fuzzer
-> INFO: lockdep is turned off.
-> irq event stamp: 0
-> hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> hardirqs last disabled at (0): [<ffffffff814406db>] copy_process+0x1e1b/0x74c0 kernel/fork.c:2061
-> softirqs last  enabled at (0): [<ffffffff8144071c>] copy_process+0x1e5c/0x74c0 kernel/fork.c:2065
-> softirqs last disabled at (0): [<0000000000000000>] 0x0
-> CPU: 1 PID: 8436 Comm: syz-fuzzer Tainted: G        W         5.13.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
->  ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
->  prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
->  __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
->  alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
->  stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
->  save_stack+0x15e/0x1e0 mm/page_owner.c:120
->  __set_page_owner+0x50/0x290 mm/page_owner.c:181
->  prep_new_page mm/page_alloc.c:2445 [inline]
->  __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
->  alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
->  vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
->  __vmalloc_area_node mm/vmalloc.c:2845 [inline]
->  __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
->  __vmalloc_node mm/vmalloc.c:2996 [inline]
->  vzalloc+0x67/0x80 mm/vmalloc.c:3066
->  n_tty_open+0x16/0x170 drivers/tty/n_tty.c:1914
->  tty_ldisc_open+0x9b/0x110 drivers/tty/tty_ldisc.c:464
->  tty_ldisc_setup+0x43/0x100 drivers/tty/tty_ldisc.c:781
->  tty_init_dev.part.0+0x1f4/0x610 drivers/tty/tty_io.c:1461
->  tty_init_dev include/linux/err.h:36 [inline]
->  tty_open_by_driver drivers/tty/tty_io.c:2102 [inline]
->  tty_open+0xb16/0x1000 drivers/tty/tty_io.c:2150
->  chrdev_open+0x266/0x770 fs/char_dev.c:414
->  do_dentry_open+0x4c8/0x11c0 fs/open.c:826
->  do_open fs/namei.c:3361 [inline]
->  path_openat+0x1c0e/0x27e0 fs/namei.c:3494
->  do_filp_open+0x190/0x3d0 fs/namei.c:3521
->  do_sys_openat2+0x16d/0x420 fs/open.c:1195
->  do_sys_open fs/open.c:1211 [inline]
->  __do_sys_openat fs/open.c:1227 [inline]
->  __se_sys_openat fs/open.c:1222 [inline]
->  __x64_sys_openat+0x13f/0x1f0 fs/open.c:1222
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x4af20a
-> Code: e8 3b 82 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 4c 8b 54 24 28 4c 8b 44 24 30 4c 8b 4c 24 38 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 40 ff ff ff ff 48 c7 44 24 48
-> RSP: 002b:000000c0003293f8 EFLAGS: 00000216 ORIG_RAX: 0000000000000101
-> RAX: ffffffffffffffda RBX: 000000c00001e800 RCX: 00000000004af20a
-> RDX: 0000000000000000 RSI: 000000c0001a5a50 RDI: ffffffffffffff9c
-> RBP: 000000c000329470 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000216 R12: 00000000000001a6
-> R13: 00000000000001a5 R14: 0000000000000200 R15: 000000c00029c280
-> can: request_module (can-proto-0) failed.
-> can: request_module (can-proto-0) failed.
-> can: request_module (can-proto-0) failed.
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Commit d7df2443cd5f ("powerpc/mm: Fix spurrious segfaults on radix
+with autonuma") made it clear and handled it properly. But later on
+commit d3ca587404b3 ("powerpc/mm: Fix reporting of kernel execute
+faults") removed that handling, introducing test based on error_code.
+And here is the problem, because on the 603 all upper bits of SRR1
+get cleared when the TLB instruction miss handler bails out to ISI.
+
+Until commit cbd7e6ca0210 ("powerpc/fault: Avoid heavy
+search_exception_tables() verification"), an exec fault from kernel
+at a userspace address was indirectly caught by the lack of entry for
+that address in the exception tables. But after that commit the
+kernel mainly rely on KUAP or on core mm handling to catch wrong
+user accesses. Here the access is not wrong, so mm handles it.
+It is a minor fault because PAGE_EXEC is not set,
+set_access_flags_filter() should set PAGE_EXEC and voila.
+But as is_exec_fault() returns false as explained in the begining,
+set_access_flags_filter() bails out without setting PAGE_EXEC flag,
+which leads to a forever minor exec fault.
+
+As the kernel is not prepared to handle such exec faults, the thing
+to do is to fire in bad_kernel_fault() for any exec fault taken by
+the kernel, as it was prior to commit d3ca587404b3.
+
+Fixes: d3ca587404b3 ("powerpc/mm: Fix reporting of kernel execute faults")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/mm/fault.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+index 34f641d4a2fe..a8d0ce85d39a 100644
+--- a/arch/powerpc/mm/fault.c
++++ b/arch/powerpc/mm/fault.c
+@@ -199,9 +199,7 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
+ {
+ 	int is_exec = TRAP(regs) == INTERRUPT_INST_STORAGE;
+ 
+-	/* NX faults set DSISR_PROTFAULT on the 8xx, DSISR_NOEXEC_OR_G on others */
+-	if (is_exec && (error_code & (DSISR_NOEXEC_OR_G | DSISR_KEYFAULT |
+-				      DSISR_PROTFAULT))) {
++	if (is_exec) {
+ 		pr_crit_ratelimited("kernel tried to execute %s page (%lx) - exploit attempt? (uid: %d)\n",
+ 				    address >= TASK_SIZE ? "exec-protected" : "user",
+ 				    address,
+-- 
+2.25.0
+
