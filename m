@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7263B8DBC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 08:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D2C3B8DC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 08:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234392AbhGAG3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 02:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233878AbhGAG3E (ORCPT
+        id S234405AbhGAGfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 02:35:43 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57478 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234210AbhGAGfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 02:29:04 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E2CC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 23:26:34 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id k1-20020a0568200161b029024bef8a628bso1299094ood.7
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 23:26:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=weLO0U8CcMdO2GwWr9sKBhxG+qWHdNo4kkTxiwdSbK4=;
-        b=SqGXprIAcInGnP7tK3RzkxDFPtE76fgh9ARvCCa7CynU5vIKHM8LIhUULBtT6tjx8N
-         qwAYUrFIBI0aO8DYME+OnXVK8NVMazv5UTd95r/fhCJpc1ZfdwQWrx19YftkIIyLM57I
-         uhhw2w3/2CjU+Fr811EXVEsI+nWRRi9LpedTh/wNkrsfhXM7sW9Be1j4md9z8ojoLG/e
-         eO7l7TCzk2EojkLLOoQrmldA2gYDFbVCla7jxoXjXCaht9NVdxH71hPso7NAg3QHmyZY
-         5G61NKyHCsXiZQsg6gdg6MmyQRSWR/Q8v16KHHibtvvED7ygDyUg7JeL1XAE1j6fptrF
-         E+hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=weLO0U8CcMdO2GwWr9sKBhxG+qWHdNo4kkTxiwdSbK4=;
-        b=sZzZHQM3i1aCHZVNk9nO7b+wpGcEdzENO0Mb+nDIVcQ6mHwzKLAkUDjxM3lSJL/yaC
-         nUEno3E/l/13h5T/MSCbu1WysdYgIqMwG7MqCaGt++f532Kve2jZcf0qx9jozGIQBeDt
-         UU7s7DkojZh1n+nOYty8Z6IcrwKAKFdScteKNETmkGsfVmVCBbnE4WWfaXsTDjonQ89k
-         Tq1757Jv1HjyDMsyCe4litEPqQ2tvleoCqOWoXiYPxM/YvXzIuuVnPjHxf+Lu711ZeVi
-         DpABj6PJJSRaPuKGgqUyNNI8XRDAPTog1HjjvCaye8GCDJw66XHMi1Qzgbon92i8/T1v
-         FHdQ==
-X-Gm-Message-State: AOAM5312oRJoX/0IBBXGKANgAO9IJomI99wbaf3zi1CCxCQ2uVAWM6+e
-        jipbyuFJF+Ny1/9Ge1HcmyO2akEG5HDEsPxkIsugQA==
-X-Google-Smtp-Source: ABdhPJyE6V22IxIuIcUaAU/qzpVLNqrO4pmbeOz/TNrL7m3Q7QtNRt8NZqMaVLud4itqp0JzKz+A5CQRB6xzqHmv2ok=
-X-Received: by 2002:a4a:9406:: with SMTP id h6mr11669704ooi.36.1625120793225;
- Wed, 30 Jun 2021 23:26:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <CANpmjNMh9ef30N6LfTrKaAVFR5iKPt_pkKr9p4Ly=-BD7GbTQQ@mail.gmail.com>
- <mhng-d63a7488-73a5-451e-9bf8-52ded7f2e15c@palmerdabbelt-glaptop>
-In-Reply-To: <mhng-d63a7488-73a5-451e-9bf8-52ded7f2e15c@palmerdabbelt-glaptop>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 1 Jul 2021 08:26:21 +0200
-Message-ID: <CANpmjNM4nJBu_7HyEGdb5x-me25duwH_kLU01XBZANEBTO3EhQ@mail.gmail.com>
-Subject: Re: [PATCH -next v2] riscv: Enable KFENCE for riscv64
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     liushixin2@huawei.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, glider@google.com, dvyukov@google.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 1 Jul 2021 02:35:42 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 82BA4227F1;
+        Thu,  1 Jul 2021 06:33:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625121191; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kX5n1mqVCgqH+1JOqwlPRAf2utHRmCodhB9a7wB7a1w=;
+        b=2B6HrXoRWWxmRPXCmYk9fkXGwhuNoh0W3yrby7RJd9ZKmHCrlDkQy28By4qtAuRUgVbPMj
+        inYQ+DMjzzUQI/gIE7xFN15ULhcvnpK/5mR3pbyuDQGkb+ceAahQ9CwsIuMBJo4wTR6UgQ
+        A0a+EbPQQk2ck3Cqrc+QCfPzPR2zy5o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625121191;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kX5n1mqVCgqH+1JOqwlPRAf2utHRmCodhB9a7wB7a1w=;
+        b=GFF4k+z/m4goAXSFV/tYjtAMRN6z6R4ipOQTnVb0ErMrIktYIqcKLwfXonRZ7nbjOcx7E1
+        35xHIS2eUFhosnAA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 022D3A3B83;
+        Thu,  1 Jul 2021 06:33:11 +0000 (UTC)
+Date:   Thu, 01 Jul 2021 08:33:10 +0200
+Message-ID: <s5hsg0yilw9.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Jeremy Szu <jeremy.szu@canonical.com>
+Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
+        Kailang Yang <kailang@realtek.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Sami Loone <sami@loone.fi>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for HP EliteBook 830 G8 Notebook PC
+In-Reply-To: <CAKzWQkzX-EdmY359W2D-vC-i+a-OH3-EQyEET6skAvbj6hwMfg@mail.gmail.com>
+References: <20210625133414.26760-1-jeremy.szu@canonical.com>
+        <s5h8s2xkiw8.wl-tiwai@suse.de>
+        <CAKzWQkzX-EdmY359W2D-vC-i+a-OH3-EQyEET6skAvbj6hwMfg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Jul 2021 at 04:38, 'Palmer Dabbelt' via kasan-dev
-<kasan-dev@googlegroups.com> wrote:
-> On Wed, 16 Jun 2021 02:11:53 PDT (-0700), elver@google.com wrote:
-> > On Tue, 15 Jun 2021 at 04:35, Liu Shixin <liushixin2@huawei.com> wrote:
-> >> Add architecture specific implementation details for KFENCE and enable
-> >> KFENCE for the riscv64 architecture. In particular, this implements the
-> >> required interface in <asm/kfence.h>.
-> >>
-> >> KFENCE requires that attributes for pages from its memory pool can
-> >> individually be set. Therefore, force the kfence pool to be mapped at
-> >> page granularity.
-> >>
-> >> Testing this patch using the testcases in kfence_test.c and all passed.
-> >>
-> >> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> >> Acked-by: Marco Elver <elver@google.com>
-> >> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+On Thu, 01 Jul 2021 08:23:42 +0200,
+Jeremy Szu wrote:
+> 
+> Hi Takashi,
+> 
+> May I know where the tree containing this patch is?
+> I didn't see this patch in
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git.
+
+My bad, I forgot to push out the tree before entering my vacation.
+Now it's out.
+
+
+Takashi
+
+> 
+> 
+> On Sat, Jun 26, 2021 at 12:29 AM Takashi Iwai <tiwai@suse.de> wrote:
 > >
-> > I can't see this in -next yet. It would be nice if riscv64 could get
-> > KFENCE support.
->
-> Thanks, this is on for-next.  I'm just doing a boot test with
-> CONFIG_KFENCE=y (and whatever that turns on for defconfig), let me know
-> if there's anything more interesting to test on the KFENCE side of
-> things.
-
-To test if everything still works, CONFIG_KFENCE_KUNIT_TEST=y
-(requires CONFIG_KUNIT=y) will run the KFENCE test suite on boot.
-
-Thanks,
--- Marco
+> > On Fri, 25 Jun 2021 15:34:13 +0200,
+> > Jeremy Szu wrote:
+> > >
+> > > The HP EliteBook 830 G8 Notebook PC using ALC285 codec which using 0x04 to
+> > > control mute LED and 0x01 to control micmute LED.
+> > > Therefore, add a quirk to make it works.
+> > >
+> > > Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
+> >
+> > Thanks, applied.
+> >
+> >
+> > Takashi
+> 
+> 
+> 
+> -- 
+> Sincerely,
+> Jeremy Su
+> 
