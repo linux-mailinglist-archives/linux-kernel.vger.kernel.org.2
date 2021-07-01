@@ -2,188 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78B63B8C04
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 04:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798873B8BF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 04:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238617AbhGACSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 22:18:34 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:33803 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234257AbhGACSc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 22:18:32 -0400
-X-UUID: 7a6e163fe3ba47bd8806663946434be4-20210701
-X-UUID: 7a6e163fe3ba47bd8806663946434be4-20210701
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1093462285; Thu, 01 Jul 2021 10:15:59 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 1 Jul 2021 10:15:51 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 1 Jul 2021 10:15:51 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        <Rocco.Yue@gmail.com>, <chao.song@mediatek.com>,
-        <kuohong.wang@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
-        Rocco Yue <rocco.yue@mediatek.com>
-Subject: [PATCH] net: ipv6: don't generate link-local address in any addr_gen_mode
-Date:   Thu, 1 Jul 2021 09:59:40 +0800
-Message-ID: <20210701015940.29726-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S238642AbhGACL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 22:11:56 -0400
+Received: from mga07.intel.com ([134.134.136.100]:53609 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238613AbhGACLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 22:11:49 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="272313738"
+X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
+   d="scan'208";a="272313738"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 19:09:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
+   d="scan'208";a="644284699"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 30 Jun 2021 19:09:16 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lym8h-000AD9-Pm; Thu, 01 Jul 2021 02:09:15 +0000
+Date:   Thu, 01 Jul 2021 10:08:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS
+ 38edbc04e15e78d37821253f7d858cf96bde5737
+Message-ID: <60dd23a1.OsK4SXnj0w4VX91J%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch provides an ipv6 proc file named
-"disable_gen_linklocal_addr", its absolute path is as follows:
-"/proc/sys/net/ipv6/conf/<iface>/disable_gen_linklocal_addr".
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/urgent
+branch HEAD: 38edbc04e15e78d37821253f7d858cf96bde5737  Merge branch 'for-mingo-lkmm' of git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu into locking/urgent
 
-When the "disable_gen_linklocal_addr" value of a device is 1,
-it means that this device does not need the Linux kernel to
-automatically generate the ipv6 link-local address no matter
-which IN6_ADDR_GEN_MODE is used.
+elapsed time: 723m
 
-The reasons why the kernel does not need to automatically
-generate the ipv6 link-local address are as follows:
+configs tested: 110
+configs skipped: 4
 
-(1) In the 3GPP TS 29.061, here is a description as follows:
-"in order to avoid any conflict between the link-local address
-of the MS and that of the GGSN, the Interface-Identifier used
-by the MS to build its link-local address shall be assigned by
-the GGSN. The GGSN ensures the uniqueness of this Interface-
-Identifier. The MT shall then enforce the use of this
-Interface-Identifier by the TE"
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-In other words, in the cellular network, GGSN determines whether
-to reply a solicited RA message by identifying the low 64 bits
-of the source address of the received RS message. Therefore,
-cellular network device's ipv6 link-local address should be set
-as the format of fe80::(GGSN assigned IID).
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          urquell_defconfig
+arm                          pcm027_defconfig
+arc                    vdk_hs38_smp_defconfig
+arc                        nsimosci_defconfig
+arm                       aspeed_g4_defconfig
+sh                           se7724_defconfig
+arm                         s5pv210_defconfig
+m68k                        m5272c3_defconfig
+ia64                             alldefconfig
+m68k                        m5307c3_defconfig
+sh                          sdk7786_defconfig
+ia64                         bigsur_defconfig
+sh                        dreamcast_defconfig
+sh                        edosk7705_defconfig
+mips                           xway_defconfig
+powerpc                     sbc8548_defconfig
+arc                          axs103_defconfig
+powerpc                           allnoconfig
+arm                         axm55xx_defconfig
+mips                      bmips_stb_defconfig
+powerpc                     sequoia_defconfig
+alpha                               defconfig
+xtensa                       common_defconfig
+arm                       spear13xx_defconfig
+powerpc                     pseries_defconfig
+mips                       bmips_be_defconfig
+powerpc                   currituck_defconfig
+mips                          ath25_defconfig
+powerpc                      obs600_defconfig
+m68k                        mvme147_defconfig
+mips                       lemote2f_defconfig
+mips                        workpad_defconfig
+powerpc                        warp_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a002-20210630
+x86_64               randconfig-a001-20210630
+x86_64               randconfig-a004-20210630
+x86_64               randconfig-a005-20210630
+x86_64               randconfig-a006-20210630
+x86_64               randconfig-a003-20210630
+i386                 randconfig-a004-20210630
+i386                 randconfig-a001-20210630
+i386                 randconfig-a003-20210630
+i386                 randconfig-a002-20210630
+i386                 randconfig-a005-20210630
+i386                 randconfig-a006-20210630
+i386                 randconfig-a014-20210630
+i386                 randconfig-a011-20210630
+i386                 randconfig-a016-20210630
+i386                 randconfig-a012-20210630
+i386                 randconfig-a013-20210630
+i386                 randconfig-a015-20210630
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-For example: When using a new kernel and ARPHRD_RAWIP, kernel
-will generate an EUI64 format ipv6 link-local address, and the
-Linux kernel will uses this link-local address to send RS message.
-The result is that the GGSN will not reply to the RS message with
-a solicited RA message.
+clang tested configs:
+x86_64               randconfig-b001-20210630
+x86_64               randconfig-a012-20210630
+x86_64               randconfig-a015-20210630
+x86_64               randconfig-a016-20210630
+x86_64               randconfig-a013-20210630
+x86_64               randconfig-a011-20210630
+x86_64               randconfig-a014-20210630
 
-Although the combination of IN6_ADDR_GEN_MODE_NONE + ARPHRD_NONE
-can avoid the above problem (1), when the addr_gen_mode is changed
-to the IN6_ADDR_GEN_MODE_STABLE_PRIVACY, the above problem still
-exist. The detail as follows:
-
-(2) Among global mobile operators, some operators have already
-request MT (Mobile Terminal) to support RFC7217, such as AT&T.
-This means that the device not only needs the IID assigned by the
-GGSN to build the ipv6 link-local address to trigger the RS message,
-but also needs to use the stable privacy mode to build the ipv6
-global address after receiving the RA.
-
-Obviously using APRHRD_NONE and IN6_ADDR_GEN_MODE_STABLE_PRIVACY
-mode cannot achieve this.
-
-In summary, using the "disable_gen_linklocal_addr" proc file can
-disable kernel auto generate ipv6 link-local address no matter
-which addr_gen_mode is used.
-
-Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
 ---
- include/linux/ipv6.h      |  1 +
- include/uapi/linux/ipv6.h |  1 +
- net/ipv6/addrconf.c       | 16 ++++++++++++++++
- 3 files changed, 18 insertions(+)
-
-diff --git a/include/linux/ipv6.h b/include/linux/ipv6.h
-index 70b2ad3b9884..60c5da76e207 100644
---- a/include/linux/ipv6.h
-+++ b/include/linux/ipv6.h
-@@ -76,6 +76,7 @@ struct ipv6_devconf {
- 	__s32		disable_policy;
- 	__s32           ndisc_tclass;
- 	__s32		rpl_seg_enabled;
-+	__s32		disable_gen_linklocal_addr;
- 
- 	struct ctl_table_header *sysctl_header;
- };
-diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h
-index 70603775fe91..0449d908b8c2 100644
---- a/include/uapi/linux/ipv6.h
-+++ b/include/uapi/linux/ipv6.h
-@@ -190,6 +190,7 @@ enum {
- 	DEVCONF_NDISC_TCLASS,
- 	DEVCONF_RPL_SEG_ENABLED,
- 	DEVCONF_RA_DEFRTR_METRIC,
-+	DEVCONF_DISABLE_GEN_LINKLOCAL_ADDR,
- 	DEVCONF_MAX
- };
- 
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index 701eb82acd1c..0035f935b25a 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -237,6 +237,7 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = {
- 	.addr_gen_mode		= IN6_ADDR_GEN_MODE_EUI64,
- 	.disable_policy		= 0,
- 	.rpl_seg_enabled	= 0,
-+	.disable_gen_linklocal_addr = 0,
- };
- 
- static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
-@@ -293,6 +294,7 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
- 	.addr_gen_mode		= IN6_ADDR_GEN_MODE_EUI64,
- 	.disable_policy		= 0,
- 	.rpl_seg_enabled	= 0,
-+	.disable_gen_linklocal_addr = 0,
- };
- 
- /* Check if link is ready: is it up and is a valid qdisc available */
-@@ -3352,6 +3354,12 @@ static void addrconf_dev_config(struct net_device *dev)
- 	if (IS_ERR(idev))
- 		return;
- 
-+	if (idev->cnf.disable_gen_linklocal_addr) {
-+		pr_info("%s: IPv6 link-local address being disabled\n",
-+			idev->dev->name);
-+		return;
-+	}
-+
- 	/* this device type has no EUI support */
- 	if (dev->type == ARPHRD_NONE &&
- 	    idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_EUI64)
-@@ -5526,6 +5534,7 @@ static inline void ipv6_store_devconf(struct ipv6_devconf *cnf,
- 	array[DEVCONF_DISABLE_POLICY] = cnf->disable_policy;
- 	array[DEVCONF_NDISC_TCLASS] = cnf->ndisc_tclass;
- 	array[DEVCONF_RPL_SEG_ENABLED] = cnf->rpl_seg_enabled;
-+	array[DEVCONF_DISABLE_GEN_LINKLOCAL_ADDR] = cnf->disable_gen_linklocal_addr;
- }
- 
- static inline size_t inet6_ifla6_size(void)
-@@ -6932,6 +6941,13 @@ static const struct ctl_table addrconf_sysctl[] = {
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec,
- 	},
-+	{
-+		.procname	= "disable_gen_linklocal_addr",
-+		.data		= &ipv6_devconf.disable_gen_linklocal_addr,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec,
-+	},
- 	{
- 		/* sentinel */
- 	}
--- 
-2.18.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
