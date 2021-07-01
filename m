@@ -2,145 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F74A3B8CC4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 06:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A473B8CC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 06:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbhGAEFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 00:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
+        id S231915AbhGAEHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 00:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhGAEFB (ORCPT
+        with ESMTP id S229577AbhGAEHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 00:05:01 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BBF5C0617A8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 21:02:30 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id u13so9289239lfk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 21:02:30 -0700 (PDT)
+        Thu, 1 Jul 2021 00:07:09 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CBAC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 21:04:39 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id q91so3449177pjk.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 21:04:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7hi2FrhIaizwpDJPwnSinv9W2oMvoHm0CGYALUuuXDs=;
-        b=kWWeltzlSYGGc5QRSaAkNEu3wbwvMTyMjx7Hi1Du8rAm3U1ZDS7a2a2e9GB/JtvpeI
-         3iWP3ESanAX0jItDlj8NFWAfWGDMbaPHtU+xbFrBLaplzEIJyb0VhMk8diCaNxGaxuzy
-         R8XGe8kox80GEpIggg2eFJJwK/ZKq3i11ixHY=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tlLiC0/suIzFL9Kc0HiGXCJ9guNpwuTifmDbO7ccBmk=;
+        b=GjsPDXLqMMYdUtQ04S9QypWLzNfxSIdZN+wtJfxqs98oJc5FP3ISRbX2vsRPb4PlIW
+         vEvCOlQb4NcDvwQh5ovIc6R2cKiIg/jsRX7gUTseHHRA8lYhQejsePqoDy5Z3Rh8pXKc
+         z4Yt71s9d61EOaJklZX8BRcv2MrKq67YrL/S19LYhy4+A9066tuu43r7Efu/+SjFbuBy
+         3TYYVI/ZhG/3Sguxn9jXBA6u9DqiuKUwNnHi7164E4LbbRuHY8X8qHTZMPCIBcLjAdDs
+         FIXOytssI5Ir/j4ocrqCrh8rXPlWkphvsLk6m2qOpsh/vq3gA0a1sW2PmFdFyjEF63Am
+         VofQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7hi2FrhIaizwpDJPwnSinv9W2oMvoHm0CGYALUuuXDs=;
-        b=n2OcA+dk61ONC7esu10sFYDO73S8ynizzWiv+D56dR3yeOJdBXa4xX8dq7K7w9G73n
-         2/JLGpqMVDQ0gPGfaloj12ZsVPzQcBSszHyp5K5utuxShKdOoSMM8VyQoVH6A9zZD80N
-         oQGqM0OQemGuNWeprsNijGMmEiwtYayAL+NsfDMLbrRsVUD+3Se2r4Y5rMPxdNeeC1Ec
-         607iJgDkvj0n7YQbErdY6v1WrwS0Jvw2qmwLbLCUBNtHPPBkek100DyxKHl8i6Vho473
-         ucf+UFCnDqBRuHz9M9EuTegK94EMT/Z8hVsjnamEFNHEZS/YuQq/5LjV1bnZ9D2tz7h6
-         1cRA==
-X-Gm-Message-State: AOAM5302Eoz5CYqTVMMBm6GekahErBsjxVrM0fcEzoR4Ejk6ZAdkBzLs
-        DC+nYJmJuxHpLObAIYOAaKJGUZzH/vlNPkjX2ZytOQ==
-X-Google-Smtp-Source: ABdhPJw/v6AwK/W5MblRaHBzvNcBF8/BLoJuYBeXADDntlPIgf2Bpc9gBKz0UhSMGyatSQ8BxnhizhHgp4pWwKlsVxw=
-X-Received: by 2002:a05:6512:63:: with SMTP id i3mr29997663lfo.587.1625112148504;
- Wed, 30 Jun 2021 21:02:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tlLiC0/suIzFL9Kc0HiGXCJ9guNpwuTifmDbO7ccBmk=;
+        b=IukpJGg6Ti3jrywHf1gTt1LXDQKAEZ88t3lFvMumRS1fVH13pYO8Qm1sEBSSPYEUge
+         BZcGiik9YLbl5W/NUxqZ573m3q59u464y6xugPnLihK5aKfaJn9YJ0xxB5YyOCLW/9SH
+         vdr20jTtGxEsCyt+UnifebXeX1e3HS1oiK2hx7GEFu7u1cYd813qhP/wnIowv5CvS5B1
+         rUphH1/krs0nMazoYm7VoOnI65quR+cdf2C3N/0ZdSE9uXBDyOVzh9OxY3cojElbpMg7
+         1zX+jsZCtjbOdQ4/rAERzF1XlTr52kkbsv8Je2zJi+8hzrEXTc4m52gSKnpBDa42aHvO
+         1jjg==
+X-Gm-Message-State: AOAM532UZmj+GVkp/agx/VP0ie+u/1yWPtUM64FIhZcQzArzljTja0L+
+        H4nTB26B5w857q2tUQxE5v9u4w==
+X-Google-Smtp-Source: ABdhPJxC8zqchwOE8jWRaqXwN4H0BnWwhHXMQTOWPNq3iG1fMlPMEl10tro8es2vXM0pEV3FpN+w/A==
+X-Received: by 2002:a17:90b:2504:: with SMTP id ns4mr8022103pjb.140.1625112278476;
+        Wed, 30 Jun 2021 21:04:38 -0700 (PDT)
+Received: from localhost ([106.201.108.2])
+        by smtp.gmail.com with ESMTPSA id q7sm17404549pfk.192.2021.06.30.21.04.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 21:04:38 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 09:34:36 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wsa@kernel.org,
+        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
+        stefanha@redhat.com
+Subject: Re: [PATCH v11] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210701040436.p7kega6rzeqz5tlm@vireshk-i7>
+References: <510c876952efa693339ab0d6cc78ba7be9ef6897.1625104206.git.jie.deng@intel.com>
 MIME-Version: 1.0
-References: <20210616224743.5109-1-chun-jie.chen@mediatek.com>
- <20210616224743.5109-4-chun-jie.chen@mediatek.com> <CAGXv+5F2zTcqnjH2ud38vUD149KJtgxhPQME2Mk6-vGtQv+2YQ@mail.gmail.com>
- <ff6179e8-06f9-fbba-c704-a74381c2149a@gmail.com> <CAGXv+5FXuMnhsnytLYKKA9YE97bps7KnkDNADvv8f_wdTqnrfg@mail.gmail.com>
- <be824462-4c2f-3bde-0a3d-c5470a5b0fbb@gmail.com>
-In-Reply-To: <be824462-4c2f-3bde-0a3d-c5470a5b0fbb@gmail.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Thu, 1 Jul 2021 12:02:17 +0800
-Message-ID: <CAGXv+5FSq-cCRR-wB_kp2s+59273r0nrhtkH9006ezN-sUtNzQ@mail.gmail.com>
-Subject: Re: [PATCH 03/22] clk: mediatek: Fix corner case of tuner_en_reg
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <510c876952efa693339ab0d6cc78ba7be9ef6897.1625104206.git.jie.deng@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"On Wed, Jun 30, 2021 at 7:43 PM Matthias Brugger
-<matthias.bgg@gmail.com> wrote:
-> On 30/06/2021 13:09, Chen-Yu Tsai wrote:
-> > On Wed, Jun 30, 2021 at 6:53 PM Matthias Brugger <matthias.bgg@gmail.com> wrote:
-> >> On 30/06/2021 09:31, Chen-Yu Tsai wrote:
-> >>> On Thu, Jun 17, 2021 at 7:01 AM Chun-Jie Chen
-> >>> <chun-jie.chen@mediatek.com> wrote:
-> >>>>
-> >>>> On MT8195, tuner_en_reg is moved to register offest 0x0.
-> >>>> If we only judge by tuner_en_reg, it may lead to wrong address.
-> >>>> Add tuner_en_bit to the check condition. And it has been confirmed,
-> >>>> on all the MediaTek SoCs, bit0 of offset 0x0 is always occupied by
-> >>>> clock square control.
-> >>>>
-> >>>> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-> >>>
-> >>> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
-> >>>
-> >>> Though you might want to consider converting these types of checks into feature
-> >>> flags.
-> >>>
-> >>
-> >> Yes I think adding a feature flag is the way to go. Luckily there are only a few
-> >> SoCs that will need updates at the same time.
-> >
-> > I also see that the different clock modules are tied together using only clock
-> > names written in the drivers, instead of clock references in the device tree.
-> >
->
-> Not sure I understand what you mean. Do you refer to something like [1]? That's
-> because the clock is probed by the DRM driver, as they share the same compatible
-> and IP block.
+On 01-07-21, 11:24, Jie Deng wrote:
+> Changes v10 -> v11
+> 	- Remove vi->adap.class = I2C_CLASS_DEPRECATED.
+> 	- Use #ifdef CONFIG_PM_SLEEP to replace the "__maybe_unused".
+> 	- Remove "struct mutex lock" in "struct virtio_i2c".
+> 	- Support zero-length request.
+> 	- Remove unnecessary logs.
+> 	- Remove vi->adap.timeout = HZ / 10, just use the default value.
+> 	- Use BIT(0) to define VIRTIO_I2C_FLAGS_FAIL_NEXT.
+> 	- Add the virtio_device index to adapter's naming mechanism.
 
-In the example driver you mentioned, most of the registered clocks have the same
-parent clock, "mm_sel". This clock is from another hardware block,
-"topckgen" [1].
+Thanks Jie.
 
-The two are linked together by looking up the clock name. The link should be
-explicitly described in the device tree, instead of implicitly by some name
-found in two drivers. The consuming driver can fetch the clock name via
-of_clk_get_parent_name(), or be migrated to use `struct clk_parent_data`,
-which allows specifying local (to the DT node) clock names or clk indices
-as parent clk references.
+I hope you are going to send a fix for specification as well (for the
+zero-length request) ?
 
-What's more confusing is that the mmsys node actually has "assigned-clocks"
-properties [2] referencing the "mm_sel" clock, but not "clock" properties
-referencing the same clock. On the surface this looks like the hardware
-is trying to configure clocks that it doesn't use.
+> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
+> +static int virtio_i2c_send_reqs(struct virtqueue *vq,
+> +				struct virtio_i2c_req *reqs,
+> +				struct i2c_msg *msgs, int nr)
+> +{
+> +	struct scatterlist *sgs[3], out_hdr, msg_buf, in_hdr;
+> +	int i, outcnt, incnt, err = 0;
+> +
+> +	for (i = 0; i < nr; i++) {
+> +		/*
+> +		 * Only 7-bit mode supported for this moment. For the address format,
+> +		 * Please check the Virtio I2C Specification.
+> +		 */
+> +		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
+> +
+> +		if (i != nr - 1)
+> +			reqs[i].out_hdr.flags = cpu_to_le32(VIRTIO_I2C_FLAGS_FAIL_NEXT);
+> +
+> +		outcnt = incnt = 0;
+> +		sg_init_one(&out_hdr, &reqs[i].out_hdr, sizeof(reqs[i].out_hdr));
+> +		sgs[outcnt++] = &out_hdr;
+> +
+> +		reqs[i].buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
+> +		if (!reqs[i].buf)
+> +			break;
+> +
+> +		sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
 
-Also, Maxime Ripard made the argument before that "assigned-clock-rates"
-doesn't give any real guarantees that the clock rate won't change. A
-better method is to request and "lock" the clock rate in the consuming
-driver.
+The len can be zero here for zero-length transfers.
 
-So overall I think there are many improvements that can be made to the
-Mediatek clk drivers. They aren't real blockers to new drivers though,
-and I think each would take some effort and coordination across all
-the SoCs.
+> +
+> +		if (msgs[i].flags & I2C_M_RD)
+> +			sgs[outcnt + incnt++] = &msg_buf;
+> +		else
+> +			sgs[outcnt++] = &msg_buf;
+> +
+> +		sg_init_one(&in_hdr, &reqs[i].in_hdr, sizeof(reqs[i].in_hdr));
+> +		sgs[outcnt + incnt++] = &in_hdr;
 
+Why are we still sending the msg_buf if the length is 0? Sending the
+buffer makes sense if you have some data to send, but otherwise it is
+just an extra sg element, which isn't required to be sent.
 
-Regards
-ChenYu
+> +
+> +		err = virtqueue_add_sgs(vq, sgs, outcnt, incnt, &reqs[i], GFP_KERNEL);
+> +		if (err < 0) {
+> +			i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], false);
+> +			break;
+> +		}
+> +	}
+> +
+> +	return i;
 
-[1] https://elixir.bootlin.com/linux/latest/source/drivers/clk/mediatek/clk-mt8173.c#L545
-[2] https://elixir.bootlin.com/linux/latest/source/arch/arm64/boot/dts/mediatek/mt8173.dtsi#L996
+I just noticed this now, but this function even tries to send data
+partially, which isn't right. If the caller (i2c device's driver)
+calls this for 5 struct i2c_msg instances, then all 5 need to get
+through or none.. where as we try to send as many as possible here.
 
+This looks broken to me. Rather return an error value here on success,
+or make it complete failure.
 
-> Regards,
-> Matthias
->
-> [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/mediatek/clk-mt8173-mm.c?h=v5.13#n139
->
-> > Unfortunately reworking this would likely require a lot more work. I previously
-> > did a bit of internal reworking for the sunxi drivers. While not the same, I
-> > think the plumbing required is comparable.
-> >
-> > ChenYu
-> >
+Though to be fair I see i2c-core also returns number of messages
+processed from i2c_transfer().
+
+Wolfram, what's expected here ? Shouldn't all message transfer or
+none?
+
+> +#ifdef CONFIG_PM_SLEEP
+> +static int virtio_i2c_freeze(struct virtio_device *vdev)
+> +{
+> +	virtio_i2c_del_vqs(vdev);
+> +	return 0;
+> +}
+> +
+> +static int virtio_i2c_restore(struct virtio_device *vdev)
+> +{
+> +	return virtio_i2c_setup_vqs(vdev->priv);
+> +}
+> +#endif
+> +
+> +static struct virtio_driver virtio_i2c_driver = {
+> +	.id_table	= id_table,
+> +	.probe		= virtio_i2c_probe,
+> +	.remove		= virtio_i2c_remove,
+> +	.driver	= {
+> +		.name	= "i2c_virtio",
+> +	},
+> +#ifdef CONFIG_PM_SLEEP
+
+You could avoid this pair of ifdef by creating dummy versions of below
+routines for !CONFIG_PM_SLEEP case. Up to you.
+
+> +	.freeze = virtio_i2c_freeze,
+> +	.restore = virtio_i2c_restore,
+> +#endif
+> +};
+
+-- 
+viresh
