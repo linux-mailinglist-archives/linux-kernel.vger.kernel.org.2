@@ -2,114 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BA93B9483
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E28F63B9486
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231587AbhGAQHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 12:07:10 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5838 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230005AbhGAQHI (ORCPT
+        id S232167AbhGAQMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 12:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231698AbhGAQMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 12:07:08 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161G3kbO018503;
-        Thu, 1 Jul 2021 12:04:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=jwpL9XXnuEroQhs6QYfgPLWjME2s+w8TJoKkzlJ32fY=;
- b=AhuEuWqQ6u+m4d6YuV42ygHiq+X77gj2H/eaG7ERvbBtr1qN2aXTzjs3LiBRxjomQkxG
- G6FwJZJCYxH7IorKic6W4qK58t0Y2268MGEEdxAz46HU94gPjORj+LWdoi4S6eg8i8k4
- /KuXWC8Mhj7xRiLnLy8XY9hx1ZzkiAk31EM6ms/f6BpwakXwvoEvakWHkHD131tlliGm
- yOm8c9UR7/dsyo+QcigtLlUKQrZ1XrTrJ4cc85eZXOzXu40KWv3fO244pa6exT7W87tY
- 7QsZ6DVlmwbf3NRxFzsMycC8SSOQ3odWbtDjgUY5vMoMgbei7ZdsP6bSM/vryEI2BFdk NA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39hepr4sh9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 12:04:32 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 161G3vsn018935;
-        Thu, 1 Jul 2021 12:04:31 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39hepr4sg9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 12:04:31 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 161Fv6OU024687;
-        Thu, 1 Jul 2021 16:04:29 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma02fra.de.ibm.com with ESMTP id 39duv8hahh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 16:04:29 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 161G4QdB22085896
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 1 Jul 2021 16:04:26 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3D4D95206B;
-        Thu,  1 Jul 2021 16:04:26 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 2B20A52065;
-        Thu,  1 Jul 2021 16:04:26 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 25651)
-        id E75E1E03CC; Thu,  1 Jul 2021 18:04:25 +0200 (CEST)
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        vkuznets@redhat.com, wanghaibin.wang@huawei.com
-Subject: [PATCH] KVM: selftests: do not require 64GB in set_memory_region_test
-Date:   Thu,  1 Jul 2021 18:04:25 +0200
-Message-Id: <20210701160425.33666-1-borntraeger@de.ibm.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 1 Jul 2021 12:12:08 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA37CC061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 09:09:36 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id s129so11712678ybf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 09:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uzi1kcVee3nZI004Eqmdf8y65g93K4CPvU+WDS5oQ0o=;
+        b=UbI4NvvhXAKF6UJlUQJnCnIZTrPzaWdjQcU6NH0GrVU6eIit+YEfiMywDOAfxqk9o9
+         tAUXpeb60OkDSx9bD6lOX62A/UBZAJD8ptJRlCml6KoBg4ua6O6q9JCyDDSeZAj+QAkc
+         WrJ5xeq2NOCp7aRcUS+yoclphDIkKOJdP8slkfbniGOfPxYm2Q/Jjjtv4olDqfLSSyxZ
+         Dg7d03u2ogyibOVT+ShLOuJkKEI+IxOjT8XjAxolKK3GwvR6JtkTLTQBfj7oACQa/1cF
+         C9yD3GteMdLWIIqy6hn/UTSwQ4n+A0f+lkYgWr+9bF5kE11px+0WS5EtvAqbmPm5iY/O
+         0TgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uzi1kcVee3nZI004Eqmdf8y65g93K4CPvU+WDS5oQ0o=;
+        b=eNqRqIPrU26jsyCa1FwYwefa/Isa/GHrgQ38bVGKsWeB/Mcuz+E2kfMQzjRMoQh4KJ
+         kmXDK9fBldQB/uq7s6ZH34HRd43nSzjzL8PQ1F4EVMVTV69TgB8vOfO9PgxqYkfkVNXW
+         zRxi/GnxFfZPeeARKIdp+joBHAcW8MJeDSt6p3e3HG8ktOoDICkxM0DFwudIcKx48KML
+         sruyspJ+ivRc+ROi0gKfM9i7woVLu9bT1XxL5iyAr4uuAVLnd4eJ+R8zo7EwAd7a4h2u
+         JvKpSkNUeBk3Am/M7ZoNpCmYejBOIe1Pr6WtEfhya0q0GU4f7jFOzoPeIrzed8DosAjt
+         2Dow==
+X-Gm-Message-State: AOAM532wXe8FRrlrNNuBjUUMMp2zyUtgIIUGLsTyH2DagNVdW3GFymid
+        jPCgqlpuTomhUdzZVeoFCRhQwgVBEnDukbrxYH67kg==
+X-Google-Smtp-Source: ABdhPJw73TwvlM3X+UsxZTrZkl7Yi035kGpgDESa4lssYP9pUQ2usK2Q7Aza4S0poCiOx0NH2LqRyPpMJYSPU/Q/uYs=
+X-Received: by 2002:a25:7ec4:: with SMTP id z187mr668800ybc.136.1625155775937;
+ Thu, 01 Jul 2021 09:09:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: MuhLx3pChNNubrKtsTco1XduxodZjQnT
-X-Proofpoint-GUID: jjk3-JYbNDcXscFbBev0D6uEDPpVW7mx
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-01_08:2021-07-01,2021-07-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 bulkscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
- impostorscore=0 adultscore=0 clxscore=1011 mlxscore=0 lowpriorityscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107010095
+References: <20210630205151.137001-1-surenb@google.com> <YN2DsLlE+WtxK6K9@hirez.programming.kicks-ass.net>
+In-Reply-To: <YN2DsLlE+WtxK6K9@hirez.programming.kicks-ass.net>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 1 Jul 2021 09:09:25 -0700
+Message-ID: <CAJuCfpF=Ty4ruiKQQweVoF6Ojx8P8LxvUBxp1TmMFo2W1xNWfg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] psi: stop relying on timer_pending for poll_work rescheduling
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        matthias.bgg@gmail.com, Minchan Kim <minchan@google.com>,
+        Tim Murray <timmurray@google.com>,
+        YT Chang <yt.chang@mediatek.com>,
+        =?UTF-8?B?V2VuanUgWHUgKOiuuOaWh+S4vik=?= <wenju.xu@mediatek.com>,
+        =?UTF-8?B?Sm9uYXRoYW4gSk1DaGVuICjpmbPlrrbmmI4p?= 
+        <jonathan.jmchen@mediatek.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        kernel-team <kernel-team@android.com>,
+        SH Chen <show-hong.chen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unless the user sets overcommit_memory or has plenty of swap, the latest
-changes to the testcase will result in ENOMEM failures for hosts with
-less than 64GB RAM. As we do not use much of the allocated memory, we
-can use MAP_NORESERVE to avoid this error.
+On Thu, Jul 1, 2021 at 1:59 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Jun 30, 2021 at 01:51:51PM -0700, Suren Baghdasaryan wrote:
+> > +     /* cmpxchg should be called even when !force to set poll_scheduled */
+> > +     if (atomic_cmpxchg(&group->poll_scheduled, 0, 1) && !force)
+> >               return;
+>
+> Why is that a cmpxchg() ?
 
-Cc: Zenghui Yu <yuzenghui@huawei.com>
-Cc: vkuznets@redhat.com
-Cc: wanghaibin.wang@huawei.com
-Cc: stable@vger.kernel.org
-Fixes: 309505dd5685 ("KVM: selftests: Fix mapping length truncation in m{,un}map()")
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
----
- tools/testing/selftests/kvm/set_memory_region_test.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+We want to set poll_scheduled and proceed with rescheduling the timer
+unless it's already scheduled, so cmpxchg helps us to make that
+decision atomically. Or did I misunderstand your question?
 
-diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-index d8812f27648c..d31f54ac4e98 100644
---- a/tools/testing/selftests/kvm/set_memory_region_test.c
-+++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-@@ -377,7 +377,8 @@ static void test_add_max_memory_regions(void)
- 		(max_mem_slots - 1), MEM_REGION_SIZE >> 10);
- 
- 	mem = mmap(NULL, (size_t)max_mem_slots * MEM_REGION_SIZE + alignment,
--		   PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+		   PROT_READ | PROT_WRITE,
-+		   MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE, -1, 0);
- 	TEST_ASSERT(mem != MAP_FAILED, "Failed to mmap() host");
- 	mem_aligned = (void *)(((size_t) mem + alignment - 1) & ~(alignment - 1));
- 
--- 
-2.31.1
-
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
