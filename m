@@ -2,102 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275903B8CCB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 06:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C093B8CD4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 06:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbhGAEJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 00:09:31 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:47355 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229577AbhGAEJ3 (ORCPT
+        id S231989AbhGAETO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 00:19:14 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21100 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231794AbhGAETN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 00:09:29 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6EF0A5C00DD;
-        Thu,  1 Jul 2021 00:06:59 -0400 (EDT)
-Received: from imap43 ([10.202.2.93])
-  by compute2.internal (MEProxy); Thu, 01 Jul 2021 00:06:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=b9llwkSwjZo8KM7Yex+xrFxAOW2zg3o
-        RBtRbdMGHqB0=; b=G1QmCccEFko3Xu2jq2tb/saj0i5QzxnbX6jUzhTsNUzj4h/
-        ZToqGqm5mmrSbPG3k+LU/mHbbyAnkHY6yIHfefBGyknH88D8Gu84tmiQdN6VgVrk
-        yvYhx3WWEgFA7rBrzpHLvIXTab/CNYqXBml3nNEt7S2mbwQGvUTADbqMOPFwLyjW
-        7aAaX7We+vNKtOtQHIooJzqLUJqnIKXjciiCi3wIf9vV1Qi6dzCmpItsxuINdnW3
-        eoQQO2NAir0lREGVldgV94R6WK7QvqRTAaoNAULAzV0TwtcfZG+MyLtZJ4F5Mu44
-        oznjqkz8esEx9bRlvbYplTQbeUdvvV5hC8nULDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=b9llwk
-        SwjZo8KM7Yex+xrFxAOW2zg3oRBtRbdMGHqB0=; b=I2TR+xMOnwQB1eU3SjoVpf
-        oy3/8x+qgRH9S5aduLYIW8Uu1hKwpQtDyHf6pGsFG3JLvQqz0hAolly/uAowU9Ju
-        C6DaWUDGZwyltHRIwQtzNkZfUgtd4rNxkcN51X51yfyoojxXRfIHPAsvLoyId3fa
-        /nPdpWFZsSDGrahvaSjQxIuNceVTqkX3/pS6nxD+5Jm7iUGRSqCXvjcNoaUBzB6E
-        190Z5YwoeqwBVNddCBnWOhmxp0RhWwZ6Xv7MhQt90YIS0mjSNVA+gRIbl241mmHg
-        HhLLdaCUEgQR2j2easdMex2tNiFRwBbmmfERNeXRgEXs/cGsuuLhop7RH3dHEY1Q
-        ==
-X-ME-Sender: <xms:Yj_dYKwI1X9tYlP5GkSGHRFvT_gDCFeicnwVwGbKI8_u8aEwwoGIPQ>
-    <xme:Yj_dYGRVBUIsPzWynZCuctEWy-Vg_wcqHViJQYSVVVI4p7aDNlQPCkHkb29NN42Hx
-    5gb9m50pqFbI42Jvg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeihedgjeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvufgtsehttd
-    ertderredtnecuhfhrohhmpedftehnughrvgifucflvghffhgvrhihfdcuoegrnhgurhgv
-    fiesrghjrdhiugdrrghuqeenucggtffrrghtthgvrhhnpeehhfefkefgkeduveehffehie
-    ehudejfeejveejfedugfefuedtuedvhefhveeuffenucevlhhushhtvghrufhiiigvpedt
-    necurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:Yj_dYMWLjU76N8iIO-7NevctuakLljdDF3tGDlZjHVnHLR2EYWxp8w>
-    <xmx:Yj_dYAjtVpLkSeO2xbaKoo78odtTyvidVMKmiydpN2epiWOucudSFg>
-    <xmx:Yj_dYMDgmxcC9-MRBjxGONi4e21P5iPeXn1zjaOMKR9NRuvrOSnxoA>
-    <xmx:Yz_dYL5PkTb1vFg7bplBh1Q22ZeoIsU02XA12YYSFTvJOQkocEb2Tw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 24DB7AC0073; Thu,  1 Jul 2021 00:06:58 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-530-gd0c265785f-fm-20210616.002-gd0c26578
-Mime-Version: 1.0
-Message-Id: <8c808410-6444-46a3-8779-29ba1453a5ca@www.fastmail.com>
-In-Reply-To: <20210625074031.32576-1-liuxiwei@inspur.com>
-References: <20210625074031.32576-1-liuxiwei@inspur.com>
-Date:   Thu, 01 Jul 2021 13:36:37 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "George Liu" <liuxiwei1013@gmail.com>,
-        linux-aspeed@lists.ozlabs.org
-Cc:     devicetree@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, "Rob Herring" <robh+dt@kernel.org>,
-        "George Liu" <liuxiwei@inspur.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1] ARM: dts: fp5280g2: Add KCS node for LPC MCTP
-Content-Type: text/plain
+        Thu, 1 Jul 2021 00:19:13 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16143RVX142440;
+        Thu, 1 Jul 2021 00:16:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=8Y1pJhcEdfTX8ByyHeVOiPCrmi/ljWqFUx98MB0fCMo=;
+ b=Sai8wSsIlVjGEAMGtFrjyi2+i8e7qVWwSB+lGY2k/GFIHE131OSDT3lBKd8nex/GwOXD
+ md8Z/ZV6JsxSZH85Cps2vml41LBbeNM6JDj3LOcb/sogpedCaTHN6k5ThOHjsiHpgvFe
+ Q1ZsL2A+pfC3Xco9A+LxdA6t90sikeIeE3eBawo1QS+SyUqQfLmMIjsDofZxsIlYlAs+
+ LQDdM494IRB9S4CV7V7v6z5ImUbrAnFVg2QtQCSqOm42G36s3Yye8h8LdAowudtgljLv
+ 1vnymEUyeYxM1/R/DQZZqWfBC4qb/Sl/yiFJwHDumxxLXwOc9qVtE9/7eLhdEV2MKOkm Qw== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39h514hy5b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Jul 2021 00:16:17 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1614CNVd009622;
+        Thu, 1 Jul 2021 04:16:14 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04fra.de.ibm.com with ESMTP id 39duv8h4sk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Jul 2021 04:16:13 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1614GA4X22413606
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 1 Jul 2021 04:16:11 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D03BB11C06C;
+        Thu,  1 Jul 2021 04:16:10 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 795C111C069;
+        Thu,  1 Jul 2021 04:16:07 +0000 (GMT)
+Received: from saptagiri.in.ibm.com (unknown [9.85.122.203])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  1 Jul 2021 04:16:07 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>
+Subject: [PATCH v2 0/2]  Skip numa distance for offline nodes
+Date:   Thu,  1 Jul 2021 09:45:50 +0530
+Message-Id: <20210701041552.112072-1-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.3
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: hEJwWindf7BtteiaVGFkck3ixuBoFvy7
+X-Proofpoint-GUID: hEJwWindf7BtteiaVGFkck3ixuBoFvy7
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-01_01:2021-06-30,2021-07-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ adultscore=0 phishscore=0 priorityscore=1501 spamscore=0 bulkscore=0
+ clxscore=1011 suspectscore=0 malwarescore=0 mlxlogscore=951
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107010027
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi George,
+Changelog v1->v2:
+v1: http://lore.kernel.org/lkml/20210520154427.1041031-1-srikar@linux.vnet.ibm.com/t/#u
+- Update the numa masks, whenever 1st CPU is added to cpuless node
+- Populate all possible nodes distances in boot in a
+powerpc specific function
 
-On Fri, 25 Jun 2021, at 17:10, George Liu wrote:
-> Signed-off-by: George Liu <liuxiwei@inspur.com>
-> ---
->  arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts 
-> b/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts
-> index 1752f3250e44..66c0542b2694 100644
-> --- a/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts
-> +++ b/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts
-> @@ -300,6 +300,11 @@ &lpc_ctrl {
->  	flash = <&spi1>;
->  };
->  
-> +&kcs4 {
-> +	compatible = "openbmc,mctp-lpc";
-> +	status = "okay";
-> +};
+Geetika reported yet another trace while doing a dlpar CPU add
+operation. This was true even on top of a recent commit
+6980d13f0dd1 ("powerpc/smp: Set numa node before updating mask") which fixed
+a similar trace.
 
-This was a gross hack that we carried for a bit, it never went or was 
-intended to go upstream. Please just use the standard KCS bindings.
+WARNING: CPU: 40 PID: 2954 at kernel/sched/topology.c:2088 build_sched_domains+0x6e8/0x1540
+Modules linked in: nft_counter nft_compat rpadlpar_io rpaphp mptcp_diag
+xsk_diag tcp_diag udp_diag raw_diag inet_diag unix_diag af_packet_diag
+netlink_diag bonding tls nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib
+nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat
+nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set rfkill nf_tables
+nfnetlink dm_multipath pseries_rng xts vmx_crypto binfmt_misc ip_tables xfs
+libcrc32c sd_mod t10_pi sg ibmvscsi ibmveth scsi_transport_srp dm_mirror
+dm_region_hash dm_log dm_mod fuse
+CPU: 40 PID: 2954 Comm: kworker/40:0 Not tainted 5.13.0-rc1+ #19
+Workqueue: events cpuset_hotplug_workfn
+NIP:  c0000000001de588 LR: c0000000001de584 CTR: 00000000006cd36c
+REGS: c00000002772b250 TRAP: 0700   Not tainted  (5.12.0-rc5-master+)
+MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28828422  XER: 0000000d
+CFAR: c00000000020c2f8 IRQMASK: 0 #012GPR00: c0000000001de584 c00000002772b4f0
+c000000001f55400 0000000000000036 #012GPR04: c0000063c6368010 c0000063c63f0a00
+0000000000000027 c0000063c6368018 #012GPR08: 0000000000000023 c0000063c636ef48
+00000063c4de0000 c0000063bfe9ffe8 #012GPR12: 0000000028828424 c0000063fe68fe80
+0000000000000000 0000000000000417 #012GPR16: 0000000000000028 c00000000740dcd8
+c00000000205db68 c000000001a3a4a0 #012GPR20: c000000091ed7d20 c000000091ed8520
+0000000000000001 0000000000000000 #012GPR24: c0000000113a9600 0000000000000190
+0000000000000028 c0000000010e3ac0 #012GPR28: 0000000000000000 c00000000740dd00
+c0000000317b5900 0000000000000190
+NIP [c0000000001de588] build_sched_domains+0x6e8/0x1540
+LR [c0000000001de584] build_sched_domains+0x6e4/0x1540
+Call Trace:
+[c00000002772b4f0] [c0000000001de584] build_sched_domains+0x6e4/0x1540 (unreliable)
+[c00000002772b640] [c0000000001e08dc] partition_sched_domains_locked+0x3ec/0x530
+[c00000002772b6e0] [c0000000002a2144] rebuild_sched_domains_locked+0x524/0xbf0
+[c00000002772b7e0] [c0000000002a5620] rebuild_sched_domains+0x40/0x70
+[c00000002772b810] [c0000000002a58e4] cpuset_hotplug_workfn+0x294/0xe20
+[c00000002772bc30] [c000000000187510] process_one_work+0x300/0x670
+[c00000002772bd10] [c0000000001878f8] worker_thread+0x78/0x520
+[c00000002772bda0] [c0000000001937f0] kthread+0x1a0/0x1b0
+[c00000002772be10] [c00000000000d6ec] ret_from_kernel_thread+0x5c/0x70
+Instruction dump:
+7ee5bb78 7f0ac378 7f29cb78 7f68db78 7f46d378 7f84e378 f8610068 3c62ff19
+fbe10060 3863e558 4802dd31 60000000 <0fe00000> 3920fff4 f9210080 e86100b0
 
-Cheers,
+Detailed analysis of the failing scenario showed that the span in
+question belongs to NODE domain and further the cpumasks for some
+cpus in NODE overlapped. There are two possible reasons how we ended
+up here:
 
-Andrew
+(1) The numa node was offline or blank with no CPUs or memory. Hence
+the sched_max_numa_distance could not be set correctly, or the
+sched_domains_numa_distance happened to be partially populated.
+
+(2) Depending on a bogus node_distance of an offline node to populate
+cpumasks is the issue.  On POWER platform the node_distance is
+correctly available only for an online node which has some CPU or
+memory resource associated with it.
+
+For example distance info from numactl from a fully populated 8 node
+system at boot may look like this.
+
+node distances:
+node   0   1   2   3   4   5   6   7
+  0:  10  20  40  40  40  40  40  40
+  1:  20  10  40  40  40  40  40  40
+  2:  40  40  10  20  40  40  40  40
+  3:  40  40  20  10  40  40  40  40
+  4:  40  40  40  40  10  20  40  40
+  5:  40  40  40  40  20  10  40  40
+  6:  40  40  40  40  40  40  10  20
+  7:  40  40  40  40  40  40  20  10
+
+However the same system when only two nodes are online at boot, then the
+numa topology will look like
+node distances:
+node   0   1
+  0:  10  20
+  1:  20  10
+
+This series tries to fix both these problems.
+Note: These problems are now visible, thanks to
+Commit ccf74128d66c ("sched/topology: Assert non-NUMA topology masks don't
+(partially) overlap")
+
+Cc: LKML <linux-kernel@vger.kernel.org>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Nathan Lynch <nathanl@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
+Cc: Laurent Dufour <ldufour@linux.ibm.com>
+
+Srikar Dronamraju (2):
+  sched/topology: Skip updating masks for non-online nodes
+  powerpc/numa: Fill distance_lookup_table for offline nodes
+
+ arch/powerpc/mm/numa.c  | 70 +++++++++++++++++++++++++++++++++++++++++
+ kernel/sched/topology.c | 25 +++++++++++++--
+ 2 files changed, 93 insertions(+), 2 deletions(-)
+
+
+base-commit: 031e3bd8986fffe31e1ddbf5264cccfe30c9abd7
+-- 
+2.27.0
+
