@@ -2,87 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50DA3B91F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347BB3B91F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236629AbhGAND5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 09:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236614AbhGANDO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 09:03:14 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847A7C0613A3;
-        Thu,  1 Jul 2021 06:00:42 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id yy20so10262124ejb.6;
-        Thu, 01 Jul 2021 06:00:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DaPUpeGq4S3Zxelp1iJnw2sl2vB3LeguXSMXQNFZYHM=;
-        b=rhIz2OrWRKxx/a+2VkK9ig3LnQCF7LQXVySbjUv8Tg6gNS0I4aIvQOzCSEyYgaZb4u
-         YAYu/GPDCdpRaiQLtYQt5rz0kW4tf8JVYJo3LN8BXGNuQAIzuKdCmWshN56S9LwXguVz
-         YspgpuH7e8ZaM4g7DckGHTqp1DCIGeQJDQEniLGRqxZWvbD1k+JC8cIMCYI872EJ/Odw
-         EAZDjMw+UR3GoDBZTf0U/VVjdEEFvqL9W9gXKk2dhWK4vVniJqxK+MPpf+yYmW6oNUB4
-         9qojbls90/gqdbIfySZruC2Bk5JfnON22bIsCvVeEAFepc8VSZxxtLfAWEJus0psMhl9
-         z08Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DaPUpeGq4S3Zxelp1iJnw2sl2vB3LeguXSMXQNFZYHM=;
-        b=CBiZwYI6zdp4/AnFYPsRysf7bBiF447JWaPQ41JjQQ+JWxS1YHz4XbePrPfINuuh2M
-         KT0s/yJ7JhE3uK8lvJbAcgKiMjVA36xM6ubBsUZZbA+umc1Pbgs+bZXyU53HUcPwssR9
-         aeTSO1SGKX8lRzmGXvle+tV1bAFEXfkflKx4IyOxE2u7TS75DW2yG0HDFxFEIf8Jop0e
-         5g5eOjP1rIPyHNmZqPujg5lH7j0OJx85Q4v5rlIcOOkg+twB0bOuRwW6Djvu0WTHR4+t
-         7wes/4Eoe1L4L6C4tmznWHQK/8NclVX8roWilpsX4G7xU/MWQPZuhAIWCwm9Q3CyxKty
-         ohsQ==
-X-Gm-Message-State: AOAM531/i+UFDz4avVQ4Sna7R95iJ6PqVurHms8VL/XQYdKgRRBKDvnM
-        VuinFKyISjtNCweG5jloAOKtm7rizNktPKXfj6M=
-X-Google-Smtp-Source: ABdhPJzM3yEoovZnwfVb1Qa1kPEwNFYhhKiuEdFzc3Sy5RSkQBbOJ6ZPP9WgO14NEHXiTrQNvMot4A0DR9NplaDpDNw=
-X-Received: by 2002:a17:906:2844:: with SMTP id s4mr40598906ejc.263.1625144441012;
- Thu, 01 Jul 2021 06:00:41 -0700 (PDT)
+        id S236606AbhGANHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 09:07:52 -0400
+Received: from mga02.intel.com ([134.134.136.20]:32708 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236580AbhGANHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 09:07:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="195694218"
+X-IronPort-AV: E=Sophos;i="5.83,314,1616482800"; 
+   d="scan'208";a="195694218"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 06:05:14 -0700
+X-IronPort-AV: E=Sophos;i="5.83,314,1616482800"; 
+   d="scan'208";a="457650190"
+Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.231.202]) ([10.249.231.202])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 06:05:11 -0700
+Subject: Re: [PATCH v8 01/22] perf record: Introduce thread affinity and mmap
+ masks
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+ <ab1e7917845cc175a9e1d7f149e07b000d24c881.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+ <YNyZCZ92W39inSD2@kernel.org>
+From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+Organization: Intel Corporation
+Message-ID: <b4e43f46-71d5-457b-dcbf-aada28d7ba95@linux.intel.com>
+Date:   Thu, 1 Jul 2021 16:05:09 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210629022556.3985106-1-sunnanyong@huawei.com>
-In-Reply-To: <20210629022556.3985106-1-sunnanyong@huawei.com>
-From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Thu, 1 Jul 2021 22:00:28 +0900
-Message-ID: <CAKFNMokmN5fZZ5_SUABYGOzEyd+sr3jYtfZNWmUTZwQAZa4NFg@mail.gmail.com>
-Subject: Re: [PATCH 0/6] nilfs2: fix incorrect usage of kobject
-To:     Nanyong Sun <sunnanyong@huawei.com>
-Cc:     linux-nilfs <linux-nilfs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, wangkefeng.wang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YNyZCZ92W39inSD2@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Nanyong
+Hi,
 
-Thank you so much for sending this patchset.  I will review each and
-send them upstream if applicable as is.
+On 30.06.2021 19:17, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Jun 30, 2021 at 06:54:40PM +0300, Alexey Bayduraev escreveu:
+[SNIP]
+>> +static void record__mmap_cpu_mask_free(struct mmap_cpu_mask *mask)
+>> +{
+>> +	bitmap_free(mask->bits);
+>> +	mask->nbits = 0;
+> 
+> Plese use NULL, as 'mask->nbits' is a pointer.
 
-Thanks,
-Ryusuke Konishi
+In perf/util/mmap.h "nbits" is size_t:
 
-On Tue, Jun 29, 2021 at 10:54 AM Nanyong Sun <sunnanyong@huawei.com> wrote:
->
-> This patchset fix the memory leak problems and NULL pointer problem
-> caused by incorrect usage of kobject in nilfs2 sysfs driver.
->
-> Nanyong Sun (6):
->   nilfs2: fix memory leak in nilfs_sysfs_create_device_group
->   nilfs2: fix NULL pointer in nilfs_##name##_attr_release
->   nilfs2: fix memory leak in nilfs_sysfs_create_##name##_group
->   nilfs2: fix memory leak in nilfs_sysfs_delete_##name##_group
->   nilfs2: fix memory leak in nilfs_sysfs_create_snapshot_group
->   nilfs2: fix memory leak in nilfs_sysfs_delete_snapshot_group
->
->  fs/nilfs2/sysfs.c | 26 +++++++++++---------------
->  1 file changed, 11 insertions(+), 15 deletions(-)
->
-> --
-> 2.18.0.huawei.25
->
+struct mmap_cpu_mask {
+        unsigned long *bits;
+        size_t nbits;
+};
+
+Regards,
+Alexey
+
+> 
+>> +}
+>> +
+>> +static void record__thread_mask_clear(struct thread_mask *mask)
+>> +{
+>> +	bitmap_zero(mask->maps.bits, mask->maps.nbits);
+>> +	bitmap_zero(mask->affinity.bits, mask->affinity.nbits);
+>> +}
+>> +
+>> +static int record__thread_mask_alloc(struct thread_mask *mask, int nr_bits)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = record__mmap_cpu_mask_alloc(&mask->maps, nr_bits);
+> 
+> 
+> please combine such decl + assign into one line, i.e.:
+> 
+> 	int ret = record__mmap_cpu_mask_alloc(&mask->maps, nr_bits);
+> 
+>> +	if (ret) {
+>> +		mask->affinity.bits = NULL;
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = record__mmap_cpu_mask_alloc(&mask->affinity, nr_bits);
+>> +	if (ret) {
+>> +		record__mmap_cpu_mask_free(&mask->maps);
+>> +		mask->maps.bits = NULL;
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static void record__thread_mask_free(struct thread_mask *mask)
+>> +{
+>> +	record__mmap_cpu_mask_free(&mask->maps);
+>> +	record__mmap_cpu_mask_free(&mask->affinity);
+>> +}
+>> +
+>>  static int parse_output_max_size(const struct option *opt,
+>>  				 const char *str, int unset)
+>>  {
+>> @@ -2664,6 +2720,70 @@ static struct option __record_options[] = {
+>>  
+>>  struct option *record_options = __record_options;
+>>  
+>> +static void record__mmap_cpu_mask_init(struct mmap_cpu_mask *mask, struct perf_cpu_map *cpus)
+>> +{
+>> +	int c;
+>> +
+>> +	for (c = 0; c < cpus->nr; c++)
+>> +		set_bit(cpus->map[c], mask->bits);
+>> +}
+>> +
+>> +static int record__alloc_thread_masks(struct record *rec, int nr_threads, int nr_bits)
+>> +{
+>> +	int t, ret;
+>> +
+>> +	rec->thread_masks = zalloc(nr_threads * sizeof(*(rec->thread_masks)));
+>> +	if (!rec->thread_masks) {
+>> +		pr_err("Failed to allocate thread masks\n");
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	for (t = 0; t < nr_threads; t++) {
+>> +		ret = record__thread_mask_alloc(&rec->thread_masks[t], nr_bits);
+> 
+> Usually when we don't manage to allocate all that we need we go on and
+> free the partially allocated resources.
+> 
+>> +		if (ret)
+>> +			return ret;
+>> +		record__thread_mask_clear(&rec->thread_masks[t]);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +static int record__init_thread_default_masks(struct record *rec, struct perf_cpu_map *cpus)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = record__alloc_thread_masks(rec, 1, cpu__max_cpu());
+> 
+> ditto
+> 
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	record__mmap_cpu_mask_init(&rec->thread_masks->maps, cpus);
+>> +
+>> +	rec->nr_threads = 1;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int record__init_thread_masks(struct record *rec)
+>> +{
+>> +	struct perf_cpu_map *cpus = rec->evlist->core.cpus;
+>> +
+>> +	return record__init_thread_default_masks(rec, cpus);
+>> +}
+>> +
+>> +static int record__fini_thread_masks(struct record *rec)
+>> +{
+>> +	int t;
+>> +
+>> +	if (rec->thread_masks)
+>> +		for (t = 0; t < rec->nr_threads; t++)
+>> +			record__thread_mask_free(&rec->thread_masks[t]);
+>> +
+>> +	zfree(&rec->thread_masks);
+>> +
+>> +	rec->nr_threads = 0;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  int cmd_record(int argc, const char **argv)
+>>  {
+>>  	int err;
+>> @@ -2912,6 +3032,12 @@ int cmd_record(int argc, const char **argv)
+>>  		goto out;
+>>  	}
+>>  
+>> +	err = record__init_thread_masks(rec);
+>> +	if (err) {
+>> +		pr_err("record__init_thread_masks failed, error %d\n", err);
+>> +		goto out;
+>> +	}
+>> +
+>>  	if (rec->opts.nr_cblocks > nr_cblocks_max)
+>>  		rec->opts.nr_cblocks = nr_cblocks_max;
+>>  	pr_debug("nr_cblocks: %d\n", rec->opts.nr_cblocks);
+>> @@ -2930,6 +3056,7 @@ int cmd_record(int argc, const char **argv)
+>>  	symbol__exit();
+>>  	auxtrace_record__free(rec->itr);
+>>  out_opts:
+>> +	record__fini_thread_masks(rec);
+>>  	evlist__close_control(rec->opts.ctl_fd, rec->opts.ctl_fd_ack, &rec->opts.ctl_fd_close);
+>>  	return err;
+>>  }
+>> -- 
+>> 2.19.0
+>>
+> 
