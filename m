@@ -2,145 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010F03B8F27
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458333B8F24
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235685AbhGAIz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 04:55:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235444AbhGAIzY (ORCPT
+        id S235651AbhGAIzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 04:55:03 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:55451 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235444AbhGAIzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 04:55:24 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E082FC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 01:52:54 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id i13so3228580plb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 01:52:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sqi5dYju1eQpu1Gv8JeZV2pnVuxQV19mlpxHCz/3bw4=;
-        b=kqM74IEV9LjH2L+lLiR6R6EAVh0PCSiJxDgvv5m8FaUJWoIIs5BLsA0MYT77/v1w/Y
-         qAruwtwNxE3zqk5qNR46sBLZDGxwrpq8rSH+9Avv55Nvamm6NuranIRHQ5ZQ5fUlXIUU
-         1A314r1iYZN4kcW5RYlq7IDVMFI0JZkc3r4ZUbmBhkKt5NK85eIpLozcm/M+6Md73dTE
-         B78NEIPlCLL/2Hlt67PHG96X6eTMX/2K9iv09kuPNCWrOZ50Yc93pRe4sdphO9RK3XcD
-         +M4rBbJiCNySOTHNxVmR/4lxOAzH9sIdA7IguJXEDUvHd0DWEvqI+W0+d2nFBpWAr5gS
-         F/pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sqi5dYju1eQpu1Gv8JeZV2pnVuxQV19mlpxHCz/3bw4=;
-        b=QWOO+wQjsXbxOccg1b7sr3cscABdH2q5ifakQ3836Gdz+9qtCOwd0Xjhi39KbYDU9p
-         d5Z5aRaKlJCORAcnHPMomB+cWj5oWuErSwspQtnJS9zDfg/Nz0rPcFNn/G6Lqv5p07g4
-         HoVmWqh9bqEoHsnOX/iGIIEQsSrBAnsRMItcYfNtJBsEambN88aVLpTBDsyI44GFJPV2
-         vLRVglHXHsaCsV8Y6+AdOxILYQEbOOzJmFcfNTWkurR5Ue8prSYr8BQaJIas9LEp/lZW
-         ezr+jNODmnugDUX9zvEJCqR6/gEuQF4MsQCKMz1QVOsvGZ4XYcNXExy1JYNzdPFyB/yE
-         TOwA==
-X-Gm-Message-State: AOAM531TVtgsjFP++vSEzJj7nBkY5NYUd9sHxV/y0FSKPi/9x7qW3L0Q
-        NSSiGN0fjswM7ZSGxQxuOQU=
-X-Google-Smtp-Source: ABdhPJzCxYbwOiLTbJuv++8ov90r2QsnB0H+ApTnYZFVCB+3MqUWzQyVsCnrXV/gbFMW68GwOYmbYg==
-X-Received: by 2002:a17:90a:2d8c:: with SMTP id p12mr22457490pjd.41.1625129574509;
-        Thu, 01 Jul 2021 01:52:54 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id i27sm24926973pgl.78.2021.07.01.01.52.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 01:52:54 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] clocksource/drivers/sprd: Add module support to Unisoc timer
-Date:   Thu,  1 Jul 2021 16:51:59 +0800
-Message-Id: <20210701085159.208143-4-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210701085159.208143-1-zhang.lyra@gmail.com>
-References: <20210701085159.208143-1-zhang.lyra@gmail.com>
+        Thu, 1 Jul 2021 04:55:03 -0400
+X-UUID: 6c2bb18e6e534c00ad876bd29950ce95-20210701
+X-UUID: 6c2bb18e6e534c00ad876bd29950ce95-20210701
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <lecopzer.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 873094388; Thu, 01 Jul 2021 16:52:31 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 1 Jul 2021 16:52:29 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 1 Jul 2021 16:52:29 +0800
+From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
+To:     <nathan@kernel.org>
+CC:     <clang-built-linux@googlegroups.com>, <keescook@chromium.org>,
+        <lecopzer.chen@mediatek.com>, <linux-kbuild@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <masahiroy@kernel.org>,
+        <michal.lkml@markovi.net>, <samitolvanen@google.com>,
+        <yj.chiang@mediatek.com>
+Subject: Re: [PATCH 1/2] Kbuild: lto: add make-version macros
+Date:   Thu, 1 Jul 2021 16:52:29 +0800
+Message-ID: <20210701085229.32761-1-lecopzer.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <fdcb8b80-00dd-dd59-1283-836736d4a773@kernel.org>
+References: <fdcb8b80-00dd-dd59-1283-836736d4a773@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> Hi Lecopzer,
+> 
+> On 6/30/2021 5:14 AM, Lecopzer Chen wrote:
+> > To check the GNU make version. Used by the LTO Kconfig.
+> > 
+> > LTO with MODVERSION will fail in generating correct CRC because
+> > the makefile rule doesn't work for make with version 3.8X.[1]
+> > 
+> > Thus we need to check make version during selecting on LTO Kconfig.
+> > The MAKE_VERSION_INT means MAKE_VERSION in canonical digits integer and
+> > implemnted by imitating CLANG_VERSION.
+> 
+> implemented
 
-Timers still have devices created for them. So, when compiling a timer
-driver as a module, implement it as a normal platform device driver.
+Thanks!
+> 
+> > 
+> > [1] https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/
+> > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> > ---
+> >   Makefile                |  2 +-
+> >   init/Kconfig            |  4 ++++
+> >   scripts/Kconfig.include |  3 +++
+> >   scripts/make-version.sh | 13 +++++++++++++
+> >   4 files changed, 21 insertions(+), 1 deletion(-)
+> >   create mode 100755 scripts/make-version.sh
+> > 
+> > diff --git a/Makefile b/Makefile
+> > index 88888fff4c62..2402745b2ba9 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -516,7 +516,7 @@ CLANG_FLAGS :=
+> >   
+> >   export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS CROSS_COMPILE LD CC
+> >   export CPP AR NM STRIP OBJCOPY OBJDUMP READELF PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL
+> > -export PERL PYTHON3 CHECK CHECKFLAGS MAKE UTS_MACHINE HOSTCXX
+> > +export PERL PYTHON3 CHECK CHECKFLAGS MAKE MAKE_VERSION UTS_MACHINE HOSTCXX
+> >   export KGZIP KBZIP2 KLZOP LZMA LZ4 XZ ZSTD
+> >   export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
+> >   
+> > diff --git a/init/Kconfig b/init/Kconfig
+> > index a61c92066c2e..9f2b71fdf23e 100644
+> > --- a/init/Kconfig
+> > +++ b/init/Kconfig
+> > @@ -83,6 +83,10 @@ config TOOLS_SUPPORT_RELR
+> >   config CC_HAS_ASM_INLINE
+> >   	def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
+> >   
+> > +config MAKE_VERSION_INT
+> 
+> It might be cleaner to make this "config MAKE_VERSION". It will not 
+> conflict with the builtin MAKE_VERSION because this is really 
+> CONFIG_MAKE_VERSION, which is how MAKE_VERSION will be handled in Kconfig.
 
-Original-by: Baolin Wang <baolin.wang7@gmail.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
----
- drivers/clocksource/Kconfig      |  2 +-
- drivers/clocksource/timer-sprd.c | 15 +++++++++++++--
- 2 files changed, 14 insertions(+), 3 deletions(-)
+Okat, thanks, I'll try and fix it in patch v2.
+> 
+> > +	int
+> > +	default $(make-version)
+> > +
+> >   config CONSTRUCTORS
+> >   	bool
+> >   
+> > diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
+> > index 0496efd6e117..f956953d0236 100644
+> > --- a/scripts/Kconfig.include
+> > +++ b/scripts/Kconfig.include
+> > @@ -63,3 +63,6 @@ ld-version := $(shell,set -- $(ld-info) && echo $2)
+> >   cc-option-bit = $(if-success,$(CC) -Werror $(1) -E -x c /dev/null -o /dev/null,$(1))
+> >   m32-flag := $(cc-option-bit,-m32)
+> >   m64-flag := $(cc-option-bit,-m64)
+> > +
+> > +# Get the GNU make version with a canonical digit.
+> > +make-version := $(shell,$(srctree)/scripts/make-version.sh $(MAKE_VERSION))
+> 
+> It might be better for this to just be used directly by "config 
+> MAKE_VERSION":
+> 
+> config MAKE_VERSION
+> 	int
+> 	default $(shell,$(srctree)/scripts/make-version.sh $(MAKE_VERSION))
 
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 39aa21d01e05..9f16c2779edb 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -447,7 +447,7 @@ config MTK_TIMER
- 	  Support for Mediatek timer driver.
- 
- config SPRD_TIMER
--	bool "Spreadtrum timer driver" if EXPERT
-+	tristate "Spreadtrum timer driver" if EXPERT
- 	depends on HAS_IOMEM
- 	depends on (ARCH_SPRD || COMPILE_TEST)
- 	default ARCH_SPRD
-diff --git a/drivers/clocksource/timer-sprd.c b/drivers/clocksource/timer-sprd.c
-index 430cb99d8d79..73c7b3f8c901 100644
---- a/drivers/clocksource/timer-sprd.c
-+++ b/drivers/clocksource/timer-sprd.c
-@@ -5,6 +5,8 @@
- 
- #include <linux/init.h>
- #include <linux/interrupt.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
- 
- #include "timer-of.h"
- 
-@@ -141,7 +143,7 @@ static struct timer_of to = {
- 	},
- };
- 
--static int __init sprd_timer_init(struct device_node *np)
-+static int sprd_timer_init(struct device_node *np)
- {
- 	int ret;
- 
-@@ -190,7 +192,7 @@ static struct clocksource suspend_clocksource = {
- 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS | CLOCK_SOURCE_SUSPEND_NONSTOP,
- };
- 
--static int __init sprd_suspend_timer_init(struct device_node *np)
-+static int sprd_suspend_timer_init(struct device_node *np)
- {
- 	int ret;
- 
-@@ -204,6 +206,15 @@ static int __init sprd_suspend_timer_init(struct device_node *np)
- 	return 0;
- }
- 
-+#ifdef MODULE
-+TIMER_PLATFORM_DRIVER_BEGIN(sprd_timer)
-+TIMER_MATCH("sprd,sc9860-timer", sprd_timer_init)
-+TIMER_MATCH("sprd,sc9860-suspend-timer", sprd_suspend_timer_init)
-+TIMER_PLATFORM_DRIVER_END(sprd_timer);
-+MODULE_DESCRIPTION("Unisoc broadcast timer module");
-+MODULE_LICENSE("GPL");
-+#else
- TIMER_OF_DECLARE(sc9860_timer, "sprd,sc9860-timer", sprd_timer_init);
- TIMER_OF_DECLARE(sc9860_persistent_timer, "sprd,sc9860-suspend-timer",
- 		 sprd_suspend_timer_init);
-+#endif
--- 
-2.25.1
+Sure, I'll fix in patch v2, thank you.
 
+> 
+> > diff --git a/scripts/make-version.sh b/scripts/make-version.sh
+> > new file mode 100755
+> > index 000000000000..ce5af96696cc
+> > --- /dev/null
+> > +++ b/scripts/make-version.sh
+> > @@ -0,0 +1,13 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +#
+> > +# Print the linker name and its version in a 5 or 6-digit form.
+> > +
+> > +set -e
+> > +
+> > +# Convert the version string x.y.z to a canonical 5 or 6-digit form.
+> > +IFS=.
+> > +set -- $1
+> > +
+> > +# If the 2nd or 3rd field is missing, fill it with a zero.
+> > +echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
+> > 
