@@ -2,108 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F6E3B98CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 01:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D5E3B98D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 01:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234222AbhGAXCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 19:02:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234011AbhGAXCc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 19:02:32 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E23C061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 16:00:01 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id m9so13473509ybo.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 16:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eKQAwFjuaAaCUshwMfZMCC25WSRc/6MI7bYOaT2lCu0=;
-        b=FoF9JYuQr2PlAVV/PhJWgD36muB9/aW/s+nV24F+xMy0h2zSpj362f8TWPJDLDGa18
-         QHu25LoAVyZ3n/D4n+D4/Yw3QqVLPAkMkedrYl3t6mUMyP6FffkPvJr/mgzJ6CKPeocY
-         JUfsSwAkeJoevYgGMRK4v1MYvth6O2/Rlwkh/ziIDs7+zoMwbI6ROOaHte8KUCwQQd++
-         HLbbCDyi2U/PtWgvf/r6u8Ta7WSkJVDfet8kOKMK6qsJ6K+zcoq6p93aP1XjH0MNOOHX
-         Vj4luGFFW0KdDZB586uQS/Wf7MXqo+USQJHhoOL4+OQZgCerlNgrrN3YVIgCcojWU34p
-         YTQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eKQAwFjuaAaCUshwMfZMCC25WSRc/6MI7bYOaT2lCu0=;
-        b=c1MKFbbjqm36nnbYRghT/a9YmY7hIAc8nq/xyu8PXEgpRECd3PaHOIO8t5HP0jJBi8
-         KXcsvbCN0UaELODxniulN65jUdU1drUZlAo19aK97HTv7Z23My6Oxys7CxXJd0v5Tzc6
-         HsMbFGqLGnqF+MdR38QF4ippjJHTq3fJ5+oqnBCYcJZ1DdAAGCyqYv3PFVgP0DX8DwkI
-         J+RqVTwOKt04X7zTFnGmp7IhjNhovD6po7cJvbRd2jkpu9b82puwj0vAGpxHDIj6fIQl
-         USpwDOv6MvMUJ7TQ3BHDovCjZigS6pS252Av1xnQW+OIUwKLpvWW/eRQYAn0j4cEFrRG
-         tvyg==
-X-Gm-Message-State: AOAM531Lh5gEqrYLD+uf43nEDwvB0Xv77TZlTLBYvfkLXYKu8+y6hjO5
-        rHdhxyyaeqKwUGUFjUf+boOzPH/9xjoWxIMrUG2etQ==
-X-Google-Smtp-Source: ABdhPJz1GahShCzpqEDbjJXS/OG05BwiTLL16WKqm1uItCK8AEpt3nGqA1WXxQC4ONTDzI4RGDY9KSIsX7TYVHYAPS8=
-X-Received: by 2002:a25:83ca:: with SMTP id v10mr2997364ybm.84.1625180400150;
- Thu, 01 Jul 2021 16:00:00 -0700 (PDT)
+        id S234102AbhGAXGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 19:06:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233648AbhGAXGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 19:06:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3DC1613DC;
+        Thu,  1 Jul 2021 23:04:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625180653;
+        bh=+HiBm4y2G/OI/CCrGo4hwCm699FrUDzFzL1HhjQ1s2A=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=YO86vBw446qb7l/fbFDkIStu00xNLetn6+c2vfY1/FQgoSaG/8o988/hOB/fD1eGG
+         GmSD/s9Du7L9qzcSI0PY9EpLbZ2pRP5+0U4+cJwQ1W4Z41PqNoa8SBTLWlJdAvN6ng
+         ZHeEvFoxx3k11PeJkfZh5s1kMHol5+BkIG7M6frKDmw+6WoxCIru51HLl7d2eI8SGG
+         FKtstFrCLRsjIi/bCtYZZVNpgaww61ii2RMSVBKghrAj/RBgLsqfqPPSjJ0nj7FPdu
+         o88gMK0y0dkR5e6Rn+8qC7HUe0qUwAc2hxDQj0h6DxFxEM9UTjqqq1nGfD2aukek8j
+         3f2UKK0kJ7ZKQ==
+Subject: Re: [PATCH v2 RFC] f2fs: fix to force keeping write barrier for
+ strict fsync mode
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <20210601101024.119356-1-yuchao0@huawei.com>
+ <YN32/NsjqJONbvz7@google.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <648a96f7-2c83-e9ed-0cbd-4ee8e4797724@kernel.org>
+Date:   Fri, 2 Jul 2021 07:04:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210623192822.3072029-1-surenb@google.com> <CALCETrU577MD59P-+9sMYtS3t2sZYx-zi=VirhQpZLnhEck1vg@mail.gmail.com>
- <CAJuCfpFMTP-g9CFELMqNawX0FhF4vBNtRDP_R=WAi_RiuGW8-Q@mail.gmail.com>
- <YNzl6XNu2vxyCJu8@cmpxchg.org> <CALCETrWsVw4+jT_Z1uxidRAZ0SQbngYe7E2m-8iyX6qRbug6zA@mail.gmail.com>
-In-Reply-To: <CALCETrWsVw4+jT_Z1uxidRAZ0SQbngYe7E2m-8iyX6qRbug6zA@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 1 Jul 2021 15:59:48 -0700
-Message-ID: <CAJuCfpG5Ua7C4usJGEqTm6_UUd6VyRd0BsPgT97LWOzjb4Ry+g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YN32/NsjqJONbvz7@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 5:44 PM Andy Lutomirski <luto@kernel.org> wrote:
->
-> On Wed, Jun 30, 2021 at 2:45 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Wed, Jun 30, 2021 at 11:51:36AM -0700, Suren Baghdasaryan wrote:
-> > > On Wed, Jun 30, 2021 at 11:26 AM Andy Lutomirski <luto@kernel.org> wrote:
-> > > > Also, please consider removing all mention of the word "reap" from the
-> > > > user API.  For better or for worse, "reap" in UNIX refers to what
-> > > > happens when a dead task gets wait()ed.  I sincerely wish I could go
-> > > > back in time and gently encourage whomever invented that particular
-> > > > abomination to change their mind, but my time machine doesn't work.
-> > >
-> > > I see. Thanks for the note. How about process_mem_release() and
-> > > replacing reap with release everywhere?
-> >
-> > I don't quite understand the objection. This syscall works on tasks
-> > that are at the end of their life, right? Isn't something like
-> > process_mreap() establishing exactly the mental link we want here?
-> > Release is less descriptive for what this thing is to be used for.
->
-> For better or for worse, "reap" means to make a zombie pid go away.
-> From the description, this new operation takes a dying process (not
-> necessarily a zombie yet) and aggressively frees its memory.  This is
-> a different optioneration.
->
-> How about "free_dying_process_memory"?
+On 2021/7/2 1:10, Jaegeuk Kim wrote:
+> On 06/01, Chao Yu wrote:
+>> [1] https://www.mail-archive.com/linux-f2fs-devel@lists.sourceforge.net/msg15126.html
+>>
+>> As [1] reported, if lower device doesn't support write barrier, in below
+>> case:
+>>
+>> - write page #0; persist
+>> - overwrite page #0
+>> - fsync
+>>   - write data page #0 OPU into device's cache
+>>   - write inode page into device's cache
+>>   - issue flush
+> 
+> Well, we have preflush for node writes, so I don't think this is the case.
+> 
+>   fio.op_flags |= REQ_PREFLUSH | REQ_FUA;
 
-process_mreap sounds definitely better and in line with names like
-process_madvise. So maybe we can use it?
+This is only used for atomic write case, right?
+
+I mean the common case which is called from f2fs_issue_flush() in
+f2fs_do_sync_file().
+
+And please see do_checkpoint(), we call f2fs_flush_device_cache() and
+commit_checkpoint() separately to keep persistence order of CP datas.
+
+See commit 46706d5917f4 ("f2fs: flush cp pack except cp pack 2 page at first")
+for details.
+
+Thanks,
+
+> 
+>>
+>> If SPO is triggered during flush command, inode page can be persisted
+>> before data page #0, so that after recovery, inode page can be recovered
+>> with new physical block address of data page #0, however there may
+>> contains dummy data in new physical block address.
+>>
+>> Then what user will see is: after overwrite & fsync + SPO, old data in
+>> file was corrupted, if any user do care about such case, we can suggest
+>> user to use STRICT fsync mode, in this mode, we will force to trigger
+>> preflush command to persist data in device cache in prior to node
+>> writeback, it avoids potential data corruption during fsync().
+>>
+>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>> ---
+>> v2:
+>> - fix this by adding additional preflush command rather than using
+>> atomic write flow.
+>>   fs/f2fs/file.c | 14 ++++++++++++++
+>>   1 file changed, 14 insertions(+)
+>>
+>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>> index 7d5311d54f63..238ca2a733ac 100644
+>> --- a/fs/f2fs/file.c
+>> +++ b/fs/f2fs/file.c
+>> @@ -301,6 +301,20 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
+>>   				f2fs_exist_written_data(sbi, ino, UPDATE_INO))
+>>   			goto flush_out;
+>>   		goto out;
+>> +	} else {
+>> +		/*
+>> +		 * for OPU case, during fsync(), node can be persisted before
+>> +		 * data when lower device doesn't support write barrier, result
+>> +		 * in data corruption after SPO.
+>> +		 * So for strict fsync mode, force to trigger preflush to keep
+>> +		 * data/node write order to avoid potential data corruption.
+>> +		 */
+>> +		if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT &&
+>> +								!atomic) {
+>> +			ret = f2fs_issue_flush(sbi, inode->i_ino);
+>> +			if (ret)
+>> +				goto out;
+>> +		}
+>>   	}
+>>   go_write:
+>>   	/*
+>> -- 
+>> 2.29.2
