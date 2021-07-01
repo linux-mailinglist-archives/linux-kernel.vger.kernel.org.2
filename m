@@ -2,189 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2393B9834
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 23:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BED3B9836
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 23:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbhGAVfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 17:35:06 -0400
-Received: from mail-dm6nam10on2050.outbound.protection.outlook.com ([40.107.93.50]:27393
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229934AbhGAVfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 17:35:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i5l9TtX8cO71NOG44/WRVL+jDBTYZyS5Rf5T0paajjCbVKxsTQfQ7+0YyF1qnDJ2cX78ouh9K0/sncFBcx7/AAmeF6WeJJdxBTBOuGCmd5eecKB1wok7An24OTpe1sLxNoZo0p5HkAvulWVVHzsTxekaUwed9ViqWxfrIKtIr5gvQ/1hPMiB6E7kt+OzuSFzEA9666v/RSlPGfcHO9T8dvM/1rB0syKFe/OtuwilwlRszuO042hVulMLnr7ANTCzmSneOuzguJFoWoxLNBpfEa9UPM9tTeh0NCfEEmvZQC6/BkbsR5e00ph74rPgkx/z/QmuM+ERxZ7Iw01NbK+SLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aLb+DQNtdNhY8DyDlt6JZO25i1CVWLje6cwrD5uew04=;
- b=fJaYzPv16RI7TNw1a4fU2En/vEzdc/vJCJ/ZG8aRPn+mR3At2z5PgGX6iq3Z1VLQqSKWulR3BEfkS6bfXsLC014iVEGIJ8EeDhjPdx3bxDvn5MpozfIqoxeojsT4Z0/Qxac7tej39qHkaAet20f+9oj4Lz5JlSiWa1uVpL7AxfUuzkM+Y4EEJlL5GMTQPcGLyr3hgqZulxu7yKY+izd0qO6r76J/zal7F2Z9KT0M0F2jAyXmmAaqDg/aY3v3uKTWzyj3+J4v2i8KngWtQnsqxv/EhV3ONm8kxxpfB4ldvBipiDPMtHaAfeMGOJDO69cV0zG5wPA8RZRuOaWzrEQ2KQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aLb+DQNtdNhY8DyDlt6JZO25i1CVWLje6cwrD5uew04=;
- b=5rCo+4YnIqseUCQmKmZ9uDBiFb5ntJCwVmpGNvVr6biO0smMdy6BprqvI3uNKjNfqqZGq85pOLU1VJ0L8dJ+Mz/mopdJAfTs1EqH/jxhKOAeC8P5/+avAQRI9FXiqhTYO8I+tP0gZt+KlSDdSCC89+oHs/AghnvS0SGOJ9yXZQA=
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=amd.com;
-Received: from DM6PR12MB2714.namprd12.prod.outlook.com (2603:10b6:5:42::18) by
- DM5PR12MB1513.namprd12.prod.outlook.com (2603:10b6:4:d::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4264.23; Thu, 1 Jul 2021 21:32:30 +0000
-Received: from DM6PR12MB2714.namprd12.prod.outlook.com
- ([fe80::7df8:b0cd:fe1b:ae7b]) by DM6PR12MB2714.namprd12.prod.outlook.com
- ([fe80::7df8:b0cd:fe1b:ae7b%5]) with mapi id 15.20.4264.026; Thu, 1 Jul 2021
- 21:32:30 +0000
-Cc:     brijesh.singh@amd.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com, Dov Murik <dovmurik@linux.ibm.com>
-Subject: Re: [PATCH Part1 RFC v3 22/22] virt: Add SEV-SNP guest driver
-To:     Borislav Petkov <bp@alien8.de>
-References: <20210602140416.23573-1-brijesh.singh@amd.com>
- <20210602140416.23573-23-brijesh.singh@amd.com> <YNxzJ2I3ZumTELLb@zn.tnic>
- <46499161-0106-3ae9-9688-0afd9076b28b@amd.com> <YN4DixahyShxyyCv@zn.tnic>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <5b4d20db-3013-4411-03b9-708dd18dbe64@amd.com>
-Date:   Thu, 1 Jul 2021 16:32:25 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YN4DixahyShxyyCv@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.78.25]
-X-ClientProxiedBy: SA0PR11CA0206.namprd11.prod.outlook.com
- (2603:10b6:806:1bc::31) To DM6PR12MB2714.namprd12.prod.outlook.com
- (2603:10b6:5:42::18)
+        id S234394AbhGAVf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 17:35:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234152AbhGAVf6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 17:35:58 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848DAC061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 14:33:27 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id 3so7867018ilj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 14:33:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Tc7gbn3Ftt/4NIeXEIEA6HpsChZKnl2aVzWD/EIv0TM=;
+        b=ijw8xLNjGCINxCvnMakX8PDxs6krlcvVIattltygR45dT84xYpmio/o7WAEfbMunJA
+         dETSqm6ef9MteDT0aXyi6FZhORuQI7vN+ZA/6VjY877yeDLk72JwFUoq6umQg9LJsgLI
+         kTPKsvc5JiiiAJ4M6vy3NTRZMh6mk9xtVYomraNn5T1OORcs6kuKAbfNoZi24eTW/yVL
+         pSsaQ2bgWeHuul1ijWubHn3klzx8SH3geqbazGn70JZ6QHr9dNck1cm3oiBBJHcwpnoc
+         JXeWQqCScXVGSY9yVcs3NEPQS0SFP9ZrUr+tDyOfyGzE0K8idwQujCh+95kAfutACkPy
+         slCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tc7gbn3Ftt/4NIeXEIEA6HpsChZKnl2aVzWD/EIv0TM=;
+        b=XWakV1/7dg/zrGTXbYXx0ru7496ZmJ+GDq+di5VLZV0tYaJG1Yiy3DfGB+hSexSQPu
+         oFKaligwrgWf6t+TIxT1Uxuy+DukObpPTPKNu182gasEoTQVvzggikoWSfjZHiehl/rl
+         noDkW2Nr7jBXGiG4yKG6nkRRAQ669kOfZrJ8i9iDJXBsgWfbUb72oD34K60Rc9hTk10C
+         R60DZkeNzeJAs6uls3fk0tvpkYT0Up2pdl8oXGaeobpFdFP2drrnov1l5n+ioxXEg/ro
+         M29BpMm1XIErjpcOkKxmdM1tSc9PKBqugSR2Gg2XyMAi2+vthDjZFg+VHiOMrYP0oYg6
+         4I+Q==
+X-Gm-Message-State: AOAM531+xUs3u2YsouxMe6SJ5nHy0qk6b0TLAJsd1x2EJHK0oxJGlESI
+        rIUFKVexi28J2kIWHWZQnFl/5x8f6rCj6UT0Q49brQ==
+X-Google-Smtp-Source: ABdhPJyqwQFS2DJ9sd+9rwuufJk+LsP76x3pz66cDOie6yeWh0RdRT0fXyaOwJ+2rDZqidB+kHpzVFrxJNuseEyFLKw=
+X-Received: by 2002:a05:6e02:921:: with SMTP id o1mr1104988ilt.57.1625175206943;
+ Thu, 01 Jul 2021 14:33:26 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.31.130.124] (165.204.78.25) by SA0PR11CA0206.namprd11.prod.outlook.com (2603:10b6:806:1bc::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Thu, 1 Jul 2021 21:32:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2f689bc1-73c6-4e7b-026e-08d93cd7bafc
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1513:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1513C55B2C7FE8D4568E132FE5009@DM5PR12MB1513.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6hIa4N0XaaiNvRcz8of1xKf1JULnfGRZzzVTEQGQRGShmrNG5HjJfbrf1JvGtMsGxBFkkfzu2KlX62i9g39HbceGjViJ8QOdUUXbLISh4jy3DHQZE7/2jDIsUxVI50SNuBkehG7t0TQjbUB48FXjevglPMPh3TCi0uwBBmwKeoQN8JlcSD+ebO4ktUuAtsy85FMUG9ZviPo47Ty1toLHzNvWOUfXZhpvhC3DTYCuhyX3S7BHtZm1bp6ACqMOhUYVRoXNDbK1RjPYwFVWSRJmKO8NSzUGu1hz2vuoFTgu/UUois21eVZVKklsYrPXVRdKcVVXVDy8iMr8l7D2oV5z3dg0y9UcLeHvrzWONC9CDeC/LAiadk0fqoLkMk4sU8+BGworC+lRG5c5DR4G1vmooGc9QUAPrhAWQ5lIMOSoheei/ePI7sGhHxuk8vWKM3Bv4qKxeSQE4bVR3fsRa4c8Ohk97043UTgKPQQKNad3X87gat2Q7pPx/MDPBe+XAh0FAHDvW3Ov2yZSjOhmPkmk8zErz29FdsttC6HPFB264ZlVBULr9Vy/BSfxtW2WFCRHFVflLibE8PSLo/Iob6i0KMZ0GjO/FIDZJEu/zzOLXWMn1x2/HVbZJP/Io9BreH4heYQr9i9jUKJymHWqtJcB0Cyisz7l8P4GsyV20pkaTEDllqQibKWS+zp/s+J2Y0/tQd+n/yuFc4G7OMMHet2LOdauJqvmxV+FjpubHwXkFK/rBigZFKAPbWjtuYE2Wnny17obTqIgPw/+6RlXIFjPqw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB2714.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(346002)(396003)(376002)(2616005)(66556008)(956004)(7416002)(66476007)(5660300002)(6916009)(36756003)(44832011)(16526019)(38100700002)(38350700002)(478600001)(31696002)(26005)(186003)(86362001)(53546011)(4326008)(2906002)(31686004)(66946007)(52116002)(16576012)(316002)(83380400001)(6486002)(8676002)(8936002)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UHA2VTVZNHJBS2V2QlBrZi85cXhwc1p0QyszZm5OS3JBNlR2eXEzUDF1enFD?=
- =?utf-8?B?UDdZYXRUMGwrR0FWMHlld2c2ZzA4RURYUFpqa0ZNdGNzM0MzTWJTZ1B0WDRj?=
- =?utf-8?B?TlJBV1NWSm1ON0p2TjRTV1JBdThmWUZkUDNnOVZqNnFiOHJwOEx0cHc1L29S?=
- =?utf-8?B?OGZLcGVXcEF3bE5IdjJJdzZSdUVmV2wzcUducTExRWp1eHlXSFNSVVY0R1c2?=
- =?utf-8?B?d0RPeUNBRkdwcHhiNUlKTTZTVW55MjFSRjlLVjVxcDZLcXYzY0w3OFhmMFNO?=
- =?utf-8?B?aU5yTnFDZ0Fvc2ZGY3AvbjJCTDZMb0dIcC9ha0llaXgvTHZod2FPNTJaSkV1?=
- =?utf-8?B?QUR5dmkrVENRYVl6U1JZYk5URlVUR2wzOExiTEd0UTZJa1ZrcmdaRVk0Mmh6?=
- =?utf-8?B?ZEdjK2dkRVMxeVloWFNhdWZVRHRYb011eGU2bWZvZHdVTXdXbFhNQnpLTVBz?=
- =?utf-8?B?czc3Ky9DL0UrVk1FeTVmaXNMUFMwQTVYQmdFRkFJM2NzOUxwWnVvK0JvaHFh?=
- =?utf-8?B?NGhoWEpoQ3hpWEZneTBVWHBmTEVYYTFkY01xZkFsQ3ZjaFAwY0NXcTFYcTFr?=
- =?utf-8?B?anI5RnhQTDZJZUFVaXdLZTJYanc5a0lrdHFyMTlUanhiblVpdkR1V1drVlJV?=
- =?utf-8?B?cmFXeWlvaG5nOXlZYkp6cXZWaEFXZW53QTNoS0U3QkkyS2o0Z2ZyMFVzeGNX?=
- =?utf-8?B?eCtRbUFPUGVYWEJIQXl0MjgyTlZmTnUvM0UrYmVRVzdXVkhGY0lKdGx2dkNO?=
- =?utf-8?B?TEJzbTJ2a2pSNzRHSUplRFNvcTY3Slc1R2NqRVVSKzVVMkhiWWpyTGJ4VDFq?=
- =?utf-8?B?ank1ZVhneTNIUUV5Q1R1VGh4SGtUZkhmMHNWQ205dDRKcVZQMGdHbVczMURh?=
- =?utf-8?B?Ym00aG5uMDJ6QmowM1VuQm9hbWw3WUtQK2pQRVA1QWxDNnR5R3Eya296Z29i?=
- =?utf-8?B?d0F3aXVxa0NzUDBScDZXN3o3VGc1N3lhWGJDL3ZKbXQxZldjSElKQmpYQjBm?=
- =?utf-8?B?TU45djdieXM4UUlCcVdkL1JqYU5LRTBWWFpmNHRLaC95bjBTaThreHUrcFFq?=
- =?utf-8?B?TERFK2Z4NVhPSHpCWGRtakEydjNCb0hoTG1zdVZXN2xheEtVejkxQ3FNVW9Z?=
- =?utf-8?B?NlBHQ3pKd3F0aVk1NXhOSThLT3JRcHFtTHVWMTVWUnJqTndDaEtXSm5pelhy?=
- =?utf-8?B?Q1FuTzNabEl4R0kwK2hnRUkxRjNVMFlrMlc4UUthRGtENWNvUGtEWmhGQi9h?=
- =?utf-8?B?c0piVncrZnZHcUhEMXp0UkEzVVB5Wk9hMFNWeVpKakY4Z3dQaVRQb3hNYzZs?=
- =?utf-8?B?dXdqWG41Vk15TExZUWVtMTVqV1ZmY1ZYbkF4VWtnczZrdVRXZ2p6VmNReTdF?=
- =?utf-8?B?K2JEdDdWNlZaVGx5YWVnNE5PejBUVUsrcTZ0NE1xczhnS1FENTkvZVFqc2hL?=
- =?utf-8?B?eFg0SGxiMHZibFdjbjFTUWNHUEtrN2RROHNsaUFzVDdDNlZkc1pzbkpIdXgz?=
- =?utf-8?B?RWNlN2Q1cmhXb0tkVU5EcFpwQVAxSiswbmRyM3ExWG1lRlI3aUlERFZrUHpu?=
- =?utf-8?B?V0VUbGRMcHQwRlpXaW1xWjRndW1KaFN2ME5objR5dmZFdWZIVzJNVkNtQ2h2?=
- =?utf-8?B?QU43bVRjMitldzNNQUlLNGNHMDdySDdMRC9RR1RyUjRGL0xNcUZPZ0N0V09u?=
- =?utf-8?B?K0xpN3puTlEzck1hcEU5VjVoaW53aitOWGNYWkovK1hwRnZQY2RhNyt4dDdB?=
- =?utf-8?Q?yVLi35T6LCeSQYbPzYwUPtKevRgGfYzxU0t/MAh?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f689bc1-73c6-4e7b-026e-08d93cd7bafc
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB2714.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2021 21:32:30.8025
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s2L/qNovLXFgRDvKUGuzFnBW4hEgK0jZHLDK5jK0H4cOSC66f80lxehFOszQK+LoGNo4BHRQMG/isVtRSvOjcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1513
+References: <20210609130421.13934-1-james.clark@arm.com> <20210614155442.GA396617@p14s>
+ <YN34LlxuaNo60CGu@kernel.org>
+In-Reply-To: <YN34LlxuaNo60CGu@kernel.org>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Thu, 1 Jul 2021 15:33:15 -0600
+Message-ID: <CANLsYkzH-OMr0Qo7L-Ush1nZuqhOAfocawHnVPAP8NcXk1K1Lg@mail.gmail.com>
+Subject: Re: [PATCH] perf cs-etm: Delay decode of non-timeless data until cs_etm__flush_events()
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     James Clark <james.clark@arm.com>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Leo Yan <leo.yan@linaro.org>, Al Grant <al.grant@arm.com>,
+        Branislav Rankov <branislav.rankov@arm.com>,
+        Denis Nikitin <denik@chromium.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-perf-users@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 1 Jul 2021 at 11:15, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+>
+> Em Mon, Jun 14, 2021 at 09:54:42AM -0600, Mathieu Poirier escreveu:
+> > On Wed, Jun 09, 2021 at 04:04:20PM +0300, James Clark wrote:
+> > > Currently, timeless mode starts the decode on PERF_RECORD_EXIT, and
+> > > non-timeless mode starts decoding on the fist PERF_RECORD_AUX record.
+> > >
+> > > This can cause the "data has no samples!" error if the first
+> > > PERF_RECORD_AUX record comes before the first (or any relevant)
+> > > PERF_RECORD_MMAP2 record because the mmaps are required by the decoder
+> > > to access the binary data.
+> > >
+> > > This change pushes the start of non-timeless decoding to the very end of
+> > > parsing the file. The PERF_RECORD_EXIT event can't be used because it
+> > > might not exist in system-wide or snapshot modes.
+>
+> <SNIP>
+>
+> > This looks good to me but I'd like to have other people testing it.
+>
+> So Leo reviewed and tested this, I'm taking your "looks good to me" as
+> an Acked-by, as per Documentation/process/submitting-patches.rst.
+>
 
+Yes, please.  My goal here was to wait for other people to test this
+code, which Leo did.
 
-On 7/1/2021 1:03 PM, Borislav Petkov wrote:
-> 
-> Sure, but I'd call it sevguest.c and will have it deal with both SEV and
-> SNP ioctls depending on what has been detected in the hardware. Or is
-> there some special reason for having snp.c and sev.c separate?
-> 
-
-I don't have any strong reason. I am okay to begin putting all the SNP
-stuff in the sevguest.c.
-
-
->> I followed the naming convension you recommended during the initial SEV driver
->> developement. IIRC, the main reason for us having to add "user" in it because
->> we wanted to distinguious that this structure is not exactly same as the what
->> is defined in the SEV-SNP firmware spec.
-> 
-> I most definitely have forgotten about this. Can you point me to the
-> details of that discussion and why there's a need to distinguish?
-> 
->> Good question, I am not able to find a generic place to document it. Should we
->> create a documentation "Documentation/virt/coco/sevguest-api.rst" for it ? I am
->> open to other suggestions.
-> 
-
-The spec definition is present in include/linux/psp-sev.h but sometime we don't
-expose the spec defs as-is to userspace. Several SEV/SEV-SNP does not need to
-be exposed to the userspace, those which need to be expose we provide a bit
-modified Linux uapi for it, and for SEV drivers we choose "_user" prefix.
-
-e.g
-a spec definition for the PEK import in include/linux/psp-sev.h is:
-struct sev_data_pek_cert_import {
-	u64 pdh_cert_address;  /* system physical address */
-	u32 pdh_cert_len;
-	u32 reserved;
-	...
-};
-
-But its corresponding userspace structure def in include/uapi/linux/psp-sev.h is:
-struct sev_user_data_pek_cert_import {
-	__u64 pek_cert_uaddr; /* userspace address */
-	__u32 pek_cert_len;
-	...
-};
-
-The ioctl handling takes care of mapping from uaddr to pa and other things as required.
-So, I took similar approach for the SEV-SNP guest ioctl. In this particular case the
-guest request structure defined in the spec contains multiple field but many of
-those fields are managed internally by the kernel (e.g seqno, IV, etc etc).
-
--Brijesh
-
--Brijesh
+> - Arnaldo
+>
+> > Thanks,
+> > Mathieu
