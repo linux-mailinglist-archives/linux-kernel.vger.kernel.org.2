@@ -2,111 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500753B938B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E003B938C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbhGAOpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:45:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34737 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbhGAOpi (ORCPT
+        id S232431AbhGAOtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229900AbhGAOtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:45:38 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lyxuE-0001vL-5Z; Thu, 01 Jul 2021 14:43:06 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Felipe Balbi <balbi@kernel.org>,
+        Thu, 1 Jul 2021 10:49:45 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D500AC061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 07:47:13 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id g7so8560290wri.7
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 07:47:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2SY0TCyX0d4BuF/HPv+siMhswvjAmIedZMktaAD9ovU=;
+        b=u2Xernl74Yji61o8FpP1QFlZJ3MDeUgpGyYjHnFF6lX4yEuqCtkn1J/WZjBTUphlgg
+         bYww79V5TefMavQ01JP5Td4vycf/QBjlmelOHA+pXAfZq5S7TRW68Lu5Xni6PL44cpmy
+         quMQGZTnYYuPthHONXRsmEswsoSpgXV73f+jWPToiAM4iggxNVfTAWVpUkqcjIac62Ve
+         lN/KG6keQ/J7RieQTNmLTp2tgl6xM/XNIrnT1wPAoMMoKkRR0Bk2my7JXqWSymFOExWE
+         Nd6DjQ+s5hcmB8AjTgJMeBDQr632N8tRYRXC1jYZUidOSu0ROzNm6xEepoGgo8hl6thg
+         eZ1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2SY0TCyX0d4BuF/HPv+siMhswvjAmIedZMktaAD9ovU=;
+        b=hQ/w6OCjG8q+cZrN8Vy/apsDvFBvVqiu7UorFSt8G6v/cv86uWu58o0Kex55RsuBLS
+         aQYgm82JtvrOmnkH/ffoQwUFulehwBQX0BtPWHCxtQ4GtYoBDAQR7zmJBgKXDX0GBdUs
+         01QtsPwCIRLSOXHkOiUgzHFGFze4znKWHevZsBcYy/JGr5eHOvg9wXuLGVEgqq0oecmp
+         oP3w/c2zLZEXu/S0iJp5n+agpCLgZosDDbgYO2JNGTlXyZIWzjn5hfE1lZATatSRSSWi
+         ZlhsFUiL+wVe8hszijlHqsuf/rfeDxqBcR97kIPLkAb/0Q1/eu4GVHRq7J2al/CSzk+m
+         XiEA==
+X-Gm-Message-State: AOAM5302bU6pMg3akOGTKEsYzEwCZ5lXDjOwYqmuG6jBPMyPIISF9yrG
+        zxaLjq4H5TmwohLTUJUpZDZ5BzQLUMSx8g==
+X-Google-Smtp-Source: ABdhPJwGbi8LLGy8LLTlbNJxGlQ3lktPv9icFHs9LJ4Kjya9Z5ESb+kfsvfPba1fbGy1DShHuOJP0w==
+X-Received: by 2002:a5d:4983:: with SMTP id r3mr26391wrq.184.1625150832202;
+        Thu, 01 Jul 2021 07:47:12 -0700 (PDT)
+Received: from linux.local (host-80-181-152-252.pool80181.interbusiness.it. [80.181.152.252])
+        by smtp.gmail.com with ESMTPSA id y8sm18587wrr.76.2021.07.01.07.47.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 07:47:11 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: gadget: u_serial: remove WARN_ON on null port
-Date:   Thu,  1 Jul 2021 15:43:05 +0100
-Message-Id: <20210701144305.110078-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] staging: rtl8188eu: Remove an unused variable and some lines of code
+Date:   Thu,  1 Jul 2021 16:47:07 +0200
+Message-Id: <20210701144707.22820-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Remove set but unused iw_operation_mode[]. Remove all the lines of 
+code from the function rtw_wx_set_rate, except the "return 0;" line 
+to not break userland code that somewhat uses this IOCTL.
 
-Loading and then unloading module g_dpgp on a VM that does not
-support the driver currently throws a WARN_ON message because
-the port has not been initialized. Removing an unused driver
-is a valid use-case and the WARN_ON kernel warning is a bit
-excessive, so remove it.
-
-Cleans up:
-
-[27654.638698] ------------[ cut here ]------------
-[27654.638705] WARNING: CPU: 6 PID: 2956336 at drivers/usb/gadget/function/u_serial.c:1201 gserial_free_line+0x7c/0x90 [u_serial]
-[27654.638728] Modules linked in: g_dbgp(-) u_serial usb_f_tcm target_core_mod libcomposite udc_core vmw_vmci mcb i2c_nforce2 i2c_amd756 nfit cx8800 videobuf2_dma_sg videobuf2_memops videobuf2_v4l2 cx88xx tveeprom videobuf2_common videodev mc ccp hid_generic hid intel_ishtp cros_ec mc13xxx_core vfio_mdev mdev i915 i2c_algo_bit kvm ppdev parport zatm eni suni uPD98402 atm rio_scan binder_linux hwmon_vid video ipmi_devintf ipmi_msghandler zstd nls_utf8 decnet qrtr ns sctp ip6_udp_tunnel udp_tunnel fcrypt pcbc nhc_udp nhc_ipv6 nhc_routing nhc_mobility nhc_hop nhc_dest nhc_fragment 6lowpan ts_kmp dccp_ipv6 dccp_ipv4 dccp snd_seq_midi snd_seq_midi_event snd_rawmidi snd_seq_dummy snd_seq snd_seq_device xen_front_pgdir_shbuf binfmt_misc nls_iso8859_1 dm_multipath scsi_dh_rdac scsi_dh_emc scsi_dh_alua intel_rapl_msr intel_rapl_common snd_hda_codec_generic ledtrig_audio snd_hda_codec snd_hda_core snd_hwdep snd_pcm snd_timer snd rapl soundcore joydev input_leds mac_hid serio_raw efi_pstore
-[27654.638880]  qemu_fw_cfg sch_fq_codel msr virtio_rng autofs4 btrfs blake2b_generic zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 multipath linear qxl drm_ttm_helper crct10dif_pclmul ttm drm_kms_helper syscopyarea sysfillrect sysimgblt virtio_net fb_sys_fops cec net_failover rc_core ahci psmouse drm libahci lpc_ich virtio_blk failover [last unloaded: u_ether]
-[27654.638949] CPU: 6 PID: 2956336 Comm: modprobe Tainted: P           O      5.13.0-9-generic #9
-[27654.638956] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-[27654.638969] RIP: 0010:gserial_free_line+0x7c/0x90 [u_serial]
-[27654.638981] Code: 20 00 00 00 00 e8 74 1a ba c9 4c 89 e7 e8 8c fe ff ff 48 8b 3d 75 3b 00 00 44 89 f6 e8 3d 7c 69 c9 5b 41 5c 41 5d 41 5e 5d c3 <0f> 0b 4c 89 ef e8 4a 1a ba c9 5b 41 5c 41 5d 41 5e 5d c3 90 0f 1f
-[27654.638986] RSP: 0018:ffffba0b81403da0 EFLAGS: 00010246
-[27654.638992] RAX: 0000000000000000 RBX: ffffffffc0eaf6a0 RCX: 0000000000000000
-[27654.638996] RDX: ffff8e21c0cac8c0 RSI: 0000000000000006 RDI: ffffffffc0eaf6a0
-[27654.639000] RBP: ffffba0b81403dc0 R08: ffffba0b81403de0 R09: fefefefefefefeff
-[27654.639003] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-[27654.639006] R13: ffffffffc0eaf6a0 R14: 0000000000000000 R15: 0000000000000000
-[27654.639010] FS:  00007faa1935e740(0000) GS:ffff8e223bd80000(0000) knlGS:0000000000000000
-[27654.639015] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[27654.639019] CR2: 00007ffc840cd4e8 CR3: 000000000e1ac006 CR4: 0000000000370ee0
-[27654.639028] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[27654.639031] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[27654.639035] Call Trace:
-[27654.639044]  dbgp_exit+0x1c/0xa1a [g_dbgp]
-[27654.639054]  __do_sys_delete_module.constprop.0+0x144/0x260
-[27654.639066]  ? call_rcu+0xe/0x10
-[27654.639073]  __x64_sys_delete_module+0x12/0x20
-[27654.639081]  do_syscall_64+0x61/0xb0
-[27654.639092]  ? exit_to_user_mode_loop+0xec/0x160
-[27654.639098]  ? exit_to_user_mode_prepare+0x37/0xb0
-[27654.639104]  ? syscall_exit_to_user_mode+0x27/0x50
-[27654.639110]  ? __x64_sys_close+0x12/0x40
-[27654.639119]  ? do_syscall_64+0x6e/0xb0
-[27654.639126]  ? exit_to_user_mode_prepare+0x37/0xb0
-[27654.639132]  ? syscall_exit_to_user_mode+0x27/0x50
-[27654.639137]  ? __x64_sys_newfstatat+0x1e/0x20
-[27654.639146]  ? do_syscall_64+0x6e/0xb0
-[27654.639154]  ? exc_page_fault+0x8f/0x170
-[27654.639159]  ? asm_exc_page_fault+0x8/0x30
-[27654.639166]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[27654.639173] RIP: 0033:0x7faa194a4b2b
-[27654.639179] Code: 73 01 c3 48 8b 0d 3d 73 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 0d 73 0c 00 f7 d8 64 89 01 48
-[27654.639185] RSP: 002b:00007ffc840d0578 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
-[27654.639191] RAX: ffffffffffffffda RBX: 000056060f9f4e70 RCX: 00007faa194a4b2b
-[27654.639194] RDX: 0000000000000000 RSI: 0000000000000800 RDI: 000056060f9f4ed8
-[27654.639197] RBP: 000056060f9f4e70 R08: 0000000000000000 R09: 0000000000000000
-[27654.639200] R10: 00007faa1951eac0 R11: 0000000000000206 R12: 000056060f9f4ed8
-[27654.639203] R13: 0000000000000000 R14: 000056060f9f4ed8 R15: 00007ffc840d06c8
-[27654.639219] ---[ end trace 8dd0ea0bb32ce94a ]---
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
- drivers/usb/gadget/function/u_serial.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../staging/rtl8188eu/os_dep/ioctl_linux.c    | 72 -------------------
+ 1 file changed, 72 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/u_serial.c b/drivers/usb/gadget/function/u_serial.c
-index 1e59204..83fb82c 100644
---- a/drivers/usb/gadget/function/u_serial.c
-+++ b/drivers/usb/gadget/function/u_serial.c
-@@ -1198,7 +1198,7 @@ void gserial_free_line(unsigned char port_num)
- 	struct gs_port	*port;
+diff --git a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+index b958a8d882b0..a66d8838c034 100644
+--- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
++++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+@@ -46,11 +46,6 @@ static u32 rtw_rates[] = {1000000, 2000000, 5500000, 11000000,
+ 	6000000, 9000000, 12000000, 18000000, 24000000, 36000000,
+ 	48000000, 54000000};
  
- 	mutex_lock(&ports[port_num].lock);
--	if (WARN_ON(!ports[port_num].port)) {
-+	if (!ports[port_num].port) {
- 		mutex_unlock(&ports[port_num].lock);
- 		return;
- 	}
+-static const char * const iw_operation_mode[] = {
+-	"Auto", "Ad-Hoc", "Managed",  "Master", "Repeater",
+-	"Secondary", "Monitor"
+-};
+-
+ void indicate_wx_scan_complete_event(struct adapter *padapter)
+ {
+ 	union iwreq_data wrqu;
+@@ -1266,73 +1261,6 @@ static int rtw_wx_set_rate(struct net_device *dev,
+ 			   struct iw_request_info *a,
+ 			   union iwreq_data *wrqu, char *extra)
+ {
+-	int i;
+-	u8 datarates[NumRates];
+-	u32	target_rate = wrqu->bitrate.value;
+-	u32	fixed = wrqu->bitrate.fixed;
+-	u32	ratevalue = 0;
+-	u8 mpdatarate[NumRates] = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0xff};
+-
+-	if (target_rate == -1) {
+-		ratevalue = 11;
+-		goto set_rate;
+-	}
+-	target_rate /= 100000;
+-
+-	switch (target_rate) {
+-	case 10:
+-		ratevalue = 0;
+-		break;
+-	case 20:
+-		ratevalue = 1;
+-		break;
+-	case 55:
+-		ratevalue = 2;
+-		break;
+-	case 60:
+-		ratevalue = 3;
+-		break;
+-	case 90:
+-		ratevalue = 4;
+-		break;
+-	case 110:
+-		ratevalue = 5;
+-		break;
+-	case 120:
+-		ratevalue = 6;
+-		break;
+-	case 180:
+-		ratevalue = 7;
+-		break;
+-	case 240:
+-		ratevalue = 8;
+-		break;
+-	case 360:
+-		ratevalue = 9;
+-		break;
+-	case 480:
+-		ratevalue = 10;
+-		break;
+-	case 540:
+-		ratevalue = 11;
+-		break;
+-	default:
+-		ratevalue = 11;
+-		break;
+-	}
+-
+-set_rate:
+-
+-	for (i = 0; i < NumRates; i++) {
+-		if (ratevalue == mpdatarate[i]) {
+-			datarates[i] = mpdatarate[i];
+-			if (fixed == 0)
+-				break;
+-		} else {
+-			datarates[i] = 0xff;
+-		}
+-	}
+-
+ 	return 0;
+ }
+ 
 -- 
-2.7.4
+2.32.0
 
