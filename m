@@ -2,95 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28F63B9486
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793433B9488
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbhGAQMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 12:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55912 "EHLO
+        id S232413AbhGAQMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 12:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231698AbhGAQMI (ORCPT
+        with ESMTP id S231698AbhGAQMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 12:12:08 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA37CC061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 09:09:36 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id s129so11712678ybf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 09:09:36 -0700 (PDT)
+        Thu, 1 Jul 2021 12:12:41 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D6FC061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 09:10:11 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id df12so9202911edb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 09:10:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uzi1kcVee3nZI004Eqmdf8y65g93K4CPvU+WDS5oQ0o=;
-        b=UbI4NvvhXAKF6UJlUQJnCnIZTrPzaWdjQcU6NH0GrVU6eIit+YEfiMywDOAfxqk9o9
-         tAUXpeb60OkDSx9bD6lOX62A/UBZAJD8ptJRlCml6KoBg4ua6O6q9JCyDDSeZAj+QAkc
-         WrJ5xeq2NOCp7aRcUS+yoclphDIkKOJdP8slkfbniGOfPxYm2Q/Jjjtv4olDqfLSSyxZ
-         Dg7d03u2ogyibOVT+ShLOuJkKEI+IxOjT8XjAxolKK3GwvR6JtkTLTQBfj7oACQa/1cF
-         C9yD3GteMdLWIIqy6hn/UTSwQ4n+A0f+lkYgWr+9bF5kE11px+0WS5EtvAqbmPm5iY/O
-         0TgA==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=KJHVWYvb3k7oZOehoarqx2Vy0pWj8RrFR/FEJGc4l1A=;
+        b=dUncOJ8GCTdzk0LJjO/SqR55/4b3pByJWB18EPR8UlLceTqgSE01uQ5WsX/y7qUkHj
+         CgG8dJ5PoxRfgcm1hG6WLhHi+sk1Z9GbtjPx+Pq+2nWEdnwADPzQspu9Ax/XDUbncdeI
+         jQo5XD4rcyrWSwhxW1q3b56R7Ig7fTBY/9nmPXgDNERZ2dBZ3UWwf9mB5MKuVfgbVuYn
+         znArPd2qGb54QfJ/ngXaBoEdd/PmsGGudQ5FFIYFvAoP9A9c+2TKXR7DJfYzj1NFR4Og
+         FVxITFHWND/4k6Zl7qxEambeQzsUMtxfuSgImRKEFS9NjvE1KpOJK+h1nad8C8cR9pOQ
+         3OHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uzi1kcVee3nZI004Eqmdf8y65g93K4CPvU+WDS5oQ0o=;
-        b=eNqRqIPrU26jsyCa1FwYwefa/Isa/GHrgQ38bVGKsWeB/Mcuz+E2kfMQzjRMoQh4KJ
-         kmXDK9fBldQB/uq7s6ZH34HRd43nSzjzL8PQ1F4EVMVTV69TgB8vOfO9PgxqYkfkVNXW
-         zRxi/GnxFfZPeeARKIdp+joBHAcW8MJeDSt6p3e3HG8ktOoDICkxM0DFwudIcKx48KML
-         sruyspJ+ivRc+ROi0gKfM9i7woVLu9bT1XxL5iyAr4uuAVLnd4eJ+R8zo7EwAd7a4h2u
-         JvKpSkNUeBk3Am/M7ZoNpCmYejBOIe1Pr6WtEfhya0q0GU4f7jFOzoPeIrzed8DosAjt
-         2Dow==
-X-Gm-Message-State: AOAM532wXe8FRrlrNNuBjUUMMp2zyUtgIIUGLsTyH2DagNVdW3GFymid
-        jPCgqlpuTomhUdzZVeoFCRhQwgVBEnDukbrxYH67kg==
-X-Google-Smtp-Source: ABdhPJw73TwvlM3X+UsxZTrZkl7Yi035kGpgDESa4lssYP9pUQ2usK2Q7Aza4S0poCiOx0NH2LqRyPpMJYSPU/Q/uYs=
-X-Received: by 2002:a25:7ec4:: with SMTP id z187mr668800ybc.136.1625155775937;
- Thu, 01 Jul 2021 09:09:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KJHVWYvb3k7oZOehoarqx2Vy0pWj8RrFR/FEJGc4l1A=;
+        b=Bwz4oBxkLjGMi2flaBYJC84VBZRk52nfyApEW1nQyFFcluOVs5+pW9zlIqJieU2jcO
+         7+D9b3fCeAhU12qOyMo7xZpWeD5k+rd9dgejb7ONpgEuov1bJqeYAk0eIMOMUacP1rfg
+         5oFqpeIsapYhrqZ1V7cZ1IpoiCzSkUIFVJJ+bbCjkDREQtNdu3PnCZ2zBgyO/l5LzpPO
+         AMrZOqhpraw32GLMPqhxPUW2g5CQIWp1BRvdzEfJN6XMxisYvpuENawNpK1kTSw3+xmm
+         OSxipgCy1zRYqje86xNXz7qORooGnM9ZCLJVIau2idtkBODpoE+25eVoPHvaiUFPeDLj
+         5fjA==
+X-Gm-Message-State: AOAM532ZEZDZhFvqyHQeLYTStg18Apq3kdcqwoJtCuAYvpsh/sqICgaT
+        OHwYaw3vMx/XSWoszvr/qDQ=
+X-Google-Smtp-Source: ABdhPJyafyBWNMS6rfxXY8dHPzcvOaB0CVWij73xTuOjVb2ljHBwMYB5qE1/P3i+58ibozSQ2j+i5w==
+X-Received: by 2002:a05:6402:35cf:: with SMTP id z15mr817962edc.208.1625155809777;
+        Thu, 01 Jul 2021 09:10:09 -0700 (PDT)
+Received: from linux.local (host-80-181-152-252.retail.telecomitalia.it. [80.181.152.252])
+        by smtp.gmail.com with ESMTPSA id yc11sm87424ejb.109.2021.07.01.09.10.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 09:10:09 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Laight <David.Laight@aculab.com>
+Subject: Re: [PATCH] staging: rtl8188eu: Replace a custom function with crc32_le()
+Date:   Thu, 01 Jul 2021 18:10:08 +0200
+Message-ID: <1769059.L4xhdxBWhX@linux.local>
+In-Reply-To: <190cf86a4b8a40d2b672327e26cceace@AcuMS.aculab.com>
+References: <20210701133809.26534-1-fmdefrancesco@gmail.com> <2058378.BL2Rai63ie@linux.local> <190cf86a4b8a40d2b672327e26cceace@AcuMS.aculab.com>
 MIME-Version: 1.0
-References: <20210630205151.137001-1-surenb@google.com> <YN2DsLlE+WtxK6K9@hirez.programming.kicks-ass.net>
-In-Reply-To: <YN2DsLlE+WtxK6K9@hirez.programming.kicks-ass.net>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 1 Jul 2021 09:09:25 -0700
-Message-ID: <CAJuCfpF=Ty4ruiKQQweVoF6Ojx8P8LxvUBxp1TmMFo2W1xNWfg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] psi: stop relying on timer_pending for poll_work rescheduling
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        matthias.bgg@gmail.com, Minchan Kim <minchan@google.com>,
-        Tim Murray <timmurray@google.com>,
-        YT Chang <yt.chang@mediatek.com>,
-        =?UTF-8?B?V2VuanUgWHUgKOiuuOaWh+S4vik=?= <wenju.xu@mediatek.com>,
-        =?UTF-8?B?Sm9uYXRoYW4gSk1DaGVuICjpmbPlrrbmmI4p?= 
-        <jonathan.jmchen@mediatek.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        kernel-team <kernel-team@android.com>,
-        SH Chen <show-hong.chen@mediatek.com>
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 1:59 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Thursday, July 1, 2021 5:54:49 PM CEST David Laight wrote:
+> From: Fabio M. De Francesco
+> 
+> > Sent: 01 July 2021 16:24
+> > 
+> > On Thursday, July 1, 2021 4:52:08 PM CEST David Laight wrote:
+> > 
+> > > From: Fabio M. De Francesco
+> > >
+> > >
+> > >
+> > > > Sent: 01 July 2021 14:38
+> > > >
+> > > >
+> > > >
+> > > > Use crc32_le in place of the custom getcrc32. This change makes GCC
+> > > > to warn about incorrect castings to the restricted type __le32, but
+> > > > they can be safely ignored because crc32_le calculates bitwise
+> > > > little-endian Ethernet AUTODIN II CRC32.
+> > >
+> > >
+> > >
+> > > ...
+> > >
+> > >
+> > >
+> > > > -					*((__le32 *)crc) =
+> > 
+> > getcrc32(payload, length);/* modified by Amy*/
+> > 
+> > > > +					*((__le32 *)crc) =
+> > 
+> > ~crc32_le(~0, payload, length);
+> > 
+> > >
+> > >
+> > > Haven't we been round this before?
+> > >
+> > >
+> > 
+> > No, I don't think so. At least, not you and I.
+> > 
+> 
+> 
+> That was rt1872 this is rtl8188 but I think it is the same crap.
 >
-> On Wed, Jun 30, 2021 at 01:51:51PM -0700, Suren Baghdasaryan wrote:
-> > +     /* cmpxchg should be called even when !force to set poll_scheduled */
-> > +     if (atomic_cmpxchg(&group->poll_scheduled, 0, 1) && !force)
-> >               return;
->
-> Why is that a cmpxchg() ?
+Perhaps it is the same crap... However, the patch is in accordance to one of 
+the two solution that Al Viro wrote about.
 
-We want to set poll_scheduled and proceed with rescheduling the timer
-unless it's already scheduled, so cmpxchg helps us to make that
-decision atomically. Or did I misunderstand your question?
+I think I'll leave the patch as is and wait for the final review by Greg K-H.
 
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+Thanks,
+
+Fabio
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 
+1PT, UK
+> Registration No: 1397386 (Wales)
+
+
+
+
