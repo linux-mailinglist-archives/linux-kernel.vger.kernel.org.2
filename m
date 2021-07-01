@@ -2,88 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9FF3B9521
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E19B3B9525
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbhGARDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 13:03:11 -0400
-Received: from mail-pf1-f182.google.com ([209.85.210.182]:46910 "EHLO
-        mail-pf1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbhGARDK (ORCPT
+        id S232785AbhGARFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 13:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229812AbhGARFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 13:03:10 -0400
-Received: by mail-pf1-f182.google.com with SMTP id x16so6406836pfa.13;
-        Thu, 01 Jul 2021 10:00:38 -0700 (PDT)
+        Thu, 1 Jul 2021 13:05:04 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD0DC061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 10:02:32 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id g7so9108653wri.7
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 10:02:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dJh7FVYjBCdjPmtoOdvfEtFDITIvKo/TmmTk+wz8FwY=;
+        b=cjqFxg3v1zZF3wtBoDE/4jCV14OwVtVivTacqhPCZYFXa5fHUMwH9GddxteGcnpCmk
+         QzEhtYqKec0j0Lk5Y9YZLqAeXl1cPhZXH0BIfRkGLw+Lc/TVfMD/Pf6Ai4mm3jqzWcG5
+         Q2wfBP7rHlTpQ1kkbdHxc9k+26fEhuPJ+Q+mFsdYfINWNGswOxsrzdNF8MdtYL9Osbn3
+         SeARqap8D8f5SikgcNJeXd8LLtrES/TzcpRTisd8M7rgFUHrOqLGvuQRQatyfcl+wTG8
+         AVBInElg4lDhZ6Z79kHeIGwxnyCB9KdFJD/2E6bCG5z79RvQO1wdo9k4yZ7YafCLMcgW
+         zipQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=i0PDBSR6J+2RCMkE4AvoNnDfJPZgImJwdk+FEOtcmFc=;
-        b=Dxfgi3KyTQvxKP/W8uhy2jtoj3ywUIeg7gkhqYshLcLEMH2wgVq4qNbX+zKGPhNUXG
-         RQflcsJdNgaLpPlEfKJBOZrHWJvly6iDaK0ScJ3sc9MuloOB9qprzu3ayvyeRajhxD6i
-         56L/zs5U049SBip+rq0+GkypUyme09pSvIPT871WcXagft29sqiUGQf4a6f0gKwqF2tU
-         DPG6sfxPWRlTQ/+xJLhbcXND8uAXdLLcZOJId7rd4jJfH9JgxQVt1R6maILj6fl6OeIZ
-         WhBGAnTWrShQxGxT/FjXGgmrtCs0vOkWwLYdwsreztERWCT/fdUtm9iC0PUlBvhUayAk
-         Sb6Q==
-X-Gm-Message-State: AOAM532F2m6TgjL6ImS8PXYtX9vVkxeMLTuYczniK/Qr+KMKlW6VOQ4a
-        WnoxIv4Sn5In9Dyy1J6Mvnk=
-X-Google-Smtp-Source: ABdhPJzACyIK5ziWpfBZqzlcFRlMCUHgkzZmSfSboD4QULXsBs+4ZTP0hooQ9UNFPCkEnQDzyoUjTw==
-X-Received: by 2002:a63:ae01:: with SMTP id q1mr558225pgf.216.1625158838371;
-        Thu, 01 Jul 2021 10:00:38 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:6a75:b07:a0d:8bd5? ([2601:647:4000:d7:6a75:b07:a0d:8bd5])
-        by smtp.gmail.com with ESMTPSA id y9sm528707pfa.197.2021.07.01.10.00.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Jul 2021 10:00:37 -0700 (PDT)
-Subject: Re: [PATCH] scsi: ufs: add missing host_lock in setup_xfer_req
-From:   Bart Van Assche <bvanassche@acm.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Cc:     Stanley Chu <stanley.chu@mediatek.com>,
-        Can Guo <cang@codeaurora.org>, Bean Huo <beanhuo@micron.com>,
-        Asutosh Das <asutoshd@codeaurora.org>
-References: <20210701005117.3846179-1-jaegeuk@kernel.org>
- <cb928bc9-0124-f082-8b5a-584afd9f1d66@acm.org>
-Message-ID: <5349dca5-b8a4-d668-9370-c722da7c9ead@acm.org>
-Date:   Thu, 1 Jul 2021 10:00:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=dJh7FVYjBCdjPmtoOdvfEtFDITIvKo/TmmTk+wz8FwY=;
+        b=rlO7C08ITdrYISO8AGzEVKRTJcMTA57BtJZZItU4Dp4He8dwl40iCXBMm4G+7tpjJF
+         89J1Llug5Bf7cZxnUOvNKBAnVemu5euRnVjhhzwyunexrxZPx/RdXO+l2gXUAYlm5AsX
+         7/8ewcm1P0SN+k9e2wblPcvYEXWI1xmWN4pa648nVvPhK/AE6PVAJ21RPsTbYp7koFnv
+         1iktKEeWeICFDEqwLO1ZhCpJmAgBUKqcMeu0qzdtVbKIJjMyGJmyqhm9l6R0KsWYliU/
+         XsUNsnmNd3EvUloHpyolM/LZSXVNpWraz0iggRrEj495p02JyrSu4NiQeb4bEg8Tc7OB
+         pS7w==
+X-Gm-Message-State: AOAM531gq36BqVtetZfo+wkzygeNXGUqEfD7jyCP2xR0cSGaKxNIY7Jm
+        9rPUhbgdO1s2nN007N37cdI=
+X-Google-Smtp-Source: ABdhPJzLws09u4c9E3LZw1Gyuf6AzC7yiwkotpB9uGpOXkKY+G9fDUG00ZywHHzO0aQ4yf7+jYrCiw==
+X-Received: by 2002:a5d:6841:: with SMTP id o1mr805000wrw.370.1625158951522;
+        Thu, 01 Jul 2021 10:02:31 -0700 (PDT)
+Received: from othello.cust.communityfibre.co.uk ([2a02:6b64:80a9:0:1be:22d4:3c1d:bcad])
+        by smtp.gmail.com with ESMTPSA id f6sm527442wrs.13.2021.07.01.10.02.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 10:02:31 -0700 (PDT)
+From:   Cassio Neri <cassio.neri@gmail.com>
+To:     john.stultz@linaro.org, tglx@linutronix.de
+Cc:     sboyd@kernel.org, linux-kernel@vger.kernel.org,
+        Cassio Neri <cassio.neri@gmail.com>
+Subject: [PATCH] time: Fix help message on TIME_KUNIT_TEST.
+Date:   Thu,  1 Jul 2021 18:02:15 +0100
+Message-Id: <20210701170214.133015-1-cassio.neri@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <cb928bc9-0124-f082-8b5a-584afd9f1d66@acm.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/1/21 8:23 AM, Bart Van Assche wrote:
-> On 6/30/21 5:51 PM, Jaegeuk Kim wrote:
->> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->> index c98d540ac044..194755c9ddfe 100644
->> --- a/drivers/scsi/ufs/ufshcd.h
->> +++ b/drivers/scsi/ufs/ufshcd.h
->> @@ -1229,8 +1229,13 @@ static inline int ufshcd_vops_pwr_change_notify(struct ufs_hba *hba,
->>  static inline void ufshcd_vops_setup_xfer_req(struct ufs_hba *hba, int tag,
->>  					bool is_scsi_cmd)
->>  {
->> -	if (hba->vops && hba->vops->setup_xfer_req)
->> -		return hba->vops->setup_xfer_req(hba, tag, is_scsi_cmd);
->> +	if (hba->vops && hba->vops->setup_xfer_req) {
->> +		unsigned long flags;
->> +
->> +		spin_lock_irqsave(hba->host->host_lock, flags);
->> +		hba->vops->setup_xfer_req(hba, tag, is_scsi_cmd);
->> +		spin_unlock_irqrestore(hba->host->host_lock, flags);
->> +	}
->>  }
-> 
-> Since this function has only one caller, how about moving it into ufshcd.c?
+Change 'RTC library' to 'kernel/time'.
 
-(replying to my own email)
+Signed-off-by: Cassio Neri <cassio.neri@gmail.com>
+---
+ kernel/time/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Since I just noticed that there are many other similar function
-definitions in ufshcd.h, let's postpone moving these definitions until a
-later time.
+diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
+index 3610b1bef142..aa07f59809a1 100644
+--- a/kernel/time/Kconfig
++++ b/kernel/time/Kconfig
+@@ -69,7 +69,7 @@ config TIME_KUNIT_TEST
+ 	depends on KUNIT
+ 	default KUNIT_ALL_TESTS
+ 	help
+-	  Enable this option to test RTC library functions.
++	  Enable this option to test kernel/time functions.
+ 
+ 	  If unsure, say N.
+ 
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+base-commit: 2d0a9eb23ccfdf11308bec6db0bc007585d919d2
+-- 
+2.32.0
+
