@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39983B8F01
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21CC3B8F02
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235575AbhGAIpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 04:45:22 -0400
-Received: from mail-eopbgr80110.outbound.protection.outlook.com ([40.107.8.110]:49811
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        id S235493AbhGAIp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 04:45:26 -0400
+Received: from mail-eopbgr10136.outbound.protection.outlook.com ([40.107.1.136]:58247
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235445AbhGAIpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 04:45:19 -0400
+        id S235579AbhGAIpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 04:45:25 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LBkF22yJp1WWR8P77ud7WhwZ8twOfsOfMaNqTq2OEGvRkemA7yC4LGQvJYIbueMvVrNgcsAcK+uwPrgNNYdTvZDRNF2jM7cWrB84LxoC1kACok3lIRMX/1W2Sa0VB6x9KjSy1DT4fT6wkFzqI8KTXRurZkS5SJWfIB6uJjufekbipnL/y6To3f7Quae4kZDypBuYsc2ecYry9SjPhPXD2QuqEjdt79QCB6TPPn8HAWAE63D6PpiJuiigri+tvRWiJZpOHZlqdAzPMMpl02MATeu7c1WzUqDv5BIzvJYx7BkewDaVFO7jiGmGRG8hS//BMQyUuGjUIbCvCnu5VTjloA==
+ b=Zs2nGgNdOnGH5mLDjOkgcxZ1KVvbupb9KB5AbM9VmxovAuOOzV509LSwN2isFTKLHkhIegJa1O+8B4lx2zA9rFROn8Hn+RgsnASRO7cXAxkEuUIkK7MpGzSq+9sCqB+ITu37aBPZNz8Gwb74bUrG24IrnWJtPyIvZHJTjTstw8lYtq3FyuhS0BRfIKu8EQBi9I2Iaf2X7a33lEA0hkk46vxnK/wirm0wM1DzcoDjwZjdUK3Bzc9+z4PyW9YIIVvrmcwOJQTbUsvZeUBkdRGj2MRh7hG0FzEup1KRIOVvw3ilyGUvCPCm45Rox+u8dDKUTytUio/VUHIPU4QumsP6UA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QCC9YUYrZw5ZD7jTyzsWsWHbfUHYK7DHQRRJvTNRrb4=;
- b=CzH3y0ChubqH0WFYgOsiFwzhJvMjjE+8EisacOCELvISwPTA3NsOQn1Y+lRrUyvt0/lrgVzQ7Llwoioo8jBVLX5tJZ9/nO5lefHjcpKXpat85py8wdjeKEYX8O6gxuFqhgvHFsFjiwfZ26k7Xw8Rdl3XI9OFnedXcAsrvXnLXxXpLg7IfhFqV8P7t/24fR/blZjQRiP/3GiE49hpeE3xoGb116yqdRS30ySmxRTnt+atszyYnZJ+c4/3yEoMFjtFBilXce57aTPMWWvUve8GKFoaK+4UIMQMnViWgxCP5scf2wL2UYWD8wmqwl5YOcwKrlzJtJv2Tf/w7AX+/WmNSg==
+ bh=vv4fpEsRaUxFOTAI/knYmC0II/WQYU308jyEr5r8Ewg=;
+ b=ONsgySlMRCfFc9UBm3UAyP55Zg49qHwHb2Rf4zCBvEghkwnJqGN9zfBFNzGxS+urr8hzLC5KDwvvDZ09lZJ9jOY6bc8CBrmpvh3YKheRW9wJ3Ct+kiHO3XWz6MWHWJO89xWuH1P80JxvAgsaqfX9eudjG+aWCLJ9WXMKGsaEAPyasswv9OWMQQq7V1U+oHlAYKLkSOsuMhKpmLbCZRwWq4rFiFarbx1Va1hjfxUPQgH1LVc+nh0DrpG6mt8j8HHWy0DCIKc5BV3lPJFuUTx+3LYInW8Y7C4PeFadlr6kGJVzbg8e+2/kZ70E324PqxzhbSMWjIYnYtO4rdZjsn+FkQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=opensynergy.com; dmarc=pass action=none
  header.from=opensynergy.com; dkim=pass header.d=opensynergy.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QCC9YUYrZw5ZD7jTyzsWsWHbfUHYK7DHQRRJvTNRrb4=;
- b=LAtD+11QZnyjPIqCM1wFy8w/ghBDuoeSPkS2isYh7+LqApJ87NXiM5dKGaAJHSTe/T8Mnu6lYRrwnSzyK6bzb+Mhk7j9Wyte5ufFOBy6JCK8HrE3wiQFRSHmoYMLYOBhu9GUlU6NUiKRHO5WaKY/za0D31xkOPjJRINOpws5O9g=
+ bh=vv4fpEsRaUxFOTAI/knYmC0II/WQYU308jyEr5r8Ewg=;
+ b=smy30pgNWZ1Z5+mVeqMkxlKwIFgcyidAbNtgsTJl+3D7rVa99sk/X1eHQcSvy+NEHzQaWeZaF6elQQTf9pGrW93N3lLhTsAmeiRNt0k2gaKPvUDcH7gv75fnDmfMBGbGFyNtbgcQrvJXT1CUXo0iRKxHh7kKK5VYctlQfxY7sbU=
 Authentication-Results: opensynergy.com; dkim=none (message not signed)
  header.d=none;opensynergy.com; dmarc=none action=none
  header.from=opensynergy.com;
@@ -44,573 +44,351 @@ Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
         Vasyl.Vavrychuk@opensynergy.com,
         Andriy.Tryshnivskyy@opensynergy.com
 References: <20210611165937.701-1-cristian.marussi@arm.com>
- <20210611165937.701-5-cristian.marussi@arm.com>
-Subject: Re: [PATCH v4 04/16] firmware: arm_scmi: Introduce monotonically
- increasing tokens
-Message-ID: <cb7f3259-0ad5-8ce0-15e7-2abee1f704ff@opensynergy.com>
-Date:   Thu, 1 Jul 2021 10:42:45 +0200
-In-Reply-To: <20210611165937.701-5-cristian.marussi@arm.com>
+ <20210611165937.701-6-cristian.marussi@arm.com>
+Subject: Re: [PATCH v4 05/16] firmware: arm_scmi: Introduce delegated xfers
+ support
+Message-ID: <1675b521-8164-4daa-baa1-592268474a56@opensynergy.com>
+Date:   Thu, 1 Jul 2021 10:42:51 +0200
+In-Reply-To: <20210611165937.701-6-cristian.marussi@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM6PR01CA0057.eurprd01.prod.exchangelabs.com
- (2603:10a6:20b:e0::34) To AM9PR04MB8084.eurprd04.prod.outlook.com
+X-ClientProxiedBy: AM6PR01CA0059.eurprd01.prod.exchangelabs.com
+ (2603:10a6:20b:e0::36) To AM9PR04MB8084.eurprd04.prod.outlook.com
  (2603:10a6:20b:3ec::17)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5f68d7d1-f593-4b90-41e5-08d93c6c33d0
-X-MS-TrafficTypeDiagnostic: AM0PR04MB5028:
+X-MS-Office365-Filtering-Correlation-Id: a0233464-c74f-4825-ba56-08d93c6c36fc
+X-MS-TrafficTypeDiagnostic: AM9PR04MB8356:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB50287A2742CA3B61C2FE2FC28C009@AM0PR04MB5028.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Microsoft-Antispam-PRVS: <AM9PR04MB8356188E9B0FE8A9130B9AB28C009@AM9PR04MB8356.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3WaJN5ZiQfnFdhhVYmIHfFj1K8kvAlzU6+9EG+y8Bv3ogFwvupJg0MkBzD2aWZ88MmvV+Dc8p4fz522oHmDAmztV4Ey2AE5M9NYdeThzLbVScHuMcOx+hXjQ9xyhBS+UPUJszrk7H6CRkljnmxV97XLO5qwUxfjo5mG+txzSq6rzjEzinzMUPNjZtBcRTycv71gcNHznv0/gtSLRiNM/EEbRtb48ZNKQ7CZ2nZpFVzWSFy84cFajqxCF/wpbcZVgdqD8b3wd6qIAHAz3mH1r0o1jx+x1JZLZylVBcY+Nhrht7T8x9pya/dPyZYqbDTKKlEWdOemIN1valJSHU3zeATF7BCIAoW0YXR56zORjeGcGTSezxq90sBHVKdhd+J2g9Av30m2G0bBtQTKJCzObY9vrep9JDXjQNrKUCwZOOWXFEUtaBDQWzTITi3CK+l8jt+0FjaW10B+IABwj2zUPq6BbCxKFjTltn/xZKfoZiBadevhDHaSBQVHjIZhWfdBmKiZPd62YwWhZDnfTN5dwN1hv8Sai4e7Y7svf8kcUdofbZ4ZuvJ1GhliFMPn8YTb69pOlrEwz/s0AOfDoNooIqTrwTvDo1DVLlLAQsmlJN4EVOLObdqxDmYkGTgJ2BjNrY0NjZZofk9dkUfCsFh6OPA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8084.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(396003)(366004)(346002)(376002)(136003)(36756003)(186003)(83380400001)(53546011)(66946007)(86362001)(31686004)(31696002)(42186006)(478600001)(2906002)(316002)(8936002)(8676002)(7416002)(66556008)(2616005)(66476007)(4326008)(107886003)(38100700002)(5660300002)(30864003)(44832011);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: /2M9LgYKDnatxOWpZVbmlL3utuwUzAgOrcIeBDfgim8tdikqlJJXq+dbyBbe994hCrD2pa8/muOhZASvPTRfoZ+NnJeJAVo/B78b8pypUZENhIju+ggVUSpHdQo566u34d9kBr+8zQu8Sh0QObshLa27nxuBhRPJJjUCUx3ue6gAvRNmZIrn+l7vAOC2MNtiAR2ze1G5bqlsIMKTVV+Yv6zpZLW3KXvnsuSlIOnlXPb/t5CJjojTWs5f1DXOJcTm+2ntLRgJfatJLFEoW8JkLjSYqCWW+63WJChbQDzd3owbEOT/55X/0k0/lNKjyYDb/IEppBlDL8xvVa2D6HeZX3RZdHGN6/pSJwPcSb6B+limCHNOMjJCUjdbjSKOjp4arAjS0tkiB0Jrgr2i76S4IRU1mJHBZx5Wi9OpumrbxbuCNHyihdAkwYjde0DU+LYgg7iylWqQl/BjyGrQzmR1BAQuX+HAnGUeiiaJa+eMB1LW5napSs4ETarrW0WnCrP1ZyYZ78TUGO1l9R95IYuHdsg6XnS3Oys9fg1YVN+dX8p13M0Qrr1snBTwKHx1VkbWQej7lhYug/HbuDr/FgUfyhPqX+jVV8W+rWhBjwLOfopXgFaEWVTP8sXbRU/duNnZryPOQp9kBcqM0pZPcgooqjKBbSNvb7qRHRpxsk5wB13Mxs4xONBtU+3iJ2IZ3ldr4LBfXWUc4weYoVn0xmEepYxH8ORQUErTlJHVwCh2bYk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8084.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(366004)(346002)(376002)(396003)(136003)(186003)(8676002)(4326008)(38100700002)(30864003)(5660300002)(66476007)(66946007)(2616005)(8936002)(316002)(31696002)(66556008)(107886003)(42186006)(44832011)(53546011)(7416002)(83380400001)(478600001)(36756003)(31686004)(2906002)(86362001)(358444002)(21314003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L0QzYzVqZ0c1YjR2T1M5UUY0Q1pQSkVnbVgzeGhpSHExdzZtZW85UzNqUTF2?=
- =?utf-8?B?K2JJU3dCbU9SMGZ2NEJwM3JhQnU4VnNvcnNhYThWckNCT0R1Ky9IUmF2Q080?=
- =?utf-8?B?dGh5K3RZVW5pVTNXN2ovVytuWEdMZDlRZ1JZS2RwL2x5a2s3aGFSYldXNjFE?=
- =?utf-8?B?S0Q4Z2FwQ3dRYWhwWkRrOTF0OTUzUEw4U21EbFpQejlCOXVPMEtGeWlTM0U2?=
- =?utf-8?B?VkMwM0NEUHRiMUpDWnJQQVcyd3pDWnp1b0xqTWhmMHlzd2RodHA3aE1ESTV2?=
- =?utf-8?B?RlB5a0dYTXhLSzk5ZFd2NUlzVVdTc1FPVjM0TEpYcVViVG84QWYrcTdjMjBn?=
- =?utf-8?B?QXgyQjZySElrT005Z0xIK2svUkZKczZGWGoxZmU2NitJSGlhQ3JBTHkzQWpM?=
- =?utf-8?B?aXZKSG1mdnhabUxWL2xCOTFFaDduaVBrbVo1VzJXN2R4WHMxTWNmak1Obk9n?=
- =?utf-8?B?SWlJTVdkUm85cTRCa2dwU2VqY3JnS2RBb2szdEJESW1tZndzSWFkTWdmM2hX?=
- =?utf-8?B?Q05rQXRuNVB1OVNBVDRIM0tDMzBkMWk0d250OW13bldYR2hQUEtjeTY3UXF4?=
- =?utf-8?B?ZFpsYm12NVJMQWRrcHB2bDVpeVJWWE8xSDA3Tnk4QWtMUTRuc0NIU3duN3dM?=
- =?utf-8?B?YlErQzF3Ry9sRHZ0Nms0V3lmVEM5eTBLYjNsNnBkR1pKZmFTRUw2cm10a3Va?=
- =?utf-8?B?QStoeEI5cXJ2TEZTQW5Hb0Y1VDUyejFHZnFEcFVQS3ljNjhmMytYR01pWFpZ?=
- =?utf-8?B?MmxnSE1iKzNOakd6Ny9NeE1mRUk0MUlKOEt0U0lJK0U1UTFHeVlxNDlBQVdI?=
- =?utf-8?B?SWZOTkhOUTN3S3gwLzBxVG8xU2ZkRWNQY1F3WklnaGRLMzArVFd4UlU5dG9x?=
- =?utf-8?B?RzlTWEhSZUtTTmZzOFFhTG1VbjF2T1RxcnpzRDRaZ2paaUlCSXNXSnVvWFdl?=
- =?utf-8?B?ckFoNHVxQ3JHZm5ZZ29BeEhodEk2ZjdnT0pTSmZMODVNV1N3WERlczVNOWNP?=
- =?utf-8?B?OG1UVzQ4UGpoVEtmM3BzeTJudzZxcEhWY2RtU1NmeE5jd0xncEJTSTBCWlFL?=
- =?utf-8?B?Z0E2K0Vac2ZmOWNNbW10ZDhiUTUybXBNMXVaYjUxcTdQS3B2andjbkJYSldE?=
- =?utf-8?B?KzM4RU9Bc2prVERWQzZjbFhBZmVHZVd3OFk3VG9wUlBpYzI5TmtBZm55U0Rr?=
- =?utf-8?B?d1JmUVdrUjB0c25QbUorYXN2MzFwQzAwcXMzSWk5RE9BZGhXdHIwRHlycENN?=
- =?utf-8?B?eUNkYVNlUjFDTDNPOHN0ODJqbFJJWU1kNDJvRWFiZGtJNWtYTExYQnZvUktF?=
- =?utf-8?B?OVlLYlFyZTlJOFZ0TEZ4SHU3d2ZjbVlBY1VCMStuWVBBb3NZQ3R4WHdkdXZS?=
- =?utf-8?B?QXpkakNpeTNWRm9YamZjM2RRVy9BSkpMY3hLWlIydU4yQ1RpVG5Bd1JsU1ps?=
- =?utf-8?B?TE9NWlVSYVdraFNpbWtNQTNaM0RYS0wyd3FSUExoQjhYNjFWVmVzTFQzWUVv?=
- =?utf-8?B?REpkKy9zclNRS0E4UkRHTzJ1V3pqdHNXdnVDWFFIQUhvZ041dmwrTG85dTZv?=
- =?utf-8?B?dlAwWmlRMjVVQUxOTGFmOFFxOXBSZTUrUXp3OHZLYXB4WnBLS21VNXBxL1dy?=
- =?utf-8?B?Y3FZNkF0VmM3UUxRaU9WN2QzSGY1R01KRVhZMXVzbjdMa3oyZXRhMVMwZ1Zu?=
- =?utf-8?B?MThjZTg5SmMyN1cyOFZZVlRkeUEvQitwUGFZN3g5bGdhdTA0K05pT2FSZlZU?=
- =?utf-8?B?Tk5YZW9qa3BrRnc2YURmZVVoRmdickZ2eiszU1pVdFpIMlAzWXl4VjA3enRW?=
- =?utf-8?B?Z0NUbE43Yi8yeHJ5L1RiNnlGUHBmOEsrcmdQUXYvdDBwRERWekZBYUZpY0l3?=
- =?utf-8?Q?AXHs6WlDtKHQW?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?STVCdC9BMHhIbFBBdkk0a29pU3Y0T2x3aHMzeWpyZnY4RDZjT24rTmJyeS9R?=
+ =?utf-8?B?Y25LNm41UTgzckhGS280bGhkNXhieCtrekxSbkh4MHpUR3lpSUEwdzdMRGpX?=
+ =?utf-8?B?dmVXSEZuaTVIUGp5MjhPV0V3Mm1wajBvSnh1VUhuVkw2c2VKeithd2YzN1J6?=
+ =?utf-8?B?QzlKOFB3dC9sR1BpbVlOMUR0TWtaS0NjZDBIcTFFQkpMd0JSOXJIek1zbGtv?=
+ =?utf-8?B?RE81aFloZXpQNk5GTDNHWTBWVForZkI5VFZxT0hhRE5IS0dBMGZEcU41N2NK?=
+ =?utf-8?B?b2hWSzNjSnlhK3k0K3VaNHdoVkR1OE9NdGl2WUlIUWdSd3dBbFVUand0UnFu?=
+ =?utf-8?B?ckphdDJtQkx4N3dKcWFCZWdrVDl1N1h3NUxkTHpzZFp2eXRmbURDZUlkWkhy?=
+ =?utf-8?B?Rk15TXBYQmtuUXRzb3E1aWdFNjROU2ZOZ2dWZldtQmlnRzBDbmxiS1RacUt1?=
+ =?utf-8?B?QmJXUnBoMFh0R3V4cnFWUjZzdEh4Mm1CZmZjdU9iNVIxdTd6d1c5T29YL0xi?=
+ =?utf-8?B?cERsb1RMTXpaWmx4anN5dkpDWDVOMkVYaEtTQklMYWxDUHRxZHNQVWpleXl6?=
+ =?utf-8?B?SVppbUYwRmc3bWtZSmdTa2J5NzRodElRbW5pbHh6SlJUUWxrbEZkUGpWZzFv?=
+ =?utf-8?B?TlVBRm4yQlhja1ZFWVZlOUtrRmtaRlVlSDBrVGg0YnJBaldpTUNsRmJMdC9j?=
+ =?utf-8?B?SnBUODhVV1lOMCtHdnlOald1aUo0QkloMElpanpnNTRMN3o2b2xSSlhTQW9J?=
+ =?utf-8?B?QzNEVkhnd2NyRWtjL2E1NTVOQjFXVUpUN09MUCtBSllIWFUxVnYxS2xXRlZF?=
+ =?utf-8?B?UzhLT2VDNHcyK1h0VHpnWk9MaHdLdjdNN1FiZ1F5TnU3Y1ZESkVEN3JzSkht?=
+ =?utf-8?B?d2FvZCtReFRuOGg1dkFGdE5DaWhNVUFGU0xNY2lBMERKQzJZajd5YlZva0lt?=
+ =?utf-8?B?bXNzRG54NW5vMEhFdTlSUEw0SVozYXRqV0ZjcVlWN3lZWGVYN0Q0YXU1Q1lp?=
+ =?utf-8?B?bytsenpGMkkraFNpYnZoWTRhYUV6cTAyb1M1NVkvd2l3eE9tRnk1TEp3TDZK?=
+ =?utf-8?B?R2NJRVJGaFh2cW5YQk9LSnkzVTJQK0RqOUh1QzlqQkJVT2JTNTBUZjc5UWJp?=
+ =?utf-8?B?a1hXQ3ovWDlZYlBxVG84RzVtUG5mdzRhSitZaVRPcmlxUTR1Tis2dWNHZ3pD?=
+ =?utf-8?B?RG1pMFh0QUg5bFkreVUzbDFkcjhrdHRKamxmMGVBWnYzdzZhQmtHbyt5ODdQ?=
+ =?utf-8?B?MFhMNnpscFRhVEExZlcrQUkrWTlqKzBqTE53Y25CWm9DL2tCNExTMko3NHJO?=
+ =?utf-8?B?QWNsUURCdjlHTzdPejJ4NzQ1b0NYVFc3NW5OT2xOVUVTMjNZREJrODJhUnA4?=
+ =?utf-8?B?ME9GUU1QdkZOUW9ZQlpORDRwWHFPdEhTWVJmUm9nQy95Smt1S0FOU0lBK0ZV?=
+ =?utf-8?B?TEh0QTE2YmJNNitzdEFQWWpjZS9TaFZZY0Y1UkFZQ2MzY2U5NndGQ1REVk5I?=
+ =?utf-8?B?UlpWMzVQTVFIcmdNSHlnamsrQlpkVGNpL3FpT0o5b1lUVUcwUFJUZTVReHdq?=
+ =?utf-8?B?T25HOW8vMTRLWHlRUUlMYlQ5bXVJbnBmRW5GMFV3ODh6SnVuVnNaczdkbWNx?=
+ =?utf-8?B?aWYxUmVKSFpvOEJWQlFzaUtxdWZxMWhhZXdsRE9sckZTakttSTdnNng5YjBQ?=
+ =?utf-8?B?YVh1N0J3cFlFcTljcUhpY0orUC83dloydUVHbUtoLzJSbEdtMWE5STlRWjVO?=
+ =?utf-8?B?Z2I2VE0zalFhZTVFZ2Z2V0YyOGhyc0dNL1hVbEtZV24rVmw1WFFtU0ZFdVBk?=
+ =?utf-8?B?bnRCeVBPN0tKK3cyb1lRWW1oeVJIVDd2cEtVNjdRa1lRaEFPMURnY0lnZVNz?=
+ =?utf-8?Q?uu8iemcFEjrXf?=
 X-OriginatorOrg: opensynergy.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f68d7d1-f593-4b90-41e5-08d93c6c33d0
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0233464-c74f-4825-ba56-08d93c6c36fc
 X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8084.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2021 08:42:47.6740
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2021 08:42:52.9030
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pVQEpEIZpkQd1GX5X6OgKcCADIP+/d3vqzQ8eEEeVj3UaMHHcfayO9XqhNTeXeVaCoQA+H3jQYgmbIC3Assojg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB5028
+X-MS-Exchange-CrossTenant-UserPrincipalName: aj5nrS9tIoEZLOoKvPPiqkQRA2cpvFatqfcEPXmWY1cZeed+wYCo1iKOtmCXvEtnI01fM9EYwLrCtBaxmIiXJQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8356
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I find `monotonically increasing tokens' misleading, since the token may 
-wrap around quite often during normal usage. How about `modulo 
-incrementing'?
-
 On 11.06.21 18:59, Cristian Marussi wrote:
-> Tokens are sequence numbers embedded in the each SCMI message header: they
-> are used to correlate commands with responses (and delayed responses), but
-> their usage and policy of selection is entirely up to the caller (usually
-> the OSPM agent), while they are completely opaque to the callee (SCMI
-> server platform) which merely copies them back from the command into the
-> response message header.
-> This also means that the platform does not, can not and should not enforce
-> any kind of policy on received messages depending on the contained sequence
-> number: platform can perfectly handle concurrent requests carrying the same
-> identifiying token if that should happen.
+> Introduce optional support for delegated xfers allocation.
 > 
-> Moreover the platform is not required to produce in-order responses to
-> agent requests, the only constraint in these regards is that in case of
-> an asynchronous message the delayed response must be sent after the
-> immediate response for the synchronous part of the command transaction.
+> An SCMI transport can optionally declare to support delegated xfers and
+> then use a few helper functions exposed by the core SCMI transport layer to
+> query the core for existing in-flight transfers matching a provided message
+> header or alternatively and transparently obtain a brand new xfer to handle
+> a freshly received notification message.
+> In both cases the obtained xfer is uniquely mapped into a specific xfer
+> through the means of the message header acting as key.
 > 
-> Currenly the SCMI stack of the OSPM agent selects a token for the egressing
-> commands picking the lowest possible number which is not already in use by
-> an existing in-flight transaction, which means, in other words, that we
-> immediately reuse any token after its transaction has completed or it has
-> timed out: this policy indeed does simplify management and lookup of tokens
-> and associated xfers.
+> In this way such a transport can properly store its own transport specific
+> payload into the xfer uniquely associated to the message header before
+> even calling into the core scmi_rx_callback() in the usual way, so that
+> the transport specific message envelope structures can be freed early
+> and there is no more need to keep track of their status till the core
+> fully processes the xfer to completion or times out.
 > 
-> Under the above assumptions and constraints, since there is really no state
-> shared between the agent and the platform to let the platform know when a
-> token and its associated message has timed out, the current policy of early
-> reuse of tokens can easily lead to the situation in which a spurious or
-> late received response (or delayed_response), related to an old stale and
-> timed out transaction, can be wrongly associated to a newer valid in-flight
-> xfer that just happens to have reused the same token.
+> The scmi_rx_callbak() does not need to be modified to carry additional
+> transport-specific ancillary data related to such message envelopes since
+> an unique natural association is established between the xfer and the
+> related message header.
 > 
-> This misbehaviour on such ghost responses is more easily exposed on those
-> transports that naturally have an higher level of parallelism in processing
-> multiple concurrent in-flight messages.
-> 
-> This commit introduces a new policy of selection of tokens for the OSPM
-> agent: each new transfer now gets the next available and monotonically
-> increasing token, until tokens are exhausted and the counter rolls over.
-> 
-> Such new policy mitigates the above issues with ghost responses since the
-> tokens are now reused as late as possible (when they roll back ideally)
-> and so it is much easier to identify such ghost responses to stale timed
-> out transactions: this also helps in simplifying the specific transports
-> implementation since stale transport messages can be easily identified
-> and discarded early on in the rx path without the need to cross check
-> their actual state with the core transport layer.
-> This mitigation is even more effective when, as is usually the case, the
-> maximum number of pending messages is capped by the platform to a much
-> lower number than the whole possible range of tokens values (2^10).
-> 
-> This internal policy change in the core SCMI transport layer is fully
-> transparent to the specific transports so it has not and should not have
-> any impact on the transports implementation.
-> 
-> The empirically observed cost of such new procedure of token selection
-> amounts in the best case to ~10us out of an observed full transaction cost
-> of 3ms for the completion of a synchronous sensor reading command on a
-> platform supporting commands completion interrupts.
+> Existing transports that do not need anything of the above will continue
+> to work as before without any change.
 > 
 > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 > ---
->  drivers/firmware/arm_scmi/common.h |  23 +++
->  drivers/firmware/arm_scmi/driver.c | 243 +++++++++++++++++++++++++----
->  2 files changed, 233 insertions(+), 33 deletions(-)
+>  drivers/firmware/arm_scmi/common.h |  14 +++
+>  drivers/firmware/arm_scmi/driver.c | 132 ++++++++++++++++++++++++++++-
+>  2 files changed, 143 insertions(+), 3 deletions(-)
 > 
 > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-> index 6bb734e0e3ac..e64c5ca9ee7c 100644
+> index e64c5ca9ee7c..0edc04bc434c 100644
 > --- a/drivers/firmware/arm_scmi/common.h
 > +++ b/drivers/firmware/arm_scmi/common.h
-> @@ -14,7 +14,10 @@
->  #include <linux/device.h>
->  #include <linux/errno.h>
->  #include <linux/kernel.h>
-> +#include <linux/hashtable.h>
-> +#include <linux/list.h>
->  #include <linux/module.h>
-> +#include <linux/refcount.h>
->  #include <linux/scmi_protocol.h>
->  #include <linux/types.h>
->  
-> @@ -127,6 +130,21 @@ struct scmi_msg {
->  	size_t len;
+> @@ -80,6 +80,7 @@ struct scmi_msg_resp_prot_version {
+>   * @status: Status of the transfer once it's complete
+>   * @poll_completion: Indicate if the transfer needs to be polled for
+>   *	completion or interrupt mode is used
+> + * @saved_hdr: A copy of the original msg_hdr
+>   */
+>  struct scmi_msg_hdr {
+>  	u8 id;
+> @@ -88,6 +89,7 @@ struct scmi_msg_hdr {
+>  	u16 seq;
+>  	u32 status;
+>  	bool poll_completion;
+> +	u32 saved_hdr;
 >  };
 >  
-> +/**
-> + * An helper macro to lookup an xfer from the @pending_xfers hashtable
-> + * using the message sequence number token as a key.
-> + */
-> +#define XFER_FIND(__ht, __k)					\
-> +({								\
-> +	typeof(__k) k_ = __k;					\
-> +	struct scmi_xfer *xfer_ = NULL;				\
-> +								\
-> +	hash_for_each_possible((__ht), xfer_, node, k_)		\
-> +		if (xfer_->hdr.seq == k_)			\
-> +			break;					\
-> +	 xfer_;							\
-
-There is an extra space before the return value.
-
-> +})
-> +
 >  /**
->   * struct scmi_xfer - Structure representing a message flow
->   *
-> @@ -138,6 +156,9 @@ struct scmi_msg {
+> @@ -154,6 +156,9 @@ struct scmi_msg {
+>   * @rx: Receive message, the buffer should be pre-allocated to store
+>   *	message. If request-ACK protocol is used, we can reuse the same
 >   *	buffer for the rx path as we use for the tx path.
+> + * @rx_raw_len: A field which can be optionally used by a specific transport
+> + *		to save transport specific message length
+> + *		It is not used by the SCMI transport core
 >   * @done: command message transmit completion event
 >   * @async_done: pointer to delayed response message received event completion
-> + * @users: A refcount to track the active users for this xfer
-> + * @node: An hlist_node reference used to store this xfer, alternatively, on
-> + *	  the free list @free_xfers or in the @pending_xfers hashtable
->   */
->  struct scmi_xfer {
->  	int transfer_id;
-> @@ -146,6 +167,8 @@ struct scmi_xfer {
+>   * @users: A refcount to track the active users for this xfer
+> @@ -165,6 +170,7 @@ struct scmi_xfer {
+>  	struct scmi_msg_hdr hdr;
+>  	struct scmi_msg tx;
 >  	struct scmi_msg rx;
+> +	size_t rx_raw_len;
 >  	struct completion done;
 >  	struct completion *async_done;
-> +	refcount_t users;
-> +	struct hlist_node node;
+>  	refcount_t users;
+> @@ -355,6 +361,9 @@ struct scmi_device *scmi_child_dev_find(struct device *parent,
+>   * @max_msg: Maximum number of messages that can be pending
+>   *	simultaneously in the system
+>   * @max_msg_size: Maximum size of data per message that can be handled.
+> + * @support_xfers_delegation: A flag to indicate if the described transport
+> + *			      will handle delegated xfers, so the core can
+> + *			      derive proper related assumptions.
+>   */
+>  struct scmi_desc {
+>  	int (*init)(void);
+> @@ -363,6 +372,7 @@ struct scmi_desc {
+>  	int max_rx_timeout_ms;
+>  	int max_msg;
+>  	int max_msg_size;
+> +	bool support_xfers_delegation;
 >  };
 >  
->  struct scmi_xfer_ops;
+>  extern const struct scmi_desc scmi_mailbox_desc;
+> @@ -391,4 +401,8 @@ void scmi_notification_instance_data_set(const struct scmi_handle *handle,
+>  					 void *priv);
+>  void *scmi_notification_instance_data_get(const struct scmi_handle *handle);
+>  
+> +int scmi_transfer_acquire(struct scmi_chan_info *cinfo, u32 *msg_hdr,
+> +			  struct scmi_xfer **xfer);
+> +void scmi_transfer_release(struct scmi_chan_info *cinfo,
+> +			   struct scmi_xfer *xfer);
+>  #endif /* _SCMI_COMMON_H */
 > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> index 20f8f0581f3a..f0b20ddb24f4 100644
+> index f0b20ddb24f4..371d3804cd79 100644
 > --- a/drivers/firmware/arm_scmi/driver.c
 > +++ b/drivers/firmware/arm_scmi/driver.c
-> @@ -21,6 +21,7 @@
->  #include <linux/io.h>
->  #include <linux/kernel.h>
->  #include <linux/ktime.h>
-> +#include <linux/hashtable.h>
->  #include <linux/list.h>
->  #include <linux/module.h>
->  #include <linux/of_address.h>
-> @@ -65,19 +66,29 @@ struct scmi_requested_dev {
->  	struct list_head node;
->  };
->  
-> +#define SCMI_PENDING_XFERS_HT_ORDER_SZ	9
-
-Micro-optimization note: This increases struct scmi_info size to > 8 kiB 
-(on 64-bit architectures). A lower size of the hash table would be 
-enough for some transports.
-
-> +
->  /**
->   * struct scmi_xfers_info - Structure to manage transfer information
->   *
-> - * @xfer_block: Preallocated Message array
->   * @xfer_alloc_table: Bitmap table for allocated messages.
->   *	Index of this bitmap table is also used for message
->   *	sequence identifier.
->   * @xfer_lock: Protection for message allocation
-> + * @last_token: A counter to use as base to generate for monotonically
-> + *		increasing tokens.
-> + * @free_xfers: A free list for available to use xfers. It is initialized with
-> + *		a number of xfers equal to the maximum allowed in-flight
-> + *		messages.
-> + * @pending_xfers: An hashtable, indexed by msg_hdr.seq, used to keep all the
-> + *		   currently in-flight messages.
->   */
->  struct scmi_xfers_info {
-> -	struct scmi_xfer *xfer_block;
->  	unsigned long *xfer_alloc_table;
->  	spinlock_t xfer_lock;
-> +	atomic_t last_token;
-> +	struct hlist_head free_xfers;
-> +	DECLARE_HASHTABLE(pending_xfers, SCMI_PENDING_XFERS_HT_ORDER_SZ);
->  };
->  
->  /**
-> @@ -203,6 +214,117 @@ void *scmi_notification_instance_data_get(const struct scmi_handle *handle)
->  	return info->notify_priv;
+> @@ -432,6 +432,124 @@ scmi_xfer_lookup_unlocked(struct scmi_xfers_info *minfo, u16 xfer_id)
+>  	return xfer ?: ERR_PTR(-EINVAL);
 >  }
 >  
 > +/**
-> + * scmi_xfer_token_set  - Reserve and set new token for the xfer at hand
+> + * scmi_xfer_acquire  -  Helper to lookup and acquire an xfer
 > + *
 > + * @minfo: Pointer to Tx/Rx Message management info based on channel type
-> + * @xfer: The xfer to act upon
+> + * @xfer_id: Token ID to lookup in @pending_xfers
 > + *
-> + * Pick the next unused monotonically increasing token and set it into
-> + * xfer->hdr.seq: picking a monotonically increasing value avoids immediate
-> + * reuse of freshly completed or timed-out xfers, thus mitigating the risk
-> + * of incorrect association of a late and expired xfer with a live in-flight
-> + * transaction, both happening to re-use the same token identifier.
+> + * When a valid xfer is found for the provided @xfer_id, reference counting is
+> + * properly updated.
 > + *
-> + * Since platform is NOT required to answer our request in-order we should
-> + * account for a few rare but possible scenarios:
-> + *
-> + *  - exactly 'next_token' may be NOT available so pick xfer_id >= next_token
-> + *    using find_next_zero_bit() starting from candidate next_token bit
-> + *
-> + *  - all tokens ahead upto (MSG_TOKEN_ID_MASK - 1) are used in-flight but we
-> + *    are plenty of free tokens at start, so try a second pass using
-> + *    find_next_zero_bit() and starting from 0.
-> + *
-> + *  X = used in-flight
-> + *
-> + * Normal
-> + * ------
-> + *
-> + *		|- xfer_id picked
-> + *   -----------+----------------------------------------------------------
-> + *   | | |X|X|X| | | | | | ... ... ... ... ... ... ... ... ... ... ...|X|X|
-> + *   ----------------------------------------------------------------------
-> + *		^
-> + *		|- next_token
-> + *
-> + * Out-of-order pending at start
-> + * -----------------------------
-> + *
-> + *	  |- xfer_id picked, last_token fixed
-> + *   -----+----------------------------------------------------------------
-> + *   |X|X| | | | |X|X| ... ... ... ... ... ... ... ... ... ... ... ...|X| |
-> + *   ----------------------------------------------------------------------
-> + *    ^
-> + *    |- next_token
-> + *
-> + *
-> + * Out-of-order pending at end
-> + * ---------------------------
-> + *
-> + *	  |- xfer_id picked, last_token fixed
-> + *   -----+----------------------------------------------------------------
-> + *   |X|X| | | | |X|X| ... ... ... ... ... ... ... ... ... ... |X|X|X||X|X|
-> + *   ----------------------------------------------------------------------
-> + *								^
-> + *								|- next_token
-> + *
-> + * Context: Assumes to be called with @xfer_lock already acquired.
-> + *
-> + * Return: 0 on Success or error
+> + * Return: A valid @xfer on Success or error otherwise.
 > + */
-> +static int scmi_xfer_token_set(struct scmi_xfers_info *minfo,
-> +			       struct scmi_xfer *xfer)
+> +static struct scmi_xfer *
+> +scmi_xfer_acquire(struct scmi_xfers_info *minfo, u16 xfer_id)
 > +{
-> +	unsigned long xfer_id, next_token;
+> +	unsigned long flags;
+> +	struct scmi_xfer *xfer;
 > +
-> +	/* Pick a candidate monotonic token in range [0, MSG_TOKEN_MAX - 1] */
-> +	next_token = (atomic_inc_return(&minfo->last_token) &
-> +		      (MSG_TOKEN_MAX - 1));
+> +	spin_lock_irqsave(&minfo->xfer_lock, flags);
+> +	xfer = scmi_xfer_lookup_unlocked(minfo, xfer_id);
+> +	if (!IS_ERR(xfer))
+> +		refcount_inc(&xfer->users);
+> +	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
 > +
-> +	/* Pick the next available xfer_id >= next_token */
-> +	xfer_id = find_next_zero_bit(minfo->xfer_alloc_table,
-> +				     MSG_TOKEN_MAX, next_token);
-> +	if (xfer_id == MSG_TOKEN_MAX) {
-> +		/*
-> +		 * After heavily out-of-order responses, there are no free
-> +		 * tokens ahead, but only at start of xfer_alloc_table so
-> +		 * try again from the beginning.
-> +		 */
-> +		xfer_id = find_next_zero_bit(minfo->xfer_alloc_table,
-> +					     MSG_TOKEN_MAX, 0);
-> +		/*
-> +		 * Something is wrong if we got here since there can be a
-> +		 * maximum number of (MSG_TOKEN_MAX - 1) in-flight messages
-> +		 * but we have not found any free token [0, MSG_TOKEN_MAX - 1].
-> +		 */
-> +		if (WARN_ON_ONCE(xfer_id == MSG_TOKEN_MAX))
-> +			return -ENOMEM;
+> +	return xfer;
+> +}
+> +
+> +/**
+> + * scmi_transfer_acquire  -  Lookup for an existing xfer or freshly allocate a
+> + * new one depending on the type of the message
+> + *
+> + * @cinfo: A reference to the channel descriptor.
+> + * @msg_hdr: A pointer to the message header to lookup.
+> + * @xfer: A reference to the pre-existent or freshly allocated xfer
+> + *	  associated with the provided *msg_hdr.
+> + *
+> + * This function can be used by transports supporting delegated xfers to obtain
+> + * a valid @xfer associated with the provided @msg_hdr param.
+> + *
+> + * The nature of the resulting @xfer depends on the type of message specified in
+> + * @msg_hdr:
+> + *  - for responses and delayed responses a pre-existent/pre-allocated in-flight
+> + *    xfer descriptor will be returned (properly refcounted)
+> + *  - for notifications a brand new xfer will be allocated; in this case the
+> + *    provided message header sequence number will also be mangled to match
+> + *    the token in the freshly allocated xfer: this is needed to establish a
+> + *    link between the picked xfer and the msg_hdr that will be subsequently
+> + *    passed back via usual scmi_rx_callback().
+> + *
+> + * Return: 0 if a valid xfer is returned in @xfer, error otherwise.
+> + */
+> +int scmi_transfer_acquire(struct scmi_chan_info *cinfo, u32 *msg_hdr,
+> +			  struct scmi_xfer **xfer)
+> +{
+> +	u8 msg_type;
+> +	struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
+> +
+> +	if (!xfer || !msg_hdr || !info->desc->support_xfers_delegation)
+> +		return -EINVAL;
+> +
+> +	msg_type = MSG_XTRACT_TYPE(*msg_hdr);
+> +	switch (msg_type) {
+> +	case MSG_TYPE_COMMAND:
+> +	case MSG_TYPE_DELAYED_RESP:
+> +		/* Grab an existing xfer for xfer_id */
+> +		*xfer = scmi_xfer_acquire(&info->tx_minfo,
+> +					  MSG_XTRACT_TOKEN(*msg_hdr));
+> +		break;
+> +	case MSG_TYPE_NOTIFICATION:
+> +		/* Get a brand new RX xfer */
+> +		*xfer = scmi_xfer_get(cinfo->handle, &info->rx_minfo);
+> +		if (!IS_ERR(*xfer)) {
+> +			/* Save original msg_hdr and fix sequence number */
+> +			(*xfer)->hdr.saved_hdr = *msg_hdr;
+
+The saved header isn't used anywhere.
+
+> +			*msg_hdr &= ~MSG_TOKEN_ID_MASK;
+> +			*msg_hdr |= FIELD_PREP(MSG_TOKEN_ID_MASK,
+> +					       (*xfer)->hdr.seq);
+
+This will invalidate the token set by the platform in 
+scmi_dump_header_dbg(). Maybe it would have been more elegant to 
+introduce a dedicated hash table key field?
+
+> +		}
+> +		break;
+> +	default:
+> +		*xfer = ERR_PTR(-EINVAL);
+> +		break;
 > +	}
 > +
-> +	/* Update +/- last_token accordingly if we skipped some hole */
-> +	if (xfer_id != next_token)
-> +		atomic_add((int)(xfer_id - next_token), &minfo->last_token);
+> +	if (IS_ERR(*xfer)) {
+> +		dev_err(cinfo->dev,
+> +			"Failed to acquire a valid xfer for hdr:0x%X\n",
+> +			*msg_hdr);
+> +		return PTR_ERR(*xfer);
+> +	}
 > +
-> +	/* Set in-flight */
-> +	set_bit(xfer_id, minfo->xfer_alloc_table);
-> +	xfer->hdr.seq = (u16)xfer_id;
+> +	/* Fix xfer->hdr.type with actual msg_hdr carried type */
+> +	unpack_scmi_header(*msg_hdr, &((*xfer)->hdr));
 > +
 > +	return 0;
 > +}
 > +
 > +/**
-> + * scmi_xfer_token_clear  - Release the token
+> + * scmi_transfer_release  - Release an previously acquired xfer
 > + *
-> + * @minfo: Pointer to Tx/Rx Message management info based on channel type
-> + * @xfer: The xfer to act upon
+> + * @cinfo: A reference to the channel descriptor.
+> + * @xfer: A reference to the xfer to release.
 > + */
-> +static inline void scmi_xfer_token_clear(struct scmi_xfers_info *minfo,
-> +					 struct scmi_xfer *xfer)
+> +void scmi_transfer_release(struct scmi_chan_info *cinfo, struct scmi_xfer *xfer)
 > +{
-> +	clear_bit(xfer->hdr.seq, minfo->xfer_alloc_table);
-> +}
+> +	struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
+> +	struct scmi_xfers_info *minfo;
 > +
->  /**
->   * scmi_xfer_get() - Allocate one message
->   *
-> @@ -212,36 +334,49 @@ void *scmi_notification_instance_data_get(const struct scmi_handle *handle)
->   * Helper function which is used by various message functions that are
->   * exposed to clients of this driver for allocating a message traffic event.
->   *
-> - * This function can sleep depending on pending requests already in the system
-> - * for the SCMI entity. Further, this also holds a spinlock to maintain
-> - * integrity of internal data structures.
-> + * Picks an xfer from the free list @free_xfers (if any available), sets a
-> + * monotonically increasing token and stores the inflight xfer into the
-> + * @pending_xfers hashtable for later retrieval.
-> + *
-> + * The successfully initialized xfer is refcounted.
-> + *
-> + * Context: Holds @xfer_lock while manipulating @xfer_alloc_table and
-> + *	    @free_xfers.
->   *
->   * Return: 0 if all went fine, else corresponding error.
->   */
->  static struct scmi_xfer *scmi_xfer_get(const struct scmi_handle *handle,
->  				       struct scmi_xfers_info *minfo)
->  {
-> -	u16 xfer_id;
-> +	int ret;
-> +	unsigned long flags;
->  	struct scmi_xfer *xfer;
-> -	unsigned long flags, bit_pos;
-> -	struct scmi_info *info = handle_to_scmi_info(handle);
->  
-> -	/* Keep the locked section as small as possible */
->  	spin_lock_irqsave(&minfo->xfer_lock, flags);
-> -	bit_pos = find_first_zero_bit(minfo->xfer_alloc_table,
-> -				      info->desc->max_msg);
-> -	if (bit_pos == info->desc->max_msg) {
-> +	if (hlist_empty(&minfo->free_xfers)) {
->  		spin_unlock_irqrestore(&minfo->xfer_lock, flags);
->  		return ERR_PTR(-ENOMEM);
->  	}
-> -	set_bit(bit_pos, minfo->xfer_alloc_table);
-> -	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
->  
-> -	xfer_id = bit_pos;
-> +	/* grab an xfer from the free_list */
-> +	xfer = hlist_entry(minfo->free_xfers.first, struct scmi_xfer, node);
-> +	hlist_del_init(&xfer->node);
->  
-> -	xfer = &minfo->xfer_block[xfer_id];
-> -	xfer->hdr.seq = xfer_id;
-> -	xfer->transfer_id = atomic_inc_return(&transfer_last_id);
-> +	/* Pick and set monotonic token */
-> +	ret = scmi_xfer_token_set(minfo, xfer);
-> +	if (!ret) {
-> +		hash_add(minfo->pending_xfers, &xfer->node, xfer->hdr.seq);
-> +	} else {
-> +		dev_err(handle->dev, "Failed to get monotonic token %d\n", ret);
-> +		hlist_add_head(&xfer->node, &minfo->free_xfers);
-> +		xfer = ERR_PTR(ret);
-> +	}
-> +	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
+> +	if (!xfer || !info->desc->support_xfers_delegation)
+> +		return;
 > +
-> +	if (!IS_ERR(xfer)) {
-> +		refcount_set(&xfer->users, 1);
-
-Maybe it would be better to do this inside the lock, so that there is no 
-(unlikely) race with refcount_inc() in scmi_xfer_acquire().
-
-> +		xfer->transfer_id = atomic_inc_return(&transfer_last_id);
-> +	}
->  
->  	return xfer;
->  }
-> @@ -252,6 +387,9 @@ static struct scmi_xfer *scmi_xfer_get(const struct scmi_handle *handle,
->   * @minfo: Pointer to Tx/Rx Message management info based on channel type
->   * @xfer: message that was reserved by scmi_xfer_get
->   *
-> + * After refcount check, possibly release an xfer, clearing the token slot,
-> + * removing xfer from @pending_xfers and putting it back into free_xfers.
-> + *
->   * This holds a spinlock to maintain integrity of internal data structures.
->   */
->  static void
-> @@ -259,16 +397,41 @@ __scmi_xfer_put(struct scmi_xfers_info *minfo, struct scmi_xfer *xfer)
->  {
->  	unsigned long flags;
->  
-> -	/*
-> -	 * Keep the locked section as small as possible
-> -	 * NOTE: we might escape with smp_mb and no lock here..
-> -	 * but just be conservative and symmetric.
-> -	 */
->  	spin_lock_irqsave(&minfo->xfer_lock, flags);
-> -	clear_bit(xfer->hdr.seq, minfo->xfer_alloc_table);
-> +	if (refcount_dec_and_test(&xfer->users)) {
-> +		scmi_xfer_token_clear(minfo, xfer);
-> +		hash_del(&xfer->node);
-> +		hlist_add_head(&xfer->node, &minfo->free_xfers);
-> +	}
->  	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
->  }
->  
-> +/**
-> + * scmi_xfer_lookup_unlocked  -  Helper to lookup an xfer_id
-> + *
-> + * @minfo: Pointer to Tx/Rx Message management info based on channel type
-> + * @xfer_id: Token ID to lookup in @pending_xfers
-> + *
-> + * Refcounting is untouched.
-> + *
-> + * Context: Assumes to be called with @xfer_lock already acquired.
-> + *
-> + * Return: A valid xfer on Success or error otherwise
-> + */
-> +static struct scmi_xfer *
-> +scmi_xfer_lookup_unlocked(struct scmi_xfers_info *minfo, u16 xfer_id)
-> +{
-> +	struct scmi_xfer *xfer = NULL;
+> +	if (xfer->hdr.type == MSG_TYPE_NOTIFICATION)
+> +		minfo = &info->rx_minfo;
+> +	else
+> +		minfo = &info->tx_minfo;
 > +
-> +	if (xfer_id >= MSG_TOKEN_MAX)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	if (test_bit(xfer_id, minfo->xfer_alloc_table))
-> +		xfer = XFER_FIND(minfo->pending_xfers, xfer_id);
-> +
-> +	return xfer ?: ERR_PTR(-EINVAL);
+> +	__scmi_xfer_put(minfo, xfer);
 > +}
 > +
 >  static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
 >  {
 >  	struct scmi_xfer *xfer;
-> @@ -305,19 +468,22 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
->  static void scmi_handle_response(struct scmi_chan_info *cinfo,
->  				 u16 xfer_id, u8 msg_type)
->  {
-> +	unsigned long flags;
->  	struct scmi_xfer *xfer;
->  	struct device *dev = cinfo->dev;
->  	struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
->  	struct scmi_xfers_info *minfo = &info->tx_minfo;
+> @@ -441,7 +559,11 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
+>  	ktime_t ts;
 >  
->  	/* Are we even expecting this? */
-> -	if (!test_bit(xfer_id, minfo->xfer_alloc_table)) {
-> +	spin_lock_irqsave(&minfo->xfer_lock, flags);
-> +	xfer = scmi_xfer_lookup_unlocked(minfo, xfer_id);
-> +	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-> +	if (IS_ERR(xfer)) {
->  		dev_err(dev, "message for %d is not expected!\n", xfer_id);
->  		info->desc->ops->clear_channel(cinfo);
+>  	ts = ktime_get_boottime();
+> -	xfer = scmi_xfer_get(cinfo->handle, minfo);
+> +
+> +	if (!info->desc->support_xfers_delegation)
+> +		xfer = scmi_xfer_get(cinfo->handle, minfo);
+> +	else
+> +		xfer = scmi_xfer_acquire(minfo, MSG_XTRACT_TOKEN(msg_hdr));
+>  	if (IS_ERR(xfer)) {
+>  		dev_err(dev, "failed to get free message slot (%ld)\n",
+>  			PTR_ERR(xfer));
+> @@ -449,8 +571,11 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
 >  		return;
 >  	}
 >  
-> -	xfer = &minfo->xfer_block[xfer_id];
->  	/*
->  	 * Even if a response was indeed expected on this slot at this point,
->  	 * a buggy platform could wrongly reply feeding us an unexpected
-> @@ -1033,18 +1199,25 @@ static int __scmi_xfer_info_init(struct scmi_info *sinfo,
->  		return -EINVAL;
+> -	unpack_scmi_header(msg_hdr, &xfer->hdr);
+>  	scmi_dump_header_dbg(dev, &xfer->hdr);
+> +
+> +	if (!info->desc->support_xfers_delegation)
+> +		unpack_scmi_header(msg_hdr, &xfer->hdr);
+> +
+
+Why dump the header before unpacking?
+
+>  	info->desc->ops->fetch_notification(cinfo, info->desc->max_msg_size,
+>  					    xfer);
+>  	scmi_notify(cinfo->handle, xfer->hdr.protocol_id,
+> @@ -496,7 +621,8 @@ static void scmi_handle_response(struct scmi_chan_info *cinfo,
+>  			xfer_id);
+>  		info->desc->ops->clear_channel(cinfo);
+>  		/* It was unexpected, so nobody will clear the xfer if not us */
+> -		__scmi_xfer_put(minfo, xfer);
+> +		if (!info->desc->support_xfers_delegation) //XXX ??? Really
+> +			__scmi_xfer_put(minfo, xfer);
+>  		return;
 >  	}
 >  
-> -	info->xfer_block = devm_kcalloc(dev, desc->max_msg,
-> -					sizeof(*info->xfer_block), GFP_KERNEL);
-> -	if (!info->xfer_block)
-> -		return -ENOMEM;
-> +	hash_init(info->pending_xfers);
->  
-> -	info->xfer_alloc_table = devm_kcalloc(dev, BITS_TO_LONGS(desc->max_msg),
-> +	/* Allocate a bitmask sized to hold MSG_TOKEN_MAX tokens */
-> +	info->xfer_alloc_table = devm_kcalloc(dev, BITS_TO_LONGS(MSG_TOKEN_MAX),
->  					      sizeof(long), GFP_KERNEL);
->  	if (!info->xfer_alloc_table)
->  		return -ENOMEM;
->  
-> -	/* Pre-initialize the buffer pointer to pre-allocated buffers */
-> -	for (i = 0, xfer = info->xfer_block; i < desc->max_msg; i++, xfer++) {
-> +	/*
-> +	 * Preallocate a number of xfers equal to max inflight messages,
-> +	 * pre-initialize the buffer pointer to pre-allocated buffers and
-> +	 * attach all of them to the free list
-> +	 */
-> +	INIT_HLIST_HEAD(&info->free_xfers);
-> +	for (i = 0; i < desc->max_msg; i++) {
-> +		xfer = devm_kzalloc(dev, sizeof(*xfer), GFP_KERNEL);
-> +		if (!xfer)
-> +			return -ENOMEM;
-> +
->  		xfer->rx.buf = devm_kcalloc(dev, sizeof(u8), desc->max_msg_size,
->  					    GFP_KERNEL);
->  		if (!xfer->rx.buf)
-> @@ -1052,8 +1225,12 @@ static int __scmi_xfer_info_init(struct scmi_info *sinfo,
->  
->  		xfer->tx.buf = xfer->rx.buf;
->  		init_completion(&xfer->done);
-> +
-> +		/* Add initialized xfer to the free list */
-> +		hlist_add_head(&xfer->node, &info->free_xfers);
->  	}
->  
-> +	atomic_set(&info->last_token, -1);
->  	spin_lock_init(&info->xfer_lock);
->  
->  	return 0;
 > 
 
 
