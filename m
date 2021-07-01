@@ -2,94 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61DE13B95F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 20:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 651493B95F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 20:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233795AbhGASLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 14:11:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54610 "EHLO
+        id S233947AbhGASOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 14:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbhGASLz (ORCPT
+        with ESMTP id S233700AbhGASOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 14:11:55 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57DFEC061764
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 11:09:24 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id p7so3429301qvn.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 11:09:24 -0700 (PDT)
+        Thu, 1 Jul 2021 14:14:03 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5DFC061764
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 11:11:31 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id x20so9736737ljc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 11:11:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R138qpb5V9GltpoHl9JfVzIFIBjpIQq4f7DuRdEpxfk=;
-        b=UwTe7TNS+a++bNDyVEugeP17Qo36wJmTqNxmkt85UpPo+fx3IHQxylras006MHg/pX
-         B4E/VaOBVCffLhCEyBpUQKPlHcn5f6KvGJkj0eihLH43RwyPcgLn9++z6lLltQVZ02Qd
-         MlMSUcxazien7cv9pkNG4xZ6T1ARR5pr/b8ob06qREN59+WdyCgffcpWKcb1OJGnc0a/
-         kfFAcAW4Ijw8TiONTjCwzfwAsNEnkLTxJGRCWi9UjfInxxhmkXhNc20MN5XA1+fMjdRR
-         7ScatupMe70tOXujl2JePKNJjaCD2ffBp6UR74RPFb0ukP+dI7XTq1EZiNatfTgJqpfQ
-         xBFA==
+         :cc:content-transfer-encoding;
+        bh=mhB/YI84F2jHO2Py8UfLFqOobb3dwNmtuci/rX0g1cM=;
+        b=jasMDnHxjyvUllqlfSgbkf3lsM1C59ID2VwFAdbjR9jGHNGK1c2ePnhO1K6hQd4uHR
+         VNFP4RkpTx7f7HnBJ1LkRS5Ak84RttR+CblcIUzjyT1uvl9F/Q9fYLgYsI7SIBGe0+VC
+         MXZTwtPrF00/sqmgD0tpytwSPhW2eYdAr2tt1K86OJeSK4UdjflKRozDqyGvo2LnmGNd
+         P5O4Ey4joC6Wkcv4izcVRLLTbA8iOYxYOUC/sk4kDRh+2zGG4mi+7NF5DdZbNBr7ASwH
+         PDSFwbXmoTxzDNDMVAYbsyKsB8xS9Wr9Xfi4CGlSRBwXaPvtjjLSp+4TAns0df3xBvF5
+         1HZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R138qpb5V9GltpoHl9JfVzIFIBjpIQq4f7DuRdEpxfk=;
-        b=EbtFNsj4bHft++UQz4+cLteTZ8J5k2diY7MiTpDwuesRu83w8lfQlFRd6+qz5j62//
-         0VkbVyX5XY9kNwc5m10aaBD9XyRENLPxTzB4NVDQX1l5NpvHYrVxECxbSxMI4yO3tbRe
-         NU6Hh/iK2IoB0pFux3WPFSAi8kI7sP0m7my4QANyo9R98QQ2cvZvPlmxu/Jf/+gLaEko
-         0C5KeTVtHyM/sduYjXjtIXRMjd6tqjWHncXHQ0Nv4o+I81ysTe/TJ3xAoWUKOBzQat1j
-         uYq58Vd14DdcmH9ekpV3nSf9Lj7GAsXNOpaqg/A+7jzhy9STOJb8GSRmez9IgRznG+WR
-         OCsw==
-X-Gm-Message-State: AOAM531HgOWekkAdbXrvEQ7Awba5CrKzHryuwWPyLjF/TxjL3WDxj2xt
-        cvZVv4k1nOrb0wMiDJ7BRT3nAl7o+oKNP+K+fE2Phw==
-X-Google-Smtp-Source: ABdhPJyTJ2YT0EAPjvKbr/rujHX4DyzUM0IJbNxV+R0cyZT0MqNNxUEd1y8SxlqtpqBObK8ggzPxh3jPMm2rAP/4Gy4=
-X-Received: by 2002:a0c:ed46:: with SMTP id v6mr1123035qvq.35.1625162963332;
- Thu, 01 Jul 2021 11:09:23 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mhB/YI84F2jHO2Py8UfLFqOobb3dwNmtuci/rX0g1cM=;
+        b=qVtO+ObozJXrEuLMf+VYvK/86ubM5KI8iCCw8IeExed3hK3LcMPss4j+Vquch3SpE/
+         V9YMOpRNGabZ7MbxmqJDPeeXwuX3DmnHNSoOL0g+YuTmRIqzhB7ZCWfAOk6X7AnQmTKs
+         QLfcMTSxjp/935ycz2KZyqgeUpxINE51v3KLPxEkpGrZ6lsvqVOUSUIpBHgJcNwXi4ZM
+         NJ7LAEYwEH3GhAimTr44xGvRrDeLzIzwqSjxsSvSG48G53upJvtM19bXpp+BDwpd+LgV
+         OuY2eN1jbk8YEhkxvH6TRxSkW9GntogHXaewSHxv93w2GT7tFDiJM9nAIufjsm+lKXhr
+         y9eQ==
+X-Gm-Message-State: AOAM531CjMKFMGmB/7BHeW0TSWvxNRtSDNhDgoGHFhgKScGy2xhBN5XZ
+        c2oCzdRJtEumU1VT2ErTUxWc7oqq9PfJa9g8XoLRBw==
+X-Google-Smtp-Source: ABdhPJzwrzWKarSKuQaZfnYcXLi//voBFmL1XAoyCfEpVCtf51jw2GU48PRryMrkCjV1uF3c6fUtqkW0zqveSiAJIiY=
+X-Received: by 2002:a2e:9e04:: with SMTP id e4mr613052ljk.431.1625163089028;
+ Thu, 01 Jul 2021 11:11:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210630003406.4013668-1-paulburton@google.com>
- <CAJWu+ooRQ6hFtaA4tr3BNs9Btss1yan8taua=VMWMopGmEVhSA@mail.gmail.com>
- <YN38D3dg0fLzL0Ia@google.com> <20210701140754.5847a50f@oasis.local.home>
-In-Reply-To: <20210701140754.5847a50f@oasis.local.home>
-From:   Joel Fernandes <joelaf@google.com>
-Date:   Thu, 1 Jul 2021 14:09:12 -0400
-Message-ID: <CAJWu+optxZYJ=RdmconCGMHQRgJqv=0k6NKAzEWui1smXieToA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] tracing: Simplify & fix saved_tgids logic
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Paul Burton <paulburton@google.com>, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>, stable@vger.kernel.org
+References: <cover.1625118581.git.christophe.jaillet@wanadoo.fr>
+ <CAErkTsQLP9_y-Am3MN-O4vZXe3cTKHfYMwkFk-9YWWPLAQM1cw@mail.gmail.com> <29632746-3234-1991-040d-3c0dfb3b3acb@wanadoo.fr>
+In-Reply-To: <29632746-3234-1991-040d-3c0dfb3b3acb@wanadoo.fr>
+From:   Jeroen de Borst <jeroendb@google.com>
+Date:   Thu, 1 Jul 2021 11:11:17 -0700
+Message-ID: <CAErkTsS36YV2f4sHMDyKMTteGOwF+wGmvqfpqj36vh41gPz-2A@mail.gmail.com>
+Subject: Re: [PATCH 0/3] gve: Fixes and clean-up
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     csully@google.com, sagis@google.com, jonolson@google.com,
+        davem@davemloft.net, kuba@kernel.org, awogbemila@google.com,
+        willemb@google.com, yangchun@google.com, bcf@google.com,
+        kuozhao@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 2:07 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Thu, Jul 1, 2021 at 10:42 AM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
 >
-> On Thu, 1 Jul 2021 10:31:59 -0700
-> Paul Burton <paulburton@google.com> wrote:
+> Le 01/07/2021 =C3=A0 18:20, Jeroen de Borst a =C3=A9crit :
+> > On Wed, Jun 30, 2021 at 10:58 PM Christophe JAILLET
+> > <christophe.jaillet@wanadoo.fr> wrote:
+> >>
+> >> This serie is part of the effort to axe the wrappers in
+> >> include/linux/pci-dma-compat.h
+> >>
+> >> While looking at it, I spotted:
+> >>    - a resource leak in an error handling path (patch 1)
+> >>    - an error code that could be propagated. (patch 2)
+> >>      This patch could be ignored. It's only goal is to be more consist=
+ent
+> >>      with other drivers.
+> >>
+> >> These 2 paches are not related to the 'pci-dma-compat.h' stuff, which =
+can
+> >> be found in patch 3.
+> >>
+> >> Christophe JAILLET (3):
+> >>    gve: Fix an error handling path in 'gve_probe()'
+> >>    gve: Propagate error codes to caller
+> >>    gve: Simplify code and axe the use of a deprecated API
+> >>
+> >>
+> >
+> > Thanks for these patches.
+> >
+> > Can split this into 2 patch series;
 >
-> > I was tempted to just add the redundant checks anyway (pick your battles
-> > and all) but for show() in particular it wound up making things seem
-> > non-sensical to me ("display the value describing this non-NULL pointer
-> > into tgid_map only if tgid_map is not NULL?").
+> Sure.
 >
-> I agree with your assessment, and will actually take your first patch,
-> as I don't think the comment is that helpful, not to mention, we don't
-> use '//' comments in the kernel, so that would have to be changed.
+> > one for net (with the first 2
+> > patches) and one for net-next (with the cleanup one)?
 >
-> But for cases like this, I usually have something like:
+> I've never worked with net and net-next directly.
+> If just adding net and net-next after [PATCH] in the subject of the
+> mail, yes, I can do it if it helps.
 >
 >
->         if (WARN_ON_ONCE(!tgid_map))
->                 return -1;
+> BTW, I gave a look at https://patchwork.kernel.org/project/netdevbpf/list=
+/
+> The patch 1/3 is marked as failed because "1 blamed authors not CCed:
+> lrizzo@google.com; 1 maintainers not CCed: lrizzo@google.com"
 >
-> Because the logic is what makes tgid_map not being NULL, but as
-> experience has taught me, the logic can sometimes be mistaken, at least
-> as time goes by. And things that are protected by logic, deserve a
-> WARN*() when it doesn't go as planned.
+> This author/blame was not spotted by get_maintainer.pl. Is it something
+> I should worry about?
 >
-> We can always add that later, if needed.
+>
+> > Also the label in the first patch should probably read
+> > 'abort_with_gve_init' instead of 'abort_with_vge_init'.
+>
+> Good catch. Sorry about that.
+>
+> >
+> > Jeroen
+> >
+>
+> CJ
+>
 
-Agreed, was thinking similar/same.
+[again, now in plaintext, sorry for the spam]
 
-thanks,
+You tag the patch sets with [PATCH net <n>/2] for the 2 fixes and just
+[PATCH net-next] for the cleanup one.
 
--Joel
+You can cc Luigi (lrizzo@google.com) on that one patch for
+completeness, but I think it shouldn't be necessary.
+
+Thanks!
