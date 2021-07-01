@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDF33B9608
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 20:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140EF3B960C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 20:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233899AbhGASSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 14:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbhGASSP (ORCPT
+        id S233528AbhGASUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 14:20:50 -0400
+Received: from mail-il1-f171.google.com ([209.85.166.171]:47001 "EHLO
+        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229844AbhGASUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 14:18:15 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DFDC061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 11:15:43 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id l11so4757955pji.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 11:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VBK3elG7+RffbG0U9TL73XjsoLZSaxYTEj/YLeL64j4=;
-        b=F4yNM9ndU/GFX5Dpx1BNEVZH7b9oSr88oWu0kz62oL9CJgaPBh/H+hgIGXunaN2WTt
-         uZjvt5G1mUhUjVH9m6/v8w3WKGzo228LP2r6bRnqP4wZFsKZBWbbh1sjJYLEZgzPmMC4
-         XtkhmMyF6RaCmjzBMGycnZY0qoIFT8ePmVeaz1hSrUZgYtLrEZobquEFLKEodvtVpy5K
-         ykSuAWf+OI0h/q2uGyQhhgQKVtRVvvTYcIy1142iiXk/mBQHJ3MCEFePfQ/YPt0RpBKy
-         yDCa0L0EZlR9eoBxm06lh7Pn7kuMYlsMiP6M2ORVr6eZi2Bs3S+jcPRbHxiE9bPs9CBx
-         VTYQ==
+        Thu, 1 Jul 2021 14:20:47 -0400
+Received: by mail-il1-f171.google.com with SMTP id t12so7246819ile.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 11:18:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VBK3elG7+RffbG0U9TL73XjsoLZSaxYTEj/YLeL64j4=;
-        b=LKrDwpvKkyhglXXO1rSl3bfdhCeKxASGBKLEI2ci8sY1XdOKeRI3rARUNXX0B8t5Mp
-         HHKp9AFTzecnIIgpSOMpITJjncvZyltL5n/yVw+xaRW1YF8XiDV/C3h+qlodQoBkU3zn
-         endbBQokg4jBRMLfDmvcvoicFB6ObbUB78IIOA48QNvD4z7ksOQlzCeXD5AzSWLmJrbb
-         5HkGFW1BpVmo5TGQS2yifI0DJt+xT+ryaa+h95PfClIqAg3uLNav/jt/k74kogGkFoMY
-         ui7Io8d1j1RqF6xeLhN7zLVJ1ANQ29uU8/dpjQ9omJsQTMkQC/6WFwHYWtaisnpJVOmx
-         SLng==
-X-Gm-Message-State: AOAM533bgdrFHix/WV+YCpHiG/oHNaObXFup1LKWc5pfAJy2Mu68hVZr
-        66aptzysVJKPZEyh7Hinamvt35qn4s3Dxg==
-X-Google-Smtp-Source: ABdhPJx+0AKjtxUAwtA0opUfMtTSNeImrLpUEBTW3u8J/HIZARu6V3+zpwFavk5Btxnje99bkW6jWQ==
-X-Received: by 2002:a17:90b:46c3:: with SMTP id jx3mr901300pjb.206.1625163343317;
-        Thu, 01 Jul 2021 11:15:43 -0700 (PDT)
-Received: from google.com ([2620:15c:280:201:558a:406a:d453:dbe5])
-        by smtp.gmail.com with ESMTPSA id n23sm714011pff.93.2021.07.01.11.15.42
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=RfAst8jf06jV75PDGjbAHUMMTq2o1HWk2Y22ohLeAWI=;
+        b=uP2EkQkzgjU7jFcsj28w8PThb6Q7Ay3jsg2thuYlujN0RtbeskUknV7deTLKMuZghp
+         5MMTydha16D9eqI56Qk5RjRZyrutfrojBr+GKXs2klMtW50YpNAmO2MLwbNsW/jGyxm8
+         LvlpNYw4Oe+DkrXQnrzyuinV/ZKqa3d0IlQl3x6SQ8NdwCBCgx4Mzszewj7XTh8Xs8F6
+         wbKQfNo8NZ7QEBnGnh9Hi1ajVJdzQ0pE8dkZdry/eyj8XlnJFak+zcCjviSH+tLb9MC5
+         gOoZclojkOUGV3B9zBZp1gjCLUiMU2GT28c55NESCYo+yVLGRZ2FlX9odTbLcFW1dWiK
+         /N5Q==
+X-Gm-Message-State: AOAM530jwd9vr/Gnw8euEvQBcoFX4okxM2Zq7696mbPrkcDnERturyIp
+        ImROLBT57ZKD0kDjXGT42ak=
+X-Google-Smtp-Source: ABdhPJyrQ4ADD4Uyu5RuVs6MaNMzOr1/6//DJiv68k2idk2ac/MXf70t+uVK1i/p8WheVBvPqIYo1Q==
+X-Received: by 2002:a92:7b0f:: with SMTP id w15mr534304ilc.150.1625163495763;
+        Thu, 01 Jul 2021 11:18:15 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id 67sm318917iob.15.2021.07.01.11.18.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 11:15:42 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 11:15:37 -0700
-From:   Paul Burton <paulburton@google.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Joel Fernandes <joelaf@google.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] tracing: Resize tgid_map to pid_max, not
- PID_MAX_DEFAULT
-Message-ID: <YN4GSV8/AzK1fz4o@google.com>
-References: <20210701095525.400839d3@oasis.local.home>
- <20210701172407.889626-1-paulburton@google.com>
- <20210701172407.889626-2-paulburton@google.com>
- <20210701141221.1d0b1fe0@oasis.local.home>
+        Thu, 01 Jul 2021 11:18:15 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 18:18:14 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] percpu changes for v5.14-rc1
+Message-ID: <YN4G5kUGi295tSzs@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210701141221.1d0b1fe0@oasis.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+Hi Linus,
 
-On Thu, Jul 01, 2021 at 02:12:21PM -0400, Steven Rostedt wrote:
-> On Thu,  1 Jul 2021 10:24:07 -0700
-> Paul Burton <paulburton@google.com> wrote:
-> 
-> > +static int *trace_find_tgid_ptr(int pid)
-> > +{
-> > +	// Pairs with the smp_store_release in set_tracer_flag() to ensure that
-> > +	// if we observe a non-NULL tgid_map then we also observe the correct
-> > +	// tgid_map_max.
-> 
-> BTW, it's against the Linux kernel coding style to use // for comments.
-> 
-> I can take this patch, but I need to change this to:
-> 
-> 	/*
-> 	 * Pairs with the smp_store_release in set_tracer_flag() to ensure that
-> 	 * if we observe a non-NULL tgid_map then we also observe the correct
-> 	 * tgid_map_max.
-> 	 */
-> 
-> Same with the other comments. Please follow coding style that can be
-> found in:
-> 
->    Documentation/process/coding-style.rst
-> 
-> And see section 8 on Commenting.
+This pull request contains:
+ - percpu chunk depopulation - depopulate backing pages for chunks with
+   empty pages when we exceed a global threshold without those pages.
+   This lets us reclaim a portion of memory that would previously be
+   lost until the full chunk would be freed (possibly never).
 
-Yeah, sorry about that - I should know better having been a maintainer
-in a former life...
+ - memcg accounting cleanup - previously separate chunks were managed
+   for normal allocations and __GFP_ACCOUNT allocations. These are now
+   consolidated which cleans up the code quite a bit.
 
-Just to confirm - are you happy to fix those up when applying or should
-I send a v3?
+ - a few misc clean ups for clang warnings
+
+Two notes though. First there is a small conflict in mm/memcontrol.c and
+I have an example merge in percpu#for-5.14-merge [1]. Second, I have an
+outstanding patch to do some level of batching for percpu depopulation.
+Oliver Wang (krobot tests) is reporting a regression only on Knights
+Landing cpus [2]. I am working on debugging it and hopefully will have
+it figured out soon.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git/log/?h=for-5.14-merge
+[2] https://lore.kernel.org/lkml/20210630074500.GB10248@xsang-OptiPlex-9020/
 
 Thanks,
-    Paul
+Dennis
+
+The following changes since commit d434405aaab7d0ebc516b68a8fc4100922d7f5ef:
+
+  Linux 5.12-rc7 (2021-04-11 15:16:13 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git for-5.14
+
+for you to fetch changes up to e4d777003a43feab2e000749163e531f6c48c385:
+
+  percpu: optimize locking in pcpu_balance_workfn() (2021-06-17 23:05:24 +0000)
+
+----------------------------------------------------------------
+Dennis Zhou (2):
+      percpu: use pcpu_free_slot instead of pcpu_nr_slots - 1
+      percpu: initialize best_upa variable
+
+Roman Gushchin (8):
+      percpu: fix a comment about the chunks ordering
+      percpu: split __pcpu_balance_workfn()
+      percpu: factor out pcpu_check_block_hint()
+      percpu: implement partial chunk depopulation
+      mm, memcg: mark cgroup_memory_nosocket, nokmem and noswap as __ro_after_init
+      mm, memcg: introduce mem_cgroup_kmem_disabled()
+      percpu: rework memcg accounting
+      percpu: optimize locking in pcpu_balance_workfn()
+
+Wei Yongjun (1):
+      percpu: make symbol 'pcpu_free_slot' static
+
+ include/linux/memcontrol.h |   5 +
+ mm/memcontrol.c            |  11 +-
+ mm/percpu-internal.h       |  56 +------
+ mm/percpu-km.c             |  10 +-
+ mm/percpu-stats.c          |  44 ++----
+ mm/percpu-vm.c             |  35 ++++-
+ mm/percpu.c                | 368 +++++++++++++++++++++++++++++++++------------
+ 7 files changed, 343 insertions(+), 186 deletions(-)
