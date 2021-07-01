@@ -2,88 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259B13B92C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A33E3B92B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbhGAOGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:06:36 -0400
-Received: from mail-il1-f179.google.com ([209.85.166.179]:45833 "EHLO
-        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232631AbhGAOGc (ORCPT
+        id S233253AbhGAOGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:06:05 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:28163 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233131AbhGAOGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:06:32 -0400
-Received: by mail-il1-f179.google.com with SMTP id b5so6432705ilc.12;
-        Thu, 01 Jul 2021 07:04:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=wbT8Ks1SNmRLlWkzxeU8xdlQA5u/+Yl10JWaWVZb/dQ=;
-        b=XDokCOVNy1sl7UFa44Vwo4YBOQD4rG4FTAf+0i7et9/aqI9j6ayOyHtN1qw8iX+WhJ
-         p5/PnAkYexrrC/nr8kb7pqyzaGxdcLPKh8pKsheO7SJDkBBlXBncfHke1NnPIYi8ubWD
-         ExEgKL/gg8LuPR6vf7tDI6W+dhAUazkU+ui/UBMMr0Ti8O8jGVfSsSjk4jAajBXua5yV
-         JikpNpZXy8xalFOoD+ukKcWZSa6w/DwKq1ntLxglIj/0qKriguZz2wA09LboKikmjK7f
-         nl3ItbmL2h22Isf4rhjT8IGbBOM63Hezg0yST2reKOmkFwfz7cC7x0QtDfFnGhsahoty
-         5j1g==
-X-Gm-Message-State: AOAM533jmrPDEFseWaOO8ngPjR8mhbvHHrDQRN0gg3GWEcMnJgCriCH3
-        pmd9W8eDD6UtftklaFqCh91V4eTZUg==
-X-Google-Smtp-Source: ABdhPJx71za0MYqLZLGjIKph+dBsSeZJNQ43Mf4e2arjbbbCoz00zF0285z+YR4s9PRr63GczYPUfg==
-X-Received: by 2002:a05:6e02:ee2:: with SMTP id j2mr23739395ilk.63.1625148240363;
-        Thu, 01 Jul 2021 07:04:00 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id g14sm14460934ioo.19.2021.07.01.07.03.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 07:03:58 -0700 (PDT)
-Received: (nullmailer pid 2278716 invoked by uid 1000);
-        Thu, 01 Jul 2021 14:02:43 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Cc:     devicetree@vger.kernel.org, jic23@kernel.org,
-        linux-iio@vger.kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210701112803.75815-2-antoniu.miclaus@analog.com>
-References: <20210701112803.75815-1-antoniu.miclaus@analog.com> <20210701112803.75815-2-antoniu.miclaus@analog.com>
-Subject: Re: [PATCH v2 2/2] dt-bindings: iio: frequency: add adrf6780 doc
-Date:   Thu, 01 Jul 2021 08:02:43 -0600
-Message-Id: <1625148163.622224.2278715.nullmailer@robh.at.kernel.org>
+        Thu, 1 Jul 2021 10:06:02 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210701140330epoutp0465e4b1d6c01343be4e547b6afaec9021~Nr6-eyppo1381413814epoutp04q
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 14:03:30 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210701140330epoutp0465e4b1d6c01343be4e547b6afaec9021~Nr6-eyppo1381413814epoutp04q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1625148210;
+        bh=E1aaxR8FfUi3vlMZNGnaBp5eQ1CM10Z3mqMC5JAz3Cc=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=ODDJbCkB42qiJP/sbRJmIJFXqxAHlgTxqJvql1lR33bf222eWDNrJ9QGWSuxTaVuO
+         PeI0Kp4y3Sunig0oJEk91g58YnG2e+2sMykML5YepS/YWR+m8V6whXq1xDgRZfEK9e
+         Nu75Ypsj/AfuP++/AmYHhWfY28kS501Wn2usVycU=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210701140329epcas1p35fd7d39293d17eaa8737b9353ce846a9~Nr6_7__Md1305613056epcas1p3c;
+        Thu,  1 Jul 2021 14:03:29 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.160]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4GG0L86Q6Mz4x9Pt; Thu,  1 Jul
+        2021 14:03:28 +0000 (GMT)
+X-AuditID: b6c32a37-0c7ff700000024fc-91-60ddcb3082d2
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2A.F4.09468.03BCDD06; Thu,  1 Jul 2021 23:03:28 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH] of: base: remove unnecessary for loop
+Reply-To: ohoono.kwon@samsung.com
+Sender: =?UTF-8?B?6raM7Jik7ZuI?= <ohoono.kwon@samsung.com>
+From:   =?UTF-8?B?6raM7Jik7ZuI?= <ohoono.kwon@samsung.com>
+To:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "frowand.list@gmail.com" <frowand.list@gmail.com>
+CC:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        =?UTF-8?B?6raM7Jik7ZuI?= <ohoono.kwon@samsung.com>,
+        "ohkwon1043@gmail.com" <ohkwon1043@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210701140328epcms1p85149318b6c18fa18b3c7c8e966c14db0@epcms1p8>
+Date:   Thu, 01 Jul 2021 23:03:28 +0900
+X-CMS-MailID: 20210701140328epcms1p85149318b6c18fa18b3c7c8e966c14db0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNKsWRmVeSWpSXmKPExsWy7bCmnq7B6bsJBu8361rMP3KO1WLmm/9s
+        Fve/HmW0uLxrDpvF3v2+Frt+rmC2aN17hN2B3WPnrLvsHptWdbJ53Lm2h82jb8sqRo/Pm+QC
+        WKNybDJSE1NSixRS85LzUzLz0m2VvIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8AnTdMnOArlBS
+        KEvMKQUKBSQWFyvp29kU5ZeWpCpk5BeX2CqlFqTkFBgaFOgVJ+YWl+al6yXn51oZGhgYmQJV
+        JuRkHL/7hbXgK2fF4yvPWRoYj7N3MXJySAiYSOza1M7axcjFISSwg1HiyvbLjF2MHBy8AoIS
+        f3cIg9QIC5hJLJ39kx0kLCSgKLHttBtE2EpiWt8/JhCbTcBC4vnan6wgtohAksSOlVMYQUYy
+        C0xhktjceIwVYhevxIz2pywQtrTE9uVbGSFsUYmbq9+yw9jvj82HiotItN47ywxhC0o8+Lkb
+        Ki4pcbPtLgvIAgmBfkaJ++taoJwJjBJLnkxig6gyl3i2oQVsKq+Ar8TtSYfBTmURUJWYc/IC
+        1EUuElc6N4HVMwvIS2x/O4cZ5EtmAU2J9bv0IUoUJXb+nssIUcIn8e5rD9wzO+Y9YQIplwAa
+        uey3B8xffdMvQ13gIfG9YS3YBUICgRK3ts9insAoPwsRurOQ7J2FsHcBI/MqRrHUguLc9NRi
+        wwJj5AjdxAhOhVrmOxinvf2gd4iRiYPxEKMEB7OSCO+E6XcThHhTEiurUovy44tKc1KLDzGa
+        An08kVlKNDkfmIzzSuINTY2MjY0tTMzMzUyNlcR5d7IdShASSE8sSc1OTS1ILYLpY+LglGpg
+        6uVfOP3Kqd3yEhOv9vd+cHlZVe4p6Bteu/b9Y28+L7dFN9ab/k46Pmv6PdGVQt1Ze3r6ApbX
+        XtyY+N32XKGmrPrECF61Kt9Fi7MT72/7u8vRr+XJ1m8fcnvnbbiypTKrf+v3Ram31x5+qsOj
+        O2/CTI4GicDuHUvmHm65YxKzukb505Gq1InL1zA++8P6NCAi7JnkQRX1q5VrVs3RucK8fLFX
+        8+OLbGIFnawKz/Pro7s+eQsHb+bd87ibYc02ZbEJe0sbt0089XKb0cUk+4xVPHavzV7KXck2
+        l9rWftHL+saECPZi6Uqf0ua8TY/O6Uys2PSXMTV+tuDKNV/zir0OKJr6eXg2/Nc+ckkpqa4h
+        XYmlOCPRUIu5qDgRANNZz4cOBAAA
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210701140328epcms1p85149318b6c18fa18b3c7c8e966c14db0
+References: <CGME20210701140328epcms1p85149318b6c18fa18b3c7c8e966c14db0@epcms1p8>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 01 Jul 2021 14:28:03 +0300, Antoniu Miclaus wrote:
-> Add device tree bindings for the ADRF6780 Upconverter.
-> 
-> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
-> ---
-> v2: remove `det-en` and `parity-en` from device tree
->  .../bindings/iio/frequency/adi,adrf6780.yaml  | 123 ++++++++++++++++++
->  1 file changed, 123 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
-> 
+In __of_get_next_child function, loop iteration for getting next node is
+unnecessary.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+for loop is already checking if next is NULL or not, and
+of_node_get(next) always returns next itself.
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml:10:1: [warning] wrong indentation: expected 2 but found 0 (indentation)
-./Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml:101:1: [warning] wrong indentation: expected 2 but found 0 (indentation)
-./Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml:109:1: [warning] wrong indentation: expected 2 but found 0 (indentation)
+Therefore checking return value in the if clause always evaluates to
+true, and thus it always breaks out from for loop in the first iteration.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.example.dt.yaml: adrf6780@0: 'adi,parity-en' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
-\ndoc reference errors (make refcheckdocs):
+Remove the unnecessary for loop for readability.
 
-See https://patchwork.ozlabs.org/patch/1499502
+I tested the code as below, and it showed that BUG was never called.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+-       for (; next; next = next->sibling)
++       for (; next; next = next->sibling) {
+                if (of_node_get(next))
+                        break;
++               BUG();
++       }
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+Signed-off-by: Ohhoon Kwon <ohoono.kwon@samsung.com>
+---
+ drivers/of/base.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+diff --git a/drivers/of/base.c b/drivers/of/base.c
+index 48e941f99558..ca60988ef428 100644
+--- a/drivers/of/base.c
++++ b/drivers/of/base.c
+@@ -708,9 +708,7 @@ static struct device_node *__of_get_next_child(const struct device_node *node,
+ 		return NULL;
+ 
+ 	next = prev ? prev->sibling : node->child;
+-	for (; next; next = next->sibling)
+-		if (of_node_get(next))
+-			break;
++	of_node_get(next);
+ 	of_node_put(prev);
+ 	return next;
+ }
+-- 
+2.17.1
