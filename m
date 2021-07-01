@@ -2,179 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952923B9196
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 14:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C32C3B91A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 14:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236421AbhGAM24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 08:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236332AbhGAM2y (ORCPT
+        id S236526AbhGAMaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 08:30:01 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:9333 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236424AbhGAM3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 08:28:54 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F90C0617AD
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 05:26:23 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id t15so4629472wry.11
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 05:26:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=kssr4gmtp/IYFhUj7wTF1rAC75pSE7knZqtnbVaCSJQ=;
-        b=bNldtXZX7OEsU7hC/ydIj5dZEObpyOXouxDSTP89Bgkm87aVhs+/bm1l7KCWSLfxUY
-         +63/2TYNUoS4zfmhz64+zcyhyR+i9yXH910ON0rNU4Y1WQDxQ98gafnnx+XnYp5CfkpB
-         tPmkpwU9vwlTeed7La9IgctWwoV91OfNryWv1O+tXb5Yj1aV1adqxcVoJDmjl/xjuldP
-         O4vUhCVi2hOqheVzxcJTz8Ff1BTOJo6PF4iVhEbkB263lHY0zM9xJx+UKUXZGTKVJKrI
-         Q/QPQqUu2EjkDt8Uakc7DwKgz6a3KEa/n5ZGqhBiC89+fLOCB64xhrzqQPEDj3ntuqle
-         fY8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=kssr4gmtp/IYFhUj7wTF1rAC75pSE7knZqtnbVaCSJQ=;
-        b=pT/7UVz5Ikt4dMPTEAtfRxjJKixh+3mxax0YfL4QghXxxo17ByVJqPKQakOY00CAhn
-         +RuCJPlLCafTj4HQliOwJ4wgFCE0uKsQwfCbwzlnMXh0tbBSTehu1w0JZ1aNFXzQAoNL
-         fEEi7FDehBnFUs9QzQfgC0f9P5z2Kf2HCsY7gyNiCKfzVtZWGp8ncrFQxYV5ZXm/1b9E
-         +CDLa+ALxQRvdT/S2xIeHpYBYS0mlKEjICS3Xp6PLGxWpIEeJiLVH37XqewtZPbBzqDp
-         8uOf6W3PPoLWmj+25qgKVlqIr5xzlueAgY8jMOzCgtcRfP4NUGr44F3PTdxdJrbRf/Od
-         M7vA==
-X-Gm-Message-State: AOAM531xFpkMl+aoxJRyhP3Gl1Ziw3lw/fT738VpM65VLliDLwpI0BKO
-        p7TeFlCPdRv4HHUFiFtUrff8Jg==
-X-Google-Smtp-Source: ABdhPJzBdFnxTWsk0egKHVdT1n4WauRyT1kSgT/Hb+MvhoTby5kBqrcZY9ZsQQ6/vghoUeShvliqvA==
-X-Received: by 2002:a5d:564c:: with SMTP id j12mr46200631wrw.37.1625142382388;
-        Thu, 01 Jul 2021 05:26:22 -0700 (PDT)
-Received: from dell ([109.180.115.217])
-        by smtp.gmail.com with ESMTPSA id n18sm4392386wms.3.2021.07.01.05.26.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 05:26:21 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 13:26:19 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        "david.e.box@linux.intel.com" <david.e.box@linux.intel.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH 2/4] MFD: intel_pmt: Remove OOBMSM device
-Message-ID: <YN20a95YllXYUwjG@dell>
-References: <20210617215408.1412409-1-david.e.box@linux.intel.com>
- <20210617215408.1412409-3-david.e.box@linux.intel.com>
- <YNxENGGctLXmifzj@dell>
- <f590ee871d0527a12b307f1494cb4c8a91c5e3c2.camel@linux.intel.com>
- <e734a968-818a-380d-0ae5-fee41b3db246@redhat.com>
- <YN2lmdDAOaykCvHK@dell>
- <CAHp75Vfn6GKSj6USUPEWiPdhWRYcJbirqhU6aOeB4gruekmocg@mail.gmail.com>
- <YN2vwT+7sVRvz8iS@dell>
- <CAHp75VdmnRJKSBZ8dmU=7XsGOZ-wX6EpZhtC3X6JEE0mz-UJNg@mail.gmail.com>
+        Thu, 1 Jul 2021 08:29:52 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GFy6F1zwPz74K4;
+        Thu,  1 Jul 2021 20:23:01 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 1 Jul 2021 20:27:14 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 1 Jul 2021 20:27:14 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <jasowang@redhat.com>,
+        <mst@redhat.com>
+CC:     <brouer@redhat.com>, <paulmck@kernel.org>, <peterz@infradead.org>,
+        <will@kernel.org>, <shuah@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linuxarm@openeuler.org>
+Subject: [PATCH net-next v3 0/3] add benchmark selftest and optimization for ptr_ring
+Date:   Thu, 1 Jul 2021 20:26:39 +0800
+Message-ID: <1625142402-64945-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VdmnRJKSBZ8dmU=7XsGOZ-wX6EpZhtC3X6JEE0mz-UJNg@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 01 Jul 2021, Andy Shevchenko wrote:
+Patch 1: add a selftest app to benchmark the performance
+         of ptr_ring.
+Patch 2: move r->queue[] clearing after r->consumer_head
+         updating.
+Patch 3: add barrier to ensure the visiblity of r->queue[].
 
-> On Thursday, July 1, 2021, Lee Jones <lee.jones@linaro.org> wrote:
-> 
-> > On Thu, 01 Jul 2021, Andy Shevchenko wrote:
-> >
-> > > On Thursday, July 1, 2021, Lee Jones <lee.jones@linaro.org> wrote:
-> > >
-> > > > On Thu, 01 Jul 2021, Hans de Goede wrote:
-> > > >
-> > > > > Hi,
-> > > > >
-> > > > > On 6/30/21 11:11 PM, David E. Box wrote:
-> > > > > > On Wed, 2021-06-30 at 11:15 +0100, Lee Jones wrote:
-> > > > > >> On Thu, 17 Jun 2021, David E. Box wrote:
-> > > > > >>
-> > > > > >>> Unlike the other devices in intel_pmt, the Out of Band Management
-> > > > > >>> Services
-> > > > > >>> Module (OOBMSM) is actually not a PMT dedicated device. It can
-> > also
-> > > > > >>> be used
-> > > > > >>> to describe non-PMT capabilities. Like PMT, these capabilities
-> > are
-> > > > > >>> also
-> > > > > >>> enumerated using PCIe Vendor Specific registers in config space.
-> > In
-> > > > > >>> order
-> > > > > >>> to better support these devices without the confusion of a
-> > > > > >>> dependency on
-> > > > > >>> MFD_INTEL_PMT, remove the OOBMSM device from intel_pmt so that it
-> > > > > >>> can be
-> > > > > >>> later placed in its own driver. Since much of the same code will
-> > be
-> > > > > >>> used by
-> > > > > >>> intel_pmt and the new driver, create a new file with symbols to
-> > be
-> > > > > >>> used by
-> > > > > >>> both.
-> > > > > >>>
-> > > > > >>> While performing this split we need to also handle the creation
-> > of
-> > > > > >>> platform
-> > > > > >>> devices for the non-PMT capabilities. Currently PMT devices are
-> > > > > >>> named by
-> > > > > >>> their capability (e.g. pmt_telemetry). Instead, generically name
-> > > > > >>> them by
-> > > > > >>> their capability ID (e.g. intel_extnd_cap_2). This allows the IDs
-> > > > > >>> to be
-> > > > > >>> created automatically.  However, to ensure that unsupported
-> > devices
-> > > > > >>> aren't
-> > > > > >>> created, use an allow list to specify supported capabilities.
-> > > > > >>>
-> > > > > >>> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > > > > >>> ---
-> > > > > >>>  MAINTAINERS                                |   1 +
-> > > > > >>>  drivers/mfd/Kconfig                        |   4 +
-> > > > > >>>  drivers/mfd/Makefile                       |   1 +
-> > > > > >>>  drivers/mfd/intel_extended_caps.c          | 208
-> > > > > >>> +++++++++++++++++++++
-> > > > > >>
-> > > > > >> Please consider moving this <whatever this is> out to either
-> > > > > >> drivers/pci or drivers/platform/x86.
-> > > > > >
-> > > > > > None of the cell drivers are in MFD, only the PCI drivers from
-> > which
-> > > > > > the cells are created. I understood that these should be in MFD.
-> > But
-> > > > > > moving it to drivers/platform/x86 would be fine with me. That
-> > keeps the
-> > > > > > code together in the same subsystem. Comment from Hans or Andy?
-> > > > >
-> > > > > I'm fine with moving everything to drivers/platform/x86, but AFAIK
-> > > > > usually the actual code which has the MFD cells and creates the
-> > > > > child devices usually lives under drivers/mfd
-> > > >
-> > > > Correct.  It must.
-> > >
-> > > It’s definitely not the first time you are talking about, but it may be
-> > the
-> > > first time I asked why it’s not enforced overall. Last time I have
-> > checked
-> > > it was like 5-7 MFD uses outside the MFD folder. Are you going to fix
-> > that?
-> >
-> > Because I can't NACK patches that weren't sent to me. :)
-> >
-> >
-> Hint: you may add regexp match to the maintainers database and you will see
-> them more often
+V3: add patch 3 and address most of Michael's comment.
+V2: add patch 1 and add performance data for patch 2.
 
-Good idea.  I'll add it to my TODO.
+---
+Performance raw data using "perf stat -r" cmd, comparison
+is also done in patch 2/3.
+ptr_ring_test_org: patch 1
+ptr_ring_test_opt1: patch 1 + patch 2
+ptr_ring_test_opt2: patch 1 + patch 2 + patch 3
+
+
+x86_64(as there is other workload in the x86_64 system, so
+run 1000 times to get more accurate result):
+
+Performance counter stats for './ptr_ring_test_org -s 1000 -m 1 -N 100000000' (1000 runs):
+
+          5,291.83 msec task-clock                #    1.994 CPUs utilized            ( +-  0.41% )
+               690      context-switches          #    0.130 K/sec                    ( +-  3.65% )
+                 8      cpu-migrations            #    0.002 K/sec                    ( +-  5.70% )
+               291      page-faults               #    0.055 K/sec                    ( +-  0.05% )
+    12,660,040,758      cycles                    #    2.392 GHz                      ( +-  0.41% )
+    24,202,160,722      instructions              #    1.91  insn per cycle           ( +-  0.06% )
+     3,559,123,597      branches                  #  672.569 M/sec                    ( +-  0.07% )
+         8,009,010      branch-misses             #    0.23% of all branches          ( +-  0.11% )
+
+            2.6538 +- 0.0109 seconds time elapsed  ( +-  0.41% )
+
+ Performance counter stats for './ptr_ring_test_opt1 -s 1000 -m 1 -N 100000000' (1000 runs):
+
+          5,064.95 msec task-clock                #    1.992 CPUs utilized            ( +-  0.55% )
+               668      context-switches          #    0.132 K/sec                    ( +-  4.20% )
+                 9      cpu-migrations            #    0.002 K/sec                    ( +-  4.45% )
+               291      page-faults               #    0.057 K/sec                    ( +-  0.06% )
+    12,117,262,182      cycles                    #    2.392 GHz                      ( +-  0.55% )
+    22,586,035,716      instructions              #    1.86  insn per cycle           ( +-  0.08% )
+     3,404,652,345      branches                  #  672.199 M/sec                    ( +-  0.10% )
+         7,864,190      branch-misses             #    0.23% of all branches          ( +-  0.16% )
+
+            2.5422 +- 0.0142 seconds time elapsed  ( +-  0.56% )
+
+ Performance counter stats for './ptr_ring_test_opt2 -s 1000 -m 1 -N 100000000' (1000 runs):
+
+          5,105.33 msec task-clock                #    1.995 CPUs utilized            ( +-  0.47% )
+               589      context-switches          #    0.115 K/sec                    ( +-  4.24% )
+                11      cpu-migrations            #    0.002 K/sec                    ( +-  4.24% )
+               292      page-faults               #    0.057 K/sec                    ( +-  0.04% )
+    12,214,160,307      cycles                    #    2.392 GHz                      ( +-  0.47% )
+    22,756,292,370      instructions              #    1.86  insn per cycle           ( +-  0.10% )
+     3,429,218,233      branches                  #  671.694 M/sec                    ( +-  0.12% )
+         7,921,984      branch-misses             #    0.23% of all branches          ( +-  0.15% )
+
+            2.5587 +- 0.0122 seconds time elapsed  ( +-  0.47% )
+
+
+-------------------------------------------------------------------------------------------------
+arm64(using taskset to avoid the numa effects):
+
+Performance counter stats for 'taskset -c 0-1 ./ptr_ring_test_org -s 1000 -m 1 -N 100000000' (100 runs):
+
+           4172.83 msec task-clock                #    1.999 CPUs utilized            ( +-  0.01% )
+                54      context-switches          #    0.013 K/sec                    ( +-  0.29% )
+                 1      cpu-migrations            #    0.000 K/sec
+               115      page-faults               #    0.028 K/sec                    ( +-  0.16% )
+       10848085945      cycles                    #    2.600 GHz                      ( +-  0.01% )
+       25808501369      instructions              #    2.38  insn per cycle           ( +-  0.00% )
+   <not supported>      branches
+          11190266      branch-misses                                                 ( +-  0.02% )
+
+          2.087205 +- 0.000130 seconds time elapsed  ( +-  0.01% )
+
+
+ Performance counter stats for 'taskset -c 0-1 ./ptr_ring_test_opt1 -s 1000 -m 1 -N 100000000' (100 runs):
+
+           3774.91 msec task-clock                #    1.999 CPUs utilized            ( +-  0.03% )
+                50      context-switches          #    0.013 K/sec                    ( +-  0.36% )
+                 1      cpu-migrations            #    0.000 K/sec
+               114      page-faults               #    0.030 K/sec                    ( +-  0.15% )
+        9813658996      cycles                    #    2.600 GHz                      ( +-  0.03% )
+       23920189000      instructions              #    2.44  insn per cycle           ( +-  0.01% )
+   <not supported>      branches
+          10018927      branch-misses                                                 ( +-  0.04% )
+
+          1.888224 +- 0.000541 seconds time elapsed  ( +-  0.03% )
+
+ Performance counter stats for 'taskset -c 0-1 ./ptr_ring_test_opt2 -s 1000 -m 1 -N 100000000' (100 runs):
+
+           3785.79 msec task-clock                #    1.999 CPUs utilized            ( +-  0.03% )
+                49      context-switches          #    0.013 K/sec                    ( +-  0.32% )
+                 1      cpu-migrations            #    0.000 K/sec
+               114      page-faults               #    0.030 K/sec                    ( +-  0.15% )
+        9842067534      cycles                    #    2.600 GHz                      ( +-  0.03% )
+       24074397270      instructions              #    2.45  insn per cycle           ( +-  0.01% )
+   <not supported>      branches
+          10091918      branch-misses                                                 ( +-  0.04% )
+
+          1.893673 +- 0.000508 seconds time elapsed  ( +-  0.03% )
+
+Yunsheng Lin (3):
+  selftests/ptr_ring: add benchmark application for ptr_ring
+  ptr_ring: move r->queue[] clearing after r->consumer_head updating
+  ptr_ring: add barrier to ensure the visiblity of r->queue[]
+
+ MAINTAINERS                                      |   5 +
+ include/linux/ptr_ring.h                         |  52 ++++--
+ tools/testing/selftests/ptr_ring/Makefile        |   6 +
+ tools/testing/selftests/ptr_ring/ptr_ring_test.c | 224 +++++++++++++++++++++++
+ tools/testing/selftests/ptr_ring/ptr_ring_test.h | 130 +++++++++++++
+ 5 files changed, 399 insertions(+), 18 deletions(-)
+ create mode 100644 tools/testing/selftests/ptr_ring/Makefile
+ create mode 100644 tools/testing/selftests/ptr_ring/ptr_ring_test.c
+ create mode 100644 tools/testing/selftests/ptr_ring/ptr_ring_test.h
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.7.4
+
