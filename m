@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641A43B923E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D03C3B924F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbhGAN3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 09:29:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230005AbhGAN3F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 09:29:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B692261417;
-        Thu,  1 Jul 2021 13:26:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625145995;
-        bh=KE08IZ7N2zGxao9rEaDNwWtGrUCeXJ7OIw+RZIM0zO0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GoA8R/OrX31Xp7phjzlnKyn5dy9p8dTsHF2AL0FSbKKDcVIdrPJKWfNv24hD1ZNjd
-         pz055uJeRm05yW2OKnly9+QykHCAkpTcYhSnlUliWCVrRryWgzx4jILXXZ2RvJCWYA
-         XPvVgUM0wlpJN7YJV0kMX3gnKSSckNAcNHibVu12NSDu5HKUOXSOyfmvFSaLF5rwsy
-         l5/eU8zAHlS77ouQ8CUTTRNQl370GKHC4Le1OX5mTJc1LdEhN2bUk+u75Np4JClWYZ
-         upnerC74FpqaLdnXGH3GnaKf9k5zPpuWv8Ipy+/7ystk6in6Ah0lmeMfk48EYNLa4o
-         ck8m4gHpSZS4Q==
-Date:   Thu, 1 Jul 2021 15:26:29 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        linux-phy@lists.infradead.org, linux-staging@lists.linux.dev,
-        linux-usb@vger.kernel.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: repair reference in USB IP DRIVER FOR
- HISILICON KIRIN 970
-Message-ID: <20210701152629.66a47fe2@coco.lan>
-In-Reply-To: <20210701093903.28733-1-lukas.bulwahn@gmail.com>
-References: <20210701093903.28733-1-lukas.bulwahn@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S231940AbhGANeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 09:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhGANeZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 09:34:25 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A72C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 06:31:54 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id bg14so10396682ejb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 06:31:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F9xHPQXfeX85p/WzrKNX5asqql2B/nD64WETM/hhNus=;
+        b=rPkrb7S1fk4T3qkJ10Ep2j4MR6kgQaC6BsJseApFIwDMzhwuu3VfF4W+PMn+D6OOsj
+         leSkEpTvERGV5xLo8VbBUsUr6mDM5rt1doaDh50MTc0uzsUlN3zRbh2OYSSAHBJiN6li
+         bdQWhTsymoM6+mvoXx3OTtT4O61r1hWcjpzftezV2yOqO0RfmEfAX5YUEsKJs5htq92G
+         PAQJrU/eJlCnP6y154lnlyQfgEYTmc87dxS+SyvZO3Cl9jM1WBBTv2ljPQLxX5FHDlcc
+         pCiiqVPZIQkb+xQuzE49/flY/F7wWvZhXhUebyqm5a0zD+rEBDd72pM6O3vUDjN392Wt
+         D2fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F9xHPQXfeX85p/WzrKNX5asqql2B/nD64WETM/hhNus=;
+        b=UE9UKUtWFPOmS006DknTH6+zxgZK3dls0yLxQT1/6cNThic4I/VwEYOV75N1OGq22v
+         tk/almGqRU59WIOPT2kHbi1eXbERvyhfUsczkOJeU9r18CEhgtpi5Ex9rB9dWS5XNktb
+         XR3g2Eg0T/uD8tIJKvjG9XURuEjCAKxKGp6MRh+crQ1E8etUgDwVqT4rFbbdrS8g/uws
+         8G9xjt949B8KsV3HTgeSsgoxiawUbz6HnsjY1ojQ/lvzAm9pC32oxFXlyodHDAPgue5Q
+         XnSotUzqeInAlw9anw4lvfxGOeRhinwApPkp2IBTV1wj6iR02zFlHjAZQiM1HoltJ9vW
+         8i2g==
+X-Gm-Message-State: AOAM533nSsdBSBYgftNVahUlYDIzKpczmiZeY6j+EFvK6bgUsKS1LYDK
+        tuBuyhc/ComIMmoWv1Fn2oxjR35fwxDVg4/IV1U=
+X-Google-Smtp-Source: ABdhPJwAB9zNDvwIwLlvuGpl2XmkQHgjogSwTqCGj4FJ6uy6ez3lXb60hBmJa9obZ737ErpszWY/M6A6HyDbpv+9BfA=
+X-Received: by 2002:a17:907:9f0:: with SMTP id ce16mr42484016ejc.126.1625146312962;
+ Thu, 01 Jul 2021 06:31:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210630134943.20781-1-yee.lee@mediatek.com> <20210630134943.20781-2-yee.lee@mediatek.com>
+ <YNzCVxmMtZ1Kc6XA@elver.google.com>
+In-Reply-To: <YNzCVxmMtZ1Kc6XA@elver.google.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Thu, 1 Jul 2021 16:31:42 +0300
+Message-ID: <CA+fCnZcPXLZxCVAk2Cmhfvov9KNGxALQuWun_yKf0O+q=rbnfQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] kasan: Add memzero init for unaligned size under
+ SLUB debug
+To:     Marco Elver <elver@google.com>, yee.lee@mediatek.com
+Cc:     wsd_upstream@mediatek.com,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:KASAN" <kasan-dev@googlegroups.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu,  1 Jul 2021 11:39:03 +0200
-Lukas Bulwahn <lukas.bulwahn@gmail.com> escreveu:
+On Wed, Jun 30, 2021 at 10:13 PM Marco Elver <elver@google.com> wrote:
+>
+> > +     if (IS_ENABLED(CONFIG_SLUB_DEBUG) && init && ((unsigned long)size & KASAN_GRANULE_MASK)) {
+> > +             init = false;
+> > +             memzero_explicit((void *)addr, size);
+> > +     }
+> >       size = round_up(size, KASAN_GRANULE_SIZE);
+> >
+> >       hw_set_mem_tag_range((void *)addr, size, tag, init);
+>
+> I think this solution might be fine for now, as I don't see an easy way
+> to do this without some major refactor to use kmem_cache_debug_flags().
+>
+> However, I think there's an intermediate solution where we only check
+> the static-key 'slub_debug_enabled' though. Because I've checked, and
+> various major distros _do_ enabled CONFIG_SLUB_DEBUG. But the static
+> branch just makes sure there's no performance overhead.
+>
+> Checking the static branch requires including mm/slab.h into
+> mm/kasan/kasan.h, which we currently don't do and perhaps wanted to
+> avoid. Although I don't see a reason there, because there's no circular
+> dependency even if we did.
 
-> Commit 8de6b7edd493 ("phy: phy-hi3670-usb3: move driver from staging into
-> phy") moves phy-hi3670-usb3.c from ./drivers/staging/hikey9xx/ to
-> ./drivers/phy/hisilicon/, but the new file entry in MAINTAINERS refers to
-> ./drivers/phy/hisilicon/phy-kirin970-usb3.c.
-> 
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
-> 
->   warning: no file matches  F:  drivers/phy/hisilicon/phy-kirin970-usb3.c
-> 
-> Repair the file entry by referring to the right location.
-> 
-> Fixes: 8de6b7edd493 ("phy: phy-hi3670-usb3: move driver from staging into phy")
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> applies cleanly on next-20210701
-> 
-> Mauro, please ack.
+Most likely this won't be a problem. We already include ../slab.h into
+many mm/kasan/*.c files.
 
-Acked-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Andrey, any opinion?
 
-> Greg, please pick this non-urgent minor fix on top of commit 8de6b7edd493
-> 
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 66d047dc6880..a4e0c20b416a 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -19153,7 +19153,7 @@ M:	Mauro Carvalho Chehab <mchehab@kernel.org>
->  L:	linux-usb@vger.kernel.org
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml
-> -F:	drivers/phy/hisilicon/phy-kirin970-usb3.c
-> +F:	drivers/phy/hisilicon/phy-hi3670-usb3.c
->  
->  USB ISP116X DRIVER
->  M:	Olav Kongas <ok@artecdesign.ee>
+I like this approach. Easy to implement and is better than checking
+only CONFIG_SLUB_DEBUG.
 
-
-
-Thanks,
-Mauro
+Thanks, Marco!
