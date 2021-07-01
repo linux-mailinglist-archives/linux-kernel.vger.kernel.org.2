@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722CF3B8F97
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 11:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE063B8F99
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 11:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235723AbhGAJRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 05:17:08 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56475 "EHLO
+        id S235737AbhGAJRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 05:17:16 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56492 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235088AbhGAJRH (ORCPT
+        with ESMTP id S235654AbhGAJRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 05:17:07 -0400
-Received: from mail-pj1-f72.google.com ([209.85.216.72])
+        Thu, 1 Jul 2021 05:17:14 -0400
+Received: from mail-pl1-f198.google.com ([209.85.214.198])
         by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <andy.chi@canonical.com>)
-        id 1lysmK-000749-0s
-        for linux-kernel@vger.kernel.org; Thu, 01 Jul 2021 09:14:36 +0000
-Received: by mail-pj1-f72.google.com with SMTP id x1-20020a17090ab001b02901726198443cso520548pjq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 02:14:35 -0700 (PDT)
+        id 1lysmQ-00075M-Q0
+        for linux-kernel@vger.kernel.org; Thu, 01 Jul 2021 09:14:42 +0000
+Received: by mail-pl1-f198.google.com with SMTP id b2-20020a1709027e02b0290128e572ee46so2495948plm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 02:14:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xPTN30ZO1AZ2z4aTyWnCz44BtVf74Dz6y2exPPRRYvk=;
-        b=SKjRsD+xkwVXwtCxdcfdX4SNKmfTi43WPaccCHFWHEdE9S5heNu6IDhs5aObuq590W
-         HzQR3T+axWuQzf8lqkAYUK4HXJoOtdTSkV62SHr8/pHH/jr/DM6BvAK4DBxS4LgfW/z6
-         1lpq+kCixNQJe+XavbQpdIuzd9Tkq1IaOAbepKn09YLufinEWKHWFX5OB0cJ8XAcWQU2
-         1Nz64TQgNIhlHtZ/uqMC/3338EQ+OIdECxTPCLcc6QoL/KDvvV7gtO/3G4JEqT92JQeV
-         4F/hUJotHWEZmvJRRhkEkjrvMFDNKZLjcvqrF2726w9kjAPhGxyZhYYh+D9o0vEwO976
-         YRPA==
-X-Gm-Message-State: AOAM532WehUh4GU07J/Pr5KG4Vp6dTkOfkoZHfavMUTXifGwQX33Ccmu
-        hxwlWdnnqklcdj9S7wu80kxWalJrey96VUXwoQqpV/uCRR1s8gguMA7NiZP8jlbNQfw4PBH2xzV
-        Dvq1cPWK5Xt5PZ10jVE1kAHufbshXWWckMXui1DAilQ==
-X-Received: by 2002:a17:902:760c:b029:129:2dde:f8c9 with SMTP id k12-20020a170902760cb02901292ddef8c9mr3176897pll.41.1625130874737;
-        Thu, 01 Jul 2021 02:14:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyDXGfAk5uAuYrbBFUdY4xpCYOLzlyf1KZ2iTm/g8dW8upHdP5SCvvii2IzXt3bTlRvzhG33A==
-X-Received: by 2002:a17:902:760c:b029:129:2dde:f8c9 with SMTP id k12-20020a170902760cb02901292ddef8c9mr3176876pll.41.1625130874499;
-        Thu, 01 Jul 2021 02:14:34 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Q9/fqvpbjKgQMRg7iZrW6B8O8Uu9VdWOniL08X6W/aU=;
+        b=Mt1enSmaCuJjz36t2YTEWFhzI1krqlWFO1MGdSBjllg9zicGmmRuQf6qfpI8/FOLZM
+         xcliK6Nc5Mec4EwQYawmosajkBqhtQOTBS5ynLB7xG8V9BRTdzN9Z1g2NBucQjbfeE4f
+         sdRvwz7ggnCHxaXtQmlS+rZb0WvWiwlku9nK4i/GCpIw1axhNhjP35366EH695dwcROH
+         +HPSklJa5xueahPebvUM9IqVV2sbDWL5yu2JJIqk/vpx+Y61Dph0oK2sc2GJ1POdJqrH
+         CCIA9iZfqEQ1L1+MmloMz/P/sT617gAiLXc/B54GxE/js7TkBu8DSt+teE8ZDdAztSJB
+         VqSQ==
+X-Gm-Message-State: AOAM5330xfuftRV/Urv73ognhNAir/AZ/BlCR6a6UcYGSJ2tMfUbZV8B
+        aRwsjIa1C/N1RQnAtTVK95ga/SC27O6sPDGHYxoo1i2P8aBK93Mz/s9TLMCkCoc8pUMfv0ua0KV
+        fyuLat2Sz472g7auwhd1lwJwkTnXl5UZOWth6kTTqrg==
+X-Received: by 2002:a62:6447:0:b029:30d:4bba:8b5a with SMTP id y68-20020a6264470000b029030d4bba8b5amr17894358pfb.71.1625130881480;
+        Thu, 01 Jul 2021 02:14:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyJasFPj16Ov0bOfkITpp0DDnYHeL11ZbT+TguiSAiGd55GdvBTgzRgX2sTPujm8vg8dEQ4tA==
+X-Received: by 2002:a62:6447:0:b029:30d:4bba:8b5a with SMTP id y68-20020a6264470000b029030d4bba8b5amr17894332pfb.71.1625130881287;
+        Thu, 01 Jul 2021 02:14:41 -0700 (PDT)
 Received: from localhost.localdomain (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
-        by smtp.gmail.com with ESMTPSA id c14sm18133190pfj.205.2021.07.01.02.14.31
+        by smtp.gmail.com with ESMTPSA id c14sm18133190pfj.205.2021.07.01.02.14.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 02:14:34 -0700 (PDT)
+        Thu, 01 Jul 2021 02:14:40 -0700 (PDT)
 From:   Andy Chi <andy.chi@canonical.com>
 Cc:     andy.chi@canonical.com, Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
@@ -56,10 +56,12 @@ Cc:     andy.chi@canonical.com, Jaroslav Kysela <perex@perex.cz>,
         Werner Sembach <wse@tuxedocomputers.com>,
         alsa-devel@alsa-project.org (moderated list:SOUND),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 1/3] ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook 450 G8
-Date:   Thu,  1 Jul 2021 17:14:13 +0800
-Message-Id: <20210701091417.9696-1-andy.chi@canonical.com>
+Subject: [PATCH v2 2/3] ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook 445 G8
+Date:   Thu,  1 Jul 2021 17:14:14 +0800
+Message-Id: <20210701091417.9696-2-andy.chi@canonical.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210701091417.9696-1-andy.chi@canonical.com>
+References: <20210701091417.9696-1-andy.chi@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To:     unlisted-recipients:; (no To-header on input)
@@ -67,27 +69,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HP ProBook 450 G8 using ALC236 codec which using 0x02 to
-control mute LED and 0x01 to control micmute LED.
+The HP ProBook 445 G8 using ALC236 codec.
+COEF index 0x34 bit 5 is used to control the playback mute LED, but the
+microphone mute LED is controlled using pin VREF instead of a COEF index.
 Therefore, add a quirk to make it works.
 
 Signed-off-by: Andy Chi <andy.chi@canonical.com>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_realtek.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 308a58a83f33..6c423172a1f4 100644
+index 6c423172a1f4..949c8e5ac54a 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -8363,6 +8363,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87e5, "HP ProBook 440 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x87e7, "HP ProBook 450 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f2, "HP ProBook 640 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
+@@ -8372,6 +8372,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8847, "HP EliteBook x360 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x884b, "HP EliteBook 840 Aero G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x884c, "HP EliteBook 840 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8862, "HP ProBook 445 G8 Notebook PC", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
++	SND_PCI_QUIRK(0x103c, 0x8863, "HP ProBook 445 G8 Notebook PC", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x886d, "HP ZBook Fury 17.3 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8870, "HP ZBook Fury 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8873, "HP ZBook Studio 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
 -- 
 2.25.1
 
