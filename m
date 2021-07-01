@@ -2,150 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD573B9713
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB4B3B9715
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbhGAUSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 16:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232113AbhGAUR7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 16:17:59 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF23EC061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 13:15:27 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id t17so14103546lfq.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 13:15:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2iNcNOPlfT+qWPK+b3Uy11X2JBFYAgrqY9VVeV4ulS8=;
-        b=H8D4sU0qi8I8AexpK1PssC7DU2czpDwmWVt+gaksX9V0+4qrhKVDeAU4WC8yrVExYC
-         M4yjFLQXLHVEUWOJxmw4kTbvDus+9qR26Lidx/Zsz9UWn9KtkLtY1eQ68x/nntopJt5V
-         MkXIhnFBYxdh8Ujqznp+zti9Rs1/SumlGyZC4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2iNcNOPlfT+qWPK+b3Uy11X2JBFYAgrqY9VVeV4ulS8=;
-        b=RLRwu1xzLMGP3AINAWp4y+EYE6dAtTy8GsKNKaKRWRwSt8p177JNjXFQMrq4+s/Bdp
-         uNirh0q4BkhlmUWE5MdMqVjsYx1rawnO6F6WOZ1olCbvi+kHsK8Ie66qoQ+GB834pJNq
-         pzufba1DDguM4YfEMziD98GxNiL5C3VLlzfvC64KWlUWSpJQFxPtl99xjcUAGvpvd2Zq
-         JXtOZErF0wFZYfrcaZiQ3iy35Usd0hWSdSCRv0gOTwozk03CDy4VYOWho0oyV0Y1nnSV
-         gDvXxT/VRgc7zcGQU22Rje/AnjMRAH0nF0hxN/TKQKJwCYFLD/aBPWCRNL3ldEGV9dWR
-         CNdw==
-X-Gm-Message-State: AOAM533OZLaW+jc4nBUfSWKuYrxWiVbbtp+EESjz1xtBNqXpkHjbHbRL
-        4QME8V8aLwUdWwBtkKpqJyNZHJkKmvK1fseOJVc=
-X-Google-Smtp-Source: ABdhPJy/mBsp9CSgKVk7RwmPZ75DVCY0gpvkm61Th7q/HeRy2l6eL8l1Pm+5aPIriaAiHHAtcnSocA==
-X-Received: by 2002:ac2:4906:: with SMTP id n6mr1077689lfi.592.1625170525486;
-        Thu, 01 Jul 2021 13:15:25 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id n17sm63704lft.74.2021.07.01.13.15.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Jul 2021 13:15:24 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id p24so10219914ljj.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 13:15:23 -0700 (PDT)
-X-Received: by 2002:a05:651c:32e:: with SMTP id b14mr965880ljp.251.1625170523672;
- Thu, 01 Jul 2021 13:15:23 -0700 (PDT)
+        id S233842AbhGAUSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 16:18:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57422 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232113AbhGAUSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 16:18:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76C6661411;
+        Thu,  1 Jul 2021 20:15:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625170546;
+        bh=mDHH5k4BbJmf2Zws784yhvUtgLilXdWIMMsget5ZbDM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=gSdR4+83pd3eDayQpkjTGyRT9eWXelciijCQgcv7/WVpDp8f9I1vhHPT1t//TG6S5
+         rVc5vAAjvidShogvjJJ1pP3LeKOvN9mmCDFTMyOn4VcXCmv4yuj/YfXGpBwGoPPLeR
+         UwNt1mlXFgRNarkKG/ZSCnAFROFBsk5C7vd/trSaXsH+iNexjWhZT/qOgm1pGlMjkR
+         UmzbOMzwSEt2oZv+F/thJlgML0SZ6hIemGZcJzZLLyUFjYNI2YpVaCIK8tembAsrZU
+         FPp44QOteflolVhRd4XS4b5ieA43ocwblH+ljHEGN+qy/b0R7tiZwFl5O4rN6vUDLH
+         bK3BS9mHQYqxQ==
+Date:   Thu, 1 Jul 2021 15:15:45 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Robert Straw <drbawb@fatalsyntax.com>, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alex.williamson@redhat.com
+Subject: Re: [PATCH v2] PCI: Disable Samsung SM951/PM951 NVMe before FLR
+Message-ID: <20210701201545.GA85919@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <CAPM=9tzR4BqTtamrTy4T_XV7E0fUNyduaVtH5zAi=sqwX_3udg@mail.gmail.com>
-In-Reply-To: <CAPM=9tzR4BqTtamrTy4T_XV7E0fUNyduaVtH5zAi=sqwX_3udg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 1 Jul 2021 13:15:07 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whgcN6MEyZBgK3UZRw=vwd1CAAK9+rafmZ2vsOiGpsMSA@mail.gmail.com>
-Message-ID: <CAHk-=whgcN6MEyZBgK3UZRw=vwd1CAAK9+rafmZ2vsOiGpsMSA@mail.gmail.com>
-Subject: Re: [git pull] drm for 5.14-rc1
-To:     Dave Airlie <airlied@gmail.com>, Philip Yang <Philip.Yang@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YN4etaP6hInKvSgG@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 9:34 PM Dave Airlie <airlied@gmail.com> wrote:
->
-> Hi Linus,
->
-> This is the main drm pull request for 5.14-rc1.
->
-> I've done a test pull into your current tree, and hit two conflicts
-> (one in vc4, one in amdgpu), both seem pretty trivial, the amdgpu one
-> is recent and sfr sent out a resolution for it today.
+On Thu, Jul 01, 2021 at 08:59:49PM +0100, Christoph Hellwig wrote:
+> On Thu, Jul 01, 2021 at 02:38:56PM -0500, Bjorn Helgaas wrote:
+> > On Fri, Apr 30, 2021 at 06:01:19PM -0500, Robert Straw wrote:
+> > > The SM951/PM951, when used in conjunction with the vfio-pci driver and
+> > > passed to a KVM guest, can exhibit the fatal state addressed by the
+> > > existing `nvme_disable_and_flr` quirk. If the guest cleanly shuts down
+> > > the SSD, and vfio-pci attempts an FLR to the device while it is in this
+> > > state, the nvme driver will fail when it attempts to bind to the device
+> > > after the FLR due to the frozen config area, e.g:
+> > > 
+> > >   nvme nvme2: frozen state error detected, reset controller
+> > >   nvme nvme2: Removing after probe failure status: -12
+> > > 
+> > > By including this older model (Samsung 950 PRO) of the controller in the
+> > > existing quirk: the device is able to be cleanly reset after being used
+> > > by a KVM guest.
+> > > 
+> > > Signed-off-by: Robert Straw <drbawb@fatalsyntax.com>
+> > 
+> > Applied to pci/virtualization for v5.14, thanks!
+> 
+> FYI, I really do not like the idea of the PCIe core messing with NVMe
+> registers like this.
 
-Well, the resolutions may be trivial, but the conflict made me look at
-the code, and it's buggy.
+I hadn't looked at the nvme_disable_and_flr() implementation, but yes,
+I see what you mean, that *is* ugly.  I dropped this patch for now.
 
-Commit 04d8d73dbcbe ("drm/amdgpu: add common HMM get pages function")
-is broken. It made the code do
+I see that you suggested earlier that we not allow these devices to be
+assigned via VFIO [1].  Is that practical?  Sounds like it could be
+fairly punitive.
 
-        mmap_read_lock(mm);
-        vma = find_vma(mm, start);
-        mmap_read_unlock(mm);
+I assume this reset is normally used when vfio-pci is the driver in
+the host kernel and there probably is no guest.  In that particular
+case, I'd guess there's no conflict, but as you say, the sysfs reset
+attribute could trigger this reset when there *is* a guest driver, so
+there *would* be a conflict.
 
-and then it *uses* that "vma" after it has dropped the lock.
+Could we coordinate this reset with vfio somehow so we only use
+nvme_disable_and_flr() when there is no guest?
 
-That's a big no-no - once you've dropped the lock, the vma contents
-simply aren't reliable any more. That mapping could now be unmapped
-and removed at any time.
+Bjorn
 
-Now, the conflict actually made one of the uses go away (switching to
-vma_lookup() means that the subsequent code no longer needs to look at
-"vm_start" to verify we're actually _inside_ the vma), but it still
-checks for vma->vm_file afterwards.
-
-So those locking changes in commit 04d8d73dbcbe are completely bogus.
-
-I tried to fix up that bug while handling the conflict, but who knows
-what else similar is going on elsewhere.
-
-So I would ask people to
-
- (a) verify that I didn't make things worse as I fixed things up (note
-how I had to change the last argument to amdgpu_hmm_range_get_pages()
-from false to true etc).
-
- (b) go and look at their vma lookup code: you can't just look up a
-vma under the lock, and then drop the lock, and then think things stay
-stable.
-
-In particular for that (b) case: it is *NOT* enough to look up
-vma->vm_file inside the lock and cache that. No - if the test is about
-"no backing file before looking up pages", then you have to *keep*
-holding the lock until after you've actually looked up the pages!
-
-Because otherwise any test for "vma->vm_file" is entirely pointless,
-for the same reason it's buggy to even look at it after dropping the
-lock: because once you've dropped the lock, the thing you just tested
-for might not be true any more.
-
-So no, it's not valid to do
-
-    bool has_file = vma && vma->vm_file;
-
-and then drop the lock, because you don't use 'vma' any more as a
-pointer, and then use 'has_file' outside the lock. Because after
-you've dropped the lock, 'has_file' is now meaningless.
-
-So it's not just about "you can't look at vma->vm_file after dropping
-the lock". It's more fundamental than that. Any *decision* you make
-based on the vma is entirely pointless and moot after the lock is
-dropped!
-
-Did I fix it up correctly? Who knows. The code makes more sense to me
-now and seems valid. But I really *really* want to stress how locking
-is important.
-
-You also can't just unlock in the middle of an operation - even if you
-then take the lock *again* later (as amdgpu_hmm_range_get_pages() then
-did), the fact that you unlocked in the middle means that all the
-earlier tests you did are simply no longer valid when you re-take the
-lock.
-
-                 Linus
+[1] https://lore.kernel.org/r/YKTP2GQkLz5jma/q@infradead.org
