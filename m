@@ -2,134 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680983B8EF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB383B8EF6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 10:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235465AbhGAInW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 04:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235235AbhGAInV (ORCPT
+        id S235449AbhGAImO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 04:42:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43763 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235356AbhGAImN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 04:43:21 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFCDC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 01:40:51 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id i3-20020a05620a1503b02903b2ffa0a87fso3690877qkk.18
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 01:40:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=5iHoNZMOeP6TxsWwP/0krCRRwCbLGs4FQeU+EZRnVpw=;
-        b=FMpj5JxuvGNfBzF6vXgu2ty+hfpspeI/EDm3LJYTsJoaCNE3k6TVARsbPBxXFX4nWm
-         1HoNvamktFRK3begTvvzpfatrEad5S90Acr/VAL1gvywFra+8hYcXivsK0/KDNEQmoL+
-         Vfqp6Ej0zCR4SHWdJKdm0irz/YBGo4kKOJyhXv7XrFMuCtX7xJfrRIGY7RGmQMtl2ifu
-         dm8fMDH76QKCAL5NJBWJXdxOoqNHMBdk5/w03UE3OnrblaMwURXPUro8tyjfXesNsIeB
-         tJIHFJqgIgZzyVsNbxUVFSlBS3fFw7lBxxoX5x3NbOv5OZ4Xm2qPiN7EUtBzyqiN9TXX
-         oSVA==
+        Thu, 1 Jul 2021 04:42:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625128783;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u9jAbsencUUDdK5AITgRqpk4mB/AMqBStj1da/54uyc=;
+        b=f96rBK/TT4CLe0Q34bDYMJ2tHFBcg5r9qNK/eNwZgO5R3Tggat82bH4DFuKrE9pXKlK35z
+        VTNVateNQ+qMhXZN3jy2gFT3wWFnPLOQH7peWeeDTM4cksadIIVagLvQv7PyBMOvawutVd
+        nASmf6R9qjaGeTNfmoUzzSMxS8VOg3A=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-UuPCW9mWP9aMSAYALqx_jA-1; Thu, 01 Jul 2021 04:39:41 -0400
+X-MC-Unique: UuPCW9mWP9aMSAYALqx_jA-1
+Received: by mail-ed1-f72.google.com with SMTP id cn11-20020a0564020cabb0290396d773d4c7so2338316edb.18
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 01:39:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=5iHoNZMOeP6TxsWwP/0krCRRwCbLGs4FQeU+EZRnVpw=;
-        b=HVL418kdvMus8Fw4NGT7matN5/CSMTqzm92PsMW5CkMKcxzjggJ8BwxfV4EpC63MW6
-         Z76//Mz7nr1lIB9Y6WqcSEtrhJ/KA5VP9QeET5jmIe/cnzP+asmajWCVrNXa2mKWEiiC
-         jKXn3OFGwMKQiZzCPMrx91ksmJ+QNQLSd1AF3/th83Q9Kx4ep0Lfxf6mEP4eTasSiWOO
-         MntoPA53KhfhY88q0ANs2CHzdFniy/7EONPQl5uKh7tPh1+xMUFSey6Yl7/nwHetVKZd
-         ikDgf303r4Sc1oo+Wfl2ObT/5SUNN+v5nC9Ll1s12nXLex2s4uqIB9HXszlyyuYoqTH8
-         rUNA==
-X-Gm-Message-State: AOAM5323oRBBH9RvfuO/b/+6EOHAwiumEIxEA5yqzR7hZ2teWNYSN4nW
-        xMuyKNUreiTFBeSp99WIiknow/gfqg==
-X-Google-Smtp-Source: ABdhPJzh0BWd6kKdTshLd8GOa6BvrBKw2SUY1e5kpAyenT4O3KV55wn97GNSQeSm1oacAHDSzUhCAtKGzg==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:8b0e:c57f:ff29:7e4])
- (user=elver job=sendgmr) by 2002:ad4:4ba4:: with SMTP id i4mr34049163qvw.42.1625128850422;
- Thu, 01 Jul 2021 01:40:50 -0700 (PDT)
-Date:   Thu,  1 Jul 2021 10:38:43 +0200
-Message-Id: <20210701083842.580466-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v2] perf: Require CAP_KILL if sigtrap is requested
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, peterz@infradead.org
-Cc:     tglx@linutronix.de, mingo@kernel.org, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org,
-        linux-perf-users@vger.kernel.org, ebiederm@xmission.com,
-        omosnace@redhat.com, serge@hallyn.com,
-        linux-security-module@vger.kernel.org, stable@vger.kernel.org,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=u9jAbsencUUDdK5AITgRqpk4mB/AMqBStj1da/54uyc=;
+        b=oo/ZE5QDogREGuFYTxgtWzLl6KpGmlv68qopUaE71KB3w/I5/bZvHrTKiNHF+6suo8
+         0M9r0tzaQ3e8y/4k6X8aquQUJUafQad18RPdSeOBcEnnf7uxHeafmqUfdGzKnwccnj+L
+         o3fZQ1DAK36/bkH2GN9wpJESliXeHnw2nJhnJuqOd5OsPGNJZJu70+UYSgs15PVOuUTP
+         Yql9D0SnqbYSb+XlfeuH4j1FKftfpFZ7Z+vJuGom/bApzOQmevysZNKZYVioaH+Zvc9o
+         I2FAuX9xmgjHsuXDCTYk1aYLxyHtQwDl01bD7COU4JGKVBrNJU7Ld+a/w8QDgHRPxtNb
+         fTmg==
+X-Gm-Message-State: AOAM533N+pMHiVVLihltYI22apgCYYC3A1AD1SdrUeQhSt05H5u9t4t3
+        LvQqXnHsruBBsPPL/SHw2uEP9uroEaqKUuVZtGuOvHXTOOgGcDr5IVfQbpGLhPfJETz1fZePtuK
+        2vxIWaprRNy4u2MUGoGith6dz
+X-Received: by 2002:a05:6402:176f:: with SMTP id da15mr51597390edb.334.1625128780805;
+        Thu, 01 Jul 2021 01:39:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwjM9KkxtshOjO1NdUjE9y5FxAxm9cYgDU4y0IKWEB3WTjlpt1wyNiLoAcJdRJ2Lm+4zJaUzQ==
+X-Received: by 2002:a05:6402:176f:: with SMTP id da15mr51597374edb.334.1625128780670;
+        Thu, 01 Jul 2021 01:39:40 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id q5sm10322484ejc.117.2021.07.01.01.39.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Jul 2021 01:39:40 -0700 (PDT)
+Subject: Re: [PATCH 2/4] MFD: intel_pmt: Remove OOBMSM device
+To:     david.e.box@linux.intel.com, Lee Jones <lee.jones@linaro.org>
+Cc:     mgross@linux.intel.com, bhelgaas@google.com,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pci@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20210617215408.1412409-1-david.e.box@linux.intel.com>
+ <20210617215408.1412409-3-david.e.box@linux.intel.com>
+ <YNxENGGctLXmifzj@dell>
+ <f590ee871d0527a12b307f1494cb4c8a91c5e3c2.camel@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e734a968-818a-380d-0ae5-fee41b3db246@redhat.com>
+Date:   Thu, 1 Jul 2021 10:39:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <f590ee871d0527a12b307f1494cb4c8a91c5e3c2.camel@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If perf_event_open() is called with another task as target and
-perf_event_attr::sigtrap is set, and the target task's user does not
-match the calling user, also require the CAP_KILL capability.
+Hi,
 
-Otherwise, with the CAP_PERFMON capability alone it would be possible
-for a user to send SIGTRAP signals via perf events to another user's
-tasks. This could potentially result in those tasks being terminated if
-they cannot handle SIGTRAP signals.
+On 6/30/21 11:11 PM, David E. Box wrote:
+> On Wed, 2021-06-30 at 11:15 +0100, Lee Jones wrote:
+>> On Thu, 17 Jun 2021, David E. Box wrote:
+>>
+>>> Unlike the other devices in intel_pmt, the Out of Band Management
+>>> Services
+>>> Module (OOBMSM) is actually not a PMT dedicated device. It can also
+>>> be used
+>>> to describe non-PMT capabilities. Like PMT, these capabilities are
+>>> also
+>>> enumerated using PCIe Vendor Specific registers in config space. In
+>>> order
+>>> to better support these devices without the confusion of a
+>>> dependency on
+>>> MFD_INTEL_PMT, remove the OOBMSM device from intel_pmt so that it
+>>> can be
+>>> later placed in its own driver. Since much of the same code will be
+>>> used by
+>>> intel_pmt and the new driver, create a new file with symbols to be
+>>> used by
+>>> both.
+>>>
+>>> While performing this split we need to also handle the creation of
+>>> platform
+>>> devices for the non-PMT capabilities. Currently PMT devices are
+>>> named by
+>>> their capability (e.g. pmt_telemetry). Instead, generically name
+>>> them by
+>>> their capability ID (e.g. intel_extnd_cap_2). This allows the IDs
+>>> to be
+>>> created automatically.  However, to ensure that unsupported devices
+>>> aren't
+>>> created, use an allow list to specify supported capabilities.
+>>>
+>>> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+>>> ---
+>>>  MAINTAINERS                                |   1 +
+>>>  drivers/mfd/Kconfig                        |   4 +
+>>>  drivers/mfd/Makefile                       |   1 +
+>>>  drivers/mfd/intel_extended_caps.c          | 208
+>>> +++++++++++++++++++++
+>>
+>> Please consider moving this <whatever this is> out to either
+>> drivers/pci or drivers/platform/x86.
+> 
+> None of the cell drivers are in MFD, only the PCI drivers from which
+> the cells are created. I understood that these should be in MFD. But
+> moving it to drivers/platform/x86 would be fine with me. That keeps the
+> code together in the same subsystem. Comment from Hans or Andy? 
 
-Note: The check complements the existing capability check, but is not
-supposed to supersede the ptrace_may_access() check. At a high level we
-now have:
+I'm fine with moving everything to drivers/platform/x86, but AFAIK
+usually the actual code which has the MFD cells and creates the
+child devices usually lives under drivers/mfd
 
-	capable of CAP_PERFMON and (CAP_KILL if sigtrap)
-		OR
-	ptrace_may_access() // also checks for same thread-group and uid
+Regards,
 
-Fixes: 97ba62b27867 ("perf: Add support for SIGTRAP on perf events")
-Cc: <stable@vger.kernel.org> # 5.13+
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Marco Elver <elver@google.com>
----
-v2:
-* Drop kill_capable() and just check CAP_KILL (reported by Ondrej Mosnacek).
-* Use ns_capable(__task_cred(task)->user_ns, CAP_KILL) to check for
-  capability in target task's ns (reported by Ondrej Mosnacek).
----
- kernel/events/core.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+Hans
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index fe88d6eea3c2..43c99695dc3f 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -12152,10 +12152,23 @@ SYSCALL_DEFINE5(perf_event_open,
- 	}
- 
- 	if (task) {
-+		bool is_capable;
-+
- 		err = down_read_interruptible(&task->signal->exec_update_lock);
- 		if (err)
- 			goto err_file;
- 
-+		is_capable = perfmon_capable();
-+		if (attr.sigtrap) {
-+			/*
-+			 * perf_event_attr::sigtrap sends signals to the other
-+			 * task. Require the current task to have CAP_KILL.
-+			 */
-+			rcu_read_lock();
-+			is_capable &= ns_capable(__task_cred(task)->user_ns, CAP_KILL);
-+			rcu_read_unlock();
-+		}
-+
- 		/*
- 		 * Preserve ptrace permission check for backwards compatibility.
- 		 *
-@@ -12165,7 +12178,7 @@ SYSCALL_DEFINE5(perf_event_open,
- 		 * perf_event_exit_task() that could imply).
- 		 */
- 		err = -EACCES;
--		if (!perfmon_capable() && !ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS))
-+		if (!is_capable && !ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS))
- 			goto err_cred;
- 	}
- 
--- 
-2.32.0.93.g670b81a890-goog
+
+
+> 
+>>
+>> I suggest Andy should also be on Cc.
+>>
+>>>  drivers/mfd/intel_extended_caps.h          |  40 ++++
+>>>  drivers/mfd/intel_pmt.c                    | 198 ++---------------
+>>> ---
+>>>  drivers/platform/x86/intel_pmt_crashlog.c  |   2 +-
+>>>  drivers/platform/x86/intel_pmt_telemetry.c |   2 +-
+>>>  8 files changed, 270 insertions(+), 186 deletions(-)
+>>>  create mode 100644 drivers/mfd/intel_extended_caps.c
+>>>  create mode 100644 drivers/mfd/intel_extended_caps.h
+>>
+> 
+> 
 
