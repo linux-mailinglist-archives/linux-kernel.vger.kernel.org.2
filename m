@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E171F3B9541
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7363B9542
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbhGARMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 13:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbhGARMA (ORCPT
+        id S233023AbhGARMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 13:12:13 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45660 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229974AbhGARMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 13:12:00 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F8BC061762;
-        Thu,  1 Jul 2021 10:09:29 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 32F041F445DA
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     ebiederm@xmission.com (Eric W. Biederman)
-Cc:     luto@kernel.org, tglx@linutronix.de, keescook@chromium.org,
-        gofmanp@gmail.com, christian.brauner@ubuntu.com,
-        peterz@infradead.org, willy@infradead.org, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, x86@kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v8 3/7] kernel: Implement selective syscall userspace
- redirection
-Organization: Collabora
-References: <20201127193238.821364-1-krisman@collabora.com>
-        <20201127193238.821364-4-krisman@collabora.com>
-        <8735szowmu.fsf@disp2133>
-Date:   Thu, 01 Jul 2021 13:09:21 -0400
-In-Reply-To: <8735szowmu.fsf@disp2133> (Eric W. Biederman's message of "Wed,
-        30 Jun 2021 16:44:41 -0500")
-Message-ID: <87mtr6gdvi.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        Thu, 1 Jul 2021 13:12:12 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id CA5FB20501;
+        Thu,  1 Jul 2021 17:09:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625159380; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HKgU83K+SbwrjjoMswEJgStzpmG9cfIkbb3pajP9b5Y=;
+        b=shNkbBtwyJsl35/88xvhwK+0xiMjCvdB2GawA+Y1/rg8sqJmZW1EMzNWkS4wp3RlRXyTCQ
+        M7F6u9QIql59jxkrCz7rNp98GH5EQlWIrnjqAQuCYB+zYVrykHd3d8PLjb7Od1HTe/emgG
+        PBvVj1TWzGVYa+i6GolYKRwt4okV0Bo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625159380;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HKgU83K+SbwrjjoMswEJgStzpmG9cfIkbb3pajP9b5Y=;
+        b=lFuJWV43h1yj+PcQiYiF1eQn6pqXaNcUQzYVfHW/C8AAHUOB37PhA1q8y7S69alCplIrmd
+        +OemJGquNEI+i/CA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 4AF0BA3B8B;
+        Thu,  1 Jul 2021 17:09:39 +0000 (UTC)
+Date:   Thu, 01 Jul 2021 19:09:39 +0200
+Message-ID: <s5hk0mahsfg.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Andy Chi <andy.chi@canonical.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Kailang Yang <kailang@realtek.com>,
+        Jeremy Szu <jeremy.szu@canonical.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Sami Loone <sami@loone.fi>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH v2 1/3] ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook 450 G8
+In-Reply-To: <20210701091417.9696-1-andy.chi@canonical.com>
+References: <20210701091417.9696-1-andy.chi@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ebiederm@xmission.com (Eric W. Biederman) writes:
+On Thu, 01 Jul 2021 11:14:13 +0200,
+Andy Chi wrote:
+> 
+> The HP ProBook 450 G8 using ALC236 codec which using 0x02 to
+> control mute LED and 0x01 to control micmute LED.
+> Therefore, add a quirk to make it works.
+> 
+> Signed-off-by: Andy Chi <andy.chi@canonical.com>
 
-> Why does do_syscal_user_dispatch call do_exit(SIGSEGV) and
-> do_exit(SIGSYS) instead of force_sig(SIGSEGV) and force_sig(SIGSYS)?
->
-> Looking at the code these cases are not expected to happen, so I would
-> be surprised if userspace depends on any particular behaviour on the
-> failure path so I think we can change this.
+Applied all three patches now.  Thanks.
 
-Hi Eric,
 
-There is not really a good reason, and the use case that originated the
-feature doesn't rely on it.
-
-Unless I'm missing yet another problem and others correct me, I think
-it makes sense to change it as you described.
-
-> Is using do_exit in this way something you copied from seccomp?
-
-I'm not sure, its been a while, but I think it might be just that.  The
-first prototype of SUD was implemented as a seccomp mode.
-
-> The reason I am asking is that by using do_exit you deprive userspace
-> of the change to catch the signal handler and try and fix things.
->
-> Also by using do_exit only a single thread of a multi-thread application
-> is terminated which seems wrong.
->
-> I am asking because I am going through the callers of do_exit so I can
-> refactor things and clean things up and this use just looks wrong.
-
-Thanks,
-
--- 
-Gabriel Krisman Bertazi
+Takashi
