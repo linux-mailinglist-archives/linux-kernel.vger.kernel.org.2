@@ -2,136 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDA53B8C52
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 04:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97623B8C58
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 04:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238807AbhGAC1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 22:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43258 "EHLO
+        id S238832AbhGAC2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 22:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238695AbhGAC1Z (ORCPT
+        with ESMTP id S238721AbhGAC1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 22:27:25 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0992C061756;
-        Wed, 30 Jun 2021 19:24:54 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id d16so8908492lfn.3;
-        Wed, 30 Jun 2021 19:24:54 -0700 (PDT)
+        Wed, 30 Jun 2021 22:27:55 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD96C061230;
+        Wed, 30 Jun 2021 19:25:25 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id m9so8381358ybo.5;
+        Wed, 30 Jun 2021 19:25:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+unlqaajKL+UdtGKZaBkJ1mKCovLdUju0d1rygjTQhE=;
-        b=U1f0aL/dsUy1ATWelleHa9rQI5g5jUd+AjxgB+5npU89mZoHOugUN9T8DmQYDgH2Fj
-         kStJ7b9KyuFRYJz2MBMIuUpUM3grAkr54sQTsh9+LRK3pM//wzAes2cyf+7Va/VR018D
-         TSP2lfHHwTbSU0GZuKGAMHgKTYyIIdIIXF9AzaKs/a39+t88PppneFd3Zjf4O79jIqXA
-         liDnW4775e3NagthQAIG2LrcRstkYCOLMWibKxb3BQNuk0RxdVtzqbiF0mgPUkJh+lDb
-         G55QTWZ7bQQahv/H4POlpzSHfCakKQh3ooCbCESlktHCEv1s0FiET4i+LrJduqrGOwad
-         sebw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EZ5joYeT1vWGOdC639vm4xzdrB9GYQUWOsxh2Cw62fs=;
+        b=BkB0e4A4lqcB9HHNA2CIuOXjjNW9v8VDOmenRqaJ781r8n/0x+dsT0IBYHzX3rQweN
+         BISCfVoYeGNeT0Y/7Amc1ZmdM13+MLVVny00hy8YUXVvf7njRGBYJeIlS3kJebNG9/DS
+         dQLrtToWKbw0tikxx+0n9EZ3a5ePESjLiPPUsKLTpObgT+t/+C3uqepOCYfSdJ8ZI8a6
+         Zg3jWh+72spwkqxwgS6IfiYRiuvY1A2Lf0u/xNrvu60BnWfuxylNrUvAuvmyDhfl7wYT
+         A611/g308s2p7vtfQG+FOLghXJzgMTSg4u/pl5ZSvR/F4aoKqIsFQP7yAopDZOrHbZm9
+         E9GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+unlqaajKL+UdtGKZaBkJ1mKCovLdUju0d1rygjTQhE=;
-        b=naCpQgXejg51j8iIFY+NRL6KEUaL35hc+eS7GxlUTbK+olXJbuKy8D12R4G8ts8IiH
-         UxIZlUa/aUC8TxY+ul8hDxExBYjf4NGMK7J1eh0InzkAL8ub5NwyzunhLI2IqwjzNHvw
-         CRNYYDYkagl4TYw3HnJL1SfAW/UZov0cIMxLFQvJIPhCwyZMMTFr6OlEPZJ65g+/u0zB
-         aC7z0zFIBfnhdEYxEJeqQnQ7I7mCQlS5kObGaTaZ7O2xpDjW7/a2OF3EjUm08yMc4zGt
-         InfvGkMB6P1GOsRIHmyEqRe38hhRxsaq1CoWMIcJUfHJMOFpXieL9GbDEoSfhjqphSI/
-         06Gg==
-X-Gm-Message-State: AOAM531NoHgQw8BxVy0fJz+yJVoEx2+g/KzVvWSHPXV07K+VL2FwNmdB
-        yBWTUkUPYwPoaO//CyWN3So=
-X-Google-Smtp-Source: ABdhPJwRFghxwlHjwBfKGp6n4gvKiwCuXQ94+KGQ/Dq0axXpCaFiWVoPodkv6TpT22lTa+8o/SercQ==
-X-Received: by 2002:a05:6512:1048:: with SMTP id c8mr29229001lfb.480.1625106293053;
-        Wed, 30 Jun 2021 19:24:53 -0700 (PDT)
-Received: from localhost.localdomain (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
-        by smtp.gmail.com with ESMTPSA id v7sm2407262ljn.14.2021.06.30.19.24.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 19:24:52 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v1 12/12] ARM: tegra: nexus7: Enable USB OTG mode
-Date:   Thu,  1 Jul 2021 05:24:05 +0300
-Message-Id: <20210701022405.10817-13-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210701022405.10817-1-digetx@gmail.com>
-References: <20210701022405.10817-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EZ5joYeT1vWGOdC639vm4xzdrB9GYQUWOsxh2Cw62fs=;
+        b=ZN3uIDrm8AQkxV1xAzfYMiDwiYK9lFiJKYFY9gQF35CmCK1Fnj5O++lFrEU6q8TnE+
+         cuw63nzHNEOYEvOx6WhVBxsaK5nQKyKTuN8aBMCTqR7A4N4zdfg0GtYxR31au17AcsEa
+         jVvMFb9uHmFu5CdAHvXmpz+fa0XED7YjZYvcx5x14hZ80uoI0JK7wxyYvLCo+r4ntTqc
+         jVGtfiqnA8LpWh3W0zmJ81j3XBZ/AG85pGslS11cIhAf4E8YFIQfFS5ntcnas/PrYHTR
+         0TIi1pKsFcYPuikKb8sqM2+lbCGBvQT7ADLAtiySJZzn8za+OdmBu1GB8btdW6tWfmLf
+         9qpg==
+X-Gm-Message-State: AOAM5335YnvXbcU8ESEuQuUmnmMJC8KVXa32xF0rMxB2DxMvzrqjWfkS
+        HT2HgS6E+nw4aeIL5lu6HfCHY7pv+5hdo7Mx9co=
+X-Google-Smtp-Source: ABdhPJxpBls7pzAWN/Mwft/OqHg/7WX7iWrNpIvnEjCOGwEJubVbMovb1/Y4YrI++b13jH9vqJQvtaCGu7A4SMdBtkQ=
+X-Received: by 2002:a25:6c04:: with SMTP id h4mr50224689ybc.122.1625106324052;
+ Wed, 30 Jun 2021 19:25:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210701002037.912625-1-drew@beagleboard.org> <20210701002037.912625-3-drew@beagleboard.org>
+In-Reply-To: <20210701002037.912625-3-drew@beagleboard.org>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Thu, 1 Jul 2021 10:25:12 +0800
+Message-ID: <CAEUhbmXuxSePo22y_keGsqPWyCSAoUdTQPqCRJmYXS7rT4DhZA@mail.gmail.com>
+Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO driver
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Huan Feng <huan.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nexus 7 has OTG-cable microUSB port, enable OTG mode. USB peripheral
-devices now can be connected to Nexus 7 using OTG adapter, switching
-USB port into host mode.
+On Thu, Jul 1, 2021 at 8:23 AM Drew Fustini <drew@beagleboard.org> wrote:
+>
+> Add GPIO driver for the StarFive JH7100 SoC [1] used on the
+> BeagleV Starlight JH7100 board [2].
+>
+> [1] https://github.com/starfive-tech/beaglev_doc/
+> [2] https://github.com/beagleboard/beaglev-starlight
+>
+> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> ---
+>  MAINTAINERS                         |   8 +
+>  drivers/gpio/Kconfig                |   8 +
+>  drivers/gpio/Makefile               |   1 +
+>  drivers/gpio/gpio-starfive-jh7100.c | 425 ++++++++++++++++++++++++++++
+>  4 files changed, 442 insertions(+)
+>  create mode 100644 drivers/gpio/gpio-starfive-jh7100.c
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index bc0ceef87b73..04fccc2ceffa 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17423,6 +17423,14 @@ S:     Supported
+>  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git
+>  F:     drivers/staging/
+>
+> +SIFVE JH7100 SOC GPIO DRIVER
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- .../tegra30-asus-nexus7-grouper-common.dtsi   | 25 +++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
+typo of SIFIVE, but it should be STARFIVE
 
-diff --git a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
-index 8bc552b09672..c341e8971b2f 100644
---- a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
-+++ b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
-@@ -941,9 +941,29 @@ power_supply: charger@6a {
- 			interrupts = <TEGRA_GPIO(V, 1) IRQ_TYPE_EDGE_BOTH>;
- 
- 			summit,enable-charge-control = <SMB3XX_CHG_ENABLE_PIN_ACTIVE_LOW>;
-+			summit,inok-polarity = <SMB3XX_SYSOK_INOK_ACTIVE_LOW>;
- 			summit,enable-usb-charging;
- 
- 			monitored-battery = <&battery_cell>;
-+
-+			usb_vbus: usb-vbus {
-+				regulator-name = "usb_vbus";
-+				regulator-min-microvolt = <5000000>;
-+				regulator-max-microvolt = <5000000>;
-+				regulator-min-microamp = <750000>;
-+				regulator-max-microamp = <750000>;
-+
-+				/*
-+				 * SMB347 INOK input pin is connected to PMIC's
-+				 * ACOK output, which is fixed to ACTIVE_LOW as
-+				 * long as battery voltage is in a good range.
-+				 *
-+				 * Active INOK disables SMB347 output, so polarity
-+				 * needs to be toggled when we want to get the
-+				 * output.
-+				 */
-+				summit,needs-inok-toggle;
-+			};
- 		};
- 	};
- 
-@@ -1017,12 +1037,13 @@ sdmmc4: mmc@78000600 {
- 	usb@7d000000 {
- 		compatible = "nvidia,tegra30-udc";
- 		status = "okay";
--		dr_mode = "peripheral";
-+		dr_mode = "otg";
-+		vbus-supply = <&usb_vbus>;
- 	};
- 
- 	usb-phy@7d000000 {
- 		status = "okay";
--		dr_mode = "peripheral";
-+		dr_mode = "otg";
- 		nvidia,hssync-start-delay = <0>;
- 		nvidia,xcvr-lsfslew = <2>;
- 		nvidia,xcvr-lsrslew = <2>;
--- 
-2.30.2
+> +M:     Drew Fustini <drew@beagleboard.org>
+> +M:     Huan Feng <huan.feng@starfivetech.com>
+> +L:     linux-riscv@lists.infradead.org
+> +L:     linux-gpio@vger.kernel.org
+> +F:     Documentation/devicetree/bindings/gpio/starfive,jh7100-gpio.yaml
+> +F:     drivers/gpio/gpio-starfive-jh7100.c
+> +
 
+[snip]
+
+Regards,
+Bin
