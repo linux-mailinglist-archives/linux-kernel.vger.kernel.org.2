@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E19B3B9525
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056153B9528
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232785AbhGARFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 13:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhGARFE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 13:05:04 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD0DC061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 10:02:32 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id g7so9108653wri.7
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 10:02:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dJh7FVYjBCdjPmtoOdvfEtFDITIvKo/TmmTk+wz8FwY=;
-        b=cjqFxg3v1zZF3wtBoDE/4jCV14OwVtVivTacqhPCZYFXa5fHUMwH9GddxteGcnpCmk
-         QzEhtYqKec0j0Lk5Y9YZLqAeXl1cPhZXH0BIfRkGLw+Lc/TVfMD/Pf6Ai4mm3jqzWcG5
-         Q2wfBP7rHlTpQ1kkbdHxc9k+26fEhuPJ+Q+mFsdYfINWNGswOxsrzdNF8MdtYL9Osbn3
-         SeARqap8D8f5SikgcNJeXd8LLtrES/TzcpRTisd8M7rgFUHrOqLGvuQRQatyfcl+wTG8
-         AVBInElg4lDhZ6Z79kHeIGwxnyCB9KdFJD/2E6bCG5z79RvQO1wdo9k4yZ7YafCLMcgW
-         zipQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dJh7FVYjBCdjPmtoOdvfEtFDITIvKo/TmmTk+wz8FwY=;
-        b=rlO7C08ITdrYISO8AGzEVKRTJcMTA57BtJZZItU4Dp4He8dwl40iCXBMm4G+7tpjJF
-         89J1Llug5Bf7cZxnUOvNKBAnVemu5euRnVjhhzwyunexrxZPx/RdXO+l2gXUAYlm5AsX
-         7/8ewcm1P0SN+k9e2wblPcvYEXWI1xmWN4pa648nVvPhK/AE6PVAJ21RPsTbYp7koFnv
-         1iktKEeWeICFDEqwLO1ZhCpJmAgBUKqcMeu0qzdtVbKIJjMyGJmyqhm9l6R0KsWYliU/
-         XsUNsnmNd3EvUloHpyolM/LZSXVNpWraz0iggRrEj495p02JyrSu4NiQeb4bEg8Tc7OB
-         pS7w==
-X-Gm-Message-State: AOAM531gq36BqVtetZfo+wkzygeNXGUqEfD7jyCP2xR0cSGaKxNIY7Jm
-        9rPUhbgdO1s2nN007N37cdI=
-X-Google-Smtp-Source: ABdhPJzLws09u4c9E3LZw1Gyuf6AzC7yiwkotpB9uGpOXkKY+G9fDUG00ZywHHzO0aQ4yf7+jYrCiw==
-X-Received: by 2002:a5d:6841:: with SMTP id o1mr805000wrw.370.1625158951522;
-        Thu, 01 Jul 2021 10:02:31 -0700 (PDT)
-Received: from othello.cust.communityfibre.co.uk ([2a02:6b64:80a9:0:1be:22d4:3c1d:bcad])
-        by smtp.gmail.com with ESMTPSA id f6sm527442wrs.13.2021.07.01.10.02.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 10:02:31 -0700 (PDT)
-From:   Cassio Neri <cassio.neri@gmail.com>
-To:     john.stultz@linaro.org, tglx@linutronix.de
-Cc:     sboyd@kernel.org, linux-kernel@vger.kernel.org,
-        Cassio Neri <cassio.neri@gmail.com>
-Subject: [PATCH] time: Fix help message on TIME_KUNIT_TEST.
-Date:   Thu,  1 Jul 2021 18:02:15 +0100
-Message-Id: <20210701170214.133015-1-cassio.neri@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S230050AbhGARFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 13:05:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229812AbhGARFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 13:05:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21DAD6128E;
+        Thu,  1 Jul 2021 17:03:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625159001;
+        bh=TvfZ8ZpA+Bt++OF11xc9ysqfPKVPLi3/pVy70tRJvaY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aPWGJRQyi8Puk6QOPpyBUbKuqN0a6r7hDgnTirK3X6Oe75Dk1Eqb8Kg8++/Py6gZC
+         ekoyqyaAT/asilkL9vb9hLzM4lgCeoEONFMPrYsZCMPhPCTmTwDJoQOmHbON4vMP1y
+         Bg7pzhBFK2UpTqs4aFV8E4HCN2DL5MdvVEwj1A+sOZzTl5ZjMrGmdrHVIrJz6L41vO
+         lvmJP9Y+hTri7BmCSc56r0uO4xbwXjyUG3iNZmxCZu5qNysnfaFqwwUcwCMvZadqKa
+         UR1uziy7409pOjTVAA0Sdj67PIqjYZJKt9L5XNc0ZqHE46VJBUU3wPKvJUWJ/W6CZT
+         0AR5IZMBjoiYg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B526040B1A; Thu,  1 Jul 2021 14:03:16 -0300 (-03)
+Date:   Thu, 1 Jul 2021 14:03:16 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     James Clark <james.clark@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>, Al Grant <Al.Grant@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 5/5] perf arm-spe: Don't wait for PERF_RECORD_EXIT
+ event
+Message-ID: <YN31VC9e/33QYhwn@kernel.org>
+References: <20210519071939.1598923-1-leo.yan@linaro.org>
+ <20210519071939.1598923-6-leo.yan@linaro.org>
+ <369fd454-d94d-daa1-ead4-b42645ec4282@arm.com>
+ <20210628121217.GD200044@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628121217.GD200044@leoy-ThinkPad-X240s>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change 'RTC library' to 'kernel/time'.
-
-Signed-off-by: Cassio Neri <cassio.neri@gmail.com>
----
- kernel/time/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
-index 3610b1bef142..aa07f59809a1 100644
---- a/kernel/time/Kconfig
-+++ b/kernel/time/Kconfig
-@@ -69,7 +69,7 @@ config TIME_KUNIT_TEST
- 	depends on KUNIT
- 	default KUNIT_ALL_TESTS
- 	help
--	  Enable this option to test RTC library functions.
-+	  Enable this option to test kernel/time functions.
+Em Mon, Jun 28, 2021 at 08:12:17PM +0800, Leo Yan escreveu:
+> On Fri, Jun 25, 2021 at 02:25:15PM +0100, James Clark wrote:
+> > For the whole set:
+> > Reviewed-by: James Clark <james.clark@arm.com>
+> > Tested-by: James Clark <james.clark@arm.com>
  
- 	  If unsure, say N.
- 
+> > I see a big improvement in decoding involving multiple processes because the timestamps are now
 
-base-commit: 2d0a9eb23ccfdf11308bec6db0bc007585d919d2
--- 
-2.32.0
+> > 
+> > For example perf-exec samples are visible right before the exec is done, and on an
+> > application that forks, samples are visible from all processes. For example:
 
+> >    perf record -e arm_spe// -- bash -c "stress -c 1"
+> >    perf script
+
+> >    perf-exec  4502 [003] 259755.050409:          1    l1d-access:  ffff80001014b840 sched_clock+0x40 ([kernel.kallsyms])
+> >    perf-exec  4502 [003] 259755.050409:          1    tlb-access:  ffff80001014b840 sched_clock+0x40 ([kernel.kallsyms])
+> >    perf-exec  4502 [003] 259755.050409:          1        memory:  ffff80001014b840 sched_clock+0x40 ([kernel.kallsyms])
+> >    perf-exec  4502 [003] 259755.050411:          1    tlb-access:  ffff800010120fb8 __rcu_read_lock+0x0 ([kernel.kallsyms])
+> >    bash  4502 [003] 259755.050411:          1   branch-miss:  ffff8000105b2a40 memcpy+0x80 ([kernel.kallsyms])
+> >    bash  4502 [003] 259755.050411:          1    tlb-access:                 0 [unknown] ([unknown])
+> >    ...
+> >    stress  4502 [003] 259755.051468:          1    l1d-access:  ffff800010259a24 __vma_adjust+0x1f4 ([kernel.kallsyms])
+> >    stress  4502 [003] 259755.051468:          1    tlb-access:  ffff800010259a24 __vma_adjust+0x1f4 ([kernel.kallsyms])
+> >    stress  4502 [003] 259755.051468:          1        memory:  ffff800010259a24 __vma_adjust+0x1f4 ([kernel.kallsyms])
+
+> > Previously samples were only attributed to 'stress', which was obviously wrong.
+> 
+> Thanks a lot for the review and testing, James!
+> 
+> Hi Arnaldo, I confirmed this patch set can be cleanly applied on
+> the latest acme/perf/core branch, so could you pick up this patch
+> set?
+
+Applied, thanks, please let me know if there is still something
+outstanding,
+
+- Arnaldo
