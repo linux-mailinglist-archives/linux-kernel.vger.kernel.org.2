@@ -2,102 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C2B3B8FE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 11:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9403B8FE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 11:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235694AbhGAJlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 05:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53300 "EHLO
+        id S235780AbhGAJnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 05:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235296AbhGAJls (ORCPT
+        with ESMTP id S235362AbhGAJnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 05:41:48 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02BD7C061756;
-        Thu,  1 Jul 2021 02:39:18 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id m18so7359533wrv.2;
-        Thu, 01 Jul 2021 02:39:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=EteEmF3Lp/VaCzgm6zJMhc5umO2ASKXQnNmmMqr1tyY=;
-        b=n27K8xSc5i9k4pRnthrnVcOCeJ7Nl2hOJLEBy4pNnYc/TBewzXbVZfhTzlnkCiSZkH
-         +p1Ml12cArHwaAQuucyF4Y7bsC9WQLu3qOFSN5G8liifR9f/TYUXxg8Zr9qwoW21817z
-         Ljigm3UGNACmRDtyQJ+XcTFhI423ymHuXLbP7HECNQFoy7CaNNRBzmQyCvjEfpgToYyj
-         okdbdH9iH20L5JXc+M0diFvNYFBft9LDb1decwb2boaSbwXKriengXBtHtyruoR7vpHQ
-         dkAI1A67aUvw+wzWs7fllAZ6Zd/rVs2+9pGhOTttsJCzoF2q7idqNXde1mPxDGQ1sBJ0
-         kFEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=EteEmF3Lp/VaCzgm6zJMhc5umO2ASKXQnNmmMqr1tyY=;
-        b=IwSvdeQXicPNvWItp3sWubunMdOyOM4WXaZtUDnwE/rp2OlzA00haeNdAm+9IpQKr+
-         pb7wzWTs1clYpdqA9HQpLvX4S+FoKiMClI/NOMbgzpgtjrBb9K3wooBNYhUjU5s8zqQo
-         L4ys6UXr+PzYOUrCuF15GX7PYLafD1oklqIKcATagL2x8G0UpGFh6EcT3lbeIVwuT81B
-         GxU63cicS4IyWYf0tQK8CuoH9zRIVAm096gUJTnIVyeWa5J2lcF1A0aXn0E7b/v6v214
-         8rzhHXG3sIJfYOwUUqgerIgwFCBqeDoelXrTgd50Z6znmNNlm+4TniGNTT4DE48s7VM2
-         u3Pg==
-X-Gm-Message-State: AOAM531AvampGsptftqReZw5rCQcnQmYXIeZa2QZvvl6lmLNlL6L8WfB
-        kP21mtCinWz1z5pFsnV/UOfKBaretYk=
-X-Google-Smtp-Source: ABdhPJy1ZxB6OSrNUo8EIlwIhP2R2Oh066AMEgk+CCD2AjW50J2Uohgej+UhDxh5J4YfsYDMcgb8FA==
-X-Received: by 2002:a5d:6841:: with SMTP id o1mr14964784wrw.370.1625132356515;
-        Thu, 01 Jul 2021 02:39:16 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2de7:3e00:21:6759:f8f2:826e])
-        by smtp.gmail.com with ESMTPSA id k6sm22370164wms.8.2021.07.01.02.39.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 02:39:15 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        linux-phy@lists.infradead.org, linux-staging@lists.linux.dev,
-        linux-usb@vger.kernel.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: repair reference in USB IP DRIVER FOR HISILICON KIRIN 970
-Date:   Thu,  1 Jul 2021 11:39:03 +0200
-Message-Id: <20210701093903.28733-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 1 Jul 2021 05:43:04 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD24C061756;
+        Thu,  1 Jul 2021 02:40:34 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 6A0131F43DC5
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        drinkcat@chromium.org, hsinyi@chromium.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [RESEND PATCH 0/3] Misc bug fixes in mtk power domain driver
+Date:   Thu,  1 Jul 2021 11:40:21 +0200
+Message-Id: <20210701094024.1273759-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8de6b7edd493 ("phy: phy-hi3670-usb3: move driver from staging into
-phy") moves phy-hi3670-usb3.c from ./drivers/staging/hikey9xx/ to
-./drivers/phy/hisilicon/, but the new file entry in MAINTAINERS refers to
-./drivers/phy/hisilicon/phy-kirin970-usb3.c.
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+This series, originally sent by Bilal Wasim [1], initially broke my
+display in mainline (no gpu driver). The problem was not in the series
+itself, and, after [2], this series works as expected. I was able to go
+to the UI with and without the imgtec gpu driver on my Acer Chromebook
+R13 (elm). Hence I rebased on top of mainline and resend it to take into
+account for next merge window.
 
-  warning: no file matches  F:  drivers/phy/hisilicon/phy-kirin970-usb3.c
+Best regards,
+  Enric
 
-Repair the file entry by referring to the right location.
+[1] https://yhbt.net/lore/all/20210216165926.46bbafc7@a-VirtualBox/T/
+[2] https://patchwork.kernel.org/project/linux-mediatek/patch/20210625062448.3462177-1-enric.balletbo@collabora.com/
 
-Fixes: 8de6b7edd493 ("phy: phy-hi3670-usb3: move driver from staging into phy")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20210701
 
-Mauro, please ack.
-Greg, please pick this non-urgent minor fix on top of commit 8de6b7edd493
+Bilal Wasim (3):
+  soc: mediatek: pm-domains: Use correct mask for bus_prot_clr
+  soc: mediatek: pm-domains: Add domain_supply cap for mfg_async PD
+  arm64: dts: mediatek: mt8173: Add domain supply for mfg_async
 
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 4 ++++
+ arch/arm64/boot/dts/mediatek/mt8173-evb.dts  | 4 ++++
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi     | 2 +-
+ drivers/soc/mediatek/mt8173-pm-domains.h     | 1 +
+ drivers/soc/mediatek/mtk-pm-domains.h        | 2 +-
+ 5 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 66d047dc6880..a4e0c20b416a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19153,7 +19153,7 @@ M:	Mauro Carvalho Chehab <mchehab@kernel.org>
- L:	linux-usb@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml
--F:	drivers/phy/hisilicon/phy-kirin970-usb3.c
-+F:	drivers/phy/hisilicon/phy-hi3670-usb3.c
- 
- USB ISP116X DRIVER
- M:	Olav Kongas <ok@artecdesign.ee>
 -- 
-2.17.1
+2.30.2
 
