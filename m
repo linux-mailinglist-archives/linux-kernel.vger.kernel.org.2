@@ -2,114 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450A43B9145
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 13:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4A03B9157
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 13:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236234AbhGALoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 07:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236130AbhGALop (ORCPT
+        id S236314AbhGALxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 07:53:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37998 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236306AbhGALxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 07:44:45 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C03C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 04:42:15 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id 67-20020a17090a0fc9b02901725ed49016so843423pjz.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 04:42:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=q38CLcv3Qc5/VnHmOJCGbwYCeyjT7BxLYBjG3lO8V8o=;
-        b=nrTzjbXTJ583jwzSj7rquzxH5INOgxVWobYBAN17f6r5oUKwX7fYyMCxDV2tgb5rUm
-         MT28YVfEYuUn1dXa6kzklWmNBGvJIdHlkYt+uTh1wo8be2RGDMODVYHzwEG+dABIhuQO
-         6AFeNtAmNzZ6r+5oFzkmv0k68eIsBaT37zimSIl5M9e+IBWMVc+a2sruPas5Wp++hVqL
-         03WKhtLyz9yk+OPuY8gKntUzdJtdof7nDSode/tf0gqkA/Ykvg4W7ruLTdlbv86kduYG
-         loH/9W+J/eqcQpRjRK6p11NLAytVd1Q3Dk36xtbFTTLm4Qn/HvEpcdQH/QysxlbAzzUc
-         el7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=q38CLcv3Qc5/VnHmOJCGbwYCeyjT7BxLYBjG3lO8V8o=;
-        b=p4mWArMNrFaeCnO32WC2Ov/0017AfWhpDbwuIcMvqajIqDaQtMYogHkQUxSHwer7Na
-         5d1Te9ZuxwbvElYyT+yMBadH+UbucuWfeW7gC62fe3djaX+iKS1xQoguu/8m164LNadD
-         ijAoE1xPa5B8JpRBWEaSogWEjxATZCmEG3U0orrscSJEIzn9mWHR3gP2UWHtjceyHJg5
-         LJGVB0taLnOkDIGh0Vu4qE2HP2TRcRsIltZhjfC9pbQHY/uedwxCbDLYyVQIGQEJLXR3
-         THSgwIWx1PpiAtfr5Ti80kDPpOwl13ohCA45ERC4Dz/5OiZUfWoIhThk6ZlhGmGV0xzU
-         Gbwg==
-X-Gm-Message-State: AOAM533cqvsTKC3s9E4v798lzMWWUIoui7HEfHstdmAvJeSYTm+xsdy2
-        mHlkJuWWfme5qjzao3d0aWdZcdCmNdIU7g==
-X-Google-Smtp-Source: ABdhPJwjPFc+IE8nAUCCt52J1ZCY4jdK5B4dlkXLqbHs/d8R0v9W64jaPedb1uQaZxDheHhf8R1qQA==
-X-Received: by 2002:a17:90a:588b:: with SMTP id j11mr31801565pji.114.1625139734822;
-        Thu, 01 Jul 2021 04:42:14 -0700 (PDT)
-Received: from bj10045pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id z15sm27426787pgu.71.2021.07.01.04.42.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 01 Jul 2021 04:42:14 -0700 (PDT)
-From:   Zhenguo Zhao <zhenguo6858@gmail.com>
-To:     zhenguo6858@gmail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2] tty: n_gsm: delete DISC command frame as requester
-Date:   Thu,  1 Jul 2021 19:42:03 +0800
-Message-Id: <1625139723-23197-1-git-send-email-zhenguo6858@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Thu, 1 Jul 2021 07:53:43 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161BWr4h028347;
+        Thu, 1 Jul 2021 07:51:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type : subject :
+ from : in-reply-to : date : cc : message-id : references : to :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=CojOA0Cd6D44w89fGful52nUI3MSzEEZZlqaey3DZ9E=;
+ b=gOBbk0rP05XSU8lQ5OmAkivFJ6P7Wr+jSVsRakBGY2dRfWEpVdMfPtkjKqT8XENejFRu
+ sWiBTeT10Ox0yqpIoclsXVEVzwIa8MOJTFER8L+LFbr3P8gTsY7oB0g7DNgst5elOWV5
+ LqkVWJndzXy1cdbcvg60f7U2YcBCcX/tocxVet8u4RiZ5gKnUaMgNBL26km9bPwsStSM
+ 5FCQYptFIxPQWLG3KmSJiwBk3K0xLOEZrhhowOQzJRjptuykqZtItw2X/p0QyieddWto
+ foKsYdEPaeo7EXP2kvdJWckkRUB0xJ+D3NmaD1I3QPoGgZNDivHouh5gaLbnyWznYR8N 9A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39hc20278q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Jul 2021 07:51:06 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 161BX9Lc029817;
+        Thu, 1 Jul 2021 07:51:05 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39hc20277x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Jul 2021 07:51:05 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 161BldrJ009847;
+        Thu, 1 Jul 2021 11:51:04 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 39h19bgc81-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Jul 2021 11:51:03 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 161Bp1rN25625030
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 1 Jul 2021 11:51:01 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7A4ECA235B;
+        Thu,  1 Jul 2021 11:45:34 +0000 (GMT)
+Received: from smtpclient.apple (unknown [9.199.58.175])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 31079A2358;
+        Thu,  1 Jul 2021 11:45:33 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Subject: Re: [PATCH] sched/fair: Ensure _sum and _avg values stay consistent
+From:   Sachin Sant <sachinp@linux.vnet.ibm.com>
+In-Reply-To: <CAFpoUr1mpErE1Soa05p36wL1uTeojQ2mqNLJ1GKVnpJ+x-3itw@mail.gmail.com>
+Date:   Thu, 1 Jul 2021 17:15:31 +0530
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Message-Id: <C253482E-0B1E-4F38-92D6-6F00AFFA7DEF@linux.vnet.ibm.com>
+References: <20210624111815.57937-1-odin@uged.al>
+ <E16E71B3-E941-4522-AFF1-ABDF918FED19@linux.vnet.ibm.com>
+ <20210701103448.GL3840@techsingularity.net>
+ <CAFpoUr1mpErE1Soa05p36wL1uTeojQ2mqNLJ1GKVnpJ+x-3itw@mail.gmail.com>
+To:     Odin Ugedal <odin@uged.al>,
+        Mel Gorman <mgorman@techsingularity.net>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: TZ7z7bYZq0gtBFQlY98jyY8oklaKIpDi
+X-Proofpoint-ORIG-GUID: CBEB11oueOe_45huybhkWihmbwQs3sF3
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-01_07:2021-06-30,2021-07-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 mlxscore=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 malwarescore=0 suspectscore=0
+ impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2107010075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
 
-as initiator,it need to send DISC command ,as requester,there is
-no need to send the DISC control frame,it will cause redundant data.
 
-Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
----
- drivers/tty/n_gsm.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+> On 01-Jul-2021, at 4:39 PM, Odin Ugedal <odin@uged.al> wrote:
+>=20
+> tor. 1. jul. 2021 kl. 12:34 skrev Mel Gorman <mgorman@techsingularity.net=
+>:
+>>=20
+>> What was HEAD when you checked this? 1c35b07e6d39 was merged in the
+>> 5.14-rc1 merge window so would not be in 5.13.
+>=20
+> From the kernel log it looks like he used commit dbe69e433722
+> (somewhere in Linus' tree), and that should include my patch. I don't
+> think the patches from Vincent in the previous thread have been posted
+> properly, and I think those can fix the edge case you are seeing.
+>=20
+Sorry about the confusion. Yes I am using this code level.
 
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 5fea02c..1aa87d9 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -2050,7 +2050,8 @@ static int gsm_disconnect(struct gsm_mux *gsm)
- 	del_timer_sync(&gsm->t2_timer);
- 	/* Now we are sure T2 has stopped */
- 
--	gsm_dlci_begin_close(dlci);
-+	if (gsm->initiator)
-+		gsm_dlci_begin_close(dlci);
- 	wait_event_interruptible(gsm->event,
- 				dlci->state == DLCI_CLOSED);
- 
-@@ -3014,6 +3015,7 @@ static int gsmtty_open(struct tty_struct *tty, struct file *filp)
- static void gsmtty_close(struct tty_struct *tty, struct file *filp)
- {
- 	struct gsm_dlci *dlci = tty->driver_data;
-+	struct gsm_mux *gsm = dlci->gsm;
- 
- 	if (dlci == NULL)
- 		return;
-@@ -3024,7 +3026,8 @@ static void gsmtty_close(struct tty_struct *tty, struct file *filp)
- 	mutex_unlock(&dlci->mutex);
- 	if (tty_port_close_start(&dlci->port, tty, filp) == 0)
- 		return;
--	gsm_dlci_begin_close(dlci);
-+	if (gsm->initiator)
-+		gsm_dlci_begin_close(dlci);
- 	if (tty_port_initialized(&dlci->port) && C_HUPCL(tty))
- 		tty_port_lower_dtr_rts(&dlci->port);
- 	tty_port_close_end(&dlci->port, tty);
-@@ -3038,7 +3041,8 @@ static void gsmtty_hangup(struct tty_struct *tty)
- 	if (dlci->state == DLCI_CLOSED)
- 		return;
- 	tty_port_hangup(&dlci->port);
--	gsm_dlci_begin_close(dlci);
-+	if (gsm->initiator)
-+		gsm_dlci_begin_close(dlci);
- }
- 
- static int gsmtty_write(struct tty_struct *tty, const unsigned char *buf,
--- 
-1.9.1
+commit dbe69e43372212527abf48609aba7fc39a6daa27 (HEAD -> master, origin/mas=
+ter, origin/HEAD)
+Merge: a6eaf3850cb1 b6df00789e28
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed Jun 30 15:51:09 2021 -0700
+
+This does contain the patch from Odin.
+
+> This should mitigate some issues:
+> https://lore.kernel.org/lkml/20210622143154.GA804@vingu-book/
+>=20
+> while
+> https://lore.kernel.org/lkml/20210623071935.GA29143@vingu-book/
+> might also help in some cases as well.
+>=20
+> Both of those are needed to make sure that *_avg is zero whenever *_sum i=
+s zero.
+
+Okay, so additional patches are required to fix this problem completely.
+I can help test these.
+
+Thanks
+-Sachin
 
