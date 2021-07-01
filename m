@@ -2,125 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5783B98D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 01:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 029B53B98D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 01:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234158AbhGAXII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 19:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
+        id S234080AbhGAXKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 19:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233648AbhGAXIH (ORCPT
+        with ESMTP id S232827AbhGAXKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 19:08:07 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF32C061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 16:05:36 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id k16so9509806ios.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 16:05:36 -0700 (PDT)
+        Thu, 1 Jul 2021 19:10:45 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E4BC061764
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 16:08:13 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id k184so13460027ybf.12
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 16:08:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NiNIR6k4gDoDe9HuA7sGuhCI/TkwRDGteUCqF497qiU=;
-        b=Ow/9xnEEMDhkeugBMrtf5hTfF6mqrQRonwSEJ26ic5Nt0oKlElmcPATRr2c5IAGV43
-         +YErFUWWRqev2mSzxL1QcA0pBctGDwLTYlyrG9oXIo4JNDO5mI25ir4JrRHSKhzLtgd2
-         A9HcIj+7wwILa2VC6MzGJcdXM52Fd6mZ4wxbI=
+        bh=JVFwhu0Nl1U9FivJTXYgbITws6r7aJBlzJ81RHuWBSo=;
+        b=lYp1QR+VzXen7d2xJF2fbcLqhi1ay1+vCQpxCfKI+F1Y7rAEbyh89MNhAJooFga14A
+         2CH/m1K/T8X3/uyuzQjJDfWZHqlboXl4tsagwV7koZJU7jeAfOYCnWCgWa/O4R5fwY3k
+         yYnfPUXeE/8aSQXjZhSXs6EvokPk/NMTM5PpcQaBWdcNl0Dl55TWRBjo3DMictyRffxP
+         FNevKNKq8Ym1jcjlF+kQrzoOANVGeNb9pQxesajua1x+gbaUcYlzLUHWX9Mz/Ee+5Yf1
+         2ZFBoRILOFE+9MK5DbKOXMVrix+YZBY/am2DjjhmAb4abHoU+TtwSZ7pcjhIfuwthRJm
+         tOjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NiNIR6k4gDoDe9HuA7sGuhCI/TkwRDGteUCqF497qiU=;
-        b=VjZaUZB4MLXEn8zic0OmfMv2/yJuSC/9XnnOyGPdxpnbn/yf/DJMG8ZnFtTJQpZhxe
-         ujGza4EXuRgH6mHZ7KLIjbsH3qIgacNlH3V/V/ExijHw4+UnIZdzOmvt6iz0JgEiSUOE
-         HQEU1xJhws5WCUzFNi2YZw5tF/W/9vqnLRJpCmaDrqLeKxVo7ADqZ65Sjthp2stiKr4+
-         jpg8APwU1gcOdRQKeTxBItK4QoFyaEb+yQSR1LO3S4AOScr60aBVIwcqtD7fq7rVuOrd
-         zYlBj7/OSG8Is7BteIXzEeZZ0lssVNcsoq8xhhaOCovXDetWpH4C8q1uZCJUAWL62Gnt
-         o/cw==
-X-Gm-Message-State: AOAM5309iy6Z6Sgnyo1gxNnI9MHkBGuNYDKUYfFyr1ZxrWPh7te6Lr79
-        cbWZdxUWjMmpBV7+9h0tcGySf1T/m+cx0XUI
-X-Google-Smtp-Source: ABdhPJyV/ORrERrOtBvjJAHF751ylsBCDbbt+hnDow2eVaO+lvIHT8povSUCKDT214qlkmttQE246w==
-X-Received: by 2002:a5e:8345:: with SMTP id y5mr1297700iom.209.1625180736154;
-        Thu, 01 Jul 2021 16:05:36 -0700 (PDT)
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com. [209.85.166.174])
-        by smtp.gmail.com with ESMTPSA id a18sm768745ilc.31.2021.07.01.16.05.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Jul 2021 16:05:34 -0700 (PDT)
-Received: by mail-il1-f174.google.com with SMTP id h3so8032959ilc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 16:05:33 -0700 (PDT)
-X-Received: by 2002:a92:7b07:: with SMTP id w7mr1261220ilc.308.1625180733446;
- Thu, 01 Jul 2021 16:05:33 -0700 (PDT)
+        bh=JVFwhu0Nl1U9FivJTXYgbITws6r7aJBlzJ81RHuWBSo=;
+        b=GBGO7PnaZ1GW/6Non3ihRCCj4pj+1+6GpkMezHb180c+mXzmQIKtqDtConEGdOE5XK
+         79bLi1KgrpNLA9DMrluGUQyTI+DLvLWPvXtDZP4qNSg81cqh3Nw2XrbIRacLqLlcjSV7
+         LroUze7IV2pxX/FNv1LICktcrwsoEeI+uYHbla+PwCzM8iadpR6G3ES6XgOZESIczqnu
+         1CdEkFhYjwmwg1mR/sOC7XZqr1I2CEoApDh3mPvkQnYPoLUkzv2nxgo0mvhjsFnwbdyN
+         hB2jZ8Q09ttgbfaU9vWV9kU9lD8lMYuhB7xj65Rezq7F4dN1vRtOnxGIUyllPegpFkK6
+         5Sfw==
+X-Gm-Message-State: AOAM533iYXPJ1y9n0D8ZGZILGzWPWlV1o+aTwS7nfehtIp//dr/3hf05
+        tdyHLUuC76hSB2q8ic7vtnj3jSiB8vcg5TLQbpTIjg==
+X-Google-Smtp-Source: ABdhPJzlD1Rwyg4aaTXscYYkLEEMfARA5rwHrPGJiwB0C5EZgf9sRsRKGD9SS7+cgRsYyt0WzPidD7cw4j9F8JmjJMM=
+X-Received: by 2002:a25:2341:: with SMTP id j62mr3050343ybj.190.1625180892125;
+ Thu, 01 Jul 2021 16:08:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210630100432.v1.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
- <20210701200253.GB983@bug>
-In-Reply-To: <20210701200253.GB983@bug>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Thu, 1 Jul 2021 16:04:57 -0700
-X-Gmail-Original-Message-ID: <CAE=gft6UUesGAcT3cweFuQBOh3xFzN2gCDNGWZRqizNmPT7Rdg@mail.gmail.com>
-Message-ID: <CAE=gft6UUesGAcT3cweFuQBOh3xFzN2gCDNGWZRqizNmPT7Rdg@mail.gmail.com>
-Subject: Re: [PATCH v1] mm: Enable suspend-only swap spaces
-To:     Pavel Machek <pavel@ucw.cz>
+References: <20210623192822.3072029-1-surenb@google.com> <CALCETrU577MD59P-+9sMYtS3t2sZYx-zi=VirhQpZLnhEck1vg@mail.gmail.com>
+ <CAJuCfpFMTP-g9CFELMqNawX0FhF4vBNtRDP_R=WAi_RiuGW8-Q@mail.gmail.com> <CALCETrW7Mm6xNwdhsEd9LZFJNJ_5ZtBPfTiqs=np3V7cqo=cAA@mail.gmail.com>
+In-Reply-To: <CALCETrW7Mm6xNwdhsEd9LZFJNJ_5ZtBPfTiqs=np3V7cqo=cAA@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 1 Jul 2021 16:08:01 -0700
+Message-ID: <CAJuCfpEWmcJSKuAD+4yOcWyTTDTo0p7Aico5FruXZcyZt120Jg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
+To:     Andy Lutomirski <luto@kernel.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alexs@kernel.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
         Minchan Kim <minchan@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 1:02 PM Pavel Machek <pavel@ucw.cz> wrote:
+)
+
+On Wed, Jun 30, 2021 at 5:46 PM Andy Lutomirski <luto@kernel.org> wrote:
 >
-> Hi!
->
-> > Currently it's not possible to enable hibernation without also enabling
-> > generic swap for a given swap area. These two use cases are not the
-> > same. For example there may be users who want to enable hibernation,
-> > but whose drives don't have the write endurance for generic swap
-> > activities.
+> On Wed, Jun 30, 2021 at 11:51 AM Suren Baghdasaryan <surenb@google.com> wrote:
 > >
-> > Add a new SWAP_FLAG_NOSWAP that adds a swap region but refuses to allow
-> > generic swapping to it. This region can still be wired up for use in
-> > suspend-to-disk activities, but will never have regular pages swapped to
-> > it.
+> > On Wed, Jun 30, 2021 at 11:26 AM Andy Lutomirski <luto@kernel.org> wrote:
+> > >
+> > > On Wed, Jun 23, 2021 at 12:28 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > > >
+> > > > In modern systems it's not unusual to have a system component monitoring
+> > > > memory conditions of the system and tasked with keeping system memory
+> > > > pressure under control. One way to accomplish that is to kill
+> > > > non-essential processes to free up memory for more important ones.
+> > > > Examples of this are Facebook's OOM killer daemon called oomd and
+> > > > Android's low memory killer daemon called lmkd.
+> > > > For such system component it's important to be able to free memory
+> > > > quickly and efficiently. Unfortunately the time process takes to free
+> > > > up its memory after receiving a SIGKILL might vary based on the state
+> > > > of the process (uninterruptible sleep), size and OPP level of the core
+> > > > the process is running. A mechanism to free resources of the target
+> > > > process in a more predictable way would improve system's ability to
+> > > > control its memory pressure.
+> > > > Introduce process_reap system call that reclaims memory of a dying process
+> > > > from the context of the caller. This way the memory in freed in a more
+> > > > controllable way with CPU affinity and priority of the caller. The workload
+> > > > of freeing the memory will also be charged to the caller.
+> > > > The operation is allowed only on a dying process.
+> > >
+> > > At the risk of asking a potentially silly question, should this just
+> > > be a file in procfs?
 > >
-> > Signed-off-by: Evan Green <evgreen@chromium.org>
+> > Hmm. I guess it's doable if procfs will not disappear too soon before
+> > memory is released... syscall also supports parameters, in this case
+> > flags can be used in the future to support PIDs in addition to PIDFDs
+> > for example.
+> > Before looking more in that direction, a silly question from my side:
+> > why procfs interface would be preferable to a syscall?
 >
-> Makes sense to me.
->
-> Reviewed-by: Pavel Machek <pavel@ucw.cz>
+> It avoids using a syscall nr.  (Admittedly a syscall nr is not *that*
+> precious of a resource.)  It also makes it possible to use a shell
+> script to do this, which is maybe useful.
 
-Thanks!
-
->
-> >  #define SWAP_FLAG_DISCARD_ONCE       0x20000 /* discard swap area at swapon-time */
-> >  #define SWAP_FLAG_DISCARD_PAGES 0x40000 /* discard page-clusters after use */
-> > +#define SWAP_FLAG_NOSWAP     0x80000 /* use only for suspend, not swap */
->
-> I'd say "only for hibernation". And actually maybe code would be more clear if logic was reverted.
-
-Sure about the rewording. Yes, I also thought about flipping the
-polarity. This made more sense to me as an outlier condition, despite
-the slight awkwardness of a negative flag. And the usermode flag has
-to be written this way, so I might as well carry it through. I think
-I'll keep it unless anyone feels strongly.
+I see. Not really sure if the shell usage is a big usecase for this
+operation but let's see if more people like that approach. For my
+specific usecase one syscall (process_reap) is better than three
+syscalls (open, write, close) and the possibility to extend the
+functionality using flags might be of value for the future.
 
 >
-> Aha, and you may want to check... does the hibernation still work for you without the swap?
->
-> Because we need half memory free to create swap image and swap is really quite useful for that.
-
-Yes, hibernation still works. You're right that without another swap
-space set up, it starts to fail when half of memory is used up. This
-flag gives me the control to exclusively steer swap towards one device
-and hibernate towards another.
--Evan
+> --Andy
