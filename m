@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E643B9822
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 23:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BDF3B9825
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 23:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbhGAV1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 17:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41494 "EHLO
+        id S234339AbhGAV3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 17:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233080AbhGAV1e (ORCPT
+        with ESMTP id S230328AbhGAV3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 17:27:34 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9806DC061764
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 14:25:03 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id a6so10450129ljq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 14:25:03 -0700 (PDT)
+        Thu, 1 Jul 2021 17:29:40 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA590C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 14:27:08 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id a6so10456321ljq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 14:27:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uPZE1BnafEGGofshB/oCVcT1sDDIq1gVM120dwnS8WQ=;
-        b=qrtMwvxzuwsefQ6MJGziiD+Zj5B/8NlZ9l3QFDoj3ttI3TNctdjKL/H768lEDo7/Bn
-         /3S6E3Ik34hDvHag9Jvgh6/jZKUdvSGeWVOwzEO+uXMzcleV2c34BBqNO1360HuEtzdb
-         i9u7JnTIujV13k5YXPB9Rv/7PvdXAHIKNAinJt+jZzAaGMWh/sckm2pLHbJqGrj29NSY
-         eJQmEiA4i+ipiUKAquwa8mEeOEy20UojSuA9pXleAP0XbvWIqE/i7bnFzHX/nhA0zng3
-         h4Ii8qO6AMa5okkG2Iq01cFfhHGIfwgw+mkVDuwm8QQWYRyn4vUeH30TybayS3uX9JBQ
-         qcvQ==
+        bh=tNdovWONAJS2tmla2jBCM5Itz2o4pqMUjGORL+HptVU=;
+        b=kNiciE1LKvyy4oLjI1gsH75NPWT6lqeO2ZobdhJ5FuiJiASUJ7WhGVQDwXaox9IWqb
+         sDgEKqepnkz0avDsZjGb+wr7h1FJIbDfaJgCBQcMvoxv/JHElZ1uM8YB/OlBkN7Hb3ET
+         LBQVxNBuUUY9VM792HIoU+GSfrsx25WYxwp0cBnAfsnuoE4xcH2oOczPgX+fo6tnFnAZ
+         4kvCLLgpPwVT3pjSRLLIzng4lnnAvcymVtaINT3OoysXzgyPMLo5eVUmRBjqInnBBcm2
+         tZqZPjzh3Si96zFD0tXxg0mHQuSh+MfZkJjsk/rx1tcifTze5i/LCy16p29HVp2l3527
+         Igrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uPZE1BnafEGGofshB/oCVcT1sDDIq1gVM120dwnS8WQ=;
-        b=e9ipCtTA2A+PYwZfqLbCA1Io2Hmt2yHFgTiKtClskwiWG53QT/pvRFMhjz+N8CzAG+
-         3D7nK9u/6tE7qDl7+4lLKctZ6zUyLealArjPcpNXlGqZqu9lxdmBgKeMtNBDxkrkfhXj
-         eA6cyHMaD6ph9KgpllikxZt5hIIQxxpJqTuUm0AdnD/mAvgRWLgbmzrdMVYe7G2ApiRP
-         HjKOy5U0jSKCIrsD3zulmu0YxAza3rTxFdsyPhIrkmDCtSdvBd7UdxOwB0hjh75AW00n
-         6tF3/HwhNVeOTy7oWCfsl2N4QYsT5kfPVOYx/NAVwpuKvA3qfd5bW1KKgUxF6IrkgsGo
-         LIrQ==
-X-Gm-Message-State: AOAM532m8B9UG/aYJBi+rR9cWbyXmnjA7IzuxkCr891BQ1Lu/UChONDy
-        NbrClQCFa8MmkNj2cCjD6s1SUXGgyu3G/H2d2tpN/w==
-X-Google-Smtp-Source: ABdhPJyczRahnz2Bvg+RDafJ0A1MHyUUYYJlaOn5sOi6JrcXxe2uH2eeAHM3Uf0K6fIBEA9Mczbi05sPz2qTgefQYUU=
-X-Received: by 2002:a2e:9853:: with SMTP id e19mr1224260ljj.256.1625174701631;
- Thu, 01 Jul 2021 14:25:01 -0700 (PDT)
+        bh=tNdovWONAJS2tmla2jBCM5Itz2o4pqMUjGORL+HptVU=;
+        b=d5uaWIzQlEFcD2Ws2GcWvy2udPeY3WYv2rMDSh3ZVD3n6p1BfDzoiPtfH7JHv0Vaby
+         VLD/uflMBdHJ2rMXnBNkSxUf0oiZdGWDmK/FTZzpP8sc591AyOPde1b8YYTGH4edj193
+         W7hfkmHGe+uBXFerprXE3K1jaf8oaH53etFEcQNW6dMe1KuiXYPIKMD3SiSSdBpIQvCz
+         xNibgG8XaUBSSH31R2CUAaP4aWsk5x1TEZlrGL0d9Jx2mOwRlzIbCI2/ph6u5ZeVQ0TM
+         8PKXSeDfN9V0Ukywd+zMGYqwGId9CmAX21OffWo4YhoyUfOijP951j9Y1L4K50fdjBvI
+         xBeA==
+X-Gm-Message-State: AOAM5333JJWmkYBMamK78lH7Xc7OtyGNdHbQaASHnrQyEr7DjjCGZPQv
+        yglSeVNIqWkUtjMXXtGlFrDCO2CDNJ5mXOx1hz4fKg==
+X-Google-Smtp-Source: ABdhPJwFqmciUVS+yaaqjQV5c2F883P7rLgFT4w/dpSTBGNG7drC0d+KS7wtsp1DcNlNLXKew0OzKqYf8TbyEYWqdWU=
+X-Received: by 2002:a05:651c:305:: with SMTP id a5mr1167662ljp.337.1625174826795;
+ Thu, 01 Jul 2021 14:27:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210701195500.27097-1-paskripkin@gmail.com>
-In-Reply-To: <20210701195500.27097-1-paskripkin@gmail.com>
-From:   Jing Zhang <jingzhangos@google.com>
-Date:   Thu, 1 Jul 2021 16:24:50 -0500
-Message-ID: <CAAdAUtiAA+H178X7pU1KLzKwmPZ1jTOUpmsP0TvFzqVH5gJAdg@mail.gmail.com>
-Subject: Re: [PATCH next] kvm: debugfs: fix memory leak in kvm_create_vm_debugfs
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
+References: <a8ff6511e4740cff2bb549708b98fb1e6dd7e070.1625172036.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <a8ff6511e4740cff2bb549708b98fb1e6dd7e070.1625172036.git.christophe.jaillet@wanadoo.fr>
+From:   Catherine Sullivan <csully@google.com>
+Date:   Thu, 1 Jul 2021 14:26:30 -0700
+Message-ID: <CAH_-1qyRsfFzm_F26WV4wSjMojTVQSdahASWTKXb7VgQPHHUNA@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] gve: Simplify code and axe the use of a
+ deprecated API
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Sagi Shahar <sagis@google.com>, Jon Olson <jonolson@google.com>,
+        David Miller <davem@davemloft.net>, kuba@kernel.org,
+        David Awogbemila <awogbemila@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Yangchun Fu <yangchun@google.com>,
+        Bailey Forrest <bcf@google.com>, Kuo Zhao <kuozhao@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 2:55 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
+On Thu, Jul 1, 2021 at 1:41 PM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
 >
-> In commit bc9e9e672df9 ("KVM: debugfs: Reuse binary stats descriptors")
-> loop for filling debugfs_stat_data was copy-pasted 2 times, but
-> in the second loop pointers are saved over pointers allocated
-> in the first loop. It causes memory leak. Fix it.
+> The wrappers in include/linux/pci-dma-compat.h should go away.
 >
-> Fixes: bc9e9e672df9 ("KVM: debugfs: Reuse binary stats descriptors")
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
->  virt/kvm/kvm_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Replace 'pci_set_dma_mask/pci_set_consistent_dma_mask' by an equivalent
+> and less verbose 'dma_set_mask_and_coherent()' call.
 >
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 7d95126cda9e..986959833d70 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -935,7 +935,7 @@ static int kvm_create_vm_debugfs(struct kvm *kvm, int fd)
->                 stat_data->kvm = kvm;
->                 stat_data->desc = pdesc;
->                 stat_data->kind = KVM_STAT_VCPU;
-> -               kvm->debugfs_stat_data[i] = stat_data;
-> +               kvm->debugfs_stat_data[i + kvm_vm_stats_header.num_desc] = stat_data;
-Pavel, thanks for fixing this.
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Reviewed-by: Jing Zhang <jingzhangos@google.com>
->                 debugfs_create_file(pdesc->name, kvm_stats_debugfs_mode(pdesc),
->                                     kvm->debugfs_dentry, stat_data,
->                                     &stat_fops_per_vm);
-> --
-> 2.32.0
+Reviewed-by: Catherine Sullivan <csully@google.com>
+
+> ---
+> If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+>    https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
 >
+> v2: Unchanged
+>     This patch was previously 3/3 of a serie
+> ---
+>  drivers/net/ethernet/google/gve/gve_main.c | 9 +--------
+>  1 file changed, 1 insertion(+), 8 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+> index c03984b26db4..099a2bc5ae67 100644
+> --- a/drivers/net/ethernet/google/gve/gve_main.c
+> +++ b/drivers/net/ethernet/google/gve/gve_main.c
+> @@ -1477,19 +1477,12 @@ static int gve_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>
+>         pci_set_master(pdev);
+>
+> -       err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
+> +       err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+>         if (err) {
+>                 dev_err(&pdev->dev, "Failed to set dma mask: err=%d\n", err);
+>                 goto abort_with_pci_region;
+>         }
+>
+> -       err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+> -       if (err) {
+> -               dev_err(&pdev->dev,
+> -                       "Failed to set consistent dma mask: err=%d\n", err);
+> -               goto abort_with_pci_region;
+> -       }
+> -
+>         reg_bar = pci_iomap(pdev, GVE_REGISTER_BAR, 0);
+>         if (!reg_bar) {
+>                 dev_err(&pdev->dev, "Failed to map pci bar!\n");
+> --
+> 2.30.2
+>
+
+Thanks!
