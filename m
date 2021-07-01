@@ -2,126 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F21C3B959C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FA93B95A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233079AbhGARnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 13:43:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229978AbhGARnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 13:43:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99F89613CF;
-        Thu,  1 Jul 2021 17:40:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625161232;
-        bh=xLCtF4ERVx3lvbj2NQhW5MfgdR9rvEAlBwDFrcwnl/g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eEJ9MlUD87Ql9QHIW5WB3GYn6Vz9rDGcEJaeIijzsOCxhYmTKOfTRLMyfwCa3X/mt
-         209o1yjP/k6DjuC71oYIEQ3dYmJXSmFTo3jGNo+H3EmN6fQ0hmuy56/SXQkNBGDBs6
-         e9l5mnWpghWY2Mv9TTdtG9buBGFGqf/ObuTgVDJlW4OeAwX7iRhm3v/z2uD53DbRfW
-         r9eXLG28Bt9hCTJaNpKoP8aNS6Ag/S313Ek74MXuQU01iDaImrf2iDdETeETEP3wyZ
-         jJp+lT5nWsZHWRVWD+4gBJ2IoylpNYQz1z00gIQjskgoiSW5syteDhxyBYhd4iPcXY
-         6P3qvBDyxZ/pg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E426C40B1A; Thu,  1 Jul 2021 14:40:28 -0300 (-03)
-Date:   Thu, 1 Jul 2021 14:40:28 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 00/10] perf script: Add API for filtering via
- dynamically loaded shared object
-Message-ID: <YN3+DLZvPsW6q/l5@kernel.org>
-References: <20210627131818.810-1-adrian.hunter@intel.com>
+        id S229978AbhGARpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 13:45:24 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:27311 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233189AbhGARpX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 13:45:23 -0400
+Received: from [192.168.1.18] ([86.243.172.93])
+        by mwinf5d12 with ME
+        id Ptip2500321Fzsu03tip3W; Thu, 01 Jul 2021 19:42:51 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 01 Jul 2021 19:42:51 +0200
+X-ME-IP: 86.243.172.93
+Subject: Re: [PATCH 0/3] gve: Fixes and clean-up
+To:     Jeroen de Borst <jeroendb@google.com>
+Cc:     csully@google.com, sagis@google.com, jonolson@google.com,
+        davem@davemloft.net, kuba@kernel.org, awogbemila@google.com,
+        willemb@google.com, yangchun@google.com, bcf@google.com,
+        kuozhao@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <cover.1625118581.git.christophe.jaillet@wanadoo.fr>
+ <CAErkTsQLP9_y-Am3MN-O4vZXe3cTKHfYMwkFk-9YWWPLAQM1cw@mail.gmail.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <29632746-3234-1991-040d-3c0dfb3b3acb@wanadoo.fr>
+Date:   Thu, 1 Jul 2021 19:42:48 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210627131818.810-1-adrian.hunter@intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAErkTsQLP9_y-Am3MN-O4vZXe3cTKHfYMwkFk-9YWWPLAQM1cw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Jun 27, 2021 at 04:18:08PM +0300, Adrian Hunter escreveu:
-> Hi
->  
-> In some cases, users want to filter very large amounts of data (e.g. from
-> AUX area tracing like Intel PT) looking for something specific. While
-> scripting such as Python can be used, Python is 10 to 20 times slower than
-> C. So define a C API so that custom filters can be written and loaded.
+Le 01/07/2021 à 18:20, Jeroen de Borst a écrit :
+> On Wed, Jun 30, 2021 at 10:58 PM Christophe JAILLET
+> <christophe.jaillet@wanadoo.fr> wrote:
+>>
+>> This serie is part of the effort to axe the wrappers in
+>> include/linux/pci-dma-compat.h
+>>
+>> While looking at it, I spotted:
+>>    - a resource leak in an error handling path (patch 1)
+>>    - an error code that could be propagated. (patch 2)
+>>      This patch could be ignored. It's only goal is to be more consistent
+>>      with other drivers.
+>>
+>> These 2 paches are not related to the 'pci-dma-compat.h' stuff, which can
+>> be found in patch 3.
+>>
+>> Christophe JAILLET (3):
+>>    gve: Fix an error handling path in 'gve_probe()'
+>>    gve: Propagate error codes to caller
+>>    gve: Simplify code and axe the use of a deprecated API
+>>
+>>
 > 
-> This is V2.
+> Thanks for these patches.
 > 
-> The main patch is patch 1.
-> 
-> The other patches add more functionality, except for patch 5 which installs
-> the C API header file.
+> Can split this into 2 patch series;
 
-Thanks! applied.
+Sure.
 
-Please consider adding a 'perf test' entry to check if what is produced
-is what is expected, also to exercise this code so that we get some
-'perf test' segfault if we break something it uses somehow.
+> one for net (with the first 2
+> patches) and one for net-next (with the cleanup one)?
 
-- Arnaldo
- 
-> 
-> Changes in V2:
->     perf script: Move filter_cpu() earlier
->     perf script: Move filtering before scripting
->     perf script: Share addr_al between functions
-> 	Dropped because they have now been applied.
-> 
->     perf script: Add API for filtering via dynamically loaded shared object
-> 	Move 2 members of struct perf_dlfilter_sample
-> 	Add 'ctx' as an argument to 'start' and 'stop'
-> 	Find dlfilter .so files in current directory or exec-path/dlfilters
-> 
->     perf script: Add option to list dlfilters
-> 	New patch
-> 
->     perf script: Add option to pass arguments to dlfilters
-> 	New patch
-> 
-> 
-> Adrian Hunter (10):
->       perf script: Add API for filtering via dynamically loaded shared object
->       perf script: Add dlfilter__filter_event_early()
->       perf script: Add option to list dlfilters
->       perf script: Add option to pass arguments to dlfilters
->       perf build: Install perf_dlfilter.h
->       perf dlfilter: Add resolve_address() to perf_dlfilter_fns
->       perf dlfilter: Add insn() to perf_dlfilter_fns
->       perf dlfilter: Add srcline() to perf_dlfilter_fns
->       perf dlfilter: Add attr() to perf_dlfilter_fns
->       perf dlfilter: Add object_code() to perf_dlfilter_fns
-> 
->  tools/perf/Documentation/perf-dlfilter.txt | 251 ++++++++++++
->  tools/perf/Documentation/perf-script.txt   |  15 +-
->  tools/perf/Makefile.config                 |   3 +
->  tools/perf/Makefile.perf                   |   4 +-
->  tools/perf/builtin-script.c                |  86 +++-
->  tools/perf/util/Build                      |   1 +
->  tools/perf/util/dlfilter.c                 | 615 +++++++++++++++++++++++++++++
->  tools/perf/util/dlfilter.h                 |  97 +++++
->  tools/perf/util/perf_dlfilter.h            | 150 +++++++
->  9 files changed, 1211 insertions(+), 11 deletions(-)
->  create mode 100644 tools/perf/Documentation/perf-dlfilter.txt
->  create mode 100644 tools/perf/util/dlfilter.c
->  create mode 100644 tools/perf/util/dlfilter.h
->  create mode 100644 tools/perf/util/perf_dlfilter.h
-> 
-> 
-> Regards
-> Adrian
+I've never worked with net and net-next directly.
+If just adding net and net-next after [PATCH] in the subject of the 
+mail, yes, I can do it if it helps.
 
--- 
 
-- Arnaldo
+BTW, I gave a look at https://patchwork.kernel.org/project/netdevbpf/list/
+The patch 1/3 is marked as failed because "1 blamed authors not CCed: 
+lrizzo@google.com; 1 maintainers not CCed: lrizzo@google.com"
+
+This author/blame was not spotted by get_maintainer.pl. Is it something 
+I should worry about?
+
+
+> Also the label in the first patch should probably read
+> 'abort_with_gve_init' instead of 'abort_with_vge_init'.
+
+Good catch. Sorry about that.
+
+> 
+> Jeroen
+> 
+
+CJ
+
