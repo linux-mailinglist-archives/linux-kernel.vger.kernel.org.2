@@ -2,77 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB02A3B96D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8003B3B96E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233898AbhGAUF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 16:05:27 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46278 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbhGAUF0 (ORCPT
+        id S233119AbhGAUI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 16:08:29 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:42528 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231726AbhGAUI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 16:05:26 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B26511C0B7F; Thu,  1 Jul 2021 22:02:54 +0200 (CEST)
-Date:   Thu, 1 Jul 2021 22:02:53 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Evan Green <evgreen@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alexs@kernel.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v1] mm: Enable suspend-only swap spaces
-Message-ID: <20210701200253.GB983@bug>
-References: <20210630100432.v1.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
+        Thu, 1 Jul 2021 16:08:29 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:48706)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lz2wf-0051gb-7p; Thu, 01 Jul 2021 14:05:57 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:48610 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lz2we-00BEc1-3d; Thu, 01 Jul 2021 14:05:56 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexey Gladkov <legion@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>
+References: <87fsx1vcr9.fsf@disp2133>
+        <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
+        <87czs4u0rm.fsf@disp2133>
+        <CAHk-=wgs5+3MLjG_hsQcKdamOcTsJLsk47tV12FfD_0f2h47Rg@mail.gmail.com>
+        <87mtr8sjvr.fsf@disp2133> <87a6n8simq.fsf@disp2133>
+        <20210701164144.u2dod4g2obfj4kit@example.org>
+Date:   Thu, 01 Jul 2021 15:05:18 -0500
+In-Reply-To: <20210701164144.u2dod4g2obfj4kit@example.org> (Alexey Gladkov's
+        message of "Thu, 1 Jul 2021 18:41:44 +0200")
+Message-ID: <87o8blol4x.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210630100432.v1.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain
+X-XM-SPF: eid=1lz2we-00BEc1-3d;;;mid=<87o8blol4x.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX186RRMiCoq2i2iZsr93Lu2GAzZej0SbQoQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XMSubMetaSxObfu_03,
+        XMSubMetaSx_00 autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.2042]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Alexey Gladkov <legion@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 485 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 8 (1.7%), b_tie_ro: 7 (1.5%), parse: 1.39 (0.3%),
+        extract_message_metadata: 22 (4.5%), get_uri_detail_list: 2.7 (0.6%),
+        tests_pri_-1000: 17 (3.5%), tests_pri_-950: 1.18 (0.2%),
+        tests_pri_-900: 0.99 (0.2%), tests_pri_-90: 71 (14.7%), check_bayes:
+        70 (14.4%), b_tokenize: 6 (1.3%), b_tok_get_all: 5 (1.1%),
+        b_comp_prob: 2.0 (0.4%), b_tok_touch_all: 53 (10.8%), b_finish: 0.94
+        (0.2%), tests_pri_0: 341 (70.2%), check_dkim_signature: 0.52 (0.1%),
+        check_dkim_adsp: 8 (1.6%), poll_dns_idle: 0.73 (0.1%), tests_pri_10:
+        2.6 (0.5%), tests_pri_500: 16 (3.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [GIT PULL] ucounts: Count rlimits in each user namespace
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Alexey Gladkov <legion@kernel.org> writes:
 
-> Currently it's not possible to enable hibernation without also enabling
-> generic swap for a given swap area. These two use cases are not the
-> same. For example there may be users who want to enable hibernation,
-> but whose drives don't have the write endurance for generic swap
-> activities.
-> 
-> Add a new SWAP_FLAG_NOSWAP that adds a swap region but refuses to allow
-> generic swapping to it. This region can still be wired up for use in
-> suspend-to-disk activities, but will never have regular pages swapped to
-> it.
-> 
-> Signed-off-by: Evan Green <evgreen@chromium.org>
+> On Tue, Jun 29, 2021 at 12:09:01PM -0500, Eric W. Biederman wrote:
+>> ebiederm@xmission.com (Eric W. Biederman) writes:
+>> 
+>> > Linus Torvalds <torvalds@linux-foundation.org> writes:
+>> >
+>> >> On Tue, Jun 29, 2021 at 8:52 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>> >>>
+>> >>> Linus Torvalds <torvalds@linux-foundation.org> writes:
+>> >>>
+>> >>> > Why the "sigpending < LONG_MAX" test in that
+>> >>> >
+>> >>> >         if (override_rlimit || (sigpending < LONG_MAX && sigpending <=
+>> >>> > task_rlimit(t, RLIMIT_SIGPENDING))) {
+>> >>> > thing?
+>> >>>
+>> >>> On second look that sigpending < LONG_MAX check is necessary.  When
+>> >>> inc_rlimit_ucounts detects a problem it returns LONG_MAX.
+>> >>
+>> >> I saw that, but _without_ that test you'd be left with just that
+>> >>
+>> >>     sigpending <= task_rlimit(t, RLIMIT_SIGPENDING)
+>> >>
+>> >> and if task_rlimit() is LONG_MAX, then that means "no limits", so it is all ok.
+>> >
+>> > It means no limits locally.  The creator of your user namespace might
+>> > have had a limit which you are also bound by.
+>> >
+>> > The other possibility is that inc_rlimits_ucounts caused a sigpending
+>> > counter to overflow.  In which case we need to fail and run
+>> > dec_rlimit_ucounts to keep the counter from staying overflowed.
+>> >
+>> > So I don't see a clever way to avoid the sigpending < LONG_MAX  test.
+>> 
+>> Hmm.  I take that back.  There is a simple clever way to satisfy all of
+>> the tests.
+>> 
+>> - sigpending < LONG_MAX && sigpending <= task_rlimit(t, RLIMIT_SIGPENDING)
+>> + sigpending < task_rlimit(t, RLIMIT_SIGPENDING)
+>> 
+>> That would just need a small comment to explain the subtleties.  
+>
+> Is it because user.sigpending was atomic_t before this patch ?
 
-Makes sense to me.
+Apologies I was wrong.
 
-Reviewed-by: Pavel Machek <pavel@ucw.cz>
+The replacement of "<=" with "<" is correct for the case where
+"task_rlimit(t, RLIMIT_SIGPENDING) == LONG_MAX".
 
->  #define SWAP_FLAG_DISCARD_ONCE	0x20000 /* discard swap area at swapon-time */
->  #define SWAP_FLAG_DISCARD_PAGES 0x40000 /* discard page-clusters after use */
-> +#define SWAP_FLAG_NOSWAP	0x80000 /* use only for suspend, not swap */
+Unfortunately off by one for all other values of
+"task_rlimit(t, RLIMIT_SIGPENDING)".
 
-I'd say "only for hibernation". And actually maybe code would be more clear if logic was reverted.
+It completely breaks things for the case where RLIMIT_SIGPENDING == 1,
+where no signals are allowed to be queued.  Today allowing 1 queued
+signal with a single task and a sender that does not send a second
+signal until the first is consumed will work reliably.
 
-Aha, and you may want to check... does the hibernation still work for you without the swap?
+That was just a brain fart on my part.
 
-Because we need half memory free to create swap image and swap is really quite useful for that.
+Eric
 
-Best regards,
-										Pavel
--- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
