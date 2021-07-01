@@ -2,126 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0BA3B95DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 20:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA97D3B95E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 20:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhGASGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 14:06:33 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:44848 "EHLO mail.skyhub.de"
+        id S233846AbhGASHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 14:07:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229967AbhGASGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 14:06:32 -0400
-Received: from zn.tnic (p200300ec2f129e0080cb4010141c3d3f.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:9e00:80cb:4010:141c:3d3f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7547E1EC054E;
-        Thu,  1 Jul 2021 20:04:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1625162640;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=pA5qidpGRMz4iB462uPn953XJs14KjqFbjDwTnvDnKg=;
-        b=OHT4NlQL9fVtGHXge2xZSd0T4EtBcQOmHUNmaE2UC612fKA/8lwfY5w8HH19skwww6/STE
-        w59gY7ILIMMe0ZyN6jwbgjjR4zWs30kvUfgtbeBw73IN/ywKqCl1h2D8vx+XtIEcdzKNGg
-        kS/Fvml/488FUBEJyM1T7mfITHlUCSg=
-Date:   Thu, 1 Jul 2021 20:03:55 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        id S229958AbhGASHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 14:07:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0D74611F1;
+        Thu,  1 Jul 2021 18:05:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625162703;
+        bh=3kyu4JepJJ9a+p12n/faYnLEi5XmJZwv9CoyN/fgGOk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gen8sslU9tVVnAuVtQzAuzXNas9mcOi4ydYSzlRgBqOEtDDboJ5AxjdZ2Mp6hFU4C
+         DGqixb9hQ/ITKq00sVSn9ZkipsR4o/ct9y1NlLntxNCMKtBq1mj3sUHeSXBcJzJvY8
+         fOJPrR6aOqN4KaehgXXFKmuFx2mk4Tt3N3e3yxGpwYd+/Nol7lBGQHEligxocykoLz
+         BSBSoyJmD0QiQje4ANS52lauDaf8IVzuO7n2k6xMeFs8kk317uGrEUdyY6CXZZZalz
+         ZzhAR5GSlbmer1yLeNuoUYhwhlKOD0TFaBoKJiXsqASApb66/dFNZ2545Cj/o8oxTf
+         /KpChIY1ViHQQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0F0E040B1A; Thu,  1 Jul 2021 15:05:00 -0300 (-03)
+Date:   Thu, 1 Jul 2021 15:04:59 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com, Dov Murik <dovmurik@linux.ibm.com>
-Subject: Re: [PATCH Part1 RFC v3 22/22] virt: Add SEV-SNP guest driver
-Message-ID: <YN4DixahyShxyyCv@zn.tnic>
-References: <20210602140416.23573-1-brijesh.singh@amd.com>
- <20210602140416.23573-23-brijesh.singh@amd.com>
- <YNxzJ2I3ZumTELLb@zn.tnic>
- <46499161-0106-3ae9-9688-0afd9076b28b@amd.com>
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] perf session: add missing evlist__delete when
+ deleting a session
+Message-ID: <YN4Dy9qLrop4pM+9@kernel.org>
+References: <20210624231926.212208-1-rickyman7@gmail.com>
+ <CAP-5=fVbGZbV3qp27DPD_7r0z-v9hr2m34H294angaEsssKB0Q@mail.gmail.com>
+ <YNXD2xN2wrZgdbwO@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <46499161-0106-3ae9-9688-0afd9076b28b@amd.com>
+In-Reply-To: <YNXD2xN2wrZgdbwO@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 11:26:46AM -0500, Brijesh Singh wrote:
-> As you have noticed that Dov is submitting the SEV specific driver.
-
-Well, reportedly that driver is generic-ish as it only handles the
-EFI-provided sekrits and is not SEV-specific - the SEV use is only
-exemplary.
-
-> I was thinking that it will be nice if we have one driver that covers
-> both the SEV and SEV-SNP. That driver can be called "sevguest". The
-> kernel will install the appropriate platform device. The sevguest
-> driver can probe for both the "sev-guest" and "snp-guest" and delegate
-> the ioctl handling accordingly.
->
-> In the kernel the directory structure may look like this:
->
-> virt/coco/sevguest
->   sevguest.c       // common code
->   snp.c            // SNP specific ioctl implementation
->   sev.c            // SEV specific ioctl or sysfs implementation
+Em Fri, Jun 25, 2021 at 01:54:03PM +0200, Jiri Olsa escreveu:
+> On Thu, Jun 24, 2021 at 10:39:34PM -0700, Ian Rogers wrote:
+> > On Thu, Jun 24, 2021 at 4:20 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
+> > >
+> > > ASan reports a memory leak caused by evlist not being deleted on exit in
+> > > perf-report, perf-script and perf-data.
+> > > The problem is caused by evlist->session not being deleted, which is
+> > > allocated in perf_session__read_header, called in perf_session__new if
+> > > perf_data is in read mode.
+> > > In case of write mode, the session->evlist is filled by the caller.
+> > > This patch solves the problem by calling evlist__delete in
+> > > perf_session__delete if perf_data is in read mode.
 > 
-> Thoughts ?
+> ugh, I'm surprised we did not free that.. and can't find
+> in git log we ever did ;-) I briefly check commands using
+> sessions and looks like it's correct
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+> 
+> > 
+> > Acked-by: Ian Rogers <irogers@google.com>
+> > 
+> > It is messy that in read mode the session owns the evlist, but
+> > otherwise not. Imo, it'd be nice to make the ownership unconditional.
+> 
+> yep, would be nice
 
-Sure, but I'd call it sevguest.c and will have it deal with both SEV and
-SNP ioctls depending on what has been detected in the hardware. Or is
-there some special reason for having snp.c and sev.c separate?
+Thanks, applied.
 
-> I followed the naming convension you recommended during the initial SEV driver
-> developement. IIRC, the main reason for us having to add "user" in it because
-> we wanted to distinguious that this structure is not exactly same as the what
-> is defined in the SEV-SNP firmware spec.
+Riccardo, next time please consider adding a Fixes: tag so that the
+stable@kernel.org guys can pick this for stable releases.
 
-I most definitely have forgotten about this. Can you point me to the
-details of that discussion and why there's a need to distinguish?
+- Arnaldo
 
-> Good question, I am not able to find a generic place to document it. Should we
-> create a documentation "Documentation/virt/coco/sevguest-api.rst" for it ? I am
-> open to other suggestions.
-
-Well, grepping the tree for "ioctl" I see:
-
-Documentation/driver-api/ioctl.rst
-Documentation/process/botching-up-ioctls.rst
-Documentation/userspace-api/ioctl/cdrom.rst
-Documentation/userspace-api/ioctl/hdio.rst
-Documentation/userspace-api/ioctl/index.rst
-Documentation/userspace-api/ioctl/ioctl-decoding.rst
-Documentation/userspace-api/ioctl/ioctl-number.rst
-Documentation/userspace-api/media/cec/cec-func-ioctl.rst
-Documentation/userspace-api/media/mediactl/media-func-ioctl.rst
-Documentation/userspace-api/media/mediactl/request-func-ioctl.rst
-Documentation/userspace-api/media/v4l/func-ioctl.rst
-
-and there's some good info as to what to do.
-
-In any case, Documentation/virt/coco/sevguest-api.rst doesn't sound too
-bad either, actually, as it collects everything under virt/
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
