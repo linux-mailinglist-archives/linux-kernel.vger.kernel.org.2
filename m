@@ -2,248 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33293B8CD5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 06:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA4A3B8CEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 06:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbhGAETR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 00:19:17 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20708 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229577AbhGAETN (ORCPT
+        id S232076AbhGAEZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 00:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229664AbhGAEZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 00:19:13 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161466Kb077183;
-        Thu, 1 Jul 2021 00:16:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=oPIuBBPZ70P+PF/7mhNIHUEPApm7nDezaCT2pZZbVZw=;
- b=fdaZ5lqitbHPfHwZjgMFP7jPbeKosEfr1Idj7lW/roH4vqMDS5u22PIpdVrZyV3bAbAP
- Ru1q2zRdxMbAk99/oAbIHkkqCxJmcMA+er/OFbTAsIdxXB5PRWWf8Q3KMJkfZCRkX/RG
- KrpN2naQkWTjRlSRKWHXulK5fevJW69zu2BsY8XA08uJswILBdNbB6j2uIUSjOqc0CdJ
- mFxZskoXVcM/OFcEugZCsyw3cqg+Mk8OEbG3REq/Zbacf8S3KhmWQhBQDrqsNBeweiDj
- RhsYVDVjkvnQqm2u/ZL8CheOjpgPcjGz2Xnx+uzAzDJRkitvS+RsbJb/q4ZYn1KcPgYs Pw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39gwhuw3qk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 00:16:22 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1614C1IL005182;
-        Thu, 1 Jul 2021 04:16:21 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 39duv8j5jq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 04:16:21 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1614GINs21496226
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 1 Jul 2021 04:16:18 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1576C11C069;
-        Thu,  1 Jul 2021 04:16:18 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D8CC711C05B;
-        Thu,  1 Jul 2021 04:16:14 +0000 (GMT)
-Received: from saptagiri.in.ibm.com (unknown [9.85.122.203])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  1 Jul 2021 04:16:14 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>
-Subject: [PATCH v2 2/2] powerpc/numa: Fill distance_lookup_table for offline nodes
-Date:   Thu,  1 Jul 2021 09:45:52 +0530
-Message-Id: <20210701041552.112072-3-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210701041552.112072-1-srikar@linux.vnet.ibm.com>
-References: <20210701041552.112072-1-srikar@linux.vnet.ibm.com>
+        Thu, 1 Jul 2021 00:25:32 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FCC9C0617A8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 21:23:03 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id g3-20020a4ae8830000b029024c9afa2547so1236442ooe.6
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 21:23:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SjIkznd62qf0N2/dK9GJzXrfd0rBEDC5ueAUYi6JXT8=;
+        b=Q7zdFbK5igGTcfVQOu4L33G/7Tz6XEb5PGkaU7fcUbR4Mzm9M/0JUIBoycrc/sLBS5
+         8zRGzxme9L1Tvc66bmXrwHecEpBlL726C5pC7gd05Qn+1Qa+icC63XUzAVMKGtD5YrNt
+         WpX+6NvFfNOSx52dykN3gNuSbQr7ui0flDFJhQ+fQjGdnn44XitejCpzINUa2ZXOM/r/
+         5xoBzIGBw+WG8liSkXOZPnNghoZAoDmVDjfIBNunRafIYA88O6wknebK1okQlha8nHw/
+         IVvzn1mscofD9wkgvaExPVmvTKr9XQwTBLOqQGHSbLqGlvLiQ6Hdp1gUabnXrk5GLVEa
+         ZUDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SjIkznd62qf0N2/dK9GJzXrfd0rBEDC5ueAUYi6JXT8=;
+        b=eYrspDdIEITMpb/NlOj+VvpBQ1kchdU9MN1B9HEcKJHuSfKuRO8qq115sogVHupo8i
+         mGlsC4odmEus3VdpqQswJffaNgWzipCJ1yevYvjWPjUBpwExbdiaYo2KYnS1ouUxYSYW
+         LuFFftHNAS8BuAQMjmSmkmrB3UvwzpIkYYfykxfPTSzizVaOoEboD5Oj9Gk571g2VK4q
+         O/twM8xBVIsBoJh6aDLSbRN8YKDRH5OBpdeMKeckIBZ+kAP0PdVSr17wCmImY+YwD2WK
+         gyIfF0wdaWS76GFMFj7ruNtfwVHDeQUFXvCWrUC7bmLAYFD0+rtFCFslaKsQ4Yz8py50
+         dLeA==
+X-Gm-Message-State: AOAM5309aYwU8XExLg76frmMGkUmLGrsGCTkKkS0wGevJK1fISpH8Nzd
+        1B1o1iLeQHGanhHGkMfotKRuhg==
+X-Google-Smtp-Source: ABdhPJzGiYEJBTQyjeWOlkqjXC9UawH0lJec0qTnkXoF5eOQ/ZxncxUtoaRTIqppCAZV9eNIgv6czg==
+X-Received: by 2002:a4a:8901:: with SMTP id f1mr11392225ooi.66.1625113382138;
+        Wed, 30 Jun 2021 21:23:02 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id o25sm4993775ood.20.2021.06.30.21.23.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 21:23:01 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 23:22:59 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, rnayak@codeaurora.org
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Taniya Das <tdas@codeaurora.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/6] clk: qcom: gdsc: enable optional power domain support
+Message-ID: <YN1DIwR66JKoFhEZ@yoga>
+References: <20210630133149.3204290-1-dmitry.baryshkov@linaro.org>
+ <20210630133149.3204290-4-dmitry.baryshkov@linaro.org>
+ <YNyHDAHk6ad/XCGl@yoga>
+ <CAA8EJpqf6VyaS7KyhujFgST+S=fua4S-uXia0g7Qh7ogYgWYbw@mail.gmail.com>
+ <YNylqGEi7Q3tFCgy@yoga>
+ <CAA8EJppHQ-XhZWbsPX39wie48JXWvsNerWB9=Q0yxxs7987xxA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: m4NvHT9SNR3226OZ_T9x72LK9YghuLAT
-X-Proofpoint-GUID: m4NvHT9SNR3226OZ_T9x72LK9YghuLAT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-01_01:2021-06-30,2021-07-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- bulkscore=0 clxscore=1015 suspectscore=0 mlxlogscore=999 spamscore=0
- malwarescore=0 phishscore=0 lowpriorityscore=0 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107010027
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJppHQ-XhZWbsPX39wie48JXWvsNerWB9=Q0yxxs7987xxA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently scheduler populates the distance map by looking at distance
-of each node from all other nodes. This should work for most
-architectures and platforms.
+On Wed 30 Jun 15:29 CDT 2021, Dmitry Baryshkov wrote:
 
-Scheduler expects unique number of node distances to be available at
-boot. It uses node distance to calculate this unique node distances.
-On Power Servers, node distances for offline nodes is not available.
-However, Power Servers already knows unique possible node distances.
-Fake the offline node's distance_lookup_table entries so that all
-possible node distances are updated.
+> On Wed, 30 Jun 2021 at 20:11, Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
+> >
+> > On Wed 30 Jun 10:47 CDT 2021, Dmitry Baryshkov wrote:
+> >
+> > > Hi,
+> > >
+> > > On Wed, 30 Jun 2021 at 18:00, Bjorn Andersson
+> > > <bjorn.andersson@linaro.org> wrote:
+> > > >
+> > > > On Wed 30 Jun 08:31 CDT 2021, Dmitry Baryshkov wrote:
+> > > >
+> > > > > On sm8250 dispcc and videocc registers are powered up by the MMCX power
+> > > > > domain. Currently we used a regulator to enable this domain on demand,
+> > > > > however this has some consequences, as genpd code is not reentrant.
+> > > > >
+> > > > > Teach Qualcomm clock controller code about setting up power domains and
+> > > > > using them for gdsc control.
+> > > > >
+> > > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > >
+> > > > There's a proposal to add a generic binding for statically assigning a
+> > > > performance states here:
+> > > >
+> > > > https://lore.kernel.org/linux-arm-msm/1622095949-2014-1-git-send-email-rnayak@codeaurora.org/
+> 
+> I checked this thread. It looks like Rajendra will also switch to the
+> "required-opps" property. So if that series goes in first, we can drop
+> the call to set_performance_state. If this one goes in first, we can
+> drop the set_performance_state call after getting Rajendra's work in.
+> 
+> > > >
+> > > >
+> > > > But that said, do you really need this?
+> > > >
+> > > > The requirement for driving MMCX to LOW_SVS on SM8250 (and NOM on
+> > > > SM8150/SC8180x) seems to only come from the fact that you push MDP_CLK
+> > > > to 460MHz in &mdss.
+> > > >
+> > > > But then in &mdss_mdp you do the same using an opp-table based on the
+> > > > actual MDP_CLK, which per its power-domains will scale MMCX accordingly.
+> > >
+> > > MDSS and DSI would bump up MMCX performance state requirements on
+> > > their own, depending on the frequency being selected.
+> > >
+> >
+> > Right, but as I copied things from the sm8250.dtsi to come up with
+> > sm8150/sc8180x.dtsi I concluded that as soon as the assigned-clockrate
+> > in &mdss kicks in I need the performance state to be at NOM.
+> >
+> > So keeping the assigned-clockrate in &mdss means that MMCX will never go
+> > below NOM.
+> 
+> No, because once MDP is fully running, it will lower the clock frequency:
+> 
+> # grep mdp_clk /sys/kernel/debug/clk/clk_summary
+>           disp_cc_mdss_mdp_clk_src       1        1        0
+> 150000000          0     0  50000         ?
+>              disp_cc_mdss_mdp_clk       2        2        0
+> 150000000          0     0  50000         Y
+> 
 
-For example distance info from numactl from a fully populated 8 node
-system at boot may look like this.
+But won't that just lower the performance state requested by the
+&mdss_mdp, while the &mdss still votes for NOM - with the outcome being
+that we maintain NOM even if the clock goes down?
 
-node distances:
-node   0   1   2   3   4   5   6   7
-  0:  10  20  40  40  40  40  40  40
-  1:  20  10  40  40  40  40  40  40
-  2:  40  40  10  20  40  40  40  40
-  3:  40  40  20  10  40  40  40  40
-  4:  40  40  40  40  10  20  40  40
-  5:  40  40  40  40  20  10  40  40
-  6:  40  40  40  40  40  40  10  20
-  7:  40  40  40  40  40  40  20  10
+> >
+> > > > So wouldn't it be sufficient to ensure that MDSS_GDSC is parented by
+> > > > MMCX and then use opp-tables associated with the devices that scales the
+> > > > clock and thereby actually carries the "required-opps".
+> > >
+> > > Actually no. I set the performance state in the qcom_cc_map, so that
+> > > further register access is possible. Initially I was doing this in the
+> > > qcom_cc_really_probe() and it was already too late.
+> > > Just to remind: this patchset is not about MDSS_GDSC being parented by
+> > > MMCX, it is about dispcc/videocc registers being gated with MMCX.
+> > >
+> >
+> > So you're saying that just enabling MMCX isn't enough to touch the
+> > dispcc/videocc registers? If that's the case it seems like MMCX's
+> > definition of "on" needs to be adjusted - because just specifying MMCX
+> > as the power-domain for dispcc/videocc and enabling pm_runtime should
+> > ensure that MMCX is enabled when the clock registers are accessed (I
+> > don't see anything like that for the GDSC part though).
+> 
+> No, it is not enough. If I comment out the set_performance_state call,
+> the board reboots.
+> 
+> However I can set the opps as low as RET and register access will work.
+> I'll run more experiments and if everything works as expected, I can
+> use retention or min_svs level in the next iteration.
+> Just note that downstream specifies low_svs as minimum voltage level
+> for MMCX regulator.
+> 
 
-However the same system when only two nodes are online at boot, then
-distance info from numactl will look like
-node distances:
-node   0   1
-  0:  10  20
-  1:  20  10
+It doesn't make sense to me that a lone power_on on the power-domain
+wouldn't give us enough juice to poke the registers.
 
-It may be implementation dependent on what node_distance(0,3) where
-node 0 is online and node 3 is offline. In Power Servers case, it returns
-LOCAL_DISTANCE(10). Here at boot the scheduler would assume that the max
-distance between nodes is 20. However that would not be true.
+But digging into the rpmhpd implementation answers the question, simply
+invoking rpmhpd_power_on() is a nop, unless
+rpmhpd_set_performance_state() has previously been called, because
+pd->corner is 0. So this explains why enable isn't sufficient.
 
-When Nodes are onlined and CPUs from those nodes are hotplugged,
-the max node distance would be 40.
+Compare this with the rpmpd implementation that will send an
+enable request to the RPM in this case.
 
-However this only needs to be done if the number of unique node
-distances that can be computed for online nodes is less than the
-number of possible unique node distances as represented by
-distance_ref_points_depth. When the node is actually onlined,
-distance_lookup_table will be updated with actual entries.
+> > I thought our problem you had was that you need to set a
+> > performance_state in order to clock up some of the clocks - e.g.
+> > MDP_CLK.
+> 
+> No, even register access needs proper perf state.
+> 
 
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: Nathan Lynch <nathanl@linux.ibm.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
-Cc: Laurent Dufour <ldufour@linux.ibm.com>
-Reported-by: Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
-Changelog v1->v2:
-Move to a Powerpc specific solution as suggested by Peter and Valentin
+Per above finding you're right, enabling a rpmhpd power-domain doesn't
+do anything. And I don't find this intuitive or even in line with the
+expectations of the api...
 
- arch/powerpc/mm/numa.c | 70 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
 
-diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
-index f2bf98bdcea2..6d0d89127190 100644
---- a/arch/powerpc/mm/numa.c
-+++ b/arch/powerpc/mm/numa.c
-@@ -860,6 +860,75 @@ void __init dump_numa_cpu_topology(void)
- 	}
- }
- 
-+/*
-+ * Scheduler expects unique number of node distances to be available at
-+ * boot. It uses node distance to calculate this unique node distances. On
-+ * POWER, node distances for offline nodes is not available. However, POWER
-+ * already knows unique possible node distances. Fake the offline node's
-+ * distance_lookup_table entries so that all possible node distances are
-+ * updated.
-+ */
-+void __init fake_update_distance_lookup_table(void)
-+{
-+	unsigned long distance_map;
-+	int i, nr_levels, nr_depth, node;
-+
-+	if (!numa_enabled)
-+		return;
-+
-+	if (!form1_affinity)
-+		return;
-+
-+	/*
-+	 * distance_ref_points_depth lists the unique numa domains
-+	 * available. However it ignore LOCAL_DISTANCE. So add +1
-+	 * to get the actual number of unique distances.
-+	 */
-+	nr_depth = distance_ref_points_depth + 1;
-+
-+	WARN_ON(nr_depth > sizeof(distance_map));
-+
-+	bitmap_zero(&distance_map, nr_depth);
-+	bitmap_set(&distance_map, 0, 1);
-+
-+	for_each_online_node(node) {
-+		int nd, distance = LOCAL_DISTANCE;
-+
-+		if (node == first_online_node)
-+			continue;
-+
-+		nd = __node_distance(node, first_online_node);
-+		for (i = 0; i < nr_depth; i++, distance *= 2) {
-+			if (distance == nd) {
-+				bitmap_set(&distance_map, i, 1);
-+				break;
-+			}
-+		}
-+		nr_levels = bitmap_weight(&distance_map, nr_depth);
-+		if (nr_levels == nr_depth)
-+			return;
-+	}
-+
-+	for_each_node(node) {
-+		if (node_online(node))
-+			continue;
-+
-+		i = find_first_zero_bit(&distance_map, nr_depth);
-+		if (i >= nr_depth || i == 0) {
-+			pr_warn("Levels(%d) not matching levels(%d)", nr_levels, nr_depth);
-+			return;
-+		}
-+
-+		bitmap_set(&distance_map, i, 1);
-+		while (i--)
-+			distance_lookup_table[node][i] = node;
-+
-+		nr_levels = bitmap_weight(&distance_map, nr_depth);
-+		if (nr_levels == nr_depth)
-+			return;
-+	}
-+}
-+
- /* Initialize NODE_DATA for a node on the local memory */
- static void __init setup_node_data(int nid, u64 start_pfn, u64 end_pfn)
- {
-@@ -975,6 +1044,7 @@ void __init mem_topology_setup(void)
- 		 */
- 		numa_setup_cpu(cpu);
- 	}
-+	fake_update_distance_lookup_table();
- }
- 
- void __init initmem_init(void)
--- 
-2.27.0
 
+A quick test booting rb3 and rb5 seems to indicate that it's possible to
+initialize pd->corner to 1 (to ensure that enable at least gives us the
+lowest level).
+
+set_performance_state(0) will however then result in voting for "off",
+rather than the lowest enabled level.
+
+
+Rajendra, Stephen, is this really how rpmhpd is supposed to work?!
+
+Regards,
+Bjorn
