@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A33E3B92B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8C33B92CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233253AbhGAOGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:06:05 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:28163 "EHLO
+        id S232677AbhGAOHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:07:32 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:28623 "EHLO
         mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233131AbhGAOGC (ORCPT
+        with ESMTP id S232081AbhGAOHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:06:02 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210701140330epoutp0465e4b1d6c01343be4e547b6afaec9021~Nr6-eyppo1381413814epoutp04q
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 14:03:30 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210701140330epoutp0465e4b1d6c01343be4e547b6afaec9021~Nr6-eyppo1381413814epoutp04q
+        Thu, 1 Jul 2021 10:07:31 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210701140459epoutp040a2f6df73da152304c606cb19ad9d405~Nr8Swiv2J1381413814epoutp040
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 14:04:59 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210701140459epoutp040a2f6df73da152304c606cb19ad9d405~Nr8Swiv2J1381413814epoutp040
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1625148210;
-        bh=E1aaxR8FfUi3vlMZNGnaBp5eQ1CM10Z3mqMC5JAz3Cc=;
+        s=mail20170921; t=1625148299;
+        bh=IsGSNyDRzmkA11rDtqCy+WlE/3QGZJsC0ekGLoVhPXg=;
         h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=ODDJbCkB42qiJP/sbRJmIJFXqxAHlgTxqJvql1lR33bf222eWDNrJ9QGWSuxTaVuO
-         PeI0Kp4y3Sunig0oJEk91g58YnG2e+2sMykML5YepS/YWR+m8V6whXq1xDgRZfEK9e
-         Nu75Ypsj/AfuP++/AmYHhWfY28kS501Wn2usVycU=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210701140329epcas1p35fd7d39293d17eaa8737b9353ce846a9~Nr6_7__Md1305613056epcas1p3c;
-        Thu,  1 Jul 2021 14:03:29 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.160]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4GG0L86Q6Mz4x9Pt; Thu,  1 Jul
-        2021 14:03:28 +0000 (GMT)
-X-AuditID: b6c32a37-0c7ff700000024fc-91-60ddcb3082d2
+        b=e/+C46DU+pdtmd1G0D2HNQFX8QOk6mmV7cw4icdumfU8PNNmAhP8Isjl6HyECo7Eh
+         LUFXp1Oopr5R88dhdBU0bDOYeTVFLESC0Nt6t7ZndgXzvS+FcOJuh47j4wf0leOu7I
+         BI3OM/xtRWv+7FlqSS6x7GGhcMlqwKV24RbSDw9o=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210701140459epcas1p159feafa442638f24e649cdc352053bcb~Nr8SUcb8G3054330543epcas1p1o;
+        Thu,  1 Jul 2021 14:04:59 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.159]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4GG0Mt2RXCz4x9Pt; Thu,  1 Jul
+        2021 14:04:58 +0000 (GMT)
+X-AuditID: b6c32a36-2b3ff7000000254f-c3-60ddcb8a410f
 Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2A.F4.09468.03BCDD06; Thu,  1 Jul 2021 23:03:28 +0900 (KST)
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2F.84.09551.A8BCDD06; Thu,  1 Jul 2021 23:04:58 +0900 (KST)
 Mime-Version: 1.0
-Subject: [PATCH] of: base: remove unnecessary for loop
+Subject: [PATCH] of: fdt: remove unnecessary codes
 Reply-To: ohoono.kwon@samsung.com
 Sender: =?UTF-8?B?6raM7Jik7ZuI?= <ohoono.kwon@samsung.com>
 From:   =?UTF-8?B?6raM7Jik7ZuI?= <ohoono.kwon@samsung.com>
@@ -52,78 +52,77 @@ X-Drm-Type: N,general
 X-Msg-Generator: Mail
 X-Msg-Type: PERSONAL
 X-Reply-Demand: N
-Message-ID: <20210701140328epcms1p85149318b6c18fa18b3c7c8e966c14db0@epcms1p8>
-Date:   Thu, 01 Jul 2021 23:03:28 +0900
-X-CMS-MailID: 20210701140328epcms1p85149318b6c18fa18b3c7c8e966c14db0
+Message-ID: <20210701140457epcms1p2cc43a7c62150f012619feab913f017af@epcms1p2>
+Date:   Thu, 01 Jul 2021 23:04:57 +0900
+X-CMS-MailID: 20210701140457epcms1p2cc43a7c62150f012619feab913f017af
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: SVC_REQ_APPROVE
 CMS-TYPE: 101P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNKsWRmVeSWpSXmKPExsWy7bCmnq7B6bsJBu8361rMP3KO1WLmm/9s
-        Fve/HmW0uLxrDpvF3v2+Frt+rmC2aN17hN2B3WPnrLvsHptWdbJ53Lm2h82jb8sqRo/Pm+QC
-        WKNybDJSE1NSixRS85LzUzLz0m2VvIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8AnTdMnOArlBS
-        KEvMKQUKBSQWFyvp29kU5ZeWpCpk5BeX2CqlFqTkFBgaFOgVJ+YWl+al6yXn51oZGhgYmQJV
-        JuRkHL/7hbXgK2fF4yvPWRoYj7N3MXJySAiYSOza1M7axcjFISSwg1HiyvbLjF2MHBy8AoIS
-        f3cIg9QIC5hJLJ39kx0kLCSgKLHttBtE2EpiWt8/JhCbTcBC4vnan6wgtohAksSOlVMYQUYy
-        C0xhktjceIwVYhevxIz2pywQtrTE9uVbGSFsUYmbq9+yw9jvj82HiotItN47ywxhC0o8+Lkb
-        Ki4pcbPtLgvIAgmBfkaJ++taoJwJjBJLnkxig6gyl3i2oQVsKq+Ar8TtSYfBTmURUJWYc/IC
-        1EUuElc6N4HVMwvIS2x/O4cZ5EtmAU2J9bv0IUoUJXb+nssIUcIn8e5rD9wzO+Y9YQIplwAa
-        uey3B8xffdMvQ13gIfG9YS3YBUICgRK3ts9insAoPwsRurOQ7J2FsHcBI/MqRrHUguLc9NRi
-        wwJj5AjdxAhOhVrmOxinvf2gd4iRiYPxEKMEB7OSCO+E6XcThHhTEiurUovy44tKc1KLDzGa
-        An08kVlKNDkfmIzzSuINTY2MjY0tTMzMzUyNlcR5d7IdShASSE8sSc1OTS1ILYLpY+LglGpg
-        6uVfOP3Kqd3yEhOv9vd+cHlZVe4p6Bteu/b9Y28+L7dFN9ab/k46Pmv6PdGVQt1Ze3r6ApbX
-        XtyY+N32XKGmrPrECF61Kt9Fi7MT72/7u8vRr+XJ1m8fcnvnbbiypTKrf+v3Ram31x5+qsOj
-        O2/CTI4GicDuHUvmHm65YxKzukb505Gq1InL1zA++8P6NCAi7JnkQRX1q5VrVs3RucK8fLFX
-        8+OLbGIFnawKz/Pro7s+eQsHb+bd87ibYc02ZbEJe0sbt0089XKb0cUk+4xVPHavzV7KXck2
-        l9rWftHL+saECPZi6Uqf0ua8TY/O6Uys2PSXMTV+tuDKNV/zir0OKJr6eXg2/Nc+ckkpqa4h
-        XYmlOCPRUIu5qDgRANNZz4cOBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrFKsWRmVeSWpSXmKPExsWy7bCmnm7X6bsJBv1NnBbzj5xjtZj55j+b
+        xf2vRxktLu+aw2axd7+vxa6fK5gtWvceYXdg99g56y67x6ZVnWwed67tYfPo27KK0ePzJrkA
+        1qgcm4zUxJTUIoXUvOT8lMy8dFsl7+B453hTMwNDXUNLC3MlhbzE3FRbJRefAF23zBygK5QU
+        yhJzSoFCAYnFxUr6djZF+aUlqQoZ+cUltkqpBSk5BYYGBXrFibnFpXnpesn5uVaGBgZGpkCV
+        CTkZ3xedYS/YwlExYetPpgbGBWxdjJwcEgImEo235jJ1MXJxCAnsYJQ4/3EPaxcjBwevgKDE
+        3x3CIDXCAkYSf/8uYQQJCwkoSmw77QYRtpKY1vePCcRmE7CQeL72JyuILSKQJLFj5RRGkJHM
+        AlOYJDY3HmOF2MUrMaP9KQuELS2xfflWRghbVOLm6rfsMPb7Y/Oh4iISrffOMkPYghIPfu6G
+        iktK3Gy7ywKyQEKgn1Hi/roWKGcCo8SSJ5OgPjOXeLahhR3iGV+Jg3/0QMIsAqoSU161Qw1y
+        kbh98yzYB8wC8hLb385hBilnFtCUWL9LH6JEUWLn77mMECV8Eu++9sD9smPeEyaQcgmgkct+
+        e8C81Tf9MtQBHhLfG9aCvSUkECix6vFuxgmM8rMQgTsLyd5ZCHsXMDKvYhRLLSjOTU8tNiww
+        Qo7PTYzgRKhltoNx0tsPeocYmTgYDzFKcDArifBOmH43QYg3JbGyKrUoP76oNCe1+BCjKdDH
+        E5mlRJPzgak4ryTe0NTI2NjYwsTM3MzUWEmcdyfboQQhgfTEktTs1NSC1CKYPiYOTqkGJqng
+        wuRP4fqG8bdlsy2+H330277jyux9Ya9OxHxhbRfbGPJ35VZV34orU65wx4XOZCl9GPd3JY/i
+        vCPW2+zq9aben3l8a3149lnNRddLSyYeKP+j3ZQvWzen49UVGc03y+bGcnz89yZuUX7Hhqun
+        /tm/XiTv13Wif7Xz+4YjfKqli19+m1n35t/zE9UPEs+EsFc4Ntttvppnv1k268m2fUUxQjmT
+        z2jcets4K8k6k7f1fGrAt6CsWdWbJQqCDbh93ITf2bierZ689W1WxgzPu3nhvApe4qfuzTX7
+        /yLor3WNf5uN2K3I4hXix055fzyU0C15OXvGiVOKV/gC34cui+WRMXr2jKk/307gklCNiBJL
+        cUaioRZzUXEiAJEDq58NBAAA
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
 X-CMS-RootMailID: 20210701140328epcms1p85149318b6c18fa18b3c7c8e966c14db0
-References: <CGME20210701140328epcms1p85149318b6c18fa18b3c7c8e966c14db0@epcms1p8>
+References: <CGME20210701140328epcms1p85149318b6c18fa18b3c7c8e966c14db0@epcms1p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In __of_get_next_child function, loop iteration for getting next node is
-unnecessary.
+While unflattening the device tree, we try to populate dt nodes and
+properties into tree-shaped data structure.
 
-for loop is already checking if next is NULL or not, and
-of_node_get(next) always returns next itself.
+In populate_properties function, pprev is initially set to
+&np->properties, and then updated to &pp->next.
 
-Therefore checking return value in the if clause always evaluates to
-true, and thus it always breaks out from for loop in the first iteration.
-
-Remove the unnecessary for loop for readability.
+In both scenarios *pprev is NULL, since the memory area that we are
+allocating from is initially zeroed.
 
 I tested the code as below, and it showed that BUG was never called.
 
--       for (; next; next = next->sibling)
-+       for (; next; next = next->sibling) {
-                if (of_node_get(next))
-                        break;
-+               BUG();
+-       if (!dryrun)
++       if (!dryrun) {
++               if (*pprev)
++                       BUG();
+                *pprev = NULL;
 +       }
+
+Let's remove unnecessary code.
 
 Signed-off-by: Ohhoon Kwon <ohoono.kwon@samsung.com>
 ---
- drivers/of/base.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/of/fdt.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/of/base.c b/drivers/of/base.c
-index 48e941f99558..ca60988ef428 100644
---- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -708,9 +708,7 @@ static struct device_node *__of_get_next_child(const struct device_node *node,
- 		return NULL;
- 
- 	next = prev ? prev->sibling : node->child;
--	for (; next; next = next->sibling)
--		if (of_node_get(next))
--			break;
-+	of_node_get(next);
- 	of_node_put(prev);
- 	return next;
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index ba17a80b8c79..5e71f5eb35b1 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -200,9 +200,6 @@ static void populate_properties(const void *blob,
+ 				 nodename, (char *)pp->value);
+ 		}
+ 	}
+-
+-	if (!dryrun)
+-		*pprev = NULL;
  }
+ 
+ static int populate_node(const void *blob,
 -- 
 2.17.1
