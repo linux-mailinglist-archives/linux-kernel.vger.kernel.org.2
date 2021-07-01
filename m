@@ -2,211 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3763B958B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F21C3B959C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233131AbhGARei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 13:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbhGAReg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 13:34:36 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331A8C061764
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 10:32:05 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id u19so4058872plc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 10:32:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BbJUiUUe8T9b2PK6TM2EJq7HBKzquI9DW1+aUliaiPo=;
-        b=CVBp7SxkahiNSc/6amQlsQrupBIvPGzMuT+qFHMb8J+fEgPmJ+jSNCObUz3UPwYwDh
-         96U0UYYZnKH2aWE3M+lvXivMBhfaVSK+gjY5ur0I4ocShvUctW+KnLGvoFzWfrQslIk6
-         qhd/uIEmUd5jSNYfWvz65ylCrTmu0PcSVOlxbZrg1xHtLdgXfIko/5vmpmtm3li2QbnP
-         Y0moswHricRpt+NVr5AWm0QclZ+uXuMmIJKEWZ9wiXx/T/+XpZgl7Z/SMudxcLfqBcNP
-         TTnrGYRIDdk4Nea4OFwd9s1bwBi4xFDWbYXNUIWUbl0VP7GQ9CetjiSW63t0JNc8CgD3
-         wD7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BbJUiUUe8T9b2PK6TM2EJq7HBKzquI9DW1+aUliaiPo=;
-        b=t456SsPw+PAB4GXGO89GskpYMm+zGFPcJo9fzp0MA3XHA4Q5LM07/kIJaFnzLlV/Bl
-         nT34FuIwXfNt/Y3gpvnD0YRV2V72I1G15CuETlZ0HleCm7XZsZHQ3zhBqNyDP/O0sdGU
-         h13ECI9xw3swrGkMhNpE9Gk6/iQtaCJefkkdRYVUV5cYaRV2blrlsqgzxzVVpyEOBXBc
-         /xuBEAIWHS8cXz19PSo8yNKDmJR/faCCm6DhEUxpb2df9SwVkCw18x4G7nbDrkqqc351
-         wR1xzHeWHV56TRRnGjheC4CX4b//7W3s3JteSnV/FXxGKmsxQtzM/6KII/ZPqI5BHvK+
-         ykKw==
-X-Gm-Message-State: AOAM531yidQ2SMixaUgc5R9isEBNF1JLtAJN0sGj4Rx8F3n5lwTEdBqA
-        87oAqiUmHMkBaLnFRPrQFcIMGA==
-X-Google-Smtp-Source: ABdhPJwaRu6TdRHiOXUsrbUGWmqyGU/c31E1IgwClXw1IEA4MbKdQrnpni+2qvPFr+yjvDGvNmfw+Q==
-X-Received: by 2002:a17:902:8503:b029:127:8abc:191c with SMTP id bj3-20020a1709028503b02901278abc191cmr845772plb.21.1625160724477;
-        Thu, 01 Jul 2021 10:32:04 -0700 (PDT)
-Received: from google.com ([2620:15c:280:201:558a:406a:d453:dbe5])
-        by smtp.gmail.com with ESMTPSA id y13sm444667pgp.16.2021.07.01.10.32.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 10:32:04 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 10:31:59 -0700
-From:   Paul Burton <paulburton@google.com>
-To:     Joel Fernandes <joelaf@google.com>
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] tracing: Simplify & fix saved_tgids logic
-Message-ID: <YN38D3dg0fLzL0Ia@google.com>
-References: <20210630003406.4013668-1-paulburton@google.com>
- <CAJWu+ooRQ6hFtaA4tr3BNs9Btss1yan8taua=VMWMopGmEVhSA@mail.gmail.com>
+        id S233079AbhGARnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 13:43:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229978AbhGARnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 13:43:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99F89613CF;
+        Thu,  1 Jul 2021 17:40:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625161232;
+        bh=xLCtF4ERVx3lvbj2NQhW5MfgdR9rvEAlBwDFrcwnl/g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eEJ9MlUD87Ql9QHIW5WB3GYn6Vz9rDGcEJaeIijzsOCxhYmTKOfTRLMyfwCa3X/mt
+         209o1yjP/k6DjuC71oYIEQ3dYmJXSmFTo3jGNo+H3EmN6fQ0hmuy56/SXQkNBGDBs6
+         e9l5mnWpghWY2Mv9TTdtG9buBGFGqf/ObuTgVDJlW4OeAwX7iRhm3v/z2uD53DbRfW
+         r9eXLG28Bt9hCTJaNpKoP8aNS6Ag/S313Ek74MXuQU01iDaImrf2iDdETeETEP3wyZ
+         jJp+lT5nWsZHWRVWD+4gBJ2IoylpNYQz1z00gIQjskgoiSW5syteDhxyBYhd4iPcXY
+         6P3qvBDyxZ/pg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E426C40B1A; Thu,  1 Jul 2021 14:40:28 -0300 (-03)
+Date:   Thu, 1 Jul 2021 14:40:28 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 00/10] perf script: Add API for filtering via
+ dynamically loaded shared object
+Message-ID: <YN3+DLZvPsW6q/l5@kernel.org>
+References: <20210627131818.810-1-adrian.hunter@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJWu+ooRQ6hFtaA4tr3BNs9Btss1yan8taua=VMWMopGmEVhSA@mail.gmail.com>
+In-Reply-To: <20210627131818.810-1-adrian.hunter@intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joel,
+Em Sun, Jun 27, 2021 at 04:18:08PM +0300, Adrian Hunter escreveu:
+> Hi
+>  
+> In some cases, users want to filter very large amounts of data (e.g. from
+> AUX area tracing like Intel PT) looking for something specific. While
+> scripting such as Python can be used, Python is 10 to 20 times slower than
+> C. So define a C API so that custom filters can be written and loaded.
+> 
+> This is V2.
+> 
+> The main patch is patch 1.
+> 
+> The other patches add more functionality, except for patch 5 which installs
+> the C API header file.
 
-On Wed, Jun 30, 2021 at 06:29:55PM -0400, Joel Fernandes wrote:
-> On Tue, Jun 29, 2021 at 8:34 PM Paul Burton <paulburton@google.com> wrote:
-> >
-> > The tgid_map array records a mapping from pid to tgid, where the index
-> > of an entry within the array is the pid & the value stored at that index
-> > is the tgid.
-> >
-> > The saved_tgids_next() function iterates over pointers into the tgid_map
-> > array & dereferences the pointers which results in the tgid, but then it
-> > passes that dereferenced value to trace_find_tgid() which treats it as a
-> > pid & does a further lookup within the tgid_map array. It seems likely
-> > that the intent here was to skip over entries in tgid_map for which the
-> > recorded tgid is zero, but instead we end up skipping over entries for
-> > which the thread group leader hasn't yet had its own tgid recorded in
-> > tgid_map.
-> >
-> > A minimal fix would be to remove the call to trace_find_tgid, turning:
-> >
-> >   if (trace_find_tgid(*ptr))
-> >
-> > into:
-> >
-> >   if (*ptr)
-> >
-> > ..but it seems like this logic can be much simpler if we simply let
-> > seq_read() iterate over the whole tgid_map array & filter out empty
-> > entries by returning SEQ_SKIP from saved_tgids_show(). Here we take that
-> > approach, removing the incorrect logic here entirely.
-> 
-> Looks reasonable except for one nit:
-> 
-> > Signed-off-by: Paul Burton <paulburton@google.com>
-> > Fixes: d914ba37d714 ("tracing: Add support for recording tgid of tasks")
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Joel Fernandes <joelaf@google.com>
-> > Cc: <stable@vger.kernel.org>
-> > ---
-> >  kernel/trace/trace.c | 38 +++++++++++++-------------------------
-> >  1 file changed, 13 insertions(+), 25 deletions(-)
-> >
-> > diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> > index d23a09d3eb37b..9570667310bcc 100644
-> > --- a/kernel/trace/trace.c
-> > +++ b/kernel/trace/trace.c
-> > @@ -5608,37 +5608,20 @@ static const struct file_operations tracing_readme_fops = {
-> >
-> >  static void *saved_tgids_next(struct seq_file *m, void *v, loff_t *pos)
-> >  {
-> > -       int *ptr = v;
-> > +       int pid = ++(*pos);
-> >
-> > -       if (*pos || m->count)
-> > -               ptr++;
-> > -
-> > -       (*pos)++;
-> > -
-> > -       for (; ptr <= &tgid_map[PID_MAX_DEFAULT]; ptr++) {
-> > -               if (trace_find_tgid(*ptr))
-> > -                       return ptr;
-> 
-> It would be great if you can add back the check for !tgid_map to both
-> next() and show() as well, for added robustness (since the old code
-> previously did it).
+Thanks! applied.
 
-That condition cannot happen, because both next() & show() are called to
-iterate through the content of the seq_file & by definition their v
-argument is non-NULL (else seq_file would have finished iterating
-already). That argument came from either start() or an earlier call to
-next(), which would only have returned a non-NULL pointer into tgid_map
-if tgid_map is non-NULL.
+Please consider adding a 'perf test' entry to check if what is produced
+is what is expected, also to exercise this code so that we get some
+'perf test' segfault if we break something it uses somehow.
 
-I've added comments to this effect in v2, though the second patch in v2
-does wind up effectively adding back the check in next() anyway in order
-to reuse some code.
-
-I was tempted to just add the redundant checks anyway (pick your battles
-and all) but for show() in particular it wound up making things seem
-non-sensical to me ("display the value describing this non-NULL pointer
-into tgid_map only if tgid_map is not NULL?").
-
-Thanks,
-    Paul
-
-> With that change:
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+- Arnaldo
+ 
 > 
-> thanks,
+> Changes in V2:
+>     perf script: Move filter_cpu() earlier
+>     perf script: Move filtering before scripting
+>     perf script: Share addr_al between functions
+> 	Dropped because they have now been applied.
 > 
-> -Joel
+>     perf script: Add API for filtering via dynamically loaded shared object
+> 	Move 2 members of struct perf_dlfilter_sample
+> 	Add 'ctx' as an argument to 'start' and 'stop'
+> 	Find dlfilter .so files in current directory or exec-path/dlfilters
+> 
+>     perf script: Add option to list dlfilters
+> 	New patch
+> 
+>     perf script: Add option to pass arguments to dlfilters
+> 	New patch
 > 
 > 
-> > -       }
-> > +       if (pid > PID_MAX_DEFAULT)
-> > +               return NULL;
-> >
-> > -       return NULL;
-> > +       return &tgid_map[pid];
-> >  }
-> >
-> >  static void *saved_tgids_start(struct seq_file *m, loff_t *pos)
-> >  {
-> > -       void *v;
-> > -       loff_t l = 0;
-> > -
-> > -       if (!tgid_map)
-> > +       if (!tgid_map || *pos > PID_MAX_DEFAULT)
-> >                 return NULL;
-> >
-> > -       v = &tgid_map[0];
-> > -       while (l <= *pos) {
-> > -               v = saved_tgids_next(m, v, &l);
-> > -               if (!v)
-> > -                       return NULL;
-> > -       }
-> > -
-> > -       return v;
-> > +       return &tgid_map[*pos];
-> >  }
-> >
-> >  static void saved_tgids_stop(struct seq_file *m, void *v)
-> > @@ -5647,9 +5630,14 @@ static void saved_tgids_stop(struct seq_file *m, void *v)
-> >
-> >  static int saved_tgids_show(struct seq_file *m, void *v)
-> >  {
-> > -       int pid = (int *)v - tgid_map;
-> > +       int *entry = (int *)v;
-> > +       int pid = entry - tgid_map;
-> > +       int tgid = *entry;
-> > +
-> > +       if (tgid == 0)
-> > +               return SEQ_SKIP;
-> >
-> > -       seq_printf(m, "%d %d\n", pid, trace_find_tgid(pid));
-> > +       seq_printf(m, "%d %d\n", pid, tgid);
-> >         return 0;
-> >  }
-> >
-> >
-> > base-commit: 62fb9874f5da54fdb243003b386128037319b219
-> > --
-> > 2.32.0.93.g670b81a890-goog
-> >
+> Adrian Hunter (10):
+>       perf script: Add API for filtering via dynamically loaded shared object
+>       perf script: Add dlfilter__filter_event_early()
+>       perf script: Add option to list dlfilters
+>       perf script: Add option to pass arguments to dlfilters
+>       perf build: Install perf_dlfilter.h
+>       perf dlfilter: Add resolve_address() to perf_dlfilter_fns
+>       perf dlfilter: Add insn() to perf_dlfilter_fns
+>       perf dlfilter: Add srcline() to perf_dlfilter_fns
+>       perf dlfilter: Add attr() to perf_dlfilter_fns
+>       perf dlfilter: Add object_code() to perf_dlfilter_fns
+> 
+>  tools/perf/Documentation/perf-dlfilter.txt | 251 ++++++++++++
+>  tools/perf/Documentation/perf-script.txt   |  15 +-
+>  tools/perf/Makefile.config                 |   3 +
+>  tools/perf/Makefile.perf                   |   4 +-
+>  tools/perf/builtin-script.c                |  86 +++-
+>  tools/perf/util/Build                      |   1 +
+>  tools/perf/util/dlfilter.c                 | 615 +++++++++++++++++++++++++++++
+>  tools/perf/util/dlfilter.h                 |  97 +++++
+>  tools/perf/util/perf_dlfilter.h            | 150 +++++++
+>  9 files changed, 1211 insertions(+), 11 deletions(-)
+>  create mode 100644 tools/perf/Documentation/perf-dlfilter.txt
+>  create mode 100644 tools/perf/util/dlfilter.c
+>  create mode 100644 tools/perf/util/dlfilter.h
+>  create mode 100644 tools/perf/util/perf_dlfilter.h
+> 
+> 
+> Regards
+> Adrian
+
+-- 
+
+- Arnaldo
