@@ -2,81 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9593B985F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 23:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5723B9865
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 23:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234413AbhGAVzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 17:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233998AbhGAVzB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 17:55:01 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38ECDC061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 14:52:30 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id n14so14436237lfu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 14:52:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J39z1K1H9iYgiKTRenHzC+Q5MRshLFfVFTh3xPa3JgM=;
-        b=bw6xCNESDz/oRoLjaorfElSJpYWVHAjWx3+V3UIwpQq3cl/SS6ExZXKuELeedwNTV/
-         PpppvmevABPPVYta6ZbqEsURwd1NR9uIZJfjAZtiQafHB/IvtttxBLkWCLNFOZryRe/v
-         P3WCYwp5sR6GJuYejHu4/wj+xONy0i0jGjRRg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J39z1K1H9iYgiKTRenHzC+Q5MRshLFfVFTh3xPa3JgM=;
-        b=M/ed/ygQZfX9zOvCUARmTACUex+x7cyUTScOJrY5k8M9GahSACZN4jmjOPziJ8TWh3
-         iVWPNVRMR51lMEiszmXTM7tsPspb5dK0K7nACHzAoPNcRtHeBDSpoTEvNAjmO7CeWFAB
-         FE4dWSd5sUzRZeVWb3tjDCzlrXjGR/nq+Sr8Lu3xPex378IwgLsLD6DhqR9vhONeTHrc
-         joQYeE2T1dh+3n2XOBE1B1gTXdQnI3+49+tYOMvK8HMxAfGiHXx7vAp+6KEWJCATnc0E
-         MPQGNkhpX6c6oQeJTZoevYle0qCP1U6Wp4ROJXhJoZV7ocrxEyENfimF87oMuAeIzf/K
-         O4TQ==
-X-Gm-Message-State: AOAM530oxILVlbTEWMHCKrC9Ajgn6LH9s2PCRo1laRGhAGvwusKBfPeh
-        yZLnEOoPuSPAXMZRI6p0zBRMfNowOg3imDwHSBY=
-X-Google-Smtp-Source: ABdhPJxOfKDNj6HRMAOeqetv1fLn7wbOy6fTKmCEesWm4hgglceBQjM4Z0Kn/Td4JcywJq6SkFOVMg==
-X-Received: by 2002:ac2:5de5:: with SMTP id z5mr1281581lfq.94.1625176348435;
-        Thu, 01 Jul 2021 14:52:28 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id b5sm81844lfe.281.2021.07.01.14.52.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Jul 2021 14:52:27 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id n14so14436118lfu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 14:52:27 -0700 (PDT)
-X-Received: by 2002:a19:7d04:: with SMTP id y4mr1222289lfc.201.1625176347073;
- Thu, 01 Jul 2021 14:52:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210701204246.2037142-1-agruenba@redhat.com> <CAHk-=wjk6KP3vSLFNPMjoaZ4xY4u=DjTM+C+hCS3QKt+XAE6OA@mail.gmail.com>
-In-Reply-To: <CAHk-=wjk6KP3vSLFNPMjoaZ4xY4u=DjTM+C+hCS3QKt+XAE6OA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 1 Jul 2021 14:52:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whHTB6dOrz3AkPVL7h5t8k0Ety1dy1r+BEy3+xptzF3bQ@mail.gmail.com>
-Message-ID: <CAHk-=whHTB6dOrz3AkPVL7h5t8k0Ety1dy1r+BEy3+xptzF3bQ@mail.gmail.com>
-Subject: Re: [PATCH] gfs2: Fix mmap + page fault deadlocks
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        cluster-devel <cluster-devel@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S234291AbhGAWBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 18:01:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229934AbhGAWBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 18:01:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 495C1613BA;
+        Thu,  1 Jul 2021 21:58:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625176709;
+        bh=NUt43gcqvopSyG3CniOCgP+WdSQtlYXXIPzeH1i0Ryg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=SF5O15OWluNAorev3/PI6x4Qzv5UYwemkEFSernFnEDCvmPzxQdj/xLfhlKnhCdmd
+         Kp5skhJzVQzWHhRp8Pc7WBkGd/cW+YiTf8Wf5IoYDiNBstmJ/g0BrSGMv7kivK0nI2
+         +0UFryBL+FA5ag72qRYmhBtPqi4PcC+tTuPXEVTgM2tKJLr5zL4P3sTYSgRkLzksgr
+         06gChggNhdtiIRZgSmDeEawo9Z++4TYmyogpZXzF4HQEs9d9HUj+zdwdl0jLrFxuS9
+         CMYSgAqwVs26vYuSqjQ35rBtbZZYjSoJY4ZvXM1yk11Psit4TZ6TVddEaAYS0qZ4zN
+         uBioBF2lz14bQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 354796095D;
+        Thu,  1 Jul 2021 21:58:29 +0000 (UTC)
+Subject: Re: [GIT PULL] clk changes for the merge window
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210630183823.3500371-1-sboyd@kernel.org>
+References: <20210630183823.3500371-1-sboyd@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210630183823.3500371-1-sboyd@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-for-linus
+X-PR-Tracked-Commit-Id: d2b21013bf5fb177c08b2c9c4dfa32ee0fc97b53
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 514798d36572fb8eba6ccff3de10c9615063a7f5
+Message-Id: <162517670915.12814.14744576124603045704.pr-tracker-bot@kernel.org>
+Date:   Thu, 01 Jul 2021 21:58:29 +0000
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 2:41 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> So what the direct-IO code _should_ do is to turn an ITER_IOVEC into a
-> ITER_KVEC by doing the page lookup ahead of time
+The pull request you sent on Wed, 30 Jun 2021 11:38:23 -0700:
 
-Actually, an ITER_BVEC, not ITER_KVEC. It wants a page array, not a
-kernel pointer array.
+> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-for-linus
 
-But I hope people understood what I meant..
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/514798d36572fb8eba6ccff3de10c9615063a7f5
 
-             Linus
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
