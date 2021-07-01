@@ -2,165 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A49A3B986A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 00:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A073B987E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 00:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236864AbhGAWET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 18:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234270AbhGAWES (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 18:04:18 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDE5C061762;
-        Thu,  1 Jul 2021 15:01:46 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id u8so10010040wrq.8;
-        Thu, 01 Jul 2021 15:01:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Glw4MyKbfrqZ47X58GjOG7N696nHmNYjMSTqKnCauic=;
-        b=pB6caxcDX3Lg9zrR/9Wpvy4LgyS9BDrZiE4/9T9z3G4fCiHz1SlAv11MADJ6i684/Q
-         MmosESNPPwEBH50u/E2UdiRER4TlOq0JMDcT3Kz+FXS+8PzHdH+BluFUMmLEoAu6jC6U
-         hDQQHWf4dyBcgPFZPFSqOcLFgRxmk+4J454AZnZaJV22K8WvwQ/4gBfEEN6m/asVVK2F
-         Y+jzk1iAVPwUD7LZmDWMHA3krmiOc5fJ10OyQe23vqmqH0F8SMNsSBIKSX9DxJgTus0+
-         D0pJG9JD0XPZ7gQH+RpFM3Ry8csp71WU7kA5dK6uwsycBJLSPvh18RGBv4UCmKnaX6SD
-         FkOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Glw4MyKbfrqZ47X58GjOG7N696nHmNYjMSTqKnCauic=;
-        b=fcAqh0pFsF21CM0OK+rb44aHk6Ry0LlzXFWJa2pG6eWxgD86SL4Hr+DXUMJDedGV0m
-         WdIHxn4GknR2zCmLCotB5qbn0p/cM8iNQphf6RC3mFWL21iWbjx2iixDT1Qm3yxrcf42
-         ptsHTqMaVyi4619eA+udev7vtSPBC4+skR8s3GfIAlTjdICUAFB8UklbokyKZUJ5R3k+
-         AX2C960y4gLOZO+UiAGsaU/KI0Tkhl8f3LQlxkUct99eR/P9+AWd3QZREpEsw7Xo3S7E
-         /skn3Sbde8bPV43xUZIz3luB0KvIZyEc+Xy2r8a6GwM/FDrBv5IXB677io06VuZfbqAv
-         exXQ==
-X-Gm-Message-State: AOAM531BuszUfjndYpJL9iVUxXHhmtC+D8FkdzyoZLsVVDd/DeiK1P7W
-        1PXea5hG+MUMQm5KUqm8Tng=
-X-Google-Smtp-Source: ABdhPJy2CcFtSyfD468hjAaYe4xZZCtBaiI2zSCBtYBb2m2WthEMN0tv3UCP89do7iMMA5AgoYytfQ==
-X-Received: by 2002:a5d:400a:: with SMTP id n10mr2056703wrp.268.1625176905351;
-        Thu, 01 Jul 2021 15:01:45 -0700 (PDT)
-Received: from masalkhi.fritz.box (dslb-178-005-073-162.178.005.pools.vodafone-ip.de. [178.5.73.162])
-        by smtp.gmail.com with ESMTPSA id y7sm10648005wma.22.2021.07.01.15.01.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 15:01:44 -0700 (PDT)
-From:   Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-To:     hch@infradead.org
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-Subject: Re: [PATCH] block: Removed a warning while compiling with a cross compiler for parisc
-Date:   Fri,  2 Jul 2021 00:01:30 +0200
-Message-Id: <20210701220130.226582-1-abd.masalkhi@gmail.com>
-X-Mailer: git-send-email 2.29.0.rc1.dirty
+        id S236870AbhGAWMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 18:12:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234270AbhGAWMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 18:12:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1CAE613C2;
+        Thu,  1 Jul 2021 22:09:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625177378;
+        bh=9oOW9rb3aWkygqoFbEjWvKEdRgMpllmK2yiCvxQYrZs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=KRj/PvOr8i2dQuPpOZqUFYu1rj+nr9GrPBAwnjIn73AIyKjWsrwxEJpzFTGs0n6DL
+         j4zRcQskG0ljelQW8ksfKopWNpAJja3l9KnONj6YpjL2PB2gLpKPNe9phyyhYEQHRb
+         LPFAWZeCSk13gYk5GNNa08w1CnfVUylGHywavSLOCp/Mw+Yyf53nH7jv7gzaVki6HH
+         dZP71aKIZCBxowECO70wQQdU/Thr8tX8WIbzZX7F7OU1pPhstZ8Zh79h4JYQyeff/d
+         yiraslP/OIf/DPa6XdXyhnHNR1RDdjw6nS0GVsV9vm7jHsmqiPdlS9YQ93cKkduuPo
+         SsSLjZyYeL0nQ==
+Date:   Thu, 1 Jul 2021 17:09:36 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pci@vger.kernel.org
+Subject: Re: [PATCH] PCI/P2PDMA: finish RCU conversion of pdev->p2pdma
+Message-ID: <20210701220936.GA102273@bjorn-Precision-5520>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210701095621.3129283-1-eric.dumazet@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you Christoph for your comment, you are absolutely right, my previous
-solution has not actually solved the problem... I have not know about %pg,
-it is a nice feature, I hope I have used correctly!! and about div_u64 I
-have found out that each time div_u64 was used the stack frame increased
-dramatically, so I wrapped with a wrapper function and used the noinline
-attribute, and if there is any mistakes or if i have do not something not
-correct I am happy to hear them.
-And I am sorry for the late respond, I was at work, delivering pizza. next
-time, if you have ordered a pizza and I was the deliver, it will be on me.
+On Thu, Jul 01, 2021 at 02:56:21AM -0700, Eric Dumazet wrote:
+> From: Eric Dumazet <edumazet@google.com>
+> 
+> While looking at pci_alloc_p2pmem() I found rcu protection
+> was not properly applied there, as pdev->p2pdma was
+> potentially read multiple times.
+> 
+> I decided to fix pci_alloc_p2pmem(), add __rcu qualifier
+> to p2pdma field of struct pci_dev, and fix all
+> other accesses to this field with proper rcu verbs.
+> 
+> Fixes: 1570175abd16 ("PCI/P2PDMA: track pgmap references per resource, not globally")
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
 
-Thank you again!
+Applied to pci/p2pdma for v5.14, thanks!
 
-Kind Regards,
-Abd-Alrhman,
+There were some conflicting changes, so it'd be great if you could
+take a look and see if I did the right thing:
 
-Signed-off-by: Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
----
- block/genhd.c | 35 ++++++++++++++++++-----------------
- 1 file changed, 18 insertions(+), 17 deletions(-)
+  https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/commit/?h=pci/p2pdma&id=651b0ba3f8302e183277e4fa317fff2f9685bca2
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 79aa40b4c39c..c32b7716381a 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1106,6 +1106,12 @@ const struct device_type disk_type = {
- };
- 
- #ifdef CONFIG_PROC_FS
-+
-+static noinline unsigned int call_div_u64(u64 dividend, u32 divisor)
-+{
-+	return (unsigned int)div_u64(dividend, divisor);
-+}
-+
- /*
-  * aggregate disk stat collector.  Uses the same stats that the sysfs
-  * entries do, above, but makes them available through one seq_file.
-@@ -1117,7 +1123,6 @@ static int diskstats_show(struct seq_file *seqf, void *v)
- {
- 	struct gendisk *gp = v;
- 	struct block_device *hd;
--	char buf[BDEVNAME_SIZE];
- 	unsigned int inflight;
- 	struct disk_stats stat;
- 	unsigned long idx;
-@@ -1140,40 +1145,36 @@ static int diskstats_show(struct seq_file *seqf, void *v)
- 		else
- 			inflight = part_in_flight(hd);
- 
--		seq_printf(seqf, "%4d %7d %s "
-+		seq_printf(seqf, "%4d %7d %pg "
- 			   "%lu %lu %lu %u "
- 			   "%lu %lu %lu %u "
- 			   "%u %u %u "
- 			   "%lu %lu %lu %u "
- 			   "%lu %u"
- 			   "\n",
--			   MAJOR(hd->bd_dev), MINOR(hd->bd_dev),
--			   disk_name(gp, hd->bd_partno, buf),
-+			   MAJOR(hd->bd_dev), MINOR(hd->bd_dev), gp,
- 			   stat.ios[STAT_READ],
- 			   stat.merges[STAT_READ],
- 			   stat.sectors[STAT_READ],
--			   (unsigned int)div_u64(stat.nsecs[STAT_READ],
--							NSEC_PER_MSEC),
-+			   call_div_u64(stat.nsecs[STAT_READ], NSEC_PER_MSEC),
- 			   stat.ios[STAT_WRITE],
- 			   stat.merges[STAT_WRITE],
- 			   stat.sectors[STAT_WRITE],
--			   (unsigned int)div_u64(stat.nsecs[STAT_WRITE],
--							NSEC_PER_MSEC),
-+			   call_div_u64(stat.nsecs[STAT_WRITE], NSEC_PER_MSEC),
- 			   inflight,
- 			   jiffies_to_msecs(stat.io_ticks),
--			   (unsigned int)div_u64(stat.nsecs[STAT_READ] +
--						 stat.nsecs[STAT_WRITE] +
--						 stat.nsecs[STAT_DISCARD] +
--						 stat.nsecs[STAT_FLUSH],
--							NSEC_PER_MSEC),
-+			   call_div_u64(stat.nsecs[STAT_READ] +
-+					stat.nsecs[STAT_WRITE] +
-+					stat.nsecs[STAT_DISCARD] +
-+					stat.nsecs[STAT_FLUSH],
-+					NSEC_PER_MSEC),
- 			   stat.ios[STAT_DISCARD],
- 			   stat.merges[STAT_DISCARD],
- 			   stat.sectors[STAT_DISCARD],
--			   (unsigned int)div_u64(stat.nsecs[STAT_DISCARD],
--						 NSEC_PER_MSEC),
-+			   call_div_u64(stat.nsecs[STAT_DISCARD],
-+					NSEC_PER_MSEC),
- 			   stat.ios[STAT_FLUSH],
--			   (unsigned int)div_u64(stat.nsecs[STAT_FLUSH],
--						 NSEC_PER_MSEC)
-+			   call_div_u64(stat.nsecs[STAT_FLUSH], NSEC_PER_MSEC)
- 			);
- 	}
- 	rcu_read_unlock();
--- 
-2.29.0.rc1.dirty
-
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Cc: Logan Gunthorpe <logang@deltatee.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: "Jérôme Glisse" <jglisse@redhat.com>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Cc: linux-pci@vger.kernel.org
+> ---
+>  drivers/pci/p2pdma.c | 101 ++++++++++++++++++++++++++++++-------------
+>  include/linux/pci.h  |   2 +-
+>  2 files changed, 73 insertions(+), 30 deletions(-)
+> 
+> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+> index 1963826303631465da2956b0e3abcec3e0fcfbc4..89095aa5c674f5b8237d543c7af2bbdc2c176e5a 100644
+> --- a/drivers/pci/p2pdma.c
+> +++ b/drivers/pci/p2pdma.c
+> @@ -48,10 +48,14 @@ static ssize_t size_show(struct device *dev, struct device_attribute *attr,
+>  			 char *buf)
+>  {
+>  	struct pci_dev *pdev = to_pci_dev(dev);
+> +	struct pci_p2pdma *p2pdma;
+>  	size_t size = 0;
+>  
+> -	if (pdev->p2pdma->pool)
+> -		size = gen_pool_size(pdev->p2pdma->pool);
+> +	rcu_read_lock();
+> +	p2pdma = rcu_dereference(pdev->p2pdma);
+> +	if (p2pdma && p2pdma->pool)
+> +		size = gen_pool_size(p2pdma->pool);
+> +	rcu_read_unlock();
+>  
+>  	return scnprintf(buf, PAGE_SIZE, "%zd\n", size);
+>  }
+> @@ -61,10 +65,14 @@ static ssize_t available_show(struct device *dev, struct device_attribute *attr,
+>  			      char *buf)
+>  {
+>  	struct pci_dev *pdev = to_pci_dev(dev);
+> +	struct pci_p2pdma *p2pdma;
+>  	size_t avail = 0;
+>  
+> -	if (pdev->p2pdma->pool)
+> -		avail = gen_pool_avail(pdev->p2pdma->pool);
+> +	rcu_read_lock();
+> +	p2pdma = rcu_dereference(pdev->p2pdma);
+> +	if (p2pdma && p2pdma->pool)
+> +		avail = gen_pool_avail(p2pdma->pool);
+> +	rcu_read_unlock();
+>  
+>  	return scnprintf(buf, PAGE_SIZE, "%zd\n", avail);
+>  }
+> @@ -74,9 +82,16 @@ static ssize_t published_show(struct device *dev, struct device_attribute *attr,
+>  			      char *buf)
+>  {
+>  	struct pci_dev *pdev = to_pci_dev(dev);
+> +	struct pci_p2pdma *p2pdma;
+> +	bool published = false;
+> +
+> +	rcu_read_lock();
+> +	p2pdma = rcu_dereference(pdev->p2pdma);
+> +	if (p2pdma)
+> +		published = p2pdma->p2pmem_published;
+> +	rcu_read_unlock();
+>  
+> -	return scnprintf(buf, PAGE_SIZE, "%d\n",
+> -			 pdev->p2pdma->p2pmem_published);
+> +	return scnprintf(buf, PAGE_SIZE, "%d\n", published);
+>  }
+>  static DEVICE_ATTR_RO(published);
+>  
+> @@ -95,8 +110,9 @@ static const struct attribute_group p2pmem_group = {
+>  static void pci_p2pdma_release(void *data)
+>  {
+>  	struct pci_dev *pdev = data;
+> -	struct pci_p2pdma *p2pdma = pdev->p2pdma;
+> +	struct pci_p2pdma *p2pdma;
+>  
+> +	p2pdma = rcu_dereference_protected(pdev->p2pdma, 1);
+>  	if (!p2pdma)
+>  		return;
+>  
+> @@ -128,16 +144,14 @@ static int pci_p2pdma_setup(struct pci_dev *pdev)
+>  	if (error)
+>  		goto out_pool_destroy;
+>  
+> -	pdev->p2pdma = p2p;
+> -
+>  	error = sysfs_create_group(&pdev->dev.kobj, &p2pmem_group);
+>  	if (error)
+>  		goto out_pool_destroy;
+>  
+> +	rcu_assign_pointer(pdev->p2pdma, p2p);
+>  	return 0;
+>  
+>  out_pool_destroy:
+> -	pdev->p2pdma = NULL;
+>  	gen_pool_destroy(p2p->pool);
+>  out:
+>  	devm_kfree(&pdev->dev, p2p);
+> @@ -159,6 +173,7 @@ int pci_p2pdma_add_resource(struct pci_dev *pdev, int bar, size_t size,
+>  {
+>  	struct pci_p2pdma_pagemap *p2p_pgmap;
+>  	struct dev_pagemap *pgmap;
+> +	struct pci_p2pdma *p2pdma;
+>  	void *addr;
+>  	int error;
+>  
+> @@ -200,7 +215,8 @@ int pci_p2pdma_add_resource(struct pci_dev *pdev, int bar, size_t size,
+>  		goto pgmap_free;
+>  	}
+>  
+> -	error = gen_pool_add_owner(pdev->p2pdma->pool, (unsigned long)addr,
+> +	p2pdma = rcu_dereference_protected(pdev->p2pdma, 1);
+> +	error = gen_pool_add_owner(p2pdma->pool, (unsigned long)addr,
+>  			pci_bus_address(pdev, bar) + offset,
+>  			range_len(&pgmap->range), dev_to_node(&pdev->dev),
+>  			pgmap->ref);
+> @@ -476,6 +492,7 @@ upstream_bridge_distance(struct pci_dev *provider, struct pci_dev *client,
+>  		int *dist, bool *acs_redirects, struct seq_buf *acs_list)
+>  {
+>  	enum pci_p2pdma_map_type map_type;
+> +	struct pci_p2pdma *p2pdma;
+>  
+>  	map_type = __upstream_bridge_distance(provider, client, dist,
+>  					      acs_redirects, acs_list);
+> @@ -486,10 +503,12 @@ upstream_bridge_distance(struct pci_dev *provider, struct pci_dev *client,
+>  			map_type = PCI_P2PDMA_MAP_NOT_SUPPORTED;
+>  	}
+>  
+> -	if (provider->p2pdma)
+> -		xa_store(&provider->p2pdma->map_types, map_types_idx(client),
+> -			 xa_mk_value(map_type), GFP_KERNEL);
+> -
+> +	rcu_read_lock();
+> +	p2pdma = rcu_dereference(provider->p2pdma);
+> +	if (p2pdma)
+> +		xa_store(&p2pdma->map_types, map_types_idx(client),
+> +			 xa_mk_value(map_type), GFP_ATOMIC);
+> +	rcu_read_unlock();
+>  	return map_type;
+>  }
+>  
+> @@ -595,7 +614,15 @@ EXPORT_SYMBOL_GPL(pci_p2pdma_distance_many);
+>   */
+>  bool pci_has_p2pmem(struct pci_dev *pdev)
+>  {
+> -	return pdev->p2pdma && pdev->p2pdma->p2pmem_published;
+> +	struct pci_p2pdma *p2pdma;
+> +	bool res;
+> +
+> +	rcu_read_lock();
+> +	p2pdma = rcu_dereference(pdev->p2pdma);
+> +	res = p2pdma && p2pdma->p2pmem_published;
+> +	rcu_read_unlock();
+> +
+> +	return res;
+>  }
+>  EXPORT_SYMBOL_GPL(pci_has_p2pmem);
+>  
+> @@ -675,6 +702,7 @@ void *pci_alloc_p2pmem(struct pci_dev *pdev, size_t size)
+>  {
+>  	void *ret = NULL;
+>  	struct percpu_ref *ref;
+> +	struct pci_p2pdma *p2pdma;
+>  
+>  	/*
+>  	 * Pairs with synchronize_rcu() in pci_p2pdma_release() to
+> @@ -682,16 +710,17 @@ void *pci_alloc_p2pmem(struct pci_dev *pdev, size_t size)
+>  	 * read-lock.
+>  	 */
+>  	rcu_read_lock();
+> -	if (unlikely(!pdev->p2pdma))
+> +	p2pdma = rcu_dereference(pdev->p2pdma);
+> +	if (unlikely(!p2pdma))
+>  		goto out;
+>  
+> -	ret = (void *)gen_pool_alloc_owner(pdev->p2pdma->pool, size,
+> +	ret = (void *)gen_pool_alloc_owner(p2pdma->pool, size,
+>  			(void **) &ref);
+>  	if (!ret)
+>  		goto out;
+>  
+>  	if (unlikely(!percpu_ref_tryget_live(ref))) {
+> -		gen_pool_free(pdev->p2pdma->pool, (unsigned long) ret, size);
+> +		gen_pool_free(p2pdma->pool, (unsigned long) ret, size);
+>  		ret = NULL;
+>  		goto out;
+>  	}
+> @@ -710,9 +739,9 @@ EXPORT_SYMBOL_GPL(pci_alloc_p2pmem);
+>  void pci_free_p2pmem(struct pci_dev *pdev, void *addr, size_t size)
+>  {
+>  	struct percpu_ref *ref;
+> +	struct pci_p2pdma *p2pdma = rcu_dereference_protected(pdev->p2pdma, 1);
+>  
+> -	gen_pool_free_owner(pdev->p2pdma->pool, (uintptr_t)addr, size,
+> -			(void **) &ref);
+> +	gen_pool_free_owner(p2pdma->pool, (uintptr_t)addr, size, (void **) &ref);
+>  	percpu_ref_put(ref);
+>  }
+>  EXPORT_SYMBOL_GPL(pci_free_p2pmem);
+> @@ -725,9 +754,12 @@ EXPORT_SYMBOL_GPL(pci_free_p2pmem);
+>   */
+>  pci_bus_addr_t pci_p2pmem_virt_to_bus(struct pci_dev *pdev, void *addr)
+>  {
+> +	struct pci_p2pdma *p2pdma;
+> +
+>  	if (!addr)
+>  		return 0;
+> -	if (!pdev->p2pdma)
+> +	p2pdma = rcu_dereference_protected(pdev->p2pdma, 1);
+> +	if (!p2pdma)
+>  		return 0;
+>  
+>  	/*
+> @@ -735,7 +767,7 @@ pci_bus_addr_t pci_p2pmem_virt_to_bus(struct pci_dev *pdev, void *addr)
+>  	 * bus address as the physical address. So gen_pool_virt_to_phys()
+>  	 * actually returns the bus address despite the misleading name.
+>  	 */
+> -	return gen_pool_virt_to_phys(pdev->p2pdma->pool, (unsigned long)addr);
+> +	return gen_pool_virt_to_phys(p2pdma->pool, (unsigned long)addr);
+>  }
+>  EXPORT_SYMBOL_GPL(pci_p2pmem_virt_to_bus);
+>  
+> @@ -806,19 +838,30 @@ EXPORT_SYMBOL_GPL(pci_p2pmem_free_sgl);
+>   */
+>  void pci_p2pmem_publish(struct pci_dev *pdev, bool publish)
+>  {
+> -	if (pdev->p2pdma)
+> -		pdev->p2pdma->p2pmem_published = publish;
+> +	struct pci_p2pdma *p2pdma;
+> +
+> +	rcu_read_lock();
+> +	p2pdma = rcu_dereference(pdev->p2pdma);
+> +	if (p2pdma)
+> +		p2pdma->p2pmem_published = publish;
+> +	rcu_read_unlock();
+>  }
+>  EXPORT_SYMBOL_GPL(pci_p2pmem_publish);
+>  
+>  static enum pci_p2pdma_map_type pci_p2pdma_map_type(struct pci_dev *provider,
+>  						    struct pci_dev *client)
+>  {
+> -	if (!provider->p2pdma)
+> -		return PCI_P2PDMA_MAP_NOT_SUPPORTED;
+> +	enum pci_p2pdma_map_type type = PCI_P2PDMA_MAP_NOT_SUPPORTED;
+> +	struct pci_p2pdma *p2pdma;
+>  
+> -	return xa_to_value(xa_load(&provider->p2pdma->map_types,
+> -				   map_types_idx(client)));
+> +	rcu_read_lock();
+> +	p2pdma = rcu_dereference(provider->p2pdma);
+> +
+> +	if (p2pdma)
+> +		type = xa_to_value(xa_load(&p2pdma->map_types,
+> +					   map_types_idx(client)));
+> +	rcu_read_unlock();
+> +	return type;
+>  }
+>  
+>  static int __pci_p2pdma_map_sg(struct pci_p2pdma_pagemap *p2p_pgmap,
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 24306504226ab665be7323549d0759da1b7ac715..6abdebe2aeb1676da08f03e05e5ecb26f0b08cd6 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -497,7 +497,7 @@ struct pci_dev {
+>  	u16		pasid_features;
+>  #endif
+>  #ifdef CONFIG_PCI_P2PDMA
+> -	struct pci_p2pdma *p2pdma;
+> +	struct pci_p2pdma __rcu *p2pdma;
+>  #endif
+>  	u16		acs_cap;	/* ACS Capability offset */
+>  	phys_addr_t	rom;		/* Physical address if not from BAR */
+> -- 
+> 2.32.0.93.g670b81a890-goog
+> 
