@@ -2,87 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8B63B9355
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7675C3B9352
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233315AbhGAOax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231698AbhGAOaw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:30:52 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F9DC061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 07:28:21 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id c5so6056426pfv.8
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 07:28:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rCgP763lhHmu2Zi9rE7V5pAQrFC+jTrogD4P+Vwy7DI=;
-        b=i46/qIP5TjrqiOY4TvpqCWNlERAIoyVjth9QViWTorv91EwQq/p1kyWMt+g4B6ZCkK
-         tm3ShyjOm2L2kPjOTEhR0JeueEhOyMXexcVAWxM/srVSyLX1EhSwqu2GFiK9Smvg8Jbv
-         D0BNk95l7VcWxj9YsApSRg4oUt6IwgWhBNfpDzyMNRIuYrJQWW1YBlynLu2AAAdBK5n+
-         xO1zkzx82iptjsDAcLX5NJ5wu0cCIcU8Pfn1PFEvT0cKENHsGQDnZWCPLzUgCgb2xOkG
-         4UBSlMgDGTF/8xrv9C0y5ediIM4svMs8acdoAJJpaOjrfoBiAInLsAtmHp1Ks+5AbqoX
-         cvkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rCgP763lhHmu2Zi9rE7V5pAQrFC+jTrogD4P+Vwy7DI=;
-        b=Jbx6fm+yLmCsb8U+ePHTui7ovR8mFJgQ1Jv666EHSgRqS7Zv8tAWtzuAgslI0oI1/1
-         MB6V99+Tb3jxUU3r70H+kkSmO00Soxb8CVPMavywBWbF72e9IlQrCS6mc7ROOCqiuwMM
-         Ur9rY/WpMlm545rGwfJeXa9T4rbB84Qbo6kA2HwpIv0KvYhg3+D6A/+10FKpWcu3geOk
-         3KjcjF4gipg+9gd+5UsOU8i7DwoLtz2P4neUXgOPmX4v/2kDjPYSmLWZOI2oNNqiLxGZ
-         VGnIBY9i4jNi+hYmNo5YS7hL2PQqpJFdOM41oBjKOSlSHV+gmsu+880kKQI56JJ1959B
-         YxWw==
-X-Gm-Message-State: AOAM533FNpfn043JBS/5syUulpW0iaAro4rSQ0S89FJFMZjFcwfSB8oj
-        uMk+eozQ3sFgr17XV41UzRM=
-X-Google-Smtp-Source: ABdhPJyz4xlLKRPuYbJ26xKiV6i7fzmTIkLBZoegoxJ/RIqDZcO9c4Rgvfxwt75f/kM/O0TbDr/H5g==
-X-Received: by 2002:a05:6a00:23d0:b029:2de:c1a2:f1e with SMTP id g16-20020a056a0023d0b02902dec1a20f1emr1642pfc.60.1625149700331;
-        Thu, 01 Jul 2021 07:28:20 -0700 (PDT)
-Received: from localhost.localdomain ([61.98.234.207])
-        by smtp.gmail.com with ESMTPSA id m10sm180307pff.215.2021.07.01.07.28.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 07:28:19 -0700 (PDT)
-From:   Jeongtae Park <jeongtae.park@gmail.com>
-To:     broonie@kernel.org, ldewangan@nvidia.com
-Cc:     linux-kernel@vger.kernel.org, jeongtae.park@gmail.com,
-        jtp.park@samsung.com
-Subject: [PATCH] regmap: fix the offset of register error log
-Date:   Thu,  1 Jul 2021 23:26:30 +0900
-Message-Id: <20210701142630.44936-1-jeongtae.park@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S233827AbhGAO3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:29:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232618AbhGAO3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 10:29:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EA0661409;
+        Thu,  1 Jul 2021 14:26:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625149603;
+        bh=qKgx3HCbAl2O2yMXpHyqALqNcKKjqeW9rIOXBgMJ7IA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nh/mDDRFcF/2ERPfAlGxzAAnpIBLl32hGqC3dePCwwzv5eOHW8+0nuXCG48gb4nJn
+         CLmQhwPJBB/i/DP+szXSrfae7rPfNcYuJzoEDEo2RRZNsRPEG0mxvVCiFuw1ZB4/ao
+         8OCw18ZCRtR0YLg4AWLAlQmdaQY+CdZ6lqSFcAw/bhBK4alxUqc9MlGvC0GzFJx52H
+         J2HEOe7L7dxk6Y3dCahKAnpM6a7a1edx90snCUEeAkpEF41ju1T5msGbLcENZceDVT
+         rKaNoeMe5ppMZcrAZgsLgOBEpstpmDv8l+4N/NKYncwH+HziAeLsTToKryIeTJnRK5
+         6H75vfxhc/nmw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C5D2840B1A; Thu,  1 Jul 2021 11:26:39 -0300 (-03)
+Date:   Thu, 1 Jul 2021 11:26:39 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: Re: [PATCH v8 10/22] perf record: Introduce --threads=<spec> command
+ line option
+Message-ID: <YN3Qn5mO5cPffPZa@kernel.org>
+References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+ <e0069b09cb53d9149ba651474ce65faf6a001303.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+ <YNyprxe/0EiImxpF@kernel.org>
+ <e2aca481-2623-10fb-850b-88ec7870d9cf@linux.intel.com>
+ <00e9de2e-3963-1507-9eb0-40d419bf9a49@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00e9de2e-3963-1507-9eb0-40d419bf9a49@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the offset of register error log
-by using regmap_get_offset().
+Em Thu, Jul 01, 2021 at 02:50:40PM +0300, Bayduraev, Alexey V escreveu:
+> On 30.06.2021 21:54, Bayduraev, Alexey V wrote:
+> > On 30.06.2021 20:28, Arnaldo Carvalho de Melo wrote:
+> >> I thought you would start with plain:
 
-Signed-off-by: Jeongtae Park <jeongtae.park@gmail.com>
----
- drivers/base/regmap/regmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> >>   -j N
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index fe3e38dd5324..2fc826e97591 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -1667,7 +1667,7 @@ static int _regmap_raw_write_impl(struct regmap *map, unsigned int reg,
- 			if (ret) {
- 				dev_err(map->dev,
- 					"Error in caching of register: %x ret: %d\n",
--					reg + i, ret);
-+					reg + regmap_get_offset(map, i), ret);
- 				return ret;
- 			}
- 		}
--- 
-2.25.1
+> >> And start one thread per CPU in 'perf record' existing CPU affinity
+> >> mask, then go on introducing more sophisticated modes.
 
+> > As I remember the first prototype [1] and 
+> > [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+
+> > introduces: 
+
+> > --thread=mode|number_of_threads
+
+> > where mode defines cpu masks (cpu/numa/socket/etc)
+
+> > Then somewhere while discussing this patchset it was decided, for unification,
+> > that --thread should only define CPU/affinity masks or their aliases.
+> > I think Alexei or Jiri could clarify this more.
+
+> >> Have you done this way because its how VTune has evolved over the years
+> >> and now expects from 'perf record'?
+
+> > VTune uses only --thread=cpu or no threading.
+
+> However we would like to have such sophisticated cpu/affinity masks to
+> tune perf-record for different workloads.
+
+I don't have, a priori, anything against the modes you propose, as you
+have a justification for them, its just how we should introduce that.
+
+I.e. first doing the simple case of '-j NCPUS' and then doing what you
+need, so that we get more granular patches.
+
+Not adding too much complexity per patch pays off when/if we find bugs
+and need to bisect.
+
+> For example, some HPC workloads prefer "numa" mask or most of telecom
+> workloads disallow to use cpus where their non-preemtable
+> communication threads work.
+
+- Arnaldo
