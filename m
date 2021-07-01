@@ -2,99 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FA93B95A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152873B95A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhGARpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 13:45:24 -0400
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:27311 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233189AbhGARpX (ORCPT
+        id S233357AbhGARpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 13:45:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233189AbhGARpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 13:45:23 -0400
-Received: from [192.168.1.18] ([86.243.172.93])
-        by mwinf5d12 with ME
-        id Ptip2500321Fzsu03tip3W; Thu, 01 Jul 2021 19:42:51 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 01 Jul 2021 19:42:51 +0200
-X-ME-IP: 86.243.172.93
-Subject: Re: [PATCH 0/3] gve: Fixes and clean-up
-To:     Jeroen de Borst <jeroendb@google.com>
-Cc:     csully@google.com, sagis@google.com, jonolson@google.com,
-        davem@davemloft.net, kuba@kernel.org, awogbemila@google.com,
-        willemb@google.com, yangchun@google.com, bcf@google.com,
-        kuozhao@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <cover.1625118581.git.christophe.jaillet@wanadoo.fr>
- <CAErkTsQLP9_y-Am3MN-O4vZXe3cTKHfYMwkFk-9YWWPLAQM1cw@mail.gmail.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <29632746-3234-1991-040d-3c0dfb3b3acb@wanadoo.fr>
-Date:   Thu, 1 Jul 2021 19:42:48 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 1 Jul 2021 13:45:33 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C94C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 10:43:02 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id w19so13255144lfk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 10:43:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e5t/eiICJInDaoPzgCkbGyquWwZQG2z8agCSrrhjkWw=;
+        b=BoZk87HblOIMHhcA3JOWDsn38hVKRcHQUjkhqOV5B1xlLqWV/kZ+R9udPMbCwa87sl
+         6UAyLiXgdH0srcoB9t9t9KQ39Av+nUavAbCdyRRwKurZdJrCo43DSyv0fHbiA6arIRoF
+         jIZ/U1h5Xgo6B91m//GEDty2RQlV30/hu5z4r3ANXUFkZjOGr0tt6im+pKQAw3vSLWwO
+         t2hPfJnQP3/7zYpOJ/hXlCXViKwCaF+LOJweA/FeS0344DL66IHsQvbYEu6MIyQcJyUu
+         GINhw4gAEJJ3sEmkVdzYfYftnQ/1056KDMnrTpsw6fLJy0uzAbLnuVAc8kcVz/I4ooK1
+         /U9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e5t/eiICJInDaoPzgCkbGyquWwZQG2z8agCSrrhjkWw=;
+        b=dEpybmWpNlPJyeTvZgaS8kx/QRPJYfAyyZIkxQS8/PScyqirW4jl/lWImok7jzrfZd
+         vpM/VicOEO0Rg26D/nVUnFNnfUBDy9Lmjs1lLWxYk6Kp7o7GrQWzCI1F9PM1aVEAKRNa
+         oVgR6/Gr/roRISfF3/1e5bpVpj3aRBgUFE55bzYmoOFUwy21Ek4bjrTSdWYBmDw071FO
+         nuSmYmsrzobKllFbFrMgf8yhkB1+oQ5svMSTCP4lraDnmX7ZfBFOpfkPPbXeOWY1R3fG
+         A+BC3be+kR29fR2Y3dYdZU5GQ+EOyuCW/oPqtJpK1/0M0N48OhFgmy46fYbawSjZpysC
+         Ycmg==
+X-Gm-Message-State: AOAM531LeJI+VGFRR+mTj2TSvlV9B+fAINd0lOu7o3QK98bIHqv+/5vW
+        mnS/a8oFPFrhS3WQfPUhfJqjwzv5tLv7aDCcqTPMv/JH66U=
+X-Google-Smtp-Source: ABdhPJzyu1JesxIKgYX0997DHE64yRPefBgiqP3dkWfIIqKK601FKEdirVgejDjCY82RNvVwazpRhnvL5FFZmhyi+lg=
+X-Received: by 2002:a19:5f04:: with SMTP id t4mr583484lfb.297.1625161380470;
+ Thu, 01 Jul 2021 10:43:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAErkTsQLP9_y-Am3MN-O4vZXe3cTKHfYMwkFk-9YWWPLAQM1cw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210701092841.1419-1-lecopzer.chen@mediatek.com> <20210701092841.1419-2-lecopzer.chen@mediatek.com>
+In-Reply-To: <20210701092841.1419-2-lecopzer.chen@mediatek.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 1 Jul 2021 10:42:49 -0700
+Message-ID: <CAKwvOdkGjz-rH8AHudO3dJmSt+48FSJ8iT-eCacwyeMhWv909w@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2 1/2] Kbuild: lto: add CONFIG_MAKE_VERSION
+To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
+Cc:     keescook@chromium.org, samitolvanen@google.com,
+        linux-kbuild@vger.kernel.org, nathan@kernel.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        yj.chiang@mediatek.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 01/07/2021 à 18:20, Jeroen de Borst a écrit :
-> On Wed, Jun 30, 2021 at 10:58 PM Christophe JAILLET
-> <christophe.jaillet@wanadoo.fr> wrote:
->>
->> This serie is part of the effort to axe the wrappers in
->> include/linux/pci-dma-compat.h
->>
->> While looking at it, I spotted:
->>    - a resource leak in an error handling path (patch 1)
->>    - an error code that could be propagated. (patch 2)
->>      This patch could be ignored. It's only goal is to be more consistent
->>      with other drivers.
->>
->> These 2 paches are not related to the 'pci-dma-compat.h' stuff, which can
->> be found in patch 3.
->>
->> Christophe JAILLET (3):
->>    gve: Fix an error handling path in 'gve_probe()'
->>    gve: Propagate error codes to caller
->>    gve: Simplify code and axe the use of a deprecated API
->>
->>
-> 
-> Thanks for these patches.
-> 
-> Can split this into 2 patch series;
+On Thu, Jul 1, 2021 at 2:28 AM Lecopzer Chen <lecopzer.chen@mediatek.com> wrote:
+>
+> To check the GNU make version. Used by the LTO Kconfig.
+>
+> LTO with MODVERSIONS will fail in generating correct CRC because
+> the makefile rule doesn't work for make with version 3.8X.[1]
+>
+> Thus we need to check make version during selecting on LTO Kconfig.
+> Add CONFIG_MAKE_VERSION which means MAKE_VERSION in canonical digits
+> for arithmetic comparisons.
+>
+> [1] https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/
+> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> ---
+>  Makefile                |  2 +-
+>  init/Kconfig            |  4 ++++
+>  scripts/make-version.sh | 13 +++++++++++++
+>  3 files changed, 18 insertions(+), 1 deletion(-)
+>  create mode 100755 scripts/make-version.sh
+>
+> diff --git a/Makefile b/Makefile
+> index 88888fff4c62..2402745b2ba9 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -516,7 +516,7 @@ CLANG_FLAGS :=
+>
+>  export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS CROSS_COMPILE LD CC
+>  export CPP AR NM STRIP OBJCOPY OBJDUMP READELF PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL
+> -export PERL PYTHON3 CHECK CHECKFLAGS MAKE UTS_MACHINE HOSTCXX
+> +export PERL PYTHON3 CHECK CHECKFLAGS MAKE MAKE_VERSION UTS_MACHINE HOSTCXX
+>  export KGZIP KBZIP2 KLZOP LZMA LZ4 XZ ZSTD
+>  export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 55f9f7738ebb..ecc110504f87 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -86,6 +86,10 @@ config CC_HAS_ASM_INLINE
+>  config CC_HAS_NO_PROFILE_FN_ATTR
+>         def_bool $(success,echo '__attribute__((no_profile_instrument_function)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
+>
+> +config MAKE_VERSION
+> +       int
+> +       default $(shell,$(srctree)/scripts/make-version.sh $(MAKE_VERSION))
+> +
+>  config CONSTRUCTORS
+>         bool
+>
+> diff --git a/scripts/make-version.sh b/scripts/make-version.sh
+> new file mode 100755
+> index 000000000000..ce5af96696cc
+> --- /dev/null
+> +++ b/scripts/make-version.sh
+> @@ -0,0 +1,13 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Print the linker name and its version in a 5 or 6-digit form.
 
-Sure.
+The linker?
 
-> one for net (with the first 2
-> patches) and one for net-next (with the cleanup one)?
-
-I've never worked with net and net-next directly.
-If just adding net and net-next after [PATCH] in the subject of the 
-mail, yes, I can do it if it helps.
-
-
-BTW, I gave a look at https://patchwork.kernel.org/project/netdevbpf/list/
-The patch 1/3 is marked as failed because "1 blamed authors not CCed: 
-lrizzo@google.com; 1 maintainers not CCed: lrizzo@google.com"
-
-This author/blame was not spotted by get_maintainer.pl. Is it something 
-I should worry about?
+> +
+> +set -e
+> +
+> +# Convert the version string x.y.z to a canonical 5 or 6-digit form.
+> +IFS=.
+> +set -- $1
+> +
+> +# If the 2nd or 3rd field is missing, fill it with a zero.
+> +echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
+> --
 
 
-> Also the label in the first patch should probably read
-> 'abort_with_gve_init' instead of 'abort_with_vge_init'.
-
-Good catch. Sorry about that.
-
-> 
-> Jeroen
-> 
-
-CJ
-
+-- 
+Thanks,
+~Nick Desaulniers
