@@ -2,229 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5803B922C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61EC73B9238
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236749AbhGANUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 09:20:01 -0400
-Received: from mga14.intel.com ([192.55.52.115]:9054 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236757AbhGANT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 09:19:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="208350680"
-X-IronPort-AV: E=Sophos;i="5.83,314,1616482800"; 
-   d="scan'208";a="208350680"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 06:17:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,314,1616482800"; 
-   d="scan'208";a="493506057"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.79])
-  by fmsmga002.fm.intel.com with ESMTP; 01 Jul 2021 06:17:24 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 3/3] perf intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
-Date:   Thu,  1 Jul 2021 16:17:32 +0300
-Message-Id: <20210701131732.31602-4-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210701131732.31602-1-adrian.hunter@intel.com>
-References: <20210701131732.31602-1-adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S236672AbhGAN1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 09:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236622AbhGAN1a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 09:27:30 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B27C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 06:24:58 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id c11so8444156ljd.6
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 06:24:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=5/N7mzUAeULeAAxL5YtoCIilrbc1XZmeK0B5sNxzUeg=;
+        b=IgycJGSJBcj80+eyJx3UyqL0WBT8ec0fphzbUcvmUzFLoTqrbU0AS2ULwJ/hE/M3jF
+         C6wfq+0qe+6bLZoUVNSjKk89POb33Mwzi7BBVlVz0UMxA85Iz+kifj72KVfcjh4vhW8h
+         VFaDZDCFsTrCx2ATyNeaYlLOiqRr6zlqehk6wShFMnT4ZCQX2wIt7pFujGfT9tvH3TIQ
+         dk0hwGV6MAoC3mjFxomH6eu2+kmCmeHtQOLzHMgJHnh80dU0QSQkVu4162ghBPWx7URS
+         5Hs82mh7S+rYZ+fvcm1XGBX9Q3EUbRabYoKJ8/pMvJiyoDRzSgkEAMo63GN8lLpTpUOE
+         /6kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=5/N7mzUAeULeAAxL5YtoCIilrbc1XZmeK0B5sNxzUeg=;
+        b=DJfD6LOs2/5imDLtg1druW+zb+OvOxE2G8vJWXSQwQAdBBKzSm9bh0o+r94UBN9xIO
+         24afn31ANHhp8uIf27CkfC3fxg2lOQRoPhkmUdiI7k78/nj150gceazOEJR/QkaFjcXq
+         V3K6MM45JrijXYoMH7HGdT2lBSUsk2gYEEWprNVvdc0U+ODOqDkd7IPXcjh9lVI4y3Dk
+         GJOUeI5kKu5pRhJoROG4n301rwGc8VmH3jNUoCPOHT5WrL3EI+8Yl5HNi6mXTowcse+a
+         OL5y3yJB9DmLN5tJE2kv1t2J2ZKm6572U7plWUOYa9mR4xHl6UPfsdnPY/YnGxlTBtrv
+         j8Yg==
+X-Gm-Message-State: AOAM531Mt3nyiwd22VL0spOeTxbqduQuOOWmuWkY60LFITz2J5jeHm9g
+        mzeUQL23fYLWGbHUlxgGjMw=
+X-Google-Smtp-Source: ABdhPJwvI3CXHQFWMdsGKQkWtw9DiG11eOBjZ3EjWs9OHYiX/UBNJ2vaVFp4zukqfUOM3ufZngyAgg==
+X-Received: by 2002:a2e:8584:: with SMTP id b4mr8287171lji.277.1625145896847;
+        Thu, 01 Jul 2021 06:24:56 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id u26sm1345012lfd.256.2021.07.01.06.24.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 06:24:56 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 16:24:46 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     sunpeng.li@amd.com, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        airlied@linux.ie, amd-gfx@lists.freedesktop.org,
+        tzimmermann@suse.de, rodrigo.vivi@intel.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com
+Subject: Re: [PATCH v4 12/17] drm/uAPI: Add "preferred color format" drm
+ property as setting for userspace
+Message-ID: <20210701162446.14f4f577@eldfell>
+In-Reply-To: <b7144386-a98b-faf9-b425-c1157d9d0241@tuxedocomputers.com>
+References: <20210618091116.14428-1-wse@tuxedocomputers.com>
+        <20210618091116.14428-13-wse@tuxedocomputers.com>
+        <20210622101516.6a53831c@eldfell>
+        <jIDQ2rRRMWlhDDPf08Z8xZlEE8HTBx7fHsylFdK0joSSFVyES8D444Giyiji9zbIm7dU4QpbsXZLvIDTbGW0wEoUWKsMEI4evizn0UdGMvM=@emersion.fr>
+        <20210629141712.21f00c38@eldfell>
+        <6d8716e0-e68a-e7b7-a341-a7471c413e9c@tuxedocomputers.com>
+        <20210630114133.47397e2f@eldfell>
+        <d3674d49-8bca-7ecf-1735-7bff2d9d526e@tuxedocomputers.com>
+        <20210701110714.61f3e2af@eldfell>
+        <b7144386-a98b-faf9-b425-c1157d9d0241@tuxedocomputers.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/Y4YmqX2wcipYT4My_T+NbPj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Originally, software only supported redirecting at most one PEBS event to
-Intel PT (PEBS-via-PT) because it was not able to differentiate one event
-from another. To overcome that, add support for the
-PERF_RECORD_AUX_OUTPUT_HW_ID side-band event.
+--Sig_/Y4YmqX2wcipYT4My_T+NbPj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Reviewed-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
----
- tools/perf/Documentation/perf-intel-pt.txt |  7 +-
- tools/perf/util/intel-pt.c                 | 85 +++++++++++++++++++++-
- 2 files changed, 87 insertions(+), 5 deletions(-)
+On Thu, 1 Jul 2021 14:50:13 +0200
+Werner Sembach <wse@tuxedocomputers.com> wrote:
 
-diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-index bcf3eca5afbe..f3e9880614fd 100644
---- a/tools/perf/Documentation/perf-intel-pt.txt
-+++ b/tools/perf/Documentation/perf-intel-pt.txt
-@@ -1135,7 +1135,12 @@ Recording is selected by using the aux-output config term e.g.
- 
- 	perf record -c 10000 -e '{intel_pt/branch=0/,cycles/aux-output/ppp}' uname
- 
--Note that currently, software only supports redirecting at most one PEBS event.
-+Originally, software only supported redirecting at most one PEBS event because it
-+was not able to differentiate one event from another. To overcome that, more recent
-+kernels and perf tools add support for the PERF_RECORD_AUX_OUTPUT_HW_ID side-band event.
-+To check for the presence of that event in a PEBS-via-PT trace:
-+
-+	perf script -D --no-itrace | grep PERF_RECORD_AUX_OUTPUT_HW_ID
- 
- To display PEBS events from the Intel PT trace, use the itrace 'o' option e.g.
- 
-diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-index 0dfec8761b9a..483b63217555 100644
---- a/tools/perf/util/intel-pt.c
-+++ b/tools/perf/util/intel-pt.c
-@@ -110,6 +110,7 @@ struct intel_pt {
- 	u64 cbr_id;
- 	u64 psb_id;
- 
-+	bool single_pebs;
- 	bool sample_pebs;
- 	struct evsel *pebs_evsel;
- 
-@@ -143,6 +144,14 @@ enum switch_state {
- 	INTEL_PT_SS_EXPECTING_SWITCH_IP,
- };
- 
-+/* applicable_counters is 64-bits */
-+#define INTEL_PT_MAX_PEBS 64
-+
-+struct intel_pt_pebs_event {
-+	struct evsel *evsel;
-+	u64 id;
-+};
-+
- struct intel_pt_queue {
- 	struct intel_pt *pt;
- 	unsigned int queue_nr;
-@@ -184,6 +193,7 @@ struct intel_pt_queue {
- 	u64 last_br_cyc_cnt;
- 	unsigned int cbr_seen;
- 	char insn[INTEL_PT_INSN_BUF_SZ];
-+	struct intel_pt_pebs_event pebs[INTEL_PT_MAX_PEBS];
- };
- 
- static void intel_pt_dump(struct intel_pt *pt __maybe_unused,
-@@ -1873,15 +1883,13 @@ static void intel_pt_add_lbrs(struct branch_stack *br_stack,
- 	}
- }
- 
--static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
-+static int intel_pt_do_synth_pebs_sample(struct intel_pt_queue *ptq, struct evsel *evsel, u64 id)
- {
- 	const struct intel_pt_blk_items *items = &ptq->state->items;
- 	struct perf_sample sample = { .ip = 0, };
- 	union perf_event *event = ptq->event_buf;
- 	struct intel_pt *pt = ptq->pt;
--	struct evsel *evsel = pt->pebs_evsel;
- 	u64 sample_type = evsel->core.attr.sample_type;
--	u64 id = evsel->core.id[0];
- 	u8 cpumode;
- 	u64 regs[8 * sizeof(sample.intr_regs.mask)];
- 
-@@ -2007,6 +2015,45 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
- 	return intel_pt_deliver_synth_event(pt, event, &sample, sample_type);
- }
- 
-+static int intel_pt_synth_single_pebs_sample(struct intel_pt_queue *ptq)
-+{
-+	struct intel_pt *pt = ptq->pt;
-+	struct evsel *evsel = pt->pebs_evsel;
-+	u64 id = evsel->core.id[0];
-+
-+	return intel_pt_do_synth_pebs_sample(ptq, evsel, id);
-+}
-+
-+static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
-+{
-+	const struct intel_pt_blk_items *items = &ptq->state->items;
-+	struct intel_pt_pebs_event *pe;
-+	struct intel_pt *pt = ptq->pt;
-+	int err = -EINVAL;
-+	int hw_id;
-+
-+	if (!items->has_applicable_counters || !items->applicable_counters) {
-+		if (!pt->single_pebs)
-+			pr_err("PEBS-via-PT record with no applicable_counters\n");
-+		return intel_pt_synth_single_pebs_sample(ptq);
-+	}
-+
-+	for_each_set_bit(hw_id, &items->applicable_counters, INTEL_PT_MAX_PEBS) {
-+		pe = &ptq->pebs[hw_id];
-+		if (!pe->evsel) {
-+			if (!pt->single_pebs)
-+				pr_err("PEBS-via-PT record with no matching event, hw_id %d\n",
-+				       hw_id);
-+			return intel_pt_synth_single_pebs_sample(ptq);
-+		}
-+		err = intel_pt_do_synth_pebs_sample(ptq, pe->evsel, pe->id);
-+		if (err)
-+			return err;
-+	}
-+
-+	return err;
-+}
-+
- static int intel_pt_synth_error(struct intel_pt *pt, int code, int cpu,
- 				pid_t pid, pid_t tid, u64 ip, u64 timestamp)
- {
-@@ -2777,6 +2824,30 @@ static int intel_pt_process_itrace_start(struct intel_pt *pt,
- 					event->itrace_start.tid);
- }
- 
-+static int intel_pt_process_aux_output_hw_id(struct intel_pt *pt,
-+					     union perf_event *event,
-+					     struct perf_sample *sample)
-+{
-+	u64 hw_id = event->aux_output_hw_id.hw_id;
-+	struct auxtrace_queue *queue;
-+	struct intel_pt_queue *ptq;
-+	struct evsel *evsel;
-+
-+	queue = auxtrace_queues__sample_queue(&pt->queues, sample, pt->session);
-+	evsel = evlist__id2evsel_strict(pt->session->evlist, sample->id);
-+	if (!queue || !queue->priv || !evsel || hw_id > INTEL_PT_MAX_PEBS) {
-+		pr_err("Bad AUX output hardware ID\n");
-+		return -EINVAL;
-+	}
-+
-+	ptq = queue->priv;
-+
-+	ptq->pebs[hw_id].evsel = evsel;
-+	ptq->pebs[hw_id].id = sample->id;
-+
-+	return 0;
-+}
-+
- static int intel_pt_find_map(struct thread *thread, u8 cpumode, u64 addr,
- 			     struct addr_location *al)
- {
-@@ -2902,6 +2973,8 @@ static int intel_pt_process_event(struct perf_session *session,
- 		err = intel_pt_process_switch(pt, sample);
- 	else if (event->header.type == PERF_RECORD_ITRACE_START)
- 		err = intel_pt_process_itrace_start(pt, event, sample);
-+	else if (event->header.type == PERF_RECORD_AUX_OUTPUT_HW_ID)
-+		err = intel_pt_process_aux_output_hw_id(pt, event, sample);
- 	else if (event->header.type == PERF_RECORD_SWITCH ||
- 		 event->header.type == PERF_RECORD_SWITCH_CPU_WIDE)
- 		err = intel_pt_context_switch(pt, event, sample);
-@@ -3285,9 +3358,13 @@ static void intel_pt_setup_pebs_events(struct intel_pt *pt)
- 
- 	evlist__for_each_entry(pt->session->evlist, evsel) {
- 		if (evsel->core.attr.aux_output && evsel->core.id) {
-+			if (pt->single_pebs) {
-+				pt->single_pebs = false;
-+				return;
-+			}
-+			pt->single_pebs = true;
- 			pt->sample_pebs = true;
- 			pt->pebs_evsel = evsel;
--			return;
- 		}
- 	}
- }
--- 
-2.17.1
+> Am 01.07.21 um 10:07 schrieb Pekka Paalanen:
+>=20
+> > On Wed, 30 Jun 2021 11:20:18 +0200
+> > Werner Sembach <wse@tuxedocomputers.com> wrote:
+> > =20
+> >> Am 30.06.21 um 10:41 schrieb Pekka Paalanen:
+> >> =20
+> >>> On Tue, 29 Jun 2021 13:39:18 +0200
+> >>> Werner Sembach <wse@tuxedocomputers.com> wrote:
+> >>>   =20
+> >>>> Am 29.06.21 um 13:17 schrieb Pekka Paalanen:   =20
+> >>>>> On Tue, 29 Jun 2021 08:12:54 +0000
+> >>>>> Simon Ser <contact@emersion.fr> wrote:
+> >>>>>      =20
+> >>>>>> On Tuesday, June 22nd, 2021 at 09:15, Pekka Paalanen <ppaalanen@gm=
+ail.com> wrote:
+> >>>>>>      =20
+> >>>>>>> yes, I think this makes sense, even if it is a property that one =
+can't
+> >>>>>>> tell for sure what it does before hand.
+> >>>>>>>
+> >>>>>>> Using a pair of properties, preference and active, to ask for som=
+ething
+> >>>>>>> and then check what actually worked is good for reducing the
+> >>>>>>> combinatorial explosion caused by needing to "atomic TEST_ONLY co=
+mmit"
+> >>>>>>> test different KMS configurations. Userspace has a better chance =
+of
+> >>>>>>> finding a configuration that is possible.
+> >>>>>>>
+> >>>>>>> OTOH, this has the problem than in UI one cannot tell the user in
+> >>>>>>> advance which options are truly possible. Given that KMS properti=
+es are
+> >>>>>>> rarely completely independent, and in this case known to depend on
+> >>>>>>> several other KMS properties, I think it is good enough to know a=
+fter
+> >>>>>>> the fact.
+> >>>>>>>
+> >>>>>>> If a driver does not use what userspace prefers, there is no way =
+to
+> >>>>>>> understand why, or what else to change to make it happen. That pr=
+oblem
+> >>>>>>> exists anyway, because TEST_ONLY commits do not give useful feedb=
+ack
+> >>>>>>> but only a yes/no.   =20
+> >>>>>> By submitting incremental atomic reqs with TEST_ONLY (i.e. only ch=
+anging one
+> >>>>>> property at a time), user-space can discover which property makes =
+the atomic
+> >>>>>> commit fail.   =20
+> >>>>> That works if the properties are independent of each other. Color
+> >>>>> range, color format, bpc and more may all be interconnected,
+> >>>>> allowing only certain combinations to work.
+> >>>>>
+> >>>>> If all these properties have "auto" setting too, then it would be
+> >>>>> possible to probe each property individually, but that still does n=
+ot
+> >>>>> tell which combinations are valid.
+> >>>>>
+> >>>>> If you probe towards a certain configuration by setting the propert=
+ies
+> >>>>> one by one, then depending on the order you pick the properties, you
+> >>>>> may come to a different conclusion on which property breaks the
+> >>>>> configuration.   =20
+> >>>> My mind crossed another point that must be considered: When plugin in
+> >>>> a Monitor a list of possible Resolutions+Framerate combinations is
+> >>>> created for xrandr and other userspace (I guess by atomic checks? but
+> >>>> I don't know).   =20
+> >>> Hi,
+> >>>
+> >>> I would not think so, but I hope to be corrected if I'm wrong.
+> >>>
+> >>> My belief is that the driver collects a list of modes from EDID, some
+> >>> standard modes, and maybe some other hardcoded modes, and then
+> >>> validates each entry against all the known limitations like vertical
+> >>> and horizontal frequency limits, discarding modes that do not fit.
+> >>>
+> >>> Not all limitations are known during that phase, which is why KMS
+> >>> property "link-status" exists. When userspace actually programs a mode
+> >>> (not a TEST_ONLY commit), the link training may fail. The kernel prun=
+es
+> >>> the mode from the list and sets the link status property to signal
+> >>> failure, and sends a hotplug uevent. Userspace needs to re-check the
+> >>> mode list and try again.
+> >>>
+> >>> That is a generic escape hatch for when TEST_ONLY commit succeeds, but
+> >>> in reality the hardware cannot do it, you just cannot know until you
+> >>> actually try for real. It causes end user visible flicker if it happe=
+ns
+> >>> on an already running connector, but since it usually happens when
+> >>> turning a connector on to begin with, there is no flicker to be seen,
+> >>> just a small delay in finding a mode that works.
+> >>>   =20
+> >>>> During this drm
+> >>>> properties are already considered, which is no problem atm because as
+> >>>> far as i can tell there is currently no drm property that would make
+> >>>> a certain Resolutions+Framerate combination unreachable that would be
+> >>>> possible with everything on default.   =20
+> >>> I would not expect KMS properties to be considered at all. It would
+> >>> reject modes that are actually possible if the some KMS properties we=
+re
+> >>> changed. So at least going forward, current KMS property values cannot
+> >>> factor in.   =20
+> >> At least the debugfs variable "force_yuv420_output" did change the=20
+> >> available modes here:=20
+> >> https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/amd/disp=
+lay/amdgpu_dm/amdgpu_dm.c#L5165=20
+> >> before my patch=20
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/com=
+mit/?id=3D68eb3ae3c63708f823aeeb63bb15197c727bd9bf =20
+> > Hi,
+> >
+> > debugfs is not proper UAPI, so we can just ignore it. Display servers
+> > cannot be expected to poke in debugfs. Debugfs is not even supposed to
+> > exist in production systems, but I'm sure people use it for hacking
+> > stuff. But that's all it is for: developer testing and hacking. =20
+> e.g. Ubuntu has it active by default, but only read (and writable) by roo=
+t.
 
+Hi,
+
+that's normal, yes. Root can do damage anyway, and it's useful for
+debugging. KMS clients OTOH often do not run as root.
+
+> > =20
+> >> Forcing a color format via a DRM property in this function would=20
+> >> reintroduce the problem. =20
+> > The property would need to be defined differently because its presence
+> > could otherwise break existing userspace. Well, I suppose it could
+> > break existing userspace no matter what, so we would need the generic
+> > "reset to sane defaults" mechanism first IMO.
+> >
+> > DRM has client caps for exposing video modes that old userspace might
+> > not expect, to avoid breaking old userspace. Care needs to be taken
+> > with all new UAPI, because if a kernel upgrade makes something wrong,
+> > it's the kernel's fault no matter what userspace is doing, in principle=
+. =20
+> Can you give me a link describing how I define this caps?
+
+I don't have any, but you can find all the existing ones by grepping
+for DRM_CLIENT_CAP_.
+
+I'm not saying that we need it, but mentioning them as a possible
+workaround if userspace breakage seems imminent or is proven.
+
+> >
+> > Debugfs has no problem breaking userspace AFAIU, since it's not proper
+> > UAPI.
+> > =20
+> >> And I think i915 driver works similar in this regard.
+> >> =20
+> >>>   =20
+> >>>> However for example forcing YCbCr420 encoding would limit the
+> >>>> available resolutions (my screen for example only supports YCbCr420
+> >>>> on 4k@60 and @50Hz and on no other resolution or frequency (native is
+> >>>> 2560x1440@144Hz).
+> >>>>
+> >>>> So would a "force color format" that does not get resetted on
+> >>>> repluging/reenabling a monitor break the output, for example, of an
+> >>>> not updated xrandr, unaware of this new property?   =20
+> >>> Yes, not because the mode list would be missing the mode, but because
+> >>> actually setting the mode would fail.   =20
+> >> Well, like described above, I think the mode would actually be missing=
+,=20
+> >> which is also an unexpected behavior from a user perspective. =20
+> > I think that is not how the property should work.
+> >
+> > If KMS properties would affect the list of modes, then userspace would
+> > need to set the properties for real (TEST_ONLY cannot change anything)
+> > and re-fetch the mode lists (maybe there is a hotplug event, maybe
+> > not). That workflow just doesn't work. =20
+
+> The properties are set before the list is created in the first place.
+> Because, in my example, the properties get set before the monitor is
+> plugged in and the list can only be created as soon as the monitor is
+> plugged in.
+
+That's just an accident, it's not what I mean.
+
+What I mean is, we cannot have the KMS properties affect the list of
+modes, because then userspace that want to use specific values on those
+properties would have to program those properties first, and then get
+the list of modes. KMS UAPI does not work that way AFAIK.
+
+If the initial mode list is created on hotplug like you say, then the
+initial list could already be missing some modes that would be valid if
+some KMS properties had different values.
+
+> >
+> > A very interesting question is when should link-status failure not drop
+> > the current mode from the mode list, if other KMS properties affect the
+> > bandwidth etc. requirements of the mode. That mechanism is engineered
+> > for old userspace that doesn't actually handle link-status but does
+> > handle hotplug, so the hotplug triggers re-fetching the mode list and
+> > userspace maybe trying again with a better luck since the offending
+> > mode is gone. How to keep that working when introducing KMS properties
+> > forcing the cable format, I don't know.
+> >
+> > As long as the other affecting KMS properties are all "auto", the
+> > driver will probably exhaust all possibilities to make the mode work
+> > before signalling link-status failure and pruning the mode.
+> > Theoretically, as I have no idea what drivers actually do. =20
+
+> Isn't that exactly how the "preferred color format" property works in
+> my patchset now?
+
+There was an argument that "preferred" with no guarantees is not
+useful enough. So I'm considering the force property instead.
+The problem is, "auto" is not the only possible value.
+
+When the value is not "auto", should link failure drop the mode or not?
+Userspace might change the value back to "auto" next time. If you
+dropped the mode, it would be gone. If you didn't drop the mode,
+userspace might be stuck picking the same non-working mode again and
+again if it doesn't know about the force mode property.
+
+You could argue that changing the value back to "auto" needs to reset
+the mode list, but that only gets us back to the "need to set
+properties before getting mode list".
+
+Maybe there needs to be an assumption that if "force color format" is
+not "auto", then link failure does not drop modes and userspace knows
+to handle this. Messy.
+
+I'm afraid I just don't know to give any clear answer. It's also
+possible that, as I'm not a kernel dev, I have some false assumptions
+here.
+
+
+Thanks,
+pq
+
+--Sig_/Y4YmqX2wcipYT4My_T+NbPj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDdwh4ACgkQI1/ltBGq
+qqcVcxAAlkrSovkYPEUP3fmzbuGuZe/dNT2ljBbYG985X2es00EEZrFHTJ8qdla9
+BtOOr7wcl+DK36rfwnuDKLxukzMg0LiTwvlpW4Cop177cZ9157HXA64uZc2xraH7
+tbPZSz8fh/JT3DNxBiAdJQueoNmnKqg2Enesk2BqcyLTT4gKX5ZJPuh0evdDLv35
+ProGbD8RUM0OM+ugdosO/MYuCUXiKCUQzPOuPoSoW0qSD2/nUlOdpFSyjBNBqtKu
+ZicsuT29ZruvTmu9+tz/wbgXYV//hPPm06Oy6+i9x4XQE6dDsxPmahhG1ZHPN3k8
+ISnuxNh/FCHBcX0TQLgb2dI6SqbKxKhmC0/NJ0oHqKJ6JVcoes5ZVuvg1rBCJ3xJ
+DiiWP4sMgRV0iXEXdSioyIQQcIvuVh2qebUEcwHOwPJuf4qaXrs9l2jLtyo07ROG
+Z4vjzg0wYZv5cPUD4Sfbx5ANbJhvgLgcekU3WBxphwDeyaQpWMnVtVWwYJE7xLkB
+eT2kexrk90oFVLNiVhxRdag1FJm+bKE09cYOEQN/TF0+NyYY5ZbimeDvu+UKQ2YT
++bBktq22CjHK5KyDJcWJWEJ2YWHFsQ/wLf7JRgcC1DrEnnWVQAottL9QlZraB7Qk
+tMPLWLGx4UB7J1tqqhQJmAYV9eu7ipjNLYonLRZWP++hMRPqnTQ=
+=Jan+
+-----END PGP SIGNATURE-----
+
+--Sig_/Y4YmqX2wcipYT4My_T+NbPj--
