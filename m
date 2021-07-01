@@ -2,96 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AA43B93E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7573B93EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbhGAP2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 11:28:08 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:65392 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232817AbhGAP2H (ORCPT
+        id S233375AbhGAPbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 11:31:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40424 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233096AbhGAPbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 11:28:07 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161F4Q4K040717;
-        Thu, 1 Jul 2021 11:25:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=oETp4wcH8qi4tT8W+8NM0k2YuYCHdgBjcXm/KqSgA80=;
- b=cYc7fP6O4k+4NKgbvZS2DLnX58IdX8j/JjASZDelCcYLs32B8yOaZV/m59YSEOO0/kSi
- 9h2+76ELfSoddigdZEJloiZAo8ZHq96rYQlaegnPCfaeaLjIireUnCz69C7QXYBMzotw
- 42sjNHjFrDxf3v+x0tpLCPzyaiRZzwjZaSggUI8XHjgCQ92nMLqYEmDmttf6dNJgZiSa
- uewN0LlUbJMPY/iweJS63JyFgU5uHUkV1YzhM9UAjYcq4cuSVa5qVt0H2fiHrp7T8NMj
- FVxs6Bdx1y4nS7SiXTwp2fjQQ2rpRfAXKanYhlg+4V0qKH/pi+GRGLiqCGIixc7UE3C3 bQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39he8emec8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 11:25:35 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 161F5pBZ048193;
-        Thu, 1 Jul 2021 11:25:34 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39he8emebd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 11:25:34 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 161FFpqf008903;
-        Thu, 1 Jul 2021 15:25:32 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 39h19bgfge-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 15:25:32 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 161FNoMC25362728
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 1 Jul 2021 15:23:50 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4841EAE05A;
-        Thu,  1 Jul 2021 15:25:28 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AEBF1AE059;
-        Thu,  1 Jul 2021 15:25:27 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.22.223])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  1 Jul 2021 15:25:27 +0000 (GMT)
-Subject: Re: [PATCH v6 2/2] s390/vfio-ap: r/w lock for PQAP interception
- handler function pointer
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210621155714.1198545-1-akrowiak@linux.ibm.com>
- <20210621155714.1198545-3-akrowiak@linux.ibm.com>
- <8936a637-68cd-91f0-85da-f0fce99315cf@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <53181dcb-cabc-d6a1-3bbe-7eba298f06fe@de.ibm.com>
-Date:   Thu, 1 Jul 2021 17:25:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 1 Jul 2021 11:31:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625153322;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DmXj8caY15pwsQgjtiEZnmZUg1bkwyeXw/rOXNl13yM=;
+        b=hdAaYu1ItddJGhG8tyWL0+KyGJlU/RA5IxOXyAc2NGmxLWhznoAha6Yi4LJcy9mZek6B1W
+        F74XEVMMlUJBaUs26aOG6mOlz77iQfDU7AuS8f3Kb+LrzJLN/DbI37SM3/tJw+mmQ1etYh
+        /uybaaUMifn6dmCsxP521o+xvBAtbnE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-31-2j6XOe-zPpK98edlVNmnrw-1; Thu, 01 Jul 2021 11:28:38 -0400
+X-MC-Unique: 2j6XOe-zPpK98edlVNmnrw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C42B19611AE;
+        Thu,  1 Jul 2021 15:28:36 +0000 (UTC)
+Received: from fedora.hsd1.ca.comcast.net (ovpn-116-250.rdu2.redhat.com [10.10.116.250])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 233C85C22B;
+        Thu,  1 Jul 2021 15:28:31 +0000 (UTC)
+From:   jglisse@redhat.com
+To:     linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Diego Santa Cruz <Diego.SantaCruz@spinetix.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jon Hunter <jonathanh@nvidia.com>, stable@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Subject: [PATCH] misc: eeprom: at24: Always append device id even if label property is set.
+Date:   Thu,  1 Jul 2021 08:28:25 -0700
+Message-Id: <20210701152825.265729-1-jglisse@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <8936a637-68cd-91f0-85da-f0fce99315cf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: MOmGIV0Y-A3aZdTSZKN-1gxhbSh7WZV4
-X-Proofpoint-GUID: 2fgLdHAGspMhJI5uPIkQtrHpLqAHjBn0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-01_08:2021-07-01,2021-07-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 spamscore=0 phishscore=0
- clxscore=1015 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2107010092
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.06.21 17:18, Tony Krowiak wrote:
-> I assumed that this patch would get queued along with the other one in this series,
-> but it looks like that was an erroneous assumption. Should this also be queued?
+From: Jérôme Glisse <jglisse@redhat.com>
 
-Sorry, this is on my todo list.
+We need to append device id even if eeprom have a label property set as some
+platform can have multiple eeproms with same label and we can not register
+each of those with same label. Failing to register those eeproms trigger
+cascade failures on such platform (system is no longer working).
+
+This fix regression on such platform introduced with 4e302c3b568e
+
+Signed-off-by: Jérôme Glisse <jglisse@redhat.com>
+Cc: Diego Santa Cruz <Diego.SantaCruz@spinetix.com>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: Jon Hunter <jonathanh@nvidia.com>
+Cc: stable@vger.kernel.org
+Cc: linux-i2c@vger.kernel.org
+---
+ drivers/misc/eeprom/at24.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+index 7a6f01ace78a..305ffad131a2 100644
+--- a/drivers/misc/eeprom/at24.c
++++ b/drivers/misc/eeprom/at24.c
+@@ -714,23 +714,20 @@ static int at24_probe(struct i2c_client *client)
+ 	}
+ 
+ 	/*
+-	 * If the 'label' property is not present for the AT24 EEPROM,
+-	 * then nvmem_config.id is initialised to NVMEM_DEVID_AUTO,
+-	 * and this will append the 'devid' to the name of the NVMEM
+-	 * device. This is purely legacy and the AT24 driver has always
+-	 * defaulted to this. However, if the 'label' property is
+-	 * present then this means that the name is specified by the
+-	 * firmware and this name should be used verbatim and so it is
+-	 * not necessary to append the 'devid'.
++	 * We initialize nvmem_config.id to NVMEM_DEVID_AUTO even if the
++	 * label property is set as some platform can have multiple eeproms
++	 * with same label and we can not register each of those with same
++	 * label. Failing to register those eeproms trigger cascade failure
++	 * on such platform.
+ 	 */
++	nvmem_config.id = NVMEM_DEVID_AUTO;
++
+ 	if (device_property_present(dev, "label")) {
+-		nvmem_config.id = NVMEM_DEVID_NONE;
+ 		err = device_property_read_string(dev, "label",
+ 						  &nvmem_config.name);
+ 		if (err)
+ 			return err;
+ 	} else {
+-		nvmem_config.id = NVMEM_DEVID_AUTO;
+ 		nvmem_config.name = dev_name(dev);
+ 	}
+ 
+-- 
+2.31.1
+
