@@ -2,158 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7983B8DA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 08:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E1E3B8DA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 08:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234266AbhGAGN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 02:13:26 -0400
-Received: from mga02.intel.com ([134.134.136.20]:1867 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232797AbhGAGNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 02:13:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="195638111"
-X-IronPort-AV: E=Sophos;i="5.83,313,1616482800"; 
-   d="scan'208";a="195638111"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 23:10:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,313,1616482800"; 
-   d="scan'208";a="420285841"
-Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.58]) ([10.239.154.58])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Jun 2021 23:10:48 -0700
-Subject: Re: [PATCH v11] i2c: virtio: add a virtio i2c frontend driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org,
-        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        stefanha@redhat.com
-References: <510c876952efa693339ab0d6cc78ba7be9ef6897.1625104206.git.jie.deng@intel.com>
- <20210701040436.p7kega6rzeqz5tlm@vireshk-i7>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <cb35472d-f79e-f3f8-405f-35c699d897a1@intel.com>
-Date:   Thu, 1 Jul 2021 14:10:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        id S234339AbhGAGP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 02:15:59 -0400
+Received: from mail-wm1-f42.google.com ([209.85.128.42]:50988 "EHLO
+        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234116AbhGAGP5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 02:15:57 -0400
+Received: by mail-wm1-f42.google.com with SMTP id o22so3663161wms.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 23:13:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HZwcVQEaesXNwK4ujdTlqtQPUcw8KfhtBdw+MIe13p0=;
+        b=s8SJm6gX+dxGw9WoRntRPmV/UuEWx6mmhI6eBj9F7O7zVj0XhHLzO2Ef8JgwfGbK2b
+         7q/uI4EHZP3+K4XsUejLcxHXdOiWwR3jGkG3IwGD3otqr43m/Jlpkpot2Oy4DO/ukwgc
+         0oLvAo8hSPfOXbHO8w2WLntT8y2ARhSs0Rrl6glwiSo4CGwU9LnISaG6L8lmieJvANLK
+         dwwKEMubvyuA26wSK+0R04DCiL7YlWN5OBgdYSKGQmkQojgOKYRSDaPPfgDS8Sb+/Zlc
+         9+EqJSytQ/kdbbfwxksN+CZ4JB3rIOs/JVYbS+tjO7CpkVuxQEhfduhiueXtedPNSSb/
+         l+0w==
+X-Gm-Message-State: AOAM532fUozp/v/b+nnwJFVS/JHhKgEG5o0MajoApXJPIFpwBhpBBOnL
+        HYiLXuK14a8V9wkcjqbxd+puLkF9343Xkw==
+X-Google-Smtp-Source: ABdhPJwhHBzX/y3E4g4R4stEH9cAtGLSpTE0FoFjc6CwTFc+VKT1Wn0FHRqY0BhirBOfxubeNYK0ng==
+X-Received: by 2002:a05:600c:3783:: with SMTP id o3mr8715912wmr.123.1625120006706;
+        Wed, 30 Jun 2021 23:13:26 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id t17sm15247436wrs.61.2021.06.30.23.13.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Jun 2021 23:13:26 -0700 (PDT)
+Subject: Re: [PATCH] tty: n_gsm: delete SABM command frame as requester
+To:     Zhenguo Zhao <zhenguo6858@gmail.com>, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+References: <1625108078-16491-1-git-send-email-zhenguo6858@gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <695b2537-28e0-90c4-d516-727dfeead12d@kernel.org>
+Date:   Thu, 1 Jul 2021 08:13:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210701040436.p7kega6rzeqz5tlm@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1625108078-16491-1-git-send-email-zhenguo6858@gmail.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 01. 07. 21, 4:54, Zhenguo Zhao wrote:
+> From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
+> 
+> as initiator,it need to send SABM conmmand ,as requester,there is
+> no need to send the SABM control frame,it will cause redundant data.
 
-On 2021/7/1 12:04, Viresh Kumar wrote:
-> On 01-07-21, 11:24, Jie Deng wrote:
->> Changes v10 -> v11
->> 	- Remove vi->adap.class = I2C_CLASS_DEPRECATED.
->> 	- Use #ifdef CONFIG_PM_SLEEP to replace the "__maybe_unused".
->> 	- Remove "struct mutex lock" in "struct virtio_i2c".
->> 	- Support zero-length request.
->> 	- Remove unnecessary logs.
->> 	- Remove vi->adap.timeout = HZ / 10, just use the default value.
->> 	- Use BIT(0) to define VIRTIO_I2C_FLAGS_FAIL_NEXT.
->> 	- Add the virtio_device index to adapter's naming mechanism.
-> Thanks Jie.
->
-> I hope you are going to send a fix for specification as well (for the
-> zero-length request) ?
+Hi,
 
+is there any document you can refer to? I am still confused so I don't 
+understand why this didn't matter until now. Maybe you only need to 
+explain better the whole point behind the introduced initiator/requester 
+functionality.
 
-Yes. I will send that fix once this patch get merged.
+In any way, could you use spell checker on the commit log (like "conmmand")?
 
+> Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
+> ---
+>   drivers/tty/n_gsm.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+> index 5fea02c..e66418b 100644
+> --- a/drivers/tty/n_gsm.c
+> +++ b/drivers/tty/n_gsm.c
+> @@ -3005,8 +3005,9 @@ static int gsmtty_open(struct tty_struct *tty, struct file *filp)
+>   	/* We could in theory open and close before we wait - eg if we get
+>   	   a DM straight back. This is ok as that will have caused a hangup */
+>   	tty_port_set_initialized(port, 1);
+> -	/* Start sending off SABM messages */
+> -	gsm_dlci_begin_open(dlci);
+> +	/* Start sending off SABM messages for initiator */
+> +	if (gsm->initiator)
+> +		gsm_dlci_begin_open(dlci);
+>   	/* And wait for virtual carrier */
+>   	return tty_port_block_til_ready(port, tty, filp);
+>   }
+> 
 
->
->> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
->> +static int virtio_i2c_send_reqs(struct virtqueue *vq,
->> +				struct virtio_i2c_req *reqs,
->> +				struct i2c_msg *msgs, int nr)
->> +{
->> +	struct scatterlist *sgs[3], out_hdr, msg_buf, in_hdr;
->> +	int i, outcnt, incnt, err = 0;
->> +
->> +	for (i = 0; i < nr; i++) {
->> +		/*
->> +		 * Only 7-bit mode supported for this moment. For the address format,
->> +		 * Please check the Virtio I2C Specification.
->> +		 */
->> +		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
->> +
->> +		if (i != nr - 1)
->> +			reqs[i].out_hdr.flags = cpu_to_le32(VIRTIO_I2C_FLAGS_FAIL_NEXT);
->> +
->> +		outcnt = incnt = 0;
->> +		sg_init_one(&out_hdr, &reqs[i].out_hdr, sizeof(reqs[i].out_hdr));
->> +		sgs[outcnt++] = &out_hdr;
->> +
->> +		reqs[i].buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
->> +		if (!reqs[i].buf)
->> +			break;
->> +
->> +		sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
-> The len can be zero here for zero-length transfers.
->
->> +
->> +		if (msgs[i].flags & I2C_M_RD)
->> +			sgs[outcnt + incnt++] = &msg_buf;
->> +		else
->> +			sgs[outcnt++] = &msg_buf;
->> +
->> +		sg_init_one(&in_hdr, &reqs[i].in_hdr, sizeof(reqs[i].in_hdr));
->> +		sgs[outcnt + incnt++] = &in_hdr;
-> Why are we still sending the msg_buf if the length is 0? Sending the
-> buffer makes sense if you have some data to send, but otherwise it is
-> just an extra sg element, which isn't required to be sent.
-
-
-I think a fixed number of sgs will make things easier to develop backend.
-
-If you prefer to parse the number of descriptors instead of using the 
-msg length to
-
-distinguish the zero-length request from other requests, I'm OK to set a 
-limit.
-
-if (!msgs[i].len) {
-     sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
-
-     if (msgs[i].flags & I2C_M_RD)
-         sgs[outcnt + incnt++] = &msg_buf;
-     else
-         sgs[outcnt++] = &msg_buf;
-}
-
-
-
->
->> +#ifdef CONFIG_PM_SLEEP
->> +static int virtio_i2c_freeze(struct virtio_device *vdev)
->> +{
->> +	virtio_i2c_del_vqs(vdev);
->> +	return 0;
->> +}
->> +
->> +static int virtio_i2c_restore(struct virtio_device *vdev)
->> +{
->> +	return virtio_i2c_setup_vqs(vdev->priv);
->> +}
->> +#endif
->> +
->> +static struct virtio_driver virtio_i2c_driver = {
->> +	.id_table	= id_table,
->> +	.probe		= virtio_i2c_probe,
->> +	.remove		= virtio_i2c_remove,
->> +	.driver	= {
->> +		.name	= "i2c_virtio",
->> +	},
->> +#ifdef CONFIG_PM_SLEEP
-> You could avoid this pair of ifdef by creating dummy versions of below
-> routines for !CONFIG_PM_SLEEP case. Up to you.
-
-
-Thank you. I'd like to keep the same.
-
+thanks,
+-- 
+js
+suse labs
