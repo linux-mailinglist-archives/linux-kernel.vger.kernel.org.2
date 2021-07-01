@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56063B9106
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 13:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B3D3B9108
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 13:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236131AbhGALTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 07:19:44 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:52718 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236040AbhGALTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 07:19:42 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4GFwfG1JNGzBDd1;
-        Thu,  1 Jul 2021 13:17:10 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 9iG8UJUbAIoV; Thu,  1 Jul 2021 13:17:10 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4GFwfG0R6KzBDb6;
-        Thu,  1 Jul 2021 13:17:10 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D7A078B8F9;
-        Thu,  1 Jul 2021 13:17:09 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id rl1aU70ZKTna; Thu,  1 Jul 2021 13:17:09 +0200 (CEST)
-Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1B9F18B903;
-        Thu,  1 Jul 2021 13:17:09 +0200 (CEST)
-Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id BFD336627F; Thu,  1 Jul 2021 11:17:08 +0000 (UTC)
-Message-Id: <024bb05105050f704743a0083fe3548702be5706.1625138205.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/mm: Fix lockup on kernel exec fault
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu,  1 Jul 2021 11:17:08 +0000 (UTC)
+        id S236171AbhGALUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 07:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236040AbhGALUR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 07:20:17 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F06C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 04:17:45 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id w19so11175697lfk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 04:17:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KFPUItBMnncK7FHehif+IBkI2DHCqlFHO1vIqrwRGSQ=;
+        b=FITtGH2VIoJiv/K+yqkEckOSGh/No1WWyQpXykyRPUj1S+pSaUEF2C+6+QYY7P2eIE
+         wGdCdF8X8FQJuJcCowuwFfZXL04QA+yma6Rl2FT0DRQOR9zptMOh0WqcFk6trlW/+to/
+         1ZXRUbprfCqOROVNozmzQy/J2r6F+vhkLcoF1ED7YD4PP0aSkjdLf5aFitSifL3iL28U
+         x9XAfRkRW7CUDP0quCg7D8iKGJ3xu10fxQ9pX2oLsgZ3omjFFS90EIh5yCRpD2qgzzLj
+         +Ka+y5D5Q3dsBZfeiHudfwmMc5yt9MdzBG6FtERizzsr1/Hze46EqBHTyftNQfEB8KbU
+         Baow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KFPUItBMnncK7FHehif+IBkI2DHCqlFHO1vIqrwRGSQ=;
+        b=GrmTv5afh7Suv2sACifEf6wWTAMsuH76HW+aZ01GGDb0/DK0bg+rVBzox0+19TnbUq
+         rGcH6XwcFvugNpcW7aYNvzfGNgcXpYD53o/Z4bZMXsjQQfEkL9zcln++PzCoe/+owzme
+         7IPg2iPpA/hZlIFPC7gO8iMRG0soTIIoMe52MGcBfJH28+j29fAhRmF9X08SNTlm/OaH
+         rQeZ94psyg4oKy+L9F+V8lwE/aUBEQ0mRy0QMjB7y3sr+Te7SgyBpBd0Q5D7pzaqwb7H
+         Z9LgZjCweiXBC3ANkLE8zgkgIG17RBnK1PjQeurIT9/fBO8b2Jo6jhoLJ2ILxed3bsrR
+         ycZQ==
+X-Gm-Message-State: AOAM532DKzr/ai1ZbEhRzHDUuNVJWQDa35WYsTxtv3cwwI94P0yMWOUC
+        KN/w8KZFqXkPAtTQcZCJQr7o3T6RAOY75M2kDusflw==
+X-Google-Smtp-Source: ABdhPJz3ump/F+CEEAsd9xLbeE61Fc9Tnzv2NquCKJbQy8E4kSgiVZaCY012Ps1/KNkYHQ+O21fOXEEnOjF8oea/nmk=
+X-Received: by 2002:a05:6512:242:: with SMTP id b2mr31880953lfo.277.1625138264081;
+ Thu, 01 Jul 2021 04:17:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210624111815.57937-1-odin@uged.al> <E16E71B3-E941-4522-AFF1-ABDF918FED19@linux.vnet.ibm.com>
+ <20210701103448.GL3840@techsingularity.net> <CAFpoUr1mpErE1Soa05p36wL1uTeojQ2mqNLJ1GKVnpJ+x-3itw@mail.gmail.com>
+In-Reply-To: <CAFpoUr1mpErE1Soa05p36wL1uTeojQ2mqNLJ1GKVnpJ+x-3itw@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 1 Jul 2021 13:17:32 +0200
+Message-ID: <CAKfTPtBG0r3mOON_i5cDtFP7pSG3pzue+TNAAQe-8a+FUwB3Lg@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Ensure _sum and _avg values stay consistent
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The powerpc kernel is not prepared to handle exec faults from kernel.
-Especially, the function is_exec_fault() will return 'false' when an
-exec fault is taken by kernel, because the check is based on reading
-current->thread.regs->trap which contains the trap from user.
+On Thu, 1 Jul 2021 at 13:10, Odin Ugedal <odin@uged.al> wrote:
+>
+> tor. 1. jul. 2021 kl. 12:34 skrev Mel Gorman <mgorman@techsingularity.net>:
+> >
+> > What was HEAD when you checked this? 1c35b07e6d39 was merged in the
+> > 5.14-rc1 merge window so would not be in 5.13.
+>
+> From the kernel log it looks like he used commit dbe69e433722
+> (somewhere in Linus' tree), and that should include my patch. I don't
+> think the patches from Vincent in the previous thread have been posted
+> properly, and I think those can fix the edge case you are seeing.
+>
+> This should mitigate some issues:
+> https://lore.kernel.org/lkml/20210622143154.GA804@vingu-book/
 
-For instance, when provoking a LKDTM EXEC_USERSPACE test,
-current->thread.regs->trap is set to SYSCALL trap (0xc00), and
-the fault taken by the kernel is not seen as an exec fault by
-set_access_flags_filter().
+Yeah this one should help . I will send a proper patch if it fixes your issue
 
-Commit d7df2443cd5f ("powerpc/mm: Fix spurrious segfaults on radix
-with autonuma") made it clear and handled it properly. But later on
-commit d3ca587404b3 ("powerpc/mm: Fix reporting of kernel execute
-faults") removed that handling, introducing test based on error_code.
-And here is the problem, because on the 603 all upper bits of SRR1
-get cleared when the TLB instruction miss handler bails out to ISI.
-
-Until commit cbd7e6ca0210 ("powerpc/fault: Avoid heavy
-search_exception_tables() verification"), an exec fault from kernel
-at a userspace address was indirectly caught by the lack of entry for
-that address in the exception tables. But after that commit the
-kernel mainly rely on KUAP or on core mm handling to catch wrong
-user accesses. Here the access is not wrong, so mm handles it.
-It is a minor fault because PAGE_EXEC is not set,
-set_access_flags_filter() should set PAGE_EXEC and voila.
-But as is_exec_fault() returns false as explained in the begining,
-set_access_flags_filter() bails out without setting PAGE_EXEC flag,
-which leads to a forever minor exec fault.
-
-As the kernel is not prepared to handle such exec faults, the thing
-to do is to fire in bad_kernel_fault() for any exec fault taken by
-the kernel, as it was prior to commit d3ca587404b3.
-
-Fixes: d3ca587404b3 ("powerpc/mm: Fix reporting of kernel execute faults")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/mm/fault.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-index 34f641d4a2fe..a8d0ce85d39a 100644
---- a/arch/powerpc/mm/fault.c
-+++ b/arch/powerpc/mm/fault.c
-@@ -199,9 +199,7 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
- {
- 	int is_exec = TRAP(regs) == INTERRUPT_INST_STORAGE;
- 
--	/* NX faults set DSISR_PROTFAULT on the 8xx, DSISR_NOEXEC_OR_G on others */
--	if (is_exec && (error_code & (DSISR_NOEXEC_OR_G | DSISR_KEYFAULT |
--				      DSISR_PROTFAULT))) {
-+	if (is_exec) {
- 		pr_crit_ratelimited("kernel tried to execute %s page (%lx) - exploit attempt? (uid: %d)\n",
- 				    address >= TASK_SIZE ? "exec-protected" : "user",
- 				    address,
--- 
-2.25.0
-
+>
+> while
+> https://lore.kernel.org/lkml/20210623071935.GA29143@vingu-book/
+> might also help in some cases as well.
+>
+> Both of those are needed to make sure that *_avg is zero whenever *_sum is zero.
+>
+> > # git log v5.13..origin/master --pretty=one | grep 1c35b07e
+> > 1c35b07e6d3986474e5635be566e7bc79d97c64d sched/fair: Ensure _sum and _avg values stay consistent
+> >
+> > It's not tagged for stable and lacks a Fixes: tag so I don't think
+> > it'll be automatically picked up for 5.13-stable unless Odin sends it
+> > to stable@vger.kernel.org.
+>
+> Ahh, so the "Fixes" tag is what makes them pick it up...  Thanks! I am
+> fairly new to this, but it does make sense when I think about it. I
+> have seen https://www.kernel.org/doc/html/v5.13/process/stable-kernel-rules.html
+> before, so I guess I can send it to them to get it into -stable. The
+> assertion is not a part of v5.13 either though, so people will not see
+> this warning there (but it can still cause fairness issues).
+>
+> > --
+> > Mel Gorman
+> > SUSE Labs
+>
+> Thanks
+> Odin
