@@ -2,322 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CFE3B8D85
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 07:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1833B8D88
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 07:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbhGAF4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 01:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbhGAF4H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 01:56:07 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BD3C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 22:53:36 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id a7so5137787pga.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 22:53:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nnc8SGC3tFxZ59O88HilSk7TnH2ERKA2KVLoI2ZMWOw=;
-        b=dEGPgMpevdPfdKdTQcztcFf/wvUQ/HKxhFOdxEbD76FhCxUvIakbx/PteHv83AweS4
-         1xiVaHVLDzCrH7UtHFruOC+ZXfqoh7R3OCwIEhe4hKs0bhVPo1u0Pj8KXWjpZPEu/NK0
-         2Kc01t/xtDnsrOTVKDf7FKqkMhEJhLti7Dpo090Z3HtsIg+6izjwtbLotJswGJw/My9K
-         TmcvdLradB3cg2XWlYO86+qyQCHWjuM1+mw3T0+bxmVS0rV4euvFmTMQgp4fEePkGFoe
-         A6WDo8P8JrklN/mSkcO6l4qiVNZ22+SwlRKvXujf8SdYxzrzkEHPVFkQnlCgk9kJYhYR
-         lG0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nnc8SGC3tFxZ59O88HilSk7TnH2ERKA2KVLoI2ZMWOw=;
-        b=sAlGO5b7mfqb9Us2sEYzF6WpVrpuxJWJPvMn+4TeB8u3SIYYSBOESA098soM1vj7Qi
-         e3uBRMChk1/gJZP90Bds5EjkU0Q1eZlzcuRzDY6MPpIVZ41pMzOZf71pJVyvXkv71svu
-         nukRhpSUg80cyGZ3y9VuasaZNPwdjqkgssv/hDVWvo6n3ZhA/JabuDJW7GTqsF0SV/o3
-         8CXId2bMQrghhIdeQPGnoeIXZiuxznAh1aoZee6BWipWbrbofmYX9FyHfKpS2Zef4cky
-         tXr59vFMpSi58qyHjBcw1IqvS7saqSupK4X4XmO6jXOh+O4KAgY7EOKLrG6YfMB8fyh2
-         4NLw==
-X-Gm-Message-State: AOAM532nsOukMlll2HalTwxD/7CeNhT2LwsyQzIHhwBiTz3W++HVq0xT
-        KDFNwbvfp5paWm417il+THs058ggXXU=
-X-Google-Smtp-Source: ABdhPJwqtWtNhuR8Sfp+40nYDz5VlMjLAYjyD8rGd/YwtSvin7ysMx3VEBB5IJJ+MVH6Lno99pkg2w==
-X-Received: by 2002:a05:6a00:1496:b029:308:29bc:6d4d with SMTP id v22-20020a056a001496b029030829bc6d4dmr37478652pfu.14.1625118815690;
-        Wed, 30 Jun 2021 22:53:35 -0700 (PDT)
-Received: from bobo.ibm.com (220-244-87-52.tpgi.com.au. [220.244.87.52])
-        by smtp.gmail.com with ESMTPSA id 20sm24005661pfi.170.2021.06.30.22.53.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 22:53:34 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Subject: [PATCH] nohz: nohz idle balancing per node
-Date:   Thu,  1 Jul 2021 15:53:23 +1000
-Message-Id: <20210701055323.2199175-1-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
+        id S234269AbhGAF4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 01:56:17 -0400
+Received: from mail-bn8nam11on2060.outbound.protection.outlook.com ([40.107.236.60]:13536
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229777AbhGAF4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 01:56:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VM2jLfJMhRCbYPDemNcH9lsEoNJeS3PtR6thqvp1uvCJ6s6+KdJI3UtV4r9er4g1ykvyy6rww9GTRJ3ttUY07p2AEgqZ4ewV+xAHaenfMzBS+fMBmGb9av37NPmIwi9YJQnYK/I0gDpOuDculZ1bukDm5near6nsKahZJgfSkCgx1rx9WTRXE5zlY9JOQKr8p3qWpncS77N+xr/uRjGtozG9MaQesjEUR7wA5lbzKjatF1Oia5Fo3Mh5Jk5aCl+OG+A/+VsDdctKWHh0rxEr+I96przN4U5fyMDaEid6xYgSDNlEYt803P+CzJVWhe1TI1Q2Vb++QZfEt2pHfo9hTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pwMWTY1BlvVARPQ8YlwC2rMQGoJYOjBE4j+FpRgCVaM=;
+ b=L3C82jvGSKEeRvzM1epCZltmEFtDM+GQDY6RZDiK3DZUy/a3q1iadWBBV5zZg+CgpbtfGaLNSvPgQHZcKTYUsKnHJ6jvUOUwkj2w0oSYayL1dLDcaFOoWYLbYlrpz7o5yYeBzdrIV8Z6BM8amfBHIWBRndf0zQd3Jbw4YAKrSFHJ32qSPHXPkPt6zkmHbJGCiRxNco2LvXSENIFrBJsaVp93adlwRRWmysMgfpR59pk8ASQSkdUBa4xz40tgRLnLI31SAJ4i7nDCNlK+Om3EZjOl+lybnS8MFsTlDRP0c7RCBP4A9LrfWjSB17ePCLfyXdPXBuNUzjYXL7X4gh19Ag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pwMWTY1BlvVARPQ8YlwC2rMQGoJYOjBE4j+FpRgCVaM=;
+ b=K2IIs7enr3q0CJhxdq858s9CNuJF9TDC64camPgk56WLtuiIMN0mMnUPhmA2VFlFB1f4oWkAXTJot+crQFlXj9hwn5tuhYMEEDIXsQZ+429mvEmTKhkJpL7ELKOVlzxVj/vPdB/9kppx24aVJ+93KxdpscPugz7UJBQJKfx73xRXgZPWAqMXRPh7NDx+MAbe1heTEIKPU/WEs62kpo4c2QoeyQ3OntJaFww4AeXq75d/P+NeNKHe+pYijr0IHEhbBTxRXHpYdV/iFnW72hr0aPsDy6/ArBzrYYdyp32lRZm0EwyR0/Wiy/Irokb2Q+3fs3av3bIBgP3fqu3annsP2g==
+Received: from BN8PR15CA0018.namprd15.prod.outlook.com (2603:10b6:408:c0::31)
+ by CH2PR12MB4231.namprd12.prod.outlook.com (2603:10b6:610:7d::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Thu, 1 Jul
+ 2021 05:53:44 +0000
+Received: from BN8NAM11FT033.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:c0:cafe::d5) by BN8PR15CA0018.outlook.office365.com
+ (2603:10b6:408:c0::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend
+ Transport; Thu, 1 Jul 2021 05:53:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT033.mail.protection.outlook.com (10.13.177.149) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4287.22 via Frontend Transport; Thu, 1 Jul 2021 05:53:44 +0000
+Received: from [10.26.49.10] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 1 Jul
+ 2021 05:53:40 +0000
+Subject: Re: [PATCH v4] gpio: tegra186: Add ACPI support
+To:     Akhil R <akhilrajeev@nvidia.com>, <andy.shevchenko@gmail.com>
+CC:     <bgolaszewski@baylibre.com>, <kyarlagadda@nvidia.com>,
+        <ldewangan@nvidia.com>, <linus.walleij@linaro.org>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <mperttunen@nvidia.com>,
+        <smangipudi@nvidia.com>, <thierry.reding@gmail.com>
+References: <CAHp75VfB8varyi5j=j8YaysdgofxFU1-xCKLFPrxiYz7KadGfA@mail.gmail.com>
+ <1625115672-17932-1-git-send-email-akhilrajeev@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <2a8eb285-3b71-199c-1bf4-39fb47fac77e@nvidia.com>
+Date:   Thu, 1 Jul 2021 06:53:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1625115672-17932-1-git-send-email-akhilrajeev@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 68ac5d3c-c63d-4398-c472-08d93c549624
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4231:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB423169ADFD5D0F8BFA468BC3D9009@CH2PR12MB4231.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2276;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: k8zIzfHUg/gy87QMGCTMbjBEMxRdenvzkdNJWXrMpm77nSR3rwQV8C1cqtOxmHA9fZDn5MvvxWJxqFs0f7CHl0+3llFVEjUG7tJCHtGUDwavt3iyXVZFSqsfJY+NMWOUek+X6Y5WP/0FQAGhGWPtJEShYfh2QTUPb+z3yNSqZ+Syx8BPdPIj64AvCbAdytRUedJsZ5VSrqlNaJgwkamX9lH8vGe5iuOJ6hHdXmjVtPguRUyQHWgyKWi5y37FESgF8HwY5SD3+kMwtU1ixbVnVEAFL+2kvUDqMhAGu4aoWCrxAhMOQVbclIP1ZEt7vxr1N99rwqoPBDXWx5bQ5MOs+yrs4e1Axf+q0437vu381kiXFyqvWpQZso//X5Zftt/tyDChlkjLbHPQykHoj17fkpaTmUJwP8ZOtFCdfzfJmknag7Sxyfm+daJ3fcbonJE8VWGGbUkpmCFPzOn3E3wo8kZn74NMzU8UNThixvhAqC0acMKiXiJZoOo+fwPFeauDX4OMJHB9tu0UQv7OnW1kSUoa3oQPEaSEUIxhF5pnRds4infhIapYCFZrGGHcsJ1/tsMMQVzIzxxFa+6fNeWxLKGxojU+kX6vQecstIwlquKf2LeDlLt3d3eKrLKQWYg66jBZA1H+rRrQ3JLjTpqchOJ9qweBUhDzRQfGbFCiZwtopdW6RG2vuDX1I4Aa2/aBVz+u0aCUahk5XNZ0jXqAJLlc5Qg1Emwusbsaa/6gZLDrNTAjNhmZ2JlWaDObmrXw
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(136003)(39860400002)(36840700001)(46966006)(4326008)(70206006)(53546011)(47076005)(2616005)(356005)(36756003)(5660300002)(478600001)(86362001)(31696002)(2906002)(336012)(8936002)(8676002)(54906003)(110136005)(83380400001)(31686004)(426003)(316002)(82740400003)(16526019)(82310400003)(7636003)(70586007)(26005)(186003)(36860700001)(16576012)(43740500002)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2021 05:53:44.1918
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 68ac5d3c-c63d-4398-c472-08d93c549624
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT033.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4231
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently a single nohz idle CPU is designated to perform balancing on
-behalf of all other nohz idle CPUs in the system. Implement a per node
-nohz balancer to minimize cross-node memory accesses and runqueue lock
-acquisitions.
 
-On a 4 node system, this improves performance by 9.3% on a 'pgbench -N'
-with 32 clients/jobs (which is about where throughput maxes out due to
-IO and contention in postgres).
+On 01/07/2021 06:01, Akhil R wrote:
+> Add ACPI module ID to probe the driver from the ACPI based bootloader
+> firmware.
+> 
+> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> ---
+>  drivers/gpio/gpio-tegra186.c | 32 +++++++++++++++++++++++++-------
+>  1 file changed, 25 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-tegra186.c b/drivers/gpio/gpio-tegra186.c
+> index 1bd9e44..e0ba8cd 100644
+> --- a/drivers/gpio/gpio-tegra186.c
+> +++ b/drivers/gpio/gpio-tegra186.c
+> @@ -620,15 +620,21 @@ static int tegra186_gpio_probe(struct platform_device *pdev)
+>  	if (!gpio)
+>  		return -ENOMEM;
+>  
+> -	gpio->soc = of_device_get_match_data(&pdev->dev);
+> +	gpio->soc = device_get_match_data(&pdev->dev);
+>  
+>  	gpio->secure = devm_platform_ioremap_resource_byname(pdev, "security");
+> -	if (IS_ERR(gpio->secure))
+> -		return PTR_ERR(gpio->secure);
+> -
+>  	gpio->base = devm_platform_ioremap_resource_byname(pdev, "gpio");
+> -	if (IS_ERR(gpio->base))
+> -		return PTR_ERR(gpio->base);
+> +
+> +	if (IS_ERR(gpio->secure) || IS_ERR(gpio->base)) {
 
-Performance consistency and drop-off after peak is much improved:
 
-https://user-images.githubusercontent.com/19833002/124070985-0e923a80-da82-11eb-81c8-6788be27dfdb.png
+The OR here seems a bit odd, my preference would be how Andy suggested
+initially ...
 
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- kernel/sched/core.c |  3 ++
- kernel/sched/fair.c | 90 +++++++++++++++++++++++++++++++--------------
- 2 files changed, 65 insertions(+), 28 deletions(-)
+    gpio->secure = devm_platform_ioremap_resource_byname(pdev, "security");
+    if (IS_ERR(gpio->secure)) {
+        gpio->secure = devm_platform_ioremap_resource(pdev, 0);
+        if (IS_ERR(gpio->secure))
+            return PTR_ERR(gpio->secure)
+    }
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index cf16f8fda9a6..52681f11e98c 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9067,6 +9067,9 @@ void __init sched_init(void)
- 	 */
- 	init_idle(current, smp_processor_id());
- 
-+	/* Must run before init_sched_fair_class(), which tests housekeeping */
-+	housekeeping_init();
-+
- 	calc_load_update = jiffies + LOAD_FREQ;
- 
- #ifdef CONFIG_SMP
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index fb469b26b00a..832f8673bba1 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5722,13 +5722,27 @@ DEFINE_PER_CPU(cpumask_var_t, select_idle_mask);
- 
- #ifdef CONFIG_NO_HZ_COMMON
- 
--static struct {
-+struct nohz {
- 	cpumask_var_t idle_cpus_mask;
- 	atomic_t nr_cpus;
- 	int has_blocked;		/* Idle CPUS has blocked load */
- 	unsigned long next_balance;     /* in jiffy units */
- 	unsigned long next_blocked;	/* Next update of blocked load in jiffies */
--} nohz ____cacheline_aligned;
-+} ____cacheline_aligned;
-+
-+static struct nohz **nohz_nodes __ro_after_init;
-+
-+static struct nohz *get_nohz(void)
-+{
-+#ifdef CONFIG_CPU_ISOLATION
-+	/*
-+	 * May not have a house keeping CPU per node, do global idle balancing.
-+	 */
-+	if (static_branch_unlikely(&housekeeping_overridden))
-+		return nohz_nodes[0];
-+#endif
-+	return nohz_nodes[numa_node_id()];
-+}
- 
- #endif /* CONFIG_NO_HZ_COMMON */
- 
-@@ -10217,7 +10231,7 @@ static inline int find_new_ilb(void)
- {
- 	int ilb;
- 
--	for_each_cpu_and(ilb, nohz.idle_cpus_mask,
-+	for_each_cpu_and(ilb, get_nohz()->idle_cpus_mask,
- 			      housekeeping_cpumask(HK_FLAG_MISC)) {
- 
- 		if (ilb == smp_processor_id())
-@@ -10243,7 +10257,7 @@ static void kick_ilb(unsigned int flags)
- 	 * not if we only update stats.
- 	 */
- 	if (flags & NOHZ_BALANCE_KICK)
--		nohz.next_balance = jiffies+1;
-+		get_nohz()->next_balance = jiffies+1;
- 
- 	ilb_cpu = find_new_ilb();
- 
-@@ -10291,14 +10305,14 @@ static void nohz_balancer_kick(struct rq *rq)
- 	 * None are in tickless mode and hence no need for NOHZ idle load
- 	 * balancing.
- 	 */
--	if (likely(!atomic_read(&nohz.nr_cpus)))
-+	if (likely(!atomic_read(&get_nohz()->nr_cpus)))
- 		return;
- 
--	if (READ_ONCE(nohz.has_blocked) &&
--	    time_after(now, READ_ONCE(nohz.next_blocked)))
-+	if (READ_ONCE(get_nohz()->has_blocked) &&
-+	    time_after(now, READ_ONCE(get_nohz()->next_blocked)))
- 		flags = NOHZ_STATS_KICK;
- 
--	if (time_before(now, nohz.next_balance))
-+	if (time_before(now, get_nohz()->next_balance))
- 		goto out;
- 
- 	if (rq->nr_running >= 2) {
-@@ -10328,7 +10342,7 @@ static void nohz_balancer_kick(struct rq *rq)
- 		 * currently idle; in which case, kick the ILB to move tasks
- 		 * around.
- 		 */
--		for_each_cpu_and(i, sched_domain_span(sd), nohz.idle_cpus_mask) {
-+		for_each_cpu_and(i, sched_domain_span(sd), get_nohz()->idle_cpus_mask) {
- 			if (sched_asym_prefer(i, cpu)) {
- 				flags = NOHZ_KICK_MASK;
- 				goto unlock;
-@@ -10405,8 +10419,8 @@ void nohz_balance_exit_idle(struct rq *rq)
- 		return;
- 
- 	rq->nohz_tick_stopped = 0;
--	cpumask_clear_cpu(rq->cpu, nohz.idle_cpus_mask);
--	atomic_dec(&nohz.nr_cpus);
-+	cpumask_clear_cpu(rq->cpu, get_nohz()->idle_cpus_mask);
-+	atomic_dec(&get_nohz()->nr_cpus);
- 
- 	set_cpu_sd_state_busy(rq->cpu);
- }
-@@ -10467,8 +10481,8 @@ void nohz_balance_enter_idle(int cpu)
- 
- 	rq->nohz_tick_stopped = 1;
- 
--	cpumask_set_cpu(cpu, nohz.idle_cpus_mask);
--	atomic_inc(&nohz.nr_cpus);
-+	cpumask_set_cpu(cpu, get_nohz()->idle_cpus_mask);
-+	atomic_inc(&get_nohz()->nr_cpus);
- 
- 	/*
- 	 * Ensures that if nohz_idle_balance() fails to observe our
-@@ -10484,7 +10498,7 @@ void nohz_balance_enter_idle(int cpu)
- 	 * Each time a cpu enter idle, we assume that it has blocked load and
- 	 * enable the periodic update of the load of idle cpus
- 	 */
--	WRITE_ONCE(nohz.has_blocked, 1);
-+	WRITE_ONCE(get_nohz()->has_blocked, 1);
- }
- 
- static bool update_nohz_stats(struct rq *rq)
-@@ -10494,7 +10508,7 @@ static bool update_nohz_stats(struct rq *rq)
- 	if (!rq->has_blocked_load)
- 		return false;
- 
--	if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
-+	if (!cpumask_test_cpu(cpu, get_nohz()->idle_cpus_mask))
- 		return false;
- 
- 	if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_tick)))
-@@ -10532,7 +10546,7 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 	 * setting the flag, we are sure to not clear the state and not
- 	 * check the load of an idle cpu.
- 	 */
--	WRITE_ONCE(nohz.has_blocked, 0);
-+	WRITE_ONCE(get_nohz()->has_blocked, 0);
- 
- 	/*
- 	 * Ensures that if we miss the CPU, we must see the has_blocked
-@@ -10544,10 +10558,7 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 	 * Start with the next CPU after this_cpu so we will end with this_cpu and let a
- 	 * chance for other idle cpu to pull load.
- 	 */
--	for_each_cpu_wrap(balance_cpu,  nohz.idle_cpus_mask, this_cpu+1) {
--		if (!idle_cpu(balance_cpu))
--			continue;
--
-+	for_each_cpu_wrap(balance_cpu,  get_nohz()->idle_cpus_mask, this_cpu+1) {
- 		/*
- 		 * If this CPU gets work to do, stop the load balancing
- 		 * work being done for other CPUs. Next load
-@@ -10558,6 +10569,9 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 			goto abort;
- 		}
- 
-+		if (!idle_cpu(balance_cpu))
-+			continue;
-+
- 		rq = cpu_rq(balance_cpu);
- 
- 		has_blocked_load |= update_nohz_stats(rq);
-@@ -10589,15 +10603,15 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 	 * updated.
- 	 */
- 	if (likely(update_next_balance))
--		nohz.next_balance = next_balance;
-+		get_nohz()->next_balance = next_balance;
- 
--	WRITE_ONCE(nohz.next_blocked,
-+	WRITE_ONCE(get_nohz()->next_blocked,
- 		now + msecs_to_jiffies(LOAD_AVG_PERIOD));
- 
- abort:
- 	/* There is still blocked load, enable periodic update */
- 	if (has_blocked_load)
--		WRITE_ONCE(nohz.has_blocked, 1);
-+		WRITE_ONCE(get_nohz()->has_blocked, 1);
- }
- 
- /*
-@@ -10655,8 +10669,8 @@ static void nohz_newidle_balance(struct rq *this_rq)
- 		return;
- 
- 	/* Don't need to update blocked load of idle CPUs*/
--	if (!READ_ONCE(nohz.has_blocked) ||
--	    time_before(jiffies, READ_ONCE(nohz.next_blocked)))
-+	if (!READ_ONCE(get_nohz()->has_blocked) ||
-+	    time_before(jiffies, READ_ONCE(get_nohz()->next_blocked)))
- 		return;
- 
- 	/*
-@@ -11573,9 +11587,29 @@ __init void init_sched_fair_class(void)
- 	open_softirq(SCHED_SOFTIRQ, run_rebalance_domains);
- 
- #ifdef CONFIG_NO_HZ_COMMON
--	nohz.next_balance = jiffies;
--	nohz.next_blocked = jiffies;
--	zalloc_cpumask_var(&nohz.idle_cpus_mask, GFP_NOWAIT);
-+	if (static_branch_unlikely(&housekeeping_overridden)) {
-+		struct nohz *nohz;
-+
-+		nohz_nodes = kcalloc(1, sizeof(struct nohz *), GFP_NOWAIT);
-+		nohz = kmalloc(sizeof(struct nohz), GFP_NOWAIT);
-+		nohz->next_balance = jiffies;
-+		nohz->next_blocked = jiffies;
-+		zalloc_cpumask_var(&nohz->idle_cpus_mask, GFP_NOWAIT);
-+		nohz_nodes[0] = nohz;
-+	} else {
-+		int n;
-+
-+		nohz_nodes = kcalloc(nr_node_ids, sizeof(struct nohz *), GFP_NOWAIT);
-+		for_each_node(n) {
-+			struct nohz *nohz;
-+
-+			nohz = kmalloc_node(sizeof(struct nohz), GFP_NOWAIT, n);
-+			nohz->next_balance = jiffies;
-+			nohz->next_blocked = jiffies;
-+			zalloc_cpumask_var_node(&nohz->idle_cpus_mask, GFP_NOWAIT, n);
-+			nohz_nodes[n] = nohz;
-+		}
-+	}
- #endif
- #endif /* SMP */
- 
+Cheers
+Jon
+
 -- 
-2.23.0
-
+nvpublic
