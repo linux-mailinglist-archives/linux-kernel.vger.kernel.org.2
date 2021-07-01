@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4DA3B96C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 21:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D9F3B96C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 21:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbhGATsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 15:48:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49642 "EHLO mail.kernel.org"
+        id S232977AbhGATxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 15:53:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233671AbhGATsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 15:48:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 558336137D;
-        Thu,  1 Jul 2021 19:46:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625168770;
-        bh=JojscTv4rJz7rLg1H0xFJT4opmHXJRbrVBHCt+0GBx8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Cwqd8JAebD5mpCCmmOL4SYvZqtsOrtNDokB1ZrlBeeegWptFOf99u3bhR0aQWrAlk
-         Mf1zshpIectrgmDrUZp+0NATCv/aTN3mCMzDJJaF6xu0iYdg+/GDSU1PSRmSLkchgp
-         1U81FvJ95twCUs3ihDLNQ6v3Nx3SnyBHBEIerImdbnUgyTfc9AT9Bj2YGtS7iPyCEs
-         mMO9YVJBuMEXiFnyqzUjo9dWHlSScqUVfNL+CwHQxYn2KZ+SCAQf3ldWPuuVYo2xND
-         3eYtJdsxYxuHubu6NdEND6EbnLDXwrDB2gU+9ASff0EvbWm+Ny7LT9jLjCyKAxgaay
-         f1swrGHt+5ZCg==
-Date:   Thu, 1 Jul 2021 14:46:09 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Joyce Ooi <joyce.ooi@intel.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Wilczynski <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ley Foon Tan <lftan.linux@gmail.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Replace Ley Foon Tan as Altera PCIE
- maintainer
-Message-ID: <20210701194609.GA83537@bjorn-Precision-5520>
+        id S229894AbhGATxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 15:53:34 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DDF360FF2;
+        Thu,  1 Jul 2021 19:51:02 +0000 (UTC)
+Date:   Thu, 1 Jul 2021 15:51:00 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Paul Burton <paulburton@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] tracing: Simplify & fix saved_tgids logic
+Message-ID: <20210701155100.3f29ddfb@oasis.local.home>
+In-Reply-To: <51babd56c2fe53ba011152700a546151@perches.com>
+References: <20210630003406.4013668-1-paulburton@google.com>
+        <CAJWu+ooRQ6hFtaA4tr3BNs9Btss1yan8taua=VMWMopGmEVhSA@mail.gmail.com>
+        <YN38D3dg0fLzL0Ia@google.com>
+        <20210701140754.5847a50f@oasis.local.home>
+        <YN4Fpl+dhijItkUP@google.com>
+        <20210701142624.44bb4dde@oasis.local.home>
+        <51babd56c2fe53ba011152700a546151@perches.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210701065247.152292-1-joyce.ooi@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 02:52:47PM +0800, Joyce Ooi wrote:
-> This patch is to replace Ley Foon Tan as Altera PCIE maintainer as she
-> has moved to a different role.
-> 
-> Signed-off-by: Joyce Ooi <joyce.ooi@intel.com>
+On Thu, 01 Jul 2021 12:35:29 -0700
+Joe Perches <joe@perches.com> wrote:
 
-Applied to pci/misc for v5.14, thanks!
+> C99 comments are allowed since about 5 years ago.
 
-I also dropped the rfi@lists.rocketboards.org address since it seems
-to be dead.  If it's fixed, let me know and we'll keep it.
+Really, I thought Linus hated them. Personally, I find them rather ugly
+myself. The only user of them I see in the kernel/ directory appears to
+be for RCU. But Paul's on the C/C++ committee, so perhaps he favors them.
 
-> ---
->  MAINTAINERS |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 66d047d..7693c5b 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14148,7 +14148,7 @@ F:	Documentation/devicetree/bindings/pci/aardvark-pci.txt
->  F:	drivers/pci/controller/pci-aardvark.c
->  
->  PCI DRIVER FOR ALTERA PCIE IP
-> -M:	Ley Foon Tan <ley.foon.tan@intel.com>
-> +M:	Joyce Ooi <joyce.ooi@intel.com>
->  L:	rfi@lists.rocketboards.org (moderated for non-subscribers)
->  L:	linux-pci@vger.kernel.org
->  S:	Supported
-> @@ -14353,7 +14353,7 @@ S:	Supported
->  F:	Documentation/PCI/pci-error-recovery.rst
->  
->  PCI MSI DRIVER FOR ALTERA MSI IP
-> -M:	Ley Foon Tan <ley.foon.tan@intel.com>
-> +M:	Joyce Ooi <joyce.ooi@intel.com>
->  L:	rfi@lists.rocketboards.org (moderated for non-subscribers)
->  L:	linux-pci@vger.kernel.org
->  S:	Supported
-> -- 
-> 1.7.1
-> 
+The net/ directory doesn't have any, except perhaps to comment out code
+(which I sometimes use it for that too).
+
+The block/, arch/x86/ directories don't have them either.
+
+I wouldn't go and change checkpatch, but I still rather avoid them,
+especially for multi line comments.
+
+ /*
+  * When it comes to multi line comments I prefer using something
+  * that denotes a start and an end to the comment, as it makes it
+  * look like a nice clip of information.
+  */
+
+Instead of:
+
+  // When it comes to multi line comments I prefer using something
+  // that denotes a start and an end to the comment, as it makes it
+  // look like a nice clip of information.
+
+Which just looks like noise. But hey, maybe that's just me because I
+find "*" as a sign of information and '//' something to ignore. ;-)
+
+-- Steve
