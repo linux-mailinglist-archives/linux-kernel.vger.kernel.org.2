@@ -2,141 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE5F3B907D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 12:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4B53B907F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 12:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236008AbhGAK3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 06:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235887AbhGAK3E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 06:29:04 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D138C0617AE
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 03:26:34 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id df12so7680219edb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 03:26:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=a9K4jyXYx47Q8btyuDKrrTrq0PEaaUA3+QP6HJIrGos=;
-        b=UbsrHWUQ+mj/292xk46YRGIEWdXS7+QUOxq+6nNb3yIUs4zHYJrkuHGgQOce8DFrQe
-         md9AW7iO+3I2/Gy/0pAB4ksC45W+234IMOkL++jK9Ut5s1vRLJE3bHdXjN761/r4oe2f
-         rrENVsppo3Jrt+VvPkoj8uviilfOhQYD1fLZsSYmxlaq+oX/ZAl36g/kjQIzB82UT/ci
-         MsYhbtWrw18oEv5eBIolntsiKHP3qi59dFbBWXD2KwR7OAOnPaSBv5xvF7/vHO2gDnY9
-         DYJCzMg6LY4GJsFkzIZYE13B6X8/NPbpnEh/pX4mSS3+UYLngtGXoFLSkaU2VGZ/3SUB
-         VdKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=a9K4jyXYx47Q8btyuDKrrTrq0PEaaUA3+QP6HJIrGos=;
-        b=WePhK1k5PV+gYJKSukFAHYCfEGxY+00bfOozeRV36OFx2RPto710eEy/S9kQVeBP+t
-         yzV8NeU6Rgb6/nJx//s3HoMFtawahxAepUUJsW+iKQUNyB5bSai3ffvq5E6A3VmWwZGr
-         +Oi1bXudFGWRUqZlinhBvN183+YPjo37u/qqyTCqr7ZfkdWGv78MaOtZBBOG8N6dALBF
-         7vEHA+Ex9lxgjo2/x+NCxHJVotO9XZNyZZSLIWO75pQTPNH/82+K3NNHYCYcQNq41ZyW
-         +954OCkbusWAE0gbJQeDu/+U7rxfmCIlf1Olro4MRBHrVd5s9e1O/2LSHo/yF7i8+SWZ
-         Io1Q==
-X-Gm-Message-State: AOAM533CpMNcD9vv9dQ4F+y2GQ00bofYVovDjClt48bsgSPQbxnsROLQ
-        rc+AkBxxH6N12p7l9iBetGp52rxZ1sJdPqPiZLIv
-X-Google-Smtp-Source: ABdhPJz1/meMgJS0CbGomq08efo6oPox9DOh/ZiqfZwarY0z7LVGZFk2nW7ff1FIg7dKAGvVHmDMMOZVK5XkBCN2Y10=
-X-Received: by 2002:a50:ff01:: with SMTP id a1mr52286665edu.253.1625135192829;
- Thu, 01 Jul 2021 03:26:32 -0700 (PDT)
+        id S236050AbhGAKaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 06:30:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:50760 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229878AbhGAKaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 06:30:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95317D6E;
+        Thu,  1 Jul 2021 03:27:31 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5FD073F718;
+        Thu,  1 Jul 2021 03:27:28 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 11:27:25 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Peter Hilber <peter.hilber@opensynergy.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, sudeep.holla@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
+        igor.skalkin@opensynergy.com, alex.bennee@linaro.org,
+        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
+        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
+        Andriy.Tryshnivskyy@opensynergy.com
+Subject: Re: [PATCH v4 06/16] firmware: arm_scmi, smccc, mailbox: Make shmem
+ based transports optional
+Message-ID: <20210701102725.GC17807@e120937-lin>
+References: <20210611165937.701-1-cristian.marussi@arm.com>
+ <20210611165937.701-7-cristian.marussi@arm.com>
+ <039f1a64-b4b6-5274-1fff-253f1dd6eac8@opensynergy.com>
 MIME-Version: 1.0
-References: <20210615141331.407-1-xieyongji@bytedance.com> <20210615141331.407-10-xieyongji@bytedance.com>
- <YNSatrDFsg+4VvH4@stefanha-x1.localdomain> <CACycT3vaXQ4dxC9QUzXXJs7og6TVqqVGa8uHZnTStacsYAiFwQ@mail.gmail.com>
- <YNw+q/ADMPviZi6S@stefanha-x1.localdomain> <CACycT3t6M5i0gznABm52v=rdmeeLZu8smXAOLg+WsM3WY1fgTw@mail.gmail.com>
- <7264cb0b-7072-098e-3d22-2b7e89216545@redhat.com>
-In-Reply-To: <7264cb0b-7072-098e-3d22-2b7e89216545@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Thu, 1 Jul 2021 18:26:21 +0800
-Message-ID: <CACycT3v7pYXAFtijPgWCMZ2WXxjT2Y-DUwS3hN_T7dhfE5o_6g@mail.gmail.com>
-Subject: Re: Re: [PATCH v8 09/10] vduse: Introduce VDUSE - vDPA Device in Userspace
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <039f1a64-b4b6-5274-1fff-253f1dd6eac8@opensynergy.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 3:55 PM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> =E5=9C=A8 2021/7/1 =E4=B8=8B=E5=8D=882:50, Yongji Xie =E5=86=99=E9=81=93:
-> > On Wed, Jun 30, 2021 at 5:51 PM Stefan Hajnoczi <stefanha@redhat.com> w=
-rote:
-> >> On Tue, Jun 29, 2021 at 10:59:51AM +0800, Yongji Xie wrote:
-> >>> On Mon, Jun 28, 2021 at 9:02 PM Stefan Hajnoczi <stefanha@redhat.com>=
- wrote:
-> >>>> On Tue, Jun 15, 2021 at 10:13:30PM +0800, Xie Yongji wrote:
-> >>>>> +/* ioctls */
-> >>>>> +
-> >>>>> +struct vduse_dev_config {
-> >>>>> +     char name[VDUSE_NAME_MAX]; /* vduse device name */
-> >>>>> +     __u32 vendor_id; /* virtio vendor id */
-> >>>>> +     __u32 device_id; /* virtio device id */
-> >>>>> +     __u64 features; /* device features */
-> >>>>> +     __u64 bounce_size; /* bounce buffer size for iommu */
-> >>>>> +     __u16 vq_size_max; /* the max size of virtqueue */
-> >>>> The VIRTIO specification allows per-virtqueue sizes. A device can ha=
-ve
-> >>>> two virtqueues, where the first one allows up to 1024 descriptors an=
-d
-> >>>> the second one allows only 128 descriptors, for example.
-> >>>>
-> >>> Good point! But it looks like virtio-vdpa/virtio-pci doesn't support
-> >>> that now. All virtqueues have the same maximum size.
-> >> I see struct vpda_config_ops only supports a per-device max vq size:
-> >> u16 (*get_vq_num_max)(struct vdpa_device *vdev);
-> >>
-> >> virtio-pci supports per-virtqueue sizes because the struct
-> >> virtio_pci_common_cfg->queue_size register is per-queue (controlled by
-> >> queue_select).
-> >>
-> > Oh, yes. I miss queue_select.
-> >
-> >> I guess this is a question for Jason: will vdpa will keep this limitat=
-ion?
-> >> If yes, then VDUSE can stick to it too without running into problems i=
-n
-> >> the future.
->
->
-> I think it's better to extend the get_vq_num_max() per virtqueue.
->
-> Currently, vDPA assumes the parent to have a global max size. This seems
-> to work on most of the parents but not vp-vDPA (which could be backed by
-> QEMU, in that case cvq's size is smaller).
->
-> Fortunately, we haven't enabled had cvq support in the userspace now.
->
-> I can post the fixes.
->
+Hi,
 
-OK. If so, it looks like we need to support the per-vq configuration.
-I wonder if it's better to use something like: VDUSE_CREATE_DEVICE ->
-VDUSE_SETUP_VQ -> VDUSE_SETUP_VQ -> ... -> VDUSE_ENABLE_DEVICE to do
-initialization rather than only use VDUSE_CREATE_DEVICE.
+On Thu, Jul 01, 2021 at 10:42:56AM +0200, Peter Hilber wrote:
+> On 11.06.21 18:59, Cristian Marussi wrote:
+> > From: Igor Skalkin <igor.skalkin@opensynergy.com>
+> > 
+> > Upon adding the virtio transport in this patch series, SCMI will also
+> > work without shared memory based transports. Also, the mailbox transport
+> > may not be needed if the smc transport is used.
+> > 
+> > - Compile shmem.c only if a shmem based transport is available.
+> > 
+> > - Remove hard dependency of SCMI on mailbox.
+> 
+> The hard dependency has now already been removed with
+> 
+>   c05b07963e96 ("firmware: arm_scmi: Add SMCCC discovery dependency in")
+> 
+
+I deeply reviewed transport Kconfig approach in V5 in general, making
+all transport configurable (y/n), so this patch will be adapted to the new
+Kconfig layout annd basically just provide the HAVE_SHMEM feature.
 
 Thanks,
-Yongji
+Cristian
