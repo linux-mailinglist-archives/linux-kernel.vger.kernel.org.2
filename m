@@ -2,346 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A073B987E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 00:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB703B9880
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 00:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236870AbhGAWMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 18:12:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234270AbhGAWMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 18:12:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1CAE613C2;
-        Thu,  1 Jul 2021 22:09:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625177378;
-        bh=9oOW9rb3aWkygqoFbEjWvKEdRgMpllmK2yiCvxQYrZs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=KRj/PvOr8i2dQuPpOZqUFYu1rj+nr9GrPBAwnjIn73AIyKjWsrwxEJpzFTGs0n6DL
-         j4zRcQskG0ljelQW8ksfKopWNpAJja3l9KnONj6YpjL2PB2gLpKPNe9phyyhYEQHRb
-         LPFAWZeCSk13gYk5GNNa08w1CnfVUylGHywavSLOCp/Mw+Yyf53nH7jv7gzaVki6HH
-         dZP71aKIZCBxowECO70wQQdU/Thr8tX8WIbzZX7F7OU1pPhstZ8Zh79h4JYQyeff/d
-         yiraslP/OIf/DPa6XdXyhnHNR1RDdjw6nS0GVsV9vm7jHsmqiPdlS9YQ93cKkduuPo
-         SsSLjZyYeL0nQ==
-Date:   Thu, 1 Jul 2021 17:09:36 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pci@vger.kernel.org
-Subject: Re: [PATCH] PCI/P2PDMA: finish RCU conversion of pdev->p2pdma
-Message-ID: <20210701220936.GA102273@bjorn-Precision-5520>
+        id S236880AbhGAWM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 18:12:58 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:40741 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234270AbhGAWM5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 18:12:57 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 5EB632224E;
+        Fri,  2 Jul 2021 00:10:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1625177425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PcAxigrwwF9F3F7PPN780aqLqzi5RHsuceox244cbvk=;
+        b=sd8RLE6MNUd4PQ207kQFHzYKzN1dwqULKM+tdqflqVkNAYD4Sbiq0+9BXQdNcDZuUGBlO8
+        YYAqBIpBQhvIWuewtFly91fBZ726czmJk0500wclEG0REDdpSZ2qLDCujbooXCnylKM6i/
+        sN82miAXk3i4vBTyJvlAcx/qwcj7wYw=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210701095621.3129283-1-eric.dumazet@gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 02 Jul 2021 00:10:24 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v2 5/5] mtd: core: add OTP nvmem provider support
+In-Reply-To: <20210701213420.GA1131789@roeck-us.net>
+References: <20210424110608.15748-1-michael@walle.cc>
+ <20210424110608.15748-6-michael@walle.cc>
+ <20210701213420.GA1131789@roeck-us.net>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <f48661d2d54b37db395fb73af8b52359@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 02:56:21AM -0700, Eric Dumazet wrote:
-> From: Eric Dumazet <edumazet@google.com>
-> 
-> While looking at pci_alloc_p2pmem() I found rcu protection
-> was not properly applied there, as pdev->p2pdma was
-> potentially read multiple times.
-> 
-> I decided to fix pci_alloc_p2pmem(), add __rcu qualifier
-> to p2pdma field of struct pci_dev, and fix all
-> other accesses to this field with proper rcu verbs.
-> 
-> Fixes: 1570175abd16 ("PCI/P2PDMA: track pgmap references per resource, not globally")
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
+Hi Guenter,
 
-Applied to pci/p2pdma for v5.14, thanks!
-
-There were some conflicting changes, so it'd be great if you could
-take a look and see if I did the right thing:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/commit/?h=pci/p2pdma&id=651b0ba3f8302e183277e4fa317fff2f9685bca2
-
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Cc: Logan Gunthorpe <logang@deltatee.com>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: "Jérôme Glisse" <jglisse@redhat.com>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: linux-pci@vger.kernel.org
-> ---
->  drivers/pci/p2pdma.c | 101 ++++++++++++++++++++++++++++++-------------
->  include/linux/pci.h  |   2 +-
->  2 files changed, 73 insertions(+), 30 deletions(-)
+Am 2021-07-01 23:34, schrieb Guenter Roeck:
+> Hi,
 > 
-> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-> index 1963826303631465da2956b0e3abcec3e0fcfbc4..89095aa5c674f5b8237d543c7af2bbdc2c176e5a 100644
-> --- a/drivers/pci/p2pdma.c
-> +++ b/drivers/pci/p2pdma.c
-> @@ -48,10 +48,14 @@ static ssize_t size_show(struct device *dev, struct device_attribute *attr,
->  			 char *buf)
->  {
->  	struct pci_dev *pdev = to_pci_dev(dev);
-> +	struct pci_p2pdma *p2pdma;
->  	size_t size = 0;
->  
-> -	if (pdev->p2pdma->pool)
-> -		size = gen_pool_size(pdev->p2pdma->pool);
-> +	rcu_read_lock();
-> +	p2pdma = rcu_dereference(pdev->p2pdma);
-> +	if (p2pdma && p2pdma->pool)
-> +		size = gen_pool_size(p2pdma->pool);
-> +	rcu_read_unlock();
->  
->  	return scnprintf(buf, PAGE_SIZE, "%zd\n", size);
->  }
-> @@ -61,10 +65,14 @@ static ssize_t available_show(struct device *dev, struct device_attribute *attr,
->  			      char *buf)
->  {
->  	struct pci_dev *pdev = to_pci_dev(dev);
-> +	struct pci_p2pdma *p2pdma;
->  	size_t avail = 0;
->  
-> -	if (pdev->p2pdma->pool)
-> -		avail = gen_pool_avail(pdev->p2pdma->pool);
-> +	rcu_read_lock();
-> +	p2pdma = rcu_dereference(pdev->p2pdma);
-> +	if (p2pdma && p2pdma->pool)
-> +		avail = gen_pool_avail(p2pdma->pool);
-> +	rcu_read_unlock();
->  
->  	return scnprintf(buf, PAGE_SIZE, "%zd\n", avail);
->  }
-> @@ -74,9 +82,16 @@ static ssize_t published_show(struct device *dev, struct device_attribute *attr,
->  			      char *buf)
->  {
->  	struct pci_dev *pdev = to_pci_dev(dev);
-> +	struct pci_p2pdma *p2pdma;
-> +	bool published = false;
-> +
-> +	rcu_read_lock();
-> +	p2pdma = rcu_dereference(pdev->p2pdma);
-> +	if (p2pdma)
-> +		published = p2pdma->p2pmem_published;
-> +	rcu_read_unlock();
->  
-> -	return scnprintf(buf, PAGE_SIZE, "%d\n",
-> -			 pdev->p2pdma->p2pmem_published);
-> +	return scnprintf(buf, PAGE_SIZE, "%d\n", published);
->  }
->  static DEVICE_ATTR_RO(published);
->  
-> @@ -95,8 +110,9 @@ static const struct attribute_group p2pmem_group = {
->  static void pci_p2pdma_release(void *data)
->  {
->  	struct pci_dev *pdev = data;
-> -	struct pci_p2pdma *p2pdma = pdev->p2pdma;
-> +	struct pci_p2pdma *p2pdma;
->  
-> +	p2pdma = rcu_dereference_protected(pdev->p2pdma, 1);
->  	if (!p2pdma)
->  		return;
->  
-> @@ -128,16 +144,14 @@ static int pci_p2pdma_setup(struct pci_dev *pdev)
->  	if (error)
->  		goto out_pool_destroy;
->  
-> -	pdev->p2pdma = p2p;
-> -
->  	error = sysfs_create_group(&pdev->dev.kobj, &p2pmem_group);
->  	if (error)
->  		goto out_pool_destroy;
->  
-> +	rcu_assign_pointer(pdev->p2pdma, p2p);
->  	return 0;
->  
->  out_pool_destroy:
-> -	pdev->p2pdma = NULL;
->  	gen_pool_destroy(p2p->pool);
->  out:
->  	devm_kfree(&pdev->dev, p2p);
-> @@ -159,6 +173,7 @@ int pci_p2pdma_add_resource(struct pci_dev *pdev, int bar, size_t size,
->  {
->  	struct pci_p2pdma_pagemap *p2p_pgmap;
->  	struct dev_pagemap *pgmap;
-> +	struct pci_p2pdma *p2pdma;
->  	void *addr;
->  	int error;
->  
-> @@ -200,7 +215,8 @@ int pci_p2pdma_add_resource(struct pci_dev *pdev, int bar, size_t size,
->  		goto pgmap_free;
->  	}
->  
-> -	error = gen_pool_add_owner(pdev->p2pdma->pool, (unsigned long)addr,
-> +	p2pdma = rcu_dereference_protected(pdev->p2pdma, 1);
-> +	error = gen_pool_add_owner(p2pdma->pool, (unsigned long)addr,
->  			pci_bus_address(pdev, bar) + offset,
->  			range_len(&pgmap->range), dev_to_node(&pdev->dev),
->  			pgmap->ref);
-> @@ -476,6 +492,7 @@ upstream_bridge_distance(struct pci_dev *provider, struct pci_dev *client,
->  		int *dist, bool *acs_redirects, struct seq_buf *acs_list)
->  {
->  	enum pci_p2pdma_map_type map_type;
-> +	struct pci_p2pdma *p2pdma;
->  
->  	map_type = __upstream_bridge_distance(provider, client, dist,
->  					      acs_redirects, acs_list);
-> @@ -486,10 +503,12 @@ upstream_bridge_distance(struct pci_dev *provider, struct pci_dev *client,
->  			map_type = PCI_P2PDMA_MAP_NOT_SUPPORTED;
->  	}
->  
-> -	if (provider->p2pdma)
-> -		xa_store(&provider->p2pdma->map_types, map_types_idx(client),
-> -			 xa_mk_value(map_type), GFP_KERNEL);
-> -
-> +	rcu_read_lock();
-> +	p2pdma = rcu_dereference(provider->p2pdma);
-> +	if (p2pdma)
-> +		xa_store(&p2pdma->map_types, map_types_idx(client),
-> +			 xa_mk_value(map_type), GFP_ATOMIC);
-> +	rcu_read_unlock();
->  	return map_type;
->  }
->  
-> @@ -595,7 +614,15 @@ EXPORT_SYMBOL_GPL(pci_p2pdma_distance_many);
->   */
->  bool pci_has_p2pmem(struct pci_dev *pdev)
->  {
-> -	return pdev->p2pdma && pdev->p2pdma->p2pmem_published;
-> +	struct pci_p2pdma *p2pdma;
-> +	bool res;
-> +
-> +	rcu_read_lock();
-> +	p2pdma = rcu_dereference(pdev->p2pdma);
-> +	res = p2pdma && p2pdma->p2pmem_published;
-> +	rcu_read_unlock();
-> +
-> +	return res;
->  }
->  EXPORT_SYMBOL_GPL(pci_has_p2pmem);
->  
-> @@ -675,6 +702,7 @@ void *pci_alloc_p2pmem(struct pci_dev *pdev, size_t size)
->  {
->  	void *ret = NULL;
->  	struct percpu_ref *ref;
-> +	struct pci_p2pdma *p2pdma;
->  
->  	/*
->  	 * Pairs with synchronize_rcu() in pci_p2pdma_release() to
-> @@ -682,16 +710,17 @@ void *pci_alloc_p2pmem(struct pci_dev *pdev, size_t size)
->  	 * read-lock.
->  	 */
->  	rcu_read_lock();
-> -	if (unlikely(!pdev->p2pdma))
-> +	p2pdma = rcu_dereference(pdev->p2pdma);
-> +	if (unlikely(!p2pdma))
->  		goto out;
->  
-> -	ret = (void *)gen_pool_alloc_owner(pdev->p2pdma->pool, size,
-> +	ret = (void *)gen_pool_alloc_owner(p2pdma->pool, size,
->  			(void **) &ref);
->  	if (!ret)
->  		goto out;
->  
->  	if (unlikely(!percpu_ref_tryget_live(ref))) {
-> -		gen_pool_free(pdev->p2pdma->pool, (unsigned long) ret, size);
-> +		gen_pool_free(p2pdma->pool, (unsigned long) ret, size);
->  		ret = NULL;
->  		goto out;
->  	}
-> @@ -710,9 +739,9 @@ EXPORT_SYMBOL_GPL(pci_alloc_p2pmem);
->  void pci_free_p2pmem(struct pci_dev *pdev, void *addr, size_t size)
->  {
->  	struct percpu_ref *ref;
-> +	struct pci_p2pdma *p2pdma = rcu_dereference_protected(pdev->p2pdma, 1);
->  
-> -	gen_pool_free_owner(pdev->p2pdma->pool, (uintptr_t)addr, size,
-> -			(void **) &ref);
-> +	gen_pool_free_owner(p2pdma->pool, (uintptr_t)addr, size, (void **) &ref);
->  	percpu_ref_put(ref);
->  }
->  EXPORT_SYMBOL_GPL(pci_free_p2pmem);
-> @@ -725,9 +754,12 @@ EXPORT_SYMBOL_GPL(pci_free_p2pmem);
->   */
->  pci_bus_addr_t pci_p2pmem_virt_to_bus(struct pci_dev *pdev, void *addr)
->  {
-> +	struct pci_p2pdma *p2pdma;
-> +
->  	if (!addr)
->  		return 0;
-> -	if (!pdev->p2pdma)
-> +	p2pdma = rcu_dereference_protected(pdev->p2pdma, 1);
-> +	if (!p2pdma)
->  		return 0;
->  
->  	/*
-> @@ -735,7 +767,7 @@ pci_bus_addr_t pci_p2pmem_virt_to_bus(struct pci_dev *pdev, void *addr)
->  	 * bus address as the physical address. So gen_pool_virt_to_phys()
->  	 * actually returns the bus address despite the misleading name.
->  	 */
-> -	return gen_pool_virt_to_phys(pdev->p2pdma->pool, (unsigned long)addr);
-> +	return gen_pool_virt_to_phys(p2pdma->pool, (unsigned long)addr);
->  }
->  EXPORT_SYMBOL_GPL(pci_p2pmem_virt_to_bus);
->  
-> @@ -806,19 +838,30 @@ EXPORT_SYMBOL_GPL(pci_p2pmem_free_sgl);
->   */
->  void pci_p2pmem_publish(struct pci_dev *pdev, bool publish)
->  {
-> -	if (pdev->p2pdma)
-> -		pdev->p2pdma->p2pmem_published = publish;
-> +	struct pci_p2pdma *p2pdma;
-> +
-> +	rcu_read_lock();
-> +	p2pdma = rcu_dereference(pdev->p2pdma);
-> +	if (p2pdma)
-> +		p2pdma->p2pmem_published = publish;
-> +	rcu_read_unlock();
->  }
->  EXPORT_SYMBOL_GPL(pci_p2pmem_publish);
->  
->  static enum pci_p2pdma_map_type pci_p2pdma_map_type(struct pci_dev *provider,
->  						    struct pci_dev *client)
->  {
-> -	if (!provider->p2pdma)
-> -		return PCI_P2PDMA_MAP_NOT_SUPPORTED;
-> +	enum pci_p2pdma_map_type type = PCI_P2PDMA_MAP_NOT_SUPPORTED;
-> +	struct pci_p2pdma *p2pdma;
->  
-> -	return xa_to_value(xa_load(&provider->p2pdma->map_types,
-> -				   map_types_idx(client)));
-> +	rcu_read_lock();
-> +	p2pdma = rcu_dereference(provider->p2pdma);
-> +
-> +	if (p2pdma)
-> +		type = xa_to_value(xa_load(&p2pdma->map_types,
-> +					   map_types_idx(client)));
-> +	rcu_read_unlock();
-> +	return type;
->  }
->  
->  static int __pci_p2pdma_map_sg(struct pci_p2pdma_pagemap *p2p_pgmap,
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 24306504226ab665be7323549d0759da1b7ac715..6abdebe2aeb1676da08f03e05e5ecb26f0b08cd6 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -497,7 +497,7 @@ struct pci_dev {
->  	u16		pasid_features;
->  #endif
->  #ifdef CONFIG_PCI_P2PDMA
-> -	struct pci_p2pdma *p2pdma;
-> +	struct pci_p2pdma __rcu *p2pdma;
->  #endif
->  	u16		acs_cap;	/* ACS Capability offset */
->  	phys_addr_t	rom;		/* Physical address if not from BAR */
-> -- 
-> 2.32.0.93.g670b81a890-goog
+> On Sat, Apr 24, 2021 at 01:06:08PM +0200, Michael Walle wrote:
+>> Flash OTP regions can already be read via user space. Some boards have
+>> their serial number or MAC addresses stored in the OTP regions. Add
+>> support for them being a (read-only) nvmem provider.
+>> 
+>> The API to read the OTP data is already in place. It distinguishes
+>> between factory and user OTP, thus there are up to two different
+>> providers.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
 > 
+> This patch causes a boot failure with one of my qemu tests.
+> With the patch in place, the flash fails to instantiate.
+> 
+> [    1.156578] Creating 3 MTD partitions on "physmap-flash":
+> [    1.157192] 0x000000000000-0x000000040000 : "U-Boot Bootloader"
+> [    1.184632] 0x000000040000-0x000000060000 : "U-Boot Environment"
+> [    1.201767] 0x000000060000-0x000000800000 : "Flash"
+> [    1.222320] Deleting MTD partitions on "physmap-flash":
+> [    1.222744] Deleting U-Boot Bootloader MTD partition
+> [    1.303597] Deleting U-Boot Environment MTD partition
+> [    1.368751] Deleting Flash MTD partition
+> [    1.430619] physmap-flash: probe of physmap-flash failed with error 
+> -61
+> 
+> -61 is -ENODATA.
+> 
+> Other boot tests with different flash chips can still boot.
+> Reverting this patch (as well as the follow-up patches) fixes
+> the problem.
+> 
+> I do not know if this is a problem with qemu or a problem with the
+> patch, but, as I mentioned, other flash chips do still instantiate.
+> 
+> Do you have an idea what to look for when I try to track down the 
+> problem ?
+
+I'd start by looking at the return code of mtd_otp_size() because that
+should be the only function which communicates with the flash at probe
+time.
+
+Can you share how to reproduce that problem? Like the qemu commandline
+and involved images?
+
+-michael
