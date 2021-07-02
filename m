@@ -2,136 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BB93B9D52
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DF03B9D59
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhGBIKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 04:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhGBIKy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 04:10:54 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782D1C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 01:08:22 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id q18so16596735lfc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 01:08:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yN1JzFQU4unToYWY8NK5C5gYLDQEtwyJk7jPmsLsEp8=;
-        b=D/LeWMQtjBYgH73i/c8YhbQLtaFWbn6Z9DeQsu7X/Iyt5mFnbYD5jKv8R0uaA3wY5s
-         UmnAMJcgQau4mJJbCJp70hJF3DC1pUGESSBOFYm/mAAoJnpulmYi/9i0dc2sgHOnOIGc
-         NcAd1YA7BVoUbGb3/JTK3CPgMXeLetQinKHBWa+ykHge6O2rnAat251W/TugdmgT4lvE
-         BYBjpBKZK7xjt5+ICdZlWalexVDIlB8S1iyba/ELv4j4qVG92/3F5TSxjcu0TrSzqG+T
-         n/OcZ5R6mvLbGEIaEkyFB5Io9qH91zoxA5BkyNxSu463lz2y/CTZMpyMhLy5+ADI8Oxd
-         47yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yN1JzFQU4unToYWY8NK5C5gYLDQEtwyJk7jPmsLsEp8=;
-        b=W9nxWoB86/uSyo+kniG0TRja3UiunoznzqotbFkr9tfu6EKRaEwJIRk933S9gPXNjc
-         qFPJGGrW0bbtn4P45nOFJtC9VNeLgiMNntRYuEu4USwumwUVdz5NAc1WyMmsvx1M8ctY
-         +qFEuIWx85CYZ0kWq1+HybpHqeuAAX/RX7YVcRJM516EpP/kkLygXxV3Zbbcfh//E6Al
-         OaWMu+SpYYwdZS6tx1IAkX+w5pIxjgOd4HO51HN3Cvf3TLPsoxi2yghnlCdc8yafc0tJ
-         LPqFcOnIhN5uxgVKPPutj1WuGEOYw/9TxUq0vOxu2LC6iMERy6Ss1kbZcO12Z0tUWEd5
-         R5aA==
-X-Gm-Message-State: AOAM5338qB5y+i1d7bGC+npemrreLNGPu/tYlschVTx7GYGPoF6r26eq
-        PMZtUrQfvCttJOCJumU8xV6s5F3w79hsERgem2H2Yw==
-X-Google-Smtp-Source: ABdhPJwL7BmXsthKodpGU325iOcVo9DuP0LDJcGh8/TAP1Eta7KM+FM1XvKOf3JEJXEn+lwA3DVNYHRQINFxlU+87RE=
-X-Received: by 2002:a05:6512:3d1d:: with SMTP id d29mr3004059lfv.286.1625213300604;
- Fri, 02 Jul 2021 01:08:20 -0700 (PDT)
+        id S230234AbhGBINa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 04:13:30 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:20653 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230166AbhGBIN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 04:13:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625213457; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=FYWUVQrncpozsXLV74MYcklChO0it0+j8pO/qQyVCso=; b=kbiCDKIDyzrhKUS1plYJ6IcthRL+QaRRNHP6CyuxsfjCj4dF660/f4F9tL/oASc7tjsSiZ5z
+ TgZGni+N/PBEZOYEHGsni1wsbPdVpyLb+wkgrhJnLWbT0amlpYhfw/T4ybTER/2ezlf/zQXb
+ 71kLc79UKCPHA8sDdnn47/sAZm8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60dec9e9ec0b18a7454324da (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 02 Jul 2021 08:10:17
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 328CCC4323A; Fri,  2 Jul 2021 08:10:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.67.21] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9AB08C433F1;
+        Fri,  2 Jul 2021 08:10:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9AB08C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v11 4/5] usb: dwc3: dwc3-qcom: Enable tx-fifo-resize
+ property by default
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     robh+dt@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        balbi@kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, jackp@codeaurora.org,
+        fntoth@gmail.com
+References: <1625043642-29822-1-git-send-email-wcheng@codeaurora.org>
+ <1625043642-29822-5-git-send-email-wcheng@codeaurora.org>
+ <YN6e8G1e9cZBBMr7@kroah.com>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <83237faa-9840-5d31-43da-8ce551e75067@codeaurora.org>
+Date:   Fri, 2 Jul 2021 01:10:13 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210701171837.32156-1-vincent.guittot@linaro.org> <DAABF914-F5D0-4C92-BFE0-341D83B9F3D0@linux.vnet.ibm.com>
-In-Reply-To: <DAABF914-F5D0-4C92-BFE0-341D83B9F3D0@linux.vnet.ibm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 2 Jul 2021 10:08:09 +0200
-Message-ID: <CAKfTPtCuV6iCRfb53Avu7=+rV6G=AYYRyutqm0_LJU6mVV1kKg@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: Sync load_sum with load_avg after dequeue
-To:     Sachin Sant <sachinp@linux.vnet.ibm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Odin Ugedal <odin@uged.al>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YN6e8G1e9cZBBMr7@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Jul 2021 at 08:16, Sachin Sant <sachinp@linux.vnet.ibm.com> wrote=
-:
+
+
+On 7/1/2021 10:06 PM, Greg KH wrote:
+> On Wed, Jun 30, 2021 at 02:00:41AM -0700, Wesley Cheng wrote:
+>> In order to take advantage of the TX fifo resizing logic, manually add
+>> these properties to the DWC3 child node by default.  This will allow
+>> the DWC3 gadget to resize the TX fifos for the IN endpoints, which
+>> help with performance.
+>>
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>> ---
+>>  drivers/usb/dwc3/dwc3-qcom.c | 21 +++++++++++++++++++++
+>>  1 file changed, 21 insertions(+)
+>>
+>> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+>> index 49e6ca9..cec4f4a 100644
+>> --- a/drivers/usb/dwc3/dwc3-qcom.c
+>> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+>> @@ -640,6 +640,25 @@ static int dwc3_qcom_acpi_register_core(struct platform_device *pdev)
+>>  	return ret;
+>>  }
+>>  
+>> +#ifdef CONFIG_OF
+>> +static void dwc3_qcom_add_dt_props(struct device *dev, struct device_node *np)
+>> +{
+>> +	struct property		*prop;
+>> +	int ret;
+>> +
+>> +	prop = devm_kzalloc(dev, sizeof(*prop), GFP_KERNEL);
+>> +	if (prop) {
+>> +		prop->name = "tx-fifo-resize";
+>> +		ret = of_add_property(np, prop);
+>> +		if (ret < 0)
+>> +			dev_info(dev, "unable to add tx-fifo-resize prop\n");
+
+Hi Greg,
+> 
+> Is that really an "informational" error?  :(
+> 
 >
->
->
-> > On 01-Jul-2021, at 10:48 PM, Vincent Guittot <vincent.guittot@linaro.or=
-g> wrote:
-> >
-> > commit 9e077b52d86a ("sched/pelt: Check that *_avg are null when *_sum =
-are")
-> > reported some inconsitencies between *_avg and *_sum.
-> >
-> > commit 1c35b07e6d39 ("sched/fair: Ensure _sum and _avg values stay cons=
-istent")
-> > fixed some but one remains when dequeuing load.
-> >
-> > sync the cfs's load_sum with its load_avg after dequeuing the load of a
-> > sched_entity.
-> >
-> > Fixes: 9e077b52d86a ("sched/pelt: Check that *_avg are null when *_sum =
-are")
-> > Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> > ---
-> >
-> > I have been able to trigger a WARN on my system even with the patch
-> > listed above. This patch fixes it.
-> > Sachin could you test that it also fixes yours ?
-> >
->
-> I ran various LTP stress tests, scheduler tests and kernel compile operat=
-ion for about 5 hours.
-> Haven=E2=80=99t seen the warning during the testing.
->
-> Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+We can remove it.  If anything we can always check the sysfs if the
+property is present or not.
+
+>> +	}
+> 
+> So if you can not allocate memory, you just fail quietly?  Are you sure
+> that is ok?
+> 
+> Please properly handle errors.
+> 
+OK, will handle the case where we can't allocate memory for the property.
 
 Thanks
+Wesley Cheng
 
->
-> I have left the tests running, will let it run for few more hours.
->
-> Thanks
-> -Sachin
->
-> > kernel/sched/fair.c | 3 ++-
-> > 1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 11d22943753f..48fc7dfc2f66 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -3037,8 +3037,9 @@ enqueue_load_avg(struct cfs_rq *cfs_rq, struct sc=
-hed_entity *se)
-> > static inline void
-> > dequeue_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se)
-> > {
-> > +     u32 divider =3D get_pelt_divider(&se->avg);
-> >       sub_positive(&cfs_rq->avg.load_avg, se->avg.load_avg);
-> > -     sub_positive(&cfs_rq->avg.load_sum, se_weight(se) * se->avg.load_=
-sum);
-> > +     cfs_rq->avg.load_sum =3D cfs_rq->avg.load_avg * divider;
-> > }
-> > #else
-> > static inline void
-> > --
-> > 2.17.1
-> >
->
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
