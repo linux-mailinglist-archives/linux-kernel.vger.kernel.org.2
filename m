@@ -2,75 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9160C3BA023
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3243BA025
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232016AbhGBMCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 08:02:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231912AbhGBMCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 08:02:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F3EC6141D
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 11:59:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625227185;
-        bh=8rtNsvaI1RHggmsZdI3pAW+DctsXAHwCkT27YexpT/A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DwP+PEktSgVq7gQ0gXyZW4ifnc/xeGi9nAVp5X0zWMubqTIyzWtFT6n4sgqIEIP1M
-         LWBgndsYwMal8kuvn3fyKB5ShJAglxOMh0VT632WFbb0We9OG5rgv/7VEeL64wgYCl
-         /llI6RMuBW9opalCMOY2/6fHgGQb8VUN6zN+g+pm6+exbIDT9QD/MJqpFC6kK5afSS
-         G0pM5SS0fV5qsljOgu8ZuO0zARQeH9yitr5bsuMvMLBc4D6bWUVzSEYavI/YBjfSE1
-         af/5NUaJwNR784XPVrBWqMOL1cJWfBcwZcC2kpddEl0sNRGgrzjdR9u+u28QYEikkw
-         Zt9GYMFLLvcNQ==
-Received: by mail-wm1-f43.google.com with SMTP id b14-20020a1c1b0e0000b02901fc3a62af78so2339574wmb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 04:59:45 -0700 (PDT)
-X-Gm-Message-State: AOAM5315k7saPUjjXEKkQ0V4yEKD6OniIzTCRFA2zaQG4I4QlKwuK0xw
-        WKMsIG6gByELBzPdX2Te5Krs+BrREku1JkiLTnM=
-X-Google-Smtp-Source: ABdhPJwF4kuxfZztdywzrGPdXLkjpSbnED1hOv6IrSdBVWuLbGYJ6rUssgt2qq2BTVDOAypw3hqCPBCEvvuuGwxdhgE=
-X-Received: by 2002:a05:600c:3205:: with SMTP id r5mr6678910wmp.75.1625227184199;
- Fri, 02 Jul 2021 04:59:44 -0700 (PDT)
+        id S232040AbhGBMDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 08:03:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47813 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231912AbhGBMCy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 08:02:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625227212;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Et5iZ97LTU9tQ2pMs7pR/S5TGxgSyJzTr+8AlXGoLA=;
+        b=RedEYwEHJLwBuhNA0qOsxODgNHokuRbmFGg+Yyje0Rxo+XQZbFjvX6fsC7Q0X2u/milN5e
+        x/iK8bo13PzGWPLVyJER7H6wGTGJ0wVR9Pz7Tpa3KcXa8EVZHrrCJ7NdPUdQXKBgXsTlM4
+        CR1Eg/TSNtKpOq+0/eqOiU20IDXbUv0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-102-3Kq-VP_BPZaAjLq-cirY6w-1; Fri, 02 Jul 2021 08:00:10 -0400
+X-MC-Unique: 3Kq-VP_BPZaAjLq-cirY6w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A341E9126D;
+        Fri,  2 Jul 2021 12:00:09 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9531A620DE;
+        Fri,  2 Jul 2021 12:00:03 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 8F29C4179B8D; Fri,  2 Jul 2021 08:59:59 -0300 (-03)
+Date:   Fri, 2 Jul 2021 08:59:59 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Christoph Lameter <cl@gentwo.de>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Nitesh Lal <nilal@redhat.com>
+Subject: Re: [patch 0/5] optionally sync per-CPU vmstats counter on return to
+ userspace
+Message-ID: <20210702115959.GA239377@fuller.cnet>
+References: <20210701210336.358118649@fuller.cnet>
+ <alpine.DEB.2.22.394.2107020958430.201080@gentwo.de>
 MIME-Version: 1.0
-References: <20210701235505.1792711-1-ndesaulniers@google.com>
-In-Reply-To: <20210701235505.1792711-1-ndesaulniers@google.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 2 Jul 2021 13:59:28 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1EfBNxaMbsp+s2BiYHGKPK4NeRR+ugM82jfY43Pq7-Uw@mail.gmail.com>
-Message-ID: <CAK8P3a1EfBNxaMbsp+s2BiYHGKPK4NeRR+ugM82jfY43Pq7-Uw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: drop CROSS_COMPILE for LLVM=1 LLVM_IAS=1
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2107020958430.201080@gentwo.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 1:55 AM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> +ifneq ($(LLVM),)
-> +ifneq ($(LLVM_IAS),)
-> +ifeq ($(CROSS_COMPILE),)
-> +CLANG_TARGET   :=--target=aarch64-linux
-> +CLANG_FLAGS    += $(CLANG_TARGET)
-> +KBUILD_CFLAGS  += $(CLANG_TARGET)
-> +KBUILD_AFLAGS  += $(CLANG_TARGET)
-> +endif
-> +endif
-> +endif
+Hi Christoph,
 
-I think only the "CLANG_TARGET   :=--target=aarch64-linux" line should
-go into the
-per-architecture Makefile. It doesn't hurt to just set that
-unconditionally here,
-and then change the CLANG_FLAGS logic in the top-level Makefile to use this
-in place of $(notdir $(CROSS_COMPILE:%-=%)).
+Forgot to reply to this question...
 
-       Arnd
+On Fri, Jul 02, 2021 at 10:00:11AM +0200, Christoph Lameter wrote:
+> On Thu, 1 Jul 2021, Marcelo Tosatti wrote:
+> 
+> > The logic to disable vmstat worker thread, when entering
+> > nohz full, does not cover all scenarios. For example, it is possible
+> > for the following to happen:
+> >
+> > 1) enter nohz_full, which calls refresh_cpu_vm_stats, syncing the stats.
+> > 2) app runs mlock, which increases counters for mlock'ed pages.
+> > 3) start -RT loop
+> >
+> > Since refresh_cpu_vm_stats from nohz_full logic can happen _before_
+> > the mlock, vmstat shepherd can restart vmstat worker thread on
+> > the CPU in question.
+> 
+> Can we enter nohz_full after the app runs mlock?
+
+Hum, i don't think its a good idea to use that route, because
+entering or exiting nohz_full depends on a number of variable
+outside of one's control (and additional variables might be
+added in the future).
+
+So preparing the system to function
+while entering nohz_full at any location seems the sane thing to do.
+
+And that would be at return to userspace (since, if mlocked, after 
+that point there will be no more changes to propagate to vmstat
+counters).
+
+Or am i missing something else you can think of ?
+
+
