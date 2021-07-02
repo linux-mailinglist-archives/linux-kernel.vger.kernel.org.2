@@ -2,91 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE97E3BA03E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32893BA03F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbhGBMUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 08:20:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232111AbhGBMUZ (ORCPT
+        id S232146AbhGBMVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 08:21:14 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38368 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232056AbhGBMVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 08:20:25 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F6DC061764
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 05:17:53 -0700 (PDT)
-Date:   Fri, 2 Jul 2021 14:17:49 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625228271;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Fri, 2 Jul 2021 08:21:12 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 5A5C422989;
+        Fri,  2 Jul 2021 12:18:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625228319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=GayRj68MxYlhLq1b72BYBOzpVTzkn6ZlV4tZ2wvOh7w=;
-        b=Cw4KZ3DbM3XM9/ouqvqzAGiIhwYUuKq7vRGFxLVCC4rkOq5FsdkbVQvcNrJAiDRNmvzSsx
-        C3EkL8+242kyNQcjdbKkYjjHcV02KYDavb2LIImrvfGznL28qXzkU0T3uiF+xJV3YF33NH
-        pDrc2MY4w4olSuPBi1YS49DRnGDz8yE7Pha1+WzUzmaWoiR/aRKxSIndWzZ/X9EodY+97V
-        qH3NvNga5USmwE2UNVeGAS3gco6AE5Nv2pJn4WvTZI50C0UnT/rg509YBRnnjnentFnJZG
-        dj4r9ywKiH+UyrA+4r9xQmnprnTXUs+R4Hio/flljWXOo28e2102HqUcYLCEqQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625228271;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GayRj68MxYlhLq1b72BYBOzpVTzkn6ZlV4tZ2wvOh7w=;
-        b=rflAF7uIIPZLISkwTB0wCO+VkyX7Cp4wKoawbaMXO9umI0hjececP3AtZm42aWNpDQHE/5
-        v+7iaxDNOgGn8yCg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [RFC v2 31/34] mm, slub: optionally save/restore irqs in
- slab_[un]lock()/
-Message-ID: <20210702121749.edrkrwf6uaxwoiyp@linutronix.de>
-References: <20210609113903.1421-1-vbabka@suse.cz>
- <20210609113903.1421-32-vbabka@suse.cz>
+        bh=tafCEo0yQeDqyI1Ey6/WGCSopcKZ7s02+Wi5y5dZTAI=;
+        b=FnKWHedlFVULx5aCP3jFRg0wcDsQg6Sa2NPo83SBoHS3qwD+LLXeOq3SnfMF1eCNjuV97k
+        fVxwYj/dP16vUi3TF5j0zB0RW5Qb3UNVX7oJqZl+UrtW6MmTps7BCRz73hmjet5ahHseOd
+        JA9VSlhXs5nX9X3TciS1lpWP0DboDq4=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id A62DBA3B83;
+        Fri,  2 Jul 2021 12:18:38 +0000 (UTC)
+Date:   Fri, 2 Jul 2021 14:18:37 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Ohhoon Kwon <ohoono.kwon@samsung.com>
+Cc:     david@redhat.com, akpm@linux-foundation.org, bhe@redhat.com,
+        rppt@linux.ibm.com, ohkwon1043@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] mm: sparse: remove __section_nr() function
+Message-ID: <YN8EHfBu358OMugA@dhcp22.suse.cz>
+References: <20210702094132.6276-1-ohoono.kwon@samsung.com>
+ <CGME20210702094457epcas1p4e181c7b0a18338403a7ffb57f44807fe@epcas1p4.samsung.com>
+ <20210702094132.6276-4-ohoono.kwon@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210609113903.1421-32-vbabka@suse.cz>
+In-Reply-To: <20210702094132.6276-4-ohoono.kwon@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-09 13:39:00 [+0200], Vlastimil Babka wrote:
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -353,18 +353,35 @@ static inline unsigned int oo_objects(struct kmem_cache_order_objects x)
->  /*
->   * Per slab locking using the pagelock
->   */
-> -static __always_inline void slab_lock(struct page *page)
-> +static __always_inline void
-> +__slab_lock(struct page *page, unsigned long *flags, bool disable_irqs)
->  {
->  	VM_BUG_ON_PAGE(PageTail(page), page);
-> +	if (disable_irqs)
-> +		local_irq_save(*flags);
->  	bit_spin_lock(PG_locked, &page->flags);
+On Fri 02-07-21 18:41:32, Ohhoon Kwon wrote:
+> __section_nr() was used to convert struct mem_section * to section_nr.
+> 
+> With CONFIG_SPARSEMEM_EXTREME enabled, however, __section_nr() can be
+> costly since it iterates all section roots to check if the given
+> mem_section is in its range.
+> 
+> On the other hand, __nr_to_section() which converts section_nr to
+> mem_section can be done in O(1).
+> 
+> The only users of __section_nr() was section_mark_present() and
+> find_memory_block().
+> 
+> Since I changed both functions to use section_nr directly in the
+> preceeding patches, let's remove __section_nr() which has no users.
+> 
+> Signed-off-by: Ohhoon Kwon <ohoono.kwon@samsung.com>
+
+I would go with a much shorter changelog. The function is not used
+anymore so it can be simply dropped.
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  include/linux/mmzone.h |  1 -
+>  mm/sparse.c            | 26 --------------------------
+>  2 files changed, 27 deletions(-)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 0d53eba1c383..8931f95cf885 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -1321,7 +1321,6 @@ static inline struct mem_section *__nr_to_section(unsigned long nr)
+>  		return NULL;
+>  	return &mem_section[SECTION_NR_TO_ROOT(nr)][nr & SECTION_ROOT_MASK];
 >  }
+> -extern unsigned long __section_nr(struct mem_section *ms);
+>  extern size_t mem_section_usage_size(void);
 >  
-> -static __always_inline void slab_unlock(struct page *page)
-> +static __always_inline void
-> +__slab_unlock(struct page *page, unsigned long *flags, bool disable_irqs)
->  {
->  	VM_BUG_ON_PAGE(PageTail(page), page);
-> +	if (disable_irqs)
-> +		local_irq_restore(*flags);
->  	__bit_spin_unlock(PG_locked, &page->flags);
+>  /*
+> diff --git a/mm/sparse.c b/mm/sparse.c
+> index 4a2700e9a65f..1b32d15593e4 100644
+> --- a/mm/sparse.c
+> +++ b/mm/sparse.c
+> @@ -108,32 +108,6 @@ static inline int sparse_index_init(unsigned long section_nr, int nid)
 >  }
+>  #endif
+>  
+> -#ifdef CONFIG_SPARSEMEM_EXTREME
+> -unsigned long __section_nr(struct mem_section *ms)
+> -{
+> -	unsigned long root_nr;
+> -	struct mem_section *root = NULL;
+> -
+> -	for (root_nr = 0; root_nr < NR_SECTION_ROOTS; root_nr++) {
+> -		root = __nr_to_section(root_nr * SECTIONS_PER_ROOT);
+> -		if (!root)
+> -			continue;
+> -
+> -		if ((ms >= root) && (ms < (root + SECTIONS_PER_ROOT)))
+> -		     break;
+> -	}
+> -
+> -	VM_BUG_ON(!root);
+> -
+> -	return (root_nr * SECTIONS_PER_ROOT) + (ms - root);
+> -}
+> -#else
+> -unsigned long __section_nr(struct mem_section *ms)
+> -{
+> -	return (unsigned long)(ms - mem_section[0]);
+> -}
+> -#endif
+> -
+>  /*
+>   * During early boot, before section_mem_map is used for an actual
+>   * mem_map, we use section_mem_map to store the section's NUMA
+> -- 
+> 2.17.1
 
-You should first unlock then enable IRQs.
-
-Sebastian
+-- 
+Michal Hocko
+SUSE Labs
