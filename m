@@ -2,143 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBAC3BA143
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 875B43BA144
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhGBNdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
+        id S232636AbhGBNdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231929AbhGBNdb (ORCPT
+        with ESMTP id S232280AbhGBNdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:33:31 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632B4C061762;
-        Fri,  2 Jul 2021 06:30:59 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id h2so13271772edt.3;
-        Fri, 02 Jul 2021 06:30:59 -0700 (PDT)
+        Fri, 2 Jul 2021 09:33:50 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E69C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 06:31:18 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id m9-20020a05600c3b09b02901f246b43bbeso6394806wms.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 06:31:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TLPL1vwuoSurIn1Ke4+3XJSEMyvrxI7jqw6j1iy/If0=;
-        b=CpCP4CL1+OGJCBDouYv0X21+BYXnktM13u1Rzi4vJ6YISSCdgISCyh+zfkTYrK8QzF
-         YD8GFZ0mZc/WKKPTpYDc4EOOL0vn78bFwAI2bKvvjk9CRnQOVyOBlt5xkSxOxMEszoCU
-         xZxvzIlZwEjgbqhb7e3nv5Rqq7zskft7QbEGGEXfN/NuC5WdUHm9BfOub51GgJMI6NpN
-         r1RTVfMkd/rwrajpEDTRUHTlkJM5mXCwrSUsUdv95fFXn53sxWRW+waK6X4Nc3EqZD6f
-         HxY1obYx8wiE+j5p4bg2RMH14e9SioNL53Ol2Qe5q+QNHvvsJRwgRRgIOMMyyGyWuA0i
-         O3mw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=/PCl/PleBZTsH8zunBgGuzFmk4Ca8Tvt5r3eo4Zy03A=;
+        b=Zvx4trx0T5UUwwZc7zAID+VpfV4MTSM07xo4EQdejZ85cTy0hG2qt+Hd3JshkaF+zs
+         n4Ux9Ae59nC3Ibr2ZPEU7ncgILO2x6tgcFcSm5WB5QDV9r3HD95q6wrKZuB8X5tZEGNd
+         RBJ5Xqt8uwSXkk7qiIkVW5eiGVXBeL3Jxnq/O62lWT5dUZPUpso9wmVH2ml7QNDxXfaL
+         W9dZLEX89MyLBJtAZgaJ+C34ZelqExiLUzfHIVbcHnfJaWa+sBCEVhAQshWC38YVJTvl
+         /dz2mrp8My/++kkWiqEU/Lj6xSku5vHRnNIe5+KCGV3D8VNawr/2RXkcIkZWEA9XuOv8
+         bnCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TLPL1vwuoSurIn1Ke4+3XJSEMyvrxI7jqw6j1iy/If0=;
-        b=j00esFCT7acHIsaa6zV7Yql7BjxAt9/hrN9MV6J6OtHixvLwMoLOaqACXwwUc6QL4t
-         DxYTEON6tuH2OzDkmjs5UZwwCF9vT5pqMKCYIl7KleufA4Zj5sjF++ysMYg5slivwhS+
-         4jYm7i258/cbyLZpYJ/1O6CQe4vVnyKhNi587fIFyvcIRwW5DmMM8c3ZiU32KllaQf4V
-         kIbuD+WqoRZm1RQjI4bPVKEzNGxrSQFD7cJYUY+e0KNSFTb4Qo9S/P5xkxA4xaq72pk+
-         +PyaZY3f2tZuz86xu48qyeazgLL+zof4KR3zkFwSHiTm6Hjwld8sCT8zziWJav2Zhfti
-         sS/A==
-X-Gm-Message-State: AOAM532RTur5kslfLhM95QBiEKXvkisfuyw1bUQ5uPg3MeA3D91jfdj6
-        K8JEtG6vsbbqThuW/U78wRfGRPBzKU0w98K5hnQ=
-X-Google-Smtp-Source: ABdhPJwIDHn33FNtfeYw5efdxrdIzFrxnJWYLZAnaxQC9V+Ht48b2EB/ZvFajhnCdRje/T2QhEt0tMootqGY4wHhyww=
-X-Received: by 2002:aa7:d74b:: with SMTP id a11mr6863372eds.40.1625232657982;
- Fri, 02 Jul 2021 06:30:57 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=/PCl/PleBZTsH8zunBgGuzFmk4Ca8Tvt5r3eo4Zy03A=;
+        b=RVz3caUJp/6YaFMaDljyeDAEwMfA0qbpsLLCuy6GJJlCXsMKxIO0CQS3cG4yxc5d5f
+         AjAtJN/H+F3tc1j5hHOEZnhOcTBJjkkjco4bF4f9LQnMeI4A4BqRP/zUIt9CvrXLG2hN
+         yZm3UJi0hUH5fu6GGcuSqGVuf1FqSoY1/PnesAT38we7OQtsqObVA8Sf5fkandLKn4Pq
+         3a4TDTrj2HpDcYsIyxFnmwfindJDh3ZDPMjG+bT1ft5Fv4YvuHccL2zrpFmD5ut+J1v1
+         5wZYL1bXKAONq+1b/anjmGvzI9TCoo6EGqzqHrZJ1k+po0gMSZaLmTv8VC64MYa8yLVa
+         duOg==
+X-Gm-Message-State: AOAM533tvt+wc+dIOvucPuAquLzqcJli9tGEXXoRueDIGrrNVOqMZgRr
+        N5QFJvJ3TdymdSFTizqGr3KRPy4r+9NHvA==
+X-Google-Smtp-Source: ABdhPJyR66t2BH5Bcr1W97j/O5McPmsjUNy5/8db3to3P3ejLL+VMeyjxmdIaUICbXIbVQROon85RQ==
+X-Received: by 2002:a05:600c:1c2a:: with SMTP id j42mr16265842wms.173.1625232677015;
+        Fri, 02 Jul 2021 06:31:17 -0700 (PDT)
+Received: from pc ([196.235.73.129])
+        by smtp.gmail.com with ESMTPSA id y20sm12422210wmi.31.2021.07.02.06.31.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 06:31:16 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 14:31:14 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dio: return -ENOMEM when kzalloc() fails
+Message-ID: <20210702133114.GA314157@pc>
 MIME-Version: 1.0
-References: <20210701215132.16317-1-viktor.prutyanov@phystech.edu> <20210701215132.16317-2-viktor.prutyanov@phystech.edu>
-In-Reply-To: <20210701215132.16317-2-viktor.prutyanov@phystech.edu>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Fri, 2 Jul 2021 15:30:46 +0200
-Message-ID: <CAFBinCBZXRrPakwvRLsbNbuYY6fcYysMs0+SPUmAhKpcYxrq0g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] media: rc: meson-irblaster: document device tree bindings
-To:     Viktor Prutyanov <viktor.prutyanov@phystech.edu>
-Cc:     sean@mess.org, mchehab@kernel.org, robh+dt@kernel.org,
-        khilman@baylibre.com, Neil Armstrong <narmstrong@baylibre.com>,
-        jbrunet@baylibre.com, linux-media <linux-media@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, rockosov@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viktor,
+Return -ENOMEM when kzalloc() fails in order to inform the caller of the
+failure.
 
-On Thu, Jul 1, 2021 at 11:51 PM Viktor Prutyanov
-<viktor.prutyanov@phystech.edu> wrote:
->
-> This patch adds binding documentation for the IR transmitter
-> available in Amlogic Meson SoCs.
-This is an interesting piece of hardware where I've always wondered if
-there is any device out there which supports this functionality.It
-turns out that there is
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ drivers/dio/dio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[...]
-> +description: |
-> +  Some Amlogic SoCs such as A311D and T950D4 have IR transmitter
-> +  (blaster) controller onboard. It is capable of sending IR signals
-> +  with arbitrary carrier frequency and duty cycle.
-> +
-> +properties:
-> +  compatible:
-> +    const: amlogic,meson-irblaster
-if you feel like some registers or register values are specific to
-A311D or T950D4 then please also add a SoC-specific compatible string
-(for example: amlogic,meson-g12b-irblaster).
-An example can be seen in
-Documentation/devicetree/bindings/iio/adc/amlogic,meson-saradc.yaml
+diff --git a/drivers/dio/dio.c b/drivers/dio/dio.c
+index 193b40e7aec0..4c06c93c93d3 100644
+--- a/drivers/dio/dio.c
++++ b/drivers/dio/dio.c
+@@ -219,7 +219,7 @@ static int __init dio_init(void)
+                 /* Found a board, allocate it an entry in the list */
+ 		dev = kzalloc(sizeof(struct dio_dev), GFP_KERNEL);
+ 		if (!dev)
+-			return 0;
++			return -ENOMEM;
+ 
+ 		dev->bus = &dio_bus;
+ 		dev->dev.parent = &dio_bus.dev;
+-- 
+2.25.1
 
-[...]
-> +  clocks:
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    minItems: 1
-> +    maxItems: 2
-from my understanding there are two clock inputs to the hardware
-dt-bindings should always describe the hardware, not what the driver
-may (or may not) use.
-based on that I think you should drop minItems (then minItems will
-have the same value as maxItems)
-
-[...]
-> +  mod-clock:
-> +    oneOf:
-> +      - const: sysclk
-> +      - const: xtal
-Does this "mod-clock" depend on something external to the IR blaster hardware?
-If not this should be handled inside the driver only.
-
-From how I understand the register description in the datasheet
-there's two clock inputs.
-XTAL is internally divided further down with fixed dividers.
-Then there's a configurable divider which is then used to generate the
-IR signal.
-If the sysclk (I assume that this is clk81 - or at least derived from
-it) is "too fast" then the driver should just ignore that clock while
-the dt-bindings should still describe it (see my comment above)
-
-[...]
-> +    meson-irblaster@ff80014c {
-node names should be generic, see for example
-Documentation/devicetree/bindings/spi/amlogic,meson6-spifc.yaml
-(spifc is the name Amlogic has given this IP, but since node names are
-supposed to be generic we use spi@...)
-
-However, I am not sure if an IR blaster would be described as
-ir-blaster@... or simply ir@...
-
-> +      compatible = "amlogic,meson-irblaster";
-> +      reg = <0xff80014c 0x10>;
-> +      interrupts = <0 198 IRQ_TYPE_EDGE_RISING>;
-> +      clocks = <&clkc CLKID_CLK81 &xtal>;
-[...]
-> +      clocks = <&clkc CLKID_CLK81 &xtal>;
-while this works I think the recommended format is:
-    clocks = <&clkc CLKID_CLK81>, <&xtal>
-
-
-Best regards,
-Martin
