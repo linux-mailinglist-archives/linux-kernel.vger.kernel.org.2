@@ -2,118 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B5C3BA655
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 01:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0647E3BA65C
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 02:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbhGBXyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 19:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
+        id S230185AbhGCAC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 20:02:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbhGBXyQ (ORCPT
+        with ESMTP id S230017AbhGCAC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 19:54:16 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645CDC061762;
-        Fri,  2 Jul 2021 16:51:43 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id k10so20923825lfv.13;
-        Fri, 02 Jul 2021 16:51:43 -0700 (PDT)
+        Fri, 2 Jul 2021 20:02:58 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4866DC061762;
+        Fri,  2 Jul 2021 17:00:26 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id d12so11430416pgd.9;
+        Fri, 02 Jul 2021 17:00:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=clIxmMxm6a6CEZgz+Vza6vLv6bCnIn97w16YVzgjAlM=;
-        b=FoT0dmiW5pg1cksplUr/CeGivwq5WJq3isweu43mewFVK44G9HuNkOWWWyop84QHbg
-         BJ3EzPf+8rllun7eVmU+kHM2rbs3mmLni5QjTN76moOuCV551f2h+TbSnmOmI296BI2L
-         O8clzex1LoUqVKu8CnQwi9mxvNyKlqo2XFQPkqlTwW+9vqAyMDkBkRfS3TPGIcLdnjuA
-         +W8NLlsGX9cgZlQrb3ZaRUo4chBtoK+6/rNTZBJuvg779Na2lnXo+EHDDXMe3wQrxKjP
-         r0J1S8hXMJl0hSEUqOBRsvNc19A7JqurFiIblnZZ5jazuK9gCiZFKLKGm2JWGcBe0ybS
-         N5yw==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zLdbz+KNKw9C/s+UQg9D2c39mkDMgDODryRHEG/G82M=;
+        b=LwIRYO0PPgUIWAquYY8ces1Lo5AOOwxoJysiMqJ+rjZyGg7w7Ao+0dMA8KSfoZfGc5
+         6Oo5YcN7fF0sVh6fupTmApnNdpAGn0YuYpHa3RdeQ9HLQtFmhKFA3f737hiIjh27Ij9W
+         owDAfDx429O+hOGvZlaLFR5Gkd4rsw2ghLWiFb4HPFKGswr0TqZDMdTWh+D6pXzBIzC7
+         TJ9RTXC3Xzp9hMEp4/8lV4iOgbNyczTGxqFceZe6SCY88tHvesGZii0SoTh/P5FCHODa
+         F2OjEMox6EmIGtzQ+Ffmxx62uJ3YQeVAGZmu5Hho5VHRcvFY4uTXVB2IrttX3BrbRW5b
+         2TKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=clIxmMxm6a6CEZgz+Vza6vLv6bCnIn97w16YVzgjAlM=;
-        b=k1Q9W+u0yHiP5pFg1D5/CkqDcUQ1aATa4tTAjX5wiDrRq7AJeCBwiIIFbkRgCSz6MX
-         4za9jgsIkh6AbSUiuVWKuwrGrcwhsmJkdiyoAmZvxraq10gLg1SBHEHt7DBoxhVu0KsG
-         wxGIUCzCdaUYShOzI9qLJizaZ6Z+WVYeXXSBt2W9ybSnDu6l+oI8zF0HJ2E5Oo+DVOLy
-         tTx19nISQSSyfMVk7duq0BxS8aGZk78sFuUJQ4gDdsxgP/GadfOCdbYDe9LwSd90Do6e
-         97jtEJzjPOMK6ANY6reXSlafwMDQWKKu8bhF2+W65dD6fKYafzzj+/mbFTvu9gVOBlNW
-         i6JQ==
-X-Gm-Message-State: AOAM531bZ0k0ml1qcfwO7I3+36BL0QuYaT8Icd9+iOgF4MfOsgPgI2o7
-        2++DrjCgfttk0KTIbAaxUXA=
-X-Google-Smtp-Source: ABdhPJydzceV3YNwBPGVPTfA75ZgpY72chgAiNPUAVyjrB5jY4i5pFIEoIbGzPL9cN3ySRZ7MsdCMw==
-X-Received: by 2002:a05:6512:3761:: with SMTP id z1mr1511747lft.99.1625269901657;
-        Fri, 02 Jul 2021 16:51:41 -0700 (PDT)
-Received: from 192.168.1.8 ([212.59.242.58])
-        by smtp.gmail.com with ESMTPSA id h5sm511370ljj.80.2021.07.02.16.51.40
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zLdbz+KNKw9C/s+UQg9D2c39mkDMgDODryRHEG/G82M=;
+        b=AA6yxv0EfJVuS8nt5BGcYAlqDXQ4QaEIuuCMAVQHS5GsiqrxSAMpTJIXmEbHAsirq4
+         LjQb9+KgkVd6/WBm47vQx7WMPWuIzNO+7XJPTFF3GdP8Hjai4Rk2RGbf4DXiAP3rfydf
+         JxI+KxpNqXQ4++bTDudbBM3YjhJKOlQZvzSHxjgc8hwJu4UQG4uLazxpJCUEED8h6LOQ
+         HrgutMBctc3KfCuMo/Jr1uXSapnIfWZGokHSFtW7HCeWHduypVWglpVbsJQX8S67U/zm
+         ct2hG9wwrcANaKMRG4xRBLzmvhCh5RbBgIQQkf3JaCs1JMAB+WGqOHdSW6TF47MS+u5M
+         vHQQ==
+X-Gm-Message-State: AOAM532f4UcYYlq6Lsp+4duYpPbWQ+ApVKV5HlHWDTbVIHW8mKpLBfN+
+        ktAgR7roFBIKSh97IY9gHQc=
+X-Google-Smtp-Source: ABdhPJxnbtYL89n654xSOh6b90sp+H5567DRf8tKX47V90OuB40VjJA3YNDZpUKDYmDN9dyRce4MsA==
+X-Received: by 2002:a63:7d5:: with SMTP id 204mr2416568pgh.309.1625270425816;
+        Fri, 02 Jul 2021 17:00:25 -0700 (PDT)
+Received: from localhost ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 20sm3597615pfu.5.2021.07.02.17.00.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 16:51:41 -0700 (PDT)
-From:   Maciej Falkowski <maciej.falkowski9@gmail.com>
-To:     natechancellor@gmail.com, ndesaulniers@google.com,
-        masahiroy@kernel.org, michal.lkml@markovi.net, nhuck@google.com
-Cc:     clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, maciej.falkowski9@gmail.com
-Subject: [PATCH] clang-tools: Print information when clang-tidy tool is missing
-Date:   Sat,  3 Jul 2021 01:51:20 +0200
-Message-Id: <20210702235120.7023-1-maciej.falkowski9@gmail.com>
-X-Mailer: git-send-email 2.26.3
+        Fri, 02 Jul 2021 17:00:24 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Sat, 3 Jul 2021 07:56:29 +0800
+To:     Joe Perches <joe@perches.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, netdev@vger.kernel.org,
+        Benjamin Poirier <benjamin.poirier@gmail.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC 13/19] staging: qlge: rewrite do while loop as for loop in
+ qlge_sem_spinlock
+Message-ID: <20210702235629.k2k2q7b2lxzw4kzd@Rk>
+References: <20210621134902.83587-1-coiby.xu@gmail.com>
+ <20210621134902.83587-14-coiby.xu@gmail.com>
+ <20210622072036.GK1861@kadam>
+ <20210624112245.zgvkcxyu7hzrzc23@Rk>
+ <f7beb9aee00a1cdb8dd97a49a36abd60d58279f2.camel@perches.com>
+ <20210630233338.2l34shhrm3bdd4gx@Rk>
+ <fe4a647d5324e9d8d23564f6d685f3ca720db166.camel@perches.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <fe4a647d5324e9d8d23564f6d685f3ca720db166.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When clang-tidy tool is missing in the system, the FileNotFoundError
-exception is raised in the program reporting a stack trace to the user:
+On Wed, Jun 30, 2021 at 09:35:31PM -0700, Joe Perches wrote:
+>On Thu, 2021-07-01 at 07:33 +0800, Coiby Xu wrote:
+>> On Wed, Jun 30, 2021 at 03:58:06AM -0700, Joe Perches wrote:
+>> > On Thu, 2021-06-24 at 19:22 +0800, Coiby Xu wrote:
+>> > > On Tue, Jun 22, 2021 at 10:20:36AM +0300, Dan Carpenter wrote:
+>> > > > On Mon, Jun 21, 2021 at 09:48:56PM +0800, Coiby Xu wrote:
+>> > > > > Since wait_count=30 > 0, the for loop is equivalent to do while
+>> > > > > loop. This commit also replaces 100 with UDELAY_DELAY.
+>> > []
+>> > > > > diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
+>> > []
+>> > I also think using UDELAY_DELAY is silly and essentially misleading
+>> > as it's also used as an argument value for mdelay
+>> >
+>> > $ git grep -w UDELAY_DELAY
+>> > drivers/staging/qlge/qlge.h:#define UDELAY_DELAY 100
+>> > drivers/staging/qlge/qlge_main.c:               udelay(UDELAY_DELAY);
+>> > drivers/staging/qlge/qlge_main.c:               udelay(UDELAY_DELAY);
+>> > drivers/staging/qlge/qlge_mpi.c:                mdelay(UDELAY_DELAY);
+>> > drivers/staging/qlge/qlge_mpi.c:                mdelay(UDELAY_DELAY);
+>> > drivers/staging/qlge/qlge_mpi.c:                mdelay(UDELAY_DELAY); /* 100ms */
+>>
+>> Thanks for spotting this issue! How about "#define MDELAY_DELAY 100" for
+>> mdelay?
+>
+>I think the define is pointless and it'd be more readable
+>to just use 100 in all the cases.
+>
+>IMO: There really aren't enough cases to justify using defines.
 
-$ ./scripts/clang-tools/run-clang-tools.py clang-tidy ./compile_commands.json
-multiprocessing.pool.RemoteTraceback:
-"""
-Traceback (most recent call last):
-  File "/usr/lib64/python3.8/multiprocessing/pool.py", line 125, in worker
-    result = (True, func(*args, **kwds))
-  File "/usr/lib64/python3.8/multiprocessing/pool.py", line 48, in mapstar
-    return list(map(*args))
-  File "./scripts/clang-tools/run-clang-tools.py", line 54, in run_analysis
-    p = subprocess.run(["clang-tidy", "-p", args.path, checks, entry["file"]],
-  File "/usr/lib64/python3.8/subprocess.py", line 489, in run
-    with Popen(*popenargs, **kwargs) as process:
-  File "/usr/lib64/python3.8/subprocess.py", line 854, in __init__
-    self._execute_child(args, executable, preexec_fn, close_fds,
-  File "/usr/lib64/python3.8/subprocess.py", line 1702, in _execute_child
-    raise child_exception_type(errno_num, err_msg, err_filename)
-FileNotFoundError: [Errno 2] No such file or directory: 'clang-tidy'
-"""
+I thought magic number should be avoided if possible. This case is new
+to me. Thanks for the explanation!
 
-The patch adds more user-friendly information about missing tool by
-checking the presence of clang-tidy using `command -v` at the beginning
-of the script:
+>
+>
 
-$ ./scripts/clang-tools/run-clang-tools.py clang-tidy ./compile_commands.json
-Command 'clang-tidy' is missing in the system
-
-Signed-off-by: Maciej Falkowski <maciej.falkowski9@gmail.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1342
----
- scripts/clang-tools/run-clang-tools.py | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
-index fa7655c7cec0..d34eaf5a0ee5 100755
---- a/scripts/clang-tools/run-clang-tools.py
-+++ b/scripts/clang-tools/run-clang-tools.py
-@@ -60,6 +60,11 @@ def run_analysis(entry):
- 
- 
- def main():
-+    exitcode = subprocess.getstatusoutput('command -v clang-tidy')[0]
-+    if exitcode == 1:
-+        print("Command 'clang-tidy' is missing in the system", file=sys.stderr)
-+        sys.exit(127)
-+
-     args = parse_arguments()
- 
-     lock = multiprocessing.Lock()
 -- 
-2.26.3
-
+Best regards,
+Coiby
