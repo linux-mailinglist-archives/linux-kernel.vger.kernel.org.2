@@ -2,255 +2,617 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA923B9F8B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0F73B9F91
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhGBLPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 07:15:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231130AbhGBLPM (ORCPT
+        id S231757AbhGBLRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 07:17:21 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:30820 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231130AbhGBLRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 07:15:12 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0CBC061762;
-        Fri,  2 Jul 2021 04:12:41 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id y76so11159049iof.6;
-        Fri, 02 Jul 2021 04:12:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=29mqB4d/0JGo1jbK5BbrdHh+6Rbk+2mvbm3FjqAEBQg=;
-        b=pV9cy2OfhtSEXcuGY1aqZLuCiqd112B3UHzcR/m2fa90m1CjCXH5RgKzQLyMu6BpFH
-         yjvjtuqG0BijGIl8pBD8ukLJUpp3aROvkdpWi3WX3tJSlI60uI5u6011QpJCuaXfZSR8
-         cEV1Bm1PotU5ePgpC+3X3xSh1Ehzfr7HS3qvkRmG2t5F2dJQnA2K/3FLMdcXQdhlU+e7
-         yDa8x6P+ROyyadwYuTR8LimkM64mkZY67c8bEqGEpYYqFYt/0NEgKnVy409dzBIvpRcL
-         4W2963B1d9My2BT/3wRb/dHVzfDk7ZIlBgyhsm5K1GTwwNHK4JJP5X8XuBwAXwDoJ8lW
-         Dskg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=29mqB4d/0JGo1jbK5BbrdHh+6Rbk+2mvbm3FjqAEBQg=;
-        b=nEHkbRZGqbfBFwxxDjDV0SthXjqnR7TI+zk0d20VMTGAJsG+xUOQSt2tRQGC7IoVo/
-         mUo3H2PYFUF86UdocTswovKrSs0+2UD5+qftwbjlgCqT2IJILRgeyqbRCKP0ByhV7Xzk
-         aWhLSj2/BPHED5XLw3EAuqkn2hoVjygpg9p5Fs7on4stUqVLxbNSZQJfoZoOfOOxZJK3
-         myGOYfZ6rtQ/3P2470s2upeVd/WqgIDBGD9onF7mnNsudTeTR9x1qLDoEwQxLH9+XklC
-         kO5+Kqbq/FDm0n3ZlsWMC9FVws279JELjZs5zCQjomgrlrvE1DhLG5Pu1ufTXP+7IkNE
-         bX7w==
-X-Gm-Message-State: AOAM532mwpIRwICx0HHR8ueGwPeujUDNjpIjQWYtzheHq4D99IFigJW1
-        SspD3dj5bf4a2xL6sb8+Omn4PFdTOujzKzAOtk0=
-X-Google-Smtp-Source: ABdhPJwcPcrxy04I1LZUe45F2SYG/h6tMc1rGytBq1rxZ1KLGESeiK1+ugbpX5DHmJb5VMvoiPdpqDMIJ2Y8RnrQx4g=
-X-Received: by 2002:a5d:8b03:: with SMTP id k3mr393471ion.203.1625224360491;
- Fri, 02 Jul 2021 04:12:40 -0700 (PDT)
+        Fri, 2 Jul 2021 07:17:21 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 162BBMuD029561;
+        Fri, 2 Jul 2021 07:14:48 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 39h859wfk6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 02 Jul 2021 07:14:48 -0400
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 162BElw2052696
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 2 Jul 2021 07:14:47 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Fri, 2 Jul 2021
+ 07:14:46 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
+ Transport; Fri, 2 Jul 2021 07:14:46 -0400
+Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.128])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 162BEhEJ008901;
+        Fri, 2 Jul 2021 07:14:44 -0400
+From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jic23@kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>
+CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Subject: [PATCH v4 1/2] iio: frequency: adrf6780: add support for ADRF6780
+Date:   Fri, 2 Jul 2021 14:12:38 +0300
+Message-ID: <20210702111239.174189-1-antoniu.miclaus@analog.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210702090012.28458-1-lhenriques@suse.de>
-In-Reply-To: <20210702090012.28458-1-lhenriques@suse.de>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 2 Jul 2021 14:12:29 +0300
-Message-ID: <CAOQ4uxhQciJ=r5E2yvM2zafhnBO4nZNVzUfEU9-tj9SAKAYwGg@mail.gmail.com>
-Subject: Re: [PATCH v12] vfs: fix copy_file_range regression in cross-fs copies
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Petr Vorel <pvorel@suse.cz>, Steve French <sfrench@samba.org>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: u6SbmTkomfrzD_8c3sQCBhFnKjQL5cEx
+X-Proofpoint-ORIG-GUID: u6SbmTkomfrzD_8c3sQCBhFnKjQL5cEx
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-02_03:2021-07-02,2021-07-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 impostorscore=0 mlxscore=0
+ adultscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107020063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 12:00 PM Luis Henriques <lhenriques@suse.de> wrote:
->
-> A regression has been reported by Nicolas Boichat, found while using the
-> copy_file_range syscall to copy a tracefs file.  Before commit
-> 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
-> kernel would return -EXDEV to userspace when trying to copy a file across
-> different filesystems.  After this commit, the syscall doesn't fail anymore
-> and instead returns zero (zero bytes copied), as this file's content is
-> generated on-the-fly and thus reports a size of zero.
->
-> This patch restores some cross-filesystem copy restrictions that existed
-> prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-> devices").  Filesystems are still allowed to fall-back to the VFS
-> generic_copy_file_range() implementation, but that has now to be done
-> explicitly.
->
-> The short-circuit code for the case where the copy length is zero has also
-> been dropped from the VFS code.  This is because a zero size copy between
-> two files shall provide a clear indication on whether or not the
-> filesystem supports non-zero copies.
->
-> nfsd is also modified to fall-back into generic_copy_file_range() in case
-> vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
->
-> Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
-> Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
-> Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
-> Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
-> Link: https://lore.kernel.org/linux-fsdevel/20210630161320.29006-1-lhenriques@suse.de/
-> Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> ---
-> Changes since v11
-> - added note about zero-size copies and a link to the corresponding
->   mailing-list discussion
-> Changes since v10
-> - simply remove the "if (len == 0)" short-circuit instead of checking if
->   the filesystem implements the syscall.  This is because a filesystem may
->   implement it but a particular instance (hint: overlayfs!) may not.
-> Changes since v9
-> - the early return from the syscall when len is zero now checks if the
->   filesystem is implemented, returning -EOPNOTSUPP if it is not and 0
->   otherwise.  Issue reported by test robot.
->   (obviously, dropped Amir's Reviewed-by and Olga's Tested-by tags)
-> Changes since v8
-> - Simply added Amir's Reviewed-by and Olga's Tested-by
-> Changes since v7
-> - set 'ret' to '-EOPNOTSUPP' before the clone 'if' statement so that the
->   error returned is always related to the 'copy' operation
-> Changes since v6
-> - restored i_sb checks for the clone operation
-> Changes since v5
-> - check if ->copy_file_range is NULL before calling it
-> Changes since v4
-> - nfsd falls-back to generic_copy_file_range() only *if* it gets -EOPNOTSUPP
->   or -EXDEV.
-> Changes since v3
-> - dropped the COPY_FILE_SPLICE flag
-> - kept the f_op's checks early in generic_copy_file_checks, implementing
->   Amir's suggestions
-> - modified nfsd to use generic_copy_file_range()
-> Changes since v2
-> - do all the required checks earlier, in generic_copy_file_checks(),
->   adding new checks for ->remap_file_range
-> - new COPY_FILE_SPLICE flag
-> - don't remove filesystem's fallback to generic_copy_file_range()
-> - updated commit changelog (and subject)
-> Changes since v1 (after Amir review)
-> - restored do_copy_file_range() helper
-> - return -EOPNOTSUPP if fs doesn't implement CFR
-> - updated commit description
->
->  fs/nfsd/vfs.c   |  8 +++++++-
->  fs/read_write.c | 52 +++++++++++++++++++++++--------------------------
->  2 files changed, 31 insertions(+), 29 deletions(-)
->
-> diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
-> index 15adf1f6ab21..f54a88b3b4a2 100644
-> --- a/fs/nfsd/vfs.c
-> +++ b/fs/nfsd/vfs.c
-> @@ -569,6 +569,7 @@ __be32 nfsd4_clone_file_range(struct nfsd_file *nf_src, u64 src_pos,
->  ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
->                              u64 dst_pos, u64 count)
->  {
-> +       ssize_t ret;
->
->         /*
->          * Limit copy to 4MB to prevent indefinitely blocking an nfsd
-> @@ -579,7 +580,12 @@ ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
->          * limit like this and pipeline multiple COPY requests.
->          */
->         count = min_t(u64, count, 1 << 22);
-> -       return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
-> +       ret = vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
-> +
-> +       if (ret == -EOPNOTSUPP || ret == -EXDEV)
-> +               ret = generic_copy_file_range(src, src_pos, dst, dst_pos,
-> +                                             count, 0);
-> +       return ret;
->  }
->
->  __be32 nfsd4_vfs_fallocate(struct svc_rqst *rqstp, struct svc_fh *fhp,
-> diff --git a/fs/read_write.c b/fs/read_write.c
-> index 9db7adf160d2..049a2dda29f7 100644
-> --- a/fs/read_write.c
-> +++ b/fs/read_write.c
-> @@ -1395,28 +1395,6 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
->  }
->  EXPORT_SYMBOL(generic_copy_file_range);
->
-> -static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
-> -                                 struct file *file_out, loff_t pos_out,
-> -                                 size_t len, unsigned int flags)
-> -{
-> -       /*
-> -        * Although we now allow filesystems to handle cross sb copy, passing
-> -        * a file of the wrong filesystem type to filesystem driver can result
-> -        * in an attempt to dereference the wrong type of ->private_data, so
-> -        * avoid doing that until we really have a good reason.  NFS defines
-> -        * several different file_system_type structures, but they all end up
-> -        * using the same ->copy_file_range() function pointer.
-> -        */
-> -       if (file_out->f_op->copy_file_range &&
-> -           file_out->f_op->copy_file_range == file_in->f_op->copy_file_range)
-> -               return file_out->f_op->copy_file_range(file_in, pos_in,
-> -                                                      file_out, pos_out,
-> -                                                      len, flags);
-> -
-> -       return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
-> -                                      flags);
-> -}
-> -
->  /*
->   * Performs necessary checks before doing a file copy
->   *
-> @@ -1434,6 +1412,25 @@ static int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
->         loff_t size_in;
->         int ret;
->
-> +       /*
-> +        * Although we now allow filesystems to handle cross sb copy, passing
-> +        * a file of the wrong filesystem type to filesystem driver can result
-> +        * in an attempt to dereference the wrong type of ->private_data, so
-> +        * avoid doing that until we really have a good reason.  NFS defines
-> +        * several different file_system_type structures, but they all end up
-> +        * using the same ->copy_file_range() function pointer.
-> +        */
-> +       if (file_out->f_op->copy_file_range) {
-> +               if (file_in->f_op->copy_file_range !=
-> +                   file_out->f_op->copy_file_range)
-> +                       return -EXDEV;
-> +       } else if (file_in->f_op->remap_file_range) {
-> +               if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
-> +                       return -EXDEV;
-> +       } else {
-> +                return -EOPNOTSUPP;
-> +       }
-> +
->         ret = generic_file_rw_checks(file_in, file_out);
->         if (ret)
->                 return ret;
-> @@ -1497,11 +1494,9 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
->         if (unlikely(ret))
->                 return ret;
->
-> -       if (len == 0)
-> -               return 0;
-> -
+The ADRF6780 is a silicon germanium (SiGe) design, wideband,
+microwave upconverter optimized for point to point microwave
+radio designs operating in the 5.9 GHz to 23.6 GHz frequency
+range.
 
-I guess there was miscommunication
+Datasheet:
+https://www.analog.com/media/en/technical-documentation/data-sheets/ADRF6780.pdf
 
-As Olga wrote, you have to place this short-circuit in
-nfs4_copy_file_range() if you remove it from here.
-It is NOT SAFE to pass zero length to nfs4_copy_file_range().
+Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+---
+ changes in v4:
+  - change license to: GPL-2.0-only
+ drivers/iio/frequency/Kconfig    |  13 +
+ drivers/iio/frequency/Makefile   |   1 +
+ drivers/iio/frequency/adrf6780.c | 498 +++++++++++++++++++++++++++++++
+ 3 files changed, 512 insertions(+)
+ create mode 100644 drivers/iio/frequency/adrf6780.c
 
-I apologize if you inferred from my response that you don't need to
-do that.
+diff --git a/drivers/iio/frequency/Kconfig b/drivers/iio/frequency/Kconfig
+index 240b81502512..fc9751c48f59 100644
+--- a/drivers/iio/frequency/Kconfig
++++ b/drivers/iio/frequency/Kconfig
+@@ -49,5 +49,18 @@ config ADF4371
+ 
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called adf4371.
++
++config ADRF6780
++        tristate "Analog Devices ADRF6780 Microwave Upconverter"
++        depends on SPI
++        depends on COMMON_CLK
++        depends on OF
++        help
++          Say yes here to build support for Analog Devices ADRF6780
++          5.9 GHz to 23.6 GHz, Wideband, Microwave Upconverter.
++
++          To compile this driver as a module, choose M here: the
++          module will be called adrf6780.
++
+ endmenu
+ endmenu
+diff --git a/drivers/iio/frequency/Makefile b/drivers/iio/frequency/Makefile
+index 518b1e50caef..ae3136c79202 100644
+--- a/drivers/iio/frequency/Makefile
++++ b/drivers/iio/frequency/Makefile
+@@ -7,3 +7,4 @@
+ obj-$(CONFIG_AD9523) += ad9523.o
+ obj-$(CONFIG_ADF4350) += adf4350.o
+ obj-$(CONFIG_ADF4371) += adf4371.o
++obj-$(CONFIG_ADRF6780) += adrf6780.o
+diff --git a/drivers/iio/frequency/adrf6780.c b/drivers/iio/frequency/adrf6780.c
+new file mode 100644
+index 000000000000..472a66f90c7f
+--- /dev/null
++++ b/drivers/iio/frequency/adrf6780.c
+@@ -0,0 +1,498 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * ADRF6780 driver
++ *
++ * Copyright 2021 Analog Devices Inc.
++ */
++
++#include <linux/bitfield.h>
++#include <linux/bits.h>
++#include <linux/clk.h>
++#include <linux/clkdev.h>
++#include <linux/clk-provider.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/iio/iio.h>
++#include <linux/module.h>
++#include <linux/spi/spi.h>
++
++/* ADRF6780 Register Map */
++#define ADRF6780_REG_CONTROL			0x00
++#define ADRF6780_REG_ALARM_READBACK		0x01
++#define ADRF6780_REG_ALARM_MASKS		0x02
++#define ADRF6780_REG_ENABLE			0x03
++#define ADRF6780_REG_LINEARIZE			0x04
++#define ADRF6780_REG_LO_PATH			0x05
++#define ADRF6780_REG_ADC_CONTROL		0x06
++#define ADRF6780_REG_ADC_OUTPUT			0x0C
++
++/* ADRF6780_REG_CONTROL Map */
++#define ADRF6780_PARITY_EN_MSK			BIT(15)
++#define ADRF6780_PARITY_EN(x)			FIELD_PREP(ADRF6780_PARITY_EN_MSK, x)
++#define ADRF6780_SOFT_RESET_MSK			BIT(14)
++#define ADRF6780_SOFT_RESET(x)			FIELD_PREP(ADRF6780_SOFT_RESET_MSK, x)
++#define ADRF6780_CHIP_ID_MSK			GENMASK(11, 4)
++#define ADRF6780_CHIP_ID			0xA
++#define ADRF6780_CHIP_REVISION_MSK		GENMASK(3, 0)
++#define ADRF6780_CHIP_REVISION(x)		FIELD_PREP(ADRF6780_CHIP_REVISION_MSK, x)
++
++/* ADRF6780_REG_ALARM_READBACK Map */
++#define ADRF6780_PARITY_ERROR_MSK		BIT(15)
++#define ADRF6780_PARITY_ERROR(x)		FIELD_PREP(ADRF6780_PARITY_ERROR_MSK, x)
++#define ADRF6780_TOO_FEW_ERRORS_MSK		BIT(14)
++#define ADRF6780_TOO_FEW_ERRORS(x)		FIELD_PREP(ADRF6780_TOO_FEW_ERRORS_MSK, x)
++#define ADRF6780_TOO_MANY_ERRORS_MSK		BIT(13)
++#define ADRF6780_TOO_MANY_ERRORS(x)		FIELD_PREP(ADRF6780_TOO_MANY_ERRORS_MSK, x)
++#define ADRF6780_ADDRESS_RANGE_ERROR_MSK	BIT(12)
++#define ADRF6780_ADDRESS_RANGE_ERROR(x)		FIELD_PREP(ADRF6780_ADDRESS_RANGE_ERROR_MSK, x)
++
++/* ADRF6780_REG_ENABLE Map */
++#define ADRF6780_VGA_BUFFER_EN_MSK		BIT(8)
++#define ADRF6780_VGA_BUFFER_EN(x)		FIELD_PREP(ADRF6780_VGA_BUFFER_EN_MSK, x)
++#define ADRF6780_DETECTOR_EN_MSK		BIT(7)
++#define ADRF6780_DETECTOR_EN(x)			FIELD_PREP(ADRF6780_DETECTOR_EN_MSK, x)
++#define ADRF6780_LO_BUFFER_EN_MSK		BIT(6)
++#define ADRF6780_LO_BUFFER_EN(x)		FIELD_PREP(ADRF6780_LO_BUFFER_EN_MSK, x)
++#define ADRF6780_IF_MODE_EN_MSK			BIT(5)
++#define ADRF6780_IF_MODE_EN(x)			FIELD_PREP(ADRF6780_IF_MODE_EN_MSK, x)
++#define ADRF6780_IQ_MODE_EN_MSK			BIT(4)
++#define ADRF6780_IQ_MODE_EN(x)			FIELD_PREP(ADRF6780_IQ_MODE_EN_MSK, x)
++#define ADRF6780_LO_X2_EN_MSK			BIT(3)
++#define ADRF6780_LO_X2_EN(x)			FIELD_PREP(ADRF6780_LO_X2_EN_MSK, x)
++#define ADRF6780_LO_PPF_EN_MSK			BIT(2)
++#define ADRF6780_LO_PPF_EN(x)			FIELD_PREP(ADRF6780_LO_PPF_EN_MSK, x)
++#define ADRF6780_LO_EN_MSK			BIT(1)
++#define ADRF6780_LO_EN(x)			FIELD_PREP(ADRF6780_LO_EN_MSK, x)
++#define ADRF6780_UC_BIAS_EN_MSK			BIT(0)
++#define ADRF6780_UC_BIAS_EN(x)			FIELD_PREP(ADRF6780_UC_BIAS_EN_MSK, x)
++
++/* ADRF6780_REG_LINEARIZE Map */
++#define ADRF6780_RDAC_LINEARIZE_MSK		GENMASK(7, 0)
++#define ADRF6780_RDAC_LINEARIZE(x)		FIELD_PREP(ADRF6780_RDAC_LINEARIZE_MSK, x)
++
++/* ADRF6780_REG_LO_PATH Map */
++#define ADRF6780_LO_SIDEBAND_MSK		BIT(10)
++#define ADRF6780_LO_SIDEBAND(x)			FIELD_PREP(ADRF6780_LO_SIDEBAND_MSK, x)
++#define ADRF6780_Q_PATH_PHASE_ACCURACY_MSK	GENMASK(7, 4)
++#define ADRF6780_Q_PATH_PHASE_ACCURACY(x)	FIELD_PREP(ADRF6780_Q_PATH_PHASE_ACCURACY_MSK, x)
++#define ADRF6780_I_PATH_PHASE_ACCURACY_MSK	GENMASK(3, 0)
++#define ADRF6780_I_PATH_PHASE_ACCURACY(x)	FIELD_PREP(ADRF6780_I_PATH_PHASE_ACCURACY_MSK, x)
++
++/* ADRF6780_REG_ADC_CONTROL Map */
++#define ADRF6780_VDET_OUTPUT_SELECT_MSK		BIT(3)
++#define ADRF6780_VDET_OUTPUT_SELECT(x)		FIELD_PREP(ADRF6780_VDET_OUTPUT_SELECT_MSK, x)
++#define ADRF6780_ADC_START_MSK			BIT(2)
++#define ADRF6780_ADC_START(x)			FIELD_PREP(ADRF6780_ADC_START_MSK, x)
++#define ADRF6780_ADC_EN_MSK			BIT(1)
++#define ADRF6780_ADC_EN(x)			FIELD_PREP(ADRF6780_ADC_EN_MSK, x)
++#define ADRF6780_ADC_CLOCK_EN_MSK		BIT(0)
++#define ADRF6780_ADC_CLOCK_EN(x)		FIELD_PREP(ADRF6780_ADC_CLOCK_EN_MSK, x)
++
++/* ADRF6780_REG_ADC_OUTPUT Map */
++#define ADRF6780_ADC_STATUS_MSK			BIT(8)
++#define ADRF6780_ADC_STATUS(x)			FIELD_PREP(ADRF6780_ADC_STATUS_MSK, x)
++#define ADRF6780_ADC_VALUE_MSK			GENMASK(7, 0)
++#define ADRF6780_ADC_VALUE(x)			FIELD_PREP(ADRF6780_ADC_VALUE_MSK, x)
++
++struct adrf6780_dev {
++	struct spi_device	*spi;
++	struct clk		*clkin;
++	/* Protect against concurrent accesses to the device */
++	struct mutex		lock;
++	bool			vga_buff_en;
++	bool			lo_buff_en;
++	bool			if_mode_en;
++	bool			iq_mode_en;
++	bool			lo_x2_en;
++	bool			lo_ppf_en;
++	bool			lo_en;
++	bool			uc_bias_en;
++	bool			lo_sideband;
++	bool			vdet_out_en;
++};
++
++static int adrf6780_spi_read(struct adrf6780_dev *dev, unsigned int reg,
++			      unsigned int *val)
++{
++	int ret;
++	unsigned int temp;
++	struct spi_transfer t = {0};
++	u8 data[3];
++
++	data[0] = 0x80 | (reg << 1);
++	data[1] = 0x0;
++	data[2] = 0x0;
++
++	t.rx_buf = &data[0];
++	t.tx_buf = &data[0];
++	t.len = 3;
++
++	ret = spi_sync_transfer(dev->spi, &t, 1);
++	if (ret < 0)
++		return ret;
++
++	temp = ((data[0] | 0x80 | (reg << 1)) << 16) |
++		(data[1] << 8) | data[2];
++
++	*val = (temp >> 1) & 0xFFFF;
++
++	return ret;
++}
++
++static int adrf6780_spi_write(struct adrf6780_dev *dev,
++				      unsigned int reg,
++				      unsigned int val)
++{
++	u8 data[3];
++
++	val = (val << 1);
++
++	data[0] = (reg << 1) | (val >> 16);
++	data[1] = val >> 8;
++	data[2] = val;
++
++	return spi_write(dev->spi, &data[0], 3);
++}
++
++static int __adrf6780_spi_update_bits(struct adrf6780_dev *dev, unsigned int reg,
++			       unsigned int mask, unsigned int val)
++{
++	int ret;
++	unsigned int data, temp;
++
++	ret = adrf6780_spi_read(dev, reg, &data);
++	if (ret < 0)
++		return ret;
++
++	temp = (data & ~mask) | (val & mask);
++
++	return adrf6780_spi_write(dev, reg, temp);
++}
++
++static int adrf6780_spi_update_bits(struct adrf6780_dev *dev, unsigned int reg,
++			       unsigned int mask, unsigned int val)
++{
++	int ret;
++
++	mutex_lock(&dev->lock);
++	ret = __adrf6780_spi_update_bits(dev, reg, mask, val);
++	mutex_unlock(&dev->lock);
++	return ret;
++}
++
++static int adrf6780_read_raw(struct iio_dev *indio_dev,
++			    struct iio_chan_spec const *chan,
++			    int *val, int *val2, long info)
++{
++	struct adrf6780_dev *dev = iio_priv(indio_dev);
++	unsigned int data;
++	int ret;
++
++	switch (info) {
++	case IIO_CHAN_INFO_RAW:
++		mutex_lock(&dev->lock);
++
++		ret = __adrf6780_spi_update_bits(dev, ADRF6780_REG_ADC_CONTROL,
++						ADRF6780_ADC_EN_MSK |
++						ADRF6780_ADC_CLOCK_EN_MSK |
++						ADRF6780_ADC_START_MSK,
++						ADRF6780_ADC_EN(1) |
++						ADRF6780_ADC_CLOCK_EN(1) |
++						ADRF6780_ADC_START(1));
++		if (ret < 0)
++			goto exit;
++
++		usleep_range(200, 250);
++
++		ret = adrf6780_spi_read(dev, ADRF6780_REG_ADC_OUTPUT, &data);
++		if (ret < 0)
++			goto exit;
++
++		if (!(data & ADRF6780_ADC_STATUS_MSK)) {
++			ret = -EINVAL;
++			goto exit;
++		}
++
++		ret = __adrf6780_spi_update_bits(dev, ADRF6780_REG_ADC_CONTROL,
++						ADRF6780_ADC_START_MSK,
++						ADRF6780_ADC_START(0));
++		if (ret < 0)
++			goto exit;
++
++		ret = adrf6780_spi_read(dev, ADRF6780_REG_ADC_OUTPUT, &data);
++		if (ret < 0)
++			goto exit;
++
++		mutex_unlock(&dev->lock);
++
++		*val = data & ADRF6780_ADC_VALUE_MSK;
++
++		return IIO_VAL_INT;
++exit:
++		mutex_unlock(&dev->lock);
++		return ret;
++	case IIO_CHAN_INFO_SCALE:
++		ret = adrf6780_spi_read(dev, ADRF6780_REG_LINEARIZE, &data);
++		if (ret < 0)
++			return ret;
++
++		*val = data & ADRF6780_RDAC_LINEARIZE_MSK;
++
++		return IIO_VAL_INT;
++	case IIO_CHAN_INFO_PHASE:
++		ret = adrf6780_spi_read(dev, ADRF6780_REG_LO_PATH, &data);
++		if (ret < 0)
++			return ret;
++
++		if (chan->channel2 == IIO_MOD_I)
++			*val = data & ADRF6780_I_PATH_PHASE_ACCURACY_MSK;
++		else
++			*val = (data & ADRF6780_Q_PATH_PHASE_ACCURACY_MSK) >> 4;
++
++		return IIO_VAL_INT;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int adrf6780_write_raw(struct iio_dev *indio_dev,
++			     struct iio_chan_spec const *chan,
++			     int val, int val2, long info)
++{
++	struct adrf6780_dev *dev = iio_priv(indio_dev);
++	int ret;
++
++	switch (info) {
++	case IIO_CHAN_INFO_SCALE:
++		return adrf6780_spi_write(dev, ADRF6780_REG_LINEARIZE, val);
++	case IIO_CHAN_INFO_PHASE:
++		if (chan->channel2 == IIO_MOD_I)
++			ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_LO_PATH,
++							ADRF6780_I_PATH_PHASE_ACCURACY_MSK,
++							ADRF6780_I_PATH_PHASE_ACCURACY(val));
++		else
++			ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_LO_PATH,
++							ADRF6780_Q_PATH_PHASE_ACCURACY_MSK,
++							ADRF6780_Q_PATH_PHASE_ACCURACY(val));
++		return ret;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int adrf6780_reg_access(struct iio_dev *indio_dev,
++				unsigned int reg,
++				unsigned int write_val,
++				unsigned int *read_val)
++{
++	struct adrf6780_dev *dev = iio_priv(indio_dev);
++
++	if (read_val)
++		return adrf6780_spi_read(dev, reg, read_val);
++	else
++		return adrf6780_spi_write(dev, reg, write_val);
++}
++
++static const struct iio_info adrf6780_info = {
++	.read_raw = adrf6780_read_raw,
++	.write_raw = adrf6780_write_raw,
++	.debugfs_reg_access = &adrf6780_reg_access,
++};
++
++#define ADRF6780_CHAN(_channel) {			\
++	.type = IIO_VOLTAGE,				\
++	.output = 1,					\
++	.indexed = 1,					\
++	.channel = _channel,				\
++	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |	\
++		BIT(IIO_CHAN_INFO_SCALE)		\
++}
++
++#define ADRF6780_CHAN_IQ(_channel, rf_comp) {			\
++	.type = IIO_ALTVOLTAGE,					\
++	.modified = 1,						\
++	.output = 1,						\
++	.indexed = 1,						\
++	.channel2 = IIO_MOD_##rf_comp,				\
++	.channel = _channel,					\
++	.info_mask_separate = BIT(IIO_CHAN_INFO_PHASE)		\
++}
++
++static const struct iio_chan_spec adrf6780_channels[] = {
++	ADRF6780_CHAN(0),
++	ADRF6780_CHAN_IQ(0, I),
++	ADRF6780_CHAN_IQ(0, Q),
++};
++
++static int adrf6780_reset(struct adrf6780_dev *dev)
++{
++	int ret;
++	struct spi_device *spi = dev->spi;
++
++	ret = __adrf6780_spi_update_bits(dev, ADRF6780_REG_CONTROL,
++				 ADRF6780_SOFT_RESET_MSK,
++				 ADRF6780_SOFT_RESET(1));
++	if (ret < 0) {
++		dev_err(&spi->dev, "ADRF6780 SPI software reset failed.\n");
++		return ret;
++	}
++
++	ret = __adrf6780_spi_update_bits(dev, ADRF6780_REG_CONTROL,
++				 ADRF6780_SOFT_RESET_MSK,
++				 ADRF6780_SOFT_RESET(0));
++	if (ret < 0) {
++		dev_err(&spi->dev, "ADRF6780 SPI software reset disable failed.\n");
++		return ret;
++	}
++
++	return ret;
++}
++
++static int adrf6780_init(struct adrf6780_dev *dev)
++{
++	int ret;
++	unsigned int chip_id, enable_reg, enable_reg_msk;
++	struct spi_device *spi = dev->spi;
++
++	/* Perform a software reset */
++	ret = adrf6780_reset(dev);
++	if (ret < 0)
++		return ret;
++
++	ret = adrf6780_spi_read(dev, ADRF6780_REG_CONTROL, &chip_id);
++	if (ret < 0)
++		return ret;
++
++	chip_id = (chip_id & ADRF6780_CHIP_ID_MSK) >> 4;
++	if (chip_id != ADRF6780_CHIP_ID) {
++		dev_err(&spi->dev, "ADRF6780 Invalid Chip ID.\n");
++		return -EINVAL;
++	}
++
++	enable_reg_msk = ADRF6780_VGA_BUFFER_EN_MSK |
++			ADRF6780_DETECTOR_EN_MSK |
++			ADRF6780_LO_BUFFER_EN_MSK |
++			ADRF6780_IF_MODE_EN_MSK |
++			ADRF6780_IQ_MODE_EN_MSK |
++			ADRF6780_LO_X2_EN_MSK |
++			ADRF6780_LO_PPF_EN_MSK |
++			ADRF6780_LO_EN_MSK |
++			ADRF6780_UC_BIAS_EN_MSK;
++
++	enable_reg = ADRF6780_VGA_BUFFER_EN(dev->vga_buff_en) |
++			ADRF6780_DETECTOR_EN(1) |
++			ADRF6780_LO_BUFFER_EN(dev->lo_buff_en) |
++			ADRF6780_IF_MODE_EN(dev->if_mode_en) |
++			ADRF6780_IQ_MODE_EN(dev->iq_mode_en) |
++			ADRF6780_LO_X2_EN(dev->lo_x2_en) |
++			ADRF6780_LO_PPF_EN(dev->lo_ppf_en) |
++			ADRF6780_LO_EN(dev->lo_en) |
++			ADRF6780_UC_BIAS_EN(dev->uc_bias_en);
++
++	ret = __adrf6780_spi_update_bits(dev, ADRF6780_REG_ENABLE, enable_reg_msk, enable_reg);
++	if (ret < 0)
++		return ret;
++
++	ret = __adrf6780_spi_update_bits(dev, ADRF6780_REG_LO_PATH,
++						ADRF6780_LO_SIDEBAND_MSK,
++						ADRF6780_LO_SIDEBAND(dev->lo_sideband));
++	if (ret < 0)
++		return ret;
++
++	return __adrf6780_spi_update_bits(dev, ADRF6780_REG_ADC_CONTROL,
++						ADRF6780_VDET_OUTPUT_SELECT_MSK,
++						ADRF6780_VDET_OUTPUT_SELECT(dev->vdet_out_en));
++}
++
++static void adrf6780_clk_disable(void *data)
++{
++	clk_disable_unprepare(data);
++}
++
++static int adrf6780_dt_parse(struct adrf6780_dev *dev)
++{
++	struct spi_device *spi = dev->spi;
++
++	dev->vga_buff_en = of_property_read_bool(spi->dev.of_node, "adi,vga-buff-en");
++	dev->lo_buff_en = of_property_read_bool(spi->dev.of_node, "adi,lo-buff-en");
++	dev->if_mode_en = of_property_read_bool(spi->dev.of_node, "adi,if-mode-en");
++	dev->iq_mode_en = of_property_read_bool(spi->dev.of_node, "adi,iq-mode-en");
++	dev->lo_x2_en = of_property_read_bool(spi->dev.of_node, "adi,lo-x2-en");
++	dev->lo_ppf_en = of_property_read_bool(spi->dev.of_node, "adi,lo-ppf-en");
++	dev->lo_en = of_property_read_bool(spi->dev.of_node, "adi,lo-en");
++	dev->uc_bias_en = of_property_read_bool(spi->dev.of_node, "adi,uc-bias-en");
++	dev->lo_sideband = of_property_read_bool(spi->dev.of_node, "adi,lo-sideband");
++	dev->vdet_out_en = of_property_read_bool(spi->dev.of_node, "adi,vdet-out-en");
++
++	return 0;
++}
++
++static int adrf6780_probe(struct spi_device *spi)
++{
++	struct iio_dev *indio_dev;
++	struct adrf6780_dev *dev;
++	int ret;
++
++	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*dev));
++	if (!indio_dev)
++		return -ENOMEM;
++
++	dev = iio_priv(indio_dev);
++
++	indio_dev->info = &adrf6780_info;
++	indio_dev->name = "adrf6780";
++	indio_dev->channels = adrf6780_channels;
++	indio_dev->num_channels = ARRAY_SIZE(adrf6780_channels);
++
++	dev->spi = spi;
++
++	ret = adrf6780_dt_parse(dev);
++	if (ret < 0)
++		return ret;
++
++	dev->clkin = devm_clk_get(&spi->dev, "lo_in");
++	if (IS_ERR(dev->clkin))
++		return PTR_ERR(dev->clkin);
++
++	ret = clk_prepare_enable(dev->clkin);
++	if (ret < 0)
++		return ret;
++
++	ret = devm_add_action_or_reset(&spi->dev, adrf6780_clk_disable, dev->clkin);
++	if (ret < 0)
++		return ret;
++
++	mutex_init(&dev->lock);
++
++	ret = adrf6780_init(dev);
++	if (ret < 0)
++		return ret;
++
++	return devm_iio_device_register(&spi->dev, indio_dev);
++}
++
++static const struct spi_device_id adrf6780_id[] = {
++	{ "adrf6780", 0 },
++	{}
++};
++MODULE_DEVICE_TABLE(spi, adrf6780_id);
++
++static const struct of_device_id adrf6780_of_match[] = {
++	{ .compatible = "adi,adrf6780" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, adrf6780_of_match);
++
++static struct spi_driver adrf6780_driver = {
++	.driver = {
++		.name = "adrf6780",
++		.of_match_table = adrf6780_of_match,
++	},
++	.probe = adrf6780_probe,
++	.id_table = adrf6780_id,
++};
++module_spi_driver(adrf6780_driver);
++
++MODULE_AUTHOR("Antoniu Miclaus <antoniu.miclaus@analog.com");
++MODULE_DESCRIPTION("Analog Devices ADRF6780");
++MODULE_LICENSE("GPL v2");
+-- 
+2.32.0
 
-My intention was, not knowing if and when your patch will be picked up,
-(a volunteer to pick it pick never showed up...)
-I think that nfs client developers should make sure that the zero length
-check is added to nfs code as fail safety, because the semantics
-of the vfs method and the NFS protocol command do not match.
-
-Thanks,
-Amir.
