@@ -2,171 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C683BA19B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B581D3BA1A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbhGBNvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232672AbhGBNvd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:51:33 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C0DC061762;
-        Fri,  2 Jul 2021 06:49:01 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so10158636otl.0;
-        Fri, 02 Jul 2021 06:49:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9x+juvDeOlaCtKmozneQfrCt9yo0Whbh1MNkOy7JJZU=;
-        b=UEjOTwG3dEw4BMs9zskTAlB/qyEqwJyHyp2F3uc3IEyjANLR6uP1/H9KR/MbGUoN+q
-         uXXp5fn/iI8ZGaLxshXE1VQxeK5/3UWORkO2pNxSV6JX6TB55C98dgtqR+ifQCzwR/+E
-         tWXw5g4HJNLzPOLmN5ZESxRdKK1SlSI9vIjSxu/oxrzoNqDVDJAp6devlE/I9vjje1jl
-         UriRs+KKNlto9yhu5Cc6j3zBlDtCEQbiH6DoyRIcLxwtvRuZjbkzbi0yal/mv3qJLt2a
-         3fiDvGnsl5Hudqdx9BEktUwL9MS3wAY6jCzLNb0Q5Ly1c+F45rGX3brSqu3cPed6aviv
-         JOqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9x+juvDeOlaCtKmozneQfrCt9yo0Whbh1MNkOy7JJZU=;
-        b=rnp0loDKExb81NYcW1AVOHl744/ODWsZUzxHbAbWJc0miKokU545NYq3Rz7QPAPK72
-         GwULTgjZUxBqiqYTF70JCIHnOeo3/Z4EOOvx07wBr4bsuXoFeAqQ0BujCV6RCjF8MDfP
-         gHRGREagbqIRnlAGxqrFCJLMZJqNOh+wLDIBSAnkaq4HLhNRS4P/zd6mMHaJrTWMEiyk
-         8fVNiX5LKysRYdgxIJyYKGdrO+9/xqYR8eheEaA2ieIVKMjwyf75yp7o1ok7qKwyatem
-         hiemxfZwp94wMU1zBsaW6BuYK4+5BODilwjvEOORoSpDQRzoADkB2jv9DtbnAfBz6YKW
-         Dp2g==
-X-Gm-Message-State: AOAM530uHP2fDw7tqNwZQknCUqcTMqZBNawru59BLhD0+ikifK75dzqv
-        QtGOvzY6ZPCeZwa8S7OykTE=
-X-Google-Smtp-Source: ABdhPJzlnGPxxKYZSXkVHHmfsdkLH9E7ecEfVsvBHCQZR82klKUBGGO/PYD4fEoEphoBmS1gKABKng==
-X-Received: by 2002:a05:6830:823:: with SMTP id t3mr4518459ots.334.1625233740480;
-        Fri, 02 Jul 2021 06:49:00 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n26sm599488oos.14.2021.07.02.06.48.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Jul 2021 06:48:59 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v15 12/12] of: Add plumbing for restricted DMA pool
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
-        peterz@infradead.org, dri-devel@lists.freedesktop.org,
-        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
-        mingo@kernel.org, jxgao@google.com, sstabellini@kernel.org,
-        Saravana Kannan <saravanak@google.com>, xypron.glpk@gmx.de,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        bskeggs@redhat.com, linux-pci@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Thierry Reding <treding@nvidia.com>,
-        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
-        linux-devicetree <devicetree@vger.kernel.org>, airlied@linux.ie,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        rodrigo.vivi@intel.com, bhelgaas@google.com,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>, quic_qiancai@quicinc.com,
-        lkml <linux-kernel@vger.kernel.org>, tfiga@chromium.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        thomas.lendacky@amd.com, linuxppc-dev@lists.ozlabs.org,
-        bauerman@linux.ibm.com
-References: <20210624155526.2775863-1-tientzu@chromium.org>
- <20210624155526.2775863-13-tientzu@chromium.org>
- <20210702030807.GA2685166@roeck-us.net>
- <87ca3ada-22ed-f40c-0089-ca6fffc04f24@arm.com>
- <20210702131829.GA11132@willie-the-truck>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <2f2d6633-2457-f7eb-81c1-355f56dc34ce@roeck-us.net>
-Date:   Fri, 2 Jul 2021 06:48:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232803AbhGBNwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:52:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232691AbhGBNwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 09:52:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84510613F4;
+        Fri,  2 Jul 2021 13:49:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625233787;
+        bh=OHdeFEnQVJvOVh/or6l4rellXMMPBuzIf6W0CCnQbo0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WMbipGNUPIt7k7ijQ8kPktcEBkAm9860rR5GmqYWJcLldRqIQKg6MeAz32vPVb5Bi
+         FbrlpYE+Sk97ckwvyp2bMJWepu8Vtn6cDaptnGQEcyM3933SW4mJw7ctKOamicJ+cX
+         mPLEk5MsMErkTlVM7sb7tZ7HCa7OJUUbaX9fmYslx/Wx8Xe1XPTtNe4x0F2TheptvZ
+         oeMwNcyT8Ol82CWxRFlvc3JCby7eBt5e9s8SMjLEDwhe235efWrUecCbbFLb76SLi1
+         bk5Qwo7G7niLett1eKVSOPHeCVde7NXc04pO9u9UcsmgjZLtJmvJSIIuOcsGLrUksE
+         jFtnDUJ2BVp0A==
+Received: by mail-wr1-f46.google.com with SMTP id a8so879595wrp.5;
+        Fri, 02 Jul 2021 06:49:47 -0700 (PDT)
+X-Gm-Message-State: AOAM531N+m6EYJCRZRdDMnaXph6YiDlWgnysrcor6OalEMTqcBCOvhFt
+        Xoq6406nLmXVch9kWiNMQl5M+CT0xeAaAOz/5fk=
+X-Google-Smtp-Source: ABdhPJwymNM1iCQ1nA54dZFPRfy7X9qHSosl/UFboTIThXk/vh1xaXqpbrcebsxTbOji3me1WpuIaVSctNColYJyHaw=
+X-Received: by 2002:adf:ee10:: with SMTP id y16mr6064774wrn.99.1625233786121;
+ Fri, 02 Jul 2021 06:49:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210702131829.GA11132@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
+In-Reply-To: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 2 Jul 2021 15:49:30 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3Y1FHaS0yRAeBYmq0Z-yXtvHBRRiO1tNHKf-TaWVrFzQ@mail.gmail.com>
+Message-ID: <CAK8P3a3Y1FHaS0yRAeBYmq0Z-yXtvHBRRiO1tNHKf-TaWVrFzQ@mail.gmail.com>
+Subject: [GIT PULL 2/2] asm-generic: Unify asm/unaligned.h around struct helper
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/2/21 6:18 AM, Will Deacon wrote:
-> On Fri, Jul 02, 2021 at 12:39:41PM +0100, Robin Murphy wrote:
->> On 2021-07-02 04:08, Guenter Roeck wrote:
->>> On Thu, Jun 24, 2021 at 11:55:26PM +0800, Claire Chang wrote:
->>>> If a device is not behind an IOMMU, we look up the device node and set
->>>> up the restricted DMA when the restricted-dma-pool is presented.
->>>>
->>>> Signed-off-by: Claire Chang <tientzu@chromium.org>
->>>> Tested-by: Stefano Stabellini <sstabellini@kernel.org>
->>>> Tested-by: Will Deacon <will@kernel.org>
->>>
->>> With this patch in place, all sparc and sparc64 qemu emulations
->>> fail to boot. Symptom is that the root file system is not found.
->>> Reverting this patch fixes the problem. Bisect log is attached.
->>
->> Ah, OF_ADDRESS depends on !SPARC, so of_dma_configure_id() is presumably
->> returning an unexpected -ENODEV from the of_dma_set_restricted_buffer()
->> stub. That should probably be returning 0 instead, since either way it's not
->> an error condition for it to simply do nothing.
-> 
-> Something like below?
-> 
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-Yes, that does the trick.
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-> Will
-> 
-> --->8
-> 
->>From 4d9dcb9210c1f37435b6088284e04b6b36ee8c4d Mon Sep 17 00:00:00 2001
-> From: Will Deacon <will@kernel.org>
-> Date: Fri, 2 Jul 2021 14:13:28 +0100
-> Subject: [PATCH] of: Return success from of_dma_set_restricted_buffer() when
->   !OF_ADDRESS
-> 
-> When CONFIG_OF_ADDRESS=n, of_dma_set_restricted_buffer() returns -ENODEV
-> and breaks the boot for sparc[64] machines. Return 0 instead, since the
-> function is essentially a glorified NOP in this configuration.
-> 
-> Cc: Claire Chang <tientzu@chromium.org>
-> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Suggested-by: Robin Murphy <robin.murphy@arm.com>
-> Link: https://lore.kernel.org/r/20210702030807.GA2685166@roeck-us.net
-> Signed-off-by: Will Deacon <will@kernel.org>
+are available in the Git repository at:
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+  git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git
+tags/asm-generic-unaligned-5.14
 
-> ---
->   drivers/of/of_private.h | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-> index 8fde97565d11..34dd548c5eac 100644
-> --- a/drivers/of/of_private.h
-> +++ b/drivers/of/of_private.h
-> @@ -173,7 +173,8 @@ static inline int of_dma_get_range(struct device_node *np,
->   static inline int of_dma_set_restricted_buffer(struct device *dev,
->   					       struct device_node *np)
->   {
-> -	return -ENODEV;
-> +	/* Do nothing, successfully. */
-> +	return 0;
->   }
->   #endif
->   
-> 
+for you to fetch changes up to 803f4e1eab7a8938ba3a3c30dd4eb5e9eeef5e63:
 
+  asm-generic: simplify asm/unaligned.h (2021-05-17 13:30:29 +0200)
+
+----------------------------------------------------------------
+asm-generic/unaligned: Unify asm/unaligned.h around struct helper
+
+The get_unaligned()/put_unaligned() helpers are traditionally architecture
+specific, with the two main variants being the "access-ok.h" version
+that assumes unaligned pointer accesses always work on a particular
+architecture, and the "le-struct.h" version that casts the data to a
+byte aligned type before dereferencing, for architectures that cannot
+always do unaligned accesses in hardware.
+
+Based on the discussion linked below, it appears that the access-ok
+version is not realiable on any architecture, but the struct version
+probably has no downsides. This series changes the code to use the
+same implementation on all architectures, addressing the few exceptions
+separately.
+
+Link: https://lore.kernel.org/lkml/75d07691-1e4f-741f-9852-38c0b4f520bc@synopsys.com/
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100363
+Link: https://lore.kernel.org/lkml/20210507220813.365382-14-arnd@kernel.org/
+Link: git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git
+unaligned-rework-v2
+Link: https://lore.kernel.org/lkml/CAHk-=whGObOKruA_bU3aPGZfoDqZM1_9wBkwREp0H0FgR-90uQ@mail.gmail.com/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+----------------------------------------------------------------
+Arnd Bergmann (13):
+      asm-generic: use asm-generic/unaligned.h for most architectures
+      openrisc: always use unaligned-struct header
+      sh: remove unaligned access for sh4a
+      m68k: select CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+      powerpc: use linux/unaligned/le_struct.h on LE power7
+      asm-generic: unaligned: remove byteshift helpers
+      asm-generic: unaligned always use struct helpers
+      partitions: msdos: fix one-byte get_unaligned()
+      apparmor: use get_unaligned() only for multi-byte words
+      mwifiex: re-fix for unaligned accesses
+      netpoll: avoid put_unaligned() on single character
+      asm-generic: uaccess: 1-byte access is always aligned
+      asm-generic: simplify asm/unaligned.h
+
+ arch/alpha/include/asm/unaligned.h          |  12 --
+ arch/arm/include/asm/unaligned.h            |  27 ----
+ arch/ia64/include/asm/unaligned.h           |  12 --
+ arch/m68k/Kconfig                           |   1 +
+ arch/m68k/include/asm/unaligned.h           |  26 ----
+ arch/microblaze/include/asm/unaligned.h     |  27 ----
+ arch/mips/crypto/crc32-mips.c               |   2 +-
+ arch/openrisc/include/asm/unaligned.h       |  47 -------
+ arch/parisc/include/asm/unaligned.h         |   6 +-
+ arch/powerpc/include/asm/unaligned.h        |  22 ---
+ arch/sh/include/asm/unaligned-sh4a.h        | 199 ----------------------------
+ arch/sh/include/asm/unaligned.h             |  13 --
+ arch/sparc/include/asm/unaligned.h          |  11 --
+ arch/x86/include/asm/unaligned.h            |  15 ---
+ arch/xtensa/include/asm/unaligned.h         |  29 ----
+ block/partitions/ldm.c                      |   2 +-
+ block/partitions/ldm.h                      |   3 -
+ block/partitions/msdos.c                    |  24 ++--
+ drivers/net/wireless/marvell/mwifiex/pcie.c |  10 +-
+ include/asm-generic/uaccess.h               |   4 +-
+ include/asm-generic/unaligned.h             | 141 ++++++++++++++++----
+ include/linux/unaligned/access_ok.h         |  68 ----------
+ include/linux/unaligned/be_byteshift.h      |  71 ----------
+ include/linux/unaligned/be_memmove.h        |  37 ------
+ include/linux/unaligned/be_struct.h         |  37 ------
+ include/linux/unaligned/generic.h           | 115 ----------------
+ include/linux/unaligned/le_byteshift.h      |  71 ----------
+ include/linux/unaligned/le_memmove.h        |  37 ------
+ include/linux/unaligned/le_struct.h         |  37 ------
+ include/linux/unaligned/memmove.h           |  46 -------
+ net/core/netpoll.c                          |   4 +-
+ security/apparmor/policy_unpack.c           |   2 +-
+ 32 files changed, 141 insertions(+), 1017 deletions(-)
+ delete mode 100644 arch/alpha/include/asm/unaligned.h
+ delete mode 100644 arch/arm/include/asm/unaligned.h
+ delete mode 100644 arch/ia64/include/asm/unaligned.h
+ delete mode 100644 arch/m68k/include/asm/unaligned.h
+ delete mode 100644 arch/microblaze/include/asm/unaligned.h
+ delete mode 100644 arch/openrisc/include/asm/unaligned.h
+ delete mode 100644 arch/powerpc/include/asm/unaligned.h
+ delete mode 100644 arch/sh/include/asm/unaligned-sh4a.h
+ delete mode 100644 arch/sh/include/asm/unaligned.h
+ delete mode 100644 arch/sparc/include/asm/unaligned.h
+ delete mode 100644 arch/x86/include/asm/unaligned.h
+ delete mode 100644 arch/xtensa/include/asm/unaligned.h
+ delete mode 100644 include/linux/unaligned/access_ok.h
+ delete mode 100644 include/linux/unaligned/be_byteshift.h
+ delete mode 100644 include/linux/unaligned/be_memmove.h
+ delete mode 100644 include/linux/unaligned/be_struct.h
+ delete mode 100644 include/linux/unaligned/generic.h
+ delete mode 100644 include/linux/unaligned/le_byteshift.h
+ delete mode 100644 include/linux/unaligned/le_memmove.h
+ delete mode 100644 include/linux/unaligned/le_struct.h
+ delete mode 100644 include/linux/unaligned/memmove.h
