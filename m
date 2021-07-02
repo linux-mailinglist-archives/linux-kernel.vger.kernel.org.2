@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE483B9A36
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 02:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41EC73B9A39
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 02:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234569AbhGBAtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 20:49:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46348 "EHLO mail.kernel.org"
+        id S234623AbhGBAtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 20:49:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234510AbhGBAs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 20:48:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id F1C836140E;
-        Fri,  2 Jul 2021 00:46:24 +0000 (UTC)
+        id S234576AbhGBAtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 20:49:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B7D056140E;
+        Fri,  2 Jul 2021 00:46:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625186785;
-        bh=voKr1DSTLMJskXATNUfJ0oSpsSoDaC7HiFwL5Sz8S2M=;
+        s=k20201202; t=1625186791;
+        bh=JQVIzVFAsH0iYEmOwFtvKwvoc+/Y6QAgI/p8c+9HMLc=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=rTddCbWKi6kFBivaYgKvwPRPwXH9m983RW8fizGl879IZNuabltelDIPcGc7UHmMn
-         uRfyGbYCOeFjdlYzAvnWXJYkQhvwR5Tp6r0ex7VbIKmWWDxz4TTyMjdqkPF8yTRNyQ
-         vGiBQdDr6CMO2k1UakdRMXOh8IvRgMbNZT7cGw5RB3bYfttMMInBlt71JZ2pTDFwuh
-         KxtrhxsJFwfuoSo7r6PFoP8nEsBvX/RNIyq0u1e8bWOnkote9Bkh+Ojhp/kv43HIQc
-         qBejnCFu2/RgMjysVXtnT/vdFarssUedaeizqI18KMbXOew+B53Q+69P+Z2o7gf7y+
-         LmcVGrGOVekPA==
+        b=IpBQv4a5WxH4fZWhgoSxTiUXuY4joG8F15DMSoq92OlplMZSP/Oz2y7nGKGRDiq7+
+         YbAI4z6AqEBBJoN6owQ2ETkAQ8ILB7xTVtfwBGLVaTf/3CCrs0VdPkzfDuUmgVS1zS
+         oP7mIETMcu/nLcNyKGg16uTIHVzluGUUhqQiX+YZa4lUu9YYdJDkveSc2jVMzmvrhB
+         /+kh8vpcaWeSr40AgF2qwHKCEmk46lxMt2908VZB0axGlSrCcALJdA0wx1SaLDeYSx
+         d5pfDTkEbp6JZb6arquxD904C9gEr3Ykz00wI5SOVeVJcJmJg1Q5qCtaxydAo+5ylh
+         +5xm3pitfstkg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EBAF6609F7;
-        Fri,  2 Jul 2021 00:46:24 +0000 (UTC)
-Subject: Re: [GIT PULL] bulk pin control changes for v5.14
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AF37C609F7;
+        Fri,  2 Jul 2021 00:46:31 +0000 (UTC)
+Subject: Re: [GIT PULL] percpu changes for v5.14-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CACRpkdadLCD=LEkq7jj6gu_XyDH5qvfoq3ABAyLU0hk+qPzsAQ@mail.gmail.com>
-References: <CACRpkdadLCD=LEkq7jj6gu_XyDH5qvfoq3ABAyLU0hk+qPzsAQ@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CACRpkdadLCD=LEkq7jj6gu_XyDH5qvfoq3ABAyLU0hk+qPzsAQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.14-1
-X-PR-Tracked-Commit-Id: bfa50166cd9d5d190b20dc33d1ec7ae19ced7022
+In-Reply-To: <YN4G5kUGi295tSzs@google.com>
+References: <YN4G5kUGi295tSzs@google.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YN4G5kUGi295tSzs@google.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git for-5.14
+X-PR-Tracked-Commit-Id: e4d777003a43feab2e000749163e531f6c48c385
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a32b344e6f4375c5bdc3e89d0997b7eae187a3b1
-Message-Id: <162518678495.2278.10928620210611047907.pr-tracker-bot@kernel.org>
-Date:   Fri, 02 Jul 2021 00:46:24 +0000
-To:     Linus Walleij <linus.walleij@linaro.org>
+X-PR-Merge-Commit-Id: e267992f9ef0bf717d70a9ee18049782f77e4b3a
+Message-Id: <162518679171.2278.15806419236220359373.pr-tracker-bot@kernel.org>
+Date:   Fri, 02 Jul 2021 00:46:31 +0000
+To:     Dennis Zhou <dennis@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mips@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 2 Jul 2021 01:33:07 +0200:
+The pull request you sent on Thu, 1 Jul 2021 18:18:14 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.14-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git for-5.14
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a32b344e6f4375c5bdc3e89d0997b7eae187a3b1
+https://git.kernel.org/torvalds/c/e267992f9ef0bf717d70a9ee18049782f77e4b3a
 
 Thank you!
 
