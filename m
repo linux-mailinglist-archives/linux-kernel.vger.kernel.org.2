@@ -2,88 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D563BA5F7
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 00:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB4B3BA5FB
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 00:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhGBW3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 18:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
+        id S230104AbhGBWfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 18:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhGBW3N (ORCPT
+        with ESMTP id S229847AbhGBWfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 18:29:13 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CE8C061762;
-        Fri,  2 Jul 2021 15:26:40 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id m15so1793903plx.7;
-        Fri, 02 Jul 2021 15:26:40 -0700 (PDT)
+        Fri, 2 Jul 2021 18:35:05 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3392CC061765
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 15:32:33 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id w127so13046365oig.12
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 15:32:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=s1+mLyUtQCUAV2WWOyntQZbuF/k3KJ0qXJL3GSGY5Z0=;
-        b=pkTu+y8uzUfmpZpZxCfdGhCWkpcTGT3XhbgnYRrJFo3EgmPEcB3ALvb6y+gtv5+gSL
-         La6StCuj7lYmwwBsJcW7PrHmxk4aQkkXzF4cwVMXc2Kh7TlMTfgJYznDFlOjCJMPiLap
-         ZCSGypci0hedQ3zs4jdoBdL8rppevZvttyoTAkUowR6LjAIz5mkPRy3xhGdFIIFTZO+2
-         IoqT81yCdISrkdFmvAyWIwzlpIm6sKutr2CIikiJwr8ubW8IH+P1KdTXsxTaCILBrJye
-         LdzmVgd4oilzQ2OzNrAtOJRderLjqc1N8bgJJX9J0I74PTaYjpUT/X97KBU6QqfLH31E
-         w35g==
+        d=linuxtx.org; s=google;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f7q94PMW36yr5rptah60oKyUeqPiKIPlgmyqeUcPJ2o=;
+        b=N8Pjyo1OOzX23wODt1rPErvl/FpT0mS4lNO28NqZD6XuBpQWR1M/zhhYe2MxO/4Ecj
+         uEaEaRwOPdj+jWA87k9MTe6H7EjatL43D5h0KNP7g67UIWq1uSGnKWBfhyFHX9rEOIzQ
+         lw5Yaho2cJOV4wgopZQ4M3R+/FNtOMVHihiJo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=s1+mLyUtQCUAV2WWOyntQZbuF/k3KJ0qXJL3GSGY5Z0=;
-        b=e1qHfQbs5c2vQS4/qPBDgHK05NQR492uTo7KJn6XpKkIUV6Aucu7BxZtcTlRCh/dtM
-         H1Hs920ZwGhrtu1611Uqb9Ufg3Ku9K5uK/6gMEiQei9UoO5512rbfK05dyBuc+jbDNwL
-         UfR6DazC2Ze8JXRiFxXpCa8ppxvSud8gWoc5vDpUMkERo1trpkKgtehpmSAL7JR+NF/3
-         dmpcXQoJ9GKyOx9Dxa0lH7dEU94yeKxyYoLQbkbzPmWyvHcs5ER7UgLKwL+KyAGPHy4a
-         N9TAM9EJJtnhM/3hw/sLLFzDU++y9SJB9qXhjTUUN/NYxeeF09dhiDy3MbYuXTyFs0RS
-         XAJQ==
-X-Gm-Message-State: AOAM531J0u2zNVg+g/BFFcw2Whq2aMdmeBXFKdelKZlgyVRmOnCWu2k5
-        XI4Is6l2na+UjQPU7Hi3Hdw=
-X-Google-Smtp-Source: ABdhPJxpv/FlVhKOSAwoHiAPmBu1JmpiuWOfMIOGM8rT/ator53Y9fq3Ud8FEsWFbOENR1TqdChVxg==
-X-Received: by 2002:a17:902:968a:b029:11d:6448:1352 with SMTP id n10-20020a170902968ab029011d64481352mr1594499plp.59.1625264800082;
-        Fri, 02 Jul 2021 15:26:40 -0700 (PDT)
-Received: from localhost (udp264798uds.hawaiiantel.net. [72.253.242.87])
-        by smtp.gmail.com with ESMTPSA id j10sm3611835pjb.36.2021.07.02.15.26.39
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=f7q94PMW36yr5rptah60oKyUeqPiKIPlgmyqeUcPJ2o=;
+        b=lIGF1S0sGrNOWKtlzSUFn+Cwfji2TPlpZeRKoxC8nPWKxALL0r3mosxbyDKEqDjTy0
+         KDx9TvqnHpIid2NuNjzcp0PsLfWqwR9REsRZQh4wGU/JBWmTWySGnLSQzUn2jW5XEhe5
+         7qWrN6284ABvXs8+3dUnzQMM0A7Q6xcwETwul7Wtny0ciW4/VRP1gSnTKl1OMvdeK0k7
+         65YzH6OuZ52QFQAkNW6F+88ouDWc55XRok8uKml3Ed+A0llFanSMQLFhP4lFnSTU6yVl
+         JZyCDBlRhWyNbMM4Kt09ICarlsD7nzcfSiMNUD7/hWxD7yprqO4TSqIhrbTpDy/zCwqk
+         NJoA==
+X-Gm-Message-State: AOAM532mhRIVt9zAi6m/CmQ1eWtVPj2gw5+NUcrcaOmrI55bAqIM6OIB
+        ZP/Ajv16hqvl/zA4Km8PEo9IbQ==
+X-Google-Smtp-Source: ABdhPJzRSblwQIZOE085jx9LltD2/8BZnTczDrEP9umQCwCmqWoj1f1S30VWoMDiTYyjGNfTrCNtxw==
+X-Received: by 2002:a05:6808:10c1:: with SMTP id s1mr1577344ois.58.1625265152408;
+        Fri, 02 Jul 2021 15:32:32 -0700 (PDT)
+Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
+        by smtp.gmail.com with ESMTPSA id e29sm1007731oiy.53.2021.07.02.15.32.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 15:26:39 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 2 Jul 2021 12:26:37 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Hao Lee <haolee.swjtu@gmail.com>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        Fri, 02 Jul 2021 15:32:31 -0700 (PDT)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+From:   "Justin M. Forbes" <jforbes@fedoraproject.org>
+To:     Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matti Gottlieb <matti.gottlieb@intel.com>,
+        ybaruch <yaara.baruch@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Ihab Zhaika <ihab.zhaika@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [Question] Do we need remote charging for cpu and cpuacct subsys?
-Message-ID: <YN+Sne76dhKBzV/R@mtj.duckdns.org>
-References: <60decdb6.1c69fb81.6130e.7642@mx.google.com>
+Cc:     jforbes@fedoraproject.org, jmforbes@linuxtx.org
+Subject: [PATCH] iwlwifi Add support for ax201 in Samsung Galaxy Book Flex2 Alpha
+Date:   Fri,  2 Jul 2021 17:31:53 -0500
+Message-Id: <20210702223155.1981510-1-jforbes@fedoraproject.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <60decdb6.1c69fb81.6130e.7642@mx.google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The Samsung Galaxy Book Flex2 Alpha uses an ax201 with the ID a0f0/6074.
+This works fine with the existing driver once it knows to claim it.
+Simple patch to add the device.
 
-On Fri, Jul 02, 2021 at 08:26:27AM -0000, Hao Lee wrote:
-> memcg currently has a remote charging mechanism that can charge usage to other
-> memcg instead of the one the task belongs to.
-> 
-> In our environment, we need to account the cpu usage consumed by some kworkers
-> to a specific cgroup. Thus, we want to introduce a remote-charging mechanism to
-> cpu and cpuacct subsys in our kernel.
-> 
-> I want to know if the community has a plan to do this?
-> What will the community approach look like?
+Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
+---
+ drivers/net/wireless/intel/iwlwifi/pcie/drv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Yeah, we need sth like this to account for cpu cycles spent in commont path
-but caused by specific cgroups - e.g. memory reclaim, net packet rx and so
-on. There were some mentions of needing somthing like that but haven't been
-any patchsets or concrete efforts that I know of.
-
-Thanks.
-
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
+index 16baee3d52ae..63f5598ebe3f 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
+@@ -558,6 +558,7 @@ static const struct iwl_dev_info iwl_dev_info_table[] = {
+ 	IWL_DEV_INFO(0xA0F0, 0x1652, killer1650i_2ax_cfg_qu_b0_hr_b0, NULL),
+ 	IWL_DEV_INFO(0xA0F0, 0x2074, iwl_ax201_cfg_qu_hr, NULL),
+ 	IWL_DEV_INFO(0xA0F0, 0x4070, iwl_ax201_cfg_qu_hr, NULL),
++	IWL_DEV_INFO(0xA0F0, 0x6074, iwl_ax201_cfg_qu_hr, NULL),
+ 	IWL_DEV_INFO(0x02F0, 0x0070, iwl_ax201_cfg_quz_hr, NULL),
+ 	IWL_DEV_INFO(0x02F0, 0x0074, iwl_ax201_cfg_quz_hr, NULL),
+ 	IWL_DEV_INFO(0x02F0, 0x6074, iwl_ax201_cfg_quz_hr, NULL),
 -- 
-tejun
+2.31.1
+
