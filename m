@@ -2,146 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392AE3BA4A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A083BA4AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhGBUaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 16:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhGBUay (ORCPT
+        id S231489AbhGBUcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 16:32:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22178 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230447AbhGBUcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 16:30:54 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A20FC061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 13:28:22 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id l26so10110992oic.7
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 13:28:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G3oeQWQfQg7R6ZTkuSFwzLdWju3dWQvTVitCiMSYhzA=;
-        b=FyILO6ZXBGGJBsNmgS4gCCfKYz8ArhANiGesQ6ixptTTjSgqtT/NGnvn2uxFpob84O
-         Sx2eVDvn8yMeU72VCUwKwKlzL8+67cjXQfQu9YRaopoeWTBn9eG0VwGGWmmgRRPFnpgt
-         +Q4/MK7Zl7oCSgk/Q95E3RFmY6GTm4Z6PNZGLUurvfSTWKB2whMTi4HriXvtuyrUwM/+
-         XeVDCXWR8yNVDUbuoboll9uB2O+VYjfrPpCnyafGSSmC+kZqbpL0JGjgUU6MLuRRzup9
-         HWkQuKx5yxSlaluGXuw2WXVo7aMf4GKyjfSK9j/w5gN2rdUK7R2CbjG6T4kOy9pQQrcS
-         EhjQ==
+        Fri, 2 Jul 2021 16:32:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625257767;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fmc5dDCDNgUCGurtDUVLQJtKxPKiPIBI/PH7SfH7U+s=;
+        b=UxvVJPf12oS0gUgJKi2w2eKEt3eTpdJ9HFzMSWuQxp2o4aht1I7hcnmND1Is6AuO6FsH9F
+        ipuhSaQXROGBK3APhhKQAikYHQDtKo/PyAqYFqEVK+6+EcYY6EUFvc/jUGVrLgL+ddDGYD
+        V7BsFRJtulDoSWRQT0pavGBjW0Cthxg=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-147-a0Eavu6UP7WU6USEHGTlbA-1; Fri, 02 Jul 2021 16:29:26 -0400
+X-MC-Unique: a0Eavu6UP7WU6USEHGTlbA-1
+Received: by mail-oo1-f71.google.com with SMTP id e25-20020a4ab9990000b029024aa2670b1cso6140750oop.21
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 13:29:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G3oeQWQfQg7R6ZTkuSFwzLdWju3dWQvTVitCiMSYhzA=;
-        b=Dg7REETLzGPq7r6Z7xnyIdZVrGUE2z3erRS4mPPfwuQBNRKpqcSZ7RkVbgCOaViNNQ
-         4kNx08aFD4j5lAkF+OegpXbq0lxrS9EAXNkYG1l1pWm3xIg202tlzwyJAmub89LB129O
-         1cG7B6OiZ4Q8KnPMjjVZ/JwB6sP+VupL9i5Lvi9K8+qrfKpTpkU6gBCNH5YKDUPMpFGa
-         MDkVQB5Rx7Y4g2s4lSjVHtLehEfm56wkyMwT0bBGkcqKUQc+bNyzuPkT0Xyk/ulQbtm6
-         JA/1wq1/+np3YLc1XZdhyLt+PaYebE6SrR6AwnULLGHjce8b58oq1uF6cfSp2ny4HwkX
-         4X+g==
-X-Gm-Message-State: AOAM533FBpAwE657Z1oogqmNj4kBBS3ATEQFw45PktiWngOqMaqP5N2g
-        9hwgAYhZackxy2gg6MxJr6LMmH6MIHs=
-X-Google-Smtp-Source: ABdhPJynPxNN4TOayB4uOuYJUOVcsddvIpO8SDqE9jSnUSRgcaWYA3OwnY498Dj4i+9OhXOPsKUcCA==
-X-Received: by 2002:a54:418c:: with SMTP id 12mr1052171oiy.42.1625257701153;
-        Fri, 02 Jul 2021 13:28:21 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e74sm806771ote.14.2021.07.02.13.28.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Jul 2021 13:28:20 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210419225047.3415425-1-dennis@kernel.org>
- <20210419225047.3415425-4-dennis@kernel.org>
- <20210702191140.GA3166599@roeck-us.net> <YN9s5HLjNeb1lxMK@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 3/4] percpu: implement partial chunk depopulation
-Message-ID: <dc349738-544c-34a1-748f-4e1a2c595a20@roeck-us.net>
-Date:   Fri, 2 Jul 2021 13:28:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=fmc5dDCDNgUCGurtDUVLQJtKxPKiPIBI/PH7SfH7U+s=;
+        b=Wm4QcMkbOeVplhq8JxULQIJsxuqsf54KWhSSCwv3etVJv9d9qL2XtZt7cpIg3nezmh
+         9jjalnVx4PIHvbYgfTzl9JAWAWGmW7uqFqjtLJYKpJrJbARSNyUbV2LVyFSGv/USHqX1
+         o4WazNAXPgnR2bF4il/LY6faJAaxxjmRMmLlaSDPUpL4ZILz0XlZhPViIw0KrQSeComH
+         /CpeG1Zr86jl4m0S8WFDgbHIBp09KUclbMtpgj/nqbtChlNvhArqzoAWzOntQEEEeOVi
+         GnKqI1SwVXz3TpyZjUnFM2ndLo94Qf5rfz6U3OSdpeAMl1TNd2uQ6DpAzARPNWzeAjiI
+         wImQ==
+X-Gm-Message-State: AOAM532YkPHtr7O5bk6RPASf0faM3MN/pNlTQxUdTVar2lbQm+aPPQle
+        OEwKyLG5AymOjJROILAy6H4lxdixgnUEZoidYse+kyKNqFg0b5S37j0rIgOLRBPBWhhKDfHFkRp
+        ZKlxCNOOWcBwZlrXmQr2jE8a2
+X-Received: by 2002:aca:5c83:: with SMTP id q125mr1212829oib.145.1625257765869;
+        Fri, 02 Jul 2021 13:29:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxID8tFygzc63+V/OnOwmURZq1R+FB5/h+aIx/TaQ4be7u+W/7HkgR7SQpmZd2ecmJ0FbfCDQ==
+X-Received: by 2002:aca:5c83:: with SMTP id q125mr1212817oib.145.1625257765667;
+        Fri, 02 Jul 2021 13:29:25 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id v3sm800954oon.11.2021.07.02.13.29.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 13:29:25 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 14:29:24 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+Cc:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>, <jgg@nvidia.com>,
+        <mgurtovoy@nvidia.com>, <linuxarm@huawei.com>,
+        <liulongfang@huawei.com>, <prime.zeng@hisilicon.com>,
+        <yuzenghui@huawei.com>, <jonathan.cameron@huawei.com>,
+        <wangzhou1@hisilicon.com>
+Subject: Re: [RFC v2 1/4] hisi-acc-vfio-pci: add new vfio_pci driver for
+ HiSilicon ACC devices
+Message-ID: <20210702142924.57ad33dc.alex.williamson@redhat.com>
+In-Reply-To: <20210702095849.1610-2-shameerali.kolothum.thodi@huawei.com>
+References: <20210702095849.1610-1-shameerali.kolothum.thodi@huawei.com>
+        <20210702095849.1610-2-shameerali.kolothum.thodi@huawei.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YN9s5HLjNeb1lxMK@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/2/21 12:45 PM, Dennis Zhou wrote:
-> Hello,
+On Fri, 2 Jul 2021 10:58:46 +0100
+Shameer Kolothum <shameerali.kolothum.thodi@huawei.com> wrote:
+
+> Add a vendor-specific vfio_pci driver for HiSilicon ACC devices.
+> This will be extended in follow-up patches to add support for
+> vfio live migration feature.
 > 
-> On Fri, Jul 02, 2021 at 12:11:40PM -0700, Guenter Roeck wrote:
->> Hi,
->>
->> On Mon, Apr 19, 2021 at 10:50:46PM +0000, Dennis Zhou wrote:
->>> From: Roman Gushchin <guro@fb.com>
->>>
->>> This patch implements partial depopulation of percpu chunks.
->>>
->>> As of now, a chunk can be depopulated only as a part of the final
->>> destruction, if there are no more outstanding allocations. However
->>> to minimize a memory waste it might be useful to depopulate a
->>> partially filed chunk, if a small number of outstanding allocations
->>> prevents the chunk from being fully reclaimed.
->>>
->>> This patch implements the following depopulation process: it scans
->>> over the chunk pages, looks for a range of empty and populated pages
->>> and performs the depopulation. To avoid races with new allocations,
->>> the chunk is previously isolated. After the depopulation the chunk is
->>> sidelined to a special list or freed. New allocations prefer using
->>> active chunks to sidelined chunks. If a sidelined chunk is used, it is
->>> reintegrated to the active lists.
->>>
->>> The depopulation is scheduled on the free path if the chunk is all of
->>> the following:
->>>    1) has more than 1/4 of total pages free and populated
->>>    2) the system has enough free percpu pages aside of this chunk
->>>    3) isn't the reserved chunk
->>>    4) isn't the first chunk
->>> If it's already depopulated but got free populated pages, it's a good
->>> target too. The chunk is moved to a special slot,
->>> pcpu_to_depopulate_slot, chunk->isolated is set, and the balance work
->>> item is scheduled. On isolation, these pages are removed from the
->>> pcpu_nr_empty_pop_pages. It is constantly replaced to the
->>> to_depopulate_slot when it meets these qualifications.
->>>
->>> pcpu_reclaim_populated() iterates over the to_depopulate_slot until it
->>> becomes empty. The depopulation is performed in the reverse direction to
->>> keep populated pages close to the beginning. Depopulated chunks are
->>> sidelined to preferentially avoid them for new allocations. When no
->>> active chunk can suffice a new allocation, sidelined chunks are first
->>> checked before creating a new chunk.
->>>
->>> Signed-off-by: Roman Gushchin <guro@fb.com>
->>> Co-developed-by: Dennis Zhou <dennis@kernel.org>
->>> Signed-off-by: Dennis Zhou <dennis@kernel.org>
->>
->> This patch results in a number of crashes and other odd behavior
->> when trying to boot mips images from Megasas controllers in qemu.
->> Sometimes the boot stalls, but I also see various crashes.
->> Some examples and bisect logs are attached.
+> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+> ---
+>  drivers/vfio/pci/Kconfig             |   9 +++
+>  drivers/vfio/pci/Makefile            |   2 +
+>  drivers/vfio/pci/hisi_acc_vfio_pci.c | 100 +++++++++++++++++++++++++++
+>  3 files changed, 111 insertions(+)
+>  create mode 100644 drivers/vfio/pci/hisi_acc_vfio_pci.c
 > 
-> Ah, this doesn't look good.. Do you have a reproducer I could use to
-> debug this?
-> 
+> diff --git a/drivers/vfio/pci/Kconfig b/drivers/vfio/pci/Kconfig
+> index 9cdef46dd299..709807c28153 100644
+> --- a/drivers/vfio/pci/Kconfig
+> +++ b/drivers/vfio/pci/Kconfig
+> @@ -57,3 +57,12 @@ config MLX5_VFIO_PCI
+>  	  framework.
+>  
+>  	  If you don't know what to do here, say N.
+> +
+> +config HISI_ACC_VFIO_PCI
+> +	tristate "VFIO support for HiSilicon ACC devices"
+> +	depends on ARM64 && VFIO_PCI_CORE
+> +	help
+> +	  This provides generic PCI support for HiSilicon devices using the VFIO
+> +	  framework.
+> +
+> +	  If you don't know what to do here, say N.
+> diff --git a/drivers/vfio/pci/Makefile b/drivers/vfio/pci/Makefile
+> index a0df9c2a4bd9..d1de3e81921f 100644
+> --- a/drivers/vfio/pci/Makefile
+> +++ b/drivers/vfio/pci/Makefile
+> @@ -3,6 +3,7 @@
+>  obj-$(CONFIG_VFIO_PCI_CORE) += vfio-pci-core.o
+>  obj-$(CONFIG_VFIO_PCI) += vfio-pci.o
+>  obj-$(CONFIG_MLX5_VFIO_PCI) += mlx5-vfio-pci.o
+> +obj-$(CONFIG_HISI_ACC_VFIO_PCI) += hisi-acc-vfio-pci.o
+>  
+>  vfio-pci-core-y := vfio_pci_core.o vfio_pci_intrs.o vfio_pci_rdwr.o vfio_pci_config.o
+>  vfio-pci-core-$(CONFIG_S390) += vfio_pci_zdev.o
+> @@ -11,3 +12,4 @@ vfio-pci-y := vfio_pci.o
+>  vfio-pci-$(CONFIG_VFIO_PCI_IGD) += vfio_pci_igd.o
+>  
+>  mlx5-vfio-pci-y := mlx5_vfio_pci.o
+> +hisi-acc-vfio-pci-y := hisi_acc_vfio_pci.o
+> diff --git a/drivers/vfio/pci/hisi_acc_vfio_pci.c b/drivers/vfio/pci/hisi_acc_vfio_pci.c
+> new file mode 100644
+> index 000000000000..a9e173098ab5
+> --- /dev/null
+> +++ b/drivers/vfio/pci/hisi_acc_vfio_pci.c
+> @@ -0,0 +1,100 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2021, HiSilicon Ltd.
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/eventfd.h>
+> +#include <linux/file.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +#include <linux/vfio.h>
+> +#include <linux/vfio_pci_core.h>
+> +
+> +static int hisi_acc_vfio_pci_open(struct vfio_device *core_vdev)
+> +{
+> +	struct vfio_pci_core_device *vdev =
+> +		container_of(core_vdev, struct vfio_pci_core_device, vdev);
+> +	int ret;
+> +
+> +	lockdep_assert_held(&core_vdev->reflck->lock);
+> +
+> +	ret = vfio_pci_core_enable(vdev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	vfio_pci_core_finish_enable(vdev);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct vfio_device_ops hisi_acc_vfio_pci_ops = {
+> +	.name		= "hisi-acc-vfio-pci",
+> +	.open		= hisi_acc_vfio_pci_open,
+> +	.release	= vfio_pci_core_release,
+> +	.ioctl		= vfio_pci_core_ioctl,
+> +	.read		= vfio_pci_core_read,
+> +	.write		= vfio_pci_core_write,
+> +	.mmap		= vfio_pci_core_mmap,
+> +	.request	= vfio_pci_core_request,
+> +	.match		= vfio_pci_core_match,
+> +	.reflck_attach	= vfio_pci_core_reflck_attach,
+> +};
+> +
+> +static int hisi_acc_vfio_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> +{
+> +	struct vfio_pci_core_device *vdev;
+> +	int ret;
+> +
+> +	vdev = kzalloc(sizeof(*vdev), GFP_KERNEL);
+> +	if (!vdev)
+> +		return -ENOMEM;
+> +
+> +	ret = vfio_pci_core_register_device(vdev, pdev, &hisi_acc_vfio_pci_ops);
+> +	if (ret)
+> +		goto out_free;
+> +
+> +	dev_set_drvdata(&pdev->dev, vdev);
+> +
+> +	return 0;
+> +
+> +out_free:
+> +	kfree(vdev);
+> +	return ret;
+> +}
+> +
+> +static void hisi_acc_vfio_pci_remove(struct pci_dev *pdev)
+> +{
+> +	struct vfio_pci_core_device *vdev = dev_get_drvdata(&pdev->dev);
+> +
+> +	vfio_pci_core_unregister_device(vdev);
+> +	kfree(vdev);
+> +}
+> +
+> +static const struct pci_device_id hisi_acc_vfio_pci_table[] = {
+> +	{ PCI_DRIVER_OVERRIDE_DEVICE_VFIO(PCI_VENDOR_ID_HUAWEI, 0xa256) }, /* SEC VF */
+> +	{ PCI_DRIVER_OVERRIDE_DEVICE_VFIO(PCI_VENDOR_ID_HUAWEI, 0xa259) }, /* HPRE VF */
+> +	{ PCI_DRIVER_OVERRIDE_DEVICE_VFIO(PCI_VENDOR_ID_HUAWEI, 0xa251) }, /* ZIP VF */
+> +	{ 0, }
+> +};
+> +
+> +MODULE_DEVICE_TABLE(pci, hisi_acc_vfio_pci_table);
+> +
+> +static struct pci_driver hisi_acc_vfio_pci_driver = {
+> +	.name			= "hisi-acc-vfio-pci",
+> +	.id_table		= hisi_acc_vfio_pci_table,
+> +	.probe			= hisi_acc_vfio_pci_probe,
+> +	.remove			= hisi_acc_vfio_pci_remove,
+> +#ifdef CONFIG_PCI_IOV
+> +	.sriov_configure	= vfio_pci_core_sriov_configure,
+> +#endif
 
-I copied the relevant information to http://server.roeck-us.net/qemu/mips/.
+The device table suggests only VFs are supported by this driver, so it
+really shouldn't need sriov_configure support, right?  Thanks,
 
-run.sh - qemu command (I tried with qemu 6.0 and 4.2.1)
-rootfs.ext2 - root file system
-config - complete configuration
-defconfig - shortened configuration
-vmlinux - a crashing kernel image (v5.13-7637-g3dbdb38e2869, with above configuration)
+Alex
 
-Interestingly, the crash doesn't always happen at the same location, even
-with the same image. Some memory corruption, maybe ?
+> +	.err_handler		= &vfio_pci_core_err_handlers,
+> +};
+> +
+> +module_pci_driver(hisi_acc_vfio_pci_driver);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_AUTHOR("Liu Longfang <liulongfang@huawei.com>");
+> +MODULE_AUTHOR("Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>");
+> +MODULE_DESCRIPTION("HiSilicon VFIO PCI - Generic VFIO PCI driver for HiSilicon ACC device family");
 
-Hope this helps. Please let me know if I can provide anything else.
-
-Thanks,
-Guenter
