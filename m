@@ -2,110 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136913B9AF7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 05:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9B33B9AFB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 05:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234832AbhGBDXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 23:23:53 -0400
-Received: from [210.61.82.184] ([210.61.82.184]:48521 "EHLO
-        mailgw02.mediatek.com" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234731AbhGBDXw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 23:23:52 -0400
-X-UUID: b8b6fa4102924558afc3271190e5e027-20210702
-X-UUID: b8b6fa4102924558afc3271190e5e027-20210702
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1843929319; Fri, 02 Jul 2021 11:21:05 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 2 Jul 2021 11:21:04 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 2 Jul 2021 11:21:03 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <ndesaulniers@google.com>
-CC:     <clang-built-linux@googlegroups.com>, <keescook@chromium.org>,
-        <lecopzer.chen@mediatek.com>, <linux-kbuild@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <masahiroy@kernel.org>,
-        <michal.lkml@markovi.net>, <nathan@kernel.org>,
-        <samitolvanen@google.com>, <yj.chiang@mediatek.com>
-Subject: Re: [RESEND PATCH v2 1/2] Kbuild: lto: add CONFIG_MAKE_VERSION
-Date:   Fri, 2 Jul 2021 11:21:03 +0800
-Message-ID: <20210702032103.7787-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <CAKwvOdkGjz-rH8AHudO3dJmSt+48FSJ8iT-eCacwyeMhWv909w@mail.gmail.com>
-References: <CAKwvOdkGjz-rH8AHudO3dJmSt+48FSJ8iT-eCacwyeMhWv909w@mail.gmail.com>
+        id S234849AbhGBDZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 23:25:13 -0400
+Received: from mail-mw2nam10on2057.outbound.protection.outlook.com ([40.107.94.57]:11936
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234731AbhGBDZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 23:25:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EhlbwW8y2iQii9UdZRrX7xrSCBXrk9YYzQNvy9kol1DoP/ceDlnj64ECnN28tLlhKxopqYEP0euMboIF7HV7qHUYUy/D7CM3HpdsrrlqW4pcIu7rkTyYcVJcTbNOpayy87X/Pjx6mBJtOrUQ9050j1So7jIM65A9UI8czMoHbOJxfCLXItHrFh/oaMl+uQAF1PJeilR5YM4cjG8bk4VnIJVHXtDtu+LdOdrpFW3ImNNV7ZHphVcO4i3G9F0ynFp+0TSMkVrcdFKGEDOWQsHeNxmyn3EaBUHTylCobrw7ZasBQAtU9HlU5PmJgrGQDq0ty9XTbVfh+mRNolUtHO15Iw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qvCXO4SJ+TiDx+dMDHSWlACKeFJbrHDeuVczQYAxIfo=;
+ b=Xs/uJ2B9B/2U0JnJpOuEcBVSIxNzcV59iABx0LLxOzzpArUsKndDPq0JJsM44ZFRFZge650CuvEZ1uPpbwPUGoqh/cz6NtXbNw6PaR9scfuAOkZiW4iPZUgrhKXtVK76DGbvraP13iUe8nvlyB0MD/uTLOeZ8BNi51LOSfUaqrsoqJlKSBWK+xr5YGg9lmbtO+DjnwL33IcyVCB9FUILd9IzLzC5gt5qTaTGFOv38lM+h6omi6myTST9BTf8TV+H5B4/0KCneKftaOX2uDZly6Gh8SCg0Aj75MUsyp5SpQ/vTsiRWAH/qV1gXEHmcZggQ2V73+iF78VYPt0236/xAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=russell.cc smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qvCXO4SJ+TiDx+dMDHSWlACKeFJbrHDeuVczQYAxIfo=;
+ b=ISrPg7AQzEP+ltTNbtnXuA6bG7fX32WEEOQ+Ci1/uOaeVh7jv3JESK9C/WryxEBNQ6QGdA4pjz8D9ol2+lSyjB039BBQ87mq+q4Z45WqT/SdJBYsl9JI219V4Y/QN2y7lu/FQg/tYAPJN7fNqjZFYBjJ3Nrp7fyRaUrMbIs7Mrc=
+Received: from DM5PR21CA0070.namprd21.prod.outlook.com (2603:10b6:3:129::32)
+ by MWHPR1201MB0207.namprd12.prod.outlook.com (2603:10b6:301:4d::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.24; Fri, 2 Jul
+ 2021 03:22:37 +0000
+Received: from DM6NAM11FT041.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:129:cafe::b4) by DM5PR21CA0070.outlook.office365.com
+ (2603:10b6:3:129::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.4 via Frontend
+ Transport; Fri, 2 Jul 2021 03:22:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; russell.cc; dkim=none (message not signed)
+ header.d=none;russell.cc; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT041.mail.protection.outlook.com (10.13.172.98) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4287.22 via Frontend Transport; Fri, 2 Jul 2021 03:22:36 +0000
+Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 1 Jul 2021
+ 22:22:36 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
+ (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 1 Jul 2021
+ 20:22:35 -0700
+Received: from weisheng-Pro-E800-G4-WS950T.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4
+ via Frontend Transport; Thu, 1 Jul 2021 22:22:33 -0500
+From:   Wesley Sheng <wesley.sheng@amd.com>
+To:     <ruscur@russell.cc>, <oohall@gmail.com>, <linasvepstas@gmail.com>,
+        <bhelgaas@google.com>, <corbet@lwn.net>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-pci@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <wesleyshenggit@sina.com>, <wesley.sheng@amd.com>
+Subject: [PATCH v2] Documentation: PCI: pci-error-recovery: swap sequence between MMIO Enabled and Link Reset
+Date:   Fri, 2 Jul 2021 11:22:30 +0800
+Message-ID: <20210702032230.7518-1-wesley.sheng@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-MTK:  N
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8b17ba83-45dc-45f9-cb71-08d93d08a3fe
+X-MS-TrafficTypeDiagnostic: MWHPR1201MB0207:
+X-Microsoft-Antispam-PRVS: <MWHPR1201MB0207A980A88DF91836A76353951F9@MWHPR1201MB0207.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jjVW7Oc+M6gdMagwO94mXvscQQ9kAfktE3mmfBNW9IDkRruOFaK9LpPydvE4X5H8cdxjTPeCS6ZqLRv1tNp1m2EXcDINeUGwS6eGSlWuLZn3dpvGJVJhM8aDaPpIuBNK/nBibKNM17tWOzuUSLd9GBqnYLjDrk7Q+WfAWR+fwcPYEPnbGAm5b6s4QSngcmEMdMZzNY+QYF/WIDRxPWbWcFy1peUQTdKXn9U+rqbWmDiiggb76RoXKJ+gxzzjtklxlNc1l+zy2CKQpp9cja2HhGyZBQfGE3u4I75+LBWoZPTAuD0LTnMC8vbKeVi6YbLuX6II9fuTd0u32wxB9aeY38pyel/P1irnW3pKnUWimrYX4PA7rTD8M+qqKsXUqEREtwAUtfY9jQ5NB/L+uu2OqoPeemgZRQINT0sRdrxYcFwxiSZS/F7oXicTo4x2VVqY1a+x4evd4zgYU6iDyvGkeWOvl1BgLPNFkBzs9jQ0652ijVpJ2yfdxpJQWgUsG+kqvln96vGWunpK3C8WFNOpVnNOJVKVlm6xBjm3MLqCFfhQM+El+uADGjb8DeXnSMNcgv0mcajBv94V7zoNHCpn05MHsAapFCUC3HCXUfE2vOFd3eMgEiEGELPkQiLn3LQOUbCdDZJNLfa1C7HYGKNObudk+t7AmXVjmZc2t0WUpV/EPggLhUbp6IT0HOHu+74cBCef09JvdbBfteQ94qEvYlmic+LbAPbVQs6dbEwvxmO0RqW53vKLzcaGYNLskcWm
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(39860400002)(346002)(36840700001)(46966006)(7696005)(186003)(47076005)(70206006)(2616005)(2906002)(36860700001)(70586007)(82740400003)(44832011)(4326008)(5660300002)(1076003)(26005)(82310400003)(336012)(478600001)(110136005)(54906003)(316002)(8936002)(356005)(86362001)(36756003)(83380400001)(426003)(7416002)(81166007)(8676002)(2101003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2021 03:22:36.9073
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b17ba83-45dc-45f9-cb71-08d93d08a3fe
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT041.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0207
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Thu, Jul 1, 2021 at 2:28 AM Lecopzer Chen <lecopzer.chen@mediatek.com> wrote:
-> >
-> > To check the GNU make version. Used by the LTO Kconfig.
-> >
-> > LTO with MODVERSIONS will fail in generating correct CRC because
-> > the makefile rule doesn't work for make with version 3.8X.[1]
-> >
-> > Thus we need to check make version during selecting on LTO Kconfig.
-> > Add CONFIG_MAKE_VERSION which means MAKE_VERSION in canonical digits
-> > for arithmetic comparisons.
-> >
-> > [1] https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/
-> > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> > ---
-> >  Makefile                |  2 +-
-> >  init/Kconfig            |  4 ++++
-> >  scripts/make-version.sh | 13 +++++++++++++
-> >  3 files changed, 18 insertions(+), 1 deletion(-)
-> >  create mode 100755 scripts/make-version.sh
-> >
-> > diff --git a/Makefile b/Makefile
-> > index 88888fff4c62..2402745b2ba9 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -516,7 +516,7 @@ CLANG_FLAGS :=
-> >
-> >  export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS CROSS_COMPILE LD CC
-> >  export CPP AR NM STRIP OBJCOPY OBJDUMP READELF PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL
-> > -export PERL PYTHON3 CHECK CHECKFLAGS MAKE UTS_MACHINE HOSTCXX
-> > +export PERL PYTHON3 CHECK CHECKFLAGS MAKE MAKE_VERSION UTS_MACHINE HOSTCXX
-> >  export KGZIP KBZIP2 KLZOP LZMA LZ4 XZ ZSTD
-> >  export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
-> >
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index 55f9f7738ebb..ecc110504f87 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -86,6 +86,10 @@ config CC_HAS_ASM_INLINE
-> >  config CC_HAS_NO_PROFILE_FN_ATTR
-> >         def_bool $(success,echo '__attribute__((no_profile_instrument_function)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
-> >
-> > +config MAKE_VERSION
-> > +       int
-> > +       default $(shell,$(srctree)/scripts/make-version.sh $(MAKE_VERSION))
-> > +
-> >  config CONSTRUCTORS
-> >         bool
-> >
-> > diff --git a/scripts/make-version.sh b/scripts/make-version.sh
-> > new file mode 100755
-> > index 000000000000..ce5af96696cc
-> > --- /dev/null
-> > +++ b/scripts/make-version.sh
-> > @@ -0,0 +1,13 @@
-> > +#!/bin/sh
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +#
-> > +# Print the linker name and its version in a 5 or 6-digit form.
-> 
-> The linker? 
+Reset_link() callback function (named with reset_subordinates()
+in pcie_do_recovery() function) was called before mmio_enabled(),
+so exchange the sequence between step 2 MMIO Enabled and step 3
+Link Reset accordingly.
 
-my bad, I'll fix this, thanks
+Signed-off-by: Wesley Sheng <wesley.sheng@amd.com>
+---
+ Documentation/PCI/pci-error-recovery.rst | 25 ++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-
+diff --git a/Documentation/PCI/pci-error-recovery.rst b/Documentation/PCI/pci-error-recovery.rst
+index 187f43a03200..0e2f3f77bf0a 100644
+--- a/Documentation/PCI/pci-error-recovery.rst
++++ b/Documentation/PCI/pci-error-recovery.rst
+@@ -157,7 +157,7 @@ drivers.
+ If all drivers on the segment/slot return PCI_ERS_RESULT_CAN_RECOVER,
+ then the platform should re-enable IOs on the slot (or do nothing in
+ particular, if the platform doesn't isolate slots), and recovery
+-proceeds to STEP 2 (MMIO Enable).
++proceeds to STEP 3 (MMIO Enable).
+ 
+ If any driver requested a slot reset (by returning PCI_ERS_RESULT_NEED_RESET),
+ then recovery proceeds to STEP 4 (Slot Reset).
+@@ -184,7 +184,14 @@ is STEP 6 (Permanent Failure).
+    and prints an error to syslog.  A reboot is then required to
+    get the device working again.
+ 
+-STEP 2: MMIO Enabled
++STEP 2: Link Reset
++------------------
++The platform resets the link.  This is a PCI-Express specific step
++and is done whenever a fatal error has been detected that can be
++"solved" by resetting the link.
++
++
++STEP 3: MMIO Enabled
+ --------------------
+ The platform re-enables MMIO to the device (but typically not the
+ DMA), and then calls the mmio_enabled() callback on all affected
+@@ -197,8 +204,8 @@ information, if any, and eventually do things like trigger a device local
+ reset or some such, but not restart operations. This callback is made if
+ all drivers on a segment agree that they can try to recover and if no automatic
+ link reset was performed by the HW. If the platform can't just re-enable IOs
+-without a slot reset or a link reset, it will not call this callback, and
+-instead will have gone directly to STEP 3 (Link Reset) or STEP 4 (Slot Reset)
++without a slot reset, it will not call this callback, and
++instead will have gone directly to STEP 4 (Slot Reset)
+ 
+ .. note::
+ 
+@@ -210,7 +217,7 @@ instead will have gone directly to STEP 3 (Link Reset) or STEP 4 (Slot Reset)
+    such an error might cause IOs to be re-blocked for the whole
+    segment, and thus invalidate the recovery that other devices
+    on the same segment might have done, forcing the whole segment
+-   into one of the next states, that is, link reset or slot reset.
++   into the next states, that is, slot reset.
+ 
+ The driver should return one of the following result codes:
+   - PCI_ERS_RESULT_RECOVERED
+@@ -233,17 +240,11 @@ The driver should return one of the following result codes:
+ 
+ The next step taken depends on the results returned by the drivers.
+ If all drivers returned PCI_ERS_RESULT_RECOVERED, then the platform
+-proceeds to either STEP3 (Link Reset) or to STEP 5 (Resume Operations).
++proceeds to STEP 5 (Resume Operations).
+ 
+ If any driver returned PCI_ERS_RESULT_NEED_RESET, then the platform
+ proceeds to STEP 4 (Slot Reset)
+ 
+-STEP 3: Link Reset
+-------------------
+-The platform resets the link.  This is a PCI-Express specific step
+-and is done whenever a fatal error has been detected that can be
+-"solved" by resetting the link.
+-
+ STEP 4: Slot Reset
+ ------------------
+ 
+-- 
+2.25.1
 
