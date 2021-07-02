@@ -2,113 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7C23BA0A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3133E3BA0AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232291AbhGBMsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 08:48:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230359AbhGBMsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 08:48:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25E7C613E1;
-        Fri,  2 Jul 2021 12:46:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625229971;
-        bh=E4oEj+PbpdO3Eg5wJcPghg3wJkKA1lvkxfMQFbolpWA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sWujkA5oT53blWuSaqrUxURxM5NcZTMeXxkXotymWiv6LvbAsQDleoitgyLeV189w
-         mSBI5ox0MyI01/a3lJdaoyeJI5f9hJtIvqEoqFazjYuBkO4Q5Hqwx1O0G31RSseTcN
-         LnhzHoYR4XlVbceRepYV7FLiiwwrMTlA/njzxS/uuGg5KR0xMrBDUyzC1fSsUaVkpE
-         LPf4UAf0L/DcjoUScrexmc07uWVqIBO3OZnV0iHAT9CC9cwlw8AzhpoH3K5qqX3jFd
-         iPBLUnHbFoDE7Mb5c/Yx4vhY2ZFbh1wHuWhk3SiqFyktiBC+0Ej/tjaPfldn5EJ2rO
-         86/BExgZnx4Tg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8D03440B1A; Fri,  2 Jul 2021 09:46:08 -0300 (-03)
-Date:   Fri, 2 Jul 2021 09:46:08 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, stable@kernel.org
-Subject: Re: [PATCH] perf report: Fix --task and --stat with pipe input
-Message-ID: <YN8KkP759PDZY6dQ@kernel.org>
-References: <20210630043058.1131295-1-namhyung@kernel.org>
- <YN7skX0uRz5SrB0w@krava>
+        id S232313AbhGBMss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 08:48:48 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:55858 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230359AbhGBMsr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 08:48:47 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210702124613euoutp0242db08db6114ad1b9f412dbda7fb009b~N_gzgjb6R1652416524euoutp02H
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 12:46:13 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210702124613euoutp0242db08db6114ad1b9f412dbda7fb009b~N_gzgjb6R1652416524euoutp02H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1625229973;
+        bh=GTYicL+/1yUaOGFpBvz+ljJJPoHasxAWYxyVH7LSBYA=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=Hk6l3XAUGnwtyudxcWaU5/0QaT16kgN+jAyukTAT6OLcFhEvGdr+bKX/8QnXHVBDb
+         dXPCIXBU3rGsSgNVIJAY+lL6n5m6nCayQ0Zfaf1wtm4ee8Y1yykfrFqRM8KXqsQXG+
+         4l3+IV6gnnY8EWRho9NCYNEGZIF4vjeo/mf86yyg=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210702124613eucas1p1feb35815611cab1bc8740742bad150a0~N_gzNo3WP2335123351eucas1p1I;
+        Fri,  2 Jul 2021 12:46:13 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id B1.F8.56448.59A0FD06; Fri,  2
+        Jul 2021 13:46:13 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210702124612eucas1p1762911deb37e4fb03adc9239bb715135~N_gyq0r2D0368203682eucas1p1l;
+        Fri,  2 Jul 2021 12:46:12 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210702124612eusmtrp13bd226e935ab5aa2b2dd22a4e9718a03~N_gyp7Y951092610926eusmtrp1V;
+        Fri,  2 Jul 2021 12:46:12 +0000 (GMT)
+X-AuditID: cbfec7f5-d53ff7000002dc80-d4-60df0a955f67
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id A3.CD.31287.49A0FD06; Fri,  2
+        Jul 2021 13:46:12 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210702124612eusmtip22efc10793f5f170ed32a4e12f2946234~N_gx8b_da2001720017eusmtip2f;
+        Fri,  2 Jul 2021 12:46:12 +0000 (GMT)
+Subject: Re: [PATCH v3 2/3] clk: divider: Switch from .round_rate to
+ .determine_rate by default
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, mturquette@baylibre.com,
+        linux-clk@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
+        khilman@baylibre.com, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <e21c34a3-2586-057d-013b-6c8ec094d1a8@samsung.com>
+Date:   Fri, 2 Jul 2021 14:46:11 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YN7skX0uRz5SrB0w@krava>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAFBinCAASQUB=cg5EFsBQ4jd3TvcCJzV1=sYJci4ibR7FjRcww@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrEKsWRmVeSWpSXmKPExsWy7djP87pTue4nGKy6JmLx5tERZouf7VuY
+        LBbM5rbY9Pgaq8XHnnusFpd3zWGzeLLwDJPFsUUnWSwunnK1ONQXbfHv2kYWB26P9zda2T2e
+        TpjM7rFpVSebx+Yl9R47vzewe3zeJBfAFsVlk5Kak1mWWqRvl8CVcaR3P2vBZMGKy/N2sjcw
+        fuftYuTkkBAwkTj6+SBjFyMXh5DACkaJiZtuskM4XxglTi36wwThfGaU2L7/KTNMy6V/l1kh
+        EssZJa5/X8QG4XxklJjdu50dpEpYIFHi9O/7TCC2iEC8xMa7P8CKmAXmMklMXTmTESTBJmAo
+        0fW2CyjBwcErYCdx6rwaSJhFQEXi49HnLCC2qECyxPt5M1hBbF4BQYmTM5+wgJRzCgRKbJ2X
+        ARJmFpCX2P52DjOELS5x68l8sKslBH5wSDRdusUIUi8h4CKx8TQjxAPCEq+Ob2GHsGUkTk/u
+        YYGob2aUeHhuLTuE08MocblpBlSHtcSdc7/A7mQW0JRYv0sfIuwocaj9ABPEfD6JG28FIW7g
+        k5i0bTozRJhXoqNNCKJaTWLW8XVwaw9euMQ8gVFpFpLHZiH5ZhaSb2Yh7F3AyLKKUTy1tDg3
+        PbXYOC+1XK84Mbe4NC9dLzk/dxMjMFmd/nf86w7GFa8+6h1iZOJgPMQowcGsJMIbOu9eghBv
+        SmJlVWpRfnxRaU5q8SFGaQ4WJXHeXVvXxAsJpCeWpGanphakFsFkmTg4pRqYuG/F3OaMk7p4
+        NTf8VFfT8fsXNxxzu2G0WP6I8zefDx+Xf/YpXFL7/VTKuVmGjmqzHmrx1Uzey/TEeE7HZIfT
+        R+ZU/0r1Tfx/l+VO11sdlZC/yW91gvrV4//1ch1qPSO+KU5ZzG++/WH+lHjJ0FiG+ZtmlKWv
+        v/K1csXDX2t/5Omwer5qEj6spMKxqUMm/mPXulcS3Cffuj1gCi1M+3nrq+O+DEY1DX1mZsW0
+        ewcO6aZsbarWLtM5vDv91qWp6naL77Wr1ZU/kVmW86FMy3W37EWtt15Ted42ftzBJ8W97+rl
+        ngfrt33OqZWSMuTyfNpqxF389tDHWQsr2ty6Vv9vXxjLUqs6UespI4t6xD9dJZbijERDLeai
+        4kQAGebPjcUDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCIsWRmVeSWpSXmKPExsVy+t/xe7pTuO4nGBycqWXx5tERZouf7VuY
+        LBbM5rbY9Pgaq8XHnnusFpd3zWGzeLLwDJPFsUUnWSwunnK1ONQXbfHv2kYWB26P9zda2T2e
+        TpjM7rFpVSebx+Yl9R47vzewe3zeJBfAFqVnU5RfWpKqkJFfXGKrFG1oYaRnaGmhZ2RiqWdo
+        bB5rZWSqpG9nk5Kak1mWWqRvl6CXcaR3P2vBZMGKy/N2sjcwfuftYuTkkBAwkbj07zJrFyMX
+        h5DAUkaJ+fNvMEMkZCROTmtghbCFJf5c62KDKHrPKLH9+gSwImGBRInTv+8zgdgiAvESNw5/
+        ZgSxmQXmMklMeSQA0dDBLHFtWSdYgk3AUKLrLcgkDg5eATuJU+fVQMIsAioSH48+ZwGxRQWS
+        JX6ub2cDsXkFBCVOznzCAlLOKRAosXVeBsR4M4l5mx8yQ9jyEtvfzoGyxSVuPZnPNIFRaBaS
+        7llIWmYhaZmFpGUBI8sqRpHU0uLc9NxiQ73ixNzi0rx0veT83E2MwOjcduzn5h2M81591DvE
+        yMTBeIhRgoNZSYQ3dN69BCHelMTKqtSi/Pii0pzU4kOMpkDvTGSWEk3OB6aHvJJ4QzMDU0MT
+        M0sDU0szYyVx3q1z18QLCaQnlqRmp6YWpBbB9DFxcEo1MC04PGE391eHwtzqQ+YivUWGa+bH
+        tSs/WyJw1bRqI5P4xYJ1kjcDPn3eyHSY2V3v+yTObctarh3WXyC17bG4ZxrDD5YcL6XwTEcB
+        JcuJOjp6h/4t9J4WrcX6cQ7r9xMn1Hi3vf+04/bZ5z2erlInTsmzLP6jJs3QUrll2TMHu0WP
+        /9VEyyXqWbSHXDTmLZmbxGpVoWK9T8GH6air4oGC4MLJzb7ZuyMFDeO3tk5UqhC10zq1y1k/
+        VvPIAeaqundVz9NLpquaZW3MjuA8cjH8fKOT0FZR5YzNpfbzYvff0Z7tYa3/ZPqJpuBQG/dn
+        7rf2xigFOJZaFui8FFh18k/GhkW+sdfFTj7g+uI2zWOtEktxRqKhFnNRcSIA2f1DkVcDAAA=
+X-CMS-MailID: 20210702124612eucas1p1762911deb37e4fb03adc9239bb715135
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210702124612eucas1p1762911deb37e4fb03adc9239bb715135
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210702124612eucas1p1762911deb37e4fb03adc9239bb715135
+References: <20210627223959.188139-1-martin.blumenstingl@googlemail.com>
+        <20210627223959.188139-3-martin.blumenstingl@googlemail.com>
+        <20210701202540.GA1085600@roeck-us.net>
+        <CAFBinCC2KB-_pOenpWPknCuHV+CCjhP5hqukSkwD3qwRe6OtQw@mail.gmail.com>
+        <162518776607.3570193.14348711594242395887@swboyd.mtv.corp.google.com>
+        <CAFBinCAASQUB=cg5EFsBQ4jd3TvcCJzV1=sYJci4ibR7FjRcww@mail.gmail.com>
+        <CGME20210702124612eucas1p1762911deb37e4fb03adc9239bb715135@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jul 02, 2021 at 12:38:09PM +0200, Jiri Olsa escreveu:
-> On Tue, Jun 29, 2021 at 09:30:58PM -0700, Namhyung Kim wrote:
-> > Current perf report fails to process a pipe input when --task
-> > or --stat option is used.  This is because they reset all the
-> > tool callbacks and failed to find a matching event for a sample.
-> > 
-> > When pipe input is used, the event info is passed via ATTR records
-> > so it needs to handle that operation.  Otherwise the following error
-> > occurred.  Note, -14 (= -EFAULT) comes from evlist__parse_sample():
-> > 
-> >   # perf record -a -o- sleep 1 | perf report -i- --stat
-> >   Can't parse sample, err = -14
-> >   0x271044 [0x38]: failed to process type: 9
-> >   Error:
-> >   failed to process sample
-> > 
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
+Hi
 
-Added this for the the benefit of stable@kernel.org:
+On 02.07.2021 11:19, Martin Blumenstingl wrote:
+> Hi Stephen,
+>
+> On Fri, Jul 2, 2021 at 3:02 AM Stephen Boyd <sboyd@kernel.org> wrote:
+> [...]
+>> My guess is that we have drivers copying the clk_ops from the
+>> divider_ops structure and so they are copying over round_rate but not
+>> determine_rate.
+> I just learned something new - thanks for investigating this as well!
+>
+> $ git grep "clk_divider_ops\.round_rate" drivers/
+> drivers/clk/bcm/clk-bcm2835.c:  return clk_divider_ops.round_rate(hw,
+> rate, parent_rate);
 
-Fixes: a4a4d0a7a2b20f78 ("perf report: Add --stats option to display quick data statistics")
- 
-> thanks,
-> jirka
-> 
-> > ---
-> >  tools/perf/builtin-report.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-> > index bc5c393021dc..8639bbe0969d 100644
-> > --- a/tools/perf/builtin-report.c
-> > +++ b/tools/perf/builtin-report.c
-> > @@ -729,9 +729,14 @@ static int count_sample_event(struct perf_tool *tool __maybe_unused,
-> >  	return 0;
-> >  }
-> >  
-> > +static int process_attr(struct perf_tool *tool __maybe_unused,
-> > +			union perf_event *event,
-> > +			struct evlist **pevlist);
-> > +
-> >  static void stats_setup(struct report *rep)
-> >  {
-> >  	memset(&rep->tool, 0, sizeof(rep->tool));
-> > +	rep->tool.attr = process_attr;
-> >  	rep->tool.sample = count_sample_event;
-> >  	rep->tool.no_warn = true;
-> >  }
-> > @@ -753,6 +758,7 @@ static void tasks_setup(struct report *rep)
-> >  		rep->tool.mmap = perf_event__process_mmap;
-> >  		rep->tool.mmap2 = perf_event__process_mmap2;
-> >  	}
-> > +	rep->tool.attr = process_attr;
-> >  	rep->tool.comm = perf_event__process_comm;
-> >  	rep->tool.exit = perf_event__process_exit;
-> >  	rep->tool.fork = perf_event__process_fork;
-> > -- 
-> > 2.32.0.93.g670b81a890-goog
-> > 
-> 
+I confirm that this issue appears also on Raspberry Pi 3b+ board. I was 
+about to write a bug report, but you were faster. The funny thing is 
+that is so nondeterministic, that automated bisecting failed to catch it.
 
+> drivers/clk/clk-stm32f4.c:      return clk_divider_ops.round_rate(hw,
+> rate, prate);
+> drivers/clk/clk-stm32h7.c:      return clk_divider_ops.round_rate(hw,
+> rate, prate);
+> drivers/clk/clk-stm32mp1.c:             req->rate =
+> clk_divider_ops.round_rate(hw, req->rate, &best_parent_rate);
+> drivers/clk/imx/clk-divider-gate.c:     return
+> clk_divider_ops.round_rate(hw, rate, prate);
+> $ git grep "clk_divider_ro_ops\.round_rate" drivers/
+> $
+>
+> Changing these over to use clk_divider_ops.determine_rate doesn't seem too hard.
+> The part that I am not sure about is how to organize the patches.
+> 1) amend the changes to all relevant drivers (from above) to this patch
+> 2) multiple patches:
+> - adding .determine_rate to the default divider ops (but not removing
+> .round_rate)
+> - a single patch for each relevant driver (from above)
+> - removing .round_rate from the default divider ops
+>
+> Another approach is to first create clk_divider_determine_rate() (as
+> done here) and export it.
+> Then I could have one individual patch for each relevant driver (from
+> above) to use:
+>    .determine_rate = clk_divider_determine_rate,
+> Then finally I could remove clk_divider_round_rate() and switch over
+> the default divider ops to .determine_rate as well.
+>
+> Which way do you prefer?
+>
+>
+> Best regards,
+> Martin
+>
+Best regards
 -- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-- Arnaldo
