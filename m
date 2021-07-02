@@ -2,107 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBB03B9DD1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0F43B9DDC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhGBI7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 04:59:11 -0400
-Received: from mout01.posteo.de ([185.67.36.65]:45095 "EHLO mout01.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231183AbhGBI7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 04:59:09 -0400
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 890CC240028
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 10:56:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1625216196; bh=TiLwUHSR7R0Qj3YVWzytod8xNxHzUWymnFs38evq0YU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GjNB7krnEHr4k1J8Q/asUpMJ3bG4aLw+w1Gf5RxxeVxEfVRCVkVWH7rmSM43gsjwf
-         6b4MNRWiVIhwUqtcWn4oaq+N4+IlRrnzs/P5KWPfL0ibhltnIF0Q3ulEnzrYkcFguS
-         NU+yF037JF2kU1mZWQvgs92NJQaqPQ1NSuKdwxIRfBr9+aYZ7pPmu3ddvUxsW03SCG
-         svFL50HU0H0kKIBZwO9zcZgf3s6XMD43ZBpwD6m6PWh1dbJamg4cp7XQ2fGDrVIAK4
-         5953D44AaJjeLbTbsQxClXoSSiwTO4/xqlDchgYWih7EKKplRbhJbrxgOn1Kj7RvKJ
-         mO7yuiDKsDFDA==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4GGTTW6dstz9rxS;
-        Fri,  2 Jul 2021 10:56:31 +0200 (CEST)
-Date:   Fri,  2 Jul 2021 08:56:31 +0000
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>
-To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        Ash Logan <ash@heyquark.com>, Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] powerpc: wii.dts: Expose the OTP on this platform
-Message-ID: <YN7Uv/43TwL4+9ic@latitude>
-References: <20210519095044.4109-1-linkmauve@linkmauve.fr>
- <20210519095044.4109-4-linkmauve@linkmauve.fr>
- <YNe5aW55SrXFGKFV@latitude>
- <20210701195655.knbcikdga57a7epx@luna>
+        id S231151AbhGBJCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 05:02:50 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45108 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230418AbhGBJCt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 05:02:49 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 555C62005F;
+        Fri,  2 Jul 2021 09:00:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625216416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=lXxrAJvjehNUyVTRE9GdwBU5ZEfgYvUxtPib1oNykLE=;
+        b=GdgFi0iPRtWxSfXAzQXTiUd8/pjb3fo7fQICjK8ECg24L9R2Zg12NU49BKfhcW4SCELQhp
+        idxnX1QAdSO10dFzTE7j4wX5iy85Q5LehEmje2GQFiyizq5hNQsDtUoF2XoObm1ydoZ88f
+        kW0E+Qh5GZGcJd4hrwhVrzpjhK+PjfU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625216416;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=lXxrAJvjehNUyVTRE9GdwBU5ZEfgYvUxtPib1oNykLE=;
+        b=D520AvdHQXfz62vwi3FX/lUIKLeowI6KVmfDrXHheUFdFHyn/GTHKK/bw9dEtW7z7I342c
+        l1Z5lDNNw4/pBKCQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id A33EE11CD6;
+        Fri,  2 Jul 2021 09:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625216416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=lXxrAJvjehNUyVTRE9GdwBU5ZEfgYvUxtPib1oNykLE=;
+        b=GdgFi0iPRtWxSfXAzQXTiUd8/pjb3fo7fQICjK8ECg24L9R2Zg12NU49BKfhcW4SCELQhp
+        idxnX1QAdSO10dFzTE7j4wX5iy85Q5LehEmje2GQFiyizq5hNQsDtUoF2XoObm1ydoZ88f
+        kW0E+Qh5GZGcJd4hrwhVrzpjhK+PjfU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625216416;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=lXxrAJvjehNUyVTRE9GdwBU5ZEfgYvUxtPib1oNykLE=;
+        b=D520AvdHQXfz62vwi3FX/lUIKLeowI6KVmfDrXHheUFdFHyn/GTHKK/bw9dEtW7z7I342c
+        l1Z5lDNNw4/pBKCQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id BxYCJZ/V3mAVMgAALh3uQQ
+        (envelope-from <lhenriques@suse.de>); Fri, 02 Jul 2021 09:00:15 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 0c881fca;
+        Fri, 2 Jul 2021 09:00:15 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Henriques <lhenriques@suse.de>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Petr Vorel <pvorel@suse.cz>, Steve French <sfrench@samba.org>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        linux-nfs@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>
+Subject: [PATCH v12] vfs: fix copy_file_range regression in cross-fs copies
+Date:   Fri,  2 Jul 2021 10:00:12 +0100
+Message-Id: <20210702090012.28458-1-lhenriques@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/oh87RkuYSLgv47m"
-Content-Disposition: inline
-In-Reply-To: <20210701195655.knbcikdga57a7epx@luna>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A regression has been reported by Nicolas Boichat, found while using the
+copy_file_range syscall to copy a tracefs file.  Before commit
+5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+kernel would return -EXDEV to userspace when trying to copy a file across
+different filesystems.  After this commit, the syscall doesn't fail anymore
+and instead returns zero (zero bytes copied), as this file's content is
+generated on-the-fly and thus reports a size of zero.
 
---/oh87RkuYSLgv47m
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch restores some cross-filesystem copy restrictions that existed
+prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+devices").  Filesystems are still allowed to fall-back to the VFS
+generic_copy_file_range() implementation, but that has now to be done
+explicitly.
 
-On Thu, Jul 01, 2021 at 09:56:55PM +0200, Emmanuel Gil Peyrot wrote:
-> On Sat, Jun 26, 2021 at 11:34:01PM +0000, Jonathan Neusch=C3=A4fer wrote:
-> > On Wed, May 19, 2021 at 11:50:43AM +0200, Emmanuel Gil Peyrot wrote:
-[...]
-> > > +		otp@d8001ec {
-> > > +			compatible =3D "nintendo,hollywood-otp";
-> > > +			reg =3D <0x0d8001ec 0x8>;
-> >=20
-> > The OTP registers overlap with the previous node, control@d800100.
-> > Not sure what's the best way to structure the devicetree in this case,
-> > maybe something roughly like the following (untested, unverified):
-> [snip]
->=20
-> I couldn=E2=80=99t get this to work, but additionally it looks like it sh=
-ould
-> start 0x100 earlier and contain pic1@d800030 and gpio@d8000c0, given
-> https://wiibrew.org/wiki/Hardware/Hollywood_Registers
->=20
-> Would it make sense, for the time being, to reduce the size of this
-> control@d800100 device to the single register currently being used by
-> arch/powerpc/platforms/embedded6xx/wii.c (0xd800194, used to reboot the
-> system) and leave the refactor of restart + OTP + PIC + GPIO for a
-> future series?
+The short-circuit code for the case where the copy length is zero has also
+been dropped from the VFS code.  This is because a zero size copy between
+two files shall provide a clear indication on whether or not the
+filesystem supports non-zero copies.
 
-Makes sense to me!
+nfsd is also modified to fall-back into generic_copy_file_range() in case
+vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
 
-Jonathan
+Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+Link: https://lore.kernel.org/linux-fsdevel/20210630161320.29006-1-lhenriques@suse.de/
+Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Luis Henriques <lhenriques@suse.de>
+---
+Changes since v11
+- added note about zero-size copies and a link to the corresponding
+  mailing-list discussion
+Changes since v10
+- simply remove the "if (len == 0)" short-circuit instead of checking if
+  the filesystem implements the syscall.  This is because a filesystem may
+  implement it but a particular instance (hint: overlayfs!) may not.
+Changes since v9
+- the early return from the syscall when len is zero now checks if the
+  filesystem is implemented, returning -EOPNOTSUPP if it is not and 0
+  otherwise.  Issue reported by test robot.
+  (obviously, dropped Amir's Reviewed-by and Olga's Tested-by tags)
+Changes since v8
+- Simply added Amir's Reviewed-by and Olga's Tested-by
+Changes since v7
+- set 'ret' to '-EOPNOTSUPP' before the clone 'if' statement so that the
+  error returned is always related to the 'copy' operation
+Changes since v6
+- restored i_sb checks for the clone operation
+Changes since v5
+- check if ->copy_file_range is NULL before calling it
+Changes since v4
+- nfsd falls-back to generic_copy_file_range() only *if* it gets -EOPNOTSUPP
+  or -EXDEV.
+Changes since v3
+- dropped the COPY_FILE_SPLICE flag
+- kept the f_op's checks early in generic_copy_file_checks, implementing
+  Amir's suggestions
+- modified nfsd to use generic_copy_file_range()
+Changes since v2
+- do all the required checks earlier, in generic_copy_file_checks(),
+  adding new checks for ->remap_file_range
+- new COPY_FILE_SPLICE flag
+- don't remove filesystem's fallback to generic_copy_file_range()
+- updated commit changelog (and subject)
+Changes since v1 (after Amir review)
+- restored do_copy_file_range() helper
+- return -EOPNOTSUPP if fs doesn't implement CFR
+- updated commit description
 
---/oh87RkuYSLgv47m
-Content-Type: application/pgp-signature; name="signature.asc"
+ fs/nfsd/vfs.c   |  8 +++++++-
+ fs/read_write.c | 52 +++++++++++++++++++++++--------------------------
+ 2 files changed, 31 insertions(+), 29 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmDe1JUACgkQCDBEmo7z
-X9vJqxAAyOC7GHGtEdGs0vs4QOo2/Kqcbn9qgnpKABaeF4UqeCCvRa8+mAAN3ai+
-87P+gZgBZoJb/p4bYR/kP7B4AtGBBhzAFTIyO1dLzt8bZtPpCcaOBWjKRlKGHVrH
-cQdBdPDTuhRbYR2iQLoweYXMiojsQqfCJVd5eEGXWEwItywRRtfZ3ZEVcPAzhNHK
-vhspIhK47tFZpgEK+bJza8GDjK2mgvDZp4+hNGzwKpzcjwEPgk+G4s+yT2xN0xDn
-4BP7UoER6NfpyQ5NYj81sGzcgzsWwCx9Tu/HeCA8wA30xxJQ/FUptyDw3hGuMiaM
-DQcRjAHCI+Yil/U3tB8XoNFx+xbkgvKj/DY9bm+IkbsFKki0eK63PhdNI9R//QuG
-zyTpzNNEvevNwtVH6stoBBLGqMDoXw2VuzgKmFkkTt0h7L7YCI5tYQ3aoZQi+tfl
-wpwi+dskP0BiICvv2n0CQketiITe3b3Q+yBwwXT5chcSh+TtliwJrzHWSK+DgE2r
-ixqJjg4Q6nDMsO7d8gwJTV/J3NAi3nIhIiuuFvtomqecOxq5jsnpyNRQTkFd0a19
-vrG//er+o0sOSrKcgD4he3K8rBzBMOt1+ZwcCgKwmlryHqB9iMqUyBXoBLHoy8s9
-CH+YMx0LNscsooI19FA595BOioLN+hlf8yprR54T5eARem3j1MQ=
-=jObg
------END PGP SIGNATURE-----
-
---/oh87RkuYSLgv47m--
+diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
+index 15adf1f6ab21..f54a88b3b4a2 100644
+--- a/fs/nfsd/vfs.c
++++ b/fs/nfsd/vfs.c
+@@ -569,6 +569,7 @@ __be32 nfsd4_clone_file_range(struct nfsd_file *nf_src, u64 src_pos,
+ ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
+ 			     u64 dst_pos, u64 count)
+ {
++	ssize_t ret;
+ 
+ 	/*
+ 	 * Limit copy to 4MB to prevent indefinitely blocking an nfsd
+@@ -579,7 +580,12 @@ ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
+ 	 * limit like this and pipeline multiple COPY requests.
+ 	 */
+ 	count = min_t(u64, count, 1 << 22);
+-	return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
++	ret = vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
++
++	if (ret == -EOPNOTSUPP || ret == -EXDEV)
++		ret = generic_copy_file_range(src, src_pos, dst, dst_pos,
++					      count, 0);
++	return ret;
+ }
+ 
+ __be32 nfsd4_vfs_fallocate(struct svc_rqst *rqstp, struct svc_fh *fhp,
+diff --git a/fs/read_write.c b/fs/read_write.c
+index 9db7adf160d2..049a2dda29f7 100644
+--- a/fs/read_write.c
++++ b/fs/read_write.c
+@@ -1395,28 +1395,6 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
+ }
+ EXPORT_SYMBOL(generic_copy_file_range);
+ 
+-static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
+-				  struct file *file_out, loff_t pos_out,
+-				  size_t len, unsigned int flags)
+-{
+-	/*
+-	 * Although we now allow filesystems to handle cross sb copy, passing
+-	 * a file of the wrong filesystem type to filesystem driver can result
+-	 * in an attempt to dereference the wrong type of ->private_data, so
+-	 * avoid doing that until we really have a good reason.  NFS defines
+-	 * several different file_system_type structures, but they all end up
+-	 * using the same ->copy_file_range() function pointer.
+-	 */
+-	if (file_out->f_op->copy_file_range &&
+-	    file_out->f_op->copy_file_range == file_in->f_op->copy_file_range)
+-		return file_out->f_op->copy_file_range(file_in, pos_in,
+-						       file_out, pos_out,
+-						       len, flags);
+-
+-	return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+-				       flags);
+-}
+-
+ /*
+  * Performs necessary checks before doing a file copy
+  *
+@@ -1434,6 +1412,25 @@ static int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
+ 	loff_t size_in;
+ 	int ret;
+ 
++	/*
++	 * Although we now allow filesystems to handle cross sb copy, passing
++	 * a file of the wrong filesystem type to filesystem driver can result
++	 * in an attempt to dereference the wrong type of ->private_data, so
++	 * avoid doing that until we really have a good reason.  NFS defines
++	 * several different file_system_type structures, but they all end up
++	 * using the same ->copy_file_range() function pointer.
++	 */
++	if (file_out->f_op->copy_file_range) {
++		if (file_in->f_op->copy_file_range !=
++		    file_out->f_op->copy_file_range)
++			return -EXDEV;
++	} else if (file_in->f_op->remap_file_range) {
++		if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
++			return -EXDEV;
++	} else {
++                return -EOPNOTSUPP;
++	}
++
+ 	ret = generic_file_rw_checks(file_in, file_out);
+ 	if (ret)
+ 		return ret;
+@@ -1497,11 +1494,9 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+ 	if (unlikely(ret))
+ 		return ret;
+ 
+-	if (len == 0)
+-		return 0;
+-
+ 	file_start_write(file_out);
+ 
++	ret = -EOPNOTSUPP;
+ 	/*
+ 	 * Try cloning first, this is supported by more file systems, and
+ 	 * more efficient if both clone and copy are supported (e.g. NFS).
+@@ -1520,9 +1515,10 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+ 		}
+ 	}
+ 
+-	ret = do_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+-				flags);
+-	WARN_ON_ONCE(ret == -EOPNOTSUPP);
++	if (file_out->f_op->copy_file_range)
++		ret = file_out->f_op->copy_file_range(file_in, pos_in,
++						      file_out, pos_out,
++						      len, flags);
+ done:
+ 	if (ret > 0) {
+ 		fsnotify_access(file_in);
