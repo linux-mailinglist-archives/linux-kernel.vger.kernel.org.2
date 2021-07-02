@@ -2,161 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8983BA368
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 18:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495D23BA371
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 19:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhGBQ7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 12:59:36 -0400
-Received: from smtprelay0179.hostedemail.com ([216.40.44.179]:38772 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229455AbhGBQ7e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 12:59:34 -0400
-Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 1BBDF837F27E;
-        Fri,  2 Jul 2021 16:57:01 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id D6515D1517;
-        Fri,  2 Jul 2021 16:56:52 +0000 (UTC)
-Message-ID: <7a2ef915bd08a1c0277b9633e20905c0ca62c568.camel@perches.com>
-Subject: Re: [PATCH V7 01/18] perf/core: Use static_call to optimize
- perf_guest_info_callbacks
-From:   Joe Perches <joe@perches.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Zhu Lingshan <lingshan.zhu@intel.com>, wanpengli@tencent.com,
-        Like Xu <like.xu@linux.intel.com>, eranian@google.com,
-        weijiang.yang@intel.com, Guo Ren <guoren@kernel.org>,
-        linux-riscv@lists.infradead.org, Will Deacon <will@kernel.org>,
-        kvmarm@lists.cs.columbia.edu, kan.liang@linux.intel.com,
-        ak@linux.intel.com, kvm@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>, joro@8bytes.org, x86@kernel.org,
-        linux-csky@vger.kernel.org, wei.w.wang@intel.com,
-        xen-devel@lists.xenproject.org, liuxiangdong5@huawei.com,
-        bp@alien8.de, Paul Walmsley <paul.walmsley@sifive.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        linux-arm-kernel@lists.infradead.org, jmattson@google.com,
-        like.xu.linux@gmail.com, Nick Hu <nickhu@andestech.com>,
-        seanjc@google.com, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, vkuznets@redhat.com
-Date:   Fri, 02 Jul 2021 09:56:51 -0700
-In-Reply-To: <20210702163836.GB94260@C02TD0UTHF1T.local>
-References: <20210622094306.8336-1-lingshan.zhu@intel.com>
-         <20210622094306.8336-2-lingshan.zhu@intel.com>
-         <YN722HIrzc6Z2+oD@hirez.programming.kicks-ass.net>
-         <7379289718c6826dd1affec5824b749be2aee0a4.camel@perches.com>
-         <20210702163836.GB94260@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        id S230048AbhGBRFB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 2 Jul 2021 13:05:01 -0400
+Received: from 151-0-195-85.ip282.fastwebnet.it ([151.0.195.85]:27501 "EHLO
+        S510.gigasys" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229532AbhGBRFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 13:05:01 -0400
+Received: from [192.168.1.105] ([156.0.214.24])
+        (authenticated bits=0)
+        by S510.gigasys (9.0.0) with ESMTP id 162H0wwm002235
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 sabrina@S510.gigasys verify=NOT);
+        Fri, 2 Jul 2021 19:01:06 +0200
+Message-Id: <202107021701.162H0wwm002235@S510.gigasys>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.40
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: D6515D1517
-X-Stat-Signature: yfcchsbgyrrjqd9annscud3jta5gtkxi
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/FrPSf3Ewjv8gI9yMKoa9Lq2JHlpGAS2Q=
-X-HE-Tag: 1625245012-826405
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Your Attention Is Needed.
+To:     Recipients <marialpaton@online.ee>
+From:   "David Dossou" <marialpaton@online.ee>
+Date:   Fri, 02 Jul 2021 18:00:57 +0100
+Reply-To: revdaviddossou@gmail.com
+X-Antivirus: verificato in 0.010sec su S510.gigasys ([192.168.1.2])
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-07-02 at 17:38 +0100, Mark Rutland wrote:
-> On Fri, Jul 02, 2021 at 09:00:22AM -0700, Joe Perches wrote:
-> > On Fri, 2021-07-02 at 13:22 +0200, Peter Zijlstra wrote:
-> > > On Tue, Jun 22, 2021 at 05:42:49PM +0800, Zhu Lingshan wrote:
-[]
-> > > > +	if (perf_guest_cbs && perf_guest_cbs->handle_intel_pt_intr)
-> > > > +		static_call_update(x86_guest_handle_intel_pt_intr,
-> > > > +				   perf_guest_cbs->handle_intel_pt_intr);
-> > > > +}
-> > > 
-> > > Coding style wants { } on that last if().
-> > 
-> > That's just your personal preference.
-> > 
-> > The coding-style document doesn't require that.
-> > 
-> > It just says single statement.  It's not the number of
-> > vertical lines or characters required for the statement.
-> > 
-> > ----------------------------------
-> > 
-> > Do not unnecessarily use braces where a single statement will do.
-> > 
-> > .. code-block:: c
-> > 
-> > 	if (condition)
-> > 		action();
-> > 
-> > and
-> > 
-> > .. code-block:: none
-> > 
-> > 	if (condition)
-> > 		do_this();
-> > 	else
-> > 		do_that();
-> > 
-> > This does not apply if only one branch of a conditional statement is a single
-> > statement; in the latter case use braces in both branches:
-> 
-> Immediately after this, we say:
-> 
-> > Also, use braces when a loop contains more than a single simple statement:
-> > 
-> > .. code-block:: c
-> > 
-> >         while (condition) {
-> >                 if (test)
-> >                         do_something();
-> >         }
-> > 
-> 
-> ... and while that says "a loop", the principle is obviously supposed to
-> apply to conditionals too; structurally they're no different. We should
-> just fix the documentation to say "a loop or conditional", or something
-> to that effect.
+Your Attention Is Needed
 
-<shrug>  Maybe.
+I write to inform you that we have already sent you $5,200.00 dollars through Western Union as we have been given the mandate to transfer your full compensation payment total sum of USD950,000.00 via western Union by this government.
 
-I think there are _way_ too many existing obvious uses where the
-statement that follows a conditional is multi-line.
+I was calling your telephone number to give you the information through the phone but you did not pick up my calls throughout yesterday, even this morning. Now, I decided to email you the MTCN and sender name so that you will pick up this $5,200.00 to enable us to send another $5,200.00 today as you know we will be sending you only $5,200.00 per day.
 
-	if (foo)
-		printk(fmt,
-		       args...);
+Please pick up this information and run to western union to pick up the $5,200.00 and call me back to send you another payment today, My direct phone line is +229-61380-625 once you picked up this $5,200.00 today. 
 
-where the braces wouldn't add anything other than more vertical space.
+Here is the western union information to pick up the $5,200.00,
 
-I don't much care one way or another other than Peter's somewhat ambiguous
-use of the phrase "coding style".
+Senderâ€™s First Name____David 
+Senders Second Name____Dossou
+Senders Country Benin Republic
+Text question___When
+Answer__45Minutes
+Amount$5,200.00
+MTCN Number___ 4420429799
 
-checkpatch doesn't emit a message either way.
------------------------------------------
-$ cat t_multiline.c
-// SPDX-License-Identifier: GPL-2.0-only
+I am waiting for your call once you pick up this $5,200.00. Please email me your direct telephone number because I need to be calling you once we send any payment for the information
 
-void foo(void)
-{
-	if (foo) {
-		pr_info(fmt,
-			args);
-	}
+Thanks
 
-	if (foo)
-		pr_info(fmt,
-			args);
-
-	if (foo)
-		pr_info(fmt, args);
-}
-
-$ ./scripts/checkpatch.pl -f --strict t_multiline.c
-total: 0 errors, 0 warnings, 0 checks, 16 lines checked
-
-t_multiline.c has no obvious style problems and is ready for submission.
------------------------------------------
-
-cheers, Joe
-
-
+Rev. David Dossou.
