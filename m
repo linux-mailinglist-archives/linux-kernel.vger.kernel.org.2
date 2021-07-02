@@ -2,74 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA2F3B9BEB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 07:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710B33B9BED
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 07:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbhGBFTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 01:19:19 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:34213 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhGBFTR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 01:19:17 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 01 Jul 2021 22:16:46 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 01 Jul 2021 22:16:43 -0700
-X-QCInternal: smtphost
-Received: from c-mansur-linux.qualcomm.com ([10.204.90.208])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 02 Jul 2021 10:46:25 +0530
-Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
-        id 7F795224DC; Fri,  2 Jul 2021 10:46:24 +0530 (IST)
-From:   Mansur Alisha Shaik <mansur@codeaurora.org>
-To:     bryan.odonoghue@linaro.org, linux-media@vger.kernel.org,
-        stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, dikshita@codeaurora.org,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-Subject: [V3] venus: helper: do not set constrained parameters for UBWC
-Date:   Fri,  2 Jul 2021 10:46:19 +0530
-Message-Id: <1625202979-23232-1-git-send-email-mansur@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S229785AbhGBFVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 01:21:47 -0400
+Received: from mga17.intel.com ([192.55.52.151]:60441 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229455AbhGBFVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 01:21:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="189056877"
+X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
+   d="scan'208";a="189056877"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 22:19:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
+   d="scan'208";a="626630655"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 01 Jul 2021 22:19:12 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lzBa4-000Aua-0K; Fri, 02 Jul 2021 05:19:12 +0000
+Date:   Fri, 02 Jul 2021 13:18:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.06.30a] BUILD SUCCESS
+ 9a6b5a10785f4d9b4f073736e6648fa3851882bd
+Message-ID: <60dea1a1.Pz0fzj+V1gumNhCN%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-plane constraints firmware interface is to override the default
-alignment for a given color format. By default venus hardware has
-alignments as 128x32, but NV12 was defined differently to meet
-various usecases. Compressed NV12 has always been aligned as 128x32,
-hence not needed to override the default alignment.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.06.30a
+branch HEAD: 9a6b5a10785f4d9b4f073736e6648fa3851882bd  rcu: Use per_cpu_ptr to get the pointer of per_cpu variable
 
-Fixes: bc28936bbba9 ("media: venus: helpers, hfi, vdec: Set actual plane constraints to FW")
-Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+elapsed time: 727m
 
-Changes in V3:
-- Elaborated commit message as per comments by Bryan
-- As per Bryan comment alligned fixes in single line.
+configs tested: 102
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                       imx_v6_v7_defconfig
+arm                   milbeaut_m10v_defconfig
+mips                         mpc30x_defconfig
+xtensa                           alldefconfig
+mips                            e55_defconfig
+sh                         ecovec24_defconfig
+mips                           ip28_defconfig
+mips                             allmodconfig
+arm                         assabet_defconfig
+arm                          badge4_defconfig
+m68k                                defconfig
+arm                     eseries_pxa_defconfig
+sh                          sdk7780_defconfig
+openrisc                            defconfig
+arm                        spear3xx_defconfig
+sh                          kfr2r09_defconfig
+mips                      bmips_stb_defconfig
+powerpc                          g5_defconfig
+mips                       bmips_be_defconfig
+arm                          ixp4xx_defconfig
+arm                        oxnas_v6_defconfig
+arc                     haps_hs_smp_defconfig
+m68k                         apollo_defconfig
+sh                         microdev_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20210630
+x86_64               randconfig-a001-20210630
+x86_64               randconfig-a004-20210630
+x86_64               randconfig-a005-20210630
+x86_64               randconfig-a006-20210630
+x86_64               randconfig-a003-20210630
+i386                 randconfig-a004-20210630
+i386                 randconfig-a001-20210630
+i386                 randconfig-a003-20210630
+i386                 randconfig-a002-20210630
+i386                 randconfig-a005-20210630
+i386                 randconfig-a006-20210630
+i386                 randconfig-a014-20210630
+i386                 randconfig-a011-20210630
+i386                 randconfig-a016-20210630
+i386                 randconfig-a012-20210630
+i386                 randconfig-a013-20210630
+i386                 randconfig-a015-20210630
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210630
+x86_64               randconfig-b001-20210702
+x86_64               randconfig-a012-20210630
+x86_64               randconfig-a015-20210630
+x86_64               randconfig-a016-20210630
+x86_64               randconfig-a013-20210630
+x86_64               randconfig-a011-20210630
+x86_64               randconfig-a014-20210630
+
 ---
- drivers/media/platform/qcom/venus/helpers.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
-index 1fe6d46..601ee3e 100644
---- a/drivers/media/platform/qcom/venus/helpers.c
-+++ b/drivers/media/platform/qcom/venus/helpers.c
-@@ -1137,8 +1137,12 @@ int venus_helper_set_format_constraints(struct venus_inst *inst)
- 	if (!IS_V6(inst->core))
- 		return 0;
- 
-+	if (inst->opb_fmt == HFI_COLOR_FORMAT_NV12_UBWC)
-+		return 0;
-+
- 	pconstraint.buffer_type = HFI_BUFFER_OUTPUT2;
- 	pconstraint.num_planes = 2;
-+
- 	pconstraint.plane_format[0].stride_multiples = 128;
- 	pconstraint.plane_format[0].max_stride = 8192;
- 	pconstraint.plane_format[0].min_plane_buffer_height_multiple = 32;
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
