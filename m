@@ -2,173 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37A13BA000
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BF43BA003
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232017AbhGBLrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 07:47:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50384 "EHLO mail.kernel.org"
+        id S231981AbhGBLvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 07:51:16 -0400
+Received: from mga09.intel.com ([134.134.136.24]:42653 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232006AbhGBLrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 07:47:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ED5F61402;
-        Fri,  2 Jul 2021 11:44:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625226290;
-        bh=6BZPEDKAj+7kvkj991rbBYP4cz+T/5lQA2vpcgGtwcU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=cPyRTlp20NdcAXAR+EjKnqf7Mh9jzhMAESmqRd6Ukuwh92MIeciNqVVHB3zsLbALQ
-         ayKVqghJxGvQFtseUyJNu4iA5qE0EtoiBBjtBbRBnjDkXA5QGyMFpVvuYelneeRu3r
-         tub4AdXgAktQRlodmqWOErWQlMi1mUUE8V3oIUYNDgNDh+Yz9mXyDn44WcsTm8dgPO
-         DghL1e5W7E2SyCKa0O1SFeb5DIs2qturxcyWNEA+yXA7kVpEK5+6NyBumcUoQJkdTp
-         304WLhGsKQFnaNNIEYwtO6ySYRt7dnmuQkB3WTLZNLfjnSs0LWzu9PFqCvfy8zAuHG
-         JpLmk2p4XMdiA==
-Message-ID: <43b5f2c7e7e5e5ed35c8e3de2eafeb960f267836.camel@kernel.org>
-Subject: Re: [PATCH 1/2] fcntl: fix potential deadlocks for &fown_struct.lock
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        bfields@fieldses.org, viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
-Date:   Fri, 02 Jul 2021 07:44:48 -0400
-In-Reply-To: <20210702091831.615042-2-desmondcheongzx@gmail.com>
-References: <20210702091831.615042-1-desmondcheongzx@gmail.com>
-         <20210702091831.615042-2-desmondcheongzx@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+        id S229739AbhGBLvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 07:51:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="208673636"
+X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
+   d="scan'208";a="208673636"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 04:48:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
+   d="scan'208";a="644850790"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 02 Jul 2021 04:48:40 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lzHey-000B3w-9d; Fri, 02 Jul 2021 11:48:40 +0000
+Date:   Fri, 02 Jul 2021 19:48:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ a030f26738499018bb5fe3da1516896efdf809a0
+Message-ID: <60defcfc.18RVV5KUzMOUe4f0%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-07-02 at 17:18 +0800, Desmond Cheong Zhi Xi wrote:
-> Syzbot reports a potential deadlock in do_fcntl:
-> 
-> ========================================================
-> WARNING: possible irq lock inversion dependency detected
-> 5.12.0-syzkaller #0 Not tainted
-> --------------------------------------------------------
-> syz-executor132/8391 just changed the state of lock:
-> ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: f_getown_ex fs/fcntl.c:211 [inline]
-> ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: do_fcntl+0x8b4/0x1200 fs/fcntl.c:395
-> but this lock was taken by another, HARDIRQ-safe lock in the past:
->  (&dev->event_lock){-...}-{2:2}
-> 
-> and interrupts could create inverse lock ordering between them.
-> 
-> other info that might help us debug this:
-> Chain exists of:
->   &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
-> 
->  Possible interrupt unsafe locking scenario:
-> 
->        CPU0                    CPU1
->        ----                    ----
->   lock(&f->f_owner.lock);
->                                local_irq_disable();
->                                lock(&dev->event_lock);
->                                lock(&new->fa_lock);
->   <Interrupt>
->     lock(&dev->event_lock);
-> 
->  *** DEADLOCK ***
-> 
-> This happens because there is a lock hierarchy of
-> &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
-> from the following call chain:
-> 
->   input_inject_event():
->     spin_lock_irqsave(&dev->event_lock,...);
->     input_handle_event():
->       input_pass_values():
->         input_to_handler():
->           evdev_events():
->             evdev_pass_values():
->               spin_lock(&client->buffer_lock);
->               __pass_event():
->                 kill_fasync():
->                   kill_fasync_rcu():
->                     read_lock(&fa->fa_lock);
->                     send_sigio():
->                       read_lock_irqsave(&fown->lock,...);
-> 
-> However, since &dev->event_lock is HARDIRQ-safe, interrupts have to be
-> disabled while grabbing &f->f_owner.lock, otherwise we invert the lock
-> hierarchy.
-> 
-> Hence, we replace calls to read_lock/read_unlock on &f->f_owner.lock,
-> with read_lock_irq/read_unlock_irq.
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: a030f26738499018bb5fe3da1516896efdf809a0  Merge branch 'urgent.2021.07.01a' into HEAD
 
-Patches look reasonable overall, but why does this one use read_lock_irq
-and the other one use read_lock_irqsave? Don't we need to *_irqsasve in
-both patches?
+i386-tinyconfig vmlinux size:
 
++-------+------------------------------+------------------------------------------+
+| DELTA |            SYMBOL            |                  COMMIT                  |
++-------+------------------------------+------------------------------------------+
+| +2412 | TOTAL                        | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+| +2190 | TEXT                         | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|  +198 | DATA                         | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|  +565 | init.text                    | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|  +206 | __get_vm_area_node.isra()    | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|  +154 | alloc_ucounts()              | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|  +150 | perf_clear_dirty_counters()  | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|  +140 | page_vma_mapped_walk()       | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|  +113 | sld_setup()                  | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|  +100 | inc_rlimit_ucounts()         | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   +97 | unmap_mapping_range_tree()   | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   +96 | vma_address()                | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   +88 | fork_init()                  | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   +83 | user_namespace_sysctl_init() | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   +81 | set_cred_ucounts()           | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   +79 | vmalloc_no_huge()            | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   +74 | amd_get_highest_perf()       | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   +70 | force_sig_perf()             | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   +68 | init_ucounts                 | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   +66 | unmap_mapping_page()         | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   +64 | intel_spr_extra_regs         | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   -64 | __kthread_cancel_work()      | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   -69 | parse_reservelow()           | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|   -89 | unmap_mapping_pages()        | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|  -166 | inc_ucount()                 | 6efb943b8616..a030f2673849 (ALL COMMITS) |
+|  -206 | __get_vm_area_node()         | 6efb943b8616..a030f2673849 (ALL COMMITS) |
++-------+------------------------------+------------------------------------------+
 
-> Reported-and-tested-by: syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
-> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> ---
->  fs/fcntl.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/fcntl.c b/fs/fcntl.c
-> index dfc72f15be7f..cf9e81dfa615 100644
-> --- a/fs/fcntl.c
-> +++ b/fs/fcntl.c
-> @@ -150,7 +150,8 @@ void f_delown(struct file *filp)
->  pid_t f_getown(struct file *filp)
->  {
->  	pid_t pid = 0;
-> -	read_lock(&filp->f_owner.lock);
-> +
-> +	read_lock_irq(&filp->f_owner.lock);
->  	rcu_read_lock();
->  	if (pid_task(filp->f_owner.pid, filp->f_owner.pid_type)) {
->  		pid = pid_vnr(filp->f_owner.pid);
-> @@ -158,7 +159,7 @@ pid_t f_getown(struct file *filp)
->  			pid = -pid;
->  	}
->  	rcu_read_unlock();
-> -	read_unlock(&filp->f_owner.lock);
-> +	read_unlock_irq(&filp->f_owner.lock);
->  	return pid;
->  }
->  
-> @@ -208,7 +209,7 @@ static int f_getown_ex(struct file *filp, unsigned long arg)
->  	struct f_owner_ex owner = {};
->  	int ret = 0;
->  
-> -	read_lock(&filp->f_owner.lock);
-> +	read_lock_irq(&filp->f_owner.lock);
->  	rcu_read_lock();
->  	if (pid_task(filp->f_owner.pid, filp->f_owner.pid_type))
->  		owner.pid = pid_vnr(filp->f_owner.pid);
-> @@ -231,7 +232,7 @@ static int f_getown_ex(struct file *filp, unsigned long arg)
->  		ret = -EINVAL;
->  		break;
->  	}
-> -	read_unlock(&filp->f_owner.lock);
-> +	read_unlock_irq(&filp->f_owner.lock);
->  
->  	if (!ret) {
->  		ret = copy_to_user(owner_p, &owner, sizeof(owner));
-> @@ -249,10 +250,10 @@ static int f_getowner_uids(struct file *filp, unsigned long arg)
->  	uid_t src[2];
->  	int err;
->  
-> -	read_lock(&filp->f_owner.lock);
-> +	read_lock_irq(&filp->f_owner.lock);
->  	src[0] = from_kuid(user_ns, filp->f_owner.uid);
->  	src[1] = from_kuid(user_ns, filp->f_owner.euid);
-> -	read_unlock(&filp->f_owner.lock);
-> +	read_unlock_irq(&filp->f_owner.lock);
->  
->  	err  = put_user(src[0], &dst[0]);
->  	err |= put_user(src[1], &dst[1]);
+elapsed time: 727m
 
--- 
-Jeff Layton <jlayton@kernel.org>
+configs tested: 99
+configs skipped: 2
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                      fuloong2e_defconfig
+arm                         vf610m4_defconfig
+sh                           se7619_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sh                           se7780_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                    socrates_defconfig
+arm                            lart_defconfig
+ia64                        generic_defconfig
+mips                     loongson2k_defconfig
+sh                          sdk7780_defconfig
+arm                         assabet_defconfig
+m68k                        mvme147_defconfig
+m68k                        m5272c3_defconfig
+powerpc                 mpc837x_rdb_defconfig
+powerpc                     tqm8541_defconfig
+mips                         tb0219_defconfig
+arm                        spear6xx_defconfig
+mips                           xway_defconfig
+arm                          ixp4xx_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20210630
+x86_64               randconfig-a001-20210630
+x86_64               randconfig-a004-20210630
+x86_64               randconfig-a005-20210630
+x86_64               randconfig-a006-20210630
+x86_64               randconfig-a003-20210630
+i386                 randconfig-a004-20210630
+i386                 randconfig-a001-20210630
+i386                 randconfig-a003-20210630
+i386                 randconfig-a002-20210630
+i386                 randconfig-a005-20210630
+i386                 randconfig-a006-20210630
+i386                 randconfig-a014-20210630
+i386                 randconfig-a011-20210630
+i386                 randconfig-a016-20210630
+i386                 randconfig-a012-20210630
+i386                 randconfig-a013-20210630
+i386                 randconfig-a015-20210630
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210630
+x86_64               randconfig-a012-20210630
+x86_64               randconfig-a015-20210630
+x86_64               randconfig-a016-20210630
+x86_64               randconfig-a013-20210630
+x86_64               randconfig-a011-20210630
+x86_64               randconfig-a014-20210630
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
