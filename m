@@ -2,184 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFEF3B9CC7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 09:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD813B9CC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 09:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhGBHOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 03:14:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230048AbhGBHOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 03:14:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C33A613EE;
-        Fri,  2 Jul 2021 07:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625209901;
-        bh=eoG5+LPlW39s5b8KsuIE+kZNo2XuizVk3AMbRXID92k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WjV577dYilmAtE4zd343jmaQBJpg+v1rMJVBq4ci97U8SnncF3zSnP0+g2DJbD33a
-         LyGbeaz0A4lEUW1lgJ6yhBjcasegZqTx2ZG2mF7ulmi4ASPXkAn4wokQRM/kXxo/F4
-         epFRA0vsBjoUaRQXyb4bo9hGxGrAot06ZNIMj/c8=
-Date:   Fri, 2 Jul 2021 09:11:39 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, jeyu@kernel.org,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        rafael@kernel.org, axboe@kernel.dk, tj@kernel.org, mbenes@suse.com,
-        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
-        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] zram: fix deadlock with sysfs attribute usage and
- module removal
-Message-ID: <YN68K7JaAnM/TX69@kroah.com>
-References: <20210702043716.2692247-1-mcgrof@kernel.org>
- <20210702043716.2692247-3-mcgrof@kernel.org>
- <YN6rBKIHmLhEo36w@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YN6rBKIHmLhEo36w@google.com>
+        id S230176AbhGBHOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 03:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230157AbhGBHOW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 03:14:22 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C08C061765
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 00:11:51 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id r15-20020a0562140c4fb0290262f40bf4bcso5594386qvj.11
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 00:11:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=HBjx96dRvIYpvLm9bDce2WQF6RaXhOM1qkXEjF3chQI=;
+        b=vqiqhchLV2gT4U8J5tgFK6IYRNU7yAhHftRlqQdbbKrd1a0Dah7U7nbSEW4Ib34+Q+
+         e5ggChBQeS9T4rZi9vXd7PpWhtWstB+7OGSGpSq5Luy9a2XsJreHA8dPpvM74ZrE5HPO
+         8jQEMhGCcP6d/Oq/sVdWushjB6jzxzl6I1JQzSqALfACNHhmWk+H57WxsPRnhoEPi03E
+         lCStBDLFIGG45xCjbqnmMMKy++0cwNxzZV+n6IfmG1EVS998zYwciGSx3lgrhZ0mWKSQ
+         3atYvgpKueteQbEoFpIVqwCTbFdfIED63q09L45NCUT7C2qODDW14OopAFY8qNxMpm5N
+         9Brg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=HBjx96dRvIYpvLm9bDce2WQF6RaXhOM1qkXEjF3chQI=;
+        b=EqkzEXxw/mqKDKICJXn8ubAoVrdi7i7FJ8fl/nomLatWqpkt8uE7ATGBsLId9YZ1KL
+         tgwtdWaDAJgabBZy8m/l/5Ep6ZaMIT1zfCK8k2tdq26CNE/MqNUngRAScUqXOr6eLhcU
+         Bas1QFupyD+x+ftyj7+9Japk7sSjJkocYFsi2Y0BEk4j75baNi8S/WmYGyDUn0i45w8z
+         NYRqyHufSjGjlUZuunNGEr0/u36tSVS6Ee4zxQCisGTpF/mT6RSbveiUXIayylp3FCBB
+         AWUwz1xR7KAgcqbrSIlVWhVvIsf5RnMfkCwUWMBOMTmi1lpjjMJEG6i285b1vLC5QvmL
+         j/Zg==
+X-Gm-Message-State: AOAM533oAA3dLIQFZ8iOkWxftQFadTMJHbqxNah/PBMSKAPwfsejJ5tW
+        zaZG6cslKbweE9Dq45AcyuUZne8C2JMf
+X-Google-Smtp-Source: ABdhPJw3/J4TdhG5Zpt5/mAeePK+GXLjosZvQn5DY6EGnZ1QYFmEAXyDqDmIcAaDPmUxfVwMdhAEotKrWfDN
+X-Received: from gthelen2.svl.corp.google.com ([2620:15c:2cd:202:81c6:dd12:da9f:dd72])
+ (user=gthelen job=sendgmr) by 2002:a0c:f78a:: with SMTP id
+ s10mr3743938qvn.61.1625209910018; Fri, 02 Jul 2021 00:11:50 -0700 (PDT)
+Date:   Fri, 02 Jul 2021 00:11:48 -0700
+In-Reply-To: <YN6qf51XfkHFsDx/@kroah.com>
+Message-Id: <xr93czs1p4uj.fsf@gthelen2.svl.corp.google.com>
+Mime-Version: 1.0
+References: <20210702054754.2056918-1-gthelen@google.com> <YN6qf51XfkHFsDx/@kroah.com>
+Subject: Re: [PATCH] usb: xhci: avoid renesas_usb_fw.mem when it's unusable
+From:   Greg Thelen <gthelen@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 10:58:28PM -0700, Minchan Kim wrote:
-> On Thu, Jul 01, 2021 at 09:37:16PM -0700, Luis Chamberlain wrote:
-> > When sysfs attributes use a lock also used on module removal we can
-> > potentially deadlock. This happens when for instance a sysfs file on
-> > a driver is used, then at the same time we have module removal call
-> > trigger. The module removal call code holds a lock, and then the sysfs
-> > file entry waits for the same lock. While holding the lock the module
-> > removal tries to remove the sysfs entries, but these cannot be removed
-> > yet as one is waiting for a lock. This won't complete as the lock is
-> > already held. Likewise module removal cannot complete, and so we deadlock.
-> > 
-> > To fix this we just *try* to get a refcount to the module when a shared
-> > lock is used, prior to mucking with a sysfs attribute. If this fails we
-> > just give up right away.
-> > 
-> > We use a try method as a full lock means we'd then make our sysfs
-> > attributes busy us out from possible module removal, and so userspace
-> > could force denying module removal, a silly form of "DOS" against module
-> > removal. A try lock on the module removal ensures we give priority to
-> > module removal and interacting with sysfs attributes only comes second.
-> > Using a full lock could mean for instance that if you don't stop poking
-> > at sysfs files you cannot remove a module.
-> > 
-> > This deadlock was first reported with the zram driver, a sketch of how
-> > this can happen follows:
-> > 
-> > CPU A                              CPU B
-> >                                    whatever_store()
-> > module_unload
-> >   mutex_lock(foo)
-> >                                    mutex_lock(foo)
-> >    del_gendisk(zram->disk);
-> >      device_del()
-> >        device_remove_groups()
-> > 
-> > In this situation whatever_store() is waiting for the mutex foo to
-> > become unlocked, but that won't happen until module removal is complete.
-> > But module removal won't complete until the sysfs file being poked
-> > completes which is waiting for a lock already held.
-> > 
-> > This is a generic kernel issue with sysfs files which use any lock also
-> > used on module removal. Different generic solutions have been proposed.
-> > One approach proposed is by directly by augmenting attributes with module
-> > information [0]. This patch implements a solution by adding macros with
-> > the prefix MODULE_DEVICE_ATTR_*() which accomplish the same. Until we
-> > don't have a generic agreed upon solution for this shared between drivers,
-> > we must implement a fix for this on each driver.
-> > 
-> > We make zram use the new MODULE_DEVICE_ATTR_*() helpers, and completely
-> > open code the solution for class attributes as there are only a few of
-> > those.
-> > 
-> > This issue can be reproduced easily on the zram driver as follows:
-> > 
-> > Loop 1 on one terminal:
-> > 
-> > while true;
-> > 	do modprobe zram;
-> > 	modprobe -r zram;
-> > done
-> > 
-> > Loop 2 on a second terminal:
-> > while true; do
-> > 	echo 1024 >  /sys/block/zram0/disksize;
-> > 	echo 1 > /sys/block/zram0/reset;
-> > done
-> > 
-> > Without this patch we end up in a deadlock, and the following
-> > stack trace is produced which hints to us what the issue was:
-> > 
-> > INFO: task bash:888 blocked for more than 120 seconds.
-> >       Tainted: G            E 5.12.0-rc1-next-20210304+ #4
-> > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > task:bash            state:D stack:    0 pid:  888 ppid: 887 flags:<etc>
-> > Call Trace:
-> >  __schedule+0x2e4/0x900
-> >  schedule+0x46/0xb0
-> >  schedule_preempt_disabled+0xa/0x10
-> >  __mutex_lock.constprop.0+0x2c3/0x490
-> >  ? _kstrtoull+0x35/0xd0
-> >  reset_store+0x6c/0x160 [zram]
-> >  kernfs_fop_write_iter+0x124/0x1b0
-> >  new_sync_write+0x11c/0x1b0
-> >  vfs_write+0x1c2/0x260
-> >  ksys_write+0x5f/0xe0
-> >  do_syscall_64+0x33/0x80
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > RIP: 0033:0x7f34f2c3df33
-> > RSP: 002b:00007ffe751df6e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> > RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f34f2c3df33
-> > RDX: 0000000000000002 RSI: 0000561ccb06ec10 RDI: 0000000000000001
-> > RBP: 0000561ccb06ec10 R08: 000000000000000a R09: 0000000000000001
-> > R10: 0000561ccb157590 R11: 0000000000000246 R12: 0000000000000002
-> > R13: 00007f34f2d0e6a0 R14: 0000000000000002 R15: 00007f34f2d0e8a0
-> > INFO: task modprobe:1104 can't die for more than 120 seconds.
-> > task:modprobe        state:D stack:    0 pid: 1104 ppid: 916 flags:<etc>
-> > Call Trace:
-> >  __schedule+0x2e4/0x900
-> >  schedule+0x46/0xb0
-> >  __kernfs_remove.part.0+0x228/0x2b0
-> >  ? finish_wait+0x80/0x80
-> >  kernfs_remove_by_name_ns+0x50/0x90
-> >  remove_files+0x2b/0x60
-> >  sysfs_remove_group+0x38/0x80
-> >  sysfs_remove_groups+0x29/0x40
-> >  device_remove_attrs+0x4a/0x80
-> >  device_del+0x183/0x3e0
-> >  ? mutex_lock+0xe/0x30
-> >  del_gendisk+0x27a/0x2d0
-> >  zram_remove+0x8a/0xb0 [zram]
-> >  ? hot_remove_store+0xf0/0xf0 [zram]
-> >  zram_remove_cb+0xd/0x10 [zram]
-> >  idr_for_each+0x5e/0xd0
-> >  destroy_devices+0x39/0x6f [zram]
-> >  __do_sys_delete_module+0x190/0x2a0
-> >  do_syscall_64+0x33/0x80
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > RIP: 0033:0x7f32adf727d7
-> > RSP: 002b:00007ffc08bb38a8 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
-> > RAX: ffffffffffffffda RBX: 000055eea23cbb10 RCX: 00007f32adf727d7
-> > RDX: 0000000000000000 RSI: 0000000000000800 RDI: 000055eea23cbb78
-> > RBP: 000055eea23cbb10 R08: 0000000000000000 R09: 0000000000000000
-> > R10: 00007f32adfe5ac0 R11: 0000000000000206 R12: 000055eea23cbb78
-> > R13: 0000000000000000 R14: 0000000000000000 R15: 000055eea23cbc20
-> > 
-> > [0] https://lkml.kernel.org/r/20210401235925.GR4332@42.do-not-panic.com
-> > 
-> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> 
-> Acked-by: Minchan Kim <minchan@kernel.org>
-> 
-> Much simple/clean now. Thanks for persuing the effort.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-No, please let us NOT do this.  Let's revisit this after 5.14-rc1 is
-out, I still do not think this is the correct thing to do as this still
-contains races, your window is now just smaller.
+> On Thu, Jul 01, 2021 at 10:47:54PM -0700, Greg Thelen wrote:
+>> Commit a66d21d7dba8 ("usb: xhci: Add support for Renesas controller with
+>> memory") added renesas_usb_fw.mem firmware reference to xhci-pci.  Thus
+>> modinfo indicates xhci-pci.ko has "firmware: renesas_usb_fw.mem".  But
+>> the firmware is only actually used with CONFIG_USB_XHCI_PCI_RENESAS.  An
+>> unusable firmware reference can trigger safety checkers which look for
+>> drivers with unmet firmware dependencies.
+>> 
+>> Avoid referring to renesas_usb_fw.mem in circumstances when it cannot be
+>> loaded (when CONFIG_USB_XHCI_PCI_RENESAS isn't set).
+>> 
+>> Signed-off-by: Greg Thelen <gthelen@google.com>
+>> ---
+>>  drivers/usb/host/xhci-pci.c | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
+>> 
+>> diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+>> index 18c2bbddf080..cb148da7a789 100644
+>> --- a/drivers/usb/host/xhci-pci.c
+>> +++ b/drivers/usb/host/xhci-pci.c
+>> @@ -618,8 +618,10 @@ static void xhci_pci_shutdown(struct usb_hcd *hcd)
+>>  /*-------------------------------------------------------------------------*/
+>>  
+>>  static const struct xhci_driver_data reneses_data = {
+>> +#if IS_ENABLED(CONFIG_USB_XHCI_PCI_RENESAS)
+>
+> If this is not enabled, why is the whole structure needed?
 
-thanks,
+Removing the struct meant 2 more #if guards needed below to initialize
+pci_ids, which exceeded my taste.
 
-greg k-h
+>>  	.quirks  = XHCI_RENESAS_FW_QUIRK,
+>>  	.firmware = "renesas_usb_fw.mem",
+>> +#endif
+>>  };
+>>  
+>>  /* PCI driver selection metadata; PCI hotplugging uses this */
+>> @@ -636,7 +638,13 @@ static const struct pci_device_id pci_ids[] = {
+>>  	{ /* end: all zeroes */ }
+>>  };
+>>  MODULE_DEVICE_TABLE(pci, pci_ids);
+>> +/*
+>> + * Without CONFIG_USB_XHCI_PCI_RENESAS renesas_xhci_check_request_fw() won't
+>> + * load firmware, so don't encumber the xhci-pci driver with it.
+>> + */
+>> +#if IS_ENABLED(CONFIG_USB_XHCI_PCI_RENESAS)
+>>  MODULE_FIRMWARE("renesas_usb_fw.mem");
+>> +#endif
+>
+> Why not just have this one chunk, why is the first chunk needed?
+
+It seemed cleaner to remove both renesas_usb_fw.mem references rather
+than leave one unusable one in reneses_data above.  But a simpler patch
+is appealing, especially given the number of #if guards needed to remove
+reneses_data.  Patch V2 will just go with this 1-hunk approach.
+
+> And a blank line please before your comment?
+
+Will do.
+
+> And can you add a Fixes: line to the changelog text when you resend?
+
+Will do.
+
+> thanks,
+>
+> greg k-h
