@@ -2,105 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCFF3B9AC2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 04:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFA63B9AC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 05:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234766AbhGBC7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 22:59:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39234 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234627AbhGBC7O (ORCPT
+        id S234811AbhGBDEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 23:04:05 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6033 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234627AbhGBDED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 22:59:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625194601;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m5z3d4RwQ1oxkBNEm0vInMTPKMfejVnKxB2uO9Gpumg=;
-        b=bl7mZyfu1t20Os10TR3Ny3Sl5vGMKXHVqDkuje6QGJ+CDaEyKOWTFJ32ohwK+SZGPQh8Xs
-        +XqTG/V4U+CUbyASTkbJzPILcMVL9Hbv0hhPs/I6j/z9Mh/VDZ8QdoX4yTxL2J96BILBK0
-        DIzdJbNnPFn4bdQ4lr0VVJIZzD/fdSU=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596-wbMiPZMWNaem40eFepUtRQ-1; Thu, 01 Jul 2021 22:56:41 -0400
-X-MC-Unique: wbMiPZMWNaem40eFepUtRQ-1
-Received: by mail-qv1-f70.google.com with SMTP id r15-20020a0562140c4fb0290262f40bf4bcso5278281qvj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 19:56:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=m5z3d4RwQ1oxkBNEm0vInMTPKMfejVnKxB2uO9Gpumg=;
-        b=OlBuiJSAeFJ3SzlqCYuqeGulzToqQHBPMTUnIAkt261LkXh02Dl/4I+yRVgkHtPQkU
-         wQEXLbTa61FAEGzryUJ6ZDMvIltbZZColA1FpZ1K4YcQI9cbGJtVoSiKsN0l9qVqapIy
-         PTBGWqJ1qDaP5ddHYjwCzvtAwxvVO2f62w8FGDvSaRiwB3Qo5A1NSHBwedBVyM23+WXY
-         7GmMenMWuP01Rz2uS8cao0/GYpE3LvzJ30pVQSOQZshyvsBhe3T5Tx8K0dqf8Iu7NPww
-         m6BpndxoSBRchP0ElhwwcxgO9DGGINhKkAsCbdFqQIkiNm/v9HW/r7sr+wswOJFnAsTt
-         Adng==
-X-Gm-Message-State: AOAM5333GhgR1ScLB6wSWggxy4illdQz3iKFK3vRfi1yFSOLMRHgDGaH
-        qR3YMU3XSzZLVFkrAvzDM+QsMhNyyyzftNSfb9dCGDbho4WtkFKlJG8Nd4CyyamimwyB9LMcUbB
-        wAfvgO/DDjIV8wfBbPf/qWRQWIaJDqlPIOa1kA2j+z175qP6sQkmxpEAzS/PoXG/fdr+rp7FKWW
-        iz
-X-Received: by 2002:a17:902:cec8:b029:129:3394:b8ab with SMTP id d8-20020a170902cec8b02901293394b8abmr2393529plg.42.1625194162750;
-        Thu, 01 Jul 2021 19:49:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJziiXCaB2hANUotxmVfz4U3eOo1f66xxuMUB/caj7bntZbEAFOOUgOd2Od56ZkHdILH50CNcw==
-X-Received: by 2002:a17:902:cec8:b029:129:3394:b8ab with SMTP id d8-20020a170902cec8b02901293394b8abmr2393496plg.42.1625194162264;
-        Thu, 01 Jul 2021 19:49:22 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id w14sm1452484pgo.75.2021.07.01.19.49.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Jul 2021 19:49:21 -0700 (PDT)
-Subject: Re: [PATCH] virtio_vdpa: reject invalid vq indices
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     kernel@axis.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210701114652.21956-1-vincent.whitchurch@axis.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <8e6a6793-39a3-0478-c574-5d3d641f2310@redhat.com>
-Date:   Fri, 2 Jul 2021 10:49:18 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Thu, 1 Jul 2021 23:04:03 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GGKTf5fn4zXmKM;
+        Fri,  2 Jul 2021 10:56:06 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 2 Jul 2021 11:01:28 +0800
+Received: from [10.174.178.46] (10.174.178.46) by
+ dggema761-chm.china.huawei.com (10.1.198.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 2 Jul 2021 11:01:27 +0800
+Subject: Re: [PATCH] perf llvm: Fix error return code in llvm__compile_bpf()
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <jolsa@redhat.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <nathan@kernel.org>, <ndesaulniers@google.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <clang-built-linux@googlegroups.com>, <yukuai3@huawei.com>
+References: <20210609115945.2193194-1-chengzhihao1@huawei.com>
+ <YN35TYxboEdM5iHc@kernel.org>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <21406430-56f0-c59b-7ece-7fd387bb47e9@huawei.com>
+Date:   Fri, 2 Jul 2021 11:01:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210701114652.21956-1-vincent.whitchurch@axis.com>
-Content-Type: text/plain; charset=gbk; format=flowed
+In-Reply-To: <YN35TYxboEdM5iHc@kernel.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/7/1 下午7:46, Vincent Whitchurch 写道:
-> Do not call vDPA drivers' callbacks with vq indicies larger than what
-> the drivers indicate that they support.  vDPA drivers do not bounds
-> check the indices.
->
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> ---
->   drivers/virtio/virtio_vdpa.c | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> index e28acf482e0c..e9b9dd03f44a 100644
-> --- a/drivers/virtio/virtio_vdpa.c
-> +++ b/drivers/virtio/virtio_vdpa.c
-> @@ -149,6 +149,9 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
->   	if (!name)
->   		return NULL;
+在 2021/7/2 1:20, Arnaldo Carvalho de Melo 写道:
+> Em Wed, Jun 09, 2021 at 07:59:45PM +0800, Zhihao Cheng escreveu:
+>> Fix to return a negative error code from the error handling
+>> case instead of 0, as done elsewhere in this function.
+> 
+> I checked and llvm__compile_bpf() returns -errno, so I'll change this to
+> instead set err to -ENOMEM just before the if (asprintf)(), ok?
+> 
+> - Arnaldo
 >   
-> +	if (index >= vdpa->nvqs)
-> +		return ERR_PTR(-ENOENT);
-> +
->   	/* Queue shouldn't already be set up. */
->   	if (ops->get_vq_ready(vdpa, index))
->   		return ERR_PTR(-ENOENT);
+Glad to accept this change.
+>> Fixes: cb76371441d098 ("perf llvm: Allow passing options to llc ...")
+>> Fixes: 5eab5a7ee032ac ("perf llvm: Display eBPF compiling command ...")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+
 
