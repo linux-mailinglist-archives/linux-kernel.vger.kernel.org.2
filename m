@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF07F3B9A17
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 02:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E653B9A1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 02:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234479AbhGBAdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 20:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
+        id S234513AbhGBAej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 20:34:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbhGBAdT (ORCPT
+        with ESMTP id S234384AbhGBAei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 20:33:19 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD5CC061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 17:30:47 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id k21so10985180ljh.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 17:30:47 -0700 (PDT)
+        Thu, 1 Jul 2021 20:34:38 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E763C061762;
+        Thu,  1 Jul 2021 17:32:06 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id t9so7901217pgn.4;
+        Thu, 01 Jul 2021 17:32:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bJvQk/Alftrz3YVUjbu29T6DoGupesSg/dDRXRbYPhA=;
-        b=SVvtIYIAvKTDQpKRfVjOwCnujyR61TBG4yZhipigFvuTp/YCXE7jq5gzL82D5wXtaR
-         oKMWIB/FCXm9SO0cNEVgkmR+UUPX/6lGNbi3IB6xg4QgUjXFrN1WXgqfM9F9sFMs8Ugs
-         6LvKysEba7oWQnlYRe7QpDHGvX47PEmkHCEXA=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S7GtzayBonC8NXc3VVE0on7/iur23UaGBI7PatPPRKM=;
+        b=H/u4c/hymNgAID7Wp67NBhcBAjGZwLzZ7zRqFx+h8z2wsf38WglwFA0aWj8YA4tf7X
+         6hqu5BrC0s+b/4hFo4R7JjVJD/HUBl3u+qa4pJej4Gv+7N9OWafAjHyFxvz3JSmchGDe
+         ggfzuBlxzNCGTTntNZcxSLVJWmhr67FXIfBRTe9eZUro1ppaML51amNUeDKX9nm032/w
+         SjQJYQIhJ7oN1bMgepUhuQp5H9CiqP0fs7brc0wCE2xbgcIcCnj6QQhOnB109dEyRkkR
+         FOybLuD9UbnD1NhEzoNPfNoLCrTymMu5VSIVHukjPMdaUwFbMFyKraJCvO7CbMDG6V+Y
+         hPbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bJvQk/Alftrz3YVUjbu29T6DoGupesSg/dDRXRbYPhA=;
-        b=qqFetWXOffh86NwI5GwmJVxA5fhoAcW4yfwMbdDwyVyv+3wwkOCw3RXth9nt4bVfQV
-         NAuoBTlslqPfa45Uz7yNJtDBnFqV7piC70h1fT1UyHwhN/E9Eau+zNFEAUrkI6cN1pXY
-         rTaQ7zgNDepz0ep9aX2QWSf4k8uouQHxszKGXO9EuBjIrBtzFRvGIrX0szPv3WorQKzF
-         GDzXOtmu2w5UFgUciUJMGwH1Uirqg6z/gS2/RhI/KJTB62etAovieQz7rDB6RuFa8lXm
-         +n2S1kl4HgKbEAQnhy2BvdvX19O/f4U7SPxTIndvc+yDGVZY/RWQq1ZP1RZyR21En8Hi
-         1ztA==
-X-Gm-Message-State: AOAM533xJOu7YiZXP0Cqm6pImbxGi8W01kHwXiaN3SHJdzHAIOflXEaD
-        ios4DQrRfbo5+GgsfBfenzwP/YijlD/HkNfLY90=
-X-Google-Smtp-Source: ABdhPJwmeGHjpbvTNhuZ4iiNhxZmMTOVwWV+AZrwu2xu2fx0x/7G5PlvnH6zf+Y5/K7Ka0kLN2gHeQ==
-X-Received: by 2002:a2e:8248:: with SMTP id j8mr1659040ljh.300.1625185845491;
-        Thu, 01 Jul 2021 17:30:45 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id l20sm168997ljb.139.2021.07.01.17.30.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Jul 2021 17:30:44 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id bq39so2417468lfb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 17:30:44 -0700 (PDT)
-X-Received: by 2002:ac2:4903:: with SMTP id n3mr551418lfi.487.1625185844416;
- Thu, 01 Jul 2021 17:30:44 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=S7GtzayBonC8NXc3VVE0on7/iur23UaGBI7PatPPRKM=;
+        b=KXRUqz2ba3E0mbWjD5U+gmwYPv//ZhBG1cQpNUsOVVugAcW1BEjXeDb8KckCRZkEEa
+         hIaGR4q5cY1KE3/1Z3uevFral5zNqpY57UBQgqFU8zX16HUkDELpz8inVzeIHA0BF77w
+         dSDMJneFkaoC4TcPERG9rZOW57uQlRS6hgoPDUThwPzAFDN8lWu6/ad+1i67mNo/RkZy
+         6Rwbtiqhs57k0/j7g7oiv6dBnrrpftusx9cJWv83ghsjpWpByIvQFMEX37QyB/0AHIdE
+         3S1SrTUtpZr65LrUSIuByj7v3Lt332MaZqvHVUmdcNDATdrMsYm1PWGsFUTMwNIsa/1n
+         BiMQ==
+X-Gm-Message-State: AOAM533r8ZRxhSmSlVhDf6li6oQWLCpj3BOstbwfRFeWA1tbu3H41Mwm
+        fDc7UIn/Feb/qurKgRE2XjdIJaDAsEE6HQ==
+X-Google-Smtp-Source: ABdhPJyG3i7g+MTD9q8cjQy7jmmfYmWjJOYjCg+fnKiP3dOcxrerO9ip8g3LOEPd8sXKm2GgFL+8Pw==
+X-Received: by 2002:aa7:8681:0:b029:304:3432:ba2a with SMTP id d1-20020aa786810000b02903043432ba2amr2658060pfo.40.1625185925548;
+        Thu, 01 Jul 2021 17:32:05 -0700 (PDT)
+Received: from localhost (udp264798uds.hawaiiantel.net. [72.253.242.87])
+        by smtp.gmail.com with ESMTPSA id gk20sm783508pjb.17.2021.07.01.17.32.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 17:32:05 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 1 Jul 2021 14:32:02 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Cgroups <cgroups@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] cgroup changes for v5.14-rc1
+Message-ID: <YN5egtsVvp3xIqCl@mtj.duckdns.org>
+References: <YN4rzCdUR+/2LgaP@mtj.duckdns.org>
+ <CAHk-=wgcyjLGcoRho5iw7b3Yx+R05rXwyJmP_LhOqsHgjiZugQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210701204246.2037142-1-agruenba@redhat.com> <CAHk-=wjk6KP3vSLFNPMjoaZ4xY4u=DjTM+C+hCS3QKt+XAE6OA@mail.gmail.com>
- <CAHc6FU5XMfTOBW1a0OnMaPSmgWECvO-KYAo8HeVNsCyd-HyV3g@mail.gmail.com>
-In-Reply-To: <CAHc6FU5XMfTOBW1a0OnMaPSmgWECvO-KYAo8HeVNsCyd-HyV3g@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 1 Jul 2021 17:30:28 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whaRsSuUeVBn_rLECWyG6h9RGuF9idsT_S+==vnsT8org@mail.gmail.com>
-Message-ID: <CAHk-=whaRsSuUeVBn_rLECWyG6h9RGuF9idsT_S+==vnsT8org@mail.gmail.com>
-Subject: Re: [PATCH] gfs2: Fix mmap + page fault deadlocks
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        cluster-devel <cluster-devel@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgcyjLGcoRho5iw7b3Yx+R05rXwyJmP_LhOqsHgjiZugQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 5:20 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
->
-> On Thu, Jul 1, 2021 at 11:41 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> > Also, I have to say that I think the direct-IO code is fundamentally
-> > mis-designed. Why it is doing the page lookup _during_ the IO is a
-> > complete mystery to me. Why wasn't that done ahead of time before the
-> > filesystem took the locks it needed?
->
-> That would be inconvenient for reads, when the number of bytes read is
-> much smaller than the buffer size and we won't need to page in the
-> entire buffer.
+Hello,
 
-What?
+On Thu, Jul 01, 2021 at 05:25:59PM -0700, Linus Torvalds wrote:
+> On Thu, Jul 1, 2021 at 1:55 PM Tejun Heo <tj@kernel.org> wrote:
+> >
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.14
+> 
+> I've pulled it, but let me vent about this history a bit.
+> 
+> Look at commit c2a11971549b ("Merge branch 'for-5.13-fixes' into for-5.14").
+> 
+> Now tell me how that commit explains why it exists.
+> 
+> Merge commits need commit messages too.
+> 
+> In particular, they need commit messages that *explain* why they exist
+> in the first place, not just a one-liner that says what it does (and
+> does so badly at that).
 
-A file read will READ THE WHOLE BUFFER.
+for-5.13-fixes had comment updates across the file and I pulled them into
+for-5.14 to avoid trivial context conflicts down the line. Yeah, I should
+have commented on the rationale. Will add explanations from now on.
 
-We're not talking pipes or ttys here. If you ask for X bytes, you'll
-get X bytes.
+Thanks.
 
-Of course, if you ask for more data than the file has, that's another
-thing, but who really does that with direct-IO? And if they do, why
-should we care about their silly behavior?
-
-Face it, right now direct-IO is *BUGGY* because of this, and you can
-deadlock filesystems with it.
-
-So tell me again how it's "inconvenient" to fix this bug, and fix the
-bad direct-IO design?
-
-              Linus
+-- 
+tejun
