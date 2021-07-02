@@ -2,100 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6923F3B9FBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60BC3B9F97
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbhGBLYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 07:24:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231145AbhGBLYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 07:24:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FDE5613F4;
-        Fri,  2 Jul 2021 11:22:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625224935;
-        bh=NAwtCL2bEeXmRZrt0BC0gPfCUoaxfOcDVf4HdonjzPY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TGiQKFEpmAppwMG1AQ9lOE5jAJ3UNX1yNVdynm0Sc0CFEZX59bJdveQXQ6i+4mhcM
-         KrPSBGgueAVmXwIVK/f3pTNzj+Xhdnt1z8dePxQsupvavSlGn6jEGjafU25A/n4dZZ
-         oHKc17gVj+76hPCtreciV9gwWPI3qCLeYeuMdICzf407UDCw4oX/u26EEjrBtHPVeB
-         iqvdly/7UgMbr4I9pJXAMgurt/67Ly/UP2Ww+CdAIcJG4huvHFEPHaSHMgqwGp+AbR
-         QaGkS1W7aPWCWEobhbiyF5XleJ03SLyIe5gg5xWzs6q+frTPxEThJOcaMOjL5HUUBf
-         zv95HkMfoqXNg==
-Date:   Fri, 2 Jul 2021 12:22:10 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] arm64: drop CROSS_COMPILE for LLVM=1 LLVM_IAS=1
-Message-ID: <20210702112210.GA11084@willie-the-truck>
-References: <20210701235505.1792711-1-ndesaulniers@google.com>
+        id S231743AbhGBLTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 07:19:10 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:33918 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230498AbhGBLTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 07:19:08 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id DB8A346759;
+        Fri,  2 Jul 2021 11:16:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-type:content-type:content-transfer-encoding:mime-version
+        :x-mailer:message-id:date:date:subject:subject:from:from
+        :received:received:received; s=mta-01; t=1625224593; x=
+        1627038994; bh=LT52yX2+1sgdqwo6AJLkCSNgc56psjUMyc9SnqouNRc=; b=t
+        urOmgmPPa+oOyMmrYIMCU+zcLdgK1d6zizAPaObiI2tazyhsnUtu49dsYopKu9QG
+        gjLSvA68DTuDEkQOCVuxxtpz4eMCMtFVu7xxPJDXZ7br1lTmabe0E1a8o73n5voR
+        UOrG/WnIfpb8mdGUQk00vXW+WmQWdPpgHjYFjwkmdE=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id vsor2mjJayvm; Fri,  2 Jul 2021 14:16:33 +0300 (MSK)
+Received: from T-EXCH-03.corp.yadro.com (t-exch-03.corp.yadro.com [172.17.100.103])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 49715412FC;
+        Fri,  2 Jul 2021 14:16:29 +0300 (MSK)
+Received: from localhost.yadro.com (10.199.0.133) by T-EXCH-03.corp.yadro.com
+ (172.17.100.103) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Fri, 2 Jul
+ 2021 14:16:29 +0300
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>
+CC:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>
+Subject: [PATCH 0/2] Add NCSI Intel OEM command to keep PHY link up on
+Date:   Fri, 2 Jul 2021 14:25:17 +0300
+Message-ID: <20210702112519.76385-1-i.mikhaylov@yadro.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210701235505.1792711-1-ndesaulniers@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.199.0.133]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-03.corp.yadro.com (172.17.100.103)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 04:55:05PM -0700, Nick Desaulniers wrote:
-> We get constant feedback that the command line invocation of make is too
-> long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
-> target triple, or is an absolute path outside of $PATH, but it's mostly
-> redundant for a given ARCH.
-> 
-> If CROSS_COMPILE is not set, simply set --target=aarch64-linux for
-> CLANG_FLAGS, KBUILD_CFLAGS, and KBUILD_AFLAGS.
-> 
-> Previously, we'd cross compile via:
-> $ ARCH=arm64 CROSS_COMPILE=aarch64-linxu-gnu make LLVM=1 LLVM_IAS=1
-> Now:
-> $ ARCH=arm64 make LLVM=1 LLVM_IAS=1
-> 
-> We can drop gnu from the triple, but dropping linux from the triple
-> produces different .config files for the above invocations for the
-> defconfig target.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1399
-> Suggested-by: Arnd Bergmann <arnd@kernel.org>
-> Suggested-by: Fangrui Song <maskray@google.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  arch/arm64/Makefile | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-> index 7bc37d0a1b68..016873fddcc3 100644
-> --- a/arch/arm64/Makefile
-> +++ b/arch/arm64/Makefile
-> @@ -34,6 +34,17 @@ $(warning LSE atomics not supported by binutils)
->    endif
->  endif
->  
-> +ifneq ($(LLVM),)
-> +ifneq ($(LLVM_IAS),)
-> +ifeq ($(CROSS_COMPILE),)
-> +CLANG_TARGET	:=--target=aarch64-linux
-> +CLANG_FLAGS	+= $(CLANG_TARGET)
-> +KBUILD_CFLAGS	+= $(CLANG_TARGET)
-> +KBUILD_AFLAGS	+= $(CLANG_TARGET)
+Add NCSI Intel OEM command to keep PHY link up and prevents any channel
+resets during the host load. Also includes dummy response handler for Intel
+manufacturer id.
 
-Do we need to do anything extra for the linker here? I can't see how we
-avoid picking up the host copy.
+Ivan Mikhaylov (2):
+  net/ncsi: add NCSI Intel OEM command to keep PHY up
+  net/ncsi: add dummy response handler for Intel boards
 
-> +endif
-> +endif
-> +endif
+ net/ncsi/Kconfig       |  6 ++++++
+ net/ncsi/internal.h    |  5 +++++
+ net/ncsi/ncsi-manage.c | 48 ++++++++++++++++++++++++++++++++++++++++++
+ net/ncsi/ncsi-rsp.c    |  9 +++++++-
+ 4 files changed, 67 insertions(+), 1 deletion(-)
 
-Have you tested the compat vDSO with this change? I think we'll just end
-up passing two --target options, which is hopefully ok, but thought I'd
-better check.
+-- 
+2.31.1
 
-Will
