@@ -2,431 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2ED3BA4A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DFA3BA4A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbhGBUVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 16:21:36 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:57780 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbhGBUVf (ORCPT
+        id S231492AbhGBUWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 16:22:10 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:36668 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229996AbhGBUWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 16:21:35 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9B101891;
-        Fri,  2 Jul 2021 22:19:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1625257141;
-        bh=1eQ1bjQN3Q4T+SWyTRVFXnpLqI59/CsZiUox6aOQJYI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o27lfhNISqIEgxjj6y40U9ekWGZNSjUfsX7JaoU5/TUj3EipJk2BxlF3noriNXkos
-         6+gJ8x9H+pIxN4vI3B6M/5fC0aWhXwkz9BHL5Cuar6SHgPWxGjUNKg6qWWk4DwhjoP
-         mNmR0rD0KqOVfAuAqBjtGc2xQn7d0eeeWYZWSKV0=
-Date:   Fri, 2 Jul 2021 23:18:21 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
-Cc:     Marek Vasut <marex@denx.de>, Tim Gover <tim.gover@raspberrypi.com>,
-        Eric Anholt <eric@anholt.net>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Maxime Ripard <maxime@cerno.tech>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH] drm/vc4: dsi: Only register our component once a DSI
- device is attached
-Message-ID: <YN90jZ1ynoC2IwNm@pendragon.ideasonboard.com>
-References: <YM6dgVb12oITNfc0@pendragon.ideasonboard.com>
- <CAPY8ntC+hzmfrJwWW0ytNdHSXruMKMi7N3K6tdJbp9gDBbJ3Qw@mail.gmail.com>
- <YM+MEsKjdkYAVI5X@pendragon.ideasonboard.com>
- <YM/FwVkkQXX8VrzV@pendragon.ideasonboard.com>
- <CAPY8ntCbzFkbM5fZmo3RVw5okQkVKFcR8TCHOo+xkW7wNk8MQA@mail.gmail.com>
- <YNCMbw6B6OL4Gho3@pendragon.ideasonboard.com>
- <YNCPcbJTEZVLJyCF@pendragon.ideasonboard.com>
- <YNCbVtIFcryw6wO5@pendragon.ideasonboard.com>
- <YN9DBX0QVbjtbwFE@pendragon.ideasonboard.com>
- <CAPY8ntCiw=28ay5VmARG55q00L1fj9aTKCbHi+sp=FTPUqZLVA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Fri, 2 Jul 2021 16:22:09 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 162KC6Hw002499;
+        Fri, 2 Jul 2021 20:19:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=TRgInt7NXvWcv4AjlAp0yqi8aGSlE0iQsPoM2X812HU=;
+ b=G5xs11ZLllfc9YgvNGcSAvRou4DWErLSO5pKcr8ElOpwptkOgDkwjSxLc6dHyWQlBdr/
+ UNfDwJuTA9WbkeGh9vJMJH+KzIjuI1hw0zbKD2OZBZ7k/++mHXRNhggESH7c7e9H4UIu
+ 7l50reOioiCwtuRztEMP4EP49/5mOeaj7WRX4ytgW+92B3l7bnLnTUlooc8KkmgcdH24
+ 6fR25eQu9vsHQNwFvZangBL+v3vsc6h0vxsJIF3iKIfBfkSC80NWL5gd9tLDZrQtc5mc
+ QcMcdIU4DY+cy5rlttRQGtBbASwPtf36D+4mpz2y/Z4w3R8Wp75Z8X+hOlnCus8/yOcB 0A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39j3uj8mus-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Jul 2021 20:19:30 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 162K9rtN101539;
+        Fri, 2 Jul 2021 20:19:29 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
+        by userp3030.oracle.com with ESMTP id 39dsc72qpu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Jul 2021 20:19:29 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i9NUTgmY0/1eaM5M/ft+LQOb4W2yazmUoGBWCxjyLwYXousOA4+xipkS0Hf+bYsx/wrIBAOQqWIF79FVwO/7eENSLPFEUKakdUJUFU5ldLlxHPyuicSuCvJUazdBWMj4N867nnZGQkhw0FbXkszlxngDLgJixt/iNNlNTQuilfj1k3M2RefowuAdLZHqSdImoUUQo0+3RLOOzkGyr6Pplk5LuHLVrGKfs+7SPbD6sHRYqze4RV9odgZq4RICR5nhTz01SvtgIBSvRIAtJyJUmKCDtqNS9VdDUkMBom7KNtx+P1Ea3i+7P94vDdibUNmVIlP5fMgQVpMLLfa+3Ivb4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TRgInt7NXvWcv4AjlAp0yqi8aGSlE0iQsPoM2X812HU=;
+ b=KusH+Ecb4pKehNTT2Ieu+xkLxzsxyoeD2x0uJ/P5XUvJ8H9mdSCtJRyfNleR+9nNnJoGbc3/vpz1fgaYvXPOWSbaHnAWcvV5o/AnPlNtvUs56Kb/RZEeSBiCEwAxJKJuD7zVpYR1AHrNPrt4paPHrarGAJYsRUhT0y+ywVuzvlG1xCllBU5Q+RlZXf2ZHd9bsglIga1RfHfwCBGupZpIJ0bMZ0pXXZ0EGWcgY0jZvyc5a//6rAzKx4jWjRPCf/HzNd7hWPwrlzaV19St90tlolyfXQ7aPK1HfLl4lHJU5CN0U6fL996ATX0AEbRE7WPkBJOvgPLquNZQIke1zuqXAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TRgInt7NXvWcv4AjlAp0yqi8aGSlE0iQsPoM2X812HU=;
+ b=s3vyYnG2meo9LEsypgjwVAH5Bkjdd7F7znXZvfgWk+Xqx/lMwwuX+NRrLmf7gqoMvVMH4leSvjtz2lK30N2ozX6XSBLKVQqITaa61Y9ZhFxrswkH8lTJGOePpZKYHdmbkHwjEQ5HWXLvDq+yfT1SjoJwQBazPk205h04ztN8a6A=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2966.namprd10.prod.outlook.com (2603:10b6:a03:8c::27)
+ by BYAPR10MB2871.namprd10.prod.outlook.com (2603:10b6:a03:83::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Fri, 2 Jul
+ 2021 20:19:25 +0000
+Received: from BYAPR10MB2966.namprd10.prod.outlook.com
+ ([fe80::9478:368e:93b4:6b48]) by BYAPR10MB2966.namprd10.prod.outlook.com
+ ([fe80::9478:368e:93b4:6b48%4]) with mapi id 15.20.4287.023; Fri, 2 Jul 2021
+ 20:19:24 +0000
+Date:   Fri, 2 Jul 2021 16:19:20 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Hao Lee <haolee.swjtu@gmail.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Wei Wang <wvw@google.com>
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tj@kernel.org
+Subject: Re: [Question] Do we need remote charging for cpu and cpuacct subsys?
+Message-ID: <20210702201920.i4pacu2x76e6crbf@oracle.com>
+References: <60decdb6.1c69fb81.6130e.7642@mx.google.com>
+ <20210702200742.wuhdg4dhpolher3t@oracle.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPY8ntCiw=28ay5VmARG55q00L1fj9aTKCbHi+sp=FTPUqZLVA@mail.gmail.com>
+In-Reply-To: <20210702200742.wuhdg4dhpolher3t@oracle.com>
+X-Originating-IP: [98.229.125.203]
+X-ClientProxiedBy: BL1PR13CA0182.namprd13.prod.outlook.com
+ (2603:10b6:208:2be::7) To BYAPR10MB2966.namprd10.prod.outlook.com
+ (2603:10b6:a03:8c::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from oracle.com (98.229.125.203) by BL1PR13CA0182.namprd13.prod.outlook.com (2603:10b6:208:2be::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.8 via Frontend Transport; Fri, 2 Jul 2021 20:19:23 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b6987c11-9f10-48fe-635f-08d93d96af15
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2871:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB28711B903E0AEF151E4BE044D91F9@BYAPR10MB2871.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Wf+Gw/Cbx4CBYWM5aFXvq89mVdGURoHYvEq3WNetvTYyE049ghyUxyoPowRmNcmHb5AWVQ4qASP4KPuKYS+g40zUesM+/WFYVl9cOUUKrR/r5JICyB37aH0LqozjYi4bGkg6c1QHq+C/EK+4l5OFdQ9+KOmFNBJ9/uCB4drkXhWMy9qAMusOuhMHROJ8ASAb3AjP+0lC0e055R05y8YaVXvSTnSMVg4FPM9d+Xjk+9NXUDn7dat2gffMpPkjAyDoKI+keu4W9vmZrT1g9yCVdVkROM0eFFqyLbgpEkZnfQ3qaZ81ayRxVoWzGLGgzcY+Ut8Oz7LvVsKFl8MgGzXvylY6LbbvptO5FVtutx45hUiSwcCyJ55AvfrzeSXJljmO0IfW/xUnFY9f46det1f4X0/sndqJ+Mv+W1UF6XNvH7pJkHopUwCYn9XsVF1VoSe2WFdsFF43KfeBfEay20dIWXP8xibN+OhpXR/MGIczq9mT5xFn/ReRqAePfJdMHfcvmevzAdarb44/mCubOUGwI6sMmMLTihTbyoPhrWefJ4cKW8ugjxt3TacJlS9S3MBIdpj7ETPyQzH6vLNyE9vmO4/BWljuWcW1AB/EIv/aUTZd2DmOxEso9XZhXT7nYYDT8jKabTMh8oi0AsdGX+WlrSlmIxOtSS/qIyPid0YUe0X3UOSt5mq6WoH0FXwafAUQgFBpy9PCbtnQelalz2Vkujiq0mbTnTTcMfBP9nvQ2wuaKiFypm2e2Mj9z7dxGTDFGBG4cxRoUtV1x/XlXPASNPwc4+qKA6MtaWjdzjm3u/kd30C3vRHYF+c8O+2d743p4q+tUsBpoXoa4SmybFN+aRdhDVywDCzZWY0gzy4kHyo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2966.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(39860400002)(366004)(396003)(346002)(83380400001)(55016002)(956004)(2616005)(316002)(8886007)(966005)(36756003)(7696005)(38100700002)(26005)(38350700002)(186003)(16526019)(8936002)(5660300002)(110136005)(8676002)(86362001)(2906002)(4326008)(66946007)(52116002)(478600001)(66476007)(66556008)(1076003)(87590200002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1vtQKk8i5ium2OVunppVSP7OsO0vYcxA487kbRuuUMn8G70/0mEql5xa2CZT?=
+ =?us-ascii?Q?iBo7ixxfT1rMik5iCgepnarH9ebaDxzF6EQlgrpDY3bDuY34N9QWb/sVyQsn?=
+ =?us-ascii?Q?F32ZZRd3fFpt0aKa4BXRefgW46ElGhe+bVcGd2B38ORta4HwWXHdELXk/jSx?=
+ =?us-ascii?Q?Q6FGKn07RJ8674DoYj5yWdizIOp4v/siT0Zvbl/hxHTruBDwaSeF5l7R7oqt?=
+ =?us-ascii?Q?KHFa3SNHMxc97RXmAfDp8vp8JjhJpMP9mtXOlETaIr9IX11iMHph97uvRkC/?=
+ =?us-ascii?Q?ktdT20A6jCWHDOlWzb0QMEa+7LC1JESKcUI8v2bT3ohfkNnilfYTwND8Sjqd?=
+ =?us-ascii?Q?e9lXsG7qL4pGde63EhWHLvprSMcqggL06i9/WUp6mcLWubyLJsJ+3ydJpNmt?=
+ =?us-ascii?Q?VQILSQrHvMoPnxmt8shxnfKWpLMGuJp6ZIxbJFdl9C3PeMjcLzP1G76yg20+?=
+ =?us-ascii?Q?b3uFtkJKrfGyv/WqHb6vc2IC+BN9HlaQHuGGl83pGV50Dqq670JqQRctbF03?=
+ =?us-ascii?Q?/VZiqMxi63jGeB37fFCI5ViwP7SAiFX/8+d7iSCwHS+8qC6tLsPdk+2IhdZZ?=
+ =?us-ascii?Q?GF+yirwWzQ4XwUtvOtbYnKJ4Z3QUeIEglQMNS6uqZpxoGqKcOqN7uywNm/hF?=
+ =?us-ascii?Q?LvvT7n7nz+XuUkLhEra/1h2y3H+KnR5GzfmP3u1Dje+f/IpXnhK6SCNAGvrj?=
+ =?us-ascii?Q?HmnLS0DEy+tk2XAa6ByaJytj/k2yG4f5sBdg7EzUqYo7cScyZQFJrjcJcmjL?=
+ =?us-ascii?Q?7+81utX28H5m17yCVyXcLjqqX1WIMlvQ1QdBIColM4ImXSCtKaTYlzmU8K2A?=
+ =?us-ascii?Q?Ls6PJI5//5h2K5RmWvbXX1gzpqHGgXCL1AQfornm6SIdhD5v/W++A4fCAKdI?=
+ =?us-ascii?Q?VmFkNSyOl22TNu5eG3r1zKyrh8y+H+EWqmEcljYnSnkO9NwAjrX0mHFk1+nt?=
+ =?us-ascii?Q?/pmLt9SV3MnsTzTrNd5PVpF9QCiS/QnkzPZf/bpP78s6n38mmzYL1pWbSN/U?=
+ =?us-ascii?Q?tmBU2brYgzZ0jNE1lk+EC6QF30xYDSKaVhMKvWHt1LWf7WLZo4Yre/kHwWFd?=
+ =?us-ascii?Q?StrQYoTouNdmEIEXN17FTUJgiRTGsbtT7iLNChCdlezSq9BAX+KYQq4boiRD?=
+ =?us-ascii?Q?d/TIVZbZSh9sKBCEIiPPPey1175X5XAvlbBxce3OIoOayZBlgtS01n9S7+4L?=
+ =?us-ascii?Q?FzD+M31Yd3o1AKOAKphDl+aDdZfHkfa6bS8iw40oUa2rhJ+waqQkEDkJrUFl?=
+ =?us-ascii?Q?Xc0s3+adl645+/WK0fxxe7anuJY0Plrx95k4FWEOcduj2dw0mEsekHIep6SZ?=
+ =?us-ascii?Q?31w+3MFw9JyI8/zmTDhU+sG5?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6987c11-9f10-48fe-635f-08d93d96af15
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2966.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2021 20:19:24.3118
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WaYGWsQJzbf5rqWvjYjCMSJC/1O5CHY57JWce9e6lFrB6Bg9VBZ5evRm+p1eJzxt6N4+Sf7nECFgh+qpIiQOicAieiU49nE21mCa9sdyqYI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2871
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10033 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 bulkscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107020103
+X-Proofpoint-GUID: c5WRDNbHL2O9NULJLB5fJmCqgQNY-N_H
+X-Proofpoint-ORIG-GUID: c5WRDNbHL2O9NULJLB5fJmCqgQNY-N_H
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
++ Android folks
 
-On Fri, Jul 02, 2021 at 06:44:22PM +0100, Dave Stevenson wrote:
-> On Fri, 2 Jul 2021 at 17:47, Laurent Pinchart wrote:
-> > On Mon, Jun 21, 2021 at 04:59:51PM +0300, Laurent Pinchart wrote:
-> >> On Mon, Jun 21, 2021 at 04:09:05PM +0300, Laurent Pinchart wrote:
-> >>> On Mon, Jun 21, 2021 at 03:56:16PM +0300, Laurent Pinchart wrote:
-> >>>> On Mon, Jun 21, 2021 at 12:49:14PM +0100, Dave Stevenson wrote:
-> >>>>> On Sun, 20 Jun 2021 at 23:49, Laurent Pinchart wrote:
-> >>>>>> On Sun, Jun 20, 2021 at 09:42:27PM +0300, Laurent Pinchart wrote:
-> >>>>>>> On Sun, Jun 20, 2021 at 03:29:03PM +0100, Dave Stevenson wrote:
-> >>>>>>>> On Sun, 20 Jun 2021 at 04:26, Laurent Pinchart wrote:
-> >>>>>>>>>
-> >>>>>>>>> Hi Maxime,
-> >>>>>>>>>
-> >>>>>>>>> I'm testing this, and I'm afraid it causes an issue with all the
-> >>>>>>>>> I2C-controlled bridges. I'm focussing on the newly merged ti-sn65dsi83
-> >>>>>>>>> driver at the moment, but other are affected the same way.
-> >>>>>>>>>
-> >>>>>>>>> With this patch, the DSI component is only added when the DSI device is
-> >>>>>>>>> attached to the host with mipi_dsi_attach(). In the ti-sn65dsi83 driver,
-> >>>>>>>>> this happens in the bridge attach callback, which is called when the
-> >>>>>>>>> bridge is attached by a call to drm_bridge_attach() in vc4_dsi_bind().
-> >>>>>>>>> This creates a circular dependency, and the DRM/KMS device is never
-> >>>>>>>>> created.
-> >>>>>>>>>
-> >>>>>>>>> How should this be solved ? Dave, I think you have shown an interest in
-> >>>>>>>>> the sn65dsi83 recently, any help would be appreciated. On a side note,
-> >>>>>>>>> I've tested the ti-sn65dsi83 driver on a v5.10 RPi kernel, without much
-> >>>>>>>>> success (on top of commit e1499baa0b0c I get a very weird frame rate -
-> >>>>>>>>> 147 fps of 99 fps instead of 60 fps - and nothing on the screen, and on
-> >>>>>>>>> top of the latest v5.10 RPi branch, I get lock-related warnings at every
-> >>>>>>>>> page flip), which is why I tried v5.12 and noticed this patch. Is it
-> >>>>>>>>> worth trying to bring up the display on the v5.10 RPi kernel in parallel
-> >>>>>>>>> to fixing the issue introduced in this patch, or is DSI known to be
-> >>>>>>>>> broken there ?
-> >>>>>>>>
-> >>>>>>>> I've been looking at SN65DSI83/4, but as I don't have any hardware
-> >>>>>>>> I've largely been suggesting things to try to those on the forums who
-> >>>>>>>> do [1].
-> >>>>>>>>
-> >>>>>>>> My branch at https://github.com/6by9/linux/tree/rpi-5.10.y-sn65dsi8x-marek
-> >>>>>>>> is the latest one I've worked on. It's rpi-5.10.y with Marek's driver
-> >>>>>>>> cherry-picked, and an overlay and simple-panel definition by others.
-> >>>>>>>> It also has a rework for vc4_dsi to use pm_runtime, instead of
-> >>>>>>>> breaking up the DSI bridge chain (which is flawed as it never calls
-> >>>>>>>> the bridge mode_set or mode_valid functions which sn65dsi83 relies
-> >>>>>>>> on).
-> >>
-> >> I've looked at that, and I'm afraid it doesn't go in the right
-> >> direction. The drm_encoder.crtc field is deprecated and documented as
-> >> only meaningful for non-atomic drivers. You're not introducing its
-> >> usage, but moving the configuration code from .enable() to the runtime
-> >> PM resume handler will make it impossible to fix this. The driver should
-> >> instead move to the .atomic_enable() function. If you need
-> >> enable/pre_enable in the DSI encoder, then you should turn it into a
-> >> drm_bridge.
-> >
-> > Is this something you're looking at by any chance ? I'm testing the
-> > ti-sn65dsi83 driver with VC4. I've spent a couple of hours debugging,
-> > only to realise that the vc4_dsi driver (before the rework you mention
-> > above) doesn't call .mode_set() on the bridges... Applying my sn65dsi83
-> > series that removes .mode_set() didn't help much as vc4_dsi doesn't call
-> > the atomic operations either :-) I'll test your branch now.
+On Fri, Jul 02, 2021 at 04:07:42PM -0400, Daniel Jordan wrote:
+> Hello,
 > 
-> This is one of the reasons for my email earlier today - thank you for
-> your reply.
+> On Fri, Jul 02, 2021 at 08:26:27AM -0000, Hao Lee wrote:
+> > memcg currently has a remote charging mechanism that can charge usage to other
+> > memcg instead of the one the task belongs to.
+> > 
+> > In our environment, we need to account the cpu usage consumed by some kworkers
+> > to a specific cgroup. Thus, we want to introduce a remote-charging mechanism to
+> > cpu and cpuacct subsys in our kernel.
 > 
-> The current mainline vc4_dsi driver deliberately breaks the bridge
-> chain so that it gets called before the panel/bridge pre_enable and
-> can power everything up, therefore pre_enable can call host_transfer
-> to configure the panel/bridge over the DSI interface.
-> However we've both noted that it doesn't forward on the mode_set and
-> mode_valid calls, and my investigations say that it doesn't have
-> enough information to make those calls.
+> I also want to see this upstream, and am actually working on it right
+> now, have been for some time.
 > 
-> My branch returns the chain to normal, and tries to use pm_runtime to
-> power up the PHY at the first usage (host_transfer or _enable). The
-> PHY enable needs to know the link frequency to use, hence my question
-> over how that should be determined.
-> Currently it's coming from drm_encoder.crtc, but you say that's
-> deprecated. If a mode hasn't been set then we have no clock
-> information and bad things will happen.
+> So far, this is needed to properly account multithreaded padata jobs,
+> memory reclaim, and net rx.  Android folks have raised this issue in the
+> past too, though I'm not aware of the specific kthreads that are giving
+> them problems.
 
-To make sure I understand things correctly, if no mode has been set, you
-only need to know the HS clock frequency in order to perform command
-transfers in HS mode, right ? Do we have a list of use cases for those
-transfers before a mode is set ? Can we force LP mode, or is it
-something that sinks are not required to support ?
+Pavan, Wei, do you have any details about this?
 
-> On the Pi forums one person has DSI83 working with an 800x1280 panel
-> (Google Nexus 7 Gen 1 AIUI) using my branch, but only on 3 lanes
-> rather than 4. I have a suspicion it's because the mode_fixup for
-> burst mode has moved the panel timings too far outside the panel's
-> spec, hence my other question about how bridges should pick up the
-> panel timings independent of burst mode timings. The SN65DSI83 driver
-> currently programs the output LVDS side with the DSI timings and
-> doesn't account for burst mode.
-
-I've just tried lowering the number of lanes to 3, and I now get an
-image on the display !
-
-Interestingly, when I enable the test pattern mode of the SN65DSI63, I
-get an image on my display, even in 4 lanes mode. I thus believe the DSI
-clock frequency is within the range of what the panel can accept (as the
-SN65DSI83 is programmed to derive the LVDS clock from the DSI clock),
-but the other timing parameters. The fact that kmstest --flip reports
-125fps makes me think there's something very wrong in the timings.
-
-> If you want a call or to discuss your setup in more detail, then give
-> me a shout.
-
-I don't really have anything special about this setup to discuss
-(there's a DS92LV0421 and DS92LV2422 pair between the SN65DSI83 and the
-panel, but that shouldn't matter much). In addition to the 4 lanes mode
-issue, the big difference between this and a DSI panel connected
-directly to the encoder is related to how the DSI sink is probed, the
-DSI encoder driver in your v5.12 kernel is broken for DSI sinks that are
-controlled over I2C (due to the fact they're not children of the DSI
-encoder DT node anymore). This will require a solution too, but I don't
-think it's specific to my setup.
-
-If there's any patch you'd like me to test for the mode timings, please
-let me know.
-
-> We have a DSI analyser on order now (3-4 week lead time), so hopefully
-> I'll soon be able to get some better visibility of what the block is
-> doing.
+> So naturally, I'm curious about your use case and how it may be
+> different from these others.  What kworkers would you like to account?
 > 
-> >>>>>>>> I ran it on Friday in the lab and encountered an issue with vc4_dsi
-> >>>>>>>> should vc4_dsi_encoder_mode_fixup wish for a divider of 7 (required
-> >>>>>>>> for this 800x1280 panel over 4 lanes) where it resulted in an invalid
-> >>>>>>>> mode configuration. That resulted in patch [2] which then gave me
-> >>>>>>>> sensible numbers.
-> >>
-> >> I have that commit in my branch, but still get 125 fps instead of 60 fps
-> >> with kmstest --flip (after reverting commit 1c3834201272 "drm/vc4:
-> >> Increase the core clock based on HVS load"). I'm not sure if [2] is the
-> >> cause of this, but there seems to be an improvement: in my previous
-> >> tests, the mode was fixed up every time I would start the application,
-> >> with the timings getting more and more bizarre at every run :-)
-> >>
-> >>>>>>>> That branch with dtoverlay=vc4-kms-v3d and
-> >>>>>>>> dtoverlay=vc4-kms-dsi-ti-sn65dsi83 created all the expected devices,
-> >>>>>>>> and everything came up normally.
-> >>>>>>>> It was a busy day, but I think I even stuck a scope on the clock lanes
-> >>>>>>>> at that point and confirmed that they were at the link frequency
-> >>>>>>>> expected.
-> >>>>>>>
-> >>>>>>> Thanks, I'll test your branch and will report the results.
-> >>>>>>
-> >>>>>> I had to apply the following diff to work around a crash:
-> >>>>>>
-> >>>>>> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> >>>>>> index 55b6c53207f5..647426aa793a 100644
-> >>>>>> --- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> >>>>>> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> >>>>>> @@ -525,6 +525,9 @@ static bool sn65dsi83_mode_fixup(struct drm_bridge *bridge,
-> >>>>>>
-> >>>>>>         /* The DSI format is always RGB888_1X24 */
-> >>>>>>         list_for_each_entry(connector, &ddev->mode_config.connector_list, head) {
-> >>>>>> +               if (!connector->display_info.bus_formats)
-> >>>>>> +                       continue;
-> >>>>>> +
-> >>>>>>                 switch (connector->display_info.bus_formats[0]) {
-> >>>>>>                 case MEDIA_BUS_FMT_RGB666_1X7X3_SPWG:
-> >>>>>>                         ctx->lvds_format_24bpp = false;
-> >>>>>>
-> >>>>>> connector->display_info.bus_formats is NULL for the HDMI connectors, as
-> >>>>>> I have nothing connected to them, as well as for the writeback
-> >>>>>> connector.
-> >>>>>
-> >>>>> I'm now confused as to what I'm doing as my branch appears NOT to have
-> >>>>> Marek's latest version of the driver as it doesn't have
-> >>>>> sn65dsi83_mode_fixup.
-> >>>>> I need to have another look at what's going on - I think I've got
-> >>>>> branches confused when switching between machines :-( Remaking that
-> >>>>> branch now.
-> >>>>>
-> >>>>> I do see that Marek has sent another patch around
-> >>>>> sn65dsi83_mode_fixup, but it'll still dereference
-> >>>>> connector->display_info.bus_formats[0] on all connectors. Shouldn't it
-> >>>>> only be switching on the one connector that is connected to this
-> >>>>> bridge, not HDMI or writeback connectors? I'm not totally clear on
-> >>>>> which connectors are in that list.
-> >>>>> https://patchwork.freedesktop.org/patch/440175/
-> >>>>
-> >>>> The following series should fix the issue:
-> >>>>
-> >>>> [PATCH] drm/bridge: ti-sn65dsi83: Replace connector format patching with atomic_get_input_bus_fmts
-> >>>> [PATCH 0/5] ti-sn65dsi83: Finalize transition to atomic operations
-> >>>>
-> >>>>>> Then, when running kmstest --flip, I get one warning per frame:
-> >>>>>>
-> >>>>>> [   29.762089] [drm:vc4_dsi_runtime_resume] *ERROR* vc4_dsi_runtime_resume:
-> >>>>>> [   29.763200] [drm:vc4_dsi_runtime_resume] *ERROR* vc4_dsi_runtime_resume: All good
-> >>>>>> [   29.793861] ------------[ cut here ]------------
-> >>>>>> [   29.798572] WARNING: CPU: 2 PID: 249 at drivers/gpu/drm/drm_modeset_lock.c:246 drm_modeset_lock+0xd0/0x100
-> >>>>>> [   29.808365] Modules linked in: ipv6 bcm2835_codec(C) bcm2835_unicam bcm2835_v4l2(C) bcm2835_isp(C) bcm2835_mmal_vchiq(C) v4l2_mem2mem v4l2_dv_timings imx296 rtc_ds1307 videobuf2_vmallom
-> >>>>>> [   29.855284] CPU: 2 PID: 249 Comm: kworker/u8:10 Tainted: G         C        5.10.44-v8+ #23
-> >>>>>> [   29.863756] Hardware name: Raspberry Pi Compute Module 4 Rev 1.0 (DT)
-> >>>>>> [   29.870297] Workqueue: events_unbound commit_work
-> >>>>>> [   29.875077] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-> >>>>>> [   29.881172] pc : drm_modeset_lock+0xd0/0x100
-> >>>>>> [   29.885506] lr : drm_atomic_get_new_or_current_crtc_state+0x6c/0x110
-> >>>>>> [   29.891950] sp : ffffffc011fcbcb0
-> >>>>>> [   29.895308] x29: ffffffc011fcbcb0 x28: ffffff80403fe780
-> >>>>>> [   29.900705] x27: ffffff80415a2000 x26: ffffffc0106f0000
-> >>>>>> [   29.906100] x25: 0000000000000000 x24: ffffff80420d3c80
-> >>>>>> [   29.911495] x23: ffffff8042174080 x22: 0000000000000038
-> >>>>>> [   29.916890] x21: 0000000000000000 x20: ffffff80421740a8
-> >>>>>> [   29.922284] x19: ffffffc011f8bc50 x18: 0000000000000000
-> >>>>>> [   29.927678] x17: 0000000000000000 x16: 0000000000000000
-> >>>>>> [   29.933072] x15: 0000000000000000 x14: 0000000000000000
-> >>>>>> [   29.938466] x13: 0048000000000329 x12: 0326032303290320
-> >>>>>> [   29.943860] x11: 03200000020301f4 x10: 00000000000019e0
-> >>>>>> [   29.949255] x9 : ffffffc0106efd8c x8 : ffffff804390d5c0
-> >>>>>> [   29.954649] x7 : 7fffffffffffffff x6 : 0000000000000001
-> >>>>>> [   29.960043] x5 : 0000000000000001 x4 : 0000000000000001
-> >>>>>> [   29.965436] x3 : ffffff80415a2000 x2 : ffffff804199b200
-> >>>>>> [   29.970830] x1 : 00000000000000bc x0 : ffffffc011f8bc98
-> >>>>>> [   29.976225] Call trace:
-> >>>>>> [   29.978708]  drm_modeset_lock+0xd0/0x100
-> >>>>>> [   29.982687]  drm_atomic_get_new_or_current_crtc_state+0x6c/0x110
-> >>>>>> [   29.988781]  vc4_atomic_complete_commit+0x4e4/0x860
-> >>>>>> [   29.993729]  commit_work+0x18/0x20
-> >>>>>> [   29.997181]  process_one_work+0x1c4/0x4a0
-> >>>>>> [   30.001248]  worker_thread+0x50/0x420
-> >>>>>> [   30.004965]  kthread+0x11c/0x150
-> >>>>>> [   30.008239]  ret_from_fork+0x10/0x20
-> >>>>>> [   30.011865] ---[ end trace f44ae6b09cda951a ]---
-> >>>>>>
-> >>>>>> Does it ring any bell ?
-> >>>>>
-> >>>>> kmstest --flip is a new one on me. kmstest from
-> >>>>> https://cgit.freedesktop.org/drm/libdrm/tree/tests/kmstest doesn't
-> >>>>> have such an option.
-> >>>>> Based on Google, I'm guessing at
-> >>>>> https://github.com/tomba/kmsxx/blob/master/utils/kmstest.cpp. Multiple
-> >>>>> apps with the same name is always fun.
-> >>>>
-> >>>> Correct.
-> >>>>
-> >>>>>> In case this is useful information, the problem didn't occur on top of
-> >>>>>> commit e1499baa0b0c.
-> >>>>>
-> >>>>> e1499baa0b0c is from back in March by the looks of it.
-> >>>>> Maxime has done a number of reworks to accessor functions since then,
-> >>>>> so it's quite possible there's a locking issue lurking. I'll let him
-> >>>>> comment though.
-> >>>>
-> >>>> Maybe there's a reason why the patch the introduced
-> >>>> drm_atomic_get_new_or_current_crtc_state() in your branch hasn't made it
-> >>>> to mainline yet :-)
-> >>>
-> >>> Any chance this could be reverted from the RPi kernel v5.10 branch in
-> >>> the meantime ?
-> >>>
-> >>>>>>>> Coming back to this patch though, it isn't in 5.10 so I'm not seeing
-> >>>>>>>> the issues. As to the exact ordering of attaches, I can't claim
-> >>>>>>>> sufficient knowledge on that front.
-> >>>>>>>> I can try a cherry-pick of this patch to see what goes on, but it
-> >>>>>>>> won't be for a day or two.
-> >>>>>>>
-> >>>>>>> Let's see if Maxime has an opinion :-)
-> >>>>>>>
-> >>>>>>>> [1] Largely https://www.raspberrypi.org/forums/viewtopic.php?f=44&t=305690,
-> >>>>>>>> but ignore about the first 5 pages of the thread as different driver
-> >>>>>>>> versions were floating about. Most stuff after that is based on
-> >>>>>>>> Marek's driver.
-> >>>>>>>> [2] https://github.com/6by9/linux/commit/c3c774136a1e946109048711d16974be8d520aaa
-> >>>>>>>>
-> >>>>>>>>> On Tue, Jul 07, 2020 at 12:19:12PM +0200, Maxime Ripard wrote:
-> >>>>>>>>>> If the DSI driver is the last to probe, component_add will try to run all
-> >>>>>>>>>> the bind callbacks straight away and return the error code.
-> >>>>>>>>>>
-> >>>>>>>>>> However, since we depend on a power domain, we're pretty much guaranteed to
-> >>>>>>>>>> be in that case on the BCM2711, and are just lucky on the previous SoCs
-> >>>>>>>>>> since the v3d also depends on that power domain and is further in the probe
-> >>>>>>>>>> order.
-> >>>>>>>>>>
-> >>>>>>>>>> In that case, the DSI host will not stick around in the system: the DSI
-> >>>>>>>>>> bind callback will be executed, will not find any DSI device attached and
-> >>>>>>>>>> will return EPROBE_DEFER, and we will then remove the DSI host and ask to
-> >>>>>>>>>> be probed later on.
-> >>>>>>>>>>
-> >>>>>>>>>> But since that host doesn't stick around, DSI devices like the RaspberryPi
-> >>>>>>>>>> touchscreen whose probe is not linked to the DSI host (unlike the usual DSI
-> >>>>>>>>>> devices that will be probed through the call to mipi_dsi_host_register)
-> >>>>>>>>>> cannot attach to the DSI host, and we thus end up in a situation where the
-> >>>>>>>>>> DSI host cannot probe because the panel hasn't probed yet, and the panel
-> >>>>>>>>>> cannot probe because the DSI host hasn't yet.
-> >>>>>>>>>>
-> >>>>>>>>>> In order to break this cycle, let's wait until there's a DSI device that
-> >>>>>>>>>> attaches to the DSI host to register the component and allow to progress
-> >>>>>>>>>> further.
-> >>>>>>>>>>
-> >>>>>>>>>> Suggested-by: Andrzej Hajda <a.hajda@samsung.com>
-> >>>>>>>>>> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> >>>>>>>>>> ---
-> >>>>>>>>>>  drivers/gpu/drm/vc4/vc4_dsi.c | 25 ++++++++-----------------
-> >>>>>>>>>>  1 file changed, 8 insertions(+), 17 deletions(-)
-> >>>>>>>>>>
-> >>>>>>>>>> diff --git a/drivers/gpu/drm/vc4/vc4_dsi.c b/drivers/gpu/drm/vc4/vc4_dsi.c
-> >>>>>>>>>> index eaf276978ee7..19aab4e7e209 100644
-> >>>>>>>>>> --- a/drivers/gpu/drm/vc4/vc4_dsi.c
-> >>>>>>>>>> +++ b/drivers/gpu/drm/vc4/vc4_dsi.c
-> >>>>>>>>>> @@ -1246,10 +1246,12 @@ static ssize_t vc4_dsi_host_transfer(struct mipi_dsi_host *host,
-> >>>>>>>>>>       return ret;
-> >>>>>>>>>>  }
-> >>>>>>>>>>
-> >>>>>>>>>> +static const struct component_ops vc4_dsi_ops;
-> >>>>>>>>>>  static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
-> >>>>>>>>>>                              struct mipi_dsi_device *device)
-> >>>>>>>>>>  {
-> >>>>>>>>>>       struct vc4_dsi *dsi = host_to_dsi(host);
-> >>>>>>>>>> +     int ret;
-> >>>>>>>>>>
-> >>>>>>>>>>       dsi->lanes = device->lanes;
-> >>>>>>>>>>       dsi->channel = device->channel;
-> >>>>>>>>>> @@ -1284,6 +1286,12 @@ static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
-> >>>>>>>>>>               return 0;
-> >>>>>>>>>>       }
-> >>>>>>>>>>
-> >>>>>>>>>> +     ret = component_add(&dsi->pdev->dev, &vc4_dsi_ops);
-> >>>>>>>>>> +     if (ret) {
-> >>>>>>>>>> +             mipi_dsi_host_unregister(&dsi->dsi_host);
-> >>>>>>>>>> +             return ret;
-> >>>>>>>>>> +     }
-> >>>>>>>>>> +
-> >>>>>>>>>>       return 0;
-> >>>>>>>>>>  }
-> >>>>>>>>>>
-> >>>>>>>>>> @@ -1662,7 +1670,6 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
-> >>>>>>>>>>  {
-> >>>>>>>>>>       struct device *dev = &pdev->dev;
-> >>>>>>>>>>       struct vc4_dsi *dsi;
-> >>>>>>>>>> -     int ret;
-> >>>>>>>>>>
-> >>>>>>>>>>       dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
-> >>>>>>>>>>       if (!dsi)
-> >>>>>>>>>> @@ -1670,26 +1677,10 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
-> >>>>>>>>>>       dev_set_drvdata(dev, dsi);
-> >>>>>>>>>>
-> >>>>>>>>>>       dsi->pdev = pdev;
-> >>>>>>>>>> -
-> >>>>>>>>>> -     /* Note, the initialization sequence for DSI and panels is
-> >>>>>>>>>> -      * tricky.  The component bind above won't get past its
-> >>>>>>>>>> -      * -EPROBE_DEFER until the panel/bridge probes.  The
-> >>>>>>>>>> -      * panel/bridge will return -EPROBE_DEFER until it has a
-> >>>>>>>>>> -      * mipi_dsi_host to register its device to.  So, we register
-> >>>>>>>>>> -      * the host during pdev probe time, so vc4 as a whole can then
-> >>>>>>>>>> -      * -EPROBE_DEFER its component bind process until the panel
-> >>>>>>>>>> -      * successfully attaches.
-> >>>>>>>>>> -      */
-> >>>>>>>>>>       dsi->dsi_host.ops = &vc4_dsi_host_ops;
-> >>>>>>>>>>       dsi->dsi_host.dev = dev;
-> >>>>>>>>>>       mipi_dsi_host_register(&dsi->dsi_host);
-> >>>>>>>>>>
-> >>>>>>>>>> -     ret = component_add(&pdev->dev, &vc4_dsi_ops);
-> >>>>>>>>>> -     if (ret) {
-> >>>>>>>>>> -             mipi_dsi_host_unregister(&dsi->dsi_host);
-> >>>>>>>>>> -             return ret;
-> >>>>>>>>>> -     }
-> >>>>>>>>>> -
-> >>>>>>>>>>       return 0;
-> >>>>>>>>>>  }
-> >>>>>>>>>>
-
--- 
-Regards,
-
-Laurent Pinchart
+> > I want to know if the community has a plan to do this?
+> > What will the community approach look like?
+> 
+> There has been discussion about this here,
+> 
+>    https://lore.kernel.org/lkml/20200219214112.4kt573kyzbvmbvn3@ca-dmjordan1.us.oracle.com/
+> 
+> more recently here,
+> 
+>    https://lore.kernel.org/lkml/YGxjwKbec68sCcqo@slm.duckdns.org/
+> 
+> and we may talk about it at LPC:
+> 
+>    https://www.linuxplumbersconf.org/event/11/page/104-accepted-microconferences#cont-perform
+> 
+> > I think we need to move the active_memcg to a separated active_cgroup struct,
+> > and the latter will contain active_memcg, active_tg, and active_cpuacct.
+> 
+> I'm not seeing how that could work for cases that don't know the cgroup
+> when the remote charging period begins.  The only one I'm aware of
+> that's like that is net rx, where the work to process packets has to
+> start before their ultimate destination, and therefore cgroup, is known.
+> 
+> thanks,
+> Daniel
