@@ -2,132 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7693B9C0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 07:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD7D3B9C10
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 07:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbhGBFuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 01:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
+        id S230091AbhGBFud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 01:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbhGBFuS (ORCPT
+        with ESMTP id S230048AbhGBFub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 01:50:18 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F8B2C061762;
-        Thu,  1 Jul 2021 22:47:47 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id ie21so4007604pjb.0;
-        Thu, 01 Jul 2021 22:47:47 -0700 (PDT)
+        Fri, 2 Jul 2021 01:50:31 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22523C061764
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 22:47:59 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id x3-20020ac853830000b029025167dca6e0so4911398qtp.22
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 22:47:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2wK0sFMdIZyCO2WDDH+HS8h56bpuMmkc9e3XYE6mC5Q=;
-        b=qnmeXfnHyTdcxzSWqkrnRdF2V//PUbXbCggyVQvBBlImgYwbIwgnUm6ym34I4xErv2
-         6MGrB3Tkkm6p0KjJF9w3F82WPl/xLdcPBDWEOSf7XXYL1fGDtOf7VcYxIfdYA5fCvjLk
-         QoFE+LYblZyAosZAA8iP3SbFkuEM7PwYh/B732Bx09daQx1XWvI/TGoXKtdzjXk9Ek/6
-         2fYEFiur77q5gOOoOE0jypLYycPfkDk/9cWN5hANTuWWLf9Dd/4ffiDEMczborexJZD6
-         roCtnk7h9y2yZ0czsJi1c8Z3o3kxvc+w93aY7sai88a70paIkVMLRmeuXDBYBs8cL+xw
-         ZVvg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=wdon6WR16eVk/mXealjFOSo3Z4uiXRlZx0g446VrFWw=;
+        b=fDu9N97ymY57BM+0wJqs9uTTgOPDZjR/iNU0x95In9zv46MlUsokrbdZ5al/uzdLUr
+         M2umhfSwOg7sabn+6ep81QZx9ryvQAG+CTVcIuYTGhXD/hckq7dV1hr6OQGTL33+W2tV
+         WRLTMhb4QmKUWk0ZjWznj5GEn8QkevQ/f4AwCxBzeLoQM5b/Ya6G9jUq23dhR3sjqRri
+         72ohNfCxTln6gBhprE7V0msZ+o6pVAn59p4vywKjjV6DozZt3/bUxXbc1vY8Oz00b0AR
+         91iERJ7GEH2E4L5P84At1jTEJkGgpjYIxwFWE4iRH0KEzHlY8T9ngnxNWmbsXWJqRlvZ
+         2qtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=2wK0sFMdIZyCO2WDDH+HS8h56bpuMmkc9e3XYE6mC5Q=;
-        b=HQEmUYix4lTb+dv+2jw0qqTiwXbpa4QDaa68+aS3doA8shHK5uwTelWY6NNJKj/cnM
-         epYr15RugblGZSkqE0TPyHu2+yge8ewm3fyJrVDCIOdrhOrm3n4PLKkWq6uFep5JkD36
-         ZkrPjsez7P7FFcuVIrPqCGfy8NRV2uLeScH9hCHJSwzMy6V7LYs4yBtrmTflhU9gLjcl
-         ZrILjyTGyNM07iLjowv2zSvTUU0MYDjz+lX9JSvSbUMo5AF7EAZhwDy4GcSJX734GLWt
-         QTzdz6WhKW54Cz2KLP9yTDLaOefZjNxLmCfmaN64IG+t4LPcmtTRLaJT0HlSVwCMSeCQ
-         1a9A==
-X-Gm-Message-State: AOAM533e+Hb7kxa0+wOKk/XWRtSCjq2ny3EHiondGUY3sFTilQeEc4CC
-        jrCToba7Y6QYRrW2EYNmf+A=
-X-Google-Smtp-Source: ABdhPJzx2qJnS6WY4yyozM0awsnrnn4p1AUviqTkpqPguXby+p7/335O/NkQcbUVuFQqnIn4jQAvLg==
-X-Received: by 2002:a17:90a:7e13:: with SMTP id i19mr3237480pjl.23.1625204866789;
-        Thu, 01 Jul 2021 22:47:46 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:e476:fcd4:d1bf:22a2])
-        by smtp.gmail.com with ESMTPSA id s31sm1915055pfg.191.2021.07.01.22.47.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 22:47:46 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 1 Jul 2021 22:47:44 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        mm-commits@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        torvalds@linux-foundation.org,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-Subject: Re: [patch 108/192] mm: zram: amend SLAB_RECLAIM_ACCOUNT on
- zspage_cachep
-Message-ID: <YN6ogJbnI46hnjgk@google.com>
-References: <20210630184624.9ca1937310b0dd5ce66b30e7@linux-foundation.org>
- <20210701015258.BrxjIzdE1%akpm@linux-foundation.org>
- <YN3Xbdc9N81PIegK@google.com>
- <CAGWkznHWe22iwtBNtJfY75aS5_cfwKTaBfkX=zzmSaTwHZaAyQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGWkznHWe22iwtBNtJfY75aS5_cfwKTaBfkX=zzmSaTwHZaAyQ@mail.gmail.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=wdon6WR16eVk/mXealjFOSo3Z4uiXRlZx0g446VrFWw=;
+        b=NtgpXHti93OzzTXyBQnR7OYBv/MFYCxztLaEtl6AEAmXPyVZYrobT2bZCl1wFhXIuB
+         8WfxsqXr/QEcXJk6bpRAjF/l4g9udUaoVeKmvdjOPb+6Cl+yKfbgP0eRnpj7XmwKCCkX
+         Zak0XWVvxg1QYorJiioXmPZC6KVGAU6+VsxxVfgF5McesQZyrWVk2U54JXGZH3HzU/DS
+         CmkFkQffmMJS8HQDWRIEnnaMJDVZBnnWzr00Zk/YEPcUioThBU97qXAVTYGQ3t+Sm7NX
+         5uEY0s3lXETQvE5JnnRikJkJTTkqR134FUsMbyj1VHpUu5NO+rRzQwnzc3m7ERptLPfd
+         g0DA==
+X-Gm-Message-State: AOAM532fZITgj2XM1GRKdcz90xMKkhgKbu77ec8H6T8jWvgfcfuvIcTF
+        kg3usBDJ9IgGFtZITyaLzORgfZaSTHpO
+X-Google-Smtp-Source: ABdhPJwls7dt2TFSw3P9uW4DpbRemJGgWLXcEiTKmODlVLFIf9gFpDYGRxiAqxTDRY//O+oDHZCUfK5iOlLa
+X-Received: from gthelen2.svl.corp.google.com ([2620:15c:2cd:202:81c6:dd12:da9f:dd72])
+ (user=gthelen job=sendgmr) by 2002:a0c:b450:: with SMTP id
+ e16mr3511217qvf.25.1625204878247; Thu, 01 Jul 2021 22:47:58 -0700 (PDT)
+Date:   Thu,  1 Jul 2021 22:47:54 -0700
+Message-Id: <20210702054754.2056918-1-gthelen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH] usb: xhci: avoid renesas_usb_fw.mem when it's unusable
+From:   Greg Thelen <gthelen@google.com>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 10:45:09AM +0800, Zhaoyang Huang wrote:
-> On Thu, Jul 1, 2021 at 10:56 PM Minchan Kim <minchan@kernel.org> wrote:
-> >
-> > On Wed, Jun 30, 2021 at 06:52:58PM -0700, Andrew Morton wrote:
-> > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > Subject: mm: zram: amend SLAB_RECLAIM_ACCOUNT on zspage_cachep
-> > >
-> > > Zspage_cachep is found be merged with other kmem cache during test, which
-> > > is not good for debug things (zs_pool->zspage_cachep present to be another
-> > > kmem cache in memory dumpfile).  It is also neccessary to do so as
-> > > shrinker has been registered for zspage.
-> > >
-> > > Amending this flag can help kernel to calculate SLAB_RECLAIMBLE correctly.
-> > >
-> > > Link: https://lkml.kernel.org/r/1623137297-29685-1-git-send-email-huangzhaoyang@gmail.com
-> > > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > Cc: Minchan Kim <minchan@kernel.org>
-> > > Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> >
-> > Sorry for the late. I don't think this is correct.
-> >
-> > It's true "struct zspage" can be freed by zsmalloc's compaction registerred
-> > by slab shrinker so tempted to make it SLAB_RECLAIM_ACCOUNT. However, it's
-> > quite limited to work only when objects in the zspage are heavily fragmented.
-> > Once the compaction is done, zspage are never discardable until objects are
-> > fragmented again. It means it could hurt other reclaimable slab page reclaiming
-> > since the zspage slab object pins the page.
-> IMHO, kmem cache's reclaiming is NOT affected by SLAB_RECLAIM_ACCOUNT
-> . This flag just affects kmem cache merge[1], the slab page's migrate
-> type[2] and the page's statistics. Actually, zspage's cache DO merged
-> with others even without SLAB_RECLAIM_ACCOUNT currently, which maybe
-> cause zspage's object will NEVER be discarded.(SLAB_MERGE_SAME
-> introduce confusions as people believe the cache will merge with
-> others when it set and vice versa)
-> 
-> [1]
->  struct kmem_cache *find_mergeable(size_t size, size_t align, unsigned
-> long flags, const char *name, void (*ctor)(void *))
-> ...
->     if ((flags & SLAB_MERGE_SAME) != (s->flags & SLAB_MERGE_SAME))
->      continue;
-> 
-> [2]
-> if (s->flags & SLAB_RECLAIM_ACCOUNT)
->     s->allocflags |= __GFP_RECLAIMABLE;
+Commit a66d21d7dba8 ("usb: xhci: Add support for Renesas controller with
+memory") added renesas_usb_fw.mem firmware reference to xhci-pci.  Thus
+modinfo indicates xhci-pci.ko has "firmware: renesas_usb_fw.mem".  But
+the firmware is only actually used with CONFIG_USB_XHCI_PCI_RENESAS.  An
+unusable firmware reference can trigger safety checkers which look for
+drivers with unmet firmware dependencies.
 
-That's the point here. With SLAB_RECLAIM_ACCOUNT, page allocator
-try to allocate pages from MIGRATE_RECLAIMABLE with belief those
-objects are easily reclaimable. Say a page has object A, B, C, D
-and E. A-D are easily reclaimable but E is hard. What happens is
-VM couldn't reclaim the page in the end due to E even though it
-already reclaimed A-D. And the such fragmenation could be spread
-out entire MIGRATE_RECLAIMABLE pageblocks over time.
-That's why I'd like to put zspage into MIGRATE_UNMOVALBE from the
-beginning since I don't think it's easily reclaimble once compaction
-is done.
+Avoid referring to renesas_usb_fw.mem in circumstances when it cannot be
+loaded (when CONFIG_USB_XHCI_PCI_RENESAS isn't set).
+
+Signed-off-by: Greg Thelen <gthelen@google.com>
+---
+ drivers/usb/host/xhci-pci.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+index 18c2bbddf080..cb148da7a789 100644
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -618,8 +618,10 @@ static void xhci_pci_shutdown(struct usb_hcd *hcd)
+ /*-------------------------------------------------------------------------*/
+ 
+ static const struct xhci_driver_data reneses_data = {
++#if IS_ENABLED(CONFIG_USB_XHCI_PCI_RENESAS)
+ 	.quirks  = XHCI_RENESAS_FW_QUIRK,
+ 	.firmware = "renesas_usb_fw.mem",
++#endif
+ };
+ 
+ /* PCI driver selection metadata; PCI hotplugging uses this */
+@@ -636,7 +638,13 @@ static const struct pci_device_id pci_ids[] = {
+ 	{ /* end: all zeroes */ }
+ };
+ MODULE_DEVICE_TABLE(pci, pci_ids);
++/*
++ * Without CONFIG_USB_XHCI_PCI_RENESAS renesas_xhci_check_request_fw() won't
++ * load firmware, so don't encumber the xhci-pci driver with it.
++ */
++#if IS_ENABLED(CONFIG_USB_XHCI_PCI_RENESAS)
+ MODULE_FIRMWARE("renesas_usb_fw.mem");
++#endif
+ 
+ /* pci driver glue; this is a "new style" PCI driver module */
+ static struct pci_driver xhci_pci_driver = {
+-- 
+2.32.0.93.g670b81a890-goog
+
