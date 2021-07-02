@@ -2,120 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0EA3B9BE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 07:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA2F3B9BEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 07:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234032AbhGBFMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 01:12:41 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:33084 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230289AbhGBFMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 01:12:40 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4GGNSH0h1GzB8bH;
-        Fri,  2 Jul 2021 07:10:07 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3DGnOvqCmCtc; Fri,  2 Jul 2021 07:10:07 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4GGNSG6sV6zB8bG;
-        Fri,  2 Jul 2021 07:10:06 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E09888B998;
-        Fri,  2 Jul 2021 07:10:06 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 87cl5JyHGmEG; Fri,  2 Jul 2021 07:10:06 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 554E78B96E;
-        Fri,  2 Jul 2021 07:10:06 +0200 (CEST)
-Subject: Re: [PATCH] powerpc/mm: Fix lockup on kernel exec fault
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <024bb05105050f704743a0083fe3548702be5706.1625138205.git.christophe.leroy@csgroup.eu>
- <1625188324.lt6lsizhsx.astroid@bobo.none>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <86e29e20-a8bb-8309-8ee3-ef1be4a73a37@csgroup.eu>
-Date:   Fri, 2 Jul 2021 07:10:04 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <1625188324.lt6lsizhsx.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        id S229997AbhGBFTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 01:19:19 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:34213 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229676AbhGBFTR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 01:19:17 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 01 Jul 2021 22:16:46 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 01 Jul 2021 22:16:43 -0700
+X-QCInternal: smtphost
+Received: from c-mansur-linux.qualcomm.com ([10.204.90.208])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 02 Jul 2021 10:46:25 +0530
+Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
+        id 7F795224DC; Fri,  2 Jul 2021 10:46:24 +0530 (IST)
+From:   Mansur Alisha Shaik <mansur@codeaurora.org>
+To:     bryan.odonoghue@linaro.org, linux-media@vger.kernel.org,
+        stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+Subject: [V3] venus: helper: do not set constrained parameters for UBWC
+Date:   Fri,  2 Jul 2021 10:46:19 +0530
+Message-Id: <1625202979-23232-1-git-send-email-mansur@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+plane constraints firmware interface is to override the default
+alignment for a given color format. By default venus hardware has
+alignments as 128x32, but NV12 was defined differently to meet
+various usecases. Compressed NV12 has always been aligned as 128x32,
+hence not needed to override the default alignment.
 
+Fixes: bc28936bbba9 ("media: venus: helpers, hfi, vdec: Set actual plane constraints to FW")
+Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
 
-Le 02/07/2021 à 03:25, Nicholas Piggin a écrit :
-> Excerpts from Christophe Leroy's message of July 1, 2021 9:17 pm:
->> The powerpc kernel is not prepared to handle exec faults from kernel.
->> Especially, the function is_exec_fault() will return 'false' when an
->> exec fault is taken by kernel, because the check is based on reading
->> current->thread.regs->trap which contains the trap from user.
->>
->> For instance, when provoking a LKDTM EXEC_USERSPACE test,
->> current->thread.regs->trap is set to SYSCALL trap (0xc00), and
->> the fault taken by the kernel is not seen as an exec fault by
->> set_access_flags_filter().
->>
->> Commit d7df2443cd5f ("powerpc/mm: Fix spurrious segfaults on radix
->> with autonuma") made it clear and handled it properly. But later on
->> commit d3ca587404b3 ("powerpc/mm: Fix reporting of kernel execute
->> faults") removed that handling, introducing test based on error_code.
->> And here is the problem, because on the 603 all upper bits of SRR1
->> get cleared when the TLB instruction miss handler bails out to ISI.
-> 
-> So the problem is 603 doesn't see the DSISR_NOEXEC_OR_G bit?
+Changes in V3:
+- Elaborated commit message as per comments by Bryan
+- As per Bryan comment alligned fixes in single line.
+---
+ drivers/media/platform/qcom/venus/helpers.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-I a way yes. But the problem is also that the kernel doesn't see it as an exec fault in 
-set_access_flags_filter() as explained above. If it could see it as an exec fault, it would set 
-PAGE_EXEC and it would work (or maybe not because it seems it also checks for the dirtiness of the 
-page, and here the page is also flagged as dirty).
+diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+index 1fe6d46..601ee3e 100644
+--- a/drivers/media/platform/qcom/venus/helpers.c
++++ b/drivers/media/platform/qcom/venus/helpers.c
+@@ -1137,8 +1137,12 @@ int venus_helper_set_format_constraints(struct venus_inst *inst)
+ 	if (!IS_V6(inst->core))
+ 		return 0;
+ 
++	if (inst->opb_fmt == HFI_COLOR_FORMAT_NV12_UBWC)
++		return 0;
++
+ 	pconstraint.buffer_type = HFI_BUFFER_OUTPUT2;
+ 	pconstraint.num_planes = 2;
++
+ 	pconstraint.plane_format[0].stride_multiples = 128;
+ 	pconstraint.plane_format[0].max_stride = 8192;
+ 	pconstraint.plane_format[0].min_plane_buffer_height_multiple = 32;
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
-603 will see DSISR_NOEXEC_OR_G if it's an access to a page which is in a segment flagged NX.
-
-> 
-> I don't see the problem with this for 64s, I don't think anything sane
-> can be done for any 0x400 interrupt in the kernel so it's probably
-> good to catch all here just in case. For 64s,
-> 
-> Acked-by: Nicholas Piggin <npiggin@gmail.com>
-> 
-> Why is 32s clearing those top bits? And it seems to be setting DSISR
-> that AFAIKS it does not use. Seems like it would be good to add a
-> NOEXEC_OR_G bit into SRR1.
-
-Probably for simplicity.
-
-When taking the Instruction TLB Miss interrupt, SRR1 contains CR0 fields in bits 0-3 and some 
-dedicated info in bits 12-15. That doesn't match SRR1 bits for ISI, so before falling back to the 
-ISI handler, ITLB Miss handler error patch clears upper SRR1 bits.
-
-Maybe it could instead try to set the right bits, but it would make it more complicated because the 
-error patch can be taken for the following reasons:
-- No page table
-- Not PAGE_PRESENT
-- Not PAGE_ACCESSED
-- Not PAGE_EXEC
-- Below TASK_SIZE and not PAGE_USER
-
-At the time being the verification of the flags is done with a single 'andc' operation. If we wanted 
-to set the proper bits, it would mean testing the flags separately, which would impact performance 
-on the no-error path.
-
-Or maybe it would be good enough to set the PROTFAULT bit in all cases but the lack of page table. 
-The 8xx sets PROTFAULT when hitting non-exec pages, so the kernel is prepared for it anyway. Not 
-sure about the lack of PAGE_PRESENT thought. The 8xx sets NOHPTE bit when PAGE_PRESENT is cleared.
-
-But is it really worth doing ?
-
-Christophe
