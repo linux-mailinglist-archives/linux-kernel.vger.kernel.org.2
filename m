@@ -2,145 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217AB3BA273
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F26D13BA276
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232665AbhGBPEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 11:04:14 -0400
-Received: from mout.gmx.net ([212.227.17.22]:45667 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231991AbhGBPEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 11:04:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1625238017;
-        bh=zidR5285gxvu2arbyxmhDqg6e5LTCzi9fQLp50nBsWk=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=DuwxOwI7319Lhx+I9Dc37PZMe6AbuRiW2QGky5FKmFl1Xg9YxF2MVb5pznrGmPGSG
-         jDEfrCCNH/5D0owzJ+rQfsut4w+8PVHn04RN3vsa/vy15PQMMDwtv0vo+XZM4BbQRQ
-         BbuJ3M+fhEcG2fy8ysO3Su1QGNK3ABFykt/t90p8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([83.52.228.41]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MxDkm-1l29Sj2INE-00xaUC; Fri, 02
- Jul 2021 17:00:17 +0200
-Date:   Fri, 2 Jul 2021 16:59:54 +0200
-From:   John Wood <john.wood@gmx.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     John Wood <john.wood@gmx.com>, Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Arnd Bergmann <arnd@arndb.de>, Andi Kleen <ak@linux.intel.com>,
-        valdis.kletnieks@vt.edu,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v8 3/8] security/brute: Detect a brute force attack
-Message-ID: <20210702145954.GA4513@ubuntu>
-References: <20210701234807.50453-1-alobakin@pm.me>
+        id S230480AbhGBPEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 11:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhGBPEn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 11:04:43 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE6FC061762;
+        Fri,  2 Jul 2021 08:02:10 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id g5so8394081iox.11;
+        Fri, 02 Jul 2021 08:02:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3ESnv5VltIcws9DNfVOo0LCJ9MunPT869dSHDL/9jQk=;
+        b=MW8SyPAkGlNMj/7lTIXQI54JdRINXm54t8virqWSj8TBq1OzjoaLeIBhKE4poR0TqK
+         2zgXO7G1NxOoKeB4ykAsoqT1xhG8M6b2FcMddg01P0zt0oRasIebhD9c6gbJ+ks6Gyj2
+         DMIWNURi83YlaX+8ZbhoSMFZ4lCj78fpYs+iFXKqG3pGBTdZ9bc8aoqfAFGsG4kiva/D
+         w7U1CEEAtzstg5BgFveRnkcbk7NTP6uUrAVR0rQFvdNMXK8j4pTo0HsrjOaeB0tsy/9Z
+         Dr6vV5V9vE/gY1wtHPs5TYPMbj/PTov+IGq0Z9lgVdo3XVFCJdUWOpFym63t/uztt0/s
+         yCvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3ESnv5VltIcws9DNfVOo0LCJ9MunPT869dSHDL/9jQk=;
+        b=XTPy7Qv5Ygrph0HhggEZA181Peymz45A1zrBMn+nkHm8aImKA7GPAx/YurGhmkIUVm
+         xDWw2vKjzPa1Je+s7Zu8+6uBlPdht+gQPq+eVJ7jk2GlBQM7H+iyJwhxPFPbcubuvrBd
+         FXXYPI8K7eLytM0Cds+yvbqs+TanvhR/7NO3vtUEDAIxUgG5f6H6SdcFMrLeyOj0T4xC
+         3jcpHUFptPfaJfh5QjooTfDcvE9fqLkxRDELEfDbhUgKFfy7QjU3zoRkLneeCe7GfJsI
+         ZsJ+9cq/Evw55/6N93x1RQzNEtWFtcS9l6DmPViHx9JQAfYPFOcXOQzLvMy724j0fuWu
+         7a2w==
+X-Gm-Message-State: AOAM530++920/mVY+vtKTOi3GHHNwedPyZkCnFqPENgrnkixfjcesRZV
+        eYOlGFpWAGTz/Sym/5GgRV1eTtDHpTJyDufekW0=
+X-Google-Smtp-Source: ABdhPJymjpTCbVqbwJKHZL55yBj4hfNpFvH9autX0ylNKZMkjmtHSyFnxvTzNhTu5jrzDtq6Q/gwKAO8DgZCB7+Crpw=
+X-Received: by 2002:a6b:f81a:: with SMTP id o26mr377544ioh.68.1625238129618;
+ Fri, 02 Jul 2021 08:02:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210701234807.50453-1-alobakin@pm.me>
-X-Provags-ID: V03:K1:dlN1ofh6LpaEb5MwTI60oBZZOzpxRydjUFLx8+d3q3xlDqOLQ/g
- AseUQcRVOSgw+y90S5R3RUUGkX4oXSPdXODz7muskTdGNG4XTvD+dI31GrvERxszJqmj3O+
- NGR5HMBSM0ueD0/qczK9UGA5RkFsMcK72AJTDElYA0GJzeW/4Rjit8KMkEtMMq+A508WvZ1
- 9CbOiefkEzVVJqbrQIGyQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9i/ZvK/cQjw=:a39Z0eLmluy9VDDGJKeaLg
- TvSqt9FDYwL9BX/25PlbGRXeBfVdd3fgvyeCfs3Cp+XW92EKF2euJ/2+8TNV7UogXY/OPVI6H
- FiS43ZCv15Ssd8V0eSkpzvQ5M7jHPHu341L84wtUpSzP0G21MSQnvItwJXbGogBsXNar813oT
- SUjE4WB1mmj64Lhvz5tEcgxk09x+e3yVDtMStATKQafRV93kysgYntaYek7y+rvnVs+Jz9cho
- 6ftPnQa7oB+fiBrMlvv18UPBM7FYSf5xmj0eyeAcUEngS6J9NnI7vje+YtPv01oFwp53wRMo7
- Ui1yNLxR6D8tkXq4NAl9MqRVsX0/VbkYgti+7sEL7SXbC8sVtjhNTkCafaP8hGK6fDHserJxV
- 6MwKbHRunfIlcT6k/5PukZ7cCcG/lwCBLu1BsGz7mJ/H2qiTr9btN92/xs1280gM/u4bTToHc
- NugNiuR3cZ786M2B2/Qgy6SkwwlRn5b8nIZhWGt30TwI+FU2acVkPZZMqBL7krRB2ftGc32yg
- 7qv+UruXZ9hYUEi9NSWXhlv0enDJDSEaFoMuU3WCSKx/hmRDlhI66InBaQMe0FQa8svHAzLFb
- MK7kCn3InBuncnfy+7rF6WUovWzYH51ZqwRXwND50Rbd2KoPpM1AxqVEgql8erI+4ixdfGjSE
- PrB7w+qQCOLJoT6NtZm5wi7RwlrDounjK5jV1+HzoIXxDcJhS1wpkpT6Bjl1YwB0mrvrtJykq
- yc1ExbKWcfNOpVAOiDjblN+wy5gHGKO/aFv+OsZ+RKgENsFFnR/QsUU3bqkuvHtb7u+UEIJxd
- 2HQJgnYxNvMR42G6Q8uozh9FR4jXey86VfhsQO/grEelJeTnD+rtyRXSvQxEysyvT1sSqvDKq
- lG1OOsPrGn5mwDQHGHrbZWaqXGfVuCM2SqplAnLo0N2FVoAWq8XZEBa0dW5WNW33PEheDT9L1
- J04TS0Npus+qiII4tcAjQEdRAVaaxJAvqNL9m5HkkZd57G3s8GNl7Wx73D26baD632LFja3Z+
- Ou5+ote2Rp99OhcFduh5OZLItt1JTTby/dwq6pvw7wAYOSQTUoAtVx4/cNM6tHxSm40iEhx/B
- CPtyjW63bPVQErsJmi9gsJiBsN5L7c5lBy1
-Content-Transfer-Encoding: quoted-printable
+References: <20210603171507.22514-1-andrew_gabbasov@mentor.com> <20210604110503.GA23002@vmlxhi-102.adit-jv.com>
+In-Reply-To: <20210604110503.GA23002@vmlxhi-102.adit-jv.com>
+From:   Macpaul Lin <macpaul@gmail.com>
+Date:   Fri, 2 Jul 2021 23:01:57 +0800
+Message-ID: <CACCg+XO+D+2SWJq0C=_sWXj53L1fh-wra8dmCb3VQ4bYCZQryA@mail.gmail.com>
+Subject: Re: [PATCH] usb: gadget: f_fs: Fix setting of device and driver data cross-references
+To:     Eugeniu Rosca <erosca@de.adit-jv.com>, stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        Eddie Hung <eddie.hung@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Jul 01, 2021 at 11:55:14PM +0000, Alexander Lobakin wrote:
-> Hi,
+Eugeniu Rosca <erosca@de.adit-jv.com> wrote:
 >
-> From: John Wood <john.wood@gmx.com>
-> Date: Sat, 5 Jun 2021 17:04:00 +0200
+> Hello,
 >
-> > +static int brute_task_execve(struct linux_binprm *bprm, struct file *=
-file)
-> > +{
-> > +	struct dentry *dentry =3D file_dentry(bprm->file);
-> > +	struct inode *inode =3D file_inode(bprm->file);
-> > +	struct brute_stats stats;
-> > +	int rc;
-> > +
-> > +	inode_lock(inode);
-> > +	rc =3D brute_get_xattr_stats(dentry, inode, &stats);
-> > +	if (WARN_ON_ONCE(rc && rc !=3D -ENODATA))
-> > +		goto unlock;
+> On Thu, Jun 03, 2021 at 12:15:07PM -0500, Andrew Gabbasov wrote:
+> > FunctionFS device structure 'struct ffs_dev' and driver data structure
+> > 'struct ffs_data' are bound to each other with cross-reference pointers
+> > 'ffs_data->private_data' and 'ffs_dev->ffs_data'. While the first one
+> > is supposed to be valid through the whole life of 'struct ffs_data'
+> > (and while 'struct ffs_dev' exists non-freed), the second one is cleared
+> > in 'ffs_closed()' (called from 'ffs_data_reset()' or the last
+> > 'ffs_data_put()'). This can be called several times, alternating in
+> > different order with 'ffs_free_inst()', that, if possible, clears
+> > the other cross-reference.
+> >
+
+[Skip some comment...]
+
+> I confirm there are at least two KASAN use-after-free issues
+> consistently/100% reproducible on v5.13-rc4-88-gf88cd3fb9df2:
 >
-> I think I caught a problem here. Have you tested this with
-> initramfs?
-
-No, it has not been tested with initramfs :(
-
-> According to init/do_mount.c's
-> init_rootfs()/rootfs_init_fs_context(), when `root=3D` cmdline
-> parameter is not empty, kernel creates rootfs of type ramfs
-> (tmpfs otherwise).
-> The thing about ramfs is that it doesn't support xattrs.
-
-It is a known issue that systems without xattr support are not
-suitable for Brute (there are a note in the documentation).
-However, the purpose is not to panic the system :(
-
-> I'm running this v8 on a regular PC with initramfs and having
-> `root=3D` in cmdline, and Brute doesn't allow the kernel to run
-> any init processes (/init, /sbin/init, ...) with err =3D=3D -95
-> (-EOPNOTSUPP) -- I'm getting a
+> https://gist.github.com/erosca/b5976a96789e574b319cb9e076938b5c
+> https://gist.github.com/erosca/4ded55ed32f0133bc2f4ccfe821c7776
 >
-> WARNING: CPU: 0 PID: 173 at brute_task_execve+0x15d/0x200
-> <snip>
-> Failed to execute /init (error -95)
+> These two can no longer be seen after the patch is applied.
 >
-> and so on (and a panic at the end).
+> In addition, below static analysis tools did not spot any regressions:
+> cppcheck 2.4, smatch v0.5.0-7445-g58776ae33ae8, make W=1, coccicheck
 >
-> If I omit `root=3D` from cmdline, then the kernel runs init process
-> just fine -- I guess because initramfs is then placed inside tmpfs
-> with xattr support.
+> Reviewed-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> Tested-by: Eugeniu Rosca <erosca@de.adit-jv.com>
 >
-> As for me, this ramfs/tmpfs selection based on `root=3D` presence
-> is ridiculous and I don't see or know any reasons behind that.
-> But that's another story, and ramfs might be not the only one
-> system without xattr support.
-> I think Brute should have a fallback here, e.g. it could simply
-> ignore files from xattr-incapable filesystems instead of such
-> WARNING splats and stuff.
+> --
+> Best regards,
+> Eugeniu Rosca
 
-Ok, it seems reasonable to me: if the file system doesn't support
-xattr, but Brute is enabled, Brute will do nothing and the system
-will work normally.
+It like there is similar issue on kernel-4.14 reported by our customer
+(Android).
+The back trace are similar.
+It looks like this patch has fixed issue existed in earlier kernels.
+Could Engeniu and Andrew help to comment if this fix is suggested to be pick to
+stable-tree? I've tried to port it onto kernel-4.14, kernel-4.19, and
+kernel-5.10.
+But it seems there is some revise work to do.
+If the origin issue affect multiple LTS kernel versions, then it will
+be better to be
+cherry-pick to stable-tree after it has been merged.
+Thanks!
 
-I will work on it for the next version.
-Thanks for the feedback.
-
-John Wood
+-- 
+Best regards,
+Macpaul Lin
