@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC493B9E30
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4016A3B9E31
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhGBJ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 05:29:02 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13053 "EHLO
+        id S231422AbhGBJ3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 05:29:07 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6036 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbhGBJ3B (ORCPT
+        with ESMTP id S231320AbhGBJ3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 05:29:01 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GGV4S16dBzZmCC;
-        Fri,  2 Jul 2021 17:23:20 +0800 (CST)
+        Fri, 2 Jul 2021 05:29:06 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GGV1y712TzXlql;
+        Fri,  2 Jul 2021 17:21:10 +0800 (CST)
 Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 2 Jul 2021 17:26:28 +0800
+ 15.1.2176.2; Fri, 2 Jul 2021 17:26:33 +0800
 Received: from SWX921481.china.huawei.com (10.126.203.116) by
  dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 2 Jul 2021 17:26:23 +0800
+ 15.1.2176.2; Fri, 2 Jul 2021 17:26:28 +0800
 From:   Barry Song <song.bao.hua@hisilicon.com>
 To:     <gregkh@linuxfoundation.org>, <akpm@linux-foundation.org>,
         <andriy.shevchenko@linux.intel.com>, <linux-kernel@vger.kernel.org>
@@ -34,11 +34,14 @@ CC:     <dave.hansen@intel.com>, <yury.norov@gmail.com>,
         <bristot@redhat.com>, <guodong.xu@linaro.org>,
         <tangchengchang@huawei.com>, <prime.zeng@hisilicon.com>,
         <yangyicong@huawei.com>, <tim.c.chen@linux.intel.com>,
-        <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH v5 0/3] use bin_attribute to break the size limitation of cpumap ABI
-Date:   Fri, 2 Jul 2021 21:25:56 +1200
-Message-ID: <20210702092559.8776-1-song.bao.hua@hisilicon.com>
+        <linuxarm@huawei.com>, Tian Tao <tiantao6@hisilicon.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH v5 1/3] cpumask: introduce cpumap_print_to_buf to support large bitmask and list
+Date:   Fri, 2 Jul 2021 21:25:57 +1200
+Message-ID: <20210702092559.8776-2-song.bao.hua@hisilicon.com>
 X-Mailer: git-send-email 2.21.0.windows.1
+In-Reply-To: <20210702092559.8776-1-song.bao.hua@hisilicon.com>
+References: <20210702092559.8776-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -50,95 +53,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v5:
-  -remove the bitmap API bitmap_print_to_buf, alternatively, only provide
-   cpumap_print_to_buf API as what we really care about is cpumask for
-   this moment. we can freely take bitmap_print_to_buf back once we find
-   the second user.
-   hopefully this can alleviate Yury's worries on possible abuse of a new
-   bitmap API.
-  -correct the document of cpumap_print_to_buf;
-  -In patch1, clearly explain why we need this new API in commit log;
-  -Also refine the commit log of patch 2 and 3;
-  -As the modification is narrowed to the scope of cpumask, the kunit
-   test of bitmap_print_to_buf doesn't apply in the new patchset. so
-   test case patch4/4 is removed.
+From: Tian Tao <tiantao6@hisilicon.com>
 
-   Thanks for the comments of Greg, Yury, Andy. Thanks for Jonathan's
-   review.
+The existing cpumap_print_to_pagebuf() is used by cpu topology and other
+drivers to export hexadecimal bitmask and decimal list to userspace by
+sysfs ABI.
 
-v4:
-  -add test cases for bitmap_print_to_buf API;
-  -add Reviewed-by of Jonathan Cameron for patches 1-3, thanks!
+Right now, those drivers are using a normal attribute for this kind of
+ABIs. A normal attribute typically has show entry as below:
 
-v3:
-  -fixed the strlen issue and patch #1,#2,#3 minor formatting issues, thanks
-   to Andy Shevchenko and Jonathan Cameron.
-
-v2:
-  -split the original patch #1 into two patches and use kasprintf() in
-  -patch #1 to simplify the code. do some minor formatting adjustments.
-
-Background:
-
-the whole story began from this thread when Jonatah and me tried to add a
-new topology level-cluster which exists on kunpeng920 and X86 Jacobsville:
-https://lore.kernel.org/lkml/YFRGIedW1fUlnmi+@kroah.com/
-https://lore.kernel.org/lkml/YFR2kwakbcGiI37w@kroah.com/
-
-in the discussion, Greg had some concern about the potential one page size
-limitation of sysfs ABI for topology. Greg's comment is reasonable
-and I think we should address the problem.
-
-For this moment, numa node, cpu topology and some other drivers are using
-cpu bitmap and list to expose hardware topology. When cpu number is large,
-the page buffer of sysfs won't be able to hold the whole bitmask or list.
-This doesn't really happen nowadays for bitmask as the maximum NR_CPUS
-is 8196 for X86_64 and 4096 for ARM64 since
-8196 * 9 / 32 = 2305
-is still smaller than 4KB page size.
-
-So the existing BUILD_BUG_ON() in drivers/base/node.c is pretty much
-preventing future problems when hardware gets more and more CPUs:
-static ssize_t node_read_cpumap(struct device *dev, bool list, char *buf)
+static ssize_t example_dev_show(struct device *dev,
+                struct device_attribute *attr, char *buf)
 {
- 	cpumask_var_t mask;
- 	struct node *node_dev = to_node(dev);
+	...
+        return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
+}
+show entry of attribute has no offset and count parameters and this
+means the file is limited to one page only.
 
-	/* 2008/04/07: buf currently PAGE_SIZE, need 9 chars per 32 bits. */
-	BUILD_BUG_ON((NR_CPUS/32 * 9) > (PAGE_SIZE-1));
+cpumap_print_to_pagebuf() API works terribly well for this kind of
+normal attribute with buf parameter and without offset, count:
+
+static inline ssize_t
+cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
+{
+        return bitmap_print_to_pagebuf(list, buf, cpumask_bits(mask),
+                                      nr_cpu_ids);
 }
 
-But those ABIs exposing cpu lists are much more tricky as a list could be
-like: 0, 3, 5, 7, 9, 11... etc. so nobody knows the size till the last
-moment. Comparing to bitmask, list is easier to exceed one page.
+The problem is once we have many cpus, we have a chance to make bitmask
+or list more than one page. Especially for list, it could be as complex
+as 0,3,5,7,9,...... We have no simple way to know it exact size.
 
-In the previous discussion, Greg and Dave Hansen preferred to remove this
-kind of limitation totally and remove the BUILD_BUG_ON() in
-drivers/base/node.c together:
-https://lore.kernel.org/lkml/1619679819-45256-2-git-send-email-tiantao6@hisilicon.com/
-https://lore.kernel.org/lkml/YIueOR4fOYa1dSAb@kroah.com/
+It turns out bin_attribute is a way to break this limit. bin_attribute
+has show entry as below:
+static ssize_t
+example_bin_attribute_show(struct file *filp, struct kobject *kobj,
+             struct bin_attribute *attr, char *buf,
+             loff_t offset, size_t count)
+{
+        ...
+}
 
-Todo:
+With the new offset and count parameters, this makes sysfs ABI be able
+to support file size more than one page. For example, offset could be
+>= 4096.
 
-right now, only topology and node are addressed. there are many other
-drivers are calling cpumap_print_to_pagebuf() and have the similar
-problems. we are going to address them one by one after this patchset
-settles down.
+This patch introduces cpumap_print_to_buf() so that those drivers can
+move to bin_attribute to support large bitmask and list. In result,
+we have to pass the corresponding parameters from bin_attribute to this
+new API.
 
-Tian Tao (3):
-  cpumask: introduce cpumap_print_to_buf to support large bitmask and
-    list
-  topology: use bin_attribute to break the size limitation of cpumap ABI
-  drivers/base/node.c: use bin_attribute to break the size limitation of
-    cpumap ABI
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Stefano Brivio <sbrivio@redhat.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: "Ma, Jianpeng" <jianpeng.ma@intel.com>
+Cc: Yury Norov <yury.norov@gmail.com>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ include/linux/cpumask.h | 19 +++++++++++++++++++
+ lib/cpumask.c           | 18 ++++++++++++++++++
+ 2 files changed, 37 insertions(+)
 
- drivers/base/node.c     |  52 +++++++++++-------
- drivers/base/topology.c | 115 ++++++++++++++++++++++------------------
- include/linux/cpumask.h |  19 +++++++
- lib/cpumask.c           |  18 +++++++
- 4 files changed, 133 insertions(+), 70 deletions(-)
-
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index bfc4690de4f4..24f410a2e793 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -983,6 +983,25 @@ cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
+ 				      nr_cpu_ids);
+ }
+ 
++/**
++ * cpumap_print_to_buf  - copies the cpumask into the buffer either
++ *      as comma-separated list of cpus or hex values of cpumask;
++ *      Typically used by bin_attribute to export cpumask bitmask and
++ *      list ABI.
++ * @list: indicates whether the cpumap must be list
++ *      true:  print in decimal list format
++ *      fasle: print in hexadecimal bitmask format
++ * @mask: the cpumask to copy
++ * @buf: the buffer to copy into
++ * @off: in the string from which we are copying, We copy to @buf
++ * @count: the maximum number of bytes to print
++ *
++ * Returns the length of how many bytes have been copied.
++ */
++extern ssize_t
++cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
++		    loff_t off, size_t count);
++
+ #if NR_CPUS <= BITS_PER_LONG
+ #define CPU_MASK_ALL							\
+ (cpumask_t) { {								\
+diff --git a/lib/cpumask.c b/lib/cpumask.c
+index c3c76b833384..40421a6d31bc 100644
+--- a/lib/cpumask.c
++++ b/lib/cpumask.c
+@@ -279,3 +279,21 @@ int cpumask_any_distribute(const struct cpumask *srcp)
+ 	return next;
+ }
+ EXPORT_SYMBOL(cpumask_any_distribute);
++
++ssize_t cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
++		    loff_t off, size_t count)
++{
++	const char *fmt = list ? "%*pbl\n" : "%*pb\n";
++	ssize_t size;
++	void *data;
++
++	data = kasprintf(GFP_KERNEL, fmt, nr_cpu_ids, cpumask_bits(mask));
++	if (!data)
++		return -ENOMEM;
++
++	size = memory_read_from_buffer(buf, count, &off, data, strlen(data) + 1);
++	kfree(data);
++
++	return size;
++}
++EXPORT_SYMBOL(cpumap_print_to_buf);
 -- 
 2.25.1
 
