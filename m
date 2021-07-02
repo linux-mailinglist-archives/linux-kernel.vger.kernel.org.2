@@ -2,217 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3766D3BA09E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337AA3BA0A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhGBMnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 08:43:35 -0400
-Received: from mail-dm6nam10on2085.outbound.protection.outlook.com ([40.107.93.85]:27616
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232026AbhGBMne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 08:43:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=doV5xYSEah825xBhHxTBAEpILtL19ngsHuy9H4woyVMh5Gxa/RWOFSTgxZK5fG9mbWkSVbXycE0IOJUXN7S45udCr/FsMwqRPKNBO0f64DO8CY31uhOdZHMs5zNwA5dnRgL1Uni4xGbCCvJbXoSTRuOhhthGjiJk6T0pkSfNg60PguMC+/zL67XpgyU8mrSEX3PAMbVFVsipqVYOdFSdMHCKr7E+k5oh5Iyhzspm6K3fFun6niNlZMRVkEDiHFq6K5vPuSN/CQSJWMCc0pJjP8BLoQqeeU90hVeUF8iWQ56fAD9jIiBk3cz+zwJn2Y55bPnQlZO6e/Fdg9iccnDcUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZOo2Bh7EFs7tFMOR5iXj4/s7OZ6ZAOzqNVncj92rDjE=;
- b=K5oKOYKzF6dY/qkqq3zIyO5DuZbpG6PXWk1nPdjHIEZemMV2ylFA25dIHCsYWXvQa19oNm7p/bNMZvVCBfxK5PJeT0M2Sg7qtJrspA1v/XBNrUUxYgtDFzQNO5TsS2c585A6pVSXj+06HMf8iA9Xdd9mYqu7wNspQe21GdB4VeyLOcbreMXREfUPc2mYWyd+GPOpbM24aIA7bh8CF1/JhN7/TLFGeedzrdwV/6+trmcjrv3/z+6UeZ/8oqsgnncMSaNFwh1wNOSph55jrgNpgKeXrvuQPDSMa2fbugRjpmKNlSlHFYxzGCGlrAwpZ18rTAUYgQ1v7eNXZ2wpNmggFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZOo2Bh7EFs7tFMOR5iXj4/s7OZ6ZAOzqNVncj92rDjE=;
- b=DAH7J4zFFyr55VRxKGEtSlpH+riA1ZkLqqdEIzd6m33NkbcHINY1iq2L4tIx577yqL7yxEgxWVv6FhicJI2bGyJ5DcLzMVpkRK6Vu+KbIaxvi/jPNzxxA1tdW6EUgUjg+IRP+h9m//z6uYQOeatwQtwoqJ4RD2P3jYz6jKQxv0g=
-Received: from BN6PR16CA0023.namprd16.prod.outlook.com (2603:10b6:404:f5::33)
- by SJ0PR02MB7472.namprd02.prod.outlook.com (2603:10b6:a03:29d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Fri, 2 Jul
- 2021 12:41:00 +0000
-Received: from BN1NAM02FT024.eop-nam02.prod.protection.outlook.com
- (2603:10b6:404:f5:cafe::4d) by BN6PR16CA0023.outlook.office365.com
- (2603:10b6:404:f5::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend
- Transport; Fri, 2 Jul 2021 12:41:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- BN1NAM02FT024.mail.protection.outlook.com (10.13.2.138) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4287.22 via Frontend Transport; Fri, 2 Jul 2021 12:41:00 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 2 Jul 2021 05:40:59 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Fri, 2 Jul 2021 05:40:59 -0700
-Envelope-to: robh@kernel.org,
- linux-arm-kernel@lists.infradead.org,
- alvaro.gamez@hazent.com,
- linux-kernel@vger.kernel.org,
- s.hauer@pengutronix.de,
- u.kleine-koenig@pengutronix.de,
- devicetree@vger.kernel.org,
- linux-pwm@vger.kernel.org,
- monstr@monstr.eu,
- sean.anderson@seco.com
-Received: from [172.30.17.109] (port=49258)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1lzITa-000E83-UH; Fri, 02 Jul 2021 05:40:59 -0700
-Subject: Re: [PATCH v4 1/3] dt-bindings: pwm: Add Xilinx AXI Timer
-To:     Sean Anderson <sean.anderson@seco.com>,
-        Michal Simek <monstr@monstr.eu>, <linux-pwm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-CC:     <michal.simek@xilinx.com>, <linux-kernel@vger.kernel.org>,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh@kernel.org>
-References: <20210528214522.617435-1-sean.anderson@seco.com>
- <13c9345f-b3e5-cc97-437b-c342777fcf3c@monstr.eu>
- <36b23b6b-e064-a9c6-2cd4-4fd53614724b@seco.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <5e7c9d00-bacb-325a-c8f6-413ad9da5f73@xilinx.com>
-Date:   Fri, 2 Jul 2021 14:40:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232235AbhGBMpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 08:45:12 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:47134 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232085AbhGBMpL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 08:45:11 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 162CRFxT013803;
+        Fri, 2 Jul 2021 12:42:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=+IJpwNA8I0jIOfMjRkbkVtev9n6gx+bEwQcrxVqju/M=;
+ b=mD60Jo191DdsOuG8QiWskOjnV9jmPZovt9p6d3t4QJZ0XSF6dafpJjEQZ7UO5b2dDRT/
+ tbyPg4qvMlbpuMyU53DNz6yii8n3erLwkNTyaoczqF5i7Mz/wyjQJnxRnOyuQGnM8dpN
+ tOQ1v41gT27WHq7aT1ZyGzhx7Y9XWFR4pWnIOAnS+b88im6r7xlFKy/sf/EA03ft2Rrs
+ 6s6LdZUy784LmFrCo/K19x3R44FaMxPQEHL09JV3YicbEBg//BO1GlazNrLfOZuPGV0j
+ o32wzKfktCtiWV9rcb6LeCRh/tA9YAFoX/VDX95hwneSQTu6JLrnc/Lt40v3/M2D1ADY DQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39gy5w3n99-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Jul 2021 12:42:34 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 162CeELB008075;
+        Fri, 2 Jul 2021 12:42:33 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 39dt9nsdax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Jul 2021 12:42:33 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 162CgW1b014129;
+        Fri, 2 Jul 2021 12:42:32 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 39dt9nsdaf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Jul 2021 12:42:32 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.14.4) with ESMTP id 162CgVDA009874;
+        Fri, 2 Jul 2021 12:42:31 GMT
+Received: from kadam (/102.222.70.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 02 Jul 2021 05:42:31 -0700
+Date:   Fri, 2 Jul 2021 15:42:25 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8188eu: Remove an unused variable and some
+ lines of code
+Message-ID: <20210702124225.GW2040@kadam>
+References: <20210701144707.22820-1-fmdefrancesco@gmail.com>
+ <20210702074840.GT2040@kadam>
+ <20210702083521.GV2040@kadam>
+ <2153683.Tj7f0gbxMR@linux.local>
 MIME-Version: 1.0
-In-Reply-To: <36b23b6b-e064-a9c6-2cd4-4fd53614724b@seco.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5fae810a-5698-4923-ed1c-08d93d56a579
-X-MS-TrafficTypeDiagnostic: SJ0PR02MB7472:
-X-Microsoft-Antispam-PRVS: <SJ0PR02MB7472BA7BBE679E44A99FC0B0C61F9@SJ0PR02MB7472.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2ocOu+TVHyPIzFoDoYbr6/sWUFpK8Q7ggaEs2DG1+joKw911p4hAoj83ixsxgK9MKS01Oa2C9ns3YYo1xG9UEtyGvArKFJ2jcjuy+nLd4Pu+Ou/S2T7It7ZKkGq2qlAKpSfG3rx6APJyoP7O4MV76gZ8VLYm2syULOV8vmmLcTXKz4O7qTIY5K8p2QKsEeHQF5DA3X6W3zHHxxgTcnQzJj4e590k4SxI1nt8iQOYEAfMfoWsws6x560+hVbHr1Natvr5ccWAD4LwJCQDuO5O1eztmg+1JhDt/0V7Ub6ZfBwE0aY+bSH0rxx4HFczAvD4Rspc4dp8Xi4sjjV0V9AAQV4oZa5myhNLwWmF+TCYmY3r3wff/2+Q7bLrPJw9GcmeQrnP8MEN7KxHRSfUS4HraWV1Fo3gZUe9kzVF1S2EefzxFF3Oq5x7lVRZdnHhxouM4BIhRbq9R+0QACzz8h/HRaYxvQvA/0CboIDwq+wrI3cjho1kkoCsjdnMD1NomYbHvGWztoICZWfFbHqkbhHjOmzmQk8p/leNuOXWp7Iv3mPn0UoyPyXeqW5jS6ks4nqOo5RweV5uuFX/W3StnaFPMGaTZXPXpAdReDBkJ+e3Z4eNvNQRfWomZ+E0W/BAXF+fHld4EE8hByEYsHLY7bXm878ttd8Epk2mmSl/H4+Y4k7K5n1SIlGmD5bVvEApZHnjZqhfysGrsSrrbGDCP/MB47/kb5uKf6gPbJXoF0D3qrtOvANfR+AFfBTJU9w7CICZwYPrCp5FANXuauAyImoP6vzGKEft5SlWqr10SPUJcddjtCRl93KN91nV6ND/APkzTPjoxwvIEJ0WcixG/rdNbYJSxfI3+ZUM91ZFB7dIpi9MmYS1MiO8ghNTD9KDmupI
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(136003)(346002)(36840700001)(46966006)(36860700001)(82310400003)(31686004)(7416002)(47076005)(44832011)(82740400003)(356005)(478600001)(31696002)(966005)(2906002)(83380400001)(70206006)(6666004)(316002)(26005)(54906003)(8676002)(2616005)(186003)(36756003)(5660300002)(36906005)(336012)(9786002)(8936002)(426003)(110136005)(4326008)(7636003)(70586007)(53546011)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2021 12:41:00.0929
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5fae810a-5698-4923-ed1c-08d93d56a579
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT024.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7472
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2153683.Tj7f0gbxMR@linux.local>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: DeV7b3Mf6xTtMvSAxMZRo7jDxsVaxF48
+X-Proofpoint-ORIG-GUID: DeV7b3Mf6xTtMvSAxMZRo7jDxsVaxF48
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/1/21 5:32 PM, Sean Anderson wrote:
+On Fri, Jul 02, 2021 at 02:14:45PM +0200, Fabio M. De Francesco wrote:
+> On Friday, July 2, 2021 10:35:21 AM CEST Dan Carpenter wrote:
+> > On Fri, Jul 02, 2021 at 10:48:40AM +0300, Dan Carpenter wrote:
+> > > On Thu, Jul 01, 2021 at 04:47:07PM +0200, Fabio M. De Francesco wrote:
+> > > > Remove set but unused iw_operation_mode[]. Remove all the lines of
+> > > > code from the function rtw_wx_set_rate, except the "return 0;" line
+> > > > to not break userland code that somewhat uses this IOCTL.
+> > > > 
+> > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > > [...]
+> > > 
 > 
+> Dear Dan,
 > 
-> On 6/30/21 9:47 AM, Michal Simek wrote:
->>
->>
->> On 5/28/21 11:45 PM, Sean Anderson wrote:
->>> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is
->>> a "soft" block, so it has many parameters which would not be
->>> configurable in most hardware. This binding is usually automatically
->>> generated by Xilinx's tools, so the names and values of some properties
->>> must be kept as they are. Replacement properties have been provided for
->>> new device trees.
->>>
->>> Because we need to init timer devices so early in boot, the easiest way
->>> to configure things is to use a device tree property. For the moment
->>> this is 'xlnx,pwm', but this could be extended/renamed/etc. in the
->>> future if these is a need for a generic property.
->>>
->>> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
->>> ---
->>>
->>> Changes in v4:
->>> - Remove references to generate polarity so this can get merged
->>> - Predicate PWM driver on the presence of #pwm-cells
->>> - Make some properties optional for clocksource drivers
->>>
->>> Changes in v3:
->>> - Mark all boolean-as-int properties as deprecated
->>> - Add xlnx,pwm and xlnx,gen?-active-low properties.
->>> - Make newer replacement properties mutually-exclusive with what they
->>>   replace
->>> - Add an example with non-deprecated properties only.
->>>
->>> Changes in v2:
->>> - Use 32-bit addresses for example binding
->>>
->>>  .../bindings/pwm/xlnx,axi-timer.yaml          | 85 +++++++++++++++++++
->>>  1 file changed, 85 insertions(+)
->>>  create mode 100644
-> Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
->>>
->>> diff --git
-> a/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
-> b/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
->>> new file mode 100644
->>> index 000000000000..48a280f96e63
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
->>
->> I don't think this is the right location for this.
->>
->> I have done some grepping and I think this should be done in a different
->> way. I pretty much like solution around "ti,omap3430-timer" which is
->> calling dmtimer_systimer_select_best() and later dmtimer_is_preferred()
->> which in this case would allow us to get rid of cases which are not
->> suitable for clocksource and clockevent.
->>
->> And there is drivers/pwm/pwm-omap-dmtimer.c which has link to timer
->> which is providing functions for it's functionality.
->>
->> I have also looked at
->> Documentation/devicetree/bindings/timer/nxp,tpm-timer.yaml which is also
->> the same device.
+> > > Just delete this whole file.  It doesn't do anything now.
+> > 
+> > Sorry, I meant function, not file.  *chortle*.  :P
 > 
-> Ok, I will move this under bindings/timer.
+> No worries, it is clear it was unintended.
 > 
->>
->> And sort of curious if you look at
->>
-> https://www.xilinx.com/support/documentation/ip_documentation/axi_timer/v2_0/pg079-axi-timer.pdf
+> Back to the function... As you may suspect :-) I know practically nothing 
+> neither of Linux device drivers or of whatever else kernel, so I take your 
+> words for good. ASAP, I'll send a v2 of this patch.
 > 
->> ( Figure 1-1)
->> that PWM is taking input from generate out 0 and generate out 1 which is
->> maybe can be modeled is any output and pwm driver can register inputs
->> for pwm driver.
+> However, I usually like to understand what I make (just for fun and... more).
 > 
-> I don't think that is a good model, since several bits (GENERATE, PWM,
-> etc) need to be set in the TCSR, and we need to coordinate changes
-> between timers closely to keep our contract for apply_state(). Although
-> that is how the hardware is organized, the requirements of the
-> clocksource and pwm subsystems are very different.
+> That rtw_wx_set_rate() is the implementation of the SIOCSIWRATE IOCTL command. 
+> I hope that I have not misunderstood it, have I? 
 
-There is another upstream solution done by samsung. Where they use
-samsung,pwm-outputs property to identify PWMs. I think that make sense
-to consider to identify which timer should be clocksource/clockevent
-because with MB SMP this has to be done to pair timer with cpu for
-clockevents.
+Correct.
 
-You can see drivers here.
-drivers/clocksource/smasung_pwm_timer.c
-drivers/pwm/pwm-samsung.c
+> 
+> However, we know that this function does practically nothing and then simply 
+> returns 0 to the user. That's exactly the reason why I deleted all its lines 
+> (except one). 
 
-Uwe: How does it sound to you?
+It used to do nothing in a much more complicated way before commit
+1aef69ecacda ("staging: rtl8188eu: Remove function rtw_setdatarate_cmd()")
 
-Thanks,
-Michal
+> 
+> If I am a user of that command I get a "success" return code (0) and I don't  
+> notice that it won't be able to set the bit rate. However everything should 
+> still keep running (I suppose using the default bit rate of the hardware; who 
+> really knows?). 
+
+It will still do nothing but now instead of returning success it will
+return -ENOTSUPP.  This is done in wireless_process_ioctl().
+
+> 
+> Now it's time for two questions: 
+> 
+> 1) what happens if that command is used by some users that (hopelessly) expect 
+> the function to set the bit rate? I mean: if the function is not anymore in 
+> the list of the IOCTL commands of the rtw_handlers array will still the user 
+> program compile, link, and don't crash at runtime? 
+> 
+
+Userspace programs are supposed to be written so that they work with
+every wifi driver, so they should be able to handle -ENOTSUPP.  If this
+breaks a userspace application then we will have to change it back.  But
+returning -ENOTSUPP is the correct behavior, so let's first try to do
+the correct thing and then think about working around bugs in userspace
+if we find them.
+
+> 2) how should I delete the association of SIOCSIWRATE with rtw_wx_set_rate() 
+> in the rtw_handlers array?
+> 	- delete the entry and shift the array one position up?
+> 	- set the SIOCSIWRATE entry to NULL?
+
+The IW_HANDLER() macro puts the function in the correct position in the
+array.  So just delete it.  Everything else will remain unchanged.
+
+regards,
+dan carpenter
