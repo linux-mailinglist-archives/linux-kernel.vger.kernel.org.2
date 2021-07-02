@@ -2,190 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6BA3BA2B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4E23BA2B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhGBPZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 11:25:49 -0400
-Received: from mga06.intel.com ([134.134.136.31]:1475 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231920AbhGBPZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 11:25:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10033"; a="269875057"
-X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
-   d="scan'208";a="269875057"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 08:23:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
-   d="scan'208";a="482531792"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by FMSMGA003.fm.intel.com with ESMTP; 02 Jul 2021 08:23:15 -0700
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     bp@suse.de, luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
-        x86@kernel.org
-Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com
-Subject: [PATCH v6-fix 06/26] x86/fpu/xstate: Calculate and remember dynamic XSTATE buffer sizes
-Date:   Fri,  2 Jul 2021 08:17:26 -0700
-Message-Id: <20210702151726.27293-1-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <7B6BF36A-E1C5-4D7C-96EC-2036AE27414B@intel.com>
-References: <7B6BF36A-E1C5-4D7C-96EC-2036AE27414B@intel.com>
+        id S231865AbhGBPWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 11:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhGBPWj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 11:22:39 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E0EC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 08:20:06 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id w13so13815104edc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 08:20:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=06Nd6TnCb3nAEOSv6yJcw8Ps4KFQ2U44qABFJzU7ha0=;
+        b=Tb/6zZy4QHtUFQ/eS5cHy+sIGYIkdjTd200ybkGsGXbXYWCEALMoQDLxmcoiNdrIgI
+         cfY5xLUYk705kgEv0XtIyadG7Cxb56eW5w9P04fb7WrYDhByCRSAOpJanGBrr38sDSRN
+         i2mVFrn7X4L/Spm4WwxNuzxYnFfv4dOyXp18c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=06Nd6TnCb3nAEOSv6yJcw8Ps4KFQ2U44qABFJzU7ha0=;
+        b=jWOpz26qNMzBRWwBNmNiitPPKZcwnlPzkWwiU+J1asDawM0sc5dHmEON9Clu+anbx8
+         ofChX4DCDw+I4nvBtfys5bPa+9XrBkrPmZErBpzj0upna+lwr/KtVCsfkjzYLZdyXipf
+         F7ksZ8S6cN1bUcucRv0zofVLTBdkAbmImJR8N6NFYfZz5k3nAQqrMzYjh1NQ3VrTJ3Kp
+         1PAlsu4q1sUonmXAMm58cxTd3UiEF/h4v2Ye1SvS7rTXeFSQrmlSoA6OmRjmoiwbz3e6
+         zu2Bb3TmYStZLWvXxoZ3AtcpDAqAiIbxFwchirALgypSQps4flMfdxm5EfyjNpQA2xkC
+         8fgg==
+X-Gm-Message-State: AOAM5315mjA5LfbTSmlN6iUomkI4jKqQjkNZTw0uajMkIVk908xuUuFc
+        JESx9jSkV31fWAD0A5V8cDKrYw==
+X-Google-Smtp-Source: ABdhPJy1u5wCKlcBTOsax8/gzE7py/1SbgaTWjGsn//HbIVqC6hXhZ/ySiT8Gf+pZZArQ4zCrVvkDA==
+X-Received: by 2002:aa7:ccc1:: with SMTP id y1mr7348581edt.321.1625239204808;
+        Fri, 02 Jul 2021 08:20:04 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8109:9880:57f0:ba7c:cdd5:fff7:623c])
+        by smtp.gmail.com with ESMTPSA id c14sm1508402edr.27.2021.07.02.08.20.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 08:20:04 -0700 (PDT)
+From:   Rodrigo Campos <rodrigo@kinvolk.io>
+To:     Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org,
+        containers@lists.linux.dev
+Cc:     Alban Crequy <alban@kinvolk.io>,
+        =?UTF-8?q?Mauricio=20V=C3=A1squez=20Bernal?= <mauricio@kinvolk.io>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Rodrigo Campos <rodrigo@kinvolk.io>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH] Documentation: seccomp: Fix typo in user notification
+Date:   Fri,  2 Jul 2021 17:19:27 +0200
+Message-Id: <20210702151927.263402-1-rodrigo@kinvolk.io>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The XSTATE per-task buffer is currently embedded into struct fpu with
-static size. To accommodate dynamic user XSTATEs, record the maximum and
-minimum buffer sizes.
+The close on exec flag is O_CLOEXEC, not O_EXEC. This patch just fixes
+the typo.
 
-Rename the size calculation function. It calculates the maximum XSTATE size
-and sanity checks it with CPUID. It also calculates the static embedded
-buffer size by excluding the dynamic user states from the maximum size.
-
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Len Brown <len.brown@intel.com>
-Cc: x86@kernel.org
-Cc: linux-kernel@vger.kernel.org
+Suggested-by: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: Rodrigo Campos <rodrigo@kinvolk.io>
 ---
-Changes from v6:
-* Fixed the v6 changes.
+ Documentation/userspace-api/seccomp_filter.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes from v5:
-* Re-adjusted some local variable names.
-
-Changes from v4:
-* Massaged the function description, in preparation for the change
-  with a return value.
-
-Changes from v3:
-* Updated the changelog. (Borislav Petkov)
-* Updated the code comment. (Borislav Petkov)
-* Adjusted the calculation function naming.
-* Moved out the new variable addition into a new patch.
-
-Changes from v2:
-* Updated the changelog with task->fpu removed. (Borislav Petkov)
-* Renamed the in-line size variable.
-* Updated some code comments.
----
- arch/x86/kernel/fpu/xstate.c | 59 ++++++++++++++++++++++++------------
- 1 file changed, 40 insertions(+), 19 deletions(-)
-
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index e03853bb2603..75969f1ef4b3 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -590,24 +590,36 @@ static void check_xstate_against_struct(int nr)
- 	}
- }
- 
--/*
-- * This essentially double-checks what the cpu told us about
-- * how large the XSAVE buffer needs to be.  We are recalculating
-- * it to be safe.
-+/**
-+ * calculate_xstate_sizes() - Calculate the xstate per-task buffer sizes.
-+ *
-+ * Record the minimum and double-check the maximum against what the CPU
-+ * told.
-  *
-  * Independent XSAVE features allocate their own buffers and are not
-  * covered by these checks. Only the size of the buffer for task->fpu
-  * is checked here.
-+ *
-+ * Dynamic user states are stored in this per-task buffer. They account
-+ * for the delta between the maximum and the minimum.
-+ *
-+ * Return: nothing.
-  */
--static void do_extra_xstate_size_checks(void)
-+static void calculate_xstate_sizes(void)
- {
--	int paranoid_xstate_size = FXSAVE_SIZE + XSAVE_HDR_SIZE;
--	int i;
-+	int xstate_size = FXSAVE_SIZE + XSAVE_HDR_SIZE;
-+	int xstate_size_no_dynamic, i;
-+
-+	xstate_size_no_dynamic = xstate_size;
- 
- 	for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
-+		bool user_dynamic;
-+
- 		if (!xfeature_enabled(i))
- 			continue;
- 
-+		user_dynamic = (xfeatures_mask_user_dynamic & BIT_ULL(i)) ? true : false;
-+
- 		check_xstate_against_struct(i);
- 		/*
- 		 * Supervisor state components can be managed only by
-@@ -617,27 +629,39 @@ static void do_extra_xstate_size_checks(void)
- 			XSTATE_WARN_ON(xfeature_is_supervisor(i));
- 
- 		/* Align from the end of the previous feature */
--		if (xfeature_is_aligned(i))
--			paranoid_xstate_size = ALIGN(paranoid_xstate_size, 64);
-+		if (xfeature_is_aligned(i)) {
-+			xstate_size = ALIGN(xstate_size, 64);
-+			if (!user_dynamic)
-+				xstate_size_no_dynamic = ALIGN(xstate_size_no_dynamic, 64);
-+		}
- 		/*
- 		 * The offset of a given state in the non-compacted
- 		 * format is given to us in a CPUID leaf.  We check
- 		 * them for being ordered (increasing offsets) in
- 		 * setup_xstate_features(). XSAVES uses compacted format.
- 		 */
--		if (!cpu_feature_enabled(X86_FEATURE_XSAVES))
--			paranoid_xstate_size = xfeature_uncompacted_offset(i);
-+		if (!cpu_feature_enabled(X86_FEATURE_XSAVES)) {
-+			xstate_size = xfeature_uncompacted_offset(i);
-+			if (!user_dynamic)
-+				xstate_size_no_dynamic = xfeature_uncompacted_offset(i);
-+		}
- 		/*
- 		 * The compacted-format offset always depends on where
- 		 * the previous state ended.
- 		 */
--		paranoid_xstate_size += xfeature_size(i);
-+		xstate_size += xfeature_size(i);
-+		if (!user_dynamic)
-+			xstate_size_no_dynamic += xfeature_size(i);
- 	}
-+
- 	/*
- 	 * The size accounts for all the possible states reserved in the
- 	 * per-task buffer.  Check against the maximum size.
- 	 */
--	XSTATE_WARN_ON(paranoid_xstate_size != get_xstate_config(XSTATE_MAX_SIZE));
-+	XSTATE_WARN_ON(xstate_size != get_xstate_config(XSTATE_MAX_SIZE));
-+
-+	/* Record the one without dynamic states as the minimum. */
-+	set_xstate_config(XSTATE_MIN_SIZE, xstate_size_no_dynamic);
- }
- 
- 
-@@ -738,14 +762,11 @@ static int __init init_xstate_size(void)
- 	 */
- 	set_xstate_config(XSTATE_MAX_SIZE, possible_xstate_size);
- 
--	/* Perform an extra check for the maximum size. */
--	do_extra_xstate_size_checks();
--
- 	/*
--	 * Set the minimum to be the same as the maximum. The dynamic
--	 * user states are not supported yet.
-+	 * Calculate and double-check the maximum size. Calculate and record
-+	 * the minimum size.
- 	 */
--	set_xstate_config(XSTATE_MIN_SIZE, possible_xstate_size);
-+	calculate_xstate_sizes();
- 
- 	/* Ensure the minimum size fits in the statically-allocated buffer: */
- 	if (!is_supported_xstate_size(get_xstate_config(XSTATE_MIN_SIZE)))
+diff --git a/Documentation/userspace-api/seccomp_filter.rst b/Documentation/userspace-api/seccomp_filter.rst
+index d61219889e49..539e9d4a4860 100644
+--- a/Documentation/userspace-api/seccomp_filter.rst
++++ b/Documentation/userspace-api/seccomp_filter.rst
+@@ -263,7 +263,7 @@ Userspace can also add file descriptors to the notifying process via
+ ``ioctl(SECCOMP_IOCTL_NOTIF_ADDFD)``. The ``id`` member of
+ ``struct seccomp_notif_addfd`` should be the same ``id`` as in
+ ``struct seccomp_notif``. The ``newfd_flags`` flag may be used to set flags
+-like O_EXEC on the file descriptor in the notifying process. If the supervisor
++like O_CLOEXEC on the file descriptor in the notifying process. If the supervisor
+ wants to inject the file descriptor with a specific number, the
+ ``SECCOMP_ADDFD_FLAG_SETFD`` flag can be used, and set the ``newfd`` member to
+ the specific number to use. If that file descriptor is already open in the
 -- 
-2.17.1
+2.30.2
 
