@@ -2,126 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CBF53B9A92
+	by mail.lfdr.de (Postfix) with ESMTP id 75F773B9A93
 	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 03:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234743AbhGBBfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 21:35:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52166 "EHLO mail.kernel.org"
+        id S234721AbhGBBnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 21:43:43 -0400
+Received: from m12-13.163.com ([220.181.12.13]:43138 "EHLO m12-13.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234708AbhGBBfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 21:35:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E1AA613BC;
-        Fri,  2 Jul 2021 01:32:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625189549;
-        bh=x/cZLU8gLdFXi9n2Y5IATFQF9pEIi5JCiI99YW3rBRE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VfMcQoeK3ZoEMkwoJqws8BVhZSz4DxiT6HAGhBVmKqaAb6IiHe1b5epTXAtdDqHu+
-         nDICz5+SGgFnKFT5rUk6ZhNnPoamJ1SRBNNPnmt7nCTv33T+UE8BHEAqb1hTdFVNIQ
-         wF84i5f1Y0KO4H0mJCTibirBqDCk1G+4jg44w8izkKP/oeYuvNWhQr08QgSOf4EDTp
-         gUbjeS9dM2p0HNPYD39d6z7jKHbCZW5MJr8rK0babaX/wSbTTGo4r4F2NUl26k3cUb
-         OAF4NgUnO9wvyuWtnxO0MUMhM+n+klNroU7rjZAPXreinZx+R+QZig3c7KFytBJ9R8
-         pVUhk6XvGICHg==
-Date:   Thu, 1 Jul 2021 18:32:28 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 RFC] f2fs: fix to force keeping write barrier for
- strict fsync mode
-Message-ID: <YN5srPRZaPN9gpZ0@google.com>
-References: <20210601101024.119356-1-yuchao0@huawei.com>
- <YN32/NsjqJONbvz7@google.com>
- <648a96f7-2c83-e9ed-0cbd-4ee8e4797724@kernel.org>
+        id S234501AbhGBBnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 21:43:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=NFqOO
+        gC2TpUHPNiBTgBnyCWVqf6zzZelwM0t3zf8bJw=; b=XCcq4MQQr1SAi4bGjDyDi
+        Js2Vzv9w54HWP5sfgIPPhjWqcqgWIGm2t+dzzzEUfZ+N5+AMbkR6XuP8qj/foKeg
+        v6vwU18KBGWu7JW0tkYPBIQq3v5fE+EfqiPmD8dA/Bu88OLIMlT1iDI1SNKds12h
+        L06FYu59SktELhjcgB4/rw=
+Received: from localhost (unknown [218.17.89.111])
+        by smtp9 (Coremail) with SMTP id DcCowACHaOaHbt5ghYmbJA--.16524S2;
+        Fri, 02 Jul 2021 09:40:25 +0800 (CST)
+Date:   Fri, 2 Jul 2021 09:40:23 +0800
+From:   Chunyou Tang <tangchunyou@163.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     tomeu.vizoso@collabora.com, airlied@linux.ie,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        alyssa.rosenzweig@collabora.com,
+        ChunyouTang <tangchunyou@icubecorp.cn>
+Subject: Re: [PATCH v2] drm/panfrost:report the full raw fault information
+ instead
+Message-ID: <20210702094023.00006ba3@163.com>
+In-Reply-To: <3fe0e553-ac73-0d97-4404-c597fd4993a0@arm.com>
+References: <20210617062054.1864-1-tangchunyou@163.com>
+        <2dcbb36a-b550-4c9d-cff8-73ca4b5abb11@arm.com>
+        <20210619111852.00003e52@163.com>
+        <23f675e9-698d-840d-104f-33aa594dcb96@arm.com>
+        <20210622094000.00004f7e@163.com>
+        <04bc1306-f8a3-2e3c-b55d-030d1448fad2@arm.com>
+        <20210625174937.0000183f@163.com>
+        <14b2a3c8-4bc2-c8f9-627b-9ac5840cad11@arm.com>
+        <20210629110453.00007ace@163.com>
+        <3fe0e553-ac73-0d97-4404-c597fd4993a0@arm.com>
+Organization: icube
+X-Mailer: Claws Mail 3.10.1 (GTK+ 2.16.6; i586-pc-mingw32msvc)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <648a96f7-2c83-e9ed-0cbd-4ee8e4797724@kernel.org>
+Content-Type: text/plain; charset=GB18030
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DcCowACHaOaHbt5ghYmbJA--.16524S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXw17tw4DuF4kJFWrGw15urg_yoW5GF1kpF
+        W5JrW2yr4qqFyjvw1rJw4Du345tan8Jr45Gr95Gr1jqrn8J348Xr17JrZ8CFy8CryrK345
+        tr1YyrZxZF1qvrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jNa9-UUUUU=
+X-Originating-IP: [218.17.89.111]
+X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbipRrCUVUMfGGJJQABsF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/02, Chao Yu wrote:
-> On 2021/7/2 1:10, Jaegeuk Kim wrote:
-> > On 06/01, Chao Yu wrote:
-> > > [1] https://www.mail-archive.com/linux-f2fs-devel@lists.sourceforge.net/msg15126.html
-> > > 
-> > > As [1] reported, if lower device doesn't support write barrier, in below
-> > > case:
-> > > 
-> > > - write page #0; persist
-> > > - overwrite page #0
-> > > - fsync
-> > >   - write data page #0 OPU into device's cache
-> > >   - write inode page into device's cache
-> > >   - issue flush
-> > 
-> > Well, we have preflush for node writes, so I don't think this is the case.
-> > 
-> >   fio.op_flags |= REQ_PREFLUSH | REQ_FUA;
+Hi Steve,
+> You didn't answer my previous question:
 > 
-> This is only used for atomic write case, right?
-> 
-> I mean the common case which is called from f2fs_issue_flush() in
-> f2fs_do_sync_file().
+> > Is this device working with the kbase/DDK proprietary driver?
 
-How about adding PREFLUSH when writing node blocks aligned to the above set?
+I don't know whether I used kbase/DDK,I only know I used the driver of
+panfrost in linux 5.11.
 
-> 
-> And please see do_checkpoint(), we call f2fs_flush_device_cache() and
-> commit_checkpoint() separately to keep persistence order of CP datas.
-> 
-> See commit 46706d5917f4 ("f2fs: flush cp pack except cp pack 2 page at first")
-> for details.
-> 
-> Thanks,
-> 
+> What you are describing sounds like a hardware integration issue, so
+> it would be good to check that the hardware is working with the
+> proprietary driver to rule that out. And perhaps there is something
+> in the kbase for this device that is setting a chicken bit to 'fix'
+> the coherency?
+
+I don't have the proprietary driver,I only used driver in linux 5.11.
+
+Thinks very much!
+
+Chunyou.
+
+
+ÓÚ Thu, 1 Jul 2021 11:15:14 +0100
+Steven Price <steven.price@arm.com> Ð´µÀ:
+
+> On 29/06/2021 04:04, Chunyou Tang wrote:
+
+
+> > Hi Steve,
+> > 	thinks for your reply.
+> > 	I set the pte in arm_lpae_prot_to_pte(),
+> > ***********************************************************************
+> > 	/*
+> > 	 * Also Mali has its own notions of shareability wherein its
+> > Inner
+> > 	 * domain covers the cores within the GPU, and its Outer
+> > domain is
+> > 	 * "outside the GPU" (i.e. either the Inner or System
+> > domain in CPU
+> > 	 * terms, depending on coherency).
+> > 	 */
+> > 	if (prot & IOMMU_CACHE && data->iop.fmt != ARM_MALI_LPAE)
+> > 		pte |= ARM_LPAE_PTE_SH_IS;
+> > 	else
+> > 		pte |= ARM_LPAE_PTE_SH_OS;
+> > ***********************************************************************
+> > I set pte |= ARM_LPAE_PTE_SH_NS.
 > > 
-> > > 
-> > > If SPO is triggered during flush command, inode page can be persisted
-> > > before data page #0, so that after recovery, inode page can be recovered
-> > > with new physical block address of data page #0, however there may
-> > > contains dummy data in new physical block address.
-> > > 
-> > > Then what user will see is: after overwrite & fsync + SPO, old data in
-> > > file was corrupted, if any user do care about such case, we can suggest
-> > > user to use STRICT fsync mode, in this mode, we will force to trigger
-> > > preflush command to persist data in device cache in prior to node
-> > > writeback, it avoids potential data corruption during fsync().
-> > > 
-> > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > > ---
-> > > v2:
-> > > - fix this by adding additional preflush command rather than using
-> > > atomic write flow.
-> > >   fs/f2fs/file.c | 14 ++++++++++++++
-> > >   1 file changed, 14 insertions(+)
-> > > 
-> > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > > index 7d5311d54f63..238ca2a733ac 100644
-> > > --- a/fs/f2fs/file.c
-> > > +++ b/fs/f2fs/file.c
-> > > @@ -301,6 +301,20 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
-> > >   				f2fs_exist_written_data(sbi, ino, UPDATE_INO))
-> > >   			goto flush_out;
-> > >   		goto out;
-> > > +	} else {
-> > > +		/*
-> > > +		 * for OPU case, during fsync(), node can be persisted before
-> > > +		 * data when lower device doesn't support write barrier, result
-> > > +		 * in data corruption after SPO.
-> > > +		 * So for strict fsync mode, force to trigger preflush to keep
-> > > +		 * data/node write order to avoid potential data corruption.
-> > > +		 */
-> > > +		if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT &&
-> > > +								!atomic) {
-> > > +			ret = f2fs_issue_flush(sbi, inode->i_ino);
-> > > +			if (ret)
-> > > +				goto out;
-> > > +		}
-> > >   	}
-> > >   go_write:
-> > >   	/*
-> > > -- 
-> > > 2.29.2
+> > 	If I set pte to ARM_LPAE_PTE_SH_OS or
+> > 	ARM_LPAE_PTE_SH_IS,whether I use singel core GPU or multi
+> > core GPU,it will occur GPU Fault.
+> > 	if I set pte to ARM_LPAE_PTE_SH_NS,whether I use singel core
+> > 	GPU or multi core GPU,it will not occur GPU Fault.
+> 
+> Hi,
+> 
+> So this is a difference between Panfrost and kbase. Panfrost (well
+> technically the IOMMU framework) enables the inner-shareable bit for
+> all memory, whereas kbase only enables it for some memory types (the
+> BASE_MEM_COHERENT_LOCAL flag in the UABI controls it). However this
+> should only be a performance/power difference (and AFAIK probably an
+> irrelevant one) and it's definitely required that "inner shareable"
+> (i.e. within the GPU) works for communication between the different
+> units of the GPU.
+> 
+> You didn't answer my previous question:
+> 
+> > Is this device working with the kbase/DDK proprietary driver?
+> 
+> What you are describing sounds like a hardware integration issue, so
+> it would be good to check that the hardware is working with the
+> proprietary driver to rule that out. And perhaps there is something
+> in the kbase for this device that is setting a chicken bit to 'fix'
+> the coherency?
+> 
+> Steve
+
+
