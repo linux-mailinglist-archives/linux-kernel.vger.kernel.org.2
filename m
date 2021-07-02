@@ -2,119 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D363BA2FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 18:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EBC3BA301
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 18:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhGBQDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 12:03:08 -0400
-Received: from smtprelay0095.hostedemail.com ([216.40.44.95]:55646 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229807AbhGBQDG (ORCPT
+        id S230149AbhGBQDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 12:03:52 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59862 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229807AbhGBQDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 12:03:06 -0400
-Received: from omf08.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 5E8CE181D207E;
-        Fri,  2 Jul 2021 16:00:33 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf08.hostedemail.com (Postfix) with ESMTPA id 850751A29F9;
-        Fri,  2 Jul 2021 16:00:25 +0000 (UTC)
-Message-ID: <7379289718c6826dd1affec5824b749be2aee0a4.camel@perches.com>
-Subject: Re: [PATCH V7 01/18] perf/core: Use static_call to optimize
- perf_guest_info_callbacks
-From:   Joe Perches <joe@perches.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Cc:     pbonzini@redhat.com, bp@alien8.de, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, weijiang.yang@intel.com,
-        kan.liang@linux.intel.com, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        like.xu.linux@gmail.com, Like Xu <like.xu@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        xen-devel@lists.xenproject.org
-Date:   Fri, 02 Jul 2021 09:00:22 -0700
-In-Reply-To: <YN722HIrzc6Z2+oD@hirez.programming.kicks-ass.net>
-References: <20210622094306.8336-1-lingshan.zhu@intel.com>
-         <20210622094306.8336-2-lingshan.zhu@intel.com>
-         <YN722HIrzc6Z2+oD@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Fri, 2 Jul 2021 12:03:50 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 162G1BDU028133
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 2 Jul 2021 12:01:12 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 66F6E15C3CE4; Fri,  2 Jul 2021 12:01:11 -0400 (EDT)
+Date:   Fri, 2 Jul 2021 12:01:11 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Artem S. Tashkinov" <aros@gmx.com>
+Cc:     linux-kernel@vger.kernel.org, leah.rumancik@gmail.com
+Subject: Re: [PATCH v4] ext4: wipe ext4_dir_entry2 upon file deletion
+Message-ID: <YN84R5GJrv5pvDuj@mit.edu>
+References: <b99d8632-6e3d-b557-0ca4-7416a9d818d5@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 850751A29F9
-X-Spam-Status: No, score=-1.40
-X-Stat-Signature: shha9bwa3wcuy6qog6sh3abeec4qbbut
-X-Rspamd-Server: rspamout03
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18c3UUJH2LcjAG65GSZ68xha895S86OjZI=
-X-HE-Tag: 1625241625-20610
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b99d8632-6e3d-b557-0ca4-7416a9d818d5@gmx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-07-02 at 13:22 +0200, Peter Zijlstra wrote:
-> On Tue, Jun 22, 2021 at 05:42:49PM +0800, Zhu Lingshan wrote:
-> > diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-[]
-> > @@ -90,6 +90,27 @@ DEFINE_STATIC_CALL_NULL(x86_pmu_pebs_aliases, *x86_pmu.pebs_aliases);
-> >   */
-> >  DEFINE_STATIC_CALL_RET0(x86_pmu_guest_get_msrs, *x86_pmu.guest_get_msrs);
-> >  
-> > 
-> > +DEFINE_STATIC_CALL_RET0(x86_guest_state, *(perf_guest_cbs->state));
-> > +DEFINE_STATIC_CALL_RET0(x86_guest_get_ip, *(perf_guest_cbs->get_ip));
-> > +DEFINE_STATIC_CALL_RET0(x86_guest_handle_intel_pt_intr, *(perf_guest_cbs->handle_intel_pt_intr));
-> > +
-> > +void arch_perf_update_guest_cbs(void)
-> > +{
-> > +	static_call_update(x86_guest_state, (void *)&__static_call_return0);
-> > +	static_call_update(x86_guest_get_ip, (void *)&__static_call_return0);
-> > +	static_call_update(x86_guest_handle_intel_pt_intr, (void *)&__static_call_return0);
-> > +
-> > +	if (perf_guest_cbs && perf_guest_cbs->state)
-> > +		static_call_update(x86_guest_state, perf_guest_cbs->state);
-> > +
-> > +	if (perf_guest_cbs && perf_guest_cbs->get_ip)
-> > +		static_call_update(x86_guest_get_ip, perf_guest_cbs->get_ip);
-> > +
-> > +	if (perf_guest_cbs && perf_guest_cbs->handle_intel_pt_intr)
-> > +		static_call_update(x86_guest_handle_intel_pt_intr,
-> > +				   perf_guest_cbs->handle_intel_pt_intr);
-> > +}
+On Fri, Jul 02, 2021 at 01:29:52PM +0000, Artem S. Tashkinov wrote:
+> Hi,
 > 
-> Coding style wants { } on that last if().
+> I'm curious about the nature of this feature. Does it make restoring
+> accidentally deleted files more difficult or even impossible? OK, data
+> remains but the patch description makes it sound like all the metadata
+> is being wiped completely.
 
-That's just your personal preference.
+It doesn't make any worse, but that's because ever since ext3 (e.g.,
+since 2001), when we unlink a file, we endup zeroing i_blocks[] as
+well as the indirect or extent tree blocks.  We *could* have fixed
+this by special casing the path where the entire unlink fits inside
+the current transaction, instead of always allowing for the
+transaction to split across more than one transaction.
 
-The coding-style document doesn't require that.
+No one complained about the fact we were zero'ing the logical ->
+physical block maps for two decades, by which I think we can assume
+almost no one has tried used the "lsdel" + "link" hack in debugfs for
+years and years.
 
-It just says single statement.  It's not the number of
-vertical lines or characters required for the statement.
+> If it's the case, is it possible to make this new security feature user
+> configurable? I'm OK with it being on by default but I'd be glad if
+> there were a mount option to disable it.
 
-----------------------------------
+We considered this, but given that all this would do is allow people
+to recover the timestamps, user/group ownerships, etc., but not the
+data blocks, it was deemed not to be worth the extra complexity.
 
-Do not unnecessarily use braces where a single statement will do.
+If someone really wanted to allow undelete support, they could use the
+various userspace solutions, or we *could* have an optional feature
+which moves inodes whose link couint is about to go to zero into a
+magic "trash can" directory, with some kind of automated auto-delete
+mechanism when free blocks or free inodes all below some threshold, or
+when free space falls below some threshold.  The trash can directory
+would have to be readable only by root, in order to preserve security
+when users delete files in a mode 0700 directory.  I'm not really
+convinced it's worth it to implement such a thing, though....
 
-.. code-block:: c
-
-	if (condition)
-		action();
-
-and
-
-.. code-block:: none
-
-	if (condition)
-		do_this();
-	else
-		do_that();
-
-This does not apply if only one branch of a conditional statement is a single
-statement; in the latter case use braces in both branches:
-
-
+	       	     	   	     	  - Ted
