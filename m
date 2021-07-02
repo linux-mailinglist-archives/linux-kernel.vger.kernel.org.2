@@ -2,265 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2297C3BA29B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC95E3BA2A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbhGBPPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 11:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232306AbhGBPPD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 11:15:03 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54080C061764
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 08:12:31 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id bu19so18661115lfb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 08:12:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=khrNN02EDjPn05bGelbS4FlmRXR9mKhe5093E+aR9GU=;
-        b=a9CXomLJ4GNd0tdcmkWcR+FmNcSc2kTxEU0xtbUD6O3OGNR/M2wgP49Lq3F7YFZs38
-         oqgcyEv+SagTByCN0q2uRdW5ipKECVAgViAA1aTBKmqVbTIxdE2wHLRIWLT+Q86HOTQJ
-         l7+DZ2ZxNM8tloIrlk3qbkDV3HsizwWyA1s5Y7Jke8Cg98+8kvVkRtTT7kcPA0jQxjV2
-         Fo0qsKh0aRE59elDr04R6kZtlvijP4PCxUS/b+q3gO5O18r21Iu26OnzX6kW2xvMx1/3
-         WJqmVMes6CXVl01lfFlr/YA/HV5rd2LAvfrQh5Q0WUzS3Ty/7yHCVcUiw/Rkgd6yXlHc
-         BhjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=khrNN02EDjPn05bGelbS4FlmRXR9mKhe5093E+aR9GU=;
-        b=hIPEbf7FRC4XV2BxkTDhMt4eEB3dkzMnGNBlYgv94HGd+fZrIIBTqvwCKRqix0MQga
-         dXREPXCWo5jrwgjKyzD9AR4775t8DebCcKl6KVymmkcF0A4ChihPPIpdJ4nLHfNCkeXU
-         1J+wnnm9Lbhz5eEa9w5sfofYwOAk0KLd9y6f5pZmGZMXfEkYweSKdsU+p6ksr8hIAbT3
-         4m6gGSX0BgVLBT8wtByxCMN0NLbrRGYcPJxEYv407mb+ivEADhkm07KuerYRbnjRswUW
-         W63t0QljCjBjZAd9DnyCj22Vmg5Y4nx7pMqMRxkYCEP0Lw6Vg9QrvvUvHzoE5tj7r70c
-         NO9A==
-X-Gm-Message-State: AOAM533V+JYpkesz9v4VJBTm7s+wZgouolNW+wVMMitVDs61kdRKy087
-        8c9Xnrga7oN92V3qQpB6m8MAH8f/4VX7M9B0c4EDRQ==
-X-Google-Smtp-Source: ABdhPJxPyb01nLArk8HsphTcEK9TwKyoakG/3eUzbZINCpJhALlOZQQYpvV7hhCrYlkELzFhkQuBsnRDwBFhONDS5Fc=
-X-Received: by 2002:ac2:519b:: with SMTP id u27mr94541lfi.352.1625238749175;
- Fri, 02 Jul 2021 08:12:29 -0700 (PDT)
+        id S232240AbhGBPQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 11:16:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:49292 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230480AbhGBPQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 11:16:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A8A51396;
+        Fri,  2 Jul 2021 08:14:02 -0700 (PDT)
+Received: from [10.57.40.45] (unknown [10.57.40.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A13EA3F5A1;
+        Fri,  2 Jul 2021 08:13:54 -0700 (PDT)
+Subject: Re: [PATCH v15 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+To:     Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     Claire Chang <tientzu@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Qian Cai <quic_qiancai@quicinc.com>
+References: <20210624155526.2775863-1-tientzu@chromium.org>
+ <20210624155526.2775863-7-tientzu@chromium.org>
+ <YNvMDFWKXSm4LRfZ@Ryzen-9-3900X.localdomain>
+ <CALiNf2-a-haQN0-4+gX8+wa++52-0CnO2O4BEkxrQCxoTa_47w@mail.gmail.com>
+ <20210630114348.GA8383@willie-the-truck>
+ <YNyUQwiagNeZ9YeJ@Ryzen-9-3900X.localdomain>
+ <20210701074045.GA9436@willie-the-truck>
+ <ea28db1f-846e-4f0a-4f13-beb67e66bbca@kernel.org>
+ <20210702135856.GB11132@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <0f7bd903-e309-94a0-21d7-f0e8e9546018@arm.com>
+Date:   Fri, 2 Jul 2021 16:13:50 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210414055217.543246-1-avagin@gmail.com> <CAG48ez0jfsS=gKN0Vo_VS2EvvMBvEr+QNz0vDKPeSAzsrsRwPQ@mail.gmail.com>
- <YN648cPBDIGKYlYa@gmail.com>
-In-Reply-To: <YN648cPBDIGKYlYa@gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 2 Jul 2021 17:12:02 +0200
-Message-ID: <CAG48ez2vLKGTBOmc-5AJQE=j4Uy=HprSJVmJnOR-4Exb5rbMdA@mail.gmail.com>
-Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
- address space
-To:     Andrei Vagin <avagin@gmail.com>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Gleixner <tglx@linutronix.de>, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210702135856.GB11132@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 9:01 AM Andrei Vagin <avagin@gmail.com> wrote:
-> On Wed, Apr 14, 2021 at 08:46:40AM +0200, Jann Horn wrote:
-> > On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:
-> > > We already have process_vm_readv and process_vm_writev to read and wr=
-ite
-> > > to a process memory faster than we can do this with ptrace. And now i=
-t
-> > > is time for process_vm_exec that allows executing code in an address
-> > > space of another process. We can do this with ptrace but it is much
-> > > slower.
-> > >
-> > > =3D Use-cases =3D
-> >
-> > It seems to me like your proposed API doesn't really fit either one of
-> > those usecases well...
-> >
-> > > Here are two known use-cases. The first one is =E2=80=9Capplication k=
-ernel=E2=80=9D
-> > > sandboxes like User-mode Linux and gVisor. In this case, we have a
-> > > process that runs the sandbox kernel and a set of stub processes that
-> > > are used to manage guest address spaces. Guest code is executed in th=
-e
-> > > context of stub processes but all system calls are intercepted and
-> > > handled in the sandbox kernel. Right now, these sort of sandboxes use
-> > > PTRACE_SYSEMU to trap system calls, but the process_vm_exec can
-> > > significantly speed them up.
-> >
-> > In this case, since you really only want an mm_struct to run code
-> > under, it seems weird to create a whole task with its own PID and so
-> > on. It seems to me like something similar to the /dev/kvm API would be
-> > more appropriate here? Implementation options that I see for that
-> > would be:
-> >
-> > 1. mm_struct-based:
-> >       a set of syscalls to create a new mm_struct,
-> >       change memory mappings under that mm_struct, and switch to it
->
-> I like the idea to have a handle for mm. Instead of pid, we will pass
-> this handle to process_vm_exec. We have pidfd for processes and we can
-> introduce mmfd for mm_struct.
+On 2021-07-02 14:58, Will Deacon wrote:
+> Hi Nathan,
+> 
+> On Thu, Jul 01, 2021 at 12:52:20AM -0700, Nathan Chancellor wrote:
+>> On 7/1/2021 12:40 AM, Will Deacon wrote:
+>>> On Wed, Jun 30, 2021 at 08:56:51AM -0700, Nathan Chancellor wrote:
+>>>> On Wed, Jun 30, 2021 at 12:43:48PM +0100, Will Deacon wrote:
+>>>>> On Wed, Jun 30, 2021 at 05:17:27PM +0800, Claire Chang wrote:
+>>>>>> `BUG: unable to handle page fault for address: 00000000003a8290` and
+>>>>>> the fact it crashed at `_raw_spin_lock_irqsave` look like the memory
+>>>>>> (maybe dev->dma_io_tlb_mem) was corrupted?
+>>>>>> The dev->dma_io_tlb_mem should be set here
+>>>>>> (https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/pci/probe.c#n2528)
+>>>>>> through device_initialize.
+>>>>>
+>>>>> I'm less sure about this. 'dma_io_tlb_mem' should be pointing at
+>>>>> 'io_tlb_default_mem', which is a page-aligned allocation from memblock.
+>>>>> The spinlock is at offset 0x24 in that structure, and looking at the
+>>>>> register dump from the crash:
+>>>>>
+>>>>> Jun 29 18:28:42 hp-4300G kernel: RSP: 0018:ffffadb4013db9e8 EFLAGS: 00010006
+>>>>> Jun 29 18:28:42 hp-4300G kernel: RAX: 00000000003a8290 RBX: 0000000000000000 RCX: ffff8900572ad580
+>>>>> Jun 29 18:28:42 hp-4300G kernel: RDX: ffff89005653f024 RSI: 00000000000c0000 RDI: 0000000000001d17
+>>>>> Jun 29 18:28:42 hp-4300G kernel: RBP: 000000000a20d000 R08: 00000000000c0000 R09: 0000000000000000
+>>>>> Jun 29 18:28:42 hp-4300G kernel: R10: 000000000a20d000 R11: ffff89005653f000 R12: 0000000000000212
+>>>>> Jun 29 18:28:42 hp-4300G kernel: R13: 0000000000001000 R14: 0000000000000002 R15: 0000000000200000
+>>>>> Jun 29 18:28:42 hp-4300G kernel: FS:  00007f1f8898ea40(0000) GS:ffff890057280000(0000) knlGS:0000000000000000
+>>>>> Jun 29 18:28:42 hp-4300G kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>>> Jun 29 18:28:42 hp-4300G kernel: CR2: 00000000003a8290 CR3: 00000001020d0000 CR4: 0000000000350ee0
+>>>>> Jun 29 18:28:42 hp-4300G kernel: Call Trace:
+>>>>> Jun 29 18:28:42 hp-4300G kernel:  _raw_spin_lock_irqsave+0x39/0x50
+>>>>> Jun 29 18:28:42 hp-4300G kernel:  swiotlb_tbl_map_single+0x12b/0x4c0
+>>>>>
+>>>>> Then that correlates with R11 holding the 'dma_io_tlb_mem' pointer and
+>>>>> RDX pointing at the spinlock. Yet RAX is holding junk :/
+>>>>>
+>>>>> I agree that enabling KASAN would be a good idea, but I also think we
+>>>>> probably need to get some more information out of swiotlb_tbl_map_single()
+>>>>> to see see what exactly is going wrong in there.
+>>>>
+>>>> I can certainly enable KASAN and if there is any debug print I can add
+>>>> or dump anything, let me know!
+>>>
+>>> I bit the bullet and took v5.13 with swiotlb/for-linus-5.14 merged in, built
+>>> x86 defconfig and ran it on my laptop. However, it seems to work fine!
+>>>
+>>> Please can you share your .config?
+>>
+>> Sure thing, it is attached. It is just Arch Linux's config run through
+>> olddefconfig. The original is below in case you need to diff it.
+>>
+>> https://raw.githubusercontent.com/archlinux/svntogit-packages/9045405dc835527164f3034b3ceb9a67c7a53cd4/trunk/config
+>>
+>> If there is anything more that I can provide, please let me know.
+> 
+> I eventually got this booting (for some reason it was causing LD to SEGV
+> trying to link it for a while...) and sadly it works fine on my laptop. Hmm.
+> 
+> Did you manage to try again with KASAN?
+> 
+> It might also be worth taking the IOMMU out of the equation, since that
+> interfaces differently with SWIOTLB and I couldn't figure out the code path
+> from the log you provided. What happens if you boot with "amd_iommu=off
+> swiotlb=force"?
 
-I personally think that it might be quite unwieldy when it comes to
-the restrictions you get from trying to have shared memory with the
-owning process - I'm having trouble figuring out how you can implement
-copy-on-write semantics without relying on copy-on-write logic in the
-host OS and without being able to use userfaultfd.
+Oh, now there's a thing... the chat from the IOMMU API in the boot log 
+implies that the IOMMU *should* be in the picture - we see that default 
+domains are IOMMU_DOMAIN_DMA default and the GPU 0000:0c:00.0 was added 
+to a group. That means dev->dma_ops should be set and DMA API calls 
+should be going through iommu-dma, yet the callstack in the crash says 
+we've gone straight from dma_map_page_attrs() to swiotlb_map(), implying 
+the inline dma_direct_map_page() path.
 
-But if that's not a problem somehow, and you can find some reasonable
-way to handle memory usage accounting and fix up everything that
-assumes that multithreaded userspace threads don't switch ->mm, I
-guess this might work for your usecase.
+If dev->dma_ops didn't look right in the first place, it's perhaps less 
+surprising that dev->dma_io_tlb_mem might be wild as well. It doesn't 
+seem plausible that we should have a race between initialising the 
+device and probing its driver, so maybe the whole dev pointer is getting 
+trampled earlier in the callchain (or is fundamentally wrong to begin 
+with, but from a quick skim of the amdgpu code it did look like 
+adev->dev and adev->pdev are appropriately set early on by 
+amdgpu_pci_probe()).
 
-> > 2. pagetable-mirroring-based:
-> >       like /dev/kvm, an API to create a new pagetable, mirror parts of
-> >       the mm_struct's pagetables over into it with modified permissions
-> >       (like KVM_SET_USER_MEMORY_REGION),
-> >       and run code under that context.
-> >       page fault handling would first handle the fault against mm->pgd
-> >       as normal, then mirror the PTE over into the secondary pagetables=
-.
-> >       invalidation could be handled with MMU notifiers.
-> >
->
-> I found this idea interesting and decided to look at it more closely.
-> After reading the kernel code for a few days, I realized that it would
-> not be easy to implement something like this,
+> (although word of warning here: i915 dies horribly on my laptop if I pass
+> swiotlb=force, even with the distro 5.10 kernel)
 
-Yeah, it might need architecture-specific code to flip the page tables
-on userspace entry/exit, and maybe also for mirroring them. And for
-the TLB flushing logic...
+FWIW I'd imagine you probably need to massively increase the SWIOTLB 
+buffer size to have hope of that working.
 
-> but more important is that
-> I don=E2=80=99t understand what problem it solves. Will it simplify the
-> user-space code? I don=E2=80=99t think so. Will it improve performance? I=
-t is
-> unclear for me too.
-
-Some reasons I can think of are:
-
- - direct guest memory access: I imagined you'd probably want to be able to
-   directly access userspace memory from the supervisor, and
-   with this approach that'd become easy.
-
- - integration with on-demand paging of the host OS: You'd be able to
-   create things like file-backed copy-on-write mappings from the
-   host filesystem, or implement your own mappings backed by some kind
-   of storage using userfaultfd.
-
- - sandboxing: For sandboxing usecases (not your usecase), it would be
-   possible to e.g. create a read-only clone of the entire address space of=
- a
-   process and give write access to specific parts of it, or something
-   like that.
-   These address space clones could potentially be created and destroyed
-   fairly quickly.
-
- - accounting: memory usage would be automatically accounted to the
-   supervisor process, so even without a parasite process, you'd be able
-   to see the memory usage correctly in things like "top".
-
- - small (non-pageable) memory footprint in the host kernel:
-   The only things the host kernel would have to persistently store would b=
-e
-   the normal MM data structures for the supervisor plus the mappings
-   from "guest userspace" memory ranges to supervisor memory ranges;
-   userspace pagetables would be discardable, and could even be shared
-   with those of the supervisor in cases where the alignment fits.
-   So with this, large anonymous mappings with 4K granularity only cost you
-   ~0.20% overhead across host and guest address space; without this, if yo=
-u
-   used shared mappings instead, you'd pay twice that for every 2MiB range
-   from which parts are accessed in both contexts, plus probably another
-   ~0.2% or so for the "struct address_space"?
-
- - all memory-management-related syscalls could be directly performed
-   in the "kernel" process
-
-But yeah, some of those aren't really relevant for your usecase, and I
-guess things like the accounting aspect could just as well be solved
-differently...
-
-> First, in the KVM case, we have a few big linear mappings and need to
-> support one =E2=80=9Cshadow=E2=80=9D address space. In the case of sandbo=
-xes, we can
-> have a tremendous amount of mappings and many address spaces that we
-> need to manage.  Memory mappings will be mapped with different addresses
-> in a supervisor address space and =E2=80=9Cguest=E2=80=9D address spaces.=
- If guest
-> address spaces will not have their mm_structs, we will need to reinvent
-> vma-s in some form. If guest address spaces have mm_structs, this will
-> look similar to https://lwn.net/Articles/830648/.
->
-> Second, each pagetable is tied up with mm_stuct. You suggest creating
-> new pagetables that will not have their mm_struct-s (sorry if I
-> misunderstood something).
-
-Yeah, that's what I had in mind, page tables without an mm_struct.
-
-> I am not sure that it will be easy to
-> implement. How many corner cases will be there?
-
-Yeah, it would require some work around TLB flushing and entry/exit
-from userspace. But from a high-level perspective it feels to me like
-a change with less systematic impact. Maybe I'm wrong about that.
-
-> As for page faults in a secondary address space, we will need to find a
-> fault address in the main address space, handle the fault there and then
-> mirror the PTE to the secondary pagetable.
-
-Right.
-
-> Effectively, it means that
-> page faults will be handled in two address spaces. Right now, we use
-> memfd and shared mappings. It means that each fault is handled only in
-> one address space, and we map a guest memory region to the supervisor
-> address space only when we need to access it. A large portion of guest
-> anonymous memory is never mapped to the supervisor address space.
-> Will an overhead of mirrored address spaces be smaller than memfd shared
-> mappings? I am not sure.
-
-But as long as the mappings are sufficiently big and aligned properly,
-or you explicitly manage the supervisor address space, some of that
-cost disappears: E.g. even if a page is mapped in both address spaces,
-you wouldn't have a memory cost for the second mapping if the page
-tables are shared.
-
-> Third, this approach will not get rid of having process_vm_exec. We will
-> need to switch to a guest address space with a specified state and
-> switch back on faults or syscalls.
-
-Yeah, you'd still need a syscall for running code under a different
-set of page tables. But that's something that KVM _almost_ already
-does.
-
-> If the main concern is the ability to
-> run syscalls on a remote mm, we can think about how to fix this. I see
-> two ways what we can do here:
->
-> * Specify the exact list of system calls that are allowed. The first
-> three candidates are mmap, munmap, and vmsplice.
->
-> * Instead of allowing us to run system calls, we can implement this in
-> the form of commands. In the case of sandboxes, we need to implement
-> only two commands to create and destroy memory mappings in a target
-> address space.
-
-FWIW, there is precedent for something similar: The Android folks
-already added process_madvise() for remotely messing with the VMAs of
-another process to some degree.
+Robin.
