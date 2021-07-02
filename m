@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAC23B9CB7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 09:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612353B9CBD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 09:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhGBHGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 03:06:09 -0400
-Received: from mga01.intel.com ([192.55.52.88]:46298 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230147AbhGBHGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 03:06:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="230353255"
-X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
-   d="scan'208";a="230353255"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 00:03:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
-   d="scan'208";a="482194015"
-Received: from aubrey-ubuntu.sh.intel.com ([10.239.53.122])
-  by FMSMGA003.fm.intel.com with ESMTP; 02 Jul 2021 00:03:28 -0700
-From:   Aubrey Li <aubrey.li@intel.com>
-To:     rjw@rjwysocki.net, lenb@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Aubrey Li <aubrey.li@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-Subject: [PATCH 2/2] ACPI: let BIOS fall back to legacy handling if PRM disabled
-Date:   Fri,  2 Jul 2021 15:03:50 +0800
-Message-Id: <1625209430-19934-2-git-send-email-aubrey.li@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1625209430-19934-1-git-send-email-aubrey.li@intel.com>
-References: <1625209430-19934-1-git-send-email-aubrey.li@intel.com>
+        id S230099AbhGBHMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 03:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhGBHMB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 03:12:01 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61DE9C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 00:09:28 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id r9-20020a7bc0890000b02901f347b31d55so5477232wmh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 00:09:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c51xWP6HFxyDdwuJ+ddvRUqSKclx8bRLI29HINoCXbk=;
+        b=a5ur/ziq97S2/VwBEdouMyPFhp4QefygRKUS+KdZhNND8sGB4tPCO0nRqPcSuNH/94
+         E8dTyDF0wsHGyqhouc9RPI+rlZMgqYVEulXchFRUmJWIlYfpT8KVi5w/RpXwGJcO3Nvc
+         1naYLp9uJ1ugo93DJJS20DZMJ2CFqnZ0ESTquZqSgJEHfKdM5IvGMU+x7bSn6DlCXheD
+         6gLQeN5QJ7rSHwZvUjEcNmyyiJbFhfUK/V/k8oUalkNCa7tYwK5aeJYXnaNX8JeNUZhD
+         1ojCTBAz5PicwhYcXK1afhtwAcbFv0GF8bEKY9EcKAHMhFDVcnoYxluZe4vF8y2aRLUu
+         IoYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c51xWP6HFxyDdwuJ+ddvRUqSKclx8bRLI29HINoCXbk=;
+        b=ZhNtOv4vl15xLGPKmKBVNgtkreZ2YNDQvDUtmiarAuwoaO3szagvkfcU5RO/YwzO9r
+         pUOO3USDxq9DsO5xtWeGGuNpF7LTUBOD4aJyqV8D5bXpt8oCST97uZ4Yw8UeOBc9hPFq
+         LrRyJNOywXZApl9nBJ5pgJUJhMrMkCPC44OjzjDGgnIaruS4ijTF89NygUDSc+Fmn8Su
+         b4FYHRZrZ0NGCKz3IqRCrYrUDfKUibgyHcTQVjJCv2M06pxtLKHaKErgwiGlO+GrUsHR
+         sDYE1yvk2RaNUZJ/4fA0MC9jkndtASp4S+EFUXoQfGFaHn6nSlEyDL4waSttPkInqjzl
+         SI1A==
+X-Gm-Message-State: AOAM5335Z0o9W+G0jW8lDqPQzhAPK5kD3ngQJ88UfVNupyerhrLIiIHk
+        IWOR4ErrKVaNO3PkZwRs5Gh2/Mor1AbWRw==
+X-Google-Smtp-Source: ABdhPJxJhJosJoa0E2M4zoTce1R0UHKzRSap+lYfzMH1gseWrgOYYK34YPODrjGcgiI2Xn/0KeamoQ==
+X-Received: by 2002:a7b:cd88:: with SMTP id y8mr3864870wmj.8.1625209766767;
+        Fri, 02 Jul 2021 00:09:26 -0700 (PDT)
+Received: from masalkhi.fritz.box (dslb-178-005-073-162.178.005.pools.vodafone-ip.de. [178.5.73.162])
+        by smtp.gmail.com with ESMTPSA id a16sm2672845wrx.72.2021.07.02.00.09.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 00:09:26 -0700 (PDT)
+From:   Jenny Mgeryan <jennymgeryan@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jenny Mgeryan <jennymgeryan@gmail.com>
+Subject: How to reply to comments
+Date:   Fri,  2 Jul 2021 09:08:57 +0200
+Message-Id: <20210702070857.5049-1-jennymgeryan@gmail.com>
+X-Mailer: git-send-email 2.29.0.rc1.dirty
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Based on _OSC PRM bit, BIOS can choose switch from legacy handling
-to using PRM. So if CONFIG_ACPI_PRMT is disabled, this bit should
-not be set to let BIOS fall back to the legacy handling (such as SMI).
-
-Cc: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
----
- drivers/acpi/bus.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-index 60fb6a84..30a3d4a 100644
---- a/drivers/acpi/bus.c
-+++ b/drivers/acpi/bus.c
-@@ -303,7 +303,9 @@ static void acpi_bus_osc_negotiate_platform_control(void)
- 
- 	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_OST_SUPPORT;
- 	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_PCLPI_SUPPORT;
-+#ifdef CONFIG_ACPI_PRMT
- 	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_PRM_SUPPORT;
-+#endif
- 
- #ifdef CONFIG_ARM64
- 	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_GENERIC_INITIATOR_SUPPORT;
--- 
-2.7.4
+Hello everyone, I have posted an patch and I have received some comments
+from reviewers, but I do not know How to reply to them.
+thank you!
+Jenny
 
