@@ -2,194 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900203BA35D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 18:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5DF3BA363
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 18:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbhGBQwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 12:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhGBQwH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 12:52:07 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E08C061762;
-        Fri,  2 Jul 2021 09:49:35 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id u19so5889703plc.3;
-        Fri, 02 Jul 2021 09:49:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=r04r30t3Y200Y/AHEPmOStIgaJywRT9acaLbe+VfwK8=;
-        b=dtGeJ3WWpWO88kcTgsir8hQKzfQwR3Ll1ScRHvMVGiGI42x/Z6Jd9rSmDRUdG57cD4
-         vF+XQRa8yv55Bo1GcQPjLia7xLRxD7PfaNq+EPSOELpmYbWrcn9UONCDvIef+witr9PQ
-         XF4PTKXo4WQwXhdkXAPA6za+5bXFTuc2Elt4HJ7Yqg2n0/oUZj3ERH33yO/J5Ez7SutX
-         xTsyFFHZxilkWO6QzGvlZjyE5DviIujdYZk9pMuhPo0942/opmdUX7p2u2qbTxI7tVcd
-         iGvKbDSP6L6InC+kqlJAIKLsgE1i8Q7ftLRWjaMOqqQq9EB71d6RlGzD8baKyku8nGOQ
-         AC9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=r04r30t3Y200Y/AHEPmOStIgaJywRT9acaLbe+VfwK8=;
-        b=Q7aiKIyYH+NIJzUx7Vfc/pE94ZF5tbbeGfidFlIGiI4aG4nhK4xJTBbhEyV1raXjiI
-         y5G8X2RJqQqrqg38krqKHNYY50L0R2zd1QU14gPxOXDV5yMIqS5L2aGTxnEDJ6iGnDlO
-         jQYtcFycO3kdAEDbXDh3/4Ga7LtqPJ+izH1TbEuQYy8My+uZUs50X/c2fXd7QbGR/4Pg
-         y137N74a+/Jfz24A0YpLT5T8ovGSb89g/UmYx5vCJ6ycC0EAJW7ZqG8G+yjS5+3rP6yX
-         ogRlXgLB8+yQgwoZheCQpzI6kUQggnGjrM/KHN8kCWMRVFhzF1gX+waKMZ5u/6eWc3eQ
-         vg2w==
-X-Gm-Message-State: AOAM532Cgj/Yi8K/DGeG8BW+W1Esol2KALr4qCTX7CaQGBDWks7o+u9Y
-        hiSQGxrbBJdvJ5UQo2rDRTtRXr3ddE4=
-X-Google-Smtp-Source: ABdhPJxNOVRmY8/NMCgjvT/qoaShHj2buicPIN1qWUu+JrXHv9fDFnxwawcujNp5HVw4eSUCYN2uPg==
-X-Received: by 2002:a17:90a:8d17:: with SMTP id c23mr652765pjo.96.1625244574115;
-        Fri, 02 Jul 2021 09:49:34 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id s22sm3948458pfe.208.2021.07.02.09.49.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Jul 2021 09:49:33 -0700 (PDT)
-Subject: Re: Kernel Panic in skb_release_data using genet
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     nicolas saenz julienne <nsaenz@kernel.org>,
-        Doug Berger <opendmb@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-References: <a53f6192-3520-d5f8-df4b-786b3e4e8707@gmail.com>
- <20210524151329.5ummh4dfui6syme3@gilmour>
- <1482eff4-c5f4-66d9-237c-55a096ae2eb4@gmail.com>
- <6caa98e7-28ba-520c-f0cc-ee1219305c17@gmail.com>
- <20210528163219.x6yn44aimvdxlp6j@gilmour>
- <77d412b4-cdd6-ea86-d7fd-adb3af8970d9@gmail.com>
- <9e99ade5-ebfc-133e-ac61-1aba07ca80a2@gmail.com>
- <483c73edf02fa0139aae2b81e797534817655ea0.camel@kernel.org>
- <20210602132822.5hw4yynjgoomcfbg@gilmour>
- <681f7369-90c7-0d2a-18a3-9a10917ce5f3@gmail.com>
- <20210625125906.gj45zykbemh5zzhw@gilmour>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <0f0f41de-76ca-a9a2-c362-9b15dd47f144@gmail.com>
-Date:   Fri, 2 Jul 2021 09:49:31 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230108AbhGBQyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 12:54:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229455AbhGBQym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 12:54:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0C0561360
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 16:52:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625244729;
+        bh=ZMOJ+aU0iHUQNvK8N1KkxNlPoJ/sEmmo8Cx9jkbgpS4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=o4b/RO+IHhibGjwiJqsV/b52Gn8nI5ApOGDpYoKSkVLzWiZprsbsQI8sBGvpgbTir
+         GDkDp0c8IOaeAjldzcogX2qmHzrObL+faxcoxLCWeSjwgJ9k+e0zIxJUr7zOnmPMb1
+         mD2NHFD2Eh1irEchIli8H6dVaCFbml6iZ/3IjlujgPV0SKVIOtxC3CptCDdmqeN8n4
+         D9QIjE2AqodrkY2RMrhZ67bphNFfT+DPsroZTqKppZ7PLHtEpyzgzbIJj8Jh89C5yF
+         oAQxboL+urLEze47LRL48sRi/2McBXJvq2nKFHAr/RxFbWFvrvsDSj0zg71FdIxYMp
+         TD9x9WX7iimAA==
+Received: by mail-ed1-f42.google.com with SMTP id h2so14117732edt.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 09:52:09 -0700 (PDT)
+X-Gm-Message-State: AOAM532XioOEplQ11IO7xyAbP7s9gNMu2H/8i+Xo7PNyr/rKIMf3O4Hp
+        G9LCe4MrXfnYfkg7jhhJMqa0oOIZ/6GDIjFxbA==
+X-Google-Smtp-Source: ABdhPJyLlWXKWuur9jDnDAmS9SFa+IIcxbWH3+5Db4q9ZDyoSlsa8HatLFkZREPjrb9f0D3x8oyDKsU+WcT/aS87VPc=
+X-Received: by 2002:a50:ed82:: with SMTP id h2mr496062edr.165.1625244728367;
+ Fri, 02 Jul 2021 09:52:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210625125906.gj45zykbemh5zzhw@gilmour>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <847aca40-2ded-8e37-72bf-c38ccbdc28e5@linaro.org>
+In-Reply-To: <847aca40-2ded-8e37-72bf-c38ccbdc28e5@linaro.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 2 Jul 2021 10:51:55 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLuLcHj7525tTUmh7pLqe7T2j6UcznyhV7joS8ipyb_VQ@mail.gmail.com>
+Message-ID: <CAL_JsqLuLcHj7525tTUmh7pLqe7T2j6UcznyhV7joS8ipyb_VQ@mail.gmail.com>
+Subject: Re: [RFD] DTPM hierarchy description via DT
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Maxime,
+On Fri, Jul 2, 2021 at 7:51 AM Daniel Lezcano <daniel.lezcano@linaro.org> w=
+rote:
+>
+>
+> Hi,
+>
+> recently a new framework based on top of the powercap framework was
+> introduced to limit the power of some devices when they are capable of
+> that. Based on the approximate power numbers from the energy model, it
+> allows to have a rough estimation of the power consumption and set the
+> power limit [1].
+>
+> This framework describes via a hierarchy the constraints relationship
+> between all those devices and it is SoC specific.
+>
+> The problem is how to describe this hierarchy.
+>
+> The hierarchy could be like:
+>
+> soc
+>
+>
+>    |
+>
+>
+>    |-- package
+>
+>
+>    |      |
+>
+>
+>    |      |-- cluster0
+>
+>
+>    |      |      |
+>
+>
+>    |      |      |-- cpu0
+>
+>
+>    |      |      |
+>
+>
+>    |      |      |-- cpu1
+>
+>
+>    |      |      |
+>
+>
+>    |      |      |-- cpu2
+>
+>
+>    |      |      |
+>
+>
+>    |      |      `-- cpu3
+>
+>
+>    |      |
+>
+>
+>    |      |-- cluster1
+>
+>
+>    |      |      |
+>
+>
+>    |      |      |-- cpu4
+>
+>
+>    |      |      |
+>
+>
+>    |      |      `-- cpu5
 
-On 6/25/2021 5:59 AM, Maxime Ripard wrote:
-> Hi Florian,
-> 
-> Sorry for the late reply
-> 
-> On Thu, Jun 10, 2021 at 02:33:17PM -0700, Florian Fainelli wrote:
->> On 6/2/2021 6:28 AM, Maxime Ripard wrote:
->>> On Tue, Jun 01, 2021 at 11:33:18AM +0200, nicolas saenz julienne wrote:
->>>> On Mon, 2021-05-31 at 19:36 -0700, Florian Fainelli wrote:
->>>>>> That is also how I boot my Pi4 at home, and I suspect you are right, if
->>>>>> the VPU does not shut down GENET's DMA, and leaves buffer addresses in
->>>>>> the on-chip descriptors that point to an address space that is managed
->>>>>> totally differently by Linux, then we can have a serious problem and
->>>>>> create some memory corruption when the ring is being reclaimed. I will
->>>>>> run a few experiments to test that theory and there may be a solution
->>>>>> using the SW_INIT reset controller to have a big reset of the controller
->>>>>> before handing it over to the Linux driver.
->>>>>
->>>>> Adding a WARN_ON(reg & DMA_EN) in bcmgenet_dma_disable() has not shown
->>>>> that the TX or RX DMA have been left running during the hand over from
->>>>> the VPU to the kernel. I checked out drm-misc-next-2021-05-17 to reduce
->>>>> as much as possible the differences between your set-up and my set-up
->>>>> but so far have not been able to reproduce the crash in booting from NFS
->>>>> repeatedly, I will try again.
->>>>
->>>> FWIW I can reproduce the error too. That said it's rather hard to reproduce,
->>>> something in the order of 1 failure every 20 tries.
->>>
->>> Yeah, it looks like it's only from a cold boot and comes in "bursts",
->>> where you would get like 5 in a row and be done with it for a while.
->>
->> Here are two patches that you could try exclusive from one another
->>
->> 1) Limit GENET to a single queue
->>
->> diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
->> b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
->> index fcca023f22e5..e400c12e6868 100644
->> --- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
->> +++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
->> @@ -3652,6 +3652,12 @@ static int bcmgenet_change_carrier(struct
->> net_device *dev, bool new_carrier)
->>          return 0;
->>   }
->>
->> +static u16 bcmgenet_select_queue(struct net_device *dev, struct sk_buff
->> *skb,
->> +                                struct net_device *sb_dev)
->> +{
->> +       return 0;
->> +}
->> +
->>   static const struct net_device_ops bcmgenet_netdev_ops = {
->>          .ndo_open               = bcmgenet_open,
->>          .ndo_stop               = bcmgenet_close,
->> @@ -3666,6 +3672,7 @@ static const struct net_device_ops
->> bcmgenet_netdev_ops = {
->>   #endif
->>          .ndo_get_stats          = bcmgenet_get_stats,
->>          .ndo_change_carrier     = bcmgenet_change_carrier,
->> +       .ndo_select_queue       = bcmgenet_select_queue,
->>   };
->>
->>   /* Array of GENET hardware parameters/characteristics */
->>
->> 2) Ensure that all TX/RX queues are disabled upon DMA initialization
->>
->> diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
->> b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
->> index fcca023f22e5..7f8a5996fbbb 100644
->> --- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
->> +++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
->> @@ -3237,15 +3237,21 @@ static void bcmgenet_get_hw_addr(struct
->> bcmgenet_priv *priv,
->>   /* Returns a reusable dma control register value */
->>   static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
->>   {
->> +       unsigned int i;
->>          u32 reg;
->>          u32 dma_ctrl;
->>
->>          /* disable DMA */
->>          dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
->> +       for (i = 0; i < priv->hw_params->tx_queues; i++)
->> +               dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
->>          reg = bcmgenet_tdma_readl(priv, DMA_CTRL);
->>          reg &= ~dma_ctrl;
->>          bcmgenet_tdma_writel(priv, reg, DMA_CTRL);
->>
->> +       dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
->> +       for (i = 0; i < priv->hw_params->rx_queues; i++)
->> +               dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
->>          reg = bcmgenet_rdma_readl(priv, DMA_CTRL);
->>          reg &= ~dma_ctrl;
->>          bcmgenet_rdma_writel(priv, reg, DMA_CTRL);
-> 
-> I had a bunch of issues popping up today so I took the occasion to test
-> those patches. The first one doesn't change anything, I still had the
-> crash occurring with it. With the second applied (in addition), it seems
-> like it's fixed. I'll keep testing and will let you know.
+We already have all this with cpu topology binding which feeds cpu
+topology functionality in the kernel. Is there a case for the
+powerzone hierarchy to be different? For CPUs, I don't see why we'd
+need anything else or perhaps just a new property in cpu nodes for
+something?
 
-Did this patch survive more days of testing? I am tempted to send it 
-regardless of your testing because it is a correctness issue that is 
-being fixed. There is a global DMA enable bit which should "cut" any 
-TX/RX queues, but still, for symmetry with other code paths all queues 
-should be disabled.
+For other devices, is there a need for a hierarchy or just grouping?
 
-Thanks!
--- 
-Florian
+>
+>
+>    |      |
+>
+>
+>    |      `-- gpu
+>
+>
+>    |
+>
+>
+>    |-- memory
+>
+>
+>    |      |
+>
+>
+>    |      |-- bank0
+>
+>
+>    |      |
+>
+>
+>    |      `-- bank1
+>
+>
+>    |
+>
+>
+>    |-- multimedia
+>
+>
+>    |      |
+>
+>
+>    |      |-- camera
+>
+>
+>    |      |
+>
+>
+>    |      `-- dsp
+>
+>
+>    |
+>
+>
+>    |-- modem
+>
+>
+>    |
+>
+>
+>    `-- screen
+>
+>
+>
+>
+> We are far from this description yet but it is for illustration purpose.
+>
+> All the nodes of the tree do not necessarily reflect real devices, for
+> example, 'package' or 'multimedia' are not described in the DT.
+>
+> What we want is to build this hierarchy which is SoC dependent.
+>
+> A first proposal was made to create those nodes in configfs but because
+> it results in creating a node in sysfs also the approach is not valid [2]
+>
+> It was suggested to use the devicetree to describe such hierarchy. There
+> are several possibilities but the nodes not describing real hardware
+> above is difficult to describe. Also, the hierarchy should not be over
+> complexified.
+
+I'm very leary of yet another CPU PM related binding. We already have
+topology, idle states, OPP, ...
+
+There's less on the device side, but it's more fragmented with each
+vendor doing their own thing.
+
+>
+> On the other hand most of the devices are already described, so it is a
+> question of tightening them together.
+>
+> There are different possibilities to describe this hierarchy:
+>
+> 1. Create the hierarchy in the DT:
+>
+>         power-zones {
+>
+>                 package {
+>
+>                         big {
+>                                 powerzone =3D <&cpu_b0 POWERZONE_DVFS>,
+>                                         <&cpu_b1 POWERZONE_DVFS>;
+>                         };
+>
+>                         little {
+>                                 powerzone =3D <&cpu_l0 POWERZONE_DVFS>,
+>                                         <&cpu_l1 POWERZONE_DVFS>,
+>                                         <&cpu_l2 POWERZONE_DVFS>,
+>                                         <&cpu_l3 POWERZONE_DVFS>;
+>                         };
+>
+>                         gpu {
+>                                 powerzone =3D <&gpu POWERZONE_DVFS>;
+>                         };
+>                 };
+>         };
+>
+> 2. Let the kernel build the hierarchy but add a property in the
+> different nodes:
+>
+> https://git.linaro.org/people/daniel.lezcano/linux.git/commit/?h=3Dpowerc=
+ap/dtpm-dts-1.0&id=3D05943f5a1cf33df36dbe423fd4b549a9aa244da1
+>
+> And from there the kernel does for_each_node_with_property(). The kernel
+> has to know "cpu-pd0" and "cpu-pd1". That implies a per soc
+> initialization code:
+>
+> https://git.linaro.org/people/daniel.lezcano/linux.git/commit/?h=3Dpowerc=
+ap/dtpm-dts-1.0&id=3D7525abb234695d07a0094b2f511d5fe8bea0a979
+>
+> https://git.linaro.org/people/daniel.lezcano/linux.git/commit/?h=3Dpowerc=
+ap/dtpm-dts-1.0&id=3D70e1deb642a939d14dd9b0391d8219cf21a03253
+>
+>
+> 3. An intermediate description between 1. and 2.
+>
+> The nodes have a property which is a phandle to the parent node. But if
+> the parent node does not exists, create an empty and point to it.
+>
+> package {
+>         powerzone;
+>         powerzone-parent =3D <&soc>;
+> };
+>
+> cluster0 {
+>         powerzone-parent =3D <&package>;
+> };
+>
+>         ...
+>
+>                 cpu_l0: cpu@0 {
+>                         device_type =3D "cpu";
+>                         compatible =3D "arm,cortex-a53";
+>                         reg =3D <0x0 0x0>;
+>                         enable-method =3D "psci";
+>                         capacity-dmips-mhz =3D <485>;
+>                         clocks =3D <&cru ARMCLKL>;
+>                         #cooling-cells =3D <2>; /* min followed by max */
+>                         dynamic-power-coefficient =3D <100>;
+>                         cpu-idle-states =3D <&CPU_SLEEP &CLUSTER_SLEEP>;
+>                         powerzone-parent =3D <&cluster0>;
+>                 };
+>
+>         ...
+>
+> I implemented 1. and 2. but before going forward and writing the yaml
+> bindings which are time consuming, it would be preferable we agree on
+> something instead of having to drop the code again and again.
+>
+> Thanks for your comments
+>
+>
+> [1] https://lwn.net/Articles/839318/
+> [2] https://www.spinics.net/lists/kernel/msg3891770.html
+>
+> --
+> <http://www.linaro.org/> Linaro.org =E2=94=82 Open source software for AR=
+M SoCs
+>
+> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+> <http://twitter.com/#!/linaroorg> Twitter |
+> <http://www.linaro.org/linaro-blog/> Blog
