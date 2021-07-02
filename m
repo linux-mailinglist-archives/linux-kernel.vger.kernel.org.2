@@ -2,87 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244413B9A56
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 03:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895563B9A58
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 03:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234657AbhGBBC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 21:02:59 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13050 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234561AbhGBBC4 (ORCPT
+        id S234561AbhGBBEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 21:04:41 -0400
+Received: from lucky1.263xmail.com ([211.157.147.135]:36958 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230427AbhGBBEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 21:02:56 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GGGrX60zfzZlwv;
-        Fri,  2 Jul 2021 08:57:16 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 2 Jul 2021 09:00:24 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 2 Jul 2021 09:00:23 +0800
-Subject: Re: Linux 4.14.238
-To:     Sasha Levin <sashal@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, <akpm@linux-foundation.org>,
-        <torvalds@linux-foundation.org>
-CC:     <lwn@lwn.net>, <jslaby@suse.cz>, <gregkh@linuxfoundation.org>
-References: <20210630134100.478528-1-sashal@kernel.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <8571f95a-da89-9e79-ba59-7149b443279e@huawei.com>
-Date:   Fri, 2 Jul 2021 09:00:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 1 Jul 2021 21:04:40 -0400
+Received: from localhost (unknown [192.168.167.32])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 91A2DB0A09;
+        Fri,  2 Jul 2021 09:02:03 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 0
+X-SPAM-CHECKED: 5
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from [172.16.12.64] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P29909T139671178565376S1625187716058830_;
+        Fri, 02 Jul 2021 09:01:56 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <2b5a0cf30c818905d8e17c12045a82c1>
+X-RL-SENDER: shawn.lin@rock-chips.com
+X-SENDER: lintao@rock-chips.com
+X-LOGIN-NAME: shawn.lin@rock-chips.com
+X-FST-TO: arnd@kernel.org
+X-RCPT-COUNT: 8
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Message-ID: <6a5d06db-92af-7df0-2c71-e25bad08ee0c@rock-chips.com>
+Date:   Fri, 2 Jul 2021 09:02:03 +0800
 MIME-Version: 1.0
-In-Reply-To: <20210630134100.478528-1-sashal@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101
+ Thunderbird/90.0
+Cc:     shawn.lin@rock-chips.com, Arnd Bergmann <arnd@arndb.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_mmc=3a_warn_for_invalid_SDIO_data_buffe?=
+ =?UTF-8?B?cnPjgJDor7fms6jmhI/vvIzpgq7ku7bnlLFsaW51eC1tbWMtb3duZXJAdmdlci5r?=
+ =?UTF-8?B?ZXJuZWwub3Jn5Luj5Y+R44CR?=
+To:     Arnd Bergmann <arnd@kernel.org>
+References: <20210630122057.2795882-1-arnd@kernel.org>
+From:   Shawn Lin <shawn.lin@rock-chips.com>
+In-Reply-To: <20210630122057.2795882-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arnd
+
+On 2021/6/30 20:20, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Jernej Skrabec reported a problem with the cw1200 driver failing on
+> arm64 systems with CONFIG_VMAP_STACK=y.
+> 
+> The driver in this case passes a pointer to a stack variable (in vmalloc
+> space) into the sdio layer, which gets translated into an invalid DMA
+> address.
+> 
+> Even without CONFIG_VMAP_STACK, the driver is still unreliable, as
+> cache invalidations on the DMA buffer may cause random data corruption
+> in adjacent stack slots.
+> 
+> This could be worked around in the SDIO core, but in the discussion we
+> decided that passing a stack variable into SDIO should always be considered
+> a bug, as it is for USB drivers.
+> 
+> Change the sdio core to produce a one-time warning for any on-stack
+> (both with and without CONFIG_VMAP_STACK) as well as any vmalloc
+> or module-local address that would have the same translation problem.
+
+This was the previous comment about the same topic.
+Should we check for mmc_io_rw_direct?
+
+https://www.spinics.net/lists/linux-mmc/msg41794.html
+
+> 
+> Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
+> Link: https://lore.kernel.org/lkml/20210622202345.795578-1-jernej.skrabec@gmail.com/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/mmc/core/sdio_ops.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mmc/core/sdio_ops.c b/drivers/mmc/core/sdio_ops.c
+> index 4c229dd2b6e5..14e983faf223 100644
+> --- a/drivers/mmc/core/sdio_ops.c
+> +++ b/drivers/mmc/core/sdio_ops.c
+> @@ -6,6 +6,7 @@
+>    */
+>   
+>   #include <linux/scatterlist.h>
+> +#include <linux/sched/task_stack.h>
+>   
+>   #include <linux/mmc/host.h>
+>   #include <linux/mmc/card.h>
+> @@ -124,6 +125,7 @@ int mmc_io_rw_extended(struct mmc_card *card, int write, unsigned fn,
+>   	int err;
+>   
+>   	WARN_ON(blksz == 0);
+> +	WARN_ON_ONCE(is_vmalloc_or_module_addr(buf) || object_is_on_stack(buf));
+>   
+>   	/* sanity check */
+>   	if (addr & ~0x1FFFF)
+> 
 
 
-On 2021/6/30 21:40, Sasha Levin wrote:
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA512
-> 
-> I'm announcing the release of the 4.14.238 kernel.
-> 
-> All users of the 4.14 kernel series must upgrade.
-> 
-> The updated 4.14.y git tree can be found at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.14.y
-> and can be browsed at the normal kernel.org git web browser:
->          https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
-> 
-> 
-> Thanks,
-> Sasha
-> 
-
-Tested on x86 for 4.14.238,
-
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.14.y
-Version: 4.14.238
-Commit: 313e82bbefb3d1d926858b58092f5d50f41d924d
-Compiler: gcc version 7.3.0 (GCC)
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8835
-passed: 8835
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
