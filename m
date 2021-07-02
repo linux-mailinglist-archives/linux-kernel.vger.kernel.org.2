@@ -2,85 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C59E3BA029
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB113BA033
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbhGBMDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 08:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbhGBMDQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 08:03:16 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817CFC061764
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 05:00:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=D59vjIFHsm1bwSteYMmO3Ib3ErHnsCny5NoZ3raY1vo=; b=l9ffb1YsS4W/xQ4gKtVC/5wkLQ
-        DHi7qgqIscJ1Ae4y9g/YeweFURc7Tv/tSo9aNi+oJEZVHwtBP2iKKkQTqEIEp8EbpP666EikPmFuq
-        tRi9J0OHjN1Vg4V9UU1jRAPYH6SgwsyFFZ3a8Cmv1hgqPUKqPQBgs1wmqT04Vo5+oZo9Aqcu/Fe2N
-        LnyTNaq8w32s6wmNybdErCXJCqtrRb8uAC02w8TlkEFO2DaQg78+ZlOSCqerXUHM4u86RnVxPhSMb
-        1QUllXIZiln4Ushqu1tzTsyfGSt66/diyHCLbgxTWjiJc5OvSkJW9q+mrsv6ORomFWlbR5sG+0TKo
-        3whEk7Ew==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lzHqQ-00Dqnn-7z; Fri, 02 Jul 2021 12:00:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A2070300091;
-        Fri,  2 Jul 2021 14:00:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 728D92CEACB1C; Fri,  2 Jul 2021 14:00:29 +0200 (CEST)
-Date:   Fri, 2 Jul 2021 14:00:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Xuewen Yan <xuewen.yan94@gmail.com>, valentin.schneider@arm.com,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        patrick.bellasi@matbug.net, qperret@google.com
-Subject: Re: [PATCH v2] sched/uclamp: Avoid getting unreasonable ucalmp value
- when rq is idle
-Message-ID: <YN7/3RkISFqM4rt+@hirez.programming.kicks-ass.net>
-References: <20210630141204.8197-1-xuewen.yan94@gmail.com>
- <YN70sbUGh2pViWEQ@hirez.programming.kicks-ass.net>
- <20210702115421.gcju2vluhof6rp6f@e107158-lin.cambridge.arm.com>
+        id S232059AbhGBMIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 08:08:42 -0400
+Received: from mga01.intel.com ([192.55.52.88]:1621 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231912AbhGBMHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 08:07:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="230394038"
+X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
+   d="scan'208";a="230394038"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 05:04:30 -0700
+X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
+   d="scan'208";a="482420148"
+Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.228.32]) ([10.249.228.32])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 05:04:27 -0700
+Subject: Re: [PATCH v8 20/22] perf session: Load data directory files for
+ analysis
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+ <fbcb2de8d7e90cbf418a5a0465f444d0d5295615.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+ <YN7qwOZ5UlEkZ2zv@krava>
+From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+Organization: Intel Corporation
+Message-ID: <7dfdebb5-c10b-7f2a-ba93-70106d9fd909@linux.intel.com>
+Date:   Fri, 2 Jul 2021 15:04:24 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210702115421.gcju2vluhof6rp6f@e107158-lin.cambridge.arm.com>
+In-Reply-To: <YN7qwOZ5UlEkZ2zv@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 12:54:21PM +0100, Qais Yousef wrote:
-> Yep. How about the below?
-> 
-> --->8---
-> 
-> sched/uclamp: Ignore max aggregation if rq is idle
-> 
-> When a task wakes up on an idle rq, uclamp_rq_util_with() would max
-> aggregate with rq value. But since there is no task enqueued yet, the
-> values are stale based on the last task that was running. When the new
-> task actually wakes up and enqueued, then the rq uclamp values should
-> reflect that of the newly woken up task effective uclamp values.
-> 
-> This is a problem particularly for uclamp_max because it default to
-> 1024. If a task p with uclamp_max = 512 wakes up, then max aggregation
-> would ignore the capping that should apply when this task is enqueued,
-> which is wrong.
-> 
-> Fix that by ignoring max aggregation if the rq is idle since in that
-> case the effective uclamp value of the rq will be the ones of the task
-> that will wake up.
-> 
-> --->8---
 
-Much better, I've updated it. Thanks!
+On 02.07.2021 13:30, Jiri Olsa wrote:
+> On Wed, Jun 30, 2021 at 06:54:59PM +0300, Alexey Bayduraev wrote:
+> 
+> SNIP
+> 
+>> +	while ((ret >= 0) && readers) {
+>> +		if (session_done())
+>> +			return 0;
+>> +
+>> +		if (rd[i].state.eof) {
+>> +			i = (i + 1) % session->nr_readers;
+>> +			continue;
+>> +		}
+>> +
+>> +		ret = reader__read_event(&rd[i], session, &prog);
+>> +		if (ret < 0)
+>> +			break;
+>> +		if (ret == READER_EOF) {
+>> +			ret = reader__mmap(&rd[i], session);
+>> +			if (ret < 0)
+>> +				goto out_err;
+>> +			if (ret == READER_EOF)
+>> +				readers--;
+>> +		}
+>> +
+>> +		/*
+>> +		 * Processing 10MBs of data from each reader in sequence,
+>> +		 * because that's the way the ordered events sorting works
+>> +		 * most efficiently.
+>> +		 */
+>> +		if (rd[i].state.size >= 10*1024*1024) {
+>> +			rd[i].state.size = 0;
+>> +			i = (i + 1) % session->nr_readers;
+>> +		}
+> 
+> hi,
+> so this was sort of hack to make this faster.. we need some
+> justification for this and make that configurable as well,
+> if we keep it
+
+Hi,
+
+I am currently thinking of another round-robin read algorithm, based on
+timestamps with periodical ordered_queue flushing after each round, this
+might be better, but I'm not sure if this should be included in this patchset. 
+
+Probably introduction of new constant will be enough for current implementation.
+
+Regards,
+Alexey
+
+> 
+> jirka
+> 
