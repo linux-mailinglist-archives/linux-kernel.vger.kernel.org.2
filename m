@@ -2,70 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8163BA039
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE003BA042
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhGBMRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 08:17:36 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59357 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231975AbhGBMI3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 08:08:29 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lzHv5-0006TO-1f; Fri, 02 Jul 2021 12:05:19 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, lyude@redhat.com,
-        Dave Airlie <airlied@redhat.com>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/nouveau: Remove redundant error check on variable ret
-Date:   Fri,  2 Jul 2021 13:05:18 +0100
-Message-Id: <20210702120518.17740-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S232138AbhGBMWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 08:22:37 -0400
+Received: from foss.arm.com ([217.140.110.172]:46518 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232058AbhGBMWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 08:22:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E9541FB;
+        Fri,  2 Jul 2021 05:12:47 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC1623F718;
+        Fri,  2 Jul 2021 05:12:45 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Qais Yousef <qais.yousef@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Xuewen Yan <xuewen.yan94@gmail.com>, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net, qperret@google.com
+Subject: Re: [PATCH v2] sched/uclamp: Avoid getting unreasonable ucalmp value when rq is idle
+In-Reply-To: <20210702115421.gcju2vluhof6rp6f@e107158-lin.cambridge.arm.com>
+References: <20210630141204.8197-1-xuewen.yan94@gmail.com> <YN70sbUGh2pViWEQ@hirez.programming.kicks-ass.net> <20210702115421.gcju2vluhof6rp6f@e107158-lin.cambridge.arm.com>
+Date:   Fri, 02 Jul 2021 13:12:41 +0100
+Message-ID: <87wnq87w3q.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 02/07/21 12:54, Qais Yousef wrote:
+> sched/uclamp: Ignore max aggregation if rq is idle
+>
+> When a task wakes up on an idle rq, uclamp_rq_util_with() would max
+> aggregate with rq value. But since there is no task enqueued yet, the
+> values are stale based on the last task that was running. When the new
 
-The call to drm_dp_aux_init never returns an error code and there
-is no error return being assigned to variable ret. The check for
-an error in ret is always false since ret is still zero from the
-start of the function so the init error check and error message
-is redundant and can be removed.
+Nit: those values are "intentionally stale" for UCLAMP_MAX, per
 
-Addresses-Coverity: ("Logically dead code")
-Fixes: fd43ad9d47e7 ("drm/nouveau/kms/nv50-: Move AUX adapter reg to connector late register/early unregister")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/nouveau/nouveau_connector.c | 6 ------
- 1 file changed, 6 deletions(-)
+  e496187da710 ("sched/uclamp: Enforce last task's UCLAMP_MAX")
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.c b/drivers/gpu/drm/nouveau/nouveau_connector.c
-index 22b83a6577eb..f37e5f28a93f 100644
---- a/drivers/gpu/drm/nouveau/nouveau_connector.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
-@@ -1362,12 +1362,6 @@ nouveau_connector_create(struct drm_device *dev,
- 			 dcbe->hasht, dcbe->hashm);
- 		nv_connector->aux.name = kstrdup(aux_name, GFP_KERNEL);
- 		drm_dp_aux_init(&nv_connector->aux);
--		if (ret) {
--			NV_ERROR(drm, "Failed to init AUX adapter for sor-%04x-%04x: %d\n",
--				 dcbe->hasht, dcbe->hashm, ret);
--			kfree(nv_connector);
--			return ERR_PTR(ret);
--		}
- 		fallthrough;
- 	default:
- 		funcs = &nouveau_connector_funcs;
--- 
-2.31.1
+for UCLAMP_MIN we'll set uclamp_none(UCLAMP_MIN) == 0 upon dequeueing the
+last runnable task, which DTRT.
 
+> task actually wakes up and enqueued, then the rq uclamp values should
+> reflect that of the newly woken up task effective uclamp values.
+>
+> This is a problem particularly for uclamp_max because it default to
+                    ^^^^^^^^^^^^
+Per the above, it's "only" a problem for UCLAMP_MAX.
+
+> 1024. If a task p with uclamp_max = 512 wakes up, then max aggregation
+> would ignore the capping that should apply when this task is enqueued,
+> which is wrong.
+>
+> Fix that by ignoring max aggregation if the rq is idle since in that
+> case the effective uclamp value of the rq will be the ones of the task
+> that will wake up.
+>
