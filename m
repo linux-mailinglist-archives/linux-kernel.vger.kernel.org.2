@@ -2,62 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAAB63BA18C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894323BA193
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbhGBNsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:48:08 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:37458 "EHLO vps0.lunn.ch"
+        id S232740AbhGBNuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:50:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232654AbhGBNsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:48:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=ALmwgqUw8xCCQst4oxbjM/eh7ulpVe3fZ6mcmGg55Uw=; b=bhn09CgsSPQf9ZVxXwDa9BXfQ5
-        IRq5RNnWOXslOZtra05ujQBMe61psPP91RhrcmxTvlDqeie7TwwnxLOqr4zYx/BPDGpaOyP6EeE26
-        fa0Ot0jXfJM8PKs2b/RJBVLg0v9EYwA7Kla2N50yL4gbKTkx2t7AXWdpFKVqmgN5RvAc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lzJU5-00BvIA-6i; Fri, 02 Jul 2021 15:45:33 +0200
-Date:   Fri, 2 Jul 2021 15:45:33 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] gpio: tqmx86: really make IRQ optional
-Message-ID: <YN8YfTHFDc1a9z0d@lunn.ch>
-References: <cover.1625227382.git.matthias.schiffer@ew.tq-group.com>
- <aee1d5a46b75fcaf4c231ddaf221f9ac2538440d.1625227382.git.matthias.schiffer@ew.tq-group.com>
+        id S232386AbhGBNuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 09:50:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 910436142B;
+        Fri,  2 Jul 2021 13:48:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625233688;
+        bh=2sqvaKpsBfNMgq83CEar15dETBn3QWs27Pt8LM/rCwM=;
+        h=From:Date:Subject:To:Cc:From;
+        b=rc62/bOo5T2jDzR4RHPSTBU9uRAByYE4yKqqeivveY0JA8eJssOJVIEfs4EEX9KR4
+         IrPz2C1OHXFxfio5zL9ScYUVfVpHi+OjIZlwgHNng3KBYm8KKAL+dYGLu889KvdIss
+         fVFNvo7E+VSwodDiRF+vWIF4GJDR3Zy+uNmCHZ7vaEazMC3DpeWUDWUVlwaDhSqKcx
+         QMu8wJv7wuaNTcicgKSOeNP+BaC1q/oUQKf/u0QWsAc2DHQsPrc4+Eep50U/kLxyhq
+         umlzUc/4pDN/spuMUbKadOeONFFU/IcYgJTX1atZh8dGPu9YZwT2y3EJSMHgQDUxPa
+         Fpxib2ruZpQNQ==
+Received: by mail-wr1-f42.google.com with SMTP id a13so12520603wrf.10;
+        Fri, 02 Jul 2021 06:48:08 -0700 (PDT)
+X-Gm-Message-State: AOAM531HmZiGYBoh4yGtqDG8rEH7cLPaeeQKb4FsoqEaMP3mIm/oV+SN
+        M003SqBHeS269JAKkVMVYp8i4/Nmzd2ixxRW/Ko=
+X-Google-Smtp-Source: ABdhPJxjuAcWk+fUW2iebkdnRr3QNskMI/RshqdGsVxS1+zazUtNB4DLWU+IzcKQARqYjKSwvSI4o2tSJmitDSPbyTM=
+X-Received: by 2002:adf:ee10:: with SMTP id y16mr6057171wrn.99.1625233687201;
+ Fri, 02 Jul 2021 06:48:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aee1d5a46b75fcaf4c231ddaf221f9ac2538440d.1625227382.git.matthias.schiffer@ew.tq-group.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 2 Jul 2021 15:47:51 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
+Message-ID: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
+Subject: [GIT PULL 1/2] asm-generic: rework PCI I/O space access
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 02:23:47PM +0200, Matthias Schiffer wrote:
-> The tqmx86 MFD driver was passing IRQ 0 for "no IRQ" in the past. This
-> causes warnings with newer kernels.
-> 
-> Prepare the gpio-tqmx86 driver for the fixed MFD driver by handling a
-> missing IRQ properly.
-> 
-> Fixes: b868db94a6a7 ("gpio: tqmx86: Add GPIO from for this IO controller")
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-The system i was using this on made use of interrupts, so i never
-tested with it missing.
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-It is a shame platform_get_irq_optional() does something different to
-all the other _optional() calls :-(
+are available in the Git repository at:
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+  git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git
+tags/asm-generic-pci-ioport-5.14
 
-    Andrew
+for you to fetch changes up to 5ae6eadfdaf431f47adbdf1754f3b5a5fd638de2:
+
+  asm-generic/io.h: warn in inb() and friends with undefined
+PCI_IOBASE (2021-05-10 17:37:55 +0200)
+
+----------------------------------------------------------------
+asm-generic: rework PCI I/O space access
+
+A rework for PCI I/O space access from Niklas Schnelle:
+
+  "This is version 5 of my attempt to get rid of a clang
+  -Wnull-pointer-arithmetic warning for the use of PCI_IOBASE in
+  asm-generic/io.h. This was originally found on s390 but should apply to
+  all platforms leaving PCI_IOBASE undefined while making use of the inb()
+  and friends helpers from asm-generic/io.h.
+
+  This applies cleanly and was compile tested on top of v5.12 for the
+  previously broken ARC, nds32, h8300 and risc-v architecture. It also
+  applies cleanly on v5.13-rc1 for which I boot tested it on s390.
+
+  I did boot test this only on x86_64 and s390x the former implements
+  inb() itself while the latter would emit a WARN_ONCE() but no drivers
+  use inb().
+
+Link: https://lore.kernel.org/lkml/20210510145234.594814-1-schnelle@linux.ibm.com/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+----------------------------------------------------------------
+Niklas Schnelle (3):
+      sparc: explicitly set PCI_IOBASE to 0
+      risc-v: Use generic io.h helpers for nommu
+      asm-generic/io.h: warn in inb() and friends with undefined PCI_IOBASE
+
+ arch/riscv/include/asm/io.h |  5 +++--
+ arch/sparc/include/asm/io.h |  8 ++++++++
+ include/asm-generic/io.h    | 68
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 75 insertions(+), 6 deletions(-)
