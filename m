@@ -2,127 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F603BA016
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004283BA019
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbhGBLyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 07:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34654 "EHLO
+        id S232047AbhGBLzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 07:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231936AbhGBLyJ (ORCPT
+        with ESMTP id S231936AbhGBLzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 07:54:09 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4EFC061764
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 04:51:36 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id a15so17569392lfr.6
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 04:51:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=itw4ZSFZPbB5jMtAcW94A5cIi28Zbh7A4MY1L25gGO0=;
-        b=skWOQ+tjB/RGXCRgCh/oX+pSqn801BpaewaioJ94g7BDJUoKJyzmNIJxfF6R7k4OVV
-         FkwksQciuoAEGOrZtrGFPyYLCXxLZXMJQsbTDphZ25i2JhWuw1YkS/xEcgUdDDbf9BEz
-         j7+1ZY18y7jKX0p1sfgvxy86H6YhI4LvjICQmgerkbW0Z3rzuCrlxHcOSbVsgrfKEMkm
-         twF/uAlLn/bNXF+depqyu2UMF8dk7nIYWit4IrjecjAjTjt4ERd3UudzQ1TbM8bnmPv4
-         qcu2ePgioE8YFrrKk17qWsiRJ2RNd9GS4629An1dwAydO/asFBTQAYsYJLt0DMpXfTAL
-         jsNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=itw4ZSFZPbB5jMtAcW94A5cIi28Zbh7A4MY1L25gGO0=;
-        b=fWhk2AHGG9wJrsGZ2LyieSj/HAuYlVShtynLVLWvR/Dr+PkpHWtoSfDx9zLcMt6Y0B
-         x4aK0zGURPv9x3PQdVbuDtTX9wAIoWib0n+qIco+m3klEIpsnGHVTmXYu76vwjF6UsSL
-         EGYTqKnutw5YDZyoLwk08Jy5am5puvRXZ/vo0LwXYBLcr8LXkKatopiFx5Mh1jVeD2P+
-         UNUrchChiXfeIY5v+H9Af+2k1XkuIiw5Rtx8AipXLtSxPx0FXGLHHFjURGuUxFvsW/yS
-         YF+ZDvvQwlvtwvJIRV4qKzc5GxCHSL9kbHTF9fzQxoLApx0K2zkCbNMPJVJX1pWmjnj/
-         5l4w==
-X-Gm-Message-State: AOAM531BI9DpxdfaQDPdKdgZPkmrXyyuR5mCXxLvEgj/Gpyy6pPW2suC
-        tiNtqsKF6JntBRbcWcWNwRuqaUIU1N6xkJrCC+TBOg==
-X-Google-Smtp-Source: ABdhPJzv91oZ5IBQE4TVWTsbh26N4tL41MOZOBkez4YnKnXUpCp87craAVl4JAJ/NuKAFHVkgR9wdySOTWnDC2Tli5g=
-X-Received: by 2002:a19:f51a:: with SMTP id j26mr3666613lfb.390.1625226694605;
- Fri, 02 Jul 2021 04:51:34 -0700 (PDT)
+        Fri, 2 Jul 2021 07:55:37 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EDAC061762;
+        Fri,  2 Jul 2021 04:53:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/sLwb7Cxkc1PFTyYiL5GsOTR4TUt3nINwnHPE+BGuo0=; b=YpMOOV00UxinpjzrmMGOLPVn52
+        zW5a8SeV7X5BWstNgbMvDWMtF9TEc0vpSx2VJQyUJ+py5LIKjpGQcB+SOivcTZ6xr+P4J551yDbho
+        lrWof83QJfDmOF7RQr87jRGwcrcoiYWVeeOcyIaIwfHvyR8RQ6vCug822lktaN6Evkyg7t8S+V3+H
+        DP/aeNxHOt9YbEHhW47TqRZ/u1Ej6U7pMxPl3jYTdA8KMtCibWFsfh5xe6AUAAdUGSq97zH4BSzQq
+        xCh1Ihc36Ba6gM084VJFvIIcQHsOtPToKQsLvMk7gDeIZgx0Dv3EvYQbgsRuDsuG8wPUGV7JeqTyw
+        RBrha1aA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lzHic-00Dqhi-J4; Fri, 02 Jul 2021 11:52:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 00AC83001DC;
+        Fri,  2 Jul 2021 13:52:22 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DDFB62CEACAE1; Fri,  2 Jul 2021 13:52:21 +0200 (CEST)
+Date:   Fri, 2 Jul 2021 13:52:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Zhu Lingshan <lingshan.zhu@intel.com>
+Cc:     pbonzini@redhat.com, bp@alien8.de, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, weijiang.yang@intel.com,
+        kan.liang@linux.intel.com, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        like.xu.linux@gmail.com, Like Xu <like.xu@linux.intel.com>
+Subject: Re: [PATCH V7 11/18] KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to
+ support guest DS
+Message-ID: <YN799S5hwWqsbY/h@hirez.programming.kicks-ass.net>
+References: <20210622094306.8336-1-lingshan.zhu@intel.com>
+ <20210622094306.8336-12-lingshan.zhu@intel.com>
 MIME-Version: 1.0
-References: <20210414055217.543246-1-avagin@gmail.com> <20210414055217.543246-3-avagin@gmail.com>
- <CAG48ez3UrzPE8rkucTgCu8ggcTEjx_h3Gj2FES1qM-uv2KD8bQ@mail.gmail.com> <YN6wlwFomEJ0LK1Y@gmail.com>
-In-Reply-To: <YN6wlwFomEJ0LK1Y@gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 2 Jul 2021 13:51:08 +0200
-Message-ID: <CAG48ez1=RPbsUos6yY1jMVU49U+GqSN8kFPosoFpKJZjFa4yvQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] arch/x86: implement the process_vm_exec syscall
-To:     Andrei Vagin <avagin@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Gleixner <tglx@linutronix.de>, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622094306.8336-12-lingshan.zhu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 8:25 AM Andrei Vagin <avagin@gmail.com> wrote:
-> On Mon, Jun 28, 2021 at 06:13:29PM +0200, Jann Horn wrote:
-> > On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:
-> > > +static void swap_mm(struct mm_struct *prev_mm, struct mm_struct *target_mm)
-> > > +{
-> > > +       struct task_struct *tsk = current;
-> > > +       struct mm_struct *active_mm;
-> > > +
-> > > +       task_lock(tsk);
-> > > +       /* Hold off tlb flush IPIs while switching mm's */
-> > > +       local_irq_disable();
-> > > +
-> > > +       sync_mm_rss(prev_mm);
-> > > +
-> > > +       vmacache_flush(tsk);
-> > > +
-> > > +       active_mm = tsk->active_mm;
-> > > +       if (active_mm != target_mm) {
-> > > +               mmgrab(target_mm);
-> > > +               tsk->active_mm = target_mm;
-> > > +       }
-> > > +       tsk->mm = target_mm;
-> >
-> > I'm pretty sure you're not currently allowed to overwrite the ->mm
-> > pointer of a userspace thread. For example, zap_threads() assumes that
-> > all threads running under a process have the same ->mm. (And if you're
-> > fiddling with ->mm stuff, you should probably CC linux-mm@.)
-> >
-> > As far as I understand, only kthreads are allowed to do this (as
-> > implemented in kthread_use_mm()).
->
-> kthread_use_mm() was renamed from use_mm in the v5.8 kernel. Before
-> that, it wasn't used for user processes in the kernel, but it was
-> exported for modules, and we used it without any visible problems. We
-> understood that there could be some issues like zap_threads and it was
-> one of reasons why we decided to introduce this system call.
->
-> I understand that there are no places in the kernel where we change mm
-> of user threads back and forth, but are there any real concerns why we
-> should not do that? I agree that zap_threads should be fixed, but it
-> will the easy one.
+On Tue, Jun 22, 2021 at 05:42:59PM +0800, Zhu Lingshan wrote:
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index 190d8d98abf0..b336bcaad626 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -21,6 +21,7 @@
+>  #include <asm/intel_pt.h>
+>  #include <asm/apic.h>
+>  #include <asm/cpu_device_id.h>
+> +#include <asm/kvm_host.h>
+>  
+>  #include "../perf_event.h"
+>  
+> @@ -3915,6 +3916,7 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
+>  {
+>  	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>  	struct perf_guest_switch_msr *arr = cpuc->guest_switch_msrs;
+> +	struct kvm_pmu *pmu = (struct kvm_pmu *)data;
+>  	u64 intel_ctrl = hybrid(cpuc->pmu, intel_ctrl);
+>  	u64 pebs_mask = cpuc->pebs_enabled & x86_pmu.pebs_capable;
+>  
+> @@ -3945,9 +3947,15 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
+>  		return arr;
+>  	}
+>  
+> -	if (!x86_pmu.pebs_vmx)
+> +	if (!pmu || !x86_pmu.pebs_vmx)
+>  		return arr;
+>  
+> +	arr[(*nr)++] = (struct perf_guest_switch_msr){
+> +		.msr = MSR_IA32_DS_AREA,
+> +		.host = (unsigned long)cpuc->ds,
+> +		.guest = pmu->ds_area,
+> +	};
+> +
+>  	arr[*nr] = (struct perf_guest_switch_msr){
+>  		.msr = MSR_IA32_PEBS_ENABLE,
+>  		.host = cpuc->pebs_enabled & ~cpuc->intel_ctrl_guest_mask,
 
-My point is that if you break a preexisting assumption like this,
-you'll have to go through the kernel and search for places that rely
-on this assumption, and fix them up, which may potentially require
-thinking about what kinds of semantics would actually be appropriate
-there. Like the MCE killing logic (collect_procs_anon() and such). And
-current_is_single_threaded(), in which the current patch probably
-leads to logic security bugs. And __uprobe_perf_filter(). Before my
-refactoring of the ELF coredump logic in kernel 5.10 (commit
-b2767d97f5ff75 and the ones before it), you'd have also probably
-created memory corruption bugs in races between elf_core_dump() and
-syscalls like mmap()/munmap(). (Note that this is not necessarily an
-exhaustive list.)
+s/pmu/kvm_pmu/ or something. pmu is normally a struct pmu *, and having
+it be kvm_pmu here is super confusing.
