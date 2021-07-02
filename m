@@ -2,174 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1493BA4E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD083BA4E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbhGBU7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 16:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhGBU7k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 16:59:40 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D13C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 13:57:06 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id bu19so20325043lfb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 13:57:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8hDmjhh4CEc7tcPs29BDsOViDcQQOe2tkj/fgDDj4a8=;
-        b=WK38xMCuVpfUrGEjMntGywHqdXgVFuWSivGvWFJymCFPCO9Ml/kPCWA6DekIoIMQ/D
-         kZNRHf7S0mKDYkX1xvAyT8n7OUP1MQlFZLadK+qUubLFBPuZsgv/gJy1tovcgSjchPQO
-         1zkMQe147Ckwr5W5S2YvW2sygH/bGmwrv+rLpTHnI37KxoaCvULHquOLvIuMcdkwIkZ5
-         yZi+eV3R3hu9FJxtC6KMCLBrgP9x7Xno2W3HnohpYj89P+L6H1eVmcEzmnA1gkx5V7yv
-         rsGL3DkQGuRbG0+OTmk3xxv5IB1PV6/45GJu2NPlAroTtBnSwOtfQ0LuQv8zvrPCWAFt
-         jbfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8hDmjhh4CEc7tcPs29BDsOViDcQQOe2tkj/fgDDj4a8=;
-        b=TdvuPiNnrOYs/kJdqn9Rof+jwqDznLnNujX8X1EZHrlZoMdBPmDMZeU3SkiOpfW/jw
-         qNCQ8W6/a8cF9xPxweIJ5L6gju8YRYuincpjKi2Jk/u3xJ0SB+UYozN7hTwiFgKOvuXp
-         VC4/szS2Z+migy9U6k0lqiVbEKGRKfCFxNBhS5vqmolp18cH+tLIeFqYQ0CtftA8oLbR
-         /nDj8FU8hbXdLu2v5ix+LRFjp9v0q0LWAC1YD9HyhkBPDUULhhw24sWmK99nbjRs4qaR
-         pkIEre1br2nTTq9h5PRZti4hBPDiQyGYk5rC51OrBcCFjrov37xaTqlBLlLi6iDIRpCI
-         FlrA==
-X-Gm-Message-State: AOAM533K4YCmd+2xnIYjgPkVPfPUCrYgW7LL0CdwAzCjU0PFdhCRh5f7
-        m8O4UqwMxC0PBNX6dBWx0edmFUAhRqwjY1GUJCXHw1uS191rNQ==
-X-Google-Smtp-Source: ABdhPJwInonwQ2eFAluymRJg+OzibVAdAH9rjiGeegy/PBQqyDo3Lz9bheVoB3rtWdelqiuYYIjZmdtKHRWINk99MoU=
-X-Received: by 2002:a05:6512:210e:: with SMTP id q14mr1061425lfr.356.1625259424639;
- Fri, 02 Jul 2021 13:57:04 -0700 (PDT)
+        id S231802AbhGBVBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 17:01:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230377AbhGBVBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 17:01:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F4F1613EB;
+        Fri,  2 Jul 2021 20:59:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625259551;
+        bh=Ls60RX1571idIce45U8CLpSNiuxtIk6tUPerE3Q41Eo=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=FfUTkZL9BWNlcdfcEF60jjkt0s6tNk4MtpFj1RIiL2uFJ2Vqu1klVyqGcSYYMqYtf
+         ONTmjqa8a38F/ExsbJuHgdCXaAbUu6WmfudZAHDu4gs4XWyoesOqmaKzXfjItu/2/4
+         f3+X13KwtGS9MLqPfqPuIyikVBr+6RVYZQNLkhlRHTF/Gb5WTMhZUtkXC/OzVSEVVM
+         FODHOtz1uFht9goJuP8negMV3VW/h387QRtYBlcA85oN+1MOHysk86CVmkhSNIDJK3
+         /lAHMwDQDUg9EVDsSRZqJ5Tj/35NQqmGjZdWojO8k3BYoug65d/nxjOhVmh8fwQQ3M
+         sxwOXeJUuM7Lg==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210414055217.543246-1-avagin@gmail.com> <20210414055217.543246-3-avagin@gmail.com>
-In-Reply-To: <20210414055217.543246-3-avagin@gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 2 Jul 2021 22:56:38 +0200
-Message-ID: <CAG48ez37ZUNvWy1eOvrW13kFRM-_ZW175x99Nyjq43w4Qz1qJQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] arch/x86: implement the process_vm_exec syscall
-To:     Andrei Vagin <avagin@gmail.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAFBinCAASQUB=cg5EFsBQ4jd3TvcCJzV1=sYJci4ibR7FjRcww@mail.gmail.com>
+References: <20210627223959.188139-1-martin.blumenstingl@googlemail.com> <20210627223959.188139-3-martin.blumenstingl@googlemail.com> <20210701202540.GA1085600@roeck-us.net> <CAFBinCC2KB-_pOenpWPknCuHV+CCjhP5hqukSkwD3qwRe6OtQw@mail.gmail.com> <162518776607.3570193.14348711594242395887@swboyd.mtv.corp.google.com> <CAFBinCAASQUB=cg5EFsBQ4jd3TvcCJzV1=sYJci4ibR7FjRcww@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] clk: divider: Switch from .round_rate to .determine_rate by default
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, mturquette@baylibre.com,
+        linux-clk@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
+        khilman@baylibre.com, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Fri, 02 Jul 2021 13:59:10 -0700
+Message-ID: <162525955027.3570193.16463056788252699243@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:
-> This change introduces the new system call:
-> process_vm_exec(pid_t pid, struct sigcontext *uctx, unsigned long flags,
->                 siginfo_t * uinfo, sigset_t *sigmask, size_t sizemask)
->
-> process_vm_exec allows to execute the current process in an address
-> space of another process.
->
-> process_vm_exec swaps the current address space with an address space of
-> a specified process, sets a state from sigcontex and resumes the process.
-> When a process receives a signal or calls a system call,
-> process_vm_exec saves the process state back to sigcontext, restores the
-> origin address space, restores the origin process state, and returns to
-> userspace.
->
-> If it was interrupted by a signal and the signal is in the user_mask,
-> the signal is dequeued and information about it is saved in uinfo.
-> If process_vm_exec is interrupted by a system call, a synthetic siginfo
-> for the SIGSYS signal is generated.
->
-> The behavior of this system call is similar to PTRACE_SYSEMU but
-> everything is happing in the context of one process, so
-> process_vm_exec shows a better performance.
->
-> PTRACE_SYSEMU is primarily used to implement sandboxes (application
-> kernels) like User-mode Linux or gVisor. These type of sandboxes
-> intercepts applications system calls and acts as the guest kernel.
-> A simple benchmark, where a "tracee" process executes systems calls in a
-> loop and a "tracer" process traps syscalls and handles them just
-> incrementing the tracee instruction pointer to skip the syscall
-> instruction shows that process_vm_exec works more than 5 times faster
-> than PTRACE_SYSEMU.
-[...]
-> +long swap_vm_exec_context(struct sigcontext __user *uctx)
-> +{
-> +       struct sigcontext ctx = {};
-> +       sigset_t set = {};
-> +
-> +
-> +       if (copy_from_user(&ctx, uctx, CONTEXT_COPY_SIZE))
-> +               return -EFAULT;
-> +       /* A floating point state is managed from user-space. */
-> +       if (ctx.fpstate != 0)
-> +               return -EINVAL;
-> +       if (!user_access_begin(uctx, sizeof(*uctx)))
-> +               return -EFAULT;
-> +       unsafe_put_sigcontext(uctx, NULL, current_pt_regs(), (&set), Efault);
-> +       user_access_end();
-> +
-> +       if (__restore_sigcontext(current_pt_regs(), &ctx, 0))
-> +               goto badframe;
-> +
-> +       return 0;
-> +Efault:
-> +       user_access_end();
-> +badframe:
-> +       signal_fault(current_pt_regs(), uctx, "swap_vm_exec_context");
-> +       return -EFAULT;
-> +}
+Quoting Martin Blumenstingl (2021-07-02 02:19:37)
+> Hi Stephen,
+>=20
+> On Fri, Jul 2, 2021 at 3:02 AM Stephen Boyd <sboyd@kernel.org> wrote:
+> [...]
+> > My guess is that we have drivers copying the clk_ops from the
+> > divider_ops structure and so they are copying over round_rate but not
+> > determine_rate.
+> I just learned something new - thanks for investigating this as well!
+>=20
+> $ git grep "clk_divider_ops\.round_rate" drivers/
+> drivers/clk/bcm/clk-bcm2835.c:  return clk_divider_ops.round_rate(hw,
+> rate, parent_rate);
+> drivers/clk/clk-stm32f4.c:      return clk_divider_ops.round_rate(hw,
+> rate, prate);
+> drivers/clk/clk-stm32h7.c:      return clk_divider_ops.round_rate(hw,
+> rate, prate);
+> drivers/clk/clk-stm32mp1.c:             req->rate =3D
+> clk_divider_ops.round_rate(hw, req->rate, &best_parent_rate);
+> drivers/clk/imx/clk-divider-gate.c:     return
+> clk_divider_ops.round_rate(hw, rate, prate);
+> $ git grep "clk_divider_ro_ops\.round_rate" drivers/
+> $
+>=20
+> Changing these over to use clk_divider_ops.determine_rate doesn't seem to=
+o hard.
+> The part that I am not sure about is how to organize the patches.
+> 1) amend the changes to all relevant drivers (from above) to this patch
+> 2) multiple patches:
+> - adding .determine_rate to the default divider ops (but not removing
+> .round_rate)
+> - a single patch for each relevant driver (from above)
+> - removing .round_rate from the default divider ops
+>=20
+> Another approach is to first create clk_divider_determine_rate() (as
+> done here) and export it.
+> Then I could have one individual patch for each relevant driver (from
+> above) to use:
+>   .determine_rate =3D clk_divider_determine_rate,
+> Then finally I could remove clk_divider_round_rate() and switch over
+> the default divider ops to .determine_rate as well.
+>=20
+> Which way do you prefer?
+>=20
 
-Comparing the pieces of context that restore_sigcontext() restores
-with what a normal task switch does (see __switch_to() and callees), I
-noticed: On CPUs with FSGSBASE support, I think sandboxed code could
-overwrite FSBASE/GSBASE using the WRFSBASE/WRGSBASE instructions,
-causing the supervisor to access attacker-controlled addresses when it
-tries to access a thread-local variable like "errno"? Signal handling
-saves the segment registers, but not the FS/GS base addresses.
+I'd prefer we leave round_rate assigned in clk_divider_ops and
+clk_divider_ro_ops but then also assign the determine_rate function. We
+have some duplication but that's OK. Then make individual patches to
+migrate each driver over to the new clk op.
 
-
-jannh@laptop:~/test$ cat signal_gsbase.c
-// compile with -mfsgsbase
-#include <stdio.h>
-#include <signal.h>
-#include <immintrin.h>
-
-void signal_handler(int sig, siginfo_t *info, void *ucontext_) {
-  puts("signal handler");
-  _writegsbase_u64(0x12345678);
-}
-
-int main(void) {
-  struct sigaction new_act = {
-    .sa_sigaction = signal_handler,
-    .sa_flags = SA_SIGINFO
-  };
-  sigaction(SIGUSR1, &new_act, NULL);
-
-  printf("original gsbase is 0x%lx\n", _readgsbase_u64());
-  raise(SIGUSR1);
-  printf("post-signal gsbase is 0x%lx\n", _readgsbase_u64());
-}
-jannh@laptop:~/test$ gcc -o signal_gsbase signal_gsbase.c -mfsgsbase
-jannh@laptop:~/test$ ./signal_gsbase
-original gsbase is 0x0
-signal handler
-post-signal gsbase is 0x12345678
-jannh@laptop:~/test$
-
-
-So to make this usable for a sandboxing usecase, you'd also have to
-save and restore FSBASE/GSBASE, just like __switch_to().
+We could stack a final patch on top to remove the round_rate function
+from clk divider.  Unfortunately, if some driver wants to use round_rate
+then it will fail in interesting ways. Probably best to live with it
+until we decide to drop round_rate entirely. Patches to convert all the
+round_rate code over to determine_rate would be welcome in the meantime.
