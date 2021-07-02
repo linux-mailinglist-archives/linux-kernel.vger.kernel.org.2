@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0473B9E27
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3723B9E2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhGBJ12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 05:27:28 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:2133 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231301AbhGBJ1P (ORCPT
+        id S231235AbhGBJ16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 05:27:58 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:37215 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230388AbhGBJ16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 05:27:15 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A14p3oa3VLAJhMaZWsNxtmwqjBI4kLtp133Aq?=
- =?us-ascii?q?2lEZdPU1SL39qynKppkmPHDP5gr5J0tLpTntAsi9qBDnhPtICOsqTNSftWDd0Q?=
- =?us-ascii?q?PGEGgI1/qB/9SPIU3D398Y/aJhXow7M9foEGV95PyQ3CCIV/om3/mLmZrFudvj?=
-X-IronPort-AV: E=Sophos;i="5.83,316,1616428800"; 
-   d="scan'208";a="110542369"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 02 Jul 2021 17:24:42 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 79CBF4C36A19;
-        Fri,  2 Jul 2021 17:24:39 +0800 (CST)
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Fri, 2 Jul 2021 17:24:34 +0800
-Received: from irides.mr.mr.mr (10.167.225.141) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Fri, 2 Jul 2021 17:24:33 +0800
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-To:     <linux-kernel@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-        <linux-fsdevel@vger.kernel.org>
-CC:     <djwong@kernel.org>, <dan.j.williams@intel.com>,
-        <willy@infradead.org>, <jack@suse.cz>, <viro@zeniv.linux.org.uk>,
-        <hch@lst.de>, <riteshh@linux.ibm.com>
-Subject: [RESEND PATCH v3 3/3] fsdax: Output address in dax_iomap_pfn() and rename it
-Date:   Fri, 2 Jul 2021 17:23:57 +0800
-Message-ID: <20210702092357.262744-4-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210702092357.262744-1-ruansy.fnst@fujitsu.com>
-References: <20210702092357.262744-1-ruansy.fnst@fujitsu.com>
+        Fri, 2 Jul 2021 05:27:58 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lzFQG-002aEM-Gp; Fri, 02 Jul 2021 11:25:20 +0200
+Received: from p57bd964c.dip0.t-ipconnect.de ([87.189.150.76] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lzFQG-004BfI-AA; Fri, 02 Jul 2021 11:25:20 +0200
+Subject: Re: [PATCH 3/3 v2] sh: fix READ/WRITE redefinition warnings
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Takashi YOSHII <takasi-y@ops.dti.ne.jp>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20210627220544.8757-1-rdunlap@infradead.org>
+ <20210627220544.8757-4-rdunlap@infradead.org>
+ <6af41806-e715-4084-418f-4a8924d26c07@physik.fu-berlin.de>
+ <8efd6e1d-9949-9598-9e6b-41d9b2f4ea7a@infradead.org>
+ <d1e925b1-b0ef-2e00-ea79-b5ff2be3cf4c@physik.fu-berlin.de>
+ <CAMuHMdUjT3GnZTUurHmjctxaa==VYU9-rNuQun=f=RyWi2M5Tw@mail.gmail.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <85485961-4c6e-a1bc-d66a-19869b5a03f1@physik.fu-berlin.de>
+Date:   Fri, 2 Jul 2021 11:25:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 79CBF4C36A19.A3639
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+In-Reply-To: <CAMuHMdUjT3GnZTUurHmjctxaa==VYU9-rNuQun=f=RyWi2M5Tw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.150.76
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add address output in dax_iomap_pfn() in order to perform a memcpy() in
-CoW case.  Since this function both output address and pfn, rename it to
-dax_iomap_direct_access().
+Hi Geert!
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
----
- fs/dax.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+On 7/1/21 10:41 AM, Geert Uytterhoeven wrote:
+>>> OK. Thanks for all of the testing.
+>>
+>> I'll report back with the other patch applied that Geert mentioned from linux-next before this one.
+> 
+> FTR, I booted all three successfully on qemu/rts7751r2d and on physical landisk.
 
-diff --git a/fs/dax.c b/fs/dax.c
-index acc548875fd4..f661227b49cd 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -1009,8 +1009,8 @@ static sector_t dax_iomap_sector(struct iomap *iomap, loff_t pos)
- 	return (iomap->addr + (pos & PAGE_MASK) - iomap->offset) >> 9;
- }
- 
--static int dax_iomap_pfn(struct iomap *iomap, loff_t pos, size_t size,
--			 pfn_t *pfnp)
-+static int dax_iomap_direct_access(struct iomap *iomap, loff_t pos, size_t size,
-+		void **kaddr, pfn_t *pfnp)
- {
- 	const sector_t sector = dax_iomap_sector(iomap, pos);
- 	pgoff_t pgoff;
-@@ -1022,11 +1022,13 @@ static int dax_iomap_pfn(struct iomap *iomap, loff_t pos, size_t size,
- 		return rc;
- 	id = dax_read_lock();
- 	length = dax_direct_access(iomap->dax_dev, pgoff, PHYS_PFN(size),
--				   NULL, pfnp);
-+				   kaddr, pfnp);
- 	if (length < 0) {
- 		rc = length;
- 		goto out;
- 	}
-+	if (!pfnp)
-+		goto out_check_addr;
- 	rc = -EINVAL;
- 	if (PFN_PHYS(length) < size)
- 		goto out;
-@@ -1036,6 +1038,12 @@ static int dax_iomap_pfn(struct iomap *iomap, loff_t pos, size_t size,
- 	if (length > 1 && !pfn_t_devmap(*pfnp))
- 		goto out;
- 	rc = 0;
-+
-+out_check_addr:
-+	if (!kaddr)
-+		goto out;
-+	if (!*kaddr)
-+		rc = -EFAULT;
- out:
- 	dax_read_unlock(id);
- 	return rc;
-@@ -1400,7 +1408,7 @@ static vm_fault_t dax_fault_actor(struct vm_fault *vmf, pfn_t *pfnp,
- 		return pmd ? VM_FAULT_FALLBACK : VM_FAULT_SIGBUS;
- 	}
- 
--	err = dax_iomap_pfn(iomap, pos, size, &pfn);
-+	err = dax_iomap_direct_access(iomap, pos, size, NULL, &pfn);
- 	if (err)
- 		return pmd ? VM_FAULT_FALLBACK : dax_fault_return(err);
- 
+Good to know, thanks.
+
+>> FWIW, there are some warnings when building the SH-7785LCR configuration:
+>>
+>> In file included from ./arch/sh/include/asm/hw_irq.h:6,
+>>                  from ./include/linux/irq.h:591,
+>>                  from ./include/asm-generic/hardirq.h:17,
+>>                  from ./arch/sh/include/asm/hardirq.h:9,
+>>                  from ./include/linux/hardirq.h:11,
+>>                  from ./include/linux/interrupt.h:11,
+>>                  from ./include/linux/serial_core.h:13,
+>>                  from ./include/linux/serial_sci.h:6,
+>>                  from arch/sh/kernel/cpu/sh4a/setup-sh7785.c:10:
+>> ./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
+>>   100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+>>       |                                                               ^
+>> ./include/linux/sh_intc.h:107:9: note: in expansion of macro '_INTC_ARRAY'
+>>   107 |         _INTC_ARRAY(sense_regs), _INTC_ARRAY(ack_regs), \
+>>       |         ^~~~~~~~~~~
+>> ./include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
+>>   124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
+>>       |               ^~~~~~~~~~~~
+>> arch/sh/kernel/cpu/sh4a/setup-sh7785.c:478:8: note: in expansion of macro 'DECLARE_INTC_DESC'
+>>   478 | static DECLARE_INTC_DESC(intc_desc, "sh7785", vectors, groups,
+>>       |        ^~~~~~~~~~~~~~~~~
+> 
+> A while ago, I had a look into fixing them, but it was non-trivial.
+> The issue is that the macros are sometimes used with NULL pointer arrays.
+> The __same_type() check in
+> 
+>     #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+> 
+> is supposed to catch that, but modern compilers seem to evaluate the
+> non-taken branch, too, leading to the warning.
+> 
+> Anyone with a suggestion? (CCing the multi-compiler guru)
+
+Ah, thanks for the explanation.
+
+Adrian
+
 -- 
-2.32.0
-
-
-
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
