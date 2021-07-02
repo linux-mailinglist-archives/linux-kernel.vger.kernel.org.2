@@ -2,115 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B35F3B9FAE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C5D3B9FC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbhGBLWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 07:22:53 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55922 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbhGBLWw (ORCPT
+        id S231933AbhGBLZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 07:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231802AbhGBLZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 07:22:52 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1A59D22985;
-        Fri,  2 Jul 2021 11:20:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625224819;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=badF2A4qEOZ32Uu+PhlD0CDqgloiQf4kfcO0SCCAJdM=;
-        b=mmG8zpRixprVY2svVvl2d+F7FbvbS7Cjl72YOi2Y/QLzJRoV47UJ1/7XTYskXXMvMxlHsj
-        ZYV9bD4Jb4VEn5Qp8No1LLypLmbjJ1MY6RHxNAfqTKthzQVYcRTvoH9ICaSCo237/cdSnB
-        krqp2+4fq9Ur/txsJxkD+1o5Tuk33Sw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625224819;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=badF2A4qEOZ32Uu+PhlD0CDqgloiQf4kfcO0SCCAJdM=;
-        b=HGKLej9Ipsp5dwAm5vXLy5+ZP3P41NISkuD3pmUqIdW1nanFgZmqUlftgSylKLnQroLLrA
-        jJ9wtD1v7ONhHJAA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E582EA3B87;
-        Fri,  2 Jul 2021 11:20:18 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E9721DA6FD; Fri,  2 Jul 2021 13:17:47 +0200 (CEST)
-Date:   Fri, 2 Jul 2021 13:17:47 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] btrfs: Fix multiple out-of-bounds warnings
-Message-ID: <20210702111747.GF2610@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210702010653.GA84106@embeddedor>
- <ba89916a-f141-2962-2526-89bd43e75a42@gmx.com>
+        Fri, 2 Jul 2021 07:25:25 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A051C061762;
+        Fri,  2 Jul 2021 04:22:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=O5Uqso+ww5amQ01DKigcD3vJJ7N3bwtD7LxAeQZ8NGo=; b=JYJbKRCaTtVjDzb/7N8Vg5ALJK
+        Z9z+lgf5/nby+DFt32t6/4uiGrBJeKjTLVqqlBekOg4CgVhfQqk4bd+I/0DRjmpHrmNI77IlDRhYn
+        JTJlDJI2+gb1fvdiaPk1sAjttTyO6N8hHeBFR/6wiUzGir5xO+zjr18vT2GDa7ueMv3jA0DvapxgS
+        sORLkZ7+5aVcnyqMrOOh2sxuewdQjUzEt/H8Pa02qexOzNdz5irUkHr2OVQIQ7TUGNBbfjA6/qU55
+        KLYzKy4dbIvNoL9okqBh6IPngAIxJ8W8lD+1vYchcUWAbhBempd1bUMgvDJN85yD8fulHZbpEdfXJ
+        Z5/MAk+w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lzHFD-00DqNT-HJ; Fri, 02 Jul 2021 11:22:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 43862300091;
+        Fri,  2 Jul 2021 13:22:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D797A20244CE2; Fri,  2 Jul 2021 13:22:00 +0200 (CEST)
+Date:   Fri, 2 Jul 2021 13:22:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Zhu Lingshan <lingshan.zhu@intel.com>
+Cc:     pbonzini@redhat.com, bp@alien8.de, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, weijiang.yang@intel.com,
+        kan.liang@linux.intel.com, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        like.xu.linux@gmail.com, Like Xu <like.xu@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        xen-devel@lists.xenproject.org
+Subject: Re: [PATCH V7 01/18] perf/core: Use static_call to optimize
+ perf_guest_info_callbacks
+Message-ID: <YN722HIrzc6Z2+oD@hirez.programming.kicks-ass.net>
+References: <20210622094306.8336-1-lingshan.zhu@intel.com>
+ <20210622094306.8336-2-lingshan.zhu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ba89916a-f141-2962-2526-89bd43e75a42@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210622094306.8336-2-lingshan.zhu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 06:20:33PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2021/7/2 上午9:06, Gustavo A. R. Silva wrote:
-> > Fix the following out-of-bounds warnings by using a flexible-array
-> > member *pages[] at the bottom of struct extent_buffer:
-> >
-> > fs/btrfs/disk-io.c:225:34: warning: array subscript 1 is above array bounds of ‘struct page *[1]’ [-Warray-bounds]
-> 
-> The involved code looks like:
-> 
-> static void csum_tree_block(struct extent_buffer *buf, u8 *result)
-> {
->          struct btrfs_fs_info *fs_info = buf->fs_info;
->          const int num_pages = fs_info->nodesize >> PAGE_SHIFT;
-> 	...
->          for (i = 1; i < num_pages; i++) {
->                  kaddr = page_address(buf->pages[i]);
->                  crypto_shash_update(shash, kaddr, PAGE_SIZE);
->          }
-> 
-> For Power case, the page size is 64K and nodesize is at most 64K for
-> btrfs, thus num_pages will either be 0 or 1.
-> 
-> In that case, the for loop should never get reached, thus it's not
-> possible to really get beyond the boundary.
-> 
-> To me, the real problem is we have no way to tell compiler that
-> fs_info->nodesize is ensured to be no larger than 64K.
-> 
-> 
-> Although using flex array can mask the problem, but it's really masking
-> the problem as now compiler has no idea how large the array can really be.
+On Tue, Jun 22, 2021 at 05:42:49PM +0800, Zhu Lingshan wrote:
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 8f71dd72ef95..c71af4cfba9b 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -90,6 +90,27 @@ DEFINE_STATIC_CALL_NULL(x86_pmu_pebs_aliases, *x86_pmu.pebs_aliases);
+>   */
+>  DEFINE_STATIC_CALL_RET0(x86_pmu_guest_get_msrs, *x86_pmu.guest_get_msrs);
+>  
+> +DEFINE_STATIC_CALL_RET0(x86_guest_state, *(perf_guest_cbs->state));
+> +DEFINE_STATIC_CALL_RET0(x86_guest_get_ip, *(perf_guest_cbs->get_ip));
+> +DEFINE_STATIC_CALL_RET0(x86_guest_handle_intel_pt_intr, *(perf_guest_cbs->handle_intel_pt_intr));
+> +
+> +void arch_perf_update_guest_cbs(void)
+> +{
+> +	static_call_update(x86_guest_state, (void *)&__static_call_return0);
+> +	static_call_update(x86_guest_get_ip, (void *)&__static_call_return0);
+> +	static_call_update(x86_guest_handle_intel_pt_intr, (void *)&__static_call_return0);
+> +
+> +	if (perf_guest_cbs && perf_guest_cbs->state)
+> +		static_call_update(x86_guest_state, perf_guest_cbs->state);
+> +
+> +	if (perf_guest_cbs && perf_guest_cbs->get_ip)
+> +		static_call_update(x86_guest_get_ip, perf_guest_cbs->get_ip);
+> +
+> +	if (perf_guest_cbs && perf_guest_cbs->handle_intel_pt_intr)
+> +		static_call_update(x86_guest_handle_intel_pt_intr,
+> +				   perf_guest_cbs->handle_intel_pt_intr);
+> +}
 
-Agreed, that's the problem, we'd be switching compile-time static
-information about the array with dynamic.
-
-> David still has the final say on how to fix it, but I'm really wondering
-> is there any way to give compiler some hint about the possible value
-> range for things like fs_info->nodesize?
-
-We can add some macros that are also page size dependent and evaluate to
-a constant that can be in turn used to optimize the loop to a single
-call of the loop body.
-
-Looking at csum_tree_block we should really use the num_extent_pages
-helper that does the same thing but handles when nodesize >> PAGE_SIZE
-is zero (and returns 1).
+Coding style wants { } on that last if().
