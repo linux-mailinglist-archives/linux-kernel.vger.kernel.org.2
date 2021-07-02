@@ -2,120 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81E03BA3C7
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDBA3BA3C6
 	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 19:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhGBR5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 13:57:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230026AbhGBR5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230078AbhGBR5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 2 Jul 2021 13:57:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF18961402;
-        Fri,  2 Jul 2021 17:54:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625248497;
-        bh=ig/YK/r/5aLCR4xsEWigroc4/rfDVngvQX1gzhgNYiY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nNXGNTep34Cgwd/OvUI5QhxtTKbZ1bqzOHzVc9Z9Q/gsXGxr+/ahJsB42AhZrrC/J
-         NEpgegDa2Ysbpfp+s+gkTetfnbQgugHPvUacyndQ1kZFpKoc/t5FtEuRe9spMIHQFv
-         gkEXVERrla99tcynuXPqU1gTjGHfg42RxtoK6idyoH4xKiH3iyVCj0QHamKCtzz2kT
-         4TQXfOIlx5GvqCJpLSL7GFCa2IU5cA0rtii/3wdscbfrHlsBihcQ6kBtLZ5dw2+AWx
-         cLCW8AUy+mTXNhpf8Pfunhn6AfvkGBpLiA+xr76h0yPSNlLX07ie0CHaR3tUKQk/Rp
-         rfxxF3V8UAe8Q==
-From:   Alexey Gladkov <legion@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Alexey Gladkov <legion@kernel.org>
-Subject: [PATCH] ucounts: Fix UCOUNT_RLIMIT_SIGPENDING counter leak
-Date:   Fri,  2 Jul 2021 19:54:42 +0200
-Message-Id: <20210702175442.1603082-1-legion@kernel.org>
-X-Mailer: git-send-email 2.29.3
-In-Reply-To: <CAHk-=wjQks3o_3=WewaXw++h+a318B3LTLSFER9Ee4n1pLCZLw@mail.gmail.com>
-References: <CAHk-=wjQks3o_3=WewaXw++h+a318B3LTLSFER9Ee4n1pLCZLw@mail.gmail.com>
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60915 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229499AbhGBR53 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 13:57:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625248496;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pbkNyJDGj/8iXe0TBDEAUMiCkg9SviOFzgrnNXTZons=;
+        b=ON8yPlKVKCIJIvWISsnVtCnIo4IZ//qC134YZdrXuvtZGyglPx2PrlXJMu71nX2FSWxL6s
+        L4WeW2kO0wSYA/6KOZKsTXHF2bfN+k+hxouzFLPVDtc0aUR/fHYDFt/BOVJNBM81sKdlDx
+        BcX4+AS0rFrZhS8JW0BMOpm0tjJBfMc=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-185-CO5QLA3gMuC8gzdw-18nyQ-1; Fri, 02 Jul 2021 13:54:55 -0400
+X-MC-Unique: CO5QLA3gMuC8gzdw-18nyQ-1
+Received: by mail-wr1-f71.google.com with SMTP id j2-20020a0560001242b029012c82df4dbbso3293752wrx.23
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 10:54:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=pbkNyJDGj/8iXe0TBDEAUMiCkg9SviOFzgrnNXTZons=;
+        b=N4jjVum++7jqq2IJEwP1//iGWhk+VABw1w7kn1RP1R/rW6RfM0QUpBcfOu9d+eM79N
+         +gVx0Dg/wc4W7H1qKmwp3vwXrPT8MsJeKQbiCvjoBfFjIk7o9pWfs09E4M2pUHrzkpnN
+         ietdXQjf4DaJPQ1XMRE1zJEfQldLdwWERA5ismTXykV+9YJr9tOGBMcOUUEMik0H0YS6
+         W/xjVuVj2GAmkllpRdfDfUajoOxGcsVOTkBCuilq5jbWjiIrxHJx4nwJdE+FVCJXkHeD
+         PfgYfLZ79Y2YfxQrvvRmUW3vPzQH11/3ThmV2DvYljXJh0DqWhskALg6Pb6XZmN7CL4o
+         /C1A==
+X-Gm-Message-State: AOAM5313Le4g572a1B+cEcc8Pm4slODIg5gCtTSmYb8BkVAMNs6aUDYx
+        Mob5L0pXlS43JyDpsETm2uyQ41rUHInkHYTqSogA+/8pY/1LL7l0CEvjFcdwtvYuFqA5Afgaqiq
+        WT1IvJq8bZF7alRLp0WPHlROMGNTi46IXBCGgLDYwW4ROEOUhPtXxT4hhS37kYV1woMDsz1bh
+X-Received: by 2002:a5d:64ca:: with SMTP id f10mr927474wri.178.1625248494526;
+        Fri, 02 Jul 2021 10:54:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy9jF5LRPmzSEe/NyTfPh5kL45cRM6XILkCgx2GtLpLbrvUG5J4flBCB2S8jIFb348/NuS/kA==
+X-Received: by 2002:a5d:64ca:: with SMTP id f10mr927451wri.178.1625248494313;
+        Fri, 02 Jul 2021 10:54:54 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23afb.dip0.t-ipconnect.de. [79.242.58.251])
+        by smtp.gmail.com with ESMTPSA id l9sm3949679wrp.14.2021.07.02.10.54.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Jul 2021 10:54:53 -0700 (PDT)
+Subject: Re: [PATCH 1/3] mm: sparse: pass section_nr to section_mark_present
+To:     Ohhoon Kwon <ohoono.kwon@samsung.com>, akpm@linux-foundation.org,
+        mhocko@suse.com
+Cc:     bhe@redhat.com, rppt@linux.ibm.com, ohkwon1043@gmail.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210702094132.6276-1-ohoono.kwon@samsung.com>
+ <CGME20210702094457epcas1p3ddac76bd3cc3e5b93fadb897cdb6dfd0@epcas1p3.samsung.com>
+ <20210702094132.6276-2-ohoono.kwon@samsung.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <b0d49715-b90f-7e9e-34f3-337557eac71c@redhat.com>
+Date:   Fri, 2 Jul 2021 19:54:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210702094132.6276-2-ohoono.kwon@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If get_ucounts() could not increase the reference counter, then in case
-of an error it will be impossible to decrease the counter.
+On 02.07.21 11:41, Ohhoon Kwon wrote:
+> With CONFIG_SPARSEMEM_EXTREME enabled, __section_nr() which converts
+> mem_section to section_nr could be costly since it iterates all
+> section roots to check if the given mem_section is in its range.
+> 
+> On the other hand, __nr_to_section() which converts section_nr to
+> mem_section can be done in O(1).
+> 
+> Let's pass section_nr instead of mem_section ptr to
+> section_mark_present() in order to reduce needless iterations.
+> 
+> Signed-off-by: Ohhoon Kwon <ohoono.kwon@samsung.com>
+> ---
+>   mm/sparse.c | 9 +++++----
+>   1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/sparse.c b/mm/sparse.c
+> index 55c18aff3e42..4a2700e9a65f 100644
+> --- a/mm/sparse.c
+> +++ b/mm/sparse.c
+> @@ -186,13 +186,14 @@ void __meminit mminit_validate_memmodel_limits(unsigned long *start_pfn,
+>    * those loops early.
+>    */
+>   unsigned long __highest_present_section_nr;
+> -static void section_mark_present(struct mem_section *ms)
+> +static void section_mark_present(unsigned long section_nr)
+>   {
+> -	unsigned long section_nr = __section_nr(ms);
+> +	struct mem_section *ms;
+>   
+>   	if (section_nr > __highest_present_section_nr)
+>   		__highest_present_section_nr = section_nr;
+>   
+> +	ms = __nr_to_section(section_nr);
+>   	ms->section_mem_map |= SECTION_MARKED_PRESENT;
+>   }
+>   
+> @@ -279,7 +280,7 @@ static void __init memory_present(int nid, unsigned long start, unsigned long en
+>   		if (!ms->section_mem_map) {
+>   			ms->section_mem_map = sparse_encode_early_nid(nid) |
+>   							SECTION_IS_ONLINE;
+> -			section_mark_present(ms);
+> +			section_mark_present(section);
+>   		}
+>   	}
+>   }
+> @@ -933,7 +934,7 @@ int __meminit sparse_add_section(int nid, unsigned long start_pfn,
+>   
+>   	ms = __nr_to_section(section_nr);
+>   	set_section_nid(section_nr, nid);
+> -	section_mark_present(ms);
+> +	section_mark_present(section_nr);
+>   
+>   	/* Align memmap to section boundary in the subsection case */
+>   	if (section_nr_to_pfn(section_nr) != start_pfn)
+> 
 
-In case of an error, the ucounts variable cannot be set to NULL. Also
-dec_rlimit_ucounts() has to be REGARDLESS of whether get_ucounts() was
-successful or not.
+Fine for me either like this, or as Michal suggested. It's an internal 
+helper either way.
 
-Signed-off-by: Alexey Gladkov <legion@kernel.org>
----
- kernel/signal.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index de0920353d30..87a64b3307a8 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -412,7 +412,7 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
- 		 int override_rlimit, const unsigned int sigqueue_flags)
- {
- 	struct sigqueue *q = NULL;
--	struct ucounts *ucounts = NULL;
-+	struct ucounts *ucounts, *ucounts_new;
- 	long sigpending;
- 
- 	/*
-@@ -424,10 +424,10 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
- 	 * changes from/to zero.
- 	 */
- 	rcu_read_lock();
--	ucounts = task_ucounts(t);
-+	ucounts = ucounts_new = task_ucounts(t);
- 	sigpending = inc_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
- 	if (sigpending == 1)
--		ucounts = get_ucounts(ucounts);
-+		ucounts_new = get_ucounts(ucounts);
- 	rcu_read_unlock();
- 
- 	if (override_rlimit || (sigpending < LONG_MAX && sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
-@@ -437,13 +437,24 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
- 	}
- 
- 	if (unlikely(q == NULL)) {
--		if (ucounts && dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1))
--			put_ucounts(ucounts);
-+		ucounts_new = NULL;
- 	} else {
- 		INIT_LIST_HEAD(&q->list);
- 		q->flags = sigqueue_flags;
--		q->ucounts = ucounts;
-+		q->ucounts = ucounts_new;
- 	}
-+
-+	/*
-+	 * In case it failed to allocate sigqueue or ucounts reference counter
-+	 * overflow, we decrement UCOUNT_RLIMIT_SIGPENDING to avoid counter
-+	 * leaks.
-+	 */
-+	if (unlikely(ucounts_new == NULL)) {
-+		dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
-+		if (sigpending == 1)
-+			put_ucounts(ucounts);
-+	}
-+
- 	return q;
- }
- 
-@@ -451,7 +462,7 @@ static void __sigqueue_free(struct sigqueue *q)
- {
- 	if (q->flags & SIGQUEUE_PREALLOC)
- 		return;
--	if (q->ucounts && dec_rlimit_ucounts(q->ucounts, UCOUNT_RLIMIT_SIGPENDING, 1)) {
-+	if (dec_rlimit_ucounts(q->ucounts, UCOUNT_RLIMIT_SIGPENDING, 1)) {
- 		put_ucounts(q->ucounts);
- 		q->ucounts = NULL;
- 	}
 -- 
-2.29.3
+Thanks,
+
+David / dhildenb
 
