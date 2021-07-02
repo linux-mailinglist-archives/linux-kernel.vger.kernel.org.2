@@ -2,178 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE0F3BA3CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 19:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209B53BA3D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbhGBSCQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 2 Jul 2021 14:02:16 -0400
-Received: from aposti.net ([89.234.176.197]:49264 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229499AbhGBSCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 14:02:16 -0400
-Date:   Fri, 02 Jul 2021 18:59:33 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     tiwai@suse.com, SOUND <alsa-devel@alsa-project.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mike Rapoport <rppt@kernel.org>
-Message-Id: <9ZPMVQ.7NLNMVBCK1243@crapouillou.net>
-In-Reply-To: <ZRC9VQ.M548GASAC18G2@crapouillou.net>
-References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
-        <20201216124726.2842197-1-kai.heng.feng@canonical.com>
-        <ZRC9VQ.M548GASAC18G2@crapouillou.net>
+        id S230141AbhGBSDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 14:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229455AbhGBSDY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 14:03:24 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B106EC061764
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 11:00:51 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id k11so12658409ioa.5
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 11:00:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6i4AtMAfxuHj6dUewQkFdeehfEClu3wbewt0ov3ATOQ=;
+        b=JmF+SaQBuRMGQiavh+g7rKja0ZXRGmsTRjsx2EZVCzGcOAmNPv01zOfniiBmTo+5Gk
+         1S5JMwZCbLFTJxRx93vi0kQGuR/Mi3MHyfN1Z6/mSfgKE/5yrvrvPo4oqpLJQuhU4Ei/
+         UCXSUZqd1KBSuSLsu8t1uiOHa0TnHvYrqxNc2QxXWdZsyYwb4Pm5JlASM9JHdtRjuo9C
+         xc1eAYNZUuxtqfr3Ge1//WqpwPBlCzIH8Z8HnuE1ldOcdkjtyhw55leVHdZ8UJ4O/TKW
+         IgLexSu974ENQVnpWnPuVzp1xl+rQjtzy59JuBsHjY8tF4XChUhwssfxIvNuV1X4390U
+         z6Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6i4AtMAfxuHj6dUewQkFdeehfEClu3wbewt0ov3ATOQ=;
+        b=ONCk2ua5dypM8ulFv887LNxXz8Bewn6VilecQIoXKsSvJyT8tuPf9pAWUbOjRUrVrO
+         NDbWpYlPjyXn3Rf4lTrDmTrIKjEDZD104o3YZyWRgZ4gPEqEC/xZ52TqeoQxRtsPHlzT
+         HspAMzooI7gAr1PCFvNv6BrAywOr02Ax4R8/XC6YdW/tjeO+wCNp+5yrS/Bu6KKd1QYK
+         cixY0njM+W/a7kDNttu6ZYquTeSsZu9VkAylEAVl47T98bU2tAEtjaN3uSGz6EVuClWJ
+         IN09Q5IY66HkWGuP4Zt9rLhaKVyn/0rAXgiBibtp5WzPqOFtjSvu2JARmQD65vPi1neW
+         f36Q==
+X-Gm-Message-State: AOAM533f05b/W78xT3RzRjzagdO1fIpsR4VSmFOSuugt0d/q7R60tjuq
+        2G4l1D9n5O9DnB3uvbSoqq8hwThOx42+A03P2FWRRQ==
+X-Google-Smtp-Source: ABdhPJwMMptBIdAVrrH8g2/22L2pwo0JTFXqZiZP4iJ0c00iHWIMewwBWPicbdhGzNzpY0ftz8ej3XK0HzWTsNir7GU=
+X-Received: by 2002:a05:6602:3403:: with SMTP id n3mr889257ioz.165.1625248851051;
+ Fri, 02 Jul 2021 11:00:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <20210701093537.90759-1-leo.yan@linaro.org> <20210701093537.90759-3-leo.yan@linaro.org>
+ <YN3sas8tWPfWjFqE@kernel.org> <20210702011018.GA251512@leoy-ThinkPad-X240s>
+In-Reply-To: <20210702011018.GA251512@leoy-ThinkPad-X240s>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Fri, 2 Jul 2021 12:00:39 -0600
+Message-ID: <CANLsYkyxaWUCFYWF2LzooYWqeAMq8P4UzxfPWGoYur3LxyD92A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] perf cs-etm: Remove callback cs_etm_find_snapshot()
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <James.Clark@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Denis Nikitin <denik@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 1 Jul 2021 at 19:10, Leo Yan <leo.yan@linaro.org> wrote:
+>
+> On Thu, Jul 01, 2021 at 01:25:14PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Thu, Jul 01, 2021 at 05:35:36PM +0800, Leo Yan escreveu:
+> > > The callback cs_etm_find_snapshot() is invoked for snapshot mode, its
+> > > main purpose is to find the correct AUX trace data and returns "head"
+> > > and "old" (we can call "old" as "old head") to the caller, the caller
+> > > __auxtrace_mmap__read() uses these two pointers to decide the AUX trace
+> > > data size.
+> > >
+> > > This patch removes cs_etm_find_snapshot() with below reasons:
+> > >
+> > > - The first thing in cs_etm_find_snapshot() is to check if the head has
+> > >   wrapped around, if it is not, directly bails out.  The checking is
+> > >   pointless, this is because the "head" and "old" pointers both are
+> > >   monotonical increasing so they never wrap around.
+> > >
+> > > - cs_etm_find_snapshot() adjusts the "head" and "old" pointers and
+> > >   assumes the AUX ring buffer is fully filled with the hardware trace
+> > >   data, so it always subtracts the difference "mm->len" from "head" to
+> > >   get "old".  Let's imagine the snapshot is taken in very short
+> > >   interval, the tracers only fill a small chunk of the trace data into
+> > >   the AUX ring buffer, in this case, it's wrongly to copy the whole the
+> > >   AUX ring buffer to perf file.
+> > >
+> > > - As the "head" and "old" pointers are monotonically increased, the
+> > >   function __auxtrace_mmap__read() handles these two pointers properly.
+> > >   It calculates the reminders for these two pointers, and the size is
+> > >   clamped to be never more than "snapshot_size".  We can simply reply on
+> > >   the function __auxtrace_mmap__read() to calculate the correct result
+> > >   for data copying, it's not necessary to add Arm CoreSight specific
+> > >   callback.
+> >
+> > Thanks, applied.
+>
+> Thanks a lot for picking up the patch, Arnaldo!
+>
+> Hi Mathieu, I supposed to get your review before merging; since
+> Arnaldo moves quickly, if you want me to follow up anything relevant
+> to this change, please let me know.  Thanks!
 
-Le ven., juin 25 2021 at 13:45:35 +0100, Paul Cercueil 
-<paul@crapouillou.net> a écrit :
-> Hi Kai-Heng,
-> 
-> I am facing the same bug. Unfortunately your patch does not seem to 
-> fix the bug for me, the nvidia GPU stays constantly active. Only if I 
-> unbind the snd-hda-intel module for this PCI device that the nvidia 
-> GPU will eventually go to sleep.
+I was going to review this set next week.  But it is fine if Arnaldo
+has picked it up since enough people have already looked at and tested
+this code.
 
-Nevermind, I'm stupid. I think I just didn't have the PM mode set to 
-"auto", because I tried again and it works now. Ignore my email.
+Thanks,
+Mathieu
 
-If you (or anybody) does a v3, please Cc me.
-
-Cheers,
--Paul
-
-> My dmesg (with your patch applied):
-> 
-> [ 1.821358] MXM: GUID detected in BIOS
-> [ 1.821396] ACPI BIOS Error (bug): AE_AML_PACKAGE_LIMIT, Index 
-> (0x000000003) is beyond end of object (length 0x0) 
-> (20200925/exoparg2-393)
-> [ 1.821406] ACPI Error: Aborting method \_SB.PCI0.GFX0._DSM due to 
-> previous error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
-> [ 1.821415] ACPI: \_SB_.PCI0.GFX0: failed to evaluate _DSM (0x300b)
-> [ 1.821419] ACPI Warning: \_SB.PCI0.GFX0._DSM: Argument #4 type 
-> mismatch - Found [Buffer], ACPI requires [Package] 
-> (20200925/nsarguments-61)
-> [ 1.821528] i915 0000:00:02.0: optimus capabilities: enabled, status 
-> dynamic power,
-> [ 1.821554] ACPI BIOS Error (bug): AE_AML_PACKAGE_LIMIT, Index 
-> (0x000000003) is beyond end of object (length 0x0) 
-> (20200925/exoparg2-393)
-> [ 1.821560] ACPI Error: Aborting method \_SB.PCI0.GFX0._DSM due to 
-> previous error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
-> [ 1.821565] ACPI Error: Aborting method \_SB.PCI0.PEG0.PEGP._DSM due 
-> to previous error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
-> [ 1.821572] ACPI: \_SB_.PCI0.PEG0.PEGP: failed to evaluate _DSM 
-> (0x300b)
-> [ 1.821574] ACPI Warning: \_SB.PCI0.PEG0.PEGP._DSM: Argument #4 type 
-> mismatch - Found [Buffer], ACPI requires [Package] 
-> (20200925/nsarguments-61)
-> [ 1.821683] pci 0000:01:00.0: optimus capabilities: enabled, status 
-> dynamic power,
-> [ 1.821685] VGA switcheroo: detected Optimus DSM method 
-> \_SB_.PCI0.PEG0.PEGP handle
-> [ 1.821920] nouveau 0000:01:00.0: NVIDIA GK107 (0e71f0a2)
-> [ 1.830781] nouveau 0000:01:00.0: bios: version 80.07.95.00.07
-> [ 1.894392] nouveau 0000:01:00.0: fb: 2048 MiB DDR3
-> [ 1.896669] [drm] Initialized i915 1.6.0 20200917 for 0000:00:02.0 on 
-> minor 0
-> [ 1.896862] ACPI: Video Device [PEGP] (multi-head: yes rom: yes post: 
-> no)
-> [ 1.897361] input: Video Bus as 
-> /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/device:02/LNXVIDEO:00/input/input12
-> [ 1.897974] ACPI: Video Device [GFX0] (multi-head: yes rom: no post: 
-> no)
-> [ 1.898219] nouveau 0000:01:00.0: bus: MMIO write of 0000001f FAULT 
-> at 6013d4 [ IBUS ]
-> [ 1.900114] input: Video Bus as 
-> /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/LNXVIDEO:01/input/input13
-> [ 1.969353] vga_switcheroo: enabled
-> [ 1.969407] [TTM] Zone kernel: Available graphics memory: 3791596 KiB
-> [ 1.969408] [TTM] Zone dma32: Available graphics memory: 2097152 KiB
-> [ 1.969409] [TTM] Initializing pool allocator
-> [ 1.969416] [TTM] Initializing DMA pool allocator
-> [ 1.969431] nouveau 0000:01:00.0: DRM: VRAM: 2048 MiB
-> [ 1.969432] nouveau 0000:01:00.0: DRM: GART: 1048576 MiB
-> [ 1.969436] nouveau 0000:01:00.0: DRM: Pointer to TMDS table not found
-> [ 1.969438] nouveau 0000:01:00.0: DRM: DCB version 4.0
-> [ 1.971139] nouveau 0000:01:00.0: DRM: MM: using COPY for buffer 
-> copies
-> [ 1.971485] [drm] Initialized nouveau 1.3.1 20120801 for 0000:01:00.0 
-> on minor 1
-> 
-> [ ... ]
-> 
-> [ 4.594245] snd_hda_intel 0000:00:1b.0: bound 0000:00:02.0 (ops 
-> i915_audio_component_bind_ops [i915])
-> [ 4.594380] snd_hda_intel 0000:01:00.1: can't change power state from 
-> D3cold to D0 (config space inaccessible)
-> [ 4.594410] snd_hda_intel 0000:01:00.1: can't change power state from 
-> D3cold to D0 (config space inaccessible)
-> [ 4.594486] snd_hda_intel 0000:01:00.1: Disabling MSI
-> [ 4.594494] snd_hda_intel 0000:01:00.1: Handle vga_switcheroo audio 
-> client
-> [ 4.594526] snd_hda_intel 0000:01:00.1: number of I/O streams is 30, 
-> forcing separate stream tags
-> 
-> [ ... ]
-> 
-> [ 4.696732] hdaudio hdaudioC1D0: no AFG or MFG node found
-> [ 4.696745] hdaudio hdaudioC1D1: no AFG or MFG node found
-> [ 4.696752] hdaudio hdaudioC1D2: no AFG or MFG node found
-> [ 4.696759] hdaudio hdaudioC1D3: no AFG or MFG node found
-> [ 4.696765] hdaudio hdaudioC1D4: no AFG or MFG node found
-> [ 4.696771] hdaudio hdaudioC1D5: no AFG or MFG node found
-> [ 4.696778] hdaudio hdaudioC1D6: no AFG or MFG node found
-> [ 4.696785] hdaudio hdaudioC1D7: no AFG or MFG node found
-> [ 4.696787] snd_hda_intel 0000:01:00.1: no codecs initialized
-> 
-> Cheers,
-> -Paul
-> 
-> 
-> Le mer., déc. 16 2020 at 20:47:24 +0800, Kai-Heng Feng 
-> <kai.heng.feng@canonical.com> a écrit :
->> Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
->> initialization even if no codecs found"), when codec probe fails, it
->> doesn't enable runtime suspend, and can prevent graphics card from
->> getting powered down:
->> [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
->> 
->> $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
->> active
->> 
->> So mark there's no codec and continue probing to let runtime PM to 
->> work.
->> 
->> BugLink: https://bugs.launchpad.net/bugs/1907212
->> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->> ---
->>  sound/pci/hda/hda_intel.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->> index 6852668f1bcb..872a703dee43 100644
->> --- a/sound/pci/hda/hda_intel.c
->> +++ b/sound/pci/hda/hda_intel.c
->> @@ -2328,7 +2328,7 @@ static int azx_probe_continue(struct azx *chip)
->>  	if (bus->codec_mask) {
->>  		err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
->>  		if (err < 0)
->> -			goto out_free;
->> +			bus->codec_mask = 0;
->>  	}
->> 
->>  #ifdef CONFIG_SND_HDA_PATCH_LOADER
-> 
-
-
+>
+> Leo
