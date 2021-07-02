@@ -2,147 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BB73BA130
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB103BA13A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbhGBNZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231753AbhGBNZW (ORCPT
+        id S232554AbhGBNbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:31:12 -0400
+Received: from mail-io1-f45.google.com ([209.85.166.45]:45640 "EHLO
+        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232273AbhGBNbL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:25:22 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCA9C061764
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 06:22:49 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id l68so5744721vsc.13
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 06:22:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PZ15K3S/1hphrSeMFsXZLHij0/U+9+Yp4xZew5uxF1U=;
-        b=gR0Bo2R/we3qBUL2oOcrm/NRqu2zzxDbrYQuDoYWY75MtvJHkEHD1IO40GkzZWIHC3
-         dMWQRXgHSd8ftl0IrNfQtye7DGfpySZiIBSyfYVsrEsbEH/HUDW204AfoBynbQ5UuyuC
-         ZPslIuHke4dtw5RpbU1Z9uhKe7oR0JrjH5XTp6CgCcJWw/ofZlAJIdav/PDSnwMWi6n4
-         OSkqTNSu5WrvxjG2lPE4WYyC+LCNczsGPP8NYpnjBg7uGm9yk4T5N8fMDfRM3lYrNYel
-         Bq5uwNjK+xZwYUJCq+qtHZvP9bb4c4k3jOpx6PY8/wB/WFdLbEg4/GEqcsTN5RrARDzA
-         wj+A==
+        Fri, 2 Jul 2021 09:31:11 -0400
+Received: by mail-io1-f45.google.com with SMTP id g3so9671982iok.12;
+        Fri, 02 Jul 2021 06:28:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PZ15K3S/1hphrSeMFsXZLHij0/U+9+Yp4xZew5uxF1U=;
-        b=oK2kdfwoK/eldlxTw2fTev8X3icVim7HTfeJk+Hkeughfu8He+1F8ILETHf9EnZ0JA
-         wxKGQEPHRnLmM6sW/jJ73OiVEroVhE9T2P1aNPjoNzmG7aicvt6zqGHXFLICvedHUhGC
-         LNq7pClR5jHrOOw9BOKeD1sUuGCRGY/KTkxpjOe3c2jlZzEPI2yQ9CnTfOhsL/rS3d5z
-         vgjwQq/sRPCEW4RjPRkCvqzh+okg78PoUuR1qK5qsxQ6GwPt0D98Dm4WVG8/ZqRhQtTl
-         EJt0HPSJ6461P9btPyoraoFdbELqDQNcjz06Bx/RstkiflaQ7/0dhMKaxj9N97hIq1CJ
-         PDJw==
-X-Gm-Message-State: AOAM531RdloTEupvWlxmWHgQ/ViG6VckLid6UUXB7aayW4aPZoOgom1c
-        nVkS4kefNwpiCeLhFk5Pfm7DBxNDASBKUOdH9FxyQg==
-X-Google-Smtp-Source: ABdhPJyLP59DEtJyHgftkz8MDTDVZkaRiJRgske4DXopqT09J5h2lzJ26VEdHAbUMZr38K/w9z3dNfAGIuNLMFJlJHA=
-X-Received: by 2002:a67:8783:: with SMTP id j125mr6537816vsd.42.1625232168370;
- Fri, 02 Jul 2021 06:22:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210624163045.33651-1-alcooperx@gmail.com> <CAPDyKFqwrX64W8t-PYrN-JYTttu6Bsfg40abPOOYFdZqDH0qMw@mail.gmail.com>
- <CAOGqxeUSLpC9+aGnMxEZpMTOvwMrb-3=11EGH48qdZvdioijHQ@mail.gmail.com>
-In-Reply-To: <CAOGqxeUSLpC9+aGnMxEZpMTOvwMrb-3=11EGH48qdZvdioijHQ@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 2 Jul 2021 15:22:11 +0200
-Message-ID: <CAPDyKFqzcFkU-tWEMyFLVxBekXuWUMpV-gHCt=1wf-rY=Nz5gQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci: Fix warning message when accessing RPMB in
- HS400 mode
-To:     Alan Cooper <alcooperx@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=6VAjp+1g1/6JxjvtnTpo35j86mJBNoZO/+9hIOMNiL8=;
+        b=Ovf2Murioq8ywPycdwkNGzkOETxRepQk2GGoOIQZNS7lXhuMKYUUvzkI/M/Awoy0Ws
+         rYlEFnste69TmDcEpazJAGxyvRiHhSTaObimML4S+Fa7WxwN94YkPGD8c8MTRWmSs4O/
+         /1z02XhZfANMS8B3EfUgVy84Wn3/GV6YUYpZLQVP0StHbmZWJzdcQRhfRhHvpUpcFlZ9
+         ouYCHofP3Y3pj+Y8HMuR8N4ZaGJldK0dezijyaI97YuPcsQCQ9ri97GbAh1X/86O11by
+         IszN17j4tAX2z3KTg2sEyftNqZuxo3yZw/5SxgAl2TtQhxZejRY8cVDh9RXtY6TEYan5
+         IC+A==
+X-Gm-Message-State: AOAM533WYCM1/cxj9FWCjLCsgKIOt0TfmOGDgLOstkJXu8hnC7pFqI0l
+        keBW+Xpt90WTCCQ5PWMnfQ==
+X-Google-Smtp-Source: ABdhPJzT6n33b3xKbEvJpC4uROSwAAAPdrO/QZIfQETl3OkC0z4NKXvm3j5l1qv2BaaKbjvD4xtxgA==
+X-Received: by 2002:a05:6638:4199:: with SMTP id az25mr4238547jab.45.1625232518931;
+        Fri, 02 Jul 2021 06:28:38 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id a12sm1820482ilt.3.2021.07.02.06.28.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 06:28:38 -0700 (PDT)
+Received: (nullmailer pid 274908 invoked by uid 1000);
+        Fri, 02 Jul 2021 13:28:35 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Alex Helms <alexander.helms.jy@renesas.com>
+Cc:     mturquette@baylibre.com, linux-clk@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, sboyd@kernel.org,
+        david.cater.jc@renesas.com, geert+renesas@glider.be,
+        devicetree@vger.kernel.org, michal.simek@xilinx.com
+In-Reply-To: <20210701232258.19146-2-alexander.helms.jy@renesas.com>
+References: <202107020640.YyVoU69S-lkp@intel.com> <20210701232258.19146-1-alexander.helms.jy@renesas.com> <20210701232258.19146-2-alexander.helms.jy@renesas.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: Add binding for Renesas 8T49N241
+Date:   Fri, 02 Jul 2021 07:28:35 -0600
+Message-Id: <1625232515.402706.274905.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Jul 2021 at 14:34, Alan Cooper <alcooperx@gmail.com> wrote:
->
-> On Wed, Jun 30, 2021 at 10:21 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > On Thu, 24 Jun 2021 at 18:31, Al Cooper <alcooperx@gmail.com> wrote:
-> > >
-> > > When an eMMC device is being run in HS400 mode, any access to the
-> > > RPMB device will cause the error message "mmc1: Invalid UHS-I mode
-> > > selected". This happens as a result of tuning being disabled before
-> > > RPMB access and then re-enabled after the RPMB access is complete.
-> > > When tuning is re-enabled, the system has to switch from HS400
-> > > to HS200 to do the tuning and then back to HS400. As part of
-> > > sequence to switch from HS400 to HS200 the system is temporarily
-> > > put into HS mode. When switching to HS mode, sdhci_get_preset_value()
-> > > is called and does not have support for HS mode and prints the warning
-> > > message and returns the preset for SDR12. The fix is to add support
-> > > for MMC and SD HS modes to sdhci_get_preset_value().
-> > >
-> > > This can be reproduced on any system running eMMC in HS400 mode
-> > > (not HS400ES) by using the "mmc" utility to run the following
-> > > command: "mmc rpmb read-counter /dev/mmcblk0rpmb".
-> > >
-> > > Signed-off-by: Al Cooper <alcooperx@gmail.com>
-> >
-> > I assume we want this for stable kernels, but it would be nice to add
-> > a fixes tag as well.
-> >
-> > Do you know if there is a specific commit that this fixes?
->
-> The function sdhci_get_preset_value(), which is missing the HS modes,
-> was added in 52983382c74f5 for v3.9. Should I add a fixes tag for that
-> commit?
+On Thu, 01 Jul 2021 16:22:57 -0700, Alex Helms wrote:
+> Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
+> The 8T49N241 accepts up to two differential or single-ended input clocks
+> and a fundamental-mode crystal input. The internal PLL can lock to either
+> of the input reference clocks or to the crystal to behave as a frequency
+> synthesizer.
+> 
+> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
+> ---
+>  .../bindings/clock/renesas,8t49n241.yaml      | 183 ++++++++++++++++++
+>  MAINTAINERS                                   |   6 +
+>  2 files changed, 189 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
+> 
 
-Thanks for checking this! I have amended the patch to add a
-fixes/stable tag and applied it for fixes.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Kind regards
-Uffe
+yamllint warnings/errors:
 
->
-> Thanks
-> Al
->
-> >
-> > Kind regards
-> > Uffe
-> >
-> > > ---
-> > >  drivers/mmc/host/sdhci.c | 4 ++++
-> > >  drivers/mmc/host/sdhci.h | 1 +
-> > >  2 files changed, 5 insertions(+)
-> > >
-> > > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> > > index bf238ade1602..6b39126fbf06 100644
-> > > --- a/drivers/mmc/host/sdhci.c
-> > > +++ b/drivers/mmc/host/sdhci.c
-> > > @@ -1812,6 +1812,10 @@ static u16 sdhci_get_preset_value(struct sdhci_host *host)
-> > >         u16 preset = 0;
-> > >
-> > >         switch (host->timing) {
-> > > +       case MMC_TIMING_MMC_HS:
-> > > +       case MMC_TIMING_SD_HS:
-> > > +               preset = sdhci_readw(host, SDHCI_PRESET_FOR_HIGH_SPEED);
-> > > +               break;
-> > >         case MMC_TIMING_UHS_SDR12:
-> > >                 preset = sdhci_readw(host, SDHCI_PRESET_FOR_SDR12);
-> > >                 break;
-> > > diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-> > > index 0770c036e2ff..960fed78529e 100644
-> > > --- a/drivers/mmc/host/sdhci.h
-> > > +++ b/drivers/mmc/host/sdhci.h
-> > > @@ -253,6 +253,7 @@
-> > >
-> > >  /* 60-FB reserved */
-> > >
-> > > +#define SDHCI_PRESET_FOR_HIGH_SPEED    0x64
-> > >  #define SDHCI_PRESET_FOR_SDR12 0x66
-> > >  #define SDHCI_PRESET_FOR_SDR25 0x68
-> > >  #define SDHCI_PRESET_FOR_SDR50 0x6A
-> > >
-> > > base-commit: 7426cedc7dad67bf3c71ea6cc29ab7822e1a453f
-> > > --
-> > > 2.17.1
-> > >
+dtschema/dtc warnings/errors:
+./Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/clock/renesas,8t49n241.yaml#
+Documentation/devicetree/bindings/clock/renesas,8t49n241.example.dt.yaml:0:0: /example-0/i2c@0/clock-generator@6c: failed to match any schema with compatible: ['renesas,8t49n241']
+Documentation/devicetree/bindings/clock/renesas,8t49n241.example.dt.yaml:0:0: /example-1/i2c@0/clock-generator@6c: failed to match any schema with compatible: ['renesas,8t49n241']
+\ndoc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1499761
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
