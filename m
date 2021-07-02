@@ -2,177 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A103B9CAF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 09:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EF93B9CB3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 09:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhGBHEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 03:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhGBHD7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 03:03:59 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083B2C061762;
-        Fri,  2 Jul 2021 00:01:26 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d1so5092258plg.6;
-        Fri, 02 Jul 2021 00:01:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=pOxwy4S8+CMaHsFPZCERpcLAZFzgkbgCU7ysS2kserA=;
-        b=C7iqWm/wesRNy/TjG2rGEA+W4kQ+TyHVuuL7z1F62PhJmxaaEoArlcQc84EmSneSqz
-         iznC5OCPYsOsUJxJhgRSMTidOscJf/aghiOmDfzN8vcOyS9Ktom0AAY3oZkSKKjSXO1d
-         bNX6lm2SULxR5MVs+e4vybMcekoS7NI2FBZQjmcpcDVbq1yNnSJqb1zN5kPr2Z1pUbNk
-         A5G6ojm9VhQ8EdJjli5tjWX9R26cjvQG9ITwcfWD6VHn+xMCAGOok6yLzhJ4HNTQ0yGZ
-         /Y/LCtDHcowpYrJJLDpAoIzycnxxFSBNvQyxIEhjKJ4y6wPKqpXxQSs7x9PXOvzmkcds
-         oZlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=pOxwy4S8+CMaHsFPZCERpcLAZFzgkbgCU7ysS2kserA=;
-        b=Huu+9TsdpC67OgbLtHNe97lTzt0BMZGwO1TZvd24qV+NJdw7gnEWIp5Uwuv6LHBn6f
-         c6eAxbeZtsOsoqKHPgunxvYoEpgAUd1mZ/efIr2eCOZ8wbsNFAwjpwkNsHP4Q3Wk+l7U
-         nnjbYGPrvgyN0cZSeqF3e9U0hwNzHvuIk4TrJ76lXzWgt5FyggnjwpOPWs8FHdM/Fzfv
-         HyA/6AG6TLYR31bbHPsLqpEwxW4MPvzPlXYg4dSZhu5KRwhSJ3ZDvyrJfmPQVVK8yMGM
-         vlg4C+CUvyJJzm/PbUy2K3Bn1ULQOTfswHII3PbJMSuebLUW6T6Pa5Q5/uqqHn/2fen5
-         mrVA==
-X-Gm-Message-State: AOAM532/9WmDYzMI5jjeNew+IGS7zo07YLsSuNgdPUp6UtYdnqj0T2Cw
-        GkHXysuYazLxjWC3VTCIoSI=
-X-Google-Smtp-Source: ABdhPJyfi/fuR+AXjHafBzne+j9YCvbhOaUZINfEYssRYGLtqsbz0Nrvakl5C11G5EnSvNYHMM3PVw==
-X-Received: by 2002:a17:90b:4c4b:: with SMTP id np11mr13875779pjb.125.1625209286236;
-        Fri, 02 Jul 2021 00:01:26 -0700 (PDT)
-Received: from gmail.com ([2601:600:8500:5f14:d627:c51e:516e:a105])
-        by smtp.gmail.com with ESMTPSA id p14sm2378495pgb.2.2021.07.02.00.01.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 00:01:25 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 23:57:53 -0700
-From:   Andrei Vagin <avagin@gmail.com>
-To:     Jann Horn <jannh@google.com>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Gleixner <tglx@linutronix.de>, linux-mm@kvack.org
-Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
- address space
-Message-ID: <YN648cPBDIGKYlYa@gmail.com>
-References: <20210414055217.543246-1-avagin@gmail.com>
- <CAG48ez0jfsS=gKN0Vo_VS2EvvMBvEr+QNz0vDKPeSAzsrsRwPQ@mail.gmail.com>
+        id S230114AbhGBHF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 03:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229542AbhGBHFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 03:05:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52E3B613EE;
+        Fri,  2 Jul 2021 07:03:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625209404;
+        bh=Hh2zjhoHGPBbQkmc5JkFShU5GroINP9pj1TtKufCft0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eAV+6pZEUQCt6Akyb9vHYG3FiGspEBCTfZSZjQ9dW/cpaUUyni4haD4qeGDuGpYUE
+         Z5T73JaF39kFb+TwupMevjiacIArYXtJHTgFvRFpT1fbFFKKH/IOoRLwj5bx2uYpie
+         AhlqYVnOP1uxHZcmGTV0ZIQxh+LI17kv2oN9FuyU2YEbdBV3LxK3GTjTG3+4uVRBq8
+         SE/rtJ94qVMDHKyZN21u4gg3XuqClRG9Cvebe2moT6PfNM2K3WKPU5VtKZ8SOyzxsJ
+         X0jYEBSqLCvzFz9zjw6Fe/EPaTR189NGvjo2CwD2UnbW+LmMJY4LAM5gbOHqE3MDag
+         Ej5Y7SSTozYlQ==
+Received: by mail-wr1-f51.google.com with SMTP id i94so11180729wri.4;
+        Fri, 02 Jul 2021 00:03:24 -0700 (PDT)
+X-Gm-Message-State: AOAM531Ayj/tyx4+syAceJh7t724jY7PDh00dS4AcYO325BLGhTcTIkr
+        QJLp4Es+LBDLlda17VxENWqXBIO7mL0t5O8TKPU=
+X-Google-Smtp-Source: ABdhPJxJCdbg7r+5UkmMwcMIkFiHhvxiov8e5VyyE6aFngrPSPZNtyIEv6XRRmbcegVjpQuK6UbSfra67wONqq/OojM=
+X-Received: by 2002:a5d:5012:: with SMTP id e18mr4167208wrt.286.1625209402965;
+ Fri, 02 Jul 2021 00:03:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG48ez0jfsS=gKN0Vo_VS2EvvMBvEr+QNz0vDKPeSAzsrsRwPQ@mail.gmail.com>
+References: <20210630122057.2795882-1-arnd@kernel.org> <6a5d06db-92af-7df0-2c71-e25bad08ee0c@rock-chips.com>
+In-Reply-To: <6a5d06db-92af-7df0-2c71-e25bad08ee0c@rock-chips.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 2 Jul 2021 09:03:07 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3UjLfKpsg2M-RP3AO3CVCnZrbD71uaLf0+iiJ9RJsHCQ@mail.gmail.com>
+Message-ID: <CAK8P3a3UjLfKpsg2M-RP3AO3CVCnZrbD71uaLf0+iiJ9RJsHCQ@mail.gmail.com>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gbW1jOiB3YXJuIGZvciBpbnZhbGlkIFNESU8gZGF0YSBidWZmZXJz?=
+        =?UTF-8?B?44CQ6K+35rOo5oSP77yM6YKu5Lu255SxbGludXgtbW1jLW93bmVyQHZnZXIua2VybmVsLm9yZ+S7ow==?=
+        =?UTF-8?B?5Y+R44CR?=
+To:     Shawn Lin <shawn.lin@rock-chips.com>
+Cc:     Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 08:46:40AM +0200, Jann Horn wrote:
-> On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:
-> > We already have process_vm_readv and process_vm_writev to read and write
-> > to a process memory faster than we can do this with ptrace. And now it
-> > is time for process_vm_exec that allows executing code in an address
-> > space of another process. We can do this with ptrace but it is much
-> > slower.
+On Fri, Jul 2, 2021 at 3:02 AM Shawn Lin <shawn.lin@rock-chips.com> wrote:
+> On 2021/6/30 20:20, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
 > >
-> > = Use-cases =
-> 
-> It seems to me like your proposed API doesn't really fit either one of
-> those usecases well...
-> 
-> > Here are two known use-cases. The first one is “application kernel”
-> > sandboxes like User-mode Linux and gVisor. In this case, we have a
-> > process that runs the sandbox kernel and a set of stub processes that
-> > are used to manage guest address spaces. Guest code is executed in the
-> > context of stub processes but all system calls are intercepted and
-> > handled in the sandbox kernel. Right now, these sort of sandboxes use
-> > PTRACE_SYSEMU to trap system calls, but the process_vm_exec can
-> > significantly speed them up.
-> 
-> In this case, since you really only want an mm_struct to run code
-> under, it seems weird to create a whole task with its own PID and so
-> on. It seems to me like something similar to the /dev/kvm API would be
-> more appropriate here? Implementation options that I see for that
-> would be:
-> 
-> 1. mm_struct-based:
->       a set of syscalls to create a new mm_struct,
->       change memory mappings under that mm_struct, and switch to it
-
-I like the idea to have a handle for mm. Instead of pid, we will pass
-this handle to process_vm_exec. We have pidfd for processes and we can
-introduce mmfd for mm_struct.
-
-
-> 2. pagetable-mirroring-based:
->       like /dev/kvm, an API to create a new pagetable, mirror parts of
->       the mm_struct's pagetables over into it with modified permissions
->       (like KVM_SET_USER_MEMORY_REGION),
->       and run code under that context.
->       page fault handling would first handle the fault against mm->pgd
->       as normal, then mirror the PTE over into the secondary pagetables.
->       invalidation could be handled with MMU notifiers.
+> > Jernej Skrabec reported a problem with the cw1200 driver failing on
+> > arm64 systems with CONFIG_VMAP_STACK=y.
+> >
+> > The driver in this case passes a pointer to a stack variable (in vmalloc
+> > space) into the sdio layer, which gets translated into an invalid DMA
+> > address.
+> >
+> > Even without CONFIG_VMAP_STACK, the driver is still unreliable, as
+> > cache invalidations on the DMA buffer may cause random data corruption
+> > in adjacent stack slots.
+> >
+> > This could be worked around in the SDIO core, but in the discussion we
+> > decided that passing a stack variable into SDIO should always be considered
+> > a bug, as it is for USB drivers.
+> >
+> > Change the sdio core to produce a one-time warning for any on-stack
+> > (both with and without CONFIG_VMAP_STACK) as well as any vmalloc
+> > or module-local address that would have the same translation problem.
 >
+> This was the previous comment about the same topic.
+> Should we check for mmc_io_rw_direct?
+>
+> https://www.spinics.net/lists/linux-mmc/msg41794.html
 
-I found this idea interesting and decided to look at it more closely.
-After reading the kernel code for a few days, I realized that it would
-not be easy to implement something like this, but more important is that
-I don’t understand what problem it solves. Will it simplify the
-user-space code? I don’t think so. Will it improve performance? It is
-unclear for me too.
+Hi Shawn,
 
-First, in the KVM case, we have a few big linear mappings and need to
-support one “shadow” address space. In the case of sandboxes, we can
-have a tremendous amount of mappings and many address spaces that we
-need to manage.  Memory mappings will be mapped with different addresses
-in a supervisor address space and “guest” address spaces. If guest
-address spaces will not have their mm_structs, we will need to reinvent
-vma-s in some form. If guest address spaces have mm_structs, this will
-look similar to https://lwn.net/Articles/830648/.
+thank you for remembering that previous discussion, that is a
+good question. Looking at the code though, I don't actually
+see any part of mmc_io_rw_direct() doing DMA on a caller-provided
+buffer. The only thing I see in the code is a 'u8 *out' argument, but
+that is just a pointer to a single byte that is set by this function.
 
-Second, each pagetable is tied up with mm_stuct. You suggest creating
-new pagetables that will not have their mm_struct-s (sorry if I
-misunderstood something). I am not sure that it will be easy to
-implement. How many corner cases will be there?
+Do you see any other issue with that function, or does that mean
+we don't have to change it?
 
-As for page faults in a secondary address space, we will need to find a
-fault address in the main address space, handle the fault there and then
-mirror the PTE to the secondary pagetable. Effectively, it means that
-page faults will be handled in two address spaces. Right now, we use
-memfd and shared mappings. It means that each fault is handled only in
-one address space, and we map a guest memory region to the supervisor
-address space only when we need to access it. A large portion of guest
-anonymous memory is never mapped to the supervisor address space.
-Will an overhead of mirrored address spaces be smaller than memfd shared
-mappings? I am not sure.
-
-Third, this approach will not get rid of having process_vm_exec. We will
-need to switch to a guest address space with a specified state and
-switch back on faults or syscalls. If the main concern is the ability to
-run syscalls on a remote mm, we can think about how to fix this. I see
-two ways what we can do here:
-
-* Specify the exact list of system calls that are allowed. The first
-three candidates are mmap, munmap, and vmsplice.
-
-* Instead of allowing us to run system calls, we can implement this in
-the form of commands. In the case of sandboxes, we need to implement
-only two commands to create and destroy memory mappings in a target
-address space.
-
-Thanks,
-Andrei
+       Arnd
