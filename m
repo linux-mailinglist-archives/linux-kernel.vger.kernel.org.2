@@ -2,423 +2,959 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2B53BA3BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 19:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49FD33BA3BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 19:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhGBRrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 13:47:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
+        id S230124AbhGBRra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 13:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhGBRrO (ORCPT
+        with ESMTP id S229812AbhGBRra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 13:47:14 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D49D7C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 10:44:40 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso7006626wmc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 10:44:40 -0700 (PDT)
+        Fri, 2 Jul 2021 13:47:30 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DFEC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 10:44:57 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id b15so12608974iow.4
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 10:44:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+RepJf9ECUmBMkI5WjyG+s9QdRcdbVPpCEHIihTBWZs=;
-        b=ZXjZ1QYgOcUDOjpYAUHC55p5URXRZYcCOS+iNN4B8BwMaVvtjvZQY0y0s+u0sta3uk
-         VvulMzxEwBAVPYPmP8JWRh1lC4JtSAJ+clhFj7d3VDAzDAyWkyNQuUMzHfl9cKdUqrUM
-         6MGP8ZvyHoROxrPce4jDlNsiT7N6TlRyxVZyCf0C1ZYtKDGoXmZCZnTOXCruzgho8dsK
-         z8TxxOTpTIB8aNgJ1M0aVAdyGkKJgQfJetYPMgwGKV1l3hJ9YraXePW69U6qg+GSY6HH
-         tBc2LEr+6Zi3adx0dj+q/yf/WLTmIygGSqK7zfxQtCXsSkUadZ3vdlpVbMUGro1DCHkb
-         GeBQ==
+        d=linuxfoundation.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language;
+        bh=KhUFjFc4PNJROyTJtUEcXg7AdBP9ZTbnL0e8ZbVJ8lM=;
+        b=CRz5GvzJLoCYC5MJLb6yJac7CxQx1sUivQPd6A8txHOqsyGJcWTjTKBa9rCei5yWlP
+         bsIt/2n3mhElerkUm7H23SR077aCtSwzqGMKJf/OHWhj6tq3shCWRd9S3TQsWgue1TkF
+         e5agPx1QIrI0tMqC0nRk/6l6dd38d/a9ZJSKA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+RepJf9ECUmBMkI5WjyG+s9QdRcdbVPpCEHIihTBWZs=;
-        b=mWI/RRdWEIckz/fod4W5RXGddbpkxPO9kMhAi9Oh1YVTVR9d3H7wMYEBHthkvyhRMj
-         hC40RIcktb9F3FUsuLZ0Gc02Y2Xye/iXYerpJIbfwbaHHmEfqmOWAdd/w78RQh8uScTM
-         rb/iJP3p3KmAYAnWn9uvxrceKpOE5Mh8zmj2cGPaGNJjF3G6uYgJG/rJxcY9axzzFBYv
-         tZz/WIZYdU7aoQHuvlHNZuiNoBUGbKeWyHxzozQGUm0b/O1wN2M7HrqHEbf1q3qmPfDN
-         Yidj4Xut6MUj+5xOt4JC7UR1nLg+muY6rsKrpkmrBO5gzdfXz02CIH4QoOOTQ5IVbgUZ
-         ItCQ==
-X-Gm-Message-State: AOAM5310arN9YshyGN+ADiED9vZj4TYZ9RYu0sOR0126IkGbBBREd35/
-        q+sOraQOa1IsXBAcWr+5yLI8+qtOrDcRg+3Xynr0VQ==
-X-Google-Smtp-Source: ABdhPJz+oilXA52eVyzW4o7NgteH6hrX5bEmGEVRmbLdJBVts6/XjW3OE4vztUD8t+5Xuj2MJqofmbZx1703NwEY8co=
-X-Received: by 2002:a1c:7411:: with SMTP id p17mr993755wmc.116.1625247879411;
- Fri, 02 Jul 2021 10:44:39 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language;
+        bh=KhUFjFc4PNJROyTJtUEcXg7AdBP9ZTbnL0e8ZbVJ8lM=;
+        b=eQ27H93lolfAw7dduWj9DOr8YFIx/w2VWPWJ3U8D1CwINEBi4EGAr9zZ0WQp2vYNP9
+         e198tBY843FEC6dXHwEe1sLiTXkPKcpHlEi+/TUSjNCrmVHCIMUy+GpqoptuWfzSlBG9
+         Rc6Lxwuqh653yuhblVnYHysPSszZSswYVwq+Pm3TGHaUAs/rdb5/5IFlrB2gHEL7j31F
+         mI+KEV9+cyOEiGFOGS0H9Ggq9HmPoBkACcKXaAJhqPtP/tT4Rj1v1Pt7LWrKU7RAmgcs
+         S7oXOCN8bFvUxWDFml25Xyl3/r2iKxiufrVTKmlGcLv9ypWjEhkWEaBporvBzgi+9JAg
+         guwg==
+X-Gm-Message-State: AOAM530BTB8/vPV9AcX8lcmaFfzPW8mjd1oarPdwnDSLA+f3bbw4LctF
+        Hu1kl/6Ci5qckU9oMfM/HBm4OA==
+X-Google-Smtp-Source: ABdhPJwSYtsS5he367KBuTdGGSIEbGSapp0wIAAD2ytchN5SO2URxMlEgCd0AS1q/ppxlsqKfYQxHg==
+X-Received: by 2002:a02:3781:: with SMTP id r123mr579229jar.26.1625247897348;
+        Fri, 02 Jul 2021 10:44:57 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id i1sm1991932ilq.10.2021.07.02.10.44.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Jul 2021 10:44:56 -0700 (PDT)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Subject: [GIT PULL] Kselftest update for Linux 5.14-rc1
+Message-ID: <933f7ca8-71ae-6af3-64bb-b43795a98290@linuxfoundation.org>
+Date:   Fri, 2 Jul 2021 11:44:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20200707101912.571531-1-maxime@cerno.tech> <YM6dgVb12oITNfc0@pendragon.ideasonboard.com>
- <CAPY8ntC+hzmfrJwWW0ytNdHSXruMKMi7N3K6tdJbp9gDBbJ3Qw@mail.gmail.com>
- <YM+MEsKjdkYAVI5X@pendragon.ideasonboard.com> <YM/FwVkkQXX8VrzV@pendragon.ideasonboard.com>
- <CAPY8ntCbzFkbM5fZmo3RVw5okQkVKFcR8TCHOo+xkW7wNk8MQA@mail.gmail.com>
- <YNCMbw6B6OL4Gho3@pendragon.ideasonboard.com> <YNCPcbJTEZVLJyCF@pendragon.ideasonboard.com>
- <YNCbVtIFcryw6wO5@pendragon.ideasonboard.com> <YN9DBX0QVbjtbwFE@pendragon.ideasonboard.com>
-In-Reply-To: <YN9DBX0QVbjtbwFE@pendragon.ideasonboard.com>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Fri, 2 Jul 2021 18:44:22 +0100
-Message-ID: <CAPY8ntCiw=28ay5VmARG55q00L1fj9aTKCbHi+sp=FTPUqZLVA@mail.gmail.com>
-Subject: Re: [PATCH] drm/vc4: dsi: Only register our component once a DSI
- device is attached
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Marek Vasut <marex@denx.de>, Tim Gover <tim.gover@raspberrypi.com>,
-        Eric Anholt <eric@anholt.net>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Maxime Ripard <maxime@cerno.tech>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-rpi-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed;
+ boundary="------------E64F399F8330183219BA06E5"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent
+This is a multi-part message in MIME format.
+--------------E64F399F8330183219BA06E5
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2 Jul 2021 at 17:47, Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Dave,
->
-> On Mon, Jun 21, 2021 at 04:59:51PM +0300, Laurent Pinchart wrote:
-> > On Mon, Jun 21, 2021 at 04:09:05PM +0300, Laurent Pinchart wrote:
-> > > On Mon, Jun 21, 2021 at 03:56:16PM +0300, Laurent Pinchart wrote:
-> > > > On Mon, Jun 21, 2021 at 12:49:14PM +0100, Dave Stevenson wrote:
-> > > > > On Sun, 20 Jun 2021 at 23:49, Laurent Pinchart wrote:
-> > > > > > On Sun, Jun 20, 2021 at 09:42:27PM +0300, Laurent Pinchart wrote:
-> > > > > > > On Sun, Jun 20, 2021 at 03:29:03PM +0100, Dave Stevenson wrote:
-> > > > > > > > On Sun, 20 Jun 2021 at 04:26, Laurent Pinchart wrote:
-> > > > > > > > >
-> > > > > > > > > Hi Maxime,
-> > > > > > > > >
-> > > > > > > > > I'm testing this, and I'm afraid it causes an issue with all the
-> > > > > > > > > I2C-controlled bridges. I'm focussing on the newly merged ti-sn65dsi83
-> > > > > > > > > driver at the moment, but other are affected the same way.
-> > > > > > > > >
-> > > > > > > > > With this patch, the DSI component is only added when the DSI device is
-> > > > > > > > > attached to the host with mipi_dsi_attach(). In the ti-sn65dsi83 driver,
-> > > > > > > > > this happens in the bridge attach callback, which is called when the
-> > > > > > > > > bridge is attached by a call to drm_bridge_attach() in vc4_dsi_bind().
-> > > > > > > > > This creates a circular dependency, and the DRM/KMS device is never
-> > > > > > > > > created.
-> > > > > > > > >
-> > > > > > > > > How should this be solved ? Dave, I think you have shown an interest in
-> > > > > > > > > the sn65dsi83 recently, any help would be appreciated. On a side note,
-> > > > > > > > > I've tested the ti-sn65dsi83 driver on a v5.10 RPi kernel, without much
-> > > > > > > > > success (on top of commit e1499baa0b0c I get a very weird frame rate -
-> > > > > > > > > 147 fps of 99 fps instead of 60 fps - and nothing on the screen, and on
-> > > > > > > > > top of the latest v5.10 RPi branch, I get lock-related warnings at every
-> > > > > > > > > page flip), which is why I tried v5.12 and noticed this patch. Is it
-> > > > > > > > > worth trying to bring up the display on the v5.10 RPi kernel in parallel
-> > > > > > > > > to fixing the issue introduced in this patch, or is DSI known to be
-> > > > > > > > > broken there ?
-> > > > > > > >
-> > > > > > > > I've been looking at SN65DSI83/4, but as I don't have any hardware
-> > > > > > > > I've largely been suggesting things to try to those on the forums who
-> > > > > > > > do [1].
-> > > > > > > >
-> > > > > > > > My branch at https://github.com/6by9/linux/tree/rpi-5.10.y-sn65dsi8x-marek
-> > > > > > > > is the latest one I've worked on. It's rpi-5.10.y with Marek's driver
-> > > > > > > > cherry-picked, and an overlay and simple-panel definition by others.
-> > > > > > > > It also has a rework for vc4_dsi to use pm_runtime, instead of
-> > > > > > > > breaking up the DSI bridge chain (which is flawed as it never calls
-> > > > > > > > the bridge mode_set or mode_valid functions which sn65dsi83 relies
-> > > > > > > > on).
-> >
-> > I've looked at that, and I'm afraid it doesn't go in the right
-> > direction. The drm_encoder.crtc field is deprecated and documented as
-> > only meaningful for non-atomic drivers. You're not introducing its
-> > usage, but moving the configuration code from .enable() to the runtime
-> > PM resume handler will make it impossible to fix this. The driver should
-> > instead move to the .atomic_enable() function. If you need
-> > enable/pre_enable in the DSI encoder, then you should turn it into a
-> > drm_bridge.
->
-> Is this something you're looking at by any chance ? I'm testing the
-> ti-sn65dsi83 driver with VC4. I've spent a couple of hours debugging,
-> only to realise that the vc4_dsi driver (before the rework you mention
-> above) doesn't call .mode_set() on the bridges... Applying my sn65dsi83
-> series that removes .mode_set() didn't help much as vc4_dsi doesn't call
-> the atomic operations either :-) I'll test your branch now.
+Hi Linus,
 
-This is one of the reasons for my email earlier today - thank you for
-your reply.
+Please pull the following Kselftest update for Linux 5.14-rc1.
 
-The current mainline vc4_dsi driver deliberately breaks the bridge
-chain so that it gets called before the panel/bridge pre_enable and
-can power everything up, therefore pre_enable can call host_transfer
-to configure the panel/bridge over the DSI interface.
-However we've both noted that it doesn't forward on the mode_set and
-mode_valid calls, and my investigations say that it doesn't have
-enough information to make those calls.
+This Kselftest update for Linux 5.14-rc1 consists of fixes to
 
-My branch returns the chain to normal, and tries to use pm_runtime to
-power up the PHY at the first usage (host_transfer or _enable). The
-PHY enable needs to know the link frequency to use, hence my question
-over how that should be determined.
-Currently it's coming from drm_encoder.crtc, but you say that's
-deprecated. If a mode hasn't been set then we have no clock
-information and bad things will happen.
+existing tests and framework:
 
-On the Pi forums one person has DSI83 working with an 800x1280 panel
-(Google Nexus 7 Gen 1 AIUI) using my branch, but only on 3 lanes
-rather than 4. I have a suspicion it's because the mode_fixup for
-burst mode has moved the panel timings too far outside the panel's
-spec, hence my other question about how bridges should pick up the
-panel timings independent of burst mode timings. The SN65DSI83 driver
-currently programs the output LVDS side with the DSI timings and
-doesn't account for burst mode.
 
-If you want a call or to discuss your setup in more detail, then give
-me a shout.
-We have a DSI analyser on order now (3-4 week lead time), so hopefully
-I'll soon be able to get some better visibility of what the block is
-doing.
+-- migrate sgx test to kselftest harness
 
-  Dave
+-- add new test cases to sgx test
 
-> > > > > > > > I ran it on Friday in the lab and encountered an issue with vc4_dsi
-> > > > > > > > should vc4_dsi_encoder_mode_fixup wish for a divider of 7 (required
-> > > > > > > > for this 800x1280 panel over 4 lanes) where it resulted in an invalid
-> > > > > > > > mode configuration. That resulted in patch [2] which then gave me
-> > > > > > > > sensible numbers.
-> >
-> > I have that commit in my branch, but still get 125 fps instead of 60 fps
-> > with kmstest --flip (after reverting commit 1c3834201272 "drm/vc4:
-> > Increase the core clock based on HVS load"). I'm not sure if [2] is the
-> > cause of this, but there seems to be an improvement: in my previous
-> > tests, the mode was fixed up every time I would start the application,
-> > with the timings getting more and more bizarre at every run :-)
-> >
-> > > > > > > > That branch with dtoverlay=vc4-kms-v3d and
-> > > > > > > > dtoverlay=vc4-kms-dsi-ti-sn65dsi83 created all the expected devices,
-> > > > > > > > and everything came up normally.
-> > > > > > > > It was a busy day, but I think I even stuck a scope on the clock lanes
-> > > > > > > > at that point and confirmed that they were at the link frequency
-> > > > > > > > expected.
-> > > > > > >
-> > > > > > > Thanks, I'll test your branch and will report the results.
-> > > > > >
-> > > > > > I had to apply the following diff to work around a crash:
-> > > > > >
-> > > > > > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> > > > > > index 55b6c53207f5..647426aa793a 100644
-> > > > > > --- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> > > > > > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> > > > > > @@ -525,6 +525,9 @@ static bool sn65dsi83_mode_fixup(struct drm_bridge *bridge,
-> > > > > >
-> > > > > >         /* The DSI format is always RGB888_1X24 */
-> > > > > >         list_for_each_entry(connector, &ddev->mode_config.connector_list, head) {
-> > > > > > +               if (!connector->display_info.bus_formats)
-> > > > > > +                       continue;
-> > > > > > +
-> > > > > >                 switch (connector->display_info.bus_formats[0]) {
-> > > > > >                 case MEDIA_BUS_FMT_RGB666_1X7X3_SPWG:
-> > > > > >                         ctx->lvds_format_24bpp = false;
-> > > > > >
-> > > > > > connector->display_info.bus_formats is NULL for the HDMI connectors, as
-> > > > > > I have nothing connected to them, as well as for the writeback
-> > > > > > connector.
-> > > > >
-> > > > > I'm now confused as to what I'm doing as my branch appears NOT to have
-> > > > > Marek's latest version of the driver as it doesn't have
-> > > > > sn65dsi83_mode_fixup.
-> > > > > I need to have another look at what's going on - I think I've got
-> > > > > branches confused when switching between machines :-( Remaking that
-> > > > > branch now.
-> > > > >
-> > > > > I do see that Marek has sent another patch around
-> > > > > sn65dsi83_mode_fixup, but it'll still dereference
-> > > > > connector->display_info.bus_formats[0] on all connectors. Shouldn't it
-> > > > > only be switching on the one connector that is connected to this
-> > > > > bridge, not HDMI or writeback connectors? I'm not totally clear on
-> > > > > which connectors are in that list.
-> > > > > https://patchwork.freedesktop.org/patch/440175/
-> > > >
-> > > > The following series should fix the issue:
-> > > >
-> > > > [PATCH] drm/bridge: ti-sn65dsi83: Replace connector format patching with atomic_get_input_bus_fmts
-> > > > [PATCH 0/5] ti-sn65dsi83: Finalize transition to atomic operations
-> > > >
-> > > > > > Then, when running kmstest --flip, I get one warning per frame:
-> > > > > >
-> > > > > > [   29.762089] [drm:vc4_dsi_runtime_resume] *ERROR* vc4_dsi_runtime_resume:
-> > > > > > [   29.763200] [drm:vc4_dsi_runtime_resume] *ERROR* vc4_dsi_runtime_resume: All good
-> > > > > > [   29.793861] ------------[ cut here ]------------
-> > > > > > [   29.798572] WARNING: CPU: 2 PID: 249 at drivers/gpu/drm/drm_modeset_lock.c:246 drm_modeset_lock+0xd0/0x100
-> > > > > > [   29.808365] Modules linked in: ipv6 bcm2835_codec(C) bcm2835_unicam bcm2835_v4l2(C) bcm2835_isp(C) bcm2835_mmal_vchiq(C) v4l2_mem2mem v4l2_dv_timings imx296 rtc_ds1307 videobuf2_vmallom
-> > > > > > [   29.855284] CPU: 2 PID: 249 Comm: kworker/u8:10 Tainted: G         C        5.10.44-v8+ #23
-> > > > > > [   29.863756] Hardware name: Raspberry Pi Compute Module 4 Rev 1.0 (DT)
-> > > > > > [   29.870297] Workqueue: events_unbound commit_work
-> > > > > > [   29.875077] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-> > > > > > [   29.881172] pc : drm_modeset_lock+0xd0/0x100
-> > > > > > [   29.885506] lr : drm_atomic_get_new_or_current_crtc_state+0x6c/0x110
-> > > > > > [   29.891950] sp : ffffffc011fcbcb0
-> > > > > > [   29.895308] x29: ffffffc011fcbcb0 x28: ffffff80403fe780
-> > > > > > [   29.900705] x27: ffffff80415a2000 x26: ffffffc0106f0000
-> > > > > > [   29.906100] x25: 0000000000000000 x24: ffffff80420d3c80
-> > > > > > [   29.911495] x23: ffffff8042174080 x22: 0000000000000038
-> > > > > > [   29.916890] x21: 0000000000000000 x20: ffffff80421740a8
-> > > > > > [   29.922284] x19: ffffffc011f8bc50 x18: 0000000000000000
-> > > > > > [   29.927678] x17: 0000000000000000 x16: 0000000000000000
-> > > > > > [   29.933072] x15: 0000000000000000 x14: 0000000000000000
-> > > > > > [   29.938466] x13: 0048000000000329 x12: 0326032303290320
-> > > > > > [   29.943860] x11: 03200000020301f4 x10: 00000000000019e0
-> > > > > > [   29.949255] x9 : ffffffc0106efd8c x8 : ffffff804390d5c0
-> > > > > > [   29.954649] x7 : 7fffffffffffffff x6 : 0000000000000001
-> > > > > > [   29.960043] x5 : 0000000000000001 x4 : 0000000000000001
-> > > > > > [   29.965436] x3 : ffffff80415a2000 x2 : ffffff804199b200
-> > > > > > [   29.970830] x1 : 00000000000000bc x0 : ffffffc011f8bc98
-> > > > > > [   29.976225] Call trace:
-> > > > > > [   29.978708]  drm_modeset_lock+0xd0/0x100
-> > > > > > [   29.982687]  drm_atomic_get_new_or_current_crtc_state+0x6c/0x110
-> > > > > > [   29.988781]  vc4_atomic_complete_commit+0x4e4/0x860
-> > > > > > [   29.993729]  commit_work+0x18/0x20
-> > > > > > [   29.997181]  process_one_work+0x1c4/0x4a0
-> > > > > > [   30.001248]  worker_thread+0x50/0x420
-> > > > > > [   30.004965]  kthread+0x11c/0x150
-> > > > > > [   30.008239]  ret_from_fork+0x10/0x20
-> > > > > > [   30.011865] ---[ end trace f44ae6b09cda951a ]---
-> > > > > >
-> > > > > > Does it ring any bell ?
-> > > > >
-> > > > > kmstest --flip is a new one on me. kmstest from
-> > > > > https://cgit.freedesktop.org/drm/libdrm/tree/tests/kmstest doesn't
-> > > > > have such an option.
-> > > > > Based on Google, I'm guessing at
-> > > > > https://github.com/tomba/kmsxx/blob/master/utils/kmstest.cpp. Multiple
-> > > > > apps with the same name is always fun.
-> > > >
-> > > > Correct.
-> > > >
-> > > > > > In case this is useful information, the problem didn't occur on top of
-> > > > > > commit e1499baa0b0c.
-> > > > >
-> > > > > e1499baa0b0c is from back in March by the looks of it.
-> > > > > Maxime has done a number of reworks to accessor functions since then,
-> > > > > so it's quite possible there's a locking issue lurking. I'll let him
-> > > > > comment though.
-> > > >
-> > > > Maybe there's a reason why the patch the introduced
-> > > > drm_atomic_get_new_or_current_crtc_state() in your branch hasn't made it
-> > > > to mainline yet :-)
-> > >
-> > > Any chance this could be reverted from the RPi kernel v5.10 branch in
-> > > the meantime ?
-> > >
-> > > > > > > > Coming back to this patch though, it isn't in 5.10 so I'm not seeing
-> > > > > > > > the issues. As to the exact ordering of attaches, I can't claim
-> > > > > > > > sufficient knowledge on that front.
-> > > > > > > > I can try a cherry-pick of this patch to see what goes on, but it
-> > > > > > > > won't be for a day or two.
-> > > > > > >
-> > > > > > > Let's see if Maxime has an opinion :-)
-> > > > > > >
-> > > > > > > > [1] Largely https://www.raspberrypi.org/forums/viewtopic.php?f=44&t=305690,
-> > > > > > > > but ignore about the first 5 pages of the thread as different driver
-> > > > > > > > versions were floating about. Most stuff after that is based on
-> > > > > > > > Marek's driver.
-> > > > > > > > [2] https://github.com/6by9/linux/commit/c3c774136a1e946109048711d16974be8d520aaa
-> > > > > > > >
-> > > > > > > > > On Tue, Jul 07, 2020 at 12:19:12PM +0200, Maxime Ripard wrote:
-> > > > > > > > > > If the DSI driver is the last to probe, component_add will try to run all
-> > > > > > > > > > the bind callbacks straight away and return the error code.
-> > > > > > > > > >
-> > > > > > > > > > However, since we depend on a power domain, we're pretty much guaranteed to
-> > > > > > > > > > be in that case on the BCM2711, and are just lucky on the previous SoCs
-> > > > > > > > > > since the v3d also depends on that power domain and is further in the probe
-> > > > > > > > > > order.
-> > > > > > > > > >
-> > > > > > > > > > In that case, the DSI host will not stick around in the system: the DSI
-> > > > > > > > > > bind callback will be executed, will not find any DSI device attached and
-> > > > > > > > > > will return EPROBE_DEFER, and we will then remove the DSI host and ask to
-> > > > > > > > > > be probed later on.
-> > > > > > > > > >
-> > > > > > > > > > But since that host doesn't stick around, DSI devices like the RaspberryPi
-> > > > > > > > > > touchscreen whose probe is not linked to the DSI host (unlike the usual DSI
-> > > > > > > > > > devices that will be probed through the call to mipi_dsi_host_register)
-> > > > > > > > > > cannot attach to the DSI host, and we thus end up in a situation where the
-> > > > > > > > > > DSI host cannot probe because the panel hasn't probed yet, and the panel
-> > > > > > > > > > cannot probe because the DSI host hasn't yet.
-> > > > > > > > > >
-> > > > > > > > > > In order to break this cycle, let's wait until there's a DSI device that
-> > > > > > > > > > attaches to the DSI host to register the component and allow to progress
-> > > > > > > > > > further.
-> > > > > > > > > >
-> > > > > > > > > > Suggested-by: Andrzej Hajda <a.hajda@samsung.com>
-> > > > > > > > > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > > > > > > > > > ---
-> > > > > > > > > >  drivers/gpu/drm/vc4/vc4_dsi.c | 25 ++++++++-----------------
-> > > > > > > > > >  1 file changed, 8 insertions(+), 17 deletions(-)
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/drivers/gpu/drm/vc4/vc4_dsi.c b/drivers/gpu/drm/vc4/vc4_dsi.c
-> > > > > > > > > > index eaf276978ee7..19aab4e7e209 100644
-> > > > > > > > > > --- a/drivers/gpu/drm/vc4/vc4_dsi.c
-> > > > > > > > > > +++ b/drivers/gpu/drm/vc4/vc4_dsi.c
-> > > > > > > > > > @@ -1246,10 +1246,12 @@ static ssize_t vc4_dsi_host_transfer(struct mipi_dsi_host *host,
-> > > > > > > > > >       return ret;
-> > > > > > > > > >  }
-> > > > > > > > > >
-> > > > > > > > > > +static const struct component_ops vc4_dsi_ops;
-> > > > > > > > > >  static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
-> > > > > > > > > >                              struct mipi_dsi_device *device)
-> > > > > > > > > >  {
-> > > > > > > > > >       struct vc4_dsi *dsi = host_to_dsi(host);
-> > > > > > > > > > +     int ret;
-> > > > > > > > > >
-> > > > > > > > > >       dsi->lanes = device->lanes;
-> > > > > > > > > >       dsi->channel = device->channel;
-> > > > > > > > > > @@ -1284,6 +1286,12 @@ static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
-> > > > > > > > > >               return 0;
-> > > > > > > > > >       }
-> > > > > > > > > >
-> > > > > > > > > > +     ret = component_add(&dsi->pdev->dev, &vc4_dsi_ops);
-> > > > > > > > > > +     if (ret) {
-> > > > > > > > > > +             mipi_dsi_host_unregister(&dsi->dsi_host);
-> > > > > > > > > > +             return ret;
-> > > > > > > > > > +     }
-> > > > > > > > > > +
-> > > > > > > > > >       return 0;
-> > > > > > > > > >  }
-> > > > > > > > > >
-> > > > > > > > > > @@ -1662,7 +1670,6 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
-> > > > > > > > > >  {
-> > > > > > > > > >       struct device *dev = &pdev->dev;
-> > > > > > > > > >       struct vc4_dsi *dsi;
-> > > > > > > > > > -     int ret;
-> > > > > > > > > >
-> > > > > > > > > >       dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
-> > > > > > > > > >       if (!dsi)
-> > > > > > > > > > @@ -1670,26 +1677,10 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
-> > > > > > > > > >       dev_set_drvdata(dev, dsi);
-> > > > > > > > > >
-> > > > > > > > > >       dsi->pdev = pdev;
-> > > > > > > > > > -
-> > > > > > > > > > -     /* Note, the initialization sequence for DSI and panels is
-> > > > > > > > > > -      * tricky.  The component bind above won't get past its
-> > > > > > > > > > -      * -EPROBE_DEFER until the panel/bridge probes.  The
-> > > > > > > > > > -      * panel/bridge will return -EPROBE_DEFER until it has a
-> > > > > > > > > > -      * mipi_dsi_host to register its device to.  So, we register
-> > > > > > > > > > -      * the host during pdev probe time, so vc4 as a whole can then
-> > > > > > > > > > -      * -EPROBE_DEFER its component bind process until the panel
-> > > > > > > > > > -      * successfully attaches.
-> > > > > > > > > > -      */
-> > > > > > > > > >       dsi->dsi_host.ops = &vc4_dsi_host_ops;
-> > > > > > > > > >       dsi->dsi_host.dev = dev;
-> > > > > > > > > >       mipi_dsi_host_register(&dsi->dsi_host);
-> > > > > > > > > >
-> > > > > > > > > > -     ret = component_add(&pdev->dev, &vc4_dsi_ops);
-> > > > > > > > > > -     if (ret) {
-> > > > > > > > > > -             mipi_dsi_host_unregister(&dsi->dsi_host);
-> > > > > > > > > > -             return ret;
-> > > > > > > > > > -     }
-> > > > > > > > > > -
-> > > > > > > > > >       return 0;
-> > > > > > > > > >  }
-> > > > > > > > > >
->
-> --
-> Regards,
->
-> Laurent Pinchart
+-- ftrace test fix event-no-pid on 1-core machine
+
+-- splice test adjust for handler fallback removal
+
+diff is attached.
+
+Apologies if this message appears to have double spacing. My email
+client is at fault - I am trying to figure out what changed.
+
+thanks,
+-- Shuah
+
+----------------------------------------------------------------
+The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
+
+
+
+   Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
+
+
+
+are available in the Git repository at:
+
+
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest 
+tags/linux-kselftest-next-5.14-rc1
+
+
+
+for you to fetch changes up to 4896df9d53ae5521f3ce83751e828ad70bc65c80:
+
+
+
+   selftests/sgx: remove checks for file execute permissions (2021-06-23 
+18:38:04 -0600)
+
+
+
+----------------------------------------------------------------
+
+linux-kselftest-next-5.14-rc1
+
+
+
+This Kselftest update for Linux 5.14-rc1 consists of fixes to
+
+existing tests and framework:
+
+
+
+-- migrate sgx test to kselftest harness
+
+-- add new test cases to sgx test
+
+-- ftrace test fix event-no-pid on 1-core machine
+
+-- splice test adjust for handler fallback removal
+
+
+
+----------------------------------------------------------------
+
+Dave Hansen (1):
+
+       selftests/sgx: remove checks for file execute permissions
+
+
+
+Jarkko Sakkinen (5):
+
+       selftests/sgx: Rename 'eenter' and 'sgx_call_vdso'
+
+       selftests/sgx: Migrate to kselftest harness
+
+       selftests/sgx: Dump enclave memory map
+
+       selftests/sgx: Add EXPECT_EEXIT() macro
+
+       selftests/sgx: Refine the test enclave to have storage
+
+
+
+Kees Cook (3):
+
+       selftests/tls: Add {} to avoid static checker warning
+
+       selftests: splice: Adjust for handler fallback removal
+
+       selftests: lib.mk: Also install "config" and "settings"
+
+
+
+Krzysztof Kozlowski (1):
+
+       selftests/ftrace: fix event-no-pid on 1-core machine
+
+
+
+Po-Hsu Lin (1):
+
+       selftests: timers: rtcpie: skip test if default RTC device does 
+not exist
+
+
+
+Xiaochen Shen (1):
+
+       selftests/resctrl: Fix incorrect parsing of option "-t"
+
+
+
+  .../selftests/ftrace/test.d/event/event-no-pid.tc  |   7 +
+
+  tools/testing/selftests/lib.mk                     |   1 +
+
+  tools/testing/selftests/net/tls.c                  |   3 +-
+
+  tools/testing/selftests/resctrl/README             |   2 +-
+
+  tools/testing/selftests/resctrl/resctrl_tests.c    |   4 +-
+
+  tools/testing/selftests/sgx/call.S                 |   6 +-
+
+  tools/testing/selftests/sgx/defines.h              |  10 +
+
+  tools/testing/selftests/sgx/load.c                 |  19 +-
+
+  tools/testing/selftests/sgx/main.c                 | 239 
++++++++++++++--------
+
+  tools/testing/selftests/sgx/main.h                 |   4 +-
+
+  tools/testing/selftests/sgx/test_encl.c            |  19 +-
+
+  tools/testing/selftests/sgx/test_encl.lds          |   3 +-
+
+  .../testing/selftests/splice/short_splice_read.sh  | 119 ++++++++--
+
+  tools/testing/selftests/timers/rtcpie.c            |  10 +-
+
+  14 files changed, 308 insertions(+), 138 deletions(-)
+
+
+----------------------------------------------------------------
+
+--------------E64F399F8330183219BA06E5
+Content-Type: text/x-patch; charset=UTF-8;
+ name="linux-kselftest-next-5.14-rc1.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="linux-kselftest-next-5.14-rc1.diff"
+
+diff --git a/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc b/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
+index e6eb78f0b954..9933ed24f901 100644
+--- a/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
++++ b/tools/testing/selftests/ftrace/test.d/event/event-no-pid.tc
+@@ -57,6 +57,10 @@ enable_events() {
+     echo 1 > tracing_on
+ }
+ 
++other_task() {
++    sleep .001 || usleep 1 || sleep 1
++}
++
+ echo 0 > options/event-fork
+ 
+ do_reset
+@@ -94,6 +98,9 @@ child=$!
+ echo "child = $child"
+ wait $child
+ 
++# Be sure some other events will happen for small systems (e.g. 1 core)
++other_task
++
+ echo 0 > tracing_on
+ 
+ cnt=`count_pid $mypid`
+diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+index 0af84ad48aa7..fa2ac0e56b43 100644
+--- a/tools/testing/selftests/lib.mk
++++ b/tools/testing/selftests/lib.mk
+@@ -100,6 +100,7 @@ define INSTALL_RULE
+ 	$(eval INSTALL_LIST = $(TEST_CUSTOM_PROGS)) $(INSTALL_SINGLE_RULE)
+ 	$(eval INSTALL_LIST = $(TEST_GEN_PROGS_EXTENDED)) $(INSTALL_SINGLE_RULE)
+ 	$(eval INSTALL_LIST = $(TEST_GEN_FILES)) $(INSTALL_SINGLE_RULE)
++	$(eval INSTALL_LIST = $(wildcard config settings)) $(INSTALL_SINGLE_RULE)
+ endef
+ 
+ install: all
+diff --git a/tools/testing/selftests/net/tls.c b/tools/testing/selftests/net/tls.c
+index 426d07875a48..7119f8eb823b 100644
+--- a/tools/testing/selftests/net/tls.c
++++ b/tools/testing/selftests/net/tls.c
+@@ -418,8 +418,9 @@ TEST_F(tls, sendmsg_large)
+ 		EXPECT_EQ(sendmsg(self->cfd, &msg, 0), send_len);
+ 	}
+ 
+-	while (recvs++ < sends)
++	while (recvs++ < sends) {
+ 		EXPECT_NE(recv(self->fd, mem, send_len, 0), -1);
++	}
+ 
+ 	free(mem);
+ }
+diff --git a/tools/testing/selftests/resctrl/README b/tools/testing/selftests/resctrl/README
+index 4b36b25b6ac0..3d2bbd4fa3aa 100644
+--- a/tools/testing/selftests/resctrl/README
++++ b/tools/testing/selftests/resctrl/README
+@@ -47,7 +47,7 @@ Parameter '-h' shows usage information.
+ 
+ usage: resctrl_tests [-h] [-b "benchmark_cmd [options]"] [-t test list] [-n no_of_bits]
+         -b benchmark_cmd [options]: run specified benchmark for MBM, MBA and CMT default benchmark is builtin fill_buf
+-        -t test list: run tests specified in the test list, e.g. -t mbm, mba, cmt, cat
++        -t test list: run tests specified in the test list, e.g. -t mbm,mba,cmt,cat
+         -n no_of_bits: run cache tests using specified no of bits in cache bit mask
+         -p cpu_no: specify CPU number to run the test. 1 is default
+         -h: help
+diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+index f51b5fc066a3..973f09a66e1e 100644
+--- a/tools/testing/selftests/resctrl/resctrl_tests.c
++++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+@@ -40,7 +40,7 @@ static void cmd_help(void)
+ 	printf("\t-b benchmark_cmd [options]: run specified benchmark for MBM, MBA and CMT\n");
+ 	printf("\t   default benchmark is builtin fill_buf\n");
+ 	printf("\t-t test list: run tests specified in the test list, ");
+-	printf("e.g. -t mbm, mba, cmt, cat\n");
++	printf("e.g. -t mbm,mba,cmt,cat\n");
+ 	printf("\t-n no_of_bits: run cache tests using specified no of bits in cache bit mask\n");
+ 	printf("\t-p cpu_no: specify CPU number to run the test. 1 is default\n");
+ 	printf("\t-h: help\n");
+@@ -173,7 +173,7 @@ int main(int argc, char **argv)
+ 
+ 					return -1;
+ 				}
+-				token = strtok(NULL, ":\t");
++				token = strtok(NULL, ",");
+ 			}
+ 			break;
+ 		case 'p':
+diff --git a/tools/testing/selftests/sgx/call.S b/tools/testing/selftests/sgx/call.S
+index 4ecadc7490f4..b09a25890f3b 100644
+--- a/tools/testing/selftests/sgx/call.S
++++ b/tools/testing/selftests/sgx/call.S
+@@ -5,8 +5,8 @@
+ 
+ 	.text
+ 
+-	.global sgx_call_vdso
+-sgx_call_vdso:
++	.global sgx_enter_enclave
++sgx_enter_enclave:
+ 	.cfi_startproc
+ 	push	%r15
+ 	.cfi_adjust_cfa_offset	8
+@@ -27,7 +27,7 @@ sgx_call_vdso:
+ 	.cfi_adjust_cfa_offset	8
+ 	push	0x38(%rsp)
+ 	.cfi_adjust_cfa_offset	8
+-	call	*eenter(%rip)
++	call	*vdso_sgx_enter_enclave(%rip)
+ 	add	$0x10, %rsp
+ 	.cfi_adjust_cfa_offset	-0x10
+ 	pop	%rbx
+diff --git a/tools/testing/selftests/sgx/defines.h b/tools/testing/selftests/sgx/defines.h
+index 0bd73428d2f3..f88562afcaa0 100644
+--- a/tools/testing/selftests/sgx/defines.h
++++ b/tools/testing/selftests/sgx/defines.h
+@@ -18,4 +18,14 @@
+ #include "../../../../arch/x86/include/asm/enclu.h"
+ #include "../../../../arch/x86/include/uapi/asm/sgx.h"
+ 
++enum encl_op_type {
++	ENCL_OP_PUT,
++	ENCL_OP_GET,
++};
++
++struct encl_op {
++	uint64_t type;
++	uint64_t buffer;
++};
++
+ #endif /* DEFINES_H */
+diff --git a/tools/testing/selftests/sgx/load.c b/tools/testing/selftests/sgx/load.c
+index f441ac34b4d4..3ebe5d1fe337 100644
+--- a/tools/testing/selftests/sgx/load.c
++++ b/tools/testing/selftests/sgx/load.c
+@@ -150,16 +150,6 @@ bool encl_load(const char *path, struct encl *encl)
+ 		goto err;
+ 	}
+ 
+-	/*
+-	 * This just checks if the /dev file has these permission
+-	 * bits set.  It does not check that the current user is
+-	 * the owner or in the owning group.
+-	 */
+-	if (!(sb.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))) {
+-		fprintf(stderr, "no execute permissions on device file %s\n", device_path);
+-		goto err;
+-	}
+-
+ 	ptr = mmap(NULL, PAGE_SIZE, PROT_READ, MAP_SHARED, fd, 0);
+ 	if (ptr == (void *)-1) {
+ 		perror("mmap for read");
+@@ -169,13 +159,13 @@ bool encl_load(const char *path, struct encl *encl)
+ 
+ #define ERR_MSG \
+ "mmap() succeeded for PROT_READ, but failed for PROT_EXEC.\n" \
+-" Check that current user has execute permissions on %s and \n" \
+-" that /dev does not have noexec set: mount | grep \"/dev .*noexec\"\n" \
++" Check that /dev does not have noexec set:\n" \
++" \tmount | grep \"/dev .*noexec\"\n" \
+ " If so, remount it executable: mount -o remount,exec /dev\n\n"
+ 
+ 	ptr = mmap(NULL, PAGE_SIZE, PROT_EXEC, MAP_SHARED, fd, 0);
+ 	if (ptr == (void *)-1) {
+-		fprintf(stderr, ERR_MSG, device_path);
++		fprintf(stderr, ERR_MSG);
+ 		goto err;
+ 	}
+ 	munmap(ptr, PAGE_SIZE);
+@@ -239,9 +229,6 @@ bool encl_load(const char *path, struct encl *encl)
+ 		seg->offset = (phdr->p_offset & PAGE_MASK) - src_offset;
+ 		seg->size = (phdr->p_filesz + PAGE_SIZE - 1) & PAGE_MASK;
+ 
+-		printf("0x%016lx 0x%016lx 0x%02x\n", seg->offset, seg->size,
+-		       seg->prot);
+-
+ 		j++;
+ 	}
+ 
+diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
+index d304a4044eb9..e252015e0c15 100644
+--- a/tools/testing/selftests/sgx/main.c
++++ b/tools/testing/selftests/sgx/main.c
+@@ -17,11 +17,11 @@
+ #include <sys/types.h>
+ #include <sys/auxv.h>
+ #include "defines.h"
++#include "../kselftest_harness.h"
+ #include "main.h"
+-#include "../kselftest.h"
+ 
+ static const uint64_t MAGIC = 0x1122334455667788ULL;
+-vdso_sgx_enter_enclave_t eenter;
++vdso_sgx_enter_enclave_t vdso_sgx_enter_enclave;
+ 
+ struct vdso_symtab {
+ 	Elf64_Sym *elf_symtab;
+@@ -107,85 +107,51 @@ static Elf64_Sym *vdso_symtab_get(struct vdso_symtab *symtab, const char *name)
+ 	return NULL;
+ }
+ 
+-bool report_results(struct sgx_enclave_run *run, int ret, uint64_t result,
+-		  const char *test)
+-{
+-	bool valid = true;
+-
+-	if (ret) {
+-		printf("FAIL: %s() returned: %d\n", test, ret);
+-		valid = false;
+-	}
+-
+-	if (run->function != EEXIT) {
+-		printf("FAIL: %s() function, expected: %u, got: %u\n", test, EEXIT,
+-		       run->function);
+-		valid = false;
+-	}
+-
+-	if (result != MAGIC) {
+-		printf("FAIL: %s(), expected: 0x%lx, got: 0x%lx\n", test, MAGIC,
+-		       result);
+-		valid = false;
+-	}
+-
+-	if (run->user_data) {
+-		printf("FAIL: %s() user data, expected: 0x0, got: 0x%llx\n",
+-		       test, run->user_data);
+-		valid = false;
+-	}
+-
+-	return valid;
+-}
+-
+-static int user_handler(long rdi, long rsi, long rdx, long ursp, long r8, long r9,
+-			struct sgx_enclave_run *run)
+-{
+-	run->user_data = 0;
+-	return 0;
+-}
++FIXTURE(enclave) {
++	struct encl encl;
++	struct sgx_enclave_run run;
++};
+ 
+-int main(int argc, char *argv[])
++FIXTURE_SETUP(enclave)
+ {
+-	struct sgx_enclave_run run;
++	Elf64_Sym *sgx_enter_enclave_sym = NULL;
+ 	struct vdso_symtab symtab;
+-	Elf64_Sym *eenter_sym;
+-	uint64_t result = 0;
+-	struct encl encl;
++	struct encl_segment *seg;
++	char maps_line[256];
++	FILE *maps_file;
+ 	unsigned int i;
+ 	void *addr;
+-	int ret;
+ 
+-	memset(&run, 0, sizeof(run));
+-
+-	if (!encl_load("test_encl.elf", &encl)) {
+-		encl_delete(&encl);
++	if (!encl_load("test_encl.elf", &self->encl)) {
++		encl_delete(&self->encl);
+ 		ksft_exit_skip("cannot load enclaves\n");
+ 	}
+ 
+-	if (!encl_measure(&encl))
++	for (i = 0; i < self->encl.nr_segments; i++) {
++		seg = &self->encl.segment_tbl[i];
++
++		TH_LOG("0x%016lx 0x%016lx 0x%02x", seg->offset, seg->size, seg->prot);
++	}
++
++	if (!encl_measure(&self->encl))
+ 		goto err;
+ 
+-	if (!encl_build(&encl))
++	if (!encl_build(&self->encl))
+ 		goto err;
+ 
+ 	/*
+ 	 * An enclave consumer only must do this.
+ 	 */
+-	for (i = 0; i < encl.nr_segments; i++) {
+-		struct encl_segment *seg = &encl.segment_tbl[i];
+-
+-		addr = mmap((void *)encl.encl_base + seg->offset, seg->size,
+-			    seg->prot, MAP_SHARED | MAP_FIXED, encl.fd, 0);
+-		if (addr == MAP_FAILED) {
+-			perror("mmap() segment failed");
+-			exit(KSFT_FAIL);
+-		}
++	for (i = 0; i < self->encl.nr_segments; i++) {
++		struct encl_segment *seg = &self->encl.segment_tbl[i];
++
++		addr = mmap((void *)self->encl.encl_base + seg->offset, seg->size,
++			    seg->prot, MAP_SHARED | MAP_FIXED, self->encl.fd, 0);
++		EXPECT_NE(addr, MAP_FAILED);
++		if (addr == MAP_FAILED)
++			goto err;
+ 	}
+ 
+-	memset(&run, 0, sizeof(run));
+-	run.tcs = encl.encl_base;
+-
+ 	/* Get vDSO base address */
+ 	addr = (void *)getauxval(AT_SYSINFO_EHDR);
+ 	if (!addr)
+@@ -194,37 +160,134 @@ int main(int argc, char *argv[])
+ 	if (!vdso_get_symtab(addr, &symtab))
+ 		goto err;
+ 
+-	eenter_sym = vdso_symtab_get(&symtab, "__vdso_sgx_enter_enclave");
+-	if (!eenter_sym)
++	sgx_enter_enclave_sym = vdso_symtab_get(&symtab, "__vdso_sgx_enter_enclave");
++	if (!sgx_enter_enclave_sym)
+ 		goto err;
+ 
+-	eenter = addr + eenter_sym->st_value;
+-
+-	ret = sgx_call_vdso((void *)&MAGIC, &result, 0, EENTER, NULL, NULL, &run);
+-	if (!report_results(&run, ret, result, "sgx_call_vdso"))
+-		goto err;
++	vdso_sgx_enter_enclave = addr + sgx_enter_enclave_sym->st_value;
+ 
++	memset(&self->run, 0, sizeof(self->run));
++	self->run.tcs = self->encl.encl_base;
+ 
+-	/* Invoke the vDSO directly. */
+-	result = 0;
+-	ret = eenter((unsigned long)&MAGIC, (unsigned long)&result, 0, EENTER,
+-		     0, 0, &run);
+-	if (!report_results(&run, ret, result, "eenter"))
+-		goto err;
++	maps_file = fopen("/proc/self/maps", "r");
++	if (maps_file != NULL)  {
++		while (fgets(maps_line, sizeof(maps_line), maps_file) != NULL) {
++			maps_line[strlen(maps_line) - 1] = '\0';
+ 
+-	/* And with an exit handler. */
+-	run.user_handler = (__u64)user_handler;
+-	run.user_data = 0xdeadbeef;
+-	ret = eenter((unsigned long)&MAGIC, (unsigned long)&result, 0, EENTER,
+-		     0, 0, &run);
+-	if (!report_results(&run, ret, result, "user_handler"))
+-		goto err;
++			if (strstr(maps_line, "/dev/sgx_enclave"))
++				TH_LOG("%s", maps_line);
++		}
+ 
+-	printf("SUCCESS\n");
+-	encl_delete(&encl);
+-	exit(KSFT_PASS);
++		fclose(maps_file);
++	}
+ 
+ err:
+-	encl_delete(&encl);
+-	exit(KSFT_FAIL);
++	if (!sgx_enter_enclave_sym)
++		encl_delete(&self->encl);
++
++	ASSERT_NE(sgx_enter_enclave_sym, NULL);
++}
++
++FIXTURE_TEARDOWN(enclave)
++{
++	encl_delete(&self->encl);
++}
++
++#define ENCL_CALL(op, run, clobbered) \
++	({ \
++		int ret; \
++		if ((clobbered)) \
++			ret = vdso_sgx_enter_enclave((unsigned long)(op), 0, 0, \
++						     EENTER, 0, 0, (run)); \
++		else \
++			ret = sgx_enter_enclave((void *)(op), NULL, 0, EENTER, NULL, NULL, \
++						(run)); \
++		ret; \
++	})
++
++#define EXPECT_EEXIT(run) \
++	do { \
++		EXPECT_EQ((run)->function, EEXIT); \
++		if ((run)->function != EEXIT) \
++			TH_LOG("0x%02x 0x%02x 0x%016llx", (run)->exception_vector, \
++			       (run)->exception_error_code, (run)->exception_addr); \
++	} while (0)
++
++TEST_F(enclave, unclobbered_vdso)
++{
++	struct encl_op op;
++
++	op.type = ENCL_OP_PUT;
++	op.buffer = MAGIC;
++
++	EXPECT_EQ(ENCL_CALL(&op, &self->run, false), 0);
++
++	EXPECT_EEXIT(&self->run);
++	EXPECT_EQ(self->run.user_data, 0);
++
++	op.type = ENCL_OP_GET;
++	op.buffer = 0;
++
++	EXPECT_EQ(ENCL_CALL(&op, &self->run, false), 0);
++
++	EXPECT_EQ(op.buffer, MAGIC);
++	EXPECT_EEXIT(&self->run);
++	EXPECT_EQ(self->run.user_data, 0);
++}
++
++TEST_F(enclave, clobbered_vdso)
++{
++	struct encl_op op;
++
++	op.type = ENCL_OP_PUT;
++	op.buffer = MAGIC;
++
++	EXPECT_EQ(ENCL_CALL(&op, &self->run, true), 0);
++
++	EXPECT_EEXIT(&self->run);
++	EXPECT_EQ(self->run.user_data, 0);
++
++	op.type = ENCL_OP_GET;
++	op.buffer = 0;
++
++	EXPECT_EQ(ENCL_CALL(&op, &self->run, true), 0);
++
++	EXPECT_EQ(op.buffer, MAGIC);
++	EXPECT_EEXIT(&self->run);
++	EXPECT_EQ(self->run.user_data, 0);
+ }
++
++static int test_handler(long rdi, long rsi, long rdx, long ursp, long r8, long r9,
++			struct sgx_enclave_run *run)
++{
++	run->user_data = 0;
++
++	return 0;
++}
++
++TEST_F(enclave, clobbered_vdso_and_user_function)
++{
++	struct encl_op op;
++
++	self->run.user_handler = (__u64)test_handler;
++	self->run.user_data = 0xdeadbeef;
++
++	op.type = ENCL_OP_PUT;
++	op.buffer = MAGIC;
++
++	EXPECT_EQ(ENCL_CALL(&op, &self->run, true), 0);
++
++	EXPECT_EEXIT(&self->run);
++	EXPECT_EQ(self->run.user_data, 0);
++
++	op.type = ENCL_OP_GET;
++	op.buffer = 0;
++
++	EXPECT_EQ(ENCL_CALL(&op, &self->run, true), 0);
++
++	EXPECT_EQ(op.buffer, MAGIC);
++	EXPECT_EEXIT(&self->run);
++	EXPECT_EQ(self->run.user_data, 0);
++}
++
++TEST_HARNESS_MAIN
+diff --git a/tools/testing/selftests/sgx/main.h b/tools/testing/selftests/sgx/main.h
+index 67211a708f04..68672fd86cf9 100644
+--- a/tools/testing/selftests/sgx/main.h
++++ b/tools/testing/selftests/sgx/main.h
+@@ -35,7 +35,7 @@ bool encl_load(const char *path, struct encl *encl);
+ bool encl_measure(struct encl *encl);
+ bool encl_build(struct encl *encl);
+ 
+-int sgx_call_vdso(void *rdi, void *rsi, long rdx, u32 function, void *r8, void *r9,
+-		  struct sgx_enclave_run *run);
++int sgx_enter_enclave(void *rdi, void *rsi, long rdx, u32 function, void *r8, void *r9,
++		      struct sgx_enclave_run *run);
+ 
+ #endif /* MAIN_H */
+diff --git a/tools/testing/selftests/sgx/test_encl.c b/tools/testing/selftests/sgx/test_encl.c
+index cf25b5dc1e03..734ea52f9924 100644
+--- a/tools/testing/selftests/sgx/test_encl.c
++++ b/tools/testing/selftests/sgx/test_encl.c
+@@ -4,6 +4,8 @@
+ #include <stddef.h>
+ #include "defines.h"
+ 
++static uint8_t encl_buffer[8192] = { 1 };
++
+ static void *memcpy(void *dest, const void *src, size_t n)
+ {
+ 	size_t i;
+@@ -14,7 +16,20 @@ static void *memcpy(void *dest, const void *src, size_t n)
+ 	return dest;
+ }
+ 
+-void encl_body(void *rdi, void *rsi)
++void encl_body(void *rdi,  void *rsi)
+ {
+-	memcpy(rsi, rdi, 8);
++	struct encl_op *op = (struct encl_op *)rdi;
++
++	switch (op->type) {
++	case ENCL_OP_PUT:
++		memcpy(&encl_buffer[0], &op->buffer, 8);
++		break;
++
++	case ENCL_OP_GET:
++		memcpy(&op->buffer, &encl_buffer[0], 8);
++		break;
++
++	default:
++		break;
++	}
+ }
+diff --git a/tools/testing/selftests/sgx/test_encl.lds b/tools/testing/selftests/sgx/test_encl.lds
+index 0fbbda7e665e..a1ec64f7d91f 100644
+--- a/tools/testing/selftests/sgx/test_encl.lds
++++ b/tools/testing/selftests/sgx/test_encl.lds
+@@ -18,9 +18,10 @@ SECTIONS
+ 	.text : {
+ 		*(.text*)
+ 		*(.rodata*)
++		FILL(0xDEADBEEF);
++		. = ALIGN(4096);
+ 	} : text
+ 
+-	. = ALIGN(4096);
+ 	.data : {
+ 		*(.data*)
+ 	} : data
+diff --git a/tools/testing/selftests/splice/short_splice_read.sh b/tools/testing/selftests/splice/short_splice_read.sh
+index 7810d3589d9a..22b6c8910b18 100755
+--- a/tools/testing/selftests/splice/short_splice_read.sh
++++ b/tools/testing/selftests/splice/short_splice_read.sh
+@@ -1,21 +1,87 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0
++#
++# Test for mishandling of splice() on pseudofilesystems, which should catch
++# bugs like 11990a5bd7e5 ("module: Correctly truncate sysfs sections output")
++#
++# Since splice fallback was removed as part of the set_fs() rework, many of these
++# tests expect to fail now. See https://lore.kernel.org/lkml/202009181443.C2179FB@keescook/
+ set -e
+ 
++DIR=$(dirname "$0")
++
+ ret=0
+ 
++expect_success()
++{
++	title="$1"
++	shift
++
++	echo "" >&2
++	echo "$title ..." >&2
++
++	set +e
++	"$@"
++	rc=$?
++	set -e
++
++	case "$rc" in
++	0)
++		echo "ok: $title succeeded" >&2
++		;;
++	1)
++		echo "FAIL: $title should work" >&2
++		ret=$(( ret + 1 ))
++		;;
++	*)
++		echo "FAIL: something else went wrong" >&2
++		ret=$(( ret + 1 ))
++		;;
++	esac
++}
++
++expect_failure()
++{
++	title="$1"
++	shift
++
++	echo "" >&2
++	echo "$title ..." >&2
++
++	set +e
++	"$@"
++	rc=$?
++	set -e
++
++	case "$rc" in
++	0)
++		echo "FAIL: $title unexpectedly worked" >&2
++		ret=$(( ret + 1 ))
++		;;
++	1)
++		echo "ok: $title correctly failed" >&2
++		;;
++	*)
++		echo "FAIL: something else went wrong" >&2
++		ret=$(( ret + 1 ))
++		;;
++	esac
++}
++
+ do_splice()
+ {
+ 	filename="$1"
+ 	bytes="$2"
+ 	expected="$3"
++	report="$4"
+ 
+-	out=$(./splice_read "$filename" "$bytes" | cat)
++	out=$("$DIR"/splice_read "$filename" "$bytes" | cat)
+ 	if [ "$out" = "$expected" ] ; then
+-		echo "ok: $filename $bytes"
++		echo "      matched $report" >&2
++		return 0
+ 	else
+-		echo "FAIL: $filename $bytes"
+-		ret=1
++		echo "      no match: '$out' vs $report" >&2
++		return 1
+ 	fi
+ }
+ 
+@@ -23,34 +89,45 @@ test_splice()
+ {
+ 	filename="$1"
+ 
++	echo "  checking $filename ..." >&2
++
+ 	full=$(cat "$filename")
++	rc=$?
++	if [ $rc -ne 0 ] ; then
++		return 2
++	fi
++
+ 	two=$(echo "$full" | grep -m1 . | cut -c-2)
+ 
+ 	# Make sure full splice has the same contents as a standard read.
+-	do_splice "$filename" 4096 "$full"
++	echo "    splicing 4096 bytes ..." >&2
++	if ! do_splice "$filename" 4096 "$full" "full read" ; then
++		return 1
++	fi
+ 
+ 	# Make sure a partial splice see the first two characters.
+-	do_splice "$filename" 2 "$two"
++	echo "    splicing 2 bytes ..." >&2
++	if ! do_splice "$filename" 2 "$two" "'$two'" ; then
++		return 1
++	fi
++
++	return 0
+ }
+ 
+-# proc_single_open(), seq_read()
+-test_splice /proc/$$/limits
+-# special open, seq_read()
+-test_splice /proc/$$/comm
++### /proc/$pid/ has no splice interface; these should all fail.
++expect_failure "proc_single_open(), seq_read() splice" test_splice /proc/$$/limits
++expect_failure "special open(), seq_read() splice" test_splice /proc/$$/comm
+ 
+-# proc_handler, proc_dointvec_minmax
+-test_splice /proc/sys/fs/nr_open
+-# proc_handler, proc_dostring
+-test_splice /proc/sys/kernel/modprobe
+-# proc_handler, special read
+-test_splice /proc/sys/kernel/version
++### /proc/sys/ has a splice interface; these should all succeed.
++expect_success "proc_handler: proc_dointvec_minmax() splice" test_splice /proc/sys/fs/nr_open
++expect_success "proc_handler: proc_dostring() splice" test_splice /proc/sys/kernel/modprobe
++expect_success "proc_handler: special read splice" test_splice /proc/sys/kernel/version
+ 
++### /sys/ has no splice interface; these should all fail.
+ if ! [ -d /sys/module/test_module/sections ] ; then
+-	modprobe test_module
++	expect_success "test_module kernel module load" modprobe test_module
+ fi
+-# kernfs, attr
+-test_splice /sys/module/test_module/coresize
+-# kernfs, binattr
+-test_splice /sys/module/test_module/sections/.init.text
++expect_failure "kernfs attr splice" test_splice /sys/module/test_module/coresize
++expect_failure "kernfs binattr splice" test_splice /sys/module/test_module/sections/.init.text
+ 
+ exit $ret
+diff --git a/tools/testing/selftests/timers/rtcpie.c b/tools/testing/selftests/timers/rtcpie.c
+index 47b5bad1b393..4ef2184f1558 100644
+--- a/tools/testing/selftests/timers/rtcpie.c
++++ b/tools/testing/selftests/timers/rtcpie.c
+@@ -18,6 +18,8 @@
+ #include <stdlib.h>
+ #include <errno.h>
+ 
++#include "../kselftest.h"
++
+ /*
+  * This expects the new RTC class driver framework, working with
+  * clocks that will often not be clones of what the PC-AT had.
+@@ -35,8 +37,14 @@ int main(int argc, char **argv)
+ 	switch (argc) {
+ 	case 2:
+ 		rtc = argv[1];
+-		/* FALLTHROUGH */
++		break;
+ 	case 1:
++		fd = open(default_rtc, O_RDONLY);
++		if (fd == -1) {
++			printf("Default RTC %s does not exist. Test Skipped!\n", default_rtc);
++			exit(KSFT_SKIP);
++		}
++		close(fd);
+ 		break;
+ 	default:
+ 		fprintf(stderr, "usage:  rtctest [rtcdev] [d]\n");
+
+--------------E64F399F8330183219BA06E5--
