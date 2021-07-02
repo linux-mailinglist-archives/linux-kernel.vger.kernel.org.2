@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B31A3B9A5C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 03:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E703B9A5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 03:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234664AbhGBBFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 21:05:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49598 "EHLO mail.kernel.org"
+        id S234576AbhGBBGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 21:06:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234370AbhGBBFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 21:05:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56034613F7;
-        Fri,  2 Jul 2021 01:02:47 +0000 (UTC)
+        id S230369AbhGBBGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 21:06:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC320613DA;
+        Fri,  2 Jul 2021 01:04:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625187767;
-        bh=CfWIpKKl303hREJ4X2i7un5cOC2KayhRK9260oHQV8A=;
+        s=k20201202; t=1625187860;
+        bh=6lTjGlBo1chEWk8zH/z2MaOn2rpR7j/WephiT1Q6uDE=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=YjLchiU5GDhN+13sDWf/CKHa3aZ/tbC4/M6tx6AYgjipkBynVAQik51CBFKZqthtN
-         b1cH19kUEHXu3lKoofZdjcdxxM+tOg6jAElNbvwzCw+mHTxbY96yFIRKnFewsaNkT8
-         WYnUlM/gGj0V8q5+QKu1pgUjCD5SaeF4wvS/cS2jUU9Bje02wuLcAeySVQcAh/8NKb
-         jwf1y8/nu9NUxivFGIUeonPBKDLYXupjs1l2gwVwQ2Ucgj+KWEXzFu0As/UF5Uxbp8
-         iD+TnD2iOsnW1ZPKVoNe/GLj0piTJQ1snOUGqD3F8vvB5ycaGMIt7skWXf4FeMZXnN
-         NkFFIRsfYtW8Q==
+        b=IP+Y2SZXVQQb5iXv1/hQ7YV6dfKIcp5Ti5vkvU+HiW7ojIKVho+h2BN0WKEDeruDu
+         /TZP3qDxT8uOpuhgT1ojJ7+GjalDMrFj4y2cMKgUY1kZ2qMmqw6iZnV2W56h5Zn9BS
+         c+VAndazUNxxr4jFisx0dOOLi/ONSdyTrU9/OONI2NEwLu0C65voJUelDnKFVd5QlH
+         6vZjqaBWXVrIq+3xstRPlP0hkCrAxiAz/PlIQVe5eG3kFQXtNw8gmF5JkPhlwsp/HM
+         zmV2uVqtseKHDIMRjHxfxBgvwot4lx5tLaz5uD9THlQ+4Mekw1D5BRIA5ChFScRGfv
+         749U3EfjsiCYQ==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAFBinCC2KB-_pOenpWPknCuHV+CCjhP5hqukSkwD3qwRe6OtQw@mail.gmail.com>
-References: <20210627223959.188139-1-martin.blumenstingl@googlemail.com> <20210627223959.188139-3-martin.blumenstingl@googlemail.com> <20210701202540.GA1085600@roeck-us.net> <CAFBinCC2KB-_pOenpWPknCuHV+CCjhP5hqukSkwD3qwRe6OtQw@mail.gmail.com>
+In-Reply-To: <20210627223959.188139-3-martin.blumenstingl@googlemail.com>
+References: <20210627223959.188139-1-martin.blumenstingl@googlemail.com> <20210627223959.188139-3-martin.blumenstingl@googlemail.com>
 Subject: Re: [PATCH v3 2/3] clk: divider: Switch from .round_rate to .determine_rate by default
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     mturquette@baylibre.com, linux-clk@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
+Cc:     narmstrong@baylibre.com, jbrunet@baylibre.com,
         khilman@baylibre.com, linux-kernel@vger.kernel.org,
         linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-To:     Guenter Roeck <linux@roeck-us.net>,
+        linux-arm-kernel@lists.infradead.org,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Thu, 01 Jul 2021 18:02:46 -0700
-Message-ID: <162518776607.3570193.14348711594242395887@swboyd.mtv.corp.google.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-clk@vger.kernel.org, mturquette@baylibre.com
+Date:   Thu, 01 Jul 2021 18:04:18 -0700
+Message-ID: <162518785878.3570193.8070459883237401552@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Martin Blumenstingl (2021-07-01 13:57:28)
-> Hi Guenter,
+Quoting Martin Blumenstingl (2021-06-27 15:39:58)
+> .determine_rate is meant to replace .round_rate. The former comes with a
+> benefit which is especially relevant on 32-bit systems: since
+> .determine_rate uses an "unsigned long" (compared to a "signed long"
+> which is used by .round_rate) the maximum value on 32-bit systems
+> increases from 2^31 (or approx. 2.14GHz) to 2^32 (or approx. 4.29GHz).
+> Switch to a .determine_rate implementation by default so 32-bit systems
+> can benefit from the increased maximum value as well as so we have one
+> fewer user of .round_rate.
 >=20
-> On Thu, Jul 1, 2021 at 10:25 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> [...]
-> > [    0.000000] [<c07be330>] (clk_core_determine_round_nolock) from [<c0=
-7c5480>] (clk_core_set_rate_nolock+0x184/0x294)
-> > [    0.000000] [<c07c5480>] (clk_core_set_rate_nolock) from [<c07c55c0>=
-] (clk_set_rate+0x30/0x64)
-> > [    0.000000] [<c07c55c0>] (clk_set_rate) from [<c163c310>] (imx6ul_cl=
-ocks_init+0x2798/0x2a44)
-> > [    0.000000] [<c163c310>] (imx6ul_clocks_init) from [<c162a4e4>] (of_=
-clk_init+0x180/0x26c)
-> > [    0.000000] [<c162a4e4>] (of_clk_init) from [<c1604d34>] (time_init+=
-0x20/0x30)
-> > [    0.000000] [<c1604d34>] (time_init) from [<c1600e0c>] (start_kernel=
-+0x4c8/0x6cc)
-> > [    0.000000] [<c1600e0c>] (start_kernel) from [<00000000>] (0x0)
-> > [    0.000000] Code: bad PC value
-> > [    0.000000] ---[ end trace 7009a0f298fd39e9 ]---
-> > [    0.000000] Kernel panic - not syncing: Attempted to kill the idle t=
-ask!
-> >
-> > Bisct points to this patch as culprit. Reverting it fixes the problem.
-> sorry for breaking imx6 - and at the same time: thanks for reporting this!
+> Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> ---
+>  drivers/clk/clk-divider.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
 >=20
-> Do you have some additional information about this crash (which clock
-> this relates to, file and line number, etc.)?
-> I am struggling to understand the cause of this NULL dereference
-> My patch doesn't change the clk_core_determine_round_nolock()
-> implementation and the new determine_rate code-path (inside that
-> function) doesn't seem to be more fragile in terms of NULL values
-> compared to the round_rate code-path.
-> Instead I think it's more likely that the problem is somewhere within
-> clk_divider_determine_rate() (or in any helper function it uses), but
-> that doesn't show up in the trace
+> diff --git a/drivers/clk/clk-divider.c b/drivers/clk/clk-divider.c
+> index 87ba4966b0e8..9e05e81116af 100644
+> --- a/drivers/clk/clk-divider.c
+> +++ b/drivers/clk/clk-divider.c
+> @@ -425,8 +425,8 @@ long divider_ro_round_rate_parent(struct clk_hw *hw, =
+struct clk_hw *parent,
+>  }
+>  EXPORT_SYMBOL_GPL(divider_ro_round_rate_parent);
+> =20
+> -static long clk_divider_round_rate(struct clk_hw *hw, unsigned long rate,
+> -                               unsigned long *prate)
+> +static int clk_divider_determine_rate(struct clk_hw *hw,
+> +                                     struct clk_rate_request *req)
+>  {
+>         struct clk_divider *divider =3D to_clk_divider(hw);
+> =20
+> @@ -437,13 +437,13 @@ static long clk_divider_round_rate(struct clk_hw *h=
+w, unsigned long rate,
+>                 val =3D clk_div_readl(divider) >> divider->shift;
+>                 val &=3D clk_div_mask(divider->width);
+> =20
+> -               return divider_ro_round_rate(hw, rate, prate, divider->ta=
+ble,
+> -                                            divider->width, divider->fla=
+gs,
+> -                                            val);
+> +               return divider_ro_determine_rate(hw, req, divider->table,
+> +                                                divider->width,
+> +                                                divider->flags, val);
+>         }
+> =20
+> -       return divider_round_rate(hw, rate, prate, divider->table,
+> -                                 divider->width, divider->flags);
+> +       return divider_determine_rate(hw, req, divider->table, divider->w=
+idth,
+> +                                     divider->flags);
+>  }
+> =20
+>  int divider_get_val(unsigned long rate, unsigned long parent_rate,
+> @@ -500,14 +500,14 @@ static int clk_divider_set_rate(struct clk_hw *hw, =
+unsigned long rate,
+> =20
+>  const struct clk_ops clk_divider_ops =3D {
+>         .recalc_rate =3D clk_divider_recalc_rate,
+> -       .round_rate =3D clk_divider_round_rate,
+> +       .determine_rate =3D clk_divider_determine_rate,
 
-My guess is that we have drivers copying the clk_ops from the
-divider_ops structure and so they are copying over round_rate but not
-determine_rate.
+Guess was right.
 
->=20
-> I don't have any imx6 board myself and so far I am unable to reproduce
-> this crash on any hardware I have.
-> However, if it's a problem in my clk-divider.c changes then I'd like
-> to find the cause (ASAP) because possibly more SoCs may be broken...
->
+ $ git grep clk_divider_ops -- drivers/clk/imx/
+ drivers/clk/imx/clk-divider-gate.c:     return clk_divider_ops.round_rate(=
+hw, rate, prate);
+
+>         .set_rate =3D clk_divider_set_rate,
+>  };
+>  EXPORT_SYMBOL_GPL(clk_divider_ops);
+> =20
+>  const struct clk_ops clk_divider_ro_ops =3D {
+>         .recalc_rate =3D clk_divider_recalc_rate,
+> -       .round_rate =3D clk_divider_round_rate,
+> +       .determine_rate =3D clk_divider_determine_rate,
