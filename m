@@ -2,151 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694FC3B9C21
+	by mail.lfdr.de (Postfix) with ESMTP id E0A343B9C22
 	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 08:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhGBGSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 02:18:48 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7414 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229696AbhGBGSr (ORCPT
+        id S230087AbhGBGXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 02:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229696AbhGBGX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 02:18:47 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 162643Eb015250;
-        Fri, 2 Jul 2021 02:15:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to; s=pp1;
- bh=6nNY+BQbDuZz+Df2jshSXLz50v32o/fcEIK3qvuyHzY=;
- b=jTEHmqQWGy+WXH5YWrs/GorsRi0HI7c6IyU/4qa6L/JlmLx9u6lIdZJdrhg/l7vFwYHJ
- r9OcZj9yT2CnP9egEZH0QSUXAlbYKY75vAHRedFV3RDZSmn+tIXR7cZpamgAKKpipU7a
- PH72SAzbE1vULiskXKPH5SgoNVFN29JUWBkbm22ET0qkOCRqh1P/4lGJUq71lOKyXygo
- 3hbfxmQb658mp4Qlw0R2/m0qZo8Wt8SY4iJy+m57ojvkiyIIVQh7unnLOBl28KRRSmMb
- PcRENlgJua6qIOTWEe37lHLEBpTQn054QiIslpQ6zEYKfnBKwKvjVCTxQrXXBwm7W2Hc 8w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39hsddnc44-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 02 Jul 2021 02:15:37 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 162659jt018395;
-        Fri, 2 Jul 2021 02:15:37 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39hsddnc36-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 02 Jul 2021 02:15:36 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1626CYkg015048;
-        Fri, 2 Jul 2021 06:15:34 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma01fra.de.ibm.com with ESMTP id 39fv59rv0r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 02 Jul 2021 06:15:34 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1626FWZ931719758
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 2 Jul 2021 06:15:32 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 004E311C04C;
-        Fri,  2 Jul 2021 06:15:32 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DE2AD11C05E;
-        Fri,  2 Jul 2021 06:15:29 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.85.118.157])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  2 Jul 2021 06:15:29 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH] sched/fair: Sync load_sum with load_avg after dequeue
-From:   Sachin Sant <sachinp@linux.vnet.ibm.com>
-In-Reply-To: <20210701171837.32156-1-vincent.guittot@linaro.org>
-Date:   Fri, 2 Jul 2021 11:45:28 +0530
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org, odin@uged.al
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <DAABF914-F5D0-4C92-BFE0-341D83B9F3D0@linux.vnet.ibm.com>
-References: <20210701171837.32156-1-vincent.guittot@linaro.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: e9hIC05t5gA5h07m0DVC3tTYzGju2RzJ
-X-Proofpoint-GUID: SmllJ8trSvHVjvdOGJp25MLpZ0rMpPSS
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-01_15:2021-07-01,2021-07-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- lowpriorityscore=0 priorityscore=1501 mlxlogscore=999 suspectscore=0
- adultscore=0 impostorscore=0 clxscore=1015 phishscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107020033
+        Fri, 2 Jul 2021 02:23:27 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D756C061762;
+        Thu,  1 Jul 2021 23:20:55 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id dj3so4178374qvb.11;
+        Thu, 01 Jul 2021 23:20:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hYWXH12CqnZMtZW0pOGnma+92SUvIYhPgYiicHyCps0=;
+        b=pQwNRlKTGjy2M9pBSmsG0ces2zrOqUET4rUf+IEl0L7cNrn2VJv4Pz6h6LBQq/qszl
+         9fIV2kKFNq1/p8cadqBFJS9bAVNN2MAW5csSy4ud9gcPd+MV+qgZBEb7Jhklbf5RtxGk
+         IEcVOea8EflMh3hi74fxCd+Js2P2j+0YAHCcA3hER/ZtY39t/NYfQx81miuURjYoBXAq
+         8Db2CXKtvbemUNRtQG2ZhmwVvHY5vLwf/pZhbyA/gYbHL6FyBxlIVIw21Yn8uyb+cUgC
+         PtaeVkTK+F9ks2tNpRffQWQ2RI8cmnSGqWoDXFJvUJK3viyr1ygpb6BxMvazsccG1p0p
+         IPag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hYWXH12CqnZMtZW0pOGnma+92SUvIYhPgYiicHyCps0=;
+        b=XYsTdwZOSkwVT/1uujfy9Y2XSbHJNh6faYI59/DSA5O3j/9c4Wf9DJ27N0uGNc1/As
+         bSX9fgJ2WqlNdaXaABTPB8H8rjxzPjd/DcykWwm9gszEGO0QmP00RVBGhHWPwzaHX15p
+         JV7EZ17KZyBqaXNTZYM7hURJj7D/rJU2TMf8rdD7rExSUYP4pdNZxvo5rJV4Xyx0OB9U
+         +sFy79u8TzTBQXy773zMgvb3rN9vq6P7S0bEl8B/KcekAe2gLMONGKxwbzgknipNfe/2
+         qkr9I57VcKG2F/nFpxAq8wbaa0WesDp4lHtUfjHtXJPxMpXaSnc2Hds4hLUWiRJx4P6m
+         A6vg==
+X-Gm-Message-State: AOAM531E9u/T8hk/SHVJ1UfhQRMgvf/NKYxl+B+3ahu4ZkovPNP9UPY/
+        cS4FDiMXMBy7xUc5lr8ttL5axNH4Eh7KfROscfs=
+X-Google-Smtp-Source: ABdhPJyWdolrUsVPXoxZQ8ujjBZfyvsIfNOIUdm2Vus8RIEkG9WhT2mnr8LlKu3AUn45rS7CCoMmr1t4VDIBdj/4nQY=
+X-Received: by 2002:a05:6214:1244:: with SMTP id q4mr3424052qvv.50.1625206854038;
+ Thu, 01 Jul 2021 23:20:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210630184624.9ca1937310b0dd5ce66b30e7@linux-foundation.org>
+ <20210701015258.BrxjIzdE1%akpm@linux-foundation.org> <YN3Xbdc9N81PIegK@google.com>
+ <CAGWkznHWe22iwtBNtJfY75aS5_cfwKTaBfkX=zzmSaTwHZaAyQ@mail.gmail.com> <YN6ogJbnI46hnjgk@google.com>
+In-Reply-To: <YN6ogJbnI46hnjgk@google.com>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Fri, 2 Jul 2021 14:20:42 +0800
+Message-ID: <CAGWkznGaQyfxUuP8OJxvLapk4R8x3kpgU50H-xZfTiLO-i9WMg@mail.gmail.com>
+Subject: Re: [patch 108/192] mm: zram: amend SLAB_RECLAIM_ACCOUNT on zspage_cachep
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        mm-commits@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        torvalds@linux-foundation.org,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On 01-Jul-2021, at 10:48 PM, Vincent Guittot =
-<vincent.guittot@linaro.org> wrote:
->=20
-> commit 9e077b52d86a ("sched/pelt: Check that *_avg are null when *_sum =
-are")
-> reported some inconsitencies between *_avg and *_sum.
->=20
-> commit 1c35b07e6d39 ("sched/fair: Ensure _sum and _avg values stay =
-consistent")
-> fixed some but one remains when dequeuing load.
->=20
-> sync the cfs's load_sum with its load_avg after dequeuing the load of =
-a
-> sched_entity.
->=20
-> Fixes: 9e077b52d86a ("sched/pelt: Check that *_avg are null when *_sum =
-are")
-> Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->=20
-> I have been able to trigger a WARN on my system even with the patch
-> listed above. This patch fixes it.
-> Sachin could you test that it also fixes yours ?
->=20
-
-I ran various LTP stress tests, scheduler tests and kernel compile =
-operation for about 5 hours.
-Haven=E2=80=99t seen the warning during the testing.
-
-Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-
-I have left the tests running, will let it run for few more hours.
-
-Thanks
--Sachin
-
-> kernel/sched/fair.c | 3 ++-
-> 1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 11d22943753f..48fc7dfc2f66 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3037,8 +3037,9 @@ enqueue_load_avg(struct cfs_rq *cfs_rq, struct =
-sched_entity *se)
-> static inline void
-> dequeue_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se)
-> {
-> +	u32 divider =3D get_pelt_divider(&se->avg);
-> 	sub_positive(&cfs_rq->avg.load_avg, se->avg.load_avg);
-> -	sub_positive(&cfs_rq->avg.load_sum, se_weight(se) * =
-se->avg.load_sum);
-> +	cfs_rq->avg.load_sum =3D cfs_rq->avg.load_avg * divider;
-> }
-> #else
-> static inline void
-> --=20
-> 2.17.1
->=20
-
+On Fri, Jul 2, 2021 at 1:47 PM Minchan Kim <minchan@kernel.org> wrote:
+>
+> On Fri, Jul 02, 2021 at 10:45:09AM +0800, Zhaoyang Huang wrote:
+> > On Thu, Jul 1, 2021 at 10:56 PM Minchan Kim <minchan@kernel.org> wrote:
+> > >
+> > > On Wed, Jun 30, 2021 at 06:52:58PM -0700, Andrew Morton wrote:
+> > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > Subject: mm: zram: amend SLAB_RECLAIM_ACCOUNT on zspage_cachep
+> > > >
+> > > > Zspage_cachep is found be merged with other kmem cache during test, which
+> > > > is not good for debug things (zs_pool->zspage_cachep present to be another
+> > > > kmem cache in memory dumpfile).  It is also neccessary to do so as
+> > > > shrinker has been registered for zspage.
+> > > >
+> > > > Amending this flag can help kernel to calculate SLAB_RECLAIMBLE correctly.
+> > > >
+> > > > Link: https://lkml.kernel.org/r/1623137297-29685-1-git-send-email-huangzhaoyang@gmail.com
+> > > > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > Cc: Minchan Kim <minchan@kernel.org>
+> > > > Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > >
+> > > Sorry for the late. I don't think this is correct.
+> > >
+> > > It's true "struct zspage" can be freed by zsmalloc's compaction registerred
+> > > by slab shrinker so tempted to make it SLAB_RECLAIM_ACCOUNT. However, it's
+> > > quite limited to work only when objects in the zspage are heavily fragmented.
+> > > Once the compaction is done, zspage are never discardable until objects are
+> > > fragmented again. It means it could hurt other reclaimable slab page reclaiming
+> > > since the zspage slab object pins the page.
+> > IMHO, kmem cache's reclaiming is NOT affected by SLAB_RECLAIM_ACCOUNT
+> > . This flag just affects kmem cache merge[1], the slab page's migrate
+> > type[2] and the page's statistics. Actually, zspage's cache DO merged
+> > with others even without SLAB_RECLAIM_ACCOUNT currently, which maybe
+> > cause zspage's object will NEVER be discarded.(SLAB_MERGE_SAME
+> > introduce confusions as people believe the cache will merge with
+> > others when it set and vice versa)
+> >
+> > [1]
+> >  struct kmem_cache *find_mergeable(size_t size, size_t align, unsigned
+> > long flags, const char *name, void (*ctor)(void *))
+> > ...
+> >     if ((flags & SLAB_MERGE_SAME) != (s->flags & SLAB_MERGE_SAME))
+> >      continue;
+> >
+> > [2]
+> > if (s->flags & SLAB_RECLAIM_ACCOUNT)
+> >     s->allocflags |= __GFP_RECLAIMABLE;
+>
+> That's the point here. With SLAB_RECLAIM_ACCOUNT, page allocator
+> try to allocate pages from MIGRATE_RECLAIMABLE with belief those
+> objects are easily reclaimable. Say a page has object A, B, C, D
+> and E. A-D are easily reclaimable but E is hard. What happens is
+> VM couldn't reclaim the page in the end due to E even though it
+> already reclaimed A-D. And the such fragmenation could be spread
+> out entire MIGRATE_RECLAIMABLE pageblocks over time.
+> That's why I'd like to put zspage into MIGRATE_UNMOVALBE from the
+> beginning since I don't think it's easily reclaimble once compaction
+> is done.
+The slab page could fallback to any migrate type even allocating with
+__GFP_RECLAIMABLE, and there is only one page per slab within zspage's
+cache, which will not be affected by compaction, so I think that
+doesn't make sense.
