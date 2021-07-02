@@ -2,127 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209B53BA3D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7226B3BA3D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230141AbhGBSDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 14:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhGBSDY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 14:03:24 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B106EC061764
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 11:00:51 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id k11so12658409ioa.5
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 11:00:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6i4AtMAfxuHj6dUewQkFdeehfEClu3wbewt0ov3ATOQ=;
-        b=JmF+SaQBuRMGQiavh+g7rKja0ZXRGmsTRjsx2EZVCzGcOAmNPv01zOfniiBmTo+5Gk
-         1S5JMwZCbLFTJxRx93vi0kQGuR/Mi3MHyfN1Z6/mSfgKE/5yrvrvPo4oqpLJQuhU4Ei/
-         UCXSUZqd1KBSuSLsu8t1uiOHa0TnHvYrqxNc2QxXWdZsyYwb4Pm5JlASM9JHdtRjuo9C
-         xc1eAYNZUuxtqfr3Ge1//WqpwPBlCzIH8Z8HnuE1ldOcdkjtyhw55leVHdZ8UJ4O/TKW
-         IgLexSu974ENQVnpWnPuVzp1xl+rQjtzy59JuBsHjY8tF4XChUhwssfxIvNuV1X4390U
-         z6Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6i4AtMAfxuHj6dUewQkFdeehfEClu3wbewt0ov3ATOQ=;
-        b=ONCk2ua5dypM8ulFv887LNxXz8Bewn6VilecQIoXKsSvJyT8tuPf9pAWUbOjRUrVrO
-         NDbWpYlPjyXn3Rf4lTrDmTrIKjEDZD104o3YZyWRgZ4gPEqEC/xZ52TqeoQxRtsPHlzT
-         HspAMzooI7gAr1PCFvNv6BrAywOr02Ax4R8/XC6YdW/tjeO+wCNp+5yrS/Bu6KKd1QYK
-         cixY0njM+W/a7kDNttu6ZYquTeSsZu9VkAylEAVl47T98bU2tAEtjaN3uSGz6EVuClWJ
-         IN09Q5IY66HkWGuP4Zt9rLhaKVyn/0rAXgiBibtp5WzPqOFtjSvu2JARmQD65vPi1neW
-         f36Q==
-X-Gm-Message-State: AOAM533f05b/W78xT3RzRjzagdO1fIpsR4VSmFOSuugt0d/q7R60tjuq
-        2G4l1D9n5O9DnB3uvbSoqq8hwThOx42+A03P2FWRRQ==
-X-Google-Smtp-Source: ABdhPJwMMptBIdAVrrH8g2/22L2pwo0JTFXqZiZP4iJ0c00iHWIMewwBWPicbdhGzNzpY0ftz8ej3XK0HzWTsNir7GU=
-X-Received: by 2002:a05:6602:3403:: with SMTP id n3mr889257ioz.165.1625248851051;
- Fri, 02 Jul 2021 11:00:51 -0700 (PDT)
+        id S230104AbhGBSKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 14:10:10 -0400
+Received: from phobos.denx.de ([85.214.62.61]:55944 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229455AbhGBSKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 14:10:10 -0400
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 337A680A22;
+        Fri,  2 Jul 2021 20:07:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1625249256;
+        bh=DVXT6/CYOSAyDwpNFBEXfSTGeNkDxbgh/EoHZVqJm+A=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Z/ej3xyycbNljAT+gmegjwcoP7YhWYaTK2I6wvT1bVp8h/7NUDq2uPR4QwZzKkWhe
+         zHYhQtz/dPNMedT2FYFOJCV4Ey9Y/KE3UFXBRO60fPEzup5u3VaZziTz27Un4+UDpv
+         Bw5EuevxgUCe7J5wRFX/OMDW6I7W3iJS6xJfJdr+3ZUKizs/ned4a184h8cHXtqGtO
+         ZJSncVBluzXST22RIr9yvbvPUURj3NH3VCajJUEASJ6YDN5SGiG/vYcynv13+4ioaE
+         5Ill8a0Dm3B6111SPf/3AGXYgS11Fdv8qwxgtyZknIn+kW0D+XkkIAA1tKIp797nYx
+         8ACgqLHj3BQ4g==
+Subject: Re: [PATCH] drm/stm: ltdc: improve pm_runtime to stop clocks
+To:     Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Cc:     Yannick FERTRE <yannick.fertre@st.com>,
+        Philippe CORNU <philippe.cornu@st.com>,
+        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
+        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
+        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>
+References: <20210629115709.16145-1-raphael.gallais-pou@foss.st.com>
+ <420e243d-7541-a07e-177b-d2db11c26aef@denx.de>
+ <3bb823e4-4724-7072-fe9f-7b8a355c8e50@foss.st.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <5d65ca80-4f94-49e1-5de1-cf29e8231a6a@denx.de>
+Date:   Fri, 2 Jul 2021 20:07:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210701093537.90759-1-leo.yan@linaro.org> <20210701093537.90759-3-leo.yan@linaro.org>
- <YN3sas8tWPfWjFqE@kernel.org> <20210702011018.GA251512@leoy-ThinkPad-X240s>
-In-Reply-To: <20210702011018.GA251512@leoy-ThinkPad-X240s>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Fri, 2 Jul 2021 12:00:39 -0600
-Message-ID: <CANLsYkyxaWUCFYWF2LzooYWqeAMq8P4UzxfPWGoYur3LxyD92A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] perf cs-etm: Remove callback cs_etm_find_snapshot()
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <James.Clark@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Denis Nikitin <denik@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3bb823e4-4724-7072-fe9f-7b8a355c8e50@foss.st.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Jul 2021 at 19:10, Leo Yan <leo.yan@linaro.org> wrote:
->
-> On Thu, Jul 01, 2021 at 01:25:14PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Thu, Jul 01, 2021 at 05:35:36PM +0800, Leo Yan escreveu:
-> > > The callback cs_etm_find_snapshot() is invoked for snapshot mode, its
-> > > main purpose is to find the correct AUX trace data and returns "head"
-> > > and "old" (we can call "old" as "old head") to the caller, the caller
-> > > __auxtrace_mmap__read() uses these two pointers to decide the AUX trace
-> > > data size.
-> > >
-> > > This patch removes cs_etm_find_snapshot() with below reasons:
-> > >
-> > > - The first thing in cs_etm_find_snapshot() is to check if the head has
-> > >   wrapped around, if it is not, directly bails out.  The checking is
-> > >   pointless, this is because the "head" and "old" pointers both are
-> > >   monotonical increasing so they never wrap around.
-> > >
-> > > - cs_etm_find_snapshot() adjusts the "head" and "old" pointers and
-> > >   assumes the AUX ring buffer is fully filled with the hardware trace
-> > >   data, so it always subtracts the difference "mm->len" from "head" to
-> > >   get "old".  Let's imagine the snapshot is taken in very short
-> > >   interval, the tracers only fill a small chunk of the trace data into
-> > >   the AUX ring buffer, in this case, it's wrongly to copy the whole the
-> > >   AUX ring buffer to perf file.
-> > >
-> > > - As the "head" and "old" pointers are monotonically increased, the
-> > >   function __auxtrace_mmap__read() handles these two pointers properly.
-> > >   It calculates the reminders for these two pointers, and the size is
-> > >   clamped to be never more than "snapshot_size".  We can simply reply on
-> > >   the function __auxtrace_mmap__read() to calculate the correct result
-> > >   for data copying, it's not necessary to add Arm CoreSight specific
-> > >   callback.
-> >
-> > Thanks, applied.
->
-> Thanks a lot for picking up the patch, Arnaldo!
->
-> Hi Mathieu, I supposed to get your review before merging; since
-> Arnaldo moves quickly, if you want me to follow up anything relevant
-> to this change, please let me know.  Thanks!
+On 7/2/21 11:23 AM, Raphael Gallais-Pou wrote:
+> Hello Marek,
 
-I was going to review this set next week.  But it is fine if Arnaldo
-has picked it up since enough people have already looked at and tested
-this code.
+Hi,
 
-Thanks,
-Mathieu
+> Sorry for the late answer.
 
->
-> Leo
+No worries, take your time
+
+> On 6/30/21 2:35 AM, Marek Vasut wrote:
+>> On 6/29/21 1:58 PM, Raphael GALLAIS-POU - foss wrote:
+>>
+>> [...]
+>>
+>>> +++ b/drivers/gpu/drm/stm/ltdc.c
+>>> @@ -425,10 +425,17 @@ static void ltdc_crtc_atomic_enable(struct 
+>>> drm_crtc *crtc,
+>>>   {
+>>>       struct ltdc_device *ldev = crtc_to_ltdc(crtc);
+>>>       struct drm_device *ddev = crtc->dev;
+>>> +    int ret;
+>>>         DRM_DEBUG_DRIVER("\n");
+>>>   -    pm_runtime_get_sync(ddev->dev);
+>>> +    if (!pm_runtime_active(ddev->dev)) {
+>>> +        ret = pm_runtime_get_sync(ddev->dev);
+>>
+>> All these if (!pm_runtime_active()) then pm_runtime_get_sync() calls 
+>> look like workaround for some larger issue. Shouldn't the pm_runtime 
+>> do some refcounting on its own , so this shouldn't be needed ?
+> 
+> 
+> This problem purely comes from the driver internals, so I don't think it 
+> is a workaround.
+> 
+> Because of the "ltdc_crtc_mode_set_nofb" function which does not have 
+> any "symmetrical" call, such as enable/disable functions, there was two 
+> calls to pm_runtime_get_sync against one call to pm_runtime_put_sync.
+> 
+> This instability resulted in the LTDC clocks being always enabled, even 
+> when the peripheral was disabled. This could be seen in the clk_summary 
+> as explained in the patch summary among other things.
+> 
+> By doing so, we first check if the clocks are not already activated, and 
+> in that case we call pm_runtime_get_sync.
+
+I just have to wonder, how come other drivers don't need these if 
+(!pm_runtime_active()) pm_runtime_get_sync() conditions. I think they 
+just get/put the runtime PM within a call itself, not across function 
+calls. Maybe that could be the right fix here too ?
