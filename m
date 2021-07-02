@@ -2,107 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635283B9C24
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 08:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB283B9C2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 08:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhGBGY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 02:24:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229696AbhGBGYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 02:24:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CC21613FA;
-        Fri,  2 Jul 2021 06:22:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625206942;
-        bh=+9+44rB/9RcT9+DjjfGfMY5WQvks+ySXpU6PeYPkon8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M/LH+b3HktzFxuCnvsn3c2hWtGMNr9OFVVf/CE62QY3EBrcR30BOuPLaxvu3ikg/J
-         CxWFeP//q3nmIoe+uXo2Q5ysxpOYzo55/Xj9kIbSDyS1DtaI3U9WObsZd9V098hjb8
-         AlwEFtYDxR7/rvSzBJGOd5+z3CHz81LovwyuWyOZwqdut3F7t9jonhKyu8ROWkt6SP
-         DrRjemMKFdJHoy+eqGbzU7Sc8PbYIwz24CS1DqoX9sRsx7vdOMDqsoayeesLyyFPT/
-         4qTh7stU2NyGSBc4vhPmKUHmjVBuR7l1o+EzunE5HHd5xQudWbYlIZ3ai3OH3jm+Hm
-         dGa3thQkyegCQ==
-Date:   Fri, 2 Jul 2021 08:22:13 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        stefanha@redhat.com
-Subject: Re: [PATCH v11] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <YN6wlXw2KhALAyS3@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        stefanha@redhat.com
-References: <510c876952efa693339ab0d6cc78ba7be9ef6897.1625104206.git.jie.deng@intel.com>
- <20210701040436.p7kega6rzeqz5tlm@vireshk-i7>
- <YN4WeJCepCrpylOD@kunai>
- <20210702045512.u4dvbapoc5a2a4jb@vireshk-i7>
+        id S230026AbhGBG2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 02:28:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhGBG2W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 02:28:22 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9615C061762;
+        Thu,  1 Jul 2021 23:25:49 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id b1so5064375pls.5;
+        Thu, 01 Jul 2021 23:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6gR7+oJ7XUI6MhB8zU2feJZoMeVNHRmve9e7TtBVXiM=;
+        b=lut5GHGzEENqE8c4bauh/TlTusHss46DVGXnM+uHrZNQa2tVs3OSIJno9FEvBX0IEE
+         DRd0IxZVKcqShqReCftvCxc27vVee57OdWf8It8CqNa6zWmIFhfx7PWIJKDW6UttNeFP
+         SR0aLs6JXUA7vWA9nCRK2R0GWaHK7Jt+UD4CtLFXDbj3lj9ZpHcgQzgbomiWONF2ySwc
+         BxX6qpyhqDIhg5Ks56kIlMaIX77/IH8xAwOaEMBtpkltVPWvlreaGyagGNX/3R+XR77y
+         DhCOij3wubI5Ai80m2VhgBv/HS/RUGw5JKna45VYuleIvU3tZzfdQWmHN2gEJIyt5Bek
+         rKEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6gR7+oJ7XUI6MhB8zU2feJZoMeVNHRmve9e7TtBVXiM=;
+        b=Nfde3sgmsBjChbq4hsjs88LKac6roqGVakgEkeUTZrGpP9BWf5UwXGpE9Du3wajdNw
+         hdIfchFD3hseCznUBLlUbg46i8+zmToyE7IA7OEPBkhFaUHf8IWFvECF1gvu4wy/muki
+         bqPCmGplZd9lNBbGMYq0xKYwrHNk+PtmYYzY2410JODw+Fis9qTMyT0cCpMKYHi42qLO
+         F9lT7yJCAt2PHoIlLojoyDvJNPVHG5p17FtDqfwImcmGfz+QsNuAWuUsh2ui+Rc5jFH9
+         Ze5U4U8JChc9hRHr4oaS5JTllcd/WLqeB9O5GY6zTwbyt3c+dfh0kOpyEEoxTHbVgRx9
+         Kpzg==
+X-Gm-Message-State: AOAM532X1G+yN8FjATJonvEyZJrGzvyWtKvNkJYKgKkEHkzOE9JZNRB2
+        Bdo7zZSd0kGbxzpltzfurKA=
+X-Google-Smtp-Source: ABdhPJwNyKqnFsz6sUSx1d/aGhENQ2XeF1+TR5MNvyjlOl72Tstx0VP9NRESCGyA5ledv+bxfbqarg==
+X-Received: by 2002:a17:90a:4091:: with SMTP id l17mr3384594pjg.12.1625207148980;
+        Thu, 01 Jul 2021 23:25:48 -0700 (PDT)
+Received: from gmail.com ([2601:600:8500:5f14:d627:c51e:516e:a105])
+        by smtp.gmail.com with ESMTPSA id b19sm1499251pjh.29.2021.07.01.23.25.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 23:25:48 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 23:22:15 -0700
+From:   Andrei Vagin <avagin@gmail.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Thomas Gleixner <tglx@linutronix.de>, linux-mm@kvack.org
+Subject: Re: [PATCH 2/4] arch/x86: implement the process_vm_exec syscall
+Message-ID: <YN6wlwFomEJ0LK1Y@gmail.com>
+References: <20210414055217.543246-1-avagin@gmail.com>
+ <20210414055217.543246-3-avagin@gmail.com>
+ <CAG48ez3UrzPE8rkucTgCu8ggcTEjx_h3Gj2FES1qM-uv2KD8bQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SotEO4qp2V5IcJ53"
+Content-Type: text/plain; charset=koi8-r
 Content-Disposition: inline
-In-Reply-To: <20210702045512.u4dvbapoc5a2a4jb@vireshk-i7>
+In-Reply-To: <CAG48ez3UrzPE8rkucTgCu8ggcTEjx_h3Gj2FES1qM-uv2KD8bQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 28, 2021 at 06:13:29PM +0200, Jann Horn wrote:
+> On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:
+> > This change introduces the new system call:
+> > process_vm_exec(pid_t pid, struct sigcontext *uctx, unsigned long flags,
+> >                 siginfo_t * uinfo, sigset_t *sigmask, size_t sizemask)
+> >
+> > process_vm_exec allows to execute the current process in an address
+> > space of another process.
+> [...]
+> 
+> I still think that this whole API is fundamentally the wrong approach
+> because it tries to shoehorn multiple usecases with different
+> requirements into a single API. But that aside:
 
---SotEO4qp2V5IcJ53
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Here, I can't agree with you, but this is discussed in the parallel
+thread.
 
+> 
+> > +static void swap_mm(struct mm_struct *prev_mm, struct mm_struct *target_mm)
+> > +{
+> > +       struct task_struct *tsk = current;
+> > +       struct mm_struct *active_mm;
+> > +
+> > +       task_lock(tsk);
+> > +       /* Hold off tlb flush IPIs while switching mm's */
+> > +       local_irq_disable();
+> > +
+> > +       sync_mm_rss(prev_mm);
+> > +
+> > +       vmacache_flush(tsk);
+> > +
+> > +       active_mm = tsk->active_mm;
+> > +       if (active_mm != target_mm) {
+> > +               mmgrab(target_mm);
+> > +               tsk->active_mm = target_mm;
+> > +       }
+> > +       tsk->mm = target_mm;
+> 
+> I'm pretty sure you're not currently allowed to overwrite the ->mm
+> pointer of a userspace thread. For example, zap_threads() assumes that
+> all threads running under a process have the same ->mm. (And if you're
+> fiddling with ->mm stuff, you should probably CC linux-mm@.)
+> 
+> As far as I understand, only kthreads are allowed to do this (as
+> implemented in kthread_use_mm()).
 
-> > > Wolfram, what's expected here ? Shouldn't all message transfer or
-> > > none?
-> >=20
-> > Well, on a physical bus, it can simply happen that after message 3 of 5,
-> > the bus is stalled, so we need to bail out.
->=20
-> Right, and in that case the transfer will have any meaning left? I believ=
-e it
-> needs to be fully retried as the requests may have been dependent on each=
- other.
+kthread_use_mm() was renamed from use_mm in the v5.8 kernel. Before
+that, it wasn't used for user processes in the kernel, but it was
+exported for modules, and we used it without any visible problems. We
+understood that there could be some issues like zap_threads and it was
+one of reasons why we decided to introduce this system call.
 
-The client driver handles the case. I'd assume most will bail out of the
-calling function and at some higher level it will be retried.
+I understand that there are no places in the kernel where we change mm
+of user threads back and forth, but are there any real concerns why we
+should not do that? I agree that zap_threads should be fixed, but it
+will the easy one.
 
-> > Of course, it can later happen on the physical bus of the host, though,
-> > that the bus is stalled after message 3 of 5, and I2C_RDWR will bail
-> > out.
->=20
-> Basically we fail as soon as we know something is not right, correct?
-
-Yes.
-
-
---SotEO4qp2V5IcJ53
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDesJEACgkQFA3kzBSg
-KbZOhQ/+NdCmNPinhpL6SdKc6r1zoX7a8w6FmzzQqKowP11lIlFQrnYz4gdlCWiQ
-c7auvFAY3ExcnZsxclZIfjuW5GEBV1W2QVx6i3Uk7GUqAUPb34L6mcmBqDZY6PyL
-Mw8TbpZBq5PegAW5c39YYCfeuLe3hotMYvxrTciwghhZb9ikqlGmKeP9hkx9EfRD
-ZCGfaiMFUiwBYqHZtf36E5fuVipLuu8FNUVInqeCmpZYY1eCAeAeQXh+T7GDPVLe
-N15pQjoFftokmAksoakfgSFr2B6QXrLkaIrxv2bi6FnhfFRp9Kei+2H7vV9q23hT
-kH5YYhyCi5kN85TM9NOXd7JFgSDZBt0yEE+0uEmOa7oFDz8m8jGW8hB1rc0PiY2M
-bY6XAwNaUsBwtNOZHTr/eSCQcwaU3disNJfft27QfaZrudsY2+6K5Igh5sOfGUiH
-7rsomHl6sp4FL2oEzqYzsiPSurtgulbwpZEh53wKDpL75AxAR/+tfS+u410Wpoie
-jQUHV5ndqrW9z2P0Y4Qvea0Fd/PvIepAqSUnXVRXMqxpDzY3zQwSN/NgJNARKDWo
-FZnbWSjaO0gNIUjMLra3vOdbrkLxQ3Moayzol0/KgWdDyIuQQpKKnzfG0fq86fda
-yZRPQCwNhdeKoXvwRA4wpZ2i3btTeovkMCWdTdwtBeO1R8L9vfg=
-=vze1
------END PGP SIGNATURE-----
-
---SotEO4qp2V5IcJ53--
+> 
+> > +       switch_mm_irqs_off(active_mm, target_mm, tsk);
+> > +       local_irq_enable();
+> > +       task_unlock(tsk);
+> > +#ifdef finish_arch_post_lock_switch
+> > +       finish_arch_post_lock_switch();
+> > +#endif
+> > +
+> > +       if (active_mm != target_mm)
+> > +               mmdrop(active_mm);
+> > +}
