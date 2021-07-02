@@ -2,105 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FC83BA4E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 23:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10E43BA4E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 23:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhGBVCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 17:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231807AbhGBVCs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231817AbhGBVCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 2 Jul 2021 17:02:48 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6625C061764
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 14:00:14 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id y4so10123499pfi.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 14:00:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oOQvjNwUs6iGdF4qU2K20XA2rSMaHeKg3ys4j3WcHnc=;
-        b=hYM4Px7OvwbK9XsUFZfo1RxGbzj90AUFJXgJwyByTUvzILGgndzmwMbIeL8chJCL/1
-         jnLgsfXFcJORybUzJlR8Ts4om5iI3vfYCOOaOGhcbqNDqPf5G9HIQDmb575aYR+2mMcB
-         UHULog5A9xsnm2hD6O+LvitJflAiWtuUlsSp8b1zC1z+F+GtjwFOkmoxUpEr7qnFab+S
-         K4eS+ZSOYZqUI8WwZwd1Xylpf6Tsx1ULc6iiDVbo5T58XZunv+/TzmElGmJCmEBO3KQ4
-         9Mgj+VUVg1GWSmLadoePcZyVGiDpn3Gx6gFsQyDn3LxMUHibgihro9oW4eb8GFKbtJ+X
-         rfTg==
+Received: from mail-io1-f53.google.com ([209.85.166.53]:46055 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230377AbhGBVCp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 17:02:45 -0400
+Received: by mail-io1-f53.google.com with SMTP id g3so11253257iok.12
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 14:00:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=oOQvjNwUs6iGdF4qU2K20XA2rSMaHeKg3ys4j3WcHnc=;
-        b=KZkK1STLUpnHl2SeNnvKniNpd1qB/THGRP37XFHWjY8wrnvnAUpmtNAi2FY/13T89c
-         6CpugcGsGncfXuvWp1vMrHJWXD1Q4FHSjzYs1dcWcFZj839OpnvM6fOV3Xa6Kn9RQtKy
-         nSsUdKFuiCsrz6yT4JCjvL8QJIRI7zQJ6LBEVc2lhNQu41ri54ErUaivvxaMdlQZ14nu
-         XgK7rE2Nhyp3ELxDOQpIQgezmbEdycdxzEjcr/ekbNfVOIJzETC1mFb+EiSsUaikl7Ej
-         GwO5r1oEBu1IuiZa+GNHW6vTOMALJZ2jGH8sye+yT+gFEzCUWkc1NoEiKfs2mrMqpj5U
-         LRfQ==
-X-Gm-Message-State: AOAM532xfHYJ2FdlG2YX+veiT83fN2Y8rlwHYx+MXMUt6zRTd5CeIj7o
-        u/EXgerx+WY+XIejPVGGZzHJRg==
-X-Google-Smtp-Source: ABdhPJwX6MC0pslJVSWjiHUEQMYnxqyk6w0QgIpJI+wow/rFNf/BdwqJWoRkWhXswPubyBwBxdmobA==
-X-Received: by 2002:a62:7950:0:b029:30f:cffa:a25e with SMTP id u77-20020a6279500000b029030fcffaa25emr1324959pfc.50.1625259614259;
-        Fri, 02 Jul 2021 14:00:14 -0700 (PDT)
-Received: from x1 ([2601:1c0:4701:ae70:f236:257f:88f9:445e])
-        by smtp.gmail.com with ESMTPSA id 11sm4742618pge.7.2021.07.02.14.00.12
+        bh=eJiGAN6TDR6lmwiAYmh3I6OaAmocOou8J1w1pSB9/H0=;
+        b=lbVthRRCmFZfD0iM1GHuOEgDpJwG1VR/hp5ZZXovao5T6OksAfswDXK/rK+Lf+6opv
+         /Kv3NOGLG7DE6j01QV9qYKHkIQwVXl5gC6GEIkJeAgThk+SrW3CsrUbkpGGNG+RSrbIh
+         cwfZDZCfOzhhzh786/5moQ33kt1+DpZrstOMBps4murstRWPL+Ls+doce1mDaILNdIgD
+         Kp+WEp2mJutjfBCnFutINATovBp7QOg2OfCsRddXIEcH2kQUXHUfmB7FcbDTtllavFdg
+         OyiGECRE3aaQJ6bcayUq2NguLExQJw9wUCxOhLzScmPRiPjDIOzwBtjVyzhkJtPOUOH8
+         kLxg==
+X-Gm-Message-State: AOAM530Ye73TlCRLHN8xPmrJMur5EDavIScIVA31dDyyR3dlUj+gUH5N
+        9GeatpBvqaOnrSvE4J2hRL8=
+X-Google-Smtp-Source: ABdhPJyHMRv1obezn+AfX6bOyzQG76tl7I6rKmaqgrj+MqxqdnHnoP4BX96FwzKWiO449bdx4Qvc6Q==
+X-Received: by 2002:a5d:9c86:: with SMTP id p6mr1445235iop.24.1625259612732;
+        Fri, 02 Jul 2021 14:00:12 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id o7sm2331377ilt.29.2021.07.02.14.00.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 14:00:13 -0700 (PDT)
-Date:   Fri, 2 Jul 2021 14:00:10 -0700
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Michael Walle <michael@walle.cc>, g@x1
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Fu Wei <tekkamanninja@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
-        Huan Feng <huan.feng@starfivetech.com>
-Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO
- driver
-Message-ID: <20210702210010.GB1035183@x1>
-References: <20210701002037.912625-1-drew@beagleboard.org>
- <20210701002037.912625-3-drew@beagleboard.org>
- <8c59105d32a9936f8806501ecd20e044@walle.cc>
+        Fri, 02 Jul 2021 14:00:12 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 21:00:11 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] percpu: implement partial chunk depopulation
+Message-ID: <YN9+W+81xaMeckMi@google.com>
+References: <20210419225047.3415425-1-dennis@kernel.org>
+ <20210419225047.3415425-4-dennis@kernel.org>
+ <20210702191140.GA3166599@roeck-us.net>
+ <YN9s5HLjNeb1lxMK@google.com>
+ <dc349738-544c-34a1-748f-4e1a2c595a20@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8c59105d32a9936f8806501ecd20e044@walle.cc>
+In-Reply-To: <dc349738-544c-34a1-748f-4e1a2c595a20@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 08:39:40AM +0200, Michael Walle wrote:
-> Hi Drew,
-> 
-> Am 2021-07-01 02:20, schrieb Drew Fustini:
-> > Add GPIO driver for the StarFive JH7100 SoC [1] used on the
-> > BeagleV Starlight JH7100 board [2].
+On Fri, Jul 02, 2021 at 01:28:18PM -0700, Guenter Roeck wrote:
+> On 7/2/21 12:45 PM, Dennis Zhou wrote:
+> > Hello,
 > > 
-> > [1] https://github.com/starfive-tech/beaglev_doc/
-> > [2] https://github.com/beagleboard/beaglev-starlight
+> > On Fri, Jul 02, 2021 at 12:11:40PM -0700, Guenter Roeck wrote:
+> > > Hi,
+> > > 
+> > > On Mon, Apr 19, 2021 at 10:50:46PM +0000, Dennis Zhou wrote:
+> > > > From: Roman Gushchin <guro@fb.com>
+> > > > 
+> > > > This patch implements partial depopulation of percpu chunks.
+> > > > 
+> > > > As of now, a chunk can be depopulated only as a part of the final
+> > > > destruction, if there are no more outstanding allocations. However
+> > > > to minimize a memory waste it might be useful to depopulate a
+> > > > partially filed chunk, if a small number of outstanding allocations
+> > > > prevents the chunk from being fully reclaimed.
+> > > > 
+> > > > This patch implements the following depopulation process: it scans
+> > > > over the chunk pages, looks for a range of empty and populated pages
+> > > > and performs the depopulation. To avoid races with new allocations,
+> > > > the chunk is previously isolated. After the depopulation the chunk is
+> > > > sidelined to a special list or freed. New allocations prefer using
+> > > > active chunks to sidelined chunks. If a sidelined chunk is used, it is
+> > > > reintegrated to the active lists.
+> > > > 
+> > > > The depopulation is scheduled on the free path if the chunk is all of
+> > > > the following:
+> > > >    1) has more than 1/4 of total pages free and populated
+> > > >    2) the system has enough free percpu pages aside of this chunk
+> > > >    3) isn't the reserved chunk
+> > > >    4) isn't the first chunk
+> > > > If it's already depopulated but got free populated pages, it's a good
+> > > > target too. The chunk is moved to a special slot,
+> > > > pcpu_to_depopulate_slot, chunk->isolated is set, and the balance work
+> > > > item is scheduled. On isolation, these pages are removed from the
+> > > > pcpu_nr_empty_pop_pages. It is constantly replaced to the
+> > > > to_depopulate_slot when it meets these qualifications.
+> > > > 
+> > > > pcpu_reclaim_populated() iterates over the to_depopulate_slot until it
+> > > > becomes empty. The depopulation is performed in the reverse direction to
+> > > > keep populated pages close to the beginning. Depopulated chunks are
+> > > > sidelined to preferentially avoid them for new allocations. When no
+> > > > active chunk can suffice a new allocation, sidelined chunks are first
+> > > > checked before creating a new chunk.
+> > > > 
+> > > > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > > > Co-developed-by: Dennis Zhou <dennis@kernel.org>
+> > > > Signed-off-by: Dennis Zhou <dennis@kernel.org>
+> > > 
+> > > This patch results in a number of crashes and other odd behavior
+> > > when trying to boot mips images from Megasas controllers in qemu.
+> > > Sometimes the boot stalls, but I also see various crashes.
+> > > Some examples and bisect logs are attached.
 > > 
-> > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> > Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
-> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> > Ah, this doesn't look good.. Do you have a reproducer I could use to
+> > debug this?
+> > 
 > 
-> Could this driver use GPIO_REGMAP and REGMAP_IRQ? See
-> drivers/gpio/gpio-sl28cpld.c for an example.
+> I copied the relevant information to http://server.roeck-us.net/qemu/mips/.
 > 
-> -michael
 
-I looked more at the example.  Do you have a suggestion of how to handle
-different types of interrupts?  
+This is perfect! I'm able to reproduce it.
 
-This gpio controller can handle level triggered and edge triggered.
-Edge triggered can be positve, negative or both. Level trigger can be
-high or low.
+> run.sh - qemu command (I tried with qemu 6.0 and 4.2.1)
+> rootfs.ext2 - root file system
+> config - complete configuration
+> defconfig - shortened configuration
+> vmlinux - a crashing kernel image (v5.13-7637-g3dbdb38e2869, with above configuration)
+> 
+> Interestingly, the crash doesn't always happen at the same location, even
+> with the same image. Some memory corruption, maybe ?
+> 
+
+Well a few factors matter, percpu gets placed in random places. Percpu
+allocations may happen in different order and this will cause different
+freeing patterns. Then the problem patch may free the wrong backing
+page.
+
+I'm working on it, x86 doesn't seem to have any immediate issues
+(fingers crossed) so it must be some delta here.
+
+> Hope this helps. Please let me know if I can provide anything else.
+> 
+> Thanks,
+> Guenter
 
 Thanks,
-Drew
+Dennis
