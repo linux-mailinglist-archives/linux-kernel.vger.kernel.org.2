@@ -2,120 +2,423 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F013BA3B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 19:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2B53BA3BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 19:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhGBRoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 13:44:46 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:53165 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229455AbhGBRop (ORCPT
+        id S230109AbhGBRrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 13:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229812AbhGBRrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 13:44:45 -0400
-X-UUID: 25a63eb8ebbc4918912bc611a5dc5f62-20210703
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=W3mE1N6NI3osqqcQy+E1z3volKwDBN0BeypQrroDM1M=;
-        b=mNkERxTXO2mhw9YslIko/EncRE9voatsfxdSGzoDF0e9e7FqLWDOQxKjOaP16rOTvVem7cR9TCc5NQ4+xZcYG/7cr1eHCrqNcsgIy+a621wUwbbjNi1woWsOUTanANfebBlispyyMivE9jZiq2zoyWNfc6vNRT4DcosXV8IQxO8=;
-X-UUID: 25a63eb8ebbc4918912bc611a5dc5f62-20210703
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <jason-jh.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1516597151; Sat, 03 Jul 2021 01:42:10 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 3 Jul 2021 01:42:01 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 3 Jul 2021 01:42:01 +0800
-Message-ID: <06acd9a411edaf4dd3db4344646ca1e1875c8f0b.camel@mediatek.com>
-Subject: Re: [PATCH v1 3/5] arm64: dts: mt8195: add gce node
-From:   Jason-JH Lin <jason-jh.lin@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Date:   Sat, 3 Jul 2021 01:42:01 +0800
-In-Reply-To: <CAAOTY_9B1L=1=LzdC_1_czFgc4smH0hTk0B=XCquH08KAjx_nA@mail.gmail.com>
-References: <20210630051418.14044-1-jason-jh.lin@mediatek.com>
-         <20210630051418.14044-4-jason-jh.lin@mediatek.com>
-         <CAAOTY_9B1L=1=LzdC_1_czFgc4smH0hTk0B=XCquH08KAjx_nA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Fri, 2 Jul 2021 13:47:14 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D49D7C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 10:44:40 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso7006626wmc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 10:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+RepJf9ECUmBMkI5WjyG+s9QdRcdbVPpCEHIihTBWZs=;
+        b=ZXjZ1QYgOcUDOjpYAUHC55p5URXRZYcCOS+iNN4B8BwMaVvtjvZQY0y0s+u0sta3uk
+         VvulMzxEwBAVPYPmP8JWRh1lC4JtSAJ+clhFj7d3VDAzDAyWkyNQuUMzHfl9cKdUqrUM
+         6MGP8ZvyHoROxrPce4jDlNsiT7N6TlRyxVZyCf0C1ZYtKDGoXmZCZnTOXCruzgho8dsK
+         z8TxxOTpTIB8aNgJ1M0aVAdyGkKJgQfJetYPMgwGKV1l3hJ9YraXePW69U6qg+GSY6HH
+         tBc2LEr+6Zi3adx0dj+q/yf/WLTmIygGSqK7zfxQtCXsSkUadZ3vdlpVbMUGro1DCHkb
+         GeBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+RepJf9ECUmBMkI5WjyG+s9QdRcdbVPpCEHIihTBWZs=;
+        b=mWI/RRdWEIckz/fod4W5RXGddbpkxPO9kMhAi9Oh1YVTVR9d3H7wMYEBHthkvyhRMj
+         hC40RIcktb9F3FUsuLZ0Gc02Y2Xye/iXYerpJIbfwbaHHmEfqmOWAdd/w78RQh8uScTM
+         rb/iJP3p3KmAYAnWn9uvxrceKpOE5Mh8zmj2cGPaGNJjF3G6uYgJG/rJxcY9axzzFBYv
+         tZz/WIZYdU7aoQHuvlHNZuiNoBUGbKeWyHxzozQGUm0b/O1wN2M7HrqHEbf1q3qmPfDN
+         Yidj4Xut6MUj+5xOt4JC7UR1nLg+muY6rsKrpkmrBO5gzdfXz02CIH4QoOOTQ5IVbgUZ
+         ItCQ==
+X-Gm-Message-State: AOAM5310arN9YshyGN+ADiED9vZj4TYZ9RYu0sOR0126IkGbBBREd35/
+        q+sOraQOa1IsXBAcWr+5yLI8+qtOrDcRg+3Xynr0VQ==
+X-Google-Smtp-Source: ABdhPJz+oilXA52eVyzW4o7NgteH6hrX5bEmGEVRmbLdJBVts6/XjW3OE4vztUD8t+5Xuj2MJqofmbZx1703NwEY8co=
+X-Received: by 2002:a1c:7411:: with SMTP id p17mr993755wmc.116.1625247879411;
+ Fri, 02 Jul 2021 10:44:39 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20200707101912.571531-1-maxime@cerno.tech> <YM6dgVb12oITNfc0@pendragon.ideasonboard.com>
+ <CAPY8ntC+hzmfrJwWW0ytNdHSXruMKMi7N3K6tdJbp9gDBbJ3Qw@mail.gmail.com>
+ <YM+MEsKjdkYAVI5X@pendragon.ideasonboard.com> <YM/FwVkkQXX8VrzV@pendragon.ideasonboard.com>
+ <CAPY8ntCbzFkbM5fZmo3RVw5okQkVKFcR8TCHOo+xkW7wNk8MQA@mail.gmail.com>
+ <YNCMbw6B6OL4Gho3@pendragon.ideasonboard.com> <YNCPcbJTEZVLJyCF@pendragon.ideasonboard.com>
+ <YNCbVtIFcryw6wO5@pendragon.ideasonboard.com> <YN9DBX0QVbjtbwFE@pendragon.ideasonboard.com>
+In-Reply-To: <YN9DBX0QVbjtbwFE@pendragon.ideasonboard.com>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 2 Jul 2021 18:44:22 +0100
+Message-ID: <CAPY8ntCiw=28ay5VmARG55q00L1fj9aTKCbHi+sp=FTPUqZLVA@mail.gmail.com>
+Subject: Re: [PATCH] drm/vc4: dsi: Only register our component once a DSI
+ device is attached
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Marek Vasut <marex@denx.de>, Tim Gover <tim.gover@raspberrypi.com>,
+        Eric Anholt <eric@anholt.net>,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Maxime Ripard <maxime@cerno.tech>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-rpi-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTA3LTAxIGF0IDA3OjIxICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
-PiBIaSwgSmFzb246DQo+IA0KPiBqYXNvbi1qaC5saW4gPGphc29uLWpoLmxpbkBtZWRpYXRlay5j
-b20+IOaWvCAyMDIx5bm0NuaciDMw5pelIOmAseS4iSDkuIvljYgxOjE45a+r6YGT77yaDQo+ID4g
-DQo+ID4gYWRkIGdjZSBub2RlIG9uIGR0cyBmaWxlLg0KPiA+IA0KPiA+IENoYW5nZS1JZDogSTgw
-NTQ1NWNiN2M2NDVjYjVhMjRjZTFjODdmZTg5MWE4MDcwNjkxMjMNCj4gPiBTaWduZWQtb2ZmLWJ5
-OiBqYXNvbi1qaC5saW4gPGphc29uLWpoLmxpbkBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4g
-VGhpcyBwYXRjaCBpcyBiYXNlZCBvbiBbMV0NCj4gPiBbMV0gQWRkIE1lZGlhdGVrIFNvQyBNVDgx
-OTUgYW5kIGV2YWx1YXRpb24gYm9hcmQgZHRzIGFuZCBNYWtlZmlsZQ0KPiA+ICAgICAtIA0KPiA+
-IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC1tZWRpYXRlay9wYXRj
-aC8yMDIxMDYwMTA3NTM1MC4zMTUxNS0yLXNlaXlhLndhbmdAbWVkaWF0ZWsuY29tLw0KPiA+IC0t
-LQ0KPiA+ICBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5NS5kdHNpIHwgMjENCj4g
-PiArKysrKysrKysrKysrKysrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDIxIGluc2VydGlv
-bnMoKykNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRl
-ay9tdDgxOTUuZHRzaQ0KPiA+IGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTUu
-ZHRzaQ0KPiA+IGluZGV4IGMxNDZhOTFjNjI3Mi4uMzgwNTQxOTZlZWE0IDEwMDY0NA0KPiA+IC0t
-LSBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTk1LmR0c2kNCj4gPiArKysgYi9h
-cmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5NS5kdHNpDQo+ID4gQEAgLTYsNiArNiw3
-IEBADQo+ID4gDQo+ID4gIC9kdHMtdjEvOw0KPiA+ICAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvY2xv
-Y2svbXQ4MTk1LWNsay5oPg0KPiA+ICsjaW5jbHVkZSA8ZHQtYmluZGluZ3MvZ2NlL210ODE5NS1n
-Y2UuaD4NCj4gPiAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2ludGVycnVwdC1jb250cm9sbGVyL2Fy
-bS1naWMuaD4NCj4gPiAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2ludGVycnVwdC1jb250cm9sbGVy
-L2lycS5oPg0KPiA+ICAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvcG93ZXIvbXQ4MTk1LXBvd2VyLmg+
-DQo+ID4gQEAgLTcxNyw2ICs3MTgsMjYgQEANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAj
-Y2xvY2stY2VsbHMgPSA8MT47DQo+ID4gICAgICAgICAgICAgICAgIH07DQo+ID4gDQo+ID4gKyAg
-ICAgICAgICAgICAgIGdjZTA6IG1kcF9tYWlsYm94QDEwMzIwMDAwIHsNCj4gPiArICAgICAgICAg
-ICAgICAgICAgICAgICBjb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5NS1nY2UiOw0KPiA+ICsg
-ICAgICAgICAgICAgICAgICAgICAgIHJlZyA9IDwwIDB4MTAzMjAwMDAgMCAweDQwMDA+Ow0KPiA+
-ICsgICAgICAgICAgICAgICAgICAgICAgIGludGVycnVwdHMgPSA8R0lDX1NQSSAyMjYNCj4gPiBJ
-UlFfVFlQRV9MRVZFTF9ISUdIIDA+Ow0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICNtYm94
-LWNlbGxzID0gPDM+Ow0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGNsb2NrcyA9IDwmaW5m
-cmFjZmdfYW8gQ0xLX0lORlJBX0FPX0dDRT4sDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfQU9fR0NFMj47DQo+ID4gKyAgICAgICAg
-ICAgICAgICAgICAgICAgY2xvY2stbmFtZXMgPSAiZ2NlIiwgImdjZTEiOw0KPiA+ICsgICAgICAg
-ICAgICAgICB9Ow0KPiA+ICsNCj4gPiArICAgICAgICAgICAgICAgZ2NlMTogZGlzcF9tYWlsYm94
-QDEwMzMwMDAwIHsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gIm1l
-ZGlhdGVrLG10ODE5NS1nY2UiOw0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHJlZyA9IDww
-IDB4MTAzMzAwMDAgMCAweDQwMDA+Ow0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGludGVy
-cnVwdHMgPSA8R0lDX1NQSSAyMjgNCj4gPiBJUlFfVFlQRV9MRVZFTF9ISUdIIDA+Ow0KPiA+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICNtYm94LWNlbGxzID0gPDM+Ow0KPiA+ICsgICAgICAgICAg
-ICAgICAgICAgICAgIGNsb2NrcyA9IDwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX0FPX0dDRT4sDQo+
-ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPCZpbmZyYWNmZ19hbyBDTEtfSU5G
-UkFfQU9fR0NFMj47DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgY2xvY2stbmFtZXMgPSAi
-Z2NlIiwgImdjZTEiOw0KPiANCj4gSSB0aGluayBlYWNoIGdjZSBjb3VsZCBiZSBicm9rZW4gaW50
-byB0d28gZnVuY3Rpb24gYmxvY2ssIHRoZSBjb3JlDQo+IGZ1bmN0aW9uIGJsb2NrIGFuZCBldmVu
-dCBwcm9jZXNzaW5nIGJsb2NrLg0KPiBFYWNoIGJsb2NrIGhhcyBpbmRlcGVuZGVudCBjbG9jayBz
-b3VyY2UgYW5kICJnY2UiIGlzIGZvciBjb3JlDQo+IGZ1bmN0aW9uDQo+IGJsb2NrIGFuZCAiZ2Nl
-MSIgaXMgZm9yIGV2ZW50IHByb2Nlc3NpbmcgYmxvY2ssIGlzIGl0Pw0KPiBJZiBzbywgdGhlIGNv
-cmUgZnVuY3Rpb24gb2YgZ2NlMCBhbmQgZ2NlMSBoYXMgY29tbW9uIGNsb2NrIHNvdXJjZQ0KPiAo
-PCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfQU9fR0NFPiksIHJpZ2h0Pw0KPiANCj4gUmVnYXJkcywN
-Cj4gQ2h1bi1LdWFuZy4NCj4gDQo+ID4gKyAgICAgICAgICAgICAgIH07DQo+ID4gKw0KPiA+ICAg
-ICAgICAgICAgICAgICB1YXJ0MDogc2VyaWFsQDExMDAxMTAwIHsNCj4gPiAgICAgICAgICAgICAg
-ICAgICAgICAgICBjb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5NS11YXJ0IiwNCj4gPiAibWVk
-aWF0ZWssbXQ2NTc3LXVhcnQiOw0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgIHJlZyA9IDww
-IDB4MTEwMDExMDAgMCAweDEwMD47DQo+ID4gLS0NCj4gPiAyLjE4LjANCj4gPiANCmdjZTAgYW5k
-IGdjZTEgYXJlIHR3byBkdXBsaWNhdGUgaGFyZHdhcmUgbm9kZSBlYWNoIG9mIHRoZW0gaGF2ZSB0
-aGllcg0Kb3duIGNvcmUgZnVuY3Rpb24gYmxvY2sgYW5kIGV2ZW50IHByb2NjZXNzaW5nIGJsb2Nr
-Lg0KVGhlIGNsb2NrczogPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfQU9fR0NFPiBpcyBmb3IgZ2Nl
-MCwNCjwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX0FPX0dDRTI+IGlzIGZvciBnY2UxLg0KDQpGb3Ig
-dGhlIGRlc2lnbiBvZiBHQ0UgaGFyZHdhcmUgZXZlbnQgc2lnbmFsIHRyYW5zcG9ydGF0aW9uLCBl
-YWNoIGNtZHENCm1haWxib3ggc2hvdWxkIGVuYWJsZSBvciBkaXNhYmxlIHRoZSBvdGhlciBnY2Ug
-Y2xrIGF0IHRoZSBzYW1lIHRpbWUuDQoNCkkgcHV0IHR3byBjbG9jayBzb3VyY2UgaW4gb25lIGdj
-ZSBub2RlIHNvIHRoYXQgSSBjYW4gZ2V0IGJvdGggb2YgdGhlbQ0KZWFzaWVyIHdoZW4gZWFjaCBj
-bWRxIGRyaXZlciBwcm9iZS4NCkJ1dCBJIHRoaW5rIHRha2Ugb3V0IHRoZSBvdGhlciBnY2UgY2xr
-IGZvciBlYWNoIGdjZSBub2RlIGlzIGZpbmUuDQpJIHdpbGwgbW9kaWZ5IGl0IGF0IHRoZSBuZXh0
-IHBhdGNoIHZlcnNpb24uDQoNClJlZ2FyZHMsDQpKYXNvbi1KSC5MaW4uDQotLSANCkphc29uLUpI
-IExpbiA8amFzb24tamgubGluQG1lZGlhdGVrLmNvbT4NCg==
+Hi Laurent
 
+On Fri, 2 Jul 2021 at 17:47, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Dave,
+>
+> On Mon, Jun 21, 2021 at 04:59:51PM +0300, Laurent Pinchart wrote:
+> > On Mon, Jun 21, 2021 at 04:09:05PM +0300, Laurent Pinchart wrote:
+> > > On Mon, Jun 21, 2021 at 03:56:16PM +0300, Laurent Pinchart wrote:
+> > > > On Mon, Jun 21, 2021 at 12:49:14PM +0100, Dave Stevenson wrote:
+> > > > > On Sun, 20 Jun 2021 at 23:49, Laurent Pinchart wrote:
+> > > > > > On Sun, Jun 20, 2021 at 09:42:27PM +0300, Laurent Pinchart wrote:
+> > > > > > > On Sun, Jun 20, 2021 at 03:29:03PM +0100, Dave Stevenson wrote:
+> > > > > > > > On Sun, 20 Jun 2021 at 04:26, Laurent Pinchart wrote:
+> > > > > > > > >
+> > > > > > > > > Hi Maxime,
+> > > > > > > > >
+> > > > > > > > > I'm testing this, and I'm afraid it causes an issue with all the
+> > > > > > > > > I2C-controlled bridges. I'm focussing on the newly merged ti-sn65dsi83
+> > > > > > > > > driver at the moment, but other are affected the same way.
+> > > > > > > > >
+> > > > > > > > > With this patch, the DSI component is only added when the DSI device is
+> > > > > > > > > attached to the host with mipi_dsi_attach(). In the ti-sn65dsi83 driver,
+> > > > > > > > > this happens in the bridge attach callback, which is called when the
+> > > > > > > > > bridge is attached by a call to drm_bridge_attach() in vc4_dsi_bind().
+> > > > > > > > > This creates a circular dependency, and the DRM/KMS device is never
+> > > > > > > > > created.
+> > > > > > > > >
+> > > > > > > > > How should this be solved ? Dave, I think you have shown an interest in
+> > > > > > > > > the sn65dsi83 recently, any help would be appreciated. On a side note,
+> > > > > > > > > I've tested the ti-sn65dsi83 driver on a v5.10 RPi kernel, without much
+> > > > > > > > > success (on top of commit e1499baa0b0c I get a very weird frame rate -
+> > > > > > > > > 147 fps of 99 fps instead of 60 fps - and nothing on the screen, and on
+> > > > > > > > > top of the latest v5.10 RPi branch, I get lock-related warnings at every
+> > > > > > > > > page flip), which is why I tried v5.12 and noticed this patch. Is it
+> > > > > > > > > worth trying to bring up the display on the v5.10 RPi kernel in parallel
+> > > > > > > > > to fixing the issue introduced in this patch, or is DSI known to be
+> > > > > > > > > broken there ?
+> > > > > > > >
+> > > > > > > > I've been looking at SN65DSI83/4, but as I don't have any hardware
+> > > > > > > > I've largely been suggesting things to try to those on the forums who
+> > > > > > > > do [1].
+> > > > > > > >
+> > > > > > > > My branch at https://github.com/6by9/linux/tree/rpi-5.10.y-sn65dsi8x-marek
+> > > > > > > > is the latest one I've worked on. It's rpi-5.10.y with Marek's driver
+> > > > > > > > cherry-picked, and an overlay and simple-panel definition by others.
+> > > > > > > > It also has a rework for vc4_dsi to use pm_runtime, instead of
+> > > > > > > > breaking up the DSI bridge chain (which is flawed as it never calls
+> > > > > > > > the bridge mode_set or mode_valid functions which sn65dsi83 relies
+> > > > > > > > on).
+> >
+> > I've looked at that, and I'm afraid it doesn't go in the right
+> > direction. The drm_encoder.crtc field is deprecated and documented as
+> > only meaningful for non-atomic drivers. You're not introducing its
+> > usage, but moving the configuration code from .enable() to the runtime
+> > PM resume handler will make it impossible to fix this. The driver should
+> > instead move to the .atomic_enable() function. If you need
+> > enable/pre_enable in the DSI encoder, then you should turn it into a
+> > drm_bridge.
+>
+> Is this something you're looking at by any chance ? I'm testing the
+> ti-sn65dsi83 driver with VC4. I've spent a couple of hours debugging,
+> only to realise that the vc4_dsi driver (before the rework you mention
+> above) doesn't call .mode_set() on the bridges... Applying my sn65dsi83
+> series that removes .mode_set() didn't help much as vc4_dsi doesn't call
+> the atomic operations either :-) I'll test your branch now.
+
+This is one of the reasons for my email earlier today - thank you for
+your reply.
+
+The current mainline vc4_dsi driver deliberately breaks the bridge
+chain so that it gets called before the panel/bridge pre_enable and
+can power everything up, therefore pre_enable can call host_transfer
+to configure the panel/bridge over the DSI interface.
+However we've both noted that it doesn't forward on the mode_set and
+mode_valid calls, and my investigations say that it doesn't have
+enough information to make those calls.
+
+My branch returns the chain to normal, and tries to use pm_runtime to
+power up the PHY at the first usage (host_transfer or _enable). The
+PHY enable needs to know the link frequency to use, hence my question
+over how that should be determined.
+Currently it's coming from drm_encoder.crtc, but you say that's
+deprecated. If a mode hasn't been set then we have no clock
+information and bad things will happen.
+
+On the Pi forums one person has DSI83 working with an 800x1280 panel
+(Google Nexus 7 Gen 1 AIUI) using my branch, but only on 3 lanes
+rather than 4. I have a suspicion it's because the mode_fixup for
+burst mode has moved the panel timings too far outside the panel's
+spec, hence my other question about how bridges should pick up the
+panel timings independent of burst mode timings. The SN65DSI83 driver
+currently programs the output LVDS side with the DSI timings and
+doesn't account for burst mode.
+
+If you want a call or to discuss your setup in more detail, then give
+me a shout.
+We have a DSI analyser on order now (3-4 week lead time), so hopefully
+I'll soon be able to get some better visibility of what the block is
+doing.
+
+  Dave
+
+> > > > > > > > I ran it on Friday in the lab and encountered an issue with vc4_dsi
+> > > > > > > > should vc4_dsi_encoder_mode_fixup wish for a divider of 7 (required
+> > > > > > > > for this 800x1280 panel over 4 lanes) where it resulted in an invalid
+> > > > > > > > mode configuration. That resulted in patch [2] which then gave me
+> > > > > > > > sensible numbers.
+> >
+> > I have that commit in my branch, but still get 125 fps instead of 60 fps
+> > with kmstest --flip (after reverting commit 1c3834201272 "drm/vc4:
+> > Increase the core clock based on HVS load"). I'm not sure if [2] is the
+> > cause of this, but there seems to be an improvement: in my previous
+> > tests, the mode was fixed up every time I would start the application,
+> > with the timings getting more and more bizarre at every run :-)
+> >
+> > > > > > > > That branch with dtoverlay=vc4-kms-v3d and
+> > > > > > > > dtoverlay=vc4-kms-dsi-ti-sn65dsi83 created all the expected devices,
+> > > > > > > > and everything came up normally.
+> > > > > > > > It was a busy day, but I think I even stuck a scope on the clock lanes
+> > > > > > > > at that point and confirmed that they were at the link frequency
+> > > > > > > > expected.
+> > > > > > >
+> > > > > > > Thanks, I'll test your branch and will report the results.
+> > > > > >
+> > > > > > I had to apply the following diff to work around a crash:
+> > > > > >
+> > > > > > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> > > > > > index 55b6c53207f5..647426aa793a 100644
+> > > > > > --- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> > > > > > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> > > > > > @@ -525,6 +525,9 @@ static bool sn65dsi83_mode_fixup(struct drm_bridge *bridge,
+> > > > > >
+> > > > > >         /* The DSI format is always RGB888_1X24 */
+> > > > > >         list_for_each_entry(connector, &ddev->mode_config.connector_list, head) {
+> > > > > > +               if (!connector->display_info.bus_formats)
+> > > > > > +                       continue;
+> > > > > > +
+> > > > > >                 switch (connector->display_info.bus_formats[0]) {
+> > > > > >                 case MEDIA_BUS_FMT_RGB666_1X7X3_SPWG:
+> > > > > >                         ctx->lvds_format_24bpp = false;
+> > > > > >
+> > > > > > connector->display_info.bus_formats is NULL for the HDMI connectors, as
+> > > > > > I have nothing connected to them, as well as for the writeback
+> > > > > > connector.
+> > > > >
+> > > > > I'm now confused as to what I'm doing as my branch appears NOT to have
+> > > > > Marek's latest version of the driver as it doesn't have
+> > > > > sn65dsi83_mode_fixup.
+> > > > > I need to have another look at what's going on - I think I've got
+> > > > > branches confused when switching between machines :-( Remaking that
+> > > > > branch now.
+> > > > >
+> > > > > I do see that Marek has sent another patch around
+> > > > > sn65dsi83_mode_fixup, but it'll still dereference
+> > > > > connector->display_info.bus_formats[0] on all connectors. Shouldn't it
+> > > > > only be switching on the one connector that is connected to this
+> > > > > bridge, not HDMI or writeback connectors? I'm not totally clear on
+> > > > > which connectors are in that list.
+> > > > > https://patchwork.freedesktop.org/patch/440175/
+> > > >
+> > > > The following series should fix the issue:
+> > > >
+> > > > [PATCH] drm/bridge: ti-sn65dsi83: Replace connector format patching with atomic_get_input_bus_fmts
+> > > > [PATCH 0/5] ti-sn65dsi83: Finalize transition to atomic operations
+> > > >
+> > > > > > Then, when running kmstest --flip, I get one warning per frame:
+> > > > > >
+> > > > > > [   29.762089] [drm:vc4_dsi_runtime_resume] *ERROR* vc4_dsi_runtime_resume:
+> > > > > > [   29.763200] [drm:vc4_dsi_runtime_resume] *ERROR* vc4_dsi_runtime_resume: All good
+> > > > > > [   29.793861] ------------[ cut here ]------------
+> > > > > > [   29.798572] WARNING: CPU: 2 PID: 249 at drivers/gpu/drm/drm_modeset_lock.c:246 drm_modeset_lock+0xd0/0x100
+> > > > > > [   29.808365] Modules linked in: ipv6 bcm2835_codec(C) bcm2835_unicam bcm2835_v4l2(C) bcm2835_isp(C) bcm2835_mmal_vchiq(C) v4l2_mem2mem v4l2_dv_timings imx296 rtc_ds1307 videobuf2_vmallom
+> > > > > > [   29.855284] CPU: 2 PID: 249 Comm: kworker/u8:10 Tainted: G         C        5.10.44-v8+ #23
+> > > > > > [   29.863756] Hardware name: Raspberry Pi Compute Module 4 Rev 1.0 (DT)
+> > > > > > [   29.870297] Workqueue: events_unbound commit_work
+> > > > > > [   29.875077] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
+> > > > > > [   29.881172] pc : drm_modeset_lock+0xd0/0x100
+> > > > > > [   29.885506] lr : drm_atomic_get_new_or_current_crtc_state+0x6c/0x110
+> > > > > > [   29.891950] sp : ffffffc011fcbcb0
+> > > > > > [   29.895308] x29: ffffffc011fcbcb0 x28: ffffff80403fe780
+> > > > > > [   29.900705] x27: ffffff80415a2000 x26: ffffffc0106f0000
+> > > > > > [   29.906100] x25: 0000000000000000 x24: ffffff80420d3c80
+> > > > > > [   29.911495] x23: ffffff8042174080 x22: 0000000000000038
+> > > > > > [   29.916890] x21: 0000000000000000 x20: ffffff80421740a8
+> > > > > > [   29.922284] x19: ffffffc011f8bc50 x18: 0000000000000000
+> > > > > > [   29.927678] x17: 0000000000000000 x16: 0000000000000000
+> > > > > > [   29.933072] x15: 0000000000000000 x14: 0000000000000000
+> > > > > > [   29.938466] x13: 0048000000000329 x12: 0326032303290320
+> > > > > > [   29.943860] x11: 03200000020301f4 x10: 00000000000019e0
+> > > > > > [   29.949255] x9 : ffffffc0106efd8c x8 : ffffff804390d5c0
+> > > > > > [   29.954649] x7 : 7fffffffffffffff x6 : 0000000000000001
+> > > > > > [   29.960043] x5 : 0000000000000001 x4 : 0000000000000001
+> > > > > > [   29.965436] x3 : ffffff80415a2000 x2 : ffffff804199b200
+> > > > > > [   29.970830] x1 : 00000000000000bc x0 : ffffffc011f8bc98
+> > > > > > [   29.976225] Call trace:
+> > > > > > [   29.978708]  drm_modeset_lock+0xd0/0x100
+> > > > > > [   29.982687]  drm_atomic_get_new_or_current_crtc_state+0x6c/0x110
+> > > > > > [   29.988781]  vc4_atomic_complete_commit+0x4e4/0x860
+> > > > > > [   29.993729]  commit_work+0x18/0x20
+> > > > > > [   29.997181]  process_one_work+0x1c4/0x4a0
+> > > > > > [   30.001248]  worker_thread+0x50/0x420
+> > > > > > [   30.004965]  kthread+0x11c/0x150
+> > > > > > [   30.008239]  ret_from_fork+0x10/0x20
+> > > > > > [   30.011865] ---[ end trace f44ae6b09cda951a ]---
+> > > > > >
+> > > > > > Does it ring any bell ?
+> > > > >
+> > > > > kmstest --flip is a new one on me. kmstest from
+> > > > > https://cgit.freedesktop.org/drm/libdrm/tree/tests/kmstest doesn't
+> > > > > have such an option.
+> > > > > Based on Google, I'm guessing at
+> > > > > https://github.com/tomba/kmsxx/blob/master/utils/kmstest.cpp. Multiple
+> > > > > apps with the same name is always fun.
+> > > >
+> > > > Correct.
+> > > >
+> > > > > > In case this is useful information, the problem didn't occur on top of
+> > > > > > commit e1499baa0b0c.
+> > > > >
+> > > > > e1499baa0b0c is from back in March by the looks of it.
+> > > > > Maxime has done a number of reworks to accessor functions since then,
+> > > > > so it's quite possible there's a locking issue lurking. I'll let him
+> > > > > comment though.
+> > > >
+> > > > Maybe there's a reason why the patch the introduced
+> > > > drm_atomic_get_new_or_current_crtc_state() in your branch hasn't made it
+> > > > to mainline yet :-)
+> > >
+> > > Any chance this could be reverted from the RPi kernel v5.10 branch in
+> > > the meantime ?
+> > >
+> > > > > > > > Coming back to this patch though, it isn't in 5.10 so I'm not seeing
+> > > > > > > > the issues. As to the exact ordering of attaches, I can't claim
+> > > > > > > > sufficient knowledge on that front.
+> > > > > > > > I can try a cherry-pick of this patch to see what goes on, but it
+> > > > > > > > won't be for a day or two.
+> > > > > > >
+> > > > > > > Let's see if Maxime has an opinion :-)
+> > > > > > >
+> > > > > > > > [1] Largely https://www.raspberrypi.org/forums/viewtopic.php?f=44&t=305690,
+> > > > > > > > but ignore about the first 5 pages of the thread as different driver
+> > > > > > > > versions were floating about. Most stuff after that is based on
+> > > > > > > > Marek's driver.
+> > > > > > > > [2] https://github.com/6by9/linux/commit/c3c774136a1e946109048711d16974be8d520aaa
+> > > > > > > >
+> > > > > > > > > On Tue, Jul 07, 2020 at 12:19:12PM +0200, Maxime Ripard wrote:
+> > > > > > > > > > If the DSI driver is the last to probe, component_add will try to run all
+> > > > > > > > > > the bind callbacks straight away and return the error code.
+> > > > > > > > > >
+> > > > > > > > > > However, since we depend on a power domain, we're pretty much guaranteed to
+> > > > > > > > > > be in that case on the BCM2711, and are just lucky on the previous SoCs
+> > > > > > > > > > since the v3d also depends on that power domain and is further in the probe
+> > > > > > > > > > order.
+> > > > > > > > > >
+> > > > > > > > > > In that case, the DSI host will not stick around in the system: the DSI
+> > > > > > > > > > bind callback will be executed, will not find any DSI device attached and
+> > > > > > > > > > will return EPROBE_DEFER, and we will then remove the DSI host and ask to
+> > > > > > > > > > be probed later on.
+> > > > > > > > > >
+> > > > > > > > > > But since that host doesn't stick around, DSI devices like the RaspberryPi
+> > > > > > > > > > touchscreen whose probe is not linked to the DSI host (unlike the usual DSI
+> > > > > > > > > > devices that will be probed through the call to mipi_dsi_host_register)
+> > > > > > > > > > cannot attach to the DSI host, and we thus end up in a situation where the
+> > > > > > > > > > DSI host cannot probe because the panel hasn't probed yet, and the panel
+> > > > > > > > > > cannot probe because the DSI host hasn't yet.
+> > > > > > > > > >
+> > > > > > > > > > In order to break this cycle, let's wait until there's a DSI device that
+> > > > > > > > > > attaches to the DSI host to register the component and allow to progress
+> > > > > > > > > > further.
+> > > > > > > > > >
+> > > > > > > > > > Suggested-by: Andrzej Hajda <a.hajda@samsung.com>
+> > > > > > > > > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > > > > > > > > > ---
+> > > > > > > > > >  drivers/gpu/drm/vc4/vc4_dsi.c | 25 ++++++++-----------------
+> > > > > > > > > >  1 file changed, 8 insertions(+), 17 deletions(-)
+> > > > > > > > > >
+> > > > > > > > > > diff --git a/drivers/gpu/drm/vc4/vc4_dsi.c b/drivers/gpu/drm/vc4/vc4_dsi.c
+> > > > > > > > > > index eaf276978ee7..19aab4e7e209 100644
+> > > > > > > > > > --- a/drivers/gpu/drm/vc4/vc4_dsi.c
+> > > > > > > > > > +++ b/drivers/gpu/drm/vc4/vc4_dsi.c
+> > > > > > > > > > @@ -1246,10 +1246,12 @@ static ssize_t vc4_dsi_host_transfer(struct mipi_dsi_host *host,
+> > > > > > > > > >       return ret;
+> > > > > > > > > >  }
+> > > > > > > > > >
+> > > > > > > > > > +static const struct component_ops vc4_dsi_ops;
+> > > > > > > > > >  static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
+> > > > > > > > > >                              struct mipi_dsi_device *device)
+> > > > > > > > > >  {
+> > > > > > > > > >       struct vc4_dsi *dsi = host_to_dsi(host);
+> > > > > > > > > > +     int ret;
+> > > > > > > > > >
+> > > > > > > > > >       dsi->lanes = device->lanes;
+> > > > > > > > > >       dsi->channel = device->channel;
+> > > > > > > > > > @@ -1284,6 +1286,12 @@ static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
+> > > > > > > > > >               return 0;
+> > > > > > > > > >       }
+> > > > > > > > > >
+> > > > > > > > > > +     ret = component_add(&dsi->pdev->dev, &vc4_dsi_ops);
+> > > > > > > > > > +     if (ret) {
+> > > > > > > > > > +             mipi_dsi_host_unregister(&dsi->dsi_host);
+> > > > > > > > > > +             return ret;
+> > > > > > > > > > +     }
+> > > > > > > > > > +
+> > > > > > > > > >       return 0;
+> > > > > > > > > >  }
+> > > > > > > > > >
+> > > > > > > > > > @@ -1662,7 +1670,6 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
+> > > > > > > > > >  {
+> > > > > > > > > >       struct device *dev = &pdev->dev;
+> > > > > > > > > >       struct vc4_dsi *dsi;
+> > > > > > > > > > -     int ret;
+> > > > > > > > > >
+> > > > > > > > > >       dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
+> > > > > > > > > >       if (!dsi)
+> > > > > > > > > > @@ -1670,26 +1677,10 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
+> > > > > > > > > >       dev_set_drvdata(dev, dsi);
+> > > > > > > > > >
+> > > > > > > > > >       dsi->pdev = pdev;
+> > > > > > > > > > -
+> > > > > > > > > > -     /* Note, the initialization sequence for DSI and panels is
+> > > > > > > > > > -      * tricky.  The component bind above won't get past its
+> > > > > > > > > > -      * -EPROBE_DEFER until the panel/bridge probes.  The
+> > > > > > > > > > -      * panel/bridge will return -EPROBE_DEFER until it has a
+> > > > > > > > > > -      * mipi_dsi_host to register its device to.  So, we register
+> > > > > > > > > > -      * the host during pdev probe time, so vc4 as a whole can then
+> > > > > > > > > > -      * -EPROBE_DEFER its component bind process until the panel
+> > > > > > > > > > -      * successfully attaches.
+> > > > > > > > > > -      */
+> > > > > > > > > >       dsi->dsi_host.ops = &vc4_dsi_host_ops;
+> > > > > > > > > >       dsi->dsi_host.dev = dev;
+> > > > > > > > > >       mipi_dsi_host_register(&dsi->dsi_host);
+> > > > > > > > > >
+> > > > > > > > > > -     ret = component_add(&pdev->dev, &vc4_dsi_ops);
+> > > > > > > > > > -     if (ret) {
+> > > > > > > > > > -             mipi_dsi_host_unregister(&dsi->dsi_host);
+> > > > > > > > > > -             return ret;
+> > > > > > > > > > -     }
+> > > > > > > > > > -
+> > > > > > > > > >       return 0;
+> > > > > > > > > >  }
+> > > > > > > > > >
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
