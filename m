@@ -2,163 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE173BA43D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 21:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0843BA43F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 21:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhGBTMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 15:12:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
+        id S230415AbhGBTM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 15:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbhGBTMt (ORCPT
+        with ESMTP id S230418AbhGBTM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 15:12:49 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5304DC061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 12:10:16 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id t15so10287029wry.11
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 12:10:16 -0700 (PDT)
+        Fri, 2 Jul 2021 15:12:56 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB0BC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 12:10:23 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id g10so1431971wmh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 12:10:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=pwYoD+B5XKnwLTcyRy1LIQVYYLjlHZQVZ1+ImYP0NLo=;
-        b=CBPShXOPYqgpGQgdz+9TSJbQ7w7OW39b+MhptbzOrbq2ZLvKvP01ki62Xz/PxR2cvS
-         LS1FeTnMTyMQe4nC+mlvUkS2en6XCKlTg9TiD1F5JO5LX41qnzRK+fqPUputfAyTPIxg
-         rBY9Gp4alPxUxkU4blLQpNUzVhp4KaS6W7uOVcLE95wfQeYh/8EZsKQcY8Vm79HzMjLU
-         wjd8V8mzTBM6jn5ePIMdx5xyMIgogMmIRIYIqJPE8/5s900thDLnIMvA4mB0O0oSmvo0
-         QGvCVrVktni6LZhHDRhhPfEiP13R/2ry+Zp1fTshrltm5gSHnoTKFVPMKK977y9slVV9
-         vYBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=pwYoD+B5XKnwLTcyRy1LIQVYYLjlHZQVZ1+ImYP0NLo=;
-        b=rxNPLnddg/DiLJRvYVqte77UFwAv1MWcS5JwdeSD7M6gnKQfx/gDrU5nyqE2e/zrV6
-         9y2QkEiHEBkJAcvYcBGMiDXNsfaiTE9QxSpedsAJb7/1KioaAEdbdwtzeHvyQCaOFqXc
-         w4tBnAyCn6QIVA7l+AgqXo22gZV3iBhK/DT5BC2gM1SiUmKeGMijzI6Qu6rG7o8kzapZ
-         2ACqQ/YS7bsCedasoL6D1Zs/fwn9ByfpH8mctCNLAW531NV1JACjxMkpSGyOCIySjZ/r
-         KJj0Lk5UCmaUgpYdDDUIYZyiW9YA5vP+wTPXbrrkjP8OnxbdBarW7TgErtis0vIOJNvd
-         VYsQ==
-X-Gm-Message-State: AOAM533VCQeoWF7XKoRGPimc69WhLQzMqDxUFh7LboylqDlVT2aCgTUO
-        FptmsYa3aCX+g9GuW21aoNjU/g==
-X-Google-Smtp-Source: ABdhPJw2z1kS4JD1LLZBKCqieRZzq9InEf52wN2TIEnY7/TnJvGFtkcpfdh4euHle6tf2agiFjvKcg==
-X-Received: by 2002:adf:a355:: with SMTP id d21mr1234792wrb.65.1625253014887;
-        Fri, 02 Jul 2021 12:10:14 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id h21sm3760283wmq.38.2021.07.02.12.10.14
+        bh=Pmanh/l4RYPiMz9vtWN5vGxol6i2zbYeNRxTf6wlNo0=;
+        b=h8lOkcy0Z6seVHPg996JrP6IqrpLp4pAriwUYYdNa41UYfO45lrwbhOoZ80NJRfQM6
+         B2vXzas48bRn8XDOJMDNXxWs982fIRZvkU+9UArz0OnA/Qmp0ZhZsgRGgeYql9soQlaV
+         BC8yeinu9wCkIMe04pvuj0eWLTY/yxagfdqUQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=Pmanh/l4RYPiMz9vtWN5vGxol6i2zbYeNRxTf6wlNo0=;
+        b=b2T+zPek1/VsIvSx2lmwqt/tL9uiX/k0ujCbjYGfxiWQXtCzUmtXlFST/geZeub1ZM
+         owSoiiFZ7TtMZn3gLm+fiz+hhuedGE7yanCTgh8Qq0RG7YQLnMJ8L0TyWayXvWQHdY+S
+         npZ2C3KTKkzlLHT3YblYJLULuGNzbI1wed/PxThsiVgbhfcTABxBnH3bwDPJt8OgTn8v
+         RyLioXmOZg8YNERdMwTpMLFLeAltOqpVF/FceGCUSGq+3UhjG0mQTlcxK5PVY2bI4N2P
+         1BqZm/9D4GHS+iM71BtPlR3Nx99TetlE3KoIXcxy16q97apQACnf0w2Ox7i9dTV7GRdj
+         3zwg==
+X-Gm-Message-State: AOAM5320VayXMbLoy9xes4yeTE8ItL7VPaRhjxz8+KV4AxqcMby+uXyr
+        FazDA5tXrkaEEBjsokPluQGLuw==
+X-Google-Smtp-Source: ABdhPJy5BNnqGN0Fwpl5zTTbBdeJYST9zgAK6VB4zEBH02UqccbbJZ0NAQLXspAuKwm4Ob8x7p3meQ==
+X-Received: by 2002:a05:600c:4f09:: with SMTP id l9mr1368996wmq.114.1625253021638;
+        Fri, 02 Jul 2021 12:10:21 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id d24sm9110479wmb.42.2021.07.02.12.10.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 12:10:14 -0700 (PDT)
-Date:   Fri, 2 Jul 2021 20:10:12 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Yunus Bas <Y.Bas@phytec.de>,
-        "stwiss.opensource@diasemi.com" <stwiss.opensource@diasemi.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mfd: mfd-core: Change "Failed to locate of_node" warning
- to debug
-Message-ID: <20210702191012.mecgw577ggkabxr6@maple.lan>
-References: <5a3f5fd82a391ade9a659338983e5efa7924210d.camel@phytec.de>
- <YMsHXEP36Vxr7lAb@dell>
- <03cb3befabdda032b1ec9d97b4daac69fa23c759.camel@phytec.de>
- <YNsid9K4PdUJbKqs@dell>
- <5a718e7812f2ce46347ae94fda6175f38c65359e.camel@phytec.de>
- <20210630105557.eaktwdz5p6yzuron@maple.lan>
- <YNxktsFmlzLcn4+Y@dell>
- <9b5d0003cce92cad57e7712d1e46c78c10f1a0ab.camel@phytec.de>
- <20210702125920.fydyfhwqe7tyr7oi@maple.lan>
- <YN9cl1/7k/UlllSq@dell>
+        Fri, 02 Jul 2021 12:10:20 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 21:10:19 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Zack Rusin <zackr@vmware.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Roland Scheidegger <sroland@vmware.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Subject: Re: [PATCH -next] drm: vmwgfx: add header file for ttm_range_manager
+Message-ID: <YN9km1dVs5Z1YDXJ@phenom.ffwll.local>
+Mail-Followup-To: Zack Rusin <zackr@vmware.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Roland Scheidegger <sroland@vmware.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+References: <20210630203252.32471-1-rdunlap@infradead.org>
+ <8CB463FC-BF27-48CD-8843-975AE600DE35@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YN9cl1/7k/UlllSq@dell>
+In-Reply-To: <8CB463FC-BF27-48CD-8843-975AE600DE35@vmware.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 07:36:07PM +0100, Lee Jones wrote:
-> On Fri, 02 Jul 2021, Daniel Thompson wrote:
+On Wed, Jun 30, 2021 at 08:36:29PM +0000, Zack Rusin wrote:
 > 
-> > On Thu, Jul 01, 2021 at 03:34:43PM +0000, Yunus Bas wrote:
-> > > Am Mittwoch, dem 30.06.2021 um 13:33 +0100 schrieb Lee Jones:
-> > > > On Wed, 30 Jun 2021, Daniel Thompson wrote:
-> > > > 
-> > > > > On Wed, Jun 30, 2021 at 07:27:32AM +0000, Yunus Bas wrote:
-> > > > > > Am Dienstag, dem 29.06.2021 um 14:39 +0100 schrieb Lee Jones:
-> > > > > > Imagine only required parts of the MFD is connected to the
-> > > > > > designed
-> > > > > > system and unrequired parts are not. In that case, fully
-> > > > > > describing the
-> > > > > > MFD in the devicetree wouldn't represent the system at all.
-> > > > > 
-> > > > > To describe hardware that is present but unused we would normally
-> > > > > use
-> > > > > status = "disabled".
-> > > > > 
-> > > > > So if, for example, your board cannot use the RTC for some reason
-> > > > > (perhaps the board has no 32KHz oscillator?) then the DA9062 still
-> > > > > contains the hardware but it is useless. Such hardware could be
-> > > > > described as:
-> > > > > 
-> > > > > da9062_rtc: rtc {
-> > > > >     compatible = "dlg,da9062-rtc";
-> > > > >     status = "disabled";
-> > > > > }
-> > > > > 
-> > > > > Is this sufficient to suppress the warnings when the hardware is
-> > > > > not fully described?
-> > <snip>
-> > > > 
-> > > > Right.  This is a potential solution.
-> > > 
-> > > @Daniel, you hit the nail on the head :). Thank you for that.
-> > > 
-> > > This solution would indeed surpress the warnings, but what is the
-> > > benefit of this? We would define never used device nodes just to
-> > > satisfy the driver.
+> 
+> > On Jun 30, 2021, at 16:32, Randy Dunlap <rdunlap@infradead.org> wrote:
 > > 
-> > I would say that doing so resolves an awkward ambiguity of
-> > interpretation w.r.t. the bindings.
+> > Add a header file for ttm_range_manager function prototypes to
+> > eliminate build errors:
 > > 
-> > 1. The MFD device compatible "dlg,da9062" tells the OS that we
-> >    have an DA9062. An DA9062 contains six functions and this can be
-> >    inferred *entirely* from the MFD compatible string. We do not
-> >    need any subnodes to tell us that a DA9062 contains an RTC. The OS
-> >    can (and in this case, does) already know that there is an RTC
-> >    because we have a DA9062 (and a datasheet).
+> > ../drivers/gpu/drm/vmwgfx/vmwgfx_drv.c: In function â€˜vmw_vram_manager_initâ€™:
+> > ../drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:678:8: error: implicit declaration of function â€˜ttm_range_man_initâ€™; did you mean â€˜ttm_tt_mgr_initâ€™? [-Werror=implicit-function-declaration]
+> >  ret = ttm_range_man_init(&dev_priv->bdev, TTM_PL_VRAM, false,
+> > ../drivers/gpu/drm/vmwgfx/vmwgfx_drv.c: In function â€˜vmw_vram_manager_finiâ€™:
+> > ../drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:690:2: error: implicit declaration of function â€˜ttm_range_man_finiâ€™; did you mean â€˜ttm_pool_mgr_finiâ€™? [-Werror=implicit-function-declaration]
+> >  ttm_range_man_fini(&dev_priv->bdev, TTM_PL_VRAM);
 > > 
-> > 2. The default behaviour when a node has no status field is to
-> >    assume that is is *enabled*.
-> > 
-> > Based on #1 and #2 above then assuming that a DT that omits the
-> > sub-nodes actually means "disable the RTC" is risky. #2 might
-> > actually make it more natural to assume that the device is present and
-> > functional because there is no status field to tell MFD *not* to
-> > initialize it.
+> > Fixes: 9c3006a4cc1b ("drm/ttm: remove available_caching")
+> > Fixes: a343160235f5 ("drm/vmwgfx/ttm: fix the non-THP cleanup path.")
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: "VMware Graphics" <linux-graphics-maintainer@vmware.com>
+> > Cc: Roland Scheidegger <sroland@vmware.com>
+> > Cc: Zack Rusin <zackr@vmware.com>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: Dave Airlie <airlied@redhat.com>
+> > Cc: Christian KÃ¶nig <christian.koenig@amd.com>
 > 
-> Exactly.  Nicely put.
-> 
-> > That leaves us in a situation where there is no way to correctly guess
-> > the authors intent when sub-nodes are omitted from the DT.
-> 
-> > Given this is something of a corner case and the documentation is
-> > ambiguous then a warning of the author does not clearly resolve the
-> > ambiguity seems reasonable.
-> 
-> I'm having trouble parsing this part.
+> Thank you. That change has been part of drm-misc for a few weeks now:
+> https://cgit.freedesktop.org/drm/drm-misc/commit/?id=352a81b71ea0a3ce8f929aa60afe369d738a0c6a
+> I think it should be part of the next merge of drm-misc to linux-next. If not Iâ€™ll port it to drm-misc-fixes.
 
-That's quite reasonable because was is written is nonsense!
-Perhaps s/warning of the author/warning if the author/ will help
-but there are still too many words to say something very simple.
-The whole last paragraph could simply say:
+It should probably be in drm-misc-next-fixes. drm-misc-next is for 5.15.
+drm-misc-fixes was for 5.14 and will only reopen after -rc1.
 
-  The bindings documentation is ambiguous so is it reasonable
-  for the OS to issue a warning when the devicetree author does
-  not clearly resolve the ambiguity.
+See  https://drm.pages.freedesktop.org/maintainer-tools/committer-drm-misc.html#where-do-i-apply-my-patch
 
-This is still a long sentence but at least it is no longer a
-complicated one!
-
-
-Daniel.
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
