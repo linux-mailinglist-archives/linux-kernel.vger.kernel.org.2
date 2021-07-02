@@ -2,150 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5FF3BA2EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AAD73BA2FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbhGBPwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 11:52:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbhGBPwn (ORCPT
+        id S232033AbhGBP7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 11:59:38 -0400
+Received: from mailgate.ics.forth.gr ([139.91.1.2]:62155 "EHLO
+        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230098AbhGBP7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 11:52:43 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229F8C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 08:50:11 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id i4so17117559ybe.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 08:50:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qA8VgGLlkFB/PkXrTcenc5nCOSnabAFGt5bfyGsdlu8=;
-        b=UHAD63/yXxCyyYZYt5IZFX/NsDNvW4cR5o2wVYjbiQ6AjisFxLh0wGLMLupHuV/4D5
-         IAj2LSmJORVGCrv6nvGAm5hxHadjS/g5q/u2P3kWtvT9gzSVbRGv3yauLrPRgpLtpI4X
-         pJU+c3BTU0sTEKQeCJschfl9lvMknix5kF8vs6qQzDbGuJOdjOdje2+5zZuMNzdjOEVP
-         URrVCOhgrExl+pan77E/WpJISnX9HqoCif8YCk7mr7ffpKNqp1KbOH/S2I0ugooD5nAY
-         TTCOLEVjWW9odiUGCiVUrWX703n52/KvH5gii53SyXcJDJ0T6m4bunAjJVQe03Zu8E+c
-         OFMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qA8VgGLlkFB/PkXrTcenc5nCOSnabAFGt5bfyGsdlu8=;
-        b=DE3ORErQRxIYPqO/QzAarD56jwCCOpUHaqS8KX450sNqKvjOh89TpRqhk0DRtYTQIY
-         dAx+4dMzr4Snhh0YQbLlbyOsj7nGQdbBBoi6b25cYrGRzazihiMhJ5inU28Cx40yvZPX
-         AQVjl/hL6vBMa5ncYlKXjXKJ/k31vRPdJHiKqsgV7GzPTfyanPFWzAmDcKK6uycrH7OS
-         CCm8gQD3PYqorupagddQen6moWn4grBpBawtJ/V2TgW35UDFreMiS2797Cb4cQL42wu0
-         ECXGoV5uQDS+9B0aJPNwhY1d4v8IsvYXKlLXGt4ubAIfd1pArOb5Y7++NohiksT1od0J
-         xpTg==
-X-Gm-Message-State: AOAM532WATRutwa+ivV0dyWwnJqU38/XZ+eZEi0zhDbm2yOKHRplky29
-        g9T9MmaEoikgWr8HZSWPQxtjE+UaIjhHExKxx1U0+g==
-X-Google-Smtp-Source: ABdhPJyHntmDdthDS54GlrPzHQ5DU3ubq3o9deXw/J4JZCB+oThlJ84A/mgRALRtY9H9RW2IUIiTvRopgvhh63Oji0U=
-X-Received: by 2002:a25:9945:: with SMTP id n5mr77710ybo.294.1625241010145;
- Fri, 02 Jul 2021 08:50:10 -0700 (PDT)
+        Fri, 2 Jul 2021 11:59:36 -0400
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 162Fv1PL051420
+        for <linux-kernel@vger.kernel.org>; Fri, 2 Jul 2021 18:57:01 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+        q=dns/txt; i=@ics.forth.gr; t=1625241416; x=1627833416;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=t0VSE4yvqzLzoGTJTNfADyTmW4ylvlyixsQMnViMXlE=;
+        b=W1poDQWGMNUQdc02AMMYJSW6C6qUeRH/acUywkO/d4MD5tgcU/o9zF5+Py8WOclL
+        trm5ZmcrwwzVK4p6jn0HpS5Fu2EVOWe5rdrsVUK5f4m856HJfHqlCAdFhMIzc8Mw
+        qlXFnflYUcFaIFRQLtnAtTpR/RFAVQ6p2k+US/xgkE0dRnOb1QNb3VWB1skgzSuU
+        IRGY4LBskN2z22ucXLRJ1hYPbxIYMyPjjcKxCvwTAikA6OF4CSPO5UuuqhQsc+B3
+        hMWF7K5VDUgEyqADTZetuUeeyG9M8AujzOnpBfW+Nde7H1TsvLDIagHEjYiRLTXO
+        zYReTKkrXBgvg7WKpeXrFQ==;
+X-AuditID: 8b5b014d-96ef2700000067b6-a9-60df37486b8d
+Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id F8.F9.26550.8473FD06; Fri,  2 Jul 2021 18:56:56 +0300 (EEST)
+X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
 MIME-Version: 1.0
-References: <20210630205151.137001-1-surenb@google.com> <YN2DsLlE+WtxK6K9@hirez.programming.kicks-ass.net>
- <CAJuCfpF=Ty4ruiKQQweVoF6Ojx8P8LxvUBxp1TmMFo2W1xNWfg@mail.gmail.com>
- <YN3pUNgpBjn42f8s@hirez.programming.kicks-ass.net> <CAJuCfpFKDhcgjU=MGsz+JuetrWvYCe0EL3FMp91zopH+8T=mMQ@mail.gmail.com>
- <YN7cJZOZzjYJFClR@hirez.programming.kicks-ass.net>
-In-Reply-To: <YN7cJZOZzjYJFClR@hirez.programming.kicks-ass.net>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 2 Jul 2021 08:49:59 -0700
-Message-ID: <CAJuCfpHbZ2ShG02OfXzBfm7vvzCUTeP1qoTzgicGOrPh9W+5Gg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] psi: stop relying on timer_pending for poll_work rescheduling
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        matthias.bgg@gmail.com, Minchan Kim <minchan@google.com>,
-        Tim Murray <timmurray@google.com>,
-        YT Chang <yt.chang@mediatek.com>,
-        =?UTF-8?B?V2VuanUgWHUgKOiuuOaWh+S4vik=?= <wenju.xu@mediatek.com>,
-        =?UTF-8?B?Sm9uYXRoYW4gSk1DaGVuICjpmbPlrrbmmI4p?= 
-        <jonathan.jmchen@mediatek.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        kernel-team <kernel-team@android.com>,
-        SH Chen <show-hong.chen@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Fri, 02 Jul 2021 18:56:55 +0300
+From:   Nick Kossifidis <mick@ics.forth.gr>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     robh+dt@kernel.org, mick@ics.forth.gr, geert@linux-m68k.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, frowand.list@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] riscv: Remove non-standard linux,elfcorehdr handling
+Organization: FORTH
+In-Reply-To: <mhng-6db38728-4f82-45bd-9b17-c41da55c41e9@palmerdabbelt-glaptop>
+References: <mhng-6db38728-4f82-45bd-9b17-c41da55c41e9@palmerdabbelt-glaptop>
+Message-ID: <008ddfd79d256dcddd7c802e4eef6b5a@mailhost.ics.forth.gr>
+X-Sender: mick@mailhost.ics.forth.gr
+User-Agent: Roundcube Webmail/1.3.16
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnkeLIzCtJLcpLzFFi42Lpjp6urOthfj/B4Mh+YYutv2exW7xf1sNo
+        Mf/IOVaLmW/+s1k8u7WXyWLT42usFpd3zWGz2Pa5hc2i+d05douXl3uYLdpm8Vu07j3CbtFy
+        x9SB12PNvDWMHm9evmTxONzxhd1j56y77B4PN11i8ti0qpPN49DhDkaPzUvqPS41X2f3+LxJ
+        LoArissmJTUnsyy1SN8ugSvjVvNy5oJNghULWjuYGxj7+boYOTkkBEwk+tr3sXQxcnEICRxl
+        lOhvuMQGkTCVmL23kxHE5hUQlDg58wkLiM0sYCEx9cp+RghbXqJ562xmEJtFQFXi2cmLYHE2
+        AU2J+ZcOgtWLCKhLHHh9hxmi/iWTxK6/VSC2sICvxK+ZF9lBbH4BYYlPdy+ygticAn4SHS92
+        Ad3AAXSQr8Tn6yYQJ7hI/N38lBXiNBWJD78fsIOUiALZm+cqTWAUnIXk0FlIDp2F5NAFjMyr
+        GAUSy4z1MpOL9dLyi0oy9NKLNjGC44rRdwfj7c1v9Q4xMnEwHmKU4GBWEuENnXcvQYg3JbGy
+        KrUoP76oNCe1+BCjNAeLkjgvr96EeCGB9MSS1OzU1ILUIpgsEwenVANT/6/LD0RTd+2v8D9Z
+        96Z3S0fekS9aMs67BYLYbdo39SwyOb71rcM7LbW/DE0f7yo+992sIJvzO3rFnXaPTc1XGXZd
+        ibz3dnrZef6tL765b70Y5RJqo79CNCzt6LO95r9nch91W/XLfW3P3lJxpZUb80ILRHPFDedZ
+        HLm3siqiTjDszu8nuRosz+qVGDylIr1qfLoELjG9/aGksoN58q9So0tdp1jC/EqrNnW2boiV
+        TZu+hV9l9dof9b1bCs+YbHvg49p+yMV/WhnrLLvJnHuU+2/9PJX74Uhb2baj36uLJ3Nv3PSQ
+        XUT/SWbUT3EG1ZvJEa+eVJ3u1J2ulHjnuyyP+okfd4OCjFuzj3pE5hUqsRRnJBpqMRcVJwIA
+        3+AlDBoDAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 2:28 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Jul 01, 2021 at 09:28:04AM -0700, Suren Baghdasaryan wrote:
-> > On Thu, Jul 1, 2021 at 9:12 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Thu, Jul 01, 2021 at 09:09:25AM -0700, Suren Baghdasaryan wrote:
-> > > > On Thu, Jul 1, 2021 at 1:59 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > > >
-> > > > > On Wed, Jun 30, 2021 at 01:51:51PM -0700, Suren Baghdasaryan wrote:
-> > > > > > +     /* cmpxchg should be called even when !force to set poll_scheduled */
-> > > > > > +     if (atomic_cmpxchg(&group->poll_scheduled, 0, 1) && !force)
-> > > > > >               return;
-> > > > >
-> > > > > Why is that a cmpxchg() ?
-> > > >
-> > > > We want to set poll_scheduled and proceed with rescheduling the timer
-> > > > unless it's already scheduled, so cmpxchg helps us to make that
-> > > > decision atomically. Or did I misunderstand your question?
-> > >
-> > > What's wrong with: atomic_xchg(&group->poll_scheduled, 1) ?
-> >
-> > Yes, since poll_scheduled can be only 0 or 1 atomic_xchg should work
-> > fine here. Functionally equivalent but I assume atomic_xchg() is more
-> > efficient due to no comparison.
->
-> Mostly conceptually simpler; the cmpxchg-on-0 makes that you have to
-> check if there's ever any state outside of {0,1}. The xchg() thing is
-> the classical test-and-set pattern.
->
-> On top of all that, the cmpxchg() can fail, which brings ordering
-> issues.
+Στις 2021-07-01 05:52, Palmer Dabbelt έγραψε:
+> On Wed, 16 Jun 2021 07:47:46 PDT (-0700), robh+dt@kernel.org wrote:
+>> On Wed, Jun 16, 2021 at 4:43 AM Nick Kossifidis <mick@ics.forth.gr> 
+>> wrote:
+>>> 
+>>> Στις 2021-06-16 10:56, Geert Uytterhoeven έγραψε:
+>>> >
+>>> > I can't comment on the duplication on arm64, but to me, /chosen
+>>> > sounds like the natural place for both "linux,elfcorehdr" and
+>>> > "linux,usable-memory-range".  First rule of DT is "DT describes
+>>> > hardware, not software policy", with /chosen describing some software
+>>> > configuration.
+>>> >
+>>> 
+>>> We already have "linux,usable-memory" on /memory node:
+>>> https://elixir.bootlin.com/linux/v5.13-rc6/source/drivers/of/fdt.c#L1011
+>>> and it makes perfect sense to be there since it overrides /memory's 
+>>> reg
+>>> property.
+>>> 
+>>> Why define another binding for the same thing on /chosen ?
+>> 
+>> Go look at the thread adding "linux,usable-memory-range". There were
+>> only 35 versions of it[1]. I wasn't happy with a 2nd way either, but
+>> as I've mentioned before we don't always have /memory node.
+> 
+> I don't really understand what's going on here, but IIUC what I merged
+> in 5.13 doesn't match the behavior that other architectures have.  In
+> that case I'm happy moving RISC-V over to the more standard way of
+> doing things and just calling what we have in 5.13 a screwup.
+> 
+> Sorry for the confusion.
 
-Oh, I see. That was my mistake. I was wrongly assuming that all RMW
-atomic operations are fully ordered but indeed, documentation states
-that:
-```
-- RMW operations that have a return value are fully ordered;
-- RMW operations that are conditional are unordered on FAILURE,
-   otherwise the above rules apply.
-```
-So that's the actual functional difference here. Thanks for catching
-this and educating me!
+Long story short:
 
->
-> Typically, I think, you want to ensure that everything that happens
-> before psi_schedule_poll_work() is visible to the work when it runs
-> (also see Johannes' email).
+a) We use "linux,usable-memory" on /memory node to limit the memory of 
+the kdump kernel, it's a standard binding defined at:
+https://elixir.bootlin.com/linux/v5.13-rc6/source/drivers/of/fdt.c#L1011
 
-Correct and I think I understand now the concern Johannes expressed.
+b) We used a reserved region (again a standard binding) named 
+"linux,elfcorehdr" which has the same name as a property on /chosen used 
+by arm64 for the same thing. With this patch we 'll use arm64's 
+approach, although it's a bit worse since we'll need to add the same 
+region twice on the fdt (once in /chosen as a property and another one 
+in the reservation map so that it gets reserved during early boot).
 
-> In case poll_scheduled is already 1, the
-> cmpxchg will fail and *NOT* provide that ordering. Meaning the work
-> might not observe the latest changes. xchg() doesn't have this subtlety.
-
-Got it.
-So I think the modifications needed to this patch is:
-1. replacing atomic_cmpxchg(&group->poll_scheduled, 0, 1) with
-atomic_chg(&group->poll_scheduled, 1)
-2. an explicit smp_mb() barrier right after
-atomic_set(&group->poll_scheduled, 0) in psi_poll_work().
-
-I think that should ensure the correct ordering here.
-If you folks agree I'll respin v3 with these changes (or maybe I
-should respin and we continue discussion with that version?).
-
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+Fortunately I (still) haven't posted the kexec-tools patches on the 
+mailing list so we don't break userspace by doing this.
