@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3163B9A0C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 02:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1886D3B9A15
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 02:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234481AbhGBA2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 20:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
+        id S234494AbhGBAco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 20:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234469AbhGBA2u (ORCPT
+        with ESMTP id S230415AbhGBAck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 20:28:50 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAEDC061764
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 17:26:18 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id k8so10945748lja.4
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 17:26:18 -0700 (PDT)
+        Thu, 1 Jul 2021 20:32:40 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A75C061762;
+        Thu,  1 Jul 2021 17:30:08 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id x16so7459826pfa.13;
+        Thu, 01 Jul 2021 17:30:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4ojivLqIxhJFrg2mkQVdvq8a38GP5yVcK9noWQjWXjQ=;
-        b=Gop1h/wC4k56lKH6v1PD4hX8fLfZIhG0emVypz0FX1ztp1MRpep9OiBfP/xoy8jwSL
-         lMtYD7BdrUyrOBX7z2ZKXQRrJbheI/TgmVnT3A6NBpVzDnAYUMEC2D/UE+ySyLKwbIuw
-         I7HKssIjEStPfibkfy0Zr8vq1CNcrB3092+I4=
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=X6ddaC28S6L/gsq8ePFu5nDivQdfogx1DethR95R2WE=;
+        b=UnP93AsIPAgl6DVd0zQUK/ZYboAExTlIoTnTpF73m0p8Gd3GgyV/hSUW2WFzn0IkPt
+         LjfKB/0zP7iNu1NX+p05AMXOpCif+vzbahOcUYLrmcxoBvjOnEBEkhBTDuiVLIs97vt8
+         PgF0YR/viquxczihfbdHaZn1GVg9Aig4+lGF0AzigdILcJxco3Y6ga1CJ8hY31UpbvDm
+         dVUpy+h161qtC9iuE5uv5Vz2qmGg806A2wUYzcnopv4ayy3K8DtKiT8xoNYiuk7Oy7BF
+         +5n8idlMeXTJzphFAdzLscFh3uMFrL48uBe0FKtrgyAaJhhEl7CNVuCPC3pM0S2UAu1f
+         QVDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4ojivLqIxhJFrg2mkQVdvq8a38GP5yVcK9noWQjWXjQ=;
-        b=BZLwwAgyGOGXGCUT8UDB8HaBDp0PXTCqcLWE217nX/2/nOS5rLiHjRNmGx/Wc/I7Dk
-         i5DSSdo5HF37jeW6BwmbKQNZ3XZcpWXZyg4lyTRf0uYkbwawbU5H8KcwLb3oNaRlcSpN
-         I7YMh504W+k6ZeCBQQRpew3F/453nAkKUMjD/0Ma3iJ2lHPfo/ABoq9fHnkaP6t78nap
-         MmZQ2GZ+WTi6zQFBj7PcLND9PWFfEKmZggQi7I8AAXf9s1oMJ8iLGxSG5PLtuC+sA5aX
-         dWeC5JHocNyYm9NHZeor+dXahUk1BFBx50dbZ2UsfVHFAU8TwibsW4x6LgrVcR8y/Tf2
-         Vi1w==
-X-Gm-Message-State: AOAM530DAcRV6hiJFClQcAE3HzH8LGJbuPzwQmW4zlub+8Pk5ExQs1yf
-        DuTbzwVtqs+TdVoXumRYiGaFWnYWei6iKAxpUy8=
-X-Google-Smtp-Source: ABdhPJxcjsxR5g/4TxyCdTH0u+/x0hJiyARa7f7D4BT1krrrQVDs8CO9F3yAB9EDhizSbx1Iy7TkPA==
-X-Received: by 2002:a05:651c:b0d:: with SMTP id b13mr1621137ljr.481.1625185576815;
-        Thu, 01 Jul 2021 17:26:16 -0700 (PDT)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id i5sm171843ljm.120.2021.07.01.17.26.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Jul 2021 17:26:16 -0700 (PDT)
-Received: by mail-lj1-f171.google.com with SMTP id u20so10890812ljo.12
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 17:26:16 -0700 (PDT)
-X-Received: by 2002:a2e:b553:: with SMTP id a19mr1574210ljn.507.1625185575823;
- Thu, 01 Jul 2021 17:26:15 -0700 (PDT)
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=X6ddaC28S6L/gsq8ePFu5nDivQdfogx1DethR95R2WE=;
+        b=fnQ0qnU5MLBRnWHKPw0/Oh50P0WpJiqD7UmDtYUozkv4vC+Hv3hhF9Noy7mAtinKHG
+         qVYcA0xc7pt6eUvlfp0IfSXvG+TyvaP33OZOZyxk+s99+Pk4iEmSzcflHc8q6IQIHPrO
+         BI4B/qWcf8/PKR5EgDeWzyiQ9YSbkEz/lN1Yp32rfU5zrNU4P0zGntx41imBDNqjLqxO
+         BCZLeaVOaeAricR+rjFdrsFwC+AT9MIRoTyKDAoy9Ubqru/ugPZ5SBeXLbDbntfqq2J7
+         Ad8AbQ7/UrY8ij9YDxZdxUVJwU2VGFyj3r05+/8xdUDCkNGUWsYzQvwaz0UmCkG9tjOJ
+         3BqA==
+X-Gm-Message-State: AOAM533RiVu12Xj1OUUoTgdguIpSYOpXrhM7SCIi/JyvAqZ30v+c8qf3
+        g2Q6uQl6vqSw/Crx4r3R0Jg=
+X-Google-Smtp-Source: ABdhPJwJMd3lXgIfrAdEdvEG6NH6cCOUAvI8o9IteFjyi7nmmTAXJUC+i7n/EfHF1/EMFKwTYwOQ6Q==
+X-Received: by 2002:a63:4302:: with SMTP id q2mr2214756pga.428.1625185807889;
+        Thu, 01 Jul 2021 17:30:07 -0700 (PDT)
+Received: from localhost ([118.209.250.144])
+        by smtp.gmail.com with ESMTPSA id c9sm754423pja.7.2021.07.01.17.30.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 17:30:07 -0700 (PDT)
+Date:   Fri, 02 Jul 2021 10:30:02 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH] x86: enable dead code and data elimination
+To:     Rui Salvaterra <rsalvaterra@gmail.com>, tobias.karnat@remondis.de
+Cc:     linux-arch@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sedat.dilek@gmail.com, x86@kernel.org
+References: <OF02B93D81.2CCB21DA-ONC1258705.0032D3B2-C1258705.00338684@remondis.de>
+        <CALjTZvZCi07iVbEOOn8bduueRFLE3MOicWa2WFvxap+zFzpiSg@mail.gmail.com>
+In-Reply-To: <CALjTZvZCi07iVbEOOn8bduueRFLE3MOicWa2WFvxap+zFzpiSg@mail.gmail.com>
 MIME-Version: 1.0
-References: <YN4rzCdUR+/2LgaP@mtj.duckdns.org>
-In-Reply-To: <YN4rzCdUR+/2LgaP@mtj.duckdns.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 1 Jul 2021 17:25:59 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgcyjLGcoRho5iw7b3Yx+R05rXwyJmP_LhOqsHgjiZugQ@mail.gmail.com>
-Message-ID: <CAHk-=wgcyjLGcoRho5iw7b3Yx+R05rXwyJmP_LhOqsHgjiZugQ@mail.gmail.com>
-Subject: Re: [GIT PULL] cgroup changes for v5.14-rc1
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Cgroups <cgroups@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <1625185686.surevoro33.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 1:55 PM Tejun Heo <tj@kernel.org> wrote:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.14
+Excerpts from Rui Salvaterra's message of July 1, 2021 8:00 pm:
+> Hi, Tobias,
+>=20
+> On Thu, 1 Jul 2021 at 10:22, <tobias.karnat@remondis.de> wrote:
+>>
+>> Hello,
+>>
+>> I have found your patch to enable x86 dead code and data elimination on =
+the openwrt-devel mailing list and I wonder if you can sent it upstream to =
+the kernel mailing list?
+>=20
+> As I quoted, mine is an adaptation of Nicholas Piggin's original
+> patch, basically a forward-port to 5.4 (5.10 in my OpenWrt tree [1]).
+> Since the original proposal has been sent upstream and hasn't been
+> merged, there are probably good reasons for it (even though it works
+> perfectly for my use case). Nicholas, any idea on why your original
+> patch [2] hasn't been merged?
 
-I've pulled it, but let me vent about this history a bit.
+Not sure, I didn't do much testing or try too hard to get it upstream.=20
+If you have found it works and is helpful I don't see why it couldn't
+be merged. Feel free to submit it.
 
-Look at commit c2a11971549b ("Merge branch 'for-5.13-fixes' into for-5.14").
+Thanks,
+Nick
 
-Now tell me how that commit explains why it exists.
-
-Merge commits need commit messages too.
-
-In particular, they need commit messages that *explain* why they exist
-in the first place, not just a one-liner that says what it does (and
-does so badly at that).
-
-                    Linus
