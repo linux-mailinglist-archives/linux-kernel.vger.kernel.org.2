@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9273B9A90
+	by mail.lfdr.de (Postfix) with ESMTP id B43953B9A91
 	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 03:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234705AbhGBBeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 21:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39204 "EHLO
+        id S234723AbhGBBec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 21:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234476AbhGBBeA (ORCPT
+        with ESMTP id S234710AbhGBBeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 21:34:00 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1767C061762;
-        Thu,  1 Jul 2021 18:31:28 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id c5so7606341pfv.8;
-        Thu, 01 Jul 2021 18:31:28 -0700 (PDT)
+        Thu, 1 Jul 2021 21:34:25 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CECCC061764
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 18:31:53 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id v13so4739859ple.9
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 18:31:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qM0IASgoBZVDBMc/iSq9wtDekoeCr9h0tQGMOZCQdSU=;
-        b=ipwtG2GDhk8omn4nOHeK7/duVF+qzYw0BDeftypVI8rz84wbXJpdyKM9RRc+78IH9q
-         ljX1Q8OPwKXwtCp5zhPrreKrLkqwZcMyNjCRGu0XJX3NkI/5BrRbMqXeqA8bwIYwqwdS
-         GqG1L3g1qnuhb6c6MG0lZzlqIEFYOSVMRCQQdTBuzaFj7fQc69FoS9k52OQXWKBDHp5o
-         ky+GJXF9YTYnCy9DfXU900VgkUvuQMJim4+jzTs3Ncq/0Vx5nZS7Azi/yg8KTkosM5t1
-         /FM3ULy3oICQReWxqx//I6Ckkxfxllp+8FZDYs375tSBXiGTvmSH7+q3wzBwBbROoT07
-         S2NA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2VS8QrT4FkOZf/FxdigYQ26l7luOXyTJp7RV8GPJrdE=;
+        b=YOglFXKrkWo5dpfRFx0RdzPtuj4a/f0VTge5boEtc45ZjeSKS8YYTXDaYG8IOGMukk
+         Xm/WELpFafE2KhJgnmw0qnx2ArVyuGn1DxP6UAFkFtMb617XPjzn2glQ3gOVaWuZStaO
+         Gr37qU+YoI9TKhtO6l7ppHSmuaAGUa8DhVMmc8hg9AB8KV9Q1kjrWAB4el6OwPt/Q1zO
+         8bnwQ3WvNCUDpG9DuEJPpztMOBVjlbiADAns3GXj+kCNbgBv88a8HHBzWinGKdy3xXu2
+         hy9MxJbV2nqnEE+AbQiKuFtgGTVAzH0oX+iZVEOpc2PuQVKrpmtHVd98Ym8XRTyajM3X
+         FEBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qM0IASgoBZVDBMc/iSq9wtDekoeCr9h0tQGMOZCQdSU=;
-        b=ZZbCJrGUGbopqyDI8mQznAOJbe8lNauxBr6o3JEH74BZpol3P8TlnIs2Btozz0Oeq3
-         mmGVMf5Q6mAf44h/M4mR4GRJD48V92gZ2Opg899XeJEG+TtoAKGNomYxmbUYS7CUnbHa
-         vvmF9sSxvlP6vyBjXT+jd431Vb3SclMNwUHcDELnga2q3ykKDhET9CEHWjJxodyckwEg
-         +6IF5ObpJ7OO8BcINlJ77dYozctyH09HG2pOERUryQkkzaD6PVYDu+7AgoSqM/quhcBN
-         qqjYMwwexWJffh7SHdHkP5oVUYNog5AS8vunzKlk/lY6D2eu3oMeoq95MYNeTF2qpXWy
-         YW0w==
-X-Gm-Message-State: AOAM532YR29kNYFgs37/esIuyJ3/hQlVXBLToJmyYo9shqX6/n8wKvcQ
-        IOTXEelQRUYtTea+75L+rV8=
-X-Google-Smtp-Source: ABdhPJxAYwIEtoTJNtCqSYtqLsEkaIMU8Yn1c2YcsKNpL8mRT4W4+mXQ41/tbW6+kz6tPDXyr0vWXQ==
-X-Received: by 2002:a62:aa10:0:b029:2bd:ea13:c4b4 with SMTP id e16-20020a62aa100000b02902bdea13c4b4mr2545700pff.48.1625189488094;
-        Thu, 01 Jul 2021 18:31:28 -0700 (PDT)
-Received: from U64-BenChuang.genesyslogic.com.tw ([180.176.36.63])
-        by smtp.gmail.com with ESMTPSA id b1sm1181025pgb.91.2021.07.01.18.31.25
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2VS8QrT4FkOZf/FxdigYQ26l7luOXyTJp7RV8GPJrdE=;
+        b=HNX5AFKO6TmSt5Ef6njF6svMeEI/Lnm80AAe2BP6SPHj04ZU2YtZqNx0sk9QYcWuyW
+         aUEeH1vjEHbL3NItSYd1pE1pYoEC1llATu/ZLbFzkzWcCOStaquFeLYzWp0H2BAdgrXB
+         pIVA54nxE2Y7EQz4V2JD/g2BEHJyrQ9U7gUPMB/Ve5RU2XpwLRYlk6eHUxsPqfqHC3bo
+         kN/bpp+fR/cqG+DMkNXWUlkC4R8XwqzZwM1yNH/OirF0kIidsFpO4tOTTQLmkMLglrR8
+         eqI7q5atCIBJFfNz/KDmy+3lwLx+9xiF+CkQhM3VfU0GtbHgi+OLNeTG64gJO0/p64Qa
+         WQ0g==
+X-Gm-Message-State: AOAM530RnH5br00o/8ooFX5krOSsAYdT6ekvzIMx6qXX272eguf3y0JM
+        ge63Lc6AdAav8ItHvIcfF/fhKQ==
+X-Google-Smtp-Source: ABdhPJwBlYWe733SkOJLsfGovF+cVSjYu3148ezEuyNifXWhyvR+fX8TyG2SEVd/heJH5iHnBVGNFw==
+X-Received: by 2002:a17:90b:4b8d:: with SMTP id lr13mr2402518pjb.89.1625189513083;
+        Thu, 01 Jul 2021 18:31:53 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([103.207.71.35])
+        by smtp.gmail.com with ESMTPSA id gz24sm852593pjb.0.2021.07.01.18.31.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 18:31:27 -0700 (PDT)
-From:   Ben Chuang <benchuanggli@gmail.com>
-To:     reniuschengl@gmail.com
-Cc:     ben.chuang@genesyslogic.com.tw, adrian.hunter@intel.com,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        ulf.hansson@linaro.org, Ben Chuang <benchuanggli@gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-pci-gli: Finetune GL9763E L1 Entry Delay
-Date:   Fri,  2 Jul 2021 09:29:51 +0800
-Message-Id: <20210702012951.2911-1-benchuanggli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAJU4x8tAoHebcynA1+UdAiqF4kRYgzEpu2qpzcikfUSKxjL3AQ@mail.gmail.com>
-References: <CAJU4x8tAoHebcynA1+UdAiqF4kRYgzEpu2qpzcikfUSKxjL3AQ@mail.gmail.com>
+        Thu, 01 Jul 2021 18:31:52 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 09:31:43 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     James Clark <james.clark@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>, Al Grant <Al.Grant@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 5/5] perf arm-spe: Don't wait for PERF_RECORD_EXIT
+ event
+Message-ID: <20210702013143.GB251512@leoy-ThinkPad-X240s>
+References: <20210519071939.1598923-1-leo.yan@linaro.org>
+ <20210519071939.1598923-6-leo.yan@linaro.org>
+ <369fd454-d94d-daa1-ead4-b42645ec4282@arm.com>
+ <20210628121217.GD200044@leoy-ThinkPad-X240s>
+ <YN31VC9e/33QYhwn@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YN31VC9e/33QYhwn@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ulf and Renius,
+On Thu, Jul 01, 2021 at 02:03:16PM -0300, Arnaldo Carvalho de Melo wrote:
 
-> Ulf Hansson <ulf.hansson@linaro.org> 於 2021年6月30日 週三 下午11:16寫道：
-> >
-> > On Thu, 24 Jun 2021 at 04:56, Renius Chen <reniuschengl@gmail.com> wrote:
-> > >
-> > > Finetune the L1 entry delay to 20us for better balance of performance and
-> > > battery life.
-> > >
-> > > Signed-off-by: Renius Chen <reniuschengl@gmail.com>
-> > > ---
-> > >  drivers/mmc/host/sdhci-pci-gli.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-> > > index 302a7579a9b3..4e3c0561354d 100644
-> > > --- a/drivers/mmc/host/sdhci-pci-gli.c
-> > > +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> > > @@ -90,7 +90,7 @@
-> > >
-> > >  #define PCIE_GLI_9763E_CFG2      0x8A4
-> > >  #define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
-> > > -#define   GLI_9763E_CFG2_L1DLY_MID 0x54
-> > > +#define   GLI_9763E_CFG2_L1DLY_MID 0x50
-> >
-> > We just changed from 21us to 20us. Really, how big of a difference can
-> > this make?
-> >
-> > Moreover, I suppose the difference is related to the running use case. No?
-> >
-> > If you really want this, at least I want an ack from Ben for it, then
-> > let's be done with it.
-> >
-> > Kind regards
-> > Uffe
-> >
-> Yes, according to the result of our customer's PLT test for battery life,
-> It will pass the test with 20us and will not pass the test with 21us.
-> I'll ask Ben for acking this, thank you.
+[...]
 
-Using 20us can pass the battery life testing, but need to consider that it
-may reduce some performance.
+> > Hi Arnaldo, I confirmed this patch set can be cleanly applied on
+> > the latest acme/perf/core branch, so could you pick up this patch
+> > set?
+> 
+> Applied, thanks, please let me know if there is still something
+> outstanding,
 
-So this patch should be together with 4k patch or after 4k patch.
-Then I can acked Acked-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>. 
-
-Best regards,
-Ben
-
->
-> > >
-> > >  #define PCIE_GLI_9763E_MMC_CTRL  0x960
-> > >  #define   GLI_9763E_HS400_SLOW     BIT(3)
-> > > @@ -810,7 +810,7 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
-> > >
-> > >         pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG2, &value);
-> > >         value &= ~GLI_9763E_CFG2_L1DLY;
-> > > -       /* set ASPM L1 entry delay to 21us */
-> > > +       /* set ASPM L1 entry delay to 20us */
-> > >         value |= FIELD_PREP(GLI_9763E_CFG2_L1DLY, GLI_9763E_CFG2_L1DLY_MID);
-> > >         pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG2, value);
-> > >
-> > > --
-> > > 2.27.0
-> > >
+Thanks, Arnaldo!  I confirmed you don't miss anything.
