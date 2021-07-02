@@ -2,154 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F543B9E06
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AB53B9E18
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbhGBJXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 05:23:35 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35490 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhGBJXe (ORCPT
+        id S231294AbhGBJZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 05:25:31 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:10238 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231162AbhGBJZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 05:23:34 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1756A228DD;
-        Fri,  2 Jul 2021 09:21:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625217662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=917ZlYP36XkgOQn6r9EovU4chAB4GY0K6ElVDj7YODY=;
-        b=sLajJTTFNmV8Nvktrd+o8uuIMUZxAEl9Tr+QVltAoqWdc0T68npjmSCP4hl6TO1Wztud5m
-        VSRRya4UauV2ui9ptakCit2uKdYO8xW5KXl0wtAM11svE+jfQ7ZgYmITEsrJV5hWG1wto4
-        BBLOehp4Ll9UayhwyK/cnS3LVEHxNAI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625217662;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=917ZlYP36XkgOQn6r9EovU4chAB4GY0K6ElVDj7YODY=;
-        b=M+nDoxHbMNqYAN19hifaQ4MMP4HpxJ+X4dKVxedPAkqyOlTdCvbAcktsKmUfUopxSTgbTP
-        y6Ekl88qQ9B30IDA==
-Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 0A1DAA3B87;
-        Fri,  2 Jul 2021 09:21:02 +0000 (UTC)
-Received: by adalid.arch.suse.de (Postfix, from userid 17828)
-        id EFDFA5170E26; Fri,  2 Jul 2021 11:21:01 +0200 (CEST)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-scsi@vger.kernel.org
-Cc:     GR-QLogic-Storage-Upstream@marvell.com,
-        linux-kernel@vger.kernel.org, Nilesh Javali <njavali@marvell.com>,
-        Arun Easi <aeasi@marvell.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Benjamin Block <bblock@linux.ibm.com>,
-        Roman Bolshakov <r.bolshakov@yadro.com>,
-        James Smart <jsmart2021@gmail.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Daniel Wagner <dwagner@suse.de>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2] qla2xxx: synchronize rport dev_loss_tmo setting
-Date:   Fri,  2 Jul 2021 11:20:52 +0200
-Message-Id: <20210702092052.93202-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.29.2
+        Fri, 2 Jul 2021 05:25:30 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GGTxp4ZHrz1BTML;
+        Fri,  2 Jul 2021 17:17:34 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 2 Jul 2021 17:22:56 +0800
+Received: from thunder-town.china.huawei.com (10.174.179.0) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 2 Jul 2021 17:22:56 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH -next 1/1] iomap: Fix a false positive of UBSAN in iomap_seek_data()
+Date:   Fri, 2 Jul 2021 17:21:09 +0800
+Message-ID: <20210702092109.2601-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+Move the evaluation expression "size - offset" after the "if (offset < 0)"
+judgment statement to eliminate a false positive produced by the UBSAN.
 
-Currently, the dev_loss_tmo setting is only ever used for SCSI
-devices. This patch reshuffles initialisation such that the SCSI
-remote ports are registered before the NVMe ones, allowing the
-dev_loss_tmo setting to be synchronized between SCSI and NVMe.
+No functional changes.
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
-[lkp: Do not depend on nvme_fc_set_remoteport_devloss() for !NVME_FC]
-Reported-by: kernel test robot <lkp@intel.com>
+==========================================================================
+UBSAN: Undefined behaviour in fs/iomap.c:1435:9
+signed integer overflow:
+0 - -9223372036854775808 cannot be represented in type 'long long int'
+CPU: 1 PID: 462 Comm: syz-executor852 Tainted: G ---------r-  - 4.18.0+ #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ...
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0xca/0x13e lib/dump_stack.c:113
+ ubsan_epilogue+0xe/0x81 lib/ubsan.c:159
+ handle_overflow+0x193/0x1e2 lib/ubsan.c:190
+ iomap_seek_data+0x128/0x140 fs/iomap.c:1435
+ ext4_llseek+0x1e3/0x290 fs/ext4/file.c:494
+ vfs_llseek fs/read_write.c:300 [inline]
+ ksys_lseek+0xe9/0x160 fs/read_write.c:313
+ do_syscall_64+0xca/0x5b0 arch/x86/entry/common.c:293
+ entry_SYSCALL_64_after_hwframe+0x6a/0xdf
+==========================================================================
+
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
+ fs/iomap/seek.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-This patch got some more testing by one of our partners. So far, no
-regression identified.
-
-changes v2:
- - fixed build failure for !NVME_FC reported by lkp
-
- drivers/scsi/qla2xxx/qla_attr.c |  6 ++++++
- drivers/scsi/qla2xxx/qla_init.c | 10 +++-------
- drivers/scsi/qla2xxx/qla_nvme.c |  5 ++++-
- 3 files changed, 13 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/scsi/qla2xxx/qla_attr.c b/drivers/scsi/qla2xxx/qla_attr.c
-index 3aa9869f6fae..dad48a982804 100644
---- a/drivers/scsi/qla2xxx/qla_attr.c
-+++ b/drivers/scsi/qla2xxx/qla_attr.c
-@@ -2648,7 +2648,13 @@ qla2x00_get_starget_port_id(struct scsi_target *starget)
- static inline void
- qla2x00_set_rport_loss_tmo(struct fc_rport *rport, uint32_t timeout)
+diff --git a/fs/iomap/seek.c b/fs/iomap/seek.c
+index dab1b02eba5b..778e3e84c95e 100644
+--- a/fs/iomap/seek.c
++++ b/fs/iomap/seek.c
+@@ -83,13 +83,14 @@ loff_t
+ iomap_seek_data(struct inode *inode, loff_t offset, const struct iomap_ops *ops)
  {
-+	fc_port_t *fcport = *(fc_port_t **)rport->dd_data;
-+
- 	rport->dev_loss_tmo = timeout ? timeout : 1;
-+
-+	if (IS_ENABLED(CONFIG_NVME_FC) && fcport->nvme_remote_port)
-+		nvme_fc_set_remoteport_devloss(fcport->nvme_remote_port,
-+					       rport->dev_loss_tmo);
- }
+ 	loff_t size = i_size_read(inode);
+-	loff_t length = size - offset;
++	loff_t length;
+ 	loff_t ret;
  
- static void
-diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
-index 0de250570e39..d078f16933c0 100644
---- a/drivers/scsi/qla2xxx/qla_init.c
-+++ b/drivers/scsi/qla2xxx/qla_init.c
-@@ -5631,13 +5631,6 @@ qla2x00_update_fcport(scsi_qla_host_t *vha, fc_port_t *fcport)
+ 	/* Nothing to be found before or beyond the end of the file. */
+ 	if (offset < 0 || offset >= size)
+ 		return -ENXIO;
  
- 	qla2x00_dfs_create_rport(vha, fcport);
- 
--	if (NVME_TARGET(vha->hw, fcport)) {
--		qla_nvme_register_remote(vha, fcport);
--		qla2x00_set_fcport_disc_state(fcport, DSC_LOGIN_COMPLETE);
--		qla2x00_set_fcport_state(fcport, FCS_ONLINE);
--		return;
--	}
--
- 	qla24xx_update_fcport_fcp_prio(vha, fcport);
- 
- 	switch (vha->host->active_mode) {
-@@ -5659,6 +5652,9 @@ qla2x00_update_fcport(scsi_qla_host_t *vha, fc_port_t *fcport)
- 		break;
- 	}
- 
-+	if (NVME_TARGET(vha->hw, fcport))
-+		qla_nvme_register_remote(vha, fcport);
-+
- 	qla2x00_set_fcport_state(fcport, FCS_ONLINE);
- 
- 	if (IS_IIDMA_CAPABLE(vha->hw) && vha->hw->flags.gpsc_supported) {
-diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
-index 0cacb667a88b..678083a34e4d 100644
---- a/drivers/scsi/qla2xxx/qla_nvme.c
-+++ b/drivers/scsi/qla2xxx/qla_nvme.c
-
-@@ -41,7 +41,7 @@ int qla_nvme_register_remote(struct scsi_qla_host *vha, struct fc_port *fcport)
- 	req.port_name = wwn_to_u64(fcport->port_name);
- 	req.node_name = wwn_to_u64(fcport->node_name);
- 	req.port_role = 0;
--	req.dev_loss_tmo = 0;
-+	req.dev_loss_tmo = fcport->dev_loss_tmo;
- 
- 	if (fcport->nvme_prli_service_param & NVME_PRLI_SP_INITIATOR)
- 		req.port_role = FC_PORT_ROLE_NVME_INITIATOR;
-@@ -68,6 +68,9 @@ int qla_nvme_register_remote(struct scsi_qla_host *vha, struct fc_port *fcport)
- 		return ret;
- 	}
- 
-+	nvme_fc_set_remoteport_devloss(fcport->nvme_remote_port,
-+				       fcport->dev_loss_tmo);
-+
- 	if (fcport->nvme_prli_service_param & NVME_PRLI_SP_SLER)
- 		ql_log(ql_log_info, vha, 0x212a,
- 		       "PortID:%06x Supports SLER\n", req.port_id);
++	length = size - offset;
+ 	while (length > 0) {
+ 		ret = iomap_apply(inode, offset, length, IOMAP_REPORT, ops,
+ 				  &offset, iomap_seek_data_actor);
 -- 
-2.29.2
+2.25.1
+
 
