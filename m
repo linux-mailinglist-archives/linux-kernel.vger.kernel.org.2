@@ -2,306 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5DF3BA363
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 18:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8983BA368
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 18:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhGBQyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 12:54:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229455AbhGBQym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 12:54:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0C0561360
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 16:52:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625244729;
-        bh=ZMOJ+aU0iHUQNvK8N1KkxNlPoJ/sEmmo8Cx9jkbgpS4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=o4b/RO+IHhibGjwiJqsV/b52Gn8nI5ApOGDpYoKSkVLzWiZprsbsQI8sBGvpgbTir
-         GDkDp0c8IOaeAjldzcogX2qmHzrObL+faxcoxLCWeSjwgJ9k+e0zIxJUr7zOnmPMb1
-         mD2NHFD2Eh1irEchIli8H6dVaCFbml6iZ/3IjlujgPV0SKVIOtxC3CptCDdmqeN8n4
-         D9QIjE2AqodrkY2RMrhZ67bphNFfT+DPsroZTqKppZ7PLHtEpyzgzbIJj8Jh89C5yF
-         oAQxboL+urLEze47LRL48sRi/2McBXJvq2nKFHAr/RxFbWFvrvsDSj0zg71FdIxYMp
-         TD9x9WX7iimAA==
-Received: by mail-ed1-f42.google.com with SMTP id h2so14117732edt.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 09:52:09 -0700 (PDT)
-X-Gm-Message-State: AOAM532XioOEplQ11IO7xyAbP7s9gNMu2H/8i+Xo7PNyr/rKIMf3O4Hp
-        G9LCe4MrXfnYfkg7jhhJMqa0oOIZ/6GDIjFxbA==
-X-Google-Smtp-Source: ABdhPJyLlWXKWuur9jDnDAmS9SFa+IIcxbWH3+5Db4q9ZDyoSlsa8HatLFkZREPjrb9f0D3x8oyDKsU+WcT/aS87VPc=
-X-Received: by 2002:a50:ed82:: with SMTP id h2mr496062edr.165.1625244728367;
- Fri, 02 Jul 2021 09:52:08 -0700 (PDT)
+        id S230093AbhGBQ7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 12:59:36 -0400
+Received: from smtprelay0179.hostedemail.com ([216.40.44.179]:38772 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229455AbhGBQ7e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 12:59:34 -0400
+Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 1BBDF837F27E;
+        Fri,  2 Jul 2021 16:57:01 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id D6515D1517;
+        Fri,  2 Jul 2021 16:56:52 +0000 (UTC)
+Message-ID: <7a2ef915bd08a1c0277b9633e20905c0ca62c568.camel@perches.com>
+Subject: Re: [PATCH V7 01/18] perf/core: Use static_call to optimize
+ perf_guest_info_callbacks
+From:   Joe Perches <joe@perches.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Zhu Lingshan <lingshan.zhu@intel.com>, wanpengli@tencent.com,
+        Like Xu <like.xu@linux.intel.com>, eranian@google.com,
+        weijiang.yang@intel.com, Guo Ren <guoren@kernel.org>,
+        linux-riscv@lists.infradead.org, Will Deacon <will@kernel.org>,
+        kvmarm@lists.cs.columbia.edu, kan.liang@linux.intel.com,
+        ak@linux.intel.com, kvm@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>, joro@8bytes.org, x86@kernel.org,
+        linux-csky@vger.kernel.org, wei.w.wang@intel.com,
+        xen-devel@lists.xenproject.org, liuxiangdong5@huawei.com,
+        bp@alien8.de, Paul Walmsley <paul.walmsley@sifive.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-arm-kernel@lists.infradead.org, jmattson@google.com,
+        like.xu.linux@gmail.com, Nick Hu <nickhu@andestech.com>,
+        seanjc@google.com, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com
+Date:   Fri, 02 Jul 2021 09:56:51 -0700
+In-Reply-To: <20210702163836.GB94260@C02TD0UTHF1T.local>
+References: <20210622094306.8336-1-lingshan.zhu@intel.com>
+         <20210622094306.8336-2-lingshan.zhu@intel.com>
+         <YN722HIrzc6Z2+oD@hirez.programming.kicks-ass.net>
+         <7379289718c6826dd1affec5824b749be2aee0a4.camel@perches.com>
+         <20210702163836.GB94260@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-References: <847aca40-2ded-8e37-72bf-c38ccbdc28e5@linaro.org>
-In-Reply-To: <847aca40-2ded-8e37-72bf-c38ccbdc28e5@linaro.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 2 Jul 2021 10:51:55 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLuLcHj7525tTUmh7pLqe7T2j6UcznyhV7joS8ipyb_VQ@mail.gmail.com>
-Message-ID: <CAL_JsqLuLcHj7525tTUmh7pLqe7T2j6UcznyhV7joS8ipyb_VQ@mail.gmail.com>
-Subject: Re: [RFD] DTPM hierarchy description via DT
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.40
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: D6515D1517
+X-Stat-Signature: yfcchsbgyrrjqd9annscud3jta5gtkxi
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/FrPSf3Ewjv8gI9yMKoa9Lq2JHlpGAS2Q=
+X-HE-Tag: 1625245012-826405
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 7:51 AM Daniel Lezcano <daniel.lezcano@linaro.org> w=
-rote:
->
->
-> Hi,
->
-> recently a new framework based on top of the powercap framework was
-> introduced to limit the power of some devices when they are capable of
-> that. Based on the approximate power numbers from the energy model, it
-> allows to have a rough estimation of the power consumption and set the
-> power limit [1].
->
-> This framework describes via a hierarchy the constraints relationship
-> between all those devices and it is SoC specific.
->
-> The problem is how to describe this hierarchy.
->
-> The hierarchy could be like:
->
-> soc
->
->
->    |
->
->
->    |-- package
->
->
->    |      |
->
->
->    |      |-- cluster0
->
->
->    |      |      |
->
->
->    |      |      |-- cpu0
->
->
->    |      |      |
->
->
->    |      |      |-- cpu1
->
->
->    |      |      |
->
->
->    |      |      |-- cpu2
->
->
->    |      |      |
->
->
->    |      |      `-- cpu3
->
->
->    |      |
->
->
->    |      |-- cluster1
->
->
->    |      |      |
->
->
->    |      |      |-- cpu4
->
->
->    |      |      |
->
->
->    |      |      `-- cpu5
+On Fri, 2021-07-02 at 17:38 +0100, Mark Rutland wrote:
+> On Fri, Jul 02, 2021 at 09:00:22AM -0700, Joe Perches wrote:
+> > On Fri, 2021-07-02 at 13:22 +0200, Peter Zijlstra wrote:
+> > > On Tue, Jun 22, 2021 at 05:42:49PM +0800, Zhu Lingshan wrote:
+[]
+> > > > +	if (perf_guest_cbs && perf_guest_cbs->handle_intel_pt_intr)
+> > > > +		static_call_update(x86_guest_handle_intel_pt_intr,
+> > > > +				   perf_guest_cbs->handle_intel_pt_intr);
+> > > > +}
+> > > 
+> > > Coding style wants { } on that last if().
+> > 
+> > That's just your personal preference.
+> > 
+> > The coding-style document doesn't require that.
+> > 
+> > It just says single statement.  It's not the number of
+> > vertical lines or characters required for the statement.
+> > 
+> > ----------------------------------
+> > 
+> > Do not unnecessarily use braces where a single statement will do.
+> > 
+> > .. code-block:: c
+> > 
+> > 	if (condition)
+> > 		action();
+> > 
+> > and
+> > 
+> > .. code-block:: none
+> > 
+> > 	if (condition)
+> > 		do_this();
+> > 	else
+> > 		do_that();
+> > 
+> > This does not apply if only one branch of a conditional statement is a single
+> > statement; in the latter case use braces in both branches:
+> 
+> Immediately after this, we say:
+> 
+> > Also, use braces when a loop contains more than a single simple statement:
+> > 
+> > .. code-block:: c
+> > 
+> >         while (condition) {
+> >                 if (test)
+> >                         do_something();
+> >         }
+> > 
+> 
+> ... and while that says "a loop", the principle is obviously supposed to
+> apply to conditionals too; structurally they're no different. We should
+> just fix the documentation to say "a loop or conditional", or something
+> to that effect.
 
-We already have all this with cpu topology binding which feeds cpu
-topology functionality in the kernel. Is there a case for the
-powerzone hierarchy to be different? For CPUs, I don't see why we'd
-need anything else or perhaps just a new property in cpu nodes for
-something?
+<shrug>  Maybe.
 
-For other devices, is there a need for a hierarchy or just grouping?
+I think there are _way_ too many existing obvious uses where the
+statement that follows a conditional is multi-line.
 
->
->
->    |      |
->
->
->    |      `-- gpu
->
->
->    |
->
->
->    |-- memory
->
->
->    |      |
->
->
->    |      |-- bank0
->
->
->    |      |
->
->
->    |      `-- bank1
->
->
->    |
->
->
->    |-- multimedia
->
->
->    |      |
->
->
->    |      |-- camera
->
->
->    |      |
->
->
->    |      `-- dsp
->
->
->    |
->
->
->    |-- modem
->
->
->    |
->
->
->    `-- screen
->
->
->
->
-> We are far from this description yet but it is for illustration purpose.
->
-> All the nodes of the tree do not necessarily reflect real devices, for
-> example, 'package' or 'multimedia' are not described in the DT.
->
-> What we want is to build this hierarchy which is SoC dependent.
->
-> A first proposal was made to create those nodes in configfs but because
-> it results in creating a node in sysfs also the approach is not valid [2]
->
-> It was suggested to use the devicetree to describe such hierarchy. There
-> are several possibilities but the nodes not describing real hardware
-> above is difficult to describe. Also, the hierarchy should not be over
-> complexified.
+	if (foo)
+		printk(fmt,
+		       args...);
 
-I'm very leary of yet another CPU PM related binding. We already have
-topology, idle states, OPP, ...
+where the braces wouldn't add anything other than more vertical space.
 
-There's less on the device side, but it's more fragmented with each
-vendor doing their own thing.
+I don't much care one way or another other than Peter's somewhat ambiguous
+use of the phrase "coding style".
 
->
-> On the other hand most of the devices are already described, so it is a
-> question of tightening them together.
->
-> There are different possibilities to describe this hierarchy:
->
-> 1. Create the hierarchy in the DT:
->
->         power-zones {
->
->                 package {
->
->                         big {
->                                 powerzone =3D <&cpu_b0 POWERZONE_DVFS>,
->                                         <&cpu_b1 POWERZONE_DVFS>;
->                         };
->
->                         little {
->                                 powerzone =3D <&cpu_l0 POWERZONE_DVFS>,
->                                         <&cpu_l1 POWERZONE_DVFS>,
->                                         <&cpu_l2 POWERZONE_DVFS>,
->                                         <&cpu_l3 POWERZONE_DVFS>;
->                         };
->
->                         gpu {
->                                 powerzone =3D <&gpu POWERZONE_DVFS>;
->                         };
->                 };
->         };
->
-> 2. Let the kernel build the hierarchy but add a property in the
-> different nodes:
->
-> https://git.linaro.org/people/daniel.lezcano/linux.git/commit/?h=3Dpowerc=
-ap/dtpm-dts-1.0&id=3D05943f5a1cf33df36dbe423fd4b549a9aa244da1
->
-> And from there the kernel does for_each_node_with_property(). The kernel
-> has to know "cpu-pd0" and "cpu-pd1". That implies a per soc
-> initialization code:
->
-> https://git.linaro.org/people/daniel.lezcano/linux.git/commit/?h=3Dpowerc=
-ap/dtpm-dts-1.0&id=3D7525abb234695d07a0094b2f511d5fe8bea0a979
->
-> https://git.linaro.org/people/daniel.lezcano/linux.git/commit/?h=3Dpowerc=
-ap/dtpm-dts-1.0&id=3D70e1deb642a939d14dd9b0391d8219cf21a03253
->
->
-> 3. An intermediate description between 1. and 2.
->
-> The nodes have a property which is a phandle to the parent node. But if
-> the parent node does not exists, create an empty and point to it.
->
-> package {
->         powerzone;
->         powerzone-parent =3D <&soc>;
-> };
->
-> cluster0 {
->         powerzone-parent =3D <&package>;
-> };
->
->         ...
->
->                 cpu_l0: cpu@0 {
->                         device_type =3D "cpu";
->                         compatible =3D "arm,cortex-a53";
->                         reg =3D <0x0 0x0>;
->                         enable-method =3D "psci";
->                         capacity-dmips-mhz =3D <485>;
->                         clocks =3D <&cru ARMCLKL>;
->                         #cooling-cells =3D <2>; /* min followed by max */
->                         dynamic-power-coefficient =3D <100>;
->                         cpu-idle-states =3D <&CPU_SLEEP &CLUSTER_SLEEP>;
->                         powerzone-parent =3D <&cluster0>;
->                 };
->
->         ...
->
-> I implemented 1. and 2. but before going forward and writing the yaml
-> bindings which are time consuming, it would be preferable we agree on
-> something instead of having to drop the code again and again.
->
-> Thanks for your comments
->
->
-> [1] https://lwn.net/Articles/839318/
-> [2] https://www.spinics.net/lists/kernel/msg3891770.html
->
-> --
-> <http://www.linaro.org/> Linaro.org =E2=94=82 Open source software for AR=
-M SoCs
->
-> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-> <http://twitter.com/#!/linaroorg> Twitter |
-> <http://www.linaro.org/linaro-blog/> Blog
+checkpatch doesn't emit a message either way.
+-----------------------------------------
+$ cat t_multiline.c
+// SPDX-License-Identifier: GPL-2.0-only
+
+void foo(void)
+{
+	if (foo) {
+		pr_info(fmt,
+			args);
+	}
+
+	if (foo)
+		pr_info(fmt,
+			args);
+
+	if (foo)
+		pr_info(fmt, args);
+}
+
+$ ./scripts/checkpatch.pl -f --strict t_multiline.c
+total: 0 errors, 0 warnings, 0 checks, 16 lines checked
+
+t_multiline.c has no obvious style problems and is ready for submission.
+-----------------------------------------
+
+cheers, Joe
+
+
