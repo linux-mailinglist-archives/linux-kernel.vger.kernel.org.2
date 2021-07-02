@@ -2,208 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5833B9F94
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 275293B9F8C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhGBLRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 07:17:23 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:32110 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231130AbhGBLRW (ORCPT
+        id S231818AbhGBLPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 07:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231130AbhGBLPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 07:17:22 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 162BBUmV029723;
-        Fri, 2 Jul 2021 07:14:49 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 39h859wfk7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 02 Jul 2021 07:14:49 -0400
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 162BEmBl005019
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 2 Jul 2021 07:14:48 -0400
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Fri, 2 Jul 2021 07:14:47 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Fri, 2 Jul 2021 07:14:47 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
- Transport; Fri, 2 Jul 2021 07:14:47 -0400
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.128])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 162BEhEK008901;
-        Fri, 2 Jul 2021 07:14:45 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jic23@kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH v4 2/2] dt-bindings: iio: frequency: add adrf6780 doc
-Date:   Fri, 2 Jul 2021 14:12:39 +0300
-Message-ID: <20210702111239.174189-2-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210702111239.174189-1-antoniu.miclaus@analog.com>
-References: <20210702111239.174189-1-antoniu.miclaus@analog.com>
+        Fri, 2 Jul 2021 07:15:37 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA68DC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 04:13:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=n3ZL5mkrhEYr2VcrInZbn1X+Tb8h0bzNV1DESPBO+fc=; b=WBW0uF5BM+0qp8Znl7C1Wo9Fpl
+        BERgSS7E1WNTyeeAvjFVMBkgJVoiyDZpufRVlBS89q7mQGzwHvUmSknN8RZpYBHridZBDoOP6rqyD
+        WtT16R4K6TY5ahPazEpqwhBLcz7bnxcIVVXHpUevvpuiegENchvg1UYodS+MhoXmY5gmUkeeFfP2X
+        G2NhoF7+RdbqUS184XdRu+WPi5Uri2XoNvEWQrqwiaNFQe8gBVIWNXDQVYvLsVzKc7t33NGvAHlP2
+        gIVcT+R+u384gXs3dZL8zxx8PZ8a3fJU+0NiixSh1W5QKMZdTUzoYVCeCiZHjJXRsKXBZeVkXF+Di
+        o6jHApDQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lzH6I-00DqH9-A0; Fri, 02 Jul 2021 11:12:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 83485300091;
+        Fri,  2 Jul 2021 13:12:49 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4CC4620195214; Fri,  2 Jul 2021 13:12:49 +0200 (CEST)
+Date:   Fri, 2 Jul 2021 13:12:49 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Xuewen Yan <xuewen.yan94@gmail.com>
+Cc:     valentin.schneider@arm.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net, qais.yousef@arm.com, qperret@google.com
+Subject: Re: [PATCH v2] sched/uclamp: Avoid getting unreasonable ucalmp value
+ when rq is idle
+Message-ID: <YN70sbUGh2pViWEQ@hirez.programming.kicks-ass.net>
+References: <20210630141204.8197-1-xuewen.yan94@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: LlprigCi3-qXD_QRxFjBuHK1rHmqKohi
-X-Proofpoint-ORIG-GUID: LlprigCi3-qXD_QRxFjBuHK1rHmqKohi
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-02_03:2021-07-02,2021-07-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 priorityscore=1501 phishscore=0 impostorscore=0 mlxscore=0
- adultscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107020063
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210630141204.8197-1-xuewen.yan94@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings for the ADRF6780 Upconverter.
+On Wed, Jun 30, 2021 at 10:12:04PM +0800, Xuewen Yan wrote:
+> From: Xuewen Yan <xuewen.yan@unisoc.com>
+> 
+> Now in uclamp_rq_util_with(), when the task != NULL, the uclamp_max as following:
+> uc_rq_max = rq->uclamp[UCLAMP_MAX].value;
+> uc_eff_max = uclamp_eff_value(p, UCLAMP_MAX);
+> uclamp_max = max{uc_rq_max, uc_eff_max};
+> 
+> Consider the following scenario:
+> (1)the rq is idle, the uc_rq_max is last runnable task's UCLAMP_MAX;
+> (2)the p's uc_eff_max < uc_rq_max.
+> 
+> As a result, the uclamp_max = uc_rq_max instead of uc_eff_max, it is unreasonable.
+> 
+> The scenario often happens in find_energy_efficient_cpu(), when the task has smaller UCLAMP_MAX.
+> 
+> When rq has UCLAMP_FLAG_IDLE flag, enqueuing the task will lift UCLAMP_FLAG_IDLE
+> and set the rq clamp as the task's via uclamp_idle_reset(). It doesn't need
+> to read the rq clamp. And it can also avoid the problems described above.
+> 
+> Fixes: 9d20ad7dfc9a ("sched/uclamp: Add uclamp_util_with()")
+> 
+> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
- changes in v4:
-  - fix dt_binding_check detected issues
-  - update license to GPL-2.0-only OR BSD-2-Clause
-  - add dependencies schema
-  - other minor fixes based on the review received
+Valentin, Qais, can either of you write a Changelog/comment for this, I
+can't seem to make any sense of it.
 
- .../bindings/iio/frequency/adi,adrf6780.yaml  | 119 ++++++++++++++++++
- 1 file changed, 119 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
+Is this about wake-from-idle, where the first task's uclamp goes amis
+because the rq->uclamp values haven't been updated yet?
 
-diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
-new file mode 100644
-index 000000000000..61a7a45837ae
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
-@@ -0,0 +1,119 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/frequency/adi,adrf6780.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ADRF6780 Microwave Upconverter
-+
-+maintainers:
-+  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-+
-+description: |
-+   Wideband, microwave upconverter optimized for point to point microwave
-+   radio designs operating in the 5.9 GHz to 23.6 GHz frequency range.
-+
-+   https://www.analog.com/en/products/adrf6780.html
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,adrf6780
-+
-+  reg:
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    maximum: 1000000
-+
-+  clocks:
-+    description:
-+      Definition of the external clock.
-+    minItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: lo_in
-+  
-+  clock-output-names:
-+    maxItems: 1
-+
-+  adi,vga-buff-en:
-+    description:
-+      VGA Buffer Enable.
-+    type: boolean
-+
-+  adi,lo-buff-en:
-+    description:
-+      LO Buffer Enable.
-+    type: boolean
-+
-+  adi,if-mode-en:
-+    description:
-+      IF Mode Enable.
-+    type: boolean
-+
-+  adi,iq-mode-en:
-+    description:
-+      IQ Mode Enable.
-+    type: boolean
-+
-+  adi,lo-x2-en:
-+    description:
-+      LO x2 Enable.
-+    type: boolean
-+
-+  adi,lo-ppf-en:
-+    description:
-+      LO x1 Enable.
-+    type: boolean
-+
-+  adi,lo-en:
-+    description:
-+      LO Enable.
-+    type: boolean
-+
-+  adi,uc-bias-en:
-+    description:
-+      UC Bias Enable.
-+    type: boolean
-+
-+  adi,lo-sideband:
-+    description:
-+      Switch to the Other LO Sideband.
-+    type: boolean
-+
-+  adi,vdet-out-en:
-+    description:
-+      VDET Output Select Enable.
-+    type: boolean
-+
-+  '#clock-cells':
-+    const: 0
-+
-+dependencies:
-+  adi,lo-x2-en: [ "adi,lo-en" ]
-+  adi,lo-ppf-en: [ "adi,lo-en" ]
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      adrf6780@0 {
-+        compatible = "adi,adrf6780";
-+        reg = <0>;
-+        spi-max-frequency = <1000000>;
-+        clocks = <&adrf6780_lo>;
-+        clock-names = "lo_in";
-+      };
-+    };
-+...
--- 
-2.32.0
 
+> ---
+>  kernel/sched/sched.h | 21 ++++++++++++++-------
+>  1 file changed, 14 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index c80d42e9589b..14a41a243f7b 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -2818,20 +2818,27 @@ static __always_inline
+>  unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
+>  				  struct task_struct *p)
+>  {
+> -	unsigned long min_util;
+> -	unsigned long max_util;
+> +	unsigned long min_util = 0;
+> +	unsigned long max_util = 0;
+>  
+>  	if (!static_branch_likely(&sched_uclamp_used))
+>  		return util;
+>  
+> -	min_util = READ_ONCE(rq->uclamp[UCLAMP_MIN].value);
+> -	max_util = READ_ONCE(rq->uclamp[UCLAMP_MAX].value);
+> -
+>  	if (p) {
+> -		min_util = max(min_util, uclamp_eff_value(p, UCLAMP_MIN));
+> -		max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
+> +		min_util = uclamp_eff_value(p, UCLAMP_MIN);
+> +		max_util = uclamp_eff_value(p, UCLAMP_MAX);
+> +
+> +		/*
+> +		 * Ignore last runnable task's max clamp, as this task will
+> +		 * reset it. Similarly, no need to read the rq's min clamp.
+> +		 */
+> +		if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
+> +			goto out;
+>  	}
+>  
+> +	min_util = max_t(unsigned long, min_util, READ_ONCE(rq->uclamp[UCLAMP_MIN].value));
+> +	max_util = max_t(unsigned long, max_util, READ_ONCE(rq->uclamp[UCLAMP_MAX].value));
+> +out:
+>  	/*
+>  	 * Since CPU's {min,max}_util clamps are MAX aggregated considering
+>  	 * RUNNABLE tasks with _different_ clamps, we can end up with an
+> -- 
+> 2.25.1
+> 
