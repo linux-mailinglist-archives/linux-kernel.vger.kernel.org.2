@@ -2,111 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3723B9E2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC493B9E30
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhGBJ16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 05:27:58 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:37215 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230388AbhGBJ16 (ORCPT
+        id S231281AbhGBJ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 05:29:02 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13053 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230144AbhGBJ3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 05:27:58 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lzFQG-002aEM-Gp; Fri, 02 Jul 2021 11:25:20 +0200
-Received: from p57bd964c.dip0.t-ipconnect.de ([87.189.150.76] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lzFQG-004BfI-AA; Fri, 02 Jul 2021 11:25:20 +0200
-Subject: Re: [PATCH 3/3 v2] sh: fix READ/WRITE redefinition warnings
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Takashi YOSHII <takasi-y@ops.dti.ne.jp>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20210627220544.8757-1-rdunlap@infradead.org>
- <20210627220544.8757-4-rdunlap@infradead.org>
- <6af41806-e715-4084-418f-4a8924d26c07@physik.fu-berlin.de>
- <8efd6e1d-9949-9598-9e6b-41d9b2f4ea7a@infradead.org>
- <d1e925b1-b0ef-2e00-ea79-b5ff2be3cf4c@physik.fu-berlin.de>
- <CAMuHMdUjT3GnZTUurHmjctxaa==VYU9-rNuQun=f=RyWi2M5Tw@mail.gmail.com>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <85485961-4c6e-a1bc-d66a-19869b5a03f1@physik.fu-berlin.de>
-Date:   Fri, 2 Jul 2021 11:25:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 2 Jul 2021 05:29:01 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GGV4S16dBzZmCC;
+        Fri,  2 Jul 2021 17:23:20 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 2 Jul 2021 17:26:28 +0800
+Received: from SWX921481.china.huawei.com (10.126.203.116) by
+ dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 2 Jul 2021 17:26:23 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <gregkh@linuxfoundation.org>, <akpm@linux-foundation.org>,
+        <andriy.shevchenko@linux.intel.com>, <linux-kernel@vger.kernel.org>
+CC:     <dave.hansen@intel.com>, <yury.norov@gmail.com>,
+        <linux@rasmusvillemoes.dk>, <rafael@kernel.org>,
+        <rdunlap@infradead.org>, <agordeev@linux.ibm.com>,
+        <sbrivio@redhat.com>, <jianpeng.ma@intel.com>,
+        <valentin.schneider@arm.com>, <peterz@infradead.org>,
+        <bristot@redhat.com>, <guodong.xu@linaro.org>,
+        <tangchengchang@huawei.com>, <prime.zeng@hisilicon.com>,
+        <yangyicong@huawei.com>, <tim.c.chen@linux.intel.com>,
+        <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH v5 0/3] use bin_attribute to break the size limitation of cpumap ABI
+Date:   Fri, 2 Jul 2021 21:25:56 +1200
+Message-ID: <20210702092559.8776-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUjT3GnZTUurHmjctxaa==VYU9-rNuQun=f=RyWi2M5Tw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.150.76
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.203.116]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggemi761-chm.china.huawei.com (10.1.198.147)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert!
+v5:
+  -remove the bitmap API bitmap_print_to_buf, alternatively, only provide
+   cpumap_print_to_buf API as what we really care about is cpumask for
+   this moment. we can freely take bitmap_print_to_buf back once we find
+   the second user.
+   hopefully this can alleviate Yury's worries on possible abuse of a new
+   bitmap API.
+  -correct the document of cpumap_print_to_buf;
+  -In patch1, clearly explain why we need this new API in commit log;
+  -Also refine the commit log of patch 2 and 3;
+  -As the modification is narrowed to the scope of cpumask, the kunit
+   test of bitmap_print_to_buf doesn't apply in the new patchset. so
+   test case patch4/4 is removed.
 
-On 7/1/21 10:41 AM, Geert Uytterhoeven wrote:
->>> OK. Thanks for all of the testing.
->>
->> I'll report back with the other patch applied that Geert mentioned from linux-next before this one.
-> 
-> FTR, I booted all three successfully on qemu/rts7751r2d and on physical landisk.
+   Thanks for the comments of Greg, Yury, Andy. Thanks for Jonathan's
+   review.
 
-Good to know, thanks.
+v4:
+  -add test cases for bitmap_print_to_buf API;
+  -add Reviewed-by of Jonathan Cameron for patches 1-3, thanks!
 
->> FWIW, there are some warnings when building the SH-7785LCR configuration:
->>
->> In file included from ./arch/sh/include/asm/hw_irq.h:6,
->>                  from ./include/linux/irq.h:591,
->>                  from ./include/asm-generic/hardirq.h:17,
->>                  from ./arch/sh/include/asm/hardirq.h:9,
->>                  from ./include/linux/hardirq.h:11,
->>                  from ./include/linux/interrupt.h:11,
->>                  from ./include/linux/serial_core.h:13,
->>                  from ./include/linux/serial_sci.h:6,
->>                  from arch/sh/kernel/cpu/sh4a/setup-sh7785.c:10:
->> ./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
->>   100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
->>       |                                                               ^
->> ./include/linux/sh_intc.h:107:9: note: in expansion of macro '_INTC_ARRAY'
->>   107 |         _INTC_ARRAY(sense_regs), _INTC_ARRAY(ack_regs), \
->>       |         ^~~~~~~~~~~
->> ./include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
->>   124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
->>       |               ^~~~~~~~~~~~
->> arch/sh/kernel/cpu/sh4a/setup-sh7785.c:478:8: note: in expansion of macro 'DECLARE_INTC_DESC'
->>   478 | static DECLARE_INTC_DESC(intc_desc, "sh7785", vectors, groups,
->>       |        ^~~~~~~~~~~~~~~~~
-> 
-> A while ago, I had a look into fixing them, but it was non-trivial.
-> The issue is that the macros are sometimes used with NULL pointer arrays.
-> The __same_type() check in
-> 
->     #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
-> 
-> is supposed to catch that, but modern compilers seem to evaluate the
-> non-taken branch, too, leading to the warning.
-> 
-> Anyone with a suggestion? (CCing the multi-compiler guru)
+v3:
+  -fixed the strlen issue and patch #1,#2,#3 minor formatting issues, thanks
+   to Andy Shevchenko and Jonathan Cameron.
 
-Ah, thanks for the explanation.
+v2:
+  -split the original patch #1 into two patches and use kasprintf() in
+  -patch #1 to simplify the code. do some minor formatting adjustments.
 
-Adrian
+Background:
+
+the whole story began from this thread when Jonatah and me tried to add a
+new topology level-cluster which exists on kunpeng920 and X86 Jacobsville:
+https://lore.kernel.org/lkml/YFRGIedW1fUlnmi+@kroah.com/
+https://lore.kernel.org/lkml/YFR2kwakbcGiI37w@kroah.com/
+
+in the discussion, Greg had some concern about the potential one page size
+limitation of sysfs ABI for topology. Greg's comment is reasonable
+and I think we should address the problem.
+
+For this moment, numa node, cpu topology and some other drivers are using
+cpu bitmap and list to expose hardware topology. When cpu number is large,
+the page buffer of sysfs won't be able to hold the whole bitmask or list.
+This doesn't really happen nowadays for bitmask as the maximum NR_CPUS
+is 8196 for X86_64 and 4096 for ARM64 since
+8196 * 9 / 32 = 2305
+is still smaller than 4KB page size.
+
+So the existing BUILD_BUG_ON() in drivers/base/node.c is pretty much
+preventing future problems when hardware gets more and more CPUs:
+static ssize_t node_read_cpumap(struct device *dev, bool list, char *buf)
+{
+ 	cpumask_var_t mask;
+ 	struct node *node_dev = to_node(dev);
+
+	/* 2008/04/07: buf currently PAGE_SIZE, need 9 chars per 32 bits. */
+	BUILD_BUG_ON((NR_CPUS/32 * 9) > (PAGE_SIZE-1));
+}
+
+But those ABIs exposing cpu lists are much more tricky as a list could be
+like: 0, 3, 5, 7, 9, 11... etc. so nobody knows the size till the last
+moment. Comparing to bitmask, list is easier to exceed one page.
+
+In the previous discussion, Greg and Dave Hansen preferred to remove this
+kind of limitation totally and remove the BUILD_BUG_ON() in
+drivers/base/node.c together:
+https://lore.kernel.org/lkml/1619679819-45256-2-git-send-email-tiantao6@hisilicon.com/
+https://lore.kernel.org/lkml/YIueOR4fOYa1dSAb@kroah.com/
+
+Todo:
+
+right now, only topology and node are addressed. there are many other
+drivers are calling cpumap_print_to_pagebuf() and have the similar
+problems. we are going to address them one by one after this patchset
+settles down.
+
+Tian Tao (3):
+  cpumask: introduce cpumap_print_to_buf to support large bitmask and
+    list
+  topology: use bin_attribute to break the size limitation of cpumap ABI
+  drivers/base/node.c: use bin_attribute to break the size limitation of
+    cpumap ABI
+
+ drivers/base/node.c     |  52 +++++++++++-------
+ drivers/base/topology.c | 115 ++++++++++++++++++++++------------------
+ include/linux/cpumask.h |  19 +++++++
+ lib/cpumask.c           |  18 +++++++
+ 4 files changed, 133 insertions(+), 70 deletions(-)
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.25.1
+
