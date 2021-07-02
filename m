@@ -2,85 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E85E3BA324
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 18:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49CF3BA32B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 18:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhGBQSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 12:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
+        id S229921AbhGBQYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 12:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhGBQSE (ORCPT
+        with ESMTP id S229455AbhGBQYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 12:18:04 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2672C061762;
-        Fri,  2 Jul 2021 09:15:31 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id t3so13951073edc.7;
-        Fri, 02 Jul 2021 09:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0CyPLvqK+Q8NHzNuZTr5kPFxjhrjFYWhZY35XEzbiOQ=;
-        b=IbAqmb9ygFZk9a887t8qEkrN+RXWoHARiWHkHfVhqOrfUeyc5C9KeLOPdVZrHk2SVx
-         gyxP3zCIzw+ztAO+vEn42sXTsh6h61gb5b76gPnChKNurlELilaYebJuqwgBUd1N5npb
-         2UOAW6deQdfsq5DuDPWNRO0bW7/tGuEgUQk6jiHYWTI4klcfT8Be9PutLc+GLf7l7FDI
-         T2zucV7K6m8be2MAb4KqkkBgSSDJcVB5ajBC5egeKZuo5JMTncsxWB/dC3ln5YsvylpT
-         Y+SpGsQ+urLTsoI0AALKG3blP6Ud+U0jjQj9NXor35I1PG53iU8rD86ifFVgQxkHD/6O
-         OiOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0CyPLvqK+Q8NHzNuZTr5kPFxjhrjFYWhZY35XEzbiOQ=;
-        b=L2qGVSn8IJSaVr4rHEzsELfK6uHK8TQP1gkuQkD/LQ3f7lVg+7KWDu6fBzBfVOb2KC
-         UtC1l4xFEoqgH7TbiL+i2pbcbmMxfYPvLkQSEPjDywqxAIY8gaKObjoqXmtQ/Eiup2TV
-         Mt7aDItjuRzZOEQqU+AQGtVCGRDW97qTqu600qwWgX30YzHd/KImRDHOK3U+xhgSY4PR
-         eYWSBiLouihQbQ3obTMOFdMTiovA01mpxaYsnl7t4Kn2BCQwAukfYQgF4HO7p8nTpf36
-         uswS+oaEtRrH+vUGIUjAjuTfxdUWQpYxJ1j2pjInxm+lXkRp7Km2auIyOga+NI7ZBBc+
-         9bRQ==
-X-Gm-Message-State: AOAM532i+fDLPbGySBNKwaFiJyBEa+HoQbegmEVRj+fFXltxcLhLZFAx
-        8/VvYTxo35uXz11g5EWN+gFPZ3xexEAbsQxHQ0w=
-X-Google-Smtp-Source: ABdhPJzTplJzJDgwT4b8/ikKLT8jsa9voYiaeLlsSCeJmsriCnofP+WlAfCEAN/jEj1wU+EwgK6wXThHemjJnDqwhik=
-X-Received: by 2002:aa7:d8d4:: with SMTP id k20mr266060eds.143.1625242530226;
- Fri, 02 Jul 2021 09:15:30 -0700 (PDT)
+        Fri, 2 Jul 2021 12:24:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26D4C061762;
+        Fri,  2 Jul 2021 09:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=1zeioteA+jdIxWL/dgp30Yr4n/h54VyVtqBx1y8dmpw=; b=fYXRPL+pdyd6pWTWgyqUpSCon6
+        hVRsaqHU4sbIFMylpPESw6s1ds+Ne9pVmfvWssHCPh1tDhQ9NkyStK+h+EbWgWCnW12z5BtIVCdGe
+        f+zT2Z6CPo0EeWU9hw197UGVVVwpfo/M/LWBBZmP19BuXpyZ9vOQSoLzX4yYf8flnCnzPjudhIe5I
+        nAPW1UA4YFmGzh9Tr8facSLDTW5eGOBQNDmEGJQ9f2Ue8KDsvmGSbeYOcfg67qbyPcb5an5v85HpA
+        uIFMkJLiWxHwoIg2+vPo84aLIc+3qyJICFoRdiDRt5ZJq1EXAve92cC7Nu/lybkzevKBEV34ZCENu
+        mIazXrTg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lzLtX-007r9Y-4l; Fri, 02 Jul 2021 16:20:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 65FA830007E;
+        Fri,  2 Jul 2021 18:19:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 484942B759E47; Fri,  2 Jul 2021 18:19:56 +0200 (CEST)
+Date:   Fri, 2 Jul 2021 18:19:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Zhu Lingshan <lingshan.zhu@intel.com>, pbonzini@redhat.com,
+        bp@alien8.de, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        weijiang.yang@intel.com, kan.liang@linux.intel.com,
+        ak@linux.intel.com, wei.w.wang@intel.com, eranian@google.com,
+        liuxiangdong5@huawei.com, linux-kernel@vger.kernel.org,
+        x86@kernel.org, kvm@vger.kernel.org, like.xu.linux@gmail.com,
+        Like Xu <like.xu@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        xen-devel@lists.xenproject.org
+Subject: Re: [PATCH V7 01/18] perf/core: Use static_call to optimize
+ perf_guest_info_callbacks
+Message-ID: <YN88rE+cxb7HrEtI@hirez.programming.kicks-ass.net>
+References: <20210622094306.8336-1-lingshan.zhu@intel.com>
+ <20210622094306.8336-2-lingshan.zhu@intel.com>
+ <YN722HIrzc6Z2+oD@hirez.programming.kicks-ass.net>
+ <7379289718c6826dd1affec5824b749be2aee0a4.camel@perches.com>
 MIME-Version: 1.0
-References: <20210701215132.16317-1-viktor.prutyanov@phystech.edu>
- <20210701215132.16317-3-viktor.prutyanov@phystech.edu> <20210701224646.GA18540@gofer.mess.org>
-In-Reply-To: <20210701224646.GA18540@gofer.mess.org>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Fri, 2 Jul 2021 18:15:18 +0200
-Message-ID: <CAFBinCA+zud1THT6z2QsGCqXMT-3nqN_S4nR0FhaDGhcKzoe-Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] media: rc: introduce Meson IR blaster driver
-To:     Sean Young <sean@mess.org>
-Cc:     Viktor Prutyanov <viktor.prutyanov@phystech.edu>,
-        mchehab@kernel.org, robh+dt@kernel.org, khilman@baylibre.com,
-        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, rockosov@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7379289718c6826dd1affec5824b749be2aee0a4.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
+On Fri, Jul 02, 2021 at 09:00:22AM -0700, Joe Perches wrote:
+> On Fri, 2021-07-02 at 13:22 +0200, Peter Zijlstra wrote:
+> > On Tue, Jun 22, 2021 at 05:42:49PM +0800, Zhu Lingshan wrote:
+> > > diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> []
+> > > @@ -90,6 +90,27 @@ DEFINE_STATIC_CALL_NULL(x86_pmu_pebs_aliases, *x86_pmu.pebs_aliases);
+> > >   */
+> > >  DEFINE_STATIC_CALL_RET0(x86_pmu_guest_get_msrs, *x86_pmu.guest_get_msrs);
+> > >  
+> > > 
+> > > +DEFINE_STATIC_CALL_RET0(x86_guest_state, *(perf_guest_cbs->state));
+> > > +DEFINE_STATIC_CALL_RET0(x86_guest_get_ip, *(perf_guest_cbs->get_ip));
+> > > +DEFINE_STATIC_CALL_RET0(x86_guest_handle_intel_pt_intr, *(perf_guest_cbs->handle_intel_pt_intr));
+> > > +
+> > > +void arch_perf_update_guest_cbs(void)
+> > > +{
+> > > +	static_call_update(x86_guest_state, (void *)&__static_call_return0);
+> > > +	static_call_update(x86_guest_get_ip, (void *)&__static_call_return0);
+> > > +	static_call_update(x86_guest_handle_intel_pt_intr, (void *)&__static_call_return0);
+> > > +
+> > > +	if (perf_guest_cbs && perf_guest_cbs->state)
+> > > +		static_call_update(x86_guest_state, perf_guest_cbs->state);
+> > > +
+> > > +	if (perf_guest_cbs && perf_guest_cbs->get_ip)
+> > > +		static_call_update(x86_guest_get_ip, perf_guest_cbs->get_ip);
+> > > +
+> > > +	if (perf_guest_cbs && perf_guest_cbs->handle_intel_pt_intr)
+> > > +		static_call_update(x86_guest_handle_intel_pt_intr,
+> > > +				   perf_guest_cbs->handle_intel_pt_intr);
+> > > +}
+> > 
+> > Coding style wants { } on that last if().
+> 
+> That's just your personal preference.
 
-On Fri, Jul 2, 2021 at 12:46 AM Sean Young <sean@mess.org> wrote:
->
-> Hi Viktor,
->
-> Thank you for your driver. Is there a datasheet available for this hardware?
-The public S905X datasheet [0] (starting at page 515) and the public
-S905D3 datasheet [1] (starting at page 1105) document the registers.
-If Viktor has additional or better information then it would be great
-if he could share it with us.
+As a maintainer, those carry weight, also that's tip rules:
 
-
-Best regards,
-Martin
-
-
-[0] https://dl.khadas.com/Hardware/VIM1/Datasheet/S905X_Datasheet%20V0.3%2020170314publicversion-Wesion.pdf
-[1] https://dl.khadas.com/Hardware/VIM3/Datasheet/S905D3_datasheet_0.2_Wesion.pdf
+  https://lore.kernel.org/lkml/20181107171149.165693799@linutronix.de/
