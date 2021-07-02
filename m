@@ -2,69 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9A83BA24E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 534A43BA250
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232824AbhGBOqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 10:46:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230424AbhGBOqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 10:46:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94FFF613FE;
-        Fri,  2 Jul 2021 14:44:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625237050;
-        bh=tQbOmOYm52sqPdnKBHSq7Q8mipiiNLQCBkJZv7Ts5mo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dlvppMt6J9x4cFjD5sqPNkUFLKCc9HNF+xb6trH2ja/+l+bnmCQEJT0naFGH93Z/+
-         6qHD1i8IIOlwo0P/waN3WyAC1uC7MlOY5UeQCfPThtca4FM7Y4/USFA3PNV2WFGWkn
-         ksAGsl2c+dnK6GvCvPEZFUHS8PiRncYQby6eH64Q=
-Date:   Fri, 2 Jul 2021 16:44:07 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Salah Triki <salah.triki@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dio: return -ENOMEM when kzalloc() fails
-Message-ID: <YN8mN3mtRH+S6D3o@kroah.com>
-References: <20210702133114.GA314157@pc>
+        id S232917AbhGBOrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 10:47:25 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:54256 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230424AbhGBOrZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 10:47:25 -0400
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B3BAF20B83F6;
+        Fri,  2 Jul 2021 07:44:52 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B3BAF20B83F6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1625237092;
+        bh=COfBRLi+BJ3qGAqOVgLUX0fhQNuQxKTydWlChw0BlLI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tRGwEHasZTX06Egu9Ww7uR8RabiaJLr5vR4tlDPOfGgBdAE0IHk7ehSVCVKdwfsTX
+         nDL34TDk/hAMHQ9GJhkVTEsbQH2mo7XE3c2M1Me7rIrRLOXwxwAPWBfJvYSqg0z0Re
+         dE3HS528+HtMzM0UXqVixjAMR5aSPvt46WJVMjwM=
+Received: by mail-pl1-f180.google.com with SMTP id l19so450209plg.6;
+        Fri, 02 Jul 2021 07:44:52 -0700 (PDT)
+X-Gm-Message-State: AOAM533bsPXci+LPKoOpKHNWaY8umg8/tkK2V6aEPpJiPLJHHcfxla5j
+        XJhAbT1+3r4zVs4xSHOepXhNzjLxXkW5aWy7wJ8=
+X-Google-Smtp-Source: ABdhPJzWnpiLuYZjxkaOt2GXQN8Y0htWvRKauf64n9pu1ITllRnRm87jqyOrrR0TIYSKM6zsEhBaReTnfjD2r+YVp+g=
+X-Received: by 2002:a17:902:70c4:b029:129:45cd:aa90 with SMTP id
+ l4-20020a17090270c4b029012945cdaa90mr123959plt.43.1625237092188; Fri, 02 Jul
+ 2021 07:44:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210702133114.GA314157@pc>
+References: <20210702123153.14093-1-mcroce@linux.microsoft.com>
+ <20210702123153.14093-2-mcroce@linux.microsoft.com> <0e0fa030-8995-b930-5e22-954349a0b82e@codethink.co.uk>
+In-Reply-To: <0e0fa030-8995-b930-5e22-954349a0b82e@codethink.co.uk>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Fri, 2 Jul 2021 16:44:16 +0200
+X-Gmail-Original-Message-ID: <CAFnufp1H4fzOHcinAgS0nnStSqLcALKAtk0QYkrnkQvwAx=BNA@mail.gmail.com>
+Message-ID: <CAFnufp1H4fzOHcinAgS0nnStSqLcALKAtk0QYkrnkQvwAx=BNA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] lib/string: optimized memcpy
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Guo Ren <guoren@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Laight <David.Laight@aculab.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 02:31:14PM +0100, Salah Triki wrote:
-> Return -ENOMEM when kzalloc() fails in order to inform the caller of the
-> failure.
-> 
-> Signed-off-by: Salah Triki <salah.triki@gmail.com>
-> ---
->  drivers/dio/dio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dio/dio.c b/drivers/dio/dio.c
-> index 193b40e7aec0..4c06c93c93d3 100644
-> --- a/drivers/dio/dio.c
-> +++ b/drivers/dio/dio.c
-> @@ -219,7 +219,7 @@ static int __init dio_init(void)
->                  /* Found a board, allocate it an entry in the list */
->  		dev = kzalloc(sizeof(struct dio_dev), GFP_KERNEL);
->  		if (!dev)
-> -			return 0;
-> +			return -ENOMEM;
+On Fri, Jul 2, 2021 at 4:37 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>
+> On 02/07/2021 13:31, Matteo Croce wrote:
+> > From: Matteo Croce <mcroce@microsoft.com>
+> >
+> > Rewrite the generic memcpy() to copy a word at time, without generating
+> > unaligned accesses.
+> >
+> > The procedure is made of three steps:
+> > First copy data one byte at time until the destination buffer is aligned
+> > to a long boundary.
+> > Then copy the data one long at time shifting the current and the next long
+> > to compose a long at every cycle.
+> > Finally, copy the remainder one byte at time.
+> >
+> > This is the improvement on RISC-V:
+> >
+> > original aligned:      75 Mb/s
+> > original unaligned:    75 Mb/s
+> > new aligned:          114 Mb/s
+> > new unaligned:                107 Mb/s
+> >
+> > and this the binary size increase according to bloat-o-meter:
+> >
+> > Function     old     new   delta
+> > memcpy        36     324    +288
+> >
+> >
+> > Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+> > ---
+> >   lib/string.c | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+> >   1 file changed, 77 insertions(+), 3 deletions(-)
+>
+> Doesn't arch/riscv/lib/memcpy.S also exist for an architecture
+> optimised version? I would have thought the lib/string.c version
+> was not being used?
+>
+>
 
-Do you have this hardware to test with?
+Yes, but this series started as C replacement for the assembly one,
+which generates unaligned accesses.
+Unfortunately the existing RISC-V processors can't handle unaligned
+accesses, so they are emulated with a terrible slowdown.
+Then, since there wasn't any riscv specific code, it was proposed as
+generic code:
 
-While this patch looks correct, it still is leaking lots of resources if
-this every happens.  Can you fix this up "properly" so that all of the
-resources allocated at this point in time will be correctly freed?
+Discussion: https://lore.kernel.org/linux-riscv/20210617152754.17960-1-mcroce@linux.microsoft.com/
 
-Or, really, this is an impossible error path to hit, given that it is at
-boot time, so maybe it's just not worth it given that I doubt anyone has
-this hardware...
-
-thanks,
-
-greg k-h
+-- 
+per aspera ad upstream
