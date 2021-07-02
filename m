@@ -2,119 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352353BA3E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570E33BA3E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhGBSSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 14:18:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229455AbhGBSSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 14:18:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02EF8613DC;
-        Fri,  2 Jul 2021 18:15:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625249745;
-        bh=0PGfeLOVIYY2WpcoibguCgA2At0IRQvLGVRHR7AppB4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JjLJpNEy0ZjKRZ4DXwAjerVDqKZJTWLAReg1mUdHG6Om3AlauS8ui+M4gjF+8DsmC
-         CnAacGXtl4fhasawY+/E3orpxIU4MnkqIQGBn8s/Bb+kqZccmAeaXMoRQ/VJ3pbOx3
-         +0k3SjpLkbAxbIhQN+ys8qMJRyUWzOzqD+kvBT2rOp5S5jsuIIMMqU96pbZ2p/4oWQ
-         cTGX5mYTfU3Ntkog27L906h3HAZdaYggUwdwdztD4rK/GKBtOjofKmmbs2OkhfCwmJ
-         9Khv40qanG0G/JDdyWigidXr38w31rsTX+HGvxU0BqhiUQ/oxI7QGQuEw01+Pq4lb4
-         viz0yNuPKJn5Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 200F340B1A; Fri,  2 Jul 2021 15:15:42 -0300 (-03)
-Date:   Fri, 2 Jul 2021 15:15:42 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Subject: Re: [PATCH v9 02/24] tools lib: Introduce fdarray clone function
-Message-ID: <YN9Xzs9q3r8qU90R@kernel.org>
-References: <cover.1625227739.git.alexey.v.bayduraev@linux.intel.com>
- <e400806e403d2d607c89c251f72b4ba631b52f14.1625227739.git.alexey.v.bayduraev@linux.intel.com>
+        id S230130AbhGBSWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 14:22:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35232 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229817AbhGBSWh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 14:22:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625250005;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ljBkCCbVc5OdHhjmFR2eMLVXMDCuwitek0RrMPP1ROw=;
+        b=CbuS5pXuK+a+M6SL6pxksOea0CdJ6oAcvw+BJZucHx+0ttcLscql1f4ImITZIWbqgyVzY4
+        8l8yCUF6bdF4QvQXIvgmm/82TsmBfO6LWVjsOCtT9k58HCejNO8aL7gojJOZNHuMcVlY9+
+        eRttqT6UB90PGWfel/sDkGWrv7GEa+Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-vXm2Qzy_NPCQampVscaRcA-1; Fri, 02 Jul 2021 14:20:01 -0400
+X-MC-Unique: vXm2Qzy_NPCQampVscaRcA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7FF17C7403;
+        Fri,  2 Jul 2021 18:19:56 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (ovpn-115-5.ams2.redhat.com [10.36.115.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E6FD060853;
+        Fri,  2 Jul 2021 18:19:47 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-audit/audit-kernel 
+        <reply+ADSN7RXLQ62LNLD2MK5HFHF65GIU3EVBNHHDPMBXHU@reply.github.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        bobo.shaobowang@huawei.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Alexander Graf <agraf@suse.de>,
+        Alexey Klimov <klimov.linux@gmail.com>,
+        Andreas Schwab <schwab@suse.de>,
+        Andrew Pinski <pinskia@gmail.com>,
+        Bamvor Zhangjian <bamv2005@gmail.com>,
+        Chris Metcalf <cmetcalf@mellanox.com>,
+        Christoph Muellner <christoph.muellner@theobroma-systems.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        James Hogan <james.hogan@imgtec.com>,
+        James Morse <james.morse@arm.com>,
+        Joseph Myers <joseph@codesourcery.com>,
+        Lin Yongting <linyongting@huawei.com>,
+        Manuel Montezelo <manuel.montezelo@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Nathan_Lynch <Nathan_Lynch@mentor.com>,
+        Philipp Tomsich <philipp.tomsich@theobroma-systems.com>,
+        Prasun Kapoor <Prasun.Kapoor@caviumnetworks.com>,
+        Ramana Radhakrishnan <ramana.gcc@googlemail.com>,
+        Steve Ellcey <sellcey@caviumnetworks.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>
+Subject: Re: [linux-audit/audit-kernel] BUG: audit_classify_syscall() fails
+ to properly handle 64-bit syscalls when executing as 32-bit application on
+ ARM (#131)
+References: <linux-audit/audit-kernel/issues/131@github.com>
+        <linux-audit/audit-kernel/issues/131/872191450@github.com>
+        <YN9V/qM0mxIYXt3h@yury-ThinkPad>
+Date:   Fri, 02 Jul 2021 20:19:46 +0200
+In-Reply-To: <YN9V/qM0mxIYXt3h@yury-ThinkPad> (Yury Norov's message of "Fri, 2
+        Jul 2021 11:07:58 -0700")
+Message-ID: <87zgv4y3wd.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e400806e403d2d607c89c251f72b4ba631b52f14.1625227739.git.alexey.v.bayduraev@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jul 02, 2021 at 03:32:10PM +0300, Alexey Bayduraev escreveu:
-> Introduce a function to create a copy of an existing file descriptor in
-> the fdarray structure. The function returns the position of the copied fd.
-> 
-> Acked-by: Namhyung Kim <namhyung@gmail.com>
-> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-> ---
->  tools/lib/api/fd/array.c | 17 +++++++++++++++++
->  tools/lib/api/fd/array.h |  1 +
->  2 files changed, 18 insertions(+)
-> 
-> diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
-> index 5e6cb9debe37..de8bcbaea3f1 100644
-> --- a/tools/lib/api/fd/array.c
-> +++ b/tools/lib/api/fd/array.c
-> @@ -88,6 +88,23 @@ int fdarray__add(struct fdarray *fda, int fd, short revents, enum fdarray_flags
->  	return pos;
->  }
->  
-> +int fdarray__clone(struct fdarray *fda, int pos, struct fdarray *base)
+* Yury Norov:
 
-The "XX__clone" idiom means "get the XXX instance and get me a clone of
-it", i.e. of the whole class, not of an entry, see map__clone(),
-evsel__clone(), parse_events_term__clone(), etc.
+> At least Marvell, Samsung, Huawei, Cisco and Weiyuchen's employer
+> actively use and develop arm64/ilp32. I receive feedback / bugrepotrs
+> on ilp32 every 4-6 month. Is that enough for you to reconsider
+> including the project into the mainline?
 
-Please consider:
+I believe that glibc has the infrastructure now to integrate an ILP32
+port fairly cleanly, although given that it would be first
+post-libpthread work, it would have to absorb some of the cleanup work
+for such a configuration.
 
-int fdarray__dup_entry_from(struct fdarray *fda, int pos, struct fdarray *from)
+(I do not plan to work on this myself.)
 
-> +{
-> +	struct pollfd *entry;
-> +	int npos;
-> +
-> +	if (pos >= base->nr)
-> +		return -EINVAL;
-> +
-> +	entry = &base->entries[pos];
-> +
-> +	npos = fdarray__add(fda, entry->fd, entry->events, base->priv[pos].flags);
-> +	if (npos >= 0)
-> +		fda->priv[npos] = base->priv[pos];
-> +
-> +	return npos;
-> +}
-> +
->  int fdarray__filter(struct fdarray *fda, short revents,
->  		    void (*entry_destructor)(struct fdarray *fda, int fd, void *arg),
->  		    void *arg)
-> diff --git a/tools/lib/api/fd/array.h b/tools/lib/api/fd/array.h
-> index 7fcf21a33c0c..4a03da7f1fc1 100644
-> --- a/tools/lib/api/fd/array.h
-> +++ b/tools/lib/api/fd/array.h
-> @@ -42,6 +42,7 @@ struct fdarray *fdarray__new(int nr_alloc, int nr_autogrow);
->  void fdarray__delete(struct fdarray *fda);
->  
->  int fdarray__add(struct fdarray *fda, int fd, short revents, enum fdarray_flags flags);
-> +int fdarray__clone(struct fdarray *fda, int pos, struct fdarray *base);
->  int fdarray__poll(struct fdarray *fda, int timeout);
->  int fdarray__filter(struct fdarray *fda, short revents,
->  		    void (*entry_destructor)(struct fdarray *fda, int fd, void *arg),
-> -- 
-> 2.19.0
-> 
+Thanks,
+Florian
 
--- 
-
-- Arnaldo
