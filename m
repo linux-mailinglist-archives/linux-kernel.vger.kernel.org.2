@@ -2,68 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFA63B9AC6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 05:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4853B9ACC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 05:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234811AbhGBDEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 23:04:05 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6033 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234627AbhGBDED (ORCPT
+        id S234773AbhGBDKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 23:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234627AbhGBDKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 23:04:03 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GGKTf5fn4zXmKM;
-        Fri,  2 Jul 2021 10:56:06 +0800 (CST)
-Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 2 Jul 2021 11:01:28 +0800
-Received: from [10.174.178.46] (10.174.178.46) by
- dggema761-chm.china.huawei.com (10.1.198.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 2 Jul 2021 11:01:27 +0800
-Subject: Re: [PATCH] perf llvm: Fix error return code in llvm__compile_bpf()
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <jolsa@redhat.com>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <nathan@kernel.org>, <ndesaulniers@google.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <clang-built-linux@googlegroups.com>, <yukuai3@huawei.com>
-References: <20210609115945.2193194-1-chengzhihao1@huawei.com>
- <YN35TYxboEdM5iHc@kernel.org>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <21406430-56f0-c59b-7ece-7fd387bb47e9@huawei.com>
-Date:   Fri, 2 Jul 2021 11:01:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Thu, 1 Jul 2021 23:10:42 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1C6C061762;
+        Thu,  1 Jul 2021 20:08:09 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 22so9741963oix.10;
+        Thu, 01 Jul 2021 20:08:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vnC0TqPJlyIMqLOncGpr5zl9pmbmcIIyiC4phT6PUIQ=;
+        b=rcatVMwnoboRAVBm6z7P2HYmOyqx+HWthzA0HOg5zSVWMr7WIAx3ZVtmMQBABS3jSs
+         ll3cBrlaV5N4g4Rvy938v3Mka2o7BKSsLAnp0j9BVKtd6G0HRyhUAM117EPetSB6PYk4
+         aIzksvokAZwg7oj60y4L3zka5GOYTYtCADcKKqh9eOpTeqFos+tdtKUeh13pl/ncaATb
+         z+gsly2qHHMFdyn0yxdy8vih0i6Y3VD1swKheCHmBE++JlII4Ajp+FJ6942Kfxfr0p9t
+         PlSPUBKWfUPw26fCx2/8jDss0gWJ7ZhSbqGnHJzN7Y9CqXNOHLSOGPQ6Z7xfZJI1OXzp
+         hIRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=vnC0TqPJlyIMqLOncGpr5zl9pmbmcIIyiC4phT6PUIQ=;
+        b=kYAob3lfnlaFBXhNcS3y0zVaHzfksgVE2PvdSR/mRXzWDDzsJP/nWrcfZiLzuEVPjY
+         2PSY3VWIg7AYnlAD480yiyYiIJZCnDj4Un4uYL9EMyD0k3KYer3O3T7D8Ot43tazIvsh
+         vOnhPlAtFQiSRY2fj67SPZsETP13uiXnXcMy44/vijvvQN2xgMJ3cqNbt4P8wqsLpiiU
+         dMR9XvpIcTNX93a2TA3h90EpomEV5gxg1PJ/hR5pGVZ8ntC/1gQNJGWd+wk4NJzLRq5J
+         ZtuMsdzSUTG3YQpBtl3ajhmWMEoxf005D+QVyyXV6mVCgleQVvG/PZOKk9d4XPBbEtw3
+         XTaw==
+X-Gm-Message-State: AOAM530lwzQm+/xaxtaEQcpQ8d5Wc/qNzcbG2bHPA0hHqjdzodstgc2R
+        MYC6BJN7P0E3BM9vv0/l+Jo=
+X-Google-Smtp-Source: ABdhPJxROyx59a65CULGKnIjDKL6LEkceViIozGHO/6JCiILIO/ostWPfjk3TYymGpFPnNGZwku3+w==
+X-Received: by 2002:a54:4187:: with SMTP id 7mr2101677oiy.127.1625195289117;
+        Thu, 01 Jul 2021 20:08:09 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l2sm374555otl.27.2021.07.01.20.08.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 20:08:08 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 1 Jul 2021 20:08:07 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Claire Chang <tientzu@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
+        peterz@infradead.org, dri-devel@lists.freedesktop.org,
+        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
+        mingo@kernel.org, jxgao@google.com, sstabellini@kernel.org,
+        Saravana Kannan <saravanak@google.com>, xypron.glpk@gmx.de,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bskeggs@redhat.com, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Thierry Reding <treding@nvidia.com>,
+        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
+        linux-devicetree <devicetree@vger.kernel.org>, airlied@linux.ie,
+        Robin Murphy <robin.murphy@arm.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        rodrigo.vivi@intel.com, bhelgaas@google.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>, quic_qiancai@quicinc.com,
+        lkml <linux-kernel@vger.kernel.org>, tfiga@chromium.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        thomas.lendacky@amd.com, linuxppc-dev@lists.ozlabs.org,
+        bauerman@linux.ibm.com
+Subject: Re: [PATCH v15 12/12] of: Add plumbing for restricted DMA pool
+Message-ID: <20210702030807.GA2685166@roeck-us.net>
+References: <20210624155526.2775863-1-tientzu@chromium.org>
+ <20210624155526.2775863-13-tientzu@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <YN35TYxboEdM5iHc@kernel.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema761-chm.china.huawei.com (10.1.198.203)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624155526.2775863-13-tientzu@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ÔÚ 2021/7/2 1:20, Arnaldo Carvalho de Melo Ð´µÀ:
-> Em Wed, Jun 09, 2021 at 07:59:45PM +0800, Zhihao Cheng escreveu:
->> Fix to return a negative error code from the error handling
->> case instead of 0, as done elsewhere in this function.
-> 
-> I checked and llvm__compile_bpf() returns -errno, so I'll change this to
-> instead set err to -ENOMEM just before the if (asprintf)(), ok?
-> 
-> - Arnaldo
->   
-Glad to accept this change.
->> Fixes: cb76371441d098 ("perf llvm: Allow passing options to llc ...")
->> Fixes: 5eab5a7ee032ac ("perf llvm: Display eBPF compiling command ...")
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Hi,
 
+On Thu, Jun 24, 2021 at 11:55:26PM +0800, Claire Chang wrote:
+> If a device is not behind an IOMMU, we look up the device node and set
+> up the restricted DMA when the restricted-dma-pool is presented.
+> 
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> Tested-by: Stefano Stabellini <sstabellini@kernel.org>
+> Tested-by: Will Deacon <will@kernel.org>
 
+With this patch in place, all sparc and sparc64 qemu emulations
+fail to boot. Symptom is that the root file system is not found.
+Reverting this patch fixes the problem. Bisect log is attached.
+
+Guenter
+
+---
+# bad: [fb0ca446157a86b75502c1636b0d81e642fe6bf1] Add linux-next specific files for 20210701
+# good: [62fb9874f5da54fdb243003b386128037319b219] Linux 5.13
+git bisect start 'HEAD' 'v5.13'
+# bad: [f63c4fda987a19b1194cc45cb72fd5bf968d9d90] Merge remote-tracking branch 'rdma/for-next'
+git bisect bad f63c4fda987a19b1194cc45cb72fd5bf968d9d90
+# good: [46bb5dd1d2a63e906e374e97dfd4a5e33934b1c4] Merge remote-tracking branch 'ipsec/master'
+git bisect good 46bb5dd1d2a63e906e374e97dfd4a5e33934b1c4
+# good: [43ba6969cfb8185353a7a6fc79070f13b9e3d6d3] Merge remote-tracking branch 'clk/clk-next'
+git bisect good 43ba6969cfb8185353a7a6fc79070f13b9e3d6d3
+# good: [1ca5eddcf8dca1d6345471c6404e7364af0d7019] Merge remote-tracking branch 'fuse/for-next'
+git bisect good 1ca5eddcf8dca1d6345471c6404e7364af0d7019
+# good: [8f6d7b3248705920187263a4e7147b0752ec7dcf] Merge remote-tracking branch 'pci/next'
+git bisect good 8f6d7b3248705920187263a4e7147b0752ec7dcf
+# good: [df1885a755784da3ef285f36d9230c1d090ef186] RDMA/rtrs_clt: Alloc less memory with write path fast memory registration
+git bisect good df1885a755784da3ef285f36d9230c1d090ef186
+# good: [93d31efb58c8ad4a66bbedbc2d082df458c04e45] Merge remote-tracking branch 'cpufreq-arm/cpufreq/arm/linux-next'
+git bisect good 93d31efb58c8ad4a66bbedbc2d082df458c04e45
+# good: [46308965ae6fdc7c25deb2e8c048510ae51bbe66] RDMA/irdma: Check contents of user-space irdma_mem_reg_req object
+git bisect good 46308965ae6fdc7c25deb2e8c048510ae51bbe66
+# good: [6de7a1d006ea9db235492b288312838d6878385f] thermal/drivers/int340x/processor_thermal: Split enumeration and processing part
+git bisect good 6de7a1d006ea9db235492b288312838d6878385f
+# good: [081bec2577cda3d04f6559c60b6f4e2242853520] dt-bindings: of: Add restricted DMA pool
+git bisect good 081bec2577cda3d04f6559c60b6f4e2242853520
+# good: [bf95ac0bcd69979af146852f6a617a60285ebbc1] Merge remote-tracking branch 'thermal/thermal/linux-next'
+git bisect good bf95ac0bcd69979af146852f6a617a60285ebbc1
+# good: [3d8287544223a3d2f37981c1f9ffd94d0b5e9ffc] RDMA/core: Always release restrack object
+git bisect good 3d8287544223a3d2f37981c1f9ffd94d0b5e9ffc
+# bad: [cff1f23fad6e0bd7d671acce0d15285c709f259c] Merge remote-tracking branch 'swiotlb/linux-next'
+git bisect bad cff1f23fad6e0bd7d671acce0d15285c709f259c
+# bad: [b655006619b7bccd0dc1e055bd72de5d613e7b5c] of: Add plumbing for restricted DMA pool
+git bisect bad b655006619b7bccd0dc1e055bd72de5d613e7b5c
+# first bad commit: [b655006619b7bccd0dc1e055bd72de5d613e7b5c] of: Add plumbing for restricted DMA pool
