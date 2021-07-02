@@ -2,133 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BDB3BA34C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 18:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C7D3BA34F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 18:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhGBQk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 12:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhGBQk0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 12:40:26 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C4DC061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 09:37:53 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id b2so17083665ejg.8
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 09:37:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AWY2RjKT+2r3oOmvFmiVbr8M8QoRSQ2qxYObjvNjLmQ=;
-        b=U+hn6zNHXD+IESe1KrFQasFz7kosnf4i5y/6PFBQmfHlyo5Szovx60z28i/0+ggl0P
-         umuN5Rt8TyW/5ilPETR7GTovfa5gv3B5JxdURNuVsSFp7NYyl4MeCx0Rfj9B5v/gXgMX
-         eEl/V2Okc1baBWkL3L8amgCJWe6sqhlOPXulw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AWY2RjKT+2r3oOmvFmiVbr8M8QoRSQ2qxYObjvNjLmQ=;
-        b=IbX0GoXQWuLmP+nK7dwW2YFQVGR6rlVV7Rg4lwr+EsNImCAfRMTbPLcW67PfJlr0L6
-         GbyYBMfvUtDYIA4pFV/pd0mPeJoNFvHG5s6I97lGYDyIv3i2f9sxT0kFGRi/gRvhvwQr
-         rhBmjkXrMPAm8tAJvAr4sLOgYIT6+4XVmn+utY3m4yZeuPXmfdohsYZNYHcFI4qqEfXa
-         PdAbuUIgTGNkHB924+F5/nxPaDckzpJ/g29jGW8ZggKgWgr06iKEf2k3YVyhYGU6n7BL
-         9z19iYyzOjPK+LrHrtLhRF/kLVotdq4TGLA2R2dpgMsmeN9mwmK9UyQ/EAoJIiERFJb9
-         3QKQ==
-X-Gm-Message-State: AOAM531daGwTCYSgO2YSqawg2zEbExF7id7yQdHQ3tbAUm0OS5RFNSyn
-        PlP5R8UFK10fg7O+29GMX5DNnA==
-X-Google-Smtp-Source: ABdhPJwR/GYYl0fu9wEzKJ0eiUPDI1kkw+wyvUlhtvQtLoDy9p07qEo7EIkd0+kGi0B68yIw0pvYhA==
-X-Received: by 2002:a17:906:bc83:: with SMTP id lv3mr583357ejb.133.1625243871841;
-        Fri, 02 Jul 2021 09:37:51 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8109:9880:57f0:ba7c:cdd5:fff7:623c])
-        by smtp.gmail.com with ESMTPSA id g23sm1536450edp.74.2021.07.02.09.37.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 09:37:51 -0700 (PDT)
-From:   Rodrigo Campos <rodrigo@kinvolk.io>
-To:     linux-man@vger.kernel.org,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Alban Crequy <alban@kinvolk.io>,
-        =?UTF-8?q?Mauricio=20V=C3=A1squez=20Bernal?= <mauricio@kinvolk.io>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Rodrigo Campos <rodrigo@kinvolk.io>
-Subject: [PATCH] seccomp_unotify.2: Add doc for SECCOMP_ADDFD_FLAG_SEND
-Date:   Fri,  2 Jul 2021 18:37:44 +0200
-Message-Id: <20210702163744.265749-1-rodrigo@kinvolk.io>
-X-Mailer: git-send-email 2.30.2
+        id S230019AbhGBQlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 12:41:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:50774 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229455AbhGBQlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 12:41:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 45060147A;
+        Fri,  2 Jul 2021 09:38:43 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.15.239])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 94E3C3F5A1;
+        Fri,  2 Jul 2021 09:38:38 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 17:38:36 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Zhu Lingshan <lingshan.zhu@intel.com>, wanpengli@tencent.com,
+        Like Xu <like.xu@linux.intel.com>, eranian@google.com,
+        weijiang.yang@intel.com, Guo Ren <guoren@kernel.org>,
+        linux-riscv@lists.infradead.org, Will Deacon <will@kernel.org>,
+        kvmarm@lists.cs.columbia.edu, kan.liang@linux.intel.com,
+        ak@linux.intel.com, kvm@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>, joro@8bytes.org, x86@kernel.org,
+        linux-csky@vger.kernel.org, wei.w.wang@intel.com,
+        xen-devel@lists.xenproject.org, liuxiangdong5@huawei.com,
+        bp@alien8.de, Paul Walmsley <paul.walmsley@sifive.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-arm-kernel@lists.infradead.org, jmattson@google.com,
+        like.xu.linux@gmail.com, Nick Hu <nickhu@andestech.com>,
+        seanjc@google.com, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com
+Subject: Re: [PATCH V7 01/18] perf/core: Use static_call to optimize
+ perf_guest_info_callbacks
+Message-ID: <20210702163836.GB94260@C02TD0UTHF1T.local>
+References: <20210622094306.8336-1-lingshan.zhu@intel.com>
+ <20210622094306.8336-2-lingshan.zhu@intel.com>
+ <YN722HIrzc6Z2+oD@hirez.programming.kicks-ass.net>
+ <7379289718c6826dd1affec5824b749be2aee0a4.camel@perches.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <7379289718c6826dd1affec5824b749be2aee0a4.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This flag was recently added to Linux 5.14 by a patch I wrote:
-	https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0ae71c7720e3ae3aabd2e8a072d27f7bd173d25c
+On Fri, Jul 02, 2021 at 09:00:22AM -0700, Joe Perches wrote:
+> On Fri, 2021-07-02 at 13:22 +0200, Peter Zijlstra wrote:
+> > On Tue, Jun 22, 2021 at 05:42:49PM +0800, Zhu Lingshan wrote:
+> > > diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> []
+> > > @@ -90,6 +90,27 @@ DEFINE_STATIC_CALL_NULL(x86_pmu_pebs_aliases, *x86_pmu.pebs_aliases);
+> > >   */
+> > >  DEFINE_STATIC_CALL_RET0(x86_pmu_guest_get_msrs, *x86_pmu.guest_get_msrs);
+> > >  
+> > > 
+> > > +DEFINE_STATIC_CALL_RET0(x86_guest_state, *(perf_guest_cbs->state));
+> > > +DEFINE_STATIC_CALL_RET0(x86_guest_get_ip, *(perf_guest_cbs->get_ip));
+> > > +DEFINE_STATIC_CALL_RET0(x86_guest_handle_intel_pt_intr, *(perf_guest_cbs->handle_intel_pt_intr));
+> > > +
+> > > +void arch_perf_update_guest_cbs(void)
+> > > +{
+> > > +	static_call_update(x86_guest_state, (void *)&__static_call_return0);
+> > > +	static_call_update(x86_guest_get_ip, (void *)&__static_call_return0);
+> > > +	static_call_update(x86_guest_handle_intel_pt_intr, (void *)&__static_call_return0);
+> > > +
+> > > +	if (perf_guest_cbs && perf_guest_cbs->state)
+> > > +		static_call_update(x86_guest_state, perf_guest_cbs->state);
+> > > +
+> > > +	if (perf_guest_cbs && perf_guest_cbs->get_ip)
+> > > +		static_call_update(x86_guest_get_ip, perf_guest_cbs->get_ip);
+> > > +
+> > > +	if (perf_guest_cbs && perf_guest_cbs->handle_intel_pt_intr)
+> > > +		static_call_update(x86_guest_handle_intel_pt_intr,
+> > > +				   perf_guest_cbs->handle_intel_pt_intr);
+> > > +}
+> > 
+> > Coding style wants { } on that last if().
+> 
+> That's just your personal preference.
+> 
+> The coding-style document doesn't require that.
+> 
+> It just says single statement.  It's not the number of
+> vertical lines or characters required for the statement.
+> 
+> ----------------------------------
+> 
+> Do not unnecessarily use braces where a single statement will do.
+> 
+> .. code-block:: c
+> 
+> 	if (condition)
+> 		action();
+> 
+> and
+> 
+> .. code-block:: none
+> 
+> 	if (condition)
+> 		do_this();
+> 	else
+> 		do_that();
+> 
+> This does not apply if only one branch of a conditional statement is a single
+> statement; in the latter case use braces in both branches:
 
-This patch adds documentation for the flag, the error code that the flag
-added and explains in the caveat when it is useful.
+Immediately after this, we say:
 
-Signed-off-by: Rodrigo Campos <rodrigo@kinvolk.io>
----
-Hi! Here goes the documentation for the flag I just added. Please feel free to
-amend as you want and let me know if something is not clear :)
+| Also, use braces when a loop contains more than a single simple statement:
+|
+| .. code-block:: c
+| 
+|         while (condition) {
+|                 if (test)
+|                         do_something();
+|         }
+| 
 
+... and while that says "a loop", the principle is obviously supposed to
+apply to conditionals too; structurally they're no different. We should
+just fix the documentation to say "a loop or conditional", or something
+to that effect.
 
- man2/seccomp_unotify.2 | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/man2/seccomp_unotify.2 b/man2/seccomp_unotify.2
-index 2673d9bc7..9bd27214f 100644
---- a/man2/seccomp_unotify.2
-+++ b/man2/seccomp_unotify.2
-@@ -739,6 +739,17 @@ When allocating the file descriptor in the target,
- use the file descriptor number specified in the
- .I newfd
- field.
-+.TP
-+.BR SECCOMP_ADDFD_FLAG_SEND
-+Available since Linux 5.14, combines the
-+.B SECCOMP_IOCTL_NOTIF_ADDFD
-+ioctl with
-+.B SECCOMP_IOCTL_NOTIF_SEND
-+into an atomic operation. On successful invocation, the target process's
-+errno will be 0 and the return value will be the file descriptor number that was
-+installed in the target. If allocating the file descriptor in the tatget fails,
-+the target's syscall continues to be blocked until a successful response is
-+sent.
- .RE
- .TP
- .I srcfd
-@@ -801,6 +812,13 @@ Allocating the file descriptor in the target would cause the target's
- limit to be exceeded (see
- .BR getrlimit (2)).
- .TP
-+.B EBUSY
-+If the flag
-+.B SECCOMP_IOCTL_NOTIF_SEND
-+is used, this means the operation can't proceed until other
-+.B SECCOMP_IOCTL_NOTIF_ADDFD
-+requests are processed.
-+.TP
- .B EINPROGRESS
- The user-space notification specified in the
- .I id
-@@ -1131,6 +1149,14 @@ that would
- normally be restarted by the
- .BR SA_RESTART
- flag.
-+.PP
-+Furthermore, if the supervisor response is a file descriptor
-+added with
-+.B SECCOMP_IOCTL_NOTIF_ADDFD,
-+then the flag
-+.B SECCOMP_ADDFD_FLAG_SEND
-+can be used to atomically add the file descriptor and return that value,
-+making sure no file descriptors are inadvertently leaked into the target.
- .\" FIXME
- .\" About the above, Kees Cook commented:
- .\"
--- 
-2.30.2
-
+Mark.
