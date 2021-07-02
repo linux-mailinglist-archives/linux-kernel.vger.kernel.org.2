@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1197C3BA157
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918953BA165
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhGBNoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:44:02 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:37448 "EHLO vps0.lunn.ch"
+        id S232712AbhGBNp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:45:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232392AbhGBNoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:44:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=kchqsuQLvbI71SC88Xxd9k0q25E9iDGofPdCgD98g/o=; b=maNqJ16v3eIZ54p1TD0iSqD78y
-        rxtug5mOfX3OAmdt+1buKgIhdwWxR/t+xLfoZCVhC+O9sWJg+Zg7kIgbwX3rrwexXBmynqAVE63EC
-        QB9gaGySSiaIOMjum7SjCwJ5unMszzdJzfrsykDHC3YlkZ/0x/oHm5OaCtHO4V+GWwfE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lzJQ6-00BvHU-28; Fri, 02 Jul 2021 15:41:26 +0200
-Date:   Fri, 2 Jul 2021 15:41:26 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] TQMx86: TQMx110EB and TQMxE40x MFD/GPIO support
-Message-ID: <YN8Xhu3XXGeLAlhj@lunn.ch>
-References: <cover.1625227382.git.matthias.schiffer@ew.tq-group.com>
+        id S232695AbhGBNp0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 09:45:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 836406142C;
+        Fri,  2 Jul 2021 13:42:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625233374;
+        bh=zOX+FTluH2U02y8XyREMEHRyXOW0wlBd7RBEcHKV/AA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uf5MBApkwtli0CLrC8CAZwmpDWmzoTyEqcVEd4kycg0zL4dpu49K+neXEj3dCM4S1
+         VamKvzAE5uCQAu12Kzk0l1UPVSb0InhELrDTt2TfpvSrQ5AWfzsL4lTfpB6/SqU6CQ
+         LF3Y//JvtVVHPchdbyCrBni2ZNs3P6Foh5qBjD2XM0KRxsTZcp+xjQvfkwPOPriRX/
+         R4320ZmROaenE1QA6k4DC0E5E/UfOhekEv+0edbtWXvcqjLDuLF5N+0/fb2Yc+pA7w
+         IOE+zdtXPI1XaTN+PSapecBF5trfYwkXivcVfZ6uMN+fEkNlL5h86GmUJmIUcFMyum
+         5YRslxJxHtruw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lzJRS-0006Q0-6l; Fri, 02 Jul 2021 15:42:50 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/6] USB: serial: cp210x: fixes and CP2105/CP2108 fw version
+Date:   Fri,  2 Jul 2021 15:42:21 +0200
+Message-Id: <20210702134227.24621-1-johan@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1625227382.git.matthias.schiffer@ew.tq-group.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 02:23:46PM +0200, Matthias Schiffer wrote:
-> Updated patch series:
-> 
-> - A number of new patches (more hardware support and a few fixes)
-> - Patches 1-3 have gained Fixes tags
-> - Patch 2 depends on 1, so maybe we can push the GPIO patch through the
->   MFD tree to keep them together?
-> - The change in patch 7 was somewhat controversial. I've added a
->   warning, but it is the last patch of the series, so it doesn't affect
->   the rest of the series if it is rejected.
+Here are couple of minor fixes and some cleanups related to the recent
+regression which broke RTS control on some CP2102N devices with buggy
+firmware.
 
-Hi Matthias
+In case we run into another one of these, let's log the firmware
+version also for CP2105 and CP2108 for which it can be retrieved.
 
-Nice to see the vendor involved. That does not happen enough.
+Johan
 
-Please split these into fixes and new features. They go into different
-trees, so splitting them makes it easier for the maintainers.
 
-I would also suggest splitting the patches per subsystem, and send
-them to the specific subsystem maintainer. The exception would be when
-there is cross subsystem dependencies.
+Johan Hovold (6):
+  USB: serial: cp210x: fix control-characters error handling
+  USB: serial: cp210x: fix flow-control error handling
+  USB: serial: cp210x: clean up control-request timeout
+  USB: serial: cp210x: clean up set-chars request
+  USB: serial: cp210x: clean up type detection
+  USB: serial: cp210x: determine fw version for CP2105 and CP2108
 
-     Andrew
+ drivers/usb/serial/cp210x.c | 73 ++++++++++++++-----------------------
+ 1 file changed, 28 insertions(+), 45 deletions(-)
+
+-- 
+2.31.1
+
