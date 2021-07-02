@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E653B9A1D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 02:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D23D3B9A2E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 02:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbhGBAej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 20:34:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
+        id S234520AbhGBArQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 20:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234384AbhGBAei (ORCPT
+        with ESMTP id S234251AbhGBArP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 20:34:38 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E763C061762;
-        Thu,  1 Jul 2021 17:32:06 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id t9so7901217pgn.4;
-        Thu, 01 Jul 2021 17:32:06 -0700 (PDT)
+        Thu, 1 Jul 2021 20:47:15 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA05C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 17:44:44 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id u20so10942508ljo.12
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 17:44:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S7GtzayBonC8NXc3VVE0on7/iur23UaGBI7PatPPRKM=;
-        b=H/u4c/hymNgAID7Wp67NBhcBAjGZwLzZ7zRqFx+h8z2wsf38WglwFA0aWj8YA4tf7X
-         6hqu5BrC0s+b/4hFo4R7JjVJD/HUBl3u+qa4pJej4Gv+7N9OWafAjHyFxvz3JSmchGDe
-         ggfzuBlxzNCGTTntNZcxSLVJWmhr67FXIfBRTe9eZUro1ppaML51amNUeDKX9nm032/w
-         SjQJYQIhJ7oN1bMgepUhuQp5H9CiqP0fs7brc0wCE2xbgcIcCnj6QQhOnB109dEyRkkR
-         FOybLuD9UbnD1NhEzoNPfNoLCrTymMu5VSIVHukjPMdaUwFbMFyKraJCvO7CbMDG6V+Y
-         hPbQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iAFBHiNSZwKerU1t63V8e2H+JwkRhVjzTJjD0e6PoSw=;
+        b=ZYxIP1QsQJOofaF+2clUty0T1Lhs1wjmljMk5X/1TqPaMbGngtWbuzlUinFBRUI/Vw
+         T6H/oVRETBU5E8BNhMLHjhRROCntkKWIe4IXLBd32rPUXuOif4u9OM91D+vt/nvJxrJu
+         CqtEtrlRMfDxo9x8MLGh6DlDPpBI22MIbMUyA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=S7GtzayBonC8NXc3VVE0on7/iur23UaGBI7PatPPRKM=;
-        b=KXRUqz2ba3E0mbWjD5U+gmwYPv//ZhBG1cQpNUsOVVugAcW1BEjXeDb8KckCRZkEEa
-         hIaGR4q5cY1KE3/1Z3uevFral5zNqpY57UBQgqFU8zX16HUkDELpz8inVzeIHA0BF77w
-         dSDMJneFkaoC4TcPERG9rZOW57uQlRS6hgoPDUThwPzAFDN8lWu6/ad+1i67mNo/RkZy
-         6Rwbtiqhs57k0/j7g7oiv6dBnrrpftusx9cJWv83ghsjpWpByIvQFMEX37QyB/0AHIdE
-         3S1SrTUtpZr65LrUSIuByj7v3Lt332MaZqvHVUmdcNDATdrMsYm1PWGsFUTMwNIsa/1n
-         BiMQ==
-X-Gm-Message-State: AOAM533r8ZRxhSmSlVhDf6li6oQWLCpj3BOstbwfRFeWA1tbu3H41Mwm
-        fDc7UIn/Feb/qurKgRE2XjdIJaDAsEE6HQ==
-X-Google-Smtp-Source: ABdhPJyG3i7g+MTD9q8cjQy7jmmfYmWjJOYjCg+fnKiP3dOcxrerO9ip8g3LOEPd8sXKm2GgFL+8Pw==
-X-Received: by 2002:aa7:8681:0:b029:304:3432:ba2a with SMTP id d1-20020aa786810000b02903043432ba2amr2658060pfo.40.1625185925548;
-        Thu, 01 Jul 2021 17:32:05 -0700 (PDT)
-Received: from localhost (udp264798uds.hawaiiantel.net. [72.253.242.87])
-        by smtp.gmail.com with ESMTPSA id gk20sm783508pjb.17.2021.07.01.17.32.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 17:32:05 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 1 Jul 2021 14:32:02 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Cgroups <cgroups@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] cgroup changes for v5.14-rc1
-Message-ID: <YN5egtsVvp3xIqCl@mtj.duckdns.org>
-References: <YN4rzCdUR+/2LgaP@mtj.duckdns.org>
- <CAHk-=wgcyjLGcoRho5iw7b3Yx+R05rXwyJmP_LhOqsHgjiZugQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iAFBHiNSZwKerU1t63V8e2H+JwkRhVjzTJjD0e6PoSw=;
+        b=UCqjTceA9tYAgkdX+SugeGoR6pQ5b3r9Easfz8hsGJVA9ha135tZJvBzYC9blo7A45
+         RKqfkKnjKqJHA5RTxN8u7A7XWSbvWPVU5NBWWQJCEZSvQ303i6SohzabFlCiUd2i4c6Q
+         2Fz3GzVtX4w4OjgyeJit47D1dCTzkR9ZICGpABRSE3KHx+iYNXeT+eS0Dbh+a2Zmwfch
+         S8cl1zwZGVuJB7Fm4fKFrDmzY7EIc6JG5MHEJvFqSMcZ+mEENSa9FPXNdUXaealbq9w8
+         GRdATSBq+4wEewi1d9a1vasBFOAAfxnu0qv40RMba2R5NHnBCGdWsciMYRGzQDhBNCAd
+         xf2w==
+X-Gm-Message-State: AOAM533N5H4Py73b+IuKZ3XOSygAQl2RRnfMom7SfOnSAwlbc2JoWUUr
+        dwWVjZZVMrd8g5miUvcqZUjnCFu7e07KTFKGmaU=
+X-Google-Smtp-Source: ABdhPJxWqIyPA75CY4hBHYQKyBHXnuQZQrNz4YvoHsLsAe5MzHHtSVq1TIrD9pRHjn25dmr8A2StqQ==
+X-Received: by 2002:a05:651c:546:: with SMTP id q6mr1681136ljp.73.1625186682135;
+        Thu, 01 Jul 2021 17:44:42 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id s21sm175405lji.57.2021.07.01.17.44.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Jul 2021 17:44:40 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id u13so15148867lfk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 17:44:40 -0700 (PDT)
+X-Received: by 2002:a05:6512:15a2:: with SMTP id bp34mr1715559lfb.40.1625186680318;
+ Thu, 01 Jul 2021 17:44:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgcyjLGcoRho5iw7b3Yx+R05rXwyJmP_LhOqsHgjiZugQ@mail.gmail.com>
+References: <20210701204246.2037142-1-agruenba@redhat.com> <CAHk-=wjk6KP3vSLFNPMjoaZ4xY4u=DjTM+C+hCS3QKt+XAE6OA@mail.gmail.com>
+ <CAHc6FU5XMfTOBW1a0OnMaPSmgWECvO-KYAo8HeVNsCyd-HyV3g@mail.gmail.com> <CAHk-=whaRsSuUeVBn_rLECWyG6h9RGuF9idsT_S+==vnsT8org@mail.gmail.com>
+In-Reply-To: <CAHk-=whaRsSuUeVBn_rLECWyG6h9RGuF9idsT_S+==vnsT8org@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 1 Jul 2021 17:44:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whnHfghvfLAteVeOTyDbypZ=Y7WBHfYByoVZa9SMxKe1w@mail.gmail.com>
+Message-ID: <CAHk-=whnHfghvfLAteVeOTyDbypZ=Y7WBHfYByoVZa9SMxKe1w@mail.gmail.com>
+Subject: Re: [PATCH] gfs2: Fix mmap + page fault deadlocks
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        cluster-devel <cluster-devel@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Jul 1, 2021 at 5:30 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+>
+> Of course, if you ask for more data than the file has, that's another
+> thing, but who really does that with direct-IO? And if they do, why
+> should we care about their silly behavior?
 
-On Thu, Jul 01, 2021 at 05:25:59PM -0700, Linus Torvalds wrote:
-> On Thu, Jul 1, 2021 at 1:55 PM Tejun Heo <tj@kernel.org> wrote:
-> >
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.14
-> 
-> I've pulled it, but let me vent about this history a bit.
-> 
-> Look at commit c2a11971549b ("Merge branch 'for-5.13-fixes' into for-5.14").
-> 
-> Now tell me how that commit explains why it exists.
-> 
-> Merge commits need commit messages too.
-> 
-> In particular, they need commit messages that *explain* why they exist
-> in the first place, not just a one-liner that says what it does (and
-> does so badly at that).
+Now, if the issue is that people do IO for bigger areas than you have
+memory for, then I think that's a chunking issue. I don't think the
+ITER_IOVEC necessarily needs to be converted to an ITER_BVEC in one
+single go. That would indeed be painful if somebody tries to do some
+huge direct-IO when they just don't have the memory for it.
 
-for-5.13-fixes had comment updates across the file and I pulled them into
-for-5.14 to avoid trivial context conflicts down the line. Yeah, I should
-have commented on the rationale. Will add explanations from now on.
+But the fact is, direct-IO has been an incredible pain-point for
+decades, because it's (a) unusual, (b) buggy and (c) has very little
+overall design and common code.
 
-Thanks.
+The three issues are likely intimately tied together.
 
--- 
-tejun
+The iomap code at least has tried to make for much more common code,
+but I really think some direct-IO people should seriously reconsider
+how they are doing things when there are fundamental deadlocks in the
+design.
+
+And I do think that a ITER_IOVEC -> ITER_BVEC conversion function
+might be a really really good idea to solve this problem. There's even
+a very natural chunking algorithm: try to do as much as possible with
+get_user_pages_fast() - so that if you already *have* the memory, you
+can do the full IO (or at least a big part of it).
+
+And if get_user_pages_fast() only gives you a small area - or nothing
+at all - you chunk it down aggressively, and realize that "oh, doing
+direct-IO when user space is paged out might not be the most optimal
+case".
+
+              Linus
