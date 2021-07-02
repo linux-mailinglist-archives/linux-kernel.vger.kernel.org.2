@@ -2,210 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA94C3B9F1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 12:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BABC3B9F23
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 12:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhGBKfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 06:35:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54249 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230205AbhGBKfH (ORCPT
+        id S231544AbhGBKgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 06:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231192AbhGBKgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 06:35:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625221955;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=T2CGRUW3oJPamYIsDdIUVn0g2vFuEx2hOo9bbcWDWv0=;
-        b=I1tmvdM/ZZ4tn0Wa6m3ojSne/wheR8PRAtqb5Rl08mUFXXYRk7U0EniCJ+veQbaWYu7/61
-        9siXJk1TG4IR9lRZpV0nkxJ5zy+EV/mDMoNgMc/I8Y2ZRqhX4IP4D5WmnsF2VT5hcnY0Db
-        +BNgLKG7Rg+FN8w++bTzBBeU6raa3T0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-543-QWIE9XfjOMekfFrzfYZ24w-1; Fri, 02 Jul 2021 06:32:34 -0400
-X-MC-Unique: QWIE9XfjOMekfFrzfYZ24w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C62218414A1;
-        Fri,  2 Jul 2021 10:32:32 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-119.bne.redhat.com [10.64.54.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7687D4EF70;
-        Fri,  2 Jul 2021 10:32:30 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, shan.gavin@gmail.com
-Subject: [PATCH] mm/debug_vm_pgtable: Fix corrupted PG_arch_1 by set_pmd_at()
-Date:   Fri,  2 Jul 2021 18:32:25 +0800
-Message-Id: <20210702103225.51448-1-gshan@redhat.com>
+        Fri, 2 Jul 2021 06:36:45 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8ADC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 03:34:13 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id a11so9295843ilf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 03:34:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s3EPRF1pEN1wQqk7o7Umd29HQktIGf0pO66kMZbdGeo=;
+        b=n7GF7qwgngIJQ+Wly8+ZE8j4351YUt1QljTVtcvz7EjxYgdErZmqS1MMFrLeuxSHIb
+         7R6FgTwhdUfQv8hLKYXmgU9cXXGruseoDTatriaJ4JjPXgy6OL/Y9k56gfWeMflcDHEr
+         Ot4+wO8yuLGwDUY2tbuL23zF1sy3Yqly5smB4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s3EPRF1pEN1wQqk7o7Umd29HQktIGf0pO66kMZbdGeo=;
+        b=GdHIrFIPkia6XKiy2VkfCGW/SP9aSFhJzjkZor3UTBehHhtgYxMAvxYhUgV78xTQLf
+         ViBCHJ5qOqjknc6QVp6bfcVk0ZPgTL7GwF0zRQ1zu4WSMuu9BlDHBh2ngvxK2Vv2hikW
+         1lv1M1XRe1DY4hlio9d9A6BGX4YSR/fSGwnUrN4gl05jVbrE+dAQZiPIiJGw957bs8gq
+         01Ei3Nzs7wNPc5b34ywdeYD7qReoJ2P6kHPLHXenFp9Shq4hPPhIlzb7SgZymMv0Skyb
+         7elSZaDR3yYVCKzrL6oLz3syJtqCOQOMfOkCvis2+ElWiI1Ihda0zHfOfh8uoBtL3aFh
+         TiSg==
+X-Gm-Message-State: AOAM531L4mCfzjdIBQwn9rocjoQlcxW44LNtjt2KT5w2IpHOp9k9G/mk
+        kNkx24WwWkz9KcHbvpoCPh5/IrM5/psSNOCWfk3EXQ==
+X-Google-Smtp-Source: ABdhPJzxVN9HaXoMeRol98y3X1xzmiqrkgjuq/VatFVk0MZX+R5NP0ktmPrhdGsERlJXh8YVKe8mmCZXs/n8qMfGnCk=
+X-Received: by 2002:a92:7b07:: with SMTP id w7mr896465ilc.308.1625222053373;
+ Fri, 02 Jul 2021 03:34:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210504054612.3585017-1-hsinyi@chromium.org> <20210504054612.3585017-2-hsinyi@chromium.org>
+ <20210506203124.GA753747@robh.at.kernel.org> <a573e490-44bd-d6a1-d0c0-075b6541f720@gmail.com>
+ <CAJe_Zhcz3yPcyxHMtAYTY+wKAzWxt2LJsj-AU7QFneW8MTv1HQ@mail.gmail.com>
+In-Reply-To: <CAJe_Zhcz3yPcyxHMtAYTY+wKAzWxt2LJsj-AU7QFneW8MTv1HQ@mail.gmail.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Fri, 2 Jul 2021 18:33:47 +0800
+Message-ID: <CAJMQK-jMWQErHS+5Uutre4yXzae_5=RySrFo4gsyuxei-_zPMQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] dt-bindings: mediatek: Add optional mediatek,
+ gce-events property
+To:     Jassi Brar <jaswinder.singh@linaro.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two addresses selected: random virtual address and physical
-address corresponding to kernel symbol @start_kernel. During the PMD
-tests in pmd_advanced_tests(), the physical address is aligned down
-to the starting address of the huge page, whose size is 512MB on ARM64
-when we have 64KB base page size. After that, set_pmd_at() is called
-to populate the PMD entry. PG_arch_1, PG_dcache_clean on ARM64, is
-set to the page flags. Unforunately, the page, corresponding to the
-starting address of the huge page could be owned by buddy. It means
-PG_arch_1 can be unconditionally set to page owned by buddy.
+On Fri, May 14, 2021 at 11:25 AM Jassi Brar <jaswinder.singh@linaro.org> wrote:
+>
+> On Wed, 12 May 2021 at 10:55, Matthias Brugger <matthias.bgg@gmail.com> wrote:
+> >
+> > Hi Jassi,
+> >
+> > On 06/05/2021 22:31, Rob Herring wrote:
+> > > On Tue, 04 May 2021 13:46:12 +0800, Hsin-Yi Wang wrote:
+> > >> This property is used by gce clients.
+> > >>
+> > >> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> > >> ---
+> > >> v2->v3: move definition to Documentation/devicetree/bindings/mailbox/mtk-gce.txt
+> > >> ---
+> > >>  .../devicetree/bindings/mailbox/mtk-gce.txt       | 15 +++++++++++++++
+> > >>  1 file changed, 15 insertions(+)
+> > >>
+> > >
+> > > Acked-by: Rob Herring <robh@kernel.org>
+> > >
+> >
+> > Will you take this through your branch, or do you prefer me taking it through mine?
+> >
+> I see I was not CC'ed on the patch. So I can't.
 
-Afterwards, the page with PG_arch_1 set is fetched from buddy's free
-area list, but fails the checking. It leads to the following warning
-on ARM64:
+Hi Jassi,
 
-   BUG: Bad page state in process memhog  pfn:08000
-   page:0000000015c0a628 refcount:0 mapcount:0 \
-        mapping:0000000000000000 index:0x1 pfn:0x8000
-   flags: 0x7ffff8000000800(arch_1|node=0|zone=0|lastcpupid=0xfffff)
-   raw: 07ffff8000000800 dead000000000100 dead000000000122 0000000000000000
-   raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
-   page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
+A resend version is cc'ed to you, thanks.
+https://patchwork.kernel.org/project/linux-mediatek/patch/20210622030741.2120393-2-hsinyi@chromium.org/
 
-This fixes the issue by calling flush_dcache_page() after each call
-to set_{pud, pmd, pte}_at() because PG_arch_1 isn't needed in any case.
 
-Fixes: a5c3b9ffb0f4 ("mm/debug_vm_pgtable: add tests validating advanced arch page table helpers")
-Cc: stable@vger.kernel.org # v5.9+
-Signed-off-by: Gavin Shan <gshan@redhat.com>
----
- mm/debug_vm_pgtable.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
 
-diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-index 92bfc37300df..7dedf6c6dd25 100644
---- a/mm/debug_vm_pgtable.c
-+++ b/mm/debug_vm_pgtable.c
-@@ -29,6 +29,8 @@
- #include <linux/start_kernel.h>
- #include <linux/sched/mm.h>
- #include <linux/io.h>
-+
-+#include <asm/cacheflush.h>
- #include <asm/pgalloc.h>
- #include <asm/tlbflush.h>
- 
-@@ -91,6 +93,7 @@ static void __init pte_advanced_tests(struct mm_struct *mm,
- 				      unsigned long pfn, unsigned long vaddr,
- 				      pgprot_t prot)
- {
-+	struct page *page = pfn_to_page(pfn);
- 	pte_t pte = pfn_pte(pfn, prot);
- 
- 	/*
-@@ -102,6 +105,7 @@ static void __init pte_advanced_tests(struct mm_struct *mm,
- 	pr_debug("Validating PTE advanced\n");
- 	pte = pfn_pte(pfn, prot);
- 	set_pte_at(mm, vaddr, ptep, pte);
-+	flush_dcache_page(page);
- 	ptep_set_wrprotect(mm, vaddr, ptep);
- 	pte = ptep_get(ptep);
- 	WARN_ON(pte_write(pte));
-@@ -113,6 +117,7 @@ static void __init pte_advanced_tests(struct mm_struct *mm,
- 	pte = pte_wrprotect(pte);
- 	pte = pte_mkclean(pte);
- 	set_pte_at(mm, vaddr, ptep, pte);
-+	flush_dcache_page(page);
- 	pte = pte_mkwrite(pte);
- 	pte = pte_mkdirty(pte);
- 	ptep_set_access_flags(vma, vaddr, ptep, pte, 1);
-@@ -125,6 +130,7 @@ static void __init pte_advanced_tests(struct mm_struct *mm,
- 	pte = pfn_pte(pfn, prot);
- 	pte = pte_mkyoung(pte);
- 	set_pte_at(mm, vaddr, ptep, pte);
-+	flush_dcache_page(page);
- 	ptep_test_and_clear_young(vma, vaddr, ptep);
- 	pte = ptep_get(ptep);
- 	WARN_ON(pte_young(pte));
-@@ -186,6 +192,7 @@ static void __init pmd_advanced_tests(struct mm_struct *mm,
- 				      unsigned long pfn, unsigned long vaddr,
- 				      pgprot_t prot, pgtable_t pgtable)
- {
-+	struct page *page = pfn_to_page(pfn);
- 	pmd_t pmd;
- 
- 	if (!has_transparent_hugepage())
-@@ -199,6 +206,7 @@ static void __init pmd_advanced_tests(struct mm_struct *mm,
- 
- 	pmd = pfn_pmd(pfn, prot);
- 	set_pmd_at(mm, vaddr, pmdp, pmd);
-+	flush_dcache_page(page);
- 	pmdp_set_wrprotect(mm, vaddr, pmdp);
- 	pmd = READ_ONCE(*pmdp);
- 	WARN_ON(pmd_write(pmd));
-@@ -210,6 +218,7 @@ static void __init pmd_advanced_tests(struct mm_struct *mm,
- 	pmd = pmd_wrprotect(pmd);
- 	pmd = pmd_mkclean(pmd);
- 	set_pmd_at(mm, vaddr, pmdp, pmd);
-+	flush_dcache_page(page);
- 	pmd = pmd_mkwrite(pmd);
- 	pmd = pmd_mkdirty(pmd);
- 	pmdp_set_access_flags(vma, vaddr, pmdp, pmd, 1);
-@@ -222,6 +231,7 @@ static void __init pmd_advanced_tests(struct mm_struct *mm,
- 	pmd = pmd_mkhuge(pfn_pmd(pfn, prot));
- 	pmd = pmd_mkyoung(pmd);
- 	set_pmd_at(mm, vaddr, pmdp, pmd);
-+	flush_dcache_page(page);
- 	pmdp_test_and_clear_young(vma, vaddr, pmdp);
- 	pmd = READ_ONCE(*pmdp);
- 	WARN_ON(pmd_young(pmd));
-@@ -334,6 +344,7 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
- 				      unsigned long pfn, unsigned long vaddr,
- 				      pgprot_t prot)
- {
-+	struct page *page = pfn_to_page(page);
- 	pud_t pud;
- 
- 	if (!has_transparent_hugepage())
-@@ -345,6 +356,7 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
- 
- 	pud = pfn_pud(pfn, prot);
- 	set_pud_at(mm, vaddr, pudp, pud);
-+	flush_dcache_page(page);
- 	pudp_set_wrprotect(mm, vaddr, pudp);
- 	pud = READ_ONCE(*pudp);
- 	WARN_ON(pud_write(pud));
-@@ -358,6 +370,7 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
- 	pud = pud_wrprotect(pud);
- 	pud = pud_mkclean(pud);
- 	set_pud_at(mm, vaddr, pudp, pud);
-+	flush_dcache_page(page);
- 	pud = pud_mkwrite(pud);
- 	pud = pud_mkdirty(pud);
- 	pudp_set_access_flags(vma, vaddr, pudp, pud, 1);
-@@ -373,6 +386,7 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
- 	pud = pfn_pud(pfn, prot);
- 	pud = pud_mkyoung(pud);
- 	set_pud_at(mm, vaddr, pudp, pud);
-+	flush_dcache_page(page);
- 	pudp_test_and_clear_young(vma, vaddr, pudp);
- 	pud = READ_ONCE(*pudp);
- 	WARN_ON(pud_young(pud));
-@@ -604,6 +618,7 @@ static void __init pte_clear_tests(struct mm_struct *mm, pte_t *ptep,
- 				   unsigned long pfn, unsigned long vaddr,
- 				   pgprot_t prot)
- {
-+	struct page *page = pfn_to_page(pfn);
- 	pte_t pte = pfn_pte(pfn, prot);
- 
- 	pr_debug("Validating PTE clear\n");
-@@ -611,6 +626,7 @@ static void __init pte_clear_tests(struct mm_struct *mm, pte_t *ptep,
- 	pte = __pte(pte_val(pte) | RANDOM_ORVALUE);
- #endif
- 	set_pte_at(mm, vaddr, ptep, pte);
-+	flush_dcache_page(page);
- 	barrier();
- 	pte_clear(mm, vaddr, ptep);
- 	pte = ptep_get(ptep);
--- 
-2.23.0
-
+>
+> -j
