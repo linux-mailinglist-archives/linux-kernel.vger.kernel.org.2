@@ -2,109 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570E33BA3E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6D13BA3EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhGBSWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 14:22:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35232 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229817AbhGBSWh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 14:22:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625250005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ljBkCCbVc5OdHhjmFR2eMLVXMDCuwitek0RrMPP1ROw=;
-        b=CbuS5pXuK+a+M6SL6pxksOea0CdJ6oAcvw+BJZucHx+0ttcLscql1f4ImITZIWbqgyVzY4
-        8l8yCUF6bdF4QvQXIvgmm/82TsmBfO6LWVjsOCtT9k58HCejNO8aL7gojJOZNHuMcVlY9+
-        eRttqT6UB90PGWfel/sDkGWrv7GEa+Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-302-vXm2Qzy_NPCQampVscaRcA-1; Fri, 02 Jul 2021 14:20:01 -0400
-X-MC-Unique: vXm2Qzy_NPCQampVscaRcA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7FF17C7403;
-        Fri,  2 Jul 2021 18:19:56 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (ovpn-115-5.ams2.redhat.com [10.36.115.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E6FD060853;
-        Fri,  2 Jul 2021 18:19:47 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-audit/audit-kernel 
-        <reply+ADSN7RXLQ62LNLD2MK5HFHF65GIU3EVBNHHDPMBXHU@reply.github.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        bobo.shaobowang@huawei.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Alexander Graf <agraf@suse.de>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        Andreas Schwab <schwab@suse.de>,
-        Andrew Pinski <pinskia@gmail.com>,
-        Bamvor Zhangjian <bamv2005@gmail.com>,
-        Chris Metcalf <cmetcalf@mellanox.com>,
-        Christoph Muellner <christoph.muellner@theobroma-systems.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        James Hogan <james.hogan@imgtec.com>,
-        James Morse <james.morse@arm.com>,
-        Joseph Myers <joseph@codesourcery.com>,
-        Lin Yongting <linyongting@huawei.com>,
-        Manuel Montezelo <manuel.montezelo@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Nathan_Lynch <Nathan_Lynch@mentor.com>,
-        Philipp Tomsich <philipp.tomsich@theobroma-systems.com>,
-        Prasun Kapoor <Prasun.Kapoor@caviumnetworks.com>,
-        Ramana Radhakrishnan <ramana.gcc@googlemail.com>,
-        Steve Ellcey <sellcey@caviumnetworks.com>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>
-Subject: Re: [linux-audit/audit-kernel] BUG: audit_classify_syscall() fails
- to properly handle 64-bit syscalls when executing as 32-bit application on
- ARM (#131)
-References: <linux-audit/audit-kernel/issues/131@github.com>
-        <linux-audit/audit-kernel/issues/131/872191450@github.com>
-        <YN9V/qM0mxIYXt3h@yury-ThinkPad>
-Date:   Fri, 02 Jul 2021 20:19:46 +0200
-In-Reply-To: <YN9V/qM0mxIYXt3h@yury-ThinkPad> (Yury Norov's message of "Fri, 2
-        Jul 2021 11:07:58 -0700")
-Message-ID: <87zgv4y3wd.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S230001AbhGBS3U convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 2 Jul 2021 14:29:20 -0400
+Received: from aposti.net ([89.234.176.197]:50264 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229455AbhGBS3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 14:29:20 -0400
+Date:   Fri, 02 Jul 2021 19:26:38 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     tiwai@suse.com, SOUND <alsa-devel@alsa-project.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mike Rapoport <rppt@kernel.org>
+Message-Id: <E8RMVQ.F0HRHAOIPPHU1@crapouillou.net>
+In-Reply-To: <9ZPMVQ.7NLNMVBCK1243@crapouillou.net>
+References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
+        <20201216124726.2842197-1-kai.heng.feng@canonical.com>
+        <ZRC9VQ.M548GASAC18G2@crapouillou.net>
+        <9ZPMVQ.7NLNMVBCK1243@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Yury Norov:
 
-> At least Marvell, Samsung, Huawei, Cisco and Weiyuchen's employer
-> actively use and develop arm64/ilp32. I receive feedback / bugrepotrs
-> on ilp32 every 4-6 month. Is that enough for you to reconsider
-> including the project into the mainline?
 
-I believe that glibc has the infrastructure now to integrate an ILP32
-port fairly cleanly, although given that it would be first
-post-libpthread work, it would have to absorb some of the cleanup work
-for such a configuration.
+Le ven., juil. 2 2021 at 18:59:33 +0100, Paul Cercueil 
+<paul@crapouillou.net> a écrit :
+> Hi,
+> 
+> Le ven., juin 25 2021 at 13:45:35 +0100, Paul Cercueil 
+> <paul@crapouillou.net> a écrit :
+>> Hi Kai-Heng,
+>> 
+>> I am facing the same bug. Unfortunately your patch does not seem to 
+>> fix the bug for me, the nvidia GPU stays constantly active. Only if 
+>> I unbind the snd-hda-intel module for this PCI device that the 
+>> nvidia GPU will eventually go to sleep.
+> 
+> Nevermind, I'm stupid. I think I just didn't have the PM mode set to 
+> "auto", because I tried again and it works now. Ignore my email.
 
-(I do not plan to work on this myself.)
+Ok, I'm definitely not stupid, I could reproduce it again, with this 
+patch applied and the PM set to "auto". It then only suspends when I 
+unload the snd-hda-intel module.
 
-Thanks,
-Florian
+Sorry about the spam.
+
+-Paul
+
+> 
+> If you (or anybody) does a v3, please Cc me.
+> 
+> Cheers,
+> -Paul
+> 
+>> My dmesg (with your patch applied):
+>> 
+>> [ 1.821358] MXM: GUID detected in BIOS
+>> [ 1.821396] ACPI BIOS Error (bug): AE_AML_PACKAGE_LIMIT, Index 
+>> (0x000000003) is beyond end of object (length 0x0) 
+>> (20200925/exoparg2-393)
+>> [ 1.821406] ACPI Error: Aborting method \_SB.PCI0.GFX0._DSM due to 
+>> previous error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
+>> [ 1.821415] ACPI: \_SB_.PCI0.GFX0: failed to evaluate _DSM (0x300b)
+>> [ 1.821419] ACPI Warning: \_SB.PCI0.GFX0._DSM: Argument #4 type 
+>> mismatch - Found [Buffer], ACPI requires [Package] 
+>> (20200925/nsarguments-61)
+>> [ 1.821528] i915 0000:00:02.0: optimus capabilities: enabled, status 
+>> dynamic power,
+>> [ 1.821554] ACPI BIOS Error (bug): AE_AML_PACKAGE_LIMIT, Index 
+>> (0x000000003) is beyond end of object (length 0x0) 
+>> (20200925/exoparg2-393)
+>> [ 1.821560] ACPI Error: Aborting method \_SB.PCI0.GFX0._DSM due to 
+>> previous error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
+>> [ 1.821565] ACPI Error: Aborting method \_SB.PCI0.PEG0.PEGP._DSM due 
+>> to previous error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
+>> [ 1.821572] ACPI: \_SB_.PCI0.PEG0.PEGP: failed to evaluate _DSM 
+>> (0x300b)
+>> [ 1.821574] ACPI Warning: \_SB.PCI0.PEG0.PEGP._DSM: Argument #4 type 
+>> mismatch - Found [Buffer], ACPI requires [Package] 
+>> (20200925/nsarguments-61)
+>> [ 1.821683] pci 0000:01:00.0: optimus capabilities: enabled, status 
+>> dynamic power,
+>> [ 1.821685] VGA switcheroo: detected Optimus DSM method 
+>> \_SB_.PCI0.PEG0.PEGP handle
+>> [ 1.821920] nouveau 0000:01:00.0: NVIDIA GK107 (0e71f0a2)
+>> [ 1.830781] nouveau 0000:01:00.0: bios: version 80.07.95.00.07
+>> [ 1.894392] nouveau 0000:01:00.0: fb: 2048 MiB DDR3
+>> [ 1.896669] [drm] Initialized i915 1.6.0 20200917 for 0000:00:02.0 
+>> on minor 0
+>> [ 1.896862] ACPI: Video Device [PEGP] (multi-head: yes rom: yes 
+>> post: no)
+>> [ 1.897361] input: Video Bus as 
+>> /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/device:02/LNXVIDEO:00/input/input12
+>> [ 1.897974] ACPI: Video Device [GFX0] (multi-head: yes rom: no post: 
+>> no)
+>> [ 1.898219] nouveau 0000:01:00.0: bus: MMIO write of 0000001f FAULT 
+>> at 6013d4 [ IBUS ]
+>> [ 1.900114] input: Video Bus as 
+>> /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/LNXVIDEO:01/input/input13
+>> [ 1.969353] vga_switcheroo: enabled
+>> [ 1.969407] [TTM] Zone kernel: Available graphics memory: 3791596 KiB
+>> [ 1.969408] [TTM] Zone dma32: Available graphics memory: 2097152 KiB
+>> [ 1.969409] [TTM] Initializing pool allocator
+>> [ 1.969416] [TTM] Initializing DMA pool allocator
+>> [ 1.969431] nouveau 0000:01:00.0: DRM: VRAM: 2048 MiB
+>> [ 1.969432] nouveau 0000:01:00.0: DRM: GART: 1048576 MiB
+>> [ 1.969436] nouveau 0000:01:00.0: DRM: Pointer to TMDS table not 
+>> found
+>> [ 1.969438] nouveau 0000:01:00.0: DRM: DCB version 4.0
+>> [ 1.971139] nouveau 0000:01:00.0: DRM: MM: using COPY for buffer 
+>> copies
+>> [ 1.971485] [drm] Initialized nouveau 1.3.1 20120801 for 
+>> 0000:01:00.0 on minor 1
+>> 
+>> [ ... ]
+>> 
+>> [ 4.594245] snd_hda_intel 0000:00:1b.0: bound 0000:00:02.0 (ops 
+>> i915_audio_component_bind_ops [i915])
+>> [ 4.594380] snd_hda_intel 0000:01:00.1: can't change power state 
+>> from D3cold to D0 (config space inaccessible)
+>> [ 4.594410] snd_hda_intel 0000:01:00.1: can't change power state 
+>> from D3cold to D0 (config space inaccessible)
+>> [ 4.594486] snd_hda_intel 0000:01:00.1: Disabling MSI
+>> [ 4.594494] snd_hda_intel 0000:01:00.1: Handle vga_switcheroo audio 
+>> client
+>> [ 4.594526] snd_hda_intel 0000:01:00.1: number of I/O streams is 30, 
+>> forcing separate stream tags
+>> 
+>> [ ... ]
+>> 
+>> [ 4.696732] hdaudio hdaudioC1D0: no AFG or MFG node found
+>> [ 4.696745] hdaudio hdaudioC1D1: no AFG or MFG node found
+>> [ 4.696752] hdaudio hdaudioC1D2: no AFG or MFG node found
+>> [ 4.696759] hdaudio hdaudioC1D3: no AFG or MFG node found
+>> [ 4.696765] hdaudio hdaudioC1D4: no AFG or MFG node found
+>> [ 4.696771] hdaudio hdaudioC1D5: no AFG or MFG node found
+>> [ 4.696778] hdaudio hdaudioC1D6: no AFG or MFG node found
+>> [ 4.696785] hdaudio hdaudioC1D7: no AFG or MFG node found
+>> [ 4.696787] snd_hda_intel 0000:01:00.1: no codecs initialized
+>> 
+>> Cheers,
+>> -Paul
+>> 
+>> 
+>> Le mer., déc. 16 2020 at 20:47:24 +0800, Kai-Heng Feng 
+>> <kai.heng.feng@canonical.com> a écrit :
+>>> Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
+>>> initialization even if no codecs found"), when codec probe fails, it
+>>> doesn't enable runtime suspend, and can prevent graphics card from
+>>> getting powered down:
+>>> [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+>>> 
+>>> $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
+>>> active
+>>> 
+>>> So mark there's no codec and continue probing to let runtime PM to 
+>>> work.
+>>> 
+>>> BugLink: https://bugs.launchpad.net/bugs/1907212
+>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>>> ---
+>>>  sound/pci/hda/hda_intel.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>> 
+>>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>>> index 6852668f1bcb..872a703dee43 100644
+>>> --- a/sound/pci/hda/hda_intel.c
+>>> +++ b/sound/pci/hda/hda_intel.c
+>>> @@ -2328,7 +2328,7 @@ static int azx_probe_continue(struct azx 
+>>> *chip)
+>>>  	if (bus->codec_mask) {
+>>>  		err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
+>>>  		if (err < 0)
+>>> -			goto out_free;
+>>> +			bus->codec_mask = 0;
+>>>  	}
+>>> 
+>>>  #ifdef CONFIG_SND_HDA_PATCH_LOADER
+>> 
+> 
+
 
