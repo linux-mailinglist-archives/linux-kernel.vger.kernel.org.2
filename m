@@ -2,156 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7043B9CFB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 09:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1475D3B9D00
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 09:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbhGBHgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 03:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhGBHgG (ORCPT
+        id S230176AbhGBHiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 03:38:23 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:37908 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhGBHiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 03:36:06 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12F6C061762;
-        Fri,  2 Jul 2021 00:33:33 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id in17-20020a17090b4391b0290170ba0ec7fcso8274764pjb.4;
-        Fri, 02 Jul 2021 00:33:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iFQeUZJpN/P8c4rNnw9ZStEGC/9J57e7oVfkc7jOXBw=;
-        b=mJMs94qsqAKm0pzG+d/8ak5uPFgWva45kkIYnP5i9i11ynkExAicnsBOkuoIaMVVPq
-         rqwpeeplbqDUYVThdtFU/WwAiaHtI6/hGyAuOXS9egERqDiQi8bziv0Zq3pNEotYU1AE
-         /KD8IClawLyRgExTpQkDXSVDep7Nqu032aflrB8St3IR7/QH5wR75f0QW155eRcKYXgh
-         3ar3esD3sC1KEClkMznsib3UqTjgJoy1sZTSGYiUiFFvG298cl+wR+C3iGRUTznYGrMZ
-         YCqDk/Erp9mfk5XN/9uJ+u6lPAFcHWeUXhI8UMjeLSdOe1jb2sOoFN/eK2HQ+IN7RETu
-         ffFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=iFQeUZJpN/P8c4rNnw9ZStEGC/9J57e7oVfkc7jOXBw=;
-        b=Ods9QtLLTGVgpQDmnbv7aFTsOS12EXIDHl7ivZKAK6CbwntneVms7t98n7sFehWq1p
-         +zve9ImMC/XCZHMnCD08V6JkjCvrLSyav80UzkIJOCG+GYbCm2BNEPTB55myMkzkC2Nd
-         FfckF3OthVHVWHyKDQdM//xhNpDsq2pyYPp0tos37CVQ4bIgm0fFgpBZrvYGGDAtp9D3
-         ffi/6M/ZlZ6UkkTcznAFSRcFkwEOUzq4Nn4Xq7jI/C1ZisjJkpl6M0Zke5Ag6LKcxYGA
-         Cn+oxMZeuWXuE3lcymj2HuJL34nmRseyBG8T6niI6d5LUmCWC3kEOpkodfNSpIUv8oEn
-         CXaA==
-X-Gm-Message-State: AOAM5318lS03NpkAr3qSVj780YWai7i67EChHHSJcDGBd1zXb6ZYEd8i
-        /h7GBxARfDXB413orjC4WvA=
-X-Google-Smtp-Source: ABdhPJzfbBfr0twKNwd1iNtaS41APSdZgzYtJq7ZlrpuaBqpD8i4yGmApJ4Nl/bhtwzQBmHnz014EQ==
-X-Received: by 2002:a17:902:6e02:b029:128:977c:217d with SMTP id u2-20020a1709026e02b0290128977c217dmr1310954plk.44.1625211213156;
-        Fri, 02 Jul 2021 00:33:33 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:e476:fcd4:d1bf:22a2])
-        by smtp.gmail.com with ESMTPSA id 133sm2438670pfx.39.2021.07.02.00.33.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 00:33:32 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Fri, 2 Jul 2021 00:33:30 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        mm-commits@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        torvalds@linux-foundation.org,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-Subject: Re: [patch 108/192] mm: zram: amend SLAB_RECLAIM_ACCOUNT on
- zspage_cachep
-Message-ID: <YN7BSgvSJXzzbIBj@google.com>
-References: <20210630184624.9ca1937310b0dd5ce66b30e7@linux-foundation.org>
- <20210701015258.BrxjIzdE1%akpm@linux-foundation.org>
- <YN3Xbdc9N81PIegK@google.com>
- <CAGWkznHWe22iwtBNtJfY75aS5_cfwKTaBfkX=zzmSaTwHZaAyQ@mail.gmail.com>
- <YN6ogJbnI46hnjgk@google.com>
- <CAGWkznGaQyfxUuP8OJxvLapk4R8x3kpgU50H-xZfTiLO-i9WMg@mail.gmail.com>
+        Fri, 2 Jul 2021 03:38:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625211350; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=g7LR8EdjUqh8oZirAnB19g1VLbJWOG/mJceTdUmfR90=; b=WRxpkQc72pFRdXhLcp66xqJNKy0ezg39A635T2OmoK31dn0gNNlFKuza8eta1dCRtGK4ygX8
+ DkVUaIodFPbN7V1zsDmqGpokwtwdRWEZhExb4iJhYrxTIJ/L1EUpVloGG72pFCn5MOe+NPKI
+ 9+naVu3xP6Buqq6z4/jp6Fy04eI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60dec1bf2a2a9a9761dceb7e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 02 Jul 2021 07:35:27
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7D911C4338A; Fri,  2 Jul 2021 07:35:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.50.56.198] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 95774C433F1;
+        Fri,  2 Jul 2021 07:35:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 95774C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH 3/6] clk: qcom: gdsc: enable optional power domain support
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Taniya Das <tdas@codeaurora.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210630133149.3204290-1-dmitry.baryshkov@linaro.org>
+ <20210630133149.3204290-4-dmitry.baryshkov@linaro.org>
+ <YNyHDAHk6ad/XCGl@yoga>
+ <CAA8EJpqf6VyaS7KyhujFgST+S=fua4S-uXia0g7Qh7ogYgWYbw@mail.gmail.com>
+ <YNylqGEi7Q3tFCgy@yoga>
+ <CAA8EJppHQ-XhZWbsPX39wie48JXWvsNerWB9=Q0yxxs7987xxA@mail.gmail.com>
+ <YN1DIwR66JKoFhEZ@yoga>
+ <CAA8EJpr6qrVJY7DdcNagrpaTFW2FMxE-GE8nHyxmiFHCY0A+jA@mail.gmail.com>
+ <YN4sRDqPpZMiNd1T@yoga>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <ea5d9cea-a501-b8d7-e0b7-79110b84c4e6@codeaurora.org>
+Date:   Fri, 2 Jul 2021 13:05:19 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGWkznGaQyfxUuP8OJxvLapk4R8x3kpgU50H-xZfTiLO-i9WMg@mail.gmail.com>
+In-Reply-To: <YN4sRDqPpZMiNd1T@yoga>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 02:20:42PM +0800, Zhaoyang Huang wrote:
-> On Fri, Jul 2, 2021 at 1:47 PM Minchan Kim <minchan@kernel.org> wrote:
-> >
-> > On Fri, Jul 02, 2021 at 10:45:09AM +0800, Zhaoyang Huang wrote:
-> > > On Thu, Jul 1, 2021 at 10:56 PM Minchan Kim <minchan@kernel.org> wrote:
-> > > >
-> > > > On Wed, Jun 30, 2021 at 06:52:58PM -0700, Andrew Morton wrote:
-> > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > > > Subject: mm: zram: amend SLAB_RECLAIM_ACCOUNT on zspage_cachep
-> > > > >
-> > > > > Zspage_cachep is found be merged with other kmem cache during test, which
-> > > > > is not good for debug things (zs_pool->zspage_cachep present to be another
-> > > > > kmem cache in memory dumpfile).  It is also neccessary to do so as
-> > > > > shrinker has been registered for zspage.
-> > > > >
-> > > > > Amending this flag can help kernel to calculate SLAB_RECLAIMBLE correctly.
-> > > > >
-> > > > > Link: https://lkml.kernel.org/r/1623137297-29685-1-git-send-email-huangzhaoyang@gmail.com
-> > > > > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > > > Cc: Minchan Kim <minchan@kernel.org>
-> > > > > Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > > > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > > >
-> > > > Sorry for the late. I don't think this is correct.
-> > > >
-> > > > It's true "struct zspage" can be freed by zsmalloc's compaction registerred
-> > > > by slab shrinker so tempted to make it SLAB_RECLAIM_ACCOUNT. However, it's
-> > > > quite limited to work only when objects in the zspage are heavily fragmented.
-> > > > Once the compaction is done, zspage are never discardable until objects are
-> > > > fragmented again. It means it could hurt other reclaimable slab page reclaiming
-> > > > since the zspage slab object pins the page.
-> > > IMHO, kmem cache's reclaiming is NOT affected by SLAB_RECLAIM_ACCOUNT
-> > > . This flag just affects kmem cache merge[1], the slab page's migrate
-> > > type[2] and the page's statistics. Actually, zspage's cache DO merged
-> > > with others even without SLAB_RECLAIM_ACCOUNT currently, which maybe
-> > > cause zspage's object will NEVER be discarded.(SLAB_MERGE_SAME
-> > > introduce confusions as people believe the cache will merge with
-> > > others when it set and vice versa)
-> > >
-> > > [1]
-> > >  struct kmem_cache *find_mergeable(size_t size, size_t align, unsigned
-> > > long flags, const char *name, void (*ctor)(void *))
-> > > ...
-> > >     if ((flags & SLAB_MERGE_SAME) != (s->flags & SLAB_MERGE_SAME))
-> > >      continue;
-> > >
-> > > [2]
-> > > if (s->flags & SLAB_RECLAIM_ACCOUNT)
-> > >     s->allocflags |= __GFP_RECLAIMABLE;
-> >
-> > That's the point here. With SLAB_RECLAIM_ACCOUNT, page allocator
-> > try to allocate pages from MIGRATE_RECLAIMABLE with belief those
-> > objects are easily reclaimable. Say a page has object A, B, C, D
-> > and E. A-D are easily reclaimable but E is hard. What happens is
-> > VM couldn't reclaim the page in the end due to E even though it
-> > already reclaimed A-D. And the such fragmenation could be spread
-> > out entire MIGRATE_RECLAIMABLE pageblocks over time.
-> > That's why I'd like to put zspage into MIGRATE_UNMOVALBE from the
-> > beginning since I don't think it's easily reclaimble once compaction
-> > is done.
-> The slab page could fallback to any migrate type even allocating with
 
-It's true but it couldn't be justication to allocate objects from any
-migration type. We should try to select right type. Please see below.
 
-> __GFP_RECLAIMABLE, and there is only one page per slab within zspage's
-> cache, which will not be affected by compaction, so I think that
-> doesn't make sense.
+On 7/2/2021 2:27 AM, Bjorn Andersson wrote:
+> On Thu 01 Jul 15:12 CDT 2021, Dmitry Baryshkov wrote:
+> 
+>> On Thu, 1 Jul 2021 at 07:23, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
+>>>
+>>> On Wed 30 Jun 15:29 CDT 2021, Dmitry Baryshkov wrote:
+>>>
+>>>> On Wed, 30 Jun 2021 at 20:11, Bjorn Andersson
+>>>> <bjorn.andersson@linaro.org> wrote:
+>>>>>
+>>>>> On Wed 30 Jun 10:47 CDT 2021, Dmitry Baryshkov wrote:
+>>>>>
+>>>>>> Hi,
+>>>>>>
+>>>>>> On Wed, 30 Jun 2021 at 18:00, Bjorn Andersson
+>>>>>> <bjorn.andersson@linaro.org> wrote:
+>>>>>>>
+>>>>>>> On Wed 30 Jun 08:31 CDT 2021, Dmitry Baryshkov wrote:
+>>>>>>>
+>>>>>>>> On sm8250 dispcc and videocc registers are powered up by the MMCX power
+>>>>>>>> domain. Currently we used a regulator to enable this domain on demand,
+>>>>>>>> however this has some consequences, as genpd code is not reentrant.
+>>>>>>>>
+>>>>>>>> Teach Qualcomm clock controller code about setting up power domains and
+>>>>>>>> using them for gdsc control.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>>>>>>>
+>>>>>>> There's a proposal to add a generic binding for statically assigning a
+>>>>>>> performance states here:
+>>>>>>>
+>>>>>>> https://lore.kernel.org/linux-arm-msm/1622095949-2014-1-git-send-email-rnayak@codeaurora.org/
+>>>>
+>>>> I checked this thread. It looks like Rajendra will also switch to the
+>>>> "required-opps" property. So if that series goes in first, we can drop
+>>>> the call to set_performance_state. If this one goes in first, we can
+>>>> drop the set_performance_state call after getting Rajendra's work in.
+>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> But that said, do you really need this?
+>>>>>>>
+>>>>>>> The requirement for driving MMCX to LOW_SVS on SM8250 (and NOM on
+>>>>>>> SM8150/SC8180x) seems to only come from the fact that you push MDP_CLK
+>>>>>>> to 460MHz in &mdss.
+>>>>>>>
+>>>>>>> But then in &mdss_mdp you do the same using an opp-table based on the
+>>>>>>> actual MDP_CLK, which per its power-domains will scale MMCX accordingly.
+>>>>>>
+>>>>>> MDSS and DSI would bump up MMCX performance state requirements on
+>>>>>> their own, depending on the frequency being selected.
+>>>>>>
+>>>>>
+>>>>> Right, but as I copied things from the sm8250.dtsi to come up with
+>>>>> sm8150/sc8180x.dtsi I concluded that as soon as the assigned-clockrate
+>>>>> in &mdss kicks in I need the performance state to be at NOM.
+>>>>>
+>>>>> So keeping the assigned-clockrate in &mdss means that MMCX will never go
+>>>>> below NOM.
+>>>>
+>>>> No, because once MDP is fully running, it will lower the clock frequency:
+>>>>
+>>>> # grep mdp_clk /sys/kernel/debug/clk/clk_summary
+>>>>            disp_cc_mdss_mdp_clk_src       1        1        0
+>>>> 150000000          0     0  50000         ?
+>>>>               disp_cc_mdss_mdp_clk       2        2        0
+>>>> 150000000          0     0  50000         Y
+>>>>
+>>>
+>>> But won't that just lower the performance state requested by the
+>>> &mdss_mdp, while the &mdss still votes for NOM - with the outcome being
+>>> that we maintain NOM even if the clock goes down?
+>>
+>> &mdss doesn't vote on performance state. At least it does not on
+>> msm/msm-next which I have at hand right now.
+>> &mdss toggles mdss_gdsc, but does not assign any performance state.
+>>
+> 
+> Right, but per the upstream implementation, enabling MDSS_GDSC could in
+> itself fail, because unless something else has driven up the performance
+> state the enable that trickles up won't actually turn on the supply.
+> 
+>> On the other hand &mdss_mdp and &dsi0 clearly vote on mmcx's performance state.
+>>
+> 
+> Right, but it does so as part of its clock scaling, so this makes
+> perfect sense to me.
+> 
+>>>
+>>>>>
+>>>>>>> So wouldn't it be sufficient to ensure that MDSS_GDSC is parented by
+>>>>>>> MMCX and then use opp-tables associated with the devices that scales the
+>>>>>>> clock and thereby actually carries the "required-opps".
+>>>>>>
+>>>>>> Actually no. I set the performance state in the qcom_cc_map, so that
+>>>>>> further register access is possible. Initially I was doing this in the
+>>>>>> qcom_cc_really_probe() and it was already too late.
+>>>>>> Just to remind: this patchset is not about MDSS_GDSC being parented by
+>>>>>> MMCX, it is about dispcc/videocc registers being gated with MMCX.
+>>>>>>
+>>>>>
+>>>>> So you're saying that just enabling MMCX isn't enough to touch the
+>>>>> dispcc/videocc registers? If that's the case it seems like MMCX's
+>>>>> definition of "on" needs to be adjusted - because just specifying MMCX
+>>>>> as the power-domain for dispcc/videocc and enabling pm_runtime should
+>>>>> ensure that MMCX is enabled when the clock registers are accessed (I
+>>>>> don't see anything like that for the GDSC part though).
+>>>>
+>>>> No, it is not enough. If I comment out the set_performance_state call,
+>>>> the board reboots.
+>>>>
+>>>> However I can set the opps as low as RET and register access will work.
+>>>> I'll run more experiments and if everything works as expected, I can
+>>>> use retention or min_svs level in the next iteration.
+>>>> Just note that downstream specifies low_svs as minimum voltage level
+>>>> for MMCX regulator.
+>>>>
+>>>
+>>> It doesn't make sense to me that a lone power_on on the power-domain
+>>> wouldn't give us enough juice to poke the registers.
+>>>
+>>> But digging into the rpmhpd implementation answers the question, simply
+>>> invoking rpmhpd_power_on() is a nop, unless
+>>> rpmhpd_set_performance_state() has previously been called, because
+>>> pd->corner is 0. So this explains why enable isn't sufficient.
+>>>
+>>> Compare this with the rpmpd implementation that will send an
+>>> enable request to the RPM in this case.
 
-You shouldn't rely on how many pages the slab has since it's internal
-implemenation and zspage size also could be changed in the future.
-And please think about external fragmentaion as well as internal one.
+Right, in case of RPMh, there was no separate 'enable' request which
+could be sent, there was just a 'corner' request.
 
-What we want to try with allocation type is to group similar lifetime
-objects together in a pageblock group to help external fragmentation
-for high-order allocation. Think what happens if the unreclaimable
-object is located in a reclaimable pageblock. The block couldn't be
-merged into high-order page in the end so it causes more compaction
-and smaller available high-order pages in the system.
+I don't completely recall, but the reason to not send a 'default corner'
+on enable was perhaps to keep the enable and set_performance orthogonal.
+
+However, given we then decided to send the lowest possible corner
+in disable, it perhaps makes sense to send a 'lowest non-zero corner' on enable
+as well.
+
+>>
+>> Do you think that we should change that to:
+>>
+>> rpmhpd_aggregate_corner(pd, max(pd->corner, 1)) ?
+>>
+>> Or
+>>
+>> rpmhpd_aggregate_corner(pd, max(pd->corner, pd->levels[1])) ?
+>>
+> 
+> In rpmhpd_power_on() and rpmhpd_set_performance_state() we pass the
+> index of the entry in pd->levels[] that we want, but in
+> rpmhpd_power_off() we pass the value of pd->levels[0].
+> 
+> So I would suggest dropping the if (pd->corner) and doing:
+> 
+>    rpmhpd_aggregate_corner(pd, max(pd->corner, 1));
+
+So the index value represents the hlvl (0-15) that eventually gets sent to
+rpmh, the pd->levels are the sparse vlvl values that come from the command
+DB mappings.
+
+What seems sane is to sent the lowest non-zero vlvl. That in most cases
+would be at index 1, but for some which do not support complete off,
+it could be at index 0.
+
+> 
+> And it seems both rb3 and rb5 still boots with this change (but I need
+> to do some more testing to know for sure).
+> 
+>>>
+>>>>> I thought our problem you had was that you need to set a
+>>>>> performance_state in order to clock up some of the clocks - e.g.
+>>>>> MDP_CLK.
+>>>>
+>>>> No, even register access needs proper perf state.
+>>>>
+>>>
+>>> Per above finding you're right, enabling a rpmhpd power-domain doesn't
+>>> do anything. And I don't find this intuitive or even in line with the
+>>> expectations of the api...
+>>>
+>>>
+>>>
+>>> A quick test booting rb3 and rb5 seems to indicate that it's possible to
+>>> initialize pd->corner to 1 (to ensure that enable at least gives us the
+>>> lowest level).
+>>>
+>>> set_performance_state(0) will however then result in voting for "off",
+>>> rather than the lowest enabled level.
+>>
+>> Well, set_performance_state(0) means that "the device wouldn't
+>> participate anymore to find the target performance state of the
+>> genpd".
+> 
+> I agree.
+> 
+>> Strictly speaking it does not specify whether it is ok to turn
+>> it off or not. (like the regulator with the voltage set to 0V).
+>> But I'd also like to hear a comment from Stephen here.
+>>
+> 
+> Looking at other power-domains (e.g. gdsc and rpmpd) enabling the
+> power-domain means it is no longer off and if you need some specific
+> performance state you have to vote for that.
+> 
+> So I'm also interested in hearing if there's any reasoning behind how
+> this was written.
+> 
+> Regards,
+> Bjorn
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
