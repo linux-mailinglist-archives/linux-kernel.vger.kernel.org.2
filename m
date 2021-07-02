@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37AD83BA2A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571223BA2AC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbhGBPRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 11:17:11 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:37646 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232248AbhGBPRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 11:17:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=OrjOu76OBGPYy39KuvyK91RrT0dYFD2lgNzam5imG+w=; b=aKtlMxctQdlvgLWeJXRAg8VLhm
-        EbHsjT0nSPMFHL23FLtPtdhFO8RIfusa7/n27a8xsVCqiN6uWQ8bufbJtVU3c/rYnulI/cHYFKEOV
-        uEPPLInjWnn2sTZtkUeUvstH53ajiZ94NbVvRXIfdleKEY1yzXMzLIplwkcTfsZLU7s4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lzKsE-00BvlX-B2; Fri, 02 Jul 2021 17:14:34 +0200
-Date:   Fri, 2 Jul 2021 17:14:34 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>, '@lunn.ch
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        id S232390AbhGBPRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 11:17:16 -0400
+Received: from mail-il1-f174.google.com ([209.85.166.174]:44729 "EHLO
+        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232248AbhGBPRP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 11:17:15 -0400
+Received: by mail-il1-f174.google.com with SMTP id f12so3721265ils.11;
+        Fri, 02 Jul 2021 08:14:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ut9imKxL6QnSk4qfHyI4LHUlOzS0PtJ0GGDAQ0op66c=;
+        b=SJGZXTDhenUslSS9BqAXQ/qbYoqWr27zC5voqaxGmsBn+0WEncFCpHxyhH8tg6LJng
+         EFc282MDp3NDuh96e6a4NyccrnEnZIG400oAESlHPLbqYd1YfEeBxn4Gw5nmBvvr9uBH
+         LABgHn8exns+cOsWWEnFNP77hlzgX+HbcWb13/lkc7ZiiM7dn+ENULsPIj2gMAy2KdMC
+         cMjDhl5djMLwn1i9Ga75oSt1Bm9O8J2xHLwougcBnHcseSAADJ4DcOJLlePbETAkWRO7
+         LCw6M590+xmgueuG6swEgYmngMTsI1tVk7wbk/aTFNGUClnX+a6p7yK/PSQrhC0TikAa
+         XPrw==
+X-Gm-Message-State: AOAM531YR5bc/6OzUR32H8AIAWpitcm5M3sA3O5/SBiIFJHCzxhTVLvf
+        v090yGPKnN4LQ8qMpztl6Q==
+X-Google-Smtp-Source: ABdhPJyJQ+7r5oKAFDBY9y+s7apI5nAskZUs0JrjDvLU1ycLlp4sB/Uhwdv5yqQLYQelhXIiDZpx6g==
+X-Received: by 2002:a92:dd89:: with SMTP id g9mr333572iln.209.1625238882803;
+        Fri, 02 Jul 2021 08:14:42 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id g6sm1846444ilj.65.2021.07.02.08.14.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 08:14:41 -0700 (PDT)
+Received: (nullmailer pid 437820 invoked by uid 1000);
+        Fri, 02 Jul 2021 15:14:37 -0000
+Date:   Fri, 2 Jul 2021 09:14:37 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Matthew Hagan <mnhagan88@gmail.com>
+Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        soc@kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        devicetree@vger.kernel.org, Ray Jui <rjui@broadcom.com>,
         Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH net-next v2 3/6] net: dsa: qca: ar9331: add forwarding
- database support'
-Message-ID: <YN8tWtqfRRO7kAlb@lunn.ch>
-References: <20210702101751.13168-1-o.rempel@pengutronix.de>
- <20210702101751.13168-4-o.rempel@pengutronix.de>
+        Scott Branden <sbranden@broadcom.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v4 4/4] dt-bindings: arm: bcm: NSP: add Meraki MX64/MX65
+Message-ID: <20210702151437.GA437656@robh.at.kernel.org>
+References: <20210625095000.3358973-1-mnhagan88@gmail.com>
+ <20210625095000.3358973-5-mnhagan88@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210702101751.13168-4-o.rempel@pengutronix.de>
+In-Reply-To: <20210625095000.3358973-5-mnhagan88@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 12:17:48PM +0200, Oleksij Rempel wrote:
-> This switch provides simple address resolution table, without VLAN or
-> multicast specific information.
-> With this patch we are able now to read, modify unicast and mulicast
+On Fri, 25 Jun 2021 10:49:51 +0100, Matthew Hagan wrote:
+> Add bindings for the Meraki MX64/MX65 series.
+> 
+> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
 
-mul_t_icast.
 
-> addresses.
-> +static int ar9331_sw_port_fdb_dump(struct dsa_switch *ds, int port,
-> +				   dsa_fdb_dump_cb_t *cb, void *data)
-> +{
-> +	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-> +	int cnt = AR9331_SW_NUM_ARL_RECORDS;
-> +	struct ar9331_sw_fdb _fdb = { 0 };
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
 
-Why use _fdb? There does not appear to be an fdb?
+If a tag was not added on purpose, please state why and what changed.
 
-> +static int ar9331_sw_port_fdb_rmw(struct ar9331_sw_priv *priv,
-> +				  const unsigned char *mac,
-> +				  u8 port_mask_set,
-> +				  u8 port_mask_clr)
-> +{
-> +	struct regmap *regmap = priv->regmap;
-> +	u32 f0, f1, f2 = 0;
-> +	u8 port_mask, port_mask_new, status, func;
-> +	int ret;
-
-Reverse Christmas tree.
-
-> +static int ar9331_sw_port_fdb_add(struct dsa_switch *ds, int port,
-> +				  const unsigned char *mac, u16 vid)
-> +{
-> +	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-> +	u16 port_mask = BIT(port);
-> +
-> +	dev_info(priv->dev, "%s(%pM, %x)\n", __func__, mac, port);
-
-dev_dbg()?
-
-	Andrew
