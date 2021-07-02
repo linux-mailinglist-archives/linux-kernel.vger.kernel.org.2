@@ -2,117 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26D13BA276
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4882D3BA27D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbhGBPEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 11:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
+        id S232005AbhGBPIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 11:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhGBPEn (ORCPT
+        with ESMTP id S231791AbhGBPIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 11:04:43 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE6FC061762;
-        Fri,  2 Jul 2021 08:02:10 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id g5so8394081iox.11;
-        Fri, 02 Jul 2021 08:02:10 -0700 (PDT)
+        Fri, 2 Jul 2021 11:08:18 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D06C061762;
+        Fri,  2 Jul 2021 08:05:46 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id v7so9827111pgl.2;
+        Fri, 02 Jul 2021 08:05:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3ESnv5VltIcws9DNfVOo0LCJ9MunPT869dSHDL/9jQk=;
-        b=MW8SyPAkGlNMj/7lTIXQI54JdRINXm54t8virqWSj8TBq1OzjoaLeIBhKE4poR0TqK
-         2zgXO7G1NxOoKeB4ykAsoqT1xhG8M6b2FcMddg01P0zt0oRasIebhD9c6gbJ+ks6Gyj2
-         DMIWNURi83YlaX+8ZbhoSMFZ4lCj78fpYs+iFXKqG3pGBTdZ9bc8aoqfAFGsG4kiva/D
-         w7U1CEEAtzstg5BgFveRnkcbk7NTP6uUrAVR0rQFvdNMXK8j4pTo0HsrjOaeB0tsy/9Z
-         Dr6vV5V9vE/gY1wtHPs5TYPMbj/PTov+IGq0Z9lgVdo3XVFCJdUWOpFym63t/uztt0/s
-         yCvA==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=lzeTdJJkCqv5mk9Gasn/+NrDrHS7Qalj8jBb3up29Zc=;
+        b=Kkbk7AWBs4JpZjwH9Qna4U1kLDZHzbIKcEdUCwdclmma4xfgkw9rq2K8pbvLWKorca
+         76RDSResPlYstHCyQPuJisbSgEj7jbNFqBy2XF7EUdwM5fUyCN8SsWZGkN7G0KMYh3sa
+         TlBMDGe1IB8CrqwesdFF7eVIdiPjpScQAkuOA61S56E44VJHuh3Vcp7buwQAwV4LVpLj
+         O/fJo+TANtvdK8hZSeMp3eB6jnUuS0/kDaKFJUUM1c0rzYbxSPZk5RgPHn+fgarzzWSP
+         9QhY8AT0VSzbPusqZy7cOhEaL/neNMAwB7A5S4SQFd1n/sRI+8YudT1al6eUWLmKfxTb
+         h5pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3ESnv5VltIcws9DNfVOo0LCJ9MunPT869dSHDL/9jQk=;
-        b=XTPy7Qv5Ygrph0HhggEZA181Peymz45A1zrBMn+nkHm8aImKA7GPAx/YurGhmkIUVm
-         xDWw2vKjzPa1Je+s7Zu8+6uBlPdht+gQPq+eVJ7jk2GlBQM7H+iyJwhxPFPbcubuvrBd
-         FXXYPI8K7eLytM0Cds+yvbqs+TanvhR/7NO3vtUEDAIxUgG5f6H6SdcFMrLeyOj0T4xC
-         3jcpHUFptPfaJfh5QjooTfDcvE9fqLkxRDELEfDbhUgKFfy7QjU3zoRkLneeCe7GfJsI
-         ZsJ+9cq/Evw55/6N93x1RQzNEtWFtcS9l6DmPViHx9JQAfYPFOcXOQzLvMy724j0fuWu
-         7a2w==
-X-Gm-Message-State: AOAM530++920/mVY+vtKTOi3GHHNwedPyZkCnFqPENgrnkixfjcesRZV
-        eYOlGFpWAGTz/Sym/5GgRV1eTtDHpTJyDufekW0=
-X-Google-Smtp-Source: ABdhPJymjpTCbVqbwJKHZL55yBj4hfNpFvH9autX0ylNKZMkjmtHSyFnxvTzNhTu5jrzDtq6Q/gwKAO8DgZCB7+Crpw=
-X-Received: by 2002:a6b:f81a:: with SMTP id o26mr377544ioh.68.1625238129618;
- Fri, 02 Jul 2021 08:02:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=lzeTdJJkCqv5mk9Gasn/+NrDrHS7Qalj8jBb3up29Zc=;
+        b=YGG3Ppp4WREHFXf26NVQKTt3o0TvOMTjqguhoOqBSgq7Xqdv93f6MpDawUAcPlFN5i
+         58z9kYwHi1uSPg/rL+UaKCA6ftbW1mD5laY5St4RhYl8cyWRuSa5rK1bcz+ZH/R5WXMG
+         H/xJvxQiQ+UmtEL8/oFrh2xfxBvk1/eblEU0Ki1QhL9mzy3+iIyuBpb1ywbcv+FcgVY+
+         nBj3eYkqPYFRN82TvlMC8LJd5nDzBEg/r/oM1it6wJvrNkK2ueeLP5drIc0+qcVPh7V/
+         jrHr55M9Wfef0XsqxamuaOjewnvwHA9lNq4VFtqUSo53jNGgwXDlG752qbdwixCX1LYW
+         OUpg==
+X-Gm-Message-State: AOAM532s0ibOWZQG2E4ZpvZhJKERxZQtT9pYmgPAvPPj8VbmOxyWApa9
+        kaneh1kSWRWvYU6o1vz0czw=
+X-Google-Smtp-Source: ABdhPJyEoV6BglneJZH8oaLFEYu1M4e9vr0Bt06inDSQr09mdE5PBYFr4BT9k/ihahZJ01yu8Ov7bg==
+X-Received: by 2002:a63:4e05:: with SMTP id c5mr445037pgb.151.1625238346129;
+        Fri, 02 Jul 2021 08:05:46 -0700 (PDT)
+Received: from fedora ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
+        by smtp.gmail.com with ESMTPSA id y7sm3551508pfi.204.2021.07.02.08.05.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 08:05:45 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 20:35:41 +0530
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     jack@suse.cz, rkovhaev@gmail.com
+Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Verify the items that we read from blocks
+Message-ID: <YN8rRYxhZvAa+VxU@fedora>
 MIME-Version: 1.0
-References: <20210603171507.22514-1-andrew_gabbasov@mentor.com> <20210604110503.GA23002@vmlxhi-102.adit-jv.com>
-In-Reply-To: <20210604110503.GA23002@vmlxhi-102.adit-jv.com>
-From:   Macpaul Lin <macpaul@gmail.com>
-Date:   Fri, 2 Jul 2021 23:01:57 +0800
-Message-ID: <CACCg+XO+D+2SWJq0C=_sWXj53L1fh-wra8dmCb3VQ4bYCZQryA@mail.gmail.com>
-Subject: Re: [PATCH] usb: gadget: f_fs: Fix setting of device and driver data cross-references
-To:     Eugeniu Rosca <erosca@de.adit-jv.com>, stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eugeniu Rosca <erosca@de.adit-jv.com> wrote:
->
-> Hello,
->
-> On Thu, Jun 03, 2021 at 12:15:07PM -0500, Andrew Gabbasov wrote:
-> > FunctionFS device structure 'struct ffs_dev' and driver data structure
-> > 'struct ffs_data' are bound to each other with cross-reference pointers
-> > 'ffs_data->private_data' and 'ffs_dev->ffs_data'. While the first one
-> > is supposed to be valid through the whole life of 'struct ffs_data'
-> > (and while 'struct ffs_dev' exists non-freed), the second one is cleared
-> > in 'ffs_closed()' (called from 'ffs_data_reset()' or the last
-> > 'ffs_data_put()'). This can be called several times, alternating in
-> > different order with 'ffs_free_inst()', that, if possible, clears
-> > the other cross-reference.
-> >
+Hi,
 
-[Skip some comment...]
+I was trying to work on this[1] bug. After a lot of reading the code and
+running it under gdb, I found out that the error happens because
+syzkaller creates a segment with raw binary data in the reproducer[2],
+that has the wrong deh_location for the `..` directory item. (The value
+is 0x5d (93), where as it should have been 0x20 (32).)
 
-> I confirm there are at least two KASAN use-after-free issues
-> consistently/100% reproducible on v5.13-rc4-88-gf88cd3fb9df2:
->
-> https://gist.github.com/erosca/b5976a96789e574b319cb9e076938b5c
-> https://gist.github.com/erosca/4ded55ed32f0133bc2f4ccfe821c7776
->
-> These two can no longer be seen after the patch is applied.
->
-> In addition, below static analysis tools did not spot any regressions:
-> cppcheck 2.4, smatch v0.5.0-7445-g58776ae33ae8, make W=1, coccicheck
->
-> Reviewed-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-> Tested-by: Eugeniu Rosca <erosca@de.adit-jv.com>
->
-> --
-> Best regards,
-> Eugeniu Rosca
+I think that the solution would involve checking the items that we read,
+and verify that they are actually valid. But this check could actually
+happen in two places:
 
-It like there is similar issue on kernel-4.14 reported by our customer
-(Android).
-The back trace are similar.
-It looks like this patch has fixed issue existed in earlier kernels.
-Could Engeniu and Andrew help to comment if this fix is suggested to be pick to
-stable-tree? I've tried to port it onto kernel-4.14, kernel-4.19, and
-kernel-5.10.
-But it seems there is some revise work to do.
-If the origin issue affect multiple LTS kernel versions, then it will
-be better to be
-cherry-pick to stable-tree after it has been merged.
-Thanks!
+- First idea would be to check as soon as we read a
+  block, and one way of doing that would be adding a wrapper around
+  ll_rw_block that validates the leaf node blocks that we read. The
+  benifits to this would be that since we're solving the problem at it's
+  root, very few functions would have to be changed. But I don't know
+  how much of a performance hit would it be.
 
--- 
-Best regards,
-Macpaul Lin
+- Second idea would be to do these validation checks lazily. This should
+  be faster than the first idea, but this would involve changing the
+  code at more places than in the first idea.
+
+For how the validation happens, the first idea that comes to mind is
+reading the item headers from the block that we read and verifying if
+the header is valid, and if the items themselves are valid according to
+the header.
+
+It's very likely that better approaches to this problem exist, that I
+wasn't able to think of. I wanted to discuss about this before pursuing
+the solution any further. Would such a change be accepted?
+
+If there are better approaches, or if I am looking at this bug from an
+incorrect perspective, please let me know.
+
+Thank you,
+Shreyansh Chouhan
+
+--
+
+[1] https://syzkaller.appspot.com/bug?id=d8c00bae1644df59696f2d74d1955fd286691234
+[2] https://syzkaller.appspot.com/text?tag=ReproC&x=13f9f338d00000
+
+(PS: In the reproducer, the segment partition with data at 0x20011100 in
+the execute_once function has the faulty directory item.)
