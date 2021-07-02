@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFB43B9DE6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5783B9DF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhGBJKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 05:10:53 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46606 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbhGBJKx (ORCPT
+        id S231158AbhGBJVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 05:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230112AbhGBJV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 05:10:53 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 4BD262006A;
-        Fri,  2 Jul 2021 09:08:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625216900; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vy9xdj2QLgIqzr/TgmLE77gLmPWcB0CW7T+Mjh40YGc=;
-        b=VAQaWwdMVj2o9m81fAuHALE0jIVcwnGjxshViGXKd+wsXn5bTqSdtgFdYG0DDnSmGtE7+u
-        F2s+VgUPZyf2Z8NN1XmybNZgSe0FhTv33uGZZmMsU9Su142BWJIF/s+7Rv6CcvLZVnpuj7
-        t78uAO9mWgSCzrZheK9G9KPILW5elK4=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 07E27A3B83;
-        Fri,  2 Jul 2021 09:08:19 +0000 (UTC)
-Date:   Fri, 2 Jul 2021 11:08:19 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: Process memory accounting (cgroups) accuracy
-Message-ID: <YN7XgzB4bE2K9int@dhcp22.suse.cz>
-References: <69ffd3a0-2cb7-8baa-17d0-ae45a52595af@canonical.com>
+        Fri, 2 Jul 2021 05:21:26 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B31C061762;
+        Fri,  2 Jul 2021 02:18:53 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id v7so8981691pgl.2;
+        Fri, 02 Jul 2021 02:18:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uJEaMh5QMIWKQSiW3NhFAWboQVAmMWKJTMsm2BnrKWA=;
+        b=b3Agk3pau1jzghfawlkN8c7Mdga3Nzlj5mQz3xpbz85WeyXNj6Gs54d14giwqX75H5
+         2/iO0XgdoLFJBLkqOlQhhvM/a+j/UNWycRXpCosZ3mKhrSwvnnlt9cjIDIIEiAXXFj1A
+         i3MRRi1eV9LT+3SxSydMIET2w22HX1dFDfxfLK73wbc8ITyzucHWxXKLGt2rBLrgUXr3
+         Hi5p4TEE1FwGiD8tth8dAB3fbitiFQ/0iez44c5sf/YhBszhhorsAE1aSpgp57Wwm6hD
+         zR+SNI6cCUS+7F+0oiMJQEBhLDG07QhSEynK0a4gOpcwTDbfV1UpYirNtbrS5fUZ4t+o
+         30XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uJEaMh5QMIWKQSiW3NhFAWboQVAmMWKJTMsm2BnrKWA=;
+        b=aok8BwvV4c5LMcJS4l5hYXjYzd2MEuUfDYF7h7EFPr9a/uJI/vR28RZUUOId7afwNL
+         7/bz0vhMz2hev6nBRWWmrAKkwy8p1bKpHjO08c4kfz87G5c5WnYQ7GWPfxZdz6Be1aEx
+         oWGRPSsE1YEXjd5xxbU7TTJyBnVlxPIwYfUg5XVw88fRwUO2S+Acwbbgz0xkpm512AEP
+         Hmv7bhQr+0/us4aU0cbEeOuYHm2LSA+AtrtgaCLqGJqbaPXja6vIGUQV/adswQ4quwse
+         EHp75OQdtWvhZDtnWnxVgfoED7+W95Q4wYFEhxDZjnYsa2CtfzKAJUELPRID4MofMuC0
+         CZ3Q==
+X-Gm-Message-State: AOAM533Aa8TsZIw9WH1JECQHuV5FHXnaO7ESHboVPgH+uMHQlTLnZM/7
+        42EOERPaqlVzl8zBAZ+86fU=
+X-Google-Smtp-Source: ABdhPJxJOwoAcoKmZkfGso6jjy9hW28TXA4lMFBKPHpGF+EHRsgL/W14RrCs8aNA22yZAy3MllzMeQ==
+X-Received: by 2002:a63:4f11:: with SMTP id d17mr1260315pgb.20.1625217533419;
+        Fri, 02 Jul 2021 02:18:53 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id y3sm3023918pga.72.2021.07.02.02.18.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 02:18:53 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     jlayton@kernel.org, bfields@fieldses.org, viro@zeniv.linux.org.uk
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH 0/2] fcntl: fix potential deadlocks
+Date:   Fri,  2 Jul 2021 17:18:29 +0800
+Message-Id: <20210702091831.615042-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <69ffd3a0-2cb7-8baa-17d0-ae45a52595af@canonical.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 02-07-21 09:50:11, Krzysztof Kozlowski wrote:
-[...]
-> The questions: How accurate are now the cgroup counters?
+Hi,
 
-The precision depends on the number of CPUs the workload is running on
-as we do a per-cpu charge caching to optimize the accounting. This is
-MEMCG_CHARGE_BATCH (32) pages currently. You can learn more by checking
-try_charge function (mm/memcontrol.c).
+Syzbot reports a possible irq lock inversion dependency:
+https://syzkaller.appspot.com/bug?id=923cfc6c6348963f99886a0176ef11dcc429547b
 
-> I understood they should charge only pages allocated by the process, so
-> why mmap(4 kB) causes max_usage_in_bytes=132 kB?
+While investigating this error, I discovered that multiple similar lock inversion scenarios can occur. Hence, this series addresses potential deadlocks for two classes of locks, one in each patch:
 
-Please note that kernel allocations (marked by __GFP_ACCOUNT) are
-accounted as well so this is not only about mmaped memory.
+1. Fix potential deadlocks for &fown_struct.lock
 
-> Why mmap(4 MB) causes max_usage_in_bytes=4 MB + 34 pages?
+2. Fix potential deadlock for &fasync_struct.fa_lock
 
-The specific number will depend on the executing - e.g. use up all but 3
-pages from CPU0 batch and have 31 pages on another cpu.
+Best wishes,
+Desmond
 
-> What is being accounted there (stack guards?)?
-> 
-> Or maybe the entire LTP test checking so carefully memcg limits is useless?
+Desmond Cheong Zhi Xi (2):
+  fcntl: fix potential deadlocks for &fown_struct.lock
+  fcntl: fix potential deadlock for &fasync_struct.fa_lock
 
-Well, I haven't really checked details of those tests and their
-objective but aiming for an absolute precision is not really something
-that is very useful IMHO. We are very likely to do optimizations like
-the one mentioned above as the runtime tends to be much more important
-than to-the-page precision.
+ fs/fcntl.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-Hope this clarifies this a bit.
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
