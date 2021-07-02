@@ -2,115 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A343B9D39
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 864CF3B9D37
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhGBICw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 04:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbhGBICu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 04:02:50 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0EC4C0613DB
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 01:00:18 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lzE5x-0007GU-04; Fri, 02 Jul 2021 10:00:17 +0200
-Subject: Re: [PATCH v2 6/6] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        horia geanta <horia.geanta@nxp.com>,
-        aymen sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        davem <davem@davemloft.net>, Udit Agarwal <udit.agarwal@nxp.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        david <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>
-References: <cover.1dfbb73645d917b3c76d01290804a3410bd9932e.1624364386.git-series.a.fatoum@pengutronix.de>
- <39e6d65ca5d2a0a35fb71d6c1f85add8ee489a19.1624364386.git-series.a.fatoum@pengutronix.de>
- <1850833581.13438.1625172175436.JavaMail.zimbra@nod.at>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <2f608e5a-5a12-6db1-b9bd-a2cd9e3e3671@pengutronix.de>
-Date:   Fri, 2 Jul 2021 10:00:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230174AbhGBICr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 04:02:47 -0400
+Received: from vmi485042.contaboserver.net ([161.97.139.209]:58512 "EHLO
+        gentwo.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229519AbhGBICq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 04:02:46 -0400
+Received: by gentwo.de (Postfix, from userid 1001)
+        id 7720FB0079B; Fri,  2 Jul 2021 10:00:11 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.de (Postfix) with ESMTP id 7601BB00255;
+        Fri,  2 Jul 2021 10:00:11 +0200 (CEST)
+Date:   Fri, 2 Jul 2021 10:00:11 +0200 (CEST)
+From:   Christoph Lameter <cl@gentwo.de>
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Nitesh Lal <nilal@redhat.com>
+Subject: Re: [patch 0/5] optionally sync per-CPU vmstats counter on return
+ to userspace
+In-Reply-To: <20210701210336.358118649@fuller.cnet>
+Message-ID: <alpine.DEB.2.22.394.2107020958430.201080@gentwo.de>
+References: <20210701210336.358118649@fuller.cnet>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <1850833581.13438.1625172175436.JavaMail.zimbra@nod.at>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Richard,
+On Thu, 1 Jul 2021, Marcelo Tosatti wrote:
 
-On 01.07.21 22:42, Richard Weinberger wrote:
-> Ahmad,
-> 
-> ----- Ursprüngliche Mail -----
->> Von: "Ahmad Fatoum" <a.fatoum@pengutronix.de>
->> +static struct caam_blob_priv *blobifier;
->> +
->> +#define KEYMOD "kernel:trusted"
-> 
-> I'm still think that hard coding the key modifier is not wise.
-> As I said[0], there are folks out there that want to provide their own modifier,
-> so it is not only about being binary compatible with other CAAM blob patches in the wild.
+> The logic to disable vmstat worker thread, when entering
+> nohz full, does not cover all scenarios. For example, it is possible
+> for the following to happen:
+>
+> 1) enter nohz_full, which calls refresh_cpu_vm_stats, syncing the stats.
+> 2) app runs mlock, which increases counters for mlock'ed pages.
+> 3) start -RT loop
+>
+> Since refresh_cpu_vm_stats from nohz_full logic can happen _before_
+> the mlock, vmstat shepherd can restart vmstat worker thread on
+> the CPU in question.
 
-I don't think the characterization as a salt is accurate. AFAIU it's more
-of a namespace, so blobs being loaded are "type-checked" against the modifier.
+Can we enter nohz_full after the app runs mlock?
 
-> I'll happily implement that feature after your patches got merged but IMHO we should first agree on an interface.
-> How about allowing another optional parameter to Opt_new and Opt_load
+> To fix this, optionally sync the vmstat counters when returning
+> from userspace, controllable by a new "vmstat_sync" isolcpus
+> flags (default off).
+>
+> See individual patches for details.
 
-Sound good to me. pcrlock for TPM trusted keys has the same interface.
+Wow... This is going into some performance sensitive VM counters here and
+adds code to their primitives.
 
-I'd prefer the new option to accept strings, not hex though.
+Isnt there a simpler solution that does not require this amount of
+changes?
 
-
-> and having a key modifier per struct trusted_key_payload instance?
-
-Ye, possibly a void *backend_data, which other trust sources could leverage
-as well. But that should be separate discussion.
-
-
-Cheers,
-Ahmad
-
-> 
-> Thanks,
-> //richard
-> 
-> [0]
-> https://patchwork.kernel.org/project/linux-crypto/patch/319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de/#24085397
-> 
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
