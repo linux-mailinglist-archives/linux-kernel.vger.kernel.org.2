@@ -2,80 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F583B9B3C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 06:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117D23B9B40
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 06:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhGBELn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 00:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhGBELm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 00:11:42 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867F8C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 21:09:11 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id a11so8570511ilf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 21:09:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1gC6Cvl08bnslgy8WMJr7QNn+YYwFlDy13+HxzwRk8M=;
-        b=NciZtOZ25evhYvZlsCKUK1olqhbASLK7QkPiPHy3BPnDfBvV6maHGibVQjs3Z4CDc+
-         709TkprfM2FKC7TqPaO+aYrdwKZDiiJ5ClxrAXLYh7Msp1YpidnvopVGGYdUFymYM6H1
-         sTnEQBKNMflYZ1VUcPcjzAmjhv6QoqZL8cTVw0ttSHHdoKuYJE9OVNlGaY84gKzOhzgg
-         y+2ASjN+MsOpKHXicCrLjSYsimbuOxGM1HsfUXmcHbYL7MD+KN1zAnIz8ZekVK59YTJR
-         6pN6UorVkUbHoxolVAFDBGivrpeGfQHuuKiNuZF6DM1v1EnONybezObTzRyquu4h2vlU
-         fCfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1gC6Cvl08bnslgy8WMJr7QNn+YYwFlDy13+HxzwRk8M=;
-        b=K11vXEAgeSOMSk5bseU1or12r3H3KLxVdctrL617/+FjAjQjFCflbI+RjHzsB89UZF
-         JjBAVWSeFZFwus1odDbjvSjTgy/06I89ivT1rPfJ+fg6IwyB1zeqwncg0CkWyUw2bj0p
-         rwnChurgQQNYnw58YuLI/3rdavFOrlkhvZez/3F7GbW43snK6IZDCiYqATNTdKFVfrxj
-         JMlQzcO6x8sYiLiZaoOZanatTuknE5knoeRDRS7jeDvbXoAvUU+URLY8vBa5fM8IRWNy
-         dQBsQ6QK+AWRdhPDz4P0hxfuc9sHpVflFeGRoT377YRoEzhLKwneFyW2G3camfv7XRbY
-         gYmg==
-X-Gm-Message-State: AOAM533OHe6lUBj9yftprXeDtU/PmfoR10so//D+2yd1ARYP1+8RvykG
-        KhokhoXiu2QPfOZsk1prCsWtRStQLL3RGrPLRq1gIQ==
-X-Google-Smtp-Source: ABdhPJyMAYJ+oj3Ah4Z5Te9mpgidxlbMPme/PtZviWgLgSIfiUPgsYDOKP3BdaS2QUHV4m/FgKmZbeNg5jF0BLg85Zs=
-X-Received: by 2002:a92:dd05:: with SMTP id n5mr1966777ilm.72.1625198950511;
- Thu, 01 Jul 2021 21:09:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210630085247.27554-1-irui.wang@mediatek.com> <20210630085247.27554-3-irui.wang@mediatek.com>
-In-Reply-To: <20210630085247.27554-3-irui.wang@mediatek.com>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 2 Jul 2021 12:08:59 +0800
-Message-ID: <CA+Px+wUdPx39jQ2OPi_yTfmqAiPT=TB_vdQFpe+GVRfNm3R3pQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] dt-bindings: media: mtk-vcodec: Add binding for
- MT8195 VENC
-To:     Irui Wang <irui.wang@mediatek.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Longfei Wang <longfei.wang@mediatek.com>,
-        Yunfei Dong <Yunfei.Dong@mediatek.com>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+        id S230346AbhGBEM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 00:12:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229672AbhGBEM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 00:12:28 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABD9161407;
+        Fri,  2 Jul 2021 04:09:56 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1lzAV1-000ePk-Hf; Fri, 02 Jul 2021 00:09:55 -0400
+Message-ID: <20210702040936.551628380@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Fri, 02 Jul 2021 00:09:36 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-next][PATCH 0/2] tracing: Final update before sending to 5.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 4:54 PM Irui Wang <irui.wang@mediatek.com> wrote:
-> Updates binding document for mt8192 encoder driver.
-Typo in the commit message.
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+for-next
+
+Head SHA1: 4030a6e6a6a4a42ff8c18414c9e0c93e24cc70b8
+
+
+Paul Burton (2):
+      tracing: Simplify & fix saved_tgids logic
+      tracing: Resize tgid_map to pid_max, not PID_MAX_DEFAULT
+
+----
+ kernel/trace/trace.c | 91 +++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 55 insertions(+), 36 deletions(-)
