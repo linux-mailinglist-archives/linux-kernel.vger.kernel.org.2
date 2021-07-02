@@ -2,75 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AC13B9D81
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F0E3B9D7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhGBI3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 04:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230326AbhGBI3D (ORCPT
+        id S230375AbhGBI3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 04:29:04 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54978 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230023AbhGBI3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 04:29:03 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F091C061762;
-        Fri,  2 Jul 2021 01:26:31 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id dj3so4288336qvb.11;
-        Fri, 02 Jul 2021 01:26:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:from:to:cc:subject:mime-version:date
-         :content-transfer-encoding;
-        bh=dX6i2Y1Ly1681d2mbj0j/9kxKdKTvA3NyPTEzjPTIAo=;
-        b=O0MCkaYt1focsaJcVAnZ1S3briveTgqC3Ppgjih1yaYijWRG7f96cLefa3xqTEXomV
-         L4dvYp//TA70BCp2Y3yTdZEUpbA0RcpZayLdNh/QtlwhM2qs/gL+IAN8/dqfZH1VTgnk
-         7CCVSwasXmTbRUGlu+Kap89MRd5Gy4dF7cX0NSXi14ofkkD7KtRIMohmR1zUkUD4iSmJ
-         HT6OVSzRb61vhdKRpbQ4ftZEdX7zg7/FJl36V7/CQME95EO0rmAaaAYZsh6Qm+o2i0MG
-         wZY8xzG6jSN8YhuaG1XCLriRGNqQx9yr/ciYt31BR9wJaIsJHCWl41Hn/7tP/HPRD6Aa
-         mI+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:to:cc:subject:mime-version:date
-         :content-transfer-encoding;
-        bh=dX6i2Y1Ly1681d2mbj0j/9kxKdKTvA3NyPTEzjPTIAo=;
-        b=D19QPSC0w0UnVSfGlFQ1EVteeCjlfzdM4qnok2FeOXnQOBbrtI5gEr9TNlg3woqqNP
-         Lnfp35a9kNLpU4PJfcRLVBrAIIRyQEmBqtWfqu+jmVDEAetYRgZbXOj5JdnhxDv/uiYP
-         IvWREgoCAUEq3mlfooQI9vKCoWiYC/B5Z0HvUiaL07uTaJfBpc2Vyv1Rbzj64/AX0khP
-         +mgTeDC8dCdUMSKnXwgKNufjIXORYDpALIaXPXlC/xyV/u87ZPmNQ6AQ3GyYmh8tmgsq
-         3NJgTD1r+qhXLa+iDRKR6bdBnrgfpyj9FaRFRORWMjvEAqE9aVzRBpbgNtPftOGIwYNJ
-         jAtg==
-X-Gm-Message-State: AOAM530xGiyJH2uvf7xyFOlKLWBSw2AzaC6K4NqiygPby/M5JT9HOCve
-        QHnIPnVYQ/xhkMjOyrn1Y0Bw+rVt0/+bOw==
-X-Google-Smtp-Source: ABdhPJyh1faEm+PaNeHQWlnYm8PYe1qU9GMOX7JUK3+hWCk+yPFaT7RsCTS7Vx/6axzlT9K6e3ZgJA==
-X-Received: by 2002:a0c:9ac7:: with SMTP id k7mr4078405qvf.49.1625214390729;
-        Fri, 02 Jul 2021 01:26:30 -0700 (PDT)
-Received: from 53a3b1cb497b ([50.236.19.102])
-        by smtp.gmail.com with ESMTPSA id 19sm979536qtt.87.2021.07.02.01.26.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 01:26:30 -0700 (PDT)
-Message-ID: <60decdb6.1c69fb81.6130e.7642@mx.google.com>
-From:   Hao Lee <haolee.swjtu@gmail.com>
-To:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     tj@kernel.org
-Subject: [Question] Do we need remote charging for cpu and cpuacct subsys?
+        Fri, 2 Jul 2021 04:29:02 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1376C22961;
+        Fri,  2 Jul 2021 08:26:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625214389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WxJWw2CqLjQ4AZ75S144xJsmeSvAip+8rmh0FMz/5GM=;
+        b=lkUj24IiRvJIFfbBu/iB88l1qdMcO1clseyNEaQKefJCuMgGcAjgdMJRWlP12kgCV9/Yhi
+        tKyRbORZtjInluugNAS1LcxunK4xUoJoywGyxahtGQ5N81ENdJld/x7bfoqUeoLYg9WEAU
+        jPJD63Wi4XgVJsa218wDWmyvbHlfMkI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625214389;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WxJWw2CqLjQ4AZ75S144xJsmeSvAip+8rmh0FMz/5GM=;
+        b=x8IuBnkDowOrrc2WoDMs/m5k/YVR3o2og0kw/SEkXusC5ZIvp3lzIuKm1dvNCeUv9UsIFd
+        HQsALjOFSp+2BsBA==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id AAC2BA3B81;
+        Fri,  2 Jul 2021 08:26:28 +0000 (UTC)
+Date:   Fri, 2 Jul 2021 10:26:28 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     gushengxian <gushengxian507419@gmail.com>
+cc:     jpoimboe@redhat.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
+Subject: Re: [PATCH] objtool: avoid Memory leak: orig_alt_group
+In-Reply-To: <20210702031327.559429-1-gushengxian507419@gmail.com>
+Message-ID: <alpine.LSU.2.21.2107021021510.29699@pobox.suse.cz>
+References: <20210702031327.559429-1-gushengxian507419@gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Date:   Fri, 02 Jul 2021 08:26:27 -0000
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksCgptZW1jZyBjdXJyZW50bHkgaGFzIGEgcmVtb3RlIGNoYXJnaW5nIG1lY2hhbmlzbSB0aGF0
-IGNhbiBjaGFyZ2UgdXNhZ2UgdG8gb3RoZXIKbWVtY2cgaW5zdGVhZCBvZiB0aGUgb25lIHRoZSB0
-YXNrIGJlbG9uZ3MgdG8uCgpJbiBvdXIgZW52aXJvbm1lbnQsIHdlIG5lZWQgdG8gYWNjb3VudCB0
-aGUgY3B1IHVzYWdlIGNvbnN1bWVkIGJ5IHNvbWUga3dvcmtlcnMKdG8gYSBzcGVjaWZpYyBjZ3Jv
-dXAuIFRodXMsIHdlIHdhbnQgdG8gaW50cm9kdWNlIGEgcmVtb3RlLWNoYXJnaW5nIG1lY2hhbmlz
-bSB0bwpjcHUgYW5kIGNwdWFjY3Qgc3Vic3lzIGluIG91ciBrZXJuZWwuCgpJIHdhbnQgdG8ga25v
-dyBpZiB0aGUgY29tbXVuaXR5IGhhcyBhIHBsYW4gdG8gZG8gdGhpcz8KV2hhdCB3aWxsIHRoZSBj
-b21tdW5pdHkgYXBwcm9hY2ggbG9vayBsaWtlPwoKSSB0aGluayB3ZSBuZWVkIHRvIG1vdmUgdGhl
-IGFjdGl2ZV9tZW1jZyB0byBhIHNlcGFyYXRlZCBhY3RpdmVfY2dyb3VwIHN0cnVjdCwKYW5kIHRo
-ZSBsYXR0ZXIgd2lsbCBjb250YWluIGFjdGl2ZV9tZW1jZywgYWN0aXZlX3RnLCBhbmQgYWN0aXZl
-X2NwdWFjY3QuCgoKUmVnYXJkcywKSGFvIExlZQo=
+Hi,
 
+On Thu, 1 Jul 2021, gushengxian wrote:
+
+> From: gushengxian <gushengxian@yulong.com>
+> 
+> free(orig_alt_group) should be added in order to avoid memery leak.
+> Reported by cppcheck.
+> 
+> Signed-off-by: gushengxian <gushengxian@yulong.com>
+
+It is not necessary. Objtool would exit immediately in case of this error 
+and we do not handle the allocations in such cases. 
+
+> ---
+>  tools/objtool/check.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+> index e5947fbb9e7a..deb48b1bc16d 100644
+> --- a/tools/objtool/check.c
+> +++ b/tools/objtool/check.c
+> @@ -1097,6 +1097,7 @@ static int handle_group_alt(struct objtool_file *file,
+>  				     sizeof(struct cfi_state *));
+>  	if (!orig_alt_group->cfi) {
+>  		WARN("calloc failed");
+> +		free(orig_alt_group);
+>  		return -1;
+>  	}
+
+There are more sites like this in the code. For example there is one a 
+couple of lines later in the same function. It is fine.
+
+Regards
+Miroslav
