@@ -2,56 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8BE3B9EE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 12:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C064B3B9EC7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 12:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbhGBKP2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 2 Jul 2021 06:15:28 -0400
-Received: from 151-0-195-85.ip282.fastwebnet.it ([151.0.195.85]:64105 "EHLO
-        S510.gigasys" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230496AbhGBKPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 06:15:22 -0400
-X-Greylist: delayed 745 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Jul 2021 06:15:22 EDT
-Received: from [192.168.1.105] ([156.0.214.24])
-        (authenticated bits=0)
-        by S510.gigasys (9.0.0) with ESMTP id 1629wqNL029289
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 sabrina@S510.gigasys verify=NOT);
-        Fri, 2 Jul 2021 11:58:54 +0200
-Message-Id: <202107020958.1629wqNL029289@S510.gigasys>
-Content-Type: text/plain; charset="utf-8"
+        id S231150AbhGBKGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 06:06:20 -0400
+Received: from mga06.intel.com ([134.134.136.31]:45127 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230150AbhGBKGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 06:06:18 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="269836552"
+X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
+   d="scan'208";a="269836552"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 03:03:47 -0700
+X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
+   d="scan'208";a="626689785"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 03:03:42 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lzG1I-007egr-Gq; Fri, 02 Jul 2021 13:03:36 +0300
+Date:   Fri, 2 Jul 2021 13:03:36 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, dave.hansen@intel.com,
+        yury.norov@gmail.com, linux@rasmusvillemoes.dk, rafael@kernel.org,
+        rdunlap@infradead.org, agordeev@linux.ibm.com, sbrivio@redhat.com,
+        jianpeng.ma@intel.com, valentin.schneider@arm.com,
+        peterz@infradead.org, bristot@redhat.com, guodong.xu@linaro.org,
+        tangchengchang@huawei.com, prime.zeng@hisilicon.com,
+        yangyicong@huawei.com, tim.c.chen@linux.intel.com,
+        linuxarm@huawei.com, Tian Tao <tiantao6@hisilicon.com>
+Subject: Re: [PATCH v5 3/3] drivers/base/node.c: use bin_attribute to break
+ the size limitation of cpumap ABI
+Message-ID: <YN7keAGnfQrM1RBF@smile.fi.intel.com>
+References: <20210702092559.8776-1-song.bao.hua@hisilicon.com>
+ <20210702092559.8776-4-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Your Attention Is Needed.
-To:     Recipients <marialpaton@online.ee>
-From:   "David Dossou" <marialpaton@online.ee>
-Date:   Fri, 02 Jul 2021 10:58:46 +0100
-Reply-To: revdaviddossou@gmail.com
-X-Antivirus: verificato in 0.011sec su S510.gigasys ([192.168.1.2])
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210702092559.8776-4-song.bao.hua@hisilicon.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Your Attention Is Needed
+On Fri, Jul 02, 2021 at 09:25:59PM +1200, Barry Song wrote:
+> From: Tian Tao <tiantao6@hisilicon.com>
+> 
+> Reading sys/devices/system/cpu/cpuX/nodeX/ returns cpumap and cpulist.
+> However, the size of this file is limited to PAGE_SIZE because of the
+> limitation for sysfs attribute.
+> 
+> This patch moves to use bin_attribute to extend the ABI to be more
+> than one page so that cpumap bitmask and list won't be potentially
+> trimmed.
 
-I write to inform you that we have already sent you $5,200.00 dollars through Western Union as we have been given the mandate to transfer your full compensation payment total sum of USD950,000.00 via western Union by this government.
+...
 
-I was calling your telephone number to give you the information through the phone but you did not pick up my calls throughout yesterday, even this morning. Now, I decided to email you the MTCN and sender name so that you will pick up this $5,200.00 to enable us to send another $5,200.00 today as you know we will be sending you only $5,200.00 per day.
+>  }
+>  
+> -static DEVICE_ATTR_RO(cpumap);
+>  
+> -static inline ssize_t cpulist_show(struct device *dev,
+> -				   struct device_attribute *attr,
+> -				   char *buf)
+> +static BIN_ATTR_RO(cpumap, 0);
 
-Please pick up this information and run to western union to pick up the $5,200.00 and call me back to send you another payment today, My direct phone line is +229-61380-625 once you picked up this $5,200.00 today. 
+It will be extra blank line after this change.
 
-Here is the western union information to pick up the $5,200.00,
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Sender’s First Name____David 
-Senders Second Name____Dossou
-Senders Country Benin Republic
-Text question___When
-Answer__45Minutes
-Amount$5,200.00
-MTCN Number___ 4420429799
 
-I am waiting for your call once you pick up this $5,200.00. Please email me your direct telephone number because I need to be calling you once we send any payment for the information
-
-Thanks
-
-Rev. David Dossou.
