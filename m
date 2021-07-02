@@ -2,152 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880183BA1CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8733BA1D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232778AbhGBOBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 10:01:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51692 "EHLO mail.kernel.org"
+        id S232823AbhGBODB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 10:03:01 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:37508 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232661AbhGBOBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 10:01:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E67B26142B;
-        Fri,  2 Jul 2021 13:59:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625234348;
-        bh=GAzz+9Wi5F3smddcMqAPXL+yX+g6y+b7+ZdyCyCYk6o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DRFf+Wzi4/1+CXjK9WTjhUw5flwP67NTwGefIxgOECtBfi65Tj3m3RZAnGmMeaHWN
-         2nB6ydioSV2HMouSGryEIIBRdSlehAFMTcH+PJ43Fzncx1dyolaRkF7sppvivPuZf7
-         cPX4Boe7jQMJiyFe3ZHKT4MFIZG39Q+YJQliaRWFbkh7/vzRbU7bxJi79Z1ru+gtBo
-         ad1ubKsTeSBiWjEpbwdaLM3RhLgyMoL6khfdtq+W/6U3noQUe78qA62SPzsLgc5K4n
-         HLEZtG+/PJtTdlqtEwnI8LIwqrv30Hz5pVN+cgBES579vlL24El76ac3B9gttOgNJw
-         +e4R0HS7ObwsQ==
-Date:   Fri, 2 Jul 2021 14:58:57 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
-        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
+        id S232700AbhGBODA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 10:03:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Yn8dILk7SaxgrwIdkqjUSo2LpPLZvadnuNn4JtaFs0k=; b=lO3B/ywuxzoGkJf6sGpLn3HXQl
+        hLoA27O7/WR121k4QL3u7edck4RTDxKsHDHY/STQsVtVJBrIvvlmDKvHhD7cZ0itADGQoA6G14d5p
+        dq8I7KLI8YInhUtZTkEn6tv5vuRwPgsggHMzMcIe9OK/I+MDVzf7GimaYkfKr45frvxc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lzJiT-00BvMt-H0; Fri, 02 Jul 2021 16:00:25 +0200
+Date:   Fri, 2 Jul 2021 16:00:25 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
-        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Qian Cai <quic_qiancai@quicinc.com>
-Subject: Re: [PATCH v15 06/12] swiotlb: Use is_swiotlb_force_bounce for
- swiotlb data bouncing
-Message-ID: <20210702135856.GB11132@willie-the-truck>
-References: <20210624155526.2775863-1-tientzu@chromium.org>
- <20210624155526.2775863-7-tientzu@chromium.org>
- <YNvMDFWKXSm4LRfZ@Ryzen-9-3900X.localdomain>
- <CALiNf2-a-haQN0-4+gX8+wa++52-0CnO2O4BEkxrQCxoTa_47w@mail.gmail.com>
- <20210630114348.GA8383@willie-the-truck>
- <YNyUQwiagNeZ9YeJ@Ryzen-9-3900X.localdomain>
- <20210701074045.GA9436@willie-the-truck>
- <ea28db1f-846e-4f0a-4f13-beb67e66bbca@kernel.org>
+        Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/7] mfd: tqmx86: fix typo in "platform"
+Message-ID: <YN8b+QVSnB1tvFgp@lunn.ch>
+References: <cover.1625227382.git.matthias.schiffer@ew.tq-group.com>
+ <7c689191a76ddf0f18ff14989651038f509f1746.1625227382.git.matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ea28db1f-846e-4f0a-4f13-beb67e66bbca@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <7c689191a76ddf0f18ff14989651038f509f1746.1625227382.git.matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nathan,
-
-On Thu, Jul 01, 2021 at 12:52:20AM -0700, Nathan Chancellor wrote:
-> On 7/1/2021 12:40 AM, Will Deacon wrote:
-> > On Wed, Jun 30, 2021 at 08:56:51AM -0700, Nathan Chancellor wrote:
-> > > On Wed, Jun 30, 2021 at 12:43:48PM +0100, Will Deacon wrote:
-> > > > On Wed, Jun 30, 2021 at 05:17:27PM +0800, Claire Chang wrote:
-> > > > > `BUG: unable to handle page fault for address: 00000000003a8290` and
-> > > > > the fact it crashed at `_raw_spin_lock_irqsave` look like the memory
-> > > > > (maybe dev->dma_io_tlb_mem) was corrupted?
-> > > > > The dev->dma_io_tlb_mem should be set here
-> > > > > (https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/pci/probe.c#n2528)
-> > > > > through device_initialize.
-> > > > 
-> > > > I'm less sure about this. 'dma_io_tlb_mem' should be pointing at
-> > > > 'io_tlb_default_mem', which is a page-aligned allocation from memblock.
-> > > > The spinlock is at offset 0x24 in that structure, and looking at the
-> > > > register dump from the crash:
-> > > > 
-> > > > Jun 29 18:28:42 hp-4300G kernel: RSP: 0018:ffffadb4013db9e8 EFLAGS: 00010006
-> > > > Jun 29 18:28:42 hp-4300G kernel: RAX: 00000000003a8290 RBX: 0000000000000000 RCX: ffff8900572ad580
-> > > > Jun 29 18:28:42 hp-4300G kernel: RDX: ffff89005653f024 RSI: 00000000000c0000 RDI: 0000000000001d17
-> > > > Jun 29 18:28:42 hp-4300G kernel: RBP: 000000000a20d000 R08: 00000000000c0000 R09: 0000000000000000
-> > > > Jun 29 18:28:42 hp-4300G kernel: R10: 000000000a20d000 R11: ffff89005653f000 R12: 0000000000000212
-> > > > Jun 29 18:28:42 hp-4300G kernel: R13: 0000000000001000 R14: 0000000000000002 R15: 0000000000200000
-> > > > Jun 29 18:28:42 hp-4300G kernel: FS:  00007f1f8898ea40(0000) GS:ffff890057280000(0000) knlGS:0000000000000000
-> > > > Jun 29 18:28:42 hp-4300G kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > Jun 29 18:28:42 hp-4300G kernel: CR2: 00000000003a8290 CR3: 00000001020d0000 CR4: 0000000000350ee0
-> > > > Jun 29 18:28:42 hp-4300G kernel: Call Trace:
-> > > > Jun 29 18:28:42 hp-4300G kernel:  _raw_spin_lock_irqsave+0x39/0x50
-> > > > Jun 29 18:28:42 hp-4300G kernel:  swiotlb_tbl_map_single+0x12b/0x4c0
-> > > > 
-> > > > Then that correlates with R11 holding the 'dma_io_tlb_mem' pointer and
-> > > > RDX pointing at the spinlock. Yet RAX is holding junk :/
-> > > > 
-> > > > I agree that enabling KASAN would be a good idea, but I also think we
-> > > > probably need to get some more information out of swiotlb_tbl_map_single()
-> > > > to see see what exactly is going wrong in there.
-> > > 
-> > > I can certainly enable KASAN and if there is any debug print I can add
-> > > or dump anything, let me know!
-> > 
-> > I bit the bullet and took v5.13 with swiotlb/for-linus-5.14 merged in, built
-> > x86 defconfig and ran it on my laptop. However, it seems to work fine!
-> > 
-> > Please can you share your .config?
+On Fri, Jul 02, 2021 at 02:23:50PM +0200, Matthias Schiffer wrote:
+> Rename variable from "ocores_platfom_data" to "ocores_platform_data".
 > 
-> Sure thing, it is attached. It is just Arch Linux's config run through
-> olddefconfig. The original is below in case you need to diff it.
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> ---
 > 
-> https://raw.githubusercontent.com/archlinux/svntogit-packages/9045405dc835527164f3034b3ceb9a67c7a53cd4/trunk/config
+> v2: new patch
 > 
-> If there is anything more that I can provide, please let me know.
+>  drivers/mfd/tqmx86.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mfd/tqmx86.c b/drivers/mfd/tqmx86.c
+> index 9b65dbedc1bb..ff1bdb742e3f 100644
+> --- a/drivers/mfd/tqmx86.c
+> +++ b/drivers/mfd/tqmx86.c
+> @@ -76,7 +76,7 @@ static struct i2c_board_info tqmx86_i2c_devices[] = {
+>  	},
+>  };
+>  
+> -static struct ocores_i2c_platform_data ocores_platfom_data = {
+> +static struct ocores_i2c_platform_data ocores_platform_data = {
 
-I eventually got this booting (for some reason it was causing LD to SEGV
-trying to link it for a while...) and sadly it works fine on my laptop. Hmm.
+Ah. Missed that in the vendor code :-(
 
-Did you manage to try again with KASAN?
+FYI: I used tqmx86-drivers_1.3. If you have any fixes in later
+versions, you might want to submit patches.
 
-It might also be worth taking the IOMMU out of the equation, since that
-interfaces differently with SWIOTLB and I couldn't figure out the code path
-from the log you provided. What happens if you boot with "amd_iommu=off
-swiotlb=force"?
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-(although word of warning here: i915 dies horribly on my laptop if I pass
-swiotlb=force, even with the distro 5.10 kernel)
-
-Will
+    Andrew
