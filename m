@@ -2,72 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F1A3BA4D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E8E3BA4DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhGBUzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 16:55:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46696 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230274AbhGBUzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 16:55:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AF9D613E8;
-        Fri,  2 Jul 2021 20:53:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625259180;
-        bh=PmOqPkABTz0RGEK4HIf1Ym6gYzjtW5ypA2aziXgk48I=;
-        h=In-Reply-To:References:Subject:From:To:Date:From;
-        b=kcLD3i7qh/YjQW2E4JIcC/7cgdK9K+iUbSc5cwsWwWETBEk8njRL5hUKRyWS9z+En
-         jtKkxbw9OfqNVYXxZxtfaEdm8Leb9zSg8iFYOkDmuX28PciJLh5C0Fx+zNB2K5YR7n
-         yoxanA5rPlTgmGNaH4LEqqdMVukLeK8lkzTUR89ppRJGNt37XwHNcdzeeLY3twrMRu
-         9IUgWKbJltujMPKQb8lrJ0r09cpcoJMA4ggIBJTZtLjKEwLZsywHUTjG7+RJgAahVT
-         rj+HYwsicnRsP8OEFVjRcWM0TMLFmXGJK3tcm10JE0SzFMiYYxxRCmXuyY2eWFXgkK
-         2HH8kDLER68lQ==
-Content-Type: text/plain; charset="utf-8"
+        id S231698AbhGBU67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 16:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230377AbhGBU66 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 16:58:58 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2718CC061764
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 13:56:26 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id w15so10843337pgk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 13:56:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1AEvcX79wTwRSqbgBLrkHdiDfFShg8BM5FD9raF2EWY=;
+        b=IKuq5TByHH3DkX3ppDM5EBgRgnaAP3gRxzEx/9k8gJBKVC2i35+kz++q7w1A9sq8JK
+         JIe1c7iiGsUtCfUQBtZ1rmKNuKFnY9UJlS3Iyx66zNFBQg2cPztZkL+tPnuQW9g5stJO
+         LofVqXnk0H3/nl3BiqcovVZdRYE/OGJxIczEKYEz3eggxQATcNROQVhd8hOkxxgcj30F
+         NwBFRw1hXahDBiHBoCdhHV7F3jGZ6LH00hhgSFQqx9kmU0LCbpw6JJBPhehoZi9fixSo
+         klkKgmmuHew3Sm0ZZCO8V4IZ5H1kjDrOtBhoxyE1HwvAv2zHOVLJtCCjk9yo93bQCGns
+         BlAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1AEvcX79wTwRSqbgBLrkHdiDfFShg8BM5FD9raF2EWY=;
+        b=b9zP/elZ/ZBUMaQnco0fMKXEPtC3TZ+NKjKpBzz92QQPDxg9tLihjZQRjA86yK0yG0
+         wgxSS+roRaEQ6o35nPfB95+IvtgWNR23o3CroMQVjUZpYaY4rZ6TnOuM/QDCS87z8sGb
+         CVsCQkUGW9VNPRFQbSAo3sbF7ggYtIjiev6pxeoi443sH650ZHaQPoW0DirX5q60HGut
+         Ngb4dMfL8sz643HP1R9FrFOkS8utgF/L7b19H7c/ciVtGElVoYvcnmovQWywsFcJ7WlT
+         jgtkYFgJiqLqg6VpVw78qySJ9egQXjTf71bccv+zn4/WL1wEEPk9vIOiY4e+OQlQVxvQ
+         +5dw==
+X-Gm-Message-State: AOAM532TN+HUqJgN3bitReSo/6TgQ85oo3jcnjyuGXoUOJu/VB2BEwwD
+        O6zn4alAstnCaX7X6z3Fo/r4izPmHr8upg==
+X-Google-Smtp-Source: ABdhPJy//fWJHUgOfLQXNO5yR56HJiJp3eYtU+jnWyQxCWPl2c7tstUnyhlF0EcmYQlhyMVWmYGR+w==
+X-Received: by 2002:a63:6246:: with SMTP id w67mr1850437pgb.66.1625259385386;
+        Fri, 02 Jul 2021 13:56:25 -0700 (PDT)
+Received: from x1 ([2601:1c0:4701:ae70:f236:257f:88f9:445e])
+        by smtp.gmail.com with ESMTPSA id j16sm4908574pgh.69.2021.07.02.13.56.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 13:56:24 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 13:56:22 -0700
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Subject: Re: [RFC PATH 1/2] dt-bindings: gpio: add starfive,jh7100-gpio
+ bindings
+Message-ID: <20210702205622.GA1035183@x1>
+References: <20210701002037.912625-1-drew@beagleboard.org>
+ <20210701002037.912625-2-drew@beagleboard.org>
+ <CAMuHMdWLNy6_CnFEYDvHSEdMYH=T_Fy=DCjZCF9kPGWcD-B0Qw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <0000000000002de98c05c61dba72@google.com>
-References: <0000000000002de98c05c61dba72@google.com>
-Subject: Re: [syzbot] upstream build error (16)
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     gengdongjiu@huawei.com, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
-        syzbot <syzbot+567c9f52d94ad483cac5@syzkaller.appspotmail.com>,
-        syzkaller-bugs@googlegroups.com
-Date:   Fri, 02 Jul 2021 13:52:59 -0700
-Message-ID: <162525917933.3570193.3861451207856095054@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWLNy6_CnFEYDvHSEdMYH=T_Fy=DCjZCF9kPGWcD-B0Qw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting syzbot (2021-07-01 23:04:23)
-> Hello,
->=20
-> syzbot found the following issue on:
->=20
-> HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/=
-p..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D11c93764300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dcaee64f929f74=
-d56
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D567c9f52d94ad48=
-3cac5
-> userspace arch: arm
->=20
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+567c9f52d94ad483cac5@syzkaller.appspotmail.com
->=20
-> drivers/clk/hisilicon/clk-hi3559a.c:818: undefined reference to `hisi_res=
-et_exit'
-> drivers/clk/hisilicon/clk-hi3559a.c:800: undefined reference to `hisi_res=
-et_init'
-> arm-linux-gnueabi-ld: drivers/clk/hisilicon/clk-hi3559a.c:806: undefined =
-reference to `hisi_reset_exit'
->=20
+On Thu, Jul 01, 2021 at 10:34:56AM +0200, Geert Uytterhoeven wrote:
+> Hi Drew,
+> 
+> On Thu, Jul 1, 2021 at 2:22 AM Drew Fustini <drew@beagleboard.org> wrote:
+> > Add bindings for the GPIO controller in the StarFive JH7100 SoC [1].
+> >
+> > [1] https://github.com/starfive-tech/beaglev_doc
+> >
+> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> > Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
+> 
+> Thanks for your patch!
+> 
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/gpio/starfive,jh7100-gpio.yaml
+> > @@ -0,0 +1,60 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/gpio/starfive,jh7100-gpio.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: StarFive JH7100 GPIO controller
+> > +
+> > +maintainers:
+> > +  - Huan Feng <huan.feng@starfivetech.com>
+> > +  - Drew Fustini <drew@beagleboard.org>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: starfive,jh7100-gpio
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    description:
+> > +      Interrupt mapping, one per GPIO. Maximum 32 GPIOs.
+> > +    minItems: 1
+> > +    maxItems: 32
+> 
+> What about clocks and resets?
 
-I think we fixed it. It's staged to merge in the next couple days.
+Thank you for your feedback, Geert.
 
-#syz fix: clk: hisilicon: hi3559a: Drop __init markings everywhere
+GPIO controller uses clk_apb1_bus under dom0_sys.  I believe the device
+tree node would use something like this:
+
+  clocks = <&clkgen JH7100_CLK_APB1>;
+
+I see the sifive-gpio.yaml has:
+
+  clocks:
+    maxItems: 1
+
+Would that be the correct way to do it for the starfive gpio yaml?
+
+
+The reset for GPIO controller is presetn under dom_sys.  Do you think
+know you know an example that has reset in the YAML?  Is there some code
+that would actually make use of that information?
+
+> 
+> > +
+> > +  gpio-controller: true
+> > +
+> > +  "#gpio-cells":
+> > +    const: 2
+> > +
+> > +  interrupt-controller: true
+> > +
+> > +  "#interrupt-cells":
+> > +    const: 2
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +  - interrupt-controller
+> > +  - "#interrupt-cells"
+> > +  - "#gpio-cells"
+> > +  - gpio-controller
+
+Do you think I should add 'clocks' to 'required:'?
+
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +      gpio@11910000 {
+> > +        compatible = "starfive,jh7100-gpio";
+> > +        reg = <0x11910000 0x10000>;
+> > +        gpio-controller;
+> > +        #gpio-cells = <2>;
+> > +        interrupt-controller;
+> > +        #interrupt-cells = <2>;
+> > +        interrupts = <32>;
+
+I would add:
+
+  clocks = <&clkgen JH7100_CLK_APB1>;
+
+But I am not sure how reset would work?
+
+
+Thank you,
+Drew
