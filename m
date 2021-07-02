@@ -2,102 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385FC3BA014
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F603BA016
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 13:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhGBLxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 07:53:02 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9446 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231936AbhGBLxB (ORCPT
+        id S232033AbhGBLyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 07:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231936AbhGBLyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 07:53:01 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GGYGZ6gZlzZmnq;
-        Fri,  2 Jul 2021 19:47:18 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 2 Jul 2021 19:50:27 +0800
-Received: from [127.0.0.1] (10.174.179.0) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 2 Jul 2021
- 19:50:26 +0800
-Subject: Re: [PATCH -next 1/1] iomap: Fix a false positive of UBSAN in
- iomap_seek_data()
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     "Darrick J . Wong" <djwong@kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210702092109.2601-1-thunder.leizhen@huawei.com>
- <YN7dn08eeUXfixJ7@infradead.org>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <2ce02a7f-4b8b-5a86-13ee-097aff084f82@huawei.com>
-Date:   Fri, 2 Jul 2021 19:50:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Fri, 2 Jul 2021 07:54:09 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4EFC061764
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 04:51:36 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id a15so17569392lfr.6
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 04:51:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=itw4ZSFZPbB5jMtAcW94A5cIi28Zbh7A4MY1L25gGO0=;
+        b=skWOQ+tjB/RGXCRgCh/oX+pSqn801BpaewaioJ94g7BDJUoKJyzmNIJxfF6R7k4OVV
+         FkwksQciuoAEGOrZtrGFPyYLCXxLZXMJQsbTDphZ25i2JhWuw1YkS/xEcgUdDDbf9BEz
+         j7+1ZY18y7jKX0p1sfgvxy86H6YhI4LvjICQmgerkbW0Z3rzuCrlxHcOSbVsgrfKEMkm
+         twF/uAlLn/bNXF+depqyu2UMF8dk7nIYWit4IrjecjAjTjt4ERd3UudzQ1TbM8bnmPv4
+         qcu2ePgioE8YFrrKk17qWsiRJ2RNd9GS4629An1dwAydO/asFBTQAYsYJLt0DMpXfTAL
+         jsNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=itw4ZSFZPbB5jMtAcW94A5cIi28Zbh7A4MY1L25gGO0=;
+        b=fWhk2AHGG9wJrsGZ2LyieSj/HAuYlVShtynLVLWvR/Dr+PkpHWtoSfDx9zLcMt6Y0B
+         x4aK0zGURPv9x3PQdVbuDtTX9wAIoWib0n+qIco+m3klEIpsnGHVTmXYu76vwjF6UsSL
+         EGYTqKnutw5YDZyoLwk08Jy5am5puvRXZ/vo0LwXYBLcr8LXkKatopiFx5Mh1jVeD2P+
+         UNUrchChiXfeIY5v+H9Af+2k1XkuIiw5Rtx8AipXLtSxPx0FXGLHHFjURGuUxFvsW/yS
+         YF+ZDvvQwlvtwvJIRV4qKzc5GxCHSL9kbHTF9fzQxoLApx0K2zkCbNMPJVJX1pWmjnj/
+         5l4w==
+X-Gm-Message-State: AOAM531BI9DpxdfaQDPdKdgZPkmrXyyuR5mCXxLvEgj/Gpyy6pPW2suC
+        tiNtqsKF6JntBRbcWcWNwRuqaUIU1N6xkJrCC+TBOg==
+X-Google-Smtp-Source: ABdhPJzv91oZ5IBQE4TVWTsbh26N4tL41MOZOBkez4YnKnXUpCp87craAVl4JAJ/NuKAFHVkgR9wdySOTWnDC2Tli5g=
+X-Received: by 2002:a19:f51a:: with SMTP id j26mr3666613lfb.390.1625226694605;
+ Fri, 02 Jul 2021 04:51:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YN7dn08eeUXfixJ7@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.0]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+References: <20210414055217.543246-1-avagin@gmail.com> <20210414055217.543246-3-avagin@gmail.com>
+ <CAG48ez3UrzPE8rkucTgCu8ggcTEjx_h3Gj2FES1qM-uv2KD8bQ@mail.gmail.com> <YN6wlwFomEJ0LK1Y@gmail.com>
+In-Reply-To: <YN6wlwFomEJ0LK1Y@gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 2 Jul 2021 13:51:08 +0200
+Message-ID: <CAG48ez1=RPbsUos6yY1jMVU49U+GqSN8kFPosoFpKJZjFa4yvQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4] arch/x86: implement the process_vm_exec syscall
+To:     Andrei Vagin <avagin@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Thomas Gleixner <tglx@linutronix.de>, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 2, 2021 at 8:25 AM Andrei Vagin <avagin@gmail.com> wrote:
+> On Mon, Jun 28, 2021 at 06:13:29PM +0200, Jann Horn wrote:
+> > On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:
+> > > +static void swap_mm(struct mm_struct *prev_mm, struct mm_struct *target_mm)
+> > > +{
+> > > +       struct task_struct *tsk = current;
+> > > +       struct mm_struct *active_mm;
+> > > +
+> > > +       task_lock(tsk);
+> > > +       /* Hold off tlb flush IPIs while switching mm's */
+> > > +       local_irq_disable();
+> > > +
+> > > +       sync_mm_rss(prev_mm);
+> > > +
+> > > +       vmacache_flush(tsk);
+> > > +
+> > > +       active_mm = tsk->active_mm;
+> > > +       if (active_mm != target_mm) {
+> > > +               mmgrab(target_mm);
+> > > +               tsk->active_mm = target_mm;
+> > > +       }
+> > > +       tsk->mm = target_mm;
+> >
+> > I'm pretty sure you're not currently allowed to overwrite the ->mm
+> > pointer of a userspace thread. For example, zap_threads() assumes that
+> > all threads running under a process have the same ->mm. (And if you're
+> > fiddling with ->mm stuff, you should probably CC linux-mm@.)
+> >
+> > As far as I understand, only kthreads are allowed to do this (as
+> > implemented in kthread_use_mm()).
+>
+> kthread_use_mm() was renamed from use_mm in the v5.8 kernel. Before
+> that, it wasn't used for user processes in the kernel, but it was
+> exported for modules, and we used it without any visible problems. We
+> understood that there could be some issues like zap_threads and it was
+> one of reasons why we decided to introduce this system call.
+>
+> I understand that there are no places in the kernel where we change mm
+> of user threads back and forth, but are there any real concerns why we
+> should not do that? I agree that zap_threads should be fixed, but it
+> will the easy one.
 
-
-On 2021/7/2 17:34, Christoph Hellwig wrote:
-> We might as well just kill off the length variable while we're at it:
-
-Hi, Christoph:
-  Maybe you need to write a separate patch. Because the patch I sent is
-to modify function iomap_seek_data(). I didn't look at the other functions.
-In fact, both iomap_seek_data() and iomap_seek_hole() need to be modified.
-The iomap_seek_data() may not be intuitive to delete the variable 'length'.
-
-I'm now analyzing if the "if (length <= 0)" statement in iomap_seek_data()
-is redundant (the condition is never true).
-
-> 
-> 
-> diff --git a/fs/iomap/seek.c b/fs/iomap/seek.c
-> index dab1b02eba5b7f..942e354e9e13e6 100644
-> --- a/fs/iomap/seek.c
-> +++ b/fs/iomap/seek.c
-> @@ -35,23 +35,21 @@ loff_t
->  iomap_seek_hole(struct inode *inode, loff_t offset, const struct iomap_ops *ops)
->  {
->  	loff_t size = i_size_read(inode);
-> -	loff_t length = size - offset;
->  	loff_t ret;
->  
->  	/* Nothing to be found before or beyond the end of the file. */
->  	if (offset < 0 || offset >= size)
->  		return -ENXIO;
->  
-> -	while (length > 0) {
-> -		ret = iomap_apply(inode, offset, length, IOMAP_REPORT, ops,
-> -				  &offset, iomap_seek_hole_actor);
-> +	while (offset < size) {
-> +		ret = iomap_apply(inode, offset, size - offset, IOMAP_REPORT,
-> +				  ops, &offset, iomap_seek_hole_actor);
->  		if (ret < 0)
->  			return ret;
->  		if (ret == 0)
->  			break;
->  
->  		offset += ret;
-> -		length -= ret;
->  	}
->  
->  	return offset;
-> 
-> .
-> 
-
+My point is that if you break a preexisting assumption like this,
+you'll have to go through the kernel and search for places that rely
+on this assumption, and fix them up, which may potentially require
+thinking about what kinds of semantics would actually be appropriate
+there. Like the MCE killing logic (collect_procs_anon() and such). And
+current_is_single_threaded(), in which the current patch probably
+leads to logic security bugs. And __uprobe_perf_filter(). Before my
+refactoring of the ELF coredump logic in kernel 5.10 (commit
+b2767d97f5ff75 and the ones before it), you'd have also probably
+created memory corruption bugs in races between elf_core_dump() and
+syscalls like mmap()/munmap(). (Note that this is not necessarily an
+exhaustive list.)
