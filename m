@@ -2,214 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA313BA50D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 23:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708FC3BA511
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 23:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbhGBVdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 17:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230157AbhGBVdL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 17:33:11 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED760C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 14:30:38 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id y9so7670185qtx.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 14:30:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3Alfjt6eSPGGBgUe0dXvmpysArVuqw7ew4pBZYJ9k5U=;
-        b=sZhqfjx8Grl3ya0nowidFbbJ4yEg40g9ktN/qh94AvC3ZP7DHNIaxZEVHWCkCnqgoR
-         nNcd42vVZe0UbgtG1LXGjKhlh5KBwkKT6IzEvnzhqu94YU+jrEBqyMMW6X1tsuJQXuZq
-         nVeuefDz5ca+BYXo/7b/krpZotVBuDMvoRdW2QZ38sDMIF2Pa9Bg6urddMxOQDSLN2AA
-         kwC7kW4G5Qwml+B4vdEmq/vE3sffZwx6wHsRgrKQwORNhuzbKvkzcJT4W9lQP9BIaI3O
-         /9J5yY/mTHFcZ3SoZk1TOsKaueg76g6D8Opl/1VAka3IMGQndiXFoKkCun5g3EzsGA9+
-         /x3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3Alfjt6eSPGGBgUe0dXvmpysArVuqw7ew4pBZYJ9k5U=;
-        b=V4N93AemydeAN4UaXi6aHoHFyTt+LpCuRZLR80MAssgNWAtgN9LLaQaSvtYaON203G
-         IQsxZOlgfZwKMTAqPDQX09Sj/O8TcNyf3Y5wyJNC5rbP3SFxt6ywphOrRC3THXfEThzT
-         Qbvusn8VTIjOh6LNIBGg9KuxQnX4NspEoAhoUkvNeViVr0z7ZtNr8CNrPB++cWJp4c9l
-         6nodCy98jz4Y3eQ/xyTPyeBHP7bNBye4u+egW7VLU7i5+wBzIUQox01kfc6++RMAMDMI
-         O6mNxi48rGhJgh84UjRAgbJHdHn4ohEYAlxIXNFJjNokzr8uh/Fi8ZzKDqNIZ0AyNwWS
-         Zv9w==
-X-Gm-Message-State: AOAM5338PWAHCOMJ/fnxrYsWvJVZcuh6jgMAD2T6qBoa0LG2aRoXT4c8
-        p5Nn1UfvyLL1nqdSGoiL3sw=
-X-Google-Smtp-Source: ABdhPJwp8TdDPtpFOSgA+2+W+8HfMNHCO9svJ3YfG/jRr6mOJzjm9WnjKdGD36o04JpHQ8HIzhqLlQ==
-X-Received: by 2002:a05:622a:1349:: with SMTP id w9mr1757853qtk.73.1625261436125;
-        Fri, 02 Jul 2021 14:30:36 -0700 (PDT)
-Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id t12sm1886919qkg.40.2021.07.02.14.30.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 14:30:35 -0700 (PDT)
-Date:   Fri, 2 Jul 2021 14:30:34 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     gregkh@linuxfoundation.org, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, linux-kernel@vger.kernel.org,
-        dave.hansen@intel.com, linux@rasmusvillemoes.dk, rafael@kernel.org,
-        rdunlap@infradead.org, agordeev@linux.ibm.com, sbrivio@redhat.com,
-        jianpeng.ma@intel.com, valentin.schneider@arm.com,
-        peterz@infradead.org, bristot@redhat.com, guodong.xu@linaro.org,
-        tangchengchang@huawei.com, prime.zeng@hisilicon.com,
-        yangyicong@huawei.com, tim.c.chen@linux.intel.com,
-        linuxarm@huawei.com, Tian Tao <tiantao6@hisilicon.com>
-Subject: Re: [PATCH v5 1/3] cpumask: introduce cpumap_print_to_buf to support
- large bitmask and list
-Message-ID: <YN+FemDxyeG+lRTC@yury-ThinkPad>
-References: <20210702092559.8776-1-song.bao.hua@hisilicon.com>
- <20210702092559.8776-2-song.bao.hua@hisilicon.com>
+        id S229917AbhGBViA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 17:38:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229648AbhGBVh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 17:37:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B354613FB;
+        Fri,  2 Jul 2021 21:35:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625261726;
+        bh=z7+DYpKgnBsH4gmStBPaBdAdXn1cQOKI9dZV8b3NXNM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O5U27fRGk74UARzD45f9wKHvk3EX5YX9VineY9x+lwNVRwPZbVg77sihAIfNO7bNm
+         weYJvacJPidHc0BudFJcR7hZSbxiqcCQXtvEMs1z0wL1XwcHPkI2wPlapiJ5EcWwUP
+         baXFw8lRJ4jHmFrq38eMWFLA8KHdhmnxIzlcfaonjKEnN120lM9QSAPm7ayVP5k28l
+         pfgei4X66MYPcjbKZdkHFaFp9aPyC3aslYtleoTzjJn0/9fN6REv/Tg1WTk6koylwa
+         1j9lu3YAcCXGqY3OfWgAnnlGEIHjoxhMdYTfGxEpb3S3EUfjgPBeTt37NnpHBMs4gz
+         /1OGn4ZesjZqg==
+Received: by pali.im (Postfix)
+        id 35F7167D; Fri,  2 Jul 2021 23:35:24 +0200 (CEST)
+Date:   Fri, 2 Jul 2021 23:35:24 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 20/42] PCI: aardvark: Add support for more than 32 MSI
+ interrupts
+Message-ID: <20210702213524.mhpu24dxlh2fe7zm@pali>
+References: <20210506153153.30454-1-pali@kernel.org>
+ <20210506153153.30454-21-pali@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210702092559.8776-2-song.bao.hua@hisilicon.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210506153153.30454-21-pali@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 09:25:57PM +1200, Barry Song wrote:
-> From: Tian Tao <tiantao6@hisilicon.com>
+FYI this one patch does not work. Please drop it.
+
+On Thursday 06 May 2021 17:31:31 Pali Rohár wrote:
+> Aardvark HW can handle MSI interrupt with any 16-bit number. Received MSI
+> interrupt number is visible in PCIE_MSI_PAYLOAD_REG register after clearing
+> corresponding bit in PCIE_MSI_STATUS_REG register.
+
+After doing heavy load testing I figured out that PCIE_MSI_PAYLOAD_REG
+register is either buggy or unusable or there is missing some other
+configuration as it contains in most cases just content of the last
+received memory write operation to MSI doorbell register. And also even
+after clearing corresponding bit in PCIE_MSI_STATUS_REG register.
+
+Therefore we should avoid usage of PCIE_MSI_PAYLOAD_REG register
+completely. Which implies that it is needed to use only corresponding
+bit from PCIE_MSI_STATUS_REG register and so only 32 MSI interrupts are
+supported.
+
+I will address removal of PCIE_MSI_STATUS_REG register in other followup
+patch.
+
+> The first 32 interrupt numbers are currently stored in linear map in MSI
+> inner domain. Store the rest in dynamic radix tree for space efficiency.
 > 
-> The existing cpumap_print_to_pagebuf() is used by cpu topology and other
-> drivers to export hexadecimal bitmask and decimal list to userspace by
-> sysfs ABI.
+> Free interrupt numbers (available for MSI inner domain allocation) for the
+> first 32 interrupts are currently stored in a bitmap. For the rest,
+> introduce a linked list of allocated regions.
 > 
-> Right now, those drivers are using a normal attribute for this kind of
-> ABIs. A normal attribute typically has show entry as below:
+> In the most common scenario there is only one PCIe card connected on boards
+> with Armada 3720 SoC. Since in Multi-MSI mode the PCIe device can use at
+> most 32 interrupts, all these interrupts are allocated in the linear map of
+> MSI inner domain and marked as used in the bitmap.
 > 
-> static ssize_t example_dev_show(struct device *dev,
->                 struct device_attribute *attr, char *buf)
-> {
-> 	...
->         return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
-> }
-> show entry of attribute has no offset and count parameters and this
-> means the file is limited to one page only.
+> For less common scenarios with PCIe devices with multiple functions or with
+> a PCIe Bridge with packet switches with more connected PCIe devices more
+> than 32 interrupts are requested. In this case, store each interrupt range
+> from each interrupt request into the linked list as one node. In the worst
+> case every PCIe function will occupy one node in this linked list.
 > 
-> cpumap_print_to_pagebuf() API works terribly well for this kind of
-> normal attribute with buf parameter and without offset, count:
+> This change allows to use all 32 Multi-MSI interrupts on every connected
+> PCIe card on the Turris Mox router with Mox G module.
 > 
-> static inline ssize_t
-> cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
-> {
->         return bitmap_print_to_pagebuf(list, buf, cpumask_bits(mask),
->                                       nr_cpu_ids);
-> }
-> 
-> The problem is once we have many cpus, we have a chance to make bitmask
-> or list more than one page. Especially for list, it could be as complex
-> as 0,3,5,7,9,...... We have no simple way to know it exact size.
-> 
-> It turns out bin_attribute is a way to break this limit. bin_attribute
-> has show entry as below:
-> static ssize_t
-> example_bin_attribute_show(struct file *filp, struct kobject *kobj,
->              struct bin_attribute *attr, char *buf,
->              loff_t offset, size_t count)
-> {
->         ...
-> }
-> 
-> With the new offset and count parameters, this makes sysfs ABI be able
-> to support file size more than one page. For example, offset could be
-> >= 4096.
-> 
-> This patch introduces cpumap_print_to_buf() so that those drivers can
-> move to bin_attribute to support large bitmask and list. In result,
-> we have to pass the corresponding parameters from bin_attribute to this
-> new API.
-> 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Stefano Brivio <sbrivio@redhat.com>
-> Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-> Cc: "Ma, Jianpeng" <jianpeng.ma@intel.com>
-> Cc: Yury Norov <yury.norov@gmail.com>
-> Cc: Valentin Schneider <valentin.schneider@arm.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> Reviewed-by: Marek Behún <kabel@kernel.org>
 > ---
->  include/linux/cpumask.h | 19 +++++++++++++++++++
->  lib/cpumask.c           | 18 ++++++++++++++++++
->  2 files changed, 37 insertions(+)
+>  drivers/pci/controller/pci-aardvark.c | 71 ++++++++++++++++++++++++---
+>  1 file changed, 64 insertions(+), 7 deletions(-)
 > 
-> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> index bfc4690de4f4..24f410a2e793 100644
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -983,6 +983,25 @@ cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
->  				      nr_cpu_ids);
+> diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> index 199015215779..d74e84b0e689 100644
+> --- a/drivers/pci/controller/pci-aardvark.c
+> +++ b/drivers/pci/controller/pci-aardvark.c
+> @@ -178,11 +178,18 @@
+>  #define RETRAIN_WAIT_MAX_RETRIES	10
+>  #define RETRAIN_WAIT_USLEEP_US		2000
+>  
+> -#define MSI_IRQ_NUM			32
+> +#define MSI_IRQ_LINEAR_COUNT		32
+> +#define MSI_IRQ_TOTAL_COUNT		65536
+>  
+>  #define CFG_RD_UR_VAL			0xffffffff
+>  #define CFG_RD_CRS_VAL			0xffff0001
+>  
+> +struct advk_msi_range {
+> +	struct list_head list;
+> +	u16 first;
+> +	u16 count;
+> +};
+> +
+>  struct advk_pcie {
+>  	struct platform_device *pdev;
+>  	void __iomem *base;
+> @@ -193,7 +200,8 @@ struct advk_pcie {
+>  	struct irq_chip msi_bottom_irq_chip;
+>  	struct irq_chip msi_irq_chip;
+>  	struct msi_domain_info msi_domain_info;
+> -	DECLARE_BITMAP(msi_used, MSI_IRQ_NUM);
+> +	DECLARE_BITMAP(msi_used_linear, MSI_IRQ_LINEAR_COUNT);
+> +	struct list_head msi_used_radix;
+>  	struct mutex msi_used_lock;
+>  	int link_gen;
+>  	struct pci_bridge_emul bridge;
+> @@ -885,12 +893,44 @@ static int advk_msi_irq_domain_alloc(struct irq_domain *domain,
+>  				     unsigned int nr_irqs, void *args)
+>  {
+>  	struct advk_pcie *pcie = domain->host_data;
+> +	struct advk_msi_range *msi_range, *msi_range_prev, *msi_range_next;
+> +	unsigned int first, count, last;
+>  	int hwirq, i;
+>  
+>  	mutex_lock(&pcie->msi_used_lock);
+> -	hwirq = bitmap_find_free_region(pcie->msi_used, MSI_IRQ_NUM,
+> +
+> +	/* First few used interrupt numbers are marked in bitmap (the most common) */
+> +	hwirq = bitmap_find_free_region(pcie->msi_used_linear, MSI_IRQ_LINEAR_COUNT,
+>  					order_base_2(nr_irqs));
+> +
+> +	/* And rest used interrupt numbers are stored in linked list as ranges */
+> +	if (hwirq < 0) {
+> +		count = 1 << order_base_2(nr_irqs);
+> +		msi_range_prev = list_entry(&pcie->msi_used_radix, typeof(*msi_range), list);
+> +		do {
+> +			msi_range_next = list_next_entry(msi_range_prev, list);
+> +			last = list_entry_is_head(msi_range_next, &pcie->msi_used_radix, list)
+> +				? MSI_IRQ_TOTAL_COUNT : msi_range_next->first;
+> +			first = list_entry_is_head(msi_range_prev, &pcie->msi_used_radix, list)
+> +				? MSI_IRQ_LINEAR_COUNT : round_up(msi_range_prev->first +
+> +								  msi_range_prev->count, count);
+> +			if (first + count > last) {
+> +				msi_range_prev = msi_range_next;
+> +				continue;
+> +			}
+> +			msi_range = kzalloc(sizeof(*msi_range), GFP_KERNEL);
+> +			if (msi_range) {
+> +				hwirq = first;
+> +				msi_range->first = first;
+> +				msi_range->count = count;
+> +				list_add(&msi_range->list, &msi_range_prev->list);
+> +			}
+> +			break;
+> +		} while (!list_entry_is_head(msi_range_next, &pcie->msi_used_radix, list));
+> +	}
+> +
+>  	mutex_unlock(&pcie->msi_used_lock);
+> +
+>  	if (hwirq < 0)
+>  		return -ENOSPC;
+>  
+> @@ -908,9 +948,20 @@ static void advk_msi_irq_domain_free(struct irq_domain *domain,
+>  {
+>  	struct irq_data *d = irq_domain_get_irq_data(domain, virq);
+>  	struct advk_pcie *pcie = domain->host_data;
+> +	struct advk_msi_range *msi_range;
+>  
+>  	mutex_lock(&pcie->msi_used_lock);
+> -	bitmap_release_region(pcie->msi_used, d->hwirq, order_base_2(nr_irqs));
+> +	if (d->hwirq < MSI_IRQ_LINEAR_COUNT) {
+> +		bitmap_release_region(pcie->msi_used_linear, d->hwirq, order_base_2(nr_irqs));
+> +	} else {
+> +		list_for_each_entry(msi_range, &pcie->msi_used_radix, list) {
+> +			if (msi_range->first != d->hwirq)
+> +				continue;
+> +			list_del(&msi_range->list);
+> +			kfree(msi_range);
+> +			break;
+> +		}
+> +	}
+>  	mutex_unlock(&pcie->msi_used_lock);
 >  }
 >  
-> +/**
-> + * cpumap_print_to_buf  - copies the cpumask into the buffer either
-> + *      as comma-separated list of cpus or hex values of cpumask;
-> + *      Typically used by bin_attribute to export cpumask bitmask and
-> + *      list ABI.
-> + * @list: indicates whether the cpumap must be list
-> + *      true:  print in decimal list format
-> + *      fasle: print in hexadecimal bitmask format
-> + * @mask: the cpumask to copy
-> + * @buf: the buffer to copy into
-> + * @off: in the string from which we are copying, We copy to @buf
-> + * @count: the maximum number of bytes to print
-> + *
-> + * Returns the length of how many bytes have been copied.
-> + */
-> +extern ssize_t
-> +cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
-> +		    loff_t off, size_t count);
-> +
->  #if NR_CPUS <= BITS_PER_LONG
->  #define CPU_MASK_ALL							\
->  (cpumask_t) { {								\
-> diff --git a/lib/cpumask.c b/lib/cpumask.c
-> index c3c76b833384..40421a6d31bc 100644
-> --- a/lib/cpumask.c
-> +++ b/lib/cpumask.c
-> @@ -279,3 +279,21 @@ int cpumask_any_distribute(const struct cpumask *srcp)
->  	return next;
->  }
->  EXPORT_SYMBOL(cpumask_any_distribute);
-> +
-> +ssize_t cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
-> +		    loff_t off, size_t count)
-> +{
-> +	const char *fmt = list ? "%*pbl\n" : "%*pb\n";
-> +	ssize_t size;
-> +	void *data;
-> +
-> +	data = kasprintf(GFP_KERNEL, fmt, nr_cpu_ids, cpumask_bits(mask));
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	size = memory_read_from_buffer(buf, count, &off, data, strlen(data) + 1);
-> +	kfree(data);
-
-Barry,
-
-It looks like my comments for previous iteration were ignored. I don't
-like the approach where you allocate potentially big amount of kernel
-memory just to free it almost immediately. Nor in lib/bitmap, neither
-in lib/cpumask.
-
-For next iterations, please move this function back to lib/bitmap
-because there's no specific here for cpumasks.
-
-Thaks,
-Yury
-
-> +	return size;
-> +}
-> +EXPORT_SYMBOL(cpumap_print_to_buf);
+> @@ -967,6 +1018,7 @@ static int advk_pcie_init_msi_irq_domain(struct advk_pcie *pcie)
+>  	struct msi_domain_info *msi_di;
+>  
+>  	mutex_init(&pcie->msi_used_lock);
+> +	INIT_LIST_HEAD(&pcie->msi_used_radix);
+>  
+>  	bottom_ic = &pcie->msi_bottom_irq_chip;
+>  
+> @@ -982,9 +1034,14 @@ static int advk_pcie_init_msi_irq_domain(struct advk_pcie *pcie)
+>  		MSI_FLAG_MULTI_PCI_MSI;
+>  	msi_di->chip = msi_ic;
+>  
+> +	/*
+> +	 * Aardvark HW can handle MSI interrupt with any 16bit number.
+> +	 * For optimization first few interrupts are allocated in linear map
+> +	 * (which is common scenario) and rest are allocated in radix tree.
+> +	 */
+>  	pcie->msi_inner_domain =
+> -		irq_domain_add_linear(NULL, MSI_IRQ_NUM,
+> -				      &advk_msi_domain_ops, pcie);
+> +		__irq_domain_add(NULL, MSI_IRQ_LINEAR_COUNT, MSI_IRQ_TOTAL_COUNT, 0,
+> +				 &advk_msi_domain_ops, pcie);
+>  	if (!pcie->msi_inner_domain)
+>  		return -ENOMEM;
+>  
+> @@ -1052,7 +1109,7 @@ static void advk_pcie_handle_msi(struct advk_pcie *pcie)
+>  	msi_val = advk_readl(pcie, PCIE_MSI_STATUS_REG);
+>  	msi_status = msi_val & ((~msi_mask) & PCIE_MSI_ALL_MASK);
+>  
+> -	for (msi_idx = 0; msi_idx < MSI_IRQ_NUM; msi_idx++) {
+> +	for (msi_idx = 0; msi_idx < BITS_PER_TYPE(msi_status); msi_idx++) {
+>  		if (!(BIT(msi_idx) & msi_status))
+>  			continue;
+>  
 > -- 
-> 2.25.1
+> 2.20.1
+> 
