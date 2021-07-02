@@ -2,157 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B2E3B9D93
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1073B9D96
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhGBIgL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 2 Jul 2021 04:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbhGBIgI (ORCPT
+        id S230442AbhGBIgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 04:36:41 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:34474 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230166AbhGBIgj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 04:36:08 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E7A0C061764
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 01:33:36 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lzEbx-0002MD-KP; Fri, 02 Jul 2021 10:33:21 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lzEbt-0002gx-GA; Fri, 02 Jul 2021 10:33:17 +0200
-Message-ID: <bf4f26cdca7174ba687e29a581a5276511112fe7.camel@pengutronix.de>
-Subject: Re: [PATCH v19 3/7] soc: mediatek: SVS: introduce MTK SVS engine
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Roger Lu <roger.lu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Fan Chen <fan.chen@mediatek.com>,
-        HenryC Chen <HenryC.Chen@mediatek.com>,
-        YT Lee <yt.lee@mediatek.com>,
-        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
-        Charles Yang <Charles.Yang@mediatek.com>,
-        Angus Lin <Angus.Lin@mediatek.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nishanth Menon <nm@ti.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Guenter Roeck <linux@roeck-us.net>
-Date:   Fri, 02 Jul 2021 10:33:17 +0200
-In-Reply-To: <20210702031214.21597-4-roger.lu@mediatek.com>
-References: <20210702031214.21597-1-roger.lu@mediatek.com>
-         <20210702031214.21597-4-roger.lu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Fri, 2 Jul 2021 04:36:39 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1628HB0Y023539;
+        Fri, 2 Jul 2021 08:34:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=p1fdxON4YZiX04AnQjMpcG7PIg89DU/zakNCxmA8d5U=;
+ b=xrYdjuOW3hKCFKgXnQz0nfUx8p6t1v26rX+dJgCSUuVKfel1pzEJY8lELYS1JZ7KHJqN
+ mArOc3sFZ3QfC0jxn+AgjR5R6wpTXFu5vqCWW323s5TXuCOs8wqcDbbCD2TMBn7tNktr
+ ynr+Ig5hvBTUoYIgTsd//lgb4UAUGpqnAAnpsD0O6u7Zk4r496Tt5EJS93R/Lrfzb3Ff
+ IFpLjy1QJM6PRIrlFfcDQmUUCZCh9fy8/tpbCr1ann6oALkFD69Vu9PTRTC2VYtKhb7e
+ 2D9mm120UZPlPNqNngPUM7E0N+Bcuu27FUYX73ZNQe5nqz9ViGvXr2dM4WbiOM3UO5Da Rg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39gguq4yf1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Jul 2021 08:34:02 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1628GCJv016939;
+        Fri, 2 Jul 2021 08:34:01 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 39ee12t8ye-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Jul 2021 08:34:01 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1628Xxou063457;
+        Fri, 2 Jul 2021 08:34:00 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 39ee12t8x7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Jul 2021 08:33:59 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1628Xvkg011095;
+        Fri, 2 Jul 2021 08:33:57 GMT
+Received: from kadam (/102.222.70.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 02 Jul 2021 08:33:56 +0000
+Date:   Fri, 2 Jul 2021 11:33:47 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Jeroen de Borst <jeroendb@google.com>, csully@google.com,
+        sagis@google.com, jonolson@google.com, davem@davemloft.net,
+        kuba@kernel.org, awogbemila@google.com, willemb@google.com,
+        yangchun@google.com, bcf@google.com, kuozhao@google.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 0/3] gve: Fixes and clean-up
+Message-ID: <20210702083347.GU2040@kadam>
+References: <cover.1625118581.git.christophe.jaillet@wanadoo.fr>
+ <CAErkTsQLP9_y-Am3MN-O4vZXe3cTKHfYMwkFk-9YWWPLAQM1cw@mail.gmail.com>
+ <29632746-3234-1991-040d-3c0dfb3b3acb@wanadoo.fr>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29632746-3234-1991-040d-3c0dfb3b3acb@wanadoo.fr>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: GV9X0QQKB7necXf1VDT28w9qquFJCvrv
+X-Proofpoint-GUID: GV9X0QQKB7necXf1VDT28w9qquFJCvrv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roger,
+On Thu, Jul 01, 2021 at 07:42:48PM +0200, Christophe JAILLET wrote:
+> > one for net (with the first 2
+> > patches) and one for net-next (with the cleanup one)?
+> 
+> I've never worked with net and net-next directly.
+> If just adding net and net-next after [PATCH] in the subject of the mail,
+> yes, I can do it if it helps.
 
-On Fri, 2021-07-02 at 11:12 +0800, Roger Lu wrote:
-[...]
-> diff --git a/drivers/soc/mediatek/mtk-svs.c b/drivers/soc/mediatek/mtk-svs.c
-> new file mode 100644
-> index 000000000000..c2fcbc204b1d
-> --- /dev/null
-> +++ b/drivers/soc/mediatek/mtk-svs.c
-> @@ -0,0 +1,1724 @@
-[...]
-> +static int svs_suspend(struct device *dev)
-> +{
-> +	struct svs_platform *svsp = dev_get_drvdata(dev);
-> +	struct svs_bank *svsb;
-> +	unsigned long flags;
-> +	int ret;
-> +	u32 idx;
-> +
-> +	for (idx = 0; idx < svsp->bank_num; idx++) {
-> +		svsb = &svsp->banks[idx];
-> +
-> +		/* Wait if svs_isr() is still in process. */
-> +		spin_lock_irqsave(&mtk_svs_lock, flags);
-> +		svsp->pbank = svsb;
-> +		svs_switch_bank(svsp);
-> +		svs_writel(svsp, SVSB_EN_OFF, SVSEN);
-> +		svs_writel(svsp, SVSB_INTSTS_CLEAN, INTSTS);
-> +		spin_unlock_irqrestore(&mtk_svs_lock, flags);
-> +
-> +		svsb->suspended = true;
-> +		if (svsb->phase != SVSB_PHASE_INIT01) {
-> +			svsb->phase = SVSB_PHASE_ERROR;
-> +			svs_adjust_pm_opp_volts(svsb, true);
-> +		}
-> +	}
-> +
-> +	if (svsp->rst) {
+I have a separate tree that I use for sending net patches.  I generally
+write my patches against linux-next and then postpone sending them until
+the next day.
 
-This is not necessary, reset_control_assert() checks for (rstc == NULL)
-itself.
+Then I open my patch in mutt.
+cd tmp_tree/
+../switch_to_net.sh
+cat /var/tmp/mutt-speke-1000-511162-9994856746594827871 | patch -p1 --dry-run
+If that applies then I "net" to the subject.  Otherwise I do a
+`../switch_to_net-next.sh` verify it applies and send that.
 
-> +		ret = reset_control_assert(svsp->rst);
-> +		if (ret) {
-> +			dev_err(svsp->dev, "cannot assert reset %d\n", ret);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	clk_disable_unprepare(svsp->main_clk);
-> +
-> +	return 0;
-> +}
-> +
-> +static int svs_resume(struct device *dev)
-> +{
-> +	struct svs_platform *svsp = dev_get_drvdata(dev);
-> +	struct svs_bank *svsb;
-> +	int ret;
-> +	u32 idx;
-> +
-> +	ret = clk_prepare_enable(svsp->main_clk);
-> +	if (ret) {
-> +		dev_err(svsp->dev, "cannot enable main_clk, disable svs\n");
-> +		return ret;
-> +	}
-> +
-> +	if (svsp->rst) {
+Once in a while I will have to modify my patches to apply cleanly
+against the net tree.
 
-Same as above, reset_control_deassert(NULL) will just return 0.
+It's a pain in the butt and I get it wrong disappointingly often.  I
+only do it for networking.  Not for linux-wireless.  There is another
+tree where they complain if you don't add a tree to their patches but I
+forget what it is...  (I don't use the process for them, only for
+networking).
 
-> +		ret = reset_control_deassert(svsp->rst);
-> +		if (ret) {
-> +			dev_err(svsp->dev, "cannot deassert reset %d\n", ret);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	for (idx = 0; idx < svsp->bank_num; idx++) {
-> +		svsb = &svsp->banks[idx];
-> +		svsb->suspended = false;
-> +	}
-> +
-> +	ret = svs_init02(svsp);
-> +	if (ret)
-> +		return ret;
-> +
-> +	svs_mon_mode(svsp);
-> +
-> +	return 0;
-> +}
+regards,
+dan carpenter
 
-regards
-Philipp
