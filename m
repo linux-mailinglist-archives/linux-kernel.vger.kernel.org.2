@@ -2,119 +2,522 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98343B9C3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 08:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63273B9C44
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 08:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbhGBGl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 02:41:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229542AbhGBGl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 02:41:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E08A613FB;
-        Fri,  2 Jul 2021 06:38:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625207936;
-        bh=JyTuKCLD1I+mEBP/UUmCbI9VqTb4ZjTS2241I8Zw7m8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cEZKplZtL8srXuLJGv/iX8oV+tZDjo1cheBCKnXUX++bzqX7mZnYYaWm8Jm8hvWx5
-         L54VLWSk/tMt/F29Pv77LKoK+9GGTpBqW583/Gks9PiZXUhuQN9j6zAZFwz8cAllFC
-         zGzuIqJqVKUcAMstY6P8eT3alh2rj8DEdquTIjRcbg+UYA3QeYpG6D68J4FhBIS2E6
-         5oRneLbF1t9VIC5b+FSnEFqCnEcHVED638x+FJmWdDN9cOgJJGeAtiyxJpNWBpZTzy
-         uEzM+IYnsMcREGx8DZ47EzTMJEMt1NFY0Z5c2qSS//pkUguHD2SVUZTnES+Uf0vXjo
-         JD2PpjKD5QdEQ==
-Date:   Fri, 2 Jul 2021 09:38:53 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org,
-        andrianov@ispras.ru
-Subject: Re: [PATCH] char: tpm: vtpm_proxy: Fix race in init
-Message-ID: <20210702063853.x27z6yzsdxp7u4y6@kernel.org>
-References: <20210623132226.140341-1-saubhik.mukherjee@gmail.com>
- <20210629172700.yxqnedbayumo5f24@kernel.org>
- <20210629210524.hze6yb23pps3flnv@kernel.org>
- <2b7d8d44-791e-284a-a700-5465fbc2c100@gmail.com>
+        id S230020AbhGBGpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 02:45:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44537 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229542AbhGBGpt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 02:45:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625208197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NIZKTtb1jwEZjcV4ldpwwLBX6Xr32O8eSrh/qCluvFg=;
+        b=ig5W9LWh6HCGT4ef8ceMxCOOQnxDeBzObzExTWXwdmcTSdpEbniHapzJExzjz/TKrzDc7p
+        83sNNdhz5Cx4AV7A7PhXL8TEQ18EG52NLfw4KfPCf1qGQdg+4+smqfifPCijV9VE5pCCvq
+        VOFfMW63OriDy7nKRcdwby5Dq4SlEBU=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-412-oy8OEzMlOxyETk_fKagmyw-1; Fri, 02 Jul 2021 02:43:13 -0400
+X-MC-Unique: oy8OEzMlOxyETk_fKagmyw-1
+Received: by mail-pl1-f197.google.com with SMTP id t10-20020a170902b20ab029011b9ceafaafso3966245plr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 23:43:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=NIZKTtb1jwEZjcV4ldpwwLBX6Xr32O8eSrh/qCluvFg=;
+        b=lvLsxtMeoWvecKmkWqoRiPftpQ9raxtpufLtFhCfGgKrZV0pItHfdaM4kaFbRiWksg
+         VYecx9l4mgdbtqed3o5Sf5GBvrvBejwrPz+7PyyIlK/4iDph86nDtkVGx4yjdffd2ZfK
+         GNAdeNi2dmeeHsUg81dRsfVNTPatu8YJIeeOtvEzheVNUPqiLnjZ32d+e9yyGl98VKfW
+         QdUCWvrB3ULxX5NO3NEILUH5ltmSAB6jD7RL5W6pl4IfZGjfmjW+8NPYe4UL3+Z06Wcq
+         UzSY01kJRL77S0Hap6dKIIEWMqTc7xRr9DEO00xDqEM9zKJ8N8hR4ATSLI3zbZkHUDpk
+         wOpg==
+X-Gm-Message-State: AOAM531Op0nukLfT+CxnnEclne7PUqOfZ7JViXmzDNVeJhlVc3fQMIqb
+        KxRO1T7Mbf/t7d+yq9RLCoJeXn5L6HvXVQGHuWRVEXDB55wEbnbvxtHgbN8uAI3vaIIDsr+ihTs
+        MXi+fVgMGlU6CyS2qYGq1tRfd
+X-Received: by 2002:a17:90a:bf03:: with SMTP id c3mr13829501pjs.47.1625208192481;
+        Thu, 01 Jul 2021 23:43:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy8RBqMWjGesXmA7QADFcA80JK/C9xfE+4ue9p0+hy9GwBlzNiE8EMod0Nsdpmp7E2oSK8xqA==
+X-Received: by 2002:a17:90a:bf03:: with SMTP id c3mr13829482pjs.47.1625208192174;
+        Thu, 01 Jul 2021 23:43:12 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id j15sm2167117pfh.194.2021.07.01.23.43.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Jul 2021 23:43:11 -0700 (PDT)
+Subject: Re: [PATCH net-next v3 1/3] selftests/ptr_ring: add benchmark
+ application for ptr_ring
+To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        kuba@kernel.org, mst@redhat.com
+Cc:     brouer@redhat.com, paulmck@kernel.org, peterz@infradead.org,
+        will@kernel.org, shuah@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linuxarm@openeuler.org
+References: <1625142402-64945-1-git-send-email-linyunsheng@huawei.com>
+ <1625142402-64945-2-git-send-email-linyunsheng@huawei.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <e1ec4577-a48f-ff56-b766-1445c2501b9f@redhat.com>
+Date:   Fri, 2 Jul 2021 14:43:02 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b7d8d44-791e-284a-a700-5465fbc2c100@gmail.com>
+In-Reply-To: <1625142402-64945-2-git-send-email-linyunsheng@huawei.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 12:54:30PM +0530, Saubhik Mukherjee wrote:
-> On 6/30/21 2:35 AM, Jarkko Sakkinen wrote:
-> > On Tue, Jun 29, 2021 at 08:27:00PM +0300, Jarkko Sakkinen wrote:
-> > > On Wed, Jun 23, 2021 at 06:52:26PM +0530, Saubhik Mukherjee wrote:
-> > > > vtpm_module_init calls vtpmx_init which calls misc_register. The file
-> > > > operations callbacks are registered. So, vtpmx_fops_ioctl can execute in
-> > > > parallel with rest of vtpm_module_init. vtpmx_fops_ioctl calls
-> > > > vtpmx_ioc_new_dev, which calls vtpm_proxy_create_device, which calls
-> > > > vtpm_proxy_work_start, which could read uninitialized workqueue.
-> > > > 
-> > > > To avoid this, create workqueue before vtpmx init.
-> > > > 
-> > > > Found by Linux Driver Verification project (linuxtesting.org).
-> > > > 
-> > > > Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-> > > > ---
-> > > >   drivers/char/tpm/tpm_vtpm_proxy.c | 19 +++++++++----------
-> > > >   1 file changed, 9 insertions(+), 10 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
-> > > > index 91c772e38bb5..225dfa026a8f 100644
-> > > > --- a/drivers/char/tpm/tpm_vtpm_proxy.c
-> > > > +++ b/drivers/char/tpm/tpm_vtpm_proxy.c
-> > > > @@ -697,23 +697,22 @@ static int __init vtpm_module_init(void)
-> > > >   {
-> > > >   	int rc;
-> > > > -	rc = vtpmx_init();
-> > > > -	if (rc) {
-> > > > -		pr_err("couldn't create vtpmx device\n");
-> > > > -		return rc;
-> > > > -	}
-> > > > -
-> > > >   	workqueue = create_workqueue("tpm-vtpm");
-> > > >   	if (!workqueue) {
-> > > >   		pr_err("couldn't create workqueue\n");
-> > > > -		rc = -ENOMEM;
-> > > > -		goto err_vtpmx_cleanup;
-> > > > +		return -ENOMEM;
-> > > > +	}
-> > > > +
-> > > > +	rc = vtpmx_init();
-> > > > +	if (rc) {
-> > > > +		pr_err("couldn't create vtpmx device\n");
-> > > > +		goto err_destroy_workqueue;
-> > > >   	}
-> > > >   	return 0;
-> > > > -err_vtpmx_cleanup:
-> > > > -	vtpmx_cleanup();
-> > > > +err_destroy_workqueue:
-> > > > +	destroy_workqueue(workqueue);
-> > > >   	return rc;
-> > > >   }
-> > > > -- 
-> > > > 2.30.2
-> > > > 
-> > > > 
-> > > 
-> > > Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > 
-> > Taking reviewed-by back.
-> > 
-> > You're lacking fixes tag. Please re-send with one.
-> > 
-> > /Jarkko
-> > 
-> 
-> Thank you for noticing. I sent the patch containing the Fixes tag in reply
-> to your last message. (https://lkml.org/lkml/2021/6/30/104)
 
-Please do not do that. Instead, version your patches (git format-patch -vX)
-and send them as separate threads.
+ÔÚ 2021/7/1 ÏÂÎç8:26, Yunsheng Lin Ð´µÀ:
+> Currently ptr_ring selftest is embedded within the virtio
+> selftest, which involves some specific virtio operation,
+> such as notifying and kicking.
+>
+> As ptr_ring has been used by various subsystems, it deserves
+> it's owner selftest in order to benchmark different usecase
+> of ptr_ring, such as page pool and pfifo_fast qdisc.
+>
+> So add a simple application to benchmark ptr_ring performance.
+> Currently two test mode is supported:
+> Mode 0: Both producing and consuming is done in a single thread,
+>          it is called simple test mode in the test app.
+> Mode 1: Producing and consuming is done in different thread
+>          concurrently, also known as SPSC(single-producer/
+>          single-consumer) test.
+>
+> The multi-producer/single-consumer test for pfifo_fast case is
+> not added yet, which can be added if using CAS atomic operation
+> to enable lockless multi-producer is proved to be better than
+> using r->producer_lock.
+>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
+> V3: Remove timestamp sampling, use standard C library as much
+>      as possible.
+> ---
+>   MAINTAINERS                                      |   5 +
+>   tools/testing/selftests/ptr_ring/Makefile        |   6 +
+>   tools/testing/selftests/ptr_ring/ptr_ring_test.c | 224 +++++++++++++++++++++++
+>   tools/testing/selftests/ptr_ring/ptr_ring_test.h | 130 +++++++++++++
+>   4 files changed, 365 insertions(+)
+>   create mode 100644 tools/testing/selftests/ptr_ring/Makefile
+>   create mode 100644 tools/testing/selftests/ptr_ring/ptr_ring_test.c
+>   create mode 100644 tools/testing/selftests/ptr_ring/ptr_ring_test.h
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index cc375fd..1227022 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14847,6 +14847,11 @@ F:	drivers/net/phy/dp83640*
+>   F:	drivers/ptp/*
+>   F:	include/linux/ptp_cl*
+>   
+> +PTR RING BENCHMARK
+> +M:	Yunsheng Lin <linyunsheng@huawei.com>
+> +L:	netdev@vger.kernel.org
+> +F:	tools/testing/selftests/ptr_ring/
+> +
+>   PTRACE SUPPORT
+>   M:	Oleg Nesterov <oleg@redhat.com>
+>   S:	Maintained
+> diff --git a/tools/testing/selftests/ptr_ring/Makefile b/tools/testing/selftests/ptr_ring/Makefile
+> new file mode 100644
+> index 0000000..346dea9
+> --- /dev/null
+> +++ b/tools/testing/selftests/ptr_ring/Makefile
+> @@ -0,0 +1,6 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +LDLIBS = -lpthread
+> +
+> +TEST_GEN_PROGS := ptr_ring_test
+> +
+> +include ../lib.mk
+> diff --git a/tools/testing/selftests/ptr_ring/ptr_ring_test.c b/tools/testing/selftests/ptr_ring/ptr_ring_test.c
+> new file mode 100644
+> index 0000000..4a5312f
+> --- /dev/null
+> +++ b/tools/testing/selftests/ptr_ring/ptr_ring_test.c
+> @@ -0,0 +1,224 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2021 HiSilicon Limited.
+> + */
+> +
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <string.h>
+> +#include <errno.h>
+> +#include <malloc.h>
+> +#include <stdbool.h>
+> +
+> +#include "ptr_ring_test.h"
+> +#include "../../../../include/linux/ptr_ring.h"
+> +
+> +#define MIN_RING_SIZE	2
+> +#define MAX_RING_SIZE	10000000
+> +
+> +static struct ptr_ring ring ____cacheline_aligned_in_smp;
+> +
+> +struct worker_info {
+> +	pthread_t tid;
+> +	int test_count;
+> +	bool error;
+> +};
+> +
+> +static void *produce_worker(void *arg)
+> +{
+> +	struct worker_info *info = arg;
+> +	unsigned long i = 0;
+> +	int ret;
+> +
+> +	while (++i <= info->test_count) {
+> +		while (__ptr_ring_full(&ring))
+> +			cpu_relax();
+> +
+> +		ret = __ptr_ring_produce(&ring, (void *)i);
+> +		if (ret) {
+> +			fprintf(stderr, "produce failed: %d\n", ret);
+> +			info->error = true;
+> +			return NULL;
+> +		}
+> +	}
+> +
+> +	info->error = false;
+> +
+> +	return NULL;
+> +}
+> +
+> +static void *consume_worker(void *arg)
+> +{
+> +	struct worker_info *info = arg;
+> +	unsigned long i = 0;
+> +	int *ptr;
+> +
+> +	while (++i <= info->test_count) {
+> +		while (__ptr_ring_empty(&ring))
+> +			cpu_relax();
 
-It's all documented: https://www.kernel.org/doc/html/v5.13/process/submitting-patches.html
 
-/Jarkko
+Any reason for not simply use __ptr_ring_consume() here?
+
+
+> +
+> +		ptr = __ptr_ring_consume(&ring);
+> +		if ((unsigned long)ptr != i) {
+> +			fprintf(stderr, "consumer failed, ptr: %lu, i: %lu\n",
+> +				(unsigned long)ptr, i);
+> +			info->error = true;
+> +			return NULL;
+> +		}
+> +	}
+> +
+> +	if (!__ptr_ring_empty(&ring)) {
+> +		fprintf(stderr, "ring should be empty, test failed\n");
+> +		info->error = true;
+> +		return NULL;
+> +	}
+> +
+> +	info->error = false;
+> +	return NULL;
+> +}
+> +
+> +/* test case for single producer single consumer */
+> +static void spsc_test(int size, int count)
+> +{
+> +	struct worker_info producer, consumer;
+> +	pthread_attr_t attr;
+> +	void *res;
+> +	int ret;
+> +
+> +	ret = ptr_ring_init(&ring, size, 0);
+> +	if (ret) {
+> +		fprintf(stderr, "init failed: %d\n", ret);
+> +		return;
+> +	}
+> +
+> +	producer.test_count = count;
+> +	consumer.test_count = count;
+> +
+> +	ret = pthread_attr_init(&attr);
+> +	if (ret) {
+> +		fprintf(stderr, "pthread attr init failed: %d\n", ret);
+> +		goto out;
+> +	}
+> +
+> +	ret = pthread_create(&producer.tid, &attr,
+> +			     produce_worker, &producer);
+> +	if (ret) {
+> +		fprintf(stderr, "create producer thread failed: %d\n", ret);
+> +		goto out;
+> +	}
+> +
+> +	ret = pthread_create(&consumer.tid, &attr,
+> +			     consume_worker, &consumer);
+> +	if (ret) {
+> +		fprintf(stderr, "create consumer thread failed: %d\n", ret);
+> +		goto out;
+> +	}
+> +
+> +	ret = pthread_join(producer.tid, &res);
+> +	if (ret) {
+> +		fprintf(stderr, "join producer thread failed: %d\n", ret);
+> +		goto out;
+> +	}
+> +
+> +	ret = pthread_join(consumer.tid, &res);
+> +	if (ret) {
+> +		fprintf(stderr, "join consumer thread failed: %d\n", ret);
+> +		goto out;
+> +	}
+> +
+> +	if (producer.error || consumer.error) {
+> +		fprintf(stderr, "spsc test failed\n");
+> +		goto out;
+> +	}
+> +
+> +	printf("ptr_ring(size:%d) perf spsc test produced/comsumed %d items, finished\n",
+> +	       size, count);
+> +out:
+> +	ptr_ring_cleanup(&ring, NULL);
+> +}
+> +
+> +static void simple_test(int size, int count)
+> +{
+> +	struct timeval start, end;
+> +	int i = 0;
+> +	int *ptr;
+> +	int ret;
+> +
+> +	ret = ptr_ring_init(&ring, size, 0);
+> +	if (ret) {
+> +		fprintf(stderr, "init failed: %d\n", ret);
+> +		return;
+> +	}
+> +
+> +	while (++i <= count) {
+> +		ret = __ptr_ring_produce(&ring, &count);
+> +		if (ret) {
+> +			fprintf(stderr, "produce failed: %d\n", ret);
+> +			goto out;
+> +		}
+> +
+> +		ptr = __ptr_ring_consume(&ring);
+> +		if (ptr != &count)  {
+> +			fprintf(stderr, "consume failed: %p\n", ptr);
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	printf("ptr_ring(size:%d) perf simple test produced/consumed %d items, finished\n",
+> +	       size, count);
+> +
+> +out:
+> +	ptr_ring_cleanup(&ring, NULL);
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int count = 1000000;
+> +	int size = 1000;
+> +	int mode = 0;
+> +	int opt;
+> +
+> +	while ((opt = getopt(argc, argv, "N:s:m:h")) != -1) {
+> +		switch (opt) {
+> +		case 'N':
+> +			count = atoi(optarg);
+> +			break;
+> +		case 's':
+> +			size = atoi(optarg);
+> +			break;
+> +		case 'm':
+> +			mode = atoi(optarg);
+> +			break;
+> +		case 'h':
+> +			printf("usage: ptr_ring_test [-N COUNT] [-s RING_SIZE] [-m TEST_MODE]\n");
+> +			return 0;
+> +		default:
+> +			return -1;
+> +		}
+> +	}
+> +
+> +	if (count <= 0) {
+> +		fprintf(stderr, "invalid test count, must be > 0\n");
+> +		return -1;
+> +	}
+> +
+> +	if (size < MIN_RING_SIZE || size > MAX_RING_SIZE) {
+> +		fprintf(stderr, "invalid ring size, must be in %d-%d\n",
+> +			MIN_RING_SIZE, MAX_RING_SIZE);
+> +		return -1;
+> +	}
+> +
+> +	switch (mode) {
+> +	case 0:
+> +		simple_test(size, count);
+> +		break;
+> +	case 1:
+> +		spsc_test(size, count);
+> +		break;
+> +	default:
+> +		fprintf(stderr, "invalid test mode\n");
+> +		return -1;
+> +	}
+> +
+> +	return 0;
+> +}
+> diff --git a/tools/testing/selftests/ptr_ring/ptr_ring_test.h b/tools/testing/selftests/ptr_ring/ptr_ring_test.h
+> new file mode 100644
+> index 0000000..32bfefb
+> --- /dev/null
+> +++ b/tools/testing/selftests/ptr_ring/ptr_ring_test.h
+
+
+Let's reuse ptr_ring.c in tools/virtio/ringtest. Nothing virt specific 
+there.
+
+Thanks
+
+
+> @@ -0,0 +1,130 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +
+> +#ifndef _TEST_PTR_RING_TEST_H
+> +#define _TEST_PTR_RING_TEST_H
+> +
+> +#include <assert.h>
+> +#include <stdatomic.h>
+> +#include <pthread.h>
+> +
+> +/* Assuming the cache line size is 64 for most cpu,
+> + * change it accordingly if the running cpu has different
+> + * cache line size in order to get more accurate result.
+> + */
+> +#define SMP_CACHE_BYTES	64
+> +
+> +#define cpu_relax()	sched_yield()
+> +#define smp_release()	atomic_thread_fence(memory_order_release)
+> +#define smp_acquire()	atomic_thread_fence(memory_order_acquire)
+> +#define smp_wmb()	smp_release()
+> +#define smp_store_release(p, v)	\
+> +		atomic_store_explicit(p, v, memory_order_release)
+> +
+> +#define READ_ONCE(x)		(*(volatile typeof(x) *)&(x))
+> +#define WRITE_ONCE(x, val)	((*(volatile typeof(x) *)&(x)) = (val))
+> +#define cache_line_size		SMP_CACHE_BYTES
+> +#define unlikely(x)		(__builtin_expect(!!(x), 0))
+> +#define likely(x)		(__builtin_expect(!!(x), 1))
+> +#define ALIGN(x, a)		(((x) + (a) - 1) / (a) * (a))
+> +#define SIZE_MAX		(~(size_t)0)
+> +#define KMALLOC_MAX_SIZE	SIZE_MAX
+> +#define spinlock_t		pthread_spinlock_t
+> +#define gfp_t			int
+> +#define __GFP_ZERO		0x1
+> +
+> +#define ____cacheline_aligned_in_smp \
+> +		__attribute__((aligned(SMP_CACHE_BYTES)))
+> +
+> +static inline void *kmalloc(unsigned int size, gfp_t gfp)
+> +{
+> +	void *p;
+> +
+> +	p = memalign(64, size);
+> +	if (!p)
+> +		return p;
+> +
+> +	if (gfp & __GFP_ZERO)
+> +		memset(p, 0, size);
+> +
+> +	return p;
+> +}
+> +
+> +static inline void *kzalloc(unsigned int size, gfp_t flags)
+> +{
+> +	return kmalloc(size, flags | __GFP_ZERO);
+> +}
+> +
+> +static inline void *kmalloc_array(size_t n, size_t size, gfp_t flags)
+> +{
+> +	if (size != 0 && n > SIZE_MAX / size)
+> +		return NULL;
+> +	return kmalloc(n * size, flags);
+> +}
+> +
+> +static inline void *kcalloc(size_t n, size_t size, gfp_t flags)
+> +{
+> +	return kmalloc_array(n, size, flags | __GFP_ZERO);
+> +}
+> +
+> +static inline void kfree(void *p)
+> +{
+> +	free(p);
+> +}
+> +
+> +#define kvmalloc_array		kmalloc_array
+> +#define kvfree			kfree
+> +
+> +static inline void spin_lock_init(spinlock_t *lock)
+> +{
+> +	int r = pthread_spin_init(lock, 0);
+> +
+> +	assert(!r);
+> +}
+> +
+> +static inline void spin_lock(spinlock_t *lock)
+> +{
+> +	int ret = pthread_spin_lock(lock);
+> +
+> +	assert(!ret);
+> +}
+> +
+> +static inline void spin_unlock(spinlock_t *lock)
+> +{
+> +	int ret = pthread_spin_unlock(lock);
+> +
+> +	assert(!ret);
+> +}
+> +
+> +static inline void spin_lock_bh(spinlock_t *lock)
+> +{
+> +	spin_lock(lock);
+> +}
+> +
+> +static inline void spin_unlock_bh(spinlock_t *lock)
+> +{
+> +	spin_unlock(lock);
+> +}
+> +
+> +static inline void spin_lock_irq(spinlock_t *lock)
+> +{
+> +	spin_lock(lock);
+> +}
+> +
+> +static inline void spin_unlock_irq(spinlock_t *lock)
+> +{
+> +	spin_unlock(lock);
+> +}
+> +
+> +static inline void spin_lock_irqsave(spinlock_t *lock,
+> +				     unsigned long f)
+> +{
+> +	spin_lock(lock);
+> +}
+> +
+> +static inline void spin_unlock_irqrestore(spinlock_t *lock,
+> +					  unsigned long f)
+> +{
+> +	spin_unlock(lock);
+> +}
+> +
+> +#endif
+
