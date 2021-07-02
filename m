@@ -2,88 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501723BA263
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9A83BA24E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232413AbhGBPAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 11:00:33 -0400
-Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:58604 "EHLO
-        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbhGBPAd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 11:00:33 -0400
-X-Greylist: delayed 1236 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Jul 2021 11:00:32 EDT
-Received: from cpc152649-stkp13-2-0-cust121.10-2.cable.virginm.net ([86.15.83.122] helo=[192.168.0.18])
-        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1lzKID-0007JQ-2I; Fri, 02 Jul 2021 15:37:21 +0100
-Subject: Re: [PATCH v2 1/3] lib/string: optimized memcpy
-To:     Matteo Croce <mcroce@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, Nick Kossifidis <mick@ics.forth.gr>,
-        Guo Ren <guoren@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Drew Fustini <drew@beagleboard.org>
-Cc:     linux-arch@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv@lists.infradead.org
-References: <20210702123153.14093-1-mcroce@linux.microsoft.com>
- <20210702123153.14093-2-mcroce@linux.microsoft.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <0e0fa030-8995-b930-5e22-954349a0b82e@codethink.co.uk>
-Date:   Fri, 2 Jul 2021 15:37:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232824AbhGBOqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 10:46:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230424AbhGBOqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 10:46:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94FFF613FE;
+        Fri,  2 Jul 2021 14:44:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625237050;
+        bh=tQbOmOYm52sqPdnKBHSq7Q8mipiiNLQCBkJZv7Ts5mo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dlvppMt6J9x4cFjD5sqPNkUFLKCc9HNF+xb6trH2ja/+l+bnmCQEJT0naFGH93Z/+
+         6qHD1i8IIOlwo0P/waN3WyAC1uC7MlOY5UeQCfPThtca4FM7Y4/USFA3PNV2WFGWkn
+         ksAGsl2c+dnK6GvCvPEZFUHS8PiRncYQby6eH64Q=
+Date:   Fri, 2 Jul 2021 16:44:07 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Salah Triki <salah.triki@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dio: return -ENOMEM when kzalloc() fails
+Message-ID: <YN8mN3mtRH+S6D3o@kroah.com>
+References: <20210702133114.GA314157@pc>
 MIME-Version: 1.0
-In-Reply-To: <20210702123153.14093-2-mcroce@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210702133114.GA314157@pc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/07/2021 13:31, Matteo Croce wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
+On Fri, Jul 02, 2021 at 02:31:14PM +0100, Salah Triki wrote:
+> Return -ENOMEM when kzalloc() fails in order to inform the caller of the
+> failure.
 > 
-> Rewrite the generic memcpy() to copy a word at time, without generating
-> unaligned accesses.
-> 
-> The procedure is made of three steps:
-> First copy data one byte at time until the destination buffer is aligned
-> to a long boundary.
-> Then copy the data one long at time shifting the current and the next long
-> to compose a long at every cycle.
-> Finally, copy the remainder one byte at time.
-> 
-> This is the improvement on RISC-V:
-> 
-> original aligned:	 75 Mb/s
-> original unaligned:	 75 Mb/s
-> new aligned:		114 Mb/s
-> new unaligned:		107 Mb/s
-> 
-> and this the binary size increase according to bloat-o-meter:
-> 
-> Function     old     new   delta
-> memcpy        36     324    +288
-> 
-> 
-> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+> Signed-off-by: Salah Triki <salah.triki@gmail.com>
 > ---
->   lib/string.c | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 77 insertions(+), 3 deletions(-)
+>  drivers/dio/dio.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dio/dio.c b/drivers/dio/dio.c
+> index 193b40e7aec0..4c06c93c93d3 100644
+> --- a/drivers/dio/dio.c
+> +++ b/drivers/dio/dio.c
+> @@ -219,7 +219,7 @@ static int __init dio_init(void)
+>                  /* Found a board, allocate it an entry in the list */
+>  		dev = kzalloc(sizeof(struct dio_dev), GFP_KERNEL);
+>  		if (!dev)
+> -			return 0;
+> +			return -ENOMEM;
 
-Doesn't arch/riscv/lib/memcpy.S also exist for an architecture
-optimised version? I would have thought the lib/string.c version
-was not being used?
+Do you have this hardware to test with?
 
+While this patch looks correct, it still is leaking lots of resources if
+this every happens.  Can you fix this up "properly" so that all of the
+resources allocated at this point in time will be correctly freed?
 
--- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+Or, really, this is an impossible error path to hit, given that it is at
+boot time, so maybe it's just not worth it given that I doubt anyone has
+this hardware...
 
-https://www.codethink.co.uk/privacy.html
+thanks,
+
+greg k-h
