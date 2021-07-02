@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3023BA3ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE303BA3EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhGBScR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 14:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhGBScQ (ORCPT
+        id S230174AbhGBScU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 14:32:20 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48010 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230114AbhGBScT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 14:32:16 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E179C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 11:29:44 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id u25so14475091ljj.11
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 11:29:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Uke8QP8jDT0ISFCLZ021BNSpKYLqzZN1MQPfd1lmORs=;
-        b=Go8dlU4pYH27zAulQl0JEeWem+aLHmXx6lAAGJ5RX5Th1L0JIkmbQVShEOdiuVEDNe
-         w5McMXyT7OkESj6bjNOMryjuUhU2GQF+fPvFWY1eHUaIvxmaNLXDsD/pbV7HRZAgw30w
-         y6+fbNTxPudDQKN5uoia56HylE+fS2vPHOr9iOOoKN1rpFYdxoM4U5gNOZ2ze+F3C4v3
-         9uC36SUCTgF+fD9Pkiz1s1vxUBCuIxF6x87F2z2W3jLZQjRdBrfV+Rw4pt6Tme03aX9E
-         rH8yBm5gt/MbY1wQbj8f3CFMaWe8B6zwgsv7SVQybImoBY3Qtq2/TrhFk/xWza2nK/Mr
-         pQVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Uke8QP8jDT0ISFCLZ021BNSpKYLqzZN1MQPfd1lmORs=;
-        b=oftC4BgOPJWGwnDWTh8TAjFjQMaTAIlwmI/aTlyzWHfwqadQsliuLmssqSpcu/o1yi
-         u2M6BZAgkpY9f5CerlJmhhvciOFaWvO1gIsje9Ja+5VaI7l7qkJJ6TcwgRpWS5+0meui
-         A4RWcPVCPwlitg7L08qUmFZTrRAEi3EPQVVzp9AJe6mjCyOq6W0NplvL4+9l2chuo8sL
-         QrYTWH9dce5FtB+kickNjIIh6nuhNN0JH7X1veYJdYW6annDqH+3LKjUAWvmMXwc5IGZ
-         Bp9GpxPq6ZAqoRvDDOfrpHx9S0bot3nWkWSSaD/g/pM/Vran4FBSDhM/B9RpJWztReSR
-         xRlg==
-X-Gm-Message-State: AOAM532j99zo5rA2OSpOaeuCHQpyxPK3wCRLOEOOpHZ3DwztVIh1dtFi
-        vldFB6rdk39JydJkSxwy/Kj5A1+kbyvOt3dpeVoiwQ==
-X-Google-Smtp-Source: ABdhPJxo8xGnK3pq7PzatyX9aih8j04svJoEYfDiTkNvI1T83vRxvgJmwble7AKeQKXSG9W6O1uph3cP81m14NAYgdI=
-X-Received: by 2002:a2e:5c03:: with SMTP id q3mr574881ljb.233.1625250582245;
- Fri, 02 Jul 2021 11:29:42 -0700 (PDT)
+        Fri, 2 Jul 2021 14:32:19 -0400
+Date:   Fri, 2 Jul 2021 20:29:44 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1625250586;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1LP04KpdM/Xii9XazRoYT55qF7Zs2WWSaf0X5rgB/YI=;
+        b=OWg8L2E+Rd3pYI642Oye8e4r4BiJocV794SpGvwipz4GoE4GhuCuDzsOixQ7CJ6BV3ZDs2
+        bpu/1AO6xtEgGmdT9iv7fnormWD61hMjlk30r3DhwkdHB8ezKkfZKKsSsHhnAJuYvI+j/E
+        ow/w0VmGaj2ao3TBK6EFLtjmcuQ6saJTMRm48PwFU/9NQOZXqSH0VX+xJLGd7+jTZz3kkW
+        KHAWzlvOk/O0bFqUEONCZLYJ0ezlBKrAldqmxo7uXVHnEDz0Yh5IvPUYSN+VyIght8Skwu
+        FvNhMxmfDuGbj1pP8iyfeSXg/ru8n00gwkzFmAO7u95FPla17KJzjNoRjhF5aA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1625250586;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1LP04KpdM/Xii9XazRoYT55qF7Zs2WWSaf0X5rgB/YI=;
+        b=6lw7AkFPWzvD6KtRY6f6Uwn1CU3N72ZwVjan69VBAARy2e3VZTII4arXD/qZXbGBUm9J6x
+        2tHMV49sbM05F1Bg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [RFC v2 00/34] SLUB: reduce irq disabled scope and make it RT
+ compatible
+Message-ID: <20210702182944.lqa7o2a25to6czju@linutronix.de>
+References: <20210609113903.1421-1-vbabka@suse.cz>
 MIME-Version: 1.0
-References: <20210701235505.1792711-1-ndesaulniers@google.com> <CAK8P3a1EfBNxaMbsp+s2BiYHGKPK4NeRR+ugM82jfY43Pq7-Uw@mail.gmail.com>
-In-Reply-To: <CAK8P3a1EfBNxaMbsp+s2BiYHGKPK4NeRR+ugM82jfY43Pq7-Uw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 2 Jul 2021 11:29:31 -0700
-Message-ID: <CAKwvOdkgEeQktLgEN7CAh7bTjTN+TQNE27aETgvbXep9=xb1DQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: drop CROSS_COMPILE for LLVM=1 LLVM_IAS=1
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210609113903.1421-1-vbabka@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 4:59 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Fri, Jul 2, 2021 at 1:55 AM 'Nick Desaulniers' via Clang Built
-> Linux <clang-built-linux@googlegroups.com> wrote:
-> >
-> > +ifneq ($(LLVM),)
-> > +ifneq ($(LLVM_IAS),)
-> > +ifeq ($(CROSS_COMPILE),)
-> > +CLANG_TARGET   :=--target=aarch64-linux
-> > +CLANG_FLAGS    += $(CLANG_TARGET)
-> > +KBUILD_CFLAGS  += $(CLANG_TARGET)
-> > +KBUILD_AFLAGS  += $(CLANG_TARGET)
-> > +endif
-> > +endif
-> > +endif
->
-> I think only the "CLANG_TARGET   :=--target=aarch64-linux" line should
-> go into the
-> per-architecture Makefile. It doesn't hurt to just set that
-> unconditionally here,
-> and then change the CLANG_FLAGS logic in the top-level Makefile to use this
-> in place of $(notdir $(CROSS_COMPILE:%-=%)).
+I replaced my slub changes with slub-local-lock-v2r3.
+I haven't seen any complains from lockdep or so which is good. Then I
+did this with RT enabled (and no debug):
 
-I don't think we can do that. Based on the order the arch/ specific
-Makefiles are included, if we don't eagerly add --target to the
-KBUILD_{C|A}FLAGS, then cc-option, as-option, and as-instr macros
-(defined in scripts/Makefile.compiler) checks in per arch/ Makefiles
-may fail erroneously because --target was not set for
-KBUILD_{C|A}FLAGS yet.
+- A "time make -j32" run of allmodconfig on /dev/shm.
+  Old:
+| real    20m6,217s
+| user    568m22,553s
+| sys     48m33,126s
 
-Another issue is the order of operations between the top level
-Makefile and the per arch/ Makefiles.  The `notdir` block you
-reference occurs earlier than the per-arch includes:
+  New:
+| real    20m9,049s
+| user    569m32,096s
+| sys     48m47,670s
 
- 609 TENTATIVE_CLANG_FLAGS += --target=$(notdir $(CROSS_COMPILE:%-=%))
-...
- 648 include $(srctree)/arch/$(SRCARCH)/Makefile
+  These 3 seconds here are probably in the noise range.
 
-We would need the opposite order to do what you describe. Reordering
-these would effectively be a revert of
-commit ae6b289a3789 ("kbuild: Set KBUILD_CFLAGS before incl. arch Makefile")
-which I'm not sure we want to do.  But maybe there's another way I'm
-not seeing yet?
--- 
-Thanks,
-~Nick Desaulniers
+- perf_5.10 stat -r 10 hackbench -g200 -s 4096 -l500
+Old:
+|         464.967,20 msec task-clock                #   27,220 CPUs utilized            ( +-  0,16% )
+|          7.683.944      context-switches          #    0,017 M/sec                    ( +-  0,86% )
+|            931.380      cpu-migrations            #    0,002 M/sec                    ( +-  4,94% )
+|            219.569      page-faults               #    0,472 K/sec                    ( +-  0,39% )
+|  1.104.727.599.918      cycles                    #    2,376 GHz                      ( +-  0,18% )
+|    941.428.898.087      stalled-cycles-frontend   #   85,22% frontend cycles idle     ( +-  0,24% )
+|    729.016.546.572      stalled-cycles-backend    #   65,99% backend cycles idle      ( +-  0,32% )
+|    340.133.571.519      instructions              #    0,31  insn per cycle
+|                                                   #    2,77  stalled cycles per insn  ( +-  0,12% )
+|     73.746.821.314      branches                  #  158,607 M/sec                    ( +-  0,13% )
+|        377.838.006      branch-misses             #    0,51% of all branches          ( +-  1,01% )
+| 
+|            17,0820 +- 0,0202 seconds time elapsed  ( +-  0,12% )
+
+New:
+|         422.865,71 msec task-clock                #    4,782 CPUs utilized            ( +-  0,34% )
+|         14.594.238      context-switches          #    0,035 M/sec                    ( +-  0,43% )
+|          3.737.926      cpu-migrations            #    0,009 M/sec                    ( +-  0,46% )
+|            218.474      page-faults               #    0,517 K/sec                    ( +-  0,74% )
+|    940.715.812.020      cycles                    #    2,225 GHz                      ( +-  0,34% )
+|    716.593.827.820      stalled-cycles-frontend   #   76,18% frontend cycles idle     ( +-  0,39% )
+|    550.730.862.839      stalled-cycles-backend    #   58,54% backend cycles idle      ( +-  0,43% )
+|    417.274.588.907      instructions              #    0,44  insn per cycle
+|                                                   #    1,72  stalled cycles per insn  ( +-  0,17% )
+|     92.814.150.290      branches                  #  219,488 M/sec                    ( +-  0,17% )
+|        822.102.170      branch-misses             #    0,89% of all branches          ( +-  0,41% )
+| 
+|             88,427 +- 0,618 seconds time elapsed  ( +-  0,70% )
+
+So this is outside of the noise range.
+I'm not sure where this is coming from. My guess would be higher lock
+contention within the memory allocator.
+  
+> The remaining patches to upstream from the RT tree are small ones related to
+> KConfig. The patch that restricts PREEMPT_RT to SLUB (not SLAB or SLOB) makes
+> sense. The patch that disables CONFIG_SLUB_CPU_PARTIAL with PREEMPT_RT could
+> perhaps be re-evaluated as the series also addresses some latency issues with
+> percpu partial slabs.
+
+With that series the PARTIAL slab can be indeed enabled. I have (had) a
+half done series where I had PARTIAL enabled and noticed a slight
+increase in latency so made it "default y on !RT". It wasn't dramatic
+but appeared to be outside of noise.
+
+Sebastian
