@@ -2,325 +2,431 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1629C3BA49B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2ED3BA4A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbhGBUTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 16:19:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232491AbhGBUTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 16:19:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8CB46140E;
-        Fri,  2 Jul 2021 20:16:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625257004;
-        bh=NbSvi0y9GaeXCurI4Kj3SsUph1KnedMgtCxiSVdc2P4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=JiRDkQTkReq3Ulbr/qftOZamtBtIPM+BuUtGLrpQ46pysiF2I7Qs0LryvpqYzvv8i
-         Jzrgf1z8xBzP7vjXfDxs6GPSay7/ShqmcsQbncK6dTcLW5AYZ0qbeiB3P+OszsE370
-         JxcUiqdoDvxskOqQp6O96/FP7HjZf3rm+GGQQhedZOjls2ABOyRo5pHHdGKqQP97n1
-         k5lo8xde7rgk17u537GmKRgcJqaPylwJFk8bZCVyALLl/55R8m2S5KDmO4rlmuBIf9
-         he/gXAvOJI/jl5lFlVHTA6KvKaAP8RKUIc0gH4JOakJgBljZDSeqrmXCJLmXFfVg0W
-         IdJjLIH9SpwNw==
-Date:   Fri, 2 Jul 2021 13:16:43 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de
-Subject: [GIT PULL] xfs: new code for 5.14
-Message-ID: <20210702201643.GA13765@locust>
+        id S231477AbhGBUVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 16:21:36 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:57780 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230002AbhGBUVf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 16:21:35 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9B101891;
+        Fri,  2 Jul 2021 22:19:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1625257141;
+        bh=1eQ1bjQN3Q4T+SWyTRVFXnpLqI59/CsZiUox6aOQJYI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o27lfhNISqIEgxjj6y40U9ekWGZNSjUfsX7JaoU5/TUj3EipJk2BxlF3noriNXkos
+         6+gJ8x9H+pIxN4vI3B6M/5fC0aWhXwkz9BHL5Cuar6SHgPWxGjUNKg6qWWk4DwhjoP
+         mNmR0rD0KqOVfAuAqBjtGc2xQn7d0eeeWYZWSKV0=
+Date:   Fri, 2 Jul 2021 23:18:21 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
+Cc:     Marek Vasut <marex@denx.de>, Tim Gover <tim.gover@raspberrypi.com>,
+        Eric Anholt <eric@anholt.net>,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Maxime Ripard <maxime@cerno.tech>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-rpi-kernel@lists.infradead.org
+Subject: Re: [PATCH] drm/vc4: dsi: Only register our component once a DSI
+ device is attached
+Message-ID: <YN90jZ1ynoC2IwNm@pendragon.ideasonboard.com>
+References: <YM6dgVb12oITNfc0@pendragon.ideasonboard.com>
+ <CAPY8ntC+hzmfrJwWW0ytNdHSXruMKMi7N3K6tdJbp9gDBbJ3Qw@mail.gmail.com>
+ <YM+MEsKjdkYAVI5X@pendragon.ideasonboard.com>
+ <YM/FwVkkQXX8VrzV@pendragon.ideasonboard.com>
+ <CAPY8ntCbzFkbM5fZmo3RVw5okQkVKFcR8TCHOo+xkW7wNk8MQA@mail.gmail.com>
+ <YNCMbw6B6OL4Gho3@pendragon.ideasonboard.com>
+ <YNCPcbJTEZVLJyCF@pendragon.ideasonboard.com>
+ <YNCbVtIFcryw6wO5@pendragon.ideasonboard.com>
+ <YN9DBX0QVbjtbwFE@pendragon.ideasonboard.com>
+ <CAPY8ntCiw=28ay5VmARG55q00L1fj9aTKCbHi+sp=FTPUqZLVA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <CAPY8ntCiw=28ay5VmARG55q00L1fj9aTKCbHi+sp=FTPUqZLVA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Dave,
 
-Please pull this branch containing new code for 5.14.  Most of the work
-this cycle has been on refactoring various parts of the codebase.  The
-biggest non-cleanup changes are (1) reducing the number of cache flushes
-sent when writing the log; (2) a substantial number of log recovery
-fixes; and (3) I started accepting pull requests from contributors if
-the commits in their branches match what's been sent to the list.
+On Fri, Jul 02, 2021 at 06:44:22PM +0100, Dave Stevenson wrote:
+> On Fri, 2 Jul 2021 at 17:47, Laurent Pinchart wrote:
+> > On Mon, Jun 21, 2021 at 04:59:51PM +0300, Laurent Pinchart wrote:
+> >> On Mon, Jun 21, 2021 at 04:09:05PM +0300, Laurent Pinchart wrote:
+> >>> On Mon, Jun 21, 2021 at 03:56:16PM +0300, Laurent Pinchart wrote:
+> >>>> On Mon, Jun 21, 2021 at 12:49:14PM +0100, Dave Stevenson wrote:
+> >>>>> On Sun, 20 Jun 2021 at 23:49, Laurent Pinchart wrote:
+> >>>>>> On Sun, Jun 20, 2021 at 09:42:27PM +0300, Laurent Pinchart wrote:
+> >>>>>>> On Sun, Jun 20, 2021 at 03:29:03PM +0100, Dave Stevenson wrote:
+> >>>>>>>> On Sun, 20 Jun 2021 at 04:26, Laurent Pinchart wrote:
+> >>>>>>>>>
+> >>>>>>>>> Hi Maxime,
+> >>>>>>>>>
+> >>>>>>>>> I'm testing this, and I'm afraid it causes an issue with all the
+> >>>>>>>>> I2C-controlled bridges. I'm focussing on the newly merged ti-sn65dsi83
+> >>>>>>>>> driver at the moment, but other are affected the same way.
+> >>>>>>>>>
+> >>>>>>>>> With this patch, the DSI component is only added when the DSI device is
+> >>>>>>>>> attached to the host with mipi_dsi_attach(). In the ti-sn65dsi83 driver,
+> >>>>>>>>> this happens in the bridge attach callback, which is called when the
+> >>>>>>>>> bridge is attached by a call to drm_bridge_attach() in vc4_dsi_bind().
+> >>>>>>>>> This creates a circular dependency, and the DRM/KMS device is never
+> >>>>>>>>> created.
+> >>>>>>>>>
+> >>>>>>>>> How should this be solved ? Dave, I think you have shown an interest in
+> >>>>>>>>> the sn65dsi83 recently, any help would be appreciated. On a side note,
+> >>>>>>>>> I've tested the ti-sn65dsi83 driver on a v5.10 RPi kernel, without much
+> >>>>>>>>> success (on top of commit e1499baa0b0c I get a very weird frame rate -
+> >>>>>>>>> 147 fps of 99 fps instead of 60 fps - and nothing on the screen, and on
+> >>>>>>>>> top of the latest v5.10 RPi branch, I get lock-related warnings at every
+> >>>>>>>>> page flip), which is why I tried v5.12 and noticed this patch. Is it
+> >>>>>>>>> worth trying to bring up the display on the v5.10 RPi kernel in parallel
+> >>>>>>>>> to fixing the issue introduced in this patch, or is DSI known to be
+> >>>>>>>>> broken there ?
+> >>>>>>>>
+> >>>>>>>> I've been looking at SN65DSI83/4, but as I don't have any hardware
+> >>>>>>>> I've largely been suggesting things to try to those on the forums who
+> >>>>>>>> do [1].
+> >>>>>>>>
+> >>>>>>>> My branch at https://github.com/6by9/linux/tree/rpi-5.10.y-sn65dsi8x-marek
+> >>>>>>>> is the latest one I've worked on. It's rpi-5.10.y with Marek's driver
+> >>>>>>>> cherry-picked, and an overlay and simple-panel definition by others.
+> >>>>>>>> It also has a rework for vc4_dsi to use pm_runtime, instead of
+> >>>>>>>> breaking up the DSI bridge chain (which is flawed as it never calls
+> >>>>>>>> the bridge mode_set or mode_valid functions which sn65dsi83 relies
+> >>>>>>>> on).
+> >>
+> >> I've looked at that, and I'm afraid it doesn't go in the right
+> >> direction. The drm_encoder.crtc field is deprecated and documented as
+> >> only meaningful for non-atomic drivers. You're not introducing its
+> >> usage, but moving the configuration code from .enable() to the runtime
+> >> PM resume handler will make it impossible to fix this. The driver should
+> >> instead move to the .atomic_enable() function. If you need
+> >> enable/pre_enable in the DSI encoder, then you should turn it into a
+> >> drm_bridge.
+> >
+> > Is this something you're looking at by any chance ? I'm testing the
+> > ti-sn65dsi83 driver with VC4. I've spent a couple of hours debugging,
+> > only to realise that the vc4_dsi driver (before the rework you mention
+> > above) doesn't call .mode_set() on the bridges... Applying my sn65dsi83
+> > series that removes .mode_set() didn't help much as vc4_dsi doesn't call
+> > the atomic operations either :-) I'll test your branch now.
+> 
+> This is one of the reasons for my email earlier today - thank you for
+> your reply.
+> 
+> The current mainline vc4_dsi driver deliberately breaks the bridge
+> chain so that it gets called before the panel/bridge pre_enable and
+> can power everything up, therefore pre_enable can call host_transfer
+> to configure the panel/bridge over the DSI interface.
+> However we've both noted that it doesn't forward on the mode_set and
+> mode_valid calls, and my investigations say that it doesn't have
+> enough information to make those calls.
+> 
+> My branch returns the chain to normal, and tries to use pm_runtime to
+> power up the PHY at the first usage (host_transfer or _enable). The
+> PHY enable needs to know the link frequency to use, hence my question
+> over how that should be determined.
+> Currently it's coming from drm_encoder.crtc, but you say that's
+> deprecated. If a mode hasn't been set then we have no clock
+> information and bad things will happen.
 
-For a week or so I /had/ staged a major cleanup of the logging code from
-Dave Chinner, but it exposed so many lurking bugs in other parts of the
-logging and log recovery code that I decided to defer that patchset
-until we can address those latent bugs.
+To make sure I understand things correctly, if no mode has been set, you
+only need to know the HS clock frequency in order to perform command
+transfers in HS mode, right ? Do we have a list of use cases for those
+transfers before a mode is set ? Can we force LP mode, or is it
+something that sinks are not required to support ?
 
-Larger cleanups this time include walking the incore inode cache (me)
-and rework of the extended attribute code (Allison) to prepare it for
-adding logged xattr updates (and directory tree parent pointers) in
-future releases.
+> On the Pi forums one person has DSI83 working with an 800x1280 panel
+> (Google Nexus 7 Gen 1 AIUI) using my branch, but only on 3 lanes
+> rather than 4. I have a suspicion it's because the mode_fixup for
+> burst mode has moved the panel timings too far outside the panel's
+> spec, hence my other question about how bridges should pick up the
+> panel timings independent of burst mode timings. The SN65DSI83 driver
+> currently programs the output LVDS side with the DSI timings and
+> doesn't account for burst mode.
 
-The branch merges cleanly against upstream as of a few minutes ago.
-Please let me know if anything else strange happens during the merge
-process.  The merge commits I made seem stable enough, but as it's the
-first time I've ever accepted a pull request, we'd all be open to
-feedback for improvements for next time.
+I've just tried lowering the number of lanes to 3, and I now get an
+image on the display !
 
---D
+Interestingly, when I enable the test pattern mode of the SN65DSI63, I
+get an image on my display, even in 4 lanes mode. I thus believe the DSI
+clock frequency is within the range of what the panel can accept (as the
+SN65DSI83 is programmed to derive the LVDS clock from the DSI clock),
+but the other timing parameters. The fact that kmstest --flip reports
+125fps makes me think there's something very wrong in the timings.
 
-The following changes since commit 8124c8a6b35386f73523d27eacb71b5364a68c4c:
+> If you want a call or to discuss your setup in more detail, then give
+> me a shout.
 
-  Linux 5.13-rc4 (2021-05-30 11:58:25 -1000)
+I don't really have anything special about this setup to discuss
+(there's a DS92LV0421 and DS92LV2422 pair between the SN65DSI83 and the
+panel, but that shouldn't matter much). In addition to the 4 lanes mode
+issue, the big difference between this and a DSI panel connected
+directly to the encoder is related to how the DSI sink is probed, the
+DSI encoder driver in your v5.12 kernel is broken for DSI sinks that are
+controlled over I2C (due to the fact they're not children of the DSI
+encoder DT node anymore). This will require a solution too, but I don't
+think it's specific to my setup.
 
-are available in the Git repository at:
+If there's any patch you'd like me to test for the mode timings, please
+let me know.
 
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.14-merge-6
+> We have a DSI analyser on order now (3-4 week lead time), so hopefully
+> I'll soon be able to get some better visibility of what the block is
+> doing.
+> 
+> >>>>>>>> I ran it on Friday in the lab and encountered an issue with vc4_dsi
+> >>>>>>>> should vc4_dsi_encoder_mode_fixup wish for a divider of 7 (required
+> >>>>>>>> for this 800x1280 panel over 4 lanes) where it resulted in an invalid
+> >>>>>>>> mode configuration. That resulted in patch [2] which then gave me
+> >>>>>>>> sensible numbers.
+> >>
+> >> I have that commit in my branch, but still get 125 fps instead of 60 fps
+> >> with kmstest --flip (after reverting commit 1c3834201272 "drm/vc4:
+> >> Increase the core clock based on HVS load"). I'm not sure if [2] is the
+> >> cause of this, but there seems to be an improvement: in my previous
+> >> tests, the mode was fixed up every time I would start the application,
+> >> with the timings getting more and more bizarre at every run :-)
+> >>
+> >>>>>>>> That branch with dtoverlay=vc4-kms-v3d and
+> >>>>>>>> dtoverlay=vc4-kms-dsi-ti-sn65dsi83 created all the expected devices,
+> >>>>>>>> and everything came up normally.
+> >>>>>>>> It was a busy day, but I think I even stuck a scope on the clock lanes
+> >>>>>>>> at that point and confirmed that they were at the link frequency
+> >>>>>>>> expected.
+> >>>>>>>
+> >>>>>>> Thanks, I'll test your branch and will report the results.
+> >>>>>>
+> >>>>>> I had to apply the following diff to work around a crash:
+> >>>>>>
+> >>>>>> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> >>>>>> index 55b6c53207f5..647426aa793a 100644
+> >>>>>> --- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> >>>>>> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> >>>>>> @@ -525,6 +525,9 @@ static bool sn65dsi83_mode_fixup(struct drm_bridge *bridge,
+> >>>>>>
+> >>>>>>         /* The DSI format is always RGB888_1X24 */
+> >>>>>>         list_for_each_entry(connector, &ddev->mode_config.connector_list, head) {
+> >>>>>> +               if (!connector->display_info.bus_formats)
+> >>>>>> +                       continue;
+> >>>>>> +
+> >>>>>>                 switch (connector->display_info.bus_formats[0]) {
+> >>>>>>                 case MEDIA_BUS_FMT_RGB666_1X7X3_SPWG:
+> >>>>>>                         ctx->lvds_format_24bpp = false;
+> >>>>>>
+> >>>>>> connector->display_info.bus_formats is NULL for the HDMI connectors, as
+> >>>>>> I have nothing connected to them, as well as for the writeback
+> >>>>>> connector.
+> >>>>>
+> >>>>> I'm now confused as to what I'm doing as my branch appears NOT to have
+> >>>>> Marek's latest version of the driver as it doesn't have
+> >>>>> sn65dsi83_mode_fixup.
+> >>>>> I need to have another look at what's going on - I think I've got
+> >>>>> branches confused when switching between machines :-( Remaking that
+> >>>>> branch now.
+> >>>>>
+> >>>>> I do see that Marek has sent another patch around
+> >>>>> sn65dsi83_mode_fixup, but it'll still dereference
+> >>>>> connector->display_info.bus_formats[0] on all connectors. Shouldn't it
+> >>>>> only be switching on the one connector that is connected to this
+> >>>>> bridge, not HDMI or writeback connectors? I'm not totally clear on
+> >>>>> which connectors are in that list.
+> >>>>> https://patchwork.freedesktop.org/patch/440175/
+> >>>>
+> >>>> The following series should fix the issue:
+> >>>>
+> >>>> [PATCH] drm/bridge: ti-sn65dsi83: Replace connector format patching with atomic_get_input_bus_fmts
+> >>>> [PATCH 0/5] ti-sn65dsi83: Finalize transition to atomic operations
+> >>>>
+> >>>>>> Then, when running kmstest --flip, I get one warning per frame:
+> >>>>>>
+> >>>>>> [   29.762089] [drm:vc4_dsi_runtime_resume] *ERROR* vc4_dsi_runtime_resume:
+> >>>>>> [   29.763200] [drm:vc4_dsi_runtime_resume] *ERROR* vc4_dsi_runtime_resume: All good
+> >>>>>> [   29.793861] ------------[ cut here ]------------
+> >>>>>> [   29.798572] WARNING: CPU: 2 PID: 249 at drivers/gpu/drm/drm_modeset_lock.c:246 drm_modeset_lock+0xd0/0x100
+> >>>>>> [   29.808365] Modules linked in: ipv6 bcm2835_codec(C) bcm2835_unicam bcm2835_v4l2(C) bcm2835_isp(C) bcm2835_mmal_vchiq(C) v4l2_mem2mem v4l2_dv_timings imx296 rtc_ds1307 videobuf2_vmallom
+> >>>>>> [   29.855284] CPU: 2 PID: 249 Comm: kworker/u8:10 Tainted: G         C        5.10.44-v8+ #23
+> >>>>>> [   29.863756] Hardware name: Raspberry Pi Compute Module 4 Rev 1.0 (DT)
+> >>>>>> [   29.870297] Workqueue: events_unbound commit_work
+> >>>>>> [   29.875077] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
+> >>>>>> [   29.881172] pc : drm_modeset_lock+0xd0/0x100
+> >>>>>> [   29.885506] lr : drm_atomic_get_new_or_current_crtc_state+0x6c/0x110
+> >>>>>> [   29.891950] sp : ffffffc011fcbcb0
+> >>>>>> [   29.895308] x29: ffffffc011fcbcb0 x28: ffffff80403fe780
+> >>>>>> [   29.900705] x27: ffffff80415a2000 x26: ffffffc0106f0000
+> >>>>>> [   29.906100] x25: 0000000000000000 x24: ffffff80420d3c80
+> >>>>>> [   29.911495] x23: ffffff8042174080 x22: 0000000000000038
+> >>>>>> [   29.916890] x21: 0000000000000000 x20: ffffff80421740a8
+> >>>>>> [   29.922284] x19: ffffffc011f8bc50 x18: 0000000000000000
+> >>>>>> [   29.927678] x17: 0000000000000000 x16: 0000000000000000
+> >>>>>> [   29.933072] x15: 0000000000000000 x14: 0000000000000000
+> >>>>>> [   29.938466] x13: 0048000000000329 x12: 0326032303290320
+> >>>>>> [   29.943860] x11: 03200000020301f4 x10: 00000000000019e0
+> >>>>>> [   29.949255] x9 : ffffffc0106efd8c x8 : ffffff804390d5c0
+> >>>>>> [   29.954649] x7 : 7fffffffffffffff x6 : 0000000000000001
+> >>>>>> [   29.960043] x5 : 0000000000000001 x4 : 0000000000000001
+> >>>>>> [   29.965436] x3 : ffffff80415a2000 x2 : ffffff804199b200
+> >>>>>> [   29.970830] x1 : 00000000000000bc x0 : ffffffc011f8bc98
+> >>>>>> [   29.976225] Call trace:
+> >>>>>> [   29.978708]  drm_modeset_lock+0xd0/0x100
+> >>>>>> [   29.982687]  drm_atomic_get_new_or_current_crtc_state+0x6c/0x110
+> >>>>>> [   29.988781]  vc4_atomic_complete_commit+0x4e4/0x860
+> >>>>>> [   29.993729]  commit_work+0x18/0x20
+> >>>>>> [   29.997181]  process_one_work+0x1c4/0x4a0
+> >>>>>> [   30.001248]  worker_thread+0x50/0x420
+> >>>>>> [   30.004965]  kthread+0x11c/0x150
+> >>>>>> [   30.008239]  ret_from_fork+0x10/0x20
+> >>>>>> [   30.011865] ---[ end trace f44ae6b09cda951a ]---
+> >>>>>>
+> >>>>>> Does it ring any bell ?
+> >>>>>
+> >>>>> kmstest --flip is a new one on me. kmstest from
+> >>>>> https://cgit.freedesktop.org/drm/libdrm/tree/tests/kmstest doesn't
+> >>>>> have such an option.
+> >>>>> Based on Google, I'm guessing at
+> >>>>> https://github.com/tomba/kmsxx/blob/master/utils/kmstest.cpp. Multiple
+> >>>>> apps with the same name is always fun.
+> >>>>
+> >>>> Correct.
+> >>>>
+> >>>>>> In case this is useful information, the problem didn't occur on top of
+> >>>>>> commit e1499baa0b0c.
+> >>>>>
+> >>>>> e1499baa0b0c is from back in March by the looks of it.
+> >>>>> Maxime has done a number of reworks to accessor functions since then,
+> >>>>> so it's quite possible there's a locking issue lurking. I'll let him
+> >>>>> comment though.
+> >>>>
+> >>>> Maybe there's a reason why the patch the introduced
+> >>>> drm_atomic_get_new_or_current_crtc_state() in your branch hasn't made it
+> >>>> to mainline yet :-)
+> >>>
+> >>> Any chance this could be reverted from the RPi kernel v5.10 branch in
+> >>> the meantime ?
+> >>>
+> >>>>>>>> Coming back to this patch though, it isn't in 5.10 so I'm not seeing
+> >>>>>>>> the issues. As to the exact ordering of attaches, I can't claim
+> >>>>>>>> sufficient knowledge on that front.
+> >>>>>>>> I can try a cherry-pick of this patch to see what goes on, but it
+> >>>>>>>> won't be for a day or two.
+> >>>>>>>
+> >>>>>>> Let's see if Maxime has an opinion :-)
+> >>>>>>>
+> >>>>>>>> [1] Largely https://www.raspberrypi.org/forums/viewtopic.php?f=44&t=305690,
+> >>>>>>>> but ignore about the first 5 pages of the thread as different driver
+> >>>>>>>> versions were floating about. Most stuff after that is based on
+> >>>>>>>> Marek's driver.
+> >>>>>>>> [2] https://github.com/6by9/linux/commit/c3c774136a1e946109048711d16974be8d520aaa
+> >>>>>>>>
+> >>>>>>>>> On Tue, Jul 07, 2020 at 12:19:12PM +0200, Maxime Ripard wrote:
+> >>>>>>>>>> If the DSI driver is the last to probe, component_add will try to run all
+> >>>>>>>>>> the bind callbacks straight away and return the error code.
+> >>>>>>>>>>
+> >>>>>>>>>> However, since we depend on a power domain, we're pretty much guaranteed to
+> >>>>>>>>>> be in that case on the BCM2711, and are just lucky on the previous SoCs
+> >>>>>>>>>> since the v3d also depends on that power domain and is further in the probe
+> >>>>>>>>>> order.
+> >>>>>>>>>>
+> >>>>>>>>>> In that case, the DSI host will not stick around in the system: the DSI
+> >>>>>>>>>> bind callback will be executed, will not find any DSI device attached and
+> >>>>>>>>>> will return EPROBE_DEFER, and we will then remove the DSI host and ask to
+> >>>>>>>>>> be probed later on.
+> >>>>>>>>>>
+> >>>>>>>>>> But since that host doesn't stick around, DSI devices like the RaspberryPi
+> >>>>>>>>>> touchscreen whose probe is not linked to the DSI host (unlike the usual DSI
+> >>>>>>>>>> devices that will be probed through the call to mipi_dsi_host_register)
+> >>>>>>>>>> cannot attach to the DSI host, and we thus end up in a situation where the
+> >>>>>>>>>> DSI host cannot probe because the panel hasn't probed yet, and the panel
+> >>>>>>>>>> cannot probe because the DSI host hasn't yet.
+> >>>>>>>>>>
+> >>>>>>>>>> In order to break this cycle, let's wait until there's a DSI device that
+> >>>>>>>>>> attaches to the DSI host to register the component and allow to progress
+> >>>>>>>>>> further.
+> >>>>>>>>>>
+> >>>>>>>>>> Suggested-by: Andrzej Hajda <a.hajda@samsung.com>
+> >>>>>>>>>> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> >>>>>>>>>> ---
+> >>>>>>>>>>  drivers/gpu/drm/vc4/vc4_dsi.c | 25 ++++++++-----------------
+> >>>>>>>>>>  1 file changed, 8 insertions(+), 17 deletions(-)
+> >>>>>>>>>>
+> >>>>>>>>>> diff --git a/drivers/gpu/drm/vc4/vc4_dsi.c b/drivers/gpu/drm/vc4/vc4_dsi.c
+> >>>>>>>>>> index eaf276978ee7..19aab4e7e209 100644
+> >>>>>>>>>> --- a/drivers/gpu/drm/vc4/vc4_dsi.c
+> >>>>>>>>>> +++ b/drivers/gpu/drm/vc4/vc4_dsi.c
+> >>>>>>>>>> @@ -1246,10 +1246,12 @@ static ssize_t vc4_dsi_host_transfer(struct mipi_dsi_host *host,
+> >>>>>>>>>>       return ret;
+> >>>>>>>>>>  }
+> >>>>>>>>>>
+> >>>>>>>>>> +static const struct component_ops vc4_dsi_ops;
+> >>>>>>>>>>  static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
+> >>>>>>>>>>                              struct mipi_dsi_device *device)
+> >>>>>>>>>>  {
+> >>>>>>>>>>       struct vc4_dsi *dsi = host_to_dsi(host);
+> >>>>>>>>>> +     int ret;
+> >>>>>>>>>>
+> >>>>>>>>>>       dsi->lanes = device->lanes;
+> >>>>>>>>>>       dsi->channel = device->channel;
+> >>>>>>>>>> @@ -1284,6 +1286,12 @@ static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
+> >>>>>>>>>>               return 0;
+> >>>>>>>>>>       }
+> >>>>>>>>>>
+> >>>>>>>>>> +     ret = component_add(&dsi->pdev->dev, &vc4_dsi_ops);
+> >>>>>>>>>> +     if (ret) {
+> >>>>>>>>>> +             mipi_dsi_host_unregister(&dsi->dsi_host);
+> >>>>>>>>>> +             return ret;
+> >>>>>>>>>> +     }
+> >>>>>>>>>> +
+> >>>>>>>>>>       return 0;
+> >>>>>>>>>>  }
+> >>>>>>>>>>
+> >>>>>>>>>> @@ -1662,7 +1670,6 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
+> >>>>>>>>>>  {
+> >>>>>>>>>>       struct device *dev = &pdev->dev;
+> >>>>>>>>>>       struct vc4_dsi *dsi;
+> >>>>>>>>>> -     int ret;
+> >>>>>>>>>>
+> >>>>>>>>>>       dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
+> >>>>>>>>>>       if (!dsi)
+> >>>>>>>>>> @@ -1670,26 +1677,10 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
+> >>>>>>>>>>       dev_set_drvdata(dev, dsi);
+> >>>>>>>>>>
+> >>>>>>>>>>       dsi->pdev = pdev;
+> >>>>>>>>>> -
+> >>>>>>>>>> -     /* Note, the initialization sequence for DSI and panels is
+> >>>>>>>>>> -      * tricky.  The component bind above won't get past its
+> >>>>>>>>>> -      * -EPROBE_DEFER until the panel/bridge probes.  The
+> >>>>>>>>>> -      * panel/bridge will return -EPROBE_DEFER until it has a
+> >>>>>>>>>> -      * mipi_dsi_host to register its device to.  So, we register
+> >>>>>>>>>> -      * the host during pdev probe time, so vc4 as a whole can then
+> >>>>>>>>>> -      * -EPROBE_DEFER its component bind process until the panel
+> >>>>>>>>>> -      * successfully attaches.
+> >>>>>>>>>> -      */
+> >>>>>>>>>>       dsi->dsi_host.ops = &vc4_dsi_host_ops;
+> >>>>>>>>>>       dsi->dsi_host.dev = dev;
+> >>>>>>>>>>       mipi_dsi_host_register(&dsi->dsi_host);
+> >>>>>>>>>>
+> >>>>>>>>>> -     ret = component_add(&pdev->dev, &vc4_dsi_ops);
+> >>>>>>>>>> -     if (ret) {
+> >>>>>>>>>> -             mipi_dsi_host_unregister(&dsi->dsi_host);
+> >>>>>>>>>> -             return ret;
+> >>>>>>>>>> -     }
+> >>>>>>>>>> -
+> >>>>>>>>>>       return 0;
+> >>>>>>>>>>  }
+> >>>>>>>>>>
 
-for you to fetch changes up to 1effb72a8179a02c2dd8a268454ccf50bf68aa50:
+-- 
+Regards,
 
-  xfs: don't wait on future iclogs when pushing the CIL (2021-06-25 14:02:02 -0700)
-
-----------------------------------------------------------------
-New code for 5.14:
-- Refactor the buffer cache to use bulk page allocation
-- Convert agnumber-based AG iteration to walk per-AG structures
-- Clean up some unit conversions and other code warts
-- Reduce spinlock contention in the directio fastpath
-- Collapse all the inode cache walks into a single function
-- Remove indirect function calls from the inode cache walk code
-- Dramatically reduce the number of cache flushes sent when writing log
-  buffers
-- Preserve inode sickness reports for longer
-- Rename xfs_eofblocks since it controls inode cache walks
-- Refactor the extended attribute code to prepare it for the addition
-  of log intent items to make xattrs fully transactional
-- A few fixes to earlier large patchsets
-- Log recovery fixes so that we don't accidentally mark the log clean
-  when log intent recovery fails
-- Fix some latent SOB errors
-- Clean up shutdown messages that get logged to dmesg
-- Fix a regression in the online shrink code
-- Fix a UAF in the buffer logging code if the fs goes offline
-- Fix uninitialized error variables
-- Fix a UAF in the CIL when commited log item callbacks race with a
-  shutdown
-- Fix a bug where the CIL could hang trying to push part of the log ring
-  buffer that hasn't been filled yet
-
-----------------------------------------------------------------
-Allison Henderson (15):
-      xfs: Reverse apply 72b97ea40d
-      xfs: Add xfs_attr_node_remove_name
-      xfs: Refactor xfs_attr_set_shortform
-      xfs: Separate xfs_attr_node_addname and xfs_attr_node_addname_clear_incomplete
-      xfs: Add helper xfs_attr_node_addname_find_attr
-      xfs: Hoist xfs_attr_node_addname
-      xfs: Hoist xfs_attr_leaf_addname
-      xfs: Hoist node transaction handling
-      xfs: Add delay ready attr remove routines
-      xfs: Add delay ready attr set routines
-      xfs: Remove xfs_attr_rmtval_set
-      xfs: Clean up xfs_attr_node_addname_clear_incomplete
-      xfs: Fix default ASSERT in xfs_attr_set_iter
-      xfs: Make attr name schemes consistent
-      xfs: Initialize error in xfs_attr_remove_iter
-
-Brian Foster (2):
-      xfs: hold buffer across unpin and potential shutdown processing
-      xfs: remove dead stale buf unpin handling code
-
-Christoph Hellwig (4):
-      xfs: mark xfs_bmap_set_attrforkoff static
-      xfs: remove ->b_offset handling for page backed buffers
-      xfs: simplify the b_page_count calculation
-      xfs: cleanup error handling in xfs_buf_get_map
-
-Darrick J. Wong (38):
-      xfs: clean up open-coded fs block unit conversions
-      xfs: remove unnecessary shifts
-      xfs: move the quotaoff dqrele inode walk into xfs_icache.c
-      xfs: detach inode dquots at the end of inactivation
-      xfs: move the inode walk functions further down
-      xfs: rename xfs_inode_walk functions to xfs_icwalk
-      xfs: pass the goal of the incore inode walk to xfs_inode_walk()
-      xfs: separate the dqrele_all inode grab logic from xfs_inode_walk_ag_grab
-      xfs: move xfs_inew_wait call into xfs_dqrele_inode
-      xfs: remove iter_flags parameter from xfs_inode_walk_*
-      xfs: remove indirect calls from xfs_inode_walk{,_ag}
-      xfs: clean up inode state flag tests in xfs_blockgc_igrab
-      xfs: make the icwalk processing functions clean up the grab state
-      xfs: fix radix tree tag signs
-      xfs: pass struct xfs_eofblocks to the inode scan callback
-      xfs: merge xfs_reclaim_inodes_ag into xfs_inode_walk_ag
-      xfs: refactor per-AG inode tagging functions
-      Merge tag 'xfs-buf-bulk-alloc-tag' of git://git.kernel.org/pub/scm/linux/kernel/git/dgc/linux-xfs into xfs-5.14-merge2
-      Merge tag 'xfs-perag-conv-tag' of git://git.kernel.org/pub/scm/linux/kernel/git/dgc/linux-xfs into xfs-5.14-merge2
-      Merge tag 'unit-conversion-cleanups-5.14_2021-06-03' of https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux into xfs-5.14-merge2
-      Merge tag 'assorted-fixes-5.14-1_2021-06-03' of https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux into xfs-5.14-merge2
-      Merge tag 'inode-walk-cleanups-5.14_2021-06-03' of https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux into xfs-5.14-merge2
-      xfs: only reset incore inode health state flags when reclaiming an inode
-      xfs: drop IDONTCACHE on inodes when we mark them sick
-      xfs: change the prefix of XFS_EOF_FLAGS_* to XFS_ICWALK_FLAG_
-      xfs: selectively keep sick inodes in memory
-      xfs: rename struct xfs_eofblocks to xfs_icwalk
-      Merge tag 'fix-inode-health-reports-5.14_2021-06-08' of https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux into xfs-5.14-merge2
-      Merge tag 'rename-eofblocks-5.14_2021-06-08' of https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux into xfs-5.14-merge2
-      Merge tag 'xfs-delay-ready-attrs-v20.1' of https://github.com/allisonhenderson/xfs_work into xfs-5.14-merge4
-      xfs: refactor the inode recycling code
-      xfs: separate primary inode selection criteria in xfs_iget_cache_hit
-      xfs: fix type mismatches in the inode reclaim functions
-      xfs: print name of function causing fs shutdown instead of hex pointer
-      xfs: shorten the shutdown messages to a single line
-      xfs: fix log intent recovery ENOSPC shutdowns when inactivating inodes
-      xfs: force the log offline when log intent item recovery fails
-      xfs: fix endianness issue in xfs_ag_shrink_space
-
-Dave Chinner (47):
-      xfs: split up xfs_buf_allocate_memory
-      xfs: use xfs_buf_alloc_pages for uncached buffers
-      xfs: use alloc_pages_bulk_array() for buffers
-      xfs: merge _xfs_buf_get_pages()
-      xfs: move page freeing into _xfs_buf_free_pages()
-      xfs: move xfs_perag_get/put to xfs_ag.[ch]
-      xfs: prepare for moving perag definitions and support to libxfs
-      xfs: move perag structure and setup to libxfs/xfs_ag.[ch]
-      xfs: make for_each_perag... a first class citizen
-      xfs: convert raw ag walks to use for_each_perag
-      xfs: convert xfs_iwalk to use perag references
-      xfs: convert secondary superblock walk to use perags
-      xfs: pass perags through to the busy extent code
-      xfs: push perags through the ag reservation callouts
-      xfs: pass perags around in fsmap data dev functions
-      xfs: add a perag to the btree cursor
-      xfs: convert rmap btree cursor to using a perag
-      xfs: convert refcount btree cursor to use perags
-      xfs: convert allocbt cursors to use perags
-      xfs: use perag for ialloc btree cursors
-      xfs: remove agno from btree cursor
-      xfs: simplify xfs_dialloc_select_ag() return values
-      xfs: collapse AG selection for inode allocation
-      xfs: get rid of xfs_dir_ialloc()
-      xfs: inode allocation can use a single perag instance
-      xfs: clean up and simplify xfs_dialloc()
-      xfs: use perag through unlink processing
-      xfs: remove xfs_perag_t
-      xfs: don't take a spinlock unconditionally in the DIO fastpath
-      xfs: get rid of xb_to_gfp()
-      xfs: merge xfs_buf_allocate_memory
-      xfs: drop the AGI being passed to xfs_check_agi_freecount
-      xfs: perag may be null in xfs_imap()
-      xfs: log stripe roundoff is a property of the log
-      xfs: separate CIL commit record IO
-      xfs: remove xfs_blkdev_issue_flush
-      xfs: async blkdev cache flush
-      xfs: CIL checkpoint flushes caches unconditionally
-      xfs: remove need_start_rec parameter from xlog_write()
-      xfs: journal IO cache flush reductions
-      xfs: Fix CIL throttle hang when CIL space used going backwards
-      xfs: xfs_log_force_lsn isn't passed a LSN
-      xfs: add iclog state trace events
-      xfs: don't nest icloglock inside ic_callback_lock
-      xfs: remove callback dequeue loop from xlog_state_do_iclog_callbacks
-      xfs: Fix a CIL UAF by getting get rid of the iclog callback lock
-      xfs: don't wait on future iclogs when pushing the CIL
-
-Geert Uytterhoeven (1):
-      xfs: Fix 64-bit division on 32-bit in xlog_state_switch_iclogs()
-
-Jiapeng Chong (1):
-      xfs: Remove redundant assignment to busy
-
-Shaokun Zhang (2):
-      xfs: sort variable alphabetically to avoid repeated declaration
-      xfs: remove redundant initialization of variable error
-
- fs/xfs/libxfs/xfs_ag.c             |  280 ++++++++-
- fs/xfs/libxfs/xfs_ag.h             |  136 +++++
- fs/xfs/libxfs/xfs_ag_resv.c        |   11 +-
- fs/xfs/libxfs/xfs_ag_resv.h        |   15 +
- fs/xfs/libxfs/xfs_alloc.c          |  111 ++--
- fs/xfs/libxfs/xfs_alloc.h          |    2 +-
- fs/xfs/libxfs/xfs_alloc_btree.c    |   31 +-
- fs/xfs/libxfs/xfs_alloc_btree.h    |    9 +-
- fs/xfs/libxfs/xfs_attr.c           |  956 +++++++++++++++++------------
- fs/xfs/libxfs/xfs_attr.h           |  403 +++++++++++++
- fs/xfs/libxfs/xfs_attr_leaf.c      |    5 +-
- fs/xfs/libxfs/xfs_attr_leaf.h      |    2 +-
- fs/xfs/libxfs/xfs_attr_remote.c    |  167 +++---
- fs/xfs/libxfs/xfs_attr_remote.h    |    8 +-
- fs/xfs/libxfs/xfs_bmap.c           |    3 +-
- fs/xfs/libxfs/xfs_bmap.h           |    1 -
- fs/xfs/libxfs/xfs_btree.c          |   15 +-
- fs/xfs/libxfs/xfs_btree.h          |   10 +-
- fs/xfs/libxfs/xfs_ialloc.c         |  641 ++++++++++----------
- fs/xfs/libxfs/xfs_ialloc.h         |   40 +-
- fs/xfs/libxfs/xfs_ialloc_btree.c   |   46 +-
- fs/xfs/libxfs/xfs_ialloc_btree.h   |   13 +-
- fs/xfs/libxfs/xfs_inode_buf.c      |    2 +-
- fs/xfs/libxfs/xfs_log_format.h     |    3 -
- fs/xfs/libxfs/xfs_refcount.c       |  122 ++--
- fs/xfs/libxfs/xfs_refcount.h       |    9 +-
- fs/xfs/libxfs/xfs_refcount_btree.c |   39 +-
- fs/xfs/libxfs/xfs_refcount_btree.h |    7 +-
- fs/xfs/libxfs/xfs_rmap.c           |  147 ++---
- fs/xfs/libxfs/xfs_rmap.h           |    6 +-
- fs/xfs/libxfs/xfs_rmap_btree.c     |   46 +-
- fs/xfs/libxfs/xfs_rmap_btree.h     |    6 +-
- fs/xfs/libxfs/xfs_sb.c             |  146 +----
- fs/xfs/libxfs/xfs_sb.h             |    9 -
- fs/xfs/libxfs/xfs_shared.h         |   20 +-
- fs/xfs/libxfs/xfs_types.c          |    4 +-
- fs/xfs/libxfs/xfs_types.h          |    1 +
- fs/xfs/scrub/agheader.c            |    1 +
- fs/xfs/scrub/agheader_repair.c     |   33 +-
- fs/xfs/scrub/alloc.c               |    3 +-
- fs/xfs/scrub/bmap.c                |   21 +-
- fs/xfs/scrub/common.c              |   15 +-
- fs/xfs/scrub/fscounters.c          |   42 +-
- fs/xfs/scrub/health.c              |    2 +-
- fs/xfs/scrub/ialloc.c              |    9 +-
- fs/xfs/scrub/refcount.c            |    3 +-
- fs/xfs/scrub/repair.c              |   14 +-
- fs/xfs/scrub/rmap.c                |    3 +-
- fs/xfs/scrub/trace.c               |    3 +-
- fs/xfs/xfs_attr_inactive.c         |    2 +-
- fs/xfs/xfs_bio_io.c                |   35 ++
- fs/xfs/xfs_bmap_util.c             |    6 +-
- fs/xfs/xfs_buf.c                   |  311 ++++------
- fs/xfs/xfs_buf.h                   |    3 +-
- fs/xfs/xfs_buf_item.c              |   97 ++-
- fs/xfs/xfs_discard.c               |    6 +-
- fs/xfs/xfs_dquot_item.c            |    2 +-
- fs/xfs/xfs_extent_busy.c           |   35 +-
- fs/xfs/xfs_extent_busy.h           |    7 +-
- fs/xfs/xfs_file.c                  |   70 ++-
- fs/xfs/xfs_filestream.c            |    2 +-
- fs/xfs/xfs_fsmap.c                 |   80 ++-
- fs/xfs/xfs_fsops.c                 |   24 +-
- fs/xfs/xfs_health.c                |   15 +-
- fs/xfs/xfs_icache.c                | 1162 ++++++++++++++++++++----------------
- fs/xfs/xfs_icache.h                |   58 +-
- fs/xfs/xfs_inode.c                 |  234 ++++----
- fs/xfs/xfs_inode.h                 |    9 +-
- fs/xfs/xfs_inode_item.c            |   18 +-
- fs/xfs/xfs_inode_item.h            |    2 +-
- fs/xfs/xfs_ioctl.c                 |   41 +-
- fs/xfs/xfs_iops.c                  |    4 +-
- fs/xfs/xfs_iwalk.c                 |   84 ++-
- fs/xfs/xfs_linux.h                 |    2 +
- fs/xfs/xfs_log.c                   |  273 ++++-----
- fs/xfs/xfs_log.h                   |    5 +-
- fs/xfs/xfs_log_cil.c               |  138 +++--
- fs/xfs/xfs_log_priv.h              |   41 +-
- fs/xfs/xfs_log_recover.c           |   61 +-
- fs/xfs/xfs_mount.c                 |  136 +----
- fs/xfs/xfs_mount.h                 |  110 +---
- fs/xfs/xfs_qm.c                    |   10 +-
- fs/xfs/xfs_qm.h                    |    1 -
- fs/xfs/xfs_qm_syscalls.c           |   54 +-
- fs/xfs/xfs_reflink.c               |   13 +-
- fs/xfs/xfs_super.c                 |   10 +-
- fs/xfs/xfs_super.h                 |    1 -
- fs/xfs/xfs_symlink.c               |    9 +-
- fs/xfs/xfs_trace.c                 |    2 +
- fs/xfs/xfs_trace.h                 |  115 +++-
- fs/xfs/xfs_trans.c                 |    6 +-
- fs/xfs/xfs_trans.h                 |    4 +-
- 92 files changed, 3855 insertions(+), 3064 deletions(-)
+Laurent Pinchart
