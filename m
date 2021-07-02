@@ -2,52 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01D43BA1DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1CB3BA1DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhGBOEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 10:04:31 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:37528 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232858AbhGBOE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 10:04:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=R6DckeZgtg3V51Sx0cjR8Pu4OSMjTj4JgtVcMO8EmD0=; b=jfetKrMTblvVqOrFbffmkjJH7/
-        DgTddZo+bf0aZbJtao2UBKUQ5jeO7rz74UzQD+4iuxFWEMODr3I3Wnkml4vzzyIxAxVrbBqMXtZf8
-        KDtiTFzSjE2ctWTEAe9pjdquOeMnwSWSgw96WOPkeSG5p523ZG2fr0UwAZLO9NBsKGIw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lzJjv-00BvNf-8K; Fri, 02 Jul 2021 16:01:55 +0200
-Date:   Fri, 2 Jul 2021 16:01:55 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] mfd: tqmx86: add support for TQ-Systems DMI IDs
-Message-ID: <YN8cU5Pewnn0miuF@lunn.ch>
-References: <cover.1625227382.git.matthias.schiffer@ew.tq-group.com>
- <11bef2179e4745a4edcf579ff96185cb6987931d.1625227382.git.matthias.schiffer@ew.tq-group.com>
+        id S232858AbhGBOFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 10:05:07 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:43550 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232537AbhGBOFG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 10:05:06 -0400
+Received: by mail-ot1-f53.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso10118234otu.10;
+        Fri, 02 Jul 2021 07:02:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tp7kflwyuTLEinjM2vlPexiFxYfi5m3o28+q1GtVsGA=;
+        b=e5YxjqyyjjE1hR90QlP04Lbnw4Yul8d6TX5JADLGqsY1557SXhEQax8H3izzOhOG0p
+         IiDnd3h4cco1MLyxHYS6dpJxJSrWSFljehHQBst1weVkqAfpxaFFSc/XRIKAfGPXft60
+         iNNKUkzkcBsWYA0CUTZBzO4ZRhwz4xvRMGpJuFiKHdWeXD6vU6bANeOQbKQQq+GrDCEj
+         g0dKUewSrIpVKN2zZ8xKw5t38/W8zLu26/H1D3qFOKmiUEWIq/lsEoHef/jsxzZHtvD6
+         TRoc7DsJyV0hY6wGKHUIEYK/LGbKT4bkaaGlCWKqv90sXpmf292aRxcUg8yignnjnXm0
+         BWtA==
+X-Gm-Message-State: AOAM53081YKO5EZ6LEoHugAGSfAdBMNfaQHkB3h59NmA1wAyoSse75VX
+        idRpNUueS2Bu1yesMAtUwIlj6mkff0vt9Rnds9E=
+X-Google-Smtp-Source: ABdhPJy6eZoAXQV1ZNVA1Xnp0PjSzl/2h6uQ8rD/0be947T6Ch2AzHZB+aypLF7pdjiTCWKDCTQn0QkoyIiTs0bLlN8=
+X-Received: by 2002:a9d:604e:: with SMTP id v14mr1822850otj.260.1625234553676;
+ Fri, 02 Jul 2021 07:02:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11bef2179e4745a4edcf579ff96185cb6987931d.1625227382.git.matthias.schiffer@ew.tq-group.com>
+References: <1625209430-19934-1-git-send-email-aubrey.li@intel.com>
+ <1625209430-19934-2-git-send-email-aubrey.li@intel.com> <CAJZ5v0jq=-97bW_s7dx2U=y-3rZoJsLtFre2XXYAaQgAdbQdXA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jq=-97bW_s7dx2U=y-3rZoJsLtFre2XXYAaQgAdbQdXA@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 2 Jul 2021 16:02:22 +0200
+Message-ID: <CAJZ5v0h=jA8awhGZDYXXX7ybcT-d8BpSoPDZfvJ3+_7tOoK=bw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ACPI: let BIOS fall back to legacy handling if PRM disabled
+To:     Aubrey Li <aubrey.li@intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 02:23:52PM +0200, Matthias Schiffer wrote:
-> Newer TQMx86 modules use TQ-Systems instead of TQ-Group as their vendor
-> ID.
-> 
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+On Fri, Jul 2, 2021 at 1:37 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Fri, Jul 2, 2021 at 9:03 AM Aubrey Li <aubrey.li@intel.com> wrote:
+> >
+> > Based on _OSC PRM bit, BIOS can choose switch from legacy handling
+> > to using PRM. So if CONFIG_ACPI_PRMT is disabled, this bit should
+> > not be set to let BIOS fall back to the legacy handling (such as SMI).
+> >
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+> > ---
+> >  drivers/acpi/bus.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+> > index 60fb6a84..30a3d4a 100644
+> > --- a/drivers/acpi/bus.c
+> > +++ b/drivers/acpi/bus.c
+> > @@ -303,7 +303,9 @@ static void acpi_bus_osc_negotiate_platform_control(void)
+> >
+> >         capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_OST_SUPPORT;
+> >         capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_PCLPI_SUPPORT;
+> > +#ifdef CONFIG_ACPI_PRMT
+> >         capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_PRM_SUPPORT;
+> > +#endif
+>
+> What about using if (IS_ENABLED()) instead of #ifdef?
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+I've made this change myself and applied the patch with a rewritten
+changelog and under a different subject ("ACPI: Do not singal PRM
+support if not enabled").
 
-    Andrew
+Thanks!
