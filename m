@@ -2,105 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE903BA26C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 217AB3BA273
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232505AbhGBPC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 11:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbhGBPC2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 11:02:28 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19283C061762;
-        Fri,  2 Jul 2021 07:59:56 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 9A2A02224D;
-        Fri,  2 Jul 2021 16:59:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1625237992;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OWy2yrkTk66WQxbgnmVpmHdWaJn/RapTlXrAofVrtKA=;
-        b=fM22OssiTe4GCgmGyUJ7YDdMyNsIY/kmsOERyeYP4g4ELQkYfNOfWr0JFoVJ9aR293lgJT
-        rfb47ACOX/2AevGjX5afzHIFaImldCqYHhEBny5bI8WtWGxmj45uLrrmmnZ6XV7FJPRlNm
-        NdrL/SOe9I912AbrKuCnqNgw4a3Ea/g=
+        id S232665AbhGBPEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 11:04:14 -0400
+Received: from mout.gmx.net ([212.227.17.22]:45667 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231991AbhGBPEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 11:04:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1625238017;
+        bh=zidR5285gxvu2arbyxmhDqg6e5LTCzi9fQLp50nBsWk=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=DuwxOwI7319Lhx+I9Dc37PZMe6AbuRiW2QGky5FKmFl1Xg9YxF2MVb5pznrGmPGSG
+         jDEfrCCNH/5D0owzJ+rQfsut4w+8PVHn04RN3vsa/vy15PQMMDwtv0vo+XZM4BbQRQ
+         BbuJ3M+fhEcG2fy8ysO3Su1QGNK3ABFykt/t90p8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([83.52.228.41]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MxDkm-1l29Sj2INE-00xaUC; Fri, 02
+ Jul 2021 17:00:17 +0200
+Date:   Fri, 2 Jul 2021 16:59:54 +0200
+From:   John Wood <john.wood@gmx.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     John Wood <john.wood@gmx.com>, Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Arnd Bergmann <arnd@arndb.de>, Andi Kleen <ak@linux.intel.com>,
+        valdis.kletnieks@vt.edu,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: Re: [PATCH v8 3/8] security/brute: Detect a brute force attack
+Message-ID: <20210702145954.GA4513@ubuntu>
+References: <20210701234807.50453-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 02 Jul 2021 16:59:51 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Fu Wei <tekkamanninja@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
-        Huan Feng <huan.feng@starfivetech.com>
-Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO
- driver
-In-Reply-To: <20210701203333.GA963857@x1>
-References: <20210701002037.912625-1-drew@beagleboard.org>
- <20210701002037.912625-3-drew@beagleboard.org>
- <8c59105d32a9936f8806501ecd20e044@walle.cc> <20210701203333.GA963857@x1>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <c915172ac456b3f7b7547c065c41750b@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210701234807.50453-1-alobakin@pm.me>
+X-Provags-ID: V03:K1:dlN1ofh6LpaEb5MwTI60oBZZOzpxRydjUFLx8+d3q3xlDqOLQ/g
+ AseUQcRVOSgw+y90S5R3RUUGkX4oXSPdXODz7muskTdGNG4XTvD+dI31GrvERxszJqmj3O+
+ NGR5HMBSM0ueD0/qczK9UGA5RkFsMcK72AJTDElYA0GJzeW/4Rjit8KMkEtMMq+A508WvZ1
+ 9CbOiefkEzVVJqbrQIGyQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9i/ZvK/cQjw=:a39Z0eLmluy9VDDGJKeaLg
+ TvSqt9FDYwL9BX/25PlbGRXeBfVdd3fgvyeCfs3Cp+XW92EKF2euJ/2+8TNV7UogXY/OPVI6H
+ FiS43ZCv15Ssd8V0eSkpzvQ5M7jHPHu341L84wtUpSzP0G21MSQnvItwJXbGogBsXNar813oT
+ SUjE4WB1mmj64Lhvz5tEcgxk09x+e3yVDtMStATKQafRV93kysgYntaYek7y+rvnVs+Jz9cho
+ 6ftPnQa7oB+fiBrMlvv18UPBM7FYSf5xmj0eyeAcUEngS6J9NnI7vje+YtPv01oFwp53wRMo7
+ Ui1yNLxR6D8tkXq4NAl9MqRVsX0/VbkYgti+7sEL7SXbC8sVtjhNTkCafaP8hGK6fDHserJxV
+ 6MwKbHRunfIlcT6k/5PukZ7cCcG/lwCBLu1BsGz7mJ/H2qiTr9btN92/xs1280gM/u4bTToHc
+ NugNiuR3cZ786M2B2/Qgy6SkwwlRn5b8nIZhWGt30TwI+FU2acVkPZZMqBL7krRB2ftGc32yg
+ 7qv+UruXZ9hYUEi9NSWXhlv0enDJDSEaFoMuU3WCSKx/hmRDlhI66InBaQMe0FQa8svHAzLFb
+ MK7kCn3InBuncnfy+7rF6WUovWzYH51ZqwRXwND50Rbd2KoPpM1AxqVEgql8erI+4ixdfGjSE
+ PrB7w+qQCOLJoT6NtZm5wi7RwlrDounjK5jV1+HzoIXxDcJhS1wpkpT6Bjl1YwB0mrvrtJykq
+ yc1ExbKWcfNOpVAOiDjblN+wy5gHGKO/aFv+OsZ+RKgENsFFnR/QsUU3bqkuvHtb7u+UEIJxd
+ 2HQJgnYxNvMR42G6Q8uozh9FR4jXey86VfhsQO/grEelJeTnD+rtyRXSvQxEysyvT1sSqvDKq
+ lG1OOsPrGn5mwDQHGHrbZWaqXGfVuCM2SqplAnLo0N2FVoAWq8XZEBa0dW5WNW33PEheDT9L1
+ J04TS0Npus+qiII4tcAjQEdRAVaaxJAvqNL9m5HkkZd57G3s8GNl7Wx73D26baD632LFja3Z+
+ Ou5+ote2Rp99OhcFduh5OZLItt1JTTby/dwq6pvw7wAYOSQTUoAtVx4/cNM6tHxSm40iEhx/B
+ CPtyjW63bPVQErsJmi9gsJiBsN5L7c5lBy1
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Drew,
+Hi,
 
-Am 2021-07-01 22:33, schrieb Drew Fustini:
-> On Thu, Jul 01, 2021 at 08:39:40AM +0200, Michael Walle wrote:
->> Hi Drew,
->> 
->> Am 2021-07-01 02:20, schrieb Drew Fustini:
->> > Add GPIO driver for the StarFive JH7100 SoC [1] used on the
->> > BeagleV Starlight JH7100 board [2].
->> >
->> > [1] https://github.com/starfive-tech/beaglev_doc/
->> > [2] https://github.com/beagleboard/beaglev-starlight
->> >
->> > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
->> > Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
->> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
->> 
->> Could this driver use GPIO_REGMAP and REGMAP_IRQ? See
->> drivers/gpio/gpio-sl28cpld.c for an example.
->> 
->> -michael
-> 
-> Thank you for the suggestion.  I am not familiar with GPIO_REGMAP and
-> REGMAP_IRQ so I will read about it.  Is the advantage is that is helps
-> to reduce code duplication by using an abstraction?
+On Thu, Jul 01, 2021 at 11:55:14PM +0000, Alexander Lobakin wrote:
+> Hi,
+>
+> From: John Wood <john.wood@gmx.com>
+> Date: Sat, 5 Jun 2021 17:04:00 +0200
+>
+> > +static int brute_task_execve(struct linux_binprm *bprm, struct file *=
+file)
+> > +{
+> > +	struct dentry *dentry =3D file_dentry(bprm->file);
+> > +	struct inode *inode =3D file_inode(bprm->file);
+> > +	struct brute_stats stats;
+> > +	int rc;
+> > +
+> > +	inode_lock(inode);
+> > +	rc =3D brute_get_xattr_stats(dentry, inode, &stats);
+> > +	if (WARN_ON_ONCE(rc && rc !=3D -ENODATA))
+> > +		goto unlock;
+>
+> I think I caught a problem here. Have you tested this with
+> initramfs?
 
-Yes, I've looked briefly at your patch and it seemed that GPIO_REGMAP
-might fit here which will reduce code.
+No, it has not been tested with initramfs :(
 
-> I did notice that the gpio-sifive.c driver used regmap_update_bits() 
-> and
-> regmap_write().
-> 
-> I suppose that is better than writel_relaxed() and iowrite32() which
-> this RFC driver does?
+> According to init/do_mount.c's
+> init_rootfs()/rootfs_init_fs_context(), when `root=3D` cmdline
+> parameter is not empty, kernel creates rootfs of type ramfs
+> (tmpfs otherwise).
+> The thing about ramfs is that it doesn't support xattrs.
 
-Its just another abstraction layer in between. For MMIO it will also
-end up using some variant of the above (see regmap-mmio.c). But if you
-use regmap, you can also use REGMAP_IRQ which might also be a fit
-for your GPIO controller and thus don't have to implement your own
-versions for the irq_chip ops.
+It is a known issue that systems without xattr support are not
+suitable for Brute (there are a note in the documentation).
+However, the purpose is not to panic the system :(
 
--michael
+> I'm running this v8 on a regular PC with initramfs and having
+> `root=3D` in cmdline, and Brute doesn't allow the kernel to run
+> any init processes (/init, /sbin/init, ...) with err =3D=3D -95
+> (-EOPNOTSUPP) -- I'm getting a
+>
+> WARNING: CPU: 0 PID: 173 at brute_task_execve+0x15d/0x200
+> <snip>
+> Failed to execute /init (error -95)
+>
+> and so on (and a panic at the end).
+>
+> If I omit `root=3D` from cmdline, then the kernel runs init process
+> just fine -- I guess because initramfs is then placed inside tmpfs
+> with xattr support.
+>
+> As for me, this ramfs/tmpfs selection based on `root=3D` presence
+> is ridiculous and I don't see or know any reasons behind that.
+> But that's another story, and ramfs might be not the only one
+> system without xattr support.
+> I think Brute should have a fallback here, e.g. it could simply
+> ignore files from xattr-incapable filesystems instead of such
+> WARNING splats and stuff.
+
+Ok, it seems reasonable to me: if the file system doesn't support
+xattr, but Brute is enabled, Brute will do nothing and the system
+will work normally.
+
+I will work on it for the next version.
+Thanks for the feedback.
+
+John Wood
