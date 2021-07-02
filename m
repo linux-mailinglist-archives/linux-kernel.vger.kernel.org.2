@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1BB3BA629
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 00:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F0E3BA62D
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 01:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhGBXAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 19:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbhGBXAn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 19:00:43 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989EEC061762;
-        Fri,  2 Jul 2021 15:58:09 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id l24so15237006edr.11;
-        Fri, 02 Jul 2021 15:58:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vD/TqU6XibWuKwYjrV7s56wP7tIAz61+brCWfIO8Z2U=;
-        b=XjBvD2TBKWWknE0OCd9OoUjARi5xxbwhs4C6y7LA5KBJ+XVEf4PLQHxLA9h3l0hKlB
-         qJ+kn3S9k27KrLK9izjUJqMpTPnzS4H9klZ9IvuLfOEhj0O4WFrh90+zqHa7p8igLkQ6
-         x43wE7EcFN4vWBTR2Xfnb4heyvbkGgRGN1K7fwf+ZofT7ao2WtI5QK/Qc9wrD14MI4yt
-         CQD6QApV+vLOTnAG4bP4StCgTWHf3cu/XwrpBpntVbLZD9h4Aw16gIAu8Ns3IpPyRz3z
-         IE4YoTYFQ9ZGJl/sVlWs/Bxt1F+t7LdcQbPvpyVkt99X91IKAr5E7hs21Smu4ZiMHl2+
-         zxIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vD/TqU6XibWuKwYjrV7s56wP7tIAz61+brCWfIO8Z2U=;
-        b=MVVHzAJMr1i0jPL+sLmO56ZxkVJwuyei/r1NzP4hrRjQHxtAl80lzbUWztq5C4MLzv
-         w2ozkC3Afn0xg7rRYeeGGb/+xnsxgCXhP71Lx3HbvA+cyRSukWYQ6sdN8hfMqd7qbZKN
-         3xq8FzVbZEfS61dlHAr8UWrZz4FaQYDS4T+u6QSt+Wfx6M8Dgje53B5e6uP96vlbkAzJ
-         lBdGurVbTXtqkS9r4SMQkvLRxyuxSYsnLrS1uayrAtqnILo8y68GeUxr0Z17T3sPQWAh
-         iS7Atr2LiUord6utk4oym1e/GgEf9dHO2YAtIF8a2FhAgKpkHAm9C3PdZS3TNEcC71IV
-         iyRg==
-X-Gm-Message-State: AOAM533fOoRcI/xLj7YXTzb7Y7ENdZOqMGYp4j39IXhEVY8Nx25e6Gtx
-        RCMXvAIfB1DAo6wCp/oRQG5zP13dzV4dRaaOFEQ=
-X-Google-Smtp-Source: ABdhPJxXJfuDOqau0i9bIe7paYpcmNa20KnLmKDh8yc2DV1RzGhDNRIB8IZvZkTatJvfWGjnqztGHlGhSGbu/YbPKos=
-X-Received: by 2002:aa7:d74b:: with SMTP id a11mr2191239eds.40.1625266688199;
- Fri, 02 Jul 2021 15:58:08 -0700 (PDT)
+        id S230174AbhGBXEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 19:04:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229648AbhGBXEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 19:04:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6060F6140E;
+        Fri,  2 Jul 2021 23:01:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625266897;
+        bh=bM3A5UidT8fI6f1r1MObCSjrzfca4+FhgMz0lIMssuo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SwAZBx3pnTXfMJvjSDD1MamyR9X/kTrvJrydc80c5GGiIYE2oOqN2U0XDUD7zg/Ij
+         C3n556WogQvNi+5r8zClpQ37GbfaMeJziANpnrSqaY/rIp6yaylWJ2+cXGF2fje43I
+         bF5AzESLroFh2WBZoQbd0xM33r3tj7sW0XN8Vwyz+2uU5udB96ThjoohzsYePVeP5s
+         opHy1zcI3gtZNxTEQ8YyRTVvipNEL1gU0/7+FAAnjWp1pfvA57kcnxt3EHjCAHpd8X
+         K3KCI9MX6l0pPbO41zLD3/oTvFMnnLcHCLkTjEMK10ptcgnoU4l+GcrgTmY3GPsViT
+         FWD8tZWXs2k/Q==
+Date:   Sat, 3 Jul 2021 01:01:34 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, yu1.wang@intel.com, shuo.a.liu@intel.com,
+        conghui.chen@intel.com, viresh.kumar@linaro.org,
+        stefanha@redhat.com
+Subject: Re: [PATCH v12] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <YN+azpQsgAK9MbYd@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, yu1.wang@intel.com, shuo.a.liu@intel.com,
+        conghui.chen@intel.com, viresh.kumar@linaro.org,
+        stefanha@redhat.com
+References: <f229cd761048bc143f88f33a3437bdbf891c39fd.1625214435.git.jie.deng@intel.com>
+ <YN7jOm68fUL4UA2Q@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20210627223959.188139-1-martin.blumenstingl@googlemail.com>
- <20210627223959.188139-3-martin.blumenstingl@googlemail.com>
- <20210701202540.GA1085600@roeck-us.net> <CAFBinCC2KB-_pOenpWPknCuHV+CCjhP5hqukSkwD3qwRe6OtQw@mail.gmail.com>
- <162518776607.3570193.14348711594242395887@swboyd.mtv.corp.google.com>
- <CAFBinCAASQUB=cg5EFsBQ4jd3TvcCJzV1=sYJci4ibR7FjRcww@mail.gmail.com> <162525955027.3570193.16463056788252699243@swboyd.mtv.corp.google.com>
-In-Reply-To: <162525955027.3570193.16463056788252699243@swboyd.mtv.corp.google.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 3 Jul 2021 00:57:57 +0200
-Message-ID: <CAFBinCBsveheUZeW892J+1iyB_5P67rdLiJHtq4+PoNF4r_4CQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] clk: divider: Switch from .round_rate to
- .determine_rate by default
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, mturquette@baylibre.com,
-        linux-clk@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
-        khilman@baylibre.com, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="IxARlzPRJnfyHLX0"
+Content-Disposition: inline
+In-Reply-To: <YN7jOm68fUL4UA2Q@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
 
-On Fri, Jul 2, 2021 at 10:59 PM Stephen Boyd <sboyd@kernel.org> wrote:
-[...]
-> I'd prefer we leave round_rate assigned in clk_divider_ops and
-> clk_divider_ro_ops but then also assign the determine_rate function. We
-> have some duplication but that's OK. Then make individual patches to
-> migrate each driver over to the new clk op.
-I just sent a series with those changes: [0]
-
-> We could stack a final patch on top to remove the round_rate function
-> from clk divider.  Unfortunately, if some driver wants to use round_rate
-> then it will fail in interesting ways. Probably best to live with it
-> until we decide to drop round_rate entirely. Patches to convert all the
-> round_rate code over to determine_rate would be welcome in the meantime.
-For now I have omitted the patch to remove .round_rate from clk_divider_ops.
-Also I will start migrating .round_rate over to .determine_rate in
-drivers/clk/meson/ (as it's the only hardware with CCF support that I
-have).
+--IxARlzPRJnfyHLX0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 
-Best regards,
-Martin
+> It's _BITUL() or so from linux/const.h.
+> https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/const.h#L28
+> You may not use internal definitions in UAPI headers.
+
+Sorry, I missed it was an uapi header and gave the authors bad advice
+with BIT.
+
+If I get another fixed version by Saturday evening (CEST), I can still
+squeeze it into my pull request for 5.14. Minor details can be fixed
+incrementally, but we definatel need to get the uapi header correct.
 
 
-[0] https://patchwork.kernel.org/project/linux-clk/cover/20210702225145.2643303-1-martin.blumenstingl@googlemail.com/
+--IxARlzPRJnfyHLX0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDfmskACgkQFA3kzBSg
+KbZLBg/5AeU6TjKkwB4I79xJ8UhpHUBAJ0CQWQgCo/7pcojSqebMzQNv0Y9052rJ
+oXT8uYDUEbGUayMp8Vd/MKLXjvJnPdHMtzyICtj5w83/9pZyhgd9ObbNfXJcdM5d
+ViSEIzWo+9JaeN7eNHk1iFmgqgKw6OIZtdfnsJXD/DrkSrULFdUWKGZAii9mgS0S
+XMeq+Wbt6xb+bhmIfi/Pn5O79CcPRkMRZZ1ClGlm+KciLaMKl09YJyua69oWlXrh
+0/vOmRMwyI9j9gWunrzgBZGq6k7it/7Y3xewkak1o2La7snoN3TMu+FFQ0pftbPD
+A5xvI9Ffi4s/suFYTAcdLjHfTZ97qDkxNHBnzlbPy7nVPWN61XRoxj2RXmqdLg0h
+aoW+8dTLDT8qTV5zlqm+KnJpe6YHrzPnvr9rfpPZrWV2vMVfEyhoHCiWS+sDZoFH
+VB8jWe6SiUQD46pW8NZzySO5rYIIVPFrz8ZuZUY64RxUGXBUU/S9SD59itVJwfk+
+BMVB2xespgxuJ+V6bpECUZW41S7hXyDgVPaFKIfT5KC6wVeiOlwfYAEvUEtRHs7d
+cRUC67Pieypuuc5stD0HuG8e93BJZDdYXXO/q7Iz7/PHR/hxm26ou13o3YTDQzJb
+xlhSTHGAAjbICjwaaY5W09lxYoB+1TTtKVIrHmMP8TzvHIOSkXA=
+=uVsf
+-----END PGP SIGNATURE-----
+
+--IxARlzPRJnfyHLX0--
