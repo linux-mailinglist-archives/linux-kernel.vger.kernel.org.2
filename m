@@ -2,119 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 895563B9A58
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 03:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D0E3B9A5A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 03:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234561AbhGBBEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 21:04:41 -0400
-Received: from lucky1.263xmail.com ([211.157.147.135]:36958 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230427AbhGBBEk (ORCPT
+        id S234614AbhGBBEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 21:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234564AbhGBBEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 21:04:40 -0400
-Received: from localhost (unknown [192.168.167.32])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 91A2DB0A09;
-        Fri,  2 Jul 2021 09:02:03 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 0
-X-SPAM-CHECKED: 5
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from [172.16.12.64] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P29909T139671178565376S1625187716058830_;
-        Fri, 02 Jul 2021 09:01:56 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <2b5a0cf30c818905d8e17c12045a82c1>
-X-RL-SENDER: shawn.lin@rock-chips.com
-X-SENDER: lintao@rock-chips.com
-X-LOGIN-NAME: shawn.lin@rock-chips.com
-X-FST-TO: arnd@kernel.org
-X-RCPT-COUNT: 8
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Message-ID: <6a5d06db-92af-7df0-2c71-e25bad08ee0c@rock-chips.com>
-Date:   Fri, 2 Jul 2021 09:02:03 +0800
+        Thu, 1 Jul 2021 21:04:51 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F93C061762;
+        Thu,  1 Jul 2021 18:02:20 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id a7so7989604pga.1;
+        Thu, 01 Jul 2021 18:02:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UlRaziJx7TG6nALXj+SGSTTIDO8Ah1AeLcJr/4yfTEo=;
+        b=N3qrbUbrbXvO6UBNyPwxKENi27xaa+ZyNXM6j73mX+vTKc0YdsY4jGFhtweBmuMATQ
+         wI4SCSn0a5BdNPya0Dwgm7o9kQtFFnV++aH6kKD85edHCKUEYetEE0aTxXBOxwkVZPIg
+         HYE5VSWDvHZIyrOkMQQJkcK0uoOgAp2WgHEqc5nIq6xDHz+dPrhz/18F3G2/gdDYunYD
+         bOgAL//p2u8UIjb3wpHy758dWgiGxy1AJlfTKOjc+xHxHnhZ80/eu86gVAgRIZYfOv1D
+         I5E1IP1+SlC2g80gBnnvB6kDWcW5yPNBRP2MOhZ7CKdZVpW1kLKKTQvE3KIO4GKAzqQh
+         hnzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UlRaziJx7TG6nALXj+SGSTTIDO8Ah1AeLcJr/4yfTEo=;
+        b=So0n1wedMIU2ribzFeah8w+Hddui1QiB6+BSTVUZP/VNB63wFhIITPMY6WpuytgF3k
+         OKSPCudfKijsW3cxNYTiY5mDUmRZRFY2cg1RkOR/UdjHjf7/I8LT6dF21mtHGVg8nlTL
+         YARBir763MMusFtcWJqnq8U1hcQQ6BgqZkKWha3nDSgb3qsf+O/EfBSFxcjH9+yU4Fxl
+         9awma79QaA4JBt0pOtz4lygNe8l3I/YXfoZs6d/1iDthqJYXcgiL8bTBaq0NjMb+ITl+
+         smXjCrTsMqGN/7a1vjzuwAr/5G5hAYvsJdmVKLPatz9wpTeD4rHlUBQh/f6FH+9wtbam
+         jJnQ==
+X-Gm-Message-State: AOAM532DvinaoOaDB+t7uQD1BRMYgq5OTd7qcTljpaDoMrHHRK/VSnx0
+        FbIJEmLRO1FF3lJ01FO0jSc=
+X-Google-Smtp-Source: ABdhPJzTREkZp9dUcvTZuI7IztdsabYQPAgtglkvGMlzzhr3yxSAhWflfuZ9WeDF7GXmlSkPcE5zYw==
+X-Received: by 2002:a62:844d:0:b029:308:230c:fe3a with SMTP id k74-20020a62844d0000b0290308230cfe3amr2759538pfd.34.1625187739384;
+        Thu, 01 Jul 2021 18:02:19 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:5027:e508:7678:5df6])
+        by smtp.gmail.com with ESMTPSA id y9sm1244254pfa.197.2021.07.01.18.02.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 18:02:18 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 18:02:15 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Bastien Nocera <hadess@hadess.net>, Jiri Kosina <jikos@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Kenneth Albanowski <kenalba@google.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] HID: input: do not report stylus battery state as "full"
+Message-ID: <YN5llwVfb0abPJZU@google.com>
+References: <YNtlrrKZVQY4byVa@google.com>
+ <CAO-hwJJ-VyKBohETJabxmgjZ8RtmZHWWOBr2kZNC=feOxHgTtQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101
- Thunderbird/90.0
-Cc:     shawn.lin@rock-chips.com, Arnd Bergmann <arnd@arndb.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_mmc=3a_warn_for_invalid_SDIO_data_buffe?=
- =?UTF-8?B?cnPjgJDor7fms6jmhI/vvIzpgq7ku7bnlLFsaW51eC1tbWMtb3duZXJAdmdlci5r?=
- =?UTF-8?B?ZXJuZWwub3Jn5Luj5Y+R44CR?=
-To:     Arnd Bergmann <arnd@kernel.org>
-References: <20210630122057.2795882-1-arnd@kernel.org>
-From:   Shawn Lin <shawn.lin@rock-chips.com>
-In-Reply-To: <20210630122057.2795882-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAO-hwJJ-VyKBohETJabxmgjZ8RtmZHWWOBr2kZNC=feOxHgTtQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd
+Hi Benjamin,
 
-On 2021/6/30 20:20, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Jun 30, 2021 at 09:09:27AM +0200, Benjamin Tissoires wrote:
+> Hi Dmitry,
 > 
-> Jernej Skrabec reported a problem with the cw1200 driver failing on
-> arm64 systems with CONFIG_VMAP_STACK=y.
+> On Tue, Jun 29, 2021 at 8:26 PM Dmitry Torokhov
+> <dmitry.torokhov@gmail.com> wrote:
+> >
+> > The power supply states of discharging, charging, full, etc, represent
+> > state of charging, not the capacity level of the battery (for which
+> > we have a separate property). Current HID usage tables to not allow
+> > for expressing charging state of the batteries found in generic
+> > styli, so we should simply assume that the battery is discharging
+> > even if current capacity is at 100% when battery strength reporting
+> > is done via HID interface. In fact, we were doing just that before
+> > commit 581c4484769e.
 > 
-> The driver in this case passes a pointer to a stack variable (in vmalloc
-> space) into the sdio layer, which gets translated into an invalid DMA
-> address.
+> This commit is 4 year old already, so I'd like to have the opinion of
+> Bastien on the matter for the upower side (or at least notify him).
 > 
-> Even without CONFIG_VMAP_STACK, the driver is still unreliable, as
-> cache invalidations on the DMA buffer may cause random data corruption
-> in adjacent stack slots.
+> >
+> > This change helps UIs to not mis-represent fully charged batteries in
+> > styli as being charging/topping-off.
+> >
+> > Fixes: 581c4484769e ("HID: input: map digitizer battery usage")
+> > Reported-by: Kenneth Albanowski <kenalba@google.com>
+> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > ---
+> >  drivers/hid/hid-input.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> >
+> > diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+> > index e982d8173c9c..e85a1a34ff39 100644
+> > --- a/drivers/hid/hid-input.c
+> > +++ b/drivers/hid/hid-input.c
+> > @@ -417,8 +417,6 @@ static int hidinput_get_battery_property(struct power_supply *psy,
+> >
+> >                 if (dev->battery_status == HID_BATTERY_UNKNOWN)
+> >                         val->intval = POWER_SUPPLY_STATUS_UNKNOWN;
 > 
-> This could be worked around in the SDIO core, but in the discussion we
-> decided that passing a stack variable into SDIO should always be considered
-> a bug, as it is for USB drivers.
-> 
-> Change the sdio core to produce a one-time warning for any on-stack
-> (both with and without CONFIG_VMAP_STACK) as well as any vmalloc
-> or module-local address that would have the same translation problem.
+> What's the point of keeping the HID_BATTERY_UNKNOWN code path? AFAICT,
+> before 581c4484769e, we were just returning
+> POWER_SUPPLY_STATUS_DISCHARGING. If we don't need to check for the
+> capacity, I think we could also drop the hunk just before where we do
+> the query of the capacity.
 
-This was the previous comment about the same topic.
-Should we check for mmc_io_rw_direct?
+I believe it is beneficial to keep this check: prior to 581c4484769e we
+were only handling batteries reported via generic device control -
+HID_DC_BATTERYSTRENGTH - essentially UPS batteries that normally can be
+queried at will. Stylus batteries are typically only reported when
+stylus is in contact with the digitzer, so until user actually engages
+stylus we do not have idea about its level/capacity. For this reason I
+think we should keep reporting POWER_SUPPLY_STATUS_UNKNOWN.
 
-https://www.spinics.net/lists/linux-mmc/msg41794.html
+Thanks.
 
-> 
-> Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
-> Link: https://lore.kernel.org/lkml/20210622202345.795578-1-jernej.skrabec@gmail.com/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/mmc/core/sdio_ops.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mmc/core/sdio_ops.c b/drivers/mmc/core/sdio_ops.c
-> index 4c229dd2b6e5..14e983faf223 100644
-> --- a/drivers/mmc/core/sdio_ops.c
-> +++ b/drivers/mmc/core/sdio_ops.c
-> @@ -6,6 +6,7 @@
->    */
->   
->   #include <linux/scatterlist.h>
-> +#include <linux/sched/task_stack.h>
->   
->   #include <linux/mmc/host.h>
->   #include <linux/mmc/card.h>
-> @@ -124,6 +125,7 @@ int mmc_io_rw_extended(struct mmc_card *card, int write, unsigned fn,
->   	int err;
->   
->   	WARN_ON(blksz == 0);
-> +	WARN_ON_ONCE(is_vmalloc_or_module_addr(buf) || object_is_on_stack(buf));
->   
->   	/* sanity check */
->   	if (addr & ~0x1FFFF)
-> 
-
-
+-- 
+Dmitry
