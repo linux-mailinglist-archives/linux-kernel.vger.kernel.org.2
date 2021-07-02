@@ -2,126 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8253BA0D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041EF3BA0DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbhGBNEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:04:45 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57574 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232250AbhGBNEn (ORCPT
+        id S232471AbhGBNGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232169AbhGBNGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:04:43 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2FB8320560;
-        Fri,  2 Jul 2021 13:02:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625230930; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3d1yKJRwIM3/3JhL7UHi0GBB49k8bfYaL1isHtBjNiU=;
-        b=cR4n9AZzeh+F2V6p9n+sHtf+6fHRppgsvSuFgaB5/1EN9C3rwJ3XOd6z1DpCJrTKIlOPuS
-        CaU9IXxxODIbUXf/5/LVXXP9ZqW3E9mybx5FqVIjtCgH1L9KguvGIZAMSBgQcpB6HY73CK
-        R4V+UTr82OHyU4CnTKxfaYvRvWvaLDc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625230930;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3d1yKJRwIM3/3JhL7UHi0GBB49k8bfYaL1isHtBjNiU=;
-        b=YZNQrLbP7OiucHCEciIGA1VY7OqUhjIgOpRHnyIHA+E7RVUWocP3FCBXTSYYjH4S8FQM1R
-        xboihQsmW00MYQDA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 7EFC411C84;
-        Fri,  2 Jul 2021 13:02:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625230930; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3d1yKJRwIM3/3JhL7UHi0GBB49k8bfYaL1isHtBjNiU=;
-        b=cR4n9AZzeh+F2V6p9n+sHtf+6fHRppgsvSuFgaB5/1EN9C3rwJ3XOd6z1DpCJrTKIlOPuS
-        CaU9IXxxODIbUXf/5/LVXXP9ZqW3E9mybx5FqVIjtCgH1L9KguvGIZAMSBgQcpB6HY73CK
-        R4V+UTr82OHyU4CnTKxfaYvRvWvaLDc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625230930;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3d1yKJRwIM3/3JhL7UHi0GBB49k8bfYaL1isHtBjNiU=;
-        b=YZNQrLbP7OiucHCEciIGA1VY7OqUhjIgOpRHnyIHA+E7RVUWocP3FCBXTSYYjH4S8FQM1R
-        xboihQsmW00MYQDA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id eBAbHFEO32CzNAAALh3uQQ
-        (envelope-from <lhenriques@suse.de>); Fri, 02 Jul 2021 13:02:09 +0000
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 1d835cb7;
-        Fri, 2 Jul 2021 13:02:08 +0000 (UTC)
-Date:   Fri, 2 Jul 2021 14:02:08 +0100
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Petr Vorel <pvorel@suse.cz>, Steve French <sfrench@samba.org>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH v12] vfs: fix copy_file_range regression in cross-fs
- copies
-Message-ID: <YN8OUJvdRXAuNXSk@suse.de>
-References: <20210702090012.28458-1-lhenriques@suse.de>
- <CAOQ4uxhQciJ=r5E2yvM2zafhnBO4nZNVzUfEU9-tj9SAKAYwGg@mail.gmail.com>
+        Fri, 2 Jul 2021 09:06:22 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5D5C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 06:03:50 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id bu19so17946411lfb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 06:03:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2Aa/jq9YI+x1KrryZAVhVE7EOEsppjIR0uL1Rz6taMM=;
+        b=oc5zdTAaxOMZ069Jm12x2LhhLcTy9yAK+I4qT6kVK62wlNFSXompxgLU7DE13phAjk
+         G41xl8nuHAWztfx809kJPUNPA6BPVDyIH5AVR0CnhZYaakq5LA+iG+Yg3ghg3qErEevp
+         aODfAFU9en2UCks7eRjUp336caCNsrKTx5tADuaYU8D2L3ePGaYw/dCNYEPadBYHrr59
+         KMPVH5p/dsoC1axXFMaiXt412zXXZ77uEcPIPzVWVm3vq9xWLjbSzq51pdphPf4BGbWD
+         +fx15VV82sq5sVAZsucs5JU3Jnx9ulZDX80OVwwZyTXbn4/li5bEFLPlSrZbtI0jivVB
+         r0FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2Aa/jq9YI+x1KrryZAVhVE7EOEsppjIR0uL1Rz6taMM=;
+        b=gy9hQVbwlkZtU1EgJ40ijL0l02/ZCdGgyiTDteHYljNHkiZFDIN9rW/TJdx3pr/8T+
+         qZhTB0xk4cWWUkZceh1oe7qgu/M8sHxnK52Ul/+Mn8wfF5KnYXr8U05a8gN0gAWJCYwv
+         enWwj2dbQb79tOijAnc8YBGNf1PbacfeYkC4Lvt/HBuMjmlvoog/jHJC3yqFOazBbV1o
+         ZBZdyJOD9rrq/APklR92wmPai/0hP4zs5VzAjYUEsv3muvGPFSjJjeeJNpQ8cg1y4WKT
+         ArZ5uECZpP+Jq9dWLivVLvCtKN07ZOIL+KWKQ/5Wa7o0fjTHuLJaAD4DheEoNoQZzfeY
+         7Cfw==
+X-Gm-Message-State: AOAM530ryd///B4jhu0SBRLIr4JLG/tJQyXFm08oGnmP70OXo/GKbBBd
+        Zf/kkREsJl1k5wNGXy9NJzYTJa1GoruLRTVinDY=
+X-Google-Smtp-Source: ABdhPJwQc++fHCClEDuSMd1fZcwLFEYwjl8BDOkmt94mM+q6OIOycPWB0ch0v+GFiaTXYpnfWFZYHMLt5x+DfeUVdEI=
+X-Received: by 2002:a05:6512:2629:: with SMTP id bt41mr3747956lfb.95.1625231028775;
+ Fri, 02 Jul 2021 06:03:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxhQciJ=r5E2yvM2zafhnBO4nZNVzUfEU9-tj9SAKAYwGg@mail.gmail.com>
+References: <20210630141204.8197-1-xuewen.yan94@gmail.com> <YN70sbUGh2pViWEQ@hirez.programming.kicks-ass.net>
+ <20210702115421.gcju2vluhof6rp6f@e107158-lin.cambridge.arm.com> <87wnq87w3q.mognet@arm.com>
+In-Reply-To: <87wnq87w3q.mognet@arm.com>
+From:   Xuewen Yan <xuewen.yan94@gmail.com>
+Date:   Fri, 2 Jul 2021 21:03:31 +0800
+Message-ID: <CAB8ipk-+BRXg_2=-=NXWr_OEi0rAN4Eo8hHwfOjo_YbkQCvVmg@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/uclamp: Avoid getting unreasonable ucalmp value
+ when rq is idle
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Qais Yousef <qais.yousef@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Quentin Perret <qperret@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 02:12:29PM +0300, Amir Goldstein wrote:
-<snip>
-> I guess there was miscommunication
-> 
-> As Olga wrote, you have to place this short-circuit in
-> nfs4_copy_file_range() if you remove it from here.
-> It is NOT SAFE to pass zero length to nfs4_copy_file_range().
-> 
-> I apologize if you inferred from my response that you don't need to
-> do that.
+On Fri, Jul 2, 2021 at 8:12 PM Valentin Schneider
+<valentin.schneider@arm.com> wrote:
+>
+> On 02/07/21 12:54, Qais Yousef wrote:
+> > sched/uclamp: Ignore max aggregation if rq is idle
+> >
+> > When a task wakes up on an idle rq, uclamp_rq_util_with() would max
+> > aggregate with rq value. But since there is no task enqueued yet, the
+> > values are stale based on the last task that was running. When the new
+>
+> Nit: those values are "intentionally stale" for UCLAMP_MAX, per
+>
+>   e496187da710 ("sched/uclamp: Enforce last task's UCLAMP_MAX")
+>
+> for UCLAMP_MIN we'll set uclamp_none(UCLAMP_MIN) == 0 upon dequeueing the
+> last runnable task, which DTRT.
+>
+> > task actually wakes up and enqueued, then the rq uclamp values should
+> > reflect that of the newly woken up task effective uclamp values.
+> >
+> > This is a problem particularly for uclamp_max because it default to
+>                     ^^^^^^^^^^^^
+> Per the above, it's "only" a problem for UCLAMP_MAX.
+>
+> > 1024. If a task p with uclamp_max = 512 wakes up, then max aggregation
+> > would ignore the capping that should apply when this task is enqueued,
+> > which is wrong.
+> >
+> > Fix that by ignoring max aggregation if the rq is idle since in that
+> > case the effective uclamp value of the rq will be the ones of the task
+> > that will wake up.
+> >
 
-Yeah, I totally misread your email.  But yeah I understand the issue and
-I'll take a look into that.  Although this will need to go back to my TODO
-pile for next week.
-
-> My intention was, not knowing if and when your patch will be picked up,
-> (a volunteer to pick it pick never showed up...)
-
-Right, and this brings the question that this has been dragging already
-for a while now.  And I feel like I'm approaching my last attempt before
-giving up.  If no one is picking this patch there's no point continue
-wasting more time with it (mine and all the other people helping with
-reviews and testing).
-
-Anyway... I'll try to get back to this during next week.
-
-Cheers,
---
-Luís
-
-> I think that nfs client developers should make sure that the zero length
-> check is added to nfs code as fail safety, because the semantics
-> of the vfs method and the NFS protocol command do not match.
-> 
-> Thanks,
-> Amir.
+Thanks!
+xuewen
