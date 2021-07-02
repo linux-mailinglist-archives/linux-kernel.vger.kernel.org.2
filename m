@@ -2,71 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C473BA498
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 953223BA492
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhGBUQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 16:16:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39602 "EHLO mail.kernel.org"
+        id S231217AbhGBUQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 16:16:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231179AbhGBUQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 16:16:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9450161420;
+        id S231157AbhGBUQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 16:16:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 46C4961413;
         Fri,  2 Jul 2021 20:13:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1625256820;
-        bh=eVKK5wUCmh1On5h88XwikbSrepvV6lRMYe1Dy1rne+Y=;
+        bh=HUOZ+C2wIyg73qzEvZVd6hqiaAxDw34zAvWf1aRunpA=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Cqe08NyTgRIIPRcBZfZjDN1QgpvyM7B+FotD5+1qenC3kJh+/Wui68PXYaHcBDAVI
-         qOF7hi+Vrcs3KbJdz69RXQvmyz9VwG1GkobbBdBUEhydDDuxQzFP+4zBzOXEGQ4Je3
-         R0LFUxmELEGAYZBPFCVXUhNaxQSQ/F6OoJXY2I4clUKM2W3i35IuQMf+WOR0sINA9Z
-         PoNFaOkQ8qPZNXTnco+oLlHF6aSQZ7oozfQL8ZJTgyaATpOHUAF7sFZzVebRy1rVsp
-         6PUAOZjllNQtAQK4rp+vGeXIKecAw72rFcE206iZdkxrZRbKtFDqsIfo/COjG3rwGe
-         E2e7jtm1ttIAg==
+        b=r09QVE0lPh+yu/QTnvUTIh/0JmANf+wMamx6Fl+IXoEfN1NgaKCyGEeun4kOlMYmT
+         uhKnSc1cRPhDuKUMRd5Iez9Qwdv1XAXubnprTFjacNJC8U8VSRBaOyWVZko+z7U8ka
+         QHZi/D6C+j8xh5eicPbdFeCskQUigNcYO9xxzTklAuAjcugC9NYJ/FUsqmL8RvRafQ
+         DOH/1m/ByBONBB/qgYGNHzBAbgIW9Wj3M76Y7OHyZRehgKdDHtLT6nhe9VpiE1Va0R
+         a6kwMLY25WMFBJ0ZhBVTFpbzVs/bqKJl88GJoPwV4LfNi/wQLvJuSMQ+kycJKabRRt
+         JuwpkY7V8GyOA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 88D2C60283;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3F288609E4;
         Fri,  2 Jul 2021 20:13:40 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.14-1 tag
+Subject: Re: [GIT PULL 2/2] asm-generic: Unify asm/unaligned.h around struct helper
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <87o8bk7qk1.fsf@mpe.ellerman.id.au>
-References: <87o8bk7qk1.fsf@mpe.ellerman.id.au>
+In-Reply-To: <CAK8P3a3Y1FHaS0yRAeBYmq0Z-yXtvHBRRiO1tNHKf-TaWVrFzQ@mail.gmail.com>
+References: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com> <CAK8P3a3Y1FHaS0yRAeBYmq0Z-yXtvHBRRiO1tNHKf-TaWVrFzQ@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <87o8bk7qk1.fsf@mpe.ellerman.id.au>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.14-1
-X-PR-Tracked-Commit-Id: 4ebbbaa4ce8524b853dd6febf0176a6efa3482d7
+X-PR-Tracked-Message-Id: <CAK8P3a3Y1FHaS0yRAeBYmq0Z-yXtvHBRRiO1tNHKf-TaWVrFzQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git tags/asm-generic-unaligned-5.14
+X-PR-Tracked-Commit-Id: 803f4e1eab7a8938ba3a3c30dd4eb5e9eeef5e63
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 019b3fd94ba73d3ac615f0537440b81f129821f6
-Message-Id: <162525682055.6172.2897089487227077976.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 4cad67197989c81417810b89f09a3549b75a2441
+Message-Id: <162525682025.6172.3953171867366042769.pr-tracker-bot@kernel.org>
 Date:   Fri, 02 Jul 2021 20:13:40 +0000
-To:     Michael Ellerman <mpe@ellerman.id.au>
+To:     Arnd Bergmann <arnd@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        andriy.shevchenko@linux.intel.com, aneesh.kumar@linux.ibm.com,
-        arnd@arndb.de, atrajeev@linux.vnet.ibm.com,
-        benh@kernel.crashing.org, chris.zjh@huawei.com,
-        christophe.leroy@csgroup.eu, danielhb413@gmail.com, dja@axtens.net,
-        fthain@linux-m68k.org, geoff@infradead.org, haren@linux.ibm.com,
-        herbert@gondor.apana.org.au, jiapeng.chong@linux.alibaba.com,
-        jniethe5@gmail.com, joel@jms.id.au, kjain@linux.ibm.com,
-        libaokun1@huawei.com, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mhiramat@kernel.org,
-        nathan@kernel.org, nathanl@linux.ibm.com,
-        naveen.n.rao@linux.vnet.ibm.com, ndesaulniers@google.com,
-        npiggin@gmail.com, paulus@ozlabs.org, ruscur@russell.cc,
-        sathvika@linux.vnet.ibm.com, sudeep.holla@arm.com,
-        thunder.leizhen@huawei.com, trix@redhat.com, vaibhav@linux.ibm.com,
-        wangborong@cdjrlc.com, yuehaibing@huawei.com,
-        zhangshaokun@hisilicon.com
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 03 Jul 2021 00:12:30 +1000:
+The pull request you sent on Fri, 2 Jul 2021 15:49:30 +0200:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.14-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git tags/asm-generic-unaligned-5.14
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/019b3fd94ba73d3ac615f0537440b81f129821f6
+https://git.kernel.org/torvalds/c/4cad67197989c81417810b89f09a3549b75a2441
 
 Thank you!
 
