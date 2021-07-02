@@ -2,128 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDFF3B9CF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 09:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7043B9CFB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 09:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhGBHfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 03:35:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
+        id S230160AbhGBHgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 03:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhGBHfK (ORCPT
+        with ESMTP id S230127AbhGBHgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 03:35:10 -0400
-Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35882C061762;
-        Fri,  2 Jul 2021 00:32:38 -0700 (PDT)
-Received: from miraculix.mork.no (fwa219.mork.no [192.168.9.219])
-        (authenticated bits=0)
-        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 1627WTFM008403
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Fri, 2 Jul 2021 09:32:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
-        t=1625211149; bh=4IcPPKCPtha5caFpsZbpIXIABLLgrcYiJzOTZgq2fqI=;
-        h=From:To:Cc:Subject:References:Date:Message-ID:From;
-        b=mbkGlWgP+f+Jtzg6EonrswIcr+5x61PhMzBMiQpBdbZB7dz5nJt1cCX3fbToaE6Wu
-         9tHZjLKHB/uSGsdoC0iqs8AILR2Rp1lqSVjJsBL+VYtzexo1qe9FZR8rmYjpaDqDRl
-         3US7PtdhvWQssy53NQ83xesqC/ay6G3c+zvWcWdE=
-Received: from bjorn by miraculix.mork.no with local (Exim 4.94.2)
-        (envelope-from <bjorn@mork.no>)
-        id 1lzDf2-000BB9-Rw; Fri, 02 Jul 2021 09:32:28 +0200
-From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
-To:     Stefan =?utf-8?Q?Br=C3=BCns?= <stefan.bruens@rwth-aachen.de>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Daniele Palmas <dnlplm@gmail.com>
-Subject: Re: [PATCH v2] USB: serial: qcserial: Support for SDX55 based
- Sierra Wireless 5G modules
-Organization: m
-References: <20210611134507.8780-1-stefan.bruens@rwth-aachen.de>
-        <YNQ0O0vhtpStp0n/@hovoldconsulting.com>
-        <87tulnms3o.fsf@miraculix.mork.no> <1727850.UKLhYeRy6v@pebbles>
-Date:   Fri, 02 Jul 2021 09:32:28 +0200
-In-Reply-To: <1727850.UKLhYeRy6v@pebbles> ("Stefan =?utf-8?Q?Br=C3=BCns=22?=
- =?utf-8?Q?'s?= message of "Thu, 1
-        Jul 2021 18:28:14 +0200")
-Message-ID: <87y2apf9wz.fsf@miraculix.mork.no>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Fri, 2 Jul 2021 03:36:06 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12F6C061762;
+        Fri,  2 Jul 2021 00:33:33 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id in17-20020a17090b4391b0290170ba0ec7fcso8274764pjb.4;
+        Fri, 02 Jul 2021 00:33:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iFQeUZJpN/P8c4rNnw9ZStEGC/9J57e7oVfkc7jOXBw=;
+        b=mJMs94qsqAKm0pzG+d/8ak5uPFgWva45kkIYnP5i9i11ynkExAicnsBOkuoIaMVVPq
+         rqwpeeplbqDUYVThdtFU/WwAiaHtI6/hGyAuOXS9egERqDiQi8bziv0Zq3pNEotYU1AE
+         /KD8IClawLyRgExTpQkDXSVDep7Nqu032aflrB8St3IR7/QH5wR75f0QW155eRcKYXgh
+         3ar3esD3sC1KEClkMznsib3UqTjgJoy1sZTSGYiUiFFvG298cl+wR+C3iGRUTznYGrMZ
+         YCqDk/Erp9mfk5XN/9uJ+u6lPAFcHWeUXhI8UMjeLSdOe1jb2sOoFN/eK2HQ+IN7RETu
+         ffFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=iFQeUZJpN/P8c4rNnw9ZStEGC/9J57e7oVfkc7jOXBw=;
+        b=Ods9QtLLTGVgpQDmnbv7aFTsOS12EXIDHl7ivZKAK6CbwntneVms7t98n7sFehWq1p
+         +zve9ImMC/XCZHMnCD08V6JkjCvrLSyav80UzkIJOCG+GYbCm2BNEPTB55myMkzkC2Nd
+         FfckF3OthVHVWHyKDQdM//xhNpDsq2pyYPp0tos37CVQ4bIgm0fFgpBZrvYGGDAtp9D3
+         ffi/6M/ZlZ6UkkTcznAFSRcFkwEOUzq4Nn4Xq7jI/C1ZisjJkpl6M0Zke5Ag6LKcxYGA
+         Cn+oxMZeuWXuE3lcymj2HuJL34nmRseyBG8T6niI6d5LUmCWC3kEOpkodfNSpIUv8oEn
+         CXaA==
+X-Gm-Message-State: AOAM5318lS03NpkAr3qSVj780YWai7i67EChHHSJcDGBd1zXb6ZYEd8i
+        /h7GBxARfDXB413orjC4WvA=
+X-Google-Smtp-Source: ABdhPJzfbBfr0twKNwd1iNtaS41APSdZgzYtJq7ZlrpuaBqpD8i4yGmApJ4Nl/bhtwzQBmHnz014EQ==
+X-Received: by 2002:a17:902:6e02:b029:128:977c:217d with SMTP id u2-20020a1709026e02b0290128977c217dmr1310954plk.44.1625211213156;
+        Fri, 02 Jul 2021 00:33:33 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:e476:fcd4:d1bf:22a2])
+        by smtp.gmail.com with ESMTPSA id 133sm2438670pfx.39.2021.07.02.00.33.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 00:33:32 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Fri, 2 Jul 2021 00:33:30 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        mm-commits@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        torvalds@linux-foundation.org,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Subject: Re: [patch 108/192] mm: zram: amend SLAB_RECLAIM_ACCOUNT on
+ zspage_cachep
+Message-ID: <YN7BSgvSJXzzbIBj@google.com>
+References: <20210630184624.9ca1937310b0dd5ce66b30e7@linux-foundation.org>
+ <20210701015258.BrxjIzdE1%akpm@linux-foundation.org>
+ <YN3Xbdc9N81PIegK@google.com>
+ <CAGWkznHWe22iwtBNtJfY75aS5_cfwKTaBfkX=zzmSaTwHZaAyQ@mail.gmail.com>
+ <YN6ogJbnI46hnjgk@google.com>
+ <CAGWkznGaQyfxUuP8OJxvLapk4R8x3kpgU50H-xZfTiLO-i9WMg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: clamav-milter 0.103.2 at canardo
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGWkznGaQyfxUuP8OJxvLapk4R8x3kpgU50H-xZfTiLO-i9WMg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stefan Br=C3=BCns <stefan.bruens@rwth-aachen.de> writes:
+On Fri, Jul 02, 2021 at 02:20:42PM +0800, Zhaoyang Huang wrote:
+> On Fri, Jul 2, 2021 at 1:47 PM Minchan Kim <minchan@kernel.org> wrote:
+> >
+> > On Fri, Jul 02, 2021 at 10:45:09AM +0800, Zhaoyang Huang wrote:
+> > > On Thu, Jul 1, 2021 at 10:56 PM Minchan Kim <minchan@kernel.org> wrote:
+> > > >
+> > > > On Wed, Jun 30, 2021 at 06:52:58PM -0700, Andrew Morton wrote:
+> > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > > Subject: mm: zram: amend SLAB_RECLAIM_ACCOUNT on zspage_cachep
+> > > > >
+> > > > > Zspage_cachep is found be merged with other kmem cache during test, which
+> > > > > is not good for debug things (zs_pool->zspage_cachep present to be another
+> > > > > kmem cache in memory dumpfile).  It is also neccessary to do so as
+> > > > > shrinker has been registered for zspage.
+> > > > >
+> > > > > Amending this flag can help kernel to calculate SLAB_RECLAIMBLE correctly.
+> > > > >
+> > > > > Link: https://lkml.kernel.org/r/1623137297-29685-1-git-send-email-huangzhaoyang@gmail.com
+> > > > > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > > Cc: Minchan Kim <minchan@kernel.org>
+> > > > > Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > > > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > > >
+> > > > Sorry for the late. I don't think this is correct.
+> > > >
+> > > > It's true "struct zspage" can be freed by zsmalloc's compaction registerred
+> > > > by slab shrinker so tempted to make it SLAB_RECLAIM_ACCOUNT. However, it's
+> > > > quite limited to work only when objects in the zspage are heavily fragmented.
+> > > > Once the compaction is done, zspage are never discardable until objects are
+> > > > fragmented again. It means it could hurt other reclaimable slab page reclaiming
+> > > > since the zspage slab object pins the page.
+> > > IMHO, kmem cache's reclaiming is NOT affected by SLAB_RECLAIM_ACCOUNT
+> > > . This flag just affects kmem cache merge[1], the slab page's migrate
+> > > type[2] and the page's statistics. Actually, zspage's cache DO merged
+> > > with others even without SLAB_RECLAIM_ACCOUNT currently, which maybe
+> > > cause zspage's object will NEVER be discarded.(SLAB_MERGE_SAME
+> > > introduce confusions as people believe the cache will merge with
+> > > others when it set and vice versa)
+> > >
+> > > [1]
+> > >  struct kmem_cache *find_mergeable(size_t size, size_t align, unsigned
+> > > long flags, const char *name, void (*ctor)(void *))
+> > > ...
+> > >     if ((flags & SLAB_MERGE_SAME) != (s->flags & SLAB_MERGE_SAME))
+> > >      continue;
+> > >
+> > > [2]
+> > > if (s->flags & SLAB_RECLAIM_ACCOUNT)
+> > >     s->allocflags |= __GFP_RECLAIMABLE;
+> >
+> > That's the point here. With SLAB_RECLAIM_ACCOUNT, page allocator
+> > try to allocate pages from MIGRATE_RECLAIMABLE with belief those
+> > objects are easily reclaimable. Say a page has object A, B, C, D
+> > and E. A-D are easily reclaimable but E is hard. What happens is
+> > VM couldn't reclaim the page in the end due to E even though it
+> > already reclaimed A-D. And the such fragmenation could be spread
+> > out entire MIGRATE_RECLAIMABLE pageblocks over time.
+> > That's why I'd like to put zspage into MIGRATE_UNMOVALBE from the
+> > beginning since I don't think it's easily reclaimble once compaction
+> > is done.
+> The slab page could fallback to any migrate type even allocating with
 
-> On Donnerstag, 24. Juni 2021 13:15:07 CEST Bj=C3=B8rn Mork wrote:
->> Johan Hovold <johan@kernel.org> writes:
->> > Could you please also post the output of usb-devices (or lsusb -v) for
->> > this device in MBIM mode?
->>=20
->> Yes, this would be nice to have.
->
-> See below.
->=20=20
->> I suspect that this device is like other SDX55 devices we've seen, using
->> class/subclass/function to map the vendor specific functions
->> too. Dropping static interface numbers.  If correct, then the patch is
->> bogus and the interface numbers might change based on firmware version
->> and configuration.
->
-> Do you really expect Sierra do to something sensible? According to their=
-=20
-> documentation functions are matched by interface numbers.
+It's true but it couldn't be justication to allocate objects from any
+migration type. We should try to select right type. Please see below.
 
-Well... I expect them to be as sensible as any other vendor.  And I
-expect docs to be intendend as guidance only ;-)
+> __GFP_RECLAIMABLE, and there is only one page per slab within zspage's
+> cache, which will not be affected by compaction, so I think that
+> doesn't make sense.
 
-> They still use broken interface descriptors with holes in interface numbe=
-ring=20
-> (i.e. interface number 2 does not exist, which violates the USB standard).
+You shouldn't rely on how many pages the slab has since it's internal
+implemenation and zspage size also could be changed in the future.
+And please think about external fragmentaion as well as internal one.
 
-Right. Wrt the violation, I think that train left a decade ago.=20=20
-
->     Interface Descriptor:
->       bLength                 9
->       bDescriptorType         4
->       bInterfaceNumber        3
->       bAlternateSetting       0
->       bNumEndpoints           3
->       bInterfaceClass       255 Vendor Specific Class
->       bInterfaceSubClass      0=20
->       bInterfaceProtocol      0=20
-[..]
->     Interface Descriptor:
->       bLength                 9
->       bDescriptorType         4
->       bInterfaceNumber        4
->       bAlternateSetting       0
->       bNumEndpoints           2
->       bInterfaceClass       255 Vendor Specific Class
->       bInterfaceSubClass    255 Vendor Specific Subclass
->       bInterfaceProtocol     48=20
-
-
-So Sierra do follow the same pattern we've seen on other X55 devices:
-
-ff/00/00 - AT
-ff/ff/30 - QCDM
-
-See commits
-
- accf227de4d2 ("USB: serial: option: Add support for Quectel RM500Q")
- d6c1ddd938d8 ("USB: serial: option: add Quectel EM160R-GL")
-
-for other examples.
-
-This obviously doesn't make any difference if your configuration is the
-only one.  But I believe that is unlikely.  There are probably ways the
-layout can be changed, even if currenly not documented.  The advantage
-of class/subclass/protocol matching to function is that it works
-regardless of the number of functions and their interface number.
-
-
-Bj=C3=B8rn
+What we want to try with allocation type is to group similar lifetime
+objects together in a pageblock group to help external fragmentation
+for high-order allocation. Think what happens if the unreclaimable
+object is located in a reclaimable pageblock. The block couldn't be
+merged into high-order page in the end so it causes more compaction
+and smaller available high-order pages in the system.
