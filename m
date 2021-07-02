@@ -2,101 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBBC3BA0C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917423BA0C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbhGBNAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbhGBNAF (ORCPT
+        id S232375AbhGBNAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:00:51 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5948 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230241AbhGBNAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:00:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66B5C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 05:57:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GW7O2b9giTKhc36P5PVe5SwIe/E7zGRfMUdGgkuBFMY=; b=WJOsav2YAO5yyYWf5MznMqYZdP
-        Gw9HxQkqAhef9jFMBEACaXuinWd2eSCWKgz+UFAXi4hgLiHI9CVOKOsGvEmLK+NqQHxyczcQevzz4
-        rRDem+Xh8p41XL6sWk6WCdqzt0kgFlxl08Wr8OdzY/ZQN1hJDFf6nh3JJvpO0IBFY34OaMLsthLKJ
-        1EXiZbiOoQSR4/5ZbbMjo4hW5mzD3Ss3cJxE/Khy70GoXFKpox4H2j+/cZRhKbgHopYgMxyiyazfa
-        +EYJg9yTJW0pxsFft0Dx6kseOxldzX9ioS/l2fZkJKnXnPsMuI/TuqiuiI1D3L0+zXmNEFyi9VoPy
-        GXULI5gg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lzIj3-007i7k-5J; Fri, 02 Jul 2021 12:57:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 707673002D3;
-        Fri,  2 Jul 2021 14:56:56 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 38C772B981DA0; Fri,  2 Jul 2021 14:56:56 +0200 (CEST)
-Date:   Fri, 2 Jul 2021 14:56:56 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Bill Wendling <morbo@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bill Wendling <wcw@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jarmo Tiitto <jarmo.tiitto@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [GIT PULL] Clang feature updates for v5.14-rc1
-Message-ID: <YN8NGLPQ4Cqanc48@hirez.programming.kicks-ass.net>
-References: <202106281231.E99B92BB13@keescook>
- <CAHk-=whqCT0BeqBQhW8D-YoLLgp_eFY=8Y=9ieREM5xx0ef08w@mail.gmail.com>
- <202106291311.20AB10D04@keescook>
- <CAHk-=wg8M2DyA=bWtnGsAOVqYU-AusxYcpXubUO2htb6qPU9dg@mail.gmail.com>
- <CAGG=3QXrOnN3-3r-VGDpmikKRpaK_p5hM_qHGprDDMuFNKuifA@mail.gmail.com>
+        Fri, 2 Jul 2021 09:00:49 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 162CoWFI026101;
+        Fri, 2 Jul 2021 08:58:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=xs/6hlZjQuoUQvWGcjJhhbaIAz6wjASnn/gi1LXJyiw=;
+ b=FmrmJ08I9nwX/WWz5Fn9hcyD4oXK3DAG0Tq/mKw3CQQ1lAIro0uqSFUaGvsr8O33gI/4
+ mRl7c6OepMtiT1oi8lNO/OoSPs93ZFDjyq4cioW3jXzQ45a0anjmLRlS16wstAKvE0X5
+ MECji/Rntg3MQcdya5TWaXT07TRMvNONM7+qWqSAptR4jJA0d4jAkVFfqnHDlBQ3wgeu
+ VfEgxVZkNu6Nbz7GzUDtv6oRnPNcVIxUcGS37PcKcWJ0rJFS4u9eV8Ti8g89SW0S5wbG
+ Xr+kum9F1+xnRmRt6xobGJQs8vDRqH69xvFDhqAskcD3LFr+JXBpcPcVF12+RItbj2hA NQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39j1r2jt4x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 02 Jul 2021 08:58:10 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 162Cp5v2031411;
+        Fri, 2 Jul 2021 08:58:10 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39j1r2jt3j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 02 Jul 2021 08:58:10 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 162Cw7mO013841;
+        Fri, 2 Jul 2021 12:58:07 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 39dugh9hcx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 02 Jul 2021 12:58:07 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 162Cw5YX35062246
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 2 Jul 2021 12:58:05 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2600EA4065;
+        Fri,  2 Jul 2021 12:58:05 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 39051A405B;
+        Fri,  2 Jul 2021 12:58:04 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.56.105])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri,  2 Jul 2021 12:58:04 +0000 (GMT)
+Date:   Fri, 2 Jul 2021 15:58:02 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Ohhoon Kwon <ohoono.kwon@samsung.com>
+Cc:     david@redhat.com, akpm@linux-foundation.org, mhocko@suse.com,
+        bhe@redhat.com, ohkwon1043@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] mm: sparse: remove __section_nr() function
+Message-ID: <YN8NWgf5yTHbsVlG@linux.ibm.com>
+References: <CGME20210702094457epcas1p295611b5799befffd016b8fccf3adceff@epcas1p2.samsung.com>
+ <20210702094132.6276-1-ohoono.kwon@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGG=3QXrOnN3-3r-VGDpmikKRpaK_p5hM_qHGprDDMuFNKuifA@mail.gmail.com>
+In-Reply-To: <20210702094132.6276-1-ohoono.kwon@samsung.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: YYDbHV_vzNz1fbfLO-0P3ZwY3K0sPTYN
+X-Proofpoint-ORIG-GUID: ZHtTQqajxKLgkXyeXZRm-n6NcH_KE2fK
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-02_04:2021-07-02,2021-07-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 clxscore=1011 spamscore=0
+ mlxlogscore=867 phishscore=0 priorityscore=1501 mlxscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107020070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 05:46:46AM -0700, Bill Wendling wrote:
-> On Tue, Jun 29, 2021 at 2:04 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Tue, Jun 29, 2021 at 1:44 PM Kees Cook <keescook@chromium.org> wrote:
-> > > >
-> > > > And it causes the kernel to be bigger and run slower.
-> > >
-> > > Right -- that's expected. It's not designed to be the final kernel
-> > > someone uses. :)
-> >
-> > Well, from what I've seen, you actually want to run real loads in
-> > production environments for PGO to actually be anything but a bogus
-> > "performance benchmarks only" kind of thing.
-> >
-> The reason we use PGO in this way is because we _cannot_ release a
-> kernel into production that hasn't had PGO applied to it. The
-> performance of a non-PGO'ed kernel is a non-starter for rollout. We
-> try our best to replicate this environment for the benchmarks, which
-> is the only sane way to do this. I can't imagine that we're the only
-> ones who run up against this chicken-and-egg problem.
+On Fri, Jul 02, 2021 at 06:41:29PM +0900, Ohhoon Kwon wrote:
+> This series contains cleanups to remove __section_nr().
 > 
-> For why we don't use sampling, PGO gives a better performance boost
-> from an instrumented kernel rather than a sampled profile. I'll work
-> on getting statistics to show this.
+> When CONFIG_SPARSEMEM_EXTREME is enabled, __section_nr() could be
+> costly since it iterates all section roots to check if the given
+> mem_section is in its range.
+> 
+> On the other hand, __nr_to_section which converts section_nr to
+> mem_section can be done in O(1).
+> 
+> The only users of __section_nr() was section_mark_present() and
+> find_memory_block().
+> 
+> PATCH 1 & 2 changes both functions to use section_nr instead of
+> mem_section.
+> PATCH 3 finally removes __section_nr() function.
+> 
+> More details can be found in each changelogs.
+> 
+> Ohhoon Kwon (3):
+>   mm: sparse: pass section_nr to section_mark_present
+>   mm: sparse: pass section_nr to find_memory_block
+>   mm: sparse: remove __section_nr() function
+> 
+>  .../platforms/pseries/hotplug-memory.c        |  4 +--
+>  drivers/base/memory.c                         |  4 +--
+>  include/linux/memory.h                        |  2 +-
+>  include/linux/mmzone.h                        |  1 -
+>  mm/sparse.c                                   | 35 +++----------------
+>  5 files changed, 9 insertions(+), 37 deletions(-)
+> 
+> -- 
+> 2.17.1
+ 
+For the series:
 
-I've asked this before; *what* is missing from LBR samples that's
-reponsible for the performance gap?
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+
+-- 
+Sincerely yours,
+Mike.
