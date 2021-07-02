@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4400D3BA622
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 00:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1BB3BA629
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 00:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbhGBWyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 18:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40252 "EHLO
+        id S230124AbhGBXAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 19:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbhGBWyj (ORCPT
+        with ESMTP id S229648AbhGBXAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 18:54:39 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7A5C0613DE;
-        Fri,  2 Jul 2021 15:52:04 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id i5so15299541eds.1;
-        Fri, 02 Jul 2021 15:52:04 -0700 (PDT)
+        Fri, 2 Jul 2021 19:00:43 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989EEC061762;
+        Fri,  2 Jul 2021 15:58:09 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id l24so15237006edr.11;
+        Fri, 02 Jul 2021 15:58:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=741oOKm9Y/CN6pZlsJDyA+wQ24ovzGnQR0XtQiJk4V0=;
-        b=cvI1oGQdong/J6jo2Uvf7v7DwJpDQsEHB76D+A5tSKdsRTiJif1apV6Sc6OKruoHcU
-         O1/6bF7h9IxRqm62vZco6/cmJpD/7zNoo+570lV7tmFWpN3KK59H61v7GPJ1NwYmNRxc
-         B4DyHUGOv33SNJn9E9Uaw9b1cpVyfMNcIfm7b5VpM0i0hH3DWHNzgWtPJyXHd93SUuKY
-         zACpIEWgQHAPFuJEHII5AefZ3zJcEFSKYpRj095dYUNZ25Zx0pSIJf7k7/WW+t5JB0Nv
-         NvUCL5BLafsHKspqJ+DSaHkHCDQA5p9qfT7K7IPiGwsdudWC3ueuvUWGQMiFtV8raqAy
-         LUlQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vD/TqU6XibWuKwYjrV7s56wP7tIAz61+brCWfIO8Z2U=;
+        b=XjBvD2TBKWWknE0OCd9OoUjARi5xxbwhs4C6y7LA5KBJ+XVEf4PLQHxLA9h3l0hKlB
+         qJ+kn3S9k27KrLK9izjUJqMpTPnzS4H9klZ9IvuLfOEhj0O4WFrh90+zqHa7p8igLkQ6
+         x43wE7EcFN4vWBTR2Xfnb4heyvbkGgRGN1K7fwf+ZofT7ao2WtI5QK/Qc9wrD14MI4yt
+         CQD6QApV+vLOTnAG4bP4StCgTWHf3cu/XwrpBpntVbLZD9h4Aw16gIAu8Ns3IpPyRz3z
+         IE4YoTYFQ9ZGJl/sVlWs/Bxt1F+t7LdcQbPvpyVkt99X91IKAr5E7hs21Smu4ZiMHl2+
+         zxIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=741oOKm9Y/CN6pZlsJDyA+wQ24ovzGnQR0XtQiJk4V0=;
-        b=j+Rg0wYXTJHzUNiiitCUg9pvyciClgepxJKpPDPFeXffsl+1WwnM5MPT0zIDuMxiQh
-         7uJdXrMCW2/EnQkCIq31Va6TUfbEg3x2e6CPZkF3DEiZkINc7GCyKHEfbAUV9YhzWfqB
-         4uYuUN6rFFANORu1RQSmXk/oHDEKXk6dPsVUg2rBY+l39mFYvCM3/P09UvtCTKE69r47
-         5sRnagVCQiytiNG6ymMVAZrtXIaEWsvloSeIZNkvqDPwsg5E8DokXfbECJiS9YHsKdz+
-         ZpJctV26tCeEtysParQXJxwG9R4Nw/3eq569TQJDaSE9/6GrYcxpNFQQLy84kFfOP6Sv
-         Nc8A==
-X-Gm-Message-State: AOAM5318fG79fTeGJ3kMlcaTjmS+qv8E1gs8hRFF4s6NxesiJeZoWMKX
-        9WNyePGq2oV0BmRPuahpCilJiHQnEfM=
-X-Google-Smtp-Source: ABdhPJyw33dANIX/Wgn1Qh4aloRjh0gEEBdoN1t3F9c93El0LTh594GXs/thf0NjLPIuBtUz7hwutA==
-X-Received: by 2002:a05:6402:214:: with SMTP id t20mr2212183edv.20.1625266323359;
-        Fri, 02 Jul 2021 15:52:03 -0700 (PDT)
-Received: from localhost.localdomain (dynamic-095-117-063-046.95.117.pool.telefonica.de. [95.117.63.46])
-        by smtp.googlemail.com with ESMTPSA id r17sm1866964edt.33.2021.07.02.15.52.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 15:52:03 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     linux-clk@vger.kernel.org, sboyd@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v1 6/6] clk: stm32mp1: Switch to clk_divider.determine_rate
-Date:   Sat,  3 Jul 2021 00:51:45 +0200
-Message-Id: <20210702225145.2643303-7-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210702225145.2643303-1-martin.blumenstingl@googlemail.com>
-References: <20210702225145.2643303-1-martin.blumenstingl@googlemail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vD/TqU6XibWuKwYjrV7s56wP7tIAz61+brCWfIO8Z2U=;
+        b=MVVHzAJMr1i0jPL+sLmO56ZxkVJwuyei/r1NzP4hrRjQHxtAl80lzbUWztq5C4MLzv
+         w2ozkC3Afn0xg7rRYeeGGb/+xnsxgCXhP71Lx3HbvA+cyRSukWYQ6sdN8hfMqd7qbZKN
+         3xq8FzVbZEfS61dlHAr8UWrZz4FaQYDS4T+u6QSt+Wfx6M8Dgje53B5e6uP96vlbkAzJ
+         lBdGurVbTXtqkS9r4SMQkvLRxyuxSYsnLrS1uayrAtqnILo8y68GeUxr0Z17T3sPQWAh
+         iS7Atr2LiUord6utk4oym1e/GgEf9dHO2YAtIF8a2FhAgKpkHAm9C3PdZS3TNEcC71IV
+         iyRg==
+X-Gm-Message-State: AOAM533fOoRcI/xLj7YXTzb7Y7ENdZOqMGYp4j39IXhEVY8Nx25e6Gtx
+        RCMXvAIfB1DAo6wCp/oRQG5zP13dzV4dRaaOFEQ=
+X-Google-Smtp-Source: ABdhPJxXJfuDOqau0i9bIe7paYpcmNa20KnLmKDh8yc2DV1RzGhDNRIB8IZvZkTatJvfWGjnqztGHlGhSGbu/YbPKos=
+X-Received: by 2002:aa7:d74b:: with SMTP id a11mr2191239eds.40.1625266688199;
+ Fri, 02 Jul 2021 15:58:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210627223959.188139-1-martin.blumenstingl@googlemail.com>
+ <20210627223959.188139-3-martin.blumenstingl@googlemail.com>
+ <20210701202540.GA1085600@roeck-us.net> <CAFBinCC2KB-_pOenpWPknCuHV+CCjhP5hqukSkwD3qwRe6OtQw@mail.gmail.com>
+ <162518776607.3570193.14348711594242395887@swboyd.mtv.corp.google.com>
+ <CAFBinCAASQUB=cg5EFsBQ4jd3TvcCJzV1=sYJci4ibR7FjRcww@mail.gmail.com> <162525955027.3570193.16463056788252699243@swboyd.mtv.corp.google.com>
+In-Reply-To: <162525955027.3570193.16463056788252699243@swboyd.mtv.corp.google.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sat, 3 Jul 2021 00:57:57 +0200
+Message-ID: <CAFBinCBsveheUZeW892J+1iyB_5P67rdLiJHtq4+PoNF4r_4CQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] clk: divider: Switch from .round_rate to
+ .determine_rate by default
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, mturquette@baylibre.com,
+        linux-clk@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
+        khilman@baylibre.com, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-.determine_rate is meant to replace .round_rate in CCF in the future.
-Switch over to .determine_rate now that clk_divider_ops has gained
-support for that.
+Hi Stephen,
 
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: linux-stm32@st-md-mailman.stormreply.com
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/clk/clk-stm32mp1.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+On Fri, Jul 2, 2021 at 10:59 PM Stephen Boyd <sboyd@kernel.org> wrote:
+[...]
+> I'd prefer we leave round_rate assigned in clk_divider_ops and
+> clk_divider_ro_ops but then also assign the determine_rate function. We
+> have some duplication but that's OK. Then make individual patches to
+> migrate each driver over to the new clk op.
+I just sent a series with those changes: [0]
 
-diff --git a/drivers/clk/clk-stm32mp1.c b/drivers/clk/clk-stm32mp1.c
-index 256575bd29b9..4bd1fe7d8af4 100644
---- a/drivers/clk/clk-stm32mp1.c
-+++ b/drivers/clk/clk-stm32mp1.c
-@@ -1076,14 +1076,10 @@ static int clk_divider_rtc_set_rate(struct clk_hw *hw, unsigned long rate,
- 
- static int clk_divider_rtc_determine_rate(struct clk_hw *hw, struct clk_rate_request *req)
- {
--	unsigned long best_parent_rate = req->best_parent_rate;
-+	if (req->best_parent_hw == clk_hw_get_parent_by_index(hw, HSE_RTC))
-+		return clk_divider_ops.determine_rate(hw, req);
- 
--	if (req->best_parent_hw == clk_hw_get_parent_by_index(hw, HSE_RTC)) {
--		req->rate = clk_divider_ops.round_rate(hw, req->rate, &best_parent_rate);
--		req->best_parent_rate = best_parent_rate;
--	} else {
--		req->rate = best_parent_rate;
--	}
-+	req->rate = req->best_parent_rate;
- 
- 	return 0;
- }
--- 
-2.32.0
+> We could stack a final patch on top to remove the round_rate function
+> from clk divider.  Unfortunately, if some driver wants to use round_rate
+> then it will fail in interesting ways. Probably best to live with it
+> until we decide to drop round_rate entirely. Patches to convert all the
+> round_rate code over to determine_rate would be welcome in the meantime.
+For now I have omitted the patch to remove .round_rate from clk_divider_ops.
+Also I will start migrating .round_rate over to .determine_rate in
+drivers/clk/meson/ (as it's the only hardware with CCF support that I
+have).
 
+
+Best regards,
+Martin
+
+
+[0] https://patchwork.kernel.org/project/linux-clk/cover/20210702225145.2643303-1-martin.blumenstingl@googlemail.com/
