@@ -2,210 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E13F3B9E73
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C66C53B9E7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhGBJnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 05:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230476AbhGBJnF (ORCPT
+        id S231315AbhGBJrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 05:47:39 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:22653 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230078AbhGBJrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 05:43:05 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75073C061762;
-        Fri,  2 Jul 2021 02:40:33 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id j4so1738143uae.6;
-        Fri, 02 Jul 2021 02:40:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EfNvLQqP0kFi/q/QwOw4n3oCTsPZ9Op+nfCqiBRc2NY=;
-        b=Bt1hWfzsPbL7fVoXBAb7hyGYflyLMw9XuMFjSzOKyWqe/5BXXSGdlMInwNG3uxHPfg
-         sLT0Ad6JZpZAXplnq7oKbamBvM8lmmTEaMpGSqSIRaO97XlURJCXbFelKSLK4FL9v8e6
-         +cjpivrEHW5LaIMxAOQzx1qDWp94/6HLwKy60j1N1/fzRU3pRQnglFQN5nO8S2tcRSz8
-         yTeSU5JgHwHRllt3W0WfRqUHz6J0JzQnorLnZCl/1dtO2u+VQLnuDR6AGUnbSB7+iTwy
-         BOa44CZ1Ndb2qBh9bCo+SXpMcfm0FFj7Qt3Nf1yXQz8iAqHWju0XAy+FANcUw0xWXeXj
-         wOcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EfNvLQqP0kFi/q/QwOw4n3oCTsPZ9Op+nfCqiBRc2NY=;
-        b=kRyH6u2J6m2zKi8DcZ4CSpn2Ibr07WRh6sz5qoxrpiJKHnuVzbTk9WWNOyUUCPTOo6
-         tsN704xKo3lcT7rvimAIvkVQ6ceunnPilP3uAbJO8naFkAmJRWaZMy/HU5uNYWKe0JDl
-         NNZfjxb2Vmjhn/l6otMITu7R/tZyPnPg81mpV7YN0+F8MtymbyR3+AcZGnnBCrkJcVmB
-         Py9GeTVJ6tAWavK66PbBkeRJiweVB764YaxxyD12BPJovDxo5blAJfUa6hACCUjWAwO+
-         3ZHzT7X04vRFLBgGzNXnXmlNUWNdB+rINv1e4yYIp3MorMLA8IJ2kXsusr+0CkVnd1ZR
-         vV9g==
-X-Gm-Message-State: AOAM531/m0sZathXfCjQF7k7Ze34GV3TD6ftY/zQNhhP/I1r3CWJJXFk
-        O/SkfQrUgowvAHYo1QzhpFGGgDWxfnOSyZHnOiM=
-X-Google-Smtp-Source: ABdhPJx5jzRg8GGxCCowMCBeLumqMOm7poZvhUC9p5Dyt4dxwS+k88706SiSUMQdj5UQ3ogdVr2cAvV+mncEqs7TmmI=
-X-Received: by 2002:a9f:35e9:: with SMTP id u38mr5271023uad.131.1625218832077;
- Fri, 02 Jul 2021 02:40:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210626161819.30508-1-sergio.paracuellos@gmail.com>
- <CAHp75VfM-35tQMRh98mtg2XmDOJFnmjdYRKZZoi9ADm=AT2xUw@mail.gmail.com>
- <CAMhs-H_fcNDAOHm=tZB4ku9fzeea_7f4ZLg7w5KEmcNu+8wbQQ@mail.gmail.com>
- <CAHp75VeN+vww=Bj=g-nx9AT0FKSGAZ8CKQZn=ff2kfQWM+dxdw@mail.gmail.com>
- <CAMhs-H-WwCfPDspgxzN=W8QouZ7WPAeyJDYf_6=YezyCkTM=Vw@mail.gmail.com>
- <CAHp75VcF-HDZ6mKvXT=zYnBrcPaNJ+SYJ72LQ7s-62zQ5ZqoQg@mail.gmail.com>
- <CAMhs-H9gw63j98vVo3y0ymW4_6rFNL8u5cYNM2hzyrmkPB3h3w@mail.gmail.com> <CAHp75VccSCWa=EH8i01_b_HLZRumUZ48oRjeuaV5Dp1BQAoz2w@mail.gmail.com>
-In-Reply-To: <CAHp75VccSCWa=EH8i01_b_HLZRumUZ48oRjeuaV5Dp1BQAoz2w@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Fri, 2 Jul 2021 11:40:20 +0200
-Message-ID: <CAMhs-H_Ne4W79Awbmo6w_68X+h0-ybjvzNsbh=XuHMPJJ8-hDQ@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: mt7621: support gpio-line-names property
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        John Thomson <git@johnthomson.fastmail.com.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        NeilBrown <neil@brown.name>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Nicholas Mc Guire <hofrat@osadl.org>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 2 Jul 2021 05:47:32 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210702094458epoutp01cdcdd9c332a2d2520416634054e666d5~N8CjExBb-3018730187epoutp01K
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 09:44:58 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210702094458epoutp01cdcdd9c332a2d2520416634054e666d5~N8CjExBb-3018730187epoutp01K
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1625219098;
+        bh=bDbXixnB4Y0V53jA7IW56VMxaCwE42cipQ84atzG2dQ=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=VMvWJAGSENBtkvzAAVOsyypKneloqtVJc1AYLPpljAPJm+hDP8Isb3hsoDPBveog9
+         hAjVp1n7zUAXZFYI/zriiYcNAhQnIF9i+ThQ99PKEzi/qqrmG0TDzfZLcDdDPayPCU
+         4F8yAX5/Jmw8elYl9ByAv+rPLjWlVC73fImA2kak=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210702094457epcas1p3b019b64667baa19ec91b557a383ac11f~N8Cip74Ea2802228022epcas1p3o;
+        Fri,  2 Jul 2021 09:44:57 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.164]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4GGVYP3Gb9z4x9Ps; Fri,  2 Jul
+        2021 09:44:57 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        65.93.09551.910EED06; Fri,  2 Jul 2021 18:44:57 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210702094457epcas1p295611b5799befffd016b8fccf3adceff~N8ChvI25L0305903059epcas1p25;
+        Fri,  2 Jul 2021 09:44:57 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210702094456epsmtrp1721a2dd275185c378eb037136aabbb45~N8ChuZWNb2300123001epsmtrp1M;
+        Fri,  2 Jul 2021 09:44:56 +0000 (GMT)
+X-AuditID: b6c32a36-2c9ff7000000254f-97-60dee0190181
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C8.69.08289.810EED06; Fri,  2 Jul 2021 18:44:56 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.98.78]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210702094456epsmtip18bc48ca8222b462155320c3df5a83408~N8ChdUmM70979009790epsmtip1X;
+        Fri,  2 Jul 2021 09:44:56 +0000 (GMT)
+From:   Ohhoon Kwon <ohoono.kwon@samsung.com>
+To:     david@redhat.com, ohoono.kwon@samsung.com,
+        akpm@linux-foundation.org, mhocko@suse.com
+Cc:     bhe@redhat.com, rppt@linux.ibm.com, ohkwon1043@gmail.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] mm: sparse: remove __section_nr() function
+Date:   Fri,  2 Jul 2021 18:41:29 +0900
+Message-Id: <20210702094132.6276-1-ohoono.kwon@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKKsWRmVeSWpSXmKPExsWy7bCmrq7kg3sJBluvilrMWb+GzeL8g19s
+        Fl/X/2K2uLxrDpvFvTX/WS3u9zlY7N3va7Hr5wpmixtTGtgcOD12zrrL7rHp0yR2jxMzfrN4
+        TFh0gNHj/b6rbB59W1YxeqzfcpXF4/MmuQCOqBybjNTElNQihdS85PyUzLx0WyXv4HjneFMz
+        A0NdQ0sLcyWFvMTcVFslF58AXbfMHKDrlBTKEnNKgUIBicXFSvp2NkX5pSWpChn5xSW2SqkF
+        KTkFhgYFesWJucWleel6yfm5VoYGBkamQJUJORnPZ5xmK3jHUdHbldvAeJCti5GTQ0LAROLT
+        3x72LkYuDiGBHYwS3ybdZwZJCAl8YpTYsyoBIvGZUeJPQxs7TMfz25eYIRK7GCUuNb5nhXCA
+        Oh6vXMgCUsUmoC2xv/cE2CgRgWiJ2Vc7mEBsZoECiYb+T2A1wgL2EtNf3QSyOThYBFQlTnUw
+        goR5BawlHj2YxQyxTF5i9YYDYMskBM6xSyw9dpoJIuEiMeFcI1SRsMSr41ugrpOSeNnfxg7R
+        0M8ocahvOyuEM4FRYn1XIzvINgmgze8vWYCYzAKaEut36UP0Kkrs/D2XEeJOPol3X3tYIap5
+        JTrahCBMVYllvz0gqqUl+qZfhoaih8TpbQtYIQEXK3Gh6wXbBEbZWQjzFzAyrmIUSy0ozk1P
+        LTYsMEKOok2M4PSmZbaDcdLbD3qHGJk4GA8xSnAwK4nwhs67lyDEm5JYWZValB9fVJqTWnyI
+        0RQYXBOZpUST84EJNq8k3tDUyNjY2MLEzNzM1FhJnHcn26EEIYH0xJLU7NTUgtQimD4mDk6p
+        BibDWI++mQlP3f7lGN7RalgjMl+wu4vhBetsXrmf7g1x/5t7/G5+LtE89dP27vPadFaHHR2z
+        OvxYpFTO9W/ZWedoErityn/mn3y+r9M2qH4ztfXWY5UqyYuPnfzX8QK/ztusAO7rq320xXW+
+        8T7yl2N1n7glr2CPmR2//G+ZoI/VSl1L03ffbanKLS+8nX3wt0Phxw+zFkWnvKtVeS4QZzgx
+        3mjy7meXZFgYQ2fYKOSzMsnNz51uWqzCc/Gy1JTH2z/7qSVWhX3JTMy7ntlo9niHstOPGKVU
+        N0nOD39CGpKXb/LVbWo7FBUt6ffbuf/rtuvrNpz65P7tQgbjCtEXXB8PPpj0XmDKszVcjtxz
+        lFiKMxINtZiLihMBXz0HLvgDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprILMWRmVeSWpSXmKPExsWy7bCSnK7Eg3sJBgv+GlvMWb+GzeL8g19s
+        Fl/X/2K2uLxrDpvFvTX/WS3u9zlY7N3va7Hr5wpmixtTGtgcOD12zrrL7rHp0yR2jxMzfrN4
+        TFh0gNHj/b6rbB59W1YxeqzfcpXF4/MmuQCOKC6blNSczLLUIn27BK6M5zNOsxW846jo7cpt
+        YDzI1sXIySEhYCLx/PYlZhBbSGAHo8SjJRwQcWmJpy92sXQxcgDZwhKHDxd3MXIBlXxglGjZ
+        uAesnk1AW2J/7wlmkBoRgXiJ+dfYQcLMAmUSV1f+ZQWxhQXsJaa/ugk2hkVAVeJUByNImFfA
+        WuLRg1nMEJvkJVZvOMA8gZFnASPDKkbJ1ILi3PTcYsMCo7zUcr3ixNzi0rx0veT83E2M4FDT
+        0trBuGfVB71DjEwcjIcYJTiYlUR4Q+fdSxDiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQ
+        QHpiSWp2ampBahFMlomDU6qBaWr8yj/zksPDHY5rLrK+LXJK33/GO+6nMXLOkS8W5t0WuViQ
+        OOPuX62TFnbFRjdiTnpkc0ev3/+oRYXNuzr8QTYbc+rWhH5frskH5ZylGPKr1OdHHeOvvFX4
+        5Vkhr67CCsV/FxZJS6vnbHOt2J5Uzn9PTJ6fbaILx0TPV/V11SLnjE5dLf6VeHLDypPP31fI
+        vp7IGN7lrHJfWKZ094YHwg+57F+0buKX+Lj35KMZ7sZRwXyRO+YaRQsE6hyb3+dUqxjQvuqk
+        V/zU1J/yb2v7mhMvfyv1Z/yjoDdhe87+wkqThQ+SZ9/r48oTPWPLbOUcFsf6s21dtRHj34jE
+        zz8XZZ4vT3voeVPLefKk28FKLMUZiYZazEXFiQCZLMz3pAIAAA==
+X-CMS-MailID: 20210702094457epcas1p295611b5799befffd016b8fccf3adceff
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210702094457epcas1p295611b5799befffd016b8fccf3adceff
+References: <CGME20210702094457epcas1p295611b5799befffd016b8fccf3adceff@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+This series contains cleanups to remove __section_nr().
 
-On Fri, Jul 2, 2021 at 11:27 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Sun, Jun 27, 2021 at 4:13 PM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
-> > On Sun, Jun 27, 2021 at 3:01 PM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > > On Sun, Jun 27, 2021 at 1:56 PM Sergio Paracuellos
-> > > <sergio.paracuellos@gmail.com> wrote:
-> > > > On Sun, Jun 27, 2021 at 12:51 PM Andy Shevchenko
-> > > > <andy.shevchenko@gmail.com> wrote:
-> > > > > On Sun, Jun 27, 2021 at 12:47 PM Sergio Paracuellos
-> > > > > <sergio.paracuellos@gmail.com> wrote:
-> > > > > > On Sun, Jun 27, 2021 at 11:33 AM Andy Shevchenko
-> > > > > > <andy.shevchenko@gmail.com> wrote:
-> > > > > > > On Sat, Jun 26, 2021 at 7:18 PM Sergio Paracuellos
-> > > > > > > <sergio.paracuellos@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > The default handling of the gpio-line-names property by the
-> > > > > > > > gpiolib-of implementation does not work with the multiple
-> > > > > > > > gpiochip banks per device structure used by the gpio-mt7621
-> > > > > > > > driver.
-> > > > > > > >
-> > > > > > > > This commit adds driver level support for the device tree
-> > > > > > > > property so that GPIO lines can be assigned friendly names.
-> > > > >
-> > > > > > > > This driver has three gpiochips with 32 gpios each. Core implementation
-> > > > > > >
-> > > > > > > implementation
-> > > > > > >
-> > > > > > >
-> > > > > > > > got gpio's repeated along each gpio chip if chip.names is not assigned.
-> > > > > > > > To avoid this behaviour driver will set this names as empty or
-> > > > > > >
-> > > > > > > the driver
-> > > > > > > these names
-> > > > > > >
-> > > > > > > > with desired friendly line names. Consider the following sample with
-> > > > > > > > minimal entries for the first chip with this patch changes applied:
-> > > > > > >
-> > > > > > > The same comment as per v1:
-> > > > > > >
-> > > > > > > Any idea why it's not a duplicate of
-> > > > > > > https://elixir.bootlin.com/linux/v5.13-rc7/C/ident/devprop_gpiochip_set_names,
-> > > > > > > and why the latter is not called in your case?
-> > > > > >
-> > > > > > The core properly calls this function but not in the way expected.
-> > > > > > This driver implements three banks of 32 gpios each internally using
-> > > > > > one gpiochip per bank, all of them in the same device. So the core
-> > > > > > code you are pointing out here duplicates the same names along the
-> > > > > > three gpiochips which is not the expected behaviour. So implementing
-> > > > > > in this way and setting names at least reserved avoids the core code
-> > > > > > to be run and also avoids the duplication getting expected behaviour
-> > > > > > for all the banks and each line friendly name.
-> > > > >
-> > > > > Isn't it the problem of how we supply fwnode in that case?
-> > > > > Another possibility is to fix DT (although I'm not sure it's now possible).
-> > > >
-> > > > Since the fwnode is the same for all banks of the same device, each bank
-> > > > repeats the first MTK_BANK_WIDTH label names in each bank.
-> > >
-> > > Can you point out the DT in question?
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/tree/drivers/staging/mt7621-dts/mt7621.dtsi?h=staging-next
-> >
-> > Gpio node:
-> >
-> >  gpio: gpio@600 {
-> >               #gpio-cells = <2>;
-> >               #interrupt-cells = <2>;
-> >               compatible = "mediatek,mt7621-gpio";
-> >               gpio-controller;
-> >               gpio-ranges = <&pinctrl 0 0 95>;
-> >               interrupt-controller;
-> >               reg = <0x600 0x100>;
-> >               interrupt-parent = <&gic>;
-> >               interrupts = <GIC_SHARED 12 IRQ_TYPE_LEVEL_HIGH>;
-> >    };
-> >
-> > My overlay:
-> >
-> > &gpio {
-> >     gpio-line-names = "", "", "", "",
-> >                       "", "", "SFP LOS", "extcon port5 PoE compat",
-> >                       "SFP module def0", "LED blue SFP", "SFP tx disable", "",
-> >                       "switch USB power", "mode", "", "buzzer",
-> >                       "LED blue pwr", "switch port5 PoE out", "reset";
-> > };
-> >
-> >
-> >
-> > >
-> > > > This commit populates the gc.names member of each bank from the
-> > > > device-tree node within the driver. This overrides the default behavior
-> > > > since devprop_gpiochip_set_names() will only be called if names is NULL.
-> > >
-> > > I believe this commit is not needed in the proposed (i.e. duplication) shape.
-> > > The fwnode supports primary and secondary ones. Thus, we may create a
-> > > pair of fwnodes when they will unify properties per device with
-> > > properties per child together (child is primary and device, i.e.
-> > > parent, is secondary).
-> >
-> > There are no child nodes, all the stuff is in the same parent node
-> > and, as I said, belongs to the same device but internally uses three
-> > gpiochips.
->
-> And it can't be split into three children in the overlay?
+When CONFIG_SPARSEMEM_EXTREME is enabled, __section_nr() could be
+costly since it iterates all section roots to check if the given
+mem_section is in its range.
 
-Original code before this being mainlined was using three children and
-I was told in the review that three children were not allowed:
+On the other hand, __nr_to_section which converts section_nr to
+mem_section can be done in O(1).
 
-See https://patchwork.ozlabs.org/project/linux-gpio/patch/1527924610-13135-3-git-send-email-sergio.paracuellos@gmail.com/#1932827
+The only users of __section_nr() was section_mark_present() and
+find_memory_block().
 
-> Let's assume it can't, then the GPIO library function should be
-> refactored in a way that it takes parameters like base index for the
-> names and tries to satisfy the caller.
+PATCH 1 & 2 changes both functions to use section_nr instead of
+mem_section.
+PATCH 3 finally removes __section_nr() function.
 
-Bartosz, Linus, any thoughts on this?
+More details can be found in each changelogs.
 
->
-> > This case is pretty much the same as the following already
-> > added commit for gpio-brcmstb:
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/drivers/gpio/gpio-brcmstb.c?id=5eefcaed501dd9e3933dbff58720244bd75ed90f
->
-> This should be fixed accordingly.
+Ohhoon Kwon (3):
+  mm: sparse: pass section_nr to section_mark_present
+  mm: sparse: pass section_nr to find_memory_block
+  mm: sparse: remove __section_nr() function
 
-Obviously, the treatment should be the same, yes :)
+ .../platforms/pseries/hotplug-memory.c        |  4 +--
+ drivers/base/memory.c                         |  4 +--
+ include/linux/memory.h                        |  2 +-
+ include/linux/mmzone.h                        |  1 -
+ mm/sparse.c                                   | 35 +++----------------
+ 5 files changed, 9 insertions(+), 37 deletions(-)
 
-Best regards,
-    Sergio Paracuellos
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+-- 
+2.17.1
+
