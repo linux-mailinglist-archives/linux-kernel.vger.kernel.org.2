@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9C53B9A61
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 03:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1957A3B9A68
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 03:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234666AbhGBBHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 21:07:04 -0400
-Received: from mail-pg1-f174.google.com ([209.85.215.174]:42771 "EHLO
-        mail-pg1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230427AbhGBBHD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 21:07:03 -0400
-Received: by mail-pg1-f174.google.com with SMTP id d12so7962189pgd.9;
-        Thu, 01 Jul 2021 18:04:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eaR++vjtiNX6DzHjutKmZUMGyUp8898EKANyRVFBEw0=;
-        b=GYbRh3WRynklyYDXdXAmwJWBssd06qENgQD20dWyDBzL/0tAzswwRUmLtB3agJVFiJ
-         G3a9UWTFo7hFekXc+IHvgThwgM3j69SFEizORWTV2cp3PVSppUgybJsIQcN4oH5uS3Z3
-         Fy0p7XfDs0Ew4jvhnfFU3vXEIm+hxy5ESbwrCw92Yw9yUt1sJL9Qc597jpf43/CskvIV
-         QgTnOOuyPsMMt8AGO0OHBZKFn+0XTobrHQWi9S6C/kT01rafjMa9wxb+Ja3QndMu7//u
-         2T86ddvsiDGUtBh9pIM9tYz7dPfG3yxy054sFy2rI5KdWroGF/ruzx/j/V/hA07tjYPH
-         Ostg==
-X-Gm-Message-State: AOAM5318R2vDWFR3zfB2h5XqbUYBPoMum1dBhN2SFu3P5aX0OQ7XsqZ1
-        71bwbfqmNft/u0nUgVZdrWE=
-X-Google-Smtp-Source: ABdhPJwqfas45MGSvqIPpCYJVbZ5WEkNtXeEvDY+hBGZMizW2iqQHZEJwbh1Lk8KVFSTlbL6hSCAbg==
-X-Received: by 2002:a63:c1e:: with SMTP id b30mr256447pgl.118.1625187870738;
-        Thu, 01 Jul 2021 18:04:30 -0700 (PDT)
-Received: from garbanzo ([191.96.121.144])
-        by smtp.gmail.com with ESMTPSA id t5sm1198320pgb.58.2021.07.01.18.04.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 18:04:29 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 18:04:25 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>
-Cc:     rafael@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, andriin@fb.com, daniel@iogearbox.net,
-        atenart@kernel.org, alobakin@pm.me, weiwan@google.com,
-        ap420073@gmail.com, jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
-        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
-        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
-        rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] sysfs: fix kobject refcount to address races with
- kobject removal
-Message-ID: <20210702010425.frwcbregdyuguaak@garbanzo>
-References: <20210623215007.862787-1-mcgrof@kernel.org>
- <YNRnzxTabyoToKKJ@kroah.com>
- <20210625215558.xn4a24ts26bdyfzo@garbanzo>
- <20210701224816.pkzeyo4uqu3kbqdo@garbanzo>
+        id S234702AbhGBBIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 21:08:00 -0400
+Received: from mga12.intel.com ([192.55.52.136]:31373 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234529AbhGBBH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 21:07:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="188339261"
+X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
+   d="scan'208";a="188339261"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 18:05:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
+   d="scan'208";a="409132402"
+Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.58]) ([10.239.154.58])
+  by orsmga006.jf.intel.com with ESMTP; 01 Jul 2021 18:05:23 -0700
+Subject: Re: [PATCH v11] i2c: virtio: add a virtio i2c frontend driver
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wsa@kernel.org,
+        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, yu1.wang@intel.com, shuo.a.liu@intel.com,
+        conghui.chen@intel.com, viresh.kumar@linaro.org,
+        stefanha@redhat.com
+References: <510c876952efa693339ab0d6cc78ba7be9ef6897.1625104206.git.jie.deng@intel.com>
+ <YN2cs0H+5C892kM4@smile.fi.intel.com>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <a0ee5b05-0316-2529-143f-7da42ed56994@intel.com>
+Date:   Fri, 2 Jul 2021 09:05:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210701224816.pkzeyo4uqu3kbqdo@garbanzo>
+In-Reply-To: <YN2cs0H+5C892kM4@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 03:48:22PM -0700, Luis Chamberlain wrote:
-> On Fri, Jun 25, 2021 at 02:56:03PM -0700, Luis Chamberlain wrote:
-> > On Thu, Jun 24, 2021 at 01:09:03PM +0200, Greg KH wrote:
-> > > thanks for making this change and sticking with it!
-> > > 
-> > > Oh, and with this change, does your modprobe/rmmod crazy test now work?
-> > 
-> > It does but I wrote a test_syfs driver and I believe I see an issue with
-> > this. I'll debug a bit more and see what it was, and I'll then also use
-> > the driver to demo the issue more clearly, and then verification can be
-> > an easy selftest test.
-> 
-> OK my conclusion based on a new selftest driver I wrote is we can drop
-> this patch safely. The selftest will cover this corner case well now.
-> 
-> In short: the kernfs active reference will ensure the store operation
-> still exists. The kernfs mutex is not enough, but if the driver removes
-> the operation prior to getting the active reference, the write will just
-> fail. The deferencing inside of the sysfs operation is abstract to
-> kernfs, and while kernfs can't do anything to prevent a driver from
-> doing something stupid, it at least can ensure an open file ensure the
-> op is not removed until the operation completes.
 
-OK and now its not so clear, as it would seem the refcount can indeed
-get reduced after we validated it. In any case we'll have enough tools
-to reproduce any possible failure soon.
+On 2021/7/1 18:45, Andy Shevchenko wrote:
+> On Thu, Jul 01, 2021 at 11:24:46AM +0800, Jie Deng wrote:
+>> Add an I2C bus driver for virtio para-virtualization.
+>>
+>> The controller can be emulated by the backend driver in
+>> any device model software by following the virtio protocol.
+>>
+>> The device specification can be found on
+>> https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
+>>
+>> By following the specification, people may implement different
+>> backend drivers to emulate different controllers according to
+>> their needs.
+>> 	- Use #ifdef CONFIG_PM_SLEEP to replace the "__maybe_unused".
+> Why is that?
 
-  Luis
+
+Please refer to https://lkml.org/lkml/2021/3/23/285.
+
+
