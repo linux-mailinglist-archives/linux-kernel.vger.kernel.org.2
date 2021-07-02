@@ -2,125 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622533BA0F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087A23BA108
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbhGBNNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:13:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230481AbhGBNNp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:13:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 167E3613B1;
-        Fri,  2 Jul 2021 13:11:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625231473;
-        bh=VTOEMFLCdkiosprAyMGyX32cPkmxfgkO4zvLSKjrATU=;
+        id S232519AbhGBNQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:16:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232338AbhGBNQ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 09:16:58 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC336C061762;
+        Fri,  2 Jul 2021 06:14:25 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3D23C4AB;
+        Fri,  2 Jul 2021 15:14:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1625231663;
+        bh=IBR4LNA8NgjXSiJtqplX8vE2/homcyM2XE31/wxSYw4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FrMCSVMH62c/ElTMpje1nVPi0IB9kFdzijtpw/IWTCM8LK6e2a06g17PKQsOVIhU4
-         xmLFfpbF4eEbEJbRdTEdvxacBz2d//2/GdiVTDHjBpDreEhC5Y/xuPW6AGIyek+ozQ
-         FF4MgLEu33racYiy2TZoXV/acUHG0dFUIi0rwyjh8q1029TNvoHc6emvI1OuwtTi/M
-         CEbZ9ErgwsW9aGiW4wSx+XiHF8M4uQFs/X8CL3bAU7mjiHbLufEm1fyPbzvBXFR3Ir
-         k9tPHmohsr6M2GGeDpBfBHUxANVAwLnoNl8wUsZrEsvi1HGL5ZLN3f/1DdWrpFTAW2
-         gs6sV9d6JVfjQ==
-Date:   Fri, 2 Jul 2021 16:11:06 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Miles Chen <miles.chen@mediatek.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mark Rutland <mark.rutland@arm.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        wsd_upstream@mediatek.com
-Subject: Re: [PATCH] mm/sparse: clarify pgdat_to_phys
-Message-ID: <YN8QaoJuDP9Nr744@kernel.org>
-References: <20210630092309.17654-1-miles.chen@mediatek.com>
+        b=jCrp1JCb64mXSRPTfntfNPK3mhjxJ9/0kibz8/gJyeAZ9NK+xH1eV3MpXVORPoNSL
+         2qCNcIn/JgD8oQumbRh7IZ3DRzDi0e9ooU7QT4fP/08jUKN7mLA656P82JeeWLqlJn
+         r0oaGwBF1qZUmUPtAQQnizGKb8qjUot5VmpmvP/o=
+Date:   Fri, 2 Jul 2021 16:13:43 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Stefan Riedmueller <s.riedmueller@phytec.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 6/6] media: mt9p031: Use BIT macro
+Message-ID: <YN8RB6yaI7BFNk+O@pendragon.ideasonboard.com>
+References: <20210702095922.118614-1-s.riedmueller@phytec.de>
+ <20210702095922.118614-7-s.riedmueller@phytec.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210630092309.17654-1-miles.chen@mediatek.com>
+In-Reply-To: <20210702095922.118614-7-s.riedmueller@phytec.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 05:23:09PM +0800, Miles Chen wrote:
-> clarify pgdat_to_phys() by wrapping pgdat_to_phys
-> with CONFIG_NUMA. (the same config as contig_page_data)
+Hi Stefan,
+
+Thank you for the patch.
+
+On Fri, Jul 02, 2021 at 11:59:22AM +0200, Stefan Riedmueller wrote:
+> Make use of the BIT macro for setting individual bits. This improves
+> readability and safety with respect to shifts.
 > 
-> No functional change intended.
-> 
-> Comment from Mark [1]:
-> "
-> ... and I reckon it'd be clearer and more robust to define
-> pgdat_to_phys() in the same ifdefs as contig_page_data so
-> that these, stay in-sync. e.g. have:
-> 
-> | #ifdef CONFIG_NUMA
-> | #define pgdat_to_phys(x)	virt_to_phys(x)
-> | #else /* CONFIG_NUMA */
-> |
-> | extern struct pglist_data contig_page_data;
-> | ...
-> | #define pgdat_to_phys(x)	__pa_symbol(&contig_page_data)
-> |
-> | #endif /* CONIFIG_NUMA */
-> "
-> 
-> [1] https://lore.kernel.org/linux-arm-kernel/20210615131902.GB47121@C02TD0UTHF1T.local/
-> 
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
 > ---
->  mm/sparse.c | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
+>  drivers/media/i2c/mt9p031.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
 > 
-> diff --git a/mm/sparse.c b/mm/sparse.c
-> index 7272f7a1449d..62c21ec28e33 100644
-> --- a/mm/sparse.c
-> +++ b/mm/sparse.c
-> @@ -344,14 +344,15 @@ size_t mem_section_usage_size(void)
->  	return sizeof(struct mem_section_usage) + usemap_size();
->  }
->  
-> -static inline phys_addr_t pgdat_to_phys(struct pglist_data *pgdat)
-> -{
-> -#ifndef CONFIG_NUMA
-> -	return __pa_symbol(pgdat);
-> -#else
-> -	return __pa(pgdat);
-> -#endif
-> -}
-> +#ifdef CONFIG_NUMA
-> +#define pgdat_to_phys(pgdat) __pa(pgdat)
-> +#else /* CONFIG_NUMA */
-> +/*
-> + * When !CONFIG_NUMA, we only expect pgdat == &contig_page_data,
-> + * and use __pa_symbol().
-> + */
-> +#define pgdat_to_phys(pgdat) __pa_symbol(pgdat)
-> +#endif /* CONFIG_NUMA */
+> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
+> index 3511c4ff350d..0a5bcbebe55f 100644
+> --- a/drivers/media/i2c/mt9p031.c
+> +++ b/drivers/media/i2c/mt9p031.c
+> @@ -76,39 +76,39 @@
+>  #define	MT9P031_PLL_CONFIG_1				0x11
+>  #define	MT9P031_PLL_CONFIG_2				0x12
+>  #define MT9P031_PIXEL_CLOCK_CONTROL			0x0a
+> -#define		MT9P031_PIXEL_CLOCK_INVERT		(1 << 15)
+> +#define		MT9P031_PIXEL_CLOCK_INVERT		BIT(15)
+>  #define		MT9P031_PIXEL_CLOCK_SHIFT(n)		((n) << 8)
+>  #define		MT9P031_PIXEL_CLOCK_DIVIDE(n)		((n) << 0)
+>  #define MT9P031_RESTART					0x0b
+> -#define		MT9P031_FRAME_PAUSE_RESTART		(1 << 1)
+> -#define		MT9P031_FRAME_RESTART			(1 << 0)
+> +#define		MT9P031_FRAME_PAUSE_RESTART		BIT(1)
+> +#define		MT9P031_FRAME_RESTART			BIT(0)
+>  #define MT9P031_SHUTTER_DELAY				0x0c
+>  #define MT9P031_RST					0x0d
+>  #define		MT9P031_RST_ENABLE			1
 
-I'm not sure a macro is better than a static inline.
+This could also be turned into BIT(0).
 
-Maybe we'd want to warn if pgdat passed to pgtat_to_phys() is not
-&contig_page_data, e.g something like
+>  #define		MT9P031_RST_DISABLE			0
 
-static inline phys_addr_t pgdat_to_phys(struct pglist_data *pgdat)
-{
-	if (!IS_ENABLED(CONFIG_NUMA)) {
-		if (pgdat == &contig_page_data)
-			return __pa_symbol(&contig_page_data);
-		else
-			pr_warn("Unexpected pglist_data pointer!\n");
-	}
-	
-	return __pa(pgdat);
-}
-  
->  #ifdef CONFIG_MEMORY_HOTREMOVE
->  static struct mem_section_usage * __init
-> -- 
-> 2.18.0
-> 
+This should then be dropped.
+
+>  #define MT9P031_READ_MODE_1				0x1e
+>  #define MT9P031_READ_MODE_2				0x20
+> -#define		MT9P031_READ_MODE_2_ROW_MIR		(1 << 15)
+> -#define		MT9P031_READ_MODE_2_COL_MIR		(1 << 14)
+> -#define		MT9P031_READ_MODE_2_ROW_BLC		(1 << 6)
+> +#define		MT9P031_READ_MODE_2_ROW_MIR		BIT(15)
+> +#define		MT9P031_READ_MODE_2_COL_MIR		BIT(14)
+> +#define		MT9P031_READ_MODE_2_ROW_BLC		BIT(6)
+>  #define MT9P031_ROW_ADDRESS_MODE			0x22
+>  #define MT9P031_COLUMN_ADDRESS_MODE			0x23
+>  #define MT9P031_GLOBAL_GAIN				0x35
+>  #define		MT9P031_GLOBAL_GAIN_MIN			8
+>  #define		MT9P031_GLOBAL_GAIN_MAX			1024
+>  #define		MT9P031_GLOBAL_GAIN_DEF			8
+> -#define		MT9P031_GLOBAL_GAIN_MULT		(1 << 6)
+> +#define		MT9P031_GLOBAL_GAIN_MULT		BIT(6)
+>  #define MT9P031_ROW_BLACK_TARGET			0x49
+>  #define MT9P031_ROW_BLACK_DEF_OFFSET			0x4b
+>  #define MT9P031_GREEN1_OFFSET				0x60
+>  #define MT9P031_GREEN2_OFFSET				0x61
+>  #define MT9P031_BLACK_LEVEL_CALIBRATION			0x62
+> -#define		MT9P031_BLC_MANUAL_BLC			(1 << 0)
+> +#define		MT9P031_BLC_MANUAL_BLC			BIT(0)
+>  #define MT9P031_RED_OFFSET				0x63
+>  #define MT9P031_BLUE_OFFSET				0x64
+>  #define MT9P031_TEST_PATTERN				0xa0
+>  #define		MT9P031_TEST_PATTERN_SHIFT		3
+> -#define		MT9P031_TEST_PATTERN_ENABLE		(1 << 0)
+> +#define		MT9P031_TEST_PATTERN_ENABLE		BIT(0)
+>  #define		MT9P031_TEST_PATTERN_DISABLE		(0 << 0)
+
+Similarly here, MT9P031_TEST_PATTERN_DISABLE should be dropped.
+
+>  #define MT9P031_TEST_PATTERN_GREEN			0xa1
+>  #define MT9P031_TEST_PATTERN_RED			0xa2
 
 -- 
-Sincerely yours,
-Mike.
+Regards,
+
+Laurent Pinchart
