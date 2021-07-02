@@ -2,94 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5293BA413
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4E73BA421
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbhGBSwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 14:52:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhGBSwg (ORCPT
+        id S230201AbhGBTAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 15:00:09 -0400
+Received: from esa3.mentor.iphmx.com ([68.232.137.180]:9662 "EHLO
+        esa3.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhGBTAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 14:52:36 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54C6C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 11:50:03 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id r26so2301763lfp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 11:50:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=71nuSMvaqgHrgpwAtP1N6KiE3ICrLSTcXVzeIPBvQ4o=;
-        b=M7diCQUwMpzKQ1GXJoVPs9ZHH6w/FGKZMDIDOCrHx9bDTbOzzu8tbcnHNGtiUjvfRe
-         7nD4xqc8ZKvmjMItQppsaUWB7+CxM4/HXNOlQPoFXIptkAOTbwmoM8RuNSbTOSK9Qk6c
-         MNnPD0+78LLKPaN9r+5vwqH2uhsVbhc4Az2RY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=71nuSMvaqgHrgpwAtP1N6KiE3ICrLSTcXVzeIPBvQ4o=;
-        b=ElC6VBJ/YCB6CE21XV7hzH0A9Vs9yZgYIecz23c2998JQEeuVhm0+UOeA44Ln7fv2o
-         H3rh+4I7aRTHbCs3nE5C72oSRJWSDP0Ne0TEGwfkSFVZVlitc/3gvetAPmqqWyPr2PDj
-         XvliRBRQbe1ZLWBckN8t8quG2w4c/2E9bchB1LF2haKDKlanqKt2Lhlzh8aOktznAz80
-         d2Ae27gMATdI7sU+DG0XGfPZ3C8hLsl5IuVpFuwW8CcAOVXM25FsCuoh4YqF1cjq0b3E
-         73Vg1VkzyWYc4187WOl15bbu7r+k2xUHb/MZ9lCdY48a6LHgIs/ekVSxoA+cs7dNOAh1
-         hpsA==
-X-Gm-Message-State: AOAM5327BrYd8epWE4A2I2B4HRomD8C31NiqApN7HYVmoT7XUxeU+GEG
-        z9wqdE4v6RWszyi1uACQtDtb8i6mXk6IX+DA
-X-Google-Smtp-Source: ABdhPJyi6aYOEFZ7fnnc7j6uTFmlGfCCWxvcRYxxs2WxYlGMGdNeBvSNQ3OVPzX/wgD7ByVbi+xFHA==
-X-Received: by 2002:ac2:5236:: with SMTP id i22mr731523lfl.637.1625251801273;
-        Fri, 02 Jul 2021 11:50:01 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id h25sm346682lfe.284.2021.07.02.11.49.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Jul 2021 11:50:00 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id t17so19878748lfq.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 11:49:59 -0700 (PDT)
-X-Received: by 2002:a05:6512:3f82:: with SMTP id x2mr716901lfa.421.1625251799639;
- Fri, 02 Jul 2021 11:49:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYuBvh-H8Vqp58j-coXUD8p1A6h2it_aZdRiYcN2soGNdg@mail.gmail.com>
-In-Reply-To: <CA+G9fYuBvh-H8Vqp58j-coXUD8p1A6h2it_aZdRiYcN2soGNdg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 2 Jul 2021 11:49:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgJJtZ9TD_zDefSnaLzLAcjVKXPJoK2o=K-QWkhLGxyuQ@mail.gmail.com>
-Message-ID: <CAHk-=wgJJtZ9TD_zDefSnaLzLAcjVKXPJoK2o=K-QWkhLGxyuQ@mail.gmail.com>
-Subject: Re: [mainline] [arm64] Internal error: Oops - percpu_counter_add_batch
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        regressions@lists.linux.dev,
+        Fri, 2 Jul 2021 15:00:08 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Jul 2021 15:00:08 EDT
+IronPort-SDR: 2u/tDuPx+OtzPgBuHaH85sAfoUHyFKi3dRfj4zWG/yvIo4UDhZ/6CZdFd19ae9flh6K31QIy32
+ uuTSl5QsgPPsBcGf78DdB8dW2+RwME4luY6pcPD0lnh17s71EbxaFchfylfDAW3gcedJZLD/Q1
+ g1spN57bVfGJNvVf8mI1lP1aXJwmsB+E1vK2OFrElUf6Mnvy9llf4l9Nvas63oS0n1VxX/V606
+ l94bJiuJZsZTg9AqFe9+IAkdrK5OpauSFrs/Z5LT/cQVf4L+KegfktK5Ye24v9KWKV0bnnLAIs
+ YSE=
+X-IronPort-AV: E=Sophos;i="5.83,319,1616486400"; 
+   d="scan'208";a="63097658"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa3.mentor.iphmx.com with ESMTP; 02 Jul 2021 10:50:28 -0800
+IronPort-SDR: 1cCgpck76aZwU8ttF9Ytuqri9zCgnn4leh+ChPWJMAoHVxuR5ZVFsXVtoqrNf3oenztA5tNjSb
+ VBVnHUfvEWZ1bGAeuVtF6GL2FGNkQs5mjhUvAV8mU2v7VzmKrzYpGdI+JUBT9su8WzIaxI7jDA
+ Vn1kcCUl6D9pV10K7mQZvY1gL2oVsAdOngJ+eAe4jlxP93TXuI40rLW0pIvK15Gx8zHzpPGKCi
+ DY3St/pdUyE4aBrpadiw5nxZ3BgZuUjixFVZOLZggnRSrF6Yllnn8xwdNGCZ6k0aU/3jbDTnv6
+ eNo=
+From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
+To:     Macpaul Lin <macpaul.lin@mediatek.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>, Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Theodore Tso <tytso@mit.edu>, lkft-triage@lists.linaro.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jens Axboe <axboe@kernel.dk>, Zhang Yi <yi.zhang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+        Eugeniu Rosca <roscaeugeniu@gmail.com>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>
+Subject: Re: [PATCH] usb: gadget: f_fs: Fix setting of device and driver data cross-references
+Date:   Fri, 2 Jul 2021 13:49:56 -0500
+Message-ID: <20210702184957.4479-1-andrew_gabbasov@mentor.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <CACCg+XO+D+2SWJq0C=_sWXj53L1fh-wra8dmCb3VQ4bYCZQryA@mail.gmail.com>
+References: <20210603171507.22514-1-andrew_gabbasov@mentor.com> <20210604110503.GA23002@vmlxhi-102.adit-jv.com> <CACCg+XO+D+2SWJq0C=_sWXj53L1fh-wra8dmCb3VQ4bYCZQryA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [137.202.0.90]
+X-ClientProxiedBy: svr-ies-mbx-06.mgc.mentorg.com (139.181.222.6) To
+ svr-ies-mbx-01.mgc.mentorg.com (139.181.222.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 1:24 AM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> The git log short summary between good and bad.
 
-Ity would have been really good to have a full bisect.
+> -----Original Message-----
+> From: Macpaul Lin <macpaul@gmail.com>
+> Sent: Friday, July 02, 2021 6:02 PM
+> To: Eugeniu Rosca <erosca@de.adit-jv.com>; stable@vger.kernel.org
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Felipe Balbi <balbi@kernel.org>; Gabbasov, Andrew
+> <Andrew_Gabbasov@mentor.com>; linux-usb@vger.kernel.org; linux-kernel@vger.kernel.org; Eugeniu Rosca
+> <roscaeugeniu@gmail.com>; Macpaul Lin <macpaul.lin@mediatek.com>; Eddie Hung <eddie.hung@mediatek.com>
+> Subject: Re: [PATCH] usb: gadget: f_fs: Fix setting of device and driver data cross-references
+> 
+> Eugeniu Rosca <erosca@de.adit-jv.com> wrote:
+> >
+> > Hello,
+> >
+> > On Thu, Jun 03, 2021 at 12:15:07PM -0500, Andrew Gabbasov wrote:
+> > > FunctionFS device structure 'struct ffs_dev' and driver data structure
+> > > 'struct ffs_data' are bound to each other with cross-reference pointers
+> > > 'ffs_data->private_data' and 'ffs_dev->ffs_data'. While the first one
+> > > is supposed to be valid through the whole life of 'struct ffs_data'
+> > > (and while 'struct ffs_dev' exists non-freed), the second one is cleared
+> > > in 'ffs_closed()' (called from 'ffs_data_reset()' or the last
+> > > 'ffs_data_put()'). This can be called several times, alternating in
+> > > different order with 'ffs_free_inst()', that, if possible, clears
+> > > the other cross-reference.
+> > >
+> 
+> [Skip some comment...]
+> 
+> > I confirm there are at least two KASAN use-after-free issues
+> > consistently/100% reproducible on v5.13-rc4-88-gf88cd3fb9df2:
+> >
+> > https://gist.github.com/erosca/b5976a96789e574b319cb9e076938b5c
+> > https://gist.github.com/erosca/4ded55ed32f0133bc2f4ccfe821c7776
+> >
+> > These two can no longer be seen after the patch is applied.
+> >
+> > In addition, below static analysis tools did not spot any regressions:
+> > cppcheck 2.4, smatch v0.5.0-7445-g58776ae33ae8, make W=1, coccicheck
+> >
+> > Reviewed-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> > Tested-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> >
+> > --
+> > Best regards,
+> > Eugeniu Rosca
+> 
+> It like there is similar issue on kernel-4.14 reported by our customer
+> (Android).
+> The back trace are similar.
+> It looks like this patch has fixed issue existed in earlier kernels.
+> Could Engeniu and Andrew help to comment if this fix is suggested to be pick to
+> stable-tree? I've tried to port it onto kernel-4.14, kernel-4.19, and
+> kernel-5.10.
+> But it seems there is some revise work to do.
+> If the origin issue affect multiple LTS kernel versions, then it will
+> be better to be
+> cherry-pick to stable-tree after it has been merged.
+> Thanks!
+> 
+> --
+> Best regards,
+> Macpaul Lin
 
-But from another report:
+Hello!
 
-    https://lore.kernel.org/lkml/87ade24e-08f2-5fb1-7616-e6032af399a3@nvidia.com/
+Originally this issue was discovered exactly in v4.14 (non-Android),
+and the fix was developed for that version and later forward-ported to
+latest mainline 5.13. So, indeed, it makes sense to apply the fix
+to stable versions (after it has been merged to mainline).
 
- it seems to be commit 4ba3fcdde7e3 ("jbd2,ext4: add a shrinker to
-release checkpointed buffers"):
+I'm submitting the same patch, back-ported to stable/linux-4.14.y.
+It can also be applied to linux-4.19.y. While original 5.13 fix is
+applicable to linux-5.10.y.
 
-Ted, when there is a fix for this, it would be interesting to see what
-made this all work fine on x86-64 but fail elsewhere...
+Thanks!
 
-         Linus
+Best regards,
+Andrew Gabbasov
+
