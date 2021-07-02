@@ -2,175 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215FB3B9C0D
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7693B9C0E
 	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 07:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhGBFoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 01:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37026 "EHLO
+        id S230041AbhGBFuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 01:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhGBFoU (ORCPT
+        with ESMTP id S229696AbhGBFuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 01:44:20 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC5BC061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 22:41:48 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id a14so4799743pls.4
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 22:41:48 -0700 (PDT)
+        Fri, 2 Jul 2021 01:50:18 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F8B2C061762;
+        Thu,  1 Jul 2021 22:47:47 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id ie21so4007604pjb.0;
+        Thu, 01 Jul 2021 22:47:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=D7zlF8y2JuYoUJhE1oS1iaGOUuZ9xQp++/xChxOT/IQ=;
-        b=CAndttSGtAP+dzCgzlXnCQnfyHTh00G3Un/RT6vLy88Zq7jP1mUVl/TctvWNlbpUeO
-         cWmUCCPHo3kGrZ0s/pAI5odjreiYA/OlzonX/6GB4NQ5I0euxSkytDq04sN2FmKJq0eK
-         aTrNrWgopIDaT8JIzGsu8esAr4uWcnvo8yOFU=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2wK0sFMdIZyCO2WDDH+HS8h56bpuMmkc9e3XYE6mC5Q=;
+        b=qnmeXfnHyTdcxzSWqkrnRdF2V//PUbXbCggyVQvBBlImgYwbIwgnUm6ym34I4xErv2
+         6MGrB3Tkkm6p0KjJF9w3F82WPl/xLdcPBDWEOSf7XXYL1fGDtOf7VcYxIfdYA5fCvjLk
+         QoFE+LYblZyAosZAA8iP3SbFkuEM7PwYh/B732Bx09daQx1XWvI/TGoXKtdzjXk9Ek/6
+         2fYEFiur77q5gOOoOE0jypLYycPfkDk/9cWN5hANTuWWLf9Dd/4ffiDEMczborexJZD6
+         roCtnk7h9y2yZ0czsJi1c8Z3o3kxvc+w93aY7sai88a70paIkVMLRmeuXDBYBs8cL+xw
+         ZVvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=D7zlF8y2JuYoUJhE1oS1iaGOUuZ9xQp++/xChxOT/IQ=;
-        b=UEXgQUFOg42DeCBHKVJai0jqkrbHt35nB2NmNtqhz+ouiGy0+auRm9BqFNuo4qNY8R
-         uZVx0a4NZWoUv1QDOb4cUOeFQBQDO/0GiwWIierVehTWnzbQF0ikKf/QDqExqwmPFD2b
-         K+DwDGmhsn6k6qsH2Y/9QWsosHpTP3nb1hmSaL/pgdPlKXc5DkyiLQqitmouV5p5OAj6
-         a0Ny7H93+iD7UUEW8qSW7xNNM3n2mkrzR2KX2gN0kk77na/PDeLhx+qqiCVSD6bgLOC9
-         QX34+zEL33tiS9OlJYPXzHni51TdZgDMpqd2hdplz/KswCR030YHz9XV+zw3najWWIKz
-         +npA==
-X-Gm-Message-State: AOAM5316kSY8qqOMmCLUSc0iOlKRDp+JiBnU8owBWD0LmPopPt4QJlYl
-        FAo4XIiI6qZNzTPAxd/H5f4cWA==
-X-Google-Smtp-Source: ABdhPJxi/f+AQb94i0BZjuuD2GzHRRZEWoXuyNGP1UE+QuaGaQnRl0oSvWTnSbgt2900nHst8ZFcEA==
-X-Received: by 2002:a17:902:ab8e:b029:125:e6a0:fea2 with SMTP id f14-20020a170902ab8eb0290125e6a0fea2mr3150377plr.41.1625204507886;
-        Thu, 01 Jul 2021 22:41:47 -0700 (PDT)
-Received: from localhost ([2401:fa00:8f:203:21b7:6cc1:2d7d:b4])
-        by smtp.gmail.com with UTF8SMTPSA id d127sm1887619pfc.50.2021.07.01.22.41.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Jul 2021 22:41:47 -0700 (PDT)
-From:   David Stevens <stevensd@chromium.org>
-X-Google-Original-From: David Stevens <stevensd@google.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>, Tom Murphy <murphyt7@tcd.ie>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        David Stevens <stevensd@chromium.org>
-Subject: [PATCH 2/2] dma-iommu: Check CONFIG_SWIOTLB more broadly
-Date:   Fri,  2 Jul 2021 14:37:42 +0900
-Message-Id: <20210702053742.842850-2-stevensd@google.com>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-In-Reply-To: <20210702053742.842850-1-stevensd@google.com>
-References: <20210702053742.842850-1-stevensd@google.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=2wK0sFMdIZyCO2WDDH+HS8h56bpuMmkc9e3XYE6mC5Q=;
+        b=HQEmUYix4lTb+dv+2jw0qqTiwXbpa4QDaa68+aS3doA8shHK5uwTelWY6NNJKj/cnM
+         epYr15RugblGZSkqE0TPyHu2+yge8ewm3fyJrVDCIOdrhOrm3n4PLKkWq6uFep5JkD36
+         ZkrPjsez7P7FFcuVIrPqCGfy8NRV2uLeScH9hCHJSwzMy6V7LYs4yBtrmTflhU9gLjcl
+         ZrILjyTGyNM07iLjowv2zSvTUU0MYDjz+lX9JSvSbUMo5AF7EAZhwDy4GcSJX734GLWt
+         QTzdz6WhKW54Cz2KLP9yTDLaOefZjNxLmCfmaN64IG+t4LPcmtTRLaJT0HlSVwCMSeCQ
+         1a9A==
+X-Gm-Message-State: AOAM533e+Hb7kxa0+wOKk/XWRtSCjq2ny3EHiondGUY3sFTilQeEc4CC
+        jrCToba7Y6QYRrW2EYNmf+A=
+X-Google-Smtp-Source: ABdhPJzx2qJnS6WY4yyozM0awsnrnn4p1AUviqTkpqPguXby+p7/335O/NkQcbUVuFQqnIn4jQAvLg==
+X-Received: by 2002:a17:90a:7e13:: with SMTP id i19mr3237480pjl.23.1625204866789;
+        Thu, 01 Jul 2021 22:47:46 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:e476:fcd4:d1bf:22a2])
+        by smtp.gmail.com with ESMTPSA id s31sm1915055pfg.191.2021.07.01.22.47.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 22:47:46 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Thu, 1 Jul 2021 22:47:44 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        mm-commits@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        torvalds@linux-foundation.org,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Subject: Re: [patch 108/192] mm: zram: amend SLAB_RECLAIM_ACCOUNT on
+ zspage_cachep
+Message-ID: <YN6ogJbnI46hnjgk@google.com>
+References: <20210630184624.9ca1937310b0dd5ce66b30e7@linux-foundation.org>
+ <20210701015258.BrxjIzdE1%akpm@linux-foundation.org>
+ <YN3Xbdc9N81PIegK@google.com>
+ <CAGWkznHWe22iwtBNtJfY75aS5_cfwKTaBfkX=zzmSaTwHZaAyQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGWkznHWe22iwtBNtJfY75aS5_cfwKTaBfkX=zzmSaTwHZaAyQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Stevens <stevensd@chromium.org>
+On Fri, Jul 02, 2021 at 10:45:09AM +0800, Zhaoyang Huang wrote:
+> On Thu, Jul 1, 2021 at 10:56 PM Minchan Kim <minchan@kernel.org> wrote:
+> >
+> > On Wed, Jun 30, 2021 at 06:52:58PM -0700, Andrew Morton wrote:
+> > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > Subject: mm: zram: amend SLAB_RECLAIM_ACCOUNT on zspage_cachep
+> > >
+> > > Zspage_cachep is found be merged with other kmem cache during test, which
+> > > is not good for debug things (zs_pool->zspage_cachep present to be another
+> > > kmem cache in memory dumpfile).  It is also neccessary to do so as
+> > > shrinker has been registered for zspage.
+> > >
+> > > Amending this flag can help kernel to calculate SLAB_RECLAIMBLE correctly.
+> > >
+> > > Link: https://lkml.kernel.org/r/1623137297-29685-1-git-send-email-huangzhaoyang@gmail.com
+> > > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > Cc: Minchan Kim <minchan@kernel.org>
+> > > Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> >
+> > Sorry for the late. I don't think this is correct.
+> >
+> > It's true "struct zspage" can be freed by zsmalloc's compaction registerred
+> > by slab shrinker so tempted to make it SLAB_RECLAIM_ACCOUNT. However, it's
+> > quite limited to work only when objects in the zspage are heavily fragmented.
+> > Once the compaction is done, zspage are never discardable until objects are
+> > fragmented again. It means it could hurt other reclaimable slab page reclaiming
+> > since the zspage slab object pins the page.
+> IMHO, kmem cache's reclaiming is NOT affected by SLAB_RECLAIM_ACCOUNT
+> . This flag just affects kmem cache merge[1], the slab page's migrate
+> type[2] and the page's statistics. Actually, zspage's cache DO merged
+> with others even without SLAB_RECLAIM_ACCOUNT currently, which maybe
+> cause zspage's object will NEVER be discarded.(SLAB_MERGE_SAME
+> introduce confusions as people believe the cache will merge with
+> others when it set and vice versa)
+> 
+> [1]
+>  struct kmem_cache *find_mergeable(size_t size, size_t align, unsigned
+> long flags, const char *name, void (*ctor)(void *))
+> ...
+>     if ((flags & SLAB_MERGE_SAME) != (s->flags & SLAB_MERGE_SAME))
+>      continue;
+> 
+> [2]
+> if (s->flags & SLAB_RECLAIM_ACCOUNT)
+>     s->allocflags |= __GFP_RECLAIMABLE;
 
-Add check for CONFIG_SWIOTLB to dev_is_untrusted, so that swiotlb
-related code can be removed more aggressively.
-
-Signed-off-by: David Stevens <stevensd@chromium.org>
----
- drivers/iommu/dma-iommu.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 24d1042cd052..614f0dd86b08 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -310,9 +310,10 @@ static void iommu_dma_flush_iotlb_all(struct iova_domain *iovad)
- 	domain->ops->flush_iotlb_all(domain);
- }
- 
--static bool dev_is_untrusted(struct device *dev)
-+static bool dev_use_swiotlb(struct device *dev)
- {
--	return dev_is_pci(dev) && to_pci_dev(dev)->untrusted;
-+	return IS_ENABLED(CONFIG_SWIOTLB) &&
-+	       dev_is_pci(dev) && to_pci_dev(dev)->untrusted;
- }
- 
- /**
-@@ -368,7 +369,7 @@ static int iommu_dma_init_domain(struct iommu_domain *domain, dma_addr_t base,
- 
- 	init_iova_domain(iovad, 1UL << order, base_pfn);
- 
--	if (!cookie->fq_domain && (!dev || !dev_is_untrusted(dev)) &&
-+	if (!cookie->fq_domain && (!dev || !dev_use_swiotlb(dev)) &&
- 	    domain->ops->flush_iotlb_all && !iommu_get_dma_strict(domain)) {
- 		if (init_iova_flush_queue(iovad, iommu_dma_flush_iotlb_all,
- 					  iommu_dma_entry_dtor))
-@@ -553,8 +554,7 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
- 	 * If both the physical buffer start address and size are
- 	 * page aligned, we don't need to use a bounce page.
- 	 */
--	if (IS_ENABLED(CONFIG_SWIOTLB) && dev_is_untrusted(dev) &&
--	    iova_offset(iovad, phys | org_size)) {
-+	if (dev_use_swiotlb(dev) && iova_offset(iovad, phys | org_size)) {
- 		aligned_size = iova_align(iovad, org_size);
- 		phys = swiotlb_tbl_map_single(dev, phys, org_size,
- 					      aligned_size, dir,
-@@ -779,7 +779,7 @@ static void iommu_dma_sync_single_for_cpu(struct device *dev,
- {
- 	phys_addr_t phys;
- 
--	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
-+	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
- 		return;
- 
- 	phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), dma_handle);
-@@ -794,7 +794,7 @@ static void __iommu_dma_sync_single_for_device(struct device *dev,
- 		dma_addr_t dma_handle, size_t size,
- 		enum dma_data_direction dir, phys_addr_t phys)
- {
--	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
-+	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
- 		return;
- 
- 	if (phys == 0)
-@@ -821,10 +821,10 @@ static void iommu_dma_sync_sg_for_cpu(struct device *dev,
- 	struct scatterlist *sg;
- 	int i;
- 
--	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
-+	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
- 		return;
- 
--	if (dev_is_untrusted(dev))
-+	if (dev_use_swiotlb(dev))
- 		for_each_sg(sgl, sg, nelems, i)
- 			iommu_dma_sync_single_for_cpu(dev, sg_dma_address(sg),
- 						      sg->length, dir);
-@@ -840,10 +840,10 @@ static void iommu_dma_sync_sg_for_device(struct device *dev,
- 	struct scatterlist *sg;
- 	int i;
- 
--	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
-+	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
- 		return;
- 
--	if (dev_is_untrusted(dev))
-+	if (dev_use_swiotlb(dev))
- 		for_each_sg(sgl, sg, nelems, i)
- 			__iommu_dma_sync_single_for_device(dev,
- 							   sg_dma_address(sg),
-@@ -1010,7 +1010,7 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
- 	    iommu_deferred_attach(dev, domain))
- 		return 0;
- 
--	if (dev_is_untrusted(dev)) {
-+	if (dev_use_swiotlb(dev)) {
- 		early_mapped = iommu_dma_map_sg_swiotlb(dev, sg, nents,
- 							dir, attrs);
- 		if (!early_mapped)
-@@ -1092,7 +1092,7 @@ static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
- 	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
- 		iommu_dma_sync_sg_for_cpu(dev, sg, nents, dir);
- 
--	if (dev_is_untrusted(dev)) {
-+	if (dev_use_swiotlb(dev)) {
- 		iommu_dma_unmap_sg_swiotlb(dev, sg, nents, dir, attrs);
- 		return;
- 	}
--- 
-2.32.0.93.g670b81a890-goog
-
+That's the point here. With SLAB_RECLAIM_ACCOUNT, page allocator
+try to allocate pages from MIGRATE_RECLAIMABLE with belief those
+objects are easily reclaimable. Say a page has object A, B, C, D
+and E. A-D are easily reclaimable but E is hard. What happens is
+VM couldn't reclaim the page in the end due to E even though it
+already reclaimed A-D. And the such fragmenation could be spread
+out entire MIGRATE_RECLAIMABLE pageblocks over time.
+That's why I'd like to put zspage into MIGRATE_UNMOVALBE from the
+beginning since I don't think it's easily reclaimble once compaction
+is done.
