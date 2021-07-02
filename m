@@ -2,209 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D09A3B9ABC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 04:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7ACB3B9ABF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 04:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234733AbhGBCod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 22:44:33 -0400
-Received: from mail-mw2nam12on2079.outbound.protection.outlook.com ([40.107.244.79]:31492
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234627AbhGBCob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 22:44:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i0TkbUYtx5WZhydjWYmKm2bCztCisV/pSaKYqd3Q9uLRVA7SpAfz5lNLJiv+kdw+EH2+JhthPu3M+uAR2dFgxcaPP09YslQAicw9hMwK5e8MYMnUw7zTR4hyUTosTT2p0UtdFvvAmCh/8It18Ul/rLgpWB2YNHFqWmme9+iiIwCzVzi9Ei2ZypLOeQLZwvFyVPmig+Kt9boFjXmJKxbRJXqSCxd0Qm/zZZOoyeEabnPGoARCLxll5tOlpEFQYsMvhleNAfkOSX+dMLN1N6ryuI4TCrgOSnPg1CKlvRu6EjkLIBOz1fvR1ususlzhKLsnhay8kjhQzN2OsxF3McTh6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kmih0ZkrQRtOyKqpwRo6Syp55s5YzsKcF5xym9wFPUk=;
- b=LtS/+pU5uDh2Zmv4N1t2IGKhbGr6StgQvWl+I0pqyrVLDT/bckWNFFe3fRa1rkM0rOBkdOOnyH0OgaLlbgyad9egX1IGDbnHUTIib/9Ze/9oGvILN/EXcaJVcpgNZhRjx0Hhkm4BUdlz1CQP7JFDXoQ8yIURYJLw/b5n0poXm7s7gJz3djYP2Mro3QVsJurCyUljBGmoNb+o76mWwQ73SItOLKSQseMHi5dmpZHaWcYbpDgmiTuCVHOKfDKcjLBiQeUFnHC0tWMUVBIlArfTqTf5AyEmp1abe+3B1+trO2RgbOOzdzWPwfPsqTMsLSLWmMUgM1mY0JReNKSu2ab8EQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kmih0ZkrQRtOyKqpwRo6Syp55s5YzsKcF5xym9wFPUk=;
- b=grIzOmYOY5sKTd4R0TfV7H8i9wBF0ru28JzziDn+QuhUGQ+SXW8a0J9oNcIo4gbFhwv7PyoypLZGZctbK2T0lL3FkaRJs0+Sph0vmc+/nDl3gcPog5Fk4mqwivySm1ud3WHLWaicePg84Z8+fB+9Vai2SF6gj46K4Ld0Va9WR5g=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5357.namprd12.prod.outlook.com (2603:10b6:5:39b::24)
- by DM6PR12MB5518.namprd12.prod.outlook.com (2603:10b6:5:1b9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Fri, 2 Jul
- 2021 02:41:53 +0000
-Received: from DM4PR12MB5357.namprd12.prod.outlook.com
- ([fe80::9d97:11b:bb35:d2e6]) by DM4PR12MB5357.namprd12.prod.outlook.com
- ([fe80::9d97:11b:bb35:d2e6%5]) with mapi id 15.20.4264.026; Fri, 2 Jul 2021
- 02:41:53 +0000
-Date:   Fri, 2 Jul 2021 10:41:23 +0800
-From:   Wesley Sheng <wesley.sheng@amd.com>
-To:     linasvepstas@gmail.com, ruscur@russell.cc, oohall@gmail.com,
-        bhelgaas@google.com, corbet@lwn.net, linux-pci@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     wesleyshenggit@sina.com
-Subject: Re: [PATCH] Documentation: PCI: pci-error-recovery: rearrange the
- general sequence
-Message-ID: <20210702024123.GA2714@buildhost>
-References: <20210618060446.7969-1-wesley.sheng@amd.com>
- <20210701222231.GA102933@bjorn-Precision-5520>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210701222231.GA102933@bjorn-Precision-5520>
-X-Originating-IP: [165.204.134.244]
-X-ClientProxiedBy: HK2PR06CA0011.apcprd06.prod.outlook.com
- (2603:1096:202:2e::23) To DM4PR12MB5357.namprd12.prod.outlook.com
- (2603:10b6:5:39b::24)
+        id S234770AbhGBCrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 22:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234627AbhGBCry (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 22:47:54 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A9AC061762;
+        Thu,  1 Jul 2021 19:45:22 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id n9so5665508qtk.7;
+        Thu, 01 Jul 2021 19:45:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nOfujZpJs5bJ1Y1hAIj12f3/unKCESff8MCkIvriXAI=;
+        b=RuVx54sI98pLBf6DbcXjoYQW0a+GwzvuRYR21hRtFGPJglZ19aPxpKxoOrHg1d3cAM
+         uqXjy9ZYC6IHD3usEhZczLcAeVvEQUJBaAb5b9t9dU6jIzN59rjjDIrnV9NTG18Dlin4
+         2/hhgdVOYOsQfBnMaE5R/+Lpl4F5kW6AueKCisQ+MlhyVk17pgVevMuWkLhkDz2hmT7E
+         82/o3nGdd7ujb+1DVpa84CJIHZ7+sO+7zVUPyiJ4dNsvv3cNIxYerKjE/A63obmxrgeG
+         WbeYQENN6ywD3agFrj8KUBdVEdx7j/KD77WkLIbcg2QYnEfjNUWY1mMsPhdazacWQ8Qt
+         D9ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nOfujZpJs5bJ1Y1hAIj12f3/unKCESff8MCkIvriXAI=;
+        b=VIYEk4Jn8vnAxUC7PbGaC+3XaK3DLPDD14Qm26n9bwzcgneg51wEkNGIoGUBh3adys
+         Pc6jsv/mDFbzgBIhMFGdLR/1N1H7IppNKSHOenbSwMNCYtR2QBEtkFlC6KceweeeFUvJ
+         GED6Ge7J1BwVjB4/3YXzyOWeQWlev6QHp9r3oDB9h1YZQ65MVvj/VHcOZ/LO2WrZJyIc
+         /r4kgbw1Fr9TfP3U2a1IIzFxmvIKq5mOlPXHmn6TOfjkRnRZCTpnPCwbfcJFT6WBaYpO
+         3n+0NV8UKlml9wizclFl6QjjXxsD3vvkymQVTE/HCB++DU7CoyRIF85V0F0VSwluB5ZY
+         CwwA==
+X-Gm-Message-State: AOAM532OWVKrTseOmvxt4xrC+rYQx6BYbs1uyjiygkVS3yUC3VhbBipE
+        WTPeG7P7cBxfhlSvmcMtRk579GEjuCAplfS7MDvt16T5gm/0Xw==
+X-Google-Smtp-Source: ABdhPJzdKeXp/hkdB4Tj1wmnRZ8Y/zfm9GHei1xljO4BcdhplePgiV9DKq4olHz57Z4XjRuIcC3fDAR94XTbF7UEqEw=
+X-Received: by 2002:a05:622a:1451:: with SMTP id v17mr1720393qtx.286.1625193921736;
+ Thu, 01 Jul 2021 19:45:21 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from buildhost (165.204.134.244) by HK2PR06CA0011.apcprd06.prod.outlook.com (2603:1096:202:2e::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Fri, 2 Jul 2021 02:41:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4beaef6f-8996-4cd9-f933-08d93d02f3c1
-X-MS-TrafficTypeDiagnostic: DM6PR12MB5518:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB5518AF20E869BAF204A87CCC951F9@DM6PR12MB5518.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Yd8qLaRHn1Xr2m4pj8NkJbYRYSwiwm8eYoMCNdqOKZQ6hkr3wQb42Y+tjhdPrh5R94nQn91+K6gkHsBWD0oqGo8By3ECZBGO+lAlQcn+XgQqhryOdL+hJP+fnEoY5Z63SB8C1aFmYR7pCehV8IiFq6+ymGBpT1psirGSxWWKFDffsoAEDM9f0FWfSJmsyLAxSIGvi1p2KdpbUOcl5Q6oe765RwcC322LmOEj//MaCnhnwvHGXz6geUWPRufk+Ccf8x/o/vqN4AoaDB0HZnZMQch1O47w/099b0P9dXFNLIQc9vxvq/qH7pmXrhY5DgzvL4u2EFRaNoeCle4e4lc79309M3DXLIfEzNQmxT3eR+5kAbOIVvx2X1WmApULQa/iIVI6YWW/tS9xeE7/59K44ywMLyi93K9TLjmEde+mhpGnW6DKr2QEdA+/MTBiKG2IuW5zIayMZqFcoG27HcETr8udVsXkG/8hTQUmdIBZbjj5jDiRIO5/54i/ObeEZr0KecV+afu6T4HTMwVTtSf6V8PpIwDw/NnIq1llHN1DpBGOVdSTGA9HaYeso/HL03lRBkVBD9ewbfCXrF2/bJgW98mH+xNLWGzYDLSdpLqIvPm/L4uMjCE9pCtRvEEGsYoSUfqZimbzw+tg3+iC8YkjvY+3AycqI9WBi2vYd0Q7dcuQVGSN98YWtrVQ+T4JqAkHrcwDXBWBqtvUdJJ3IB+cQg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5357.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(478600001)(1076003)(316002)(33716001)(8676002)(44832011)(7416002)(2906002)(8936002)(4326008)(9576002)(956004)(83380400001)(33656002)(38350700002)(6496006)(52116002)(66556008)(66476007)(86362001)(55016002)(9686003)(5660300002)(66946007)(186003)(6666004)(38100700002)(16526019)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?82VUYWDuV7SC5Y+Df4xDvTlgEXYSy1+5RbPTrNT+cH0dv4mDjJAcLIbR3toD?=
- =?us-ascii?Q?d3GuM8JFYLPI+TMU1iH1GsGPeZd1JvTAluiIICJE4g4NWY9uskindu/m9gwt?=
- =?us-ascii?Q?LoIEY39JJAmALbz3p7Bv1EpyKP0qOFt+91TzNF5RGnRTNa0O6rAzcJsc94Rt?=
- =?us-ascii?Q?KL3moY9D6i4pDf3M+dLzOC6b0Aj/+z1jRN4/Mzm+/iKRTqonCI4rMnkHrBpX?=
- =?us-ascii?Q?DYBSIFEW2EBDDBVKQ/M7FJGg7ozQqyCK0x3UqKE4slM1UnMM8hXTlMGH5rEj?=
- =?us-ascii?Q?oHAzGEoVmDB9MxdqUA/V+v77cHRGw2/mjXNwvXFMNlB8pKPkKLunx7/uWQAH?=
- =?us-ascii?Q?LQciIOFYNj6weBd3kVKnt2shtgTFdXUmq4Z10k2acGzny6PxNJaWvtmSEg4A?=
- =?us-ascii?Q?RwSqRFSRPlXsMrX6WfzqK4XeRI2W1bERwPQA1nX/dS0jOKMflrH67WVB02PG?=
- =?us-ascii?Q?l7OITzWZrJfDCMtAhtcLRfXuYxcLtuFshyEvj5mboBSxZvJf4O4beaNW6vyI?=
- =?us-ascii?Q?f2U4+OPgEyIus8bzjbuEVZLY8mzCn2Jw67CQCIZlb4jYFMkqkhcaONgIHplS?=
- =?us-ascii?Q?71AUP7SNc76TJ/zvXczlxrXjzqO7HUCEKqZB/hLRMKLBTHhmYdOKJ/3Bl+z3?=
- =?us-ascii?Q?lNiz6CfBX++QcIM6j3oalzyxlHtfvyZiTnqTG9izpQtBkhCVEs1fNeAN+wzE?=
- =?us-ascii?Q?D+et/RASs6t889tDKFGWWAPUIgLsgj6bqM4bsNOaVcPj78kD0sOwaoBCBfGZ?=
- =?us-ascii?Q?uBokNAQRUxDfrnLRmIsZA6BI1Y9Z0ly9LUPYWXy0X1GyCjK1Tp4XxpFntWZq?=
- =?us-ascii?Q?+XI+2rb3A/Z5uZvPVhCS2GGa1asdB/MeUTsZl5By+kwB9yRopcU0O2uXXaKa?=
- =?us-ascii?Q?xkMfR1Vbm1Vu4Kcnzvh87foA2zmfDSn262zneqUdX1CSaAUCKJOIGykjLst1?=
- =?us-ascii?Q?JttvJIkNscW5GWp1CV+PqwrP4RuacDg0GSa8Pl13MRZw0lqg2ken8kxMQ+Nc?=
- =?us-ascii?Q?s7iHr//402uYESpwQsfkFMHHocl/N4jHMVAxHwKuFBiAKoDb8/GxtPBTEhc0?=
- =?us-ascii?Q?EFxqLCFe1xw9gw/1+Ac10Kqp9Pq4zJdvUpWwFS/0of+ke5xbJ6H5pUo5yRb6?=
- =?us-ascii?Q?jPYsxAaGFX6Bah5ZlAzronE0RmjXzAmeJo+v+zj9/sAeEEPSZI//maFalJXJ?=
- =?us-ascii?Q?4ILh+5OQdmWawRrAriWiTMfkH+RWkgz34R05cFZTVaMUGvXxAF+K2JxVC0wM?=
- =?us-ascii?Q?zs0vziMsHz3e7C0UX73KLy7cDjGlEtwaZZscTheIrtL3tpADUGQcfJ5op+na?=
- =?us-ascii?Q?D7lYqlIyuUHRXKqOq/wUxvam?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4beaef6f-8996-4cd9-f933-08d93d02f3c1
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5357.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2021 02:41:53.9167
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hJJ4OZO20CLgBJwfjN3Clo7kGfeiNHRM7LVk4Fpt4LILlmKOJaR32Ap2mXBUKSR3yfU/n8XaZAKNDCoFsV0Aow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5518
+References: <20210630184624.9ca1937310b0dd5ce66b30e7@linux-foundation.org>
+ <20210701015258.BrxjIzdE1%akpm@linux-foundation.org> <YN3Xbdc9N81PIegK@google.com>
+In-Reply-To: <YN3Xbdc9N81PIegK@google.com>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Fri, 2 Jul 2021 10:45:09 +0800
+Message-ID: <CAGWkznHWe22iwtBNtJfY75aS5_cfwKTaBfkX=zzmSaTwHZaAyQ@mail.gmail.com>
+Subject: Re: [patch 108/192] mm: zram: amend SLAB_RECLAIM_ACCOUNT on zspage_cachep
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        mm-commits@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        torvalds@linux-foundation.org,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 05:22:31PM -0500, Bjorn Helgaas wrote:
-> Please make the subject a little more specific.  "rearrange the
-> general sequence" doesn't say anything about what was affected.
-> 
-> On Fri, Jun 18, 2021 at 02:04:46PM +0800, Wesley Sheng wrote:
-> > Reset_link() callback function was called before mmio_enabled() in
-> > pcie_do_recovery() function actually, so rearrange the general
-> > sequence betwen step 2 and step 3 accordingly.
-> 
-> s/betwen/between/
-> 
-> Not sure "general" adds anything in this sentence.  "Step 2 and step
-> 3" are not meaningful here in the commit log.  It needs to spell out
-> what those steps are so the log makes sense by itself.
-> 
-> "reset_link" does not appear in pcie_do_recovery().  I'm guessing
-> you're referring to the "reset_subordinates" function pointer?
+On Thu, Jul 1, 2021 at 10:56 PM Minchan Kim <minchan@kernel.org> wrote:
 >
-Yes, you are right.
-pcieaer-howto.rst has a section named with "Provide callbacks",
-the callback supplied to pcie_do_recovery() was referred to 
-reset_link.
- 
-> > Signed-off-by: Wesley Sheng <wesley.sheng@amd.com>
-> 
-> I didn't quite understand your response to Oliver, so I'll wait for
-> your corrections and his ack before proceeding.
+> On Wed, Jun 30, 2021 at 06:52:58PM -0700, Andrew Morton wrote:
+> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > Subject: mm: zram: amend SLAB_RECLAIM_ACCOUNT on zspage_cachep
+> >
+> > Zspage_cachep is found be merged with other kmem cache during test, which
+> > is not good for debug things (zs_pool->zspage_cachep present to be another
+> > kmem cache in memory dumpfile).  It is also neccessary to do so as
+> > shrinker has been registered for zspage.
+> >
+> > Amending this flag can help kernel to calculate SLAB_RECLAIMBLE correctly.
+> >
+> > Link: https://lkml.kernel.org/r/1623137297-29685-1-git-send-email-huangzhaoyang@gmail.com
+> > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > Cc: Minchan Kim <minchan@kernel.org>
+> > Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 >
-OK.
-I thought step 2 MMIO Enabled and step 3 link reset should swap sequence.
+> Sorry for the late. I don't think this is correct.
+>
+> It's true "struct zspage" can be freed by zsmalloc's compaction registerred
+> by slab shrinker so tempted to make it SLAB_RECLAIM_ACCOUNT. However, it's
+> quite limited to work only when objects in the zspage are heavily fragmented.
+> Once the compaction is done, zspage are never discardable until objects are
+> fragmented again. It means it could hurt other reclaimable slab page reclaiming
+> since the zspage slab object pins the page.
+IMHO, kmem cache's reclaiming is NOT affected by SLAB_RECLAIM_ACCOUNT
+. This flag just affects kmem cache merge[1], the slab page's migrate
+type[2] and the page's statistics. Actually, zspage's cache DO merged
+with others even without SLAB_RECLAIM_ACCOUNT currently, which maybe
+cause zspage's object will NEVER be discarded.(SLAB_MERGE_SAME
+introduce confusions as people believe the cache will merge with
+others when it set and vice versa)
 
+[1]
+ struct kmem_cache *find_mergeable(size_t size, size_t align, unsigned
+long flags, const char *name, void (*ctor)(void *))
+...
+    if ((flags & SLAB_MERGE_SAME) != (s->flags & SLAB_MERGE_SAME))
+     continue;
+
+[2]
+if (s->flags & SLAB_RECLAIM_ACCOUNT)
+    s->allocflags |= __GFP_RECLAIMABLE;
+
+>
 > > ---
-> >  Documentation/PCI/pci-error-recovery.rst | 23 ++++++++++++-----------
-> >  1 file changed, 12 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/Documentation/PCI/pci-error-recovery.rst b/Documentation/PCI/pci-error-recovery.rst
-> > index 187f43a03200..ac6a8729ef28 100644
-> > --- a/Documentation/PCI/pci-error-recovery.rst
-> > +++ b/Documentation/PCI/pci-error-recovery.rst
-> > @@ -184,7 +184,14 @@ is STEP 6 (Permanent Failure).
-> >     and prints an error to syslog.  A reboot is then required to
-> >     get the device working again.
-> >  
-> > -STEP 2: MMIO Enabled
-> > +STEP 2: Link Reset
-> > +------------------
-> > +The platform resets the link.  This is a PCI-Express specific step
-> > +and is done whenever a fatal error has been detected that can be
-> > +"solved" by resetting the link.
-> > +
-> > +
-> > +STEP 3: MMIO Enabled
-> >  --------------------
-> >  The platform re-enables MMIO to the device (but typically not the
-> >  DMA), and then calls the mmio_enabled() callback on all affected
-> > @@ -197,8 +204,8 @@ information, if any, and eventually do things like trigger a device local
-> >  reset or some such, but not restart operations. This callback is made if
-> >  all drivers on a segment agree that they can try to recover and if no automatic
-> >  link reset was performed by the HW. If the platform can't just re-enable IOs
-> > -without a slot reset or a link reset, it will not call this callback, and
-> > -instead will have gone directly to STEP 3 (Link Reset) or STEP 4 (Slot Reset)
-> > +without a slot reset, it will not call this callback, and
-> > +instead will have gone directly or STEP 4 (Slot Reset)
-> 
-> s/or/to/  ?
-> 
-> >  .. note::
-> >  
-> > @@ -210,7 +217,7 @@ instead will have gone directly to STEP 3 (Link Reset) or STEP 4 (Slot Reset)
-> >     such an error might cause IOs to be re-blocked for the whole
-> >     segment, and thus invalidate the recovery that other devices
-> >     on the same segment might have done, forcing the whole segment
-> > -   into one of the next states, that is, link reset or slot reset.
-> > +   into next states, that is, slot reset.
-> 
-> s/into next states/into the next state/ ?
-> 
-> >  The driver should return one of the following result codes:
-> >    - PCI_ERS_RESULT_RECOVERED
-> > @@ -233,17 +240,11 @@ The driver should return one of the following result codes:
-> >  
-> >  The next step taken depends on the results returned by the drivers.
-> >  If all drivers returned PCI_ERS_RESULT_RECOVERED, then the platform
-> > -proceeds to either STEP3 (Link Reset) or to STEP 5 (Resume Operations).
-> > +proceeds to STEP 5 (Resume Operations).
-> >  
-> >  If any driver returned PCI_ERS_RESULT_NEED_RESET, then the platform
-> >  proceeds to STEP 4 (Slot Reset)
-> >  
-> > -STEP 3: Link Reset
-> > -------------------
-> > -The platform resets the link.  This is a PCI-Express specific step
-> > -and is done whenever a fatal error has been detected that can be
-> > -"solved" by resetting the link.
-> > -
-> >  STEP 4: Slot Reset
-> >  ------------------
-> >  
-> > -- 
-> > 2.25.1
-> > 
+> >
+> >  mm/zsmalloc.c |    2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > --- a/mm/zsmalloc.c~mm-zram-amend-slab_reclaim_account-on-zspage_cachep
+> > +++ a/mm/zsmalloc.c
+> > @@ -328,7 +328,7 @@ static int create_cache(struct zs_pool *
+> >               return 1;
+> >
+> >       pool->zspage_cachep = kmem_cache_create("zspage", sizeof(struct zspage),
+> > -                                     0, 0, NULL);
+> > +                                     0, SLAB_RECLAIM_ACCOUNT, NULL);
+> >       if (!pool->zspage_cachep) {
+> >               kmem_cache_destroy(pool->handle_cachep);
+> >               pool->handle_cachep = NULL;
+> > _
