@@ -2,87 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54FF13B9C1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 08:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11013B9C1C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 08:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhGBGDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 02:03:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbhGBGDv (ORCPT
+        id S230116AbhGBGG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 02:06:57 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:55846 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229733AbhGBGG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 02:03:51 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CAEBC061762;
-        Thu,  1 Jul 2021 23:01:18 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id s14so8131700pfg.0;
-        Thu, 01 Jul 2021 23:01:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oPi06ZHVRg+TxnMHHHCYc5ilWLPWl5RCydFn9y2UZ7I=;
-        b=JorXze+DS8+eoxmrF+5lyYwvNYWOThuE7MD8xgX4QhF38EYYDU3oWVyvKQ6mmv8Qkt
-         hBNsf689OfUAHH+x6yjutzjhzTTZrmi34y1Ud7taaXLcDYUyQHGp8aNzhXHD9Vh09H1I
-         24h3KIA5SVpSHwz6EmUD6xUg34dHuzUxjSrIIkYV36mSyzpFJA0WdB98VeReqjsW/Fui
-         7Ht4g6ymp831ULgnh4yPAMGwdy278pbQohBz4sI+ZI5Opoc8d2q5L7HNp2Q3IBYqrUea
-         ++9E0xPDt3QeO5kATltboknTnlholsroA+O5LCDMcSrR1h+1RiCEF6etcf1LrsPxFyr2
-         g6Ag==
+        Fri, 2 Jul 2021 02:06:56 -0400
+Received: by mail-io1-f69.google.com with SMTP id i13-20020a5d88cd0000b02904e5ab8bdc6cso6062138iol.22
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 23:04:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=oPi06ZHVRg+TxnMHHHCYc5ilWLPWl5RCydFn9y2UZ7I=;
-        b=qMvkAhFqXrux0nwXnw5qZalEa2twN3RrDk47Ros2qt3zHPJVZVK8eQYKT9nkWRwP1J
-         a12TQBPv05J2CKNKxmmqdDuNwgStubib22RbaDbl0JwY5F5HZlMOHwpPdBC1YGvMguUy
-         BowblMgZeaqAKnuVSIApPZpfUSefTiXeLzLempSmgTrvWXdaIleslA3NOPY2h6d6Itc7
-         Ty7IgAsTB0nbWBTgTiyQ39iAi87kcDmB9WxHW3oSD1xr88SEmVG91Fdwf9LVLspbjyoc
-         LHwYDeSFQ35+vs4I1tT0L9OLdtKyegpt+HgDlmZbNa+ia3RZAxfMc/ctFpOdF32z+Sv1
-         pFmQ==
-X-Gm-Message-State: AOAM531WMeRe4b8f0JJwcqifcBu+J8gWw67kj6Ri36mx8XuYzARfBCps
-        e68THuo5/PayzyIjXVivMuU=
-X-Google-Smtp-Source: ABdhPJwF3xarKTWFo9SP0wUcqz8z+4hm+xTgn2YxtNcBcOL6Rq9j7gZz42bkAnngiGbqPoBIWRebAA==
-X-Received: by 2002:a63:5446:: with SMTP id e6mr3543764pgm.73.1625205678405;
-        Thu, 01 Jul 2021 23:01:18 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:e476:fcd4:d1bf:22a2])
-        by smtp.gmail.com with ESMTPSA id gk20sm1431573pjb.17.2021.07.01.23.01.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 23:01:17 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 1 Jul 2021 23:01:15 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>, akpm@linux-foundation.org
-Cc:     gregkh@linuxfoundation.org, jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, rafael@kernel.org,
-        axboe@kernel.dk, tj@kernel.org, mbenes@suse.com,
-        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
-        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/2] zram: fix few sysfs races
-Message-ID: <YN6rq03Mf+eSrL43@google.com>
-References: <20210702043716.2692247-1-mcgrof@kernel.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=0v7o+yRonMwj37aWtp7LDQ+ZJZdImYbaOMRoIUdgDlA=;
+        b=Br248nmPXzM/ivfnQ6PnZ965x52kTXrd5dzZfG1j8B2umE4YMHDktyM/tbc/Nd9lhz
+         BiEOY2ngnadtIVJ5ixuUCbxH1qSl06uRIOlpGMqVioQq+TmEk+bceJyzkS4a7+tjxYHd
+         PwdSMZ+oDCfF58BZVO8ouDpHAVRMzdEqeUIuuWGB1hpzHbq1esaXQ4emxkTCfOHaL6WK
+         /ggjfPHfP3Xx4iM3WVDo62yTfId8SvcFhjTzpTYLPKPn5YxhJUJ9Ql9WmIw0taTyVrpM
+         BQFxSu+igyKuhiKJCrtmqVyWOJS0VOKOqQxzTTqxpKCrG6+4mDoGKDlXuiWm4dGraaxI
+         yKpA==
+X-Gm-Message-State: AOAM530Cm5i/4jRPzHN1xWQ/lMeNkfSL2E5Ao9sH9xKv4DKF6Dh81JB+
+        NnwvpUTDBRiZCrAhRzPvDVdDDXvNi0YPlKWsvj1iczEzeBHQ
+X-Google-Smtp-Source: ABdhPJynbx0gbZZaepJUjoArc1ttDwGYLfeGXuFHFzdIjKHLKzuwNbd3aAYAAWdGHoqCkVfJh0Wfe8j6mTlME/lfdrxfLc4efKhO
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210702043716.2692247-1-mcgrof@kernel.org>
+X-Received: by 2002:a6b:7b47:: with SMTP id m7mr2461413iop.193.1625205863474;
+ Thu, 01 Jul 2021 23:04:23 -0700 (PDT)
+Date:   Thu, 01 Jul 2021 23:04:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002de98c05c61dba72@google.com>
+Subject: [syzbot] upstream build error (16)
+From:   syzbot <syzbot+567c9f52d94ad483cac5@syzkaller.appspotmail.com>
+To:     gengdongjiu@huawei.com, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 09:37:14PM -0700, Luis Chamberlain wrote:
-> This v5 modifies the second patch, the set of macros needed a bit of
-> adjustments so we can keep the same name attributes. It also updates
-> the patches to fix all checkpatch complaints.
-> 
-> Luis Chamberlain (2):
->   zram: fix crashes with cpu hotplug multistate
->   zram: fix deadlock with sysfs attribute usage and module removal
-> 
->  drivers/block/zram/zram_drv.c | 108 ++++++++++++++++++++++++++--------
->  drivers/block/zram/zram_drv.h |  54 +++++++++++++++++
->  2 files changed, 137 insertions(+), 25 deletions(-)
+Hello,
 
-Guess first patch would be confilict with recent kernel.
+syzbot found the following issue on:
 
-Anyway, please send the patchset with Andrew If he doesn't
-pick in a few days.
+HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11c93764300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=caee64f929f74d56
+dashboard link: https://syzkaller.appspot.com/bug?extid=567c9f52d94ad483cac5
+userspace arch: arm
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+567c9f52d94ad483cac5@syzkaller.appspotmail.com
+
+drivers/clk/hisilicon/clk-hi3559a.c:818: undefined reference to `hisi_reset_exit'
+drivers/clk/hisilicon/clk-hi3559a.c:800: undefined reference to `hisi_reset_init'
+arm-linux-gnueabi-ld: drivers/clk/hisilicon/clk-hi3559a.c:806: undefined reference to `hisi_reset_exit'
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
