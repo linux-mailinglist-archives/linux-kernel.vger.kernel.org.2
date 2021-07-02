@@ -2,87 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F333BA1E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1703BA1EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233055AbhGBOFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 10:05:42 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:36658 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232537AbhGBOFl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 10:05:41 -0400
-Received: by mail-ot1-f42.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so10144649otl.3;
-        Fri, 02 Jul 2021 07:03:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yz8sqvK+LwTIlmS6VotPE2o9ldJl7oB6So4nHS6DHBE=;
-        b=Ejyy0ORx4yUX/22+LbQeWI9JvA0CNe2hqwAYCazf9RIpnvSj6b2qIEPcRPBt8Hmq8X
-         BSfGcWfTJl/tfy9cJFpx6UvuzfDH3DwzGupY5AiqkvvvrjhPB6EnFrW1M+WItnokD9jc
-         Ssf4Zv9P8pK5m4KP07OWWJDMYDE+eQ0kSTLqcd9c1c4vnssg3VV+WGC6MTfwZMIV4spe
-         cp5sJMJiE95YtSW7QGYxE4Z8O2S3qmoiios5OS37Ib5y7rJYzP+QrT0zi7EGlxdSmBC6
-         X895nubebo/oQNtpCoDXMlBth5bMq/HA4lCOacMT57lA9mL2C/2YMFmT1+WjfHrf+vSv
-         vjKw==
-X-Gm-Message-State: AOAM5323cJjmeQTQNmFlXkc4LYcT/VC/b9d3Voo00+n79dHO1QnTHuPK
-        +0fJucWxNvUK9PLTUDqmwDAGxtqRfsYvetw+gAo=
-X-Google-Smtp-Source: ABdhPJzoKSKF9xSd7DywDnTBC1E4Ktuvc/kc2JQrTjfjJzLRuw6EVvOXe5HwqGOpHiSPmgBL30gt2Tj02JjKlVO6dFE=
-X-Received: by 2002:a05:6830:1d8:: with SMTP id r24mr4865674ota.206.1625234588272;
- Fri, 02 Jul 2021 07:03:08 -0700 (PDT)
+        id S232938AbhGBOGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 10:06:46 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:37538 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232814AbhGBOGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 10:06:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=6qMVAgKVd6rGWPP/jnpkpugcgYIRE2cKjTTpe1fq8II=; b=asZG3uZSaV3Gu8goV2ZvJQr7Nc
+        jnClDGVaWUlvqMfKt1PsWdpAO1KTizDcqhDBnFqluE5apXoX9EOSEFvUly53o2046ayqfGwyryBw6
+        DMXEhBw+z1ITcTJmFeLUHFKdb7n9lVAXYCFZnvo2kIzmkd5FmJVwjgfiAJpNqRDjIpxw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lzJm7-00BvOF-Iw; Fri, 02 Jul 2021 16:04:11 +0200
+Date:   Fri, 2 Jul 2021 16:04:11 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 7/7] mfd: tqmx86: assume 24MHz LPC clock for unknown
+ boards
+Message-ID: <YN8c2zO/hehPocMF@lunn.ch>
+References: <cover.1625227382.git.matthias.schiffer@ew.tq-group.com>
+ <384f4c0070fc95e4e688731876178f9299861aa7.1625227382.git.matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
-References: <1625209430-19934-1-git-send-email-aubrey.li@intel.com>
- <1625209430-19934-2-git-send-email-aubrey.li@intel.com> <CAJZ5v0jq=-97bW_s7dx2U=y-3rZoJsLtFre2XXYAaQgAdbQdXA@mail.gmail.com>
- <f8f0b7ee-b225-eff0-cfcc-bb43e9e520dc@linux.intel.com>
-In-Reply-To: <f8f0b7ee-b225-eff0-cfcc-bb43e9e520dc@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 2 Jul 2021 16:02:56 +0200
-Message-ID: <CAJZ5v0gO0jMTr_X__NKfo+SX0ygyN2C7CQiz03Vo-WObo_ZZNQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ACPI: let BIOS fall back to legacy handling if PRM disabled
-To:     Aubrey Li <aubrey.li@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <384f4c0070fc95e4e688731876178f9299861aa7.1625227382.git.matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 4:02 PM Aubrey Li <aubrey.li@linux.intel.com> wrote:
->
-> On 7/2/21 7:37 PM, Rafael J. Wysocki wrote:
-> > On Fri, Jul 2, 2021 at 9:03 AM Aubrey Li <aubrey.li@intel.com> wrote:
-> >>
-> >> Based on _OSC PRM bit, BIOS can choose switch from legacy handling
-> >> to using PRM. So if CONFIG_ACPI_PRMT is disabled, this bit should
-> >> not be set to let BIOS fall back to the legacy handling (such as SMI).
-> >>
-> >> Cc: Dan Williams <dan.j.williams@intel.com>
-> >> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-> >> ---
-> >>  drivers/acpi/bus.c | 2 ++
-> >>  1 file changed, 2 insertions(+)
-> >>
-> >> diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-> >> index 60fb6a84..30a3d4a 100644
-> >> --- a/drivers/acpi/bus.c
-> >> +++ b/drivers/acpi/bus.c
-> >> @@ -303,7 +303,9 @@ static void acpi_bus_osc_negotiate_platform_control(void)
-> >>
-> >>         capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_OST_SUPPORT;
-> >>         capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_PCLPI_SUPPORT;
-> >> +#ifdef CONFIG_ACPI_PRMT
-> >>         capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_PRM_SUPPORT;
-> >> +#endif
-> >
-> > What about using if (IS_ENABLED()) instead of #ifdef?
->
-> aha, sorry, using if (IS_ENABLED()) is better, will come up with a new version soon.
+On Fri, Jul 02, 2021 at 02:23:53PM +0200, Matthias Schiffer wrote:
+> All future TQMx86 modules should use a 24MHz LPC clock. Warn about
+> unknown boards, but assume this is the case.
+> 
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 
-No need (see my other reply).
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Thanks!
+    Andrew
