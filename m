@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8D33B9D98
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8293B9D9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbhGBIiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 04:38:11 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:46508 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230166AbhGBIiJ (ORCPT
+        id S230273AbhGBIil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 04:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230166AbhGBIij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 04:38:09 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1628H8O9011796;
-        Fri, 2 Jul 2021 08:35:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=CgpHUvQWodsBQnISSb9kfIuwFVsNAghRjCPtbrBaYAg=;
- b=lsPDArnwObvu4saMlp5mO5c4MtLvbFJM1pwgc5TyMtgS7UUkmbDR/Vn1e3khj29fjsQy
- UM1+uVPUH3u+kZJbbeFk3iBL2C+43vP0cXfDC3SgiEaX2eAG4MdgOSJtzwJCnCguwHpX
- +OQ2lph8zmrygjyh8XxP3vX+NHZhlhH5iqSe+essirKSuyUwl5HUqbOjWjRNZxDNTCQQ
- 4E3Lw45o5wmdVytF8gv4qqUkduoUt9r/qNurqbPfa0Qu3AtjZGO7Ye1gFJRaejxNIAh6
- aMGZn5uEfPILk19J7+OY2swhBhYcXOX4pfpe62/Juq/xQu5wr86EvlIe+4jkcbMgutOe YQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39gy5w3723-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Jul 2021 08:35:33 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1628Fs0i102066;
-        Fri, 2 Jul 2021 08:35:32 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 39dsc5xm13-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Jul 2021 08:35:32 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1628ZV2S152501;
-        Fri, 2 Jul 2021 08:35:31 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 39dsc5xkyk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Jul 2021 08:35:30 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1628ZTwu025022;
-        Fri, 2 Jul 2021 08:35:29 GMT
-Received: from kadam (/102.222.70.252)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 02 Jul 2021 01:35:28 -0700
-Date:   Fri, 2 Jul 2021 11:35:21 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8188eu: Remove an unused variable and some
- lines of code
-Message-ID: <20210702083521.GV2040@kadam>
-References: <20210701144707.22820-1-fmdefrancesco@gmail.com>
- <20210702074840.GT2040@kadam>
+        Fri, 2 Jul 2021 04:38:39 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D30C061765
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 01:36:07 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id t15so8105212wry.11
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 01:36:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7FZN41zFvSYxh+iEV226AlMaIZ9YuMRVvjo0w5RlrRg=;
+        b=zARHa0Smrt/1UIlw1UhZvHTz5jbXFIGlSVYne/ZG7zj6bAj6G68ScyCLlTxEQAxFv6
+         qJIJhckBCmxtJ/QsW6Ck5W5YdiIyOzm987UxCmeVfg6hQIeZDSaq1Ztj+kQdNHpMx1w/
+         4z7MpEVjIQK9G1EMnQvMQ/N9Vw0cYmo1OTj9n5toT/cZ/IVEvLZwXVYMq6IxhOxLpHQm
+         2haIVsCbbQstJkfnjqc0XnHwPD0TDrZt7G/d8b828z248uFm6YZGw1yiEBqmXzCCXeeU
+         f1Arll1K+2v/i6+OfR8AWn0cl8ylzGpknTGQMmVvBxehFETzzN+IU/X3BlGrdZAASvPY
+         Fcag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7FZN41zFvSYxh+iEV226AlMaIZ9YuMRVvjo0w5RlrRg=;
+        b=ZXKfX4ror5ld0sWKRlwFj5u+0x/pumQuiERDy/xqPT2hGIxORXNrgdtJcD0O8RQEVs
+         ZNrKPDgyuO3OjwWl1zVizBfRrDdI9bypNOf4qVIcoeG/F6AxgXi5h0ZFSn2+X+CKfMVE
+         eXnwUg6MHczC351VId9NP6tST5SP/aF7fnc7hfrC7yY3dIqNaOvgJhWmuCD60aq9gzXE
+         MgoNEdpZb5kQ842QG2GcPEgRZrhPS7rlhBn8KVPR/WD0hkWc1gZPezLfe/PyfHECjxAr
+         5aXyRpgYWvPvnZC/+Fb04E8kMK05cR6EgwSxeW6ukYXxyM2btwPANqU0LLWJpX8fIbJt
+         MJdg==
+X-Gm-Message-State: AOAM531aliciTXCaLrrvL9ywgdYgflft5kX8PIE96phY08/XZKlZBWVN
+        7oTWwe4eDPH68+wyy3Fz5arHDw==
+X-Google-Smtp-Source: ABdhPJzga7frJg+9Zf+0ANeCdeGJyDqrA4zrx8RoTlibuVEj3L9i0gf3FY/cbI1z2ewA+/OBYH4y6A==
+X-Received: by 2002:a05:6000:1251:: with SMTP id j17mr4499946wrx.122.1625214966270;
+        Fri, 02 Jul 2021 01:36:06 -0700 (PDT)
+Received: from enceladus (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
+        by smtp.gmail.com with ESMTPSA id w3sm11965453wmi.24.2021.07.02.01.36.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 01:36:05 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 11:36:01 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        thomas.petazzoni@bootlin.com, mw@semihalf.com,
+        linux@armlinux.org.uk, hawk@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com,
+        akpm@linux-foundation.org, peterz@infradead.org, will@kernel.org,
+        willy@infradead.org, vbabka@suse.cz, fenghua.yu@intel.com,
+        guro@fb.com, peterx@redhat.com, feng.tang@intel.com, jgg@ziepe.ca,
+        mcroce@microsoft.com, hughd@google.com, jonathan.lemon@gmail.com,
+        alobakin@pm.me, willemb@google.com, wenxu@ucloud.cn,
+        cong.wang@bytedance.com, haokexin@gmail.com, nogikh@google.com,
+        elver@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next RFC 0/2] add elevated refcnt support for page
+ pool
+Message-ID: <YN7P8Y+qWxAADJJR@enceladus>
+References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210702074840.GT2040@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: G1k7SjhoYIMwPKDt3j0CyoVnoBo0j-c3
-X-Proofpoint-ORIG-GUID: G1k7SjhoYIMwPKDt3j0CyoVnoBo0j-c3
+In-Reply-To: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 10:48:40AM +0300, Dan Carpenter wrote:
-> On Thu, Jul 01, 2021 at 04:47:07PM +0200, Fabio M. De Francesco wrote:
-> > Remove set but unused iw_operation_mode[]. Remove all the lines of 
-> > code from the function rtw_wx_set_rate, except the "return 0;" line 
-> > to not break userland code that somewhat uses this IOCTL.
-> > 
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > ---
-> >  .../staging/rtl8188eu/os_dep/ioctl_linux.c    | 72 -------------------
-> >  1 file changed, 72 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-> > index b958a8d882b0..a66d8838c034 100644
-> > --- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-> > +++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-> > @@ -46,11 +46,6 @@ static u32 rtw_rates[] = {1000000, 2000000, 5500000, 11000000,
-> >  	6000000, 9000000, 12000000, 18000000, 24000000, 36000000,
-> >  	48000000, 54000000};
-> >  
-> > -static const char * const iw_operation_mode[] = {
-> > -	"Auto", "Ad-Hoc", "Managed",  "Master", "Repeater",
-> > -	"Secondary", "Monitor"
-> > -};
-> > -
-> >  void indicate_wx_scan_complete_event(struct adapter *padapter)
-> >  {
-> >  	union iwreq_data wrqu;
-> > @@ -1266,73 +1261,6 @@ static int rtw_wx_set_rate(struct net_device *dev,
-> >  			   struct iw_request_info *a,
-> >  			   union iwreq_data *wrqu, char *extra)
-> >  {
+Hi Yunsheng, 
+
+On Wed, Jun 30, 2021 at 05:17:54PM +0800, Yunsheng Lin wrote:
+> This patchset adds elevated refcnt support for page pool
+> and enable skb's page frag recycling based on page pool
+> in hns3 drvier.
 > 
-> Just delete this whole file.  It doesn't do anything now.
 
-Sorry, I meant function, not file.  *chortle*.  :P
+Thanks for taking the time with this! I am a bit overloaded atm, give me a
+few days and I'll go through the patches
 
-regards,
-dan carpenter
+Cheers
+/Ilias
 
+
+> Yunsheng Lin (2):
+>   page_pool: add page recycling support based on elevated refcnt
+>   net: hns3: support skb's frag page recycling based on page pool
+> 
+>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  79 +++++++-
+>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   3 +
+>  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
+>  drivers/net/ethernet/marvell/mvneta.c              |   6 +-
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +-
+>  include/linux/mm_types.h                           |   2 +-
+>  include/linux/skbuff.h                             |   4 +-
+>  include/net/page_pool.h                            |  30 ++-
+>  net/core/page_pool.c                               | 215 +++++++++++++++++----
+>  9 files changed, 285 insertions(+), 57 deletions(-)
+> 
+> -- 
+> 2.7.4
+> 
