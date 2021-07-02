@@ -2,121 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE303BA3EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C19C3BA3FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhGBScU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 14:32:20 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48010 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbhGBScT (ORCPT
+        id S230009AbhGBSip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 14:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229676AbhGBSio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 14:32:19 -0400
-Date:   Fri, 2 Jul 2021 20:29:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625250586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1LP04KpdM/Xii9XazRoYT55qF7Zs2WWSaf0X5rgB/YI=;
-        b=OWg8L2E+Rd3pYI642Oye8e4r4BiJocV794SpGvwipz4GoE4GhuCuDzsOixQ7CJ6BV3ZDs2
-        bpu/1AO6xtEgGmdT9iv7fnormWD61hMjlk30r3DhwkdHB8ezKkfZKKsSsHhnAJuYvI+j/E
-        ow/w0VmGaj2ao3TBK6EFLtjmcuQ6saJTMRm48PwFU/9NQOZXqSH0VX+xJLGd7+jTZz3kkW
-        KHAWzlvOk/O0bFqUEONCZLYJ0ezlBKrAldqmxo7uXVHnEDz0Yh5IvPUYSN+VyIght8Skwu
-        FvNhMxmfDuGbj1pP8iyfeSXg/ru8n00gwkzFmAO7u95FPla17KJzjNoRjhF5aA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625250586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1LP04KpdM/Xii9XazRoYT55qF7Zs2WWSaf0X5rgB/YI=;
-        b=6lw7AkFPWzvD6KtRY6f6Uwn1CU3N72ZwVjan69VBAARy2e3VZTII4arXD/qZXbGBUm9J6x
-        2tHMV49sbM05F1Bg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [RFC v2 00/34] SLUB: reduce irq disabled scope and make it RT
- compatible
-Message-ID: <20210702182944.lqa7o2a25to6czju@linutronix.de>
-References: <20210609113903.1421-1-vbabka@suse.cz>
+        Fri, 2 Jul 2021 14:38:44 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76DCC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 11:36:11 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id m18so13577286wrv.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 11:36:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Qy2SuH3yLn9nvIah9N9cVsf8v+PHZeC5od/9bGW4LXw=;
+        b=a3znGR55WEGHZ9rYByubK2VJp810L3abeZeLBp9RHvB9k8KawLIRdChMDideqmcpee
+         hMprgf2aE/vE6qDNwzojHGKk1EVRFEshqo7KHuhNTJl1IUo/uZ828WTkGkbXQiq2w593
+         lp7V+EbENMX/deeVUFN4ukLZRX/vaiYP4oKzJmChwYl4OCtCKHnAZ3tIBTCUCE97zihw
+         wOtjQZ3/DZSLlnRyt0ZFI/OC6qeILauwxbA5ElSO4rwuzc1KxKd63sf7HDpJIqX4riqX
+         82LjgEwZTrqq9d2gCMlggJdlZ5Z4ijP9G80h7AxpaWl5kDCLcUqIn7x2Cy6p5TZSR73Q
+         MnJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Qy2SuH3yLn9nvIah9N9cVsf8v+PHZeC5od/9bGW4LXw=;
+        b=WFm50ZKzARba2yO/uBi8OponIYHor3lIZBem0HcoD8s+Jl9HZCr3yfTMqsAelzCiXu
+         NDFJOG5W8Q5UARxLcNYPaz8jF5SUGQVG4L+BIUvHczIT9G/1t0PVrgB1AhWr/OD2CaWT
+         afnXZMRwZMopn+KlBgdfLRyhI72FghmPQLx3Hf5e5TTH0febg11kYkKoRmRbHjWUiv7p
+         fTvroHeN5nuhJUwk7RFlEsa6sDlyg9hYPqqV2lW8rvQCu0qnycDubtXTnTyPKCRXivju
+         JnDD5y2bQ2zQZQ5Go0tvUUAcZNa0cuiEksT5M/v5xgnsyqBANq7sDS2AiGhterhSqNHS
+         bfvQ==
+X-Gm-Message-State: AOAM533Vbp1BKkggEoO+6HGnZ58wm6O7wtLMjdmmGEKFcmpq0CRZi/EO
+        3M4F3IVaf3k/6b5pxRhzm0TxUA==
+X-Google-Smtp-Source: ABdhPJxEcdb0b54kE/uwKiajr9rj28zEzr82hGlqAQkQZZe1EmMWmbRm3Q/ZI9rJQjd0W8u2ttHo2A==
+X-Received: by 2002:a05:6000:1a85:: with SMTP id f5mr1153882wry.210.1625250970071;
+        Fri, 02 Jul 2021 11:36:10 -0700 (PDT)
+Received: from dell ([109.180.115.218])
+        by smtp.gmail.com with ESMTPSA id m17sm4265380wrr.6.2021.07.02.11.36.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 11:36:09 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 19:36:07 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Yunus Bas <Y.Bas@phytec.de>,
+        "stwiss.opensource@diasemi.com" <stwiss.opensource@diasemi.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mfd: mfd-core: Change "Failed to locate of_node" warning
+ to debug
+Message-ID: <YN9cl1/7k/UlllSq@dell>
+References: <YMm+VXRrRKIHGgmr@dell>
+ <5a3f5fd82a391ade9a659338983e5efa7924210d.camel@phytec.de>
+ <YMsHXEP36Vxr7lAb@dell>
+ <03cb3befabdda032b1ec9d97b4daac69fa23c759.camel@phytec.de>
+ <YNsid9K4PdUJbKqs@dell>
+ <5a718e7812f2ce46347ae94fda6175f38c65359e.camel@phytec.de>
+ <20210630105557.eaktwdz5p6yzuron@maple.lan>
+ <YNxktsFmlzLcn4+Y@dell>
+ <9b5d0003cce92cad57e7712d1e46c78c10f1a0ab.camel@phytec.de>
+ <20210702125920.fydyfhwqe7tyr7oi@maple.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210609113903.1421-1-vbabka@suse.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210702125920.fydyfhwqe7tyr7oi@maple.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I replaced my slub changes with slub-local-lock-v2r3.
-I haven't seen any complains from lockdep or so which is good. Then I
-did this with RT enabled (and no debug):
+On Fri, 02 Jul 2021, Daniel Thompson wrote:
 
-- A "time make -j32" run of allmodconfig on /dev/shm.
-  Old:
-| real    20m6,217s
-| user    568m22,553s
-| sys     48m33,126s
+> On Thu, Jul 01, 2021 at 03:34:43PM +0000, Yunus Bas wrote:
+> > Am Mittwoch, dem 30.06.2021 um 13:33 +0100 schrieb Lee Jones:
+> > > On Wed, 30 Jun 2021, Daniel Thompson wrote:
+> > > 
+> > > > On Wed, Jun 30, 2021 at 07:27:32AM +0000, Yunus Bas wrote:
+> > > > > Am Dienstag, dem 29.06.2021 um 14:39 +0100 schrieb Lee Jones:
+> > > > > Imagine only required parts of the MFD is connected to the
+> > > > > designed
+> > > > > system and unrequired parts are not. In that case, fully
+> > > > > describing the
+> > > > > MFD in the devicetree wouldn't represent the system at all.
+> > > > 
+> > > > To describe hardware that is present but unused we would normally
+> > > > use
+> > > > status = "disabled".
+> > > > 
+> > > > So if, for example, your board cannot use the RTC for some reason
+> > > > (perhaps the board has no 32KHz oscillator?) then the DA9062 still
+> > > > contains the hardware but it is useless. Such hardware could be
+> > > > described as:
+> > > > 
+> > > > da9062_rtc: rtc {
+> > > >     compatible = "dlg,da9062-rtc";
+> > > >     status = "disabled";
+> > > > }
+> > > > 
+> > > > Is this sufficient to suppress the warnings when the hardware is
+> > > > not fully described?
+> <snip>
+> > > 
+> > > Right.  This is a potential solution.
+> > 
+> > @Daniel, you hit the nail on the head :). Thank you for that.
+> > 
+> > This solution would indeed surpress the warnings, but what is the
+> > benefit of this? We would define never used device nodes just to
+> > satisfy the driver.
+> 
+> I would say that doing so resolves an awkward ambiguity of
+> interpretation w.r.t. the bindings.
+> 
+> 1. The MFD device compatible "dlg,da9062" tells the OS that we
+>    have an DA9062. An DA9062 contains six functions and this can be
+>    inferred *entirely* from the MFD compatible string. We do not
+>    need any subnodes to tell us that a DA9062 contains an RTC. The OS
+>    can (and in this case, does) already know that there is an RTC
+>    because we have a DA9062 (and a datasheet).
+> 
+> 2. The default behaviour when a node has no status field is to
+>    assume that is is *enabled*.
+> 
+> Based on #1 and #2 above then assuming that a DT that omits the
+> sub-nodes actually means "disable the RTC" is risky. #2 might
+> actually make it more natural to assume that the device is present and
+> functional because there is no status field to tell MFD *not* to
+> initialize it.
 
-  New:
-| real    20m9,049s
-| user    569m32,096s
-| sys     48m47,670s
+Exactly.  Nicely put.
 
-  These 3 seconds here are probably in the noise range.
+> That leaves us in a situation where there is no way to correctly guess
+> the authors intent when sub-nodes are omitted from the DT.
 
-- perf_5.10 stat -r 10 hackbench -g200 -s 4096 -l500
-Old:
-|         464.967,20 msec task-clock                #   27,220 CPUs utilized            ( +-  0,16% )
-|          7.683.944      context-switches          #    0,017 M/sec                    ( +-  0,86% )
-|            931.380      cpu-migrations            #    0,002 M/sec                    ( +-  4,94% )
-|            219.569      page-faults               #    0,472 K/sec                    ( +-  0,39% )
-|  1.104.727.599.918      cycles                    #    2,376 GHz                      ( +-  0,18% )
-|    941.428.898.087      stalled-cycles-frontend   #   85,22% frontend cycles idle     ( +-  0,24% )
-|    729.016.546.572      stalled-cycles-backend    #   65,99% backend cycles idle      ( +-  0,32% )
-|    340.133.571.519      instructions              #    0,31  insn per cycle
-|                                                   #    2,77  stalled cycles per insn  ( +-  0,12% )
-|     73.746.821.314      branches                  #  158,607 M/sec                    ( +-  0,13% )
-|        377.838.006      branch-misses             #    0,51% of all branches          ( +-  1,01% )
-| 
-|            17,0820 +- 0,0202 seconds time elapsed  ( +-  0,12% )
+> Given this is something of a corner case and the documentation is
+> ambiguous then a warning of the author does not clearly resolve the
+> ambiguity seems reasonable.
 
-New:
-|         422.865,71 msec task-clock                #    4,782 CPUs utilized            ( +-  0,34% )
-|         14.594.238      context-switches          #    0,035 M/sec                    ( +-  0,43% )
-|          3.737.926      cpu-migrations            #    0,009 M/sec                    ( +-  0,46% )
-|            218.474      page-faults               #    0,517 K/sec                    ( +-  0,74% )
-|    940.715.812.020      cycles                    #    2,225 GHz                      ( +-  0,34% )
-|    716.593.827.820      stalled-cycles-frontend   #   76,18% frontend cycles idle     ( +-  0,39% )
-|    550.730.862.839      stalled-cycles-backend    #   58,54% backend cycles idle      ( +-  0,43% )
-|    417.274.588.907      instructions              #    0,44  insn per cycle
-|                                                   #    1,72  stalled cycles per insn  ( +-  0,17% )
-|     92.814.150.290      branches                  #  219,488 M/sec                    ( +-  0,17% )
-|        822.102.170      branch-misses             #    0,89% of all branches          ( +-  0,41% )
-| 
-|             88,427 +- 0,618 seconds time elapsed  ( +-  0,70% )
+I'm having trouble parsing this part.
 
-So this is outside of the noise range.
-I'm not sure where this is coming from. My guess would be higher lock
-contention within the memory allocator.
-  
-> The remaining patches to upstream from the RT tree are small ones related to
-> KConfig. The patch that restricts PREEMPT_RT to SLUB (not SLAB or SLOB) makes
-> sense. The patch that disables CONFIG_SLUB_CPU_PARTIAL with PREEMPT_RT could
-> perhaps be re-evaluated as the series also addresses some latency issues with
-> percpu partial slabs.
-
-With that series the PARTIAL slab can be indeed enabled. I have (had) a
-half done series where I had PARTIAL enabled and noticed a slight
-increase in latency so made it "default y on !RT". It wasn't dramatic
-but appeared to be outside of noise.
-
-Sebastian
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
