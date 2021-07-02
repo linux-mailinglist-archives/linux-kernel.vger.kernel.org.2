@@ -2,100 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C3C3BA16C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E287B3BA15B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbhGBNpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:45:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48834 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232723AbhGBNp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:45:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9794761443;
-        Fri,  2 Jul 2021 13:42:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625233376;
-        bh=CH6s8PzijkWxFhtgRqiYVjHFlLYMZClTLpnnouDO70I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A40mA9tZ9LMr7PeOYwW46qsBy/YkFXTvdeGm+aRhHcmdvxoK2GZDSOc4s6ork6biV
-         uODKOjvBknp6sBNN9Ki9xGQHNKSD5Z+9TrEY3TzcgVoHS/Zwjxn1Mc3MdhzMaTGiK3
-         ISMtLwo2CZcwxkQuElGlgC6FbEYN6zkgeYbDjwGvAq1ARVFyPm1eKMjISXBeAvAp6V
-         0aw6g1vfKsjXh7+WvNeYM4YGicSYuCCBhDZ+3dI3o7fk9CAOw57i4Q8i44RBd6FRc7
-         eoPOJtOtgZXWPnXNiKOC8NHu6vU2sM4c2rWpWLWSqIHpj25xEIyiKfRJLnGPdgnGZo
-         9/+D8kTWSdjLg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lzJRT-0006QE-A2; Fri, 02 Jul 2021 15:42:51 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/6] USB: serial: cp210x: clean up type detection
+        id S232645AbhGBNpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232362AbhGBNpR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 09:45:17 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAE5C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 06:42:44 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id q16so18194706lfr.4
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 06:42:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xVOZh1Cyt+07lU9O98eURJiMyRJpRRmLjbR5+r7Bs5M=;
+        b=jAt+dM5oVAYDBU0YQrQEVGxLKdNpeJf/biXJmdCuKv1sQ//oc8AEzfKyPn8mxBXGw0
+         D4OA5YAYdk78b30jXnMy+/bzQ8vs0SXofaIw8ljB+wy+mMNJVQ9n8hJKoHDo9puWVZEn
+         d+hU97pzOEZRxdLxAKm1SO3DRpx4WoBzL4Uc79i9aJKcdPfn1WnRy8Ob/gHSCdSo28yX
+         PU0xE5VObmwmxeh0OqaW93JLDdwFhhM6X3OAGQHfFiZQWKOfvXhsqAz0Sd6VLTGOLirO
+         n+C/y3Hm/g3AJOt2c2Qc+/Noa0WC9pwU/Off9co0jphM42nzMaWkbd0fLTCdGjDbwlRL
+         /Wdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xVOZh1Cyt+07lU9O98eURJiMyRJpRRmLjbR5+r7Bs5M=;
+        b=pFhnk6twQoBIckq31Bm/E9KlmnYjkwpojZ4tGaysZ2w+DKYB72hUQeLMED5P3d5XI+
+         Ar32k+k8rT+fMgSIEIK6JBkDHmx/cn3JpmpPy4IbZDMqSWVZbsVO3PeADifnphXe9l1L
+         V08npze9XnrmDX8OurPCpJYig9ju90vRog513PImH+bjpLWxmnCHqxv2X9Bv8jcTdOxW
+         fXgUAaDyUH097l5/Vv1RCgMMUZMAGrAJf3MoDkN5wAWzzcISqg30ir/4ppto1NSyKeS4
+         38FT5FGjab9zn/Rgiabj/QC0ykxa7e/twI/LSXHD7KFc3XoINx3fdbzSpOumUf3wpoDO
+         +bPQ==
+X-Gm-Message-State: AOAM531l8zCYYO2lsqoUmFqJO8KVbkGRaVlT+IeF2u2UauxQCrd8bzEH
+        zz0qVYQ+80jU4KsuW4V2dcXP6Q==
+X-Google-Smtp-Source: ABdhPJwmVwuogUgru4yT15rfARUTm9NBF9wGR2QDq8PHLusnmKd8f7EOwcoVQB5Nz9bIa9CfLwqfsw==
+X-Received: by 2002:ac2:46cc:: with SMTP id p12mr3859067lfo.357.1625233362575;
+        Fri, 02 Jul 2021 06:42:42 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id u5sm277486lfg.268.2021.07.02.06.42.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 06:42:41 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Christian Lohle <CLoehle@hyperstone.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] mmc: core: Avoid hogging the CPU while polling for busy
 Date:   Fri,  2 Jul 2021 15:42:26 +0200
-Message-Id: <20210702134227.24621-6-johan@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210702134227.24621-1-johan@kernel.org>
-References: <20210702134227.24621-1-johan@kernel.org>
+Message-Id: <20210702134229.357717-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up attach somewhat by moving type detection into the quirk helper
-and giving it a more generic name.
+Step by step, code that have been dealing sending CMD13 to poll the card for
+busy, have been moved to use the common mmc_poll_for_busy() loop. This helps to
+avoid hogging the CPU, for example, as it inserts a small delay in between each
+polling attempt. Additionally, it avoids open coding.
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/cp210x.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+This series takes the next and final step, by moving the mmc block device layer
+from its own busy polling loop, into using the common code.
 
-diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-index 4c51381cf9aa..0f4cdba160d9 100644
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -2087,11 +2087,21 @@ static int cp210x_get_fw_version(struct usb_serial *serial, u16 value)
- 	return 0;
- }
- 
--static void cp210x_determine_quirks(struct usb_serial *serial)
-+static void cp210x_determine_type(struct usb_serial *serial)
- {
- 	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
- 	int ret;
- 
-+	ret = cp210x_read_vendor_block(serial, REQTYPE_DEVICE_TO_HOST,
-+			CP210X_GET_PARTNUM, &priv->partnum,
-+			sizeof(priv->partnum));
-+	if (ret < 0) {
-+		dev_warn(&serial->interface->dev,
-+				"querying part number failed\n");
-+		priv->partnum = CP210X_PARTNUM_UNKNOWN;
-+		return;
-+	}
-+
- 	switch (priv->partnum) {
- 	case CP210X_PARTNUM_CP2102N_QFN28:
- 	case CP210X_PARTNUM_CP2102N_QFN24:
-@@ -2116,18 +2126,9 @@ static int cp210x_attach(struct usb_serial *serial)
- 	if (!priv)
- 		return -ENOMEM;
- 
--	result = cp210x_read_vendor_block(serial, REQTYPE_DEVICE_TO_HOST,
--					  CP210X_GET_PARTNUM, &priv->partnum,
--					  sizeof(priv->partnum));
--	if (result < 0) {
--		dev_warn(&serial->interface->dev,
--			 "querying part number failed\n");
--		priv->partnum = CP210X_PARTNUM_UNKNOWN;
--	}
--
- 	usb_set_serial_data(serial, priv);
- 
--	cp210x_determine_quirks(serial);
-+	cp210x_determine_type(serial);
- 	cp210x_init_max_speed(serial);
- 
- 	result = cp210x_gpio_init(serial);
+Please test and review!
+
+Kind regards
+Uffe
+
+Ulf Hansson (3):
+  mmc: core: Avoid hogging the CPU while polling for busy in the I/O err
+    path
+  mmc: core: Avoid hogging the CPU while polling for busy for mmc ioctls
+  mmc: core: Avoid hogging the CPU while polling for busy after I/O
+    writes
+
+ drivers/mmc/core/block.c   | 74 +++++++++++++++++---------------------
+ drivers/mmc/core/mmc_ops.c |  5 ++-
+ drivers/mmc/core/mmc_ops.h |  1 +
+ 3 files changed, 37 insertions(+), 43 deletions(-)
+
 -- 
-2.31.1
+2.25.1
 
