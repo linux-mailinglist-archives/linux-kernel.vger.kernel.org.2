@@ -2,174 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F5C3BA4A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392AE3BA4A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231330AbhGBU2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 16:28:07 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51292 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhGBU2G (ORCPT
+        id S231145AbhGBUaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 16:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229996AbhGBUay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 16:28:06 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9D43F2230C;
-        Fri,  2 Jul 2021 20:25:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625257532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mabE+0eVvsCIBGarxQAzMzsRg+px+iJI6Z/84g0W3y0=;
-        b=KlsCJ2kcsyOpcoIaegCkGDM++OMkRwObGt5DA3BSZ80lgQ5wXyFoRaqEYsSnHeahs+GOCN
-        aomKcB7Sg3up8eIwyOqv0QLBSTToWLIjo9MqWVI60ijg2hDgRKmCKo8qTmXThpazvxS3tH
-        I92OOm1YSqPxaSC6rHAkQXlcTVXZkfQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625257532;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mabE+0eVvsCIBGarxQAzMzsRg+px+iJI6Z/84g0W3y0=;
-        b=KBOnFJ7/WBYOni2zmCrVkRd2qOEWPVuamcpMUYovFREiP5nQ6RX4/gc57yQXojoXTZoU2e
-        ItXh+XqjUq6MR1Cg==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 0E27D11C84;
-        Fri,  2 Jul 2021 20:25:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625257532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mabE+0eVvsCIBGarxQAzMzsRg+px+iJI6Z/84g0W3y0=;
-        b=KlsCJ2kcsyOpcoIaegCkGDM++OMkRwObGt5DA3BSZ80lgQ5wXyFoRaqEYsSnHeahs+GOCN
-        aomKcB7Sg3up8eIwyOqv0QLBSTToWLIjo9MqWVI60ijg2hDgRKmCKo8qTmXThpazvxS3tH
-        I92OOm1YSqPxaSC6rHAkQXlcTVXZkfQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625257532;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mabE+0eVvsCIBGarxQAzMzsRg+px+iJI6Z/84g0W3y0=;
-        b=KBOnFJ7/WBYOni2zmCrVkRd2qOEWPVuamcpMUYovFREiP5nQ6RX4/gc57yQXojoXTZoU2e
-        ItXh+XqjUq6MR1Cg==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id ZBWEODt232AMfAAALh3uQQ
-        (envelope-from <vbabka@suse.cz>); Fri, 02 Jul 2021 20:25:31 +0000
-Subject: Re: [RFC v2 00/34] SLUB: reduce irq disabled scope and make it RT
- compatible
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-References: <20210609113903.1421-1-vbabka@suse.cz>
- <20210702182944.lqa7o2a25to6czju@linutronix.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <35b26e48-a96a-41b0-826e-43e43660c9d6@suse.cz>
-Date:   Fri, 2 Jul 2021 22:25:05 +0200
+        Fri, 2 Jul 2021 16:30:54 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A20FC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 13:28:22 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id l26so10110992oic.7
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 13:28:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G3oeQWQfQg7R6ZTkuSFwzLdWju3dWQvTVitCiMSYhzA=;
+        b=FyILO6ZXBGGJBsNmgS4gCCfKYz8ArhANiGesQ6ixptTTjSgqtT/NGnvn2uxFpob84O
+         Sx2eVDvn8yMeU72VCUwKwKlzL8+67cjXQfQu9YRaopoeWTBn9eG0VwGGWmmgRRPFnpgt
+         +Q4/MK7Zl7oCSgk/Q95E3RFmY6GTm4Z6PNZGLUurvfSTWKB2whMTi4HriXvtuyrUwM/+
+         XeVDCXWR8yNVDUbuoboll9uB2O+VYjfrPpCnyafGSSmC+kZqbpL0JGjgUU6MLuRRzup9
+         HWkQuKx5yxSlaluGXuw2WXVo7aMf4GKyjfSK9j/w5gN2rdUK7R2CbjG6T4kOy9pQQrcS
+         EhjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G3oeQWQfQg7R6ZTkuSFwzLdWju3dWQvTVitCiMSYhzA=;
+        b=Dg7REETLzGPq7r6Z7xnyIdZVrGUE2z3erRS4mPPfwuQBNRKpqcSZ7RkVbgCOaViNNQ
+         4kNx08aFD4j5lAkF+OegpXbq0lxrS9EAXNkYG1l1pWm3xIg202tlzwyJAmub89LB129O
+         1cG7B6OiZ4Q8KnPMjjVZ/JwB6sP+VupL9i5Lvi9K8+qrfKpTpkU6gBCNH5YKDUPMpFGa
+         MDkVQB5Rx7Y4g2s4lSjVHtLehEfm56wkyMwT0bBGkcqKUQc+bNyzuPkT0Xyk/ulQbtm6
+         JA/1wq1/+np3YLc1XZdhyLt+PaYebE6SrR6AwnULLGHjce8b58oq1uF6cfSp2ny4HwkX
+         4X+g==
+X-Gm-Message-State: AOAM533FBpAwE657Z1oogqmNj4kBBS3ATEQFw45PktiWngOqMaqP5N2g
+        9hwgAYhZackxy2gg6MxJr6LMmH6MIHs=
+X-Google-Smtp-Source: ABdhPJynPxNN4TOayB4uOuYJUOVcsddvIpO8SDqE9jSnUSRgcaWYA3OwnY498Dj4i+9OhXOPsKUcCA==
+X-Received: by 2002:a54:418c:: with SMTP id 12mr1052171oiy.42.1625257701153;
+        Fri, 02 Jul 2021 13:28:21 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e74sm806771ote.14.2021.07.02.13.28.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Jul 2021 13:28:20 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210419225047.3415425-1-dennis@kernel.org>
+ <20210419225047.3415425-4-dennis@kernel.org>
+ <20210702191140.GA3166599@roeck-us.net> <YN9s5HLjNeb1lxMK@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 3/4] percpu: implement partial chunk depopulation
+Message-ID: <dc349738-544c-34a1-748f-4e1a2c595a20@roeck-us.net>
+Date:   Fri, 2 Jul 2021 13:28:18 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210702182944.lqa7o2a25to6czju@linutronix.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YN9s5HLjNeb1lxMK@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/2/21 8:29 PM, Sebastian Andrzej Siewior wrote:
-> I replaced my slub changes with slub-local-lock-v2r3.
-> I haven't seen any complains from lockdep or so which is good. Then I
-> did this with RT enabled (and no debug):
-
-Thanks for testing!
-
-> - A "time make -j32" run of allmodconfig on /dev/shm.
->   Old:
-> | real    20m6,217s
-> | user    568m22,553s
-> | sys     48m33,126s
+On 7/2/21 12:45 PM, Dennis Zhou wrote:
+> Hello,
 > 
->   New:
-> | real    20m9,049s
-> | user    569m32,096s
-> | sys     48m47,670s
+> On Fri, Jul 02, 2021 at 12:11:40PM -0700, Guenter Roeck wrote:
+>> Hi,
+>>
+>> On Mon, Apr 19, 2021 at 10:50:46PM +0000, Dennis Zhou wrote:
+>>> From: Roman Gushchin <guro@fb.com>
+>>>
+>>> This patch implements partial depopulation of percpu chunks.
+>>>
+>>> As of now, a chunk can be depopulated only as a part of the final
+>>> destruction, if there are no more outstanding allocations. However
+>>> to minimize a memory waste it might be useful to depopulate a
+>>> partially filed chunk, if a small number of outstanding allocations
+>>> prevents the chunk from being fully reclaimed.
+>>>
+>>> This patch implements the following depopulation process: it scans
+>>> over the chunk pages, looks for a range of empty and populated pages
+>>> and performs the depopulation. To avoid races with new allocations,
+>>> the chunk is previously isolated. After the depopulation the chunk is
+>>> sidelined to a special list or freed. New allocations prefer using
+>>> active chunks to sidelined chunks. If a sidelined chunk is used, it is
+>>> reintegrated to the active lists.
+>>>
+>>> The depopulation is scheduled on the free path if the chunk is all of
+>>> the following:
+>>>    1) has more than 1/4 of total pages free and populated
+>>>    2) the system has enough free percpu pages aside of this chunk
+>>>    3) isn't the reserved chunk
+>>>    4) isn't the first chunk
+>>> If it's already depopulated but got free populated pages, it's a good
+>>> target too. The chunk is moved to a special slot,
+>>> pcpu_to_depopulate_slot, chunk->isolated is set, and the balance work
+>>> item is scheduled. On isolation, these pages are removed from the
+>>> pcpu_nr_empty_pop_pages. It is constantly replaced to the
+>>> to_depopulate_slot when it meets these qualifications.
+>>>
+>>> pcpu_reclaim_populated() iterates over the to_depopulate_slot until it
+>>> becomes empty. The depopulation is performed in the reverse direction to
+>>> keep populated pages close to the beginning. Depopulated chunks are
+>>> sidelined to preferentially avoid them for new allocations. When no
+>>> active chunk can suffice a new allocation, sidelined chunks are first
+>>> checked before creating a new chunk.
+>>>
+>>> Signed-off-by: Roman Gushchin <guro@fb.com>
+>>> Co-developed-by: Dennis Zhou <dennis@kernel.org>
+>>> Signed-off-by: Dennis Zhou <dennis@kernel.org>
+>>
+>> This patch results in a number of crashes and other odd behavior
+>> when trying to boot mips images from Megasas controllers in qemu.
+>> Sometimes the boot stalls, but I also see various crashes.
+>> Some examples and bisect logs are attached.
 > 
->   These 3 seconds here are probably in the noise range.
-> 
-> - perf_5.10 stat -r 10 hackbench -g200 -s 4096 -l500
-> Old:
-> |         464.967,20 msec task-clock                #   27,220 CPUs utilized            ( +-  0,16% )
-> |          7.683.944      context-switches          #    0,017 M/sec                    ( +-  0,86% )
-> |            931.380      cpu-migrations            #    0,002 M/sec                    ( +-  4,94% )
-> |            219.569      page-faults               #    0,472 K/sec                    ( +-  0,39% )
-> |  1.104.727.599.918      cycles                    #    2,376 GHz                      ( +-  0,18% )
-> |    941.428.898.087      stalled-cycles-frontend   #   85,22% frontend cycles idle     ( +-  0,24% )
-> |    729.016.546.572      stalled-cycles-backend    #   65,99% backend cycles idle      ( +-  0,32% )
-> |    340.133.571.519      instructions              #    0,31  insn per cycle
-> |                                                   #    2,77  stalled cycles per insn  ( +-  0,12% )
-> |     73.746.821.314      branches                  #  158,607 M/sec                    ( +-  0,13% )
-> |        377.838.006      branch-misses             #    0,51% of all branches          ( +-  1,01% )
-> | 
-> |            17,0820 +- 0,0202 seconds time elapsed  ( +-  0,12% )
-> 
-> New:
-> |         422.865,71 msec task-clock                #    4,782 CPUs utilized            ( +-  0,34% )
-> |         14.594.238      context-switches          #    0,035 M/sec                    ( +-  0,43% )
-> |          3.737.926      cpu-migrations            #    0,009 M/sec                    ( +-  0,46% )
-> |            218.474      page-faults               #    0,517 K/sec                    ( +-  0,74% )
-> |    940.715.812.020      cycles                    #    2,225 GHz                      ( +-  0,34% )
-> |    716.593.827.820      stalled-cycles-frontend   #   76,18% frontend cycles idle     ( +-  0,39% )
-> |    550.730.862.839      stalled-cycles-backend    #   58,54% backend cycles idle      ( +-  0,43% )
-> |    417.274.588.907      instructions              #    0,44  insn per cycle
-> |                                                   #    1,72  stalled cycles per insn  ( +-  0,17% )
-> |     92.814.150.290      branches                  #  219,488 M/sec                    ( +-  0,17% )
-> |        822.102.170      branch-misses             #    0,89% of all branches          ( +-  0,41% )
-> | 
-> |             88,427 +- 0,618 seconds time elapsed  ( +-  0,70% )
-> 
-> So this is outside of the noise range.
-> I'm not sure where this is coming from. My guess would be higher lock
-> contention within the memory allocator.
-
-The series shouldn't significantly change the memory allocator
-interaction, though.
-Seems there's less cycles, but more time elapsed, thus more sleeping -
-is it locks becoming mutexes on RT?
-
-My first guess - the last, local_lock patch. What would happen if you
-take that one out? Should be still RT-compatible. If it improves a lot,
-maybe that conversion to local_lock is not worth it then.
-
-My second guess - list_lock remains spinlock with my series, thus RT
-mutex, but the current RT tree converts it to raw_spinlock. I'd hope
-leaving that one as non-raw spinlock would still be much better for RT
-goals, even if hackbench (which is AFAIK very slab intensive) throughput
-regresses - hopefully not that much.
-
->> The remaining patches to upstream from the RT tree are small ones related to
->> KConfig. The patch that restricts PREEMPT_RT to SLUB (not SLAB or SLOB) makes
->> sense. The patch that disables CONFIG_SLUB_CPU_PARTIAL with PREEMPT_RT could
->> perhaps be re-evaluated as the series also addresses some latency issues with
->> percpu partial slabs.
-> 
-> With that series the PARTIAL slab can be indeed enabled. I have (had) a
-> half done series where I had PARTIAL enabled and noticed a slight
-> increase in latency so made it "default y on !RT". It wasn't dramatic
-> but appeared to be outside of noise.
-> 
-> Sebastian
+> Ah, this doesn't look good.. Do you have a reproducer I could use to
+> debug this?
 > 
 
+I copied the relevant information to http://server.roeck-us.net/qemu/mips/.
+
+run.sh - qemu command (I tried with qemu 6.0 and 4.2.1)
+rootfs.ext2 - root file system
+config - complete configuration
+defconfig - shortened configuration
+vmlinux - a crashing kernel image (v5.13-7637-g3dbdb38e2869, with above configuration)
+
+Interestingly, the crash doesn't always happen at the same location, even
+with the same image. Some memory corruption, maybe ?
+
+Hope this helps. Please let me know if I can provide anything else.
+
+Thanks,
+Guenter
