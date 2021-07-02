@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534A43BA250
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76953BA254
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbhGBOrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 10:47:25 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54256 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbhGBOrZ (ORCPT
+        id S232975AbhGBOtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 10:49:47 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:39931 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232930AbhGBOtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 10:47:25 -0400
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B3BAF20B83F6;
-        Fri,  2 Jul 2021 07:44:52 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B3BAF20B83F6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1625237092;
-        bh=COfBRLi+BJ3qGAqOVgLUX0fhQNuQxKTydWlChw0BlLI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tRGwEHasZTX06Egu9Ww7uR8RabiaJLr5vR4tlDPOfGgBdAE0IHk7ehSVCVKdwfsTX
-         nDL34TDk/hAMHQ9GJhkVTEsbQH2mo7XE3c2M1Me7rIrRLOXwxwAPWBfJvYSqg0z0Re
-         dE3HS528+HtMzM0UXqVixjAMR5aSPvt46WJVMjwM=
-Received: by mail-pl1-f180.google.com with SMTP id l19so450209plg.6;
-        Fri, 02 Jul 2021 07:44:52 -0700 (PDT)
-X-Gm-Message-State: AOAM533bsPXci+LPKoOpKHNWaY8umg8/tkK2V6aEPpJiPLJHHcfxla5j
-        XJhAbT1+3r4zVs4xSHOepXhNzjLxXkW5aWy7wJ8=
-X-Google-Smtp-Source: ABdhPJzWnpiLuYZjxkaOt2GXQN8Y0htWvRKauf64n9pu1ITllRnRm87jqyOrrR0TIYSKM6zsEhBaReTnfjD2r+YVp+g=
-X-Received: by 2002:a17:902:70c4:b029:129:45cd:aa90 with SMTP id
- l4-20020a17090270c4b029012945cdaa90mr123959plt.43.1625237092188; Fri, 02 Jul
- 2021 07:44:52 -0700 (PDT)
+        Fri, 2 Jul 2021 10:49:46 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 42E475C012A;
+        Fri,  2 Jul 2021 10:47:14 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 02 Jul 2021 10:47:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=auSwHk3r7cardj7nXW1L5fB3OAn
+        30noyQVw1mcZGr9Q=; b=V/8AwNrJUywwVXvYKt3hQCTA8It1gLXPikT9vbxM6Of
+        C7/nAjUOj+0i1lgPewifcC+ilTMkAAbpO2bMVyURWOcaOEiaMGEnzm5/XgH/79ca
+        Daff3fUicVrnaxd8FoOElj5HXxIIe9S56/0ZwTQGVYffYcwYoAwIZ7h9DGc8P4zY
+        5Ya/IKvs5l7uq+fZtteM1sBNCKDFzoX7AM2k93xQzgYJGrWnL+OUnc5Am5BlciXy
+        Uu5CKcvdfmmR8qTTpLSMZoGm1Mfo6fnObCijNUK+A3eDN8yp5eVzaDCQOKpNIlA3
+        nqNLiNz0gk8bGl7OENPaw+Eztx/DG57j9o8j0ep7SYw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=auSwHk
+        3r7cardj7nXW1L5fB3OAn30noyQVw1mcZGr9Q=; b=GY4j7zzTMxFDAfebXv51jm
+        IL8PJ3+ry6Tx1NetN/t1wMpQp1ElMe1GiKJEWKhbE4tCeTAzC7S+yiKBZcHuxl67
+        LYtrABgbzeAX8U1n//SQpTgsfhE3lkz8Z3fUnJS0w7bPo26cxu45O5LdreUaoOH/
+        SCN2ksVN5LmL7Y/UvTP0cy84eZezqPm4ylDnum4RehPGWB9gYNp28R3GiOzGt+UQ
+        ECoIMCZNR+d3AmMg90It40KKoqrx0Ia+RCDxCElSu2ovtq1mBc4nvurdWnHJ/2ke
+        ngujDLHrZH8z9QT72r6ue47SJKfsTXQlPoRNrdTtc8/8bUyH9AtrQtvmVfx8yHSQ
+        ==
+X-ME-Sender: <xms:8SbfYITgam-VN7unJtp6X9aqwjgnSYeuy0EwCoxTuhrOO7HNCreWyg>
+    <xme:8SbfYFxM3i_vPd1DzX_9e_uJMD5LU6Z_1GOgcr9o0TOA_cwG--6zB8wcBOVlK9cwo
+    EE40IEQinfbgQ>
+X-ME-Received: <xmr:8SbfYF2DcT5GdcJ3Q98cJRO2CqiSbMAsQmWWH3bq-KRvrFfDiYS5KKUy5f7hwBUNa2_mUaozrhf1MGLI9alXyJArxaeHyaIA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeikedgjeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:8SbfYMDo-ZYe6T5FzWweEFMEsKFXLuzHybeQe8y5jdWgiPx26JKLiQ>
+    <xmx:8SbfYBheyBytZpgq3oeIK516jgpnEuO6kKLP742S-ETpy5bTXBvhAQ>
+    <xmx:8SbfYIo84FSjI67s3HiK6UkTh5P00kir1fV3bG82Pe92yJ1_7WHHCg>
+    <xmx:8ibfYMVuIQeOnYOs-Ha2z5-M75d_NXWFY8kK41xGRgcna_HJg0YLYw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 2 Jul 2021 10:47:13 -0400 (EDT)
+Date:   Fri, 2 Jul 2021 16:47:11 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/6] USB: serial: cp210x: fix control-characters error
+ handling
+Message-ID: <YN8m7wk0dfSLi+c5@kroah.com>
+References: <20210702134227.24621-1-johan@kernel.org>
+ <20210702134227.24621-2-johan@kernel.org>
 MIME-Version: 1.0
-References: <20210702123153.14093-1-mcroce@linux.microsoft.com>
- <20210702123153.14093-2-mcroce@linux.microsoft.com> <0e0fa030-8995-b930-5e22-954349a0b82e@codethink.co.uk>
-In-Reply-To: <0e0fa030-8995-b930-5e22-954349a0b82e@codethink.co.uk>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 2 Jul 2021 16:44:16 +0200
-X-Gmail-Original-Message-ID: <CAFnufp1H4fzOHcinAgS0nnStSqLcALKAtk0QYkrnkQvwAx=BNA@mail.gmail.com>
-Message-ID: <CAFnufp1H4fzOHcinAgS0nnStSqLcALKAtk0QYkrnkQvwAx=BNA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] lib/string: optimized memcpy
-To:     Ben Dooks <ben.dooks@codethink.co.uk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Guo Ren <guoren@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210702134227.24621-2-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 4:37 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
->
-> On 02/07/2021 13:31, Matteo Croce wrote:
-> > From: Matteo Croce <mcroce@microsoft.com>
-> >
-> > Rewrite the generic memcpy() to copy a word at time, without generating
-> > unaligned accesses.
-> >
-> > The procedure is made of three steps:
-> > First copy data one byte at time until the destination buffer is aligned
-> > to a long boundary.
-> > Then copy the data one long at time shifting the current and the next long
-> > to compose a long at every cycle.
-> > Finally, copy the remainder one byte at time.
-> >
-> > This is the improvement on RISC-V:
-> >
-> > original aligned:      75 Mb/s
-> > original unaligned:    75 Mb/s
-> > new aligned:          114 Mb/s
-> > new unaligned:                107 Mb/s
-> >
-> > and this the binary size increase according to bloat-o-meter:
-> >
-> > Function     old     new   delta
-> > memcpy        36     324    +288
-> >
-> >
-> > Signed-off-by: Matteo Croce <mcroce@microsoft.com>
-> > ---
-> >   lib/string.c | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++--
-> >   1 file changed, 77 insertions(+), 3 deletions(-)
->
-> Doesn't arch/riscv/lib/memcpy.S also exist for an architecture
-> optimised version? I would have thought the lib/string.c version
-> was not being used?
->
->
+On Fri, Jul 02, 2021 at 03:42:22PM +0200, Johan Hovold wrote:
+> In the unlikely event that setting the software flow-control characters
+> fails the other flow-control settings should still be updated.
+> 
+> Fixes: 7748feffcd80 ("USB: serial: cp210x: add support for software flow control")
+> Cc: stable@vger.kernel.org	# 5.11
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
+>  drivers/usb/serial/cp210x.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+> index 09b845d0da41..b41e2c7649fb 100644
+> --- a/drivers/usb/serial/cp210x.c
+> +++ b/drivers/usb/serial/cp210x.c
+> @@ -1217,9 +1217,7 @@ static void cp210x_set_flow_control(struct tty_struct *tty,
+>  		chars.bXonChar = START_CHAR(tty);
+>  		chars.bXoffChar = STOP_CHAR(tty);
+>  
+> -		ret = cp210x_set_chars(port, &chars);
+> -		if (ret)
+> -			return;
+> +		cp210x_set_chars(port, &chars);
 
-Yes, but this series started as C replacement for the assembly one,
-which generates unaligned accesses.
-Unfortunately the existing RISC-V processors can't handle unaligned
-accesses, so they are emulated with a terrible slowdown.
-Then, since there wasn't any riscv specific code, it was proposed as
-generic code:
+What's the odds that someone tries to add the error checking back in
+here, in a few years?  Can you put a comment here saying why you are not
+checking it?
 
-Discussion: https://lore.kernel.org/linux-riscv/20210617152754.17960-1-mcroce@linux.microsoft.com/
+thanks,
 
--- 
-per aspera ad upstream
+greg k-h
