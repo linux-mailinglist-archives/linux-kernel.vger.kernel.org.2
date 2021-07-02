@@ -2,134 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DBB3BA038
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8163BA039
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232118AbhGBMQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 08:16:59 -0400
-Received: from out28-74.mail.aliyun.com ([115.124.28.74]:52946 "EHLO
-        out28-74.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbhGBMHV (ORCPT
+        id S232065AbhGBMRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 08:17:36 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59357 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231975AbhGBMI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 08:07:21 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07438208|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.257215-0.00260397-0.740181;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.KbD.WuZ_1625227484;
-Received: from 192.168.88.128(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KbD.WuZ_1625227484)
-          by smtp.aliyun-inc.com(10.147.41.231);
-          Fri, 02 Jul 2021 20:04:45 +0800
-Subject: Re: [PATCH v4 5/5] MIPS: CI20: Add second percpu timer for SMP.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-References: <1624688321-69131-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1624688321-69131-6-git-send-email-zhouyanjie@wanyeetech.com>
- <84LIVQ.EPXA43L4WLUK@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <3b6ffdde-2dcc-4883-f66b-9ca46db636e2@wanyeetech.com>
-Date:   Fri, 2 Jul 2021 20:04:43 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Fri, 2 Jul 2021 08:08:29 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lzHv5-0006TO-1f; Fri, 02 Jul 2021 12:05:19 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, lyude@redhat.com,
+        Dave Airlie <airlied@redhat.com>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/nouveau: Remove redundant error check on variable ret
+Date:   Fri,  2 Jul 2021 13:05:18 +0100
+Message-Id: <20210702120518.17740-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <84LIVQ.EPXA43L4WLUK@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
-On 2021/6/30 下午8:24, Paul Cercueil wrote:
-> Hi Zhou,
->
-> Le sam., juin 26 2021 at 14:18:41 +0800, 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com> a écrit :
->> 1.Add a new TCU channel as the percpu timer of core1, this is to
->>   prepare for the subsequent SMP support. The newly added channel
->>   will not adversely affect the current single-core state.
->> 2.Adjust the position of TCU node to make it consistent with the
->>   order in jz4780.dtsi file.
->>
->> Tested-by: Nikolaus Schaller <hns@goldelico.com> # on CI20
->> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->
-> Again, you should avoid moving nodes like that.
+The call to drm_dp_aux_init never returns an error code and there
+is no error return being assigned to variable ret. The check for
+an error in ret is always false since ret is still zero from the
+start of the function so the init error check and error message
+is redundant and can be removed.
 
+Addresses-Coverity: ("Logically dead code")
+Fixes: fd43ad9d47e7 ("drm/nouveau/kms/nv50-: Move AUX adapter reg to connector late register/early unregister")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/nouveau/nouveau_connector.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Oops, sorry, forgot to fix it, I will be more careful next time.
+diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.c b/drivers/gpu/drm/nouveau/nouveau_connector.c
+index 22b83a6577eb..f37e5f28a93f 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_connector.c
++++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
+@@ -1362,12 +1362,6 @@ nouveau_connector_create(struct drm_device *dev,
+ 			 dcbe->hasht, dcbe->hashm);
+ 		nv_connector->aux.name = kstrdup(aux_name, GFP_KERNEL);
+ 		drm_dp_aux_init(&nv_connector->aux);
+-		if (ret) {
+-			NV_ERROR(drm, "Failed to init AUX adapter for sor-%04x-%04x: %d\n",
+-				 dcbe->hasht, dcbe->hashm, ret);
+-			kfree(nv_connector);
+-			return ERR_PTR(ret);
+-		}
+ 		fallthrough;
+ 	default:
+ 		funcs = &nouveau_connector_funcs;
+-- 
+2.31.1
 
-
->
-> Not sure it's worth asking for a v5, so:
-> Acked-by: Paul Cercueil <paul@crapouillou.net>
->
-
-Thanks!
-
-
-> Cheers,
-> -Paul
->
->> ---
->>
->> Notes:
->>     v2:
->>     New patch.
->>
->>     v2->v3:
->>     No change.
->>
->>     v3->v4:
->>     Improve TCU related notes.
->>
->>  arch/mips/boot/dts/ingenic/ci20.dts | 24 ++++++++++++++----------
->>  1 file changed, 14 insertions(+), 10 deletions(-)
->>
->> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts 
->> b/arch/mips/boot/dts/ingenic/ci20.dts
->> index 3a4eaf1..61c153b 100644
->> --- a/arch/mips/boot/dts/ingenic/ci20.dts
->> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
->> @@ -118,6 +118,20 @@
->>      assigned-clock-rates = <48000000>;
->>  };
->>
->> +&tcu {
->> +    /*
->> +     * 750 kHz for the system timers and clocksource,
->> +     * use channel #0 and #1 for the per cpu system timers,
->> +     * and use channel #2 for the clocksource.
->> +     *
->> +     * 3000 kHz for the OST timer to provide a higher
->> +     * precision clocksource.
->> +     */
->> +    assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
->> +                      <&tcu TCU_CLK_TIMER2>, <&tcu TCU_CLK_OST>;
->> +    assigned-clock-rates = <750000>, <750000>, <750000>, <3000000>;
->> +};
->> +
->>  &mmc0 {
->>      status = "okay";
->>
->> @@ -522,13 +536,3 @@
->>          bias-disable;
->>      };
->>  };
->> -
->> -&tcu {
->> -    /*
->> -     * 750 kHz for the system timer and clocksource,
->> -     * use channel #0 for the system timer, #1 for the clocksource.
->> -     */
->> -    assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
->> -                      <&tcu TCU_CLK_OST>;
->> -    assigned-clock-rates = <750000>, <750000>, <3000000>;
->> -};
->> -- 
->> 2.7.4
->>
->
