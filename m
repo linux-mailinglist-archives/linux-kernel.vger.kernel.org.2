@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3703BA08C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF6C3BA09A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbhGBMgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 08:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
+        id S232230AbhGBMlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 08:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232569AbhGBMge (ORCPT
+        with ESMTP id S232100AbhGBMlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 08:36:34 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5648EC061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 05:34:02 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lzIMq-0003K9-Jc; Fri, 02 Jul 2021 14:34:00 +0200
-Subject: Re: [PATCH v2 6/6] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        horia geanta <horia.geanta@nxp.com>,
-        aymen sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        davem <davem@davemloft.net>, Udit Agarwal <udit.agarwal@nxp.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        david <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>
-References: <cover.1dfbb73645d917b3c76d01290804a3410bd9932e.1624364386.git-series.a.fatoum@pengutronix.de>
- <39e6d65ca5d2a0a35fb71d6c1f85add8ee489a19.1624364386.git-series.a.fatoum@pengutronix.de>
- <1850833581.13438.1625172175436.JavaMail.zimbra@nod.at>
- <2f608e5a-5a12-6db1-b9bd-a2cd9e3e3671@pengutronix.de>
- <783613027.15909.1625223222889.JavaMail.zimbra@nod.at>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <ac8ef66f-4d57-ead0-d1b3-e97220463241@pengutronix.de>
-Date:   Fri, 2 Jul 2021 14:33:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 2 Jul 2021 08:41:15 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302BCC061765
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 05:38:43 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id nd37so15904153ejc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 05:38:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=TejoEZ6PvhDR6/vKnlCgTBQKFLG9ws1K525Cz+uqRss=;
+        b=q+VryZfZlPZSEnfM22oyE1OsMkDXFLAqmpiBkUk4KIQVMvhqdnRnPfoMzd08w9/GVw
+         WVBztUsXpOFNtS3JeBQ1ey6GxnWnP2/aR/T2KZiJ6Ja3GW+DkKj+8b1OybetowjhzO0J
+         uKFnX1Up/FLl4aaCtxd1XCytVJrI0fxUgWirqajKIN8kaYtQ+S067CIN15z/RoBhT+ha
+         gZ2GS1vV/v57wrM2KVO+i6Xmcbe7cZSlY6/Bw4V0zGY8EYHRGroYx5xYGtK+ML7aKzAa
+         1sG6DEOCx9j+YIe257IAp8sKsZbIdeEnZQcPG3vy6uWursqKg9xKxON/EXCg6VkePNqv
+         QRJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TejoEZ6PvhDR6/vKnlCgTBQKFLG9ws1K525Cz+uqRss=;
+        b=iQU/OyCnTTK/yHlkq5XCrN0RQu6ljjOWfU6gyrzar10Q+immbveYel4ikOI6lK3PRI
+         bA444l5EOP9Bt5dnbD9GEfnJe3qh+iGK+WwP9bBsKsiAO0IuiMqjVOfurpQI49i2JxQg
+         5XwlotVmF2KpyanDjdPZ+5G5WossP7JonDA4IJGZJUbVdgpPaByIwcyXGG+LGmAAOlGe
+         8uOSByuqvWwkYp0BM6J9RQISxnljSGHp99VxWvwRajsQWlmA5wjpU7xQkYO6TiOTVfd0
+         sJVcJgq/7PvjHaLLMfNgV5N/lcfERn5vBjMZq9+QzHWGRT1Ctiq20vCDph4TSAdYLX9e
+         hg+A==
+X-Gm-Message-State: AOAM531vdS4bI3y1hJoM4/a7PzDAAcTLiMNpYzUxawdyo89dj7w/kplL
+        s6Y9hbq2Qgfo07PhKMHZGZsYITbhQ6KF4IircxqJAQ==
+X-Google-Smtp-Source: ABdhPJy2T5F8l8QmzzJ7o24iwSWZG5I9WgE9TfFMy/4Nq1nG7PIA5FfoGfDfCtgp1rNasiTAHaL+DPKH9xoGnEFyIB0=
+X-Received: by 2002:a17:906:25db:: with SMTP id n27mr4989541ejb.170.1625229521558;
+ Fri, 02 Jul 2021 05:38:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <783613027.15909.1625223222889.JavaMail.zimbra@nod.at>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <CA+G9fYuBvh-H8Vqp58j-coXUD8p1A6h2it_aZdRiYcN2soGNdg@mail.gmail.com>
+In-Reply-To: <CA+G9fYuBvh-H8Vqp58j-coXUD8p1A6h2it_aZdRiYcN2soGNdg@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 2 Jul 2021 18:08:29 +0530
+Message-ID: <CA+G9fYszTVESKbiORBj=bvZX3qco474yYhWDV3ccveScqt41YA@mail.gmail.com>
+Subject: Re: [mainline] [arm64] Internal error: Oops - percpu_counter_add_batch
+To:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        regressions@lists.linux.dev,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Theodore Tso <tytso@mit.edu>, lkft-triage@lists.linaro.org,
+        linux-fsdevel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jens Axboe <axboe@kernel.dk>, Zhang Yi <yi.zhang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.07.21 12:53, Richard Weinberger wrote:
-> Ahmad,
-> 
-> ----- Ursprüngliche Mail -----
->> Von: "Ahmad Fatoum" <a.fatoum@pengutronix.de>
->>> I'm still think that hard coding the key modifier is not wise.
->>> As I said[0], there are folks out there that want to provide their own modifier,
->>> so it is not only about being binary compatible with other CAAM blob patches in
->>> the wild.
->>
->> I don't think the characterization as a salt is accurate. AFAIU it's more
->> of a namespace, so blobs being loaded are "type-checked" against the modifier.
-> 
-> Well, the CAAM programmer's reference manual states that the blob key is a 128 bit modifier
-> and has two purposes:
-> 1. It can be used as tag to provide separation between blobs to detect accidental replacement of blobs.
-> 2. But it can also be treated as secret to provide additional protection. Because the blob encryption
-> key derivation includes the key modifier.
-> 
-> While you have case 1 in mind, I care about case 2. :-)
+On Fri, 2 Jul 2021 at 13:54, Naresh Kamboju <naresh.kamboju@linaro.org> wro=
+te:
+>
+> Results from Linaro=E2=80=99s test farm.
+> Regression found on arm64 on Linux mainline tree.
 
-Ah, using the key modifier as a passphrase didn't occur to me.
+Regression found on arm64, arm and i386 on Linux mainline tree.
+But x86_64 tests PASS.
 
->>> I'll happily implement that feature after your patches got merged but IMHO we
->>> should first agree on an interface.
->>> How about allowing another optional parameter to Opt_new and Opt_load
->>
->> Sound good to me. pcrlock for TPM trusted keys has the same interface.
->>
->> I'd prefer the new option to accept strings, not hex though.
-> 
-> Both is possible. If the string starts with "0x" it needs to be decoded to a
-> 128 bit key. Otherwise it has to be a up to 16 byte string.
+>
+> The following kernel crash was noticed while running LTP fs_fill test cas=
+e on
+> arm64 devices Linus ' mainline tree (this is not yet tagged / released).
+>
+> This regression  / crash is easy to reproduce.
+>
+> fs_fill.c:53: TINFO: Unlinking mntpoint/thread6/file2
+> fs_fill.c:87: TPASS: Got 6 ENOSPC runtime 3847ms
+> [ 1140.055715] Unable to handle kernel paging request at virtual
+> address ffff76a8a6b59000
 
-Fine by me. Looking forward to your patches. :-)
+ref;
+https://lore.kernel.org/regressions/CA+G9fYuBvh-H8Vqp58j-coXUD8p1A6h2it_aZd=
+RiYcN2soGNdg@mail.gmail.com/T/#u
 
-
-Cheers,
-Ahmad
-
-> 
-> Thanks,
-> //richard
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+- Naresh
