@@ -2,99 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AD63BA152
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1197C3BA157
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbhGBNma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:42:30 -0400
-Received: from mail-ed1-f52.google.com ([209.85.208.52]:42886 "EHLO
-        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232524AbhGBNma (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:42:30 -0400
-Received: by mail-ed1-f52.google.com with SMTP id n25so13273904edw.9;
-        Fri, 02 Jul 2021 06:39:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=w9kubsVWaTOUK+nU0YjZV/Ze/jgMiHptRWmLi0Ujvvg=;
-        b=LCaclHVVTFcyBclFiXQlzb4AKlZZxnu9WAJFydVcmRnI2zuN7akKrF7FZcnXx/jjqi
-         1EcMXXDp8YEoUofvMO+/FY5YFEZPhOnbWDYoCumMW6kPUPWUEwVieoVlvwVQD4cWdW8N
-         adlnCbXizKxWVZxLJX4DyP0i6vdoOuskQxOWubKx5icb9VyYUXvSoc9cPepnhPhlnt2Z
-         OFgg7BtZwJLKtXsLaBGOlAMNCYfkk6ox1LgA+CAB1NvhsVk86JLIXPiOwR3ndvcSK4tt
-         A5vFguwzAR5lcjAH/8R+EpE5APIfIwu0sMZHZ9lJ/K9+o3xa8vlV3+XLj7hHhKhnHCFU
-         OoNg==
-X-Gm-Message-State: AOAM5302g2INy6/RvrMUSqOyfme2siyF1Zam3T0hakVF5arbOd4hxoKV
-        fC5WltTHupH29tg6eJv0UuIWJSVQZXLJBhfN
-X-Google-Smtp-Source: ABdhPJwIHuKU+e0GC/3/lK/8AFkZf088CPagR8W+iav39xxS3ibBGzCEopLZXrN9ZYeu7IIv1zPHNg==
-X-Received: by 2002:a05:6402:88b:: with SMTP id e11mr6844737edy.21.1625233196688;
-        Fri, 02 Jul 2021 06:39:56 -0700 (PDT)
-Received: from localhost (host-80-182-89-242.retail.telecomitalia.it. [80.182.89.242])
-        by smtp.gmail.com with ESMTPSA id b8sm1336709edr.42.2021.07.02.06.39.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 06:39:56 -0700 (PDT)
-Date:   Fri, 2 Jul 2021 15:39:47 +0200
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>, <mw@semihalf.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     <davem@davemloft.net>, <kuba@kernel.org>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <linux@armlinux.org.uk>,
-        <hawk@kernel.org>, <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next RFC 0/2] add elevated refcnt support for page
- pool
-Message-ID: <20210702153947.7b44acdf@linux.microsoft.com>
-In-Reply-To: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
-References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
-Organization: Microsoft
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S232633AbhGBNoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:44:02 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:37448 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232392AbhGBNoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 09:44:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=kchqsuQLvbI71SC88Xxd9k0q25E9iDGofPdCgD98g/o=; b=maNqJ16v3eIZ54p1TD0iSqD78y
+        rxtug5mOfX3OAmdt+1buKgIhdwWxR/t+xLfoZCVhC+O9sWJg+Zg7kIgbwX3rrwexXBmynqAVE63EC
+        QB9gaGySSiaIOMjum7SjCwJ5unMszzdJzfrsykDHC3YlkZ/0x/oHm5OaCtHO4V+GWwfE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lzJQ6-00BvHU-28; Fri, 02 Jul 2021 15:41:26 +0200
+Date:   Fri, 2 Jul 2021 15:41:26 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/7] TQMx86: TQMx110EB and TQMxE40x MFD/GPIO support
+Message-ID: <YN8Xhu3XXGeLAlhj@lunn.ch>
+References: <cover.1625227382.git.matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1625227382.git.matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Jun 2021 17:17:54 +0800
-Yunsheng Lin <linyunsheng@huawei.com> wrote:
-
-> This patchset adds elevated refcnt support for page pool
-> and enable skb's page frag recycling based on page pool
-> in hns3 drvier.
+On Fri, Jul 02, 2021 at 02:23:46PM +0200, Matthias Schiffer wrote:
+> Updated patch series:
 > 
-> Yunsheng Lin (2):
->   page_pool: add page recycling support based on elevated refcnt
->   net: hns3: support skb's frag page recycling based on page pool
-> 
->  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  79 +++++++-
->  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   3 +
->  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
->  drivers/net/ethernet/marvell/mvneta.c              |   6 +-
->  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +-
->  include/linux/mm_types.h                           |   2 +-
->  include/linux/skbuff.h                             |   4 +-
->  include/net/page_pool.h                            |  30 ++-
->  net/core/page_pool.c                               | 215
-> +++++++++++++++++---- 9 files changed, 285 insertions(+), 57
-> deletions(-)
-> 
+> - A number of new patches (more hardware support and a few fixes)
+> - Patches 1-3 have gained Fixes tags
+> - Patch 2 depends on 1, so maybe we can push the GPIO patch through the
+>   MFD tree to keep them together?
+> - The change in patch 7 was somewhat controversial. I've added a
+>   warning, but it is the last patch of the series, so it doesn't affect
+>   the rest of the series if it is rejected.
 
-Interesting!
-Unfortunately I'll not have access to my macchiatobin anytime soon, can
-someone test the impact, if any, on mvpp2?
+Hi Matthias
 
-Regards,
--- 
-per aspera ad upstream
+Nice to see the vendor involved. That does not happen enough.
+
+Please split these into fixes and new features. They go into different
+trees, so splitting them makes it easier for the maintainers.
+
+I would also suggest splitting the patches per subsystem, and send
+them to the specific subsystem maintainer. The exception would be when
+there is cross subsystem dependencies.
+
+     Andrew
