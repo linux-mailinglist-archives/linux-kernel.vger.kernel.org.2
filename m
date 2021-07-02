@@ -2,142 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507993B9E99
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969F53B9EA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhGBKBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 06:01:02 -0400
-Received: from mga06.intel.com ([134.134.136.31]:44767 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230363AbhGBKA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 06:00:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="269835890"
-X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
-   d="scan'208";a="269835890"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 02:58:26 -0700
-X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
-   d="scan'208";a="558990539"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 02:58:23 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lzFwA-007eal-2Q; Fri, 02 Jul 2021 12:58:18 +0300
-Date:   Fri, 2 Jul 2021 12:58:18 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org,
-        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, yu1.wang@intel.com, shuo.a.liu@intel.com,
-        conghui.chen@intel.com, viresh.kumar@linaro.org,
-        stefanha@redhat.com
-Subject: Re: [PATCH v12] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <YN7jOm68fUL4UA2Q@smile.fi.intel.com>
-References: <f229cd761048bc143f88f33a3437bdbf891c39fd.1625214435.git.jie.deng@intel.com>
+        id S231477AbhGBKBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 06:01:51 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3342 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230450AbhGBKBt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 06:01:49 -0400
+Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GGVhq1hXHz6G8FM;
+        Fri,  2 Jul 2021 17:51:23 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 2 Jul 2021 11:59:15 +0200
+Received: from A2006125610.china.huawei.com (10.47.85.147) by
+ lhreml710-chm.china.huawei.com (10.201.108.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 2 Jul 2021 10:59:08 +0100
+From:   Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>
+CC:     <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+        <mgurtovoy@nvidia.com>, <linuxarm@huawei.com>,
+        <liulongfang@huawei.com>, <prime.zeng@hisilicon.com>,
+        <yuzenghui@huawei.com>, <jonathan.cameron@huawei.com>,
+        <wangzhou1@hisilicon.com>
+Subject: [RFC v2 0/4] vfio/hisilicon: add acc live migration driver
+Date:   Fri, 2 Jul 2021 10:58:45 +0100
+Message-ID: <20210702095849.1610-1-shameerali.kolothum.thodi@huawei.com>
+X-Mailer: git-send-email 2.12.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f229cd761048bc143f88f33a3437bdbf891c39fd.1625214435.git.jie.deng@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.85.147]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 04:46:47PM +0800, Jie Deng wrote:
-> Add an I2C bus driver for virtio para-virtualization.
-> 
-> The controller can be emulated by the backend driver in
-> any device model software by following the virtio protocol.
-> 
-> The device specification can be found on
-> https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
-> 
-> By following the specification, people may implement different
-> backend drivers to emulate different controllers according to
-> their needs.
+Hi,
 
-...
+This series attempts to add vfio live migration support for
+HiSilicon ACC VF devices. HiSilicon ACC VF device MMIO space
+includes both the functional register space and migration 
+control register space. As discussed in RFCv1[0], this may create
+security issues as these regions get shared between the Guest
+driver and the migration driver. Based on the feedback, we tried
+to address those concerns in this version. 
 
-> +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
-> +				    struct virtio_i2c_req *reqs,
-> +				    struct i2c_msg *msgs, int nr,
-> +				    bool fail)
-> +{
-> +	struct virtio_i2c_req *req;
-> +	bool failed = fail;
-> +	unsigned int len;
-> +	int i, j = 0;
-> +
-> +	for (i = 0; i < nr; i++) {
-> +		/* Detach the ith request from the vq */
-> +		req = virtqueue_get_buf(vq, &len);
-> +
-> +		/*
-> +		 * Condition (req && req == &reqs[i]) should always meet since
-> +		 * we have total nr requests in the vq.
-> +		 */
-> +		if (!failed && (WARN_ON(!(req && req == &reqs[i])) ||
-> +		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)))
-> +			failed = true;
+This is now based on the new vfio-pci-core framework proposal[1].
+Understand that the framework proposal is still under discussion,
+but really appreciate any feedback on the approach taken here
+to mitigate the security risks.
 
-...and after failed is true, we are continuing the loop, why?
+The major changes from v1 are,
 
-> +		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], !failed);
-> +		if (!failed)
+ -Adds a new vendor-specific vfio_pci driver(hisi-acc-vfio-pci)
+  for HiSilicon ACC VF devices based on the new vfio-pci-core
+  framework proposal.
 
-> +			++j;
+ -Since HiSilicon ACC VF device MMIO space contains both the
+  functional register space and migration control register space,
+  override the vfio_device_ops ioctl method to report only the
+  functional space to VMs.
 
-Besides better to read j++ the j itself can be renamed to something more
-verbose.
+ -For a successful migration, we still need access to VF dev
+  functional register space mainly to read the status registers.
+  But accessing these while the Guest vCPUs are running may leave
+  a security hole. To avoid any potential security issues, we
+  map/unmap the MMIO regions on a need basis and is safe to do so.
+  (Please see hisi_acc_vf_ioremap/unmap() fns in patch #4).
+ 
+ -Dropped debugfs support for now.
+ -Uses common QM functions for mailbox access(patch #3).
 
-> +	}
+This is now sanity tested on HiSilicon platforms that support these
+ACC devices.
 
-> +	return (fail ? -ETIMEDOUT : j);
+From v1:
+ -In order to ensure the compatibility of the devices before and
+  after the migration, the device compatibility information check
+  will be performed in the Pre-copy stage. If the check fails,
+  an error will be returned and the source VM will exit the migration.
+ -After the compatibility check is passed, it will enter the
+  Stop-and-copy stage. At this time, all the live migration data
+  will be copied and saved to the VF device of the destination.
+  Finally, the VF device of the destination will be started.
 
-Redundant parentheses.
+Thanks,
+Shameer
+[0] https://lore.kernel.org/lkml/20210415220137.GA1672608@nvidia.com/
+[1] https://lore.kernel.org/lkml/20210603160809.15845-1-mgurtovoy@nvidia.com/
 
-> +}
+Longfang Liu (2):
+  crypto: hisilicon/qm - Export mailbox functions for common use
+  hisi_acc_vfio_pci: Add support for vfio live migration
 
-...
+Shameer Kolothum (2):
+  hisi-acc-vfio-pci: add new vfio_pci driver for HiSilicon ACC devices
+  hisi_acc_vfio_pci: Override ioctl method to limit BAR2 region size
 
-> +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
-> +	if (ret != num) {
-> +		virtio_i2c_complete_reqs(vq, reqs, msgs, ret, true);
-
-Below you check the returned code, here is not.
-
-> +		ret = 0;
-> +		goto err_free;
-> +	}
-> +
-> +	reinit_completion(&vi->completion);
-> +	virtqueue_kick(vq);
-> +
-> +	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
-> +	if (!time_left)
-> +		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
-> +
-> +	ret = virtio_i2c_complete_reqs(vq, reqs, msgs, num, !time_left);
-> +
-> +err_free:
-> +	kfree(reqs);
-> +	return ret;
-
-> +++ b/include/uapi/linux/virtio_i2c.h
-
-> +#include <linux/types.h>
-> +
-> +/* The bit 0 of the @virtio_i2c_out_hdr.@flags, used to group the requests */
-> +#define VIRTIO_I2C_FLAGS_FAIL_NEXT	BIT(0)
-
-It's _BITUL() or so from linux/const.h.
-https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/const.h#L28
-You may not use internal definitions in UAPI headers.
+ drivers/crypto/hisilicon/qm.c        |    8 +-
+ drivers/crypto/hisilicon/qm.h        |    4 +
+ drivers/vfio/pci/Kconfig             |   13 +
+ drivers/vfio/pci/Makefile            |    2 +
+ drivers/vfio/pci/hisi_acc_vfio_pci.c | 1155 ++++++++++++++++++++++++++
+ drivers/vfio/pci/hisi_acc_vfio_pci.h |  144 ++++
+ 6 files changed, 1323 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/vfio/pci/hisi_acc_vfio_pci.c
+ create mode 100644 drivers/vfio/pci/hisi_acc_vfio_pci.h
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
