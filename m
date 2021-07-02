@@ -2,127 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BED83BA06E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836BA3BA06F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232235AbhGBMfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 08:35:01 -0400
-Received: from mail-ej1-f52.google.com ([209.85.218.52]:39597 "EHLO
-        mail-ej1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbhGBMfA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 08:35:00 -0400
-Received: by mail-ej1-f52.google.com with SMTP id hp26so3136983ejc.6;
-        Fri, 02 Jul 2021 05:32:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=o6ZDZDCvhi/aYSH4+o4WB0jbVOX9Yf7JZyqDclGvSvg=;
-        b=RxLVEXFe1ZOqlo95ZCKImSbLkM93C3aTVIrD1jipfq0PYcGC6u0bMuOMcnaWXq/A03
-         emTFg+3AwnvEffV2+CLG8riG2g1Zj1qlpm3ivBKQa3sWSCMbsKTcYeu9UxM3r13b0bcF
-         Y0E2XzP6u2se5IvtQfeyULy3o2/HfsHkudXhGO8e8GxCl5uDkwo25DVa0++FYb0WqGm6
-         mUjDmOMxf1Xho+0OLnDAnSH5aaZA+Ey9eXSbLYmhqqTT5as+tV68+j7T0HM8/IvALLe/
-         64uIpW2YYHQdoVZUzIcOu7puQzd+g4ut+uSIi6MaLkkfun4/aE0ACtYSm4HwD3StG3Z6
-         xFow==
-X-Gm-Message-State: AOAM530GPvH1ItIC2Dn/8RJW6xAGRaPAEMzFaYX02BXsVQKvhB1k5rN3
-        8t0sNg9dumy6lJM4lu+y2F7uZ/ab2nIN4Q==
-X-Google-Smtp-Source: ABdhPJwQrfzQ1h6zczBdfLb25MTXk3GdnKc5nFaDGxDMgWYbUpCHG31dhKgZ9CSECScHKbbT4BunVg==
-X-Received: by 2002:a17:906:9b86:: with SMTP id dd6mr4909110ejc.100.1625229142346;
-        Fri, 02 Jul 2021 05:32:22 -0700 (PDT)
-Received: from msft-t490s.fritz.box (host-80-182-89-242.retail.telecomitalia.it. [80.182.89.242])
-        by smtp.gmail.com with ESMTPSA id c3sm1290189edy.0.2021.07.02.05.32.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 05:32:21 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     linux-kernel@vger.kernel.org, Nick Kossifidis <mick@ics.forth.gr>,
-        Guo Ren <guoren@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Drew Fustini <drew@beagleboard.org>
-Cc:     linux-arch@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH v2 3/3] lib/string: optimized memset
-Date:   Fri,  2 Jul 2021 14:31:53 +0200
-Message-Id: <20210702123153.14093-4-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210702123153.14093-1-mcroce@linux.microsoft.com>
-References: <20210702123153.14093-1-mcroce@linux.microsoft.com>
+        id S232251AbhGBMfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 08:35:11 -0400
+Received: from mga01.intel.com ([192.55.52.88]:3459 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232228AbhGBMfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 08:35:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="230397060"
+X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
+   d="scan'208";a="230397060"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 05:32:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
+   d="scan'208";a="642660101"
+Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
+  by fmsmga006.fm.intel.com with ESMTP; 02 Jul 2021 05:32:33 -0700
+From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: [PATCH v9 00/24] Introduce threaded trace streaming for basic perf record operation
+Date:   Fri,  2 Jul 2021 15:32:08 +0300
+Message-Id: <cover.1625227739.git.alexey.v.bayduraev@linux.intel.com>
+X-Mailer: git-send-email 2.19.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+Changes in v9:
+- fixes in [v9 01/24]:
+  - move 'nr_threads' to before 'thread_masks'
+  - combined decl+assign into one line in record__thread_mask_alloc
+  - releasing masks inplace in record__alloc_thread_masks
+- split patch [v8 02/22] to [v9 02/24] and [v9 03/24]
+- fixes in [v9 03/24]:
+  - renamed 'struct thread_data' to 'struct record_thread'
+  - moved nr_mmaps after ctlfd_pos
+  - releasing resources inplace in record__thread_data_init_maps
+  - initializing pipes by -1 value
+  - added temporary gettid() wrapper
+- split patch [v8 03/22] to [v9 04/24] and [v9 05/24] 
+- removed upstreamed [v8 09/22]
+- split [v8 10/22] to [v9 12/24] and [v9 13/24]
+- moved --threads documentation to the related patches
+- fixed output of written/compressed stats in [v9 10/24]
+- split patch [v8 12/22] to [v9 15/24] and [v9 16/24]
+- fixed order of error checking for decompressed events in [v9 16/24]
+- merged patch [v8 21/22] with [v9 23/24] and [v9 24/24]
+- moved patch [v8 22/22] to [v9 09/24]
+- added max reader size constant in [v9 24/24]
 
-The generic memset is defined as a byte at time write. This is always
-safe, but it's slower than a 4 byte or even 8 byte write.
+v8: https://lore.kernel.org/lkml/cover.1625065643.git.alexey.v.bayduraev@linux.intel.com/
 
-Write a generic memset which fills the data one byte at time until the
-destination is aligned, then fills using the largest size allowed,
-and finally fills the remaining data one byte at time.
+Changes in v8:
+- captured Acked-by: tags by Namhyung Kim
+- merged with origin/perf/core
+- added patch 21/22 introducing READER_NODATA state
+- added patch 22/22 fixing --max-size option
 
-On a RISC-V machine the speed goes from 140 Mb/s to 241 Mb/s,
-and this the binary size increase according to bloat-o-meter:
+v7: https://lore.kernel.org/lkml/cover.1624350588.git.alexey.v.bayduraev@linux.intel.com/
 
-Function     old     new   delta
-memset        32     148    +116
+Changes in v7:
+- fixed possible crash after out_free_threads label
+- added missing pthread_attr_destroy() call
+- added check of correctness of user masks 
+- fixed zsts_data finalization
 
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- lib/string.c | 32 ++++++++++++++++++++++++++++++--
- 1 file changed, 30 insertions(+), 2 deletions(-)
+v6: https://lore.kernel.org/lkml/cover.1622025774.git.alexey.v.bayduraev@linux.intel.com/
 
-diff --git a/lib/string.c b/lib/string.c
-index 108b83c34cec..264821f0e795 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -810,10 +810,38 @@ EXPORT_SYMBOL(__sysfs_match_string);
-  */
- void *memset(void *s, int c, size_t count)
- {
--	char *xs = s;
-+	union types dest = { .as_u8 = s };
- 
-+	if (count >= MIN_THRESHOLD) {
-+		unsigned long cu = (unsigned long)c;
-+
-+		/* Compose an ulong with 'c' repeated 4/8 times */
-+#ifdef CONFIG_ARCH_HAS_FAST_MULTIPLIER
-+		cu *= 0x0101010101010101UL;
-+#else
-+		cu |= cu << 8;
-+		cu |= cu << 16;
-+		/* Suppress warning on 32 bit machines */
-+		cu |= (cu << 16) << 16;
-+#endif
-+		if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)) {
-+			/*
-+			 * Fill the buffer one byte at time until
-+			 * the destination is word aligned.
-+			 */
-+			for (; count && dest.as_uptr & WORD_MASK; count--)
-+				*dest.as_u8++ = c;
-+		}
-+
-+		/* Copy using the largest size allowed */
-+		for (; count >= BYTES_LONG; count -= BYTES_LONG)
-+			*dest.as_ulong++ = cu;
-+	}
-+
-+	/* copy the remainder */
- 	while (count--)
--		*xs++ = c;
-+		*dest.as_u8++ = c;
-+
- 	return s;
- }
- EXPORT_SYMBOL(memset);
+Changes in v6:
+- fixed leaks and possible double free in record__thread_mask_alloc()
+- fixed leaks in record__init_thread_user_masks()
+- fixed final mmaps flushing for threads id > 0
+- merged with origin/perf/core
+
+v5: https://lore.kernel.org/lkml/cover.1619781188.git.alexey.v.bayduraev@linux.intel.com/
+
+Changes in v5:
+- fixed leaks in record__init_thread_masks_spec()
+- fixed leaks after failed realloc
+- replaced "%m" to strerror()
+- added masks examples to the documentation
+- captured Acked-by: tags by Andi Kleen
+- do not allow --thread option for full_auxtrace mode 
+- split patch 06/12 to 06/20 and 07/20
+- split patch 08/12 to 09/20 and 10/20
+- split patches 11/12 and 11/12 to 13/20-20/20
+
+v4: https://lore.kernel.org/lkml/6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com/
+
+Changes in v4:
+- renamed 'comm' structure to 'pipes'
+- moved thread fd/maps messages to verbose=2
+- fixed leaks during allocation of thread_data structures
+- fixed leaks during allocation of thread masks
+- fixed possible fails when releasing thread masks
+
+v3: https://lore.kernel.org/lkml/7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com/
+
+Changes in v3:
+- avoided skipped redundant patch 3/15
+- applied "data file" and "data directory" terms allover the patch set
+- captured Acked-by: tags by Namhyung Kim
+- avoided braces where don't needed
+- employed thread local variable for serial trace streaming 
+- added specs for --thread option - core, socket, numa and user defined
+- added parallel loading of data directory files similar to the prototype [1]
+
+v2: https://lore.kernel.org/lkml/1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com/
+
+Changes in v2:
+- explicitly added credit tags to patches 6/15 and 15/15,
+  additionally to cites [1], [2]
+- updated description of 3/15 to explicitly mention the reason
+  to open data directories in read access mode (e.g. for perf report)
+- implemented fix for compilation error of 2/15
+- explicitly elaborated on found issues to be resolved for
+  threaded AUX trace capture
+
+v1: https://lore.kernel.org/lkml/810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com/
+
+Patch set provides parallel threaded trace streaming mode for basic
+perf record operation. Provided mode mitigates profiling data losses
+and resolves scalability issues of serial and asynchronous (--aio)
+trace streaming modes on multicore server systems. The design and
+implementation are based on the prototype [1], [2].
+
+Parallel threaded mode executes trace streaming threads that read kernel
+data buffers and write captured data into several data files located at
+data directory. Layout of trace streaming threads and their mapping to data
+buffers to read can be configured using a value of --thread command line
+option. Specification value provides masks separated by colon so the masks
+define cpus to be monitored by one thread and thread affinity mask is
+separated by slash. <cpus mask 1>/<affinity mask 1>:<cpu mask 2>/<affinity mask 2>
+specifies parallel threads layout that consists of two threads with
+corresponding assigned cpus to be monitored. Specification value can be
+a string e.g. "cpu", "core" or "socket" meaning creation of data streaming
+thread for monitoring every cpu, whole core or socket. The option provided
+with no or empty value defaults to "cpu" layout creating data streaming
+thread for every cpu being monitored. Specification masks are filtered
+by the mask provided via -C option.
+
+Parallel streaming mode is compatible with Zstd compression/decompression
+(--compression-level) and external control commands (--control). The mode
+is not enabled for pipe mode. The mode is not enabled for AUX area tracing,
+related and derived modes like --snapshot or --aux-sample. --switch-output-*
+and --timestamp-filename options are not enabled for parallel streaming.
+Initial intent to enable AUX area tracing faced the need to define some
+optimal way to store index data in data directory. --switch-output-* and
+--timestamp-filename use cases are not clear for data directories.
+Asynchronous(--aio) trace streaming and affinity (--affinity) modes are
+mutually exclusive to parallel streaming mode.
+
+Basic analysis of data directories is provided in perf report mode.
+Raw dump and aggregated reports are available for data directories,
+still with no memory consumption optimizations.
+
+Tested:
+
+tools/perf/perf record -o prof.data --threads -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads= -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=cpu -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=core -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=socket -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=numa -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 2,5 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 3,4 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=core -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=numa -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 --compression-level=3 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads -a
+tools/perf/perf record -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
+tools/perf/perf record --threads -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
+
+tools/perf/perf report -i prof.data
+tools/perf/perf report -i prof.data --call-graph=callee
+tools/perf/perf report -i prof.data --stdio --header
+tools/perf/perf report -i prof.data -D --header
+
+[1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
+[2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+
+Alexey Bayduraev (24):
+  perf record: Introduce thread affinity and mmap masks
+  tools lib: Introduce fdarray clone function
+  perf record: Introduce thread specific data array
+  perf record: Introduce function to propagate control commands
+  perf record: Introduce thread local variable
+  perf record: Stop threads in the end of trace streaming
+  perf record: Start threads in the beginning of trace streaming
+  perf record: Introduce data file at mmap buffer object
+  perf record: Introduce bytes written stats to support --max-size
+    option
+  perf record: Introduce data transferred and compressed stats
+  perf record: Init data file at mmap buffer object
+  perf record: Introduce --threads command line option
+  perf record: Extend --threads command line option
+  perf record: Implement compatibility checks
+  perf report: Output non-zero offset for decompressed records
+  perf report: Output data file name in raw trace dump
+  perf session: Move reader structure to the top
+  perf session: Introduce reader_state in reader object
+  perf session: Introduce reader objects in session object
+  perf session: Introduce decompressor into trace reader object
+  perf session: Move init into reader__init function
+  perf session: Move map/unmap into reader__mmap function
+  perf session: Load single file for analysis
+  perf session: Load data directory files for analysis
+
+ tools/lib/api/fd/array.c                 |   17 +
+ tools/lib/api/fd/array.h                 |    1 +
+ tools/perf/Documentation/perf-record.txt |   30 +
+ tools/perf/builtin-inject.c              |    3 +-
+ tools/perf/builtin-kvm.c                 |    2 +-
+ tools/perf/builtin-record.c              | 1196 ++++++++++++++++++++--
+ tools/perf/builtin-top.c                 |    2 +-
+ tools/perf/builtin-trace.c               |    2 +-
+ tools/perf/util/evlist.c                 |   16 +
+ tools/perf/util/evlist.h                 |    1 +
+ tools/perf/util/mmap.c                   |    6 +
+ tools/perf/util/mmap.h                   |    6 +
+ tools/perf/util/ordered-events.c         |    3 +-
+ tools/perf/util/ordered-events.h         |    3 +-
+ tools/perf/util/record.h                 |    2 +
+ tools/perf/util/session.c                |  506 ++++++---
+ tools/perf/util/session.h                |    7 +-
+ tools/perf/util/tool.h                   |    3 +-
+ 18 files changed, 1592 insertions(+), 214 deletions(-)
+
 -- 
-2.31.1
+2.19.0
 
