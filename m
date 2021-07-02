@@ -2,81 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B703BA1D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978CB3BA1D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbhGBOD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 10:03:29 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:46942 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232758AbhGBOD2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 10:03:28 -0400
-Received: by mail-ot1-f49.google.com with SMTP id c12-20020a9d684c0000b029047762db628aso6124276oto.13;
-        Fri, 02 Jul 2021 07:00:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fP6Fzy8VQM5Rg2GQo10Vq+JQKpT72W1fweff72vBeB4=;
-        b=VpD/DWwVdpk8M1nc5l8VvGfLMdDtjGvH6YsSELUYUY2zq28fI9/g2AUqPW2knnRBa2
-         x0nDYJzlJFnuOxPFr1LG4xmHHNb/zVtK+8lrEAXZH9Ac3+Yxyrkigj/gZiWtwe0cJGNi
-         fwmNR02A/PNya2lcn7/vJ8AkwUzljWlTNStA5/6bVP9dCvFphfQmu9tKw/TVsn5Bvzhi
-         PB5egxGL3FZ1svNq4uOT85qNxzo7FqSkUfEjx1kEuZWLy5GuytMtqp8br3q8QBf/MI3N
-         jFAr//MfnJMQb9BNZxThhKiU4kuZWVjdKQDWiTPA/kNEAOBGT++aa8AQlpyiXbIiIAc/
-         9kyQ==
-X-Gm-Message-State: AOAM5305rcRhZPRtDVB3u0GvFEOXdZkuPk12RBDLDVhazQQUjA67+Zz5
-        fBqmawZV7mmi9On4R+ITIhh9QPSZYcL7aB6dTSI=
-X-Google-Smtp-Source: ABdhPJzJ9FCgxXnqTiAl1d8719KNqcBH150mVsIr6nLkuiTcshiGPmrhmCV69QZ3c0A6UVjuKdMcyh28UHwe875eJUg=
-X-Received: by 2002:a9d:604e:: with SMTP id v14mr1814275otj.260.1625234454582;
- Fri, 02 Jul 2021 07:00:54 -0700 (PDT)
+        id S232979AbhGBODx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 10:03:53 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:37518 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232777AbhGBODw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 10:03:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=hyc3HElTo8Dk1b2Uszvnf79x5YRfYasl205RediPjfE=; b=fbs+Yk7tsec92vwE4ZLLcMLaZU
+        yL1rBoQTEHbu6FQjzTUrBbU0TGw2l2tdzbwbmreAmwvYXILepf9tN5zsg9yCLvHnHYtlkfGHSspoO
+        ffQv1Yc7uXuJ76NFkaLUcmM1zhcli7QCBovhipBsck4cJWiH/aor2+gTCpJfekYFGtd8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lzJjK-00BvNH-FS; Fri, 02 Jul 2021 16:01:18 +0200
+Date:   Fri, 2 Jul 2021 16:01:18 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/7] mfd: tqmx86: add support for TQMx110EB and
+ TQMxE40x
+Message-ID: <YN8cLgyLfJ+lENkc@lunn.ch>
+References: <cover.1625227382.git.matthias.schiffer@ew.tq-group.com>
+ <e6906971cd78dde5862e01acab5a8c07cee0a0e3.1625227382.git.matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
-References: <1625209430-19934-1-git-send-email-aubrey.li@intel.com>
-In-Reply-To: <1625209430-19934-1-git-send-email-aubrey.li@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 2 Jul 2021 16:00:43 +0200
-Message-ID: <CAJZ5v0hzhCAnD8KtRkq7BpBQPXOJ3X=hCvR+=usZ=tr9SpxW4g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ACPI: Correct \_SB._OSC bit definition for PRM
-To:     Aubrey Li <aubrey.li@intel.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e6906971cd78dde5862e01acab5a8c07cee0a0e3.1625227382.git.matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 9:03 AM Aubrey Li <aubrey.li@intel.com> wrote:
->
-> Accord to Platform Runtime Mechanism Specification v1.0 [1],
-> Page 42, _OSC bit (BIT 21) is used to indicate OS support of
-> platform runtime mechanism..
->
-> [1]: https://uefi.org/sites/default/files/resources/Platform%20Runtime%20Mechanism%20-%20with%20legal%20notice.pdf
->
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-> ---
->  include/linux/acpi.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index b338613..4df6a81 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -551,8 +551,8 @@ acpi_status acpi_run_osc(acpi_handle handle, struct acpi_osc_context *context);
->  #define OSC_SB_OSLPI_SUPPORT                   0x00000100
->  #define OSC_SB_CPC_DIVERSE_HIGH_SUPPORT                0x00001000
->  #define OSC_SB_GENERIC_INITIATOR_SUPPORT       0x00002000
-> -#define OSC_SB_PRM_SUPPORT                     0x00020000
->  #define OSC_SB_NATIVE_USB4_SUPPORT             0x00040000
-> +#define OSC_SB_PRM_SUPPORT                     0x00200000
->
->  extern bool osc_sb_apei_support_acked;
->  extern bool osc_pc_lpi_support_confirmed;
-> --
+On Fri, Jul 02, 2021 at 02:23:51PM +0200, Matthias Schiffer wrote:
+> Add the board IDs for the TQMx110EB and the TQMxE40x family. All use a
+> 24MHz LPC clock.
+> 
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 
-Applied as 5.14-rc1 material, thanks!
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
