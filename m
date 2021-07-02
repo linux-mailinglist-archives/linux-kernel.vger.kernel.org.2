@@ -2,157 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C5A3BA5EC
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 00:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C33523BA5F5
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 00:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbhGBWQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 18:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59510 "EHLO
+        id S230099AbhGBW1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 18:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbhGBWQK (ORCPT
+        with ESMTP id S229917AbhGBW1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 18:16:10 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED550C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 15:13:37 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id bu19so20644848lfb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 15:13:37 -0700 (PDT)
+        Fri, 2 Jul 2021 18:27:30 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8F9C061765;
+        Fri,  2 Jul 2021 15:24:56 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id a127so10362279pfa.10;
+        Fri, 02 Jul 2021 15:24:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KEZ8WS1/P9JTGSLCcSvWjs/G9krL0GBd8QeReo+j1Zk=;
-        b=YkSDML8ETWqihRMIfeWD243ylc4Mo9Vok9hpERJMs7D+ji6L3jYQF7ApYt6d+LLDqB
-         ra0TiWI801rOypgULgkh1CBvXidO8s4y3oUpaTdcuKcABrAIXMtEFcZjQoL8qH8pj/08
-         rmqGADSlByI2KqZHR/WV8Gk1t96DAB95DYmrM=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TM6cjgF2amzNsWvXOB7KJYtX5jxhorxbWHwc1I9Rrtw=;
+        b=SXpkEDNH/iGEKPGIGJQ+P9nX3dWAhgZii4Bd3EV5wTQhaQPy619uoJUzR6cjZbC18W
+         DaWUT90O5ug/ThjjYGZKrEQ5FbNLyJsR99Llg4VFauOUfA8FctMxLzDMaeiFX4k+DDym
+         Z7oH2IT72uD/htMxeHNaKWlYWzSQdjPg0za7exx5Qe55/paMiOhm3cHD0oNHcSmM8kIk
+         B5HQVntDF5bVhJ/QwwDOQdthYHEJdbmqTbWIzwG5e6pX3/ClZz7sNwujTuCOAt5o6mSu
+         3hwonR3hx7FE8Dz6w8K4fyghbz1zIkA+Bh/zoEI3JcIe7pFRESe6MGZq5gfOfVAiUV4t
+         LBzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KEZ8WS1/P9JTGSLCcSvWjs/G9krL0GBd8QeReo+j1Zk=;
-        b=pcG3ahwSoqUsd67ypxKYcEyhPRG3dDQYpN03PXZvriPOxc6Zpe9rVhAjrCxA9dbdW2
-         LD3hWJc653j17YB62+vjm1ajYL4JuW8GlKPlkFC337oHu3g0oWH4dmwCKmYIdMHV6RD1
-         daRD5b7e4NRTQ9I/2tt+PX0u/0mSHvDDCFGlHlhrYTG+YL2iCiEClp0cezF7vAcn42mK
-         0VyiRNa4YjeM2K4GZ5Do7EC0F2gmI8pkgFAPZAmqO20z7ZaVqymynNuO8AHaYfYE79E4
-         opLcENIp7bePdKYW/znsoWbvaHO1CkUKq1ZmzcRI3Y2RqRnwAeJciYwG+2Q3gxL/WbEJ
-         VCAA==
-X-Gm-Message-State: AOAM531GeL8YYZfFyYfQRyf9iJ+XlUyVfwqsb1y+E+otLSMcxxpcd7I1
-        IjQt041G9FZRXARM8fxf+z2aObXv6GmAAYSmkHM=
-X-Google-Smtp-Source: ABdhPJwRnKNUnz6v2btcw1iP2kE14i0zTEHKWo4NFS+iJyAR4EyigGVCxTckLiwfIDPvY6TcE6xP6Q==
-X-Received: by 2002:ac2:4ac6:: with SMTP id m6mr1247869lfp.189.1625264016057;
-        Fri, 02 Jul 2021 15:13:36 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id a2sm511988ljp.117.2021.07.02.15.13.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Jul 2021 15:13:35 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id u25so15249123ljj.11
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 15:13:35 -0700 (PDT)
-X-Received: by 2002:a2e:9c58:: with SMTP id t24mr1182109ljj.411.1625264014789;
- Fri, 02 Jul 2021 15:13:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TM6cjgF2amzNsWvXOB7KJYtX5jxhorxbWHwc1I9Rrtw=;
+        b=aXECF90TfqgQEhCHOo4fBSBsuogaVNHYJsbmjgfl+B0eYGbEzzLtbh55qCuSgo9oJ9
+         1tiHAZZsonpCKqYg7sxJmwDoBHEfTAdhND/eaQ+J80CuNwZzI0hHg4RW4weJm6+HevWB
+         Ok+fKGZmoXbt5/fOqzubJSVwGWfyzktYdtczsAgFNUXvMH8tngqax/zY2hFum6Wl+Pak
+         h3G9twp8VZSkaDW3NcVOb9kMJ4lDazm4YUnB4Hlp5SUvzp1fFsoqOfw4oUA8M/uIUiYv
+         jzMh+7r2xScpcwXshbXihW5zNBJGWPgjZEqFh3jOclwavPEAFwMR6x9p7Rd995tXU1is
+         tICg==
+X-Gm-Message-State: AOAM533VpQE41DIXsG9s054/wILKwVBF6+cl2a6s2GB2R9rtwGLdpfih
+        PCdZPQ7ERv39SrhgWh+LBzE=
+X-Google-Smtp-Source: ABdhPJxuPQTSDKsRpxKijJCvdVGphsFcyH6VXS8A1u6xap6S4Lz36I5vBFbYaTsQeUU7SBLy12yqyA==
+X-Received: by 2002:aa7:9727:0:b029:304:3644:2771 with SMTP id k7-20020aa797270000b029030436442771mr1682109pfg.73.1625264695987;
+        Fri, 02 Jul 2021 15:24:55 -0700 (PDT)
+Received: from gmail.com ([2601:600:8500:5f14:d627:c51e:516e:a105])
+        by smtp.gmail.com with ESMTPSA id y4sm5083312pfc.15.2021.07.02.15.24.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 15:24:55 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 15:21:22 -0700
+From:   Andrei Vagin <avagin@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 2/4] arch/x86: implement the process_vm_exec syscall
+Message-ID: <YN+RYi5honrgjFAw@gmail.com>
+References: <20210414055217.543246-1-avagin@gmail.com>
+ <20210414055217.543246-3-avagin@gmail.com>
+ <YN7TgV9RDJTRaY8R@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <CAHk-=wjQks3o_3=WewaXw++h+a318B3LTLSFER9Ee4n1pLCZLw@mail.gmail.com>
- <20210702175442.1603082-1-legion@kernel.org>
-In-Reply-To: <20210702175442.1603082-1-legion@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 2 Jul 2021 15:13:18 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whfoVN6wiP5VHekckvqivRhpB+b1FnwyWEjz1SB2FN6HQ@mail.gmail.com>
-Message-ID: <CAHk-=whfoVN6wiP5VHekckvqivRhpB+b1FnwyWEjz1SB2FN6HQ@mail.gmail.com>
-Subject: Re: [PATCH] ucounts: Fix UCOUNT_RLIMIT_SIGPENDING counter leak
-To:     Alexey Gladkov <legion@kernel.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <YN7TgV9RDJTRaY8R@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 10:55 AM Alexey Gladkov <legion@kernel.org> wrote:
->
-> @@ -424,10 +424,10 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
->          * changes from/to zero.
->          */
->         rcu_read_lock();
-> -       ucounts = task_ucounts(t);
-> +       ucounts = ucounts_new = task_ucounts(t);
->         sigpending = inc_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
->         if (sigpending == 1)
-> -               ucounts = get_ucounts(ucounts);
-> +               ucounts_new = get_ucounts(ucounts);
->         rcu_read_unlock();
+On Fri, Jul 02, 2021 at 10:51:13AM +0200, Peter Zijlstra wrote:
+> 
+> I'm terrified of all of this...
+> 
+> On Tue, Apr 13, 2021 at 10:52:15PM -0700, Andrei Vagin wrote:
+> 
+> > +long swap_vm_exec_context(struct sigcontext __user *uctx)
+> > +{
+> > +	struct sigcontext ctx = {};
+> > +	sigset_t set = {};
+> > +
+> > +
+> > +	if (copy_from_user(&ctx, uctx, CONTEXT_COPY_SIZE))
+> > +		return -EFAULT;
+> > +	/* A floating point state is managed from user-space. */
+> > +	if (ctx.fpstate != 0)
+> > +		return -EINVAL;
 
-I think this is still problematic.
+Here, we check that ctx doesn't have an FPU state.
 
-If get_ucounts() fails, we can't just drop the RCU lock and (later)
-use "ucounts" that we hold no reference to.
+> > +	if (!user_access_begin(uctx, sizeof(*uctx)))
+> > +		return -EFAULT;
+> > +	unsafe_put_sigcontext(uctx, NULL, current_pt_regs(), (&set), Efault);
+> > +	user_access_end();
+> 
+> But here you save the sigcontext without FPU state.
+> 
+> > +
+> > +	if (__restore_sigcontext(current_pt_regs(), &ctx, 0))
+> > +		goto badframe;
+> 
+> And here you restore sigcontext, *with* FPU state.  At which point your
+> FPU state is irrecoverably lost.
 
-Or am I missing something? I'm not entirely sure about the lifetime of
-that RCU protection, and I do note that "task_ucounts()" uses
-"task_cred_xxx()", which already does
-rcu_read_lock()/rcu_read_unlock() in the actual access.
+process_vm_exec doesn't change a process FPU state. Unlike signals, here
+we can control it from a user-space. A process can set an FPU state
+before process_vm_exec and then retore its FPU state after the
+call.
 
-So I'm thinking the code could/should be written something like this instead:
+This version of patches has a bug that I fixed in my tree when I
+implemented the user-space part for gVisor. I didn't take into account
+that restore_sigcontext(ctx) clears a process fpu state if ctx->fpstate
+is zero. I moved fpu__restore_sig out from __restore_sigcontext to fix
+this issue:
 
-  diff --git a/kernel/signal.c b/kernel/signal.c
-  index f6371dfa1f89..40781b197227 100644
-  --- a/kernel/signal.c
-  +++ b/kernel/signal.c
-  @@ -422,22 +422,33 @@ __sigqueue_alloc(int sig, struct task_struct
-*t, gfp_t gfp_flags,
-         * NOTE! A pending signal will hold on to the user refcount,
-         * and we get/put the refcount only when the sigpending count
-         * changes from/to zero.
-  +      *
-  +      * And if the ucount rlimit overflowed, we do not get to use it at all.
-         */
-        rcu_read_lock();
-        ucounts = task_ucounts(t);
-        sigpending = inc_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
-  -     if (sigpending == 1)
-  -             ucounts = get_ucounts(ucounts);
-  +     switch (sigpending) {
-  +     case 1:
-  +             if (likely(get_ucounts(ucounts)))
-  +                     break;
-  +
-  +             dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
-  +             fallthrough;
-  +     case LONG_MAX:
-  +             rcu_read_unlock();
-  +             return NULL;
-  +     }
-        rcu_read_unlock();
+https://github.com/avagin/linux-task-diag/commit/55b7194d00ff
 
-  -     if (override_rlimit || (sigpending < LONG_MAX && sigpending <=
-task_rlimit(t, RLIMIT_SIGPENDING))) {
-  +     if (override_rlimit || sigpending <= task_rlimit(t,
-RLIMIT_SIGPENDING)) {
-                q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
-        } else {
-                print_dropped_signal(sig);
-        }
-
-        if (unlikely(q == NULL)) {
-  -             if (ucounts && dec_rlimit_ucounts(ucounts,
-UCOUNT_RLIMIT_SIGPENDING, 1))
-  +             if (dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1))
-                        put_ucounts(ucounts);
-        } else {
-                INIT_LIST_HEAD(&q->list);
-
-(and no, I'm not sure it's a good idea to make that use a "switch()" -
-maybe the LONG_MAX case should be a "if (unlikely())" thing after the
-rcu_read_ulock() instead?
-
-Hmm?
-
-The alternate thing is to say "No, Linus, you're a nincompoop and
-wrong, that RCU protection is a non-issue because we hold a reference
-to the task, and task_ucounts() will not change, so the RCU read lock
-doesn't do anything".
-
-Although then I would think the rcu_read_lock/rcu_read_unlock here is
-entirely pointless.
-
-               Linus
+> 
+> Also, I'm not at all convinced this can ever do the right thing when the
+> tasks don't agree on what the FPU state is. I suppose in the best case
+> the save will EFAULT.
+> 
+> > +
+> > +	return 0;
+> > +Efault:
+> > +	user_access_end();
+> > +badframe:
+> > +	signal_fault(current_pt_regs(), uctx, "swap_vm_exec_context");
+> > +	return -EFAULT;
+> > +}
