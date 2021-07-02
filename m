@@ -2,95 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059063BA111
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4332B3BA10F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbhGBNSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:18:22 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:53048 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231929AbhGBNST (ORCPT
+        id S232537AbhGBNSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:18:20 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33076 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232484AbhGBNSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:18:19 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0B8354AB;
-        Fri,  2 Jul 2021 15:15:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1625231746;
-        bh=lPQJSYgt7FOS0ZkOS6nFwGRvOUGexo8giKIh+LYutSc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pHLzrIklM+D1u9072Zq6oG9RldGQojp2iOKsBao67u0bSDf33eZQ8EGZwjVrJAxyZ
-         IHflh82diE7LOOBMsucWscYMFwEps7iAjKnAZOd98e/a8u6r7DFA38LIJ0UQb7pzyU
-         DTLOLaJqp8Q3Vxwc2juwVUxHZVmL1+X3MzNS0JQ8=
-Date:   Fri, 2 Jul 2021 16:15:06 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Stefan Riedmueller <s.riedmueller@phytec.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] dt-bindings: media: mt9p031: Add missing required
- properties
-Message-ID: <YN8RWoy0xryBw3bL@pendragon.ideasonboard.com>
-References: <20210702095922.118614-1-s.riedmueller@phytec.de>
- <20210702095922.118614-4-s.riedmueller@phytec.de>
+        Fri, 2 Jul 2021 09:18:18 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lzJ1D-0003O6-0J; Fri, 02 Jul 2021 13:15:43 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Nilesh Javali <njavali@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: qla2xxx: remove redundant continue statement in a for-loop
+Date:   Fri,  2 Jul 2021 14:15:42 +0100
+Message-Id: <20210702131542.19880-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210702095922.118614-4-s.riedmueller@phytec.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefan,
+From: Colin Ian King <colin.king@canonical.com>
 
-Thank you for the patch.
+The continue statement at the end of the for-loop is redundant,
+remove it.
 
-On Fri, Jul 02, 2021 at 11:59:19AM +0200, Stefan Riedmueller wrote:
-> Add missing required clocks and supply regulator properties for the
-> sensor input clock and vdd, vdd_io and vaa supply regulators.
+Addresses-Coverity: ("Continue has no effect")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/scsi/qla2xxx/qla_sup.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Can I volunteer you to convert these bindings to YAML first, and add the
-properties on top ? :-)
-
-> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-> ---
->  .../devicetree/bindings/media/i2c/mt9p031.txt        | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/mt9p031.txt b/Documentation/devicetree/bindings/media/i2c/mt9p031.txt
-> index cb60443ff78f..4437d0e3147d 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/mt9p031.txt
-> +++ b/Documentation/devicetree/bindings/media/i2c/mt9p031.txt
-> @@ -9,6 +9,12 @@ Required Properties:
->  	(a) "aptina,mt9p031" for mt9p031 sensor
->  	(b) "aptina,mt9p031m" for mt9p031m sensor
->  
-> +- clocks: Reference to the sensor input clock
-> +
-> +- vdd-supply: VDD supply regulator
-> +- vdd_io-supply: VDD_IO supply regulator
-> +- vaa-supply: VAA supply regulator
-> +
->  - input-clock-frequency: Input clock frequency.
->  
->  - pixel-clock-frequency: Pixel clock frequency.
-> @@ -29,6 +35,12 @@ Example:
->  			reg = <0x5d>;
->  			reset-gpios = <&gpio3 30 0>;
->  
-> +			clocks = <&sensor_clk>;
-> +
-> +			vdd-supply = <&reg_vdd>;
-> +			vdd_io-supply = <&reg_vdd_io>;
-> +			vaa-supply = <&reg_vaa>;
-> +
->  			port {
->  				mt9p031_1: endpoint {
->  					input-clock-frequency = <6000000>;
-
+diff --git a/drivers/scsi/qla2xxx/qla_sup.c b/drivers/scsi/qla2xxx/qla_sup.c
+index 060c89237777..a0aeba69513d 100644
+--- a/drivers/scsi/qla2xxx/qla_sup.c
++++ b/drivers/scsi/qla2xxx/qla_sup.c
+@@ -2936,7 +2936,6 @@ qla28xx_write_flash_data(scsi_qla_host_t *vha, uint32_t *dwptr, uint32_t faddr,
+ 		liter += dburst - 1;
+ 		faddr += dburst - 1;
+ 		dwptr += dburst - 1;
+-		continue;
+ 	}
+ 
+ write_protect:
 -- 
-Regards,
+2.31.1
 
-Laurent Pinchart
