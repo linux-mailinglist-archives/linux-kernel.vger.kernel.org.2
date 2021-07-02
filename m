@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E9D3B9A48
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 02:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1374E3B9A4D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 02:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234641AbhGBA7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 20:59:23 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:42048 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234370AbhGBA7W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 20:59:22 -0400
-Received: from netfilter.org (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 6A7CC60705;
-        Fri,  2 Jul 2021 02:56:43 +0200 (CEST)
-Date:   Fri, 2 Jul 2021 02:56:48 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] netfilter: nf_tables: Fix dereference of null
- pointer flow
-Message-ID: <20210702005648.GC29227@salvia>
-References: <20210624195718.170796-1-colin.king@canonical.com>
+        id S234583AbhGBBAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 21:00:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230369AbhGBBAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 21:00:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AF67613F4;
+        Fri,  2 Jul 2021 00:57:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625187465;
+        bh=YIHxenQ2WjimdhLt2LLEP9NzxOO6nw3lYqLd/2cAsWU=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=nlRBBX+GvqBNhJGLorbzqzXuHV1XAX43YpaI0GQUuk6xLi/uReG/gfnimdiD9uZ7w
+         +TtPwr5pgt7DIWrAqJ2I1WWfJIIjUwSjKB4R+rrb8nAVaUph0zMA9zL4dkpTuZERq1
+         wx4LB3mFIYw4V3WY87Nyyl6YY5kTnwC4ESPaBtVpnwUUJtQLLiQp63YYLxGBa0VXAZ
+         81eBu9kFD3fmDWTUXqxqd3+lDmLQY16ruiP1kg9vK3/GwxjHFStuiKpLXlmSOeBtwX
+         Lg1faoXdRoyBI1t1qD82myOdQ1uvPANalUsWnAtwe3wudmiUDYZXPB7ndakTXvLFKl
+         ldQe2IqChaT6w==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210624195718.170796-1-colin.king@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210701232258.19146-1-alexander.helms.jy@renesas.com>
+References: <202107020640.YyVoU69S-lkp@intel.com> <20210701232258.19146-1-alexander.helms.jy@renesas.com>
+Subject: Re: [PATCH v2 0/2] Renesas 8T49N241 device driver
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     robh+dt@kernel.org, mturquette@baylibre.com,
+        geert+renesas@glider.be, alexander.helms.jy@renesas.com,
+        david.cater.jc@renesas.com, michal.simek@xilinx.com
+To:     Alex Helms <alexander.helms.jy@renesas.com>,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Date:   Thu, 01 Jul 2021 17:57:44 -0700
+Message-ID: <162518746420.3570193.3670897082897622119@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 08:57:18PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> In the case where chain->flags & NFT_CHAIN_HW_OFFLOAD is false then
-> nft_flow_rule_create is not called and flow is NULL. The subsequent
-> error handling execution via label err_destroy_flow_rule will lead
-> to a null pointer dereference on flow when calling nft_flow_rule_destroy.
-> Since the error path to err_destroy_flow_rule has to cater for null
-> and non-null flows, only call nft_flow_rule_destroy if flow is non-null
-> to fix this issue.
+Quoting Alex Helms (2021-07-01 16:22:56)
+> A common clock framework device driver for the Renesas 8T49N241 universal
+> frequency translator.
 
-Applied, thanks.
+Please don't send the next revision of the patch series as a reply to
+the previous series. It gets buried in my inbox and is harder to track
+revisions. Thanks.
