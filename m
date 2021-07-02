@@ -2,134 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA953BA0AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236BE3BA0B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232413AbhGBMtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 08:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47074 "EHLO
+        id S232433AbhGBMtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 08:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232168AbhGBMtc (ORCPT
+        with ESMTP id S230271AbhGBMtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 08:49:32 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F73C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 05:46:59 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id hr1so12537301ejc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 05:46:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U9Ygf5x7uiOG9bCFzCQj8dmpy7ftJ6zlaTjCUCyvuWI=;
-        b=Xkh+xgvWJNg3rs9aU1QIxdqlP7Qlu2eqBL0oaeTo3OG58Ncbm6Gp8Urn8SjvIsvSQM
-         wFO/WsLjGXApllsxXG61JcSWN+IGeCMIGEEOBA5FxGYek88RnNdww6AvExbD5YkGYwuT
-         lbhWGkCtUmILyQhgBPtDrGdxYEmtT6fKHuMenJ20IKE2g3IvprjKgz4BObJQngx+vvDC
-         1CRdOqwZP+1WNLAnn0Eh3TJpzbvWiR6gAaQWHq48v5UgjrCTyDO+r2Kr7+0J3z4pBlLp
-         wBPA+qUzsaerhCA11tVOQqAr9JEAyBeb/Jtt1+h3U1DUs5fu01UYEOPKZu5+8e3WF509
-         f4oA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U9Ygf5x7uiOG9bCFzCQj8dmpy7ftJ6zlaTjCUCyvuWI=;
-        b=p3KID59NG64ipoj/Wf/4t0rmkcTKw7KpiNF+Ddu9NDj/wz6u8zGQlnrL7NsqG1fwb6
-         2Ok9yHCp6T2JL9wdN2ARBZdS5DVPxijMdawc7Dh09aNnGl1487qJbHXoPE7HZULnfIU6
-         kMIYJVlMu/69WHNRD2aRLLJBmxzE4VAFBu9V7xiH1Fxey0BjOuuh25SfPYQobMfnCv46
-         iq/X+saQ+J22sJD4oaZzGQ8XaM9FV7UBA5XBtEOuqzS6WqSyXLzu1VLFRMz6RZnudSLQ
-         SQR+hoO7a5Jazy+CsuSKxx2eE0rC4huAqA0HRjsVJgBdhd5wLsZ7SLaej4HT66F2EKdv
-         0P8A==
-X-Gm-Message-State: AOAM532mahl2aohBGFCpm4hE+faSpsm6QR1TGyDPRs2NfsR1q9xKjyZJ
-        ImFUNVgXUdsmdfDwbCbxozxCzvhWN+k/F2O7YNof
-X-Google-Smtp-Source: ABdhPJwyH2JiEckTHAvfgM3J+sdE0oNN1VXCZl46sNxymMPsPxZ4o9q4N9qIIE62BLBEMPI+ByqIc8+hdwWKWTdFang=
-X-Received: by 2002:a17:907:72ce:: with SMTP id du14mr3731820ejc.529.1625230017449;
- Fri, 02 Jul 2021 05:46:57 -0700 (PDT)
+        Fri, 2 Jul 2021 08:49:52 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16403C061762;
+        Fri,  2 Jul 2021 05:47:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NhPbyO7JE4bS3uwJd81k6yyv7xC+fFP5FE+cPKnwlHE=; b=jB0z2wRpKQvM4CwKSllmU4Pt1K
+        9qa2jyEn179Nfk/1oWb23TM/bWLc/AbntbuZAa8SSpYo23TYk1pAZ8mLP21NdsOhhX8xyfOL08qOi
+        AanC46QDVbzENcmc3skRi+uBuAIUljcxbszSuPmGS9C7mpEnCkpCnWjWcN6pYxqaD1iRdi1FcnJhX
+        pwPQ6jU8LNSNxsGMBCYEfQilIkgxUyRcTEH1jamEXghdIhblkKMRMZTb8/WUyHLn/D8ZMsL8Z5vT4
+        o+NhpTvET7HmCGxLo8oCQa6NM0ATW2YprsZunwD7OA/8cPtW6qL6WKbL54Z6zQv+kEi4r3HEAf3dP
+        nhsrLHVg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lzIZG-00DrLQ-KR; Fri, 02 Jul 2021 12:46:50 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 48289300091;
+        Fri,  2 Jul 2021 14:46:48 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 32059299AFBF7; Fri,  2 Jul 2021 14:46:48 +0200 (CEST)
+Date:   Fri, 2 Jul 2021 14:46:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Zhu Lingshan <lingshan.zhu@intel.com>
+Cc:     pbonzini@redhat.com, bp@alien8.de, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, weijiang.yang@intel.com,
+        kan.liang@linux.intel.com, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        like.xu.linux@gmail.com, Like Xu <like.xu@linux.intel.com>
+Subject: Re: [PATCH V7 15/18] KVM: x86/pmu: Disable guest PEBS temporarily in
+ two rare situations
+Message-ID: <YN8KuNOOm1UBBsGJ@hirez.programming.kicks-ass.net>
+References: <20210622094306.8336-1-lingshan.zhu@intel.com>
+ <20210622094306.8336-16-lingshan.zhu@intel.com>
 MIME-Version: 1.0
-References: <202106281231.E99B92BB13@keescook> <CAHk-=whqCT0BeqBQhW8D-YoLLgp_eFY=8Y=9ieREM5xx0ef08w@mail.gmail.com>
- <202106291311.20AB10D04@keescook> <CAHk-=wg8M2DyA=bWtnGsAOVqYU-AusxYcpXubUO2htb6qPU9dg@mail.gmail.com>
-In-Reply-To: <CAHk-=wg8M2DyA=bWtnGsAOVqYU-AusxYcpXubUO2htb6qPU9dg@mail.gmail.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Fri, 2 Jul 2021 05:46:46 -0700
-Message-ID: <CAGG=3QXrOnN3-3r-VGDpmikKRpaK_p5hM_qHGprDDMuFNKuifA@mail.gmail.com>
-Subject: Re: [GIT PULL] Clang feature updates for v5.14-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bill Wendling <wcw@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jarmo Tiitto <jarmo.tiitto@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622094306.8336-16-lingshan.zhu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 2:04 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Tue, Jun 29, 2021 at 1:44 PM Kees Cook <keescook@chromium.org> wrote:
-> > >
-> > > And it causes the kernel to be bigger and run slower.
-> >
-> > Right -- that's expected. It's not designed to be the final kernel
-> > someone uses. :)
->
-> Well, from what I've seen, you actually want to run real loads in
-> production environments for PGO to actually be anything but a bogus
-> "performance benchmarks only" kind of thing.
->
-The reason we use PGO in this way is because we _cannot_ release a
-kernel into production that hasn't had PGO applied to it. The
-performance of a non-PGO'ed kernel is a non-starter for rollout. We
-try our best to replicate this environment for the benchmarks, which
-is the only sane way to do this. I can't imagine that we're the only
-ones who run up against this chicken-and-egg problem.
+On Tue, Jun 22, 2021 at 05:43:03PM +0800, Zhu Lingshan wrote:
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index 22386c1a32b4..8bf494f8af3e 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -3970,8 +3970,15 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
+>  		.guest = pebs_mask & ~cpuc->intel_ctrl_host_mask,
+>  	};
+>  
+> -	/* Set hw GLOBAL_CTRL bits for PEBS counter when it runs for guest */
+> -	arr[0].guest |= arr[*nr].guest;
+> +	if (arr[*nr].host) {
+> +		/* Disable guest PEBS if host PEBS is enabled. */
+> +		arr[*nr].guest = 0;
+> +	} else {
+> +		/* Disable guest PEBS for cross-mapped PEBS counters. */
+> +		arr[*nr].guest &= ~pmu->host_cross_mapped_mask;
+> +		/* Set hw GLOBAL_CTRL bits for PEBS counter when it runs for guest */
+> +		arr[0].guest |= arr[*nr].guest;
+> +	}
 
-For why we don't use sampling, PGO gives a better performance boost
-from an instrumented kernel rather than a sampled profile. I'll work
-on getting statistics to show this.
+Not saying I disagree, but is there any way for the guest to figure out
+why things aren't working? Is there like a guest log we can dump
+something in?
 
--bw
+> +void intel_pmu_cross_mapped_check(struct kvm_pmu *pmu)
+> +{
+> +	struct kvm_pmc *pmc = NULL;
+> +	int bit;
+> +
+> +	for_each_set_bit(bit, (unsigned long *)&pmu->global_ctrl,
+> +			 X86_PMC_IDX_MAX) {
+> +		pmc = kvm_x86_ops.pmu_ops->pmc_idx_to_pmc(pmu, bit);
+> +
+> +		if (!pmc || !pmc_speculative_in_use(pmc) ||
+> +		    !pmc_is_enabled(pmc))
+> +			continue;
+> +
+> +		if (pmc->perf_event && (pmc->idx != pmc->perf_event->hw.idx))
+> +			pmu->host_cross_mapped_mask |=
+> +				BIT_ULL(pmc->perf_event->hw.idx);
 
-> Of course, "performance benchmarks only" is very traditional, and
-> we've seen that used over and over in the past in this industry. That
-> doesn't make it _right_, though.
->
-> And if you actually want to have it usable in production environments,
-> you really should strive to run code as closely as possible to a
-> production kernel too.
->
-> You'd want to run something that you can sample over time, and in
-> production, not something that you have to build a special kernels for
-> that then gets used for a benchmark run, but can't be kept in
-> production because it performs so much worse.
->
-> Real proper profiles will tell you what *really* matters - and if you
-> don't have enough samples to give you good information, then that
-> particular code clearly is not important enough to waste PGO on.
->
-> This is not all that dissimilar to using gprof information for
-> traditional - manual - optimizations.
->
-> Sure, instrumented gprof output is better than nothing, but it is
-> *hugely* worse than actual proper sampled profiles that actually show
-> what matters for performance (as opposed to what runs a lot - the two
-> are not necessarily all that closely correlated, with cache misses
-> being a thing).
->
-> And I really hate how pretty much all of the PGO support seems to be
-> just about this inferior method of getting the data.
->
->                 Linus
+{ } again.
+
+> +	}
+> +}
