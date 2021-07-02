@@ -2,52 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684853B9EEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 12:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F73E3B9EF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 12:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhGBKT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 06:19:29 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:32914 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230351AbhGBKTZ (ORCPT
+        id S231559AbhGBKUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 06:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231446AbhGBKUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 06:19:25 -0400
-X-UUID: e615c15aae7a4510a52e7dcf0566415d-20210702
-X-UUID: e615c15aae7a4510a52e7dcf0566415d-20210702
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <yp.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1983520171; Fri, 02 Jul 2021 18:16:51 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 2 Jul 2021 18:16:49 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 2 Jul 2021 18:16:49 +0800
-From:   YP WU <yp.wu@mediatek.com>
-To:     <yp.wu@mediatek.com>, <leo.hsiao@mediatek.com>,
-        <Lecopzer.Chen@mediatek.com>, <mchehab@kernel.org>,
-        <gustavoars@kernel.org>, <hverkuil-cisco@xs4all.nl>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <Jason-BF.Huang@mediatek.com>, <francis.lee@mediatek.com>
-Subject: DVBS Blind scan implementation of Linux DVB
-Date:   Fri, 2 Jul 2021 18:16:49 +0800
-Message-ID: <20210702101649.12668-1-yp.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Fri, 2 Jul 2021 06:20:41 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FC0C0613DF
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 03:18:09 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lzGFH-0005B9-3u; Fri, 02 Jul 2021 12:18:03 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lzGFF-0003eO-Ck; Fri, 02 Jul 2021 12:18:01 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH net-next v2 0/6] ar9331: mainline some parts of switch functionality 
+Date:   Fri,  2 Jul 2021 12:17:45 +0200
+Message-Id: <20210702101751.13168-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, dvb frontend maintainer:
-	We have an internal discussion about how to implement DVBS blind scan.
-Currently, we can't see any structs and IOCTL commands related to DVBS blind scan in Linux-dvb framework.
-So we want to confirm if Linux-dvb framework have inherent flow of DVBS blind scan or not.
-If the answer is yes, could you tell us how to work in Linux-dvb.
-If the answer is no, do you have any suggestions or design scenario for DVBS blind scan?
+Till now the ar9331 switch was supporting only port multiplexing mode.
+With this patch set we should be able to bridging and VLAN
 
-Sorry to bother you and thanks for your helps.
-BRs,
-YP
+Oleksij Rempel (6):
+  net: dsa: qca: ar9331: reorder MDIO write sequence
+  net: dsa: qca: ar9331: make proper initial port defaults
+  net: dsa: qca: ar9331: add forwarding database support
+  net: dsa: qca: ar9331: add ageing time support
+  net: dsa: qca: ar9331: add bridge support
+  net: dsa: qca: ar9331: add vlan support
+
+ drivers/net/dsa/qca/ar9331.c | 782 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 777 insertions(+), 5 deletions(-)
+
+-- 
+2.30.2
+
