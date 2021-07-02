@@ -2,94 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894323BA193
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346AD3BA198
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbhGBNuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:50:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232386AbhGBNuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:50:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 910436142B;
-        Fri,  2 Jul 2021 13:48:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625233688;
-        bh=2sqvaKpsBfNMgq83CEar15dETBn3QWs27Pt8LM/rCwM=;
-        h=From:Date:Subject:To:Cc:From;
-        b=rc62/bOo5T2jDzR4RHPSTBU9uRAByYE4yKqqeivveY0JA8eJssOJVIEfs4EEX9KR4
-         IrPz2C1OHXFxfio5zL9ScYUVfVpHi+OjIZlwgHNng3KBYm8KKAL+dYGLu889KvdIss
-         fVFNvo7E+VSwodDiRF+vWIF4GJDR3Zy+uNmCHZ7vaEazMC3DpeWUDWUVlwaDhSqKcx
-         QMu8wJv7wuaNTcicgKSOeNP+BaC1q/oUQKf/u0QWsAc2DHQsPrc4+Eep50U/kLxyhq
-         umlzUc/4pDN/spuMUbKadOeONFFU/IcYgJTX1atZh8dGPu9YZwT2y3EJSMHgQDUxPa
-         Fpxib2ruZpQNQ==
-Received: by mail-wr1-f42.google.com with SMTP id a13so12520603wrf.10;
-        Fri, 02 Jul 2021 06:48:08 -0700 (PDT)
-X-Gm-Message-State: AOAM531HmZiGYBoh4yGtqDG8rEH7cLPaeeQKb4FsoqEaMP3mIm/oV+SN
-        M003SqBHeS269JAKkVMVYp8i4/Nmzd2ixxRW/Ko=
-X-Google-Smtp-Source: ABdhPJxjuAcWk+fUW2iebkdnRr3QNskMI/RshqdGsVxS1+zazUtNB4DLWU+IzcKQARqYjKSwvSI4o2tSJmitDSPbyTM=
-X-Received: by 2002:adf:ee10:: with SMTP id y16mr6057171wrn.99.1625233687201;
- Fri, 02 Jul 2021 06:48:07 -0700 (PDT)
+        id S232763AbhGBNvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232744AbhGBNvQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 09:51:16 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057D2C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 06:48:43 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id t15so9190157wry.11
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 06:48:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dmdV5C0TPaZh38jwc22npxunHrSD6YlmILpaclb/0ko=;
+        b=MMaK4fWwJ0vbQk/VXI4ucI0gpZ5rMsazWB7JlYgn8qFz2g7U7vIaZoCdRMNNTmBQ+B
+         QG/HsfLU+K0cKJNZaN16m3SRn+5WQEmPVx97e1I0ZYsGKxi0o1gjjXkDimK7/vdY6XZ4
+         TxMKifvdwRulh4J8UjxgaWxj0irps6/o/rmbjojsBglcy5g9eGb8eQGp2J+yPuxCzGmK
+         2X8bx//QFTfi+eb50djSKk54h7N6+7O+rc9LxS8PZxJNAc8R0eLi8Y22ZJ4QgYcUdTk0
+         AkH9WyG5cA1ATdz5aAmf0/m5rnjQIx8DRZ05vQHPQeDZJvGExrcshvMhzdtym8nnumGk
+         hxMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=dmdV5C0TPaZh38jwc22npxunHrSD6YlmILpaclb/0ko=;
+        b=qazw4ryd7F6OAT6XucBNdJG9vIF6hzx4di7qn4lLc5kSE8NZ5Uu/ensV89TACw3V5h
+         062s7Piyewb9hdVg6TNOEJhpWIXMsrJRNN/2e5yiid/S0VtJxfZXSNcCwo9y5evoK3yl
+         8UAszIwW927p49QQevixUjL5rnnx6+OxJyuMazgFF8Lq1BESLoNj4K8Fw4VsX/QRWnYz
+         TXe2RDpymwIzXArFEdaTZR5yUcoLRVaYB3ThEp6pQLqjv+q1lZ4lHlEuzhEdwLn/sFad
+         B3k0H07M1Hrlc7rVQ4hJ4p7gZwAStKV1w6XJfc9/YClzc+qxdR/jaC1sMap+Ee4xU4Wg
+         rUpQ==
+X-Gm-Message-State: AOAM533QPu1Cjt5HLsF9KKf5zCBCXaMHNcZd1VnU9ELAiA53VcdR4qqW
+        cx1gV6BzkNvrVG8QR6kAkGbUwg==
+X-Google-Smtp-Source: ABdhPJwnfiPmpsT0TFwceB+yNPe62xHEvP1eccHb9f8GwnwPkFvep/IzIg4oQ9IT0EKqsY3+JcJqaA==
+X-Received: by 2002:adf:ef50:: with SMTP id c16mr5998912wrp.137.1625233721485;
+        Fri, 02 Jul 2021 06:48:41 -0700 (PDT)
+Received: from ?IPv6:2001:861:44c0:66c0:b194:a11e:9f1:225b? ([2001:861:44c0:66c0:b194:a11e:9f1:225b])
+        by smtp.gmail.com with ESMTPSA id s5sm3363652wrn.38.2021.07.02.06.48.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Jul 2021 06:48:40 -0700 (PDT)
+Subject: Re: [PATCH 1/2] media: rc: meson-irblaster: document device tree
+ bindings
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+Cc:     sean@mess.org, mchehab@kernel.org, robh+dt@kernel.org,
+        khilman@baylibre.com, jbrunet@baylibre.com,
+        linux-media <linux-media@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, rockosov@gmail.com
+References: <20210701215132.16317-1-viktor.prutyanov@phystech.edu>
+ <20210701215132.16317-2-viktor.prutyanov@phystech.edu>
+ <CAFBinCBZXRrPakwvRLsbNbuYY6fcYysMs0+SPUmAhKpcYxrq0g@mail.gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <cc677601-fb6b-970d-be8a-e68bea9727dd@baylibre.com>
+Date:   Fri, 2 Jul 2021 15:48:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 2 Jul 2021 15:47:51 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
-Message-ID: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
-Subject: [GIT PULL 1/2] asm-generic: rework PCI I/O space access
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAFBinCBZXRrPakwvRLsbNbuYY6fcYysMs0+SPUmAhKpcYxrq0g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+Hi,
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+On 02/07/2021 15:30, Martin Blumenstingl wrote:
+> Hi Viktor,
+> 
+> On Thu, Jul 1, 2021 at 11:51 PM Viktor Prutyanov
+> <viktor.prutyanov@phystech.edu> wrote:
+>>
+>> This patch adds binding documentation for the IR transmitter
+>> available in Amlogic Meson SoCs.
+> This is an interesting piece of hardware where I've always wondered if
+> there is any device out there which supports this functionality.It
+> turns out that there is
 
-are available in the Git repository at:
+You did beat me, I started a driver some time ago but failed to finish debugging it...
+https://github.com/superna9999/linux/tree/amlogic/v5.2%2Fir-blaster
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git
-tags/asm-generic-pci-ioport-5.14
+> 
+> [...]
+>> +description: |
+>> +  Some Amlogic SoCs such as A311D and T950D4 have IR transmitter
+>> +  (blaster) controller onboard. It is capable of sending IR signals
+>> +  with arbitrary carrier frequency and duty cycle.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: amlogic,meson-irblaster
+> if you feel like some registers or register values are specific to
+> A311D or T950D4 then please also add a SoC-specific compatible string
+> (for example: amlogic,meson-g12b-irblaster).
+> An example can be seen in
+> Documentation/devicetree/bindings/iio/adc/amlogic,meson-saradc.yaml
 
-for you to fetch changes up to 5ae6eadfdaf431f47adbdf1754f3b5a5fd638de2:
+AFAIK there is 2 versions of the IP, the "old" one we can find on Meson6, 8/8b, GXBB, GXL & GXM (and maybe AXG ?),
+and the one we find on the latest G12A, G12B & SM1.
 
-  asm-generic/io.h: warn in inb() and friends with undefined
-PCI_IOBASE (2021-05-10 17:37:55 +0200)
+The SEI510 and SEI610 boards we use for Yukawa android port do have the necessary HW for IR sending,
+so I'll eventually be able to test.
 
-----------------------------------------------------------------
-asm-generic: rework PCI I/O space access
+So, as martin says you should add a "amlogic,g12a-ir-blaster" to be sure we support the older ir blaster version
+correctly with the right bindings.
 
-A rework for PCI I/O space access from Niklas Schnelle:
+Neil
 
-  "This is version 5 of my attempt to get rid of a clang
-  -Wnull-pointer-arithmetic warning for the use of PCI_IOBASE in
-  asm-generic/io.h. This was originally found on s390 but should apply to
-  all platforms leaving PCI_IOBASE undefined while making use of the inb()
-  and friends helpers from asm-generic/io.h.
-
-  This applies cleanly and was compile tested on top of v5.12 for the
-  previously broken ARC, nds32, h8300 and risc-v architecture. It also
-  applies cleanly on v5.13-rc1 for which I boot tested it on s390.
-
-  I did boot test this only on x86_64 and s390x the former implements
-  inb() itself while the latter would emit a WARN_ONCE() but no drivers
-  use inb().
-
-Link: https://lore.kernel.org/lkml/20210510145234.594814-1-schnelle@linux.ibm.com/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-----------------------------------------------------------------
-Niklas Schnelle (3):
-      sparc: explicitly set PCI_IOBASE to 0
-      risc-v: Use generic io.h helpers for nommu
-      asm-generic/io.h: warn in inb() and friends with undefined PCI_IOBASE
-
- arch/riscv/include/asm/io.h |  5 +++--
- arch/sparc/include/asm/io.h |  8 ++++++++
- include/asm-generic/io.h    | 68
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
- 3 files changed, 75 insertions(+), 6 deletions(-)
+> 
+> [...]
+>> +  clocks:
+>> +    minItems: 1
+>> +    maxItems: 2
+>> +
+>> +  clock-names:
+>> +    minItems: 1
+>> +    maxItems: 2
+> from my understanding there are two clock inputs to the hardware
+> dt-bindings should always describe the hardware, not what the driver
+> may (or may not) use.
+> based on that I think you should drop minItems (then minItems will
+> have the same value as maxItems)
+> 
+> [...]
+>> +  mod-clock:
+>> +    oneOf:
+>> +      - const: sysclk
+>> +      - const: xtal
+> Does this "mod-clock" depend on something external to the IR blaster hardware?
+> If not this should be handled inside the driver only.
+> 
+> From how I understand the register description in the datasheet
+> there's two clock inputs.
+> XTAL is internally divided further down with fixed dividers.
+> Then there's a configurable divider which is then used to generate the
+> IR signal.
+> If the sysclk (I assume that this is clk81 - or at least derived from
+> it) is "too fast" then the driver should just ignore that clock while
+> the dt-bindings should still describe it (see my comment above)
+> 
+> [...]
+>> +    meson-irblaster@ff80014c {
+> node names should be generic, see for example
+> Documentation/devicetree/bindings/spi/amlogic,meson6-spifc.yaml
+> (spifc is the name Amlogic has given this IP, but since node names are
+> supposed to be generic we use spi@...)
+> 
+> However, I am not sure if an IR blaster would be described as
+> ir-blaster@... or simply ir@...
+> 
+>> +      compatible = "amlogic,meson-irblaster";
+>> +      reg = <0xff80014c 0x10>;
+>> +      interrupts = <0 198 IRQ_TYPE_EDGE_RISING>;
+>> +      clocks = <&clkc CLKID_CLK81 &xtal>;
+> [...]
+>> +      clocks = <&clkc CLKID_CLK81 &xtal>;
+> while this works I think the recommended format is:
+>     clocks = <&clkc CLKID_CLK81>, <&xtal>
+> 
+> 
+> Best regards,
+> Martin
+> 
