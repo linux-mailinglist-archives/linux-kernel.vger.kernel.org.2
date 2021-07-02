@@ -2,108 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FB13BA183
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 340F23BA186
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbhGBNqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232787AbhGBNqD (ORCPT
+        id S232902AbhGBNqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:46:09 -0400
+Received: from mail-pj1-f41.google.com ([209.85.216.41]:42532 "EHLO
+        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232891AbhGBNqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:46:03 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB79C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 06:43:27 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id g10so868618wmh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 06:43:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rEhU8Um5f0JiN5UeHBJI5GyHDmhvUyYTxNlEBkR3UOo=;
-        b=Olhx4UlCuIfRvcxRt/0zqVPZpQnQBNItBR/JKERv+Eev5CLysDIlTi2lcWT6kpawpK
-         x4pfq3AcH7YHbC2ZTTdraCay59JnayrekmOCc0cCcIeD7fjGqlx2xLsxOx9Krx1l6KY8
-         6kvCL5XcrRNOdqUoApmmPUUtebmR41JiiBlnnVFPeB/sY86Hhbun+gEZgyq0br9EXPS7
-         dI8YRus3MYM3+Xsn8UPe0JQqN5Qspc1iExCcbKHHNVakYOe4m0OLpD5+kqXk4Plr+4n+
-         9+ApgSFKmBEcpYkbN8qJZohcCL2+1yx5ZjENIwqKds/9oaV0casBgsmQMXtnD8QQWPx8
-         sGmA==
+        Fri, 2 Jul 2021 09:46:07 -0400
+Received: by mail-pj1-f41.google.com with SMTP id p17-20020a17090b0111b02901723ab8d11fso6112999pjz.1;
+        Fri, 02 Jul 2021 06:43:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rEhU8Um5f0JiN5UeHBJI5GyHDmhvUyYTxNlEBkR3UOo=;
-        b=iX/BtDffdhTG3JC/YfL6WSORJnvSwKTu+mE4vcdg2AEDUX/KnAainuBrICxMBNP08j
-         4CbKEOATSYBIbsUgHKKDIlYx/6+mEmLo56nSatj5dj2rX0a8Ib/3WqhIihxl2l9O6165
-         dn+F9lXtLPBTjtff5ZjdqV79v6Rqo7SgAPSg3UAAKTNTGRJJHiK1ed4MuxEI1AJwNtEJ
-         kgLlMmpwLif5e6Qh+001KQt1zwO+Af27cmerR9kF6gTYI1VKcBsxfygE5YyUZr231nJu
-         a4VDhTEdesUNXVxqLnamjJZuWkuqzPGr8xSs6CRwSk106PQsfd21nr+QX7VmXgQnZ13b
-         8g0w==
-X-Gm-Message-State: AOAM533YkdVQg/A678c4mINy9GKp5NGmMOUwcq/bbldSqXxseW5Z1DJO
-        8968JTlWLJOfQmyYUovmiyqBeg==
-X-Google-Smtp-Source: ABdhPJwnStGuaizhehaJ7yHxKMwHfg61nZmXZITfuPGPqNtQIfKaLtBLZH0EDnMdLDGsESkAkkkrww==
-X-Received: by 2002:a05:600c:1c8f:: with SMTP id k15mr5646909wms.91.1625233406190;
-        Fri, 02 Jul 2021 06:43:26 -0700 (PDT)
-Received: from groot.home ([2a01:cb19:826e:8e00:c5f3:6ae:eaf:87a2])
-        by smtp.gmail.com with ESMTPSA id s1sm12595512wmj.8.2021.07.02.06.43.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 06:43:25 -0700 (PDT)
-From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Fabien Parent <fparent@baylibre.com>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Subject: [PATCH v3 4/4] arm64: dts: mt6358: add mt6358-keys node
-Date:   Fri,  2 Jul 2021 15:43:10 +0200
-Message-Id: <20210702134310.3451560-5-mkorpershoek@baylibre.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210702134310.3451560-1-mkorpershoek@baylibre.com>
-References: <20210702134310.3451560-1-mkorpershoek@baylibre.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A8O7QLpS69tWkUIOVJYRaUSUHM9jeCpg1TDyB8l/WfE=;
+        b=AkzIIjjQFagT3MRFqRHlIig3OTeoysRuD6PGzd9LgGnf2Q2dLHhpiyoAzz/rGSi50j
+         eJXy9AUd8vY32OlGDgC1a624ub/qk5diKa709qB3qbROkHBTNecmCtNRpPp5TapGLw5s
+         Dzx4w6EB7jHLwcHVeMiQ/MC5cbbpiQheyLWhrrXj875cJrQJDUdW6JmDeXrSQVDXXhq1
+         XOTquTEj6MrU6HMvOyfGVFiZ3pqwo1Wh4w/8BMmK7haaXErBBYQdag44HWZ5VNWgue+J
+         QnZ9Bee1tw330AzIVEnO+JM9VcmPq6FYkNpnh2PFuegihk6k9tTHSCpok7XT8Bn7dI9Z
+         n3Kg==
+X-Gm-Message-State: AOAM532lx13mbV5AIwu7ca6HYc7Eeq5+n/EBIVdrjNrsKfVxkhryEwG7
+        5BCp0v0/nmBy5R34f+iRTYw=
+X-Google-Smtp-Source: ABdhPJzXiskbJbYqJP+kYAuyYuVXSmi+ghRxO8IMEExGuk/sE1rHVR9pt46XfZdmem3E39NYRg+/6A==
+X-Received: by 2002:a17:90b:3142:: with SMTP id ip2mr14954286pjb.63.1625233415268;
+        Fri, 02 Jul 2021 06:43:35 -0700 (PDT)
+Received: from [192.168.50.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id m205sm2975341pfd.25.2021.07.02.06.43.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Jul 2021 06:43:34 -0700 (PDT)
+Subject: Re: [PATCH v5 2/3] scsi: sd: send REQUEST SENSE for
+ BLIST_MEDIA_CHANGE devices in runtime_resume()
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     jejb@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, kernel@puri.sm,
+        stern@rowland.harvard.edu
+References: <20210630084453.186764-1-martin.kepplinger@puri.sm>
+ <20210630084453.186764-3-martin.kepplinger@puri.sm>
+ <YN3WD4Vem5Zx8Dvq@infradead.org>
+ <b1d39dfbe1398192ef1181fc98d6b7e6bedeb649.camel@puri.sm>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <232717d6-fa10-aaec-cd15-8ed5e7e1117e@acm.org>
+Date:   Fri, 2 Jul 2021 06:43:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <b1d39dfbe1398192ef1181fc98d6b7e6bedeb649.camel@puri.sm>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This enables the power,home keys on MediaTek boards with a mt6358 pmic.
+On 7/2/21 1:04 AM, Martin Kepplinger wrote:
+> Am Donnerstag, dem 01.07.2021 um 15:49 +0100 schrieb Christoph Hellwig:
+>> On Wed, Jun 30, 2021 at 10:44:52AM +0200, Martin Kepplinger wrote:
+>>> +       struct scsi_disk *sdkp = dev_get_drvdata(dev);
+>>> +       struct scsi_device *sdp = sdkp->device;
+>>> +       int timeout, res;
+>>> +
+>>> +       timeout = sdp->request_queue->rq_timeout *
+>>> SD_FLUSH_TIMEOUT_MULTIPLIER;
+>>
+>> Is REQUEST SENSE reqlly a so slow operation on these devices that
+>> we need to override the timeout?
+> 
+> using SD_TIMEOUT works equally fine for me. Is that what you'd rather
+> like to see?
+> 
+> Bart, is SD_TIMEOUT equally ok for you? If so, I'll resend with your
+> reviewed-by.
 
-Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
----
- arch/arm64/boot/dts/mediatek/mt6358.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Hi Martin,
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt6358.dtsi b/arch/arm64/boot/dts/mediatek/mt6358.dtsi
-index fa159b20379e..a1b017a6a751 100644
---- a/arch/arm64/boot/dts/mediatek/mt6358.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt6358.dtsi
-@@ -2,6 +2,7 @@
- /*
-  * Copyright (c) 2020 MediaTek Inc.
-  */
-+#include <dt-bindings/input/input.h>
- 
- &pwrap {
- 	pmic: mt6358 {
-@@ -356,5 +357,16 @@ mt6358_vsim2_reg: ldo_vsim2 {
- 		mt6358rtc: mt6358rtc {
- 			compatible = "mediatek,mt6358-rtc";
- 		};
-+
-+		mt6358keys: mt6358keys {
-+			compatible = "mediatek,mt6358-keys";
-+			power {
-+				linux,keycodes = <KEY_POWER>;
-+				wakeup-source;
-+			};
-+			home {
-+				linux,keycodes = <KEY_HOME>;
-+			};
-+		};
- 	};
- };
--- 
-2.27.0
+I prefer sdp->request_queue->rq_timeout instead of SD_TIMEOUT since the 
+former is configurable via sysfs.
 
+Thanks,
+
+Bart.
