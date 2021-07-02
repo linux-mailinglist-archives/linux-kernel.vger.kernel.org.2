@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F32E3B9AD5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 05:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C44113B9AD7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 05:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234834AbhGBDOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S234854AbhGBDOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 23:14:55 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:41298 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234820AbhGBDOx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 1 Jul 2021 23:14:53 -0400
-Received: from mga09.intel.com ([134.134.136.24]:50211 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234627AbhGBDOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 23:14:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="208617795"
-X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
-   d="scan'208";a="208617795"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 20:12:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
-   d="scan'208";a="409158169"
-Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.58]) ([10.239.154.58])
-  by orsmga006.jf.intel.com with ESMTP; 01 Jul 2021 20:12:13 -0700
-Subject: Re: [PATCH v11] i2c: virtio: add a virtio i2c frontend driver
-To:     kernel test robot <lkp@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, wsa@kernel.org,
-        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com
-References: <510c876952efa693339ab0d6cc78ba7be9ef6897.1625104206.git.jie.deng@intel.com>
- <202107011701.sZA89A1D-lkp@intel.com>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <68b2b36b-f1ee-d1aa-d4a5-d45f36602be6@intel.com>
+X-UUID: 74ec138120ca431ca0ab952f50dca66e-20210702
+X-UUID: 74ec138120ca431ca0ab952f50dca66e-20210702
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <roger.lu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 175782217; Fri, 02 Jul 2021 11:12:18 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 2 Jul 2021 11:12:16 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 2 Jul 2021 11:12:16 +0800
+From:   Roger Lu <roger.lu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC:     Fan Chen <fan.chen@mediatek.com>,
+        HenryC Chen <HenryC.Chen@mediatek.com>,
+        YT Lee <yt.lee@mediatek.com>,
+        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
+        Charles Yang <Charles.Yang@mediatek.com>,
+        Angus Lin <Angus.Lin@mediatek.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nishanth Menon <nm@ti.com>, Roger Lu <roger.lu@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v19 5/7] dt-bindings: soc: mediatek: add mt8192 svs dt-bindings
 Date:   Fri, 2 Jul 2021 11:12:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+Message-ID: <20210702031214.21597-6-roger.lu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210702031214.21597-1-roger.lu@mediatek.com>
+References: <20210702031214.21597-1-roger.lu@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <202107011701.sZA89A1D-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Signed-off-by: Roger Lu <roger.lu@mediatek.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/soc/mediatek/mtk-svs.yaml         | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-On 2021/7/1 18:00, kernel test robot wrote:
-> Hi Jie,
->
-> Thank you for the patch! Yet something to improve:
->
-> [auto build test ERROR on wsa/i2c/for-next]
-> [also build test ERROR on linux/master linus/master v5.13 next-20210630]
-> [cannot apply to vhost/linux-next]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Jie-Deng/i2c-virtio-add-a-virtio-i2c-frontend-driver/20210701-112619
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-next
-> config: i386-randconfig-c021-20210630 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build):
->          # https://github.com/0day-ci/linux/commit/e8dedd2a8577148d7655d0affe35adf34efbbf15
->          git remote add linux-review https://github.com/0day-ci/linux
->          git fetch --no-tags linux-review Jie-Deng/i2c-virtio-add-a-virtio-i2c-frontend-driver/20210701-112619
->          git checkout e8dedd2a8577148d7655d0affe35adf34efbbf15
->          # save the attached .config to linux build tree
->          mkdir build_dir
->          make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->     In file included from <command-line>:32:
->>> ./usr/include/linux/virtio_i2c.h:12:10: fatal error: linux/bits.h: No such file or directory
->        12 | #include <linux/bits.h>
->           |          ^~~~~~~~~~~~~~
->     compilation terminated.
+diff --git a/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml b/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+index a855ced410f8..59342e627b67 100644
+--- a/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
++++ b/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+@@ -22,6 +22,7 @@ properties:
+   compatible:
+     enum:
+       - mediatek,mt8183-svs
++      - mediatek,mt8192-svs
+ 
+   reg:
+     maxItems: 1
+@@ -51,6 +52,13 @@ properties:
+       - const: svs-calibration-data
+       - const: t-calibration-data
+ 
++  resets:
++    maxItems: 1
++
++  reset-names:
++    items:
++      - const: svs_rst
++
+ required:
+   - compatible
+   - reg
+-- 
+2.18.0
 
-
-I didn't see this error. Why did you say no such file? Anything wrong ?
-
-https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git/tree/include/linux/bits.h
-
-Thank you !
-
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
