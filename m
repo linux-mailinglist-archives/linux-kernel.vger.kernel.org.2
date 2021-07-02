@@ -2,52 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4D63B9BC9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 07:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9823B9BCE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 07:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234131AbhGBFHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 01:07:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232274AbhGBFHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 01:07:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 959E061413;
-        Fri,  2 Jul 2021 05:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625202279;
-        bh=1yg95ioeHjez5VraA0fl/R1SuuD+emoJpNu8wRXEWC8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oa2kh+UkcExnKYHVV/CXrlKcbiKIBFQYJPSNod8xVomFYoAHDX3+c9HGZ5QZYTBEu
-         lBBo+zBuuhrRAp1LuPr5ocUw2qZ3NtcMjUy4FQonDk+39LM2lY/5Q3nLrZ++/QR10e
-         BHFuoQjhw1RJbU9AlUOHoAnoTtmrnb+6zwm0gmGk=
-Date:   Fri, 2 Jul 2021 07:04:36 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     robh+dt@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
-        balbi@kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, jackp@codeaurora.org,
-        fntoth@gmail.com
-Subject: Re: [PATCH v11 0/5] Re-introduce TX FIFO resize for larger EP
- bursting
-Message-ID: <YN6eZIuIUjjpP/56@kroah.com>
-References: <1625043642-29822-1-git-send-email-wcheng@codeaurora.org>
+        id S234885AbhGBFIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 01:08:21 -0400
+Received: from mail-pj1-f42.google.com ([209.85.216.42]:54212 "EHLO
+        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232274AbhGBFIT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 01:08:19 -0400
+Received: by mail-pj1-f42.google.com with SMTP id q91so5691800pjk.3;
+        Thu, 01 Jul 2021 22:05:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FyBGG3CXDWkWudPsmroNJQ+bko8qV6KGaSAatO3OSLM=;
+        b=MHZhzh44qFOiz++JEc4RIAPAskzTQb7vEHIqRv6gEzffgCcUMrlqe2rt/FFrERo1LY
+         yBzje+/hQy2LvAE5UnRUTTJd35qyatVyx+xnfAJNTzcOUu8XJjBi9kVDvMBaEljJzoK4
+         9Zo6/axfZmPHYK6nGYU6eKKv0H1rL8Ooe271MFj0TWYiMDzKEv2EhZzuAk+auGwyDHqA
+         7g0lAFS6g+yP9JMil2TqwtIi68c+/1amYLo0mWt0xxCs/dlyrSHZcol1LlqZWjEPKhwG
+         TRKdsBF1Oa4uFbMN81JFIrHgHIuk6u40iilwYMgzBD9e5W0AwtJiTeM6mXHLUoJnDu8b
+         qqbg==
+X-Gm-Message-State: AOAM5314DcKlYcdpRcaBJUMbprfLFVFv2KOG4EU5eNqOjpW2o0P/Ilvr
+        CK7jgrP8dY+cUSJN4t3DfEm+j3f5TPY=
+X-Google-Smtp-Source: ABdhPJxWp2Kv4AARq0m7M4xFOnYJIPWFCwM0Aa3UYrXg0FGWKrOr2aILQuyW+587EQ9/6w4s3M1QmQ==
+X-Received: by 2002:a17:90b:46c3:: with SMTP id jx3mr3099151pjb.206.1625202348041;
+        Thu, 01 Jul 2021 22:05:48 -0700 (PDT)
+Received: from localhost ([191.96.121.144])
+        by smtp.gmail.com with ESMTPSA id e29sm1860509pfm.0.2021.07.01.22.05.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Jul 2021 22:05:47 -0700 (PDT)
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     gregkh@linuxfoundation.org, tj@kernel.org, shuah@kernel.org,
+        akpm@linux-foundation.org, rafael@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, andriin@fb.com,
+        daniel@iogearbox.net, atenart@kernel.org, alobakin@pm.me,
+        weiwan@google.com, ap420073@gmail.com
+Cc:     jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        mcgrof@kernel.org, axboe@kernel.dk, mbenes@suse.com,
+        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
+        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] selftests: add a new test driver for sysfs
+Date:   Thu,  1 Jul 2021 22:05:39 -0700
+Message-Id: <20210702050543.2693141-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1625043642-29822-1-git-send-email-wcheng@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 02:00:37AM -0700, Wesley Cheng wrote:
-> Changes in V11:
->  - Added a DWC3 controller revision check to use a different calculation, based
->    on Ferry's testing.
->  - Removed descriptor loop in configfs, and utilize the fact that the ep->claimed
->    parameter is still valid as ep_autoconf_reset() isn't called at the time of
->    check_config()
->  - Fix compilation errors if CONFIG_OF is not defined
->  - Removed patch to add stubs for of_add_property()
+I had posted a patch to fix a theoretical race with sysfs and device
+removal [0].  While the issue is no longer present with the patch
+present, the zram driver has already a lot of enhancements, so much so,
+that the race alone is very difficult to reproduce. Likewise, the zram
+driver had a series of other races on module removal which I recently
+posted fixes for [1], and it makes it unclear if these paper over the
+possible theoretical sysfs race. Although we even have gdb output
+from an actual race where this issue presented itself, there are
+other races which could happen before that and so what we realy need
+is a clean separate driver where we can experiment and try to reproduce
+unusual races.
 
-Still breaks the build :(
+This adds such a driver, a new sysfs_test driver, along with a set of
+new tests for it. We take hint of observed issues with the sysfs on the
+zram driver, and build sandbox based where wher can try to poke holes at
+the kernel with.
+
+There are two main races we're after trying to reproduce:
+
+  1) proving the deadlock is real
+  2) allowing for enough slack for us to try to see if we can
+     reproduce the syfs / device removal race
+
+In order to tackle the second race, we need a bit of help from kernefs,
+given that the race is difficult to reproduce. So we add fault injection
+support to kernfs, which allows us to trigger all possible races on
+write.
+
+This should be enough evidence for us to drop the suggested patch for
+sysfs for the second race. The first race however which leads to a
+deadlock is clearly explained now and I hope this shows how we need a
+generic solution.
+
+[0] https://lkml.kernel.org/r/20210623215007.862787-1-mcgrof@kernel.org
+[1] https://lkml.kernel.org/r/20210702043716.2692247-1-mcgrof@kernel.org
+
+Luis Chamberlain (4):
+  selftests: add tests_sysfs module
+  kernfs: add initial failure injection support
+  test_sysfs: add support to use kernfs failure injection
+  test_sysfs: demonstrate deadlock fix
+
+ .../fault-injection/fault-injection.rst       |   22 +
+ MAINTAINERS                                   |    9 +-
+ fs/kernfs/Makefile                            |    1 +
+ fs/kernfs/failure-injection.c                 |   82 +
+ fs/kernfs/file.c                              |   13 +
+ fs/kernfs/kernfs-internal.h                   |   73 +
+ include/linux/kernfs.h                        |    5 +
+ lib/Kconfig.debug                             |   23 +
+ lib/Makefile                                  |    1 +
+ lib/test_sysfs.c                              | 1037 +++++++++++++
+ tools/testing/selftests/sysfs/Makefile        |   12 +
+ tools/testing/selftests/sysfs/config          |    5 +
+ tools/testing/selftests/sysfs/sysfs.sh        | 1376 +++++++++++++++++
+ 13 files changed, 2658 insertions(+), 1 deletion(-)
+ create mode 100644 fs/kernfs/failure-injection.c
+ create mode 100644 lib/test_sysfs.c
+ create mode 100644 tools/testing/selftests/sysfs/Makefile
+ create mode 100644 tools/testing/selftests/sysfs/config
+ create mode 100755 tools/testing/selftests/sysfs/sysfs.sh
+
+-- 
+2.27.0
+
