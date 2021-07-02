@@ -2,86 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B013B9B2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 05:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2E33B9B30
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 05:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235049AbhGBD5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 23:57:10 -0400
-Received: from mail-pl1-f177.google.com ([209.85.214.177]:38826 "EHLO
-        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235017AbhGBD5G (ORCPT
+        id S234954AbhGBD6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 23:58:48 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6034 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234758AbhGBD6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 23:57:06 -0400
-Received: by mail-pl1-f177.google.com with SMTP id b1so4910701pls.5;
-        Thu, 01 Jul 2021 20:54:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=B3cei0fPvalLZixteq5fEWoBhZmvhldd5uZk56XF+jc=;
-        b=NGtEIQy78FxYwxzZ4ezesizirlWihq/6m0jl3Qw70CyHpf9darKR0fkV5vc4eskb93
-         /7hg5Z0E1xPe+JjwqK1BjjWtMX+58ZoXr77hBRe297p7dRWWMaqsTP3cmkZzrXgyR/cJ
-         roclq835YElBxVNs7TqI3sGdms1SuSVs6MN4Vp1vtftsd3nLeEL6YECa5uxrGdyQAsux
-         J7tvzL5vqf4oxaLmD+UjpjG5WMqTYMsRf6Ke8pE5nIOCg5AQ6L+KS4djbWhI3C+x2WAS
-         sZ//0KxoPdpk2hv0KDAboIxnGO1BSFsR6d3R3hcAxZBQ/hgpDF/ZqrSzY2L/mutUOCHj
-         xsNw==
-X-Gm-Message-State: AOAM530pWLHa46LHo4jcojKGsYuxm+vBkrl9YbdsYY4+2oH2pRNyskfg
-        7AHtVV7gqahQ2MuM1Fs/nm0ECagUzrirew==
-X-Google-Smtp-Source: ABdhPJyeSo5UfYr+IkXHTTJtMIbtGuaMm70drBuDyWfvv8NXcVpP/u/UWUknSIjVVIgBoE9oo7xYsw==
-X-Received: by 2002:a17:902:82ca:b029:129:c3:af1d with SMTP id u10-20020a17090282cab029012900c3af1dmr2486113plz.55.1625198073267;
-        Thu, 01 Jul 2021 20:54:33 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id o20sm1551362pgv.80.2021.07.01.20.54.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 20:54:32 -0700 (PDT)
-From:   Moritz Fischer <mdf@kernel.org>
-To:     linux-fpga@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Moritz Fischer <mdf@kernel.org>,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH 4/4] fpga: zynqmp-fpga: Address warning about unused variable
-Date:   Thu,  1 Jul 2021 20:54:04 -0700
-Message-Id: <20210702035404.397853-5-mdf@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210702035404.397853-1-mdf@kernel.org>
-References: <20210702035404.397853-1-mdf@kernel.org>
+        Thu, 1 Jul 2021 23:58:46 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GGLhn56mGzXlyS;
+        Fri,  2 Jul 2021 11:50:49 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 2 Jul 2021 11:56:11 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 2 Jul
+ 2021 11:56:11 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <tj@kernel.org>, <axboe@kernel.dk>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH] blk-cgroup: prevent rcu_sched detected stalls warnings while iterating blkgs
+Date:   Fri, 2 Jul 2021 12:04:44 +0800
+Message-ID: <20210702040444.1917834-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-warning: ‘zynqmp_fpga_of_match’ defined but not used
- [-Wunused-const-variable=]
- static const struct of_device_id zynqmp_fpga_of_match[] = {
+We run a test that create millions of cgroups and blkgs, and then trigger
+blkg_destroy_all(). blkg_destroy_all() will hold spin lock for a long
+time in such situation. Thus release the lock when a batch of blkgs are
+destroyed.
 
-Fixes: c09f7471127e ("fpga manager: Adding FPGA Manager support for
-Xilinx zynqmp")
-Cc: Tom Rix <trix@redhat.com>
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
+blkcg_activate_policy() and blkcg_deactivate_policy() might have the
+same problem, fix them the same way.
+
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/fpga/zynqmp-fpga.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ block/blk-cgroup.c | 56 +++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 50 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/fpga/zynqmp-fpga.c b/drivers/fpga/zynqmp-fpga.c
-index 125743c9797f..b3240f75f0c7 100644
---- a/drivers/fpga/zynqmp-fpga.c
-+++ b/drivers/fpga/zynqmp-fpga.c
-@@ -110,12 +110,13 @@ static int zynqmp_fpga_probe(struct platform_device *pdev)
- 	return devm_fpga_mgr_register(dev, mgr);
- }
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 7b06a5fa3cac..1d26b58d7c25 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -56,6 +56,8 @@ static LIST_HEAD(all_blkcgs);		/* protected by blkcg_pol_mutex */
+ bool blkcg_debug_stats = false;
+ static struct workqueue_struct *blkcg_punt_bio_wq;
  
-+#ifdef CONFIG_OF
- static const struct of_device_id zynqmp_fpga_of_match[] = {
- 	{ .compatible = "xlnx,zynqmp-pcap-fpga", },
- 	{},
- };
++#define BLKG_BATCH_OP_NUM 64
++
+ static bool blkcg_policy_enabled(struct request_queue *q,
+ 				 const struct blkcg_policy *pol)
+ {
+@@ -422,7 +424,9 @@ static void blkg_destroy(struct blkcg_gq *blkg)
+ static void blkg_destroy_all(struct request_queue *q)
+ {
+ 	struct blkcg_gq *blkg, *n;
++	int count = BLKG_BATCH_OP_NUM;
+ 
++restart:
+ 	spin_lock_irq(&q->queue_lock);
+ 	list_for_each_entry_safe(blkg, n, &q->blkg_list, q_node) {
+ 		struct blkcg *blkcg = blkg->blkcg;
+@@ -430,6 +434,17 @@ static void blkg_destroy_all(struct request_queue *q)
+ 		spin_lock(&blkcg->lock);
+ 		blkg_destroy(blkg);
+ 		spin_unlock(&blkcg->lock);
++
++		/*
++		 * in order to avoid holding the spin lock for too long, release
++		 * it when a batch of blkgs are destroyed.
++		 */
++		if (!(--count)) {
++			count = BLKG_BATCH_OP_NUM;
++			spin_unlock_irq(&q->queue_lock);
++			cond_resched();
++			goto restart;
++		}
+ 	}
+ 
+ 	q->root_blkg = NULL;
+@@ -1291,6 +1306,7 @@ int blkcg_activate_policy(struct request_queue *q,
+ {
+ 	struct blkg_policy_data *pd_prealloc = NULL;
+ 	struct blkcg_gq *blkg, *pinned_blkg = NULL;
++	int count;
+ 	int ret;
+ 
+ 	if (blkcg_policy_enabled(q, pol))
+@@ -1299,6 +1315,7 @@ int blkcg_activate_policy(struct request_queue *q,
+ 	if (queue_is_mq(q))
+ 		blk_mq_freeze_queue(q);
+ retry:
++	count = BLKG_BATCH_OP_NUM;
+ 	spin_lock_irq(&q->queue_lock);
+ 
+ 	/* blkg_list is pushed at the head, reverse walk to allocate parents first */
+@@ -1342,6 +1359,16 @@ int blkcg_activate_policy(struct request_queue *q,
+ 		blkg->pd[pol->plid] = pd;
+ 		pd->blkg = blkg;
+ 		pd->plid = pol->plid;
++
++		/*
++		 * in order to avoid holding the spin lock for too long, release
++		 * it when a batch of blkgs are activated.
++		 */
++		if (!(--count)) {
++			spin_unlock_irq(&q->queue_lock);
++			cond_resched();
++			goto retry;
++		}
+ 	}
+ 
+ 	/* all allocated, init in the same order */
+@@ -1389,6 +1416,7 @@ void blkcg_deactivate_policy(struct request_queue *q,
+ 			     const struct blkcg_policy *pol)
+ {
+ 	struct blkcg_gq *blkg;
++	int count;
+ 
+ 	if (!blkcg_policy_enabled(q, pol))
+ 		return;
+@@ -1397,15 +1425,31 @@ void blkcg_deactivate_policy(struct request_queue *q,
+ 		blk_mq_freeze_queue(q);
+ 
+ 	spin_lock_irq(&q->queue_lock);
 -
- MODULE_DEVICE_TABLE(of, zynqmp_fpga_of_match);
-+#endif
+ 	__clear_bit(pol->plid, q->blkcg_pols);
++retry:
++	count = BLKG_BATCH_OP_NUM;
  
- static struct platform_driver zynqmp_fpga_driver = {
- 	.probe = zynqmp_fpga_probe,
+ 	list_for_each_entry(blkg, &q->blkg_list, q_node) {
+-		if (blkg->pd[pol->plid]) {
+-			if (pol->pd_offline_fn)
+-				pol->pd_offline_fn(blkg->pd[pol->plid]);
+-			pol->pd_free_fn(blkg->pd[pol->plid]);
+-			blkg->pd[pol->plid] = NULL;
++		if (!blkg->pd[pol->plid])
++			continue;
++
++		if (pol->pd_offline_fn) {
++			pol->pd_offline_fn(blkg->pd[pol->plid]);
++			count--;
++		}
++
++		pol->pd_free_fn(blkg->pd[pol->plid]);
++		blkg->pd[pol->plid] = NULL;
++
++		/*
++		 * in order to avoid holding the spin lock for too long, release
++		 * it when a batch of blkgs are deactivated.
++		 */
++		if (!count) {
++			spin_unlock_irq(&q->queue_lock);
++			cond_resched();
++			spin_lock_irq(&q->queue_lock);
++			goto retry;
+ 		}
+ 	}
+ 
 -- 
-2.32.0
+2.31.1
 
