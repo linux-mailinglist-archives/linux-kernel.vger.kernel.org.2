@@ -2,108 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB113BA033
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DBB3BA038
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbhGBMIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 08:08:42 -0400
-Received: from mga01.intel.com ([192.55.52.88]:1621 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231912AbhGBMHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 08:07:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="230394038"
-X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
-   d="scan'208";a="230394038"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 05:04:30 -0700
-X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
-   d="scan'208";a="482420148"
-Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.228.32]) ([10.249.228.32])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 05:04:27 -0700
-Subject: Re: [PATCH v8 20/22] perf session: Load data directory files for
- analysis
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
- <fbcb2de8d7e90cbf418a5a0465f444d0d5295615.1625065643.git.alexey.v.bayduraev@linux.intel.com>
- <YN7qwOZ5UlEkZ2zv@krava>
-From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-Organization: Intel Corporation
-Message-ID: <7dfdebb5-c10b-7f2a-ba93-70106d9fd909@linux.intel.com>
-Date:   Fri, 2 Jul 2021 15:04:24 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232118AbhGBMQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 08:16:59 -0400
+Received: from out28-74.mail.aliyun.com ([115.124.28.74]:52946 "EHLO
+        out28-74.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhGBMHV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 08:07:21 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07438208|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.257215-0.00260397-0.740181;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.KbD.WuZ_1625227484;
+Received: from 192.168.88.128(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KbD.WuZ_1625227484)
+          by smtp.aliyun-inc.com(10.147.41.231);
+          Fri, 02 Jul 2021 20:04:45 +0800
+Subject: Re: [PATCH v4 5/5] MIPS: CI20: Add second percpu timer for SMP.
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
+        sboyd@kernel.org, robh+dt@kernel.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com
+References: <1624688321-69131-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1624688321-69131-6-git-send-email-zhouyanjie@wanyeetech.com>
+ <84LIVQ.EPXA43L4WLUK@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <3b6ffdde-2dcc-4883-f66b-9ca46db636e2@wanyeetech.com>
+Date:   Fri, 2 Jul 2021 20:04:43 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <YN7qwOZ5UlEkZ2zv@krava>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <84LIVQ.EPXA43L4WLUK@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 02.07.2021 13:30, Jiri Olsa wrote:
-> On Wed, Jun 30, 2021 at 06:54:59PM +0300, Alexey Bayduraev wrote:
-> 
-> SNIP
-> 
->> +	while ((ret >= 0) && readers) {
->> +		if (session_done())
->> +			return 0;
+On 2021/6/30 下午8:24, Paul Cercueil wrote:
+> Hi Zhou,
+>
+> Le sam., juin 26 2021 at 14:18:41 +0800, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+>> 1.Add a new TCU channel as the percpu timer of core1, this is to
+>>   prepare for the subsequent SMP support. The newly added channel
+>>   will not adversely affect the current single-core state.
+>> 2.Adjust the position of TCU node to make it consistent with the
+>>   order in jz4780.dtsi file.
+>>
+>> Tested-by: Nikolaus Schaller <hns@goldelico.com> # on CI20
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>
+> Again, you should avoid moving nodes like that.
+
+
+Oops, sorry, forgot to fix it, I will be more careful next time.
+
+
+>
+> Not sure it's worth asking for a v5, so:
+> Acked-by: Paul Cercueil <paul@crapouillou.net>
+>
+
+Thanks!
+
+
+> Cheers,
+> -Paul
+>
+>> ---
+>>
+>> Notes:
+>>     v2:
+>>     New patch.
+>>
+>>     v2->v3:
+>>     No change.
+>>
+>>     v3->v4:
+>>     Improve TCU related notes.
+>>
+>>  arch/mips/boot/dts/ingenic/ci20.dts | 24 ++++++++++++++----------
+>>  1 file changed, 14 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts 
+>> b/arch/mips/boot/dts/ingenic/ci20.dts
+>> index 3a4eaf1..61c153b 100644
+>> --- a/arch/mips/boot/dts/ingenic/ci20.dts
+>> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+>> @@ -118,6 +118,20 @@
+>>      assigned-clock-rates = <48000000>;
+>>  };
+>>
+>> +&tcu {
+>> +    /*
+>> +     * 750 kHz for the system timers and clocksource,
+>> +     * use channel #0 and #1 for the per cpu system timers,
+>> +     * and use channel #2 for the clocksource.
+>> +     *
+>> +     * 3000 kHz for the OST timer to provide a higher
+>> +     * precision clocksource.
+>> +     */
+>> +    assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
+>> +                      <&tcu TCU_CLK_TIMER2>, <&tcu TCU_CLK_OST>;
+>> +    assigned-clock-rates = <750000>, <750000>, <750000>, <3000000>;
+>> +};
 >> +
->> +		if (rd[i].state.eof) {
->> +			i = (i + 1) % session->nr_readers;
->> +			continue;
->> +		}
->> +
->> +		ret = reader__read_event(&rd[i], session, &prog);
->> +		if (ret < 0)
->> +			break;
->> +		if (ret == READER_EOF) {
->> +			ret = reader__mmap(&rd[i], session);
->> +			if (ret < 0)
->> +				goto out_err;
->> +			if (ret == READER_EOF)
->> +				readers--;
->> +		}
->> +
->> +		/*
->> +		 * Processing 10MBs of data from each reader in sequence,
->> +		 * because that's the way the ordered events sorting works
->> +		 * most efficiently.
->> +		 */
->> +		if (rd[i].state.size >= 10*1024*1024) {
->> +			rd[i].state.size = 0;
->> +			i = (i + 1) % session->nr_readers;
->> +		}
-> 
-> hi,
-> so this was sort of hack to make this faster.. we need some
-> justification for this and make that configurable as well,
-> if we keep it
-
-Hi,
-
-I am currently thinking of another round-robin read algorithm, based on
-timestamps with periodical ordered_queue flushing after each round, this
-might be better, but I'm not sure if this should be included in this patchset. 
-
-Probably introduction of new constant will be enough for current implementation.
-
-Regards,
-Alexey
-
-> 
-> jirka
-> 
+>>  &mmc0 {
+>>      status = "okay";
+>>
+>> @@ -522,13 +536,3 @@
+>>          bias-disable;
+>>      };
+>>  };
+>> -
+>> -&tcu {
+>> -    /*
+>> -     * 750 kHz for the system timer and clocksource,
+>> -     * use channel #0 for the system timer, #1 for the clocksource.
+>> -     */
+>> -    assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
+>> -                      <&tcu TCU_CLK_OST>;
+>> -    assigned-clock-rates = <750000>, <750000>, <3000000>;
+>> -};
+>> -- 
+>> 2.7.4
+>>
+>
