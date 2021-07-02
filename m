@@ -2,142 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1753BA15D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C0C3BA16B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 15:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232660AbhGBNpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 09:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232362AbhGBNpS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 09:45:18 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1445DC061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 06:42:46 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id h6so13350545ljl.8
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 06:42:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3pL4MvxeWog2IfLGYd7eKX1l2HS5OPUQFZV3aIXsKoU=;
-        b=nv08IjPcm+Hty4Sfpv6VlE2MwUc+YQ6djusyBTlemq2QO4zTYkE5Wliw8U9hmoCNH6
-         +8OoyCP2c0aigcm2jF8FsL2zPS6ew+KDiNDtTKLepR8Mf9f5x1m+ldINo5Qeqkk/M0Z+
-         k1b7E6CH4JqzukdAFcOHdOT0YmNi7+rCpogKoz0HLPCbHL4wlBTXrl/5wVPUAn3zI41s
-         DHchW5QY943HsLRExewAcTc9iLyElLN7nVViRLAqyttIbanU973GIDlQtTfxcxfJrqbN
-         S9/9gk9+8T8iCxwVIOSsgXbxWT3YK1xkIhDzUbKDjMOfqvaioD2TYsuOQ8Nin85Wyr4o
-         Psdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3pL4MvxeWog2IfLGYd7eKX1l2HS5OPUQFZV3aIXsKoU=;
-        b=tq7z8kBR1eNLHRMVmXJc0i4UsUMJ/BctCtAkPE0J989HUV6j8koToBN6/oewaH/nBq
-         0ZCh68xL2ZG7163YMU1CdaLs4i/ORfsaZd2ARlU4y0UT/lOoqh+bHZ6qmsYZ/wlO77Oc
-         ZcFNrZlEwI06rsEUlga+ovIzDzqHgsXpJbfgYNrANv6BewLRfQ2R1A7yTTd7AjhCrzOg
-         MHRjnjSRUOvGAyN3QtQFO4GmYxckBazZgzuo67d+wjSZyv+16sFyyKWo0B1IxHc/sNl5
-         fNlPjRXsffx5wtH2Bwui6FTYv7g0PsCBDvKa/5/H4ajdIFCFdw12Y4xS/Hn/V7gO0w5c
-         RFEQ==
-X-Gm-Message-State: AOAM531GJYrwOnTukB0ESrjVBgJ1o25wmf4ak3UfZE0tJnSzouukQ3b0
-        fj7WIEKYj4IXZHhrbnrvWSSikQ==
-X-Google-Smtp-Source: ABdhPJwD0eRwhqZIHnQ52EyyAN9A8UlJ0xC8X2hYvZ5HvnpXibYcI5DKr+pTGJkxqY2tl1jB1dynPA==
-X-Received: by 2002:a2e:804d:: with SMTP id p13mr3936926ljg.324.1625233364409;
-        Fri, 02 Jul 2021 06:42:44 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id u5sm277486lfg.268.2021.07.02.06.42.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 06:42:43 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Christian Lohle <CLoehle@hyperstone.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] mmc: core: Avoid hogging the CPU while polling for busy in the I/O err path
+        id S232695AbhGBNpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 09:45:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48822 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232714AbhGBNp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 09:45:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8ED306142C;
+        Fri,  2 Jul 2021 13:42:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625233376;
+        bh=iQ511ti6tPKWj9+Fpr2R4MwXkxW+DRti6nYPHc/VfnA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hJrROcYyJBc/V9bdA4lRLf5PAh6VGY6cP/rxMpe0lJy32mBWVKnZsPZyDqxaGR5mS
+         knrn9+2pYfVRsUyxGCokMIkRbWJwtFwkc1nGYE8U904yUQCxv7rd+6It3KmpIcCtn2
+         LZ5My1NvIAXgXtBJf8oidsjG3v1J5UYEBShvQVcNTmAU+nw+mM0i7FyLGFZULqJFgL
+         3MTYnpKGaN7d5Dge+GRV+7z4gxtKmet3OdIWqI6GO5KAl6O3+iPMKKNOcltjJ/ByJN
+         5kJbPiaSC50QzzdrrsbvnSYGd0hrtLXZQxrze6sqSuzttl70OiqCqisNDMcL4d4Yhh
+         rquobRv8M5Uiw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lzJRT-0006QH-Cv; Fri, 02 Jul 2021 15:42:51 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 6/6] USB: serial: cp210x: determine fw version for CP2105 and CP2108
 Date:   Fri,  2 Jul 2021 15:42:27 +0200
-Message-Id: <20210702134229.357717-2-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210702134229.357717-1-ulf.hansson@linaro.org>
-References: <20210702134229.357717-1-ulf.hansson@linaro.org>
+Message-Id: <20210702134227.24621-7-johan@kernel.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210702134227.24621-1-johan@kernel.org>
+References: <20210702134227.24621-1-johan@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When mmc_blk_fix_state() sends a CMD12 to try to move the card into the
-transfer state, it calls card_busy_detect() to poll for the card's state
-with CMD13. This is done without any delays in between the commands being
-sent.
+CP2105, CP2108 and CP2102N have vendor requests that can be used to
+retrieve the firmware version. Having this information available is
+essential when trying to work around buggy firmware as a recent CP2102N
+regression showed.
 
-Rather than fixing card_busy_detect() in this regards, let's instead
-convert into using the common mmc_poll_for_busy(), which also helps us to
-avoid open-coding.
+Determine and log the firmware version also for CP2105 and CP2108
+during type detection at probe.
 
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/mmc/core/block.c   | 2 +-
- drivers/mmc/core/mmc_ops.c | 4 +++-
- drivers/mmc/core/mmc_ops.h | 1 +
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ drivers/usb/serial/cp210x.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index 88f4c215caa6..1b5576048cdb 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -1630,7 +1630,7 @@ static int mmc_blk_fix_state(struct mmc_card *card, struct request *req)
- 
- 	mmc_blk_send_stop(card, timeout);
- 
--	err = card_busy_detect(card, timeout, NULL);
-+	err = mmc_poll_for_busy(card, timeout, false, MMC_BUSY_IO);
- 
- 	mmc_retune_release(card->host);
- 
-diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-index 973756ed4016..e2c431c0ce5d 100644
---- a/drivers/mmc/core/mmc_ops.c
-+++ b/drivers/mmc/core/mmc_ops.c
-@@ -435,7 +435,7 @@ static int mmc_busy_cb(void *cb_data, bool *busy)
- 	u32 status = 0;
- 	int err;
- 
--	if (host->ops->card_busy) {
-+	if (data->busy_cmd != MMC_BUSY_IO && host->ops->card_busy) {
- 		*busy = host->ops->card_busy(host);
- 		return 0;
- 	}
-@@ -457,6 +457,7 @@ static int mmc_busy_cb(void *cb_data, bool *busy)
- 		break;
- 	case MMC_BUSY_HPI:
- 	case MMC_BUSY_EXTR_SINGLE:
-+	case MMC_BUSY_IO:
- 		break;
- 	default:
- 		err = -EINVAL;
-@@ -521,6 +522,7 @@ int mmc_poll_for_busy(struct mmc_card *card, unsigned int timeout_ms,
- 
- 	return __mmc_poll_for_busy(card, timeout_ms, &mmc_busy_cb, &cb_data);
- }
-+EXPORT_SYMBOL_GPL(mmc_poll_for_busy);
- 
- bool mmc_prepare_busy_cmd(struct mmc_host *host, struct mmc_command *cmd,
- 			  unsigned int timeout_ms)
-diff --git a/drivers/mmc/core/mmc_ops.h b/drivers/mmc/core/mmc_ops.h
-index 41ab4f573a31..ae25ffc2e870 100644
---- a/drivers/mmc/core/mmc_ops.h
-+++ b/drivers/mmc/core/mmc_ops.h
-@@ -15,6 +15,7 @@ enum mmc_busy_cmd {
- 	MMC_BUSY_ERASE,
- 	MMC_BUSY_HPI,
- 	MMC_BUSY_EXTR_SINGLE,
-+	MMC_BUSY_IO,
+diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+index 0f4cdba160d9..7908e336f962 100644
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -399,6 +399,7 @@ struct cp210x_special_chars {
  };
  
- struct mmc_host;
+ /* CP210X_VENDOR_SPECIFIC values */
++#define CP210X_GET_FW_VER	0x000E
+ #define CP210X_READ_2NCONFIG	0x000E
+ #define CP210X_GET_FW_VER_2N	0x0010
+ #define CP210X_READ_LATCH	0x00C2
+@@ -2103,6 +2104,10 @@ static void cp210x_determine_type(struct usb_serial *serial)
+ 	}
+ 
+ 	switch (priv->partnum) {
++	case CP210X_PARTNUM_CP2105:
++	case CP210X_PARTNUM_CP2108:
++		cp210x_get_fw_version(serial, CP210X_GET_FW_VER);
++		break;
+ 	case CP210X_PARTNUM_CP2102N_QFN28:
+ 	case CP210X_PARTNUM_CP2102N_QFN24:
+ 	case CP210X_PARTNUM_CP2102N_QFN20:
 -- 
-2.25.1
+2.31.1
 
