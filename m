@@ -2,188 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E8E3BA4DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1493BA4E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 22:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbhGBU67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 16:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
+        id S231782AbhGBU7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 16:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhGBU66 (ORCPT
+        with ESMTP id S230377AbhGBU7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 16:58:58 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2718CC061764
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 13:56:26 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id w15so10843337pgk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 13:56:26 -0700 (PDT)
+        Fri, 2 Jul 2021 16:59:40 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D13C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 13:57:06 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id bu19so20325043lfb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 13:57:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1AEvcX79wTwRSqbgBLrkHdiDfFShg8BM5FD9raF2EWY=;
-        b=IKuq5TByHH3DkX3ppDM5EBgRgnaAP3gRxzEx/9k8gJBKVC2i35+kz++q7w1A9sq8JK
-         JIe1c7iiGsUtCfUQBtZ1rmKNuKFnY9UJlS3Iyx66zNFBQg2cPztZkL+tPnuQW9g5stJO
-         LofVqXnk0H3/nl3BiqcovVZdRYE/OGJxIczEKYEz3eggxQATcNROQVhd8hOkxxgcj30F
-         NwBFRw1hXahDBiHBoCdhHV7F3jGZ6LH00hhgSFQqx9kmU0LCbpw6JJBPhehoZi9fixSo
-         klkKgmmuHew3Sm0ZZCO8V4IZ5H1kjDrOtBhoxyE1HwvAv2zHOVLJtCCjk9yo93bQCGns
-         BlAQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8hDmjhh4CEc7tcPs29BDsOViDcQQOe2tkj/fgDDj4a8=;
+        b=WK38xMCuVpfUrGEjMntGywHqdXgVFuWSivGvWFJymCFPCO9Ml/kPCWA6DekIoIMQ/D
+         kZNRHf7S0mKDYkX1xvAyT8n7OUP1MQlFZLadK+qUubLFBPuZsgv/gJy1tovcgSjchPQO
+         1zkMQe147Ckwr5W5S2YvW2sygH/bGmwrv+rLpTHnI37KxoaCvULHquOLvIuMcdkwIkZ5
+         yZi+eV3R3hu9FJxtC6KMCLBrgP9x7Xno2W3HnohpYj89P+L6H1eVmcEzmnA1gkx5V7yv
+         rsGL3DkQGuRbG0+OTmk3xxv5IB1PV6/45GJu2NPlAroTtBnSwOtfQ0LuQv8zvrPCWAFt
+         jbfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1AEvcX79wTwRSqbgBLrkHdiDfFShg8BM5FD9raF2EWY=;
-        b=b9zP/elZ/ZBUMaQnco0fMKXEPtC3TZ+NKjKpBzz92QQPDxg9tLihjZQRjA86yK0yG0
-         wgxSS+roRaEQ6o35nPfB95+IvtgWNR23o3CroMQVjUZpYaY4rZ6TnOuM/QDCS87z8sGb
-         CVsCQkUGW9VNPRFQbSAo3sbF7ggYtIjiev6pxeoi443sH650ZHaQPoW0DirX5q60HGut
-         Ngb4dMfL8sz643HP1R9FrFOkS8utgF/L7b19H7c/ciVtGElVoYvcnmovQWywsFcJ7WlT
-         jgtkYFgJiqLqg6VpVw78qySJ9egQXjTf71bccv+zn4/WL1wEEPk9vIOiY4e+OQlQVxvQ
-         +5dw==
-X-Gm-Message-State: AOAM532TN+HUqJgN3bitReSo/6TgQ85oo3jcnjyuGXoUOJu/VB2BEwwD
-        O6zn4alAstnCaX7X6z3Fo/r4izPmHr8upg==
-X-Google-Smtp-Source: ABdhPJy//fWJHUgOfLQXNO5yR56HJiJp3eYtU+jnWyQxCWPl2c7tstUnyhlF0EcmYQlhyMVWmYGR+w==
-X-Received: by 2002:a63:6246:: with SMTP id w67mr1850437pgb.66.1625259385386;
-        Fri, 02 Jul 2021 13:56:25 -0700 (PDT)
-Received: from x1 ([2601:1c0:4701:ae70:f236:257f:88f9:445e])
-        by smtp.gmail.com with ESMTPSA id j16sm4908574pgh.69.2021.07.02.13.56.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 13:56:24 -0700 (PDT)
-Date:   Fri, 2 Jul 2021 13:56:22 -0700
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Huan Feng <huan.feng@starfivetech.com>
-Subject: Re: [RFC PATH 1/2] dt-bindings: gpio: add starfive,jh7100-gpio
- bindings
-Message-ID: <20210702205622.GA1035183@x1>
-References: <20210701002037.912625-1-drew@beagleboard.org>
- <20210701002037.912625-2-drew@beagleboard.org>
- <CAMuHMdWLNy6_CnFEYDvHSEdMYH=T_Fy=DCjZCF9kPGWcD-B0Qw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8hDmjhh4CEc7tcPs29BDsOViDcQQOe2tkj/fgDDj4a8=;
+        b=TdvuPiNnrOYs/kJdqn9Rof+jwqDznLnNujX8X1EZHrlZoMdBPmDMZeU3SkiOpfW/jw
+         qNCQ8W6/a8cF9xPxweIJ5L6gju8YRYuincpjKi2Jk/u3xJ0SB+UYozN7hTwiFgKOvuXp
+         VC4/szS2Z+migy9U6k0lqiVbEKGRKfCFxNBhS5vqmolp18cH+tLIeFqYQ0CtftA8oLbR
+         /nDj8FU8hbXdLu2v5ix+LRFjp9v0q0LWAC1YD9HyhkBPDUULhhw24sWmK99nbjRs4qaR
+         pkIEre1br2nTTq9h5PRZti4hBPDiQyGYk5rC51OrBcCFjrov37xaTqlBLlLi6iDIRpCI
+         FlrA==
+X-Gm-Message-State: AOAM533K4YCmd+2xnIYjgPkVPfPUCrYgW7LL0CdwAzCjU0PFdhCRh5f7
+        m8O4UqwMxC0PBNX6dBWx0edmFUAhRqwjY1GUJCXHw1uS191rNQ==
+X-Google-Smtp-Source: ABdhPJwInonwQ2eFAluymRJg+OzibVAdAH9rjiGeegy/PBQqyDo3Lz9bheVoB3rtWdelqiuYYIjZmdtKHRWINk99MoU=
+X-Received: by 2002:a05:6512:210e:: with SMTP id q14mr1061425lfr.356.1625259424639;
+ Fri, 02 Jul 2021 13:57:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWLNy6_CnFEYDvHSEdMYH=T_Fy=DCjZCF9kPGWcD-B0Qw@mail.gmail.com>
+References: <20210414055217.543246-1-avagin@gmail.com> <20210414055217.543246-3-avagin@gmail.com>
+In-Reply-To: <20210414055217.543246-3-avagin@gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 2 Jul 2021 22:56:38 +0200
+Message-ID: <CAG48ez37ZUNvWy1eOvrW13kFRM-_ZW175x99Nyjq43w4Qz1qJQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4] arch/x86: implement the process_vm_exec syscall
+To:     Andrei Vagin <avagin@gmail.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 10:34:56AM +0200, Geert Uytterhoeven wrote:
-> Hi Drew,
-> 
-> On Thu, Jul 1, 2021 at 2:22 AM Drew Fustini <drew@beagleboard.org> wrote:
-> > Add bindings for the GPIO controller in the StarFive JH7100 SoC [1].
-> >
-> > [1] https://github.com/starfive-tech/beaglev_doc
-> >
-> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> > Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
-> 
-> Thanks for your patch!
-> 
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/gpio/starfive,jh7100-gpio.yaml
-> > @@ -0,0 +1,60 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/gpio/starfive,jh7100-gpio.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: StarFive JH7100 GPIO controller
-> > +
-> > +maintainers:
-> > +  - Huan Feng <huan.feng@starfivetech.com>
-> > +  - Drew Fustini <drew@beagleboard.org>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - const: starfive,jh7100-gpio
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    description:
-> > +      Interrupt mapping, one per GPIO. Maximum 32 GPIOs.
-> > +    minItems: 1
-> > +    maxItems: 32
-> 
-> What about clocks and resets?
+On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:
+> This change introduces the new system call:
+> process_vm_exec(pid_t pid, struct sigcontext *uctx, unsigned long flags,
+>                 siginfo_t * uinfo, sigset_t *sigmask, size_t sizemask)
+>
+> process_vm_exec allows to execute the current process in an address
+> space of another process.
+>
+> process_vm_exec swaps the current address space with an address space of
+> a specified process, sets a state from sigcontex and resumes the process.
+> When a process receives a signal or calls a system call,
+> process_vm_exec saves the process state back to sigcontext, restores the
+> origin address space, restores the origin process state, and returns to
+> userspace.
+>
+> If it was interrupted by a signal and the signal is in the user_mask,
+> the signal is dequeued and information about it is saved in uinfo.
+> If process_vm_exec is interrupted by a system call, a synthetic siginfo
+> for the SIGSYS signal is generated.
+>
+> The behavior of this system call is similar to PTRACE_SYSEMU but
+> everything is happing in the context of one process, so
+> process_vm_exec shows a better performance.
+>
+> PTRACE_SYSEMU is primarily used to implement sandboxes (application
+> kernels) like User-mode Linux or gVisor. These type of sandboxes
+> intercepts applications system calls and acts as the guest kernel.
+> A simple benchmark, where a "tracee" process executes systems calls in a
+> loop and a "tracer" process traps syscalls and handles them just
+> incrementing the tracee instruction pointer to skip the syscall
+> instruction shows that process_vm_exec works more than 5 times faster
+> than PTRACE_SYSEMU.
+[...]
+> +long swap_vm_exec_context(struct sigcontext __user *uctx)
+> +{
+> +       struct sigcontext ctx = {};
+> +       sigset_t set = {};
+> +
+> +
+> +       if (copy_from_user(&ctx, uctx, CONTEXT_COPY_SIZE))
+> +               return -EFAULT;
+> +       /* A floating point state is managed from user-space. */
+> +       if (ctx.fpstate != 0)
+> +               return -EINVAL;
+> +       if (!user_access_begin(uctx, sizeof(*uctx)))
+> +               return -EFAULT;
+> +       unsafe_put_sigcontext(uctx, NULL, current_pt_regs(), (&set), Efault);
+> +       user_access_end();
+> +
+> +       if (__restore_sigcontext(current_pt_regs(), &ctx, 0))
+> +               goto badframe;
+> +
+> +       return 0;
+> +Efault:
+> +       user_access_end();
+> +badframe:
+> +       signal_fault(current_pt_regs(), uctx, "swap_vm_exec_context");
+> +       return -EFAULT;
+> +}
 
-Thank you for your feedback, Geert.
-
-GPIO controller uses clk_apb1_bus under dom0_sys.  I believe the device
-tree node would use something like this:
-
-  clocks = <&clkgen JH7100_CLK_APB1>;
-
-I see the sifive-gpio.yaml has:
-
-  clocks:
-    maxItems: 1
-
-Would that be the correct way to do it for the starfive gpio yaml?
-
-
-The reset for GPIO controller is presetn under dom_sys.  Do you think
-know you know an example that has reset in the YAML?  Is there some code
-that would actually make use of that information?
-
-> 
-> > +
-> > +  gpio-controller: true
-> > +
-> > +  "#gpio-cells":
-> > +    const: 2
-> > +
-> > +  interrupt-controller: true
-> > +
-> > +  "#interrupt-cells":
-> > +    const: 2
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - interrupt-controller
-> > +  - "#interrupt-cells"
-> > +  - "#gpio-cells"
-> > +  - gpio-controller
-
-Do you think I should add 'clocks' to 'required:'?
-
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +      gpio@11910000 {
-> > +        compatible = "starfive,jh7100-gpio";
-> > +        reg = <0x11910000 0x10000>;
-> > +        gpio-controller;
-> > +        #gpio-cells = <2>;
-> > +        interrupt-controller;
-> > +        #interrupt-cells = <2>;
-> > +        interrupts = <32>;
-
-I would add:
-
-  clocks = <&clkgen JH7100_CLK_APB1>;
-
-But I am not sure how reset would work?
+Comparing the pieces of context that restore_sigcontext() restores
+with what a normal task switch does (see __switch_to() and callees), I
+noticed: On CPUs with FSGSBASE support, I think sandboxed code could
+overwrite FSBASE/GSBASE using the WRFSBASE/WRGSBASE instructions,
+causing the supervisor to access attacker-controlled addresses when it
+tries to access a thread-local variable like "errno"? Signal handling
+saves the segment registers, but not the FS/GS base addresses.
 
 
-Thank you,
-Drew
+jannh@laptop:~/test$ cat signal_gsbase.c
+// compile with -mfsgsbase
+#include <stdio.h>
+#include <signal.h>
+#include <immintrin.h>
+
+void signal_handler(int sig, siginfo_t *info, void *ucontext_) {
+  puts("signal handler");
+  _writegsbase_u64(0x12345678);
+}
+
+int main(void) {
+  struct sigaction new_act = {
+    .sa_sigaction = signal_handler,
+    .sa_flags = SA_SIGINFO
+  };
+  sigaction(SIGUSR1, &new_act, NULL);
+
+  printf("original gsbase is 0x%lx\n", _readgsbase_u64());
+  raise(SIGUSR1);
+  printf("post-signal gsbase is 0x%lx\n", _readgsbase_u64());
+}
+jannh@laptop:~/test$ gcc -o signal_gsbase signal_gsbase.c -mfsgsbase
+jannh@laptop:~/test$ ./signal_gsbase
+original gsbase is 0x0
+signal handler
+post-signal gsbase is 0x12345678
+jannh@laptop:~/test$
+
+
+So to make this usable for a sandboxing usecase, you'd also have to
+save and restore FSBASE/GSBASE, just like __switch_to().
