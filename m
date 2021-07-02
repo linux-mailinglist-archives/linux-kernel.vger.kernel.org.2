@@ -2,126 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB113B9E1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBAFA3B9E1E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhGBJ0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 05:26:15 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:37072 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230078AbhGBJ0O (ORCPT
+        id S230205AbhGBJ0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 05:26:34 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:34364 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230078AbhGBJ0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 05:26:14 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1629AxOI019441;
-        Fri, 2 Jul 2021 11:23:25 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=5ywvL4VVQ+2r/jhdIM14ypRiW/ywajQXfPzZ2maovTA=;
- b=LCFPp+Y/RgFx7ixHPOVRqbIYocI4RlvALr9i9XihsloC62P6IqcJYwyoVmO8ylFHUZ20
- L8og9QpEFFl1aiSqTNk9cS9Z7SrCTiYbrmqAsWAxFMurq+NRNG26/Sl2q2j4+Kmtysz5
- k0vqFhDN2uHI6j8gFBRBfBWOgFNkLlXVQGdpeN5Sxsf19WOtmvPibI9VciZUFYW9yYdL
- gc/Mewf4JRC9Ocf81Ywq18JbF7ik0ZCTLv5Bb7qoXfgJQ0Zjm56yfEe6pdpc4QASptl3
- H9b5gRz0WrsJfQE7zpIvK19h/jh6l6GLIR4EuT5PLLUFMAC9x0eLi+cos7DiI+ViAvAo lg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39hw3cscpu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 02 Jul 2021 11:23:25 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 317E610002A;
-        Fri,  2 Jul 2021 11:23:23 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8E2F8217B92;
-        Fri,  2 Jul 2021 11:23:23 +0200 (CEST)
-Received: from lmecxl0557.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 2 Jul
- 2021 11:23:22 +0200
-Subject: Re: [PATCH] drm/stm: ltdc: improve pm_runtime to stop clocks
-To:     Marek Vasut <marex@denx.de>
-CC:     Yannick FERTRE <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>,
-        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
-        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
-        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>
-References: <20210629115709.16145-1-raphael.gallais-pou@foss.st.com>
- <420e243d-7541-a07e-177b-d2db11c26aef@denx.de>
-From:   Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-Message-ID: <3bb823e4-4724-7072-fe9f-7b8a355c8e50@foss.st.com>
-Date:   Fri, 2 Jul 2021 11:23:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 2 Jul 2021 05:26:32 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AeMQE6alsgIiAHYZk9i/DZsknAlTpDfIQ3DAb?=
+ =?us-ascii?q?v31ZSRFFG/Fw9vre+MjzsCWYtN9/Yh8dcK+7UpVoLUm8yXcX2/h1AV7BZniEhI?=
+ =?us-ascii?q?LAFugLgrcKqAeQeREWmNQ86Y5QN4B6CPDVSWNxlNvG5mCDeOoI8Z2q97+JiI7l?=
+ =?us-ascii?q?o0tQcQ=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.83,316,1616428800"; 
+   d="scan'208";a="110542290"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 02 Jul 2021 17:23:59 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 3D90E4C36A19;
+        Fri,  2 Jul 2021 17:23:59 +0800 (CST)
+Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Fri, 2 Jul 2021 17:24:01 +0800
+Received: from irides.mr.mr.mr (10.167.225.141) by
+ G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Fri, 2 Jul 2021 17:23:59 +0800
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+        <linux-fsdevel@vger.kernel.org>
+CC:     <djwong@kernel.org>, <dan.j.williams@intel.com>,
+        <willy@infradead.org>, <jack@suse.cz>, <viro@zeniv.linux.org.uk>,
+        <hch@lst.de>, <riteshh@linux.ibm.com>
+Subject: [RESEND PATCH v3 0/3] fsdax: Factor helper functions to simplify the code
+Date:   Fri, 2 Jul 2021 17:23:54 +0800
+Message-ID: <20210702092357.262744-1-ruansy.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <420e243d-7541-a07e-177b-d2db11c26aef@denx.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-02_01:2021-07-02,2021-07-02 signatures=0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 3D90E4C36A19.A0C5B
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Marek,
+The page fault part of fsdax code is little complex. In order to add CoW
+feature and make it easy to understand, I was suggested to factor some
+helper functions to simplify the current dax code.
+
+This is separated from the previous patchset called "V3 fsdax,xfs: Add
+reflink&dedupe support for fsdax" as suggested[1].
+
+[1]: https://lore.kernel.org/linux-xfs/20210402074936.GB7057@lst.de/
 
 
-Sorry for the late answer.
+Changes from previous V3:
+ - Rebased on v5.13
+ - Add Darrick's Reviewed-by
+
+Changes from V2:
+ - fix the type of 'major' in patch 2
+ - Rebased on v5.12-rc8
+
+Changes from V1:
+ - fix Ritesh's email address
+ - simplify return logic in dax_fault_cow_page()
+
+(Rebased on v5.13)
+==
 
 
-On 6/30/21 2:35 AM, Marek Vasut wrote:
-> On 6/29/21 1:58 PM, Raphael GALLAIS-POU - foss wrote:
->
-> [...]
->
->> +++ b/drivers/gpu/drm/stm/ltdc.c
->> @@ -425,10 +425,17 @@ static void ltdc_crtc_atomic_enable(struct 
->> drm_crtc *crtc,
->>   {
->>       struct ltdc_device *ldev = crtc_to_ltdc(crtc);
->>       struct drm_device *ddev = crtc->dev;
->> +    int ret;
->>         DRM_DEBUG_DRIVER("\n");
->>   -    pm_runtime_get_sync(ddev->dev);
->> +    if (!pm_runtime_active(ddev->dev)) {
->> +        ret = pm_runtime_get_sync(ddev->dev);
->
-> All these if (!pm_runtime_active()) then pm_runtime_get_sync() calls 
-> look like workaround for some larger issue. Shouldn't the pm_runtime 
-> do some refcounting on its own , so this shouldn't be needed ?
+Shiyang Ruan (3):
+  fsdax: Factor helpers to simplify dax fault code
+  fsdax: Factor helper: dax_fault_actor()
+  fsdax: Output address in dax_iomap_pfn() and rename it
+
+ fs/dax.c | 443 +++++++++++++++++++++++++++++--------------------------
+ 1 file changed, 234 insertions(+), 209 deletions(-)
+
+-- 
+2.32.0
 
 
-This problem purely comes from the driver internals, so I don't think it 
-is a workaround.
-
-Because of the "ltdc_crtc_mode_set_nofb" function which does not have 
-any "symmetrical" call, such as enable/disable functions, there was two 
-calls to pm_runtime_get_sync against one call to pm_runtime_put_sync.
-
-This instability resulted in the LTDC clocks being always enabled, even 
-when the peripheral was disabled. This could be seen in the clk_summary 
-as explained in the patch summary among other things.
-
-By doing so, we first check if the clocks are not already activated, and 
-in that case we call pm_runtime_get_sync.
-
-
-
-Regards,
-
-Raphaël G-P
 
