@@ -2,84 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414923B9DA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6493B9DAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbhGBIox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 04:44:53 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:54380 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230166AbhGBIow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 04:44:52 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625215340; h=Content-Type: MIME-Version: Message-ID: Date:
- References: In-Reply-To: Subject: Cc: To: From: Sender;
- bh=w3yBGSGoQ8cNaUpst5+zJFm90DXtuz3EZYf+rk4KsIk=; b=NyDjWLdwAASsDx/hDZRACr/ldxJJknH8aGobKGftAJgDPT6yLAH039TAp5dYO1LRcejL1uLO
- 3SSDxzP/D0WwrrwP/o3HWAqHpwW6+SvNX1sBDDat46M6hdfZGlzHv7u63Z5cAEIimKM/BF0m
- uRQCCIBfsbf4LOsJfL17PpuG84I=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60ded15eec0b18a7455b8bea (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 02 Jul 2021 08:42:06
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 570D9C4323A; Fri,  2 Jul 2021 08:42:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6DB36C433D3;
-        Fri,  2 Jul 2021 08:42:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6DB36C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     chris.chiu@canonical.com
-Cc:     Jes.Sorensen@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        code@reto-schneider.ch, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rtl8xxxu: disable interrupt_in transfer for 8188cu and 8192cu
-In-Reply-To: <20210701163354.118403-1-chris.chiu@canonical.com> (chris chiu's
-        message of "Fri, 2 Jul 2021 00:33:54 +0800")
-References: <20210701163354.118403-1-chris.chiu@canonical.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-Date:   Fri, 02 Jul 2021 11:41:58 +0300
-Message-ID: <87v95thzu1.fsf@codeaurora.org>
+        id S230495AbhGBIr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 04:47:26 -0400
+Received: from forward4-smtp.messagingengine.com ([66.111.4.238]:57215 "EHLO
+        forward4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230166AbhGBIrX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 04:47:23 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailforward.nyi.internal (Postfix) with ESMTP id D3C8F1940668;
+        Fri,  2 Jul 2021 04:44:50 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 02 Jul 2021 04:44:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Jd0DgZ
+        kYge3EvDll0XHFsWzoTH+0LIBOXTeQjkdl/MQ=; b=biniZq9WQsy44tGBrDs47O
+        3Z6gWgPvxBQ0byj+RDNylrgv4OhOIIO9vSMocU8XthzKdmvPxnU0ZNRX06WcPDWP
+        UhygN3u7NwqX3kZbN2SOpylPDh7iebsSt0u1iXKcYxmGt9vFOmu0RyXa3VTdrivW
+        WJ2meiDgTINK173cn01gOiPjZqatsZv9Tb/QFUoCZOHdIGKNBUhe+7bwEOi3fkgY
+        sqWwIdfF5q6HaDt96yR2Er21JSduNSXCt2qZKJkiNY+B33b22PnjwWenAk59RbAU
+        F4gmK2QTlEQHV/R2c2QC55/BzvcXca6Z3LUQRX2OALT2A2XWr7cwzJ2mXO13BLLQ
+        ==
+X-ME-Sender: <xms:_dHeYKTO8ADXiBjfHqDs2mWc-GhCMOQrj5s8jA9ReAqrN4aORaxiHQ>
+    <xme:_dHeYPxvVb8_UjSDQRkcg5RH8IYPWECcWcmIuje4bdQdVNOx90hnbjryDN-mAiBPw
+    RG5EldfHOyXWl22n4A>
+X-ME-Received: <xmr:_dHeYH1urfWTrTO5r4gCkoJYlSctP8lJ0Xmtokk0FQs-_oXmg_Yf8N2859T-YAyWphsYTAX8XjsWW1T7FhzN7b-z1RWNcKtDsmescS3hlWI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeikedgtdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvffujghfhfffkfggtgesthdtredttddttdenucfhrhhomhepffgrvhhiugcu
+    gfgumhhonhgushhonhcuoegurghvihgurdgvughmohhnughsohhnsehorhgrtghlvgdrtg
+    homheqnecuggftrfgrthhtvghrnhepheelfeefudeiudegudelgfetgeetkeelveeuieet
+    udelheejkeeileekveeukedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepuggrvhhiugdrvggumhhonhgushhonhesohhrrggtlhgvrdgtohhm
+X-ME-Proxy: <xmx:_dHeYGDFO_LqK1XPMSmxdeTvd2lJCXk2mi3SDIYarnohyBn5FNaNyA>
+    <xmx:_dHeYDgOi0cjiStxfdwEy1ZlRBIrWoyVLNo-LXoNA6kqJMmKXxiE9Q>
+    <xmx:_dHeYCr6gZF9amYkyGKzh3hEyR4oyWts1X4-Fsharo1Q1YumvZtLGg>
+    <xmx:AtLeYMYcd5sCJAHZ7mYr8tIhNAJe02FWjjPulfVl_H25Tvr5b_2OwDH1atU>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 2 Jul 2021 04:44:44 -0400 (EDT)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id c7b4aea2;
+        Fri, 2 Jul 2021 08:44:43 +0000 (UTC)
+To:     David Matlack <dmatlack@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        Joao Martins <joao.m.martins@oracle.com>
+Subject: Re: [PATCH 2/2] KVM: x86: On emulation failure, convey the exit
+ reason to userspace
+In-Reply-To: <YNygagjfTIuptxL8@google.com>
+References: <20210628173152.2062988-1-david.edmondson@oracle.com>
+ <20210628173152.2062988-3-david.edmondson@oracle.com>
+ <YNygagjfTIuptxL8@google.com>
+X-HGTTG: heart-of-gold
+From:   David Edmondson <david.edmondson@oracle.com>
+Date:   Fri, 02 Jul 2021 09:44:42 +0100
+Message-ID: <m2pmw114w5.fsf@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-chris.chiu@canonical.com writes:
+On Wednesday, 2021-06-30 at 16:48:42 UTC, David Matlack wrote:
 
-> From: Chris Chiu <chris.chiu@canonical.com>
+> On Mon, Jun 28, 2021 at 06:31:52PM +0100, David Edmondson wrote:
+>> To aid in debugging.
 >
-> There will be crazy numbers of interrupts triggered by 8188cu and
-> 8192cu module, around 8000~10000 interrupts per second, on the usb
-> host controller. Compare with the vendor driver source code, it's
-> mapping to the configuration CONFIG_USB_INTERRUPT_IN_PIPE and it is
-> disabled by default.
+> Please add more context to the commit message.
+
+Okay.
+
+>> 
+>> Suggested-by: Joao Martins <joao.m.martins@oracle.com>
+>> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
+>> ---
+>>  arch/x86/kvm/x86.c       | 23 +++++++++++++++++------
+>>  include/uapi/linux/kvm.h |  2 ++
+>>  2 files changed, 19 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 8166ad113fb2..48ef0dc68faf 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -7455,7 +7455,7 @@ void kvm_inject_realmode_interrupt(struct kvm_vcpu *vcpu, int irq, int inc_eip)
+>>  }
+>>  EXPORT_SYMBOL_GPL(kvm_inject_realmode_interrupt);
+>>  
+>> -static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
+>> +static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu, uint64_t flags)
+>>  {
+>>  	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
+>>  	u32 insn_size = ctxt->fetch.end - ctxt->fetch.data;
+>> @@ -7466,7 +7466,8 @@ static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
+>>  	run->emulation_failure.ndata = 0;
+>>  	run->emulation_failure.flags = 0;
+>>  
+>> -	if (insn_size) {
+>> +	if (insn_size &&
+>> +	    (flags & KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES)) {
+>>  		run->emulation_failure.ndata = 3;
+>>  		run->emulation_failure.flags |=
+>>  			KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES;
+>> @@ -7476,6 +7477,14 @@ static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
+>>  		memcpy(run->emulation_failure.insn_bytes,
+>>  		       ctxt->fetch.data, insn_size);
+>>  	}
+>> +
+>> +	if (flags & KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON) {
 >
-> Since the interrupt transfer is neither used for TX/RX nor H2C
-> commands. Disable it to avoid the confusing interrupts for the
-> 8188cu and 8192cu module which I only have for verification.
+> This flag is always passed so this check if superfluous. Perhaps change
+> `int flags` to `bool instruction_bytes` and have it control only whether
+> the instruction bytes are populated.
 
-The last paragraph is not entirely clear for me, can you elaborate it
-more? What do you mean with "confusing interrupts"? And is this fixing
-an actual user visible bug or are you just reducing the number of
-interrupts?
+Okay.
 
+>> +		run->emulation_failure.ndata = 4;
+>> +		run->emulation_failure.flags |=
+>> +			KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON;
+>> +		run->emulation_failure.exit_reason =
+>> +			static_call(kvm_x86_get_exit_reason)(vcpu);
+>> +	}
+>>  }
+>>  
+>>  static int handle_emulation_failure(struct kvm_vcpu *vcpu, int emulation_type)
+>> @@ -7492,16 +7501,18 @@ static int handle_emulation_failure(struct kvm_vcpu *vcpu, int emulation_type)
+>>  
+>>  	if (kvm->arch.exit_on_emulation_error ||
+>>  	    (emulation_type & EMULTYPE_SKIP)) {
+>> -		prepare_emulation_failure_exit(vcpu);
+>> +		prepare_emulation_failure_exit(
+>> +			vcpu,
+>> +			KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES |
+>> +			KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON);
+>>  		return 0;
+>>  	}
+>>  
+>>  	kvm_queue_exception(vcpu, UD_VECTOR);
+>>  
+>>  	if (!is_guest_mode(vcpu) && static_call(kvm_x86_get_cpl)(vcpu) == 0) {
+>> -		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+>> -		vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_EMULATION;
+>> -		vcpu->run->internal.ndata = 0;
+>> +		prepare_emulation_failure_exit(
+>> +			vcpu, KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON);
+>
+> Should kvm_task_switch and kvm_handle_memory_failure also be updated
+> like this?
+
+Will do in v2.
+
+sgx_handle_emulation_failure() seems like an existing user of
+KVM_INTERNAL_ERROR_EMULATION that doesn't follow the new protocol (use
+the emulation_failure part of the union).
+
+Sean: If I add another flag for this case, what is the existing
+user-level consumer?
+
+>>  		return 0;
+>>  	}
+>>  
+>> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+>> index 68c9e6d8bbda..3e4126652a67 100644
+>> --- a/include/uapi/linux/kvm.h
+>> +++ b/include/uapi/linux/kvm.h
+>> @@ -282,6 +282,7 @@ struct kvm_xen_exit {
+>>  
+>>  /* Flags that describe what fields in emulation_failure hold valid data. */
+>>  #define KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES (1ULL << 0)
+>> +#define KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON       (1ULL << 1)
+>>  
+>>  /* for KVM_RUN, returned by mmap(vcpu_fd, offset=0) */
+>>  struct kvm_run {
+>> @@ -404,6 +405,7 @@ struct kvm_run {
+>>  			__u64 flags;
+>>  			__u8  insn_size;
+>>  			__u8  insn_bytes[15];
+>> +			__u64 exit_reason;
+>
+> Please document what this field contains, especially since its contents
+> depend on AMD versus Intel.
+
+Okay.
+
+>>  		} emulation_failure;
+>>  		/* KVM_EXIT_OSI */
+>>  		struct {
+>> -- 
+>> 2.30.2
+>> 
+
+dme.
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Welcome to Conditioning.
