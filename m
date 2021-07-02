@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9DB3B9D21
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 09:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A343B9D39
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhGBHzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 03:55:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230023AbhGBHzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 03:55:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F7CF613FC;
-        Fri,  2 Jul 2021 07:53:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625212391;
-        bh=zni3rapG4sTUHE5KRluuda3l4LzR8mdlFf/AW4q4gX0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G1J2lAWRymMCPEXv2PtBh35jYdNb0iYmBe8ZrO2o6AEIhzxXQA0FVWU+aqLbJrJhZ
-         UmU2x8FtYEQ7rkkWh2D7uWQwtp9UM2a37tWVLRMosUlMXVVpULQg0Tr84x3R6ThqfY
-         q6B6/8Vhn3F63a6H8h0qgmy2rV/JBK6a4YfRLGSDUtR7QEYll7CvWNx3evFMzTUZHy
-         j44p4bVuHuQGmlvcMT2PleWcFHFbyWGHtIkxZg9mtirl3o7e6gYVMCZSZxWWfWz5nx
-         fhXBdxkbPSucoABAorRWT9P1u4EzAlCF/zS/KuYU0zjZF6B156T48KZrmZTqmBgU2L
-         t0PtdPF7lUJtA==
-Date:   Fri, 2 Jul 2021 09:53:08 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: mpc: Restore reread of I2C status register
-Message-ID: <YN7F5Kv6NbD/6GBK@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210702032724.4370-1-chris.packham@alliedtelesis.co.nz>
+        id S230227AbhGBICw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 04:02:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230194AbhGBICu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 04:02:50 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0EC4C0613DB
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 01:00:18 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1lzE5x-0007GU-04; Fri, 02 Jul 2021 10:00:17 +0200
+Subject: Re: [PATCH v2 6/6] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Richard Weinberger <richard@nod.at>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        horia geanta <horia.geanta@nxp.com>,
+        aymen sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>, Udit Agarwal <udit.agarwal@nxp.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        david <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        "open list, ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>
+References: <cover.1dfbb73645d917b3c76d01290804a3410bd9932e.1624364386.git-series.a.fatoum@pengutronix.de>
+ <39e6d65ca5d2a0a35fb71d6c1f85add8ee489a19.1624364386.git-series.a.fatoum@pengutronix.de>
+ <1850833581.13438.1625172175436.JavaMail.zimbra@nod.at>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <2f608e5a-5a12-6db1-b9bd-a2cd9e3e3671@pengutronix.de>
+Date:   Fri, 2 Jul 2021 10:00:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hmLvyWhLalKJBbfH"
-Content-Disposition: inline
-In-Reply-To: <20210702032724.4370-1-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <1850833581.13438.1625172175436.JavaMail.zimbra@nod.at>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Richard,
 
---hmLvyWhLalKJBbfH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 01.07.21 22:42, Richard Weinberger wrote:
+> Ahmad,
+> 
+> ----- Ursprüngliche Mail -----
+>> Von: "Ahmad Fatoum" <a.fatoum@pengutronix.de>
+>> +static struct caam_blob_priv *blobifier;
+>> +
+>> +#define KEYMOD "kernel:trusted"
+> 
+> I'm still think that hard coding the key modifier is not wise.
+> As I said[0], there are folks out there that want to provide their own modifier,
+> so it is not only about being binary compatible with other CAAM blob patches in the wild.
 
-On Fri, Jul 02, 2021 at 03:27:24PM +1200, Chris Packham wrote:
-> Prior to commit 1538d82f4647 ("i2c: mpc: Interrupt driven transfer") the
-> old interrupt handler would reread MPC_I2C_SR after checking the CSR_MIF
-> bit. When the driver was re-written this was removed as it seemed
-> unnecessary. However as it turns out this is necessary for i2c devices
-> which do clock stretching otherwise we end up thinking the bus is still
-> busy when processing the interrupt.
->=20
-> Fixes: 1538d82f4647 ("i2c: mpc: Interrupt driven transfer")
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+I don't think the characterization as a salt is accurate. AFAIU it's more
+of a namespace, so blobs being loaded are "type-checked" against the modifier.
 
-Applied to for-current, thanks!
+> I'll happily implement that feature after your patches got merged but IMHO we should first agree on an interface.
+> How about allowing another optional parameter to Opt_new and Opt_load
+
+Sound good to me. pcrlock for TPM trusted keys has the same interface.
+
+I'd prefer the new option to accept strings, not hex though.
 
 
---hmLvyWhLalKJBbfH
-Content-Type: application/pgp-signature; name="signature.asc"
+> and having a key modifier per struct trusted_key_payload instance?
 
------BEGIN PGP SIGNATURE-----
+Ye, possibly a void *backend_data, which other trust sources could leverage
+as well. But that should be separate discussion.
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDexd8ACgkQFA3kzBSg
-KbYEqg//VIs9RClz6RTB43Y3a74uSUHoqtGL+YmqmOrBbJDa3P+3C8602odZ2nLg
-/6vef5xRplUEpqNMjwQBP4QaR3UjH/bLCJyE7P89donoPtfU6UlA5GfJqi1dPBeR
-YnY6/4XN004aC8aq0bNlx/tcFVWW9zNyHA6Z+T7kq+3Eh8nCfgIQ4OWYKNK/KKyk
-HkDT8oX8l3gh4x/U19N+9gkgVbFuBDPl+yLsGQb2s5pkulvAFVZuZ9QiYm+AiuDA
-V0d+EF59LWUtWYg3KNare5iGhfycHJzCsgWBJnbBFo4x7wnaprmdOZ307DLFvChQ
-CLKOKltLq57oX4BfeAH7vg9rtj7XW7vI9Z31VxUFxDp1BB3+Zq5CG5rkQFvrIBmS
-GYGaZ9hLjRFxGGKnEbMaU2MJAyM5s/6caRfeRwKjloTv90pE6beHB6RmV2y2Hscy
-V7OJr+f4FQPowEma1qGfc2y9uH9e1s9b5d7ZKLWWpGt+Cz9Uj3aUQshYpDjB82Mj
-zC18PoMRqK7CRJ+UZsJvWV7aKo2ySLf6m3w+IAdj5lkwzQTQDfjIWm/rghv/m83g
-rywJf2pYsud5UynHLZ+3hlDnF5UB+kx1LVSxGnfu0F2A85wlw9XyZ1vvu0diIQ+Z
-zQcMv3ETiQYrk8qsMfG42VcLDdt2mjlPBD53MIA4VetK28awsK8=
-=+/Gr
------END PGP SIGNATURE-----
 
---hmLvyWhLalKJBbfH--
+Cheers,
+Ahmad
+
+> 
+> Thanks,
+> //richard
+> 
+> [0]
+> https://patchwork.kernel.org/project/linux-crypto/patch/319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de/#24085397
+> 
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
