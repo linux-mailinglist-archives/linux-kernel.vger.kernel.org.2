@@ -2,186 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7183A3B9D70
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 746C73B9D77
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 10:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhGBITz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 04:19:55 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:10237 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbhGBITx (ORCPT
+        id S230415AbhGBIW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 04:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230367AbhGBIWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 04:19:53 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GGSV43NdSz1BPTq;
-        Fri,  2 Jul 2021 16:11:56 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 2 Jul 2021 16:17:18 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 2 Jul 2021
- 16:17:18 +0800
-Subject: Re: [PATCH net-next v3 1/3] selftests/ptr_ring: add benchmark
- application for ptr_ring
-To:     Jason Wang <jasowang@redhat.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <mst@redhat.com>
-CC:     <brouer@redhat.com>, <paulmck@kernel.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <shuah@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linuxarm@openeuler.org>
-References: <1625142402-64945-1-git-send-email-linyunsheng@huawei.com>
- <1625142402-64945-2-git-send-email-linyunsheng@huawei.com>
- <e1ec4577-a48f-ff56-b766-1445c2501b9f@redhat.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <91bcade8-f034-4bc7-f329-d5e1849867e7@huawei.com>
-Date:   Fri, 2 Jul 2021 16:17:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Fri, 2 Jul 2021 04:22:24 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3128BC061764
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 01:19:51 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id h126so2784460vsc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 01:19:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rI1zU6Vum6nEKxH2wJfQPCltA28jorr394zT33OyREs=;
+        b=oTi1+TzEJ0UkQMFtA8SG930kUziYAPv+RyuNDCOyoYV0butu1Q7L4f0RxBa9h0Hlg/
+         SrO9DwmUJtUYUJ9vmIzkLBwqQorsnVEyuFzW1T2DtHlQeknXEt6gV2f51JNVKmcZC90J
+         Ob55w1LWwV0LLHlueZXT0KbrUfLfz4GxNPBVQqA7ef21L9cHY+t+vizc40y0y5AoI4aM
+         q2iV1wNHKQZgThsdl2v7I9RdVJ6HZZkHxdwRgeluNhwDrCpqFMrWdnKj7DhNum+docPR
+         wwzixQZ7iB1UYl0cVOUc9o5W+0MpUNY1QbQFd71Q6pdqexw8RBV5yy0ajWeZtk1oOfYl
+         kPsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rI1zU6Vum6nEKxH2wJfQPCltA28jorr394zT33OyREs=;
+        b=LoM3RWuwUhaXxE9HH2DRKhR+ddG3PQrYdI4JtpwJzbeIHWmfFR2976Dr1F4sLdss7K
+         5Abpgmp8ePwiKjii8vJGXVm/C08Q0mGB+CUJGjvw7zmGyblU8U8bQjTNLJdNA3qG+6Y9
+         fshLaP24KRL6IGzGvcdkSyWd2rGCnWc4CXLjHva2bAadJhGS2Op64I8O7/exUxksXXuq
+         i9UUdNjYnCxtdDzcOrSnLUAdz/3acdReVZG8S4AppxQr45QI+DLRy+aSvkssZ0Njt4+o
+         oZZ9bAIfEsSTSCOvieVBUAXfkWzPEnDyRxLYTYgx4A3DSZuJTKBzYf8bHCT/833miP7m
+         YbVA==
+X-Gm-Message-State: AOAM533CeX3/cz/vDhYlP8w73RYSO0/dXfnEEk6FftsSOdAXQktpJdFU
+        yXpIFtnWybcI0TMSZC1Fr9B4aDyUS61d9+Lni/Jd8g==
+X-Google-Smtp-Source: ABdhPJxIUNWDQYNSMAluIxdMI255ZqTFEGp5TXpbUhrgpO6gEs57djZk+GOAv9f134/8IhxW0buOkX8Ot4nj0hwKTUw=
+X-Received: by 2002:a67:8095:: with SMTP id b143mr4944194vsd.48.1625213990146;
+ Fri, 02 Jul 2021 01:19:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e1ec4577-a48f-ff56-b766-1445c2501b9f@redhat.com>
-Content-Type: text/plain; charset="gbk"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+References: <20210630122057.2795882-1-arnd@kernel.org> <6a5d06db-92af-7df0-2c71-e25bad08ee0c@rock-chips.com>
+ <CAK8P3a3UjLfKpsg2M-RP3AO3CVCnZrbD71uaLf0+iiJ9RJsHCQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a3UjLfKpsg2M-RP3AO3CVCnZrbD71uaLf0+iiJ9RJsHCQ@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 2 Jul 2021 10:19:13 +0200
+Message-ID: <CAPDyKFrbQxyYUpFXfg2t071uN0JcCo74QsJ5Fx-VCkND-KKjPQ@mail.gmail.com>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gbW1jOiB3YXJuIGZvciBpbnZhbGlkIFNESU8gZGF0YSBidWZmZXJz?=
+        =?UTF-8?B?44CQ6K+35rOo5oSP77yM6YKu5Lu255SxbGludXgtbW1jLW93bmVyQHZnZXIua2VybmVsLm9yZ+S7ow==?=
+        =?UTF-8?B?5Y+R44CR?=
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Shawn Lin <shawn.lin@rock-chips.com>
+Cc:     Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/2 14:43, Jason Wang wrote:
-> 
-> ÔÚ 2021/7/1 ÏÂÎç8:26, Yunsheng Lin Ð´µÀ:
->> Currently ptr_ring selftest is embedded within the virtio
->> selftest, which involves some specific virtio operation,
->> such as notifying and kicking.
->>
->> As ptr_ring has been used by various subsystems, it deserves
->> it's owner selftest in order to benchmark different usecase
->> of ptr_ring, such as page pool and pfifo_fast qdisc.
->>
->> So add a simple application to benchmark ptr_ring performance.
->> Currently two test mode is supported:
->> Mode 0: Both producing and consuming is done in a single thread,
->>          it is called simple test mode in the test app.
->> Mode 1: Producing and consuming is done in different thread
->>          concurrently, also known as SPSC(single-producer/
->>          single-consumer) test.
->>
->> The multi-producer/single-consumer test for pfifo_fast case is
->> not added yet, which can be added if using CAS atomic operation
->> to enable lockless multi-producer is proved to be better than
->> using r->producer_lock.
->>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> ---
->> V3: Remove timestamp sampling, use standard C library as much
->>      as possible.
+On Fri, 2 Jul 2021 at 09:03, Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Fri, Jul 2, 2021 at 3:02 AM Shawn Lin <shawn.lin@rock-chips.com> wrote:
+> > On 2021/6/30 20:20, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > >
+> > > Jernej Skrabec reported a problem with the cw1200 driver failing on
+> > > arm64 systems with CONFIG_VMAP_STACK=y.
+> > >
+> > > The driver in this case passes a pointer to a stack variable (in vmalloc
+> > > space) into the sdio layer, which gets translated into an invalid DMA
+> > > address.
+> > >
+> > > Even without CONFIG_VMAP_STACK, the driver is still unreliable, as
+> > > cache invalidations on the DMA buffer may cause random data corruption
+> > > in adjacent stack slots.
+> > >
+> > > This could be worked around in the SDIO core, but in the discussion we
+> > > decided that passing a stack variable into SDIO should always be considered
+> > > a bug, as it is for USB drivers.
+> > >
+> > > Change the sdio core to produce a one-time warning for any on-stack
+> > > (both with and without CONFIG_VMAP_STACK) as well as any vmalloc
+> > > or module-local address that would have the same translation problem.
+> >
+> > This was the previous comment about the same topic.
+> > Should we check for mmc_io_rw_direct?
+> >
+> > https://www.spinics.net/lists/linux-mmc/msg41794.html
+>
+> Hi Shawn,
+>
+> thank you for remembering that previous discussion, that is a
+> good question. Looking at the code though, I don't actually
+> see any part of mmc_io_rw_direct() doing DMA on a caller-provided
+> buffer. The only thing I see in the code is a 'u8 *out' argument, but
+> that is just a pointer to a single byte that is set by this function.
+>
+> Do you see any other issue with that function, or does that mean
+> we don't have to change it?
 
-[...]
+I was wrong when I earlier said that we needed to care about
+mmc_io_rw_direct(). mmc_io_rw_direct() transfer "data" over the CMD
+line. MMC host drivers can't do DMA on that.
 
->> +static void *produce_worker(void *arg)
->> +{
->> +    struct worker_info *info = arg;
->> +    unsigned long i = 0;
->> +    int ret;
->> +
->> +    while (++i <= info->test_count) {
->> +        while (__ptr_ring_full(&ring))
->> +            cpu_relax();
->> +
->> +        ret = __ptr_ring_produce(&ring, (void *)i);
->> +        if (ret) {
->> +            fprintf(stderr, "produce failed: %d\n", ret);
->> +            info->error = true;
->> +            return NULL;
->> +        }
->> +    }
->> +
->> +    info->error = false;
->> +
->> +    return NULL;
->> +}
->> +
->> +static void *consume_worker(void *arg)
->> +{
->> +    struct worker_info *info = arg;
->> +    unsigned long i = 0;
->> +    int *ptr;
->> +
->> +    while (++i <= info->test_count) {
->> +        while (__ptr_ring_empty(&ring))
->> +            cpu_relax();
-> 
-> 
-> Any reason for not simply use __ptr_ring_consume() here?
+I think the $subject patch looks reasonable to me.
 
-No particular reason, just to make sure the ring is
-non-empty before doing the enqueuing, we could check
-if the __ptr_ring_consume() return NULL to decide
-the if the ring is empty. Using __ptr_ring_consume()
-here enable testing the correctness and performance of
-__ptr_ring_consume() too.
-
-> 
-> 
->> +
->> +        ptr = __ptr_ring_consume(&ring);
->> +        if ((unsigned long)ptr != i) {
->> +            fprintf(stderr, "consumer failed, ptr: %lu, i: %lu\n",
->> +                (unsigned long)ptr, i);
->> +            info->error = true;
->> +            return NULL;
->> +        }
->> +    }
->> +
->> +    if (!__ptr_ring_empty(&ring)) {
->> +        fprintf(stderr, "ring should be empty, test failed\n");
->> +        info->error = true;
->> +        return NULL;
->> +    }
->> +
->> +    info->error = false;
->> +    return NULL;
->> +}
->> +
-
-[...]
-
->> +
->> +    return 0;
->> +}
->> diff --git a/tools/testing/selftests/ptr_ring/ptr_ring_test.h b/tools/testing/selftests/ptr_ring/ptr_ring_test.h
->> new file mode 100644
->> index 0000000..32bfefb
->> --- /dev/null
->> +++ b/tools/testing/selftests/ptr_ring/ptr_ring_test.h
-> 
-> 
-> Let's reuse ptr_ring.c in tools/virtio/ringtest. Nothing virt specific there.
-
-It *does* have some virtio specific at the end of ptr_ring.c.
-It can be argued that the ptr_ring.c in tools/virtio/ringtest
-could be refactored to remove the function related to virtio.
-
-But as mentioned in the previous disscusion [1], the tools/virtio/
-seems to have compile error in the latest kernel, it does not seems
-right to reuse that. And most of testcase in tools/virtio/ seems
-better be in tools/virtio/ringtest instead£¬so until the testcase
-in tools/virtio/ is compile-error-free and moved to tools/testing/
-selftests/, it seems better not to reuse it for now.
-
-1. https://patchwork.kernel.org/project/netdevbpf/patch/1624591136-6647-2-git-send-email-linyunsheng@huawei.com/#24278945
-
-> 
-> Thanks
-> 
-
-[...]
-
-> 
-> .
-> 
+Kind regards
+Uffe
