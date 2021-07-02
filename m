@@ -2,113 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FA53B9DFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F543B9E06
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhGBJWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 05:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhGBJWV (ORCPT
+        id S230498AbhGBJXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 05:23:35 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35490 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhGBJXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 05:22:21 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE348C061764;
-        Fri,  2 Jul 2021 02:19:49 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id t3so12316264edc.7;
-        Fri, 02 Jul 2021 02:19:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OgGUwiD86E754SHPP5c8vn9EyEoNKXunTKK1V9Pgukg=;
-        b=M7SiC9cbH6MuqHUMzemWrXHCkuSRqABHEz674QXB0rpS8JD+5XXrJTmLG7A+atareB
-         bNhGKhcSiOdeygKFSU2ITr6TpgEtDSkaTDSO7eEEP6+943nYaXu4ZqsJ54d27jxLuP/j
-         u+c2aJsMJvm6bhWsWUgpvXNiiydkrpCVu0qULXRlxlGxsRqsXw4wYbxHVXevgRbSOBWW
-         4x3P4jLmLYZ2FSlhQ2TkvrIfSug0zi4pul4grzYf7YnFBAFZqiZZDEab81pTXqejRryt
-         ix/3O+pSo5XgFAT+eSZoxs0W5/RhsL4EBakDgqMEak5iWtpM5AIQUebQGu54x/D79Gb7
-         inUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OgGUwiD86E754SHPP5c8vn9EyEoNKXunTKK1V9Pgukg=;
-        b=t9S9x258bXxqGxTYrVDpI6RGSupbZGoBkZAl30t4gNO9hThPhFsi5MCH3lpboUAzE6
-         V2gncVm+CRITpqJbHNbjMy9JJRGdUBk5B7JKZqPxT3EGWhE0nDh+M+dulAzwE0B4cUmK
-         epyVnyHRmNvdSP5QzjnNIP1vHgZZ8yy+F4L/ltHjhUxEEbcNJpHWigCdedqyypU1DTFu
-         3rGCrTtQwU8PrlD0EePIvFyDfnQ5XX1HJ6fjBQAYtUn2D29vkY8ykrNr3qdtksRx2MFU
-         /zaVI7VTqcxQgZ4B6szp6dB07pqDnKDUwUqe8UGf2Sgt/x2E+6XJmecfORf1FrXRYLZF
-         IjXw==
-X-Gm-Message-State: AOAM532NK+DOgD8iBkgdlxkVujwHt9oQnshLhZS5eKcy39zcX3H6QFP4
-        ia/WQYAidZLrDYoxnGWDPS0NZwhgMUs6bXmZULw=
-X-Google-Smtp-Source: ABdhPJx8QgM9bN4Uq0tmvV5svPS+Z8nWgUa2hYgaxYeKj2MVtNlhe96O4xXkIR714oJMYujtWcbzVeYmOzCKbmukwXk=
-X-Received: by 2002:a50:ec08:: with SMTP id g8mr5484634edr.98.1625217588288;
- Fri, 02 Jul 2021 02:19:48 -0700 (PDT)
+        Fri, 2 Jul 2021 05:23:34 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1756A228DD;
+        Fri,  2 Jul 2021 09:21:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625217662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=917ZlYP36XkgOQn6r9EovU4chAB4GY0K6ElVDj7YODY=;
+        b=sLajJTTFNmV8Nvktrd+o8uuIMUZxAEl9Tr+QVltAoqWdc0T68npjmSCP4hl6TO1Wztud5m
+        VSRRya4UauV2ui9ptakCit2uKdYO8xW5KXl0wtAM11svE+jfQ7ZgYmITEsrJV5hWG1wto4
+        BBLOehp4Ll9UayhwyK/cnS3LVEHxNAI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625217662;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=917ZlYP36XkgOQn6r9EovU4chAB4GY0K6ElVDj7YODY=;
+        b=M+nDoxHbMNqYAN19hifaQ4MMP4HpxJ+X4dKVxedPAkqyOlTdCvbAcktsKmUfUopxSTgbTP
+        y6Ekl88qQ9B30IDA==
+Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
+        by relay2.suse.de (Postfix) with ESMTP id 0A1DAA3B87;
+        Fri,  2 Jul 2021 09:21:02 +0000 (UTC)
+Received: by adalid.arch.suse.de (Postfix, from userid 17828)
+        id EFDFA5170E26; Fri,  2 Jul 2021 11:21:01 +0200 (CEST)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-scsi@vger.kernel.org
+Cc:     GR-QLogic-Storage-Upstream@marvell.com,
+        linux-kernel@vger.kernel.org, Nilesh Javali <njavali@marvell.com>,
+        Arun Easi <aeasi@marvell.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Benjamin Block <bblock@linux.ibm.com>,
+        Roman Bolshakov <r.bolshakov@yadro.com>,
+        James Smart <jsmart2021@gmail.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Daniel Wagner <dwagner@suse.de>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2] qla2xxx: synchronize rport dev_loss_tmo setting
+Date:   Fri,  2 Jul 2021 11:20:52 +0200
+Message-Id: <20210702092052.93202-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210627223959.188139-1-martin.blumenstingl@googlemail.com>
- <20210627223959.188139-3-martin.blumenstingl@googlemail.com>
- <20210701202540.GA1085600@roeck-us.net> <CAFBinCC2KB-_pOenpWPknCuHV+CCjhP5hqukSkwD3qwRe6OtQw@mail.gmail.com>
- <162518776607.3570193.14348711594242395887@swboyd.mtv.corp.google.com>
-In-Reply-To: <162518776607.3570193.14348711594242395887@swboyd.mtv.corp.google.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Fri, 2 Jul 2021 11:19:37 +0200
-Message-ID: <CAFBinCAASQUB=cg5EFsBQ4jd3TvcCJzV1=sYJci4ibR7FjRcww@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] clk: divider: Switch from .round_rate to
- .determine_rate by default
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, mturquette@baylibre.com,
-        linux-clk@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
-        khilman@baylibre.com, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+From: Hannes Reinecke <hare@suse.de>
 
-On Fri, Jul 2, 2021 at 3:02 AM Stephen Boyd <sboyd@kernel.org> wrote:
-[...]
-> My guess is that we have drivers copying the clk_ops from the
-> divider_ops structure and so they are copying over round_rate but not
-> determine_rate.
-I just learned something new - thanks for investigating this as well!
+Currently, the dev_loss_tmo setting is only ever used for SCSI
+devices. This patch reshuffles initialisation such that the SCSI
+remote ports are registered before the NVMe ones, allowing the
+dev_loss_tmo setting to be synchronized between SCSI and NVMe.
 
-$ git grep "clk_divider_ops\.round_rate" drivers/
-drivers/clk/bcm/clk-bcm2835.c:  return clk_divider_ops.round_rate(hw,
-rate, parent_rate);
-drivers/clk/clk-stm32f4.c:      return clk_divider_ops.round_rate(hw,
-rate, prate);
-drivers/clk/clk-stm32h7.c:      return clk_divider_ops.round_rate(hw,
-rate, prate);
-drivers/clk/clk-stm32mp1.c:             req->rate =
-clk_divider_ops.round_rate(hw, req->rate, &best_parent_rate);
-drivers/clk/imx/clk-divider-gate.c:     return
-clk_divider_ops.round_rate(hw, rate, prate);
-$ git grep "clk_divider_ro_ops\.round_rate" drivers/
-$
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+[lkp: Do not depend on nvme_fc_set_remoteport_devloss() for !NVME_FC]
+Reported-by: kernel test robot <lkp@intel.com>
+---
 
-Changing these over to use clk_divider_ops.determine_rate doesn't seem too hard.
-The part that I am not sure about is how to organize the patches.
-1) amend the changes to all relevant drivers (from above) to this patch
-2) multiple patches:
-- adding .determine_rate to the default divider ops (but not removing
-.round_rate)
-- a single patch for each relevant driver (from above)
-- removing .round_rate from the default divider ops
+This patch got some more testing by one of our partners. So far, no
+regression identified.
 
-Another approach is to first create clk_divider_determine_rate() (as
-done here) and export it.
-Then I could have one individual patch for each relevant driver (from
-above) to use:
-  .determine_rate = clk_divider_determine_rate,
-Then finally I could remove clk_divider_round_rate() and switch over
-the default divider ops to .determine_rate as well.
+changes v2:
+ - fixed build failure for !NVME_FC reported by lkp
 
-Which way do you prefer?
+ drivers/scsi/qla2xxx/qla_attr.c |  6 ++++++
+ drivers/scsi/qla2xxx/qla_init.c | 10 +++-------
+ drivers/scsi/qla2xxx/qla_nvme.c |  5 ++++-
+ 3 files changed, 13 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/scsi/qla2xxx/qla_attr.c b/drivers/scsi/qla2xxx/qla_attr.c
+index 3aa9869f6fae..dad48a982804 100644
+--- a/drivers/scsi/qla2xxx/qla_attr.c
++++ b/drivers/scsi/qla2xxx/qla_attr.c
+@@ -2648,7 +2648,13 @@ qla2x00_get_starget_port_id(struct scsi_target *starget)
+ static inline void
+ qla2x00_set_rport_loss_tmo(struct fc_rport *rport, uint32_t timeout)
+ {
++	fc_port_t *fcport = *(fc_port_t **)rport->dd_data;
++
+ 	rport->dev_loss_tmo = timeout ? timeout : 1;
++
++	if (IS_ENABLED(CONFIG_NVME_FC) && fcport->nvme_remote_port)
++		nvme_fc_set_remoteport_devloss(fcport->nvme_remote_port,
++					       rport->dev_loss_tmo);
+ }
+ 
+ static void
+diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
+index 0de250570e39..d078f16933c0 100644
+--- a/drivers/scsi/qla2xxx/qla_init.c
++++ b/drivers/scsi/qla2xxx/qla_init.c
+@@ -5631,13 +5631,6 @@ qla2x00_update_fcport(scsi_qla_host_t *vha, fc_port_t *fcport)
+ 
+ 	qla2x00_dfs_create_rport(vha, fcport);
+ 
+-	if (NVME_TARGET(vha->hw, fcport)) {
+-		qla_nvme_register_remote(vha, fcport);
+-		qla2x00_set_fcport_disc_state(fcport, DSC_LOGIN_COMPLETE);
+-		qla2x00_set_fcport_state(fcport, FCS_ONLINE);
+-		return;
+-	}
+-
+ 	qla24xx_update_fcport_fcp_prio(vha, fcport);
+ 
+ 	switch (vha->host->active_mode) {
+@@ -5659,6 +5652,9 @@ qla2x00_update_fcport(scsi_qla_host_t *vha, fc_port_t *fcport)
+ 		break;
+ 	}
+ 
++	if (NVME_TARGET(vha->hw, fcport))
++		qla_nvme_register_remote(vha, fcport);
++
+ 	qla2x00_set_fcport_state(fcport, FCS_ONLINE);
+ 
+ 	if (IS_IIDMA_CAPABLE(vha->hw) && vha->hw->flags.gpsc_supported) {
+diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
+index 0cacb667a88b..678083a34e4d 100644
+--- a/drivers/scsi/qla2xxx/qla_nvme.c
++++ b/drivers/scsi/qla2xxx/qla_nvme.c
 
-Best regards,
-Martin
+@@ -41,7 +41,7 @@ int qla_nvme_register_remote(struct scsi_qla_host *vha, struct fc_port *fcport)
+ 	req.port_name = wwn_to_u64(fcport->port_name);
+ 	req.node_name = wwn_to_u64(fcport->node_name);
+ 	req.port_role = 0;
+-	req.dev_loss_tmo = 0;
++	req.dev_loss_tmo = fcport->dev_loss_tmo;
+ 
+ 	if (fcport->nvme_prli_service_param & NVME_PRLI_SP_INITIATOR)
+ 		req.port_role = FC_PORT_ROLE_NVME_INITIATOR;
+@@ -68,6 +68,9 @@ int qla_nvme_register_remote(struct scsi_qla_host *vha, struct fc_port *fcport)
+ 		return ret;
+ 	}
+ 
++	nvme_fc_set_remoteport_devloss(fcport->nvme_remote_port,
++				       fcport->dev_loss_tmo);
++
+ 	if (fcport->nvme_prli_service_param & NVME_PRLI_SP_SLER)
+ 		ql_log(ql_log_info, vha, 0x212a,
+ 		       "PortID:%06x Supports SLER\n", req.port_id);
+-- 
+2.29.2
+
