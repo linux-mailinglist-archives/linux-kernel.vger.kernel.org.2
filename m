@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6D43BA078
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970FA3BA07A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbhGBMfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 08:35:40 -0400
-Received: from mga01.intel.com ([192.55.52.88]:3514 "EHLO mga01.intel.com"
+        id S232392AbhGBMfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 08:35:44 -0400
+Received: from mga17.intel.com ([192.55.52.151]:32622 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232351AbhGBMfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 08:35:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="230397118"
+        id S232377AbhGBMfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 08:35:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="189107255"
 X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
-   d="scan'208";a="230397118"
+   d="scan'208";a="189107255"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 05:33:04 -0700
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 05:33:07 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
-   d="scan'208";a="642660250"
+   d="scan'208";a="642660263"
 Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
-  by fmsmga006.fm.intel.com with ESMTP; 02 Jul 2021 05:33:01 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 02 Jul 2021 05:33:04 -0700
 From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
@@ -33,9 +33,9 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
         Alexander Antonov <alexander.antonov@linux.intel.com>,
         Alexei Budankov <abudankov@huawei.com>,
         Riccardo Mancini <rickyman7@gmail.com>
-Subject: [PATCH v9 09/24] perf record: Introduce bytes written stats to support --max-size option
-Date:   Fri,  2 Jul 2021 15:32:17 +0300
-Message-Id: <e30f91a95e332f5dfc9ae87c5617b6102da6a3d9.1625227739.git.alexey.v.bayduraev@linux.intel.com>
+Subject: [PATCH v9 10/24] perf record: Introduce data transferred and compressed stats
+Date:   Fri,  2 Jul 2021 15:32:18 +0300
+Message-Id: <cd94f0a535932ed26a1965ddccde78f213f2f4f8.1625227739.git.alexey.v.bayduraev@linux.intel.com>
 X-Mailer: git-send-email 2.19.0
 In-Reply-To: <cover.1625227739.git.alexey.v.bayduraev@linux.intel.com>
 References: <cover.1625227739.git.alexey.v.bayduraev@linux.intel.com>
@@ -45,82 +45,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding a function to calculate the total amount of data written
-and using it to support the --max-size option.
+Introduce bytes_transferred and bytes_compressed stats so they
+would capture statistics for the related data buffer transfers.
 
+Acked-by: Andi Kleen <ak@linux.intel.com>
+Acked-by: Namhyung Kim <namhyung@gmail.com>
 Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 ---
- tools/perf/builtin-record.c | 30 +++++++++++++++++++++++++++---
- tools/perf/util/mmap.h      |  1 +
- 2 files changed, 28 insertions(+), 3 deletions(-)
+ tools/perf/builtin-record.c | 68 +++++++++++++++++++++++++++++--------
+ tools/perf/util/mmap.h      |  2 ++
+ 2 files changed, 56 insertions(+), 14 deletions(-)
 
 diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index ac9bc1bbdff4..6419b7974435 100644
+index 6419b7974435..4d1571234ba2 100644
 --- a/tools/perf/builtin-record.c
 +++ b/tools/perf/builtin-record.c
-@@ -186,10 +186,28 @@ static bool switch_output_time(struct record *rec)
- 	       trigger_is_ready(&switch_output_trigger);
- }
+@@ -246,8 +246,8 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
  
-+static u64 record__bytes_written(struct record *rec)
-+{
-+	int t, tm;
-+	struct record_thread *thread_data = rec->thread_data;
-+	u64 bytes_written = rec->bytes_written;
+ static int record__aio_enabled(struct record *rec);
+ static int record__comp_enabled(struct record *rec);
+-static size_t zstd_compress(struct perf_session *session, void *dst, size_t dst_size,
+-			    void *src, size_t src_size);
++static size_t zstd_compress(struct zstd_data *data,
++			    void *dst, size_t dst_size, void *src, size_t src_size);
+ 
+ #ifdef HAVE_AIO_SUPPORT
+ static int record__aio_write(struct aiocb *cblock, int trace_fd,
+@@ -381,9 +381,13 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
+ 	 */
+ 
+ 	if (record__comp_enabled(aio->rec)) {
+-		size = zstd_compress(aio->rec->session, aio->data + aio->size,
+-				     mmap__mmap_len(map) - aio->size,
++		struct zstd_data *zstd_data = &aio->rec->session->zstd_data;
 +
-+	for (t = 0; t < rec->nr_threads; t++) {
-+		for (tm = 0; tm < thread_data[t].nr_mmaps; tm++) {
-+			if (thread_data[t].maps)
-+				bytes_written += thread_data[t].maps[tm]->bytes_written;
-+			if (thread_data[t].overwrite_maps)
-+				bytes_written += thread_data[t].overwrite_maps[tm]->bytes_written;
++		aio->rec->session->bytes_transferred += size;
++		size = zstd_compress(zstd_data,
++				     aio->data + aio->size, mmap__mmap_len(map) - aio->size,
+ 				     buf, size);
++		aio->rec->session->bytes_compressed += size;
+ 	} else {
+ 		memcpy(aio->data + aio->size, buf, size);
+ 	}
+@@ -608,8 +612,22 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
+ 	struct record *rec = to;
+ 
+ 	if (record__comp_enabled(rec)) {
+-		size = zstd_compress(rec->session, map->data, mmap__mmap_len(map), bf, size);
++		struct zstd_data *zstd_data = &rec->session->zstd_data;
++
++		if (map->file) {
++			zstd_data = &map->zstd_data;
++			map->bytes_transferred += size;
++		} else {
++			rec->session->bytes_transferred += size;
 +		}
-+	}
 +
-+	return bytes_written;
-+}
++		size = zstd_compress(zstd_data, map->data, mmap__mmap_len(map), bf, size);
+ 		bf   = map->data;
 +
- static bool record__output_max_size_exceeded(struct record *rec)
- {
- 	return rec->output_max_size &&
--	       (rec->bytes_written >= rec->output_max_size);
-+	       (record__bytes_written(rec) >= rec->output_max_size);
++		if (map->file)
++			map->bytes_compressed += size;
++		else
++			rec->session->bytes_compressed += size;
+ 	}
+ 
+ 	thread->samples++;
+@@ -1394,18 +1412,15 @@ static size_t process_comp_header(void *record, size_t increment)
+ 	return size;
  }
  
- static int record__write(struct record *rec, struct mmap *map __maybe_unused,
-@@ -205,15 +223,21 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
- 		return -1;
+-static size_t zstd_compress(struct perf_session *session, void *dst, size_t dst_size,
++static size_t zstd_compress(struct zstd_data *zstd_data, void *dst, size_t dst_size,
+ 			    void *src, size_t src_size)
+ {
+ 	size_t compressed;
+ 	size_t max_record_size = PERF_SAMPLE_MAX_SIZE - sizeof(struct perf_record_compressed) - 1;
+ 
+-	compressed = zstd_compress_stream_to_records(&session->zstd_data, dst, dst_size, src, src_size,
++	compressed = zstd_compress_stream_to_records(zstd_data, dst, dst_size, src, src_size,
+ 						     max_record_size, process_comp_header);
+ 
+-	session->bytes_transferred += src_size;
+-	session->bytes_compressed  += compressed;
+-
+ 	return compressed;
+ }
+ 
+@@ -2091,8 +2106,10 @@ static int record__start_threads(struct record *rec)
+ 
+ static int record__stop_threads(struct record *rec, unsigned long *waking)
+ {
+-	int t;
++	int t, tm;
++	struct mmap *map, *overwrite_map;
+ 	struct record_thread *thread_data = rec->thread_data;
++	u64 bytes_written, bytes_transferred, bytes_compressed;
+ 
+ 	for (t = 1; t < rec->nr_threads; t++)
+ 		record__terminate_thread(&thread_data[t]);
+@@ -2100,9 +2117,32 @@ static int record__stop_threads(struct record *rec, unsigned long *waking)
+ 	for (t = 0; t < rec->nr_threads; t++) {
+ 		rec->samples += thread_data[t].samples;
+ 		*waking += thread_data[t].waking;
+-		pr_debug("threads[%d]: samples=%lld, wakes=%ld, trasferred=%ld, compressed=%ld\n",
+-			 thread_data[t].tid, thread_data[t].samples, thread_data[t].waking,
+-			 rec->session->bytes_transferred, rec->session->bytes_compressed);
++		bytes_transferred = 0;
++		bytes_compressed = 0;
++		bytes_written = t ? 0 : rec->bytes_written;
++		for (tm = 0; tm < thread_data[t].nr_mmaps; tm++) {
++			if (thread_data[t].maps) {
++				map = thread_data[t].maps[tm];
++				bytes_transferred += map->bytes_transferred;
++				bytes_compressed += map->bytes_compressed;
++				bytes_written += map->bytes_written;
++			}
++			if (thread_data[t].overwrite_maps) {
++				overwrite_map = thread_data[t].overwrite_maps[tm];
++				bytes_transferred += overwrite_map->bytes_transferred;
++				bytes_compressed += overwrite_map->bytes_compressed;
++				bytes_written += overwrite_map->bytes_written;
++			}
++		}
++		rec->session->bytes_transferred += bytes_transferred;
++		rec->session->bytes_compressed += bytes_compressed;
++		pr_debug("threads[%d]: samples=%lld, wakes=%ld, ",
++			 thread_data[t].tid, thread_data[t].samples, thread_data[t].waking);
++		if (bytes_compressed)
++			pr_debug("trasferred=%ld, compressed=%ld\n",
++				 bytes_transferred, bytes_compressed);
++		else
++			pr_debug("written=%ld\n", bytes_written);
  	}
  
--	rec->bytes_written += size;
-+	if (map && map->file)
-+		map->bytes_written += size;
-+	else
-+		rec->bytes_written += size;
- 
- 	if (record__output_max_size_exceeded(rec) && !done) {
- 		fprintf(stderr, "[ perf record: perf size limit reached (%" PRIu64 " KB),"
- 				" stopping session ]\n",
--				rec->bytes_written >> 10);
-+				record__bytes_written(rec) >> 10);
- 		done = 1;
- 	}
- 
-+	if (map && map->file)
-+		return 0;
-+
- 	if (switch_output_size(rec))
- 		trigger_hit(&switch_output_trigger);
- 
+ 	return 0;
 diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
-index c4aed6e89549..67d41003d82e 100644
+index 67d41003d82e..f5e8c8a24e68 100644
 --- a/tools/perf/util/mmap.h
 +++ b/tools/perf/util/mmap.h
-@@ -46,6 +46,7 @@ struct mmap {
- 	int		comp_level;
+@@ -47,6 +47,8 @@ struct mmap {
  	struct perf_data_file *file;
  	struct zstd_data      zstd_data;
-+	u64		      bytes_written;
+ 	u64		      bytes_written;
++	u64		      bytes_transferred;
++	u64		      bytes_compressed;
  };
  
  struct mmap_params {
