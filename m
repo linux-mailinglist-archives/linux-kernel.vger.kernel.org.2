@@ -2,253 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE523BA2DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCCC3BA2DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbhGBPoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 11:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbhGBPoK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 11:44:10 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9678CC061762;
-        Fri,  2 Jul 2021 08:41:38 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id f11so5817272plg.0;
-        Fri, 02 Jul 2021 08:41:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KK3MxR0qLHegtXtjdBa6mIQL9eEFTmy8PehJd/2y4JU=;
-        b=M/u0o3zzoTdUxRNJwuzLBn0niDD7CnupOn7tviEGUaHK+Bzi18vZvQHxNXmCP900bg
-         +vGBi+hCung8BUDwhfbixkZ48kXrX7yv0hY3HCy1bAey2dlshbfRgHcXBTxWNQV2TWOU
-         Ft+aMSodXV0FVKBHupX80apjyUyPxmPm+8nSUj9x22F3gaApHXsxrwdRGrlsrX4IwwI7
-         36oHxj4bo4wgs/8jLfGv2E89hdXsTEh/O3O9Fx6uKD2FMUPfNl3SKa7B6tb1Ho///UaD
-         vTOKCwPczAJlVTZ0l4y8VrnmzOAua+9zc0/x+0lL5q/7C7OKA60tBQZ4GzwJwyIp3LNk
-         AjaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KK3MxR0qLHegtXtjdBa6mIQL9eEFTmy8PehJd/2y4JU=;
-        b=kmPaUFTVOGJh2UcUSRBIok6nQkCBNQGOYSmV/ZrhElWXTjSFIGoPAAF9T7b23FGaOv
-         8CJ5+iD+/y/7/3FIONWDVY8XJvPZ3CDMvADGRxNWuFIAuY9yZ2yEdHZKsSM7m2DA9CxS
-         Ev/jgTywtAq92EtoFSA8oikcMoTjIYh238f9061ZFz7xCmW4h8v9GtosUaot/xjGvYFI
-         70s1XNmcbHv3UjLg4dpxmy+UB8BfY4I/GM7eh+as6G4yGH7n2hLPMps/X/12UuVzfPq3
-         zg6KOJBE79j2UBQr7VrEle54QMiLvFOrfVQBxrc5C4H+zt+S3XeDFgfll96AM/ZxcB7o
-         J9KQ==
-X-Gm-Message-State: AOAM531LAcKRVZzoTxiI7WK1coBSZwD3XkMQqXR1s5reZ7Bco1654XBZ
-        bBxMzATqzyTpyXXHgeDLumA=
-X-Google-Smtp-Source: ABdhPJxWVhXOIeVyGwLHh6fRO+IXXvAEtIe9g3z+dOcJhuFS+UPcohpRnzYO4VG09ys1jwJ0ujcAcA==
-X-Received: by 2002:a17:90a:8596:: with SMTP id m22mr405427pjn.110.1625240497630;
-        Fri, 02 Jul 2021 08:41:37 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id na7sm12892376pjb.36.2021.07.02.08.41.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Jul 2021 08:41:37 -0700 (PDT)
-Subject: Re: [PATCH 1/2] fcntl: fix potential deadlocks for &fown_struct.lock
-To:     Jeff Layton <jlayton@kernel.org>, bfields@fieldses.org,
-        viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
-References: <20210702091831.615042-1-desmondcheongzx@gmail.com>
- <20210702091831.615042-2-desmondcheongzx@gmail.com>
- <43b5f2c7e7e5e5ed35c8e3de2eafeb960f267836.camel@kernel.org>
- <9e2a46b9-5735-d73b-d35e-f88dc994f6b4@gmail.com>
- <47d655dba51cd7d3cf3011f30f42bf7120c656db.camel@kernel.org>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <3e88d502-99b6-0dac-8548-a7781beb727a@gmail.com>
-Date:   Fri, 2 Jul 2021 23:41:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232131AbhGBPqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 11:46:23 -0400
+Received: from mga06.intel.com ([134.134.136.31]:2758 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232107AbhGBPqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 11:46:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10033"; a="269877327"
+X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
+   d="scan'208";a="269877327"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 08:42:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
+   d="scan'208";a="644973037"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 02 Jul 2021 08:42:49 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lzLJY-000B8a-Ov; Fri, 02 Jul 2021 15:42:48 +0000
+Date:   Fri, 02 Jul 2021 23:42:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:for-next/Warray-bounds] BUILD SUCCESS
+ b361f88a791546ec92ee82ffc36857a56697455e
+Message-ID: <60df33e9.TqcDOZg7JjepghRy%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <47d655dba51cd7d3cf3011f30f42bf7120c656db.camel@kernel.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/7/21 10:27 pm, Jeff Layton wrote:
-> On Fri, 2021-07-02 at 21:55 +0800, Desmond Cheong Zhi Xi wrote:
->> On 2/7/21 7:44 pm, Jeff Layton wrote:
->>> On Fri, 2021-07-02 at 17:18 +0800, Desmond Cheong Zhi Xi wrote:
->>>> Syzbot reports a potential deadlock in do_fcntl:
->>>>
->>>> ========================================================
->>>> WARNING: possible irq lock inversion dependency detected
->>>> 5.12.0-syzkaller #0 Not tainted
->>>> --------------------------------------------------------
->>>> syz-executor132/8391 just changed the state of lock:
->>>> ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: f_getown_ex fs/fcntl.c:211 [inline]
->>>> ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: do_fcntl+0x8b4/0x1200 fs/fcntl.c:395
->>>> but this lock was taken by another, HARDIRQ-safe lock in the past:
->>>>    (&dev->event_lock){-...}-{2:2}
->>>>
->>>> and interrupts could create inverse lock ordering between them.
->>>>
->>>> other info that might help us debug this:
->>>> Chain exists of:
->>>>     &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
->>>>
->>>>    Possible interrupt unsafe locking scenario:
->>>>
->>>>          CPU0                    CPU1
->>>>          ----                    ----
->>>>     lock(&f->f_owner.lock);
->>>>                                  local_irq_disable();
->>>>                                  lock(&dev->event_lock);
->>>>                                  lock(&new->fa_lock);
->>>>     <Interrupt>
->>>>       lock(&dev->event_lock);
->>>>
->>>>    *** DEADLOCK ***
->>>>
->>>> This happens because there is a lock hierarchy of
->>>> &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
->>>> from the following call chain:
->>>>
->>>>     input_inject_event():
->>>>       spin_lock_irqsave(&dev->event_lock,...);
->>>>       input_handle_event():
->>>>         input_pass_values():
->>>>           input_to_handler():
->>>>             evdev_events():
->>>>               evdev_pass_values():
->>>>                 spin_lock(&client->buffer_lock);
->>>>                 __pass_event():
->>>>                   kill_fasync():
->>>>                     kill_fasync_rcu():
->>>>                       read_lock(&fa->fa_lock);
->>>>                       send_sigio():
->>>>                         read_lock_irqsave(&fown->lock,...);
->>>>
->>>> However, since &dev->event_lock is HARDIRQ-safe, interrupts have to be
->>>> disabled while grabbing &f->f_owner.lock, otherwise we invert the lock
->>>> hierarchy.
->>>>
->>>> Hence, we replace calls to read_lock/read_unlock on &f->f_owner.lock,
->>>> with read_lock_irq/read_unlock_irq.
->>>>
->>>
->>> Patches look reasonable overall, but why does this one use read_lock_irq
->>> and the other one use read_lock_irqsave? Don't we need to *_irqsasve in
->>> both patches?
->>>
->>>
->>
->> My thinking was that the functions f_getown_ex and f_getowner_uids are
->> only called from do_fcntl, and f_getown is only called from do_fnctl and
->> sock_ioctl. do_fnctl itself is only called from syscalls.
->>
->> For sock_ioctl, the chain is
->>     compat_sock_ioctl():
->>       compat_sock_ioctl_trans():
->>         sock_ioctl()
->>
->> For both paths, it doesn't seem that interrupts are disabled, so I used
->> the *irq variants.
->>
->> But of course, I might be very mistaken on this, and I'd be happy to
->> make the change to *_irqsave.
->>
->> Also, on further inspection, if these calls should be changed to
->> *_irqsave, then I believe the call to write_lock_irq in f_modown (called
->> from do_fcntl() --> f_setown() --> __f_setown() --> f_modown()) should
->> also be changed to *_irqsave.
->>
->> There's also a call to write_lock_irq(&fa->fa_lock) in
->> fasync_remove_entry and fasync_insert_entry. Whether these should be
->> changed as well isn't as clear to me, but since it's safe to do, perhaps
->> it makes sense to use *_irqsave for them too. Thoughts?
->>
-> 
-> 
-> I think your reasoning is probably valid here and we don't need to
-> save/restore. It wasn't obvious to me until you pointed it out though.
-> It might be worth a comment, or maybe even this at the top of both
-> functions:
-> 
->      WARN_ON_ONCE(irqs_disabled());
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/Warray-bounds
+branch HEAD: b361f88a791546ec92ee82ffc36857a56697455e  Makefile: Enable -Warray-bounds
 
-Adding the WARN_ON_ONCE makes sense. I'll test it with Syzbot then 
-prepare a v2 series.
+elapsed time: 724m
 
-> I'll pick these into linux-next soon and plan to merge them for v5.15.
-> Let me know if you think they need to go in sooner.
-> 
-> 
+configs tested: 191
+configs skipped: 2
 
-Sounds good to me. Thanks for the feedback, Jeff.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->>>> Reported-and-tested-by: syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
->>>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->>>> ---
->>>>    fs/fcntl.c | 13 +++++++------
->>>>    1 file changed, 7 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/fs/fcntl.c b/fs/fcntl.c
->>>> index dfc72f15be7f..cf9e81dfa615 100644
->>>> --- a/fs/fcntl.c
->>>> +++ b/fs/fcntl.c
->>>> @@ -150,7 +150,8 @@ void f_delown(struct file *filp)
->>>>    pid_t f_getown(struct file *filp)
->>>>    {
->>>>    	pid_t pid = 0;
->>>> -	read_lock(&filp->f_owner.lock);
->>>> +
->>>> +	read_lock_irq(&filp->f_owner.lock);
->>>>    	rcu_read_lock();
->>>>    	if (pid_task(filp->f_owner.pid, filp->f_owner.pid_type)) {
->>>>    		pid = pid_vnr(filp->f_owner.pid);
->>>> @@ -158,7 +159,7 @@ pid_t f_getown(struct file *filp)
->>>>    			pid = -pid;
->>>>    	}
->>>>    	rcu_read_unlock();
->>>> -	read_unlock(&filp->f_owner.lock);
->>>> +	read_unlock_irq(&filp->f_owner.lock);
->>>>    	return pid;
->>>>    }
->>>>    
->>>> @@ -208,7 +209,7 @@ static int f_getown_ex(struct file *filp, unsigned long arg)
->>>>    	struct f_owner_ex owner = {};
->>>>    	int ret = 0;
->>>>    
->>>> -	read_lock(&filp->f_owner.lock);
->>>> +	read_lock_irq(&filp->f_owner.lock);
->>>>    	rcu_read_lock();
->>>>    	if (pid_task(filp->f_owner.pid, filp->f_owner.pid_type))
->>>>    		owner.pid = pid_vnr(filp->f_owner.pid);
->>>> @@ -231,7 +232,7 @@ static int f_getown_ex(struct file *filp, unsigned long arg)
->>>>    		ret = -EINVAL;
->>>>    		break;
->>>>    	}
->>>> -	read_unlock(&filp->f_owner.lock);
->>>> +	read_unlock_irq(&filp->f_owner.lock);
->>>>    
->>>>    	if (!ret) {
->>>>    		ret = copy_to_user(owner_p, &owner, sizeof(owner));
->>>> @@ -249,10 +250,10 @@ static int f_getowner_uids(struct file *filp, unsigned long arg)
->>>>    	uid_t src[2];
->>>>    	int err;
->>>>    
->>>> -	read_lock(&filp->f_owner.lock);
->>>> +	read_lock_irq(&filp->f_owner.lock);
->>>>    	src[0] = from_kuid(user_ns, filp->f_owner.uid);
->>>>    	src[1] = from_kuid(user_ns, filp->f_owner.euid);
->>>> -	read_unlock(&filp->f_owner.lock);
->>>> +	read_unlock_irq(&filp->f_owner.lock);
->>>>    
->>>>    	err  = put_user(src[0], &dst[0]);
->>>>    	err |= put_user(src[1], &dst[1]);
->>>
->>
-> 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     mpc5200_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arm                        mvebu_v5_defconfig
+arm                          ixp4xx_defconfig
+microblaze                      mmu_defconfig
+powerpc                  mpc866_ads_defconfig
+xtensa                generic_kc705_defconfig
+sh                          sdk7780_defconfig
+sh                         microdev_defconfig
+arm                        cerfcube_defconfig
+arm                  colibri_pxa270_defconfig
+arm                           stm32_defconfig
+s390                             allmodconfig
+powerpc                         wii_defconfig
+powerpc                   currituck_defconfig
+mips                 decstation_r4k_defconfig
+sh                          polaris_defconfig
+openrisc                    or1ksim_defconfig
+powerpc                 mpc836x_mds_defconfig
+xtensa                  nommu_kc705_defconfig
+arm                       omap2plus_defconfig
+powerpc                 linkstation_defconfig
+sh                        sh7763rdp_defconfig
+sh                             espt_defconfig
+arm                           u8500_defconfig
+arm                          iop32x_defconfig
+sh                          landisk_defconfig
+m68k                       m5208evb_defconfig
+nios2                            allyesconfig
+mips                malta_qemu_32r6_defconfig
+mips                           ip32_defconfig
+powerpc                 mpc834x_mds_defconfig
+mips                         bigsur_defconfig
+s390                             allyesconfig
+ia64                        generic_defconfig
+arc                     nsimosci_hs_defconfig
+arc                        vdk_hs38_defconfig
+sh                        apsh4ad0a_defconfig
+arm                         lpc32xx_defconfig
+arm                         orion5x_defconfig
+h8300                       h8s-sim_defconfig
+sh                               j2_defconfig
+powerpc                          g5_defconfig
+ia64                         bigsur_defconfig
+arm                        spear6xx_defconfig
+xtensa                    smp_lx200_defconfig
+powerpc                      acadia_defconfig
+arc                              alldefconfig
+arm                            dove_defconfig
+mips                         tb0287_defconfig
+arm                       imx_v4_v5_defconfig
+arm                       mainstone_defconfig
+arm                        shmobile_defconfig
+mips                           jazz_defconfig
+riscv                            alldefconfig
+sh                          rsk7203_defconfig
+sh                           se7724_defconfig
+powerpc               mpc834x_itxgp_defconfig
+sh                        sh7785lcr_defconfig
+arm                              alldefconfig
+sh                          urquell_defconfig
+sh                ecovec24-romimage_defconfig
+powerpc                 mpc8560_ads_defconfig
+powerpc                  storcenter_defconfig
+mips                      pistachio_defconfig
+sh                     magicpanelr2_defconfig
+sh                   sh7724_generic_defconfig
+arc                     haps_hs_smp_defconfig
+mips                      malta_kvm_defconfig
+openrisc                            defconfig
+powerpc                     pseries_defconfig
+openrisc                 simple_smp_defconfig
+arm                       aspeed_g4_defconfig
+sh                          rsk7269_defconfig
+powerpc                   lite5200b_defconfig
+mips                        qi_lb60_defconfig
+xtensa                              defconfig
+powerpc                     mpc512x_defconfig
+m68k                         apollo_defconfig
+xtensa                           alldefconfig
+arm64                            alldefconfig
+arm                            pleb_defconfig
+arm                        neponset_defconfig
+xtensa                  cadence_csp_defconfig
+mips                        maltaup_defconfig
+powerpc                     tqm8555_defconfig
+mips                          ath79_defconfig
+mips                         cobalt_defconfig
+sparc64                             defconfig
+powerpc                      katmai_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20210630
+x86_64               randconfig-a001-20210630
+x86_64               randconfig-a004-20210630
+x86_64               randconfig-a005-20210630
+x86_64               randconfig-a006-20210630
+x86_64               randconfig-a003-20210630
+i386                 randconfig-a004-20210630
+i386                 randconfig-a001-20210630
+i386                 randconfig-a003-20210630
+i386                 randconfig-a002-20210630
+i386                 randconfig-a005-20210630
+i386                 randconfig-a006-20210630
+x86_64               randconfig-a015-20210702
+x86_64               randconfig-a012-20210702
+x86_64               randconfig-a014-20210702
+x86_64               randconfig-a011-20210702
+x86_64               randconfig-a016-20210702
+x86_64               randconfig-a013-20210702
+i386                 randconfig-a015-20210701
+i386                 randconfig-a016-20210701
+i386                 randconfig-a011-20210701
+i386                 randconfig-a012-20210701
+i386                 randconfig-a013-20210701
+i386                 randconfig-a014-20210701
+i386                 randconfig-a014-20210630
+i386                 randconfig-a011-20210630
+i386                 randconfig-a016-20210630
+i386                 randconfig-a012-20210630
+i386                 randconfig-a013-20210630
+i386                 randconfig-a015-20210630
+i386                 randconfig-a015-20210702
+i386                 randconfig-a016-20210702
+i386                 randconfig-a011-20210702
+i386                 randconfig-a012-20210702
+i386                 randconfig-a013-20210702
+i386                 randconfig-a014-20210702
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-b001-20210702
+x86_64               randconfig-b001-20210630
+x86_64               randconfig-a004-20210702
+x86_64               randconfig-a005-20210702
+x86_64               randconfig-a002-20210702
+x86_64               randconfig-a006-20210702
+x86_64               randconfig-a003-20210702
+x86_64               randconfig-a001-20210702
+x86_64               randconfig-a012-20210630
+x86_64               randconfig-a015-20210630
+x86_64               randconfig-a016-20210630
+x86_64               randconfig-a013-20210630
+x86_64               randconfig-a011-20210630
+x86_64               randconfig-a014-20210630
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
