@@ -2,172 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70AD3B9E33
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778B63B9E35
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhGBJ3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 05:29:20 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9445 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231301AbhGBJ3Q (ORCPT
+        id S231186AbhGBJ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 05:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230205AbhGBJ3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 05:29:16 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GGV4l3HRDzZkG4;
-        Fri,  2 Jul 2021 17:23:35 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 2 Jul 2021 17:26:43 +0800
-Received: from SWX921481.china.huawei.com (10.126.203.116) by
- dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 2 Jul 2021 17:26:38 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <gregkh@linuxfoundation.org>, <akpm@linux-foundation.org>,
-        <andriy.shevchenko@linux.intel.com>, <linux-kernel@vger.kernel.org>
-CC:     <dave.hansen@intel.com>, <yury.norov@gmail.com>,
-        <linux@rasmusvillemoes.dk>, <rafael@kernel.org>,
-        <rdunlap@infradead.org>, <agordeev@linux.ibm.com>,
-        <sbrivio@redhat.com>, <jianpeng.ma@intel.com>,
-        <valentin.schneider@arm.com>, <peterz@infradead.org>,
-        <bristot@redhat.com>, <guodong.xu@linaro.org>,
-        <tangchengchang@huawei.com>, <prime.zeng@hisilicon.com>,
-        <yangyicong@huawei.com>, <tim.c.chen@linux.intel.com>,
-        <linuxarm@huawei.com>, Tian Tao <tiantao6@hisilicon.com>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH v5 3/3] drivers/base/node.c: use bin_attribute to break the size limitation of cpumap ABI
-Date:   Fri, 2 Jul 2021 21:25:59 +1200
-Message-ID: <20210702092559.8776-4-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <20210702092559.8776-1-song.bao.hua@hisilicon.com>
-References: <20210702092559.8776-1-song.bao.hua@hisilicon.com>
+        Fri, 2 Jul 2021 05:29:35 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F186C061762;
+        Fri,  2 Jul 2021 02:27:03 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id b5so5277098plg.2;
+        Fri, 02 Jul 2021 02:27:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JLBVU2oYPwgUK6TMMS2VrMuatUwA2JUH26xpgi3SBU4=;
+        b=l9mtoqRxdQv5+bIdZXHr5Z4u1EbC3kBVJyheCkuy3H9BMNTF1SbWESPkK4VgHNDfAJ
+         /nfyW6V7/6Cro8CGLttpujpJtZfzJlBXUrVJSNSrigMMbfKRQRJT0XzRz/5ENBi9ZX0i
+         I9xnGQH66qNjOiLVheWfdzuKj+vumV7+Q2eyRARj57QIqJojJyzXuMUTt5hcUv8ngRoF
+         RR5ISgQgAfyxoJOq+YTvorBqsw0jQ1TSgBh9c+aim4pWbhShGxnY0YJ2o7pploaczQXs
+         rTR0nuwjPrjqiFzOMqVeUt3gHSBso+EBrEBCsUGEHn3Lc8V+PJcUr7L4j9Mrwp+hzKx7
+         YHjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JLBVU2oYPwgUK6TMMS2VrMuatUwA2JUH26xpgi3SBU4=;
+        b=NmSWjh++xY8h4aDVxqhPy0tizW2ZS9zrp8F+ODI8Qu9xlcP9eHEfbuv8P9amVV/ffD
+         FpnYUB0h32abrWIhyLrasd7I+BjFQ24Qn5Rrx0KD8t52xYdpW93xb5ueH+xH9yrmfthD
+         IG2F2f6fcNIP4HI8/8LClF7tHMiFOtylOcfU1IzW3iHeseap+vLnul+z97x8v6f2JADA
+         ZeArTn+PtEGnwBccALvKWpLgBg6avUrDS1twGINZklHeR+2G5kYmetR6VHtb/xghAAJ3
+         DL2dwgD0pzzuH5zegopzk6jhhs/vDQaAhZ6Qw3ZDnhl/RTNTcwTcNNe2d7L/w+70y3yh
+         w2ww==
+X-Gm-Message-State: AOAM531lMW1NJsVIH2fUEbmJFIjkD4KjDlt1d7zMMfL1DGUef33zDo2Q
+        DVfksnlmR/vaIVsfaC1MPIVNvefopxkPDiQ4/vc=
+X-Google-Smtp-Source: ABdhPJzaPxAQI3RUf2tQGeWiI59h46+Mbr+QbY5AlUdqFsPjXJRAdKFsiLC6Jke0wlOcLFrGzkW1EKXsz32rcGPrcu4=
+X-Received: by 2002:a17:902:b198:b029:11b:2246:e374 with SMTP id
+ s24-20020a170902b198b029011b2246e374mr1656527plr.17.1625218022764; Fri, 02
+ Jul 2021 02:27:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.203.116]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggemi761-chm.china.huawei.com (10.1.198.147)
-X-CFilter-Loop: Reflected
+References: <20210626161819.30508-1-sergio.paracuellos@gmail.com>
+ <CAHp75VfM-35tQMRh98mtg2XmDOJFnmjdYRKZZoi9ADm=AT2xUw@mail.gmail.com>
+ <CAMhs-H_fcNDAOHm=tZB4ku9fzeea_7f4ZLg7w5KEmcNu+8wbQQ@mail.gmail.com>
+ <CAHp75VeN+vww=Bj=g-nx9AT0FKSGAZ8CKQZn=ff2kfQWM+dxdw@mail.gmail.com>
+ <CAMhs-H-WwCfPDspgxzN=W8QouZ7WPAeyJDYf_6=YezyCkTM=Vw@mail.gmail.com>
+ <CAHp75VcF-HDZ6mKvXT=zYnBrcPaNJ+SYJ72LQ7s-62zQ5ZqoQg@mail.gmail.com> <CAMhs-H9gw63j98vVo3y0ymW4_6rFNL8u5cYNM2hzyrmkPB3h3w@mail.gmail.com>
+In-Reply-To: <CAMhs-H9gw63j98vVo3y0ymW4_6rFNL8u5cYNM2hzyrmkPB3h3w@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 2 Jul 2021 12:26:24 +0300
+Message-ID: <CAHp75VccSCWa=EH8i01_b_HLZRumUZ48oRjeuaV5Dp1BQAoz2w@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: mt7621: support gpio-line-names property
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        John Thomson <git@johnthomson.fastmail.com.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        NeilBrown <neil@brown.name>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Nicholas Mc Guire <hofrat@osadl.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tian Tao <tiantao6@hisilicon.com>
+On Sun, Jun 27, 2021 at 4:13 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+> On Sun, Jun 27, 2021 at 3:01 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Sun, Jun 27, 2021 at 1:56 PM Sergio Paracuellos
+> > <sergio.paracuellos@gmail.com> wrote:
+> > > On Sun, Jun 27, 2021 at 12:51 PM Andy Shevchenko
+> > > <andy.shevchenko@gmail.com> wrote:
+> > > > On Sun, Jun 27, 2021 at 12:47 PM Sergio Paracuellos
+> > > > <sergio.paracuellos@gmail.com> wrote:
+> > > > > On Sun, Jun 27, 2021 at 11:33 AM Andy Shevchenko
+> > > > > <andy.shevchenko@gmail.com> wrote:
+> > > > > > On Sat, Jun 26, 2021 at 7:18 PM Sergio Paracuellos
+> > > > > > <sergio.paracuellos@gmail.com> wrote:
+> > > > > > >
+> > > > > > > The default handling of the gpio-line-names property by the
+> > > > > > > gpiolib-of implementation does not work with the multiple
+> > > > > > > gpiochip banks per device structure used by the gpio-mt7621
+> > > > > > > driver.
+> > > > > > >
+> > > > > > > This commit adds driver level support for the device tree
+> > > > > > > property so that GPIO lines can be assigned friendly names.
+> > > >
+> > > > > > > This driver has three gpiochips with 32 gpios each. Core implementation
+> > > > > >
+> > > > > > implementation
+> > > > > >
+> > > > > >
+> > > > > > > got gpio's repeated along each gpio chip if chip.names is not assigned.
+> > > > > > > To avoid this behaviour driver will set this names as empty or
+> > > > > >
+> > > > > > the driver
+> > > > > > these names
+> > > > > >
+> > > > > > > with desired friendly line names. Consider the following sample with
+> > > > > > > minimal entries for the first chip with this patch changes applied:
+> > > > > >
+> > > > > > The same comment as per v1:
+> > > > > >
+> > > > > > Any idea why it's not a duplicate of
+> > > > > > https://elixir.bootlin.com/linux/v5.13-rc7/C/ident/devprop_gpiochip_set_names,
+> > > > > > and why the latter is not called in your case?
+> > > > >
+> > > > > The core properly calls this function but not in the way expected.
+> > > > > This driver implements three banks of 32 gpios each internally using
+> > > > > one gpiochip per bank, all of them in the same device. So the core
+> > > > > code you are pointing out here duplicates the same names along the
+> > > > > three gpiochips which is not the expected behaviour. So implementing
+> > > > > in this way and setting names at least reserved avoids the core code
+> > > > > to be run and also avoids the duplication getting expected behaviour
+> > > > > for all the banks and each line friendly name.
+> > > >
+> > > > Isn't it the problem of how we supply fwnode in that case?
+> > > > Another possibility is to fix DT (although I'm not sure it's now possible).
+> > >
+> > > Since the fwnode is the same for all banks of the same device, each bank
+> > > repeats the first MTK_BANK_WIDTH label names in each bank.
+> >
+> > Can you point out the DT in question?
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/tree/drivers/staging/mt7621-dts/mt7621.dtsi?h=staging-next
+>
+> Gpio node:
+>
+>  gpio: gpio@600 {
+>               #gpio-cells = <2>;
+>               #interrupt-cells = <2>;
+>               compatible = "mediatek,mt7621-gpio";
+>               gpio-controller;
+>               gpio-ranges = <&pinctrl 0 0 95>;
+>               interrupt-controller;
+>               reg = <0x600 0x100>;
+>               interrupt-parent = <&gic>;
+>               interrupts = <GIC_SHARED 12 IRQ_TYPE_LEVEL_HIGH>;
+>    };
+>
+> My overlay:
+>
+> &gpio {
+>     gpio-line-names = "", "", "", "",
+>                       "", "", "SFP LOS", "extcon port5 PoE compat",
+>                       "SFP module def0", "LED blue SFP", "SFP tx disable", "",
+>                       "switch USB power", "mode", "", "buzzer",
+>                       "LED blue pwr", "switch port5 PoE out", "reset";
+> };
+>
+>
+>
+> >
+> > > This commit populates the gc.names member of each bank from the
+> > > device-tree node within the driver. This overrides the default behavior
+> > > since devprop_gpiochip_set_names() will only be called if names is NULL.
+> >
+> > I believe this commit is not needed in the proposed (i.e. duplication) shape.
+> > The fwnode supports primary and secondary ones. Thus, we may create a
+> > pair of fwnodes when they will unify properties per device with
+> > properties per child together (child is primary and device, i.e.
+> > parent, is secondary).
+>
+> There are no child nodes, all the stuff is in the same parent node
+> and, as I said, belongs to the same device but internally uses three
+> gpiochips.
 
-Reading sys/devices/system/cpu/cpuX/nodeX/ returns cpumap and cpulist.
-However, the size of this file is limited to PAGE_SIZE because of the
-limitation for sysfs attribute.
+And it can't be split into three children in the overlay?
+Let's assume it can't, then the GPIO library function should be
+refactored in a way that it takes parameters like base index for the
+names and tries to satisfy the caller.
 
-This patch moves to use bin_attribute to extend the ABI to be more
-than one page so that cpumap bitmask and list won't be potentially
-trimmed.
+> This case is pretty much the same as the following already
+> added commit for gpio-brcmstb:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/drivers/gpio/gpio-brcmstb.c?id=5eefcaed501dd9e3933dbff58720244bd75ed90f
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- drivers/base/node.c | 52 +++++++++++++++++++++++++++++----------------
- 1 file changed, 34 insertions(+), 18 deletions(-)
+This should be fixed accordingly.
 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index 9db297431b97..add53df53b45 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -27,42 +27,45 @@ static struct bus_type node_subsys = {
- };
- 
- 
--static ssize_t node_read_cpumap(struct device *dev, bool list, char *buf)
-+static ssize_t node_read_cpumap(struct device *dev, bool list, char *buf,
-+				loff_t off, size_t count)
- {
- 	ssize_t n;
- 	cpumask_var_t mask;
- 	struct node *node_dev = to_node(dev);
- 
--	/* 2008/04/07: buf currently PAGE_SIZE, need 9 chars per 32 bits. */
--	BUILD_BUG_ON((NR_CPUS/32 * 9) > (PAGE_SIZE-1));
--
- 	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
- 		return 0;
- 
- 	cpumask_and(mask, cpumask_of_node(node_dev->dev.id), cpu_online_mask);
--	n = cpumap_print_to_pagebuf(list, buf, mask);
-+	n = cpumap_print_to_buf(list, buf, mask, off, count);
- 	free_cpumask_var(mask);
- 
- 	return n;
- }
- 
--static inline ssize_t cpumap_show(struct device *dev,
--				  struct device_attribute *attr,
--				  char *buf)
-+static inline ssize_t cpumap_read(struct file *file, struct kobject *kobj,
-+				  struct bin_attribute *attr, char *buf,
-+				  loff_t off, size_t count)
- {
--	return node_read_cpumap(dev, false, buf);
-+	struct device *dev = kobj_to_dev(kobj);
-+
-+	return node_read_cpumap(dev, false, buf, off, count);
- }
- 
--static DEVICE_ATTR_RO(cpumap);
- 
--static inline ssize_t cpulist_show(struct device *dev,
--				   struct device_attribute *attr,
--				   char *buf)
-+static BIN_ATTR_RO(cpumap, 0);
-+
-+static inline ssize_t cpulist_read(struct file *file, struct kobject *kobj,
-+				   struct bin_attribute *attr, char *buf,
-+				   loff_t off, size_t count)
- {
--	return node_read_cpumap(dev, true, buf);
-+	struct device *dev = kobj_to_dev(kobj);
-+
-+	return node_read_cpumap(dev, true, buf, off, count);
- }
- 
--static DEVICE_ATTR_RO(cpulist);
-+static BIN_ATTR_RO(cpulist, 0);
- 
- /**
-  * struct node_access_nodes - Access class device to hold user visible
-@@ -557,15 +560,28 @@ static ssize_t node_read_distance(struct device *dev,
- static DEVICE_ATTR(distance, 0444, node_read_distance, NULL);
- 
- static struct attribute *node_dev_attrs[] = {
--	&dev_attr_cpumap.attr,
--	&dev_attr_cpulist.attr,
- 	&dev_attr_meminfo.attr,
- 	&dev_attr_numastat.attr,
- 	&dev_attr_distance.attr,
- 	&dev_attr_vmstat.attr,
- 	NULL
- };
--ATTRIBUTE_GROUPS(node_dev);
-+
-+static struct bin_attribute *node_dev_bin_attrs[] = {
-+	&bin_attr_cpumap,
-+	&bin_attr_cpulist,
-+	NULL
-+};
-+
-+static const struct attribute_group node_dev_group = {
-+	.attrs = node_dev_attrs,
-+	.bin_attrs = node_dev_bin_attrs
-+};
-+
-+static const struct attribute_group *node_dev_groups[] = {
-+	&node_dev_group,
-+	NULL
-+};
- 
- #ifdef CONFIG_HUGETLBFS
- /*
 -- 
-2.25.1
-
+With Best Regards,
+Andy Shevchenko
