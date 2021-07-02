@@ -2,240 +2,639 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708FC3BA511
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 23:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC853BA513
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 23:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhGBViA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 17:38:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229648AbhGBVh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 17:37:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B354613FB;
-        Fri,  2 Jul 2021 21:35:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625261726;
-        bh=z7+DYpKgnBsH4gmStBPaBdAdXn1cQOKI9dZV8b3NXNM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O5U27fRGk74UARzD45f9wKHvk3EX5YX9VineY9x+lwNVRwPZbVg77sihAIfNO7bNm
-         weYJvacJPidHc0BudFJcR7hZSbxiqcCQXtvEMs1z0wL1XwcHPkI2wPlapiJ5EcWwUP
-         baXFw8lRJ4jHmFrq38eMWFLA8KHdhmnxIzlcfaonjKEnN120lM9QSAPm7ayVP5k28l
-         pfgei4X66MYPcjbKZdkHFaFp9aPyC3aslYtleoTzjJn0/9fN6REv/Tg1WTk6koylwa
-         1j9lu3YAcCXGqY3OfWgAnnlGEIHjoxhMdYTfGxEpb3S3EUfjgPBeTt37NnpHBMs4gz
-         /1OGn4ZesjZqg==
-Received: by pali.im (Postfix)
-        id 35F7167D; Fri,  2 Jul 2021 23:35:24 +0200 (CEST)
-Date:   Fri, 2 Jul 2021 23:35:24 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 20/42] PCI: aardvark: Add support for more than 32 MSI
- interrupts
-Message-ID: <20210702213524.mhpu24dxlh2fe7zm@pali>
-References: <20210506153153.30454-1-pali@kernel.org>
- <20210506153153.30454-21-pali@kernel.org>
+        id S230017AbhGBVit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 17:38:49 -0400
+Received: from mail-il1-f176.google.com ([209.85.166.176]:36468 "EHLO
+        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229648AbhGBVis (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 17:38:48 -0400
+Received: by mail-il1-f176.google.com with SMTP id k6so3149420ilo.3;
+        Fri, 02 Jul 2021 14:36:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2FNfogAuUZ+o4dsPokESYKtv0tShy/P05G3l9bvhxCU=;
+        b=Lim7iYvLBYhG66uOlvG4CvBeYzgp0Wt4wHM7Gp6+elzvPJnh5RIvREdrNPxY35Nuf9
+         EoadhGP8WglCJQ7Fxt0xV/SDTke5jkHUhY565p6GTijjHh8NCpfdOWtK7JOjoxzwthBH
+         SCIeyRD7iH8VKLrpbZ2Q2Io4det6daHkZG+woLMqEsY3q/1/qYAkXJmjU7uFyNIyMIMT
+         QNQpvNT7xsRpjHAupUjSxAM1If25flq40ejlMtTWj/FdKyCRG/jnqJ+LivHsD285yJw4
+         nmuajvdMqCeh6YfF0HtOKDDyp7iVPx8SQ2UioMRGFqiNRiZ4oBoyTG7pd6A4pRHdt6Qb
+         /PvQ==
+X-Gm-Message-State: AOAM5336PshLrTMgE44uK4dFAS0+u/8mDH6NgltDgn2G6oO6ZuTpIulK
+        US3e4TM+Xv92S2ztenmaHA==
+X-Google-Smtp-Source: ABdhPJz57iTclTfZqt1Lo59e47Mtj4/Y0dopTWVOQi1wDAqYLl5eJSeOtC9mjVcXrJGcamyFAhE/Lw==
+X-Received: by 2002:a92:c045:: with SMTP id o5mr1303808ilf.223.1625261774409;
+        Fri, 02 Jul 2021 14:36:14 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id t8sm2497468iog.21.2021.07.02.14.36.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 14:36:13 -0700 (PDT)
+Received: (nullmailer pid 1059451 invoked by uid 1000);
+        Fri, 02 Jul 2021 21:36:11 -0000
+Date:   Fri, 2 Jul 2021 15:36:11 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Axel Lin <axel.lin@ingics.com>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH v11 6/8] mfd: hi6421-spmi-pmic: move driver from staging
+Message-ID: <20210702213611.GA1050378@robh.at.kernel.org>
+References: <cover.1625211021.git.mchehab+huawei@kernel.org>
+ <9dc21f0833b9b2b36fed7a6c7f3761d8e49bfaae.1625211021.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210506153153.30454-21-pali@kernel.org>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <9dc21f0833b9b2b36fed7a6c7f3761d8e49bfaae.1625211021.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FYI this one patch does not work. Please drop it.
-
-On Thursday 06 May 2021 17:31:31 Pali Rohár wrote:
-> Aardvark HW can handle MSI interrupt with any 16-bit number. Received MSI
-> interrupt number is visible in PCIE_MSI_PAYLOAD_REG register after clearing
-> corresponding bit in PCIE_MSI_STATUS_REG register.
-
-After doing heavy load testing I figured out that PCIE_MSI_PAYLOAD_REG
-register is either buggy or unusable or there is missing some other
-configuration as it contains in most cases just content of the last
-received memory write operation to MSI doorbell register. And also even
-after clearing corresponding bit in PCIE_MSI_STATUS_REG register.
-
-Therefore we should avoid usage of PCIE_MSI_PAYLOAD_REG register
-completely. Which implies that it is needed to use only corresponding
-bit from PCIE_MSI_STATUS_REG register and so only 32 MSI interrupts are
-supported.
-
-I will address removal of PCIE_MSI_STATUS_REG register in other followup
-patch.
-
-> The first 32 interrupt numbers are currently stored in linear map in MSI
-> inner domain. Store the rest in dynamic radix tree for space efficiency.
+On Fri, Jul 02, 2021 at 09:37:21AM +0200, Mauro Carvalho Chehab wrote:
+> This driver is ready for mainstream. So, move it out of staging.
 > 
-> Free interrupt numbers (available for MSI inner domain allocation) for the
-> first 32 interrupts are currently stored in a bitmap. For the rest,
-> introduce a linked list of allocated regions.
-> 
-> In the most common scenario there is only one PCIe card connected on boards
-> with Armada 3720 SoC. Since in Multi-MSI mode the PCIe device can use at
-> most 32 interrupts, all these interrupts are allocated in the linear map of
-> MSI inner domain and marked as used in the bitmap.
-> 
-> For less common scenarios with PCIe devices with multiple functions or with
-> a PCIe Bridge with packet switches with more connected PCIe devices more
-> than 32 interrupts are requested. In this case, store each interrupt range
-> from each interrupt request into the linked list as one node. In the worst
-> case every PCIe function will occupy one node in this linked list.
-> 
-> This change allows to use all 32 Multi-MSI interrupts on every connected
-> PCIe card on the Turris Mox router with Mox G module.
-> 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Reviewed-by: Marek Behún <kabel@kernel.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  drivers/pci/controller/pci-aardvark.c | 71 ++++++++++++++++++++++++---
->  1 file changed, 64 insertions(+), 7 deletions(-)
+>  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 134 ++++++++++++++++++
+>  MAINTAINERS                                   |   7 +
+>  drivers/mfd/Kconfig                           |  16 +++
+>  drivers/mfd/Makefile                          |   1 +
+>  drivers/mfd/hi6421-spmi-pmic.c                |  66 +++++++++
+>  drivers/staging/Kconfig                       |   2 -
+>  drivers/staging/Makefile                      |   1 -
+>  drivers/staging/hikey9xx/Kconfig              |  19 ---
+>  drivers/staging/hikey9xx/Makefile             |   3 -
+>  drivers/staging/hikey9xx/TODO                 |   5 -
+>  drivers/staging/hikey9xx/hi6421-spmi-pmic.c   |  66 ---------
+>  .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 134 ------------------
+>  12 files changed, 224 insertions(+), 230 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+>  create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
+>  delete mode 100644 drivers/staging/hikey9xx/Kconfig
+>  delete mode 100644 drivers/staging/hikey9xx/Makefile
+>  delete mode 100644 drivers/staging/hikey9xx/TODO
+>  delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+>  delete mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
 > 
-> diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> index 199015215779..d74e84b0e689 100644
-> --- a/drivers/pci/controller/pci-aardvark.c
-> +++ b/drivers/pci/controller/pci-aardvark.c
-> @@ -178,11 +178,18 @@
->  #define RETRAIN_WAIT_MAX_RETRIES	10
->  #define RETRAIN_WAIT_USLEEP_US		2000
+> diff --git a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+> new file mode 100644
+> index 000000000000..8e355cddd437
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+> @@ -0,0 +1,134 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/hisilicon,hi6421-spmi-pmic.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: HiSilicon 6421v600 SPMI PMIC
+> +
+> +maintainers:
+> +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> +
+> +description: |
+> +  HiSilicon 6421v600 should be connected inside a MIPI System Power Management
+> +  (SPMI) bus. It provides interrupts and power supply.
+> +
+> +  The GPIO and interrupt settings are represented as part of the top-level PMIC
+> +  node.
+> +
+> +  The SPMI controller part is provided by
+> +  Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "pmic@[0-9a-f]"
+> +
+> +  compatible:
+> +    const: hisilicon,hi6421v600-spmi
+
+Doesn't match the example.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#interrupt-cells':
+> +    const: 2
+> +
+> +  interrupt-controller: true
+> +
+> +  gpios:
+> +    maxItems: 1
+> +    description: GPIO used for IRQs
+
+Use 'interrupts' instead if this is an interrupt.
+
+> +
+> +  regulators:
+> +    type: object
+> +
+> +    properties:
+> +      '#address-cells':
+> +        const: 1
+> +
+> +      '#size-cells':
+> +        const: 0
+> +
+> +    patternProperties:
+> +      '^ldo[0-9]+@[0-9a-f]$':
+> +        type: object
+> +
+> +        $ref: "/schemas/regulator/regulator.yaml#"
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - regulators
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    /* pmic properties */
+> +
+> +    pmic: pmic@0 {
+> +      compatible = "hisilicon,hi6421-spmi";
+> +      reg = <0 0>;
+> +
+> +      #interrupt-cells = <2>;
+> +      interrupt-controller;
+> +      gpios = <&gpio28 0 0>;
+> +
+> +      regulators {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        ldo3: LDO3 {
+> +          regulator-name = "ldo3";
+> +          regulator-min-microvolt = <1500000>;
+> +          regulator-max-microvolt = <2000000>;
+> +          regulator-boot-on;
+> +        };
+> +
+> +        ldo4: LDO4 {
+> +          regulator-name = "ldo4";
+> +          regulator-min-microvolt = <1725000>;
+> +          regulator-max-microvolt = <1900000>;
+> +          regulator-boot-on;
+> +        };
+> +
+> +        ldo9: LDO9 {
+> +          regulator-name = "ldo9";
+> +          regulator-min-microvolt = <1750000>;
+> +          regulator-max-microvolt = <3300000>;
+> +          regulator-boot-on;
+> +        };
+> +
+> +        ldo15: LDO15 {
+> +          regulator-name = "ldo15";
+> +          regulator-min-microvolt = <1800000>;
+> +          regulator-max-microvolt = <3000000>;
+> +          regulator-always-on;
+> +        };
+> +
+> +        ldo16: LDO16 {
+> +          regulator-name = "ldo16";
+> +          regulator-min-microvolt = <1800000>;
+> +          regulator-max-microvolt = <3000000>;
+> +          regulator-boot-on;
+> +        };
+> +
+> +        ldo17: LDO17 {
+> +          regulator-name = "ldo17";
+> +          regulator-min-microvolt = <2500000>;
+> +          regulator-max-microvolt = <3300000>;
+> +        };
+> +
+> +        ldo33: LDO33 {
+> +          regulator-name = "ldo33";
+> +          regulator-min-microvolt = <2500000>;
+> +          regulator-max-microvolt = <3300000>;
+> +          regulator-boot-on;
+> +        };
+> +
+> +        ldo34: LDO34 {
+> +          regulator-name = "ldo34";
+> +          regulator-min-microvolt = <2600000>;
+> +          regulator-max-microvolt = <3300000>;
+> +        };
+> +      };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 31a8cc819c0d..61bdd887d72f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8311,6 +8311,13 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
+>  F:	drivers/spmi/hisi-spmi-controller.c
 >  
-> -#define MSI_IRQ_NUM			32
-> +#define MSI_IRQ_LINEAR_COUNT		32
-> +#define MSI_IRQ_TOTAL_COUNT		65536
+> +HISILICON SPMI PMIC DRIVER FOR HIKEY 6421v600
+> +M:	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> +L:	linux-kernel@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+> +F:	drivers/mfd/hi6421-spmi-pmic.c
+> +
+>  HISILICON STAGING DRIVERS FOR HIKEY 960/970
+>  M:	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>  S:	Maintained
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index 5c7f2b100191..99b8da2548b5 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -509,6 +509,22 @@ config MFD_HI6421_PMIC
+>  	  menus in order to enable them.
+>  	  We communicate with the Hi6421 via memory-mapped I/O.
 >  
->  #define CFG_RD_UR_VAL			0xffffffff
->  #define CFG_RD_CRS_VAL			0xffff0001
->  
-> +struct advk_msi_range {
-> +	struct list_head list;
-> +	u16 first;
-> +	u16 count;
+> +config MFD_HI6421_SPMI
+> +	tristate "HiSilicon Hi6421v600 SPMI PMU/Codec IC"
+> +	depends on OF
+> +	depends on SPMI
+> +	select MFD_CORE
+> +	select REGMAP_SPMI
+> +	help
+> +	  Add support for HiSilicon Hi6421v600 SPMI PMIC. Hi6421 includes
+> +	  multi-functions, such as regulators, RTC, codec, Coulomb counter,
+> +	  etc.
+> +
+> +	  This driver includes core APIs _only_. You have to select
+> +	  individual components like voltage regulators under corresponding
+> +	  menus in order to enable them.
+> +	  We communicate with the Hi6421v600 via a SPMI bus.
+> +
+>  config MFD_HI655X_PMIC
+>  	tristate "HiSilicon Hi655X series PMU/Codec IC"
+>  	depends on ARCH_HISI || COMPILE_TEST
+> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> index 4f6d2b8a5f76..e87230fc61ac 100644
+> --- a/drivers/mfd/Makefile
+> +++ b/drivers/mfd/Makefile
+> @@ -232,6 +232,7 @@ obj-$(CONFIG_MFD_IPAQ_MICRO)	+= ipaq-micro.o
+>  obj-$(CONFIG_MFD_IQS62X)	+= iqs62x.o
+>  obj-$(CONFIG_MFD_MENF21BMC)	+= menf21bmc.o
+>  obj-$(CONFIG_MFD_HI6421_PMIC)	+= hi6421-pmic-core.o
+> +obj-$(CONFIG_MFD_HI6421_SPMI)	+= hi6421-spmi-pmic.o
+>  obj-$(CONFIG_MFD_HI655X_PMIC)   += hi655x-pmic.o
+>  obj-$(CONFIG_MFD_DLN2)		+= dln2.o
+>  obj-$(CONFIG_MFD_RT5033)	+= rt5033.o
+> diff --git a/drivers/mfd/hi6421-spmi-pmic.c b/drivers/mfd/hi6421-spmi-pmic.c
+> new file mode 100644
+> index 000000000000..c9c0c3d7011f
+> --- /dev/null
+> +++ b/drivers/mfd/hi6421-spmi-pmic.c
+> @@ -0,0 +1,66 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Device driver for regulators in HISI PMIC IC
+> + *
+> + * Copyright (c) 2013 Linaro Ltd.
+> + * Copyright (c) 2011 Hisilicon.
+> + * Copyright (c) 2020-2021 Huawei Technologies Co., Ltd.
+> + */
+> +
+> +#include <linux/mfd/core.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/slab.h>
+> +#include <linux/spmi.h>
+> +
+> +static const struct mfd_cell hi6421v600_devs[] = {
+> +	{ .name = "hi6421v600-irq", },
+> +	{ .name = "hi6421v600-regulator", },
 > +};
 > +
->  struct advk_pcie {
->  	struct platform_device *pdev;
->  	void __iomem *base;
-> @@ -193,7 +200,8 @@ struct advk_pcie {
->  	struct irq_chip msi_bottom_irq_chip;
->  	struct irq_chip msi_irq_chip;
->  	struct msi_domain_info msi_domain_info;
-> -	DECLARE_BITMAP(msi_used, MSI_IRQ_NUM);
-> +	DECLARE_BITMAP(msi_used_linear, MSI_IRQ_LINEAR_COUNT);
-> +	struct list_head msi_used_radix;
->  	struct mutex msi_used_lock;
->  	int link_gen;
->  	struct pci_bridge_emul bridge;
-> @@ -885,12 +893,44 @@ static int advk_msi_irq_domain_alloc(struct irq_domain *domain,
->  				     unsigned int nr_irqs, void *args)
->  {
->  	struct advk_pcie *pcie = domain->host_data;
-> +	struct advk_msi_range *msi_range, *msi_range_prev, *msi_range_next;
-> +	unsigned int first, count, last;
->  	int hwirq, i;
->  
->  	mutex_lock(&pcie->msi_used_lock);
-> -	hwirq = bitmap_find_free_region(pcie->msi_used, MSI_IRQ_NUM,
+> +static const struct regmap_config regmap_config = {
+> +	.reg_bits	= 16,
+> +	.val_bits	= BITS_PER_BYTE,
+> +	.max_register	= 0xffff,
+> +	.fast_io	= true
+> +};
 > +
-> +	/* First few used interrupt numbers are marked in bitmap (the most common) */
-> +	hwirq = bitmap_find_free_region(pcie->msi_used_linear, MSI_IRQ_LINEAR_COUNT,
->  					order_base_2(nr_irqs));
+> +static int hi6421_spmi_pmic_probe(struct spmi_device *sdev)
+> +{
+> +	struct device *dev = &sdev->dev;
+> +	struct regmap *regmap;
+> +	int ret;
 > +
-> +	/* And rest used interrupt numbers are stored in linked list as ranges */
-> +	if (hwirq < 0) {
-> +		count = 1 << order_base_2(nr_irqs);
-> +		msi_range_prev = list_entry(&pcie->msi_used_radix, typeof(*msi_range), list);
-> +		do {
-> +			msi_range_next = list_next_entry(msi_range_prev, list);
-> +			last = list_entry_is_head(msi_range_next, &pcie->msi_used_radix, list)
-> +				? MSI_IRQ_TOTAL_COUNT : msi_range_next->first;
-> +			first = list_entry_is_head(msi_range_prev, &pcie->msi_used_radix, list)
-> +				? MSI_IRQ_LINEAR_COUNT : round_up(msi_range_prev->first +
-> +								  msi_range_prev->count, count);
-> +			if (first + count > last) {
-> +				msi_range_prev = msi_range_next;
-> +				continue;
-> +			}
-> +			msi_range = kzalloc(sizeof(*msi_range), GFP_KERNEL);
-> +			if (msi_range) {
-> +				hwirq = first;
-> +				msi_range->first = first;
-> +				msi_range->count = count;
-> +				list_add(&msi_range->list, &msi_range_prev->list);
-> +			}
-> +			break;
-> +		} while (!list_entry_is_head(msi_range_next, &pcie->msi_used_radix, list));
-> +	}
+> +	regmap = devm_regmap_init_spmi_ext(sdev, &regmap_config);
+> +	if (IS_ERR(regmap))
+> +		return PTR_ERR(regmap);
 > +
->  	mutex_unlock(&pcie->msi_used_lock);
+> +	dev_set_drvdata(&sdev->dev, regmap);
 > +
->  	if (hwirq < 0)
->  		return -ENOSPC;
+> +	ret = devm_mfd_add_devices(&sdev->dev, PLATFORM_DEVID_NONE,
+> +				   hi6421v600_devs, ARRAY_SIZE(hi6421v600_devs),
+> +				   NULL, 0, NULL);
+> +	if (ret < 0)
+> +		dev_err(dev, "Failed to add child devices: %d\n", ret);
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct of_device_id pmic_spmi_id_table[] = {
+> +	{ .compatible = "hisilicon,hi6421-spmi" },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, pmic_spmi_id_table);
+> +
+> +static struct spmi_driver hi6421_spmi_pmic_driver = {
+> +	.driver = {
+> +		.name	= "hi6421-spmi-pmic",
+> +		.of_match_table = pmic_spmi_id_table,
+> +	},
+> +	.probe	= hi6421_spmi_pmic_probe,
+> +};
+> +module_spmi_driver(hi6421_spmi_pmic_driver);
+> +
+> +MODULE_DESCRIPTION("HiSilicon Hi6421v600 SPMI PMIC driver");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
+> index b7ae5bdc4eb5..5b4267d3ed6b 100644
+> --- a/drivers/staging/Kconfig
+> +++ b/drivers/staging/Kconfig
+> @@ -104,6 +104,4 @@ source "drivers/staging/qlge/Kconfig"
 >  
-> @@ -908,9 +948,20 @@ static void advk_msi_irq_domain_free(struct irq_domain *domain,
->  {
->  	struct irq_data *d = irq_domain_get_irq_data(domain, virq);
->  	struct advk_pcie *pcie = domain->host_data;
-> +	struct advk_msi_range *msi_range;
+>  source "drivers/staging/wfx/Kconfig"
 >  
->  	mutex_lock(&pcie->msi_used_lock);
-> -	bitmap_release_region(pcie->msi_used, d->hwirq, order_base_2(nr_irqs));
-> +	if (d->hwirq < MSI_IRQ_LINEAR_COUNT) {
-> +		bitmap_release_region(pcie->msi_used_linear, d->hwirq, order_base_2(nr_irqs));
-> +	} else {
-> +		list_for_each_entry(msi_range, &pcie->msi_used_radix, list) {
-> +			if (msi_range->first != d->hwirq)
-> +				continue;
-> +			list_del(&msi_range->list);
-> +			kfree(msi_range);
-> +			break;
-> +		}
-> +	}
->  	mutex_unlock(&pcie->msi_used_lock);
->  }
->  
-> @@ -967,6 +1018,7 @@ static int advk_pcie_init_msi_irq_domain(struct advk_pcie *pcie)
->  	struct msi_domain_info *msi_di;
->  
->  	mutex_init(&pcie->msi_used_lock);
-> +	INIT_LIST_HEAD(&pcie->msi_used_radix);
->  
->  	bottom_ic = &pcie->msi_bottom_irq_chip;
->  
-> @@ -982,9 +1034,14 @@ static int advk_pcie_init_msi_irq_domain(struct advk_pcie *pcie)
->  		MSI_FLAG_MULTI_PCI_MSI;
->  	msi_di->chip = msi_ic;
->  
-> +	/*
-> +	 * Aardvark HW can handle MSI interrupt with any 16bit number.
-> +	 * For optimization first few interrupts are allocated in linear map
-> +	 * (which is common scenario) and rest are allocated in radix tree.
-> +	 */
->  	pcie->msi_inner_domain =
-> -		irq_domain_add_linear(NULL, MSI_IRQ_NUM,
-> -				      &advk_msi_domain_ops, pcie);
-> +		__irq_domain_add(NULL, MSI_IRQ_LINEAR_COUNT, MSI_IRQ_TOTAL_COUNT, 0,
-> +				 &advk_msi_domain_ops, pcie);
->  	if (!pcie->msi_inner_domain)
->  		return -ENOMEM;
->  
-> @@ -1052,7 +1109,7 @@ static void advk_pcie_handle_msi(struct advk_pcie *pcie)
->  	msi_val = advk_readl(pcie, PCIE_MSI_STATUS_REG);
->  	msi_status = msi_val & ((~msi_mask) & PCIE_MSI_ALL_MASK);
->  
-> -	for (msi_idx = 0; msi_idx < MSI_IRQ_NUM; msi_idx++) {
-> +	for (msi_idx = 0; msi_idx < BITS_PER_TYPE(msi_status); msi_idx++) {
->  		if (!(BIT(msi_idx) & msi_status))
->  			continue;
->  
+> -source "drivers/staging/hikey9xx/Kconfig"
+> -
+>  endif # STAGING
+> diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
+> index 075c979bfe7c..7179cdcaafe7 100644
+> --- a/drivers/staging/Makefile
+> +++ b/drivers/staging/Makefile
+> @@ -42,4 +42,3 @@ obj-$(CONFIG_FIELDBUS_DEV)     += fieldbus/
+>  obj-$(CONFIG_KPC2000)		+= kpc2000/
+>  obj-$(CONFIG_QLGE)		+= qlge/
+>  obj-$(CONFIG_WFX)		+= wfx/
+> -obj-y				+= hikey9xx/
+> diff --git a/drivers/staging/hikey9xx/Kconfig b/drivers/staging/hikey9xx/Kconfig
+> deleted file mode 100644
+> index 9f53df9068fe..000000000000
+> --- a/drivers/staging/hikey9xx/Kconfig
+> +++ /dev/null
+> @@ -1,19 +0,0 @@
+> -# SPDX-License-Identifier: GPL-2.0
+> -
+> -# to be placed at drivers/mfd
+> -config MFD_HI6421_SPMI
+> -	tristate "HiSilicon Hi6421v600 SPMI PMU/Codec IC"
+> -	depends on HAS_IOMEM
+> -	depends on OF
+> -	depends on SPMI
+> -	select MFD_CORE
+> -	select REGMAP_SPMI
+> -	help
+> -	  Add support for HiSilicon Hi6421v600 SPMI PMIC. Hi6421 includes
+> -	  multi-functions, such as regulators, RTC, codec, Coulomb counter,
+> -	  etc.
+> -
+> -	  This driver includes core APIs _only_. You have to select
+> -	  individual components like voltage regulators under corresponding
+> -	  menus in order to enable them.
+> -	  We communicate with the Hi6421v600 via a SPMI bus.
+> diff --git a/drivers/staging/hikey9xx/Makefile b/drivers/staging/hikey9xx/Makefile
+> deleted file mode 100644
+> index e3108d7dd849..000000000000
+> --- a/drivers/staging/hikey9xx/Makefile
+> +++ /dev/null
+> @@ -1,3 +0,0 @@
+> -# SPDX-License-Identifier: GPL-2.0
+> -
+> -obj-$(CONFIG_MFD_HI6421_SPMI)		+= hi6421-spmi-pmic.o
+> diff --git a/drivers/staging/hikey9xx/TODO b/drivers/staging/hikey9xx/TODO
+> deleted file mode 100644
+> index 65e7996a3066..000000000000
+> --- a/drivers/staging/hikey9xx/TODO
+> +++ /dev/null
+> @@ -1,5 +0,0 @@
+> -ToDo list:
+> -
+> -- Port other drivers needed by Hikey 960/970;
+> -- Test drivers on Hikey 960;
+> -- Validate device tree bindings.
+> diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+> deleted file mode 100644
+> index c9c0c3d7011f..000000000000
+> --- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+> +++ /dev/null
+> @@ -1,66 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -/*
+> - * Device driver for regulators in HISI PMIC IC
+> - *
+> - * Copyright (c) 2013 Linaro Ltd.
+> - * Copyright (c) 2011 Hisilicon.
+> - * Copyright (c) 2020-2021 Huawei Technologies Co., Ltd.
+> - */
+> -
+> -#include <linux/mfd/core.h>
+> -#include <linux/module.h>
+> -#include <linux/platform_device.h>
+> -#include <linux/regmap.h>
+> -#include <linux/slab.h>
+> -#include <linux/spmi.h>
+> -
+> -static const struct mfd_cell hi6421v600_devs[] = {
+> -	{ .name = "hi6421v600-irq", },
+> -	{ .name = "hi6421v600-regulator", },
+> -};
+> -
+> -static const struct regmap_config regmap_config = {
+> -	.reg_bits	= 16,
+> -	.val_bits	= BITS_PER_BYTE,
+> -	.max_register	= 0xffff,
+> -	.fast_io	= true
+> -};
+> -
+> -static int hi6421_spmi_pmic_probe(struct spmi_device *sdev)
+> -{
+> -	struct device *dev = &sdev->dev;
+> -	struct regmap *regmap;
+> -	int ret;
+> -
+> -	regmap = devm_regmap_init_spmi_ext(sdev, &regmap_config);
+> -	if (IS_ERR(regmap))
+> -		return PTR_ERR(regmap);
+> -
+> -	dev_set_drvdata(&sdev->dev, regmap);
+> -
+> -	ret = devm_mfd_add_devices(&sdev->dev, PLATFORM_DEVID_NONE,
+> -				   hi6421v600_devs, ARRAY_SIZE(hi6421v600_devs),
+> -				   NULL, 0, NULL);
+> -	if (ret < 0)
+> -		dev_err(dev, "Failed to add child devices: %d\n", ret);
+> -
+> -	return ret;
+> -}
+> -
+> -static const struct of_device_id pmic_spmi_id_table[] = {
+> -	{ .compatible = "hisilicon,hi6421-spmi" },
+> -	{ }
+> -};
+> -MODULE_DEVICE_TABLE(of, pmic_spmi_id_table);
+> -
+> -static struct spmi_driver hi6421_spmi_pmic_driver = {
+> -	.driver = {
+> -		.name	= "hi6421-spmi-pmic",
+> -		.of_match_table = pmic_spmi_id_table,
+> -	},
+> -	.probe	= hi6421_spmi_pmic_probe,
+> -};
+> -module_spmi_driver(hi6421_spmi_pmic_driver);
+> -
+> -MODULE_DESCRIPTION("HiSilicon Hi6421v600 SPMI PMIC driver");
+> -MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml b/drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+> deleted file mode 100644
+> index 8e355cddd437..000000000000
+> --- a/drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+> +++ /dev/null
+> @@ -1,134 +0,0 @@
+> -# SPDX-License-Identifier: GPL-2.0
+> -%YAML 1.2
+> ----
+> -$id: http://devicetree.org/schemas/mfd/hisilicon,hi6421-spmi-pmic.yaml#
+> -$schema: http://devicetree.org/meta-schemas/core.yaml#
+> -
+> -title: HiSilicon 6421v600 SPMI PMIC
+> -
+> -maintainers:
+> -  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> -
+> -description: |
+> -  HiSilicon 6421v600 should be connected inside a MIPI System Power Management
+> -  (SPMI) bus. It provides interrupts and power supply.
+> -
+> -  The GPIO and interrupt settings are represented as part of the top-level PMIC
+> -  node.
+> -
+> -  The SPMI controller part is provided by
+> -  Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+> -
+> -properties:
+> -  $nodename:
+> -    pattern: "pmic@[0-9a-f]"
+> -
+> -  compatible:
+> -    const: hisilicon,hi6421v600-spmi
+> -
+> -  reg:
+> -    maxItems: 1
+> -
+> -  '#interrupt-cells':
+> -    const: 2
+> -
+> -  interrupt-controller: true
+> -
+> -  gpios:
+> -    maxItems: 1
+> -    description: GPIO used for IRQs
+> -
+> -  regulators:
+> -    type: object
+> -
+> -    properties:
+> -      '#address-cells':
+> -        const: 1
+> -
+> -      '#size-cells':
+> -        const: 0
+> -
+> -    patternProperties:
+> -      '^ldo[0-9]+@[0-9a-f]$':
+> -        type: object
+> -
+> -        $ref: "/schemas/regulator/regulator.yaml#"
+> -
+> -required:
+> -  - compatible
+> -  - reg
+> -  - regulators
+> -
+> -additionalProperties: false
+> -
+> -examples:
+> -  - |
+> -    /* pmic properties */
+> -
+> -    pmic: pmic@0 {
+> -      compatible = "hisilicon,hi6421-spmi";
+> -      reg = <0 0>;
+> -
+> -      #interrupt-cells = <2>;
+> -      interrupt-controller;
+> -      gpios = <&gpio28 0 0>;
+> -
+> -      regulators {
+> -        #address-cells = <1>;
+> -        #size-cells = <0>;
+> -
+> -        ldo3: LDO3 {
+> -          regulator-name = "ldo3";
+> -          regulator-min-microvolt = <1500000>;
+> -          regulator-max-microvolt = <2000000>;
+> -          regulator-boot-on;
+> -        };
+> -
+> -        ldo4: LDO4 {
+> -          regulator-name = "ldo4";
+> -          regulator-min-microvolt = <1725000>;
+> -          regulator-max-microvolt = <1900000>;
+> -          regulator-boot-on;
+> -        };
+> -
+> -        ldo9: LDO9 {
+> -          regulator-name = "ldo9";
+> -          regulator-min-microvolt = <1750000>;
+> -          regulator-max-microvolt = <3300000>;
+> -          regulator-boot-on;
+> -        };
+> -
+> -        ldo15: LDO15 {
+> -          regulator-name = "ldo15";
+> -          regulator-min-microvolt = <1800000>;
+> -          regulator-max-microvolt = <3000000>;
+> -          regulator-always-on;
+> -        };
+> -
+> -        ldo16: LDO16 {
+> -          regulator-name = "ldo16";
+> -          regulator-min-microvolt = <1800000>;
+> -          regulator-max-microvolt = <3000000>;
+> -          regulator-boot-on;
+> -        };
+> -
+> -        ldo17: LDO17 {
+> -          regulator-name = "ldo17";
+> -          regulator-min-microvolt = <2500000>;
+> -          regulator-max-microvolt = <3300000>;
+> -        };
+> -
+> -        ldo33: LDO33 {
+> -          regulator-name = "ldo33";
+> -          regulator-min-microvolt = <2500000>;
+> -          regulator-max-microvolt = <3300000>;
+> -          regulator-boot-on;
+> -        };
+> -
+> -        ldo34: LDO34 {
+> -          regulator-name = "ldo34";
+> -          regulator-min-microvolt = <2600000>;
+> -          regulator-max-microvolt = <3300000>;
+> -        };
+> -      };
+> -    };
 > -- 
-> 2.20.1
+> 2.31.1
+> 
 > 
