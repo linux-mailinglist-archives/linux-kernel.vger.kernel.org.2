@@ -2,61 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1D13BA601
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 00:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650213BA603
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 00:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhGBWkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 18:40:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229847AbhGBWkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 18:40:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4BEF8613DD;
-        Fri,  2 Jul 2021 22:37:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625265455;
-        bh=FxGp8BLLF23wyYPze/F4ar6AiPJPJ/mIwGIR/lhcCaE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=nJNRRTf+c9b3pMSaWwFoHYJnz2eUMwZhVs7qCPu7yYxff6txZrWfudENiaaxiI//l
-         +VMuYAfT1i7YjG78Kc6Tn+IgeGSwPHkSL3h8+PnS/a7uOBNLXa+Hcm56oFirQxE9YB
-         YEnlimWcNtkuWEv1U+oeQ1wPAM1fUzdPEQ6+kAf6H4+RkWumkfH5vazZoXL/eeuWfF
-         qDhnZVUBsK84Ha4baSkSKNc+afKUOOqwjYeCcIzbp9nEPlRg/10IxMzKqQN3nOBV8J
-         EEXR3JT0/xd+KUrnqb5/6mydxkjCiLmb6/zVMpIwCJyXpH+KGwuTZcnA/QejXPQzwH
-         iTAh/XrPmzKyg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3628960A3A;
-        Fri,  2 Jul 2021 22:37:35 +0000 (UTC)
-Subject: Re: [GIT PULL] first round of SCSI updates for the 5.13+ merge window
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <e118d4b2fb924156f791564483336e7125276c47.camel@HansenPartnership.com>
-References: <e118d4b2fb924156f791564483336e7125276c47.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <e118d4b2fb924156f791564483336e7125276c47.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
-X-PR-Tracked-Commit-Id: 041761f4a4db662e38b4ae9d510b8beb24c7d4b6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bd31b9efbf549d9630bf2f269a3a56dcb29fcac1
-Message-Id: <162526545516.21733.11922753738856768647.pr-tracker-bot@kernel.org>
-Date:   Fri, 02 Jul 2021 22:37:35 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        id S230228AbhGBWkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 18:40:21 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:43092 "EHLO
+        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230201AbhGBWkU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 18:40:20 -0400
+Received: from usagi.middle.earth (ethbase.usagi.not.afront.org [IPv6:2620:137:e001:0:1897:4108:901b:c660])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id C8DDF4D252307;
+        Fri,  2 Jul 2021 15:37:45 -0700 (PDT)
+Received: from usagi.middle.earth (localhost [IPv6:::1])
+        by usagi.middle.earth (Postfix) with ESMTP id 9132E27AB476;
+        Fri,  2 Jul 2021 15:37:43 -0700 (PDT)
+From:   "John 'Warthog9' Hawley (VMware)" <warthog9@eaglescrag.net>
+To:     linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     John 'Warthog9' Hawley <warthog9@eaglescrag.net>
+Subject: [PATCH] checkpatch: Add check for common mailing list helper checks
+Date:   Fri,  2 Jul 2021 15:37:43 -0700
+Message-Id: <20210702223743.1240694-1-warthog9@eaglescrag.net>
+X-Mailer: git-send-email 2.26.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Fri, 02 Jul 2021 15:37:45 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 02 Jul 2021 09:11:40 +0100:
+From: John 'Warthog9' Hawley <warthog9@eaglescrag.net>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
+Mailing lists in an attempt to try and avoid sending certain
+administrative e-mails to the list, will check the first few lines
+(usually ~10) looking for keywords.  If those key words are found it
+shunts the e-mail to the list admin contact instead of potentially
+passing it through to the list.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bd31b9efbf549d9630bf2f269a3a56dcb29fcac1
+This adds a known list of the potential things that are checked for, and
+while it may search deeper into the message (it goes till it believes
+it's into the patch section) than the mailing list software this should
+help give some warning if the wrong word is potentially added in the
+wrong place in the beginning of a patch message.
 
-Thank you!
+Signed-off-by: John 'Warthog9' Hawley (VMware) <warthog9@eaglescrag.net>
+---
+ scripts/checkpatch.pl | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 461d4221e4a4..c2f6e349f304 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2852,6 +2852,40 @@ sub process {
+ 
+ 		$cnt_lines++ if ($realcnt != 0);
+ 
++# check if this may trip up common mailing list helpers to redirect email to the admin contact
++		if ($in_commit_log &&
++		    ($line =~ /\bcancel\b/i ||
++		    $line =~ /\badd me\b/i ||
++		    $line =~ /\bdelete me\b/i ||
++		    $line =~ /\bremove\s+me\b/i ||
++		    $line =~ /\bchange\b.*\baddress\b/ ||
++		    $line =~ /\bsubscribe\b/i ||
++		    $line =~ /^sub\b/i ||
++		    $line =~ /\bunsubscribe\b/i ||
++		    $line =~ /^unsub\b/i ||
++		    $line =~ /^\s*help\s*$/i ||
++		    $line =~ /^\s*info\s*$/i ||
++		    $line =~ /^\s*info\s+\S+\s*$/i ||
++		    $line =~ /^\s*lists\s*$/i ||
++		    $line =~ /^\s*which\s*$/i ||
++		    $line =~ /^\s*which\s+\S+\s*$/i ||
++		    $line =~ /^\s*index\s*$/i ||
++		    $line =~ /^\s*index\s+\S+\s*$/i ||
++		    $line =~ /^\s*who\s*$/i ||
++		    $line =~ /^\s*who\s+\S+\s*$/i ||
++		    $line =~ /^\s*get\s+\S+\s*$/i ||
++		    $line =~ /^\s*get\s+\S+\s+\S+\s*$/i ||
++		    $line =~ /^\s*approve\b/i ||
++		    $line =~ /^\s*passwd\b/i ||
++		    $line =~ /^\s*newinfo\b/i ||
++		    $line =~ /^\s*config\b/i ||
++		    $line =~ /^\s*newconfig\b/i ||
++		    $line =~ /^\s*writeconfig\b/i ||
++		    $line =~ /^\s*mkdigest\b/i)){
++			WARN("MAILING LIST HELPER",
++			     "Line matches common mailing list helpers, and may not be delivered correctly. Consider rewording (particularly the first word)\n" . $herecurr);
++		}
++
+ # Verify the existence of a commit log if appropriate
+ # 2 is used because a $signature is counted in $commit_log_lines
+ 		if ($in_commit_log) {
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.26.3
+
