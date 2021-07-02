@@ -2,195 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6D13BA3EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA6B3BA3F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 20:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhGBS3U convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 2 Jul 2021 14:29:20 -0400
-Received: from aposti.net ([89.234.176.197]:50264 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229455AbhGBS3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 14:29:20 -0400
-Date:   Fri, 02 Jul 2021 19:26:38 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     tiwai@suse.com, SOUND <alsa-devel@alsa-project.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mike Rapoport <rppt@kernel.org>
-Message-Id: <E8RMVQ.F0HRHAOIPPHU1@crapouillou.net>
-In-Reply-To: <9ZPMVQ.7NLNMVBCK1243@crapouillou.net>
-References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
-        <20201216124726.2842197-1-kai.heng.feng@canonical.com>
-        <ZRC9VQ.M548GASAC18G2@crapouillou.net>
-        <9ZPMVQ.7NLNMVBCK1243@crapouillou.net>
+        id S230221AbhGBScX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 14:32:23 -0400
+Received: from mail-vi1eur05on2124.outbound.protection.outlook.com ([40.107.21.124]:46816
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229455AbhGBScT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 14:32:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ouwc2BaIjTi1NFZsyQnGp7/cpo47voJxJF7wjn/NCuitvYO6ZKEjJ530S1uKU1EVyXA3LAOqn5LJP6G1Houct1GaF/6LUx8JfXwIiuY9LC5mCiu2IH+bLnFklezM1Fzx/Zj/vRTbBJ+yyrg1DWvEfQlXjOIZtppmREhj0y7v/5wULt8sedZ/rpasPe1vaKnBBz6eL+soOrYWJ3NwInKPLyJYjD17QKN7znVMIFGQQhqOISGoplXcQodBly1hYCuvf3QlCzjPHDasG7QFfzxDF4ds+Aesmq0FeNSUlzRNqzzC27xu1GXlb1bqSRLvWcm78lJUHiC+TNIxTvbofBlJVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Updd4LK5y+Mb4J3QtjY2wJ+YrGUTiwmZqwpNzn6iIrQ=;
+ b=np/rwfmtBpDF5HxCAI0TVqiCaIT5VrGG4CfgDsl8JUfVROdPAhUsgGu1FIjCe449hM8N06WVCBprILfAIfB5pGd7UBLMPaXvVMitJKD8NVODWGcfprvp5RwIJJEdn3w9BL37IGVLcpLtg5ul9lwKqdLHGLQcsF7nMZrKDtmd9ENbBKLNUsOyKgyKuQKNrOlsXehX5WRF5hjgRo+O3gxh+QO5XzlpbZ/D5RVSjDU33rYRadRJ7T/Z1MgYhaiTSMmXq/464N7LNIFwQZWg3R7rZ2DU3kx9MolJYHNqkk+yXDafvrXIGdLtvTOMag3hGgPYwL9jc13TqqzJQ8jTfLnsFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Updd4LK5y+Mb4J3QtjY2wJ+YrGUTiwmZqwpNzn6iIrQ=;
+ b=ykbU4ZDzF/xYbQZG9R1HiTdnRpZZ/hkAlfzccZPcAufnw9psfRSXQABq260NggE+6DW1mVDzKdOCvjFgTnyPG1LLP7tyLnJ7cc05cVhoWrtfLSK11f54ExQxFlavA8OOwrVZSKqwZA2eZxD6ODq7CnAA5fEbOovU8nP6XbeeZkc=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=plvision.eu;
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
+ HE1P190MB0394.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:62::31) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4287.23; Fri, 2 Jul 2021 18:29:44 +0000
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::40d:b065:3aa7:ac38]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::40d:b065:3aa7:ac38%5]) with mapi id 15.20.4264.032; Fri, 2 Jul 2021
+ 18:29:44 +0000
+From:   Vadym Kochan <vadym.kochan@plvision.eu>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>, Jiri Pirko <jiri@mellanox.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
+        Serhiy Boiko <serhiy.boiko@plvision.eu>
+Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        linux-kernel@vger.kernel.org,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        Vadym Kochan <vkochan@marvell.com>
+Subject: [RFC net-next 0/4] Marvell Prestera add policer support
+Date:   Fri,  2 Jul 2021 21:29:11 +0300
+Message-Id: <20210702182915.1035-1-vadym.kochan@plvision.eu>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [217.20.186.93]
+X-ClientProxiedBy: AS8PR04CA0108.eurprd04.prod.outlook.com
+ (2603:10a6:20b:31e::23) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:7:56::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc60716vkochan.x.ow.s (217.20.186.93) by AS8PR04CA0108.eurprd04.prod.outlook.com (2603:10a6:20b:31e::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Fri, 2 Jul 2021 18:29:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bf5b6edc-a36d-4951-7c74-08d93d875cdf
+X-MS-TrafficTypeDiagnostic: HE1P190MB0394:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1P190MB03944C62D15564195D8C2EBC951F9@HE1P190MB0394.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nQbG0K6zmLz44PUqEOGla1alTTvl0BoIy153toEiDoe47TYyZZnKkpowfJ3Bh+2HUaSuvq7NXmDwJtKQH+7ZLp/lPvsi0X6coU75WwX0lo+ssy/c/PLfeLCMKcpUPIifRIu+8btmoQ+r0DGvyoBxDk82FKlSpPskxLuIWCeZ3f30gLU3t08LhgYKk4ztJuLy3zqMZ+WUAlmCSVqRwgnoIyUFwFqF847qFsiHQVrHxhcTOxp4tDDpS2JnpuEucLzQPMRzRyRih6yRO6uALpohz3tCv9qmxHTyWe2x3jBpWTOG6FxDRc1NURsZM6OXRRRxggUq4MCU2l5sO/nGqI7dt9Qf7JGjapTXc8evx+83ZrE6iB2vpoUVk4/uTvAKg2temSm0lvNoqT7sYuCfsd4DlWvmGMwavObVcMsbe5oFwtl1aRrWKIN/90y/n5CmyBw4ajd2L7+MsihXblncogJxmdkTRw4n47OYtamnvGeichWeqgg2eMEaK/4qXkuYBVdPYeSdyO8NeHRYZu9U81kOJjDbta2nAB84BFihfZIGON2XJ6h1VBfxshJyG01rPKe3OVkFZNYkElEtijBWtSXfFZ/XM7fEGI7PutUJVJNyUEz9UVDc6EjCFdxMfRVUya5p4BtqB+W95Z5kfOTRoAssWnm3/XDx9J7ujIhcztxx+KzWaoOMUpkQJHFApRPmQpS1YFI6xT1rHr3tIzd2OsnMAw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39830400003)(396003)(366004)(346002)(376002)(136003)(6636002)(7416002)(2906002)(316002)(110136005)(54906003)(44832011)(2616005)(956004)(38350700002)(83380400001)(86362001)(6666004)(36756003)(38100700002)(66476007)(4326008)(1076003)(6506007)(8676002)(8936002)(5660300002)(52116002)(16526019)(66556008)(6486002)(26005)(478600001)(66946007)(6512007)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/0nsU6rgKRw/iD+Q9RTwmaCSbXthuwFklY2dttZHspie4HFAeQXGjbW54wpN?=
+ =?us-ascii?Q?kW7kCpQNBAEmFoyPHh6C43dfV+0WUENhgLQfC+PdwBlIcZugaqt2czT8s6Wo?=
+ =?us-ascii?Q?erccYz7FpK0EXuykaIJIFVCiZOYiuWcUvVeR7DyswOM1cW9yr2iVdLM/A4Bl?=
+ =?us-ascii?Q?YP13gzE9h5bw56FWZMGcKy43Tx8ZbuxaKsctQfQCIfz/iZGcAZqC7m3uuwjz?=
+ =?us-ascii?Q?IhgrHcBcpnGVKMb+vpazvPzTm4Sqhsz39rHqLB8x3fxXXlWegTiau2c+zu2C?=
+ =?us-ascii?Q?eMHw5O5XHpHl2m/TkVeu/lTuYilMMmsfWp1+mJJM/2yvguX3MoaXE9BsWu5k?=
+ =?us-ascii?Q?jr8/1V7beMlmzLYmGVHhZHTZD1q3yViVU8hnyl2qTLZCf/YubgdoRoH46EWm?=
+ =?us-ascii?Q?hq/+iUZRsWEqTtGt39yhfAJW1qlAKzjzTaWus2m0tu0fj4nx7CkPacgY/wl0?=
+ =?us-ascii?Q?msENjxwT4CTyzBRVz1OR77r67cOmv9OmCaACI9Ppptl8iXT/tqVHUuLGcBnK?=
+ =?us-ascii?Q?UtpwXFpOKY/fIO9PE6Mgb6JUFAnXgxKjdj0AMM9Qxjw6FKvf86Vbr5/52ZBC?=
+ =?us-ascii?Q?xsQTC+CbVw7KMoA5Ncs99QOSVRD7qeHbLFb2KRRUxVv8Bz9r2TJ6GoOqYpMD?=
+ =?us-ascii?Q?KtlSdDVOoVqhgsvyY34aRVeTd/xUf3KwO/BUYdxJrgnyKhhkVArEJugOuVb/?=
+ =?us-ascii?Q?vFroR/vS8aSFVy8xL3JHuDEznkHX+Ry0P1Ruccc/97VHqyzxlPNAX+kWBoBm?=
+ =?us-ascii?Q?9xdVxGKzYBvdYY99Lyu+W4rHzFkurtwse4H3khIntweKsj8T/SJjXCDBln2S?=
+ =?us-ascii?Q?bMRBRTdtps+7F/AtZa3b7wxv8szuNxPn80YqFC4PGq8RAoTG4sH5ndEOyZOa?=
+ =?us-ascii?Q?kOPP3H5yws64Mk3azEgoMjntl/5rX31OH6eFxtnC9iw8acWZZCnvHQKVaJSs?=
+ =?us-ascii?Q?av04oT0hFhM4qI2tUQC1i+aGGuhzbUVsxlSTk7O883k3QaUoJzwEQqv6nlAZ?=
+ =?us-ascii?Q?vJ4GQdORbD5KwFH+8WZSZGe/VQRcWxPbzGsyCjxXh6Uo9tjGNWeyC6kUbuX/?=
+ =?us-ascii?Q?ULYCcGFSDTPAjXIH9Qt4laTX8BUKhOMx6prKcd2h+5ogUcGVMft0riuZV4bv?=
+ =?us-ascii?Q?n/IfJzjJy8ZE24qFgVabQcFwY6UD7Ly7iKNdbXIEKdkqrGyCd/uGMAH1DTqJ?=
+ =?us-ascii?Q?j4aekfGZSB9sXKB9gos/KSWC+CGwreoO64rLyJqb05McWCdf9btol9kIemTq?=
+ =?us-ascii?Q?q4h031id9hRIazm/DdR8yQleuBMcSVXgB4bKKfxweV5Zb/kYO9zrlyyMm6YM?=
+ =?us-ascii?Q?8InFX5+Js/NhQXVRTsRqsxa8?=
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf5b6edc-a36d-4951-7c74-08d93d875cdf
+X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2021 18:29:43.9964
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IWskUsxx8gTMVtEZorB6B9N4dTCww+Va5KXLucHknYA1Sj10qSG4l9moF6d+7waf4Zgqq/rBOZ64XYim4LfpUzNx4u/sb1rA6YIQHDOBjJ8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0394
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Vadym Kochan <vkochan@marvell.com>
 
+Offload action police when keyed to a flower classifier.
+Only rate and burst is supported for now. The conform-exceed
+drop is assumed as a default value.
 
-Le ven., juil. 2 2021 at 18:59:33 +0100, Paul Cercueil 
-<paul@crapouillou.net> a écrit :
-> Hi,
-> 
-> Le ven., juin 25 2021 at 13:45:35 +0100, Paul Cercueil 
-> <paul@crapouillou.net> a écrit :
->> Hi Kai-Heng,
->> 
->> I am facing the same bug. Unfortunately your patch does not seem to 
->> fix the bug for me, the nvidia GPU stays constantly active. Only if 
->> I unbind the snd-hda-intel module for this PCI device that the 
->> nvidia GPU will eventually go to sleep.
-> 
-> Nevermind, I'm stupid. I think I just didn't have the PM mode set to 
-> "auto", because I tried again and it works now. Ignore my email.
+Policer support requires FW 3.1 version. Because there are some FW ABI
+differences in ACL rule messages between 3.0 and 3.1 so added separate
+"_ext" struct version with separate HW helper.
 
-Ok, I'm definitely not stupid, I could reproduce it again, with this 
-patch applied and the PM set to "auto". It then only suspends when I 
-unload the snd-hda-intel module.
+Also added new __tc_classid_to_hwtc() helper which calculates hw tc
+without need of netdev but specifying the num of tc instead, because
+ingress HW queues are globally and statically per ASIC not per port.
 
-Sorry about the spam.
+Serhiy Boiko (1):
+  net: marvell: prestera: Offload FLOW_ACTION_POLICE
 
--Paul
+Vadym Kochan (3):
+  net: marvell: prestera: do not fail if FW reply is bigger
+  net: marvell: prestera: turn FW supported versions into an array
+  net: sched: introduce __tc_classid_to_hwtc() helper
 
-> 
-> If you (or anybody) does a v3, please Cc me.
-> 
-> Cheers,
-> -Paul
-> 
->> My dmesg (with your patch applied):
->> 
->> [ 1.821358] MXM: GUID detected in BIOS
->> [ 1.821396] ACPI BIOS Error (bug): AE_AML_PACKAGE_LIMIT, Index 
->> (0x000000003) is beyond end of object (length 0x0) 
->> (20200925/exoparg2-393)
->> [ 1.821406] ACPI Error: Aborting method \_SB.PCI0.GFX0._DSM due to 
->> previous error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
->> [ 1.821415] ACPI: \_SB_.PCI0.GFX0: failed to evaluate _DSM (0x300b)
->> [ 1.821419] ACPI Warning: \_SB.PCI0.GFX0._DSM: Argument #4 type 
->> mismatch - Found [Buffer], ACPI requires [Package] 
->> (20200925/nsarguments-61)
->> [ 1.821528] i915 0000:00:02.0: optimus capabilities: enabled, status 
->> dynamic power,
->> [ 1.821554] ACPI BIOS Error (bug): AE_AML_PACKAGE_LIMIT, Index 
->> (0x000000003) is beyond end of object (length 0x0) 
->> (20200925/exoparg2-393)
->> [ 1.821560] ACPI Error: Aborting method \_SB.PCI0.GFX0._DSM due to 
->> previous error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
->> [ 1.821565] ACPI Error: Aborting method \_SB.PCI0.PEG0.PEGP._DSM due 
->> to previous error (AE_AML_PACKAGE_LIMIT) (20200925/psparse-529)
->> [ 1.821572] ACPI: \_SB_.PCI0.PEG0.PEGP: failed to evaluate _DSM 
->> (0x300b)
->> [ 1.821574] ACPI Warning: \_SB.PCI0.PEG0.PEGP._DSM: Argument #4 type 
->> mismatch - Found [Buffer], ACPI requires [Package] 
->> (20200925/nsarguments-61)
->> [ 1.821683] pci 0000:01:00.0: optimus capabilities: enabled, status 
->> dynamic power,
->> [ 1.821685] VGA switcheroo: detected Optimus DSM method 
->> \_SB_.PCI0.PEG0.PEGP handle
->> [ 1.821920] nouveau 0000:01:00.0: NVIDIA GK107 (0e71f0a2)
->> [ 1.830781] nouveau 0000:01:00.0: bios: version 80.07.95.00.07
->> [ 1.894392] nouveau 0000:01:00.0: fb: 2048 MiB DDR3
->> [ 1.896669] [drm] Initialized i915 1.6.0 20200917 for 0000:00:02.0 
->> on minor 0
->> [ 1.896862] ACPI: Video Device [PEGP] (multi-head: yes rom: yes 
->> post: no)
->> [ 1.897361] input: Video Bus as 
->> /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/device:02/LNXVIDEO:00/input/input12
->> [ 1.897974] ACPI: Video Device [GFX0] (multi-head: yes rom: no post: 
->> no)
->> [ 1.898219] nouveau 0000:01:00.0: bus: MMIO write of 0000001f FAULT 
->> at 6013d4 [ IBUS ]
->> [ 1.900114] input: Video Bus as 
->> /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/LNXVIDEO:01/input/input13
->> [ 1.969353] vga_switcheroo: enabled
->> [ 1.969407] [TTM] Zone kernel: Available graphics memory: 3791596 KiB
->> [ 1.969408] [TTM] Zone dma32: Available graphics memory: 2097152 KiB
->> [ 1.969409] [TTM] Initializing pool allocator
->> [ 1.969416] [TTM] Initializing DMA pool allocator
->> [ 1.969431] nouveau 0000:01:00.0: DRM: VRAM: 2048 MiB
->> [ 1.969432] nouveau 0000:01:00.0: DRM: GART: 1048576 MiB
->> [ 1.969436] nouveau 0000:01:00.0: DRM: Pointer to TMDS table not 
->> found
->> [ 1.969438] nouveau 0000:01:00.0: DRM: DCB version 4.0
->> [ 1.971139] nouveau 0000:01:00.0: DRM: MM: using COPY for buffer 
->> copies
->> [ 1.971485] [drm] Initialized nouveau 1.3.1 20120801 for 
->> 0000:01:00.0 on minor 1
->> 
->> [ ... ]
->> 
->> [ 4.594245] snd_hda_intel 0000:00:1b.0: bound 0000:00:02.0 (ops 
->> i915_audio_component_bind_ops [i915])
->> [ 4.594380] snd_hda_intel 0000:01:00.1: can't change power state 
->> from D3cold to D0 (config space inaccessible)
->> [ 4.594410] snd_hda_intel 0000:01:00.1: can't change power state 
->> from D3cold to D0 (config space inaccessible)
->> [ 4.594486] snd_hda_intel 0000:01:00.1: Disabling MSI
->> [ 4.594494] snd_hda_intel 0000:01:00.1: Handle vga_switcheroo audio 
->> client
->> [ 4.594526] snd_hda_intel 0000:01:00.1: number of I/O streams is 30, 
->> forcing separate stream tags
->> 
->> [ ... ]
->> 
->> [ 4.696732] hdaudio hdaudioC1D0: no AFG or MFG node found
->> [ 4.696745] hdaudio hdaudioC1D1: no AFG or MFG node found
->> [ 4.696752] hdaudio hdaudioC1D2: no AFG or MFG node found
->> [ 4.696759] hdaudio hdaudioC1D3: no AFG or MFG node found
->> [ 4.696765] hdaudio hdaudioC1D4: no AFG or MFG node found
->> [ 4.696771] hdaudio hdaudioC1D5: no AFG or MFG node found
->> [ 4.696778] hdaudio hdaudioC1D6: no AFG or MFG node found
->> [ 4.696785] hdaudio hdaudioC1D7: no AFG or MFG node found
->> [ 4.696787] snd_hda_intel 0000:01:00.1: no codecs initialized
->> 
->> Cheers,
->> -Paul
->> 
->> 
->> Le mer., déc. 16 2020 at 20:47:24 +0800, Kai-Heng Feng 
->> <kai.heng.feng@canonical.com> a écrit :
->>> Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
->>> initialization even if no codecs found"), when codec probe fails, it
->>> doesn't enable runtime suspend, and can prevent graphics card from
->>> getting powered down:
->>> [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
->>> 
->>> $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
->>> active
->>> 
->>> So mark there's no codec and continue probing to let runtime PM to 
->>> work.
->>> 
->>> BugLink: https://bugs.launchpad.net/bugs/1907212
->>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>> ---
->>>  sound/pci/hda/hda_intel.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>> 
->>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->>> index 6852668f1bcb..872a703dee43 100644
->>> --- a/sound/pci/hda/hda_intel.c
->>> +++ b/sound/pci/hda/hda_intel.c
->>> @@ -2328,7 +2328,7 @@ static int azx_probe_continue(struct azx 
->>> *chip)
->>>  	if (bus->codec_mask) {
->>>  		err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
->>>  		if (err < 0)
->>> -			goto out_free;
->>> +			bus->codec_mask = 0;
->>>  	}
->>> 
->>>  #ifdef CONFIG_SND_HDA_PATCH_LOADER
->> 
-> 
+ .../ethernet/marvell/prestera/prestera_acl.c  |  14 ++
+ .../ethernet/marvell/prestera/prestera_acl.h  |  11 +-
+ .../marvell/prestera/prestera_flower.c        |  18 +++
+ .../ethernet/marvell/prestera/prestera_hw.c   | 125 +++++++++++++++++-
+ .../ethernet/marvell/prestera/prestera_pci.c  |  63 ++++-----
+ include/net/sch_generic.h                     |   9 +-
+ 6 files changed, 197 insertions(+), 43 deletions(-)
 
+-- 
+2.17.1
 
