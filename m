@@ -2,254 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB2F3BA436
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 21:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE173BA43D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 21:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhGBTKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 15:10:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46534 "EHLO
+        id S230406AbhGBTMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 15:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhGBTKV (ORCPT
+        with ESMTP id S230222AbhGBTMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 15:10:21 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEEA6C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 12:07:48 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id r9-20020a7bc0890000b02901f347b31d55so6858252wmh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 12:07:48 -0700 (PDT)
+        Fri, 2 Jul 2021 15:12:49 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5304DC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 12:10:16 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id t15so10287029wry.11
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 12:10:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eldD9WeHZLX6wVeB8QD8GX1uSa7l10sZxGzJ8FDpD+o=;
-        b=Rxhb6O3gW6N9i9/X4TIaxpsb2UnTl8sEpgJESHL7ielObQqDRBMa0YD+dka0xeWG2a
-         41eDh5E5iHyfltWQ10QJKfempg5UOYVPAzsMM75kdLFlG6g2Xyj63Bhr0fHNE2eBcR8h
-         D19HLNgZ7cvL27xoby/du5ibQ/BUnrORM+My4=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=pwYoD+B5XKnwLTcyRy1LIQVYYLjlHZQVZ1+ImYP0NLo=;
+        b=CBPShXOPYqgpGQgdz+9TSJbQ7w7OW39b+MhptbzOrbq2ZLvKvP01ki62Xz/PxR2cvS
+         LS1FeTnMTyMQe4nC+mlvUkS2en6XCKlTg9TiD1F5JO5LX41qnzRK+fqPUputfAyTPIxg
+         rBY9Gp4alPxUxkU4blLQpNUzVhp4KaS6W7uOVcLE95wfQeYh/8EZsKQcY8Vm79HzMjLU
+         wjd8V8mzTBM6jn5ePIMdx5xyMIgogMmIRIYIqJPE8/5s900thDLnIMvA4mB0O0oSmvo0
+         QGvCVrVktni6LZhHDRhhPfEiP13R/2ry+Zp1fTshrltm5gSHnoTKFVPMKK977y9slVV9
+         vYBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=eldD9WeHZLX6wVeB8QD8GX1uSa7l10sZxGzJ8FDpD+o=;
-        b=KxM68lIr/3gQwHPOyWjHIPU6jIpbkJYs0z9q2eBUu+tOYfgdBu2Jsy9VOwsknbF9t9
-         uWVVxW8ry9fUTMGUvZT8h/N2WXaVefOMZIR5KE0/GlgfbfYHrF65rI4PM8tficBRSLFs
-         XQKsCVraZGcon0NKChCRMlTBWu7CWF1orgC1UTCkIaojqSz+mOdiGdW1ymVKU5HFeU1b
-         3l37thFGCDa2+4U9USqMOl/rFqQE6dGNKOKJ8EpUr7/bNFfBtsyuDJ1mB51504A0XyRJ
-         C/3Aa3tolBfYVdQ4krfYkbYTegNCAdP6Vlte5vNq10/LnaPdtv8vzpdA2p5z8USfsQ72
-         q1Qw==
-X-Gm-Message-State: AOAM532y1t7MuszLdHfYoMLV2C++E2Q7lBmzgM8noK78fYvgCxuy0L9Y
-        GE/au3bPVeVm1FOMHOHquKwaPQ==
-X-Google-Smtp-Source: ABdhPJxuuckgiHMKw5u2LFdcUJOOGD/QqPqftjLSsrtr60B+DTy0rLbZPAdCGh6heMzOeDQbto7cZQ==
-X-Received: by 2002:a7b:c8da:: with SMTP id f26mr1048612wml.9.1625252867349;
-        Fri, 02 Jul 2021 12:07:47 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f13sm4226230wrt.86.2021.07.02.12.07.45
+        bh=pwYoD+B5XKnwLTcyRy1LIQVYYLjlHZQVZ1+ImYP0NLo=;
+        b=rxNPLnddg/DiLJRvYVqte77UFwAv1MWcS5JwdeSD7M6gnKQfx/gDrU5nyqE2e/zrV6
+         9y2QkEiHEBkJAcvYcBGMiDXNsfaiTE9QxSpedsAJb7/1KioaAEdbdwtzeHvyQCaOFqXc
+         w4tBnAyCn6QIVA7l+AgqXo22gZV3iBhK/DT5BC2gM1SiUmKeGMijzI6Qu6rG7o8kzapZ
+         2ACqQ/YS7bsCedasoL6D1Zs/fwn9ByfpH8mctCNLAW531NV1JACjxMkpSGyOCIySjZ/r
+         KJj0Lk5UCmaUgpYdDDUIYZyiW9YA5vP+wTPXbrrkjP8OnxbdBarW7TgErtis0vIOJNvd
+         VYsQ==
+X-Gm-Message-State: AOAM533VCQeoWF7XKoRGPimc69WhLQzMqDxUFh7LboylqDlVT2aCgTUO
+        FptmsYa3aCX+g9GuW21aoNjU/g==
+X-Google-Smtp-Source: ABdhPJw2z1kS4JD1LLZBKCqieRZzq9InEf52wN2TIEnY7/TnJvGFtkcpfdh4euHle6tf2agiFjvKcg==
+X-Received: by 2002:adf:a355:: with SMTP id d21mr1234792wrb.65.1625253014887;
+        Fri, 02 Jul 2021 12:10:14 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id h21sm3760283wmq.38.2021.07.02.12.10.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 12:07:46 -0700 (PDT)
-Date:   Fri, 2 Jul 2021 21:07:44 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        emil.l.velikov@gmail.com
-Subject: Re: [PATCH v7 0/5] drm: address potential UAF bugs with drm_master
- ptrs
-Message-ID: <YN9kAFcfGoB13x7f@phenom.ffwll.local>
-Mail-Followup-To: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        emil.l.velikov@gmail.com
-References: <20210701165358.19053-1-desmondcheongzx@gmail.com>
+        Fri, 02 Jul 2021 12:10:14 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 20:10:12 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Yunus Bas <Y.Bas@phytec.de>,
+        "stwiss.opensource@diasemi.com" <stwiss.opensource@diasemi.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mfd: mfd-core: Change "Failed to locate of_node" warning
+ to debug
+Message-ID: <20210702191012.mecgw577ggkabxr6@maple.lan>
+References: <5a3f5fd82a391ade9a659338983e5efa7924210d.camel@phytec.de>
+ <YMsHXEP36Vxr7lAb@dell>
+ <03cb3befabdda032b1ec9d97b4daac69fa23c759.camel@phytec.de>
+ <YNsid9K4PdUJbKqs@dell>
+ <5a718e7812f2ce46347ae94fda6175f38c65359e.camel@phytec.de>
+ <20210630105557.eaktwdz5p6yzuron@maple.lan>
+ <YNxktsFmlzLcn4+Y@dell>
+ <9b5d0003cce92cad57e7712d1e46c78c10f1a0ab.camel@phytec.de>
+ <20210702125920.fydyfhwqe7tyr7oi@maple.lan>
+ <YN9cl1/7k/UlllSq@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210701165358.19053-1-desmondcheongzx@gmail.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YN9cl1/7k/UlllSq@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 12:53:53AM +0800, Desmond Cheong Zhi Xi wrote:
-> This patch series addresses potential use-after-free errors when dereferencing pointers to struct drm_master. These were identified after one such bug was caught by Syzbot in drm_getunique():
-> https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
+On Fri, Jul 02, 2021 at 07:36:07PM +0100, Lee Jones wrote:
+> On Fri, 02 Jul 2021, Daniel Thompson wrote:
 > 
-> The series is broken up into five patches:
+> > On Thu, Jul 01, 2021 at 03:34:43PM +0000, Yunus Bas wrote:
+> > > Am Mittwoch, dem 30.06.2021 um 13:33 +0100 schrieb Lee Jones:
+> > > > On Wed, 30 Jun 2021, Daniel Thompson wrote:
+> > > > 
+> > > > > On Wed, Jun 30, 2021 at 07:27:32AM +0000, Yunus Bas wrote:
+> > > > > > Am Dienstag, dem 29.06.2021 um 14:39 +0100 schrieb Lee Jones:
+> > > > > > Imagine only required parts of the MFD is connected to the
+> > > > > > designed
+> > > > > > system and unrequired parts are not. In that case, fully
+> > > > > > describing the
+> > > > > > MFD in the devicetree wouldn't represent the system at all.
+> > > > > 
+> > > > > To describe hardware that is present but unused we would normally
+> > > > > use
+> > > > > status = "disabled".
+> > > > > 
+> > > > > So if, for example, your board cannot use the RTC for some reason
+> > > > > (perhaps the board has no 32KHz oscillator?) then the DA9062 still
+> > > > > contains the hardware but it is useless. Such hardware could be
+> > > > > described as:
+> > > > > 
+> > > > > da9062_rtc: rtc {
+> > > > >     compatible = "dlg,da9062-rtc";
+> > > > >     status = "disabled";
+> > > > > }
+> > > > > 
+> > > > > Is this sufficient to suppress the warnings when the hardware is
+> > > > > not fully described?
+> > <snip>
+> > > > 
+> > > > Right.  This is a potential solution.
+> > > 
+> > > @Daniel, you hit the nail on the head :). Thank you for that.
+> > > 
+> > > This solution would indeed surpress the warnings, but what is the
+> > > benefit of this? We would define never used device nodes just to
+> > > satisfy the driver.
+> > 
+> > I would say that doing so resolves an awkward ambiguity of
+> > interpretation w.r.t. the bindings.
+> > 
+> > 1. The MFD device compatible "dlg,da9062" tells the OS that we
+> >    have an DA9062. An DA9062 contains six functions and this can be
+> >    inferred *entirely* from the MFD compatible string. We do not
+> >    need any subnodes to tell us that a DA9062 contains an RTC. The OS
+> >    can (and in this case, does) already know that there is an RTC
+> >    because we have a DA9062 (and a datasheet).
+> > 
+> > 2. The default behaviour when a node has no status field is to
+> >    assume that is is *enabled*.
+> > 
+> > Based on #1 and #2 above then assuming that a DT that omits the
+> > sub-nodes actually means "disable the RTC" is risky. #2 might
+> > actually make it more natural to assume that the device is present and
+> > functional because there is no status field to tell MFD *not* to
+> > initialize it.
 > 
-> 1. Move a call to drm_is_current_master() out from a section locked by &dev->mode_config.mutex in drm_mode_getconnector(). This patch does not apply to stable.
+> Exactly.  Nicely put.
 > 
-> 2. Move a call to _drm_lease_held() out from the section locked by &dev->mode_config.idr_mutex in __drm_mode_object_find().
+> > That leaves us in a situation where there is no way to correctly guess
+> > the authors intent when sub-nodes are omitted from the DT.
 > 
-> 3. Implement a locked version of drm_is_current_master() function that's used within drm_auth.c.
+> > Given this is something of a corner case and the documentation is
+> > ambiguous then a warning of the author does not clearly resolve the
+> > ambiguity seems reasonable.
 > 
-> 4. Serialize drm_file.master by introducing a new lock that's held whenever the value of drm_file.master changes.
-> 
-> 5. Identify areas in drm_lease.c where pointers to struct drm_master are dereferenced, and ensure that the master pointers are not freed during use.
-> 
-> Changes in v6 -> v7:
-> - Patch 2:
-> Modify code alignment as suggested by the intel-gfx CI.
-> 
-> Update commit message based on the changes to patch 5.
-> 
-> - Patch 4:
-> Add patch 4 to the series. This patch adds a new lock to serialize drm_file.master, in response to the lockdep splat by the intel-gfx CI.
-> 
-> - Patch 5:
-> Move kerneldoc comment about protecting drm_file.master with drm_device.master_mutex into patch 4.
-> 
-> Update drm_file_get_master to use the new drm_file.master_lock instead of drm_device.master_mutex, in response to the lockdep splat by the intel-gfx CI.
+> I'm having trouble parsing this part.
 
-So there's another one now because master->leases is protected by the
-mode_config.idr_mutex, and that's a bit awkward to untangle.
+That's quite reasonable because was is written is nonsense!
+Perhaps s/warning of the author/warning if the author/ will help
+but there are still too many words to say something very simple.
+The whole last paragraph could simply say:
 
-Also I'm really surprised that there was now lockdep through the atomic
-code anywhere. The reason seems to be that somehow CI reboot first before
-it managed to run any of the kms_atomic tests, and we can only hit this
-when we go through the atomic kms ioctl, the legacy kms ioctl don't have
-that specific issue.
+  The bindings documentation is ambiguous so is it reasonable
+  for the OS to issue a warning when the devicetree author does
+  not clearly resolve the ambiguity.
 
-Anyway I think this approach doesn't look too workable, and we need
-something new.
-
-But first things first: Are you still on board working on this? You
-started with a simple patch to fix a UAF bug, now we're deep into
-reworking tricky locking ... If you feel like you want out I'm totally
-fine with that.
-
-Anyway, I think we need to split drm_device->master_mutex up into two
-parts:
-
-- One part that protects the actual access/changes, which I think for
-  simplicity we'll just leave as the current lock. That lock is a very
-  inner lock, since for the drm_lease.c stuff it has to nest within
-  mode_config.idr_mutex even.
-
-- Now the issue with checking master status/leases/whatever as an
-  innermost lock is that you can race, it's a classic time of check vs
-  time of use race: By the time we actually use the thing we validate
-  we'er allowed to use, we might now have access anymore. There's two
-  reasons for that:
-
-  * DROPMASTER ioctl could remove the master rights, which removes access
-    rights also for all leases
-
-  * REVOKE_LEASE ioctl can do the same but only for a specific lease
-
-  This is the thing we're trying to protect against in fbcon code, but
-  that's very spotty protection because all the ioctls by other users
-  aren't actually protected against this.
-
-  So I think for this we need some kind of big reader lock.
-
-Now for the implementation, there's a few things:
-
-- I think best option for this big reader lock would be to just use srcu.
-  We only need to flush out all current readers when we drop master or
-  revoke a lease, so synchronize_srcu is perfectly good enough for this
-  purpose.
-
-- The fbdev code would switch over to srcu in
-  drm_master_internal_acquire() and drm_master_internal_release(). Ofc
-  within drm_master_internal_acquire we'd still need to check master
-  status with the normal master_mutex.
-
-- While we revamp all this we should fix the ioctl checks in drm_ioctl.c.
-  Just noticed that drm_ioctl_permit() could and should be unexported,
-  last user was removed.
-
-  Within drm_ioctl_kernel we'd then replace the check for
-  drm_is_current_master with the drm_master_internal_acquire/release.
-
-- This alone does nothing, we still need to make sure that dropmaster and
-  revoke_lease ioctl flush out all other access before they return to
-  userspace. We can't just call synchronize_srcu because due to the ioctl
-  code in drm_ioctl_kernel we're in that sruc section, we'd need to add a
-  DRM_MASTER_FLUSH ioctl flag which we'd check only when DRM_MASTER is
-  set, and use to call synchronize_srcu. Maybe wrap that in a
-  drm_master_flush or so, or perhaps a drm_master_internal_release_flush.
-
-- Also maybe we should drop the _internal_ from that name. Feels a bit
-  wrong when we're also going to use this in the ioctl handler.
-
-Thoughts? Totally silly and overkill?
-
-Cheers, Daniel
+This is still a long sentence but at least it is no longer a
+complicated one!
 
 
-> Changes in v5 -> v6:
-> - Patch 2:
-> Add patch 2 to the series. This patch moves the call to _drm_lease_held out from the section locked by &dev->mode_config.idr_mutex in __drm_mode_object_find.
-> 
-> - Patch 5:
-> Clarify the kerneldoc for dereferencing drm_file.master, as suggested by Daniel Vetter.
-> 
-> Refactor error paths with goto labels so that each function only has a single drm_master_put(), as suggested by Emil Velikov.
-> 
-> Modify comparison to NULL into "!master", as suggested by the intel-gfx CI.
-> 
-> Changes in v4 -> v5:
-> - Patch 1:
-> Add patch 1 to the series. The changes in patch 1 do not apply to stable because they apply to new changes in the drm-misc-next branch. This patch moves the call to drm_is_current_master in drm_mode_getconnector out from the section locked by &dev->mode_config.mutex.
-> 
-> Additionally, added a missing semicolon to the patch, caught by the intel-gfx CI.
-> 
-> - Patch 3:
-> Move changes to drm_connector.c into patch 1.
-> 
-> Changes in v3 -> v4:
-> - Patch 3:
-> Move the call to drm_is_current_master in drm_mode_getconnector out from the section locked by &dev->mode_config.mutex. As suggested by Daniel Vetter. This avoids a circular lock lock dependency as reported here https://patchwork.freedesktop.org/patch/440406/
-> 
-> Additionally, inside drm_is_current_master, instead of grabbing &fpriv->master->dev->master_mutex, we grab &fpriv->minor->dev->master_mutex to avoid dereferencing a null ptr if fpriv->master is not set.
-> 
-> - Patch 5:
-> Modify kerneldoc formatting.
-> 
-> Additionally, add a file_priv->master NULL check inside drm_file_get_master, and handle the NULL result accordingly in drm_lease.c. As suggested by Daniel Vetter.
-> 
-> Changes in v2 -> v3:
-> - Patch 3:
-> Move the definition of drm_is_current_master and the _locked version higher up in drm_auth.c to avoid needing a forward declaration of drm_is_current_master_locked. As suggested by Daniel Vetter.
-> 
-> - Patch 5:
-> Instead of leaking drm_device.master_mutex into drm_lease.c to protect drm_master pointers, add a new drm_file_get_master() function that returns drm_file->master while increasing its reference count, to prevent drm_file->master from being freed. As suggested by Daniel Vetter.
-> 
-> Changes in v1 -> v2:
-> - Patch 5:
-> Move the lock and assignment before the DRM_DEBUG_LEASE in drm_mode_get_lease_ioctl, as suggested by Emil Velikov.
-> 
-> Desmond Cheong Zhi Xi (5):
->   drm: avoid circular locks in drm_mode_getconnector
->   drm: separate locks in __drm_mode_object_find
->   drm: add a locked version of drm_is_current_master
->   drm: serialize drm_file.master with a master lock
->   drm: protect drm_master pointers in drm_lease.c
-> 
->  drivers/gpu/drm/drm_auth.c        | 86 +++++++++++++++++++++++--------
->  drivers/gpu/drm/drm_connector.c   |  5 +-
->  drivers/gpu/drm/drm_file.c        |  1 +
->  drivers/gpu/drm/drm_lease.c       | 81 ++++++++++++++++++++++-------
->  drivers/gpu/drm/drm_mode_object.c | 10 ++--
->  include/drm/drm_auth.h            |  1 +
->  include/drm/drm_file.h            | 18 +++++--
->  7 files changed, 153 insertions(+), 49 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Daniel.
