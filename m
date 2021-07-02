@@ -2,130 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287083BA465
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 21:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846AF3BA468
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 21:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbhGBTnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 15:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53902 "EHLO
+        id S230515AbhGBTpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 15:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhGBTns (ORCPT
+        with ESMTP id S229676AbhGBTps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 15:43:48 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766CCC061762;
-        Fri,  2 Jul 2021 12:41:15 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id cx9-20020a17090afd89b0290170a3e085edso6820448pjb.0;
-        Fri, 02 Jul 2021 12:41:15 -0700 (PDT)
+        Fri, 2 Jul 2021 15:45:48 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26527C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 12:43:16 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id w11so14876585ljh.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 12:43:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iRPcc3KZxFiOquaZxV8pj049/M7XwQEX+qEAJ1CThqY=;
-        b=jZYFtq8t0vu44PTn5Z+yPEuzQOUQUUfO4KZHYczUuYxuQxlT4x311ea4GnY64XtRt1
-         e2HxrA7+vGA1rplFWjjwUmAkd2hx2jivqmUPtGQfw5WRIhW7A/GmvuGePBxZARebMzKF
-         7vvCHUkjjoGYS6Ps96IocB+M7G69jbvKx08ssSLuX5HBAyAfuwEPRM/TXm9VzqUbXY1P
-         LoSHna5097UuNkbBsV1kzOIlD4apjTmwBYjNKcz8Vf+Mjw26+EkJ7/WlZSDqi1W2RfNT
-         n99tM3lE+taucZKU5xko37/Ozy2M90SzNb12AXsjRrbLFijk6QitmrrCFMDp9ZmUz6S4
-         uIMA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hfx5fSmOdgY90FoUlA/sfF9P5clz6NRu1yzH0lQXy18=;
+        b=A/SegpDPvGpVDgVFaqmM0GXMqPsQ/YHD1gkkXyAN6+ZudmMV3Oj69yFt8Zsw66RCuG
+         K3vuuTgR1a5B67XiC6xopZzPFZV+4QKrQ620iRpmYgken8P2VG5mnpN5IKG785/EDPoz
+         m6WWZRkWp8qmJ7M/20I+XPw9h9fKWKKZgpaXI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iRPcc3KZxFiOquaZxV8pj049/M7XwQEX+qEAJ1CThqY=;
-        b=CfNHPb9k0YWFSlUBi5GtCfNXUK4lvfw86N0IAVmV/Vx1TpjRJG+l7fxJoiGBSCQ5aH
-         xlwdBZ0wBnsAeEwmU5P8/QDk7JT+amsb+EulcXMe9hscH77GVxeQ68GV0HJwujYffaWx
-         ynxWuWT1GGyCDzo7UNG6+OWIh+vzXCtS1t02ZzhfWYpULsV61YAL1znMH3izOahp5Gjk
-         1NTSK3i59VLRRrjESaTS8hpY1nMWnww7fKzGkLpHnkxoCPDGv5it5RJq7FrQTOUkI2S3
-         lH97bi0CRK25gYq1Ql9TDU+wDIsDRIADaq894/ahx91uiyEEWImkTK6JpiCXA9yZegbf
-         wMeA==
-X-Gm-Message-State: AOAM532KQwWZsY5hH51KKh/hz5DvhR19FW4lDjX2SDRJJ2E/yapymnRy
-        ztPwJ1yORKaKTO1t0bfD5nk=
-X-Google-Smtp-Source: ABdhPJwlqv/SX20NxLLJQWxL029/6T76a5hMovPA8WKZ7PJNpejCd2IOwTKiiocwnq+RNntcwk1dqw==
-X-Received: by 2002:a17:90a:dc06:: with SMTP id i6mr1263098pjv.65.1625254874773;
-        Fri, 02 Jul 2021 12:41:14 -0700 (PDT)
-Received: from pn-hyperv.lan (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
-        by smtp.gmail.com with ESMTPSA id t14sm5283132pgm.9.2021.07.02.12.41.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 12:41:14 -0700 (PDT)
-From:   Nguyen Dinh Phi <phind.uet@gmail.com>
-To:     edumazet@google.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
-Subject: [PATCH v2] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
-Date:   Sat,  3 Jul 2021 03:40:33 +0800
-Message-Id: <20210702194033.1370634-1-phind.uet@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hfx5fSmOdgY90FoUlA/sfF9P5clz6NRu1yzH0lQXy18=;
+        b=tUW8W35C1Akz90bFJPm6VwSW6PF9eGPsMUwaOzbQfTbjs6nw0Gp93tYvmuokZDZJva
+         eZjaYwzGtvbOhtItR4O3l7GurGQOAQEv8JOGcYZQn3rMXtYmFwDS6XwIWHwtCj1WoCLl
+         sCGbYsUNyuCAHJ1BIY7ZZD8ax2SSDnamEG/ePfh+aVUjOwVU3vYmsTKdKD6rX/mttuZg
+         oOR7f0CtBZLUZWb1gnXcDflxwDd7+xyJS4852ZBad4YXnFdyOCZR77UqyKPLITts53+x
+         tzoaGTNfq/RNfT2wcYDl4tX5u08tmOHUugtwc6BDjKzunTdQ0i5v6yBrqJXyvFhruwyD
+         eIYw==
+X-Gm-Message-State: AOAM532y4zZrahD+U0u7XQzQgJZ67VngtQ3ascyxJnnCBZSApcZIraw5
+        83I4B6Um9RF8WHgwERuSfzFyzStNCa9lkrsq+hk=
+X-Google-Smtp-Source: ABdhPJw/OsQTz+ZPLKYOIYHABhwhldX6OBVVB98SyNzYX8lW12szV2JKCPKUIUwvj7vdlx2+sSvC4g==
+X-Received: by 2002:a2e:9c02:: with SMTP id s2mr784095lji.299.1625254994222;
+        Fri, 02 Jul 2021 12:43:14 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id u9sm75990lfm.127.2021.07.02.12.43.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Jul 2021 12:43:13 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id q18so19989918lfc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 12:43:13 -0700 (PDT)
+X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr866325lfs.377.1625254993210;
+ Fri, 02 Jul 2021 12:43:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
+In-Reply-To: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 2 Jul 2021 12:42:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com>
+Message-ID: <CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com>
+Subject: Re: [GIT PULL 1/2] asm-generic: rework PCI I/O space access
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit fixes a bug (found by syzkaller) that could cause spurious
-double-initializations for congestion control modules, which could cause
-memory leaks orother problems for congestion control modules (like CDG)
-that allocate memory in their init functions.
+On Fri, Jul 2, 2021 at 6:48 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> A rework for PCI I/O space access from Niklas Schnelle:
 
-The buggy scenario constructed by syzkaller was something like:
+I pulled this, but then I ended up unpulling.
 
-(1) create a TCP socket
-(2) initiate a TFO connect via sendto()
-(3) while socket is in TCP_SYN_SENT, call setsockopt(TCP_CONGESTION),
-    which calls:
-       tcp_set_congestion_control() ->
-         tcp_reinit_congestion_control() ->
-           tcp_init_congestion_control()
-(4) receive ACK, connection is established, call tcp_init_transfer(),
-    set icsk_ca_initialized=0 (without first calling cc->release()),
-    call tcp_init_congestion_control() again.
+I don't absolutely _hate_ the concept, but I really find this to be
+very unpalatable:
 
-Note that in this sequence tcp_init_congestion_control() is called
-twice without a cc->release() call in between. Thus, for CC modules
-that allocate memory in their init() function, e.g, CDG, a memory leak
-may occur. The syzkaller tool managed to find a reproducer that
-triggered such a leak in CDG.
+  #if !defined(inb) && !defined(_inb)
+  #define _inb _inb
+  static inline u8 _inb(unsigned long addr)
+  {
+  #ifdef PCI_IOBASE
+        u8 val;
 
-The bug was introduced when that commit 8919a9b31eb4 ("tcp: Only init
-congestion control if not initialized already")
-introduced icsk_ca_initialized and set icsk_ca_initialized to 0 in
-tcp_init_transfer(), missing the possibility for a sequence like the
-one above, where a process could call setsockopt(TCP_CONGESTION) in
-state TCP_SYN_SENT (i.e. after the connect() or TFO open sendmsg()),
-which would call tcp_init_congestion_control(). It did not intend to
-reset any initialization that the user had already explicitly made;
-it just missed the possibility of that particular sequence (which
-syzkaller managed to find).
+        __io_pbr();
+        val = __raw_readb(PCI_IOBASE + addr);
+        __io_par(val);
+        return val;
+  #else
+        WARN_ONCE(1, "No I/O port support\n");
+        return ~0;
+  #endif
+  }
+  #endif
 
-Fixes: commit 8919a9b31eb4 ("tcp: Only init congestion control if not
-initialized already")
-Reported-by: syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
----
-V2:	- Modify the Subject line.
-	- Adjust the commit message.
-	- Add Fixes: tag.
+because honestly, the notion of a run-time warning for a compile-time
+"this cannot work" is just wrong.
 
- net/ipv4/tcp_input.c | 1 -
- 1 file changed, 1 deletion(-)
+If the platform doesn't have inb/outb, and you compile some driver
+that uses them, you don't want a run-time warning. Particularly since
+in many cases nobody will ever run it, and the main use case was to do
+compile-testing across a wide number of platforms.
 
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 7d5e59f688de..855ada2be25e 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -5922,7 +5922,6 @@ void tcp_init_transfer(struct sock *sk, int bpf_op, struct sk_buff *skb)
- 		tp->snd_cwnd = tcp_init_cwnd(tp, __sk_dst_get(sk));
- 	tp->snd_cwnd_stamp = tcp_jiffies32;
+So if the platform doesn't have inb/outb, they simply should not be
+declared, and there should be a *compile-time* error. That is
+literally a lot more useful, and it avoids this extra code.
 
--	icsk->icsk_ca_initialized = 0;
- 	bpf_skops_established(sk, bpf_op, skb);
- 	if (!icsk->icsk_ca_initialized)
- 		tcp_init_congestion_control(sk);
---
-2.25.1
+Extra code that not only doesn't add value, but that actually
+*subtracts* value is not code I really want to pull.
 
+                     Linus
