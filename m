@@ -2,235 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237683BA089
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E003BA095
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 14:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232577AbhGBMgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 08:36:25 -0400
-Received: from mga17.intel.com ([192.55.52.151]:32637 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232554AbhGBMgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 08:36:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="189107363"
-X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
-   d="scan'208";a="189107363"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 05:33:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
-   d="scan'208";a="642660379"
-Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
-  by fmsmga006.fm.intel.com with ESMTP; 02 Jul 2021 05:33:47 -0700
-From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Subject: [PATCH v9 24/24] perf session: Load data directory files for analysis
-Date:   Fri,  2 Jul 2021 15:32:32 +0300
-Message-Id: <4fd68fdcce3c40d6d48b171eb2c8ae4f43423956.1625227739.git.alexey.v.bayduraev@linux.intel.com>
-X-Mailer: git-send-email 2.19.0
-In-Reply-To: <cover.1625227739.git.alexey.v.bayduraev@linux.intel.com>
-References: <cover.1625227739.git.alexey.v.bayduraev@linux.intel.com>
+        id S232439AbhGBMhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 08:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232490AbhGBMhE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 08:37:04 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18EBC0613DD;
+        Fri,  2 Jul 2021 05:34:25 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id i13so9573453ilu.4;
+        Fri, 02 Jul 2021 05:34:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vgKtcyeiy8EN/ZB2UkGxHv/hs6NpszraEHFim7BARfA=;
+        b=HebwOk1mxXfT2pL9Oq0eqEi4AEFu12hA0hN+krojgMl7MViI2o0gSELwVMRrgz8rIF
+         E0sH65Kg6sCDza6AS2FIW4LxQzeX36aCXxgARn6UXjuiKdhnGpsonOcgg4T1MW5AGfZ4
+         8u6TUh0NY8zW5I3rr1KuqXUk1j70b+yRQY3WRW3t/NM6u2XHs8POGVYYCOPfd4ORC/y3
+         vXYhQNgSiC5rkDPEdfbc4i7hIjVRKFUvbL6p+oVpzrycFF3NF094+ffkLQyfxivd17nQ
+         VPNKQpwfg1MLcDr3Xs8BZ9sgRTCN+lZEEyjppiJp/PAvywe2sHGjV7Zg0EiUnvwpXlVQ
+         vfaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vgKtcyeiy8EN/ZB2UkGxHv/hs6NpszraEHFim7BARfA=;
+        b=B51JDFCcB+NsL2x0tp09LGrC55Djd2lrG4+LclxtTsGI6jVeVhtO73wVrn4Jkbef+l
+         8z1WblRO4TU1UJnX/z51hsjBck30QSJZqQe1785UUk52MjQ0IBWirkQ5KcyLhbPf6Xa2
+         6962fzzHmPeFTuM9e/Cqiu4EURg02wqR/a82+M/OiY1xebfYUh008/wFO1jB60YTVg0d
+         736LIzCeo+/x56YVXtZpDnZ7QMwQ1ETrh/5TOM7At9ssx19TmBC78PflpVAIGs6I4MhT
+         +CPQ2gleTEUbX/EcBYwlHIjbmrhh7G5qHB1ygXJibaesYxIrnzupsS3oU1YuV5WmBnqT
+         CnnA==
+X-Gm-Message-State: AOAM532fFL5bRHu6+eU56ZH+dszXaQWgWVz+NPMGi7D0ikNYE6YXcmdc
+        pojQaDtVbUjJBOySRdF3y1RhoRLPOe6XZ/z7lBWlv5mK3KTTEg==
+X-Google-Smtp-Source: ABdhPJyMKGDbzvDVc9VsROLvgaU9RDUJpKR210sQzIBmRHGTIzm6YtVqvumYsvbko+32KKF9H+gShAM3DlZ56KCKEf8=
+X-Received: by 2002:a92:1e08:: with SMTP id e8mr83309ile.10.1625229265263;
+ Fri, 02 Jul 2021 05:34:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210624163045.33651-1-alcooperx@gmail.com> <CAPDyKFqwrX64W8t-PYrN-JYTttu6Bsfg40abPOOYFdZqDH0qMw@mail.gmail.com>
+In-Reply-To: <CAPDyKFqwrX64W8t-PYrN-JYTttu6Bsfg40abPOOYFdZqDH0qMw@mail.gmail.com>
+From:   Alan Cooper <alcooperx@gmail.com>
+Date:   Fri, 2 Jul 2021 08:33:48 -0400
+Message-ID: <CAOGqxeUSLpC9+aGnMxEZpMTOvwMrb-3=11EGH48qdZvdioijHQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci: Fix warning message when accessing RPMB in
+ HS400 mode
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Load data directory files and provide basic raw dump and aggregated
-analysis support of data directories in report mode, still with no
-memory consumption optimizations.
+On Wed, Jun 30, 2021 at 10:21 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Thu, 24 Jun 2021 at 18:31, Al Cooper <alcooperx@gmail.com> wrote:
+> >
+> > When an eMMC device is being run in HS400 mode, any access to the
+> > RPMB device will cause the error message "mmc1: Invalid UHS-I mode
+> > selected". This happens as a result of tuning being disabled before
+> > RPMB access and then re-enabled after the RPMB access is complete.
+> > When tuning is re-enabled, the system has to switch from HS400
+> > to HS200 to do the tuning and then back to HS400. As part of
+> > sequence to switch from HS400 to HS200 the system is temporarily
+> > put into HS mode. When switching to HS mode, sdhci_get_preset_value()
+> > is called and does not have support for HS mode and prints the warning
+> > message and returns the preset for SDR12. The fix is to add support
+> > for MMC and SD HS modes to sdhci_get_preset_value().
+> >
+> > This can be reproduced on any system running eMMC in HS400 mode
+> > (not HS400ES) by using the "mmc" utility to run the following
+> > command: "mmc rpmb read-counter /dev/mmcblk0rpmb".
+> >
+> > Signed-off-by: Al Cooper <alcooperx@gmail.com>
+>
+> I assume we want this for stable kernels, but it would be nice to add
+> a fixes tag as well.
+>
+> Do you know if there is a specific commit that this fixes?
 
-Design and implementation are based on the prototype [1], [2].
+The function sdhci_get_preset_value(), which is missing the HS modes,
+was added in 52983382c74f5 for v3.9. Should I add a fixes tag for that
+commit?
 
-[1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
-[2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+Thanks
+Al
 
-Suggested-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Namhyung Kim <namhyung@gmail.com>
-Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
----
- tools/perf/util/session.c | 131 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 131 insertions(+)
-
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 63811fec2583..021f543c22a4 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -48,6 +48,13 @@
- #define NUM_MMAPS 128
- #endif
- 
-+/*
-+ * Processing 10MBs of data from each reader in sequence,
-+ * because that's the way the ordered events sorting works
-+ * most efficiently.
-+ */
-+#define READER_MAX_SIZE (10 * 1024 * 1024)
-+
- struct reader;
- 
- typedef s64 (*reader_cb_t)(struct perf_session *session,
-@@ -65,6 +72,7 @@ struct reader_state {
- 	u64	 data_size;
- 	u64	 head;
- 	bool	 eof;
-+	u64	 size;
- };
- 
- enum {
-@@ -2326,6 +2334,7 @@ reader__read_event(struct reader *rd, struct perf_session *session,
- 	if (skip)
- 		size += skip;
- 
-+	st->size += size;
- 	st->head += size;
- 	st->file_pos += size;
- 
-@@ -2425,6 +2434,125 @@ static int __perf_session__process_events(struct perf_session *session)
- 	return err;
- }
- 
-+/*
-+ * This function reads, merge and process directory data.
-+ * It assumens the version 1 of directory data, where each
-+ * data file holds per-cpu data, already sorted by kernel.
-+ */
-+static int __perf_session__process_dir_events(struct perf_session *session)
-+{
-+	struct perf_data *data = session->data;
-+	struct perf_tool *tool = session->tool;
-+	int i, ret = 0, readers = 1;
-+	struct ui_progress prog;
-+	u64 total_size = perf_data__size(session->data);
-+	struct reader *rd;
-+
-+	perf_tool__fill_defaults(tool);
-+
-+	ui_progress__init_size(&prog, total_size, "Sorting events...");
-+
-+	for (i = 0; i < data->dir.nr; i++) {
-+		if (data->dir.files[i].size)
-+			readers++;
-+	}
-+
-+	rd = session->readers = zalloc(readers * sizeof(struct reader));
-+	if (!rd)
-+		return -ENOMEM;
-+	session->nr_readers = readers;
-+	readers = 0;
-+
-+	rd[readers] = (struct reader) {
-+		.fd		 = perf_data__fd(session->data),
-+		.path		 = session->data->file.path,
-+		.data_size	 = session->header.data_size,
-+		.data_offset	 = session->header.data_offset,
-+		.in_place_update = session->data->in_place_update,
-+	};
-+	ret = reader__init(&rd[readers], NULL);
-+	if (ret)
-+		goto out_err;
-+	ret = reader__mmap(&rd[readers], session);
-+	if (ret != READER_OK) {
-+		if (ret == READER_EOF)
-+			ret = -EINVAL;
-+		goto out_err;
-+	}
-+	readers++;
-+
-+	for (i = 0; i < data->dir.nr; i++) {
-+		if (!data->dir.files[i].size)
-+			continue;
-+		rd[readers] = (struct reader) {
-+			.fd		 = data->dir.files[i].fd,
-+			.path		 = data->dir.files[i].path,
-+			.data_size	 = data->dir.files[i].size,
-+			.data_offset	 = 0,
-+			.in_place_update = session->data->in_place_update,
-+		};
-+		ret = reader__init(&rd[readers], NULL);
-+		if (ret)
-+			goto out_err;
-+		ret = reader__mmap(&rd[readers], session);
-+		if (ret != READER_OK) {
-+			if (ret == READER_EOF)
-+				ret = -EINVAL;
-+			goto out_err;
-+		}
-+		readers++;
-+	}
-+
-+	i = 0;
-+
-+	while ((ret >= 0) && readers) {
-+		if (session_done())
-+			return 0;
-+
-+		if (rd[i].state.eof) {
-+			i = (i + 1) % session->nr_readers;
-+			continue;
-+		}
-+
-+		ret = reader__read_event(&rd[i], session, &prog);
-+		if (ret < 0)
-+			break;
-+		if (ret == READER_NODATA) {
-+			ret = reader__mmap(&rd[i], session);
-+			if (ret < 0)
-+				goto out_err;
-+			if (ret == READER_EOF)
-+				readers--;
-+		}
-+
-+		if (rd[i].state.size >= READER_MAX_SIZE) {
-+			rd[i].state.size = 0;
-+			i = (i + 1) % session->nr_readers;
-+		}
-+	}
-+
-+	ret = ordered_events__flush(&session->ordered_events, OE_FLUSH__FINAL);
-+	if (ret)
-+		goto out_err;
-+
-+	ret = perf_session__flush_thread_stacks(session);
-+out_err:
-+	ui_progress__finish();
-+
-+	if (!tool->no_warn)
-+		perf_session__warn_about_errors(session);
-+
-+	/*
-+	 * We may switching perf.data output, make ordered_events
-+	 * reusable.
-+	 */
-+	ordered_events__reinit(&session->ordered_events);
-+
-+	session->one_mmap = false;
-+
-+	return ret;
-+}
-+
- int perf_session__process_events(struct perf_session *session)
- {
- 	if (perf_session__register_idle_thread(session) < 0)
-@@ -2433,6 +2561,9 @@ int perf_session__process_events(struct perf_session *session)
- 	if (perf_data__is_pipe(session->data))
- 		return __perf_session__process_pipe_events(session);
- 
-+	if (perf_data__is_dir(session->data))
-+		return __perf_session__process_dir_events(session);
-+
- 	return __perf_session__process_events(session);
- }
- 
--- 
-2.19.0
-
+>
+> Kind regards
+> Uffe
+>
+> > ---
+> >  drivers/mmc/host/sdhci.c | 4 ++++
+> >  drivers/mmc/host/sdhci.h | 1 +
+> >  2 files changed, 5 insertions(+)
+> >
+> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> > index bf238ade1602..6b39126fbf06 100644
+> > --- a/drivers/mmc/host/sdhci.c
+> > +++ b/drivers/mmc/host/sdhci.c
+> > @@ -1812,6 +1812,10 @@ static u16 sdhci_get_preset_value(struct sdhci_host *host)
+> >         u16 preset = 0;
+> >
+> >         switch (host->timing) {
+> > +       case MMC_TIMING_MMC_HS:
+> > +       case MMC_TIMING_SD_HS:
+> > +               preset = sdhci_readw(host, SDHCI_PRESET_FOR_HIGH_SPEED);
+> > +               break;
+> >         case MMC_TIMING_UHS_SDR12:
+> >                 preset = sdhci_readw(host, SDHCI_PRESET_FOR_SDR12);
+> >                 break;
+> > diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+> > index 0770c036e2ff..960fed78529e 100644
+> > --- a/drivers/mmc/host/sdhci.h
+> > +++ b/drivers/mmc/host/sdhci.h
+> > @@ -253,6 +253,7 @@
+> >
+> >  /* 60-FB reserved */
+> >
+> > +#define SDHCI_PRESET_FOR_HIGH_SPEED    0x64
+> >  #define SDHCI_PRESET_FOR_SDR12 0x66
+> >  #define SDHCI_PRESET_FOR_SDR25 0x68
+> >  #define SDHCI_PRESET_FOR_SDR50 0x6A
+> >
+> > base-commit: 7426cedc7dad67bf3c71ea6cc29ab7822e1a453f
+> > --
+> > 2.17.1
+> >
