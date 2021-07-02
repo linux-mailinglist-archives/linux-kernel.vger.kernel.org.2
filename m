@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D983BA25C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 16:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE903BA26C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 17:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233044AbhGBOvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 10:51:36 -0400
-Received: from mga11.intel.com ([192.55.52.93]:16479 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232381AbhGBOvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 10:51:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10033"; a="205734472"
-X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
-   d="scan'208";a="205734472"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 07:49:02 -0700
-X-IronPort-AV: E=Sophos;i="5.83,317,1616482800"; 
-   d="scan'208";a="409527191"
-Received: from tkhalx-mobl.amr.corp.intel.com (HELO [10.252.132.13]) ([10.252.132.13])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 07:49:02 -0700
-Subject: Re: [PATCH v3 1/2] x86/ioremap: fix the pfn calculation mistake in
- __ioremap_check_ram()
-To:     Yaohui Wang <yaohuiwang@linux.alibaba.com>, tglx@linutronix.de
-Cc:     luto@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
-        luoben@linux.alibaba.com, Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <20210621123419.2976-1-yaohuiwang@linux.alibaba.com>
- <20210621123419.2976-2-yaohuiwang@linux.alibaba.com>
- <94a38542-b639-37e4-1b53-29b59c5ea655@intel.com>
- <34bae667-180f-ce97-ee55-12e13ff28ca0@linux.alibaba.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <663229c2-1957-2af5-678c-5d553507f5f3@intel.com>
-Date:   Fri, 2 Jul 2021 07:49:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232505AbhGBPC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 11:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230271AbhGBPC2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 11:02:28 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19283C061762;
+        Fri,  2 Jul 2021 07:59:56 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 9A2A02224D;
+        Fri,  2 Jul 2021 16:59:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1625237992;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OWy2yrkTk66WQxbgnmVpmHdWaJn/RapTlXrAofVrtKA=;
+        b=fM22OssiTe4GCgmGyUJ7YDdMyNsIY/kmsOERyeYP4g4ELQkYfNOfWr0JFoVJ9aR293lgJT
+        rfb47ACOX/2AevGjX5afzHIFaImldCqYHhEBny5bI8WtWGxmj45uLrrmmnZ6XV7FJPRlNm
+        NdrL/SOe9I912AbrKuCnqNgw4a3Ea/g=
 MIME-Version: 1.0
-In-Reply-To: <34bae667-180f-ce97-ee55-12e13ff28ca0@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 02 Jul 2021 16:59:51 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Fu Wei <tekkamanninja@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-riscv@lists.infradead.org,
+        devicetree@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
+        Huan Feng <huan.feng@starfivetech.com>
+Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO
+ driver
+In-Reply-To: <20210701203333.GA963857@x1>
+References: <20210701002037.912625-1-drew@beagleboard.org>
+ <20210701002037.912625-3-drew@beagleboard.org>
+ <8c59105d32a9936f8806501ecd20e044@walle.cc> <20210701203333.GA963857@x1>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <c915172ac456b3f7b7547c065c41750b@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/2/21 3:05 AM, Yaohui Wang wrote:
-> On 2021/7/1 22:41, Dave Hansen wrote:
->> Was this issue found by inspection, or is it causing an actual problem
->> in practice?
+Hi Drew,
+
+Am 2021-07-01 22:33, schrieb Drew Fustini:
+> On Thu, Jul 01, 2021 at 08:39:40AM +0200, Michael Walle wrote:
+>> Hi Drew,
+>> 
+>> Am 2021-07-01 02:20, schrieb Drew Fustini:
+>> > Add GPIO driver for the StarFive JH7100 SoC [1] used on the
+>> > BeagleV Starlight JH7100 board [2].
+>> >
+>> > [1] https://github.com/starfive-tech/beaglev_doc/
+>> > [2] https://github.com/beagleboard/beaglev-starlight
+>> >
+>> > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+>> > Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
+>> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
+>> 
+>> Could this driver use GPIO_REGMAP and REGMAP_IRQ? See
+>> drivers/gpio/gpio-sl28cpld.c for an example.
+>> 
+>> -michael
 > 
-> This issus truly caused terrible perforamnce downgrade in the practice.
-> When developing an out of tree module in our testing environment,
-> invoking ioremap() on normal RAM causes apparent CLI lag. The Unixbench
-> score also decreases a lot (5x slowdown in the worst case).
+> Thank you for the suggestion.  I am not familiar with GPIO_REGMAP and
+> REGMAP_IRQ so I will read about it.  Is the advantage is that is helps
+> to reduce code duplication by using an abstraction?
+
+Yes, I've looked briefly at your patch and it seemed that GPIO_REGMAP
+might fit here which will reduce code.
+
+> I did notice that the gpio-sifive.c driver used regmap_update_bits() 
+> and
+> regmap_write().
 > 
-> Debugging such performance issue is extremely difficult, especially when
-> the code of the faulty module itself is already very complex. I tested
-> the system in many aspects before finally located this problem.
+> I suppose that is better than writel_relaxed() and iowrite32() which
+> this RFC driver does?
 
-Do you know why this check:
+Its just another abstraction layer in between. For MMIO it will also
+end up using some variant of the above (see regmap-mmio.c). But if you
+use regmap, you can also use REGMAP_IRQ which might also be a fit
+for your GPIO controller and thus don't have to implement your own
+versions for the irq_chip ops.
 
-> 	if ((res->flags & IORESOURCE_SYSTEM_RAM) != IORESOURCE_SYSTEM_RAM)
-> 		return false;
-
-did not catch your out-of-tree driver's errant ioremap()?
+-michael
