@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576913B9BB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 06:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37383B9BB2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 06:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234947AbhGBE5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 00:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
+        id S233360AbhGBE5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 00:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233691AbhGBE5u (ORCPT
+        with ESMTP id S230289AbhGBE5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 00:57:50 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2370C061764
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 21:55:18 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id 61-20020aed21430000b029024e7e455d67so4866319qtc.16
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 21:55:18 -0700 (PDT)
+        Fri, 2 Jul 2021 00:57:47 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A01C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 21:55:15 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id in17-20020a17090b4391b0290170ba0ec7fcso8087473pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 21:55:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=r2Kq6aGqAuq4Pv1SlGhd10LnvnYS6xXKFusVet9luSw=;
-        b=JfAxOM3uFhUKSQ+6IHdpuH1wCPcfMx7QAM5TmlyH9yNnFf7nHDROzrQZE0Tp5G0FXM
-         gZ0E0cvA84Glaovbt4ER/tvR/eiPtxxqm4vzQ2rLpGfeeuOSLxpusNhdGJSh0VHCqM9w
-         /Thyv6X48Jkpk+GqV3rnJoAnomd+a27SqEJUTiPwYbD30dooKFGvgTvbN+XIHZ6MPWOO
-         nCTLokvjBCE5wUIZG6Tk8kNaywDnJ/7UWvRIFV44wRjcsbU6aXaeAwaLa2W1fn0QE4uc
-         0I6OZn6sGZRa8V0W58b89ca7EHct0MPCrvMeBHdwahUdn09+pykAJX91hza4+D0eo5Zc
-         65Sg==
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8wdpYac922+2MTlxWPHYisZu+1HjHabMF9049YmCpVc=;
+        b=q8GcCDdQAmEIRNwTEc0ZT49UMheJANOM3BeGBqt9HosmhwUlxPmIw4hRgwbWvVxFqZ
+         SwlkUrDAWtNPIN8GjI5y7UtinPZLnE1UHs7BX0U0rH0bh0rG+7or/oR1+K+VABxk53xQ
+         0rCiZxsSOMfj97YIrPhbLL0D+ynBVYw1e0yyEmG0xVhfd3QvZXToGH/K8+g4LSTMTnsw
+         BCbNisHE30++nWDIxXBye6EtG8echBFZQbeWYPsxU+FPnvG5OUlW3ZWuSBvwHhNhsdoW
+         j9xrJOTTBnjzuUwaVcgnJKH+GDMfu7TDAtK3sF/R5NdJruCSIXiaQ6CRpxFRQgYp3YId
+         wAFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=r2Kq6aGqAuq4Pv1SlGhd10LnvnYS6xXKFusVet9luSw=;
-        b=gKIeMyoI9dfEwA2HuK8HFt7855OsjHJjomt4stK/ZDdu5YC3aa2txlRYojWQ6fEkzg
-         yz56hz1Dg1sdvMijQJki2hrnGHdvQMskFjF6fyD0Pm2TYGLJ6+7cFxG4Li+YYS9cQq4w
-         FJqsbPuRj2piijEnE2MumUUSM6StqCSxLw6UF3E8rPcr0kJL5gXngI95Q0m/6tI0bNx/
-         EAOtJ9rvX3QrsRTxJWPfdgosptiPMHVvdnBE2+MQC1WlhCVoBaAiZ2d8FwfGjaB4kk4v
-         uXh0BiMcgeHevlecd/YweEqOI8DRggnSPO/oKK7yCyBz6n619nW3cH6WcJJzQH9enqFW
-         dRUQ==
-X-Gm-Message-State: AOAM531XjfMpYEu9g4bCGjdQ044Uf7/JLBPTwmoxJEkH+bownN6MR8Jy
-        cTYAWnUWY1mMqGcMhdF30qaF5qVjJ1GL
-X-Google-Smtp-Source: ABdhPJyabafndSiPzXuzqRurfZ+C7hfuGXB2Gz7DP8fpH4wfzuldifH3K52owDZeo9bYaOMrRVSvK7PvuilC
-X-Received: from gthelen2.svl.corp.google.com ([2620:15c:2cd:202:81c6:dd12:da9f:dd72])
- (user=gthelen job=sendgmr) by 2002:a05:6214:d49:: with SMTP id
- 9mr3502901qvr.30.1625201717833; Thu, 01 Jul 2021 21:55:17 -0700 (PDT)
-Date:   Thu,  1 Jul 2021 21:55:09 -0700
-Message-Id: <20210702045509.1517643-1-gthelen@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH] selftests/memfd: remove unused variable
-From:   Greg Thelen <gthelen@google.com>
-To:     Shuah Khan <shuah@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8wdpYac922+2MTlxWPHYisZu+1HjHabMF9049YmCpVc=;
+        b=gVB0AWjGhhsnsfeySCxUyPVIP+jOG+xav0+uLzoVhcCMqq78rqW8jUDXLeKGKfVyoI
+         OzFMQBYm/QZkyVwcWU477XoQV2RDg6WmaLyI5OjeiCDdhNxP5its97voLHGP1UTNjUmo
+         o8rnlWy2Ng6QK5j2Uzm2cCX8U/F3fn5FXTkXBzOtbg2DL9flCtFR9U8udUURxsB73ps7
+         SZkqYfZwOCh8aZeCWqp3ebb/qrUG9ASPYOJ85gOqK65Qul+BdqYWh5x8/jK+n5PbtRqD
+         xnSBsDHx0cYteZVZfs1o/A10EQqAPlGzTi2m+DpLoFUoqUxbUKh1cVRa4GFth/YchyqO
+         uq2w==
+X-Gm-Message-State: AOAM530eEKgV9zzwXvcLxYQRCr6zNoiPPwF9WoaTKw8Av6DiK2ic7+Lk
+        N2I+IVGQGpZxgoP6M2NvVCuuVA==
+X-Google-Smtp-Source: ABdhPJznt1hF1UhbLKd6O/yeO2rtrvTkZBeGb4a5GgpM31uoykKdAXgmMBRg83/pWoJpJgqh1pi2vg==
+X-Received: by 2002:a17:903:1ce:b029:128:e252:4480 with SMTP id e14-20020a17090301ceb0290128e2524480mr2821877plh.74.1625201715380;
+        Thu, 01 Jul 2021 21:55:15 -0700 (PDT)
+Received: from localhost ([106.201.108.2])
+        by smtp.gmail.com with ESMTPSA id cx5sm3347132pjb.1.2021.07.01.21.55.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 21:55:14 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 10:25:12 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Wolfram Sang <wsa@kernel.org>, Jie Deng <jie.deng@intel.com>,
+        linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
+        stefanha@redhat.com
+Subject: Re: [PATCH v11] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210702045512.u4dvbapoc5a2a4jb@vireshk-i7>
+References: <510c876952efa693339ab0d6cc78ba7be9ef6897.1625104206.git.jie.deng@intel.com>
+ <20210701040436.p7kega6rzeqz5tlm@vireshk-i7>
+ <YN4WeJCepCrpylOD@kunai>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YN4WeJCepCrpylOD@kunai>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 544029862cbb ("selftests/memfd: add tests for F_SEAL_FUTURE_WRITE
-seal") added an unused variable to mfd_assert_reopen_fd().
+On 01-07-21, 21:24, Wolfram Sang wrote:
+> 
+> > I just noticed this now, but this function even tries to send data
+> > partially, which isn't right. If the caller (i2c device's driver)
+> > calls this for 5 struct i2c_msg instances, then all 5 need to get
+> > through or none.. where as we try to send as many as possible here.
+> > 
+> > This looks broken to me. Rather return an error value here on success,
+> > or make it complete failure.
+> > 
+> > Though to be fair I see i2c-core also returns number of messages
+> > processed from i2c_transfer().
+> > 
+> > Wolfram, what's expected here ? Shouldn't all message transfer or
+> > none?
+> 
+> Well, on a physical bus, it can simply happen that after message 3 of 5,
+> the bus is stalled, so we need to bail out.
 
-Delete the unused variable.
+Right, and in that case the transfer will have any meaning left? I believe it
+needs to be fully retried as the requests may have been dependent on each other.
 
-Fixes: 544029862cbb ("selftests/memfd: add tests for F_SEAL_FUTURE_WRITE seal")
-Signed-off-by: Greg Thelen <gthelen@google.com>
----
- tools/testing/selftests/memfd/memfd_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Again, I am missing details of a virtqueue, but I'd think it is
+> different. If adding to the queue fails, then it probably make sense to
+> drop the whole transfer.
 
-diff --git a/tools/testing/selftests/memfd/memfd_test.c b/tools/testing/selftests/memfd/memfd_test.c
-index 74baab83fec3..192a2899bae8 100644
---- a/tools/testing/selftests/memfd/memfd_test.c
-+++ b/tools/testing/selftests/memfd/memfd_test.c
-@@ -56,7 +56,7 @@ static int mfd_assert_new(const char *name, loff_t sz, unsigned int flags)
- 
- static int mfd_assert_reopen_fd(int fd_in)
- {
--	int r, fd;
-+	int fd;
- 	char path[100];
- 
- 	sprintf(path, "/proc/self/fd/%d", fd_in);
+Exactly my point.
+
+> Of course, it can later happen on the physical bus of the host, though,
+> that the bus is stalled after message 3 of 5, and I2C_RDWR will bail
+> out.
+
+Basically we fail as soon as we know something is not right, correct?
+
 -- 
-2.32.0.93.g670b81a890-goog
-
+viresh
