@@ -2,82 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45913BA609
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 00:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431433BA60B
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 00:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233265AbhGBWrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 18:47:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233249AbhGBWrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 18:47:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88B1D61369;
-        Fri,  2 Jul 2021 22:44:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625265883;
-        bh=VAS+i7j9RsZ5DMKojNBUf0k3To0kIZtOvo7yvM1oi8w=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=dD0DozhQq7Qa778vxZIqWGs+qXclDLvCdjAF/3bHkz1/HbJEX8RMbAqV7L08WQ3D9
-         p5TQhcRdav3lunVo3DljPtUD5d/CX/y/A+ybJW8U7+WsIFZeV5AFu9lhICMuRGJhzo
-         2iUu5aPzwJtW1ZipB4zChrDyLLqTOt2AKk5Mub4GgU40xW8Xn/IDdiO5MIuOTEK8Vm
-         ssM7dNIyHlzjgvHGDabsNNa5E0qmSUEC5Qn/7Iu0SaBXuU1YqwxEBbOV6mp5bqzb7Y
-         4i0QQ2mcNWbS1oRiPTiRM+Tyubz2xmwDHty6m2wBCw9zHO3ehs09NwTwiDYxLspJhf
-         /e6zPWovD4/Bw==
-Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
- address space
-To:     Andrei Vagin <avagin@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Cc:     linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20210414055217.543246-1-avagin@gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <6073e4c6-6fe8-0448-4586-5d04d7154164@kernel.org>
-Date:   Fri, 2 Jul 2021 15:44:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231149AbhGBWto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 18:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234226AbhGBWti (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 18:49:38 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35043C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 15:47:04 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id t17so20890127lfq.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 15:47:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i96gpHGmTqGyzL1pRnwYPnBFinTz4+ocAC93WptRIao=;
+        b=hp1aHE8ygjAGHlmTsQeB3xMJAGF+yLnZeuFihIhiI5Bc0Bb1qlcnAU2lE6/h8MXc4Z
+         Z+9940FafwWiyXs2NhVd9WoxXmtmwvH4iCtbYSH9fV5b5cfh27i3NRTYi+e+wUuHVdLV
+         vJsVZLg1nx9Z20Qatfa5yOWxl41UD9//VJcXg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i96gpHGmTqGyzL1pRnwYPnBFinTz4+ocAC93WptRIao=;
+        b=dQae20+Yj/nESAuCHT/7v/hsfjz2nLlt5EKPkPyn1GCIbK1jHp2YZ+MTmnyAlFNkcC
+         GngPjaibnB1Fs0P0VwxMn4BDLaK/jtpmdddSqruJDiOgCZcsJBPOnPmuXsrt3o2qXm/B
+         3/3GE9igL1UsuBMzIaRVf8L6wnAYx7Zio81YwZYta54jQ+FMRng1X+pOx/V+h05saIjK
+         UgJg/+P4KC2EOOtg50BtOHuTpE/hK/SaHJ8DLG8Cvbfjxj+KJTbn2SsUs/QHaSdU+c+b
+         CwCYX3mWnYW5PFHPlFimKusyoFwYrBxNMzks2udGX0XEB/KmK4roQYtwBEDIlJ6COpeI
+         IRTw==
+X-Gm-Message-State: AOAM5316wTPL2YvtbbqVoLxesMIYKC5ALnpRhg+crY9b/436spP19A9X
+        FhS4AGH0WmSbA+qY0GtjTicBb8aOxoI78xg5P9Y=
+X-Google-Smtp-Source: ABdhPJx2HqYbVJCkg4SLGT/I2tPlERqoFLUypAY4BMu/wCYxcPUfUxIdJnOlKlr7XbJlmeI2KvPpcQ==
+X-Received: by 2002:a05:6512:23a9:: with SMTP id c41mr1314844lfv.171.1625266022428;
+        Fri, 02 Jul 2021 15:47:02 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id s16sm494677lji.131.2021.07.02.15.47.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Jul 2021 15:47:02 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id p24so15437928ljj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 15:47:01 -0700 (PDT)
+X-Received: by 2002:a2e:b553:: with SMTP id a19mr1260817ljn.507.1625266021672;
+ Fri, 02 Jul 2021 15:47:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210414055217.543246-1-avagin@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <e118d4b2fb924156f791564483336e7125276c47.camel@HansenPartnership.com>
+In-Reply-To: <e118d4b2fb924156f791564483336e7125276c47.camel@HansenPartnership.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 2 Jul 2021 15:46:45 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiErhCUj8tGjcZS9mA7Efnv4JO1aMg06GfSqL8nacG4xA@mail.gmail.com>
+Message-ID: <CAHk-=wiErhCUj8tGjcZS9mA7Efnv4JO1aMg06GfSqL8nacG4xA@mail.gmail.com>
+Subject: Re: [GIT PULL] first round of SCSI updates for the 5.13+ merge window
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/13/21 10:52 PM, Andrei Vagin wrote:
+On Fri, Jul 2, 2021 at 1:11 AM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> This series consists of the usual driver updates (ufs, ibmvfc,
+> megaraid_sas, lpfc, elx, mpi3mr, qedi, iscsi, storvsc, mpt3sas) with
+> elx and mpi3mr being new drivers.  The major core change is a rework to
+> drop the status byte handling macros and the old bit shifted
+> definitions and the rest of the updates are minor fixes.
 
-> process_vm_exec has two modes:
-> 
-> * Execute code in an address space of a target process and stop on any
->   signal or system call.
+Grr. I noticed this too late.
 
-We already have a perfectly good context switch mechanism: context
-switches.  If you execute code, you are basically guaranteed to be
-subject to being hijacked, which means you pretty much can't allow
-syscalls.  But there's a lot of non-syscall state, and I think context
-switching needs to be done with extreme care.
+Why do we have that
 
-(Just as example, suppose you switch mms, then set %gs to point to the
-LDT, then switch back.  Now you're in a weird state.  With %ss the plot
-is a bit thicker.  And there are emulated vsyscalls and such.)
+        default y
 
-If you, PeterZ, and the UMCG could all find an acceptable, efficient way
-to wake-and-wait so you can switch into an injected task in the target
-process and switch back quickly, then I think a much nicer solution will
-become available.
+for "config FC_APPID".
 
-> 
-> * Execute a system call in an address space of a target process.
+That makes absolutely zero sense to me. Not only don't we do "default
+y" for new features _anyway_, but something like this is certainly
+much too specialized to warrant it.
 
-I could get behind this, but there are plenty of cans of worms to watch
-out for.  Serious auditing would be needed.
+To make matters worse, it actually asks for this stupid thing *TWICE*.
+Even if you say no the first time, it will then later on ask about
+BLK_CGROUP_FC_APPID, and if you make the mistake to say 'y' on that
+second try to push this feature, that will then do a "select FC_APPID"
+to turn it on.
+
+So honestly, it feels like
+
+ (a) the "default y" is just completely wrong in all ways
+
+ (b) this "config FC_APPID" shouldn't be a question AT ALL
+
+IOW, it should likely purely be enabled by that 'select' for people
+who decide they want BLK_CGROUP_FC_APPID (which properly defaults to
+'n').
+
+Pls advise. Or just send me a patch to fix it. Because the current
+situation is most definitely not ok.
+
+            Linus
