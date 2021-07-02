@@ -2,64 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B065F3B9E8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4967A3B9E8D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbhGBJyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 05:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbhGBJyd (ORCPT
+        id S231330AbhGBJ5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 05:57:18 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:10239 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230150AbhGBJ5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 05:54:33 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB29C061764
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 02:52:01 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id v139so8811605qkb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 02:52:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=gtVh8F3VOJEmwJsmYU4KV1Pmm5uwY76juULsGQB+Mq0=;
-        b=RF6cChCBFEuBjOkNI+L4niidIS43+Q0lQUTkpXthJMQ7k9EkCI4tja5/sxMP/8JZJ3
-         2aja9I+NnE4RhWLSrLmNII0TqMeJHAuMBwVo3iwpGtz1zIPQ2IXUcNEfgZ150Y1MZ35g
-         ULL7UH/6R10AxrXZg44btqclBSZHx7HNb8va786TrF/aEIdQiYQ2IZib/tq2UVv3Ycpd
-         FOqTIq8kc3bbd/IckprDMGrtaINqBQ8PXqv6L75rrZcJwncQKfs8hcmx47oWvW3u5NN5
-         YXVnfWlAhLu5XMbqNrcwYv98IB2SqYc98DeNuiETcAQlZCwKnEPy9W7GDu9mSQAayJ9t
-         aQXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=gtVh8F3VOJEmwJsmYU4KV1Pmm5uwY76juULsGQB+Mq0=;
-        b=RkA4Jotc2Sz/7l93UvQfmJ4nLVOhyocYbOk9E/c/GkqmJsC+BENPJmFtr/AE02fICU
-         vVLQ7ND++yUpPXfOTBIBLWy85M3HEB+2QU/eVYaXHsC+rMbhQXp3HwUa8kdIpi2Mmm5f
-         ofpvI2nIPuWbNQ6qeeZqlFiuD9fkYgLvF5iUK4mmCH6meDFNQWfyrrp4llvJim1N0Afa
-         J17MSQ7vuwZmT7KjosnQ+0KXP+D6YB01tZ0muRjv2xjXueNMU3vzZyUfpoSu6TE0Ijoc
-         tvJ0H6/EDHHd4GdxU4kTTSbcBX0jFAFi1/BG5/PlFFGyJ0MendbnI0SxEDm5Xnuj5atm
-         IAHg==
-X-Gm-Message-State: AOAM533MriPABlNeWZgGF4uxIoiQkLVqWqlweBzph4HBTvnWAswQm5mZ
-        QY5Omx1DwMi5a78hoVs6fkjIKzNa09AGmbYAG54=
-X-Google-Smtp-Source: ABdhPJxUf4vRle7geL0OmAHNo4Vx7uEOzaX9gBhGcdO6C0m388cDQul+Qv2ehmOfvPWEOREGR9Dqz2BhcEiVMOChWc0=
-X-Received: by 2002:a37:2754:: with SMTP id n81mr4531164qkn.275.1625219520294;
- Fri, 02 Jul 2021 02:52:00 -0700 (PDT)
+        Fri, 2 Jul 2021 05:57:17 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GGVfT2vjGz1BTT2;
+        Fri,  2 Jul 2021 17:49:21 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 2 Jul 2021 17:54:42 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 2 Jul 2021
+ 17:54:42 +0800
+Subject: Re: [PATCH net-next v3 1/3] selftests/ptr_ring: add benchmark
+ application for ptr_ring
+To:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <brouer@redhat.com>,
+        <paulmck@kernel.org>, <peterz@infradead.org>, <will@kernel.org>,
+        <shuah@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+References: <1625142402-64945-1-git-send-email-linyunsheng@huawei.com>
+ <1625142402-64945-2-git-send-email-linyunsheng@huawei.com>
+ <e1ec4577-a48f-ff56-b766-1445c2501b9f@redhat.com>
+ <91bcade8-f034-4bc7-f329-d5e1849867e7@huawei.com>
+ <20210702042838-mutt-send-email-mst@kernel.org>
+ <661a84bc-e7c5-bc21-25ac-75a68efa79ca@huawei.com>
+ <1fed53f1-f882-ca67-8876-ca6702dcd9cd@redhat.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <06f0dc67-d614-30d3-6dcc-f2446cb6030b@huawei.com>
+Date:   Fri, 2 Jul 2021 17:54:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Received: by 2002:ac8:57c2:0:0:0:0:0 with HTTP; Fri, 2 Jul 2021 02:51:59 -0700 (PDT)
-Reply-To: bkdirector5@gmail.com
-From:   John Collins <jamesabdul1111@gmail.com>
-Date:   Fri, 2 Jul 2021 09:51:59 +0000
-Message-ID: <CAKyVJODaZ0JJSRAa8Gy7=GEq9ykZBd-e2Y+npgATZw6WKrtsDg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1fed53f1-f882-ca67-8876-ca6702dcd9cd@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings, I am Mr. John Collins, a banker from Lome Republic of Togo,
-I contacted you for a legitimate business deal, looking forward to
-establish long-term business relationship with you
-Looking forward to your urgent reply for more details
-Your urgent reply is highly needed
-Best Regards.
-Mr. John Collins
+On 2021/7/2 17:04, Jason Wang wrote:
+> 
+
+[...]
+
+> 
+> 
+>> I understand that you guys like to see a working testcase of virtio.
+>> I would love to do that if I have the time and knowledge of virtio,
+>> But I do not think I have the time and I am familiar enough with
+>> virtio to fix that now.
+> 
+> 
+> So ringtest is used for bench-marking the ring performance for different format. Virtio is only one of the supported ring format, ptr ring is another. Wrappers were used to reuse the same test logic.
+> 
+> Though you may see host/guest in the test, it's in fact done via two processes.
+> 
+> We need figure out:
+> 
+> 1) why the current ringtest.c does not fit for your requirement (it has SPSC test)
+
+There is MPSC case used by pfifo_fast, it make more sense to use a separate selftest
+for ptr_ring as ptr_ring has been used by various subsystems.
+
+
+> 2) why can't we tweak the ptr_ring.c to be used by both ring_test and your benchmark
+
+Actually that is what I do in this patch, move the specific part related to ptr_ring
+to ptr_ring_test.h. When the virtio testing is refactored to work, it can reuse the
+abstract layer in ptr_ring_test.h too.
+
+> 
+> If neither of the above work, we can invent new ptr_ring infrastructure under tests/
+> 
+> Thanks
+> 
+> 
+>>
+>>
+> 
+> .
+> 
