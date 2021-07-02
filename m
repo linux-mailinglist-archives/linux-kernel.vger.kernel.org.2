@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0CD3BA42D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 21:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278313BA434
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 21:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhGBTFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 15:05:10 -0400
-Received: from mail-pj1-f45.google.com ([209.85.216.45]:46622 "EHLO
-        mail-pj1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbhGBTFJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 15:05:09 -0400
-Received: by mail-pj1-f45.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso6682127pjp.5;
-        Fri, 02 Jul 2021 12:02:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yB0ZQpA9XJtnRtrSbqsDl0rPIO7pvP8OCnrT7G8ciAM=;
-        b=itcQIXjXtf0p8inMVBt7UOqv4ZStxluiaiKctxCqOh3OgO8POztPeDV/E+kseNxmDp
-         uBTDsd4sQhdxGEJ74LGzLw4hqhjiiil0NxuNnOFpRm0eyHIWekG/W6SEKp8P806BEf4C
-         Bu4yyAaPtaFn73KzeA8L4yx1zWO89lrs2bAveJyEGFPEX8F57hLFh7PaE6boW/h1jYbM
-         aHPMI2ZOCZP5AjZrLwK+tIGZyYEbGHHdeylHQ77uU9IsxfHuAhCwWNoaMonz3uuEvdZq
-         DE6ZJFGGG5Al/O2HCmPxOLhB8Sj2HCMptjPfZ01gorCy6TNh+hhCQ5sNRLCB0zQ2D50M
-         g85g==
-X-Gm-Message-State: AOAM532SirlrIpnG1/5kbUv54zVeOEA5TXaS2WLNW8Gl37Vc3z7FODuE
-        rCz7wwQT7Re7BE8tLKZmkLs=
-X-Google-Smtp-Source: ABdhPJw+K/k5WgtbywwaL0MKsZ7NkF/S5cQbPmtspDf+gqWkxwa5FCqh5acmQsllS/twoyyGikr8vg==
-X-Received: by 2002:a17:90a:6744:: with SMTP id c4mr40645pjm.27.1625252555299;
-        Fri, 02 Jul 2021 12:02:35 -0700 (PDT)
-Received: from garbanzo ([191.96.121.144])
-        by smtp.gmail.com with ESMTPSA id z76sm4372769pfc.173.2021.07.02.12.02.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 12:02:34 -0700 (PDT)
-Date:   Fri, 2 Jul 2021 12:02:30 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     tj@kernel.org, shuah@kernel.org, akpm@linux-foundation.org,
-        Richard Fontana <fontana@sharpeleven.org>, rafael@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        andriin@fb.com, daniel@iogearbox.net, atenart@kernel.org,
-        alobakin@pm.me, weiwan@google.com, ap420073@gmail.com,
-        jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
-        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
-        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
-        rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] selftests: add tests_sysfs module
-Message-ID: <20210702190230.r46bck4vib7u3qo6@garbanzo>
-References: <20210702050543.2693141-1-mcgrof@kernel.org>
- <20210702050543.2693141-2-mcgrof@kernel.org>
- <YN6iSKCetBrk2y8V@kroah.com>
+        id S230266AbhGBTKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 15:10:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:52972 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230172AbhGBTKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 15:10:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39E061FB;
+        Fri,  2 Jul 2021 12:07:28 -0700 (PDT)
+Received: from [10.57.14.38] (unknown [10.57.14.38])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 270633F718;
+        Fri,  2 Jul 2021 12:07:24 -0700 (PDT)
+Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
+ of EAS estimated energy
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chris Redpath <Chris.Redpath@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        CCj.Yeh@mediatek.com
+References: <20210625152603.25960-1-lukasz.luba@arm.com>
+ <20210625152603.25960-2-lukasz.luba@arm.com>
+ <CAJZ5v0iOzp5FKo4NsNE-m+sEXZUvv1TbkAO_9+jSidx9c0iq8A@mail.gmail.com>
+ <ffc63114-c1c2-f866-8b2a-15e9fd0a7818@arm.com>
+Message-ID: <6ce4d4c8-889b-f2cf-f282-213b9a7651ab@arm.com>
+Date:   Fri, 2 Jul 2021 20:07:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YN6iSKCetBrk2y8V@kroah.com>
+In-Reply-To: <ffc63114-c1c2-f866-8b2a-15e9fd0a7818@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 07:21:12AM +0200, Greg KH wrote:
-> On Thu, Jul 01, 2021 at 10:05:40PM -0700, Luis Chamberlain wrote:
-> > @@ -0,0 +1,953 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * sysfs test driver
-> > + *
-> > + * Copyright (C) 2021 Luis Chamberlain <mcgrof@kernel.org>
-> > + *
-> > + * This program is free software; you can redistribute it and/or modify it
-> > + * under the terms of the GNU General Public License as published by the Free
-> > + * Software Foundation; either version 2 of the License, or at your option any
-> > + * later version; or, when distributed separately from the Linux kernel or
-> > + * when incorporated into other software packages, subject to the following
-> > + * license:
+Hi Peter,
+
+Gentle ping.
+You might missed my previous email.
+
+On 6/30/21 6:28 PM, Lukasz Luba wrote:
 > 
-> This boilerplate should not be here, only the spdx line is needed.
-
-As per Documentation/process/license-rules.rst we use the SPDX license
-tag for the license that applies but it also states about dual
-licensing:
-
-"Aside from that, individual files can be provided under a dual license,         
-e.g. one of the compatible GPL variants and alternatively under a               
-permissive license like BSD, MIT etc."
-
-Let me know if things should change somehow here to clarify this better.
-
-> > + *
-> > + * This program is free software; you can redistribute it and/or modify it
-> > + * under the terms of copyleft-next (version 0.3.1 or later) as published
-> > + * at http://copyleft-next.org/.
 > 
-> Please no, this is a totally different license :(
+> On 6/30/21 6:01 PM, Rafael J. Wysocki wrote:
+>> On Fri, Jun 25, 2021 at 5:26 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>
+>>> The Energy Aware Scheduler (EAS) tries to find best CPU for a waking up
+>>> task. It probes many possibilities and compares the estimated energy 
+>>> values
+>>> for different scenarios. For calculating those energy values it 
+>>> relies on
+>>> Energy Model (EM) data and em_cpu_energy(). The precision which is 
+>>> used in
+>>> EM data is in milli-Watts (or abstract scale), which sometimes is not
+>>> sufficient. In some cases it might happen that two CPUs from different
+>>> Performance Domains (PDs) get the same calculated value for a given task
+>>> placement, but in more precised scale, they might differ. This rounding
+>>> error has to be addressed. This patch prepares EAS code for better
+>>> precision in the coming EM improvements.
+>>>
+>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>>
+>> If you want me to pick up this series, this patch requires an ACK from
+>> the scheduler maintainers.
+>>
+> 
+> It would be great, if you could take it after e.g. Peter ACK it.
+> 
+> Peter could you have a look at it, please?
+> In this patch 1/3 we have only variables upgrade.
+> 
+> Regards,
+> Lukasz
 
-Dual licensing copyleft-next / GPLv2 was discussed in 2016 and I have
-been using it since for my new drivers. As far as the kernel is
-concerned only the GPLv2 applies and this is cleary clarified with the
-MODULE_LICENSE("GPL") as per Linus' preference [0] on this topic. Later
-due to Ted's and Alans's request I ironed out an "or" language clause to
-use [1].  This was also vetted by 2 attorneys at SUSE, and one at Red
-Hat [2]. The first driver submission under this dual strategy was
-lib/test_sysctl.c through commit 9308f2f9e7f05 ("test_sysctl: add
-dedicated proc sysctl test driver") merged in July 2017. Shortly after
-that I also added test_kmod through commit d9c6a72d6fa29 ("kmod: add
-test driver to stress test the module loader") in the same month. These
-two drivers went in just a few months before the SPDX license pratice
-kicked in.
-
-And so we already have this practice in place of dual GPLv2 /
-copyleft-next. What was missing was the SPDX tag. I can go and
-update the other 2 drivers to reflect this as well, but as far as I
-can tell, due to the dual licensing the boilerplace is still needed
-in this case.
-
-Let me know!
-
-[0] https://lore.kernel.org/lkml/CA+55aFyhxcvD+q7tp+-yrSFDKfR0mOHgyEAe=f_94aKLsOu0Og@mail.gmail.com/
-[1] https://lkml.kernel.org/r/1495234558.7848.122.camel@linux.intel.com
-[2] https://lore.kernel.org/lkml/20170516232702.GL17314@wotan.suse.de/
-
-  Luis
+Could you have a look and ACK the patch 1/3, please?
