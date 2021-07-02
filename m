@@ -2,85 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435BE3B9D14
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 09:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5C73B9D19
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 09:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhGBHq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 03:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230023AbhGBHq0 (ORCPT
+        id S230160AbhGBHvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 03:51:36 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:6934 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229519AbhGBHve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 03:46:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB850C061762;
-        Fri,  2 Jul 2021 00:43:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4CH7z9dtJCn3XGrA5BFatrdCjnmJPJqFx9k28BJYvw4=; b=q2JQaIVtatEQvVrOP2vatbAjeP
-        QvnrFDnIb0xmoMuWF4uziCNyxvVulfk0rA1DCoAFzMocwPjGqRns905dFsmCH7iflD1E5SSIgL0Uf
-        vBhUmpg86jy3IE1ljUG1eJ1i4+Jxy8x0x27UUEY9st9mfixYSKpGIzqt7N/WDDlifVWxtWDhcGI6C
-        KuDiYiW8GzxIbznEtk4riXcXIL8HgKdSwa/4iPHMkObJWezpNaZ4K37+NABStwwfhPcfs8kL7eSHy
-        uoDQjuj/mZIZ+nhj6clhVhORBTiiT4KUKhJtyg97/HAgkggke7AQdsS0MfxTDkGLaTnf+xIgvF35Z
-        pxb8KbtA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lzDps-007SyF-D2; Fri, 02 Jul 2021 07:43:44 +0000
-Date:   Fri, 2 Jul 2021 08:43:40 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christian L?hle <CLoehle@hyperstone.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Avri Altman <Avri.Altman@wdc.com>
-Subject: Re: [PATCH] mmc: block: Differentiate busy and non-TRAN state
-Message-ID: <YN7DrIxI2QSDhoy4@infradead.org>
-References: <CWXP265MB268049D9AB181062DA7F6DDBC4009@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+        Fri, 2 Jul 2021 03:51:34 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1627lCdT031107;
+        Fri, 2 Jul 2021 07:48:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=gFi8gQi/8WEsjevzCsa9CSkzQEahXs5lVkv1CngP5TU=;
+ b=eeHPqlWtF06lvo6m6WWXuLSiZFHfTmKc5YkbQE8DyT18UvarEiFrJ1nGdL7+KhfajEYa
+ 8ZVmwJyRsPpnQZjE01Y1ErNfiY4ZzENe+3siyvG7UB8C7KeQ8H6njQDXPTHeae9JXCjM
+ 24njPxri9VKAP8CmeKBtc4LnBD5lk8aM2y96AOpKLorAcmxceeItLjOzc6v9RYcBIblx
+ DQSa9pLkp3WjdHUsPThuMPylVzQdBcoMkrIE9EKKkgvAw2krSsKrqNHm6P/Fetndsw4R
+ LIJsdBnBgHqxVq20BtmoplyagDpT6vJqPkP4jaJiJZR6jwXtYgQABVS+XeItD125qZp6 hw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39gy5w34dd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Jul 2021 07:48:52 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1627a5Z4024823;
+        Fri, 2 Jul 2021 07:48:49 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 39dv2c75rw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Jul 2021 07:48:49 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1627mmGJ058211;
+        Fri, 2 Jul 2021 07:48:48 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 39dv2c75re-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Jul 2021 07:48:48 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.14.4) with ESMTP id 1627ml1C019320;
+        Fri, 2 Jul 2021 07:48:47 GMT
+Received: from kadam (/102.222.70.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 02 Jul 2021 00:48:47 -0700
+Date:   Fri, 2 Jul 2021 10:48:40 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8188eu: Remove an unused variable and some
+ lines of code
+Message-ID: <20210702074840.GT2040@kadam>
+References: <20210701144707.22820-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CWXP265MB268049D9AB181062DA7F6DDBC4009@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210701144707.22820-1-fmdefrancesco@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: M3sLE17F0XAuoreUmxUlCXhzOzB5Xqc2
+X-Proofpoint-ORIG-GUID: M3sLE17F0XAuoreUmxUlCXhzOzB5Xqc2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +	/*
-> +	 * Cards will never return to TRAN after completing
-> +	 * identification commands or MMC_SEND_STATUS if they are not selected.
-> +	 */
-> +	return !(cmd->opcode == MMC_GO_IDLE_STATE
-> +			|| cmd->opcode == MMC_SEND_OP_COND
-> +			|| cmd->opcode == MMC_ALL_SEND_CID
-> +			|| cmd->opcode == MMC_SET_RELATIVE_ADDR
-> +			|| cmd->opcode == MMC_SET_DSR
-> +			|| cmd->opcode == MMC_SLEEP_AWAKE
-> +			|| cmd->opcode == MMC_SELECT_CARD
-> +			|| cmd->opcode == MMC_SEND_CSD
-> +			|| cmd->opcode == MMC_SEND_CID
-> +			|| cmd->opcode == MMC_SEND_STATUS
-> +			|| cmd->opcode == MMC_GO_INACTIVE_STATE
-> +			|| cmd->opcode == MMC_APP_CMD);
+On Thu, Jul 01, 2021 at 04:47:07PM +0200, Fabio M. De Francesco wrote:
+> Remove set but unused iw_operation_mode[]. Remove all the lines of 
+> code from the function rtw_wx_set_rate, except the "return 0;" line 
+> to not break userland code that somewhat uses this IOCTL.
+> 
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+>  .../staging/rtl8188eu/os_dep/ioctl_linux.c    | 72 -------------------
+>  1 file changed, 72 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+> index b958a8d882b0..a66d8838c034 100644
+> --- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+> +++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+> @@ -46,11 +46,6 @@ static u32 rtw_rates[] = {1000000, 2000000, 5500000, 11000000,
+>  	6000000, 9000000, 12000000, 18000000, 24000000, 36000000,
+>  	48000000, 54000000};
+>  
+> -static const char * const iw_operation_mode[] = {
+> -	"Auto", "Ad-Hoc", "Managed",  "Master", "Repeater",
+> -	"Secondary", "Monitor"
+> -};
+> -
+>  void indicate_wx_scan_complete_event(struct adapter *padapter)
+>  {
+>  	union iwreq_data wrqu;
+> @@ -1266,73 +1261,6 @@ static int rtw_wx_set_rate(struct net_device *dev,
+>  			   struct iw_request_info *a,
+>  			   union iwreq_data *wrqu, char *extra)
+>  {
 
-This is not the normal kernel style, which puts operators at the end
-of the line.  And while a little more verbose I think a switch statement
-would be a lot more readable here:
+Just delete this whole file.  It doesn't do anything now.
 
-	switch (cmd->opcode) {
-	case MMC_GO_IDLE_STATE:
-	case MMC_SEND_OP_COND:
-	case MMC_ALL_SEND_CID:
-	case MMC_SET_RELATIVE_ADDR:
-	case MMC_SET_DSR:
-	case MMC_SLEEP_AWAKE:
-	case MMC_SELECT_CARD:
-	case MMC_SEND_CSD:
-	case MMC_SEND_CID:
-	case MMC_SEND_STATUS:
-	case MMC_GO_INACTIVE_STATE:
-	case MMC_APP_CMD:
-		return false;
-	default:
-		return true;
-	}
+regards,
+dan carpenter
+
