@@ -2,113 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACE73B9DFB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FA53B9DFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 11:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbhGBJVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 05:21:48 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:39831 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230112AbhGBJVo (ORCPT
+        id S231252AbhGBJWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 05:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230351AbhGBJWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 05:21:44 -0400
-X-UUID: aefc18c3c8344f5695a816aabdf4c0da-20210702
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=IYyNmRrPNeyd0roXCcc3ug77Q20krYCuClxefjY+zjA=;
-        b=OBxH2xcXEmkripda1zuduv7SxCUobWyN+AsPyEXi+WIztrYQ/9nHQP2br4XnAn+8YDTob/E2wPxlgUmTOjXrO6KGb7AlHHY84WnUXxBaWLPsNQdiGBgU9FIQ9CNztxkR/KxFLCyJVLDKUGNUWifjtEFb17eIk+c8nzAJCItw09A=;
-X-UUID: aefc18c3c8344f5695a816aabdf4c0da-20210702
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <roger.lu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 723412632; Fri, 02 Jul 2021 17:19:09 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 2 Jul 2021 17:19:06 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 2 Jul 2021 17:19:06 +0800
-Message-ID: <0911434c39aa76a6312f19baa2a468c65589de3d.camel@mediatek.com>
-Subject: Re: [PATCH v19 3/7] soc: mediatek: SVS: introduce MTK SVS engine
-From:   Roger Lu <roger.lu@mediatek.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        "Kevin Hilman" <khilman@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Nicolas Boichat" <drinkcat@google.com>,
-        Stephen Boyd <sboyd@kernel.org>
-CC:     Fan Chen <fan.chen@mediatek.com>,
-        HenryC Chen <HenryC.Chen@mediatek.com>,
-        YT Lee <yt.lee@mediatek.com>,
-        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
-        Charles Yang <Charles.Yang@mediatek.com>,
-        Angus Lin <Angus.Lin@mediatek.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nishanth Menon <nm@ti.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Date:   Fri, 2 Jul 2021 17:19:06 +0800
-In-Reply-To: <bf4f26cdca7174ba687e29a581a5276511112fe7.camel@pengutronix.de>
-References: <20210702031214.21597-1-roger.lu@mediatek.com>
-         <20210702031214.21597-4-roger.lu@mediatek.com>
-         <bf4f26cdca7174ba687e29a581a5276511112fe7.camel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Fri, 2 Jul 2021 05:22:21 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE348C061764;
+        Fri,  2 Jul 2021 02:19:49 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id t3so12316264edc.7;
+        Fri, 02 Jul 2021 02:19:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OgGUwiD86E754SHPP5c8vn9EyEoNKXunTKK1V9Pgukg=;
+        b=M7SiC9cbH6MuqHUMzemWrXHCkuSRqABHEz674QXB0rpS8JD+5XXrJTmLG7A+atareB
+         bNhGKhcSiOdeygKFSU2ITr6TpgEtDSkaTDSO7eEEP6+943nYaXu4ZqsJ54d27jxLuP/j
+         u+c2aJsMJvm6bhWsWUgpvXNiiydkrpCVu0qULXRlxlGxsRqsXw4wYbxHVXevgRbSOBWW
+         4x3P4jLmLYZ2FSlhQ2TkvrIfSug0zi4pul4grzYf7YnFBAFZqiZZDEab81pTXqejRryt
+         ix/3O+pSo5XgFAT+eSZoxs0W5/RhsL4EBakDgqMEak5iWtpM5AIQUebQGu54x/D79Gb7
+         inUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OgGUwiD86E754SHPP5c8vn9EyEoNKXunTKK1V9Pgukg=;
+        b=t9S9x258bXxqGxTYrVDpI6RGSupbZGoBkZAl30t4gNO9hThPhFsi5MCH3lpboUAzE6
+         V2gncVm+CRITpqJbHNbjMy9JJRGdUBk5B7JKZqPxT3EGWhE0nDh+M+dulAzwE0B4cUmK
+         epyVnyHRmNvdSP5QzjnNIP1vHgZZ8yy+F4L/ltHjhUxEEbcNJpHWigCdedqyypU1DTFu
+         3rGCrTtQwU8PrlD0EePIvFyDfnQ5XX1HJ6fjBQAYtUn2D29vkY8ykrNr3qdtksRx2MFU
+         /zaVI7VTqcxQgZ4B6szp6dB07pqDnKDUwUqe8UGf2Sgt/x2E+6XJmecfORf1FrXRYLZF
+         IjXw==
+X-Gm-Message-State: AOAM532NK+DOgD8iBkgdlxkVujwHt9oQnshLhZS5eKcy39zcX3H6QFP4
+        ia/WQYAidZLrDYoxnGWDPS0NZwhgMUs6bXmZULw=
+X-Google-Smtp-Source: ABdhPJx8QgM9bN4Uq0tmvV5svPS+Z8nWgUa2hYgaxYeKj2MVtNlhe96O4xXkIR714oJMYujtWcbzVeYmOzCKbmukwXk=
+X-Received: by 2002:a50:ec08:: with SMTP id g8mr5484634edr.98.1625217588288;
+ Fri, 02 Jul 2021 02:19:48 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210627223959.188139-1-martin.blumenstingl@googlemail.com>
+ <20210627223959.188139-3-martin.blumenstingl@googlemail.com>
+ <20210701202540.GA1085600@roeck-us.net> <CAFBinCC2KB-_pOenpWPknCuHV+CCjhP5hqukSkwD3qwRe6OtQw@mail.gmail.com>
+ <162518776607.3570193.14348711594242395887@swboyd.mtv.corp.google.com>
+In-Reply-To: <162518776607.3570193.14348711594242395887@swboyd.mtv.corp.google.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Fri, 2 Jul 2021 11:19:37 +0200
+Message-ID: <CAFBinCAASQUB=cg5EFsBQ4jd3TvcCJzV1=sYJci4ibR7FjRcww@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] clk: divider: Switch from .round_rate to
+ .determine_rate by default
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, mturquette@baylibre.com,
+        linux-clk@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
+        khilman@baylibre.com, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUGhpbGlwcCwNCg0KVGhhbmtzIGZvciB0aGUgYWR2aWNlLg0KDQpPbiBGcmksIDIwMjEtMDct
-MDIgYXQgMTA6MzMgKzAyMDAsIFBoaWxpcHAgWmFiZWwgd3JvdGU6DQo+IEhpIFJvZ2VyLA0KPiAN
-Cj4gT24gRnJpLCAyMDIxLTA3LTAyIGF0IDExOjEyICswODAwLCBSb2dlciBMdSB3cm90ZToNCj4g
-Wy4uLl0NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLXN2cy5jIGIv
-ZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLXN2cy5jDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQN
-Cj4gPiBpbmRleCAwMDAwMDAwMDAwMDAuLmMyZmNiYzIwNGIxZA0KPiA+IC0tLSAvZGV2L251bGwN
-Cj4gPiArKysgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstc3ZzLmMNCj4gPiBAQCAtMCwwICsx
-LDE3MjQgQEANCj4gDQo+IFsuLi5dDQo+ID4gK3N0YXRpYyBpbnQgc3ZzX3N1c3BlbmQoc3RydWN0
-IGRldmljZSAqZGV2KQ0KPiA+ICt7DQo+ID4gKwlzdHJ1Y3Qgc3ZzX3BsYXRmb3JtICpzdnNwID0g
-ZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ID4gKwlzdHJ1Y3Qgc3ZzX2JhbmsgKnN2c2I7DQo+ID4g
-Kwl1bnNpZ25lZCBsb25nIGZsYWdzOw0KPiA+ICsJaW50IHJldDsNCj4gPiArCXUzMiBpZHg7DQo+
-ID4gKw0KPiA+ICsJZm9yIChpZHggPSAwOyBpZHggPCBzdnNwLT5iYW5rX251bTsgaWR4KyspIHsN
-Cj4gPiArCQlzdnNiID0gJnN2c3AtPmJhbmtzW2lkeF07DQo+ID4gKw0KPiA+ICsJCS8qIFdhaXQg
-aWYgc3ZzX2lzcigpIGlzIHN0aWxsIGluIHByb2Nlc3MuICovDQo+ID4gKwkJc3Bpbl9sb2NrX2ly
-cXNhdmUoJm10a19zdnNfbG9jaywgZmxhZ3MpOw0KPiA+ICsJCXN2c3AtPnBiYW5rID0gc3ZzYjsN
-Cj4gPiArCQlzdnNfc3dpdGNoX2Jhbmsoc3ZzcCk7DQo+ID4gKwkJc3ZzX3dyaXRlbChzdnNwLCBT
-VlNCX0VOX09GRiwgU1ZTRU4pOw0KPiA+ICsJCXN2c193cml0ZWwoc3ZzcCwgU1ZTQl9JTlRTVFNf
-Q0xFQU4sIElOVFNUUyk7DQo+ID4gKwkJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmbXRrX3N2c19s
-b2NrLCBmbGFncyk7DQo+ID4gKw0KPiA+ICsJCXN2c2ItPnN1c3BlbmRlZCA9IHRydWU7DQo+ID4g
-KwkJaWYgKHN2c2ItPnBoYXNlICE9IFNWU0JfUEhBU0VfSU5JVDAxKSB7DQo+ID4gKwkJCXN2c2It
-PnBoYXNlID0gU1ZTQl9QSEFTRV9FUlJPUjsNCj4gPiArCQkJc3ZzX2FkanVzdF9wbV9vcHBfdm9s
-dHMoc3ZzYiwgdHJ1ZSk7DQo+ID4gKwkJfQ0KPiA+ICsJfQ0KPiA+ICsNCj4gPiArCWlmIChzdnNw
-LT5yc3QpIHsNCj4gDQo+IFRoaXMgaXMgbm90IG5lY2Vzc2FyeSwgcmVzZXRfY29udHJvbF9hc3Nl
-cnQoKSBjaGVja3MgZm9yIChyc3RjID09IE5VTEwpDQo+IGl0c2VsZi4NCk9rYXkuIFdlJ2xsIHJl
-bW92ZSAiaWYgKHN2c3AtPnJzdCkgeyIgaW4gdGhlIG5leHQgcGF0Y2guIFRoYW5rcy4NCg0KPiAN
-Cj4gPiArCQlyZXQgPSByZXNldF9jb250cm9sX2Fzc2VydChzdnNwLT5yc3QpOw0KPiA+ICsJCWlm
-IChyZXQpIHsNCj4gPiArCQkJZGV2X2VycihzdnNwLT5kZXYsICJjYW5ub3QgYXNzZXJ0IHJlc2V0
-ICVkXG4iLCByZXQpOw0KPiA+ICsJCQlyZXR1cm4gcmV0Ow0KPiA+ICsJCX0NCj4gPiArCX0NCj4g
-PiArDQo+ID4gKwljbGtfZGlzYWJsZV91bnByZXBhcmUoc3ZzcC0+bWFpbl9jbGspOw0KPiA+ICsN
-Cj4gPiArCXJldHVybiAwOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW50IHN2c19yZXN1
-bWUoc3RydWN0IGRldmljZSAqZGV2KQ0KPiA+ICt7DQo+ID4gKwlzdHJ1Y3Qgc3ZzX3BsYXRmb3Jt
-ICpzdnNwID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ID4gKwlzdHJ1Y3Qgc3ZzX2JhbmsgKnN2
-c2I7DQo+ID4gKwlpbnQgcmV0Ow0KPiA+ICsJdTMyIGlkeDsNCj4gPiArDQo+ID4gKwlyZXQgPSBj
-bGtfcHJlcGFyZV9lbmFibGUoc3ZzcC0+bWFpbl9jbGspOw0KPiA+ICsJaWYgKHJldCkgew0KPiA+
-ICsJCWRldl9lcnIoc3ZzcC0+ZGV2LCAiY2Fubm90IGVuYWJsZSBtYWluX2NsaywgZGlzYWJsZSBz
-dnNcbiIpOw0KPiA+ICsJCXJldHVybiByZXQ7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJaWYgKHN2
-c3AtPnJzdCkgew0KPiANCj4gU2FtZSBhcyBhYm92ZSwgcmVzZXRfY29udHJvbF9kZWFzc2VydChO
-VUxMKSB3aWxsIGp1c3QgcmV0dXJuIDAuDQpPa2F5LiBXZSdsbCByZW1vdmUgImlmIChzdnNwLT5y
-c3QpIHsiIGluIHRoZSBuZXh0IHBhdGNoLiBUaGFua3MuDQo+IA0KPiA+ICsJCXJldCA9IHJlc2V0
-X2NvbnRyb2xfZGVhc3NlcnQoc3ZzcC0+cnN0KTsNCj4gPiArCQlpZiAocmV0KSB7DQo+ID4gKwkJ
-CWRldl9lcnIoc3ZzcC0+ZGV2LCAiY2Fubm90IGRlYXNzZXJ0IHJlc2V0ICVkXG4iLCByZXQpOw0K
-PiA+ICsJCQlyZXR1cm4gcmV0Ow0KPiA+ICsJCX0NCj4gPiArCX0NCj4gPiArDQo+ID4gKwlmb3Ig
-KGlkeCA9IDA7IGlkeCA8IHN2c3AtPmJhbmtfbnVtOyBpZHgrKykgew0KPiA+ICsJCXN2c2IgPSAm
-c3ZzcC0+YmFua3NbaWR4XTsNCj4gPiArCQlzdnNiLT5zdXNwZW5kZWQgPSBmYWxzZTsNCj4gPiAr
-CX0NCj4gPiArDQo+ID4gKwlyZXQgPSBzdnNfaW5pdDAyKHN2c3ApOw0KPiA+ICsJaWYgKHJldCkN
-Cj4gPiArCQlyZXR1cm4gcmV0Ow0KPiA+ICsNCj4gPiArCXN2c19tb25fbW9kZShzdnNwKTsNCj4g
-PiArDQo+ID4gKwlyZXR1cm4gMDsNCj4gPiArfQ0KPiANCj4gcmVnYXJkcw0KPiBQaGlsaXBwDQo=
+Hi Stephen,
 
+On Fri, Jul 2, 2021 at 3:02 AM Stephen Boyd <sboyd@kernel.org> wrote:
+[...]
+> My guess is that we have drivers copying the clk_ops from the
+> divider_ops structure and so they are copying over round_rate but not
+> determine_rate.
+I just learned something new - thanks for investigating this as well!
+
+$ git grep "clk_divider_ops\.round_rate" drivers/
+drivers/clk/bcm/clk-bcm2835.c:  return clk_divider_ops.round_rate(hw,
+rate, parent_rate);
+drivers/clk/clk-stm32f4.c:      return clk_divider_ops.round_rate(hw,
+rate, prate);
+drivers/clk/clk-stm32h7.c:      return clk_divider_ops.round_rate(hw,
+rate, prate);
+drivers/clk/clk-stm32mp1.c:             req->rate =
+clk_divider_ops.round_rate(hw, req->rate, &best_parent_rate);
+drivers/clk/imx/clk-divider-gate.c:     return
+clk_divider_ops.round_rate(hw, rate, prate);
+$ git grep "clk_divider_ro_ops\.round_rate" drivers/
+$
+
+Changing these over to use clk_divider_ops.determine_rate doesn't seem too hard.
+The part that I am not sure about is how to organize the patches.
+1) amend the changes to all relevant drivers (from above) to this patch
+2) multiple patches:
+- adding .determine_rate to the default divider ops (but not removing
+.round_rate)
+- a single patch for each relevant driver (from above)
+- removing .round_rate from the default divider ops
+
+Another approach is to first create clk_divider_determine_rate() (as
+done here) and export it.
+Then I could have one individual patch for each relevant driver (from
+above) to use:
+  .determine_rate = clk_divider_determine_rate,
+Then finally I could remove clk_divider_round_rate() and switch over
+the default divider ops to .determine_rate as well.
+
+Which way do you prefer?
+
+
+Best regards,
+Martin
