@@ -2,149 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4EA3BA651
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 01:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B5C3BA655
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 01:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhGBXrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 19:47:20 -0400
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:44675 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbhGBXrT (ORCPT
+        id S230201AbhGBXyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 19:54:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230017AbhGBXyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 19:47:19 -0400
-Date:   Fri, 02 Jul 2021 23:44:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1625269485; bh=KiuoheV+rOeQ0KZx+f54tToH3dfxAD3L6DQcwD8631A=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=kMSyPy1On3N9/xnxVjwdW94ISH3bdhx+cSzuJYpk8rJoYEcZdIqCpUhObRQau9rNQ
-         mO+9QRRGJNvlxr0VbJ6g/IiYZeJu/FLkNHlPBCXVAwq/JmT7rlImtfDS3HHB8JfaWH
-         9GoY2jIFYQKyRyOIOmfaZyiLOa1n2YzGYxSv9E2TL4ALhy2FenOH8yVYALAVBJTR+w
-         Ws5WfCMd1a3/IuHrEk2Djnw/muAADcVOBQcgq8EBzNsP9tfJqGkwDl8laOLKlSXG8b
-         0nPQU5pFXRFxQj+bR0gvf1SilQJyb5EMmtJULaVUeq3a18BovDsNwIYk9MMMbTrTbc
-         5fCvzF9O6IS8w==
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        John Wood <john.wood@gmx.com>, Jens Axboe <axboe@kernel.dk>,
-        Jan Kara <jack@suse.cz>, Hannes Reinecke <hare@suse.de>,
-        Tejun Heo <tj@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH] do_mounts: always prefer tmpfs for rootfs when available
-Message-ID: <20210702233727.21301-1-alobakin@pm.me>
+        Fri, 2 Jul 2021 19:54:16 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645CDC061762;
+        Fri,  2 Jul 2021 16:51:43 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id k10so20923825lfv.13;
+        Fri, 02 Jul 2021 16:51:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=clIxmMxm6a6CEZgz+Vza6vLv6bCnIn97w16YVzgjAlM=;
+        b=FoT0dmiW5pg1cksplUr/CeGivwq5WJq3isweu43mewFVK44G9HuNkOWWWyop84QHbg
+         BJ3EzPf+8rllun7eVmU+kHM2rbs3mmLni5QjTN76moOuCV551f2h+TbSnmOmI296BI2L
+         O8clzex1LoUqVKu8CnQwi9mxvNyKlqo2XFQPkqlTwW+9vqAyMDkBkRfS3TPGIcLdnjuA
+         +W8NLlsGX9cgZlQrb3ZaRUo4chBtoK+6/rNTZBJuvg779Na2lnXo+EHDDXMe3wQrxKjP
+         r0J1S8hXMJl0hSEUqOBRsvNc19A7JqurFiIblnZZ5jazuK9gCiZFKLKGm2JWGcBe0ybS
+         N5yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=clIxmMxm6a6CEZgz+Vza6vLv6bCnIn97w16YVzgjAlM=;
+        b=k1Q9W+u0yHiP5pFg1D5/CkqDcUQ1aATa4tTAjX5wiDrRq7AJeCBwiIIFbkRgCSz6MX
+         4za9jgsIkh6AbSUiuVWKuwrGrcwhsmJkdiyoAmZvxraq10gLg1SBHEHt7DBoxhVu0KsG
+         wxGIUCzCdaUYShOzI9qLJizaZ6Z+WVYeXXSBt2W9ybSnDu6l+oI8zF0HJ2E5Oo+DVOLy
+         tTx19nISQSSyfMVk7duq0BxS8aGZk78sFuUJQ4gDdsxgP/GadfOCdbYDe9LwSd90Do6e
+         97jtEJzjPOMK6ANY6reXSlafwMDQWKKu8bhF2+W65dD6fKYafzzj+/mbFTvu9gVOBlNW
+         i6JQ==
+X-Gm-Message-State: AOAM531bZ0k0ml1qcfwO7I3+36BL0QuYaT8Icd9+iOgF4MfOsgPgI2o7
+        2++DrjCgfttk0KTIbAaxUXA=
+X-Google-Smtp-Source: ABdhPJydzceV3YNwBPGVPTfA75ZgpY72chgAiNPUAVyjrB5jY4i5pFIEoIbGzPL9cN3ySRZ7MsdCMw==
+X-Received: by 2002:a05:6512:3761:: with SMTP id z1mr1511747lft.99.1625269901657;
+        Fri, 02 Jul 2021 16:51:41 -0700 (PDT)
+Received: from 192.168.1.8 ([212.59.242.58])
+        by smtp.gmail.com with ESMTPSA id h5sm511370ljj.80.2021.07.02.16.51.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 16:51:41 -0700 (PDT)
+From:   Maciej Falkowski <maciej.falkowski9@gmail.com>
+To:     natechancellor@gmail.com, ndesaulniers@google.com,
+        masahiroy@kernel.org, michal.lkml@markovi.net, nhuck@google.com
+Cc:     clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maciej.falkowski9@gmail.com
+Subject: [PATCH] clang-tools: Print information when clang-tidy tool is missing
+Date:   Sat,  3 Jul 2021 01:51:20 +0200
+Message-Id: <20210702235120.7023-1-maciej.falkowski9@gmail.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Inspired by the situation from [0].
+When clang-tidy tool is missing in the system, the FileNotFoundError
+exception is raised in the program reporting a stack trace to the user:
 
-The roots of choosing tmpfs/ramfs backend for rootfs go far back
-in history, and it's unclear at all why it was decided to select
-full-blown tmpfs when "root=3D" is not specified and feature-poor
-ramfs otherwise.
-There are several cases when "root=3D" is not needed at all to work,
-and it doesn't break anything or make any [negative] sense. On the
-other hand, such separation is rather counter-intuitive and makes
-debugging more difficult.
-Simply always use tmpfs when it's available -- just like devtmpfs
-does [for over a decade].
+$ ./scripts/clang-tools/run-clang-tools.py clang-tidy ./compile_commands.json
+multiprocessing.pool.RemoteTraceback:
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.8/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/usr/lib64/python3.8/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "./scripts/clang-tools/run-clang-tools.py", line 54, in run_analysis
+    p = subprocess.run(["clang-tidy", "-p", args.path, checks, entry["file"]],
+  File "/usr/lib64/python3.8/subprocess.py", line 489, in run
+    with Popen(*popenargs, **kwargs) as process:
+  File "/usr/lib64/python3.8/subprocess.py", line 854, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib64/python3.8/subprocess.py", line 1702, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'clang-tidy'
+"""
 
-[0] https://lore.kernel.org/kernel-hardening/20210701234807.50453-1-alobaki=
-n@pm.me/
+The patch adds more user-friendly information about missing tool by
+checking the presence of clang-tidy using `command -v` at the beginning
+of the script:
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+$ ./scripts/clang-tools/run-clang-tools.py clang-tidy ./compile_commands.json
+Command 'clang-tidy' is missing in the system
+
+Signed-off-by: Maciej Falkowski <maciej.falkowski9@gmail.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1342
 ---
- fs/namespace.c       |  2 --
- include/linux/init.h |  1 -
- init/do_mounts.c     | 26 +++++++-------------------
- 3 files changed, 7 insertions(+), 22 deletions(-)
+ scripts/clang-tools/run-clang-tools.py | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/namespace.c b/fs/namespace.c
-index ab4174a3c802..310ab44fdbe7 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -17,7 +17,6 @@
- #include <linux/security.h>
- #include <linux/cred.h>
- #include <linux/idr.h>
--#include <linux/init.h>=09=09/* init_rootfs */
- #include <linux/fs_struct.h>=09/* get_fs_root et.al. */
- #include <linux/fsnotify.h>=09/* fsnotify_vfsmount_delete */
- #include <linux/file.h>
-@@ -4248,7 +4247,6 @@ void __init mnt_init(void)
- =09if (!fs_kobj)
- =09=09printk(KERN_WARNING "%s: kobj create error\n", __func__);
- =09shmem_init();
--=09init_rootfs();
- =09init_mount_tree();
- }
-
-diff --git a/include/linux/init.h b/include/linux/init.h
-index d82b4b2e1d25..10839922a1d3 100644
---- a/include/linux/init.h
-+++ b/include/linux/init.h
-@@ -148,7 +148,6 @@ extern unsigned int reset_devices;
- /* used by init/main.c */
- void setup_arch(char **);
- void prepare_namespace(void);
--void __init init_rootfs(void);
- extern struct file_system_type rootfs_fs_type;
-
- #if defined(CONFIG_STRICT_KERNEL_RWX) || defined(CONFIG_STRICT_MODULE_RWX)
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index 74aede860de7..c00b05015a66 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -611,24 +611,12 @@ void __init prepare_namespace(void)
- =09init_chroot(".");
- }
-
--static bool is_tmpfs;
--static int rootfs_init_fs_context(struct fs_context *fc)
--{
--=09if (IS_ENABLED(CONFIG_TMPFS) && is_tmpfs)
--=09=09return shmem_init_fs_context(fc);
--
--=09return ramfs_init_fs_context(fc);
--}
--
- struct file_system_type rootfs_fs_type =3D {
--=09.name=09=09=3D "rootfs",
--=09.init_fs_context =3D rootfs_init_fs_context,
--=09.kill_sb=09=3D kill_litter_super,
-+=09.name=09=09=09=3D "rootfs",
-+#ifdef CONFIG_TMPFS
-+=09.init_fs_context=09=3D shmem_init_fs_context,
-+#else
-+=09.init_fs_context=09=3D ramfs_init_fs_context,
-+#endif
-+=09.kill_sb=09=09=3D kill_litter_super,
- };
--
--void __init init_rootfs(void)
--{
--=09if (IS_ENABLED(CONFIG_TMPFS) && !saved_root_name[0] &&
--=09=09(!root_fs_names || strstr(root_fs_names, "tmpfs")))
--=09=09is_tmpfs =3D true;
--}
---
-2.32.0
-
+diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
+index fa7655c7cec0..d34eaf5a0ee5 100755
+--- a/scripts/clang-tools/run-clang-tools.py
++++ b/scripts/clang-tools/run-clang-tools.py
+@@ -60,6 +60,11 @@ def run_analysis(entry):
+ 
+ 
+ def main():
++    exitcode = subprocess.getstatusoutput('command -v clang-tidy')[0]
++    if exitcode == 1:
++        print("Command 'clang-tidy' is missing in the system", file=sys.stderr)
++        sys.exit(127)
++
+     args = parse_arguments()
+ 
+     lock = multiprocessing.Lock()
+-- 
+2.26.3
 
