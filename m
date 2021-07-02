@@ -2,100 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D967A3B9BB8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 06:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC02F3B9BC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 07:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233455AbhGBE7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 00:59:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233691AbhGBE7L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 00:59:11 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99BDC061764
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 21:56:36 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id w15so8415793pgk.13
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 21:56:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=qqSo2EHKnteCkmvIob7W7h8j2bBButMHNumXS1B2l4o=;
-        b=THUTh9lL4gLgfoWs25q+r7nEzcReUOTkjZ6PBQSvLYhT5h22qQghqFKTbnb+SueClW
-         yzFZUuYKHvmbk60MxqoXkPEIZT7QKSU230n1xDMIOEwPaorDYxvR+1FO6c9gXmnUAEyd
-         jRmw9Ho2/f6zYuDYpi6/dqnwUEhzU5C9ovYEp1pvzM/GkwAC5SJQdnZMiT9DQsTp3we/
-         sIht4/YeX7Sq2U/klwO/Men0mMiCPsDJsV+ip84CFwlRVcNtk1HMWKNMqPPCxaTt42f8
-         Ts26/9nOMSVMKIGqnJ4Kejd/m3y2N8FnH+a2Kij8aGj64AQIdpA7vu2IusgPFP7lMtgD
-         GrGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=qqSo2EHKnteCkmvIob7W7h8j2bBButMHNumXS1B2l4o=;
-        b=URMc5ZZq4XwIYg0pAp9uMahHakjRu58AyJRIWtCzzZDgfE7Bpz40/mbMuh7mtBbBzs
-         fkrZm7YLvmWWFQm954s7e2JEi1rElbVWJM/EugH58M5jqWf4UJtBU1Ll9VbIpYJP8eDs
-         L4yGMa8YPnkRiMHblXCg1yTe/3X2ptL7fmqPiF3olNzNJq7ZSFJCHmEHzbCxgYkyM2Ln
-         uFfobAK91s9T0h1XMii7UAy8/nFvS5R5Ncj7tF/AlXXABRgZYR/jhKmDJnotF2NlT911
-         D+c4iRvJhnf0NIxHDg1VBblnHfimD4sxum8CNu027AyTM1I4S0k8S+SdUFfUczf5MS/+
-         YWAw==
-X-Gm-Message-State: AOAM530dbZbUkTbo3y42h7qwo6pfZ6/Kh1mb/Oyn23hpoIElNlagRtnm
-        nrjqoSPWTP8cqzn0x/r168b0/A==
-X-Google-Smtp-Source: ABdhPJzQoHvs4UddAnwcfgRrte2ZXexLQGMoAiszR4up3WGDmvkA5xdPaNw7h+vVUySdvsIcdSrxSg==
-X-Received: by 2002:aa7:96cf:0:b029:30f:d1e8:9264 with SMTP id h15-20020aa796cf0000b029030fd1e89264mr3262408pfq.33.1625201796138;
-        Thu, 01 Jul 2021 21:56:36 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id w6sm1824644pgh.56.2021.07.01.21.56.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 21:56:35 -0700 (PDT)
-Date:   Fri, 2 Jul 2021 10:26:33 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org,
-        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        stefanha@redhat.com
-Subject: Re: [PATCH v11] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210702045633.gblpud7wcffd5kyj@vireshk-i7>
-References: <510c876952efa693339ab0d6cc78ba7be9ef6897.1625104206.git.jie.deng@intel.com>
- <20210701040436.p7kega6rzeqz5tlm@vireshk-i7>
- <cb35472d-f79e-f3f8-405f-35c699d897a1@intel.com>
- <20210701061846.7u4zorimzpmb66v7@vireshk-i7>
- <34092cb2-03f9-231d-8769-4e45ed51c30f@intel.com>
+        id S234758AbhGBFC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 01:02:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229527AbhGBFCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 01:02:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FDE761413;
+        Fri,  2 Jul 2021 05:00:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625202021;
+        bh=t2qyD3sHMTfsanlf2Ca59gxsFV/p6nqhM45H10N8ELk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b3QQh4ifIgFmVEXnr7OSqfOiwNHzkC/Xi88eZ/6PTSL2q772nrfTuoTDMBm05+V0S
+         vjCD6yzn+HkvR52h4crxuS4xguYAC3JlA8Ul1srpDZbWFBXiwkRNOi6stY0E/Onlww
+         fZCfr1vMcOqq1iu7Jb6XuqBjelUVRKDQ7vo5NiVA=
+Date:   Fri, 2 Jul 2021 07:00:19 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     robh+dt@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        balbi@kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, jackp@codeaurora.org,
+        fntoth@gmail.com
+Subject: Re: [PATCH v11 1/5] usb: gadget: udc: core: Introduce check_config
+ to verify USB configuration
+Message-ID: <YN6dY8RBXRN4BW3n@kroah.com>
+References: <1625043642-29822-1-git-send-email-wcheng@codeaurora.org>
+ <1625043642-29822-2-git-send-email-wcheng@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <34092cb2-03f9-231d-8769-4e45ed51c30f@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <1625043642-29822-2-git-send-email-wcheng@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-07-21, 11:36, Jie Deng wrote:
-> OK. Let's add the following two lines to make sure that msg_buf is only
-> sent when the msgs len is not zero. And backend judges whether it is
-> a zero-length request by checking the number of elements received.
+On Wed, Jun 30, 2021 at 02:00:38AM -0700, Wesley Cheng wrote:
+> Some UDCs may have constraints on how many high bandwidth endpoints it can
+> support in a certain configuration.  This API allows for the composite
+> driver to pass down the total number of endpoints to the UDC so it can verify
+> it has the required resources to support the configuration.
 > 
->  + if (msgs[i].len) {
->            reqs[i].buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
->            if (!reqs[i].buf)
->                    break;
+> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> ---
+>  drivers/usb/gadget/udc/core.c | 25 +++++++++++++++++++++++++
+>  include/linux/usb/gadget.h    |  4 ++++
+>  2 files changed, 29 insertions(+)
 > 
->           sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
-> 
->           if (msgs[i].flags & I2C_M_RD)
->                   sgs[outcnt + incnt++] = &msg_buf;
->           else
->                   sgs[outcnt++] = &msg_buf;
+> diff --git a/drivers/usb/gadget/udc/core.c b/drivers/usb/gadget/udc/core.c
+> index b7f0b1e..f1f44a6 100644
+> --- a/drivers/usb/gadget/udc/core.c
+> +++ b/drivers/usb/gadget/udc/core.c
+> @@ -1003,6 +1003,31 @@ int usb_gadget_ep_match_desc(struct usb_gadget *gadget,
+>  }
+>  EXPORT_SYMBOL_GPL(usb_gadget_ep_match_desc);
+>  
+> +/**
+> + * usb_gadget_check_config - checks if the UDC can support the number of eps
+
+"eps"?  What is that?
+
+> + * @gadget: controller to check the USB configuration
+> + * @ep_map: bitmap of endpoints being requested by a USB configuration
+
+There is no such option in this function, did you run 'make htmldocs'
+and see that this adds a warning?
+
+> + *
+> + * Ensure that a UDC is able to support the number of endpoints within a USB
+> + * configuration, and that there are no resource limitations to support all
+> + * requested eps.
+> + *
+> + * Returns zero on success, else a negative errno.
+> + */
+> +int usb_gadget_check_config(struct usb_gadget *gadget)
+> +{
+> +	int ret = 0;
+> +
+> +	if (!gadget->ops->check_config)
+> +		goto out;
+> +
+> +	ret = gadget->ops->check_config(gadget);
+> +
+> +out:
+> +	return ret;
 > +}
+> +EXPORT_SYMBOL_GPL(usb_gadget_check_config);
 
-Perfect. Thanks.
+This can be written in the much simpler form:
+{
+	if (gadget->ops->check_config)
+		return gadget->ops->check_config(gadget);
+	return 0;
+}
 
--- 
-viresh
+But where are the endpoints that need to be checked???
+
+How is this working?
+
+thanks,
+
+greg k-h
