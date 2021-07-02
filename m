@@ -2,120 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785563BA3C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 19:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81E03BA3C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 19:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbhGBRxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 13:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhGBRxM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 13:53:12 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410C2C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 10:50:40 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id n14so19488271lfu.8
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 10:50:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zR51Y6h156fP4t9AhpZig8/jxWVXQ+2FTjT81KZ0jSA=;
-        b=g49VPuys7EfuGjk1eCwTXbUhJJcFFvyUx8xiIMf7j9ljZsVsOblhEm4eiMsysTdr9M
-         6YM4p/q3Zz7OogZTfu6sAcKZ/ecdzJfuncl2Syhg8geFftCt0aixmYwd0FoFFIWiVSRL
-         vo65eLuW7s6vQcVTfXrphsislc5+gPSFtU2Zb6mb2Pjq/Z2bgeTjjd7UhODa42hJhSnt
-         o4BwnoH0/CoouVK2fX33CK8aHIUQIKtsWJVpHUEXcAGilj2cqSgZNVjUwyauo3GMbY+z
-         1hmkx+f6/L6Eb9PZkKuSG2kjI7Aa6qrJa4dPgbSsF1YlPr9fN8G1O7En0Uml3YSUa0Dn
-         iqyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zR51Y6h156fP4t9AhpZig8/jxWVXQ+2FTjT81KZ0jSA=;
-        b=t+LLu3DtWKx43PnhUzG3XQVpzvi7QLlUhpTMSE7flP5alJvQ+vewPrDTcXGlLnutcW
-         W0RiyRkRNvPcgKQ/fe/jEBW3ebua9B3sYwEBzNzmdCjiNPfpLjui1lsJB0T4bZypOrGN
-         RPEN9oiHX2jYIqzx8cPhVO1VuiVuKkD7/BSsW3B88NWXlmEOng/USlbhgMG8X2AgzsIf
-         24ZhbcH+Y0M0KQ+GFRem62UD5VqV/0r9EaOTdSy4uLedFQ5Ahy968rijAoRTj4Ca4tIK
-         GWxG6Hdh4jwGZXzzCluEh/nyh/gJqfoFLrmAN2D7xP7FxFs6erTKAO7shHjxD+qI2oOx
-         Y4xw==
-X-Gm-Message-State: AOAM5303j2vTZnNMEeQTm3mkjZddEUhSDe41l82GnyoRripQEnyfSFbi
-        MLdUXUJGrbBLPUfqXKWloN45haEtQLGJSuFow74aBA==
-X-Google-Smtp-Source: ABdhPJxxMbAi9u2/TFSgpUvPoJBDz1opPlvi9uxBhDCWirMsLJDYtr4GstO3YNuT/blwBMzwjXWAgaSSrPlAoBR62ec=
-X-Received: by 2002:a05:6512:3884:: with SMTP id n4mr577583lft.547.1625248238229;
- Fri, 02 Jul 2021 10:50:38 -0700 (PDT)
+        id S230121AbhGBR5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 13:57:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230026AbhGBR5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 13:57:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF18961402;
+        Fri,  2 Jul 2021 17:54:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625248497;
+        bh=ig/YK/r/5aLCR4xsEWigroc4/rfDVngvQX1gzhgNYiY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nNXGNTep34Cgwd/OvUI5QhxtTKbZ1bqzOHzVc9Z9Q/gsXGxr+/ahJsB42AhZrrC/J
+         NEpgegDa2Ysbpfp+s+gkTetfnbQgugHPvUacyndQ1kZFpKoc/t5FtEuRe9spMIHQFv
+         gkEXVERrla99tcynuXPqU1gTjGHfg42RxtoK6idyoH4xKiH3iyVCj0QHamKCtzz2kT
+         4TQXfOIlx5GvqCJpLSL7GFCa2IU5cA0rtii/3wdscbfrHlsBihcQ6kBtLZ5dw2+AWx
+         cLCW8AUy+mTXNhpf8Pfunhn6AfvkGBpLiA+xr76h0yPSNlLX07ie0CHaR3tUKQk/Rp
+         rfxxF3V8UAe8Q==
+From:   Alexey Gladkov <legion@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>,
+        Alexey Gladkov <legion@kernel.org>
+Subject: [PATCH] ucounts: Fix UCOUNT_RLIMIT_SIGPENDING counter leak
+Date:   Fri,  2 Jul 2021 19:54:42 +0200
+Message-Id: <20210702175442.1603082-1-legion@kernel.org>
+X-Mailer: git-send-email 2.29.3
+In-Reply-To: <CAHk-=wjQks3o_3=WewaXw++h+a318B3LTLSFER9Ee4n1pLCZLw@mail.gmail.com>
+References: <CAHk-=wjQks3o_3=WewaXw++h+a318B3LTLSFER9Ee4n1pLCZLw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210701235505.1792711-1-ndesaulniers@google.com> <20210702112210.GA11084@willie-the-truck>
-In-Reply-To: <20210702112210.GA11084@willie-the-truck>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 2 Jul 2021 10:50:27 -0700
-Message-ID: <CAKwvOdk4GLDVrOJsxPBVM+g4sBiYW-64M3rNN6hsBgHP0eYqGg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: drop CROSS_COMPILE for LLVM=1 LLVM_IAS=1
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 4:22 AM Will Deacon <will@kernel.org> wrote:
->
-> On Thu, Jul 01, 2021 at 04:55:05PM -0700, Nick Desaulniers wrote:
-> > diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-> > index 7bc37d0a1b68..016873fddcc3 100644
-> > --- a/arch/arm64/Makefile
-> > +++ b/arch/arm64/Makefile
-> > @@ -34,6 +34,17 @@ $(warning LSE atomics not supported by binutils)
-> >    endif
-> >  endif
-> >
-> > +ifneq ($(LLVM),)
-> > +ifneq ($(LLVM_IAS),)
-> > +ifeq ($(CROSS_COMPILE),)
-> > +CLANG_TARGET :=--target=aarch64-linux
-> > +CLANG_FLAGS  += $(CLANG_TARGET)
-> > +KBUILD_CFLAGS        += $(CLANG_TARGET)
-> > +KBUILD_AFLAGS        += $(CLANG_TARGET)
->
-> Do we need to do anything extra for the linker here? I can't see how we
-> avoid picking up the host copy.
+If get_ucounts() could not increase the reference counter, then in case
+of an error it will be impossible to decrease the counter.
 
-That's handled by the top level Makefile when LLVM=1 is set.
+In case of an error, the ucounts variable cannot be set to NULL. Also
+dec_rlimit_ucounts() has to be REGARDLESS of whether get_ucounts() was
+successful or not.
 
-There is $KBUILD_LDFLAGS, but we don't do anything with it at the
-moment in terms of which linker we select; $LD controls which linker
-we use.
+Signed-off-by: Alexey Gladkov <legion@kernel.org>
+---
+ kernel/signal.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
-LLD can figure out the target based on the object files it's given as
-input, so it doesn't need any `--target=` flag. When clang is invoked
-as the compiler or assembler, it does need --target.
-
-> Have you tested the compat vDSO with this change? I think we'll just end
-> up passing two --target options, which is hopefully ok, but thought I'd
-> better check.
-
-Good catch.  We don't reuse KBUILD_CFLAGS or KBUILD_AFLAGS for the
-compat vdso for this very reason. In arch/arm64/kernel/vdso32/Makefile
-you'll see no references to KBUILD_CFLAGS or KBUILD_AFLAGS; instead we
-use VDSO_CFLAGS and VDSO_AFLAGS in their stead.
-
-But, we could (and should) make this same change for the compat vdso,
-and drop the need for CROSS_COMPILE_COMPAT for LLVM.
-
-Let me play around with the changes Arnd suggested and see if I can
-get that working.  I'm a bit nervous about making this depend on
-something from the top level Makefile on initial glance; these changes
-start to become tree wide rather than isolated per arch/, but let's
-see.  Maybe at that point we carry a series in the kbuild tree with
-acks for the arch/ specific changes from the respective maintainers?
-
-Either way, I'll send a v2 that nixes CROSS_COMPILE_COMPAT for LLVM.
+diff --git a/kernel/signal.c b/kernel/signal.c
+index de0920353d30..87a64b3307a8 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -412,7 +412,7 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
+ 		 int override_rlimit, const unsigned int sigqueue_flags)
+ {
+ 	struct sigqueue *q = NULL;
+-	struct ucounts *ucounts = NULL;
++	struct ucounts *ucounts, *ucounts_new;
+ 	long sigpending;
+ 
+ 	/*
+@@ -424,10 +424,10 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
+ 	 * changes from/to zero.
+ 	 */
+ 	rcu_read_lock();
+-	ucounts = task_ucounts(t);
++	ucounts = ucounts_new = task_ucounts(t);
+ 	sigpending = inc_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
+ 	if (sigpending == 1)
+-		ucounts = get_ucounts(ucounts);
++		ucounts_new = get_ucounts(ucounts);
+ 	rcu_read_unlock();
+ 
+ 	if (override_rlimit || (sigpending < LONG_MAX && sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
+@@ -437,13 +437,24 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
+ 	}
+ 
+ 	if (unlikely(q == NULL)) {
+-		if (ucounts && dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1))
+-			put_ucounts(ucounts);
++		ucounts_new = NULL;
+ 	} else {
+ 		INIT_LIST_HEAD(&q->list);
+ 		q->flags = sigqueue_flags;
+-		q->ucounts = ucounts;
++		q->ucounts = ucounts_new;
+ 	}
++
++	/*
++	 * In case it failed to allocate sigqueue or ucounts reference counter
++	 * overflow, we decrement UCOUNT_RLIMIT_SIGPENDING to avoid counter
++	 * leaks.
++	 */
++	if (unlikely(ucounts_new == NULL)) {
++		dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
++		if (sigpending == 1)
++			put_ucounts(ucounts);
++	}
++
+ 	return q;
+ }
+ 
+@@ -451,7 +462,7 @@ static void __sigqueue_free(struct sigqueue *q)
+ {
+ 	if (q->flags & SIGQUEUE_PREALLOC)
+ 		return;
+-	if (q->ucounts && dec_rlimit_ucounts(q->ucounts, UCOUNT_RLIMIT_SIGPENDING, 1)) {
++	if (dec_rlimit_ucounts(q->ucounts, UCOUNT_RLIMIT_SIGPENDING, 1)) {
+ 		put_ucounts(q->ucounts);
+ 		q->ucounts = NULL;
+ 	}
 -- 
-Thanks,
-~Nick Desaulniers
+2.29.3
+
