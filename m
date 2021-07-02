@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF8A3B9C3B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 08:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 868B13B9C3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 08:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhGBGk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 02:40:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40898 "EHLO mail.kernel.org"
+        id S230101AbhGBGld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 02:41:33 -0400
+Received: from mga05.intel.com ([192.55.52.43]:54302 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229703AbhGBGkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 02:40:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B0F3613FB;
-        Fri,  2 Jul 2021 06:37:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625207871;
-        bh=t9p7+88H7JJGMLnUmEIqoSf+caS+4mkwK5K4/fkCx9g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aktlaaVqLwbTh0zvx3fDm8ajjyAZDl9LeUXRoub9KOybl0ETnwQ/3NIMcBNWQYnaX
-         7i8f9Wg46l4q2KfIAk21yBFXUdqrd4D0Cloja94oW5jLdNWLheyfgZtzEs5eYy+gsr
-         gJZw3iGOv6sPGxwgv1zd36POqxbQ5fSprqgGov1aDRgIeLnRbwRQ0pFRdQaPyDcTh4
-         Yg7rQKHKulttlWdpylpyS194rAOoYTNqdNvQvNBur5cK/71VdD2eyBBYXyEiRT7beV
-         yJFaJk3dyg/H/d5Cp2Bfov5oBllxr2e3WY/7Xh8zqF0SXPYLlBp3VrcppGYz+paLhB
-         JEk4ieTK30j/Q==
-Date:   Fri, 2 Jul 2021 09:37:49 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org,
-        andrianov@ispras.ru
-Subject: Re: [PATCH] char: tpm: vtpm_proxy: Fix race in init
-Message-ID: <20210702063749.xnjbdfv6p2lxhzxw@kernel.org>
-References: <20210629210524.hze6yb23pps3flnv@kernel.org>
- <20210630071451.15507-1-saubhik.mukherjee@gmail.com>
+        id S230056AbhGBGl2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 02:41:28 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="294327958"
+X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
+   d="scan'208";a="294327958"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 23:38:56 -0700
+X-IronPort-AV: E=Sophos;i="5.83,316,1616482800"; 
+   d="scan'208";a="559657878"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 23:38:54 -0700
+Subject: Re: [kbuild-all] Re: [PATCH v11] i2c: virtio: add a virtio i2c
+ frontend driver
+To:     Jie Deng <jie.deng@intel.com>, kernel test robot <lkp@intel.com>,
+        linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, wsa@kernel.org,
+        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, andriy.shevchenko@linux.intel.com
+References: <510c876952efa693339ab0d6cc78ba7be9ef6897.1625104206.git.jie.deng@intel.com>
+ <202107011701.sZA89A1D-lkp@intel.com>
+ <68b2b36b-f1ee-d1aa-d4a5-d45f36602be6@intel.com>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <8e5e81b0-37f5-3863-9a9e-c66bf2a9d42f@intel.com>
+Date:   Fri, 2 Jul 2021 14:38:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210630071451.15507-1-saubhik.mukherjee@gmail.com>
+In-Reply-To: <68b2b36b-f1ee-d1aa-d4a5-d45f36602be6@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 12:44:51PM +0530, Saubhik Mukherjee wrote:
-> vtpm_module_init calls vtpmx_init which calls misc_register. The file
-> operations callbacks are registered. So, vtpmx_fops_ioctl can execute in
-> parallel with rest of vtpm_module_init. vtpmx_fops_ioctl calls
-> vtpmx_ioc_new_dev, which calls vtpm_proxy_create_device, which calls
-> vtpm_proxy_work_start, which could read uninitialized workqueue.
-> 
-> To avoid this, create workqueue before vtpmx init.
-> 
-> Found by Linux Driver Verification project (linuxtesting.org).
-> 
-> Fixes: 6f99612e2500 ("tpm: Proxy driver for supporting multiple emulated TPMs")
-> Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-> ---
 
-Is this v2? What was changed?
 
->  drivers/char/tpm/tpm_vtpm_proxy.c | 19 +++++++++----------
->  1 file changed, 9 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
-> index 91c772e38bb5..225dfa026a8f 100644
-> --- a/drivers/char/tpm/tpm_vtpm_proxy.c
-> +++ b/drivers/char/tpm/tpm_vtpm_proxy.c
-> @@ -697,23 +697,22 @@ static int __init vtpm_module_init(void)
->  {
->  	int rc;
->  
-> -	rc = vtpmx_init();
-> -	if (rc) {
-> -		pr_err("couldn't create vtpmx device\n");
-> -		return rc;
-> -	}
-> -
->  	workqueue = create_workqueue("tpm-vtpm");
->  	if (!workqueue) {
->  		pr_err("couldn't create workqueue\n");
-> -		rc = -ENOMEM;
-> -		goto err_vtpmx_cleanup;
-> +		return -ENOMEM;
-> +	}
-> +
-> +	rc = vtpmx_init();
-> +	if (rc) {
-> +		pr_err("couldn't create vtpmx device\n");
-> +		goto err_destroy_workqueue;
->  	}
->  
->  	return 0;
->  
-> -err_vtpmx_cleanup:
-> -	vtpmx_cleanup();
-> +err_destroy_workqueue:
-> +	destroy_workqueue(workqueue);
->  
->  	return rc;
->  }
-> -- 
-> 2.30.2
-> 
-> 
+On 7/2/21 11:12 AM, Jie Deng wrote:
+>
+> On 2021/7/1 18:00, kernel test robot wrote:
+>> Hi Jie,
+>>
+>> Thank you for the patch! Yet something to improve:
+>>
+>> [auto build test ERROR on wsa/i2c/for-next]
+>> [also build test ERROR on linux/master linus/master v5.13 next-20210630]
+>> [cannot apply to vhost/linux-next]
+>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>> And when submitting patch, we suggest to use '--base' as documented in
+>> https://git-scm.com/docs/git-format-patch]
+>>
+>> url: 
+>> https://github.com/0day-ci/linux/commits/Jie-Deng/i2c-virtio-add-a-virtio-i2c-frontend-driver/20210701-112619
+>> base: https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git 
+>> i2c/for-next
+>> config: i386-randconfig-c021-20210630 (attached as .config)
+>> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+>> reproduce (this is a W=1 build):
+>>          # 
+>> https://github.com/0day-ci/linux/commit/e8dedd2a8577148d7655d0affe35adf34efbbf15
+>>          git remote add linux-review https://github.com/0day-ci/linux
+>>          git fetch --no-tags linux-review 
+>> Jie-Deng/i2c-virtio-add-a-virtio-i2c-frontend-driver/20210701-112619
+>>          git checkout e8dedd2a8577148d7655d0affe35adf34efbbf15
+>>          # save the attached .config to linux build tree
+>>          mkdir build_dir
+>>          make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>     In file included from <command-line>:32:
+>>>> ./usr/include/linux/virtio_i2c.h:12:10: fatal error: linux/bits.h: 
+>>>> No such file or directory
+>>        12 | #include <linux/bits.h>
+>>           |          ^~~~~~~~~~~~~~
+>>     compilation terminated.
+>
+>
+> I didn't see this error. Why did you say no such file? Anything wrong ?
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git/tree/include/linux/bits.h 
+>
+>
+> Thank you !
 
-/Jarkko
+
+Hi Jie,
+
+The problem is reproducible, I guess it's due to bits.h not in 
+include/uapi/linux.
+
+Best Regards,
+Rong Chen
