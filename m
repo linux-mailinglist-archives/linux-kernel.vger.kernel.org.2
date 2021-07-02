@@ -2,531 +2,413 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6EE3BA5E4
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 00:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A5B3BA5E7
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 00:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234614AbhGBWLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 18:11:00 -0400
-Received: from mga17.intel.com ([192.55.52.151]:15306 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234187AbhGBWJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 18:09:18 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10033"; a="189168432"
-X-IronPort-AV: E=Sophos;i="5.83,320,1616482800"; 
-   d="scan'208";a="189168432"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 15:05:33 -0700
-X-IronPort-AV: E=Sophos;i="5.83,320,1616482800"; 
-   d="scan'208";a="642814912"
-Received: from ls.sc.intel.com (HELO localhost) ([143.183.96.54])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 15:05:33 -0700
-From:   isaku.yamahata@intel.com
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com
-Subject: [RFC PATCH v2 69/69] Documentation/virtual/kvm: Add Trust Domain Extensions(TDX)
-Date:   Fri,  2 Jul 2021 15:05:15 -0700
-Message-Id: <cf3d3bff4b1aaf254208434cb430fab155bfa1fd.1625186503.git.isaku.yamahata@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1625186503.git.isaku.yamahata@intel.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
+        id S233624AbhGBWLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 18:11:24 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:37452 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233919AbhGBWKa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 18:10:30 -0400
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 478D7B11A7C;
+        Sat,  3 Jul 2021 00:07:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1625263675;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sP+kGSTqxbgDKIo0jglVyuAvrwv1HWZzz1PPC9Bv5No=;
+        b=oeEopQgafT42S4SKNF/T5yQe+k5qHxUNNnEWHkEayNUU+3VlZs/vd4KhDB73Ef3mqV1PZz
+        6/FaAF3mmHRxwKyfixsy2R0V0AbOFK17j3eOS3MDeU0+u0bagIGsYCth4e5Sj8JaQa30By
+        +CWHSWPOC9Oiz2Aql8lr992Ot1ySBvM=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luca Mariotti <mariottiluca1@hotmail.it>,
+        Holger =?ISO-8859-1?Q?Hoffst=E4tte?= 
+        <holger@applied-asynchrony.com>,
+        Pietro Pedroni <pedroni.pietro.96@gmail.com>,
+        Piotr Gorski <lucjan.lucjanov@gmail.com>,
+        Khazhy Kumykov <khazhy@google.com>, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH FIXES/IMPROVEMENTS 0/7] block, bfq: preserve control, boost throughput, fix bugs
+Date:   Sat, 03 Jul 2021 00:07:53 +0200
+Message-ID: <2957867.CS06ZTPI5V@spock>
+In-Reply-To: <20210622162948.GJ14261@quack2.suse.cz>
+References: <20210619140948.98712-1-paolo.valente@linaro.org> <8003699.Qy64SzLKsf@spock> <20210622162948.GJ14261@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
+Hello.
 
-Add a documentation to Intel Trusted Docmain Extensions(TDX) support.
+On =C3=BAter=C3=BD 22. =C4=8Dervna 2021 18:29:48 CEST Jan Kara wrote:
+> On Tue 22-06-21 09:35:05, Oleksandr Natalenko wrote:
+> > On =C3=BAter=C3=BD 22. =C4=8Dervna 2021 9:08:43 CEST Paolo Valente wrot=
+e:
+> > > CCing also Jan and Khazhy, because in your commit log I see also the
+> > > commit on bfq_requests_merged().
+> > >=20
+> > > Is this OOPS reproducible for you?
+> >=20
+> > No, I haven't found a reproducer, at least yet. It took half a day of
+> > uptime to hit this, so might not be that easy.
+>=20
+> Hum, if you can acquire a crash dump it would be the easiest I guess. We'd
+> need to find out more about the request we crash on - whether it's
+> otherwise valid, in what state it is etc...
 
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
----
- Documentation/virt/kvm/api.rst       |   6 +-
- Documentation/virt/kvm/intel-tdx.rst | 441 +++++++++++++++++++++++++++
- 2 files changed, 446 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/virt/kvm/intel-tdx.rst
+Still have no reliable reproducer and no vmcore, however I'm running v5.13=
+=20
+with the following patches applied on top of it:
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 7fcb2fd38f42..b6a33a9bac87 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -4297,7 +4297,7 @@ H_GET_CPU_CHARACTERISTICS hypercall.
- 
- :Capability: basic
- :Architectures: x86
--:Type: vm
-+:Type: vm ioctl, vcpu ioctl
- :Parameters: an opaque platform specific structure (in/out)
- :Returns: 0 on success; -1 on error
- 
-@@ -4309,6 +4309,10 @@ Currently, this ioctl is used for issuing Secure Encrypted Virtualization
- (SEV) commands on AMD Processors. The SEV commands are defined in
- Documentation/virt/kvm/amd-memory-encryption.rst.
- 
-+Currently, this ioctl is used for issuing Trusted Domain Extensions
-+(TDX) commands on Intel Processors. The TDX commands are defined in
-+Documentation/virt/kvm/intel-tdx.rst.
-+
- 4.111 KVM_MEMORY_ENCRYPT_REG_REGION
- -----------------------------------
- 
-diff --git a/Documentation/virt/kvm/intel-tdx.rst b/Documentation/virt/kvm/intel-tdx.rst
-new file mode 100644
-index 000000000000..6f2fbd2da243
---- /dev/null
-+++ b/Documentation/virt/kvm/intel-tdx.rst
-@@ -0,0 +1,441 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===================================
-+Intel Trust Dodmain Extensions(TDX)
-+===================================
-+
-+Overview
-+========
-+TDX stands for Trust Domain Extensions which isolates VMs from
-+the virtual-machine manager (VMM)/hypervisor and any other software on
-+the platform. [1]
-+For details, the specifications, [2], [3], [4], [5], [6], [7], are
-+available.
-+
-+
-+API description
-+===============
-+
-+KVM_MEMORY_ENCRYPT_OP
-+---------------------
-+:Type: system ioctl, vm ioctl, vcpu ioctl
-+
-+For TDX operations, KVM_MEMORY_ENCRYPT_OP is re-purposed to be generic
-+ioctl with TDX specific sub ioctl command.
-+
-+::
-+
-+  /* Trust Domain eXtension sub-ioctl() commands. */
-+  enum kvm_tdx_cmd_id {
-+          KVM_TDX_CAPABILITIES = 0,
-+          KVM_TDX_INIT_VM,
-+          KVM_TDX_INIT_VCPU,
-+          KVM_TDX_INIT_MEM_REGION,
-+          KVM_TDX_FINALIZE_VM,
-+
-+          KVM_TDX_CMD_NR_MAX,
-+  };
-+
-+  struct kvm_tdx_cmd {
-+          __u32 id;             /* tdx_cmd_id */
-+          __u32 metadata;       /* sub comamnd specific */
-+          __u64 data;           /* sub command specific */
-+  };
-+
-+
-+KVM_TDX_CAPABILITIES
-+--------------------
-+:Type: system ioctl
-+
-+subset of TDSYSINFO_STRCUCT retrieved by TDH.SYS.INFO TDX SEAM call will be
-+returned. which describes about Intel TDX module.
-+
-+- id: KVM_TDX_CAPABILITIES
-+- metadata: must be 0
-+- data: pointer to struct kvm_tdx_capabilities
-+
-+::
-+
-+  struct kvm_tdx_cpuid_config {
-+          __u32 leaf;
-+          __u32 sub_leaf;
-+          __u32 eax;
-+          __u32 ebx;
-+          __u32 ecx;
-+          __u32 edx;
-+  };
-+
-+  struct kvm_tdx_capabilities {
-+          __u64 attrs_fixed0;
-+          __u64 attrs_fixed1;
-+          __u64 xfam_fixed0;
-+          __u64 xfam_fixed1;
-+
-+          __u32 nr_cpuid_configs;
-+          struct kvm_tdx_cpuid_config cpuid_configs[0];
-+  };
-+
-+
-+KVM_TDX_INIT_VM
-+---------------
-+:Type: vm ioctl
-+
-+Does additional VM initialization specific to TDX which corresponds to
-+TDH.MNG.INIT TDX SEAM call.
-+
-+- id: KVM_TDX_INIT_VM
-+- metadata: must be 0
-+- data: pointer to struct kvm_tdx_init_vm
-+- reserved: must be 0
-+
-+::
-+
-+  struct kvm_tdx_init_vm {
-+          __u32 max_vcpus;
-+          __u32 reserved;
-+          __u64 attributes;
-+          __u64 cpuid;  /* pointer to struct kvm_cpuid2 */
-+          __u64 mrconfigid[6];          /* sha384 digest */
-+          __u64 mrowner[6];             /* sha384 digest */
-+          __u64 mrownerconfig[6];       /* sha348 digest */
-+          __u64 reserved[43];           /* must be zero for future extensibility */
-+  };
-+
-+
-+KVM_TDX_INIT_VCPU
-+-----------------
-+:Type: vcpu ioctl
-+
-+Does additional VCPU initialization specific to TDX which corresponds to
-+TDH.VP.INIT TDX SEAM call.
-+
-+- id: KVM_TDX_INIT_VCPU
-+- metadata: must be 0
-+- data: initial value of the guest TD VCPU RCX
-+
-+
-+KVM_TDX_INIT_MEM_REGION
-+-----------------------
-+:Type: vm ioctl
-+
-+Encrypt a memory continuous region which corresponding to TDH.MEM.PAGE.ADD
-+TDX SEAM call.
-+If KVM_TDX_MEASURE_MEMORY_REGION flag is specified, it also extends measurement
-+which corresponds to TDH.MR.EXTEND TDX SEAM call.
-+
-+- id: KVM_TDX_INIT_VCPU
-+- metadata: flags
-+            currently only KVM_TDX_MEASURE_MEMORY_REGION is defined
-+- data: pointer to struct kvm_tdx_init_mem_region
-+
-+::
-+
-+  #define KVM_TDX_MEASURE_MEMORY_REGION   (1UL << 0)
-+
-+  struct kvm_tdx_init_mem_region {
-+          __u64 source_addr;
-+          __u64 gpa;
-+          __u64 nr_pages;
-+  };
-+
-+
-+KVM_TDX_FINALIZE_VM
-+-------------------
-+:Type: vm ioctl
-+
-+Complete measurement of the initial TD contents and mark it ready to run
-+which corresponds to TDH.MR.FINALIZE
-+
-+- id: KVM_TDX_FINALIZE_VM
-+- metadata: ignored
-+- data: ignored
-+
-+
-+KVM TDX creation flow
-+=====================
-+In addition to KVM normal flow, new TDX ioctls need to be called.  The control flow
-+looks like as follows.
-+
-+#. system wide capability check
-+  * KVM_TDX_CAPABILITIES: query if TDX is supported on the platform.
-+  * KVM_CAP_xxx: check other KVM extensions same to normal KVM case.
-+
-+#. creating VM
-+  * KVM_CREATE_VM
-+  * KVM_TDX_INIT_VM: pass TDX specific VM parameters.
-+
-+#. creating VCPU
-+  * KVM_CREATE_VCPU
-+  * KVM_TDX_INIT_VCPU: pass TDX specific VCPU parameters.
-+
-+#. initializing guest memory
-+  * allocate guest memory and initialize page same to normal KVM case
-+    In TDX case, parse and load TDVF into guest memory in addition.
-+  * KVM_TDX_INIT_MEM_REGION to add and measure guest pages.
-+    If the pages has contents above, those pages need to be added.
-+    Otherwise the contents will be lost and guest sees zero pages.
-+  * KVM_TDX_FINALIAZE_VM: Finalize VM and measurement
-+    This must be after KVM_TDX_INIT_MEM_REGION.
-+
-+#. run vcpu
-+
-+Loading TDX module
-+==================
-+
-+Integrating TDX SEAM module into initrd
-+---------------------------------------
-+If TDX is enabled in KVM(CONFIG_KVM_INTEL_TDX=y), kernel is able to load
-+tdx seam module from initrd.
-+The related modules (seamldr.ac, libtdx.so and libtdx.so.sigstruct) need to be
-+stored in initrd.
-+
-+tdx-seam is a sample hook script for initramfs-tools.
-+TDXSEAM_SRCDIR are the directory in the host file system to store files related
-+to TDX SEAM module.
-+
-+Since it heavily depends on distro how to prepare initrd, here's an example how
-+to prepare an initrd.
-+(Actually this is taken from Documentation/x86/microcode.rst)
-+
-+::
-+
-+  #!/bin/bash
-+
-+  if [ -z "$1" ]; then
-+      echo "You need to supply an initrd file"
-+      exit 1
-+  fi
-+
-+  INITRD="$1"
-+
-+  DSTDIR=lib/firmware/intel-seam
-+  TMPDIR=/tmp/initrd
-+  LIBTDX="/lib/firmware/intel-seam/seamldr.acm /lib/firmware/intel-seam/libtdx.so /lib/firmware/intel-seam/libtdx.so.sigstruct"
-+
-+  rm -rf $TMPDIR
-+
-+  mkdir $TMPDIR
-+  cd $TMPDIR
-+  mkdir -p $DSTDIR
-+
-+  cp ${LIBTDX} ${DSTDIR}
-+
-+  find . | cpio -o -H newc > ../tdx-seam.cpio
-+  cd ..
-+  mv $INITRD $INITRD.orig
-+  cat tdx-seam.cpio $INITRD.orig > $INITRD
-+
-+  rm -rf $TMPDIR
-+
-+
-+Design discussion
-+=================
-+
-+the file location of the boot code
-+----------------------------------
-+BSP launches SEAM Loader on BSP to load TDX module. TDX module is on
-+all CPUs. The directory, arch/x86/kvm/boot/seam, is chosen to locate
-+the related files in near directory. When maintenance/enhancement in
-+future, it will be easy to identify that they're related to be synced
-+with.
-+
-+- arch/x86/kvm/boot/seam: the current choice
-+  Pros:
-+  - The directory clearly indicates that the code is related to only KVM.
-+  - Keep files near to the related code (KVM TDX code).
-+  Cons:
-+  - It doesn't follow the existing convention.
-+
-+Alternative:
-+
-+The alternative is to follow the existing convention.
-+- arch/x86/kernel/cpu/
-+  Pros:
-+  - It follows the existing convention.
-+  Cons:
-+  - It's unclear that it's related to only KVM TDX.
-+
-+- drivers/firmware/
-+  As TDX module can be considered a firmware, yet other choice is
-+  Pros:
-+  - It follows the existing convention. it clarifies that TDX module
-+    is a firmware.
-+  Cons:
-+  - It's hard to understand the firmware is only for KVM TDX.
-+  - The files are far from the related code(KVM TDX).
-+
-+Coexistence of normal(VMX) VM and TD VM
-+---------------------------------------
-+It's required to allow both legacy(normal VMX) VMs and new TD VMs to
-+coexist. Otherwise the benefits of VM flexibility would be eliminated.
-+The main issue for it is that the logic of kvm_x86_ops callbacks for
-+TDX is different from VMX. On the other hand, the variable,
-+kvm_x86_ops, is global single variable. Not per-VM, not per-vcpu.
-+
-+Several points to be considered.
-+  . No or minimal overhead when TDX is disabled(CONFIG_KVM_INTEL_TDX=n).
-+  . Avoid overhead of indirect call via function pointers.
-+  . Contain the changes under arch/x86/kvm/vmx directory and share logic
-+    with VMX for maintenance.
-+    Even though the ways to operation on VM (VMX instruction vs TDX
-+    SEAM call) is different, the basic idea remains same. So, many
-+    logic can be shared.
-+  . Future maintenance
-+    The huge change of kvm_x86_ops in (near) future isn't expected.
-+    a centralized file is acceptable.
-+
-+- Wrapping kvm x86_ops: The current choice
-+  Introduce dedicated file for arch/x86/kvm/vmx/main.c (the name,
-+  main.c, is just chosen to show main entry points for callbacks.) and
-+  wrapper functions around all the callbacks with
-+  "if (is-tdx) tdx-callback() else vmx-callback()".
-+
-+  Pros:
-+  - No major change in common x86 KVM code. The change is (mostly)
-+    contained under arch/x86/kvm/vmx/.
-+  - When TDX is disabled(CONFIG_KVM_INTEL_TDX=n), the overhead is
-+    optimized out.
-+  - Micro optimization by avoiding function pointer.
-+  Cons:
-+  - Many boiler plates in arch/x86/kvm/vmx/main.c.
-+
-+Alternative:
-+- Introduce another callback layer under arch/x86/kvm/vmx.
-+  Pros:
-+  - No major change in common x86 KVM code. The change is (mostly)
-+    contained under arch/x86/kvm/vmx/.
-+  - clear separation on callbacks.
-+  Cons:
-+  - overhead in VMX even when TDX is disabled(CONFIG_KVM_INTEL_TDX=n).
-+
-+- Allow per-VM kvm_x86_ops callbacks instead of global kvm_x86_ops
-+  Pros:
-+  - clear separation on callbacks.
-+  Cons:
-+  - Big change in common x86 code.
-+  - overhead in common code even when TDX is
-+    disabled(CONFIG_KVM_INTEL_TDX=n).
-+
-+- Introduce new directory arch/x86/kvm/tdx
-+  Pros:
-+  - It clarifies that TDX is different from VMX.
-+  Cons:
-+  - Given the level of code sharing, it complicates code sharing.
-+
-+KVM MMU Changes
-+---------------
-+KVM MMU needs to be enhanced to handle Secure/Shared-EPT. The
-+high-level execution flow is mostly same to normal EPT case.
-+EPT violation/misconfiguration -> invoke TDP fault handler ->
-+resolve TDP fault -> resume execution. (or emulate MMIO)
-+The difference is, that S-EPT is operated(read/write) via TDX SEAM
-+call which is expensive instead of direct read/write EPT entry.
-+One bit of GPA (51 or 47 bit) is repurposed so that it means shared
-+with host(if set to 1) or private to TD(if cleared to 0).
-+
-+- The current implementation
-+  . Reuse the existing MMU code with minimal update.  Because the
-+    execution flow is mostly same. But additional operation, TDX call
-+    for S-EPT, is needed. So add hooks for it to kvm_x86_ops.
-+  . For performance, minimize TDX SEAM call to operate on S-EPT. When
-+    getting corresponding S-EPT pages/entry from faulting GPA, don't
-+    use TDX SEAM call to read S-EPT entry. Instead create shadow copy
-+    in host memory.
-+    Repurpose the existing kvm_mmu_page as shadow copy of S-EPT and
-+    associate S-EPT to it.
-+  . Treats share bit as attributes. mask/unmask the bit where
-+    necessary to keep the existing traversing code works.
-+    Introduce kvm.arch.gfn_shared_mask and use "if (gfn_share_mask)"
-+    for special case.
-+    = 0 : for non-TDX case
-+    = 51 or 47 bit set for TDX case.
-+
-+  Pros:
-+  - Large code reuse with minimal new hooks.
-+  - Execution path is same.
-+  Cons:
-+  - Complicates the existing code.
-+  - Repurpose kvm_mmu_page as shadow of Secure-EPT can be confusing.
-+
-+Alternative:
-+- Replace direct read/write on EPT entry with TDX-SEAM call by
-+  introducing callbacks on EPT entry.
-+  Pros:
-+  - Straightforward.
-+  Cons:
-+  - Too many touching point.
-+  - Too slow due to TDX-SEAM call.
-+  - Overhead even when TDX is disabled(CONFIG_KVM_INTEL_TDX=n).
-+
-+- Sprinkle "if (is-tdx)" for TDX special case
-+  Pros:
-+  - Straightforward.
-+  Cons:
-+  - The result is non-generic and ugly.
-+  - Put TDX specific logic into common KVM MMU code.
-+
-+New KVM API, ioctl (sub)command, to manage TD VMs
-+-------------------------------------------------
-+Additional KVM API are needed to control TD VMs. The operations on TD
-+VMs are specific to TDX.
-+
-+- Piggyback and repurpose KVM_MEMORY_ENCRYPT_OP
-+  Although not all operation isn't memory encryption, repupose to get
-+  TDX specific ioctls.
-+  Pros:
-+  - No major change in common x86 KVM code.
-+  Cons:
-+  - The operations aren't actually memory encryption, but operations
-+    on TD VMs.
-+
-+Alternative:
-+- Introduce new ioctl for guest protection like
-+  KVM_GUEST_PROTECTION_OP and introduce subcommand for TDX.
-+  Pros:
-+  - Clean name.
-+  Cons:
-+  - One more new ioctl for guest protection.
-+  - Confusion with KVM_MEMORY_ENCRYPT_OP with KVM_GUEST_PROTECTION_OP.
-+
-+- Rename KVM_MEMORY_ENCRYPT_OP to KVM_GUEST_PROTECTION_OP and keep
-+  KVM_MEMORY_ENCRYPT_OP as same value for user API for compatibility.
-+  "#define KVM_MEMORY_ENCRYPT_OP KVM_GUEST_PROTECTION_OP" for uapi
-+  compatibility.
-+  Pros:
-+  - No new ioctl with more suitable name.
-+  Cons:
-+  - May cause confusion to the existing user program.
-+
-+
-+References
-+==========
-+
-+.. [1] TDX specification
-+   https://software.intel.com/content/www/us/en/develop/articles/intel-trust-domain-extensions.html
-+.. [2] Intel Trust Domain Extensions (Intel TDX)
-+   https://software.intel.com/content/dam/develop/external/us/en/documents/tdx-whitepaper-final9-17.pdf
-+.. [3] Intel CPU Architectural Extensions Specification
-+   https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-cpu-architectural-specification.pdf
-+.. [4] Intel TDX Module 1.0 EAS
-+   https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-module-1eas.pdf
-+.. [5] Intel TDX Loader Interface Specification
-+   https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-seamldr-interface-specification.pdf
-+.. [6] Intel TDX Guest-Hypervisor Communication Interface
-+   https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-guest-hypervisor-communication-interface.pdf
-+.. [7] Intel TDX Virtual Firmware Design Guide
-+   https://software.intel.com/content/dam/develop/external/us/en/documents/tdx-virtual-firmware-design-guide-rev-1.
-+.. [8] intel public github
-+   kvm TDX branch: https://github.com/intel/tdx/tree/kvm
-+   TDX guest branch: https://github.com/intel/tdx/tree/guest
-+.. [9] tdvf
-+    https://github.com/tianocore/edk2-staging/tree/TDVF
-+.. [10] KVM forum 2020: Intel Virtualization Technology Extensions to
-+     Enable Hardware Isolated VMs
-+     https://osseu2020.sched.com/event/eDzm/intel-virtualization-technology-extensions-to-enable-hardware-isolated-vms-sean-christopherson-intel
-+.. [11] Linux Security Summit EU 2020:
-+     Architectural Extensions for Hardware Virtual Machine Isolation
-+     to Advance Confidential Computing in Public Clouds - Ravi Sahita
-+     & Jun Nakajima, Intel Corporation
-+     https://osseu2020.sched.com/event/eDOx/architectural-extensions-for-hardware-virtual-machine-isolation-to-advance-confidential-computing-in-public-clouds-ravi-sahita-jun-nakajima-intel-corporation
-+.. [12] [RFCv2,00/16] KVM protected memory extension
-+     https://lkml.org/lkml/2020/10/20/66
--- 
-2.25.1
+```
+blk: Fix lock inversion between ioc lock and bfqd lock
+bfq: Remove merged request already in bfq_requests_merged()
+block: Remove unnecessary elevator operation checks
+block: Do not pull requests from the scheduler when we cannot dispatch them
+block, bfq: reset waker pointer with shared queues
+block, bfq: check waker only for queues with no in-flight I/O
+block, bfq: avoid delayed merge of async queues
+block, bfq: boost throughput by extending queue-merging times
+block, bfq: consider also creation time in delayed stable merge
+block, bfq: fix delayed stable merge check
+block, bfq: let also stably merged queues enjoy weight raising
+```
+
+and just got the following crash:
+
+```
+[60313.522570] ------------[ cut here ]------------
+[60313.522579] WARNING: CPU: 20 PID: 388 at arch/x86/include/asm/kfence.h:4=
+4=20
+kfence_protect_page+0x39/0xc0
+[60313.522586] Modules linked in: sctp ip6_udp_tunnel udp_tunnel uinput=20
+netconsole blocklayoutdriver rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver=
+=20
+nfs lockd grace sunrpc fscache netfs rfcomm nft_ct nf_conntrack nf_defrag_i=
+pv6=20
+nf_defrag_ipv4 cmac algif_hash algif_skcipher nf_tables af_alg bnep tun=20
+nfnetlink nls_iso8859_1 intel_rapl_msr vfat intel_rapl_common iwlmvm fat=20
+mac80211 edac_mce_amd libarc4 btusb eeepc_wmi btrtl asus_wmi iwlwifi btbcm=
+=20
+snd_usb_audio sparse_keymap kvm_amd video wmi_bmof mxm_wmi btintel uvcvideo=
+=20
+snd_hda_codec_realtek videobuf2_vmalloc videobuf2_memops snd_usbmidi_lib kv=
+m=20
+snd_hda_codec_generic bluetooth videobuf2_v4l2 ledtrig_audio=20
+snd_hda_codec_hdmi joydev snd_rawmidi ecdh_generic irqbypass ecc snd_hda_in=
+tel=20
+mousedev pl2303 cfg80211 snd_seq_device videobuf2_common crc16 rapl k10temp=
+=20
+snd_intel_dspcfg snd_intel_sdw_acpi snd_hda_codec igb r8169 sp5100_tco=20
+snd_hda_core realtek i2c_piix4 ipmi_devintf dca snd_hwdep mdio_devres rfkil=
+l=20
+snd_pcm libphy ipmi_msghandler wmi
+[60313.522630]  pinctrl_amd mac_hid acpi_cpufreq tcp_bbr2 vhost_vsock=20
+vmw_vsock_virtio_transport_common vhost vhost_iotlb vsock v4l2loopback=20
+videodev mc snd_hrtimer snd_timer snd soundcore nct6775 hwmon_vid crypto_us=
+er=20
+fuse ip_tables x_tables xfs dm_thin_pool dm_persistent_data dm_bio_prison=20
+dm_bufio libcrc32c crc32c_generic dm_crypt cbc encrypted_keys trusted=20
+asn1_encoder tee hid_logitech_hidpp hid_logitech_dj usbhid dm_mod=20
+crct10dif_pclmul crc32_pclmul crc32c_intel raid10 ghash_clmulni_intel=20
+aesni_intel md_mod crypto_simd cryptd amdgpu ccp xhci_pci xhci_pci_renesas=
+=20
+tpm_crb tpm_tis tpm_tis_core tpm rng_core drm_ttm_helper ttm gpu_sched=20
+i2c_algo_bit drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops c=
+ec=20
+drm agpgart
+[60313.522665] CPU: 20 PID: 388 Comm: kworker/20:1H Tainted: G        W    =
+    =20
+5.13.0-pf2 #1
+[60313.522668] Hardware name: ASUS System Product Name/Pro WS X570-ACE, BIO=
+S=20
+3601 05/26/2021
+[60313.522671] Workqueue: kblockd blk_mq_run_work_fn
+[60313.522675] RIP: 0010:kfence_protect_page+0x39/0xc0
+[60313.522679] Code: 04 65 48 8b 04 25 28 00 00 00 48 89 44 24 08 31 c0 c7 =
+44=20
+24 04 00 00 00 00 e8 83 20 d5 ff 48 85 c0 74 07 83 7c 24 04 01 74 06 <0f> 0=
+b 31=20
+c0 eb 4c 48 8b 38 48 89 c2 84 db 75 59 48 89 f8 0f 1f 40
+[60313.522682] RSP: 0018:ffffb559c0affb28 EFLAGS: 00010046
+[60313.522684] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffb559c0a=
+ffb2c
+[60313.522687] RDX: ffffb559c0affb2c RSI: 0000000000000000 RDI: 00000000000=
+00000
+[60313.522690] RBP: 0000000000000000 R08: 0000000000000000 R09:=20
+0000000000000000
+[60313.522692] R10: 0000000000000000 R11: 0000000000000000 R12:=20
+0000000000000002
+[60313.522694] R13: ffffb559c0affc28 R14: 00000000c0affc01 R15: 00000000000=
+00000
+[60313.522696] FS:  0000000000000000(0000) GS:ffff8cf44ef00000(0000) knlGS:
+0000000000000000
+[60313.522698] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[60313.522700] CR2: 0000000000000120 CR3: 000000013ebce000 CR4:=20
+0000000000350ee0
+[60313.522702] Call Trace:
+[60313.522707]  kfence_handle_page_fault+0xa6/0x280
+[60313.522710]  page_fault_oops+0x9d/0x2d0
+[60313.522714]  exc_page_fault+0x78/0x180
+[60313.522718]  asm_exc_page_fault+0x1e/0x30
+[60313.522721] RIP: 0010:bfq_dispatch_request+0x4c3/0x1280
+[60313.522725] Code: 4c 89 e7 e8 ef da ff ff 4c 89 ff 89 c6 e8 75 64 00 00 =
+4c 39=20
+bb a0 00 00 00 0f 84 86 04 00 00 49 8b 84 24 90 00 00 00 48 8b 33 <ff> 80 2=
+0 01=20
+00 00 48 89 34 24 48 8b 46 08 4c 8b 58 08 4c 89 5c 24
+[60313.522727] RSP: 0018:ffffb559c0affcd0 EFLAGS: 00010046
+[60313.522729] RAX: 0000000000000000 RBX: ffff8ced4d6a1000 RCX: 00000000000=
+00000
+[60313.522731] RDX: 0000000000000000 RSI: ffff8ced4ad90000 RDI: ffff8ced52f=
+c9f40
+[60313.522733] RBP: 0000000000000000 R08: 0000000000000001 R09:=20
+0000000000000000
+[60313.522735] R10: 000000000000003f R11: 0000000000000000 R12: ffff8cf20e5=
+a5400
+[60313.522737] R13: ffff8cf0e7e91c70 R14: ffff8ced4d6a1420 R15: ffff8cf0e7e=
+91c70
+[60313.522741]  ? mod_delayed_work_on+0x71/0xe0
+[60313.522745]  ? __sbitmap_get_word+0x30/0x80
+[60313.522748]  __blk_mq_do_dispatch_sched+0x218/0x320
+[60313.522752]  __blk_mq_sched_dispatch_requests+0x107/0x150
+[60313.522755]  blk_mq_sched_dispatch_requests+0x2f/0x60
+[60313.522758]  blk_mq_run_work_fn+0x43/0xc0
+[60313.522761]  process_one_work+0x24e/0x430
+[60313.522765]  worker_thread+0x54/0x4d0
+[60313.522767]  ? process_one_work+0x430/0x430
+[60313.522770]  kthread+0x182/0x1b0
+[60313.522773]  ? __kthread_init_worker+0x50/0x50
+[60313.522776]  ret_from_fork+0x22/0x30
+[60313.522781] ---[ end trace 55ef262e614b59af ]---
+[60313.522786] ------------[ cut here ]------------
+[60313.522787] WARNING: CPU: 20 PID: 388 at mm/kfence/core.c:135=20
+kfence_handle_page_fault+0xaa/0x280
+[60313.522791] Modules linked in: sctp ip6_udp_tunnel udp_tunnel uinput=20
+netconsole blocklayoutdriver rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver=
+=20
+nfs lockd grace sunrpc fscache netfs rfcomm nft_ct nf_conntrack nf_defrag_i=
+pv6=20
+nf_defrag_ipv4 cmac algif_hash algif_skcipher nf_tables af_alg bnep tun=20
+nfnetlink nls_iso8859_1 intel_rapl_msr vfat intel_rapl_common iwlmvm fat=20
+mac80211 edac_mce_amd libarc4 btusb eeepc_wmi btrtl asus_wmi iwlwifi btbcm=
+=20
+snd_usb_audio sparse_keymap kvm_amd video wmi_bmof mxm_wmi btintel uvcvideo=
+=20
+snd_hda_codec_realtek videobuf2_vmalloc videobuf2_memops snd_usbmidi_lib kv=
+m=20
+snd_hda_codec_generic bluetooth videobuf2_v4l2 ledtrig_audio=20
+snd_hda_codec_hdmi joydev snd_rawmidi ecdh_generic irqbypass ecc snd_hda_in=
+tel=20
+mousedev pl2303 cfg80211 snd_seq_device videobuf2_common crc16 rapl k10temp=
+=20
+snd_intel_dspcfg snd_intel_sdw_acpi snd_hda_codec igb r8169 sp5100_tco=20
+snd_hda_core realtek i2c_piix4 ipmi_devintf dca snd_hwdep mdio_devres rfkil=
+l=20
+snd_pcm libphy ipmi_msghandler wmi
+[60313.522817]  pinctrl_amd mac_hid acpi_cpufreq tcp_bbr2 vhost_vsock=20
+vmw_vsock_virtio_transport_common vhost vhost_iotlb vsock v4l2loopback=20
+videodev mc snd_hrtimer snd_timer snd soundcore nct6775 hwmon_vid crypto_us=
+er=20
+fuse ip_tables x_tables xfs dm_thin_pool dm_persistent_data dm_bio_prison=20
+dm_bufio libcrc32c crc32c_generic dm_crypt cbc encrypted_keys trusted=20
+asn1_encoder tee hid_logitech_hidpp hid_logitech_dj usbhid dm_mod=20
+crct10dif_pclmul crc32_pclmul crc32c_intel raid10 ghash_clmulni_intel=20
+aesni_intel md_mod crypto_simd cryptd amdgpu ccp xhci_pci xhci_pci_renesas=
+=20
+tpm_crb tpm_tis tpm_tis_core tpm rng_core drm_ttm_helper ttm gpu_sched=20
+i2c_algo_bit drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops c=
+ec=20
+drm agpgart
+[60313.522840] CPU: 20 PID: 388 Comm: kworker/20:1H Tainted: G        W    =
+    =20
+5.13.0-pf2 #1
+[60313.522843] Hardware name: ASUS System Product Name/Pro WS X570-ACE, BIO=
+S=20
+3601 05/26/2021
+[60313.522845] Workqueue: kblockd blk_mq_run_work_fn
+[60313.522848] RIP: 0010:kfence_handle_page_fault+0xaa/0x280
+[60313.522851] Code: 0f 86 d4 00 00 00 0f b6 f3 41 b8 03 00 00 00 31 c9 4c =
+89=20
+ea 48 89 ef e8 e4 05 00 00 31 f6 4c 89 ff e8 6a f5 ff ff 84 c0 75 8d <0f> 0=
+b c6=20
+05 7d fd 6b 01 00 45 31 f6 e9 7c ff ff ff 48 8b 0d 36 a0
+[60313.522853] RSP: 0018:ffffb559c0affb50 EFLAGS: 00010046
+[60313.522855] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffb559c0a=
+ffb2c
+[60313.522857] RDX: 0000000000000000 RSI: 0000000000000000 RDI:=20
+0000000000000000
+[60313.522859] RBP: 0000000000000120 R08: 0000000000000000 R09:=20
+0000000000000000
+[60313.522860] R10: 0000000000000000 R11: 0000000000000000 R12:=20
+0000000000000002
+[60313.522862] R13: ffffb559c0affc28 R14: 00000000c0affc01 R15: 00000000000=
+00000
+[60313.522864] FS:  0000000000000000(0000) GS:ffff8cf44ef00000(0000) knlGS:
+0000000000000000
+[60313.522866] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[60313.522868] CR2: 0000000000000120 CR3: 000000013ebce000 CR4:=20
+0000000000350ee0
+[60313.522870] Call Trace:
+[60313.522872]  page_fault_oops+0x9d/0x2d0
+[60313.522875]  exc_page_fault+0x78/0x180
+[60313.522878]  asm_exc_page_fault+0x1e/0x30
+[60313.522880] RIP: 0010:bfq_dispatch_request+0x4c3/0x1280
+[60313.522883] Code: 4c 89 e7 e8 ef da ff ff 4c 89 ff 89 c6 e8 75 64 00 00 =
+4c 39=20
+bb a0 00 00 00 0f 84 86 04 00 00 49 8b 84 24 90 00 00 00 48 8b 33 <ff> 80 2=
+0 01=20
+00 00 48 89 34 24 48 8b 46 08 4c 8b 58 08 4c 89 5c 24
+[60313.522885] RSP: 0018:ffffb559c0affcd0 EFLAGS: 00010046
+[60313.522887] RAX: 0000000000000000 RBX: ffff8ced4d6a1000 RCX: 00000000000=
+00000
+[60313.522889] RDX: 0000000000000000 RSI: ffff8ced4ad90000 RDI: ffff8ced52f=
+c9f40
+[60313.522890] RBP: 0000000000000000 R08: 0000000000000001 R09:=20
+0000000000000000
+[60313.522892] R10: 000000000000003f R11: 0000000000000000 R12: ffff8cf20e5=
+a5400
+[60313.523148] R13: ffff8cf0e7e91c70 R14: ffff8ced4d6a1420 R15: ffff8cf0e7e=
+91c70
+[60313.523150]  ? mod_delayed_work_on+0x71/0xe0
+[60313.523153]  ? __sbitmap_get_word+0x30/0x80
+[60313.523157]  __blk_mq_do_dispatch_sched+0x218/0x320
+[60313.523161]  __blk_mq_sched_dispatch_requests+0x107/0x150
+[60313.523165]  blk_mq_sched_dispatch_requests+0x2f/0x60
+[60313.523167]  blk_mq_run_work_fn+0x43/0xc0
+[60313.523170]  process_one_work+0x24e/0x430
+[60313.523173]  worker_thread+0x54/0x4d0
+[60313.523176]  ? process_one_work+0x430/0x430
+[60313.523178]  kthread+0x182/0x1b0
+[60313.523181]  ? __kthread_init_worker+0x50/0x50
+[60313.523183]  ret_from_fork+0x22/0x30
+[60313.523187] ---[ end trace 55ef262e614b59b0 ]---
+[60313.523189] BUG: kernel NULL pointer dereference, address: 0000000000000=
+120
+[60313.523191] #PF: supervisor write access in kernel mode
+[60313.523193] #PF: error_code(0x0002) - not-present page
+[60313.523195] PGD 0 P4D 0=20
+[60313.523197] Oops: 0002 [#1] PREEMPT SMP NOPTI
+[60313.523200] CPU: 20 PID: 388 Comm: kworker/20:1H Tainted: G        W    =
+    =20
+5.13.0-pf2 #1
+[60313.523202] Hardware name: ASUS System Product Name/Pro WS X570-ACE, BIO=
+S=20
+3601 05/26/2021
+[60313.523204] Workqueue: kblockd blk_mq_run_work_fn
+[60313.523207] RIP: 0010:bfq_dispatch_request+0x4c3/0x1280
+[60313.523210] Code: 4c 89 e7 e8 ef da ff ff 4c 89 ff 89 c6 e8 75 64 00 00 =
+4c 39=20
+bb a0 00 00 00 0f 84 86 04 00 00 49 8b 84 24 90 00 00 00 48 8b 33 <ff> 80 2=
+0 01=20
+00 00 48 89 34 24 48 8b 46 08 4c 8b 58 08 4c 89 5c 24
+[60313.523213] RSP: 0018:ffffb559c0affcd0 EFLAGS: 00010046
+[60313.523215] RAX: 0000000000000000 RBX: ffff8ced4d6a1000 RCX: 00000000000=
+00000
+[60313.523216] RDX: 0000000000000000 RSI: ffff8ced4ad90000 RDI: ffff8ced52f=
+c9f40
+[60313.523218] RBP: 0000000000000000 R08: 0000000000000001 R09:=20
+0000000000000000
+[60313.523220] R10: 000000000000003f R11: 0000000000000000 R12: ffff8cf20e5=
+a5400
+[60313.523221] R13: ffff8cf0e7e91c70 R14: ffff8ced4d6a1420 R15: ffff8cf0e7e=
+91c70
+[60313.523223] FS:  0000000000000000(0000) GS:ffff8cf44ef00000(0000) knlGS:
+0000000000000000
+[60313.523225] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[60313.523227] CR2: 0000000000000120 CR3: 000000013ebce000 CR4:=20
+0000000000350ee0
+[60313.523229] Call Trace:
+[60313.523231]  ? mod_delayed_work_on+0x71/0xe0
+[60313.523233]  ? __sbitmap_get_word+0x30/0x80
+[60313.523237]  __blk_mq_do_dispatch_sched+0x218/0x320
+[60313.523240]  __blk_mq_sched_dispatch_requests+0x107/0x150
+[60313.523243]  blk_mq_sched_dispatch_requests+0x2f/0x60
+[60313.523246]  blk_mq_run_work_fn+0x43/0xc0
+[60313.523249]  process_one_work+0x24e/0x430
+[60313.523251]  worker_thread+0x54/0x4d0
+[60313.523254]  ? process_one_work+0x430/0x430
+[60313.523257]  kthread+0x182/0x1b0
+[60313.523259]  ? __kthread_init_worker+0x50/0x50
+[60313.523261]  ret_from_fork+0x22/0x30
+[60313.523265] Modules linked in: sctp ip6_udp_tunnel udp_tunnel uinput=20
+netconsole blocklayoutdriver rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver=
+=20
+nfs lockd grace sunrpc fscache netfs rfcomm nft_ct nf_conntrack nf_defrag_i=
+pv6=20
+nf_defrag_ipv4 cmac algif_hash algif_skcipher nf_tables af_alg bnep tun=20
+nfnetlink nls_iso8859_1 intel_rapl_msr vfat intel_rapl_common iwlmvm fat=20
+mac80211 edac_mce_amd libarc4 btusb eeepc_wmi btrtl asus_wmi iwlwifi btbcm=
+=20
+snd_usb_audio sparse_keymap kvm_amd video wmi_bmof mxm_wmi btintel uvcvideo=
+=20
+snd_hda_codec_realtek videobuf2_vmalloc videobuf2_memops snd_usbmidi_lib kv=
+m=20
+snd_hda_codec_generic bluetooth videobuf2_v4l2 ledtrig_audio=20
+snd_hda_codec_hdmi joydev snd_rawmidi ecdh_generic irqbypass ecc snd_hda_in=
+tel=20
+mousedev pl2303 cfg80211 snd_seq_device videobuf2_common crc16 rapl k10temp=
+=20
+snd_intel_dspcfg snd_intel_sdw_acpi snd_hda_codec igb r8169 sp5100_tco=20
+snd_hda_core realtek i2c_piix4 ipmi_devintf dca snd_hwdep mdio_devres rfkil=
+l=20
+snd_pcm libphy ipmi_msghandler wmi
+[60313.523290]  pinctrl_amd mac_hid acpi_cpufreq tcp_bbr2 vhost_vsock=20
+vmw_vsock_virtio_transport_common vhost vhost_iotlb vsock v4l2loopback=20
+videodev mc snd_hrtimer snd_timer snd soundcore nct6775 hwmon_vid crypto_us=
+er=20
+fuse ip_tables x_tables xfs dm_thin_pool dm_persistent_data dm_bio_prison=20
+dm_bufio libcrc32c crc32c_generic dm_crypt cbc encrypted_keys trusted=20
+asn1_encoder tee hid_logitech_hidpp hid_logitech_dj usbhid dm_mod=20
+crct10dif_pclmul crc32_pclmul crc32c_intel raid10 ghash_clmulni_intel=20
+aesni_intel md_mod crypto_simd cryptd amdgpu ccp xhci_pci xhci_pci_renesas=
+=20
+tpm_crb tpm_tis tpm_tis_core tpm rng_core drm_ttm_helper ttm gpu_sched=20
+i2c_algo_bit drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops c=
+ec=20
+drm agpgart
+[60313.523314] CR2: 0000000000000120
+[60313.523316] ---[ end trace 55ef262e614b59b1 ]---
+[60313.523318] RIP: 0010:bfq_dispatch_request+0x4c3/0x1280
+[60313.523321] Code: 4c 89 e7 e8 ef da ff ff 4c 89 ff 89 c6 e8 75 64 00 00 =
+4c 39=20
+bb a0 00 00 00 0f 84 86 04 00 00 49 8b 84 24 90 00 00 00 48 8b 33 <ff> 80 2=
+0 01=20
+00 00 48 89 34 24 48 8b 46 08 4c 8b 58 08 4c 89 5c 24
+[60313.523323] RSP: 0018:ffffb559c0affcd0 EFLAGS: 00010046
+[60313.523325] RAX: 0000000000000000 RBX: ffff8ced4d6a1000 RCX: 00000000000=
+00000
+[60313.523326] RDX: 0000000000000000 RSI: ffff8ced4ad90000 RDI: ffff8ced52f=
+c9f40
+[60313.523328] RBP: 0000000000000000 R08: 0000000000000001 R09:=20
+0000000000000000
+[60313.523330] R10: 000000000000003f R11: 0000000000000000 R12: ffff8cf20e5=
+a5400
+[60313.523332] R13: ffff8cf0e7e91c70 R14: ffff8ced4d6a1420 R15: ffff8cf0e7e=
+91c70
+[60313.523334] FS:  0000000000000000(0000) GS:ffff8cf44ef00000(0000) knlGS:
+0000000000000000
+[60313.523336] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[60313.523338] CR2: 0000000000000120 CR3: 000000013ebce000 CR4:=20
+0000000000350ee0
+[60313.523339] note: kworker/20:1H[388] exited with preempt_count 1
+```
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+
 
