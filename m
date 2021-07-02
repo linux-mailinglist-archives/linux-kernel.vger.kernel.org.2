@@ -2,130 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A343B9C22
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 08:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 635283B9C24
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 08:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhGBGXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 02:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbhGBGX1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 02:23:27 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D756C061762;
-        Thu,  1 Jul 2021 23:20:55 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id dj3so4178374qvb.11;
-        Thu, 01 Jul 2021 23:20:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hYWXH12CqnZMtZW0pOGnma+92SUvIYhPgYiicHyCps0=;
-        b=pQwNRlKTGjy2M9pBSmsG0ces2zrOqUET4rUf+IEl0L7cNrn2VJv4Pz6h6LBQq/qszl
-         9fIV2kKFNq1/p8cadqBFJS9bAVNN2MAW5csSy4ud9gcPd+MV+qgZBEb7Jhklbf5RtxGk
-         IEcVOea8EflMh3hi74fxCd+Js2P2j+0YAHCcA3hER/ZtY39t/NYfQx81miuURjYoBXAq
-         8Db2CXKtvbemUNRtQG2ZhmwVvHY5vLwf/pZhbyA/gYbHL6FyBxlIVIw21Yn8uyb+cUgC
-         PtaeVkTK+F9ks2tNpRffQWQ2RI8cmnSGqWoDXFJvUJK3viyr1ygpb6BxMvazsccG1p0p
-         IPag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hYWXH12CqnZMtZW0pOGnma+92SUvIYhPgYiicHyCps0=;
-        b=XYsTdwZOSkwVT/1uujfy9Y2XSbHJNh6faYI59/DSA5O3j/9c4Wf9DJ27N0uGNc1/As
-         bSX9fgJ2WqlNdaXaABTPB8H8rjxzPjd/DcykWwm9gszEGO0QmP00RVBGhHWPwzaHX15p
-         JV7EZ17KZyBqaXNTZYM7hURJj7D/rJU2TMf8rdD7rExSUYP4pdNZxvo5rJV4Xyx0OB9U
-         +sFy79u8TzTBQXy773zMgvb3rN9vq6P7S0bEl8B/KcekAe2gLMONGKxwbzgknipNfe/2
-         qkr9I57VcKG2F/nFpxAq8wbaa0WesDp4lHtUfjHtXJPxMpXaSnc2Hds4hLUWiRJx4P6m
-         A6vg==
-X-Gm-Message-State: AOAM531E9u/T8hk/SHVJ1UfhQRMgvf/NKYxl+B+3ahu4ZkovPNP9UPY/
-        cS4FDiMXMBy7xUc5lr8ttL5axNH4Eh7KfROscfs=
-X-Google-Smtp-Source: ABdhPJyWdolrUsVPXoxZQ8ujjBZfyvsIfNOIUdm2Vus8RIEkG9WhT2mnr8LlKu3AUn45rS7CCoMmr1t4VDIBdj/4nQY=
-X-Received: by 2002:a05:6214:1244:: with SMTP id q4mr3424052qvv.50.1625206854038;
- Thu, 01 Jul 2021 23:20:54 -0700 (PDT)
+        id S230104AbhGBGY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 02:24:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229696AbhGBGYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 02:24:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CC21613FA;
+        Fri,  2 Jul 2021 06:22:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625206942;
+        bh=+9+44rB/9RcT9+DjjfGfMY5WQvks+ySXpU6PeYPkon8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M/LH+b3HktzFxuCnvsn3c2hWtGMNr9OFVVf/CE62QY3EBrcR30BOuPLaxvu3ikg/J
+         CxWFeP//q3nmIoe+uXo2Q5ysxpOYzo55/Xj9kIbSDyS1DtaI3U9WObsZd9V098hjb8
+         AlwEFtYDxR7/rvSzBJGOd5+z3CHz81LovwyuWyOZwqdut3F7t9jonhKyu8ROWkt6SP
+         DrRjemMKFdJHoy+eqGbzU7Sc8PbYIwz24CS1DqoX9sRsx7vdOMDqsoayeesLyyFPT/
+         4qTh7stU2NyGSBc4vhPmKUHmjVBuR7l1o+EzunE5HHd5xQudWbYlIZ3ai3OH3jm+Hm
+         dGa3thQkyegCQ==
+Date:   Fri, 2 Jul 2021 08:22:13 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
+        stefanha@redhat.com
+Subject: Re: [PATCH v11] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <YN6wlXw2KhALAyS3@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
+        stefanha@redhat.com
+References: <510c876952efa693339ab0d6cc78ba7be9ef6897.1625104206.git.jie.deng@intel.com>
+ <20210701040436.p7kega6rzeqz5tlm@vireshk-i7>
+ <YN4WeJCepCrpylOD@kunai>
+ <20210702045512.u4dvbapoc5a2a4jb@vireshk-i7>
 MIME-Version: 1.0
-References: <20210630184624.9ca1937310b0dd5ce66b30e7@linux-foundation.org>
- <20210701015258.BrxjIzdE1%akpm@linux-foundation.org> <YN3Xbdc9N81PIegK@google.com>
- <CAGWkznHWe22iwtBNtJfY75aS5_cfwKTaBfkX=zzmSaTwHZaAyQ@mail.gmail.com> <YN6ogJbnI46hnjgk@google.com>
-In-Reply-To: <YN6ogJbnI46hnjgk@google.com>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Fri, 2 Jul 2021 14:20:42 +0800
-Message-ID: <CAGWkznGaQyfxUuP8OJxvLapk4R8x3kpgU50H-xZfTiLO-i9WMg@mail.gmail.com>
-Subject: Re: [patch 108/192] mm: zram: amend SLAB_RECLAIM_ACCOUNT on zspage_cachep
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        mm-commits@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        torvalds@linux-foundation.org,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SotEO4qp2V5IcJ53"
+Content-Disposition: inline
+In-Reply-To: <20210702045512.u4dvbapoc5a2a4jb@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 1:47 PM Minchan Kim <minchan@kernel.org> wrote:
->
-> On Fri, Jul 02, 2021 at 10:45:09AM +0800, Zhaoyang Huang wrote:
-> > On Thu, Jul 1, 2021 at 10:56 PM Minchan Kim <minchan@kernel.org> wrote:
-> > >
-> > > On Wed, Jun 30, 2021 at 06:52:58PM -0700, Andrew Morton wrote:
-> > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > > Subject: mm: zram: amend SLAB_RECLAIM_ACCOUNT on zspage_cachep
-> > > >
-> > > > Zspage_cachep is found be merged with other kmem cache during test, which
-> > > > is not good for debug things (zs_pool->zspage_cachep present to be another
-> > > > kmem cache in memory dumpfile).  It is also neccessary to do so as
-> > > > shrinker has been registered for zspage.
-> > > >
-> > > > Amending this flag can help kernel to calculate SLAB_RECLAIMBLE correctly.
-> > > >
-> > > > Link: https://lkml.kernel.org/r/1623137297-29685-1-git-send-email-huangzhaoyang@gmail.com
-> > > > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > > Cc: Minchan Kim <minchan@kernel.org>
-> > > > Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > >
-> > > Sorry for the late. I don't think this is correct.
-> > >
-> > > It's true "struct zspage" can be freed by zsmalloc's compaction registerred
-> > > by slab shrinker so tempted to make it SLAB_RECLAIM_ACCOUNT. However, it's
-> > > quite limited to work only when objects in the zspage are heavily fragmented.
-> > > Once the compaction is done, zspage are never discardable until objects are
-> > > fragmented again. It means it could hurt other reclaimable slab page reclaiming
-> > > since the zspage slab object pins the page.
-> > IMHO, kmem cache's reclaiming is NOT affected by SLAB_RECLAIM_ACCOUNT
-> > . This flag just affects kmem cache merge[1], the slab page's migrate
-> > type[2] and the page's statistics. Actually, zspage's cache DO merged
-> > with others even without SLAB_RECLAIM_ACCOUNT currently, which maybe
-> > cause zspage's object will NEVER be discarded.(SLAB_MERGE_SAME
-> > introduce confusions as people believe the cache will merge with
-> > others when it set and vice versa)
-> >
-> > [1]
-> >  struct kmem_cache *find_mergeable(size_t size, size_t align, unsigned
-> > long flags, const char *name, void (*ctor)(void *))
-> > ...
-> >     if ((flags & SLAB_MERGE_SAME) != (s->flags & SLAB_MERGE_SAME))
-> >      continue;
-> >
-> > [2]
-> > if (s->flags & SLAB_RECLAIM_ACCOUNT)
-> >     s->allocflags |= __GFP_RECLAIMABLE;
->
-> That's the point here. With SLAB_RECLAIM_ACCOUNT, page allocator
-> try to allocate pages from MIGRATE_RECLAIMABLE with belief those
-> objects are easily reclaimable. Say a page has object A, B, C, D
-> and E. A-D are easily reclaimable but E is hard. What happens is
-> VM couldn't reclaim the page in the end due to E even though it
-> already reclaimed A-D. And the such fragmenation could be spread
-> out entire MIGRATE_RECLAIMABLE pageblocks over time.
-> That's why I'd like to put zspage into MIGRATE_UNMOVALBE from the
-> beginning since I don't think it's easily reclaimble once compaction
-> is done.
-The slab page could fallback to any migrate type even allocating with
-__GFP_RECLAIMABLE, and there is only one page per slab within zspage's
-cache, which will not be affected by compaction, so I think that
-doesn't make sense.
+
+--SotEO4qp2V5IcJ53
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+
+> > > Wolfram, what's expected here ? Shouldn't all message transfer or
+> > > none?
+> >=20
+> > Well, on a physical bus, it can simply happen that after message 3 of 5,
+> > the bus is stalled, so we need to bail out.
+>=20
+> Right, and in that case the transfer will have any meaning left? I believ=
+e it
+> needs to be fully retried as the requests may have been dependent on each=
+ other.
+
+The client driver handles the case. I'd assume most will bail out of the
+calling function and at some higher level it will be retried.
+
+> > Of course, it can later happen on the physical bus of the host, though,
+> > that the bus is stalled after message 3 of 5, and I2C_RDWR will bail
+> > out.
+>=20
+> Basically we fail as soon as we know something is not right, correct?
+
+Yes.
+
+
+--SotEO4qp2V5IcJ53
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDesJEACgkQFA3kzBSg
+KbZOhQ/+NdCmNPinhpL6SdKc6r1zoX7a8w6FmzzQqKowP11lIlFQrnYz4gdlCWiQ
+c7auvFAY3ExcnZsxclZIfjuW5GEBV1W2QVx6i3Uk7GUqAUPb34L6mcmBqDZY6PyL
+Mw8TbpZBq5PegAW5c39YYCfeuLe3hotMYvxrTciwghhZb9ikqlGmKeP9hkx9EfRD
+ZCGfaiMFUiwBYqHZtf36E5fuVipLuu8FNUVInqeCmpZYY1eCAeAeQXh+T7GDPVLe
+N15pQjoFftokmAksoakfgSFr2B6QXrLkaIrxv2bi6FnhfFRp9Kei+2H7vV9q23hT
+kH5YYhyCi5kN85TM9NOXd7JFgSDZBt0yEE+0uEmOa7oFDz8m8jGW8hB1rc0PiY2M
+bY6XAwNaUsBwtNOZHTr/eSCQcwaU3disNJfft27QfaZrudsY2+6K5Igh5sOfGUiH
+7rsomHl6sp4FL2oEzqYzsiPSurtgulbwpZEh53wKDpL75AxAR/+tfS+u410Wpoie
+jQUHV5ndqrW9z2P0Y4Qvea0Fd/PvIepAqSUnXVRXMqxpDzY3zQwSN/NgJNARKDWo
+FZnbWSjaO0gNIUjMLra3vOdbrkLxQ3Moayzol0/KgWdDyIuQQpKKnzfG0fq86fda
+yZRPQCwNhdeKoXvwRA4wpZ2i3btTeovkMCWdTdwtBeO1R8L9vfg=
+=vze1
+-----END PGP SIGNATURE-----
+
+--SotEO4qp2V5IcJ53--
