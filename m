@@ -2,142 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9433E3BA9D0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 19:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860753BA9D5
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 19:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhGCR2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 13:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhGCR2o (ORCPT
+        id S229829AbhGCRbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 13:31:09 -0400
+Received: from mail-pf1-f180.google.com ([209.85.210.180]:35700 "EHLO
+        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229463AbhGCRbI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 13:28:44 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8E8C061762
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Jul 2021 10:26:10 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id u11so15561097oiv.1
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 10:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ntrdXoUnRsaJbvopMZjndYtHLvb7fmdkPnczq42fWHQ=;
-        b=L9PNt0QIYb09GdqPpUNIgRTIBn8uUQX6k7NVA3DE1XT1xsbtgd/WVMIARyS9HpAtnS
-         30d3LndMMnzXUWepD+5YsiEIyktXWwgnIcEsVqRyt79CFw3wp+ejkhECwD+rdUU1zBz9
-         3dF7GmZyfJVbh8TiNiAFwVxZp16mwkS+lCutORJ/KOTY2StSHFawBynJxWqx4HH6G2x8
-         +jsPix+uZ6ORnfd+xZcs/wfwHEHO3jM+Xgrgx+09wjcrOk2XUsWO8u1g7zqIo2BHRxgG
-         q55+0lenZRxVfKTNyT4FebXDfhExkqptoIEKHCDGjEz/mU2nEHtWYVWHB1afDfaajlAD
-         11Zw==
+        Sat, 3 Jul 2021 13:31:08 -0400
+Received: by mail-pf1-f180.google.com with SMTP id d12so12297404pfj.2;
+        Sat, 03 Jul 2021 10:28:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ntrdXoUnRsaJbvopMZjndYtHLvb7fmdkPnczq42fWHQ=;
-        b=Hx71sxCfKf2pxZ4uGAMsfiMQ3WN7KjRTtdyJI7aFW4wnp9iZx1ta0e5YToUlbsA8Wc
-         oWpjZD+r+0pBOlbZTOF5V6GYdJDfYVsGas/szVvzKOIstQjMP6uT2+s2aXOWTPht1zc8
-         CF8YTSltIIKLwlSBR8M3D/1Y7JWAf/iGkFszKo+fR/4nNJ/9Z0iXbKfKE7LnrPMOSPwj
-         nxdzOw6uReFcPKLKk6z4zXWsBLxzta39XPJEcGxp+AWOxyzOmQcAeqbcGY2et2wlE6DV
-         usVQKF7jFx8gtEHKJRF5xC2Vx6LMd90wrJtqQTUdQ9Lt26uCFOdClAWBM1hHGyG4Qo/+
-         CVdw==
-X-Gm-Message-State: AOAM530+FmIrk1Dm4ELeYa01dMH77MaIEpCO8nVm20xr2VLyt170Uun3
-        18iDW/pHA4G3VGOku81lquo=
-X-Google-Smtp-Source: ABdhPJwgzhlOdZO7WyJ7Mjyp5s6uc9BM0e6v3VNydi2hmunRH4+jI4CS7fwofWQ3VVqdEww4+19erw==
-X-Received: by 2002:a05:6808:8a:: with SMTP id s10mr4453972oic.70.1625333169468;
-        Sat, 03 Jul 2021 10:26:09 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o45sm1350377ota.59.2021.07.03.10.26.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Jul 2021 10:26:08 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] mtd: core: handle flashes without OTP gracefully
-To:     Tudor.Ambarus@microchip.com, michael@walle.cc,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-References: <20210702093841.32307-1-michael@walle.cc>
- <9bb2acac-aeb8-d2b2-8df0-9acfd972ec5d@microchip.com>
- <9F46D75C-D00D-4577-A337-7411049EC7D9@walle.cc>
- <8da3d84e-dfbf-2030-98b4-148362d22f52@microchip.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <2716acf0-fcf1-d2ef-83be-152d0300d687@roeck-us.net>
-Date:   Sat, 3 Jul 2021 10:26:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7sn0DaF0wG+Fr83pUGydCXmzXu/QrmNbieyqr+LtNIk=;
+        b=BCCPtNJ0r9rUm6ZIN2VuSfi7nmPHYezpyhMUnAXf6S9t3LDmvPgSqLMxq/JMRAA9F8
+         p9woqOOP4p1QMur3fxX55F46f9aWK6WpjH+zzCoK19Vp0PSkep3Ov8cxHv7RFbVBVQI5
+         8O2AF3C7o4eFq2T7e8+yLuYzolQNin0SKR2nQpVmusv2frVoggKKHecyZ4ooo4deUk6k
+         w84nheywT8JAwTtNqBLlhIBS6OWhpaCD1ocDUyTfTMXxhEpdSqK+ZizzdMC27xuQvlrI
+         jJdrVOlKNkOSIbxKx+K/atPlXMh6OFbAkhzayBKtdWHzxdqbL/q/ULZ//vLlQXgV+MLv
+         AKMg==
+X-Gm-Message-State: AOAM532uTAE9VTc3ipjHrCakhf4s8xBho85X9nF/m6G75Zc5ZcvhfwMh
+        mFw5kWEmy8Hke+L0EKEl1AE=
+X-Google-Smtp-Source: ABdhPJwpBwVgMVFUlKeUzC8YjLnXIsiJyQ7Ci+G35ZeDdoHdddvA/2DxRCxjRnoeP/CSWGkc4KpReA==
+X-Received: by 2002:a65:4985:: with SMTP id r5mr6198260pgs.122.1625333313358;
+        Sat, 03 Jul 2021 10:28:33 -0700 (PDT)
+Received: from garbanzo ([191.96.121.144])
+        by smtp.gmail.com with ESMTPSA id z9sm7321452pfa.2.2021.07.03.10.28.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Jul 2021 10:28:32 -0700 (PDT)
+Date:   Sat, 3 Jul 2021 10:28:28 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     tj@kernel.org, shuah@kernel.org, akpm@linux-foundation.org,
+        rafael@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, andriin@fb.com, daniel@iogearbox.net,
+        atenart@kernel.org, alobakin@pm.me, weiwan@google.com,
+        ap420073@gmail.com, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] test_sysfs: demonstrate deadlock fix
+Message-ID: <20210703172828.jphifwobf3syirzi@garbanzo>
+References: <20210703004632.621662-1-mcgrof@kernel.org>
+ <20210703004632.621662-5-mcgrof@kernel.org>
+ <YN/sar6nGeSCn89/@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <8da3d84e-dfbf-2030-98b4-148362d22f52@microchip.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YN/sar6nGeSCn89/@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/3/21 9:42 AM, Tudor.Ambarus@microchip.com wrote:
-> On 7/3/21 7:08 PM, Michael Walle wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> Am 3. Juli 2021 11:56:14 MESZ schrieb Tudor.Ambarus@microchip.com:
->>> On 7/2/21 12:38 PM, Michael Walle wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
->>> know the content is safe
->>>>
->>>> There are flash drivers which registers the OTP callbacks although
->>> the
->>>> flash doesn't support OTP regions and return -ENODATA for these
->>>> callbacks if there is no OTP. If this happens, the probe of the whole
->>>
->>> why do they register the OTP callback if they don't support OTP?
->>
->> I don't know. But I certainly won't touch that code :p
+On Sat, Jul 03, 2021 at 06:49:46AM +0200, Greg KH wrote:
+> On Fri, Jul 02, 2021 at 05:46:32PM -0700, Luis Chamberlain wrote:
+> > +#define MODULE_DEVICE_ATTR_FUNC_STORE(_name) \
+> > +static ssize_t module_ ## _name ## _store(struct device *dev, \
+> > +				   struct device_attribute *attr, \
+> > +				   const char *buf, size_t len) \
+> > +{ \
+> > +	ssize_t __ret; \
+> > +	if (!try_module_get(THIS_MODULE)) \
+> > +		return -ENODEV; \
+> > +	__ret = _name ## _store(dev, attr, buf, len); \
+> > +	module_put(THIS_MODULE); \
+> > +	return __ret; \
+> > +}
 > 
-> why? :D
-> 
->>
->>
->>>> flash will fail. Fix it by handling the ENODATA return code and skip
->>>> the OTP region nvmem setup.
->>>>
->>>> Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
->>>> Reported-by: Guenter Roeck <linux@roeck-us.net>
->>>> Signed-off-by: Michael Walle <michael@walle.cc>
->>>> ---
->>>>   drivers/mtd/mtdcore.c | 10 ++++++++--
->>>>   1 file changed, 8 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
->>>> index b5ccd3037788..6881d1423dd6 100644
->>>> --- a/drivers/mtd/mtdcore.c
->>>> +++ b/drivers/mtd/mtdcore.c
->>>> @@ -880,7 +880,10 @@ static int mtd_otp_nvmem_add(struct mtd_info
->>> *mtd)
->>>>
->>>>          if (mtd->_get_user_prot_info && mtd->_read_user_prot_reg) {
->>>>                  size = mtd_otp_size(mtd, true);
->>>> -               if (size < 0)
->>>> +               /* ENODATA means there is no OTP region */
->>>> +               if (size == -ENODATA)
->>>
->>> If no OTP data, maybe it's more appropriate for the clients to just
->>> return a retlen of 0.
->>
->> you mean already checking ENODATA in mtd_otp_size() and return 0. That would also make the hunk below unnecessary. I'll change it.
-> 
-> I've thought about:
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index 54f92d09d9cf..9419b33d7238 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -2314,7 +2314,7 @@ static int cfi_intelext_otp_walk(struct mtd_info *mtd, loff_t from, size_t len,
->   
->          /* Check that we actually have some OTP registers */
->          if (!extp || !(extp->FeatureSupport & 64) || !extp->NumProtectionFields)
-> -               return -ENODATA;
-> +               return 0;
-> 
+> As I have pointed out before, doing try_module_get(THIS_MODULE) is racy
+> and should not be added back to the kernel tree.  We got rid of many
+> instances of this "bad pattern" over the years, please do not encourage
+> it to be added back as others will somehow think that it correct code.
 
-There are various places where this is called, including code returning information
-to userspace. That means you'd be changing the ABI to userspace which would now suddenly
-return 0 instead of -ENODATA.
+It is noted this is used in lieu of any agreed upon solution to
+*demonstrate* how this at least does fix it. In this case (and in the
+generic solution I also had suggested for kernfs a while ago), if the
+try fails, we give up. If it succeeds, we now know we can rely on the
+device pointer. If the refcount succeeds, can the module still not
+be present? Is try_module_get() racy in that way? In what way is it
+racy and where is this documented? Do we have a selftest to prove the
+race?
 
-Guenter
+  Luis
+
