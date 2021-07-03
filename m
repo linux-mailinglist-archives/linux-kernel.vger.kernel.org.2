@@ -2,151 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A713BB72F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704C93BB734
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbhGEGcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 02:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbhGEGcp (ORCPT
+        id S229917AbhGEGe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 02:34:58 -0400
+Received: from static-190-25-223-138.static.etb.net.co ([190.25.223.138]:53880
+        "EHLO correo.hdv.gov.co" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229910AbhGEGe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 02:32:45 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF68C061760
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 23:30:09 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id cx9-20020a17090afd89b0290170a3e085edso11185630pjb.0
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 23:30:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=kCy8PdVHeBTIQi07/Sw1LRfb7Q/EXacATKTbYu+2Fck=;
-        b=QVj/ekGNd3LBhRATDInKpV5990ELYYESSnDGSuO7s+S/DGN6i/2CHSGVagsK/5dtEB
-         OnUSmlD8FN9S25MJ3QAtWFtjXNCNA105DEEPRQYLlOj96d1x7IIV7eJ2zHttF0nDN+7+
-         pspEb/iyZSFI+0Z/hM6lSrMpxYx1wm+730lobEUZHlNvd2ZVg+61Ybr0LgSiSyk95mtM
-         hroAfuUkvIXQnI73a62/3/wSCn71CKnpD9qzbE29qEAA/4YvVla7c+/hXxk1lTOnkDgp
-         3+C9JXZhJGH5MGkoEAN3uJ8Ui0GAGJ272cr80ZlHuQ9wdeM3KAExsYCl6NZg05cpY1vG
-         0oCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=kCy8PdVHeBTIQi07/Sw1LRfb7Q/EXacATKTbYu+2Fck=;
-        b=bw4RS2jjnbS9RxP9fnFBkWVA4ZrGxATQjQJ22OAe3Zu25e/S3UAa4NyeerRvWPmR7G
-         FBOmSeen3adWH1NYY15+Lp5cjRaDP2YLBCxxgQ6bzVBgF0N5Apwz4LMtZ/JIizmDWoK2
-         5UiwZQlOLhVHVM9/piT/zD8nOfLP7FvIelTWXhjrsAcqfxlBjWsWce92oXkXR+G//oFZ
-         qA1mBaTUBJIQsFPU6t4S8BQWh3C2cPDkJm4QJmhJTOOmb8zIip1EkM1Aqw6uPIjWQxZu
-         DwtaKgA/SCvnLeC9hpctjoavmGDnb9avOOEMdnaBvR8exQeqNLHraZP2DSmP0s4+A9/M
-         /2Kg==
-X-Gm-Message-State: AOAM531CWu0PB3eo/iNgtt6qdu7p7pe53CRanKAt7x3af5f1Aj4gEs6v
-        oxDbBotRobX0rbhtIgM3DDPO9g==
-X-Google-Smtp-Source: ABdhPJzBIjW9yRmqeZARi3S9SO1AVvqH+PAwMV2PmCiAtk/oYko+ycXfzgAZ06qspQnraYwJUsbgZw==
-X-Received: by 2002:a17:90b:4b87:: with SMTP id lr7mr13983622pjb.214.1625466606283;
-        Sun, 04 Jul 2021 23:30:06 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id v21sm19445795pju.47.2021.07.04.23.30.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jul 2021 23:30:05 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 12:00:03 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org,
-        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        stefanha@redhat.com
-Subject: Re: [PATCH v12] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210705063003.a45ic3wn74nre6xe@vireshk-i7>
-References: <f229cd761048bc143f88f33a3437bdbf891c39fd.1625214435.git.jie.deng@intel.com>
- <20210705024056.ndth2bwn2itii5g3@vireshk-i7>
- <332af2be-0fb0-a846-8092-49d496fe8b6b@intel.com>
- <20210705043841.zujwo672nfdndpg2@vireshk-i7>
- <6aabc877-673a-e2bc-da2d-ec6741b4159b@intel.com>
+        Mon, 5 Jul 2021 02:34:56 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by correo.hdv.gov.co (Postfix) with ESMTP id 7B0BA1DC2792;
+        Sat,  3 Jul 2021 12:52:28 -0500 (-05)
+Received: from correo.hdv.gov.co ([127.0.0.1])
+        by localhost (correo.hdv.gov.co [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 8YQGv3Ze4BxV; Sat,  3 Jul 2021 12:52:28 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by correo.hdv.gov.co (Postfix) with ESMTP id 73BE31878ADB;
+        Sat,  3 Jul 2021 11:04:21 -0500 (-05)
+DKIM-Filter: OpenDKIM Filter v2.10.3 correo.hdv.gov.co 73BE31878ADB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hdv.gov.co;
+        s=11DF984A-9D1F-11E6-B193-F2669FC4C452; t=1625328261;
+        bh=SKFadKgM92kiwue8eMLvzaTB0eiP/neKAp89ygsk9fM=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=jej/T5GtB1Og8zRwhZFGC5s92dUjYsJilrkH5rDDrHCSfRlU89JnQkN9nCtTRyq3s
+         fASVZsFp7G6yZP/Po4gAdg/rD5ZTi6II+41u49h5aINs9dkaPTaTNT4xoazG7R+ZmR
+         tXXYqddL+kyXkeKPp4A097RdgYvjXhI8/q+v/Ae8=
+X-Virus-Scanned: amavisd-new at correo.hdv.gov.co
+Received: from correo.hdv.gov.co ([127.0.0.1])
+        by localhost (correo.hdv.gov.co [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id JgpFB6pO3-mR; Sat,  3 Jul 2021 11:04:21 -0500 (-05)
+Received: from [172.20.10.6] (unknown [41.147.1.129])
+        by correo.hdv.gov.co (Postfix) with ESMTPSA id 46CBB18771A2;
+        Sat,  3 Jul 2021 10:10:43 -0500 (-05)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6aabc877-673a-e2bc-da2d-ec6741b4159b@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: my subject
+To:     Recipients <planeacion.arquitecto@hdv.gov.co>
+From:   planeacion.arquitecto@hdv.gov.co
+Date:   Sat, 03 Jul 2021 08:10:34 -0700
+Reply-To: callumfoundation05@outlook.com
+Message-Id: <20210703151044.46CBB18771A2@correo.hdv.gov.co>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-07-21, 14:22, Jie Deng wrote:
-> On 2021/7/5 12:38, Viresh Kumar wrote:
-> > On 05-07-21, 11:45, Jie Deng wrote:
-> > > On 2021/7/5 10:40, Viresh Kumar wrote:
-> > > > On 02-07-21, 16:46, Jie Deng wrote:
-> > > > The right way of doing this is is making this function return - Error on failure
-> > > > and 0 on success. There is no point returning number of successful additions
-> > > > here.
-> > > 
-> > > We need the number for virtio_i2c_complete_reqs to do cleanup. We don't have
-> > > to
-> > > 
-> > > do cleanup "num" times every time. Just do it as needed.
-> > If you do full cleanup here, then you won't required that at the caller site.
-> > 
-> > > > Moreover, on failures this needs to clean up (free the dmabufs) itself, just
-> > > > like you did i2c_put_dma_safe_msg_buf() at the end. The caller shouldn't be
-> > > > required to handle the error cases by freeing up resources.
-> > > 
-> > > This function will return the number of requests being successfully prepared
-> > > and make sure
-> > > 
-> > > resources of the failed request being freed. And virtio_i2c_complete_reqs
-> > > will free the
-> > > 
-> > > resources of those successful request.
-> > It just looks cleaner to give such responsibility to each and every function,
-> > i.e. if they fail, they should clean stuff up instead of the caller. That's the
-> > normal philosophy you will find across kernel in most of the cases.
-> > > > > +		/*
-> > > > > +		 * Condition (req && req == &reqs[i]) should always meet since
-> > > > > +		 * we have total nr requests in the vq.
-> > > > > +		 */
-> > > > > +		if (!failed && (WARN_ON(!(req && req == &reqs[i])) ||
-> > > > > +		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)))
-> > > > What about writing this as:
-> > > > 
-> > > > 		if (!failed && (WARN_ON(req != &reqs[i]) ||
-> > > > 		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)))
-> > > > 
-> > > > We don't need to check req here since if req is NULL, we will not do req->in_hdr
-> > > > at all.
-> > > 
-> > > It's right here just because the &reqs[i] will never be NULL in our case.
-> > > But if you see
-> > > 
-> > > "virtio_i2c_complete_reqs" as an independent function, you need to check the
-> > > 
-> > > req. From the perspective of the callee, you can't ask the caller always
-> > > give you
-> > > 
-> > > the non-NULL parameters.
-> > We need to keep this driver optimized in its current form. If you see your own
-> > argument here, then why don't you test vq or msgs for a valid pointer ? And even
-> > reqs.
-> > 
-> > If we know for certain that this will never happen, then it should be optimized.
-> > But if you see a case where reqs[i] can be NULL here, then it would be fine.
-> > ot the driver. And we don't need to take care of that.
-> 
-> 
-> This is still not enough to convince me.  So I won't change them for now
-> until I see it
-> 
-> is the consensus of the majority.
+Hallo,
 
-Do you see reqs[i] to ever be NULL here ? If not, then if (req) is like if
-(true).
+ Sie haben eine Spende von 2.800.000,00 USD. Ich gewann die amerikanische L=
+otterie im Wert von 343 Millionen US-Dollar in Amerika und spendete einen T=
+eil davon an f=FCnf gl=FCckliche Menschen und Wohlt=E4tigkeitsorganisatione=
+n, die sich an meinen verstorbenen Enkel erinnern, der Anfang April vorzeit=
+ig geboren wurde und nur einen Tag lebte. F=FCr weitere Informationen wende=
+n Sie sich bitte an: callumfoundation05@outlook.com
 
-Why would you want to have something like that ?
+ =
 
--- 
-viresh
+
+Mit freundlichen Gr=FC=DFen
+Frau Lerynne West
