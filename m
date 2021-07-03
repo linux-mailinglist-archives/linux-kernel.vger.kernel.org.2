@@ -2,127 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6CB3BA7BD
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 10:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0003BA7C6
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 10:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhGCIO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 04:14:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46162 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229829AbhGCIO1 (ORCPT
+        id S229997AbhGCI0Y convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 3 Jul 2021 04:26:24 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5950 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhGCI0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 04:14:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625299913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KNgXYIOgFk3/50sq9zIL4S0YcLBbQBv9LP1nNZa2JAA=;
-        b=Is/0ClB5ELfAofWQMDsaxB3Kb/nK36FlRH+ZEQksYtN1iYzZEhCa91txECZEvXPM/BYrgC
-        77wawFIYhKYRuu9/tFxSCaIW69s+HvY1Q4KSQco49rFgyXD1HljYwNbw9jhnMGkauVjN08
-        s5RuufRHWPytaeGyAD4/TG58VzTWu2w=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-583-TkOQNl0XNyS-NwD3eXo8NQ-1; Sat, 03 Jul 2021 04:11:51 -0400
-X-MC-Unique: TkOQNl0XNyS-NwD3eXo8NQ-1
-Received: by mail-wm1-f69.google.com with SMTP id j38-20020a05600c1c26b02901dbf7d18ff8so7477431wms.8
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 01:11:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KNgXYIOgFk3/50sq9zIL4S0YcLBbQBv9LP1nNZa2JAA=;
-        b=NUUEFcVBQgo2/kDkB5GVFYdFbS5iOc2SjO3BBpSZPqXsyaGo6irHofeINhijVa68dg
-         /Fw6ECqxG1rt1dKU+aiW4ExFJbGTCysIka8HgygHBO7nC+joMlsB5Vs0OjaEhQVOrLj5
-         CQjK3Td7EC2HcxLPbqcziVvJ7gY7UT/JTneyTP74a/hbx8u9ic0SXCMMREakojNFEa8S
-         ErV2z2iwqneu8LtEo5e+bsWBJitJTbsYXGyOILxkgUYz0AWokUo18Y1T+7ypHlclG1rh
-         X9V0ufJvmaFGlbydQwEd9VNmH50urSuIb6unW2c2EU+D1+YB9UQbG2dAjFm8/xYWbbMN
-         6Law==
-X-Gm-Message-State: AOAM533lWzWp5ADxKTxnZwLxjnEDuHLavncICUzfRwWU+u5ZsWUpeC64
-        ghNqgWToMujmIXnZbwQ0b5OQfUYVdi9d6dYXTALgE1pnAMMmPz2Xcu+V+0gcay5823f2S62I0QI
-        4Bx45tEsp94UrUcrTQw4nOcCu
-X-Received: by 2002:a05:600c:296:: with SMTP id 22mr3824989wmk.17.1625299910445;
-        Sat, 03 Jul 2021 01:11:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwK/iU/CBYEp+7S7mKEGeGippXEk01Zz5EGl2SiAx3okylS3s7KpViTuEX44OaCNPVpb3WcZg==
-X-Received: by 2002:a05:600c:296:: with SMTP id 22mr3824967wmk.17.1625299910246;
-        Sat, 03 Jul 2021 01:11:50 -0700 (PDT)
-Received: from redhat.com ([2.55.4.39])
-        by smtp.gmail.com with ESMTPSA id j37sm2822258wms.37.2021.07.03.01.11.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Jul 2021 01:11:48 -0700 (PDT)
-Date:   Sat, 3 Jul 2021 04:11:45 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Gautam Dawar <gdawar.xilinx@gmail.com>, martinh@xilinx.com,
-        hanand@xilinx.com, gdawar@xilinx.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vhost-vdpa: log warning message if vhost_vdpa_remove
- gets blocked
-Message-ID: <20210703041124-mutt-send-email-mst@kernel.org>
-References: <20210606132909.177640-1-gdawar.xilinx@gmail.com>
- <aa866c72-c3d9-9022-aa5b-b5a9fc9e946a@redhat.com>
+        Sat, 3 Jul 2021 04:26:23 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GH4dM1fZRz769G;
+        Sat,  3 Jul 2021 16:20:23 +0800 (CST)
+Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 3 Jul 2021 16:23:47 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggema773-chm.china.huawei.com (10.1.198.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 3 Jul 2021 16:23:46 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Sat, 3 Jul 2021 16:23:46 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Yury Norov <yury.norov@gmail.com>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>,
+        "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
+        "sbrivio@redhat.com" <sbrivio@redhat.com>,
+        "jianpeng.ma@intel.com" <jianpeng.ma@intel.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        tangchengchang <tangchengchang@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        yangyicong <yangyicong@huawei.com>,
+        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>
+Subject: RE: [PATCH v5 1/3] cpumask: introduce cpumap_print_to_buf to support
+ large bitmask and list
+Thread-Topic: [PATCH v5 1/3] cpumask: introduce cpumap_print_to_buf to support
+ large bitmask and list
+Thread-Index: AQHXbyRYF3GmpOp6KkinmBDnnrRJtasvrpYAgAE62vA=
+Date:   Sat, 3 Jul 2021 08:23:46 +0000
+Message-ID: <3f233e7ed1a543b78c8cd3545a0ac592@hisilicon.com>
+References: <20210702092559.8776-1-song.bao.hua@hisilicon.com>
+ <20210702092559.8776-2-song.bao.hua@hisilicon.com>
+ <YN+FemDxyeG+lRTC@yury-ThinkPad>
+In-Reply-To: <YN+FemDxyeG+lRTC@yury-ThinkPad>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.36]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aa866c72-c3d9-9022-aa5b-b5a9fc9e946a@redhat.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 10:33:22PM +0800, Jason Wang wrote:
+
+
+> -----Original Message-----
+> From: Yury Norov [mailto:yury.norov@gmail.com]
+> Sent: Saturday, July 3, 2021 9:31 AM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: gregkh@linuxfoundation.org; akpm@linux-foundation.org;
+> andriy.shevchenko@linux.intel.com; linux-kernel@vger.kernel.org;
+> dave.hansen@intel.com; linux@rasmusvillemoes.dk; rafael@kernel.org;
+> rdunlap@infradead.org; agordeev@linux.ibm.com; sbrivio@redhat.com;
+> jianpeng.ma@intel.com; valentin.schneider@arm.com; peterz@infradead.org;
+> bristot@redhat.com; guodong.xu@linaro.org; tangchengchang
+> <tangchengchang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
+> yangyicong <yangyicong@huawei.com>; tim.c.chen@linux.intel.com; Linuxarm
+> <linuxarm@huawei.com>; tiantao (H) <tiantao6@hisilicon.com>
+> Subject: Re: [PATCH v5 1/3] cpumask: introduce cpumap_print_to_buf to support
+> large bitmask and list
 > 
-> 在 2021/6/6 下午9:29, Gautam Dawar 写道:
-> > From: Gautam Dawar <gdawar@xilinx.com>
-> > 
-> > If some module invokes vdpa_device_unregister (usually in the module
-> > unload function) when the userspace app (eg. QEMU) which had opened
-> > the vhost-vdpa character device is still running, vhost_vdpa_remove()
-> > function will block indefinitely in call to wait_for_completion().
-> > 
-> > This causes the vdpa_device_unregister caller to hang and with a
-> > usual side-effect of rmmod command not returning when this call
-> > is in the module_exit function.
-> > 
-> > This patch converts the wait_for_completion call to its timeout based
-> > counterpart (wait_for_completion_timeout) and also adds a warning
-> > message to alert the user/administrator about this hang situation.
-> > 
-> > To eventually fix this problem, a mechanism will be required to let
-> > vhost-vdpa module inform the userspace of this situation and
-> > userspace will close the descriptor of vhost-vdpa char device.
-> > This will enable vhost-vdpa to continue with graceful clean-up.
-> > 
-> > Signed-off-by: Gautam Dawar <gdawar@xilinx.com>
+> On Fri, Jul 02, 2021 at 09:25:57PM +1200, Barry Song wrote:
+> > From: Tian Tao <tiantao6@hisilicon.com>
+> >
+> > The existing cpumap_print_to_pagebuf() is used by cpu topology and other
+> > drivers to export hexadecimal bitmask and decimal list to userspace by
+> > sysfs ABI.
+> >
+> > Right now, those drivers are using a normal attribute for this kind of
+> > ABIs. A normal attribute typically has show entry as below:
+> >
+> > static ssize_t example_dev_show(struct device *dev,
+> >                 struct device_attribute *attr, char *buf)
+> > {
+> > 	...
+> >         return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
+> > }
+> > show entry of attribute has no offset and count parameters and this
+> > means the file is limited to one page only.
+> >
+> > cpumap_print_to_pagebuf() API works terribly well for this kind of
+> > normal attribute with buf parameter and without offset, count:
+> >
+> > static inline ssize_t
+> > cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
+> > {
+> >         return bitmap_print_to_pagebuf(list, buf, cpumask_bits(mask),
+> >                                       nr_cpu_ids);
+> > }
+> >
+> > The problem is once we have many cpus, we have a chance to make bitmask
+> > or list more than one page. Especially for list, it could be as complex
+> > as 0,3,5,7,9,...... We have no simple way to know it exact size.
+> >
+> > It turns out bin_attribute is a way to break this limit. bin_attribute
+> > has show entry as below:
+> > static ssize_t
+> > example_bin_attribute_show(struct file *filp, struct kobject *kobj,
+> >              struct bin_attribute *attr, char *buf,
+> >              loff_t offset, size_t count)
+> > {
+> >         ...
+> > }
+> >
+> > With the new offset and count parameters, this makes sysfs ABI be able
+> > to support file size more than one page. For example, offset could be
+> > >= 4096.
+> >
+> > This patch introduces cpumap_print_to_buf() so that those drivers can
+> > move to bin_attribute to support large bitmask and list. In result,
+> > we have to pass the corresponding parameters from bin_attribute to this
+> > new API.
+> >
+> > Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Cc: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: Stefano Brivio <sbrivio@redhat.com>
+> > Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+> > Cc: "Ma, Jianpeng" <jianpeng.ma@intel.com>
+> > Cc: Yury Norov <yury.norov@gmail.com>
+> > Cc: Valentin Schneider <valentin.schneider@arm.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 > > ---
-> >   drivers/vhost/vdpa.c | 6 +++++-
-> >   1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> > index bfa4c6ef554e..572b64d09b06 100644
-> > --- a/drivers/vhost/vdpa.c
-> > +++ b/drivers/vhost/vdpa.c
-> > @@ -1091,7 +1091,11 @@ static void vhost_vdpa_remove(struct vdpa_device *vdpa)
-> >   		opened = atomic_cmpxchg(&v->opened, 0, 1);
-> >   		if (!opened)
-> >   			break;
-> > -		wait_for_completion(&v->completion);
-> > +		wait_for_completion_timeout(&v->completion,
-> > +					    msecs_to_jiffies(1000));
-> > +		dev_warn_ratelimited(&v->dev,
-> > +				     "%s waiting for /dev/%s to be closed\n",
-> > +				     __func__, dev_name(&v->dev));
+> >  include/linux/cpumask.h | 19 +++++++++++++++++++
+> >  lib/cpumask.c           | 18 ++++++++++++++++++
+> >  2 files changed, 37 insertions(+)
+> >
+> > diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> > index bfc4690de4f4..24f410a2e793 100644
+> > --- a/include/linux/cpumask.h
+> > +++ b/include/linux/cpumask.h
+> > @@ -983,6 +983,25 @@ cpumap_print_to_pagebuf(bool list, char *buf, const
+> struct cpumask *mask)
+> >  				      nr_cpu_ids);
+> >  }
+> >
+> > +/**
+> > + * cpumap_print_to_buf  - copies the cpumask into the buffer either
+> > + *      as comma-separated list of cpus or hex values of cpumask;
+> > + *      Typically used by bin_attribute to export cpumask bitmask and
+> > + *      list ABI.
+> > + * @list: indicates whether the cpumap must be list
+> > + *      true:  print in decimal list format
+> > + *      fasle: print in hexadecimal bitmask format
+> > + * @mask: the cpumask to copy
+> > + * @buf: the buffer to copy into
+> > + * @off: in the string from which we are copying, We copy to @buf
+> > + * @count: the maximum number of bytes to print
+> > + *
+> > + * Returns the length of how many bytes have been copied.
+> > + */
+> > +extern ssize_t
+> > +cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
+> > +		    loff_t off, size_t count);
+> > +
+> >  #if NR_CPUS <= BITS_PER_LONG
+> >  #define CPU_MASK_ALL							\
+> >  (cpumask_t) { {								\
+> > diff --git a/lib/cpumask.c b/lib/cpumask.c
+> > index c3c76b833384..40421a6d31bc 100644
+> > --- a/lib/cpumask.c
+> > +++ b/lib/cpumask.c
+> > @@ -279,3 +279,21 @@ int cpumask_any_distribute(const struct cpumask *srcp)
+> >  	return next;
+> >  }
+> >  EXPORT_SYMBOL(cpumask_any_distribute);
+> > +
+> > +ssize_t cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
+> > +		    loff_t off, size_t count)
+> > +{
+> > +	const char *fmt = list ? "%*pbl\n" : "%*pb\n";
+> > +	ssize_t size;
+> > +	void *data;
+> > +
+> > +	data = kasprintf(GFP_KERNEL, fmt, nr_cpu_ids, cpumask_bits(mask));
+> > +	if (!data)
+> > +		return -ENOMEM;
+> > +
+> > +	size = memory_read_from_buffer(buf, count, &off, data, strlen(data) + 1);
+> > +	kfree(data);
+> 
+> Barry,
+> 
+> It looks like my comments for previous iteration were ignored. I don't
+> like the approach where you allocate potentially big amount of kernel
+> memory just to free it almost immediately. Nor in lib/bitmap, neither
+> in lib/cpumask.
+> 
 
-Can fill up the kernel log in this case ... dev_warn_once seems more
-appropriate.
+Yury, clearly your comment was not ignored. I explained in this reply:
+https://lore.kernel.org/lkml/bd62f55457ef4c269db5bb752b7accc0@hisilicon.com/
 
-> >   	} while (1);
-> >   	put_device(&v->dev);
+I explained in that email and I want to make it more clear:
+
+I don't think moving memory allocation to drivers is a correct way
+as for its main users - bin attribute, we have no way to reuse the
+buffer allocated in drivers.
+
+> For next iterations, please move this function back to lib/bitmap
+> because there's no specific here for cpumasks.
+
+I am ok with taking the bitmap API back as actually it is what i
+really preferred. Just to easy your worry on somebody else will
+abuse bitmap API. So I narrowed the scope of the modification.
+
+
 > 
+> Thaks,
+> Yury
 > 
-> Acked-by: Jason Wang <jasowang@redhat.com>
-> 
+> > +	return size;
+> > +}
+> > +EXPORT_SYMBOL(cpumap_print_to_buf);
+
+Thanks
+Barry
 
