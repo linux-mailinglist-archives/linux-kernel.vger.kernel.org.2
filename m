@@ -2,218 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4BC3BA8C4
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 14:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3301A3BA8C6
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 14:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhGCMxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 08:53:54 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:8416 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230196AbhGCMxx (ORCPT
+        id S230313AbhGCMyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 08:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230196AbhGCMyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 08:53:53 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 163CkjmM002556;
-        Sat, 3 Jul 2021 12:51:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : content-type : mime-version; s=corp-2020-01-29;
- bh=z8rAldYfRCxNykxIE8ci3HJGYDKn08sy3ZLhjgfmjvY=;
- b=PfWV4q72bQkdVEpBcN+vneZZyghqS6EgyuTq6Lk9/FpSNyLyr973YiAxMcbPluIZ353T
- VG641BBy7Xz71chpAHIhciQ9Pk7E98l7TjyEHDMxkEwcUvIwOiNkDFPo47OgNyAGLS/O
- ucboUgqohqgWXrnaYVRld1C7tRrch00Yp9YKXFkUHCvjQK2VXY9A4+3Um/obtkYNKiyC
- fkyUhhbsMlfZ+n3GKPipEjmIVMZY7xqCbYtfB218K+iz71rPSKY9FuvTRYYFOtIBojxp
- JdxMkmJC26qlor39nkbQSsFAPzz6xeZLroJEkVI8C/tv2iX4vilq9QW8MHtf/TH3BNyg iA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39jfsc8bhn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 03 Jul 2021 12:51:10 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 163Ck65P001934;
-        Sat, 3 Jul 2021 12:51:09 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2042.outbound.protection.outlook.com [104.47.73.42])
-        by aserp3020.oracle.com with ESMTP id 39jfq33jwx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 03 Jul 2021 12:51:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VxTj+NFf6vjo1jeDRIyvlvQrNTiFgINhfChnmiD8UMOP2/3ZuNKl7HSYCJlk/zcGAfTmZcsAvx+Q+F2q14+byCDXtn/2PdzLQMKBjc4jkq7Cp6V8bsndKcbghj3LFXvbJL50R8YxGa/CD5GLndifGxugEJCNSXWBH2YXUZzf3r/NLgOXTwYdCRn9l6vg9XlZGYAMoeK6iz914tsfFyPAA2LE6WNqDRrICkBg66e/rbByuOmzzPfCIedNysVECsQfZtMRwE1P0YWIuhT1u13/CMSeouaFmyT/adFKVv4vsnqmvvgRsTFwpj72AeZVBbdqnqzSGHtbu9FfFt6NEvP+ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z8rAldYfRCxNykxIE8ci3HJGYDKn08sy3ZLhjgfmjvY=;
- b=fOEABc1m6RoqOIudt59xXrr1nRisXbpa6ugFyNW6yq+t27I1ie8EGuU52zEXjzNiyvwNeQnseH3plsgix9IC6bmg8lO9pZH6WGNTO6w4dlmTS+WjjvIctHgA/jYV3AnKbqa/0eG5M7snyVO1xr+PjKz8kSFhpnsj58x0KcEpVQAzApRjV0/cWABjFE1W4Z/H/93zYiiNBBkxr3f9XCrXUv3IAx6uV7EUDgFJFgdFMryGwxB2FQvS1YYgn8wm+7DROyc2xgKRDjqRSUxPN6qFGd6yTpfTaQ6QakMURLwermy51xlZ9kyktG+w1mxa86njk1wZV3+iFhdGWQ85mflzCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Sat, 3 Jul 2021 08:54:11 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B1CC061762;
+        Sat,  3 Jul 2021 05:51:37 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id r9so4982107ual.7;
+        Sat, 03 Jul 2021 05:51:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z8rAldYfRCxNykxIE8ci3HJGYDKn08sy3ZLhjgfmjvY=;
- b=hN02A8A8VWRMP0XVH09P/IKAyE6qgmMFqm2YEDGlKxP+V+s3XyTaou+xCw3y+f1hKW3Wk/USOs0oEeuo9Wz1ToZGjimHK2dyJezQEwqxKsUxXYr9t/VYNoST9PKKGr3tdxPDo8TwniAQw5YMIk4aZqpGBdoEFaEpx3mlpXtAYus=
-Authentication-Results: lists.01.org; dkim=none (message not signed)
- header.d=none;lists.01.org; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO1PR10MB4706.namprd10.prod.outlook.com
- (2603:10b6:303:9d::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22; Sat, 3 Jul
- 2021 12:51:06 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::3413:3c61:5067:ba73]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::3413:3c61:5067:ba73%5]) with mapi id 15.20.4287.030; Sat, 3 Jul 2021
- 12:51:06 +0000
-Date:   Sat, 3 Jul 2021 15:50:36 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Hector Martin <marcan@marcan.st>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>
-Subject: drivers/irqchip/irq-apple-aic.c:849 aic_of_ic_init() warn: 'regs'
- not released on lines: 803.
-Message-ID: <202107030700.SB4h6CEa-lkp@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [102.222.70.252]
-X-ClientProxiedBy: JN2P275CA0003.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::15)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NoncdDc+nzorH8oELm/uh1CG/r+HvgN0j+4gRQRIkqs=;
+        b=sAHbtngtOE4vaFoFxKph4KSjU9oIf9SzDGoSHSwnzUlH4Dv/9Wb2NeuFvySHmf0jfw
+         8XokQAlzo1eNtmb2At7p347Qu20RSGcF0Txvr9QchQ1LLwuMWvgA+XlX/r5v5S6kvijk
+         JYCrgRPE12+WCmUhq9b41DHc/Ba94DZEswceRN1BqeHbE4jyK8a1x1vtJ64Xbc3Fq7S4
+         T2zt/1yeimRM3UVaOjoOivz4wCmZhKsyw3fcbAmmOt+ay5isK6A+bzB8BY7M9bWJ0Alj
+         j4H6jfAiy3TyITbGWnrFOFQhMOa4wMQJKrUkrpMFLtxvyvBmCubpfetaIo6jzvZfxV7/
+         Vlww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NoncdDc+nzorH8oELm/uh1CG/r+HvgN0j+4gRQRIkqs=;
+        b=NB2gJmF36wk0i5KFhmBS5dI0eb012RGayNxSdnuP1G/8cVtqLfozatp2LDQI+xSbcl
+         xjq1j/vgU+sZE81XZxywhnsVON6dw+4kLq8/4fex1m1XrKI/BAck6HogJki9lgA0C8RB
+         fTLELrGsbDmhPpJYD9FadT0nmxA32VXLllPNo1W38r+ut/7UuB1kmQPcYODBbJruUc2n
+         hdeHx35zqmFm8y1NrrJ8O7uODbIS4BFV6UWnKVeOvirVfjygdorV9vwXOKoSemt5sH5L
+         Q3ess9rObXx4yAnzR+Klam6xIVDiUsmmMPfqo4CsKZ+Qs62sPQr5sUO2rjDvATZC5c6V
+         hDig==
+X-Gm-Message-State: AOAM5334rES+TF8dYpd/0YpSB0f2g8wIR+sr+oTWi37O8NKW6q02DWSP
+        FHg+ai8GnKILlRDQxBQiVArFTX/FQtUnE4vPAcg=
+X-Google-Smtp-Source: ABdhPJzS164I9l79+cU2TgjxmtE7V50BzTNBiMvcKvbLGphSPhuWSd6I2Qundfsb7B+ETpV+r0g4GQN3eKdTXFfOuyY=
+X-Received: by 2002:ab0:77d0:: with SMTP id y16mr4564973uar.46.1625316696630;
+ Sat, 03 Jul 2021 05:51:36 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (102.222.70.252) by JN2P275CA0003.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Sat, 3 Jul 2021 12:50:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ed4bed06-bcb9-4f11-0d41-08d93e213912
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4706:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO1PR10MB4706F1AC0C1854CF14FBF2B68E1E9@CO1PR10MB4706.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:478;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ySullYMbLOYuScMCW8A6TeaN3jAExf3vmIRoT8o9HLpsCu/0fb9bA9hMcLlyl2Kjw3m0qXcm5tYUOqNIG1bwpEQ+N2AGjIRRYhj/60gaP0V4qkoAwj6m1dqwBBPG1EI+PDsDZjqlBIvUy+JvSXa/tHjDsDK6iMP75Rm/aK9TcMooC4sBTm+0rPeLJP+xS3QPXrC0hWFPXhmAxiS4efVMLQdOGRwvFyZhV9zycThXI6Cso9XprgJ8D1uWoBGrjlQfsY+2irs9NhSW8fQ8GXrsvhiMVh/NDFi70lBR6SpmmcqcGhne+vzJXnlzQpUymNIMMCsJ2djKYONDw5AcKKxGviQreHDTzhhVeTyEd46r91De8fCG67Ktukb+0f5WDrH6l59iF3jg/SCxffh+7FxjVQw9yTFgfFGAoJCzWjDri03E57M8O3HrZZ+T+EffqlECseSv2V5QAbiJcNZ77Z5TKf0wmjRI/S6tOJOJBQhvn150oC4qvXuklwRkD0cJG+27jIT5Tx+B46lL6uU06US2PZM1MxLF7SKNP13LCCdyoL4lafmqcGLZ1ZhDHY4iuYfEo2oTinW1NxcYVtIoRIb+3z2frxLJ7AyuR1Z6HEXyw8T74uvh9BjI8xx0tSa+crLEJiIj2LaeN/DPN8/AeqQAJQa/f7AgrC+6YWWF8nSVK8DYLNZwdO2+cko0TyCvLIKyaq7qLiS9gb5pN47IxzxHOELYe0KX2s5q6OXWC1f1faVOJuosFAAHLPCdhV+8Rt1lhw1IO7+R8GHgBLDA1Gqd5kkk55CYTKd9FP9ZrIBscKXYttaGAFuQmS/9eSE7iFVlIuT5Te2aYMuQUsBfGdfcYCNif3S9Od7lDC0RQqxxsN0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(39860400002)(346002)(396003)(376002)(47660400002)(9686003)(6486002)(8936002)(8676002)(66556008)(66476007)(1076003)(5660300002)(66946007)(6496006)(186003)(52116002)(26005)(4326008)(6666004)(956004)(6916009)(44832011)(966005)(316002)(86362001)(83380400001)(16526019)(2906002)(478600001)(38350700002)(38100700002)(36756003)(46800400005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JQ05LZoVTHs17avw2ENapsx+UJQce6u6jxReGw4qmPJTKmKxeqjacf4ZEHOR?=
- =?us-ascii?Q?J0wQD9qTH2sJBk4g1/AYagtqD48f05y6ZHINolmah88IvYwry8NmgWhYdw3s?=
- =?us-ascii?Q?ZmNqaowif3ncRDVYCKbQT9MdWOrMDUQrkh42ITdv9P1Vq0zp+Mwi7Q/P3oSA?=
- =?us-ascii?Q?Ij9lehmlFDvYmwotP1AtFdHu9IkR2E68P6Gi8TiENjjFei3aimvYAu6GDZe7?=
- =?us-ascii?Q?VJrN7Sa9r5XxuN7qunCJtSdIDCFQiZgKr4wa+KtMFXlVtdPOBCqgT5NTyBcR?=
- =?us-ascii?Q?i92XIJOVFMLMAMMIXX7wiyWB40mFM6iQFe0SoLDbM/eMYjEgd/RlYNG5wgvE?=
- =?us-ascii?Q?NB6BdhNHLvsmRGqF1ARC5gmA+qCDWoB9zNTKsM9svnpUbExLJEnm1an7jySH?=
- =?us-ascii?Q?vWShghz7ydY08Y7sXFwY6T9TCdZ5EIfbbu2we0YsXTeEUXUNiTaAcGhb/i5h?=
- =?us-ascii?Q?lCY3lUXiXZ8a65Je1uPtc/Gj1ZaxsAaH06E2/r0CF3xRJ6KjKYzhZCY6nEik?=
- =?us-ascii?Q?kSL2csrvn0xxXvScIud5dxBIbwBNlho3R8Hy5jYI87wwNQLcYyuN5Ph3k6R4?=
- =?us-ascii?Q?qV5f6aT/BAPJC6vi536ldANOjGRMp7vWD4oNyDC11Y7hxIHho3n0FeAUu4bZ?=
- =?us-ascii?Q?EcMflUCb01lDluZjjVWzy9Y4onrUxwwsH6pMSfeU+3j6RrCZj8eqyxAtwTCf?=
- =?us-ascii?Q?Rh2Nl/rCJSAnnMXDyiigvVqV5BTCDsf+JYU7Hwlyr9ZPHhQ5/5vE1eH2KOII?=
- =?us-ascii?Q?cKqKfT5edkqFUHwwgyIenvDPPJXkA0dtift89nw1OolazLM9QUcSbQcd3wY3?=
- =?us-ascii?Q?fHNe4LgFc6zxP5HIvmb+q5KQMKa65YaWOanmEZRle6V0MqMOxTQ+9sCaaDXa?=
- =?us-ascii?Q?ythyh1Ekl9TUFSxdIpBBKf6Ld/CTmyUQHfW6+X9zEvIjUAIycADJzmz1lNJ6?=
- =?us-ascii?Q?RpaCFL2cUdPW49rwh9oxFA9tjr+wgZQIwY4/ktv5wK6ubk6qwjL8whoW/vPe?=
- =?us-ascii?Q?pyeB9dMMH6ubUku33EwpLgaIt/qTSWGIZfHgnsdsRhbEWXgp1mIcn000lepR?=
- =?us-ascii?Q?jzKHnxijIZK131XpIQ9YILgn3adCtYYhSaY/cS6y6DiR2a7pkX99wk2fUula?=
- =?us-ascii?Q?j4YhYfPzqfqMeI4Ej95JLNr2sQU3eMpOBulEq922iJsmH/UYoOe2126PnM7n?=
- =?us-ascii?Q?4ucnb6wbwNNCCZ8OnpGxByxsqJR4KRE6NqPzVYHRKD6tgKu/IvZZmPTU9rFf?=
- =?us-ascii?Q?ICwT+PWvuZo2syBmt+wziuq+6FzlL6AN3S7ExP+x+HF/q4je5tOaeYxzLRTN?=
- =?us-ascii?Q?3Q7z5ilxcNkrc1ePw152SrUT?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed4bed06-bcb9-4f11-0d41-08d93e213912
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jul 2021 12:51:06.7979
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Uk5bbrXhXW/70DPu+IhTRNDpMEF6R3ZuEQob2zUqFb4/0Jl1NdBUeW9AUDjw3dqvtUKHSH9e7WCOkBe5zKuVMOS2pP8WCDL52eATSKhKVGk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4706
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10033 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
- mlxscore=0 bulkscore=0 malwarescore=0 adultscore=0 mlxlogscore=946
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107030082
-X-Proofpoint-GUID: ndT8ROq4a5P23-tmzTJtIjVzECh3NjJ-
-X-Proofpoint-ORIG-GUID: ndT8ROq4a5P23-tmzTJtIjVzECh3NjJ-
+References: <20210626161819.30508-1-sergio.paracuellos@gmail.com>
+ <CAHp75VfM-35tQMRh98mtg2XmDOJFnmjdYRKZZoi9ADm=AT2xUw@mail.gmail.com>
+ <CAMhs-H_fcNDAOHm=tZB4ku9fzeea_7f4ZLg7w5KEmcNu+8wbQQ@mail.gmail.com>
+ <CAHp75VeN+vww=Bj=g-nx9AT0FKSGAZ8CKQZn=ff2kfQWM+dxdw@mail.gmail.com>
+ <CAMhs-H-WwCfPDspgxzN=W8QouZ7WPAeyJDYf_6=YezyCkTM=Vw@mail.gmail.com>
+ <CAHp75VcF-HDZ6mKvXT=zYnBrcPaNJ+SYJ72LQ7s-62zQ5ZqoQg@mail.gmail.com>
+ <CAMhs-H9gw63j98vVo3y0ymW4_6rFNL8u5cYNM2hzyrmkPB3h3w@mail.gmail.com>
+ <CAHp75VccSCWa=EH8i01_b_HLZRumUZ48oRjeuaV5Dp1BQAoz2w@mail.gmail.com>
+ <CAMhs-H_Ne4W79Awbmo6w_68X+h0-ybjvzNsbh=XuHMPJJ8-hDQ@mail.gmail.com>
+ <CACRpkdaqSoyDUn3dVuVgzRK_7AabdY=1FzAnhHZzPs3qS+GfsA@mail.gmail.com>
+ <CAMhs-H_pomsvKXuerkVsNQva+B+tPr2xRZAU2R7oyjZ+GaQpqQ@mail.gmail.com>
+ <CAMhs-H_=_tYk3Qj5-NaAmWgnuWc0ZRSEABZzwPfMxiUHP35nbw@mail.gmail.com>
+ <CAHp75VdmTHr8zq0boz2ci0YO4fS9Zuf+LFXeK7CGiHqHkXKKMQ@mail.gmail.com> <CAMhs-H_e2U7nUav8h+Q0w-aZXvD6VM6wpg857WbFgw6x3z1ufA@mail.gmail.com>
+In-Reply-To: <CAMhs-H_e2U7nUav8h+Q0w-aZXvD6VM6wpg857WbFgw6x3z1ufA@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Sat, 3 Jul 2021 14:51:25 +0200
+Message-ID: <CAMhs-H8Y0txwcqRTxpsB_GEoOYbhHWO81EANMxMSybzWPS=HTA@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: mt7621: support gpio-line-names property
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Thomson <git@johnthomson.fastmail.com.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        NeilBrown <neil@brown.name>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Nicholas Mc Guire <hofrat@osadl.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   35e43538af8fd2cb39d58caca1134a87db173f75
-commit: 76cde26394114f6af2710c6b2ad6854f1e8ee859 irqchip/apple-aic: Add support for the Apple Interrupt Controller
-config: arm64-randconfig-m031-20210702 (attached as .config)
-compiler: aarch64-linux-gcc (GCC) 9.3.0
+On Sat, Jul 3, 2021 at 2:05 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> Hi Andy,
+>
+> On Sat, Jul 3, 2021 at 1:32 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> >
+> > On Sat, Jul 3, 2021 at 2:06 PM Sergio Paracuellos
+> > <sergio.paracuellos@gmail.com> wrote:
+> > > On Fri, Jul 2, 2021 at 1:30 PM Sergio Paracuellos
+> > > <sergio.paracuellos@gmail.com> wrote:
+> >
+> > ...
+> >
+> > > -               ret = devprop_gpiochip_set_names(gc);
+> > > +               ret = devprop_gpiochip_set_names(gc, 0);
+> >
+> > I had been expecting that this parameter would be in the field of the gpiochip.
+> >
+> > ...
+>
+> If doing it in that way is preferred, I have no problem at all. But in
+> that case I think there is no need for a new
+> 'devprop_gpiochip_set_names_base' and we can assume for all drivers to
+> be zero and if is set taking it into account directly in
+> devprop_gpiochip_set_names function? Is this what you mean by having
+> this field added there??
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+How about something like this?
 
-smatch warnings:
-drivers/irqchip/irq-apple-aic.c:849 aic_of_ic_init() warn: 'regs' not released on lines: 803.
+diff --git a/drivers/gpio/gpio-mt7621.c b/drivers/gpio/gpio-mt7621.c
+index 82fb20dca53a..5854a9343491 100644
+--- a/drivers/gpio/gpio-mt7621.c
++++ b/drivers/gpio/gpio-mt7621.c
+@@ -241,6 +241,7 @@ mediatek_gpio_bank_probe(struct device *dev,
+        if (!rg->chip.label)
+                return -ENOMEM;
 
-vim +/regs +849 drivers/irqchip/irq-apple-aic.c
++       rg->chip.offset = bank * MTK_BANK_WIDTH;
+        rg->irq_chip.name = dev_name(dev);
+        rg->irq_chip.parent_device = dev;
+        rg->irq_chip.irq_unmask = mediatek_gpio_irq_unmask;
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 6e3c4d7a7d14..0587f46b7c22 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -380,10 +380,10 @@ static int devprop_gpiochip_set_names(struct
+gpio_chip *chip)
+                return 0;
 
-76cde26394114f Hector Martin 2021-01-21  790  static int __init aic_of_ic_init(struct device_node *node, struct device_node *parent)
-76cde26394114f Hector Martin 2021-01-21  791  {
-76cde26394114f Hector Martin 2021-01-21  792  	int i;
-76cde26394114f Hector Martin 2021-01-21  793  	void __iomem *regs;
-76cde26394114f Hector Martin 2021-01-21  794  	u32 info;
-76cde26394114f Hector Martin 2021-01-21  795  	struct aic_irq_chip *irqc;
-76cde26394114f Hector Martin 2021-01-21  796  
-76cde26394114f Hector Martin 2021-01-21  797  	regs = of_iomap(node, 0);
-76cde26394114f Hector Martin 2021-01-21  798  	if (WARN_ON(!regs))
-76cde26394114f Hector Martin 2021-01-21  799  		return -EIO;
-76cde26394114f Hector Martin 2021-01-21  800  
-76cde26394114f Hector Martin 2021-01-21  801  	irqc = kzalloc(sizeof(*irqc), GFP_KERNEL);
-76cde26394114f Hector Martin 2021-01-21  802  	if (!irqc)
-76cde26394114f Hector Martin 2021-01-21  803  		return -ENOMEM;
+        count = device_property_string_array_count(dev, "gpio-line-names");
+-       if (count < 0)
++       if (count < 0 || count <= chip->offset)
+                return 0;
 
-iounmap() before returning.
+-       if (count > gdev->ngpio) {
++       if (count > gdev->ngpio && chip->offset == 0) {
+                dev_warn(&gdev->dev, "gpio-line-names is length %d but
+should be at most length %d",
+                         count, gdev->ngpio);
+                count = gdev->ngpio;
+@@ -401,8 +401,9 @@ static int devprop_gpiochip_set_names(struct
+gpio_chip *chip)
+                return ret;
+        }
 
-76cde26394114f Hector Martin 2021-01-21  804  
-76cde26394114f Hector Martin 2021-01-21  805  	aic_irqc = irqc;
-76cde26394114f Hector Martin 2021-01-21  806  	irqc->base = regs;
-76cde26394114f Hector Martin 2021-01-21  807  
-76cde26394114f Hector Martin 2021-01-21  808  	info = aic_ic_read(irqc, AIC_INFO);
-76cde26394114f Hector Martin 2021-01-21  809  	irqc->nr_hw = FIELD_GET(AIC_INFO_NR_HW, info);
-76cde26394114f Hector Martin 2021-01-21  810  
-76cde26394114f Hector Martin 2021-01-21  811  	irqc->hw_domain = irq_domain_create_linear(of_node_to_fwnode(node),
-76cde26394114f Hector Martin 2021-01-21  812  						   irqc->nr_hw + AIC_NR_FIQ,
-76cde26394114f Hector Martin 2021-01-21  813  						   &aic_irq_domain_ops, irqc);
-76cde26394114f Hector Martin 2021-01-21  814  	if (WARN_ON(!irqc->hw_domain)) {
-76cde26394114f Hector Martin 2021-01-21  815  		iounmap(irqc->base);
-76cde26394114f Hector Martin 2021-01-21  816  		kfree(irqc);
-76cde26394114f Hector Martin 2021-01-21  817  		return -ENODEV;
-76cde26394114f Hector Martin 2021-01-21  818  	}
-76cde26394114f Hector Martin 2021-01-21  819  
-76cde26394114f Hector Martin 2021-01-21  820  	irq_domain_update_bus_token(irqc->hw_domain, DOMAIN_BUS_WIRED);
-76cde26394114f Hector Martin 2021-01-21  821  
-76cde26394114f Hector Martin 2021-01-21  822  	if (aic_init_smp(irqc, node)) {
-76cde26394114f Hector Martin 2021-01-21  823  		irq_domain_remove(irqc->hw_domain);
-76cde26394114f Hector Martin 2021-01-21  824  		iounmap(irqc->base);
-76cde26394114f Hector Martin 2021-01-21  825  		kfree(irqc);
-76cde26394114f Hector Martin 2021-01-21  826  		return -ENODEV;
-76cde26394114f Hector Martin 2021-01-21  827  	}
-76cde26394114f Hector Martin 2021-01-21  828  
-76cde26394114f Hector Martin 2021-01-21  829  	set_handle_irq(aic_handle_irq);
-76cde26394114f Hector Martin 2021-01-21  830  	set_handle_fiq(aic_handle_fiq);
-76cde26394114f Hector Martin 2021-01-21  831  
-76cde26394114f Hector Martin 2021-01-21  832  	for (i = 0; i < BITS_TO_U32(irqc->nr_hw); i++)
-76cde26394114f Hector Martin 2021-01-21  833  		aic_ic_write(irqc, AIC_MASK_SET + i * 4, U32_MAX);
-76cde26394114f Hector Martin 2021-01-21  834  	for (i = 0; i < BITS_TO_U32(irqc->nr_hw); i++)
-76cde26394114f Hector Martin 2021-01-21  835  		aic_ic_write(irqc, AIC_SW_CLR + i * 4, U32_MAX);
-76cde26394114f Hector Martin 2021-01-21  836  	for (i = 0; i < irqc->nr_hw; i++)
-76cde26394114f Hector Martin 2021-01-21  837  		aic_ic_write(irqc, AIC_TARGET_CPU + i * 4, 1);
-76cde26394114f Hector Martin 2021-01-21  838  
-76cde26394114f Hector Martin 2021-01-21  839  	if (!is_kernel_in_hyp_mode())
-76cde26394114f Hector Martin 2021-01-21  840  		pr_info("Kernel running in EL1, mapping interrupts");
-76cde26394114f Hector Martin 2021-01-21  841  
-76cde26394114f Hector Martin 2021-01-21  842  	cpuhp_setup_state(CPUHP_AP_IRQ_APPLE_AIC_STARTING,
-76cde26394114f Hector Martin 2021-01-21  843  			  "irqchip/apple-aic/ipi:starting",
-76cde26394114f Hector Martin 2021-01-21  844  			  aic_init_cpu, NULL);
-76cde26394114f Hector Martin 2021-01-21  845  
-76cde26394114f Hector Martin 2021-01-21  846  	pr_info("Initialized with %d IRQs, %d FIQs, %d vIPIs\n",
-76cde26394114f Hector Martin 2021-01-21  847  		irqc->nr_hw, AIC_NR_FIQ, AIC_NR_SWIPI);
-76cde26394114f Hector Martin 2021-01-21  848  
-76cde26394114f Hector Martin 2021-01-21 @849  	return 0;
-76cde26394114f Hector Martin 2021-01-21  850  }
++       count = (chip->offset >= count) ? (chip->offset - count) : count;
+        for (i = 0; i < count; i++)
+-               gdev->descs[i].name = names[i];
++               gdev->descs[i].name = names[chip->offset + i];
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+        kfree(names);
 
+diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+index 4a7e295c3640..39e0786586f6 100644
+--- a/include/linux/gpio/driver.h
++++ b/include/linux/gpio/driver.h
+@@ -312,6 +312,9 @@ struct gpio_irq_chip {
+  *     get rid of the static GPIO number space in the long run.
+  * @ngpio: the number of GPIOs handled by this controller; the last GPIO
+  *     handled is (base + ngpio - 1).
++ * @offset: when multiple gpio chips belong to the same device this
++ *     can be used as offset within the device so friendly names can
++ *     be properly assigned.
+  * @names: if set, must be an array of strings to use as alternative
+  *      names for the GPIOs in this chip. Any entry in the array
+  *      may be NULL if there is no alias for the GPIO, however the
+@@ -398,6 +401,7 @@ struct gpio_chip {
+
+        int                     base;
+        u16                     ngpio;
++       int                     offset;
+        const char              *const *names;
+        bool                    can_sleep;
+
+
+Does this sound reasonable?
+
+Best regards,
+   Sergio Paracuellos
+
+
+>
+> >
+> > > The problem I see with this approach is that
+> > > 'devprop_gpiochip_set_names' already trusts in gpio_device already
+> > > created and this happens in 'gpiochip_add_data_with_key'. So doing in
+> > > this way force "broken drivers" to call this new
+> > > 'devprop_gpiochip_set_names_base' function after
+> > > 'devm_gpiochip_add_data' is called so the core code has already set up
+> > > the friendly names repeated for all gpio chip banks and the approach
+> > > would be to "overwrite" those in a second pass which sounds more like
+> > > a hack than a solution.
+> > >
+> > > But maybe I am missing something in what you were pointing out here.
+> >
+> > Would the above work?
+>
+> The following works for me, but the overwritten part of the
+> 'gdev->descs[i].name' because this has been already called once by the
+> core code is hacky and dirty, IMHO :)
+>
+> diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+> index 4a7e295c3640..ad145ab0794c 100644
+> --- a/include/linux/gpio/driver.h
+> +++ b/include/linux/gpio/driver.h
+> @@ -537,6 +537,8 @@ extern int gpiochip_add_data_with_key(struct
+> gpio_chip *gc, void *data,
+>         devm_gpiochip_add_data_with_key(dev, gc, data, NULL, NULL)
+>  #endif /* CONFIG_LOCKDEP */
+>
+> +extern int devprop_gpiochip_set_names_base(struct gpio_chip *gc, int base);
+> +
+>  static inline int gpiochip_add(struct gpio_chip *gc)
+>  {
+>         return gpiochip_add_data(gc, NULL);
+>
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index 6e3c4d7a7d14..f9942d5d2f2a 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -361,13 +361,14 @@ static int gpiochip_set_desc_names(struct gpio_chip *gc)
+>  /*
+>   * devprop_gpiochip_set_names - Set GPIO line names using device properties
+>   * @chip: GPIO chip whose lines should be named, if possible
+> + * @base: starting index in names array to start copying from
+>   *
+>   * Looks for device property "gpio-line-names" and if it exists assigns
+>   * GPIO line names for the chip. The memory allocated for the assigned
+>   * names belong to the underlying software node and should not be released
+>   * by the caller.
+>   */
+> -static int devprop_gpiochip_set_names(struct gpio_chip *chip)
+> +static int devprop_gpiochip_set_names(struct gpio_chip *chip, int base)
+>  {
+>         struct gpio_device *gdev = chip->gpiodev;
+>         struct device *dev = chip->parent;
+> @@ -383,12 +384,18 @@ static int devprop_gpiochip_set_names(struct
+> gpio_chip *chip)
+>         if (count < 0)
+>                 return 0;
+>
+> -       if (count > gdev->ngpio) {
+> +       if (count > gdev->ngpio && base == 0) {
+>                 dev_warn(&gdev->dev, "gpio-line-names is length %d but
+> should be at most length %d",
+>                          count, gdev->ngpio);
+>                 count = gdev->ngpio;
+>         }
+>
+> +       if (count <= base) {
+> +               for (i = 0; i < count; i++)
+> +                       gdev->descs[i].name = "";
+> +               return 0;
+> +       }
+> +
+>         names = kcalloc(count, sizeof(*names), GFP_KERNEL);
+>         if (!names)
+>                 return -ENOMEM;
+> @@ -401,14 +408,21 @@ static int devprop_gpiochip_set_names(struct
+> gpio_chip *chip)
+>                 return ret;
+>         }
+>
+> +       count = (base >= count) ? (base - count) : count;
+>         for (i = 0; i < count; i++)
+> -               gdev->descs[i].name = names[i];
+> +               gdev->descs[i].name = names[base + i];
+>
+>         kfree(names);
+>
+>         return 0;
+>  }
+>
+> +int devprop_gpiochip_set_names_base(struct gpio_chip *gc, int base)
+> +{
+> +       return devprop_gpiochip_set_names(gc, base);
+> +}
+> +EXPORT_SYMBOL_GPL(devprop_gpiochip_set_names_base);
+> +
+>  static unsigned long *gpiochip_allocate_mask(struct gpio_chip *gc)
+>  {
+>         unsigned long *p;
+> @@ -684,7 +698,7 @@ int gpiochip_add_data_with_key(struct gpio_chip
+> *gc, void *data,
+>         if (gc->names)
+>                 ret = gpiochip_set_desc_names(gc);
+>         else
+> -               ret = devprop_gpiochip_set_names(gc);
+> +               ret = devprop_gpiochip_set_names(gc, 0);
+>         if (ret)
+>                 goto err_remove_from_list;
+>
+> diff --git a/drivers/gpio/gpio-mt7621.c b/drivers/gpio/gpio-mt7621.c
+> index 82fb20dca53a..d4f19ab726b2 100644
+> --- a/drivers/gpio/gpio-mt7621.c
+> +++ b/drivers/gpio/gpio-mt7621.c
+> @@ -282,6 +282,12 @@ mediatek_gpio_bank_probe(struct device *dev,
+>                 return ret;
+>         }
+>
+> +       ret = devprop_gpiochip_set_names_base(&rg->chip, bank * MTK_BANK_WIDTH);
+> +       if (ret) {
+> +               dev_err(dev, "Error setting line names for bank %d", bank);
+> +               return ret;
+> +       }
+> +
+>         /* set polarity to low for all gpios */
+>         mtk_gpio_w32(rg, GPIO_REG_POL, 0);
+>
+> Best regards,
+>     Sergio Paracuellos
+>
+> >
+> > --
+> > With Best Regards,
+> > Andy Shevchenko
