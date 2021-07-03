@@ -2,77 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E493BA9BD
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 19:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BECC3BA9CA
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 19:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbhGCRVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 13:21:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229463AbhGCRVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 13:21:36 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E0856192B;
-        Sat,  3 Jul 2021 17:18:58 +0000 (UTC)
-Date:   Sat, 3 Jul 2021 18:21:22 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        id S229812AbhGCRZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 13:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229463AbhGCRZR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Jul 2021 13:25:17 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D77C061762;
+        Sat,  3 Jul 2021 10:22:42 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id r16so18120421ljk.9;
+        Sat, 03 Jul 2021 10:22:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GkqlghX39ZQMv0VL5XMqearbdcMjcK0zkdFdKOtJnZE=;
+        b=JPznIM0Ow6NR7CkKU2r2nhwUcgQydZM7A1VNBFp+isDWXxuevJXSfv8RQkurrGQL2k
+         WPQI59y6D3Tsnx8EwwRGVJArttxiRuNmrmX1DG58hyG/SDRlYihmk353i+llBl2zLCjg
+         fSfnVH9lD/Rjs5dJf9p75JWWl84pxuczO6ZuoD1hB9/JVLPHUnTQgeKPUkfLS/dmG/qs
+         mu7ImVMZ3anXjv9croyzuBMSReWpgtRDi5WnHEFhqT59Iw0O6HEU7d/z8JGkWoGPo/Fb
+         73S7EShfF1P5P9sxmGyFsvelgFUCsky2sQDBx8HSB7pWnbs6tI/NdFzBJAIfzggsLDFP
+         PnUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GkqlghX39ZQMv0VL5XMqearbdcMjcK0zkdFdKOtJnZE=;
+        b=GeCZbNj+hh0yyo7eYN02DKa4NLy1JaEjUhANj7AAm63LXNTdpYng27AjUrraamfinE
+         RpsHUKymFlmZtoPrQ7/iwnDOLFt+yoFTK1lOgKxsGMMtxcRjqhSdS1WDy3ybieZJgXDV
+         tj8eX8c3Do5ZLor2biOE5D012gN3nQCovPtQLkgJKqaZtAuRKnxA75EcevcNWpLJeuc0
+         uGyO4Oq/L+ZGRo+GW6hTdWCrDcSUt7jEBMIXcQgrvMmcskmq67P9eEEThEnSW/Lnt01v
+         H3fxRZT3EsVD04DlGUFBcWhLwmodp4L3NidcF1FfKQpFQ8V9s1uY6L3P3x5GJE5RgUWm
+         a2uQ==
+X-Gm-Message-State: AOAM532P/42N91FIo73btN+xMXlfihmTk/OKv73jlcFeWzleWR3ziOgm
+        4hofPYh2lBOlWCclEBA9PqPYrFhtjsQ=
+X-Google-Smtp-Source: ABdhPJz99JpS1s9M1J2vPLOFyo50q0z+BC5l0L+5Y8kLjHwHDWH3mZKaBsEFzY7LPxfB6iP5MWp3FQ==
+X-Received: by 2002:a05:651c:504:: with SMTP id o4mr4090359ljp.357.1625332960228;
+        Sat, 03 Jul 2021 10:22:40 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
+        by smtp.googlemail.com with ESMTPSA id x3sm749371ljm.43.2021.07.03.10.22.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Jul 2021 10:22:39 -0700 (PDT)
+Subject: Re: [PATCH v2 05/12] usb: otg-fsm: Fix hrtimer list corruption
+To:     Peter Chen <peter.chen@kernel.org>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH 0/2] Renesas RZ/G2L ADC driver support
-Message-ID: <20210703182122.0cb192e3@jic23-huawei>
-In-Reply-To: <20210629220328.13366-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20210629220328.13366-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sebastian Reichel <sre@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210701234317.26393-1-digetx@gmail.com>
+ <20210701234317.26393-6-digetx@gmail.com> <20210703110809.GA4289@Peter>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <29476aa3-c34e-8bf0-5eab-f7def493f329@gmail.com>
+Date:   Sat, 3 Jul 2021 20:22:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210703110809.GA4289@Peter>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Jun 2021 23:03:26 +0100
-Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+03.07.2021 14:08, Peter Chen пишет:
+> On 21-07-02 02:43:10, Dmitry Osipenko wrote:
+>> The HNP work can be re-scheduled while it's still in-fly. This results in
+>> re-initialization of the busy work, resetting the hrtimer's list node of
+>> the work and crashing kernel with null dereference within kernel/timer
+>> once work's timer is expired. It's very easy to trigger this problem by
+>> re-plugging USB cable quickly. Initialize HNP work only once to fix this
+>> trouble.
+> 
+> Fully OTG compliance support has not maintained for years, what's the use case you
+> still want to use?
 
-> Hi All,
-> 
-> This patch series adds DT binding and driver support for ADC block
-> found on Renesas RZ/G2L family.
-> 
-> Patches are based on top of rzg2l-update-clock-defs-v4 branch found on [1]
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/
-
-Please aim to call out any dependencies that I need to be aware of.
-That tree has lots of random things on it so I have no idea if there is anything
-I need to be aware of.
-
-> 
-> Cheers,
-> Prabhakar
-> 
-> Lad Prabhakar (2):
->   dt-bindings: iio: adc: Add binding documentation for Renesas RZ/G2L
->     A/D converter
->   iio: adc: Add driver for Renesas RZ/G2L A/D converter
-> 
->  .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 121 +++++
->  MAINTAINERS                                   |   8 +
->  drivers/iio/adc/Kconfig                       |  10 +
->  drivers/iio/adc/Makefile                      |   1 +
->  drivers/iio/adc/rzg2l_adc.c                   | 489 ++++++++++++++++++
->  5 files changed, 629 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
->  create mode 100644 drivers/iio/adc/rzg2l_adc.c
-> 
-> 
-> base-commit: 06c1e6911a7a76b446e4b00fc8bad5d8465932f8
-
+I don't have any use case for it, but I had CONFIG_USB_OTG_FSM=y and it
+was crashing kernel badly. The OTG works perfectly fine without the FSM.
