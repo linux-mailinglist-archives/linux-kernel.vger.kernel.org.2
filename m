@@ -2,189 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7343BA7CA
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 10:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE353BA7D6
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 10:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbhGCIdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 04:33:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32934 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230002AbhGCIdp (ORCPT
+        id S230106AbhGCIpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 04:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhGCIpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 04:33:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625301071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A5pLvLjSYytl9fxuQeHwRO0qsjIw9mqvaKkb7Y9O3i8=;
-        b=OM8Xesgo2gzvEtyKXLIpGN3qSWG7LbUwIjQ5hWgOLAJd5UIoGuI/J0hb5Rl/5CUbvgbFLd
-        +wmfzOH1nZJ0f86yHYB95iS2+EtgYq5q32JCZA9+34LMD0PEnEafPTC5WfXPMMfR/D1+UD
-        cqYLH+X8vDgOVmyeopAd6rWyqeOjRSE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-83-ciCrKZCdM3qDv3d5hymwpA-1; Sat, 03 Jul 2021 04:31:10 -0400
-X-MC-Unique: ciCrKZCdM3qDv3d5hymwpA-1
-Received: by mail-wm1-f72.google.com with SMTP id j6-20020a05600c1906b029019e9c982271so7523917wmq.0
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 01:31:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A5pLvLjSYytl9fxuQeHwRO0qsjIw9mqvaKkb7Y9O3i8=;
-        b=PuIC5N+D8VPf6U2E3q7qQ27z2h+QC7Sn2E3VSwbCkmX19dOk1UkOOuOlBuaP2z/ZdS
-         nrxJ1U7fiuZl0aCBYDFOa4wSJovyNLqjn8uyBQb15Chls5WVJ+7ieIpRHCTCLmOrwsxn
-         x0SKFkpqRm0yI75XTc5rXcvHk78ZDBk9x+vMaG6JruSxoZhxBJE2WQFWBmn5cxkFOgwl
-         mpVkOSwKLWpGhKOsiewbJaIX+aS/ofbFS8wPOdLlqOx8nR/VCRATHWSsgh4P8IOeTZg1
-         REp2vwdLwWNmUMXVT8HbsKFkRWO6Bcw+AmgCiSAUVcBbnM03bhXFpdRaXnu8at5WMw7R
-         hWZQ==
-X-Gm-Message-State: AOAM532Zyv1VSwtwXkmzif1UOR/C2OZ9ANxjOw0JCd68mJ500Lbk2p76
-        PJQ7s/7x3cSAWz7WsA0jwKBTZ/ScRKYn7ewTXN8NekP6JIcLz+FzNyN8RC81TIpwIo2u9eE52Or
-        jRbxK5WICafBWvxM/mzlq+9ZE
-X-Received: by 2002:a05:600c:296:: with SMTP id 22mr3900762wmk.17.1625301069177;
-        Sat, 03 Jul 2021 01:31:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzrvv4LtZcQ7zdL29oxvTkKz5qNfM0qWp0wXMltlMPDTMTgPHfjYLGKI6BE2STBxqHT1590MA==
-X-Received: by 2002:a05:600c:296:: with SMTP id 22mr3900747wmk.17.1625301069032;
-        Sat, 03 Jul 2021 01:31:09 -0700 (PDT)
-Received: from redhat.com ([2.55.4.39])
-        by smtp.gmail.com with ESMTPSA id k5sm5943632wmk.11.2021.07.03.01.31.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Jul 2021 01:31:08 -0700 (PDT)
-Date:   Sat, 3 Jul 2021 04:31:03 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     He Zhe <zhe.he@windriver.com>
-Cc:     xieyongji@bytedance.com, jasowang@redhat.com, stefanha@redhat.com,
-        sgarzare@redhat.com, parav@nvidia.com, hch@infradead.org,
-        christian.brauner@canonical.com, rdunlap@infradead.org,
-        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
-        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, gregkh@linuxfoundation.org,
-        songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, qiang.zhang@windriver.com
-Subject: Re: [PATCH] eventfd: Enlarge recursion limit to allow vhost to work
-Message-ID: <20210703043039-mutt-send-email-mst@kernel.org>
-References: <CACycT3t1Dgrzsr7LbBrDhRLDa3qZ85ZOgj9H7r1fqPi-kf7r6Q@mail.gmail.com>
- <20210618084412.18257-1-zhe.he@windriver.com>
+        Sat, 3 Jul 2021 04:45:16 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8002DC061764;
+        Sat,  3 Jul 2021 01:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ygQ/dHoI16d9t9CiCap4vqQ0iOswu0jckuAtsh9qAn0=; b=Ogm1pWu5ATnJNwGnM//rPJXFwT
+        jhvozEeKfD6Czi4uacoca1Njk9q4muTn3j5H422KVyNQxHtE1obu2qV1x/ID6JfOO7HqwuYHlJ8Gi
+        9M3pVn0asYwCzKR6WFooGY9vx3JbiHEXmuDI5X76Faow3I3GeK4Kl8UmSLwB5rUznhbc=;
+Received: from p200300ccff37da001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff37:da00:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lzbES-0006NR-OJ; Sat, 03 Jul 2021 10:42:36 +0200
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lzbES-0008Gw-7s; Sat, 03 Jul 2021 10:42:36 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     lee.jones@linaro.org, robh+dt@kernel.org, jic23@kernel.org,
+        lars@metafoo.de, sre@kernel.org, andreas@kemnade.info,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-pm@vger.kernel.org,
+        leonard.crestez@nxp.com, letux-kernel@openphoenux.org
+Subject: [PATCH 0/4] mfd: rn5t618: Extend ADC support
+Date:   Sat,  3 Jul 2021 10:42:20 +0200
+Message-Id: <20210703084224.31623-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618084412.18257-1-zhe.he@windriver.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:44:12PM +0800, He Zhe wrote:
-> commit b5e683d5cab8 ("eventfd: track eventfd_signal() recursion depth")
-> introduces a percpu counter that tracks the percpu recursion depth and
-> warn if it greater than zero, to avoid potential deadlock and stack
-> overflow.
-> 
-> However sometimes different eventfds may be used in parallel. Specifically,
-> when heavy network load goes through kvm and vhost, working as below, it
-> would trigger the following call trace.
-> 
-> -  100.00%
->    - 66.51%
->         ret_from_fork
->         kthread
->       - vhost_worker
->          - 33.47% handle_tx_kick
->               handle_tx
->               handle_tx_copy
->               vhost_tx_batch.isra.0
->               vhost_add_used_and_signal_n
->               eventfd_signal
->          - 33.05% handle_rx_net
->               handle_rx
->               vhost_add_used_and_signal_n
->               eventfd_signal
->    - 33.49%
->         ioctl
->         entry_SYSCALL_64_after_hwframe
->         do_syscall_64
->         __x64_sys_ioctl
->         ksys_ioctl
->         do_vfs_ioctl
->         kvm_vcpu_ioctl
->         kvm_arch_vcpu_ioctl_run
->         vmx_handle_exit
->         handle_ept_misconfig
->         kvm_io_bus_write
->         __kvm_io_bus_write
->         eventfd_signal
-> 
-> 001: WARNING: CPU: 1 PID: 1503 at fs/eventfd.c:73 eventfd_signal+0x85/0xa0
-> ---- snip ----
-> 001: Call Trace:
-> 001:  vhost_signal+0x15e/0x1b0 [vhost]
-> 001:  vhost_add_used_and_signal_n+0x2b/0x40 [vhost]
-> 001:  handle_rx+0xb9/0x900 [vhost_net]
-> 001:  handle_rx_net+0x15/0x20 [vhost_net]
-> 001:  vhost_worker+0xbe/0x120 [vhost]
-> 001:  kthread+0x106/0x140
-> 001:  ? log_used.part.0+0x20/0x20 [vhost]
-> 001:  ? kthread_park+0x90/0x90
-> 001:  ret_from_fork+0x35/0x40
-> 001: ---[ end trace 0000000000000003 ]---
-> 
-> This patch enlarges the limit to 1 which is the maximum recursion depth we
-> have found so far.
-> 
-> The credit of modification for eventfd_signal_count goes to
-> Xie Yongji <xieyongji@bytedance.com>
-> 
+Add devicetree support so that consumers can reference the channels
+via devicetree, especially the power subdevice can make use of that
+to provide voltage_now properties.
 
-And maybe:
+Andreas Kemnade (4):
+  dt-bindings: mfd: ricoh,rn5t618: ADC related nodes and properties
+  mfd: rn5t618: Add of compatibles for ADC and power
+  iio: rn5t618: Add devicetree support
+  power: supply: rn5t618: Add voltage_now property
 
-Fixes: b5e683d5cab8 ("eventfd: track eventfd_signal() recursion depth")
+ .../bindings/mfd/ricoh,rn5t618.yaml           | 53 ++++++++++++++++++
+ drivers/iio/adc/rn5t618-adc.c                 | 14 ++++-
+ drivers/mfd/rn5t618.c                         |  6 +-
+ drivers/power/supply/rn5t618_power.c          | 56 +++++++++++++++++++
+ 4 files changed, 126 insertions(+), 3 deletions(-)
 
-who's merging this?
-
-> Signed-off-by: He Zhe <zhe.he@windriver.com>
-> ---
->  fs/eventfd.c            | 3 ++-
->  include/linux/eventfd.h | 5 ++++-
->  2 files changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/eventfd.c b/fs/eventfd.c
-> index e265b6dd4f34..add6af91cacf 100644
-> --- a/fs/eventfd.c
-> +++ b/fs/eventfd.c
-> @@ -71,7 +71,8 @@ __u64 eventfd_signal(struct eventfd_ctx *ctx, __u64 n)
->  	 * it returns true, the eventfd_signal() call should be deferred to a
->  	 * safe context.
->  	 */
-> -	if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count)))
-> +	if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count) >
-> +	    EFD_WAKE_COUNT_MAX))
->  		return 0;
->  
->  	spin_lock_irqsave(&ctx->wqh.lock, flags);
-> diff --git a/include/linux/eventfd.h b/include/linux/eventfd.h
-> index fa0a524baed0..74be152ebe87 100644
-> --- a/include/linux/eventfd.h
-> +++ b/include/linux/eventfd.h
-> @@ -29,6 +29,9 @@
->  #define EFD_SHARED_FCNTL_FLAGS (O_CLOEXEC | O_NONBLOCK)
->  #define EFD_FLAGS_SET (EFD_SHARED_FCNTL_FLAGS | EFD_SEMAPHORE)
->  
-> +/* This is the maximum recursion depth we find so far */
-> +#define EFD_WAKE_COUNT_MAX 1
-> +
->  struct eventfd_ctx;
->  struct file;
->  
-> @@ -47,7 +50,7 @@ DECLARE_PER_CPU(int, eventfd_wake_count);
->  
->  static inline bool eventfd_signal_count(void)
->  {
-> -	return this_cpu_read(eventfd_wake_count);
-> +	return this_cpu_read(eventfd_wake_count) > EFD_WAKE_COUNT_MAX;
->  }
->  
->  #else /* CONFIG_EVENTFD */
-> -- 
-> 2.17.1
+-- 
+2.30.2
 
