@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637F53BA932
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 17:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A03B3BA934
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 17:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhGCPYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 11:24:17 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:39122 "EHLO
+        id S230008AbhGCPY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 11:24:28 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:39152 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhGCPYL (ORCPT
+        with ESMTP id S229907AbhGCPYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 11:24:11 -0400
+        Sat, 3 Jul 2021 11:24:21 -0400
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 782861C0B79; Sat,  3 Jul 2021 17:21:34 +0200 (CEST)
-Date:   Sat, 3 Jul 2021 17:21:33 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jiri Kosina <trivial@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>, Pavel Machek <pavel@denx.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v2 5/5] memory: renesas-rpc-if: Export symbols as GPL
-Message-ID: <20210703152133.GA3004@amd>
-References: <20201126191146.8753-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201126191146.8753-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201128114145.GE4761@kozik-lap>
- <OSBPR01MB5048DD433E56143A04961153AAF70@OSBPR01MB5048.jpnprd01.prod.outlook.com>
+        id 30F9A1C0B79; Sat,  3 Jul 2021 17:21:46 +0200 (CEST)
+Date:   Sat, 3 Jul 2021 17:21:45 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Fuad Tabba <tabba@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 5.10 049/101] KVM: selftests: Fix kvm_check_cap()
+ assertion
+Message-ID: <20210703152144.GB3004@amd>
+References: <20210628142607.32218-1-sashal@kernel.org>
+ <20210628142607.32218-50-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="CE+1k2dSO48ffgeK"
+        protocol="application/pgp-signature"; boundary="XF85m9dhOBO43t/C"
 Content-Disposition: inline
-In-Reply-To: <OSBPR01MB5048DD433E56143A04961153AAF70@OSBPR01MB5048.jpnprd01.prod.outlook.com>
+In-Reply-To: <20210628142607.32218-50-sashal@kernel.org>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---CE+1k2dSO48ffgeK
-Content-Type: text/plain; charset=utf-8
+--XF85m9dhOBO43t/C
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi!
 
-> > On Thu, Nov 26, 2020 at 07:11:46PM +0000, Lad Prabhakar wrote:
-> > > Renesas RPC-IF driver is licensed under GPL2.0, to be in sync export =
-the
-> > > symbols as GPL.
-> >=20
-> > It's not a valid reason to export them as GPL. Entire Linux source code
-> > is licensed as GPL-2.0, so are you going to change all EXPORT_SYMBOL to
-> > GPL?
-> >=20
-> Agreed not a valid case. That clears my understanding wrt GPL exports =F0=
-=9F=98=8A=20
+> From: Fuad Tabba <tabba@google.com>
+>=20
+> [ Upstream commit d8ac05ea13d789d5491a5920d70a05659015441d ]
+>=20
+> KVM_CHECK_EXTENSION ioctl can return any negative value on error,
+> and not necessarily -1. Change the assertion to reflect that.
+>=20
+> Signed-off-by: Fuad Tabba <tabba@google.com>
 
-Actually, you have just acquired wrong understanding of GPL
-exports. We normally export everything as _GPL unless there is very
-very very good reason not to do so.
+This is userland code, right?
 
-(The reason EXPORT_SYMBOL even exists are very obscure usecases of
-modules ported from non-free operating systems).
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -55,7 +55,7 @@ int kvm_check_cap(long cap)
+>  		exit(KSFT_SKIP);
+> =20
+>  	ret =3D ioctl(kvm_fd, KVM_CHECK_EXTENSION, cap);
+> -	TEST_ASSERT(ret !=3D -1, "KVM_CHECK_EXTENSION IOCTL failed,\n"
+> +	TEST_ASSERT(ret >=3D 0, "KVM_CHECK_EXTENSION IOCTL failed,\n"
+>  		"  rc: %i errno: %i", ret, errno);
+
+And syscalls return -1 on error in userland, not anything else. So
+this should not be needed.
 
 Best regards,
-									Pavel
---=20
-http://www.livejournal.com/~pavelmachek
+								Pavel
+--
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
---CE+1k2dSO48ffgeK
+--XF85m9dhOBO43t/C
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAmDggH0ACgkQMOfwapXb+vIH7gCeNMaIHxMthiCDl44FxLuT0mj/
-C4oAn34uyHpIcHWzjY4zofQgs3Vu7Ncs
-=KTFS
+iEYEARECAAYFAmDggIgACgkQMOfwapXb+vJhFQCgooH7ECT69tkzlu39sFmUrGsz
+UYgAn38FUHq8FNb25jgvY4foy/szD7wj
+=O1p7
 -----END PGP SIGNATURE-----
 
---CE+1k2dSO48ffgeK--
+--XF85m9dhOBO43t/C--
