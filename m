@@ -2,88 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C5D3BAAF9
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 05:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D863BAB99
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 07:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhGDDJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 23:09:40 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:39830 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229529AbhGDDJj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 23:09:39 -0400
-X-UUID: 64c9133fa8d949278109597ce187b93f-20210704
-X-UUID: 64c9133fa8d949278109597ce187b93f-20210704
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1605273528; Sun, 04 Jul 2021 11:07:03 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 4 Jul 2021 11:07:02 +0800
-Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 4 Jul 2021 11:07:02 +0800
-From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v9 5/5] arm64: dts: mt8192: add spmi node
-Date:   Sun, 4 Jul 2021 11:06:58 +0800
-Message-ID: <1625368018-17505-6-git-send-email-hsin-hsiung.wang@mediatek.com>
-X-Mailer: git-send-email 2.6.4
-In-Reply-To: <1625368018-17505-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-References: <1625368018-17505-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+        id S229510AbhGDEYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 00:24:05 -0400
+Received: from mail.slpost.lk ([203.94.75.238]:47188 "EHLO slpost.lk"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229483AbhGDEYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 00:24:05 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by slpost.lk (Postfix) with ESMTP id AF636EA8E39;
+        Sat,  3 Jul 2021 21:01:00 +0530 (IST)
+X-Virus-Scanned: amavisd-new at slpost.lk
+Received: from slpost.lk ([127.0.0.1])
+        by localhost (slpost.lk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id rKepYC78W5ey; Sat,  3 Jul 2021 21:01:00 +0530 (IST)
+Received: from slpost.lk (slpost.lk [192.168.1.246])
+        by slpost.lk (Postfix) with ESMTP id 5AEEFEA8E26;
+        Sat,  3 Jul 2021 21:00:57 +0530 (IST)
+Date:   Sat, 03 Jul 2021 21:00:57 +0530 (IST)
+From:   ANTONY BLINKEN <ds.gqn@slpost.lk>
+Reply-To: ANTONY BLINKEN <info@ablinken.us>
+Subject: =?utf-8?B?7LC46rOgIDog64u57Iug7J2AIOuvuOq1rSDrs7Xqtozsl5Ag7ISg7KCV65CY7JeI7Iq164uI64ukLg==?=
+Message-ID: <5ec98c18-4829-49ac-b5dc-522d85cf0c79@slpost.lk>
+In-Reply-To: <5be7c833-5047-49bd-950a-efaed02221eb@slpost.lk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+X-Originating-IP: [192.168.1.253]
+X-Mailer: Zimbra 7.1.2_GA_3268 (ZimbraWebClient - FF3.0 (Win)/7.1.2_GA_3268)
+To:     undisclosed-recipients:;
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add spmi node to SOC MT8192.
-
-Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
----
-changes since v8:
-- No change.
----
- arch/arm64/boot/dts/mediatek/mt8192.dtsi | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index b51409f516b1..e65890a347d0 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -316,6 +316,23 @@
- 			clock-names = "clk13m";
- 		};
- 
-+		spmi: spmi@10027000 {
-+			compatible = "mediatek,mt6873-spmi";
-+			reg = <0 0x10027000 0 0x000e00>,
-+			      <0 0x10029000 0 0x000100>;
-+			reg-names = "pmif", "spmimst";
-+			clocks = <&infracfg CLK_INFRA_PMIC_AP>,
-+				 <&infracfg CLK_INFRA_PMIC_TMR>,
-+				 <&topckgen CLK_TOP_SPMI_MST_SEL>;
-+			clock-names = "pmif_sys_ck",
-+				      "pmif_tmr_ck",
-+				      "spmimst_clk_mux";
-+			assigned-clocks = <&topckgen CLK_TOP_PWRAP_ULPOSC_SEL>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_OSC_D10>;
-+			#address-cells = <2>;
-+			#size-cells = <0>;
-+		};
-+
- 		scp_adsp: clock-controller@10720000 {
- 			compatible = "mediatek,mt8192-scp_adsp";
- 			reg = <0 0x10720000 0 0x1000>;
--- 
-2.18.0
-
+7LaV7ZWY7ZWp64uI64ukIQogCuuvuOq1rSDrs7Xqtowg7ZSE66Gc6re4656o7JeQ7IScIOy0nSAk
+IDUsMDAwLDAwMC4wMOydhOuwm+ydhCDsiJgg7J6I64+E66GdIOq3gO2VmOydmCDsnbTrqZTsnbwg
+7KO87IaM66W8IO2Gte2VtCDqt4DtlZjqsIAg7ISg7KCV65CY7JeI7J2M7J2EIOyVjOugpCDrk5zr
+pqzqsozrkJjslrQg6riw7IGY6rKMIOyDneqwge2VqeuLiOuLpC4g7LC47KGwIOuyiO2YuOuKlCAo
+VS5TLUxPVFRPLTU1Nzk1KeyeheuLiOuLpC4KCuuqqOuToCDsiJjtmJzsnpDripQg7J247YSw64S3
+7J2EIO2Gte2VtCA1IOyynOunjCDqsJzsnZgg7J2066mU7J28IOyjvOyGjOuhnCDsnpHshLHrkJwg
+6riA66Gc67KMIOustOyekeychCDthrXtlakg7Iuc7Iqk7YWc7J2EIO2Gte2VtCDshKDsoJXrkJjs
+l4jsnLzrqbAsIO2WieyatOydmCDri7nssqjsnpDripQg7Yuw7LyT7J2EIOq1rOunpO2VmOqxsOuC
+mOydtCDrs7Xqtowg7ZSE66Gc6re4656o7JeQ7IScIOuLueyyqOydhCDsi6Dssq3tlaAg7ZWE7JqU
+6rCAIOyXhuyKteuLiOuLpC4g6reA7ZWY7J2YIOydtOumhOqzvCDqsJnsnYAg7KCE7LK0IOyEuOu2
+gCDsoJXrs7Trpbwg7KCE64us7ZWY7Iut7Iuc7JikIDog7KCE7ZmUIOuyiO2YuCA6IOuCmOydtCA6
+IOyEseuzhCA6IOyjvOyGjCDrsI8g6reA7ZWY7J2YIO2MjOydvCDssLjsobAsIOuLueyyqOq4iCDs
+p4Drtogg7LKY66asIOuwjyDsp4DrtoguCgrshLjrtoAg7KCV67O066W8IOuLpOydjCDso7zshozr
+oZwg67O064K07KO87Iut7Iuc7JikLgrri7Tri7nsnpAgOiBXYWxseSBBZGV5ZW1vIOyUqC4KPT09
+IOyerOustOu2gCDssKjqtIAgPT09CuydtOuplOydvCA6IGluZm9AZHN0d2FsbHkudXMK7KCE7ZmU
+IDogKzEgKDQwNSkgNjg5LTc3MjYKCuq3gO2VmOydmCDsnbTrqZTsnbzsnbQg7J6t7Yyf7J2EIO2a
+jeuTne2WiOyKteuLiOuLpC4g64uk7IucIO2VnCDrsogg7LaV7ZWY65Oc66a964uI64ukLgogCuq3
+gO2VmOydmCDshJzruYTsiqQsCkFudG9ueSBCbGlua2VuICjrr7jqta0g6rWt66y0IOyepeq0gCkK
+66+46rWtIOuzteq2jCDstInsp4TsnpAuIMKpIDIwMjEuCioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKgrssLjqs6AgOiDqt4DtlZjsnZgg7J247YSw64S3IOyEnOu5hOyKpCDsoJzqs7Ug7JeF
+7LK06rCAIOq1rO2YhCDtlZwg7KCc7ZWcIOyCrO2VreycvOuhnCDsnbjtlbQg7Iqk7Yy4IC8g64yA
+65+JIO2PtOuNlOyXkOydtCDrqZTsi5zsp4Drpbwg7IiY7IugIO2VnCDqsr3smrAsIOuLueyCrCAo
+67O16raMIO2MgCnripQg6reA7ZWY6rCAIOynhOygleycvOuhnCDsspjrpqwg7ZWgIOqyg+ydhCDs
+tInqtaztlanri4jri6QuIOuvuOq1rSDrs7Xqtowg7LaU7LKo7JeQIOuNlCDrp47snbQg7LC47Jes
+7ZWY66Ck66m0IHd3dy5sb3R0ZXJ5dXNhLmNvbeydhCDrsKnrrLjtlZjsi63si5zsmKQu
