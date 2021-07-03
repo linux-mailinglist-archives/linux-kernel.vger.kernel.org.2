@@ -2,120 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988E03BA7F1
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 10:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5160E3BA7F4
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 11:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbhGCI7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 04:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbhGCI7d (ORCPT
+        id S229983AbhGCJCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 05:02:40 -0400
+Received: from mail1.protonmail.ch ([185.70.40.18]:19567 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhGCJCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 04:59:33 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2420CC061762
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Jul 2021 01:57:00 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lzbSA-0006qM-PW; Sat, 03 Jul 2021 10:56:46 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lzbS8-0002kJ-Ut; Sat, 03 Jul 2021 10:56:44 +0200
-Date:   Sat, 3 Jul 2021 10:56:44 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     '@lunn.ch, Florian Fainelli <f.fainelli@gmail.com>,
-        linux-mips@vger.kernel.org, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 3/6] net: dsa: qca: ar9331: add forwarding
- database support'
-Message-ID: <20210703085644.dg5faj74ijg7orw6@pengutronix.de>
-References: <20210702101751.13168-1-o.rempel@pengutronix.de>
- <20210702101751.13168-4-o.rempel@pengutronix.de>
- <YN8tWtqfRRO7kAlb@lunn.ch>
+        Sat, 3 Jul 2021 05:02:38 -0400
+Date:   Sat, 03 Jul 2021 09:00:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1625302803;
+        bh=bh7EqPBSxD7P0sFIwjUGPVXk5inH7QT2SLxv4vJUnxM=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=uKToOwdJAXk/AVaBEn+cTXOICdi8xkNcy99a/jle7KDl2C/uUR21XDBgTQXZ/UhQH
+         3rNoExoJaLw8yoB2rhCXAfb8kJJ8tnX9ouE5qEWyn0nblI/zD7lM3btLFqnzaSlq7z
+         25qB6N+e4aEdrL2hIMzoqRSC8Yhya0tv9UzyTwbg16N2r7Qg+tIX959cC80NTAXLfi
+         ysVmtIRvdzeyya//7XvBdQIPn4RcRDHJtjoZs8HdTnb6EhOhSN7qoTWTMOoHTjy43p
+         vggHDpukZ8RjVcyuG7cS+CpJdGw36Nlk+9DBGrRqAKipWyZBUzvDJFi2dLHQJMxYwr
+         cdR1lQug1hCdQ==
+To:     gushengxian <gushengxian507419@gmail.com>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        yuq825@gmail.com, linux-samsung-soc@vger.kernel.org,
+        lima@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        gushengxian <gushengxian@yulong.com>
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH] include/uapi/drm: fix spelling mistakes in header files
+Message-ID: <anhfX5shNJsdNd6vWMeQqNTawyT0AGuoZYI7yRItB-il7fywDu9_Ie1kKL7Wwv2ecVxiYaoymsZHpufnuxUBqvja2uq0_t-Qmhhc4uHT5f0=@emersion.fr>
+In-Reply-To: <20210703072502.646239-1-gushengxian507419@gmail.com>
+References: <20210703072502.646239-1-gushengxian507419@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YN8tWtqfRRO7kAlb@lunn.ch>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 10:55:21 up 212 days, 23:01, 44 users,  load average: 0.00, 0.01,
- 0.00
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 05:14:34PM +0200, Andrew Lunn wrote:
-> On Fri, Jul 02, 2021 at 12:17:48PM +0200, Oleksij Rempel wrote:
-> > This switch provides simple address resolution table, without VLAN or
-> > multicast specific information.
-> > With this patch we are able now to read, modify unicast and mulicast
-> 
-> mul_t_icast.
+Reviewed-by: Simon Ser <contact@emersion.fr>
 
-done
+But this this touches a lot of different drivers, not sure we can just
+merge this via drm-misc-next?
 
-> > addresses.
-> > +static int ar9331_sw_port_fdb_dump(struct dsa_switch *ds, int port,
-> > +				   dsa_fdb_dump_cb_t *cb, void *data)
-> > +{
-> > +	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-> > +	int cnt = AR9331_SW_NUM_ARL_RECORDS;
-> > +	struct ar9331_sw_fdb _fdb = { 0 };
-> 
-> Why use _fdb? There does not appear to be an fdb?
-
-old artifact, renamed.
-
-> > +static int ar9331_sw_port_fdb_rmw(struct ar9331_sw_priv *priv,
-> > +				  const unsigned char *mac,
-> > +				  u8 port_mask_set,
-> > +				  u8 port_mask_clr)
-> > +{
-> > +	struct regmap *regmap = priv->regmap;
-> > +	u32 f0, f1, f2 = 0;
-> > +	u8 port_mask, port_mask_new, status, func;
-> > +	int ret;
-> 
-> Reverse Christmas tree.
-
-done
-
-> > +static int ar9331_sw_port_fdb_add(struct dsa_switch *ds, int port,
-> > +				  const unsigned char *mac, u16 vid)
-> > +{
-> > +	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-> > +	u16 port_mask = BIT(port);
-> > +
-> > +	dev_info(priv->dev, "%s(%pM, %x)\n", __func__, mac, port);
-> 
-> dev_dbg()?
-
-removed.
-
-Thank you!
-Can I have your Reviewed-by with this changes?
-
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+In any case, please ping me again in a week if this hasn't been merged
+by then.
