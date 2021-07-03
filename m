@@ -2,140 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B0F3BA96C
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 18:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6AE63BA972
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 18:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhGCQVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 12:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40534 "EHLO
+        id S229812AbhGCQWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 12:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhGCQVN (ORCPT
+        with ESMTP id S229497AbhGCQWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 12:21:13 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BA3C061762;
-        Sat,  3 Jul 2021 09:18:38 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id i20so21287262ejw.4;
-        Sat, 03 Jul 2021 09:18:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/SFx0l3EFfXNlGfyI4GVdZzRabxV5Q5+sQtiSDXNWyA=;
-        b=Y89WEwsifC2v0VdErRLJjYeyJmIWBXHrtZzhT6IZHQdx/2Nsemmeil8SulvH9KRj22
-         A0Z4KglyhDv0BfV7EQtbvIGrJd6mAagDmlsICgrwU5UCwcSFBcz/ZNLIh/YNAaxYbqM0
-         7Y3SJFoXL6FokOSyo/uTlcMKTOk+lfmlRIn6oDp9MqwiiFZRpYHHtcaceEaWiTrKZxQj
-         clRa0/2TAIx0uSBeawIVdmNqtU2GiIjfR6AQBbCIZIR1+tayHXy02exYi5VQNqPzKnbU
-         fBY3jKfCTAPHStRotUekp2kOWYZ3Ml8xGNHDMLpd7CRelawB2FnloxzSY0Opt5YAojyg
-         UpKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/SFx0l3EFfXNlGfyI4GVdZzRabxV5Q5+sQtiSDXNWyA=;
-        b=h//x6c/FvXGPJ1pbHBxxaiJPyFwA1bHT8PWfcOKvuiu8Yqfy/rBtAvLghxMkQx9Q7y
-         7+8tQVQAZF8yHBOX0nKo0ZCZYkAoODtwG2tB5fb9YSOEKG7ZAmhDGXilIpCpxNVm+o3E
-         9mtGRfCl0Cx+4jE+WJ8lTOYGHP8HCkbcyKW50hjP1E1hWb97/WD90IcaqVgg67RcCRgg
-         70mu8jsX0IBPT9dDNEt9l5ggtrFuZD3UbRoCmy31RI1I0vaaZarzcUatCdRiq0pjiN1Q
-         Y3anwpFuE903rVBfzhnqctLcNqb5GQWIiOUUAt1xukl6CDWReJdhnxzB1MiATAzSghaI
-         xFFg==
-X-Gm-Message-State: AOAM530NJVrD51BHngenJ12B1ruxVYBqJ/nR0MPJYFQ8kgrurX3DM7Vc
-        8MQ2/2/Hrw+StplEEHuSnD32kyPEa/8eMA0pojh710prtGEk+A==
-X-Google-Smtp-Source: ABdhPJyIW/gHmhWZpraIEnHpbIr8igMFbgS3aJkgvRtJleUmEjWgSls5GThsHsT/TQjnxCxv5qi9q8Jw2YfdfeIdlIA=
-X-Received: by 2002:a17:906:15c2:: with SMTP id l2mr5335696ejd.348.1625329116880;
- Sat, 03 Jul 2021 09:18:36 -0700 (PDT)
+        Sat, 3 Jul 2021 12:22:30 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AECC061762;
+        Sat,  3 Jul 2021 09:19:56 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f289e0085c7d3fefeb66b8e.dip0.t-ipconnect.de [IPv6:2003:ec:2f28:9e00:85c7:d3fe:feb6:6b8e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1282F1EC047F;
+        Sat,  3 Jul 2021 18:19:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1625329195;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=upKFgpUh0zZ782nZABcY/RNBj8bd/OadOyw5te8iHZc=;
+        b=NudzYXsG646/+XcrvCCfobxDIXDqoINAGQsj0E1AkwVZlvZjqXEC4Q/LmnHdK/BN54pmaw
+        JFsqB2fy+zUTz07NLLpEzLpX8tb+BSpe+VA0CqnOJO8wCl7siWJe7RndUF0FD5wSiMEe/r
+        qnuIbLGmBy99uqaqdSvureQd8IDQa2A=
+Date:   Sat, 3 Jul 2021 18:19:47 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com, Dov Murik <dovmurik@linux.ibm.com>
+Subject: Re: [PATCH Part1 RFC v3 22/22] virt: Add SEV-SNP guest driver
+Message-ID: <YOCOIy1AW5RUfbx4@zn.tnic>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-23-brijesh.singh@amd.com>
+ <YNxzJ2I3ZumTELLb@zn.tnic>
+ <46499161-0106-3ae9-9688-0afd9076b28b@amd.com>
+ <YN4DixahyShxyyCv@zn.tnic>
+ <5b4d20db-3013-4411-03b9-708dd18dbe64@amd.com>
 MIME-Version: 1.0
-References: <60decdb6.1c69fb81.6130e.7642@mx.google.com> <20210702200742.wuhdg4dhpolher3t@oracle.com>
-In-Reply-To: <20210702200742.wuhdg4dhpolher3t@oracle.com>
-From:   Hao Lee <haolee.swjtu@gmail.com>
-Date:   Sun, 4 Jul 2021 00:18:22 +0800
-Message-ID: <CA+PpKPmN2E5zCjP3mkurNA2GANtLCUmoPG+_4mUq3E8cxOhuhQ@mail.gmail.com>
-Subject: Re: [Question] Do we need remote charging for cpu and cpuacct subsys?
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <5b4d20db-3013-4411-03b9-708dd18dbe64@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 3, 2021 at 4:07 AM Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
->
-> Hello,
->
-> On Fri, Jul 02, 2021 at 08:26:27AM -0000, Hao Lee wrote:
-> > memcg currently has a remote charging mechanism that can charge usage to other
-> > memcg instead of the one the task belongs to.
-> >
-> > In our environment, we need to account the cpu usage consumed by some kworkers
-> > to a specific cgroup. Thus, we want to introduce a remote-charging mechanism to
-> > cpu and cpuacct subsys in our kernel.
->
-> I also want to see this upstream, and am actually working on it right
-> now, have been for some time.
->
-> So far, this is needed to properly account multithreaded padata jobs,
-> memory reclaim, and net rx. Android folks have raised this issue in the
-> past too, though I'm not aware of the specific kthreads that are giving
-> them problems.
->
-> So naturally, I'm curious about your use case and how it may be
-> different from these others. What kworkers would you like to account?
+On Thu, Jul 01, 2021 at 04:32:25PM -0500, Brijesh Singh wrote:
+> The spec definition is present in include/linux/psp-sev.h but sometime
+> we don't expose the spec defs as-is to userspace.
 
-Thanks. We use a workqueue to perform asynchronous reclaim for cgroups.
-The kworker may consume lots of CPU cycles if the cgroup memory pressure
-is extremely high, so we want to charge the cpu usage to the related
-cgroup for which the kworker works. Otherwise, the reclaim kworker will
-steal cpu time from the system level, which breaks the resource isolation.
+Why?
 
->
-> > I want to know if the community has a plan to do this?
-> > What will the community approach look like?
->
-> There has been discussion about this here,
->
->    https://lore.kernel.org/lkml/20200219214112.4kt573kyzbvmbvn3@ca-dmjordan1.us.oracle.com/
->
+Having such undocumented and maybe unwarranted differences - I still
+don't see a clear reason why - is calling for additional and unnecessary
+confusion.
 
-Yes, our work is very similar to Johannes'.
+> Several SEV/SEV-SNP does not need to be exposed to the userspace,
+> those which need to be expose we provide a bit modified Linux uapi for
+> it, and for SEV drivers we choose "_user" prefix.
 
-> more recently here,
->
->    https://lore.kernel.org/lkml/YGxjwKbec68sCcqo@slm.duckdns.org/
->
-> and we may talk about it at LPC:
->
->    https://www.linuxplumbersconf.org/event/11/page/104-accepted-microconferences#cont-perform
+Is that documented somewhere?
 
-I also found that you posted a patchset in 2019 to introduce a
-cgroup-aware workqueue. In that discussion, back-charging is considered
-to be a suitable solution.
-    https://lore.kernel.org/lkml/20190611195549.GL3341036@devbig004.ftw2.facebook.com/
+Because "user" doesn't tell me it is a modified structure which is
+different from the spec.
 
-I also have a question here. Are the back-charging and remote charging
-the same thing?
+> e.g
+> a spec definition for the PEK import in include/linux/psp-sev.h is:
+> struct sev_data_pek_cert_import {
+> 	u64 pdh_cert_address;  /* system physical address */
+> 	u32 pdh_cert_len;
+> 	u32 reserved;
+> 	...
+> };
+> 
+> But its corresponding userspace structure def in include/uapi/linux/psp-sev.h is:
+> struct sev_user_data_pek_cert_import {
+> 	__u64 pek_cert_uaddr; /* userspace address */
+> 	__u32 pek_cert_len;
+> 	...
+> };
 
->
-> > I think we need to move the active_memcg to a separated active_cgroup struct,
-> > and the latter will contain active_memcg, active_tg, and active_cpuacct.
->
-> I'm not seeing how that could work for cases that don't know the cgroup
-> when the remote charging period begins.
+And the difference is a single "u32 reserved"?
 
-This is indeed a problem. Neither cgroup-aware kthread nor remote
-charging can address this. Maybe this is the biggest obstacle hindering
-fine-grained charging.
+Dunno, from where I'm standing this looks like unnecessary confusion to
+me.
 
-> The only one I'm aware of
-> that's like that is net rx, where the work to process packets has to
-> start before their ultimate destination, and therefore cgroup, is known.
+> The ioctl handling takes care of mapping from uaddr to pa and other
+> things as required. So, I took similar approach for the SEV-SNP guest
+> ioctl. In this particular case the guest request structure defined in
+> the spec contains multiple field but many of those fields are managed
+> internally by the kernel (e.g seqno, IV, etc etc).
 
-Sorry. Is this a typo? It seems the word "known" should be "unknown"...
+Ok, multiple fields sounds like you wanna save on the data that is
+shovelled between kernel and user space and then some of the fields
+don't mean a thing for the user API. Ok.
 
+But again, where is this documented and stated clear so that people are
+aware?
 
-Regards,
-Hao Lee
+Or are you assuming that since the user counterparts are in
 
->
-> thanks,
-> Daniel
+include/uapi/linux/psp-sev.h
+	^^^^
+
+and it being an uapi header, then that should state that?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
