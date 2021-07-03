@@ -2,191 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481953BAA85
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 00:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909993BAA8C
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 01:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbhGCWTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 18:19:33 -0400
-Received: from sonic314-27.consmr.mail.ne1.yahoo.com ([66.163.189.153]:40918
-        "EHLO sonic314-27.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229520AbhGCWTc (ORCPT
+        id S229700AbhGCXFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 19:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229520AbhGCXFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 18:19:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1625350617; bh=YbIv94o6C/dZEyYF2m240ieOzJImOpstAJQYnFn3Vi8=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=md/DNpfAym2TpTgCFFyNSJ2VnLP3uQe7DaBsTriKRCWQUSP3uvlwhtbLOmbLyTZWvKmMYvZyV8u8OZ5PH5mNH+u+QQ4S85l507GaLk2ETBg0QC9kcXKNiohPCZmunJxAEGHrjiVqJGTZg1A1MFhv9nwn/LhWgb4P+Aa+GHqi8oGo66caY11Qe7GI0hbGLdEGjYNVh+EhkMBRZ9vJxK9vYU/2M7ypdhLKQbu0pi+XgHi6EKu0plR2hRIJmCbgvs7xBB9/EH/4EAulw1oLceZZuodMk/VztxLRZXjf4Y8ql1pFRW/4XTBhWuWBpJ5vt9GSOlyg0kZQTaMdsuJJ9tq4qA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1625350617; bh=FtVcvZXnyHGBUIDmE8GGLVCbvFd+1Ujd5i5hwkTZV6I=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=AzGz9JKKNTM8t2mqs8Q+gDCqP4OS9L1sh8Lictggw8kjgk6Sdzh04qm0apUKMJBbWGgggDXP5H6f45ADj89d0ekdIq5hZP7KuoLZVyBl/0CNCdixMTQxsFELi3H3urwAnv4Ay4KORS04+/Dg+mGMG8OYr1waSut+0CWotLrvMXK90ytXZlJnPmTN48PJitTsb/cMWC4jRLSoufwEWJ0TJyOHMCxgsCwNCv3owAp/Bs+Kxoxa9aHmWOenaLwES2ugS+kWtDk1mJbkk83iBJXPNC6PWFXxRL91Sx8IPcc7ahA/iSKVLCg0OChFz7/VnSwLOylH/2zINMjuwGHj2Ai90g==
-X-YMail-OSG: y8D_UyoVM1nPit9zOl1Q6udbWmFCQVFW0APg.NmmM4bjfHvdoPQCatnFR9lBAdI
- AjMBk.xn6MhiKywjNq1NejNw_uxg_6PuXl8rWW1MIwMpNnCTlzAFSJDQ5flT.RKDZs.FQfEq1Lfa
- PGH7fydaPgWi971BtxQSMP8HnufmXA7RzUtlVvDuZlZaEhhYLv3BSaK.WPTFVcIALRbnB9aZNUHZ
- UwJVqEmZvgRCoTF8Zjb5sra22tuRrXkMTdauJXJMjG_rrVdlnfrpwQCH8xlQfDR7vY4vFEjUrqKM
- aNOEq5UUex00jX2eLZDd7tFsk0LnKwfT_L7KV.GeA50ae0ETC7qnftosgjSn_1weyH4r0ImF25Cs
- lubtxgFjIG1AQdtZ0RfKfMmDongqoNG_UoxojksaXDZXdOvdMXEmMYarRtrhKLJljuMdP3bya7ww
- n1rXzYVre8.IX16yjS8NoyUzoWBAzVfNwx37D6v9K7ieo9_Dnj4Xb67XwHhsi9DGHkFyQU3cBSwv
- DgvmBd8fy.qSOyHSuwKnKy6zPYT8ZvVm2kxP45KYKghOBSBskXLigkDA0SU5Uz5kcSKPX34CvwCi
- V_2ejBI99lR6hPJdsQpUfyDrKALIq7Y2YieLW2Gr7HWSuO3otaynegkiLuJBjNLuYXSfSLpfu8Rg
- xqHLeXWXMr23FCEdViF2INsCXAjB4bv.nA8gJi.ZvGIGHl81Tc81Iz4CL2siydfpyLzsFsuwHxWv
- y77Gc3YvLHE1IVQawQjNKYHw5ItC3.2FqDFtWlJRSc40yfgSSyeLnez_g6TPssvg7.nqS1glPUSf
- mhHxPAF2k7meEm6_C8TuNU.bMDErYtSNAa.AD7GVQGMYfsPC3sME6zDZ7cxn30rSdGJBFEZsMk0i
- yZK3A_UGk55UW4uOvNuVY3_EQh4T7pKBNtAH9qRIIVfyXRVeHuiE4x98p53uo_BJ_rM3G29jSHJ1
- RG0pvYt_pdttzS5SIj_njhfqXkr1p0qIVrBPgPJ.6cwlH3yPOVYyKdlh8V0CgnI1XN7DMZ5sjyoD
- TV3z7CE8JCiuoGW.9eH7I_Djo7P_RyxBaUJ1tnCrO7mHhq6DxhjkLQsySj7E9Ovq_.hFQXEU8ahX
- _R.6iSOYkAx9NZ8sC88s7x4Z30OeWs8CpPlmdRayEKiGZ0fRZm0u4MDK4ttx0bH0QEsJZubxvSV9
- 6LlVq8le5gHoJ87C8C_s0N0mYP043AmOGQ9Jz2XTNrPc6B8_VP0GGqhNmIf45q2ZZIHb5i9vBnoH
- J7y4tQ.TErc1ZtqCSTiwDkMH0xdvIrRdU7MuW5h_H0_f6N8gaQTd_IEZ64xjxckmHznwbVH6zAwc
- u5jGE7X7jY9WXS0FEvXznjQH7xhubsYf.ENHs_CwaVzJqNJR_mqwBwlbvtEAL_dgzU6NlOYPoClp
- bQzhoul7mLGcvPhzxxzQk9qblxnSFzus_zstvZQMzyA1tF6u8WfQoeXmyH4ekKViieh2aP7j1gc5
- 4_UMu3jFAF_SzkvA1phaAQ2tNqq0SCTNw1Y8oU58bo70qVvYGZS4SrY9XeAZSuzcp_hCJFV6WQtZ
- aj4kTKyk_.fIFEzQ1ahoMhTxv_1RvaKqzyo89C7w66nYEX9OGcFqR44VAwo9Cov6phoutXlezWqh
- V5JjONEbzYN.MlkeUsco3UdMrhsY3NkOEO9XTRrS6x45NMD.1YHoG.oQ.xAMlddpZZf48VTvZgZ9
- 6C1obwqZRXefARC0f1ICbClvL2hvuv7N5WhqLOzUH_mNmA3Cxne8YDZfeMT93qMIOUx..Ph0PQbS
- A9UV2pc5yql6MfxDOsxfiZO9RqtFwXvz09jsQogSbY7VeobucHNFZO6caNLlcRqhdM0jR0uNg0Bt
- 84gYzQXOV8zVVGHKRFw6YLTmE8cn2_7pDjgdV3_a_SCYDyqGuZEZ6efCX0q9jBC9kygF7WY_YJn_
- PS0lqeEzVqCnuZqZ1t07IFo6kYRPMLo20qlnDFd1qhwP245z4mtJqxKw39bMkYL6Mq7qw7cJbuiC
- WLxWgHvDq9E7s1FHk1oe.Lt3EXYzF8KJyaAhtQeqXp39g1oQbXDpo0yJnQH9S49KgrE6e_HBgB4Q
- 0KH5XfzwoOlJ8UZ38QsxXRZ2H.px45FgQiVouXJDaxgt2vPHWaH3b2llwb0uQ6HAD5DLv7c3z7NO
- Tj7DmULm821.DHOfDzZcE.7V9AgVNd0uo3LCfd6_5S1IRWotVWStZSKQs11CWbN4LeIQhkQlBDyB
- 6tCiMLS70TJ57aK4XJy_tgU6Hj7Ie0OtKiGqCT01ZRpNMbJZFR.3ti5Vn3IjCj.becwMKwVMLDQ4
- 53W5.fB4EE99KXTbJrRu0gQz_sIwNptFZtg6euyXiHfgNdrNQvXta3cvq.n3UL2iMp2ERcZUTHIF
- s.RIZr83nTytg3v772S6U8n_T6ZWaRg4yyBrjM3IANOzzVNMH4L0yIruUTsFs0Nodi.xjZ7JG2gS
- U5Et10s1SKpsbuAHMo0uQZqjmDCZMGtdvjHPuPoJXGHem3FVmWoUpZk6KiRItHZZXU.v2l2zc64y
- .y7SYbJBgxb3FgJ.PfQU6PEhNpEQ.Q_TT0bT0.80dJoZy0xHZ07JvH9SA_1KLV_aNUx1Vk6AGnel
- plCWW98SrhRVy0DVz6QXMJqH7ePj8HrD0IgT55iZePAVKMr5p37Qa14unnASOLpYoRFlWjD1z_b_
- Adyw.tUZsJaszPJQAJhNtW2X3Mrhe4TtJLf5xWOaK6M4g5VNTe4rVQMwTtFn6a7mULYeLFClVR2X
- n1rxxhAZqMA99RPSnulZGYCsGtpQxi2OqA1MBQ8zjvbcnLwyUF0XWnT_6sJzZqn.QUctGnN_Nnr_
- EoPfOF1F_._5yo6tiU_uAN0Zz5v6uPhOfv05QPAi9qDLZg10pQYuKVtvv4ZWRfvVAs4ZgC84kZug
- HOxS2SBeidu3knd5Mb3.KJ9ZbZHw3FSsb_OwafyO4MShMxvuHVrkq8ifuMU.x_KoYmrLQREhShvL
- G1L7iXp5vUDelvA--
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.ne1.yahoo.com with HTTP; Sat, 3 Jul 2021 22:16:57 +0000
-Received: by kubenode550.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 04e9081b04f56b473dc55d531f87a964;
-          Sat, 03 Jul 2021 22:16:53 +0000 (UTC)
-Subject: Re: [syzbot] general protection fault in legacy_parse_param
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-References: <0000000000004e5ec705c6318557@google.com>
- <CACT4Y+YysFa1UzT6zw9GGns69WSFgqrL6P_LjUju6ujcJRTaeA@mail.gmail.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <d11c276d-65a0-5273-d797-1092e1e2692a@schaufler-ca.com>
-Date:   Sat, 3 Jul 2021 15:16:51 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sat, 3 Jul 2021 19:05:31 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28002C061762
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Jul 2021 16:02:56 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id f12-20020a056830204cb029048bcf4c6bd9so2172141otp.8
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 16:02:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=FRTDgOZgZbls4sTZyy9sI9ZjYiInG/eav6pR4QQPXLo=;
+        b=h1D0fBUQCVYZX8BDjPtlRYvPBQzXYsHRZt5iiGkdyJDEEDxpNUgKiKkkzMI6PlLwP9
+         IgsFCylodGaNuiFVCwGuFnOkXl4+SprHEsdd6I9HI1Z8i1UNptbyP+RbEnxLtvyPwToM
+         IvNv/Q1dXXMQrhYFNL9wB6iTphcHPVWVd/xjqVBBs9XccUmM75F6oB9wULdv9YQjQNK4
+         W/5MaWbnVcCx5POmNHC6EYzNniWfZtHJiKV8MkBU7yww1Zyqf8KOEpgGrUpKyaBvVh39
+         Fuxg5wj73UGnibHy65Khw3ysZSO9DZesr6Mti4G3oDHXaTjMYDmbQ15Je4txzI0VzGYh
+         VCrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=FRTDgOZgZbls4sTZyy9sI9ZjYiInG/eav6pR4QQPXLo=;
+        b=aHYS0okNuuZauK4q26TLm5Wcop7vTpHFkie4MuKd88QrljeDjnR7NttLL7GustOd7H
+         fXUjgiicspV14hh3Fkc7ZAV13C5G+8aFUbdJ/DUhXqP19pPBNs3e9At8FaDM3WvkcxG/
+         0+YhnamSnhEcVQ6d4ZaTch25+bK7MVYAeVvVM2n9bTxzEEBUxjkOKhmxK4ySK16BG8Ik
+         eo4Rl/y7+B7VUSku8pgiB/Oy5VajvM8iRQN2N65XsJjKR6pICnyTw5Kq+31wM0ZDiRaD
+         8AsauR9cGLtDVBVtvrHHjcjjL7B7NULDNN34nUU/kFdXF5HTMy86Y9SJ5KaAZHedutQG
+         0wqA==
+X-Gm-Message-State: AOAM533uflff/Cixsm4wv+TLx2uwsVuNTXvrJuUvOhHs1QtTLcUQIPe8
+        JEiJUkmTzVzgI0Cd+uYORc8=
+X-Google-Smtp-Source: ABdhPJxfZM8zas4N6eCW6JGwqRlo1tCi1AliiYSBo0EphgrTSVwYjH1EHkJpZQIUDR4fDvox65pnyw==
+X-Received: by 2002:a9d:60dd:: with SMTP id b29mr3036778otk.289.1625353375270;
+        Sat, 03 Jul 2021 16:02:55 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z2sm1552635otm.2.2021.07.03.16.02.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Jul 2021 16:02:54 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 3 Jul 2021 16:02:53 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] percpu: flush tlb in pcpu_reclaim_populated()
+Message-ID: <20210703230253.GA2242521@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+YysFa1UzT6zw9GGns69WSFgqrL6P_LjUju6ujcJRTaeA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Mailer: WebService/1.1.18469 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/2/2021 10:51 PM, Dmitry Vyukov wrote:
-> On Sat, Jul 3, 2021 at 7:41 AM syzbot
-> <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com> wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    62fb9874 Linux 5.13
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=12ffa118300000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=19404adbea015a58
->> dashboard link: https://syzkaller.appspot.com/bug?extid=d1e3b1d92d25abf97943
->> compiler:       Debian clang version 11.0.1-2
->>
->> Unfortunately, I don't have any reproducer for this issue yet.
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
-> +Casey for what looks like a smackfs issue
+On Sat, Jul 03, 2021 at 09:05:23PM +0000, Dennis Zhou wrote:
+> Prior to "percpu: implement partial chunk depopulation",
+> pcpu_depopulate_chunk() was called only on the destruction path. This
+> meant the virtual address range was on its way back to vmalloc which
+> will handle flushing the tlbs for us.
+> 
+> However, with pcpu_reclaim_populated(), we are now calling
+> pcpu_depopulate_chunk() during the active lifecycle of a chunk.
+> Therefore, we need to flush the tlb as well otherwise we can end up
+> accessing the wrong page through an invalid tlb mapping as reported in
+> [1].
+> 
+> [1] https://lore.kernel.org/lkml/20210702191140.GA3166599@roeck-us.net/
+> 
+> Fixes: f183324133ea ("percpu: implement partial chunk depopulation")
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Dennis Zhou <dennis@kernel.org>
 
-This is from the new mount infrastructure introduced by
-David Howells in November 2018. It makes sense that there
-may be a problem in SELinux as well, as the code was introduced
-by the same developer at the same time for the same purpose.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
+Guenter
 
->
-> The crash was triggered by this test case:
->
-> 21:55:33 executing program 1:
-> r0 = fsopen(&(0x7f0000000040)='ext3\x00', 0x1)
-> fsconfig$FSCONFIG_SET_STRING(r0, 0x1, &(0x7f00000002c0)='smackfsroot',
-> &(0x7f0000000300)='default_permissions', 0x0)
->
-> And I think the issue is in smack_fs_context_parse_param():
-> https://elixir.bootlin.com/linux/latest/source/security/smack/smack_lsm.c#L691
->
-> But it seems that selinux_fs_context_parse_param() contains the same issue:
-> https://elixir.bootlin.com/linux/latest/source/security/selinux/hooks.c#L2919
-> +So selinux maintainers as well.
->
->
->
->> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
->> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
->> CPU: 0 PID: 20300 Comm: syz-executor.1 Not tainted 5.13.0-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> RIP: 0010:memchr+0x2f/0x70 lib/string.c:1054
->> Code: 41 54 53 48 89 d3 41 89 f7 45 31 f6 49 bc 00 00 00 00 00 fc ff df 0f 1f 44 00 00 48 85 db 74 3b 48 89 fd 48 89 f8 48 c1 e8 03 <42> 0f b6 04 20 84 c0 75 0f 48 ff cb 48 8d 7d 01 44 38 7d 00 75 db
->> RSP: 0018:ffffc90001dafd00 EFLAGS: 00010246
->> RAX: 0000000000000000 RBX: 0000000000000013 RCX: dffffc0000000000
->> RDX: 0000000000000013 RSI: 000000000000002c RDI: 0000000000000000
->> RBP: 0000000000000000 R08: ffffffff81e171bf R09: ffffffff81e16f95
->> R10: 0000000000000002 R11: ffff88807e96b880 R12: dffffc0000000000
->> R13: ffff888020894000 R14: 0000000000000000 R15: 000000000000002c
->> FS:  00007fe01ae27700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00000000005645a8 CR3: 0000000018afc000 CR4: 00000000001506f0
->> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> Call Trace:
->>  legacy_parse_param+0x461/0x7e0 fs/fs_context.c:537
->>  vfs_parse_fs_param+0x1e5/0x460 fs/fs_context.c:117
->>  vfs_fsconfig_locked fs/fsopen.c:265 [inline]
->>  __do_sys_fsconfig fs/fsopen.c:439 [inline]
->>  __se_sys_fsconfig+0xba9/0xff0 fs/fsopen.c:314
->>  do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
->>  entry_SYSCALL_64_after_hwframe+0x44/0xae
->> RIP: 0033:0x4665d9
->> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
->> RSP: 002b:00007fe01ae27188 EFLAGS: 00000246 ORIG_RAX: 00000000000001af
->> RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
->> RDX: 00000000200002c0 RSI: 0000000000000001 RDI: 0000000000000003
->> RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
->> R10: 0000000020000300 R11: 0000000000000246 R12: 000000000056bf80
->> R13: 00007ffd4bb7c5bf R14: 00007fe01ae27300 R15: 0000000000022000
->> Modules linked in:
->> ---[ end trace 5d7119165725bd63 ]---
->> RIP: 0010:memchr+0x2f/0x70 lib/string.c:1054
->> Code: 41 54 53 48 89 d3 41 89 f7 45 31 f6 49 bc 00 00 00 00 00 fc ff df 0f 1f 44 00 00 48 85 db 74 3b 48 89 fd 48 89 f8 48 c1 e8 03 <42> 0f b6 04 20 84 c0 75 0f 48 ff cb 48 8d 7d 01 44 38 7d 00 75 db
->> RSP: 0018:ffffc90001dafd00 EFLAGS: 00010246
->> RAX: 0000000000000000 RBX: 0000000000000013 RCX: dffffc0000000000
->> RDX: 0000000000000013 RSI: 000000000000002c RDI: 0000000000000000
->> RBP: 0000000000000000 R08: ffffffff81e171bf R09: ffffffff81e16f95
->> R10: 0000000000000002 R11: ffff88807e96b880 R12: dffffc0000000000
->> R13: ffff888020894000 R14: 0000000000000000 R15: 000000000000002c
->> FS:  00007fe01ae27700(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00000000004e4da0 CR3: 0000000018afc000 CR4: 00000000001506e0
->> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>
->>
->> ---
->> This report is generated by a bot. It may contain errors.
->> See https://goo.gl/tpsmEJ for more information about syzbot.
->> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>
->> syzbot will keep track of this issue. See:
->> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->>
->> --
->> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
->> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
->> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000004e5ec705c6318557%40google.com.
+> ---
+> I think I'm happier with this. It does the same thing as [2] but moves
+> the flush to the caller so we can batch per chunk.
+> 
+> [2] https://lore.kernel.org/lkml/20210703040449.3213210-1-dennis@kernel.org/
+> 
+>  mm/percpu-km.c |  6 ++++++
+>  mm/percpu-vm.c |  5 +++--
+>  mm/percpu.c    | 29 +++++++++++++++++++++++------
+>  3 files changed, 32 insertions(+), 8 deletions(-)
+> 
+> diff --git a/mm/percpu-km.c b/mm/percpu-km.c
+> index c9d529dc7651..fe31aa19db81 100644
+> --- a/mm/percpu-km.c
+> +++ b/mm/percpu-km.c
+> @@ -32,6 +32,12 @@
+>  
+>  #include <linux/log2.h>
+>  
+> +static void pcpu_post_unmap_tlb_flush(struct pcpu_chunk *chunk,
+> +				      int page_start, int page_end)
+> +{
+> +	/* nothing */
+> +}
+> +
+>  static int pcpu_populate_chunk(struct pcpu_chunk *chunk,
+>  			       int page_start, int page_end, gfp_t gfp)
+>  {
+> diff --git a/mm/percpu-vm.c b/mm/percpu-vm.c
+> index ee5d89fcd66f..2054c9213c43 100644
+> --- a/mm/percpu-vm.c
+> +++ b/mm/percpu-vm.c
+> @@ -303,6 +303,9 @@ static int pcpu_populate_chunk(struct pcpu_chunk *chunk,
+>   * For each cpu, depopulate and unmap pages [@page_start,@page_end)
+>   * from @chunk.
+>   *
+> + * Caller is required to call pcpu_post_unmap_tlb_flush() if not returning the
+> + * region back to vmalloc() which will lazily flush the tlb.
+> + *
+>   * CONTEXT:
+>   * pcpu_alloc_mutex.
+>   */
+> @@ -324,8 +327,6 @@ static void pcpu_depopulate_chunk(struct pcpu_chunk *chunk,
+>  
+>  	pcpu_unmap_pages(chunk, pages, page_start, page_end);
+>  
+> -	/* no need to flush tlb, vmalloc will handle it lazily */
+> -
+>  	pcpu_free_pages(chunk, pages, page_start, page_end);
+>  }
+>  
+> diff --git a/mm/percpu.c b/mm/percpu.c
+> index b4cebeca4c0c..8d8efd668f76 100644
+> --- a/mm/percpu.c
+> +++ b/mm/percpu.c
+> @@ -1572,6 +1572,7 @@ static void pcpu_chunk_depopulated(struct pcpu_chunk *chunk,
+>   *
+>   * pcpu_populate_chunk		- populate the specified range of a chunk
+>   * pcpu_depopulate_chunk	- depopulate the specified range of a chunk
+> + * pcpu_post_unmap_tlb_flush	- flush tlb for the specified range of a chunk
+>   * pcpu_create_chunk		- create a new chunk
+>   * pcpu_destroy_chunk		- destroy a chunk, always preceded by full depop
+>   * pcpu_addr_to_page		- translate address to physical address
+> @@ -1581,6 +1582,8 @@ static int pcpu_populate_chunk(struct pcpu_chunk *chunk,
+>  			       int page_start, int page_end, gfp_t gfp);
+>  static void pcpu_depopulate_chunk(struct pcpu_chunk *chunk,
+>  				  int page_start, int page_end);
+> +static void pcpu_post_unmap_tlb_flush(struct pcpu_chunk *chunk,
+> +				      int page_start, int page_end);
+>  static struct pcpu_chunk *pcpu_create_chunk(gfp_t gfp);
+>  static void pcpu_destroy_chunk(struct pcpu_chunk *chunk);
+>  static struct page *pcpu_addr_to_page(void *addr);
+> @@ -2137,11 +2140,12 @@ static void pcpu_reclaim_populated(void)
+>  {
+>  	struct pcpu_chunk *chunk;
+>  	struct pcpu_block_md *block;
+> +	int freed_page_start, freed_page_end;
+>  	int i, end;
+> +	bool reintegrate;
+>  
+>  	lockdep_assert_held(&pcpu_lock);
+>  
+> -restart:
+>  	/*
+>  	 * Once a chunk is isolated to the to_depopulate list, the chunk is no
+>  	 * longer discoverable to allocations whom may populate pages.  The only
+> @@ -2157,6 +2161,9 @@ static void pcpu_reclaim_populated(void)
+>  		 * Scan chunk's pages in the reverse order to keep populated
+>  		 * pages close to the beginning of the chunk.
+>  		 */
+> +		freed_page_start = chunk->nr_pages;
+> +		freed_page_end = 0;
+> +		reintegrate = false;
+>  		for (i = chunk->nr_pages - 1, end = -1; i >= 0; i--) {
+>  			/* no more work to do */
+>  			if (chunk->nr_empty_pop_pages == 0)
+> @@ -2164,8 +2171,8 @@ static void pcpu_reclaim_populated(void)
+>  
+>  			/* reintegrate chunk to prevent atomic alloc failures */
+>  			if (pcpu_nr_empty_pop_pages < PCPU_EMPTY_POP_PAGES_HIGH) {
+> -				pcpu_reintegrate_chunk(chunk);
+> -				goto restart;
+> +				reintegrate = true;
+> +				goto end_chunk;
+>  			}
+>  
+>  			/*
+> @@ -2194,16 +2201,26 @@ static void pcpu_reclaim_populated(void)
+>  			spin_lock_irq(&pcpu_lock);
+>  
+>  			pcpu_chunk_depopulated(chunk, i + 1, end + 1);
+> +			freed_page_start = min(freed_page_start, i + 1);
+> +			freed_page_end = max(freed_page_end, end + 1);
+>  
+>  			/* reset the range and continue */
+>  			end = -1;
+>  		}
+>  
+> -		if (chunk->free_bytes == pcpu_unit_size)
+> +end_chunk:
+> +		/* batch tlb flush per chunk to amortize cost */
+> +		if (freed_page_start < freed_page_end) {
+> +			pcpu_post_unmap_tlb_flush(chunk,
+> +						  freed_page_start,
+> +						  freed_page_end);
+> +		}
+> +
+> +		if (reintegrate || chunk->free_bytes == pcpu_unit_size)
+>  			pcpu_reintegrate_chunk(chunk);
+>  		else
+> -			list_move(&chunk->list,
+> -				  &pcpu_chunk_lists[pcpu_sidelined_slot]);
+> +			list_move_tail(&chunk->list,
+> +				       &pcpu_chunk_lists[pcpu_sidelined_slot]);
+>  	}
+>  }
+>  
+> -- 
+> 2.32.0.93.g670b81a890-goog
+> 
