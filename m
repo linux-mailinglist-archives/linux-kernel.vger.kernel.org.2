@@ -2,160 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555BD3BA7A8
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 09:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7513BA7A7
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 09:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhGCH1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 03:27:51 -0400
-Received: from mout.gmx.net ([212.227.15.19]:42457 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229528AbhGCH1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 03:27:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1625297082;
-        bh=aAQht86ygjqzuUvu+yg4HOD6z+4TpARHV7wzK6R1Ke4=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=b+4eZ6j7ELesHiF8GeAkr4cbAkd/0KTDWMr0Olwv0rEUNxGNKqK1KMFXU1ZjYiLre
-         4bJQNE5pxF56nJhqLq2dt22vckTWVNJfWjcpCsaUpchNAGybvQRNztt4dFgWoHiPEA
-         2PbPk5Ev2pxDslG5kOr0kknrE5pSmdTOaGm678cc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.146.50.218]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M8ykW-1m5cQJ3r5a-0063dD; Sat, 03
- Jul 2021 09:24:42 +0200
-Message-ID: <891dc24e38106f8542f4c72831d52dc1a1863ae8.camel@gmx.de>
-Subject: Re: [RFC v2 00/34] SLUB: reduce irq disabled scope and make it RT
- compatible
-From:   Mike Galbraith <efault@gmx.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-Date:   Sat, 03 Jul 2021 09:24:39 +0200
-In-Reply-To: <20210702182944.lqa7o2a25to6czju@linutronix.de>
-References: <20210609113903.1421-1-vbabka@suse.cz>
-         <20210702182944.lqa7o2a25to6czju@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S229895AbhGCH1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 03:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229528AbhGCH1n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Jul 2021 03:27:43 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03599C061762;
+        Sat,  3 Jul 2021 00:25:09 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id q91so7957931pjk.3;
+        Sat, 03 Jul 2021 00:25:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MIgwSNCLuBQs+cwAtmi0/COfPG7Xp5I02ys9HkOg0tY=;
+        b=Zbsf3AQlfTFHr5ZjD1TkVnN2R1+5bZKeKX75HGW6KGEM05jlF/mb9uh+0CE46Ge5Ak
+         UxGnEAz8Uy644cIRI/Mhg+HlXYsO6Th6qzK6jJOivOIqELSi/ARAVQq8ubftdSQyvWZV
+         BbaRxZX+6/H94ncKjkU6v9HfUP3fUJRu4eykRVWL/XoNaCCdlB+Br5CmKtEvJhHlk9IB
+         hxZhQQG99HVXjY1kzMe/TMWSZi2sUOY+vIuj0yNl0tJxSMSCRyNLl7dkb2x53Kwiqmvg
+         EE9h0w4wZ9fLGvCb2AnZtsQN9GPuhs77ciktEQlP946kDTp/h2QNqhkKA4q3aAktTwrb
+         3DsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MIgwSNCLuBQs+cwAtmi0/COfPG7Xp5I02ys9HkOg0tY=;
+        b=BFKsAP/RmUMwhI26pNynxPA/IJCvn0RM2KRk9o56bYdlKGViE8d+3RoF7EwAIJlSxs
+         9ommPKbIJEk8ayTynvV0z3IvFOjKDK/dBCk4Rt8wJPjPfeNW7zK4YKxuwv0+IYDPNpjF
+         RBw6bIqU2RF1Fo0D6lwuVfqgdHsokGi7Mj6Sc0B6FacE+BJbEZiajL9u2flRxdHT8A9p
+         tlyc1XPv1ACWtW/d8+SlG2xM+la2MX+3lnER6BWWECIWg/7PUbtMvzQ5bZA5YM/wHR7A
+         KvZt5sZyhe+wYN99JkJ60AITsAHkFQhvQ7A5IIPtkNBrdWJj4UQ6+qRbHMD0kakkDyWc
+         OOCg==
+X-Gm-Message-State: AOAM531t8HyGkUhkPJfLO9G6YWikNxOdeIpeKI9z1w0eXAOQ4mQueg16
+        1VCBUPYjnAkFD1Bgyym9/mA=
+X-Google-Smtp-Source: ABdhPJwPF63ZZ1EbelrVHjC8zLNNOkAxEYxRNj2Gf18dQ+jrkBcIz+PrFaQ9AvLMMSH31i1CHkRL9Q==
+X-Received: by 2002:a17:90a:9308:: with SMTP id p8mr3467470pjo.119.1625297109313;
+        Sat, 03 Jul 2021 00:25:09 -0700 (PDT)
+Received: from ubuntu.localdomain ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id cp11sm1221152pjb.16.2021.07.03.00.25.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Jul 2021 00:25:08 -0700 (PDT)
+From:   gushengxian <gushengxian507419@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        yuq825@gmail.com
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        lima@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] include/uapi/drm: fix spelling mistakes in header files
+Date:   Sat,  3 Jul 2021 00:25:02 -0700
+Message-Id: <20210703072502.646239-1-gushengxian507419@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:SZzxfTcLtL+Mr+NwejC8HfJ/MB82VSIgomyfpE4RRBVvyTJNpeG
- EhldT0r9Vj1PHOdB8nVVfIf47hK6R1Ji0RMZ2KhtV4pLP9dKXz41K2uIhw94dBT0J2YA1Lr
- x1xHykTCIE1rV/B9u2wqVq1A/1GxdhhyuTn/Jc5sqAscEvu438a5W8z1TlCPTkBM5+TJWzU
- NAnQgZx7qM/AZQQ1o3xGA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qCDe++ReYVY=:6vL+gWo8krqioqMCDD11lG
- RuIDkyTuapKwkUC/uhwdiZy2jOMWsXoNyAzfLaJZy0wCmpazaDOnW+U/ODj8b/xjXwLjHNM1T
- NyUvwVBg4C9iJmVEiofg76dWGg50hJy6gug6oVEg6/wvUC7GIrQqIxNHdYnkW4fdnlZM1TgNB
- 65hbVyebEN3ob92W2vR1J8rgucBSOlMqAQyWjgi76XZ1hTNBbKkj9Favt2LtK/J6ECnOfrmkL
- 01UOZOW/coQ5a1rczkpWfdGTsqyHaOqPRWxZ+qK4fWW9norSMykgA5+gPk3M3c/SzlPkVuszT
- 3fZCA+2qO5mbXwUIPORqxN12yxzICK7AabamTIUg6ucJ1mXOv9y3IyrVf9n+5+azrPIyyNqYd
- Jsp3LyBZ14Zsu2Fkwmzu2YPYUvEeQD79jK858wTQk895D3L7WS1Q2QkaIsP9WlLJ/xT/1fWYs
- bCjN9xAX/y+o2ID2WJiMRARrKtmzWPAPq4OtyGq95tpMdmNncTOhIFgL+HskbRx+Mk34pFXLl
- R3Kwd7pGLs7Jo3CbPTKn01zcuSkSlUcDBeE4vdEsdvrqqU0ARCpbk/q+2lL0UT0F/GDPJhsJd
- g5eDEedgCqF3yiaaR2ei0Rqm8mXhZ0WSn8WDDZnERS935gau6XAWdckiwgWo3YzfIJlb7B0f5
- 4qcqQRTBJtoJKYrX8LWcB6WS2DI4imbql/Z1VMIXnEQysAquqTl4I4NIFfLTQOV2l0jiwbp8i
- DpptVKwaQsG14h2JQFz6gVhUGJZRCirGx1qqqn9vayGoj/Yevd355vsHZxlmZ0RHflJEOxOG5
- QefmaNrEyuzejyvUHSrYftvXOzoC03XPPEylclUTG8oX+XFIhA3AIk/mavZsTxRoGmjQwCMkG
- o3szo7vKJWkwR/z8c0rDFwhdG9z7AGLnr/YPpOX/126w/qK5UMTYYwE+AyS15i+j3tmkE55WA
- rrhdBDfV5tyFyjrB6RLBufmQkS7jJD7UCmb7W9V4Qg9SAmmDKKg+0ooH/StYr8erOVb1OIe4q
- hoNjF7swVzh0Id/Ig8+NcKWcIfxAC4dilbGobHGLGe3WJ4kABdSjxo49oGVklPfBBxNr+pZ3j
- Lsyb/zHBPFsg7Ifk7g9cHDLwn6j1cyGx8ML
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-07-02 at 20:29 +0200, Sebastian Andrzej Siewior wrote:
-> I replaced my slub changes with slub-local-lock-v2r3.
-> I haven't seen any complains from lockdep or so which is good. Then I
-> did this with RT enabled (and no debug):
+From: gushengxian <gushengxian@yulong.com>
 
-Below is some raw hackbench data from my little i4790 desktop box.  It
-says we'll definitely still want list_lock to be raw.
+Fix some spelling mistakes in comments found by "codespell":
+cordinate ==> coordinate
+vertial ==> vertical
+horizonta ==> horizontal
+tranformation ==> transformation
+performend ==> performed
+synhronisation ==> synchronisation
+absulute ==> absolute
+successfuly ==> successfully
+privlege ==> privilege
+suface ==> surface
+automaticaly ==> automatically
 
-It also appears to be saying that there's something RT specific to
-stare at in addition to the list_lock business, but add a pinch of salt
-to that due to the config of the virgin(ish) tip tree being much
-lighter than the enterprise(ish) config of the tip-rt tree.
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ include/uapi/drm/drm_mode.h    | 8 ++++----
+ include/uapi/drm/exynos_drm.h  | 6 +++---
+ include/uapi/drm/i915_drm.h    | 4 ++--
+ include/uapi/drm/lima_drm.h    | 2 +-
+ include/uapi/drm/nouveau_drm.h | 2 +-
+ include/uapi/drm/vc4_drm.h     | 2 +-
+ include/uapi/drm/vmwgfx_drm.h  | 4 ++--
+ 7 files changed, 14 insertions(+), 14 deletions(-)
 
-perf stat -r10 hackbench -s4096 -l500
-full warmup, record, repeat twice for elapsed
-
-5.13.0.g60ab3ed-tip-rt
-          8,898.51 msec task-clock                #    7.525 CPUs utilized            ( +-  0.33% )
-           368,922      context-switches          #    0.041 M/sec                    ( +-  5.20% )
-            42,281      cpu-migrations            #    0.005 M/sec                    ( +-  5.28% )
-            13,180      page-faults               #    0.001 M/sec                    ( +-  0.70% )
-    33,343,378,867      cycles                    #    3.747 GHz                      ( +-  0.30% )
-    21,656,783,887      instructions              #    0.65  insn per cycle           ( +-  0.67% )
-     4,408,569,663      branches                  #  495.428 M/sec                    ( +-  0.73% )
-        12,040,125      branch-misses             #    0.27% of all branches          ( +-  2.93% )
-
-           1.18260 +- 0.00473 seconds time elapsed  ( +-  0.40% )
-           1.19018 +- 0.00441 seconds time elapsed  ( +-  0.37% ) (repeat)
-           1.18260 +- 0.00473 seconds time elapsed  ( +-  0.40% ) (repeat)
-
-5.13.0.g60ab3ed-tip-rt +slub-local-lock-v2r3 list_lock=raw_spinlock_t
-          9,642.00 msec task-clock                #    7.521 CPUs utilized            ( +-  0.46% )
-           462,091      context-switches          #    0.048 M/sec                    ( +-  4.79% )
-            44,411      cpu-migrations            #    0.005 M/sec                    ( +-  4.34% )
-            12,980      page-faults               #    0.001 M/sec                    ( +-  0.43% )
-    36,098,859,429      cycles                    #    3.744 GHz                      ( +-  0.44% )
-    25,462,853,462      instructions              #    0.71  insn per cycle           ( +-  0.50% )
-     5,260,898,360      branches                  #  545.623 M/sec                    ( +-  0.52% )
-        16,088,686      branch-misses             #    0.31% of all branches          ( +-  2.02% )
-
-           1.28207 +- 0.00568 seconds time elapsed  ( +-  0.44% )
-           1.28744 +- 0.00713 seconds time elapsed  ( +-  0.55% ) (repeat)
-           1.28085 +- 0.00850 seconds time elapsed  ( +-  0.66% ) (repeat)
-
-5.13.0.g60ab3ed-tip-rt +slub-local-lock-v2r3 list_lock=spinlock_t
-         10,004.89 msec task-clock                #    6.029 CPUs utilized            ( +-  1.37% )
-           654,311      context-switches          #    0.065 M/sec                    ( +-  5.16% )
-           211,070      cpu-migrations            #    0.021 M/sec                    ( +-  1.38% )
-            13,262      page-faults               #    0.001 M/sec                    ( +-  0.79% )
-    36,585,914,931      cycles                    #    3.657 GHz                      ( +-  1.35% )
-    27,682,240,511      instructions              #    0.76  insn per cycle           ( +-  1.06% )
-     5,766,064,432      branches                  #  576.325 M/sec                    ( +-  1.11% )
-        24,269,069      branch-misses             #    0.42% of all branches          ( +-  2.03% )
-
-            1.6595 +- 0.0116 seconds time elapsed  ( +-  0.70% )
-            1.6270 +- 0.0180 seconds time elapsed  ( +-  1.11% ) (repeat)
-            1.6213 +- 0.0150 seconds time elapsed  ( +-  0.93% ) (repeat)
-
-virgin(ish) tip
-5.13.0.g60ab3ed-tip
-          7,320.67 msec task-clock                #    7.792 CPUs utilized            ( +-  0.31% )
-           221,215      context-switches          #    0.030 M/sec                    ( +-  3.97% )
-            16,234      cpu-migrations            #    0.002 M/sec                    ( +-  4.07% )
-            13,233      page-faults               #    0.002 M/sec                    ( +-  0.91% )
-    27,592,205,252      cycles                    #    3.769 GHz                      ( +-  0.32% )
-     8,309,495,040      instructions              #    0.30  insn per cycle           ( +-  0.37% )
-     1,555,210,607      branches                  #  212.441 M/sec                    ( +-  0.42% )
-         5,484,209      branch-misses             #    0.35% of all branches          ( +-  2.13% )
-
-           0.93949 +- 0.00423 seconds time elapsed  ( +-  0.45% )
-           0.94608 +- 0.00384 seconds time elapsed  ( +-  0.41% ) (repeat)
-           0.94422 +- 0.00410 seconds time elapsed  ( +-  0.43% )
-
-5.13.0.g60ab3ed-tip +slub-local-lock-v2r3
-          7,343.57 msec task-clock                #    7.776 CPUs utilized            ( +-  0.44% )
-           223,044      context-switches          #    0.030 M/sec                    ( +-  3.02% )
-            16,057      cpu-migrations            #    0.002 M/sec                    ( +-  4.03% )
-            13,164      page-faults               #    0.002 M/sec                    ( +-  0.97% )
-    27,684,906,017      cycles                    #    3.770 GHz                      ( +-  0.45% )
-     8,323,273,871      instructions              #    0.30  insn per cycle           ( +-  0.28% )
-     1,556,106,680      branches                  #  211.901 M/sec                    ( +-  0.31% )
-         5,463,468      branch-misses             #    0.35% of all branches          ( +-  1.33% )
-
-           0.94440 +- 0.00352 seconds time elapsed  ( +-  0.37% )
-           0.94830 +- 0.00228 seconds time elapsed  ( +-  0.24% ) (repeat)
-           0.93813 +- 0.00440 seconds time elapsed  ( +-  0.47% ) (repeat)
+diff --git a/include/uapi/drm/drm_mode.h b/include/uapi/drm/drm_mode.h
+index 9b6722d45f36..8619c7dbb50d 100644
+--- a/include/uapi/drm/drm_mode.h
++++ b/include/uapi/drm/drm_mode.h
+@@ -757,8 +757,8 @@ struct hdr_metadata_infoframe {
+ 	 * These are coded as unsigned 16-bit values in units of
+ 	 * 0.00002, where 0x0000 represents zero and 0xC350
+ 	 * represents 1.0000.
+-	 * @display_primaries.x: X cordinate of color primary.
+-	 * @display_primaries.y: Y cordinate of color primary.
++	 * @display_primaries.x: X coordinate of color primary.
++	 * @display_primaries.y: Y coordinate of color primary.
+ 	 */
+ 	struct {
+ 		__u16 x, y;
+@@ -768,8 +768,8 @@ struct hdr_metadata_infoframe {
+ 	 * These are coded as unsigned 16-bit values in units of
+ 	 * 0.00002, where 0x0000 represents zero and 0xC350
+ 	 * represents 1.0000.
+-	 * @white_point.x: X cordinate of whitepoint of color primary.
+-	 * @white_point.y: Y cordinate of whitepoint of color primary.
++	 * @white_point.x: X coordinate of whitepoint of color primary.
++	 * @white_point.y: Y coordinate of whitepoint of color primary.
+ 	 */
+ 	struct {
+ 		__u16 x, y;
+diff --git a/include/uapi/drm/exynos_drm.h b/include/uapi/drm/exynos_drm.h
+index a51aa1c618c1..27daea06a78e 100644
+--- a/include/uapi/drm/exynos_drm.h
++++ b/include/uapi/drm/exynos_drm.h
+@@ -187,9 +187,9 @@ struct drm_exynos_ioctl_ipp_get_caps {
+ };
+ 
+ enum drm_exynos_ipp_limit_type {
+-	/* size (horizontal/vertial) limits, in pixels (min, max, alignment) */
++	/* size (horizontal/vertical) limits, in pixels (min, max, alignment) */
+ 	DRM_EXYNOS_IPP_LIMIT_TYPE_SIZE		= 0x0001,
+-	/* scale ratio (horizonta/vertial), 16.16 fixed point (min, max) */
++	/* scale ratio (horizontal/vertical), 16.16 fixed point (min, max) */
+ 	DRM_EXYNOS_IPP_LIMIT_TYPE_SCALE		= 0x0002,
+ 
+ 	/* image buffer area */
+@@ -295,7 +295,7 @@ struct drm_exynos_ipp_task_rect {
+ };
+ 
+ /**
+- * Image tranformation description.
++ * Image transformation description.
+  *
+  * @id: must be DRM_EXYNOS_IPP_TASK_TRANSFORM
+  * @rotation: DRM_MODE_ROTATE_* and DRM_MODE_REFLECT_* values
+diff --git a/include/uapi/drm/i915_drm.h b/include/uapi/drm/i915_drm.h
+index c2c7759b7d2e..1ad8c1998693 100644
+--- a/include/uapi/drm/i915_drm.h
++++ b/include/uapi/drm/i915_drm.h
+@@ -995,7 +995,7 @@ struct drm_i915_gem_exec_object {
+ struct drm_i915_gem_execbuffer {
+ 	/**
+ 	 * List of buffers to be validated with their relocations to be
+-	 * performend on them.
++	 * performed on them.
+ 	 *
+ 	 * This is a pointer to an array of struct drm_i915_gem_validate_entry.
+ 	 *
+@@ -1067,7 +1067,7 @@ struct drm_i915_gem_exec_object2 {
+  * used by the GPU - this flag only disables the synchronisation prior to
+  * rendering with this object in this execbuf.
+  *
+- * Opting out of implicit synhronisation requires the user to do its own
++ * Opting out of implicit synchronisation requires the user to do its own
+  * explicit tracking to avoid rendering corruption. See, for example,
+  * I915_PARAM_HAS_EXEC_FENCE to order execbufs and execute them asynchronously.
+  */
+diff --git a/include/uapi/drm/lima_drm.h b/include/uapi/drm/lima_drm.h
+index 1ec58d652a5a..4a38ac3442c8 100644
+--- a/include/uapi/drm/lima_drm.h
++++ b/include/uapi/drm/lima_drm.h
+@@ -134,7 +134,7 @@ struct drm_lima_gem_submit {
+ struct drm_lima_gem_wait {
+ 	__u32 handle;      /* in, GEM buffer handle */
+ 	__u32 op;          /* in, CPU want to read/write this buffer */
+-	__s64 timeout_ns;  /* in, wait timeout in absulute time */
++	__s64 timeout_ns;  /* in, wait timeout in absolute time */
+ };
+ 
+ /**
+diff --git a/include/uapi/drm/nouveau_drm.h b/include/uapi/drm/nouveau_drm.h
+index 853a327433d3..1fab2431df49 100644
+--- a/include/uapi/drm/nouveau_drm.h
++++ b/include/uapi/drm/nouveau_drm.h
+@@ -178,7 +178,7 @@ struct drm_nouveau_svm_bind {
+ 
+ /*
+  * NOUVEAU_BIND_COMMAND__MIGRATE: synchronous migrate to target memory.
+- * result: number of page successfuly migrate to the target memory.
++ * result: number of page successfully migrate to the target memory.
+  */
+ #define NOUVEAU_SVM_BIND_COMMAND__MIGRATE               0
+ 
+diff --git a/include/uapi/drm/vc4_drm.h b/include/uapi/drm/vc4_drm.h
+index 2cac6277a1d7..8de7a98ca6ec 100644
+--- a/include/uapi/drm/vc4_drm.h
++++ b/include/uapi/drm/vc4_drm.h
+@@ -261,7 +261,7 @@ struct drm_vc4_mmap_bo {
+  * shader BOs.
+  *
+  * Since allowing a shader to be overwritten while it's also being
+- * executed from would allow privlege escalation, shaders must be
++ * executed from would allow privilege escalation, shaders must be
+  * created using this ioctl, and they can't be mmapped later.
+  */
+ struct drm_vc4_create_shader_bo {
+diff --git a/include/uapi/drm/vmwgfx_drm.h b/include/uapi/drm/vmwgfx_drm.h
+index 02e917507479..a46ba95f4e5a 100644
+--- a/include/uapi/drm/vmwgfx_drm.h
++++ b/include/uapi/drm/vmwgfx_drm.h
+@@ -165,7 +165,7 @@ struct drm_vmw_context_arg {
+ 
+ /*************************************************************************/
+ /**
+- * DRM_VMW_CREATE_SURFACE - Create a host suface.
++ * DRM_VMW_CREATE_SURFACE - Create a host surface.
+  *
+  * Allocates a device unique surface id, and queues a create surface command
+  * for the host. Does not wait for host completion. The surface ID can be
+@@ -442,7 +442,7 @@ union drm_vmw_alloc_bo_arg {
+  *
+  * This IOCTL controls the overlay units of the svga device.
+  * The SVGA overlay units does not work like regular hardware units in
+- * that they do not automaticaly read back the contents of the given dma
++ * that they do not automatically read back the contents of the given dma
+  * buffer. But instead only read back for each call to this ioctl, and
+  * at any point between this call being made and a following call that
+  * either changes the buffer or disables the stream.
+-- 
+2.25.1
 
