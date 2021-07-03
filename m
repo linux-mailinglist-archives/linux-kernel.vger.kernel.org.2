@@ -2,152 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2582E3BAA06
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 20:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1324B3BAA0C
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 20:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbhGCSmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 14:42:23 -0400
-Received: from smtprelay0072.hostedemail.com ([216.40.44.72]:38192 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229463AbhGCSmV (ORCPT
+        id S229548AbhGCSu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 14:50:26 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52198 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229463AbhGCSuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 14:42:21 -0400
-Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id E70D6182CED2A;
-        Sat,  3 Jul 2021 18:39:46 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id DCA101E04D7;
-        Sat,  3 Jul 2021 18:39:45 +0000 (UTC)
-Message-ID: <b1592f359a7e68704c0faac77015b9b2aa8e4073.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Add check for common mailing list helper
- checks
-From:   Joe Perches <joe@perches.com>
-To:     "John 'Warthog9' Hawley (VMware)" <warthog9@eaglescrag.net>,
-        linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Sat, 03 Jul 2021 11:39:44 -0700
-In-Reply-To: <20210702223743.1240694-1-warthog9@eaglescrag.net>
-References: <20210702223743.1240694-1-warthog9@eaglescrag.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.40
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: DCA101E04D7
-X-Stat-Signature: r7hh9tepy71m8h7e1kynfe4buat5jkg6
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/NHSD30RN5KEFKYVkoV1xj4fTWrjZUb1s=
-X-HE-Tag: 1625337585-147391
+        Sat, 3 Jul 2021 14:50:25 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C47D42250F;
+        Sat,  3 Jul 2021 18:47:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625338070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o8ljRfrPPgfrXXPJ/4lM3d455YeUnWlNgsKkrjS+nnM=;
+        b=iBcCwGLblNtFe48OEOBAxcD38sD4ZAMM/aL0+0naU+fmfYYX5c27jm7SaPGGoFA9hZPdAY
+        OZ0bCE/38kPWiRYRwEIqs+stGXSHB07lU+lImck1HM/h52wiI0GwMhocgsSzsybSuN0ujG
+        eTPnLN5P73EYdqR57KLbGOB5o/LNhaw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625338070;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o8ljRfrPPgfrXXPJ/4lM3d455YeUnWlNgsKkrjS+nnM=;
+        b=7x5pskTJOpoOmeYPz6utavKkXaRHPuvyelNDxm5os5538co9pjpiFg0GqxLt18h3BCh5d4
+        jIBwGp1j2dMi7rCg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id B78CEA46DA;
+        Sat,  3 Jul 2021 18:47:50 +0000 (UTC)
+Date:   Sat, 03 Jul 2021 20:47:50 +0200
+Message-ID: <s5hbl7j9quh.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] sound updates for 5.14-rc1
+In-Reply-To: <s5heecf9rgb.wl-tiwai@suse.de>
+References: <s5hbl7li0fe.wl-tiwai@suse.de>
+        <CAHk-=wiTwX5mzzEcw3jk3QdW600Hntt=Ehgoyz8K-VU8zbEmBg@mail.gmail.com>
+        <CAHk-=whhDWDsVz12mhKtnS6DG-GzVWxBk2XjoOp=gwNJ7T0bTw@mail.gmail.com>
+        <CAHk-=wisOVeVpH42f6i5qW1gxtYxbRJQXvpt=mdVx+8p=w-yMg@mail.gmail.com>
+        <YOAF+EnvdBvSeZnR@workstation>
+        <s5hh7hbakzk.wl-tiwai@suse.de>
+        <6adcc9cd-d916-5a50-5a14-8f3b82f60ef6@marcan.st>
+        <s5heecf9rgb.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-07-02 at 15:37 -0700, John 'Warthog9' Hawley (VMware)
-wrote:
-> From: John 'Warthog9' Hawley <warthog9@eaglescrag.net>
+On Sat, 03 Jul 2021 20:34:44 +0200,
+Takashi Iwai wrote:
 > 
-> Mailing lists in an attempt to try and avoid sending certain
-> administrative e-mails to the list, will check the first few lines
-> (usually ~10) looking for keywords.  If those key words are found it
-> shunts the e-mail to the list admin contact instead of potentially
-> passing it through to the list.
+> On Sat, 03 Jul 2021 14:06:36 +0200,
+> Hector Martin wrote:
+> > 
+> > On 03/07/2021 16.56, Takashi Iwai wrote:
+> > > Unfortunately I can't test much right now in my side as I'm traveling
+> > > (until the next Tuesday).  So, Linus, Hector, please let me know if
+> > > this works.  Once when it's confirmed to work, I'll prepare the new PR
+> > > including the fix later in today.
+> > 
+> > Works for me on top of the for-next branch that was previously
+> > deadlocking. I can't get it to crash any more.
+> > 
+> > Tested-by: Hector Martin <marcan@marcan.st>
+> 
+> Great, thanks for quick testing!
 
-Perhaps the below is a bit better, but I believe a few of the tests
-are going to be tripped a bit too often.
+And now I saw that Linus reverted the commit already in his tree, so
+no hurry for pushing the fix up for now.
 
-Especially "cancel", "config" and maybe "subscribe" too.
+I'll try to check the fix more closely in my side in the next week.
+Hopefully everything will be sorted out and the new feature is enabled
+again in the next PR.
 
-For instance:
 
-$ git log --grep='\bcancel\b' -P -i --pretty=oneline -10000 | wc -l
-1693
+thanks,
 
-$ git log --grep='^config\b' -P -i --pretty=oneline -10000 | wc -l
-890
-
-$ git log --grep='\bsubscribe\b' -P -i --pretty=oneline -10000 | wc -l
-123
-
----
- scripts/checkpatch.pl | 45 ++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 42 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 461d4221e4a4a..fcbcc26da875e 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -865,6 +865,37 @@ our $allowed_asm_includes = qr{(?x:
- )};
- # memory.h: ARM has a custom one
- 
-+our $mailing_list_phrases = qr{(?xi:
-+	\bcancel\b |
-+	\badd\s+me\b |
-+	\bdelete\s+me\b |
-+	\bremove\s+me\b |
-+	\bchange\b.*\baddress\b |
-+	\bsubscribe\b |
-+	^sub\b |
-+	\bunsubscribe\b |
-+	^unsub\b |
-+	^\s*help\s*$ |
-+	^\s*info\s*$ |
-+	^\s*info\s+\S+\s*$ |
-+	^\s*lists\s*$ |
-+	^\s*which\s*$ |
-+	^\s*which\s+\S+\s*$ |
-+	^\s*index\s*$ |
-+	^\s*index\s+\S+\s*$ |
-+	^\s*who\s*$ |
-+	^\s*who\s+\S+\s*$ |
-+	^\s*get\s+\S+\s*$ |
-+	^\s*get\s+\S+\s+\S+\s*$ |
-+	^\s*approve\b |
-+	^\s*passwd\b |
-+	^\s*newinfo\b |
-+	^\s*config\b |
-+	^\s*newconfig\b |
-+	^\s*writeconfig\b |
-+	^\s*mkdigest\b
-+)};
-+
- # Load common spelling mistakes and build regular expression list.
- my $misspellings;
- my %spelling_fix;
-@@ -2581,6 +2612,7 @@ sub process {
- 	my $has_patch_separator = 0;	#Found a --- line
- 	my $has_commit_log = 0;		#Encountered lines before patch
- 	my $commit_log_lines = 0;	#Number of commit log lines
-+	my $commit_log_missing = 0;	#Emitted a missing commit message warning
- 	my $commit_log_possible_stack_dump = 0;
- 	my $commit_log_long_line = 0;
- 	my $commit_log_has_diff = 0;
-@@ -2852,16 +2884,23 @@ sub process {
- 
- 		$cnt_lines++ if ($realcnt != 0);
- 
-+# check if words in the commit message may trip up common mailing list helpers
-+# to redirect email to the admin contact
-+		if ($in_commit_log && $commit_log_lines < 10 &&
-+		    $line =~ /($mailing_list_phrases)/) {
-+			WARN("MAILING_LIST_HELPER",
-+			     "Line matches common mailing list helpers and may not be delivered correctly - consider rewording '$1'\n" . $herecurr);
-+		}
-+
- # Verify the existence of a commit log if appropriate
--# 2 is used because a $signature is counted in $commit_log_lines
- 		if ($in_commit_log) {
- 			if ($line !~ /^\s*$/) {
- 				$commit_log_lines++;	#could be a $signature
- 			}
--		} elsif ($has_commit_log && $commit_log_lines < 2) {
-+		} elsif ($has_commit_log && !$commit_log_missing) {
- 			WARN("COMMIT_MESSAGE",
- 			     "Missing commit description - Add an appropriate one\n");
--			$commit_log_lines = 2;	#warn only once
-+			$commit_log_missing = 1;	#warn only once
- 		}
- 
- # Check if the commit log has what seems like a diff which can confuse patch
-
+Takashi
