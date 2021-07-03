@@ -2,95 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A173BA6AD
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 04:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F66E3BA6BF
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 04:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbhGCCJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 22:09:45 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:54486 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230094AbhGCCJo (ORCPT
+        id S230406AbhGCC6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 22:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230330AbhGCC6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 22:09:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UeWX25L_1625278028;
-Received: from 30.25.251.73(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UeWX25L_1625278028)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 03 Jul 2021 10:07:09 +0800
-Subject: Re: [PATCH] pkcs7: support EC-RDSA/streebog in SignerInfo
-To:     Elvira Khabirova <e.khabirova@omp.ru>, keyrings@vger.kernel.org,
-        Vitaly Chikunov <vt@altlinux.org>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        dhowells@redhat.com, vt@altlinux.org
-References: <20210511174744.4f3c6c59@msk1wst204>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <0091ddbc-a32d-848a-4f18-37b041a048f4@linux.alibaba.com>
-Date:   Sat, 3 Jul 2021 10:07:08 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Fri, 2 Jul 2021 22:58:43 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209F9C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 19:56:09 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id r4-20020a0568301204b029047d1030ef5cso5183277otp.12
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 19:56:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=m4JBEn265RptunOfiTs8m0M1fvn//fFSz5pJNGMHvF0=;
+        b=pGRPaUXtl6GI7prIsGs6Khy5OqJoKovWnX9eyNulqc/9P+Ny82xu97dZdyKM1UZJPj
+         K09VavETGZPhaUbLBjlbEw4inxokntOCpYyZ0mfgbt8sJhe9hqIpI1yRl097NVwTTbtJ
+         Dym5m/Gl7j30YkbyJUrSCKLUq2Pp17pr1eE933JgoyuCqgMsYj+uxtRfrF6q/Y+EkUSI
+         CgXCAR+IyK7LdzmsjN+DCtcycOZsyBCZlq3KK+5By8d4ozJx5tiugTwcV2uAbihUC1Mr
+         t0PHJdZHmGpGJU6CWiLFQeJ8dfBKV2UuD8aHRo3dEoGi8a6LFB02ec9uBx16gpKRpMlV
+         yZJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=m4JBEn265RptunOfiTs8m0M1fvn//fFSz5pJNGMHvF0=;
+        b=aHEZPU1zXGjbFBoRjchhNjN1KXhI/AP3ESoiSJs9eK/YhNxIIZJS2S3vdbgUNWg8tC
+         yLQGRNliiXkIG5/fxJ7n3mFUpZKJyIhIHG1qwLmata9m3aTLy1bMvJ0vuheWG0D6ybcB
+         xEOb/W+ObtHfXGShDXLzQO8Xaux0XjVrFq+xQsa41RxHpMvO+tJLLdjYUUngvi42Dur4
+         DNGTuZ75f64zGLHmIOGGSClpaM8gxnvRlBHz++PELJEsihQeYiS6RXf+Ae3J83uOb1IX
+         SeQk5BDzvDZklN/cw+bFOu5YpJtK8m+y8LgRGu1SS8a+dD40eysg/Qd1y4z3mBRzxWj+
+         0zmw==
+X-Gm-Message-State: AOAM530cLfM2glni+l8+wf+5nbWrTzWRjpzSmBYzfYDv30DmoRfxR5V6
+        LSq5/sUWnTx7hTHUOzX0UDLzXw==
+X-Google-Smtp-Source: ABdhPJzR77b2c9BpirjHCvdYuYm9vS4EP4rR3vtmVD1kjsYVCHS3FjWLvwvYHBB7dDbXLaZr+Q/dGA==
+X-Received: by 2002:a9d:3d3:: with SMTP id f77mr1943963otf.43.1625280968433;
+        Fri, 02 Jul 2021 19:56:08 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id y6sm1143547oiy.18.2021.07.02.19.56.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 19:56:08 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH 2/2] soc: qcom: rpmhpd: Make power_on actually enable the domain
+Date:   Fri,  2 Jul 2021 19:54:49 -0700
+Message-Id: <20210703025449.2687201-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210703005416.2668319-3-bjorn.andersson@linaro.org>
+References: 
 MIME-Version: 1.0
-In-Reply-To: <20210511174744.4f3c6c59@msk1wst204>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Elvira,
+The general expectation is that powering on a power-domain should make
+the power domain deliver some power, and if a specific performace state
+is needed further requests has to be made.
 
-On 5/11/21 10:47 PM, Elvira Khabirova wrote:
-> Allow using EC-RDSA/streebog in pkcs7 certificates in a similar way
-> to how it's done in the x509 parser.
-> 
-> This is needed e.g. for loading kernel modules signed with EC-RDSA.
-> 
-> Signed-off-by: Elvira Khabirova <e.khabirova@omp.ru>
+But in contrast with other power-domain implementations (e.g. rpmpd) the
+RPMh does not have an interface to enable the power, so the driver has
+to vote for a particular corner (performance level) in rpmh_power_on().
 
-Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+But the corner is never initialized, so a typical request to simply
+enable the power domain would not actually turn on the hardware. Further
+more, when no more clients vote for a performance state (i.e. the
+aggregated vote is 0) the power domain would be turn off.
 
-I sent a similar patch to support the SM2/3 algorithm combination, which 
-happened to conflict with your patch.
+Fix both of these issues by always voting for a corner with non-zero
+value, when the power domain is enabled.
 
-https://lkml.org/lkml/2021/6/24/248
+The tracking of the lowest non-zero corner is performed to handle the
+corner case if there's ever a domain with a non-zero lowest corner, in
+which case both rpmh_power_on() and rpmh_rpmhpd_set_performance_state()
+would be allowed to use this lowest corner.
 
-If possible and you agree, I will put these two patches in a series and 
-then resend.
+Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
 
-Cheers,
-Tianjia
+Resending because the hunk in rpmhpd_update_level_mapping() was left in the
+index.
 
-> ---
->   crypto/asymmetric_keys/pkcs7_parser.c | 11 +++++++++++
->   1 file changed, 11 insertions(+)
-> 
-> diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
-> index 967329e0a07b..39c260a04167 100644
-> --- a/crypto/asymmetric_keys/pkcs7_parser.c
-> +++ b/crypto/asymmetric_keys/pkcs7_parser.c
-> @@ -248,6 +248,12 @@ int pkcs7_sig_note_digest_algo(void *context, size_t hdrlen,
->   	case OID_sha224:
->   		ctx->sinfo->sig->hash_algo = "sha224";
->   		break;
-> +	case OID_gost2012Digest256:
-> +		ctx->sinfo->sig->hash_algo = "streebog256";
-> +		break;
-> +	case OID_gost2012Digest512:
-> +		ctx->sinfo->sig->hash_algo = "streebog512";
-> +		break;
->   	default:
->   		printk("Unsupported digest algo: %u\n", ctx->last_oid);
->   		return -ENOPKG;
-> @@ -269,6 +275,11 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
->   		ctx->sinfo->sig->pkey_algo = "rsa";
->   		ctx->sinfo->sig->encoding = "pkcs1";
->   		break;
-> +	case OID_gost2012PKey256:
-> +	case OID_gost2012PKey512:
-> +		ctx->sinfo->sig->pkey_algo = "ecrdsa";
-> +		ctx->sinfo->sig->encoding = "raw";
-> +		break;
->   	default:
->   		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
->   		return -ENOPKG;
-> 
+ drivers/soc/qcom/rpmhpd.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
+index fa209b479ab3..76ea6b053ef0 100644
+--- a/drivers/soc/qcom/rpmhpd.c
++++ b/drivers/soc/qcom/rpmhpd.c
+@@ -30,6 +30,7 @@
+  * @active_only:	True if it represents an Active only peer
+  * @corner:		current corner
+  * @active_corner:	current active corner
++ * @enable_corner:	lowest non-zero corner
+  * @level:		An array of level (vlvl) to corner (hlvl) mappings
+  *			derived from cmd-db
+  * @level_count:	Number of levels supported by the power domain. max
+@@ -47,6 +48,7 @@ struct rpmhpd {
+ 	const bool	active_only;
+ 	unsigned int	corner;
+ 	unsigned int	active_corner;
++	unsigned int	enable_corner;
+ 	u32		level[RPMH_ARC_MAX_LEVELS];
+ 	size_t		level_count;
+ 	bool		enabled;
+@@ -385,13 +387,13 @@ static int rpmhpd_aggregate_corner(struct rpmhpd *pd, unsigned int corner)
+ static int rpmhpd_power_on(struct generic_pm_domain *domain)
+ {
+ 	struct rpmhpd *pd = domain_to_rpmhpd(domain);
+-	int ret = 0;
++	unsigned int corner;
++	int ret;
+ 
+ 	mutex_lock(&rpmhpd_lock);
+ 
+-	if (pd->corner)
+-		ret = rpmhpd_aggregate_corner(pd, pd->corner);
+-
++	corner = max(pd->corner, pd->enable_corner);
++	ret = rpmhpd_aggregate_corner(pd, corner);
+ 	if (!ret)
+ 		pd->enabled = true;
+ 
+@@ -436,6 +438,10 @@ static int rpmhpd_set_performance_state(struct generic_pm_domain *domain,
+ 		i--;
+ 
+ 	if (pd->enabled) {
++		/* Ensure that the domain isn't turn off */
++		if (i < pd->enable_corner)
++			i = pd->enable_corner;
++
+ 		ret = rpmhpd_aggregate_corner(pd, i);
+ 		if (ret)
+ 			goto out;
+@@ -472,6 +478,10 @@ static int rpmhpd_update_level_mapping(struct rpmhpd *rpmhpd)
+ 	for (i = 0; i < rpmhpd->level_count; i++) {
+ 		rpmhpd->level[i] = buf[i];
+ 
++		/* Remember the first non-zero corner */
++		if (!rpmhpd->enable_corner)
++			rpmhpd->enable_corner = i;
++
+ 		/*
+ 		 * The AUX data may be zero padded.  These 0 valued entries at
+ 		 * the end of the map must be ignored.
+-- 
+2.29.2
+
