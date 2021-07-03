@@ -2,252 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0003BA7C6
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 10:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7343BA7CA
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 10:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbhGCI0Y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 3 Jul 2021 04:26:24 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:5950 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbhGCI0X (ORCPT
+        id S230089AbhGCIdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 04:33:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32934 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230002AbhGCIdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 04:26:23 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GH4dM1fZRz769G;
-        Sat,  3 Jul 2021 16:20:23 +0800 (CST)
-Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 3 Jul 2021 16:23:47 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggema773-chm.china.huawei.com (10.1.198.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sat, 3 Jul 2021 16:23:46 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
- Sat, 3 Jul 2021 16:23:46 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Yury Norov <yury.norov@gmail.com>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>,
-        "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
-        "sbrivio@redhat.com" <sbrivio@redhat.com>,
-        "jianpeng.ma@intel.com" <jianpeng.ma@intel.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        tangchengchang <tangchengchang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        yangyicong <yangyicong@huawei.com>,
-        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>
-Subject: RE: [PATCH v5 1/3] cpumask: introduce cpumap_print_to_buf to support
- large bitmask and list
-Thread-Topic: [PATCH v5 1/3] cpumask: introduce cpumap_print_to_buf to support
- large bitmask and list
-Thread-Index: AQHXbyRYF3GmpOp6KkinmBDnnrRJtasvrpYAgAE62vA=
-Date:   Sat, 3 Jul 2021 08:23:46 +0000
-Message-ID: <3f233e7ed1a543b78c8cd3545a0ac592@hisilicon.com>
-References: <20210702092559.8776-1-song.bao.hua@hisilicon.com>
- <20210702092559.8776-2-song.bao.hua@hisilicon.com>
- <YN+FemDxyeG+lRTC@yury-ThinkPad>
-In-Reply-To: <YN+FemDxyeG+lRTC@yury-ThinkPad>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.36]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Sat, 3 Jul 2021 04:33:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625301071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=A5pLvLjSYytl9fxuQeHwRO0qsjIw9mqvaKkb7Y9O3i8=;
+        b=OM8Xesgo2gzvEtyKXLIpGN3qSWG7LbUwIjQ5hWgOLAJd5UIoGuI/J0hb5Rl/5CUbvgbFLd
+        +wmfzOH1nZJ0f86yHYB95iS2+EtgYq5q32JCZA9+34LMD0PEnEafPTC5WfXPMMfR/D1+UD
+        cqYLH+X8vDgOVmyeopAd6rWyqeOjRSE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-83-ciCrKZCdM3qDv3d5hymwpA-1; Sat, 03 Jul 2021 04:31:10 -0400
+X-MC-Unique: ciCrKZCdM3qDv3d5hymwpA-1
+Received: by mail-wm1-f72.google.com with SMTP id j6-20020a05600c1906b029019e9c982271so7523917wmq.0
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 01:31:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=A5pLvLjSYytl9fxuQeHwRO0qsjIw9mqvaKkb7Y9O3i8=;
+        b=PuIC5N+D8VPf6U2E3q7qQ27z2h+QC7Sn2E3VSwbCkmX19dOk1UkOOuOlBuaP2z/ZdS
+         nrxJ1U7fiuZl0aCBYDFOa4wSJovyNLqjn8uyBQb15Chls5WVJ+7ieIpRHCTCLmOrwsxn
+         x0SKFkpqRm0yI75XTc5rXcvHk78ZDBk9x+vMaG6JruSxoZhxBJE2WQFWBmn5cxkFOgwl
+         mpVkOSwKLWpGhKOsiewbJaIX+aS/ofbFS8wPOdLlqOx8nR/VCRATHWSsgh4P8IOeTZg1
+         REp2vwdLwWNmUMXVT8HbsKFkRWO6Bcw+AmgCiSAUVcBbnM03bhXFpdRaXnu8at5WMw7R
+         hWZQ==
+X-Gm-Message-State: AOAM532Zyv1VSwtwXkmzif1UOR/C2OZ9ANxjOw0JCd68mJ500Lbk2p76
+        PJQ7s/7x3cSAWz7WsA0jwKBTZ/ScRKYn7ewTXN8NekP6JIcLz+FzNyN8RC81TIpwIo2u9eE52Or
+        jRbxK5WICafBWvxM/mzlq+9ZE
+X-Received: by 2002:a05:600c:296:: with SMTP id 22mr3900762wmk.17.1625301069177;
+        Sat, 03 Jul 2021 01:31:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzrvv4LtZcQ7zdL29oxvTkKz5qNfM0qWp0wXMltlMPDTMTgPHfjYLGKI6BE2STBxqHT1590MA==
+X-Received: by 2002:a05:600c:296:: with SMTP id 22mr3900747wmk.17.1625301069032;
+        Sat, 03 Jul 2021 01:31:09 -0700 (PDT)
+Received: from redhat.com ([2.55.4.39])
+        by smtp.gmail.com with ESMTPSA id k5sm5943632wmk.11.2021.07.03.01.31.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Jul 2021 01:31:08 -0700 (PDT)
+Date:   Sat, 3 Jul 2021 04:31:03 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     He Zhe <zhe.he@windriver.com>
+Cc:     xieyongji@bytedance.com, jasowang@redhat.com, stefanha@redhat.com,
+        sgarzare@redhat.com, parav@nvidia.com, hch@infradead.org,
+        christian.brauner@canonical.com, rdunlap@infradead.org,
+        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
+        dan.carpenter@oracle.com, gregkh@linuxfoundation.org,
+        songmuchun@bytedance.com,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, qiang.zhang@windriver.com
+Subject: Re: [PATCH] eventfd: Enlarge recursion limit to allow vhost to work
+Message-ID: <20210703043039-mutt-send-email-mst@kernel.org>
+References: <CACycT3t1Dgrzsr7LbBrDhRLDa3qZ85ZOgj9H7r1fqPi-kf7r6Q@mail.gmail.com>
+ <20210618084412.18257-1-zhe.he@windriver.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618084412.18257-1-zhe.he@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Yury Norov [mailto:yury.norov@gmail.com]
-> Sent: Saturday, July 3, 2021 9:31 AM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: gregkh@linuxfoundation.org; akpm@linux-foundation.org;
-> andriy.shevchenko@linux.intel.com; linux-kernel@vger.kernel.org;
-> dave.hansen@intel.com; linux@rasmusvillemoes.dk; rafael@kernel.org;
-> rdunlap@infradead.org; agordeev@linux.ibm.com; sbrivio@redhat.com;
-> jianpeng.ma@intel.com; valentin.schneider@arm.com; peterz@infradead.org;
-> bristot@redhat.com; guodong.xu@linaro.org; tangchengchang
-> <tangchengchang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
-> yangyicong <yangyicong@huawei.com>; tim.c.chen@linux.intel.com; Linuxarm
-> <linuxarm@huawei.com>; tiantao (H) <tiantao6@hisilicon.com>
-> Subject: Re: [PATCH v5 1/3] cpumask: introduce cpumap_print_to_buf to support
-> large bitmask and list
+On Fri, Jun 18, 2021 at 04:44:12PM +0800, He Zhe wrote:
+> commit b5e683d5cab8 ("eventfd: track eventfd_signal() recursion depth")
+> introduces a percpu counter that tracks the percpu recursion depth and
+> warn if it greater than zero, to avoid potential deadlock and stack
+> overflow.
 > 
-> On Fri, Jul 02, 2021 at 09:25:57PM +1200, Barry Song wrote:
-> > From: Tian Tao <tiantao6@hisilicon.com>
-> >
-> > The existing cpumap_print_to_pagebuf() is used by cpu topology and other
-> > drivers to export hexadecimal bitmask and decimal list to userspace by
-> > sysfs ABI.
-> >
-> > Right now, those drivers are using a normal attribute for this kind of
-> > ABIs. A normal attribute typically has show entry as below:
-> >
-> > static ssize_t example_dev_show(struct device *dev,
-> >                 struct device_attribute *attr, char *buf)
-> > {
-> > 	...
-> >         return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
-> > }
-> > show entry of attribute has no offset and count parameters and this
-> > means the file is limited to one page only.
-> >
-> > cpumap_print_to_pagebuf() API works terribly well for this kind of
-> > normal attribute with buf parameter and without offset, count:
-> >
-> > static inline ssize_t
-> > cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
-> > {
-> >         return bitmap_print_to_pagebuf(list, buf, cpumask_bits(mask),
-> >                                       nr_cpu_ids);
-> > }
-> >
-> > The problem is once we have many cpus, we have a chance to make bitmask
-> > or list more than one page. Especially for list, it could be as complex
-> > as 0,3,5,7,9,...... We have no simple way to know it exact size.
-> >
-> > It turns out bin_attribute is a way to break this limit. bin_attribute
-> > has show entry as below:
-> > static ssize_t
-> > example_bin_attribute_show(struct file *filp, struct kobject *kobj,
-> >              struct bin_attribute *attr, char *buf,
-> >              loff_t offset, size_t count)
-> > {
-> >         ...
-> > }
-> >
-> > With the new offset and count parameters, this makes sysfs ABI be able
-> > to support file size more than one page. For example, offset could be
-> > >= 4096.
-> >
-> > This patch introduces cpumap_print_to_buf() so that those drivers can
-> > move to bin_attribute to support large bitmask and list. In result,
-> > we have to pass the corresponding parameters from bin_attribute to this
-> > new API.
-> >
-> > Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Cc: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Stefano Brivio <sbrivio@redhat.com>
-> > Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-> > Cc: "Ma, Jianpeng" <jianpeng.ma@intel.com>
-> > Cc: Yury Norov <yury.norov@gmail.com>
-> > Cc: Valentin Schneider <valentin.schneider@arm.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> > ---
-> >  include/linux/cpumask.h | 19 +++++++++++++++++++
-> >  lib/cpumask.c           | 18 ++++++++++++++++++
-> >  2 files changed, 37 insertions(+)
-> >
-> > diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> > index bfc4690de4f4..24f410a2e793 100644
-> > --- a/include/linux/cpumask.h
-> > +++ b/include/linux/cpumask.h
-> > @@ -983,6 +983,25 @@ cpumap_print_to_pagebuf(bool list, char *buf, const
-> struct cpumask *mask)
-> >  				      nr_cpu_ids);
-> >  }
-> >
-> > +/**
-> > + * cpumap_print_to_buf  - copies the cpumask into the buffer either
-> > + *      as comma-separated list of cpus or hex values of cpumask;
-> > + *      Typically used by bin_attribute to export cpumask bitmask and
-> > + *      list ABI.
-> > + * @list: indicates whether the cpumap must be list
-> > + *      true:  print in decimal list format
-> > + *      fasle: print in hexadecimal bitmask format
-> > + * @mask: the cpumask to copy
-> > + * @buf: the buffer to copy into
-> > + * @off: in the string from which we are copying, We copy to @buf
-> > + * @count: the maximum number of bytes to print
-> > + *
-> > + * Returns the length of how many bytes have been copied.
-> > + */
-> > +extern ssize_t
-> > +cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
-> > +		    loff_t off, size_t count);
-> > +
-> >  #if NR_CPUS <= BITS_PER_LONG
-> >  #define CPU_MASK_ALL							\
-> >  (cpumask_t) { {								\
-> > diff --git a/lib/cpumask.c b/lib/cpumask.c
-> > index c3c76b833384..40421a6d31bc 100644
-> > --- a/lib/cpumask.c
-> > +++ b/lib/cpumask.c
-> > @@ -279,3 +279,21 @@ int cpumask_any_distribute(const struct cpumask *srcp)
-> >  	return next;
-> >  }
-> >  EXPORT_SYMBOL(cpumask_any_distribute);
-> > +
-> > +ssize_t cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
-> > +		    loff_t off, size_t count)
-> > +{
-> > +	const char *fmt = list ? "%*pbl\n" : "%*pb\n";
-> > +	ssize_t size;
-> > +	void *data;
-> > +
-> > +	data = kasprintf(GFP_KERNEL, fmt, nr_cpu_ids, cpumask_bits(mask));
-> > +	if (!data)
-> > +		return -ENOMEM;
-> > +
-> > +	size = memory_read_from_buffer(buf, count, &off, data, strlen(data) + 1);
-> > +	kfree(data);
+> However sometimes different eventfds may be used in parallel. Specifically,
+> when heavy network load goes through kvm and vhost, working as below, it
+> would trigger the following call trace.
 > 
-> Barry,
+> -  100.00%
+>    - 66.51%
+>         ret_from_fork
+>         kthread
+>       - vhost_worker
+>          - 33.47% handle_tx_kick
+>               handle_tx
+>               handle_tx_copy
+>               vhost_tx_batch.isra.0
+>               vhost_add_used_and_signal_n
+>               eventfd_signal
+>          - 33.05% handle_rx_net
+>               handle_rx
+>               vhost_add_used_and_signal_n
+>               eventfd_signal
+>    - 33.49%
+>         ioctl
+>         entry_SYSCALL_64_after_hwframe
+>         do_syscall_64
+>         __x64_sys_ioctl
+>         ksys_ioctl
+>         do_vfs_ioctl
+>         kvm_vcpu_ioctl
+>         kvm_arch_vcpu_ioctl_run
+>         vmx_handle_exit
+>         handle_ept_misconfig
+>         kvm_io_bus_write
+>         __kvm_io_bus_write
+>         eventfd_signal
 > 
-> It looks like my comments for previous iteration were ignored. I don't
-> like the approach where you allocate potentially big amount of kernel
-> memory just to free it almost immediately. Nor in lib/bitmap, neither
-> in lib/cpumask.
+> 001: WARNING: CPU: 1 PID: 1503 at fs/eventfd.c:73 eventfd_signal+0x85/0xa0
+> ---- snip ----
+> 001: Call Trace:
+> 001:  vhost_signal+0x15e/0x1b0 [vhost]
+> 001:  vhost_add_used_and_signal_n+0x2b/0x40 [vhost]
+> 001:  handle_rx+0xb9/0x900 [vhost_net]
+> 001:  handle_rx_net+0x15/0x20 [vhost_net]
+> 001:  vhost_worker+0xbe/0x120 [vhost]
+> 001:  kthread+0x106/0x140
+> 001:  ? log_used.part.0+0x20/0x20 [vhost]
+> 001:  ? kthread_park+0x90/0x90
+> 001:  ret_from_fork+0x35/0x40
+> 001: ---[ end trace 0000000000000003 ]---
+> 
+> This patch enlarges the limit to 1 which is the maximum recursion depth we
+> have found so far.
+> 
+> The credit of modification for eventfd_signal_count goes to
+> Xie Yongji <xieyongji@bytedance.com>
 > 
 
-Yury, clearly your comment was not ignored. I explained in this reply:
-https://lore.kernel.org/lkml/bd62f55457ef4c269db5bb752b7accc0@hisilicon.com/
+And maybe:
 
-I explained in that email and I want to make it more clear:
+Fixes: b5e683d5cab8 ("eventfd: track eventfd_signal() recursion depth")
 
-I don't think moving memory allocation to drivers is a correct way
-as for its main users - bin attribute, we have no way to reuse the
-buffer allocated in drivers.
+who's merging this?
 
-> For next iterations, please move this function back to lib/bitmap
-> because there's no specific here for cpumasks.
-
-I am ok with taking the bitmap API back as actually it is what i
-really preferred. Just to easy your worry on somebody else will
-abuse bitmap API. So I narrowed the scope of the modification.
-
-
+> Signed-off-by: He Zhe <zhe.he@windriver.com>
+> ---
+>  fs/eventfd.c            | 3 ++-
+>  include/linux/eventfd.h | 5 ++++-
+>  2 files changed, 6 insertions(+), 2 deletions(-)
 > 
-> Thaks,
-> Yury
-> 
-> > +	return size;
-> > +}
-> > +EXPORT_SYMBOL(cpumap_print_to_buf);
-
-Thanks
-Barry
+> diff --git a/fs/eventfd.c b/fs/eventfd.c
+> index e265b6dd4f34..add6af91cacf 100644
+> --- a/fs/eventfd.c
+> +++ b/fs/eventfd.c
+> @@ -71,7 +71,8 @@ __u64 eventfd_signal(struct eventfd_ctx *ctx, __u64 n)
+>  	 * it returns true, the eventfd_signal() call should be deferred to a
+>  	 * safe context.
+>  	 */
+> -	if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count)))
+> +	if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count) >
+> +	    EFD_WAKE_COUNT_MAX))
+>  		return 0;
+>  
+>  	spin_lock_irqsave(&ctx->wqh.lock, flags);
+> diff --git a/include/linux/eventfd.h b/include/linux/eventfd.h
+> index fa0a524baed0..74be152ebe87 100644
+> --- a/include/linux/eventfd.h
+> +++ b/include/linux/eventfd.h
+> @@ -29,6 +29,9 @@
+>  #define EFD_SHARED_FCNTL_FLAGS (O_CLOEXEC | O_NONBLOCK)
+>  #define EFD_FLAGS_SET (EFD_SHARED_FCNTL_FLAGS | EFD_SEMAPHORE)
+>  
+> +/* This is the maximum recursion depth we find so far */
+> +#define EFD_WAKE_COUNT_MAX 1
+> +
+>  struct eventfd_ctx;
+>  struct file;
+>  
+> @@ -47,7 +50,7 @@ DECLARE_PER_CPU(int, eventfd_wake_count);
+>  
+>  static inline bool eventfd_signal_count(void)
+>  {
+> -	return this_cpu_read(eventfd_wake_count);
+> +	return this_cpu_read(eventfd_wake_count) > EFD_WAKE_COUNT_MAX;
+>  }
+>  
+>  #else /* CONFIG_EVENTFD */
+> -- 
+> 2.17.1
 
