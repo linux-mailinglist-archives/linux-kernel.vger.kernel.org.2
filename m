@@ -2,206 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80303BAA4B
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 23:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 449433BAA53
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 23:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhGCVIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 17:08:02 -0400
-Received: from mail-io1-f47.google.com ([209.85.166.47]:44788 "EHLO
-        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhGCVIB (ORCPT
+        id S229847AbhGCV17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 17:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229562AbhGCV16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 17:08:01 -0400
-Received: by mail-io1-f47.google.com with SMTP id q2so1064649iot.11
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 14:05:26 -0700 (PDT)
+        Sat, 3 Jul 2021 17:27:58 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE81DC061762;
+        Sat,  3 Jul 2021 14:25:23 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso11379460wmh.4;
+        Sat, 03 Jul 2021 14:25:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OweAPes+t/qXJD32TxqlMjyGIKhjv2jfbRCzwHUVW2I=;
+        b=VzURn8CL1pHBfd+bYmgdxdH9zVHi098mQOqObBjW6hpulnVFRRavEhpMsNTUqEf/VQ
+         nkL6T6BO7qwo3Y3azqFQWfwiPCg6stV36SBgtCHJQaQOd3NHKmDMO3qFr9TCsFvtkjDp
+         kAFP36vfl8+at2vlCdl+B2up8v/czmS0puiZnqaDd5UbsTi4x6DMqKhrK7I/21hHkcpp
+         x8p0wdbw4ppemE577ujBCFfnYILqLLpfjk91mXwqE14voBeKBT76Mu2PmNVmrhdVvVFE
+         LG7b8Tk4uMVX6SyaAAv4Zjd+dQa0vZ30zloiXI0v5PFhe+tJ0GVG7FgUOLyw61pqwwJA
+         iStQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=XE2GMksrM6rMi9AMMfF+ayFY49SMifYCVs0ytnLO6NA=;
-        b=R3u1Pc/1pbLOPYlWRxbYH17NG0Q9vjBdd9t06InbUILYpfxfQxM1qx9pJA4T7M+nxs
-         rorGp/sFFn56AwQC44NGFup758pSoi9HTSj0fRU0ZR8Xb/lD8lAWcvSaEf7vP13W2aO8
-         TUS3J0mK8PBnT6N4JLvK06sb92gST41/ZgimBqhToEa2L1kL530fn92c8nRrRLht+0EE
-         XVW8kDFJYA/EHjtppwku4CuxQEyz2rjMRSzG5A+BHYNdi23dMe/LUm1hDlfgRhkXGOBl
-         Qm/lLNJn7AB61O3FP2CI8yMib7po68ZBc8J+gLPchDZuhkjl/k0uQxpUZ7LWfIZXYl/r
-         Q4Cw==
-X-Gm-Message-State: AOAM532lLHUW7ajEWaQScxou/e9PXU8NRHar7eK9/CIW4+HQ6bbg9926
-        vNPtlPAywGeI9Ta0V4rm9Oo=
-X-Google-Smtp-Source: ABdhPJxINEXy6VygXv/m66r7IQce0E4kEGG+HxWgO4uYjL+6hSMcVhiz05lcFvmt8HANInqxTnZt2g==
-X-Received: by 2002:a5d:9acd:: with SMTP id x13mr5324985ion.134.1625346326562;
-        Sat, 03 Jul 2021 14:05:26 -0700 (PDT)
-Received: from abasin.c.googlers.com.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id l5sm4189775ion.44.2021.07.03.14.05.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Jul 2021 14:05:26 -0700 (PDT)
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Dennis Zhou <dennis@kernel.org>
-Subject: [PATCH] percpu: flush tlb in pcpu_reclaim_populated()
-Date:   Sat,  3 Jul 2021 21:05:23 +0000
-Message-Id: <20210703210523.118589-1-dennis@kernel.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+        bh=OweAPes+t/qXJD32TxqlMjyGIKhjv2jfbRCzwHUVW2I=;
+        b=Kx2GyhQtw8sQVSAS1CtqBRU6GStcIgaZzqNKsALxLaKb6eoKhvSQvAi1eBrOgKKjLC
+         0K9V/Y8ditIJ/U56rSAHsGjzE7Q8TanSdq2Uv+M91LlHYLqwP9qr9bAouTotR0WHFqPS
+         pr6vMQl694wBpyF5Cj89YKmr0ssbiXajWesGrEfTnEBRCz7BQKLB4V8f20iPJuNb63Yv
+         V+fML5gBpJ6a3S7it8c9TRxZgHL9fM6TJLGMKWPYQDzSxQscNmGGtajHD2nLHIDGC1BF
+         x2inZHDymEK9d2Z22sjGTXByL1Yp6MrI1DtP3Cys1PKnA6ZnJ/f5cQl8N3fids8u/h+B
+         AjVw==
+X-Gm-Message-State: AOAM533/bosp1Fpk4Lopgam6Nu5L+BsE1Cc93XJ/U0PhgWisDMUBiMfg
+        WQ+NQFyY6BHRILc8m6+43kzgGNB4hKQ=
+X-Google-Smtp-Source: ABdhPJwmJysHVAIqYRzs5aIDwaOniz2yn1adX22Y/9XAvpib1Qoc+0UEsoCzsupn4qXCQoHsUO3ePg==
+X-Received: by 2002:a05:600c:2058:: with SMTP id p24mr6453438wmg.76.1625347522287;
+        Sat, 03 Jul 2021 14:25:22 -0700 (PDT)
+Received: from [192.168.0.160] ([170.253.36.171])
+        by smtp.gmail.com with ESMTPSA id x18sm7573555wrw.19.2021.07.03.14.25.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Jul 2021 14:25:21 -0700 (PDT)
+Subject: Re: [PATCH] seccomp_unotify.2: Add doc for SECCOMP_ADDFD_FLAG_SEND
+To:     Rodrigo Campos <rodrigo@kinvolk.io>
+Cc:     linux-kernel@vger.kernel.org, Alban Crequy <alban@kinvolk.io>,
+        =?UTF-8?Q?Mauricio_V=c3=a1squez_Bernal?= <mauricio@kinvolk.io>,
+        Sargun Dhillon <sargun@sargun.me>, linux-man@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+References: <20210702163744.265749-1-rodrigo@kinvolk.io>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <6322ac90-3491-df4f-7505-db4081bacb79@gmail.com>
+Date:   Sat, 3 Jul 2021 23:25:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210702163744.265749-1-rodrigo@kinvolk.io>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prior to "percpu: implement partial chunk depopulation",
-pcpu_depopulate_chunk() was called only on the destruction path. This
-meant the virtual address range was on its way back to vmalloc which
-will handle flushing the tlbs for us.
+Hi Rodrigo,
 
-However, with pcpu_reclaim_populated(), we are now calling
-pcpu_depopulate_chunk() during the active lifecycle of a chunk.
-Therefore, we need to flush the tlb as well otherwise we can end up
-accessing the wrong page through an invalid tlb mapping as reported in
-[1].
+On 7/2/21 6:37 PM, Rodrigo Campos wrote:
+> This flag was recently added to Linux 5.14 by a patch I wrote:
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0ae71c7720e3ae3aabd2e8a072d27f7bd173d25c
+> 
+> This patch adds documentation for the flag, the error code that the flag
+> added and explains in the caveat when it is useful.
+> 
+> Signed-off-by: Rodrigo Campos <rodrigo@kinvolk.io>
+> ---
+> Hi! Here goes the documentation for the flag I just added. Please feel free to
+> amend as you want and let me know if something is not clear :)
 
-[1] https://lore.kernel.org/lkml/20210702191140.GA3166599@roeck-us.net/
+Thanks for documenting your own addition!
+That makes things much easier :-)
 
-Fixes: f183324133ea ("percpu: implement partial chunk depopulation")
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Dennis Zhou <dennis@kernel.org>
----
-I think I'm happier with this. It does the same thing as [2] but moves
-the flush to the caller so we can batch per chunk.
+It looks quite good to me.
 
-[2] https://lore.kernel.org/lkml/20210703040449.3213210-1-dennis@kernel.org/
+There are a few minor changes that I applied in a following patch.  I'll
+explain why in your patch inline.  And then you have the diff below your
+patch.
 
- mm/percpu-km.c |  6 ++++++
- mm/percpu-vm.c |  5 +++--
- mm/percpu.c    | 29 +++++++++++++++++++++++------
- 3 files changed, 32 insertions(+), 8 deletions(-)
+Cheers,
 
-diff --git a/mm/percpu-km.c b/mm/percpu-km.c
-index c9d529dc7651..fe31aa19db81 100644
---- a/mm/percpu-km.c
-+++ b/mm/percpu-km.c
-@@ -32,6 +32,12 @@
- 
- #include <linux/log2.h>
- 
-+static void pcpu_post_unmap_tlb_flush(struct pcpu_chunk *chunk,
-+				      int page_start, int page_end)
-+{
-+	/* nothing */
-+}
-+
- static int pcpu_populate_chunk(struct pcpu_chunk *chunk,
- 			       int page_start, int page_end, gfp_t gfp)
- {
-diff --git a/mm/percpu-vm.c b/mm/percpu-vm.c
-index ee5d89fcd66f..2054c9213c43 100644
---- a/mm/percpu-vm.c
-+++ b/mm/percpu-vm.c
-@@ -303,6 +303,9 @@ static int pcpu_populate_chunk(struct pcpu_chunk *chunk,
-  * For each cpu, depopulate and unmap pages [@page_start,@page_end)
-  * from @chunk.
-  *
-+ * Caller is required to call pcpu_post_unmap_tlb_flush() if not returning the
-+ * region back to vmalloc() which will lazily flush the tlb.
-+ *
-  * CONTEXT:
-  * pcpu_alloc_mutex.
-  */
-@@ -324,8 +327,6 @@ static void pcpu_depopulate_chunk(struct pcpu_chunk *chunk,
- 
- 	pcpu_unmap_pages(chunk, pages, page_start, page_end);
- 
--	/* no need to flush tlb, vmalloc will handle it lazily */
--
- 	pcpu_free_pages(chunk, pages, page_start, page_end);
- }
- 
-diff --git a/mm/percpu.c b/mm/percpu.c
-index b4cebeca4c0c..8d8efd668f76 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -1572,6 +1572,7 @@ static void pcpu_chunk_depopulated(struct pcpu_chunk *chunk,
-  *
-  * pcpu_populate_chunk		- populate the specified range of a chunk
-  * pcpu_depopulate_chunk	- depopulate the specified range of a chunk
-+ * pcpu_post_unmap_tlb_flush	- flush tlb for the specified range of a chunk
-  * pcpu_create_chunk		- create a new chunk
-  * pcpu_destroy_chunk		- destroy a chunk, always preceded by full depop
-  * pcpu_addr_to_page		- translate address to physical address
-@@ -1581,6 +1582,8 @@ static int pcpu_populate_chunk(struct pcpu_chunk *chunk,
- 			       int page_start, int page_end, gfp_t gfp);
- static void pcpu_depopulate_chunk(struct pcpu_chunk *chunk,
- 				  int page_start, int page_end);
-+static void pcpu_post_unmap_tlb_flush(struct pcpu_chunk *chunk,
-+				      int page_start, int page_end);
- static struct pcpu_chunk *pcpu_create_chunk(gfp_t gfp);
- static void pcpu_destroy_chunk(struct pcpu_chunk *chunk);
- static struct page *pcpu_addr_to_page(void *addr);
-@@ -2137,11 +2140,12 @@ static void pcpu_reclaim_populated(void)
- {
- 	struct pcpu_chunk *chunk;
- 	struct pcpu_block_md *block;
-+	int freed_page_start, freed_page_end;
- 	int i, end;
-+	bool reintegrate;
- 
- 	lockdep_assert_held(&pcpu_lock);
- 
--restart:
- 	/*
- 	 * Once a chunk is isolated to the to_depopulate list, the chunk is no
- 	 * longer discoverable to allocations whom may populate pages.  The only
-@@ -2157,6 +2161,9 @@ static void pcpu_reclaim_populated(void)
- 		 * Scan chunk's pages in the reverse order to keep populated
- 		 * pages close to the beginning of the chunk.
- 		 */
-+		freed_page_start = chunk->nr_pages;
-+		freed_page_end = 0;
-+		reintegrate = false;
- 		for (i = chunk->nr_pages - 1, end = -1; i >= 0; i--) {
- 			/* no more work to do */
- 			if (chunk->nr_empty_pop_pages == 0)
-@@ -2164,8 +2171,8 @@ static void pcpu_reclaim_populated(void)
- 
- 			/* reintegrate chunk to prevent atomic alloc failures */
- 			if (pcpu_nr_empty_pop_pages < PCPU_EMPTY_POP_PAGES_HIGH) {
--				pcpu_reintegrate_chunk(chunk);
--				goto restart;
-+				reintegrate = true;
-+				goto end_chunk;
- 			}
- 
- 			/*
-@@ -2194,16 +2201,26 @@ static void pcpu_reclaim_populated(void)
- 			spin_lock_irq(&pcpu_lock);
- 
- 			pcpu_chunk_depopulated(chunk, i + 1, end + 1);
-+			freed_page_start = min(freed_page_start, i + 1);
-+			freed_page_end = max(freed_page_end, end + 1);
- 
- 			/* reset the range and continue */
- 			end = -1;
- 		}
- 
--		if (chunk->free_bytes == pcpu_unit_size)
-+end_chunk:
-+		/* batch tlb flush per chunk to amortize cost */
-+		if (freed_page_start < freed_page_end) {
-+			pcpu_post_unmap_tlb_flush(chunk,
-+						  freed_page_start,
-+						  freed_page_end);
-+		}
-+
-+		if (reintegrate || chunk->free_bytes == pcpu_unit_size)
- 			pcpu_reintegrate_chunk(chunk);
- 		else
--			list_move(&chunk->list,
--				  &pcpu_chunk_lists[pcpu_sidelined_slot]);
-+			list_move_tail(&chunk->list,
-+				       &pcpu_chunk_lists[pcpu_sidelined_slot]);
- 	}
- }
- 
+Alex
+
+> 
+> 
+>  man2/seccomp_unotify.2 | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+> 
+> diff --git a/man2/seccomp_unotify.2 b/man2/seccomp_unotify.2
+> index 2673d9bc7..9bd27214f 100644
+> --- a/man2/seccomp_unotify.2
+> +++ b/man2/seccomp_unotify.2
+> @@ -739,6 +739,17 @@ When allocating the file descriptor in the target,
+>  use the file descriptor number specified in the
+>  .I newfd
+>  field.
+> +.TP
+> +.BR SECCOMP_ADDFD_FLAG_SEND
+> +Available since Linux 5.14, combines the
+
+We usually append that info to the paragraph tag (i.e., the line just
+after .TP), and with a common syntax, so that it's easier to read..
+
+> +.B SECCOMP_IOCTL_NOTIF_ADDFD
+> +ioctl with
+> +.B SECCOMP_IOCTL_NOTIF_SEND
+> +into an atomic operation. On successful invocation, the target process's
+> +errno will be 0 and the return value will be the file descriptor number that was
+> +installed in the target. If allocating the file descriptor in the tatget fails,
+> +the target's syscall continues to be blocked until a successful response is
+> +sent.
+
+See the following extract from man-pages(7):
+
+$ man 7 man-pages | sed -n '/Use semantic newlines/,/^$/p';
+   Use semantic newlines
+       In the source of a manual page,  new  sentences  should  be
+       started  on new lines, and long sentences should split into
+       lines at clause breaks (commas, semicolons, colons, and  so
+       on).   This  convention,  sometimes known as "semantic new‐
+       lines", makes it easier to see the effect of patches, which
+       often  operate at the level of individual sentences or sen‐
+       tence clauses.
+
+>  .RE
+>  .TP
+>  .I srcfd
+> @@ -801,6 +812,13 @@ Allocating the file descriptor in the target would cause the target's
+>  limit to be exceeded (see
+>  .BR getrlimit (2)).
+>  .TP
+> +.B EBUSY
+> +If the flag
+> +.B SECCOMP_IOCTL_NOTIF_SEND
+> +is used, this means the operation can't proceed until other
+> +.B SECCOMP_IOCTL_NOTIF_ADDFD
+> +requests are processed.
+> +.TP
+>  .B EINPROGRESS
+>  The user-space notification specified in the
+>  .I id
+> @@ -1131,6 +1149,14 @@ that would
+>  normally be restarted by the
+>  .BR SA_RESTART
+>  flag.
+> +.PP
+> +Furthermore, if the supervisor response is a file descriptor
+> +added with
+> +.B SECCOMP_IOCTL_NOTIF_ADDFD,
+> +then the flag
+> +.B SECCOMP_ADDFD_FLAG_SEND
+> +can be used to atomically add the file descriptor and return that value,
+> +making sure no file descriptors are inadvertently leaked into the target.
+
+I moved your paragraph below the FIXME, as I the FIXME applies to the
+previous paragraph ("About the above").
+
+>  .\" FIXME
+>  .\" About the above, Kees Cook commented:
+>  .\"
+> 
+
+
+diff --git a/man2/seccomp_unotify.2 b/man2/seccomp_unotify.2
+index 9bd27214f..ae449ae36 100644
+--- a/man2/seccomp_unotify.2
++++ b/man2/seccomp_unotify.2
+@@ -740,16 +740,18 @@ use the file descriptor number specified in the
+ .I newfd
+ field.
+ .TP
+-.BR SECCOMP_ADDFD_FLAG_SEND
+-Available since Linux 5.14, combines the
++.BR SECCOMP_ADDFD_FLAG_SEND " (since Linux 5.14)"
++Combines the
+ .B SECCOMP_IOCTL_NOTIF_ADDFD
+ ioctl with
+ .B SECCOMP_IOCTL_NOTIF_SEND
+-into an atomic operation. On successful invocation, the target process's
+-errno will be 0 and the return value will be the file descriptor number
+that was
+-installed in the target. If allocating the file descriptor in the
+tatget fails,
+-the target's syscall continues to be blocked until a successful response is
+-sent.
++into an atomic operation.
++On successful invocation, the target process's errno will be 0
++and the return value will be the file descriptor number
++that was installed in the target.
++If allocating the file descriptor in the tatget fails,
++the target's syscall continues to be blocked
++until a successful response is sent.
+ .RE
+ .TP
+ .I srcfd
+@@ -1149,14 +1151,6 @@ that would
+ normally be restarted by the
+ .BR SA_RESTART
+ flag.
+-.PP
+-Furthermore, if the supervisor response is a file descriptor
+-added with
+-.B SECCOMP_IOCTL_NOTIF_ADDFD,
+-then the flag
+-.B SECCOMP_ADDFD_FLAG_SEND
+-can be used to atomically add the file descriptor and return that value,
+-making sure no file descriptors are inadvertently leaked into the target.
+ .\" FIXME
+ .\" About the above, Kees Cook commented:
+ .\"
+@@ -1176,6 +1170,14 @@ making sure no file descriptors are inadvertently
+leaked into the target.
+ .\" calls because it's impossible for the kernel to restart the call
+ .\" with the right timeout value. I wonder what happens when those
+ .\" system calls are restarted in the scenario we're discussing.)
++.PP
++Furthermore, if the supervisor response is a file descriptor
++added with
++.B SECCOMP_IOCTL_NOTIF_ADDFD,
++then the flag
++.B SECCOMP_ADDFD_FLAG_SEND
++can be used to atomically add the file descriptor and return that value,
++making sure no file descriptors are inadvertently leaked into the target.
+ .SH BUGS
+ If a
+ .BR SECCOMP_IOCTL_NOTIF_RECV
+
+
 -- 
-2.32.0.93.g670b81a890-goog
-
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
