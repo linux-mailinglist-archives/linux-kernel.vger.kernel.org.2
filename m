@@ -2,208 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F223BA856
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 13:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAEEF3BA85A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 13:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhGCLJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 07:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbhGCLJ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 07:09:29 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3F7C061762;
-        Sat,  3 Jul 2021 04:06:55 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id j23so291235vki.4;
-        Sat, 03 Jul 2021 04:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KZ4HsDs6b9mvzeZXoceC90pUFVVJiY28SrKqwA4xe4Y=;
-        b=tILncNLNWsI2BEyuUUkoFyxW5upoSeuYnCMTnHdQUYPMob1IDTB+txpGexY5r1LExI
-         gXy5Axp6GAvdQ24NlJa1cSrJqz506sUxYeOL5ZW8pO/1j0FYKAjVlD+oeTd4wwKiNt35
-         p8cWeeWBhpBAFBA1++TGUVITinY0UdrQhccyZuQRD1MvBmGpRmXkw6evDpRjDtaBqVUG
-         wbYeQZqCkU+JxNkqjF01vm60sL8MLv7xCbCutVLlYzOio6DLxqWY/ranpu/uEgmrsk4Z
-         euWQdC37mfyXTs2jr/dcdLiMdPvdIjLga2dkN36KaFBS+F3XxT1yzxATWyrbB2in6Z/c
-         n0qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KZ4HsDs6b9mvzeZXoceC90pUFVVJiY28SrKqwA4xe4Y=;
-        b=pZ3jefS8/E//e9LZKZwk3RNShZy2k4IzcJfi/aILgS6F3hKVpRMy68hr5q99HI6s9G
-         ESfu6NEN+jNBU3kdTjgh2vzcvItBhro0jLWs4HpkwgwBMOTRUC9OOMkqZFygacLIRnNo
-         WALuST4JlIUzUj5clT64vBqEe6TJzOS3807+KpztJ2YtIRDOpDsRri3fFf+HjZs7JRgu
-         MXwtIQoqJXdZI9/AKEsJqkMbEC6NJUEhWV7FrqFQL8giIS9LNCuHIckUYkWKRfTUEdKD
-         R0MesZglknkeWT+yoC1VNwp4ovwETfrlmSMEKtIuBkt0LgUnYvDXJC2qt3+GvF0n2q79
-         CYTw==
-X-Gm-Message-State: AOAM533Ympr19wrePHZZ4VZMzwArCT1VZAswb/RoY8FKwkawh+hcC6lc
-        OhIrCC0+GuFMSeUqUCwli/zWDIyPx3OlJYY5gmo=
-X-Google-Smtp-Source: ABdhPJwtOd/xGysWYXjPRx6rZ3iO2Vc1f6/w1l3IupkWpXcOFOKfN29BcGcfoBQCHGNfoi93E8sdYxu5K1ftqfqYG1U=
-X-Received: by 2002:a05:6122:2090:: with SMTP id i16mr3315243vkd.5.1625310413980;
- Sat, 03 Jul 2021 04:06:53 -0700 (PDT)
+        id S230246AbhGCLK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 07:10:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229829AbhGCLK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Jul 2021 07:10:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E0FD6162A;
+        Sat,  3 Jul 2021 11:08:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625310503;
+        bh=la7QnelDNFLhNjusTN/qGJQp8b6+XlbmXDa/JaB3FIQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RMxLJ7Zrihaykg0n7Ky0Nq83U57Z8EB+sMgZlxbrK1YyM/yWDYFnMDzDAkufeXH1O
+         YxWu0HoVP4OEQcF6W/IBJ4LEneFyzcogTfKsc+Hxtl8jheMyQPA9n+G+6goD9CwmPg
+         iKJ5GPsI3HoVC3tawow3mWuCiWdtRUHiuwohfv9lin3Zta91D5Bv97MrLqv5B0vrSx
+         FQJs1v5AMozJmClSLUxySDlmlVju39IAl17/35nfoNyGLwSFm1NibqVM8FFjeX4K1w
+         ffEM0x6TVDHUdIfnbc5pnlqFUqoZusMbQdiFpDl7Num0Tth9M36lEGO6072q2ouMcX
+         4lWRor0gpCSOQ==
+Date:   Sat, 3 Jul 2021 19:08:09 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 05/12] usb: otg-fsm: Fix hrtimer list corruption
+Message-ID: <20210703110809.GA4289@Peter>
+References: <20210701234317.26393-1-digetx@gmail.com>
+ <20210701234317.26393-6-digetx@gmail.com>
 MIME-Version: 1.0
-References: <20210626161819.30508-1-sergio.paracuellos@gmail.com>
- <CAHp75VfM-35tQMRh98mtg2XmDOJFnmjdYRKZZoi9ADm=AT2xUw@mail.gmail.com>
- <CAMhs-H_fcNDAOHm=tZB4ku9fzeea_7f4ZLg7w5KEmcNu+8wbQQ@mail.gmail.com>
- <CAHp75VeN+vww=Bj=g-nx9AT0FKSGAZ8CKQZn=ff2kfQWM+dxdw@mail.gmail.com>
- <CAMhs-H-WwCfPDspgxzN=W8QouZ7WPAeyJDYf_6=YezyCkTM=Vw@mail.gmail.com>
- <CAHp75VcF-HDZ6mKvXT=zYnBrcPaNJ+SYJ72LQ7s-62zQ5ZqoQg@mail.gmail.com>
- <CAMhs-H9gw63j98vVo3y0ymW4_6rFNL8u5cYNM2hzyrmkPB3h3w@mail.gmail.com>
- <CAHp75VccSCWa=EH8i01_b_HLZRumUZ48oRjeuaV5Dp1BQAoz2w@mail.gmail.com>
- <CAMhs-H_Ne4W79Awbmo6w_68X+h0-ybjvzNsbh=XuHMPJJ8-hDQ@mail.gmail.com>
- <CACRpkdaqSoyDUn3dVuVgzRK_7AabdY=1FzAnhHZzPs3qS+GfsA@mail.gmail.com> <CAMhs-H_pomsvKXuerkVsNQva+B+tPr2xRZAU2R7oyjZ+GaQpqQ@mail.gmail.com>
-In-Reply-To: <CAMhs-H_pomsvKXuerkVsNQva+B+tPr2xRZAU2R7oyjZ+GaQpqQ@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sat, 3 Jul 2021 13:06:42 +0200
-Message-ID: <CAMhs-H_=_tYk3Qj5-NaAmWgnuWc0ZRSEABZzwPfMxiUHP35nbw@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: mt7621: support gpio-line-names property
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Thomson <git@johnthomson.fastmail.com.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        NeilBrown <neil@brown.name>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Nicholas Mc Guire <hofrat@osadl.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210701234317.26393-6-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 21-07-02 02:43:10, Dmitry Osipenko wrote:
+> The HNP work can be re-scheduled while it's still in-fly. This results in
+> re-initialization of the busy work, resetting the hrtimer's list node of
+> the work and crashing kernel with null dereference within kernel/timer
+> once work's timer is expired. It's very easy to trigger this problem by
+> re-plugging USB cable quickly. Initialize HNP work only once to fix this
+> trouble.
 
-On Fri, Jul 2, 2021 at 1:30 PM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
->
-> Hi Linus,
->
-> On Fri, Jul 2, 2021 at 12:18 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> >
-> > On Fri, Jul 2, 2021 at 11:40 AM Sergio Paracuellos
-> > <sergio.paracuellos@gmail.com> wrote:
-> > > On Fri, Jul 2, 2021 at 11:27 AM Andy Shevchenko
-> > > <andy.shevchenko@gmail.com> wrote:
-> >
-> > > > > There are no child nodes, all the stuff is in the same parent node
-> > > > > and, as I said, belongs to the same device but internally uses three
-> > > > > gpiochips.
-> > > >
-> > > > And it can't be split into three children in the overlay?
-> > >
-> > > Original code before this being mainlined was using three children and
-> > > I was told in the review that three children were not allowed:
-> > >
-> > > See https://patchwork.ozlabs.org/project/linux-gpio/patch/1527924610-13135-3-git-send-email-sergio.paracuellos@gmail.com/#1932827
-> >
-> > Yeah this is one of those unfortunate cases where the DT representation
-> > (or ACPI for that matter) of the device and the Linux internal representation
-> > differs.
-> >
-> > > > Let's assume it can't, then the GPIO library function should be
-> > > > refactored in a way that it takes parameters like base index for the
-> > > > names and tries to satisfy the caller.
-> > >
-> > > Bartosz, Linus, any thoughts on this?
-> >
-> > This would be ideal, is there a reasonably simple way to get to this helper?
-> >
-> > In gpiolib.c devprop_gpiochip_set_names() need to be refactored to
-> > take a base number, devprop_gpiochip_set_names_base() that
-> > function exposed in <linux/gpio/driver.h> and then the old function
-> > devprop_gpiochip_set_names() wrapped in the new
-> > one so all old users continue to work without modification.
-> > Sprinkle some kerneldoc on top so we do not make mistakes
-> > in the future.
-> >
-> > This should work I think.
+Fully OTG compliance support has not maintained for years, what's the use case you
+still want to use?
 
-If I am understanding correctly what you mean is something like follows:
+Peter
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/usb/common/usb-otg-fsm.c | 6 +++++-
+>  include/linux/usb/otg-fsm.h      | 1 +
+>  2 files changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/common/usb-otg-fsm.c b/drivers/usb/common/usb-otg-fsm.c
+> index 3740cf95560e..0697fde51d00 100644
+> --- a/drivers/usb/common/usb-otg-fsm.c
+> +++ b/drivers/usb/common/usb-otg-fsm.c
+> @@ -193,7 +193,11 @@ static void otg_start_hnp_polling(struct otg_fsm *fsm)
+>  	if (!fsm->host_req_flag)
+>  		return;
+>  
+> -	INIT_DELAYED_WORK(&fsm->hnp_polling_work, otg_hnp_polling_work);
+> +	if (!fsm->hnp_work_inited) {
+> +		INIT_DELAYED_WORK(&fsm->hnp_polling_work, otg_hnp_polling_work);
+> +		fsm->hnp_work_inited = true;
+> +	}
+> +
+>  	schedule_delayed_work(&fsm->hnp_polling_work,
+>  					msecs_to_jiffies(T_HOST_REQ_POLL));
+>  }
+> diff --git a/include/linux/usb/otg-fsm.h b/include/linux/usb/otg-fsm.h
+> index 3aee78dda16d..784659d4dc99 100644
+> --- a/include/linux/usb/otg-fsm.h
+> +++ b/include/linux/usb/otg-fsm.h
+> @@ -196,6 +196,7 @@ struct otg_fsm {
+>  	struct mutex lock;
+>  	u8 *host_req_flag;
+>  	struct delayed_work hnp_polling_work;
+> +	bool hnp_work_inited;
+>  	bool state_changed;
+>  };
+>  
+> -- 
+> 2.30.2
+> 
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 6e3c4d7a7d14..5a88a305bc59 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -361,13 +361,14 @@ static int gpiochip_set_desc_names(struct gpio_chip *gc)
- /*
-  * devprop_gpiochip_set_names - Set GPIO line names using device properties
-  * @chip: GPIO chip whose lines should be named, if possible
-+ * @base: starting index in names array to start copying from
-  *
-  * Looks for device property "gpio-line-names" and if it exists assigns
-  * GPIO line names for the chip. The memory allocated for the assigned
-  * names belong to the underlying software node and should not be released
-  * by the caller.
-  */
--static int devprop_gpiochip_set_names(struct gpio_chip *chip)
-+static int devprop_gpiochip_set_names(struct gpio_chip *chip, int base)
- {
-// WHATEVER CHANGES TO TAKE base into account
+-- 
 
-+int devprop_gpiochip_set_names_base(struct gpio_chip *gc, int base)
-+{
-+       return devprop_gpiochip_set_names(gc, base);
-+}
-+EXPORT_SYMBOL_GPL(devprop_gpiochip_set_names_base);
-+
-static unsigned long *gpiochip_allocate_mask(struct gpio_chip *gc)
- {
-        unsigned long *p;
-@@ -684,7 +706,7 @@ int gpiochip_add_data_with_key(struct gpio_chip
-*gc, void *data,
-        if (gc->names)
-                ret = gpiochip_set_desc_names(gc);
-        else
--               ret = devprop_gpiochip_set_names(gc);
-+               ret = devprop_gpiochip_set_names(gc, 0);
-        if (ret)
-                goto err_remove_from_list;
+Thanks,
+Peter Chen
 
-
-diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
-index 4a7e295c3640..ad145ab0794c 100644
---- a/include/linux/gpio/driver.h
-+++ b/include/linux/gpio/driver.h
-@@ -537,6 +537,8 @@ extern int gpiochip_add_data_with_key(struct
-gpio_chip *gc, void *data,
-        devm_gpiochip_add_data_with_key(dev, gc, data, NULL, NULL)
- #endif /* CONFIG_LOCKDEP */
-
-+extern int devprop_gpiochip_set_names_base(struct gpio_chip *gc, int base);
-+
-
-The problem I see with this approach is that
-'devprop_gpiochip_set_names' already trusts in gpio_device already
-created and this happens in 'gpiochip_add_data_with_key'. So doing in
-this way force "broken drivers" to call this new
-'devprop_gpiochip_set_names_base' function after
-'devm_gpiochip_add_data' is called so the core code has already set up
-the friendly names repeated for all gpio chip banks and the approach
-would be to "overwrite" those in a second pass which sounds more like
-a hack than a solution.
-
-But maybe I am missing something in what you were pointing out here.
-
-Best regards,
-    Sergio Paracuellos
-
-> >
-> > Any similar drivers (several gpio_chip per FW node) that want to
-> > set line names need to do the same thing.
->
-> Thanks for the advices. I'll try to make a bit of time to try to
-> handle this in the way you are pointing out here.
->
-> Best regards,
->     Sergio Paracuellos
->
-> >
-> > Sorry that you ran into this, I hate it when I'm first at hairy stuff
-> > like this.
-> >
-> > Yours,
-> > Linus Walleij
