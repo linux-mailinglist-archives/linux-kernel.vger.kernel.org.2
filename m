@@ -2,104 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29373BA6E6
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 05:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729533BA701
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 06:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbhGCDaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 23:30:01 -0400
-Received: from smtprelay0204.hostedemail.com ([216.40.44.204]:55822 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230130AbhGCDaA (ORCPT
+        id S229493AbhGCEH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 00:07:27 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:46981 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhGCEH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 23:30:00 -0400
-Received: from omf10.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 7314518172CD4;
-        Sat,  3 Jul 2021 03:27:26 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf10.hostedemail.com (Postfix) with ESMTPA id 71B152351F3;
-        Sat,  3 Jul 2021 03:27:25 +0000 (UTC)
-Message-ID: <791e3b6560056a9dc7a729c72591af6611163f6d.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Add check for common mailing list helper
- checks
-From:   Joe Perches <joe@perches.com>
-To:     "John 'Warthog9' Hawley (VMware)" <warthog9@eaglescrag.net>,
-        linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Fri, 02 Jul 2021 20:27:23 -0700
-In-Reply-To: <20210702223743.1240694-1-warthog9@eaglescrag.net>
-References: <20210702223743.1240694-1-warthog9@eaglescrag.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Sat, 3 Jul 2021 00:07:26 -0400
+Received: by mail-io1-f54.google.com with SMTP id f21so14030129ioh.13
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 21:04:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CVoiGwg8bDCGqfxgKgsIzljf6zxgJKc8KUJPsMXiyQA=;
+        b=imF9uv0/0BHKi/5BSY75Dpb75j+yG57m4CwXBVxKCOVvezukJMYQ5r3F8yPpdFrpiY
+         ofM8r25lZkqstlNGqEREnwA8wXahch3oB5WYAOvYWjan78Egtu0V/N4duKZhvtSOJfIe
+         GxA828pL9thMFhgFDJ076PYSbZ5xAzsPMMxA/I1/9JHlKKKHTDm6Dj1LGqbkLh0plnNf
+         YQJUs7e3+OuelR3Hk3eLcab2lMsNL6ZUlu0m77vuvcgYKnqvSkDoeXvheMzQoWkWaBC/
+         lILX5wrxMy74XJX/yVJEBg67lY/IkngfVsATumvqyJTaA0SqokieLNn521+EB4Lwh0/f
+         MUrA==
+X-Gm-Message-State: AOAM5320WfwM+RYZh0yKHJOZbOJGTPBm0RJFtdzYOE/09gkuZ8sogoih
+        yg0Eis4QEO4CPpwL6S2i238=
+X-Google-Smtp-Source: ABdhPJzd5aKJFzyezOczroeaBohpXe0o+RjufI1q6AU0IOwT1bkykFGnPgvnbDLF21W7EETdx+xL7Q==
+X-Received: by 2002:a6b:e403:: with SMTP id u3mr2563815iog.22.1625285092276;
+        Fri, 02 Jul 2021 21:04:52 -0700 (PDT)
+Received: from abasin.c.googlers.com.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id a11sm2996675ioq.12.2021.07.02.21.04.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 21:04:51 -0700 (PDT)
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Dennis Zhou <dennis@kernel.org>
+Subject: [PATCH] percpu: flush tlb after pcpu_depopulate_chunk()
+Date:   Sat,  3 Jul 2021 04:04:49 +0000
+Message-Id: <20210703040449.3213210-1-dennis@kernel.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.40
-X-Stat-Signature: ypay3snr36wqspezunpyojicpzctzit4
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 71B152351F3
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19lZVZVYli8dMZybR8Tp6FqE0sr7r0QGt0=
-X-HE-Tag: 1625282845-267056
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-07-02 at 15:37 -0700, John 'Warthog9' Hawley (VMware)
-wrote:
-> From: John 'Warthog9' Hawley <warthog9@eaglescrag.net>
-> 
-> Mailing lists in an attempt to try and avoid sending certain
-> administrative e-mails to the list, will check the first few lines
-> (usually ~10) looking for keywords.  If those key words are found it
-> shunts the e-mail to the list admin contact instead of potentially
-> passing it through to the list.
-> 
-> This adds a known list of the potential things that are checked for, and
-> while it may search deeper into the message (it goes till it believes
-> it's into the patch section) than the mailing list software this should
-> help give some warning if the wrong word is potentially added in the
-> wrong place in the beginning of a patch message.
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -2852,6 +2852,40 @@ sub process {
-[]
-> +# check if this may trip up common mailing list helpers to redirect email to the admin contact
-> +		if ($in_commit_log &&
-> +		    ($line =~ /\bcancel\b/i ||
-> +		    $line =~ /\badd me\b/i ||
-> +		    $line =~ /\bdelete me\b/i ||
-> +		    $line =~ /\bremove\s+me\b/i ||
-> +		    $line =~ /\bchange\b.*\baddress\b/ ||
-> +		    $line =~ /\bsubscribe\b/i ||
-> +		    $line =~ /^sub\b/i ||
-> +		    $line =~ /\bunsubscribe\b/i ||
-> +		    $line =~ /^unsub\b/i ||
-> +		    $line =~ /^\s*help\s*$/i ||
-> +		    $line =~ /^\s*info\s*$/i ||
-> +		    $line =~ /^\s*info\s+\S+\s*$/i ||
-> +		    $line =~ /^\s*lists\s*$/i ||
-> +		    $line =~ /^\s*which\s*$/i ||
-> +		    $line =~ /^\s*which\s+\S+\s*$/i ||
-> +		    $line =~ /^\s*index\s*$/i ||
-> +		    $line =~ /^\s*index\s+\S+\s*$/i ||
-> +		    $line =~ /^\s*who\s*$/i ||
-> +		    $line =~ /^\s*who\s+\S+\s*$/i ||
-> +		    $line =~ /^\s*get\s+\S+\s*$/i ||
-> +		    $line =~ /^\s*get\s+\S+\s+\S+\s*$/i ||
-> +		    $line =~ /^\s*approve\b/i ||
-> +		    $line =~ /^\s*passwd\b/i ||
-> +		    $line =~ /^\s*newinfo\b/i ||
-> +		    $line =~ /^\s*config\b/i ||
-> +		    $line =~ /^\s*newconfig\b/i ||
-> +		    $line =~ /^\s*writeconfig\b/i ||
-> +		    $line =~ /^\s*mkdigest\b/i)){
+Prior to "percpu: implement partial chunk depopulation",
+pcpu_depopulate_chunk() was called only on the destruction path. This
+meant the virtual address range was on its way back to vmalloc which
+will handle flushing the tlbs for us.
 
-Have you checked this list against actual commits?
+However, now that we call pcpu_depopulate_chunk() during the active
+lifecycle of a chunk, we need to flush the tlb as well otherwise we can
+end up accessing the wrong page through an invalid tlb mapping.
 
-> +			WARN("MAILING LIST HELPER",
+This was reported in [1].
 
-This must use underscores for the spaces
+[1] https://lore.kernel.org/lkml/20210702191140.GA3166599@roeck-us.net/
 
-	MAILING_LIST_HELPER
+Fixes: f183324133ea ("percpu: implement partial chunk depopulation")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Dennis Zhou <dennis@kernel.org>
+---
+ mm/percpu-km.c |  3 ++-
+ mm/percpu-vm.c | 11 +++++++++--
+ mm/percpu.c    |  7 ++++---
+ 3 files changed, 15 insertions(+), 6 deletions(-)
 
+diff --git a/mm/percpu-km.c b/mm/percpu-km.c
+index c9d529dc7651..6875fc3b2ed7 100644
+--- a/mm/percpu-km.c
++++ b/mm/percpu-km.c
+@@ -39,7 +39,8 @@ static int pcpu_populate_chunk(struct pcpu_chunk *chunk,
+ }
+ 
+ static void pcpu_depopulate_chunk(struct pcpu_chunk *chunk,
+-				  int page_start, int page_end)
++				  int page_start, int page_end,
++				  bool flush_tlb)
+ {
+ 	/* nada */
+ }
+diff --git a/mm/percpu-vm.c b/mm/percpu-vm.c
+index ee5d89fcd66f..6353cda1718e 100644
+--- a/mm/percpu-vm.c
++++ b/mm/percpu-vm.c
+@@ -299,6 +299,7 @@ static int pcpu_populate_chunk(struct pcpu_chunk *chunk,
+  * @chunk: chunk to depopulate
+  * @page_start: the start page
+  * @page_end: the end page
++ * @flush_tlb: if should we flush the tlb
+  *
+  * For each cpu, depopulate and unmap pages [@page_start,@page_end)
+  * from @chunk.
+@@ -307,7 +308,8 @@ static int pcpu_populate_chunk(struct pcpu_chunk *chunk,
+  * pcpu_alloc_mutex.
+  */
+ static void pcpu_depopulate_chunk(struct pcpu_chunk *chunk,
+-				  int page_start, int page_end)
++				  int page_start, int page_end,
++				  bool flush_tlb)
+ {
+ 	struct page **pages;
+ 
+@@ -324,7 +326,12 @@ static void pcpu_depopulate_chunk(struct pcpu_chunk *chunk,
+ 
+ 	pcpu_unmap_pages(chunk, pages, page_start, page_end);
+ 
+-	/* no need to flush tlb, vmalloc will handle it lazily */
++	/*
++	 * We need to flush the tlb unless the caller will pass it to vmalloc,
++	 * which will handle flushing for us.
++	 */
++	if (flush_tlb)
++		pcpu_post_unmap_tlb_flush(chunk, page_start, page_end);
+ 
+ 	pcpu_free_pages(chunk, pages, page_start, page_end);
+ }
+diff --git a/mm/percpu.c b/mm/percpu.c
+index b4cebeca4c0c..e23ba0d22220 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -1580,7 +1580,8 @@ static void pcpu_chunk_depopulated(struct pcpu_chunk *chunk,
+ static int pcpu_populate_chunk(struct pcpu_chunk *chunk,
+ 			       int page_start, int page_end, gfp_t gfp);
+ static void pcpu_depopulate_chunk(struct pcpu_chunk *chunk,
+-				  int page_start, int page_end);
++				  int page_start, int page_end,
++				  bool flush_tlb);
+ static struct pcpu_chunk *pcpu_create_chunk(gfp_t gfp);
+ static void pcpu_destroy_chunk(struct pcpu_chunk *chunk);
+ static struct page *pcpu_addr_to_page(void *addr);
+@@ -2016,7 +2017,7 @@ static void pcpu_balance_free(bool empty_only)
+ 
+ 		bitmap_for_each_set_region(chunk->populated, rs, re, 0,
+ 					   chunk->nr_pages) {
+-			pcpu_depopulate_chunk(chunk, rs, re);
++			pcpu_depopulate_chunk(chunk, rs, re, false);
+ 			spin_lock_irq(&pcpu_lock);
+ 			pcpu_chunk_depopulated(chunk, rs, re);
+ 			spin_unlock_irq(&pcpu_lock);
+@@ -2189,7 +2190,7 @@ static void pcpu_reclaim_populated(void)
+ 				continue;
+ 
+ 			spin_unlock_irq(&pcpu_lock);
+-			pcpu_depopulate_chunk(chunk, i + 1, end + 1);
++			pcpu_depopulate_chunk(chunk, i + 1, end + 1, true);
+ 			cond_resched();
+ 			spin_lock_irq(&pcpu_lock);
+ 
+-- 
+2.32.0.93.g670b81a890-goog
 
