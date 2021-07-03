@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79BEB3BA95C
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 18:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28C13BA95A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 18:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbhGCQFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 12:05:13 -0400
-Received: from gate.crashing.org ([63.228.1.57]:47667 "EHLO gate.crashing.org"
+        id S229613AbhGCQEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 12:04:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229463AbhGCQFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 12:05:13 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 163Fs1rg021323;
-        Sat, 3 Jul 2021 10:54:01 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 163FrvdE021319;
-        Sat, 3 Jul 2021 10:53:57 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Sat, 3 Jul 2021 10:53:57 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.ne@posteo.net>
-Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Ash Logan <ash@heyquark.com>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 3/4] powerpc: wii.dts: Expose the OTP on this platform
-Message-ID: <20210703155357.GG1583@gate.crashing.org>
-References: <20210519095044.4109-1-linkmauve@linkmauve.fr> <20210519095044.4109-4-linkmauve@linkmauve.fr> <YNe5aW55SrXFGKFV@latitude> <20210701195655.knbcikdga57a7epx@luna> <YN7Uv/43TwL4+9ic@latitude>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YN7Uv/43TwL4+9ic@latitude>
-User-Agent: Mutt/1.4.2.3i
+        id S229463AbhGCQEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Jul 2021 12:04:21 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA84D61628;
+        Sat,  3 Jul 2021 16:01:43 +0000 (UTC)
+Date:   Sat, 3 Jul 2021 17:04:05 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     lee.jones@linaro.org, robh+dt@kernel.org, lars@metafoo.de,
+        sre@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-pm@vger.kernel.org, leonard.crestez@nxp.com,
+        letux-kernel@openphoenux.org
+Subject: Re: [PATCH 2/4] mfd: rn5t618: Add of compatibles for ADC and power
+Message-ID: <20210703170405.60828c57@jic23-huawei>
+In-Reply-To: <20210703084224.31623-3-andreas@kemnade.info>
+References: <20210703084224.31623-1-andreas@kemnade.info>
+        <20210703084224.31623-3-andreas@kemnade.info>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 08:56:31AM +0000, Jonathan Neuschäfer wrote:
-> On Thu, Jul 01, 2021 at 09:56:55PM +0200, Emmanuel Gil Peyrot wrote:
-> > On Sat, Jun 26, 2021 at 11:34:01PM +0000, Jonathan Neuschäfer wrote:
-> > > On Wed, May 19, 2021 at 11:50:43AM +0200, Emmanuel Gil Peyrot wrote:
-> [...]
-> > > > +		otp@d8001ec {
-> > > > +			compatible = "nintendo,hollywood-otp";
-> > > > +			reg = <0x0d8001ec 0x8>;
-> > > 
-> > > The OTP registers overlap with the previous node, control@d800100.
-> > > Not sure what's the best way to structure the devicetree in this case,
-> > > maybe something roughly like the following (untested, unverified):
-> > [snip]
-> > 
-> > I couldn’t get this to work, but additionally it looks like it should
-> > start 0x100 earlier and contain pic1@d800030 and gpio@d8000c0, given
-> > https://wiibrew.org/wiki/Hardware/Hollywood_Registers
-> > 
-> > Would it make sense, for the time being, to reduce the size of this
-> > control@d800100 device to the single register currently being used by
-> > arch/powerpc/platforms/embedded6xx/wii.c (0xd800194, used to reboot the
-> > system) and leave the refactor of restart + OTP + PIC + GPIO for a
-> > future series?
+On Sat,  3 Jul 2021 10:42:22 +0200
+Andreas Kemnade <andreas@kemnade.info> wrote:
+
+> This allows having devicetree nodes for the subdevices.
 > 
-> Makes sense to me!
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> ---
+>  drivers/mfd/rn5t618.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mfd/rn5t618.c b/drivers/mfd/rn5t618.c
+> index 384acb459427..b916c7471ca3 100644
+> --- a/drivers/mfd/rn5t618.c
+> +++ b/drivers/mfd/rn5t618.c
+> @@ -24,8 +24,10 @@ static const struct mfd_cell rn5t618_cells[] = {
+>  };
+>  
+>  static const struct mfd_cell rc5t619_cells[] = {
+> -	{ .name = "rn5t618-adc" },
+> -	{ .name = "rn5t618-power" },
+> +	{ .name = "rn5t618-adc",
+> +	  .of_compatible = "ricoh,rc5t619-adc" },
 
-There is no benefit to pretending there is a "control" bus (there is no
-such thing), it only gets in the way.
+Odd to have a name of 618 and a compatible of 619.  Why?
+Definitely deserves a comment if this is necessary for some reason!
 
+> +	{ .name = "rn5t618-power",
+> +	  .of_compatible = "ricoh,rc5t619-power" },
+>  	{ .name = "rn5t618-regulator" },
+>  	{ .name = "rc5t619-rtc" },
+>  	{ .name = "rn5t618-wdt" },
 
-Segher
