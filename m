@@ -2,163 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F66E3BA6BF
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 04:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E733BA6BB
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 04:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhGCC6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Jul 2021 22:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbhGCC6n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Jul 2021 22:58:43 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209F9C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 19:56:09 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id r4-20020a0568301204b029047d1030ef5cso5183277otp.12
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 19:56:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=m4JBEn265RptunOfiTs8m0M1fvn//fFSz5pJNGMHvF0=;
-        b=pGRPaUXtl6GI7prIsGs6Khy5OqJoKovWnX9eyNulqc/9P+Ny82xu97dZdyKM1UZJPj
-         K09VavETGZPhaUbLBjlbEw4inxokntOCpYyZ0mfgbt8sJhe9hqIpI1yRl097NVwTTbtJ
-         Dym5m/Gl7j30YkbyJUrSCKLUq2Pp17pr1eE933JgoyuCqgMsYj+uxtRfrF6q/Y+EkUSI
-         CgXCAR+IyK7LdzmsjN+DCtcycOZsyBCZlq3KK+5By8d4ozJx5tiugTwcV2uAbihUC1Mr
-         t0PHJdZHmGpGJU6CWiLFQeJ8dfBKV2UuD8aHRo3dEoGi8a6LFB02ec9uBx16gpKRpMlV
-         yZJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=m4JBEn265RptunOfiTs8m0M1fvn//fFSz5pJNGMHvF0=;
-        b=aHEZPU1zXGjbFBoRjchhNjN1KXhI/AP3ESoiSJs9eK/YhNxIIZJS2S3vdbgUNWg8tC
-         yLQGRNliiXkIG5/fxJ7n3mFUpZKJyIhIHG1qwLmata9m3aTLy1bMvJ0vuheWG0D6ybcB
-         xEOb/W+ObtHfXGShDXLzQO8Xaux0XjVrFq+xQsa41RxHpMvO+tJLLdjYUUngvi42Dur4
-         DNGTuZ75f64zGLHmIOGGSClpaM8gxnvRlBHz++PELJEsihQeYiS6RXf+Ae3J83uOb1IX
-         SeQk5BDzvDZklN/cw+bFOu5YpJtK8m+y8LgRGu1SS8a+dD40eysg/Qd1y4z3mBRzxWj+
-         0zmw==
-X-Gm-Message-State: AOAM530cLfM2glni+l8+wf+5nbWrTzWRjpzSmBYzfYDv30DmoRfxR5V6
-        LSq5/sUWnTx7hTHUOzX0UDLzXw==
-X-Google-Smtp-Source: ABdhPJzR77b2c9BpirjHCvdYuYm9vS4EP4rR3vtmVD1kjsYVCHS3FjWLvwvYHBB7dDbXLaZr+Q/dGA==
-X-Received: by 2002:a9d:3d3:: with SMTP id f77mr1943963otf.43.1625280968433;
-        Fri, 02 Jul 2021 19:56:08 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id y6sm1143547oiy.18.2021.07.02.19.56.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 19:56:08 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH 2/2] soc: qcom: rpmhpd: Make power_on actually enable the domain
-Date:   Fri,  2 Jul 2021 19:54:49 -0700
-Message-Id: <20210703025449.2687201-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210703005416.2668319-3-bjorn.andersson@linaro.org>
-References: 
+        id S230211AbhGCC6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Jul 2021 22:58:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230051AbhGCC6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Jul 2021 22:58:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C34F5613EB;
+        Sat,  3 Jul 2021 02:55:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625280927;
+        bh=KdTK+UeMQf79HP2aYkDeRCjrJpwTJT0tuqEScdh1Yms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i0DvuIfc2CWeLzJnhJgtO/TkH0/iuO295xgSwcGSDwn4NJzhYqOy9QTEXv9CHGQn0
+         M1Uwt7L6RnsyrW9qIw77JalPZIYAwvl//HhSfD2YP1R4iZCsWKCvTd9Xn5qgJf7sDW
+         Y7lIsmVyVwkupymn2BUXj+pyeI7ew5Rqy1PuMBraTP9zBVjaNyJoOj/ivzriEFhuNC
+         oS9lijNK5Yl1PZ8mp4GvsybLdcuEwV7/JmTYGnFRztako5k6GtO4Stx0cKV2BTOIZm
+         yVHtOfkjUk/1bzKaRGk915UhCHq8JyOwYy/wTwEw/5YuZ3OOEfWl0v26UtG2JJ1ET1
+         VX+B3Pc5iSxGQ==
+Date:   Fri, 2 Jul 2021 19:55:27 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [GIT PULL] xfs: new code for 5.14
+Message-ID: <20210703025527.GA24788@locust>
+References: <20210702201643.GA13765@locust>
+ <CAHk-=wjaCmLbgtSXjVA19HZO6RS8rNePjUf6HuMa3PoDS9VuSQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjaCmLbgtSXjVA19HZO6RS8rNePjUf6HuMa3PoDS9VuSQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The general expectation is that powering on a power-domain should make
-the power domain deliver some power, and if a specific performace state
-is needed further requests has to be made.
+On Fri, Jul 02, 2021 at 02:39:46PM -0700, Linus Torvalds wrote:
+> On Fri, Jul 2, 2021 at 1:16 PM Darrick J. Wong <djwong@kernel.org> wrote:
+> >
+> > Please let me know if anything else strange happens during the merge
+> > process.  The merge commits I made seem stable enough, but as it's the
+> > first time I've ever accepted a pull request, we'd all be open to
+> > feedback for improvements for next time.
+> 
+> It looks fine to me.
+> 
+> I *would* suggest editing the merge commit messages a bit when doing
+> pull requests from other people.
+> 
+> It's by no means a big deal, but it looks a bit odd to see things like
+> 
+>     Hi all,
+> 
+>    ...
+> 
+>     Questions, comment and feedback appreciated!
+> 
+>     Thanks all!
+>     Allison
+> 
+> in the merge message. All that text made a ton of sense in Allison's
+> pull request, but as you actually then merge it, it doesn't make a lot
+> of sense in the commit log, if you see what I mean..
 
-But in contrast with other power-domain implementations (e.g. rpmpd) the
-RPMh does not have an interface to enable the power, so the driver has
-to vote for a particular corner (performance level) in rpmh_power_on().
+Yep, got it.  I'll strip those out next time, thanks for helping me
+figure these things out. :)
 
-But the corner is never initialized, so a typical request to simply
-enable the power domain would not actually turn on the hardware. Further
-more, when no more clients vote for a performance state (i.e. the
-aggregated vote is 0) the power domain would be turn off.
+--D
 
-Fix both of these issues by always voting for a corner with non-zero
-value, when the power domain is enabled.
-
-The tracking of the lowest non-zero corner is performed to handle the
-corner case if there's ever a domain with a non-zero lowest corner, in
-which case both rpmh_power_on() and rpmh_rpmhpd_set_performance_state()
-would be allowed to use this lowest corner.
-
-Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
-
-Resending because the hunk in rpmhpd_update_level_mapping() was left in the
-index.
-
- drivers/soc/qcom/rpmhpd.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
-index fa209b479ab3..76ea6b053ef0 100644
---- a/drivers/soc/qcom/rpmhpd.c
-+++ b/drivers/soc/qcom/rpmhpd.c
-@@ -30,6 +30,7 @@
-  * @active_only:	True if it represents an Active only peer
-  * @corner:		current corner
-  * @active_corner:	current active corner
-+ * @enable_corner:	lowest non-zero corner
-  * @level:		An array of level (vlvl) to corner (hlvl) mappings
-  *			derived from cmd-db
-  * @level_count:	Number of levels supported by the power domain. max
-@@ -47,6 +48,7 @@ struct rpmhpd {
- 	const bool	active_only;
- 	unsigned int	corner;
- 	unsigned int	active_corner;
-+	unsigned int	enable_corner;
- 	u32		level[RPMH_ARC_MAX_LEVELS];
- 	size_t		level_count;
- 	bool		enabled;
-@@ -385,13 +387,13 @@ static int rpmhpd_aggregate_corner(struct rpmhpd *pd, unsigned int corner)
- static int rpmhpd_power_on(struct generic_pm_domain *domain)
- {
- 	struct rpmhpd *pd = domain_to_rpmhpd(domain);
--	int ret = 0;
-+	unsigned int corner;
-+	int ret;
- 
- 	mutex_lock(&rpmhpd_lock);
- 
--	if (pd->corner)
--		ret = rpmhpd_aggregate_corner(pd, pd->corner);
--
-+	corner = max(pd->corner, pd->enable_corner);
-+	ret = rpmhpd_aggregate_corner(pd, corner);
- 	if (!ret)
- 		pd->enabled = true;
- 
-@@ -436,6 +438,10 @@ static int rpmhpd_set_performance_state(struct generic_pm_domain *domain,
- 		i--;
- 
- 	if (pd->enabled) {
-+		/* Ensure that the domain isn't turn off */
-+		if (i < pd->enable_corner)
-+			i = pd->enable_corner;
-+
- 		ret = rpmhpd_aggregate_corner(pd, i);
- 		if (ret)
- 			goto out;
-@@ -472,6 +478,10 @@ static int rpmhpd_update_level_mapping(struct rpmhpd *rpmhpd)
- 	for (i = 0; i < rpmhpd->level_count; i++) {
- 		rpmhpd->level[i] = buf[i];
- 
-+		/* Remember the first non-zero corner */
-+		if (!rpmhpd->enable_corner)
-+			rpmhpd->enable_corner = i;
-+
- 		/*
- 		 * The AUX data may be zero padded.  These 0 valued entries at
- 		 * the end of the map must be ignored.
--- 
-2.29.2
-
+> 
+> But it's not a problem for this pull request, and I've merged it in my
+> tree (pending my usual build tests etc, and I don't expect any
+> issues).
+> 
+>             Linus
