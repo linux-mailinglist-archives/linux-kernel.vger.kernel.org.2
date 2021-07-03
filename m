@@ -2,135 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34753BA80F
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 11:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E993BA811
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 11:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhGCJcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 05:32:52 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:53171 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhGCJct (ORCPT
+        id S230123AbhGCJhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 05:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhGCJg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 05:32:49 -0400
-Received: by mail-io1-f69.google.com with SMTP id r3-20020a6b8f030000b02904e159249245so8799888iod.19
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 02:30:16 -0700 (PDT)
+        Sat, 3 Jul 2021 05:36:58 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B92C061762;
+        Sat,  3 Jul 2021 02:34:25 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 62so4355489pgf.1;
+        Sat, 03 Jul 2021 02:34:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NA2FyDBb7VVZ1//gW7vJlp4ZAiXUzh99M3RwT57vTIw=;
+        b=Az5UIhl/sRLYFP7/l98uaxO8255cP2jLQFPASm7wIL8pcr4SkuEctY2ZXYCRWe6PYE
+         Q8MKV/+5JjaVrkibRAlQVwwTbz287kc0JfkE0QG/Fpk7yGcZV9Xb0pAA8SdAf0hP+3BK
+         nAZuI+V9p5GvL4HhqZdarEMj7b+0IH3xJ/D1Li5xnjtXJSUjhKfblPJylh3IyZFPtBtd
+         9rIiKYQaHcw73Osh/cFoCqva612gT1Yv3DcJmC3bDw1NcK6kcbmjUOKZzHn9kcwsdXeI
+         4M3mafEiCNk6pxelGcMhseZmhGyTBwVW2PzJ61aQ22GfgO01682JTKHfS+ObcA+SYA0i
+         v1Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=o2l0rJ7Rnj+4SKIrPbKdho9je+rDDlVekZtE0ABNFjA=;
-        b=MN7azXBHlggpTENDowpVabZS3oXiw5RJpmnadniO1nhs7vijOn3h/UIzIXQAU+uZlL
-         ViMMhtjjaoCgBkmEEitz5vtOYwclajQAGwDV90xTc75kjC211k9reJ+popdbEibgKGND
-         niZsmC0U0Owj8nPW/+Lw1PSc/6a7hwSxcSVL0pPCAV/X0LwcWozeKb3H04PDpdJU2veV
-         +Klvjz9JYkUm9YhP64ynuTkfIPYWnoyHdZqwWZP8psHKQC+mfpnBgznOHuipeQy9kYW0
-         /v87uGPSKcQGmW7fTJ1Cneyr2P7RarRuqVuKl6QT2G6J4+SJ/rVQf/0eTmH2EhyFlBUn
-         E9XA==
-X-Gm-Message-State: AOAM530z3hPtHWWEePdQuPevOdJODqxzUBhd/dvqEwDYZclkpN1OpIP6
-        oNXJzFtgNqIcAjHy55P5BxbXGOPY3Emj+GJsoC8vrM3znxsU
-X-Google-Smtp-Source: ABdhPJxNTHvT+vnR7UYHLMiGRVyLPApxyFH9C4MNLiMT2mit8hCIt4nXk0CdhhNN94LGhHVNoy9ELf/HsEZ0Sn95FqY+27t3MW3b
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NA2FyDBb7VVZ1//gW7vJlp4ZAiXUzh99M3RwT57vTIw=;
+        b=W7JAlbYjXqXBHOCyR7FXLPU0NOiEf6vRa1kHSHnf9CWFPn5DSj+BpqFqG2CaKLkNVe
+         c3fl10N0x0F4kMn3eAbN1oJ7cy2uQQ5EQbhV5GxRR9a6E8y2qinjJ9SlizrKNFTUKgGs
+         xj6Kj78sfhFMcDjS2omSqpIzdzTEF6SXvwAm8fN6XRi634cJHxog3bWByRkDGhWb7MrU
+         gkdKfoZQ3L95eU0OM0MZIlx0b8DUdK/TDZdcXdI3LX6iNxn0BWSLnIlZaU3M5NdHQdkd
+         OLaght0kBao0yEj8/v2SOA+nsQOeBYjxURqpzPa0TUXzP0iB5GJROPwU92PgPhYySzuz
+         kxEg==
+X-Gm-Message-State: AOAM533iS22baLy2/8E5HcNrXEYvJyWPt57BLYYdcPUZ2lg4qUkJ0pWJ
+        bpUoeThbQ5K9h+kl9YsCXrk=
+X-Google-Smtp-Source: ABdhPJxyffHwZGoXuXPFOyFpbw/YsOfSYAd3+uayOwhxVr3lCsxNRoB+lGmlEXPjCN7XJPH6dKOCmg==
+X-Received: by 2002:a62:8286:0:b029:2fc:812d:2e70 with SMTP id w128-20020a6282860000b02902fc812d2e70mr3813374pfd.24.1625304864568;
+        Sat, 03 Jul 2021 02:34:24 -0700 (PDT)
+Received: from pn-hyperv.lan (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
+        by smtp.gmail.com with ESMTPSA id 144sm7200562pgg.4.2021.07.03.02.34.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Jul 2021 02:34:24 -0700 (PDT)
+From:   Nguyen Dinh Phi <phind.uet@gmail.com>
+To:     yhs@fb.com, edumazet@google.com, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, ycheng@google.com, ncardwell@google.com,
+        yyd@google.com
+Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
+Subject: [PATCH v4] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
+Date:   Sat,  3 Jul 2021 17:34:17 +0800
+Message-Id: <20210703093417.1569943-1-phind.uet@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a5d:904c:: with SMTP id v12mr3399653ioq.95.1625304616099;
- Sat, 03 Jul 2021 02:30:16 -0700 (PDT)
-Date:   Sat, 03 Jul 2021 02:30:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004b654905c634b8e5@google.com>
-Subject: [syzbot] upstream boot error: kernel panic: VFS: Unable to mount root
- fs on unknown-block(0,0)
-From:   syzbot <syzbot+86ab74ebbf8800b62803@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, gregkh@linuxfoundation.org, hare@suse.de,
-        jack@suse.cz, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This commit fixes a bug (found by syzkaller) that could cause spurious
+double-initializations for congestion control modules, which could cause
+memory leaks orother problems for congestion control modules (like CDG)
+that allocate memory in their init functions.
 
-syzbot found the following issue on:
+The buggy scenario constructed by syzkaller was something like:
 
-HEAD commit:    4b820e16 Revert "ALSA: usb-audio: Reduce latency at playba..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f16ac4300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=476b9a5c50907dd0
-dashboard link: https://syzkaller.appspot.com/bug?extid=86ab74ebbf8800b62803
-compiler:       Debian clang version 11.0.1-2
+(1) create a TCP socket
+(2) initiate a TFO connect via sendto()
+(3) while socket is in TCP_SYN_SENT, call setsockopt(TCP_CONGESTION),
+    which calls:
+       tcp_set_congestion_control() ->
+         tcp_reinit_congestion_control() ->
+           tcp_init_congestion_control()
+(4) receive ACK, connection is established, call tcp_init_transfer(),
+    set icsk_ca_initialized=0 (without first calling cc->release()),
+    call tcp_init_congestion_control() again.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+86ab74ebbf8800b62803@syzkaller.appspotmail.com
+Note that in this sequence tcp_init_congestion_control() is called
+twice without a cc->release() call in between. Thus, for CC modules
+that allocate memory in their init() function, e.g, CDG, a memory leak
+may occur. The syzkaller tool managed to find a reproducer that
+triggered such a leak in CDG.
 
-e1000: Copyright (c) 1999-2006 Intel Corporation.
-e1000e: Intel(R) PRO/1000 Network Driver
-e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
-sky2: driver version 1.30
-ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-ehci-pci: EHCI PCI platform driver
-ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
-ohci-pci: OHCI PCI platform driver
-uhci_hcd: USB Universal Host Controller Interface driver
-usbcore: registered new interface driver usblp
-usbcore: registered new interface driver usb-storage
-i8042: PNP: PS/2 Controller [PNP0303:KBD,PNP0f13:MOU] at 0x60,0x64 irq 1,12
-i8042: Warning: Keylock active
-serio: i8042 KBD port at 0x60,0x64 irq 1
-serio: i8042 AUX port at 0x60,0x64 irq 12
-rtc_cmos 00:00: RTC can wake from S4
-rtc_cmos 00:00: registered as rtc0
-rtc_cmos 00:00: alarms up to one day, 114 bytes nvram
-device-mapper: ioctl: 4.45.0-ioctl (2021-03-22) initialised: dm-devel@redhat.com
-intel_pstate: CPU model not supported
-hid: raw HID events driver (C) Jiri Kosina
-usbcore: registered new interface driver usbhid
-usbhid: USB HID core driver
-nf_conntrack_irc: failed to register helpers
-nf_conntrack_sip: failed to register helpers
-Initializing XFRM netlink socket
-NET: Registered PF_INET6 protocol family
-Segment Routing with IPv6
-sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-NET: Registered PF_PACKET protocol family
-9pnet: Installing 9P2000 support
-Key type dns_resolver registered
-IPI shorthand broadcast: enabled
-sched_clock: Marking stable (2235106141, 17179042)->(2259812022, -7526839)
-registered taskstats version 1
-Loading compiled-in X.509 certificates
-PM:   Magic number: 13:586:166
-printk: console [netcon0] enabled
-netconsole: network logging started
-cfg80211: Loading compiled-in X.509 certificates for regulatory database
-cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
-ALSA device list:
-  No soundcards found.
-md: Waiting for all devices to be available before autodetect
-md: If you don't use raid, use raid=noautodetect
-md: Autodetecting RAID arrays.
-md: autorun ...
-md: ... autorun DONE.
-VFS: Cannot open root device "sda1" or unknown-block(0,0): error -6
-Please append a correct "root=" boot option; here are the available partitions:
-Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack_lvl+0xb7/0x103 lib/dump_stack.c:96
- dump_stack+0x11/0x1a lib/dump_stack.c:103
- panic+0x1df/0x5ea kernel/panic.c:232
- mount_block_root+0x259/0x2ae init/do_mounts.c:452
- mount_root+0x97/0xae init/do_mounts.c:555
- prepare_namespace+0x27f/0x2ba init/do_mounts.c:607
- kernel_init_freeable+0x233/0x289 init/main.c:1612
- kernel_init+0x17/0x2d0 init/main.c:1491
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+The bug was introduced when that commit 8919a9b31eb4 ("tcp: Only init
+congestion control if not initialized already")
+introduced icsk_ca_initialized and set icsk_ca_initialized to 0 in
+tcp_init_transfer(), missing the possibility for a sequence like the
+one above, where a process could call setsockopt(TCP_CONGESTION) in
+state TCP_SYN_SENT (i.e. after the connect() or TFO open sendmsg()),
+which would call tcp_init_congestion_control(). It did not intend to
+reset any initialization that the user had already explicitly made;
+it just missed the possibility of that particular sequence (which
+syzkaller managed to find).
 
-
+Fixes: 8919a9b31eb4 (tcp: Only init congestion control if not initialized already)
+Reported-by: syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+V2:     - Modify the Subject line.
+        - Adjust the commit message.
+        - Add Fixes: tag.
+V3:	- Fix netdev/verify_fixes format error.
+V4:	- Add blamed authors to receiver list.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ net/ipv4/tcp_input.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index 7d5e59f688de..855ada2be25e 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -5922,7 +5922,6 @@ void tcp_init_transfer(struct sock *sk, int bpf_op, struct sk_buff *skb)
+ 		tp->snd_cwnd = tcp_init_cwnd(tp, __sk_dst_get(sk));
+ 	tp->snd_cwnd_stamp = tcp_jiffies32;
+
+-	icsk->icsk_ca_initialized = 0;
+ 	bpf_skops_established(sk, bpf_op, skb);
+ 	if (!icsk->icsk_ca_initialized)
+ 		tcp_init_congestion_control(sk);
+--
+2.25.1
+
