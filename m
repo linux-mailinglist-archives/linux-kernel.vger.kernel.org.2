@@ -2,119 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E0D3BAA1C
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 21:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF263BAA21
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 21:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhGCTYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 15:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51858 "EHLO
+        id S229685AbhGCThA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 15:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhGCTYH (ORCPT
+        with ESMTP id S229473AbhGCTg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 15:24:07 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD46AC061762
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Jul 2021 12:21:33 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id p8so16791090wrr.1
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 12:21:33 -0700 (PDT)
+        Sat, 3 Jul 2021 15:36:59 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B708FC061762
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Jul 2021 12:34:24 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id w19so24678643lfk.5
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 12:34:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=12BVBSJInuZ6Df9NfN2LPGy+tfchmDgeR3fUuzO0Jvs=;
-        b=i4SvxPE+xzAe/iTT8W1tzSJ6gi7HtfhgdGT3T4pN5j97ITGZ+AtaNmJqVLWWtzPUeM
-         81hCAqHd3Pn7fhQ7J+ahZ0ncnOo3CMMQqlzJu1MhkPp8ksPG7eJWD8/3TFMc9Gc3u71B
-         2TI9hxX4Rlbd+XiI+gh8x0c/pmCsGYyLM0dNAZUPCSZwct6Ah0rjw/mn4M0cw0U0nrr4
-         nqVh4Xyt37Mc/1AdMGGW/qF93BIW6jM9beSpW4SbWvIYpIzNqQupFGfYfqhDgEAIlunD
-         KMBzWIElozuZZtklsKcqQAa92DzdpVYcgA1/CdgRSPhRzL1FgcOFMDgtBKYVjRBjbYgm
-         aGDQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LteJNCSpTKh9xbMe/59RuQkpJr9zFLx0HiImxwfUUxA=;
+        b=IFW9WhGy7gFSHI4FBwLNIuzV3jUA75+mJyCK+RSA5ZyehBHPnhfC64M3+hb2OezQrK
+         m7MqQccJenLyyKStvWQRZGdBsda0dzcSrb2ZGgtwwhul5AmkAarzV2BaueqXE/xZJGJL
+         3JoduOJcq621Gck9Eq6b0+R9WviMs6Jp3URHM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=12BVBSJInuZ6Df9NfN2LPGy+tfchmDgeR3fUuzO0Jvs=;
-        b=IPA5qGre80+dCdpXJQFiFhYFHo3oGyuaMruc85xnnjgRO5+DRfkHn8g522cElRJ0tY
-         Rj+OrOKOLq6OVr7hUkEJe3D5SzqHN5beMWBcCM080w63cLgmt9jSE9RG7kdrXXa2OJ67
-         mkkPx9Z4JEycxxRW026cq8jodBUKzRN6bazjAZERR/fmRqlZD1ThLJXBhnDfcMYbt+3T
-         7l4e6e8ec1Ea10Bx0NehOVWeDm9AHV1EqqA3lcJv3Nbvf9dm+8Qc4kQGTnI/GqeJtqTn
-         aL2aR6vn+uY7taeDNBf0w5NK6cEDVyU5bqAf/3rsgzSOyNhLFiTLukxj9ZNWofp3ScCA
-         UbUw==
-X-Gm-Message-State: AOAM531AoG62MQIqfjhipkX74RmNDKDrQRkFfvU2l66SDWujFblWyzKt
-        duhZoiuX8eta/fD5yIEWTKw=
-X-Google-Smtp-Source: ABdhPJwzPUp52jElvDCXWHQDTjCeskVmyf3yd0na4U9yDOe8F6eZ9CPK3j60/VMJQU+Vx8NVbeZsig==
-X-Received: by 2002:adf:d1c1:: with SMTP id b1mr1581163wrd.394.1625340092193;
-        Sat, 03 Jul 2021 12:21:32 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id c12sm8485952wrr.90.2021.07.03.12.21.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Jul 2021 12:21:31 -0700 (PDT)
-Date:   Sat, 3 Jul 2021 21:21:29 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     bskeggs@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        christian.koenig@amd.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: nouveau: failed to initialise sync
-Message-ID: <YOC4uekpD7iA3xPi@Red>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LteJNCSpTKh9xbMe/59RuQkpJr9zFLx0HiImxwfUUxA=;
+        b=FWjmJvSZucmckWxlQzBNYMDszy49iqavZYEB9X9YWaW0YK2f2dT8auANaR+tVm0+qS
+         enAsD0/hb1cfZCorsVBVYEHlGyjtWX5TAu9tL1J2HP2UECEi/nkXuDkG6PfnsppgnJTv
+         vTj5nziCM7bUnQCWD1+R14+CBaZIew+4BPbRh0WPgPPfkSl5NU0/jnz9ZbtoDC7AvsXT
+         XR03xun6v+dvBCRB1HXVdXrfzpd7iUA3+8iRl54sBmkgNBg4/4Pn+oUPsaNeEDFEAaXc
+         zV1w1m2V8GmdhPXNKVm5H5F/F3s++iyLH2uHflnm7i0fBNnjYYZtWN3X9MfnZw2lsgxp
+         8IFg==
+X-Gm-Message-State: AOAM5332HT/3tbZtWXfbJOni0MIOLYEITV+mqCUMudP+266JTDV9ak6M
+        NG8SSV52nRmZLTvugBk/cONhB7OS60HUrE1S96o=
+X-Google-Smtp-Source: ABdhPJyG8koovtKAlVtFZ/YOosO07CjmgN7yLXRhwkrd4wKKpKk0rgsicnWYZbywCgbAhQIKC4DD2w==
+X-Received: by 2002:a05:6512:3765:: with SMTP id z5mr4296603lft.583.1625340862619;
+        Sat, 03 Jul 2021 12:34:22 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id v128sm456720lfa.176.2021.07.03.12.34.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Jul 2021 12:34:21 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id q4so18470017ljp.13
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 12:34:21 -0700 (PDT)
+X-Received: by 2002:a2e:a276:: with SMTP id k22mr4368475ljm.465.1625340861140;
+ Sat, 03 Jul 2021 12:34:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <7a9ac752-2c1a-b05f-c5bd-9049c0bdd54e@linaro.org>
+In-Reply-To: <7a9ac752-2c1a-b05f-c5bd-9049c0bdd54e@linaro.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 3 Jul 2021 12:34:05 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgZzeaZb0ByL+zPV1grizuxw2nAnmzU49S7pzV7sPS1Hg@mail.gmail.com>
+Message-ID: <CAHk-=wgZzeaZb0ByL+zPV1grizuxw2nAnmzU49S7pzV7sPS1Hg@mail.gmail.com>
+Subject: Re: [GIT PULL] thermal for v5.14-rc1
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <zhang.chunyan@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Rajeshwari Ravindra Kamble <rkambl@codeaurora.org>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Finley Xiao <finley.xiao@rock-chips.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+On Sat, Jul 3, 2021 at 9:17 AM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
+> tags/thermal-v5.14-rc1
 
-Since some days on next, nouveau fail to load:
-[    2.754087] nouveau 0000:02:00.0: vgaarb: deactivate vga console
-[    2.761260] Console: switching to colour dummy device 80x25
-[    2.766888] nouveau 0000:02:00.0: NVIDIA MCP77/MCP78 (0aa480a2)
-[    2.783954] nouveau 0000:02:00.0: bios: version 62.77.2a.00.04
-[    2.810122] nouveau 0000:02:00.0: fb: 256 MiB stolen system memory
-[    3.484031] nouveau 0000:02:00.0: DRM: VRAM: 256 MiB
-[    3.488993] nouveau 0000:02:00.0: DRM: GART: 1048576 MiB
-[    3.494308] nouveau 0000:02:00.0: DRM: TMDS table version 2.0
-[    3.500052] nouveau 0000:02:00.0: DRM: DCB version 4.0
-[    3.505192] nouveau 0000:02:00.0: DRM: DCB outp 00: 01000300 0000001e
-[    3.511632] nouveau 0000:02:00.0: DRM: DCB outp 01: 01011332 00020010
-[    3.518074] nouveau 0000:02:00.0: DRM: DCB conn 00: 00000100
-[    3.523728] nouveau 0000:02:00.0: DRM: DCB conn 01: 00001261
-[    3.529455] nouveau 0000:02:00.0: DRM: failed to initialise sync subsystem, -28
-[    3.545946] nouveau: probe of 0000:02:00.0 failed with error -28
+This does not build for me. And I suspect it never built in linux-next either.
 
-I bisected it to:
-git bisect start
-# good: [62fb9874f5da54fdb243003b386128037319b219] Linux 5.13
-git bisect good 62fb9874f5da54fdb243003b386128037319b219
-# bad: [fb0ca446157a86b75502c1636b0d81e642fe6bf1] Add linux-next specific files for 20210701
-git bisect bad fb0ca446157a86b75502c1636b0d81e642fe6bf1
-# good: [f63c4fda987a19b1194cc45cb72fd5bf968d9d90] Merge remote-tracking branch 'rdma/for-next'
-git bisect good f63c4fda987a19b1194cc45cb72fd5bf968d9d90
-# bad: [49c8769be0b910d4134eba07cae5d9c71b861c4a] Merge remote-tracking branch 'drm/drm-next'
-git bisect bad 49c8769be0b910d4134eba07cae5d9c71b861c4a
-# good: [4e3db44a242a4e2afe33b59793898ecbb61d478e] Merge tag 'wireless-drivers-next-2021-06-25' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next
-git bisect good 4e3db44a242a4e2afe33b59793898ecbb61d478e
-# bad: [5745d647d5563d3e9d32013ad4e5c629acff04d7] Merge tag 'amd-drm-next-5.14-2021-06-02' of https://gitlab.freedesktop.org/agd5f/linux into drm-next
-git bisect bad 5745d647d5563d3e9d32013ad4e5c629acff04d7
-# bad: [c99c4d0ca57c978dcc2a2f41ab8449684ea154cc] Merge tag 'amd-drm-next-5.14-2021-05-19' of https://gitlab.freedesktop.org/agd5f/linux into drm-next
-git bisect bad c99c4d0ca57c978dcc2a2f41ab8449684ea154cc
-# bad: [ae25ec2fc6c5a9e5767bf1922cd648501d0f914c] Merge tag 'drm-misc-next-2021-05-17' of git://anongit.freedesktop.org/drm/drm-misc into drm-next
-git bisect bad ae25ec2fc6c5a9e5767bf1922cd648501d0f914c
-# bad: [cac80e71cfb0b00202d743c6e90333c45ba77cc5] drm/vkms: rename cursor to plane on ops of planes composition
-git bisect bad cac80e71cfb0b00202d743c6e90333c45ba77cc5
-# good: [178bdba84c5f0ad14de384fc7f15fba0e272919d] drm/ttm/ttm_device: Demote kernel-doc abuses
-git bisect good 178bdba84c5f0ad14de384fc7f15fba0e272919d
-# bad: [3f3a6524f6065fd3d130515e012f63eac74d96da] drm/dp: Clarify DP AUX registration time
-git bisect bad 3f3a6524f6065fd3d130515e012f63eac74d96da
-# bad: [6dd7efc437611db16d432e0030f72d0c7e890127] drm/gud: cleanup coding style a bit
-git bisect bad 6dd7efc437611db16d432e0030f72d0c7e890127
-# bad: [13b29cc3a722c2c0bc9ab9f72f9047d55d08a2f9] drm/mxsfb: Don't select DRM_KMS_FB_HELPER
-git bisect bad 13b29cc3a722c2c0bc9ab9f72f9047d55d08a2f9
-# bad: [d02117f8efaa5fbc37437df1ae955a147a2a424a] drm/ttm: remove special handling for non GEM drivers
-git bisect bad d02117f8efaa5fbc37437df1ae955a147a2a424a
-# good: [13ea9aa1e7d891e950230e82f1dd2c84e5debcff] drm/ttm: fix error handling if no BO can be swapped out v4
-git bisect good 13ea9aa1e7d891e950230e82f1dd2c84e5debcff
-# first bad commit: [d02117f8efaa5fbc37437df1ae955a147a2a424a] drm/ttm: remove special handling for non GEM drivers
+I get
 
-Reverting the patch permit to have nouveau works again.
+  ERROR: modpost: "tegra_fuse_readl"
+[drivers/thermal/tegra/tegra30-tsensor.ko] undefined!
+  ERROR: modpost: "tegra_fuse_readl"
+[drivers/thermal/tegra/tegra-soctherm.ko] undefined!
+  make[1]: *** [scripts/Makefile.modpost:150: modules-only.symvers] Error 1
+  make[1]: *** Deleting file 'modules-only.symvers'
+  make: *** [Makefile:1762: modules] Error 2
 
-Regards
+and I think it's due to that commit 1f9c5936b10c
+("thermal/drivers/tegra: Correct compile-testing of drivers") which
+quite sensibly tries to extend build coverage for the tegra thermal
+drivers, but that build coverage doesn't actually *work* outside the
+tegra world.
+
+That commit says "All Tegra thermal drivers support compile-testing",
+but clearly they stumble at the last hurdle.
+
+I made the decision to just unpull this, not because I couldn't fix
+it, but because if it was this untested, I don't want to worry about
+all the *other* code in there too.
+
+               Linus
