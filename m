@@ -2,185 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122753BA7E1
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 10:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0833BA7E7
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 10:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhGCIpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 04:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
+        id S230115AbhGCIts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 04:49:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbhGCIpS (ORCPT
+        with ESMTP id S229893AbhGCItq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 04:45:18 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12185C061762;
-        Sat,  3 Jul 2021 01:42:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:
-        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=PFCM19IYyhz7jH3VrV8Q9fkUeAhfoXHRT3367WSPUVc=; b=D6+pjJDGxiqOuFTDwu62WS7x7O
-        XacLijYjvp+DBB9APz5mEGC8TO3rYv/Oki/zn9/+MAeOpapdWONIp15/3ip8rGHfVP6yiMNcGL+Cg
-        hTNgT7ABQtIIRI8sHuppY9lWRHgFJlYGeIqVrA8VB6uAwzy7JnkxYq3G8iCS+qk2YwAs=;
-Received: from p200300ccff37da001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff37:da00:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1lzbEX-0006OU-DJ; Sat, 03 Jul 2021 10:42:41 +0200
-Received: from andi by aktux with local (Exim 4.92)
-        (envelope-from <andreas@kemnade.info>)
-        id 1lzbEX-0008Hu-2W; Sat, 03 Jul 2021 10:42:41 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     lee.jones@linaro.org, robh+dt@kernel.org, jic23@kernel.org,
-        lars@metafoo.de, sre@kernel.org, andreas@kemnade.info,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-pm@vger.kernel.org,
-        leonard.crestez@nxp.com, letux-kernel@openphoenux.org
-Subject: [PATCH 4/4] power: supply: rn5t618: Add voltage_now property
-Date:   Sat,  3 Jul 2021 10:42:24 +0200
-Message-Id: <20210703084224.31623-5-andreas@kemnade.info>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210703084224.31623-1-andreas@kemnade.info>
-References: <20210703084224.31623-1-andreas@kemnade.info>
+        Sat, 3 Jul 2021 04:49:46 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A89C061762;
+        Sat,  3 Jul 2021 01:47:13 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso9025217pjx.1;
+        Sat, 03 Jul 2021 01:47:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X5LqaHOTleUwEc8rezvK4+11SzDVWy9M2nq3QHqzO1A=;
+        b=JmksDk+G/11lCWwdFtloFd5ErcfB70in1PJ8teXH827oRb1YG9b5QnMaMSA/l/3NwA
+         VVYj5slobUkbtaJDdvQtd+OFd3BTpzfAtSpd9rSGgs0kODZqe5j5WyHbnNeBKb0mGemP
+         0Kin+cgjF/yw/vXYSqrGex5qH89vLWcKilbKVL6m4XHhQ4CS5EGtS7JlclGzraL0+SLf
+         IM2k5af5hs6PGPe4ZigHWrzVB5/xNeQGvEsTBF94q0kBGuBDwBiTbZTUHJgYqXALFgUd
+         e/eC6kNfH0fpe7eWOBn5x5UTeI5dOLO2/D4UYHKOZVmXV/8NLzRJeWKC4JgYa1sjhg1/
+         dttg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X5LqaHOTleUwEc8rezvK4+11SzDVWy9M2nq3QHqzO1A=;
+        b=cMHDyK5c7qIlwDPS7HXZSO11vJ3pxZbXM/HVdfLAYmBer3D6XplBBpGF2zq8yszM/u
+         tyAW2dVDJkXEkz/Z7ElQU1WJPCb+2F8tpsL5ty1gsLZXIlzPPpRgd5eEFhf5w2DjxYd/
+         vECm74TnO2b6SvDlNCFfQx6VqiPAhdVlPAejFiGu0VAVk4U+8va8cYDQqqMeV3m+HU8y
+         O6VqSzGvEqzVAFROkwGBJ/kzcUVbEUU/qFo4Hizoa73LbzkCf6kQO2PSaWEjQ09hzUHA
+         /mmfvuvJFwbG/ehqiPqBbz4r2GoTyXd4Zb06Cid/SNwa0iNM1l6ewhKqXaqGZXyRB4+5
+         AQ0A==
+X-Gm-Message-State: AOAM532LX3qidUwUkeC58J9+MV7CnoaaYz3a8x7sOojGTH5U5NKNe1jt
+        GLJGQNc7lpbZ5RZmjcPs3GA=
+X-Google-Smtp-Source: ABdhPJy4kQ82sVIVkMMbUFzKmgZYCcgMjoMXW0PnOfLEgnWYrWhHK49npgVaZbBi1xJ2U3+Pt8IvIw==
+X-Received: by 2002:a17:90b:4d81:: with SMTP id oj1mr3609967pjb.153.1625302033236;
+        Sat, 03 Jul 2021 01:47:13 -0700 (PDT)
+Received: from pn-hyperv.lan (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
+        by smtp.gmail.com with ESMTPSA id h27sm6557907pfr.171.2021.07.03.01.47.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Jul 2021 01:47:12 -0700 (PDT)
+From:   Nguyen Dinh Phi <phind.uet@gmail.com>
+To:     yhs@fb.com, edumazet@google.com, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org
+Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
+Subject: [PATCH v3] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
+Date:   Sat,  3 Jul 2021 16:47:00 +0800
+Message-Id: <20210703084700.1546968-1-phind.uet@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Read voltage_now via IIO and provide the property.
+This commit fixes a bug (found by syzkaller) that could cause spurious
+double-initializations for congestion control modules, which could cause
+memory leaks orother problems for congestion control modules (like CDG)
+that allocate memory in their init functions.
 
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+The buggy scenario constructed by syzkaller was something like:
+
+(1) create a TCP socket
+(2) initiate a TFO connect via sendto()
+(3) while socket is in TCP_SYN_SENT, call setsockopt(TCP_CONGESTION),
+    which calls:
+       tcp_set_congestion_control() ->
+         tcp_reinit_congestion_control() ->
+           tcp_init_congestion_control()
+(4) receive ACK, connection is established, call tcp_init_transfer(),
+    set icsk_ca_initialized=0 (without first calling cc->release()),
+    call tcp_init_congestion_control() again.
+
+Note that in this sequence tcp_init_congestion_control() is called
+twice without a cc->release() call in between. Thus, for CC modules
+that allocate memory in their init() function, e.g, CDG, a memory leak
+may occur. The syzkaller tool managed to find a reproducer that
+triggered such a leak in CDG.
+
+The bug was introduced when that commit 8919a9b31eb4 ("tcp: Only init
+congestion control if not initialized already")
+introduced icsk_ca_initialized and set icsk_ca_initialized to 0 in
+tcp_init_transfer(), missing the possibility for a sequence like the
+one above, where a process could call setsockopt(TCP_CONGESTION) in
+state TCP_SYN_SENT (i.e. after the connect() or TFO open sendmsg()),
+which would call tcp_init_congestion_control(). It did not intend to
+reset any initialization that the user had already explicitly made;
+it just missed the possibility of that particular sequence (which
+syzkaller managed to find).
+
+Fixes: 8919a9b31eb4 (tcp: Only init congestion control if not initialized already)
+Reported-by: syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
 ---
- drivers/power/supply/rn5t618_power.c | 56 ++++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
+V2:     - Modify the Subject line.
+        - Adjust the commit message.
+        - Add Fixes: tag.
+V3:	- Fix netdev/verify_fixes format error.
 
-diff --git a/drivers/power/supply/rn5t618_power.c b/drivers/power/supply/rn5t618_power.c
-index 819061918b2a..b062208c8a91 100644
---- a/drivers/power/supply/rn5t618_power.c
-+++ b/drivers/power/supply/rn5t618_power.c
-@@ -9,10 +9,12 @@
- #include <linux/device.h>
- #include <linux/bitops.h>
- #include <linux/errno.h>
-+#include <linux/iio/consumer.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/module.h>
- #include <linux/mfd/rn5t618.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/power_supply.h>
- #include <linux/regmap.h>
-@@ -64,6 +66,8 @@ struct rn5t618_power_info {
- 	struct power_supply *battery;
- 	struct power_supply *usb;
- 	struct power_supply *adp;
-+	struct iio_channel *channel_vusb;
-+	struct iio_channel *channel_vadp;
- 	int irq;
- };
- 
-@@ -77,6 +81,7 @@ static enum power_supply_usb_type rn5t618_usb_types[] = {
- static enum power_supply_property rn5t618_usb_props[] = {
- 	/* input current limit is not very accurate */
- 	POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
-+	POWER_SUPPLY_PROP_VOLTAGE_NOW,
- 	POWER_SUPPLY_PROP_STATUS,
- 	POWER_SUPPLY_PROP_USB_TYPE,
- 	POWER_SUPPLY_PROP_ONLINE,
-@@ -85,6 +90,7 @@ static enum power_supply_property rn5t618_usb_props[] = {
- static enum power_supply_property rn5t618_adp_props[] = {
- 	/* input current limit is not very accurate */
- 	POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
-+	POWER_SUPPLY_PROP_VOLTAGE_NOW,
- 	POWER_SUPPLY_PROP_STATUS,
- 	POWER_SUPPLY_PROP_ONLINE,
- };
-@@ -464,6 +470,16 @@ static int rn5t618_adp_get_property(struct power_supply *psy,
- 
- 		val->intval = FROM_CUR_REG(regval);
- 		break;
-+	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
-+		if (!info->channel_vadp)
-+			return -ENODATA;
-+
-+		ret = iio_read_channel_processed(info->channel_vadp, &val->intval);
-+		if (ret < 0)
-+			return ret;
-+
-+		val->intval *= 1000;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -589,6 +605,16 @@ static int rn5t618_usb_get_property(struct power_supply *psy,
- 			val->intval = FROM_CUR_REG(regval);
- 		}
- 		break;
-+	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
-+		if (!info->channel_vusb)
-+			return -ENODATA;
-+
-+		ret = iio_read_channel_processed(info->channel_vusb, &val->intval);
-+		if (ret < 0)
-+			return ret;
-+
-+		val->intval *= 1000;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -711,6 +737,28 @@ static int rn5t618_power_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, info);
- 
-+	info->channel_vusb = devm_iio_channel_get(&pdev->dev, "vusb");
-+	if (IS_ERR(info->channel_vusb)) {
-+		ret = PTR_ERR(info->channel_vusb);
-+		if (ret == -EPROBE_DEFER)
-+			return ret;
-+
-+		dev_warn(&pdev->dev, "could not request vusb iio channel (%d)",
-+			 ret);
-+		info->channel_vusb = NULL;
-+	}
-+
-+	info->channel_vadp = devm_iio_channel_get(&pdev->dev, "vadp");
-+	if (IS_ERR(info->channel_vadp)) {
-+		ret = PTR_ERR(info->channel_vadp);
-+		if (ret == -EPROBE_DEFER)
-+			return ret;
-+
-+		dev_warn(&pdev->dev, "could not request vadp iio channel (%d)",
-+			 ret);
-+		info->channel_vadp = NULL;
-+	}
-+
- 	ret = regmap_read(info->rn5t618->regmap, RN5T618_CONTROL, &v);
- 	if (ret)
- 		return ret;
-@@ -778,9 +826,17 @@ static int rn5t618_power_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct of_device_id rn5t618_power_of_match[] = {
-+	{.compatible = "ricoh,rc5t619-power", },
-+	{.compatible = "ricoh,rn5t618-power", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, rn5t618_power_of_match);
-+
- static struct platform_driver rn5t618_power_driver = {
- 	.driver = {
- 		.name   = "rn5t618-power",
-+		.of_match_table = of_match_ptr(rn5t618_power_of_match),
- 	},
- 	.probe = rn5t618_power_probe,
- };
--- 
-2.30.2
+ net/ipv4/tcp_input.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index 7d5e59f688de..855ada2be25e 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -5922,7 +5922,6 @@ void tcp_init_transfer(struct sock *sk, int bpf_op, struct sk_buff *skb)
+ 		tp->snd_cwnd = tcp_init_cwnd(tp, __sk_dst_get(sk));
+ 	tp->snd_cwnd_stamp = tcp_jiffies32;
+
+-	icsk->icsk_ca_initialized = 0;
+ 	bpf_skops_established(sk, bpf_op, skb);
+ 	if (!icsk->icsk_ca_initialized)
+ 		tcp_init_congestion_control(sk);
+--
+2.25.1
 
