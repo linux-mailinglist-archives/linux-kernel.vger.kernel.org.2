@@ -2,147 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AB93BAA70
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 00:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B6D3BAA75
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 00:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhGCWFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 18:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58464 "EHLO
+        id S229807AbhGCWMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 18:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhGCWFG (ORCPT
+        with ESMTP id S229520AbhGCWMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 18:05:06 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005E5C061764;
-        Sat,  3 Jul 2021 15:02:31 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id c17so22538885ejk.13;
-        Sat, 03 Jul 2021 15:02:31 -0700 (PDT)
+        Sat, 3 Jul 2021 18:12:49 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBDCC061762
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Jul 2021 15:10:13 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id p22so22615866yba.7
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 15:10:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Suqpqo5vbYogXQd8G18V6nH4n6l93IDGiGtOPmsm1nA=;
-        b=EhZXCxm73mp70T++U1t3VqvHUiVxVuRM3XByDA3bLXkDOtEObYdJ1/AVxPnv+abV7W
-         uPYLGKOSBkqAdArUFHVPhR8xC5xAvEZYRiaTc9TSPjDAVHPXhks7FV5Sk0PFrDG5UUUD
-         lYrwebTWwUlM8IzBaCxBjaMDCYPZyc0PRzzj5sNk36rziIviLmzPz1Svu1j2U8TDCak7
-         ydeUPdsPqXfBGtykEOlK/6fB6rD47QjLXAq0h45TzckaR6w0/EJnqLXpmo5oYg5gGECR
-         ZnjlSBQIpTR/4RGX5ge1pYXl68/WvIoSw45gOnBQ7JWrrn8KSIgPMTns8VJYieN+hrcV
-         fGKw==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=LgQN7xBOvFiuxXiMegAyp+oKBGlhU+C7ES7SUZfpamY=;
+        b=cdGWwTaDpfl0y64YdXwuMmDetTjGy9PPWQdyqbLiYicyO62TDdQizLk+0EmwQjj4WW
+         VarVl8Fo+OymPac+LurtUBFQZqJKJB8i2gieA8qyW8k4uNczhuGyWJ0WQQyQd8dEko/M
+         cnps8ri4vBpO5HEDmjiCuBngRgYDas3qZLGS5CLRDSDv+E425e54Bu+33LmZaQAD2kAV
+         JiJTIub7hiXEIbu4u/5tdcvrIuWnv8480iDEfKQvbnuFbbz5EAYW0M9ENPZbGRQH3m2R
+         gomhgekot3GZNRzF+2iyvI0ac1DxBRW4P8TqYiqLUNi/rUx712SSh/mAwrY3x5HB5A/+
+         sXhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Suqpqo5vbYogXQd8G18V6nH4n6l93IDGiGtOPmsm1nA=;
-        b=a8JuBDcLWoi/NhM26DYO652rCqqQeF2VW3cZ2zbUtW1BhP24+Vpb4IHUOvYOi4mAw9
-         3kpmMVrqRqPdNYv74Pz/SprDjzKMGDBGTOdLLoBNYGqzepYcI8hA1YdmLPiNin/ChlXa
-         /oYTYbgoMfzTrDYgS3A7y6qNT4Rx4zrRUYeAeThpZ3ej7+ZrbxYzaoYw/Eey0BMiTAhf
-         SbKYU3iIbH56dHqxTAkX9UuyhtEH3b9KnsFsHldQFgMlJqEksa5mD7mprdEGcMC61qPq
-         L7OtAIOQrHPTR4kXLv9LW1gOMf/Gy6LAcxUZMu4UoWMtH8gj5YWWduUuQVr5q66qBigc
-         l+1w==
-X-Gm-Message-State: AOAM53075C73fP/TonWttopHI/xYQKWBpqfrT26IBriuclpbKxuHCBak
-        OjgKRjGsoEv7O5hVvtu6p4A=
-X-Google-Smtp-Source: ABdhPJyBPuD8AbRKJW5TTubRnv3+Lgkn7ZtaMCfif6Im2I9efdqiQtQQV+XuaCPLP8ZAEvBY+VuZRw==
-X-Received: by 2002:a17:907:1c0a:: with SMTP id nc10mr6129835ejc.294.1625349750546;
-        Sat, 03 Jul 2021 15:02:30 -0700 (PDT)
-Received: from warrior.lan ([2a03:7380:2407:bc63:7e28:eb67:305b:8ba0])
-        by smtp.gmail.com with ESMTPSA id b25sm3186110edv.9.2021.07.03.15.02.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Jul 2021 15:02:30 -0700 (PDT)
-From:   Maxim Mikityanskiy <maxtram95@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Daniel Kurtz <djkurtz@chromium.org>,
-        Oliver Neukum <oneukum@suse.de>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxim Mikityanskiy <maxtram95@gmail.com>
-Subject: [PATCH 6/6] HID: jabra: Change mute LED state to avoid missing key press events
-Date:   Sun,  4 Jul 2021 01:02:02 +0300
-Message-Id: <20210703220202.5637-7-maxtram95@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210703220202.5637-1-maxtram95@gmail.com>
-References: <20210703220202.5637-1-maxtram95@gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=LgQN7xBOvFiuxXiMegAyp+oKBGlhU+C7ES7SUZfpamY=;
+        b=P2KsdnQ/+qWaHBAvvmsavQQ6S5QOZXzzXssOZOPoyalmx50xVAUXN2I2EKsX35ZuNY
+         wzumG4QoKSYh9mazown8WwbzDTkYZ9Sha6oTQYoUaDPKoUFGS7h3/HDcKBM8LGncv/B1
+         zF7CVz9tCzOS/43Nsz3A4l5WhI8XqB7riZhfWIzirY9g7ExoZb/nIS6+Erg+a4FbI8/i
+         YyGcyhwDMuDnLOmoFIYNCNkDQ2kQsWksQH2ft1WGKcMiyzw6bAjBEHot/iG/F63snHhZ
+         PW7uR/+qMuaHNfwRBfmqzfAyXT52C1T7Iw+74I8Vd+ojYHdRxdOHo1Jzp+LMchkHvrWz
+         N+wg==
+X-Gm-Message-State: AOAM530H85i+gDDjRd45KktzGAJAsmrm0eHHebNJzGirj2A/3cbycS42
+        YE6mKjd3wG3RtX5RvqEO98U5yT5ncSa4fRWBDAI=
+X-Google-Smtp-Source: ABdhPJwvWs9w14i/WYt9SugnIimDtkTd6aka0BmWWY5vs4G2y7JkDssy383bQgvGDK0AMXO/PjfR6+N/d+L8/o8xqMM=
+X-Received: by 2002:a25:b203:: with SMTP id i3mr7896270ybj.260.1625350212235;
+ Sat, 03 Jul 2021 15:10:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a25:ac9c:0:0:0:0:0 with HTTP; Sat, 3 Jul 2021 15:10:11 -0700 (PDT)
+Reply-To: pastorNCHA@gmail.com
+From:   James EGO <dr.olavfyksetveit@gmail.com>
+Date:   Sat, 3 Jul 2021 23:10:11 +0100
+Message-ID: <CACCuPpMBPqCrSY9mv3m=FqUNKHhNPwxQBk4LLpXimxwcL-tbiw@mail.gmail.com>
+Subject: Attention: Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jabra devices use their discretion regarding when to send the mute key
-press events. Although every press on the mute button changes the LED
-and actual mute state, key press events are only generated in the
-offhook state and only if the mute state set by the host matches the
-mute state of the headset.
+This is to thank you for your past effort and kindly assistance,I have
+suceeded with the transaction
 
-Without the host's help, every second mute key press will be missed.
-This patch addresses it by making the driver update the mute state every
-time the mute button is pressed.
+finally,so I am compensating you with the sum of US$3.500.000, so
+contact my Pastor for the money.
+Name:Pastor.Patrick NCHA.
 
-Tested with GN Netcom Jabra EVOLVE 20 MS (0b0e:0300). If some other
-Jabra device doesn't suffer from this behavior, this workaround
-shouldn't hurt.
+Email address: ( pastorNCHA@gmail.com )
+Phone Number: +22879975514
 
-Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
----
- drivers/hid/hid-jabra.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
-
-diff --git a/drivers/hid/hid-jabra.c b/drivers/hid/hid-jabra.c
-index 41dc30fe2d16..818c174cd544 100644
---- a/drivers/hid/hid-jabra.c
-+++ b/drivers/hid/hid-jabra.c
-@@ -37,16 +37,51 @@ static int jabra_input_mapping(struct hid_device *hdev,
- 	return is_vendor_defined ? -1 : 0;
- }
- 
-+static int jabra_event(struct hid_device *hdev, struct hid_field *field,
-+		       struct hid_usage *usage, __s32 value)
-+{
-+	struct hid_field *mute_led_field;
-+	int offset;
-+
-+	/* Usages are filtered in jabra_usages. */
-+
-+	if (!value) /* Handle key presses only. */
-+		return 0;
-+
-+	offset = hidinput_find_field(hdev, EV_LED, LED_MUTE, &mute_led_field);
-+	if (offset == -1)
-+		return 0; /* No mute LED, proceed. */
-+
-+	/*
-+	 * The device changes the LED state automatically on the mute key press,
-+	 * however, it still expects the host to change the LED state. If there
-+	 * is a mismatch (i.e. the host didn't change the LED state), the next
-+	 * mute key press won't generate an event. To avoid missing every second
-+	 * mute key press, change the LED state here.
-+	 */
-+	input_event(mute_led_field->hidinput->input, EV_LED, LED_MUTE,
-+		    !mute_led_field->value[offset]);
-+
-+	return 0;
-+}
-+
- static const struct hid_device_id jabra_devices[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_JABRA, HID_ANY_ID) },
- 	{ }
- };
- MODULE_DEVICE_TABLE(hid, jabra_devices);
- 
-+static const struct hid_usage_id jabra_usages[] = {
-+	{ 0x000b002f, EV_KEY, HID_ANY_ID }, /* Mic mute */
-+	{ HID_TERMINATOR, HID_TERMINATOR, HID_TERMINATOR }
-+};
-+
- static struct hid_driver jabra_driver = {
- 	.name = "jabra",
- 	.id_table = jabra_devices,
-+	.usage_table = jabra_usages,
- 	.input_mapping = jabra_input_mapping,
-+	.event = jabra_event,
- };
- module_hid_driver(jabra_driver);
- 
--- 
-2.32.0
-
+With All My
+Appreciation
+Dr.James EGO
