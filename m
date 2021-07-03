@@ -2,58 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417B13BA813
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 11:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE4E3BA829
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 11:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhGCJki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 05:40:38 -0400
-Received: from smtprelay0123.hostedemail.com ([216.40.44.123]:46190 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229977AbhGCJki (ORCPT
+        id S230180AbhGCJtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 05:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229993AbhGCJtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 05:40:38 -0400
-Received: from omf08.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id EC976101A3244;
-        Sat,  3 Jul 2021 09:38:03 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf08.hostedemail.com (Postfix) with ESMTPA id 60B691A29FE;
-        Sat,  3 Jul 2021 09:38:02 +0000 (UTC)
-Message-ID: <00de2918fb9bfc46d330a72c535892d8ab992483.camel@perches.com>
-Subject: Re: [PATCH] ACPICA: fix if condition
-From:   Joe Perches <joe@perches.com>
-To:     gushengxian <gushengxian507419@gmail.com>, robert.moore@intel.com,
-        erik.kaneda@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org
-Cc:     linux-acpi@vger.kernel.org, devel@acpica.org,
-        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-Date:   Sat, 03 Jul 2021 02:38:01 -0700
-In-Reply-To: <20210703091218.650202-1-gushengxian507419@gmail.com>
-References: <20210703091218.650202-1-gushengxian507419@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Sat, 3 Jul 2021 05:49:52 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9FEC061762;
+        Sat,  3 Jul 2021 02:47:18 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id d12so12459869pgd.9;
+        Sat, 03 Jul 2021 02:47:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cKjvdxPILk0jm57SrpZOSRJWB+g7msED20iGZuVWYfc=;
+        b=UM3nM1mnsIkJk3aZU+U6uaD+DpDJAJ1EAA6rVOej4EoXVRpl6BHnuRXSCGHqrkDUCR
+         tkrH6s5iGqK4qbD+uKvTfvaqgXT8uaVy1WA8oZo6tA4H3ciuhOfsBVGZb3y629yEQcGa
+         glZko7THKT4ILDRLHFiILlNIylLaqoYji6U+WgYdqbpqDNiEUnsWrXpWyOwT4OlHCJRQ
+         jZGF+xYh0rR81Y8kPpmk63C5I6uy5VoAuSBmwNJqQ0OYCMNEvxWJbPDwJX56Ooud3SSW
+         JqOvkWleiEJ1gMTA+vwK2hxDR1JogF5REKENFCEfrEiEuYuBdcBaY+JUGVm7jgrhTMjR
+         2FSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cKjvdxPILk0jm57SrpZOSRJWB+g7msED20iGZuVWYfc=;
+        b=AvwW12za2IaH+U5eGSH2Hff3dWdiOCy/IlMC/ftFAXL9FuAHwlBrg1PTWe/gclmDhm
+         jk1LaWxU+QWhSXnxlI1FNsUskiX7Y2OzXtdAywjGwKptRJQo+JbiWlWIK65JrGQP0iqk
+         5YbqcwMS+gNL/8pgwy+UqogC5DgugHJ7HZUgRAKHT2gfL4OUkBnEPXzDENFbQH+TT4Cs
+         rGl081PD+QVKlVrTa2Ca69Xz9cCu7nicu3V5TfzAnkT6ru648xMGG6QZYkPZUraNh668
+         MvepWrWKIt2EHkKWoDmwTBZ6gwntyxP1JsSJqXDkx6yHcXC/Jdv5wBsKFVniXiaZ+e5L
+         xJmA==
+X-Gm-Message-State: AOAM530w7rE4VFd2fFfQzEE0X1YCluI4vnRDJblvYV7c1FdAdZPPWOEI
+        cEoTGsFjf8Qxo3TnIY8oBug=
+X-Google-Smtp-Source: ABdhPJzWZbc3QJSxF/3cevQCljirbSVhS6jQWHBao++lq80I+jwWyNr+3KOTtvMS7jzQlPj6QLT7Ew==
+X-Received: by 2002:a62:34c7:0:b029:28e:addf:f17a with SMTP id b190-20020a6234c70000b029028eaddff17amr3976240pfa.62.1625305638150;
+        Sat, 03 Jul 2021 02:47:18 -0700 (PDT)
+Received: from [192.168.93.106] (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
+        by smtp.gmail.com with ESMTPSA id 199sm5100275pfy.203.2021.07.03.02.47.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Jul 2021 02:47:17 -0700 (PDT)
+Subject: Re: [PATCH v2] tcp: fix tcp_init_transfer() to not reset
+ icsk_ca_initialized
+To:     Neal Cardwell <ncardwell@google.com>
+Cc:     edumazet@google.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
+References: <20210702194033.1370634-1-phind.uet@gmail.com>
+ <CADVnQynvWsD2qWfw4qJsNhyyPXbFGfhZmhMzaggfJ8JtUUt9VA@mail.gmail.com>
+From:   Phi Nguyen <phind.uet@gmail.com>
+Message-ID: <f3d57ece-8fc7-f0b1-a675-32cfcd64bdda@gmail.com>
+Date:   Sat, 3 Jul 2021 17:47:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <CADVnQynvWsD2qWfw4qJsNhyyPXbFGfhZmhMzaggfJ8JtUUt9VA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=0.10
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: 60B691A29FE
-X-Stat-Signature: i6ecosg6rgzwagjcnhqdoy6xdkhtdqnp
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/eBocd42y4w2i2SvyF/lBhyz4B2Rynd40=
-X-HE-Tag: 1625305082-867487
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-07-03 at 02:12 -0700, gushengxian wrote:
-> From: gushengxian <gushengxian@yulong.com>
+On 7/3/2021 4:31 AM, Neal Cardwell wrote:
+> Please note that the patchwork tools have found a style/formatting
+> issue with your Fixes tag:
 > 
-> Fix if condition.
+> You can find them at:
+> https://patchwork.kernel.org/project/netdevbpf/list/
+>   ->
+>   https://patchwork.kernel.org/project/netdevbpf/patch/20210702194033.1370634-1-phind.uet@gmail.com/
+>    ->
+>     https://patchwork.hopto.org/static/nipa/510221/12356435/verify_fixes/stdout
+> 
+> The error is:
+> ---
+> Fixes tag: Fixes: commit 8919a9b31eb4 ("tcp: Only init congestion control if not
+> Has these problem(s):
+> - leading word 'commit' unexpected
+> - Subject has leading but no trailing parentheses
+> - Subject has leading but no trailing quotes
+> ---
+> 
+> Basically, please omit the "commit" and don't wrap the text (it's OK
+> if it's longer than 80 or 100 characters).
+> 
+> thanks,
+> neal
+> 
+Hi,
 
-A few more of these...
+I didn't even know there are patchwork tools for checking formatting. 
+Thank you for pointing out, I have just submitted a new version.
 
-drivers/platform/x86/thinkpad_acpi.c:		if ACPI_FAILURE(tpacpi_battery_acpi_eval(GET_START, ret, battery))
-drivers/platform/x86/thinkpad_acpi.c:		if ACPI_FAILURE(tpacpi_battery_acpi_eval(GET_STOP, ret, battery))
-drivers/platform/x86/thinkpad_acpi.c:		if ACPI_FAILURE(tpacpi_battery_acpi_eval(SET_START, &ret, param)) {
-drivers/platform/x86/thinkpad_acpi.c:		if ACPI_FAILURE(tpacpi_battery_acpi_eval(SET_STOP, &ret, param)) {
-drivers/platform/x86/thinkpad_acpi.c:		if ACPI_FAILURE(tpacpi_battery_acpi_eval(GET_START, &ret, battery)) {
-drivers/platform/x86/thinkpad_acpi.c:		if ACPI_FAILURE(tpacpi_battery_acpi_eval(GET_STOP, &ret, battery)) {
-
-
+Best regards,
+Phi.
