@@ -2,112 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF263BAA21
+	by mail.lfdr.de (Postfix) with ESMTP id C68393BAA23
 	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 21:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbhGCThA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 15:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
+        id S229813AbhGCTjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 15:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhGCTg7 (ORCPT
+        with ESMTP id S229473AbhGCTjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 15:36:59 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B708FC061762
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Jul 2021 12:34:24 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id w19so24678643lfk.5
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 12:34:24 -0700 (PDT)
+        Sat, 3 Jul 2021 15:39:23 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A625BC061762;
+        Sat,  3 Jul 2021 12:36:49 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id j24so12614516pfi.12;
+        Sat, 03 Jul 2021 12:36:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LteJNCSpTKh9xbMe/59RuQkpJr9zFLx0HiImxwfUUxA=;
-        b=IFW9WhGy7gFSHI4FBwLNIuzV3jUA75+mJyCK+RSA5ZyehBHPnhfC64M3+hb2OezQrK
-         m7MqQccJenLyyKStvWQRZGdBsda0dzcSrb2ZGgtwwhul5AmkAarzV2BaueqXE/xZJGJL
-         3JoduOJcq621Gck9Eq6b0+R9WviMs6Jp3URHM=
+        bh=QJwXPHklFmm/M0F7FosREaVzctnCkZAKK3BhxKroh4E=;
+        b=Ik4SjVjT394OT4b0ZiXqiYoiV8wAadFNh1nKnvy0xsoD/nUbvh1gfg9zSVqvngKlji
+         tly/OjFIDTuBNEH8U3Nxdi2WP6YTQ9IKYuiaYy7dMDArXavN/dkrHoKvQ3rM6XhDM9DF
+         HfviLJAvZI8CuMVDdzIOubf+UZ5BYR+eGJLs0e1esPKtLAon98tvQSW9Vgffo1lZsVX3
+         Q2XUAqhhiE0w0ruTwF6CI2nZhACj3LbcO/ExZH1a56JD1Bz+SL+Y/81gNx5LFoCSQ5/n
+         ipEmiBSWDXfPKkc5yunEEWhPo/Kk46q+x975bY1L9EckFeYJeVk4OD7Xy9vHZZiQJcBl
+         Ia8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LteJNCSpTKh9xbMe/59RuQkpJr9zFLx0HiImxwfUUxA=;
-        b=FWjmJvSZucmckWxlQzBNYMDszy49iqavZYEB9X9YWaW0YK2f2dT8auANaR+tVm0+qS
-         enAsD0/hb1cfZCorsVBVYEHlGyjtWX5TAu9tL1J2HP2UECEi/nkXuDkG6PfnsppgnJTv
-         vTj5nziCM7bUnQCWD1+R14+CBaZIew+4BPbRh0WPgPPfkSl5NU0/jnz9ZbtoDC7AvsXT
-         XR03xun6v+dvBCRB1HXVdXrfzpd7iUA3+8iRl54sBmkgNBg4/4Pn+oUPsaNeEDFEAaXc
-         zV1w1m2V8GmdhPXNKVm5H5F/F3s++iyLH2uHflnm7i0fBNnjYYZtWN3X9MfnZw2lsgxp
-         8IFg==
-X-Gm-Message-State: AOAM5332HT/3tbZtWXfbJOni0MIOLYEITV+mqCUMudP+266JTDV9ak6M
-        NG8SSV52nRmZLTvugBk/cONhB7OS60HUrE1S96o=
-X-Google-Smtp-Source: ABdhPJyG8koovtKAlVtFZ/YOosO07CjmgN7yLXRhwkrd4wKKpKk0rgsicnWYZbywCgbAhQIKC4DD2w==
-X-Received: by 2002:a05:6512:3765:: with SMTP id z5mr4296603lft.583.1625340862619;
-        Sat, 03 Jul 2021 12:34:22 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id v128sm456720lfa.176.2021.07.03.12.34.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Jul 2021 12:34:21 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id q4so18470017ljp.13
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 12:34:21 -0700 (PDT)
-X-Received: by 2002:a2e:a276:: with SMTP id k22mr4368475ljm.465.1625340861140;
- Sat, 03 Jul 2021 12:34:21 -0700 (PDT)
+        bh=QJwXPHklFmm/M0F7FosREaVzctnCkZAKK3BhxKroh4E=;
+        b=Sh1EVy42tSS+AfydzlTimCGIi0Czvj3tn0nU+umxI0JlrQ1mwXHB8zI2hsK0b4IEDX
+         KbFel4P8i1UeOvh7HQ/J53mLELfjgQxnbezEZUPeDGPcZMtQ7RuR2tyEy3SI8FK5np27
+         6mHX4wiLhLihKg/+Wf4+vIqaF9wlmEC4IlNaP9ZGRR0lMp8b1LOLiDQ6sJd6HttHGi6l
+         PPBKoQWAG8aoZiOgM6gWRreVWBdJzJ5APih9dFHh0m0+BDwN7BDSN0/Wn3oOKdLJZDer
+         8uKura4myu//ll30dncTfb5Of7GDKqUFRrq6UgXDZkks6rrm3corm96Yrc15s+6WS5ke
+         a9Rw==
+X-Gm-Message-State: AOAM533iJuomXYTDkiL1FlKuUX99GeMycIWLxgAucFsRpNYNkPju8EOE
+        MVZAjlhupF1ShAa3jQ2MIY/+Dm1YfSmKNyedBo8=
+X-Google-Smtp-Source: ABdhPJxxFL/lvNCNH/CWOol+QiT1hhYcc8osyzXmayJMl2Komgo60xwIJwNXrPUOlA7U0KVYTLEGHAhn/W9zGqM4iDY=
+X-Received: by 2002:a63:d014:: with SMTP id z20mr6708365pgf.203.1625341009085;
+ Sat, 03 Jul 2021 12:36:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <7a9ac752-2c1a-b05f-c5bd-9049c0bdd54e@linaro.org>
-In-Reply-To: <7a9ac752-2c1a-b05f-c5bd-9049c0bdd54e@linaro.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 3 Jul 2021 12:34:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgZzeaZb0ByL+zPV1grizuxw2nAnmzU49S7pzV7sPS1Hg@mail.gmail.com>
-Message-ID: <CAHk-=wgZzeaZb0ByL+zPV1grizuxw2nAnmzU49S7pzV7sPS1Hg@mail.gmail.com>
-Subject: Re: [GIT PULL] thermal for v5.14-rc1
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Linux PM mailing list <linux-pm@vger.kernel.org>,
+References: <20210626161819.30508-1-sergio.paracuellos@gmail.com>
+ <CAHp75VfM-35tQMRh98mtg2XmDOJFnmjdYRKZZoi9ADm=AT2xUw@mail.gmail.com>
+ <CAMhs-H_fcNDAOHm=tZB4ku9fzeea_7f4ZLg7w5KEmcNu+8wbQQ@mail.gmail.com>
+ <CAHp75VeN+vww=Bj=g-nx9AT0FKSGAZ8CKQZn=ff2kfQWM+dxdw@mail.gmail.com>
+ <CAMhs-H-WwCfPDspgxzN=W8QouZ7WPAeyJDYf_6=YezyCkTM=Vw@mail.gmail.com>
+ <CAHp75VcF-HDZ6mKvXT=zYnBrcPaNJ+SYJ72LQ7s-62zQ5ZqoQg@mail.gmail.com>
+ <CAMhs-H9gw63j98vVo3y0ymW4_6rFNL8u5cYNM2hzyrmkPB3h3w@mail.gmail.com>
+ <CAHp75VccSCWa=EH8i01_b_HLZRumUZ48oRjeuaV5Dp1BQAoz2w@mail.gmail.com>
+ <CAMhs-H_Ne4W79Awbmo6w_68X+h0-ybjvzNsbh=XuHMPJJ8-hDQ@mail.gmail.com>
+ <CACRpkdaqSoyDUn3dVuVgzRK_7AabdY=1FzAnhHZzPs3qS+GfsA@mail.gmail.com>
+ <CAMhs-H_pomsvKXuerkVsNQva+B+tPr2xRZAU2R7oyjZ+GaQpqQ@mail.gmail.com>
+ <CAMhs-H_=_tYk3Qj5-NaAmWgnuWc0ZRSEABZzwPfMxiUHP35nbw@mail.gmail.com>
+ <CAHp75VdmTHr8zq0boz2ci0YO4fS9Zuf+LFXeK7CGiHqHkXKKMQ@mail.gmail.com>
+ <CAMhs-H_e2U7nUav8h+Q0w-aZXvD6VM6wpg857WbFgw6x3z1ufA@mail.gmail.com> <CAMhs-H8Y0txwcqRTxpsB_GEoOYbhHWO81EANMxMSybzWPS=HTA@mail.gmail.com>
+In-Reply-To: <CAMhs-H8Y0txwcqRTxpsB_GEoOYbhHWO81EANMxMSybzWPS=HTA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 3 Jul 2021 22:36:12 +0300
+Message-ID: <CAHp75VfRYZn5uuPgQHJ5Hm3p3XVrfs=ReZXxEPm+dqLNb5QtGA@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: mt7621: support gpio-line-names property
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Thomson <git@johnthomson.fastmail.com.au>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.chunyan@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Rajeshwari Ravindra Kamble <rkambl@codeaurora.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Finley Xiao <finley.xiao@rock-chips.com>
+        NeilBrown <neil@brown.name>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Nicholas Mc Guire <hofrat@osadl.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 3, 2021 at 9:17 AM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+On Sat, Jul 3, 2021 at 3:51 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+> On Sat, Jul 3, 2021 at 2:05 PM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> > On Sat, Jul 3, 2021 at 1:32 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Sat, Jul 3, 2021 at 2:06 PM Sergio Paracuellos
+> > > <sergio.paracuellos@gmail.com> wrote:
+> > > > On Fri, Jul 2, 2021 at 1:30 PM Sergio Paracuellos
+> > > > <sergio.paracuellos@gmail.com> wrote:
+> > >
+> > > ...
+> > >
+> > > > -               ret = devprop_gpiochip_set_names(gc);
+> > > > +               ret = devprop_gpiochip_set_names(gc, 0);
+> > >
+> > > I had been expecting that this parameter would be in the field of the gpiochip.
+> > >
+> > > ...
+> >
+> > If doing it in that way is preferred, I have no problem at all. But in
+> > that case I think there is no need for a new
+> > 'devprop_gpiochip_set_names_base' and we can assume for all drivers to
+> > be zero and if is set taking it into account directly in
+> > devprop_gpiochip_set_names function? Is this what you mean by having
+> > this field added there??
+
+The below is closer to what I meant, yes. I have not much time to look
+into the details, but I don't have objections about what you suggested
+below. Additional comments there as well.
+
+> How about something like this?
 >
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
-> tags/thermal-v5.14-rc1
+> diff --git a/drivers/gpio/gpio-mt7621.c b/drivers/gpio/gpio-mt7621.c
+> index 82fb20dca53a..5854a9343491 100644
+> --- a/drivers/gpio/gpio-mt7621.c
+> +++ b/drivers/gpio/gpio-mt7621.c
+> @@ -241,6 +241,7 @@ mediatek_gpio_bank_probe(struct device *dev,
+>         if (!rg->chip.label)
+>                 return -ENOMEM;
+>
+> +       rg->chip.offset = bank * MTK_BANK_WIDTH;
+>         rg->irq_chip.name = dev_name(dev);
+>         rg->irq_chip.parent_device = dev;
+>         rg->irq_chip.irq_unmask = mediatek_gpio_irq_unmask;
 
-This does not build for me. And I suspect it never built in linux-next either.
+Obviously it should be a separate patch :-)
 
-I get
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index 6e3c4d7a7d14..0587f46b7c22 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -380,10 +380,10 @@ static int devprop_gpiochip_set_names(struct
+> gpio_chip *chip)
+>                 return 0;
+>
+>         count = device_property_string_array_count(dev, "gpio-line-names");
+> -       if (count < 0)
 
-  ERROR: modpost: "tegra_fuse_readl"
-[drivers/thermal/tegra/tegra30-tsensor.ko] undefined!
-  ERROR: modpost: "tegra_fuse_readl"
-[drivers/thermal/tegra/tegra-soctherm.ko] undefined!
-  make[1]: *** [scripts/Makefile.modpost:150: modules-only.symvers] Error 1
-  make[1]: *** Deleting file 'modules-only.symvers'
-  make: *** [Makefile:1762: modules] Error 2
+> +       if (count < 0 || count <= chip->offset)
 
-and I think it's due to that commit 1f9c5936b10c
-("thermal/drivers/tegra: Correct compile-testing of drivers") which
-quite sensibly tries to extend build coverage for the tegra thermal
-drivers, but that build coverage doesn't actually *work* outside the
-tegra world.
+Please, split it into two conditionals and add a comment to the second one.
 
-That commit says "All Tegra thermal drivers support compile-testing",
-but clearly they stumble at the last hurdle.
+>                 return 0;
+>
+> -       if (count > gdev->ngpio) {
+> +       if (count > gdev->ngpio && chip->offset == 0) {
+>                 dev_warn(&gdev->dev, "gpio-line-names is length %d but
+> should be at most length %d",
+>                          count, gdev->ngpio);
+>                 count = gdev->ngpio;
+> @@ -401,8 +401,9 @@ static int devprop_gpiochip_set_names(struct
+> gpio_chip *chip)
+>                 return ret;
+>         }
+>
+> +       count = (chip->offset >= count) ? (chip->offset - count) : count;
 
-I made the decision to just unpull this, not because I couldn't fix
-it, but because if it was this untested, I don't want to worry about
-all the *other* code in there too.
+Too many parentheses.
 
-               Linus
+>         for (i = 0; i < count; i++)
+> -               gdev->descs[i].name = names[i];
+> +               gdev->descs[i].name = names[chip->offset + i];
+>
+>         kfree(names);
+>
+> diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+> index 4a7e295c3640..39e0786586f6 100644
+> --- a/include/linux/gpio/driver.h
+> +++ b/include/linux/gpio/driver.h
+> @@ -312,6 +312,9 @@ struct gpio_irq_chip {
+>   *     get rid of the static GPIO number space in the long run.
+>   * @ngpio: the number of GPIOs handled by this controller; the last GPIO
+>   *     handled is (base + ngpio - 1).
+> + * @offset: when multiple gpio chips belong to the same device this
+> + *     can be used as offset within the device so friendly names can
+> + *     be properly assigned.
+>   * @names: if set, must be an array of strings to use as alternative
+>   *      names for the GPIOs in this chip. Any entry in the array
+>   *      may be NULL if there is no alias for the GPIO, however the
+> @@ -398,6 +401,7 @@ struct gpio_chip {
+>
+>         int                     base;
+>         u16                     ngpio;
+> +       int                     offset;
+
+u16 (as ngpio has that type)
+
+>         const char              *const *names;
+>         bool                    can_sleep;
+>
+>
+> Does this sound reasonable?
+
+> > > > The problem I see with this approach is that
+> > > > 'devprop_gpiochip_set_names' already trusts in gpio_device already
+> > > > created and this happens in 'gpiochip_add_data_with_key'. So doing in
+> > > > this way force "broken drivers" to call this new
+> > > > 'devprop_gpiochip_set_names_base' function after
+> > > > 'devm_gpiochip_add_data' is called so the core code has already set up
+> > > > the friendly names repeated for all gpio chip banks and the approach
+> > > > would be to "overwrite" those in a second pass which sounds more like
+> > > > a hack than a solution.
+> > > >
+> > > > But maybe I am missing something in what you were pointing out here.
+> > >
+> > > Would the above work?
+
+-- 
+With Best Regards,
+Andy Shevchenko
