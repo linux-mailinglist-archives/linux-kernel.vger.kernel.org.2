@@ -2,131 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD643BA945
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 17:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E763BA947
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 17:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhGCPnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 11:43:50 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:56262 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbhGCPnt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 11:43:49 -0400
-Received: by mail-il1-f197.google.com with SMTP id a15-20020a927f0f0000b02901ac2bdd733dso7816088ild.22
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 08:41:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=3Z+Kj9SdMBIQZbde3uiQ8uklH5LSV9rygtlZF17JwcQ=;
-        b=KZnxDgzKiHQ3HwnCmuMG7xHe1+UvNnztnyqxNyCTMPEJaxEibKI1DMu3CqiSvGtI2q
-         VfvpHc7RXF4g5Qeaky0jZ6IULiaUF4yGAyP5ZdyeQQxlujQ6H9EI0/7GbrlfNIXh/gLM
-         324ma2btKljbwFd6iGnunkD+PeugBiiHatSltvWySdDzhaNK7iG6960cjVYvFTQiKoWa
-         3vd4un+iesKqCg7Q3Newtm1KZbNRXZkquHg7UQOQeulaBg4FAA9r0F/zznz99iWjOs8b
-         1j+rUxGFvYd1kFGYcLh63GofPc89yKoPSR1A28s3XKtcrSYi3u+i/yP+xu1DV07ADKfX
-         NbBg==
-X-Gm-Message-State: AOAM533W2XyjDRPQdxvYGlx2hkPqHwgOZkHDRae+P7Qg5Q7N8+aaB82z
-        hYoJrAj6i8ugUwBoc88VGIyVB6qrs9wp7A0LUGFyDd40kwdb
-X-Google-Smtp-Source: ABdhPJyr8SWpra/WRTEhwVMNsFsdmL2ZrzlATgZjYKjGFhBG96Iy09VU3vUynrav+CZf0Kt5M4oty+27Saa/FU6mgE5Ifrw4nK7+
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2144:: with SMTP id d4mr3975093ilv.136.1625326875355;
- Sat, 03 Jul 2021 08:41:15 -0700 (PDT)
-Date:   Sat, 03 Jul 2021 08:41:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000cafda05c639e751@google.com>
-Subject: [syzbot] general protection fault in try_grab_compound_head
-From:   syzbot <syzbot+a3fcd59df1b372066f5a@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+        id S230001AbhGCPuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 11:50:13 -0400
+Received: from mout.gmx.net ([212.227.17.20]:53541 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229818AbhGCPuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Jul 2021 11:50:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1625327224;
+        bh=EZR4P3ADpNABWwkDJID+NKWO9cUa0tCYRwghj00Chi8=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=MAvkhFXnCHe/R1oXpQ7GXy01FjzeWlwMru/Q0xUK1btGUKCeTiKbuTo6VMkxvY3Sy
+         JTVw4aA7kzfBXmbt8T5oB8rRikBW4aH89YtPOOz0BxnCUMprLOovXwl5yKkOo3hpoc
+         ljd06UuY2C2JEdK7rkyj/gQo6EMHzr/HTMI9Fde0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.146.50.218]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M7K3Y-1m7QYV3NSG-007iHA; Sat, 03
+ Jul 2021 17:47:03 +0200
+Message-ID: <ca0474137c1e5a16a1215693298c9cd93218e24c.camel@gmx.de>
+Subject: Re: [RFC v2 00/34] SLUB: reduce irq disabled scope and make it RT
+ compatible
+From:   Mike Galbraith <efault@gmx.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>
+Date:   Sat, 03 Jul 2021 17:47:01 +0200
+In-Reply-To: <891dc24e38106f8542f4c72831d52dc1a1863ae8.camel@gmx.de>
+References: <20210609113903.1421-1-vbabka@suse.cz>
+         <20210702182944.lqa7o2a25to6czju@linutronix.de>
+         <891dc24e38106f8542f4c72831d52dc1a1863ae8.camel@gmx.de>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:wHIYTqbMbNJ0KqPPWwh+O0cNNKKXowBc0qettTCN98G59gh0j/o
+ +aFM6uDqiO86Kr8SOmDCle+h5NkSuM4eNekxdJK2ItHKx5nGilhdR09ffvihhAKxZYKLMTI
+ U23k6hogNE5is69g80b1vuaxTl9Y87sgxJsN5pVjR8rUKSYehtnQopiMeX0Ro4Vb+f6Lgkt
+ JNdVUbeiX+sAjXJDfGn1g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9CGdzv/Vcf0=:Kk7OK4DmN12xYzt5vnHl6d
+ 0actNmhgLZdXa/j/0ZD4+QfnvxjFX3rDXbhc/J7kC7b7zDZChyWyTcySu/CtdBo113L9gjVEP
+ AhZJsaV25bRWDSSSyNcQVUAF6vvM/i3Mp3q2HGE6AlPczHxfAYyGhg5iXyKLeuv8ctsivdmtF
+ sD6g+dr308dL5nikcFTFfVpV7cu1I3hrFzX1vGjC8wZr07OLAoKiB4d9HvIY34PGwvj6l8pVM
+ s4IRcZKCz6B2hMkNbNpsJb8dNRhhFXtWhPRKCxf1JhSmk1r4NETqveRAbk3ph59CBgXcBrIGt
+ AlI3gnHDOlrRc72IuNx+9qQngE0lQ5b0Y91qJjrxILOnTr6Opk2pHGHeeI6c5WsjJ8Ff9aop8
+ ihe1kZD39obdNXS6epsBlmjDiA9mjUx1JKXxlgJj/0GEPfRpGLMK1oIFHdUamVBqfB7CcH6Eo
+ DNUUpkPflETL0AvXFjYwC07lxH4PbOr5ea6Q7PfrPwDt2TLlPKDbs/4Vjd3dZp5GQP3SP/5E9
+ UhoTfodVVyKdYYqbeC6omSdwxFc9uU3iFp2btyvUUq+3/wEKh6pW0ckzZn4IIcqyBoZm1+swD
+ cB6oQflaWVjseNm7EJAwvBkxHj1cwTITAvcgqjJhLXMQufukfeV/yisHIoskr2Hzo7/2tX+Q8
+ xjRLbgur4BP3PUNfuk/zDi+zhKoNe3R+URWQiHESz1V+Dkoee9QJRI+qGJby2x3FRPUK6PUit
+ IbccK+w5n5m5gtx4PlkGBZ0AH+dkJ0eY1tk+w4OMPlpQjaODSVyKDgqC8IvW2qagmmr4lPkbf
+ ksfgk6MAjUx42WbhPbcGIktnVdcsME7qxZgzdOvPwO9eJ8qi8ATYqkWB1NcTkNyPQWuQEFzqB
+ W8rw25Oj0xB14ekdrvDJ3F5t4H3u9jW/CI0iB1aTHEw6el0T4zapo4AFtGe/ymClhWMa94/kL
+ mVAtC7swSpwIsd2ZphMK5dqJ8x/ly8GUScmerzBzYBU1StgsGF0DlQuBPACoFl6wmr5DzDYoT
+ In8K7jViLSp3kIypcLEoK8q6xSaczxTLDawzvcqYk18jtR6TvEGcmO2xCzF0SYdTbOH+pExxg
+ qvnKcPXc4lT5Ehu7NBignOQ+kUVradYgzwF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, 2021-07-03 at 09:24 +0200, Mike Galbraith wrote:
+>
+> It also appears to be saying that there's something RT specific to
+> stare at in addition to the list_lock business.
 
-syzbot found the following issue on:
+The what is ___slab_alloc() consuming 3.9% CPU in tip-rt-slub whereas
+it consumes < 1% in both tip-rt (sans slub patches) and tip-slub.
 
-HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16758ac4300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
-dashboard link: https://syzkaller.appspot.com/bug?extid=a3fcd59df1b372066f5a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a856c4300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1582c9d8300000
+The why remains to ponder.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a3fcd59df1b372066f5a@syzkaller.appspotmail.com
+            5.13.0.g60ab3ed-tip-rt           5.13.0.g60ab3ed-tip-rt-slub  =
+    5.13.0.g60ab3ed-tip-slub
+    25.18%  copy_user_enhanced_fast_string   copy_user_enhanced_fast_strin=
+g   copy_user_enhanced_fast_string
+     5.08%  unix_stream_read_generic         unix_stream_read_generic     =
+    unix_stream_read_generic
+     3.39%  rt_spin_lock                 *** ___slab_alloc ***            =
+    __skb_datagram_iter
+     2.80%  __skb_datagram_iter              rt_spin_lock                 =
+    _raw_spin_lock
+     2.11%  get_page_from_freelist           __skb_datagram_iter          =
+    __alloc_skb
+     2.01%  skb_release_data                 rt_spin_unlock               =
+    skb_release_data
+     1.94%  rt_spin_unlock                   get_page_from_freelist       =
+    __alloc_pages
+     1.85%  __alloc_skb                      migrate_enable               =
+    unix_stream_sendmsg
+     1.68%  __schedule                       skb_release_data             =
+    _raw_spin_lock_irqsave
+     1.67%  unix_stream_sendmsg              __schedule                   =
+    free_pcppages_bulk
+     1.50%  free_pcppages_bulk               unix_stream_sendmsg          =
+    __slab_free
+     1.38%  migrate_enable                   free_pcppages_bulk           =
+    __fget_light
+     1.24%  __fget_light                     __alloc_pages                =
+    vfs_write
+     1.16%  __slab_free                      migrate_disable              =
+    __schedule
+     1.14%  __alloc_pages                    __fget_light                 =
+    get_page_from_freelist
+     1.10%  fsnotify                         __slab_free                  =
+    new_sync_write
+     1.07%  kfree                            fsnotify                     =
+    fsnotify
 
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 0 PID: 8484 Comm: syz-executor116 Tainted: G        W         5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:page_zonenum include/linux/mm.h:1121 [inline]
-RIP: 0010:is_zone_movable_page include/linux/mm.h:1140 [inline]
-RIP: 0010:is_pinnable_page include/linux/mm.h:1556 [inline]
-RIP: 0010:try_grab_compound_head mm/gup.c:126 [inline]
-RIP: 0010:try_grab_compound_head+0x686/0x8f0 mm/gup.c:113
-Code: e9 16 fe ff ff e8 0a fe cc ff 0f 0b 45 31 e4 e9 07 fe ff ff e8 fb fd cc ff 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 44 02 00 00 48 8b 2b bf 03 00 00 00 49 bc 00 00
-RSP: 0018:ffffc900017df7e8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff81a88c35 RDI: 0000000000000003
-RBP: 0000000000010000 R08: 0000000000000000 R09: 0000000000000003
-R10: ffffffff81a8862b R11: 000000000000003f R12: 0000000000040000
-R13: ffff88803ac03ff8 R14: 0000000000000000 R15: dffffc0000000000
-FS:  00000000005a5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000084 CR3: 0000000021f85000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- follow_hugetlb_page+0x7bf/0x12c0 mm/hugetlb.c:5248
- __get_user_pages+0x5d8/0x1490 mm/gup.c:1137
- __get_user_pages_locked mm/gup.c:1352 [inline]
- __gup_longterm_locked+0x216/0xfa0 mm/gup.c:1745
- pin_user_pages+0x84/0xc0 mm/gup.c:2900
- io_sqe_buffer_register+0x24e/0x1350 fs/io_uring.c:8381
- io_sqe_buffers_register+0x29c/0x620 fs/io_uring.c:8508
- __io_uring_register fs/io_uring.c:10129 [inline]
- __do_sys_io_uring_register+0x1049/0x2880 fs/io_uring.c:10254
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ef49
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffea3542188 EFLAGS: 00000246 ORIG_RAX: 00000000000001ab
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000043ef49
-RDX: 00000000200001c0 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 0000000000402f30 R08: 0000000010000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000402fc0
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-Modules linked in:
----[ end trace e3fc885187db8a03 ]---
-RIP: 0010:page_zonenum include/linux/mm.h:1121 [inline]
-RIP: 0010:is_zone_movable_page include/linux/mm.h:1140 [inline]
-RIP: 0010:is_pinnable_page include/linux/mm.h:1556 [inline]
-RIP: 0010:try_grab_compound_head mm/gup.c:126 [inline]
-RIP: 0010:try_grab_compound_head+0x686/0x8f0 mm/gup.c:113
-Code: e9 16 fe ff ff e8 0a fe cc ff 0f 0b 45 31 e4 e9 07 fe ff ff e8 fb fd cc ff 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 44 02 00 00 48 8b 2b bf 03 00 00 00 49 bc 00 00
-RSP: 0018:ffffc900017df7e8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff81a88c35 RDI: 0000000000000003
-RBP: 0000000000010000 R08: 0000000000000000 R09: 0000000000000003
-R10: ffffffff81a8862b R11: 000000000000003f R12: 0000000000040000
-R13: ffff88803ac03ff8 R14: 0000000000000000 R15: dffffc0000000000
-FS:  00000000005a5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000084 CR3: 0000000021f85000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+5.13.0.g60ab3ed-tip-rt-slub ___slab_alloc() consumes 3.90%
+  0.40 =E2=94=82       mov    0x28(%r13),%edx
+  0.42 =E2=94=82       add    %r15,%rdx
+       =E2=94=82     __swab():
+       =E2=94=82     #endif
+       =E2=94=82
+       =E2=94=82     static __always_inline unsigned long __swab(const uns=
+igned long y)
+       =E2=94=82     {
+       =E2=94=82     #if __BITS_PER_LONG =3D=3D 64
+       =E2=94=82     return __swab64(y);
+  0.05 =E2=94=82       mov    %rdx,%rax
+  1.14 =E2=94=82       bswap  %rax
+       =E2=94=82     freelist_ptr():
+       =E2=94=82     return (void *)((unsigned long)ptr ^ s->random ^  <=
+=3D=3D CONFIG_SLAB_FREELIST_HARDENED
+  0.72 =E2=94=82       xor    0xb0(%r13),%rax
+ 65.41 =E2=94=82       xor    (%rdx),%rax                              <=
+=3D=3D huh? miss =3D 65% of that 3.9% kernel util?
+       =E2=94=82     next_tid():
+       =E2=94=82     return tid + TID_STEP;
+  0.09 =E2=94=82       addq   $0x200,0x48(%r12)
+       =E2=94=82     ___slab_alloc():
+       =E2=94=82     * freelist is pointing to the list of objects to be u=
+sed.
+       =E2=94=82     * page is pointing to the page from which the objects=
+ are obtained.
+       =E2=94=82     * That page must be frozen for per cpu allocations to=
+ work.
+       =E2=94=82     */
+       =E2=94=82     VM_BUG_ON(!c->page->frozen);
+       =E2=94=82     c->freelist =3D get_freepointer(s, freelist);
+  0.05 =E2=94=82       mov    %rax,0x40(%r12)
+       =E2=94=82     c->tid =3D next_tid(c->tid);
+       =E2=94=82     local_unlock_irqrestore(&s->cpu_slab->lock, flags);
+
+5.13.0.g60ab3ed-tip-rt ___slab_alloc() consumes < 1%
+Percent=E2=94=82     }
+       =E2=94=82
+       =E2=94=82     /* must check again c->freelist in case of cpu migrat=
+ion or IRQ */
+       =E2=94=82     freelist =3D c->freelist;
+  0.02 =E2=94=82 a1:   mov    (%r14),%r13
+       =E2=94=82     if (freelist)
+       =E2=94=82       test   %r13,%r13
+  0.02 =E2=94=82     =E2=86=93 je     460
+       =E2=94=82     get_freepointer():
+       =E2=94=82     return freelist_dereference(s, object + s->offset);
+  0.23 =E2=94=82 ad:   mov    0x28(%r12),%edx
+  0.18 =E2=94=82       add    %r13,%rdx
+       =E2=94=82     __swab():
+       =E2=94=82     #endif
+       =E2=94=82
+       =E2=94=82     static __always_inline unsigned long __swab(const uns=
+igned long y)
+       =E2=94=82     {
+       =E2=94=82     #if __BITS_PER_LONG =3D=3D 64
+       =E2=94=82     return __swab64(y);
+  0.06 =E2=94=82       mov    %rdx,%rax
+  1.16 =E2=94=82       bswap  %rax
+       =E2=94=82     freelist_ptr():
+       =E2=94=82     return (void *)((unsigned long)ptr ^ s->random ^
+  0.23 =E2=94=82       xor    0xb0(%r12),%rax
+ 35.25 =E2=94=82       xor    (%rdx),%rax              <=3D=3D 35% of < 1%=
+ kernel util
+       =E2=94=82     next_tid():
+       =E2=94=82     return tid + TID_STEP;
+  0.28 =E2=94=82       addq   $0x200,0x8(%r14)
+       =E2=94=82     ___slab_alloc():
+       =E2=94=82     * freelist is pointing to the list of objects to be u=
+sed.
+       =E2=94=82     * page is pointing to the page from which the objects=
+ are obtained.
+       =E2=94=82     * That page must be frozen for per cpu allocations to=
+ work.
+       =E2=94=82     */
+       =E2=94=82     VM_BUG_ON(!c->page->frozen);
+       =E2=94=82     c->freelist =3D get_freepointer(s, freelist);
+
+5.13.0.g60ab3ed-tip-slub ___slab_alloc() also consumes < 1%
+Percent=E2=94=82     load_freelist:
+       =E2=94=82
+       =E2=94=82     lockdep_assert_held(this_cpu_ptr(&s->cpu_slab->lock))=
+;
+  0.28 =E2=94=82 84:   add    this_cpu_off,%rax
+       =E2=94=82     get_freepointer():
+       =E2=94=82     return freelist_dereference(s, object + s->offset);
+  0.14 =E2=94=82       mov    0x28(%r14),%eax
+       =E2=94=82     ___slab_alloc():
+       =E2=94=82     * freelist is pointing to the list of objects to be u=
+sed.
+       =E2=94=82     * page is pointing to the page from which the objects=
+ are obtained.
+       =E2=94=82     * That page must be frozen for per cpu allocations to=
+ work.
+       =E2=94=82     */
+       =E2=94=82     VM_BUG_ON(!c->page->frozen);
+       =E2=94=82     c->freelist =3D get_freepointer(s, freelist);
+ 34.36 =E2=94=82       mov    0x0(%r13,%rax,1),%rax
+       =E2=94=82     next_tid():
+       =E2=94=82     return tid + TID_STEP;
+  0.10 =E2=94=82       addq   $0x1,0x8(%r12)
+       =E2=94=82     ___slab_alloc():
+       =E2=94=82     c->freelist =3D get_freepointer(s, freelist);
+  0.04 =E2=94=82       mov    %rax,(%r12)
+       =E2=94=82     c->tid =3D next_tid(c->tid);
+       =E2=94=82     local_unlock_irqrestore(&s->cpu_slab->lock, flags);
+  0.12 =E2=94=82       mov    (%r14),%rax
+  0.03 =E2=94=82       add    this_cpu_off,%rax
+       =E2=94=82     arch_local_irq_restore():
+       =E2=94=82     return arch_irqs_disabled_flags(flags);
+       =E2=94=82     }
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
