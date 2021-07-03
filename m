@@ -2,183 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE42A3BA78F
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 08:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A71843BA796
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 08:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhGCGl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 02:41:29 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:46381 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229539AbhGCGl2 (ORCPT
+        id S229854AbhGCGsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 02:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229528AbhGCGsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 02:41:28 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 5E95C32003AC;
-        Sat,  3 Jul 2021 02:38:54 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Sat, 03 Jul 2021 02:38:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=UOVQzo5peU9hwquiGwR5ViUp2k9
-        ewftmmdtIsg9qScw=; b=QcN1SRQRNScvREtQ7Qz078kAsUVQiueobP2eBHB07CJ
-        xwvV1WHaxoEY6nzC0YcjuctiR5FEcSsNbD+s32qMrNuPmzxUwVj9ghIfXh4nqaSM
-        WC/v+r4rzVw82nBvS/78kp1bVOOJJZ9QQRI/y8TOPB2ydVKrXawz788qNr3H86Bc
-        28I6PILaFfC+uVsaCA4td6v8hnFw2IhlTyZ83Qd/m7EuqYlBVasHqevCsQhJ396j
-        rEsnUuocF9/epLbF8CwhR6f309HoULJP+pXfHrqh+alJ7042bJOSOJ64VUuety+3
-        1zB91WT9C7SzzxorNpkWPxPtEgmeJQLbWmTk1BItT4A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=UOVQzo
-        5peU9hwquiGwR5ViUp2k9ewftmmdtIsg9qScw=; b=U+3NTxvxx71BQXB7CERqUF
-        T6gVnr2fbpR29q0jpu0xj2zmNE5zsKKTsAfSQAyvROCwbCwZCwtL89/WUqpqh4fY
-        jC9GUCPFQLwTpxmEJ6dmeU6GMLIn6GWsgaCj17gidqXK1JCi4hsO8cjQtHQYk8rn
-        QTWB1LqXfz+bSb38pT1Y9FTdRam1xELzPWijhywW0ZYb+56AyrSpjoEzkBdEvk0g
-        mXwHaMPjfGzyVyK2wl84D5EcS0CMdT6p5LZfwciTsMT/ncDDvpToXTdzY/4Rdy5p
-        /GCbOL4F+W/jjB75e3F3G7LTznJaDSiFA5ot1P66kwyUrYUj0RvIA0raZci1bLRA
-        ==
-X-ME-Sender: <xms:_QXgYKk14eHpJ7QHNesA_Gkcbq6JmXwHzhnJlCVzzue4VRpgfgwfNw>
-    <xme:_QXgYB3L29CQ8IIdZgtfC4RfkXjvHshoLBMcR36Pa76tYVAE9z0-ZqOcAkDpaMRG8
-    KkXMhxnc_cyc-0h6Rk>
-X-ME-Received: <xmr:_QXgYIrhLcJI70S-O1O_6Ksbgv026jxyJwY1Xg62qi_VHhnwgkqdZJiXxhcc72yu91qAwHGz-pyB79W8g2H5qcv5FQbZ0yAShQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeiledguddtvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
-    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
-    hjpheqnecuggftrfgrthhtvghrnheplefhueegvdejgfejgfdukeefudetvddtuddtueei
-    vedttdegteejkedvfeegfefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:_QXgYOlvRsKxpUN0zc16vImy_ViaFl7CQCcIYR8VoSkU5dowuZAy9w>
-    <xmx:_QXgYI3AmHU6sfCx1-4SgSxxbwBeXz8glYiZ7DuEkI-8kLzUV2EcbA>
-    <xmx:_QXgYFtG65fELIspQ4ARxoK5eIHXeN3zwNaYwGZJIF0ha-nVbNHOHA>
-    <xmx:_gXgYM8s-NbBUiZfKz609JzV59Bi6BrqJnBqV0YuCDRsft4QUkuNgQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 3 Jul 2021 02:38:51 -0400 (EDT)
-Date:   Sat, 3 Jul 2021 15:38:48 +0900
-From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
+        Sat, 3 Jul 2021 02:48:37 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F515C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Jul 2021 23:46:04 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id b14-20020a17090a7aceb029017261c7d206so4695672pjl.5
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Jul 2021 23:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=In75uxFR1f0iXFnBnQMn4UIW5uQb27tGmOe3rOogkRU=;
+        b=YNnAZq2AKyT9OOLR+3d2bWD1lC1lF4flke9oKN3/785NvB132pNtaZ30aSz0StJoXp
+         kgAiNDKb4EohrIW0HzJifWeHOx58nE8OH0Z+81AT3WUO/S9jYP0fctUIECHJ2dYodCJ5
+         DIu5FJiHIqgcnRwWufYGzxUsrSCQQU+uX5NxsXbiX5kgVBEeQyvs/2pWdvKxmM3vZILS
+         3TXTrTJ2t1jqQUNDLReT8omjNu36VmGmISofUAqFVInOfxrf/1eFao6WXZS82VimFIhn
+         XzDp84Sm91ytaXTj7x7j+ejlUpAIqjdlB+BszbTjR8PwmkQMqTcH9TPXlEnoKJ4ilark
+         lL7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=In75uxFR1f0iXFnBnQMn4UIW5uQb27tGmOe3rOogkRU=;
+        b=F742uWFSFuyoxAhZufaD9m89Whrq1ymb0YL2Q69Fr3c6SDfi8K9m7B/2qm8W0kZrSv
+         W8DEO7D2JvNBb3VcN8TZ4+8K0cNX/+TBzIiTu/Jsq9UzkHbd1shmFjhl/YbpNKUz9jNt
+         I1zvPzG4ykCC7lMJdjFbXERLnyUb2Nzo8nR5Xsfj+HYYGdxSfWws+QnFFBoVpe2cjvYP
+         br3vv0+cEMHjkFQabkJMjUNTvxt7p5OtbXDTJUQY0534J2zwUSsWvsxsAh/hDi3scva0
+         P5cpGvYQOfue2OCbDc5D4/g7GV82ONFP6m0XUJSy8420IHRNk0HeModCDfY4/FScyguv
+         J/wQ==
+X-Gm-Message-State: AOAM533IldguXeeVsehTU4McgdN/T1jmmMAhOYO15g1mzNOV+w2zKnrE
+        GkS6WyM9Af23+tinxYgEKmZZpw==
+X-Google-Smtp-Source: ABdhPJxzXYoxFlZenjuKy8bSI01iltLabOUzGbF3FFBEv+o6bfNo0jh0C+KUc52cTnj08U8ibFh1gQ==
+X-Received: by 2002:a17:90a:c484:: with SMTP id j4mr363259pjt.218.1625294763472;
+        Fri, 02 Jul 2021 23:46:03 -0700 (PDT)
+Received: from x1 ([2601:1c0:4701:ae70:f236:257f:88f9:445e])
+        by smtp.gmail.com with ESMTPSA id s8sm2733556pfg.190.2021.07.02.23.46.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 23:46:02 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 23:46:00 -0700
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        marcan@marcan.st
-Subject: Re: [GIT PULL] sound updates for 5.14-rc1
-Message-ID: <YOAF+EnvdBvSeZnR@workstation>
-Mail-Followup-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        marcan@marcan.st
-References: <s5hbl7li0fe.wl-tiwai@suse.de>
- <CAHk-=wiTwX5mzzEcw3jk3QdW600Hntt=Ehgoyz8K-VU8zbEmBg@mail.gmail.com>
- <CAHk-=whhDWDsVz12mhKtnS6DG-GzVWxBk2XjoOp=gwNJ7T0bTw@mail.gmail.com>
- <CAHk-=wisOVeVpH42f6i5qW1gxtYxbRJQXvpt=mdVx+8p=w-yMg@mail.gmail.com>
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Subject: Re: [RFC PATH 1/2] dt-bindings: gpio: add starfive,jh7100-gpio
+ bindings
+Message-ID: <20210703064600.GA1050194@x1>
+References: <20210701002037.912625-1-drew@beagleboard.org>
+ <20210701002037.912625-2-drew@beagleboard.org>
+ <CAMuHMdWLNy6_CnFEYDvHSEdMYH=T_Fy=DCjZCF9kPGWcD-B0Qw@mail.gmail.com>
+ <20210702205622.GA1035183@x1>
+ <CAMuHMdXiebr7SnpShhcN9BPyha+=n=cNiX88q0wMVLrDY0r=qA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wisOVeVpH42f6i5qW1gxtYxbRJQXvpt=mdVx+8p=w-yMg@mail.gmail.com>
+In-Reply-To: <CAMuHMdXiebr7SnpShhcN9BPyha+=n=cNiX88q0wMVLrDY0r=qA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, Jul 02, 2021 at 10:19:46PM -0700, Linus Torvalds wrote:
-> On Fri, Jul 2, 2021 at 9:37 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
+On Fri, Jul 02, 2021 at 11:03:56PM +0200, Geert Uytterhoeven wrote:
+> Hi Drew,
+> 
+> On Fri, Jul 2, 2021 at 10:56 PM Drew Fustini <drew@beagleboard.org> wrote:
+> > On Thu, Jul 01, 2021 at 10:34:56AM +0200, Geert Uytterhoeven wrote:
+> > > On Thu, Jul 1, 2021 at 2:22 AM Drew Fustini <drew@beagleboard.org> wrote:
+> > > > Add bindings for the GPIO controller in the StarFive JH7100 SoC [1].
+> > > >
+> > > > [1] https://github.com/starfive-tech/beaglev_doc
+> > > >
+> > > > Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> > > > Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
+> > >
+> > > Thanks for your patch!
+> > >
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/gpio/starfive,jh7100-gpio.yaml
+> > > > @@ -0,0 +1,60 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/gpio/starfive,jh7100-gpio.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: StarFive JH7100 GPIO controller
+> > > > +
+> > > > +maintainers:
+> > > > +  - Huan Feng <huan.feng@starfivetech.com>
+> > > > +  - Drew Fustini <drew@beagleboard.org>
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    items:
+> > > > +      - const: starfive,jh7100-gpio
+> > > > +
+> > > > +  reg:
+> > > > +    maxItems: 1
+> > > > +
+> > > > +  interrupts:
+> > > > +    description:
+> > > > +      Interrupt mapping, one per GPIO. Maximum 32 GPIOs.
+> > > > +    minItems: 1
+> > > > +    maxItems: 32
+> > >
+> > > What about clocks and resets?
 > >
-> > But I thought I'd report this as a likely candidate.
+> > Thank you for your feedback, Geert.
+> >
+> > GPIO controller uses clk_apb1_bus under dom0_sys.  I believe the device
+> > tree node would use something like this:
+> >
+> >   clocks = <&clkgen JH7100_CLK_APB1>;
+> >
+> > I see the sifive-gpio.yaml has:
+> >
+> >   clocks:
+> >     maxItems: 1
+> >
+> > Would that be the correct way to do it for the starfive gpio yaml?
 > 
-> Confirmed. The watchdog hang bisects right down to commit 9ce650a75a3b
-> ("ALSA: usb-audio: Reduce latency at playback start").
+> Yep.
 > 
-> And reverting it on top of my tree also fixes the hang, so it's not
-> some bisection fluke.
+> > The reset for GPIO controller is presetn under dom_sys.  Do you think
+> > know you know an example that has reset in the YAML?  Is there some code
+> > that would actually make use of that information?
+> >
+> > >
+> > > > +
+> > > > +  gpio-controller: true
+> > > > +
+> > > > +  "#gpio-cells":
+> > > > +    const: 2
+> > > > +
+> > > > +  interrupt-controller: true
+> > > > +
+> > > > +  "#interrupt-cells":
+> > > > +    const: 2
+> > > > +
+> > > > +required:
+> > > > +  - compatible
+> > > > +  - reg
+> > > > +  - interrupts
+> > > > +  - interrupt-controller
+> > > > +  - "#interrupt-cells"
+> > > > +  - "#gpio-cells"
+> > > > +  - gpio-controller
+> >
+> > Do you think I should add 'clocks' to 'required:'?
 > 
-> I have no idea what is actually wrong with that commit, but it most
-> definitely is the problem, and I have reverted it in my tree so that I
-> can continue merging stuff tomorrow.
+> I'm still having issues with i2c if the GPIO block lists a clock, due to
+> fw_devlink dependencies.
+> 
+> > > > +
+> > > > +additionalProperties: false
+> > > > +
+> > > > +examples:
+> > > > +  - |
+> > > > +      gpio@11910000 {
+> > > > +        compatible = "starfive,jh7100-gpio";
+> > > > +        reg = <0x11910000 0x10000>;
+> > > > +        gpio-controller;
+> > > > +        #gpio-cells = <2>;
+> > > > +        interrupt-controller;
+> > > > +        #interrupt-cells = <2>;
+> > > > +        interrupts = <32>;
+> >
+> > I would add:
+> >
+> >   clocks = <&clkgen JH7100_CLK_APB1>;
+> >
+> > But I am not sure how reset would work?
+> 
+> That should become "resets = <&rstgen JH7100_RSTN_GPIO_APB>",
+> but we don't have the reset controller in Linux yet (we do in barebox).
 
-The cause seems to be the attempt to lock PCM substream recursively
-introduced by the issued commit.
+Do you think I should add reset item like this?
 
-Would I ask you to test with below patch? I apologize that the patch is
-still untested in my side since at present I have no preparation to debug
-USB stuffs instantly (I'm just a maintainer for ALSA firewire stack...),
-so I'm glad if getting your cooperation for the issue.
+  resets:
+    maxItems: 1
 
-======== 8< --------
+I suppose this is supposed to describe the hardware and it shouldn't
+matter whether or not Linux uses the property, right?
 
-From f7ab449f10152635ad7083aa73d80e3fb1adabb4 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Sat, 3 Jul 2021 15:23:25 +0900
-Subject: [PATCH] ALSA: usb-audio: fix recursive lock of PCM substream when
- starting playback PCM substream
-
-A commit 9ce650a75a3b ("ALSA: usb-audio: Reduce latency at playback start")
-unfortunately introduced the call of snd_pcm_period_elapsed() under acquired
-lock of PCM substream. This causes recursive lock and results in dead-lock.
-
-->ioctl(2)
-  (sound/core/pcm_native.c)
-  ->snd_pcm_stream_lock_irqsave() <-
-    ...
-    ->struct snd_pcm_ops.trigger()
-    (sound/usb/pcm.c)
-    = snd_usb_substream_playback_trigger()
-      ->start_endpoints()
-        (sound/usb/endpoint.c)
-        ->snd_usb_endpoint_start()
-          ->prepare_outbound_urb()
-            ->struct snd_usb_endpoint.prepare_data_urb()
-            (sound/usb/pcm.c)
-            = prepare_playback_urb()
-              (sound/core/pcm_lib.c)
-              ->snd_pcm_period_elapsed()
-                (sound/core/pcm_native.c)
-                ->snd_pcm_stream_lock_irqsave() <-
-
-This commit fixes the issue to use newly added function;
-snd_pcm_period_elapsed_under_stream_lock() with condition to check running
-context.
-
-Reported-by: Hector Martin <marcan@marcan.st>
-Fixes: 9ce650a75a3b ("ALSA: usb-audio: Reduce latency at playback start")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/usb/pcm.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index c66831ee15f9..235070f0236a 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -1395,8 +1395,16 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 
- 	spin_unlock_irqrestore(&subs->lock, flags);
- 	urb->transfer_buffer_length = bytes;
--	if (period_elapsed)
--		snd_pcm_period_elapsed(subs->pcm_substream);
-+	if (period_elapsed) {
-+		// The callback of struct snd_pcm_ops.trigger with SNDRV_PCM_TRIGGER_START command
-+		// can reach here, under acquired lock of PCM substream. To avoid dead-lock, check
-+		// current context and call corresponding function.
-+		if (in_softirq()) {
-+			snd_pcm_period_elapsed(subs->pcm_substream);
-+		} else {
-+			snd_pcm_period_elapsed_under_stream_lock(subs->pcm_substream);
-+		}
-+	}
- }
- 
- /*
--- 
-2.30.2
-
-======== 8< --------
-
-Thanks
-
-Takashi (not subsystem maintainer) Sakamoto
+Thank you,
+Drew
