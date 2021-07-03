@@ -2,105 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885113BA98C
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 18:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3D83BA99F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Jul 2021 18:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbhGCQqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 12:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhGCQqE (ORCPT
+        id S229813AbhGCRBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 13:01:49 -0400
+Received: from 84-20.comp.nus.edu.sg ([137.132.84.20]:33708 "EHLO
+        mailgw1.comp.nus.edu.sg" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229499AbhGCRBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 12:46:04 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A52EC061762;
-        Sat,  3 Jul 2021 09:43:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=HtKfSB56fn7n+CnIV4JeUmzMser9oQjWjl30ggovg5A=; b=d6RvvMrj73CX7GlivJEj6YFc1s
-        5wHerC+/gsLvZqsgWS1AuhxNjmC5ROlo/MyxQ2L674l27v0pWhQO9//pXReVAhD1sMH2ChfQG/teV
-        I1f9qarNz7mnTJyDSl2r8eoU8H/IHQk7yoUZyAnGtGMJF2T4uNyjwfGPzNgeUB6rfvaU=;
-Received: from p200300ccff37da001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff37:da00:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1lzijm-0000bJ-J3; Sat, 03 Jul 2021 18:43:26 +0200
-Date:   Sat, 3 Jul 2021 18:43:25 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     lee.jones@linaro.org, robh+dt@kernel.org, lars@metafoo.de,
-        sre@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-pm@vger.kernel.org, leonard.crestez@nxp.com,
-        letux-kernel@openphoenux.org
-Subject: Re: [PATCH 1/4] dt-bindings: mfd: ricoh,rn5t618: ADC related nodes
- and properties
-Message-ID: <20210703184325.4ce09fc7@aktux>
-In-Reply-To: <20210703170245.1d310342@jic23-huawei>
-References: <20210703084224.31623-1-andreas@kemnade.info>
-        <20210703084224.31623-2-andreas@kemnade.info>
-        <20210703170245.1d310342@jic23-huawei>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Sat, 3 Jul 2021 13:01:48 -0400
+X-Greylist: delayed 587 seconds by postgrey-1.27 at vger.kernel.org; Sat, 03 Jul 2021 13:01:47 EDT
+Received: from localhost (avs2.comp.nus.edu.sg [192.168.49.6])
+        by mailgw1.comp.nus.edu.sg (Postfix) with ESMTP id 5083425762D;
+        Sun,  4 Jul 2021 00:49:24 +0800 (+08)
+X-Virus-Scanned: amavisd-new at comp.nus.edu.sg
+Received: from mailgw1.comp.nus.edu.sg ([192.168.49.5])
+        by localhost (avs.comp.nus.edu.sg [192.168.49.6]) (amavisd-new, port 10024)
+        with ESMTP id dWAa3b8PfRJC; Sun,  4 Jul 2021 00:49:07 +0800 (+08)
+Received: from mailauth0.comp.nus.edu.sg (mailauth0.comp.nus.edu.sg [192.168.49.2])
+        by mailgw1.comp.nus.edu.sg (Postfix) with ESMTP;
+        Sun,  4 Jul 2021 00:49:07 +0800 (+08)
+Received: from hujialun-ThinkPad-X240.nus.edu.sg (unknown [172.21.160.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hujialun)
+        by mailauth0.comp.nus.edu.sg (Postfix) with ESMTPSA id 8C71D201AAFF2;
+        Sun,  4 Jul 2021 00:49:06 +0800 (+08)
+From:   Hu Jialun <hujialun@comp.nus.edu.sg>
+To:     =?UTF-8?q?=E5=BC=A0=E4=B9=90=20Zhang=20Le?= <r0bertz@gentoo.org>,
+        Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>
+Cc:     Hu Jialun <hujialun@comp.nus.edu.sg>,
+        Wei Ming Chen <jj251510319013@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] docs/zh_CN: Remove the Microsoft rhetoric
+Date:   Sun,  4 Jul 2021 00:48:34 +0800
+Message-Id: <20210703164834.460447-1-hujialun@comp.nus.edu.sg>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0 (-)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 3 Jul 2021 17:02:45 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
+Update Chinese translation on par with original English coding-style.rst
+Related commit b7592e5b82db19b72a34b471f3296ad3f651c8b9
 
-> On Sat,  3 Jul 2021 10:42:21 +0200
-> Andreas Kemnade <andreas@kemnade.info> wrote:
-> 
-> > Add ADC related nodes and properties. This will allow to wire
-> > up ADC channels to consumers, especially to measure input voltages
-> > by the power subdevice.
-> > 
-> > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> > ---
-> >  .../bindings/mfd/ricoh,rn5t618.yaml           | 53 +++++++++++++++++++
-> >  1 file changed, 53 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml b/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
-> > index 032a7fb0b4a7..185f87a14a54 100644
-> > --- a/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
-> > +++ b/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
-> > @@ -73,6 +73,48 @@ properties:
-> >      description: |
-> >        See Documentation/devicetree/bindings/power/power-controller.txt
-> >  
-> > +  adc:
-> > +    type: object
-> > +
-> > +    properties:
-> > +      compatible:
-> > +        enum:
-> > +          - ricoh,rn5t618-adc
-> > +          - ricoh,rc5t619-adc
-> > +
-> > +      "#io-channel-cells":
-> > +        const: 1
-> > +
-> > +    additionalProperties: false
-> > +
-> > +    required:
-> > +      - compatible
-> > +      - "#io-channel-cells"  
-> 
-> Strictly required?  If not used below (where it is optional)
-> then why do we require the ADC driver to provided the services?
-> 
-> I don't mind you leave it as it is though if you prefer - it doesn't
-> do any harm!
-> 
-ok, it is not that strictly required.
+Signed-off-by: Hu Jialun <hujialun@comp.nus.edu.sg>
+---
+This is more of a crude first attempt to begin getting accustomed to
+mailing list conventions of open-source communities.
+While efforts have been made to conform to the patch submission
+conventions, there is still inevitably certain omissions.
+Any corrections and suggestions would be greatly appreciated! :)
 
-Regards,
-Andreas
+ Documentation/translations/zh_CN/process/coding-style.rst | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/Documentation/translations/zh_CN/process/coding-style.rst b/Documentation/translations/zh_CN/process/coding-style.rst
+index b8c484a84d10..638d714bec83 100644
+--- a/Documentation/translations/zh_CN/process/coding-style.rst
++++ b/Documentation/translations/zh_CN/process/coding-style.rst
+@@ -268,8 +268,7 @@ C 程序员不使用类似 ThisVariableIsATemporaryCounter 这样华丽的名字
+ ``count_active_users()`` 或者类似的名字，你不应该叫它 ``cntuser()`` 。
+ 
+ 在函数名中包含函数类型 (所谓的匈牙利命名法) 是脑子出了问题——编译器知道那些类
+-型而且能够检查那些类型，这样做只能把程序员弄糊涂了。难怪微软总是制造出有问题
+-的程序。
++型而且能够检查那些类型，这样做只能把程序员弄糊涂了。
+ 
+ 本地变量名应该简短，而且能够表达相关的含义。如果你有一些随机的整数型的循环计
+ 数器，它应该被称为 ``i`` 。叫它 ``loop_counter`` 并无益处，如果它没有被误解的
+-- 
+2.32.0
+
