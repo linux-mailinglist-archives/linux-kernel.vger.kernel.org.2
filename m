@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E795F3BB42F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B343BB428
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233076AbhGDXYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:24:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56944 "EHLO mail.kernel.org"
+        id S233306AbhGDXXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:23:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234207AbhGDXO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234216AbhGDXO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 4 Jul 2021 19:14:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 602F1619C5;
-        Sun,  4 Jul 2021 23:11:33 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFBF3613F9;
+        Sun,  4 Jul 2021 23:11:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440294;
-        bh=FITr/NCjK1NzcgUtmbigP0i/c3mBj4z9cXPwIzaZrz0=;
+        s=k20201202; t=1625440296;
+        bh=akcR7Pm/E7YJgiGct8FsuxZrYv4JOGAcsaYKBK4XVC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tbBr/Q0Wv97kTQwN7eQBjhk66De6/x4z54jgnSJrzj+/j8RliDyA1dUivldmvSu1i
-         8myPYIUCZVhj0UTmgiIQK0+csQXS9/hcimKl0BXce6PmwcRk/oUpwrW/MtpgHQWa0v
-         cqL5RIURNG8lFR/Gery+StIpQp6FwORPx1AOX/KKIrvD16wL7+fy/77mFM8RbjJukU
-         Rcb5c1adrvWvIOtNglBurYOfal96ypYBwFsLxP+Zuy7SihbYk5eKTWirco671VpHxL
-         Ty7x0sUGIv5tqHf/c7rqPbF02ClXW7B2hSj8KzXtt6BnNeqKNPgT9+STAGfRNdDxTu
-         Raep0CL1uBAAw==
+        b=Kasf3JE6+aUdICQriiAQ3+YhYu7hE6tLwiCI1xNB+Ax0YiUuRa2xYSAXG19g9EJk8
+         BXIFGd+qvkMRirsmZZY+YwvxMCFytWH9sx6jZQJNDb7pSlv47dxIu+LKCh/wUNtqk4
+         UywubCfqww1cPz3v/wyu5SxQH7Z1nO6oylRH5pmRUNwhlG2wuHQfXpkOsD4aTfCg+z
+         kyILViSfzRjoQ2XHfG4DWhXAXPSbAr29pDTkfz8nWEesWDWe32ZQTvBe/0doFiYU4d
+         kUjGTE4ES7rgiHDphW9YXvWF+C0KeIgAfTZ8NPIFgRqMv4XdL2ae4vl2bPz187vJiP
+         ygOGOeAQE7m1Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 08/25] media: cobalt: fix race condition in setting HPD
-Date:   Sun,  4 Jul 2021 19:11:06 -0400
-Message-Id: <20210704231123.1491517-8-sashal@kernel.org>
+Cc:     Jack Xu <jack.xu@intel.com>, Zhehui Xiang <zhehui.xiang@intel.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>, qat-linux@intel.com,
+        linux-crypto@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH AUTOSEL 4.14 10/25] crypto: qat - check return code of qat_hal_rd_rel_reg()
+Date:   Sun,  4 Jul 2021 19:11:08 -0400
+Message-Id: <20210704231123.1491517-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704231123.1491517-1-sashal@kernel.org>
 References: <20210704231123.1491517-1-sashal@kernel.org>
@@ -42,68 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Jack Xu <jack.xu@intel.com>
 
-[ Upstream commit 3d37ef41bed0854805ab9af22c422267510e1344 ]
+[ Upstream commit 96b57229209490c8bca4335b01a426a96173dc56 ]
 
-The cobalt_s_bit_sysctrl reads the old register value over PCI,
-then changes a bit and sets writes the new value to the register.
+Check the return code of the function qat_hal_rd_rel_reg() and return it
+to the caller.
 
-This is used among other things for setting the HPD output pin.
+This is to fix the following warning when compiling the driver with
+clang scan-build:
 
-But if the HPD is changed for multiple inputs at the same time,
-then this causes a race condition where a stale value is read.
+    drivers/crypto/qat/qat_common/qat_hal.c:1436:2: warning: 6th function call argument is an uninitialized value
 
-Serialize this function with a mutex.
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Jack Xu <jack.xu@intel.com>
+Co-developed-by: Zhehui Xiang <zhehui.xiang@intel.com>
+Signed-off-by: Zhehui Xiang <zhehui.xiang@intel.com>
+Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/cobalt/cobalt-driver.c | 1 +
- drivers/media/pci/cobalt/cobalt-driver.h | 7 ++++++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ drivers/crypto/qat/qat_common/qat_hal.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/pci/cobalt/cobalt-driver.c b/drivers/media/pci/cobalt/cobalt-driver.c
-index 98b6cb9505d1..0c827f488317 100644
---- a/drivers/media/pci/cobalt/cobalt-driver.c
-+++ b/drivers/media/pci/cobalt/cobalt-driver.c
-@@ -687,6 +687,7 @@ static int cobalt_probe(struct pci_dev *pci_dev,
- 		return -ENOMEM;
- 	cobalt->pci_dev = pci_dev;
- 	cobalt->instance = i;
-+	mutex_init(&cobalt->pci_lock);
- 
- 	retval = v4l2_device_register(&pci_dev->dev, &cobalt->v4l2_dev);
- 	if (retval) {
-diff --git a/drivers/media/pci/cobalt/cobalt-driver.h b/drivers/media/pci/cobalt/cobalt-driver.h
-index 00f773ec359a..9f8db7eaa43c 100644
---- a/drivers/media/pci/cobalt/cobalt-driver.h
-+++ b/drivers/media/pci/cobalt/cobalt-driver.h
-@@ -262,6 +262,8 @@ struct cobalt {
- 	int instance;
- 	struct pci_dev *pci_dev;
- 	struct v4l2_device v4l2_dev;
-+	/* serialize PCI access in cobalt_s_bit_sysctrl() */
-+	struct mutex pci_lock;
- 
- 	void __iomem *bar0, *bar1;
- 
-@@ -331,10 +333,13 @@ static inline u32 cobalt_g_sysctrl(struct cobalt *cobalt)
- static inline void cobalt_s_bit_sysctrl(struct cobalt *cobalt,
- 					int bit, int val)
- {
--	u32 ctrl = cobalt_read_bar1(cobalt, COBALT_SYS_CTRL_BASE);
-+	u32 ctrl;
- 
-+	mutex_lock(&cobalt->pci_lock);
-+	ctrl = cobalt_read_bar1(cobalt, COBALT_SYS_CTRL_BASE);
- 	cobalt_write_bar1(cobalt, COBALT_SYS_CTRL_BASE,
- 			(ctrl & ~(1UL << bit)) | (val << bit));
-+	mutex_unlock(&cobalt->pci_lock);
- }
- 
- static inline u32 cobalt_g_sysstat(struct cobalt *cobalt)
+diff --git a/drivers/crypto/qat/qat_common/qat_hal.c b/drivers/crypto/qat/qat_common/qat_hal.c
+index 8c4fd255a601..cdf80c16a033 100644
+--- a/drivers/crypto/qat/qat_common/qat_hal.c
++++ b/drivers/crypto/qat/qat_common/qat_hal.c
+@@ -1255,7 +1255,11 @@ static int qat_hal_put_rel_wr_xfer(struct icp_qat_fw_loader_handle *handle,
+ 		pr_err("QAT: bad xfrAddr=0x%x\n", xfr_addr);
+ 		return -EINVAL;
+ 	}
+-	qat_hal_rd_rel_reg(handle, ae, ctx, ICP_GPB_REL, gprnum, &gprval);
++	status = qat_hal_rd_rel_reg(handle, ae, ctx, ICP_GPB_REL, gprnum, &gprval);
++	if (status) {
++		pr_err("QAT: failed to read register");
++		return status;
++	}
+ 	gpr_addr = qat_hal_get_reg_addr(ICP_GPB_REL, gprnum);
+ 	data16low = 0xffff & data;
+ 	data16hi = 0xffff & (data >> 0x10);
 -- 
 2.30.2
 
