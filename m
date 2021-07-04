@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559C03BB266
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C293BB272
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbhGDXP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:15:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50600 "EHLO mail.kernel.org"
+        id S232128AbhGDXPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:15:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229614AbhGDXNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:13:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9754461960;
-        Sun,  4 Jul 2021 23:09:00 +0000 (UTC)
+        id S232677AbhGDXNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:13:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 884196193E;
+        Sun,  4 Jul 2021 23:09:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440141;
-        bh=EwONuDiDclzvsM2MjoctyHGHG0D1+bQenust0cxuNPo=;
+        s=k20201202; t=1625440146;
+        bh=n/WkJqG640sU3Rw25PR1ZhW2yBejxV5O1AiUCuchfeg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LS4fREZ8njo9A+TcWCwZ/hCNGwrQzswmbKgaCof9dVjmq3MX4K3plZd8r9VqM1R3q
-         Mt2CYp+EDUeDDSF8DjKwulRN6GHSG9GSJ+AJ0suPSACBmmIX1PNzJyQWA3g7nZyGtP
-         EtZAzja+ppg+QYY0wSUGL/qqu9VyBpgqEJRBOysgWOm+S4Lpo00A2eg5ozP9yT+Ppj
-         ZilVB3V6u/F2SWsFhdaPbxbo64DtU1VdnMSNjCC6L9lQHS3I8Ciwtdb3PkIfKze/pZ
-         frDGR8lS4BjAEgL27JnfQol30VukP3YWvQTcHGIV1sbXPGXizWmPTDe9LCu/jif7hq
-         0mXbkLLti6Ktw==
+        b=aRttW0RBhQyCbyi707ftYA6f7o2OEX+oP1TiwZOIMB/HsqJcEHfGmOV4risyVmSgo
+         6CPQzFRWr7X5Xkjp5BMiH/kWwSxC3w8uPri2l/gh+i3UJZyedX8JsGAKDlk6Jm8/Qx
+         4qj1ZwqtZgVfrF2Z00ibdA1BWIS68ZuOp+I92u/tzrlE6KBurp2TZ1rdIH2GEEql22
+         UJCqqg9Vr0LOBcrsodxs0J81QEkEG9R3NMT5oR18NVgT6cG08unf9plT8xvNWZkftA
+         jcu1mnBRzdfE3rF4zsnSyVyGBpwoh9F31SWyDzJNW7VuGRSFzJShmav8fgSCFw/EUX
+         0fKYI59mazJmQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kai Ye <yekai13@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 42/70] crypto: hisilicon/sec - fixup 3des minimum key size declaration
-Date:   Sun,  4 Jul 2021 19:07:35 -0400
-Message-Id: <20210704230804.1490078-42-sashal@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        kernel test robot <lkp@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 46/70] mmc: sdhci-sprd: use sdhci_sprd_writew
+Date:   Sun,  4 Jul 2021 19:07:39 -0400
+Message-Id: <20210704230804.1490078-46-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704230804.1490078-1-sashal@kernel.org>
 References: <20210704230804.1490078-1-sashal@kernel.org>
@@ -42,37 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Ye <yekai13@huawei.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 6161f40c630bd7ced5f236cd5fbabec06e47afae ]
+[ Upstream commit 961470820021e6f9d74db4837bd6831a1a30341b ]
 
-Fixup the 3des algorithm  minimum key size declaration.
+The sdhci_sprd_writew() was defined by never used in sdhci_ops:
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+    drivers/mmc/host/sdhci-sprd.c:134:20: warning: unused function 'sdhci_sprd_writew'
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210601095403.236007-2-krzysztof.kozlowski@canonical.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mmc/host/sdhci-sprd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 41f1fcacb280..630dcb59ad56 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -1515,11 +1515,11 @@ static struct skcipher_alg sec_skciphers[] = {
- 			 AES_BLOCK_SIZE, AES_BLOCK_SIZE)
- 
- 	SEC_SKCIPHER_ALG("ecb(des3_ede)", sec_setkey_3des_ecb,
--			 SEC_DES3_2KEY_SIZE, SEC_DES3_3KEY_SIZE,
-+			 SEC_DES3_3KEY_SIZE, SEC_DES3_3KEY_SIZE,
- 			 DES3_EDE_BLOCK_SIZE, 0)
- 
- 	SEC_SKCIPHER_ALG("cbc(des3_ede)", sec_setkey_3des_cbc,
--			 SEC_DES3_2KEY_SIZE, SEC_DES3_3KEY_SIZE,
-+			 SEC_DES3_3KEY_SIZE, SEC_DES3_3KEY_SIZE,
- 			 DES3_EDE_BLOCK_SIZE, DES3_EDE_BLOCK_SIZE)
- 
- 	SEC_SKCIPHER_ALG("xts(sm4)", sec_setkey_sm4_xts,
+diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+index 19cbb6171b35..9cd8862e6cbd 100644
+--- a/drivers/mmc/host/sdhci-sprd.c
++++ b/drivers/mmc/host/sdhci-sprd.c
+@@ -393,6 +393,7 @@ static void sdhci_sprd_request_done(struct sdhci_host *host,
+ static struct sdhci_ops sdhci_sprd_ops = {
+ 	.read_l = sdhci_sprd_readl,
+ 	.write_l = sdhci_sprd_writel,
++	.write_w = sdhci_sprd_writew,
+ 	.write_b = sdhci_sprd_writeb,
+ 	.set_clock = sdhci_sprd_set_clock,
+ 	.get_max_clock = sdhci_sprd_get_max_clock,
 -- 
 2.30.2
 
