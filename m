@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7857E3BAFB0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194693BAFB2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbhGDXER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
+        id S229771AbhGDXEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhGDXER (ORCPT
+        with ESMTP id S229530AbhGDXEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:04:17 -0400
+        Sun, 4 Jul 2021 19:04:50 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E898C061574;
-        Sun,  4 Jul 2021 16:01:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24F7C061574;
+        Sun,  4 Jul 2021 16:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
         Content-ID:Content-Description:In-Reply-To:References;
-        bh=bR0QEHVYAdW3v72Aw8kC9THbMpNs2o+j6IWYhXHWArQ=; b=pR2pENaQmLKuVLljp3vAWZ0rIw
-        D3huTZ2u+hOmQnmJh3zEPRxQRnZYHXfgx+8ZVjjGx6prK94cwlhA9ahlGCm5HaKJHZe0YovDxsHBo
-        hvxOH+4wTugIKll+Ewho0TjDvQfSqgNwzMQm3EwQ0LZkF0nmd3zpVOTMMD1cIyZ98uWbMCLwF9qq5
-        24KpE992qrIZOc6Dt2w7EN14lyAYL+aPIAxtRx/E8w4l8rqp5yG8Js1WEFXTGdTwTk2CHdtcOdTte
-        Cic4X2q5ZinDOlEJGoVrKmItPNPUb6GJdFt7PkBX72sR0Jya6BbbFQqvuN6bRMs1oSZiYYegoq+jZ
-        eHkJi8bg==;
+        bh=qGKjvTeOq2wVieAO64GDRo6lQa4uNDDRgX732R6pMwY=; b=LrPQm0tUyO6JU9ydJtWYfxbsri
+        f2P8ZTTr0grwfWXHwdQ9JawjqPOvuT6o1WNSTAYCEgEm8k9SWX0/o+ULsKx7x1/583BMxeHNnb0X8
+        QfQRVQTSis5r+YsCOJgTRjPJkO6Kh0o8PRmXLHHhNRWaMXHkKbyM2zLW/saCQ5DLmYMjzwP45svNK
+        p705stBc+o46sR0bBWjOA1snQ1OpSPYciZ1EgZ1i+t4I+33V1gAN1OVidyC3g8odUOdCvzh75ag11
+        5/CmV8uL6IFddgvUw7YWOTqAYZTdmS3cLvT9IWaSFBKaThY75EkbjqFLZzScUBjFC+ww4hSEjLReD
+        LsSIhx9g==;
 Received: from [2601:1c0:6280:3f0:7629:afff:fe72:e49d] (helo=bombadil.infradead.org)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0B7K-006sCv-2P; Sun, 04 Jul 2021 23:01:38 +0000
+        id 1m0B7s-006sEi-K5; Sun, 04 Jul 2021 23:02:12 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
         kernel test robot <lkp@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] m68k/coldfire: change pll var. to clk_pll
-Date:   Sun,  4 Jul 2021 16:01:37 -0700
-Message-Id: <20210704230137.28915-1-rdunlap@infradead.org>
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Kyungsik Lee <kyungsik.lee@lge.com>
+Subject: [PATCH] mips: disable branch profiling in boot/decompress.o
+Date:   Sun,  4 Jul 2021 16:02:11 -0700
+Message-Id: <20210704230211.31257-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -45,43 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DEFINE_CLK() makes the variable name be clk_xyz, so variable
-'pll' should instead be 'clk_pll'.
+Use DISABLE_BRANCH_PROFILING for arch/mips/boot/compressed/decompress.o
+to prevent linkage errors.
 
-In file included from ../arch/m68k/coldfire/m525x.c:12:
-../arch/m68k/coldfire/m525x.c:29:30: error: 'pll' undeclared here (not in a function)
-   29 |  CLKDEV_INIT(NULL, "pll.0", &pll),
-      |                              ^~~
-../include/linux/clkdev.h:30:10: note: in definition of macro 'CLKDEV_INIT'
-   30 |   .clk = c, \
-      |          ^
-In file included from ../arch/m68k/coldfire/m525x.c:21:
-../arch/m68k/include/asm/mcfclk.h:43:27: warning: 'clk_pll' defined but not used [-Wunused-variable]
-   43 |         static struct clk clk_##clk_ref = { \
-      |                           ^~~~
-../arch/m68k/coldfire/m525x.c:25:1: note: in expansion of macro 'DEFINE_CLK'
-   25 | DEFINE_CLK(pll, "pll.0", MCF_CLK);
-      | ^~~~~~~~~~
+mips64-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_fast_extDict':
+decompress.c:(.text+0x8c): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: decompress.c:(.text+0xf4): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: decompress.c:(.text+0x200): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: decompress.c:(.text+0x230): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: decompress.c:(.text+0x320): undefined reference to `ftrace_likely_update'
+mips64-linux-ld: arch/mips/boot/compressed/decompress.o:decompress.c:(.text+0x3f4): more undefined references to `ftrace_likely_update' follow
 
-Fixes: 63aadb77669a ("m68k: coldfire: use clkdev_lookup on most coldfire")
+Fixes: e76e1fdfa8f8 ("lib: add support for LZ4-compressed kernel")
 Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: uclinux-dev@uclinux.org
-Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Cc: Kyungsik Lee <kyungsik.lee@lge.com>
 ---
- arch/m68k/coldfire/m525x.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/boot/compressed/decompress.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- linux-next-20210701.orig/arch/m68k/coldfire/m525x.c
-+++ linux-next-20210701/arch/m68k/coldfire/m525x.c
-@@ -26,7 +26,7 @@ DEFINE_CLK(pll, "pll.0", MCF_CLK);
- DEFINE_CLK(sys, "sys.0", MCF_BUSCLK);
+--- linux-next-20210701.orig/arch/mips/boot/compressed/decompress.c
++++ linux-next-20210701/arch/mips/boot/compressed/decompress.c
+@@ -7,6 +7,8 @@
+  * Author: Wu Zhangjin <wuzhangjin@gmail.com>
+  */
  
- static struct clk_lookup m525x_clk_lookup[] = {
--	CLKDEV_INIT(NULL, "pll.0", &pll),
-+	CLKDEV_INIT(NULL, "pll.0", &clk_pll),
- 	CLKDEV_INIT(NULL, "sys.0", &clk_sys),
- 	CLKDEV_INIT("mcftmr.0", NULL, &clk_sys),
- 	CLKDEV_INIT("mcftmr.1", NULL, &clk_sys),
++#define DISABLE_BRANCH_PROFILING
++
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+ #include <linux/string.h>
