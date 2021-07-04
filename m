@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD663BADBD
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 18:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96713BADC0
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 18:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229722AbhGDQE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 12:04:26 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:55399 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhGDQEZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 12:04:25 -0400
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 164G1Lk7030014
-        for <linux-kernel@vger.kernel.org>; Mon, 5 Jul 2021 01:01:21 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 164G1Lk7030014
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1625414481;
-        bh=6HNc8VG/tGcCTwbJDZ5Jks5Dx/j6qMD9eu7GWnNREkU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=wNuqCnDJeszwlWMRwggixesyYC9GSSNb4BVoj9s+4KoPRsmpG40FiMfGS7lZWS0rw
-         Vju7775hwvZ0Ymko7dqLJR5sVeNmtGOK+qL1X5IacienSYlEX1tr9E1efYOLypdLNy
-         9XM6svOhwz4yrVXQuFw6T5DLQfxO7PQG6pOyYSRv+EpQ/6TZPI6939ltfX2jSpBpdm
-         voMqztZ9YNLnVtHS83PtyZ8cu/H0PCQETT4oXVzld3bvmU8qn8Pw5cVEhNiI2g/pbq
-         SCIyQ8Y8i3LbWY0oRAXpMSZrbw0YXjaRATImPIsBVtZyWD1SqH4BD0ZoM+jJR1tpTN
-         kcIaT3nFg1CcQ==
-X-Nifty-SrcIP: [209.85.214.181]
-Received: by mail-pl1-f181.google.com with SMTP id f11so8762231plg.0
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 09:01:21 -0700 (PDT)
-X-Gm-Message-State: AOAM53080H7GNZjqKW/GkYj0wGQ9zmUTUWqSov5ctFXa3TNv98Ebveon
-        eeNgK1QmJB5gL3O8RbY8efzAKS+RsCRp+57HFaM=
-X-Google-Smtp-Source: ABdhPJyUd8hDodVvk57P9D5cJOVWm0aBMKZx0VXs4hWaZHPG8ewFlyHJhF+kHHx66S20ClMVU2HYLZO67xrF8yJMaY8=
-X-Received: by 2002:a17:90a:c506:: with SMTP id k6mr10433843pjt.198.1625414480779;
- Sun, 04 Jul 2021 09:01:20 -0700 (PDT)
+        id S229609AbhGDQKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 12:10:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229537AbhGDQKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 12:10:39 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A4A2613B1;
+        Sun,  4 Jul 2021 16:07:59 +0000 (UTC)
+Date:   Sun, 4 Jul 2021 17:10:23 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
+        devicetree@vger.kernel.org, lars@metafoo.de,
+        linux-pm@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sre@kernel.org, robh+dt@kernel.org,
+        leonard.crestez@nxp.com, lee.jones@linaro.org
+Subject: Re: [Letux-kernel] [PATCH 0/4] mfd: rn5t618: Extend ADC support
+Message-ID: <20210704171023.6199826a@jic23-huawei>
+In-Reply-To: <20210703185540.5b6bec20@aktux>
+References: <20210703084224.31623-1-andreas@kemnade.info>
+        <20210703165950.6e2aeb89@jic23-huawei>
+        <20210703183932.75c7012a@aktux>
+        <20210703185540.5b6bec20@aktux>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200317071821.9916-1-yamada.masahiro@socionext.com> <20210630184741.GA1037365@maple.netwinder.org>
-In-Reply-To: <20210630184741.GA1037365@maple.netwinder.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 5 Jul 2021 01:00:43 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASvYVyEQ4M_zEUdw9K9AB-RVErKoqFMQZ5OSKJF0AoBww@mail.gmail.com>
-Message-ID: <CAK7LNASvYVyEQ4M_zEUdw9K9AB-RVErKoqFMQZ5OSKJF0AoBww@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: rawnand: denali: add more delays before latching
- incoming data
-To:     Ralph Siemsen <ralph.siemsen@linaro.org>
-Cc:     linux-mtd <linux-mtd@lists.infradead.org>,
-        Marek Vasut <marex@denx.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 3:47 AM Ralph Siemsen <ralph.siemsen@linaro.org> wrote:
->
-> On Tue, Mar 17, 2020 at 04:18:21PM +0900, Masahiro Yamada wrote:
-> >
-> >Marek Vasut reported this driver in the latest kernel does not work
-> >on his SOCFPGA board. (The on-board NAND chip is mode 5)
->
-> In a bit of an ironic twist, this change seems to cause a regression for
-> me. I'm also using a Cyclone V SoC system, similar but not the same as
-> the SOCFPGA eval board. The NAND device in my case is S34ML04G2.
->
-> It worked fine in 4.9, 4.19 and 5.4 kernels. However after upgrading to
-> 5.10 the NAND driver fails with "timeout while waiting for irq 0x4",
-> just as was reported back in 2018:
-> https://lore.kernel.org/linux-mtd/737ejrj81y.fsf@pengutronix.de/
->
-> Reverting commit 5756f2e8dad46eba6e2d3e530243b8eff4dd5a42 restores the
-> behaviour in my case, but that would presumably break the SOCFPGA board.
->
-> Any thoughts on how we could make it work for everybody?
->
-> Ralph
+On Sat, 3 Jul 2021 18:55:40 +0200
+Andreas Kemnade <andreas@kemnade.info> wrote:
 
+> On Sat, 3 Jul 2021 18:39:40 +0200
+> Andreas Kemnade <andreas@kemnade.info> wrote:
+> 
+> > Hi,
+> > 
+> > On Sat, 3 Jul 2021 16:59:50 +0100
+> > Jonathan Cameron <jic23@kernel.org> wrote:
+> >   
+> > > On Sat,  3 Jul 2021 10:42:20 +0200
+> > > Andreas Kemnade <andreas@kemnade.info> wrote:
+> > >     
+> > > > Add devicetree support so that consumers can reference the channels
+> > > > via devicetree, especially the power subdevice can make use of that
+> > > > to provide voltage_now properties.      
+> > > 
+> > > Does the mapping vary from board to board?  Often these mappings are
+> > > internal to the chip so might as well be provided hard coded in the
+> > > relevant drivers rather than via DT. See drivers that have iio_map
+> > > structure arrays.
+> > >     
+> > Most things are internal to the chip, but 
+> > AIN1/AIN0 are external and could be connected to anything.
+> >   
+> hmm, iio_map stuff looks nice, so before messing with devicetree,
+> I could solve 90% of the problem by just using iio_map? For my use
+> cases it is enough to have the internal stuff at the moment. That would
+> simplify stuff a lot.
+> 
+> So I could go forward with the iio_map stuff now, and if there is a use
+> case for AIN1/0, the devicetree stuff can be added later?
 
-I no longer have any hardware to test this driver.
+I was just thinking the same.  I 'think' that it will first try to find
+a mapping via device tree and then use the iio_map stuff.
 
-If you increase data_setup_on_host (the current value is 10000),
-will it solve your issue?
+So you can probably get away with a mixture of the two.
+Worth testing that works though (hook up iio-hwmon to AIN0 perhaps whilst
+also using the iio_map approach).
 
+I might be completely wrong though and am not aware of anyone currently
+doing this...
 
+Jonathan
 
+> 
+> Regards,
+> Andreas
 
-
--- 
-Best Regards
-Masahiro Yamada
