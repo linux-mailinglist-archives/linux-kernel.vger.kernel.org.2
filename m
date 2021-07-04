@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B1C3BB3A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A303BB38C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233317AbhGDXSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:18:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55624 "EHLO mail.kernel.org"
+        id S233280AbhGDXSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:18:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234137AbhGDXOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234142AbhGDXOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 4 Jul 2021 19:14:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 072B8619B0;
-        Sun,  4 Jul 2021 23:11:20 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF647619AA;
+        Sun,  4 Jul 2021 23:11:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440281;
-        bh=b/CIhG+SKlQx6SI8ki7u97CIeZH13CqdD0xfsr05kgU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nsG3bBCW+GpfvqgKWRhRrdo2Q5v7ZJqPtXjv9NoOawkjH1W3Rxfq0OG3iKxhBlWdQ
-         jIOKPbgbrkNcvpO3PDQwesvTttsIhX95aoo/TBTJA9hNkHhz9Icq8/NK7xO9i1IG1r
-         BugFFakoaTRPU7Dsck0I4zpOAc+KF3ibIY77m+n2ICVd/8/s9HkqolIsGTd5zHul0j
-         E2nqivIqGx3JriQ8hHhI9CO29XX+8vyPv48Sj6fGR13o2xWiX2tOjnvtLp+lD16qSO
-         ZOhR+L1pB4lc1PXAiCFle6/LZ8uStexRZgdsEBirvh0mJsF1tXrhq66/w54xeYMy9/
-         2hFuCEXL3rUIg==
+        s=k20201202; t=1625440285;
+        bh=WU1bSrE8aufbaP+Iz2ayxRaykURKJQ0Z9dZKgWW19Jo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=L7wefWDaW+GD6PuK7P7/UJhDUX8MW+rllGFKU22XBYwCOIlmuv2+N8nW54xS42PF0
+         e95lkzAHzQPzzQCw40BXx9WaexLJHriniC6NVXcTKHuINJxQ920LwoLwSKTg4gNom4
+         KCFgQZa/C+l3aFloYKis1HdhFuwLqi2TaCTT9lY8bs+bjo28mnKYu/c6c6CTZgtLId
+         j/ZUDnv88kPIkYttF/FP6GSdWtUYy8eXgKgNupFi8B/bpW9ZMsEu2ojrXacpK6Rlm9
+         XqlMjAtAVkhXSc94vrTRq5duHX5WkQw8VIvb4pZp6/XZf7D7itGtm89rgtwlPh2ugr
+         qEJcJpHo9G0lQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        kernel test robot <lkp@intel.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 30/31] btrfs: disable build on platforms having page size 256K
-Date:   Sun,  4 Jul 2021 19:10:42 -0400
-Message-Id: <20210704231043.1491209-30-sashal@kernel.org>
+Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 01/25] spi: Make of_register_spi_device also set the fwnode
+Date:   Sun,  4 Jul 2021 19:10:59 -0400
+Message-Id: <20210704231123.1491517-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210704231043.1491209-1-sashal@kernel.org>
-References: <20210704231043.1491209-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,52 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit b05fbcc36be1f8597a1febef4892053a0b2f3f60 ]
+[ Upstream commit 0e793ba77c18382f08e440260fe72bc6fce2a3cb ]
 
-With a config having PAGE_SIZE set to 256K, BTRFS build fails
-with the following message
+Currently, the SPI core doesn't set the struct device fwnode pointer
+when it creates a new SPI device. This means when the device is
+registered the fwnode is NULL and the check in device_add which sets
+the fwnode->dev pointer is skipped. This wasn't previously an issue,
+however these two patches:
 
-  include/linux/compiler_types.h:326:38: error: call to
-  '__compiletime_assert_791' declared with attribute error:
-  BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
+commit 4731210c09f5 ("gpiolib: Bind gpio_device to a driver to enable
+fw_devlink=on by default")
+commit ced2af419528 ("gpiolib: Don't probe gpio_device if it's not the
+primary device")
 
-BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
-256K pages at the time being.
+Added some code to the GPIO core which relies on using that
+fwnode->dev pointer to determine if a driver is bound to the fwnode
+and if not bind a stub GPIO driver. This means the GPIO providers
+behind SPI will get both the expected driver and this stub driver
+causing the stub driver to fail if it attempts to request any pin
+configuration. For example on my system:
 
-There are two platforms that can select 256K pages:
- - hexagon
- - powerpc
+madera-pinctrl madera-pinctrl: pin gpio5 already requested by madera-pinctrl; cannot claim for gpiochip3
+madera-pinctrl madera-pinctrl: pin-4 (gpiochip3) status -22
+madera-pinctrl madera-pinctrl: could not request pin 4 (gpio5) from group aif1  on device madera-pinctrl
+gpio_stub_drv gpiochip3: Error applying setting, reverse things back
+gpio_stub_drv: probe of gpiochip3 failed with error -22
 
-Disable BTRFS when 256K page size is selected. Supporting this would
-require changes to the subpage mode that's currently being developed.
-Given that 256K is many times larger than page sizes commonly used and
-for what the algorithms and structures have been tuned, it's out of
-scope and disabling build is a reasonable option.
+The firmware node on the device created by the GPIO framework is set
+through the of_node pointer hence things generally actually work,
+however that fwnode->dev is never set, as the check was skipped at
+device_add time. This fix appears to match how the I2C subsystem
+handles the same situation.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-[ update changelog ]
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20210421101402.8468-1-ckeepax@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/spi/spi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-index 23537bc8c827..7233127bb93a 100644
---- a/fs/btrfs/Kconfig
-+++ b/fs/btrfs/Kconfig
-@@ -12,6 +12,8 @@ config BTRFS_FS
- 	select RAID6_PQ
- 	select XOR_BLOCKS
- 	select SRCU
-+	depends on !PPC_256K_PAGES	# powerpc
-+	depends on !PAGE_SIZE_256KB	# hexagon
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index da71a53b0df7..71f74015efb9 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1670,6 +1670,7 @@ of_register_spi_device(struct spi_controller *ctlr, struct device_node *nc)
+ 	/* Store a pointer to the node in the device structure */
+ 	of_node_get(nc);
+ 	spi->dev.of_node = nc;
++	spi->dev.fwnode = of_fwnode_handle(nc);
  
- 	help
- 	  Btrfs is a general purpose copy-on-write filesystem with extents,
+ 	/* Register the new device */
+ 	rc = spi_add_device(spi);
 -- 
 2.30.2
 
