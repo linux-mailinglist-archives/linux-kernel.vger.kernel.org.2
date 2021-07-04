@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A28A3BAD4D
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 16:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC85C3BAD52
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 16:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbhGDOFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 10:05:20 -0400
-Received: from mout.gmx.net ([212.227.17.22]:51737 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229492AbhGDOFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 10:05:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1625407285;
-        bh=qCFNx0oWRTXt6mjRNsgYCCM5WwpT+/4HKI7MSDuJJGE=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=GklD0Tma/lx/2AV87ghdg/Qze0ZAKuGkX3qFSJVk1o/IAwlMlnA3M/WPBzBILFQ60
-         C1yaHfqDLcvlOWqERXxDmrixxX7IdAyTEOuIMsHVKAIAkcHmuP2maVvWg7S2usjrCj
-         SBz7OW0ip3Ekvys5cp49IWRkdbd4IZp4BUgIUXPo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([83.52.228.41]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOREc-1lqjIh1CsY-00Pvaw; Sun, 04
- Jul 2021 16:01:25 +0200
-Date:   Sun, 4 Jul 2021 16:01:08 +0200
-From:   John Wood <john.wood@gmx.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     John Wood <john.wood@gmx.com>, Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Arnd Bergmann <arnd@arndb.de>, Andi Kleen <ak@linux.intel.com>,
-        valdis.kletnieks@vt.edu,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v8 3/8] security/brute: Detect a brute force attack
-Message-ID: <20210704140108.GA2742@ubuntu>
-References: <20210701234807.50453-1-alobakin@pm.me>
- <20210702145954.GA4513@ubuntu>
- <20210702170101.16116-1-alobakin@pm.me>
- <20210703105928.GA2830@ubuntu>
+        id S229713AbhGDOGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 10:06:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhGDOGC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 10:06:02 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F01AAC061762
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 07:03:25 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id k140so3211237vkk.6
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 07:03:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gBspm/BlVrYCvD2/PgUixtAdfPPqsF72ctK925L56Wc=;
+        b=lc1LmfjctBzKJNjKLR7QVzRXzvkDICIDyMrYxrN6y5PwKmmAy6WJMPG5oIp+mrsbE3
+         XQ2/F31H5tEilzpFWH+jZPPxkOLpsutS/DpuKwoUzY9qDxb2ipYStnabEPwNTNSwEVHz
+         Ko9YLgIXfMIRjbRF4uOgoFZ7hZ+bJdcZMJ0urItEc619PEEx1ZAO0l3c+Bzdj0S1/SnM
+         Qt98R3v/DaEi0/MPNkDbAWkmam24FQHrhUBsY9goYzCPST14diqxaFcm3b2yvRykULGZ
+         oxFwXcxsoXIz+ia5Lk3MsPVxAGSquH9myTASmYxsdSEkGsa+1kalucIIT2GGU+swgI5A
+         N99w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gBspm/BlVrYCvD2/PgUixtAdfPPqsF72ctK925L56Wc=;
+        b=nJQtON9qD0mpfnoFbjE64MKIKPS4vsn18zZgUq7uthIRTho7hncJ0Ih14vWzI5nHYl
+         eak49dcsGBeXUeB9ZebBkZx7TA9zzxAOJAJw/LoQ8NPAx93v6DoO9tWceR/y9y1h2HHv
+         holinwli70KuAT8wUwT5m+YaP4FL3a0WVLML1CvwlUskB+hGU8kUaTOYUrf+K4VoKQJn
+         7DD8hId3xYa6h7L9B8N+Reex1FR+NsgI0XeAGTHH2JoekuS2JySFvt4z9SHaqXAThgjG
+         aq1GpW8eqDmjhqxXRH1rgNYcb74RNW8l4HmDZ+S6KFpFVZqPV4H4gjVAg115p0fUbJLb
+         HTqw==
+X-Gm-Message-State: AOAM530X6ogHJimrpfTOKSeIs59WP34w5z3PI+isDQz8APYz9klQkTDo
+        PSPpnqTe9h0uPt3vv1e8wY/skqrrJd4coGjNlQM5dA==
+X-Google-Smtp-Source: ABdhPJytYsHbTrFOlrsisLYRSoTTuDDGUpSkgbxQLUklvl9NvDcJPMoaAHHy6mtBNB9vJmqcpiJooThRYrXLq62DZ+o=
+X-Received: by 2002:a1f:dfc1:: with SMTP id w184mr5658047vkg.17.1625407404796;
+ Sun, 04 Jul 2021 07:03:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210703105928.GA2830@ubuntu>
-X-Provags-ID: V03:K1:Zlv/I3jSwhQHOVW60yI8jrDAcYgbYRJ0DR/nPSVeP8thlzpNyfP
- Iy4q/M6ejxhwDhZ87s3DfnCTgkAHBDLbzMX83gQOaCGeWDPFYHbSWc85q8H4B1p3bXLckjH
- c0BJ7pVpncMao1CZjr+hoU910ZdvL1AqNB1/t+dmP8YygFdNwosY681NLG+78hFRzCXk+OU
- edDRLEmHS5NdCtwr4DiGg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Xu4NXV3hBGY=:9VsIzecylfJIkNr7kTE/xd
- ffa1w/cSXPBVUdHerWPnISoMh/XoptArz8co14byqOziF831kzJj5nZ0fqnysCK1knBArVSy9
- nJjYWf9H8MFohHQreGRWofJmr+quGvrdv4PspoXMpZ55zWoqDS1cx/hdkEPja9U1FGP0jTNbq
- F1FB23qrEMmaZjzdp5hb47mkVcuD3c+XgJFre2T9ecG9VQ1BGQHLfj7RKDlc6kgG46ziYRVbj
- +j2R5Rz9beIJowdvTFsCc7Gpxu6zHpcaQnbggqAVj8dVAGJAawmEsSEvnuEMgQVY3OlBRDbKQ
- sahHpkKLopj+42BewBHYOQfAWC7jnHHkPVJX0ebUoePyw+X/TxJMpB5172IJMerGm6fFt2rKj
- uV/q2xtXoQnWQCyLtiemxIi+r+8zVa5HKMJCjMq+HBgh2Gy1L5WXTSSg411UL+xcJMjiSP1vy
- IwGaAB7CalqbdNFQA6x39qteGEZvMckOJK1LatX5Gr5nKsLVcH2TdpnFqVCe/kO1zMUPwBRQo
- bMlYCnMorKCthiiRbEfJ/QV+GsbbmwXB54JiD+uDgrlRQvCIx7iB1hisDMktSPGaDxtXWHhgc
- +E7Kj6yjWk6j6B/CVdBKcv8Se1229GE3CpMMSZZQoB93OuYdiRJMCd1CAN/WSe+6ap5lapb20
- n/JshVmBqy3Kfli935tFYBShyVW1fi1gPOFtcYkmbU83m3D66n74PgduHWWG++ucFfchYF/OD
- wxIdKMSOfy/cER6z5IbzstOTJTr19zJUJugflt4bVjC1XORzWH3ZUBN6rY744cJRk7yaAMB72
- tXFj68NKVbRGN/qD15QyYGhZiCyLP9gsaEwibZxiP72wCYuPp/DSOZcSFSLgKbJKJbfQRXwrz
- N8KRvHz3PlzzWepKE1jLm2wl6reYqaCCUgodX4rrm5qEhz7t2tMRoNBoSV7QhvClXN/p2enTv
- a0UIHvFDqstk0cHFyNhqrj4SDal/dIwQccXgNVznb+TX3Oj7Uc64rawV1TqpZUEO4FlVuG2Ai
- DT8WAFrJrQ/4XHfCqkM19Rc6Q7UFg0O77mph7SYJ+ixe7DcHrTQY/RjgcCx/e9gtIeZoU1pdM
- PH5NRowdVQ6az2dzeSJ9Bc+HKoQBGly9Alu
-Content-Transfer-Encoding: quoted-printable
+References: <20210703093417.1569943-1-phind.uet@gmail.com> <20210703.144945.1327654903412498334.davem@davemloft.net>
+In-Reply-To: <20210703.144945.1327654903412498334.davem@davemloft.net>
+From:   Neal Cardwell <ncardwell@google.com>
+Date:   Sun, 4 Jul 2021 10:03:08 -0400
+Message-ID: <CADVnQykHuUTw82Fu6XNXJaX-vmep3UN0kvxdwvqcE--2+xAs5A@mail.gmail.com>
+Subject: Re: [PATCH v4] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
+To:     David Miller <davem@davemloft.net>
+Cc:     phind.uet@gmail.com, yhs@fb.com, edumazet@google.com,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, ycheng@google.com, yyd@google.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 03, 2021 at 12:59:28PM +0200, John Wood wrote:
-> Hi,
+On Sat, Jul 3, 2021 at 5:49 PM David Miller <davem@davemloft.net> wrote:
 >
-> On Fri, Jul 02, 2021 at 05:08:09PM +0000, Alexander Lobakin wrote:
+> From: Nguyen Dinh Phi <phind.uet@gmail.com>
+> Date: Sat,  3 Jul 2021 17:34:17 +0800
+>
+> > diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+> > index 7d5e59f688de..855ada2be25e 100644
+> > --- a/net/ipv4/tcp_input.c
+> > +++ b/net/ipv4/tcp_input.c
+> > @@ -5922,7 +5922,6 @@ void tcp_init_transfer(struct sock *sk, int bpf_op, struct sk_buff *skb)
+> >               tp->snd_cwnd = tcp_init_cwnd(tp, __sk_dst_get(sk));
+> >       tp->snd_cwnd_stamp = tcp_jiffies32;
 > >
-> > On the other hand, it leaves a potentional window for attackers to
-> > perform brute force from xattr-incapable filesystems. So at the end
-> > of the day I think that the current implementation (a strong
-> > rejection of such filesystems) is way more secure than having
-> > a fallback I proposed.
+> > -     icsk->icsk_ca_initialized = 0;
+> >       bpf_skops_established(sk, bpf_op, skb);
+> >       if (!icsk->icsk_ca_initialized)
+> >               tcp_init_congestion_control(sk);
 >
-> I've been thinking more about this: that the Brute LSM depends on xattr
-> support and I don't like this part. I want that brute force attacks can
-> be detected and mitigated on every system (with minimal dependencies).
-> So, now I am working in a solution without this drawback. I have some
-> ideas but I need to work on it.
+> Don't you have to make the tcp_init_congestion_control() call unconditional now?
 
-I have been coding and testing a bit my ideas but:
+I think we want to keep it conditional, to avoid double-initialization
+if the BPF code sets the congestion control algorithm and initializes
+it. But that's relatively new and subtle, so it might be nice for this
+patch to add a comment about that, since it's touching this part of
+the code anyway:
 
-Trying to track the applications faults info using kernel memory ends up
-in an easy to abuse system (denied of service due to large amount of memor=
-y
-in use) :(
+-       icsk->icsk_ca_initialized = 0;
+        bpf_skops_established(sk, bpf_op, skb);
++       /* Initialize congestion control unless BPF initialized it already: */
+        if (!icsk->icsk_ca_initialized)
+                tcp_init_congestion_control(sk);
 
-So, I continue with the v8 idea: xattr to track application crashes info.
-
-> > I'm planning to make a patch which will eliminate such weird rootfs
-> > type selection and just always use more feature-rich tmpfs if it's
-> > compiled in. So, as an alternative, you could add it to your series
-> > as a preparatory change and just add a Kconfig dependency on
-> > CONFIG_TMPFS && CONFIG_TMPFS_XATTR to CONFIG_SECURITY_FORK_BRUTE
-> > without messing with any fallbacks at all.
-> > What do you think?
->
-> Great. But I hope this patch will not be necessary for Brute LSM :)
-
-My words are no longer valid ;)
-
-Thanks,
-John Wood
+neal
