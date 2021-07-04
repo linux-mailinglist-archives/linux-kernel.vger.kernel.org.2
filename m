@@ -2,261 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F9C3BAC92
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 11:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5EF3BAC96
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 11:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbhGDJwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 05:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
+        id S229689AbhGDJxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 05:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhGDJwE (ORCPT
+        with ESMTP id S229502AbhGDJxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 05:52:04 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B3DC061765
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 02:49:27 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id gb6so7587212ejc.5
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 02:49:27 -0700 (PDT)
+        Sun, 4 Jul 2021 05:53:51 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC84FC061764
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 02:51:15 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id n9so944144wrs.13
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 02:51:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qzAkMSP1FVlaF7igte07rNyxkup5fEZ5Kcb9vm7Jix8=;
-        b=SMZguhe0gCeK+K4fpWOBc4ZZOnMdsFi7GKjeWwau3BD+++plq8ypU2RwuzRKIlFwVo
-         EGstmcx5t98kTfUG9bhwv7ljPdHJ1Ls/qe95Asrjrtk1uCd4NQCBIIh0EKmHqhRoEYol
-         hldjt8N2LAzTyoYWQYZ2JlXUJXARXI1msbzhZKzCTFr69fWdoeJSsY/Sjn4i8pXkFpIo
-         YjRAzIAXBf6AhnVeSqz4sTXfeQB3jlvLSRpBgcbieZielxBSuw+ikxw+y8aApqvhW7Pn
-         QNM7ylmDgZqeNb+fgsjdZgKC1v3EleI+8SmZhbsCtEMJIhKligBSReCYfqRjdsfmjyH1
-         YajQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DyAPDDuQ1eqE8i0UciuIoMX1PQ8MXE7kw1cwogcfOCU=;
+        b=SkhPUwxdJlj2UXV582jVO/fN+WQVO0v7yaJjcdVwG5IrQ3MdfARcKrKh6Tz242wasM
+         ykSDT+ZNWJfDOr+Va3aKXwmcJEUPgdpfnk0Bl+fCgh4pTN8B0mDYA9H9k3c+z/Z6uHyL
+         nwkXFp+hAPtqt9/L3852FJclbrGtTZlwA/bOND1WLDrt2HUAhgQJ/UvD3xPKbZukh+4d
+         csf/ifHC4yXCS5exUg44FmoGeZM/bHtvc0XkMpZEoBpsW4bTbuYIz5F2eFT/sRpNJOjo
+         tQdN3dF2I89ESE9ECGLYE0ZQ3Telv3o8zQvvhRQ8YkQiI15URS1ty89X2iKe3IyFnvga
+         XvAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qzAkMSP1FVlaF7igte07rNyxkup5fEZ5Kcb9vm7Jix8=;
-        b=V0+xrJt9Vy00jCrRo/LAqpf9vU6s+rthfxVBrXlpy3vxVXW7oanfL+TPe3bDdRmG6L
-         x6OBB0mQPQIS5vLfqVJtfwcdoJMau4GGb6UYs4rY29AH7yNbjNByc13sXs9xQDUBK5Dg
-         8ayxxz/kN+7xZ6bzFJomnFp2BDItllyESK8x9si/Oj6kJyJPFO/Xcz4wlU4nWbqi5tqx
-         dn6gjMoVBKhqHN4krkeq+HDYT1OiGmA2Kc4sCmxwCauoA4ZmhoPsxBwVSHJzfxEHVX+h
-         zXox+Z2uQtcDlC5DQmFvl3ApKzuwtlBMvT/3N5MzAF+CkaL82cr3LKdju6oLirBLgBJc
-         l/ow==
-X-Gm-Message-State: AOAM530n2cgMCzH8R3WfBtpea/wCEuV+OwtO9EsV3Uj/f6bjCaMhnzbE
-        kJKyQaILwucLe+VKjbqSo/5NmM/g32sQ9gkaKhd9
-X-Google-Smtp-Source: ABdhPJxvRtQJIj/yqZPkvbZHD8DNlSHEoDvhzkPyPsAyedq1EVF9bW4cXHVy5LeU0C2sRpYjWJqArcNlZLkm0IT3QiI=
-X-Received: by 2002:a17:907:1690:: with SMTP id hc16mr8249257ejc.247.1625392166205;
- Sun, 04 Jul 2021 02:49:26 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DyAPDDuQ1eqE8i0UciuIoMX1PQ8MXE7kw1cwogcfOCU=;
+        b=J3shyjX3SArtzuxTaIglwjfRxoD3Iye+7IPv98tz0/jatmnjYZ67fJvJGoKEKe7qCG
+         JVUir+5eli4r6oAjxqZCBVpztFqNdw62tX9EtxKm/jueudswpSXRtuFxjIQBc+IySQ/D
+         c942CDzRJdvWx8aARLoQuIzpRJhL5bsO3PIECFx/KACPq7HCcmxkxnQxfqbjDhlBUq3e
+         qxE39K4Pdpf+Y98nTuGOC7wS94NteW4E1A/ymwV96P6rqTZsYywiSEaY1vBF7lWWyP5L
+         VXd9QeFYJwavpiZ34nf83QvG6H3mMwROtF1QRyF2QcYBisvUWXqLJJEXdXC+PutSbblC
+         DEPA==
+X-Gm-Message-State: AOAM530Ga52pmvIpa27m5NmIYquGY3I+Qzb/5t3PlSxhc64wZ+/uqqon
+        lNMp0rmXSGJBFyx9OkDu+x91LA==
+X-Google-Smtp-Source: ABdhPJyXjx6F+bIJ3fAE34Z5grYfF1JpzaPJ473ZpNd2p6MJ3dU6nEWWTPzxP5uZh0xB3mm/xEAMIg==
+X-Received: by 2002:adf:a3ce:: with SMTP id m14mr9625863wrb.246.1625392274387;
+        Sun, 04 Jul 2021 02:51:14 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:11d:6696:65bb:ef7f? ([2a01:e34:ed2f:f020:11d:6696:65bb:ef7f])
+        by smtp.googlemail.com with ESMTPSA id c9sm9130247wro.5.2021.07.04.02.51.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Jul 2021 02:51:13 -0700 (PDT)
+Subject: Re: [GIT PULL] thermal for v5.14-rc1
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <zhang.chunyan@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Rajeshwari Ravindra Kamble <rkambl@codeaurora.org>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Finley Xiao <finley.xiao@rock-chips.com>
+References: <7a9ac752-2c1a-b05f-c5bd-9049c0bdd54e@linaro.org>
+ <CAHk-=wgZzeaZb0ByL+zPV1grizuxw2nAnmzU49S7pzV7sPS1Hg@mail.gmail.com>
+ <67ce84e6-f1a5-7796-805d-6482f24b1490@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <e6ac56a5-0b7e-bfbf-7e98-8bc3f39190fd@linaro.org>
+Date:   Sun, 4 Jul 2021 11:51:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210615141331.407-1-xieyongji@bytedance.com> <20210615141331.407-11-xieyongji@bytedance.com>
- <YNSCH6l31zwPxBjL@stefanha-x1.localdomain> <CACycT3uxnQmXWsgmNVxQtiRhz1UXXTAJFY3OiAJqokbJH6ifMA@mail.gmail.com>
- <YNxCDpM3bO5cPjqi@stefanha-x1.localdomain> <CACycT3taKhf1cWp3Jd0aSVekAZvpbR-_fkyPLQ=B+jZBB5H=8Q@mail.gmail.com>
- <YN3ABqCMLQf7ejOm@stefanha-x1.localdomain>
-In-Reply-To: <YN3ABqCMLQf7ejOm@stefanha-x1.localdomain>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Sun, 4 Jul 2021 17:49:15 +0800
-Message-ID: <CACycT3vo-diHgTSLw_FS2E+5ia5VjihE3qw7JmZR7JT55P-wQA@mail.gmail.com>
-Subject: Re: Re: Re: [PATCH v8 10/10] Documentation: Add documentation for VDUSE
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <67ce84e6-f1a5-7796-805d-6482f24b1490@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 9:15 PM Stefan Hajnoczi <stefanha@redhat.com> wrote:
->
-> On Thu, Jul 01, 2021 at 06:00:48PM +0800, Yongji Xie wrote:
-> > On Wed, Jun 30, 2021 at 6:06 PM Stefan Hajnoczi <stefanha@redhat.com> wrote:
-> > >
-> > > On Tue, Jun 29, 2021 at 01:43:11PM +0800, Yongji Xie wrote:
-> > > > On Mon, Jun 28, 2021 at 9:02 PM Stefan Hajnoczi <stefanha@redhat.com> wrote:
-> > > > > On Tue, Jun 15, 2021 at 10:13:31PM +0800, Xie Yongji wrote:
-> > > > > > +     static void *iova_to_va(int dev_fd, uint64_t iova, uint64_t *len)
-> > > > > > +     {
-> > > > > > +             int fd;
-> > > > > > +             void *addr;
-> > > > > > +             size_t size;
-> > > > > > +             struct vduse_iotlb_entry entry;
-> > > > > > +
-> > > > > > +             entry.start = iova;
-> > > > > > +             entry.last = iova + 1;
-> > > > >
-> > > > > Why +1?
-> > > > >
-> > > > > I expected the request to include *len so that VDUSE can create a bounce
-> > > > > buffer for the full iova range, if necessary.
-> > > > >
-> > > >
-> > > > The function is used to translate iova to va. And the *len is not
-> > > > specified by the caller. Instead, it's used to tell the caller the
-> > > > length of the contiguous iova region from the specified iova. And the
-> > > > ioctl VDUSE_IOTLB_GET_FD will get the file descriptor to the first
-> > > > overlapped iova region. So using iova + 1 should be enough here.
-> > >
-> > > Does the entry.last field have any purpose with VDUSE_IOTLB_GET_FD? I
-> > > wonder why userspace needs to assign a value at all if it's always +1.
-> > >
-> >
-> > If we need to get some iova regions in the specified range, we need
-> > the entry.last field. For example, we can use [0, ULONG_MAX] to get
-> > the first overlapped iova region which might be [4096, 8192]. But in
-> > this function, we don't use VDUSE_IOTLB_GET_FD like this. We need to
-> > get the iova region including the specified iova.
->
-> I see, thanks for explaining!
->
-> > > > > > +             return addr + iova - entry.start;
-> > > > > > +     }
-> > > > > > +
-> > > > > > +- VDUSE_DEV_GET_FEATURES: Get the negotiated features
-> > > > >
-> > > > > Are these VIRTIO feature bits? Please explain how feature negotiation
-> > > > > works. There must be a way for userspace to report the device's
-> > > > > supported feature bits to the kernel.
-> > > > >
-> > > >
-> > > > Yes, these are VIRTIO feature bits. Userspace will specify the
-> > > > device's supported feature bits when creating a new VDUSE device with
-> > > > ioctl(VDUSE_CREATE_DEV).
-> > >
-> > > Can the VDUSE device influence feature bit negotiation? For example, if
-> > > the VDUSE virtio-blk device does not implement discard/write-zeroes, how
-> > > does QEMU or the guest find out about this?
-> > >
-> >
-> > There is a "features" field in struct vduse_dev_config which is used
-> > to do feature negotiation.
->
-> This approach is more restrictive than required by the VIRTIO
-> specification:
->
->   "The device SHOULD accept any valid subset of features the driver
->   accepts, otherwise it MUST fail to set the FEATURES_OK device status
->   bit when the driver writes it."
->
->   https://docs.oasis-open.org/virtio/virtio/v1.1/cs01/virtio-v1.1-cs01.html#x1-130002
->
-> The spec allows a device to reject certain subsets of features. For
-> example, if feature B depends on feature A and can only be enabled when
-> feature A is also enabled.
->
-> From your description I think VDUSE would accept feature B without
-> feature A since the device implementation has no opportunity to fail
-> negotiation with custom logic.
->
+On 03/07/2021 21:56, Dmitry Osipenko wrote:
+> 03.07.2021 22:34, Linus Torvalds пишет:
+>> On Sat, Jul 3, 2021 at 9:17 AM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>>>
+>>> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
+>>> tags/thermal-v5.14-rc1
+>>
+>> This does not build for me. And I suspect it never built in linux-next either.
+>>
+>> I get
+>>
+>>   ERROR: modpost: "tegra_fuse_readl"
+>> [drivers/thermal/tegra/tegra30-tsensor.ko] undefined!
+>>   ERROR: modpost: "tegra_fuse_readl"
+>> [drivers/thermal/tegra/tegra-soctherm.ko] undefined!
+>>   make[1]: *** [scripts/Makefile.modpost:150: modules-only.symvers] Error 1
+>>   make[1]: *** Deleting file 'modules-only.symvers'
+>>   make: *** [Makefile:1762: modules] Error 2
+>>
+>> and I think it's due to that commit 1f9c5936b10c
+>> ("thermal/drivers/tegra: Correct compile-testing of drivers") which
+>> quite sensibly tries to extend build coverage for the tegra thermal
+>> drivers, but that build coverage doesn't actually *work* outside the
+>> tegra world.
+>>
+>> That commit says "All Tegra thermal drivers support compile-testing",
+>> but clearly they stumble at the last hurdle.
+>>
+>> I made the decision to just unpull this, not because I couldn't fix
+>> it, but because if it was this untested, I don't want to worry about
+>> all the *other* code in there too.
+> 
+> It was tested in linux-next for about two weeks and it was a known
+> problem already [1], sorry again. The compile-testing depends on the
+> patch [2] that should come with the ARM32 PR. The linux-next was okay
+> because [2] got first into -next and I forgot about it. It will be fine
+> to defer these Tegra patches till the next release if this is the
+> easiest solution.
 
-Yes, we discussed it [1] before. So I'd like to re-introduce
-SET_STATUS messages so that the userspace can fail feature negotiation
-during setting FEATURES_OK status bit.
+My bad, I did a wrong decision assuming the ARM32 branch would be
+already there when pulling the thermal branch.
 
-[1]  https://lkml.org/lkml/2021/6/28/1587
+I'll remove the patches.
 
-> Ideally VDUSE would send a SET_FEATURES message to userspace, allowing
-> the device implementation full flexibility in which subsets of features
-> to accept.
->
-> This is a corner case. Many or maybe even all existing VIRTIO devices
-> don't need this flexibility, but I want to point out this limitation in
-> the VDUSE interface because it may cause issues in the future.
->
-> > > > > > +- VDUSE_DEV_UPDATE_CONFIG: Update the configuration space and inject a config interrupt
-> > > > >
-> > > > > Does this mean the contents of the configuration space are cached by
-> > > > > VDUSE?
-> > > >
-> > > > Yes, but the kernel will also store the same contents.
-> > > >
-> > > > > The downside is that the userspace code cannot generate the
-> > > > > contents on demand. Most devices doin't need to generate the contents
-> > > > > on demand, so I think this is okay but I had expected a different
-> > > > > interface:
-> > > > >
-> > > > > kernel->userspace VDUSE_DEV_GET_CONFIG
-> > > > > userspace->kernel VDUSE_DEV_INJECT_CONFIG_IRQ
-> > > > >
-> > > >
-> > > > The problem is how to handle the failure of VDUSE_DEV_GET_CONFIG. We
-> > > > will need lots of modification of virtio codes to support that. So to
-> > > > make it simple, we choose this way:
-> > > >
-> > > > userspace -> kernel VDUSE_DEV_SET_CONFIG
-> > > > userspace -> kernel VDUSE_DEV_INJECT_CONFIG_IRQ
-> > > >
-> > > > > I think you can leave it the way it is, but I wanted to mention this in
-> > > > > case someone thinks it's important to support generating the contents of
-> > > > > the configuration space on demand.
-> > > > >
-> > > >
-> > > > Sorry, I didn't get you here. Can't VDUSE_DEV_SET_CONFIG and
-> > > > VDUSE_DEV_INJECT_CONFIG_IRQ achieve that?
-> > >
-> > > If the contents of the configuration space change continuously, then the
-> > > VDUSE_DEV_SET_CONFIG approach is inefficient and might have race
-> > > conditions. For example, imagine a device where the driver can read a
-> > > timer from the configuration space. I think the VIRTIO device model
-> > > allows that although I'm not aware of any devices that do something like
-> > > it today. The problem is that VDUSE_DEV_SET_CONFIG would have to be
-> > > called frequently to keep the timer value updated even though the guest
-> > > driver probably isn't accessing it.
-> > >
-> >
-> > OK, I get you now. Since the VIRTIO specification says "Device
-> > configuration space is generally used for rarely-changing or
-> > initialization-time parameters". I assume the VDUSE_DEV_SET_CONFIG
-> > ioctl should not be called frequently.
->
-> The spec uses MUST and other terms to define the precise requirements.
-> Here the language (especially the word "generally") is weaker and means
-> there may be exceptions.
->
-> Another type of access that doesn't work with the VDUSE_DEV_SET_CONFIG
-> approach is reads that have side-effects. For example, imagine a field
-> containing an error code if the device encounters a problem unrelated to
-> a specific virtqueue request. Reading from this field resets the error
-> code to 0, saving the driver an extra configuration space write access
-> and possibly race conditions. It isn't possible to implement those
-> semantics suing VDUSE_DEV_SET_CONFIG. It's another corner case, but it
-> makes me think that the interface does not allow full VIRTIO semantics.
->
+Sorry for the inconvenience.
 
-Agreed. I will use VDUSE_DEV_GET_CONFIG in the next version. And to
-handle the message failure, I'm going to add a return value to
-virtio_config_ops.get() and virtio_cread_* API so that the error can
-be propagated to the virtio device driver. Then the virtio-blk device
-driver can be modified to handle that.
 
-Jason and Stefan, what do you think of this way?
 
-> > > What's worse is that there might be race conditions where other
-> > > driver->device operations are supposed to update the configuration space
-> > > but VDUSE_DEV_SET_CONFIG means that the VDUSE kernel code is caching an
-> > > outdated copy.
-> > >
-> >
-> > I'm not sure. Should the device and driver be able to access the same
-> > fields concurrently?
->
-> Yes. The VIRTIO spec has a generation count to handle multi-field
-> accesses so that consistency can be ensured:
-> https://docs.oasis-open.org/virtio/virtio/v1.1/cs01/virtio-v1.1-cs01.html#x1-180004
->
 
-I see.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-Thanks,
-Yongji
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
