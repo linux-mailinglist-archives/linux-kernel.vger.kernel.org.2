@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE15E3BB46A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CE23BB46C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhGDXfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
+        id S229989AbhGDXh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbhGDXfp (ORCPT
+        with ESMTP id S229549AbhGDXhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:35:45 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E835C061762
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 16:33:08 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id p21so7433456lfj.13
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 16:33:08 -0700 (PDT)
+        Sun, 4 Jul 2021 19:37:54 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2EEC061762
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 16:35:17 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id p21so7439306lfj.13
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 16:35:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gTm2A7ibgQ3e28ydh3Ded5QurMsV9SerKRCbFyiWwjg=;
-        b=MVSrijijak+qtCEaVC1btikMIX8cLj5ukVzkeWzNOYFTr1D47YslT6mVGEpn29hexe
-         00422XeuW41z+qelfKCHSm9lmJsrVkEy5uyK/pe6WV8CW8yHizX1ljLuQcXeSsPn6YPw
-         iCzen5uXIhqySzPQr90dmnz3cx4CRySVKpLg6I5mUk77Pu6YrL4QQl/iJsQGBqx/dUEo
-         /2ia9gYJN9gDavx9fiwdX2fVPsRKgiUj9lvSLuuxG3Cpe/LVHkG3NVFMc1Ycq5/gatZz
-         d8hqM6BG0Ll8Vdgn5BZtn+5j2pgdK1eEEd490na+fs2mg7sEuA0QU46ANkdjnmVNAayp
-         YCXA==
+        bh=lwMcQsym/BEPzMP2lbVzmNvoE0udGzyI6q7NPfbPtIc=;
+        b=WEsJAbGMCTNJpCXKUPPJBHuRCQPKS8NO5qmQnMl1WajTYa84eaq41xkNqXX3etfh/b
+         Ad1SmEp+4xqdqX8kmTQkSQk3fy9ekNTShj/T+viMDjMcxoebUpSs4Kk8d4k3eROTOp6y
+         TkDUqyCsRYFcQxf+vSZY2Xgwu0j/rhgh+GFrQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gTm2A7ibgQ3e28ydh3Ded5QurMsV9SerKRCbFyiWwjg=;
-        b=msU9KbvVnwms+7ETnl1sfzwhqtxpnx7ZVl8U5g6YLosUJiVxo7cJnJLZ1GlnAPk7VC
-         TaF2PU46wXHfR73VH0H9oyWu/GvnIHOeCOsg4cILG6crWXpL29ZbHfT/PQRfKUUElQ7F
-         sKok4b1uQe+UDlXCXJJKpTX1XD+WXHCA15Iu3oOAloGdu3EhYVdXXe50CueEPjhxJOoS
-         6L+O/uJggksV6uVlhMjEf5R+BUZo5/YoiO5+NWuLkJw7TLcC7G7UaUTte5ErYEiLk0rm
-         YbQUuiXtV/w7gr+hWZ/qtyCFHDTpjmkfgeua+0zqfriTvAnLLp6bO2nq3sfF7F1gJekT
-         P/Cw==
-X-Gm-Message-State: AOAM531Nk5sIxBZtRWXthPWQUR3ki2FIp/seveVYnYftmE+emE/13KJp
-        ehjqvWLroDCzKl7/yy0YQAdo41Q9nzLCIjUGUGLEHQ==
-X-Google-Smtp-Source: ABdhPJzHBVSn3DCxq/UwwLLJ3pQ6m6/ni3OVRb137FHXyXohsJpIBm/Ydm2kvT4Sp4+nKR7J4qfWPOR6ywfkhH5x0Co=
-X-Received: by 2002:ac2:55af:: with SMTP id y15mr8683741lfg.29.1625441586652;
- Sun, 04 Jul 2021 16:33:06 -0700 (PDT)
+        bh=lwMcQsym/BEPzMP2lbVzmNvoE0udGzyI6q7NPfbPtIc=;
+        b=JS6CGfLTX0sGN65PehTHnILo0XBr3lnMfaOJ3fRwIVYGJBHG4CaCSIJLqqVfaRAJSH
+         g3s1vfqefW274mzEVQm6vnT3ctSp23VAJDZwXGTGEotJPCj7LV+qotsIIHGOqylzymA2
+         KI7JqeY2w0Oh+9K4RzeoVyiNAP2qYsqc1Seq9UiIvTSMcF/BNlNpakof/WJ4c6kPm0sb
+         ucNINN4T/RbofacrSd1G06UXaDMN3ejKqJFfrj+g74Bl4rJ41tz+EutRBjBQL9s6rbxx
+         59QWUTQBStzKRsyPANIUowafgmA0r/nwHBX/uJD97/eig1MNMmFonm/hsSKibgJyBQ+4
+         m12A==
+X-Gm-Message-State: AOAM530hPB2uA9O9M/i728We2WpaS5x++Y4g7LJ9/ph8o6w4r1PTj3ma
+        rJguwAzjwuYlXYe9v0nr6vvsgcS7i6NsC+CC
+X-Google-Smtp-Source: ABdhPJwn9vJGJClp5F8ObAz1z6Q+m5A56HHjVAgVlMUMbGcWAFiixRcivrC0A5xWQixf7DE38RxsDQ==
+X-Received: by 2002:a05:6512:228a:: with SMTP id f10mr8204744lfu.222.1625441715715;
+        Sun, 04 Jul 2021 16:35:15 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id s5sm1277852ljj.18.2021.07.04.16.35.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Jul 2021 16:35:15 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id u25so22096205ljj.11
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 16:35:14 -0700 (PDT)
+X-Received: by 2002:a2e:50b:: with SMTP id 11mr9098341ljf.220.1625441714149;
+ Sun, 04 Jul 2021 16:35:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210628191440.2823024-1-clabbe@baylibre.com>
-In-Reply-To: <20210628191440.2823024-1-clabbe@baylibre.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 5 Jul 2021 01:32:55 +0200
-Message-ID: <CACRpkdayenaEWvXCvU9pwMVs7C1O=5US3LYAMxS1EVtDSTs_EA@mail.gmail.com>
-Subject: Re: [PATCH v2] dt_bindings: mtd: partitions: redboot: convert to YAML
-To:     Corentin Labbe <clabbe@baylibre.com>
-Cc:     =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Rob Herring <robh+dt@kernel.org>, Vignesh R <vigneshr@ti.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd@lists.infradead.org
+References: <20210704172948.GA1730187@roeck-us.net> <CAHk-=wheBFiejruhRqByt0ey1J8eU=ZUo9XBbm-ct8_xE_+B9A@mail.gmail.com>
+ <676ae33e-4e46-870f-5e22-462fc97959ed@roeck-us.net> <CAHk-=wj_AROgVZQ1=8mmYCXyu9JujGbNbxp+emGr5i3FagDayw@mail.gmail.com>
+ <19689998-9dfe-76a8-30d4-162648e04480@roeck-us.net> <CAHk-=wj0Q8R_3AxZO-34Gp2sEQAGUKhw7t6g4QtsnSxJTxb7WA@mail.gmail.com>
+ <03a15dbd-bdb9-1c72-a5cd-2e6a6d49af2b@roeck-us.net> <CAHk-=whD38FwDPc=gemuS6wNMDxO-PyVbtvcta3qXyO1ROc4EQ@mail.gmail.com>
+ <YOI6cES6C0vTS/DU@casper.infradead.org> <CAHk-=wjFOoSvSXfm0N_y0eHRM_C-Ki+-9Y7QzfLdJ9B8h1QFuw@mail.gmail.com>
+In-Reply-To: <CAHk-=wjFOoSvSXfm0N_y0eHRM_C-Ki+-9Y7QzfLdJ9B8h1QFuw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 4 Jul 2021 16:34:58 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh_L071F_-jRBLs--_0_g5Hmnr+Gt36kYqDdP_5j_UxMg@mail.gmail.com>
+Message-ID: <CAHk-=wh_L071F_-jRBLs--_0_g5Hmnr+Gt36kYqDdP_5j_UxMg@mail.gmail.com>
+Subject: Re: [PATCH] iov_iter: separate direction from flavour
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        David Howells <dhowells@redhat.com>,
+        Pavel Begunkov <asml.silence@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 9:14 PM Corentin Labbe <clabbe@baylibre.com> wrote:
-
-> Converts mtd/partitions/redboot-fis.txt to YAML.
+On Sun, Jul 4, 2021 at 3:53 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> If it had been easy to fix I'd have kept it, but this amount of pain
+> isn't worth it - I just don't want to add extra code for architectures
+> that do things wrong and don't really matter any more.
 
-Looks good to me! Thanks for doing this.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Ok, removed:
 
-Yours,
-Linus Walleij
+   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a180bd1d7e16173d965b263c5a536aa40afa2a2a
+
+where 99% of the work was writing that commit message ;)
+
+              Linus
