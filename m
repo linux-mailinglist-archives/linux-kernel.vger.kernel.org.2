@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2C63BB453
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562B33BB441
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235020AbhGDXZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234615AbhGDXQB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:16:01 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A81C0613E4;
-        Sun,  4 Jul 2021 16:12:09 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id u7so16702008ion.3;
-        Sun, 04 Jul 2021 16:12:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uzWB3AHLUJlLSAZZ+MVckrPCb57gpxCEJ5H6xaA3pgM=;
-        b=vK8bMK9DBHv1SP5pxbUtkWveCCrSoObzk1GLRdlxLWu6/SDfrVkeqFDYDh/tCrnshu
-         r2WAje5FXSusjfJk3Z0ZSN7hczhsCsR9EmG1WRYszBKms9dh4RlfWB5lv3sBb9uhWVcQ
-         HpGp1k9nl2SdlAw4OdTJGcE2NNB4FXxWQs5xtQvtL+YsjBSRedmXKJeydVETIBz/tQ1+
-         OmrP6QM7CM6E+fvi6nq+MUCgwUP+AWvys/pyitr5rwrbHQ1tBtblGGsKNFv4ktsHcT7S
-         yoMStje2lpnX/DqoJRrBqu+XxGpVyxk0ENHecwLTu0I/Rcl9fJ8SNjOaMudS0FZrcL1T
-         uy7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uzWB3AHLUJlLSAZZ+MVckrPCb57gpxCEJ5H6xaA3pgM=;
-        b=c5FLLyddT0SFLcD6XCjINKFVyQ/PcGONAcmVOQT/6nVUFqrVOfJWg86SmJ/x80L1zY
-         5G/mYHqE5J3r9AYV9Mmju7zhN7Cx+akhujpUPjK6lnm1vbMJ1NzLRuYtwvRCIBnnkJd8
-         EhlST2KXYM02u17/7vYezVD1HlHNLT5Io325X57vYdFW4WC1WMg+agVcPAucTOCo6hu7
-         xji2nNYB6EpZYthaWCNf2/7oXvbE4zQOhdAv0QHnMKhQJCp1BFREvyLcNDvLTjFKlEaB
-         N4Qyl9att03L4X2kq7y86vkTU3qS+K/y6+tykgBLviUWGmtnxQGee6ZxtDNVG9GlqEly
-         Uy1g==
-X-Gm-Message-State: AOAM5316g+WGJGjLCIO3ZJ7IprwxDYXqGoku30X120aGGv7DEBfnlopZ
-        5bpNSRanaUsZy4dc9gD0SlkJpn9fDG6guO5pyfM=
-X-Google-Smtp-Source: ABdhPJyWS8uFmP4Zn1lIgpyrEfgqdC1kj3MgjjkSOVFr2wDSyeXy0+JxFSbvIQqNFOG+GQ/umB9osbv8UxiyGXSNWj0=
-X-Received: by 2002:a05:6638:43:: with SMTP id a3mr9673706jap.41.1625440329412;
- Sun, 04 Jul 2021 16:12:09 -0700 (PDT)
+        id S234576AbhGDXYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:24:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234363AbhGDXPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:15:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75E10613F3;
+        Sun,  4 Jul 2021 23:12:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625440344;
+        bh=dOBmBQ+bXovITBVioBLH4/bROOrJQHliTPrYuifb34w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=W+MGEs7qUG34nZRBz2k1xBEMCnUQYrD0ubHFOm9hOwevG34u/wYjohxl5yvkDxZIm
+         ScbfFvo+mag+kIAR7ZRYbQqLDJVbMihHYqjq/vKdEMGl/a9RueEy0td2Z45Uwdhai0
+         CofauDhuvd18Z+vwXOJg3xQPIfQs4OGYHEODIuTwz7PND2K1Txb2f7QJE2c6sfkxsh
+         bolm69srnQXTGRIo1ZwWUVHvlRQDn0GQJ8VLlc2VyLHTcKipDFYCI9hVaEX3If7Cls
+         YuVxVWSkvpgPxFcCHBP2qAzNY9n/A5RAKsekXulzhcc0ANTroJjwnMw76jtZ85M1ub
+         So9IucTzEl/kA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jay Fang <f.fangjian@huawei.com>, Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4 01/15] spi: spi-topcliff-pch: Fix potential double free in pch_spi_process_messages()
+Date:   Sun,  4 Jul 2021 19:12:07 -0400
+Message-Id: <20210704231222.1492037-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210704202756.29107-1-ojeda@kernel.org>
-In-Reply-To: <20210704202756.29107-1-ojeda@kernel.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 5 Jul 2021 01:11:58 +0200
-Message-ID: <CANiq72nQq8Y8v9Pyf7JFq6Kf-+doNP+mHAFNzj_cSFBa3KwS5w@mail.gmail.com>
-Subject: Re: [PATCH 00/17] Rust support
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 10:28 PM <ojeda@kernel.org> wrote:
->
-> This is the patch series to add support for Rust as a second language
-> to the Linux kernel.
+From: Jay Fang <f.fangjian@huawei.com>
 
-In case somebody wonders: patch 07 was particularly big and lore does
-not seem to be showing it.
+[ Upstream commit 026a1dc1af52742c5897e64a3431445371a71871 ]
 
-Let me know if you want me to split it; otherwise I will ask
-Konstantin when he is back from holidays.
+pch_spi_set_tx() frees data->pkt_tx_buff on failure of kzalloc() for
+data->pkt_rx_buff, but its caller, pch_spi_process_messages(), will
+free data->pkt_tx_buff again. Set data->pkt_tx_buff to NULL after
+kfree() to avoid double free.
 
->   - Many folks that have reported issues, tested the project,
->     helped spread the word, joined discussions and contributed in
->     other ways! In no particular order: Chenguang Wang, Greg Morenz,
->     John Baublitz, Leah Leshchinsky, Caedin Cook, Liam Arzola,
->     Fabio Aiuto, Hanqing Zhao, Robin Randhawa, Michal Rostecki,
->     Wei Liu...
+Signed-off-by: Jay Fang <f.fangjian@huawei.com>
+Link: https://lore.kernel.org/r/1620284888-65215-1-git-send-email-f.fangjian@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/spi/spi-topcliff-pch.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-I forgot to mention Samantha Miller, Santosh Sivaraj, Vegard Nossum
-and Leandro Coutinho.
+diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
+index 9f30a4ab2004..66c170e799fc 100644
+--- a/drivers/spi/spi-topcliff-pch.c
++++ b/drivers/spi/spi-topcliff-pch.c
+@@ -589,8 +589,10 @@ static void pch_spi_set_tx(struct pch_spi_data *data, int *bpw)
+ 	data->pkt_tx_buff = kzalloc(size, GFP_KERNEL);
+ 	if (data->pkt_tx_buff != NULL) {
+ 		data->pkt_rx_buff = kzalloc(size, GFP_KERNEL);
+-		if (!data->pkt_rx_buff)
++		if (!data->pkt_rx_buff) {
+ 			kfree(data->pkt_tx_buff);
++			data->pkt_tx_buff = NULL;
++		}
+ 	}
+ 
+ 	if (!data->pkt_rx_buff) {
+-- 
+2.30.2
 
-My apologies!
-
-Cheers,
-Miguel
