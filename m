@@ -2,80 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3D73BAEA0
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 21:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B413BAEA5
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 22:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229722AbhGDTeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 15:34:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhGDTeF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 15:34:05 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234C1C061574
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 12:31:29 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id v14so2893611lfb.4
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 12:31:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=67ZRK+iff2RKAllKt0E/4Jm8+26+NCtg681EtA5JJgQ=;
-        b=doIHttyETiJif5MatFuoum9vTyW6qwXlA3VdVHRuVDftO7xNUzLCloaVsyerEYQRcL
-         VmwNSzja3qdTDHZCx7XD03rnTkt/ExU/f4LRY90bCCe/cWFriPQ0u1VNwqQxRsM7zHUA
-         vPxRTYVZwJB2Q6akMTldi2Qya/QFaD7C/db90=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=67ZRK+iff2RKAllKt0E/4Jm8+26+NCtg681EtA5JJgQ=;
-        b=K0hgDnsj7JtJ8cWAfe4pD1gpNm4vSRYCOSEgkQxcGcGxzzx9kcMpE2aOBz5SNRAJAf
-         M6W4yFEm/GV2lB1fOzacwDy0VGtHY1OeqibaCGMsCal1F252cicX7FtmP50bhEXfwFoy
-         USNwLNLxD4A/guPrAkwkej+s1FRMw5fUWMWtkiPW5zxWrwrZvRXu7mzqwbyrrew/Afxn
-         Di01zhFNeNq9YbN/I62nV0h6SUe6uFXxJ1uUWo1SDmdUGw/Z20drV6/9EKSWH+M5K1Pt
-         xb4Fk408gNBl8JDIhD5KlmhPVmXuD5P4kle/kdbPJbfKpQ9fNg96xN9dKsbObT/1Xesl
-         KG9Q==
-X-Gm-Message-State: AOAM530sYrwKmwfrtDrKLreaN+hkI6ttTgwjXux0mOhyWx3tNenesw1c
-        JsrV0gJtBYv9TA2oJUGvduD5VT6Luv99i3sH6UA=
-X-Google-Smtp-Source: ABdhPJyDjJWmeKsMf836p6x8MuQpTQ3bjN0cnH+F+lQHkEoonsYwkN2RZtQpKuO11Ahg/E/8tMwwdw==
-X-Received: by 2002:ac2:5c43:: with SMTP id s3mr7653689lfp.448.1625427087140;
-        Sun, 04 Jul 2021 12:31:27 -0700 (PDT)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id r20sm1141668ljk.10.2021.07.04.12.31.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Jul 2021 12:31:26 -0700 (PDT)
-Received: by mail-lj1-f171.google.com with SMTP id d25so21553798lji.7
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 12:31:26 -0700 (PDT)
-X-Received: by 2002:a2e:b553:: with SMTP id a19mr8179890ljn.507.1625427086306;
- Sun, 04 Jul 2021 12:31:26 -0700 (PDT)
+        id S229770AbhGDUAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 16:00:37 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:39568 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229614AbhGDUAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 16:00:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=kkGwSeTdihBY36VFXp/FW0w8u9NpfYN2EtWNHDIxCb4=; b=hj9idZMGWGuJ3OuEEx3R84ooYL
+        ZNgwUH5aH6cg/IZPHrfGZ84NRfkBRkqjskcuyHD7W9Ks9Ey/xMXLo9bVDP0YrbI/1+yhxbYgv5jjC
+        kstaa/KJ5OWOr3D5fCElI2wl0vBhrVMHP7A0gBI0Isafnc3PMqBnRJpVn3xURURd0SdI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1m08FU-00C9ez-Qc; Sun, 04 Jul 2021 21:57:52 +0200
+Date:   Sun, 4 Jul 2021 21:57:52 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "huangguangbin (A)" <huangguangbin2@huawei.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        salil.mehta@huawei.com, lipeng321@huawei.com
+Subject: Re: [PATCH net-next 3/3] net: hns3: add support for link diagnosis
+ info in debugfs
+Message-ID: <YOISwD+8ZoMpjP2m@lunn.ch>
+References: <1624545405-37050-1-git-send-email-huangguangbin2@huawei.com>
+ <1624545405-37050-4-git-send-email-huangguangbin2@huawei.com>
+ <20210624122517.7c8cb329@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <08395721-4ca1-9913-19fd-4d8ec7e41e4b@huawei.com>
+ <20210701085447.2270b1df@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <a5d42bf6-d71f-978e-b9ae-6b04f072d988@huawei.com>
 MIME-Version: 1.0
-References: <20210704172912.GA2969733@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210704172912.GA2969733@paulmck-ThinkPad-P17-Gen-1>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 4 Jul 2021 12:31:10 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wip1WgNAi-MfVUj0R+-BGch62dmJKdyWENpYw_xEq8GNg@mail.gmail.com>
-Message-ID: <CAHk-=wip1WgNAi-MfVUj0R+-BGch62dmJKdyWENpYw_xEq8GNg@mail.gmail.com>
-Subject: Re: [GIT PULL] KCSAN changes for v5.14
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a5d42bf6-d71f-978e-b9ae-6b04f072d988@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 10:29 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> Please pull the latest KCSAN tree from:
+> > > Hi Jakub, I have a question to consult you.
+> > > Some fault information in our patch are not existed in current ethtool extended
+> > > link states, for examples:
+> > > "Serdes reference clock lost"
+> > > "Serdes analog loss of signal"
+> > > "SFP tx is disabled"
+> > > "PHY power down"
+> > 
+> > Why would the PHY be powered down if user requested port to be up?
+> > 
+> In the case of other user may use MDIO tool to write PHY register directly to make
+> PHY power down, if link state can display this information, I think it is helpful.
 
-I've pulled this, but I'd _really_ like an overview of the changes for
-the merge log and my own perusal.
+If the user directly writes to PHY registers, they should expect bad
+things to happen. They can do a lot more than power the PHY down. They
+could configure it into loopback mode, turn off autoneg and force a
+mode which is compatible with the peer, etc.
 
-Even if it's just something "Minor bug fixes and cleanups" because
-there's nothing in particular that stands out, that's the kind of
-thing I want to be able to then document for the merge.
+I don't think you need to tell the user they have pointed a foot gun
+at their feet and pulled the trigger.
 
-             Linus
+   Andrew
