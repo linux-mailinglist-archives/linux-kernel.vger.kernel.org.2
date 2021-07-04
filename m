@@ -2,151 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203CC3BAD18
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 15:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F633BAD1D
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 15:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhGDNbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 09:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32794 "EHLO
+        id S229642AbhGDNgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 09:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhGDNbW (ORCPT
+        with ESMTP id S229499AbhGDNgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 09:31:22 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1298C061574;
-        Sun,  4 Jul 2021 06:28:45 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id a18so27417306lfs.10;
-        Sun, 04 Jul 2021 06:28:45 -0700 (PDT)
+        Sun, 4 Jul 2021 09:36:11 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11AEDC061574;
+        Sun,  4 Jul 2021 06:33:36 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id y2so846535pff.11;
+        Sun, 04 Jul 2021 06:33:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3xMqfh8elzx+SYmOtHOTYhmYFQAeBtG99tvp+qiX5Jo=;
-        b=jYbcnxvP31Qj75aB9JOeCnvZKrNSzfy0h9EOykOMcW6mLcAYyVVY2yGFOC4tBzVdP2
-         IiK5b3jw7PzBwz5lOLdNknJpXThIMJwWi6mEf++e90AOJ0o/SrKtCc9C4H2KzFxGXHms
-         z/ELMQa2U6PMUdoFYXlgoUrZhreQiHmrKn5rTEmEWyobaQAOh1bwdbeIvuQAbWjbe69b
-         9By3SBU6ejwflphI6zqLh2JSVDP7ll/of9y8mxWQ/vHQTEPutDgf2g3bxxAoQ7yAk+Fk
-         loj4lp+JUP/+BcGOLkpckIDX509+EPu3QUz9cri53OGAOdhzku/ln0zUNklSC1XAs7D3
-         scNQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kmTHLKYe7uN/HHD833T9elNqKTkZ445a6iSqpPqctYI=;
+        b=WmkvO46u0eH3efciHLO00/eGk4YxD9EiZzsUVUhJi+zF8htkowH3u5rWRteWzW4Y4O
+         jLaRbQh4E0O3kR1mumNtQwRngGslHtSFT56Rr/R0ONOJ5rhgle3ELXnK+JA4jO3xjEUV
+         wPLaGLpRCRKr8l5Wjkp4tUAxCyFvIKOovMWjhVVHqNNP8nOg6xrE1/9ZanwGPygtZ5N/
+         GzCH3wpclWgXN0b5hPSdK0GDumopXYYo52AQCIhHsxJMNTiQrWUBBA3ObMqBfzMyJlDb
+         PRn09Wb2d6UL83vIg/04RuMIkW7R/JjB3nbJUvC2amWsSYKPPyiBQHYIEIDbFi2XRCut
+         rcrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3xMqfh8elzx+SYmOtHOTYhmYFQAeBtG99tvp+qiX5Jo=;
-        b=N+od7K0Q8A8w4XFWg0psP+o5MWEWkRT6UwB4YMP/GdxtHupyYBnxUlTNq6KhqOjPbL
-         q1rhwFbdrarpsK1H6o1VCw6XPGpVkYIdwWeWPTLpa3/nfYnDGk10p2rW/MT2CZNXcS5i
-         sdFFnYo+PKlil7a1NcyyZjv0pjM2mo81PcOmzcG9K08RUDJUEY6XBvLYT/+fYy6X9/49
-         b2SbYbc1nu9VUzT9R7bt/nQWHwwtddwDKbnCWTj+9L0vCxXm5R5cVBHC4ky1BmfJpf5G
-         JlhEyEb6rbWzvBUDcAVbFInkkKNZWn8CxsztBu786m9LglZqmtHLG8S37gPB2gtrMXx5
-         mEOA==
-X-Gm-Message-State: AOAM531K5VP2HIkmDqBBxYFEEm+qTPJzm+HnzT/H3UwVUvotEDWiC9Lj
-        H31UCYD0AhBB4GmFTIXiHc8=
-X-Google-Smtp-Source: ABdhPJxQBShpmQLpbitDF2jnVCdtnHGsPXxkjEcJJsou5JLYbEPrYo+eVOX+DkasN2VMi8XF0CL9lA==
-X-Received: by 2002:a05:6512:419:: with SMTP id u25mr6985338lfk.600.1625405323929;
-        Sun, 04 Jul 2021 06:28:43 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
-        by smtp.googlemail.com with ESMTPSA id x21sm1051682ljh.91.2021.07.04.06.28.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Jul 2021 06:28:43 -0700 (PDT)
-Subject: Re: [GIT PULL] thermal for v5.14-rc1
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Linux PM mailing list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.chunyan@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Rajeshwari Ravindra Kamble <rkambl@codeaurora.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Finley Xiao <finley.xiao@rock-chips.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <7a9ac752-2c1a-b05f-c5bd-9049c0bdd54e@linaro.org>
- <CAHk-=wgZzeaZb0ByL+zPV1grizuxw2nAnmzU49S7pzV7sPS1Hg@mail.gmail.com>
- <67ce84e6-f1a5-7796-805d-6482f24b1490@gmail.com>
- <e6ac56a5-0b7e-bfbf-7e98-8bc3f39190fd@linaro.org>
- <aa250ea4-7871-dd39-dbf6-bffa6e732919@gmail.com>
- <17c8ce98-dc54-d439-95c8-318edb91932c@linaro.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c1afb772-0cab-3797-f0fb-af74c188c8bb@gmail.com>
-Date:   Sun, 4 Jul 2021 16:28:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kmTHLKYe7uN/HHD833T9elNqKTkZ445a6iSqpPqctYI=;
+        b=Iezc0F36b4gWW+UjKncmf9+Ak6shMdhQ92kfbCqC3qeqwxzPU1p+TARdLRKm1smwfz
+         Qo/3gm3ywm3SXegt0cCDGgIwYKBr5kxiK2tRL6Wa8NgDrC8CdMoLBCnMkSdvGzAU/DQp
+         GdpQAoT/ZPIycZT33YSveLZLIlEcefB6+1+0Ba7F/Fx0Stss7Fssw+fCUORz8R14FLgb
+         t5Tenb5HvXRFkxtzX4oH/aLTxmPlc+1GRWV/A49/habApvKs8kixjIYijbJDRDnjnOA7
+         PVlyoPTc6vTr7DkwLgLWlSRcSw58eIsnH5BOraI1CpAjY3Fwb06h24I0mCNqZSqrgx8J
+         5A/g==
+X-Gm-Message-State: AOAM530yO6SaW46Mj0Dk0Gbh13LGSJkDwPMmE2X88rhxXI0BAU0JIQBA
+        Ol2FO5jU7kjwQ46tsx2lEh0kgp3YqrI=
+X-Google-Smtp-Source: ABdhPJz0udZB2GaWgVkA667w2T9OAr9Ou+h7u+QEeVNoOzuY405q+y4T4O+jlAoQ/+l/JVCs+Y5cgg==
+X-Received: by 2002:a63:5912:: with SMTP id n18mr10513858pgb.108.1625405615365;
+        Sun, 04 Jul 2021 06:33:35 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:35:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id e1sm9572761pfd.16.2021.07.04.06.33.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Jul 2021 06:33:34 -0700 (PDT)
+Date:   Sun, 4 Jul 2021 06:33:31 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Yangbo Lu <yangbo.lu@nxp.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, mptcp@lists.linux.dev,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Rui Sousa <rui.sousa@nxp.com>,
+        Sebastien Laveze <sebastien.laveze@nxp.com>
+Subject: Re: [net-next, v5, 08/11] net: sock: extend SO_TIMESTAMPING for PHC
+ binding
+Message-ID: <20210704133331.GA4268@hoboy.vegasvil.org>
+References: <20210630081202.4423-1-yangbo.lu@nxp.com>
+ <20210630081202.4423-9-yangbo.lu@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <17c8ce98-dc54-d439-95c8-318edb91932c@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210630081202.4423-9-yangbo.lu@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-04.07.2021 16:19, Daniel Lezcano пишет:
-> On 04/07/2021 14:04, Dmitry Osipenko wrote:
->> 04.07.2021 12:51, Daniel Lezcano пишет:
->>> On 03/07/2021 21:56, Dmitry Osipenko wrote:
->>>> 03.07.2021 22:34, Linus Torvalds пишет:
->>>>> On Sat, Jul 3, 2021 at 9:17 AM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->>>>>>
->>>>>> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
->>>>>> tags/thermal-v5.14-rc1
->>>>>
->>>>> This does not build for me. And I suspect it never built in linux-next either.
->>>>>
->>>>> I get
->>>>>
->>>>>   ERROR: modpost: "tegra_fuse_readl"
->>>>> [drivers/thermal/tegra/tegra30-tsensor.ko] undefined!
->>>>>   ERROR: modpost: "tegra_fuse_readl"
->>>>> [drivers/thermal/tegra/tegra-soctherm.ko] undefined!
->>>>>   make[1]: *** [scripts/Makefile.modpost:150: modules-only.symvers] Error 1
->>>>>   make[1]: *** Deleting file 'modules-only.symvers'
->>>>>   make: *** [Makefile:1762: modules] Error 2
->>>>>
->>>>> and I think it's due to that commit 1f9c5936b10c
->>>>> ("thermal/drivers/tegra: Correct compile-testing of drivers") which
->>>>> quite sensibly tries to extend build coverage for the tegra thermal
->>>>> drivers, but that build coverage doesn't actually *work* outside the
->>>>> tegra world.
->>>>>
->>>>> That commit says "All Tegra thermal drivers support compile-testing",
->>>>> but clearly they stumble at the last hurdle.
->>>>>
->>>>> I made the decision to just unpull this, not because I couldn't fix
->>>>> it, but because if it was this untested, I don't want to worry about
->>>>> all the *other* code in there too.
->>>>
->>>> It was tested in linux-next for about two weeks and it was a known
->>>> problem already [1], sorry again. The compile-testing depends on the
->>>> patch [2] that should come with the ARM32 PR. The linux-next was okay
->>>> because [2] got first into -next and I forgot about it. It will be fine
->>>> to defer these Tegra patches till the next release if this is the
->>>> easiest solution.
->>>
->>> My bad, I did a wrong decision assuming the ARM32 branch would be
->>> already there when pulling the thermal branch.
->>>
->>> I'll remove the patches.
->>>
->>> Sorry for the inconvenience.
->>
->> Daniel, please let me know if I will need to resend the thermal patches
->> for 5.15.
+On Wed, Jun 30, 2021 at 04:11:59PM +0800, Yangbo Lu wrote:
+> Since PTP virtual clock support is added, there can be
+> several PTP virtual clocks based on one PTP physical
+> clock for timestamping.
 > 
-> I'll drop:
-> 
-> "thermal/drivers/tegra: Add driver for Tegra30 thermal sensor"
-> "thermal/drivers/tegra: Correct compile-testing of drivers"
-> 
-> but keep the bindings.
-> 
-> It won't be necessary to resend them.
+> This patch is to extend SO_TIMESTAMPING API to support
+> PHC (PTP Hardware Clock) binding by adding a new flag
+> SOF_TIMESTAMPING_BIND_PHC. When PTP virtual clocks are
+> in use, user space can configure to bind one for
+> timestamping, but PTP physical clock is not supported
+> and not needed to bind.
 
-Great, thank you!
+Would it not be better to simply bind automatically?
 
+Like this pseudo code:
+
+	if (hw_timestamping_requested() && interface_is_vclock()) {
+		bind_vclock();
+	}
+
+It would be great to avoid forcing user space to use a new option.
+
+Especially because NOT setting the option makes no sense.  Or maybe
+there is a use case for omitting the option?
+
+
+Thoughts?
+
+Thanks,
+Richard
