@@ -2,175 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C44923BAC71
+	by mail.lfdr.de (Postfix) with ESMTP id 06AA93BAC6F
 	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 11:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhGDJ04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 05:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhGDJ0z (ORCPT
+        id S229731AbhGDJZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 05:25:46 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:23483 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhGDJZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 05:26:55 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2F7C061762;
-        Sun,  4 Jul 2021 02:24:20 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id g22so15071105pgl.7;
-        Sun, 04 Jul 2021 02:24:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=ctPbpBSME4Wk2MPaV81CnmhuA+m0hProI1IntXJRC/o=;
-        b=rFQn17qifWzHT2JAc5EbNAAM5gUKEO3zkypk6Ikt1di5LdTGaBOaYPKPvPYQKHCKvh
-         y56kp4phrKzHPrRjNOFchg6oDbSLuucuLGnThcnPOBwnQLfmv5SxBbIdW+AOKPGHUKuS
-         S4onIsh8ADY8K++Nutiq9F0MKhrqgtlkemT/9ZUBFprckKPxcrA4bHt6ooZ8qEgaDlf5
-         2UcjMPB01bS74VVM4h/96TJLCBc9QyKAoAXziLm5PzWAX0AUtSx4GaKCboXToMcUu5Wh
-         r8eKWkoUJt5NrPF+ndwy6gIOdtd/bF0gfwWCmSRfSus8Z4AcFv5KJlXF0mOcjQvdqavb
-         19xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ctPbpBSME4Wk2MPaV81CnmhuA+m0hProI1IntXJRC/o=;
-        b=S2Jw/mXQpHJAd/ozXbuNqPOPtAkDXkS1s75lFTR0QKbJJ9ERz7pQjlnk+gWw2PlKzG
-         ISM4OJs7D2PmtoIrojOoPHr1EUkvIsve3d4Vm0AgWrwEG6clT3B7/AWJeqCbTl/36h+G
-         mYKRWQKNy10F5DKLKqEmncQl6SuABpE9DPlZ4v/dJo7tqKlhf2mgGwa8Gq48gwguK3Np
-         wYBl+8gsv8lOnllM+TaOxVnj5ZC6FRVgMAKuYWujXwmo6Rux0LKd6Zwg3Clxpz3GBoRF
-         EtD9yelJky8Kk7xjarWU0TcxFtajIS8QUEdk02lvNw7pGkf3ZwtNj9JJDhM8QEkYSbKN
-         1MNw==
-X-Gm-Message-State: AOAM533/7hL/Bv4m+9Skxrc0e7MP8KF5BGQ5RZjg+NHkfBmqeaTBokKF
-        HkgHUVtWYz+4S9V5HFNA5Q==
-X-Google-Smtp-Source: ABdhPJw95OVUnYnd1Oz/CSbTSFEictKjldcOyF0a5XSptSRDTQuHsji/68y46TdnR9WhtN5yeiDMMA==
-X-Received: by 2002:a65:6a01:: with SMTP id m1mr9640133pgu.201.1625390660296;
-        Sun, 04 Jul 2021 02:24:20 -0700 (PDT)
-Received: from localhost.localdomain ([121.35.181.130])
-        by smtp.gmail.com with ESMTPSA id v13sm18136526pja.44.2021.07.04.02.24.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jul 2021 02:24:20 -0700 (PDT)
-From:   fengzheng923@gmail.com
-To:     fengzheng923@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        robh+dt@kernel.org, mripard@kernel.org, wens@csie.org,
-        jernej.skrabec@gmail.com
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/2] ASoC: sun50i-dmic: dt-bindings: add DT bindings for DMIC controller
-Date:   Sun,  4 Jul 2021 05:22:51 -0400
-Message-Id: <20210704092251.40734-1-fengzheng923@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 4 Jul 2021 05:25:44 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id E560876E8A;
+        Sun,  4 Jul 2021 12:23:06 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1625390587;
+        bh=o+Pyhh8IrgTRMoEQsSE1ouzcm6woOGaG9m4KK5wD9Qk=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=AbkCn1gli6ONwiVfSL59cjAr8yQ2mJiBt2I3hj3PN/6FeoCz6PFQIBwHTYZBLoK4+
+         OpOnyCyHXdK6lk/RTe2pEyBRpLrrLolPHhz2awC/qq7w4X7GEToKVPboaEAR5CgF2X
+         /0xHqFMBT08FZiLBTleFmfRb5SCI3dICa100v4ZTLd1Nktet/A+d8AVGXY2DahHIIg
+         Nalud5m5aJZqCcZPmStRtqYTMgqi57OaY38UqKeYfffDDNUgo+YfP7OGbpjVdAmo6w
+         ylg1U3sLiJHQ01V7bU0NPol0hYRa5dxql6nCR2AzZbVxJdPfPCa89W64N9ey8iBhXM
+         1FckERhw0gy6w==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 2A30676EB4;
+        Sun,  4 Jul 2021 12:23:06 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Sun, 4
+ Jul 2021 12:23:04 +0300
+Subject: Re: [RFC PATCH v2 0/6] Improve SOCK_SEQPACKET receive logic
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210704080820.88746-1-arseny.krasnov@kaspersky.com>
+ <20210704042843-mutt-send-email-mst@kernel.org>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <b427dee7-5c1b-9686-9004-05fa05d45b28@kaspersky.com>
+Date:   Sun, 4 Jul 2021 12:23:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210704042843-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.129]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/04/2021 09:10:22
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164820 [Jul 03 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_exist}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/04/2021 09:12:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 04.07.2021 5:50:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/07/04 08:16:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/04 01:03:00 #16855183
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ban Tao <fengzheng923@gmail.com>
 
-DT binding documentation for this new ASoC driver.
+On 04.07.2021 11:30, Michael S. Tsirkin wrote:
+> On Sun, Jul 04, 2021 at 11:08:13AM +0300, Arseny Krasnov wrote:
+>> 	This patchset modifies receive logic for SOCK_SEQPACKET.
+>> Difference between current implementation and this version is that
+>> now reader is woken up when there is at least one RW packet in rx
+>> queue of socket and data is copied to user's buffer, while merged
+>> approach wake up user only when whole message is received and kept
+>> in queue. New implementation has several advantages:
+>>  1) There is no limit for message length. Merged approach requires
+>>     that length must be smaller than 'peer_buf_alloc', otherwise
+>>     transmission will stuck.
+>>  2) There is no need to keep whole message in queue, thus no
+>>     'kmalloc()' memory will be wasted until EOR is received.
+>>
+>>     Also new approach has some feature: as fragments of message
+>> are copied until EOR is received, it is possible that part of
+>> message will be already in user's buffer, while rest of message
+>> still not received. And if user will be interrupted by signal or
+>> timeout with part of message in buffer, it will exit receive loop,
+>> leaving rest of message in queue. To solve this problem special
+>> callback was added to transport: it is called when user was forced
+>> to leave exit loop and tells transport to drop any packet until
+>> EOR met.
+> Sorry about commenting late in the game.  I'm a bit lost
+>
+>
+> SOCK_SEQPACKET
+> Provides sequenced, reliable, bidirectional, connection-mode transmission paths for records. A record can be sent using one or more output operations and received using one or more input operations, but a single operation never transfers part of more than one record. Record boundaries are visible to the receiver via the MSG_EOR flag.
+>
+> it's supposed to be reliable - how is it legal to drop packets?
 
-Signed-off-by: Ban Tao <fengzheng923@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Sorry, seems i need to rephrase description. "Packet" here means fragment of record(message) at transport
 
----
-v1->v2:
-1.Fix some build errors.
----
-v2->v3:
-1.Fix some build errors.
----
-v3->v4:
-1.None.
----
-v4->v5:
-1.Add interrupt.
-2.Keep clock and reset index.
----
- .../sound/allwinner,sun50i-h6-dmic.yaml       | 79 +++++++++++++++++++
- 1 file changed, 79 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
+layer. As this is SEQPACKET mode, receiver could get only whole message or error, so if only several fragments
 
-diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
-new file mode 100644
-index 000000000000..0cfc07f369bd
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
-@@ -0,0 +1,79 @@
-+# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/allwinner,sun50i-h6-dmic.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Allwinner H6 DMIC Device Tree Bindings
-+
-+maintainers:
-+  - Ban Tao <fengzheng923@gmail.com>
-+
-+properties:
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  compatible:
-+    const: allwinner,sun50i-h6-dmic
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: Bus Clock
-+      - description: Module Clock
-+
-+  clock-names:
-+    items:
-+      - const: bus
-+      - const: mod
-+
-+  dmas:
-+    items:
-+      - description: RX DMA Channel
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+
-+  resets:
-+    maxItems: 1
-+
-+required:
-+  - "#sound-dai-cells"
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - dmas
-+  - dma-names
-+  - resets
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    #include <dt-bindings/clock/sun50i-h6-ccu.h>
-+    #include <dt-bindings/reset/sun50i-h6-ccu.h>
-+
-+    dmic: dmic@5095000 {
-+      #sound-dai-cells = <0>;
-+      compatible = "allwinner,sun50i-h6-dmic";
-+      reg = <0x05095000 0x400>;
-+      interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
-+      clocks = <&ccu CLK_BUS_DMIC>, <&ccu CLK_DMIC>;
-+      clock-names = "bus", "mod";
-+      dmas = <&dma 7>;
-+      dma-names = "rx";
-+      resets = <&ccu RST_BUS_DMIC>;
-+    };
-+
-+...
--- 
-2.17.1
+of message was copied (if signal received for example) we can't return it to user - it breaks SEQPACKET sense. I think,
 
+in this case we can drop rest of record's fragments legally.
+
+
+Thank You
+
+>
+>
+>> When EOR is found, this mode is disabled and normal packet
+>> processing started. Note, that when 'drop until EOR' mode is on,
+>> incoming packets still inserted in queue, reader will be woken up,
+>> tries to copy data, but nothing will be copied until EOR found.
+>> It was possible to drain such unneeded packets it rx work without
+>> kicking user, but implemented way is simplest. Anyway, i think
+>> such cases are rare.
+>
+>>     New test also added - it tries to copy to invalid user's
+>> buffer.
+>>
+>> Arseny Krasnov (16):
+>>  af_vsock/virtio/vsock: change seqpacket receive logic
+>>  af_vsock/virtio/vsock: remove 'seqpacket_has_data' callback
+>>  virtio/vsock: remove 'msg_count' based logic
+>>  af_vsock/virtio/vsock: add 'seqpacket_drop()' callback
+>>  virtio/vsock: remove record size limit for SEQPACKET
+>>  vsock_test: SEQPACKET read to broken buffer
+>>
+>>  drivers/vhost/vsock.c                   |   2 +-
+>>  include/linux/virtio_vsock.h            |   7 +-
+>>  include/net/af_vsock.h                  |   4 +-
+>>  net/vmw_vsock/af_vsock.c                |  44 ++++----
+>>  net/vmw_vsock/virtio_transport.c        |   2 +-
+>>  net/vmw_vsock/virtio_transport_common.c | 103 ++++++++-----------
+>>  net/vmw_vsock/vsock_loopback.c          |   2 +-
+>>  tools/testing/vsock/vsock_test.c        | 120 ++++++++++++++++++++++
+>>  8 files changed, 193 insertions(+), 91 deletions(-)
+>>
+>>  v1 -> v2:
+>>  Patches reordered and reorganized.
+>>
+>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>> ---
+>>  cv.txt | 0
+>>  1 file changed, 0 insertions(+), 0 deletions(-)
+>>  create mode 100644 cv.txt
+>>
+>> diff --git a/cv.txt b/cv.txt
+>> new file mode 100644
+>> index 000000000000..e69de29bb2d1
+>> -- 
+>> 2.25.1
+>
