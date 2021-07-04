@@ -2,187 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D6A3BAE0D
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 19:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4B13BAE18
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 19:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbhGDRaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 13:30:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229575AbhGDRaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 13:30:20 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACFD0613B1;
-        Sun,  4 Jul 2021 17:27:42 +0000 (UTC)
-Date:   Sun, 4 Jul 2021 18:30:07 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] iio: proximity: vcnl3020: add threshold options
-Message-ID: <20210704183007.67e27890@jic23-huawei>
-In-Reply-To: <20210621143051.200800-3-i.mikhaylov@yadro.com>
-References: <20210621143051.200800-1-i.mikhaylov@yadro.com>
-        <20210621143051.200800-3-i.mikhaylov@yadro.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229774AbhGDRfu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 4 Jul 2021 13:35:50 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:56605 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229575AbhGDRft (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 13:35:49 -0400
+Received: from smtpclient.apple (p5b3d2eb8.dip0.t-ipconnect.de [91.61.46.184])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 81438CECCC;
+        Sun,  4 Jul 2021 19:33:11 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH] bluetooth/virtio_bt: Fix dereference null return value
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210704145504.24756-1-john.wood@gmx.com>
+Date:   Sun, 4 Jul 2021 19:33:10 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        stable <stable@vger.kernel.org>,
+        Bluetooth Kernel Mailing List 
+        <linux-bluetooth@vger.kernel.org>, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <EE77EBBE-EB8A-475D-A1DA-BC35DD14B3E0@holtmann.org>
+References: <20210704145504.24756-1-john.wood@gmx.com>
+To:     John Wood <john.wood@gmx.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Jun 2021 17:30:51 +0300
-Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
+Hi John,
 
-> Add the low/high threshold options.
+> The alloc_skb function returns NULL on error. So, test this case and
+> avoid a NULL dereference (skb->data).
 > 
-> Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
-Hi,
-A few comments inline.
-
-Thanks,
-
-Jonathan
-
+> Addresses-Coverity-ID: 1484718 ("Dereference null return value")
+> Fixes: afd2daa26c7ab ("Bluetooth: Add support for virtio transport driver")
+> Signed-off-by: John Wood <john.wood@gmx.com>
 > ---
->  drivers/iio/proximity/vcnl3020.c | 95 ++++++++++++++++++++++++++++++++
->  1 file changed, 95 insertions(+)
+> drivers/bluetooth/virtio_bt.c | 2 ++
+> 1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/iio/proximity/vcnl3020.c b/drivers/iio/proximity/vcnl3020.c
-> index 2e65127d5359..f3320de014e4 100644
-> --- a/drivers/iio/proximity/vcnl3020.c
-> +++ b/drivers/iio/proximity/vcnl3020.c
-> @@ -255,6 +255,91 @@ static bool vcnl3020_is_thr_enabled(struct vcnl3020_data *data)
->  	return !!(icr & VCNL_ICR_THRES_EN);
->  }
->  
-> +static int vcnl3020_read_event(struct iio_dev *indio_dev,
-> +			       const struct iio_chan_spec *chan,
-> +			       enum iio_event_type type,
-> +			       enum iio_event_direction dir,
-> +			       enum iio_event_info info,
-> +			       int *val, int *val2)
-> +{
-> +	int rc;
-> +	struct vcnl3020_data *data = iio_priv(indio_dev);
-> +	__be16 res;
-> +
-> +	switch (info) {
-> +	case IIO_EV_INFO_VALUE:
-> +		switch (dir) {
-> +		case IIO_EV_DIR_RISING:
-> +			rc = regmap_bulk_read(data->regmap, VCNL_PS_HI_THR_HI,
-> +					      &res, sizeof(res));
-> +			if (rc < 0)
-> +				return rc;
-> +			*val = be16_to_cpu(res);
-> +			return IIO_VAL_INT;
-> +		case IIO_EV_DIR_FALLING:
-> +			rc = regmap_bulk_read(data->regmap, VCNL_PS_LO_THR_HI,
-> +					      &res, sizeof(res));
-> +			if (rc < 0)
-> +				return rc;
-> +			*val = be16_to_cpu(res);
-> +			return IIO_VAL_INT;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int vcnl3020_write_event(struct iio_dev *indio_dev,
-> +				const struct iio_chan_spec *chan,
-> +				enum iio_event_type type,
-> +				enum iio_event_direction dir,
-> +				enum iio_event_info info,
-> +				int val, int val2)
-> +{
-> +	int rc;
-> +	__be16 buf;
-> +	struct vcnl3020_data *data = iio_priv(indio_dev);
-> +
-> +	rc = iio_device_claim_direct_mode(indio_dev);
-Why? 
+> diff --git a/drivers/bluetooth/virtio_bt.c b/drivers/bluetooth/virtio_bt.c
+> index c804db7e90f8..5f82574236c0 100644
+> --- a/drivers/bluetooth/virtio_bt.c
+> +++ b/drivers/bluetooth/virtio_bt.c
+> @@ -34,6 +34,8 @@ static int virtbt_add_inbuf(struct virtio_bluetooth *vbt)
+> 	int err;
+> 
+> 	skb = alloc_skb(1000, GFP_KERNEL);
+> +	if (!skb)
+> +		return -ENOMEM;
+> 	sg_init_one(sg, skb->data, 1000);
 
-The intent of that function is to protect against mode transitions, so we
-can't move from sysfs type captures to interrupt driven ones whilst
-a sysfs read is in progress.   That's not the case here (or in the existing
-driver where this is used).   So I think what you really want is a locally
-defined lock that allows you to ensure device state is consistent if
-you have any read / modify / write cycles.
+this is already fixed.
 
-For these particular registers I'm not even seeing that. Regmap has it's
-own locking to avoid concurrency issues inside it's functions, so I'm not
-sure you need a lock at all.
+Author: Colin Ian King <colin.king@canonical.com>
+Date:   Fri Apr 9 17:53:14 2021 +0100
 
-> +	if (rc)
-> +		return rc;
-> +
-> +	switch (info) {
-> +	case IIO_EV_INFO_VALUE:
-> +		switch (dir) {
-> +		case IIO_EV_DIR_RISING:
-> +			/* 16 bit word/ low * high */
-> +			buf = cpu_to_be16(val);
-> +			rc = regmap_bulk_write(data->regmap, VCNL_PS_HI_THR_HI,
-> +					       &buf, sizeof(buf));
-> +			if (rc < 0)
-> +				goto out_release_direct_mode;
-> +			rc = IIO_VAL_INT;
-> +			goto out_release_direct_mode;
-> +		case IIO_EV_DIR_FALLING:
-> +			buf = cpu_to_be16(val);
-> +			rc = regmap_bulk_write(data->regmap, VCNL_PS_LO_THR_HI,
-> +					       &buf, sizeof(buf));
-> +			if (rc < 0)
-> +				goto out_release_direct_mode;
-> +			rc = IIO_VAL_INT;
-> +			goto out_release_direct_mode;
-> +		default:
-> +			rc = -EINVAL;
-> +			goto out_release_direct_mode;
-> +		}
-> +	default:
-> +		rc = -EINVAL;
-> +		goto out_release_direct_mode;
-> +	}
-> +out_release_direct_mode:
-> +	iio_device_release_direct_mode(indio_dev);
-> +
-> +	return rc;
-> +}
-> +
->  static int vcnl3020_enable_periodic(struct iio_dev *indio_dev,
->  				    struct vcnl3020_data *data)
->  {
-> @@ -356,6 +441,14 @@ static int vcnl3020_read_event_config(struct iio_dev *indio_dev,
->  
->  static const struct iio_event_spec vcnl3020_event_spec[] = {
->  	{
-> +		.type = IIO_EV_TYPE_THRESH,
-> +		.dir = IIO_EV_DIR_RISING,
-> +		.mask_separate = BIT(IIO_EV_INFO_VALUE),
-> +	}, {
-> +		.type = IIO_EV_TYPE_THRESH,
-> +		.dir = IIO_EV_DIR_FALLING,
-> +		.mask_separate = BIT(IIO_EV_INFO_VALUE),
-> +	}, {
->  		.type = IIO_EV_TYPE_THRESH,
->  		.dir = IIO_EV_DIR_EITHER,
->  		.mask_separate = BIT(IIO_EV_INFO_ENABLE),
-> @@ -445,6 +538,8 @@ static const struct iio_info vcnl3020_info = {
->  	.read_raw = vcnl3020_read_raw,
->  	.write_raw = vcnl3020_write_raw,
->  	.read_avail = vcnl3020_read_avail,
-> +	.read_event_value = vcnl3020_read_event,
-> +	.write_event_value = vcnl3020_write_event,
->  	.read_event_config = vcnl3020_read_event_config,
->  	.write_event_config = vcnl3020_write_event_config,
->  };
+    Bluetooth: virtio_bt: add missing null pointer check on alloc_skb call return
+    
+    The call to alloc_skb with the GFP_KERNEL flag can return a null sk_buff
+    pointer, so add a null check to avoid any null pointer deference issues.
+    
+    Addresses-Coverity: ("Dereference null return value")
+    Fixes: afd2daa26c7a ("Bluetooth: Add support for virtio transport driver")
+    Signed-off-by: Colin Ian King <colin.king@canonical.com>
+    Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+
+Regards
+
+Marcel
 
