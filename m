@@ -2,312 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495503BABF6
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 10:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAE33BABF9
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 10:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229575AbhGDIJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 04:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhGDIJD (ORCPT
+        id S229720AbhGDILo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 04:11:44 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:53924 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhGDILn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 04:09:03 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F37C061762;
-        Sun,  4 Jul 2021 01:06:27 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id s13so265324uao.1;
-        Sun, 04 Jul 2021 01:06:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Yp0fK1FIdmNVYeOGywFr1We/twIk8MicKuO+0wjeXh4=;
-        b=Hg2ETxkHZcUO0UbNOvE31WRDuSGEeGH+ygbqG9tPhaU9GIG36k518YwSET/B5c96b8
-         /voZNzI5SiBZjBNo7bvrT3j7bYPo4NRdNfM1emr04qd/j/EAdE7y1pzlWFT+7Fk3k1i9
-         ZE8hCL/BuZ/KHiKGgJFhLqW6J9D925hn4w9DFa28DNT3LvY5CyA5qzjBNSr5bOEUADO5
-         BoQyiE1nKVOgZ+oH48ejkOALNGDxfGEin5HOJcwqNE7CU9fCLfs2wd1w4Y1QiiGzRP4W
-         oAXmvwDztXC7wSET1rKwtXPoeNeyZ3vlrUuq7djk2mXkzsnRArlMlMtNROvU9Sed6UjS
-         oxtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yp0fK1FIdmNVYeOGywFr1We/twIk8MicKuO+0wjeXh4=;
-        b=Ie3bJQC5Bj/kL+/wy7zTpAay0wFB2LckdbcEYu4GRaRAGaY3mQLiNvXOSqCNtXKldl
-         a1w77nj/dWiZKCtRyU6C2qFA1+3mZ73gcpP4lteRcLO+NJ1hhRBj8qp0tVO+z62JOrJM
-         5SLEHNdr4TORBHbcAw05+loZHlcxPiLIhPlWd0f3lyxgj5yFvrVFhGsH0xVVjmVw6hWO
-         arGzLh6hkbbIt/1Tx9HFxaWDlYjJdK5VXqzM6mY3RQ66aisJV06hY9G8OgTXC3DsNnt7
-         iY9r64zh8AOQk4vV3mUkpqll6TpQBF6zbzqsAScYu770yRRDCOk9DNJB4nYoOPZAmfue
-         ZIuw==
-X-Gm-Message-State: AOAM530OMcPMTcmauIvZv/RPeBalru9TtSHuULuikbcZnyLsfbjBXrRK
-        ng7RWMq5+84ZHSKfbPd3CscKbTf4TQkcWKNYnBM=
-X-Google-Smtp-Source: ABdhPJyPHZKSGdL9OiuUGzJKESiBe+MpK5665e85yuDS4tYUQD/TjRnpp8Ftl1Yn4jjQ+qrx+FRB4RHWyRHXtXFob4s=
-X-Received: by 2002:ab0:217:: with SMTP id 23mr6600880uas.66.1625385985923;
- Sun, 04 Jul 2021 01:06:25 -0700 (PDT)
+        Sun, 4 Jul 2021 04:11:43 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 297E17708E;
+        Sun,  4 Jul 2021 11:09:06 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1625386146;
+        bh=JYIbF3cn7cG5DXMCQsWqPRve66iFxAE1GbM8QRQj5Tw=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=5W4EBRPQXh7fjRI+lNZzvcvPqLwtgEUn90U2WWOk3mdllUUTj/OB6tDTFGcLDCziu
+         wwOuQ4Ay5fq462iBe1D8Uw+UPPXp4v8cLZPqa7nV7fNBNzieChtmanppmB0t1e+Zd1
+         QP8sspZFbefTh2aimr2Vfh0yqArRTivRjqDefQGwkUdKCoGUc6wwOGdfW1MbiYiapG
+         Vs757Ixk4kkGOEIfVnwH5/JTByLFwkH7o77Mvb9xI/Q+fDSiHSlPo6UJkXDDPLoesn
+         BhlxZHnVtg3qYJpxGk0Tvq1sdFeVA/NlUEE+jiIAECCXF3osBqftxq/F4nMdcX2qSC
+         ogqHIsfhP/a7g==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 4B33C7708D;
+        Sun,  4 Jul 2021 11:09:05 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.68.129) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Sun, 4
+ Jul 2021 11:09:04 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <oxffffaa@gmail.com>
+Subject: [RFC PATCH v2 0/6] Improve SOCK_SEQPACKET receive logic
+Date:   Sun, 4 Jul 2021 11:08:13 +0300
+Message-ID: <20210704080820.88746-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210626161819.30508-1-sergio.paracuellos@gmail.com>
- <CAHp75VfM-35tQMRh98mtg2XmDOJFnmjdYRKZZoi9ADm=AT2xUw@mail.gmail.com>
- <CAMhs-H_fcNDAOHm=tZB4ku9fzeea_7f4ZLg7w5KEmcNu+8wbQQ@mail.gmail.com>
- <CAHp75VeN+vww=Bj=g-nx9AT0FKSGAZ8CKQZn=ff2kfQWM+dxdw@mail.gmail.com>
- <CAMhs-H-WwCfPDspgxzN=W8QouZ7WPAeyJDYf_6=YezyCkTM=Vw@mail.gmail.com>
- <CAHp75VcF-HDZ6mKvXT=zYnBrcPaNJ+SYJ72LQ7s-62zQ5ZqoQg@mail.gmail.com>
- <CAMhs-H9gw63j98vVo3y0ymW4_6rFNL8u5cYNM2hzyrmkPB3h3w@mail.gmail.com>
- <CAHp75VccSCWa=EH8i01_b_HLZRumUZ48oRjeuaV5Dp1BQAoz2w@mail.gmail.com>
- <CAMhs-H_Ne4W79Awbmo6w_68X+h0-ybjvzNsbh=XuHMPJJ8-hDQ@mail.gmail.com>
- <CACRpkdaqSoyDUn3dVuVgzRK_7AabdY=1FzAnhHZzPs3qS+GfsA@mail.gmail.com>
- <CAMhs-H_pomsvKXuerkVsNQva+B+tPr2xRZAU2R7oyjZ+GaQpqQ@mail.gmail.com>
- <CAMhs-H_=_tYk3Qj5-NaAmWgnuWc0ZRSEABZzwPfMxiUHP35nbw@mail.gmail.com>
- <CAHp75VdmTHr8zq0boz2ci0YO4fS9Zuf+LFXeK7CGiHqHkXKKMQ@mail.gmail.com>
- <CAMhs-H_e2U7nUav8h+Q0w-aZXvD6VM6wpg857WbFgw6x3z1ufA@mail.gmail.com>
- <CAMhs-H8Y0txwcqRTxpsB_GEoOYbhHWO81EANMxMSybzWPS=HTA@mail.gmail.com>
- <CAHp75VfRYZn5uuPgQHJ5Hm3p3XVrfs=ReZXxEPm+dqLNb5QtGA@mail.gmail.com> <CAMhs-H8g8c047DSw2ObX7xS=YuPrXNRMecuV1TnKT--gnDdDOw@mail.gmail.com>
-In-Reply-To: <CAMhs-H8g8c047DSw2ObX7xS=YuPrXNRMecuV1TnKT--gnDdDOw@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sun, 4 Jul 2021 10:06:12 +0200
-Message-ID: <CAMhs-H9HhBbKmbpVgDXbZD+Dmh96J98HR_DO6LZL8N0B00ihcQ@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: mt7621: support gpio-line-names property
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Thomson <git@johnthomson.fastmail.com.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        NeilBrown <neil@brown.name>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Nicholas Mc Guire <hofrat@osadl.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.68.129]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/04/2021 07:43:44
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164820 [Jul 03 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_exist}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/04/2021 07:45:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 04.07.2021 5:50:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/07/04 06:12:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/04 01:03:00 #16855183
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 7:57 AM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
->
-> On Sat, Jul 3, 2021 at 9:36 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Sat, Jul 3, 2021 at 3:51 PM Sergio Paracuellos
-> > <sergio.paracuellos@gmail.com> wrote:
-> > > On Sat, Jul 3, 2021 at 2:05 PM Sergio Paracuellos
-> > > <sergio.paracuellos@gmail.com> wrote:
-> > > > On Sat, Jul 3, 2021 at 1:32 PM Andy Shevchenko
-> > > > <andy.shevchenko@gmail.com> wrote:
-> > > > > On Sat, Jul 3, 2021 at 2:06 PM Sergio Paracuellos
-> > > > > <sergio.paracuellos@gmail.com> wrote:
-> > > > > > On Fri, Jul 2, 2021 at 1:30 PM Sergio Paracuellos
-> > > > > > <sergio.paracuellos@gmail.com> wrote:
-> > > > >
-> > > > > ...
-> > > > >
-> > > > > > -               ret = devprop_gpiochip_set_names(gc);
-> > > > > > +               ret = devprop_gpiochip_set_names(gc, 0);
-> > > > >
-> > > > > I had been expecting that this parameter would be in the field of the gpiochip.
-> > > > >
-> > > > > ...
-> > > >
-> > > > If doing it in that way is preferred, I have no problem at all. But in
-> > > > that case I think there is no need for a new
-> > > > 'devprop_gpiochip_set_names_base' and we can assume for all drivers to
-> > > > be zero and if is set taking it into account directly in
-> > > > devprop_gpiochip_set_names function? Is this what you mean by having
-> > > > this field added there??
-> >
-> > The below is closer to what I meant, yes. I have not much time to look
-> > into the details, but I don't have objections about what you suggested
-> > below. Additional comments there as well.
->
-> Thanks for your time and review, Andy. Let's wait to see if Linus and
-> Bartosz are also ok with this approach.
->
-> >
-> > > How about something like this?
-> > >
-> > > diff --git a/drivers/gpio/gpio-mt7621.c b/drivers/gpio/gpio-mt7621.c
-> > > index 82fb20dca53a..5854a9343491 100644
-> > > --- a/drivers/gpio/gpio-mt7621.c
-> > > +++ b/drivers/gpio/gpio-mt7621.c
-> > > @@ -241,6 +241,7 @@ mediatek_gpio_bank_probe(struct device *dev,
-> > >         if (!rg->chip.label)
-> > >                 return -ENOMEM;
-> > >
-> > > +       rg->chip.offset = bank * MTK_BANK_WIDTH;
-> > >         rg->irq_chip.name = dev_name(dev);
-> > >         rg->irq_chip.parent_device = dev;
-> > >         rg->irq_chip.irq_unmask = mediatek_gpio_irq_unmask;
-> >
-> > Obviously it should be a separate patch :-)
->
-> Of course :). I will include one separate patch per driver using the
-> custom set names stuff: gpio-mt7621 and gpio-brcmstb. I don't know if
-> any other one is also following that wrong pattern.
+	This patchset modifies receive logic for SOCK_SEQPACKET.
+Difference between current implementation and this version is that
+now reader is woken up when there is at least one RW packet in rx
+queue of socket and data is copied to user's buffer, while merged
+approach wake up user only when whole message is received and kept
+in queue. New implementation has several advantages:
+ 1) There is no limit for message length. Merged approach requires
+    that length must be smaller than 'peer_buf_alloc', otherwise
+    transmission will stuck.
+ 2) There is no need to keep whole message in queue, thus no
+    'kmalloc()' memory will be wasted until EOR is received.
 
-What if each gpiochip inside the same driver has a different width? In
-such a case (looking into the code seems to be the case for
-'gpio-brcmstb', since driver's calculations per base are aligned with
-this code changes but when it is assigned every line name is taking
-into account gpio bank's width variable... If the only "client" of
-this code would be gpio-mt7621 (or those where base and width of the
-banks is the same) I don't know if changing core code makes sense...
+    Also new approach has some feature: as fragments of message
+are copied until EOR is received, it is possible that part of
+message will be already in user's buffer, while rest of message
+still not received. And if user will be interrupted by signal or
+timeout with part of message in buffer, it will exit receive loop,
+leaving rest of message in queue. To solve this problem special
+callback was added to transport: it is called when user was forced
+to leave exit loop and tells transport to drop any packet until
+EOR met. When EOR is found, this mode is disabled and normal packet
+processing started. Note, that when 'drop until EOR' mode is on,
+incoming packets still inserted in queue, reader will be woken up,
+tries to copy data, but nothing will be copied until EOR found.
+It was possible to drain such unneeded packets it rx work without
+kicking user, but implemented way is simplest. Anyway, i think
+such cases are rare.
 
-Best regards,
-    Sergio Paracuellos
+    New test also added - it tries to copy to invalid user's
+buffer.
 
->
-> >
-> > > diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> > > index 6e3c4d7a7d14..0587f46b7c22 100644
-> > > --- a/drivers/gpio/gpiolib.c
-> > > +++ b/drivers/gpio/gpiolib.c
-> > > @@ -380,10 +380,10 @@ static int devprop_gpiochip_set_names(struct
-> > > gpio_chip *chip)
-> > >                 return 0;
-> > >
-> > >         count = device_property_string_array_count(dev, "gpio-line-names");
-> > > -       if (count < 0)
-> >
-> > > +       if (count < 0 || count <= chip->offset)
-> >
-> > Please, split it into two conditionals and add a comment to the second one.
->
-> For sure I will do, thanks.
->
-> >
-> > >                 return 0;
-> > >
-> > > -       if (count > gdev->ngpio) {
-> > > +       if (count > gdev->ngpio && chip->offset == 0) {
-> > >                 dev_warn(&gdev->dev, "gpio-line-names is length %d but
-> > > should be at most length %d",
-> > >                          count, gdev->ngpio);
-> > >                 count = gdev->ngpio;
-> > > @@ -401,8 +401,9 @@ static int devprop_gpiochip_set_names(struct
-> > > gpio_chip *chip)
-> > >                 return ret;
-> > >         }
-> > >
-> > > +       count = (chip->offset >= count) ? (chip->offset - count) : count;
-> >
-> > Too many parentheses.
->
-> Ok, I will also change this.
->
-> >
-> > >         for (i = 0; i < count; i++)
-> > > -               gdev->descs[i].name = names[i];
-> > > +               gdev->descs[i].name = names[chip->offset + i];
-> > >
-> > >         kfree(names);
-> > >
-> > > diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
-> > > index 4a7e295c3640..39e0786586f6 100644
-> > > --- a/include/linux/gpio/driver.h
-> > > +++ b/include/linux/gpio/driver.h
-> > > @@ -312,6 +312,9 @@ struct gpio_irq_chip {
-> > >   *     get rid of the static GPIO number space in the long run.
-> > >   * @ngpio: the number of GPIOs handled by this controller; the last GPIO
-> > >   *     handled is (base + ngpio - 1).
-> > > + * @offset: when multiple gpio chips belong to the same device this
-> > > + *     can be used as offset within the device so friendly names can
-> > > + *     be properly assigned.
-> > >   * @names: if set, must be an array of strings to use as alternative
-> > >   *      names for the GPIOs in this chip. Any entry in the array
-> > >   *      may be NULL if there is no alias for the GPIO, however the
-> > > @@ -398,6 +401,7 @@ struct gpio_chip {
-> > >
-> > >         int                     base;
-> > >         u16                     ngpio;
-> > > +       int                     offset;
-> >
-> > u16 (as ngpio has that type)
-> >
-> > >         const char              *const *names;
-> > >         bool                    can_sleep;
-> > >
-> > >
-> > > Does this sound reasonable?
->
-> So the gpiolib related patch updated code with your proposed changes
-> looks as follows:
->
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 6e3c4d7a7d14..0c773d9ef292 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -383,7 +383,18 @@ static int devprop_gpiochip_set_names(struct
-> gpio_chip *chip)
->         if (count < 0)
->                 return 0;
->
-> -       if (count > gdev->ngpio) {
-> +       /*
-> +        * When offset is set in the driver side we assume the driver internally
-> +        * is using more than one gpiochip per the same device. We have to stop
-> +        * setting friendly names if the specified ones with 'gpio-line-names'
-> +        * are less than the offset in the device itself. This means all the
-> +        * lines are not present for every single pin within all the internal
-> +        * gpiochips.
-> +        */
-> +       if (count <= chip->offset)
-> +               return 0;
-> +
-> +       if (count > gdev->ngpio && chip->offset == 0) {
->                 dev_warn(&gdev->dev, "gpio-line-names is length %d but
-> should be at most length %d",
->                          count, gdev->ngpio);
->                 count = gdev->ngpio;
-> @@ -401,8 +412,9 @@ static int devprop_gpiochip_set_names(struct
-> gpio_chip *chip)
->                 return ret;
->         }
->
-> +       count = (chip->offset >= count) ? chip->offset - count : count;
->         for (i = 0; i < count; i++)
-> -               gdev->descs[i].name = names[i];
-> +               gdev->descs[i].name = names[chip->offset + i];
->
->         kfree(names);
->
-> diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
-> index 4a7e295c3640..7a77f533d8fe 100644
-> --- a/include/linux/gpio/driver.h
-> +++ b/include/linux/gpio/driver.h
-> @@ -312,6 +312,9 @@ struct gpio_irq_chip {
->   *     get rid of the static GPIO number space in the long run.
->   * @ngpio: the number of GPIOs handled by this controller; the last GPIO
->   *     handled is (base + ngpio - 1).
-> + * @offset: when multiple gpio chips belong to the same device this
-> + *     can be used as offset within the device so friendly names can
-> + *     be properly assigned.
->   * @names: if set, must be an array of strings to use as alternative
->   *      names for the GPIOs in this chip. Any entry in the array
->   *      may be NULL if there is no alias for the GPIO, however the
-> @@ -398,6 +401,7 @@ struct gpio_chip {
->
->         int                     base;
->         u16                     ngpio;
-> +       u16                     offset;
->         const char              *const *names;
->         bool                    can_sleep;
->
-> Best regards,
->     Sergio Paracuellos
-> >
-> > > > > > The problem I see with this approach is that
-> > > > > > 'devprop_gpiochip_set_names' already trusts in gpio_device already
-> > > > > > created and this happens in 'gpiochip_add_data_with_key'. So doing in
-> > > > > > this way force "broken drivers" to call this new
-> > > > > > 'devprop_gpiochip_set_names_base' function after
-> > > > > > 'devm_gpiochip_add_data' is called so the core code has already set up
-> > > > > > the friendly names repeated for all gpio chip banks and the approach
-> > > > > > would be to "overwrite" those in a second pass which sounds more like
-> > > > > > a hack than a solution.
-> > > > > >
-> > > > > > But maybe I am missing something in what you were pointing out here.
-> > > > >
-> > > > > Would the above work?
-> >
-> > --
-> > With Best Regards,
-> > Andy Shevchenko
+Arseny Krasnov (16):
+ af_vsock/virtio/vsock: change seqpacket receive logic
+ af_vsock/virtio/vsock: remove 'seqpacket_has_data' callback
+ virtio/vsock: remove 'msg_count' based logic
+ af_vsock/virtio/vsock: add 'seqpacket_drop()' callback
+ virtio/vsock: remove record size limit for SEQPACKET
+ vsock_test: SEQPACKET read to broken buffer
+
+ drivers/vhost/vsock.c                   |   2 +-
+ include/linux/virtio_vsock.h            |   7 +-
+ include/net/af_vsock.h                  |   4 +-
+ net/vmw_vsock/af_vsock.c                |  44 ++++----
+ net/vmw_vsock/virtio_transport.c        |   2 +-
+ net/vmw_vsock/virtio_transport_common.c | 103 ++++++++-----------
+ net/vmw_vsock/vsock_loopback.c          |   2 +-
+ tools/testing/vsock/vsock_test.c        | 120 ++++++++++++++++++++++
+ 8 files changed, 193 insertions(+), 91 deletions(-)
+
+ v1 -> v2:
+ Patches reordered and reorganized.
+
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+---
+ cv.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 cv.txt
+
+diff --git a/cv.txt b/cv.txt
+new file mode 100644
+index 000000000000..e69de29bb2d1
+-- 
+2.25.1
+
