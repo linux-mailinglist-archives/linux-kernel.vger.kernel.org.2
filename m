@@ -2,263 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455143BAE21
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 19:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E1B3BAE22
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 19:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbhGDR51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 13:57:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53680 "EHLO mail.kernel.org"
+        id S229715AbhGDSBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 14:01:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhGDR50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 13:57:26 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C626E613C8;
-        Sun,  4 Jul 2021 17:54:46 +0000 (UTC)
-Date:   Sun, 4 Jul 2021 18:57:10 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v1 2/2] iio: adc: tsc2046: fix sleeping in atomic
- context warning and a deadlock after iio_trigger_poll() call
-Message-ID: <20210704185710.07789b8f@jic23-huawei>
-In-Reply-To: <20210625065922.8310-2-o.rempel@pengutronix.de>
-References: <20210625065922.8310-1-o.rempel@pengutronix.de>
-        <20210625065922.8310-2-o.rempel@pengutronix.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229636AbhGDSBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 14:01:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CB8D613DA;
+        Sun,  4 Jul 2021 17:58:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625421521;
+        bh=+ygD56cVVT60v/uF24BB3kWlgp7yuvZ90/Q4qKDeUHM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Fdj37RAuCwlGjJFENnxGr9AQfAVsWHQ55QdD/z3hk3HCkVGv7Z87uvZvNVGJ6pwn6
+         p/+TgnHCBzXKv8NIc8UQ6fSSvMHA8FZNm9qcPjQAx8aOp7IVfOj2tktLehXwKrVmjv
+         pZqEddqZP0hgsan1x0eh7FPVpWAcV5cTX1qGT9ihX+PMLHn14A7/ih3FcBwutUc2lt
+         wKDUHZMmUNw62Pm4nJlmUlDp9g7ZK1eh+V/x/O/qoPcSmPAwP4wqo5QoQrEPzk20Ku
+         IZ/AD7dE2AjfUbtEbkio3kEbNlYFA6/g69+YvsKZp4hq9REo0Qz//yQWxIjOmmrbGe
+         0SdAPyzM0lwuQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 13C025C0147; Sun,  4 Jul 2021 10:58:41 -0700 (PDT)
+Date:   Sun, 4 Jul 2021 10:58:41 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        akpm@linux-foundation.org, peterz@infradead.org, vbabka@suse.cz
+Subject: Re: [GIT PULL] RCU changes for v5.14
+Message-ID: <20210704175841.GA2972019@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210704172440.GA2966393@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210704172440.GA2966393@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Jun 2021 08:59:22 +0200
-Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-
-> If iio_trigger_poll() is called after IRQ was disabled, we will call
-> reenable_trigger() directly from hard IRQ or hrtimer context instead of
-> IRQ thread. In this case we will run in to multiple issue as sleeping in atomic
-> context and a deadlock.
-
-Hmm. This sounds like a problem that might bite us in other circumstances.
-
-So do I have the basic issue right in thinking we have a race between
-calling iio_trigger_poll() and having no devices still using that trigger?
-Thus we end up with all of trig->subirqs not being enabled.
-
-There was a previous discussion that the calls to iio_trigger_notify_done() in
-iio_trigger_poll() are only meant to decrement the counter, as the assumption
-was that the calls via threads would always happen later.  Unfortunately this
-is all clearly a little bit racy and I suspect not many of the reenable() callbacks
-are safe if they are called in interrupt context.
-
-Perhaps an alternative would be to schedule the reenable() if we hit it from
-that path thus ensuring it doesn't happen in a place where we can't sleep?
-
-Would something like that solve your problem?
-I'd do it by having a new function
-
-iio_trigger_notify_done_schedule() that uses a work struct to call
-trig->ops->reenable(trig) from a context that can sleep.
-
-It's a rare corner case so I don't really care that in theory we might have
-a device that was safe to reenable the trigger without sleeping.  That makes
-it easier to just have one path for this which allows sleeping.
-
-Jonathan
-
+On Sun, Jul 04, 2021 at 10:24:40AM -0700, Paul E. McKenney wrote:
+> Hello, Linus,
 > 
-> To avoid this issue, rework the trigger to use state machine. All state
-> changes are done over the hrtimer, so it allows us to drop fsleep() and
-> avoid the deadlock.
+> In a deviation from long-standing -tip tradition, please pull the latest
+> RCU git tree from:
 > 
-> Fixes: 9374e8f5a38d ("iio: adc: add ADC driver for the TI TSC2046 controller")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  drivers/iio/adc/ti-tsc2046.c | 102 ++++++++++++++++++++---------------
->  1 file changed, 58 insertions(+), 44 deletions(-)
+>   git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git core-rcu-2021.07.04
+>   # HEAD: 641faf1b9064c270a476a424e60063bb05df3ee9: Merge branches 'bitmaprange.2021.05.10c', 'doc.2021.05.10c', 'fixes.2021.05.13a', 'kvfree_rcu.2021.05.10c', 'mmdumpobj.2021.05.10c', 'nocb.2021.05.12a', 'srcu.2021.05.12a', 'tasks.2021.05.18a' and 'torture.2021.05.10c' into HEAD (2021-05-18 10:56:19 -0700)
 > 
-> diff --git a/drivers/iio/adc/ti-tsc2046.c b/drivers/iio/adc/ti-tsc2046.c
-> index d84ae6b008c1..91f6bd5effe7 100644
-> --- a/drivers/iio/adc/ti-tsc2046.c
-> +++ b/drivers/iio/adc/ti-tsc2046.c
-> @@ -123,14 +123,21 @@ struct tsc2046_adc_ch_cfg {
->  	unsigned int oversampling_ratio;
->  };
->  
-> +enum tsc2046_state {
-> +	TSC2046_STATE_STANDBY,
-> +	TSC2046_STATE_ENABLE_IRQ_POLL,
-> +	TSC2046_STATE_POLL,
-> +	TSC2046_STATE_ENABLE_IRQ,
-> +};
-> +
->  struct tsc2046_adc_priv {
->  	struct spi_device *spi;
->  	const struct tsc2046_adc_dcfg *dcfg;
->  
->  	struct iio_trigger *trig;
->  	struct hrtimer trig_timer;
-> -	spinlock_t trig_lock;
-> -	unsigned int trig_more_count;
-> +	enum tsc2046_state state;
-> +	spinlock_t state_lock;
->  
->  	struct spi_transfer xfer;
->  	struct spi_message msg;
-> @@ -411,21 +418,47 @@ static const struct iio_info tsc2046_adc_info = {
->  	.update_scan_mode = tsc2046_adc_update_scan_mode,
->  };
->  
-> -static enum hrtimer_restart tsc2046_adc_trig_more(struct hrtimer *hrtimer)
-> +static enum hrtimer_restart tsc2046_adc_timer(struct hrtimer *hrtimer)
->  {
->  	struct tsc2046_adc_priv *priv = container_of(hrtimer,
->  						     struct tsc2046_adc_priv,
->  						     trig_timer);
->  	unsigned long flags;
->  
-> -	spin_lock_irqsave(&priv->trig_lock, flags);
-> -
-> -	disable_irq_nosync(priv->spi->irq);
-> -
-> -	priv->trig_more_count++;
-> -	iio_trigger_poll(priv->trig);
-> -
-> -	spin_unlock_irqrestore(&priv->trig_lock, flags);
-> +	spin_lock_irqsave(&priv->state_lock, flags);
-> +	switch (priv->state) {
-> +	case TSC2046_STATE_ENABLE_IRQ_POLL:
-> +		/*
-> +		 * IRQ handler called iio_trigger_poll() to sample ADC.
-> +		 * Here we
-> +		 * - re-enable IRQs
-> +		 * - start hrtimer for timeout if no IRQ will occur
-> +		 */
-> +		priv->state = TSC2046_STATE_POLL;
-> +		enable_irq(priv->spi->irq);
-> +		hrtimer_start(&priv->trig_timer,
-> +			      ns_to_ktime(priv->scan_interval_us *
-> +					  NSEC_PER_USEC),
-> +			      HRTIMER_MODE_REL_SOFT);
-> +		break;
-> +	case TSC2046_STATE_POLL:
-> +		disable_irq_nosync(priv->spi->irq);
-> +		priv->state = TSC2046_STATE_ENABLE_IRQ;
-> +		/* iio_trigger_poll() starts hrtimer */
-> +		iio_trigger_poll(priv->trig);
-> +		break;
-> +	case TSC2046_STATE_ENABLE_IRQ:
-> +		priv->state = TSC2046_STATE_STANDBY;
-> +		enable_irq(priv->spi->irq);
-> +		break;
-> +	case TSC2046_STATE_STANDBY:
-> +		fallthrough;
-> +	default:
-> +		dev_warn(&priv->spi->dev, "Got unexpected state: %i\n",
-> +			 priv->state);
-> +		break;
-> +	}
-> +	spin_unlock_irqrestore(&priv->state_lock, flags);
->  
->  	return HRTIMER_NORESTART;
->  }
-> @@ -434,16 +467,17 @@ static irqreturn_t tsc2046_adc_irq(int irq, void *dev_id)
->  {
->  	struct iio_dev *indio_dev = dev_id;
->  	struct tsc2046_adc_priv *priv = iio_priv(indio_dev);
-> -
-> -	spin_lock(&priv->trig_lock);
-> +	unsigned long flags;
->  
->  	hrtimer_try_to_cancel(&priv->trig_timer);
->  
-> -	priv->trig_more_count = 0;
-> +	spin_lock_irqsave(&priv->state_lock, flags);
->  	disable_irq_nosync(priv->spi->irq);
-> -	iio_trigger_poll(priv->trig);
-> +	priv->state = TSC2046_STATE_ENABLE_IRQ_POLL;
->  
-> -	spin_unlock(&priv->trig_lock);
-> +	/* iio_trigger_poll() starts hrtimer */
-> +	iio_trigger_poll(priv->trig);
-> +	spin_unlock_irqrestore(&priv->state_lock, flags);
->  
->  	return IRQ_HANDLED;
->  }
-> @@ -452,37 +486,16 @@ static void tsc2046_adc_reenable_trigger(struct iio_trigger *trig)
->  {
->  	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
->  	struct tsc2046_adc_priv *priv = iio_priv(indio_dev);
-> -	unsigned long flags;
-> -	int delta;
-> +	ktime_t tim;
->  
->  	/*
->  	 * We can sample it as fast as we can, but usually we do not need so
->  	 * many samples. Reduce the sample rate for default (touchscreen) use
->  	 * case.
-> -	 * Currently we do not need a highly precise sample rate. It is enough
-> -	 * to have calculated numbers.
-> -	 */
-> -	delta = priv->scan_interval_us - priv->time_per_scan_us;
-> -	if (delta > 0)
-> -		fsleep(delta);
-> -
-> -	spin_lock_irqsave(&priv->trig_lock, flags);
-> -
-> -	/*
-> -	 * We need to trigger at least one extra sample to detect state
-> -	 * difference on ADC side.
->  	 */
-> -	if (!priv->trig_more_count) {
-> -		int timeout_ms = DIV_ROUND_UP(priv->scan_interval_us,
-> -					      USEC_PER_MSEC);
-> -
-> -		hrtimer_start(&priv->trig_timer, ms_to_ktime(timeout_ms),
-> -			      HRTIMER_MODE_REL_SOFT);
-> -	}
-> -
-> -	enable_irq(priv->spi->irq);
-> -
-> -	spin_unlock_irqrestore(&priv->trig_lock, flags);
-> +	tim = ns_to_ktime((priv->scan_interval_us - priv->time_per_scan_us) *
-> +			  NSEC_PER_USEC);
-> +	hrtimer_start(&priv->trig_timer, tim, HRTIMER_MODE_REL_SOFT);
->  }
->  
->  static int tsc2046_adc_set_trigger_state(struct iio_trigger *trig, bool enable)
-> @@ -493,8 +506,8 @@ static int tsc2046_adc_set_trigger_state(struct iio_trigger *trig, bool enable)
->  	if (enable) {
->  		enable_irq(priv->spi->irq);
->  	} else {
-> +		hrtimer_cancel(&priv->trig_timer);
->  		disable_irq(priv->spi->irq);
-> -		hrtimer_try_to_cancel(&priv->trig_timer);
->  	}
->  
->  	return 0;
-> @@ -668,10 +681,11 @@ static int tsc2046_adc_probe(struct spi_device *spi)
->  	iio_trigger_set_drvdata(trig, indio_dev);
->  	trig->ops = &tsc2046_adc_trigger_ops;
->  
-> -	spin_lock_init(&priv->trig_lock);
-> +	spin_lock_init(&priv->state_lock);
-> +	priv->state = TSC2046_STATE_STANDBY;
->  	hrtimer_init(&priv->trig_timer, CLOCK_MONOTONIC,
->  		     HRTIMER_MODE_REL_SOFT);
-> -	priv->trig_timer.function = tsc2046_adc_trig_more;
-> +	priv->trig_timer.function = tsc2046_adc_timer;
->  
->  	ret = devm_iio_trigger_register(dev, trig);
->  	if (ret) {
+> RCU changes for this cycle were:
+> 
+> o	Bitmap support for "all" as an alias for all bits.
+> 
+> o	Documentation updates.
+> 
+> o	Miscellaneous fixes, including some that overlap into mm and lockdep.
+> 
+> o	kvfree_rcu() updates.
+> 
+> o	mem_dump_obj() updates, with acks from one of the slab-allocator
+> 	maintainers.
+> 
+> o	RCU NOCB CPU updates, including limited deoffloading.
+> 
+> o	SRCU updates.
+> 
+> o	Tasks-RCU updates.
+> 
+> o	Torture-test updates.
+> 
+> These changes have two merge conflicts with mainline.  The first is
+> a semantic conflict detected by -next between these two commits:
+> 
+> 	2f064a59a11f ("sched: Change task_struct::state")
+> 	e44111ed20d8 ("rcu: Add ->rt_priority and ->gp_start to show_rcu_gp_kthreads() output")
+> 
+> An example merge resolution may be found here:
+> 
+> 	4e2b64e124c7 ("Merge remote-tracking branch 'linus/master' into HEAD")
+> 
+> The second is a trivial whitespace conflict between these two commits:
+> 
+> 	76c8eaafe4f0 ("rcu: Create an unrcu_pointer() to remove __rcu from a pointer")
+> 	b9964ce74544 ("rcu: Create an unrcu_pointer() to remove __rcu from a pointer")
+> 
+> An example merge resolution may be found here, on top of the merge commit
+> for the first conflict:
+> 
+> 	f5f576accebd ("Example merge commit for RCU fixing whitespace conflict.")
 
+Gah!  Right merge, but wrong location.  Pulling this will pull in
+KCSAN and LKMM as well as RCU.  Please accept my apologies, and
+here is the correctly placed merge commit:
+
+	fa5035b6a215 ("Merge remote-tracking branch 'linus/master' into merge-example-rcu")
+
+> And yes, this second conflict did in fact happen because I handed out
+> a patch containing this whitespace error, and failed to follow up with
+> the corrected patch.  :-/
+> 
+> 							Thanx, Paul
+> 
+> ----------------------------------------------------------------
+> Frederic Weisbecker (17):
+>       doc: Fix diagram references in memory-ordering document
+>       rcu/nocb: Use the rcuog CPU's ->nocb_timer
+>       timer: Revert "timer: Add timer_curr_running()"
+>       srcu: Remove superfluous sdp->srcu_lock_count zero filling
+>       srcu: Remove superfluous ssp initialization for early callbacks
+>       srcu: Unconditionally embed struct lockdep_map
+>       srcu: Initialize SRCU after timers
+>       srcu: Fix broken node geometry after early ssp init
+>       torture: Correctly fetch number of CPUs for non-English languages
+>       rcu/nocb: Directly call __wake_nocb_gp() from bypass timer
+>       rcu/nocb: Allow de-offloading rdp leader
+>       rcu/nocb: Cancel nocb_timer upon nocb_gp wakeup
+>       rcu/nocb: Delete bypass_timer upon nocb_gp wakeup
+>       rcu/nocb: Only cancel nocb timer if not polling
+>       rcu/nocb: Prepare for fine-grained deferred wakeup
+>       rcu/nocb: Unify timers
+>       srcu: Early test SRCU polling start
+> 
+> Ingo Molnar (1):
+>       rcu: Fix various typos in comments
+> 
+> Jules Irenge (1):
+>       rcu: Add missing __releases() annotation
+> 
+> Maninder Singh (2):
+>       mm/slub: Fix backtrace of objects to handle redzone adjustment
+>       mm/slub: Add Support for free path information of an object
+> 
+> Paul E. McKenney (47):
+>       doc: Fix statement of RCU's memory-ordering requirements
+>       tools/rcu: Add drgn script to dump number of RCU callbacks
+>       rcu-tasks: Add block comment laying out RCU Tasks design
+>       rcu-tasks: Add block comment laying out RCU Rude design
+>       torture: Fix remaining erroneous torture.sh instance of $*
+>       torture: Add "scenarios" option to kvm.sh --dryrun parameter
+>       torture: Make kvm-again.sh use "scenarios" rather than "batches" file
+>       refscale: Allow CPU hotplug to be enabled
+>       rcuscale: Allow CPU hotplug to be enabled
+>       torture: Add kvm-remote.sh script for distributed rcutorture test runs
+>       refscale: Add acqrel, lock, and lock-irq
+>       rcutorture: Abstract read-lock-held checks
+>       torture: Fix grace-period rate output
+>       torture: Abstract end-of-run summary
+>       torture: Make kvm.sh use abstracted kvm-end-run-stats.sh
+>       torture:  Make the build machine control N in "make -jN"
+>       torture: Make kvm-find-errors.sh account for kvm-remote.sh
+>       rcutorture: Judge RCU priority boosting on grace periods, not callbacks
+>       torture:  Set kvm.sh language to English
+>       rcutorture: Delay-based false positives for RCU priority boosting tests
+>       rcutorture: Consolidate rcu_torture_boost() timing and statistics
+>       rcutorture: Make rcu_torture_boost_failed() check for GP end
+>       rcutorture: Add BUSTED-BOOST to test RCU priority boosting tests
+>       rcutorture: Forgive RCU boost failures when CPUs don't pass through QS
+>       rcutorture: Don't count CPU-stalled time against priority boosting
+>       torture: Make kvm-remote.sh account for network failure in pathname checks
+>       torture: Don't cap remote runs by build-system number of CPUs
+>       rcutorture: Move mem_dump_obj() tests into separate function
+>       rcu: Remove the unused rcu_irq_exit_preempt() function
+>       rcu: Invoke rcu_spawn_core_kthreads() from rcu_spawn_gp_kthread()
+>       rcu: Add ->rt_priority and ->gp_start to show_rcu_gp_kthreads() output
+>       rcu: Add ->gp_max to show_rcu_gp_kthreads() output
+>       lockdep: Explicitly flag likely false-positive report
+>       rcu: Reject RCU_LOCKDEP_WARN() false positives
+>       rcu: Add quiescent states and boost states to show_rcu_gp_kthreads() output
+>       rcu: Make RCU priority boosting work on single-CPU rcu_node structures
+>       rcu: Make show_rcu_gp_kthreads() dump rcu_node structures blocking GP
+>       rcu: Restrict RCU_STRICT_GRACE_PERIOD to at most four CPUs
+>       rcu: Make rcu_gp_cleanup() be noinline for tracing
+>       rcu: Point to documentation of ordering guarantees
+>       rcu: Don't penalize priority boosting when there is nothing to boost
+>       rcu: Create an unrcu_pointer() to remove __rcu from a pointer
+>       rcu: Improve comments describing RCU read-side critical sections
+>       rcu: Remove obsolete rcu_read_unlock() deadlock commentary
+>       rcu-tasks: Make ksoftirqd provide RCU Tasks quiescent states
+>       tasks-rcu: Make show_rcu_tasks_gp_kthreads() be static inline
+>       Merge branches 'bitmaprange.2021.05.10c', 'doc.2021.05.10c', 'fixes.2021.05.13a', 'kvfree_rcu.2021.05.10c', 'mmdumpobj.2021.05.10c', 'nocb.2021.05.12a', 'srcu.2021.05.12a', 'tasks.2021.05.18a' and 'torture.2021.05.10c' into HEAD
+> 
+> Rolf Eike Beer (1):
+>       rcu: Fix typo in comment: kthead -> kthread
+> 
+> Uladzislau Rezki (Sony) (6):
+>       kvfree_rcu: Use [READ/WRITE]_ONCE() macros to access to nr_bkv_objs
+>       kvfree_rcu: Add a bulk-list check when a scheduler is run
+>       kvfree_rcu: Update "monitor_todo" once a batch is started
+>       kvfree_rcu: Use kfree_rcu_monitor() instead of open-coded variant
+>       kvfree_rcu: Fix comments according to current code
+>       kvfree_rcu: Refactor kfree_rcu_monitor()
+> 
+> Yury Norov (2):
+>       bitmap_parse: Support 'all' semantics
+>       rcu/tree_plugin: Don't handle the case of 'all' CPU range
+> 
+> Zhang Qiang (1):
+>       kvfree_rcu: Release a page cache under memory pressure
+> 
+> Zhouyi Zhou (1):
+>       rcu: Improve tree.c comments and add code cleanups
+> 
+>  .../Memory-Ordering/Tree-RCU-Memory-Ordering.rst   |   6 +-
+>  Documentation/admin-guide/kernel-parameters.rst    |   5 +
+>  Documentation/admin-guide/kernel-parameters.txt    |   5 +
+>  include/linux/rcupdate.h                           |  84 +++---
+>  include/linux/rcutiny.h                            |   1 -
+>  include/linux/rcutree.h                            |   1 -
+>  include/linux/srcu.h                               |   6 +
+>  include/linux/srcutree.h                           |   2 -
+>  include/linux/timer.h                              |   2 -
+>  include/trace/events/rcu.h                         |   1 +
+>  init/main.c                                        |   2 +
+>  kernel/locking/lockdep.c                           |   6 +-
+>  kernel/rcu/Kconfig.debug                           |   2 +-
+>  kernel/rcu/rcu.h                                   |  14 +-
+>  kernel/rcu/rcutorture.c                            | 315 +++++++++++----------
+>  kernel/rcu/refscale.c                              | 109 ++++++-
+>  kernel/rcu/srcutree.c                              |  28 +-
+>  kernel/rcu/sync.c                                  |   4 +-
+>  kernel/rcu/tasks.h                                 |  58 +++-
+>  kernel/rcu/tiny.c                                  |   1 -
+>  kernel/rcu/tree.c                                  | 313 +++++++++++---------
+>  kernel/rcu/tree.h                                  |  14 +-
+>  kernel/rcu/tree_plugin.h                           | 239 ++++++++--------
+>  kernel/rcu/tree_stall.h                            |  84 +++++-
+>  kernel/rcu/update.c                                |   8 +-
+>  kernel/time/timer.c                                |  14 -
+>  lib/bitmap.c                                       |   9 +
+>  lib/test_bitmap.c                                  |   7 +
+>  mm/oom_kill.c                                      |   2 +-
+>  mm/slab.h                                          |   1 +
+>  mm/slab_common.c                                   |  12 +-
+>  mm/slub.c                                          |   8 +
+>  mm/util.c                                          |   2 +-
+>  tools/rcu/rcu-cbs.py                               |  46 +++
+>  .../testing/selftests/rcutorture/bin/kvm-again.sh  |  33 +--
+>  .../testing/selftests/rcutorture/bin/kvm-build.sh  |   6 +-
+>  .../selftests/rcutorture/bin/kvm-end-run-stats.sh  |  40 +++
+>  .../selftests/rcutorture/bin/kvm-find-errors.sh    |   2 +-
+>  .../selftests/rcutorture/bin/kvm-recheck-rcu.sh    |   2 +-
+>  .../testing/selftests/rcutorture/bin/kvm-remote.sh | 249 ++++++++++++++++
+>  tools/testing/selftests/rcutorture/bin/kvm.sh      |  61 ++--
+>  tools/testing/selftests/rcutorture/bin/torture.sh  |   2 +-
+>  .../selftests/rcutorture/configs/rcu/BUSTED-BOOST  |  17 ++
+>  .../rcutorture/configs/rcu/BUSTED-BOOST.boot       |   8 +
+>  .../selftests/rcutorture/configs/rcuscale/TREE     |   2 +-
+>  .../selftests/rcutorture/configs/rcuscale/TREE54   |   2 +-
+>  .../rcutorture/configs/refscale/NOPREEMPT          |   2 +-
+>  .../selftests/rcutorture/configs/refscale/PREEMPT  |   2 +-
+>  .../rcutorture/formal/srcu-cbmc/src/locks.h        |   2 +-
+>  49 files changed, 1265 insertions(+), 576 deletions(-)
+>  create mode 100644 tools/rcu/rcu-cbs.py
+>  create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh
+>  create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-remote.sh
+>  create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST
+>  create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot
