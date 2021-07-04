@@ -2,61 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655CD3BAC86
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 11:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E94083BAC8A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 11:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbhGDJlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 05:41:37 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:53261 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhGDJlg (ORCPT
+        id S229559AbhGDJqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 05:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229476AbhGDJqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 05:41:36 -0400
-Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lzyaM-0006j6-AL; Sun, 04 Jul 2021 09:38:46 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Geoff Levand <geoff@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] powerpc: Fix spelling mistake "mesages" -> "messages" in Kconfig
-Date:   Sun,  4 Jul 2021 10:38:46 +0100
-Message-Id: <20210704093846.36972-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Sun, 4 Jul 2021 05:46:36 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AC6C061762
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 02:44:01 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id h6so337509iok.6
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 02:44:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=uDYX6i6GWm/D4T0FFuN+cS8W6SRI5j8FJUCW6aYMnRs=;
+        b=VSSUQZszHkEP4Pv3IXvh35bW0krRkLdKpoB7vMf4g4yHd94uBAeOgcjK/YJtak+rul
+         rfSyq6gl+4B7YhhBUN8W2gsMj3hCxw3D+wS3lhWiY/iQNc7Ndvi5roLLNpz4Az1HFuM7
+         0sVnGqE7sQ/HKZhRf0it9B4KKJfWQ9dN9NXIu5/jQHp6UXt0exzec8egWcj99wCBVkJs
+         9EA/qJXUCOxOe24NcSu1mIg3YrwagUzAmB9E+pXRTcRXY3xbB3FwGDcE9/h5t8/xNu4/
+         AriyEaKHK4JtnkvhQE2e8JW7EwGrLnXew/4fZcr9fR6s31j//fOFIiFBUEs91GjyT+LE
+         F8xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=uDYX6i6GWm/D4T0FFuN+cS8W6SRI5j8FJUCW6aYMnRs=;
+        b=TXOXiEcR+PH+lNN0dg/MXxf7Z6EvCmd7GBpfFj/XnqwhHR0mCPfMmal30j4tZrc+6n
+         v+7SZx06O0rveTgrMDowKj7Ngak9lH2BqXJ2POaeSwkFX2xJZXbbs51c0DUF9Kg3swWl
+         O0ZlUjMJiM4AvkF7OMQeBrTUvRpA8nMafv7BpNJo8hkDrj6zvMbjal4/G6cENw0D99ir
+         axzdTC9D1YQU9TnOKQ519nPXUrBgGtf3u732QlTwv/UsWrOYxkLwnk5XL/7BQH+g9wa8
+         6hgoK4gZgGUP+ysps1cC8EAFHsPOjC6SSRw0Wz2zk/XFSKl7miiocfwbKg/z/ZuDDro8
+         71xA==
+X-Gm-Message-State: AOAM531qTqjVzRd3ubGJCIQlxbC7uf1TxBJeym7SiWyKC1vVx64MBNEP
+        vO9c8QgMISeTuOduudPDnO9AlQNd4/0Y8PfFCdI=
+X-Google-Smtp-Source: ABdhPJycL16jkDTTjst3hDw+LWaiAGgB/D27DAx/Vv2TPFPFAGl9MbaHqM4XlHxVEIrEBsFD91tejNQfZy/lzLp+sWA=
+X-Received: by 2002:a02:1d86:: with SMTP id 128mr7178208jaj.106.1625391841213;
+ Sun, 04 Jul 2021 02:44:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a92:a30e:0:0:0:0:0 with HTTP; Sun, 4 Jul 2021 02:44:00 -0700 (PDT)
+Reply-To: mrmichelduku@outlook.com
+From:   michel <dukumichel09@gmail.com>
+Date:   Sun, 4 Jul 2021 09:44:00 +0000
+Message-ID: <CAJYsJ_FemZUmZKrcpWmDV7Hi=+fckBXhZRkGuSLXSSg5yFiseA@mail.gmail.com>
+Subject: Please respond urgently
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Greetings,
 
-There is a spelling mistake in the Kconfig text. Fix it.
+I know that this mail will come to you as a surprise as we have never
+met before, but need not to worry as I am contacting you for a good
+business. I need your urgent assistance in transferring the sum of
+$11.3million to your private account Where this money can be shared
+between us. The money has been here in our Bank lying dormant for
+years without anybody coming for the claim.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- arch/powerpc/platforms/ps3/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I want to release the money to you as the relative to our deceased
+customer (the account owner) who died in a plane crash with his family
+since October 2005. By indicating your interest I will send you the
+full details on how the business will be executed.
 
-diff --git a/arch/powerpc/platforms/ps3/Kconfig b/arch/powerpc/platforms/ps3/Kconfig
-index a4048b8c8c50..610682caabc4 100644
---- a/arch/powerpc/platforms/ps3/Kconfig
-+++ b/arch/powerpc/platforms/ps3/Kconfig
-@@ -90,7 +90,7 @@ config PS3_VERBOSE_RESULT
- 	bool "PS3 Verbose LV1 hypercall results" if PS3_ADVANCED
- 	depends on PPC_PS3
- 	help
--	  Enables more verbose log mesages for LV1 hypercall results.
-+	  Enables more verbose log messages for LV1 hypercall results.
- 
- 	  If in doubt, say N here and reduce the size of the kernel by a
- 	  small amount.
--- 
-2.31.1
-
+Best Regards,
+Michel Duku.
