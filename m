@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDE63BB2AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECC23BB2C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233479AbhGDXQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:16:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50794 "EHLO mail.kernel.org"
+        id S233945AbhGDXQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:16:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233157AbhGDXON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:14:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FB5361986;
-        Sun,  4 Jul 2021 23:09:34 +0000 (UTC)
+        id S233202AbhGDXOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:14:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 351B661405;
+        Sun,  4 Jul 2021 23:09:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440175;
-        bh=Auz1i9Vu8ZGHbO+T/8MnQgeUUVcxEUmWz8KkWj4sn7s=;
+        s=k20201202; t=1625440183;
+        bh=aZU4r3G57Y5xXD1IZkS1KN+47+dzWYcVJPYC0sf3gXQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mGXiEwL1KqETYQrvX9PFQO5T7FKUEXcWnMo9njNR0aXGI8Kj5iRbFSJwWSQ6E1hOL
-         ZGzBTVYSJxHX1kMp7IlaoUfnqElJu1pbGHjsJh5SGYUC1TdHLbrvozuh8fFBGSHbbC
-         AolD4AOldM+ojmeb95nXuPvqlL1wrCVY/y7FifMah3sh1JcbarblS6n61KBi4TXJ+s
-         TtdP420eJFBPqoqVGSz/s2iFr4F1iv93K7WUWSUYMa/tgrtGyokBBLDPt7dtKht9VC
-         LU47qTk9tOXMajsVUnR2Eiy52wfUw+kkcUzkFVnu66HWrqYJDdHn3eUOpVmDtsJ7+G
-         NHvxam3/AEO2w==
+        b=SJ5lRidDeNydWQ8yidmxRtYdGhJ4OTvN2VZ7Z1EnFj/gg2lp+35gtG/qsBazeU9G+
+         /WIUDwMQChbTX4F6BJcsOIC9JATJoZDGH58wpYXyOw6GM9Y55WYfrRL6L9SGUe1mKb
+         79r7ThqLGav9gFiHtxkiYeaDqq2VqXT5SUEh4iBNAXfydrPE/y/7EKHZlY62Tde6iy
+         XHRgxrsBgwR7PRj3H/ljndte37WMA57Z6b8OG3wurDDLDNm/R+UAj3ahiTlATfGTY3
+         YkZTOpZJ6D6kfWkRwN2PPwTvt4KzhI8QajJ/kBq9LvnsNOb/aYiSuGJXIIdSxL5IMx
+         k2vSHo3V1v/QQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Axel Lin <axel.lin@ingics.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 68/70] regulator: mt6358: Fix vdram2 .vsel_mask
-Date:   Sun,  4 Jul 2021 19:08:01 -0400
-Message-Id: <20210704230804.1490078-68-sashal@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 03/50] media: s5p: fix pm_runtime_get_sync() usage count
+Date:   Sun,  4 Jul 2021 19:08:51 -0400
+Message-Id: <20210704230938.1490742-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210704230804.1490078-1-sashal@kernel.org>
-References: <20210704230804.1490078-1-sashal@kernel.org>
+In-Reply-To: <20210704230938.1490742-1-sashal@kernel.org>
+References: <20210704230938.1490742-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,34 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 50c9462edcbf900f3d5097ca3ad60171346124de ]
+[ Upstream commit fdc34e82c0f968ac4c157bd3d8c299ebc24c9c63 ]
 
-The valid vsel value are 0 and 12, so the .vsel_mask should be 0xf.
+The pm_runtime_get_sync() internally increments the
+dev->power.usage_count without decrementing it, even on errors.
+Replace it by the new pm_runtime_resume_and_get(), introduced by:
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+in order to properly decrement the usage counter, avoiding
+a potential PM usage counter leak.
 
-Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Reviewed-by: Axel Lin <axel.lin@ingics.com>
-Link: https://lore.kernel.org/r/1624424169-510-1-git-send-email-hsin-hsiung.wang@mediatek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+While here, check if the PM runtime error was caught at
+s5p_cec_adap_enable().
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/mt6358-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/s5p-cec/s5p_cec.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/mt6358-regulator.c b/drivers/regulator/mt6358-regulator.c
-index 13cb6ac9a892..1d4eb5dc4fac 100644
---- a/drivers/regulator/mt6358-regulator.c
-+++ b/drivers/regulator/mt6358-regulator.c
-@@ -457,7 +457,7 @@ static struct mt6358_regulator_info mt6358_regulators[] = {
- 	MT6358_REG_FIXED("ldo_vaud28", VAUD28,
- 			 MT6358_LDO_VAUD28_CON0, 0, 2800000),
- 	MT6358_LDO("ldo_vdram2", VDRAM2, vdram2_voltages, vdram2_idx,
--		   MT6358_LDO_VDRAM2_CON0, 0, MT6358_LDO_VDRAM2_ELR0, 0x10, 0),
-+		   MT6358_LDO_VDRAM2_CON0, 0, MT6358_LDO_VDRAM2_ELR0, 0xf, 0),
- 	MT6358_LDO("ldo_vsim1", VSIM1, vsim_voltages, vsim_idx,
- 		   MT6358_LDO_VSIM1_CON0, 0, MT6358_VSIM1_ANA_CON0, 0xf00, 8),
- 	MT6358_LDO("ldo_vibr", VIBR, vibr_voltages, vibr_idx,
+diff --git a/drivers/media/platform/s5p-cec/s5p_cec.c b/drivers/media/platform/s5p-cec/s5p_cec.c
+index 6ddcc35b0bbd..5e80352f506b 100644
+--- a/drivers/media/platform/s5p-cec/s5p_cec.c
++++ b/drivers/media/platform/s5p-cec/s5p_cec.c
+@@ -35,10 +35,13 @@ MODULE_PARM_DESC(debug, "debug level (0-2)");
+ 
+ static int s5p_cec_adap_enable(struct cec_adapter *adap, bool enable)
+ {
++	int ret;
+ 	struct s5p_cec_dev *cec = cec_get_drvdata(adap);
+ 
+ 	if (enable) {
+-		pm_runtime_get_sync(cec->dev);
++		ret = pm_runtime_resume_and_get(cec->dev);
++		if (ret < 0)
++			return ret;
+ 
+ 		s5p_cec_reset(cec);
+ 
 -- 
 2.30.2
 
