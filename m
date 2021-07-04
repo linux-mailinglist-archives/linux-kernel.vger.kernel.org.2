@@ -2,124 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C093BAE12
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 19:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D6A3BAE0D
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 19:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhGDRc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 13:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhGDRc1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 13:32:27 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F052C061574;
-        Sun,  4 Jul 2021 10:29:51 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id m18-20020a9d4c920000b029048b4f23a9bcso3854551otf.9;
-        Sun, 04 Jul 2021 10:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=utOMOZ5qE7hKQhLEGBCvyNpeZymNCBG8WQJUaRUgXWo=;
-        b=Khjn75GpOAMKtm8eVPqoHLu8k2w+01mg7pTAF/13kTlj4bBfJSUIQueHbMaNTrD7Lm
-         2FADilB7xgxU/C1E02pXSiespQudL2SB09mS+lq4Orjl6SGPebExzxMx58WTmLCR+imo
-         slmZqBz6Cgs0wfyTTAYrAuIh4HJN02aX4mcuyZbA0KV5RJL7CcXltKfSkP2pUETlvAgr
-         dBoPeUlbM93j3MRBPi21Y/vYQOOYBf6GFUYlVVZEd8efPX1DFKlPR5M+w9gXmFuStvqD
-         wc4fwow6P+3+v6mJOFx2k09uFor8LKZVTyuxDMIL4imA4TA5hoAoAQeQeli5cFniH0pP
-         whzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=utOMOZ5qE7hKQhLEGBCvyNpeZymNCBG8WQJUaRUgXWo=;
-        b=M6I5Q+qFhPPznDb9/8D7alURz+mPWf7BaHvtF4fCPGq7VTW5staU+VvESDGZApZLcp
-         lifEFBsLpB/7NrFF+dWTzbT9/ANPqsnVeubtTK74hphhx0PUg/rwT4CRCOwGo6yvyV/M
-         jJr+jQw7TQa8pJJFS5PPXbb6fH38FyfVekDDp5IdWVVeOVxmjc7QnuyfOTuDR+tnAGTc
-         iadkOvBOlH6J90y+5hDuk5GvjTcS6WNjFE01znDpV01Geu7vJltO8zVMJ0om8RwVJJfg
-         QI8YExR+xPf1QY7GnwQoG417YvyYLEi5fWRAog1w5rgClZrGFdtLwcPXnSUF35pBPseE
-         Qe2g==
-X-Gm-Message-State: AOAM532HefmG+a5herWZw4maK1Q4SZ0T7ZxwcP9xWwuWBj24MIFNccmx
-        OerL8ik3sRrHLhfvlYu7gGk=
-X-Google-Smtp-Source: ABdhPJzpMXM9fzDvroQet1BKSgCQRamlFEmNnN9jXhHcNWmWui3LQal0gLKPCPtf1kk8Irupt3o/Gw==
-X-Received: by 2002:a05:6830:245c:: with SMTP id x28mr7986541otr.169.1625419790960;
-        Sun, 04 Jul 2021 10:29:50 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 3sm1788970oob.1.2021.07.04.10.29.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jul 2021 10:29:50 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 4 Jul 2021 10:29:48 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Sterba <dsterba@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH] iov_iter: separate direction from flavour
-Message-ID: <20210704172948.GA1730187@roeck-us.net>
+        id S229698AbhGDRaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 13:30:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229575AbhGDRaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 13:30:20 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACFD0613B1;
+        Sun,  4 Jul 2021 17:27:42 +0000 (UTC)
+Date:   Sun, 4 Jul 2021 18:30:07 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] iio: proximity: vcnl3020: add threshold options
+Message-ID: <20210704183007.67e27890@jic23-huawei>
+In-Reply-To: <20210621143051.200800-3-i.mikhaylov@yadro.com>
+References: <20210621143051.200800-1-i.mikhaylov@yadro.com>
+        <20210621143051.200800-3-i.mikhaylov@yadro.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 21 Jun 2021 17:30:51 +0300
+Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
 
-On Thu, Apr 22, 2021 at 02:50:39PM -0400, Al Viro wrote:
-> Instead of having them mixed in iter->type, use separate ->iter_type
-> and ->data_source (u8 and bool resp.)  And don't bother with (pseudo-)
-> bitmap for the former - microoptimizations from being able to check
-> if the flavour is one of two values are not worth the confusion for
-> optimizer.  It can't prove that we never get e.g. ITER_IOVEC | ITER_PIPE,
-> so we end up with extra headache.
+> Add the low/high threshold options.
 > 
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
+Hi,
+A few comments inline.
 
-This patch results in the following runtime warning on nommu systems.
+Thanks,
 
-[    8.567154] Run /init as init process
-[    8.572112] ------------[ cut here ]------------
-[    8.572248] WARNING: CPU: 0 PID: 1 at lib/iov_iter.c:468 iov_iter_init+0x35/0x58
-[    8.572484] CPU: 0 PID: 1 Comm: init Not tainted 5.13.0-09606-g303392fd5c16 #1
-[    8.572695] Hardware name: MPS2 (Device Tree Support)
-[    8.573278] [<2100ae75>] (unwind_backtrace) from [<2100a2bb>] (show_stack+0xb/0xc)
-[    8.573594] [<2100a2bb>] (show_stack) from [<2100da03>] (__warn+0x5f/0x80)
-[    8.573738] [<2100da03>] (__warn) from [<2100da55>] (warn_slowpath_fmt+0x31/0x60)
-[    8.573886] [<2100da55>] (warn_slowpath_fmt) from [<210d8e1d>] (iov_iter_init+0x35/0x58)
-[    8.574044] [<210d8e1d>] (iov_iter_init) from [<21059cab>] (vfs_read+0x89/0xc6)
-[    8.574191] [<21059cab>] (vfs_read) from [<2105d92b>] (read_code+0x15/0x2e)
-[    8.574329] [<2105d92b>] (read_code) from [<21085a8d>] (load_flat_file+0x341/0x4f0)
-[    8.574481] [<21085a8d>] (load_flat_file) from [<21085e03>] (load_flat_binary+0x47/0x2dc)
-[    8.574639] [<21085e03>] (load_flat_binary) from [<2105d581>] (bprm_execve+0x1fd/0x32c)
-[    8.574797] [<2105d581>] (bprm_execve) from [<2105dbb3>] (kernel_execve+0xa3/0xac)
-[    8.574947] [<2105dbb3>] (kernel_execve) from [<211e7095>] (kernel_init+0x31/0xb0)
-[    8.575099] [<211e7095>] (kernel_init) from [<2100814d>] (ret_from_fork+0x11/0x24)
-[    8.575287] Exception stack(0x21429fb0 to 0x21429ff8)
-[    8.575433] 9fa0:                                     00000000 00000000 00000000 00000000
-[    8.575593] 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-[    8.575743] 9fe0: 00000000 00000000 00000000 00000000 00000000 00000000
-[    8.575933] ---[ end trace ba15568c05035a77 ]---
+Jonathan
 
-This is with qemu's mps2-an385 emulation and and mps2_defconfig.
-The same warning is also observed with m68k and mcf5208evb,
-though the traceback isn't as nice.
+> ---
+>  drivers/iio/proximity/vcnl3020.c | 95 ++++++++++++++++++++++++++++++++
+>  1 file changed, 95 insertions(+)
+> 
+> diff --git a/drivers/iio/proximity/vcnl3020.c b/drivers/iio/proximity/vcnl3020.c
+> index 2e65127d5359..f3320de014e4 100644
+> --- a/drivers/iio/proximity/vcnl3020.c
+> +++ b/drivers/iio/proximity/vcnl3020.c
+> @@ -255,6 +255,91 @@ static bool vcnl3020_is_thr_enabled(struct vcnl3020_data *data)
+>  	return !!(icr & VCNL_ICR_THRES_EN);
+>  }
+>  
+> +static int vcnl3020_read_event(struct iio_dev *indio_dev,
+> +			       const struct iio_chan_spec *chan,
+> +			       enum iio_event_type type,
+> +			       enum iio_event_direction dir,
+> +			       enum iio_event_info info,
+> +			       int *val, int *val2)
+> +{
+> +	int rc;
+> +	struct vcnl3020_data *data = iio_priv(indio_dev);
+> +	__be16 res;
+> +
+> +	switch (info) {
+> +	case IIO_EV_INFO_VALUE:
+> +		switch (dir) {
+> +		case IIO_EV_DIR_RISING:
+> +			rc = regmap_bulk_read(data->regmap, VCNL_PS_HI_THR_HI,
+> +					      &res, sizeof(res));
+> +			if (rc < 0)
+> +				return rc;
+> +			*val = be16_to_cpu(res);
+> +			return IIO_VAL_INT;
+> +		case IIO_EV_DIR_FALLING:
+> +			rc = regmap_bulk_read(data->regmap, VCNL_PS_LO_THR_HI,
+> +					      &res, sizeof(res));
+> +			if (rc < 0)
+> +				return rc;
+> +			*val = be16_to_cpu(res);
+> +			return IIO_VAL_INT;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int vcnl3020_write_event(struct iio_dev *indio_dev,
+> +				const struct iio_chan_spec *chan,
+> +				enum iio_event_type type,
+> +				enum iio_event_direction dir,
+> +				enum iio_event_info info,
+> +				int val, int val2)
+> +{
+> +	int rc;
+> +	__be16 buf;
+> +	struct vcnl3020_data *data = iio_priv(indio_dev);
+> +
+> +	rc = iio_device_claim_direct_mode(indio_dev);
+Why? 
 
-WARNING: CPU: 0 PID: 1 at lib/iov_iter.c:468 0x40135e4e
-...
-Call Trace:
-        [<402b0f42>] 0x402b0f42
- [<402b0fea>] 0x402b0fea
- [<40135e4e>] 0x40135e4e
- [<40135e4e>] 0x40135e4e
- [<4009c610>] 0x4009c610
-...
+The intent of that function is to protect against mode transitions, so we
+can't move from sysfs type captures to interrupt driven ones whilst
+a sysfs read is in progress.   That's not the case here (or in the existing
+driver where this is used).   So I think what you really want is a locally
+defined lock that allows you to ensure device state is consistent if
+you have any read / modify / write cycles.
 
-Reverting this patch fixes the problem for both mps2-an385 and mcf5208evb.
+For these particular registers I'm not even seeing that. Regmap has it's
+own locking to avoid concurrency issues inside it's functions, so I'm not
+sure you need a lock at all.
 
-Guenter
+> +	if (rc)
+> +		return rc;
+> +
+> +	switch (info) {
+> +	case IIO_EV_INFO_VALUE:
+> +		switch (dir) {
+> +		case IIO_EV_DIR_RISING:
+> +			/* 16 bit word/ low * high */
+> +			buf = cpu_to_be16(val);
+> +			rc = regmap_bulk_write(data->regmap, VCNL_PS_HI_THR_HI,
+> +					       &buf, sizeof(buf));
+> +			if (rc < 0)
+> +				goto out_release_direct_mode;
+> +			rc = IIO_VAL_INT;
+> +			goto out_release_direct_mode;
+> +		case IIO_EV_DIR_FALLING:
+> +			buf = cpu_to_be16(val);
+> +			rc = regmap_bulk_write(data->regmap, VCNL_PS_LO_THR_HI,
+> +					       &buf, sizeof(buf));
+> +			if (rc < 0)
+> +				goto out_release_direct_mode;
+> +			rc = IIO_VAL_INT;
+> +			goto out_release_direct_mode;
+> +		default:
+> +			rc = -EINVAL;
+> +			goto out_release_direct_mode;
+> +		}
+> +	default:
+> +		rc = -EINVAL;
+> +		goto out_release_direct_mode;
+> +	}
+> +out_release_direct_mode:
+> +	iio_device_release_direct_mode(indio_dev);
+> +
+> +	return rc;
+> +}
+> +
+>  static int vcnl3020_enable_periodic(struct iio_dev *indio_dev,
+>  				    struct vcnl3020_data *data)
+>  {
+> @@ -356,6 +441,14 @@ static int vcnl3020_read_event_config(struct iio_dev *indio_dev,
+>  
+>  static const struct iio_event_spec vcnl3020_event_spec[] = {
+>  	{
+> +		.type = IIO_EV_TYPE_THRESH,
+> +		.dir = IIO_EV_DIR_RISING,
+> +		.mask_separate = BIT(IIO_EV_INFO_VALUE),
+> +	}, {
+> +		.type = IIO_EV_TYPE_THRESH,
+> +		.dir = IIO_EV_DIR_FALLING,
+> +		.mask_separate = BIT(IIO_EV_INFO_VALUE),
+> +	}, {
+>  		.type = IIO_EV_TYPE_THRESH,
+>  		.dir = IIO_EV_DIR_EITHER,
+>  		.mask_separate = BIT(IIO_EV_INFO_ENABLE),
+> @@ -445,6 +538,8 @@ static const struct iio_info vcnl3020_info = {
+>  	.read_raw = vcnl3020_read_raw,
+>  	.write_raw = vcnl3020_write_raw,
+>  	.read_avail = vcnl3020_read_avail,
+> +	.read_event_value = vcnl3020_read_event,
+> +	.write_event_value = vcnl3020_write_event,
+>  	.read_event_config = vcnl3020_read_event_config,
+>  	.write_event_config = vcnl3020_write_event_config,
+>  };
+
