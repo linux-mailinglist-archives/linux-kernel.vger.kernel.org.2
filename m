@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268113BB2D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE64A3BB2F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhGDXQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:16:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56944 "EHLO mail.kernel.org"
+        id S231924AbhGDXQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:16:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233461AbhGDXO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:14:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05A2A61997;
-        Sun,  4 Jul 2021 23:09:49 +0000 (UTC)
+        id S233492AbhGDXO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:14:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9D6D61941;
+        Sun,  4 Jul 2021 23:09:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440190;
-        bh=lEsf+MMZK+3GJndDa9D1xTAMOcuSfzQ+aaQ+k6xq4QU=;
+        s=k20201202; t=1625440196;
+        bh=Da050tis89NjJusNn/tyP2Jxv0QPnmJ1/hwd8rD8adE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NPVJck0NfeeTo3nHagrp+tj1UQ2+/Z+oglrwcCBYkaA1Yf+KN5KtRBGlS5ToC0zUg
-         9eMIGqeMmxvUSBqI1agn8Gc0oiWz88vgfAEYHuSnZmOHpBsWE2GbdBkX+YDzwHvIFH
-         fE7a/nuc+FUvmId05g32XgcUa1ZwyOo6lB0UL8jZxiL1mfGakAnunaWWC7X+Kbgod8
-         WDlRtpEdIpA5LU4cSo+4YMdb0X36xFLIVdfTxeDb8vAPExsK0aRasgsm1cRpntyZiM
-         ozL9gC/0BPC6mVSjwi8mdaW9ZeipWZSny6KmlHOKLqmEhDVkv2j6pT6AQPGwOWNw9X
-         eKVVK1Jy9vibQ==
+        b=SgLmRNBgwFfPHjkP0nZugFOrsT64oN7mNBUMJNGWXUdZa/UxR5nFW/pXwVuF59y/S
+         +IAWG0vHQ4TIyS3XGImh0SvUxDGhpCrlczPAB7g6fkSXpp+kcksN6zqfs10znqxiiW
+         1TQAO1Zn3ugAsA3k68P9vz1iWfIwxaU25BxGP2FMUm0SRw+5uUChBEw+hx8kNEzMB4
+         dKdLBOWtJWqU/CGQzTFf+DJT60YBQjuUWixcKT9QkCe/WoO6R3zMiSzTZ2ZmFnq17c
+         b3j/cYWmgdkjOfxoqgRJFDMsA0Rqzb8JfvY7LAPNOHr/KfuQo0wHTxt4Qv/WUHfL0V
+         xUCnoDnu566yg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jay Fang <f.fangjian@huawei.com>, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 09/50] spi: spi-loopback-test: Fix 'tx_buf' might be 'rx_buf'
-Date:   Sun,  4 Jul 2021 19:08:57 -0400
-Message-Id: <20210704230938.1490742-9-sashal@kernel.org>
+Cc:     Bixuan Cui <cuibixuan@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.4 14/50] crypto: nx - add missing MODULE_DEVICE_TABLE
+Date:   Sun,  4 Jul 2021 19:09:02 -0400
+Message-Id: <20210704230938.1490742-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704230938.1490742-1-sashal@kernel.org>
 References: <20210704230938.1490742-1-sashal@kernel.org>
@@ -41,33 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jay Fang <f.fangjian@huawei.com>
+From: Bixuan Cui <cuibixuan@huawei.com>
 
-[ Upstream commit 9e37a3ab0627011fb63875e9a93094b6fc8ddf48 ]
+[ Upstream commit 06676aa1f455c74e3ad1624cea3acb9ed2ef71ae ]
 
-In function 'spi_test_run_iter': Value 'tx_buf' might be 'rx_buf'.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Signed-off-by: Jay Fang <f.fangjian@huawei.com>
-Link: https://lore.kernel.org/r/1620629903-15493-5-git-send-email-f.fangjian@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-loopback-test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/nx/nx-842-pseries.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/spi/spi-loopback-test.c b/drivers/spi/spi-loopback-test.c
-index 51633b2b6437..69a9df2cbbcf 100644
---- a/drivers/spi/spi-loopback-test.c
-+++ b/drivers/spi/spi-loopback-test.c
-@@ -868,7 +868,7 @@ static int spi_test_run_iter(struct spi_device *spi,
- 		test.transfers[i].len = len;
- 		if (test.transfers[i].tx_buf)
- 			test.transfers[i].tx_buf += tx_off;
--		if (test.transfers[i].tx_buf)
-+		if (test.transfers[i].rx_buf)
- 			test.transfers[i].rx_buf += rx_off;
- 	}
+diff --git a/drivers/crypto/nx/nx-842-pseries.c b/drivers/crypto/nx/nx-842-pseries.c
+index 2de5e3672e42..258c5e38a551 100644
+--- a/drivers/crypto/nx/nx-842-pseries.c
++++ b/drivers/crypto/nx/nx-842-pseries.c
+@@ -1071,6 +1071,7 @@ static const struct vio_device_id nx842_vio_driver_ids[] = {
+ 	{"ibm,compression-v1", "ibm,compression"},
+ 	{"", ""},
+ };
++MODULE_DEVICE_TABLE(vio, nx842_vio_driver_ids);
  
+ static struct vio_driver nx842_vio_driver = {
+ 	.name = KBUILD_MODNAME,
 -- 
 2.30.2
 
