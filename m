@@ -2,126 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5AE3BAF0B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 22:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629E73BAF12
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 22:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbhGDUos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 16:44:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
+        id S230011AbhGDUq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 16:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhGDUor (ORCPT
+        with ESMTP id S229549AbhGDUq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 16:44:47 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67474C061574
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 13:42:11 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id k21so21754775ljh.2
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 13:42:11 -0700 (PDT)
+        Sun, 4 Jul 2021 16:46:56 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BA9C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 13:44:20 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id p24so21777410ljj.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 13:44:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ksLHrWRSt1VNjvN6bc4/KOwJ4T3qDcXRPZ+IP2o5+QE=;
-        b=QD+ir9k0F2OONnvTr+UhKJ/sIggattJ7zVPZJl47DjBfvS3pHKa4toN+gcL3pK14pv
-         H/CQq49jDcTxGqwfSwbICgN6GoYwjpm/aQsz7b8xm2SxSTtVIX1WiywveZbxFy0EjBTW
-         O3f3pAVnZSTbWVQPlRP9iKBXrE5lrWtRyiKho=
+        bh=kP0cbP2YJoKPktOWpMBVQPwBLrKZ9McZaYdUD/h15zQ=;
+        b=MbL4wmviJb1hL9n5Li76WzutyWco3aAlQOSe4mKCYVEYQtyvbfFb/7DI7X8mpr49ZP
+         5WxiBHEZiCTVhBRHY0tTDTXvkB2JiWjQaudMas64f1WFapJJHUYfvoAUrdsOlG2CcVww
+         vCUIPLcQdgQDGfNF4zNSQNCZ8CPwPk6oUaLuA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ksLHrWRSt1VNjvN6bc4/KOwJ4T3qDcXRPZ+IP2o5+QE=;
-        b=fDja1mSLvN901aygD+DXRGpnp3a+hlv9jyVeIiMhW/IsrSww7SxC9AnST3bZ0lzhQm
-         4T84ZsicT5yoOizp/ogrST8m8B2oleTk0A4XVdRDGHwzDbUQ0T8k7fTQvsMIjjOGuu+c
-         Uh5pcSV3kNvE5EINMivV+cA2jZblBuH++++LTr9krIHo8TdMEm22jmdfRYWMUzxZ6F+7
-         Me7keSQ9AsOEoLSXuvCuiWtC62aKe39Pv6k6n/K/1+hda5ZYXFC27cy9dvihlqnsQ4cn
-         Xs3xCN48yH8PD1UTodtSKD+fkCR5F2wNLGuvuRZmB8qPIwHXaz5LtbsY8iH0Bc+BQsXA
-         k+Iw==
-X-Gm-Message-State: AOAM530pUNSRcUrrdZU+kZ8lRtlezwPGW89xaxQIRlzPOGdq9qHqXWZy
-        UysuX0xZRIKQnxExtlJErsKzhvxT7mY40JsS
-X-Google-Smtp-Source: ABdhPJwwm7F9pYIjRLwwDoWqibPcl1cV2Hp6Avdiz4z3aTXRxpOGUjaT+AogDXJLz+n4m9td4vfTNA==
-X-Received: by 2002:a2e:b5c8:: with SMTP id g8mr8432032ljn.406.1625431329409;
-        Sun, 04 Jul 2021 13:42:09 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id i6sm878339lfe.164.2021.07.04.13.42.08
+        bh=kP0cbP2YJoKPktOWpMBVQPwBLrKZ9McZaYdUD/h15zQ=;
+        b=U8MDBUDk3qA4JTQDknuuhwU3NspIS+0HUiKH4C9NGPOXRZbzQ3oZWR1oVr5nu095rj
+         7p+7uEPYtsGarrSuGaNbBc/qHVjDXkCFJW/JMNNeNSa3QQO9aLleUULGQeMC0xIdTlUq
+         xQSLhpowUmMfczxHwpghwwRuaoqSj4JUovSKrJjEY5RQd+jwDGf9OX9Xeb4bpdZOxlq0
+         dP/xAlZePeX/ULyYhtFEb4/DuX7YRrh9Y68t1PLQsvgp64Kz0A4Jmi4OLIXhlP0S8F34
+         AHj4e+UDjhbDDqZIh8qVFBX8So3oXb8d9D+/R/cXWy3T76j5vgbBH5kt1R6dpSH0YIFp
+         jVKg==
+X-Gm-Message-State: AOAM530mme9N+2suqHbUEFGdZFd3HwQwtW3PD1v1lNM1+jmPghK3L69V
+        yjwA7Nk5f6Pshpz0hu14zi+zfBuNDqmTVq0V
+X-Google-Smtp-Source: ABdhPJxfYMwtrMkb5I5M8xHvTzifxapDdFLz6WD5QfR9aQA26dB8Dk5JQm8ZYk5tdG4W+3sX/oGVhg==
+X-Received: by 2002:a2e:9c02:: with SMTP id s2mr8297536lji.299.1625431458768;
+        Sun, 04 Jul 2021 13:44:18 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id y8sm877384lfe.112.2021.07.04.13.44.18
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Jul 2021 13:42:08 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id p16so1179828lfc.5
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 13:42:08 -0700 (PDT)
-X-Received: by 2002:ac2:4903:: with SMTP id n3mr7674859lfi.487.1625431327793;
- Sun, 04 Jul 2021 13:42:07 -0700 (PDT)
+        Sun, 04 Jul 2021 13:44:18 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id k21so21758904ljh.2
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 13:44:18 -0700 (PDT)
+X-Received: by 2002:a2e:a276:: with SMTP id k22mr8258122ljm.465.1625431458046;
+ Sun, 04 Jul 2021 13:44:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210704172948.GA1730187@roeck-us.net> <CAHk-=wheBFiejruhRqByt0ey1J8eU=ZUo9XBbm-ct8_xE_+B9A@mail.gmail.com>
- <676ae33e-4e46-870f-5e22-462fc97959ed@roeck-us.net> <CAHk-=wj_AROgVZQ1=8mmYCXyu9JujGbNbxp+emGr5i3FagDayw@mail.gmail.com>
- <19689998-9dfe-76a8-30d4-162648e04480@roeck-us.net>
-In-Reply-To: <19689998-9dfe-76a8-30d4-162648e04480@roeck-us.net>
+References: <20210704172440.GA2966393@paulmck-ThinkPad-P17-Gen-1>
+ <CAHk-=whSGHOiuv1yARox+P3k2uTLtJ=F51aKoJYVi5UPgjitCQ@mail.gmail.com> <20210704203201.GT4397@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20210704203201.GT4397@paulmck-ThinkPad-P17-Gen-1>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 4 Jul 2021 13:41:51 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj0Q8R_3AxZO-34Gp2sEQAGUKhw7t6g4QtsnSxJTxb7WA@mail.gmail.com>
-Message-ID: <CAHk-=wj0Q8R_3AxZO-34Gp2sEQAGUKhw7t6g4QtsnSxJTxb7WA@mail.gmail.com>
-Subject: Re: [PATCH] iov_iter: separate direction from flavour
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+Date:   Sun, 4 Jul 2021 13:44:02 -0700
+X-Gmail-Original-Message-ID: <CAHk-=winZfYrRS-dbLT0RkRPJwwQuFDTwrbQiU=krRtsZ5qYGQ@mail.gmail.com>
+Message-ID: <CAHk-=winZfYrRS-dbLT0RkRPJwwQuFDTwrbQiU=krRtsZ5qYGQ@mail.gmail.com>
+Subject: Re: [GIT PULL] RCU changes for v5.14
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 1:28 PM Guenter Roeck <linux@roeck-us.net> wrote:
+On Sun, Jul 4, 2021 at 1:32 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> Turns out that, at least on m68k/nommu, USER_DS and KERNEL_DS are the same.
+> Once again, please accept my apologies, and thank you for the explanation.
+> I should have sent something like the following, correct?
+
+Correct.  That
+
+> I have done an example merge here:
 >
-> #define USER_DS         MAKE_MM_SEG(TASK_SIZE)
-> #define KERNEL_DS       MAKE_MM_SEG(0xFFFFFFFF)
+>         git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git merge-example-rcu
 
-Ahh. So the code is fine, it's just that "uaccess_kernel()" isn't
-something that can be reliably even tested for, and it will always
-return true on those nommu platforms.
+makes it trivial for me to just do that "git fetch" and compare what
+you did with what I did.
 
-And we don't have a "uaccess_user()" macro that would test if it
-matches USER_DS (and that also would always return true on those
-configurations), so we can't just change the
+Of course, now I've already pushed out my resolution, so it's too late
+(and I've forgotten which files were involved, so I'm too lazy to go
+back and check). But hopefully it matches anyway.
 
-        WARN_ON_ONCE(uaccess_kernel());
-
-into a
-
-        WARN_ON_ONCE(!uaccess_user());
-
-instead.
-
-Very annoying. Basically, every single use of "uaccess_kernel()" is unreliable.
-
-There aren't all that many of them, and most of them are irrelevant
-for no-mmu anyway (like the bpf tracing ones, or mm/memory.c). So this
-iov_iter.c case is likely the only one that would be an issue.
-
-That warning is something that should go away eventually anyway, but I
-_like_ that warning for now, just to get coverage. But apparently it's
-just not going to be the case for these situations.
-
-My inclination is to keep it around for a while - to see if it catches
-anything else - but remove it for the final 5.14 release because of
-these nommu issues.
-
-Of course, I will almost certainly not remember to do that unless
-somebody reminds me...
-
-The other alternative would be to just make nommu platforms that have
-KERNEL_DS==USER_DS simply do
-
-    #define uaccess_kernel() (false)
-
-and avoid it that way, since that's closer to what the modern
-non-CONFIG_SET_FS world view is, and is what include/linux/uaccess.h
-does for that case..
-
-               Linus
+             Linus
