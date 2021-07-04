@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B60F3BB404
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EC53BB460
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhGDXVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:21:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50590 "EHLO mail.kernel.org"
+        id S230372AbhGDXZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:25:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233117AbhGDXOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:14:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5038661958;
-        Sun,  4 Jul 2021 23:09:25 +0000 (UTC)
+        id S233143AbhGDXON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:14:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA84961977;
+        Sun,  4 Jul 2021 23:09:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440166;
-        bh=fyS2pBw7otVL0+4RHwdOlbDlg7FT1yNzcGUexd630+c=;
+        s=k20201202; t=1625440168;
+        bh=rQ80Pd8jSZi7pRf0+k9IAkwTIRv0Y9XF0IEOvjTqhvc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d6i/R8JkxRvXkDHHQ8kLF4SEaBbGilbjZtDxKDws2RzLWnaT7fJtvLHbGXI5R36Y6
-         xpYUFdZrT9Q8FB7n9BSd99rWt7TiEvv5zsY/a9ap+Q7oc0idH8i36WYeptoZ/4MHxA
-         kpKOWmrUZoX5/H5yVpMnTzM4IcTafaTcxxuoD5rvdBjcdB9ZI9d4WMW2Zk0hmMGu7z
-         nSqERCunG/TUVfS8bn+3S1YCsBKyhaXnBBvxvRYHeaK0u3r4BxTDpnUhLqXt88JYly
-         0OsKz40UP9NkctQ3MrsBW4TimY0AGksKNAVGYu2PbV4qwEkdxbE4+QfaKr3/t0O4YP
-         hATPuyjPOvVHQ==
+        b=RbqBMqUKsYJz0gYQAE5o5a+yBQfS6E0lPrcqc40rzIJ1wqiphcEFgFU0t/NeFtC/e
+         NJYnPNc349wRZiWv1pZYe1niUI9FUzoTIWjFjkDeZkmMs5CYa/Aa5iIwORIRrSKDSK
+         Yj5wGFkM1G2AlyI8f5BibHmcLEzipaoNZELjsrEIwPc7aiYneuxZ1x4/t6OMYDo0Ch
+         eKXL4YkFAgGmXuJyFOGTAcoarzRFKXHjjr4pa/4a7qZzTnwV+IMBLf4FX+oAWDYmp7
+         frgl3Bn/XO3TsRg6EpNtVmCOT0zGvtERNdhZAs1X49evSUmq99ADQhnr1k4RGXRYqI
+         eJFa9mbG2Z9ug==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+Cc:     Qu Wenruo <wqu@suse.com>, Ritesh Harjani <riteshh@linux.ibm.com>,
+        Anand Jain <anand.jain@oracle.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 61/70] btrfs: make Private2 lifespan more consistent
-Date:   Sun,  4 Jul 2021 19:07:54 -0400
-Message-Id: <20210704230804.1490078-61-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 63/70] btrfs: don't clear page extent mapped if we're not invalidating the full page
+Date:   Sun,  4 Jul 2021 19:07:56 -0400
+Message-Id: <20210704230804.1490078-63-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704230804.1490078-1-sashal@kernel.org>
 References: <20210704230804.1490078-1-sashal@kernel.org>
@@ -44,82 +45,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit 87b4d86baae219a9a79f6b0a1434b2a42fd40d09 ]
+[ Upstream commit bcd77455d590eaa0422a5e84ae852007cfce574a ]
 
-Currently we use page Private2 bit to indicate that we have ordered
-extent for the page range.
+[BUG]
+With current btrfs subpage rw support, the following script can lead to
+fs hang:
 
-But the lifespan of it is not consistent, during regular writeback path,
-there are two locations to clear the same PagePrivate2:
+  $ mkfs.btrfs -f -s 4k $dev
+  $ mount $dev -o nospace_cache $mnt
+  $ fsstress -w -n 100 -p 1 -s 1608140256 -v -d $mnt
 
-    T ----- Page marked Dirty
-    |
-    + ----- Page marked Private2, through btrfs_run_dealloc_range()
-    |
-    + ----- Page cleared Private2, through btrfs_writepage_cow_fixup()
-    |       in __extent_writepage_io()
-    |       ^^^ Private2 cleared for the first time
-    |
-    + ----- Page marked Writeback, through btrfs_set_range_writeback()
-    |       in __extent_writepage_io().
-    |
-    + ----- Page cleared Private2, through
-    |       btrfs_writepage_endio_finish_ordered()
-    |       ^^^ Private2 cleared for the second time.
-    |
-    + ----- Page cleared Writeback, through
-            btrfs_writepage_endio_finish_ordered()
+The fs will hang at btrfs_start_ordered_extent().
 
-Currently PagePrivate2 is mostly to prevent ordered extent accounting
-being executed for both endio and invalidatepage.
-Thus only the one who cleared page Private2 is responsible for ordered
-extent accounting.
+[CAUSE]
+In above test case, btrfs_invalidate() will be called with the following
+parameters:
 
-But the fact is, in btrfs_writepage_endio_finish_ordered(), page
-Private2 is cleared and ordered extent accounting is executed
-unconditionally.
+  offset = 0 length = 53248 page dirty = 1 subpage dirty bitmap = 0x2000
 
-The race prevention only happens through btrfs_invalidatepage(), where
-we wait for the page writeback first, before checking the Private2 bit.
+Since @offset is 0, btrfs_invalidate() will try to invalidate the full
+page, and finally call clear_page_extent_mapped() which will detach
+subpage structure from the page.
 
-This means, Private2 is also protected by Writeback bit, and there is no
-need for btrfs_writepage_cow_fixup() to clear Priavte2.
+And since the page no longer has subpage structure, the subpage dirty
+bitmap will be cleared, preventing the dirty range from being written
+back, thus no way to wake up the ordered extent.
 
-This patch will change btrfs_writepage_cow_fixup() to just check
-PagePrivate2, not to clear it.
-The clearing will happen in either btrfs_invalidatepage() or
-btrfs_writepage_endio_finish_ordered().
+[FIX]
+Just follow other filesystems, only to invalidate the page if the range
+covers the full page.
 
-This makes the Private2 bit easier to understand, just meaning the page
-has unfinished ordered extent attached to it.
+There are cases like truncate_setsize() which can call
+btrfs_invalidatepage() with offset == 0 and length != 0 for the last
+page of an inode.
 
-And this patch is a hard requirement for the incoming refactoring for
-how we finished ordered IO for endio context, as the coming patch will
-check Private2 to determine if we need to do the ordered extent
-accounting.  Thus this patch is definitely needed or we will hang due to
-unfinished ordered extent.
+Although the old code will still try to invalidate the full page, we are
+still safe to just wait for ordered extent to finish.
+So it shouldn't cause extra problems.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Tested-by: Ritesh Harjani <riteshh@linux.ibm.com> # [ppc64]
+Tested-by: Anand Jain <anand.jain@oracle.com> # [aarch64]
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/inode.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 4f26dae63b64..d0f38d2890a0 100644
+index d0f38d2890a0..64274d3c4db5 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -2474,7 +2474,7 @@ int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end)
- 	struct btrfs_writepage_fixup *fixup;
+@@ -8213,7 +8213,19 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
+ 	 */
+ 	wait_on_page_writeback(page);
  
- 	/* this page is properly in the ordered list */
--	if (TestClearPagePrivate2(page))
-+	if (PagePrivate2(page))
- 		return 0;
- 
- 	/*
+-	if (offset) {
++	/*
++	 * For subpage case, we have call sites like
++	 * btrfs_punch_hole_lock_range() which passes range not aligned to
++	 * sectorsize.
++	 * If the range doesn't cover the full page, we don't need to and
++	 * shouldn't clear page extent mapped, as page->private can still
++	 * record subpage dirty bits for other part of the range.
++	 *
++	 * For cases that can invalidate the full even the range doesn't
++	 * cover the full page, like invalidating the last page, we're
++	 * still safe to wait for ordered extent to finish.
++	 */
++	if (!(offset == 0 && length == PAGE_SIZE)) {
+ 		btrfs_releasepage(page, GFP_NOFS);
+ 		return;
+ 	}
 -- 
 2.30.2
 
