@@ -2,68 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B413BAEA5
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 22:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE35D3BAEA6
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 22:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbhGDUAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 16:00:37 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:39568 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229614AbhGDUAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 16:00:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=kkGwSeTdihBY36VFXp/FW0w8u9NpfYN2EtWNHDIxCb4=; b=hj9idZMGWGuJ3OuEEx3R84ooYL
-        ZNgwUH5aH6cg/IZPHrfGZ84NRfkBRkqjskcuyHD7W9Ks9Ey/xMXLo9bVDP0YrbI/1+yhxbYgv5jjC
-        kstaa/KJ5OWOr3D5fCElI2wl0vBhrVMHP7A0gBI0Isafnc3PMqBnRJpVn3xURURd0SdI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m08FU-00C9ez-Qc; Sun, 04 Jul 2021 21:57:52 +0200
-Date:   Sun, 4 Jul 2021 21:57:52 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "huangguangbin (A)" <huangguangbin2@huawei.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        salil.mehta@huawei.com, lipeng321@huawei.com
-Subject: Re: [PATCH net-next 3/3] net: hns3: add support for link diagnosis
- info in debugfs
-Message-ID: <YOISwD+8ZoMpjP2m@lunn.ch>
-References: <1624545405-37050-1-git-send-email-huangguangbin2@huawei.com>
- <1624545405-37050-4-git-send-email-huangguangbin2@huawei.com>
- <20210624122517.7c8cb329@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <08395721-4ca1-9913-19fd-4d8ec7e41e4b@huawei.com>
- <20210701085447.2270b1df@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <a5d42bf6-d71f-978e-b9ae-6b04f072d988@huawei.com>
+        id S229794AbhGDUEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 16:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhGDUE2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 16:04:28 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FEFC061574
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 13:01:52 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id k8so21614996lja.4
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 13:01:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0Md0gkKPz/DPxslMHek692MiRmAvxsrMN/TT/CR51lc=;
+        b=YsYWx0zFx/g3ttKgXjHiGoLpm2aBbbHr+R+8iUTfyFXnH0c0hJf1cBHsoN6Ifv2KF3
+         qPNIDIzqg491I56rIOmTyAzf1eY4dqISXJ839lUtLcvqhR9QC+2sgh2QPG0aujHGn3yJ
+         zDCM2xPC7E1KN4oMI7+TKw0c5wk9e1PA0ZWT4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0Md0gkKPz/DPxslMHek692MiRmAvxsrMN/TT/CR51lc=;
+        b=kXXJ674owYOULNjsg6FEbxCwpbxFk2M8vqMFcEbOye3hcJJlo7b/7/mcGHNl5zjPFA
+         KoKvFyenPT0enTm5rPKzfaIEWDEJXpyQcscQJLTsj900qvW7WvREamOu/tXkix4aXuoD
+         ou6NNLooEJ7cWwBF1immgl3tuc3udtb5QD+1bDaj45pZuK/0ThRJYzzjuT/fcLXM9B/N
+         e4PCm1EcrbchAHEOANOsnzNRX96rQJ1JKzPHw7VtBSY4ovRhWwmlV9TxWIBkWQZ9L+8P
+         zdcMVsGK6zZSw5/Koa/T4q+Xj3MqlRLHG0HppPYBV+UFk4GhwzIeHyzpzKKTKYIiynlA
+         LsdA==
+X-Gm-Message-State: AOAM531w5Sy6A3djvV3lNe/70J2u+n7fFuGAtX8wkYOs6tN9ZVqXfK07
+        H+emP1hdOJFgFy4JOJz417Pe72fA/CeuvbPG
+X-Google-Smtp-Source: ABdhPJxKMvc/TIBFkqB+Pe0BoWoNy3gCkcftlS3c5qT5e+KoKkiFQZ0uaKmCVYEqd0JbN5oXPPgdeg==
+X-Received: by 2002:a2e:585c:: with SMTP id x28mr888140ljd.385.1625428910348;
+        Sun, 04 Jul 2021 13:01:50 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id k12sm316029lfv.14.2021.07.04.13.01.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Jul 2021 13:01:49 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id f30so28560120lfj.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 13:01:49 -0700 (PDT)
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr7617377lfc.201.1625428909235;
+ Sun, 04 Jul 2021 13:01:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a5d42bf6-d71f-978e-b9ae-6b04f072d988@huawei.com>
+References: <20210704172440.GA2966393@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20210704172440.GA2966393@paulmck-ThinkPad-P17-Gen-1>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 4 Jul 2021 13:01:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whSGHOiuv1yARox+P3k2uTLtJ=F51aKoJYVi5UPgjitCQ@mail.gmail.com>
+Message-ID: <CAHk-=whSGHOiuv1yARox+P3k2uTLtJ=F51aKoJYVi5UPgjitCQ@mail.gmail.com>
+Subject: Re: [GIT PULL] RCU changes for v5.14
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > Hi Jakub, I have a question to consult you.
-> > > Some fault information in our patch are not existed in current ethtool extended
-> > > link states, for examples:
-> > > "Serdes reference clock lost"
-> > > "Serdes analog loss of signal"
-> > > "SFP tx is disabled"
-> > > "PHY power down"
-> > 
-> > Why would the PHY be powered down if user requested port to be up?
-> > 
-> In the case of other user may use MDIO tool to write PHY register directly to make
-> PHY power down, if link state can display this information, I think it is helpful.
+On Sun, Jul 4, 2021 at 10:24 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> An example merge resolution may be found here:
+>
+>         4e2b64e124c7 ("Merge remote-tracking branch 'linus/master' into HEAD")
 
-If the user directly writes to PHY registers, they should expect bad
-things to happen. They can do a lot more than power the PHY down. They
-could configure it into loopback mode, turn off autoneg and force a
-mode which is compatible with the peer, etc.
+There sommit ID's are completely useless, because I have no idea where
+they come from. They aren't in the linux-next tree as far as I can
+tell, for example.
 
-I don't think you need to tell the user they have pointed a foot gun
-at their feet and pulled the trigger.
+So they are just random noise.
 
-   Andrew
+Now, none of the conflicts looked in the least complicated, so it's
+not like I _need_ the examples, but this "send random shortened SHA1s
+to Linus" is simply not useful.
+
+At a guess, it's actually from your merge-example branch in your own tree.
+
+The point being, that a SHA1 may be globally unique, but without
+telling me where that SHA1 can be _found_, it is entirely useless.
+
+If you have example merges - which I do like seeing, and I will
+compare against just to double-check even when I have no reason to
+doubt my own merge - you need to point to it the same way you point to
+the actual real branch.
+
+IOW, say something like
+
+  "I've done an example merge, and you can find it in
+
+     git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+rcu-example-merge"
+
+or similar.
+
+Because actual SHA1 names are only useful WHEN THEY ARE IN MY TREE. So
+you can point to history that I have (or that was in your actual pull
+request), and I can see _those_ just fine.
+
+So when you say
+
+  "The second is a trivial whitespace conflict between these two commits:
+
+        76c8eaafe4f0 ("rcu: Create an unrcu_pointer() to remove __rcu
+from a pointer")
+        b9964ce74544 ("rcu: Create an unrcu_pointer() to remove __rcu
+from a pointer")"
+
+then that makes sense, because those are two commits that I actually
+have as part of the merge conflict).
+
+But that example merge? I don't have it, unless you actually tell me
+where it is.
+
+Then I can just do
+
+      git fetch <paul-told-me-where-to-fetch>
+
+and can do
+
+    git show FETCH_HEAD
+
+or (more commonly) just compare my merge result with yours:
+
+    git diff FETCH_HEAD kernel/rcu/tree_stall.h
+
+and it's all golden. But if you send me a random SHA1 of somethign
+that only exists in your trees, I just go "oh, ok, not useful".
+
+           Linus
