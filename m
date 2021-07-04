@@ -2,806 +2,602 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AC83BAEC8
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 22:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516903BAED0
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 22:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhGDU1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 16:27:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36006 "EHLO mail.kernel.org"
+        id S229876AbhGDUbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 16:31:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229649AbhGDU1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 16:27:20 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E44B6115C;
-        Sun,  4 Jul 2021 20:24:40 +0000 (UTC)
-Date:   Sun, 4 Jul 2021 21:27:04 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Dipen Patel <dipenp@nvidia.com>
-Cc:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linus.walleij@linaro.org>,
-        <bgolaszewski@baylibre.com>, <warthog618@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <robh+dt@kernel.org>
-Subject: Re: [RFC 03/11] hte: Add tegra194 HTE kernel provider
-Message-ID: <20210704212704.26f5653b@jic23-huawei>
-In-Reply-To: <20210625235532.19575-4-dipenp@nvidia.com>
-References: <20210625235532.19575-1-dipenp@nvidia.com>
-        <20210625235532.19575-4-dipenp@nvidia.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229549AbhGDUbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 16:31:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAAC96115C;
+        Sun,  4 Jul 2021 20:28:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625430515;
+        bh=n3LljfKpRHuXWIoIp69UEVTQbXFDjTbuAHNJvxk07Wg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GPrOrMpZjgWKYSUTHzSeDNf7KOU/lTI03+AS6tM1FBbx9oYbKlWHF28v46iVsWfKc
+         bON3JJAKbU9nOuuYOr8T3tNGakmJ+jKONBX3/F8cDPAj7BjIdzIQRWavI+C19qckdX
+         Fr0bDPDEdhoHxSrgPQFuRIBLC1SYms6cr4nHuqVW9MRzelrDTKRXnoiMGRnLEo3F3T
+         wuT8ADtxvoFdIqUkA9Zvq6L8g0mN0aj70mZ2iCR6j+yWWB822XMgVHzroGTkjIBh0H
+         zIePnyUhuyQZxqBj8PvRa7DrEIo5+5w0JuF3pggleB/flaU7naGi84jNFRfMs2moMK
+         SlgC/2yL3xiOQ==
+From:   ojeda@kernel.org
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>
+Subject: [PATCH 00/17] Rust support
+Date:   Sun,  4 Jul 2021 22:27:39 +0200
+Message-Id: <20210704202756.29107-1-ojeda@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Jun 2021 16:55:24 -0700
-Dipen Patel <dipenp@nvidia.com> wrote:
+From: Miguel Ojeda <ojeda@kernel.org>
 
-> Tegra194 device has multiple HTE instances also known as GTE
-> (Generic hardware Timestamping Engine) which can timestamp subset of
-> SoC lines/signals. This provider driver focuses on IRQ and GPIO lines
-> and exposes timestamping ability on those lines to the consumers
-> through HTE subsystem.
-> 
-> Also, with this patch, added:
-> - documentation about this provider and its capabilities at
-> Documentation/hte.
-> - Compilation support in Makefile and Kconfig
-> 
-> Signed-off-by: Dipen Patel <dipenp@nvidia.com>
+Rust support
 
-A few comments inline,
+This is the patch series to add support for Rust as a second language
+to the Linux kernel.
 
-J
-> ---
->  Documentation/hte/index.rst        |  21 ++
->  Documentation/hte/tegra194-hte.rst |  65 ++++
->  Documentation/index.rst            |   1 +
->  drivers/hte/Kconfig                |  12 +
->  drivers/hte/Makefile               |   1 +
->  drivers/hte/hte-tegra194.c         | 554 +++++++++++++++++++++++++++++
->  6 files changed, 654 insertions(+)
->  create mode 100644 Documentation/hte/index.rst
->  create mode 100644 Documentation/hte/tegra194-hte.rst
->  create mode 100644 drivers/hte/hte-tegra194.c
-> 
-> diff --git a/Documentation/hte/index.rst b/Documentation/hte/index.rst
-> new file mode 100644
-> index 000000000000..f311ebec6b47
-> --- /dev/null
-> +++ b/Documentation/hte/index.rst
-> @@ -0,0 +1,21 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +============================================
-> +The Linux Hardware Timestamping Engine (HTE)
-> +============================================
-> +
-> +The HTE Subsystem
-> +=================
-> +
-> +.. toctree::
-> +   :maxdepth: 1
-> +
-> +   hte
-> +
-> +HTE Tegra Provider
-> +==================
-> +
-> +.. toctree::
-> +   :maxdepth: 1
-> +
-> +   tegra194-hte
-> \ No newline at end of file
-> diff --git a/Documentation/hte/tegra194-hte.rst b/Documentation/hte/tegra194-hte.rst
-> new file mode 100644
-> index 000000000000..c23eaafcf080
-> --- /dev/null
-> +++ b/Documentation/hte/tegra194-hte.rst
-> @@ -0,0 +1,65 @@
-> +HTE Kernel provider driver
-> +==========================
-> +
-> +Description
-> +-----------
-> +The Nvidia tegra194 chip has many hardware timestamping engine (HTE) instances
-> +known as generic timestamping engine (GTE). This provider driver implements
-> +two GTE instances 1) GPIO GTE and 2) IRQ GTE. The both GTEs instances get the
-> +timestamp from the system counter TSC which has 31.25MHz clock rate, and the
-> +driver converts clock tick rate to nano seconds before storing it as timestamp
-> +value.
-> +
-> +GPIO GTE
-> +--------
-> +
-> +This GTE instance help timestamps GPIO in real time, for that to happen GPIO
-> +needs to be configured as input and IRQ needs to ba enabled as well. The only
-> +always on (AON) gpio controller instance supports timestamping GPIOs in
-> +realtime and it has 39 GPIO lines. There is also a dependency on AON GPIO
-> +controller as it requires very specific bits to be set in GPIO config register.
-> +It in a way creates cyclic dependency between GTE and GPIO controller. The GTE
-> +GPIO functionality is accessed from the GPIOLIB. It can support both the in
-> +kernel and userspace consumers. In the later case, requests go through GPIOLIB
-> +CDEV framework. The below APIs are added in GPIOLIB framework to access HTE
-> +subsystem and GPIO GTE for in kernel consumers.
-> +
-> +.. c:function:: int gpiod_hw_timestamp_control( struct gpio_desc *desc, bool enable )
-> +
-> +	To enable HTE on given GPIO line.
-> +
-> +.. c:function:: u64 gpiod_get_hw_timestamp( struct gpio_desc *desc, bool block )
-> +
-> +	To retrieve hardwre timestamp in nano seconds.
-> +
-> +.. c:function:: bool gpiod_is_hw_timestamp_enabled( const struct gpio_desc *desc )
-> +
-> +	To query if HTE is enabled on the given GPIO.
-> +
-> +There is hte-tegra194-gpio-test.c, located in ``drivers/hte/`` directory, test
-> +driver which demonstrates above APIs for the Jetson AGX platform. For userspace
-> +consumers, GPIO_V2_LINE_FLAG_EVENT_CLOCK_HARDWARE flag must be specifed during
-> +IOCTL calls, refer ``tools/gpio/gpio-event-mon.c``, which returns the timestamp
-> +in nano second.
-> +
-> +IRQ GTE
-> +--------
-> +
-> +This GTE instance helps timestamp LIC IRQ lines in real time. There are 352 IRQ
-> +lines which this instance can help timestamp realtime. The hte devicetree
-> +binding described at ``Documentation/devicetree/bindings/hte/`` gives out
-> +example how consumer can request IRQ line, since it is one to one mapping,
-> +consumers can simply specify IRQ number that they are interested in. There is
-> +no userspace consumer support for this GTE instance. The sample test code
-> +hte-tegra194-irq-test.c, located in ``drivers/hte/`` directory,
-> +demonstrates how to use IRQ GTE instance. The below is sample device tree
-> +snippet code for the test driver::
-> +
-> + tegra_hte_irq_test {
-> +        compatible = "nvidia,tegra194-hte-irq-test";
-> +        htes = <&tegra_hte_lic 0x19>;
-> +        hte-names = "hte-lic";
-> + };
-> +
-> +The source code of the driver both IRQ and GPIO GTE is locate at
-> +``drivers/hte/hte-tegra194.c``.
-> \ No newline at end of file
-> diff --git a/Documentation/index.rst b/Documentation/index.rst
-> index 1b13c2445e87..b41118577fe6 100644
-> --- a/Documentation/index.rst
-> +++ b/Documentation/index.rst
-> @@ -138,6 +138,7 @@ needed).
->     misc-devices/index
->     scheduler/index
->     mhi/index
-> +   hte/index
->  
->  Architecture-agnostic documentation
->  -----------------------------------
-> diff --git a/drivers/hte/Kconfig b/drivers/hte/Kconfig
-> index 394e112f7dfb..f7b01fcc7190 100644
-> --- a/drivers/hte/Kconfig
-> +++ b/drivers/hte/Kconfig
-> @@ -20,3 +20,15 @@ menuconfig HTE
->  
->            If unsure, say no.
->  
-> +if HTE
-> +
-> +config HTE_TEGRA194
-> +	tristate "NVIDIA Tegra194 HTE Support"
-> +	depends on ARCH_TEGRA_194_SOC
-> +	help
-> +	  Enable this option for integrated hardware timestamping engine also
-> +	  known as generic timestamping engine (GTE) support on NVIDIA Tegra194
-> +	  systems-on-chip. The driver supports 352 LIC IRQs and 39 AON GPIOs
-> +	  lines for timestamping in realtime.
-> +
-> +endif
-> diff --git a/drivers/hte/Makefile b/drivers/hte/Makefile
-> index 9899dbe516f7..52f978cfc913 100644
-> --- a/drivers/hte/Makefile
-> +++ b/drivers/hte/Makefile
-> @@ -1 +1,2 @@
->  obj-$(CONFIG_HTE)		+= hte.o
-> +obj-$(CONFIG_HTE_TEGRA194)	+= hte-tegra194.o
-> \ No newline at end of file
+If you are interested in following this effort, please join us in
+the mailing list at:
 
-fix that
+    rust-for-linux@vger.kernel.org
 
-> diff --git a/drivers/hte/hte-tegra194.c b/drivers/hte/hte-tegra194.c
-> new file mode 100644
-> index 000000000000..8ad10efd3641
-> --- /dev/null
-> +++ b/drivers/hte/hte-tegra194.c
-> @@ -0,0 +1,554 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2021 NVIDIA Corporation
-> + *
-> + * Author: Dipen Patel <dipenp@nvidia.com>
-> + */
-> +
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +#include <linux/stat.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/hte.h>
-> +#include <linux/uaccess.h>
-> +
-> +#define HTE_SUSPEND	0
-> +
-> +/* HTE source clock TSC is 31.25MHz */
-> +#define HTE_TS_CLK_RATE_HZ	31250000ULL
-> +#define HTE_CLK_RATE_NS		32
-> +#define HTE_TS_NS_SHIFT	__builtin_ctz(HTE_CLK_RATE_NS)
-> +
-> +#define NV_AON_SLICE_INVALID	-1
-> +
-> +/* AON HTE line map For slice 1 */
-> +#define NV_AON_HTE_SLICE1_IRQ_GPIO_28	12
-> +#define NV_AON_HTE_SLICE1_IRQ_GPIO_29	13
-> +
-> +/* AON HTE line map For slice 2 */
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_0	0
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_1	1
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_2	2
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_3	3
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_4	4
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_5	5
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_6	6
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_7	7
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_8	8
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_9	9
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_10	10
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_11	11
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_12	12
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_13	13
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_14	14
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_15	15
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_16	16
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_17	17
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_18	18
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_19	19
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_20	20
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_21	21
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_22	22
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_23	23
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_24	24
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_25	25
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_26	26
-> +#define NV_AON_HTE_SLICE2_IRQ_GPIO_27	27
-> +
-> +/* AON GPIO port AA pins */
-> +#define NV_AON_GPIO_PORT_AA_0		0
-> +#define NV_AON_GPIO_PORT_AA_1		1
-> +#define NV_AON_GPIO_PORT_AA_2		2
-> +#define NV_AON_GPIO_PORT_AA_3		3
-> +#define NV_AON_GPIO_PORT_AA_4		4
-> +#define NV_AON_GPIO_PORT_AA_5		5
-> +#define NV_AON_GPIO_PORT_AA_6		6
-> +#define NV_AON_GPIO_PORT_AA_7		7
-> +
-> +/* AON GPIO port BB pins */
-> +#define NV_AON_GPIO_PORT_BB_0		8
-> +#define NV_AON_GPIO_PORT_BB_1		9
-> +#define NV_AON_GPIO_PORT_BB_2		10
-> +#define NV_AON_GPIO_PORT_BB_3		11
-> +
-> +/* AON GPIO port CC pins */
-> +#define NV_AON_GPIO_PORT_CC_0		16
-> +#define NV_AON_GPIO_PORT_CC_1		17
-> +#define NV_AON_GPIO_PORT_CC_2		18
-> +#define NV_AON_GPIO_PORT_CC_3		19
-> +#define NV_AON_GPIO_PORT_CC_4		20
-> +#define NV_AON_GPIO_PORT_CC_5		21
-> +#define NV_AON_GPIO_PORT_CC_6		22
-> +#define NV_AON_GPIO_PORT_CC_7		23
-> +
-> +/* AON GPIO port DD pins */
-> +#define NV_AON_GPIO_PORT_DD_0		24
-> +#define NV_AON_GPIO_PORT_DD_1		25
-> +#define NV_AON_GPIO_PORT_DD_2		26
-> +
-> +/* AON GPIO port EE pins */
-> +#define NV_AON_GPIO_PORT_EE_0		32
-> +#define NV_AON_GPIO_PORT_EE_1		33
-> +#define NV_AON_GPIO_PORT_EE_2		34
-> +#define NV_AON_GPIO_PORT_EE_3		35
-> +#define NV_AON_GPIO_PORT_EE_4		36
-> +#define NV_AON_GPIO_PORT_EE_5		37
-> +#define NV_AON_GPIO_PORT_EE_6		38
-> +
-> +
-> +#define HTE_TECTRL		0x0
-> +#define HTE_TETSCH		0x4
-> +#define HTE_TETSCL		0x8
-> +#define HTE_TESRC		0xC
-> +#define HTE_TECCV		0x10
-> +#define HTE_TEPCV		0x14
-> +#define HTE_TECMD		0x1C
-> +#define HTE_TESTATUS		0x20
-> +#define HTE_SLICE0_TETEN	0x40
-> +#define HTE_SLICE1_TETEN	0x60
-> +
-> +#define HTE_SLICE_SIZE		(HTE_SLICE1_TETEN - HTE_SLICE0_TETEN)
-> +
-> +#define HTE_TECTRL_ENABLE_ENABLE	0x1
-> +
-> +#define HTE_TECTRL_OCCU_SHIFT		0x8
-> +#define HTE_TECTRL_INTR_SHIFT		0x1
-> +#define HTE_TECTRL_INTR_ENABLE		0x1
-> +
-> +#define HTE_TESRC_SLICE_SHIFT		16
-> +#define HTE_TESRC_SLICE_DEFAULT_MASK	0xFF
-> +
-> +#define HTE_TECMD_CMD_POP		0x1
-> +
-> +#define HTE_TESTATUS_OCCUPANCY_SHIFT	8
-> +#define HTE_TESTATUS_OCCUPANCY_MASK	0xFF
-> +
-> +struct hte_slices {
-> +	u32 r_val;
-> +	unsigned long flags;
-> +	/* to prevent lines mapped to same slice updating its register */
-> +	spinlock_t s_lock;
-> +};
-> +
-> +struct tegra_hte_line_mapped {
-> +	int slice;
-> +	u32 bit_index;
-> +};
-> +
-> +struct tegra_hte_line_table {
-> +	int map_sz;
-> +	const struct tegra_hte_line_mapped *map;
-> +};
-> +
-> +struct tegra_hte_soc {
-> +	int hte_irq;
-> +	u32 itr_thrshld;
-> +	u32 conf_rval;
-> +	struct hte_slices *sl;
-> +	const struct tegra_hte_line_table *line_map;
-> +	struct hte_chip *chip;
-> +	void __iomem *regs;
-> +};
-> +
-> +static const struct tegra_hte_line_mapped tegra194_aon_gpio_map[] = {
-> +	/* gpio, slice, bit_index */
-> +	[NV_AON_GPIO_PORT_AA_0]  = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_11},
-> +	[NV_AON_GPIO_PORT_AA_1]  = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_10},
-> +	[NV_AON_GPIO_PORT_AA_2]  = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_9},
-> +	[NV_AON_GPIO_PORT_AA_3]  = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_8},
-> +	[NV_AON_GPIO_PORT_AA_4]  = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_7},
-> +	[NV_AON_GPIO_PORT_AA_5]  = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_6},
-> +	[NV_AON_GPIO_PORT_AA_6]  = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_5},
-> +	[NV_AON_GPIO_PORT_AA_7]  = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_4},
-> +	[NV_AON_GPIO_PORT_BB_0]  = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_3},
-> +	[NV_AON_GPIO_PORT_BB_1]  = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_2},
-> +	[NV_AON_GPIO_PORT_BB_2] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_1},
-> +	[NV_AON_GPIO_PORT_BB_3] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_0},
-> +	[12] = {NV_AON_SLICE_INVALID, 0},
-> +	[13] = {NV_AON_SLICE_INVALID, 0},
-> +	[14] = {NV_AON_SLICE_INVALID, 0},
-> +	[15] = {NV_AON_SLICE_INVALID, 0},
-> +	[NV_AON_GPIO_PORT_CC_0] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_22},
-> +	[NV_AON_GPIO_PORT_CC_1] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_21},
-> +	[NV_AON_GPIO_PORT_CC_2] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_20},
-> +	[NV_AON_GPIO_PORT_CC_3] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_19},
-> +	[NV_AON_GPIO_PORT_CC_4] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_18},
-> +	[NV_AON_GPIO_PORT_CC_5] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_17},
-> +	[NV_AON_GPIO_PORT_CC_6] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_16},
-> +	[NV_AON_GPIO_PORT_CC_7] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_15},
-> +	[NV_AON_GPIO_PORT_DD_0] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_14},
-> +	[NV_AON_GPIO_PORT_DD_1] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_13},
-> +	[NV_AON_GPIO_PORT_DD_2] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_12},
-> +	[27] = {NV_AON_SLICE_INVALID, 0},
-> +	[28] = {NV_AON_SLICE_INVALID, 0},
-> +	[29] = {NV_AON_SLICE_INVALID, 0},
-> +	[30] = {NV_AON_SLICE_INVALID, 0},
-> +	[31] = {NV_AON_SLICE_INVALID, 0},
-> +	[NV_AON_GPIO_PORT_EE_0] = {1, NV_AON_HTE_SLICE1_IRQ_GPIO_29},
-> +	[NV_AON_GPIO_PORT_EE_1] = {1, NV_AON_HTE_SLICE1_IRQ_GPIO_28},
-> +	[NV_AON_GPIO_PORT_EE_2] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_27},
-> +	[NV_AON_GPIO_PORT_EE_3] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_26},
-> +	[NV_AON_GPIO_PORT_EE_4] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_25},
-> +	[NV_AON_GPIO_PORT_EE_5] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_24},
-> +	[NV_AON_GPIO_PORT_EE_6] = {2, NV_AON_HTE_SLICE2_IRQ_GPIO_23},
-> +};
-> +
-> +static const struct tegra_hte_line_table aon_hte_map = {
-> +	.map_sz = ARRAY_SIZE(tegra194_aon_gpio_map),
-> +	.map = tegra194_aon_gpio_map,
-> +};
-> +
-> +static inline u32 tegra_hte_readl(struct tegra_hte_soc *hte, u32 reg)
-> +{
-> +	return readl(hte->regs + reg);
-> +}
-> +
-> +static inline void tegra_hte_writel(struct tegra_hte_soc *hte, u32 reg,
-> +				    u32 val)
-> +{
-> +	writel(val, hte->regs + reg);
-> +}
-> +
-> +static inline int tegra_hte_map_to_line_id(u32 eid, struct tegra_hte_soc *gs,
-> +					  u32 *mapped)
-> +{
-> +	const struct tegra_hte_line_mapped *m;
-> +
-> +	if (gs->line_map) {
-> +		m = gs->line_map->map;
-> +		if (eid > gs->line_map->map_sz)
-> +			return -EINVAL;
-> +		if (m[eid].slice == NV_AON_SLICE_INVALID)
-> +			return -EINVAL;
-> +
-> +		*mapped = (m[eid].slice << 5) + m[eid].bit_index;
-> +	} else {
-> +		*mapped = eid;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int tegra_hte_line_xlate(struct hte_chip *gc,
-> +				 const struct of_phandle_args *args,
-> +				 struct hte_ts_desc *desc, u32 *xlated_id)
-> +{
-> +	int ret = 0;
-> +
-> +	if (!gc || !desc || !xlated_id)
-> +		return -EINVAL;
-> +
-> +	if (args) {
-> +		if (gc->of_hte_n_cells < 1)
-> +			return -EINVAL;
-> +
-> +		if (args->args_count != gc->of_hte_n_cells)
-> +			return -EINVAL;
-> +
-> +		desc->con_id = args->args[0];
-> +	}
-> +
-> +	ret = tegra_hte_map_to_line_id(desc->con_id, gc->data,
-> +				       xlated_id);
-> +	if (ret < 0) {
-> +		dev_dbg(gc->dev, "con_id:%u mapping failed\n",
-> +			desc->con_id);
-> +		return ret;
-> +	}
-> +
-> +	if (*xlated_id > gc->nlines)
-> +		return -EINVAL;
-> +
-> +	dev_dbg(gc->dev, "requested id:%u, xlated id:%u\n",
-> +		desc->con_id, *xlated_id);
-> +
-> +	return 0;
-> +}
-> +
-> +static int tegra_hte_en_dis_common(struct hte_chip *chip, u32 line_id, bool en)
-> +{
-> +	u32 slice, sl_bit_shift, line_bit, val, reg;
-> +	struct tegra_hte_soc *gs;
-> +
-> +	sl_bit_shift = __builtin_ctz(HTE_SLICE_SIZE);
-> +
-> +	if (!chip)
-> +		return -EINVAL;
-> +
-> +	gs = (struct tegra_hte_soc *)chip->data;
-> +
-> +	if (line_id > chip->nlines) {
-> +		dev_err(chip->dev,
-> +			"line id: %u is not supported by this controller\n",
-> +			line_id);
-> +		return -EINVAL;
-> +	}
-> +
-> +	slice = line_id >> sl_bit_shift;
-> +	line_bit = line_id & (HTE_SLICE_SIZE - 1);
-> +	reg = (slice << sl_bit_shift) + HTE_SLICE0_TETEN;
-> +
-> +	spin_lock(&gs->sl[slice].s_lock);
-> +
-> +	if (test_bit(HTE_SUSPEND, &gs->sl[slice].flags)) {
-> +		spin_unlock(&gs->sl[slice].s_lock);
-> +		dev_dbg(chip->dev, "device suspended");
-> +		return -EBUSY;
-> +	}
-> +
-> +	val = tegra_hte_readl(gs, reg);
-> +	if (en)
-> +		val = val | (1 << line_bit);
-> +	else
-> +		val = val & (~(1 << line_bit));
-> +	tegra_hte_writel(gs, reg, val);
-> +
-> +	spin_unlock(&gs->sl[slice].s_lock);
-> +
-> +	dev_dbg(chip->dev, "line: %u, slice %u, line_bit %u, reg:0x%x\n",
-> +		line_id, slice, line_bit, reg);
-> +
-> +	return 0;
-> +}
-> +
-> +static int tegra_hte_request(struct hte_chip *chip, u32 line_id)
-> +{
-> +	return tegra_hte_en_dis_common(chip, line_id, true);
-> +}
-> +
-> +static int tegra_hte_release(struct hte_chip *chip, u32 line_id)
-> +{
-> +	return tegra_hte_en_dis_common(chip, line_id, false);
-> +}
-> +
-> +static int tegra_hte_clk_src_info(struct hte_chip *chip,
-> +				  struct hte_clk_info *ci)
-> +{
-> +	(void)chip;
-> +
-> +	ci->hz = HTE_TS_CLK_RATE_HZ;
-> +	ci->type = CLOCK_MONOTONIC;
-> +
-> +	return 0;
-> +}
-> +
-> +static void tegra_hte_read_fifo(struct tegra_hte_soc *gs)
-> +{
-> +	u32 tsh, tsl, src, pv, cv, acv, slice, bit_index, line_id;
-> +	u64 tsc;
-> +	int dir;
-> +	struct hte_ts_data el;
-> +
-> +	while ((tegra_hte_readl(gs, HTE_TESTATUS) >>
-> +		HTE_TESTATUS_OCCUPANCY_SHIFT) &
-> +		HTE_TESTATUS_OCCUPANCY_MASK) {
-> +		tsh = tegra_hte_readl(gs, HTE_TETSCH);
-> +		tsl = tegra_hte_readl(gs, HTE_TETSCL);
-> +		tsc = (((u64)tsh << 32) | tsl);
-> +
-> +		src = tegra_hte_readl(gs, HTE_TESRC);
-> +		slice = (src >> HTE_TESRC_SLICE_SHIFT) &
-> +			    HTE_TESRC_SLICE_DEFAULT_MASK;
-> +
-> +		pv = tegra_hte_readl(gs, HTE_TEPCV);
-> +		cv = tegra_hte_readl(gs, HTE_TECCV);
-> +		acv = pv ^ cv;
-> +		while (acv) {
-> +			bit_index = __builtin_ctz(acv);
-> +			if ((pv >> bit_index) & BIT(0))
-> +				dir = HTE_EVENT_RISING_EDGE;
-> +			else
-> +				dir = HTE_EVENT_FALLING_EDGE;
-> +
-> +			line_id = bit_index + (slice << 5);
-> +			el.dir = dir;
-> +			el.tsc = tsc << HTE_TS_NS_SHIFT;
-> +			hte_push_ts_ns_atomic(gs->chip, line_id, &el,
-> +					      sizeof(el));
-> +			acv &= ~BIT(bit_index);
-> +		}
-> +		tegra_hte_writel(gs, HTE_TECMD, HTE_TECMD_CMD_POP);
-> +	}
-> +}
-> +
-> +static irqreturn_t tegra_hte_isr(int irq, void *dev_id)
-> +{
-> +	struct tegra_hte_soc *gs = dev_id;
-> +
-> +	tegra_hte_read_fifo(gs);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static const struct of_device_id tegra_hte_of_match[] = {
-> +	{ .compatible = "nvidia,tegra194-gte-lic"},
-> +	{ .compatible = "nvidia,tegra194-gte-aon", .data = &aon_hte_map},
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, tegra_hte_of_match);
-> +
-> +static const struct hte_ops g_ops = {
-> +	.request = tegra_hte_request,
-> +	.release = tegra_hte_release,
-> +	.enable = tegra_hte_request,
-> +	.disable = tegra_hte_release,
-> +	.get_clk_src_info = tegra_hte_clk_src_info,
-> +};
-> +
-> +static int tegra_hte_probe(struct platform_device *pdev)
-> +{
-> +	int ret;
-> +	u32 i, slices, val = 0;
-> +	struct device *dev;
-> +	struct tegra_hte_soc *hte_dev;
-> +	struct hte_chip *gc;
-> +
-> +	dev = &pdev->dev;
-> +
-> +	hte_dev = devm_kzalloc(dev, sizeof(*hte_dev), GFP_KERNEL);
-> +	if (!hte_dev)
-> +		return -ENOMEM;
-> +
-> +	gc = devm_kzalloc(dev, sizeof(*gc), GFP_KERNEL);
-> +	if (!gc)
-> +		return -ENOMEM;
-> +
-> +	dev_set_drvdata(&pdev->dev, hte_dev);
-> +	hte_dev->line_map = of_device_get_match_data(&pdev->dev);
-> +
-> +	hte_dev->regs = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(hte_dev->regs))
-> +		return PTR_ERR(hte_dev->regs);
-> +
-> +	ret = of_property_read_u32(dev->of_node, "int-threshold",
-> +				   &hte_dev->itr_thrshld);
-> +	if (ret != 0)
-> +		hte_dev->itr_thrshld = 1;
-> +
-> +	ret = of_property_read_u32(dev->of_node, "slices", &slices);
-> +	if (ret != 0) {
-> +		dev_err(dev, "Could not read slices\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	hte_dev->sl = devm_kzalloc(dev, sizeof(struct hte_slices) * slices,
+and take a look at the project itself at:
 
-Preference for sizeof(*hte_dev->sl) as it saves me checking the size is correct
-for the type.
+    https://github.com/Rust-for-Linux
 
-> +				   GFP_KERNEL);
-> +	if (!hte_dev->sl)
-> +		return -ENOMEM;
-> +
-> +	ret = platform_get_irq(pdev, 0);
-> +	if (ret < 0) {
-> +		dev_err(dev, "get irq failed.\n");
+Cheers,
+Miguel
 
-dev_err_probe() probably so you don't print the message if deferred probing is
-going on.
+--
 
-> +		return ret;
-> +	}
-> +	hte_dev->hte_irq = ret;
-> +	ret = devm_request_irq(dev, hte_dev->hte_irq, tegra_hte_isr, 0,
-> +			       dev_name(dev), hte_dev);
-> +	if (ret < 0) {
-> +		dev_err(dev, "request irq failed.\n");
-> +		return ret;
-> +	}
-> +
-> +	gc->nlines = slices << 5;
-> +	gc->ops = &g_ops;
-> +	gc->dev = dev;
-> +	hte_dev->chip = gc;
-> +	gc->data = (void *)hte_dev;
+# Rust support
 
-Don't case to void * - cast to the actual type if necessary.
-If it is a void * then most likely it shouldn't be if we always put something
-in particular it in it.
+This cover letter explains the major changes and updates done since
+the RFC sent in the previous merge window back in April, plus a few
+extra notes and announcements. For the RFC, please see:
 
-> +	gc->xlate = tegra_hte_line_xlate;
-> +	gc->of_hte_n_cells = 1;
-> +
-> +	ret = hte_register_chip(hte_dev->chip);
-> +
+    https://lore.kernel.org/lkml/20210414184604.23473-1-ojeda@kernel.org/
 
-No blank line before error handler.  Under the circumstances is that not
-fatal?
 
-> +	if (ret)
-> +		dev_err(gc->dev, "hte chip register failed");
-> +
-> +	for (i = 0; i < slices; i++) {
-> +		hte_dev->sl[i].flags = 0;
-> +		spin_lock_init(&hte_dev->sl[i].s_lock);
-> +	}
-> +
-> +	val = HTE_TECTRL_ENABLE_ENABLE |
-> +	      (HTE_TECTRL_INTR_ENABLE << HTE_TECTRL_INTR_SHIFT) |
-> +	      (hte_dev->itr_thrshld << HTE_TECTRL_OCCU_SHIFT);
-> +	tegra_hte_writel(hte_dev, HTE_TECTRL, val);
+## Rust infrastructure updates
 
-You could use a devm_add_action_or_reset() to deal with unwinding this
-plus add a devm_hte_register_chip() and then you can get rid of remove
-entirely which is always nice.
+There have been several major improvements to the overall Rust
+support. The following subsections cover these.
 
-> +
-> +	dev_dbg(gc->dev, "lines: %d, slices:%d", gc->nlines, slices);
-> +	return 0;
-> +}
-> +
-> +static int tegra_hte_remove(struct platform_device *pdev)
-> +{
-> +	struct tegra_hte_soc *gs = dev_get_drvdata(&pdev->dev);
-> +
-> +	tegra_hte_writel(gs, HTE_TECTRL, 0);
-> +
-> +	return hte_unregister_chip(gs->chip);
-> +}
-> +
-> +#ifdef CONFIG_PM_SLEEP
 
-Personally I prefer the approach of marking PM functions
-__maybe_unused and dropping the ifdef protections.
-There have been a lot of subtle issues in the build system in the
-past around those and it's much easier to just let the compiler
-drop them if they are unused.
+### Removed panicking allocations
 
-> +static int tegra_hte_resume_early(struct device *dev)
-> +{
-> +	u32 i;
-> +	struct tegra_hte_soc *gs = dev_get_drvdata(dev);
-> +	u32 slices = gs->chip->nlines >> 5;
+We have removed infallible allocations. In order to do so, we have
+integrated a subset of the `alloc` standard library crate, with some
+additions on top. This allows us to customize things to our needs,
+while giving upstream the time they need to evaluate our changes.
 
-Whilst it's the same thing, I'd prefer a divide there by however lines there are in a slice.
+Eventually, the goal is to have everything the kernel needs in
+upstream `alloc` and drop it from the kernel tree. We have already
+started this process and some changes have been already accepted
+upstream.
 
-> +	u32 sl_bit_shift = __builtin_ctz(HTE_SLICE_SIZE);
-> +
-> +	tegra_hte_writel(gs, HTE_TECTRL, gs->conf_rval);
-> +
-> +	for (i = 0; i < slices; i++) {
-> +		spin_lock(&gs->sl[i].s_lock);
-> +		tegra_hte_writel(gs,
-> +				 ((i << sl_bit_shift) + HTE_SLICE0_TETEN),
-> +				 gs->sl[i].r_val);
-> +		clear_bit(HTE_SUSPEND, &gs->sl[i].flags);
-> +		spin_unlock(&gs->sl[i].s_lock);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int tegra_hte_suspend_late(struct device *dev)
-> +{
-> +	u32 i;
-> +	struct tegra_hte_soc *gs = dev_get_drvdata(dev);
-> +	u32 slices = gs->chip->nlines >> 5;
-> +	u32 sl_bit_shift = __builtin_ctz(HTE_SLICE_SIZE);
-> +
-> +	gs->conf_rval = tegra_hte_readl(gs, HTE_TECTRL);
-> +	for (i = 0; i < slices; i++) {
-> +		spin_lock(&gs->sl[i].s_lock);
-> +		gs->sl[i].r_val = tegra_hte_readl(gs,
-> +				((i << sl_bit_shift) + HTE_SLICE0_TETEN));
-> +		set_bit(HTE_SUSPEND, &gs->sl[i].flags);
-> +		spin_unlock(&gs->sl[i].s_lock);
-> +	}
-> +
-> +	return 0;
-> +}
-> +#endif
-> +
-> +static const struct dev_pm_ops tegra_hte_pm = {
-> +	SET_LATE_SYSTEM_SLEEP_PM_OPS(tegra_hte_suspend_late,
-> +				     tegra_hte_resume_early)
-> +};
-> +
-> +static struct platform_driver tegra_hte_driver = {
-> +	.probe = tegra_hte_probe,
-> +	.remove = tegra_hte_remove,
-> +	.driver = {
-> +		.name = "tegra_hte",
-> +		.pm = &tegra_hte_pm,
-> +		.of_match_table = tegra_hte_of_match,
-> +	},
-> +};
-> +
-> +module_platform_driver(tegra_hte_driver);
-> +
-> +MODULE_AUTHOR("Dipen Patel <dipenp@nvidia.com>");
-> +MODULE_DESCRIPTION("NVIDIA Tegra HTE (Hardware Timestamping Engine) driver");
-> +MODULE_LICENSE("GPL v2");
+On top of that, `alloc` is now compiled with panicking allocation
+methods disabled, thus they cannot be used within the kernel by
+mistake either.
+
+Moreover, the documentation for this customized `alloc`  crate (as well
+as for `core`) is now generated alongside the rest of the Rust kernel
+documentation. Thus kernel developers can now easily browse the subset
+that is available within the kernel. Like last time, you can take
+a look at a preview of the documentation at:
+
+     https://rust-for-linux.github.io/docs/alloc/
+
+Note that the `compiler_builtins` panicking intrinsics are still
+there, but those will be solved by partitioning `core` via feature
+gates. The first one, for disabling floating-point functionality,
+has just been accepted upstream.
+
+
+### Beta compiler supported
+
+Up until now, we have been using nightly releases of `rustc` because
+we need some of the latest fixes and unstable features.
+
+However, the kernel can now be compiled with beta and stable `rustc`
+releases. At the moment, we are using the 1.54-beta1 version as our
+reference compiler. At the end of this month, `rustc` 1.54 will be
+released, and we will move to that version as our reference.
+
+Note that the kernel still requires unstable features, even if it is
+compiled with a stable `rustc` release, thus we cannot guarantee that
+future `rustc` versions will work without changes to the kernel tree.
+
+Thus, until all the unstable features we need are stabilized, we will
+support a single `rustc` version for each kernel release.
+
+
+### Testing support
+
+Another big addition has been the support for testing. We now support
+the standard Rust `#[test]` attribute to easily write tests, e.g.:
+
+    #[test]
+    fn f() {
+        let a = 20;
+        let b = 22;
+        assert_eq!(a + b, 42);
+    }
+
+Furthermore, we are now also supporting Rust documentation tests
+("doctests"). These allow us to make sure our examples remain up to
+date, and also double as tests too, e.g.:
+
+    /// ```
+    /// assert_eq!(foo::f(), 42);
+    /// ```
+    pub fn f() -> i32 {
+        42
+    }
+
+For the moment, both kinds of tests are run in the host only, but
+the goal is to have them running in kernel space, so that we can
+test code that depends on kernel features, and to allow any kernel
+module to declare and use them.
+
+
+### Architectures and compiler support
+
+`arm` (i.e. 32-bit) and `riscv` are now also supported.
+
+On compilers, we would like to mention all the work that has been
+going in GCC Rust (a GCC frontend for the Rust language) and
+`rustc_codegen_gcc` (a `rustc` backend for GCC). The latter now passes
+all `core` tests, and the former is now working on traits. We continue
+to track their progress as they may become the best way to have
+GCC-built kernels with Rust support enabled. Their latest reports
+can be found at:
+
+    https://blog.antoyo.xyz/rustc_codegen_gcc-progress-report-1
+    https://thephilbert.io/2021/06/28/gcc-rust-weekly-status-report-20/
+
+On top of that, we requested Compiler Explorer to add support to all
+the alternative compilers. At the time of writing, they have already
+added `mrustc` and GCC Rust; and `rustc_codegen_gcc` is coming soon.
+See a live example at:
+
+    https://godbolt.org/z/8o74c57Yj
+
+
+## Rust abstractions and driver updates
+
+We have developed new Rust abstractions that use the kernel C
+implementations: red-black trees, reference-counted objects, file
+descriptor creation, tasks, files, io vectors...
+
+Additionally, we have improved driver support: improvements to
+`file_operations` (more operations supported, arbitrary state),
+reduced boiler-plate code, improved `module!` macro, registration
+macros, rudimentary (`probe` and `remove`) platform drivers...
+
+On Binder, there is now support for transferring files descriptors
+and LSM hooks; and we are working on preliminary performance numbers.
+
+Moreover, there is ongoing work on a Rust example driver,
+`bcm2835-rng`. This is the hardware random-number generator present
+on Raspberry Pi Zero(W), Classic, Two, and Three.
+
+There are other small improvements, such as drivers being restricted
+on what unstable features they can use.
+
+
+## Patch series status
+
+Like it was mentioned in the RFC, the Rust support is still to be
+considered experimental. However, as noted back in April, support is
+good enough that kernel developers can start working on the Rust
+abstractions for subsystems and write drivers and other modules.
+
+Please note that the current series have just arrived in `linux-next`,
+thus the first run will happen on Tuesday.
+
+
+## Industry and academia support
+
+We have been in contact with a set of companies and academia members
+that would like to use Rust as a second language in the kernel. Some
+of them have already started to evaluate Rust for their needs using
+the infrastructure we have already in place.
+
+In particular, we have got a few statements from major companies.
+In no particular order:
+
+  Microsoft's Linux Systems Group is interested in contributing to
+  getting Rust into Linux kernel. Hopefully we will be able to submit
+  select Hyper-V drivers written in Rust in the coming months.
+
+  Arm recognises the Rust value proposition and is actively working
+  with the Rust community to improve Rust for Arm based systems.
+  A good example is Arm’s RFC contribution to the Rust language which
+  made Linux on 64-bit Arm systems a Tier-1 Rust supported platform.
+  Rustaceans at Arm are excited about the Rust for Linux initiative
+  and look forward to assisting in this effort.
+
+  Google supports and contributes directly to the Rust for Linux
+  project. Our Android team is evaluating a new Binder implementation
+  and considering other drivers where Rust could be adopted.
+
+In addition, IBM contributed the Rust kernel support for PowerPC
+which was already included in the RFC.
+
+In addition, from academia, there are already several projects around
+Rust for Linux going on. As an example, members of LSE (Systems
+Research Laboratory) at EPITA (École pour l'informatique et les
+techniques avancées) are developing an SPI Rust driver.
+
+And, of course, special thanks go to ISRG (Internet Security Research
+Group) and Google for their financial support on this endeavor.
+
+
+## Conferences and talks
+
+We have submitted talk proposals for LPC (Linux Plumbers Conference).
+
+The main one will describe the work we have done so far and ideally
+will also serve as an introduction for other kernel developers
+interested in using Rust in the kernel. It will cover an introduction
+of the language within the context of the kernel, how the overall Rust
+support works, how code is documented, how tests are written, a tour
+of available tooling, an explanation of coding guidelines, how kernel
+driver code looks like, etc.
+
+In addition, we would like to announce that we are organizing a new
+conference that focuses on Rust and the Linux kernel. The first
+edition will be virtual and will take place before LPC. Details will
+be announced soon.
+
+
+## Acknowledgements
+
+The signatures in the main commits correspond to the people that
+wrote code that has ended up in them at the present time. For details
+on contributions to code and discussions, please see our repository:
+
+    https://github.com/Rust-for-Linux/linux
+
+However, we would like to give credit to everyone that has contributed
+in one way or another to the Rust for Linux project. Since the RFC:
+
+  - bjorn3 for all the input on Rust compiler details and all
+    the reviews and suggestions.
+
+  - Arthur Cohen, Esteban Blanc and Martin Schmidt for their ongoing
+    work on the SPI abstractions and driver.
+
+  - Dan Robertson for his ongoing work on softdeps in the `module!`
+    macro and the addition of a few safety comments.
+
+  - Paul Römer for his ongoing experiment on using `NonNull` as much
+    as possible.
+
+  - Sladyn Nunes for his ongoing sorting of error constants.
+
+  - Jonathan Corbet and the LPC organizers for lending us the Linux
+    Plumbers Conference infrastructure so that we can have an easy
+    time setting up the new conference.
+
+  - John Ericson for quickly implementing the `no_global_oom_handling`
+    `cfg` feature in upstream `alloc` to easily disable all
+    functionality that relies on panicking allocations.
+
+  - Josh Triplett and John Ericson for their input on `alloc` which
+    helped us decide what to do with it (i.e. fully custom vs.
+    slightly custom in-tree copy vs. upstream), as well as offering
+    to help moving forward some needed features on the Rust side.
+
+  - Mark Rousskov for answering some questions about beta backports
+    and scheduling, as well as working on unsticking `1.54.0-beta.1`.
+
+  - Philipp Krones for his input on Clippy lints and discussing
+    extensions for developing custom lints.
+
+  - Antoni Boucher for his work on `rustc_codegen_gcc`.
+
+  - Philip Herrons (and his supporters Open Source Security and
+    Embecosm) for his work on GCC Rust.
+
+  - Marc Poulhiès for his work on Compiler Explorer to add the
+    alternative Rust compilers we requested.
+
+  - Many folks that have reported issues, tested the project,
+    helped spread the word, joined discussions and contributed in
+    other ways! In no particular order: Chenguang Wang, Greg Morenz,
+    John Baublitz, Leah Leshchinsky, Caedin Cook, Liam Arzola,
+    Fabio Aiuto, Hanqing Zhao, Robin Randhawa, Michal Rostecki,
+    Wei Liu...
+
+For additional acknowledgements, please see the RFC from April.
+
+Miguel Ojeda (17):
+  kallsyms: support big kernel symbols (2-byte lengths)
+  kallsyms: increase maximum kernel symbol length to 512
+  Makefile: generate `CLANG_FLAGS` even in GCC builds
+  vsprintf: add new `%pA` format specifier
+  rust: add C helpers
+  rust: add `compiler_builtins` crate
+  rust: add `alloc` crate
+  rust: add `build_error` crate
+  rust: add `macros` crate
+  rust: add `kernel` crate
+  rust: export generated symbols
+  Kbuild: add Rust support
+  docs: add Rust documentation
+  samples: add Rust examples
+  scripts: add `generate_rust_analyzer.py`
+  MAINTAINERS: Rust
+  Android: Binder IPC in Rust (WIP)
+
+ .gitignore                                  |    5 +
+ .rustfmt.toml                               |   12 +
+ Documentation/doc-guide/kernel-doc.rst      |    3 +
+ Documentation/index.rst                     |    1 +
+ Documentation/kbuild/kbuild.rst             |    4 +
+ Documentation/process/changes.rst           |   13 +
+ Documentation/rust/arch-support.rst         |   35 +
+ Documentation/rust/assets/favicon-16x16.png |  Bin 0 -> 798 bytes
+ Documentation/rust/assets/favicon-32x32.png |  Bin 0 -> 2076 bytes
+ Documentation/rust/assets/rust-logo.png     |  Bin 0 -> 53976 bytes
+ Documentation/rust/coding.rst               |   92 +
+ Documentation/rust/docs.rst                 |  110 +
+ Documentation/rust/index.rst                |   20 +
+ Documentation/rust/quick-start.rst          |  222 ++
+ MAINTAINERS                                 |   14 +
+ Makefile                                    |  176 +-
+ arch/arm/rust/target.json                   |   28 +
+ arch/arm64/rust/target.json                 |   35 +
+ arch/powerpc/rust/target.json               |   30 +
+ arch/riscv/Makefile                         |    1 +
+ arch/riscv/rust/rv32ima.json                |   37 +
+ arch/riscv/rust/rv32imac.json               |   37 +
+ arch/riscv/rust/rv64ima.json                |   37 +
+ arch/riscv/rust/rv64imac.json               |   37 +
+ arch/x86/rust/target.json                   |   37 +
+ drivers/android/Kconfig                     |    7 +
+ drivers/android/Makefile                    |    2 +
+ drivers/android/allocation.rs               |  264 ++
+ drivers/android/context.rs                  |   80 +
+ drivers/android/defs.rs                     |   99 +
+ drivers/android/node.rs                     |  476 +++
+ drivers/android/process.rs                  |  972 ++++++
+ drivers/android/range_alloc.rs              |  189 ++
+ drivers/android/rust_binder.rs              |  114 +
+ drivers/android/thread.rs                   |  857 +++++
+ drivers/android/transaction.rs              |  328 ++
+ include/linux/kallsyms.h                    |    2 +-
+ include/linux/spinlock.h                    |   17 +-
+ include/uapi/linux/android/binder.h         |   28 +-
+ init/Kconfig                                |   28 +
+ kernel/kallsyms.c                           |    7 +
+ kernel/livepatch/core.c                     |    4 +-
+ kernel/printk/printk.c                      |    5 +-
+ lib/Kconfig.debug                           |  144 +
+ lib/vsprintf.c                              |   12 +
+ rust/.gitignore                             |    6 +
+ rust/Makefile                               |  316 ++
+ rust/alloc/README.md                        |   32 +
+ rust/alloc/alloc.rs                         |  425 +++
+ rust/alloc/borrow.rs                        |  493 +++
+ rust/alloc/boxed.rs                         | 1728 ++++++++++
+ rust/alloc/collections/mod.rs               |  116 +
+ rust/alloc/fmt.rs                           |  587 ++++
+ rust/alloc/lib.rs                           |  197 ++
+ rust/alloc/macros.rs                        |  128 +
+ rust/alloc/prelude/mod.rs                   |   17 +
+ rust/alloc/prelude/v1.rs                    |   16 +
+ rust/alloc/raw_vec.rs                       |  612 ++++
+ rust/alloc/rc.rs                            | 2539 +++++++++++++++
+ rust/alloc/slice.rs                         | 1271 ++++++++
+ rust/alloc/str.rs                           |  614 ++++
+ rust/alloc/string.rs                        | 2847 ++++++++++++++++
+ rust/alloc/sync.rs                          | 2631 +++++++++++++++
+ rust/alloc/vec/drain.rs                     |  157 +
+ rust/alloc/vec/drain_filter.rs              |  145 +
+ rust/alloc/vec/into_iter.rs                 |  296 ++
+ rust/alloc/vec/is_zero.rs                   |  106 +
+ rust/alloc/vec/mod.rs                       | 3255 +++++++++++++++++++
+ rust/alloc/vec/partial_eq.rs                |   49 +
+ rust/alloc/vec/set_len_on_drop.rs           |   30 +
+ rust/alloc/vec/spec_extend.rs               |  170 +
+ rust/bindgen_parameters                     |   13 +
+ rust/build_error.rs                         |   33 +
+ rust/compiler_builtins.rs                   |  146 +
+ rust/exports.c                              |   16 +
+ rust/helpers.c                              |  235 ++
+ rust/kernel/allocator.rs                    |   63 +
+ rust/kernel/bindings.rs                     |   28 +
+ rust/kernel/bindings_helper.h               |   24 +
+ rust/kernel/buffer.rs                       |   39 +
+ rust/kernel/build_assert.rs                 |   80 +
+ rust/kernel/c_types.rs                      |  119 +
+ rust/kernel/chrdev.rs                       |  212 ++
+ rust/kernel/error.rs                        |  272 ++
+ rust/kernel/file.rs                         |  130 +
+ rust/kernel/file_operations.rs              |  698 ++++
+ rust/kernel/io_buffer.rs                    |  153 +
+ rust/kernel/iov_iter.rs                     |   95 +
+ rust/kernel/lib.rs                          |  220 ++
+ rust/kernel/linked_list.rs                  |  245 ++
+ rust/kernel/miscdev.rs                      |  113 +
+ rust/kernel/module_param.rs                 |  497 +++
+ rust/kernel/of.rs                           |  101 +
+ rust/kernel/pages.rs                        |  176 +
+ rust/kernel/platdev.rs                      |  166 +
+ rust/kernel/prelude.rs                      |   28 +
+ rust/kernel/print.rs                        |  412 +++
+ rust/kernel/random.rs                       |   50 +
+ rust/kernel/raw_list.rs                     |  361 ++
+ rust/kernel/rbtree.rs                       |  570 ++++
+ rust/kernel/security.rs                     |   79 +
+ rust/kernel/static_assert.rs                |   39 +
+ rust/kernel/str.rs                          |  259 ++
+ rust/kernel/sync/arc.rs                     |  227 ++
+ rust/kernel/sync/condvar.rs                 |  136 +
+ rust/kernel/sync/guard.rs                   |   82 +
+ rust/kernel/sync/locked_by.rs               |  112 +
+ rust/kernel/sync/mod.rs                     |   84 +
+ rust/kernel/sync/mutex.rs                   |  101 +
+ rust/kernel/sync/spinlock.rs                |  109 +
+ rust/kernel/sysctl.rs                       |  198 ++
+ rust/kernel/task.rs                         |  193 ++
+ rust/kernel/traits.rs                       |   26 +
+ rust/kernel/types.rs                        |  249 ++
+ rust/kernel/user_ptr.rs                     |  191 ++
+ rust/macros/lib.rs                          |  127 +
+ rust/macros/module.rs                       |  754 +++++
+ samples/Kconfig                             |    2 +
+ samples/Makefile                            |    1 +
+ samples/rust/Kconfig                        |  113 +
+ samples/rust/Makefile                       |   12 +
+ samples/rust/rust_chrdev.rs                 |   51 +
+ samples/rust/rust_minimal.rs                |   38 +
+ samples/rust/rust_miscdev.rs                |  150 +
+ samples/rust/rust_module_parameters.rs      |   72 +
+ samples/rust/rust_print.rs                  |   57 +
+ samples/rust/rust_random.rs                 |   61 +
+ samples/rust/rust_semaphore.rs              |  177 +
+ samples/rust/rust_semaphore_c.c             |  212 ++
+ samples/rust/rust_stack_probing.rs          |   40 +
+ samples/rust/rust_sync.rs                   |   81 +
+ scripts/Makefile.build                      |   22 +
+ scripts/Makefile.lib                        |   12 +
+ scripts/generate_rust_analyzer.py           |  143 +
+ scripts/kallsyms.c                          |   33 +-
+ scripts/kconfig/confdata.c                  |   67 +-
+ scripts/rust-version.sh                     |   31 +
+ tools/include/linux/kallsyms.h              |    2 +-
+ tools/include/linux/lockdep.h               |    2 +-
+ tools/lib/perf/include/perf/event.h         |    2 +-
+ tools/lib/symbol/kallsyms.h                 |    2 +-
+ 141 files changed, 33003 insertions(+), 45 deletions(-)
+ create mode 100644 .rustfmt.toml
+ create mode 100644 Documentation/rust/arch-support.rst
+ create mode 100644 Documentation/rust/assets/favicon-16x16.png
+ create mode 100644 Documentation/rust/assets/favicon-32x32.png
+ create mode 100644 Documentation/rust/assets/rust-logo.png
+ create mode 100644 Documentation/rust/coding.rst
+ create mode 100644 Documentation/rust/docs.rst
+ create mode 100644 Documentation/rust/index.rst
+ create mode 100644 Documentation/rust/quick-start.rst
+ create mode 100644 arch/arm/rust/target.json
+ create mode 100644 arch/arm64/rust/target.json
+ create mode 100644 arch/powerpc/rust/target.json
+ create mode 100644 arch/riscv/rust/rv32ima.json
+ create mode 100644 arch/riscv/rust/rv32imac.json
+ create mode 100644 arch/riscv/rust/rv64ima.json
+ create mode 100644 arch/riscv/rust/rv64imac.json
+ create mode 100644 arch/x86/rust/target.json
+ create mode 100644 drivers/android/allocation.rs
+ create mode 100644 drivers/android/context.rs
+ create mode 100644 drivers/android/defs.rs
+ create mode 100644 drivers/android/node.rs
+ create mode 100644 drivers/android/process.rs
+ create mode 100644 drivers/android/range_alloc.rs
+ create mode 100644 drivers/android/rust_binder.rs
+ create mode 100644 drivers/android/thread.rs
+ create mode 100644 drivers/android/transaction.rs
+ create mode 100644 rust/.gitignore
+ create mode 100644 rust/Makefile
+ create mode 100644 rust/alloc/README.md
+ create mode 100644 rust/alloc/alloc.rs
+ create mode 100644 rust/alloc/borrow.rs
+ create mode 100644 rust/alloc/boxed.rs
+ create mode 100644 rust/alloc/collections/mod.rs
+ create mode 100644 rust/alloc/fmt.rs
+ create mode 100644 rust/alloc/lib.rs
+ create mode 100644 rust/alloc/macros.rs
+ create mode 100644 rust/alloc/prelude/mod.rs
+ create mode 100644 rust/alloc/prelude/v1.rs
+ create mode 100644 rust/alloc/raw_vec.rs
+ create mode 100644 rust/alloc/rc.rs
+ create mode 100644 rust/alloc/slice.rs
+ create mode 100644 rust/alloc/str.rs
+ create mode 100644 rust/alloc/string.rs
+ create mode 100644 rust/alloc/sync.rs
+ create mode 100644 rust/alloc/vec/drain.rs
+ create mode 100644 rust/alloc/vec/drain_filter.rs
+ create mode 100644 rust/alloc/vec/into_iter.rs
+ create mode 100644 rust/alloc/vec/is_zero.rs
+ create mode 100644 rust/alloc/vec/mod.rs
+ create mode 100644 rust/alloc/vec/partial_eq.rs
+ create mode 100644 rust/alloc/vec/set_len_on_drop.rs
+ create mode 100644 rust/alloc/vec/spec_extend.rs
+ create mode 100644 rust/bindgen_parameters
+ create mode 100644 rust/build_error.rs
+ create mode 100644 rust/compiler_builtins.rs
+ create mode 100644 rust/exports.c
+ create mode 100644 rust/helpers.c
+ create mode 100644 rust/kernel/allocator.rs
+ create mode 100644 rust/kernel/bindings.rs
+ create mode 100644 rust/kernel/bindings_helper.h
+ create mode 100644 rust/kernel/buffer.rs
+ create mode 100644 rust/kernel/build_assert.rs
+ create mode 100644 rust/kernel/c_types.rs
+ create mode 100644 rust/kernel/chrdev.rs
+ create mode 100644 rust/kernel/error.rs
+ create mode 100644 rust/kernel/file.rs
+ create mode 100644 rust/kernel/file_operations.rs
+ create mode 100644 rust/kernel/io_buffer.rs
+ create mode 100644 rust/kernel/iov_iter.rs
+ create mode 100644 rust/kernel/lib.rs
+ create mode 100644 rust/kernel/linked_list.rs
+ create mode 100644 rust/kernel/miscdev.rs
+ create mode 100644 rust/kernel/module_param.rs
+ create mode 100644 rust/kernel/of.rs
+ create mode 100644 rust/kernel/pages.rs
+ create mode 100644 rust/kernel/platdev.rs
+ create mode 100644 rust/kernel/prelude.rs
+ create mode 100644 rust/kernel/print.rs
+ create mode 100644 rust/kernel/random.rs
+ create mode 100644 rust/kernel/raw_list.rs
+ create mode 100644 rust/kernel/rbtree.rs
+ create mode 100644 rust/kernel/security.rs
+ create mode 100644 rust/kernel/static_assert.rs
+ create mode 100644 rust/kernel/str.rs
+ create mode 100644 rust/kernel/sync/arc.rs
+ create mode 100644 rust/kernel/sync/condvar.rs
+ create mode 100644 rust/kernel/sync/guard.rs
+ create mode 100644 rust/kernel/sync/locked_by.rs
+ create mode 100644 rust/kernel/sync/mod.rs
+ create mode 100644 rust/kernel/sync/mutex.rs
+ create mode 100644 rust/kernel/sync/spinlock.rs
+ create mode 100644 rust/kernel/sysctl.rs
+ create mode 100644 rust/kernel/task.rs
+ create mode 100644 rust/kernel/traits.rs
+ create mode 100644 rust/kernel/types.rs
+ create mode 100644 rust/kernel/user_ptr.rs
+ create mode 100644 rust/macros/lib.rs
+ create mode 100644 rust/macros/module.rs
+ create mode 100644 samples/rust/Kconfig
+ create mode 100644 samples/rust/Makefile
+ create mode 100644 samples/rust/rust_chrdev.rs
+ create mode 100644 samples/rust/rust_minimal.rs
+ create mode 100644 samples/rust/rust_miscdev.rs
+ create mode 100644 samples/rust/rust_module_parameters.rs
+ create mode 100644 samples/rust/rust_print.rs
+ create mode 100644 samples/rust/rust_random.rs
+ create mode 100644 samples/rust/rust_semaphore.rs
+ create mode 100644 samples/rust/rust_semaphore_c.c
+ create mode 100644 samples/rust/rust_stack_probing.rs
+ create mode 100644 samples/rust/rust_sync.rs
+ create mode 100755 scripts/generate_rust_analyzer.py
+ create mode 100755 scripts/rust-version.sh
+
+-- 
+2.32.0
 
