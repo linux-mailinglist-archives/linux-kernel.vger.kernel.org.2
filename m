@@ -2,212 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B46C3BABAC
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 08:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034FC3BABB2
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 08:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbhGDGY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 02:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhGDGY5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 02:24:57 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3786EC061764
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Jul 2021 23:22:22 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id b5so8339921plg.2
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Jul 2021 23:22:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XORvEp2gtWbQSLTOuxakjCQ6T0QdIM+9WQNeYuDCfSQ=;
-        b=eSZeT/8nUlJ8JAIidLTRFAa5IlIFdof0TE/J1j7xMrrXxM/QA7KXfcSStxeTRPTLGl
-         NRXILx9NGhWxe+UZGf6b4Y0gmzvfkS41m5/O07fsAEFGliKHAo/5SHBxsYtLE587Y3E3
-         VIlmA3gYrhj+eGlxs+Y2gG9ylu8czJspclA6/dFNOC6tRypu57wyoinA5O6eRLkGMw1o
-         6zGBBYrkMHdo09oNQYgnXpNEcC/WapWSGlemSmp5rFRengb8tEFRrd5uEEniJ3/lcDub
-         Vq935RNtK7AC3S0jwX9gB18Bjc9cP0OiDdZyOYHifsWMgBuBhqxSHQanqF7IJqrrpoig
-         Yl3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XORvEp2gtWbQSLTOuxakjCQ6T0QdIM+9WQNeYuDCfSQ=;
-        b=MBEKYEu4ci3hcmoVayX6oL8fU4UZ/oh9M4v88RlvhGE3T/BXydXAZLOIiC/JvieSYb
-         sG7qxSoPNYlOCEzbEJ3o5LAqvmw1s+sVBk3Esa6e0XxEE94EGzhEUg4vSA/MEY4TJ1fX
-         KmwxiDe529SwUA9ISauRQCkJNwgLaecMYqwBWy6HgjQCyuiez9ppiT6NKn1/PHLWo4eT
-         6noqb9tVuwgRmJ86lZyvd1ypai34T/+xxDLX8pDl+OjbRuWKR1LCoTS6JEXSLwBv3X2R
-         8CRGYLcHNn1L0vDS9mgLLxJahJZm8EZMIHl3UBpOrHBGgRF8MMyCzTngxFWJbat2Ja5S
-         v98Q==
-X-Gm-Message-State: AOAM532auL+U/NUfswEs5aD3EyUL2mjaDmm446xqdXUfipzhFdll8fAk
-        SmIvFpW2JFetDUMUcfSSCYzVEg==
-X-Google-Smtp-Source: ABdhPJz9rTDPPUHNUrbswBT+i/+oDCamLR/aueRSZ5nfssEqE1XwWvKJKV0KmjnU7p71FRYn7fh1MQ==
-X-Received: by 2002:a17:90a:fa92:: with SMTP id cu18mr8290447pjb.215.1625379741234;
-        Sat, 03 Jul 2021 23:22:21 -0700 (PDT)
-Received: from FVFX41FWHV2J.bytedance.net ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id y4sm9423683pfc.15.2021.07.03.23.22.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 03 Jul 2021 23:22:20 -0700 (PDT)
-From:   Feng zhou <zhoufeng.zf@bytedance.com>
-To:     adobriyan@gmail.com, akpm@linux-foundation.org, rppt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        duanxiongchun@bytedance.com, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com, chenying.kernel@bytedance.com,
-        zhengqi.arch@bytedance.com, zhoufeng.zf@bytedance.com
-Subject: [PATCH v3] fs/proc/kcore.c: add mmap interface
-Date:   Sun,  4 Jul 2021 14:22:08 +0800
-Message-Id: <20210704062208.7898-1-zhoufeng.zf@bytedance.com>
-X-Mailer: git-send-email 2.27.0
+        id S229575AbhGDGgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 02:36:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36692 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229549AbhGDGgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 02:36:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2ABFC613BD;
+        Sun,  4 Jul 2021 06:34:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625380443;
+        bh=wno3oUYI1yHOGawbHZ4ScbOty2mhX22sWkBa1oLvOwo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Aa/O34YsbC06irLFlMj8X2BY0NTIM+0pG7NqgnXpPpCfDWAAzJVz3FBZ2dLhkIpAn
+         v+h7VSQMudbAVtpUhTWmbu6s02LMzaxgtIOmXG5lJy+mi3EtefKf0COGQ8us3u0eD5
+         +2OvrWIXrHoFR9PzAwpSvYHXKVVf4yoxg/gEUaZiECFXSb8WSVdY5waN+IWqQXXXy2
+         EdcGJsmVwSRKPd4o6RQ3Cqi+4HZjkLDK/jxdVMw/BRg8AVwBKfRFG23CuuE3qAmVNH
+         IYCJpvvH4zGJaNW76VFXUEoLmfDN/tNSmqsg6xz+hG4BqWIMAc+q9+I4EuEqPzRTLO
+         uc7ci62JoQ9Pw==
+Date:   Sun, 4 Jul 2021 09:34:00 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Pine, Kevin" <kevin.pine@cornelisnetworks.com>
+Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
+ allocations
+Message-ID: <YOFWWOb7Dq92uaat@unreal>
+References: <0b3cc247-b67b-6151-2a32-e4682ff9af22@cornelisnetworks.com>
+ <20210519182941.GQ1002214@nvidia.com>
+ <1ceb34ec-eafb-697e-672c-17f9febb2e82@cornelisnetworks.com>
+ <20210519202623.GU1002214@nvidia.com>
+ <983802a6-0fa2-e181-832e-13a2d5f0fa82@cornelisnetworks.com>
+ <20210525131358.GU1002214@nvidia.com>
+ <4e4df8bd-4e3a-fe35-041d-ed3ed95be1cb@cornelisnetworks.com>
+ <20210525142048.GZ1002214@nvidia.com>
+ <CH0PR01MB7153F90EA5FAD6C18D361CC4F2039@CH0PR01MB7153.prod.exchangelabs.com>
+ <20210628231934.GL4459@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628231934.GL4459@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Feng Zhou <zhoufeng.zf@bytedance.com>
+On Mon, Jun 28, 2021 at 08:19:34PM -0300, Jason Gunthorpe wrote:
+> On Mon, Jun 28, 2021 at 09:59:48PM +0000, Marciniszyn, Mike wrote:
 
-When we do the kernel monitor, use the DRGN
-(https://github.com/osandov/drgn) access to kernel data structures,
-found that the system calls a lot. DRGN is implemented by reading
-/proc/kcore. After looking at the kcore code, it is found that kcore
-does not implement mmap, resulting in frequent context switching
-triggered by read. Therefore, we want to add mmap interface to optimize
-performance. Since vmalloc and module areas will change with allocation
-and release, consistency cannot be guaranteed, so mmap interface only
-maps KCORE_TEXT and KCORE_RAM.
+<...>
 
-The test results:
-1. the default version of kcore
-real 11.00
-user 8.53
-sys 3.59
+> I certainly object to this idea that the driver assumes userspace will
+> never move its IRQs off the local because it has wrongly hardwired a
+> numa locality to the wrong object.
 
-% time     seconds  usecs/call     calls    errors syscall
------- ----------- ----------- --------- --------- ----------------
-99.64  128.578319          12  11168701           pread64
-...
------- ----------- ----------- --------- --------- ----------------
-100.00  129.042853              11193748       966 total
+It makes me wonder how should we progress with my patch.
 
-2. added kcore for the mmap interface
-real 6.44
-user 7.32
-sys 0.24
+Thanks
 
-% time     seconds  usecs/call     calls    errors syscall
------- ----------- ----------- --------- --------- ----------------
-32.94    0.130120          24      5317       315 futex
-11.66    0.046077          21      2231         1 lstat
- 9.23    0.036449         177       206           mmap
-...
------- ----------- ----------- --------- --------- ----------------
-100.00    0.395077                 25435       971 total
-
-The test results show that the number of system calls and time
-consumption are significantly reduced.
-
-Co-developed-by: Ying Chen <chenying.kernel@bytedance.com>
-Signed-off-by: Ying Chen <chenying.kernel@bytedance.com>
-Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
----
-Updates since v2:
-- Remove the judgment on KCORE_REMAP
-- Add a test between "vma->vm_pgoff << PAGE_SHIFT" and "data_offset"
-- Modify the judgment logic for check that "start+size" hasn't
-overflowed
-
- fs/proc/kcore.c | 73 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
-
-diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-index 4d2e64e9016c..4aab4e3848fa 100644
---- a/fs/proc/kcore.c
-+++ b/fs/proc/kcore.c
-@@ -573,11 +573,84 @@ static int release_kcore(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
-+static vm_fault_t mmap_kcore_fault(struct vm_fault *vmf)
-+{
-+	return VM_FAULT_SIGBUS;
-+}
-+
-+static const struct vm_operations_struct kcore_mmap_ops = {
-+	.fault = mmap_kcore_fault,
-+};
-+
-+static int mmap_kcore(struct file *file, struct vm_area_struct *vma)
-+{
-+	size_t size = vma->vm_end - vma->vm_start;
-+	u64 start, end, pfn;
-+	int nphdr;
-+	size_t data_offset;
-+	size_t phdrs_len, notes_len;
-+	struct kcore_list *m = NULL;
-+	int ret = 0;
-+
-+	down_read(&kclist_lock);
-+
-+	get_kcore_size(&nphdr, &phdrs_len, &notes_len, &data_offset);
-+
-+	data_offset &= PAGE_MASK;
-+	start = (u64)vma->vm_pgoff << PAGE_SHIFT;
-+	if (start < data_offset) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+	start = kc_offset_to_vaddr(start - data_offset);
-+	end   = start + size;
-+
-+	list_for_each_entry(m, &kclist_head, list) {
-+		if (start >= m->addr && end <= m->addr + m->size)
-+			break;
-+	}
-+
-+	if (&m->list == &kclist_head) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	if (vma->vm_flags & (VM_WRITE | VM_EXEC)) {
-+		ret = -EPERM;
-+		goto out;
-+	}
-+
-+	vma->vm_flags &= ~(VM_MAYWRITE | VM_MAYEXEC);
-+	vma->vm_flags |= VM_MIXEDMAP;
-+	vma->vm_ops = &kcore_mmap_ops;
-+
-+	if (kern_addr_valid(start)) {
-+		if (m->type == KCORE_RAM)
-+			pfn = __pa(start) >> PAGE_SHIFT;
-+		else if (m->type == KCORE_TEXT)
-+			pfn = __pa_symbol(start) >> PAGE_SHIFT;
-+		else {
-+			ret = -EFAULT;
-+			goto out;
-+		}
-+
-+		ret = remap_pfn_range(vma, vma->vm_start, pfn, size,
-+				vma->vm_page_prot);
-+	} else {
-+		ret = -EFAULT;
-+	}
-+
-+out:
-+	up_read(&kclist_lock);
-+	return ret;
-+}
-+
- static const struct proc_ops kcore_proc_ops = {
- 	.proc_read	= read_kcore,
- 	.proc_open	= open_kcore,
- 	.proc_release	= release_kcore,
- 	.proc_lseek	= default_llseek,
-+	.proc_mmap	= mmap_kcore,
- };
- 
- /* just remember that we have to update kcore */
--- 
-2.11.0
-
+> 
+> Jason
