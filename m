@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226943BB3F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B5E3BB3F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbhGDXUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:20:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56966 "EHLO mail.kernel.org"
+        id S232798AbhGDXUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:20:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234141AbhGDXOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234144AbhGDXOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 4 Jul 2021 19:14:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF89619A5;
-        Sun,  4 Jul 2021 23:11:22 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EC8E61965;
+        Sun,  4 Jul 2021 23:11:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440282;
-        bh=oELBDiCkfRqdOuU0PT4sHdy7R3CRpNSQfTPY0Vfv2u0=;
+        s=k20201202; t=1625440286;
+        bh=ZwCIXI+anUKvUjBFbZwfOKZagOMJbFXhrHhA7no+JHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AvSiTngkQb7DoZqXnM31SEvCWHfnc/+27m01YCmNJqskbJUm2MW7lsKRzMBVfCG3e
-         CAzrcu9DJZpINEJAUVYSRHrwQ9Be8VB53iOthXBLBeM2z4ycg//9vspY+ZhhzDoirm
-         bQASf42GYbKIHXaC8XTHeBs5brdwogQrMC7Guc52MxD2g2qg9g2BsIqktsYX7uYbjn
-         QkwnaHZVuCBh9shbHpjt6uK72Rt+MgcVcOGnhZf5IaKpE1iP5cl7vGjczbpF0lzl31
-         SZZRm8Hqr/OntXl8gl/51wnKWXxFN/uVw7XcRNNDgOH4FNuFleXONOJYx3YdAh5+Vl
-         eiLPcvmjhMuhA==
+        b=Svs6O3mjp4hMbEvi3wlA13QW1Gi4amLQNEsqGGCRdHiBn2JBTGeg8JA8aGiZqV9RI
+         BRxVplMPoUK9hIoMm4oMyLntND8aRFZnD6RsVJ3s9EyFg6MXRfPfeFAQY5vaX7PBRo
+         41ylio+C19zp4o3p1c2EvpBrkLpWEZtPqMjdgM+jRBNakjKUQBaBhuh/tKz4QvuU+J
+         Qh3RZBEdYz/ntgOYutnriYlKIyT+eNrAY61gl7F7wu95q08yEpyhyzUByhTMHNj4V/
+         P6iLmiVQ5kbdBemgidMiqAX+XpzEQRb4arz8OvlBvU9/6pMdeMwbYF0I9QNWUHPshP
+         Gbzh05nwEgTIg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 31/31] regulator: da9052: Ensure enough delay time for .set_voltage_time_sel
-Date:   Sun,  4 Jul 2021 19:10:43 -0400
-Message-Id: <20210704231043.1491209-31-sashal@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 02/25] media: sh_vou: fix pm_runtime_get_sync() usage count
+Date:   Sun,  4 Jul 2021 19:11:00 -0400
+Message-Id: <20210704231123.1491517-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210704231043.1491209-1-sashal@kernel.org>
-References: <20210704231043.1491209-1-sashal@kernel.org>
+In-Reply-To: <20210704231123.1491517-1-sashal@kernel.org>
+References: <20210704231123.1491517-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -41,37 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Axel Lin <axel.lin@ingics.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit a336dc8f683e5be794186b5643cd34cb28dd2c53 ]
+[ Upstream commit 6e8b1526db164c9d4b9dacfb9bc48e365d7c4860 ]
 
-Use DIV_ROUND_UP to prevent truncation by integer division issue.
-This ensures we return enough delay time.
+The pm_runtime_get_sync() internally increments the
+dev->power.usage_count without decrementing it, even on errors.
+Replace it by the new pm_runtime_resume_and_get(), introduced by:
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+in order to properly decrement the usage counter, avoiding
+a potential PM usage counter leak.
 
-Also fix returning negative value when new_sel < old_sel.
+While here, check if the PM runtime error was caught at open time.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Link: https://lore.kernel.org/r/20210618141412.4014912-1-axel.lin@ingics.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/da9052-regulator.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/media/platform/sh_vou.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/da9052-regulator.c b/drivers/regulator/da9052-regulator.c
-index 9ececfef42d6..bd91c95f73e0 100644
---- a/drivers/regulator/da9052-regulator.c
-+++ b/drivers/regulator/da9052-regulator.c
-@@ -258,7 +258,8 @@ static int da9052_regulator_set_voltage_time_sel(struct regulator_dev *rdev,
- 	case DA9052_ID_BUCK3:
- 	case DA9052_ID_LDO2:
- 	case DA9052_ID_LDO3:
--		ret = (new_sel - old_sel) * info->step_uV / 6250;
-+		ret = DIV_ROUND_UP(abs(new_sel - old_sel) * info->step_uV,
-+				   6250);
- 		break;
- 	}
- 
+diff --git a/drivers/media/platform/sh_vou.c b/drivers/media/platform/sh_vou.c
+index 871da2a2a91c..06381c88229f 100644
+--- a/drivers/media/platform/sh_vou.c
++++ b/drivers/media/platform/sh_vou.c
+@@ -1147,7 +1147,11 @@ static int sh_vou_open(struct file *file)
+ 	if (v4l2_fh_is_singular_file(file) &&
+ 	    vou_dev->status == SH_VOU_INITIALISING) {
+ 		/* First open */
+-		pm_runtime_get_sync(vou_dev->v4l2_dev.dev);
++		err = pm_runtime_resume_and_get(vou_dev->v4l2_dev.dev);
++		if (err < 0) {
++			v4l2_fh_release(file);
++			goto done_open;
++		}
+ 		err = sh_vou_hw_init(vou_dev);
+ 		if (err < 0) {
+ 			pm_runtime_put(vou_dev->v4l2_dev.dev);
 -- 
 2.30.2
 
