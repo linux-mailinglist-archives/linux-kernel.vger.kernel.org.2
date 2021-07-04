@@ -2,256 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94AD33BAF06
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 22:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5AE3BAF0B
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 22:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhGDUlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 16:41:05 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:46685 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbhGDUlE (ORCPT
+        id S229947AbhGDUos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 16:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhGDUor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 16:41:04 -0400
-Received: by mail-io1-f72.google.com with SMTP id a24-20020a5d95580000b029044cbcdddd23so12030806ios.13
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 13:38:29 -0700 (PDT)
+        Sun, 4 Jul 2021 16:44:47 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67474C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 13:42:11 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id k21so21754775ljh.2
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 13:42:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ksLHrWRSt1VNjvN6bc4/KOwJ4T3qDcXRPZ+IP2o5+QE=;
+        b=QD+ir9k0F2OONnvTr+UhKJ/sIggattJ7zVPZJl47DjBfvS3pHKa4toN+gcL3pK14pv
+         H/CQq49jDcTxGqwfSwbICgN6GoYwjpm/aQsz7b8xm2SxSTtVIX1WiywveZbxFy0EjBTW
+         O3f3pAVnZSTbWVQPlRP9iKBXrE5lrWtRyiKho=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=MLuticSE4LQzdZP0NRfEKiJDbhJOy5ADvFzX0FtLti4=;
-        b=Iurq9coo5/UU8Xxu/WZopqV/5MMNKzPPSN6zE22knoYilccWCSR93CB6R/ckuuA+zd
-         L+4RxADu0kkVMg3l/r3lRCgmQwaHJ27KPkk9CmCATaPysB9dzubtcOSeBzWTn30XZ9+Q
-         ePsfqIp5wHcN1IKHOLym7Z6W656bA+0GfKETHFVo0uVroscy3FAqZ4YlRDJ5zrxStk3w
-         77b2uj/puF2xIIWffBoBPt3TeFGhSG0HLv42jL1jE4qFVx9Pu5USeHJJDUTnDjdrTzHF
-         VPM4zyhy/QXBU+/yb6ERHJqIcH9gKeRorWQ2CtzXH4vsTme9pj5CgF4aSJFmfAPJHJIs
-         HyVg==
-X-Gm-Message-State: AOAM532r3IvF/RhsPCG59wYB4EvdHpDVaLTF9H31VMWdcPbIVPHn3VXQ
-        nqfwbd0x6PW3muFVZTq5GwK9Uu2uLhXtwXluC30lpuD32uSZ
-X-Google-Smtp-Source: ABdhPJzuo27ypgJUxAtOEluYDIcClDZ625Oha1VKjo2FdKhVsryX0hD93G995cfZ2WYMD0n31Gfc3wXnxi2XO1tM8oa68JIhoDL2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ksLHrWRSt1VNjvN6bc4/KOwJ4T3qDcXRPZ+IP2o5+QE=;
+        b=fDja1mSLvN901aygD+DXRGpnp3a+hlv9jyVeIiMhW/IsrSww7SxC9AnST3bZ0lzhQm
+         4T84ZsicT5yoOizp/ogrST8m8B2oleTk0A4XVdRDGHwzDbUQ0T8k7fTQvsMIjjOGuu+c
+         Uh5pcSV3kNvE5EINMivV+cA2jZblBuH++++LTr9krIHo8TdMEm22jmdfRYWMUzxZ6F+7
+         Me7keSQ9AsOEoLSXuvCuiWtC62aKe39Pv6k6n/K/1+hda5ZYXFC27cy9dvihlqnsQ4cn
+         Xs3xCN48yH8PD1UTodtSKD+fkCR5F2wNLGuvuRZmB8qPIwHXaz5LtbsY8iH0Bc+BQsXA
+         k+Iw==
+X-Gm-Message-State: AOAM530pUNSRcUrrdZU+kZ8lRtlezwPGW89xaxQIRlzPOGdq9qHqXWZy
+        UysuX0xZRIKQnxExtlJErsKzhvxT7mY40JsS
+X-Google-Smtp-Source: ABdhPJwwm7F9pYIjRLwwDoWqibPcl1cV2Hp6Avdiz4z3aTXRxpOGUjaT+AogDXJLz+n4m9td4vfTNA==
+X-Received: by 2002:a2e:b5c8:: with SMTP id g8mr8432032ljn.406.1625431329409;
+        Sun, 04 Jul 2021 13:42:09 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id i6sm878339lfe.164.2021.07.04.13.42.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Jul 2021 13:42:08 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id p16so1179828lfc.5
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 13:42:08 -0700 (PDT)
+X-Received: by 2002:ac2:4903:: with SMTP id n3mr7674859lfi.487.1625431327793;
+ Sun, 04 Jul 2021 13:42:07 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3594:: with SMTP id v20mr9090624jal.25.1625431107414;
- Sun, 04 Jul 2021 13:38:27 -0700 (PDT)
-Date:   Sun, 04 Jul 2021 13:38:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c3b12f05c6522ba9@google.com>
-Subject: [syzbot] upstream test error: possible deadlock in fs_reclaim_acquire
-From:   syzbot <syzbot+957fdc00c16da68efb1b@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
-        daniel@iogearbox.net, ebiederm@xmission.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        peterz@infradead.org, shakeelb@google.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <20210704172948.GA1730187@roeck-us.net> <CAHk-=wheBFiejruhRqByt0ey1J8eU=ZUo9XBbm-ct8_xE_+B9A@mail.gmail.com>
+ <676ae33e-4e46-870f-5e22-462fc97959ed@roeck-us.net> <CAHk-=wj_AROgVZQ1=8mmYCXyu9JujGbNbxp+emGr5i3FagDayw@mail.gmail.com>
+ <19689998-9dfe-76a8-30d4-162648e04480@roeck-us.net>
+In-Reply-To: <19689998-9dfe-76a8-30d4-162648e04480@roeck-us.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 4 Jul 2021 13:41:51 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj0Q8R_3AxZO-34Gp2sEQAGUKhw7t6g4QtsnSxJTxb7WA@mail.gmail.com>
+Message-ID: <CAHk-=wj0Q8R_3AxZO-34Gp2sEQAGUKhw7t6g4QtsnSxJTxb7WA@mail.gmail.com>
+Subject: Re: [PATCH] iov_iter: separate direction from flavour
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pavel Begunkov <asml.silence@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, Jul 4, 2021 at 1:28 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> Turns out that, at least on m68k/nommu, USER_DS and KERNEL_DS are the same.
+>
+> #define USER_DS         MAKE_MM_SEG(TASK_SIZE)
+> #define KERNEL_DS       MAKE_MM_SEG(0xFFFFFFFF)
 
-syzbot found the following issue on:
+Ahh. So the code is fine, it's just that "uaccess_kernel()" isn't
+something that can be reliably even tested for, and it will always
+return true on those nommu platforms.
 
-HEAD commit:    df04fbe8 Merge branch 'for-linus' of git://git.kernel.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15be418c300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a5c1e3acc43bcfec
-dashboard link: https://syzkaller.appspot.com/bug?extid=957fdc00c16da68efb1b
+And we don't have a "uaccess_user()" macro that would test if it
+matches USER_DS (and that also would always return true on those
+configurations), so we can't just change the
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+957fdc00c16da68efb1b@syzkaller.appspotmail.com
+        WARN_ON_ONCE(uaccess_kernel());
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.13.0-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-fuzzer/8436 is trying to acquire lock:
-ffffffff8c099780 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_acquire+0xf7/0x160 mm/page_alloc.c:4586
+into a
 
-but task is already holding lock:
-ffff8880b9d31620 (lock#2){-.-.}-{2:2}, at: __alloc_pages_bulk+0x4ad/0x1870 mm/page_alloc.c:5291
+        WARN_ON_ONCE(!uaccess_user());
 
-which lock already depends on the new lock.
+instead.
 
+Very annoying. Basically, every single use of "uaccess_kernel()" is unreliable.
 
-the existing dependency chain (in reverse order) is:
+There aren't all that many of them, and most of them are irrelevant
+for no-mmu anyway (like the bpf tracing ones, or mm/memory.c). So this
+iov_iter.c case is likely the only one that would be an issue.
 
--> #1 (lock#2){-.-.}-{2:2}:
-       local_lock_acquire include/linux/local_lock_internal.h:42 [inline]
-       free_unref_page+0x1bf/0x690 mm/page_alloc.c:3439
-       mm_free_pgd kernel/fork.c:636 [inline]
-       __mmdrop+0xcb/0x3f0 kernel/fork.c:687
-       mmdrop include/linux/sched/mm.h:49 [inline]
-       finish_task_switch.isra.0+0x7cd/0xb80 kernel/sched/core.c:4582
-       context_switch kernel/sched/core.c:4686 [inline]
-       __schedule+0xb41/0x5980 kernel/sched/core.c:5940
-       preempt_schedule_irq+0x4e/0x90 kernel/sched/core.c:6328
-       irqentry_exit+0x31/0x80 kernel/entry/common.c:427
-       asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-       lock_release+0x12/0x720 kernel/locking/lockdep.c:5633
-       might_alloc include/linux/sched/mm.h:199 [inline]
-       slab_pre_alloc_hook mm/slab.h:485 [inline]
-       slab_alloc mm/slab.c:3306 [inline]
-       kmem_cache_alloc+0x41/0x530 mm/slab.c:3507
-       anon_vma_alloc mm/rmap.c:89 [inline]
-       anon_vma_fork+0xed/0x630 mm/rmap.c:354
-       dup_mmap kernel/fork.c:554 [inline]
-       dup_mm+0x9a0/0x1380 kernel/fork.c:1379
-       copy_mm kernel/fork.c:1431 [inline]
-       copy_process+0x71f0/0x74d0 kernel/fork.c:2119
-       kernel_clone+0xe7/0xab0 kernel/fork.c:2509
-       __do_sys_clone+0xc8/0x110 kernel/fork.c:2626
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
+That warning is something that should go away eventually anyway, but I
+_like_ that warning for now, just to get coverage. But apparently it's
+just not going to be the case for these situations.
 
--> #0 (fs_reclaim){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3051 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-       validate_chain kernel/locking/lockdep.c:3789 [inline]
-       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-       __fs_reclaim_acquire mm/page_alloc.c:4564 [inline]
-       fs_reclaim_acquire+0x117/0x160 mm/page_alloc.c:4578
-       prepare_alloc_pages+0x15c/0x580 mm/page_alloc.c:5176
-       __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
-       alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
-       stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
-       save_stack+0x15e/0x1e0 mm/page_owner.c:120
-       __set_page_owner+0x50/0x290 mm/page_owner.c:181
-       prep_new_page mm/page_alloc.c:2445 [inline]
-       __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
-       alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
-       vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
-       __vmalloc_area_node mm/vmalloc.c:2845 [inline]
-       __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
-       vmalloc_user+0x67/0x80 mm/vmalloc.c:3082
-       kcov_mmap+0x2b/0x140 kernel/kcov.c:465
-       call_mmap include/linux/fs.h:2119 [inline]
-       mmap_region+0xcde/0x1760 mm/mmap.c:1809
-       do_mmap+0x86e/0x11d0 mm/mmap.c:1585
-       vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
-       ksys_mmap_pgoff+0x4a8/0x620 mm/mmap.c:1636
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
+My inclination is to keep it around for a while - to see if it catches
+anything else - but remove it for the final 5.14 release because of
+these nommu issues.
 
-other info that might help us debug this:
+Of course, I will almost certainly not remember to do that unless
+somebody reminds me...
 
- Possible unsafe locking scenario:
+The other alternative would be to just make nommu platforms that have
+KERNEL_DS==USER_DS simply do
 
-       CPU0                    CPU1
-       ----                    ----
-  lock(lock#2);
-                               lock(fs_reclaim);
-                               lock(lock#2);
-  lock(fs_reclaim);
+    #define uaccess_kernel() (false)
 
- *** DEADLOCK ***
+and avoid it that way, since that's closer to what the modern
+non-CONFIG_SET_FS world view is, and is what include/linux/uaccess.h
+does for that case..
 
-2 locks held by syz-fuzzer/8436:
- #0: ffff88802a51c128 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_write_lock_killable include/linux/mmap_lock.h:87 [inline]
- #0: ffff88802a51c128 (&mm->mmap_lock#2){++++}-{3:3}, at: vm_mmap_pgoff+0x15c/0x290 mm/util.c:517
- #1: ffff8880b9d31620 (lock#2){-.-.}-{2:2}, at: __alloc_pages_bulk+0x4ad/0x1870 mm/page_alloc.c:5291
-
-stack backtrace:
-CPU: 1 PID: 8436 Comm: syz-fuzzer Not tainted 5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
- check_prev_add kernel/locking/lockdep.c:3051 [inline]
- check_prevs_add kernel/locking/lockdep.c:3174 [inline]
- validate_chain kernel/locking/lockdep.c:3789 [inline]
- __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __fs_reclaim_acquire mm/page_alloc.c:4564 [inline]
- fs_reclaim_acquire+0x117/0x160 mm/page_alloc.c:4578
- prepare_alloc_pages+0x15c/0x580 mm/page_alloc.c:5176
- __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
- stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
- save_stack+0x15e/0x1e0 mm/page_owner.c:120
- __set_page_owner+0x50/0x290 mm/page_owner.c:181
- prep_new_page mm/page_alloc.c:2445 [inline]
- __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
- alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
- vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
- __vmalloc_area_node mm/vmalloc.c:2845 [inline]
- __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
- vmalloc_user+0x67/0x80 mm/vmalloc.c:3082
- kcov_mmap+0x2b/0x140 kernel/kcov.c:465
- call_mmap include/linux/fs.h:2119 [inline]
- mmap_region+0xcde/0x1760 mm/mmap.c:1809
- do_mmap+0x86e/0x11d0 mm/mmap.c:1585
- vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
- ksys_mmap_pgoff+0x4a8/0x620 mm/mmap.c:1636
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4af20a
-Code: e8 3b 82 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 4c 8b 54 24 28 4c 8b 44 24 30 4c 8b 4c 24 38 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 40 ff ff ff ff 48 c7 44 24 48
-RSP: 002b:000000c0006175d8 EFLAGS: 00000212 ORIG_RAX: 0000000000000009
-RAX: ffffffffffffffda RBX: 000000c00001e800 RCX: 00000000004af20a
-RDX: 0000000000000003 RSI: 0000000000080000 RDI: 0000000000000000
-RBP: 000000c000617638 R08: 0000000000000006 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000212 R12: 00000000007798c5
-R13: 00000000000000d3 R14: 00000000000000d2 R15: 0000000000000100
-BUG: sleeping function called from invalid context at mm/page_alloc.c:5179
-in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 8436, name: syz-fuzzer
-INFO: lockdep is turned off.
-irq event stamp: 6576
-hardirqs last  enabled at (6575): [<ffffffff891e6120>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
-hardirqs last  enabled at (6575): [<ffffffff891e6120>] _raw_spin_unlock_irqrestore+0x50/0x70 kernel/locking/spinlock.c:191
-hardirqs last disabled at (6576): [<ffffffff81b1bf0c>] __alloc_pages_bulk+0x101c/0x1870 mm/page_alloc.c:5291
-softirqs last  enabled at (5362): [<ffffffff812b500e>] copy_kernel_to_xregs arch/x86/include/asm/fpu/internal.h:330 [inline]
-softirqs last  enabled at (5362): [<ffffffff812b500e>] __fpu__restore_sig+0xe5e/0x14d0 arch/x86/kernel/fpu/signal.c:360
-softirqs last disabled at (5360): [<ffffffff812b4aa2>] __fpu__restore_sig+0x8f2/0x14d0 arch/x86/kernel/fpu/signal.c:325
-CPU: 1 PID: 8436 Comm: syz-fuzzer Not tainted 5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
- ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
- prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
- __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
- stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
- save_stack+0x15e/0x1e0 mm/page_owner.c:120
- __set_page_owner+0x50/0x290 mm/page_owner.c:181
- prep_new_page mm/page_alloc.c:2445 [inline]
- __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
- alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
- vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
- __vmalloc_area_node mm/vmalloc.c:2845 [inline]
- __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
- vmalloc_user+0x67/0x80 mm/vmalloc.c:3082
- kcov_mmap+0x2b/0x140 kernel/kcov.c:465
- call_mmap include/linux/fs.h:2119 [inline]
- mmap_region+0xcde/0x1760 mm/mmap.c:1809
- do_mmap+0x86e/0x11d0 mm/mmap.c:1585
- vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
- ksys_mmap_pgoff+0x4a8/0x620 mm/mmap.c:1636
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4af20a
-Code: e8 3b 82 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 4c 8b 54 24 28 4c 8b 44 24 30 4c 8b 4c 24 38 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 40 ff ff ff ff 48 c7 44 24 48
-RSP: 002b:000000c0006175d8 EFLAGS: 00000212 ORIG_RAX: 0000000000000009
-RAX: ffffffffffffffda RBX: 000000c00001e800 RCX: 00000000004af20a
-RDX: 0000000000000003 RSI: 0000000000080000 RDI: 0000000000000000
-RBP: 000000c000617638 R08: 0000000000000006 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000212 R12: 00000000007798c5
-R13: 00000000000000d3 R14: 00000000000000d2 R15: 0000000000000100
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+               Linus
