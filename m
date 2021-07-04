@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20153BB418
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADAC3BB454
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbhGDXWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:22:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56970 "EHLO mail.kernel.org"
+        id S235037AbhGDXZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:25:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233804AbhGDXOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:14:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2878061982;
-        Sun,  4 Jul 2021 23:10:33 +0000 (UTC)
+        id S233862AbhGDXOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:14:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD159613D2;
+        Sun,  4 Jul 2021 23:10:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440234;
-        bh=z3BXUPzwUi9o7tN4WMvZUmXZh/lWJK4IWAuJaZ2qiZw=;
+        s=k20201202; t=1625440237;
+        bh=dAnvGLufU6Ejd9Nv5NgVmc7qe7BYvQ/94+7Rvi8+U/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bgdVUWUmiuJojNVLuTgUrpT+NNRYmaR5R5YWzVmcFFGx/yxixOAvo9Uqr2ov8Td6d
-         xEDJ/p5NzrPTXrf/VE4I7p5N8BrewS5mFgciJ9De8Z9GyZU3WSXPEwDUy2CaeJV1M5
-         q/a3ITToUTrvVOoLBDNyRF38wECxubSArtuMMb9Gc8XTt0FPE93bm1UKXJAYBnJrXf
-         +EoWCeahPIh9K8OBW3F/E5QktzRchZ2wdF48yg4nejHVEbrKfrIRYaAaMJuM5kPr6a
-         m1x4D2Fpzy2qMZ9QZvH7QoIc0fVksa7o9yxKgsw1CeVFdWqJHFt573Ixlc1eX+oden
-         H6w0YxRzxU6FA==
+        b=TWF0ta+/pEx8kTX7MqQMrQpIzXQFvWQZ+XNnNt9pHFZaIqOaMJBUDpZTpRUJ9+RIC
+         zIDEvPxgic0FslOAgGqb3uxHaNkAV1i8wvgYEjNkWoVva0lM9AF1aM8tI8FewiLFRL
+         5sd21BwT5Z5gz0HsBDCZH3UEuL2JJlikIEjGxI14o67/AUufrh0riQX1y3gXBTkJd6
+         SiZ7e8Z36OAL36ICJPQmm2+RTaWYb/ll1vUoMR2L/GvJLdeLQJ99+irik440pM2ISc
+         Suhog+mr3AhDpuzUcUCx3//4YLFVpIC5ZzTvV59uicFdAphVe5zFSAGwFnWb0ujYxL
+         4MGjTZLct5dBA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>, Ritesh Harjani <riteshh@linux.ibm.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 43/50] btrfs: fix the filemap_range_has_page() call in btrfs_punch_hole_lock_range()
-Date:   Sun,  4 Jul 2021 19:09:31 -0400
-Message-Id: <20210704230938.1490742-43-sashal@kernel.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 46/50] lockding/lockdep: Avoid to find wrong lock dep path in check_irq_usage()
+Date:   Sun,  4 Jul 2021 19:09:34 -0400
+Message-Id: <20210704230938.1490742-46-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704230938.1490742-1-sashal@kernel.org>
 References: <20210704230938.1490742-1-sashal@kernel.org>
@@ -43,101 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Boqun Feng <boqun.feng@gmail.com>
 
-[ Upstream commit 0528476b6ac7832f31e2ed740a57ae31316b124e ]
+[ Upstream commit 7b1f8c6179769af6ffa055e1169610b51d71edd5 ]
 
-[BUG]
-With current subpage RW support, the following script can hang the fs
-with 64K page size.
+In the step #3 of check_irq_usage(), we seach backwards to find a lock
+whose usage conflicts the usage of @target_entry1 on safe/unsafe.
+However, we should only keep the irq-unsafe usage of @target_entry1 into
+consideration, because it could be a case where a lock is hardirq-unsafe
+but soft-safe, and in check_irq_usage() we find it because its
+hardirq-unsafe could result into a hardirq-safe-unsafe deadlock, but
+currently since we don't filter out the other usage bits, so we may find
+a lock dependency path softirq-unsafe -> softirq-safe, which in fact
+doesn't cause a deadlock. And this may cause misleading lockdep splats.
 
- # mkfs.btrfs -f -s 4k $dev
- # mount $dev -o nospace_cache $mnt
- # fsstress -w -n 50 -p 1 -s 1607749395 -d $mnt
+Fix this by only keeping LOCKF_ENABLED_IRQ_ALL bits when we try the
+backwards search.
 
-The kernel will do an infinite loop in btrfs_punch_hole_lock_range().
-
-[CAUSE]
-In btrfs_punch_hole_lock_range() we:
-
-- Truncate page cache range
-- Lock extent io tree
-- Wait any ordered extents in the range.
-
-We exit the loop until we meet all the following conditions:
-
-- No ordered extent in the lock range
-- No page is in the lock range
-
-The latter condition has a pitfall, it only works for sector size ==
-PAGE_SIZE case.
-
-While can't handle the following subpage case:
-
-  0       32K     64K     96K     128K
-  |       |///////||//////|       ||
-
-lockstart=32K
-lockend=96K - 1
-
-In this case, although the range crosses 2 pages,
-truncate_pagecache_range() will invalidate no page at all, but only zero
-the [32K, 96K) range of the two pages.
-
-Thus filemap_range_has_page(32K, 96K-1) will always return true, thus we
-will never meet the loop exit condition.
-
-[FIX]
-Fix the problem by doing page alignment for the lock range.
-
-Function filemap_range_has_page() has already handled lend < lstart
-case, we only need to round up @lockstart, and round_down @lockend for
-truncate_pagecache_range().
-
-This modification should not change any thing for sector size ==
-PAGE_SIZE case, as in that case our range is already page aligned.
-
-Tested-by: Ritesh Harjani <riteshh@linux.ibm.com> # [ppc64]
-Tested-by: Anand Jain <anand.jain@oracle.com> # [aarch64]
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Reported-by: Johannes Berg <johannes@sipsolutions.net>
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20210618170110.3699115-4-boqun.feng@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/file.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ kernel/locking/lockdep.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index f6308a7b761d..b678bf7692d5 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2439,6 +2439,17 @@ static int btrfs_punch_hole_lock_range(struct inode *inode,
- 				       const u64 lockend,
- 				       struct extent_state **cached_state)
- {
-+	/*
-+	 * For subpage case, if the range is not at page boundary, we could
-+	 * have pages at the leading/tailing part of the range.
-+	 * This could lead to dead loop since filemap_range_has_page()
-+	 * will always return true.
-+	 * So here we need to do extra page alignment for
-+	 * filemap_range_has_page().
-+	 */
-+	const u64 page_lockstart = round_up(lockstart, PAGE_SIZE);
-+	const u64 page_lockend = round_down(lockend + 1, PAGE_SIZE) - 1;
-+
- 	while (1) {
- 		struct btrfs_ordered_extent *ordered;
- 		int ret;
-@@ -2458,7 +2469,7 @@ static int btrfs_punch_hole_lock_range(struct inode *inode,
- 		    (ordered->file_offset + ordered->len <= lockstart ||
- 		     ordered->file_offset > lockend)) &&
- 		     !filemap_range_has_page(inode->i_mapping,
--					     lockstart, lockend)) {
-+					     page_lockstart, page_lockend)) {
- 			if (ordered)
- 				btrfs_put_ordered_extent(ordered);
- 			break;
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index df43bf53e7c5..3ec8fd2e80e5 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -2377,8 +2377,18 @@ static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
+ 	 * Step 3: we found a bad match! Now retrieve a lock from the backward
+ 	 * list whose usage mask matches the exclusive usage mask from the
+ 	 * lock found on the forward list.
++	 *
++	 * Note, we should only keep the LOCKF_ENABLED_IRQ_ALL bits, considering
++	 * the follow case:
++	 *
++	 * When trying to add A -> B to the graph, we find that there is a
++	 * hardirq-safe L, that L -> ... -> A, and another hardirq-unsafe M,
++	 * that B -> ... -> M. However M is **softirq-safe**, if we use exact
++	 * invert bits of M's usage_mask, we will find another lock N that is
++	 * **softirq-unsafe** and N -> ... -> A, however N -> .. -> M will not
++	 * cause a inversion deadlock.
+ 	 */
+-	backward_mask = original_mask(target_entry1->class->usage_mask);
++	backward_mask = original_mask(target_entry1->class->usage_mask & LOCKF_ENABLED_IRQ_ALL);
+ 
+ 	ret = find_usage_backwards(&this, backward_mask, &target_entry);
+ 	if (ret < 0) {
 -- 
 2.30.2
 
