@@ -2,1855 +2,700 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006FB3BAEBE
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 22:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BD23BAEC3
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 22:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhGDUPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 16:15:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34284 "EHLO mail.kernel.org"
+        id S229771AbhGDUU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 16:20:57 -0400
+Received: from mga18.intel.com ([134.134.136.126]:12491 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229689AbhGDUPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 16:15:42 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C877D60FDA;
-        Sun,  4 Jul 2021 20:13:01 +0000 (UTC)
-Date:   Sun, 4 Jul 2021 21:15:25 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Dipen Patel <dipenp@nvidia.com>
-Cc:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linus.walleij@linaro.org>,
-        <bgolaszewski@baylibre.com>, <warthog618@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <robh+dt@kernel.org>
-Subject: Re: [RFC 02/11] drivers: Add HTE subsystem
-Message-ID: <20210704211525.4efb6ba0@jic23-huawei>
-In-Reply-To: <20210625235532.19575-3-dipenp@nvidia.com>
-References: <20210625235532.19575-1-dipenp@nvidia.com>
-        <20210625235532.19575-3-dipenp@nvidia.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229700AbhGDUU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 16:20:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10035"; a="196180185"
+X-IronPort-AV: E=Sophos;i="5.83,324,1616482800"; 
+   d="gz'50?scan'50,208,50";a="196180185"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jul 2021 13:18:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,324,1616482800"; 
+   d="gz'50?scan'50,208,50";a="409799013"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 04 Jul 2021 13:18:18 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m08ZF-000C9s-Af; Sun, 04 Jul 2021 20:18:17 +0000
+Date:   Mon, 5 Jul 2021 04:17:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Martijn Coenen <maco@android.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>
+Subject: drivers/block/loop.c:1729:1: warning: the frame size of 1072 bytes
+ is larger than 1024 bytes
+Message-ID: <202107050439.3emdQwKt-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="1yeeQ81UyVL57Vl7"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Jun 2021 16:55:23 -0700
-Dipen Patel <dipenp@nvidia.com> wrote:
 
-> Some devices can timestamp system lines/signals/Buses in real-time
-> using the hardware counter or other hardware means which can give
-> finer granularity and help avoid jitter introduced by software means
-> of timestamping. To utilize such functionality there has to be
-> framework where such devices can register themselves as producers or
-> providers so that the consumers or clients devices can request specific
-> line from the providers. This patch introduces such subsystem as
-> hardware timestamping engine (HTE).
-> 
-> It provides below APIs for the provider:
-> - hte_register_chip() -- To register the HTE chip.
-> - hte_unregister_chip() -- To unregister the HTE chip.
-> - hte_push_ts_ns_atomic() -- To push timestamp data into HTE subsystem.
-> 
-> It provides below APIs for the consumer:
-> - of_hte_request_ts() -- To request timestamp functionality.
-> - devm_of_hte_request_ts() -- Managed version of the above.
-> - hte_req_ts_by_dt_node() -- To request timestamp functionality by
-> using HTE provider dt node.
-> - devm_hte_release_ts() -- The managed version to release timestamp
-> functionality and associated resources.
-> - hte_retrieve_ts_ns() -- To retrieve timestamps.
-> - hte_retrieve_ts_ns_wait() -- Same as above but blocking version.
-> - hte_enable_ts() -- To disable timestamp functionality.
-> - hte_disable_ts() -- To enable timestamp functionality.
-> - hte_available_ts() -- To query available timestamp data.
-> - hte_release_ts() -- To release timestamp functionality and its
-> associated resources.
-> - hte_get_clk_src_info() -- To query clock source information from
-> the provider
-> 
-> It provides centralized software buffer management per requested id to
-> store the timestamp data for the consumers as below:
-> - hte_set_buf_len() -- To set the buffer length.
-> - hte_get_buf_len() -- To get the buffer length.
-> - hte_set_buf_watermark() -- To set the software threshold/watermark.
-> - hte_get_buf_watermark() -- To get the software threshold/watermark.
-> 
-> The detail about parameters and API usage are described in each
-> functions definitions in drivers/hte/hte.c file.
-> 
-> The patch adds compilation support in Makefile and menu options in
-> Kconfig.
-> 
-> Signed-off-by: Dipen Patel <dipenp@nvidia.com>
-
-Hi Dipen, this isn't a particularly thorough review as I'm still getting my head
-around what this is doing + it is an RFC :)
-
-> ---
->  drivers/Kconfig      |    2 +
->  drivers/Makefile     |    1 +
->  drivers/hte/Kconfig  |   22 +
->  drivers/hte/Makefile |    1 +
->  drivers/hte/hte.c    | 1368 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/hte.h  |  278 +++++++++
->  6 files changed, 1672 insertions(+)
->  create mode 100644 drivers/hte/Kconfig
->  create mode 100644 drivers/hte/Makefile
->  create mode 100644 drivers/hte/hte.c
->  create mode 100644 include/linux/hte.h
-> 
-> diff --git a/drivers/Kconfig b/drivers/Kconfig
-> index 47980c6b1945..9b078964974b 100644
-> --- a/drivers/Kconfig
-> +++ b/drivers/Kconfig
-> @@ -238,4 +238,6 @@ source "drivers/interconnect/Kconfig"
->  source "drivers/counter/Kconfig"
->  
->  source "drivers/most/Kconfig"
-> +
-> +source "drivers/hte/Kconfig"
->  endmenu
-> diff --git a/drivers/Makefile b/drivers/Makefile
-> index 5a6d613e868d..0a996a698e4c 100644
-> --- a/drivers/Makefile
-> +++ b/drivers/Makefile
-> @@ -190,3 +190,4 @@ obj-$(CONFIG_GNSS)		+= gnss/
->  obj-$(CONFIG_INTERCONNECT)	+= interconnect/
->  obj-$(CONFIG_COUNTER)		+= counter/
->  obj-$(CONFIG_MOST)		+= most/
-> +obj-$(CONFIG_HTE)		+= hte/
-> diff --git a/drivers/hte/Kconfig b/drivers/hte/Kconfig
-> new file mode 100644
-> index 000000000000..394e112f7dfb
-> --- /dev/null
-> +++ b/drivers/hte/Kconfig
-> @@ -0,0 +1,22 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +menuconfig HTE
-> +        bool "Hardware Timestamping Engine (HTE) Support"
-> +        help
-> +          Hardware Timestamping Engine (HTE) Support.
-
-Tidy this up, but think that's already been commented on.
-
-> +
-> +          Some devices provide hardware timestamping engine which can timestamp
-> +	  certain device lines/signals in realtime. This way to provide
-> +	  hardware assisted timestamp to generic signals like GPIOs, IRQs lines
-> +	  comes with benefit for the applications like autonomous machines
-> +	  needing accurate timestamping event with less jitter.
-> +
-> +	  This framework provides a generic interface to such HTE devices
-> +          within the Linux kernel. It provides an API to register and
-> +	  unregister a HTE provider chip, configurable sw buffer to
-> +	  store the timestamps, push the timestamp from the HTE providers and
-> +	  retrieve timestamps for the consumers. It also provides means for the
-> +	  consumers to request signals it wishes to hardware timestamp and
-> +	  release them if not required.
-> +
-> +          If unsure, say no.
-> +
-> diff --git a/drivers/hte/Makefile b/drivers/hte/Makefile
-> new file mode 100644
-> index 000000000000..9899dbe516f7
-> --- /dev/null
-> +++ b/drivers/hte/Makefile
-> @@ -0,0 +1 @@
-> +obj-$(CONFIG_HTE)		+= hte.o
-> diff --git a/drivers/hte/hte.c b/drivers/hte/hte.c
-> new file mode 100644
-> index 000000000000..c53260d1e250
-> --- /dev/null
-> +++ b/drivers/hte/hte.c
-> @@ -0,0 +1,1368 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2021 NVIDIA Corporation
-> + *
-> + * Author: Dipen Patel <dipenp@nvidia.com>
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/err.h>
-> +#include <linux/slab.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/kfifo.h>
-> +#include <linux/mutex.h>
-> +#include <linux/sched.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/hte.h>
-> +#include <linux/delay.h>
-> +#include <linux/debugfs.h>
-> +
-> +/* Global list of the HTE devices */
-> +static DEFINE_SPINLOCK(hte_lock);
-> +static LIST_HEAD(hte_devices);
-> +
-> +enum {
-> +	HTE_TS_REGISTERED,
-> +	HTE_TS_DISABLE,
-> +};
-> +
-> +/* Default FIFO depth */
-> +#define HTE_EV_FIFO_EL		32
-> +
-> +#define HTE_TS_NAME_LEN		10
-> +
-> +struct hte_ts_buf;
-> +
-> +/**
-> + * struct hte_ts_buf_acc_func - Software buffer management functions.
-> + * @store: Store timestamp from atomic context as providers most likely
-> + * be pushing timestamps from their interrupt handlers.
-> + * @read: Read timestamps from the buffer.
-> + * @el_available: Available timestamps to retrieve. The client can use this to
-> + * query available elements so that it can pre-allocate internal buffer to send
-> + * to during hte_retrieve_ts_ns API.
-> + * @set_length: Set length/depth of the buffer.
-> + * @get_length: Get length/depth of the buffer.
-> + * @set_watermark: Set software threshold of the buffer.
-> + * @get_watermark: Get software threshold of the buffer.
-> + * @release: Release/free buffer.
-> + * @reset: Reset the buffer.
-> + */
-> +struct hte_ts_buf_acc_func {
-> +	unsigned int (*store)(struct hte_ts_buf *buf, void *data, size_t n);
-> +	int (*read)(struct hte_ts_buf *buf, unsigned char *data, size_t n,
-> +		    size_t *copied);
-> +	size_t (*el_available)(struct hte_ts_buf *buf);
-> +	int (*set_length)(struct hte_ts_buf *buf,
-> +			  size_t length, size_t bpd);
-> +	size_t (*get_length)(struct hte_ts_buf *buf);
-> +	int (*set_watermark)(struct hte_ts_buf *buf,
-> +			     size_t val);
-> +	size_t (*get_watermark)(struct hte_ts_buf *buf);
-> +	void (*release)(struct hte_ts_buf *buf);
-> +	void (*reset)(struct hte_ts_buf *buf);
-> +};
-> +
-> +/**
-> + * struct hte_ts_buf - Software buffer per requested id or entity to store
-> + * timestamps.
-> + *
-> + * @datum_len: Buffer depth or number of elements.
-> + * @bytes_per_datum: Element size in bytes.
-> + * @watermark: Software threshold at which client will be notified.
-> + * @valid: Validity of the buffer.
-> + * @pollq: Waitqueue for the blocking clients.
-> + * @access: Various buffer management functions.
-> + */
-> +struct hte_ts_buf {
-> +	size_t datum_len;
-> +	size_t bytes_per_datum;
-> +	size_t watermark;
-> +	bool valid;
-> +	wait_queue_head_t pollq;
-> +	const struct hte_ts_buf_acc_func *access;
-> +};
-> +
-> +/**
-> + * struct hte_ts_info - Information related to requested timestamp.
-> + *
-> + * @xlated_id: Timestamp ID as understood between HTE subsys and HTE provider,
-> + * See xlate callback API.
-> + * @flags: Flags holding state informations.
-> + * @seq: Timestamp sequence counter.
-> + * @dropped_ts: Dropped timestamps.
-> + * @cb: Callback to notify clients.
-> + * @mlock: Lock during timestamp request/release APIs.
-> + * @ts_dbg_root: Root for the debug fs.
-> + * @gdev: HTE abstract device that this timestamp belongs to.
-> + * @buf: Per requested timestamp software buffer.
-> + * @desc: Timestamp descriptor understood between clients and HTE subsystem.
-> + */
-> +struct hte_ts_info {
-> +	u32 xlated_id;
-> +	unsigned long flags;
-> +	u64 seq;
-> +	atomic_t dropped_ts;
-> +	void (*cb)(enum hte_notify n);
-> +	struct mutex mlock;
-> +	struct dentry *ts_dbg_root;
-> +	struct hte_device *gdev;
-> +	struct hte_ts_buf *buf;
-> +	struct hte_ts_desc *desc;
-> +};
-> +
-> +/**
-> + * struct hte_device - HTE abstract device
-> + * @nlines: Number of entities this device supports.
-> + * @ts_req: Total number of entities requested.
-> + * @ei: Timestamp information.
-> + * @sdev: Device used at various debug prints.
-> + * @dbg_root: Root directory for debug fs.
-> + * @list: List node for internal use.
-
-Be more specific of what sort of internal use.
-
-> + * @chip: HTE chip providing this HTE device.
-> + * @owner: helps prevent removal of modules when in use.
-> + */
-> +struct hte_device {
-> +	u32 nlines;
-> +	atomic_t ts_req;
-> +	struct hte_ts_info *ei;
-> +	struct device *sdev;
-> +	struct dentry *dbg_root;
-> +	struct list_head list;
-> +	struct hte_chip *chip;
-> +	struct module *owner;
-> +};
-> +
-> +/* Buffer management functions */
-> +
-> +/**
-> + * struct hte_kfifo - Software buffer wrapper.
-> + * @buffer: Abstract buffer device.
-> + * @gkf: Actual software buffer type, this case its FIFO.
-> + */
-> +struct hte_kfifo {
-> +	struct hte_ts_buf buffer;
-> +	struct kfifo gkf;
-> +};
-> +
-> +#define buf_to_kfifo(r) container_of(r, struct hte_kfifo, buffer)
-> +
-> +static unsigned int hte_ts_store_to_buf(struct hte_ts_buf *r, void *data,
-> +					size_t n)
-> +{
-> +	struct hte_kfifo *kf = buf_to_kfifo(r);
-> +
-> +	if (unlikely(!r->valid))
-> +		return 0;
-> +
-> +	return kfifo_in(&kf->gkf, (unsigned char *)data, n);
-> +}
-> +
-> +static inline int hte_ts_buf_read(struct hte_ts_buf *r,
-> +				  unsigned char *buf, size_t n,
-> +				  size_t *copied)
-> +{
-> +	struct hte_kfifo *kf = buf_to_kfifo(r);
-> +
-> +	if ((!r->valid) || (n < kfifo_esize(&kf->gkf)))
-> +		return -EINVAL;
-> +
-> +	*copied = kfifo_out(&kf->gkf, buf, n);
-> +
-> +	return 0;
-> +}
-> +
-> +static size_t hte_ts_buf_el_available(struct hte_ts_buf *r)
-> +{
-> +	struct hte_kfifo *kf = buf_to_kfifo(r);
-> +
-> +	if (!r->valid)
-> +		return 0;
-> +
-> +	return (kfifo_len(&kf->gkf) / r->bytes_per_datum);
-> +}
-> +
-> +static int hte_ts_buf_set_length(struct hte_ts_buf *r,
-> +				 size_t length, size_t bpd)
-> +{
-> +	int ret = 0;
-> +	struct hte_kfifo *buf;
-> +
-> +	if ((length == 0) || (bpd == 0) || !r)
-> +		return -EINVAL;
-> +
-> +	buf = buf_to_kfifo(r);
-> +
-> +	if (r->datum_len != length) {
-> +		if (r->valid)
-> +			kfifo_free(&buf->gkf);
-> +		r->valid = false;
-> +		r->datum_len = length;
-> +		r->bytes_per_datum = bpd;
-> +		ret = kfifo_alloc(&buf->gkf, length * bpd, GFP_KERNEL);
-> +		if (!ret)
-> +			r->valid = true;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static inline size_t hte_ts_buf_get_length(struct hte_ts_buf *r)
-> +{
-> +	if ((!r->valid) || !r->datum_len)
-> +		return 0;
-> +
-> +	return r->datum_len;
-> +}
-> +
-> +static inline int hte_ts_buf_set_watermark(struct hte_ts_buf *r, size_t val)
-> +{
-> +	if ((!r->valid) || (val > r->datum_len))
-> +		return -EINVAL;
-> +
-> +	r->watermark = val;
-> +
-> +	return 0;
-> +}
-> +
-> +static inline size_t hte_ts_buf_get_watermark(struct hte_ts_buf *r)
-> +{
-> +	if (!r->valid)
-> +		return 0;
-> +
-> +	return r->watermark;
-> +}
-> +
-> +static inline void hte_ts_buf_release(struct hte_ts_buf *r)
-> +{
-> +	struct hte_kfifo *kf = buf_to_kfifo(r);
-> +
-> +	r->valid = false;
-> +	kfifo_free(&kf->gkf);
-> +	kfree(kf);
-> +}
-> +
-> +static inline void hte_ts_buf_reset(struct hte_ts_buf *r)
-> +{
-> +	struct hte_kfifo *kf = buf_to_kfifo(r);
-> +
-> +	if (!r->valid)
-> +		return;
-> +
-> +	kfifo_reset(&kf->gkf);
-> +}
-> +
-> +static const struct hte_ts_buf_acc_func kfifo_access_funcs = {
-> +	.store = &hte_ts_store_to_buf,
-> +	.read = &hte_ts_buf_read,
-> +	.el_available = &hte_ts_buf_el_available,
-> +	.set_length = &hte_ts_buf_set_length,
-> +	.get_length = &hte_ts_buf_get_length,
-> +	.set_watermark = &hte_ts_buf_set_watermark,
-> +	.get_watermark = &hte_ts_buf_get_watermark,
-> +	.release = &hte_ts_buf_release,
-> +	.reset = &hte_ts_buf_reset,
-> +};
-> +
-> +static struct hte_ts_buf *hte_ts_buf_allocate(void)
-> +{
-> +	struct hte_kfifo *kf;
-> +
-> +	kf = kzalloc(sizeof(*kf), GFP_KERNEL);
-> +	if (!kf)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	init_waitqueue_head(&kf->buffer.pollq);
-> +	kf->buffer.watermark = 1;
-> +	kf->buffer.datum_len = 0;
-> +	kf->buffer.valid = false;
-> +	kf->buffer.access = &kfifo_access_funcs;
-> +
-> +	return &kf->buffer;
-> +}
-> +/* End of buffer management */
-> +
-> +/* Debugfs management */
-> +
-> +#ifdef CONFIG_DEBUG_FS
-> +
-> +static struct dentry *hte_root;
-> +
-> +static void __init hte_subsys_dbgfs_init(void)
-> +{
-> +	/* creates /sys/kernel/debug/hte/ */
-> +	hte_root = debugfs_create_dir("hte", NULL);
-> +}
-> +subsys_initcall(hte_subsys_dbgfs_init);
-> +
-> +static void hte_chip_dbgfs_init(struct hte_device *gdev)
-> +{
-> +	const struct hte_chip *chip = gdev->chip;
-> +	const char *name = chip->name ? chip->name : dev_name(chip->dev);
-> +
-> +	gdev->dbg_root = debugfs_create_dir(name, hte_root);
-> +	if (!gdev->dbg_root)
-> +		return;
-> +
-> +	debugfs_create_atomic_t("ts_requested", 0444, gdev->dbg_root,
-> +				&gdev->ts_req);
-> +	debugfs_create_u32("total_ts", 0444, gdev->dbg_root,
-> +			   &gdev->nlines);
-> +}
-> +
-> +static void hte_ts_dbgfs_init(const char *name, struct hte_ts_info *ei)
-> +{
-> +	if (!ei->gdev->dbg_root || !name)
-> +		return;
-> +
-> +	ei->ts_dbg_root = debugfs_create_dir(name, ei->gdev->dbg_root);
-> +	if (!ei->ts_dbg_root)
-> +		return;
-> +
-> +	debugfs_create_size_t("ts_buffer_depth", 0444, ei->ts_dbg_root,
-> +			      &ei->buf->datum_len);
-> +	debugfs_create_size_t("ts_buffer_watermark", 0444, ei->ts_dbg_root,
-> +			      &ei->buf->watermark);
-> +	debugfs_create_atomic_t("dropped_timestamps", 0444, ei->ts_dbg_root,
-> +				&ei->dropped_ts);
-> +}
-> +
-> +static inline void hte_dbgfs_deinit(struct dentry *root)
-> +{
-> +	if (!root)
-> +		return;
-> +
-> +	debugfs_remove_recursive(root);
-> +}
-> +
-> +#else
-> +
-> +static void hte_chip_dbgfs_init(struct hte_device *gdev)
-> +{
-> +}
-> +
-> +static void hte_ts_dbgfs_init(const char *name, struct hte_ts_info *ei)
-> +{
-> +}
-> +
-> +static inline void hte_dbgfs_deinit(struct dentry *root)
-> +{
-> +}
-> +
-> +#endif
-> +/* end of debugfs management*/
-> +
-> +/* Driver APIs */
-> +
-> +/**
-> + * hte_release_ts() - Consumer calls this API to release the entity, where
-> + * entity could be anything providers support, like lines, signals, buses,
-> + * etc...
-> + *
-> + * The correct sequence to call this API is as below:
-> + * 1) Call hte_disable_ts, this stops the timestamp push from the provider.
-> + * 2) Retrieve timestamps by calling non blocking hte_retrieve_ts_ns API if you
-> + * still care about the data.
-> + * 3) Call this API.
-> + * Above sequence makes sure that entity gets released race free.
-> + *
-> + * @desc: timestamp descriptor, this is the same as returned by the request API.
-> + *
-> + * Context: hte_dbgfs_deinit() function call may use sleeping locks,
-> + *	    not suitable from atomic context in that case.
-> + * Returns: 0 on success or a negative error code on failure.
-> + */
-> +int hte_release_ts(struct hte_ts_desc *desc)
-> +{
-> +	u32 id;
-> +	int ret = 0;
-> +	struct hte_device *gdev;
-> +	struct hte_ts_info *ei;
-> +	struct hte_ts_buf *buf;
-> +
-> +	if (!desc)
-> +		return -EINVAL;
-> +
-> +	ei = (struct hte_ts_info *)desc->data_subsys;
-
-As data_subsys is void * you don't need to explicitly cast it to another pointer type.
-
-> +
-> +	if (!ei || !ei->gdev || !ei->buf)
-> +		return -EINVAL;
-> +
-> +	gdev = ei->gdev;
-> +	buf = ei->buf;
-> +	id = desc->con_id;
-> +
-> +	if (!test_bit(HTE_TS_REGISTERED, &ei->flags)) {
-> +		dev_info(gdev->sdev, "id:%d is not registered", id);
-> +		return -EUSERS;
-> +	}
-> +
-> +	ret = gdev->chip->ops->release(gdev->chip, ei->xlated_id);
-> +	if (ret) {
-> +		dev_err(gdev->sdev, "id: %d free failed\n", id);
-> +		goto out;
-> +	}
-> +
-> +	atomic_dec(&gdev->ts_req);
-> +	atomic_set(&ei->dropped_ts, 0);
-> +
-> +	kfree(desc->name);
-> +	kfree(desc);
-> +	ei->desc = NULL;
-> +	ei->seq = 0;
-> +	buf->access->release(buf);
-> +
-> +	hte_dbgfs_deinit(ei->ts_dbg_root);
-> +	module_put(gdev->owner);
-> +
-> +	clear_bit(HTE_TS_REGISTERED, &ei->flags);
-> +
-> +out:
-> +	dev_dbg(gdev->sdev, "%s: id: %d\n", __func__, id);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(hte_release_ts);
-> +
-> +static int hte_ts_dis_en_common(struct hte_ts_desc *desc, bool en)
-> +{
-> +	u32 ts_id;
-> +	struct hte_device *gdev;
-> +	struct hte_ts_info *ei;
-> +	int ret;
-> +
-> +	if (!desc)
-> +		return -EINVAL;
-> +
-> +	ei = (struct hte_ts_info *)desc->data_subsys;
-
-As above, no need to cast - though it rather implies the type of data_subsys
-should not be void *.
-
-> +
-> +	if (!ei || !ei->gdev)
-> +		return -EINVAL;
-> +
-> +	gdev = ei->gdev;
-> +	ts_id = desc->con_id;
-> +
-> +	mutex_lock(&ei->mlock);
-> +
-> +	if (!test_bit(HTE_TS_REGISTERED, &ei->flags)) {
-> +		dev_dbg(gdev->sdev, "id:%d is not registered", ts_id);
-> +		ret = -EUSERS;
-> +		goto out;
-> +	}
-> +
-> +	if (en) {
-> +		if (!test_bit(HTE_TS_DISABLE, &ei->flags)) {
-> +			ret = 0;
-> +			goto out;
-> +		}
-> +		ret = gdev->chip->ops->enable(gdev->chip, ei->xlated_id);
-> +		if (ret) {
-> +			dev_warn(gdev->sdev, "id: %d enable failed\n",
-> +				 ts_id);
-> +			goto out;
-> +		}
-> +
-> +		clear_bit(HTE_TS_DISABLE, &ei->flags);
-> +		ret = 0;
-
-ret is already 0 so no point in setting it again.
-
-> +	} else {
-> +		if (test_bit(HTE_TS_DISABLE, &ei->flags)) {
-> +			ret = 0;
-> +			goto out;
-> +		}
-> +		ret = gdev->chip->ops->disable(gdev->chip, ei->xlated_id);
-> +		if (ret) {
-> +			dev_warn(gdev->sdev, "id: %d disable failed\n",
-> +				 ts_id);
-> +			goto out;
-> +		}
-> +
-> +		set_bit(HTE_TS_DISABLE, &ei->flags);
-> +		ret = 0;
-> +	}
-> +
-> +out:
-> +	mutex_unlock(&ei->mlock);
-> +	return ret;
-> +}
-> +
-> +/**
-> + * hte_disable_ts() - Disable timestamp on given descriptor.
-> + *
-> + * @desc: ts descriptor, this is the same as returned by the request API.
-> + *
-> + * Context: Holds mutex lock, not suitable from atomic context.
-> + * Returns: 0 on success or a negative error code on failure.
-> + */
-> +int hte_disable_ts(struct hte_ts_desc *desc)
-> +{
-> +	return hte_ts_dis_en_common(desc, false);
-> +}
-> +EXPORT_SYMBOL_GPL(hte_disable_ts);
-> +
-> +/**
-> + * hte_enable_ts() - Enable timestamp on given descriptor.
-> + *
-> + * @desc: ts descriptor, this is the same as returned by the request API.
-> + *
-> + * Context: Holds mutex lock, not suitable from atomic context.
-> + * Returns: 0 on success or a negative error code on failure.
-> + */
-> +int hte_enable_ts(struct hte_ts_desc *desc)
-> +{
-> +	return hte_ts_dis_en_common(desc, true);
-> +}
-> +EXPORT_SYMBOL_GPL(hte_enable_ts);
-> +
-> +static int hte_simple_xlate(struct hte_chip *gc,
-> +			    const struct of_phandle_args *args,
-> +			    struct hte_ts_desc *desc,
-> +			    u32 *id)
-> +{
-> +	if (!id || !desc || !gc)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * For the providers which do not have any internal mappings between
-> +	 * logically exposed ids and actual ids, will set both
-> +	 * the same.
-> +	 *
-> +	 * In case there is a internal mapping needed, providers will need to
-> +	 * provide its own xlate function where con_id will be sent as
-> +	 * args[0] and it will return xlated id. Later xlated id will be
-> +	 * used for any future exchanges between provider and subsystems.
-> +	 */
-> +
-> +	if (args) {
-> +		if (gc->of_hte_n_cells < 1)
-> +			return -EINVAL;
-> +
-> +		if (args->args_count != gc->of_hte_n_cells)
-> +			return -EINVAL;
-> +
-> +		*id = args->args[0];
-> +		desc->con_id = *id;
-> +	} else {
-> +		*id = desc->con_id;
-> +	}
-> +
-> +	if (desc->con_id > gc->nlines)
-> +		return -EINVAL;
-> +
-> +	desc->data_subsys = NULL;
-> +
-> +	return 0;
-> +}
-> +
-> +static struct hte_device *of_node_to_htedevice(struct device_node *np)
-> +{
-> +	struct hte_device *gdev;
-> +
-> +	spin_lock(&hte_lock);
-> +
-> +	list_for_each_entry(gdev, &hte_devices, list)
-> +		if (gdev->chip && gdev->chip->dev &&
-> +		    gdev->chip->dev->of_node == np) {
-> +			spin_unlock(&hte_lock);
-> +			return gdev;
-> +		}
-> +
-> +	spin_unlock(&hte_lock);
-> +
-> +	return ERR_PTR(-ENODEV);
-> +}
-> +
-> +static int ___hte_req_ts(struct hte_device *gdev, struct hte_ts_desc *desc,
-> +			 u32 xlated_id, void (*cb)(enum hte_notify n))
-> +{
-> +	struct hte_ts_info *ei;
-> +	struct hte_ts_buf *buf;
-> +	int ret;
-> +	u32 con_id = desc->con_id;
-> +
-> +	if (!try_module_get(gdev->owner))
-> +		return -ENODEV;
-> +
-> +	ei = &gdev->ei[xlated_id];
-> +	ei->xlated_id = xlated_id;
-> +
-> +	/*
-> +	 * There a chance that multiple consumers requesting same entity,
-> +	 * lock here.
-> +	 */
-> +	mutex_lock(&ei->mlock);
-> +
-> +	if (test_bit(HTE_TS_REGISTERED, &ei->flags)) {
-> +		dev_dbg(gdev->chip->dev, "id:%u is already registered",
-> +			xlated_id);
-> +		ret = -EUSERS;
-> +		goto unlock;
-> +	}
-> +
-> +	buf = hte_ts_buf_allocate();
-> +	if (IS_ERR(buf)) {
-> +		dev_err(gdev->chip->dev, "Buffer allocation failed");
-> +		ret = PTR_ERR(buf);
-> +		goto unlock;
-> +	}
-> +
-> +	/* Set default here, let consumer decide how much to set later */
-> +	ret = buf->access->set_length(buf, HTE_EV_FIFO_EL,
-> +				      sizeof(struct hte_ts_data));
-> +
-
-It's good to keep to consistent style of no line break between a statement
-and it's error check.
-
-> +	if (ret) {
-> +		dev_err(gdev->chip->dev, "Fifo set length failed");
-> +		goto buf_rel;
-> +	}
-> +
-> +	buf->access->reset(buf);
-> +	buf->valid = true;
-> +
-> +	ei->buf = buf;
-> +	ei->cb = cb;
-> +
-> +	ret = gdev->chip->ops->request(gdev->chip, xlated_id);
-> +	if (ret < 0) {
-> +		dev_err(gdev->chip->dev, "ts request failed\n");
-> +		goto buf_rel;
-> +	}
-> +
-> +	desc->data_subsys = ei;
-> +	ei->desc = desc;
-> +
-> +	atomic_inc(&gdev->ts_req);
-> +	set_bit(HTE_TS_REGISTERED, &ei->flags);
-> +	mutex_unlock(&ei->mlock);
-> +
-> +	if (!desc->name) {
-> +		desc->name = kzalloc(HTE_TS_NAME_LEN, GFP_KERNEL);
-> +		if (desc->name)
-> +			scnprintf(desc->name, HTE_TS_NAME_LEN, "ts_%u",
-> +				  con_id);
-> +	}
-> +
-> +	hte_ts_dbgfs_init(desc->name, ei);
-> +
-> +	dev_dbg(gdev->chip->dev, "%s: id: %u, xlated id:%u",
-> +		__func__, con_id, xlated_id);
-> +
-> +	return 0;
-> +
-> +buf_rel:
-> +	buf->access->release(buf);
-> +unlock:
-> +	module_put(gdev->owner);
-> +	mutex_unlock(&ei->mlock);
-> +
-> +	return ret;
-> +}
-> +
-> +static struct hte_device *of_hte_dev_get(struct device *dev,
-> +					 struct device_node *np,
-> +					 const char *label,
-> +					 struct of_phandle_args *args)
-> +{
-> +	struct hte_device *gdev = NULL;
-> +	int index = 0;
-> +	int err;
-> +
-> +	if (label) {
-> +		index = of_property_match_string(np, "hte-names", label);
-> +		if (index < 0)
-> +			return ERR_PTR(index);
-> +	}
-> +
-> +	err = of_parse_phandle_with_args(np, "htes", "#hte-cells", index,
-> +					 args);
-> +	if (err) {
-> +		pr_err("%s(): can't parse \"htes\" property\n", __func__);
-> +		return ERR_PTR(err);
-> +	}
-> +
-> +	gdev = of_node_to_htedevice(args->np);
-> +	if (IS_ERR(gdev)) {
-> +		pr_err("%s(): HTE chip not found\n", __func__);
-> +		of_node_put(args->np);
-> +		return gdev;
-> +	}
-> +
-> +	return gdev;
-> +}
-> +
-> +static struct hte_ts_desc *__hte_req_ts(struct device *dev,
-> +					struct device_node *np,
-> +					const char *label,
-> +					void (*cb)(enum hte_notify n))
-> +{
-> +	struct hte_device *gdev = NULL;
-> +	struct hte_ts_desc *desc;
-> +	struct of_phandle_args args;
-> +	int ret;
-> +	u32 xlated_id;
-> +
-> +	gdev = of_hte_dev_get(dev, np, label, &args);
-> +	if (IS_ERR(gdev))
-> +		return ERR_CAST(gdev);
-> +
-> +	if (!gdev->chip) {
-> +		pr_debug("requested id does not have provider\n");
-> +		return ERR_PTR(-ENODEV);
-> +	}
-> +
-> +	desc = kzalloc(sizeof(*desc), GFP_KERNEL);
-> +	if (!desc)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	ret = gdev->chip->xlate(gdev->chip, &args, desc, &xlated_id);
-> +	if (ret < 0)
-> +		goto put;
-> +
-> +	desc->name = NULL;
-> +	if (label)
-> +		desc->name = kstrdup(label, GFP_KERNEL);
-> +
-> +	ret = ___hte_req_ts(gdev, desc, xlated_id, cb);
-> +	if (ret < 0)
-> +		goto put;
-> +
-> +	return desc;
-> +
-> +put:
-> +	of_node_put(args.np);
-> +	kfree(desc);
-> +
-> +	return ERR_PTR(ret);
-> +}
-> +
-> +/**
-> + * of_hte_request_ts() - Consumer calls this API to request the HTE facility
-> + * on the specified entity, where entity is provider specific for example,
-> + * GPIO lines, signals, buses etc...
-> + *
-> + * @dev: Consumer device.
-> + * @label: Optional label.
-> + * @cb: Optional notify callback to consumer when data is pushed by the
-> + * provider.
-> + *
-> + * Context: Holds mutex lock, not suitable from atomic context.
-> + * Returns: Timestamp descriptor on success or error ptr on failure.
-> + */
-> +struct hte_ts_desc *of_hte_request_ts(struct device *dev,
-> +				      const char *label,
-> +				      void (*cb)(enum hte_notify n))
-> +{
-> +
-> +	if (dev && dev->of_node)
-> +		return __hte_req_ts(dev, dev->of_node, label, cb);
-> +	else
-> +		return ERR_PTR(-EOPNOTSUPP);
-> +}
-> +EXPORT_SYMBOL_GPL(of_hte_request_ts);
-> +
-> +static int devm_hte_ts_match_desc(struct device *dev, void *res, void *data)
-
-I'm not seeing what is devm about this.
-
-> +{
-> +	struct hte_ts_desc **p = res;
-> +
-> +	if (WARN_ON(!p || !*p))
-> +		return 0;
-> +
-> +	return *p == data;
-> +}
-> +
-> +static void __devm_hte_release_ts(struct device *dev, void *res)
-> +{
-> +	hte_release_ts(*(struct hte_ts_desc **)res);
-> +}
-> +
-> +/**
-> + * devm_hte_release_ts() - Resource managed hte_release_ts().
-
-I'd not introduce this until you have a user.  It very rarely actually makes
-sense to call a devm release manually. Not having one makes people think harder
-about it.
-
-> + * @dev: HTE consumer/client device.
-> + * @desc: HTE ts descriptor.
-> + *
-> + * Release timestamp functionality and its resources previously allocated using
-> + * of_hte_request_ts(). Calling this function is usually not needed because
-> + * devm-allocated resources are automatically released on driver detach.
-> + *
-> + * Context: Same as hte_release_ts() function.
-> + * Returns: 0 on success otherwise negative error code.
-> + */
-> +int devm_hte_release_ts(struct device *dev, struct hte_ts_desc *desc)
-> +{
-> +	return devres_release(dev, __devm_hte_release_ts,
-> +			      devm_hte_ts_match_desc, desc);
-> +}
-> +EXPORT_SYMBOL_GPL(devm_hte_release_ts);
-> +
-> +/**
-> + * devm_of_hte_request_ts() - Resource managed of_hte_request_ts().
-
-If it's kernel-doc it needs to give no warnings when you point the kernel-doc
-scripts at it.  They insist on full parameter documentation.
-
-> + */
-> +struct hte_ts_desc *devm_of_hte_request_ts(struct device *dev,
-> +					   const char *label,
-> +					   void (*cb)(enum hte_notify n))
-> +{
-> +
-> +	struct hte_ts_desc **ptr, *desc;
-> +
-> +	ptr = devres_alloc(__devm_hte_release_ts, sizeof(*ptr), GFP_KERNEL);
-
-Superficially looks like you might get way with just calling dev_add_action_or_reset() in here
-and avoid this boilerplate.  A lot of cases that looked like this got cleaned up in the
-last kernel cycle.
-
-
-> +	if (!ptr)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	desc = of_hte_request_ts(dev, label, cb);
-> +	if (!IS_ERR(desc)) {
-> +		*ptr = desc;
-> +		devres_add(dev, ptr);
-> +	} else {
-> +		devres_free(ptr);
-> +	}
-> +	return desc;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_of_hte_request_ts);
-> +
-> +static struct hte_ts_info *hte_para_check(const struct hte_ts_desc *desc,
-> +					  size_t val)
-
-Not a good name or indeed combination of different things.
-hte_desc_to_info() and some separate check on val would be better.
-
-> +{
-> +	struct hte_ts_info *ei;
-> +
-> +	if (!desc || !desc->data_subsys || !val) {
-> +		pr_debug("%s:%d: val :%lu\n", __func__, __LINE__, val);
-> +		return NULL;
-> +	}
-> +
-> +	ei = desc->data_subsys;
-> +	if (!ei || !ei->buf) {
-> +		pr_debug("%s:%d\n", __func__, __LINE__);
-> +		return NULL;
-> +	}
-> +
-> +	return ei;
-> +}
-> +
-> +static inline bool hte_ts_buf_wait(struct hte_ts_buf *buffer, size_t to_read)
-> +{
-> +	size_t el_avail;
-> +
-> +	el_avail = buffer->access->el_available(buffer);
-> +
-> +	return (el_avail >= to_read) ? false : true;
-
-return el_avail < to_read;
-
-> +}
-> +
-> +static int _hte_retrieve_ts_ns(const struct hte_ts_desc *desc,
-> +			       struct hte_ts_data *el, size_t n, bool block)
-> +{
-> +	struct hte_ts_buf *buffer;
-> +	struct hte_ts_info *ei;
-> +	int ret;
-> +	size_t to_read, copied;
-> +
-> +	ei = hte_para_check(desc, n);
-> +	if (!ei)
-> +		return -EINVAL;
-> +
-> +	buffer = ei->buf;
-> +
-> +	to_read = min_t(size_t, n, buffer->watermark);
-
-Needs a comment as not obvious why you'd read the min of that requested or
-the watermark if there might be more available.
-
-> +
-> +	do {
-> +		if (hte_ts_buf_wait(buffer, to_read)) {
-> +			if (!block) {
-> +				/* Possibly early here to retrieve, try again */
-> +				dev_dbg(ei->gdev->chip->dev, "%s: %d\n",
-> +					__func__, ret);
-> +				return -EAGAIN;
-> +			}
-> +			ret = wait_event_interruptible(buffer->pollq,
-> +					!hte_ts_buf_wait(buffer, to_read));
-> +			if (ret)
-> +				return ret;
-> +		}
-> +		ret = buffer->access->read(buffer, (void *)el,
-
-If you have to cast to a void * that usually means something is wrong in your definitions.
-Why is it needed here?  Looks like read has an inappropriate definition.
-
-> +					   n * buffer->bytes_per_datum,
-> +					   &copied);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		if (copied > 0)
-> +			return 0;
-> +		else if (copied == 0 && !block)
-> +			return -EAGAIN;
-> +	} while (copied == 0);
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * hte_retrieve_ts_ns() - Consumer calls this API to retrieve timestamp in
-> + * nano seconds i.e. el->tsc will be in ns.
-> + *
-> + * @desc: ts descriptor, same as returned from request API.
-> + * @el: buffer to store the timestamp details.
-> + * @n: Number of struct hte_timestamp_el elements.
-> + *
-> + * Context: Can be called from the atomic context.
-> + * Returns: 0 on success or a negative error code on failure.
-> + */
-> +int hte_retrieve_ts_ns(const struct hte_ts_desc *desc,
-> +		       struct hte_ts_data *el, size_t n)
-> +{
-> +	return _hte_retrieve_ts_ns(desc, el, n, false);
-> +}
-> +EXPORT_SYMBOL_GPL(hte_retrieve_ts_ns);
-> +
-> +/**
-> + * hte_retrieve_ts_ns_wait() - Blocking version of the hte_retrieve_ts_ns.
-> + * @desc: ts descriptor, same as returned from request API.
-> + * @el: buffer to store the timestamp data.
-> + * @n: Number of struct hte_ts_data data.
-> + *
-> + * Context: Can not be called from the atomic context.
-> + * Returns: 0 on success or a negative error code on failure.
-> + */
-> +int hte_retrieve_ts_ns_wait(const struct hte_ts_desc *desc,
-> +			    struct hte_ts_data *el, size_t n)
-> +{
-> +	return _hte_retrieve_ts_ns(desc, el, n, true);
-> +}
-> +EXPORT_SYMBOL_GPL(hte_retrieve_ts_ns_wait);
-> +
-> +/**
-> + * hte_set_buf_len() - Consumer calls this API to set timestamp software buffer
-> + * depth.
-> + *
-> + * @desc: ts descriptor, same as returned from request API.
-> + * @len: New length/depth.
-> + *
-> + * The correct sequence to set buffer length is as below:
-> + * 1) Disable timestamp by calling hte_disable_ts API.
-> + * 2) Optionally retrieve all the timestamps by calling non blocking
-> + *    hte_retrieve_ts_ns() API. This step only needed if you still care about
-> + *    the data.
-> + * 3) Call this API.
-> + * 4) Enable timestamp by calling hte_enable_ts API.
-> + *
-> + * This API destroys previously allocated buffer and creates new one, because
-> + * of that, it is mandatory to follow above sequence to make sure there is no
-> + * race between various other APIs in the subsystem.
-
-Good docs.  This is why I mentioned in review of docs patch that it is better
-to just have that refer to the kernel-doc in these files.  Keep all this good
-information in one place.
-
-> + *
-> + * By default during the request API call, HTE subsystem allocates software
-> + * buffer with predefined length, this API gives flexibility to adjust the
-> + * length according to consumer's need.
-> + *
-> + * Context: Can not be called from atomic context.
-> + * Returns: 0 on success or a negative error code on failure.
-> + */
-> +int hte_set_buf_len(const struct hte_ts_desc *desc, size_t len)
-> +{
-> +	struct hte_ts_buf *buffer;
-> +	struct hte_ts_info *ei;
-> +	int ret;
-> +
-> +	ei = hte_para_check(desc, len);
-> +	if (!ei)
-> +		return -EINVAL;
-> +
-> +	buffer = ei->buf;
-> +	ret = buffer->access->set_length(buffer, len,
-> +					 sizeof(struct hte_ts_data));
-> +	if (ret)
-> +		dev_err(ei->gdev->chip->dev, "%s: ret:%d\n", __func__, ret);
-
-Not point in printing things line __func__ manually in dev_err() etc.
-Dynamic debug includes that and gives far more information + control of this.
-
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(hte_set_buf_len);
-> +
-> +/**
-> + * hte_get_buf_len() - Consumer calls this API to get timestamp software buffer
-> + * depth or length.
-> + *
-> + * @desc: ts descriptor, same as returned from request API.
-> + *
-> + * Context: Any context.
-> + * Returns: Positive length on success or 0 on failure.
-> + */
-> +size_t hte_get_buf_len(const struct hte_ts_desc *desc)
-> +{
-> +	struct hte_ts_buf *buffer;
-> +	struct hte_ts_info *ei;
-> +
-> +	ei = hte_para_check(desc, 1);
-> +	if (!ei)
-> +		return 0;
-> +
-> +	buffer = ei->buf;
-> +
-> +	return buffer->access->get_length(buffer);
-> +}
-> +EXPORT_SYMBOL_GPL(hte_get_buf_len);
-> +
-> +/**
-> + * hte_available_ts() - Returns total available timestamps.
-> + *
-> + * @desc: ts descriptor, same as returned from request API.
-> + *
-> + * The API helps consumers to pre-allocate its internal buffer required
-> + * during hte_retrieve_ts_ns call.
-> + *
-> + * Context: Any context.
-> + * Returns: Positive value if elements are available else 0. The value is
-> + * number of total available struct hte_timestamp_el elements available not
-> + * the size in bytes.
-> + */
-> +size_t hte_available_ts(const struct hte_ts_desc *desc)
-> +{
-> +	struct hte_ts_buf *buffer;
-> +	struct hte_ts_info *ei;
-> +
-> +	ei = hte_para_check(desc, 1);
-> +	if (!ei)
-> +		return 0;
-> +
-> +	buffer = ei->buf;
-> +
-> +	return buffer->access->el_available(buffer);
-> +}
-> +EXPORT_SYMBOL_GPL(hte_available_ts);
-> +
-> +/**
-> + * hte_set_buf_watermark() - Consumer calls this API to set timestamp software
-> + * buffer watermark. The correct sequence to call this API is as below:
-> + * 1) Disable timestamp by calling hte_disable_ts API.
-> + * 2) Call this API.
-> + * 3) Enable timestamp by calling hte_enable_ts API.
-> + *
-> + * @desc: ts descriptor, same as returned from request API.
-> + * @val: New watermark.
-> + *
-> + * By default during the request API call, HTE subsystem sets watermark as 1,
-> + * this API gives flexibility to adjust the watermark according to consumer's
-> + * need. The consumers will get notification through callback registered during
-> + * request API either when timestamp is dropped or watermark is reached or will
-> + * wait till watermark is reached. Refer hte_retrieve_ts_ns() and
-> + * hte_push_ts_ns_atomic() APIs to understand how watermark is used.
-> + *
-> + * Context: Any context.
-
-You have no way of knowing that as will depend on the driver - I'd definitely
-suggest not from atomic context, but then that would be crazy so you are better
- off not documenting any specific requirement at all.
-
-> + * Returns: 0 on success or a negative error code on failure.
-> + */
-> +int hte_set_buf_watermark(const struct hte_ts_desc *desc, size_t val)
-> +{
-> +	struct hte_ts_buf *buffer;
-> +	struct hte_ts_info *ei;
-> +	int ret;
-> +
-> +	ei = hte_para_check(desc, val);
-> +	if (!ei)
-> +		return -EINVAL;
-> +
-> +	buffer = ei->buf;
-> +	ret = buffer->access->set_watermark(buffer, val);
-> +	if (ret)
-> +		dev_dbg(ei->gdev->chip->dev, "%s: ret:%d\n", __func__, ret);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(hte_set_buf_watermark);
-> +
-> +/**
-> + * hte_get_buf_watermark() - Consumer calls this API to get software
-> + * buffer watermark.
-> + * @desc: ts descriptor, same as returned from request API.
-> + *
-> + * Context: Any context.
-> + * Returns: Positive current watermark on success or 0 on failure.
-> + */
-> +size_t hte_get_buf_watermark(const struct hte_ts_desc *desc)
-> +{
-> +	struct hte_ts_buf *buffer;
-> +	struct hte_ts_info *ei;
-> +
-> +	ei = hte_para_check(desc, 1);
-> +	if (!ei)
-> +		return 0;
-> +
-> +	buffer = ei->buf;
-> +
-> +	return buffer->access->get_watermark(buffer);
-> +}
-> +EXPORT_SYMBOL_GPL(hte_get_buf_watermark);
-> +
-> +/**
-> + * hte_req_ts_by_dt_node() - Request entity to monitor by passing HTE device
-> + * node directly, where meaning of the entity is provider specific, for example
-> + * lines, signals, GPIOs, buses etc...
-> + *
-> + * @of_node: HTE provider device node.
-> + * @id: entity id to monitor, this id belongs to HTE provider of_node.
-> + * @cb: Optional callback to notify.
-> + *
-> + * Context: Holds mutex lock, can not be called from atomic context.
-
-What mutex and why?  If it is one you can check is held even better.
-
-> + * Returns: ts descriptor on success or error pointers.
-> + */
-> +struct hte_ts_desc *hte_req_ts_by_dt_node(struct device_node *of_node,
-> +					  unsigned int id,
-> +					  void (*cb)(enum hte_notify n))
-> +{
-> +	struct hte_device *gdev;
-> +	struct hte_ts_desc *desc;
-> +	int ret;
-> +	u32 xlated_id;
-> +
-> +	gdev = of_node_to_htedevice(of_node);
-> +	if (IS_ERR(gdev))
-> +		return ERR_PTR(-ENOTSUPP);
-> +
-> +	if (!gdev->chip || !gdev->chip->ops)
-> +		return ERR_PTR(-ENOTSUPP);
-> +
-> +	desc = kzalloc(sizeof(*desc), GFP_KERNEL);
-> +	if (!desc) {
-> +		ret = -ENOMEM;
-> +		goto out_put_device;
-> +	}
-
-Pass a desc pointer into this function rather than allocating the structure
-in here.  That lets the caller embed that structure inside one of it's own
-structures if it wants to, resulting in fewer small allocations which is always good.
-
-It's far from obvious that the caller needs to free desc.
-
-> +
-> +	desc->con_id = id;
-> +	ret = gdev->chip->xlate(gdev->chip, NULL, desc, &xlated_id);
-> +	if (ret < 0) {
-> +		dev_err(gdev->chip->dev,
-> +			"failed to xlate id: %d\n", id);
-> +		goto out_free_desc;
-> +	}
-> +
-> +	ret = ___hte_req_ts(gdev, desc, xlated_id, cb);
-> +	if (ret < 0) {
-> +		dev_err(gdev->chip->dev,
-> +			"failed to request id: %d\n", id);
-> +		goto out_free_desc;
-> +	}
-> +
-> +	return desc;
-> +
-> +out_free_desc:
-> +	kfree(desc);
-> +
-> +out_put_device:
-> +	return ERR_PTR(ret);
-> +}
-> +EXPORT_SYMBOL_GPL(hte_req_ts_by_dt_node);
-> +
-> +/**
-> + * hte_get_clk_src_info() - Consumer calls this API to query clock source
-> + * information of the desc.
-> + *
-> + * @desc: ts descriptor, same as returned from request API.
-> + *
-> + * Context: Any context.
-> + * Returns: 0 on success else negative error code on failure.
-> + */
-> +int hte_get_clk_src_info(const struct hte_ts_desc *desc,
-> +			 struct hte_clk_info *ci)
-> +{
-> +	struct hte_chip *chip;
-> +	struct hte_ts_info *ei;
-> +
-> +	if (!desc || !desc->data_subsys || !ci) {
-> +		pr_debug("%s:%d\n", __func__, __LINE__);
-> +		return -EINVAL;
-> +	}
-> +
-> +	ei = desc->data_subsys;
-> +	if (!ei || !ei->gdev || !ei->gdev->chip)
-> +		return -EINVAL;
-> +
-> +	chip = ei->gdev->chip;
-> +	if (!chip->ops->get_clk_src_info)
-> +		return -ENOTSUPP;
-> +
-> +	return chip->ops->get_clk_src_info(chip, ci);
-> +}
-> +EXPORT_SYMBOL_GPL(hte_get_clk_src_info);
-> +
-> +static inline void hte_add_to_device_list(struct hte_device *gdev)
-> +{
-> +	struct hte_device *prev;
-
-Needs to take an appropriate lock as you may have concurrent calls.
-
-> +
-> +	if (list_empty(&hte_devices)) {
-> +		list_add_tail(&gdev->list, &hte_devices);
-
-Needs a comment. I've no idea why you might want to only add it if there were
-no other hte_devices already there.
-
-> +		return;
-> +	}
-> +
-> +	prev = list_last_entry(&hte_devices, struct hte_device, list);
-Why woud you do this?
-
-> +	list_add_tail(&gdev->list, &hte_devices);
-> +}
-> +
-> +/**
-> + * hte_push_ts_ns_atomic() - Used by the provider to push timestamp in nano
-> + * seconds i.e data->tsc will be in ns, it is assumed that provider will be
-> + * using this API from its ISR or atomic context.
-> + *
-> + * @chip: The HTE chip, used during the registration.
-> + * @xlated_id: entity id understood by both subsystem and provider, usually this
-> + * is obtained from xlate callback during request API.
-> + * @data: timestamp data.
-> + * @n: Size of the data.
-> + *
-> + * Context: Atomic.
-> + * Returns: 0 on success or a negative error code on failure.
-> + */
-> +int hte_push_ts_ns_atomic(const struct hte_chip *chip, u32 xlated_id,
-> +			  struct hte_ts_data *data, size_t n)
-> +{
-> +	unsigned int ret;
-> +	bool notify;
-> +	size_t el_avail;
-> +	struct hte_ts_buf *buffer;
-> +	struct hte_ts_info *ei;
-> +
-> +	if (!chip || !data || !chip->gdev)
-> +		return -EINVAL;
-> +
-> +	if (xlated_id > chip->nlines)
-> +		return -EINVAL;
-> +
-> +	ei = &chip->gdev->ei[xlated_id];
-> +
-> +	if (!test_bit(HTE_TS_REGISTERED, &ei->flags) ||
-> +	    test_bit(HTE_TS_DISABLE, &ei->flags)) {
-> +		dev_dbg(chip->dev, "Unknown timestamp push\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* timestamp sequence counter, start from 0 */
-> +	data->seq = ei->seq++;
-> +
-> +	buffer = ei->buf;
-> +	el_avail = buffer->access->el_available(buffer);
-
-> +	ret = buffer->access->store(buffer, data, n);
-
-If we are doing this from the hte core, why is buffer definition in the scope of the
-drivers rather than the core?  That seems backwards to me.
-
-> +	if (ret != n) {
-> +		atomic_inc(&ei->dropped_ts);
-> +		if (ei->cb)
-> +			ei->cb(HTE_TS_DROPPED);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	notify = ((el_avail + 1) >= buffer->watermark) ? true : false;
-
-You push n but only check on el_avail + 1 here.  
-Also, this is the same as
-
-	notify = ((el_avail + 1) >= buffer->watermark;
-
-
-> +
-> +	/*
-> +	 * If there is a callback, its consumer's job to retrieve the timestamp.
-> +	 * For the rest, wake up the process.
-> +	 */
-> +	if (notify && ei->cb) {
-> +		ei->cb(HTE_TS_AVAIL);
-> +		return 0;
-
-Given you return 0 anyway, might as well not have this line.
-
-> +	} else if (notify) {
-> +		wake_up_interruptible(&buffer->pollq);
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(hte_push_ts_ns_atomic);
-> +
-> +/**
-> + * hte_register_chip() - Used by provider to register a HTE chip.
-> + * @chip: the HTE chip to add to subsystem.
-> + *
-> + * Context: Can not be called from atomic context.
-
-Whilst true, I'd think that was common sense as it would be insane
-to register something like this from atomic context.  So I'd say no
-need to comment on it!  Keep those comments for things that
-might be used like that.
-
-> + * Returns: 0 on success or a negative error code on failure.
-> + */
-> +int hte_register_chip(struct hte_chip *chip)
-> +{
-> +	struct hte_device *gdev;
-> +	int ret;
-> +	u32 i;
-> +
-> +	if (!chip || !chip->dev || !chip->dev->of_node)
-> +		return -EINVAL;
-> +
-> +	if (!chip->ops || !chip->ops->request || !chip->ops->release) {
-> +		dev_err(chip->dev, "Driver needs to provide ops\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	gdev = kzalloc(sizeof(*gdev), GFP_KERNEL);
-> +	if (!gdev)
-> +		return -ENOMEM;
-> +
-> +	gdev->chip = chip;
-> +	chip->gdev = gdev;
-> +	gdev->nlines = chip->nlines;
-> +	gdev->sdev = chip->dev;
-> +
-> +	/*
-> +	 * Allocate all the supported entities here at once, this will have
-> +	 * following advantages:
-> +	 * When provider pushes timestamp, it can then just send the
-> +	 * xlated_id, subsystem will use it as an index which
-> +	 * gives us the constant time access; this is important as mostly
-> +	 * providers will be pushing the timestamps from their ISR.
-> +	 */
-> +	gdev->ei = kcalloc(chip->nlines, sizeof(struct hte_ts_info),
-> +			   GFP_KERNEL);
-
-I'd be tempted to do this as a 0 length element at the end of gdev
-then do the allocation in one go use struct_size() etc to work out
-how long it is.  Cuts down on allocations + error paths to deal with
-for no obvious disadvantage.
-
-> +	if (!gdev->ei) {
-> +		ret = -ENOMEM;
-> +		goto err_free_gdev;
-> +	}
-> +
-> +	for (i = 0; i < chip->nlines; i++) {
-> +		gdev->ei[i].flags = 0;
-
-zero allocated, so don't bother setting things to 0 where it's a fairly obvious
-base state.  If you set something to 0 to act as some form of documentation then
-that's fine, but I don't think that's true here.
-
-> +		gdev->ei[i].gdev = gdev;
-> +		gdev->ei[i].seq = 0;
-> +		mutex_init(&gdev->ei[i].mlock);
-> +	}
-> +
-> +	if (chip->dev->driver)
-> +		gdev->owner = chip->dev->driver->owner;
-> +	else
-> +		gdev->owner = THIS_MODULE;
-> +
-> +	if (!chip->xlate) {
-> +		chip->xlate = hte_simple_xlate;
-> +		/* Just a id number to monitor */
-> +		chip->of_hte_n_cells = 1;
-> +	}
-> +
-> +	of_node_get(chip->dev->of_node);
-> +
-> +	INIT_LIST_HEAD(&gdev->list);
-> +
-> +	spin_lock(&hte_lock);
-> +	hte_add_to_device_list(gdev);
-> +	spin_unlock(&hte_lock);
-> +
-> +	hte_chip_dbgfs_init(gdev);
-> +
-> +	dev_dbg(chip->dev, "Added hte chip\n");
-> +	return 0;
-> +
-> +err_free_gdev:
-> +	kfree(gdev);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(hte_register_chip);
-> +
-> +/**
-> + * hte_unregister_chip() - Used by the provider to remove a HTE chip.
-> + * @chip: the HTE chip to remove.
-> + *
-> + * Context: Can not be called from atomic context.
-> + * Returns: 0 on success or a negative error code on failure.
-> + */
-> +int hte_unregister_chip(struct hte_chip *chip)
-> +{
-> +	struct hte_device *gdev = chip->gdev;
-> +
-> +	spin_lock(&hte_lock);
-> +	list_del(&gdev->list);
-> +	spin_unlock(&hte_lock);
-> +
-> +	gdev->chip = NULL;
-> +
-> +	of_node_put(chip->dev->of_node);
-> +	hte_dbgfs_deinit(gdev->dbg_root);
-> +	kfree(gdev->ei);
-> +	kfree(gdev);
-> +
-> +	dev_dbg(chip->dev, "Removed hte chip\n");
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(hte_unregister_chip);
-> +
-> +/* Driver APIs ends */
-
-Don't bother with file layout type comments.  They don't add that much and tend
-to rot horribly over time as people move code around in files.
-
-> diff --git a/include/linux/hte.h b/include/linux/hte.h
-> new file mode 100644
-> index 000000000000..e1737579d4c4
-> --- /dev/null
-> +++ b/include/linux/hte.h
-> @@ -0,0 +1,278 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2021 NVIDIA Corporation
-> + *
-> + * Author: Dipen Patel <dipenp@nvidia.com>
-> + */
-> +
-> +#ifndef __LINUX_HTE_H
-> +#define __LINUX_HTE_H
-> +
-> +struct hte_chip;
-> +struct hte_device;
-> +struct of_phandle_args;
-> +
-> +/**
-> + * Used by providers to indicate the direction of the timestamp.
-> + */
-> +#define HTE_EVENT_RISING_EDGE          0x1
-> +#define HTE_EVENT_FALLING_EDGE         0x2
-
-Use an enum rather than a define for this as it's a value that can take a
-set of distinct values.  Also, provide a name for 'I've no idea' which
-I'm guessing is 0 currently.
-
-> +
-> +/**
-> + * struct hte_ts_data - HTE timestamp data.
-> + * The provider uses and fills timestamp related details during push_timestamp
-> + * API call. The consumer uses during retrieve_timestamp API call.
-> + *
-> + * @tsc: Timestamp value.
-> + * @seq: Sequence counter of the timestamps.
-> + * @dir: Direction of the event at the time of timestamp.
-> + */
-> +struct hte_ts_data {
-> +	u64 tsc;
-> +	u64 seq;
-> +	int dir;
-> +};
-> +
-> +/**
-> + * struct hte_clk_info - Clock source info that HTE provider uses.
-> + * The provider uses hardware clock as a source to timestamp real time. This
-> + * structure presents the clock information to consumers. 
-> + *
-> + * @hz: Clock rate in HZ, for example 1KHz clock = 1000.
-> + * @type: Clock type. CLOCK_* types.
-
-So this is something we got a it wrong in IIO. It's much better to define
-a subset of clocks that can be potentially used.  There are some that make
-absolutely no sense and consumers really don't want to have to deal with them.
- 
-> + */
-> +struct hte_clk_info {
-> +	u64 hz;
-> +	clockid_t type;
-> +};
-> +
-> +/**
-> + * HTE subsystem notifications for the consumers.
-> + *
-> + * @HTE_TS_AVAIL: Timestamps available notification.
-> + * @HTE_TS_DROPPED: Timestamps dropped notification.
-
-Something I've missed so far is whether drops are in a kfifo or a ring
-fashion.  I'm guess that's stated somewhere, but it might be useful to have
-it here.
-
-> + */
-> +enum hte_notify {
-> +	HTE_TS_AVAIL = 1,
-> +	HTE_TS_DROPPED,
-> +	HTE_NUM_NOTIFIER,
-> +};
-> +
-> +/**
-> + * struct hte_ts_desc - HTE timestamp descriptor, this structure will be
-> + * communication token between consumers to subsystem and subsystem to
-> + * providers.
-> + *
-> + * @con_id: This is the same id sent in request APIs.
-> + * @name: Descriptive name of the entity that is being monitored for the
-> + * realtime timestamping.
-> + * @data_subsys: Subsystem's private data relate to requested con_id.
-> + */
-> +struct hte_ts_desc {
-> +	u32 con_id;
-> +	char *name;
-> +	void *data_subsys;
-> +};
-> +
-> +/**
-> + * struct hte_ops - HTE operations set by providers.
-> + *
-> + * @request: Hook for requesting a HTE timestamp. Returns 0 on success,
-> + * non-zero for failures.
-> + * @release: Hook for releasing a HTE timestamp. Returns 0 on success,
-> + * non-zero for failures.
-> + * @enable: Hook to enable the specified timestamp. Returns 0 on success,
-> + * non-zero for failures.
-> + * @disable: Hook to disable specified timestamp. Returns 0 on success,
-> + * non-zero for failures.
-> + * @get_clk_src_info: Optional hook to get the clock information provider uses
-> + * to timestamp. Returns 0 for success and negative error code for failure. On
-> + * success HTE subsystem fills up provided struct hte_clk_info.
-
-Why optional?  Consumers will probably need that information.
-
-> + *
-> + * xlated_id parameter is used to communicate between HTE subsystem and the
-> + * providers. It is the same id returned during xlate API call and translated
-> + * by the provider. This may be helpful as both subsystem and provider locate
-> + * the requested entity in constant time, where entity could be anything from
-> + * lines, signals, events, buses etc.. that providers support.
-> + */
-> +struct hte_ops {
-> +	int (*request)(struct hte_chip *chip, u32 xlated_id);
-> +	int (*release)(struct hte_chip *chip, u32 xlated_id);
-> +	int (*enable)(struct hte_chip *chip, u32 xlated_id);
-> +	int (*disable)(struct hte_chip *chip, u32 xlated_id);
-> +	int (*get_clk_src_info)(struct hte_chip *chip,
-> +				struct hte_clk_info *ci);
-> +};
-> +
-> +/**
-> + * struct hte_chip - Abstract HTE chip structure.
-> + * @name: functional name of the HTE IP block.
-> + * @dev: device providing the HTE.
-
-Unclear naming.  Is this the parent device, or one associated with the HTE itself?
-I'm guessing today you don't have one associated with the HTE, but it is plausible you
-might gain on in future to make it fit nicely in the device model as a function of another
-device.
-
-> + * @ops: callbacks for this HTE.
-> + * @nlines: number of lines/signals supported by this chip.
-> + * @xlate: Callback which translates consumer supplied logical ids to
-> + * physical ids, return from 0 for the success and negative for the
-> + * failures. It stores (0 to @nlines) in xlated_id parameter for the success.
-> + * @of_hte_n_cells: Number of cells used to form the HTE specifier.
-> + * @gdev: HTE subsystem abstract device, internal to the HTE subsystem.
-> + * @data: chip specific private data.
-> + */
-> +struct hte_chip {
-> +	const char *name;
-> +	struct device *dev;
-> +	const struct hte_ops *ops;
-> +	u32 nlines;
-> +	int (*xlate)(struct hte_chip *gc,
-> +		     const struct of_phandle_args *args,
-> +		     struct hte_ts_desc *desc, u32 *xlated_id);
-> +	u8 of_hte_n_cells;
-> +
-> +	/* only used internally by the HTE framework */
-> +	struct hte_device *gdev;
-> +	void *data;
-> +};
-> +
-> +#if IS_ENABLED(CONFIG_HTE)
-> +/* HTE APIs for the providers */
-> +int hte_register_chip(struct hte_chip *chip);
-> +int hte_unregister_chip(struct hte_chip *chip);
-> +int hte_push_ts_ns_atomic(const struct hte_chip *chip, u32 xlated_id,
-> +			  struct hte_ts_data *data, size_t n);
-> +
-> +/* HTE APIs for the consumers */
-> +
-> +int hte_release_ts(struct hte_ts_desc *desc);
-> +struct hte_ts_desc *of_hte_request_ts(struct device *dev, const char *label,
-> +				      void (*cb)(enum hte_notify n));
-> +
-> +struct hte_ts_desc *devm_of_hte_request_ts(struct device *dev,
-> +					   const char *label,
-> +					   void (*cb)(enum hte_notify n));
-> +struct hte_ts_desc *hte_req_ts_by_dt_node(struct device_node *of_node,
-> +					  unsigned int id,
-> +					  void (*cb)(enum hte_notify n));
-> +int devm_hte_release_ts(struct device *dev, struct hte_ts_desc *desc);
-> +int hte_retrieve_ts_ns(const struct hte_ts_desc *desc, struct hte_ts_data *el,
-> +		       size_t n);
-> +int hte_retrieve_ts_ns_wait(const struct hte_ts_desc *desc,
-> +			    struct hte_ts_data *el, size_t n);
-> +int hte_set_buf_len(const struct hte_ts_desc *desc, size_t len);
-> +size_t hte_get_buf_len(const struct hte_ts_desc *desc);
-> +int hte_set_buf_watermark(const struct hte_ts_desc *desc, size_t val);
-> +size_t hte_get_buf_watermark(const struct hte_ts_desc *desc);
-> +size_t hte_available_ts(const struct hte_ts_desc *desc);
-> +int hte_enable_ts(struct hte_ts_desc *desc);
-> +int hte_disable_ts(struct hte_ts_desc *desc);
-> +int hte_get_clk_src_info(const struct hte_ts_desc *desc,
-> +			 struct hte_clk_info *ci);
-> +
->
-
+--1yeeQ81UyVL57Vl7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Martijn,
+
+FYI, the error/warning still remains.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   303392fd5c160822bf778270b28ec5ea50cab2b4
+commit: 3448914e8cc550ba792d4ccc74471d1ca4293aae loop: Add LOOP_CONFIGURE ioctl
+date:   1 year, 1 month ago
+config: arm-randconfig-r024-20210705 (attached as .config)
+compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3448914e8cc550ba792d4ccc74471d1ca4293aae
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 3448914e8cc550ba792d4ccc74471d1ca4293aae
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arm 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+   drivers/block/loop.c: In function 'lo_ioctl':
+>> drivers/block/loop.c:1729:1: warning: the frame size of 1072 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+    1729 | }
+         | ^
+
+
+vim +1729 drivers/block/loop.c
+
+a13165441d58b2 Jan Kara            2018-11-08  1667  
+a13165441d58b2 Jan Kara            2018-11-08  1668  static int lo_ioctl(struct block_device *bdev, fmode_t mode,
+a13165441d58b2 Jan Kara            2018-11-08  1669  	unsigned int cmd, unsigned long arg)
+a13165441d58b2 Jan Kara            2018-11-08  1670  {
+a13165441d58b2 Jan Kara            2018-11-08  1671  	struct loop_device *lo = bdev->bd_disk->private_data;
+571fae6e290d64 Martijn Coenen      2020-05-13  1672  	void __user *argp = (void __user *) arg;
+a13165441d58b2 Jan Kara            2018-11-08  1673  	int err;
+3148ffbdb9162b Omar Sandoval       2018-03-26  1674  
+^1da177e4c3f41 Linus Torvalds      2005-04-16  1675  	switch (cmd) {
+3448914e8cc550 Martijn Coenen      2020-05-13  1676  	case LOOP_SET_FD: {
+3448914e8cc550 Martijn Coenen      2020-05-13  1677  		/*
+3448914e8cc550 Martijn Coenen      2020-05-13  1678  		 * Legacy case - pass in a zeroed out struct loop_config with
+3448914e8cc550 Martijn Coenen      2020-05-13  1679  		 * only the file descriptor set , which corresponds with the
+3448914e8cc550 Martijn Coenen      2020-05-13  1680  		 * default parameters we'd have used otherwise.
+3448914e8cc550 Martijn Coenen      2020-05-13  1681  		 */
+3448914e8cc550 Martijn Coenen      2020-05-13  1682  		struct loop_config config;
+3448914e8cc550 Martijn Coenen      2020-05-13  1683  
+3448914e8cc550 Martijn Coenen      2020-05-13  1684  		memset(&config, 0, sizeof(config));
+3448914e8cc550 Martijn Coenen      2020-05-13  1685  		config.fd = arg;
+3448914e8cc550 Martijn Coenen      2020-05-13  1686  
+3448914e8cc550 Martijn Coenen      2020-05-13  1687  		return loop_configure(lo, mode, bdev, &config);
+3448914e8cc550 Martijn Coenen      2020-05-13  1688  	}
+3448914e8cc550 Martijn Coenen      2020-05-13  1689  	case LOOP_CONFIGURE: {
+3448914e8cc550 Martijn Coenen      2020-05-13  1690  		struct loop_config config;
+3448914e8cc550 Martijn Coenen      2020-05-13  1691  
+3448914e8cc550 Martijn Coenen      2020-05-13  1692  		if (copy_from_user(&config, argp, sizeof(config)))
+3448914e8cc550 Martijn Coenen      2020-05-13  1693  			return -EFAULT;
+3448914e8cc550 Martijn Coenen      2020-05-13  1694  
+3448914e8cc550 Martijn Coenen      2020-05-13  1695  		return loop_configure(lo, mode, bdev, &config);
+3448914e8cc550 Martijn Coenen      2020-05-13  1696  	}
+^1da177e4c3f41 Linus Torvalds      2005-04-16  1697  	case LOOP_CHANGE_FD:
+c371077000f413 Jan Kara            2018-11-08  1698  		return loop_change_fd(lo, bdev, arg);
+^1da177e4c3f41 Linus Torvalds      2005-04-16  1699  	case LOOP_CLR_FD:
+7ccd0791d98531 Jan Kara            2018-11-08  1700  		return loop_clr_fd(lo);
+^1da177e4c3f41 Linus Torvalds      2005-04-16  1701  	case LOOP_SET_STATUS:
+7035b5df3c071c Dmitry Monakhov     2011-11-16  1702  		err = -EPERM;
+a13165441d58b2 Jan Kara            2018-11-08  1703  		if ((mode & FMODE_WRITE) || capable(CAP_SYS_ADMIN)) {
+571fae6e290d64 Martijn Coenen      2020-05-13  1704  			err = loop_set_status_old(lo, argp);
+a13165441d58b2 Jan Kara            2018-11-08  1705  		}
+^1da177e4c3f41 Linus Torvalds      2005-04-16  1706  		break;
+^1da177e4c3f41 Linus Torvalds      2005-04-16  1707  	case LOOP_GET_STATUS:
+571fae6e290d64 Martijn Coenen      2020-05-13  1708  		return loop_get_status_old(lo, argp);
+^1da177e4c3f41 Linus Torvalds      2005-04-16  1709  	case LOOP_SET_STATUS64:
+7035b5df3c071c Dmitry Monakhov     2011-11-16  1710  		err = -EPERM;
+a13165441d58b2 Jan Kara            2018-11-08  1711  		if ((mode & FMODE_WRITE) || capable(CAP_SYS_ADMIN)) {
+571fae6e290d64 Martijn Coenen      2020-05-13  1712  			err = loop_set_status64(lo, argp);
+a13165441d58b2 Jan Kara            2018-11-08  1713  		}
+^1da177e4c3f41 Linus Torvalds      2005-04-16  1714  		break;
+^1da177e4c3f41 Linus Torvalds      2005-04-16  1715  	case LOOP_GET_STATUS64:
+571fae6e290d64 Martijn Coenen      2020-05-13  1716  		return loop_get_status64(lo, argp);
+a13165441d58b2 Jan Kara            2018-11-08  1717  	case LOOP_SET_CAPACITY:
+ab1cb278bc7027 Ming Lei            2015-08-17  1718  	case LOOP_SET_DIRECT_IO:
+89e4fdecb51cf5 Omar Sandoval       2017-08-24  1719  	case LOOP_SET_BLOCK_SIZE:
+a13165441d58b2 Jan Kara            2018-11-08  1720  		if (!(mode & FMODE_WRITE) && !capable(CAP_SYS_ADMIN))
+a13165441d58b2 Jan Kara            2018-11-08  1721  			return -EPERM;
+a13165441d58b2 Jan Kara            2018-11-08  1722  		/* Fall through */
+^1da177e4c3f41 Linus Torvalds      2005-04-16  1723  	default:
+a13165441d58b2 Jan Kara            2018-11-08  1724  		err = lo_simple_ioctl(lo, cmd, arg);
+a13165441d58b2 Jan Kara            2018-11-08  1725  		break;
+^1da177e4c3f41 Linus Torvalds      2005-04-16  1726  	}
+f028f3b2f987eb Nikanth Karthikesan 2009-03-24  1727  
+^1da177e4c3f41 Linus Torvalds      2005-04-16  1728  	return err;
+^1da177e4c3f41 Linus Torvalds      2005-04-16 @1729  }
+^1da177e4c3f41 Linus Torvalds      2005-04-16  1730  
+
+:::::: The code at line 1729 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--1yeeQ81UyVL57Vl7
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+
+--1yeeQ81UyVL57Vl7--
