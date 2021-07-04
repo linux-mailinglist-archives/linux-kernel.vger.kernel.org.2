@@ -2,108 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D483BAAF6
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 04:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A800E3BAAFE
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 05:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhGDC5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Jul 2021 22:57:02 -0400
-Received: from [43.250.32.171] ([43.250.32.171]:11779 "EHLO email.cn"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229529AbhGDC5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Jul 2021 22:57:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=To:From:Date; bh=XSfasOGrPR+I0jNlTRv4lNuiHSKY6pf0joyDX
-        n4UDSk=; b=HcA39Ds4s6tuSs3aa5UmkeA16dGQ40gtFQmrgtsdbm+jBdN64MqlQ
-        13/RBJe32JYf9V7W53PGCl5UMbls8QQawsJHolpn98pZG1ZNsqxJyPLFwxe9Tx0G
-        SveEx7LWiVjlVrhweJkPHyPrz1DJjC3NKR6v3sQlUwyT0ZuS/V27C0=
-Received: from [0.0.0.0] (unknown [39.144.6.102])
-        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgBnAzfPIuFgRjw1AA--.9206S3;
-        Sun, 04 Jul 2021 10:54:11 +0800 (CST)
-Subject: Re: [PATCH] docs/zh_CN: Remove the Microsoft rhetoric
-To:     Hu Jialun <hujialun@comp.nus.edu.sg>,
-        =?UTF-8?B?5byg5LmQIFpoYW5nIExl?= <r0bertz@gentoo.org>,
-        Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Wei Ming Chen <jj251510319013@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210703164834.460447-1-hujialun@comp.nus.edu.sg>
-From:   Hu Haowen <src.res@email.cn>
-Message-ID: <1503da9f-23e2-d1c1-8b7b-f5cd4d273f1f@email.cn>
-Date:   Sun, 4 Jul 2021 10:54:06 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229895AbhGDDJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Jul 2021 23:09:44 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:39830 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229639AbhGDDJk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Jul 2021 23:09:40 -0400
+X-UUID: e7b49e11c9e34494abd7e812c63c6ad5-20210704
+X-UUID: e7b49e11c9e34494abd7e812c63c6ad5-20210704
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1189049; Sun, 04 Jul 2021 11:07:02 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 4 Jul 2021 11:07:01 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 4 Jul 2021 11:07:01 +0800
+From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH v9 0/5] Add SPMI support for Mediatek SoC IC
+Date:   Sun, 4 Jul 2021 11:06:53 +0800
+Message-ID: <1625368018-17505-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+X-Mailer: git-send-email 2.6.4
 MIME-Version: 1.0
-In-Reply-To: <20210703164834.460447-1-hujialun@comp.nus.edu.sg>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: LCKnCgBnAzfPIuFgRjw1AA--.9206S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cr1fXr17Zr1kJry7JFW7XFb_yoW5Jry3pF
-        1DKr1xAa1xCwn5Cr4xuw48urZ5Wan7GFZxGF15G3yrWrnxAa1ktFWDKrs0va4fXry0vay5
-        ZF4jkr9ru3WavFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgmb7Iv0xC_KF4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
-        v20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2
-        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r4UJwAS0I0E0xvYzx
-        vE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_Cr1U
-        Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr2
-        1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWxJr1UJwCFx2IqxVCFs4IE7xkE
-        bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-        AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI
-        42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMI
-        IF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2
-        KfnxnUUI43ZEXa7IUUOzVUUUUUU==
-X-Originating-IP: [39.144.6.102]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds support for new SoC MT6873/MT8192/MT8195 to the spmi driver.
+This series is based on Chun-Jie's patches[1][2].
 
-在 2021/7/4 上午12:48, Hu Jialun 写道:
-> Update Chinese translation on par with original English coding-style.rst
-> Related commit b7592e5b82db19b72a34b471f3296ad3f651c8b9
->
-> Signed-off-by: Hu Jialun <hujialun@comp.nus.edu.sg>
-> ---
-> This is more of a crude first attempt to begin getting accustomed to
-> mailing list conventions of open-source communities.
-> While efforts have been made to conform to the patch submission
-> conventions, there is still inevitably certain omissions.
-> Any corrections and suggestions would be greatly appreciated! :)
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=509159
+[2] https://patchwork.kernel.org/project/linux-mediatek/list/?series=501127
 
+changes since v8:
+- Add MT8195 spmi support.
 
-Dear Hu Jialun,
+Henry Chen (1):
+  spmi: mediatek: Add support for MT8195
 
-Welcome to linux-doc mailing list. We are always welcoming new contributors
-who come up with corrections and suggestions to our documentation work.
-Looking forward to your future constructions to the Linux kernel community.
+Hsin-Hsiung Wang (4):
+  dt-bindings: spmi: modify the constraint 'maxItems' to 'minItems'
+  dt-bindings: spmi: document binding for the Mediatek SPMI controller
+  spmi: mediatek: Add support for MT6873/8192
+  arm64: dts: mt8192: add spmi node
 
-By the way, congratulations for your first contribution to the Linux
-documentation. Your patch is pretty, so don't worry about any issues.
-All you're supposed to do is to wait for Corbet to have a check and apply
-it.
-
-Reviewed-by: Hu Haowen <src.res@email.cn>
-
-Thx,
-Hu Haowen
+ .../bindings/spmi/mtk,spmi-mtk-pmif.yaml      |  76 +++
+ .../devicetree/bindings/spmi/spmi.yaml        |   2 +-
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi      |  17 +
+ drivers/spmi/Kconfig                          |  10 +
+ drivers/spmi/Makefile                         |   2 +
+ drivers/spmi/spmi-mtk-pmif.c                  | 555 ++++++++++++++++++
+ 6 files changed, 661 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
+ create mode 100644 drivers/spmi/spmi-mtk-pmif.c
 
 
->  Documentation/translations/zh_CN/process/coding-style.rst | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/Documentation/translations/zh_CN/process/coding-style.rst b/Documentation/translations/zh_CN/process/coding-style.rst
-> index b8c484a84d10..638d714bec83 100644
-> --- a/Documentation/translations/zh_CN/process/coding-style.rst
-> +++ b/Documentation/translations/zh_CN/process/coding-style.rst
-> @@ -268,8 +268,7 @@ C 程序员不使用类似 ThisVariableIsATemporaryCounter 这样华丽的名字
->  ``count_active_users()`` 或者类似的名字，你不应该叫它 ``cntuser()`` 。
->  
->  在函数名中包含函数类型 (所谓的匈牙利命名法) 是脑子出了问题——编译器知道那些类
-> -型而且能够检查那些类型，这样做只能把程序员弄糊涂了。难怪微软总是制造出有问题
-> -的程序。
-> +型而且能够检查那些类型，这样做只能把程序员弄糊涂了。
->  
->  本地变量名应该简短，而且能够表达相关的含义。如果你有一些随机的整数型的循环计
->  数器，它应该被称为 ``i`` 。叫它 ``loop_counter`` 并无益处，如果它没有被误解的
+base-commit: 4b820e167bf6f410ace479d8df5b15a574000e75
+prerequisite-patch-id: 8d0ea71c97ffaea629a73e7e7606baa0947cd4ad
+prerequisite-patch-id: 15f52bb664f0f0436627d056a53afefb0b99f67a
+prerequisite-patch-id: 479b44dfdc6d7b367c0d441d8635d2dc02466057
+prerequisite-patch-id: 5df1858972e343d3750cdda1063655fc232eb831
+prerequisite-patch-id: 7e63a29430f65c2a0d56d7353df884645d70ed8c
+prerequisite-patch-id: 2a6200e8a05329d51aaa4fd63aacfbba66d16177
+prerequisite-patch-id: 604d2702c4217b77de3dc305ff08f630ba38fdb4
+prerequisite-patch-id: d3ece2688dbd45eee248a8c6ba3206c0c673c904
+prerequisite-patch-id: 1bebe1cd9b267c974cae50c3df8c0f8f4f0b0b3d
+prerequisite-patch-id: 3b34fe85667da5287bde9fd2378359be4a126266
+prerequisite-patch-id: 5d3d139212ab304739b75f7638251703b95948d5
+prerequisite-patch-id: 621291b21be177a63eaf6769aa6d2ee8ddb2ea2b
+prerequisite-patch-id: 024f786586b409420782d24218b15f05f6476667
+prerequisite-patch-id: 946aae93303bde26226289dc389c94de96a9dacd
+prerequisite-patch-id: b3ddf6f2079c3c269bd24091243030a971c43cbc
+prerequisite-patch-id: 5c0e0308aa8eb06ca6df6f5467bc925f2cc106ad
+prerequisite-patch-id: d4e481acd8b970f08d3e4da9c8fc0ad6e1fff551
+prerequisite-patch-id: 99db7309fbe1b9f73a07e25d5174db8976c77a2c
+prerequisite-patch-id: cffbc99e9e60f6db43cf7879f17e05c5b041d312
+prerequisite-patch-id: cd19be7b7f361644843ff8111f120e3da3330ab5
+prerequisite-patch-id: 4f5900b98a0c7cbe62694f2477a6cb410187714b
+-- 
+2.18.0
 
