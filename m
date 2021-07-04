@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C7A3BB443
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF263BB44E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234654AbhGDXYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:24:53 -0400
+        id S234932AbhGDXZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:25:11 -0400
 Received: from mail.kernel.org ([198.145.29.99]:56966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234478AbhGDXPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:15:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE89E61364;
-        Sun,  4 Jul 2021 23:12:32 +0000 (UTC)
+        id S234542AbhGDXPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:15:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81445611ED;
+        Sun,  4 Jul 2021 23:12:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440353;
-        bh=FSyh4ATv5z5J1QHnSLtm7oz7ME9uM7NWV2nCpkUkoMM=;
+        s=k20201202; t=1625440357;
+        bh=F42cCTH/utOiDjZj6SlUMUviirUJIk8fA4Dqdm1MB4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ftmkFaJ40a2OrnhFy5TNEelyV5VjVk2RhEAcgW96OK87MGb7HZ3XuXORwDp+6kFbw
-         DD7/jv7vrwXjpbpgKwUO9dIF5q1N49nIUIJ12TnFzfUNK93sZGz6vsvUJZ1Xb7BrNQ
-         xJvvk8/6QbTAcdxQOdBl1ZlXgYd/5YN0BEhfSqONAKlqyDGwM+V7gHNn06cs3futgf
-         BCg1GzK2PtEne23FLnF4l0PAmsAB6n3maRbNhuOumcu9E9zabTdNJ8D1dxKc+C7f7u
-         3AMi9rRN01qU3WvfI58pEErGaS8D1Bfl4xAXUEBcpEPWrqSqk6v8z7mFPFduhtHc/2
-         OKnwahW6cUsZg==
+        b=AXI16QixEICaICtD4nBTxx6o9agtwnOVLzqe1uRHpqMSjLcoczunDa0J9FZHQ1bWp
+         7Qbk2VAlAhssU5w4EL3vDi/oeXE1wWFoZvhM1DUVyXLQOHwzhbwUYyjsshNWIc3wDA
+         8XnVxoOHtEEq+CPqW0JgRH6S8QBT81Z7l7sm0RGKdMaHLMQlEkt/X6HkJX6auRQzps
+         7CieNUapgtFiCnlnourZRLWoSe/O1UQ/H/n/uu6DvkwP5gW7fKj9HCqDNkoijH31KU
+         ghbZSk4qQT3VDxwfHGsrIg27sIvJHoeBelPfMvp4OVlTeO9NYib+lD/l/xlvIneEBg
+         S46lzdn87Q7Yg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 08/15] media: v4l2-core: Avoid the dangling pointer in v4l2_fh_release
-Date:   Sun,  4 Jul 2021 19:12:14 -0400
-Message-Id: <20210704231222.1492037-8-sashal@kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4 11/15] crypto: shash - avoid comparing pointers to exported functions under CFI
+Date:   Sun,  4 Jul 2021 19:12:17 -0400
+Message-Id: <20210704231222.1492037-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704231222.1492037-1-sashal@kernel.org>
 References: <20210704231222.1492037-1-sashal@kernel.org>
@@ -43,37 +45,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit 7dd0c9e547b6924e18712b6b51aa3cba1896ee2c ]
+[ Upstream commit 22ca9f4aaf431a9413dcc115dd590123307f274f ]
 
-A use after free bug caused by the dangling pointer
-filp->privitate_data in v4l2_fh_release.
-See https://lore.kernel.org/patchwork/patch/1419058/.
+crypto_shash_alg_has_setkey() is implemented by testing whether the
+.setkey() member of a struct shash_alg points to the default version,
+called shash_no_setkey(). As crypto_shash_alg_has_setkey() is a static
+inline, this requires shash_no_setkey() to be exported to modules.
 
-My patch sets the dangling pointer to NULL to provide
-robust.
+Unfortunately, when building with CFI, function pointers are routed
+via CFI stubs which are private to each module (or to the kernel proper)
+and so this function pointer comparison may fail spuriously.
 
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Let's fix this by turning crypto_shash_alg_has_setkey() into an out of
+line function.
+
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Eric Biggers <ebiggers@kernel.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/v4l2-core/v4l2-fh.c | 1 +
- 1 file changed, 1 insertion(+)
+ crypto/shash.c                 | 18 +++++++++++++++---
+ include/crypto/internal/hash.h |  8 +-------
+ 2 files changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-fh.c b/drivers/media/v4l2-core/v4l2-fh.c
-index 1d076deb05a9..ce844ecc3340 100644
---- a/drivers/media/v4l2-core/v4l2-fh.c
-+++ b/drivers/media/v4l2-core/v4l2-fh.c
-@@ -107,6 +107,7 @@ int v4l2_fh_release(struct file *filp)
- 		v4l2_fh_del(fh);
- 		v4l2_fh_exit(fh);
- 		kfree(fh);
-+		filp->private_data = NULL;
- 	}
- 	return 0;
+diff --git a/crypto/shash.c b/crypto/shash.c
+index 4f89f78031e2..8f162476d214 100644
+--- a/crypto/shash.c
++++ b/crypto/shash.c
+@@ -24,12 +24,24 @@
+ 
+ static const struct crypto_type crypto_shash_type;
+ 
+-int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
+-		    unsigned int keylen)
++static int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
++			   unsigned int keylen)
+ {
+ 	return -ENOSYS;
  }
+-EXPORT_SYMBOL_GPL(shash_no_setkey);
++
++/*
++ * Check whether an shash algorithm has a setkey function.
++ *
++ * For CFI compatibility, this must not be an inline function.  This is because
++ * when CFI is enabled, modules won't get the same address for shash_no_setkey
++ * (if it were exported, which inlining would require) as the core kernel will.
++ */
++bool crypto_shash_alg_has_setkey(struct shash_alg *alg)
++{
++	return alg->setkey != shash_no_setkey;
++}
++EXPORT_SYMBOL_GPL(crypto_shash_alg_has_setkey);
+ 
+ static int shash_setkey_unaligned(struct crypto_shash *tfm, const u8 *key,
+ 				  unsigned int keylen)
+diff --git a/include/crypto/internal/hash.h b/include/crypto/internal/hash.h
+index dab9569f22bf..e51741670a60 100644
+--- a/include/crypto/internal/hash.h
++++ b/include/crypto/internal/hash.h
+@@ -83,13 +83,7 @@ int ahash_register_instance(struct crypto_template *tmpl,
+ 			    struct ahash_instance *inst);
+ void ahash_free_instance(struct crypto_instance *inst);
+ 
+-int shash_no_setkey(struct crypto_shash *tfm, const u8 *key,
+-		    unsigned int keylen);
+-
+-static inline bool crypto_shash_alg_has_setkey(struct shash_alg *alg)
+-{
+-	return alg->setkey != shash_no_setkey;
+-}
++bool crypto_shash_alg_has_setkey(struct shash_alg *alg);
+ 
+ bool crypto_hash_alg_has_setkey(struct hash_alg_common *halg);
+ 
 -- 
 2.30.2
 
