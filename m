@@ -2,174 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CDAD3BACE1
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 13:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDDE3BACE3
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 13:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229575AbhGDL21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 07:28:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34580 "EHLO
+        id S229689AbhGDL2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 07:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhGDL20 (ORCPT
+        with ESMTP id S229609AbhGDL2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 07:28:26 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDC3C061574;
-        Sun,  4 Jul 2021 04:25:50 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id x15so7032103vsc.1;
-        Sun, 04 Jul 2021 04:25:50 -0700 (PDT)
+        Sun, 4 Jul 2021 07:28:30 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE94EC061762;
+        Sun,  4 Jul 2021 04:25:54 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id v5so18450057wrt.3;
+        Sun, 04 Jul 2021 04:25:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nz3VY5hMWT6gvxFnv98LVkSbNZy/EgCn5dCPbg5R5y0=;
-        b=OwDPB92caW49xeKeW1wn6hurZe2fJwoT1GTY/YZy6ynD4e/rS1igiOY3RNpz4VJilI
-         cq/URnSXtbCI5J2KxBOm5TjCsDfOFdw8HNd+WN5L9R6yF87T3ZNha6WPvCbIMSSiFz+0
-         NikztMHGdCdTc0zvbtErCtlT9Y4vQ5vyLkj0LsOKelbBrlnOa9ALZalXjiM/TOTZfJdQ
-         W4B69EZBgmKdkfQRKqlBHAWMW6b2f1jBkKQLNm3paf8sgkOnC2lXTaJvSbGIIe7gVJro
-         tUMTq5r+Ew89W/T74QGOdy7/nFaC+vDKJSLet+bFpuoQqNqxGXIAcE1sxY+8ZPeDHDPA
-         olrQ==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/sQCtgkh/m4BLKM1ZWMP5abC5oZjt490hRtVuNH1VAI=;
+        b=n9qXwQYvleViG5N1B02BI7CFq5NAV7Ic3H079WKcWZrwfQAkSD8Lt7z6CnC2Eg1hMu
+         6lcu4Bp4HG9MDangueSNPrOsffydSFqZNMEZQU1IAs8SstOfWFmEUMYm0atsmFCokWc8
+         ZXHyAZfm0Y1VWc+9OIsXd/GuvAPA6TY8NMzbjnnTxGp3PHP7csLj/LLdjSwQ9iuc2yey
+         3xoM5Vs5WbU2FEPn/ddZy3LeT8zikSZAU1gDDqNwE4x5Cdys5NT3tSvfqbCLqSR0DX3g
+         kCPM6NYbwV9vtJf60u1Xi8H9Pcmd7Z+I6CD2rdDEGgQa3ivdFmWgDMEbb4FcIWa4eHKt
+         EbQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nz3VY5hMWT6gvxFnv98LVkSbNZy/EgCn5dCPbg5R5y0=;
-        b=CMOAU0oFN/PjvcXNvPG4AMjvoIuLRYVKovYHQN7xXG5MxTz/9Kvk2qpCPRTC+/6305
-         48sWXwfxOx2ZGMTAauddhb3cQ/9UiODgrIs9J0yzUUBwb2XHclLr8R0z8WOofBCtR8sL
-         6ahLCw3fiENET5Dc/S0HzsINXTVmxAPK1/DgBFVs7Dqol+AfnkiW/LDlg+NvmMUxYlYa
-         DXb4/ObYZoV5Eixg5ap69nuhLpMLbuWahqmH7ZGKEb/cvuVHPgvvKAamf0RAjGp1ANYe
-         L6I4Opw0V5Fh2AA0GAoGjlGrAe2Y2ueJdlyc/12IoNQY91e1AZpfdiRsyj8V5xIZNoON
-         xBkQ==
-X-Gm-Message-State: AOAM531RA2TilzxjF5Nys8W7WFWpfz340YTleAEBx32OSxiARV0wnk+0
-        whpZImX5LlYLNBzi6HPClNPqX3Fj/dTAsnBxDtc=
-X-Google-Smtp-Source: ABdhPJysQCHnUIYGeZP4ntuy5m1Smheh1TuEJXY9TELWI1Ji3MCZ+RvaieUiQj5DZak9NxzceHtU25Xd9ejFHgoAC8k=
-X-Received: by 2002:a67:e116:: with SMTP id d22mr6174988vsl.49.1625397949543;
- Sun, 04 Jul 2021 04:25:49 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/sQCtgkh/m4BLKM1ZWMP5abC5oZjt490hRtVuNH1VAI=;
+        b=MI0WTUkXI7VkQW3VznVA1ao6m3VCuJ2Xi64JcWh1yAXO83dCpOfnQEMDe3AQzJjzZ+
+         f512cuVaX4Ek7le/0KpTX3/QzA3tzLdTPJUxsPDgQInUu0pFxqrSty4FgivqP9EZRMjn
+         XRqx/pqRQsS0I4FjnyqjCkr5tF7FqPG0neKNCxvmPQtl5b9mxk0NDmQUbzzsOBAXsaIg
+         MUczDLkPA2MCT74Na7bn7gnAqUaqGoIaYtWzduaZoeNfvRrdQ8z96touzaZ0PR5XNBdE
+         AY6MoQgKELv2OAqDkR3TY3V6LUbu2FRXcIzizTPVRsNdDeEms3q/FBRyavcvz6jlOK3U
+         VvKA==
+X-Gm-Message-State: AOAM531ff0IeB9LsHK+WfFp/pyPhnVAyyuv76e/8zW9/CnW3cGjxua+8
+        bS7qAg7zF0Ebwdauwi7+Itc=
+X-Google-Smtp-Source: ABdhPJyp6a32268b9vWcPAn1J2FjBjF2QLf1eO4Bn3b2fGSK+dIlHTxuUaBIr6RN+t2eeReJKGEZpQ==
+X-Received: by 2002:adf:e384:: with SMTP id e4mr9579034wrm.317.1625397953379;
+        Sun, 04 Jul 2021 04:25:53 -0700 (PDT)
+Received: from [192.168.0.160] ([170.253.36.171])
+        by smtp.gmail.com with ESMTPSA id f13sm9703825wrt.86.2021.07.04.04.25.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Jul 2021 04:25:52 -0700 (PDT)
+Subject: Re: [PATCH] seccomp_unotify.2: Add doc for SECCOMP_ADDFD_FLAG_SEND
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+To:     Rodrigo Campos <rodrigo@kinvolk.io>
+Cc:     linux-kernel@vger.kernel.org, Alban Crequy <alban@kinvolk.io>,
+        =?UTF-8?Q?Mauricio_V=c3=a1squez_Bernal?= <mauricio@kinvolk.io>,
+        Sargun Dhillon <sargun@sargun.me>, linux-man@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+References: <20210702163744.265749-1-rodrigo@kinvolk.io>
+ <6322ac90-3491-df4f-7505-db4081bacb79@gmail.com>
+Message-ID: <82b7b6a4-14bf-23d9-dad9-f348fe905d8e@gmail.com>
+Date:   Sun, 4 Jul 2021 13:25:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210626161819.30508-1-sergio.paracuellos@gmail.com>
- <CAHp75VfM-35tQMRh98mtg2XmDOJFnmjdYRKZZoi9ADm=AT2xUw@mail.gmail.com>
- <CAMhs-H_fcNDAOHm=tZB4ku9fzeea_7f4ZLg7w5KEmcNu+8wbQQ@mail.gmail.com>
- <CAHp75VeN+vww=Bj=g-nx9AT0FKSGAZ8CKQZn=ff2kfQWM+dxdw@mail.gmail.com>
- <CAMhs-H-WwCfPDspgxzN=W8QouZ7WPAeyJDYf_6=YezyCkTM=Vw@mail.gmail.com>
- <CAHp75VcF-HDZ6mKvXT=zYnBrcPaNJ+SYJ72LQ7s-62zQ5ZqoQg@mail.gmail.com>
- <CAMhs-H9gw63j98vVo3y0ymW4_6rFNL8u5cYNM2hzyrmkPB3h3w@mail.gmail.com>
- <CAHp75VccSCWa=EH8i01_b_HLZRumUZ48oRjeuaV5Dp1BQAoz2w@mail.gmail.com>
- <CAMhs-H_Ne4W79Awbmo6w_68X+h0-ybjvzNsbh=XuHMPJJ8-hDQ@mail.gmail.com>
- <CACRpkdaqSoyDUn3dVuVgzRK_7AabdY=1FzAnhHZzPs3qS+GfsA@mail.gmail.com>
- <CAMhs-H_pomsvKXuerkVsNQva+B+tPr2xRZAU2R7oyjZ+GaQpqQ@mail.gmail.com>
- <CAMhs-H_=_tYk3Qj5-NaAmWgnuWc0ZRSEABZzwPfMxiUHP35nbw@mail.gmail.com>
- <CAHp75VdmTHr8zq0boz2ci0YO4fS9Zuf+LFXeK7CGiHqHkXKKMQ@mail.gmail.com>
- <CAMhs-H_e2U7nUav8h+Q0w-aZXvD6VM6wpg857WbFgw6x3z1ufA@mail.gmail.com>
- <CAMhs-H8Y0txwcqRTxpsB_GEoOYbhHWO81EANMxMSybzWPS=HTA@mail.gmail.com>
- <CAHp75VfRYZn5uuPgQHJ5Hm3p3XVrfs=ReZXxEPm+dqLNb5QtGA@mail.gmail.com>
- <CAMhs-H8g8c047DSw2ObX7xS=YuPrXNRMecuV1TnKT--gnDdDOw@mail.gmail.com>
- <CAMhs-H9HhBbKmbpVgDXbZD+Dmh96J98HR_DO6LZL8N0B00ihcQ@mail.gmail.com> <CAHp75VdQS8fd-=onz_L5MJvhVea30EriUj6e+-Q1yCo35n2kpg@mail.gmail.com>
-In-Reply-To: <CAHp75VdQS8fd-=onz_L5MJvhVea30EriUj6e+-Q1yCo35n2kpg@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sun, 4 Jul 2021 13:25:38 +0200
-Message-ID: <CAMhs-H-Qpob8JTeJZk59_+u+NZMy0zRdyfJ219L9o73pE-zQig@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: mt7621: support gpio-line-names property
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Thomson <git@johnthomson.fastmail.com.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        NeilBrown <neil@brown.name>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Nicholas Mc Guire <hofrat@osadl.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6322ac90-3491-df4f-7505-db4081bacb79@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 12:05 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Sun, Jul 4, 2021 at 11:06 AM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
-> > On Sun, Jul 4, 2021 at 7:57 AM Sergio Paracuellos
-> > <sergio.paracuellos@gmail.com> wrote:
-> > > On Sat, Jul 3, 2021 at 9:36 PM Andy Shevchenko
-> > > <andy.shevchenko@gmail.com> wrote:
-> > > > On Sat, Jul 3, 2021 at 3:51 PM Sergio Paracuellos
-> > > > <sergio.paracuellos@gmail.com> wrote:
-> > > > > On Sat, Jul 3, 2021 at 2:05 PM Sergio Paracuellos
-> > > > > <sergio.paracuellos@gmail.com> wrote:
->
-> ...
->
-> > > > The below is closer to what I meant, yes. I have not much time to look
-> > > > into the details, but I don't have objections about what you suggested
-> > > > below. Additional comments there as well.
-> > >
-> > > Thanks for your time and review, Andy. Let's wait to see if Linus and
-> > > Bartosz are also ok with this approach.
-> > >
-> > > > > How about something like this?
-> > > > >
-> > > > > diff --git a/drivers/gpio/gpio-mt7621.c b/drivers/gpio/gpio-mt7621.c
-> > > > > index 82fb20dca53a..5854a9343491 100644
-> > > > > --- a/drivers/gpio/gpio-mt7621.c
-> > > > > +++ b/drivers/gpio/gpio-mt7621.c
-> > > > > @@ -241,6 +241,7 @@ mediatek_gpio_bank_probe(struct device *dev,
-> > > > >         if (!rg->chip.label)
-> > > > >                 return -ENOMEM;
-> > > > >
-> > > > > +       rg->chip.offset = bank * MTK_BANK_WIDTH;
-> > > > >         rg->irq_chip.name = dev_name(dev);
-> > > > >         rg->irq_chip.parent_device = dev;
-> > > > >         rg->irq_chip.irq_unmask = mediatek_gpio_irq_unmask;
-> > > >
-> > > > Obviously it should be a separate patch :-)
-> > >
-> > > Of course :). I will include one separate patch per driver using the
-> > > custom set names stuff: gpio-mt7621 and gpio-brcmstb. I don't know if
-> > > any other one is also following that wrong pattern.
-> >
-> > What if each gpiochip inside the same driver has a different width? In
-> > such a case (looking into the code seems to be the case for
-> > 'gpio-brcmstb', since driver's calculations per base are aligned with
-> > this code changes but when it is assigned every line name is taking
-> > into account gpio bank's width variable... If the only "client" of
-> > this code would be gpio-mt7621 (or those where base and width of the
-> > banks is the same) I don't know if changing core code makes sense...
->
-> As far as I understood the problem, the driver (either broadcom one or
-> mediatek) uses one GPIO description from which it internally splits to
-> a few GPIO chips. GPIO chips are kinda independent in that sense,
-> correct? So, if you put the index / offset field per GPIO chip before
-> creation, the problem is solved.  What did I miss?
 
-Should be, yes. But my concern is about why the broadcom driver
-calculate base as:
 
-base = bank->id * MAX_GPIO_PER_BANK;
+On 7/3/21 11:25 PM, Alejandro Colomar (man-pages) wrote:
+> Hi Rodrigo,
+> 
+> On 7/2/21 6:37 PM, Rodrigo Campos wrote:
+>> This flag was recently added to Linux 5.14 by a patch I wrote:
+>> 	https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0ae71c7720e3ae3aabd2e8a072d27f7bd173d25c
+>>
+>> This patch adds documentation for the flag, the error code that the flag
+>> added and explains in the caveat when it is useful.
+>>
+>> Signed-off-by: Rodrigo Campos <rodrigo@kinvolk.io>
+>> ---
+>> Hi! Here goes the documentation for the flag I just added. Please feel free to
+>> amend as you want and let me know if something is not clear :)
+> 
+> Thanks for documenting your own addition!
+> That makes things much easier :-)
+> 
+> It looks quite good to me.
+> 
+> There are a few minor changes that I applied in a following patch.  I'll
+> explain why in your patch inline.  And then you have the diff below your
 
-and then fill names using:
+And I meant: patch applied!
 
-/*
- * Make sure to not index beyond the end of the number of descriptors
- * of the GPIO device.
- */
-for (i = 0; i < bank->width; i++) {
- ...
+Thanks,
 
-It looks like each gpio chip is separated MAX_GPIO_PER_BANK but the
-width of each of some of them may be different. So in my understanding
-assume for example there are four banks with widths 32,32, 24, 32 and
-if you want to provide friendly names for all of them, in the third
-one you have to create empty strings until 32 or you will get wrong to
-the starting of the fourth bank and the code is getting care of not
-going out of index in the for loop and assign only those needed. So
-technically you are providing 8 empty strings even though the width of
-the third bank is only 24 which sounds also bad... But maybe I am
-misunderstanding the code itself and I need a bit more sleep :)
+Alex
 
-Best regards,
-    Sergio Paracuellos
+> patch.
+> 
+> Cheers,
+> 
+> Alex
+> 
+>>
+>>
+>>  man2/seccomp_unotify.2 | 26 ++++++++++++++++++++++++++
+>>  1 file changed, 26 insertions(+)
+>>
+>> diff --git a/man2/seccomp_unotify.2 b/man2/seccomp_unotify.2
+>> index 2673d9bc7..9bd27214f 100644
+>> --- a/man2/seccomp_unotify.2
+>> +++ b/man2/seccomp_unotify.2
+>> @@ -739,6 +739,17 @@ When allocating the file descriptor in the target,
+>>  use the file descriptor number specified in the
+>>  .I newfd
+>>  field.
+>> +.TP
+>> +.BR SECCOMP_ADDFD_FLAG_SEND
+>> +Available since Linux 5.14, combines the
+> 
+> We usually append that info to the paragraph tag (i.e., the line just
+> after .TP), and with a common syntax, so that it's easier to read..
+> 
+>> +.B SECCOMP_IOCTL_NOTIF_ADDFD
+>> +ioctl with
+>> +.B SECCOMP_IOCTL_NOTIF_SEND
+>> +into an atomic operation. On successful invocation, the target process's
+>> +errno will be 0 and the return value will be the file descriptor number that was
+>> +installed in the target. If allocating the file descriptor in the tatget fails,
+>> +the target's syscall continues to be blocked until a successful response is
+>> +sent.
+> 
+> See the following extract from man-pages(7):
+> 
+> $ man 7 man-pages | sed -n '/Use semantic newlines/,/^$/p';
+>    Use semantic newlines
+>        In the source of a manual page,  new  sentences  should  be
+>        started  on new lines, and long sentences should split into
+>        lines at clause breaks (commas, semicolons, colons, and  so
+>        on).   This  convention,  sometimes known as "semantic new‐
+>        lines", makes it easier to see the effect of patches, which
+>        often  operate at the level of individual sentences or sen‐
+>        tence clauses.
+> 
+>>  .RE
+>>  .TP
+>>  .I srcfd
+>> @@ -801,6 +812,13 @@ Allocating the file descriptor in the target would cause the target's
+>>  limit to be exceeded (see
+>>  .BR getrlimit (2)).
+>>  .TP
+>> +.B EBUSY
+>> +If the flag
+>> +.B SECCOMP_IOCTL_NOTIF_SEND
+>> +is used, this means the operation can't proceed until other
+>> +.B SECCOMP_IOCTL_NOTIF_ADDFD
+>> +requests are processed.
+>> +.TP
+>>  .B EINPROGRESS
+>>  The user-space notification specified in the
+>>  .I id
+>> @@ -1131,6 +1149,14 @@ that would
+>>  normally be restarted by the
+>>  .BR SA_RESTART
+>>  flag.
+>> +.PP
+>> +Furthermore, if the supervisor response is a file descriptor
+>> +added with
+>> +.B SECCOMP_IOCTL_NOTIF_ADDFD,
+>> +then the flag
+>> +.B SECCOMP_ADDFD_FLAG_SEND
+>> +can be used to atomically add the file descriptor and return that value,
+>> +making sure no file descriptors are inadvertently leaked into the target.
+> 
+> I moved your paragraph below the FIXME, as I the FIXME applies to the
+> previous paragraph ("About the above").
+> 
+>>  .\" FIXME
+>>  .\" About the above, Kees Cook commented:
+>>  .\"
+>>
+> 
+> 
+> diff --git a/man2/seccomp_unotify.2 b/man2/seccomp_unotify.2
+> index 9bd27214f..ae449ae36 100644
+> --- a/man2/seccomp_unotify.2
+> +++ b/man2/seccomp_unotify.2
+> @@ -740,16 +740,18 @@ use the file descriptor number specified in the
+>  .I newfd
+>  field.
+>  .TP
+> -.BR SECCOMP_ADDFD_FLAG_SEND
+> -Available since Linux 5.14, combines the
+> +.BR SECCOMP_ADDFD_FLAG_SEND " (since Linux 5.14)"
+> +Combines the
+>  .B SECCOMP_IOCTL_NOTIF_ADDFD
+>  ioctl with
+>  .B SECCOMP_IOCTL_NOTIF_SEND
+> -into an atomic operation. On successful invocation, the target process's
+> -errno will be 0 and the return value will be the file descriptor number
+> that was
+> -installed in the target. If allocating the file descriptor in the
+> tatget fails,
+> -the target's syscall continues to be blocked until a successful response is
+> -sent.
+> +into an atomic operation.
+> +On successful invocation, the target process's errno will be 0
+> +and the return value will be the file descriptor number
+> +that was installed in the target.
+> +If allocating the file descriptor in the tatget fails,
+> +the target's syscall continues to be blocked
+> +until a successful response is sent.
+>  .RE
+>  .TP
+>  .I srcfd
+> @@ -1149,14 +1151,6 @@ that would
+>  normally be restarted by the
+>  .BR SA_RESTART
+>  flag.
+> -.PP
+> -Furthermore, if the supervisor response is a file descriptor
+> -added with
+> -.B SECCOMP_IOCTL_NOTIF_ADDFD,
+> -then the flag
+> -.B SECCOMP_ADDFD_FLAG_SEND
+> -can be used to atomically add the file descriptor and return that value,
+> -making sure no file descriptors are inadvertently leaked into the target.
+>  .\" FIXME
+>  .\" About the above, Kees Cook commented:
+>  .\"
+> @@ -1176,6 +1170,14 @@ making sure no file descriptors are inadvertently
+> leaked into the target.
+>  .\" calls because it's impossible for the kernel to restart the call
+>  .\" with the right timeout value. I wonder what happens when those
+>  .\" system calls are restarted in the scenario we're discussing.)
+> +.PP
+> +Furthermore, if the supervisor response is a file descriptor
+> +added with
+> +.B SECCOMP_IOCTL_NOTIF_ADDFD,
+> +then the flag
+> +.B SECCOMP_ADDFD_FLAG_SEND
+> +can be used to atomically add the file descriptor and return that value,
+> +making sure no file descriptors are inadvertently leaked into the target.
+>  .SH BUGS
+>  If a
+>  .BR SECCOMP_IOCTL_NOTIF_RECV
+> 
+> 
 
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+-- 
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
