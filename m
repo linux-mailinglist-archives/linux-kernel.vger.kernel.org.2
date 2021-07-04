@@ -2,73 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E94083BAC8A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 11:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FEE3BAC8E
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 11:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229559AbhGDJqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 05:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhGDJqg (ORCPT
+        id S229609AbhGDJtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 05:49:47 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53387 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229476AbhGDJtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 05:46:36 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AC6C061762
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 02:44:01 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id h6so337509iok.6
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 02:44:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=uDYX6i6GWm/D4T0FFuN+cS8W6SRI5j8FJUCW6aYMnRs=;
-        b=VSSUQZszHkEP4Pv3IXvh35bW0krRkLdKpoB7vMf4g4yHd94uBAeOgcjK/YJtak+rul
-         rfSyq6gl+4B7YhhBUN8W2gsMj3hCxw3D+wS3lhWiY/iQNc7Ndvi5roLLNpz4Az1HFuM7
-         0sVnGqE7sQ/HKZhRf0it9B4KKJfWQ9dN9NXIu5/jQHp6UXt0exzec8egWcj99wCBVkJs
-         9EA/qJXUCOxOe24NcSu1mIg3YrwagUzAmB9E+pXRTcRXY3xbB3FwGDcE9/h5t8/xNu4/
-         AriyEaKHK4JtnkvhQE2e8JW7EwGrLnXew/4fZcr9fR6s31j//fOFIiFBUEs91GjyT+LE
-         F8xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=uDYX6i6GWm/D4T0FFuN+cS8W6SRI5j8FJUCW6aYMnRs=;
-        b=TXOXiEcR+PH+lNN0dg/MXxf7Z6EvCmd7GBpfFj/XnqwhHR0mCPfMmal30j4tZrc+6n
-         v+7SZx06O0rveTgrMDowKj7Ngak9lH2BqXJ2POaeSwkFX2xJZXbbs51c0DUF9Kg3swWl
-         O0ZlUjMJiM4AvkF7OMQeBrTUvRpA8nMafv7BpNJo8hkDrj6zvMbjal4/G6cENw0D99ir
-         axzdTC9D1YQU9TnOKQ519nPXUrBgGtf3u732QlTwv/UsWrOYxkLwnk5XL/7BQH+g9wa8
-         6hgoK4gZgGUP+ysps1cC8EAFHsPOjC6SSRw0Wz2zk/XFSKl7miiocfwbKg/z/ZuDDro8
-         71xA==
-X-Gm-Message-State: AOAM531qTqjVzRd3ubGJCIQlxbC7uf1TxBJeym7SiWyKC1vVx64MBNEP
-        vO9c8QgMISeTuOduudPDnO9AlQNd4/0Y8PfFCdI=
-X-Google-Smtp-Source: ABdhPJycL16jkDTTjst3hDw+LWaiAGgB/D27DAx/Vv2TPFPFAGl9MbaHqM4XlHxVEIrEBsFD91tejNQfZy/lzLp+sWA=
-X-Received: by 2002:a02:1d86:: with SMTP id 128mr7178208jaj.106.1625391841213;
- Sun, 04 Jul 2021 02:44:01 -0700 (PDT)
+        Sun, 4 Jul 2021 05:49:46 -0400
+Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lzyiP-00079E-GA; Sun, 04 Jul 2021 09:47:06 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: Fix a couple of spelling mistakes in Kconfig
+Date:   Sun,  4 Jul 2021 10:47:05 +0100
+Message-Id: <20210704094705.37175-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Received: by 2002:a92:a30e:0:0:0:0:0 with HTTP; Sun, 4 Jul 2021 02:44:00 -0700 (PDT)
-Reply-To: mrmichelduku@outlook.com
-From:   michel <dukumichel09@gmail.com>
-Date:   Sun, 4 Jul 2021 09:44:00 +0000
-Message-ID: <CAJYsJ_FemZUmZKrcpWmDV7Hi=+fckBXhZRkGuSLXSSg5yFiseA@mail.gmail.com>
-Subject: Please respond urgently
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+From: Colin Ian King <colin.king@canonical.com>
 
-I know that this mail will come to you as a surprise as we have never
-met before, but need not to worry as I am contacting you for a good
-business. I need your urgent assistance in transferring the sum of
-$11.3million to your private account Where this money can be shared
-between us. The money has been here in our Bank lying dormant for
-years without anybody coming for the claim.
+There are two spelling mistakes in the Kconfig text. Fix them.
 
-I want to release the money to you as the relative to our deceased
-customer (the account owner) who died in a plane crash with his family
-since October 2005. By indicating your interest I will send you the
-full details on how the business will be executed.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/mtd/nand/raw/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Best Regards,
-Michel Duku.
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index 630728de4b7c..67b7cb67c030 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -480,9 +480,9 @@ config MTD_NAND_RICOH
+ 	select MTD_SM_COMMON
+ 	help
+ 	  Enable support for Ricoh R5C852 xD card reader
+-	  You also need to enable ether
++	  You also need to enable either
+ 	  NAND SSFDC (SmartMedia) read only translation layer' or new
+-	  expermental, readwrite
++	  experimental, readwrite
+ 	  'SmartMedia/xD new translation layer'
+ 
+ config MTD_NAND_DISKONCHIP
+-- 
+2.31.1
+
