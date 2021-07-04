@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0026D3BB33E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB493BB348
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbhGDXRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:17:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57002 "EHLO mail.kernel.org"
+        id S233598AbhGDXRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:17:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233812AbhGDXOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:14:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB037619A3;
-        Sun,  4 Jul 2021 23:10:35 +0000 (UTC)
+        id S233866AbhGDXOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:14:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2CD2619A8;
+        Sun,  4 Jul 2021 23:10:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440236;
-        bh=yxV1JSp0byzG2cM2gN6t7X7YxV+FNspdBcRPK549JUU=;
+        s=k20201202; t=1625440239;
+        bh=OqgXGjBDzeSwIepSMpC1mu1vc1La23fkZjFRjuIvnhI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=reN/sT6NhJxTFp7PJA4wwiPN6u8Nt4DyQgn5PE/hAX0ZHOUpKILW+3NVzMMi43bUW
-         TmcweCzx1PGLSgKGzj1m6zqC5uPq2pfNzaXTTmn7utPrbAMaxp0U748jONrgpSaWbK
-         EJi12GTinv5nSlXdPSAO9cZTaocYdEE0o5QZae1lmKLMOCcc6gEvDAaoAtAcLe4lFx
-         XddNofPwDGSXc54Ya259CERczzXuZd/X6kh9Mp94NNaBYTGFo4srVQIEcweAIocgVk
-         FwQihq5cm9NsDE9kQWMJKG7DxG+nsSWwfg4IbL2Swk+lpaKZXjJQA/RxK4IPuZjln8
-         ZiuYMvL+WNlVw==
+        b=HGOadvkL+g81jC1NTDjiCT/eLPwBGrbouIJD7iuMJ5y3kPpCSWHpwqEmd+rO90P9P
+         OpLpEmXXAEP8fR5aslHDfn4h2APWS606uVv9rI3Ka+ZkBQMck6FlE+a+RLkAw8tuRE
+         fjdERztLy/BRLfpfLc4EoSUrdmAdsZvADIZXSYlfGNo8Vr7AZuYnJPSEXGPNWDrb0N
+         VAzmg6GnM9UmpsCl1FKClC5NxRcNcehMSEOLyN3bzjGczHGwy+IatWAM2d8eI/1ybE
+         DY81pW8EW7+RCZON+HoimPTL4nGAdQvkVlxWRFHXDJof5q61u8yfs2EGNV1VIyhDUz
+         1sTcLowTEwHoQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 45/50] locking/lockdep: Fix the dep path printing for backwards BFS
-Date:   Sun,  4 Jul 2021 19:09:33 -0400
-Message-Id: <20210704230938.1490742-45-sashal@kernel.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Huth <thuth@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 47/50] KVM: s390: get rid of register asm usage
+Date:   Sun,  4 Jul 2021 19:09:35 -0400
+Message-Id: <20210704230938.1490742-47-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704230938.1490742-1-sashal@kernel.org>
 References: <20210704230938.1490742-1-sashal@kernel.org>
@@ -43,161 +46,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boqun Feng <boqun.feng@gmail.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit 69c7a5fb2482636f525f016c8333fdb9111ecb9d ]
+[ Upstream commit 4fa3b91bdee1b08348c82660668ca0ca34e271ad ]
 
-We use the same code to print backwards lock dependency path as the
-forwards lock dependency path, and this could result into incorrect
-printing because for a backwards lock_list ->trace is not the call trace
-where the lock of ->class is acquired.
+Using register asm statements has been proven to be very error prone,
+especially when using code instrumentation where gcc may add function
+calls, which clobbers register contents in an unexpected way.
 
-Fix this by introducing a separate function on printing the backwards
-dependency path. Also add a few comments about the printing while we are
-at it.
+Therefore get rid of register asm statements in kvm code, even though
+there is currently nothing wrong with them. This way we know for sure
+that this bug class won't be introduced here.
 
-Reported-by: Johannes Berg <johannes@sipsolutions.net>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210618170110.3699115-2-boqun.feng@gmail.com
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Reviewed-by: Thomas Huth <thuth@redhat.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210621140356.1210771-1-hca@linux.ibm.com
+[borntraeger@de.ibm.com: checkpatch strict fix]
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/lockdep.c | 108 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 106 insertions(+), 2 deletions(-)
+ arch/s390/kvm/kvm-s390.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 7429f1571755..df43bf53e7c5 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -1941,7 +1941,56 @@ static void print_lock_class_header(struct lock_class *class, int depth)
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index d08e13c6dc98..20ba8537dbcc 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -318,31 +318,31 @@ static void allow_cpu_feat(unsigned long nr)
+ 
+ static inline int plo_test_bit(unsigned char nr)
+ {
+-	register unsigned long r0 asm("0") = (unsigned long) nr | 0x100;
++	unsigned long function = (unsigned long)nr | 0x100;
+ 	int cc;
+ 
+ 	asm volatile(
++		"	lgr	0,%[function]\n"
+ 		/* Parameter registers are ignored for "test bit" */
+ 		"	plo	0,0,0,0(0)\n"
+ 		"	ipm	%0\n"
+ 		"	srl	%0,28\n"
+ 		: "=d" (cc)
+-		: "d" (r0)
+-		: "cc");
++		: [function] "d" (function)
++		: "cc", "0");
+ 	return cc == 0;
  }
  
- /*
-- * printk the shortest lock dependencies from @start to @end in reverse order:
-+ * Dependency path printing:
-+ *
-+ * After BFS we get a lock dependency path (linked via ->parent of lock_list),
-+ * printing out each lock in the dependency path will help on understanding how
-+ * the deadlock could happen. Here are some details about dependency path
-+ * printing:
-+ *
-+ * 1)	A lock_list can be either forwards or backwards for a lock dependency,
-+ * 	for a lock dependency A -> B, there are two lock_lists:
-+ *
-+ * 	a)	lock_list in the ->locks_after list of A, whose ->class is B and
-+ * 		->links_to is A. In this case, we can say the lock_list is
-+ * 		"A -> B" (forwards case).
-+ *
-+ * 	b)	lock_list in the ->locks_before list of B, whose ->class is A
-+ * 		and ->links_to is B. In this case, we can say the lock_list is
-+ * 		"B <- A" (bacwards case).
-+ *
-+ * 	The ->trace of both a) and b) point to the call trace where B was
-+ * 	acquired with A held.
-+ *
-+ * 2)	A "helper" lock_list is introduced during BFS, this lock_list doesn't
-+ * 	represent a certain lock dependency, it only provides an initial entry
-+ * 	for BFS. For example, BFS may introduce a "helper" lock_list whose
-+ * 	->class is A, as a result BFS will search all dependencies starting with
-+ * 	A, e.g. A -> B or A -> C.
-+ *
-+ * 	The notation of a forwards helper lock_list is like "-> A", which means
-+ * 	we should search the forwards dependencies starting with "A", e.g A -> B
-+ * 	or A -> C.
-+ *
-+ * 	The notation of a bacwards helper lock_list is like "<- B", which means
-+ * 	we should search the backwards dependencies ending with "B", e.g.
-+ * 	B <- A or B <- C.
-+ */
-+
-+/*
-+ * printk the shortest lock dependencies from @root to @leaf in reverse order.
-+ *
-+ * We have a lock dependency path as follow:
-+ *
-+ *    @root                                                                 @leaf
-+ *      |                                                                     |
-+ *      V                                                                     V
-+ *	          ->parent                                   ->parent
-+ * | lock_list | <--------- | lock_list | ... | lock_list  | <--------- | lock_list |
-+ * |    -> L1  |            | L1 -> L2  | ... |Ln-2 -> Ln-1|            | Ln-1 -> Ln|
-+ *
-+ * , so it's natural that we start from @leaf and print every ->class and
-+ * ->trace until we reach the @root.
-  */
- static void __used
- print_shortest_lock_dependencies(struct lock_list *leaf,
-@@ -1969,6 +2018,61 @@ print_shortest_lock_dependencies(struct lock_list *leaf,
- 	} while (entry && (depth >= 0));
+ static __always_inline void __insn32_query(unsigned int opcode, u8 *query)
+ {
+-	register unsigned long r0 asm("0") = 0;	/* query function */
+-	register unsigned long r1 asm("1") = (unsigned long) query;
+-
+ 	asm volatile(
+-		/* Parameter regs are ignored */
++		"	lghi	0,0\n"
++		"	lgr	1,%[query]\n"
++		/* Parameter registers are ignored */
+ 		"	.insn	rrf,%[opc] << 16,2,4,6,0\n"
+ 		:
+-		: "d" (r0), "a" (r1), [opc] "i" (opcode)
+-		: "cc", "memory");
++		: [query] "d" ((unsigned long)query), [opc] "i" (opcode)
++		: "cc", "memory", "0", "1");
  }
  
-+/*
-+ * printk the shortest lock dependencies from @leaf to @root.
-+ *
-+ * We have a lock dependency path (from a backwards search) as follow:
-+ *
-+ *    @leaf                                                                 @root
-+ *      |                                                                     |
-+ *      V                                                                     V
-+ *	          ->parent                                   ->parent
-+ * | lock_list | ---------> | lock_list | ... | lock_list  | ---------> | lock_list |
-+ * | L2 <- L1  |            | L3 <- L2  | ... | Ln <- Ln-1 |            |    <- Ln  |
-+ *
-+ * , so when we iterate from @leaf to @root, we actually print the lock
-+ * dependency path L1 -> L2 -> .. -> Ln in the non-reverse order.
-+ *
-+ * Another thing to notice here is that ->class of L2 <- L1 is L1, while the
-+ * ->trace of L2 <- L1 is the call trace of L2, in fact we don't have the call
-+ * trace of L1 in the dependency path, which is alright, because most of the
-+ * time we can figure out where L1 is held from the call trace of L2.
-+ */
-+static void __used
-+print_shortest_lock_dependencies_backwards(struct lock_list *leaf,
-+					   struct lock_list *root)
-+{
-+	struct lock_list *entry = leaf;
-+	const struct lock_trace *trace = NULL;
-+	int depth;
-+
-+	/*compute depth from generated tree by BFS*/
-+	depth = get_lock_depth(leaf);
-+
-+	do {
-+		print_lock_class_header(entry->class, depth);
-+		if (trace) {
-+			printk("%*s ... acquired at:\n", depth, "");
-+			print_lock_trace(trace, 2);
-+			printk("\n");
-+		}
-+
-+		/*
-+		 * Record the pointer to the trace for the next lock_list
-+		 * entry, see the comments for the function.
-+		 */
-+		trace = entry->trace;
-+
-+		if (depth == 0 && (entry != root)) {
-+			printk("lockdep:%s bad path found in chain graph\n", __func__);
-+			break;
-+		}
-+
-+		entry = get_lock_parent(entry);
-+		depth--;
-+	} while (entry && (depth >= 0));
-+}
-+
- static void
- print_irq_lock_scenario(struct lock_list *safe_entry,
- 			struct lock_list *unsafe_entry,
-@@ -2086,7 +2190,7 @@ print_bad_irq_dependency(struct task_struct *curr,
- 	prev_root->trace = save_trace();
- 	if (!prev_root->trace)
- 		return;
--	print_shortest_lock_dependencies(backwards_entry, prev_root);
-+	print_shortest_lock_dependencies_backwards(backwards_entry, prev_root);
- 
- 	pr_warn("\nthe dependencies between the lock to be acquired");
- 	pr_warn(" and %s-irq-unsafe lock:\n", irqclass);
+ #define INSN_SORTL 0xb938
 -- 
 2.30.2
 
