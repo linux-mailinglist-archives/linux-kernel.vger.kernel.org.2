@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8FD3BB307
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF263BB2FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhGDXRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:17:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56956 "EHLO mail.kernel.org"
+        id S234660AbhGDXQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:16:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233512AbhGDXOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:14:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD0626195C;
-        Sun,  4 Jul 2021 23:10:00 +0000 (UTC)
+        id S233541AbhGDXOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:14:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6ACC61988;
+        Sun,  4 Jul 2021 23:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440201;
-        bh=pUMr10Mt4SCKAEeSUQG9mur+NfbW4jFFoQ3QkBymMrE=;
+        s=k20201202; t=1625440208;
+        bh=H6I1CzE8LzvNbpcekBj5LRlqnEHe8h7OLwJsoz0QF8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZhoQlAus17pFgPjLX7ult0HJ9FSMLwN5uafUrCjqCgBTemWgkUY0Z8xz5gjFQTobq
-         a64Mm/DyTNC15gRInp/u3hz8w3J6JWr4RvWS+gendw8VJSC+8WFV8p3ZD40U6gTMmi
-         JI6wZx/zxohNuUN2wTWRAHghiqGDj2iGmEHDOuQP1Aqtou9LtnjYR5V6La7CuaCm8K
-         Cpl4aTMzkhQMr8J99w9ylVTwpnGjOwA4bIjV7yIbeXnba6utq2r+RDEL1ohdph1vkj
-         VbXjtnw9SHcQuMi+wB5vB04hg4DYBaakfQMljny/kbH51/myNK0sQ/RybWrm4lMxdD
-         BanCF93B5wYvQ==
+        b=gtMfXlRydLxFkt0pL5uMBPVFBQnwOhJ5OkK1mPEyhcqcEeHDacrWKatbwbM2jOOrf
+         THGlpxG74wciRx1oidkmTsEpJWxEkWSi+4YbzEyqDcnDLswPoO7Zdx3LUGlp7A1Dki
+         5t9JdnVzGuDt3uLo5c45+Br8//M3Zha/3AOrKH6BXm4GNP6kEGAKPiNLvWaUXrd0AD
+         0KvPj2/MF8PYLpnGRFE3IjjrqWiCT8T8fX03WULG1otMoUfdKRePsH8ifrvqeIJQ6i
+         dPSlz4QIdiMi4uWO/3L++/aH60+KRsXlTy/HrIuaPwDc02I3suxPrYUflcGvKVwjTY
+         J1/cDNnCyZPjg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Anirudh Rayabharam <mail@anirudhrb.com>,
-        syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Cc:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 18/50] media: pvrusb2: fix warning in pvr2_i2c_core_done
-Date:   Sun,  4 Jul 2021 19:09:06 -0400
-Message-Id: <20210704230938.1490742-18-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 23/50] media: em28xx: Fix possible memory leak of em28xx struct
+Date:   Sun,  4 Jul 2021 19:09:11 -0400
+Message-Id: <20210704230938.1490742-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704230938.1490742-1-sashal@kernel.org>
 References: <20210704230938.1490742-1-sashal@kernel.org>
@@ -45,58 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
 
-[ Upstream commit f8194e5e63fdcb349e8da9eef9e574d5b1d687cb ]
+[ Upstream commit ac5688637144644f06ed1f3c6d4dd8bb7db96020 ]
 
-syzbot has reported the following warning in pvr2_i2c_done:
+The em28xx struct kref isn't being decreased after an error in the
+em28xx_ir_init, leading to a possible memory leak.
 
-	sysfs group 'power' not found for kobject '1-0043'
+A kref_put and em28xx_shutdown_buttons is added to the error handler code.
 
-When the device is disconnected (pvr_hdw_disconnect), the i2c adapter is
-not unregistered along with the USB and v4l2 teardown. As part of the USB
-device disconnect, the sysfs files of the subdevices are also deleted.
-So, by the time pvr_i2c_core_done is called by pvr_context_destroy, the
-sysfs files have been deleted.
-
-To fix this, unregister the i2c adapter too in pvr_hdw_disconnect. Make
-the device deregistration code shared by calling pvr_hdw_disconnect from
-pvr2_hdw_destroy.
-
-Reported-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
-Tested-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/pvrusb2/pvrusb2-hdw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/usb/em28xx/em28xx-input.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-index 1cfb7cf64131..4c991eae53cd 100644
---- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-+++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-@@ -2677,9 +2677,8 @@ void pvr2_hdw_destroy(struct pvr2_hdw *hdw)
- 		pvr2_stream_destroy(hdw->vid_stream);
- 		hdw->vid_stream = NULL;
+diff --git a/drivers/media/usb/em28xx/em28xx-input.c b/drivers/media/usb/em28xx/em28xx-input.c
+index 5aa15a7a49de..59529cbf9cd0 100644
+--- a/drivers/media/usb/em28xx/em28xx-input.c
++++ b/drivers/media/usb/em28xx/em28xx-input.c
+@@ -720,7 +720,8 @@ static int em28xx_ir_init(struct em28xx *dev)
+ 			dev->board.has_ir_i2c = 0;
+ 			dev_warn(&dev->intf->dev,
+ 				 "No i2c IR remote control device found.\n");
+-			return -ENODEV;
++			err = -ENODEV;
++			goto ref_put;
+ 		}
  	}
--	pvr2_i2c_core_done(hdw);
- 	v4l2_device_unregister(&hdw->v4l2_dev);
--	pvr2_hdw_remove_usb_stuff(hdw);
-+	pvr2_hdw_disconnect(hdw);
- 	mutex_lock(&pvr2_unit_mtx);
- 	do {
- 		if ((hdw->unit_number >= 0) &&
-@@ -2706,6 +2705,7 @@ void pvr2_hdw_disconnect(struct pvr2_hdw *hdw)
- {
- 	pvr2_trace(PVR2_TRACE_INIT,"pvr2_hdw_disconnect(hdw=%p)",hdw);
- 	LOCK_TAKE(hdw->big_lock);
-+	pvr2_i2c_core_done(hdw);
- 	LOCK_TAKE(hdw->ctl_lock);
- 	pvr2_hdw_remove_usb_stuff(hdw);
- 	LOCK_GIVE(hdw->ctl_lock);
+ 
+@@ -735,7 +736,7 @@ static int em28xx_ir_init(struct em28xx *dev)
+ 
+ 	ir = kzalloc(sizeof(*ir), GFP_KERNEL);
+ 	if (!ir)
+-		return -ENOMEM;
++		goto ref_put;
+ 	rc = rc_allocate_device(RC_DRIVER_SCANCODE);
+ 	if (!rc)
+ 		goto error;
+@@ -839,6 +840,9 @@ static int em28xx_ir_init(struct em28xx *dev)
+ 	dev->ir = NULL;
+ 	rc_free_device(rc);
+ 	kfree(ir);
++ref_put:
++	em28xx_shutdown_buttons(dev);
++	kref_put(&dev->ref, em28xx_free_device);
+ 	return err;
+ }
+ 
 -- 
 2.30.2
 
