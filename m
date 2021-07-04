@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDA03BB37A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BACF3BB3E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbhGDXSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:18:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56968 "EHLO mail.kernel.org"
+        id S231128AbhGDXUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:20:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234023AbhGDXOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:14:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD1216199C;
-        Sun,  4 Jul 2021 23:10:59 +0000 (UTC)
+        id S234132AbhGDXOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:14:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78061619B9;
+        Sun,  4 Jul 2021 23:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440260;
-        bh=IUWcRIbumaeOGzZ2g+o26vRu6Isub8Lp7+7o3bXSJgw=;
+        s=k20201202; t=1625440279;
+        bh=acRR1lv3wQeW0kLkEZF3PhUuMkq+/NkySZaHoolhYiw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AbXdO81qV6EciZehhEdrNcbTpxaed2lXDc06OlcpUhXmVhzDxS5eEHWOxR7EO1jK/
-         B7HP9lrC7s5qq/nTG1ITSVW+3twwLywE8UUBPd60wyG8vm+GOpZFztUO9vdZgN3/b1
-         LVvICXCjK1oVNFAJHd0r7K2fn2S+RiWEoJlJJAA/eaAM1d6WbB1zn2CDOU7va2DXti
-         FQ9pjy2UKdKQ08xQNtAq9q6mev6yj+zB4JeoOqhCsm7uKYnyjjF6vJJB6enGCMCgCv
-         MrdDyAWoAO9XkIKmTFarTLqFbHZ9asIYVaCg8/U04FQkE2L8WHVUj9NiETB1EHe2E2
-         sOdFdikSWzLYA==
+        b=OQQDvcxnN1u126b8KKxBfI5DAcAl5fds9922IgGOLKPB66sjY7nBLgJAXmg/UGr7v
+         Sj0jWhggvxXTB1kOqi1wPhtCkXDAduqraEuwCDz1ojx80vKawZtDViXEyAg97egxg8
+         ru4Mudogl3zfBafcUwuhYYjFC8Wx77PSmEen31vMdCJ0KXdnpsOvfD9Rq1yVOuFvbZ
+         s9uKCFqAEeeTeN1hJ87M9JhhF/rzqVoXRhDmawetDHihApC82x5/2KNB/T/fSjjr/s
+         C/sL215PfSSfapTBR/vsJO+xTeGjMKnF4yFbwcXRjoA4XnhNm1wplzc2aSOL8j4LKE
+         UHolAT6xY6Ggw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jack Xu <jack.xu@intel.com>, Zhehui Xiang <zhehui.xiang@intel.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, qat-linux@intel.com,
-        linux-crypto@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 4.19 13/31] crypto: qat - check return code of qat_hal_rd_rel_reg()
-Date:   Sun,  4 Jul 2021 19:10:25 -0400
-Message-Id: <20210704231043.1491209-13-sashal@kernel.org>
+Cc:     Qu Wenruo <wqu@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 28/31] btrfs: make Private2 lifespan more consistent
+Date:   Sun,  4 Jul 2021 19:10:40 -0400
+Message-Id: <20210704231043.1491209-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704231043.1491209-1-sashal@kernel.org>
 References: <20210704231043.1491209-1-sashal@kernel.org>
@@ -44,45 +42,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Xu <jack.xu@intel.com>
+From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit 96b57229209490c8bca4335b01a426a96173dc56 ]
+[ Upstream commit 87b4d86baae219a9a79f6b0a1434b2a42fd40d09 ]
 
-Check the return code of the function qat_hal_rd_rel_reg() and return it
-to the caller.
+Currently we use page Private2 bit to indicate that we have ordered
+extent for the page range.
 
-This is to fix the following warning when compiling the driver with
-clang scan-build:
+But the lifespan of it is not consistent, during regular writeback path,
+there are two locations to clear the same PagePrivate2:
 
-    drivers/crypto/qat/qat_common/qat_hal.c:1436:2: warning: 6th function call argument is an uninitialized value
+    T ----- Page marked Dirty
+    |
+    + ----- Page marked Private2, through btrfs_run_dealloc_range()
+    |
+    + ----- Page cleared Private2, through btrfs_writepage_cow_fixup()
+    |       in __extent_writepage_io()
+    |       ^^^ Private2 cleared for the first time
+    |
+    + ----- Page marked Writeback, through btrfs_set_range_writeback()
+    |       in __extent_writepage_io().
+    |
+    + ----- Page cleared Private2, through
+    |       btrfs_writepage_endio_finish_ordered()
+    |       ^^^ Private2 cleared for the second time.
+    |
+    + ----- Page cleared Writeback, through
+            btrfs_writepage_endio_finish_ordered()
 
-Signed-off-by: Jack Xu <jack.xu@intel.com>
-Co-developed-by: Zhehui Xiang <zhehui.xiang@intel.com>
-Signed-off-by: Zhehui Xiang <zhehui.xiang@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Currently PagePrivate2 is mostly to prevent ordered extent accounting
+being executed for both endio and invalidatepage.
+Thus only the one who cleared page Private2 is responsible for ordered
+extent accounting.
+
+But the fact is, in btrfs_writepage_endio_finish_ordered(), page
+Private2 is cleared and ordered extent accounting is executed
+unconditionally.
+
+The race prevention only happens through btrfs_invalidatepage(), where
+we wait for the page writeback first, before checking the Private2 bit.
+
+This means, Private2 is also protected by Writeback bit, and there is no
+need for btrfs_writepage_cow_fixup() to clear Priavte2.
+
+This patch will change btrfs_writepage_cow_fixup() to just check
+PagePrivate2, not to clear it.
+The clearing will happen in either btrfs_invalidatepage() or
+btrfs_writepage_endio_finish_ordered().
+
+This makes the Private2 bit easier to understand, just meaning the page
+has unfinished ordered extent attached to it.
+
+And this patch is a hard requirement for the incoming refactoring for
+how we finished ordered IO for endio context, as the coming patch will
+check Private2 to determine if we need to do the ordered extent
+accounting.  Thus this patch is definitely needed or we will hang due to
+unfinished ordered extent.
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_common/qat_hal.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/btrfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/qat/qat_common/qat_hal.c b/drivers/crypto/qat/qat_common/qat_hal.c
-index dac130bb807a..eda692271f0c 100644
---- a/drivers/crypto/qat/qat_common/qat_hal.c
-+++ b/drivers/crypto/qat/qat_common/qat_hal.c
-@@ -1256,7 +1256,11 @@ static int qat_hal_put_rel_wr_xfer(struct icp_qat_fw_loader_handle *handle,
- 		pr_err("QAT: bad xfrAddr=0x%x\n", xfr_addr);
- 		return -EINVAL;
- 	}
--	qat_hal_rd_rel_reg(handle, ae, ctx, ICP_GPB_REL, gprnum, &gprval);
-+	status = qat_hal_rd_rel_reg(handle, ae, ctx, ICP_GPB_REL, gprnum, &gprval);
-+	if (status) {
-+		pr_err("QAT: failed to read register");
-+		return status;
-+	}
- 	gpr_addr = qat_hal_get_reg_addr(ICP_GPB_REL, gprnum);
- 	data16low = 0xffff & data;
- 	data16hi = 0xffff & (data >> 0x10);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index bf0e0e3e09c5..acf91542b477 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2223,7 +2223,7 @@ static int btrfs_writepage_start_hook(struct page *page, u64 start, u64 end)
+ 	struct btrfs_writepage_fixup *fixup;
+ 
+ 	/* this page is properly in the ordered list */
+-	if (TestClearPagePrivate2(page))
++	if (PagePrivate2(page))
+ 		return 0;
+ 
+ 	if (PageChecked(page))
 -- 
 2.30.2
 
