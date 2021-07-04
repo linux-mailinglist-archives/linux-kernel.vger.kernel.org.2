@@ -2,82 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B77E3BAF2B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 23:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B8A3BAF2E
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 23:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbhGDVUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 17:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhGDVUi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 17:20:38 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63F2C061574;
-        Sun,  4 Jul 2021 14:18:01 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id s19so15497822ilj.1;
-        Sun, 04 Jul 2021 14:18:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aho8kAFcAYgKyxcXg7COYxXSvcFYFdMATaJp8RQ8Yaw=;
-        b=MF/aKff8GG4AdkTnGwg50IGns9gYgFH2EA8ubxLe7P5cxgcrjY3mMKXli3kCrWufKB
-         U/Z8Bnf+69FBhaEaaX5+X3XFYTZnF0F9NOe+n+AnHWZMsmDflqhHRDiWD8qohFjhzfSo
-         82pkggGzRIHRbDj5NBtz3OtVPgvr9OmBD9oy2wUDTuGI1fH+kT4wSv6Wu7yaWgyaY1RO
-         6PSBmWC6XENh1CQs0m+blR60eaaRXAED8zvOJPpPnPrHszdXAXcm5ngyGdXImG3VZfyK
-         hgfkljehCIlg/qy6UcrAkJ2kYDzWzhstDZcsgXE0XYr6HHhT9zrcsA2n4skgeSO1tcTs
-         Eing==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aho8kAFcAYgKyxcXg7COYxXSvcFYFdMATaJp8RQ8Yaw=;
-        b=hrRJsDPcTHRGtqxEzebS/ZVLRSCG6NCzKBTXFjFPVl1F6kSIPBURRdGbLspTsYvoP5
-         bcYZA8UsbI40051wgfR0eBQo+7U1Fkw5/1vJ8LahsSeAwNEKHDD55h7h/7VGnzpjoeFr
-         6pUj8rWtYezKloyJlJEBcjWDRfcShGnSePbnHNHByv1W7lEty0p7C7OMgqicVLfwCfDX
-         +WbMCp5A4PCFecjiK4LPjEI8tM5b5jst3BNdMFTpQrEvH4/T7CHS3UEWusdTVwLTLvoJ
-         mWYulooLZ3ewelB/gbQ3EOxRZwXwMsqm33aCL0mw7WlHyTmW4EpbMOIJkf2kpCHgNUuL
-         esLQ==
-X-Gm-Message-State: AOAM531wY6hdkZIymp1Ze1p8/hliTsco/iX53WPZBqDn9ryg1ddmYYAG
-        rYg5YCDuBTrNDQ7OLgdPniSwX3NFGPHt4p3GfEY=
-X-Google-Smtp-Source: ABdhPJyWtN2YvYH6Wr78DDZ6DVdTxCd3OBXIBRtcb/M6N3KUlI00+3tGrY3dpGD1SdcS9FfE23AN+v6TTZghbh0FXDk=
-X-Received: by 2002:a05:6e02:12e3:: with SMTP id l3mr8272230iln.203.1625433481306;
- Sun, 04 Jul 2021 14:18:01 -0700 (PDT)
+        id S230056AbhGDVU6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 4 Jul 2021 17:20:58 -0400
+Received: from aposti.net ([89.234.176.197]:48364 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229993AbhGDVU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 17:20:56 -0400
+Date:   Sun, 04 Jul 2021 22:18:10 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v3 0/2] Add "extended_name" to label
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <AIOQVQ.VCBVMZQG56T83@crapouillou.net>
+In-Reply-To: <20210704183425.34df79ef@jic23-huawei>
+References: <20210618123005.49867-1-paul@crapouillou.net>
+        <20210704183425.34df79ef@jic23-huawei>
 MIME-Version: 1.0
-References: <20210704202756.29107-1-ojeda@kernel.org> <20210704202756.29107-2-ojeda@kernel.org>
- <YOIicc94zvSjrKfe@casper.infradead.org>
-In-Reply-To: <YOIicc94zvSjrKfe@casper.infradead.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sun, 4 Jul 2021 23:17:50 +0200
-Message-ID: <CANiq72=eHs870jbmZz8CUEUuN2NOCaKS9-F6-jAb0QXje2x1Eg@mail.gmail.com>
-Subject: Re: [PATCH 01/17] kallsyms: support big kernel symbols (2-byte lengths)
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 11:05 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> What happened to my suggestion from last time of encoding symbols < 128
-> as 0-127 and symbols larger than that as (data[0] - 128) * 256 +
-> data[1]) ?
+Hi Jonathan,
 
-Nothing, sorry, we focused on other parts (e.g. the allocation panics)
-during this iteration. I can take a look for v2.
+Le dim., juil. 4 2021 at 18:34:25 +0100, Jonathan Cameron 
+<jic23@kernel.org> a écrit :
+> On Fri, 18 Jun 2021 13:30:03 +0100
+> Paul Cercueil <paul@crapouillou.net> wrote:
+> 
+>>  Hi Jonathan,
+>> 
+>>  This is the v3 of my patchset that sets the label attribute to the
+>>  "extended_name".
+>> 
+>>  v3 only refactors the code of patch [2/2] to make it look a bit 
+>> better.
+> 
+> Hi Paul,
+> 
+> Just thought I'd let you know v3 looks great to me.  Timing meant I 
+> didn't
+> manage to get it into last cycle, and am now waiting for rc1 to give 
+> a nice
+> place to rebase my trees on.  Hence I'll pick this up in a week or 
+> two.
+
+That's perfectly fine, I wasn't expecting it to land before rc1.
 
 Cheers,
-Miguel
+-Paul
+
+
