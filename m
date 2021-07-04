@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D319E3BB3FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01A13BB402
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233165AbhGDXVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:21:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50862 "EHLO mail.kernel.org"
+        id S233351AbhGDXVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:21:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232681AbhGDXNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:13:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5F256196A;
-        Sun,  4 Jul 2021 23:09:07 +0000 (UTC)
+        id S232701AbhGDXNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:13:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26D546196E;
+        Sun,  4 Jul 2021 23:09:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440148;
-        bh=svsv6M47GusGxdoHHlZTnG/iyReb7Lr39eIxDeEHyp8=;
+        s=k20201202; t=1625440152;
+        bh=ehz4wRZJTq5WtUVqNeuBwjXjAL4ZYS58kSqK78k9AMM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bgslcqF+5yt8m8DFjeOzpLvLL8HUITx98FtEjnlmUzBaoT5+IERoXgND+t+wWkIzj
-         EHWDHBwsTsnHDB4sj4GygZhRo/+oePfmQ5DGMTnHGGDrT8coHWbiN1sayFReJHxMzi
-         K2xaxanNU4HKTWb/rXbodAU4YCI1B7Xl60tPem+cEhVzDqYQCr3vOdVk7g/FvQBsla
-         FUXXisLeM74Sq8d7cIAL6vu5fEIqYuMCIuFPjmDSIVbtt2/KDoRH1GNlu5muomuxFM
-         Ao5K8ALEFIx8EJWkgrWkWLjVq0lSk5kcYBjRuQ9ZDtA03I4zJXphgUzxOpJz8kguny
-         y9S1hFcBFauOw==
+        b=rVHOKRd63Sp4w0vaCwXgWL2V5EnTrv0qcmFdq+to9Xqw/jCaS4VNj30pcJJ9u5NlO
+         XNNBSDKuA1HEfyOpg/dWiet+9q8G9lg4ukV13pDW7eAyNnvGQQLqMQv0VGSl4byYWS
+         UsFu8kuAa8UABup55BXqPwBGEoezA1BIkIekBveYrgux65fVAsinK2ffs8/qjli0HO
+         vGR7rz3wVGd9wIgBvSPiNMs6iiJbdXDrRBBcQxuPhSmAKaUzTRAoCu0ZibpeJ41OF4
+         Qei4VZzTQ8ZsLYOMc2mV5H8NjTzeX4zSIe0pftSZz7kx6Rr9z0E2eF/L6gtDhOzTRA
+         jeli2YU09rzwg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     zpershuai <zpershuai@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 48/70] spi: meson-spicc: fix a wrong goto jump for avoiding memory leak.
-Date:   Sun,  4 Jul 2021 19:07:41 -0400
-Message-Id: <20210704230804.1490078-48-sashal@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 51/70] media: dvb_net: avoid speculation from net slot
+Date:   Sun,  4 Jul 2021 19:07:44 -0400
+Message-Id: <20210704230804.1490078-51-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704230804.1490078-1-sashal@kernel.org>
 References: <20210704230804.1490078-1-sashal@kernel.org>
@@ -45,48 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zpershuai <zpershuai@gmail.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 95730d5eb73170a6d225a9998c478be273598634 ]
+[ Upstream commit abc0226df64dc137b48b911c1fe4319aec5891bb ]
 
-In meson_spifc_probe function, when enable the device pclk clock is
-error, it should use clk_disable_unprepare to release the core clock.
+The risk of especulation is actually almost-non-existing here,
+as there are very few users of TCP/IP using the DVB stack,
+as, this is mainly used with DVB-S/S2 cards, and only by people
+that receives TCP/IP from satellite connections, which limits
+a lot the number of users of such feature(*).
 
-Signed-off-by: zpershuai <zpershuai@gmail.com>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://lore.kernel.org/r/1623562172-22056-1-git-send-email-zpershuai@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+(*) In thesis, DVB-C cards could also benefit from it, but I'm
+yet to see a hardware that supports it.
+
+Yet, fixing it is trivial.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-meson-spicc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/media/dvb-core/dvb_net.c | 25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
-index ecba6b4a5d85..51aef2c6e966 100644
---- a/drivers/spi/spi-meson-spicc.c
-+++ b/drivers/spi/spi-meson-spicc.c
-@@ -725,7 +725,7 @@ static int meson_spicc_probe(struct platform_device *pdev)
- 	ret = clk_prepare_enable(spicc->pclk);
- 	if (ret) {
- 		dev_err(&pdev->dev, "pclk clock enable failed\n");
--		goto out_master;
-+		goto out_core_clk;
- 	}
+diff --git a/drivers/media/dvb-core/dvb_net.c b/drivers/media/dvb-core/dvb_net.c
+index 89620da983ba..dddebea644bb 100644
+--- a/drivers/media/dvb-core/dvb_net.c
++++ b/drivers/media/dvb-core/dvb_net.c
+@@ -45,6 +45,7 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/netdevice.h>
++#include <linux/nospec.h>
+ #include <linux/etherdevice.h>
+ #include <linux/dvb/net.h>
+ #include <linux/uio.h>
+@@ -1462,14 +1463,20 @@ static int dvb_net_do_ioctl(struct file *file,
+ 		struct net_device *netdev;
+ 		struct dvb_net_priv *priv_data;
+ 		struct dvb_net_if *dvbnetif = parg;
++		int if_num = dvbnetif->if_num;
  
- 	device_reset_optional(&pdev->dev);
-@@ -764,9 +764,11 @@ static int meson_spicc_probe(struct platform_device *pdev)
- 	return 0;
+-		if (dvbnetif->if_num >= DVB_NET_DEVICES_MAX ||
+-		    !dvbnet->state[dvbnetif->if_num]) {
++		if (if_num >= DVB_NET_DEVICES_MAX) {
+ 			ret = -EINVAL;
+ 			goto ioctl_error;
+ 		}
++		if_num = array_index_nospec(if_num, DVB_NET_DEVICES_MAX);
  
- out_clk:
--	clk_disable_unprepare(spicc->core);
- 	clk_disable_unprepare(spicc->pclk);
- 
-+out_core_clk:
-+	clk_disable_unprepare(spicc->core);
+-		netdev = dvbnet->device[dvbnetif->if_num];
++		if (!dvbnet->state[if_num]) {
++			ret = -EINVAL;
++			goto ioctl_error;
++		}
 +
- out_master:
- 	spi_master_put(master);
++		netdev = dvbnet->device[if_num];
  
+ 		priv_data = netdev_priv(netdev);
+ 		dvbnetif->pid=priv_data->pid;
+@@ -1522,14 +1529,20 @@ static int dvb_net_do_ioctl(struct file *file,
+ 		struct net_device *netdev;
+ 		struct dvb_net_priv *priv_data;
+ 		struct __dvb_net_if_old *dvbnetif = parg;
++		int if_num = dvbnetif->if_num;
++
++		if (if_num >= DVB_NET_DEVICES_MAX) {
++			ret = -EINVAL;
++			goto ioctl_error;
++		}
++		if_num = array_index_nospec(if_num, DVB_NET_DEVICES_MAX);
+ 
+-		if (dvbnetif->if_num >= DVB_NET_DEVICES_MAX ||
+-		    !dvbnet->state[dvbnetif->if_num]) {
++		if (!dvbnet->state[if_num]) {
+ 			ret = -EINVAL;
+ 			goto ioctl_error;
+ 		}
+ 
+-		netdev = dvbnet->device[dvbnetif->if_num];
++		netdev = dvbnet->device[if_num];
+ 
+ 		priv_data = netdev_priv(netdev);
+ 		dvbnetif->pid=priv_data->pid;
 -- 
 2.30.2
 
