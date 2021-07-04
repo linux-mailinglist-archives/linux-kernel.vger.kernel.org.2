@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CEF3BB431
+	by mail.lfdr.de (Postfix) with ESMTP id 3DBB43BB430
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233702AbhGDXYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:24:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57002 "EHLO mail.kernel.org"
+        id S233613AbhGDXYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:24:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234250AbhGDXO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:14:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1967561958;
-        Sun,  4 Jul 2021 23:11:53 +0000 (UTC)
+        id S234275AbhGDXO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:14:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F226361364;
+        Sun,  4 Jul 2021 23:11:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440313;
-        bh=pKqI2pkO70CnS+DtvaX3vs3rypSMeNa91l6XsGr7q9A=;
+        s=k20201202; t=1625440318;
+        bh=J4p7LzVQQchdgunuqTzd4zWgz3g8h/zu+BG8D/ucd8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fFGJH2k1v0P7xsuHZHubDg1IIuKF93fpIMEfwa3iK+D+PObYlpBsIXW33+SJWxUvi
-         By/HHC8ZIg6azHvqs3GCS4x3kgqIHGeCY72a0yeHH/9FzrjjuBLDUm7mjCBWvm2Iqg
-         RPllD6P2itz9fdMUGOY8KN+suZxrycvg/pbr20gInx6sNjnMR1wZ8b07t1M66wMNvm
-         j8lICJ/slz+u31hLh6SGONkQXBVuGIMrJF7ETe2kqwm8QHCWYCP1sjPNyG6s3n0pzJ
-         of4N9/ls3SH10i6FB0KG0xwBf7pyk1KWbxdUTOvjT7p0+SkYbz4EHiOox4fDFg86Tc
-         hQFEmPwyq9K+Q==
+        b=AFOkdEFw6PFzbvVkXzQMStOR/ZpcRf13DIoLMYRsVb+5qzDTEccg5b0aMVHQyt+Us
+         gNvh0vgw/YCMUzZz8+uEFydf1zpUVnuwVsma53HTUfjWYg1zFaTq4BNTvEVk1Gbqq4
+         nZW01s0/BPZ6URwWDVdjGBRI/gE6R8qiS5JZEGF7fSV3NBzTim3lIs2sy++0KNWO+m
+         3nwJdXtv+nZJ4TE8mZk+CJQyzfIBDBTCdq4KOUpMqTX/4bc7DrCYEvfNFpxc8aoeQ+
+         Xm0L+yJT2rvFWF1J0lzPuqqGCBbeEBh44yGUZQgGDYokHy21TRKE+TBZImTlPy0J4e
+         xzLrh7UGNO2xg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        kernel test robot <lkp@intel.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 24/25] btrfs: disable build on platforms having page size 256K
-Date:   Sun,  4 Jul 2021 19:11:22 -0400
-Message-Id: <20210704231123.1491517-24-sashal@kernel.org>
+Cc:     Jay Fang <f.fangjian@huawei.com>, Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 02/20] spi: spi-topcliff-pch: Fix potential double free in pch_spi_process_messages()
+Date:   Sun,  4 Jul 2021 19:11:37 -0400
+Message-Id: <20210704231155.1491795-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210704231123.1491517-1-sashal@kernel.org>
-References: <20210704231123.1491517-1-sashal@kernel.org>
+In-Reply-To: <20210704231155.1491795-1-sashal@kernel.org>
+References: <20210704231155.1491795-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,52 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Jay Fang <f.fangjian@huawei.com>
 
-[ Upstream commit b05fbcc36be1f8597a1febef4892053a0b2f3f60 ]
+[ Upstream commit 026a1dc1af52742c5897e64a3431445371a71871 ]
 
-With a config having PAGE_SIZE set to 256K, BTRFS build fails
-with the following message
+pch_spi_set_tx() frees data->pkt_tx_buff on failure of kzalloc() for
+data->pkt_rx_buff, but its caller, pch_spi_process_messages(), will
+free data->pkt_tx_buff again. Set data->pkt_tx_buff to NULL after
+kfree() to avoid double free.
 
-  include/linux/compiler_types.h:326:38: error: call to
-  '__compiletime_assert_791' declared with attribute error:
-  BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
-
-BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
-256K pages at the time being.
-
-There are two platforms that can select 256K pages:
- - hexagon
- - powerpc
-
-Disable BTRFS when 256K page size is selected. Supporting this would
-require changes to the subpage mode that's currently being developed.
-Given that 256K is many times larger than page sizes commonly used and
-for what the algorithms and structures have been tuned, it's out of
-scope and disabling build is a reasonable option.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-[ update changelog ]
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Jay Fang <f.fangjian@huawei.com>
+Link: https://lore.kernel.org/r/1620284888-65215-1-git-send-email-f.fangjian@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/spi/spi-topcliff-pch.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-index a26c63b4ad68..9dd07eb88455 100644
---- a/fs/btrfs/Kconfig
-+++ b/fs/btrfs/Kconfig
-@@ -11,6 +11,8 @@ config BTRFS_FS
- 	select RAID6_PQ
- 	select XOR_BLOCKS
- 	select SRCU
-+	depends on !PPC_256K_PAGES	# powerpc
-+	depends on !PAGE_SIZE_256KB	# hexagon
+diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
+index fe707440f8c3..9b24ebbba346 100644
+--- a/drivers/spi/spi-topcliff-pch.c
++++ b/drivers/spi/spi-topcliff-pch.c
+@@ -585,8 +585,10 @@ static void pch_spi_set_tx(struct pch_spi_data *data, int *bpw)
+ 	data->pkt_tx_buff = kzalloc(size, GFP_KERNEL);
+ 	if (data->pkt_tx_buff != NULL) {
+ 		data->pkt_rx_buff = kzalloc(size, GFP_KERNEL);
+-		if (!data->pkt_rx_buff)
++		if (!data->pkt_rx_buff) {
+ 			kfree(data->pkt_tx_buff);
++			data->pkt_tx_buff = NULL;
++		}
+ 	}
  
- 	help
- 	  Btrfs is a general purpose copy-on-write filesystem with extents,
+ 	if (!data->pkt_rx_buff) {
 -- 
 2.30.2
 
