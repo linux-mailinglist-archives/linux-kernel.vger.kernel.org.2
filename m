@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F733BABC6
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 09:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2733B3BABC7
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 09:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhGDHUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 03:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36368 "EHLO
+        id S229997AbhGDHUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 03:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbhGDHUG (ORCPT
+        with ESMTP id S229809AbhGDHUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 03:20:06 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA80C061762
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 00:17:31 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d12so13567306pfj.2
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 00:17:31 -0700 (PDT)
+        Sun, 4 Jul 2021 03:20:09 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC20C061764
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 00:17:34 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id s13so5263774plg.12
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 00:17:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kCQzQNUYho/r8d2unDfjM9CEfsvPEczKr8vsttMJnd8=;
-        b=pGJGBIEcKP1v98r9fkfW8D3gn5kEVOQ2tcNe7vRZ9woJExO1ntTVeLbMgMtMwJ1UYg
-         CZcI1vzj+wtUb8hHrRiEko7miZUZ4Hv3O5iCFse4PI6SKhVNasQ772ZJKMcgUSp5HFho
-         1WuvnbPOS0pqZ4VpvHcChWEZPKNGxYsjIhbK4z1uho/+T3OKZMmuV0t3MqQ1zhJ5Fe4L
-         WRlYFSFx2psp9RZIkPWM957bfv2tQASWkYo3PFNYkVYK1AouAEHx2swR7X4paGZbWEGZ
-         wr8j1xjQoKMA+TkSyc+DfS4cI30Szw2nUfVC7EnoQLFpqvZKIovexoBgd+obHTjzgCJN
-         YjPg==
+        bh=brLMJrOwQbG83P71X9VPeuY9tvE7zleojiqdMG48VEY=;
+        b=dAw3luOtdje26JAgPM3asmsdnTkplFoo7KvC7H2I/C61UvF35Nzg2HweTqvr7niy3w
+         ys2DktQwpbPTEFPl0Gr/LGVnnmdjqAiSgtMTBegUSKLAKijAFCJfajwQv+Cd5RGAzHmG
+         2ZW/bq9w3dRLhP013Ef9EVJCV6lTlgAqzoLTcD3ESWEF+uKS4NoXNviD/aH9X6UWQgP4
+         lKlBL6ss0GmwsSwpyv9rWMl+w6krPT1lD+UF+xJGHDeWJoTZ1dDm97Y8zYPIZ48dL6lL
+         I1eIWQPqDSjVmyb1U+uhUS9Ut5csTpmxVqHZDKDqkYDlt9PLsEW4HsM6wfuSYs0J9fbw
+         IQSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kCQzQNUYho/r8d2unDfjM9CEfsvPEczKr8vsttMJnd8=;
-        b=Ywsc/qGL9TeRg9ctYi8VZXTzYL50fyugEHryy5fHBBo7E0Ewg+9KMONS0N9VsKqioz
-         y3W1F0DhFI4YiM5sEKQhmMNgOo4Y5usYKsSewnTiSIMrP/AjcEzcJPa/qnOr8EzABaD3
-         qssU1+eaAv7U+OJ+xDYrm0BTfXUBrB+m6unOrfybUyhIQMJ9zNQC5RwjHXNcRtTrkIpB
-         ySNiekkfTexQi1yrgEW/VXBeQpOgeq7PQ9NVlM86QBWC4fmGm34mskwvSD52M/X+2JXN
-         MzidoRJpmzDIaJUs8vvUnfjbE0xUGERKH0sb4W27pju6VjeeDEr6WA+m2jJqv+b0QTwT
-         lAnA==
-X-Gm-Message-State: AOAM532aDssM5ZX22mA04oano1DWuRvyE80II0LSTwL5ZF9+Q8lbrA7y
-        sJoIFh8LPeDUGipvaxoHXuK//g==
-X-Google-Smtp-Source: ABdhPJy/0lUUGEPuTONMJGU3vs7xq5nWAKNr4/oXiN3xxNG/2XrE5GcCMZpOwGHpAVm/Oh7WcB7i1g==
-X-Received: by 2002:a05:6a00:13a7:b029:309:bfd1:a3f5 with SMTP id t39-20020a056a0013a7b0290309bfd1a3f5mr8464357pfg.66.1625383051124;
-        Sun, 04 Jul 2021 00:17:31 -0700 (PDT)
+        bh=brLMJrOwQbG83P71X9VPeuY9tvE7zleojiqdMG48VEY=;
+        b=fx6IuQVXhILJE0wBcr3NA4F7OKqttxZI1X45o/WQo404CpaLwpiisz1fVaBsgwVK2P
+         hClEvhQOaVPCKrTnfneSu7zgDAT5W0MSmFGLwnpFLb4FEO6j2pvaq/PpSr1Q3KvaHow/
+         EDHiH82ub8U48Y2Y2wP6khzFJWxryfFB7f5yvxO0aoaUDOvo9nnVdxw/3Jvy6bFHSfOY
+         vD932FeTR8RDBtyiwGeHTlULI2icYjT68nG2fkG2onvGyhMdztJqDGEQH7Yhc+MNWeTy
+         2qttiadlFyb9I0cVHGV3MwK0JaQU1pfRqkHe+9dE2avbes7WA805pYIwS+yQ3fQ2yu+w
+         /bJg==
+X-Gm-Message-State: AOAM531REFWNn50DVWmtAz+fiPJPNcIhJwkgdIrpSPe9yM7TiOaomX2s
+        5w7sMxjuC39n/zRZkV5dojoXmw==
+X-Google-Smtp-Source: ABdhPJzEIeBGPpbSgBBcebonFiiSAj58V7y8TRazuYUDjwzJmrKKnWu6NqjrWvwDYuhHUmwXg3kOVg==
+X-Received: by 2002:a17:902:9006:b029:107:394a:387 with SMTP id a6-20020a1709029006b0290107394a0387mr7069924plp.35.1625383053898;
+        Sun, 04 Jul 2021 00:17:33 -0700 (PDT)
 Received: from localhost ([103.207.71.35])
-        by smtp.gmail.com with ESMTPSA id m24sm3092470pgd.60.2021.07.04.00.17.30
+        by smtp.gmail.com with ESMTPSA id s43sm983678pfw.50.2021.07.04.00.17.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jul 2021 00:17:30 -0700 (PDT)
+        Sun, 04 Jul 2021 00:17:33 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -66,9 +66,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 08/10] perf auxtrace: Use WRITE_ONCE() for updating aux_tail
-Date:   Sun,  4 Jul 2021 15:16:42 +0800
-Message-Id: <20210704071644.107397-9-leo.yan@linaro.org>
+Subject: [PATCH v3 09/10] perf env: Set kernel bit mode
+Date:   Sun,  4 Jul 2021 15:16:43 +0800
+Message-Id: <20210704071644.107397-10-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210704071644.107397-1-leo.yan@linaro.org>
 References: <20210704071644.107397-1-leo.yan@linaro.org>
@@ -78,29 +78,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use WRITE_ONCE() for updating aux_tail, so can avoid unexpected memory
-behaviour.
+It's useful to know that the kernel is running in 32-bit or 64-bit
+mode.  E.g. We can decide perf tool is running in compat mode when
+detects kernel is running in 64-bit mode and the tool is in 32-bit
+mode with the compiler macro BITS_PER_LONG is 32.
+
+This patch adds a global variable "kernel_is_64_bit", during the
+environment initialization for the session, the kernel running mode
+is decided by checking the architecture string.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- tools/perf/util/auxtrace.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/env.c | 17 ++++++++++++++++-
+ tools/perf/util/env.h |  1 +
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-index 1a2f42980e3f..d68a5e80b217 100644
---- a/tools/perf/util/auxtrace.h
-+++ b/tools/perf/util/auxtrace.h
-@@ -456,7 +456,7 @@ static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
+diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+index ebc5e9ad35db..345635a2e842 100644
+--- a/tools/perf/util/env.c
++++ b/tools/perf/util/env.c
+@@ -11,6 +11,7 @@
+ #include <stdlib.h>
+ #include <string.h>
  
- 	/* Ensure all reads are done before we write the tail out */
- 	smp_mb();
--	pc->aux_tail = tail;
-+	WRITE_ONCE(pc->aux_tail, tail);
++int kernel_is_64_bit;
+ struct perf_env perf_env;
+ 
+ #ifdef HAVE_LIBBPF_SUPPORT
+@@ -172,6 +173,19 @@ static void perf_env__purge_bpf(struct perf_env *env __maybe_unused)
+ }
+ #endif // HAVE_LIBBPF_SUPPORT
+ 
++static void perf_env__init_kernel_mode(struct perf_env *env)
++{
++	const char *arch = perf_env__raw_arch(env);
++
++	if (!strncmp(arch, "x86_64", 6) || !strncmp(arch, "aarch64", 7) ||
++	    !strncmp(arch, "arm64", 5) || !strncmp(arch, "mips64", 6) ||
++	    !strncmp(arch, "parisc64", 8) || !strncmp(arch, "riscv64", 7) ||
++	    !strncmp(arch, "s390x", 5) || !strncmp(arch, "sparc64", 7))
++		kernel_is_64_bit = 1;
++	else
++		kernel_is_64_bit = 0;
++}
++
+ void perf_env__exit(struct perf_env *env)
+ {
+ 	int i;
+@@ -217,13 +231,14 @@ void perf_env__exit(struct perf_env *env)
+ 	zfree(&env->hybrid_cpc_nodes);
  }
  
- int auxtrace_mmap__mmap(struct auxtrace_mmap *mm,
+-void perf_env__init(struct perf_env *env __maybe_unused)
++void perf_env__init(struct perf_env *env)
+ {
+ #ifdef HAVE_LIBBPF_SUPPORT
+ 	env->bpf_progs.infos = RB_ROOT;
+ 	env->bpf_progs.btfs = RB_ROOT;
+ 	init_rwsem(&env->bpf_progs.lock);
+ #endif
++	perf_env__init_kernel_mode(env);
+ }
+ 
+ int perf_env__set_cmdline(struct perf_env *env, int argc, const char *argv[])
+diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
+index 6824a7423a2d..cc989ff49740 100644
+--- a/tools/perf/util/env.h
++++ b/tools/perf/util/env.h
+@@ -139,6 +139,7 @@ enum perf_compress_type {
+ struct bpf_prog_info_node;
+ struct btf_node;
+ 
++extern int kernel_is_64_bit;
+ extern struct perf_env perf_env;
+ 
+ void perf_env__exit(struct perf_env *env);
 -- 
 2.25.1
 
