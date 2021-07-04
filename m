@@ -2,140 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5EF3BAC96
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 11:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4B33BAC98
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 11:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbhGDJxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 05:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhGDJxv (ORCPT
+        id S229602AbhGDJyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 05:54:44 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53447 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhGDJyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 05:53:51 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC84FC061764
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 02:51:15 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id n9so944144wrs.13
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 02:51:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DyAPDDuQ1eqE8i0UciuIoMX1PQ8MXE7kw1cwogcfOCU=;
-        b=SkhPUwxdJlj2UXV582jVO/fN+WQVO0v7yaJjcdVwG5IrQ3MdfARcKrKh6Tz242wasM
-         ykSDT+ZNWJfDOr+Va3aKXwmcJEUPgdpfnk0Bl+fCgh4pTN8B0mDYA9H9k3c+z/Z6uHyL
-         nwkXFp+hAPtqt9/L3852FJclbrGtTZlwA/bOND1WLDrt2HUAhgQJ/UvD3xPKbZukh+4d
-         csf/ifHC4yXCS5exUg44FmoGeZM/bHtvc0XkMpZEoBpsW4bTbuYIz5F2eFT/sRpNJOjo
-         tQdN3dF2I89ESE9ECGLYE0ZQ3Telv3o8zQvvhRQ8YkQiI15URS1ty89X2iKe3IyFnvga
-         XvAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DyAPDDuQ1eqE8i0UciuIoMX1PQ8MXE7kw1cwogcfOCU=;
-        b=J3shyjX3SArtzuxTaIglwjfRxoD3Iye+7IPv98tz0/jatmnjYZ67fJvJGoKEKe7qCG
-         JVUir+5eli4r6oAjxqZCBVpztFqNdw62tX9EtxKm/jueudswpSXRtuFxjIQBc+IySQ/D
-         c942CDzRJdvWx8aARLoQuIzpRJhL5bsO3PIECFx/KACPq7HCcmxkxnQxfqbjDhlBUq3e
-         qxE39K4Pdpf+Y98nTuGOC7wS94NteW4E1A/ymwV96P6rqTZsYywiSEaY1vBF7lWWyP5L
-         VXd9QeFYJwavpiZ34nf83QvG6H3mMwROtF1QRyF2QcYBisvUWXqLJJEXdXC+PutSbblC
-         DEPA==
-X-Gm-Message-State: AOAM530Ga52pmvIpa27m5NmIYquGY3I+Qzb/5t3PlSxhc64wZ+/uqqon
-        lNMp0rmXSGJBFyx9OkDu+x91LA==
-X-Google-Smtp-Source: ABdhPJyXjx6F+bIJ3fAE34Z5grYfF1JpzaPJ473ZpNd2p6MJ3dU6nEWWTPzxP5uZh0xB3mm/xEAMIg==
-X-Received: by 2002:adf:a3ce:: with SMTP id m14mr9625863wrb.246.1625392274387;
-        Sun, 04 Jul 2021 02:51:14 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:11d:6696:65bb:ef7f? ([2a01:e34:ed2f:f020:11d:6696:65bb:ef7f])
-        by smtp.googlemail.com with ESMTPSA id c9sm9130247wro.5.2021.07.04.02.51.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Jul 2021 02:51:13 -0700 (PDT)
-Subject: Re: [GIT PULL] thermal for v5.14-rc1
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Linux PM mailing list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.chunyan@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Rajeshwari Ravindra Kamble <rkambl@codeaurora.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Finley Xiao <finley.xiao@rock-chips.com>
-References: <7a9ac752-2c1a-b05f-c5bd-9049c0bdd54e@linaro.org>
- <CAHk-=wgZzeaZb0ByL+zPV1grizuxw2nAnmzU49S7pzV7sPS1Hg@mail.gmail.com>
- <67ce84e6-f1a5-7796-805d-6482f24b1490@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <e6ac56a5-0b7e-bfbf-7e98-8bc3f39190fd@linaro.org>
-Date:   Sun, 4 Jul 2021 11:51:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 4 Jul 2021 05:54:43 -0400
+Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lzynH-0007V2-7K; Sun, 04 Jul 2021 09:52:07 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arch: Kconfig: Fix spelling mistake "seperate" -> "separate"
+Date:   Sun,  4 Jul 2021 10:52:07 +0100
+Message-Id: <20210704095207.37342-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <67ce84e6-f1a5-7796-805d-6482f24b1490@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/07/2021 21:56, Dmitry Osipenko wrote:
-> 03.07.2021 22:34, Linus Torvalds пишет:
->> On Sat, Jul 3, 2021 at 9:17 AM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->>>
->>> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
->>> tags/thermal-v5.14-rc1
->>
->> This does not build for me. And I suspect it never built in linux-next either.
->>
->> I get
->>
->>   ERROR: modpost: "tegra_fuse_readl"
->> [drivers/thermal/tegra/tegra30-tsensor.ko] undefined!
->>   ERROR: modpost: "tegra_fuse_readl"
->> [drivers/thermal/tegra/tegra-soctherm.ko] undefined!
->>   make[1]: *** [scripts/Makefile.modpost:150: modules-only.symvers] Error 1
->>   make[1]: *** Deleting file 'modules-only.symvers'
->>   make: *** [Makefile:1762: modules] Error 2
->>
->> and I think it's due to that commit 1f9c5936b10c
->> ("thermal/drivers/tegra: Correct compile-testing of drivers") which
->> quite sensibly tries to extend build coverage for the tegra thermal
->> drivers, but that build coverage doesn't actually *work* outside the
->> tegra world.
->>
->> That commit says "All Tegra thermal drivers support compile-testing",
->> but clearly they stumble at the last hurdle.
->>
->> I made the decision to just unpull this, not because I couldn't fix
->> it, but because if it was this untested, I don't want to worry about
->> all the *other* code in there too.
-> 
-> It was tested in linux-next for about two weeks and it was a known
-> problem already [1], sorry again. The compile-testing depends on the
-> patch [2] that should come with the ARM32 PR. The linux-next was okay
-> because [2] got first into -next and I forgot about it. It will be fine
-> to defer these Tegra patches till the next release if this is the
-> easiest solution.
+From: Colin Ian King <colin.king@canonical.com>
 
-My bad, I did a wrong decision assuming the ARM32 branch would be
-already there when pulling the thermal branch.
+Threre is a spelling mistake in the Kconfig text. Fix it.
 
-I'll remove the patches.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ arch/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sorry for the inconvenience.
-
-
-
-
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 0459b4882124..8dfcc72db29d 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -914,7 +914,7 @@ config HAVE_SOFTIRQ_ON_OWN_STACK
+ 	bool
+ 	help
+ 	  Architecture provides a function to run __do_softirq() on a
+-	  seperate stack.
++	  separate stack.
+ 
+ config PGTABLE_LEVELS
+ 	int
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.31.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
