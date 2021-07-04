@@ -2,191 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026063BACE9
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 13:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C080E3BACEB
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 13:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229549AbhGDLjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 07:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhGDLjH (ORCPT
+        id S229639AbhGDLj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 07:39:58 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:40685 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhGDLjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 07:39:07 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2C2C061574;
-        Sun,  4 Jul 2021 04:36:32 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id b14-20020a17090a7aceb029017261c7d206so6573665pjl.5;
-        Sun, 04 Jul 2021 04:36:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mCA/jArbhN1NzwQX1oJ3I+ca6stZiKc9cqc+VKgeNZE=;
-        b=VlLc1bi+6TRga6SowwkngctFL+v8hgiTyM4iI+LtV3kLD7Xb4oxFCEoOxOjJvTZt1H
-         3q+WrJBGWJne/iWpZzMe0t8AUw35pmdJawrrYCZghjKMkjFfhVx4+yN99I8wnkKr41Nc
-         YlUTLuTHVq7+BB/xe3jfDfcJWaTC+WAbdRFyC9Gm14vjzYyrrjftPIxY2FVDh9HR81JT
-         odnC/NjcLq8i4xiqFAOsTTg84E3ljM2HeT7/59qDElyUvr5rPDquim1c+dG/xlcZqjH4
-         P0mXKTnlPnvdt0dZXEX/yfRl/dCGuGUXkEwn0dDYyTkHtPpvMyLMe17GuksrFgHLs6R3
-         zkPQ==
+        Sun, 4 Jul 2021 07:39:55 -0400
+Received: by mail-io1-f69.google.com with SMTP id l15-20020a5e820f0000b02904bd1794d00eso11226233iom.7
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 04:37:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mCA/jArbhN1NzwQX1oJ3I+ca6stZiKc9cqc+VKgeNZE=;
-        b=EhDCTl98piQxYlwrbVG2GvCSUU5LGPRYN3dvQKvY29Q45ycAmQ1yry8FQOq9FI0Uyq
-         qEwp4osV0Zl5h5TqG1ZsqvwJDAz2P13S5xu878uw305Dij/eLt3VH6VoRsCD2g/8W8Sq
-         rnNwQ/SZ2bNrzm2+4oOV0qKubokFIUcp1Ojp/4PQljHbg1+m7ZubNTnOpuRYAx1sSzc9
-         zTlZZtkU6JH201sOzodd1cS6gh7FvbgZLgG+iL+P1Thvl0mC43LfcI+Q/X1+FqorYn8G
-         CvhbHD8df9lzv1BPJfvGnoAmFR+IcUtkto/1eCZXOK6ltvGLRbKOBHk0TatAG3dFI8pJ
-         JoVQ==
-X-Gm-Message-State: AOAM533sRI8PIUYzAew+E0BIbeh8ZJ+xfbBMHeQNjqaEc0WqQItaeC2x
-        QeXPWeARqWZl0/upeewj9ziJoJDZQPJuQEGzl0s=
-X-Google-Smtp-Source: ABdhPJzDZV+gZJaInZTLNkPjNIFbraUBn/s0rqQzZ/v4yQDW7vS22wS/+xuN7znEh7uQAernaW9VXTwAtSjDwZiFhTc=
-X-Received: by 2002:a17:902:fe0a:b029:11d:81c9:3adf with SMTP id
- g10-20020a170902fe0ab029011d81c93adfmr7846799plj.0.1625398591978; Sun, 04 Jul
- 2021 04:36:31 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=yjcMZX4+hiIGwGy3zCxArtWiKk2nJbdGA45P5+4QRk4=;
+        b=OPs8ckzAU6TX02iQxe+7PSkbDEHTjYJx0RDfXNXvfNzigFL3Xo1vvD9iqINFgLdnjP
+         K+oWdG7PDnoLoMJPKKRVJxy0n16qJJ7/r5jownryTtv6z4I7dYE5VgNTStP+APRXJQI4
+         eWUSPZIOsId1oFJYcks9NLnBxqZk2WTh3T5bU+Vwcl64p11w4pr7ErYZ9Huwmp8xa+7q
+         H6imcS7v+Wi2VAXYAUScAkW1BLev0iswGOaNkAbI+UZ5b4l67X5lFAVZlW63sS0hc+ap
+         UYWDJnme1Pp43WQT8q3+NprmzogdgXQ7fbZycHVuHu2VhsRCvp2zC0ROQEt+QkFT/uB2
+         PLKw==
+X-Gm-Message-State: AOAM5327jhMi9ChM7rp5vEht13kweVE93oHH3by1fP0+4T+Zm225/1U1
+        /RpvqrzEWgBVvX4xPTdMfvIyr3OQElkcTkZvglQA1cVIzf22
+X-Google-Smtp-Source: ABdhPJzE3syylZlC1GqQgMvTy9L/hBvOloVqp/1vVcLHpReqPSa5CL98RbnEHxiXapMfFh0nlrVtC0xdXebLjozN5qWFOcXv7y8+
 MIME-Version: 1.0
-References: <20210626161819.30508-1-sergio.paracuellos@gmail.com>
- <CAHp75VfM-35tQMRh98mtg2XmDOJFnmjdYRKZZoi9ADm=AT2xUw@mail.gmail.com>
- <CAMhs-H_fcNDAOHm=tZB4ku9fzeea_7f4ZLg7w5KEmcNu+8wbQQ@mail.gmail.com>
- <CAHp75VeN+vww=Bj=g-nx9AT0FKSGAZ8CKQZn=ff2kfQWM+dxdw@mail.gmail.com>
- <CAMhs-H-WwCfPDspgxzN=W8QouZ7WPAeyJDYf_6=YezyCkTM=Vw@mail.gmail.com>
- <CAHp75VcF-HDZ6mKvXT=zYnBrcPaNJ+SYJ72LQ7s-62zQ5ZqoQg@mail.gmail.com>
- <CAMhs-H9gw63j98vVo3y0ymW4_6rFNL8u5cYNM2hzyrmkPB3h3w@mail.gmail.com>
- <CAHp75VccSCWa=EH8i01_b_HLZRumUZ48oRjeuaV5Dp1BQAoz2w@mail.gmail.com>
- <CAMhs-H_Ne4W79Awbmo6w_68X+h0-ybjvzNsbh=XuHMPJJ8-hDQ@mail.gmail.com>
- <CACRpkdaqSoyDUn3dVuVgzRK_7AabdY=1FzAnhHZzPs3qS+GfsA@mail.gmail.com>
- <CAMhs-H_pomsvKXuerkVsNQva+B+tPr2xRZAU2R7oyjZ+GaQpqQ@mail.gmail.com>
- <CAMhs-H_=_tYk3Qj5-NaAmWgnuWc0ZRSEABZzwPfMxiUHP35nbw@mail.gmail.com>
- <CAHp75VdmTHr8zq0boz2ci0YO4fS9Zuf+LFXeK7CGiHqHkXKKMQ@mail.gmail.com>
- <CAMhs-H_e2U7nUav8h+Q0w-aZXvD6VM6wpg857WbFgw6x3z1ufA@mail.gmail.com>
- <CAMhs-H8Y0txwcqRTxpsB_GEoOYbhHWO81EANMxMSybzWPS=HTA@mail.gmail.com>
- <CAHp75VfRYZn5uuPgQHJ5Hm3p3XVrfs=ReZXxEPm+dqLNb5QtGA@mail.gmail.com>
- <CAMhs-H8g8c047DSw2ObX7xS=YuPrXNRMecuV1TnKT--gnDdDOw@mail.gmail.com>
- <CAMhs-H9HhBbKmbpVgDXbZD+Dmh96J98HR_DO6LZL8N0B00ihcQ@mail.gmail.com>
- <CAHp75VdQS8fd-=onz_L5MJvhVea30EriUj6e+-Q1yCo35n2kpg@mail.gmail.com> <CAMhs-H-Qpob8JTeJZk59_+u+NZMy0zRdyfJ219L9o73pE-zQig@mail.gmail.com>
-In-Reply-To: <CAMhs-H-Qpob8JTeJZk59_+u+NZMy0zRdyfJ219L9o73pE-zQig@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 4 Jul 2021 14:35:55 +0300
-Message-ID: <CAHp75Vd54dn6F+Vr+vXAR-8S50M-+SjHOipvqPUvsX7EFktO7A@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: mt7621: support gpio-line-names property
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        John Thomson <git@johnthomson.fastmail.com.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        NeilBrown <neil@brown.name>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Nicholas Mc Guire <hofrat@osadl.org>
+X-Received: by 2002:a05:6602:2259:: with SMTP id o25mr4554011ioo.173.1625398639366;
+ Sun, 04 Jul 2021 04:37:19 -0700 (PDT)
+Date:   Sun, 04 Jul 2021 04:37:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000084943605c64a9cbd@google.com>
+Subject: [syzbot] general protection fault in rcu_segcblist_enqueue
+From:   syzbot <syzbot+7590ddacf9f333c18f6c@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, bp@alien8.de, hpa@zytor.com, jack@suse.cz,
+        jmattson@google.com, joro@8bytes.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        paolo.valente@linaro.org, pbonzini@redhat.com, seanjc@google.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 2:25 PM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
-> On Sun, Jul 4, 2021 at 12:05 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Sun, Jul 4, 2021 at 11:06 AM Sergio Paracuellos
-> > <sergio.paracuellos@gmail.com> wrote:
-> > > On Sun, Jul 4, 2021 at 7:57 AM Sergio Paracuellos
-> > > <sergio.paracuellos@gmail.com> wrote:
-> > > > On Sat, Jul 3, 2021 at 9:36 PM Andy Shevchenko
-> > > > <andy.shevchenko@gmail.com> wrote:
-> > > > > On Sat, Jul 3, 2021 at 3:51 PM Sergio Paracuellos
-> > > > > <sergio.paracuellos@gmail.com> wrote:
-> > > > > > On Sat, Jul 3, 2021 at 2:05 PM Sergio Paracuellos
-> > > > > > <sergio.paracuellos@gmail.com> wrote:
-> >
-> > ...
-> >
-> > > > > The below is closer to what I meant, yes. I have not much time to look
-> > > > > into the details, but I don't have objections about what you suggested
-> > > > > below. Additional comments there as well.
-> > > >
-> > > > Thanks for your time and review, Andy. Let's wait to see if Linus and
-> > > > Bartosz are also ok with this approach.
-> > > >
-> > > > > > How about something like this?
-> > > > > >
-> > > > > > diff --git a/drivers/gpio/gpio-mt7621.c b/drivers/gpio/gpio-mt7621.c
-> > > > > > index 82fb20dca53a..5854a9343491 100644
-> > > > > > --- a/drivers/gpio/gpio-mt7621.c
-> > > > > > +++ b/drivers/gpio/gpio-mt7621.c
-> > > > > > @@ -241,6 +241,7 @@ mediatek_gpio_bank_probe(struct device *dev,
-> > > > > >         if (!rg->chip.label)
-> > > > > >                 return -ENOMEM;
-> > > > > >
-> > > > > > +       rg->chip.offset = bank * MTK_BANK_WIDTH;
-> > > > > >         rg->irq_chip.name = dev_name(dev);
-> > > > > >         rg->irq_chip.parent_device = dev;
-> > > > > >         rg->irq_chip.irq_unmask = mediatek_gpio_irq_unmask;
-> > > > >
-> > > > > Obviously it should be a separate patch :-)
-> > > >
-> > > > Of course :). I will include one separate patch per driver using the
-> > > > custom set names stuff: gpio-mt7621 and gpio-brcmstb. I don't know if
-> > > > any other one is also following that wrong pattern.
-> > >
-> > > What if each gpiochip inside the same driver has a different width? In
-> > > such a case (looking into the code seems to be the case for
-> > > 'gpio-brcmstb', since driver's calculations per base are aligned with
-> > > this code changes but when it is assigned every line name is taking
-> > > into account gpio bank's width variable... If the only "client" of
-> > > this code would be gpio-mt7621 (or those where base and width of the
-> > > banks is the same) I don't know if changing core code makes sense...
-> >
-> > As far as I understood the problem, the driver (either broadcom one or
-> > mediatek) uses one GPIO description from which it internally splits to
-> > a few GPIO chips. GPIO chips are kinda independent in that sense,
-> > correct? So, if you put the index / offset field per GPIO chip before
-> > creation, the problem is solved.  What did I miss?
->
-> Should be, yes. But my concern is about why the broadcom driver
-> calculate base as:
->
-> base = bank->id * MAX_GPIO_PER_BANK;
->
-> and then fill names using:
->
-> /*
->  * Make sure to not index beyond the end of the number of descriptors
->  * of the GPIO device.
->  */
-> for (i = 0; i < bank->width; i++) {
->  ...
->
-> It looks like each gpio chip is separated MAX_GPIO_PER_BANK but the
-> width of each of some of them may be different. So in my understanding
-> assume for example there are four banks with widths 32,32, 24, 32 and
-> if you want to provide friendly names for all of them, in the third
-> one you have to create empty strings until 32 or you will get wrong to
-> the starting of the fourth bank and the code is getting care of not
-> going out of index in the for loop and assign only those needed. So
-> technically you are providing 8 empty strings even though the width of
-> the third bank is only 24 which sounds also bad...
+Hello,
 
-While I might agree on this, it sounds quite well correct and should
-be done that way in such cases. The fundamental fix would be (but will
-never appear due to ABI backward compatibility) to allow gaps in the
-DT property arrays.
+syzbot found the following issue on:
 
-The workaround may be the amount of lines per bank in another property
-(gpio-ranges?). In either case the GPIO bindings and drivers that
-split hardware per bank seems to me unaligned and that is the root
-cause, but it seems it was the initial desire to have like this.
+HEAD commit:    df04fbe8 Merge branch 'for-linus' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13eb6594300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9a9c38351af1345a
+dashboard link: https://syzkaller.appspot.com/bug?extid=7590ddacf9f333c18f6c
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1326068c300000
 
-Anyway, I have an opinion that at some point either workaround or
-other means will be enforced on the GPIO library level in the core
-code and your approach seems a good first step towards that.
+The issue was bisected to:
 
-> But maybe I am
-> misunderstanding the code itself and I need a bit more sleep :)
+commit 71217df39dc67a0aeed83352b0d712b7892036a2
+Author: Paolo Valente <paolo.valente@linaro.org>
+Date:   Mon Jan 25 19:02:48 2021 +0000
 
-Also possible :-)
+    block, bfq: make waker-queue detection more robust
 
--- 
-With Best Regards,
-Andy Shevchenko
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=127c2700300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=117c2700300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=167c2700300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7590ddacf9f333c18f6c@syzkaller.appspotmail.com
+Fixes: 71217df39dc6 ("block, bfq: make waker-queue detection more robust")
+
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 11479 Comm: syz-executor.0 Tainted: G        W         5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:rcu_segcblist_enqueue+0xb9/0x130 kernel/rcu/rcu_segcblist.c:348
+Code: 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 4e 48 b8 00 00 00 00 00 fc ff df 48 8b 6b 20 48 89 ea 48 c1 ea 03 <80> 3c 02 00 75 21 48 89 75 00 48 89 73 20 48 83 c4 08 5b 5d c3 48
+RSP: 0018:ffffc90003287be8 EFLAGS: 00010046
+RAX: dffffc0000000000 RBX: ffff8880b9c00080 RCX: ffffffff815c5540
+RDX: 0000000000000000 RSI: ffffc90003287cd0 RDI: ffff8880b9c000a0
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000003
+R10: fffff52000650f6f R11: 0000000000000000 R12: ffffc90003287cd0
+R13: ffff8880b9c00080 R14: 0000000000000000 R15: ffff8880b9c00040
+FS:  00007fbfbe427700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000544038 CR3: 000000003a8e9000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ srcu_gp_start_if_needed+0x116/0xbc0 kernel/rcu/srcutree.c:828
+ __call_srcu kernel/rcu/srcutree.c:888 [inline]
+ __synchronize_srcu+0x1d1/0x280 kernel/rcu/srcutree.c:934
+ kvm_mmu_uninit_vm+0x18/0x30 arch/x86/kvm/mmu/mmu.c:5555
+ kvm_arch_destroy_vm+0x4fc/0x690 arch/x86/kvm/x86.c:11265
+ kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1046 [inline]
+ kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:4443 [inline]
+ kvm_dev_ioctl+0x120e/0x1740 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4498
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:1069 [inline]
+ __se_sys_ioctl fs/ioctl.c:1055 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fbfbe427188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000000000000 RSI: 000000000000ae01 RDI: 0000000000000003
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffc6c46097f R14: 00007fbfbe427300 R15: 0000000000022000
+Modules linked in:
+---[ end trace e798d58b3973533f ]---
+RIP: 0010:rcu_segcblist_enqueue+0xb9/0x130 kernel/rcu/rcu_segcblist.c:348
+Code: 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 4e 48 b8 00 00 00 00 00 fc ff df 48 8b 6b 20 48 89 ea 48 c1 ea 03 <80> 3c 02 00 75 21 48 89 75 00 48 89 73 20 48 83 c4 08 5b 5d c3 48
+RSP: 0018:ffffc90003287be8 EFLAGS: 00010046
+RAX: dffffc0000000000 RBX: ffff8880b9c00080 RCX: ffffffff815c5540
+RDX: 0000000000000000 RSI: ffffc90003287cd0 RDI: ffff8880b9c000a0
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000003
+R10: fffff52000650f6f R11: 0000000000000000 R12: ffffc90003287cd0
+R13: ffff8880b9c00080 R14: 0000000000000000 R15: ffff8880b9c00040
+FS:  00007fbfbe427700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000544038 CR3: 000000003a8e9000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
