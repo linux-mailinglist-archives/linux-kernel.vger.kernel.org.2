@@ -2,113 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C738F3BAC13
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 10:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C167A3BAC1E
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 10:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbhGDIUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 04:20:05 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:52945 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhGDIUE (ORCPT
+        id S229715AbhGDI2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 04:28:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhGDI2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 04:20:04 -0400
-Received: by mail-io1-f72.google.com with SMTP id r3-20020a6b8f030000b02904e159249245so10905509iod.19
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 01:17:29 -0700 (PDT)
+        Sun, 4 Jul 2021 04:28:22 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A72C061765
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 01:25:46 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id k8so20127724lja.4
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 01:25:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mem7aDqrdPAoK1Q+h1MiWVWd2rSQrghSbzr5cmPA4tE=;
+        b=T+e0XbVmuv9/j9Fjh+jIKG/WvWOhzEaVLBBiasfflltjEXdbclLUxmZe0Jykii0Awe
+         jTOWnYhIY4OJT+q2po++qNMQ+corj1KESALoloz2MDyWCViHpttTamqGUb7NPbH+pQdC
+         gWOFgtEoHCbknVjR8jx4bW0iUdhm8pGliOJlIJi/aZSh/cHNwvHAh3Rp3pea+MLo3ecN
+         WLX2XuB1g2ZkRX2lCtH3cuyZ6tkNfkSKS2IW8tdVKmHkID57ixsBhnh1XTvZ2j+vehfj
+         eXQiooSLrsJmBHy2vR9GbHy2PQhIlK5hoE+WdFPC46uJEbgYHz4AESQgaBC1gMsgtguM
+         hW3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=nNhcC/aUAlX8toxDVfr9RUSI+nx8VnmoNpMNwmaRF/c=;
-        b=YHS45at/B6EaHIx0iQSwNGroMlvvmfrroyql6wjb8vWdj8G6Dje7CCgfo6ziaynYio
-         5ufPL6W7Ql+WUz4AdFES4b8gTQBBiXAFZtj/LDJc5GBHLKWA4o8xoJDC01GOWnWS1vYP
-         fOQzitBIVafdIkZloAToHGFAyZL/r+9Z/HLSlHeYbmdnES2u0q3FJGaC2zUXRSWkd3w4
-         F6Lq5xFCIOLnMaszNzKv0dhWrPraaYbEjRIhs2dljRLZEK2bHDnWVycfIoCCm0ndyTrv
-         wCAg3D4RrFDfXQuD+P3kMY6LWgzAvMsm21a9T+KUx7A1W5PGGEd+5MD//VQQq8WxYhzh
-         Ogvw==
-X-Gm-Message-State: AOAM530ZHJ7AdhCR6k3qQEhhhtM9qpTxfQ/54XM8eh+TDoSVH7aNSxBr
-        /etboKy04xuvjpRLghKSnBtaaZyYE80vGCpx+GPCu0rZmTjt
-X-Google-Smtp-Source: ABdhPJwYw21a5ZiY/KUKXYnLKmZkl0yu4ifuB4HdHl6HYfv8swSAN+uXYDzE24Q7oP3Jb4gIoiMyqI9oDes99y6GQDJu17cQGD8K
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mem7aDqrdPAoK1Q+h1MiWVWd2rSQrghSbzr5cmPA4tE=;
+        b=NApdyNgQ52xXy0Ce6n12xg7KZnnyKAMY0WX8FQn+LT4tEeViKcV/qNhIvb5vZLPgz+
+         m58IBFHeTzUCxuoM/nJhra/jbFPLLacW2hYmQlrS45FVcgkn9h+yB4ZEeP4q003G22Gj
+         FlE2ZNTvo4SzujVtT5nq7mL6T4wIEAYNOS70i7T7ONhnst3K1IZ7FFIyBK8VVXetJPhM
+         aZBIn/SpQa8Lbbt6iMvXx3sbwkzEWtECl/rUDK+HDEs9xpc0+lQOPf+rCSVemyEQ2/Ir
+         1mXzL8mnH2ChTD7oC9glpD/vzVJ7VjPuyXxt66XB0IKrsDsTFbyo/G3oi4sw+ONjlac+
+         jK8g==
+X-Gm-Message-State: AOAM531mszbkDCkANxa6yrayAHeENkKq5ktQEEBNGkh9ZJr/tyzC2N9z
+        rVnx1Lda5v2HQKlRgs85BFZkwQ==
+X-Google-Smtp-Source: ABdhPJy4nvOjyXAyQrOq0glZ90aFFBPgm0fiFPwTmBp3srbuOj7LS6n5pX1iTaiwSpzDGPyAnNIQZg==
+X-Received: by 2002:a2e:9e18:: with SMTP id e24mr6692205ljk.336.1625387145132;
+        Sun, 04 Jul 2021 01:25:45 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id f8sm737547lfu.188.2021.07.04.01.25.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Jul 2021 01:25:44 -0700 (PDT)
+Subject: Re: [RFC] Inline rotation support in dpu driver
+To:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        dianders@chromium.org, mkrishn@codeaurora.org
+References: <1625311962-14185-1-git-send-email-kalyan_t@codeaurora.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <5dcd850a-280c-c356-32e5-35a4fe089f4e@linaro.org>
+Date:   Sun, 4 Jul 2021 11:25:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e916:: with SMTP id u22mr6985068iof.155.1625386649300;
- Sun, 04 Jul 2021 01:17:29 -0700 (PDT)
-Date:   Sun, 04 Jul 2021 01:17:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dab30c05c647d15a@google.com>
-Subject: [syzbot] BUG: sleeping function called from invalid context in stack_depot_save
-From:   syzbot <syzbot+b07d8440edb5f8988eea@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1625311962-14185-1-git-send-email-kalyan_t@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 03/07/2021 14:32, Kalyan Thota wrote:
+> This change adds support for inline rotation in the dpu driver.
+> When inline rotation is enabled the VIG pipes will directly fetch the image
+> from memory in a rotated fashion
+> 
+> Inline rotation has following restrictions
+> 1) Supported only with compressed formats
 
-syzbot found the following issue on:
+NV12, which is the only format you declare, is not compressed.
 
-HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=144d5280300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=90b227e3653ac0d7
-dashboard link: https://syzkaller.appspot.com/bug?extid=b07d8440edb5f8988eea
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=117952e2300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13fbb394300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b07d8440edb5f8988eea@syzkaller.appspotmail.com
-
-BUG: sleeping function called from invalid context at mm/page_alloc.c:5179
-in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 9731, name: kworker/0:5
-INFO: lockdep is turned off.
-irq event stamp: 0
-hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-hardirqs last disabled at (0): [<ffffffff81433b3b>] copy_process+0x1e1b/0x74c0 kernel/fork.c:2061
-softirqs last  enabled at (0): [<ffffffff81433b7c>] copy_process+0x1e5c/0x74c0 kernel/fork.c:2065
-softirqs last disabled at (0): [<0000000000000000>] 0x0
-CPU: 0 PID: 9731 Comm: kworker/0:5 Tainted: G        W         5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events pcpu_balance_workfn
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
- ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
- prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
- __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
- stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
- save_stack+0x15e/0x1e0 mm/page_owner.c:120
- __set_page_owner+0x50/0x290 mm/page_owner.c:181
- prep_new_page mm/page_alloc.c:2445 [inline]
- __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
- alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
- vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
- __vmalloc_area_node mm/vmalloc.c:2845 [inline]
- __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
- __vmalloc_node mm/vmalloc.c:2996 [inline]
- __vmalloc+0x69/0x80 mm/vmalloc.c:3010
- pcpu_mem_zalloc mm/percpu.c:517 [inline]
- pcpu_mem_zalloc+0x51/0xa0 mm/percpu.c:509
- pcpu_alloc_chunk mm/percpu.c:1455 [inline]
- pcpu_create_chunk+0xd7/0x720 mm/percpu-vm.c:337
- pcpu_balance_populated mm/percpu.c:2111 [inline]
- pcpu_balance_workfn+0xb13/0xd10 mm/percpu.c:2232
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
-IPv6: ADDRCONF(NETDEV_CHANGE): wlan1: link becomes ready
-IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
-IPv6: ADDRCONF(NETDEV_CHANGE): wlan1: link becomes ready
+> 2) max pre rotated height is 1088
+> 3) restrictions with downscaling ratio
+> 
+> Queries:
+> 
+> 1) Since inline rotation works for fewer pixel formats with specific modifier, how can we provide this information to the compositor so that
+> chrome compositor can choose between overlaying or falling back to GPU. In the patch it fails in the atomic check.
+> 
+> 2) If a display composition fails in atomic check due to any of the restrictions in overlays
+> can chrome compositor switch it back to the GPU and re trigger the commit ?
+> 
+> posting it as RFC as validation is not complete, please share early comments on this.
+> 
+> Kalyan Thota (1):
+>    drm/msm/disp/dpu1: add support for inline rotation in dpu driver
+> 
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 47 +++++++++----
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h | 20 ++++++
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c      | 93 ++++++++++++++++++++------
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.h      |  2 +
+>   4 files changed, 128 insertions(+), 34 deletions(-)
+> 
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+-- 
+With best wishes
+Dmitry
