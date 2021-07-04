@@ -2,337 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E103BAF04
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 22:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94AD33BAF06
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 22:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhGDUei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 16:34:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229731AbhGDUeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 16:34:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0328611F2;
-        Sun,  4 Jul 2021 20:32:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625430721;
-        bh=zyCebPnazQjntRzeTuZ2gfvhK3mUPhkSUxENlXWUFZM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=tb8FkdwAex3h/bfWaGy8bngp01K6n88DBGvtMYv+eaftY/pnL64GTzKaNzD0xYMDD
-         WTAO+LBcR9ELNEaEhyr72zewK1No8oKbCRVBMwlh/yil9VKEMP+Hl+zB6iD2LkazVf
-         n1HEfqSC/czcEuRn4Y1nwcglFKxsnEtOPb/4XfjiAqPtYfS0EXi5i+De1s3BQdMZEM
-         vGpkBuhCWAMhf6ektAvCGnnHGClU4hXmVOMwSi+e6vgZScZQ0BKLY8rwAr2PyQ++sc
-         TP+245E90gAZw3J9JgpzqIzmz5Gp/RJdABYtaEcGnnWoM+ljJ5B9Day6djb9Krproy
-         zip7KjNaO1kRw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 862FE5C0138; Sun,  4 Jul 2021 13:32:01 -0700 (PDT)
-Date:   Sun, 4 Jul 2021 13:32:01 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [GIT PULL] RCU changes for v5.14
-Message-ID: <20210704203201.GT4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210704172440.GA2966393@paulmck-ThinkPad-P17-Gen-1>
- <CAHk-=whSGHOiuv1yARox+P3k2uTLtJ=F51aKoJYVi5UPgjitCQ@mail.gmail.com>
+        id S229930AbhGDUlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 16:41:05 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:46685 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229788AbhGDUlE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 16:41:04 -0400
+Received: by mail-io1-f72.google.com with SMTP id a24-20020a5d95580000b029044cbcdddd23so12030806ios.13
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 13:38:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=MLuticSE4LQzdZP0NRfEKiJDbhJOy5ADvFzX0FtLti4=;
+        b=Iurq9coo5/UU8Xxu/WZopqV/5MMNKzPPSN6zE22knoYilccWCSR93CB6R/ckuuA+zd
+         L+4RxADu0kkVMg3l/r3lRCgmQwaHJ27KPkk9CmCATaPysB9dzubtcOSeBzWTn30XZ9+Q
+         ePsfqIp5wHcN1IKHOLym7Z6W656bA+0GfKETHFVo0uVroscy3FAqZ4YlRDJ5zrxStk3w
+         77b2uj/puF2xIIWffBoBPt3TeFGhSG0HLv42jL1jE4qFVx9Pu5USeHJJDUTnDjdrTzHF
+         VPM4zyhy/QXBU+/yb6ERHJqIcH9gKeRorWQ2CtzXH4vsTme9pj5CgF4aSJFmfAPJHJIs
+         HyVg==
+X-Gm-Message-State: AOAM532r3IvF/RhsPCG59wYB4EvdHpDVaLTF9H31VMWdcPbIVPHn3VXQ
+        nqfwbd0x6PW3muFVZTq5GwK9Uu2uLhXtwXluC30lpuD32uSZ
+X-Google-Smtp-Source: ABdhPJzuo27ypgJUxAtOEluYDIcClDZ625Oha1VKjo2FdKhVsryX0hD93G995cfZ2WYMD0n31Gfc3wXnxi2XO1tM8oa68JIhoDL2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whSGHOiuv1yARox+P3k2uTLtJ=F51aKoJYVi5UPgjitCQ@mail.gmail.com>
+X-Received: by 2002:a05:6638:3594:: with SMTP id v20mr9090624jal.25.1625431107414;
+ Sun, 04 Jul 2021 13:38:27 -0700 (PDT)
+Date:   Sun, 04 Jul 2021 13:38:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c3b12f05c6522ba9@google.com>
+Subject: [syzbot] upstream test error: possible deadlock in fs_reclaim_acquire
+From:   syzbot <syzbot+957fdc00c16da68efb1b@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
+        daniel@iogearbox.net, ebiederm@xmission.com,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        peterz@infradead.org, shakeelb@google.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 04, 2021 at 01:01:33PM -0700, Linus Torvalds wrote:
-> On Sun, Jul 4, 2021 at 10:24 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > An example merge resolution may be found here:
-> >
-> >         4e2b64e124c7 ("Merge remote-tracking branch 'linus/master' into HEAD")
-> 
-> There sommit ID's are completely useless, because I have no idea where
-> they come from. They aren't in the linux-next tree as far as I can
-> tell, for example.
-> 
-> So they are just random noise.
-> 
-> Now, none of the conflicts looked in the least complicated, so it's
-> not like I _need_ the examples, but this "send random shortened SHA1s
-> to Linus" is simply not useful.
-> 
-> At a guess, it's actually from your merge-example branch in your own tree.
-> 
-> The point being, that a SHA1 may be globally unique, but without
-> telling me where that SHA1 can be _found_, it is entirely useless.
-> 
-> If you have example merges - which I do like seeing, and I will
-> compare against just to double-check even when I have no reason to
-> doubt my own merge - you need to point to it the same way you point to
-> the actual real branch.
-> 
-> IOW, say something like
-> 
->   "I've done an example merge, and you can find it in
-> 
->      git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
-> rcu-example-merge"
-> 
-> or similar.
-> 
-> Because actual SHA1 names are only useful WHEN THEY ARE IN MY TREE. So
-> you can point to history that I have (or that was in your actual pull
-> request), and I can see _those_ just fine.
-> 
-> So when you say
-> 
->   "The second is a trivial whitespace conflict between these two commits:
-> 
->         76c8eaafe4f0 ("rcu: Create an unrcu_pointer() to remove __rcu
-> from a pointer")
->         b9964ce74544 ("rcu: Create an unrcu_pointer() to remove __rcu
-> from a pointer")"
-> 
-> then that makes sense, because those are two commits that I actually
-> have as part of the merge conflict).
-> 
-> But that example merge? I don't have it, unless you actually tell me
-> where it is.
-> 
-> Then I can just do
-> 
->       git fetch <paul-told-me-where-to-fetch>
-> 
-> and can do
-> 
->     git show FETCH_HEAD
-> 
-> or (more commonly) just compare my merge result with yours:
-> 
->     git diff FETCH_HEAD kernel/rcu/tree_stall.h
-> 
-> and it's all golden. But if you send me a random SHA1 of somethign
-> that only exists in your trees, I just go "oh, ok, not useful".
+Hello,
 
-Once again, please accept my apologies, and thank you for the explanation.
-I should have sent something like the following, correct?  Or is there
-still something I am missing?
+syzbot found the following issue on:
 
-							Thanx, Paul
+HEAD commit:    df04fbe8 Merge branch 'for-linus' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15be418c300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a5c1e3acc43bcfec
+dashboard link: https://syzkaller.appspot.com/bug?extid=957fdc00c16da68efb1b
 
-------------------------------------------------------------------------
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+957fdc00c16da68efb1b@syzkaller.appspotmail.com
 
-Hello, Linus,
+======================================================
+WARNING: possible circular locking dependency detected
+5.13.0-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-fuzzer/8436 is trying to acquire lock:
+ffffffff8c099780 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_acquire+0xf7/0x160 mm/page_alloc.c:4586
 
-In a deviation from long-standing -tip tradition, please pull the latest
-RCU git tree from:
+but task is already holding lock:
+ffff8880b9d31620 (lock#2){-.-.}-{2:2}, at: __alloc_pages_bulk+0x4ad/0x1870 mm/page_alloc.c:5291
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git core-rcu-2021.07.04
-  # HEAD: 641faf1b9064c270a476a424e60063bb05df3ee9: Merge branches 'bitmaprange.2021.05.10c', 'doc.2021.05.10c', 'fixes.2021.05.13a', 'kvfree_rcu.2021.05.10c', 'mmdumpobj.2021.05.10c', 'nocb.2021.05.12a', 'srcu.2021.05.12a', 'tasks.2021.05.18a' and 'torture.2021.05.10c' into HEAD (2021-05-18 10:56:19 -0700)
+which lock already depends on the new lock.
 
-RCU changes for this cycle were:
 
-o	Bitmap support for "all" as an alias for all bits.
+the existing dependency chain (in reverse order) is:
 
-o	Documentation updates.
+-> #1 (lock#2){-.-.}-{2:2}:
+       local_lock_acquire include/linux/local_lock_internal.h:42 [inline]
+       free_unref_page+0x1bf/0x690 mm/page_alloc.c:3439
+       mm_free_pgd kernel/fork.c:636 [inline]
+       __mmdrop+0xcb/0x3f0 kernel/fork.c:687
+       mmdrop include/linux/sched/mm.h:49 [inline]
+       finish_task_switch.isra.0+0x7cd/0xb80 kernel/sched/core.c:4582
+       context_switch kernel/sched/core.c:4686 [inline]
+       __schedule+0xb41/0x5980 kernel/sched/core.c:5940
+       preempt_schedule_irq+0x4e/0x90 kernel/sched/core.c:6328
+       irqentry_exit+0x31/0x80 kernel/entry/common.c:427
+       asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+       lock_release+0x12/0x720 kernel/locking/lockdep.c:5633
+       might_alloc include/linux/sched/mm.h:199 [inline]
+       slab_pre_alloc_hook mm/slab.h:485 [inline]
+       slab_alloc mm/slab.c:3306 [inline]
+       kmem_cache_alloc+0x41/0x530 mm/slab.c:3507
+       anon_vma_alloc mm/rmap.c:89 [inline]
+       anon_vma_fork+0xed/0x630 mm/rmap.c:354
+       dup_mmap kernel/fork.c:554 [inline]
+       dup_mm+0x9a0/0x1380 kernel/fork.c:1379
+       copy_mm kernel/fork.c:1431 [inline]
+       copy_process+0x71f0/0x74d0 kernel/fork.c:2119
+       kernel_clone+0xe7/0xab0 kernel/fork.c:2509
+       __do_sys_clone+0xc8/0x110 kernel/fork.c:2626
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-o	Miscellaneous fixes, including some that overlap into mm and lockdep.
+-> #0 (fs_reclaim){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3051 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
+       validate_chain kernel/locking/lockdep.c:3789 [inline]
+       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
+       lock_acquire kernel/locking/lockdep.c:5625 [inline]
+       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+       __fs_reclaim_acquire mm/page_alloc.c:4564 [inline]
+       fs_reclaim_acquire+0x117/0x160 mm/page_alloc.c:4578
+       prepare_alloc_pages+0x15c/0x580 mm/page_alloc.c:5176
+       __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
+       alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+       stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
+       save_stack+0x15e/0x1e0 mm/page_owner.c:120
+       __set_page_owner+0x50/0x290 mm/page_owner.c:181
+       prep_new_page mm/page_alloc.c:2445 [inline]
+       __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
+       alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
+       vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
+       __vmalloc_area_node mm/vmalloc.c:2845 [inline]
+       __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
+       vmalloc_user+0x67/0x80 mm/vmalloc.c:3082
+       kcov_mmap+0x2b/0x140 kernel/kcov.c:465
+       call_mmap include/linux/fs.h:2119 [inline]
+       mmap_region+0xcde/0x1760 mm/mmap.c:1809
+       do_mmap+0x86e/0x11d0 mm/mmap.c:1585
+       vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
+       ksys_mmap_pgoff+0x4a8/0x620 mm/mmap.c:1636
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-o	kvfree_rcu() updates.
+other info that might help us debug this:
 
-o	mem_dump_obj() updates, with acks from one of the slab-allocator
-	maintainers.
+ Possible unsafe locking scenario:
 
-o	RCU NOCB CPU updates, including limited deoffloading.
+       CPU0                    CPU1
+       ----                    ----
+  lock(lock#2);
+                               lock(fs_reclaim);
+                               lock(lock#2);
+  lock(fs_reclaim);
 
-o	SRCU updates.
+ *** DEADLOCK ***
 
-o	Tasks-RCU updates.
+2 locks held by syz-fuzzer/8436:
+ #0: ffff88802a51c128 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_write_lock_killable include/linux/mmap_lock.h:87 [inline]
+ #0: ffff88802a51c128 (&mm->mmap_lock#2){++++}-{3:3}, at: vm_mmap_pgoff+0x15c/0x290 mm/util.c:517
+ #1: ffff8880b9d31620 (lock#2){-.-.}-{2:2}, at: __alloc_pages_bulk+0x4ad/0x1870 mm/page_alloc.c:5291
 
-o	Torture-test updates.
+stack backtrace:
+CPU: 1 PID: 8436 Comm: syz-fuzzer Not tainted 5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
+ check_prev_add kernel/locking/lockdep.c:3051 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3174 [inline]
+ validate_chain kernel/locking/lockdep.c:3789 [inline]
+ __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
+ lock_acquire kernel/locking/lockdep.c:5625 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+ __fs_reclaim_acquire mm/page_alloc.c:4564 [inline]
+ fs_reclaim_acquire+0x117/0x160 mm/page_alloc.c:4578
+ prepare_alloc_pages+0x15c/0x580 mm/page_alloc.c:5176
+ __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+ stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
+ save_stack+0x15e/0x1e0 mm/page_owner.c:120
+ __set_page_owner+0x50/0x290 mm/page_owner.c:181
+ prep_new_page mm/page_alloc.c:2445 [inline]
+ __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
+ alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
+ vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
+ __vmalloc_area_node mm/vmalloc.c:2845 [inline]
+ __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
+ vmalloc_user+0x67/0x80 mm/vmalloc.c:3082
+ kcov_mmap+0x2b/0x140 kernel/kcov.c:465
+ call_mmap include/linux/fs.h:2119 [inline]
+ mmap_region+0xcde/0x1760 mm/mmap.c:1809
+ do_mmap+0x86e/0x11d0 mm/mmap.c:1585
+ vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
+ ksys_mmap_pgoff+0x4a8/0x620 mm/mmap.c:1636
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4af20a
+Code: e8 3b 82 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 4c 8b 54 24 28 4c 8b 44 24 30 4c 8b 4c 24 38 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 40 ff ff ff ff 48 c7 44 24 48
+RSP: 002b:000000c0006175d8 EFLAGS: 00000212 ORIG_RAX: 0000000000000009
+RAX: ffffffffffffffda RBX: 000000c00001e800 RCX: 00000000004af20a
+RDX: 0000000000000003 RSI: 0000000000080000 RDI: 0000000000000000
+RBP: 000000c000617638 R08: 0000000000000006 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000212 R12: 00000000007798c5
+R13: 00000000000000d3 R14: 00000000000000d2 R15: 0000000000000100
+BUG: sleeping function called from invalid context at mm/page_alloc.c:5179
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 8436, name: syz-fuzzer
+INFO: lockdep is turned off.
+irq event stamp: 6576
+hardirqs last  enabled at (6575): [<ffffffff891e6120>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (6575): [<ffffffff891e6120>] _raw_spin_unlock_irqrestore+0x50/0x70 kernel/locking/spinlock.c:191
+hardirqs last disabled at (6576): [<ffffffff81b1bf0c>] __alloc_pages_bulk+0x101c/0x1870 mm/page_alloc.c:5291
+softirqs last  enabled at (5362): [<ffffffff812b500e>] copy_kernel_to_xregs arch/x86/include/asm/fpu/internal.h:330 [inline]
+softirqs last  enabled at (5362): [<ffffffff812b500e>] __fpu__restore_sig+0xe5e/0x14d0 arch/x86/kernel/fpu/signal.c:360
+softirqs last disabled at (5360): [<ffffffff812b4aa2>] __fpu__restore_sig+0x8f2/0x14d0 arch/x86/kernel/fpu/signal.c:325
+CPU: 1 PID: 8436 Comm: syz-fuzzer Not tainted 5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
+ ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
+ prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
+ __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+ stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
+ save_stack+0x15e/0x1e0 mm/page_owner.c:120
+ __set_page_owner+0x50/0x290 mm/page_owner.c:181
+ prep_new_page mm/page_alloc.c:2445 [inline]
+ __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
+ alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
+ vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
+ __vmalloc_area_node mm/vmalloc.c:2845 [inline]
+ __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
+ vmalloc_user+0x67/0x80 mm/vmalloc.c:3082
+ kcov_mmap+0x2b/0x140 kernel/kcov.c:465
+ call_mmap include/linux/fs.h:2119 [inline]
+ mmap_region+0xcde/0x1760 mm/mmap.c:1809
+ do_mmap+0x86e/0x11d0 mm/mmap.c:1585
+ vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
+ ksys_mmap_pgoff+0x4a8/0x620 mm/mmap.c:1636
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4af20a
+Code: e8 3b 82 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 4c 8b 54 24 28 4c 8b 44 24 30 4c 8b 4c 24 38 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 40 ff ff ff ff 48 c7 44 24 48
+RSP: 002b:000000c0006175d8 EFLAGS: 00000212 ORIG_RAX: 0000000000000009
+RAX: ffffffffffffffda RBX: 000000c00001e800 RCX: 00000000004af20a
+RDX: 0000000000000003 RSI: 0000000000080000 RDI: 0000000000000000
+RBP: 000000c000617638 R08: 0000000000000006 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000212 R12: 00000000007798c5
+R13: 00000000000000d3 R14: 00000000000000d2 R15: 0000000000000100
 
-These changes have two merge conflicts with mainline.  The first is
-a semantic conflict detected by -next between these two commits:
 
-	2f064a59a11f ("sched: Change task_struct::state")
-	e44111ed20d8 ("rcu: Add ->rt_priority and ->gp_start to show_rcu_gp_kthreads() output")
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I have done an example merge here:
-
-	git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git merge-example-rcu
-
-The second is a trivial whitespace conflict between these two commits:
-
-	76c8eaafe4f0 ("rcu: Create an unrcu_pointer() to remove __rcu from a pointer")
-	b9964ce74544 ("rcu: Create an unrcu_pointer() to remove __rcu from a pointer")
-
-I have done an example merge on top of the merge commit for the first
-conflict:
-
-	git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git merge-example-rcu2
-
-And yes, this second conflict did in fact happen because I handed out
-a patch containing this whitespace error, and failed to follow up with
-the corrected patch.  :-/
-
-							Thanx, Paul
-
-----------------------------------------------------------------
-Frederic Weisbecker (17):
-      doc: Fix diagram references in memory-ordering document
-      rcu/nocb: Use the rcuog CPU's ->nocb_timer
-      timer: Revert "timer: Add timer_curr_running()"
-      srcu: Remove superfluous sdp->srcu_lock_count zero filling
-      srcu: Remove superfluous ssp initialization for early callbacks
-      srcu: Unconditionally embed struct lockdep_map
-      srcu: Initialize SRCU after timers
-      srcu: Fix broken node geometry after early ssp init
-      torture: Correctly fetch number of CPUs for non-English languages
-      rcu/nocb: Directly call __wake_nocb_gp() from bypass timer
-      rcu/nocb: Allow de-offloading rdp leader
-      rcu/nocb: Cancel nocb_timer upon nocb_gp wakeup
-      rcu/nocb: Delete bypass_timer upon nocb_gp wakeup
-      rcu/nocb: Only cancel nocb timer if not polling
-      rcu/nocb: Prepare for fine-grained deferred wakeup
-      rcu/nocb: Unify timers
-      srcu: Early test SRCU polling start
-
-Ingo Molnar (1):
-      rcu: Fix various typos in comments
-
-Jules Irenge (1):
-      rcu: Add missing __releases() annotation
-
-Maninder Singh (2):
-      mm/slub: Fix backtrace of objects to handle redzone adjustment
-      mm/slub: Add Support for free path information of an object
-
-Paul E. McKenney (47):
-      doc: Fix statement of RCU's memory-ordering requirements
-      tools/rcu: Add drgn script to dump number of RCU callbacks
-      rcu-tasks: Add block comment laying out RCU Tasks design
-      rcu-tasks: Add block comment laying out RCU Rude design
-      torture: Fix remaining erroneous torture.sh instance of $*
-      torture: Add "scenarios" option to kvm.sh --dryrun parameter
-      torture: Make kvm-again.sh use "scenarios" rather than "batches" file
-      refscale: Allow CPU hotplug to be enabled
-      rcuscale: Allow CPU hotplug to be enabled
-      torture: Add kvm-remote.sh script for distributed rcutorture test runs
-      refscale: Add acqrel, lock, and lock-irq
-      rcutorture: Abstract read-lock-held checks
-      torture: Fix grace-period rate output
-      torture: Abstract end-of-run summary
-      torture: Make kvm.sh use abstracted kvm-end-run-stats.sh
-      torture:  Make the build machine control N in "make -jN"
-      torture: Make kvm-find-errors.sh account for kvm-remote.sh
-      rcutorture: Judge RCU priority boosting on grace periods, not callbacks
-      torture:  Set kvm.sh language to English
-      rcutorture: Delay-based false positives for RCU priority boosting tests
-      rcutorture: Consolidate rcu_torture_boost() timing and statistics
-      rcutorture: Make rcu_torture_boost_failed() check for GP end
-      rcutorture: Add BUSTED-BOOST to test RCU priority boosting tests
-      rcutorture: Forgive RCU boost failures when CPUs don't pass through QS
-      rcutorture: Don't count CPU-stalled time against priority boosting
-      torture: Make kvm-remote.sh account for network failure in pathname checks
-      torture: Don't cap remote runs by build-system number of CPUs
-      rcutorture: Move mem_dump_obj() tests into separate function
-      rcu: Remove the unused rcu_irq_exit_preempt() function
-      rcu: Invoke rcu_spawn_core_kthreads() from rcu_spawn_gp_kthread()
-      rcu: Add ->rt_priority and ->gp_start to show_rcu_gp_kthreads() output
-      rcu: Add ->gp_max to show_rcu_gp_kthreads() output
-      lockdep: Explicitly flag likely false-positive report
-      rcu: Reject RCU_LOCKDEP_WARN() false positives
-      rcu: Add quiescent states and boost states to show_rcu_gp_kthreads() output
-      rcu: Make RCU priority boosting work on single-CPU rcu_node structures
-      rcu: Make show_rcu_gp_kthreads() dump rcu_node structures blocking GP
-      rcu: Restrict RCU_STRICT_GRACE_PERIOD to at most four CPUs
-      rcu: Make rcu_gp_cleanup() be noinline for tracing
-      rcu: Point to documentation of ordering guarantees
-      rcu: Don't penalize priority boosting when there is nothing to boost
-      rcu: Create an unrcu_pointer() to remove __rcu from a pointer
-      rcu: Improve comments describing RCU read-side critical sections
-      rcu: Remove obsolete rcu_read_unlock() deadlock commentary
-      rcu-tasks: Make ksoftirqd provide RCU Tasks quiescent states
-      tasks-rcu: Make show_rcu_tasks_gp_kthreads() be static inline
-      Merge branches 'bitmaprange.2021.05.10c', 'doc.2021.05.10c', 'fixes.2021.05.13a', 'kvfree_rcu.2021.05.10c', 'mmdumpobj.2021.05.10c', 'nocb.2021.05.12a', 'srcu.2021.05.12a', 'tasks.2021.05.18a' and 'torture.2021.05.10c' into HEAD
-
-Rolf Eike Beer (1):
-      rcu: Fix typo in comment: kthead -> kthread
-
-Uladzislau Rezki (Sony) (6):
-      kvfree_rcu: Use [READ/WRITE]_ONCE() macros to access to nr_bkv_objs
-      kvfree_rcu: Add a bulk-list check when a scheduler is run
-      kvfree_rcu: Update "monitor_todo" once a batch is started
-      kvfree_rcu: Use kfree_rcu_monitor() instead of open-coded variant
-      kvfree_rcu: Fix comments according to current code
-      kvfree_rcu: Refactor kfree_rcu_monitor()
-
-Yury Norov (2):
-      bitmap_parse: Support 'all' semantics
-      rcu/tree_plugin: Don't handle the case of 'all' CPU range
-
-Zhang Qiang (1):
-      kvfree_rcu: Release a page cache under memory pressure
-
-Zhouyi Zhou (1):
-      rcu: Improve tree.c comments and add code cleanups
-
- .../Memory-Ordering/Tree-RCU-Memory-Ordering.rst   |   6 +-
- Documentation/admin-guide/kernel-parameters.rst    |   5 +
- Documentation/admin-guide/kernel-parameters.txt    |   5 +
- include/linux/rcupdate.h                           |  84 +++---
- include/linux/rcutiny.h                            |   1 -
- include/linux/rcutree.h                            |   1 -
- include/linux/srcu.h                               |   6 +
- include/linux/srcutree.h                           |   2 -
- include/linux/timer.h                              |   2 -
- include/trace/events/rcu.h                         |   1 +
- init/main.c                                        |   2 +
- kernel/locking/lockdep.c                           |   6 +-
- kernel/rcu/Kconfig.debug                           |   2 +-
- kernel/rcu/rcu.h                                   |  14 +-
- kernel/rcu/rcutorture.c                            | 315 +++++++++++----------
- kernel/rcu/refscale.c                              | 109 ++++++-
- kernel/rcu/srcutree.c                              |  28 +-
- kernel/rcu/sync.c                                  |   4 +-
- kernel/rcu/tasks.h                                 |  58 +++-
- kernel/rcu/tiny.c                                  |   1 -
- kernel/rcu/tree.c                                  | 313 +++++++++++---------
- kernel/rcu/tree.h                                  |  14 +-
- kernel/rcu/tree_plugin.h                           | 239 ++++++++--------
- kernel/rcu/tree_stall.h                            |  84 +++++-
- kernel/rcu/update.c                                |   8 +-
- kernel/time/timer.c                                |  14 -
- lib/bitmap.c                                       |   9 +
- lib/test_bitmap.c                                  |   7 +
- mm/oom_kill.c                                      |   2 +-
- mm/slab.h                                          |   1 +
- mm/slab_common.c                                   |  12 +-
- mm/slub.c                                          |   8 +
- mm/util.c                                          |   2 +-
- tools/rcu/rcu-cbs.py                               |  46 +++
- .../testing/selftests/rcutorture/bin/kvm-again.sh  |  33 +--
- .../testing/selftests/rcutorture/bin/kvm-build.sh  |   6 +-
- .../selftests/rcutorture/bin/kvm-end-run-stats.sh  |  40 +++
- .../selftests/rcutorture/bin/kvm-find-errors.sh    |   2 +-
- .../selftests/rcutorture/bin/kvm-recheck-rcu.sh    |   2 +-
- .../testing/selftests/rcutorture/bin/kvm-remote.sh | 249 ++++++++++++++++
- tools/testing/selftests/rcutorture/bin/kvm.sh      |  61 ++--
- tools/testing/selftests/rcutorture/bin/torture.sh  |   2 +-
- .../selftests/rcutorture/configs/rcu/BUSTED-BOOST  |  17 ++
- .../rcutorture/configs/rcu/BUSTED-BOOST.boot       |   8 +
- .../selftests/rcutorture/configs/rcuscale/TREE     |   2 +-
- .../selftests/rcutorture/configs/rcuscale/TREE54   |   2 +-
- .../rcutorture/configs/refscale/NOPREEMPT          |   2 +-
- .../selftests/rcutorture/configs/refscale/PREEMPT  |   2 +-
- .../rcutorture/formal/srcu-cbmc/src/locks.h        |   2 +-
- 49 files changed, 1265 insertions(+), 576 deletions(-)
- create mode 100644 tools/rcu/rcu-cbs.py
- create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh
- create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-remote.sh
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
