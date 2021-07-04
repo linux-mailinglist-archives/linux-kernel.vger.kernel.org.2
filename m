@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 415CA3BAFAF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7857E3BAFB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbhGDXDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:03:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
+        id S229732AbhGDXER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhGDXDx (ORCPT
+        with ESMTP id S229530AbhGDXER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:03:53 -0400
+        Sun, 4 Jul 2021 19:04:17 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57539C061574
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 16:01:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E898C061574;
+        Sun,  4 Jul 2021 16:01:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
         Content-ID:Content-Description:In-Reply-To:References;
-        bh=BsjaVVnlc7BGHkveFcSINgUymOR3I5TCVJhUMezkykc=; b=Qp7kYzulFeLOyXMSSBL+isdREF
-        J6X3l7wIqzGtHWMA5t5gpCo865ormumL3/irSYU0GpEFx1Iok170/MBciJk5X7LCZDHSQiSvOI4Xv
-        tZ6A11S6JSCsPmFrgdp3MOqo241irpDnIu3ZcKdG+ipNz1T0ICiDgG+DywsgnJE+oyce8t2GkXzRz
-        bvM65VXyJbod9dJw6Tla/AWgWyXYUHbBySZypzZPfoTiqwnBWjsToEmPuRz9tSskHmQNxgoOgcZpE
-        SdXPIGXDZ/twiDfQf25371e5y++w0EppOmIO1Iz1r2bSBDK0XEAT7la6H2D8ldQavkmTrAw9JpH75
-        nHzhB71Q==;
+        bh=bR0QEHVYAdW3v72Aw8kC9THbMpNs2o+j6IWYhXHWArQ=; b=pR2pENaQmLKuVLljp3vAWZ0rIw
+        D3huTZ2u+hOmQnmJh3zEPRxQRnZYHXfgx+8ZVjjGx6prK94cwlhA9ahlGCm5HaKJHZe0YovDxsHBo
+        hvxOH+4wTugIKll+Ewho0TjDvQfSqgNwzMQm3EwQ0LZkF0nmd3zpVOTMMD1cIyZ98uWbMCLwF9qq5
+        24KpE992qrIZOc6Dt2w7EN14lyAYL+aPIAxtRx/E8w4l8rqp5yG8Js1WEFXTGdTwTk2CHdtcOdTte
+        Cic4X2q5ZinDOlEJGoVrKmItPNPUb6GJdFt7PkBX72sR0Jya6BbbFQqvuN6bRMs1oSZiYYegoq+jZ
+        eHkJi8bg==;
 Received: from [2601:1c0:6280:3f0:7629:afff:fe72:e49d] (helo=bombadil.infradead.org)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0B6y-006sB3-Gh; Sun, 04 Jul 2021 23:01:16 +0000
+        id 1m0B7K-006sCv-2P; Sun, 04 Jul 2021 23:01:38 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] mm: try_to_unmap() is now void
-Date:   Sun,  4 Jul 2021 16:01:15 -0700
-Message-Id: <20210704230115.27694-1-rdunlap@infradead.org>
+        kernel test robot <lkp@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] m68k/coldfire: change pll var. to clk_pll
+Date:   Sun,  4 Jul 2021 16:01:37 -0700
+Message-Id: <20210704230137.28915-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -44,35 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the "CONFIG_MMU is not set" case of converting
-try_to_unmap() from bool to void.
+DEFINE_CLK() makes the variable name be clk_xyz, so variable
+'pll' should instead be 'clk_pll'.
 
-In file included from ../mm/vmscan.c:33:
-../mm/vmscan.c: In function 'shrink_page_list':
-../include/linux/rmap.h:294:34: warning: statement with no effect [-Wunused-value]
-  294 | #define try_to_unmap(page, refs) false
-      |                                  ^~~~~
-../mm/vmscan.c:1508:4: note: in expansion of macro 'try_to_unmap'
- 1508 |    try_to_unmap(page, flags);
-      |    ^~~~~~~~~~~~
+In file included from ../arch/m68k/coldfire/m525x.c:12:
+../arch/m68k/coldfire/m525x.c:29:30: error: 'pll' undeclared here (not in a function)
+   29 |  CLKDEV_INIT(NULL, "pll.0", &pll),
+      |                              ^~~
+../include/linux/clkdev.h:30:10: note: in definition of macro 'CLKDEV_INIT'
+   30 |   .clk = c, \
+      |          ^
+In file included from ../arch/m68k/coldfire/m525x.c:21:
+../arch/m68k/include/asm/mcfclk.h:43:27: warning: 'clk_pll' defined but not used [-Wunused-variable]
+   43 |         static struct clk clk_##clk_ref = { \
+      |                           ^~~~
+../arch/m68k/coldfire/m525x.c:25:1: note: in expansion of macro 'DEFINE_CLK'
+   25 | DEFINE_CLK(pll, "pll.0", MCF_CLK);
+      | ^~~~~~~~~~
 
-Fixes: 1fb08ac63bee ("mm: rmap: make try_to_unmap() void function")
+Fixes: 63aadb77669a ("m68k: coldfire: use clkdev_lookup on most coldfire")
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Yang Shi <shy828301@gmail.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: uclinux-dev@uclinux.org
+Cc: Arnd Bergmann <arnd@arndb.de>
 ---
- include/linux/rmap.h |    2 +-
+ arch/m68k/coldfire/m525x.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20210701.orig/include/linux/rmap.h
-+++ linux-next-20210701/include/linux/rmap.h
-@@ -291,7 +291,7 @@ static inline int page_referenced(struct
- 	return 0;
- }
+--- linux-next-20210701.orig/arch/m68k/coldfire/m525x.c
++++ linux-next-20210701/arch/m68k/coldfire/m525x.c
+@@ -26,7 +26,7 @@ DEFINE_CLK(pll, "pll.0", MCF_CLK);
+ DEFINE_CLK(sys, "sys.0", MCF_BUSCLK);
  
--#define try_to_unmap(page, refs) false
-+#define try_to_unmap(page, refs) do {} while (0)
- 
- static inline int page_mkclean(struct page *page)
- {
+ static struct clk_lookup m525x_clk_lookup[] = {
+-	CLKDEV_INIT(NULL, "pll.0", &pll),
++	CLKDEV_INIT(NULL, "pll.0", &clk_pll),
+ 	CLKDEV_INIT(NULL, "sys.0", &clk_sys),
+ 	CLKDEV_INIT("mcftmr.0", NULL, &clk_sys),
+ 	CLKDEV_INIT("mcftmr.1", NULL, &clk_sys),
