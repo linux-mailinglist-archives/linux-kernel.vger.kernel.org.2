@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6093BB3CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E41F3BB3E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233212AbhGDXTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:19:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50600 "EHLO mail.kernel.org"
+        id S229963AbhGDXU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:20:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234298AbhGDXO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:14:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4C6B6192E;
-        Sun,  4 Jul 2021 23:12:02 +0000 (UTC)
+        id S234329AbhGDXPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:15:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FA6A61959;
+        Sun,  4 Jul 2021 23:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440323;
-        bh=JVLNcAVvJA766fz17y2DwfSvWm1nR3bQ+DMjcfM4Kns=;
+        s=k20201202; t=1625440331;
+        bh=Jwmcti+3We7EFNmLTvoKXWIf7iEHNu7GmJoJp32kUpg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cuJnQ9bDzc4XqowRkIYKcvoByoXaZxDoVRUh0oGosjASQp/FqUTd70EKoL4yWNBWd
-         mPIeq2IhhgZYhdfEFHGTsmbNqzRa/g/I0A0OTGrj7iD4umQTX1Vs4bkd/ypkBQKgVx
-         uOQNZOKVomPTfDn1IrohhcTonkoNg4wvkHqEu2tOiopaZBffnRWx0VQFEm6GhqSoy1
-         tImBtRT4G66XRhPwpEwDoJKk58PuLaVTF4hj1J7rvfogWtuwG/S3rQTLGuTKmyGFtv
-         Z8AD55o4IYwHeixL4hvsSNpJ+a3tpR8ewoqHJIVwKuNw0jzVm0rfzfVOTTHll2GvoG
-         7q2+M2cIITibA==
+        b=tsJDvmPQxc72tE8smHKuhfIsb94KUEn2pYSJJBOwj1jlCEjKEsqY/tEp0fE6r3/+c
+         N906FuAlHAzUFptGP/xTzoaDU6J5MJXauw14d0Q4YfcS1sxSwQkv1fTA/ygY6ITMIf
+         ofubGCam5I/gY2xUv+oEn9R0CByI1bA2wrtU0OUjHr8Z1wYu70D3zm5TjPaDQ6/kL2
+         EOOVNnOPXKIbZW51kRtXYA7jqjqdM2FZJBLXM6oKrvYFkQWJw+x/lFQXiOaQ44V08M
+         jFVs3N9QTmEzcO9s6FJLM+0YuEq+HBr6h/yKDH2/JQeLN25kgDsFZ2ui9zwpz/d91j
+         EkD1W6KhsRuMg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+Cc:     Evgeny Novikov <novikov@ispras.ru>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 06/20] media: cobalt: fix race condition in setting HPD
-Date:   Sun,  4 Jul 2021 19:11:41 -0400
-Message-Id: <20210704231155.1491795-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 12/20] media: st-hva: Fix potential NULL pointer dereferences
+Date:   Sun,  4 Jul 2021 19:11:47 -0400
+Message-Id: <20210704231155.1491795-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704231155.1491795-1-sashal@kernel.org>
 References: <20210704231155.1491795-1-sashal@kernel.org>
@@ -42,68 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 3d37ef41bed0854805ab9af22c422267510e1344 ]
+[ Upstream commit b7fdd208687ba59ebfb09b2199596471c63b69e3 ]
 
-The cobalt_s_bit_sysctrl reads the old register value over PCI,
-then changes a bit and sets writes the new value to the register.
+When ctx_id >= HVA_MAX_INSTANCES in hva_hw_its_irq_thread() it tries to
+access fields of ctx that is NULL at that point. The patch gets rid of
+these accesses.
 
-This is used among other things for setting the HPD output pin.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-But if the HPD is changed for multiple inputs at the same time,
-then this causes a race condition where a stale value is read.
-
-Serialize this function with a mutex.
-
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/cobalt/cobalt-driver.c | 1 +
- drivers/media/pci/cobalt/cobalt-driver.h | 7 ++++++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ drivers/media/platform/sti/hva/hva-hw.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/media/pci/cobalt/cobalt-driver.c b/drivers/media/pci/cobalt/cobalt-driver.c
-index 979634000597..17b717a1c7fa 100644
---- a/drivers/media/pci/cobalt/cobalt-driver.c
-+++ b/drivers/media/pci/cobalt/cobalt-driver.c
-@@ -689,6 +689,7 @@ static int cobalt_probe(struct pci_dev *pci_dev,
- 		return -ENOMEM;
- 	cobalt->pci_dev = pci_dev;
- 	cobalt->instance = i;
-+	mutex_init(&cobalt->pci_lock);
+diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
+index c4d97fb80aae..1653892da9a5 100644
+--- a/drivers/media/platform/sti/hva/hva-hw.c
++++ b/drivers/media/platform/sti/hva/hva-hw.c
+@@ -127,8 +127,7 @@ static irqreturn_t hva_hw_its_irq_thread(int irq, void *arg)
+ 	ctx_id = (hva->sts_reg & 0xFF00) >> 8;
+ 	if (ctx_id >= HVA_MAX_INSTANCES) {
+ 		dev_err(dev, "%s     %s: bad context identifier: %d\n",
+-			ctx->name, __func__, ctx_id);
+-		ctx->hw_err = true;
++			HVA_PREFIX, __func__, ctx_id);
+ 		goto out;
+ 	}
  
- 	retval = v4l2_device_register(&pci_dev->dev, &cobalt->v4l2_dev);
- 	if (retval) {
-diff --git a/drivers/media/pci/cobalt/cobalt-driver.h b/drivers/media/pci/cobalt/cobalt-driver.h
-index ed00dc9d9399..8f9454d30b95 100644
---- a/drivers/media/pci/cobalt/cobalt-driver.h
-+++ b/drivers/media/pci/cobalt/cobalt-driver.h
-@@ -262,6 +262,8 @@ struct cobalt {
- 	int instance;
- 	struct pci_dev *pci_dev;
- 	struct v4l2_device v4l2_dev;
-+	/* serialize PCI access in cobalt_s_bit_sysctrl() */
-+	struct mutex pci_lock;
- 
- 	void __iomem *bar0, *bar1;
- 
-@@ -333,10 +335,13 @@ static inline u32 cobalt_g_sysctrl(struct cobalt *cobalt)
- static inline void cobalt_s_bit_sysctrl(struct cobalt *cobalt,
- 					int bit, int val)
- {
--	u32 ctrl = cobalt_read_bar1(cobalt, COBALT_SYS_CTRL_BASE);
-+	u32 ctrl;
- 
-+	mutex_lock(&cobalt->pci_lock);
-+	ctrl = cobalt_read_bar1(cobalt, COBALT_SYS_CTRL_BASE);
- 	cobalt_write_bar1(cobalt, COBALT_SYS_CTRL_BASE,
- 			(ctrl & ~(1UL << bit)) | (val << bit));
-+	mutex_unlock(&cobalt->pci_lock);
- }
- 
- static inline u32 cobalt_g_sysstat(struct cobalt *cobalt)
 -- 
 2.30.2
 
