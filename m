@@ -2,255 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83263BABC8
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 09:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224733BABCE
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 09:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhGDHUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 03:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhGDHUM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 03:20:12 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D529C0613DB
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 00:17:37 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id v7so14952418pgl.2
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 00:17:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gwprV+HEULsEJDwZz52p62rJDy8elyvDLwuO5n6hP4M=;
-        b=NgdnPOfd6b3O96H8aRbeIKmk+vH5RfMp2Nx3nRMWfJpHyBi8GKXwu7s38mdKLr/Gh4
-         EkyVIEinvkCfBMH5Bm8zc4O3xeWmLnIw++hX6GlkQ1P6cXneJacsnmxsbswoyq/C+7hD
-         iUnX5NIAASXCNNfOhyDskBZ/LUOsuCBQhbDDVjDPOMXLBtZtgFJSahSHXFSN6ZYu+vsg
-         DtJpW1vOCS8mnBjSEmFlaiV9/14LVtriCLtG+aP7ikdJyAOOOxfQJuRJjD5bju3XD8xt
-         XfpOHF6JVDEsubuEKt3P3jJ1sey12d6+zJGzvd3X93nAEobsnPvHA6Csz5+QCca/clMm
-         CaPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gwprV+HEULsEJDwZz52p62rJDy8elyvDLwuO5n6hP4M=;
-        b=d0RKBbAvclKWiTOBLtx52VaIwI/ggys65eYXQ1a7D3MMK3fmVzNWcqS1bGXFJpmceO
-         EnldczXa9jUC4NZ4n0BpUKJgtNFAN6vwRsWSQ5IeDeEppGhY/4ttcaGJ3T1hBTE3E4yt
-         M4oBFwyJ6p0vyLjysPFcovSH7cc9KD8gVvHa3p9ppRfFVxvzPpywybrSt7nuZBztiLc1
-         A82uGtSRe3p1/Taq7HS6N+oqdJbpytu1rWqW51dubRN6mO0gjv0OYjNT7rh3TVWn4Cyw
-         IZuqVF/Q7mtGltPcqeknoN81yUvjcKy/bN101oAWV/I8Acw+VYbG+shTJQxU6X443+Tv
-         YwIQ==
-X-Gm-Message-State: AOAM5313wzpxNgtg67u/jmkOBdoeOqEVWGe1ZP/MpXbwMM/zWaiyJJ+Z
-        KvldWLSSQrLRm5wffEPzQtraPw==
-X-Google-Smtp-Source: ABdhPJwi978cbAVtSkaJxDburLnX4Nsgf0DoJyTtLrWIgWNd8EQiH46mWics+JvO2UBcivpRgXdwFw==
-X-Received: by 2002:aa7:8284:0:b029:312:1c62:cc0f with SMTP id s4-20020aa782840000b02903121c62cc0fmr8568364pfm.75.1625383056872;
-        Sun, 04 Jul 2021 00:17:36 -0700 (PDT)
-Received: from localhost ([103.207.71.35])
-        by smtp.gmail.com with ESMTPSA id 9sm8834236pfv.42.2021.07.04.00.17.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jul 2021 00:17:36 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 10/10] perf auxtrace: Add compat_auxtrace_mmap__{read_head|write_tail}
-Date:   Sun,  4 Jul 2021 15:16:44 +0800
-Message-Id: <20210704071644.107397-11-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210704071644.107397-1-leo.yan@linaro.org>
-References: <20210704071644.107397-1-leo.yan@linaro.org>
+        id S229549AbhGDHgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 03:36:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229492AbhGDHgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 03:36:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC7166135E;
+        Sun,  4 Jul 2021 07:33:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625384024;
+        bh=+K7ot8IQhwPVdZ+DDdetdJY4G5HR5QRJ4UtRyg9RPf8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=q51giXGDSb5jCEj2ueQH+/CYhB9Isf731uC7N+C+8/3GOijlvBiGNnHVjamwf0yBZ
+         fZkS1FEcbZwlGeQWM401cya213eo+2ajnpo5+PbwtI+Uv3wiLyE3T9vSStE5FNb7sy
+         Qb7qtlFMP+q2ZDTILi2vdaEIZcOaUXnipdYwc3VKwS3h9CfrQ7yr3YN3vOQ0x44Ti7
+         yp4M5USCwIlLdI6qlQyF8pt0y1j9h6eJcqNkk74wQ2O8ZIRzF0hwMyIFJL5suW1vnM
+         nUwVdaAGwNUqxrxIfPQl5o8VUTaWodbBCU6t3Mbb1UY+b14ElWnQ4q/NDSjfHA1bhk
+         JhP9Ln9kFq6Wg==
+Date:   Sun, 4 Jul 2021 09:33:34 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PULL REQUEST] i2c for v5.14
+Message-ID: <YOFkTpjuZQsWXDHq@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bOBf+0/2UbJz2SSC"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When perf runs in compat mode (kernel in 64-bit mode and the perf is in
-32-bit mode), the 64-bit value atomicity in the user space cannot be
-assured, E.g. on some architectures, the 64-bit value accessing is split
-into two instructions, one is the low 32-bit accessing and another is
-for the high 32-bit.
 
-This patch introduces two functions compat_auxtrace_mmap__read_head()
-and compat_auxtrace_mmap__write_tail(), as their naming indicates, when
-perf tool works in compat mode, it uses these two functions to access
-the AUX head and tail.  These two functions can allow the perf tool to
-work properly in certain conditions, e.g. when perf tool works in
-snapshot mode with only using AUX head pointer, or perf tool uses the
-AUX buffer and the tail is not bigger than 4GB.
+--bOBf+0/2UbJz2SSC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-When the perf tool cannot handle the case when the AUX tail is overflow
-for 4GB, the function compat_auxtrace_mmap__write_tail() returns -1 and
-the caller is changed to bail out for the overflow error.
+Linus,
 
-Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/perf/util/auxtrace.c |  9 ++--
- tools/perf/util/auxtrace.h | 94 +++++++++++++++++++++++++++++++++++++-
- 2 files changed, 98 insertions(+), 5 deletions(-)
+now that 5b1170560889 ("drm/i915/selftests: Rename pm_ prefixed
+functions names") hit your tree, I can ask you to pull these I2C changes
+for 5.14. Main items:
 
-diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-index db6255b55c90..a430d74b279f 100644
---- a/tools/perf/util/auxtrace.c
-+++ b/tools/perf/util/auxtrace.c
-@@ -1766,10 +1766,13 @@ static int __auxtrace_mmap__read(struct mmap *map,
- 	mm->prev = head;
- 
- 	if (!snapshot) {
--		auxtrace_mmap__write_tail(mm, head);
--		if (itr->read_finish) {
--			int err;
-+		int err;
- 
-+		err = auxtrace_mmap__write_tail(mm, head);
-+		if (err < 0)
-+			return err;
-+
-+		if (itr->read_finish) {
- 			err = itr->read_finish(itr, mm->idx);
- 			if (err < 0)
- 				return err;
-diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-index d68a5e80b217..66de7b6e65ec 100644
---- a/tools/perf/util/auxtrace.h
-+++ b/tools/perf/util/auxtrace.h
-@@ -18,6 +18,8 @@
- #include <asm/bitsperlong.h>
- #include <asm/barrier.h>
- 
-+#include "env.h"
-+
- union perf_event;
- struct perf_session;
- struct evlist;
-@@ -440,23 +442,111 @@ struct auxtrace_cache;
- 
- #ifdef HAVE_AUXTRACE_SUPPORT
- 
-+/*
-+ * In the compat mode kernel runs in 64-bit and perf tool runs in 32-bit mode,
-+ * 32-bit perf tool cannot access 64-bit value atomically, which might lead to
-+ * the issues caused by the below sequence on multiple CPUs: when perf tool
-+ * accesses either the load operation or the store operation for 64-bit value,
-+ * on some architectures the operation is divided into two instructions, one
-+ * is for accessing the low 32-bit value and another is for the high 32-bit;
-+ * thus these two user operations can give the kernel chances to access the
-+ * 64-bit value, and thus leads to the unexpected load values.
-+ *
-+ *   kernel (64-bit)                        user (32-bit)
-+ *
-+ *   if (LOAD ->aux_tail) { --,             LOAD ->aux_head_lo
-+ *       STORE $aux_data      |       ,--->
-+ *       FLUSH $aux_data      |       |     LOAD ->aux_head_hi
-+ *       STORE ->aux_head   --|-------`     smp_rmb()
-+ *   }                        |             LOAD $data
-+ *                            |             smp_mb()
-+ *                            |             STORE ->aux_tail_lo
-+ *                            `----------->
-+ *                                          STORE ->aux_tail_hi
-+ *
-+ * For this reason, it's impossible for the perf tool to work correctly when
-+ * the AUX head or tail is bigger than 4GB (more than 32 bits length); and we
-+ * can not simply limit the AUX ring buffer to less than 4GB, the reason is
-+ * the pointers can be increased monotonically (e.g in snapshot mode), whatever
-+ * the buffer size it is, at the end the head and tail can be bigger than 4GB
-+ * and carry out to the high 32-bit.
-+ *
-+ * To mitigate the issues and improve the user experience, we can allow the
-+ * perf tool working in certain conditions and bail out with error if detect
-+ * any overflow cannot be handled.
-+ *
-+ * For reading the AUX head, it reads out the values for three times, and
-+ * compares the high 4 bytes of the values between the first time and the last
-+ * time, if there has no change for high 4 bytes injected by the kernel during
-+ * the user reading sequence, it's safe for use the second value.
-+ *
-+ * When update the AUX tail and detects any carrying in the high 32 bits, it
-+ * means there have two store operations in user space and it cannot promise
-+ * the atomicity for 64-bit write, so return '-1' in this case to tell the
-+ * caller an overflow error has happened.
-+ */
-+static inline u64 compat_auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
-+{
-+	struct perf_event_mmap_page *pc = mm->userpg;
-+	u64 first, second, last;
-+	u64 mask = (u64)(UINT32_MAX) << 32;
-+
-+	do {
-+		first = READ_ONCE(pc->aux_head);
-+		/* Ensure all reads are done after we read the head */
-+		smp_rmb();
-+		second = READ_ONCE(pc->aux_head);
-+		/* Ensure all reads are done after we read the head */
-+		smp_rmb();
-+		last = READ_ONCE(pc->aux_head);
-+	} while ((first & mask) != (last & mask));
-+
-+	return second;
-+}
-+
-+static inline int compat_auxtrace_mmap__write_tail(struct auxtrace_mmap *mm,
-+						    u64 tail)
-+{
-+	struct perf_event_mmap_page *pc = mm->userpg;
-+	u64 mask = (u64)(UINT32_MAX) << 32;
-+
-+	if (tail & mask)
-+		return -1;
-+
-+	/* Ensure all reads are done before we write the tail out */
-+	smp_mb();
-+	WRITE_ONCE(pc->aux_tail, tail);
-+	return 0;
-+}
-+
- static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
- {
- 	struct perf_event_mmap_page *pc = mm->userpg;
--	u64 head = READ_ONCE(pc->aux_head);
-+	u64 head;
-+
-+#if BITS_PER_LONG == 32
-+	if (kernel_is_64_bit)
-+		return compat_auxtrace_mmap__read_head(mm);
-+#endif
-+	head = READ_ONCE(pc->aux_head);
- 
- 	/* Ensure all reads are done after we read the head */
- 	smp_rmb();
- 	return head;
- }
- 
--static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
-+static inline int auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
- {
- 	struct perf_event_mmap_page *pc = mm->userpg;
- 
-+#if BITS_PER_LONG == 32
-+	if (kernel_is_64_bit)
-+		return compat_auxtrace_mmap__write_tail(mm, tail);
-+#endif
- 	/* Ensure all reads are done before we write the tail out */
- 	smp_mb();
- 	WRITE_ONCE(pc->aux_tail, tail);
-+	return 0;
- }
- 
- int auxtrace_mmap__mmap(struct auxtrace_mmap *mm,
--- 
-2.25.1
+* core supports now bus regulators controlling power for SCL/SDA
+* quite some DT binding conversions to YAML
+* added a seperate DT binding for the optional SMBus Alert feature
+* documentation with examples how to deal with I2C sysfs files
+* some bigger rework for the i801 driver
+* and a few usual driver updates
 
+Please pull.
+
+Thanks,
+
+   Wolfram
+
+
+The following changes since commit c4681547bcce777daf576925a966ffa824edd09d:
+
+  Linux 5.13-rc3 (2021-05-23 11:42:48 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-merge=
+window
+
+for you to fetch changes up to 9d6336831bdc78e5207eaf147cc17228b5e984c3:
+
+  i2c: ali1535: mention that the device should not be disabled (2021-07-02 =
+09:14:46 +0200)
+
+----------------------------------------------------------------
+Alain Volmat (2):
+      i2c: add binding to mark a bus as supporting SMBus-Alert
+      i2c: stm32f7: add SMBus-Alert support
+
+Alex Qiu (1):
+      Documentation: i2c: Add doc for I2C sysfs
+
+Andy Shevchenko (2):
+      i2c: core: Make debug message even more debuggish
+      i2c: cht-wc: Replace of_node by NULL
+
+Bibby Hsieh (1):
+      i2c: core: support bus regulator controlling in adapter
+
+Biju Das (2):
+      dt-bindings: i2c: renesas,riic: Document RZ/G2L I2C controller
+      i2c: riic: Add RZ/G2L support
+
+Chris Packham (1):
+      i2c: mpc: Restore reread of I2C status register
+
+Dmitry Torokhov (1):
+      i2c: core: Disable client irq on reboot/shutdown
+
+Geert Uytterhoeven (10):
+      i2c: rcar: Drop "renesas,i2c-rcar"
+      dt-bindings: i2c: renesas,i2c: Drop "renesas,i2c-rcar"
+      dt-bindings: i2c: renesas,i2c: Convert to json-schema
+      dt-bindings: i2c: renesas,iic-emev2: Convert to json-schema
+      dt-bindings: i2c: renesas,riic: Convert to json-schema
+      MAINTAINERS: Add linux-renesas-soc to the Renesas I2C entries
+      dt-bindings: i2c: i2c-mux: Remove reset-active-low from ssd1307fb exa=
+mples
+      dt-bindings: i2c: renesas,iic: Always declare generic compatibility
+      dt-bindings: i2c: renesas,iic: Convert to json-schema
+      dt-bindings: i2c: ce4100: Replace "ti,pcf8575" by "nxp,pcf8575"
+
+Heiner Kallweit (7):
+      i2c: i801: Remove unneeded warning after wait_event_timeout timeout
+      i2c: i801: Replace waitqueue with completion API
+      i2c: i801: Use standard PCI constants instead of own ones
+      i2c: i801: Improve status polling
+      i2c: i801: Simplify initialization of i2c_board_info in i801_probe_op=
+tional_slaves
+      i2c: i801: Use driver name constant instead of function dev_driver_st=
+ring
+      i2c: i801: Improve i801_setup_hstcfg
+
+Hsin-Yi Wang (2):
+      dt-binding: i2c: mt65xx: add vbus-supply property
+      i2c: mediatek: mt65xx: add optional vbus-supply
+
+Jonathan Marek (1):
+      i2c: qcom-cci: add sm8250 compatible
+
+Kewei.Xu (1):
+      dt-bindings: i2c: update bindings for MT8195 SoC
+
+Krzysztof Kozlowski (3):
+      i2c: xiic: Simplify with dev_err_probe()
+      i2c: cadence: Simplify with dev_err_probe()
+      i2c: davinci: Simplify with dev_err_probe()
+
+Kwon Tae-young (1):
+      i2c: imx: Fix some checkpatch warnings
+
+Liang Chen (1):
+      dt-bindings: i2c: i2c-rk3x: add description for rk3568
+
+Qii Wang (1):
+      i2c: mediatek: Rename i2c irq name
+
+Quan Nguyen (1):
+      i2c: core-smbus: Expose PEC calculate function for generic use
+
+Raviteja Narayanam (1):
+      i2c: cadence: Clear HOLD bit before xfer_size register rolls over
+
+Vignesh Raghavendra (1):
+      dt-bindings: i2c: Move i2c-omap.txt to YAML format
+
+Wolfram Sang (1):
+      i2c: ali1535: mention that the device should not be disabled
+
+Zev Weiss (1):
+      i2c: aspeed: disable additional device addresses on ast2[56]xx
+
+
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Brendan Higgins (1):
+      (Rev.) i2c: aspeed: disable additional device addresses on ast2[56]xx
+
+Daniel Kurtz (1):
+      (Rev.) i2c: i801: Replace waitqueue with completion API
+
+Geert Uytterhoeven (2):
+      (Rev.) i2c: riic: Add RZ/G2L support
+      (Rev.) dt-bindings: i2c: renesas,riic: Document RZ/G2L I2C controller
+
+Guenter Roeck (1):
+      (Rev.) Documentation: i2c: Add doc for I2C sysfs
+
+Hans de Goede (1):
+      (Rev.) i2c: cht-wc: Replace of_node by NULL
+
+Jean Delvare (14):
+      (Rev.) i2c: ali1535: mention that the device should not be disabled
+      (Rev.) i2c: i801: Improve i801_setup_hstcfg
+      (Test) i2c: i801: Improve i801_setup_hstcfg
+      (Rev.) i2c: i801: Use driver name constant instead of function dev_dr=
+iver_string
+      (Test) i2c: i801: Use driver name constant instead of function dev_dr=
+iver_string
+      (Rev.) i2c: i801: Simplify initialization of i2c_board_info in i801_p=
+robe_optional_slaves
+      (Rev.) i2c: i801: Improve status polling
+      (Test) i2c: i801: Improve status polling
+      (Rev.) i2c: i801: Use standard PCI constants instead of own ones
+      (Test) i2c: i801: Use standard PCI constants instead of own ones
+      (Rev.) i2c: i801: Replace waitqueue with completion API
+      (Test) i2c: i801: Replace waitqueue with completion API
+      (Rev.) i2c: i801: Remove unneeded warning after wait_event_timeout ti=
+meout
+      (Test) i2c: i801: Remove unneeded warning after wait_event_timeout ti=
+meout
+
+Joel Stanley (2):
+      (Rev.) i2c: aspeed: disable additional device addresses on ast2[56]xx
+      (Test) i2c: aspeed: disable additional device addresses on ast2[56]xx
+
+Lad Prabhakar (2):
+      (Rev.) i2c: riic: Add RZ/G2L support
+      (Rev.) dt-bindings: i2c: renesas,riic: Document RZ/G2L I2C controller
+
+Loic Poulain (1):
+      (Rev.) i2c: qcom-cci: add sm8250 compatible
+
+Matthias Brugger (3):
+      (Rev.) dt-bindings: i2c: update bindings for MT8195 SoC
+      (Rev.) i2c: mediatek: mt65xx: add optional vbus-supply
+      (Rev.) i2c: core: support bus regulator controlling in adapter
+
+Philipp Zabel (1):
+      (Rev.) i2c: riic: Add RZ/G2L support
+
+Pierre-Yves MORDRET (1):
+      (Rev.) i2c: stm32f7: add SMBus-Alert support
+
+Qii Wang (1):
+      (Rev.) i2c: mediatek: mt65xx: add optional vbus-supply
+
+Rob Herring (6):
+      (Rev.) dt-bindings: i2c: ce4100: Replace "ti,pcf8575" by "nxp,pcf8575"
+      (Rev.) dt-bindings: i2c: renesas,iic: Convert to json-schema
+      (Rev.) dt-bindings: i2c: Move i2c-omap.txt to YAML format
+      (Rev.) dt-bindings: i2c: renesas,riic: Convert to json-schema
+      (Rev.) dt-bindings: i2c: renesas,iic-emev2: Convert to json-schema
+      (Rev.) dt-bindings: i2c: renesas,i2c: Convert to json-schema
+
+Uwe Kleine-K=C3=B6nig (1):
+      (Rev.) i2c: imx: Fix some checkpatch warnings
+
+Vinod Koul (1):
+      (Rev.) i2c: qcom-cci: add sm8250 compatible
+
+ .../devicetree/bindings/i2c/i2c-mt65xx.txt         |   2 +
+ .../devicetree/bindings/i2c/i2c-mux-gpio.txt       |   1 -
+ Documentation/devicetree/bindings/i2c/i2c-omap.txt |  37 --
+ .../devicetree/bindings/i2c/i2c-pxa-pci-ce4100.txt |   4 +-
+ .../devicetree/bindings/i2c/i2c-qcom-cci.txt       |   5 +-
+ .../devicetree/bindings/i2c/i2c-rk3x.yaml          |   1 +
+ Documentation/devicetree/bindings/i2c/i2c.txt      |   7 +-
+ .../devicetree/bindings/i2c/renesas,i2c.txt        |  67 ----
+ .../devicetree/bindings/i2c/renesas,iic-emev2.txt  |  22 --
+ .../devicetree/bindings/i2c/renesas,iic-emev2.yaml |  54 +++
+ .../devicetree/bindings/i2c/renesas,iic.txt        |  72 ----
+ .../devicetree/bindings/i2c/renesas,rcar-i2c.yaml  | 158 +++++++++
+ .../devicetree/bindings/i2c/renesas,riic.txt       |  32 --
+ .../devicetree/bindings/i2c/renesas,riic.yaml      |  93 +++++
+ .../bindings/i2c/renesas,rmobile-iic.yaml          | 149 ++++++++
+ .../devicetree/bindings/i2c/ti,omap4-i2c.yaml      | 102 ++++++
+ Documentation/i2c/i2c-sysfs.rst                    | 395 +++++++++++++++++=
+++++
+ MAINTAINERS                                        |  13 +-
+ drivers/i2c/busses/i2c-ali1535.c                   |   5 +
+ drivers/i2c/busses/i2c-aspeed.c                    |  12 +-
+ drivers/i2c/busses/i2c-cadence.c                   |  57 ++-
+ drivers/i2c/busses/i2c-cht-wc.c                    |   3 +-
+ drivers/i2c/busses/i2c-davinci.c                   |   5 +-
+ drivers/i2c/busses/i2c-i801.c                      | 136 +++----
+ drivers/i2c/busses/i2c-imx.c                       |  19 +-
+ drivers/i2c/busses/i2c-mpc.c                       |   2 +
+ drivers/i2c/busses/i2c-mt65xx.c                    |   9 +-
+ drivers/i2c/busses/i2c-qcom-cci.c                  |   1 +
+ drivers/i2c/busses/i2c-rcar.c                      |   1 -
+ drivers/i2c/busses/i2c-riic.c                      |  23 +-
+ drivers/i2c/busses/i2c-stm32f7.c                   |  73 ++++
+ drivers/i2c/busses/i2c-xiic.c                      |   9 +-
+ drivers/i2c/i2c-core-base.c                        | 108 +++++-
+ drivers/i2c/i2c-core-smbus.c                       |  12 +-
+ include/linux/i2c.h                                |   3 +
+ 35 files changed, 1316 insertions(+), 376 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-omap.txt
+ delete mode 100644 Documentation/devicetree/bindings/i2c/renesas,i2c.txt
+ delete mode 100644 Documentation/devicetree/bindings/i2c/renesas,iic-emev2=
+=2Etxt
+ create mode 100644 Documentation/devicetree/bindings/i2c/renesas,iic-emev2=
+=2Eyaml
+ delete mode 100644 Documentation/devicetree/bindings/i2c/renesas,iic.txt
+ create mode 100644 Documentation/devicetree/bindings/i2c/renesas,rcar-i2c.=
+yaml
+ delete mode 100644 Documentation/devicetree/bindings/i2c/renesas,riic.txt
+ create mode 100644 Documentation/devicetree/bindings/i2c/renesas,riic.yaml
+ create mode 100644 Documentation/devicetree/bindings/i2c/renesas,rmobile-i=
+ic.yaml
+ create mode 100644 Documentation/devicetree/bindings/i2c/ti,omap4-i2c.yaml
+ create mode 100644 Documentation/i2c/i2c-sysfs.rst
+
+--bOBf+0/2UbJz2SSC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDhZEkACgkQFA3kzBSg
+KbYYFQ/+Ic5ZNhdrc03RkXnKt5e1o+szxGnIfR/J7aITMHwz0lJzOdjxx7GOT1dI
+MrPHDw/D1VgO0F/DKMrBW+0c2+eSaOfcA24tIySOcAfPrZm2FdeQ05UnFZt3qbbH
+0E6ZL8fSk6n2iR5Yf8ehlmcJvwtGUrscTOJv9ScStZE7jUW4B9BLZMFENwMBnE/F
+ZKEZX+VU107kl5qDaRoMYDg8ucszPZdHKc81raabSlqwFzdujX43j+eAPs2yTkdf
+rI94Z5FC37U2lsCIxrsh1/7rjWbWBGzc81GvTV2InClzGA27WndAUROh03r0Xgpj
+9VS3HbDoKLWEnOli/VEwSqXwK3BzWOsovWXGlpzAS/9ceG0topn+7/pQ8d3azQqo
+l6DHmSIiHOPVa7l+T33deJ9tG/7pGf8jp8Qfz6hLuPG4n3m1m4t+8wv6Bd1cegQc
+IVFKRR5uS+MroUcxBlvMCcciUmturX7F/DeE4AlRNNHJmro/E/Im/AHL175U0HfH
+Xg64ZPU8gpZ5DDZutzWyztB6w/YK/yBZ0g6mOWk4eBGP6ViAMSOjp5y3bpASDIhz
+XWOFw/Kqzm3zsqApHdxjvUgT+BfDy6Abxnt0RXjwQao7XXEkWEBFoswwIUNc1OSL
+x/xS0nnxfas/uZMpWUiy9B/PLg8fWURUx+PteYt/QyenlMGFm5Q=
+=Hi0o
+-----END PGP SIGNATURE-----
+
+--bOBf+0/2UbJz2SSC--
