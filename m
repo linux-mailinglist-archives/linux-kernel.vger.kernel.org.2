@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D6B3BB2CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268113BB2D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbhGDXQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:16:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57068 "EHLO mail.kernel.org"
+        id S234233AbhGDXQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:16:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233367AbhGDXOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:14:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 714B961364;
-        Sun,  4 Jul 2021 23:09:47 +0000 (UTC)
+        id S233461AbhGDXO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:14:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05A2A61997;
+        Sun,  4 Jul 2021 23:09:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440188;
-        bh=po1r75uTwNP0LtRyFcB82w9+8ZBvCV5A7XbtQYt0yUg=;
+        s=k20201202; t=1625440190;
+        bh=lEsf+MMZK+3GJndDa9D1xTAMOcuSfzQ+aaQ+k6xq4QU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PViTHIpMFAs0YCJlIgAj1X1PRWyd2V/IGlHV/U3+az8Nz/ZW6gEEEyX8hp/loncJ3
-         4TY2O2oH3LJ8vfzBRfATiRRrRxEOLeKJJp2RfsR+0Do7SWbL3bkX5YasrS+L/LB9PQ
-         n38h/McKHpI3i9wqKY4X6tm462FSIeZOxRRM0/aNXsWSYGAazORwaZiusFIenKd7oa
-         urx51S52UlkUKZ13ZvmpsycbUl8Eg9OAWnnBL5zs8TgMWnQ72dq08M6+2oV4toSbZG
-         loFrq4oNO2GN/gmTol1co1+bApzpHi3Y8UXAqU+uhcQ9xZcG7Ch4bh1bZq+NX5si1e
-         IP4pW4+yUUcTg==
+        b=NPVJck0NfeeTo3nHagrp+tj1UQ2+/Z+oglrwcCBYkaA1Yf+KN5KtRBGlS5ToC0zUg
+         9eMIGqeMmxvUSBqI1agn8Gc0oiWz88vgfAEYHuSnZmOHpBsWE2GbdBkX+YDzwHvIFH
+         fE7a/nuc+FUvmId05g32XgcUa1ZwyOo6lB0UL8jZxiL1mfGakAnunaWWC7X+Kbgod8
+         WDlRtpEdIpA5LU4cSo+4YMdb0X36xFLIVdfTxeDb8vAPExsK0aRasgsm1cRpntyZiM
+         ozL9gC/0BPC6mVSjwi8mdaW9ZeipWZSny6KmlHOKLqmEhDVkv2j6pT6AQPGwOWNw9X
+         eKVVK1Jy9vibQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 07/50] media: sti/bdisp: fix pm_runtime_get_sync() usage count
-Date:   Sun,  4 Jul 2021 19:08:55 -0400
-Message-Id: <20210704230938.1490742-7-sashal@kernel.org>
+Cc:     Jay Fang <f.fangjian@huawei.com>, Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 09/50] spi: spi-loopback-test: Fix 'tx_buf' might be 'rx_buf'
+Date:   Sun,  4 Jul 2021 19:08:57 -0400
+Message-Id: <20210704230938.1490742-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704230938.1490742-1-sashal@kernel.org>
 References: <20210704230938.1490742-1-sashal@kernel.org>
@@ -42,65 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Jay Fang <f.fangjian@huawei.com>
 
-[ Upstream commit c44eac5b72e23c31eefc0e10a71d9650036b8341 ]
+[ Upstream commit 9e37a3ab0627011fb63875e9a93094b6fc8ddf48 ]
 
-The pm_runtime_get_sync() internally increments the
-dev->power.usage_count without decrementing it, even on errors.
+In function 'spi_test_run_iter': Value 'tx_buf' might be 'rx_buf'.
 
-The bdisp_start_streaming() doesn't take it into account, which
-would unbalance PM usage counter at bdisp_stop_streaming().
-
-The logic at bdisp_probe() is correct, but the best is to use
-the same call along the driver.
-
-So, replace it by the new pm_runtime_resume_and_get(), introduced by:
-commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-in order to properly decrement the usage counter, avoiding
-a potential PM usage counter leak.
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Jay Fang <f.fangjian@huawei.com>
+Link: https://lore.kernel.org/r/1620629903-15493-5-git-send-email-f.fangjian@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/sti/bdisp/bdisp-v4l2.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/spi/spi-loopback-test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c b/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
-index a55ddf8d185d..16a097f93b42 100644
---- a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
-+++ b/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
-@@ -499,7 +499,7 @@ static int bdisp_start_streaming(struct vb2_queue *q, unsigned int count)
- {
- 	struct bdisp_ctx *ctx = q->drv_priv;
- 	struct vb2_v4l2_buffer *buf;
--	int ret = pm_runtime_get_sync(ctx->bdisp_dev->dev);
-+	int ret = pm_runtime_resume_and_get(ctx->bdisp_dev->dev);
- 
- 	if (ret < 0) {
- 		dev_err(ctx->bdisp_dev->dev, "failed to set runtime PM\n");
-@@ -1364,10 +1364,10 @@ static int bdisp_probe(struct platform_device *pdev)
- 
- 	/* Power management */
- 	pm_runtime_enable(dev);
--	ret = pm_runtime_get_sync(dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0) {
- 		dev_err(dev, "failed to set PM\n");
--		goto err_pm;
-+		goto err_remove;
+diff --git a/drivers/spi/spi-loopback-test.c b/drivers/spi/spi-loopback-test.c
+index 51633b2b6437..69a9df2cbbcf 100644
+--- a/drivers/spi/spi-loopback-test.c
++++ b/drivers/spi/spi-loopback-test.c
+@@ -868,7 +868,7 @@ static int spi_test_run_iter(struct spi_device *spi,
+ 		test.transfers[i].len = len;
+ 		if (test.transfers[i].tx_buf)
+ 			test.transfers[i].tx_buf += tx_off;
+-		if (test.transfers[i].tx_buf)
++		if (test.transfers[i].rx_buf)
+ 			test.transfers[i].rx_buf += rx_off;
  	}
  
- 	/* Filters */
-@@ -1395,6 +1395,7 @@ static int bdisp_probe(struct platform_device *pdev)
- 	bdisp_hw_free_filters(bdisp->dev);
- err_pm:
- 	pm_runtime_put(dev);
-+err_remove:
- 	bdisp_debugfs_remove(bdisp);
- err_v4l2:
- 	v4l2_device_unregister(&bdisp->v4l2_dev);
 -- 
 2.30.2
 
