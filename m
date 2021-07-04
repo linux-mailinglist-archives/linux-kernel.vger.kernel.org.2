@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E1C3BADB7
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 17:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E0B3BADB8
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 17:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbhGDQAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 12:00:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36650 "EHLO
+        id S229725AbhGDQAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 12:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhGDQAA (ORCPT
+        with ESMTP id S229540AbhGDQAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 12:00:00 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE93AC061574
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 08:57:24 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id m15so3996641plx.7
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 08:57:24 -0700 (PDT)
+        Sun, 4 Jul 2021 12:00:43 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42013C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 08:58:08 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id n11so9894341pjo.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 08:58:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=cOMlhnPS9Nt4DVyaFyvYG80jB8+C7ONbrQ+seug7Wxg=;
-        b=o5URaTKfYg6hEi2c9uABs18WKffvL8dz0OICdJ1yAxEuR/TXwk72QVGeTFlSJarms5
-         UMPpX2elcTsDjiA3CrXRXvfBrZpECjVTs9aSmE4qxXzTEkCVroDeaQa2I04anNH/RZAW
-         NBGxGgfSoPoye6T+k7gwgyM2TZHavuHGwpassJvtnZ/8g8mN8rPg7sSpsiOXZ9GiqdfM
-         DIz2BHXn3bEj8veqpi6HBMQLRKock5vXHPauYO35FpsY83dvGNtiASHZiHEPXJbnvLex
-         PaXHeTrCM2qHwoKlgWX0rZ0YF2oLH9fiBzRu3c+thdUa8o8WiyWbKIFfoZgGqq6jh4Ev
-         CzSQ==
+        bh=By1I86ZOhnAYxBe4OcTi1BPRS1LKy0lQmzeoiW7UDbQ=;
+        b=cMPNXsgqYz53r3xjvLoBVNnfyCR1L6nWkQHOCebRjo2a4ijTm5aEbgfBFcRSewNTSr
+         igbL2Gu1r/HKaYKD6RFnsdZKVkC9YfuV8LnPvqnVx3HuTKlemW7WT8aSTcTwRkKxp3jj
+         ILE2vBK9i6YSE6p0AWJrdzZembra1mc0Di8lYfMSoApXtRn+MXoohNgwtxP6gYQ44PiB
+         7H1qK1HyD6Dzp3OrWr/elxg8yNiMWCiVS++k8Y4EntnHwN0NrNkL5DhDZ4Y5REx5utYg
+         wbsGGISQ1mqBz45dA04Lw7poKF+07eQzQ3lSaChdUxzLaOFucbVjpRUcnAb7Idc3QSeD
+         3pGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=cOMlhnPS9Nt4DVyaFyvYG80jB8+C7ONbrQ+seug7Wxg=;
-        b=aTBrw4viJSmi+DefRp6dOsRMwHxN/CSWGB8GaXXd+g6XRmhcC5ephH2TGQVnDkPLVP
-         iMuxTYFQ60BRrr3LSirkOhGBD9Bs2O0ipTxPL1MOcgvGUz9vn1oCpLHy787zEvYecDR0
-         1x8e7kLq0EP5VDDMAC11bU0AYvAGEtlnF2+q7yQ5JcVOoPxfCjOFNgJiwmwuuQ3DY5A+
-         7OVd1NL1nF+t3e68ZGv1lkfGoBkTfvn1bzh96Fi2WBVUJyRb7cCeXlUhMDn9z3TmGorA
-         EDuNTU/qj5nWldUls5haaEIdczlDQXjOjRSVzxYEmOKXw4dFm91k+Al39uiu9lGtONmN
-         3zgQ==
-X-Gm-Message-State: AOAM533vx90+anmKX/ySWLnJ0kfCO/Ub4wrITFRRbIuWZR9po1uIRODi
-        BmAXw6UH/sYEQr1crF3Cm28kEQBXFq8=
-X-Google-Smtp-Source: ABdhPJyDwl9JCVuaMQdmMC6y4d2paPbOl05xHlD+ifHJbTYzblTJLdCGA08hvkzSRCMnkZ9RVYZbRQ==
-X-Received: by 2002:a17:90a:948b:: with SMTP id s11mr10649341pjo.139.1625414244541;
-        Sun, 04 Jul 2021 08:57:24 -0700 (PDT)
+        bh=By1I86ZOhnAYxBe4OcTi1BPRS1LKy0lQmzeoiW7UDbQ=;
+        b=SH1cNHjI9tc+ZryZLkZNMjYPE2e28ssXpJ4f35VuehoLHQfY5Qa4i4fsp2SDtqZZUK
+         uJbXdu0kw44hKfNdmojN/o0JuCWgznNM+pqFo05saNO4WbNeIb8qorF7NdEy5qC+W9/T
+         EvPM1XRnpc3aYcqd/LQ8HbN2F0cGzEpmXBgGOg+eQ/JkcDeFXyHiSU131CTUeSsJdKaf
+         OZEH7QogK0akSO1Q1VmcUCvLFpJK+5acVC8/RQzNlG7YvdbAqEp29I50e7xu7lSck2Xv
+         Hv17W61e51Y7o8/M6UedjubSMVnkYZBUGJe7BEZkdmykW3IwY9wMX7DIwrZpaPL2rTxm
+         Neog==
+X-Gm-Message-State: AOAM531+Ivg9SuMx8RfSrMEWWla91XinUpp/mPfcSSD4W9AA5NErknkD
+        gCaAtJrlfEWOvGNlEbBrErg=
+X-Google-Smtp-Source: ABdhPJx8ZXhW9Ec9WXeeWynvYQtC78Dt3iTCuTcbHTrkxXdJFdtbbe6mii6P4t6f8/Nuufd/7XSgcg==
+X-Received: by 2002:a17:90a:898b:: with SMTP id v11mr6974859pjn.192.1625414287826;
+        Sun, 04 Jul 2021 08:58:07 -0700 (PDT)
 Received: from ojas ([182.69.223.21])
-        by smtp.gmail.com with ESMTPSA id k10sm5690394pfp.63.2021.07.04.08.57.20
+        by smtp.gmail.com with ESMTPSA id 10sm9944717pfh.174.2021.07.04.08.58.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jul 2021 08:57:24 -0700 (PDT)
-Date:   Sun, 4 Jul 2021 21:27:13 +0530
+        Sun, 04 Jul 2021 08:58:07 -0700 (PDT)
+Date:   Sun, 4 Jul 2021 21:27:57 +0530
 From:   Ojaswin Mujoo <ojaswin98@gmail.com>
 To:     nsaenz@kernel.org
 Cc:     gregkh@linuxfoundation.org, stefan.wahren@i2se.com, arnd@arndb.de,
@@ -56,8 +56,9 @@ Cc:     gregkh@linuxfoundation.org, stefan.wahren@i2se.com, arnd@arndb.de,
         bcm-kernel-feedback-list@broadcom.com,
         linux-arm-kernel@lists.infradead.org,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/5] staging: vchiq: Refactor vchiq cdev code
-Message-ID: <84a14939b25b5babed921f7d2bad2975d8639fd3.1625401927.git.ojaswin98@gmail.com>
+Subject: [PATCH v3 2/5] staging: vchiq: Move certain declarations to
+ vchiq_arm.h
+Message-ID: <3ed6ab5cbcc5647c9837a2a20428e954b6fb4de1.1625401927.git.ojaswin98@gmail.com>
 References: <cover.1625401927.git.ojaswin98@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -67,216 +68,233 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the vchiq cdev initialization code to its own function for better
-code organization. Call the initialization function during probe, thus
-shifting the whole cdev creation logic (which was earlier split in
-vchiq_probe() and vchiq_driver_init()) to vchiq_probe().
+Move certain declarations from vchiq_arm.c to vchiq_arm.h to allow
+code sharing. This will be useful when we eventually separate the vchiq
+char driver code from platform code, into its own file.
 
 Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
 ---
- .../interface/vchiq_arm/vchiq_arm.c           | 142 ++++++++++++------
- 1 file changed, 92 insertions(+), 50 deletions(-)
+ .../interface/vchiq_arm/vchiq_arm.c           | 68 ++---------------
+ .../interface/vchiq_arm/vchiq_arm.h           | 73 +++++++++++++++++++
+ 2 files changed, 79 insertions(+), 62 deletions(-)
 
 diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-index b5aac862a298..3a0724fe25ea 100644
+index 3a0724fe25ea..3152466086f3 100644
 --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
 +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-@@ -2134,6 +2134,81 @@ vchiq_fops = {
- 	.read = vchiq_read
+@@ -38,12 +38,6 @@
+ #undef MODULE_PARAM_PREFIX
+ #define MODULE_PARAM_PREFIX DEVICE_NAME "."
+ 
+-/* Some per-instance constants */
+-#define MAX_COMPLETIONS 128
+-#define MAX_SERVICES 64
+-#define MAX_ELEMENTS 8
+-#define MSG_QUEUE_SIZE 128
+-
+ #define KEEPALIVE_VER 1
+ #define KEEPALIVE_VER_MIN KEEPALIVE_VER
+ 
+@@ -51,62 +45,12 @@
+ int vchiq_arm_log_level = VCHIQ_LOG_DEFAULT;
+ int vchiq_susp_log_level = VCHIQ_LOG_ERROR;
+ 
+-struct user_service {
+-	struct vchiq_service *service;
+-	void __user *userdata;
+-	struct vchiq_instance *instance;
+-	char is_vchi;
+-	char dequeue_pending;
+-	char close_pending;
+-	int message_available_pos;
+-	int msg_insert;
+-	int msg_remove;
+-	struct completion insert_event;
+-	struct completion remove_event;
+-	struct completion close_event;
+-	struct vchiq_header *msg_queue[MSG_QUEUE_SIZE];
+-};
+-
+-struct bulk_waiter_node {
+-	struct bulk_waiter bulk_waiter;
+-	int pid;
+-	struct list_head list;
+-};
+-
+-struct vchiq_instance {
+-	struct vchiq_state *state;
+-	struct vchiq_completion_data_kernel completions[MAX_COMPLETIONS];
+-	int completion_insert;
+-	int completion_remove;
+-	struct completion insert_event;
+-	struct completion remove_event;
+-	struct mutex completion_mutex;
+-
+-	int connected;
+-	int closing;
+-	int pid;
+-	int mark;
+-	int use_close_delivered;
+-	int trace;
+-
+-	struct list_head bulk_waiter_list;
+-	struct mutex bulk_waiter_list_mutex;
+-
+-	struct vchiq_debugfs_node debugfs_node;
+-};
+-
+-struct dump_context {
+-	char __user *buf;
+-	size_t actual;
+-	size_t space;
+-	loff_t offset;
+-};
++DEFINE_SPINLOCK(msg_queue_spinlock);
++struct vchiq_state g_state;
+ 
+ static struct cdev    vchiq_cdev;
+ static dev_t          vchiq_devid;
+-static struct vchiq_state g_state;
+ static struct class  *vchiq_class;
+-static DEFINE_SPINLOCK(msg_queue_spinlock);
+ static struct platform_device *bcm2835_camera;
+ static struct platform_device *bcm2835_audio;
+ 
+@@ -199,7 +143,7 @@ int vchiq_initialise(struct vchiq_instance **instance_out)
+ }
+ EXPORT_SYMBOL(vchiq_initialise);
+ 
+-static void free_bulk_waiter(struct vchiq_instance *instance)
++void free_bulk_waiter(struct vchiq_instance *instance)
+ {
+ 	struct bulk_waiter_node *waiter, *next;
+ 
+@@ -561,7 +505,7 @@ add_completion(struct vchiq_instance *instance, enum vchiq_reason reason,
+ 	return VCHIQ_SUCCESS;
+ }
+ 
+-static enum vchiq_status
++enum vchiq_status
+ service_callback(enum vchiq_reason reason, struct vchiq_header *header,
+ 		 unsigned int handle, void *bulk_userdata)
+ {
+@@ -2142,7 +2086,7 @@ vchiq_fops = {
+  *
+  *	Returns 0 on success else returns the error code.
+  */
+-static int vchiq_register_chrdev(struct device *parent)
++int vchiq_register_chrdev(struct device *parent)
+ {
+ 	struct device *vchiq_dev;
+ 	int ret;
+@@ -2201,7 +2145,7 @@ static int vchiq_register_chrdev(struct device *parent)
+  *	vchiq_deregister_chrdev	- Deregister and cleanup the vchiq char
+  *				  driver and device files
+  */
+-static void vchiq_deregister_chrdev(void)
++void vchiq_deregister_chrdev(void)
+ {
+ 	device_destroy(vchiq_class, vchiq_devid);
+ 	cdev_del(&vchiq_cdev);
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.h
+index c7d2cf1f2e68..2453971b6b78 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.h
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.h
+@@ -14,6 +14,12 @@
+ #include "vchiq_core.h"
+ #include "vchiq_debugfs.h"
+ 
++/* Some per-instance constants */
++#define MAX_COMPLETIONS 128
++#define MAX_SERVICES 64
++#define MAX_ELEMENTS 8
++#define MSG_QUEUE_SIZE 128
++
+ enum USE_TYPE_E {
+ 	USE_TYPE_SERVICE,
+ 	USE_TYPE_VCHIQ
+@@ -58,9 +64,63 @@ struct vchiq_drvdata {
+ 	struct rpi_firmware *fw;
  };
  
-+/**
-+ *	vchiq_register_chrdev - Register the char driver for vchiq
-+ *				and create the necessary class and
-+ *				device files in userspace.
-+ *	@parent		The parent of the char device.
-+ *
-+ *	Returns 0 on success else returns the error code.
-+ */
-+static int vchiq_register_chrdev(struct device *parent)
-+{
-+	struct device *vchiq_dev;
-+	int ret;
++struct user_service {
++	struct vchiq_service *service;
++	void __user *userdata;
++	struct vchiq_instance *instance;
++	char is_vchi;
++	char dequeue_pending;
++	char close_pending;
++	int message_available_pos;
++	int msg_insert;
++	int msg_remove;
++	struct completion insert_event;
++	struct completion remove_event;
++	struct completion close_event;
++	struct vchiq_header *msg_queue[MSG_QUEUE_SIZE];
++};
 +
-+	vchiq_class = class_create(THIS_MODULE, DEVICE_NAME);
-+	if (IS_ERR(vchiq_class)) {
-+		pr_err("Failed to create vchiq class\n");
-+		ret = PTR_ERR(vchiq_class);
-+		goto error_exit;
-+	}
++struct bulk_waiter_node {
++	struct bulk_waiter bulk_waiter;
++	int pid;
++	struct list_head list;
++};
 +
-+	ret = alloc_chrdev_region(&vchiq_devid, 0, 1, DEVICE_NAME);
-+	if (ret) {
-+		pr_err("vchiq: Failed to allocate vchiq's chrdev region\n");
-+		goto alloc_region_error;
-+	}
++struct vchiq_instance {
++	struct vchiq_state *state;
++	struct vchiq_completion_data_kernel completions[MAX_COMPLETIONS];
++	int completion_insert;
++	int completion_remove;
++	struct completion insert_event;
++	struct completion remove_event;
++	struct mutex completion_mutex;
 +
-+	cdev_init(&vchiq_cdev, &vchiq_fops);
-+	vchiq_cdev.owner = THIS_MODULE;
-+	ret = cdev_add(&vchiq_cdev, vchiq_devid, 1);
-+	if (ret) {
-+		vchiq_log_error(vchiq_arm_log_level,
-+				"Unable to register vchiq char device");
-+		goto cdev_add_error;
-+	}
++	int connected;
++	int closing;
++	int pid;
++	int mark;
++	int use_close_delivered;
++	int trace;
 +
-+	vchiq_dev = device_create(vchiq_class, parent, vchiq_devid, NULL,
-+				  DEVICE_NAME);
-+	if (IS_ERR(vchiq_dev)) {
-+		vchiq_log_error(vchiq_arm_log_level,
-+				"Failed to create vchiq char device node");
-+		ret = PTR_ERR(vchiq_dev);
-+		goto device_create_error;
-+	}
++	struct list_head bulk_waiter_list;
++	struct mutex bulk_waiter_list_mutex;
 +
-+	vchiq_log_info(vchiq_arm_log_level,
-+		       "vchiq char dev initialised successfully - device %d.%d",
-+			MAJOR(vchiq_devid), MINOR(vchiq_devid));
++	struct vchiq_debugfs_node debugfs_node;
++};
 +
-+	return 0;
++struct dump_context {
++	char __user *buf;
++	size_t actual;
++	size_t space;
++	loff_t offset;
++};
 +
-+device_create_error:
-+	cdev_del(&vchiq_cdev);
-+
-+cdev_add_error:
-+	unregister_chrdev_region(vchiq_devid, 1);
-+
-+alloc_region_error:
-+	class_destroy(vchiq_class);
-+
-+error_exit:
-+	return ret;
-+}
-+
-+/**
-+ *	vchiq_deregister_chrdev	- Deregister and cleanup the vchiq char
-+ *				  driver and device files
-+ */
-+static void vchiq_deregister_chrdev(void)
-+{
-+	device_destroy(vchiq_class, vchiq_devid);
-+	cdev_del(&vchiq_cdev);
-+	unregister_chrdev_region(vchiq_devid, 1);
-+	class_destroy(vchiq_class);
-+}
-+
- /*
-  * Autosuspend related functionality
-  */
-@@ -2644,7 +2719,6 @@ static int vchiq_probe(struct platform_device *pdev)
- 	struct device_node *fw_node;
- 	const struct of_device_id *of_id;
- 	struct vchiq_drvdata *drvdata;
--	struct device *vchiq_dev;
- 	int err;
+ extern int vchiq_arm_log_level;
+ extern int vchiq_susp_log_level;
  
- 	of_id = of_match_node(vchiq_of_match, pdev->dev.of_node);
-@@ -2670,38 +2744,31 @@ static int vchiq_probe(struct platform_device *pdev)
- 	if (err)
- 		goto failed_platform_init;
- 
--	cdev_init(&vchiq_cdev, &vchiq_fops);
--	vchiq_cdev.owner = THIS_MODULE;
--	err = cdev_add(&vchiq_cdev, vchiq_devid, 1);
--	if (err) {
--		vchiq_log_error(vchiq_arm_log_level,
--			"Unable to register device");
--		goto failed_platform_init;
--	}
--
--	vchiq_dev = device_create(vchiq_class, &pdev->dev, vchiq_devid, NULL,
--				  "vchiq");
--	if (IS_ERR(vchiq_dev)) {
--		err = PTR_ERR(vchiq_dev);
--		goto failed_device_create;
--	}
--
- 	vchiq_debugfs_init();
- 
- 	vchiq_log_info(vchiq_arm_log_level,
--		"vchiq: initialised - version %d (min %d), device %d.%d",
--		VCHIQ_VERSION, VCHIQ_VERSION_MIN,
--		MAJOR(vchiq_devid), MINOR(vchiq_devid));
-+		       "vchiq: platform initialised - version %d (min %d)",
-+		       VCHIQ_VERSION, VCHIQ_VERSION_MIN);
++extern spinlock_t msg_queue_spinlock;
++extern struct vchiq_state g_state;
 +
-+	/*
-+	 * Simply exit on error since the function handles cleanup in
-+	 * cases of failure.
-+	 */
-+	err = vchiq_register_chrdev(&pdev->dev);
-+	if (err) {
-+		vchiq_log_warning(vchiq_arm_log_level,
-+				  "Failed to initialize vchiq cdev");
-+		goto error_exit;
-+	}
+ int vchiq_platform_init(struct platform_device *pdev,
+ 			struct vchiq_state *state);
  
- 	bcm2835_camera = vchiq_register_child(pdev, "bcm2835-camera");
- 	bcm2835_audio = vchiq_register_child(pdev, "bcm2835_audio");
+@@ -114,4 +174,17 @@ vchiq_instance_get_trace(struct vchiq_instance *instance);
+ extern void
+ vchiq_instance_set_trace(struct vchiq_instance *instance, int trace);
  
- 	return 0;
- 
--failed_device_create:
--	cdev_del(&vchiq_cdev);
- failed_platform_init:
--	vchiq_log_warning(vchiq_arm_log_level, "could not load vchiq");
-+	vchiq_log_warning(vchiq_arm_log_level, "could not initialize vchiq platform");
-+error_exit:
- 	return err;
- }
- 
-@@ -2710,8 +2777,7 @@ static int vchiq_remove(struct platform_device *pdev)
- 	platform_device_unregister(bcm2835_audio);
- 	platform_device_unregister(bcm2835_camera);
- 	vchiq_debugfs_deinit();
--	device_destroy(vchiq_class, vchiq_devid);
--	cdev_del(&vchiq_cdev);
-+	vchiq_deregister_chrdev();
- 
- 	return 0;
- }
-@@ -2729,31 +2795,9 @@ static int __init vchiq_driver_init(void)
- {
- 	int ret;
- 
--	vchiq_class = class_create(THIS_MODULE, DEVICE_NAME);
--	if (IS_ERR(vchiq_class)) {
--		pr_err("Failed to create vchiq class\n");
--		return PTR_ERR(vchiq_class);
--	}
--
--	ret = alloc_chrdev_region(&vchiq_devid, 0, 1, DEVICE_NAME);
--	if (ret) {
--		pr_err("Failed to allocate vchiq's chrdev region\n");
--		goto class_destroy;
--	}
--
- 	ret = platform_driver_register(&vchiq_driver);
--	if (ret) {
-+	if (ret)
- 		pr_err("Failed to register vchiq driver\n");
--		goto region_unregister;
--	}
--
--	return 0;
--
--region_unregister:
--	unregister_chrdev_region(vchiq_devid, 1);
--
--class_destroy:
--	class_destroy(vchiq_class);
- 
- 	return ret;
- }
-@@ -2762,8 +2806,6 @@ module_init(vchiq_driver_init);
- static void __exit vchiq_driver_exit(void)
- {
- 	platform_driver_unregister(&vchiq_driver);
--	unregister_chrdev_region(vchiq_devid, 1);
--	class_destroy(vchiq_class);
- }
- module_exit(vchiq_driver_exit);
- 
++extern void
++vchiq_deregister_chrdev(void);
++
++extern int
++vchiq_register_chrdev(struct device *parent);
++
++extern enum vchiq_status
++service_callback(enum vchiq_reason reason, struct vchiq_header *header,
++		 unsigned int handle, void *bulk_userdata);
++
++extern void
++free_bulk_waiter(struct vchiq_instance *instance);
++
+ #endif /* VCHIQ_ARM_H */
 -- 
 2.25.1
 
