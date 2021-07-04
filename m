@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADAC3BB454
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BA73BB44D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235037AbhGDXZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:25:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50502 "EHLO mail.kernel.org"
+        id S234914AbhGDXZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:25:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233862AbhGDXOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:14:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD159613D2;
-        Sun,  4 Jul 2021 23:10:36 +0000 (UTC)
+        id S233894AbhGDXOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:14:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 786D56144E;
+        Sun,  4 Jul 2021 23:10:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440237;
-        bh=dAnvGLufU6Ejd9Nv5NgVmc7qe7BYvQ/94+7Rvi8+U/8=;
+        s=k20201202; t=1625440240;
+        bh=w9dbD+sdlf57EC9sS/z688WVEVIgvZnb6vC79ehbFsY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TWF0ta+/pEx8kTX7MqQMrQpIzXQFvWQZ+XNnNt9pHFZaIqOaMJBUDpZTpRUJ9+RIC
-         zIDEvPxgic0FslOAgGqb3uxHaNkAV1i8wvgYEjNkWoVva0lM9AF1aM8tI8FewiLFRL
-         5sd21BwT5Z5gz0HsBDCZH3UEuL2JJlikIEjGxI14o67/AUufrh0riQX1y3gXBTkJd6
-         SiZ7e8Z36OAL36ICJPQmm2+RTaWYb/ll1vUoMR2L/GvJLdeLQJ99+irik440pM2ISc
-         Suhog+mr3AhDpuzUcUCx3//4YLFVpIC5ZzTvV59uicFdAphVe5zFSAGwFnWb0ujYxL
-         4MGjTZLct5dBA==
+        b=i2TFkGBigiAFuKcZrixxhFS31AhEbD61ZCiu0yanoj8wKcy40Zo+FbCkurDqwrb5k
+         l6YwHe1J3RxFs8sZ9YpizrgfTGGX2wLMY4LwicPEeOR0qXbkqOkrbMyzPmgZ3njz8B
+         mIR0//uRqhqy9cHb0YjTJ3kfmH8ddnjDZ5zRpl7PZNSgy8oodMh8vmCaOCRZPHqfXc
+         LhHvmkoNsKO5yLFSNxCeb55h3jfvWkFpKmXMT1xSz5gxum5cjYWsAvfXRK4Tkmzi9t
+         dsWzOnO8+166Fl69WZE3/jEbkiQ58sxGTJGtVhgr8hU6lVu49t1LZg3wMPukwS9eYN
+         wVIjsGpMe4OXA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 46/50] lockding/lockdep: Avoid to find wrong lock dep path in check_irq_usage()
-Date:   Sun,  4 Jul 2021 19:09:34 -0400
-Message-Id: <20210704230938.1490742-46-sashal@kernel.org>
+Cc:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        Axel Lin <axel.lin@ingics.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 48/50] regulator: mt6358: Fix vdram2 .vsel_mask
+Date:   Sun,  4 Jul 2021 19:09:36 -0400
+Message-Id: <20210704230938.1490742-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704230938.1490742-1-sashal@kernel.org>
 References: <20210704230938.1490742-1-sashal@kernel.org>
@@ -43,56 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boqun Feng <boqun.feng@gmail.com>
+From: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
 
-[ Upstream commit 7b1f8c6179769af6ffa055e1169610b51d71edd5 ]
+[ Upstream commit 50c9462edcbf900f3d5097ca3ad60171346124de ]
 
-In the step #3 of check_irq_usage(), we seach backwards to find a lock
-whose usage conflicts the usage of @target_entry1 on safe/unsafe.
-However, we should only keep the irq-unsafe usage of @target_entry1 into
-consideration, because it could be a case where a lock is hardirq-unsafe
-but soft-safe, and in check_irq_usage() we find it because its
-hardirq-unsafe could result into a hardirq-safe-unsafe deadlock, but
-currently since we don't filter out the other usage bits, so we may find
-a lock dependency path softirq-unsafe -> softirq-safe, which in fact
-doesn't cause a deadlock. And this may cause misleading lockdep splats.
+The valid vsel value are 0 and 12, so the .vsel_mask should be 0xf.
 
-Fix this by only keeping LOCKF_ENABLED_IRQ_ALL bits when we try the
-backwards search.
-
-Reported-by: Johannes Berg <johannes@sipsolutions.net>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210618170110.3699115-4-boqun.feng@gmail.com
+Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Reviewed-by: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/1624424169-510-1-git-send-email-hsin-hsiung.wang@mediatek.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/lockdep.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/regulator/mt6358-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index df43bf53e7c5..3ec8fd2e80e5 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -2377,8 +2377,18 @@ static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
- 	 * Step 3: we found a bad match! Now retrieve a lock from the backward
- 	 * list whose usage mask matches the exclusive usage mask from the
- 	 * lock found on the forward list.
-+	 *
-+	 * Note, we should only keep the LOCKF_ENABLED_IRQ_ALL bits, considering
-+	 * the follow case:
-+	 *
-+	 * When trying to add A -> B to the graph, we find that there is a
-+	 * hardirq-safe L, that L -> ... -> A, and another hardirq-unsafe M,
-+	 * that B -> ... -> M. However M is **softirq-safe**, if we use exact
-+	 * invert bits of M's usage_mask, we will find another lock N that is
-+	 * **softirq-unsafe** and N -> ... -> A, however N -> .. -> M will not
-+	 * cause a inversion deadlock.
- 	 */
--	backward_mask = original_mask(target_entry1->class->usage_mask);
-+	backward_mask = original_mask(target_entry1->class->usage_mask & LOCKF_ENABLED_IRQ_ALL);
- 
- 	ret = find_usage_backwards(&this, backward_mask, &target_entry);
- 	if (ret < 0) {
+diff --git a/drivers/regulator/mt6358-regulator.c b/drivers/regulator/mt6358-regulator.c
+index ba42682e06f3..40e09b1d323d 100644
+--- a/drivers/regulator/mt6358-regulator.c
++++ b/drivers/regulator/mt6358-regulator.c
+@@ -457,7 +457,7 @@ static struct mt6358_regulator_info mt6358_regulators[] = {
+ 	MT6358_REG_FIXED("ldo_vaud28", VAUD28,
+ 			 MT6358_LDO_VAUD28_CON0, 0, 2800000),
+ 	MT6358_LDO("ldo_vdram2", VDRAM2, vdram2_voltages, vdram2_idx,
+-		   MT6358_LDO_VDRAM2_CON0, 0, MT6358_LDO_VDRAM2_ELR0, 0x10, 0),
++		   MT6358_LDO_VDRAM2_CON0, 0, MT6358_LDO_VDRAM2_ELR0, 0xf, 0),
+ 	MT6358_LDO("ldo_vsim1", VSIM1, vsim_voltages, vsim_idx,
+ 		   MT6358_LDO_VSIM1_CON0, 0, MT6358_VSIM1_ANA_CON0, 0xf00, 8),
+ 	MT6358_LDO("ldo_vibr", VIBR, vibr_voltages, vibr_idx,
 -- 
 2.30.2
 
