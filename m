@@ -2,471 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8C63BACF2
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 13:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB823BACF4
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Jul 2021 13:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbhGDLxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 07:53:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhGDLxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 07:53:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9ADE9613D2;
-        Sun,  4 Jul 2021 11:51:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625399471;
-        bh=0o7FdprM6BfWGnJ5hLmeXNEU8SIQR+8aFqM7vd3MVLk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oLNrowA6gvEEob4aLlw0FhC37fmmSZoJrDiyusbBNM09LMyiyeaZiCXRnR4hvzzd9
-         C4PAuTta03BvC8vqezHZTwpA3vS2NbRh7bAutOirtRlZVGE5BBp2Ftw64NPApipYnZ
-         PRGfYEHzu6G7Vv7onZ+EKsthq+bNlk8UJbD075nHDw+j3muS6gMhRVPmmrvYEoNP6Y
-         XLYFUmJkBnSjAOr5PbLbwpvE2C4BVCmJ8jZC4Idd7ShWlQ7hLlZajIPWTgurm7duj5
-         EZSCzrpNu2eYmM2bIyElfAsnAmsRFjsuTNuGxTndDiKD4joY56aMR7W+1YEi/rMGzN
-         089vZlvg7/rcw==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Yuri Nudelman <ynudelman@habana.ai>
-Subject: [PATCH 4/4] habanalabs/gaudi: implement state dump
-Date:   Sun,  4 Jul 2021 14:51:02 +0300
-Message-Id: <20210704115102.9223-4-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210704115102.9223-1-ogabbay@kernel.org>
-References: <20210704115102.9223-1-ogabbay@kernel.org>
+        id S229811AbhGDLyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 07:54:01 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:38517 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhGDLx4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 07:53:56 -0400
+Received: by mail-io1-f71.google.com with SMTP id r137-20020a6b2b8f0000b02904fb34cb474cso11230740ior.5
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 04:51:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=9UY5DKEEmLfXsXziPoXaMFmZp4udBip2uaq/1L6U9RI=;
+        b=XGIzeU1JML5D9ep5Deo7XwSFx7HTtQucvQ82j2BspMoPOfepA1yo3e8G/LAdic/Rje
+         VS1w/yrOcWUAXhKXvwaEydpayex/+bYOKlyixXjwxQYS/iwtwgM5Qnt9KIUziP8CaUnY
+         QuebHdD0XcLeHeDfbSp0YC38TA75A51b6eJAj0NGwxMsrN6ZOp0k2GZxxFqkJ+UWnCGh
+         aPP19wS9iVAM7XdZE0tssP52jioohqm35WX4Ghw2xO1PJnJhulyJmqRrF/j+A1fObhuE
+         qEljm1zNuVOMXVRLQj0AlJoQsXO3WGe62jHQQ6pxscYCbrCJ7osOGtQx2KfCtmtNye3H
+         tY6Q==
+X-Gm-Message-State: AOAM531ih+RMCOLUME9wRuoyat2In3h6s0rXSHeDaWf7s+cQkAbgyo0u
+        LIncBoLBKOjRWLkdVP61RoRsc8kfLA3rM8zhxgbEdj94wPOd
+X-Google-Smtp-Source: ABdhPJxgG1Zmk2Hb/OM312E6Ut3E+4dfoWWP62/Aybr62+dtODt08SDlleLZkyvhD/yxvFVOjL3ZZp2WzC/nj01fgCYqiwT7Ej7+
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6602:19:: with SMTP id b25mr7536575ioa.93.1625399480372;
+ Sun, 04 Jul 2021 04:51:20 -0700 (PDT)
+Date:   Sun, 04 Jul 2021 04:51:20 -0700
+In-Reply-To: <0000000000002054ab05c6486083@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a5532d05c64ace69@google.com>
+Subject: Re: [syzbot] possible deadlock in __fs_reclaim_acquire
+From:   syzbot <syzbot+127fd7828d6eeb611703@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
+        daniel@iogearbox.net, ebiederm@xmission.com,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, peterz@infradead.org, shakeelb@google.com,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuri Nudelman <ynudelman@habana.ai>
+syzbot has found a reproducer for the following issue on:
 
-At the first stage, only gaudi core dump shall be implemented, not
-including the status registers.
+HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17e0b9d8300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1700b0b2b41cd52c
+dashboard link: https://syzkaller.appspot.com/bug?extid=127fd7828d6eeb611703
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10542f52300000
 
-Signed-off-by: Yuri Nudelman <ynudelman@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/gaudi/gaudi.c         | 298 +++++++++++++++++-
- drivers/misc/habanalabs/gaudi/gaudiP.h        |  12 +
- .../include/gaudi/asic_reg/gaudi_regs.h       |   3 +
- .../habanalabs/include/gaudi/gaudi_masks.h    |  17 +
- 4 files changed, 319 insertions(+), 11 deletions(-)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+127fd7828d6eeb611703@syzkaller.appspotmail.com
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 29ada339b66a..7dd36d1cb39e 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -106,6 +106,8 @@
- 
- #define GAUDI_PLL_MAX 10
- 
-+#define BIN_REG_STRING_SIZE	sizeof("0b10101010101010101010101010101010")
-+
- static const char gaudi_irq_name[GAUDI_MSI_ENTRIES][GAUDI_MAX_STRING_LEN] = {
- 		"gaudi cq 0_0", "gaudi cq 0_1", "gaudi cq 0_2", "gaudi cq 0_3",
- 		"gaudi cq 1_0", "gaudi cq 1_1", "gaudi cq 1_2", "gaudi cq 1_3",
-@@ -348,7 +350,90 @@ static enum hl_queue_type gaudi_queue_type[GAUDI_QUEUE_ID_SIZE] = {
- 	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_9_3 */
- };
- 
--static s64 gaudi_state_dump_specs_props[SP_MAX] = {0};
-+static struct hl_hw_obj_name_entry gaudi_so_id_to_str[] = {
-+	{ .id = 0,  .name = "SYNC_OBJ_DMA_DOWN_FEEDBACK" },
-+	{ .id = 1,  .name = "SYNC_OBJ_DMA_UP_FEEDBACK" },
-+	{ .id = 2,  .name = "SYNC_OBJ_DMA_STATIC_DRAM_SRAM_FEEDBACK" },
-+	{ .id = 3,  .name = "SYNC_OBJ_DMA_SRAM_DRAM_FEEDBACK" },
-+	{ .id = 4,  .name = "SYNC_OBJ_FIRST_COMPUTE_FINISH" },
-+	{ .id = 5,  .name = "SYNC_OBJ_HOST_DRAM_DONE" },
-+	{ .id = 6,  .name = "SYNC_OBJ_DBG_CTR_DEPRECATED" },
-+	{ .id = 7,  .name = "SYNC_OBJ_DMA_ACTIVATIONS_DRAM_SRAM_FEEDBACK" },
-+	{ .id = 8,  .name = "SYNC_OBJ_ENGINE_SEM_MME_0" },
-+	{ .id = 9,  .name = "SYNC_OBJ_ENGINE_SEM_MME_1" },
-+	{ .id = 10, .name = "SYNC_OBJ_ENGINE_SEM_TPC_0" },
-+	{ .id = 11, .name = "SYNC_OBJ_ENGINE_SEM_TPC_1" },
-+	{ .id = 12, .name = "SYNC_OBJ_ENGINE_SEM_TPC_2" },
-+	{ .id = 13, .name = "SYNC_OBJ_ENGINE_SEM_TPC_3" },
-+	{ .id = 14, .name = "SYNC_OBJ_ENGINE_SEM_TPC_4" },
-+	{ .id = 15, .name = "SYNC_OBJ_ENGINE_SEM_TPC_5" },
-+	{ .id = 16, .name = "SYNC_OBJ_ENGINE_SEM_TPC_6" },
-+	{ .id = 17, .name = "SYNC_OBJ_ENGINE_SEM_TPC_7" },
-+	{ .id = 18, .name = "SYNC_OBJ_ENGINE_SEM_DMA_1" },
-+	{ .id = 19, .name = "SYNC_OBJ_ENGINE_SEM_DMA_2" },
-+	{ .id = 20, .name = "SYNC_OBJ_ENGINE_SEM_DMA_3" },
-+	{ .id = 21, .name = "SYNC_OBJ_ENGINE_SEM_DMA_4" },
-+	{ .id = 22, .name = "SYNC_OBJ_ENGINE_SEM_DMA_5" },
-+	{ .id = 23, .name = "SYNC_OBJ_ENGINE_SEM_DMA_6" },
-+	{ .id = 24, .name = "SYNC_OBJ_ENGINE_SEM_DMA_7" },
-+	{ .id = 25, .name = "SYNC_OBJ_DBG_CTR_0" },
-+	{ .id = 26, .name = "SYNC_OBJ_DBG_CTR_1" },
-+};
-+
-+static struct hl_hw_obj_name_entry gaudi_monitor_id_to_str[] = {
-+	{ .id = 200, .name = "MON_OBJ_DMA_DOWN_FEEDBACK_RESET" },
-+	{ .id = 201, .name = "MON_OBJ_DMA_UP_FEADBACK_RESET" },
-+	{ .id = 203, .name = "MON_OBJ_DRAM_TO_SRAM_QUEUE_FENCE" },
-+	{ .id = 204, .name = "MON_OBJ_TPC_0_CLK_GATE" },
-+	{ .id = 205, .name = "MON_OBJ_TPC_1_CLK_GATE" },
-+	{ .id = 206, .name = "MON_OBJ_TPC_2_CLK_GATE" },
-+	{ .id = 207, .name = "MON_OBJ_TPC_3_CLK_GATE" },
-+	{ .id = 208, .name = "MON_OBJ_TPC_4_CLK_GATE" },
-+	{ .id = 209, .name = "MON_OBJ_TPC_5_CLK_GATE" },
-+	{ .id = 210, .name = "MON_OBJ_TPC_6_CLK_GATE" },
-+	{ .id = 211, .name = "MON_OBJ_TPC_7_CLK_GATE" },
-+};
-+
-+static s64 gaudi_state_dump_specs_props[] = {
-+	[SP_SYNC_OBJ_BASE_ADDR] = mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_SOB_OBJ_0,
-+	[SP_NEXT_SYNC_OBJ_ADDR] = NEXT_SYNC_OBJ_ADDR_INTERVAL,
-+	[SP_SYNC_OBJ_AMOUNT] = NUM_OF_SOB_IN_BLOCK,
-+	[SP_MON_OBJ_WR_ADDR_LOW] =
-+		mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_PAY_ADDRL_0,
-+	[SP_MON_OBJ_WR_ADDR_HIGH] =
-+		mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_PAY_ADDRH_0,
-+	[SP_MON_OBJ_WR_DATA] = mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_PAY_DATA_0,
-+	[SP_MON_OBJ_ARM_DATA] = mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_ARM_0,
-+	[SP_MON_OBJ_STATUS] = mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_STATUS_0,
-+	[SP_MONITORS_AMOUNT] = NUM_OF_MONITORS_IN_BLOCK,
-+	[SP_TPC0_CMDQ] = mmTPC0_QM_GLBL_CFG0,
-+	[SP_TPC0_CFG_SO] = mmTPC0_CFG_QM_SYNC_OBJECT_ADDR,
-+	[SP_NEXT_TPC] = mmTPC1_QM_GLBL_CFG0 - mmTPC0_QM_GLBL_CFG0,
-+	[SP_MME_CMDQ] = mmMME0_QM_GLBL_CFG0,
-+	[SP_MME_CFG_SO] = mmMME0_CTRL_ARCH_DESC_SYNC_OBJECT_ADDR_LOW_LOCAL,
-+	[SP_NEXT_MME] = mmMME2_QM_GLBL_CFG0 - mmMME0_QM_GLBL_CFG0,
-+	[SP_DMA_CMDQ] = mmDMA0_QM_GLBL_CFG0,
-+	[SP_DMA_CFG_SO] = mmDMA0_CORE_WR_COMP_ADDR_LO,
-+	[SP_DMA_QUEUES_OFFSET] = mmDMA1_QM_GLBL_CFG0 - mmDMA0_QM_GLBL_CFG0,
-+	[SP_NUM_OF_MME_ENGINES] = NUM_OF_MME_ENGINES,
-+	[SP_SUB_MME_ENG_NUM] = NUM_OF_MME_SUB_ENGINES,
-+	[SP_NUM_OF_DMA_ENGINES] = NUM_OF_DMA_ENGINES,
-+	[SP_NUM_OF_TPC_ENGINES] = NUM_OF_TPC_ENGINES,
-+	[SP_ENGINE_NUM_OF_QUEUES] = NUM_OF_QUEUES,
-+	[SP_ENGINE_NUM_OF_STREAMS] = NUM_OF_STREAMS,
-+	[SP_ENGINE_NUM_OF_FENCES] = NUM_OF_FENCES,
-+	[SP_FENCE0_CNT_OFFSET] =
-+		mmDMA0_QM_CP_FENCE0_CNT_0 - mmDMA0_QM_GLBL_CFG0,
-+	[SP_FENCE0_RDATA_OFFSET] =
-+		mmDMA0_QM_CP_FENCE0_RDATA_0 - mmDMA0_QM_GLBL_CFG0,
-+	[SP_CP_STS_OFFSET] = mmDMA0_QM_CP_STS_0 - mmDMA0_QM_GLBL_CFG0,
-+	[SP_NUM_CORES] = 1,
-+};
-+
-+static const char * const gaudi_sync_manager_names[] = {
-+	"SYNC_MGR_E_N", "SYNC_MGR_W_N", "SYNC_MGR_E_S", "SYNC_MGR_W_S",
-+	NULL
-+};
- 
- struct ecc_info_extract_params {
- 	u64 block_address;
-@@ -8979,25 +9064,141 @@ static int gaudi_map_pll_idx_to_fw_idx(u32 pll_idx)
- 	}
- }
- 
-+static int gaudi_add_sync_to_engine_map_entry(
-+	struct hl_sync_to_engine_map *map, u32 reg_value,
-+	enum hl_sync_engine_type engine_type, u32 engine_id)
-+{
-+	struct hl_sync_to_engine_map_entry *entry;
-+
-+	/* Reg value represents a partial address of sync object,
-+	 * it is used as unique identifier. For this we need to
-+	 * clear the cutoff cfg base bits from the value.
-+	 */
-+	if (reg_value == 0 || reg_value == 0xffffffff)
-+		return 0;
-+	reg_value -= (u32)CFG_BASE;
-+
-+	/* create a new hash entry */
-+	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
-+	if (!entry)
-+		return -ENOMEM;
-+	entry->engine_type = engine_type;
-+	entry->engine_id = engine_id;
-+	entry->sync_id = reg_value;
-+	hash_add(map->tb, &entry->node, reg_value);
-+
-+	return 0;
-+}
-+
- static int gaudi_gen_sync_to_engine_map(struct hl_device *hdev,
- 				struct hl_sync_to_engine_map *map)
- {
--	/* Not implemented */
-+	struct hl_state_dump_specs *sds = &hdev->state_dump_specs;
-+	struct gaudi_device *gaudi = hdev->asic_specific;
-+	int i, j, rc;
-+	u32 reg_value;
-+
-+	/* Iterate over TPC engines */
-+	for (i = 0; i < sds->props[SP_NUM_OF_TPC_ENGINES]; ++i) {
-+		/* TPC registered must be accessed with clock gating disabled */
-+		mutex_lock(&gaudi->clk_gate_mutex);
-+		hdev->asic_funcs->disable_clock_gating(hdev);
-+
-+		reg_value = RREG32(sds->props[SP_TPC0_CFG_SO] +
-+					sds->props[SP_NEXT_TPC] * i);
-+
-+		/* We can reenable clock_gating */
-+		hdev->asic_funcs->set_clock_gating(hdev);
-+		mutex_unlock(&gaudi->clk_gate_mutex);
-+
-+		rc = gaudi_add_sync_to_engine_map_entry(map, reg_value,
-+							ENGINE_TPC, i);
-+		if (rc)
-+			goto free_sync_to_engine_map;
-+	}
-+
-+	/* Iterate over MME engines */
-+	for (i = 0; i < sds->props[SP_NUM_OF_MME_ENGINES]; ++i) {
-+		for (j = 0; j < sds->props[SP_SUB_MME_ENG_NUM]; ++j) {
-+			/* MME registered must be accessed with clock gating
-+			 * disabled
-+			 */
-+			mutex_lock(&gaudi->clk_gate_mutex);
-+			hdev->asic_funcs->disable_clock_gating(hdev);
-+
-+			reg_value = RREG32(sds->props[SP_MME_CFG_SO] +
-+						sds->props[SP_NEXT_MME] * i +
-+						j * sizeof(u32));
-+
-+			/* We can reenable clock_gating */
-+			hdev->asic_funcs->set_clock_gating(hdev);
-+			mutex_unlock(&gaudi->clk_gate_mutex);
-+
-+			rc = gaudi_add_sync_to_engine_map_entry(
-+				map, reg_value, ENGINE_MME,
-+				i * sds->props[SP_SUB_MME_ENG_NUM] + j);
-+			if (rc)
-+				goto free_sync_to_engine_map;
-+		}
-+	}
-+
-+	/* Iterate over DMA engines */
-+	for (i = 0; i < sds->props[SP_NUM_OF_DMA_ENGINES]; ++i) {
-+		reg_value = RREG32(sds->props[SP_DMA_CFG_SO] +
-+					sds->props[SP_DMA_QUEUES_OFFSET] * i);
-+		rc = gaudi_add_sync_to_engine_map_entry(map, reg_value,
-+							ENGINE_DMA, i);
-+		if (rc)
-+			goto free_sync_to_engine_map;
-+	}
-+
- 	return 0;
-+
-+free_sync_to_engine_map:
-+	hl_state_dump_free_sync_to_engine_map(map);
-+
-+	return rc;
- }
- 
- static int gaudi_monitor_valid(struct hl_mon_state_dump *mon)
- {
--	/* Not implemented */
--	return 0;
-+	return FIELD_GET(
-+		SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_STATUS_0_VALID_MASK,
-+		mon->status);
- }
- 
- static int gaudi_print_single_monitor(char **buf, size_t *size, size_t *offset,
- 				struct hl_device *hdev,
- 				struct hl_mon_state_dump *mon)
- {
--	/* Not implemented */
--	return 0;
-+	const char *name;
-+	char scratch_buf1[BIN_REG_STRING_SIZE],
-+		scratch_buf2[BIN_REG_STRING_SIZE];
-+
-+	name = hl_state_dump_get_monitor_name(hdev, mon);
-+	if (!name)
-+		name = "";
-+
-+	return hl_snprintf_resize(
-+		buf, size, offset,
-+		"Mon id: %u%s, wait for group id: %u mask %s to reach val: %u and write %u to address 0x%llx. Pending: %s",
-+		mon->id, name,
-+		FIELD_GET(SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_ARM_0_SID_MASK,
-+				mon->arm_data),
-+		hl_format_as_binary(
-+			scratch_buf1, sizeof(scratch_buf1),
-+			FIELD_GET(
-+				SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_ARM_0_MASK_MASK,
-+				mon->arm_data)),
-+		FIELD_GET(SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_ARM_0_SOD_MASK,
-+				mon->arm_data),
-+		mon->wr_data,
-+		(((u64)mon->wr_addr_high) << 32) | mon->wr_addr_low,
-+		hl_format_as_binary(
-+			scratch_buf2, sizeof(scratch_buf2),
-+			FIELD_GET(
-+				SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_STATUS_0_PENDING_MASK,
-+				mon->status)));
- }
- 
- 
-@@ -9006,8 +9207,68 @@ static int gaudi_print_fences_single_engine(
- 	enum hl_sync_engine_type engine_type, u32 engine_id, char **buf,
- 	size_t *size, size_t *offset)
- {
--	/* Not implemented */
--	return 0;
-+	struct hl_state_dump_specs *sds = &hdev->state_dump_specs;
-+	int rc = -ENOMEM, i;
-+	u32 *statuses, *fences;
-+
-+	statuses = kcalloc(sds->props[SP_ENGINE_NUM_OF_QUEUES],
-+			sizeof(*statuses), GFP_KERNEL);
-+	if (!statuses)
-+		goto out;
-+
-+	fences = kcalloc(sds->props[SP_ENGINE_NUM_OF_FENCES] *
-+				sds->props[SP_ENGINE_NUM_OF_QUEUES],
-+			 sizeof(*fences), GFP_KERNEL);
-+	if (!fences)
-+		goto free_status;
-+
-+	for (i = 0; i < sds->props[SP_ENGINE_NUM_OF_FENCES]; ++i)
-+		statuses[i] = RREG32(status_base_offset + i * sizeof(u32));
-+
-+	for (i = 0; i < sds->props[SP_ENGINE_NUM_OF_FENCES] *
-+				sds->props[SP_ENGINE_NUM_OF_QUEUES]; ++i)
-+		fences[i] = RREG32(base_offset + i * sizeof(u32));
-+
-+	/* The actual print */
-+	for (i = 0; i < sds->props[SP_ENGINE_NUM_OF_QUEUES]; ++i) {
-+		u32 fence_id;
-+		u64 fence_cnt, fence_rdata;
-+		const char *engine_name;
-+
-+		if (!FIELD_GET(TPC0_QM_CP_STS_0_FENCE_IN_PROGRESS_MASK,
-+			statuses[i]))
-+			continue;
-+
-+		fence_id =
-+			FIELD_GET(TPC0_QM_CP_STS_0_FENCE_ID_MASK, statuses[i]);
-+		fence_cnt = base_offset + CFG_BASE +
-+			sizeof(u32) *
-+			(i + fence_id * sds->props[SP_ENGINE_NUM_OF_QUEUES]);
-+		fence_rdata = fence_cnt - sds->props[SP_FENCE0_CNT_OFFSET] +
-+				sds->props[SP_FENCE0_RDATA_OFFSET];
-+		engine_name = hl_sync_engine_to_string(engine_type);
-+
-+		rc = hl_snprintf_resize(
-+			buf, size, offset,
-+			"%s%u, stream %u: fence id %u cnt = 0x%llx (%s%u_QM.CP_FENCE%u_CNT_%u) rdata = 0x%llx (%s%u_QM.CP_FENCE%u_RDATA_%u) value = %u, cp_status = %u\n",
-+			engine_name, engine_id,
-+			i, fence_id,
-+			fence_cnt, engine_name, engine_id, fence_id, i,
-+			fence_rdata, engine_name, engine_id, fence_id, i,
-+			fences[fence_id],
-+			statuses[i]);
-+		if (rc)
-+			goto free_fences;
-+	}
-+
-+	rc = 0;
-+
-+free_fences:
-+	kfree(fences);
-+free_status:
-+	kfree(statuses);
-+out:
-+	return rc;
- }
- 
- 
-@@ -9020,9 +9281,24 @@ static struct hl_state_dump_specs_funcs gaudi_state_dump_funcs = {
- 
- static void gaudi_state_dump_init(struct hl_device *hdev)
- {
--	/* Not implemented */
--	hdev->state_dump_specs.props = gaudi_state_dump_specs_props;
--	hdev->state_dump_specs.funcs = gaudi_state_dump_funcs;
-+	struct hl_state_dump_specs *sds = &hdev->state_dump_specs;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(gaudi_so_id_to_str); ++i)
-+		hash_add(sds->so_id_to_str_tb,
-+			&gaudi_so_id_to_str[i].node,
-+			gaudi_so_id_to_str[i].id);
-+
-+	for (i = 0; i < ARRAY_SIZE(gaudi_monitor_id_to_str); ++i)
-+		hash_add(sds->monitor_id_to_str_tb,
-+			&gaudi_monitor_id_to_str[i].node,
-+			gaudi_monitor_id_to_str[i].id);
-+
-+	sds->props = gaudi_state_dump_specs_props;
-+
-+	sds->sync_namager_names = gaudi_sync_manager_names;
-+
-+	sds->funcs = gaudi_state_dump_funcs;
- }
- 
- static const struct hl_asic_funcs gaudi_funcs = {
-diff --git a/drivers/misc/habanalabs/gaudi/gaudiP.h b/drivers/misc/habanalabs/gaudi/gaudiP.h
-index 957bf3720f70..838e98b0d43d 100644
---- a/drivers/misc/habanalabs/gaudi/gaudiP.h
-+++ b/drivers/misc/habanalabs/gaudi/gaudiP.h
-@@ -200,6 +200,18 @@
- #define HW_CAP_TPC_MASK		GENMASK(31, 24)
- #define HW_CAP_TPC_SHIFT	24
- 
-+#define NEXT_SYNC_OBJ_ADDR_INTERVAL \
-+	(mmSYNC_MNGR_W_N_SYNC_MNGR_OBJS_SOB_OBJ_0 - \
-+	 mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_SOB_OBJ_0)
-+#define NUM_OF_MME_ENGINES			2
-+#define NUM_OF_MME_SUB_ENGINES		2
-+#define NUM_OF_TPC_ENGINES			8
-+#define NUM_OF_DMA_ENGINES			8
-+#define NUM_OF_QUEUES				5
-+#define NUM_OF_STREAMS				4
-+#define NUM_OF_FENCES				4
-+
-+
- #define GAUDI_CPU_PCI_MSB_ADDR(addr)	(((addr) & GENMASK_ULL(49, 39)) >> 39)
- #define GAUDI_PCI_TO_CPU_ADDR(addr)			\
- 	do {						\
-diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h
-index 5bb54b34a8ae..ffdfbd9b3220 100644
---- a/drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h
-+++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h
-@@ -126,6 +126,9 @@
- #define mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_SOB_OBJ_1                     0x4F2004
- #define mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_SOB_OBJ_2047                  0x4F3FFC
- #define mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_PAY_ADDRL_0               0x4F4000
-+#define mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_PAY_ADDRH_0               0x4F4800
-+#define mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_PAY_DATA_0                0x4F5000
-+#define mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_ARM_0                     0x4F5800
- #define mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_STATUS_0                  0x4F6000
- #define mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_STATUS_511                0x4F67FC
- 
-diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h b/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h
-index 9aea7e996654..acc85d3ed98b 100644
---- a/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h
-+++ b/drivers/misc/habanalabs/include/gaudi/gaudi_masks.h
-@@ -449,4 +449,21 @@ enum axi_id {
- #define PCIE_AUX_FLR_CTRL_HW_CTRL_MASK                               0x1
- #define PCIE_AUX_FLR_CTRL_INT_MASK_MASK                              0x2
- 
-+#define SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_STATUS_0_VALID_SHIFT        0
-+#define SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_STATUS_0_VALID_MASK         0x1
-+#define SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_STATUS_0_PENDING_SHIFT      1
-+#define SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_STATUS_0_PENDING_MASK       0x1FE
-+#define SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_ARM_0_SID_SHIFT             0
-+#define SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_ARM_0_SID_MASK              0xFF
-+#define SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_ARM_0_MASK_SHIFT            8
-+#define SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_ARM_0_MASK_MASK             0xFF00
-+#define SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_ARM_0_SOP_SHIFT             16
-+#define SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_ARM_0_SOP_MASK              0x10000
-+#define SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_ARM_0_SOD_SHIFT             17
-+#define SYNC_MNGR_W_S_SYNC_MNGR_OBJS_MON_ARM_0_SOD_MASK              0xFFFE0000
-+#define TPC0_QM_CP_STS_0_FENCE_ID_SHIFT                              20
-+#define TPC0_QM_CP_STS_0_FENCE_ID_MASK                               0x300000
-+#define TPC0_QM_CP_STS_0_FENCE_IN_PROGRESS_SHIFT                     22
-+#define TPC0_QM_CP_STS_0_FENCE_IN_PROGRESS_MASK                      0x400000
-+
- #endif /* GAUDI_MASKS_H_ */
--- 
-2.25.1
+======================================================
+WARNING: possible circular locking dependency detected
+5.13.0-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-execprog/8416 is trying to acquire lock:
+ffffffff8cfd6720 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:4222
+
+but task is already holding lock:
+ffff8880b9b31088 (lock#2){-.-.}-{2:2}, at: local_lock_acquire+0x7/0x130 include/linux/local_lock_internal.h:41
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (lock#2){-.-.}-{2:2}:
+       lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+       local_lock_acquire+0x23/0x130 include/linux/local_lock_internal.h:42
+       free_unref_page+0x242/0x550 mm/page_alloc.c:3439
+       mm_free_pgd kernel/fork.c:636 [inline]
+       __mmdrop+0xae/0x3f0 kernel/fork.c:687
+       mmdrop include/linux/sched/mm.h:49 [inline]
+       finish_task_switch+0x221/0x630 kernel/sched/core.c:4582
+       context_switch kernel/sched/core.c:4686 [inline]
+       __schedule+0xc0f/0x11f0 kernel/sched/core.c:5940
+       preempt_schedule_notrace+0x12c/0x170 kernel/sched/core.c:6179
+       preempt_schedule_notrace_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:36
+       rcu_read_unlock_sched_notrace include/linux/rcupdate.h:809 [inline]
+       trace_lock_release+0x9f/0x140 include/trace/events/lock.h:58
+       lock_release+0x81/0x7b0 kernel/locking/lockdep.c:5636
+       might_alloc include/linux/sched/mm.h:199 [inline]
+       slab_pre_alloc_hook mm/slab.h:485 [inline]
+       slab_alloc_node mm/slub.c:2891 [inline]
+       slab_alloc mm/slub.c:2978 [inline]
+       kmem_cache_alloc+0x41/0x340 mm/slub.c:2983
+       kmem_cache_zalloc include/linux/slab.h:711 [inline]
+       attach_epitem fs/eventpoll.c:1414 [inline]
+       ep_insert fs/eventpoll.c:1468 [inline]
+       do_epoll_ctl+0x13a7/0x2f70 fs/eventpoll.c:2133
+       __do_sys_epoll_ctl fs/eventpoll.c:2184 [inline]
+       __se_sys_epoll_ctl fs/eventpoll.c:2175 [inline]
+       __x64_sys_epoll_ctl+0x14e/0x190 fs/eventpoll.c:2175
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #0 (fs_reclaim){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3051 [inline]
+       check_prevs_add+0x4f9/0x5b30 kernel/locking/lockdep.c:3174
+       validate_chain kernel/locking/lockdep.c:3789 [inline]
+       __lock_acquire+0x4476/0x6100 kernel/locking/lockdep.c:5015
+       lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+       __fs_reclaim_acquire+0x20/0x30 mm/page_alloc.c:4564
+       fs_reclaim_acquire+0x59/0xf0 mm/page_alloc.c:4578
+       prepare_alloc_pages+0x151/0x5a0 mm/page_alloc.c:5176
+       __alloc_pages+0x14d/0x5f0 mm/page_alloc.c:5375
+       stack_depot_save+0x361/0x490 lib/stackdepot.c:303
+       save_stack+0xf9/0x1f0 mm/page_owner.c:120
+       __set_page_owner+0x42/0x2f0 mm/page_owner.c:181
+       prep_new_page mm/page_alloc.c:2445 [inline]
+       __alloc_pages_bulk+0x9f2/0x1090 mm/page_alloc.c:5313
+       alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
+       vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
+       __vmalloc_area_node mm/vmalloc.c:2845 [inline]
+       __vmalloc_node_range+0x3ad/0x7f0 mm/vmalloc.c:2947
+       vmalloc_user+0x70/0x80 mm/vmalloc.c:3082
+       kcov_mmap+0x28/0x130 kernel/kcov.c:465
+       call_mmap include/linux/fs.h:2119 [inline]
+       mmap_region+0x1410/0x1df0 mm/mmap.c:1809
+       do_mmap+0x930/0x11a0 mm/mmap.c:1585
+       vm_mmap_pgoff+0x19e/0x2b0 mm/util.c:519
+       ksys_mmap_pgoff+0x504/0x7b0 mm/mmap.c:1636
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(lock#2);
+                               lock(fs_reclaim);
+                               lock(lock#2);
+  lock(fs_reclaim);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-execprog/8416:
+ #0: ffff8880161e0128 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_write_lock_killable include/linux/mmap_lock.h:87 [inline]
+ #0: ffff8880161e0128 (&mm->mmap_lock#2){++++}-{3:3}, at: vm_mmap_pgoff+0x14d/0x2b0 mm/util.c:517
+ #1: ffff8880b9b31088 (lock#2){-.-.}-{2:2}, at: local_lock_acquire+0x7/0x130 include/linux/local_lock_internal.h:41
+
+stack backtrace:
+CPU: 1 PID: 8416 Comm: syz-execprog Not tainted 5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:96
+ print_circular_bug+0xb17/0xdc0 kernel/locking/lockdep.c:2009
+ check_noncircular+0x2cc/0x390 kernel/locking/lockdep.c:2131
+ check_prev_add kernel/locking/lockdep.c:3051 [inline]
+ check_prevs_add+0x4f9/0x5b30 kernel/locking/lockdep.c:3174
+ validate_chain kernel/locking/lockdep.c:3789 [inline]
+ __lock_acquire+0x4476/0x6100 kernel/locking/lockdep.c:5015
+ lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+ __fs_reclaim_acquire+0x20/0x30 mm/page_alloc.c:4564
+ fs_reclaim_acquire+0x59/0xf0 mm/page_alloc.c:4578
+ prepare_alloc_pages+0x151/0x5a0 mm/page_alloc.c:5176
+ __alloc_pages+0x14d/0x5f0 mm/page_alloc.c:5375
+ stack_depot_save+0x361/0x490 lib/stackdepot.c:303
+ save_stack+0xf9/0x1f0 mm/page_owner.c:120
+ __set_page_owner+0x42/0x2f0 mm/page_owner.c:181
+ prep_new_page mm/page_alloc.c:2445 [inline]
+ __alloc_pages_bulk+0x9f2/0x1090 mm/page_alloc.c:5313
+ alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
+ vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
+ __vmalloc_area_node mm/vmalloc.c:2845 [inline]
+ __vmalloc_node_range+0x3ad/0x7f0 mm/vmalloc.c:2947
+ vmalloc_user+0x70/0x80 mm/vmalloc.c:3082
+ kcov_mmap+0x28/0x130 kernel/kcov.c:465
+ call_mmap include/linux/fs.h:2119 [inline]
+ mmap_region+0x1410/0x1df0 mm/mmap.c:1809
+ do_mmap+0x930/0x11a0 mm/mmap.c:1585
+ vm_mmap_pgoff+0x19e/0x2b0 mm/util.c:519
+ ksys_mmap_pgoff+0x504/0x7b0 mm/mmap.c:1636
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4b132a
+Code: e8 db 57 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 4c 8b 54 24 28 4c 8b 44 24 30 4c 8b 4c 24 38 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 40 ff ff ff ff 48 c7 44 24 48
+RSP: 002b:000000c000173a10 EFLAGS: 00000202 ORIG_RAX: 0000000000000009
+RAX: ffffffffffffffda RBX: 000000c000020800 RCX: 00000000004b132a
+RDX: 0000000000000003 RSI: 0000000000080000 RDI: 0000000000000000
+RBP: 000000c000173a70 R08: 0000000000000006 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000202 R12: 0000000000727f1a
+R13: 00000000000001f6 R14: 0000000000000200 R15: 0000000000000100
+BUG: sleeping function called from invalid context at mm/page_alloc.c:5179
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 8416, name: syz-execprog
+INFO: lockdep is turned off.
+irq event stamp: 70646
+hardirqs last  enabled at (70645): [<ffffffff89cf038b>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (70645): [<ffffffff89cf038b>] _raw_spin_unlock_irqrestore+0x8b/0x120 kernel/locking/spinlock.c:191
+hardirqs last disabled at (70646): [<ffffffff81be4351>] __alloc_pages_bulk+0x801/0x1090 mm/page_alloc.c:5291
+softirqs last  enabled at (69738): [<ffffffff814d4fbb>] invoke_softirq kernel/softirq.c:432 [inline]
+softirqs last  enabled at (69738): [<ffffffff814d4fbb>] __irq_exit_rcu+0x21b/0x260 kernel/softirq.c:636
+softirqs last disabled at (69687): [<ffffffff814d4fbb>] invoke_softirq kernel/softirq.c:432 [inline]
+softirqs last disabled at (69687): [<ffffffff814d4fbb>] __irq_exit_rcu+0x21b/0x260 kernel/softirq.c:636
+CPU: 1 PID: 8416 Comm: syz-execprog Not tainted 5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:96
+ ___might_sleep+0x4e5/0x6b0 kernel/sched/core.c:9153
+ prepare_alloc_pages+0x1c0/0x5a0 mm/page_alloc.c:5179
+ __alloc_pages+0x14d/0x5f0 mm/page_alloc.c:5375
+ stack_depot_save+0x361/0x490 lib/stackdepot.c:303
+ save_stack+0xf9/0x1f0 mm/page_owner.c:120
+ __set_page_owner+0x42/0x2f0 mm/page_owner.c:181
+ prep_new_page mm/page_alloc.c:2445 [inline]
+ __alloc_pages_bulk+0x9f2/0x1090 mm/page_alloc.c:5313
+ alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
+ vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
+ __vmalloc_area_node mm/vmalloc.c:2845 [inline]
+ __vmalloc_node_range+0x3ad/0x7f0 mm/vmalloc.c:2947
+ vmalloc_user+0x70/0x80 mm/vmalloc.c:3082
+ kcov_mmap+0x28/0x130 kernel/kcov.c:465
+ call_mmap include/linux/fs.h:2119 [inline]
+ mmap_region+0x1410/0x1df0 mm/mmap.c:1809
+ do_mmap+0x930/0x11a0 mm/mmap.c:1585
+ vm_mmap_pgoff+0x19e/0x2b0 mm/util.c:519
+ ksys_mmap_pgoff+0x504/0x7b0 mm/mmap.c:1636
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4b132a
+Code: e8 db 57 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 4c 8b 54 24 28 4c 8b 44 24 30 4c 8b 4c 24 38 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 40 ff ff ff ff 48 c7 44 24 48
+RSP: 002b:000000c000173a10 EFLAGS: 00000202 ORIG_RAX: 0000000000000009
+RAX: ffffffffffffffda RBX: 000000c000020800 RCX: 00000000004b132a
+RDX: 0000000000000003 RSI: 0000000000080000 RDI: 0000000000000000
+RBP: 000000c000173a70 R08: 0000000000000006 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000202 R12: 0000000000727f1a
+R13: 00000000000001f6 R14: 0000000000000200 R15: 0000000000000100
 
