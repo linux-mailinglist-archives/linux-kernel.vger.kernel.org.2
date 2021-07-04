@@ -2,109 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8F43BAF69
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 00:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7013BAF77
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 00:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhGDW4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 18:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
+        id S229934AbhGDW6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 18:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhGDW4G (ORCPT
+        with ESMTP id S229642AbhGDW6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 18:56:06 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B99C061574
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 15:53:28 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id u25so21991281ljj.11
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 15:53:28 -0700 (PDT)
+        Sun, 4 Jul 2021 18:58:38 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BBCDC061574;
+        Sun,  4 Jul 2021 15:56:01 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id bu19so29035948lfb.9;
+        Sun, 04 Jul 2021 15:56:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GDM4UIZ790n+ppfiycyw7+PHwfmRhuVZBOQnWXK0gRI=;
-        b=H7WvdvevCm0cGmGJA9aPF6RMGQiFgDi5yd5uh3Pks/+TNEJ7O1vhOWAhm4nYRDgd3C
-         +Hoq74/tki4Zh8QMlUvZEbZs5sSI/vm1gNgjkjOCSrCG1jB3Dt/dL6xqCxo6XEH4s3Lg
-         YZLhI/kKu+ovHr6TBNJ4aNEZlqXTpetGfA/Xo=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fwDoLURDHKozXTahEpur8mu1fJsMk0Ebl7SqcPMfBPw=;
+        b=C/hYSUpFQgC9QKbD1nlcmsQpG1PDQOsT45ZLXQKcIMh7y0iGOolSnubsJ97nuZ/o6f
+         8k2j6+wQ1Ao2OpA59+C6ASr8CLUGDidpgj2eItjQPhaOG+7EKVx1cWI/0CTFKr5BfNCP
+         Yge5Cq1uzvA81CMTC4Syz5ZzcCy6CSU74fpvjCo700+KBAHNMYBkzD9lKwVB9GwVvUn7
+         61eKVv3sWwTE63E7qPMGhHl3ROGv3W/T8FC1NYqMpflZOqvRgoLgLwfrsmahuLegLU8K
+         yWkOnfOk2OYQomfyNXcVKhtY/9FerWa4b4qLW5VoFQv4ONx3ww+YwDL8UodI4YOcslNT
+         Pwjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GDM4UIZ790n+ppfiycyw7+PHwfmRhuVZBOQnWXK0gRI=;
-        b=uSloFmrNHFes3Bk4SH/wXlz3kDwmqo2GbCjN1moL2YB4pRSW7ekfkcV1j9R67ed21N
-         Q1bc8+GImfszPAQrgMM2MjZgu8VYAf/ZdDSWrdcJL1HNyXOOuEGx2D6nTf+Qi5X2+Y3J
-         AOpcriSADQJP00AbAAbk4QBX7G4ExRySNVt1yomn6q1nUWbFjtgF9WYWlqy4ftfFUNHu
-         rJXKv/bY3A/ol+w7sXN4rr+MXnNQeJiiBCBVjPD4wTb42xNBMTlhihYg7OonctuV3p0M
-         8yPIDTN4URQeOgi2IrLBMJSHE26PUDgSx9/aC6MhyMOX+svax4p7cIGKdiDIgO+buxtw
-         pLtA==
-X-Gm-Message-State: AOAM530f8ou8ZME+n+mipqyjFMCsLJBOiAEWKAIl1Qfg/EHhPcOEGsoF
-        hBOG5eUc5v6wsE4fSIeoVkpATeSp2yvOQDn/
-X-Google-Smtp-Source: ABdhPJziBkn/0STiwhGE34pDcpqWbNxsgSzIL1glKb129bMj9US9Q15QielSQn9fc0BYNc5O9YvE1Q==
-X-Received: by 2002:a2e:9b46:: with SMTP id o6mr3234890ljj.501.1625439206902;
-        Sun, 04 Jul 2021 15:53:26 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id bu12sm899829lfb.31.2021.07.04.15.53.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Jul 2021 15:53:26 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id p21so7301478lfj.13
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 15:53:25 -0700 (PDT)
-X-Received: by 2002:a05:6512:15a2:: with SMTP id bp34mr8027515lfb.40.1625439205690;
- Sun, 04 Jul 2021 15:53:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fwDoLURDHKozXTahEpur8mu1fJsMk0Ebl7SqcPMfBPw=;
+        b=OHizu0G0V2swkoevRUwHU8bn3/70PpZQbf/J2ux2LWcwUrD0pBgeE4BrQn7lfPn29c
+         nVW22HC9HiD7t8lXiiIfOHSmHAQ5dE71h6C6bpP/Dp1depjb6KRwOexmpLcR5UGUCgWa
+         AZ8ArZkH+LSha8pGriRtzijqZihLlLVM9IFukaVXVBR03ftSufbpTVzMQhBwjYUGhkmW
+         jrjNGARGhxyUINZnGsJ3FW3lxfB1n9L3sM5JHHHsBQO8T4sYyJGsyNb7otRq/91ySFCb
+         HtIwRXFdZVg+lxryFnE9ihpUkZ0dpBotpDlTk4jghurI4MiZ4wAvdJbirun1+9JSXH94
+         hWtQ==
+X-Gm-Message-State: AOAM532dLo4aEWsLuUB/RSLFbbRhJuLtxiG3XfoNEcE+1+FtC75YW3gQ
+        Cb9NWNX+BIA1MMPtKGc/8Fc=
+X-Google-Smtp-Source: ABdhPJyLSMj3Nn4vxMNiqosM/wWNvkeVTKUemnKgBQKHedyCJUfF2Y9d1Zqvgl8F+PABW24RuD8zNA==
+X-Received: by 2002:a05:6512:3618:: with SMTP id f24mr1084494lfs.517.1625439359975;
+        Sun, 04 Jul 2021 15:55:59 -0700 (PDT)
+Received: from localhost.localdomain (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
+        by smtp.gmail.com with ESMTPSA id i13sm497921lfc.111.2021.07.04.15.55.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Jul 2021 15:55:59 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v3 00/12] Add OTG mode support to Tegra USB PHY, SMB347 and Nexus 7
+Date:   Mon,  5 Jul 2021 01:54:21 +0300
+Message-Id: <20210704225433.32029-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210704172948.GA1730187@roeck-us.net> <CAHk-=wheBFiejruhRqByt0ey1J8eU=ZUo9XBbm-ct8_xE_+B9A@mail.gmail.com>
- <676ae33e-4e46-870f-5e22-462fc97959ed@roeck-us.net> <CAHk-=wj_AROgVZQ1=8mmYCXyu9JujGbNbxp+emGr5i3FagDayw@mail.gmail.com>
- <19689998-9dfe-76a8-30d4-162648e04480@roeck-us.net> <CAHk-=wj0Q8R_3AxZO-34Gp2sEQAGUKhw7t6g4QtsnSxJTxb7WA@mail.gmail.com>
- <03a15dbd-bdb9-1c72-a5cd-2e6a6d49af2b@roeck-us.net> <CAHk-=whD38FwDPc=gemuS6wNMDxO-PyVbtvcta3qXyO1ROc4EQ@mail.gmail.com>
- <YOI6cES6C0vTS/DU@casper.infradead.org>
-In-Reply-To: <YOI6cES6C0vTS/DU@casper.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 4 Jul 2021 15:53:09 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjFOoSvSXfm0N_y0eHRM_C-Ki+-9Y7QzfLdJ9B8h1QFuw@mail.gmail.com>
-Message-ID: <CAHk-=wjFOoSvSXfm0N_y0eHRM_C-Ki+-9Y7QzfLdJ9B8h1QFuw@mail.gmail.com>
-Subject: Re: [PATCH] iov_iter: separate direction from flavour
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        David Howells <dhowells@redhat.com>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 3:47 PM Matthew Wilcox <willy@infradead.org> wrote:
->
->
-> We could slip:
->
-> #ifndef uaccess_user
-> #define uaccess_user() !uaccess_kernel()
-> #endif
->
-> into asm-generic, switch the test over and then make it arm/m68k's
-> problem to define uaccess_user() to true?
+Hi,
 
-Yeah, except at this point I suspect I'll just remove that WARN_ON_ONCE().
+This series adds USB OTG mode support to the NVIDIA Tegra USB PHY driver,
+SMB347 charger driver and Nexus 7 tablet.
 
-I liked it as long as it wasn't giving these false positives. It's
-conceptually the right thing to do, but it's also the case that only
-CONFIG_SET_FS architectures can trigger it, and none of them get any
-real testing or matter much any more.
+Changelog:
 
-All the truly relevant architectures have been converted away from set_fs().
+v3: - Further improved interrupt handling in the PHY driver by removing
+      assumption that interrupt is enabled by the CI driver at the time
+      of set_wakeup() invocation, which makes this function a bit more
+      universal.
 
-And it's actually fairly hard to get this wrong even if you do have
-CONFIG_SET_FS - because no generic code does set_fs() any more, so you
-*really* have to screw up the few cases where you do it in your own
-architecture code.
+v2: - The PHY's interrupt is now enabled from PHY's set_wakeup() callback.
+      It prevents getting a spurious interrupt during the CI driver probe
+      time.
 
-If it had been easy to fix I'd have kept it, but this amount of pain
-isn't worth it - I just don't want to add extra code for architectures
-that do things wrong and don't really matter any more.
+Dmitry Osipenko (12):
+  dt-bindings: phy: tegra20-usb-phy: Convert to schema
+  dt-bindings: phy: tegra20-usb-phy: Document properties needed for OTG
+    mode
+  soc/tegra: pmc: Expose USB regmap to all SoCs
+  usb: phy: tegra: Support OTG mode programming
+  usb: otg-fsm: Fix hrtimer list corruption
+  dt-bindings: power: supply: smb347-charger: Document USB VBUS
+    regulator
+  power: supply: smb347-charger: Make smb347_set_writable() IRQ-safe
+  power: supply: smb347-charger: Remove caching of charger state
+  power: supply: smb347-charger: Implement USB VBUS regulator
+  arm64: tegra132: Add new properties to USB PHY device-tree node
+  ARM: tegra: Add new properties to USB PHY device-tree nodes
+  ARM: tegra: nexus7: Enable USB OTG mode
 
-             Linus
+ .../bindings/phy/nvidia,tegra20-usb-phy.txt   |  74 ----
+ .../bindings/phy/nvidia,tegra20-usb-phy.yaml  | 377 ++++++++++++++++++
+ .../power/supply/summit,smb347-charger.yaml   |  28 ++
+ arch/arm/boot/dts/tegra114.dtsi               |   6 +
+ arch/arm/boot/dts/tegra124.dtsi               |   9 +
+ arch/arm/boot/dts/tegra20.dtsi                |   9 +
+ .../tegra30-asus-nexus7-grouper-common.dtsi   |  25 +-
+ arch/arm/boot/dts/tegra30.dtsi                |   9 +
+ arch/arm64/boot/dts/nvidia/tegra132.dtsi      |   9 +
+ drivers/power/supply/Kconfig                  |   1 +
+ drivers/power/supply/smb347-charger.c         | 259 +++++++++++-
+ drivers/soc/tegra/pmc.c                       |   6 +-
+ drivers/usb/common/usb-otg-fsm.c              |   6 +-
+ drivers/usb/phy/phy-tegra-usb.c               | 202 +++++++++-
+ .../dt-bindings/power/summit,smb347-charger.h |   4 +
+ include/linux/usb/otg-fsm.h                   |   1 +
+ include/linux/usb/tegra_usb_phy.h             |   5 +
+ 17 files changed, 926 insertions(+), 104 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.yaml
+
+-- 
+2.32.0
+
