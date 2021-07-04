@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F393BB426
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 226943BB3F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232972AbhGDXXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:23:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50862 "EHLO mail.kernel.org"
+        id S231221AbhGDXUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:20:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234127AbhGDXOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:14:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B4E8619B7;
-        Sun,  4 Jul 2021 23:11:17 +0000 (UTC)
+        id S234141AbhGDXOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:14:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF89619A5;
+        Sun,  4 Jul 2021 23:11:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440278;
-        bh=436KjXPDUAyaRo0vyJMFZ7Eo5h0pkw77g6hLestQpYE=;
+        s=k20201202; t=1625440282;
+        bh=oELBDiCkfRqdOuU0PT4sHdy7R3CRpNSQfTPY0Vfv2u0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u6D9CQJ6hg9z/NdBggD2iJ/A21vdsgN7SlhbY/fVMPhw7Z80Hcb7OvZIlzus7XBat
-         Oa1uLU0fwgwMO+FR+OTxBLS0OeSA6xl0RZZCxN8r6+4IXG85H+icp/j+iUKqvlHdnQ
-         xA86iw52j1MQgwJ8QCPZZxA3kv6XotM5z098yBXVTOXIX8IaSpvOwF0xPwrp9aQf6n
-         hjkC+h3MU5IupcmBmV1gkCdTiGIN5cf8AkNA3fIOI//P0bvALWMHH388QzP+vvoZvW
-         7y1eDY35EbYRjbuwTlhPdNGTqKU7B/o2FfOxHDlDiMjt0uMd7qQrpDWq5YRPZ90P63
-         2UpDvdkrFeJjg==
+        b=AvSiTngkQb7DoZqXnM31SEvCWHfnc/+27m01YCmNJqskbJUm2MW7lsKRzMBVfCG3e
+         CAzrcu9DJZpINEJAUVYSRHrwQ9Be8VB53iOthXBLBeM2z4ycg//9vspY+ZhhzDoirm
+         bQASf42GYbKIHXaC8XTHeBs5brdwogQrMC7Guc52MxD2g2qg9g2BsIqktsYX7uYbjn
+         QkwnaHZVuCBh9shbHpjt6uK72Rt+MgcVcOGnhZf5IaKpE1iP5cl7vGjczbpF0lzl31
+         SZZRm8Hqr/OntXl8gl/51wnKWXxFN/uVw7XcRNNDgOH4FNuFleXONOJYx3YdAh5+Vl
+         eiLPcvmjhMuhA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 27/31] btrfs: abort transaction if we fail to update the delayed inode
-Date:   Sun,  4 Jul 2021 19:10:39 -0400
-Message-Id: <20210704231043.1491209-27-sashal@kernel.org>
+Cc:     Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 31/31] regulator: da9052: Ensure enough delay time for .set_voltage_time_sel
+Date:   Sun,  4 Jul 2021 19:10:43 -0400
+Message-Id: <20210704231043.1491209-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704231043.1491209-1-sashal@kernel.org>
 References: <20210704231043.1491209-1-sashal@kernel.org>
@@ -42,41 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Axel Lin <axel.lin@ingics.com>
 
-[ Upstream commit 04587ad9bef6ce9d510325b4ba9852b6129eebdb ]
+[ Upstream commit a336dc8f683e5be794186b5643cd34cb28dd2c53 ]
 
-If we fail to update the delayed inode we need to abort the transaction,
-because we could leave an inode with the improper counts or some other
-such corruption behind.
+Use DIV_ROUND_UP to prevent truncation by integer division issue.
+This ensures we return enough delay time.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Also fix returning negative value when new_sel < old_sel.
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/20210618141412.4014912-1-axel.lin@ingics.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/delayed-inode.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/regulator/da9052-regulator.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index f3994ee1a6e6..1fbe2dee1e70 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1071,6 +1071,14 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 	btrfs_delayed_inode_release_metadata(fs_info, node, (ret < 0));
- 	btrfs_release_delayed_inode(node);
+diff --git a/drivers/regulator/da9052-regulator.c b/drivers/regulator/da9052-regulator.c
+index 9ececfef42d6..bd91c95f73e0 100644
+--- a/drivers/regulator/da9052-regulator.c
++++ b/drivers/regulator/da9052-regulator.c
+@@ -258,7 +258,8 @@ static int da9052_regulator_set_voltage_time_sel(struct regulator_dev *rdev,
+ 	case DA9052_ID_BUCK3:
+ 	case DA9052_ID_LDO2:
+ 	case DA9052_ID_LDO3:
+-		ret = (new_sel - old_sel) * info->step_uV / 6250;
++		ret = DIV_ROUND_UP(abs(new_sel - old_sel) * info->step_uV,
++				   6250);
+ 		break;
+ 	}
  
-+	/*
-+	 * If we fail to update the delayed inode we need to abort the
-+	 * transaction, because we could leave the inode with the improper
-+	 * counts behind.
-+	 */
-+	if (ret && ret != -ENOENT)
-+		btrfs_abort_transaction(trans, ret);
-+
- 	return ret;
- 
- search:
 -- 
 2.30.2
 
