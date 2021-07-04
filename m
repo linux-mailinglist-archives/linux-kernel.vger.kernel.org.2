@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A0D3BAF63
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 00:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F343BAF65
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 00:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbhGDWpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 18:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39322 "EHLO
+        id S229739AbhGDWrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 18:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhGDWpR (ORCPT
+        with ESMTP id S229549AbhGDWrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 18:45:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77389C061574;
-        Sun,  4 Jul 2021 15:42:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xtcuflbG6V/1JlvW4xdoIPk6pojTTMLLnJIHQJBxuHE=; b=HnU0Im7UY/ke3GadqxbisGQBDi
-        U+u4YSYiXdknjeVfND/u0mTNVX3iHt+We8TLUrsrtdkTFTS/wMBU1c2MedcwfHaKNrmdI2IUu/eMZ
-        1TzbprAYDesMnwMi94W1v17kRw8pvOL10M5boKLAqU3P3MqJxdw7OBnrhWXr1Ma/4pBSE2HZyaLQ1
-        AoJY4ovXZtHReBRX3e60YmV61SOZDeTdWJM3IQBd6MzGTgXT9fvug7g+DZoYd+o7k6+B6SiMwvk5Y
-        pXPf1wjkjxHD+B5XAHFj7xz/cCiVh9+e0JGoko535HXO0VxFR0QV7g8Vf/Gl0kcvA2C3qwWS3GJ74
-        7iuORfGg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0AoO-009eDv-00; Sun, 04 Jul 2021 22:42:13 +0000
-Date:   Sun, 4 Jul 2021 23:42:03 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Gary Guo <gary@garyguo.net>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Subject: Re: [PATCH 01/17] kallsyms: support big kernel symbols (2-byte
- lengths)
-Message-ID: <YOI5O6/RpaN1P6mM@casper.infradead.org>
-References: <20210704202756.29107-1-ojeda@kernel.org>
- <20210704202756.29107-2-ojeda@kernel.org>
- <YOIicc94zvSjrKfe@casper.infradead.org>
- <CANiq72=eHs870jbmZz8CUEUuN2NOCaKS9-F6-jAb0QXje2x1Eg@mail.gmail.com>
- <YOIpM3iFT5roz69i@casper.infradead.org>
- <20210704232007.0000357e@garyguo.net>
+        Sun, 4 Jul 2021 18:47:13 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50686C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 15:44:37 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id f30so29041055lfj.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 15:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EGqC5BUSu2ehzvKSXDbnDhJ8xnzNi8pYNcVJXKy8JEU=;
+        b=D649w4q4OxkBSA1lvEBQVo/GHPy3qeR5KImijL8NQR+L0JKOAdLHriM8xcL9de098Q
+         sRtPfGnSydxT77lUSdmQB+Pz9ADMcoT/ScQKZo9UH7N2VJ/DIVJlvsqtvKSMU181vctn
+         kofK7f3zkUHvFWd+Keakq7yRCz+HKhWao3HH4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EGqC5BUSu2ehzvKSXDbnDhJ8xnzNi8pYNcVJXKy8JEU=;
+        b=KreVom8L8egxNwnZwAK69QnX9W0sEmtrSnhPaeOA0ljGvGrJu+Q9leF2wQlHdf/dPr
+         eDBiJ0+KH/bcVN8krHueQb9k2xjSsYk9PtloXhWwCGdckJi3FPrQR61ZHHo9H9k8KlWi
+         4frer9sMOchhGyiY+XTh3mlB6c8pcorEbviqmsNL+oBjCk23llMKj/yozd8QHAhe5xTM
+         kzqQnmHi0KMgXn4no8Uj1M3lvyNg4UwhJg7Wc3u40REeLXhbzqzd6IXAlkmD6cCvFdK0
+         l2daZpqQwVzxwJ3e26qCbaN285+jYClwC+nQ8nuwQ8FYWxHHDz9SKTkUFzBIHSWDZAJQ
+         c1Ew==
+X-Gm-Message-State: AOAM530dtZ94BVroKTkEjXwMwdFyPqBB7gX1LIyHcksPL9SY0GJ4D9tJ
+        wgGI1KwevJWbilg+7266r7X18Fmyvdc8lkJ0
+X-Google-Smtp-Source: ABdhPJy8+3StvQFntTqNpD27PXTpcTspu0ZYiPG6gLsn7YR9xUO6engS19OMfxhaQQxBsX1uVCttiA==
+X-Received: by 2002:ac2:5396:: with SMTP id g22mr8055998lfh.641.1625438674905;
+        Sun, 04 Jul 2021 15:44:34 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id d26sm427141ljo.76.2021.07.04.15.44.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Jul 2021 15:44:34 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id s18so255947ljg.7
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 15:44:33 -0700 (PDT)
+X-Received: by 2002:a05:651c:32e:: with SMTP id b14mr8539760ljp.251.1625438673695;
+ Sun, 04 Jul 2021 15:44:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210704232007.0000357e@garyguo.net>
+References: <20210704172948.GA1730187@roeck-us.net> <CAHk-=wheBFiejruhRqByt0ey1J8eU=ZUo9XBbm-ct8_xE_+B9A@mail.gmail.com>
+ <676ae33e-4e46-870f-5e22-462fc97959ed@roeck-us.net> <CAHk-=wj_AROgVZQ1=8mmYCXyu9JujGbNbxp+emGr5i3FagDayw@mail.gmail.com>
+ <19689998-9dfe-76a8-30d4-162648e04480@roeck-us.net> <CAHk-=wj0Q8R_3AxZO-34Gp2sEQAGUKhw7t6g4QtsnSxJTxb7WA@mail.gmail.com>
+ <03a15dbd-bdb9-1c72-a5cd-2e6a6d49af2b@roeck-us.net>
+In-Reply-To: <03a15dbd-bdb9-1c72-a5cd-2e6a6d49af2b@roeck-us.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 4 Jul 2021 15:44:17 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whD38FwDPc=gemuS6wNMDxO-PyVbtvcta3qXyO1ROc4EQ@mail.gmail.com>
+Message-ID: <CAHk-=whD38FwDPc=gemuS6wNMDxO-PyVbtvcta3qXyO1ROc4EQ@mail.gmail.com>
+Subject: Re: [PATCH] iov_iter: separate direction from flavour
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 04, 2021 at 11:20:07PM +0100, Gary Guo wrote:
-> This is big endian.
+On Sun, Jul 4, 2021 at 2:47 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> How about the following ?
+>
+>         WARN_ON_ONCE(IS_ENABLED(CONFIG_MMU) && uaccess_kernel());
 
-Fundamentally, it doesn't matter whether it's encoded as top-7 +
-bottom-8 or bottom-7 + top-8.  It could just as well be:
+Nope, that doesn't work either, because there are no-MMU setups that
+don't make the same mistake no-mmu arm and m68k do.
 
-        if (len >= 128) {
-                len -= 128;
-                len += *data * 256;
-                data++;
-        }
+Example: xtensa. But afaik also generic-asm/uaccess.h unless the
+architecture overrides something.
 
-It doesn't matter whether it's compatible with some other encoding.
-This encoding has one producer and one consumer.  As long as they agree,
-it's fine.  If you want to make an argument about extensibiity, then
-I'm going to suggest that wanting a symbol name more than 32kB in size
-is a sign you've done something else very, very wrong.
+So this literally seems like just an arm/m68k bug.
 
-At that point, you should probably switch to comparing hashes of the
-symbol instead of the symbol.  Indeed, I think we're already there at
-300 byte symbols; we should probably SipHash the full, unmangled symbol
-[1].  At 33k symbols in the current kernel, the risk of a collision of
-a 64-bit value is negligible, and almost every kernel symbol is longer
-than 7 bytes (thankfully).
-
-[1] ie SipHash("void unlock_page(struct page *)")
+         Linus
