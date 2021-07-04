@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C293BB272
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA5D3BB276
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbhGDXPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:15:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50794 "EHLO mail.kernel.org"
+        id S232359AbhGDXPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:15:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232677AbhGDXNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:13:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 884196193E;
-        Sun,  4 Jul 2021 23:09:05 +0000 (UTC)
+        id S229956AbhGDXNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:13:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DE1461973;
+        Sun,  4 Jul 2021 23:09:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440146;
-        bh=n/WkJqG640sU3Rw25PR1ZhW2yBejxV5O1AiUCuchfeg=;
+        s=k20201202; t=1625440150;
+        bh=FWdpgeLZjTV3yUDS9DmJf5529C3/nxBDlPw9YGo3gao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aRttW0RBhQyCbyi707ftYA6f7o2OEX+oP1TiwZOIMB/HsqJcEHfGmOV4risyVmSgo
-         6CPQzFRWr7X5Xkjp5BMiH/kWwSxC3w8uPri2l/gh+i3UJZyedX8JsGAKDlk6Jm8/Qx
-         4qj1ZwqtZgVfrF2Z00ibdA1BWIS68ZuOp+I92u/tzrlE6KBurp2TZ1rdIH2GEEql22
-         UJCqqg9Vr0LOBcrsodxs0J81QEkEG9R3NMT5oR18NVgT6cG08unf9plT8xvNWZkftA
-         jcu1mnBRzdfE3rF4zsnSyVyGBpwoh9F31SWyDzJNW7VuGRSFzJShmav8fgSCFw/EUX
-         0fKYI59mazJmQ==
+        b=W7zNWvIxumvZ08vQaMrHxATGEh0ww9QpXfzs3wuYGJlJfFTHDmwS3y4LHOAKCX93V
+         CmeEHkjVmdPywBDQe96dOdobWLQp0cnaQYwMSssVvVCaxIITuBAlcyAcEzO8rFKCvA
+         kgp2V6aJ7N8q+QTPFK7+a8VHhvXeh3eYYst5gg+UAzDi1pcWh/VY+e3Y27MouWpLTu
+         OdprazkyvO7Xn4C5DuIApBFoVw4qO3zy3/9QY1M4u8DyFe0wVQ/7gOX8XywEJ8tU9k
+         7n08StqAITnQQwrGm2sjsuhLj+aTSsVTVxlU8RCLr6lH1kph71ytBzdBPeGsFIHZ78
+         e5EqSwyBmOkrw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        kernel test robot <lkp@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 46/70] mmc: sdhci-sprd: use sdhci_sprd_writew
-Date:   Sun,  4 Jul 2021 19:07:39 -0400
-Message-Id: <20210704230804.1490078-46-sashal@kernel.org>
+Cc:     zpershuai <zpershuai@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 49/70] spi: meson-spicc: fix memory leak in meson_spicc_probe
+Date:   Sun,  4 Jul 2021 19:07:42 -0400
+Message-Id: <20210704230804.1490078-49-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704230804.1490078-1-sashal@kernel.org>
 References: <20210704230804.1490078-1-sashal@kernel.org>
@@ -43,35 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: zpershuai <zpershuai@gmail.com>
 
-[ Upstream commit 961470820021e6f9d74db4837bd6831a1a30341b ]
+[ Upstream commit b2d501c13470409ee7613855b17e5e5ec4111e1c ]
 
-The sdhci_sprd_writew() was defined by never used in sdhci_ops:
+when meson_spicc_clk_init returns failed, it should goto the
+out_clk label.
 
-    drivers/mmc/host/sdhci-sprd.c:134:20: warning: unused function 'sdhci_sprd_writew'
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20210601095403.236007-2-krzysztof.kozlowski@canonical.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: zpershuai <zpershuai@gmail.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Link: https://lore.kernel.org/r/1623562156-21995-1-git-send-email-zpershuai@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-sprd.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-meson-spicc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
-index 19cbb6171b35..9cd8862e6cbd 100644
---- a/drivers/mmc/host/sdhci-sprd.c
-+++ b/drivers/mmc/host/sdhci-sprd.c
-@@ -393,6 +393,7 @@ static void sdhci_sprd_request_done(struct sdhci_host *host,
- static struct sdhci_ops sdhci_sprd_ops = {
- 	.read_l = sdhci_sprd_readl,
- 	.write_l = sdhci_sprd_writel,
-+	.write_w = sdhci_sprd_writew,
- 	.write_b = sdhci_sprd_writeb,
- 	.set_clock = sdhci_sprd_set_clock,
- 	.get_max_clock = sdhci_sprd_get_max_clock,
+diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
+index 51aef2c6e966..b2c4621db34d 100644
+--- a/drivers/spi/spi-meson-spicc.c
++++ b/drivers/spi/spi-meson-spicc.c
+@@ -752,7 +752,7 @@ static int meson_spicc_probe(struct platform_device *pdev)
+ 	ret = meson_spicc_clk_init(spicc);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "clock registration failed\n");
+-		goto out_master;
++		goto out_clk;
+ 	}
+ 
+ 	ret = devm_spi_register_master(&pdev->dev, master);
 -- 
 2.30.2
 
