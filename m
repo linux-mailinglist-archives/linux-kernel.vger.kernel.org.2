@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FDB3BB410
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177D23BB40C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232995AbhGDXW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:22:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50502 "EHLO mail.kernel.org"
+        id S231940AbhGDXWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:22:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233355AbhGDXOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 19:14:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E9C06192E;
-        Sun,  4 Jul 2021 23:09:45 +0000 (UTC)
+        id S233403AbhGDXOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 19:14:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9673861935;
+        Sun,  4 Jul 2021 23:09:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440187;
-        bh=oqXXELPSZ+EWrXn9i3R3Ms/gMlU6dKWMz5mClD4XVT4=;
+        s=k20201202; t=1625440189;
+        bh=JSshXvAaGoLwfRbLDCHHeyzewaXyO04NzXWHw0dUZ7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bef8CXZTMZoIrFH/G+bmvvLe46BrU9M7BGlPDLe9jM25dpwd6dfQolNVuOxs6Ucph
-         15D/Wvi9gTDUYCZu3fOcKjvWl0YdHLhkRleJuPg8TQyozwZScbFhqspasnjFdonmsC
-         zccE0TPPnmTx9F2VxKg77+OtDhd1Byh3xI4Z1NmBAKRUAfbPh5phKMpYBDpZfbBzAC
-         oxZXWBsz7iNBd+fQRM+m4jamoXxkM90kw/9P5+IOQRaOwJ/faLEzsVEf8hbzMZEqrB
-         xqNYMOSy42Jfw/SVE4rnywHOVDgXGl9lx/EVdN95gk19caFZ9zsfbZfZqFkRSK/yFI
-         fsb7xoNojhWZA==
+        b=iZ4mfFgQQiEJpmRa8r/9Rbeb9BNHobYe2mIEHOwcEhBTwDotL1m9E4GvRfjtkMUV9
+         Ri5wf8UBqOKJ9Ax/0nRXHSLPTsWlwTlh+RrKh8GRHkuM3Ka1olDTz5F3Yt5ce+e4Xk
+         tY8TOrWrJOxibWsWivCS2PO/MraT/9+ExZAI/VK96j29vsU7xDP0MHUySI9eiHCTCT
+         EQtJJyQAmN++SRrFY+hooH2UNHwHzJKpjRivhlAX/ha1fKpzOzHaxaOlf2hHvA9lUe
+         qdr+yhd07/1cefv0HAUfkzZYR66rX6npXXlBgZHFLAknR3S6/Y91Gr+2lTOJ3zITff
+         3C17YOodqlMOg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 06/50] media: s5p-jpeg: fix pm_runtime_get_sync() usage count
-Date:   Sun,  4 Jul 2021 19:08:54 -0400
-Message-Id: <20210704230938.1490742-6-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 08/50] media: exynos-gsc: fix pm_runtime_get_sync() usage count
+Date:   Sun,  4 Jul 2021 19:08:56 -0400
+Message-Id: <20210704230938.1490742-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704230938.1490742-1-sashal@kernel.org>
 References: <20210704230938.1490742-1-sashal@kernel.org>
@@ -47,7 +47,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 10343de268d10cf07b092b8b525e12ad558ead77 ]
+[ Upstream commit 59087b66ea6730c130c57d23bd9fd139b78c1ba5 ]
 
 The pm_runtime_get_sync() internally increments the
 dev->power.usage_count without decrementing it, even on errors.
@@ -56,36 +56,33 @@ commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with us
 in order to properly decrement the usage counter, avoiding
 a potential PM usage counter leak.
 
-As a plus, pm_runtime_resume_and_get() doesn't return
-positive numbers, so the return code validation can
-be removed.
+As a bonus, as pm_runtime_get_sync() always return 0 on
+success, the logic can be simplified.
 
 Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/s5p-jpeg/jpeg-core.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/media/platform/exynos-gsc/gsc-m2m.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/s5p-jpeg/jpeg-core.c b/drivers/media/platform/s5p-jpeg/jpeg-core.c
-index 8dbbd5f2a40a..06e17946bbb6 100644
---- a/drivers/media/platform/s5p-jpeg/jpeg-core.c
-+++ b/drivers/media/platform/s5p-jpeg/jpeg-core.c
-@@ -2579,11 +2579,8 @@ static void s5p_jpeg_buf_queue(struct vb2_buffer *vb)
- static int s5p_jpeg_start_streaming(struct vb2_queue *q, unsigned int count)
+diff --git a/drivers/media/platform/exynos-gsc/gsc-m2m.c b/drivers/media/platform/exynos-gsc/gsc-m2m.c
+index 35a1d0d6dd66..42d1e4496efa 100644
+--- a/drivers/media/platform/exynos-gsc/gsc-m2m.c
++++ b/drivers/media/platform/exynos-gsc/gsc-m2m.c
+@@ -56,10 +56,8 @@ static void __gsc_m2m_job_abort(struct gsc_ctx *ctx)
+ static int gsc_m2m_start_streaming(struct vb2_queue *q, unsigned int count)
  {
- 	struct s5p_jpeg_ctx *ctx = vb2_get_drv_priv(q);
+ 	struct gsc_ctx *ctx = q->drv_priv;
 -	int ret;
--
--	ret = pm_runtime_get_sync(ctx->jpeg->dev);
  
+-	ret = pm_runtime_get_sync(&ctx->gsc_dev->pdev->dev);
 -	return ret > 0 ? 0 : ret;
-+	return pm_runtime_resume_and_get(ctx->jpeg->dev);
++	return pm_runtime_resume_and_get(&ctx->gsc_dev->pdev->dev);
  }
  
- static void s5p_jpeg_stop_streaming(struct vb2_queue *q)
+ static void __gsc_m2m_cleanup_queue(struct gsc_ctx *ctx)
 -- 
 2.30.2
 
