@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD2A3BB3E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FD63BB3BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 01:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbhGDXUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 19:20:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57092 "EHLO mail.kernel.org"
+        id S233590AbhGDXSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 19:18:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234206AbhGDXO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234217AbhGDXO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 4 Jul 2021 19:14:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81AAC619C6;
-        Sun,  4 Jul 2021 23:11:34 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C2E361936;
+        Sun,  4 Jul 2021 23:11:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625440295;
-        bh=SIPfpxfa8ElFAK5ax8K3+1DMagt4u+7Okx+cyHPvZ3w=;
+        s=k20201202; t=1625440298;
+        bh=/E9/ZizkB3VQvBKEl336Wh/NfyX46/O5edmmaZXQVHE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p7ZAQb2h7gh2XezfEi8nDq7EziVO3ytIrdGle3zInZIUvmnHhJ9UQcZ/7lgLOkKq9
-         3kWMqjXrnNSthuMrldG5VPlMt/vbuE2yoATxyCkgkkk9M7J4P60K3gCPYGcakr13Yg
-         CluAC3Yhb4W4iDbCnh7+SmskQ3iDTbvBtgMwNysB6oA8aj92KXm4ebodBP6u/kSVQY
-         tL9i+9X8KXyg3uvFILMFBX2WU9bijLQ5A9fXxDfmjlxcflrhuNbAdAeBt/HN+kAASM
-         UTh37LVCgdeAPLQQ2M6uZRmb1XkCESlAU05cIl+2dr8Tra2NCRqEbQ04uCtZ8bgage
-         V2IZXfBk4ELaw==
+        b=WAb+iNvf+HAFwmMegkGmaa8vwbkttmsOgR88ffeT7/v6MjUvdG1qNpOHwCAejWgeE
+         sGD40obwIxdvRjdFRJ0JtIH+fZaHsGx7n61dB43CWOKSXdaFce6KcT4tpytuiOlI36
+         arhefHg3+bcK8cNfj7dNsAli2qUPQLldJ1pA+6vCUQRQ6hUgQlRums+ienVAaokvFj
+         baPLUlU8IPqmAuAi6F9qCC98sEI21ZOe5TlRIs6WyyQbkppsxPQbpju7/fN5KLxFBi
+         ZaFkw2VViYTVzJq6OkMWzTMzFZCUr+PZF160LB2AI5ILAjnjVxuKwrGaskRolHH4gK
+         SlAtYX8CvbqqA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Anirudh Rayabharam <mail@anirudhrb.com>,
-        syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 09/25] media: pvrusb2: fix warning in pvr2_i2c_core_done
-Date:   Sun,  4 Jul 2021 19:11:07 -0400
-Message-Id: <20210704231123.1491517-9-sashal@kernel.org>
+Cc:     Jack Xu <jack.xu@intel.com>, Zhehui Xiang <zhehui.xiang@intel.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>, qat-linux@intel.com,
+        linux-crypto@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH AUTOSEL 4.14 11/25] crypto: qat - remove unused macro in FW loader
+Date:   Sun,  4 Jul 2021 19:11:09 -0400
+Message-Id: <20210704231123.1491517-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210704231123.1491517-1-sashal@kernel.org>
 References: <20210704231123.1491517-1-sashal@kernel.org>
@@ -45,58 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Jack Xu <jack.xu@intel.com>
 
-[ Upstream commit f8194e5e63fdcb349e8da9eef9e574d5b1d687cb ]
+[ Upstream commit 9afe77cf25d9670e61b489fd52cc6f75fd7f6803 ]
 
-syzbot has reported the following warning in pvr2_i2c_done:
+Remove the unused macro ICP_DH895XCC_PESRAM_BAR_SIZE in the firmware
+loader.
 
-	sysfs group 'power' not found for kobject '1-0043'
+This is to fix the following warning when compiling the driver using the
+clang compiler with CC=clang W=2:
 
-When the device is disconnected (pvr_hdw_disconnect), the i2c adapter is
-not unregistered along with the USB and v4l2 teardown. As part of the USB
-device disconnect, the sysfs files of the subdevices are also deleted.
-So, by the time pvr_i2c_core_done is called by pvr_context_destroy, the
-sysfs files have been deleted.
+    drivers/crypto/qat/qat_common/qat_uclo.c:345:9: warning: macro is not used [-Wunused-macros]
 
-To fix this, unregister the i2c adapter too in pvr_hdw_disconnect. Make
-the device deregistration code shared by calling pvr_hdw_disconnect from
-pvr2_hdw_destroy.
-
-Reported-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
-Tested-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Jack Xu <jack.xu@intel.com>
+Co-developed-by: Zhehui Xiang <zhehui.xiang@intel.com>
+Signed-off-by: Zhehui Xiang <zhehui.xiang@intel.com>
+Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/pvrusb2/pvrusb2-hdw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/crypto/qat/qat_common/qat_uclo.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-index 18db7aaafcd6..fd1bd94cd78f 100644
---- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-+++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-@@ -2670,9 +2670,8 @@ void pvr2_hdw_destroy(struct pvr2_hdw *hdw)
- 		pvr2_stream_destroy(hdw->vid_stream);
- 		hdw->vid_stream = NULL;
- 	}
--	pvr2_i2c_core_done(hdw);
- 	v4l2_device_unregister(&hdw->v4l2_dev);
--	pvr2_hdw_remove_usb_stuff(hdw);
-+	pvr2_hdw_disconnect(hdw);
- 	mutex_lock(&pvr2_unit_mtx);
- 	do {
- 		if ((hdw->unit_number >= 0) &&
-@@ -2699,6 +2698,7 @@ void pvr2_hdw_disconnect(struct pvr2_hdw *hdw)
+diff --git a/drivers/crypto/qat/qat_common/qat_uclo.c b/drivers/crypto/qat/qat_common/qat_uclo.c
+index 4f1cd83bf56f..a8e3191e5185 100644
+--- a/drivers/crypto/qat/qat_common/qat_uclo.c
++++ b/drivers/crypto/qat/qat_common/qat_uclo.c
+@@ -385,7 +385,6 @@ static int qat_uclo_init_umem_seg(struct icp_qat_fw_loader_handle *handle,
+ 	return 0;
+ }
+ 
+-#define ICP_DH895XCC_PESRAM_BAR_SIZE 0x80000
+ static int qat_uclo_init_ae_memory(struct icp_qat_fw_loader_handle *handle,
+ 				   struct icp_qat_uof_initmem *init_mem)
  {
- 	pvr2_trace(PVR2_TRACE_INIT,"pvr2_hdw_disconnect(hdw=%p)",hdw);
- 	LOCK_TAKE(hdw->big_lock);
-+	pvr2_i2c_core_done(hdw);
- 	LOCK_TAKE(hdw->ctl_lock);
- 	pvr2_hdw_remove_usb_stuff(hdw);
- 	LOCK_GIVE(hdw->ctl_lock);
 -- 
 2.30.2
 
