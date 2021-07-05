@@ -2,393 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372793BC345
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 21:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACEF3BC346
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 21:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhGET7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 15:59:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:53510 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229565AbhGET7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 15:59:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ECABA1FB;
-        Mon,  5 Jul 2021 12:57:05 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.8.66])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 93D6B3F73B;
-        Mon,  5 Jul 2021 12:57:04 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 20:56:54 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Anatoly Pugachev <matorola@gmail.com>
-Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        debian-sparc <debian-sparc@lists.debian.org>,
-        Peter Zijlstra <peterz@lists.infradead.org>
-Subject: Re: [sparc64] locking/atomic, kernel OOPS on running stress-ng
-Message-ID: <20210705195638.GA53988@C02TD0UTHF1T.local>
-References: <CADxRZqzcrnSMzy50T+kWb_mQVguWDCMu6RoXsCc+-fNDPYXbaw@mail.gmail.com>
+        id S229953AbhGEUAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 16:00:45 -0400
+Received: from einhorn.in-berlin.de ([192.109.42.8]:51717 "EHLO
+        einhorn-mail-out.in-berlin.de" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229565AbhGEUAo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 16:00:44 -0400
+X-Greylist: delayed 666 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Jul 2021 16:00:44 EDT
+X-Envelope-From: stefanr@s5r6.in-berlin.de
+Received: from authenticated.user (localhost [127.0.0.1]) by einhorn.in-berlin.de  with ESMTPSA id 165Jvnbf010053
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Mon, 5 Jul 2021 21:57:50 +0200
+Date:   Mon, 5 Jul 2021 21:57:43 +0200
+From:   Stefan Richter <stefanr@s5r6.in-berlin.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: linux-next: removed trees
+Message-ID: <20210705215743.40b26667@kant>
+In-Reply-To: <20210514123221.7c21393f@canb.auug.org.au>
+References: <20210514123221.7c21393f@canb.auug.org.au>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADxRZqzcrnSMzy50T+kWb_mQVguWDCMu6RoXsCc+-fNDPYXbaw@mail.gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/TFdYKVyY9TJGsYdH9vBV555";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 06:16:49PM +0300, Anatoly Pugachev wrote:
-> Hello!
+--Sig_/TFdYKVyY9TJGsYdH9vBV555
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi Anatoly,
+On May 14 Stephen Rothwell wrote:
+> The following tree have been removed form linux-next because they have
+> not been updated in more than a year.  If you want a tree reinstated,
+> just let me know.
+>=20
+> fbdev
+> fsl
+> generic-ioremap
+> ieee1394
+>   this contains the single commit
+> 	67f8e65e4fc1 firewire: net: remove set but not used variable 'guid'
+> random
+> realtek
+> thermal-rzhang
+> thermal-soc
+> y2038
+> zx2c4
 
-> latest sparc64 git kernel produces the following OOPS on running stress-ng as :
-> 
-> $ stress-ng -v --mmap 1 -t 30s
-> 
-> kernel OOPS (console logs):
-> 
-> [   27.276719] Unable to handle kernel NULL pointer dereference
-> [   27.276782] tsk->{mm,active_mm}->context = 00000000000003cb
-> [   27.276818] tsk->{mm,active_mm}->pgd = fff800003a2a0000
-> [   27.276853]               \|/ ____ \|/
-> [   27.276853]               "@'/ .. \`@"
-> [   27.276853]               /_| \__/ |_\
-> [   27.276853]                  \__U_/
-> [   27.276927] stress-ng(928): Oops [#1]
+Would you be OK with adding linux1394.git (for-next branch) back to
+linux-next?  There are two patches queued and I am finally aiming to get
+them merged. :-)
 
-I can reproduce this under QEMU; following your bisection (and working
-around the missing ifdeferry that breaks bisection), I can confirm that
-the first broken commit is:
+Christophe JAILLET (1):
+      firewire: nosy: switch from 'pci_' to 'dma_' API
 
-  ff5b4f1ed580 ("locking/atomic: sparc: move to ARCH_ATOMIC")
+YueHaibing (1):
+      firewire: net: remove set but not used variable 'guid'
 
-Sorry about this.
- 
-> Can someone please look at this commit ids?
+Thank you,
+--=20
+Stefan Richter
+-=3D=3D=3D=3D=3D=3D--=3D-=3D -=3D=3D=3D --=3D-=3D
+http://arcgraph.de/sr/
 
-From digging into this, I can't spot an obvious bug in the commit above.
+--Sig_/TFdYKVyY9TJGsYdH9vBV555
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-It looks like this happens when some of the xchg/cmpxchg variants are
-wrapped by <asm-generic/atomic-instrumented.h>, but I can't immediately
-explain why. This might be a latent bug that's being tickled by the
-structure of the wrappers, or some subtlety with the typecasting that
-happens in the wrappers.
+-----BEGIN PGP SIGNATURE-----
 
-Starting with:
+iQIzBAEBCAAdFiEElVwAmOXEbvmhUkgUefNvslRdedAFAmDjZDcACgkQefNvslRd
+edCzBhAAhISCDr8Wfc7MpwRLraXZJWKq7jNiDoSpBi8hwKhwVye9W3v8iKtRYofQ
+m8pNKivkKYArFY9kFqTxoRvvFAoMeuwMIt4au3+R5aEOlm6RWh6rhkZtDrc8H9u/
+kPRtYvYaurKw8OhMtafsQn6eTL0j543mcDR5t2s4o1rPW7XgIE2lepjp1VvU6/Rc
+4rSlJpBRGMy3TdMA7nbOqLudMb34YL3SNll0xNGUpCFEqRQDWnjeSqTULQtPwUkR
+S0A6++JsWcU57Vda3bxbKA/ItcfqpNDfA7+KphTrh0QiP99a22SadK9dDSB/j3yr
+HO4VIBJX/hux/AjpQFJeDIQoOoXOwoak1X0aV5IA0+RVtzKOMZWq1bh8RPSKASGz
+vbmI9KAz71FqooGW0lUVpIv/h4p8jXCdXMab7EDO5jIOdDmCTRMMBUkZtlnDsRWL
+RxIuPuc6p49uZ2AzVlTgZ2A5dlXeMzNRgmTdLEdbHDg8fcOHgt+4jGeAzofFS/zt
+vqrqenRIxBe8OMHZ4G4zdV6Wz9JxGkyfRtXZ46fUeHPEkH8bc8pQbNimb8y0Bojr
+1UYcBKprHmnEs2kF/jW3XRciLbOvIEODEAipWxApMvc5IdzVyb+VKsEyQuiACanl
+CEBb/K2e/77SMXuSTcanvbUf90hVRag+MeIHOhfFHfN4gKaYYkE=
+=JoZb
+-----END PGP SIGNATURE-----
 
-  ff5b4f1ed580 ("locking/atomic: sparc: move to ARCH_ATOMIC")
-
-... and atop that, cherry-picking:
-
-  bccf1ec369ac ("locking/atomics: atomic-instrumented: simplify ifdeffery")
-
-... the below hack seems to make the stress-ng run pass without issue,
-even after running for multiple minutes (when it would usually fail in a
-few seconds).
-
-In case this is a codegen issue, I'm using the kernel.org GCC 10.3.0
-cross toolchain.
-
-Thanks,
-Mark.
-
----->8----
-From 9a77ebd7005a9d4492686c45207642eeb4d13a8c Mon Sep 17 00:00:00 2001
-From: Mark Rutland <mark.rutland@arm.com>
-Date: Mon, 5 Jul 2021 20:38:06 +0100
-Subject: [PATCH] HACK: disable instrumentation of xchg/cmpxchg
-
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
----
- include/asm-generic/atomic-instrumented.h | 86 ++++++++++++++++++++++++++++++-
- scripts/atomic/gen-atomic-instrumented.sh | 10 ++++
- 2 files changed, 95 insertions(+), 1 deletion(-)
-
-diff --git a/include/asm-generic/atomic-instrumented.h b/include/asm-generic/atomic-instrumented.h
-index bc45af52c93b..7d0c38091c82 100644
---- a/include/asm-generic/atomic-instrumented.h
-+++ b/include/asm-generic/atomic-instrumented.h
-@@ -1177,90 +1177,139 @@ atomic64_dec_if_positive(atomic64_t *v)
- 	return arch_atomic64_dec_if_positive(v);
- }
- 
-+#if 0
- #define xchg(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_xchg(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define xchg 	arch_xchg
-+#endif
- 
-+#if 0
- #define xchg_acquire(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_xchg_acquire(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define xchg_acquire 	arch_xchg_acquire
-+#endif
- 
-+#if 0
- #define xchg_release(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_xchg_release(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define xchg_release 	arch_xchg_release
-+#endif
- 
-+#if 0
- #define xchg_relaxed(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_xchg_relaxed(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define xchg_relaxed 	arch_xchg_relaxed
-+#endif
- 
-+#if 0
- #define cmpxchg(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_cmpxchg(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define cmpxchg 	arch_cmpxchg
-+#endif
- 
-+#if 0
- #define cmpxchg_acquire(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_cmpxchg_acquire(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define cmpxchg_acquire 	arch_cmpxchg_acquire
-+#endif
- 
-+#if 0
- #define cmpxchg_release(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_cmpxchg_release(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define cmpxchg_release 	arch_cmpxchg_release
-+#endif
- 
-+#if 0
- #define cmpxchg_relaxed(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_cmpxchg_relaxed(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define cmpxchg_relaxed 	arch_cmpxchg_relaxed
-+#endif
- 
-+#if 0
- #define cmpxchg64(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_cmpxchg64(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define cmpxchg64 	arch_cmpxchg64
-+#endif
- 
-+#if 0
- #define cmpxchg64_acquire(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_cmpxchg64_acquire(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define cmpxchg64_acquire 	arch_cmpxchg64_acquire
-+#endif
- 
-+#if 0
- #define cmpxchg64_release(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_cmpxchg64_release(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define cmpxchg64_release 	arch_cmpxchg64_release
-+#endif
- 
-+#if 0
- #define cmpxchg64_relaxed(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_cmpxchg64_relaxed(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define cmpxchg64_relaxed 	arch_cmpxchg64_relaxed
-+#endif
- 
-+#if 0
- #define try_cmpxchg(ptr, oldp, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
-@@ -1269,7 +1318,11 @@ atomic64_dec_if_positive(atomic64_t *v)
- 	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
- 	arch_try_cmpxchg(__ai_ptr, __ai_oldp, __VA_ARGS__); \
- })
-+#else
-+#define try_cmpxchg 	arch_try_cmpxchg
-+#endif
- 
-+#if 0
- #define try_cmpxchg_acquire(ptr, oldp, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
-@@ -1278,7 +1331,11 @@ atomic64_dec_if_positive(atomic64_t *v)
- 	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
- 	arch_try_cmpxchg_acquire(__ai_ptr, __ai_oldp, __VA_ARGS__); \
- })
-+#else
-+#define try_cmpxchg_acquire 	arch_try_cmpxchg_acquire
-+#endif
- 
-+#if 0
- #define try_cmpxchg_release(ptr, oldp, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
-@@ -1287,7 +1344,11 @@ atomic64_dec_if_positive(atomic64_t *v)
- 	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
- 	arch_try_cmpxchg_release(__ai_ptr, __ai_oldp, __VA_ARGS__); \
- })
-+#else
-+#define try_cmpxchg_release 	arch_try_cmpxchg_release
-+#endif
- 
-+#if 0
- #define try_cmpxchg_relaxed(ptr, oldp, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
-@@ -1296,42 +1357,65 @@ atomic64_dec_if_positive(atomic64_t *v)
- 	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
- 	arch_try_cmpxchg_relaxed(__ai_ptr, __ai_oldp, __VA_ARGS__); \
- })
-+#else
-+#define try_cmpxchg_relaxed 	arch_try_cmpxchg_relaxed
-+#endif
- 
-+#if 0
- #define cmpxchg_local(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_cmpxchg_local(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define cmpxchg_local 	arch_cmpxchg_local
-+#endif
- 
-+#if 0
- #define cmpxchg64_local(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_cmpxchg64_local(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define cmpxchg64_local 	arch_cmpxchg64_local
-+#endif
- 
-+#if 0
- #define sync_cmpxchg(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
- 	arch_sync_cmpxchg(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define sync_cmpxchg 	arch_sync_cmpxchg
-+#endif
- 
-+#if 0
- #define cmpxchg_double(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, 2 * sizeof(*__ai_ptr)); \
- 	arch_cmpxchg_double(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define cmpxchg_double 	arch_cmpxchg_double
-+#endif
- 
- 
-+#if 0
- #define cmpxchg_double_local(ptr, ...) \
- ({ \
- 	typeof(ptr) __ai_ptr = (ptr); \
- 	instrument_atomic_write(__ai_ptr, 2 * sizeof(*__ai_ptr)); \
- 	arch_cmpxchg_double_local(__ai_ptr, __VA_ARGS__); \
- })
-+#else
-+#define cmpxchg_double_local 	arch_cmpxchg_double_local
-+#endif
- 
- #endif /* _ASM_GENERIC_ATOMIC_INSTRUMENTED_H */
--// 1d7c3a25aca5c7fb031c307be4c3d24c7b48fcd5
-+// 2a4279557c0aea18c2784cefd4a26d58e6ee66d0
-diff --git a/scripts/atomic/gen-atomic-instrumented.sh b/scripts/atomic/gen-atomic-instrumented.sh
-index b0c45aee19d7..bfadca4046fb 100755
---- a/scripts/atomic/gen-atomic-instrumented.sh
-+++ b/scripts/atomic/gen-atomic-instrumented.sh
-@@ -80,6 +80,7 @@ gen_xchg()
- 	if [ "${xchg%${xchg#try_cmpxchg}}" = "try_cmpxchg" ] ; then
- 
- cat <<EOF
-+#if 0
- #define ${xchg}(ptr, oldp, ...) \\
- ({ \\
- 	typeof(ptr) __ai_ptr = (ptr); \\
-@@ -88,17 +89,26 @@ cat <<EOF
- 	instrument_atomic_write(__ai_oldp, ${mult}sizeof(*__ai_oldp)); \\
- 	arch_${xchg}(__ai_ptr, __ai_oldp, __VA_ARGS__); \\
- })
-+#else
-+#define ${xchg} \
-+	arch_${xchg}
-+#endif
- EOF
- 
- 	else
- 
- cat <<EOF
-+#if 0
- #define ${xchg}(ptr, ...) \\
- ({ \\
- 	typeof(ptr) __ai_ptr = (ptr); \\
- 	instrument_atomic_write(__ai_ptr, ${mult}sizeof(*__ai_ptr)); \\
- 	arch_${xchg}(__ai_ptr, __VA_ARGS__); \\
- })
-+#else
-+#define ${xchg} \
-+	arch_${xchg}
-+#endif
- EOF
- 
- 	fi
--- 
-2.11.0
-
+--Sig_/TFdYKVyY9TJGsYdH9vBV555--
