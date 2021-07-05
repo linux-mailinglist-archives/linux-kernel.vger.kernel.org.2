@@ -2,110 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 387F43BB5F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 05:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C443BB5F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 05:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhGEDv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 23:51:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28798 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229722AbhGEDvZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 23:51:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625456928;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=25P6+qOObwDiaurdWnfUZ/5fIR3I7PXs4U3cGO2pDNQ=;
-        b=ZxfKnzuUsmBJ24UVTsrzkAeYBQNnDiNzUV/bqxYppgDq1SU3RyEdzt0Se4hoHuUpnk4G1x
-        Gltq3yKVXEelmzk5iBAO35A5/LKb2D4RbY1O6zdlmoHUos8D9oOYnEXkUw36XZInZOIaid
-        +p05T5anyVxz+wzT9RmF1sq4ZNfyDLQ=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-519-_HevpuGROUCrMfsWHfcTwg-1; Sun, 04 Jul 2021 23:48:47 -0400
-X-MC-Unique: _HevpuGROUCrMfsWHfcTwg-1
-Received: by mail-pg1-f199.google.com with SMTP id d28-20020a634f1c0000b02902238495b6a7so12713370pgb.16
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 20:48:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=25P6+qOObwDiaurdWnfUZ/5fIR3I7PXs4U3cGO2pDNQ=;
-        b=XDV0t7LLSEVWpxlqpdGd8AQBktLjxYj3FADhqIc9ZB74hJaMA7Bk477mHx3OZ2BNcq
-         bzgWVDcswJk+yS4eaZbpTcW11zAZVeOBVK/wfOUeBs/gbzSlgNl7DdjXdpr/1CNG9d1N
-         dcXHbwW5t1rfmp9ghULNz9/CmquAVJWDATJFdIOxdi2/P6WH2dm6ySpNpOI1K+9ENsfQ
-         WENJqL3mS9dMWHcUekbbSM0gOF3OMmtOK5m6KIuKU1D6ZplMPJjKtVuSQwj5E5ZmITPB
-         MxHhIquC/2+tAhNVQjtbEFhll/cD8pviXyx7YDkKDWkXlJvlw01P12KQNuL4h7ySy00i
-         7U1w==
-X-Gm-Message-State: AOAM531OCuY+Wo8a1yxQ5qU5Stcss/ukxsl+Mlo7AuTEn4XAvIf6nIl4
-        v1yMHVziAaMUSkaQbo/T3rAkmJ4FYmhqwitoiec7kUjJHhS2YYOYVpqZaYsJAQt79Iygdo68TIr
-        9F7TCV2OLsTEHG0YZcQTBaOyNFVGObqORaTxwGJG0TIFPs9WLSt7uGD5KOEQIkEZCtiIjBGAWlt
-        4u
-X-Received: by 2002:a63:f955:: with SMTP id q21mr13651952pgk.448.1625456926315;
-        Sun, 04 Jul 2021 20:48:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxh+8a0lcafys7ntL0qYOJsYQ0uxw1HqHLN2/UyNlqrNDJW0H4QdQRaegwbRorAJ1FTbNPV1A==
-X-Received: by 2002:a63:f955:: with SMTP id q21mr13651917pgk.448.1625456925713;
-        Sun, 04 Jul 2021 20:48:45 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id f193sm2380694pfa.185.2021.07.04.20.48.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Jul 2021 20:48:45 -0700 (PDT)
-Subject: Re: [RFC PATCH] vhost-vdpa: mark vhost device invalid to reflect vdpa
- device unregistration
-To:     gautam.dawar@xilinx.com
-Cc:     martinh@xilinx.com, hanand@xilinx.com, gdawar@xilinx.com,
-        "Michael S. Tsirkin" <mst@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        id S229813AbhGEDvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 23:51:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229722AbhGEDvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 23:51:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE11F6135E;
+        Mon,  5 Jul 2021 03:49:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625456956;
+        bh=pSWTYD7+rgxGLmQKw8kDoz3wh1zx9cykgZSMER+kE/c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AALlwd+apx3Rbawu+E16+x1jqReiMhNbLFREI5kP0/wjaa+evSt/QvZnHhh0dhHqz
+         SSLmqR0JX6qDQiquf7kDmneTIrPGpqRZLoLW3vNqym6ickz2uyu55onDZTHH1BSzcm
+         5LKgTgXiQzsg84ER/9j32cVBnwy7v9Bed62Bbblw0L6yHJg2Cg1uWcVxMmO99AabJ6
+         fM42ZbiMumO8Pp3k/nyg+XxrOCC5ruP0OMslxZ0HCUegnrHZkeni0RW0j6eBnKZ4ni
+         mi5SDyZUc8IqVTPe/9p40pUVffMUsW8M5u5bnzZV3YLzdnWze4oS0THiA+8C4KecRN
+         BA0HyYGpPCMew==
+Date:   Mon, 5 Jul 2021 09:19:12 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Kelvin Cheung <keguang.zhang@gmail.com>
+Cc:     dmaengine@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210704205205.6132-1-gdawar@xilinx.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <3d02b8f5-0a6b-e8d1-533d-8503da3fcc4e@redhat.com>
-Date:   Mon, 5 Jul 2021 11:48:36 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+Subject: Re: [PATCH V4 RESEND] dmaengine: Loongson1: Add Loongson1 dmaengine
+ driver
+Message-ID: <YOKBOFpNH0+3GN6e@matsya>
+References: <20210520230225.11911-1-keguang.zhang@gmail.com>
+ <YL392y4a6iRf1UyQ@vkoul-mobl>
+ <CAJhJPsXv42e23tyQjA52_my1Au6nP_VdLX3c_yzk5MxadQ95iw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210704205205.6132-1-gdawar@xilinx.com>
-Content-Type: text/plain; charset=gbk; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <CAJhJPsXv42e23tyQjA52_my1Au6nP_VdLX3c_yzk5MxadQ95iw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 04-07-21, 22:45, Kelvin Cheung wrote:
+> Vinod Koul <vkoul@kernel.org> äºŽ2021å¹´6æœˆ7æ—¥å‘¨ä¸€ ä¸‹åˆ7:07å†™é“ï¼š
+> >
+> > On 21-05-21, 07:02, Keguang Zhang wrote:
+> >
+> > > +config LOONGSON1_DMA
+> > > +     tristate "Loongson1 DMA support"
+> > > +     depends on MACH_LOONGSON32
+> >
+> > Why does it have to do that? The dma driver is generic..
+> 
+> This driver is only available for LOONGSON32 CPUs.
 
-ÔÚ 2021/7/5 ÉÏÎç4:52, gautam.dawar@xilinx.com Ð´µÀ:
->   	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> @@ -1091,11 +1122,13 @@ static void vhost_vdpa_remove(struct vdpa_device *vdpa)
->   		opened = atomic_cmpxchg(&v->opened, 0, 1);
->   		if (!opened)
->   			break;
-> -		wait_for_completion_timeout(&v->completion,
-> -					    msecs_to_jiffies(1000));
-> -		dev_warn_once(&v->dev,
-> -			      "%s waiting for/dev/%s to be closed\n",
-> -			      __func__, dev_name(&v->dev));
-> +		if (!wait_for_completion_timeout(&v->completion,
-> +					    msecs_to_jiffies(1000))) {
-> +			dev_warn(&v->dev,
-> +				 "%s/dev/%s in use, continue..\n",
-> +				 __func__, dev_name(&v->dev));
-> +			break;
-> +		}
->   	} while (1);
->   
->   	put_device(&v->dev);
-> +	v->dev_invalid = true;
+the underlaying firmware would ensure this driver is probed if you have
+such a device, so why have this restriction?
 
+> > > +static struct platform_driver ls1x_dma_driver = {
+> > > +     .probe  = ls1x_dma_probe,
+> > > +     .remove = ls1x_dma_remove,
+> > > +     .driver = {
+> > > +             .name   = "ls1x-dma",
+> > > +     },
+> >
+> > No device tree?
+> 
+> Because the LOONGSON32 platform doesn't support DT yet.
 
-Besides the mapping handling mentioned by Michael. I think this can lead 
-use-after-free. put_device may release the memory.
+Okay so how is the platform device created?
 
-Another fundamental issue, vDPA is the parent of vhost-vDPA device. I'm 
-not sure the device core can allow the parent to go away first.
-
-Thanks
-
-
+-- 
+~Vinod
