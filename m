@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E810A3BBE71
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 16:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6803BBE72
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 16:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbhGEOx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 10:53:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:48110 "EHLO foss.arm.com"
+        id S231775AbhGEOxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 10:53:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:48134 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231713AbhGEOxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 10:53:23 -0400
+        id S231764AbhGEOx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 10:53:26 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39F211FB;
-        Mon,  5 Jul 2021 07:50:46 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 612D731B;
+        Mon,  5 Jul 2021 07:50:49 -0700 (PDT)
 Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D08583F694;
-        Mon,  5 Jul 2021 07:50:42 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 747893F694;
+        Mon,  5 Jul 2021 07:50:46 -0700 (PDT)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         virtualization@lists.linux-foundation.org,
@@ -30,9 +30,9 @@ Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
         mikhail.golubev@opensynergy.com, anton.yakovlev@opensynergy.com,
         Vasyl.Vavrychuk@opensynergy.com,
         Andriy.Tryshnivskyy@opensynergy.com
-Subject: [PATCH v5 09/15] firmware: arm_scmi: Make SCMI transports configurable
-Date:   Mon,  5 Jul 2021 15:49:08 +0100
-Message-Id: <20210705144914.35094-10-cristian.marussi@arm.com>
+Subject: [PATCH v5 10/15] firmware: arm_scmi: Make shmem support optional for transports
+Date:   Mon,  5 Jul 2021 15:49:09 +0100
+Message-Id: <20210705144914.35094-11-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210705144914.35094-1-cristian.marussi@arm.com>
 References: <20210705144914.35094-1-cristian.marussi@arm.com>
@@ -40,210 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add configuration options to be able to select which SCMI transports have
-to be compiled into the SCMI stack.
+From: Igor Skalkin <igor.skalkin@opensynergy.com>
 
-Mailbox and SMC are by default enabled if their related dependencies are
-satisfied.
+Upcoming new SCMI transports won't need any kind of shared memory support.
+Compile shmem.c only if a shmem based transport is selected.
 
-While doing that move all SCMI related config options in their own
-dedicated submenu.
-
+Signed-off-by: Igor Skalkin <igor.skalkin@opensynergy.com>
+[ Peter: Adapted patch for submission to upstream. ]
+Co-developed-by: Peter Hilber <peter.hilber@opensynergy.com>
+Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
+[ Cristian: Adapted patch/commit_msg to new SCMI Kconfig layout ]
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
-Used a BUILD_BUG_ON() to avoid the scenario where SCMI is configured
-without any transport. Coul dnot do in any other way in Kconfig due to
-circular dependencies.
+ drivers/firmware/arm_scmi/Kconfig  | 8 ++++++++
+ drivers/firmware/arm_scmi/Makefile | 2 +-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-This will be neeed later on to add new Virtio based transport and
-optionally exclude other transports.
----
- drivers/firmware/Kconfig           | 34 +--------------
- drivers/firmware/arm_scmi/Kconfig  | 70 ++++++++++++++++++++++++++++++
- drivers/firmware/arm_scmi/Makefile |  4 +-
- drivers/firmware/arm_scmi/common.h |  4 +-
- drivers/firmware/arm_scmi/driver.c |  6 ++-
- 5 files changed, 80 insertions(+), 38 deletions(-)
- create mode 100644 drivers/firmware/arm_scmi/Kconfig
-
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index 1db738d5b301..8d41f73f5395 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -6,39 +6,7 @@
- 
- menu "Firmware Drivers"
- 
--config ARM_SCMI_PROTOCOL
--	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
--	depends on ARM || ARM64 || COMPILE_TEST
--	depends on MAILBOX || HAVE_ARM_SMCCC_DISCOVERY
--	help
--	  ARM System Control and Management Interface (SCMI) protocol is a
--	  set of operating system-independent software interfaces that are
--	  used in system management. SCMI is extensible and currently provides
--	  interfaces for: Discovery and self-description of the interfaces
--	  it supports, Power domain management which is the ability to place
--	  a given device or domain into the various power-saving states that
--	  it supports, Performance management which is the ability to control
--	  the performance of a domain that is composed of compute engines
--	  such as application processors and other accelerators, Clock
--	  management which is the ability to set and inquire rates on platform
--	  managed clocks and Sensor management which is the ability to read
--	  sensor data, and be notified of sensor value.
--
--	  This protocol library provides interface for all the client drivers
--	  making use of the features offered by the SCMI.
--
--config ARM_SCMI_POWER_DOMAIN
--	tristate "SCMI power domain driver"
--	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
--	default y
--	select PM_GENERIC_DOMAINS if PM
--	help
--	  This enables support for the SCMI power domains which can be
--	  enabled or disabled via the SCP firmware
--
--	  This driver can also be built as a module.  If so, the module
--	  will be called scmi_pm_domain. Note this may needed early in boot
--	  before rootfs may be available.
-+source "drivers/firmware/arm_scmi/Kconfig"
- 
- config ARM_SCPI_PROTOCOL
- 	tristate "ARM System Control and Power Interface (SCPI) Message Protocol"
 diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-new file mode 100644
-index 000000000000..479fc8a3533e
---- /dev/null
+index 479fc8a3533e..ee6517b24080 100644
+--- a/drivers/firmware/arm_scmi/Kconfig
 +++ b/drivers/firmware/arm_scmi/Kconfig
-@@ -0,0 +1,70 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+menu "ARM System Control and Management Interface Protocol"
-+
-+config ARM_SCMI_PROTOCOL
-+	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
-+	depends on ARM || ARM64 || COMPILE_TEST
-+	help
-+	  ARM System Control and Management Interface (SCMI) protocol is a
-+	  set of operating system-independent software interfaces that are
-+	  used in system management. SCMI is extensible and currently provides
-+	  interfaces for: Discovery and self-description of the interfaces
-+	  it supports, Power domain management which is the ability to place
-+	  a given device or domain into the various power-saving states that
-+	  it supports, Performance management which is the ability to control
-+	  the performance of a domain that is composed of compute engines
-+	  such as application processors and other accelerators, Clock
-+	  management which is the ability to set and inquire rates on platform
-+	  managed clocks and Sensor management which is the ability to read
-+	  sensor data, and be notified of sensor value.
-+
-+	  This protocol library provides interface for all the client drivers
-+	  making use of the features offered by the SCMI.
-+
-+config ARM_SCMI_HAVE_TRANSPORT
+@@ -28,10 +28,17 @@ config ARM_SCMI_HAVE_TRANSPORT
+ 	  Used to trigger a build bug when trying to build SCMI without any
+ 	  configured transport.
+ 
++config ARM_SCMI_HAVE_SHMEM
 +	bool
 +	help
-+	  This declares whether at least one SCMI transport has been configured.
-+	  Used to trigger a build bug when trying to build SCMI without any
-+	  configured transport.
++	  This declares whether a shared memory based transport for SCMI is
++	  available.
 +
-+config ARM_SCMI_TRANSPORT_MAILBOX
-+	bool "SCMI transport based on Mailbox"
-+	depends on ARM_SCMI_PROTOCOL && MAILBOX
-+	select ARM_SCMI_HAVE_TRANSPORT
-+	default y
-+	help
-+	  Enable mailbox based transport for SCMI.
-+
-+	  If you want the ARM SCMI PROTOCOL stack to include support for a
-+	  transport based on mailboxes, answer Y.
-+	  A matching DT entry will also be needed to indicate the effective
-+	  presence of this kind of transport.
-+
-+config ARM_SCMI_TRANSPORT_SMC
-+	bool "SCMI transport based on SMC"
-+	depends on ARM_SCMI_PROTOCOL && HAVE_ARM_SMCCC_DISCOVERY
-+	select ARM_SCMI_HAVE_TRANSPORT
-+	default y
-+	help
-+	  Enable SMC based transport for SCMI.
-+
-+	  If you want the ARM SCMI PROTOCOL stack to include support for a
-+	  transport based on SMC, answer Y.
-+	  A matching DT entry will also be needed to indicate the effective
-+	  presence of this kind of transport.
-+
-+config ARM_SCMI_POWER_DOMAIN
-+	tristate "SCMI power domain driver"
-+	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
-+	default y
-+	select PM_GENERIC_DOMAINS if PM
-+	help
-+	  This enables support for the SCMI power domains which can be
-+	  enabled or disabled via the SCP firmware
-+
-+	  This driver can also be built as a module.  If so, the module
-+	  will be called scmi_pm_domain. Note this may needed early in boot
-+	  before rootfs may be available.
-+
-+endmenu
+ config ARM_SCMI_TRANSPORT_MAILBOX
+ 	bool "SCMI transport based on Mailbox"
+ 	depends on ARM_SCMI_PROTOCOL && MAILBOX
+ 	select ARM_SCMI_HAVE_TRANSPORT
++	select ARM_SCMI_HAVE_SHMEM
+ 	default y
+ 	help
+ 	  Enable mailbox based transport for SCMI.
+@@ -45,6 +52,7 @@ config ARM_SCMI_TRANSPORT_SMC
+ 	bool "SCMI transport based on SMC"
+ 	depends on ARM_SCMI_PROTOCOL && HAVE_ARM_SMCCC_DISCOVERY
+ 	select ARM_SCMI_HAVE_TRANSPORT
++	select ARM_SCMI_HAVE_SHMEM
+ 	default y
+ 	help
+ 	  Enable SMC based transport for SCMI.
 diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-index 6a2ef63306d6..38163d6991b3 100644
+index 38163d6991b3..e0e6bd3dba9e 100644
 --- a/drivers/firmware/arm_scmi/Makefile
 +++ b/drivers/firmware/arm_scmi/Makefile
-@@ -2,8 +2,8 @@
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
  scmi-bus-y = bus.o
  scmi-driver-y = driver.o notify.o
- scmi-transport-y = shmem.o
--scmi-transport-$(CONFIG_MAILBOX) += mailbox.o
--scmi-transport-$(CONFIG_HAVE_ARM_SMCCC_DISCOVERY) += smc.o
-+scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_MAILBOX) += mailbox.o
-+scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_SMC) += smc.o
+-scmi-transport-y = shmem.o
++scmi-transport-$(CONFIG_ARM_SCMI_HAVE_SHMEM) = shmem.o
+ scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_MAILBOX) += mailbox.o
+ scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_SMC) += smc.o
  scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o
- scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
- 		    $(scmi-transport-y)
-diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index fb3770b165ca..d846ffd77b99 100644
---- a/drivers/firmware/arm_scmi/common.h
-+++ b/drivers/firmware/arm_scmi/common.h
-@@ -390,8 +390,10 @@ struct scmi_desc {
- 	bool using_xfers_delegation;
- };
- 
-+#ifdef CONFIG_ARM_SCMI_TRANSPORT_MAILBOX
- extern const struct scmi_desc scmi_mailbox_desc;
--#ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
-+#endif
-+#ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC
- extern const struct scmi_desc scmi_smc_desc;
- #endif
- 
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index c1ff0e84f72d..0ffdfdaabf35 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -2082,10 +2082,10 @@ ATTRIBUTE_GROUPS(versions);
- 
- /* Each compatible listed below must have descriptor associated with it */
- static const struct of_device_id scmi_of_match[] = {
--#ifdef CONFIG_MAILBOX
-+#ifdef CONFIG_ARM_SCMI_TRANSPORT_MAILBOX
- 	{ .compatible = "arm,scmi", .data = &scmi_mailbox_desc },
- #endif
--#ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
-+#ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC
- 	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
- #endif
- 	{ /* Sentinel */ },
-@@ -2156,6 +2156,8 @@ static int __init scmi_driver_init(void)
- 
- 	scmi_bus_init();
- 
-+	BUILD_BUG_ON(!IS_ENABLED(CONFIG_ARM_SCMI_HAVE_TRANSPORT));
-+
- 	/* Initialize any compiled-in transport which provided an init/exit */
- 	ret = scmi_transports_init();
- 	if (ret)
 -- 
 2.17.1
 
