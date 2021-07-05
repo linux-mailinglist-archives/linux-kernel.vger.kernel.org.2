@@ -2,83 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8B23BB802
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805BF3BB805
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhGEHnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 03:43:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229817AbhGEHnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 03:43:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A4AD613AE;
-        Mon,  5 Jul 2021 07:40:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625470848;
-        bh=zGHYK/Zq0c0G17od5h7JCpFMDS+7oZHhjCoKS9yvD1A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZYRb2xrtH6IOdMRfo6tCJsxnvrTlVnqTYw1JI97/GePDOIf8XqaCW3dp2t7YL25tm
-         Fp+S9zeDciRovRfrkPAD6AKqkcvyXtjQ69vhKM+rMs4QjzyPT6P6jgDh+DKvM5QDT/
-         J39RRbPOmyjYtIhXzjY8nnyXhE4UUNHO3qfVSyrlY1LXPHgxk5V0p4JDakveWnnNBi
-         u2w44OKTmdggKYV8+NUgw73niuZYuf2mvX45vaZcb26+47zskTJUH2X/Rjf3gxkQb9
-         TzxU0qp9UIp/79cHNlv47Q5xW3DZiKMtZ9pQUpe6e8mW+7PxRPARA9Tto64k7c3HqL
-         sWbnYlU1aNHcg==
-Received: from johan by xi with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1m0JDe-00087u-03; Mon, 05 Jul 2021 09:40:42 +0200
-Date:   Mon, 5 Jul 2021 09:40:41 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg KH <greg@kroah.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 1/6] USB: serial: cp210x: fix control-characters error
- handling
-Message-ID: <YOK3ecvJz3xV6C1j@hovoldconsulting.com>
-References: <20210702134227.24621-1-johan@kernel.org>
- <20210702134227.24621-2-johan@kernel.org>
- <YN8m7wk0dfSLi+c5@kroah.com>
+        id S230002AbhGEHoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 03:44:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36264 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229975AbhGEHog (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 03:44:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625470919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4VoHUzGSOequcyOo3F6H8BsyFbZ2tce0N3gMOC9Uf/8=;
+        b=Go3glGjZhuNiN09Ho07IsHlUOjbcgY2WL/RG0cK8jP3669/svJ/2yz5TC+OBSSYpbqk5lh
+        1554+dxnGICWPV84C9kC2+rq3gqVSUIz0NP9G1dsgw5XhIJBGa0b2TEwqZp2IiZek77Ged
+        Sr8G/1LAr6jRo0OzBkRhUkJdZZDi13g=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-IfR5u9JNNSSc5JBqHxTWTw-1; Mon, 05 Jul 2021 03:41:58 -0400
+X-MC-Unique: IfR5u9JNNSSc5JBqHxTWTw-1
+Received: by mail-wm1-f72.google.com with SMTP id n37-20020a05600c3ba5b02901fe49ba3bd0so2961987wms.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 00:41:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=4VoHUzGSOequcyOo3F6H8BsyFbZ2tce0N3gMOC9Uf/8=;
+        b=umo3dvzzWR1D4uUmw0TpDKceRuA7/wCsOq8ZozjQb4mWdVIjsy5xG5QotU/b2LNW61
+         kosJRjMYBnTsEebrzeGg0qORdzRviCKt5qPhE+0FOAqR0pUNtIQQdwxQnZzyDUajVvUS
+         JZY4XhVIM8mDVSSw643St/F63MsaR6yv/ZASczTwnEAlU1Rb72IYf4a/T6iVYydrQNyT
+         cnwAW+KALWEHd5qnDh0ittC+oB9qKiSB1tcEvw5vNBHH1BIDOu3ScCKqyWWZzruqLrB1
+         FB5atgPCYeo0/+OeA7YKnbWRd2eolQ4kxbBEmRG2P2Z3lKEFXTHloZu2yiRHevFL2tiy
+         THQA==
+X-Gm-Message-State: AOAM531C7Ke2vE3HJJrUGrpni3365TKFsklvDlpeDCmCFJymU6G41Zdh
+        D0Z1k4qO6moj5+n2Ad16sFaqFuqDCmgqJnsir0JumeidfRVTq5AvuyTQQtrBKOlDOZ+7YGLW3Aw
+        ei3uFhknUkwlwn6IYh9bD8+fv
+X-Received: by 2002:a05:6000:2c6:: with SMTP id o6mr13958751wry.299.1625470917224;
+        Mon, 05 Jul 2021 00:41:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzcx+WC36pR7wWTgO82M+tfm+vTSe542c1Nbeh+g9RtlXwZwnIn83qNzboNxZSL/BOnfACf5w==
+X-Received: by 2002:a05:6000:2c6:: with SMTP id o6mr13958737wry.299.1625470917079;
+        Mon, 05 Jul 2021 00:41:57 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
+        by smtp.gmail.com with ESMTPSA id m5sm214888wmq.2.2021.07.05.00.41.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Jul 2021 00:41:56 -0700 (PDT)
+Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Suren Baghdasaryan <surenb@google.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+References: <20210623192822.3072029-1-surenb@google.com>
+ <CALCETrU577MD59P-+9sMYtS3t2sZYx-zi=VirhQpZLnhEck1vg@mail.gmail.com>
+ <CAJuCfpFMTP-g9CFELMqNawX0FhF4vBNtRDP_R=WAi_RiuGW8-Q@mail.gmail.com>
+ <YNzl6XNu2vxyCJu8@cmpxchg.org>
+ <CALCETrWsVw4+jT_Z1uxidRAZ0SQbngYe7E2m-8iyX6qRbug6zA@mail.gmail.com>
+ <CAJuCfpG5Ua7C4usJGEqTm6_UUd6VyRd0BsPgT97LWOzjb4Ry+g@mail.gmail.com>
+ <20210702152724.7fv5tnik4qlap6do@wittgenstein>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <af8e76f1-6625-25d1-98d2-a3c8a9bf2fd6@redhat.com>
+Date:   Mon, 5 Jul 2021 09:41:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YN8m7wk0dfSLi+c5@kroah.com>
+In-Reply-To: <20210702152724.7fv5tnik4qlap6do@wittgenstein>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 04:47:11PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Jul 02, 2021 at 03:42:22PM +0200, Johan Hovold wrote:
-> > In the unlikely event that setting the software flow-control characters
-> > fails the other flow-control settings should still be updated.
-> > 
-> > Fixes: 7748feffcd80 ("USB: serial: cp210x: add support for software flow control")
-> > Cc: stable@vger.kernel.org	# 5.11
-> > Signed-off-by: Johan Hovold <johan@kernel.org>
-> > ---
-> >  drivers/usb/serial/cp210x.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-> > index 09b845d0da41..b41e2c7649fb 100644
-> > --- a/drivers/usb/serial/cp210x.c
-> > +++ b/drivers/usb/serial/cp210x.c
-> > @@ -1217,9 +1217,7 @@ static void cp210x_set_flow_control(struct tty_struct *tty,
-> >  		chars.bXonChar = START_CHAR(tty);
-> >  		chars.bXoffChar = STOP_CHAR(tty);
-> >  
-> > -		ret = cp210x_set_chars(port, &chars);
-> > -		if (ret)
-> > -			return;
-> > +		cp210x_set_chars(port, &chars);
+On 02.07.21 17:27, Christian Brauner wrote:
+> On Thu, Jul 01, 2021 at 03:59:48PM -0700, Suren Baghdasaryan wrote:
+>> On Wed, Jun 30, 2021 at 5:44 PM Andy Lutomirski <luto@kernel.org> wrote:
+>>>
+>>> On Wed, Jun 30, 2021 at 2:45 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>>>>
+>>>> On Wed, Jun 30, 2021 at 11:51:36AM -0700, Suren Baghdasaryan wrote:
+>>>>> On Wed, Jun 30, 2021 at 11:26 AM Andy Lutomirski <luto@kernel.org> wrote:
+>>>>>> Also, please consider removing all mention of the word "reap" from the
+>>>>>> user API.  For better or for worse, "reap" in UNIX refers to what
+>>>>>> happens when a dead task gets wait()ed.  I sincerely wish I could go
+>>>>>> back in time and gently encourage whomever invented that particular
+>>>>>> abomination to change their mind, but my time machine doesn't work.
+>>>>>
+>>>>> I see. Thanks for the note. How about process_mem_release() and
+>>>>> replacing reap with release everywhere?
+>>>>
+>>>> I don't quite understand the objection. This syscall works on tasks
+>>>> that are at the end of their life, right? Isn't something like
+>>>> process_mreap() establishing exactly the mental link we want here?
+>>>> Release is less descriptive for what this thing is to be used for.
+>>>
+>>> For better or for worse, "reap" means to make a zombie pid go away.
+>>>  From the description, this new operation takes a dying process (not
+>>> necessarily a zombie yet) and aggressively frees its memory.  This is
+>>> a different optioneration.
+>>>
+>>> How about "free_dying_process_memory"?
+>>
+>> process_mreap sounds definitely better and in line with names like
+>> process_madvise. So maybe we can use it?
 > 
-> What's the odds that someone tries to add the error checking back in
-> here, in a few years?  Can you put a comment here saying why you are not
-> checking it?
+> That one was my favorite from the list I gave too but maybe we can
+> satisfy Andy too if we use one of:
+> - process_mfree()
+> - process_mrelease()
+> 
 
-This is just how set_termios() works and how the other requests are
-handled by the driver. I can add an explicit error message here though
-just like when setting the line-control register so that it doesn't look
-like an oversight. The error message is currently printed by the
-set_chars() helper, but I can move that out when removing the helper
-later in the series.
+FWIW, I tend to like process_mrelease(), due to the implied "release" 
+("free the memory if there are no other references") semantics. Further, 
+a new syscall feels cleaner than some magic sysfs/procfs toggle. Just my 
+2 cents.
 
-Johan
+-- 
+Thanks,
+
+David / dhildenb
+
