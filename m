@@ -2,88 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CB63BC3CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 00:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 762403BC3D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 00:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbhGEWJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 18:09:03 -0400
-Received: from ozlabs.org ([203.11.71.1]:51811 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230086AbhGEWJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 18:09:01 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GJfsT58ktz9sWq;
-        Tue,  6 Jul 2021 08:06:21 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1625522781;
-        bh=TwqMw62jrR/kI5w4kSqFgyUFVnwFQ2A8qCJfovIHDIA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=l0IcdjbYrJI5JQ3eCNY49qmRtoI9T2SI/qHuePuqfgHSV/gwUHG0yT0WZeazaB8WF
-         3gVTjOSFrUz3VdnEE7kGHnjkIBZ7Kd17RRhEJgb0aKl4fafH9VPgeMnsMRNZztALhZ
-         +FoxxpHhPgMn0H7vTwGwDCiVGsO2LUvp84ZiJMbgng/o7IwnJVytZyBsZICfQpuDtG
-         npxPFzl1OX6bNBknAsTJnVWMrx3jNNV4qr1heZa4TwdoNJ6+rHVJp6COADdcFsncCl
-         pi+CXYa9kwkaLq307BnTo4rqNrw8QRp77Jhjm/YwLOrGKuus7n6vejAT/ww2ABfp84
-         2RoW3jy9kVa0A==
-Date:   Tue, 6 Jul 2021 08:06:21 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the memblock-fixes tree
-Message-ID: <20210706080621.5d497973@canb.auug.org.au>
+        id S233122AbhGEWMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 18:12:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230086AbhGEWMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 18:12:17 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AB5C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 15:09:39 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id z1so18620815ils.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 15:09:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=4WozBVZzyk1lBEbGC2n9wCY9l6DjmuOhvC82QU50fjU=;
+        b=T/cbkLTa3MFtB0QE2qgK09v0gl2juSpm5dmis6O2XeoblaAnil9r3xtnLQ8JZmbBfB
+         1b75q2bnD4BNr/UUw4Y2u8HqbkVsB7erQ4lqsxp0XxcZful45i5tzHZtPl/DVrT8Klom
+         pvmtY+JNYWsxoy1gLylLG0N9dKKRb0LcecO6X6bwv6aetBXD0LdH05T9/8N0JGPoA4p7
+         lzb2IQX4/Vgnf+vbX4xi8K5vSK+yjkbgsZwBcim1mkx6+4cMLQfcgen+bPZLYmRDIIGw
+         dagqN4ylrFO2QCKAjk42OOD+q5xEp3+YHY7giaJiiWHGoaWe0BPwJgs8RfXtIT6D4TOC
+         z5lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=4WozBVZzyk1lBEbGC2n9wCY9l6DjmuOhvC82QU50fjU=;
+        b=a6yaNwZg8iSMkJ3fG9PhY1u+y3UuA7tzmZoqyGms3aWCtyldBs0oABaFn5+lYA7Nwu
+         YwH89WrSYKjPyrNXVlInhmP7JLK9owDGKpbcNQKPb7AdcEtSQHFfW2FZKVZVVDS7fuz9
+         I+4Lnyb3963g66XUKwEjo16OOjhCBCK8ZV+VlHx+Bxr5p1sVS3HOaVpt8eZhzYZN+FYA
+         Zm58Wc11XjJdy3cNScPPrOTJOF8iK3P8E5x4ZsNDgwXOOoY5TApGAT+y3Z7H2fnktMfQ
+         BIBJ28JSvu8jmV8+UC4CqOjxIzaepRPjRjUFHCY3hGobPpZvzk9GFhZd766C0aw52OqB
+         tEHg==
+X-Gm-Message-State: AOAM531MQst8SQosRUQvNLVDSYeKHMl8g3pgxW2BdyaBD2gW6AG1MEg8
+        VAjVw0znb+AKgQQqHTECbaM4aPucgehoPq6/fzRKBuEjRk/ulA==
+X-Google-Smtp-Source: ABdhPJyxCLzqynZlK3774Z9LgHjwJZ6/7KaVyWzZ9gZ9OXmlwpCz5d2MEGCoZ4kB2GUJrwIg5biRRpLZDHKL9roaOp4=
+X-Received: by 2002:a92:c7c7:: with SMTP id g7mr12503492ilk.216.1625522978274;
+ Mon, 05 Jul 2021 15:09:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/cOHV3q4rtL2hX9.blEKZJvr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+From:   Sunip Mukherjee <sunipkmukherjee@gmail.com>
+Date:   Mon, 5 Jul 2021 18:09:28 -0400
+Message-ID: <CADLJR24hQya0MkJhdDAJ0KO4MG+Fj4tRU5dNrbNdD9DMG_gLHg@mail.gmail.com>
+Subject: Char Driver for Silicon Labs Si446x Transceivers
+To:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/cOHV3q4rtL2hX9.blEKZJvr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+I am very new to the kernel community; this is my first message in the
+LKML so my apologies if I am doing things wrong.
 
-In commit
+I have been using an Si4463 transceiver for UHF communication with a
+cubesat I developed. I could not find any code to control the
+transceiver on Linux. The closest thing I could find was an AVR
+implementation by Zak Kemble
+(https://blog.zakkemble.net/si4463-radio-library-avr-arduino/).
+I followed the API docs and rewrote the whole thing at first for
+userland only (can be found here:
+https://github.com/SPACE-HAUC/si446x_linux/releases/tag/v3.1), and
+then I decided it would be a great learning opportunity for me to port
+it to the kernel.
 
-  24caecffab46 ("arm: ioremap: don't abuse pfn_valid() to check if pfn is i=
-n RAM")
+The kernel port has gone mostly smoothly. The transceiver communicates
+with the host MCU over SPI, and requires a pin for RESET, and another
+pin for IRQ.
+I have implemented the driver to provide a char device (/dev/si446x#)
+to the userland for open, read, write, poll and ioctl.
+I had initially set up a pull request for the driver and the device
+tree overlay to the Raspberry Pi kernel community. They have agreed to
+accept the device tree overlay for the device, however the driver
+needs to be included by the Linux Kernel community. I want to use this
+opportunity to find some people who have access to a Si446x
+transceiver and a Raspberry Pi, so that the code I have can be tested,
+and if deemed worthy, included in the kernel tree.
 
-Fixes tag
+My code is hosted here: https://github.com/sunipkmukherjee/silabs.git
 
-  Fixes: 30603c5a0c9a ("arm: ioremap: don't abuse pfn_valid() to check if p=
-fn
+Any suggestions/criticisms are welcome.
 
-has these problem(s):
+Thanks,
 
-  - Target SHA1 does not exist
+Sunip Mukherjee,
+PhD Candidate,
+University of Massachusetts, Lowell
 
-I could not easily find the actual commit that was meant.
-
-Also, please do not split Fixes tags over more than one line.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/cOHV3q4rtL2hX9.blEKZJvr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDjgl0ACgkQAVBC80lX
-0GyjnAf8Cwd+kNYrUBK63Um85skjWgpV/sNrhSCb7GATYhg41oKybiAyf0HUiF67
-6WvzbkG/b8mFknBKvyRarBtFv/CFw7Bkt5sMD3w6isezcNUXvtanj2zkxQXshKQd
-V7wulwc59J0SN+Kn9pN5fPJumChW0hKgdKiuQRpB7jWiKZkgM5cK+cZjsOE0j8JB
-f6MlZfaLVhzpaToph4Pn8cE3M8Dqcu80jMTjfCF3GFHrGiVxaRrsWUrUHxuD10iM
-hIXYkTNk/kZrOAkaBFlKeXfQlh0t52qqRjQJz92Dw2Pb73aazl/QpjjUq+jiqQD6
-O6FhpWg/cwo64wjjzb0R1uI0W5sFOQ==
-=szX0
------END PGP SIGNATURE-----
-
---Sig_/cOHV3q4rtL2hX9.blEKZJvr--
+Email: sunip_mukherjee@student.uml.edu | sunipkmukherjee@gmail.com
