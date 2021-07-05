@@ -2,119 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB82A3BBD7F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80B63BBD83
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhGENcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 09:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
+        id S231231AbhGENd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 09:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhGENcR (ORCPT
+        with ESMTP id S230188AbhGENd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 09:32:17 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02C4C06175F;
-        Mon,  5 Jul 2021 06:29:40 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 5364D2224A;
-        Mon,  5 Jul 2021 15:29:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1625491776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ddqwepprvqFiaW8VYgzbLNgNvkfzv1fsbM9mR4tb2MU=;
-        b=KlKc6cuymWilnEHSiZybjsBCb7lqFMoM0B0qntA5wAIa83ZClp/T+yO2jhPZO3P097HPyx
-        I9LJ4cgHjYs5tbZ1GkoFxLOWaMPYXOA7xBLcq+czcgCMWb6barEtcJBGF1+1tR/jQQHk1w
-        GDVJF5uW3DqrkflWRAWNDdHoOV/WFvs=
+        Mon, 5 Jul 2021 09:33:58 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF7FC061574;
+        Mon,  5 Jul 2021 06:31:21 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id f13so5743975lfh.6;
+        Mon, 05 Jul 2021 06:31:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WqJSKXEq1qvxzt4fRoDnpx/9Q8+N8oW72HArhulx5c4=;
+        b=S5tyMH6tdDy8zu6XhKnUxvI8WfUNknC0197JRod1YHnrJ8jMpMeuShvMurJcL/XN61
+         PDaQQysmSZMu6p5Nyq+REnvvk+4w5EKJvCsGqhzt0N/KmSd205Vn3YI5lqBibyoMCN24
+         pLLaeuMtw8ipDdi7YiljZQg9WUchUHZWmUSGaYzedNYq/w2aLLE9n5K0I4YFRpw2eoc5
+         nlbPHLyXwo5YyivgVBjkqu+hvUk4WNcHlHhMoxg0BE7AzYlTqx26jXaQbVmzC9qpDiPz
+         OD+Be5fu6NJXk6/RDeeTHRLb2IaN6C0ktskTTMLMN84z3X8IZHe5xl68Rw9KeOwfoJbC
+         HAeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WqJSKXEq1qvxzt4fRoDnpx/9Q8+N8oW72HArhulx5c4=;
+        b=PIOxuuxWr16TVlARz4BcO6dI1xTN5SKjNT5LXS/4+5hC9+pAbGY1Y7s9pLJPlBtzwI
+         GaB7a5W+Bffy5oHQx2PN3BQElViYDUMwYVMlzKFchk7aIm9z+LLiQZX9ISj6nif9TEZ+
+         eile3hpH+guTkAEieDBtJBjfcbAXJWRkg6bwo0gyLphsRZjgoBGqb2ReRJiCMFRL2kzQ
+         KYtlWl8v3pO8BFRItzrOxnXMm1qbZW5bJLsY3JS4P6hDSU4Oygoss02/bPLUTDDYpojT
+         QX7q5EQHE35xSFQJleoXL49CUQNf05VVXUSaQUddNctl0Plr9ygspjt+gMGsfoNNgT1b
+         Gqjw==
+X-Gm-Message-State: AOAM5336hXtjzkcPUdRwWgA8mzkoGQhnuHq4/pHm2YYY2gL7aO3jSG8s
+        dnQnu+uoe+3mJ1+sq5tTDbE=
+X-Google-Smtp-Source: ABdhPJw+GZgQ+lQ0lANw8cUSXymS8JLjFao55geIUHEN5JpD1+kXXSNMY6a7Ute3/ROcp/zTpckg0Q==
+X-Received: by 2002:a05:6512:3b8c:: with SMTP id g12mr10741709lfv.551.1625491879881;
+        Mon, 05 Jul 2021 06:31:19 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.225.155])
+        by smtp.gmail.com with ESMTPSA id q21sm1090364lfp.233.2021.07.05.06.31.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 06:31:19 -0700 (PDT)
+Date:   Mon, 5 Jul 2021 16:31:13 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+c87d2efb740931ec76c7@syzkaller.appspotmail.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] memory leak in kvm_dev_ioctl
+Message-ID: <20210705163113.367df3f1@gmail.com>
+In-Reply-To: <CACT4Y+aeiQ9=p6esuAseErekJnLzxFL1eG7qpWehZHUfb8UoNw@mail.gmail.com>
+References: <000000000000bfb6cf05c631db0b@google.com>
+        <20210703101243.45cbf143@gmail.com>
+        <CACT4Y+Yk5v3=2V_t77RSqACNYQb6PmDM0Mst6N1QEgz9CdYrqw@mail.gmail.com>
+        <20210705143652.56b3d68b@gmail.com>
+        <CACT4Y+aeiQ9=p6esuAseErekJnLzxFL1eG7qpWehZHUfb8UoNw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 05 Jul 2021 15:29:35 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Huan Feng <huan.feng@starfivetech.com>
-Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO
- driver
-In-Reply-To: <20210702210622.GC1035183@x1>
-References: <20210701002037.912625-1-drew@beagleboard.org>
- <20210701002037.912625-3-drew@beagleboard.org>
- <CAHp75Vc7kFk_SC8MSmFE5mBt53=4yUnxpSpr=cxZ+7eA-t1r5g@mail.gmail.com>
- <20210702210622.GC1035183@x1>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <991dddfee40c5b358c07257b58a316f3@walle.cc>
-X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Drew,
+On Mon, 5 Jul 2021 13:47:30 +0200
+Dmitry Vyukov <dvyukov@google.com> wrote:
 
-Am 2021-07-02 23:06, schrieb Drew Fustini:
-> On Fri, Jul 02, 2021 at 07:03:19PM +0300, Andy Shevchenko wrote:
->> On Thu, Jul 1, 2021 at 3:23 AM Drew Fustini <drew@beagleboard.org> 
->> wrote:
->> >
->> > Add GPIO driver for the StarFive JH7100 SoC [1] used on the
->> > BeagleV Starlight JH7100 board [2].
->> >
->> > [1] https://github.com/starfive-tech/beaglev_doc/
->> > [2] https://github.com/beagleboard/beaglev-starlight
->> 
->> > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
->> > Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
->> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
->> 
->> Seems some Co-developed-by are missing.
+> On Mon, Jul 5, 2021 at 1:36 PM Pavel Skripkin <paskripkin@gmail.com>
+> wrote:
+> >
+> > On Mon, 5 Jul 2021 07:54:59 +0200
+> > Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > > On Sat, Jul 3, 2021 at 9:12 AM Pavel Skripkin
+> > > <paskripkin@gmail.com> wrote:
+> > > >
+> > > > On Fri, 02 Jul 2021 23:05:26 -0700
+> > > > syzbot <syzbot+c87d2efb740931ec76c7@syzkaller.appspotmail.com>
+> > > > wrote:
+> > > >
+> > > > > Hello,
+> > > > >
+> > > > > syzbot found the following issue on:
+> > > > >
+> > > > > HEAD commit:    e058a84b Merge tag 'drm-next-2021-07-01' of
+> > > > > git://anongit... git tree:       upstream
+> > > > > console output:
+> > > > > https://syzkaller.appspot.com/x/log.txt?x=171fbbdc300000
+> > > > > kernel config:
+> > > > > https://syzkaller.appspot.com/x/.config?x=8c46abb9076f44dc
+> > > > > dashboard link:
+> > > > > https://syzkaller.appspot.com/bug?extid=c87d2efb740931ec76c7
+> > > > > syz repro:
+> > > > > https://syzkaller.appspot.com/x/repro.syz?x=119d1efc300000 C
+> > > > > reproducer:
+> > > > > https://syzkaller.appspot.com/x/repro.c?x=16c58c28300000
+> > > > >
+> > > > > IMPORTANT: if you fix the issue, please add the following tag
+> > > > > to the commit: Reported-by:
+> > > > > syzbot+c87d2efb740931ec76c7@syzkaller.appspotmail.com
+> > > > >
+> > > >
+> > > > Corresponding fix was sent about 2 days ago
+> > > > https://patchwork.kernel.org/project/kvm/patch/20210701195500.27097-1-paskripkin@gmail.com/
+> > >
+> > > Hi Pavel,
+> > >
+> > > Thanks for checking. Let's tell syzbot about the fix:
+> > >
+> > > #syz fix: kvm: debugfs: fix memory leak in kvm_create_vm_debugfs
+> >
+> >
+> > Hi, Dmitry!
+> >
+> > Sorry for stupid question :)
+> >
+> > I don't see, that my patch was applied, so syzbot will save the
+> > patch name and will test it after it will be applied? I thought
+> > about sending `syz fix` command, but I was sure that syzbot takes
+> > only accepted patches.
 > 
-> Thank you for suggesting this.  Huan Feng originally wrote the driver.
-> Emil and I have made some changes to reorganize and clean it up for
-> submission.
+> Hi Pavel,
 > 
-> Do you think all three of us should list Co-developed-by: for our names
-> in addition to the SOB?
-> 
->> Brief look into the code brings the Q. Can't you utilize gpio-regmap
->> here? Why not?
-> 
-> Michael Walle asked about this yesterday and it was my first time
-> looking at regmap and gpio-regmap.  I've been reading the code and it
-> does look like I should try convert this driver over to using
-> gpio-regmap.
-> 
-> The open question in my mind is how to handle the interrupt type (edge
-> trigged on positive or negative, level triggered on high or low).
-> Hopefully I can find some other examples that can help me think about
-> how to do that correctly.
+> Please see if http://bit.do/syzbot#communication-with-syzbot answers
+> your questions.
 
-Have a look at include/linux/regmap.h, there is "struct 
-regmap_irq_type".
-If you're lucky, you can just supply the corresponding values that fits
-your hardware. If it doesn't match your hardware at all, then you can
-keep your own functions, or if its slightly different, then maybe you
-can add support for your quirk in regmap-irq. You don't necessarily have
-to use regmap-irq together with gpio-regmap. You can also just use
-regmap-irq or gpio-regmap independently.
 
-A quick grep for "type_rising_" lists drivers/mfd/max77650.c and
-drivers/mfd/rohm-bd70528.c for example.
+Yes, it does. Thank you! 
 
--michael
+
+With regards,
+Pavel Skripkin
