@@ -2,74 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDC43BC25B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 19:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2154B3BC25D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 19:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbhGERqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 13:46:15 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46538 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhGERqN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 13:46:13 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 58F091C0B76; Mon,  5 Jul 2021 19:43:35 +0200 (CEST)
-Date:   Mon, 5 Jul 2021 19:43:34 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de
-Subject: Re: [PATCH 5.10 0/7] 5.10.48-rc1 review
-Message-ID: <20210705174333.GA7032@amd>
-References: <20210705105957.1513284-1-sashal@kernel.org>
+        id S229794AbhGERtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 13:49:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229686AbhGERtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 13:49:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC9EF61946;
+        Mon,  5 Jul 2021 17:47:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625507230;
+        bh=O85WJvVbPh+zxTWxPfLPmLw5JuXuUcRQ8xrIqn8SHSk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HXieEPbXG5zDh5AbincKiUh3934HCwJLOqFQW/KdRE8Ru6qxXJIfQ6rG4oaLIyGEG
+         A7xpw3ZaaRKjS7JCLeo8ViEDkms83SfSuhaaooHlgvv0WwBbtG7hKhwDIr3R5fsN1T
+         TE0fZz7DBo+F99XCplVgTquJUEADjhqL2QDCooCx1mYKPJI42u04Sf0CTqXmSbrKxk
+         ArIAXZhmJF7ecsbI8CaEZGfZg6Eqqu7yOW3Yuj6U55/5c5E3xNRbsNnZMzCcRgnWum
+         mwKJOlwZq+sOVL0+OkCSw0AtmquyRaNsZQrqu/sdtCw6FjTXt+nFXvy0beRbHPtzmk
+         IFg3HoGCbllbQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2461D40B1A; Mon,  5 Jul 2021 14:47:06 -0300 (-03)
+Date:   Mon, 5 Jul 2021 14:47:06 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Stefan Liebler <stli@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] perf probe: Do not show @plt function by default
+Message-ID: <YONFmpWBdqGX7VZJ@kernel.org>
+References: <162532651032.393143.4602033845482295575.stgit@devnote2>
+ <162532653450.393143.12621329879630677469.stgit@devnote2>
+ <9824bd00-3291-3a65-73f1-553410b8eb68@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="ikeVEW9yuYc//A+q"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210705105957.1513284-1-sashal@kernel.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <9824bd00-3291-3a65-73f1-553410b8eb68@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Mon, Jul 05, 2021 at 02:11:11PM +0200, Thomas Richter escreveu:
+> On 7/3/21 5:35 PM, Masami Hiramatsu wrote:
+> > +++ b/tools/perf/builtin-probe.c
+> > @@ -31,7 +31,7 @@
+> >  #include <linux/zalloc.h>
 
---ikeVEW9yuYc//A+q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >  #define DEFAULT_VAR_FILTER "!__k???tab_* & !__crc_*"
+> > -#define DEFAULT_FUNC_FILTER "!_*"
+> > +#define DEFAULT_FUNC_FILTER "!_* & !*@plt"
+> >  #define DEFAULT_LIST_FILTER "*"
 
-Hi!
+> Thanks, works again ...
 
-> This is the start of the stable review cycle for the 5.10.48 release.
-> There are 7 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+I took this as an Acked-by.
 
-CIP testing did not find any problems here:
+Thanks, applied.
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y
-
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---ikeVEW9yuYc//A+q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmDjRMUACgkQMOfwapXb+vI0eACdEpElprecsfwSuh7Xq16sMG/i
-TkYAn3kfKG9iqOIBE7m7M920HqOQ6CMH
-=5MC8
------END PGP SIGNATURE-----
-
---ikeVEW9yuYc//A+q--
+- Arnaldo
