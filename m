@@ -2,173 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536C73BB7B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD19E3BB7BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhGEHZA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 5 Jul 2021 03:25:00 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3351 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbhGEHY7 (ORCPT
+        id S230004AbhGEH0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 03:26:08 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:46851 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhGEH0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 03:24:59 -0400
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GJH4D4Skqz6FBdK;
-        Mon,  5 Jul 2021 15:14:20 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 5 Jul 2021 09:22:21 +0200
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- lhreml710-chm.china.huawei.com (10.201.108.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 5 Jul 2021 08:22:20 +0100
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2176.012; Mon, 5 Jul 2021 08:22:20 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "mgurtovoy@nvidia.com" <mgurtovoy@nvidia.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        liulongfang <liulongfang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        yuzenghui <yuzenghui@huawei.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>
-Subject: RE: [RFC v2 2/4] hisi_acc_vfio_pci: Override ioctl method to limit
- BAR2 region size
-Thread-Topic: [RFC v2 2/4] hisi_acc_vfio_pci: Override ioctl method to limit
- BAR2 region size
-Thread-Index: AQHXbyj3vpz5WZg5PUaAeM5yVRE1zKswEt6AgAPrT3A=
-Date:   Mon, 5 Jul 2021 07:22:20 +0000
-Message-ID: <0b5ce067e86b46d78033d1d3694db529@huawei.com>
-References: <20210702095849.1610-1-shameerali.kolothum.thodi@huawei.com>
-        <20210702095849.1610-3-shameerali.kolothum.thodi@huawei.com>
- <20210702142937.5cbe366f.alex.williamson@redhat.com>
-In-Reply-To: <20210702142937.5cbe366f.alex.williamson@redhat.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.83.49]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 5 Jul 2021 03:26:08 -0400
+Received: from [222.129.38.159] (helo=[192.168.1.18])
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <aaron.ma@canonical.com>)
+        id 1m0Iwy-0000jS-Ew; Mon, 05 Jul 2021 07:23:28 +0000
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
+Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
+References: <20210702045120.22855-1-aaron.ma@canonical.com>
+ <20210704142808.f43jbcufk37hundo@pali>
+From:   Aaron Ma <aaron.ma@canonical.com>
+Subject: Re: [PATCH 1/2] igc: don't rd/wr iomem when PCI is removed
+Message-ID: <3bc507f7-3eb9-1bef-d47d-cad42fcb1c48@canonical.com>
+Date:   Mon, 5 Jul 2021 15:23:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210704142808.f43jbcufk37hundo@pali>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-> -----Original Message-----
-> From: Alex Williamson [mailto:alex.williamson@redhat.com]
-> Sent: 02 July 2021 21:30
-> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> Cc: kvm@vger.kernel.org; linux-kernel@vger.kernel.org;
-> linux-crypto@vger.kernel.org; jgg@nvidia.com; mgurtovoy@nvidia.com;
-> Linuxarm <linuxarm@huawei.com>; liulongfang <liulongfang@huawei.com>;
-> Zengtao (B) <prime.zeng@hisilicon.com>; yuzenghui
-> <yuzenghui@huawei.com>; Jonathan Cameron
-> <jonathan.cameron@huawei.com>; Wangzhou (B) <wangzhou1@hisilicon.com>
-> Subject: Re: [RFC v2 2/4] hisi_acc_vfio_pci: Override ioctl method to limit
-> BAR2 region size
+On 7/4/21 10:28 PM, Pali Rohár wrote:
+> + Bjorn, Krzysztof and linux-pci
 > 
-> On Fri, 2 Jul 2021 10:58:47 +0100
-> Shameer Kolothum <shameerali.kolothum.thodi@huawei.com> wrote:
+> On Friday 02 July 2021 12:51:19 Aaron Ma wrote:
+>> Check PCI state when rd/wr iomem.
+>> Implement wr32 function as rd32 too.
+>>
+>> When unplug TBT dock with i225, rd/wr PCI iomem will cause error log:
+>> Trace:
+>> BUG: unable to handle page fault for address: 000000000000b604
+>> Oops: 0000 [#1] SMP NOPTI
+>> RIP: 0010:igc_rd32+0x1c/0x90 [igc]
+>> Call Trace:
+>> igc_ptp_suspend+0x6c/0xa0 [igc]
+>> igc_ptp_stop+0x12/0x50 [igc]
+>> igc_remove+0x7f/0x1c0 [igc]
+>> pci_device_remove+0x3e/0xb0
+>> __device_release_driver+0x181/0x240
+>>
+>> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+>> ---
+>>   drivers/net/ethernet/intel/igc/igc_main.c | 16 ++++++++++++++++
+>>   drivers/net/ethernet/intel/igc/igc_regs.h |  7 ++-----
+>>   2 files changed, 18 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+>> index f1adf154ec4a..606b72cb6193 100644
+>> --- a/drivers/net/ethernet/intel/igc/igc_main.c
+>> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
+>> @@ -5292,6 +5292,10 @@ u32 igc_rd32(struct igc_hw *hw, u32 reg)
+>>   	u8 __iomem *hw_addr = READ_ONCE(hw->hw_addr);
+>>   	u32 value = 0;
+>>   
+>> +	if (igc->pdev &&
+>> +		igc->pdev->error_state == pci_channel_io_perm_failure)
 > 
-> > HiSilicon ACC VF device BAR2 region consists of both functional register
-> > space and migration control register space. From a security point of
-> > view, it's not advisable to export the migration control region to Guest.
-> >
-> > Hence, hide the migration region and report only the functional register
-> > space.
-> >
-> > Signed-off-by: Shameer Kolothum
-> <shameerali.kolothum.thodi@huawei.com>
-> > ---
-> >  drivers/vfio/pci/hisi_acc_vfio_pci.c | 42 +++++++++++++++++++++++++++-
-> >  1 file changed, 41 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/vfio/pci/hisi_acc_vfio_pci.c
-> b/drivers/vfio/pci/hisi_acc_vfio_pci.c
-> > index a9e173098ab5..d57cf6d7adaf 100644
-> > --- a/drivers/vfio/pci/hisi_acc_vfio_pci.c
-> > +++ b/drivers/vfio/pci/hisi_acc_vfio_pci.c
-> > @@ -12,6 +12,46 @@
-> >  #include <linux/vfio.h>
-> >  #include <linux/vfio_pci_core.h>
-> >
-> > +static long hisi_acc_vfio_pci_ioctl(struct vfio_device *core_vdev, unsigned
-> int cmd,
-> > +				    unsigned long arg)
-> > +{
-> > +	struct vfio_pci_core_device *vdev =
-> > +		container_of(core_vdev, struct vfio_pci_core_device, vdev);
-> > +
-> > +	if (cmd == VFIO_DEVICE_GET_REGION_INFO) {
-> > +		struct pci_dev *pdev = vdev->pdev;
-> > +		struct vfio_region_info info;
-> > +		unsigned long minsz;
-> > +
-> > +		minsz = offsetofend(struct vfio_region_info, offset);
-> > +
-> > +		if (copy_from_user(&info, (void __user *)arg, minsz))
-> > +			return -EFAULT;
-> > +
-> > +		if (info.argsz < minsz)
-> > +			return -EINVAL;
-> > +
-> > +		if (info.index == VFIO_PCI_BAR2_REGION_INDEX) {
-> > +			info.offset = VFIO_PCI_INDEX_TO_OFFSET(info.index);
-> > +
-> > +			/*
-> > +			 * ACC VF dev BAR2 region(64K) consists of both functional
-> > +			 * register space and migration control register space.
-> > +			 * Report only the first 32K(functional region) to Guest.
-> > +			 */
-> > +			info.size = pci_resource_len(pdev, info.index) / 2;
-> > +
+> Hello! This code pattern and commit message looks like that we could use
+> pci_dev_is_disconnected() helper function for checking if device is
+> still connected or was disconnected.
 > 
-> Great, but what actually prevents the user from accessing the full
-> extent of the BAR since you're re-using core code for read/write/mmap,
-> which are all basing access on pci_resource_len()?  Thanks,
-
-Ah..true. Missed that. I will add overrides for read/write/mmap and limit
-the access.
-
-Thanks,
-Shameer
-
+> Apparently pci_dev_is_disconnected() is defined only in private header
+> file drivers/pci/pci.h and not in public include/linux/pci.h.
 > 
-> Alex
+> Aaron: can you check if pci_dev_is_disconnected() is really something
+> which should be used and it helps you?
 > 
-> > +			info.flags = VFIO_REGION_INFO_FLAG_READ |
-> > +					VFIO_REGION_INFO_FLAG_WRITE |
-> > +					VFIO_REGION_INFO_FLAG_MMAP;
-> > +
-> > +			return copy_to_user((void __user *)arg, &info, minsz) ?
-> > +					    -EFAULT : 0;
-> > +		}
-> > +	}
-> > +	return vfio_pci_core_ioctl(core_vdev, cmd, arg);
-> > +}
-> > +
-> >  static int hisi_acc_vfio_pci_open(struct vfio_device *core_vdev)
-> >  {
-> >  	struct vfio_pci_core_device *vdev =
-> > @@ -33,7 +73,7 @@ static const struct vfio_device_ops
-> hisi_acc_vfio_pci_ops = {
-> >  	.name		= "hisi-acc-vfio-pci",
-> >  	.open		= hisi_acc_vfio_pci_open,
-> >  	.release	= vfio_pci_core_release,
-> > -	.ioctl		= vfio_pci_core_ioctl,
-> > +	.ioctl		= hisi_acc_vfio_pci_ioctl,
-> >  	.read		= vfio_pci_core_read,
-> >  	.write		= vfio_pci_core_write,
-> >  	.mmap		= vfio_pci_core_mmap,
 
+Hi Pali,
+
+How about using pci_channel_offline instead?
+It's ready and also safe for frozen state, and verified on hw.
+
+> Bjorn, Krzysztof: what do you think about lifting helper function
+> pci_dev_is_disconnected() to be available to all drivers and not only in
+> PCI subsystem?
+> 
+> I think that such helper function makes driver code more readable and
+> can be useful also for other drivers which are checking if return value
+> is all F's.
+> 
+>> +		return 0;
+> 
+> Aaron: should not you return all F's on error? Because few lines below
+> in this function is returned value with all F's when PCIe link lost.
+> 
+
+If you agree with the above change, I can fix it to "return -1" in v2.
+
+Thanks for your comments,
+Aaron
+
+
+>> +
+>>   	value = readl(&hw_addr[reg]);
+> 
+> Anyway, this code looks to be racy. When pci_channel_io_perm_failure is
+> set (e.g. by hotplug interrupt) after checking for pdev->error_state and
+> prior executing above readl() then mentioned fatal error still occurs.
+> 
+>>   
+>>   	/* reads should not return all F's */
+>> @@ -5308,6 +5312,18 @@ u32 igc_rd32(struct igc_hw *hw, u32 reg)
+>>   	return value;
+>>   }
+>>   
+>> +void igc_wr32(struct igc_hw *hw, u32 reg, u32 val)
+>> +{
+>> +	struct igc_adapter *igc = container_of(hw, struct igc_adapter, hw);
+>> +	u8 __iomem *hw_addr = READ_ONCE(hw->hw_addr);
+>> +
+>> +	if (igc->pdev &&
+>> +		igc->pdev->error_state == pci_channel_io_perm_failure)
+>> +		return;
+>> +
+>> +	writel((val), &hw_addr[(reg)]);
+>> +}
+>> +
+>>   int igc_set_spd_dplx(struct igc_adapter *adapter, u32 spd, u8 dplx)
+>>   {
+>>   	struct igc_mac_info *mac = &adapter->hw.mac;
+>> diff --git a/drivers/net/ethernet/intel/igc/igc_regs.h b/drivers/net/ethernet/intel/igc/igc_regs.h
+>> index cc174853554b..eb4be87d0e8b 100644
+>> --- a/drivers/net/ethernet/intel/igc/igc_regs.h
+>> +++ b/drivers/net/ethernet/intel/igc/igc_regs.h
+>> @@ -260,13 +260,10 @@ struct igc_hw;
+>>   u32 igc_rd32(struct igc_hw *hw, u32 reg);
+>>   
+>>   /* write operations, indexed using DWORDS */
+>> -#define wr32(reg, val) \
+>> -do { \
+>> -	u8 __iomem *hw_addr = READ_ONCE((hw)->hw_addr); \
+>> -	writel((val), &hw_addr[(reg)]); \
+>> -} while (0)
+>> +void igc_wr32(struct igc_hw *hw, u32 reg, u32 val);
+>>   
+>>   #define rd32(reg) (igc_rd32(hw, reg))
+>> +#define wr32(reg, val) (igc_wr32(hw, reg, val))
+>>   
+>>   #define wrfl() ((void)rd32(IGC_STATUS))
+>>   
+>> -- 
+>> 2.30.2
+>>
