@@ -2,84 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A340C3BB525
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 04:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DFC3BB527
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 04:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbhGECYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 22:24:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhGECYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 22:24:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77544613BD;
-        Mon,  5 Jul 2021 02:21:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625451719;
-        bh=nCOdqQkG5UQ9ELEuMGrQai5rcTgVU73WviH2mpknfCY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OTcdkjxhu/1EaSqon4LOsiqxRvjiRfM3LTqS5m9JEc3MtH8W3TZuxBKGR1mAQpiSo
-         G+hlph1+lA6RxgcNL4OUxYr+kH457wAJc6hPbP3gIG+z6W/Nrz9weHT54R+x0/SL1V
-         0Pqk8OtxyO80i428JlNIFPt8jxUxCNn2XoBKb5EpzKuAxXMPXD5XKbVMIECGrhOHbo
-         IG+JUFTmY6m3vyz+0GKlepcxOL3Uz62eGvSuCPGe/1m+Vlkz9teJOwsNYT7+u7DCEr
-         zwc60jOZi80ln3Zse2/KUbXARNFVTK3CNNVBGKjsNMFCjh7C1B8cmpcFHTONPSBAwI
-         724WADwxhO1Ow==
-Date:   Mon, 5 Jul 2021 10:21:51 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 05/12] usb: otg-fsm: Fix hrtimer list corruption
-Message-ID: <20210705022151.GA12125@nchen>
-References: <20210701234317.26393-1-digetx@gmail.com>
- <20210701234317.26393-6-digetx@gmail.com>
- <20210703110809.GA4289@Peter>
- <29476aa3-c34e-8bf0-5eab-f7def493f329@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <29476aa3-c34e-8bf0-5eab-f7def493f329@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S229728AbhGECbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 22:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229652AbhGECa5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 22:30:57 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E69C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 19:28:20 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso10641341pjx.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 19:28:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=AE+ZaDsZOY/6RJQa01DMCt5X83pmNsyIgZ8cL0q4kcU=;
+        b=ptFwdY+QE9Q2Fs4pdQrSLNmhhiK7ix8K2eiaV1ArfSjvxpc6iiWe53ct+WPS071DVO
+         +rv98M0FhRvaA4jT98AFzskzYK2CZuIp9gLf3JfpZ2ganlmLyxUxgulb4E0+WMk9w/FY
+         FvouV+9tdk5mWBlGJKH3whnbVNciHJ8OXseBxOaY12a953oHiXU8rnISJvRp6iUcPRHs
+         i77kxyjDI+ZJtI39UD23EOKry0vPgPj7oxT749FBUMC2MmVjBbqqkiKXxECMk0i9uJr7
+         0U7sU2P2j4fniaM6mCZhbQMqxSVR7/TdlqYCY0QyQ0FiPLsA/QKE9mgjkNBdMzIyBELm
+         bNvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=AE+ZaDsZOY/6RJQa01DMCt5X83pmNsyIgZ8cL0q4kcU=;
+        b=BvtpEoCvbIInaxfKsIZE17090M/zjFsQn6ds55A5w5UEWmeDrNmbPURYqvhYubb0uP
+         bAbXntYKfUePae8Q2YJdylgS/IKp0GWjl4NnLDzUluA9r8jHJFU0YgX4PeDe69tBLuGi
+         uyY+6oWorh5kpnhmd7etC4F6UfvbwdKrdF2V4ATLLOGNYxsQlhPd0ju6Itzithz6suf7
+         AYxnQ1fOH7skArBoKpQ57NNJFv+VJH8PjHsOD0YjMBWtbGgCMTgvZHFDjrW7cTp0DxYg
+         Nv/xsPowGxbNuUxhX54aUVcJlQik7boY4FzxxRbqJe6cUHOEeZmAHNFfN0rMZUff0QYI
+         lOQw==
+X-Gm-Message-State: AOAM531I61Qj65fcwFUzwRBVVMUMZilye3iwdFcxVCqF6zIFjKMdlclA
+        iKknibrAM4Kix5YEidscI7o=
+X-Google-Smtp-Source: ABdhPJy/QgiNAbZf728UfcoR0blWQR6E3M0O/x/OHxmZDsYwT+m2VX7u3rEeCC3FHt1IX6sJG97gAQ==
+X-Received: by 2002:a17:903:2452:b029:129:33a0:399d with SMTP id l18-20020a1709032452b029012933a0399dmr10642987pls.31.1625452100043;
+        Sun, 04 Jul 2021 19:28:20 -0700 (PDT)
+Received: from bj10045pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id b3sm10921614pfi.179.2021.07.04.19.28.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 04 Jul 2021 19:28:19 -0700 (PDT)
+From:   Zhenguo Zhao <zhenguo6858@gmail.com>
+To:     zhenguo6858@gmail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v3] tty: n_gsm: delete DISC command frame as requester
+Date:   Mon,  5 Jul 2021 10:28:07 +0800
+Message-Id: <1625452087-12655-1-git-send-email-zhenguo6858@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-07-03 20:22:38, Dmitry Osipenko wrote:
-> 03.07.2021 14:08, Peter Chen пишет:
-> > On 21-07-02 02:43:10, Dmitry Osipenko wrote:
-> >> The HNP work can be re-scheduled while it's still in-fly. This results in
-> >> re-initialization of the busy work, resetting the hrtimer's list node of
-> >> the work and crashing kernel with null dereference within kernel/timer
-> >> once work's timer is expired. It's very easy to trigger this problem by
-> >> re-plugging USB cable quickly. Initialize HNP work only once to fix this
-> >> trouble.
-> > 
-> > Fully OTG compliance support has not maintained for years, what's the use case you
-> > still want to use?
-> 
-> I don't have any use case for it, but I had CONFIG_USB_OTG_FSM=y and it
-> was crashing kernel badly. The OTG works perfectly fine without the FSM.
+From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
 
-You could add below at your dts to disable OTG FSM:
-hnp-disable
-srp-disable
-adp-disable
+as initiator,it need to send DISC command ,as requester,there is
+no need to send the DISC control frame,it will cause redundant data.
 
-Since there are no users for OTG FSM, it hasn't maintained for years,
-I am not sure if it still works OK. If I remember correctly, the VBUS
-will be off if you enable HNP, and the device at the host port will be
-disconnected, that's may not your expectation.
+Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
+---
+ drivers/tty/n_gsm.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+index 5fea02c..f8e5935 100644
+--- a/drivers/tty/n_gsm.c
++++ b/drivers/tty/n_gsm.c
+@@ -2050,7 +2050,8 @@ static int gsm_disconnect(struct gsm_mux *gsm)
+ 	del_timer_sync(&gsm->t2_timer);
+ 	/* Now we are sure T2 has stopped */
+ 
+-	gsm_dlci_begin_close(dlci);
++	if (gsm->initiator)
++		gsm_dlci_begin_close(dlci);
+ 	wait_event_interruptible(gsm->event,
+ 				dlci->state == DLCI_CLOSED);
+ 
+@@ -3014,6 +3015,7 @@ static int gsmtty_open(struct tty_struct *tty, struct file *filp)
+ static void gsmtty_close(struct tty_struct *tty, struct file *filp)
+ {
+ 	struct gsm_dlci *dlci = tty->driver_data;
++	struct gsm_mux *gsm = dlci->gsm;
+ 
+ 	if (dlci == NULL)
+ 		return;
+@@ -3024,7 +3026,8 @@ static void gsmtty_close(struct tty_struct *tty, struct file *filp)
+ 	mutex_unlock(&dlci->mutex);
+ 	if (tty_port_close_start(&dlci->port, tty, filp) == 0)
+ 		return;
+-	gsm_dlci_begin_close(dlci);
++	if (gsm->initiator)
++		gsm_dlci_begin_close(dlci);
+ 	if (tty_port_initialized(&dlci->port) && C_HUPCL(tty))
+ 		tty_port_lower_dtr_rts(&dlci->port);
+ 	tty_port_close_end(&dlci->port, tty);
+@@ -3035,10 +3038,12 @@ static void gsmtty_close(struct tty_struct *tty, struct file *filp)
+ static void gsmtty_hangup(struct tty_struct *tty)
+ {
+ 	struct gsm_dlci *dlci = tty->driver_data;
++	struct gsm_mux *gsm = dlci->gsm;
+ 	if (dlci->state == DLCI_CLOSED)
+ 		return;
+ 	tty_port_hangup(&dlci->port);
+-	gsm_dlci_begin_close(dlci);
++	if (gsm->initiator)
++		gsm_dlci_begin_close(dlci);
+ }
+ 
+ static int gsmtty_write(struct tty_struct *tty, const unsigned char *buf,
 -- 
-
-Thanks,
-Peter Chen
+1.9.1
 
