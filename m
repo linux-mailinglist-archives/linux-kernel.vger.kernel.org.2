@@ -2,130 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3033BB731
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7824C3BB733
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhGEGdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 02:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbhGEGdm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 02:33:42 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F14C061574
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 23:31:06 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id v7so17385493pgl.2
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 23:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wWMXmMCJoSZ9OCdipGCDRnC3WjS629PoEJ5rr2yZGV4=;
-        b=DkNMSvM96dm/AcUPUGEq9JBeaCg2RBULAlZIqhkyanmq/ooofwovzz1sIYEjs873Hy
-         hfEBAN6RtF0t5J86yneotbcmbmZzq0O3hj4ZljjxrqTM3IXpQJrnodt+Xb5GgW6QQe5p
-         cIrHyv3lrAXb2qZ14efevI+sKddKGnFRJFyEpvM1+7pWINYIv2NA0Ce9O75/33njDL7i
-         y99Glt8+3v+1ZCUoIR0bAnLi+lVKclqr98EkceNpSYW47BaMMJOf+0gM8qLTxP4qANrk
-         0EmPbLfPMNYyqnfq7aL56vC+OAJzTbQezhjtY0qK4Plk1T8ysZclL44NmcpHZloPEw66
-         ItJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wWMXmMCJoSZ9OCdipGCDRnC3WjS629PoEJ5rr2yZGV4=;
-        b=JAV/+F28ZEX+FIXsL6mjZrH4MmnBwSYS+fHaD+hgxMs0voMsO7oCjYpdvCEV3tncgk
-         sZH8xwaYO2MU6IEsT6zNAXCoM3n1JK37LHc12jOW9MZaWCc2VxjK2cuKAvIvk8Y6lfz5
-         lolSC/t78IkMBqI7BK7LCrc7wygRyhJCz7u43GcNbcNUO10xX546JKyerU7POCz2RdyZ
-         jmgksdCwdsO1XSDwrpE1uk78hir0vTDjzdylxj5P8l+2pbbREh6keZke9Lr9yiSh9y1h
-         ++bs2i9dk3EaWaoaYDukUFh1icNJElmWQyvsmENML52MHU+i7d++66AKsGL0zlvpGO34
-         DIMg==
-X-Gm-Message-State: AOAM530AoY7dfxIJZo2M/g3gl5ymr7/0DGABl2zOcZ5ehME/td6k5K6j
-        qtrNFKdTJs5c7HTJWsjlGdZmjA==
-X-Google-Smtp-Source: ABdhPJwjbeDpEwUGHX4wapdtd68i1JUGbnqyQuUWmDrUGIl18KntYn+5LqFO42LZddC9cRK1RvizQQ==
-X-Received: by 2002:a63:5a5b:: with SMTP id k27mr1117953pgm.294.1625466665652;
-        Sun, 04 Jul 2021 23:31:05 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id z20sm13337396pgk.36.2021.07.04.23.31.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jul 2021 23:31:05 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 12:01:03 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org,
-        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, yu1.wang@intel.com, shuo.a.liu@intel.com,
-        conghui.chen@intel.com, stefanha@redhat.com
-Subject: Re: [PATCH v12] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210705063103.4gnrnx6qwheq37lp@vireshk-i7>
-References: <f229cd761048bc143f88f33a3437bdbf891c39fd.1625214435.git.jie.deng@intel.com>
- <YN7jOm68fUL4UA2Q@smile.fi.intel.com>
- <20210705024340.mb5sv5epxbdatgsg@vireshk-i7>
- <adb5a18f-cf48-3059-5541-fb6d7bafb8d2@intel.com>
+        id S229893AbhGEGex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 02:34:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229797AbhGEGeu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 02:34:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33710613B1;
+        Mon,  5 Jul 2021 06:32:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625466734;
+        bh=qXNW2ZG7c5MVDWbUdh+dqGa/9/WrXi9VqrWCyzq3bU4=;
+        h=Subject:To:References:From:Cc:Date:In-Reply-To:From;
+        b=lkoAWC+H3zK6SxYfMtkBOd+wWpYxBXLd4f57oSQKBLVj1mUVp48lDe2z5yh7DktxD
+         1ntPtNP5APymp1A9r0lrO3t5xW49q/ptdebZUpUHI1unI6w+FPWQYMrKI1UTt0Fkar
+         /ik8umHQtCf182XDnn/RGGtWV/Hv8U0z9Z8w52qioxc41LMcLcby0IDNnE9VEAVHBW
+         Z3iYdMU1uAH2VeqpY34kNdn9i/w4i51sPY8aid4ToBFxFvLV61DGV3V+bBkueXIGxF
+         55O1xQe/kd2F0FlwUDQI14b/cXM0gCbYYGSnWYwBDUnS7b9cIyD5L3q/tH8YPAA4tc
+         Huxi330aCPl3A==
+Subject: Re: [f2fs-dev] [PATCH] f2fs: initialize page->private when using for
+ our internal use
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+References: <20210705052216.831989-1-jaegeuk@kernel.org>
+From:   Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Matthew Wilcox <willy@infradead.org>
+Message-ID: <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
+Date:   Mon, 5 Jul 2021 14:32:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <adb5a18f-cf48-3059-5541-fb6d7bafb8d2@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210705052216.831989-1-jaegeuk@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-07-21, 14:21, Jie Deng wrote:
-> 
-> On 2021/7/5 10:43, Viresh Kumar wrote:
-> > On 02-07-21, 12:58, Andy Shevchenko wrote:
-> > > On Fri, Jul 02, 2021 at 04:46:47PM +0800, Jie Deng wrote:
-> > > > +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
-> > > > +				    struct virtio_i2c_req *reqs,
-> > > > +				    struct i2c_msg *msgs, int nr,
-> > > > +				    bool fail)
-> > > > +{
-> > > > +	struct virtio_i2c_req *req;
-> > > > +	bool failed = fail;
-> > Jie, you can actually get rid of this variable too. Jut rename fail to failed
-> > and everything shall work as you want.
-> 
-> 
-> Oh, You are not right. I just found we can't remove this variable. The
-> "fail" and "failed" have different
-> 
-> meanings for this function. We need fail to return the result.
+On 2021/7/5 13:22, Jaegeuk Kim wrote:
+> We need to guarantee it's initially zero. Otherwise, it'll hurt entire flag
+> operations.
 
-Ahh, yes. You are right. Maybe rename fail to timedout, it would make it more
-readable, else fail and failed look very similar.
- 
-> > > > +	unsigned int len;
-> > > > +	int i, j = 0;
-> > > > +
-> > > > +	for (i = 0; i < nr; i++) {
-> > > > +		/* Detach the ith request from the vq */
-> > > > +		req = virtqueue_get_buf(vq, &len);
-> > > > +
-> > > > +		/*
-> > > > +		 * Condition (req && req == &reqs[i]) should always meet since
-> > > > +		 * we have total nr requests in the vq.
-> > > > +		 */
-> > > > +		if (!failed && (WARN_ON(!(req && req == &reqs[i])) ||
-> > > > +		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)))
-> > > > +			failed = true;
-> > > ...and after failed is true, we are continuing the loop, why?
-> > Actually this function can be called with fail set to true. We proceed as we
-> > need to call i2c_put_dma_safe_msg_buf() for all buffers we allocated earlier.
-> > 
-> > > > +		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], !failed);
-> > > > +		if (!failed)
-> > > > +			++j;
-> > > Besides better to read j++ the j itself can be renamed to something more
-> > > verbose.
-> > > 
-> > > > +	}
-> > > > +	return (fail ? -ETIMEDOUT : j);
-> > > Redundant parentheses.
-> > > 
-> > > > +}
+Oops, I didn't get the point, shouldn't .private be zero after page was
+just allocated by filesystem? What's the case we will encounter stall
+private data left in page?
 
--- 
-viresh
+Cc Matthew Wilcox.
+
+Thanks,
+
+> 
+> Fixes: b763f3bedc2d ("f2fs: restructure f2fs page.private layout")
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>   fs/f2fs/data.c | 2 ++
+>   fs/f2fs/f2fs.h | 5 ++++-
+>   2 files changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 3a01a1b50104..d2cf48c5a2e4 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -3819,6 +3819,8 @@ int f2fs_migrate_page(struct address_space *mapping,
+>   		get_page(newpage);
+>   	}
+>   
+> +	/* guarantee to start from no stale private field */
+> +	set_page_private(newpage, 0);
+>   	if (PagePrivate(page)) {
+>   		set_page_private(newpage, page_private(page));
+>   		SetPagePrivate(newpage);
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 65befc68d88e..ee8eb33e2c25 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -1331,7 +1331,8 @@ enum {
+>   #define PAGE_PRIVATE_GET_FUNC(name, flagname) \
+>   static inline bool page_private_##name(struct page *page) \
+>   { \
+> -	return test_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)) && \
+> +	return PagePrivate(page) && \
+> +		test_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)) && \
+>   		test_bit(PAGE_PRIVATE_##flagname, &page_private(page)); \
+>   }
+>   
+> @@ -1341,6 +1342,7 @@ static inline void set_page_private_##name(struct page *page) \
+>   	if (!PagePrivate(page)) { \
+>   		get_page(page); \
+>   		SetPagePrivate(page); \
+> +		set_page_private(page, 0); \
+>   	} \
+>   	set_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)); \
+>   	set_bit(PAGE_PRIVATE_##flagname, &page_private(page)); \
+> @@ -1392,6 +1394,7 @@ static inline void set_page_private_data(struct page *page, unsigned long data)
+>   	if (!PagePrivate(page)) {
+>   		get_page(page);
+>   		SetPagePrivate(page);
+> +		set_page_private(page, 0);
+>   	}
+>   	set_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page));
+>   	page_private(page) |= data << PAGE_PRIVATE_MAX;
+> 
