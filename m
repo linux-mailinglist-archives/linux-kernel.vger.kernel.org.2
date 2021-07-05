@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EA33BC24D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 19:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3F73BC24E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 19:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhGERdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 13:33:00 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59140 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbhGERc7 (ORCPT
+        id S229827AbhGERdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 13:33:38 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34748 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229689AbhGERdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 13:32:59 -0400
+        Mon, 5 Jul 2021 13:33:37 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 7562A2268B;
-        Mon,  5 Jul 2021 17:30:21 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 6F746203A4;
+        Mon,  5 Jul 2021 17:30:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625506221; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1625506259; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=16gShvgDTVY/pfDOaccRaKPlNMV99e8RU/hl5EyeqP0=;
-        b=WyOzr/W2ZH7KZjnzXo/II8E72mkM/SmS1cHMUEdfVxPQZkboqZlLvhN7uztGpXLcBWLQxi
-        iNZ6ZCUU9yv9VAkdE/lQ76klt4TpY47ICDXzpSb570oQx0RM9gfpL7oODgUay+KtaGdc9K
-        MZ8n0UJPPxpH8fp+VjmON8vMR5r83HI=
+        bh=Wk6nCCWun77/CvcuITuo6svOvYPvomrG827xBdsx/KY=;
+        b=0zu5JtJgbUmwY5brP/Uu2w5lYVixHTY/WoXryIIAOq6XSxVJkWFNlGI9d5SYfbAlxSk9Hv
+        88ijg3lIuHuRE6U7KdlL0meex1Ja/NoLRrLkD6ge9hS6bjTOUkzERWN1cZFnjsuXZ0lSI3
+        nR++Ix2mZ6ufhdSQM3tL87jOllBfGzI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625506221;
+        s=susede2_ed25519; t=1625506259;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=16gShvgDTVY/pfDOaccRaKPlNMV99e8RU/hl5EyeqP0=;
-        b=bPXTrn7fJZpjuzUYWVZmQSEZ5WK0t1A/gtM+gV/fAcCZL6KdX6KcKGJpWcASGGALs4HPHY
-        qwvFheweGwKXDMBA==
+        bh=Wk6nCCWun77/CvcuITuo6svOvYPvomrG827xBdsx/KY=;
+        b=awu4+2oHLba49R5c+2IIcTuLD5ZrzIXZd+yShqiy5hQ7BjBI84qAKQFEKu2wgOnUbY/DZs
+        3CtijTud1EJ/YWAA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 07C93A3B8C;
-        Mon,  5 Jul 2021 17:30:21 +0000 (UTC)
-Date:   Mon, 05 Jul 2021 19:30:21 +0200
-Message-ID: <s5h1r8cacsy.wl-tiwai@suse.de>
+        by relay2.suse.de (Postfix) with ESMTP id 5C3CBA3B8A;
+        Mon,  5 Jul 2021 17:30:59 +0000 (UTC)
+Date:   Mon, 05 Jul 2021 19:30:59 +0200
+Message-ID: <s5hzgv08y7g.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     gushengxian <gushengxian507419@gmail.com>
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-Subject: Re: [PATCH] sound: x86: fix spelling mistakes
-In-Reply-To: <20210705073736.662875-1-gushengxian507419@gmail.com>
-References: <20210705073736.662875-1-gushengxian507419@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+Subject: Re: [PATCH] ALSA: usx2y: fix spelling mistakes
+In-Reply-To: <20210705093419.664366-1-gushengxian507419@gmail.com>
+References: <20210705093419.664366-1-gushengxian507419@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -52,16 +52,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 05 Jul 2021 09:37:36 +0200,
+On Mon, 05 Jul 2021 11:34:19 +0200,
 gushengxian wrote:
 > 
 > From: gushengxian <gushengxian@yulong.com>
 > 
 > Fix some spelling mistakes as follows:
-> regiter ==> register
-> confgiuration ==> configuration
-> playabck ==> playback
-> platoform ==> platform
+> wroong ==> wrong
+> evrything ==> everything
 > 
 > Signed-off-by: gushengxian <gushengxian@yulong.com>
 
