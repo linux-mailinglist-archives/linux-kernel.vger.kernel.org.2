@@ -2,93 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6483BB8AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF803BB8B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhGEIUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 04:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53482 "EHLO
+        id S230114AbhGEIWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 04:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhGEIUI (ORCPT
+        with ESMTP id S230000AbhGEIWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:20:08 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32158C061574;
-        Mon,  5 Jul 2021 01:17:30 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id t15so17616098wry.11;
-        Mon, 05 Jul 2021 01:17:30 -0700 (PDT)
+        Mon, 5 Jul 2021 04:22:02 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC184C061574;
+        Mon,  5 Jul 2021 01:19:24 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id b8-20020a17090a4888b02901725eedd346so8402643pjh.4;
+        Mon, 05 Jul 2021 01:19:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0hN6t3XOPfYl7bbCREM9Ps0hpP4pUKWb+JjtXnJ6TMY=;
-        b=s0FopFfcJJr0KsFtnbGPHOSAe9XCFfZpNrl8E0mT7vGLXfUNcyCkR28wT7mUZBO0zo
-         0ANXLA95yP3XsebQ1PQIPXABNWh+0pe7O+BKumXzEv9ta/4r5jRXH6GyM+a1kMovZmVO
-         4kw4hFqnckMdjh/CrNrZCFyuaLeZGxOlEY27Q+EGdXA46/Yn+w0OyuXiDDmpet1rxJvG
-         Wweln2NqzNZr3xJV2wNZp9IQyvrsseo7nQbOyFEsT9Q4QN0wDT9vyMtpaVxBw8tT6Dt0
-         CiyGqjiP3k6x5TxWVmNPjI/iSDCueCcrWwFsErpavhoXuO4yAgtAmsFPsaDp6GBzhAlH
-         JE/w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z1P0C+fJT3E1BmyLma3Hvt+LmdbtbvRdt4PGsDvZhDo=;
+        b=hbAxn5PkjyDIa6lxUCJXoInHZZziGv78nTgayqagi4cPk6CZAHbU6uAkYcE9ckzcBL
+         lXmrxyWAcdQUgSxTak7vyp6yD+8kwgGIzFpuk/4nHM6A7OvByeaF38nm4f2SQilizy1j
+         dF8aiUS9VDps+5xuRFEpgXt9Wm23VPxUwbzjBCzdjpRdvJAMzH/XYEILlAuPYYxlgPR8
+         YJO8cvgoyw6KtHDnICzUV+FmvSgJD/6vfyqfnGithRmnD5rH9XfcKUTIRdsdDoDzSIQq
+         MUfKS1D/YjhygvLbXvy/YlfnX2hEy34tjVkj+eR+4vX8oEKOi4nvbeKDQsCk3PgMZVXt
+         mP8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=0hN6t3XOPfYl7bbCREM9Ps0hpP4pUKWb+JjtXnJ6TMY=;
-        b=jvKMp1yuErD61Q3YMvNyBJoBFg2yj4hNOwZ894nFnUjnucTCIQLLs3xMagl+889I8n
-         7IkDpm5vp0VRReVqRbtmKetuT4jgP6Izser9pwvYs/P62kQ0XU09oVTX7o2Vf+hFh78k
-         I3Os1sF0iXN2Rt+ofYUuiq3suePcjxSbJK2jCSflwvxoSFGbvfEK+7Mshjaku1BZXOnd
-         A4+HPclyb8qePa78wrAjv1MMU1+Q9TrHC/Ht65Uxmq3UIEiGgD/E9zOTg/3tDtp0c6J1
-         ZruGGRpHruJrV57Me2vwFJvyWyOqX2SOTH1L3Z8zvmhanpWNUBbpUy2LNZvXcPpaAxio
-         RJbw==
-X-Gm-Message-State: AOAM5329sFKYHFWmrnTvWJEfmAfxHuBCfBpM5lknhIEGIDjZtwNT826Q
-        TuXYbjcKJUHVU7jLwPxR2Ss=
-X-Google-Smtp-Source: ABdhPJxldIS0FV2nN7r6D7TYxp4Z3Kg5zle4YEupnyXfrICk/EBGqctPw0IMvloXUnaET3Xk9yYGsA==
-X-Received: by 2002:a5d:4849:: with SMTP id n9mr6780932wrs.186.1625473048901;
-        Mon, 05 Jul 2021 01:17:28 -0700 (PDT)
-Received: from gmail.com (178-164-188-14.pool.digikabel.hu. [178.164.188.14])
-        by smtp.gmail.com with ESMTPSA id j37sm8968987wms.37.2021.07.05.01.17.27
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z1P0C+fJT3E1BmyLma3Hvt+LmdbtbvRdt4PGsDvZhDo=;
+        b=iYQMHj7I99kY+rwDcxiH9epsF3mns5SURI5YPXtWWnnYjUfVUyYRx+EqhCWB+rX9fa
+         T7I3rxPkZb8MKmZ4dlWi+oPKHGHX0lqyBa4BWX1WbeaSPJygYMzpZJxeOBkVL0BaxE/U
+         GaS0yROFOHdaEiu/k6dRwkyox9CwIUdDiv78ZFoG4776eI+2XCt9GIZON+f1XlqpUnSz
+         DVt7CmAJPkp6vGjz4XwAQvYaOUPnW9QVYooUbT2b6j7yo2xm9Zf0TNYpge+eFLpsck5G
+         tw+2DUtNc3b2L96wjlGke+AE5BZx2q8RVEmB01oWpvFZmlgbR4W5SlI7NflM6jzp0Lav
+         8w0Q==
+X-Gm-Message-State: AOAM533s4e3lN4Xn9vu87ohCI8WBW6NB2UsIwUvm/dtBXVh3tt4EBRvQ
+        htPgCxS/PuPpV9FmgcUE+zI=
+X-Google-Smtp-Source: ABdhPJyW07EURk2obQnItNdqKcxAHzpBo8dwmgWrp9zIifIAudIWcCD5SxYkGAzC63Rwk+MqT8t6hA==
+X-Received: by 2002:a17:90a:5401:: with SMTP id z1mr13788644pjh.7.1625473164317;
+        Mon, 05 Jul 2021 01:19:24 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id y11sm12209986pfo.160.2021.07.05.01.19.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 01:17:28 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 5 Jul 2021 10:17:26 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v8 10/13] x86/kprobes: Push a fake return address at
- kretprobe_trampoline
-Message-ID: <YOLAFswnvyNReMmI@gmail.com>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
- <162400001661.506599.5153975410607447958.stgit@devnote2>
+        Mon, 05 Jul 2021 01:19:23 -0700 (PDT)
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     jic23@kernel.org
+Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        jarkko.nikula@linux.intel.com,
+        William Breathitt Gray <vilhelm.gray@gmail.com>
+Subject: [PATCH v12 00/17] Introduce the Counter character device interface
+Date:   Mon,  5 Jul 2021 17:18:48 +0900
+Message-Id: <cover.1625471640.git.vilhelm.gray@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162400001661.506599.5153975410607447958.stgit@devnote2>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes in v12:
+ - Move unlock to after register set in quad8_count_ceiling_write()
+ - Add locking protection to counter_set_event_node()
+ - Fix sparse warning by using {} instead of {0}
+ - Clean up and organize comments for clarity
+ - Reduce boilerplate by utilizing devm_add_action_or_reset()
+ - Use switch statements in ti_eqep_action_read() to make possible cases
+   more obvious
 
-* Masami Hiramatsu <mhiramat@kernel.org> wrote:
+I pulled out a lot of bits and pieces to their own patches; hopefully
+that makes reviewing this patchset much simpler than before. This
+patchset is also available on my personal git repo for convenience:
+https://gitlab.com/vilhelmgray/iio/-/tree/counter_chrdev_v12
 
-> +	/* Replace fake return address with real one. */
-> +	*frame_pointer = kretprobe_trampoline_handler(regs, frame_pointer);
-> +	/*
-> +	 * Move flags to sp so that kretprobe_trapmoline can return
-> +	 * right after popf.
+The patches preceding "counter: Internalize sysfs interface code" are
+primarily cleanup and fixes that can be picked up and applied now to the
+IIO tree if so desired. The "counter: Internalize sysfs interface code"
+patch as well may be considered for pickup because it is relatively safe
+and makes no changes to the userspace interface.
 
-What is a trapmoline?
+To summarize the main points of this patchset: there are no changes to
+the existing Counter sysfs userspace interface; a Counter character
+device interface is introduced that allows Counter events and associated
+data to be read() by userspace; the events_configure() and
+watch_validate() driver callbacks are introduced to support Counter
+events; and IRQ support is added to the 104-QUAD-8 driver, serving as an
+example of how to support the new Counter events functionality.
 
-Also, in the x86 code we capitalize register and instruction names so that 
-they are more distinctive and easier to read in the flow of English text.
+Something that should still be discussed: should the struct
+counter_event "status" member be 8 bits or 32 bits wide? This member
+will provide the return status (system error number) of an event
+operation.
 
-Thanks,
+William Breathitt Gray (17):
+  counter: 104-quad-8: Return error when invalid mode during
+    ceiling_write
+  counter: Return error code on invalid modes
+  counter: Standardize to ERANGE for limit exceeded errors
+  counter: Rename counter_signal_value to counter_signal_level
+  counter: Rename counter_count_function to counter_function
+  counter: Internalize sysfs interface code
+  counter: Update counter.h comments to reflect sysfs internalization
+  docs: counter: Update to reflect sysfs internalization
+  counter: Move counter enums to uapi header
+  counter: Add character device interface
+  docs: counter: Document character device interface
+  tools/counter: Create Counter tools
+  counter: Implement signalZ_action_component_id sysfs attribute
+  counter: Implement *_component_id sysfs attributes
+  counter: Implement events_queue_size sysfs attribute
+  counter: 104-quad-8: Replace mutex with spinlock
+  counter: 104-quad-8: Add IRQ support for the ACCES 104-QUAD-8
 
-	Ingo
+ Documentation/ABI/testing/sysfs-bus-counter   |   38 +-
+ Documentation/driver-api/generic-counter.rst  |  366 +++-
+ .../userspace-api/ioctl/ioctl-number.rst      |    1 +
+ MAINTAINERS                                   |    3 +-
+ drivers/counter/104-quad-8.c                  |  728 ++++----
+ drivers/counter/Kconfig                       |    6 +-
+ drivers/counter/Makefile                      |    1 +
+ drivers/counter/counter-chrdev.c              |  498 ++++++
+ drivers/counter/counter-chrdev.h              |   14 +
+ drivers/counter/counter-core.c                |  182 ++
+ drivers/counter/counter-sysfs.c               |  953 +++++++++++
+ drivers/counter/counter-sysfs.h               |   13 +
+ drivers/counter/counter.c                     | 1496 -----------------
+ drivers/counter/ftm-quaddec.c                 |   59 +-
+ drivers/counter/intel-qep.c                   |  150 +-
+ drivers/counter/interrupt-cnt.c               |   73 +-
+ drivers/counter/microchip-tcb-capture.c       |  103 +-
+ drivers/counter/stm32-lptimer-cnt.c           |  176 +-
+ drivers/counter/stm32-timer-cnt.c             |  147 +-
+ drivers/counter/ti-eqep.c                     |  205 ++-
+ include/linux/counter.h                       |  716 ++++----
+ include/linux/counter_enum.h                  |   45 -
+ include/uapi/linux/counter.h                  |  133 ++
+ tools/Makefile                                |   13 +-
+ tools/counter/Build                           |    1 +
+ tools/counter/Makefile                        |   53 +
+ tools/counter/counter_example.c               |   95 ++
+ 27 files changed, 3501 insertions(+), 2767 deletions(-)
+ create mode 100644 drivers/counter/counter-chrdev.c
+ create mode 100644 drivers/counter/counter-chrdev.h
+ create mode 100644 drivers/counter/counter-core.c
+ create mode 100644 drivers/counter/counter-sysfs.c
+ create mode 100644 drivers/counter/counter-sysfs.h
+ delete mode 100644 drivers/counter/counter.c
+ delete mode 100644 include/linux/counter_enum.h
+ create mode 100644 include/uapi/linux/counter.h
+ create mode 100644 tools/counter/Build
+ create mode 100644 tools/counter/Makefile
+ create mode 100644 tools/counter/counter_example.c
+
+
+base-commit: 6cbb3aa0f9d5d23221df787cf36f74d3866fdb78
+-- 
+2.32.0
+
