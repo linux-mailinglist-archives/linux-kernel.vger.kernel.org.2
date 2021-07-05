@@ -2,178 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6723BB531
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 04:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3990A3BB536
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 04:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbhGECnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 22:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhGECnh (ORCPT
+        id S229852AbhGECnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 22:43:55 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:51669 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229824AbhGECnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 22:43:37 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F960C061574
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 19:41:00 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id j199so15007306pfd.7
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 19:41:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5/pN4Ke3pX5vwwN2WlNO8yjdHUq5AXPfMRLrRETfPdM=;
-        b=aKHomYdcEPhBlAt9kkJ9qhJHj4PKhbT8TgIKZmAadkH7oOmMWT7cO8Nc2Dh6r+KABy
-         0RcgKCkPwd9PD3TXkF4zAa6KFS+yFhm5nSMnR89DRg9ljePoxjE+xGbwDXJOtD1+RDjs
-         68unMHyVBNWNz0Bu/GPPH479FKPHzgOvubvi3NE/0q6wpbhwbt8YDwJyn50nP+W68MVW
-         FdyYPUiMSa96ouDxzhvHnCLNgjRlVmpskQhqkZMmNj/I2IAIK/h2sspGxK2anoPE3lii
-         bCW8i0qRetCnlEHomG0zBkx3BJbYyo3nhULU8cGXU0fArL/+TyqX0mtApAuIFlWnXq/M
-         53Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5/pN4Ke3pX5vwwN2WlNO8yjdHUq5AXPfMRLrRETfPdM=;
-        b=i/1rDKt7FQU8e7qh1/kxrc2Zou7l4f4SiAp01Zn656zx5CN5b211YixsBq9KyzVHGY
-         M6ptj7UsPGCZwws2exnrwqDTzGU7zomwSPDXsm4oBmrjLnRq8SzfZVvD586NWdFcOQDf
-         PQ6gjvvlI9zOaMhobLbTI8D+bh26KWaz48ILiznzc0fe7IJfPxxu/rxTds3qs/6rbVwW
-         YtD3/IDY3kO76vqnjZzxWwbxgWYteSZpZ6AEodOPiaagun4yVftDcpvZ3DnDgnSrMNeB
-         FO1eZwnMCfGehbGXWCRmPR21rHSxhRAFkkXf9RuCkg1lKv5iomhkxLlsevrUhifgG+c4
-         ZI1w==
-X-Gm-Message-State: AOAM533CFnFoabquvV6R1jKHtSQB2NIUQDQ1QAZBs2+YjGrwEw+y9W9V
-        x3t55OHIydhygWeMTwuKfm5SpQ==
-X-Google-Smtp-Source: ABdhPJzv9zFkEM6yETuk4Cev7zKRIgjashmgNIf2AdxBqzXPrH5890A/gDkkpaAuKAPq34OVoQ/T0Q==
-X-Received: by 2002:a65:68c1:: with SMTP id k1mr13154806pgt.335.1625452859542;
-        Sun, 04 Jul 2021 19:40:59 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id d1sm10001808pfu.6.2021.07.04.19.40.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jul 2021 19:40:58 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 08:10:56 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org,
-        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        stefanha@redhat.com
-Subject: Re: [PATCH v12] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210705024056.ndth2bwn2itii5g3@vireshk-i7>
-References: <f229cd761048bc143f88f33a3437bdbf891c39fd.1625214435.git.jie.deng@intel.com>
+        Sun, 4 Jul 2021 22:43:51 -0400
+X-UUID: 25a6ac1c61314a33b90c857c581a46a9-20210705
+X-UUID: 25a6ac1c61314a33b90c857c581a46a9-20210705
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <yee.lee@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1815970025; Mon, 05 Jul 2021 10:41:10 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 5 Jul 2021 10:41:08 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 5 Jul 2021 10:41:08 +0800
+From:   <yee.lee@mediatek.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <wsd_upstream@mediatek.com>, <nicholas.Tang@mediatek.com>,
+        <Kuan-Ying.lee@mediatek.com>, <chinwen.chang@mediatek.com>,
+        Marco Elver <elver@google.com>, Yee Lee <yee.lee@mediatek.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v5 1/2] mm: introduce helper to check slub_debug_enabled
+Date:   Mon, 5 Jul 2021 10:40:57 +0800
+Message-ID: <20210705024101.1567-2-yee.lee@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210705024101.1567-1-yee.lee@mediatek.com>
+References: <20210705024101.1567-1-yee.lee@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f229cd761048bc143f88f33a3437bdbf891c39fd.1625214435.git.jie.deng@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I think we missed the first deadline for 5.14-rc1 as Wolfram should be out of
-office now. Anyway lets make sure we fix all the pending bits before he is back
-and see if we can still pull it off by rc2.
+From: Marco Elver <elver@google.com>
 
-On 02-07-21, 16:46, Jie Deng wrote:
-> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
-> +static int virtio_i2c_send_reqs(struct virtqueue *vq,
+Introduce a helper to check slub_debug_enabled, so that we can confine
+the use of #ifdef to the definition of the slub_debug_enabled_unlikely()
+helper.
 
-It would be better to rename this to virtio_i2c_prepare_reqs instead, as this
-doesn't send anything.
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Yee Lee <yee.lee@mediatek.com>
+---
+ mm/slab.h | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-> +				struct virtio_i2c_req *reqs,
-> +				struct i2c_msg *msgs, int nr)
-> +{
-> +	struct scatterlist *sgs[3], out_hdr, msg_buf, in_hdr;
-> +	int i, outcnt, incnt, err = 0;
-> +
-> +	for (i = 0; i < nr; i++) {
-> +		/*
-> +		 * Only 7-bit mode supported for this moment. For the address format,
-> +		 * Please check the Virtio I2C Specification.
-> +		 */
-> +		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
-> +
-> +		if (i != nr - 1)
-> +			reqs[i].out_hdr.flags = cpu_to_le32(VIRTIO_I2C_FLAGS_FAIL_NEXT);
-> +
-> +		outcnt = incnt = 0;
-> +		sg_init_one(&out_hdr, &reqs[i].out_hdr, sizeof(reqs[i].out_hdr));
-> +		sgs[outcnt++] = &out_hdr;
-> +
-> +		if (msgs[i].len) {
-> +			reqs[i].buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
-> +			if (!reqs[i].buf)
-> +				break;
-> +
-> +			sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
-> +
-> +			if (msgs[i].flags & I2C_M_RD)
-> +				sgs[outcnt + incnt++] = &msg_buf;
-> +			else
-> +				sgs[outcnt++] = &msg_buf;
-> +		}
-> +
-> +		sg_init_one(&in_hdr, &reqs[i].in_hdr, sizeof(reqs[i].in_hdr));
-> +		sgs[outcnt + incnt++] = &in_hdr;
-> +
-> +		err = virtqueue_add_sgs(vq, sgs, outcnt, incnt, &reqs[i], GFP_KERNEL);
-> +		if (err < 0) {
-> +			i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], false);
-> +			break;
-> +		}
-> +	}
-> +
-> +	return i;
-> +}
-
-The right way of doing this is is making this function return - Error on failure
-and 0 on success. There is no point returning number of successful additions
-here.
-
-Moreover, on failures this needs to clean up (free the dmabufs) itself, just
-like you did i2c_put_dma_safe_msg_buf() at the end. The caller shouldn't be
-required to handle the error cases by freeing up resources.
-
-> +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
-> +				    struct virtio_i2c_req *reqs,
-> +				    struct i2c_msg *msgs, int nr,
-> +				    bool fail)
-> +{
-> +	struct virtio_i2c_req *req;
-> +	bool failed = fail;
-> +	unsigned int len;
-> +	int i, j = 0;
-> +
-> +	for (i = 0; i < nr; i++) {
-> +		/* Detach the ith request from the vq */
-> +		req = virtqueue_get_buf(vq, &len);
-> +
-> +		/*
-> +		 * Condition (req && req == &reqs[i]) should always meet since
-> +		 * we have total nr requests in the vq.
-> +		 */
-> +		if (!failed && (WARN_ON(!(req && req == &reqs[i])) ||
-> +		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)))
-
-What about writing this as:
-
-		if (!failed && (WARN_ON(req != &reqs[i]) ||
-		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)))
-
-We don't need to check req here since if req is NULL, we will not do req->in_hdr
-at all.
-
-> +			failed = true;
-> +
-> +		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], !failed);
-> +		if (!failed)
-> +			++j;
-> +	}
-> +
-> +	return (fail ? -ETIMEDOUT : j);
-> +}
-> +
-
+diff --git a/mm/slab.h b/mm/slab.h
+index 7b60ef2f32c3..a11126afe24c 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -216,10 +216,18 @@ DECLARE_STATIC_KEY_FALSE(slub_debug_enabled);
+ #endif
+ extern void print_tracking(struct kmem_cache *s, void *object);
+ long validate_slab_cache(struct kmem_cache *s);
++static inline bool slub_debug_enabled_unlikely(void)
++{
++	return static_branch_unlikely(&slub_debug_enabled);
++}
+ #else
+ static inline void print_tracking(struct kmem_cache *s, void *object)
+ {
+ }
++static inline bool slub_debug_enabled_unlikely(void)
++{
++	return false;
++}
+ #endif
+ 
+ /*
+@@ -229,11 +237,10 @@ static inline void print_tracking(struct kmem_cache *s, void *object)
+  */
+ static inline bool kmem_cache_debug_flags(struct kmem_cache *s, slab_flags_t flags)
+ {
+-#ifdef CONFIG_SLUB_DEBUG
+-	VM_WARN_ON_ONCE(!(flags & SLAB_DEBUG_FLAGS));
+-	if (static_branch_unlikely(&slub_debug_enabled))
++	if (IS_ENABLED(CONFIG_SLUB_DEBUG))
++		VM_WARN_ON_ONCE(!(flags & SLAB_DEBUG_FLAGS));
++	if (slub_debug_enabled_unlikely())
+ 		return s->flags & flags;
+-#endif
+ 	return false;
+ }
+ 
 -- 
-viresh
+2.18.0
+
