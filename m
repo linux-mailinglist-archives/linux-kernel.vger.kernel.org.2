@@ -2,99 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A28E73BB4F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 03:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E203BB510
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 04:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbhGEBqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 21:46:25 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:10247 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhGEBqY (ORCPT
+        id S229807AbhGECGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 22:06:13 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:45179 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229689AbhGECGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 21:46:24 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GJ7cY09tlz1CFLb;
-        Mon,  5 Jul 2021 09:38:21 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 5 Jul 2021 09:43:46 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 5 Jul 2021
- 09:43:46 +0800
-Subject: Re: Re: [PATCH net-next v3 1/3] selftests/ptr_ring: add benchmark
- application for ptr_ring
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     Jason Wang <jasowang@redhat.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <brouer@redhat.com>, <paulmck@kernel.org>,
-        <peterz@infradead.org>, <will@kernel.org>, <shuah@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linuxarm@openeuler.org>
-References: <1625142402-64945-1-git-send-email-linyunsheng@huawei.com>
- <1625142402-64945-2-git-send-email-linyunsheng@huawei.com>
- <e1ec4577-a48f-ff56-b766-1445c2501b9f@redhat.com>
- <91bcade8-f034-4bc7-f329-d5e1849867e7@huawei.com>
- <20210702042838-mutt-send-email-mst@kernel.org>
- <661a84bc-e7c5-bc21-25ac-75a68efa79ca@huawei.com>
- <1fed53f1-f882-ca67-8876-ca6702dcd9cd@redhat.com>
- <06f0dc67-d614-30d3-6dcc-f2446cb6030b@huawei.com>
- <20210702101730-mutt-send-email-mst@kernel.org>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <6e070501-204b-dc3e-60fb-4134ebdab206@huawei.com>
-Date:   Mon, 5 Jul 2021 09:43:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Sun, 4 Jul 2021 22:06:13 -0400
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 16523Jpt010664;
+        Mon, 5 Jul 2021 11:03:19 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 16523Jpt010664
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1625450599;
+        bh=i6TqbcfWRrqlvlGxRh4UhpNAO4m8Y8977j2FL6bcy68=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=atZdeBL7jys/wwkgQQFZEKxiLAamu7xob3+AEsxkRCRybp0KH98VV64yBSFXJ6e5D
+         zV+kfJ+7WJj92SFM5wRmydPredWAAGIijBsNPadOXIwDIZbKN1j/S+mhD/biuCnjHm
+         yzE+mALnys5LI9TXvv/qpauMkkDGmjJeIVYqHL56r15/veN7S+gKrzRWqjEdPOgRyV
+         B9eigxV9XN4hT5i3py6L4C/U+7pWUy3Mtta0t5ioNqfWypoiNf3uf4qUfcjKfzGEvE
+         0ww/+OO9oN0d+rAH48zWqKBc0DtGXhKYm038ptDg6Qxl6N3aifHGecLX8fYwiaSgy2
+         s35VXQb6YryYQ==
+X-Nifty-SrcIP: [209.85.216.42]
+Received: by mail-pj1-f42.google.com with SMTP id ie21so9069064pjb.0;
+        Sun, 04 Jul 2021 19:03:19 -0700 (PDT)
+X-Gm-Message-State: AOAM530t5a/8cLTrcIbl7eqJud8V9/CixpkvZW4CJe6GSljOla1GRBHM
+        Dxt4LYk26vRFGbizozUymiGuOeLW66ncqZSXw5E=
+X-Google-Smtp-Source: ABdhPJw4hd8V5x40kF8tSMckM9rvS2hMCQGd+tBctCYS3U9EgBBJKFlvgLbMvgriuyjosmayUyeC5qE8rTWLpOHXedU=
+X-Received: by 2002:a17:90b:4d81:: with SMTP id oj1mr12215610pjb.153.1625450598996;
+ Sun, 04 Jul 2021 19:03:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210702101730-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+References: <20210702032943.7865-1-lecopzer.chen@mediatek.com> <20210702032943.7865-2-lecopzer.chen@mediatek.com>
+In-Reply-To: <20210702032943.7865-2-lecopzer.chen@mediatek.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 5 Jul 2021 11:02:42 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATqZdZy9mH2qbFJPGs81a0fEFGPutqmvrdz1U51zOvH3Q@mail.gmail.com>
+Message-ID: <CAK7LNATqZdZy9mH2qbFJPGs81a0fEFGPutqmvrdz1U51zOvH3Q@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] Kbuild: lto: add CONFIG_MAKE_VERSION
+To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        yj.chiang@mediatek.com, Michal Marek <michal.lkml@markovi.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/2 22:18, Michael S. Tsirkin wrote:
-> On Fri, Jul 02, 2021 at 05:54:42PM +0800, Yunsheng Lin wrote:
->> On 2021/7/2 17:04, Jason Wang wrote:
->>>
->>
->> [...]
->>
->>>
->>>
->>>> I understand that you guys like to see a working testcase of virtio.
->>>> I would love to do that if I have the time and knowledge of virtio,
->>>> But I do not think I have the time and I am familiar enough with
->>>> virtio to fix that now.
->>>
->>>
->>> So ringtest is used for bench-marking the ring performance for different format. Virtio is only one of the supported ring format, ptr ring is another. Wrappers were used to reuse the same test logic.
->>>
->>> Though you may see host/guest in the test, it's in fact done via two processes.
->>>
->>> We need figure out:
->>>
->>> 1) why the current ringtest.c does not fit for your requirement (it has SPSC test)
->>
->> There is MPSC case used by pfifo_fast, it make more sense to use a separate selftest
->> for ptr_ring as ptr_ring has been used by various subsystems.
->>
->>
->>> 2) why can't we tweak the ptr_ring.c to be used by both ring_test and your benchmark
->>
->> Actually that is what I do in this patch, move the specific part related to ptr_ring
->> to ptr_ring_test.h. When the virtio testing is refactored to work, it can reuse the
->> abstract layer in ptr_ring_test.h too.
-> 
-> Sounds good. But that refactoring will be up to you as a contributor.
-
-It seems that tools/include/* have a lot of portability infrastructure for building
-kernel code from userspace, will try to refactor the ptr_ring.h to use the portability
-infrastructure in tools/include/* when building ptr_ring.h from userspace.
-
+On Fri, Jul 2, 2021 at 12:29 PM Lecopzer Chen
+<lecopzer.chen@mediatek.com> wrote:
 >
+> To check the GNU make version. Used by the LTO Kconfig.
+>
+> LTO with MODVERSIONS will fail in generating correct CRC because
+> the makefile rule doesn't work for make with version 3.8X.[1]
+>
+> Thus we need to check make version during selecting on LTO Kconfig.
+> Add CONFIG_MAKE_VERSION which means MAKE_VERSION in canonical digits
+> for arithmetic comparisons.
+>
+> [1] https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/
+> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> ---
+
+
+NACK.
+
+"Let's add MAKE_VERSION >= 40200 restriction
+just because I cannot write correct code that
+works for older Make" is a horrible idea.
+
+Also, Kconfig is supposed to check the compiler
+(or toolchains) capability, not host tool versions.
+
+
+
+
+
+
+
+>  Makefile                |  2 +-
+>  init/Kconfig            |  4 ++++
+>  scripts/make-version.sh | 13 +++++++++++++
+>  3 files changed, 18 insertions(+), 1 deletion(-)
+>  create mode 100755 scripts/make-version.sh
+>
+> diff --git a/Makefile b/Makefile
+> index 88888fff4c62..2402745b2ba9 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -516,7 +516,7 @@ CLANG_FLAGS :=
+>
+>  export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS CROSS_COMPILE LD CC
+>  export CPP AR NM STRIP OBJCOPY OBJDUMP READELF PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL
+> -export PERL PYTHON3 CHECK CHECKFLAGS MAKE UTS_MACHINE HOSTCXX
+> +export PERL PYTHON3 CHECK CHECKFLAGS MAKE MAKE_VERSION UTS_MACHINE HOSTCXX
+>  export KGZIP KBZIP2 KLZOP LZMA LZ4 XZ ZSTD
+>  export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 55f9f7738ebb..ecc110504f87 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -86,6 +86,10 @@ config CC_HAS_ASM_INLINE
+>  config CC_HAS_NO_PROFILE_FN_ATTR
+>         def_bool $(success,echo '__attribute__((no_profile_instrument_function)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
+>
+> +config MAKE_VERSION
+> +       int
+> +       default $(shell,$(srctree)/scripts/make-version.sh $(MAKE_VERSION))
+> +
+>  config CONSTRUCTORS
+>         bool
+>
+> diff --git a/scripts/make-version.sh b/scripts/make-version.sh
+> new file mode 100755
+> index 000000000000..3a451db3c067
+> --- /dev/null
+> +++ b/scripts/make-version.sh
+> @@ -0,0 +1,13 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Print the GNU make version in a 5 or 6-digit form.
+> +
+> +set -e
+> +
+> +# Convert the version string x.y.z to a canonical 5 or 6-digit form.
+> +IFS=.
+> +set -- $1
+> +
+> +# If the 2nd or 3rd field is missing, fill it with a zero.
+> +echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
+> --
+> 2.18.0
+>
+
+
+--
+Best Regards
+Masahiro Yamada
