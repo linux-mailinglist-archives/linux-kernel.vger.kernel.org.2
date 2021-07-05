@@ -2,132 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C9A3BBB73
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D656D3BBB76
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhGEKsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 06:48:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhGEKsB (ORCPT
+        id S231173AbhGEKsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 06:48:52 -0400
+Received: from angie.orcam.me.uk ([78.133.224.34]:60282 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhGEKsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 06:48:01 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2A6C061760
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 03:45:23 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso17888880otu.10
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 03:45:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/dlGtZu9Ej/xN5Tsuqsmc/vVOMpJLibVcfVItFdDo7U=;
-        b=rzSYkZK4ThrPA7smzcFNs/5Jpclbny/wcmfSQ8ORkq914C2DoGl0LnnmVaVBf+GSTU
-         cLg454r3cKsTz8r0/LI3A8jiqvat498AEPySwnwQDrkBQB2Z8MPavannymAkadlwCbfx
-         Csku08DMBzkEafDnNel69M7EN0kR7nB9LMem4pcRtUUH+kql+y8bf8n0b2GFWDknwps6
-         //spGXvECrbO40sSisf4xvjw2KfLYVu2/TIhODA91ZPkGbr3BWPAY+C8hUppoPo728RU
-         VKby50aiKF843yEXxbKAGEFYcuw8/4FVbXCC7lfE5ubVb87wKWwmyU5A+9xmy94ciW/Z
-         fe0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/dlGtZu9Ej/xN5Tsuqsmc/vVOMpJLibVcfVItFdDo7U=;
-        b=tnn4Kzs6ikueu4Zg5cutvjqphMJnu2jDKwFQ1nAj8G+jmdP7iVjvzUhv0wFTXgsULd
-         zPuAQWFwmY9DpgXL1D3pu6JctOcqTtifXV2tCcMSkWO89hEHMsEwqZvuRLyY19xOctDe
-         zyiLhWnUmpbCJ0QrdGevxMi0k45Zjy94zVqU5Fw125bqnxhlh3nbMhrLEEUCkWBkz6Rm
-         rSKLwMG8FNw9dg1KMmfPCg+OaHtrnP+MfWqQZeb4g59C8l8v1cLzcqPsVHjmusFjQwjL
-         V65lTSHikhvz2rpbfcdWNUpnlotPUMz5ObZRqpFIbBx5VhgI/zYb6NgZ5XILwS+gc3Z6
-         g7GQ==
-X-Gm-Message-State: AOAM532lDelIG+5JHrzRx/GaaXVCv+pcqlakoBl+QvxnpjBgYdPDU1Ry
-        nqzfIaNVBAG6PR4FXbZmTQeiNIi+WOa6T6YbZForGw==
-X-Google-Smtp-Source: ABdhPJz7Ojrr+OaKK7eh0H330aLKUBIAQgR26pV3/KDO8TkXS7oJOSMJQ2lq5muUp+LwEhxnKBOuBoP/AfYymTXkTok=
-X-Received: by 2002:a9d:d04:: with SMTP id 4mr10779395oti.251.1625481922714;
- Mon, 05 Jul 2021 03:45:22 -0700 (PDT)
+        Mon, 5 Jul 2021 06:48:51 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 82FE092009C; Mon,  5 Jul 2021 12:46:13 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 7BD6092009B;
+        Mon,  5 Jul 2021 12:46:13 +0200 (CEST)
+Date:   Mon, 5 Jul 2021 12:46:13 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Nikolai Zhubr <zhubr.2@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+cc:     Arnd Bergmann <arnd@kernel.org>, x86@kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/PCI: Handle PIRQ routing tables with no router device
+ given
+Message-ID: <alpine.DEB.2.21.2107051133010.33206@angie.orcam.me.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20210705103229.8505-1-yee.lee@mediatek.com> <20210705103229.8505-3-yee.lee@mediatek.com>
-In-Reply-To: <20210705103229.8505-3-yee.lee@mediatek.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 5 Jul 2021 12:45:11 +0200
-Message-ID: <CANpmjNMg7DwVJL10AesxTsiz_9UEuwZkAxdGrQdsmxOR4qiHXQ@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] kasan: Add memzero int for unaligned size at DEBUG
-To:     yee.lee@mediatek.com
-Cc:     linux-kernel@vger.kernel.org, nicholas.tang@mediatek.com,
-        Kuan-Ying.Lee@mediatek.com, chinwen.chang@mediatek.com,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:KASAN" <kasan-dev@googlegroups.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Jul 2021 at 12:33, <yee.lee@mediatek.com> wrote:
-> From: Yee Lee <yee.lee@mediatek.com>
->
-> Issue: when SLUB debug is on, hwtag kasan_unpoison() would overwrite
-> the redzone of object with unaligned size.
->
-> An additional memzero_explicit() path is added to replacing init by
-> hwtag instruction for those unaligned size at SLUB debug mode.
->
-> The penalty is acceptable since they are only enabled in debug mode,
-> not production builds. A block of comment is added for explanation.
->
-> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Suggested-by: Marco Elver <elver@google.com>
-> Suggested-by: Andrey Konovalov <andreyknvl@gmail.com>
-> Signed-off-by: Yee Lee <yee.lee@mediatek.com>
+PIRQ routing tables provided by the PCI BIOS usually specify the PCI 
+vendor:device ID as well as the bus address of the device implementing 
+the PIRQ router, e.g.:
 
-Reviewed-by: Marco Elver <elver@google.com>
+PCI: Interrupt Routing Table found at 0xc00fde10
+[...]
+PCI: Attempting to find IRQ router for [8086:7000]
+pci 0000:00:07.0: PIIX/ICH IRQ router [8086:7000]
 
-Thank you!
+however in some cases they do not, in which case we fail to match the 
+router handler, e.g.:
 
-> ---
->  mm/kasan/kasan.h | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index 98e3059bfea4..d739cdd1621a 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -9,6 +9,7 @@
->  #ifdef CONFIG_KASAN_HW_TAGS
->
->  #include <linux/static_key.h>
-> +#include "../slab.h"
->
->  DECLARE_STATIC_KEY_FALSE(kasan_flag_stacktrace);
->  extern bool kasan_flag_async __ro_after_init;
-> @@ -387,6 +388,17 @@ static inline void kasan_unpoison(const void *addr, size_t size, bool init)
->
->         if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
->                 return;
-> +       /*
-> +        * Explicitly initialize the memory with the precise object size to
-> +        * avoid overwriting the SLAB redzone. This disables initialization in
-> +        * the arch code and may thus lead to performance penalty. The penalty
-> +        * is accepted since SLAB redzones aren't enabled in production builds.
-> +        */
-> +       if (__slub_debug_enabled() &&
-> +           init && ((unsigned long)size & KASAN_GRANULE_MASK)) {
-> +               init = false;
-> +               memzero_explicit((void *)addr, size);
-> +       }
->         size = round_up(size, KASAN_GRANULE_SIZE);
->
->         hw_set_mem_tag_range((void *)addr, size, tag, init);
-> --
-> 2.18.0
+PCI: Interrupt Routing Table found at 0xc00fdae0
+[...]
+PCI: Attempting to find IRQ router for [0000:0000]
+PCI: Interrupt router not found at 00:00
+
+This is because we always match the vendor:device ID and the bus address 
+literally, even if they are all zeros.
+
+Handle this case then and iterate over all PCI devices until we find a 
+matching router handler if the vendor ID given by the routing table is 
+the invalid value of zero.
+
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+---
+ arch/x86/pci/irq.c |   63 ++++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 43 insertions(+), 20 deletions(-)
+
+linux-x86-pirq-router-nodev.diff
+Index: linux-macro-ide-tty/arch/x86/pci/irq.c
+===================================================================
+--- linux-macro-ide-tty.orig/arch/x86/pci/irq.c
++++ linux-macro-ide-tty/arch/x86/pci/irq.c
+@@ -908,10 +908,32 @@ static struct pci_dev *pirq_router_dev;
+  *	chipset" ?
+  */
+ 
++static bool __init pirq_try_router(struct irq_router *r,
++				   struct irq_routing_table *rt,
++				   struct pci_dev *dev)
++{
++	struct irq_router_handler *h;
++
++	DBG(KERN_DEBUG "PCI: Trying IRQ router for [%04x:%04x]\n",
++	    dev->vendor, dev->device);
++
++	for (h = pirq_routers; h->vendor; h++) {
++		/* First look for a router match */
++		if (rt->rtr_vendor == h->vendor &&
++		    h->probe(r, dev, rt->rtr_device))
++			return true;
++		/* Fall back to a device match */
++		if (dev->vendor == h->vendor &&
++		    h->probe(r, dev, dev->device))
++			return true;
++	}
++	return false;
++}
++
+ static void __init pirq_find_router(struct irq_router *r)
+ {
+ 	struct irq_routing_table *rt = pirq_table;
+-	struct irq_router_handler *h;
++	struct pci_dev *dev;
+ 
+ #ifdef CONFIG_PCI_BIOS
+ 	if (!rt->signature) {
+@@ -930,27 +952,28 @@ static void __init pirq_find_router(stru
+ 	DBG(KERN_DEBUG "PCI: Attempting to find IRQ router for [%04x:%04x]\n",
+ 	    rt->rtr_vendor, rt->rtr_device);
+ 
+-	pirq_router_dev = pci_get_domain_bus_and_slot(0, rt->rtr_bus,
+-						      rt->rtr_devfn);
+-	if (!pirq_router_dev) {
+-		DBG(KERN_DEBUG "PCI: Interrupt router not found at "
+-			"%02x:%02x\n", rt->rtr_bus, rt->rtr_devfn);
+-		return;
++	/* Use any vendor:device provided by the routing table or try all.  */
++	if (rt->rtr_vendor) {
++		dev = pci_get_domain_bus_and_slot(0, rt->rtr_bus,
++						  rt->rtr_devfn);
++		if (pirq_try_router(r, rt, dev))
++			pirq_router_dev = dev;
++	} else {
++		for_each_pci_dev(dev) {
++			if (pirq_try_router(r, rt, dev)) {
++				pirq_router_dev = dev;
++				break;
++			}
++		}
+ 	}
+ 
+-	for (h = pirq_routers; h->vendor; h++) {
+-		/* First look for a router match */
+-		if (rt->rtr_vendor == h->vendor &&
+-			h->probe(r, pirq_router_dev, rt->rtr_device))
+-			break;
+-		/* Fall back to a device match */
+-		if (pirq_router_dev->vendor == h->vendor &&
+-			h->probe(r, pirq_router_dev, pirq_router_dev->device))
+-			break;
+-	}
+-	dev_info(&pirq_router_dev->dev, "%s IRQ router [%04x:%04x]\n",
+-		 pirq_router.name,
+-		 pirq_router_dev->vendor, pirq_router_dev->device);
++	if (pirq_router_dev)
++		dev_info(&pirq_router_dev->dev, "%s IRQ router [%04x:%04x]\n",
++			 pirq_router.name,
++			 pirq_router_dev->vendor, pirq_router_dev->device);
++	else
++		DBG(KERN_DEBUG "PCI: Interrupt router not found at "
++		    "%02x:%02x\n", rt->rtr_bus, rt->rtr_devfn);
+ 
+ 	/* The device remains referenced for the kernel lifetime */
+ }
