@@ -2,485 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F773BC136
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 17:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C7D3BC13F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 17:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhGEPxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 11:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231721AbhGEPxR (ORCPT
+        id S231950AbhGEPya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 11:54:30 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:7084 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231806AbhGEPy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 11:53:17 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD16C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 08:50:39 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id b14-20020a1c1b0e0000b02901fc3a62af78so7860562wmb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 08:50:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=enlWRJAFl8l8jgYogluSDP2f9hSu7vEeMil27C7DaDc=;
-        b=pbem5zh/6uch/c4wRcCm700cGnqv8+SO1YXnedbpkhq6YwFSGYdBQPB2pC6rWgl0IH
-         K5L11njDMcVBvonkmxZjN0v559pO45lJvCyiv1HBJ7xjRTrkn1FLsbfEpNMp3apcWsiU
-         ckkE0mRBK46/+sg/JvqQM/wGfEMe3FxjNs87B+7I9EwnaTUFEyWOHKWhbBzgIxxdUl5X
-         V+CLd0ygsOaZ3be2suaAQbwKZFExa+AEZ5C1YvbGsz6aBjw0nWc5hWGvq6DG0FtskovK
-         Aal6v9NKFPUB9jDzqGoPZgLIUHVbTfEoYClHqNPIbcmIRbUOluG14QlCwWI+j6oJc3jB
-         Iwdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=enlWRJAFl8l8jgYogluSDP2f9hSu7vEeMil27C7DaDc=;
-        b=qXRznOdzIyv/YAPrr2KWTojZMFLjFZX2OG3rTRV2O8wx0HKch6LVWkuWGoDa8yQ1Mu
-         NBP1H32i2eN20yCSMoMR6bhjdFhHZ/+HZSIXI74oxGsGpRhyey7zC23IxzluYv9qx2yJ
-         5wZGdMMAYr+Hp604LLciaMISrRBSh/iTj9yA97RsWnOALyVELs+cWUU1S1nuwk6H51wt
-         RTF1nSy178TXFQr/fFhNJ+KHzYG04+iKoj7RyVIYx0FuuzXYJQVv0jyjwOsD2Xd9R/c4
-         9krCuGOwCWt9BF8ehoO+8N0zYQNnohVgYKOQlfIndd3qJPcjdys8qNLhWeXLRAIPD3gx
-         c1EA==
-X-Gm-Message-State: AOAM53192dKNM8P1nKotevhS0Pgive9D/fESPLdLWbkfKJvJV201FOi2
-        0Xpatdxh0NJPX/JOoQZLNaKwT5lznnBEWfmbdPYLrg==
-X-Google-Smtp-Source: ABdhPJzDSAxpzlhQFB5Cx0TY4/GywrQGtK3BzJMlWrG03bi3BaQzMNSyqdqBPrbNNwkaGDKRYsvKoxGEgjeNyBLHUWY=
-X-Received: by 2002:a05:600c:d0:: with SMTP id u16mr15501287wmm.96.1625500238270;
- Mon, 05 Jul 2021 08:50:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <YM6dgVb12oITNfc0@pendragon.ideasonboard.com> <CAPY8ntC+hzmfrJwWW0ytNdHSXruMKMi7N3K6tdJbp9gDBbJ3Qw@mail.gmail.com>
- <YM+MEsKjdkYAVI5X@pendragon.ideasonboard.com> <YM/FwVkkQXX8VrzV@pendragon.ideasonboard.com>
- <CAPY8ntCbzFkbM5fZmo3RVw5okQkVKFcR8TCHOo+xkW7wNk8MQA@mail.gmail.com>
- <YNCMbw6B6OL4Gho3@pendragon.ideasonboard.com> <YNCPcbJTEZVLJyCF@pendragon.ideasonboard.com>
- <YNCbVtIFcryw6wO5@pendragon.ideasonboard.com> <YN9DBX0QVbjtbwFE@pendragon.ideasonboard.com>
- <CAPY8ntCiw=28ay5VmARG55q00L1fj9aTKCbHi+sp=FTPUqZLVA@mail.gmail.com> <YN90jZ1ynoC2IwNm@pendragon.ideasonboard.com>
-In-Reply-To: <YN90jZ1ynoC2IwNm@pendragon.ideasonboard.com>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Mon, 5 Jul 2021 16:50:21 +0100
-Message-ID: <CAPY8ntBDjpOhB9Wrq-YrrtmbLQ4G2sWzS+aTXLAbKpXtCnUyCQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/vc4: dsi: Only register our component once a DSI
- device is attached
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Marek Vasut <marex@denx.de>, Tim Gover <tim.gover@raspberrypi.com>,
-        Eric Anholt <eric@anholt.net>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Maxime Ripard <maxime@cerno.tech>,
-        Phil Elwell <phil@raspberrypi.com>,
-        linux-rpi-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 5 Jul 2021 11:54:29 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 05 Jul 2021 08:51:52 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 05 Jul 2021 08:51:50 -0700
+X-QCInternal: smtphost
+Received: from c-sbhanu-linux.qualcomm.com ([10.242.50.201])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 05 Jul 2021 21:20:56 +0530
+Received: by c-sbhanu-linux.qualcomm.com (Postfix, from userid 2344807)
+        id 869C0504D; Mon,  5 Jul 2021 21:20:55 +0530 (IST)
+From:   Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
+        vbadigan@codeaurora.org, rampraka@codeaurora.org,
+        sayalil@codeaurora.org, sartgarg@codeaurora.org,
+        rnayak@codeaurora.org, cang@codeaurora.org,
+        pragalla@codeaurora.org, nitirawa@codeaurora.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+Subject: [PATCH V3] mmc: sdhci-msm: Update the software timeout value for sdhc
+Date:   Mon,  5 Jul 2021 21:20:53 +0530
+Message-Id: <1625500253-12815-1-git-send-email-sbhanu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent
+Whenever SDHC run at clock rate 50MHZ or below, the hardware data
+timeout value will be 21.47secs, which is approx. 22secs and we have
+a current software timeout value as 10secs. We have to set software
+timeout value more than the hardware data timeout value to avioid seeing
+the below register dumps.
 
-On Fri, 2 Jul 2021 at 21:19, Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Dave,
->
-> On Fri, Jul 02, 2021 at 06:44:22PM +0100, Dave Stevenson wrote:
-> > On Fri, 2 Jul 2021 at 17:47, Laurent Pinchart wrote:
-> > > On Mon, Jun 21, 2021 at 04:59:51PM +0300, Laurent Pinchart wrote:
-> > >> On Mon, Jun 21, 2021 at 04:09:05PM +0300, Laurent Pinchart wrote:
-> > >>> On Mon, Jun 21, 2021 at 03:56:16PM +0300, Laurent Pinchart wrote:
-> > >>>> On Mon, Jun 21, 2021 at 12:49:14PM +0100, Dave Stevenson wrote:
-> > >>>>> On Sun, 20 Jun 2021 at 23:49, Laurent Pinchart wrote:
-> > >>>>>> On Sun, Jun 20, 2021 at 09:42:27PM +0300, Laurent Pinchart wrote:
-> > >>>>>>> On Sun, Jun 20, 2021 at 03:29:03PM +0100, Dave Stevenson wrote:
-> > >>>>>>>> On Sun, 20 Jun 2021 at 04:26, Laurent Pinchart wrote:
-> > >>>>>>>>>
-> > >>>>>>>>> Hi Maxime,
-> > >>>>>>>>>
-> > >>>>>>>>> I'm testing this, and I'm afraid it causes an issue with all the
-> > >>>>>>>>> I2C-controlled bridges. I'm focussing on the newly merged ti-sn65dsi83
-> > >>>>>>>>> driver at the moment, but other are affected the same way.
-> > >>>>>>>>>
-> > >>>>>>>>> With this patch, the DSI component is only added when the DSI device is
-> > >>>>>>>>> attached to the host with mipi_dsi_attach(). In the ti-sn65dsi83 driver,
-> > >>>>>>>>> this happens in the bridge attach callback, which is called when the
-> > >>>>>>>>> bridge is attached by a call to drm_bridge_attach() in vc4_dsi_bind().
-> > >>>>>>>>> This creates a circular dependency, and the DRM/KMS device is never
-> > >>>>>>>>> created.
-> > >>>>>>>>>
-> > >>>>>>>>> How should this be solved ? Dave, I think you have shown an interest in
-> > >>>>>>>>> the sn65dsi83 recently, any help would be appreciated. On a side note,
-> > >>>>>>>>> I've tested the ti-sn65dsi83 driver on a v5.10 RPi kernel, without much
-> > >>>>>>>>> success (on top of commit e1499baa0b0c I get a very weird frame rate -
-> > >>>>>>>>> 147 fps of 99 fps instead of 60 fps - and nothing on the screen, and on
-> > >>>>>>>>> top of the latest v5.10 RPi branch, I get lock-related warnings at every
-> > >>>>>>>>> page flip), which is why I tried v5.12 and noticed this patch. Is it
-> > >>>>>>>>> worth trying to bring up the display on the v5.10 RPi kernel in parallel
-> > >>>>>>>>> to fixing the issue introduced in this patch, or is DSI known to be
-> > >>>>>>>>> broken there ?
-> > >>>>>>>>
-> > >>>>>>>> I've been looking at SN65DSI83/4, but as I don't have any hardware
-> > >>>>>>>> I've largely been suggesting things to try to those on the forums who
-> > >>>>>>>> do [1].
-> > >>>>>>>>
-> > >>>>>>>> My branch at https://github.com/6by9/linux/tree/rpi-5.10.y-sn65dsi8x-marek
-> > >>>>>>>> is the latest one I've worked on. It's rpi-5.10.y with Marek's driver
-> > >>>>>>>> cherry-picked, and an overlay and simple-panel definition by others.
-> > >>>>>>>> It also has a rework for vc4_dsi to use pm_runtime, instead of
-> > >>>>>>>> breaking up the DSI bridge chain (which is flawed as it never calls
-> > >>>>>>>> the bridge mode_set or mode_valid functions which sn65dsi83 relies
-> > >>>>>>>> on).
-> > >>
-> > >> I've looked at that, and I'm afraid it doesn't go in the right
-> > >> direction. The drm_encoder.crtc field is deprecated and documented as
-> > >> only meaningful for non-atomic drivers. You're not introducing its
-> > >> usage, but moving the configuration code from .enable() to the runtime
-> > >> PM resume handler will make it impossible to fix this. The driver should
-> > >> instead move to the .atomic_enable() function. If you need
-> > >> enable/pre_enable in the DSI encoder, then you should turn it into a
-> > >> drm_bridge.
-> > >
-> > > Is this something you're looking at by any chance ? I'm testing the
-> > > ti-sn65dsi83 driver with VC4. I've spent a couple of hours debugging,
-> > > only to realise that the vc4_dsi driver (before the rework you mention
-> > > above) doesn't call .mode_set() on the bridges... Applying my sn65dsi83
-> > > series that removes .mode_set() didn't help much as vc4_dsi doesn't call
-> > > the atomic operations either :-) I'll test your branch now.
-> >
-> > This is one of the reasons for my email earlier today - thank you for
-> > your reply.
-> >
-> > The current mainline vc4_dsi driver deliberately breaks the bridge
-> > chain so that it gets called before the panel/bridge pre_enable and
-> > can power everything up, therefore pre_enable can call host_transfer
-> > to configure the panel/bridge over the DSI interface.
-> > However we've both noted that it doesn't forward on the mode_set and
-> > mode_valid calls, and my investigations say that it doesn't have
-> > enough information to make those calls.
-> >
-> > My branch returns the chain to normal, and tries to use pm_runtime to
-> > power up the PHY at the first usage (host_transfer or _enable). The
-> > PHY enable needs to know the link frequency to use, hence my question
-> > over how that should be determined.
-> > Currently it's coming from drm_encoder.crtc, but you say that's
-> > deprecated. If a mode hasn't been set then we have no clock
-> > information and bad things will happen.
->
-> To make sure I understand things correctly, if no mode has been set, you
-> only need to know the HS clock frequency in order to perform command
-> transfers in HS mode, right ? Do we have a list of use cases for those
-> transfers before a mode is set ? Can we force LP mode, or is it
-> something that sinks are not required to support ?
+[  332.953670] mmc2: Timeout waiting for hardware interrupt.
+[  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP ===========
+[  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  0x00007202
+[  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  0x00000001
+[  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 0x00000027
+[  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 0x0000001f
+[  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  0x00000000
+[  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
+[  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 0x00000000
+[  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 0x03ff100b
+[  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
+[  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x0000808f
+[  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 0x00000000
+[  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0x00000000
+[  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
+[  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
+[  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
+0x0000000ffffff218
+[  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
+-----------
+[  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
+0x6000642c | DLL cfg2: 0x0020a000
+[  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
+0x00000000 | DDR cfg: 0x80040873
+[  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
+0xf88218a8 Vndr func3: 0x02626040
+[  333.102371] mmc2: sdhci: ============================================
 
-AFAIK It's up to the sink as to what modes it supports. If it's asked
-for HS then it really ought to be honoured.
-Anyway, not an issue for your SN65DSI83, so leave it to the other thread.
+So, set software timeout value more than hardware timeout value.
 
-> > On the Pi forums one person has DSI83 working with an 800x1280 panel
-> > (Google Nexus 7 Gen 1 AIUI) using my branch, but only on 3 lanes
-> > rather than 4. I have a suspicion it's because the mode_fixup for
-> > burst mode has moved the panel timings too far outside the panel's
-> > spec, hence my other question about how bridges should pick up the
-> > panel timings independent of burst mode timings. The SN65DSI83 driver
-> > currently programs the output LVDS side with the DSI timings and
-> > doesn't account for burst mode.
->
-> I've just tried lowering the number of lanes to 3, and I now get an
-> image on the display !
+Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+---
 
-Whoop whoop!
+Changes since V2:
+	- Updated 22 with 22LL to avoid compiler warning as suggested by
+	  Adrian Hunter.
+	- Added a check to update software data timeout value if its value is
+	  less than the calculated hardware data timeout value as suggested
+	  by Veerabhadrarao Badiganti.
 
-I currently have no real idea why 4 lanes doesn't when 3 lanes does.
-Most modes shouldn't need to drop into the weird modes where the
-number of bytes doesn't evenly divide by the number of lanes, so until
-I get the analyser I'm just guessing.
+Changes since V1:
+	- Moved software data timeout update part to qcom specific file
+	  as suggested by Veerabhadrarao Badiganti.
+---
+ drivers/mmc/host/sdhci-msm.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-> Interestingly, when I enable the test pattern mode of the SN65DSI63, I
-> get an image on my display, even in 4 lanes mode. I thus believe the DSI
-> clock frequency is within the range of what the panel can accept (as the
-> SN65DSI83 is programmed to derive the LVDS clock from the DSI clock),
-> but the other timing parameters. The fact that kmstest --flip reports
-> 125fps makes me think there's something very wrong in the timings.
+diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+index e44b7a6..64fb85e 100644
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -2089,6 +2089,23 @@ static void sdhci_msm_cqe_disable(struct mmc_host *mmc, bool recovery)
+ 	sdhci_cqe_disable(mmc, recovery);
+ }
+ 
++static void sdhci_msm_set_timeout(struct sdhci_host *host, struct mmc_command *cmd)
++{
++
++	u32 count, start = 15;
++
++	__sdhci_set_timeout(host, cmd);
++	count = sdhci_readb(host, SDHCI_TIMEOUT_CONTROL);
++	/*
++	 * Update software timeout value if its value is less than hardware data
++	 * timeout value. Qcom SoC hardware data timeout value was calculated
++	 * using 4 * MCLK * 2^(count + 13). where MCLK = 1 / host->clock.
++	 */
++	if (cmd && cmd->data && host->clock > 400000 && host->clock <= 50000000
++			&& ((1 << (count + start)) > (10 * host->clock)))
++		host->data_timeout = 22LL * NSEC_PER_SEC;
++}
++
+ static const struct cqhci_host_ops sdhci_msm_cqhci_ops = {
+ 	.enable		= sdhci_msm_cqe_enable,
+ 	.disable	= sdhci_msm_cqe_disable,
+@@ -2438,6 +2455,7 @@ static const struct sdhci_ops sdhci_msm_ops = {
+ 	.irq	= sdhci_msm_cqe_irq,
+ 	.dump_vendor_regs = sdhci_msm_dump_vendor_regs,
+ 	.set_power = sdhci_set_power_noreg,
++	.set_timeout = sdhci_msm_set_timeout,
+ };
+ 
+ static const struct sdhci_pltfm_data sdhci_msm_pdata = {
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
-It's a weird one, but I'd like to know the panel timings you're requesting.
-
-The timings for the 800x1280 panel for are nominally
-    .pixelclock = { 66800000, 66800000, 66800000 },
-    .hactive = { 800, 800, 800 },
-    .hfront_porch = { 16, 16, 16 },
-    .hback_porch = { 32, 32, 32 },
-    .hsync_len = { 16, 16, 16 },
-    .vactive = { 1280, 1280, 1280 },
-    .vfront_porch = { 5, 5, 5 },
-    .vback_porch = { 2, 2, 2 },
-    .vsync_len = { 1, 1, 1 },
-which works out at 60.02fps, and kmstest --flip reports 60.03fps.
-
-IIRC the pixel clock timing on 2711 is driven from the DSI block (or
-HDMI, or whatever sink), so that implies something is miscomputed from
-your timing.
-Dumping them pre and post the changes in vc4_dsi_encoder_mode_fixup
-would be useful the first step.
-
-  Dave
-
-> > If you want a call or to discuss your setup in more detail, then give
-> > me a shout.
->
-> I don't really have anything special about this setup to discuss
-> (there's a DS92LV0421 and DS92LV2422 pair between the SN65DSI83 and the
-> panel, but that shouldn't matter much). In addition to the 4 lanes mode
-> issue, the big difference between this and a DSI panel connected
-> directly to the encoder is related to how the DSI sink is probed, the
-> DSI encoder driver in your v5.12 kernel is broken for DSI sinks that are
-> controlled over I2C (due to the fact they're not children of the DSI
-> encoder DT node anymore). This will require a solution too, but I don't
-> think it's specific to my setup.
->
-> If there's any patch you'd like me to test for the mode timings, please
-> let me know.
->
-> > We have a DSI analyser on order now (3-4 week lead time), so hopefully
-> > I'll soon be able to get some better visibility of what the block is
-> > doing.
-> >
-> > >>>>>>>> I ran it on Friday in the lab and encountered an issue with vc4_dsi
-> > >>>>>>>> should vc4_dsi_encoder_mode_fixup wish for a divider of 7 (required
-> > >>>>>>>> for this 800x1280 panel over 4 lanes) where it resulted in an invalid
-> > >>>>>>>> mode configuration. That resulted in patch [2] which then gave me
-> > >>>>>>>> sensible numbers.
-> > >>
-> > >> I have that commit in my branch, but still get 125 fps instead of 60 fps
-> > >> with kmstest --flip (after reverting commit 1c3834201272 "drm/vc4:
-> > >> Increase the core clock based on HVS load"). I'm not sure if [2] is the
-> > >> cause of this, but there seems to be an improvement: in my previous
-> > >> tests, the mode was fixed up every time I would start the application,
-> > >> with the timings getting more and more bizarre at every run :-)
-> > >>
-> > >>>>>>>> That branch with dtoverlay=vc4-kms-v3d and
-> > >>>>>>>> dtoverlay=vc4-kms-dsi-ti-sn65dsi83 created all the expected devices,
-> > >>>>>>>> and everything came up normally.
-> > >>>>>>>> It was a busy day, but I think I even stuck a scope on the clock lanes
-> > >>>>>>>> at that point and confirmed that they were at the link frequency
-> > >>>>>>>> expected.
-> > >>>>>>>
-> > >>>>>>> Thanks, I'll test your branch and will report the results.
-> > >>>>>>
-> > >>>>>> I had to apply the following diff to work around a crash:
-> > >>>>>>
-> > >>>>>> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> > >>>>>> index 55b6c53207f5..647426aa793a 100644
-> > >>>>>> --- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> > >>>>>> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> > >>>>>> @@ -525,6 +525,9 @@ static bool sn65dsi83_mode_fixup(struct drm_bridge *bridge,
-> > >>>>>>
-> > >>>>>>         /* The DSI format is always RGB888_1X24 */
-> > >>>>>>         list_for_each_entry(connector, &ddev->mode_config.connector_list, head) {
-> > >>>>>> +               if (!connector->display_info.bus_formats)
-> > >>>>>> +                       continue;
-> > >>>>>> +
-> > >>>>>>                 switch (connector->display_info.bus_formats[0]) {
-> > >>>>>>                 case MEDIA_BUS_FMT_RGB666_1X7X3_SPWG:
-> > >>>>>>                         ctx->lvds_format_24bpp = false;
-> > >>>>>>
-> > >>>>>> connector->display_info.bus_formats is NULL for the HDMI connectors, as
-> > >>>>>> I have nothing connected to them, as well as for the writeback
-> > >>>>>> connector.
-> > >>>>>
-> > >>>>> I'm now confused as to what I'm doing as my branch appears NOT to have
-> > >>>>> Marek's latest version of the driver as it doesn't have
-> > >>>>> sn65dsi83_mode_fixup.
-> > >>>>> I need to have another look at what's going on - I think I've got
-> > >>>>> branches confused when switching between machines :-( Remaking that
-> > >>>>> branch now.
-> > >>>>>
-> > >>>>> I do see that Marek has sent another patch around
-> > >>>>> sn65dsi83_mode_fixup, but it'll still dereference
-> > >>>>> connector->display_info.bus_formats[0] on all connectors. Shouldn't it
-> > >>>>> only be switching on the one connector that is connected to this
-> > >>>>> bridge, not HDMI or writeback connectors? I'm not totally clear on
-> > >>>>> which connectors are in that list.
-> > >>>>> https://patchwork.freedesktop.org/patch/440175/
-> > >>>>
-> > >>>> The following series should fix the issue:
-> > >>>>
-> > >>>> [PATCH] drm/bridge: ti-sn65dsi83: Replace connector format patching with atomic_get_input_bus_fmts
-> > >>>> [PATCH 0/5] ti-sn65dsi83: Finalize transition to atomic operations
-> > >>>>
-> > >>>>>> Then, when running kmstest --flip, I get one warning per frame:
-> > >>>>>>
-> > >>>>>> [   29.762089] [drm:vc4_dsi_runtime_resume] *ERROR* vc4_dsi_runtime_resume:
-> > >>>>>> [   29.763200] [drm:vc4_dsi_runtime_resume] *ERROR* vc4_dsi_runtime_resume: All good
-> > >>>>>> [   29.793861] ------------[ cut here ]------------
-> > >>>>>> [   29.798572] WARNING: CPU: 2 PID: 249 at drivers/gpu/drm/drm_modeset_lock.c:246 drm_modeset_lock+0xd0/0x100
-> > >>>>>> [   29.808365] Modules linked in: ipv6 bcm2835_codec(C) bcm2835_unicam bcm2835_v4l2(C) bcm2835_isp(C) bcm2835_mmal_vchiq(C) v4l2_mem2mem v4l2_dv_timings imx296 rtc_ds1307 videobuf2_vmallom
-> > >>>>>> [   29.855284] CPU: 2 PID: 249 Comm: kworker/u8:10 Tainted: G         C        5.10.44-v8+ #23
-> > >>>>>> [   29.863756] Hardware name: Raspberry Pi Compute Module 4 Rev 1.0 (DT)
-> > >>>>>> [   29.870297] Workqueue: events_unbound commit_work
-> > >>>>>> [   29.875077] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-> > >>>>>> [   29.881172] pc : drm_modeset_lock+0xd0/0x100
-> > >>>>>> [   29.885506] lr : drm_atomic_get_new_or_current_crtc_state+0x6c/0x110
-> > >>>>>> [   29.891950] sp : ffffffc011fcbcb0
-> > >>>>>> [   29.895308] x29: ffffffc011fcbcb0 x28: ffffff80403fe780
-> > >>>>>> [   29.900705] x27: ffffff80415a2000 x26: ffffffc0106f0000
-> > >>>>>> [   29.906100] x25: 0000000000000000 x24: ffffff80420d3c80
-> > >>>>>> [   29.911495] x23: ffffff8042174080 x22: 0000000000000038
-> > >>>>>> [   29.916890] x21: 0000000000000000 x20: ffffff80421740a8
-> > >>>>>> [   29.922284] x19: ffffffc011f8bc50 x18: 0000000000000000
-> > >>>>>> [   29.927678] x17: 0000000000000000 x16: 0000000000000000
-> > >>>>>> [   29.933072] x15: 0000000000000000 x14: 0000000000000000
-> > >>>>>> [   29.938466] x13: 0048000000000329 x12: 0326032303290320
-> > >>>>>> [   29.943860] x11: 03200000020301f4 x10: 00000000000019e0
-> > >>>>>> [   29.949255] x9 : ffffffc0106efd8c x8 : ffffff804390d5c0
-> > >>>>>> [   29.954649] x7 : 7fffffffffffffff x6 : 0000000000000001
-> > >>>>>> [   29.960043] x5 : 0000000000000001 x4 : 0000000000000001
-> > >>>>>> [   29.965436] x3 : ffffff80415a2000 x2 : ffffff804199b200
-> > >>>>>> [   29.970830] x1 : 00000000000000bc x0 : ffffffc011f8bc98
-> > >>>>>> [   29.976225] Call trace:
-> > >>>>>> [   29.978708]  drm_modeset_lock+0xd0/0x100
-> > >>>>>> [   29.982687]  drm_atomic_get_new_or_current_crtc_state+0x6c/0x110
-> > >>>>>> [   29.988781]  vc4_atomic_complete_commit+0x4e4/0x860
-> > >>>>>> [   29.993729]  commit_work+0x18/0x20
-> > >>>>>> [   29.997181]  process_one_work+0x1c4/0x4a0
-> > >>>>>> [   30.001248]  worker_thread+0x50/0x420
-> > >>>>>> [   30.004965]  kthread+0x11c/0x150
-> > >>>>>> [   30.008239]  ret_from_fork+0x10/0x20
-> > >>>>>> [   30.011865] ---[ end trace f44ae6b09cda951a ]---
-> > >>>>>>
-> > >>>>>> Does it ring any bell ?
-> > >>>>>
-> > >>>>> kmstest --flip is a new one on me. kmstest from
-> > >>>>> https://cgit.freedesktop.org/drm/libdrm/tree/tests/kmstest doesn't
-> > >>>>> have such an option.
-> > >>>>> Based on Google, I'm guessing at
-> > >>>>> https://github.com/tomba/kmsxx/blob/master/utils/kmstest.cpp. Multiple
-> > >>>>> apps with the same name is always fun.
-> > >>>>
-> > >>>> Correct.
-> > >>>>
-> > >>>>>> In case this is useful information, the problem didn't occur on top of
-> > >>>>>> commit e1499baa0b0c.
-> > >>>>>
-> > >>>>> e1499baa0b0c is from back in March by the looks of it.
-> > >>>>> Maxime has done a number of reworks to accessor functions since then,
-> > >>>>> so it's quite possible there's a locking issue lurking. I'll let him
-> > >>>>> comment though.
-> > >>>>
-> > >>>> Maybe there's a reason why the patch the introduced
-> > >>>> drm_atomic_get_new_or_current_crtc_state() in your branch hasn't made it
-> > >>>> to mainline yet :-)
-> > >>>
-> > >>> Any chance this could be reverted from the RPi kernel v5.10 branch in
-> > >>> the meantime ?
-> > >>>
-> > >>>>>>>> Coming back to this patch though, it isn't in 5.10 so I'm not seeing
-> > >>>>>>>> the issues. As to the exact ordering of attaches, I can't claim
-> > >>>>>>>> sufficient knowledge on that front.
-> > >>>>>>>> I can try a cherry-pick of this patch to see what goes on, but it
-> > >>>>>>>> won't be for a day or two.
-> > >>>>>>>
-> > >>>>>>> Let's see if Maxime has an opinion :-)
-> > >>>>>>>
-> > >>>>>>>> [1] Largely https://www.raspberrypi.org/forums/viewtopic.php?f=44&t=305690,
-> > >>>>>>>> but ignore about the first 5 pages of the thread as different driver
-> > >>>>>>>> versions were floating about. Most stuff after that is based on
-> > >>>>>>>> Marek's driver.
-> > >>>>>>>> [2] https://github.com/6by9/linux/commit/c3c774136a1e946109048711d16974be8d520aaa
-> > >>>>>>>>
-> > >>>>>>>>> On Tue, Jul 07, 2020 at 12:19:12PM +0200, Maxime Ripard wrote:
-> > >>>>>>>>>> If the DSI driver is the last to probe, component_add will try to run all
-> > >>>>>>>>>> the bind callbacks straight away and return the error code.
-> > >>>>>>>>>>
-> > >>>>>>>>>> However, since we depend on a power domain, we're pretty much guaranteed to
-> > >>>>>>>>>> be in that case on the BCM2711, and are just lucky on the previous SoCs
-> > >>>>>>>>>> since the v3d also depends on that power domain and is further in the probe
-> > >>>>>>>>>> order.
-> > >>>>>>>>>>
-> > >>>>>>>>>> In that case, the DSI host will not stick around in the system: the DSI
-> > >>>>>>>>>> bind callback will be executed, will not find any DSI device attached and
-> > >>>>>>>>>> will return EPROBE_DEFER, and we will then remove the DSI host and ask to
-> > >>>>>>>>>> be probed later on.
-> > >>>>>>>>>>
-> > >>>>>>>>>> But since that host doesn't stick around, DSI devices like the RaspberryPi
-> > >>>>>>>>>> touchscreen whose probe is not linked to the DSI host (unlike the usual DSI
-> > >>>>>>>>>> devices that will be probed through the call to mipi_dsi_host_register)
-> > >>>>>>>>>> cannot attach to the DSI host, and we thus end up in a situation where the
-> > >>>>>>>>>> DSI host cannot probe because the panel hasn't probed yet, and the panel
-> > >>>>>>>>>> cannot probe because the DSI host hasn't yet.
-> > >>>>>>>>>>
-> > >>>>>>>>>> In order to break this cycle, let's wait until there's a DSI device that
-> > >>>>>>>>>> attaches to the DSI host to register the component and allow to progress
-> > >>>>>>>>>> further.
-> > >>>>>>>>>>
-> > >>>>>>>>>> Suggested-by: Andrzej Hajda <a.hajda@samsung.com>
-> > >>>>>>>>>> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > >>>>>>>>>> ---
-> > >>>>>>>>>>  drivers/gpu/drm/vc4/vc4_dsi.c | 25 ++++++++-----------------
-> > >>>>>>>>>>  1 file changed, 8 insertions(+), 17 deletions(-)
-> > >>>>>>>>>>
-> > >>>>>>>>>> diff --git a/drivers/gpu/drm/vc4/vc4_dsi.c b/drivers/gpu/drm/vc4/vc4_dsi.c
-> > >>>>>>>>>> index eaf276978ee7..19aab4e7e209 100644
-> > >>>>>>>>>> --- a/drivers/gpu/drm/vc4/vc4_dsi.c
-> > >>>>>>>>>> +++ b/drivers/gpu/drm/vc4/vc4_dsi.c
-> > >>>>>>>>>> @@ -1246,10 +1246,12 @@ static ssize_t vc4_dsi_host_transfer(struct mipi_dsi_host *host,
-> > >>>>>>>>>>       return ret;
-> > >>>>>>>>>>  }
-> > >>>>>>>>>>
-> > >>>>>>>>>> +static const struct component_ops vc4_dsi_ops;
-> > >>>>>>>>>>  static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
-> > >>>>>>>>>>                              struct mipi_dsi_device *device)
-> > >>>>>>>>>>  {
-> > >>>>>>>>>>       struct vc4_dsi *dsi = host_to_dsi(host);
-> > >>>>>>>>>> +     int ret;
-> > >>>>>>>>>>
-> > >>>>>>>>>>       dsi->lanes = device->lanes;
-> > >>>>>>>>>>       dsi->channel = device->channel;
-> > >>>>>>>>>> @@ -1284,6 +1286,12 @@ static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
-> > >>>>>>>>>>               return 0;
-> > >>>>>>>>>>       }
-> > >>>>>>>>>>
-> > >>>>>>>>>> +     ret = component_add(&dsi->pdev->dev, &vc4_dsi_ops);
-> > >>>>>>>>>> +     if (ret) {
-> > >>>>>>>>>> +             mipi_dsi_host_unregister(&dsi->dsi_host);
-> > >>>>>>>>>> +             return ret;
-> > >>>>>>>>>> +     }
-> > >>>>>>>>>> +
-> > >>>>>>>>>>       return 0;
-> > >>>>>>>>>>  }
-> > >>>>>>>>>>
-> > >>>>>>>>>> @@ -1662,7 +1670,6 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
-> > >>>>>>>>>>  {
-> > >>>>>>>>>>       struct device *dev = &pdev->dev;
-> > >>>>>>>>>>       struct vc4_dsi *dsi;
-> > >>>>>>>>>> -     int ret;
-> > >>>>>>>>>>
-> > >>>>>>>>>>       dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
-> > >>>>>>>>>>       if (!dsi)
-> > >>>>>>>>>> @@ -1670,26 +1677,10 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
-> > >>>>>>>>>>       dev_set_drvdata(dev, dsi);
-> > >>>>>>>>>>
-> > >>>>>>>>>>       dsi->pdev = pdev;
-> > >>>>>>>>>> -
-> > >>>>>>>>>> -     /* Note, the initialization sequence for DSI and panels is
-> > >>>>>>>>>> -      * tricky.  The component bind above won't get past its
-> > >>>>>>>>>> -      * -EPROBE_DEFER until the panel/bridge probes.  The
-> > >>>>>>>>>> -      * panel/bridge will return -EPROBE_DEFER until it has a
-> > >>>>>>>>>> -      * mipi_dsi_host to register its device to.  So, we register
-> > >>>>>>>>>> -      * the host during pdev probe time, so vc4 as a whole can then
-> > >>>>>>>>>> -      * -EPROBE_DEFER its component bind process until the panel
-> > >>>>>>>>>> -      * successfully attaches.
-> > >>>>>>>>>> -      */
-> > >>>>>>>>>>       dsi->dsi_host.ops = &vc4_dsi_host_ops;
-> > >>>>>>>>>>       dsi->dsi_host.dev = dev;
-> > >>>>>>>>>>       mipi_dsi_host_register(&dsi->dsi_host);
-> > >>>>>>>>>>
-> > >>>>>>>>>> -     ret = component_add(&pdev->dev, &vc4_dsi_ops);
-> > >>>>>>>>>> -     if (ret) {
-> > >>>>>>>>>> -             mipi_dsi_host_unregister(&dsi->dsi_host);
-> > >>>>>>>>>> -             return ret;
-> > >>>>>>>>>> -     }
-> > >>>>>>>>>> -
-> > >>>>>>>>>>       return 0;
-> > >>>>>>>>>>  }
-> > >>>>>>>>>>
->
-> --
-> Regards,
->
-> Laurent Pinchart
