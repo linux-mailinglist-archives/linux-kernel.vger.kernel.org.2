@@ -2,60 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282BA3BC318
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 21:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76923BC31B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 21:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhGET0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 15:26:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40808 "EHLO mail.kernel.org"
+        id S230063AbhGET0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 15:26:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230000AbhGET0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 15:26:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 805EA6141C;
+        id S229982AbhGET0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 15:26:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D368061973;
         Mon,  5 Jul 2021 19:24:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1625513048;
-        bh=uVX2yCpdtPvb/0LsatUmREaH7MB/H+IPC31fTSSuQ94=;
+        bh=nnEtudmIgnqnaKAZ+cqahPRnZyq1wGPbsLkorTy13q8=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=JdV8+CB1NY2KzmlCyrbmaRm0nAY/pJTi92mAPnJNxO36UenP81ZkBPI4RdMP3zgVL
-         +mP3vB0IDPoGBUkMXpIMAix9OLYvJXollazGK0RD54MXUcEHEyWwxHcm1TCp4+cv1e
-         OVX9K/141IPkII51eh9NyMAHz/iEc6WHHaW//1axGFdURQ1hxCdAwQXT78VMXqJv1U
-         3W5wInV6fCTKuDTH1Bawwn472/lEsmV+jwGtkcGc3EV65UzSKMibFectqlYxSy2G2M
-         Tq0dmaqF2ujw5Y2oabuvPQm4btr58Ij1QT3zK7btMEYd7fdLLxhNeJgs3xtBzOAiCD
-         /ClzCe8NrRuKg==
+        b=BBgio68cw86oKobs7+5U1K60E/LNDwGiUYWekcRUS3ALIrg8k2SMKLqkJwVZwh0zw
+         lR88+5j8vJPlCibn1za5V70dAEe9uBIBjE3LsjGtNTKk7jlB18AKKbtttk8m89ClsB
+         g+WLWC+X6rQsxI8kR3XEItt/fNPjUwU1mOYon1eWkkL8X7OA5BwXuBKxFogek3GJ5C
+         HoTpJA58/BJOvwW3pkO/SlQHGH8Hdf1dMFjh3cxPOq0VSkAFwx0IOM9VzaVHBWavhn
+         lUpJTyKxSkEXmpGGmYUDjicgGxHE3g/gaeewNfV3so8VRCGwHahTAlugh245emRkrR
+         JZSQzlO8qqnNA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7971460A4D;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CB30960A4D;
         Mon,  5 Jul 2021 19:24:08 +0000 (UTC)
-Subject: Re: [GIT PULL] MTD updates for 5.14
+Subject: Re: [git pull] m68knommu changes for v5.14
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <713549850.26791.1625426900795.JavaMail.zimbra@nod.at>
-References: <713549850.26791.1625426900795.JavaMail.zimbra@nod.at>
+In-Reply-To: <f1a49aed-3498-ee1c-a29c-77f900970308@linux-m68k.org>
+References: <f1a49aed-3498-ee1c-a29c-77f900970308@linux-m68k.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <713549850.26791.1625426900795.JavaMail.zimbra@nod.at>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.14
-X-PR-Tracked-Commit-Id: 0bcc3939c98d83955397eac1584d5f791fdc88d0
+X-PR-Tracked-Message-Id: <f1a49aed-3498-ee1c-a29c-77f900970308@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.14
+X-PR-Tracked-Commit-Id: 3f605ee17f8e785ba6ff69bee8e584e377a3cf28
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: da85e7ed6993144a9ca43a1106c7f898626390a3
-Message-Id: <162551304848.9654.340536382376523669.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 8fc4fb1728855a22f9149079ba51877f5ee61fc9
+Message-Id: <162551304882.9654.3371212168119343265.pr-tracker-bot@kernel.org>
 Date:   Mon, 05 Jul 2021 19:24:08 +0000
-To:     Richard Weinberger <richard@nod.at>
-Cc:     torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     torvalds@linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 4 Jul 2021 21:28:20 +0200 (CEST):
+The pull request you sent on Mon, 5 Jul 2021 11:15:32 +1000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.14
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.14
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/da85e7ed6993144a9ca43a1106c7f898626390a3
+https://git.kernel.org/torvalds/c/8fc4fb1728855a22f9149079ba51877f5ee61fc9
 
 Thank you!
 
