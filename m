@@ -2,96 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882E23BC2D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 20:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8C33BC2D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 20:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhGESqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 14:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52862 "EHLO
+        id S229924AbhGESsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 14:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhGESqn (ORCPT
+        with ESMTP id S229725AbhGESsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 14:46:43 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42501C06175F;
-        Mon,  5 Jul 2021 11:44:05 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id 17so17129563pfz.4;
-        Mon, 05 Jul 2021 11:44:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=q9B674I/+/MTqKFyAT06vY9UMY1nLlYo82cmty5TYFU=;
-        b=U76TMLXOV4pdFDQFVwfpz4YW7eAM3VMSh+sg+dkwJDnf5Wyu2diLJptad2GOzoaJhj
-         9K27nXn0+L6f/KD5uuiR7ez//OnVNMSyK77IQ7ytOlmH6cDgOYcefVnITNhc4efdDhmC
-         eW6mYSiUh26B1kMlcJ1VZJOWZpWRL+cIs4OkuPEut6GN8jaSsojbfSIZBXruzABLFXa4
-         LXn+hPgjIIVsIsCTY0uNkwbuX0fmjFuYJ/urIhLx7BrAhzSDiCVBqg46y7GXL4uKG+Jw
-         QoFDNEJwBjUrGaPSLLNZ1YASrGV/MQOMNJgLldQCac4k880XzGqFMF110w+TKtJHHDdC
-         oO9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=q9B674I/+/MTqKFyAT06vY9UMY1nLlYo82cmty5TYFU=;
-        b=Ymeex6Ms0jM58OjBh9ZTWc4TCxhZfJ9LbmB9yT3rRD2YX+iSE4fxn7eNkgaBZB0ElR
-         WmhrXEmlY2t5MP/Ez5FZB4zIdOUhVZ+NBPOjIsPQFvbMgp5pLTmXxb8cLIwB97VhOFKc
-         O6TMav/imOlyqjHB13CzRbVuWzfMg5EqW7gYxIl5YXQWgsARCzvlQL9kPamHZexzIiu9
-         2NRQzJYvu+jodsb3Ep9WWuebnnxDqAqho+MXZ8JsZctZfwG5bN1JGMlN/Ea76OmEcksR
-         vCCzxQwAHYG4tS3g6WWXgom372zE1cmq/47dSuwPtjiQDgfY62TkKfASgA7G8WLN9adQ
-         SyPw==
-X-Gm-Message-State: AOAM533kE7ms4ycYo62DefVSGb9E2GvreeiWZxqRTZkq0exOsSwOLSG/
-        S4JjQ/0ud7aSVwchu9bUigA=
-X-Google-Smtp-Source: ABdhPJyFPZFlKa0i+0rwZcF+zTp1p31HnTBY1c4ty+efUwLDX1BzuLrPZs1aVYGImcZW2oWQ6iM2Jg==
-X-Received: by 2002:a63:dd51:: with SMTP id g17mr17197215pgj.238.1625510644823;
-        Mon, 05 Jul 2021 11:44:04 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:35:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id 31sm4292038pgu.17.2021.07.05.11.44.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 11:44:04 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 11:44:01 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     "Y.b. Lu" <yangbo.lu@nxp.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "mptcp@lists.linux.dev" <mptcp@lists.linux.dev>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, Rui Sousa <rui.sousa@nxp.com>,
-        Sebastien Laveze <sebastien.laveze@nxp.com>
-Subject: Re: [net-next, v5, 08/11] net: sock: extend SO_TIMESTAMPING for PHC
- binding
-Message-ID: <20210705184401.GA16128@hoboy.vegasvil.org>
-References: <20210630081202.4423-1-yangbo.lu@nxp.com>
- <20210630081202.4423-9-yangbo.lu@nxp.com>
- <20210704133331.GA4268@hoboy.vegasvil.org>
- <DB7PR04MB50174906EE8CCEB4A02F4C17F81C9@DB7PR04MB5017.eurprd04.prod.outlook.com>
+        Mon, 5 Jul 2021 14:48:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13506C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 11:45:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aNDwCscw1p86DkXqINJ193YMMwMojg7IqAtfTHOFrf0=; b=tli0JQf63aKNQuU6V30vDNoLKW
+        xs1PRFkoJOOygR1Pe/ZKjRhuqlwLDKBN6y1ULUtJb/dYAbDQRHxf9AgySXqDNdzbFgtk8EDNx+JqV
+        iO7ICp+tFdRpf1XWxhgO2SAOSEG8V0KORR1aUAAh6ROogwS3XXW0GzzsqGrRYRkjIA/dwN5XJRFgO
+        DM6jIV+NFd2QqIpBA+rjPQS2f2455MclI6qONorqe5aHu8DjB3D4PlHvSMDCAVgzUNz+kAKyzX92g
+        b13se+6qajfCbSwFF1hA9kH/PbvTj34O0SD3hPjiWrz/IL2Quv0N+M8pd9z2xTXqmep1hBEKHyPM8
+        sX/mjbTA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m0Taw-00AW2c-IU; Mon, 05 Jul 2021 18:45:30 +0000
+Date:   Mon, 5 Jul 2021 19:45:26 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Chao Yu <chao@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: initialize page->private when using for
+ our internal use
+Message-ID: <YONTRlrJugeVq6Fj@casper.infradead.org>
+References: <20210705052216.831989-1-jaegeuk@kernel.org>
+ <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
+ <YOLJW0IgCagMk2tF@google.com>
+ <e2fdf628-f25c-7495-cfd1-952899f7ff9a@kernel.org>
+ <YOLxZAnaKSwBIlK9@casper.infradead.org>
+ <YONJpQapR7BRnW/J@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DB7PR04MB50174906EE8CCEB4A02F4C17F81C9@DB7PR04MB5017.eurprd04.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YONJpQapR7BRnW/J@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 08:19:30AM +0000, Y.b. Lu wrote:
-> When several ptp virtual clocks are created, the ptp physical clock is guaranteed for free running.
+On Mon, Jul 05, 2021 at 11:04:21AM -0700, Jaegeuk Kim wrote:
+> On 07/05, Matthew Wilcox wrote:
+> > I think freshly allocated pages have a page->private of 0.  ie this
+> > code in mm/page_alloc.c:
+> > 
+> >                 page = rmqueue(ac->preferred_zoneref->zone, zone, order,
+> >                                 gfp_mask, alloc_flags, ac->migratetype);
+> >                 if (page) {
+> >                         prep_new_page(page, order, gfp_mask, alloc_flags);
+> > 
+> > where prep_new_page() calls post_alloc_hook() which contains:
+> >         set_page_private(page, 0);
 > 
-> What I think is, for timestamping, if no flag SOF_TIMESTAMPING_BIND_PHC, the timestamping keeps using ptp physical clock.
-> If application wants to bind one ptp virtual clock for timestamping, the flag SOF_TIMESTAMPING_BIND_PHC should be set and clock index should be provided.
-> After all, several ptp virtual clocks created are likely for different timescale/use case. There should be a method for any of applications to select the right one to use.
+> Hmm, I can see it in 4.14 and 5.10 kernel.
 > 
-> Does it make sense?
+> The trace is on:
+> 
+>  30875 [ 1065.118750] c3     87  f2fs_migrate_page+0x354/0x45c
+>  30876 [ 1065.123872] c3     87  move_to_new_page+0x70/0x30c
+>  30877 [ 1065.128813] c3     87  migrate_pages+0x3a0/0x964
+>  30878 [ 1065.133583] c3     87  compact_zone+0x608/0xb04
+>  30879 [ 1065.138257] c3     87  kcompactd+0x378/0x4ec
+>  30880 [ 1065.142664] c3     87  kthread+0x11c/0x12c
+>  30881 [ 1065.146897] c3     87  ret_from_fork+0x10/0x18
+> 
+>  It seems compaction_alloc() gets a free page which doesn't reset the fields?
 
-Yes, indeed.  I totally forgot that the user space PTP stack has
-network sockets bond to interfaces, and they are completely separate
-from the PHC clockid_t.  Need more sleep...
-
-Thanks,
-Richard
+I'm not really familiar with the compaction code.  Mel, I see a call
+to post_alloc_hook() in split_map_pages().  Are there other ways of
+getting the compaction code to allocate a page which don't go through
+split_map_pages()?
