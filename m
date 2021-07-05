@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835173BBC3A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ADC23BBC3C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbhGELfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 07:35:54 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:47816 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbhGELfx (ORCPT
+        id S231303AbhGELgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 07:36:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56158 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231126AbhGELgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 07:35:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1625484796; x=1657020796;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zSlXXaMWmpaIruL70G2uArDgeP8tRphJOudMX0EJyTk=;
-  b=YXhWy4SZUT7lYm/x0lckXe/AvqhAxgoKILtMTE2lCZ/6t7Txssv5GCKO
-   JXZTnU08QC6vC18zWTAS8pAgk44mBKrUaM+P8aaUTjANKAnlgFeP0X+TH
-   axH2hMuNSYgyGCJrwMwTLLR9B/1cA4Xu4JyU6JxNiQISEe5RPJ0TgySYB
-   Q3EBTmOidrJZ8UtzQgofaV+V4V5osxVJTqDw3ZkG/WDg/fhLxAO/qTVx7
-   EG0F8B8xHpfFkjM5xnM9yAC8Pq8JuuVKh5MwfXZKfJvTgEWHymqtJqCLG
-   vnMzgAwURJipHA7b0CCBwh6HiTwDTBdO10FlOfaJ27dpn3AB+pgDXJ2WH
-   A==;
-IronPort-SDR: qqRGo4LG29iWzFEC099TAWHho2vVHqQmJtyGXa26+d+2aMaksnf4EsirIHh7cWjGb8U3BXR0l2
- PzSOKOxRsG8el5086LO2UardHJ3oJvZYS/MLS8nqjdFBa/wfWLOs3l4BbFBkr+XTW5WwnmBG1h
- SBDUDAk51G2Kp7akEuybXNFHgzs5p9t8kvkZrV8awysMhiRKI4I3ZVPnGicdXY8K60cCH/qsbH
- y472bjM+BJbZwLjO78Pg5l0XF9SQSZa3y+PdvBFemc6zaDAGQOg79pRCZJVXgyr5irsVRHZzSu
- oGE=
-X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
-   d="scan'208";a="134613673"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Jul 2021 04:33:16 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 5 Jul 2021 04:33:16 -0700
-Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 5 Jul 2021 04:33:13 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <lee.jones@linaro.org>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        <romain.izard.pro@gmail.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 2/2] mfd: atmel-flexcom: use resume_noirq
-Date:   Mon, 5 Jul 2021 14:31:04 +0300
-Message-ID: <20210705113104.579535-3-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210705113104.579535-1-claudiu.beznea@microchip.com>
-References: <20210705113104.579535-1-claudiu.beznea@microchip.com>
+        Mon, 5 Jul 2021 07:36:07 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4F8EC21CAE;
+        Mon,  5 Jul 2021 11:33:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625484809; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6J7FT459w1mR+ClPDnP6dAqMfQqmMt7HkiwXcKAL8XI=;
+        b=SoLAuhDilZO3LZtpt4jux0RYpV8oPebH+RX8X18PzGZv5kY1MJPsmYI5qgSSVgI/o6P8Ww
+        2zDNZ+tEgEasyx2UslzKa+2A72QjB5mDbsbz5cVliVnZWxzWlZk5GccbhseeWUHc3C7H1X
+        Jnn3qQe7LBsdeNq7ifY8aZuaigMbyNM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625484809;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6J7FT459w1mR+ClPDnP6dAqMfQqmMt7HkiwXcKAL8XI=;
+        b=FCGD4j/JA9AbbAcGHJZJIvK176cGAglcunPYzX8aqLIV8Yi6FnFew7rQ10B3CHdyUeFhuI
+        EHHnJseAY3sdGGAA==
+Received: from quack2.suse.cz (unknown [10.163.43.118])
+        by relay2.suse.de (Postfix) with ESMTP id 4142CA3B8A;
+        Mon,  5 Jul 2021 11:33:29 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 1C1911E1139; Mon,  5 Jul 2021 13:33:29 +0200 (CEST)
+Date:   Mon, 5 Jul 2021 13:33:29 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+Cc:     jack@suse.cz, rkovhaev@gmail.com, reiserfs-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Verify the items that we read from blocks
+Message-ID: <20210705113329.GE15373@quack2.suse.cz>
+References: <YN8rRYxhZvAa+VxU@fedora>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YN8rRYxhZvAa+VxU@fedora>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Flexcom IP embeds 3 other IPs: usart, i2c, spi and selects the operation
-mode (usart, i2c, spi) via mode register (FLEX_MR). On i2c bus there might
-be connected critical devices (like PMIC) which on suspend/resume should
-be suspended/resumed at the end/beginning. i2c uses
-.suspend_noirq/.resume_noirq for this kind of purposes. Align flexcom
-to use .resume_noirq as it should be resumed before the embedded IPs.
-Otherwise the embedded devices might behave badly.
+Hello!
 
-Fixes: 7fdec11015c3 ("atmel_flexcom: Support resuming after a chip reset")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- drivers/mfd/atmel-flexcom.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+On Fri 02-07-21 20:35:41, Shreyansh Chouhan wrote:
+> I was trying to work on this[1] bug. After a lot of reading the code and
+> running it under gdb, I found out that the error happens because
+> syzkaller creates a segment with raw binary data in the reproducer[2],
+> that has the wrong deh_location for the `..` directory item. (The value
+> is 0x5d (93), where as it should have been 0x20 (32).)
 
-diff --git a/drivers/mfd/atmel-flexcom.c b/drivers/mfd/atmel-flexcom.c
-index 962f66dc8813..559eb4d352b6 100644
---- a/drivers/mfd/atmel-flexcom.c
-+++ b/drivers/mfd/atmel-flexcom.c
-@@ -87,7 +87,7 @@ static const struct of_device_id atmel_flexcom_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, atmel_flexcom_of_match);
- 
--static int __maybe_unused atmel_flexcom_resume(struct device *dev)
-+static int __maybe_unused atmel_flexcom_resume_noirq(struct device *dev)
- {
- 	struct atmel_flexcom *ddata = dev_get_drvdata(dev);
- 	int err;
-@@ -105,8 +105,9 @@ static int __maybe_unused atmel_flexcom_resume(struct device *dev)
- 	return 0;
- }
- 
--static SIMPLE_DEV_PM_OPS(atmel_flexcom_pm_ops, NULL,
--			 atmel_flexcom_resume);
-+static const struct dev_pm_ops atmel_flexcom_pm_ops = {
-+	.resume_noirq = atmel_flexcom_resume_noirq,
-+};
- 
- static struct platform_driver atmel_flexcom_driver = {
- 	.probe	= atmel_flexcom_probe,
+First, I'd like to note that reiserfs is a legacy filesystem which gets
+little maintenance and I think distributions are close to disabling it in
+their default kernels if they didn't do it already. So I'm not sure how
+much is it worth it to do any larger fixes to it. But if you have a
+personal passion for reiserfs feel free to go ahead and try to fix these
+issues.
+
+> I think that the solution would involve checking the items that we read,
+> and verify that they are actually valid. But this check could actually
+> happen in two places:
+> 
+> - First idea would be to check as soon as we read a
+>   block, and one way of doing that would be adding a wrapper around
+>   ll_rw_block that validates the leaf node blocks that we read. The
+>   benifits to this would be that since we're solving the problem at it's
+>   root, very few functions would have to be changed. But I don't know
+>   how much of a performance hit would it be.
+
+It depends on how heavy the checks are going to be but generally checking
+when loading from the disk is the way how most filesystems handle this.
+
+> - Second idea would be to do these validation checks lazily. This should
+>   be faster than the first idea, but this would involve changing the
+>   code at more places than in the first idea.
+> 
+> For how the validation happens, the first idea that comes to mind is
+> reading the item headers from the block that we read and verifying if
+> the header is valid, and if the items themselves are valid according to
+> the header.
+
+Looks sound.
+
+								Honza
 -- 
-2.25.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
