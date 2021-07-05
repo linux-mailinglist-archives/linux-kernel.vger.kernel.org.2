@@ -2,182 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23AE03BB741
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09CF33BB746
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhGEGlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 02:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59496 "EHLO
+        id S229898AbhGEGoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 02:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhGEGlL (ORCPT
+        with ESMTP id S229817AbhGEGoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 02:41:11 -0400
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963CEC061574
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 23:38:33 -0700 (PDT)
-Received: by mail-ua1-x92f.google.com with SMTP id k20so6603229uao.8
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 23:38:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7LOfRMnkDXcKW+MBvyXL+fw+fgJSD67ELnS1x+u7s+Y=;
-        b=OMkEwopl0pWWhz1/8xqkZ6ZdwwEtJIQ+eSgP8VDSSZkgEURGVO0UIIZ4VWtXkGZ2sq
-         1QjXMTA5ZFnwHa+y26ld7UjnDeEjkAaU1+XNbvJF7DELrIcs4YST6/7nR+T8QJZYNYS+
-         8vOd+IR/DKZXnmpYmvt7TQAdSvMELWkyy5XDg+ta6mFhWlCToclITNoQEP9dbiTXfVmZ
-         rLGEaEbU29JSMVr6FL8kSsY11iY+Fj+T+M0mFh5OKO/podACxSSG3LNbM2rTMlSTh5VP
-         PbBoAE2ayXRXfNwDyjklS/Wg0XbKQ5B5Jjnq9YHLmsidkQwNFHNiNjIRghCU5spQaG1i
-         sUOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7LOfRMnkDXcKW+MBvyXL+fw+fgJSD67ELnS1x+u7s+Y=;
-        b=ZvgNf0y/gh4AvgdqG9VpoXTlN+RgM9aUDWKSNGZ4C683phL2LHldsTqnwT4fAhUux2
-         OsjaKVMxSqZPvgbs+z/+ekggF2mKUegN2qgnRNqLHrrnRt7zoRZZd6yu+s7Xj7yibL71
-         0xIWpKxLhkx2+3JdyVs2546dz9tAQzqyGCbsMwJgQ7IKHkzKFEzkovfaUnwMvs/JumM7
-         CpZxX5x0iyuB/KS4aGR5R6tgJw1jXuGMIsIdCnKeQaFEbs/jGCRAvz9F0/wEbXpY7BPv
-         Ce3kFDIjjJXniysRFgAZI/X+e1f5nOATEPUBTvXzENLU+x4co6hFa6haSDJrLPY4bIDH
-         6CGA==
-X-Gm-Message-State: AOAM531PMN0iQckwhR2/4X6bIaldiqG7W//aIHKx/1FqLDvoqf2NBMft
-        6bwtRGRbKqFf/jqhDpDHw3k9VRGjssAvkUx9hV2Vhg==
-X-Google-Smtp-Source: ABdhPJxD+vA6iPu+fUxzp/X+K3IsPKpbEpw9RPR3c1tbqqRkdxyae9oOe1AfbnzW7YwLnY9RDrfVL5Ts2pYS0EhtbD8=
-X-Received: by 2002:ab0:7399:: with SMTP id l25mr9097692uap.67.1625467112660;
- Sun, 04 Jul 2021 23:38:32 -0700 (PDT)
+        Mon, 5 Jul 2021 02:44:44 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3647C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 23:42:07 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m0IIt-0008Sy-6o; Mon, 05 Jul 2021 08:42:03 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m0IIq-00038G-R2; Mon, 05 Jul 2021 08:42:00 +0200
+Date:   Mon, 5 Jul 2021 08:42:00 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin King <colin.king@canonical.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] pwm: ep93xx: Fix uninitialized variable bug in
+ ep93xx_pwm_apply()
+Message-ID: <20210705064200.adl72wngfidov7xn@pengutronix.de>
+References: <YNx1y8PlSLehZVIY@mwanda>
+ <20210630153600.327ff7vcrx76lw26@pengutronix.de>
 MIME-Version: 1.0
-References: <20210628135132.73682-1-aardelean@deviqon.com> <20210703185007.2c2283f4@jic23-huawei>
-In-Reply-To: <20210703185007.2c2283f4@jic23-huawei>
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-Date:   Mon, 5 Jul 2021 09:38:21 +0300
-Message-ID: <CAASAkoYMaSuRnSWwtcoZVaGj+m6bDtu7ms2idHBtp5JFzDEp1g@mail.gmail.com>
-Subject: Re: [PATCH] iio: light: adjd_s311: convert to device-managed functions
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        pmeerw@pmeerw.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kks4xpy4yqeqdftx"
+Content-Disposition: inline
+In-Reply-To: <20210630153600.327ff7vcrx76lw26@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 3 Jul 2021 at 20:47, Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Mon, 28 Jun 2021 16:51:32 +0300
-> Alexandru Ardelean <aardelean@deviqon.com> wrote:
->
-> > This one is a little easier to convert to device-managed, now with the
-> > devm_krealloc() function.
-> >
-> > The other iio_triggered_buffer_setup() and iio_device_register() can be
-> > converted to their devm_ variants. And devm_krealloc() can be used to
-> > (re)alloc the buffer. When the driver unloads, this will also be free'd.
-> >
-> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-> > ---
-> >  drivers/iio/light/adjd_s311.c | 34 +++++-----------------------------
-> >  1 file changed, 5 insertions(+), 29 deletions(-)
-> >
-> > diff --git a/drivers/iio/light/adjd_s311.c b/drivers/iio/light/adjd_s311.c
-> > index 17dac8d0e11d..19d60d6986a1 100644
-> > --- a/drivers/iio/light/adjd_s311.c
-> > +++ b/drivers/iio/light/adjd_s311.c
-> > @@ -230,8 +230,8 @@ static int adjd_s311_update_scan_mode(struct iio_dev *indio_dev,
-> >  {
-> >       struct adjd_s311_data *data = iio_priv(indio_dev);
-> >
-> > -     kfree(data->buffer);
-> > -     data->buffer = kmalloc(indio_dev->scan_bytes, GFP_KERNEL);
-> > +     data->buffer = devm_krealloc(indio_dev->dev.parent, data->buffer,
-> > +                                  indio_dev->scan_bytes, GFP_KERNEL);
-> I got some complaints about exactly this trick in a review recently so I'll
-> pass them on.
->
-> Whilst devm_krealloc() usage like this won't lose the original reference, its
-> not what people expect from a realloc() case, so to not confuse people it is
-> better to do a dance where you use a local variable, then only set data->buffer
-> to it once we know the realloc succeeded.
->
-> That avoids this looking like the anti-pattern it would be if that were a normal
-> realloc in which case you would just have leaked the original allocation.
->
-> More interestingly, why are we bothering with resizing the buffer dependent on what
-> is enabled?  Can't we just allocate a 128 byte buffer and not bother changing it
-> as we really aren't wasting that much space?  Just embed it in the adjd_s311_data
-> structure directly and don't worry about the allocations.  Will need to be
-> aligned(8) though to avoid the push_to_buffer_with_timestamp() issue.
-> Using something like
->
-> struct {
->         s16 chans[4];
->         s64 ts __aligned(8); /* I hate x86 32 bit */
 
-do you want to me t also add this comment? :p
-[just kidding]
+--kks4xpy4yqeqdftx
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> } scan;
->
-> Inside the priv structure should work nicely.
+Hello,
 
-i agree; will do it like this;
-i hesitated a bit due to the inertia of converting things to devm_
+On Wed, Jun 30, 2021 at 05:36:00PM +0200, Uwe Kleine-K=F6nig wrote:
+> this problem was found already earlier by Colin King:
+>=20
+> 	https://lore.kernel.org/r/20210629172253.43131-1-colin.king@canonical.com
+>=20
+> I'm fine with either change.
 
->
->
-> >       if (data->buffer == NULL)
-> >               return -ENOMEM;
-> >
-> > @@ -256,7 +256,6 @@ static int adjd_s311_probe(struct i2c_client *client,
-> >               return -ENOMEM;
-> >
-> >       data = iio_priv(indio_dev);
-> > -     i2c_set_clientdata(client, indio_dev);
-> >       data->client = client;
-> >
-> >       indio_dev->info = &adjd_s311_info;
-> > @@ -265,34 +264,12 @@ static int adjd_s311_probe(struct i2c_client *client,
-> >       indio_dev->num_channels = ARRAY_SIZE(adjd_s311_channels);
-> >       indio_dev->modes = INDIO_DIRECT_MODE;
-> >
-> > -     err = iio_triggered_buffer_setup(indio_dev, NULL,
-> > -             adjd_s311_trigger_handler, NULL);
-> > +     err = devm_iio_triggered_buffer_setup(&client->dev, indio_dev, NULL,
-> > +                                           adjd_s311_trigger_handler, NULL);
-> >       if (err < 0)
-> >               return err;
-> >
-> > -     err = iio_device_register(indio_dev);
-> > -     if (err)
-> > -             goto exit_unreg_buffer;
-> > -
-> > -     dev_info(&client->dev, "ADJD-S311 color sensor registered\n");
-> > -
-> > -     return 0;
-> > -
-> > -exit_unreg_buffer:
-> > -     iio_triggered_buffer_cleanup(indio_dev);
-> > -     return err;
-> > -}
-> > -
-> > -static int adjd_s311_remove(struct i2c_client *client)
-> > -{
-> > -     struct iio_dev *indio_dev = i2c_get_clientdata(client);
-> > -     struct adjd_s311_data *data = iio_priv(indio_dev);
-> > -
-> > -     iio_device_unregister(indio_dev);
-> > -     iio_triggered_buffer_cleanup(indio_dev);
-> > -     kfree(data->buffer);
-> > -
-> > -     return 0;
-> > +     return devm_iio_device_register(&client->dev, indio_dev);
-> >  }
-> >
-> >  static const struct i2c_device_id adjd_s311_id[] = {
-> > @@ -306,7 +283,6 @@ static struct i2c_driver adjd_s311_driver = {
-> >               .name   = ADJD_S311_DRV_NAME,
-> >       },
-> >       .probe          = adjd_s311_probe,
-> > -     .remove         = adjd_s311_remove,
-> >       .id_table       = adjd_s311_id,
-> >  };
-> >  module_i2c_driver(adjd_s311_driver);
->
+FTR: Thierry applied Colin's patch, so I'm discarding this one from
+patchwork as not applicable.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--kks4xpy4yqeqdftx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDiqa8ACgkQwfwUeK3K
+7AkIqAf+JkteW/uZUQyk1+Ob90zPhNWHL/Zs1ADVtXTLffha5f+XU3LmDxcvzGsg
+D+j0gfnClBIRFLEVnNh5+heuERDz7zmMZEyrDt28NPa3uEMHPBMh4RQLnM832vUY
+pzk8H0F8DFs6pin9ToDYsFIvo0jSruZl6WwGEtPoTSMab6wNAqaIOfJp4JetICC9
+EzJApcGhIHykl0RzRrfHGQzZxG5TdIRLvOCt588ybmcXopfnPmhzx1TKUKDfZTbn
+VDNDWMkC71zrUcybzhP5nF3xYcRlpyxO/VIOdNS0esZ/WjFD3HPenrcNY3+FUgkP
+R0Y+/DZNe3TUHViXDNacm2c4XP+jpw==
+=QLDn
+-----END PGP SIGNATURE-----
+
+--kks4xpy4yqeqdftx--
