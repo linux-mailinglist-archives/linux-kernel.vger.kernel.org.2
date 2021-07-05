@@ -2,72 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD123BB9F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E80A3BB9FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbhGEJRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 05:17:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:41616 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230149AbhGEJRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 05:17:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 19AA313D5;
-        Mon,  5 Jul 2021 02:14:42 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.8.167])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 313C43F5A1;
-        Mon,  5 Jul 2021 02:14:38 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 10:14:36 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Bharat Bhushan <bbhushan2@marvell.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        daniel.lezcano@linaro.org, maz@kernel.org,
-        konrad.dybcio@somainline.org, saiprakash.ranjan@codeaurora.org,
-        robh@kernel.org, marcan@marcan.st, suzuki.poulose@arm.com,
-        broonie@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Linu Cherian <lcherian@marvell.com>
-Subject: Re: [PATCH] clocksource: Add Marvell Errata-38627 workaround
-Message-ID: <20210705091436.GE38629@C02TD0UTHF1T.local>
-References: <20210705060843.3150-1-bbhushan2@marvell.com>
- <20210705090753.GD38629@C02TD0UTHF1T.local>
+        id S230314AbhGEJSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 05:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhGEJSB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 05:18:01 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C65C061760
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 02:15:24 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id n11so11376447pjo.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 02:15:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=umJqdN/Kghanf87PrOW7ly3BAvBjzkV6eo4lUVI3NGE=;
+        b=ZV2NSqe96CvOJzGYnnmqxN8ckY+rjz0Vq0upurDVUYC25uAZJRSyAI+EVqkJcXQ7cm
+         vDYQqe+0eiKIRVYagfV7CLb9neTq5BVvwuQFZS9WAqE4T0UZqRgq91DjXk1t7JCIORDB
+         3C3byV6yYUm9J3wbLWmkN9erWjjKLVVcnJbUU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=umJqdN/Kghanf87PrOW7ly3BAvBjzkV6eo4lUVI3NGE=;
+        b=QchPBiuetuqXOAMr+vsbvvx+nDJ1MWbLvlZTFW9xrcsJMKh3VFNmEvG7ptD9q8kvYk
+         TVVMnBRIdFahPHp134Rd0sJ4lRyxMnJ7TQttvFLHf4mQI7bjtYvlCJL+CrhnqK6l04NT
+         O7Y5nXY9y4JY4S2MXfI5u16gG+djlMg8pAgJ7EFIt6NvSbuRBCFVeU0hNckYg1ed3DjN
+         aRe6DjUS5SfMJJrAnW9ho20hQwJw0gW+xTLGYXbq4z6bg8Yxn/8urSK8bsCb8InsExOq
+         Xw7pO8KHujVm8/vr+2BhBVfolubrcTVJ+ybmZg4O6zfjb7hcDmI/UGJSCsAbAVGmzPZp
+         cO3g==
+X-Gm-Message-State: AOAM532WrvZDRc0vAlmaWZ5AEaYPUzLIqvCTDkFqReK+ybBKwOXeZ8lp
+        WuD1jrrOoPQztuAarfMDt3LV+g==
+X-Google-Smtp-Source: ABdhPJzvsk3n7se/8QtiY+N021ieLTuJ8ebq64UibbjCe4HmDxTqZ34SFxfYvhwG0OPPQ27RVKh0wA==
+X-Received: by 2002:a17:90a:fb8d:: with SMTP id cp13mr14382138pjb.21.1625476524343;
+        Mon, 05 Jul 2021 02:15:24 -0700 (PDT)
+Received: from kansho.tok.corp.google.com ([2401:fa00:8f:203:cdc4:4be8:5ce4:df43])
+        by smtp.gmail.com with ESMTPSA id 9sm12245176pfv.42.2021.07.05.02.15.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 02:15:23 -0700 (PDT)
+From:   Kansho Nishida <kansho@chromium.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Shunli Wang <shunli.wang@mediatek.com>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Kansho Nishida <kansho@chromium.org>
+Subject: [PATCH v2 0/2] arm64: dts: mt8183: Add kukui platform audio node to the device tree
+Date:   Mon,  5 Jul 2021 18:15:12 +0900
+Message-Id: <20210705091514.912355-1-kansho@chromium.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210705090753.GD38629@C02TD0UTHF1T.local>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 10:07:53AM +0100, Mark Rutland wrote:
-> Hi Bharat,
-> 
-> On Mon, Jul 05, 2021 at 11:38:43AM +0530, Bharat Bhushan wrote:
-> > CPU pipeline have unpredicted behavior when timer
-> > interrupt appears and then disappears prior to the
-> > exception happening. Time interrupt appears on timer
-> > expiry and disappears when timer programming or timer
-> > disable. This typically can happen when a load
-> > instruction misses in the cache,  which can take
-> > few hundreds of cycles, and an interrupt appears
-> > after the load instruction starts executing but
-> > disappears before the load instruction completes.
-> 
-> Could you elaborate on the scenario? What sort of unpredictable
-> behaviour can occur? e.g:
-> 
-> * Does the CPU lockup?
-> * Does the CPU take the exception at all?
-> * Does the load behave erroneously?
-> * Does any CPU state (e.g. GPRs, PC, PSTATE) become corrupted?
-> 
-> Does the problem manifest when IRQs are masked by DAIF.I, or by
-> CNT8_CTL_EL0.{IMASK,ENABLE} ?
 
-Whoops, that was supposed to say:
+Hi Matthias,
 
-| CNT*_CTL_EL0.{IMASK,ENABLE}
+This patchset is the v2 patch applying your comment.
 
-... i.e. those fields in either CNTP_CTL_EL0 or CNTV_CTL_EL0.
+Regards,
+Kansho
 
-Thanks,
-Mark.
+
+Changes in v2:
+- Changed to the dual license GPL + MIT.
+
+Kansho Nishida (2):
+  arm64: dts: mt8183: add audio node
+  arm64: dts: mt8183: add kukui platform audio node
+
+ arch/arm64/boot/dts/mediatek/mt6358.dtsi      |  1 +
+ .../mt8183-kukui-audio-da7219-max98357a.dtsi  | 13 +++
+ .../mt8183-kukui-audio-da7219-rt1015p.dtsi    | 13 +++
+ .../mediatek/mt8183-kukui-audio-da7219.dtsi   | 54 +++++++++++
+ .../mt8183-kukui-audio-max98357a.dtsi         | 13 +++
+ .../mediatek/mt8183-kukui-audio-rt1015p.dtsi  | 13 +++
+ ...mt8183-kukui-audio-ts3a227e-max98357a.dtsi | 13 +++
+ .../mt8183-kukui-audio-ts3a227e-rt1015p.dtsi  | 13 +++
+ .../mediatek/mt8183-kukui-audio-ts3a227e.dtsi | 32 +++++++
+ .../mediatek/mt8183-kukui-jacuzzi-burnet.dts  |  1 +
+ .../mediatek/mt8183-kukui-jacuzzi-damu.dts    |  1 +
+ .../mediatek/mt8183-kukui-jacuzzi-fennel.dtsi |  1 +
+ .../mt8183-kukui-jacuzzi-juniper-sku16.dts    |  1 +
+ .../mediatek/mt8183-kukui-jacuzzi-kappa.dts   |  1 +
+ .../mediatek/mt8183-kukui-jacuzzi-kenzo.dts   |  1 +
+ .../mt8183-kukui-jacuzzi-willow-sku0.dts      |  1 +
+ .../mt8183-kukui-jacuzzi-willow-sku1.dts      |  1 +
+ .../boot/dts/mediatek/mt8183-kukui-kakadu.dts |  1 +
+ .../dts/mediatek/mt8183-kukui-kodama.dtsi     |  1 +
+ .../boot/dts/mediatek/mt8183-kukui-krane.dtsi |  5 +
+ .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 67 ++++++++++++-
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 94 ++++++++++++++++++-
+ 22 files changed, 336 insertions(+), 5 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-da7219-max98357a.dtsi
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-da7219-rt1015p.dtsi
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-da7219.dtsi
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-max98357a.dtsi
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-rt1015p.dtsi
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-ts3a227e-max98357a.dtsi
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-ts3a227e-rt1015p.dtsi
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-ts3a227e.dtsi
+
+-- 
+2.32.0.93.g670b81a890-goog
+
