@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663343BC42E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 01:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F5B3BC42F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 01:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbhGEXqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 19:46:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45470 "EHLO mail.kernel.org"
+        id S229827AbhGEXqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 19:46:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229698AbhGEXqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 19:46:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 990E96194B;
-        Mon,  5 Jul 2021 23:43:50 +0000 (UTC)
+        id S229698AbhGEXqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 19:46:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0B4D61975;
+        Mon,  5 Jul 2021 23:43:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625528632;
-        bh=ibsbKw0bGfPKvmgI3kyEe/l/cxv7GcL0No8b1zbzo54=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oLJF8GhqwAEQiSVCmVZy+4mz6k+qvPo8SHiNWKUFLVpovsIJNXFscqJMVfoTzMsiy
-         lZi8qAt5uzjEgZEN0Yuhlk5JuVp5g89TizGeqUrL6ysQGpTKMh69xdSsvZPmdWBKDr
-         ieD2Td6Tr9+ftYSnKvmiUTkosgmtmzywADx6L9qvYB7ljDMxp+v11AtkmJiWU2VaiX
-         fccO6g5TttNzfl6gerJFsbEvn1p+zU8aPb13EIq+qIawSmiJfMP8fIb5BGTjjaUXVG
-         c0WFA5Ta5MDgQM9zbcn8P3rzwZNHrmVCHc0HyfcbWRg+t2+5x9DWxc6x84YgygkL94
-         R8JhpcH0CBUgw==
+        s=k20201202; t=1625528634;
+        bh=LkjNHYltU2slKI5/7CCdHUU7NawqELcL6QiRGbBdKG8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=PpeU80n2IR5XLKyNLnhjPX9fdPNm+8R1+4Xm0st/xaNE7MFKWSePBbzhsfE4UmrdX
+         INB/OtK696+cI/L74RQ6zvgbRugr3jTLBusBFgWFqSuOUVuM25kSDSUVl3cqU9f/fg
+         y0AWn5AzTq4ixsoadOHYbU1PUyAR3Z54DtavzN/37eyEPIg2ijrdgvRAApVnhOkGu4
+         A11cI8Lmdywy2F9ueYF2WI1gJm6Ihff1JNK2wnsGLcvyjtjqNHl5n9YQThLPZBorce
+         aUq/0D3h+Ox9RhzsnL3myLMuaaAjU7wpIJkkDxUe2BteBlG6fYR7BynjkAmutNFLFT
+         2KpE/9+67uvWQ==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -33,55 +33,44 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH 1/2] rcu: Explain why rcu_all_qs() is a stub in preemptible TREE RCU
-Date:   Tue,  6 Jul 2021 01:43:43 +0200
-Message-Id: <20210705234344.104239-1-frederic@kernel.org>
+Subject: [PATCH 2/2] rcu: Remove needless preemption disablement in rcu_all_qs()
+Date:   Tue,  6 Jul 2021 01:43:44 +0200
+Message-Id: <20210705234344.104239-2-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210705234344.104239-1-frederic@kernel.org>
+References: <20210705234344.104239-1-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cond_resched() reports an RCU quiescent state only in non-preemptible
-TREE RCU implementation. Provide an explanation for the different
-behaviour in CONFIG_PREEMPT_RCU=y.
+The preemption is already disabled when we write rcu_data.rcu_urgent_qs.
+We can use __this_cpu_write() directly, although that path is mostly
+used when CONFIG_PREEMPT=n.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Joel Fernandes <joel@joelfernandes.org>
 Cc: Uladzislau Rezki <urezki@gmail.com>
 Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
 ---
- kernel/sched/core.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ kernel/rcu/tree_plugin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index cf16f8fda9a6..db374cb38eb2 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7780,6 +7780,19 @@ int __sched __cond_resched(void)
- 		preempt_schedule_common();
- 		return 1;
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 27b74352cccf..38b3d01424d7 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -871,7 +871,7 @@ void rcu_all_qs(void)
+ 		preempt_enable();
+ 		return;
  	}
-+	/*
-+	 * A process spending a long time in the kernel space might
-+	 * have too few opportunities to report quiescent states
-+	 * when CONFIG_PREEMPT_RCU=n because then the tick can't know
-+	 * if it's interrupting an RCU read side critical section. In the
-+	 * absence of voluntary sleeps, the last resort resides in tracking
-+	 * calls to cond_resched() which always imply quiescent states.
-+	 *
-+	 * On the other hand, preemptible RCU has a real RCU read side
-+	 * tracking that allows the tick for reporting interrupted quiescent
-+	 * states or, in the worst case, deferred quiescent states after
-+	 * rcu_read_unlock().
-+	 */
- #ifndef CONFIG_PREEMPT_RCU
- 	rcu_all_qs();
- #endif
+-	this_cpu_write(rcu_data.rcu_urgent_qs, false);
++	__this_cpu_write(rcu_data.rcu_urgent_qs, false);
+ 	if (unlikely(raw_cpu_read(rcu_data.rcu_need_heavy_qs))) {
+ 		local_irq_save(flags);
+ 		rcu_momentary_dyntick_idle();
 -- 
 2.25.1
 
