@@ -2,110 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA063BB7F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDCE3BB7FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhGEHkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 03:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        id S230009AbhGEHk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 03:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbhGEHkD (ORCPT
+        with ESMTP id S229817AbhGEHk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 03:40:03 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02808C061762
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 00:37:26 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id i94so20841133wri.4
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 00:37:25 -0700 (PDT)
+        Mon, 5 Jul 2021 03:40:28 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CC5C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 00:37:50 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id s13so6695378plg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 00:37:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=3gcOyn0drqMN2jcigqPYxvdzNQqta5uQwhQq9F4TJg0=;
-        b=drOt69ort5zAXQmwvPrRSoM71unOxTnmcRTsox0FSHWyaXJVAJqs0QaqeQtZjTUEnB
-         Yy+6nwAQoP1MZwjlWZFtVjElWhze7SZQDnBFYs0utlQrX6AKAyvWdUZSeHwXDzaLKLxg
-         ZF4IlcMl9QtLVg44dtinwFgTWYg09GTJVYYNs5rB2gOvmTis5fUnvISa6yX9uGVliJWC
-         QNGd+TR/+0W7jXNXhJHNAZU4e8WTL93s1rRP61vbhgTNPeEHDnbmZgqNjFqw3qoZUHPk
-         YFVEmwnlZRYld4Zhw6uJ6lFLqe6RT3lWsQMGewIvyKgOFiEbPxaa5R+fupdWtQ1QG9RJ
-         lt8A==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uIYkWEg6ddHgyeOZ+TasZ9tt9xSrdpyE5MFOa1Fdx4E=;
+        b=RURpQEkiG89CAuGiDuimdVkL4MKD3H9WowmHt3ZTKdEgfEvqvKYljuU/SaSeHinBW0
+         5oaa9s8J1UodnyjLvOk6QdBTFD/f3Q9+iuCHs/Whnqqlwlw4pZh0qX+BV3q1ZR5Hz5Yk
+         oGDaoh7BmvRTZAxwX0BT9bthVDqALGu8zmam5HL/fgQGdXyg+5z7RtJQvWN08uMjv5jC
+         Mldc3udVmwc+SXCNTgIY7zqM60rWf9xAYwfq/5LS3PAMmrXb9WIEYMs3sw1D/fkO/ApB
+         TlnrXf9nHPMDmWrFW9hRhyIj9CMZWMVemHpIpyxbj3JuDYqkWXpzxkdaiyBIphB6O7bk
+         KCfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=3gcOyn0drqMN2jcigqPYxvdzNQqta5uQwhQq9F4TJg0=;
-        b=CdJPxLh2Voxbw+NnhJTl5/y7vdgp89tql4S8HHDKQ73DhhSmY/u454rctll6hWahqv
-         eWV/r9OwVziH/+NdtKm06ED6WJJG322Rab6zpKohb3zK1ZVnuHdMwN9EyqnWhP8Wh+W8
-         Kgz+m/ElvHqrO0MhTjJH2N0oPORMGYmq+uhgiDLrRYZ5YnlytCHiIqDUOhlSIxNpw3sq
-         di8DGvQ9KigfO5Qw6KVcoCk6YGWrhTMYTJx7JKXDtH1/YMEtShf9z5vva+4+RNnbAFtQ
-         XiknGpU3/UJvjJbNyNOlTB5DqULJPqRQb/mtWFI+FiOr37yIA+d2yZW8JQaYbwxazkxG
-         5Mng==
-X-Gm-Message-State: AOAM532pIz8vKSNgx95fHXfIJ7xOn+e1e6yQ7wREPOyeATryc42uq+tD
-        zA4r1FG5RZdb9PmA5D/1E/xbmw==
-X-Google-Smtp-Source: ABdhPJw/f1Dw6+hRm2MwOKeQIdSMIlyxE8FHR1I8ojqGa9Mkrc42ZHpnzUDmUOeIHT2+1tzq1v7eAA==
-X-Received: by 2002:a5d:6e81:: with SMTP id k1mr14096502wrz.144.1625470644642;
-        Mon, 05 Jul 2021 00:37:24 -0700 (PDT)
-Received: from dell ([109.180.115.218])
-        by smtp.gmail.com with ESMTPSA id l16sm21893173wmj.47.2021.07.05.00.37.23
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uIYkWEg6ddHgyeOZ+TasZ9tt9xSrdpyE5MFOa1Fdx4E=;
+        b=nD/qArdq0jtbl4P+qCvuO3y8usa2nPTn9BCeWMReh5/Mp8CThWRnOWy+ccVby1MYm0
+         UuKGv9OaZXKyNB83vWrqpWooVvRQty/SqIWwZmGB79+aAafimS7in9NXExXxU7SlW5+w
+         MoauBRECQknUiuRk5tA0ZzZiguIFHc8yi3AqXIgl7mReZcg0/a6S6iL4vXBszjS9U6H/
+         lThhykRd8jLASYEVA8wKC/jPopxWSZNYwjDYGXgrz6LdNUdF+VuIxhppCPTHNcKt2skf
+         hn6+ZTc77+yxpSH9+N77NA43VVa2LZ0RwHVCCG2e0IkAN3VP+eKdLgYoERHeLB9B3UOn
+         yXCA==
+X-Gm-Message-State: AOAM530slNA5WwfnZT8A/D1YnbhZNnW5d19YPY9zc3ziwtJtfw3a9xdU
+        iZ9LEd5xrREwBEugNB4C47geX/gY77NbBg==
+X-Google-Smtp-Source: ABdhPJxwk9VAwLAt6zdodDdK4aaJMDRuD9OasQ3YaXQSuVpnBPtwDVw+vAGCokaehZ/TR5Zp/RZ10Q==
+X-Received: by 2002:a17:90b:1403:: with SMTP id jo3mr14330309pjb.160.1625470670034;
+        Mon, 05 Jul 2021 00:37:50 -0700 (PDT)
+Received: from ubuntu.localdomain ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id g4sm2694975pfo.44.2021.07.05.00.37.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 00:37:24 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 08:37:25 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     robh+dt@kernel.org, jic23@kernel.org, lars@metafoo.de,
-        sre@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-pm@vger.kernel.org, leonard.crestez@nxp.com,
-        letux-kernel@openphoenux.org
-Subject: Re: [PATCH 2/4] mfd: rn5t618: Add of compatibles for ADC and power
-Message-ID: <YOK2tdaqGcHfz6Uw@dell>
-References: <20210703084224.31623-1-andreas@kemnade.info>
- <20210703084224.31623-3-andreas@kemnade.info>
+        Mon, 05 Jul 2021 00:37:49 -0700 (PDT)
+From:   gushengxian <gushengxian507419@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] sound: x86: fix spelling mistakes
+Date:   Mon,  5 Jul 2021 00:37:36 -0700
+Message-Id: <20210705073736.662875-1-gushengxian507419@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210703084224.31623-3-andreas@kemnade.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 03 Jul 2021, Andreas Kemnade wrote:
+From: gushengxian <gushengxian@yulong.com>
 
-> This allows having devicetree nodes for the subdevices.
-> 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> ---
->  drivers/mfd/rn5t618.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mfd/rn5t618.c b/drivers/mfd/rn5t618.c
-> index 384acb459427..b916c7471ca3 100644
-> --- a/drivers/mfd/rn5t618.c
-> +++ b/drivers/mfd/rn5t618.c
-> @@ -24,8 +24,10 @@ static const struct mfd_cell rn5t618_cells[] = {
->  };
->  
->  static const struct mfd_cell rc5t619_cells[] = {
-> -	{ .name = "rn5t618-adc" },
-> -	{ .name = "rn5t618-power" },
-> +	{ .name = "rn5t618-adc",
-> +	  .of_compatible = "ricoh,rc5t619-adc" },
-> +	{ .name = "rn5t618-power",
-> +	  .of_compatible = "ricoh,rc5t619-power" },
+Fix some spelling mistakes as follows:
+regiter ==> register
+confgiuration ==> configuration
+playabck ==> playback
+platoform ==> platform
 
-If you're converting entries from single to multi-line, you should
-place the coding lines one different ones to the brackets.
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ sound/x86/intel_hdmi_audio.c | 6 +++---
+ sound/x86/intel_hdmi_audio.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Also, if ordering is unimportant, could you move the multi-line
-entries to the bottom please?
-
->  	{ .name = "rn5t618-regulator" },
->  	{ .name = "rc5t619-rtc" },
->  	{ .name = "rn5t618-wdt" },
-
+diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
+index 33b12aa67cf5..a34d7d9c2a57 100644
+--- a/sound/x86/intel_hdmi_audio.c
++++ b/sound/x86/intel_hdmi_audio.c
+@@ -236,7 +236,7 @@ static void had_write_register(struct snd_intelhad *ctx, u32 reg, u32 val)
+  * updating AUD_CONFIG register.
+  * This is because:
+  * Bit6 of AUD_CONFIG register is writeonly due to a silicon bug on VLV2
+- * HDMI IP. As a result a read-modify of AUD_CONFIG regiter will always
++ * HDMI IP. As a result a read-modify of AUD_CONFIG register will always
+  * clear bit6. AUD_CONFIG[6:4] represents the "channels" field of the
+  * register. This field should be 1xy binary for configuration with 6 or
+  * more channels. Read-modify of AUD_CONFIG (Eg. for enabling audio)
+@@ -342,7 +342,7 @@ static int had_prog_status_reg(struct snd_pcm_substream *substream,
+ 
+ /*
+  * function to initialize audio
+- * registers and buffer confgiuration registers
++ * registers and buffer configuration registers
+  * This function is called in the prepare callback
+  */
+ static int had_init_audio_ctrl(struct snd_pcm_substream *substream,
+@@ -1790,7 +1790,7 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
+ 		pcm->private_data = ctx;
+ 		pcm->info_flags = 0;
+ 		strscpy(pcm->name, card->shortname, strlen(card->shortname));
+-		/* setup the ops for playabck */
++		/* setup the ops for playback */
+ 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &had_pcm_ops);
+ 
+ 		/* allocate dma pages;
+diff --git a/sound/x86/intel_hdmi_audio.h b/sound/x86/intel_hdmi_audio.h
+index 0d91bb5dbab7..bb3853195922 100644
+--- a/sound/x86/intel_hdmi_audio.h
++++ b/sound/x86/intel_hdmi_audio.h
+@@ -96,7 +96,7 @@ struct pcm_stream_info {
+  * @had_spinlock: driver lock
+  * @aes_bits: IEC958 status bits
+  * @buff_done: id of current buffer done intr
+- * @dev: platoform device handle
++ * @dev: platform device handle
+  * @chmap: holds channel map info
+  */
+ struct snd_intelhad {
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
