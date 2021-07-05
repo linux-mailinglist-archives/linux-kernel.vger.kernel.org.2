@@ -2,164 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF243BC146
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 17:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53343BC120
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 17:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbhGEP6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 11:58:24 -0400
-Received: from mail-dm6nam12on2076.outbound.protection.outlook.com ([40.107.243.76]:4931
+        id S232047AbhGEPni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 11:43:38 -0400
+Received: from mail-dm6nam12on2041.outbound.protection.outlook.com ([40.107.243.41]:47712
         "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230440AbhGEP6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 11:58:22 -0400
+        id S231937AbhGEPne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 11:43:34 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YBR7J5qV6qi7/ar+/EByfpEfi1Xi3xJW7PhXfLU07DmxErdnA2uXvMRI6vnB8CZ/vVRzxOS+h7jkOEObWGO4AjjzcI2KP5JTkF7IIqClp04ZzPGOFkfzgpf2aZeTmIr0IYa2GH9KpzfAB1Su31m6pBLpaF7MSdU5u6+lUtZvrYr4gjVaIMlljQXohEOvbuYE4Mslw3au9QwUZCsWzS61YXsWGo9NixfCRnbM0M5uyD+wpq86/UiRU7bTb9nl7BSFvbHOJicq8Y1aTLsdgv8NUmzOibNvS5IrhSm4bSBheCKvwnrnEfOU07Tvgkxbg7E5aCSxl0HXvyhFCrm2GAoUeA==
+ b=WBgjEJCTA3EBsVv7pMdfBmYWoRYRGACc4uBuY5ARexcMfg9c5XyqQIs7acrypl9auiVM2iETOmDQAsL9xx18sfaVqCHfc4o9L4gjF/67il5cFeYU9W7JdWP/yygkLuF7rdLRCqBKbpD/66SAFZQstBbXKcn6zLJ9Ylq1oKlwP/HWDSRni6M5oT2eX7SAjj725ufmTxKYfOSMyRZfv1L1dPTnzGkWn6xjG1IhyXreI/73DUPyNy/QnH53wnfFOU6cJ5qX9f/3wuedsFhc6ZDderFMsW0dKxUoFuuMxuRRhuGkLy73JCglhIFwEqGGrJV945/29sHivt5/977WJ/Rs4Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7LncCPB2o0vt1ECFxJ4wDdgYCaS7KVtUnWxMfZhH9X4=;
- b=d+OlnYSd6D8hUK1cyiRJd5gOp+YGmt0aPj2RViyjh7BCtjCwJq4SdRBdo3Hx11VKNDmbeIEo7J3ZuHq6gXgo4yK2Os/3AjgkuytCkeJkNWHISeSkmHMYHuOaYQ9aYcHe8TIUiqhGrhPbOhY1MkX1yAU74DRj1cYnEtkJlZ72S7GeNAtq3yz/1V9eVh+MsJZ0Z6P8IVVoN9LtMJOiP5ozfTMwazqtY1L+WHjiFlvJUu1NdxZtXBDBn486K4Ire/GgaSEWj++K48HAFDk8huiezdbpqETR5ybtPdsZ/jWk3zC7mzI3CoxaN6kUODdF/jKAUOR9ZKTIrN4QpaFunVpKSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=oiUKBABkTl1FfNmzh4k/S6iEXv814/i9aIc+IK35YAk=;
+ b=kFRj8Nm8kaDldh6V2ZHqUOEjeZUxuIeL/UHODWj5bhCXt5gRA8/H5y9EQFHt3LXihCwZelTA8SQ6JOlPKRgE1ulHp+nEShzA/7tcJhqsEj/eGW3EVHn+IzMklaUaoz1ljfdfLLXitN0Bv1WINl8bh6Zfn6RURGNoSb5ughhp/LYqjUqcDZQBMzKIaz7nf3cnfDd8k+Fi5jAYc0+Cv5FAaC5p3kSF3tBaWBTAdzFhJlLwnTG1ROElCMGD0XAbAW+W11Ne7w3n3aBXsVX6jq4VqvTLc9PF5FRM5VDjgp12EXXCMSE1iGzqhuYEeYHf4uv08z0EMj1VN3AkpByWwqakmw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7LncCPB2o0vt1ECFxJ4wDdgYCaS7KVtUnWxMfZhH9X4=;
- b=JLiOYON0KKRi1hrNK5B5AeLDwggq+UBwJepGHFDGzi+Tdv0Ginae+XF4MdRIdyJyWgqwn3aj1qEVEC9sLluaqUwZznWicDumi7hIED0MoRMlETXeUrsrR5ncOAT4I2lUhuI7Z0xSYoZJ/8vqlpjdf33XvaFqCwWD5C8Rqbs3mWc9t3h8AJOmIyjbR3BixDfhO3JXkdjkNGAnkQ+9GuMwvgqJ42ZToXAqZKueJhRBlH4Bi4rNWjFlPnRPWZeKt50noL8u0+82JXh3MnUpW9iPyyMTkDJDPMLU/vFDICVKaIlfsiXup/umxmi1MKnVuEBdl3fLFYGhrGRNusfT7x0VAQ==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5539.namprd12.prod.outlook.com (2603:10b6:208:1c3::15) with
+ bh=oiUKBABkTl1FfNmzh4k/S6iEXv814/i9aIc+IK35YAk=;
+ b=NP9fu3yAHqvEi/Z5Xap+3qargEKaDCQgl5c+68xCHSKs0OPu0qJZMMsGo+1aG7V2NTP4SCuNNwqQ0EdENxyy4rHpa40Xqt5ZkwxS6UpIVyQocNPuYCbKxFgluWH7psUcSbcbwY5R2dCDvDhVIPbBxSRV5oUGNPde/a+SrCy91Fc=
+Received: from DM5PR12CA0058.namprd12.prod.outlook.com (2603:10b6:3:103::20)
+ by MN2PR12MB4992.namprd12.prod.outlook.com (2603:10b6:208:3c::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Mon, 5 Jul
- 2021 15:55:44 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482%4]) with mapi id 15.20.4287.033; Mon, 5 Jul 2021
- 15:55:44 +0000
-Date:   Mon, 5 Jul 2021 12:55:43 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterx@redhat.com, prime.zeng@hisilicon.com, cohuck@redhat.com
-Subject: Re: [PATCH v3] vfio/pci: Handle concurrent vma faults
-Message-ID: <20210705155543.GP4459@nvidia.com>
-References: <162497742783.3883260.3282953006487785034.stgit@omen>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162497742783.3883260.3282953006487785034.stgit@omen>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BLAPR03CA0097.namprd03.prod.outlook.com
- (2603:10b6:208:32a::12) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22; Mon, 5 Jul
+ 2021 15:40:53 +0000
+Received: from DM6NAM11FT036.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:103:cafe::9f) by DM5PR12CA0058.outlook.office365.com
+ (2603:10b6:3:103::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23 via Frontend
+ Transport; Mon, 5 Jul 2021 15:40:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT036.mail.protection.outlook.com (10.13.172.64) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4287.22 via Frontend Transport; Mon, 5 Jul 2021 15:40:53 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 5 Jul 2021
+ 10:40:52 -0500
+Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Mon, 5 Jul 2021 10:40:41 -0500
+From:   Vijendar Mukunda <vijendar.mukunda@amd.com>
+To:     <broonie@kernel.org>, <peter.ujfalusi@ti.com>,
+        <alsa-devel@alsa-project.org>
+CC:     <amistry@google.com>, <nartemiev@google.com>,
+        <Alexander.Deucher@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
+        <Sunil-kumar.Dommati@amd.com>,
+        "Vijendar Mukunda" <Vijendar.Mukunda@amd.com>,
+        Vijendar Mukunda <vijendar.mukunda@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ASoC: add dai_reoder flag to reverse the stop sequence
+Date:   Mon, 5 Jul 2021 21:28:28 +0530
+Message-ID: <20210705155830.24693-1-vijendar.mukunda@amd.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BLAPR03CA0097.namprd03.prod.outlook.com (2603:10b6:208:32a::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23 via Frontend Transport; Mon, 5 Jul 2021 15:55:44 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m0Qwh-003qp9-IL; Mon, 05 Jul 2021 12:55:43 -0300
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 58f31b80-0fac-4c71-9175-08d93fcd58f4
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5539:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB5539734CB111C9A82A32D5D8C21C9@BL0PR12MB5539.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Office365-Filtering-Correlation-Id: 7b09641a-dda1-46cd-300a-08d93fcb45c6
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4992:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB49923F58170EF37CE58D7DC2971C9@MN2PR12MB4992.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OPHQENIXgebpITIzAXJRc8eqhCsixOES504Mng+MnODvzny3BWKriYCrLEzsnKO+Rbo8RD3Kpcr0xxpfztAduOx9/aJd7OjurYXUU+i8C8KeanFfR+QsMyevRBacxmHW+7xK1CTlJRJ2dk/04jgpjK1g8px//XQgb/E0+sPvpy7wbgJAu3wJs7KzZVtniPN8va8S+dkklfXnu8RowCofKgyyS8A+bzil9gGEs1zj4kCfkw06m1AQqIuLqkSEf5oDKmyhVQAAW4CceEOGqjgQeNQJnU6obO7kfo6/gpM0wy11Yh7LGQX+UdWkaCBTlWs1oAiBr0ypRXvz5vRXVF6ZnanKfmob0w/013ctypmIAYmx2fNT7MQXPkybXgB5KK+iC/youbQp3vSJ34twJuEOnHv+6wU08mYqAhoSTMBeVJAj601WCpZWKO+XWZUvMVfiCsay1CKoCjGC1XOkj4pTmtJ6eBMtZjheK+xUx2A3pgAF29hl6U0LDE0yF0xrIHFwhVQLuIHWwHYDAMqIrNyrx97DzdfoRIJbVJUmDnJpo6qi9nQJrdseioYUapl0id+B/t3tjXGPRH24qFXFC3Rdz+jYawU2h5JVUrmpiH9KNfpRyY8SQ61J/x/8pOfXFnOzPg62sFxu1blWbFphJHajfQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(366004)(136003)(396003)(186003)(8936002)(26005)(478600001)(83380400001)(38100700002)(2616005)(66946007)(66476007)(9746002)(6916009)(9786002)(426003)(33656002)(8676002)(45080400002)(66556008)(2906002)(4326008)(5660300002)(86362001)(1076003)(36756003)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Agl2Z6xpR2BIRoyTpNmjOtZddPzMUt6v9wFWnSF42JX5YzOVTTcE02VZ0o0+?=
- =?us-ascii?Q?zCKwxXFTg0jVQJMkCjxueqV3nONWhRoeljPK+Tdlisc5xuEy3KJv5wdA+Wpa?=
- =?us-ascii?Q?piXuXEFLRYN8G1SUNsPoeVKNafubrOj6Vv8Msubgl4aGqFK1dfwL375AAwN3?=
- =?us-ascii?Q?Ul1c1xHrYyrn2fYXjZeM3/m93KHZDtwHSV4vV4GhGLZ0s4E12sjKnQmhxbcW?=
- =?us-ascii?Q?pPgf5+Ojr0VfUzU7OSTPM7ShVYUIdBKFj174A9nnVsYqzHKKovY5pLMq3oPX?=
- =?us-ascii?Q?+XYl6rmiQGwmZ9GwNJN4nrhKsWirUtRc2JIL6yVsizJnVtZIbbD19eMwA5UH?=
- =?us-ascii?Q?KF7Kkm7FfJ/scql+CVefveCSYKCDjVabcafZ8b8Vdee0YHLX5P4v1MmtL6oT?=
- =?us-ascii?Q?sjOglInbdOPy93zrUjJh1dduRdh03lFset2trZs+xu2UNEuMoUbDvjJhrgvC?=
- =?us-ascii?Q?bJ+rhlc4E/6uJu6TvNJonk9wxZYRd9HRW4WlU0SFNea8FJM1RitrNAmZhfAU?=
- =?us-ascii?Q?uWPbIjgLQoidUyRNvBn7w0N5ZfQloFpBlCxr9TGUBROMinag2iskq3Hv9sCa?=
- =?us-ascii?Q?kl4O1kpCF4UPk82X0c/vXRSE0TJ5iF3Y5xJYFO6kwqRnH727OHS8KeAQVpEX?=
- =?us-ascii?Q?XrMcpZgjjaf40DOHcaqvA7Nti2iUaFFETn3r5t3UhaoKn+iMta5A8jDMOn/S?=
- =?us-ascii?Q?f2SHe4SoY7e3+u3DFKGMKo0R7rWwd5llezu2liyEKIDAHbdGRIEUk1i5LGtb?=
- =?us-ascii?Q?eGV3d0l6YPnLr6zGHhqhwY2VVotO++pMQapkwxOi9Mu3c6SEPb9uYjb9pS3x?=
- =?us-ascii?Q?MU9ue+8M6mYg9PXZTTMX71wHHvQ2BSYjA9i+S06ZLLHyxoE3yfpqWJISPovN?=
- =?us-ascii?Q?CsF03OsD8ApWf06mvMQdsLdOCt8mUuf8/aQE47RNCVpizrm877VKlSbg09Q+?=
- =?us-ascii?Q?YDYSsuFpgzwynEU65A+BRqbVkR5btKUM2y3Y1IRA0S9mmsqd1xvx5Y/KwL/m?=
- =?us-ascii?Q?KffUmOf15T+ez2TxDC9ZNaK+U3sTHgbxU7+dgbqZYAmaAybocc9TQlqjuKYM?=
- =?us-ascii?Q?EM2Yc94jFi9HV0ysdUkLC4AS6WQHFae2cQ2ffiwqh4vU13mlJuifFQwgXKV8?=
- =?us-ascii?Q?GFL/vwJ9q63DpT7T/fcdoMIJZusftwfxieI5G5ZshBtgvr9TTTeoFdGIZH2D?=
- =?us-ascii?Q?L038yEzbzxaTysRsvGrVWqMkGk1SbJ2Z55BRAFENG8WjhGQKs8QqwfdHTRRJ?=
- =?us-ascii?Q?cDrBnNJR9WwxGfE4HA8MobnJdRrK8lws6PkZQjXVDgu4NpJNgO510TlpH9DP?=
- =?us-ascii?Q?MWZxnLnN6MWsMb9u+qkhPD4v?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58f31b80-0fac-4c71-9175-08d93fcd58f4
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2021 15:55:44.4168
+X-Microsoft-Antispam-Message-Info: FSMurKfsMPoTapXlB9qyrpTL6voheKm9N+FTCeVIq0PNv4G/5dlti0ZdDN2eQaT7h7uxvG0PE3/Lue475ka00Ucl669s65DaRq2Mm7jKGXCJEkmirLAsfa+ipzuGMHvHgQ7Ml5VVuqs8q+Zn60PJL2t4TdmTklPtnt8nyLqkh9g+rTWUH5sZIzb9cjQvNnpqF6deOD+duOok6+8ZO3dBQA7n5Lxi2n42xZAdql+xoqY+wDwcPamXd7Hky1aIw7rFEfMRXogq+dKRe6ACKrS2KSQgdZjPN08JyZpJJGanZVTDLvKCxUlZroo5Vy7qqw4LlbZAkPraYoAsQ/vuc5KT0zh1BnKn5b5QJhNZuchS5NgiglJ9NfakyniVf7DKqtuGtcMsgj5Z7i6dw3sLjDlzm75HX9jKcYgwdSWK8Pj8REXVNRgzQrC/JxFtXu/14KxaWGnAUAjlNuZnF6FI/BBBXCVmGxRqFJtF2yVEY/VD6qYwjfSarQ6K/rdLVIz1xTvIkpEDeXxHHOCNQcFgRZiQpnfuoed9JsEETJm1hiCXhf8LdXBr6Q655IevGfGE7D4GtyLM4JPitnAoQYKEMXqE4c94Zow2qdcfOL6py/JZEYh8CWQCFjpU/TYFNwoxfAcFT4nHnNFri82995icMgjep7gO1/YpbY3iSNOerM1nT5XZNsubb/91mhQkCKMqWAG4KgYRGq8yfOVJVUb1Uu7kr3l86c1ElkO/aTJuDtVIp1g=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(376002)(136003)(46966006)(36840700001)(478600001)(2616005)(110136005)(1076003)(7696005)(336012)(47076005)(8676002)(36860700001)(186003)(426003)(82310400003)(86362001)(54906003)(7416002)(36756003)(26005)(4326008)(83380400001)(5660300002)(81166007)(356005)(82740400003)(44832011)(70586007)(8936002)(70206006)(6666004)(316002)(2906002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2021 15:40:53.0203
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5uaOOySpcG59iYoTjpX1k8E75yWo7Zpb6CdNEUCVdxZpVBiq+FDR2dC6XsHK89uF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5539
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b09641a-dda1-46cd-300a-08d93fcb45c6
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT036.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4992
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 08:37:46AM -0600, Alex Williamson wrote:
-> io_remap_pfn_range() will trigger a BUG_ON if it encounters a
-> populated pte within the mapping range.  This can occur because we map
-> the entire vma on fault and multiple faults can be blocked behind the
-> vma_lock.  This leads to traces like the one reported below.
-> 
-> We can use our vma_list to test whether a given vma is mapped to avoid
-> this issue.
-> 
-> [ 1591.733256] kernel BUG at mm/memory.c:2177!
-> [ 1591.739515] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-> [ 1591.747381] Modules linked in: vfio_iommu_type1 vfio_pci vfio_virqfd vfio pv680_mii(O)
-> [ 1591.760536] CPU: 2 PID: 227 Comm: lcore-worker-2 Tainted: G O 5.11.0-rc3+ #1
-> [ 1591.770735] Hardware name:  , BIOS HixxxxFPGA 1P B600 V121-1
-> [ 1591.778872] pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
-> [ 1591.786134] pc : remap_pfn_range+0x214/0x340
-> [ 1591.793564] lr : remap_pfn_range+0x1b8/0x340
-> [ 1591.799117] sp : ffff80001068bbd0
-> [ 1591.803476] x29: ffff80001068bbd0 x28: 0000042eff6f0000
-> [ 1591.810404] x27: 0000001100910000 x26: 0000001300910000
-> [ 1591.817457] x25: 0068000000000fd3 x24: ffffa92f1338e358
-> [ 1591.825144] x23: 0000001140000000 x22: 0000000000000041
-> [ 1591.832506] x21: 0000001300910000 x20: ffffa92f141a4000
-> [ 1591.839520] x19: 0000001100a00000 x18: 0000000000000000
-> [ 1591.846108] x17: 0000000000000000 x16: ffffa92f11844540
-> [ 1591.853570] x15: 0000000000000000 x14: 0000000000000000
-> [ 1591.860768] x13: fffffc0000000000 x12: 0000000000000880
-> [ 1591.868053] x11: ffff0821bf3d01d0 x10: ffff5ef2abd89000
-> [ 1591.875932] x9 : ffffa92f12ab0064 x8 : ffffa92f136471c0
-> [ 1591.883208] x7 : 0000001140910000 x6 : 0000000200000000
-> [ 1591.890177] x5 : 0000000000000001 x4 : 0000000000000001
-> [ 1591.896656] x3 : 0000000000000000 x2 : 0168044000000fd3
-> [ 1591.903215] x1 : ffff082126261880 x0 : fffffc2084989868
-> [ 1591.910234] Call trace:
-> [ 1591.914837]  remap_pfn_range+0x214/0x340
-> [ 1591.921765]  vfio_pci_mmap_fault+0xac/0x130 [vfio_pci]
-> [ 1591.931200]  __do_fault+0x44/0x12c
-> [ 1591.937031]  handle_mm_fault+0xcc8/0x1230
-> [ 1591.942475]  do_page_fault+0x16c/0x484
-> [ 1591.948635]  do_translation_fault+0xbc/0xd8
-> [ 1591.954171]  do_mem_abort+0x4c/0xc0
-> [ 1591.960316]  el0_da+0x40/0x80
-> [ 1591.965585]  el0_sync_handler+0x168/0x1b0
-> [ 1591.971608]  el0_sync+0x174/0x180
-> [ 1591.978312] Code: eb1b027f 540000c0 f9400022 b4fffe02 (d4210000)
-> 
-> Fixes: 11c4cd07ba11 ("vfio-pci: Fault mmaps to enable vma tracking")
-> Reported-by: Zeng Tao <prime.zeng@hisilicon.com>
-> Suggested-by: Zeng Tao <prime.zeng@hisilicon.com>
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
->  drivers/vfio/pci/vfio_pci.c |   29 +++++++++++++++++++++--------
->  1 file changed, 21 insertions(+), 8 deletions(-)
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 
-It seems like a reasonable stop gap to me
+On stream stop, currently CPU DAI stop sequence is invoked first
+followed by DMA. For Few platforms, it is required to stop the
+DMA first before stopping CPU DAI.
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+For Stoneyridge platform, it is required to invoke DMA driver stop
+first rather than invoking DWC I2S controller stop.
+Introduced new flag in sound card structure for reordering stop sequence.
+Based on flag check, ASoC core will re-order the stop requence.
 
-Jason
+Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
+---
+ include/sound/soc.h                  |  1 +
+ sound/soc/amd/acp-da7219-max98357a.c |  1 +
+ sound/soc/soc-pcm.c                  | 23 +++++++++++++++++------
+ 3 files changed, 19 insertions(+), 6 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 675849d07284..12f79cb70600 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -982,6 +982,7 @@ struct snd_soc_card {
+ 	unsigned int disable_route_checks:1;
+ 	unsigned int probed:1;
+ 	unsigned int component_chaining:1;
++	unsigned int dai_reorder:1;
+ 
+ 	void *drvdata;
+ };
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index 84e3906abd4f..b0533b4b7b18 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -742,6 +742,7 @@ static int cz_probe(struct platform_device *pdev)
+ 	if (!machine)
+ 		return -ENOMEM;
+ 	card->dev = &pdev->dev;
++	cz_card.dai_reorder = true;
+ 	platform_set_drvdata(pdev, card);
+ 	snd_soc_card_set_drvdata(card, machine);
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 46513bb97904..4a9a51e6c988 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1015,6 +1015,8 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 
+ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+++	struct snd_soc_card *card = rtd->card;
+ 	int ret = -EINVAL, _ret = 0;
+ 	int rollback = 0;
+ 
+@@ -1055,14 +1057,23 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		ret = snd_soc_pcm_dai_trigger(substream, cmd, rollback);
+-		if (ret < 0)
+-			break;
++		if (card->dai_reorder) {
++			ret = snd_soc_pcm_component_trigger(substream, cmd, rollback);
++			if (ret < 0)
++				break;
+ 
+-		ret = snd_soc_pcm_component_trigger(substream, cmd, rollback);
+-		if (ret < 0)
+-			break;
++			ret = snd_soc_pcm_dai_trigger(substream, cmd, rollback);
++			if (ret < 0)
++				break;
++		} else {
++			ret = snd_soc_pcm_dai_trigger(substream, cmd, rollback);
++			if (ret < 0)
++				break;
+ 
++			ret = snd_soc_pcm_component_trigger(substream, cmd, rollback);
++			if (ret < 0)
++				break;
++		}
+ 		ret = snd_soc_link_trigger(substream, cmd, rollback);
+ 		break;
+ 	}
+-- 
+2.17.1
+
