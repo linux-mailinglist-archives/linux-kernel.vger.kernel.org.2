@@ -2,149 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9CD3BB622
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 06:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393883BB650
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 06:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbhGEE0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 00:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbhGEE0j (ORCPT
+        id S229713AbhGEE3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 00:29:32 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:61360 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhGEE3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 00:26:39 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC89EC061574;
-        Sun,  4 Jul 2021 21:24:01 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id c13so11417369qtb.12;
-        Sun, 04 Jul 2021 21:24:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
-         :from:to:references:in-reply-to;
-        bh=4xLD0xnPHmSCI5wig2OoEO1eCTmstt0nYltLi+2xt6Y=;
-        b=Tbq9KuFAIF0eI7BVFPWJgct0akp9rsfmNjtohh1Lg/p/9/+os5CFrGeeMubE+GmFV+
-         U9eLXwS7Fioqge4JL9rWmONyxZ1thvgl4D4pes6FgigtubxFu+k0xjzDf9mmgMRKiN41
-         YKVNOULitCXnSIkhIQ6rQE2arsI4KfAMH+fUnVVpK/uQYjG1SnGtN2XAcC9zFj+b2FGI
-         HQVW8UnaR21o7GrzlHkFvs+vHCYp/ls6MRIuduuWGMolRmGhsskHVO+R80cCDGNFDYrN
-         kJgnz4Opacy0jiXVL/ErHg4YXSsl6ZxhC73MxNuzmVQ+hSWbW28Q379b6brzw8J/VDFW
-         DmYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:cc:subject:from:to:references:in-reply-to;
-        bh=4xLD0xnPHmSCI5wig2OoEO1eCTmstt0nYltLi+2xt6Y=;
-        b=J03F/feyPviyq35zoKkVS88VtWzRENDOJeeceNBiW3GqDS4AZUTgBUBVTN6O0djEcK
-         HxBKBdbs6IgS1TIknNZsOUx74Ll41uk2QvtKh2bXPVYZ2o/zbVk2APWZEEPmuSQMgi3A
-         SgfK/iOXgqcpR1qMBHYwaEia1ichG+Mk6nyMZC9+aZy/OrUddA1Fwv9oUrKi8IISWnEi
-         np9V6agRT+SGmbccqGwMN7a1dmnsTebK9lbw28QSxMZHWAe9s+bDeDuuTkT5oUHnx6Nc
-         SFx7dj47amX3gecCD0QvdKXd8YMPgDUMW5KQ9frFKqVxOsH5fD7w/92SoT4ZxpPptzQZ
-         SkhQ==
-X-Gm-Message-State: AOAM530yd26xPb28J3J3DcI2pR9/YUTydiwxIKo0lNzcjfVuqAKKlVkX
-        BgSiXeros9u7PQQDPYD8zcA=
-X-Google-Smtp-Source: ABdhPJwAfFo0gp++mPNwF026WIrfqwNzFA7FAsBvdRi1szO2vw/QZRoQOkzF0C+2bl/IgpBYbRcPuQ==
-X-Received: by 2002:a05:622a:c2:: with SMTP id p2mr11225550qtw.83.1625459041011;
-        Sun, 04 Jul 2021 21:24:01 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id j3sm4164784qth.63.2021.07.04.21.24.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Jul 2021 21:24:00 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 05 Jul 2021 00:23:59 -0400
-Message-Id: <CCKX5239AEWI.3T3JF9PXHIESQ@shaak>
-Cc:     <peda@axentia.se>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 04/10] iio: afe: rescale: reduce risk of integer
- overflow
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Jonathan Cameron" <jic23@kernel.org>
-References: <20210701010034.303088-1-liambeguin@gmail.com>
- <20210701010034.303088-5-liambeguin@gmail.com>
- <20210704173639.622371bf@jic23-huawei>
-In-Reply-To: <20210704173639.622371bf@jic23-huawei>
+        Mon, 5 Jul 2021 00:29:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625459215; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=yYpTiZpf19JnYVEBEkARGtbnCGMAkVEzYr6TbDh/j14=; b=RrO/O1UjmEJ6ttr6Q06FUlImBw5FR+dprUNr0W6g/ur3PcC6r3pNu/LZGgjUp4i+wzk+Gx7T
+ CjiVFag7bKK6vrEmuv4o9ZRRRe0mTCtrSga9xjbPI5cRSR5iLqXE9pjNBQyXg7+vamX4tvm3
+ NXJT6xmrXS1MWd2iU8KKW4ZpM58=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60e28a0a2a2a9a976189fd33 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Jul 2021 04:26:50
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 23A5CC4323A; Mon,  5 Jul 2021 04:26:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.100] (unknown [49.207.201.203])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3C12DC433D3;
+        Mon,  5 Jul 2021 04:26:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3C12DC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH 1/2] soc: qcom: rpmhpd: Use corner in power_off
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210703005416.2668319-1-bjorn.andersson@linaro.org>
+ <20210703005416.2668319-2-bjorn.andersson@linaro.org>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <cacd1a1f-01c8-b913-23e5-538a772cd118@codeaurora.org>
+Date:   Mon, 5 Jul 2021 09:56:47 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210703005416.2668319-2-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun Jul 4, 2021 at 12:36 PM EDT, Jonathan Cameron wrote:
-> On Wed, 30 Jun 2021 21:00:28 -0400
-> Liam Beguin <liambeguin@gmail.com> wrote:
->
-> > From: Liam Beguin <lvb@xiphos.com>
-> >=20
-> > Reduce the risk of integer overflow by doing the scale calculation with
-> > 64bit integers and looking for a Greatest Common Divider for both parts
-> > of the fractional value.
-> >=20
-> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> > ---
-> >  drivers/iio/afe/iio-rescale.c | 10 +++++++---
-> >  1 file changed, 7 insertions(+), 3 deletions(-)
-> >=20
-> > diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescal=
-e.c
-> > index 774eb3044edd..98bcb5d418d6 100644
-> > --- a/drivers/iio/afe/iio-rescale.c
-> > +++ b/drivers/iio/afe/iio-rescale.c
-> > @@ -39,7 +39,8 @@ static int rescale_read_raw(struct iio_dev *indio_dev=
-,
-> >  			    int *val, int *val2, long mask)
-> >  {
-> >  	struct rescale *rescale =3D iio_priv(indio_dev);
-> > -	unsigned long long tmp;
-> > +	s64 tmp, tmp2;
-> > +	u32 factor;
-> >  	int ret;
-> > =20
-> >  	switch (mask) {
-> > @@ -67,8 +68,11 @@ static int rescale_read_raw(struct iio_dev *indio_de=
-v,
-> >  		}
-> >  		switch (ret) {
-> >  		case IIO_VAL_FRACTIONAL:
-> > -			*val *=3D rescale->numerator;
-> > -			*val2 *=3D rescale->denominator;
-> > +			tmp =3D (s64)*val * rescale->numerator;
-> > +			tmp2 =3D (s64)*val2 * rescale->denominator;
-> > +			factor =3D gcd(tmp, tmp2);
->
-> Hmm. I wonder if there are cases where this doesn't work and we end up
-> truncating because the gcd is say 1. If all of val, val2,
-> rescale->numerator,
-> rescale->denominator are primes and the rescale values are moderately
-> large
-> then that might happen. We probably need a fallback position. Perhaps
-> check tmp / factor and temp2/factor will fit in an int. If not, shift
-> them until
-> they do even if we have to dump some precision to do so.
->
 
-I see what you mean. If we want to do that I guess it would also apply
-to other areas of the driver.
 
-> This stuff is getting fiddly enough we might want to figure out some
-> self tests
-> that exercise the various cases.
->
+On 7/3/2021 6:24 AM, Bjorn Andersson wrote:
+> rpmhpd_aggregate_corner() takes a corner as parameter, but in
+> rpmhpd_power_off() the code requests the level of the first corner
+> instead.
+> 
+> In all (known) current cases the first corner has level 0, so this
+> change should be a nop, but in case that there's a power domain with a
+> non-zero lowest level this makes sure that rpmhpd_power_off() actually
+> requests the lowest level - which is the closest to "power off" we can
+> get.
+> 
+> While touching the code, also skip the unnecessary zero-initialization
+> of "ret".
+> 
+> Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>   drivers/soc/qcom/rpmhpd.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
+> index 2daa17ba54a3..fa209b479ab3 100644
+> --- a/drivers/soc/qcom/rpmhpd.c
+> +++ b/drivers/soc/qcom/rpmhpd.c
+> @@ -403,12 +403,11 @@ static int rpmhpd_power_on(struct generic_pm_domain *domain)
+>   static int rpmhpd_power_off(struct generic_pm_domain *domain)
+>   {
+>   	struct rpmhpd *pd = domain_to_rpmhpd(domain);
+> -	int ret = 0;
+> +	int ret;
+>   
+>   	mutex_lock(&rpmhpd_lock);
+>   
+> -	ret = rpmhpd_aggregate_corner(pd, pd->level[0]);
+> -
+> +	ret = rpmhpd_aggregate_corner(pd, 0);
 
-I never implemented kernel self tests before, I guess it should follow
-the example of drivers/iio/test/iio-test-format.c?
+This won't work for cases where pd->level[0] != 0, rpmh would just ignore this and keep the
+resource at whatever corner it was previously at.
+(unless command DB tells you a 0 is 'valid' for a resource, sending a 0 is a nop)
+The right thing to do is to send in whatever command DB tells you is the lowest level that's valid,
+which is pd->level[0].
 
-Would you be okay to add this in a follow up series?
 
-> > +			*val =3D tmp / factor;
-> > +			*val2 =3D tmp2 / factor;
->
-> This is doing 64 bit numbers divided by 32 bit ones. Doesn't that
-> require
-> use of do_div() etc on 32 bit platforms?
->
+>   	if (!ret)
+>   		pd->enabled = false;
+>   
+> 
 
-Apologies for that mistake, will fix.
-
-> >  			return ret;
-> >  		case IIO_VAL_INT:
-> >  			*val *=3D rescale->numerator;
-
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
