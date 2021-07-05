@@ -2,280 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6579D3BB48C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 02:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600EF3BB48F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 02:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhGEAuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 20:50:12 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:53539 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbhGEAuL (ORCPT
+        id S229793AbhGEAvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 20:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229715AbhGEAvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 20:50:11 -0400
-Date:   Mon, 05 Jul 2021 00:47:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1625446052;
-        bh=6b16QE5YQHT72Z9ghl2TeHay/lu1wSrBZbhnT2txrMI=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=sPH3SIpc+HDSyLnmdcaST2qeMedh8vZYY1vXW7OiDySNzLDTt/IAQdn5eUaKWIpQD
-         lvnGqJbOzhehCpUiLP5WLNfYE+PzN8xdAPgD1GgUOiVEIp/Y8DGYx4/+cKyBCojzTi
-         BxSVAdHu/wIL23bUET368aGPu6mgx76HGgeWPyAQ=
-To:     "Luke D. Jones" <luke@ljones.dev>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     hdegoede@redhat.com, corentin.chary@gmail.com,
-        mgross@linux.intel.com, jdelvare@suse.com, linux@roeck-us.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH 2/3] asus-wmi: Add dgpu disable method
-Message-ID: <knw744OJB1AYrrFpo77N1Eei0JZC3SjKzg6SMoMhOsEchAiE8-klOIPTyFCAUSiVeTopPNqgFSefQJ2av6Gs_cS4TuIRXVQcHUxvw8YvSl0=@protonmail.com>
-In-Reply-To: <20210704222148.880848-3-luke@ljones.dev>
-References: <20210704222148.880848-1-luke@ljones.dev> <20210704222148.880848-3-luke@ljones.dev>
+        Sun, 4 Jul 2021 20:51:36 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972E9C061574;
+        Sun,  4 Jul 2021 17:48:59 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id r26so11912156lfp.2;
+        Sun, 04 Jul 2021 17:48:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Zbny6c4U5xIiHOmoSTTHs4i8OEndtnMhRSM0VtOkERs=;
+        b=sAXo4x/vOOlwkXdE+3nC3QO4YjOIakudSwwvHQN9NnxQCP9pjuIsiXbI8H8N4gfdGf
+         GF8+mN/O1J+nj5gccgUQv5TNJ4TMwMwG87BvAbmXp0ZKoxj9Faf+H9OudqKwJrpQ4orI
+         F2Dv6Lm/1GUcCflk9YcUxdrbSNVPBLPyvaNz14hUMMBru9lq6kr/FX8HIoqG0T77iW8x
+         kkzAKjl4RL93xIoqjGCEdepIfLMPhA+D3OO1WtkWqbhUU/K520650SbNYnymB+lVwdyY
+         IjI1dZH+Kz+oo5jG2EqTjklVHHiX+WVFEBymX+pzLmcVlgqJxZ+xR7BorTUIII70kTOj
+         31wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zbny6c4U5xIiHOmoSTTHs4i8OEndtnMhRSM0VtOkERs=;
+        b=oPkr5zvIzZRp4WfHwMli1OFjZ6g6xWrGNcoWQMvsljtFxp2f0HPHeuJ5oQEH5DkkXc
+         0LaRJbG2UFfbcZehOfrfVufCyOHnJNCmQgXF4gJcRce+T0QsawA2Hp1enrlb7VCLyDpg
+         iAXiGipu4wQZ3tnz981+fNTjk3RwTmNs6ojyIe71/6+eTcUCkavJlgBxcXfpB/hWt/nf
+         OPJTMCvEY/BCD2Jpf+HpgNQs5SDMDVRsjTHw7JXww5a+3yBvSQAT46ftXH5CxTNvAPJA
+         pKzNkFlGORwHCr/z8h1aJxEWTNA/zNNZWOKts+I2W83rN1ON9vJsjsvEGKOp2Q9bzexI
+         a/gQ==
+X-Gm-Message-State: AOAM530bgagVjvLI7IF/1mvni7yenvIIEY7se0AE2v1ZHFxBywgFExG9
+        RPHd1I/aNBu+oDXPrvJ4T44rHQJuJsWvSKn6Utk=
+X-Google-Smtp-Source: ABdhPJyO+Fh66SzuQVx4z1RCdu7stkCBJn2n70+cZ8Uz9me9HiobpU1kclyK9HFiiNFwoO+l5bRrs5HYsOIg5V25i+c=
+X-Received: by 2002:ac2:55a7:: with SMTP id y7mr8598442lfg.179.1625446137972;
+ Sun, 04 Jul 2021 17:48:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <1243888060.510560.1612783497400@ichabod.co-bxl>
+ <20210210150118.ly252i37eykayrcb@gilmour> <1719200956.433094.1613199092092@ichabod.co-bxl>
+ <6612268.HtAl026vyE@jernej-laptop> <206881200.203318.1622780349817@ichabod.co-bxl>
+ <CAGRGNgVSze9yW6KTsC=KGCVOJLzck65J-f9v8y30iBw7k0KXQA@mail.gmail.com> <131830164.377678.1625444303416@ichabod.co-bxl>
+In-Reply-To: <131830164.377678.1625444303416@ichabod.co-bxl>
+From:   Julian Calaby <julian.calaby@gmail.com>
+Date:   Mon, 5 Jul 2021 10:48:46 +1000
+Message-ID: <CAGRGNgWEFXLYL7Day6TC9XM5zWPYyq3+7TAYGpLWLoD=Kg-Nnw@mail.gmail.com>
+Subject: Re: [linux-sunxi] Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix
+ Ethernet PHY mode
+To:     "B.R. Oake" <broake@mailfence.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Mailing List, Arm" <linux-arm-kernel@lists.infradead.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Hi,
 
-I have added a couple comments inline.
+You're veering dangerously close to troll territory, but I'll give you
+one last response on this.
 
-
-2021. j=C3=BAlius 5., h=C3=A9tf=C5=91 0:21 keltez=C3=A9ssel, Luke D. Jones =
-=C3=ADrta:
-
-> In Windows the ASUS Armory Crate progrm can enable or disable the
-                                        ^
-"program"
-
-
-> dGPU via a WMI call. This functions much the same as various Linux
-> methods in software where the dGPU is removed from the device tree.
+On Mon, Jul 5, 2021 at 10:18 AM B.R. Oake <broake@mailfence.com> wrote:
 >
-> However the WMI call saves the state of dGPU enabled or not and this
-
-I think "[...] the WMI call saves whether the dGPU is enabled or not, and [=
-...]"
-might be better.
-Or "[...] the WMI call saves the state of the dGPU (enabled or not) and [..=
-.]".
-
-
-> then changes the dGPU visibility in Linux with no way for Linux
-> users to re-enable it. We expose the WMI method so users can see
-> and change the dGPU ACPI state.
+> On Fri Jun 04 08:49:28 CEST 2021, Julian Calaby wrote:
+> > While I completely sympathise with your points here, the issue isn't a
+> > technical or social issue, but a legal one.
+> > [...]
 >
-> Signed-off-by: Luke D. Jones <luke@ljones.dev>
-> ---
->  drivers/platform/x86/asus-wmi.c            | 98 ++++++++++++++++++++++
->  include/linux/platform_data/x86/asus-wmi.h |  3 +
->  2 files changed, 101 insertions(+)
+> Dear Julian,
 >
-> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-=
-wmi.c
-> index 2468076d6cd8..8dc3f7ed021f 100644
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
-> @@ -210,6 +210,9 @@ struct asus_wmi {
->  =09u8 fan_boost_mode_mask;
->  =09u8 fan_boost_mode;
+> Thank you for giving your point of view on this issue, and sorry for not
+> replying sooner. Thanks also for your work on the Atheros wifi driver,
+> which I've used a lot. I think it's a particularly important one since
+> it's one of the few wireless chipsets with open firmware.
 >
-> +=09bool dgpu_disable_available;
-> +=09u8 dgpu_disable_mode;
-> +
->  =09bool throttle_thermal_policy_available;
->  =09u8 throttle_thermal_policy_mode;
 >
-> @@ -427,6 +430,93 @@ static void lid_flip_tablet_mode_get_state(struct as=
-us_wmi *asus)
->  =09}
->  }
+> > The DCO was introduced to provide a mechanism to trace the origin of a
+> > piece of code for legal purposes, so my understanding is that the name
+> > supplied needs to be your legal name.
 >
-> +/* dGPU ****************************************************************=
-****/
-> +static int dgpu_disable_check_present(struct asus_wmi *asus)
-> +{
-> +=09u32 result;
-> +=09int err;
-> +
-> +=09asus->dgpu_disable_available =3D false;
-> +
-> +=09err =3D asus_wmi_get_devstate(asus, ASUS_WMI_DEVID_DGPU, &result);
-> +=09if (err) {
-> +=09=09if (err =3D=3D -ENODEV)
-> +=09=09=09return 0;
-> +=09=09return err;
-> +=09}
-> +
-> +=09if (result & ASUS_WMI_DSTS_PRESENCE_BIT)
-> +=09=09asus->dgpu_disable_available =3D true;
-> +=09=09asus->dgpu_disable_mode =3D result & ASUS_WMI_DSTS_STATUS_BIT;
-> +
+> Please could you say what you mean by "legal name"? For example, do you
+> consider "J.R.R. Tolkien" to be a legal name?
 
-Aren't braces missing here?
+Nope, I'd be surprised if that was his legal name. I'd expect it would
+have been "John Tolkien" or "John Ronald Reuel Tolkien".
 
+> Can you give an example of a legal purpose for which the DCO was
+> intended and which fails when the DCO is signed with a name like
+> G. Robinson or C.J. Newton?
 
-> +=09return 0;
-> +}
-> +
-> +static int dgpu_disable_write(struct asus_wmi *asus)
-> +{
-> +=09int err;
-> +=09u8 value;
-> +=09u32 retval;
-> +
-> +=09value =3D asus->dgpu_disable_mode;
-> +
-> +=09err =3D asus_wmi_set_devstate(ASUS_WMI_DEVID_DGPU, value, &retval);
-> +
-> +=09sysfs_notify(&asus->platform_device->dev.kobj, NULL,
-> +=09=09=09"dgpu_disable");
+https://lkml.org/lkml/2004/5/23/10 is the rationale behind the DCO.
+The TL;DR is that SCO was claiming that code was written by them and
+suing people over that. The DCO was developed as a method to assign a
+legal origin to contributions to Linux.
 
-A similar line with the exact same length in patch 3/3 is not broken in two=
-.
-And shouldn't the notification be sent if the operation succeeded?
+My understanding is that there needs to be some way to link up a piece
+of code with an actual physical person, so "real" / "legal" name +
+email was chosen as the simplest solution. My understanding is that if
+your name on your passport / drivers license / official id card is
+"B.R. Oake" then we're good, otherwise use the name that would be used
+in a legal document.
 
-
-> +
-> +=09if (err) {
-> +=09=09pr_warn("Failed to set dgpu disable: %d\n", err);
-> +=09=09return err;
-> +=09}
-> +
-> +=09if (retval > 1 || retval < 0) {
-> +=09=09pr_warn("Failed to set dgpu disable (retval): 0x%x\n",
-> +=09=09=09retval);
-> +=09=09return -EIO;
-> +=09}
-> +
-> +=09return 0;
-> +}
-> +
-> +static ssize_t dgpu_disable_show(struct device *dev,
-> +=09=09=09=09   struct device_attribute *attr, char *buf)
-> +{
-> +=09struct asus_wmi *asus =3D dev_get_drvdata(dev);
-> +=09u8 mode =3D asus->dgpu_disable_mode;
-> +
-> +=09return scnprintf(buf, PAGE_SIZE, "%d\n", mode);
-
-You could use `sysfs_emit()`.
-
-
-> +}
-> +
-> +static ssize_t dgpu_disable_store(struct device *dev,
-> +=09=09=09=09    struct device_attribute *attr,
-> +=09=09=09=09    const char *buf, size_t count)
-> +{
-> +=09int result;
-> +=09u8 disable;
-> +=09struct asus_wmi *asus =3D dev_get_drvdata(dev);
-> +
-> +=09result =3D kstrtou8(buf, 10, &disable);
-
-You could use `kstrtobool()`. I think that would be better since it accepts
-'y', 'n', etc. in addition to 0 and 1.
-
-
-> +=09if (result < 0)
-> +=09=09return result;
-> +
-> +=09if (disable > 1 || disable < 0)
-> +=09=09return -EINVAL;
-> +
-> +=09asus->dgpu_disable_mode =3D disable;
-> +=09/*
-> +=09 * The ACPI call used does not save the mode unless the call is run t=
-wice.
-> +=09 * Once to disable, then once to check status and save - this is two =
-code
-> +=09 * paths in the method in the ACPI dumps.
-> +=09*/
-> +=09dgpu_disable_write(asus);
-> +=09dgpu_disable_write(asus);
-
-Is there any reason the potential error codes are not returned?
-
-
-> +
-> +=09return count;
-> +}
-> +
-> +static DEVICE_ATTR_RW(dgpu_disable);
-> +
->  /* Battery *************************************************************=
-*******/
+> > Whilst, as you've pointed out, there are a lot of ways that names
+> > don't match up to the normal "Firstname I. N. I. T. I. A. L. S.
+> > Lastname" format, that is the case for the vast majority of people and
+> > exceptions to that are rare.
 >
->  /* The battery maximum charging percentage */
-> @@ -2412,6 +2502,7 @@ static struct attribute *platform_attributes[] =3D =
-{
->  =09&dev_attr_camera.attr,
->  =09&dev_attr_cardr.attr,
->  =09&dev_attr_touchpad.attr,
-> +=09&dev_attr_dgpu_disable.attr,
->  =09&dev_attr_lid_resume.attr,
->  =09&dev_attr_als_enable.attr,
->  =09&dev_attr_fan_boost_mode.attr,
-> @@ -2438,6 +2529,8 @@ static umode_t asus_sysfs_is_visible(struct kobject=
- *kobj,
->  =09=09devid =3D ASUS_WMI_DEVID_LID_RESUME;
->  =09else if (attr =3D=3D &dev_attr_als_enable.attr)
->  =09=09devid =3D ASUS_WMI_DEVID_ALS_ENABLE;
-> +=09else if (attr =3D=3D &dev_attr_dgpu_disable.attr)
-> +=09=09ok =3D asus->dgpu_disable_available;
->  =09else if (attr =3D=3D &dev_attr_fan_boost_mode.attr)
->  =09=09ok =3D asus->fan_boost_mode_available;
->  =09else if (attr =3D=3D &dev_attr_throttle_thermal_policy.attr)
-> @@ -2699,6 +2792,10 @@ static int asus_wmi_add(struct platform_device *pd=
-ev)
->  =09if (err)
->  =09=09goto fail_platform;
+> I'm not sure about that - for example, Mandarin names don't really fit
+> that template. But even if exceptions were rare, would that mean those
+> people and their contributions didn't matter?
+
+Here's an example of someone who I believe is a Chinese national using
+a anglicised chinese name as their name in a patch:
+https://lore.kernel.org/linux-wireless/20210517050141.61488-6-shenyang39@huawei.com/
+
+Here's another example:
+https://lore.kernel.org/linux-wireless/2e938041399b47ae04c6c339c6cd5cdb7786ee6b.1623912317.git.ryder.lee@mediatek.com/
+
+> > Your arguments against providing that
+> > name haven't exactly helped your case [...]
 >
-> +=09err =3D dgpu_disable_check_present(asus);
-> +=09if (err)
-> +=09=09goto fail_dgpu_disable;
-> +
+> Well I didn't actually argue against providing a name of the form you've
+> specified - I have no objection to authors doing that if they want to. I
+> just gave some reasons why an author might sign with a name of the form
+> J.K. Smith. When a practice is contested I believe it does help to show
+> that it has legitimate reasons.
 
-Should this really be considered a "fatal" error?
+The first link above was found on the third search result on Bing.
+It's not difficult to find out why this practice has been adopted and
+what the reasoning behind it is.
 
-
->  =09err =3D fan_boost_mode_check_present(asus);
->  =09if (err)
->  =09=09goto fail_fan_boost_mode;
-> @@ -2799,6 +2896,7 @@ static int asus_wmi_add(struct platform_device *pde=
-v)
->  fail_sysfs:
->  fail_throttle_thermal_policy:
->  fail_fan_boost_mode:
-> +fail_dgpu_disable:
->  fail_platform:
->  fail_panel_od:
->  =09kfree(asus);
-> diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/p=
-latform_data/x86/asus-wmi.h
-> index 428aea701c7b..a528f9d0e4b7 100644
-> --- a/include/linux/platform_data/x86/asus-wmi.h
-> +++ b/include/linux/platform_data/x86/asus-wmi.h
-> @@ -90,6 +90,9 @@
->  /* Keyboard dock */
->  #define ASUS_WMI_DEVID_KBD_DOCK=09=090x00120063
+> > Your points about previous instances of this happening also don't hold
+> > water either as we don't know the circumstances behind those cases.
+> > Git's history is considered immutable once it makes it to an
+> > "official" repository (generally one published publicly) so it's
+> > likely they were oversights that weren't caught until it was too late.
 >
-> +/* dgpu on/off */
-> +#define ASUS_WMI_DEVID_DGPU=09=090x00090020
-> +
->  /* DSTS masks */
->  #define ASUS_WMI_DSTS_STATUS_BIT=090x00000001
->  #define ASUS_WMI_DSTS_UNKNOWN_BIT=090x00000002
-> --
-> 2.31.1
+> Although the history might be immutable, offending commits can still be
+> reverted. However, I have not found any examples of this happening to
+> the commits by the authors I mentioned, which suggests there is no
+> problem with having them.
 
+Reverting doesn't eliminate history, it just puts things back to how
+they were. Kinda like tidying a room the day after you messed it up
+instead of changing history to not mess it up at all.
 
-Regards,
-Barnab=C3=A1s P=C5=91cze
+I don't believe that reverting is a strong enough act to fix these
+sorts of issues.
+
+> And I think we do know a bit about their circumstances. To take one
+> example, over an 18-month period I can see 72 commits authored by KP
+> Singh which were variously committed, signed off, acknowledged and
+> reviewed by Daniel Borkmann, Yonghong Song, Mimi Zohar, Alexei
+> Starovoitov, Andrii Nakryiko, Martin KaFai Lau, Song Liu, Florent
+> Revest, James Morris, Andrew Morton, Linus Torvalds, Brendan Jackman,
+> Thomas Garnier, Kees Cook, Casey Schaufler and Randy Dunlap.
+>
+> It doesn't seem very likely that these approvals were all oversights. It
+> seems a lot more likely that there is actually no problem with names of
+> this form.
+
+Or perhaps KP is that person's legal name and they've proven that
+sufficiently to the various people involved. Perhaps the changes they
+make are considered minor enough that it's not likely to be a problem
+in the future. Or perhaps the maintainer who accepted the patches has
+lower standards than Maxime. Generally subsystem maintainers assume
+that driver maintainers do the right thing. So It's possible that most
+of those people assumed that everything was fine and whoever accepted
+the patch initially (Probably the second Signed-off-by line) was fine
+with this.
+
+Thanks,
+
+-- 
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
