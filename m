@@ -2,90 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A303BC127
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 17:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566113BC12A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 17:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbhGEPqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 11:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41408 "EHLO
+        id S231931AbhGEPru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 11:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231807AbhGEPqF (ORCPT
+        with ESMTP id S231806AbhGEPrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 11:46:05 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C09DC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 08:43:28 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id e3so16726942ljo.6
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 08:43:28 -0700 (PDT)
+        Mon, 5 Jul 2021 11:47:49 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D2BC061574;
+        Mon,  5 Jul 2021 08:45:11 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id l5so5850070wrv.7;
+        Mon, 05 Jul 2021 08:45:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2I5OKuYkuayNi3jHus1jYSAwzTCOsFOu/KrA6yZe8wQ=;
-        b=UwdjJmRC2FPpEevnGhbuOw8NfdenTTA5NuAYSOYRBGGZyzkiNBu9flp8dnM/L3c+7W
-         tn44osMbt1E7x3ikTawc2+hef7gL+U0mhsA4UTCqnoQMRSZSJfion5EWCzJVEVj2k/Iv
-         +3yytyfgzON+MSikkOdTdFoYMfvzYujBJZwKRmlPlxxZkB7NpM+FSmnWszX/x9vt2wSJ
-         Qr1h/JV9JckqEHatGNs8Urm5Co6StHOQLoNIuJ99GMcveIjICpNaNln6i5BX60p6mdkv
-         ID/MRdwNvSiqiVFPb3TcAft6yMTIRAza4cuVmetNvDP2ewWM8IJ4TBDklknriN4s57Xa
-         SLZA==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iRm7ng62vz94LNteI1Cih0zeAdgyP1p1V+2xJCFvsqg=;
+        b=VKCvWgx307Vniav5+5GwJdAoX+BqLeBProcFBWAg1Db+3j859JQYDj247SVBafkYz6
+         tp3+x3bLx5Wq9bbY3k5uQWCBDyVRH6A8ILbuys1nMGOFw44HHEteT6ZLYgzVqj4WYhhd
+         h7RMf1Z+1W/z6H+JYAK+u9jv/TkqCFSRWe9o69Nhv1sfaFpsiKtbZvjJ89VHwU90ujhW
+         4axxUUHR2NVjRciPhafM1vWaObcE3qqgdp4o/nPV1bdtbdn6acDXtJa/UHrF61BBSJ4M
+         mHpT7TTEhMn8Jq6729O34Yhk8jZiSX5cT+QYsciOIOgPJjQa8f5oS0ASk5/rM1kMWTax
+         Pf5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2I5OKuYkuayNi3jHus1jYSAwzTCOsFOu/KrA6yZe8wQ=;
-        b=lzu+h0C39ILqc4TPx0Zm54G3lQecZzZ4GrNxC5HbByEsnsXmfGWwXkBbyTfBjPdchg
-         OOkGmOgst4d1iN+hpBXImw/kddT1Fp78GU0hS66EWtAK83g6xwB/nwN1cT+ECcMAAVwZ
-         h9pP0cySLIV+nkqLlBp2zZYVHJc/w0zPMLLbxUF4+rfC5oKglVkanoG2ZIjKY4YD2mJ4
-         ekIKuY2bUpp+Ee7v+LQaKxX7Apj9rOEwbawDQ85HgaCti1xAsG9+iDK7IMGjSv6EvqHY
-         ekzNDVdQtgVSOtktljSsbZI9+Z9XRvOgUK2IGNpRTXVSmqh+f19Pcn6RDQjrq1hFp2Fb
-         SXGg==
-X-Gm-Message-State: AOAM532mptyrKqMR6yseN4250DiKnBecJSG/lwmLpBikUcIXE3Nl33Y6
-        SU1OShkUz4u6XBstnlcIF2sYZIhD6P4fDQ==
-X-Google-Smtp-Source: ABdhPJx231U6ypU1O4mZwtPAtUZFzUu5GDqICu5JX6qZcz3iV7wQ9IusC0/Q9rboDx05O31nh/kvdQ==
-X-Received: by 2002:a05:651c:1689:: with SMTP id bd9mr11250046ljb.373.1625499806661;
-        Mon, 05 Jul 2021 08:43:26 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id i130sm1112860lfd.304.2021.07.05.08.43.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 08:43:26 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Mon, 5 Jul 2021 17:43:24 +0200
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] mm/vmalloc: Use batched page requests in bulk-allocator
-Message-ID: <20210705154324.GA41292@pc638.lan>
-References: <20210705145547.41206-1-urezki@gmail.com>
- <YOMmKo1FMNz048zV@casper.infradead.org>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iRm7ng62vz94LNteI1Cih0zeAdgyP1p1V+2xJCFvsqg=;
+        b=GOPPTuEFLuWLbBkTbrPXFAcSrUlbcWlrkkxfoPxsg8PdUlSUytMKjw8+SS3sMurSvY
+         Wtbkx5XHexQyTXqyWJgWj2L9tLoWh9suHihbbPTFgYk37QVo2md28u3mWyZgtQFcPtt9
+         iXEVIBMHqKAN/kkWmSrJePlKlWo3k/tRoxCrAh4gma/Y41UYxPf8MXXmQ8jcOGszt0NN
+         22KF1UB7T/TFujAKBisDAXcE1KhFLXxuLrNMPa2gvS/37wtde6FZ9ZEb31aEOUwvT/Vg
+         +Qm04ZjyBHtyIvBJWGs16I3Oci2kMdSoOSts7cPMNEz/BUj8vjkHd2Nk45YpIVLlhOp+
+         x4jQ==
+X-Gm-Message-State: AOAM5339ctzbNUkBxS9CefuoY5q3v7PR0xZI1VvqXxZHzttvXGXNjcT1
+        8ZqqxUWU2TYytNdofzGInQY=
+X-Google-Smtp-Source: ABdhPJzc63RLP0dLTZRU0oPe/Q+B3XBpkwNbTucwsbP8b4phCD5U2diRKEdWeN26wMIkt907FvnvNg==
+X-Received: by 2002:a05:6000:118d:: with SMTP id g13mr16362365wrx.191.1625499910517;
+        Mon, 05 Jul 2021 08:45:10 -0700 (PDT)
+Received: from ziggy.stardust (static-55-132-6-89.ipcom.comunitel.net. [89.6.132.55])
+        by smtp.gmail.com with ESMTPSA id v25sm13917133wrd.65.2021.07.05.08.45.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Jul 2021 08:45:10 -0700 (PDT)
+Subject: Re: [v12 02/20] dt-bindings: ARM: Mediatek: Add mmsys document
+ binding for MT8192
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20210705033824.1934-1-chun-jie.chen@mediatek.com>
+ <20210705033824.1934-3-chun-jie.chen@mediatek.com>
+ <564fa3c8-1d85-5e98-f3f9-f83cb17e905a@gmail.com>
+Message-ID: <15d27282-54b2-2cfe-7f44-2df3be11dd40@gmail.com>
+Date:   Mon, 5 Jul 2021 17:45:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOMmKo1FMNz048zV@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <564fa3c8-1d85-5e98-f3f9-f83cb17e905a@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Jul 05, 2021 at 04:55:47PM +0200, Uladzislau Rezki (Sony) wrote:
-> > +			if (gfpflags_allow_blocking(gfp))
-> > +				cond_resched();
+On 05/07/2021 17:40, Matthias Brugger wrote:
 > 
-> How does one call vmalloc() with gfp flags that _don't_ allow blocking?
-> They have to allow a GFP_KERNEL allocation of the page tables.
-> So I think this should be an unconditional cond_resched().
-Historically it is there. I decided to align with below code. But i agree
-vmalloc is sleepable anyway, so blocking is supposed.
+> 
+> On 05/07/2021 05:38, Chun-Jie Chen wrote:
+>> This patch adds the mmsys document binding for MT8192 SoC.
+>>
+>> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> 
+> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+> 
 
-OK, i will respin and send out two patches. 
+Of course, that's not what we need here...
 
---
-Vlad Rezki
+Now pushed to v5.14-tmp/dts64 until v5.14-rc1 is released.
+
+Thanks!
+Matthias
+
+>> ---
+>>  .../devicetree/bindings/arm/mediatek/mediatek,mmsys.txt          | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt
+>> index 78c50733985c..9712a6831fab 100644
+>> --- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt
+>> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt
+>> @@ -16,6 +16,7 @@ Required Properties:
+>>  	- "mediatek,mt8167-mmsys", "syscon"
+>>  	- "mediatek,mt8173-mmsys", "syscon"
+>>  	- "mediatek,mt8183-mmsys", "syscon"
+>> +	- "mediatek,mt8192-mmsys", "syscon"
+>>  - #clock-cells: Must be 1
+>>  
+>>  For the clock control, the mmsys controller uses the common clk binding from
+>>
+
