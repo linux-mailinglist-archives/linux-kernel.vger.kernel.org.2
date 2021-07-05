@@ -2,121 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB1C3BBC71
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B113BBC7B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhGEL5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 07:57:22 -0400
-Received: from mga14.intel.com ([192.55.52.115]:33481 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230174AbhGEL5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 07:57:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10035"; a="208785004"
-X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
-   d="scan'208";a="208785004"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 04:54:44 -0700
-X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
-   d="scan'208";a="485477393"
-Received: from sneftin-mobl.ger.corp.intel.com (HELO [10.185.169.17]) ([10.185.169.17])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 04:54:41 -0700
-Subject: Re: [Intel-wired-lan] [PATCH 2/2] igc: wait for the MAC copy when
- enabled MAC passthrough
-To:     Aaron Ma <aaron.ma@canonical.com>, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Edri, Michael" <michael.edri@intel.com>,
-        "Ruinskiy, Dima" <dima.ruinskiy@intel.com>,
-        "Shalev, Avi" <avi.shalev@intel.com>,
-        "Ruinskiy, Dima" <dima.ruinskiy@intel.com>,
-        "Neftin, Sasha" <sasha.neftin@intel.com>
-References: <20210702045120.22855-1-aaron.ma@canonical.com>
- <20210702045120.22855-2-aaron.ma@canonical.com>
- <613e2106-940a-49ed-6621-0bb00bc7dca5@intel.com>
- <ad3d2d01-1d0a-8887-b057-e6a9531a05f4@canonical.com>
-From:   "Neftin, Sasha" <sasha.neftin@intel.com>
-Message-ID: <f9f9408e-9ba3-7ed9-acc2-1c71913b04f0@intel.com>
-Date:   Mon, 5 Jul 2021 14:54:39 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231354AbhGEL6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 07:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231159AbhGEL6F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 07:58:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F8DC061574;
+        Mon,  5 Jul 2021 04:55:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Pq7bP+MTawU/za6/1KcKOrsotUVcyEKhovbCd0LbYxs=; b=a+qDzygSNKqUonGPkaGwhrnB5T
+        Nm56mhN/nkb4qEMQf8wo67ZcRNY40zF/g8Gq5vbUJaVK6mdWQghoQ3ItzYisV3ahD7M1pZPf0+pBq
+        sMzo8GAzPGX7lfnm0nAj6EskGk523UnvjSQpgad6kBB0C5v77Q6AGNxYZr02WitwcdudQVcBcMInY
+        6oJbrQKYUcJSntqCQhanhsjE6+0gv0E97fMm8JyML0mfWCAHZ27WkdgxeMsVwmZy3KG1q+3WYKGWK
+        shmZK3c9fzIarX5AleY8Gzgbx+FgK67mHhpgrYKQN1XMfP4QzQkghUyF0KQ16pFGsHG6PfrECEfNe
+        xihRRcrA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m0NBl-00ADQL-7P; Mon, 05 Jul 2021 11:55:09 +0000
+Date:   Mon, 5 Jul 2021 12:55:01 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     akpm@linux-foundation.org, glider@google.com, dvyukov@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com, Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>, bpf@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH] Revert "mm/page_alloc: make should_fail_alloc_page()
+ static"
+Message-ID: <YOLzFecogWmdZ5Hc@infradead.org>
+References: <20210705103806.2339467-1-elver@google.com>
 MIME-Version: 1.0
-In-Reply-To: <ad3d2d01-1d0a-8887-b057-e6a9531a05f4@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705103806.2339467-1-elver@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/5/2021 10:38, Aaron Ma wrote:
+On Mon, Jul 05, 2021 at 12:38:06PM +0200, Marco Elver wrote:
+> This reverts commit f7173090033c70886d925995e9dfdfb76dbb2441.
 > 
+> Commit 76cd61739fd1 ("mm/error_inject: Fix allow_error_inject function
+> signatures") explicitly made should_fail_alloc_page() non-static, due to
+> worries of remaining compiler optimizations in the absence of function
+> side-effects while being noinline.
 > 
-> On 7/4/21 1:36 PM, Neftin, Sasha wrote:
->> On 7/2/2021 07:51, Aaron Ma wrote:
->>> Such as dock hot plug event when runtime, for hardware implementation,
->>> the MAC copy takes less than one second when BIOS enabled MAC 
->>> passthrough.
->>> After test on Lenovo TBT4 dock, 600ms is enough to update the
->>> MAC address.
->>> Otherwise ethernet fails to work.
->>>
->>> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
->>> ---
->>>   drivers/net/ethernet/intel/igc/igc_main.c | 3 +++
->>>   1 file changed, 3 insertions(+)
->>>
->>> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c 
->>> b/drivers/net/ethernet/intel/igc/igc_main.c
->>> index 606b72cb6193..c8bc5f089255 100644
->>> --- a/drivers/net/ethernet/intel/igc/igc_main.c
->>> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
->>> @@ -5468,6 +5468,9 @@ static int igc_probe(struct pci_dev *pdev,
->>>       memcpy(&hw->mac.ops, ei->mac_ops, sizeof(hw->mac.ops));
->>>       memcpy(&hw->phy.ops, ei->phy_ops, sizeof(hw->phy.ops));
->>> +    if (pci_is_thunderbolt_attached(pdev) > +        msleep(600);
->> I believe it is a bit fragile. I would recommend here look for another 
->> indication instead of delay. Can we poll for a 'pci_channel_io_normal' 
->> state? (igc->pdev->error_state == pci_channel_io_normal)
+> Furthermore, kernel/bpf/verifier.c pushes should_fail_alloc_page onto
+> the btf_non_sleepable_error_inject BTF IDs set, which when enabling
+> CONFIG_DEBUG_INFO_BTF results in an error at the BTFIDS stage:
 > 
-> Hi sasha,
-> In this situation, the error_state is always pci_channel_io_normal.
-Ok.
-> The delay is necessary.
+>   FAILED unresolved symbol should_fail_alloc_page
 > 
-> Refer to "627239-Intel® Ethernet Controller 
-> I225-MAC-Address-Passthrough-rev1.2"
-> section "3.5
->   Timing Considerations":
-Hello Aaron, Thanks to point me on this document. I see... This is 
-recommendation for Windows driver. Anyway, "delay" approach is 
-error-prone. We need rather ask for MNG FW confirmation (message) that 
-MAC address is copied.
-Can we call (in case we know that MNG FW copied MAC address):
-igc_rar_set (method from igc_mac.c), update the mac.addr and then 
-perform": memcpy(netdev->dev_addr, hw->mac.addr, netdev->addr_len);?
+> To avoid the W=1 warning, add a function declaration right above the
+> function itself, with a comment it is required in a BTF IDs set.
 
-> "For hardware implementation,
-> 
-> when the operating system is already running, the MAC copy must happen 
-> not more than one
-> 
-> second after TBT link is established.
-> the I225 Windows driver prevents the operating
-> 
-> system from detecting the I225 for one second. This allows enough time 
-> for hardware to update the
-> 
-> MAC address."
-> 
-> Thanks sasha,
-> Aaron
-> 
->>> +
->>>       /* Initialize skew-specific constants */
->>>       err = ei->get_invariants(hw);
->>>       if (err)
->>>
->> Thanks Aaron,
->> sasha
-Sasha
+NAK.  We're not going to make symbols pointlessly global for broken
+instrumentation coe.  Someone needs to fixthis eBPF mess as we had
+the same kind of issue before already.
