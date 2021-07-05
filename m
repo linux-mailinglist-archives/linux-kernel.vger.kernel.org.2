@@ -2,109 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7824C3BB733
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23AE03BB741
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhGEGex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 02:34:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229797AbhGEGeu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 02:34:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33710613B1;
-        Mon,  5 Jul 2021 06:32:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625466734;
-        bh=qXNW2ZG7c5MVDWbUdh+dqGa/9/WrXi9VqrWCyzq3bU4=;
-        h=Subject:To:References:From:Cc:Date:In-Reply-To:From;
-        b=lkoAWC+H3zK6SxYfMtkBOd+wWpYxBXLd4f57oSQKBLVj1mUVp48lDe2z5yh7DktxD
-         1ntPtNP5APymp1A9r0lrO3t5xW49q/ptdebZUpUHI1unI6w+FPWQYMrKI1UTt0Fkar
-         /ik8umHQtCf182XDnn/RGGtWV/Hv8U0z9Z8w52qioxc41LMcLcby0IDNnE9VEAVHBW
-         Z3iYdMU1uAH2VeqpY34kNdn9i/w4i51sPY8aid4ToBFxFvLV61DGV3V+bBkueXIGxF
-         55O1xQe/kd2F0FlwUDQI14b/cXM0gCbYYGSnWYwBDUnS7b9cIyD5L3q/tH8YPAA4tc
-         Huxi330aCPl3A==
-Subject: Re: [f2fs-dev] [PATCH] f2fs: initialize page->private when using for
- our internal use
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-References: <20210705052216.831989-1-jaegeuk@kernel.org>
-From:   Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Matthew Wilcox <willy@infradead.org>
-Message-ID: <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
-Date:   Mon, 5 Jul 2021 14:32:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229930AbhGEGlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 02:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhGEGlL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 02:41:11 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963CEC061574
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 23:38:33 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id k20so6603229uao.8
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 23:38:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7LOfRMnkDXcKW+MBvyXL+fw+fgJSD67ELnS1x+u7s+Y=;
+        b=OMkEwopl0pWWhz1/8xqkZ6ZdwwEtJIQ+eSgP8VDSSZkgEURGVO0UIIZ4VWtXkGZ2sq
+         1QjXMTA5ZFnwHa+y26ld7UjnDeEjkAaU1+XNbvJF7DELrIcs4YST6/7nR+T8QJZYNYS+
+         8vOd+IR/DKZXnmpYmvt7TQAdSvMELWkyy5XDg+ta6mFhWlCToclITNoQEP9dbiTXfVmZ
+         rLGEaEbU29JSMVr6FL8kSsY11iY+Fj+T+M0mFh5OKO/podACxSSG3LNbM2rTMlSTh5VP
+         PbBoAE2ayXRXfNwDyjklS/Wg0XbKQ5B5Jjnq9YHLmsidkQwNFHNiNjIRghCU5spQaG1i
+         sUOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7LOfRMnkDXcKW+MBvyXL+fw+fgJSD67ELnS1x+u7s+Y=;
+        b=ZvgNf0y/gh4AvgdqG9VpoXTlN+RgM9aUDWKSNGZ4C683phL2LHldsTqnwT4fAhUux2
+         OsjaKVMxSqZPvgbs+z/+ekggF2mKUegN2qgnRNqLHrrnRt7zoRZZd6yu+s7Xj7yibL71
+         0xIWpKxLhkx2+3JdyVs2546dz9tAQzqyGCbsMwJgQ7IKHkzKFEzkovfaUnwMvs/JumM7
+         CpZxX5x0iyuB/KS4aGR5R6tgJw1jXuGMIsIdCnKeQaFEbs/jGCRAvz9F0/wEbXpY7BPv
+         Ce3kFDIjjJXniysRFgAZI/X+e1f5nOATEPUBTvXzENLU+x4co6hFa6haSDJrLPY4bIDH
+         6CGA==
+X-Gm-Message-State: AOAM531PMN0iQckwhR2/4X6bIaldiqG7W//aIHKx/1FqLDvoqf2NBMft
+        6bwtRGRbKqFf/jqhDpDHw3k9VRGjssAvkUx9hV2Vhg==
+X-Google-Smtp-Source: ABdhPJxD+vA6iPu+fUxzp/X+K3IsPKpbEpw9RPR3c1tbqqRkdxyae9oOe1AfbnzW7YwLnY9RDrfVL5Ts2pYS0EhtbD8=
+X-Received: by 2002:ab0:7399:: with SMTP id l25mr9097692uap.67.1625467112660;
+ Sun, 04 Jul 2021 23:38:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210705052216.831989-1-jaegeuk@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210628135132.73682-1-aardelean@deviqon.com> <20210703185007.2c2283f4@jic23-huawei>
+In-Reply-To: <20210703185007.2c2283f4@jic23-huawei>
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+Date:   Mon, 5 Jul 2021 09:38:21 +0300
+Message-ID: <CAASAkoYMaSuRnSWwtcoZVaGj+m6bDtu7ms2idHBtp5JFzDEp1g@mail.gmail.com>
+Subject: Re: [PATCH] iio: light: adjd_s311: convert to device-managed functions
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        pmeerw@pmeerw.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/5 13:22, Jaegeuk Kim wrote:
-> We need to guarantee it's initially zero. Otherwise, it'll hurt entire flag
-> operations.
+On Sat, 3 Jul 2021 at 20:47, Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Mon, 28 Jun 2021 16:51:32 +0300
+> Alexandru Ardelean <aardelean@deviqon.com> wrote:
+>
+> > This one is a little easier to convert to device-managed, now with the
+> > devm_krealloc() function.
+> >
+> > The other iio_triggered_buffer_setup() and iio_device_register() can be
+> > converted to their devm_ variants. And devm_krealloc() can be used to
+> > (re)alloc the buffer. When the driver unloads, this will also be free'd.
+> >
+> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> > ---
+> >  drivers/iio/light/adjd_s311.c | 34 +++++-----------------------------
+> >  1 file changed, 5 insertions(+), 29 deletions(-)
+> >
+> > diff --git a/drivers/iio/light/adjd_s311.c b/drivers/iio/light/adjd_s311.c
+> > index 17dac8d0e11d..19d60d6986a1 100644
+> > --- a/drivers/iio/light/adjd_s311.c
+> > +++ b/drivers/iio/light/adjd_s311.c
+> > @@ -230,8 +230,8 @@ static int adjd_s311_update_scan_mode(struct iio_dev *indio_dev,
+> >  {
+> >       struct adjd_s311_data *data = iio_priv(indio_dev);
+> >
+> > -     kfree(data->buffer);
+> > -     data->buffer = kmalloc(indio_dev->scan_bytes, GFP_KERNEL);
+> > +     data->buffer = devm_krealloc(indio_dev->dev.parent, data->buffer,
+> > +                                  indio_dev->scan_bytes, GFP_KERNEL);
+> I got some complaints about exactly this trick in a review recently so I'll
+> pass them on.
+>
+> Whilst devm_krealloc() usage like this won't lose the original reference, its
+> not what people expect from a realloc() case, so to not confuse people it is
+> better to do a dance where you use a local variable, then only set data->buffer
+> to it once we know the realloc succeeded.
+>
+> That avoids this looking like the anti-pattern it would be if that were a normal
+> realloc in which case you would just have leaked the original allocation.
+>
+> More interestingly, why are we bothering with resizing the buffer dependent on what
+> is enabled?  Can't we just allocate a 128 byte buffer and not bother changing it
+> as we really aren't wasting that much space?  Just embed it in the adjd_s311_data
+> structure directly and don't worry about the allocations.  Will need to be
+> aligned(8) though to avoid the push_to_buffer_with_timestamp() issue.
+> Using something like
+>
+> struct {
+>         s16 chans[4];
+>         s64 ts __aligned(8); /* I hate x86 32 bit */
 
-Oops, I didn't get the point, shouldn't .private be zero after page was
-just allocated by filesystem? What's the case we will encounter stall
-private data left in page?
+do you want to me t also add this comment? :p
+[just kidding]
 
-Cc Matthew Wilcox.
+> } scan;
+>
+> Inside the priv structure should work nicely.
 
-Thanks,
+i agree; will do it like this;
+i hesitated a bit due to the inertia of converting things to devm_
 
-> 
-> Fixes: b763f3bedc2d ("f2fs: restructure f2fs page.private layout")
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
->   fs/f2fs/data.c | 2 ++
->   fs/f2fs/f2fs.h | 5 ++++-
->   2 files changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 3a01a1b50104..d2cf48c5a2e4 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -3819,6 +3819,8 @@ int f2fs_migrate_page(struct address_space *mapping,
->   		get_page(newpage);
->   	}
->   
-> +	/* guarantee to start from no stale private field */
-> +	set_page_private(newpage, 0);
->   	if (PagePrivate(page)) {
->   		set_page_private(newpage, page_private(page));
->   		SetPagePrivate(newpage);
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index 65befc68d88e..ee8eb33e2c25 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -1331,7 +1331,8 @@ enum {
->   #define PAGE_PRIVATE_GET_FUNC(name, flagname) \
->   static inline bool page_private_##name(struct page *page) \
->   { \
-> -	return test_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)) && \
-> +	return PagePrivate(page) && \
-> +		test_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)) && \
->   		test_bit(PAGE_PRIVATE_##flagname, &page_private(page)); \
->   }
->   
-> @@ -1341,6 +1342,7 @@ static inline void set_page_private_##name(struct page *page) \
->   	if (!PagePrivate(page)) { \
->   		get_page(page); \
->   		SetPagePrivate(page); \
-> +		set_page_private(page, 0); \
->   	} \
->   	set_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)); \
->   	set_bit(PAGE_PRIVATE_##flagname, &page_private(page)); \
-> @@ -1392,6 +1394,7 @@ static inline void set_page_private_data(struct page *page, unsigned long data)
->   	if (!PagePrivate(page)) {
->   		get_page(page);
->   		SetPagePrivate(page);
-> +		set_page_private(page, 0);
->   	}
->   	set_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page));
->   	page_private(page) |= data << PAGE_PRIVATE_MAX;
-> 
+>
+>
+> >       if (data->buffer == NULL)
+> >               return -ENOMEM;
+> >
+> > @@ -256,7 +256,6 @@ static int adjd_s311_probe(struct i2c_client *client,
+> >               return -ENOMEM;
+> >
+> >       data = iio_priv(indio_dev);
+> > -     i2c_set_clientdata(client, indio_dev);
+> >       data->client = client;
+> >
+> >       indio_dev->info = &adjd_s311_info;
+> > @@ -265,34 +264,12 @@ static int adjd_s311_probe(struct i2c_client *client,
+> >       indio_dev->num_channels = ARRAY_SIZE(adjd_s311_channels);
+> >       indio_dev->modes = INDIO_DIRECT_MODE;
+> >
+> > -     err = iio_triggered_buffer_setup(indio_dev, NULL,
+> > -             adjd_s311_trigger_handler, NULL);
+> > +     err = devm_iio_triggered_buffer_setup(&client->dev, indio_dev, NULL,
+> > +                                           adjd_s311_trigger_handler, NULL);
+> >       if (err < 0)
+> >               return err;
+> >
+> > -     err = iio_device_register(indio_dev);
+> > -     if (err)
+> > -             goto exit_unreg_buffer;
+> > -
+> > -     dev_info(&client->dev, "ADJD-S311 color sensor registered\n");
+> > -
+> > -     return 0;
+> > -
+> > -exit_unreg_buffer:
+> > -     iio_triggered_buffer_cleanup(indio_dev);
+> > -     return err;
+> > -}
+> > -
+> > -static int adjd_s311_remove(struct i2c_client *client)
+> > -{
+> > -     struct iio_dev *indio_dev = i2c_get_clientdata(client);
+> > -     struct adjd_s311_data *data = iio_priv(indio_dev);
+> > -
+> > -     iio_device_unregister(indio_dev);
+> > -     iio_triggered_buffer_cleanup(indio_dev);
+> > -     kfree(data->buffer);
+> > -
+> > -     return 0;
+> > +     return devm_iio_device_register(&client->dev, indio_dev);
+> >  }
+> >
+> >  static const struct i2c_device_id adjd_s311_id[] = {
+> > @@ -306,7 +283,6 @@ static struct i2c_driver adjd_s311_driver = {
+> >               .name   = ADJD_S311_DRV_NAME,
+> >       },
+> >       .probe          = adjd_s311_probe,
+> > -     .remove         = adjd_s311_remove,
+> >       .id_table       = adjd_s311_id,
+> >  };
+> >  module_i2c_driver(adjd_s311_driver);
+>
