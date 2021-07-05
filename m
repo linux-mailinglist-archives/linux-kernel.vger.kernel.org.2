@@ -2,122 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991CC3BC2F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 21:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35793BC2FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 21:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbhGETGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 15:06:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229770AbhGETGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 15:06:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D07161978;
-        Mon,  5 Jul 2021 19:03:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625511844;
-        bh=o012umLuvyjggdb73nB1nx1kOYsPv1SNeUIs18hDcAw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GRwf1cGaUQnGNSK48BMiS8/L53RP5G/QW+0L7WarqJg3vdXhPi76IMHEfxJBcIPa3
-         O/IVWGS61Gw63qZ6P/lu+E1G7lOjBRQgMMYZUlxciRBcXpXeaEm0Nt8VlI20vyORW0
-         5Yt77iWQoVMzfxA0eNrndYooJS41ndFVzjZWCxmusBkktvSuT3rDjxcvXFg+FyE3zq
-         Tiys8WKwLxyKU0wwkmXs/VX0V/xsNc/cZvd76dhCDw80UkiEfPmHKQyUCziEG4n9+X
-         zngjj2Bp6GquWJbjoHo8XOCLo60dYdheBX5hvWTEA+kb21c5xQf9Khdj2j/E3DZMQq
-         mzeeqFIjv4raA==
-Date:   Mon, 5 Jul 2021 20:03:52 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Claire Chang <tientzu@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
-        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Qian Cai <quic_qiancai@quicinc.com>
-Subject: Re: [PATCH v15 06/12] swiotlb: Use is_swiotlb_force_bounce for
- swiotlb data bouncing
-Message-ID: <20210705190352.GA19461@willie-the-truck>
-References: <20210624155526.2775863-7-tientzu@chromium.org>
- <YNvMDFWKXSm4LRfZ@Ryzen-9-3900X.localdomain>
- <CALiNf2-a-haQN0-4+gX8+wa++52-0CnO2O4BEkxrQCxoTa_47w@mail.gmail.com>
- <20210630114348.GA8383@willie-the-truck>
- <YNyUQwiagNeZ9YeJ@Ryzen-9-3900X.localdomain>
- <20210701074045.GA9436@willie-the-truck>
- <ea28db1f-846e-4f0a-4f13-beb67e66bbca@kernel.org>
- <20210702135856.GB11132@willie-the-truck>
- <0f7bd903-e309-94a0-21d7-f0e8e9546018@arm.com>
- <YN/7xcxt/XGAKceZ@Ryzen-9-3900X.localdomain>
+        id S229959AbhGETIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 15:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229743AbhGETIp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 15:08:45 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA811C061574;
+        Mon,  5 Jul 2021 12:06:07 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id w22so13750504pff.5;
+        Mon, 05 Jul 2021 12:06:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UuZh8eJmQ1lIEadR8z/9iR40GstH8GqfR3g6tCx7cRE=;
+        b=WJQx9NA8BlzVRMafs+7EpMWi9x3rYpCEMMXMC1Ug33QN7MAfMRBh94GJhwCibzemus
+         iJcwK/0iE9ddqwI6SQMjUMDFDVLHvu+HV55386PbGPr9F+dKnQkokj1QpnCWW9mtArHh
+         jpILZUSOgLC+7ulmGkfLrB+3T9kd5fmujRIroAVpuNcbAjYEnRfhX3bAcLTHKlZckFQ3
+         YREPXxjt7YglLinDmsMpMSOzEum9OZ7UGJkW6JC74oIkPreY58UJ1C3+2uYkV3TQZzeg
+         5vPeL94bY3wV1z3QJj/yefgZQjEyJftH0s79OomsaPClPOk9T2fKQhKK8Hg8P/fHVTmW
+         RIwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UuZh8eJmQ1lIEadR8z/9iR40GstH8GqfR3g6tCx7cRE=;
+        b=p53Hfzjxs8Jre9vM3xnjSVxKdDoeXZVqTfRsfqUV5fpSWzTGuoZ/PSK8B9Zz8xIizA
+         /7c6Ajo/N1sJKEItHKeAl1dC4bXyO64+Ky6hc3FzrEoFP6E+5b4rh3Ywhw7/cCNaLc/3
+         bquXdOSPksMsVV1cV3QRTUTaBQGrk0vKNCN53Vgw+3cH4/wZkOPWnLF2bDne/zlZTfnz
+         p2s9+3Agf8SGW/pl5aH3ObCTGQCtuwm7kG+flu83IHmt2Iyhb7H+22qqzLqeEQzkM98G
+         BvuKZ9Y1pK9OapYHr4pEujKd+tYeKWP5hb3A73CFDhRAAX0EIPOafziNVF8kJsUHZsVL
+         FYGA==
+X-Gm-Message-State: AOAM530zHwb+MsmUBZFyqt1gNdPsE6/YQeLR0QVJz0Y42oLAWDxMrSBf
+        WR0TYm251xbB3TqOh5zp7wRBPoCcOkrhD22M7eU=
+X-Google-Smtp-Source: ABdhPJzBtBfYSQTDKaFdu9uHDDFSuLkh44ARNTnK7EYRd7Fh8DbqQD1vimLJIZZeQcUJ8XkToCJGZtqoXm1ttwjjbcE=
+X-Received: by 2002:a63:d014:: with SMTP id z20mr17034219pgf.203.1625511967330;
+ Mon, 05 Jul 2021 12:06:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YN/7xcxt/XGAKceZ@Ryzen-9-3900X.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1625457455-4667-1-git-send-email-linyunsheng@huawei.com>
+ <YOLXTB6VxtLBmsuC@smile.fi.intel.com> <c6844e2b-530f-14b2-0ec3-d47574135571@huawei.com>
+ <20210705142555-mutt-send-email-mst@kernel.org> <YONRKnDzCzSAXptx@smile.fi.intel.com>
+ <20210705143952-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210705143952-mutt-send-email-mst@kernel.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 5 Jul 2021 22:05:30 +0300
+Message-ID: <CAHp75VcsUxOqu48E1+RNqn=RhJqfd7XG8e3AKRHyMb3ywzSPrg@mail.gmail.com>
+Subject: Re: [PATCH net-next 0/2] refactor the ringtest testing for ptr_ring
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>, ndesaulniers@gooogle.com,
+        Joe Perches <joe@perches.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nathan,
+On Mon, Jul 5, 2021 at 9:45 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Mon, Jul 05, 2021 at 09:36:26PM +0300, Andy Shevchenko wrote:
+> > On Mon, Jul 05, 2021 at 02:26:32PM -0400, Michael S. Tsirkin wrote:
+> > > On Mon, Jul 05, 2021 at 08:06:50PM +0800, Yunsheng Lin wrote:
+> > > > On 2021/7/5 17:56, Andy Shevchenko wrote:
+> > > > > On Mon, Jul 05, 2021 at 11:57:33AM +0800, Yunsheng Lin wrote:
+> > > > >> tools/include/* have a lot of abstract layer for building
+> > > > >> kernel code from userspace, so reuse or add the abstract
+> > > > >> layer in tools/include/ to build the ptr_ring for ringtest
+> > > > >> testing.
+> > > > >
+> > > > > ...
+> > > > >
+> > > > >>  create mode 100644 tools/include/asm/cache.h
+> > > > >>  create mode 100644 tools/include/asm/processor.h
+> > > > >>  create mode 100644 tools/include/generated/autoconf.h
+> > > > >>  create mode 100644 tools/include/linux/align.h
+> > > > >>  create mode 100644 tools/include/linux/cache.h
+> > > > >>  create mode 100644 tools/include/linux/slab.h
+> > > > >
+> > > > > Maybe somebody can change this to be able to include in-tree headers directly?
+> > > >
+> > > > If the above works, maybe the files in tools/include/* is not
+> > > > necessary any more, just use the in-tree headers to compile
+> > > > the user space app?
+> > > >
+> > > > Or I missed something here?
+> > >
+> > > why would it work? kernel headers outside of uapi are not
+> > > intended to be consumed by userspace.
+> >
+> > The problem here, that we are almost getting two copies of the headers, and
+> > tools are not in a good maintenance, so it's often desynchronized from the
+> > actual Linux headers. This will become more and more diverse if we keep same
+> > way of operation. So, I would rather NAK any new copies of the headers from
+> > include/ to tools/include.
+>
+> We already have the copies
+> yes they are not maintained well ... what's the plan then?
+> NAK won't help us improve the situation.
 
-I may have just spotted something in these logs...
+I understand and the proposal is to leave only the files which are not
+the same (can we do kinda wrappers or so in tools/include rather than
+copying everything?).
 
-On Fri, Jul 02, 2021 at 10:55:17PM -0700, Nathan Chancellor wrote:
-> [    2.340956] pci 0000:0c:00.1: Adding to iommu group 4
-> [    2.340996] pci 0000:0c:00.2: Adding to iommu group 4
-> [    2.341038] pci 0000:0c:00.3: Adding to iommu group 4
-> [    2.341078] pci 0000:0c:00.4: Adding to iommu group 4
-> [    2.341122] pci 0000:0c:00.6: Adding to iommu group 4
-> [    2.341163] pci 0000:0d:00.0: Adding to iommu group 4
-> [    2.341203] pci 0000:0d:00.1: Adding to iommu group 4
-> [    2.361821] pci 0000:00:00.2: AMD-Vi: Found IOMMU cap 0x40
-> [    2.361839] pci 0000:00:00.2: AMD-Vi: Extended features (0x206d73ef22254ade):
-> [    2.361846]  PPR X2APIC NX GT IA GA PC GA_vAPIC
-> [    2.361861] AMD-Vi: Interrupt remapping enabled
-> [    2.361865] AMD-Vi: Virtual APIC enabled
-> [    2.361870] AMD-Vi: X2APIC enabled
-> [    2.362272] AMD-Vi: Lazy IO/TLB flushing enabled
+> I would say copies are kind of okay just make sure they are
+> built with kconfig. Then any breakage will be
+> detected.
+>
+> > > > > Besides above, had you tested this with `make O=...`?
+> > > >
+> > > > You are right, the generated/autoconf.h is in another directory
+> > > > with `make O=...`.
+> > > >
+> > > > Any nice idea to fix the above problem?
 
-So at this point, the AMD IOMMU driver does:
 
-	swiotlb        = (iommu_default_passthrough() || sme_me_mask) ? 1 : 0;
-
-where 'swiotlb' is a global variable indicating whether or not swiotlb
-is in use. It's picked up a bit later on by pci_swiotlb_late_init(), which
-will call swiotlb_exit() if 'swiotlb' is false.
-
-Now, that used to work fine, because swiotlb_exit() clears
-'io_tlb_default_mem' to NULL, but now with the restricted DMA changes, I
-think that all the devices which have successfully probed beforehand will
-have stale pointers to the freed structure in their 'dev->dma_io_tlb_mem'
-field.
-
-Will
+-- 
+With Best Regards,
+Andy Shevchenko
