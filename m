@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2E03BC1CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 18:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F0F3BC1D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 18:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhGEQzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 12:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbhGEQzF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 12:55:05 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F27DC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 09:52:28 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id g15so6103927qvi.13
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 09:52:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TRW2liv0KvxRpEn1sZgxByQ6WPmBTh1GhCnSHVjnwbg=;
-        b=jBFIqWpkHJUwhFRIEXpavqYg2lOBnFUgtfMCAa51Keo5p1e7uaLLRwx5ShUDeIlhdM
-         2If2zjmjcfC5T6RoGkkweicUk3Qsx+2vRdseYI/0mJ+ciw96iBmUkpkVkiJE+86t8cyr
-         2oJc7CwvfA5oUIWZzMzGPAFug62Z67fj3p3Z3WgSBFHsqz4/BWGoOCucw+iLuagpvAH1
-         PpbSwCitf8MOcMx6/0YLotNGXe8rFb+KOw2NMKF5n5y/HAuQN75chVqThR99yPOEQKYA
-         xDWvGJSbbwBNR2Hg29azK+xEHKNYDfvZIIv02WRktmpruBPJPenBbq+963N6aPphnsv4
-         Bn7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TRW2liv0KvxRpEn1sZgxByQ6WPmBTh1GhCnSHVjnwbg=;
-        b=IpsB6ucoi6MdKKsDABXlEo0kq023Gzf093esI4Tq91VT4j4LJCd6r+bi2q6SOnEolS
-         SV7YwQlpJhpj3UkvCe0NZ1R8o53EZptK4LvLK42ELCxbxjUxngLfHRBLyuHNOekZbECU
-         dNwZnKidH1diGaugvfCuEhNCnunAh3pwqwvQDxVA17O3Uo16PD0gq8onGlialhXHMebg
-         nYsihzOTqnDA16t5emZ5xSyHuycZdg2UMSMOCLn5ZM1maku4jHZHBc8T7vlxalkGPaN4
-         8tAMgQ3bYktikb1roOxpmEwi8c3dYGz5s9oe+7EVaiGN5a7R3a8g5bsWeGh9iNhqFYz2
-         PmlQ==
-X-Gm-Message-State: AOAM531QHzUW1GkQAd5I/MKjwyQxpEhu77W0tMl4GA/wsbvHMXyz6R7J
-        ck/fAVAW4FP5H9f4G1fuHGqO3Q==
-X-Google-Smtp-Source: ABdhPJw/xzr3myWPCDkP4OYKH+JUqyzPcaaW7tJ0//CdDzso+M0bp2m0674/I/B/gC+TTQwFiqkSng==
-X-Received: by 2002:a0c:ef51:: with SMTP id t17mr13560008qvs.14.1625503947734;
-        Mon, 05 Jul 2021 09:52:27 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id 82sm5694070qke.63.2021.07.05.09.52.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 09:52:27 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1m0Rpa-003sCS-IC; Mon, 05 Jul 2021 13:52:26 -0300
-Date:   Mon, 5 Jul 2021 13:52:26 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Oded Gabbay <ogabbay@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        daniel.vetter@ffwll.ch, galpress@amazon.com, sleybo@amazon.com,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, dledford@redhat.com,
-        airlied@gmail.com, alexander.deucher@amd.com, leonro@nvidia.com,
-        hch@lst.de, amd-gfx@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, Tomer Tayar <ttayar@habana.ai>
-Subject: Re: [PATCH v4 2/2] habanalabs: add support for dma-buf exporter
-Message-ID: <20210705165226.GJ4604@ziepe.ca>
-References: <20210705130314.11519-1-ogabbay@kernel.org>
- <20210705130314.11519-3-ogabbay@kernel.org>
+        id S229812AbhGEQ4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 12:56:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229652AbhGEQ4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 12:56:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F34AB61278;
+        Mon,  5 Jul 2021 16:53:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625504006;
+        bh=OQoRiE6FpxfI2/SIV4tbnVrTGtf9MzYZtaCIiysd5jM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AWXh0H6ilfMGghLa2xY4692pc1OH6xTKse5tUxs2e7Q6afddB0TQHyu3EaDuEcz8n
+         pBoCC5MHieN3Y6YjLxffBh/EvAB1wS20vtdq6eQf0+/RmhlCHoGHz1XAXoqXOKNNEU
+         SgcgBXFFTZWak/dq4DbAjOvBjtwjNar5WWEQ6fK+c5oZU9MVyAZdVI05CuKCdtj45X
+         cHu0KLriFFHdLFhv0EqS+17ohFAMcK1DbzvsLPA7v0UEUUIDKPgq/6kbwUoKJB+mO1
+         YQRD0lQVk8aeTB7AS5IVzDSlUZzzGZnNKc+QXQZYFiBtOHP/9ky0wvCC7AT4Gq8/n9
+         fISoHQ+KleSEw==
+Date:   Mon, 5 Jul 2021 17:52:55 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     ChiYuan Huang <u0084500@gmail.com>
+Cc:     Axel Lin <axel.lin@ingics.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        ChiYuan Huang <cy_huang@richtek.com>
+Subject: Re: [PATCH] regulator: rt5033: Use linear ranges to map all voltage
+ selection
+Message-ID: <20210705165255.GD4574@sirena.org.uk>
+References: <1625111646-3955-1-git-send-email-u0084500@gmail.com>
+ <CAFRkauCNf6fP8zAz+0gY_Vzb_wCtVyYqLjw8s1T+t2s=bR0RQw@mail.gmail.com>
+ <CADiBU3_dCNvZRwewiztB0UGFvDz3g5sw-q+95sg9akqte1YJsA@mail.gmail.com>
+ <CADiBU3-i2tg33iCjX83NEYAhYYabnHjL129+tOm9_h=MrPhraw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="d9ADC0YsG2v16Js0"
 Content-Disposition: inline
-In-Reply-To: <20210705130314.11519-3-ogabbay@kernel.org>
+In-Reply-To: <CADiBU3-i2tg33iCjX83NEYAhYYabnHjL129+tOm9_h=MrPhraw@mail.gmail.com>
+X-Cookie: Star Trek Lives!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 04:03:14PM +0300, Oded Gabbay wrote:
 
-> +	rc = sg_alloc_table(*sgt, nents, GFP_KERNEL | __GFP_ZERO);
-> +	if (rc)
-> +		goto error_free;
+--d9ADC0YsG2v16Js0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If you are not going to include a CPU list then I suggest setting
-sg_table->orig_nents == 0
+On Fri, Jul 02, 2021 at 11:47:50PM +0800, ChiYuan Huang wrote:
+> ChiYuan Huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=881=E6=
+=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=881:53=E5=AF=AB=E9=81=93=EF=BC=9A
+> > Axel Lin <axel.lin@ingics.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=881=E6=97=
+=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8812:41=E5=AF=AB=E9=81=93=EF=BC=9A
 
-And using only the nents which is the length of the DMA list.
+> > From the regulator register in probe, it will get the current voltage
+> > from the IC.
+> > If the vout sel is not is over N_VOLTAGES, it will return the error num=
+ber.
 
-At least it gives some hope that other parts of the system could
-detect this.
+> > But as I think it's the side effect to change the vout step num.
+> > To use the linear range is just to guarantee all vout sel range are inc=
+luded.
 
-> +
-> +	/* Merge pages and put them into the scatterlist */
-> +	cur_page = 0;
-> +	for_each_sgtable_sg((*sgt), sg, i) {
+> > That's my initial thoughts.
 
-for_each_sgtable_sg should never be used when working with
-sg_dma_address() type stuff, here and everywhere else. The DMA list
-should be iterated using the for_each_sgtable_dma_sg() macro.
+>    Like as you said,  the first revision is from 2014.
+> It is almost EOL for this product.
+> To fix this seems redundant.
 
-> +	/* In case we got a large memory area to export, we need to divide it
-> +	 * to smaller areas because each entry in the dmabuf sgt can only
-> +	 * describe unsigned int.
-> +	 */
+Even if something is old it's still posible that people can use it, and
+if someone's done the work to fix it then why not?
 
-Huh? This is forming a SGL, it should follow the SGL rules which means
-you have to fragment based on the dma_get_max_seg_size() of the
-importer device.
+--d9ADC0YsG2v16Js0
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +	hl_dmabuf->pages = kcalloc(hl_dmabuf->npages, sizeof(*hl_dmabuf->pages),
-> +								GFP_KERNEL);
-> +	if (!hl_dmabuf->pages) {
-> +		rc = -ENOMEM;
-> +		goto err_free_dmabuf_wrapper;
-> +	}
+-----BEGIN PGP SIGNATURE-----
 
-Why not just create the SGL directly? Is there a reason it needs to
-make a page list?
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDjOOYACgkQJNaLcl1U
+h9B+Mgf+MWapEDWuJZ3hOsHSCMCCr9jtCwoIiZCIBNIK7H+LjFLnbfw1n/6nwrJp
+LQ0AAvjuoSklB7AhLj4TEQ8v3kGOgglOxwltjCb6idxYbfOpaxc2qtjv91eC1XeB
+x8d7EwWTE6z1tM/IN/e3C0yWKenlE+Dm9SIbhZBviy5/rpCa0UB9Akqq/+HDL6x/
+pw3Y27D9l4QL4WxgGzKLEyN5sMkzI3Uvvc1tDsBoAXjcRh+tYjbbvqhF19N8obyL
+f6h1XgQ13iFaYJdDHiccewq9NjDPWlq26O9mGn0JN50XK62TXjr5ClBK6pjv2Y58
+iBnvR298V8NqJTbYmtOrm1dx6N9q0A==
+=AXjd
+-----END PGP SIGNATURE-----
 
-Jason
+--d9ADC0YsG2v16Js0--
