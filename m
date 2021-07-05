@@ -2,151 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4F43BB5E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 05:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC433BB5A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 05:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhGEDpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 23:45:12 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:47875 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230118AbhGEDpC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 23:45:02 -0400
-X-UUID: b39ee3735c08476f9870a01504f4f443-20210705
-X-UUID: b39ee3735c08476f9870a01504f4f443-20210705
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 691492012; Mon, 05 Jul 2021 11:42:23 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 5 Jul 2021 11:42:21 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 5 Jul 2021 11:42:21 +0800
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Subject: [v12 20/20] clk: mediatek: Add MT8192 vencsys clock support
-Date:   Mon, 5 Jul 2021 11:38:24 +0800
-Message-ID: <20210705033824.1934-21-chun-jie.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210705033824.1934-1-chun-jie.chen@mediatek.com>
-References: <20210705033824.1934-1-chun-jie.chen@mediatek.com>
+        id S229740AbhGEDlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 23:41:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:36290 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229700AbhGEDlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 23:41:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BE94D6E;
+        Sun,  4 Jul 2021 20:38:36 -0700 (PDT)
+Received: from [10.163.88.246] (unknown [10.163.88.246])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 78E7D3F5A1;
+        Sun,  4 Jul 2021 20:38:34 -0700 (PDT)
+Subject: Re: [PATCH V2] mm/thp: Make ALLOC_SPLIT_PTLOCKS dependent on
+ USE_SPLIT_PTE_PTLOCKS
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org
+References: <1621409586-5555-1-git-send-email-anshuman.khandual@arm.com>
+ <YKZFRPqg4wKjOdVg@casper.infradead.org>
+ <9d1ce685-e0fd-febd-5ff2-179f7fa6e3fa@arm.com>
+ <YN27uc64s/yllfQR@casper.infradead.org>
+ <45c1feaa-4bab-91d1-6962-81549d2b6d00@arm.com>
+ <YOJ8YR8wWkiHsRTp@casper.infradead.org>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <67a7c36d-a040-b58a-ab8b-d67ba4341369@arm.com>
+Date:   Mon, 5 Jul 2021 09:09:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <YOJ8YR8wWkiHsRTp@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MT8192 vencsys clock provider
 
-Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
----
- drivers/clk/mediatek/Kconfig           |  6 +++
- drivers/clk/mediatek/Makefile          |  1 +
- drivers/clk/mediatek/clk-mt8192-venc.c | 53 ++++++++++++++++++++++++++
- 3 files changed, 60 insertions(+)
- create mode 100644 drivers/clk/mediatek/clk-mt8192-venc.c
 
-diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
-index 31779f2c5c83..576babd86f98 100644
---- a/drivers/clk/mediatek/Kconfig
-+++ b/drivers/clk/mediatek/Kconfig
-@@ -574,6 +574,12 @@ config COMMON_CLK_MT8192_VDECSYS
- 	help
- 	  This driver supports MediaTek MT8192 vdecsys and vdecsys_soc clocks.
- 
-+config COMMON_CLK_MT8192_VENCSYS
-+	bool "Clock driver for MediaTek MT8192 vencsys"
-+	depends on COMMON_CLK_MT8192
-+	help
-+	  This driver supports MediaTek MT8192 vencsys clocks.
-+
- config COMMON_CLK_MT8516
- 	bool "Clock driver for MediaTek MT8516"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
-diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
-index 887dd6bcf7f2..15bc045f0b71 100644
---- a/drivers/clk/mediatek/Makefile
-+++ b/drivers/clk/mediatek/Makefile
-@@ -79,5 +79,6 @@ obj-$(CONFIG_COMMON_CLK_MT8192_MMSYS) += clk-mt8192-mm.o
- obj-$(CONFIG_COMMON_CLK_MT8192_MSDC) += clk-mt8192-msdc.o
- obj-$(CONFIG_COMMON_CLK_MT8192_SCP_ADSP) += clk-mt8192-scp_adsp.o
- obj-$(CONFIG_COMMON_CLK_MT8192_VDECSYS) += clk-mt8192-vdec.o
-+obj-$(CONFIG_COMMON_CLK_MT8192_VENCSYS) += clk-mt8192-venc.o
- obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
- obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
-diff --git a/drivers/clk/mediatek/clk-mt8192-venc.c b/drivers/clk/mediatek/clk-mt8192-venc.c
-new file mode 100644
-index 000000000000..c0d867bff09e
---- /dev/null
-+++ b/drivers/clk/mediatek/clk-mt8192-venc.c
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Copyright (c) 2021 MediaTek Inc.
-+// Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-+
-+#include <linux/clk-provider.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+
-+#include "clk-mtk.h"
-+#include "clk-gate.h"
-+
-+#include <dt-bindings/clock/mt8192-clk.h>
-+
-+static const struct mtk_gate_regs venc_cg_regs = {
-+	.set_ofs = 0x4,
-+	.clr_ofs = 0x8,
-+	.sta_ofs = 0x0,
-+};
-+
-+#define GATE_VENC(_id, _name, _parent, _shift)	\
-+	GATE_MTK(_id, _name, _parent, &venc_cg_regs, _shift, &mtk_clk_gate_ops_setclr_inv)
-+
-+static const struct mtk_gate venc_clks[] = {
-+	GATE_VENC(CLK_VENC_SET0_LARB, "venc_set0_larb", "venc_sel", 0),
-+	GATE_VENC(CLK_VENC_SET1_VENC, "venc_set1_venc", "venc_sel", 4),
-+	GATE_VENC(CLK_VENC_SET2_JPGENC, "venc_set2_jpgenc", "venc_sel", 8),
-+	GATE_VENC(CLK_VENC_SET5_GALS, "venc_set5_gals", "venc_sel", 28),
-+};
-+
-+static const struct mtk_clk_desc venc_desc = {
-+	.clks = venc_clks,
-+	.num_clks = ARRAY_SIZE(venc_clks),
-+};
-+
-+static const struct of_device_id of_match_clk_mt8192_venc[] = {
-+	{
-+		.compatible = "mediatek,mt8192-vencsys",
-+		.data = &venc_desc,
-+	}, {
-+		/* sentinel */
-+	}
-+};
-+
-+static struct platform_driver clk_mt8192_venc_drv = {
-+	.probe = mtk_clk_simple_probe,
-+	.driver = {
-+		.name = "clk-mt8192-venc",
-+		.of_match_table = of_match_clk_mt8192_venc,
-+	},
-+};
-+
-+builtin_platform_driver(clk_mt8192_venc_drv);
--- 
-2.18.0
+On 7/5/21 8:58 AM, Matthew Wilcox wrote:
+> On Mon, Jul 05, 2021 at 08:57:54AM +0530, Anshuman Khandual wrote:
+>>
+>> On 7/1/21 6:27 PM, Matthew Wilcox wrote:
+>>> On Thu, Jul 01, 2021 at 10:51:27AM +0530, Anshuman Khandual wrote:
+>>>>
+>>>>
+>>>> On 5/20/21 4:47 PM, Matthew Wilcox wrote:
+>>>>> On Wed, May 19, 2021 at 01:03:06PM +0530, Anshuman Khandual wrote:
+>>>>>> Split ptlocks need not be defined and allocated unless they are being used.
+>>>>>> ALLOC_SPLIT_PTLOCKS is inherently dependent on USE_SPLIT_PTE_PTLOCKS. This
+>>>>>> just makes it explicit and clear. While here drop the spinlock_t element
+>>>>>> from the struct page when USE_SPLIT_PTE_PTLOCKS is not enabled.
+>>>>>
+>>>>> I didn't spot this email yesterday.  I'm not a fan.  Isn't struct page
+>>>>> already complicated enough without adding another ifdef to it?  Surely
+>>>>> there's a better way than this.
+>>>>
+>>>> This discussion thread just got dropped off the radar, sorry about it.
+>>>> None of the spinlock_t elements are required unless split ptlocks are
+>>>> in use. I understand your concern regarding yet another #ifdef in the
+>>>> struct page definition. But this change is simple and minimal. Do you
+>>>> have any other particular alternative in mind which I could explore ?
+>>>
+>>> Do nothing?  I don't understand what problem you're trying to solve.
+>>
+>> Currently there is an element (spinlock_t ptl) in the struct page for page
+>> table lock. Although a struct page based spinlock is not even required in
+>> case USE_SPLIT_PTE_PTLOCKS evaluates to be false. Is not that something to
+>> be fixed here i.e drop the splinlock_t element if not required ?
+> 
+> No?  It doesn't actually cause any problems, does it?
+> 
 
+No but should an unnecessary element in a struct is dropped only if there
+is a reported problem ?
