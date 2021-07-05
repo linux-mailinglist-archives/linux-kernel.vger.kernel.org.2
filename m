@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E65C3BC352
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 22:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8833BC354
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 22:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhGEUMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 16:12:25 -0400
-Received: from einhorn.in-berlin.de ([192.109.42.8]:40517 "EHLO
-        einhorn-mail-out.in-berlin.de" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229817AbhGEUMZ (ORCPT
+        id S229958AbhGEUPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 16:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229794AbhGEUPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 16:12:25 -0400
-X-Envelope-From: stefanr@s5r6.in-berlin.de
-Received: from authenticated.user (localhost [127.0.0.1]) by einhorn.in-berlin.de  with ESMTPSA id 165K9fls014834
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Mon, 5 Jul 2021 22:09:42 +0200
-Date:   Mon, 5 Jul 2021 22:09:35 +0200
-From:   Stefan Richter <stefanr@s5r6.in-berlin.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: linux-next: removed trees
-Message-ID: <20210705220935.4d24a7af@kant>
-In-Reply-To: <20210705215743.40b26667@kant>
-References: <20210514123221.7c21393f@canb.auug.org.au>
-        <20210705215743.40b26667@kant>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 5 Jul 2021 16:15:07 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E3FC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 13:12:29 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id h6so26020535ljl.8
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 13:12:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6yDwF3xJ6uKq9R8h2XYuJ4l+Q6LPg2Woh9j1XtGjc+Q=;
+        b=AKWFLsIdim8CYTMHyHvDif4WM/2IW8USa0qU/KweaRACbeRYJ4HlS18KDpgV6tbHef
+         w/VuwOPS06/47hY2kG3Qe6sVDS2kVRRR5bo9rOKpRCyNrWTH/LbZfsIeRBK/M/fsbKMc
+         vqwLX46ZMP1L3qlzkoP19uwKgWWWvI6Kyf7oJbqmiIRalztPf+yJ9lum3kao07xL85HD
+         QcxJPshjWlR1UWY2u3LDYeLjJ95uepfk/DpCLXCTlyPvWCoQFQxpCJViG9p/cjKRmjnk
+         48EkMGj2R6HbELhjDK0eLQKicrqGe2pO5eHDC749aApNsVnfOU7WKQYA7VmuTSoRu4ES
+         6cIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6yDwF3xJ6uKq9R8h2XYuJ4l+Q6LPg2Woh9j1XtGjc+Q=;
+        b=ftxKA9HDsvHhAeVsJH2+10lr84v66y/WJly//ogVa5zslcf/nGnjGPZhvGuw2PqnLJ
+         35VrwUb4LEnbH7wMq9JhpGFJ18KUG+YxEsq0+crot+hSwZvsyQWj4THo0/xTlkIe6Zgc
+         dVIBnHaeI+W4EGKoQqheNPqEEI6gC7iy8+OIap2E3CXqy/GPQ1A8n7bZ1aR6QSKcTwwL
+         REZWpV05OmmAWzCN5NuUpHtyWU4ZzRraA4AZv9b4qDp31rBvqHL0IGwazAN7nK9k1Ty2
+         8hThspZz/O++I++1UBsDrqIyjRA3q1AyfEzVUvpEvJS6Fr23kc2sf5V38NwFpYXNGwZT
+         XQ+Q==
+X-Gm-Message-State: AOAM530joObT87niFptDOmRteic3Pb6jH0p1BPbl/e+Y7vPde2yhp7Iz
+        2rTCsSV8yS0Q0rjA53zRB1E=
+X-Google-Smtp-Source: ABdhPJwajx6iHpQrkLrmNXtaApzk0iGhFPVTQmrWPq2Qg4QCj1WsMnhDx9DrLR68wMwEmny+FDO/rw==
+X-Received: by 2002:a2e:557:: with SMTP id 84mr12417499ljf.211.1625515947575;
+        Mon, 05 Jul 2021 13:12:27 -0700 (PDT)
+Received: from localhost.localdomain (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
+        by smtp.gmail.com with ESMTPSA id h8sm928117lfe.35.2021.07.05.13.12.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 13:12:27 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Matt Merhar <mattmerhar@protonmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v1] regulator: tps65910: Silence deferred probe error
+Date:   Mon,  5 Jul 2021 23:12:11 +0300
+Message-Id: <20210705201211.16082-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9s8Qt82ZjAaJfCmL6FL0aXx";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9s8Qt82ZjAaJfCmL6FL0aXx
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The TPS65910 regulator now gets a deferred probe until supply regulator is
+registered. Silence noisy error message about the deferred probe.
 
-On Jul 05 Stefan Richter wrote:
-> On May 14 Stephen Rothwell wrote:
-> > The following tree have been removed form linux-next because they have
-> > not been updated in more than a year.  If you want a tree reinstated,
-> > just let me know.
-> >=20
-> > fbdev
-> > fsl
-> > generic-ioremap
-> > ieee1394
-> >   this contains the single commit
-> > 	67f8e65e4fc1 firewire: net: remove set but not used variable 'guid'
-> > random
-> > realtek
-> > thermal-rzhang
-> > thermal-soc
-> > y2038
-> > zx2c4 =20
->=20
-> Would you be OK with adding linux1394.git (for-next branch) back to
-> linux-next?  There are two patches queued and I am finally aiming to get
-> them merged. :-)
+Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
+Reported-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/regulator/tps65910-regulator.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-(PS, this is for the /next/ merge window after 5.14 is final, not for the
-current window anymore of course.)
---=20
-Stefan Richter
--=3D=3D=3D=3D=3D=3D--=3D-=3D -=3D=3D=3D --=3D-=3D
-http://arcgraph.de/sr/
+diff --git a/drivers/regulator/tps65910-regulator.c b/drivers/regulator/tps65910-regulator.c
+index 1d5b0a1b86f7..06cbe60c990f 100644
+--- a/drivers/regulator/tps65910-regulator.c
++++ b/drivers/regulator/tps65910-regulator.c
+@@ -1211,12 +1211,10 @@ static int tps65910_probe(struct platform_device *pdev)
+ 
+ 		rdev = devm_regulator_register(&pdev->dev, &pmic->desc[i],
+ 					       &config);
+-		if (IS_ERR(rdev)) {
+-			dev_err(tps65910->dev,
+-				"failed to register %s regulator\n",
+-				pdev->name);
+-			return PTR_ERR(rdev);
+-		}
++		if (IS_ERR(rdev))
++			return dev_err_probe(tps65910->dev, PTR_ERR(rdev),
++					     "failed to register %s regulator\n",
++					     pdev->name);
+ 
+ 		/* Save regulator for cleanup */
+ 		pmic->rdev[i] = rdev;
+-- 
+2.32.0
 
---Sig_/9s8Qt82ZjAaJfCmL6FL0aXx
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEElVwAmOXEbvmhUkgUefNvslRdedAFAmDjZv8ACgkQefNvslRd
-edDSyQ//USdECkSZg6HZfGDxl+r02umdl3qf5K1cM904eDj8hSL2qsnvjC4ELPZY
-Sxugd3yZWiOMCbEcbUgC0yxr8RcpXmPz/TiwA7Nj24EJ7okGU8nbIuKWXjDBZ8Fz
-m3g37DaMp1NQ0MxuIb5Hk3ILroB8QD1oSHUCQEe5VHmhQSsEPUAf4tSkwguhSynr
-jq41nOYkqXH9/0KWFWBR3yjNwDLNae7j8cNzO3ND2EatgleJ1qD0A7xfi21u3uXh
-SJF6kK+lqff0ky5wTRZPNZn5shy2AdycL2dF8YonO8BS01dIWpGio2aMCNVfLXxZ
-4kGksqw09LjwLOXvSGxplXVCUAjz1UVynegZZRb3laY5ODlsqTT80ieWZr86dFal
-pq96Q81jIzL9Eg8tVhW4jjQIInf6+VuZVgzIu3ZhzZMVeMe6lP8IBR0qjq3K3/3D
-jvonOMGnO3OZqq/PtBAn8+R43z28Q+j50kCKF9GFe7Kev08d3Gq+itqJLSwaHKeL
-khWzJ7LyeIZ36O0wd/JZrKsiK2kxUccGNtwiZTA4HS/tyRak3ZBotqlAZe2qNXZv
-HBm/wM9J4Bc3fYhpdoT/zNAY5KgFuVjKxVhDB8gGE5Lm/ER5o0p0lmH8ziIbFpI/
-/9h1XmRuVDCUqw5R8k/xRO3rlMz9/AdOT0hx0cD96SzLAxgwL54=
-=Eg1A
------END PGP SIGNATURE-----
-
---Sig_/9s8Qt82ZjAaJfCmL6FL0aXx--
