@@ -2,107 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3103BB78A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C093BB78F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhGEHOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 03:14:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhGEHOG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 03:14:06 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01369C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 00:11:30 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id u11so19782171oiv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 00:11:29 -0700 (PDT)
+        id S229953AbhGEHPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 03:15:44 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:27440 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229817AbhGEHPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 03:15:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cZxArIjNZiHAGrhe17Yt+MUgYkYYP6oVJyNePuaLvQo=;
-        b=jt+4gUW9plZiaS9YkEY8ki1HyDF9NdX/e/lcWCxHXtVTkxPsdM/atRLxcFXqW9EKoQ
-         Yk+8PFQjcYz6Gh7CdGvunOQmap638MzLaAlLksr++j9bHRlLbL8wV5nO8nX1EWcFpoQt
-         sbhgTYq57PEOz8AZOImm/t05oInCAxLY6CmCGLfkAt3POBqiwYogq3YKLydmmNEbdjCO
-         CP3Y5Q8/vG+jn1uGyJDr1OUJZ0HnyhP1yka5f3m+DaUCZuRmchZwBw1HtSM8PLqvYlGE
-         lyPVZfHn1/aqNmhTBnX7KhboGSZBOlkeQR126yinmckoYg/AQm+OmDXVrqaz5R6vWJQu
-         libg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cZxArIjNZiHAGrhe17Yt+MUgYkYYP6oVJyNePuaLvQo=;
-        b=Xu8hZYJxXXxLhSZORSZTdfEcxjgC9PAc/ypFgqY4Cecy0ULeh0GNxwgxJg04/CXfyF
-         2FLBgYwVVejZR3hkhMNz1YGN4+V3Z3D0kKTu4YX8grZhbXdS2Efiq0dw+qpgH/gUVvya
-         1CsEWd5lmjb2/kMyMC+pahpKFwjlvRCzPJqL4y9SQMoQFGdyR7iwQ6nYyEbFDaU19kq5
-         cqAk5PRv7JadeuJq/BDWrAMvHMghDq88ehzVHqjSqhH02oXSSHwQiEoQeO5VjzLixWsl
-         d0gEV9mMdPKv1JrVzj6wOueLraRcD6AoKqtKM4jHMVrYN1nG+HVxlHqu4ibFtINEKj0o
-         XX6A==
-X-Gm-Message-State: AOAM531+NMbARuN15wWMQ8QfigzzH5YkJffcoCOJSrO1agSf63lHUds8
-        mlqZr8KlcW/f7nimDC2DVGhN7bJ2mE7LRT4/ywy7jg==
-X-Google-Smtp-Source: ABdhPJwxa4HxU03oGoZBalOKZcT2rSN8GgCgw22jAVdG6FeLKxYuzpzdZSzAMBm9hF/iaaAMYRfNBM3gbYi48NnAF8c=
-X-Received: by 2002:a05:6808:158b:: with SMTP id t11mr9184452oiw.8.1625469089197;
- Mon, 05 Jul 2021 00:11:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210628142607.32218-1-sashal@kernel.org> <20210628142607.32218-50-sashal@kernel.org>
- <20210703152144.GB3004@amd>
-In-Reply-To: <20210703152144.GB3004@amd>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Mon, 5 Jul 2021 08:10:47 +0100
-Message-ID: <CA+EHjTzO5Tsns4c6-7qXsyRtyGRwf4Yf_rBAPaVF303R1ih3EA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 049/101] KVM: selftests: Fix kvm_check_cap() assertion
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1625469187; x=1657005187;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=WFs6iuzL8MTjqxfVBFBGlzOm4RIn2wwlIlaO03FepJI=;
+  b=bPnE+a6PSn9nOfxEXGjf4bWO1bvR7pQZvzXO9/Df99WQGetZYBsSBeeR
+   CpAJpyTRqdrdqBJADjXgtQ94A01kvJro6c+w8Ekd+ZcBAZzkguzMGVyQG
+   dw67woxmj3LEJBuyM7S4+DKjt1TPBIxKLknOfF1qngyzJoRow762jwu8L
+   h2qLDzHbVD42miEcM/K503naYg0yvSa0RhK/RXpYGYmGzkfk9y1HCjQIm
+   ZkBWQdAxBNaIi4EAg5PbdSD30bRHt4LE4/GuqclD07XZ7Srwkf8u1HASu
+   qVw3jLUYhDifmd+iFY/Qse61xIund69iV7vAqSmu2DSB1bdDg/4oXlaL0
+   g==;
+X-IronPort-AV: E=Sophos;i="5.83,325,1616454000"; 
+   d="scan'208";a="18268919"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 05 Jul 2021 09:13:05 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Mon, 05 Jul 2021 09:13:05 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Mon, 05 Jul 2021 09:13:05 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1625469185; x=1657005185;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=WFs6iuzL8MTjqxfVBFBGlzOm4RIn2wwlIlaO03FepJI=;
+  b=fX9Qdpz8A0eRAksLNfmOq/9UAbh5ThVynvVMO94j92LYW78pWacZbFk0
+   /VqWBwhGI+zmj6PuGuXQx6TLV7EoWktV4b6NotTwkB2rf6C9oOIxJzcqy
+   Hm2AuX064/ELC3XjVuqrGb3IdHL7BjpyukLQokeaKmqhQFTjMTwCYmzh1
+   xCyzX9OHqBsXO+4rkRV3bbIvhcMTNl/6zL7N9PhzFr1ML+Ri1PjzcDhn1
+   RU0wSj/vH+vhab61B6MnE28DzQymPXAGJDWZj/BrPT0elraiHbfrF7x8O
+   06wvJ/oMyNx8TY+dCeSW4Q6Fei93aBglq0aVk94mOyCeHz6wFaHjBdQxy
+   g==;
+X-IronPort-AV: E=Sophos;i="5.83,325,1616454000"; 
+   d="scan'208";a="18268918"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 05 Jul 2021 09:13:05 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 16D9C280070;
+        Mon,  5 Jul 2021 09:13:05 +0200 (CEST)
+Message-ID: <be0f9d179f0adcc13f46c0b8d36bec78fa99c2e6.camel@ew.tq-group.com>
+Subject: Re: [PATCH v2 0/7] TQMx86: TQMx110EB and TQMxE40x MFD/GPIO support
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 05 Jul 2021 09:13:02 +0200
+In-Reply-To: <YN8Xhu3XXGeLAlhj@lunn.ch>
+References: <cover.1625227382.git.matthias.schiffer@ew.tq-group.com>
+         <YN8Xhu3XXGeLAlhj@lunn.ch>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Hi Pavel,
+On Fri, 2021-07-02 at 15:41 +0200, Andrew Lunn wrote:
+> On Fri, Jul 02, 2021 at 02:23:46PM +0200, Matthias Schiffer wrote:
+> > Updated patch series:
+> > 
+> > - A number of new patches (more hardware support and a few fixes)
+> > - Patches 1-3 have gained Fixes tags
+> > - Patch 2 depends on 1, so maybe we can push the GPIO patch through the
+> >   MFD tree to keep them together?
+> > - The change in patch 7 was somewhat controversial. I've added a
+> >   warning, but it is the last patch of the series, so it doesn't affect
+> >   the rest of the series if it is rejected.
+> 
+> Hi Matthias
+> 
+> Nice to see the vendor involved. That does not happen enough.
+> 
+> Please split these into fixes and new features. They go into different
+> trees, so splitting them makes it easier for the maintainers.
+> 
+> I would also suggest splitting the patches per subsystem, and send
+> them to the specific subsystem maintainer. The exception would be when
+> there is cross subsystem dependencies.
+> 
+>      Andrew
 
-On Sat, Jul 3, 2021 at 4:21 PM Pavel Machek <pavel@denx.de> wrote:
->
-> Hi!
->
-> > From: Fuad Tabba <tabba@google.com>
-> >
-> > [ Upstream commit d8ac05ea13d789d5491a5920d70a05659015441d ]
-> >
-> > KVM_CHECK_EXTENSION ioctl can return any negative value on error,
-> > and not necessarily -1. Change the assertion to reflect that.
-> >
-> > Signed-off-by: Fuad Tabba <tabba@google.com>
->
-> This is userland code, right?
->
-> > +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> > @@ -55,7 +55,7 @@ int kvm_check_cap(long cap)
-> >               exit(KSFT_SKIP);
-> >
-> >       ret = ioctl(kvm_fd, KVM_CHECK_EXTENSION, cap);
-> > -     TEST_ASSERT(ret != -1, "KVM_CHECK_EXTENSION IOCTL failed,\n"
-> > +     TEST_ASSERT(ret >= 0, "KVM_CHECK_EXTENSION IOCTL failed,\n"
-> >               "  rc: %i errno: %i", ret, errno);
+Hi Andrew,
 
-There's at least one case that I am aware of that potentially would
-return a value other than -1 on error, which is a check for
-KVM_CAP_MSI_DEVID (-EINVAL, -22):
+thanks for the quick review.
 
-https://elixir.bootlin.com/linux/latest/source/arch/arm64/kvm/arm.c#L229
+As mentioned in the cover letter, patch 2 depends on 1, so I think it
+would make sense to push all through the MFD tree, including the GPIO
+fix.
 
-Also, considering that this is test code, it might be good to have the
-check be as strict as possible.
+I guess patches 5 and 6 would be covered by the "new device IDs and
+quirks" rule of the stable kernel rules. Does that mean they should
+also go through the "fixes" rather than the "next" branch, making 4 and
+7 the only ones for "next"?
 
-Cheers,
-/fuad
+Should I add "Cc: stable@vger.kernel.org" to all patches for the
+"fixes" tree?
 
-> And syscalls return -1 on error in userland, not anything else. So
-> this should not be needed.
->
-> Best regards,
->                                                                 Pavel
-> --
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Kind regards,
+Matthias
+
