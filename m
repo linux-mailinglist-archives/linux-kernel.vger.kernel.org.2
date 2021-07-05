@@ -2,114 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27BB3BB798
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548AD3BB79A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbhGEHQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 03:16:29 -0400
-Received: from mga17.intel.com ([192.55.52.151]:47704 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229941AbhGEHQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 03:16:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10035"; a="189314758"
-X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
-   d="scan'208";a="189314758"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 00:13:49 -0700
-X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
-   d="scan'208";a="422279299"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 00:13:46 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id BBB5420188;
-        Mon,  5 Jul 2021 10:13:43 +0300 (EEST)
-Date:   Mon, 5 Jul 2021 10:13:43 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Stefan Riedmueller <s.riedmueller@phytec.de>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-Subject: Re: [PATCH v3 1/6] media: mt9p031: Read back the real clock rate
-Message-ID: <20210705071343.GR3@paasikivi.fi.intel.com>
-References: <20210702095922.118614-1-s.riedmueller@phytec.de>
- <20210702095922.118614-2-s.riedmueller@phytec.de>
+        id S229907AbhGEHRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 03:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229884AbhGEHRq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 03:17:46 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B04C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 00:15:10 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id hc16so27654684ejc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 00:15:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9ykkqmppWnyrslZWxdlWEu20g35sW6pBGKuevoDuJtE=;
+        b=UUaCkbZyLKctdNEs96AGfrx0lVlXJ2vW1OfUs4K3VibMRD7JyshiaVi+/gp5ECkqRZ
+         R8jES1wRnq9pKAyfQMK7AtUY3QP0gEf0AVDEiS0cXwgQrZ4LUgCv0caFrO26YNeUYIgi
+         XHDTkxvDSdrsOvJVxFhAspsYtZVmvTLn9aiiQGUi2676TpQ3ExdDvD5BD8uf+BWN4k0L
+         szUGfZOE/oAh10F4K9rQdiSh6f0kbnIqWIQZ3om6NXXkhoOyP5ufrzgCHx0X/XlGVtLD
+         5Yrts4dWvA4WeuKcSABOU19BHaUDR+nmSN+wthysbaarHZoTSex9ZUYtAmO5fwhsJQk9
+         GF+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9ykkqmppWnyrslZWxdlWEu20g35sW6pBGKuevoDuJtE=;
+        b=KVCD/CGRdKP9wvahtTpGt/dQbAZ8dzdi0+ZQYb9xBT4M5Asw0oqoBBrsAf/IWFVfFK
+         oiFbdENMrBQW677t/LjjQOgRTQC2CRssDjOSy3neb3aYX0U2m11i4CvvuoTdZq4fYMP9
+         VMChgMHPOlp33ct78lEpzXNE6HRXd+MhddIYRG1963LTPaaKeSmvknmqHozuWrcWNcak
+         qFebxw7ehNsrtwRf+XvYlOgMjhrBZrEc+LkC5SOnw8t98BChbxOZP2+6z1XrKJIPySTS
+         run2XgO1+2RehYm2atKe+/J8XmXwNBc5j52EcdGVSi822aC3KZndivKAn/Tt+4g1FSHo
+         goYQ==
+X-Gm-Message-State: AOAM5338rulbvVzNbeZk6/gKCUaoV1v11ESGGrSmjuxeNH68gMH5T/rW
+        j3lHK7/no9AK/LwHSWJiz6ra/A==
+X-Google-Smtp-Source: ABdhPJxz/16L2ufkgqfkMVdBuWiZ1CyZN9q/L++yakSFkA9g9URIAlBLI7o3S8S4Z6uMpL1PRW0tgg==
+X-Received: by 2002:a17:906:36d5:: with SMTP id b21mr11994516ejc.258.1625469308728;
+        Mon, 05 Jul 2021 00:15:08 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id n22sm3973823eje.3.2021.07.05.00.15.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 00:15:07 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH v2 1/2] iio: light: adjd_s311: move buffer on adjd_s311_data object
+Date:   Mon,  5 Jul 2021 10:14:55 +0300
+Message-Id: <20210705071456.649659-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210702095922.118614-2-s.riedmueller@phytec.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Enrico,
+This change moves the entire buffer on the private adjd_s311_data type.
+Since the device has 4 channels, it's not a big waste to just allocate the
+maximum possible buffer and use only what's needed.
 
-On Fri, Jul 02, 2021 at 11:59:17AM +0200, Stefan Riedmueller wrote:
-> From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-> 
-> The real and requested clock can differ and because it is used to
-> calculate PLL values, the real clock rate should be read.
+This is in contrast with free-ing and re-allocating the buffer on the
+update_scan_mode hook.
 
-Do you have a system where this happens? That suggests there's a wrong
-value in DT.
+Since the driver pushes buffer data with
+iio_push_to_buffers_with_timestamp(), the buffer must also include a
+64-bit buffer for the timestamp, for each sample-set.
 
-The preference nowadays is to rely on assigned-clock-rates, even though
-it's inherently somewhat unreliable, just as clk_set_rate(). This is an
-existing driver though. The old ones could be kept for compatibility with
-older DT binaries.
+With this change, the adjd_s311_update_scan_mode() is no longer needed.
 
-> 
-> Signed-off-by: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> ---
->  drivers/media/i2c/mt9p031.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
-> index 77567341ec98..3eaaa8d44523 100644
-> --- a/drivers/media/i2c/mt9p031.c
-> +++ b/drivers/media/i2c/mt9p031.c
-> @@ -255,6 +255,7 @@ static int mt9p031_clk_setup(struct mt9p031 *mt9p031)
->  
->  	struct i2c_client *client = v4l2_get_subdevdata(&mt9p031->subdev);
->  	struct mt9p031_platform_data *pdata = mt9p031->pdata;
-> +	unsigned long ext_freq;
->  	int ret;
->  
->  	mt9p031->clk = devm_clk_get(&client->dev, NULL);
-> @@ -265,13 +266,15 @@ static int mt9p031_clk_setup(struct mt9p031 *mt9p031)
->  	if (ret < 0)
->  		return ret;
->  
-> +	ext_freq = clk_get_rate(mt9p031->clk);
-> +
->  	/* If the external clock frequency is out of bounds for the PLL use the
->  	 * pixel clock divider only and disable the PLL.
->  	 */
-> -	if (pdata->ext_freq > limits.ext_clock_max) {
-> +	if (ext_freq > limits.ext_clock_max) {
->  		unsigned int div;
->  
-> -		div = DIV_ROUND_UP(pdata->ext_freq, pdata->target_freq);
-> +		div = DIV_ROUND_UP(ext_freq, pdata->target_freq);
->  		div = roundup_pow_of_two(div) / 2;
->  
->  		mt9p031->clk_div = min_t(unsigned int, div, 64);
-> @@ -280,7 +283,7 @@ static int mt9p031_clk_setup(struct mt9p031 *mt9p031)
->  		return 0;
->  	}
->  
-> -	mt9p031->pll.ext_clock = pdata->ext_freq;
-> +	mt9p031->pll.ext_clock = ext_freq;
->  	mt9p031->pll.pix_clock = pdata->target_freq;
->  	mt9p031->use_pll = true;
->  
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
 
+Changelog v1 -> v2:
+* https://patchwork.kernel.org/project/linux-iio/patch/20210628135132.73682-1-aardelean@deviqon.com/
+* split into 2 patches:
+  - first patch move the buffer on the adjd_s311_data object (i.e. this
+    patch)
+  - second patch to do the conversion to devm_ functions
+
+ drivers/iio/light/adjd_s311.c | 25 ++++++-------------------
+ 1 file changed, 6 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/iio/light/adjd_s311.c b/drivers/iio/light/adjd_s311.c
+index 17dac8d0e11d..caf852554897 100644
+--- a/drivers/iio/light/adjd_s311.c
++++ b/drivers/iio/light/adjd_s311.c
+@@ -54,7 +54,10 @@
+ 
+ struct adjd_s311_data {
+ 	struct i2c_client *client;
+-	u16 *buffer;
++	struct {
++		s16 chans[4];
++		s64 ts __aligned(8);
++	} scan;
+ };
+ 
+ enum adjd_s311_channel_idx {
+@@ -129,10 +132,10 @@ static irqreturn_t adjd_s311_trigger_handler(int irq, void *p)
+ 		if (ret < 0)
+ 			goto done;
+ 
+-		data->buffer[j++] = ret & ADJD_S311_DATA_MASK;
++		data->scan.chans[j++] = ret & ADJD_S311_DATA_MASK;
+ 	}
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer, time_ns);
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan, time_ns);
+ 
+ done:
+ 	iio_trigger_notify_done(indio_dev->trig);
+@@ -225,23 +228,9 @@ static int adjd_s311_write_raw(struct iio_dev *indio_dev,
+ 	return -EINVAL;
+ }
+ 
+-static int adjd_s311_update_scan_mode(struct iio_dev *indio_dev,
+-	const unsigned long *scan_mask)
+-{
+-	struct adjd_s311_data *data = iio_priv(indio_dev);
+-
+-	kfree(data->buffer);
+-	data->buffer = kmalloc(indio_dev->scan_bytes, GFP_KERNEL);
+-	if (data->buffer == NULL)
+-		return -ENOMEM;
+-
+-	return 0;
+-}
+-
+ static const struct iio_info adjd_s311_info = {
+ 	.read_raw = adjd_s311_read_raw,
+ 	.write_raw = adjd_s311_write_raw,
+-	.update_scan_mode = adjd_s311_update_scan_mode,
+ };
+ 
+ static int adjd_s311_probe(struct i2c_client *client,
+@@ -286,11 +275,9 @@ static int adjd_s311_probe(struct i2c_client *client,
+ static int adjd_s311_remove(struct i2c_client *client)
+ {
+ 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+-	struct adjd_s311_data *data = iio_priv(indio_dev);
+ 
+ 	iio_device_unregister(indio_dev);
+ 	iio_triggered_buffer_cleanup(indio_dev);
+-	kfree(data->buffer);
+ 
+ 	return 0;
+ }
 -- 
-Kind regards,
+2.31.1
 
-Sakari Ailus
