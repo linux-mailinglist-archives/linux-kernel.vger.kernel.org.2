@@ -2,155 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCA13BC1CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 18:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2E03BC1CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 18:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbhGEQxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 12:53:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
+        id S229793AbhGEQzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 12:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhGEQxk (ORCPT
+        with ESMTP id S229743AbhGEQzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 12:53:40 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09570C061574;
-        Mon,  5 Jul 2021 09:51:02 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id v20so29776663eji.10;
-        Mon, 05 Jul 2021 09:51:01 -0700 (PDT)
+        Mon, 5 Jul 2021 12:55:05 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F27DC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 09:52:28 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id g15so6103927qvi.13
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 09:52:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9sktkUxG3S8lSrJsfOUzMs562zEuFhtkrmIQvaJAQbs=;
-        b=PAN65IgOQWPTgYS4XZLZHRGGdkvq294r9wfNQDwpVZ5Sg2GIOhRwo0g8fFyw59GtNt
-         SnYVF8kTK7mUso6qcQ4inDbuWQA9sJtODauZhajT7M9iNRIItAybnue76L5pzqlcqWu+
-         /Da6qHd+hfWNEHFZsZT8xV7zJDyP61GHAb8jOqO/w5MFYv+6UarVIrblGHT1mO/bEncI
-         YNRON9A+EdESr5l4e7CzqQHLe1XO+M5pJc4dEq2VeYCWQh9NmukwWEwqMetAWkleHTWL
-         fqfSIibxL1vDYy6Y5rg2HNVQDftnM9q2IrJjkM6DwgaDah8dwFKAMHVneMNBZ4ZpEwMY
-         q53A==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TRW2liv0KvxRpEn1sZgxByQ6WPmBTh1GhCnSHVjnwbg=;
+        b=jBFIqWpkHJUwhFRIEXpavqYg2lOBnFUgtfMCAa51Keo5p1e7uaLLRwx5ShUDeIlhdM
+         2If2zjmjcfC5T6RoGkkweicUk3Qsx+2vRdseYI/0mJ+ciw96iBmUkpkVkiJE+86t8cyr
+         2oJc7CwvfA5oUIWZzMzGPAFug62Z67fj3p3Z3WgSBFHsqz4/BWGoOCucw+iLuagpvAH1
+         PpbSwCitf8MOcMx6/0YLotNGXe8rFb+KOw2NMKF5n5y/HAuQN75chVqThR99yPOEQKYA
+         xDWvGJSbbwBNR2Hg29azK+xEHKNYDfvZIIv02WRktmpruBPJPenBbq+963N6aPphnsv4
+         Bn7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9sktkUxG3S8lSrJsfOUzMs562zEuFhtkrmIQvaJAQbs=;
-        b=nYIF5Hjmj6gg2UFifxtXJKqgYeSjnXrXhIGDZxk1s0pCunf+iKzWlqOXSjUtlSJF+m
-         4WaG1SGrbBdddCaMkZlyVP1R595O/p4osTjHuuWZXvi6OlgUG+HNKQdu76f1xIX3UP8M
-         Rzrb4BVIeQRlOC+SoJsYYqGji0xRnwAb/7Ln0FJUeeo6WvKSE0iIUq2/bjI+Tt5cuQnX
-         BX0oKl30vsuYa8fKvy0jDCcbsryGilWQOy1W9jsbpkO23iG5ejc/Oeq6ldOJxV1jjFS/
-         3wepAlIQiWUAMJ12jhekx0VjGre5k+vnTI6WvExbZXqfbsTPeOHRmBcuIIsMI0Q0kZIY
-         AWWA==
-X-Gm-Message-State: AOAM530bbmq5pyg/htdMnMzEOp6kgtY+qJPAst2byiRQmxqDu4CTC/RM
-        p/vKKUxqwuitmN3bmTNiz7SFNukiw7l7gEkMpPw=
-X-Google-Smtp-Source: ABdhPJwEAdn1FYjN8xdmsvWsg+tPzoarkVZyD0e+MOk2C3iQV+A/xDvg/0hrjyhcaiYaUoORdbcjJW/FLbSvA7yUiMc=
-X-Received: by 2002:a17:906:24c3:: with SMTP id f3mr1922119ejb.145.1625503860490;
- Mon, 05 Jul 2021 09:51:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TRW2liv0KvxRpEn1sZgxByQ6WPmBTh1GhCnSHVjnwbg=;
+        b=IpsB6ucoi6MdKKsDABXlEo0kq023Gzf093esI4Tq91VT4j4LJCd6r+bi2q6SOnEolS
+         SV7YwQlpJhpj3UkvCe0NZ1R8o53EZptK4LvLK42ELCxbxjUxngLfHRBLyuHNOekZbECU
+         dNwZnKidH1diGaugvfCuEhNCnunAh3pwqwvQDxVA17O3Uo16PD0gq8onGlialhXHMebg
+         nYsihzOTqnDA16t5emZ5xSyHuycZdg2UMSMOCLn5ZM1maku4jHZHBc8T7vlxalkGPaN4
+         8tAMgQ3bYktikb1roOxpmEwi8c3dYGz5s9oe+7EVaiGN5a7R3a8g5bsWeGh9iNhqFYz2
+         PmlQ==
+X-Gm-Message-State: AOAM531QHzUW1GkQAd5I/MKjwyQxpEhu77W0tMl4GA/wsbvHMXyz6R7J
+        ck/fAVAW4FP5H9f4G1fuHGqO3Q==
+X-Google-Smtp-Source: ABdhPJw/xzr3myWPCDkP4OYKH+JUqyzPcaaW7tJ0//CdDzso+M0bp2m0674/I/B/gC+TTQwFiqkSng==
+X-Received: by 2002:a0c:ef51:: with SMTP id t17mr13560008qvs.14.1625503947734;
+        Mon, 05 Jul 2021 09:52:27 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id 82sm5694070qke.63.2021.07.05.09.52.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 09:52:27 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1m0Rpa-003sCS-IC; Mon, 05 Jul 2021 13:52:26 -0300
+Date:   Mon, 5 Jul 2021 13:52:26 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        daniel.vetter@ffwll.ch, galpress@amazon.com, sleybo@amazon.com,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, dledford@redhat.com,
+        airlied@gmail.com, alexander.deucher@amd.com, leonro@nvidia.com,
+        hch@lst.de, amd-gfx@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, Tomer Tayar <ttayar@habana.ai>
+Subject: Re: [PATCH v4 2/2] habanalabs: add support for dma-buf exporter
+Message-ID: <20210705165226.GJ4604@ziepe.ca>
+References: <20210705130314.11519-1-ogabbay@kernel.org>
+ <20210705130314.11519-3-ogabbay@kernel.org>
 MIME-Version: 1.0
-References: <20210701152825.265729-1-jglisse@redhat.com> <CAMpxmJX_3eu+8Oxg2UgiifwD=qwJYM3-qCqwxseM1mnLbn5fJA@mail.gmail.com>
-In-Reply-To: <CAMpxmJX_3eu+8Oxg2UgiifwD=qwJYM3-qCqwxseM1mnLbn5fJA@mail.gmail.com>
-From:   Alexander Fomichev <fomichev.ru@gmail.com>
-Date:   Mon, 5 Jul 2021 19:50:49 +0300
-Message-ID: <CAEKnZG5TmoR44dOmK9KmHnWogHvd7MGVXjdXWgew+9smuGEOCg@mail.gmail.com>
-Subject: Re: [PATCH] misc: eeprom: at24: Always append device id even if label
- property is set.
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Diego Santa Cruz <Diego.SantaCruz@spinetix.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        "Stable # 4 . 20+" <stable@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>, linux@yadro.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705130314.11519-3-ogabbay@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The proposed patch has been tested and it solves the problem.
-Thanks.
+On Mon, Jul 05, 2021 at 04:03:14PM +0300, Oded Gabbay wrote:
 
-Tested-by: Alexander Fomichev <fomichev.ru@gmail.com>
+> +	rc = sg_alloc_table(*sgt, nents, GFP_KERNEL | __GFP_ZERO);
+> +	if (rc)
+> +		goto error_free;
 
-=D1=87=D1=82, 1 =D0=B8=D1=8E=D0=BB. 2021 =D0=B3. =D0=B2 19:47, Bartosz Gola=
-szewski <bgolaszewski@baylibre.com>:
->
-> On Thu, Jul 1, 2021 at 5:28 PM <jglisse@redhat.com> wrote:
-> >
-> > From: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> >
-> > We need to append device id even if eeprom have a label property set as=
- some
-> > platform can have multiple eeproms with same label and we can not regis=
-ter
-> > each of those with same label. Failing to register those eeproms trigge=
-r
-> > cascade failures on such platform (system is no longer working).
-> >
-> > This fix regression on such platform introduced with 4e302c3b568e
-> >
-> > Signed-off-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> > Cc: Diego Santa Cruz <Diego.SantaCruz@spinetix.com>
-> > Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > Cc: Jon Hunter <jonathanh@nvidia.com>
-> > Cc: stable@vger.kernel.org
-> > Cc: linux-i2c@vger.kernel.org
-> > ---
-> >  drivers/misc/eeprom/at24.c | 17 +++++++----------
-> >  1 file changed, 7 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-> > index 7a6f01ace78a..305ffad131a2 100644
-> > --- a/drivers/misc/eeprom/at24.c
-> > +++ b/drivers/misc/eeprom/at24.c
-> > @@ -714,23 +714,20 @@ static int at24_probe(struct i2c_client *client)
-> >         }
-> >
-> >         /*
-> > -        * If the 'label' property is not present for the AT24 EEPROM,
-> > -        * then nvmem_config.id is initialised to NVMEM_DEVID_AUTO,
-> > -        * and this will append the 'devid' to the name of the NVMEM
-> > -        * device. This is purely legacy and the AT24 driver has always
-> > -        * defaulted to this. However, if the 'label' property is
-> > -        * present then this means that the name is specified by the
-> > -        * firmware and this name should be used verbatim and so it is
-> > -        * not necessary to append the 'devid'.
-> > +        * We initialize nvmem_config.id to NVMEM_DEVID_AUTO even if th=
-e
-> > +        * label property is set as some platform can have multiple eep=
-roms
-> > +        * with same label and we can not register each of those with s=
-ame
-> > +        * label. Failing to register those eeproms trigger cascade fai=
-lure
-> > +        * on such platform.
-> >          */
-> > +       nvmem_config.id =3D NVMEM_DEVID_AUTO;
-> > +
-> >         if (device_property_present(dev, "label")) {
-> > -               nvmem_config.id =3D NVMEM_DEVID_NONE;
-> >                 err =3D device_property_read_string(dev, "label",
-> >                                                   &nvmem_config.name);
-> >                 if (err)
-> >                         return err;
-> >         } else {
-> > -               nvmem_config.id =3D NVMEM_DEVID_AUTO;
-> >                 nvmem_config.name =3D dev_name(dev);
-> >         }
-> >
-> > --
-> > 2.31.1
-> >
->
-> Cc'ing Alexander Fomichev who reported this issue first.
->
-> This is the second time someone raises this problem so it seems that
-> this change really broke many existing systems. I will apply this
-> patch and send it for stable.
->
-> Bart
+If you are not going to include a CPU list then I suggest setting
+sg_table->orig_nents == 0
 
+And using only the nents which is the length of the DMA list.
 
+At least it gives some hope that other parts of the system could
+detect this.
 
---=20
-=D0=A1 =D1=83=D0=B2=D0=B0=D0=B6=D0=B5=D0=BD=D0=B8=D0=B5=D0=BC,
-=D0=90=D0=BB=D0=B5=D0=BA=D1=81=D0=B0=D0=BD=D0=B4=D1=80 =D0=A4=D0=BE=D0=BC=
-=D0=B8=D1=87=D1=91=D0=B2.
+> +
+> +	/* Merge pages and put them into the scatterlist */
+> +	cur_page = 0;
+> +	for_each_sgtable_sg((*sgt), sg, i) {
+
+for_each_sgtable_sg should never be used when working with
+sg_dma_address() type stuff, here and everywhere else. The DMA list
+should be iterated using the for_each_sgtable_dma_sg() macro.
+
+> +	/* In case we got a large memory area to export, we need to divide it
+> +	 * to smaller areas because each entry in the dmabuf sgt can only
+> +	 * describe unsigned int.
+> +	 */
+
+Huh? This is forming a SGL, it should follow the SGL rules which means
+you have to fragment based on the dma_get_max_seg_size() of the
+importer device.
+
+> +	hl_dmabuf->pages = kcalloc(hl_dmabuf->npages, sizeof(*hl_dmabuf->pages),
+> +								GFP_KERNEL);
+> +	if (!hl_dmabuf->pages) {
+> +		rc = -ENOMEM;
+> +		goto err_free_dmabuf_wrapper;
+> +	}
+
+Why not just create the SGL directly? Is there a reason it needs to
+make a page list?
+
+Jason
