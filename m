@@ -2,203 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E100E3BB881
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 013463BB88B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhGEIDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 04:03:42 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52170 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbhGEIDl (ORCPT
+        id S230078AbhGEIF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 04:05:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230041AbhGEIFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:03:41 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 75D791FE10;
-        Mon,  5 Jul 2021 08:01:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625472063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zCG1o1PoHWgd44Q4byX5kHQ41zaAVuorzbR1iXUBkd0=;
-        b=DGk4atwdt7kKtr+EZhtgn9O/plJKHRKbq9nkZzEDN2FiCDVnEcYK91OwaOwflqi39Stm2n
-        FN2xI2Y7jC9I6Pn+OKTF76RtNS/Vr7WLT6/qKOAsG7LaQt3so6xJ/jfsAVz03yRlimuKXb
-        dotKik+Qz9CW19vNYpZfBQckDTAiONs=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 4C9DA139A1;
-        Mon,  5 Jul 2021 08:01:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id QSxPET+84mD5LgAAGKfGzw
-        (envelope-from <jgross@suse.com>); Mon, 05 Jul 2021 08:01:03 +0000
-Subject: Re: [PATCH -next] xen: Use DEVICE_ATTR_*() macro
-To:     YueHaibing <yuehaibing@huawei.com>, boris.ostrovsky@oracle.com,
-        sstabellini@kernel.org
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <20210526141019.13752-1-yuehaibing@huawei.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <c3d4bd4c-7012-ec9b-733c-e3db19d2dc7b@suse.com>
-Date:   Mon, 5 Jul 2021 10:01:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Mon, 5 Jul 2021 04:05:25 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EB4C061760
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 01:02:47 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id cs1-20020a17090af501b0290170856e1a8aso14334350pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 01:02:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7HFtrvl8Hp3RAM/FFfn+6kiIZNa9TUM0Rjxm9S07BYU=;
+        b=wT20aR19P0l8+aXdUbQcBT2ncbwV7FLfcH5+V03YDNNqKv6/W87Yd4qmTk6DrcK30g
+         DvdQhRcrJe9G3BFaoFV5p4WrmgUYKk3+u3X4UvHFL0rNEX3TkXe2iLY38CprPo955Xzk
+         jXw1t1JN2FhA8XTxNXav8VU91f4SYPjClLB2etFbnaARMLCB1puhJz8RBotc77tIGNYG
+         YqVZkWZTcmUltC94eZPNzm9ddh9ayqP2+UMdqYc/uXD+lDCeqntSEOoRDnRI80vOfihc
+         4Rwft7IiiyvdBJHDpT7OmrenOGha/+t3Zh7rTwhzsLC3HMMBQmC6moV+GZbSHYxhWGsY
+         5KAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7HFtrvl8Hp3RAM/FFfn+6kiIZNa9TUM0Rjxm9S07BYU=;
+        b=Fks5B5K5cx0VbQE7oYpFH08nrA7cUXBYFFSIJb5l/W9UdtDfXoKAxuEHLp0MYJ9G5h
+         p5yDFb3/wxE+a1IC8N5PK1IQEZw9CGXQxKQZ8RaN1GsJXatNccpRwp+gSMixuRJSrC/d
+         gXadcjsmCqk99vk9XOAUm/7oRABHOKh+mwjJUfYMQOxl/oyxyqMJ7NDCFjHLJ8XnFFaD
+         wOlg+HDC9XaIRkYA6IGYfH7J0slbywJOOFjkbsAYbyY/qt9JrfnDtcxuKql/r5wK3PcP
+         TzpzXENAlygA0cIZSuIRoNb7sNqgCA+i+RcFbFT2H2Ouad5YELJjvzcnu7RUzJYNE/Ms
+         zH5Q==
+X-Gm-Message-State: AOAM533Gj3K4usSE+55SeGjwoAmdQ7bhMYsRZDtNcL/VsESt8pU9CV1M
+        7pgWqyNb/H99Nze4W3VrnSo0uA==
+X-Google-Smtp-Source: ABdhPJzpiH5Tj6rIdJ6BpWrt9yRBYxI8qI2sTP9njbWlR/EiBwQY+vKPW1G7o0sV6W/XsAOUrtBk/A==
+X-Received: by 2002:a17:902:e848:b029:129:2e87:9944 with SMTP id t8-20020a170902e848b02901292e879944mr11397658plg.27.1625472167343;
+        Mon, 05 Jul 2021 01:02:47 -0700 (PDT)
+Received: from localhost ([106.201.108.2])
+        by smtp.gmail.com with ESMTPSA id v14sm13323329pgo.89.2021.07.05.01.02.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 01:02:46 -0700 (PDT)
+Date:   Mon, 5 Jul 2021 13:32:45 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wsa@kernel.org,
+        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
+        stefanha@redhat.com, gregkh@linuxfoundation.org
+Subject: Re: [PATCH v13] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210705080245.yabjlrgje5l7vndt@vireshk-i7>
+References: <8908f35a741e25a630d521e1012494e67d31ea64.1625466616.git.jie.deng@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210526141019.13752-1-yuehaibing@huawei.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="EtmeGcJPJZcXsKIlHqF5OFNd2RoHRw5R9"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8908f35a741e25a630d521e1012494e67d31ea64.1625466616.git.jie.deng@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---EtmeGcJPJZcXsKIlHqF5OFNd2RoHRw5R9
-Content-Type: multipart/mixed; boundary="tBOwrfiwH6vWztjNsO7LDxZno6xcwWQ2E";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: YueHaibing <yuehaibing@huawei.com>, boris.ostrovsky@oracle.com,
- sstabellini@kernel.org
-Cc: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Message-ID: <c3d4bd4c-7012-ec9b-733c-e3db19d2dc7b@suse.com>
-Subject: Re: [PATCH -next] xen: Use DEVICE_ATTR_*() macro
-References: <20210526141019.13752-1-yuehaibing@huawei.com>
-In-Reply-To: <20210526141019.13752-1-yuehaibing@huawei.com>
+Hi Jie.
 
---tBOwrfiwH6vWztjNsO7LDxZno6xcwWQ2E
-Content-Type: multipart/mixed;
- boundary="------------38A98B3C80FA94D29300F6F4"
-Content-Language: en-US
+On 05-07-21, 14:53, Jie Deng wrote:
+> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
+> +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
+> +				    struct virtio_i2c_req *reqs,
+> +				    struct i2c_msg *msgs, int nr,
+> +				    bool fail)
+> +{
+> +	struct virtio_i2c_req *req;
+> +	bool failed = fail;
+> +	unsigned int len;
+> +	int i, j = 0;
+> +
+> +	for (i = 0; i < nr; i++) {
+> +		/* Detach the ith request from the vq */
+> +		req = virtqueue_get_buf(vq, &len);
 
-This is a multi-part message in MIME format.
---------------38A98B3C80FA94D29300F6F4
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Calling this for cases where virtio_i2c_prepare_reqs() itself has failed will
+always return NULL, should we even try to call this then ?
 
-On 26.05.21 16:10, YueHaibing wrote:
-> Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR(),
-> which makes the code a bit shorter and easier to read.
->=20
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+virtqueue_get_buf() returns the next used buffer only, i.e. returned by the host
+?
 
-Pushed to xen/tip.git for-linus-5.14
+> +
+> +		/*
+> +		 * Condition (req && req == &reqs[i]) should always meet since
+> +		 * we have total nr requests in the vq.
+> +		 */
+> +		if (!failed && (WARN_ON(!(req && req == &reqs[i])) ||
 
+Mentioning again for completeness of the review, reqs[i] can never be NULL here
+though req can be. And even in that case you never need to check req here.
 
-Juergen
+Feel free to ignore it if you want, we can always send a fixup patch later and
+discuss it further :)
 
---------------38A98B3C80FA94D29300F6F4
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+> +		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)))
+> +			failed = true;
+> +
+> +		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], !failed);
+> +		if (!failed)
+> +			j++;
+> +	}
+> +
+> +	return fail ? 0 : j;
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+Since you don't return ETIMEDOUT anymore, you can simply return j now. And so we
+can work with a single failed argument and don't need both fail and failed.
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+> +}
+> +
+> +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+> +{
+> +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
+> +	struct virtqueue *vq = vi->vq;
+> +	struct virtio_i2c_req *reqs;
+> +	unsigned long time_left;
+> +	int ret;
+> +
+> +	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
+> +	if (!reqs)
+> +		return -ENOMEM;
+> +
+> +	ret = virtio_i2c_prepare_reqs(vq, reqs, msgs, num);
+> +	if (ret != num) {
+> +		ret = virtio_i2c_complete_reqs(vq, reqs, msgs, ret, true);
+> +		goto err_free;
+> +	}
+> +
+> +	reinit_completion(&vi->completion);
+> +	virtqueue_kick(vq);
+> +	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
+> +	ret = virtio_i2c_complete_reqs(vq, reqs, msgs, num, !time_left);
+> +
+> +	if (!time_left) {
+> +		ret = -ETIMEDOUT;
+> +		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
+> +	}
+> +
+> +err_free:
+> +	kfree(reqs);
+> +	return ret;
+> +}
 
---------------38A98B3C80FA94D29300F6F4--
+> diff --git a/include/uapi/linux/virtio_i2c.h b/include/uapi/linux/virtio_i2c.h
+> new file mode 100644
+> index 0000000..df936a2
+> --- /dev/null
+> +++ b/include/uapi/linux/virtio_i2c.h
+> @@ -0,0 +1,41 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later WITH Linux-syscall-note */
+> +/*
+> + * Definitions for virtio I2C Adpter
+> + *
+> + * Copyright (c) 2021 Intel Corporation. All rights reserved.
+> + */
+> +
+> +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
+> +#define _UAPI_LINUX_VIRTIO_I2C_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/const.h>
 
---tBOwrfiwH6vWztjNsO7LDxZno6xcwWQ2E--
+Both of these need to be the uapi headers as Andy said earlier and they better
+be in alphabetical order.
 
---EtmeGcJPJZcXsKIlHqF5OFNd2RoHRw5R9
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+#include <uapi/linux/const.h>
+#include <uapi/linux/types.h>
 
------BEGIN PGP SIGNATURE-----
+Though in your support, I do see a lot of files in uapi/linux using the standard
+types.h, which looks wrong as that types.h is not a userspace ABI.
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDivD4FAwAAAAAACgkQsN6d1ii/Ey8q
-Mwf+NF8idU9BsY+BSFf/2P5xnabC58++xUwUpeVX9mIqb79Jy94887c5EDT6EkMBDAZKUy3W/TCf
-OKsNRuQg6qKA6Am7IN2WJgRmRz28ZVIXawmDnO3XZq++Idr9pVROG6xLxmw34vs0PnL6QTQ+4e5D
-SsmlmmMLLIF7A7/GkZ45dd/QzEIMyTeFNc6NAnhmccMQaVyVavCLSKSZNrTky+y9+xOGmP1S+ZDK
-kwje71XNi77tMb9tZAELo6XBGsZsCoTweXWejh+uyYDDMktUAqFfyr6IVZqZmab9pP5LSi+c2kph
-mI379lzsFgfJ6XsjfmQRch4bsEMDP1rC2QwKzO+IGw==
-=r57y
------END PGP SIGNATURE-----
-
---EtmeGcJPJZcXsKIlHqF5OFNd2RoHRw5R9--
+-- 
+viresh
