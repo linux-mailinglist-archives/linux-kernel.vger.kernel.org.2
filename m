@@ -2,152 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68DA3BB82B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF0D3BB82D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhGEHtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 03:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhGEHtu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 03:49:50 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DBBC061574;
-        Mon,  5 Jul 2021 00:47:12 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id y40so7416196ede.4;
-        Mon, 05 Jul 2021 00:47:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3lU+yaKyB51Nd0BK8K42+im13NtdWR4bDe3Aamdm8jM=;
-        b=uL2q1Zm27Mou4aR++Qi4k2PhgTcOxmTaP/AvPFFD6VwvtpuVHyKE+SeDhn9TagmhLM
-         gAUS+muSbU17ieGtmK6jbT3cVJ1D2VAdrTPbA2KDHp9BJ47Blcxph91HM9uAxUeHe+xq
-         6oA9502f2xIpoXh/nGgdlrE07cDFvnvonT3fhqoEyotKc3pba1Evzn7QSt73TMejW+X3
-         5Dx6/3ghkpKVg76hBPLASmOgrjkx4it6ctWl9fA1+FXW7Z4So0zQLyzyLGqc5LrkHj9m
-         UWRfTqUBaYfHwqKFDN4Z2CTBr+xWVeAk0A1rubFbE1AuVe76++CPrUk5XHWmByVPHqup
-         vHMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3lU+yaKyB51Nd0BK8K42+im13NtdWR4bDe3Aamdm8jM=;
-        b=HdlFlocNrTpzEPgFkSCZBtE4/TjV2LsHpGBIU56oqs5DleA0A+g7aKza8qmSNCwczG
-         mf3gfz9uUeqft//+n+PYSf8yrh06fuIkOEl4tqtokSu9hMiORQ6FoUd9kQKoY/0XjwU0
-         e8a+JPC012HopLeiE0UDm5YwV9QfpN3+cU8TwzbUt0RaYqIiOhVthxpMxisiPsm5Pnzy
-         z4EGRmu9FdI14GXF0BBSUs8X1W77oeKz/WNxdvtL7cvMmU5qKkRLuenNgM4YGLfx+dxM
-         nzbbP76WKtmWAG78KwmrUPpae9QhBq22tyqWXB6tEES+u0ySCiqrnEb53tOQf6b4pHLI
-         C1vg==
-X-Gm-Message-State: AOAM531msBmAVjNghkuZumL4Rm4P2BCXkSm7PmjTJlL51+AffI3P66Wp
-        BNmRLxX//Mg6ZZ0tW8czITlrgVjmuTzZXp+JeyY=
-X-Google-Smtp-Source: ABdhPJz69wsIJaVHAjEsyhlptcdaiCA6lkPbcEgV2ZN7vTcn2KJseSzhclcqBiPPooE+gAluDhZBtkKzSUMJypwiJb4=
-X-Received: by 2002:a05:6402:430f:: with SMTP id m15mr2352655edc.113.1625471231421;
- Mon, 05 Jul 2021 00:47:11 -0700 (PDT)
+        id S230088AbhGEHt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 03:49:57 -0400
+Received: from mga09.intel.com ([134.134.136.24]:22268 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230053AbhGEHty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 03:49:54 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10035"; a="208895523"
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="208895523"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 00:47:12 -0700
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="496033702"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 00:47:10 -0700
+Subject: Re: [kbuild-all] Re: kernel/time/clocksource-wdtest.c:47:22: warning:
+ signed shift result (0x27BC86B00) requires 35 bits to represent, but 'long'
+ only has 32 bits
+To:     paulmck@kernel.org, kernel test robot <lkp@intel.com>
+Cc:     clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+References: <202107040532.wqL30yFp-lkp@intel.com>
+ <20210704174310.GR4397@paulmck-ThinkPad-P17-Gen-1>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <254ab0ec-2c25-29fd-cbe1-eaf2bc135326@intel.com>
+Date:   Mon, 5 Jul 2021 15:47:09 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <20210702045120.22855-1-aaron.ma@canonical.com>
-In-Reply-To: <20210702045120.22855-1-aaron.ma@canonical.com>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Mon, 5 Jul 2021 17:47:00 +1000
-Message-ID: <CAPM=9twzx0aa5Dq-L5oOSk+w8z7audCq_biXwtFVh3QVY1VceA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] igc: don't rd/wr iomem when PCI is removed
-To:     Aaron Ma <aaron.ma@canonical.com>
-Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        intel-wired-lan@lists.osuosl.org,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210704174310.GR4397@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Jul 2021 at 14:53, Aaron Ma <aaron.ma@canonical.com> wrote:
->
-> Check PCI state when rd/wr iomem.
-> Implement wr32 function as rd32 too.
->
-> When unplug TBT dock with i225, rd/wr PCI iomem will cause error log:
-> Trace:
-> BUG: unable to handle page fault for address: 000000000000b604
-> Oops: 0000 [#1] SMP NOPTI
-> RIP: 0010:igc_rd32+0x1c/0x90 [igc]
-> Call Trace:
-> igc_ptp_suspend+0x6c/0xa0 [igc]
-> igc_ptp_stop+0x12/0x50 [igc]
-> igc_remove+0x7f/0x1c0 [igc]
-> pci_device_remove+0x3e/0xb0
-> __device_release_driver+0x181/0x240
->
-> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
-> ---
-
-Drive-by, but won't this add a lot of overhead on every register
-access? has this been benchmarked with lots of small network transfers
-or anything?
-
-Dave.
 
 
->  drivers/net/ethernet/intel/igc/igc_main.c | 16 ++++++++++++++++
->  drivers/net/ethernet/intel/igc/igc_regs.h |  7 ++-----
->  2 files changed, 18 insertions(+), 5 deletions(-)
+On 7/5/21 1:43 AM, Paul E. McKenney wrote:
+> On Sun, Jul 04, 2021 at 05:42:36AM +0800, kernel test robot wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   303392fd5c160822bf778270b28ec5ea50cab2b4
+>> commit: 1253b9b87e42ab6a3d5c2cb27af2bdd67d7e50ff clocksource: Provide kernel module to test clocksource watchdog
+>> date:   11 days ago
+>> config: mips-randconfig-r015-20210702 (attached as .config)
+>> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 9eb613b2de3163686b1a4bd1160f15ac56a4b083)
+>> reproduce (this is a W=1 build):
+>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # install mips cross compiling tool for clang build
+>>          # apt-get install binutils-mips-linux-gnu
+>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1253b9b87e42ab6a3d5c2cb27af2bdd67d7e50ff
+>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>          git fetch --no-tags linus master
+>>          git checkout 1253b9b87e42ab6a3d5c2cb27af2bdd67d7e50ff
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=mips
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All warnings (new ones prefixed by >>):
+>>
+>>>> kernel/time/clocksource-wdtest.c:47:22: warning: signed shift result (0x27BC86B00) requires 35 bits to represent, but 'long' only has 32 bits [-Wshift-overflow]
+>>             .mult                   = TICK_NSEC << JIFFIES_SHIFT, /* details above */
+>>                                       ~~~~~~~~~ ^  ~~~~~~~~~~~~~
+>>     1 warning generated.
+> You have CONFIG_HZ_24=y and this test module assumes HZ > 100, as noted
+> just above the excerpt below:
 >
-> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-> index f1adf154ec4a..606b72cb6193 100644
-> --- a/drivers/net/ethernet/intel/igc/igc_main.c
-> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
-> @@ -5292,6 +5292,10 @@ u32 igc_rd32(struct igc_hw *hw, u32 reg)
->         u8 __iomem *hw_addr = READ_ONCE(hw->hw_addr);
->         u32 value = 0;
+> /* Assume HZ > 100. */
+> #define JIFFIES_SHIFT   8
 >
-> +       if (igc->pdev &&
-> +               igc->pdev->error_state == pci_channel_io_perm_failure)
-> +               return 0;
-> +
->         value = readl(&hw_addr[reg]);
+> So this is expected behavior.
 >
->         /* reads should not return all F's */
-> @@ -5308,6 +5312,18 @@ u32 igc_rd32(struct igc_hw *hw, u32 reg)
->         return value;
->  }
+> Would it help if I gave that comment some teeth, for example, as
+> shown at the end of this email?
+
+Hi Paul,
+
+I have confirmed that the below change can avoid the warning.
+
+Best Regards,
+Rong Chen
+
 >
-> +void igc_wr32(struct igc_hw *hw, u32 reg, u32 val)
-> +{
-> +       struct igc_adapter *igc = container_of(hw, struct igc_adapter, hw);
-> +       u8 __iomem *hw_addr = READ_ONCE(hw->hw_addr);
-> +
-> +       if (igc->pdev &&
-> +               igc->pdev->error_state == pci_channel_io_perm_failure)
-> +               return;
-> +
-> +       writel((val), &hw_addr[(reg)]);
-> +}
-> +
->  int igc_set_spd_dplx(struct igc_adapter *adapter, u32 spd, u8 dplx)
->  {
->         struct igc_mac_info *mac = &adapter->hw.mac;
-> diff --git a/drivers/net/ethernet/intel/igc/igc_regs.h b/drivers/net/ethernet/intel/igc/igc_regs.h
-> index cc174853554b..eb4be87d0e8b 100644
-> --- a/drivers/net/ethernet/intel/igc/igc_regs.h
-> +++ b/drivers/net/ethernet/intel/igc/igc_regs.h
-> @@ -260,13 +260,10 @@ struct igc_hw;
->  u32 igc_rd32(struct igc_hw *hw, u32 reg);
+> ------------------------------------------------------------------------
 >
->  /* write operations, indexed using DWORDS */
-> -#define wr32(reg, val) \
-> -do { \
-> -       u8 __iomem *hw_addr = READ_ONCE((hw)->hw_addr); \
-> -       writel((val), &hw_addr[(reg)]); \
-> -} while (0)
-> +void igc_wr32(struct igc_hw *hw, u32 reg, u32 val);
->
->  #define rd32(reg) (igc_rd32(hw, reg))
-> +#define wr32(reg, val) (igc_wr32(hw, reg, val))
->
->  #define wrfl() ((void)rd32(IGC_STATUS))
->
-> --
-> 2.30.2
->
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index e1856030fa66..8f0ad6e4183c 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2573,6 +2573,7 @@ config TEST_FPU
+>   config TEST_CLOCKSOURCE_WATCHDOG
+>   	tristate "Test clocksource watchdog in kernel space"
+>   	depends on CLOCKSOURCE_WATCHDOG
+> +	depends on HZ >= 100
+>   	help
+>   	  Enable this option to create a kernel module that will trigger
+>   	  a test of the clocksource watchdog.  This module may be loaded
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+
