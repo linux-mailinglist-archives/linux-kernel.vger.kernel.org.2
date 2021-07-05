@@ -2,221 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16AC13BB713
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF3B3BB71B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhGEGMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 02:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbhGEGMr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 02:12:47 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28692C061574;
-        Sun,  4 Jul 2021 23:10:11 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id x3so1193821pll.5;
-        Sun, 04 Jul 2021 23:10:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=JEhINzht+z/BFpCV+B98U2IUTccYiWXANCuuqJv185U=;
-        b=lh3WqIQtfm/H3F7rt3qXA/ORAkJsCi5YQOKkHXAka0LDmEAd8CKVTuT8J653hwGV3X
-         G9Qux3/IDHpJ8VputqRIOewJk1njRCe033odbCTXTM4gvbg3LwAJUmq2nS5E5VmhcOJB
-         n/FtQWLY54oUgg6omedYzesAVQsjeMFjQkDJpdYLKvkKKa8wthC6/xGE3hT0kEUjEEH8
-         MZNABNW05CacynL/U0pJ7IAY2EJkk6/Znz9lhLgoeySWX3UiwsOtaBp9Lpc8SedhL6lj
-         2J8EhjHmI5tgsVuuAoO7YgwrdHC8cwD2iWkhArXL77eBrIPQ+SgKL7ZxcWJeEVHjKR8H
-         a6vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=JEhINzht+z/BFpCV+B98U2IUTccYiWXANCuuqJv185U=;
-        b=l0qH4Qi4H0iG+n8vby9duIN+p9r+C4dFV9bTIDB4beMLY3lmtrMSTiuZejIETX8b2Y
-         g2kyZZQUCQQZAfCNJswWujKa07xFSdm8wRcDYodkkvhpz857dSrpfUKdm9iL0xYwtq9n
-         LJt7AWMSeOAR4U+kAv+GEEs+MIRYbzXAbQa/AO4Vf59ukBXa15mxT1a40lNrfabQIzme
-         0AK/MpAnuxoZHG7BUeFEAkCpQprYmObRWVMCZ1SejrJNL6FZD/2sB3A2Nsljqo2uwO44
-         Jesnd90jS9YZ+hgxx2NYHCxXtl7XKS75X05H4b1jJhq5WAc+EmSBMpCWuTf3VB+z/mLq
-         7BhQ==
-X-Gm-Message-State: AOAM532J/Lbj2FvPY6TXwYARNNPxl2IqGJ5X+64WV5pO6wsOTbXvSRte
-        6OtRXmfu0a4IhyTNNhvGKpY=
-X-Google-Smtp-Source: ABdhPJzEvMZuYSW7/06b7+cens/0AjHweBa48H4w9H8E68eJIjHC0+5g/A+6koIS07Zo9xdZZi0Htg==
-X-Received: by 2002:a17:90a:f68f:: with SMTP id cl15mr13260999pjb.219.1625465410504;
-        Sun, 04 Jul 2021 23:10:10 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:7310:c0e:56b3:ae76])
-        by smtp.gmail.com with ESMTPSA id z20sm13229027pgk.36.2021.07.04.23.10.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jul 2021 23:10:09 -0700 (PDT)
-Date:   Sun, 4 Jul 2021 23:10:07 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [git pull] Input updates for v5.14-rc0
-Message-ID: <YOKiP9QsgXyK8zQK@google.com>
+        id S229834AbhGEGVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 02:21:25 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:34004 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229812AbhGEGVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 02:21:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625465928; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=yCrPkEAKmaz+cVp5YvGeM+Fn0+vuJCy4/YBCSelI6DE=;
+ b=eqy7yHjsStQjjyK1QTQ4ZK8J0eZYTpZgycjZVQHI8h6lGMjyVEVmFcooE0e94b8sM+0PM2cU
+ D4aF8Buhp+uL236cgAv8Ny3in/ccDRFXQTIsjcNqs54d0EFMM/aGe3+DH5CVx2GRPkJDLE3R
+ 1O2oExAs/Ocxt6ypDZQrN3UKg2Q=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60e2a43e3a8b6d0a458b74d8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Jul 2021 06:18:38
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 147B1C4360C; Mon,  5 Jul 2021 06:18:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A775C433D3;
+        Mon,  5 Jul 2021 06:18:37 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 05 Jul 2021 11:48:37 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mgautam@codeaurora.org, dianders@chromium.org, mka@chromium.org,
+        sanm@codeaurora.org
+Subject: Re: [PATCH v3 4/4] PCIe: qcom: Add support to control pipe clk mux
+In-Reply-To: <1624377651-30604-5-git-send-email-pmaliset@codeaurora.org>
+References: <1624377651-30604-1-git-send-email-pmaliset@codeaurora.org>
+ <1624377651-30604-5-git-send-email-pmaliset@codeaurora.org>
+Message-ID: <c334a6d11fae5bd135a94ab5c66b3f97@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-Please pull from:
-
-	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
-
-to receive updates for the input subsystem. You will get:
-
-- a new driver for SparkFun Qwiic Joystick
-- pm8941-pwrkey driver now supports PMK8350
-- a bunch of assorted driver fixes
-
-
-Changelog:
----------
-
-Alexander Larkin (1):
-      Input: joydev - prevent use of not validated data in JSIOCSBTNMAP ioctl
-
-Andy Shevchenko (2):
-      Input: resistive-adc-touch - describe parameters in kernel doc
-      Input: resistive-adc-touch - replace OF headers with proper ones
-
-Chris Ye (1):
-      Input: xpad - map "Select" button on Microsoft Xbox One controller
-
-Christophe JAILLET (1):
-      Input: evbug - remove an empty comment block
-
-Colin Ian King (1):
-      Input: resistive-adc-touch - fix uninitialized variable 'press'
-
-Corentin Labbe (1):
-      dt-bindings: input: remove fsl-mma8450 which is handled by trivial-devices
-
-David Collins (2):
-      dt-bindings: input: pm8941-pwrkey: add pmk8350 compatible strings
-      Input: pm8941-pwrkey - add support for PMK8350 PON_HLOS PMIC peripheral
-
-Dmitry Torokhov (11):
-      Input: cyttsp - do not force interrupt trigger
-      Input: resistive-adc-touch - rework mapping of channels
-      Input: cyttsp - change maintainer
-      Input: cyttsp - remove public header
-      Input: cy8ctmg110_ts - rely on platform code to supply interrupt
-      Input: cy8ctmg110_ts - do not hard code interrupt trigger
-      Input: cy8ctmg110_ts - do not hardcode as wakeup source
-      Input: cy8ctmg110_ts - let I2C core configure wake interrupt
-      Input: cy8ctmg110_ts - use endian helpers when converting data on wire
-      Input: cy8ctmg110_ts - switch to using managed resources
-      Input: cy8ctmg110_ts - switch to using gpiod API
-
-Geert Uytterhoeven (1):
-      dt-bindings: input: touchscreen: st1232: Convert to json-schema
-
-Johan Hovold (1):
-      Input: usbtouchscreen - fix control-request directions
-
-Linus Walleij (3):
-      Input: cyttsp - convert bindings to YAML and extend
-      Input: cyttsp - probe from compatibles
-      Input: cyttsp - obtain regulators
-
-Oleh Kravchenko (2):
-      dt-bindings: Add vendor prefix and bindings for Qwiic Joystick
-      Input: add SparkFun Qwiic Joystick driver
-
-Oleksij Rempel (4):
-      dt-bindings: touchscreen: Convert resistive-adc-touch binding to json schema
-      dt-bindings: touchscreen: add touchscreen-x/y-plate-ohms property
-      dt-bindings: touchscreen: resistive-adc-touch: add support for z1 and z2 channels
-      Input: resistive-adc-touch - add support for z1 and z2 channels
-
-Shubhankar Kuranagatti (1):
-      Input: ims-pcu - replace some spaces with tabs
-
-Stephan Gerhold (2):
-      dt-bindings: input: touchscreen: edt-ft5x06: add iovcc-supply
-      Input: edt-ft5x06 - add support for iovcc-supply
-
-Takashi Iwai (2):
-      Input: elants_i2c - fix NULL dereference at probing
-      Input: elants_i2c - switch to probe_new
-
-Tyson Moore (1):
-      Input: i8042 - fix typos in comments
-
-Yizhuo Zhai (1):
-      Input: hideep - fix the uninitialized use in hideep_nvm_unlock()
-
-YueHaibing (4):
-      Input: ims-pcu - use kobj_to_dev()
-      Input: tsc200x-core - use kobj_to_dev()
-      Input: atkbd - use kobj_to_dev()
-      Input: trackpoint - use kobj_to_dev()
-
-Zhen Lei (1):
-      Input: hil_kbd - fix error return code in hil_dev_connect()
-
-zhouchuangao (1):
-      Input: cros_ec_keyb - use kobj_to_dev() API
-
-Diffstat:
---------
-
- .../devicetree/bindings/input/fsl-mma8450.txt      |  12 --
- .../bindings/input/qcom,pm8941-pwrkey.txt          |   2 +
- .../input/touchscreen/cypress,cy8ctma340.yaml      | 148 ++++++++++++++++++
- .../bindings/input/touchscreen/cyttsp.txt          |  93 ------------
- .../bindings/input/touchscreen/edt-ft5x06.yaml     |   1 +
- .../input/touchscreen/resistive-adc-touch.txt      |  33 ----
- .../input/touchscreen/resistive-adc-touch.yaml     |  86 +++++++++++
- .../input/touchscreen/sitronix,st1232.yaml         |  50 ++++++
- .../bindings/input/touchscreen/sitronix-st1232.txt |  28 ----
- .../bindings/input/touchscreen/touchscreen.yaml    |   6 +
- .../devicetree/bindings/trivial-devices.yaml       |   2 +
- .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
- MAINTAINERS                                        |   5 +-
- drivers/input/evbug.c                              |   3 -
- drivers/input/joydev.c                             |   2 +-
- drivers/input/joystick/Kconfig                     |   9 ++
- drivers/input/joystick/Makefile                    |   1 +
- drivers/input/joystick/qwiic-joystick.c            | 146 ++++++++++++++++++
- drivers/input/joystick/xpad.c                      |   6 +
- drivers/input/keyboard/atkbd.c                     |   2 +-
- drivers/input/keyboard/cros_ec_keyb.c              |   2 +-
- drivers/input/keyboard/hil_kbd.c                   |   1 +
- drivers/input/misc/ims-pcu.c                       |   6 +-
- drivers/input/misc/pm8941-pwrkey.c                 | 103 +++++++++----
- drivers/input/mouse/trackpoint.c                   |   2 +-
- drivers/input/serio/i8042.c                        |   4 +-
- drivers/input/touchscreen/cy8ctmg110_ts.c          | 167 +++++++--------------
- drivers/input/touchscreen/cyttsp_core.c            |  47 +++++-
- drivers/input/touchscreen/cyttsp_core.h            |   3 +-
- drivers/input/touchscreen/cyttsp_i2c.c             |  10 ++
- drivers/input/touchscreen/cyttsp_spi.c             |  10 ++
- drivers/input/touchscreen/edt-ft5x06.c             |  38 ++++-
- drivers/input/touchscreen/elants_i2c.c             |  11 +-
- drivers/input/touchscreen/hideep.c                 |  13 +-
- drivers/input/touchscreen/resistive-adc-touch.c    | 136 ++++++++++++++---
- drivers/input/touchscreen/tsc200x-core.c           |   2 +-
- drivers/input/touchscreen/usbtouchscreen.c         |   8 +-
- include/linux/input/cy8ctmg110_pdata.h             |   1 -
- include/linux/input/cyttsp.h                       |  29 ----
- 39 files changed, 836 insertions(+), 394 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/input/fsl-mma8450.txt
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/cypress,cy8ctma340.yaml
- delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/cyttsp.txt
- delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/sitronix,st1232.yaml
- delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/sitronix-st1232.txt
- create mode 100644 drivers/input/joystick/qwiic-joystick.c
- delete mode 100644 include/linux/input/cyttsp.h
-
-Thanks.
+On 2021-06-22 21:30, Prasad Malisetty wrote:
+> pipe-clk mux needs to switch between pipe_clk
+> and XO as part of LPM squence. This is done by setting
+> pipe_clk mux as parent of pipe_clk after phy init.
+> This is a new requirement for sc7280.
+> For accessing to DBI registers during L23,
+> need to switch the pipe clock with free-running
+> clock (TCXO) using GCC’s registers
+> 
+> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c
+> b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 8a7a300..80e9ee4 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -166,6 +166,9 @@ struct qcom_pcie_resources_2_7_0 {
+>  	struct regulator_bulk_data supplies[2];
+>  	struct reset_control *pci_reset;
+>  	struct clk *pipe_clk;
+> +	struct clk *pipe_clk_mux;
+> +	struct clk *pipe_ext_src;
+> +	struct clk *ref_clk_src;
+>  };
+> 
+>  union qcom_pcie_resources {
+> @@ -1167,6 +1170,20 @@ static int qcom_pcie_get_resources_2_7_0(struct
+> qcom_pcie *pcie)
+>  	if (ret < 0)
+>  		return ret;
+> 
+> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
+> +		res->pipe_clk_mux = devm_clk_get(dev, "pipe_mux");
+> +		if (IS_ERR(res->pipe_clk_mux))
+> +			return PTR_ERR(res->pipe_clk_mux);
+> +
+> +		res->pipe_ext_src = devm_clk_get(dev, "phy_pipe");
+> +		if (IS_ERR(res->pipe_ext_src))
+> +			return PTR_ERR(res->pipe_ext_src);
+> +
+> +		res->ref_clk_src = devm_clk_get(dev, "ref");
+> +		if (IS_ERR(res->ref_clk_src))
+> +			return PTR_ERR(res->ref_clk_src);
+> +	}
+> +
+>  	res->pipe_clk = devm_clk_get(dev, "pipe");
+>  	return PTR_ERR_OR_ZERO(res->pipe_clk);
+>  }
+> @@ -1255,6 +1272,11 @@ static void qcom_pcie_deinit_2_7_0(struct
+> qcom_pcie *pcie)
+>  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+>  {
+>  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+> +	struct dw_pcie *pci = pcie->pci;
+> +	struct device *dev = pci->dev;
+> +
+> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
+> +		clk_set_parent(res->pipe_clk_mux, res->pipe_ext_src);
+> 
+>  	return clk_prepare_enable(res->pipe_clk);
+>  }
 
 
--- 
-Dmitry
+Hi All,
+
+Greetings of the day !!
+
+Could you please provide your comments on updated change series
+
+Thanks
+-Prasad
