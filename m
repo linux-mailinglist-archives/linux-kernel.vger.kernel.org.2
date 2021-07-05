@@ -2,223 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242083BC1F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 19:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6263BC1CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 18:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhGERC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 13:02:59 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:29334 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhGERC7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 13:02:59 -0400
-X-Greylist: delayed 359 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Jul 2021 13:02:58 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1625503702;
-    s=strato-dkim-0002; d=xenosoft.de;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=GL/SEjFclEbv+ueFVl5DcM/7AsJmzOXwlhf+RAxWh2U=;
-    b=j99RYuCcqQYXApJ/VFnfwbtENq4D1X9FlNNG3r01uaMwpWyxCiPJJh68A5bJvL9wMl
-    3JyGFG0W2n6lYAbV2Hj+8TGc5Ex9ni6vwnZXi1DHYd0i9eOsSe5vo85zDObdyoeemwz/
-    aEQqTQefYCOGZbApa5JtpdEy8EkgehLZA4Thb/SqFmmZtZ+iK9Y+eDTFHPtdnXuPxhFC
-    kF07DUStajeDo4U4Prrg95AHMGKCUGP8p7DetxRV/imQu/87t4kvQ2hN6oP7+Mi7mn0Z
-    TKGMLFGfr8zo6Ldl0wTxE/mnX5ymnYUka77xHzymhTpbGFG55lVx5hyZJIi2+oBDj/QG
-    2Edg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":L2QefEenb+UdBJSdRCXu93KJ1bmSGnhMdmOod1DhGM4l4Hio94KKxRySfLxnHvJzedV4hZQiYXCAp5NvAFkGNAfx9ALYQynABVYTFWoNejc="
-X-RZG-CLASS-ID: mo00
-Received: from [IPv6:2a01:598:a836:4cf1:442:36e0:ea94:ce76]
-    by smtp.strato.de (RZmta 47.28.1 AUTH)
-    with ESMTPSA id D02c3ax65GmLNkt
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 5 Jul 2021 18:48:21 +0200 (CEST)
-Subject: Re: Xorg doesn't work anymore after the latest DRM updates
-To:     "Das, Nirmoy" <nirmoy.das@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Cc:     Darren Stevens <darren@stevens-zone.net>,
-        "R.T.Dickinson" <rtd2@xtra.co.nz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        mad skateman <madskateman@gmail.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Christian Zigotzky <info@xenosoft.de>
-References: <20210509224926.GA31035@embeddedor>
- <CADnq5_OWk+rXK5xrwu0YOMVC45WyQgFQBTUNkcF8oO3ucp+=XQ@mail.gmail.com>
- <ba5f2a73-58e8-6b3e-4048-bb19f238be51@embeddedor.com>
- <4e0a3130-4c20-aa8a-f32a-6c3f0d9cd6f8@xenosoft.de>
- <345042b3-7b96-63d9-d4a5-f31c4441ddaf@amd.com>
-From:   Christian Zigotzky <chzigotzky@xenosoft.de>
-Message-ID: <d22b9f68-3692-2819-33a4-123b7182daf3@xenosoft.de>
-Date:   Mon, 5 Jul 2021 18:48:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229781AbhGEQxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 12:53:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229753AbhGEQxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 12:53:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EB8D61278;
+        Mon,  5 Jul 2021 16:51:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625503872;
+        bh=E2qKGlOmNIoto35uDuCrhW5NXTON5UvLxqC9khTS49E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cIr27ePdACHbDgmGGKZRXNMTZR0fs8kzbIbnKjSrBctZlnzNQu/B/y/jt8juXVE3+
+         qbstEEJjRtBNUNOisLCh+1iIeh+66mL1hZYZRJATzH+AvTaHWGeiIUHqAs7amuWI3s
+         k31sxNPe0M8JNzu61SiHPQoYJ0aBmReEAVAIes9vEbT0i2nZSr7J8PTj9qEhFZrGib
+         CVhwSlRCJr9u49QMY5ynCfgvKJXPow86xhoJ4/uvA1+3j4EzONLqoQ+5Ado1b/DmmM
+         xK/IV2BxSJJ5hhUXKErlVibAdkY9Q4BtAyGKd4/yPddT36ysJoXJPgTN+Kzy+bsJkt
+         qrFR2hd0D2o/A==
+Date:   Mon, 5 Jul 2021 17:50:41 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     pierre-louis.bossart@linux.intel.com, rander.wang@linux.intel.com,
+        shumingf@realtek.com, patches@opensource.cirrus.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: dapm: Revert "use component prefix when checking
+ widget names"
+Message-ID: <20210705165041.GC4574@sirena.org.uk>
+References: <20210703125034.24655-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-In-Reply-To: <345042b3-7b96-63d9-d4a5-f31c4441ddaf@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: de-DE
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="96YOpH+ONegL0A3E"
+Content-Disposition: inline
+In-Reply-To: <20210703125034.24655-1-rf@opensource.cirrus.com>
+X-Cookie: Star Trek Lives!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nirmoy,
 
-Many thanks for this information. We will test this patch asap.
+--96YOpH+ONegL0A3E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Have a nice day,
-Christian
+On Sat, Jul 03, 2021 at 01:50:34PM +0100, Richard Fitzgerald wrote:
 
-On 05 July 2021 at 10:26pm, Nirmoy wrote:
- > Hi Christian,
- >
- >
- > This issue looks similar to the one Mikel Rychliski fixed recently  : 
-https://patchwork.freedesktop.org/patch/440791. Let us know if this helps.
- >
- >
- > Regards,
- >
- > Nirmoy
- >
- > On 7/3/2021 9:30 AM, Christian Zigotzky wrote:
- >> Hi All,
- >>
- >> Xorg doesn't work anymore after the latest DRM updates. [1]
- >>
- >> Error messages:
- >>
- >> Jul 03 08:54:51 Fienix systemd[1]: Starting Light Display Manager...
- >> Jul 03 08:54:51 Fienix systemd[1]: Started Light Display Manager.
- >> Jul 03 08:54:51 Fienix kernel: BUG: Kernel NULL pointer dereference 
-on read at 0x00000010
- >> Jul 03 08:54:51 Fienix kernel: Faulting instruction address: 
-0xc000000000630750
- >> Jul 03 08:54:51 Fienix kernel: Oops: Kernel access of bad area, sig: 
-11 [#1]
- >> Jul 03 08:54:51 Fienix kernel: BE PAGE_SIZE=4K PREEMPT SMP NR_CPUS=4 
-CoreNet Generic
- >> Jul 03 08:54:51 Fienix kernel: Modules linked in: algif_skcipher 
-bnep tuner_simple tuner_types tea5767 tuner tda7432 tvaudio msp3400 bttv 
-tea575x tveeprom videobuf_dma_sg videobuf_core rc_core videodev mc btusb 
-btrtl btbcm btintel bluetooth ecdh_generic ecc uio_pdrv_genirq uio
- >> Jul 03 08:54:51 Fienix kernel: CPU: 3 PID: 4300 Comm: Xorg.wrap Not 
-tainted 5.14.0-a3_A-EON_X5000-07637-g3dbdb38e2869-dirty #1
- >> Jul 03 08:54:51 Fienix kernel: NIP:  c000000000630750 LR: 
-c00000000060fedc CTR: c000000000630728
- >> Jul 03 08:54:51 Fienix kernel: REGS: c00000008d903470 TRAP: 0300 Not 
-tainted  (5.14.0-a3_A-EON_X5000-07637-g3dbdb38e2869-dirty)
- >> Jul 03 08:54:51 Fienix kernel: MSR:  0000000080029002 <CE,EE,ME>  
-CR: 20000222  XER: 20000000
- >> Jul 03 08:54:51 Fienix kernel: DEAR: 0000000000000010 ESR: 
-0000000000000000 IRQMASK: 0
- >>                                GPR00: c00000000060fedc 
-c00000008d903710 c00000000190c400 c000000085d59c00
- >>                                GPR04: c00000008d9035b8 
-ffffffffffffffff c0000000870a4900 c000000085b62d00
- >>                                GPR08: 000000000000000f 
-0000000000000000 c000000000630728 0000000000000003
- >>                                GPR12: 0000000020000222 
-c00000003fffeac0 00000000ffe51070 000000000086007c
- >>                                GPR16: 0000000000862820 
-00000000ffb7ec68 0000000000000000 00000000ffffffff
- >>                                GPR20: 00000000c04064a0 
-0000000000450088 00000000ffca79e4 5deadbeef0000122
- >>                                GPR24: 5deadbeef0000100 
-0000000000000000 c0000000876028f0 c000000080bd4000
- >>                                GPR28: c000000087603c48 
-c000000085d59d78 c000000085d59c00 c000000085d59c78
- >> Jul 03 08:54:51 Fienix kernel: NIP [c000000000630750] 
-.radeon_ttm_bo_destroy+0x28/0xc0
- >> Jul 03 08:54:51 Fienix kernel: LR [c00000000060fedc] 
-.ttm_bo_put+0x2ec/0x344
- >> Jul 03 08:54:51 Fienix kernel: Call Trace:
- >> Jul 03 08:54:51 Fienix kernel: [c00000008d903710] [c00000000060fbe4] 
-.ttm_bo_cleanup_memtype_use+0x54/0x60 (unreliable)
- >> Jul 03 08:54:51 Fienix kernel: [c00000008d903790] [c00000000060fedc] 
-.ttm_bo_put+0x2ec/0x344
- >> Jul 03 08:54:51 Fienix kernel: [c00000008d903820] [c000000000630b50] 
-.radeon_bo_unref+0x28/0x3c
- >> Jul 03 08:54:51 Fienix kernel: [c00000008d9038a0] [c0000000006d1f6c] 
-.radeon_vm_fini+0x1b0/0x1b8
- >> Jul 03 08:54:51 Fienix kernel: [c00000008d903940] [c000000000618e38] 
-.radeon_driver_postclose_kms+0x128/0x178
- >> Jul 03 08:54:51 Fienix kernel: [c00000008d9039e0] [c0000000005deb14] 
-.drm_file_free+0x1d8/0x278
- >> Jul 03 08:54:51 Fienix kernel: [c00000008d903aa0] [c0000000005def00] 
-.drm_release+0x64/0xc8
- >> Jul 03 08:54:51 Fienix kernel: [c00000008d903b30] [c00000000017636c] 
-.__fput+0x11c/0x25c
- >> Jul 03 08:54:51 Fienix kernel: [c00000008d903bd0] [c00000000008b1e8] 
-.task_work_run+0xa4/0xbc
- >> Jul 03 08:54:51 Fienix kernel: [c00000008d903c70] [c000000000004bf4] 
-.do_notify_resume+0x144/0x2f0
- >> Jul 03 08:54:51 Fienix kernel: [c00000008d903d70] [c00000000000b380] 
-.syscall_exit_prepare+0x110/0x130
- >> Jul 03 08:54:51 Fienix kernel: [c00000008d903e10] [c000000000000688] 
-system_call_common+0x100/0x1fc
- >> Jul 03 08:54:51 Fienix kernel: --- interrupt: c00 at 0x3f4f58
- >> Jul 03 08:54:51 Fienix kernel: NIP:  00000000003f4f58 LR: 
-00000000003f4f2c CTR: 0000000000000000
- >> Jul 03 08:54:51 Fienix kernel: REGS: c00000008d903e80 TRAP: 0c00 Not 
-tainted  (5.14.0-a3_A-EON_X5000-07637-g3dbdb38e2869-dirty)
- >> Jul 03 08:54:51 Fienix kernel: MSR:  000000000002d002 <CE,EE,PR,ME>  
-CR: 20000420  XER: 00000000
- >> Jul 03 08:54:51 Fienix kernel: IRQMASK: 0
- >>                                GPR00: 0000000000000006 
-00000000ffca66a0 00000000f798a310 0000000000000000
- >>                                GPR04: 0000000000000000 
-0000000000000000 0000000000000000 0000000000000000
- >>                                GPR08: 0000000000000000 
-0000000000000000 0000000000000000 0000000000000000
- >>                                GPR12: 0000000000000000 
-000000000044fff4 00000000ffe51070 000000000086007c
- >>                                GPR16: 0000000000862820 
-00000000ffb7ec68 0000000000000000 00000000ffffffff
- >>                                GPR20: 00000000c04064a0 
-0000000000450088 00000000ffca79e4 00000000004317ac
- >>                                GPR24: 00000000004317b8 
-00000000ffca66d0 0000000000000001 00000000ffca673c
- >>                                GPR28: 0000000000000001 
-0000000000000000 000000000041cff4 0000000000000003
- >> Jul 03 08:54:51 Fienix kernel: NIP [00000000003f4f58] 0x3f4f58
- >> Jul 03 08:54:51 Fienix kernel: LR [00000000003f4f2c] 0x3f4f2c
- >> Jul 03 08:54:51 Fienix kernel: --- interrupt: c00
- >> Jul 03 08:54:51 Fienix kernel: Instruction dump:
- >> Jul 03 08:54:51 Fienix kernel: 40c2fff4 4e800020 7c0802a6 fbc1fff0 
-f8010010 3bc3ff88 fbe1fff8 38a0ffff
- >> Jul 03 08:54:51 Fienix kernel: f821ff81 7c7f1b78 e9230168 7fc3f378 
-<80890010> 4bffff51 e87f0208 38631df8
- >> Jul 03 08:54:51 Fienix kernel: ---[ end trace ddf73d2d70058380 ]---
- >> Jul 03 08:54:51 Fienix kernel:
- >> Jul 03 08:54:51 Fienix systemd[1]: lightdm.service: Main process 
-exited, code=exited, status=1/FAILURE
- >> Jul 03 08:54:51 Fienix systemd[1]: lightdm.service: Failed with 
-result 'exit-code'.
- >> Jul 03 08:54:51 Fienix avahi-daemon[3857]: Registering new address 
-record for 2a02:8109:89c0:ebfc:d372:f06c:9247:7d54 on enP4096p4s4.*.
- >> Jul 03 08:54:51 Fienix systemd[1]: lightdm.service: Scheduled 
-restart job, restart counter is at 1.
- >> Jul 03 08:54:51 Fienix systemd[1]: Stopped Light Display Manager.
- >>
- >> ----
- >> Systems: A-EON AmigaOne X1000 and X5000 with Radeon HD6970 graphics 
-cards. [2] [3] [4]
- >>
- >> The biggest problem is, that I don't have time for bisecting and 
-fixing this issue.
- >>
- >> Cheers,
- >> Christian
- >>
- >> [1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e058a84bfddc42ba356a2316f2cf1141974625c9
- >> [2] http://wiki.amiga.org/index.php?title=X5000
- >> [3] https://en.wikipedia.org/wiki/AmigaOne_X1000
- >> [4] https://forum.hyperion-entertainment.com/viewtopic.php?f=58&t=4378
+> That commit breaks all users of the snd_soc_component_*_pin() functions
+> because it results in the prefix being added twice. It also breaks code
+> that correctly uses the snd_soc_dapm_*_pin() functions.
 
+> Use the snd_soc_component_*_pin() functions if you want the component
+> prefix to be prepended automatically.
 
+> Use the raw snd_soc_dapm_*_pin() functions if the caller has the full
+> name that should be matched exactly.
+
+I'm not sure the analysis of which function to use when is correct or
+what we want here (though it will work ATM), though looking again more
+closely at the patch it doesn't look entirely right either.  The way
+this used to be done, and the way that older code will most likely
+assume things work, was that the DAPM functions would first try to match
+on the local DAPM context before falling back to doing a global match.
+This is what the fallback loop is intended to do, and the dapm functions
+are passing the "search other contexts" flag into dapm_find_widget().
+
+I'd not expect the distinction you seem to expect between component and
+DAPM and we probably have a bunch of older drivers that aren't working
+correctly like the Realtek driver mentioned in the original fix.  I
+think what needs to happen is that dapm_find_widget() needs to be
+checking both the prefixed and non-prefixed names, and that the
+component stuff shouldn't need to bother and just be a convenience
+wrapper for users that happene to have a component to hand.
+Alternatively we need to do an audit of all the non-machine drivers to
+switch them to use the component functions exclusively (and possibly
+some of the machine drivers as well), most of the CODEC users look to be
+a small number of Wolfson/Cirrus ones.
+
+--96YOpH+ONegL0A3E
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDjOGAACgkQJNaLcl1U
+h9B8VAf/fT+qkZLFc+06JxvhI5ChgxVl1SJI25mXkIlwItayArYD9CMLMTN4Lz4F
+Y0l+VvAZmO98kht/uXvfnDbkawHzriFTxw86eBZdr6Aina6p5QWzlPS5xQmBTpx0
+g0tvysXnfGbLqCXLZlee859ie7HRTAFzgZRixwXlwtTC/WEbKF4G7rZCtHeUqTMq
+4syKhV3yEwz+L0RHEDxLfJ2pL3Y3af1xpi0I/0aLPMDEwRa0dm0p6DSIbyHMS9ig
+C0JJfFZumjq74rNS1+8darm8IS9bxI8eAq11vNm866DhNPsIMY/abeukUj1ap1t9
+7VdteccabI50+pM4wz1lKLkKwk3Rgg==
+=t9wF
+-----END PGP SIGNATURE-----
+
+--96YOpH+ONegL0A3E--
