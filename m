@@ -2,67 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203E93BB482
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 02:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A353BB486
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 02:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhGEAiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 20:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
+        id S229814AbhGEAqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 20:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhGEAiR (ORCPT
+        with ESMTP id S229549AbhGEAql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 20:38:17 -0400
-Received: from mxout017.mail.hostpoint.ch (mxout017.mail.hostpoint.ch [IPv6:2a00:d70:0:e::317])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98CDBC061574;
-        Sun,  4 Jul 2021 17:35:40 -0700 (PDT)
-Received: from [10.0.2.44] (helo=asmtp014.mail.hostpoint.ch)
-        by mxout017.mail.hostpoint.ch with esmtp (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1m0CaG-000ILa-D6; Mon, 05 Jul 2021 02:35:36 +0200
-Received: from [2a02:168:6182:1:4826:4d5:dcc6:d0b0]
-        by asmtp014.mail.hostpoint.ch with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1m0CaG-000G3n-BG; Mon, 05 Jul 2021 02:35:36 +0200
-X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
-Subject: Re: [PATCH] rtl8xxxu: disable interrupt_in transfer for 8188cu and
- 8192cu
-To:     chris.chiu@canonical.com, Jes.Sorensen@gmail.com,
-        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210701163354.118403-1-chris.chiu@canonical.com>
-From:   Reto Schneider <code@reto-schneider.ch>
-Message-ID: <876caa77-702c-eb29-bfd1-c2ebcc4fb641@reto-schneider.ch>
-Date:   Mon, 5 Jul 2021 02:35:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 4 Jul 2021 20:46:41 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449DAC061574;
+        Sun,  4 Jul 2021 17:44:05 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id ie21so8953027pjb.0;
+        Sun, 04 Jul 2021 17:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RoRwu7X2cHfz4D8K4O6Qb/qjVmxWtGhql31qve1wJtc=;
+        b=Mg4l4CqceddtxvDKqhh/j1/QTCzmCACoz3E8YktiPGHfMXGGj+yrXiF2qW40jFjIVe
+         0RRuJmvXrCUDSbP7Oh1zxy4wxITe8rofVwwedmY1rVZXukNyFSbLZAslTJajNKTIxKjL
+         ocnqGz33yeGmpbsBlMnQpsZwoxVywqyAUx0ppUqzXjrqfwLvyxxiU6OU7dJiRVD2kbgT
+         m0vpgCow4UV2ZI6rIcHRorNCuLajeN4pFOB2O9umlULwqs4SIoRZeR4EL57V+k2eGx07
+         VeYLlmntlB/2LPi4QEulCKms41vN3ni5+1UmXaM22OfyIegNtRkH7KY4gHSe0P7F6J/h
+         YClQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RoRwu7X2cHfz4D8K4O6Qb/qjVmxWtGhql31qve1wJtc=;
+        b=dQ/j9fO+sF3LsKB7++rXShXhM43BibHiAOF1xNtJePtRukwJzZntDDoeMiaJk3ozQc
+         zQ9GBlRBCT4Pv06F6MjyyDdAObelBUqdeho+Zk0E1Xp9Enr1cMtMwpLJOq7CTIz/PSeq
+         Xim6WquJsBkzZFfiVoyN2FgzZLg/Z3rRlhh0SptXQQsnTlMKGet1sHdHQFL5+k71+XXZ
+         wD3JdZqNiT7jY9h2itFzKW0vRGoFDsbtdWi7GzSDU0oLNX8Y/wji3vWdAKujQcTKs1zW
+         Cihtnt2JPcQQBNiCsYZIXeOL2Y95yglgnh42p52xjCKORcKIAZ8DhSPGe5cAPIVVINgo
+         5fGQ==
+X-Gm-Message-State: AOAM530TveVzQqf3L6i87rLSkA/6icPJPWNNpjF0ZLyRAruzNs8fnErH
+        I3O4/ibb2trKWzv2ELIL3g8Ab30bMrzf9IwGTy0=
+X-Google-Smtp-Source: ABdhPJxIiefTGClOgL6uKzDoW9dPMszv+sGDg2sP/uj3oquM0INw+a4VAWftKgyGxyrvyig7wGAOfg==
+X-Received: by 2002:a17:90a:4586:: with SMTP id v6mr12088253pjg.36.1625445844499;
+        Sun, 04 Jul 2021 17:44:04 -0700 (PDT)
+Received: from localhost.lan ([2400:4070:175b:7500::7a7])
+        by smtp.gmail.com with ESMTPSA id j2sm10848631pfb.53.2021.07.04.17.44.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Jul 2021 17:44:03 -0700 (PDT)
+Received: from x2.lan (localhost [127.0.0.1])
+        by localhost.lan (Postfix) with ESMTPSA id 8FC44900773;
+        Mon,  5 Jul 2021 00:44:01 +0000 (GMT)
+From:   Vincent Pelletier <plr.vincent@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-gpio@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Documentation: gpio: driver.rst: Remove gpiochip_irqchip_add mention
+Date:   Mon,  5 Jul 2021 00:43:59 +0000
+Message-Id: <5d1823c503629694de74ccd2d823188507c54706.1625445811.git.plr.vincent@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210701163354.118403-1-chris.chiu@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.07.21 18:33, chris.chiu@canonical.com wrote:
-> There will be crazy numbers of interrupts triggered by 8188cu and
-> 8192cu module, around 8000~10000 interrupts per second, on the usb
-> host controller. Compare with the vendor driver source code, it's
-> mapping to the configuration CONFIG_USB_INTERRUPT_IN_PIPE and it is
-> disabled by default.
-> 
-> Since the interrupt transfer is neither used for TX/RX nor H2C
-> commands. Disable it to avoid the confusing interrupts for the
-> 8188cu and 8192cu module which I only have for verification.
+This function was removed in commit f1f37abbe6fc ("gpio: Retire the
+explicit gpio irqchip code") but this mention was left behind.
+Also, mention that .set_type() only has to set a line handler if the chip
+is cascaded, as opposed to hierarchical.
 
-I tested the new code on the GARDENA smart gateway and it works as 
-expected. Interrupts are greatly reduced while the same level of TX/RX 
-performance could be measured as before the change: A (too) high 
-percentage of retransmissions, but otherwise fine.
+Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
+---
+ Documentation/driver-api/gpio/driver.rst | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-Tested-by: reto.schneider@husqvarnagroup.com
+diff --git a/Documentation/driver-api/gpio/driver.rst b/Documentation/driver-api/gpio/driver.rst
+index d6b0d779859b..bbc53920d4dd 100644
+--- a/Documentation/driver-api/gpio/driver.rst
++++ b/Documentation/driver-api/gpio/driver.rst
+@@ -547,13 +547,10 @@ To use the helpers please keep the following in mind:
+   the irqchip can initialize. E.g. .dev and .can_sleep shall be set up
+   properly.
+ 
+-- Nominally set all handlers to handle_bad_irq() in the setup call and pass
+-  handle_bad_irq() as flow handler parameter in gpiochip_irqchip_add() if it is
+-  expected for GPIO driver that irqchip .set_type() callback will be called
+-  before using/enabling each GPIO IRQ. Then set the handler to
+-  handle_level_irq() and/or handle_edge_irq() in the irqchip .set_type()
+-  callback depending on what your controller supports and what is requested
+-  by the consumer.
++- Nominally set gpio_irq_chip.handler to handle_bad_irq. Then, if your irqchip
++  is cascaded, set the handler to handle_level_irq() and/or handle_edge_irq()
++  in the irqchip .set_type() callback depending on what your controller
++  supports and what is requested by the consumer.
+ 
+ 
+ Locking IRQ usage
+-- 
+2.32.0
 
-Kind regards,
-Reto
