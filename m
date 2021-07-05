@@ -2,186 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013463BB88B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 032553BB890
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhGEIF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 04:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
+        id S230107AbhGEIFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 04:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbhGEIFZ (ORCPT
+        with ESMTP id S230088AbhGEIF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:05:25 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EB4C061760
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 01:02:47 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id cs1-20020a17090af501b0290170856e1a8aso14334350pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 01:02:47 -0700 (PDT)
+        Mon, 5 Jul 2021 04:05:28 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A982C061574;
+        Mon,  5 Jul 2021 01:02:51 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id a8so9236101wrp.5;
+        Mon, 05 Jul 2021 01:02:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7HFtrvl8Hp3RAM/FFfn+6kiIZNa9TUM0Rjxm9S07BYU=;
-        b=wT20aR19P0l8+aXdUbQcBT2ncbwV7FLfcH5+V03YDNNqKv6/W87Yd4qmTk6DrcK30g
-         DvdQhRcrJe9G3BFaoFV5p4WrmgUYKk3+u3X4UvHFL0rNEX3TkXe2iLY38CprPo955Xzk
-         jXw1t1JN2FhA8XTxNXav8VU91f4SYPjClLB2etFbnaARMLCB1puhJz8RBotc77tIGNYG
-         YqVZkWZTcmUltC94eZPNzm9ddh9ayqP2+UMdqYc/uXD+lDCeqntSEOoRDnRI80vOfihc
-         4Rwft7IiiyvdBJHDpT7OmrenOGha/+t3Zh7rTwhzsLC3HMMBQmC6moV+GZbSHYxhWGsY
-         5KAQ==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nDuL6f8Z9nXcmXENCd06OrjSCnYjBU1lGgkNiNZdJMs=;
+        b=R/gy7mYUqgocSsQcPyweebZW5aSxozHHZYjO/99tK78pwiZm/MULplsTRCmRTAH/DH
+         xIvW3kerIaQuNsYFiojpBcGNoPQyEQ9R7fG5hGO9O77fAzJdRVVOe+5tZRmNkckQkm+N
+         XIinPBRbOjZiGyeFgT0J/wY84jyY2RyeR9NOgaroKUg+HbLWwSTQpn2ZJQuIzg5hiiUn
+         FpQjRtsaD5hCbgJYom7ZbZAIHcLNUDB9WzVwzgc1iYhi2+QEabLVDfZWUwgNiK+ivEkY
+         +UXNFVAAj4zL1U+OO5InApYxQLsHe+sXqdj6nAfKkMDuQOBzgeVP6XzHDLb61SmN8yH+
+         VVSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7HFtrvl8Hp3RAM/FFfn+6kiIZNa9TUM0Rjxm9S07BYU=;
-        b=Fks5B5K5cx0VbQE7oYpFH08nrA7cUXBYFFSIJb5l/W9UdtDfXoKAxuEHLp0MYJ9G5h
-         p5yDFb3/wxE+a1IC8N5PK1IQEZw9CGXQxKQZ8RaN1GsJXatNccpRwp+gSMixuRJSrC/d
-         gXadcjsmCqk99vk9XOAUm/7oRABHOKh+mwjJUfYMQOxl/oyxyqMJ7NDCFjHLJ8XnFFaD
-         wOlg+HDC9XaIRkYA6IGYfH7J0slbywJOOFjkbsAYbyY/qt9JrfnDtcxuKql/r5wK3PcP
-         TzpzXENAlygA0cIZSuIRoNb7sNqgCA+i+RcFbFT2H2Ouad5YELJjvzcnu7RUzJYNE/Ms
-         zH5Q==
-X-Gm-Message-State: AOAM533Gj3K4usSE+55SeGjwoAmdQ7bhMYsRZDtNcL/VsESt8pU9CV1M
-        7pgWqyNb/H99Nze4W3VrnSo0uA==
-X-Google-Smtp-Source: ABdhPJzpiH5Tj6rIdJ6BpWrt9yRBYxI8qI2sTP9njbWlR/EiBwQY+vKPW1G7o0sV6W/XsAOUrtBk/A==
-X-Received: by 2002:a17:902:e848:b029:129:2e87:9944 with SMTP id t8-20020a170902e848b02901292e879944mr11397658plg.27.1625472167343;
-        Mon, 05 Jul 2021 01:02:47 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id v14sm13323329pgo.89.2021.07.05.01.02.46
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=nDuL6f8Z9nXcmXENCd06OrjSCnYjBU1lGgkNiNZdJMs=;
+        b=KrIDwEFLYv+FrLTF/B+vMhYx9DGuGPy+/F71F4Z15lbLC99GZZzv+t6S0ykcCVlNn+
+         gZfKjqwz2z+ES88xbqqQoqzs7qVF9bLQw2K7GcEqMQnNKXWyNmi32qDWJC+XHIkf9qAv
+         POctt0w2JDe20xmL7rWLilHQFDYjeGthNCLM4QrFLmt0EW779RaBk5jN8GHvPyshS2EH
+         57Qqa6Ue3NgV7S/7rZi2Pew4/qJc3P1BColTRtnho3ewBZJlbhomf5X4vBV9wqxeVIcQ
+         +ZWxgv0zJc81zVd45Oe0JzmDSecWJnXIbLNwweLZCUTagdVEScguraMl5xgZkQC3Fjg2
+         S3jA==
+X-Gm-Message-State: AOAM532SB/gHPdfQDS3mm/rCxDDnyL416veclyfymYuS08jScpyU87HV
+        UMMn15tJphXzlYkRZ7D9z88=
+X-Google-Smtp-Source: ABdhPJyL6aJS7V9VOYZLzsWIpvPdp2UJoP0THM5EMXpOd8Yg8ZrDZwVHtL/IdAto8nRiJggPDWe9nQ==
+X-Received: by 2002:adf:f642:: with SMTP id x2mr10594402wrp.37.1625472170047;
+        Mon, 05 Jul 2021 01:02:50 -0700 (PDT)
+Received: from gmail.com (178-164-188-14.pool.digikabel.hu. [178.164.188.14])
+        by smtp.gmail.com with ESMTPSA id p18sm9155162wrt.18.2021.07.05.01.02.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 01:02:46 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 13:32:45 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org,
-        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        stefanha@redhat.com, gregkh@linuxfoundation.org
-Subject: Re: [PATCH v13] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210705080245.yabjlrgje5l7vndt@vireshk-i7>
-References: <8908f35a741e25a630d521e1012494e67d31ea64.1625466616.git.jie.deng@intel.com>
+        Mon, 05 Jul 2021 01:02:49 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 5 Jul 2021 10:02:47 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v8 05/13] x86/kprobes: Add UNWIND_HINT_FUNC on
+ kretprobe_trampoline code
+Message-ID: <YOK8pzp8B2V+1EaU@gmail.com>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+ <162399996966.506599.810050095040575221.stgit@devnote2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8908f35a741e25a630d521e1012494e67d31ea64.1625466616.git.jie.deng@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <162399996966.506599.810050095040575221.stgit@devnote2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jie.
 
-On 05-07-21, 14:53, Jie Deng wrote:
-> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
-> +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
-> +				    struct virtio_i2c_req *reqs,
-> +				    struct i2c_msg *msgs, int nr,
-> +				    bool fail)
-> +{
-> +	struct virtio_i2c_req *req;
-> +	bool failed = fail;
-> +	unsigned int len;
-> +	int i, j = 0;
-> +
-> +	for (i = 0; i < nr; i++) {
-> +		/* Detach the ith request from the vq */
-> +		req = virtqueue_get_buf(vq, &len);
+* Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Calling this for cases where virtio_i2c_prepare_reqs() itself has failed will
-always return NULL, should we even try to call this then ?
+> From: Josh Poimboeuf <jpoimboe@redhat.com>
+> 
+> Add UNWIND_HINT_FUNC on kretporbe_trampoline code so that ORC
+> information is generated on the kretprobe_trampoline correctly.
 
-virtqueue_get_buf() returns the next used buffer only, i.e. returned by the host
-?
+What is a 'kretporbe'?
 
-> +
-> +		/*
-> +		 * Condition (req && req == &reqs[i]) should always meet since
-> +		 * we have total nr requests in the vq.
-> +		 */
-> +		if (!failed && (WARN_ON(!(req && req == &reqs[i])) ||
+> Note that when the CONFIG_FRAME_POINTER=y, since the
+> kretprobe_trampoline skips updating frame pointer, the stack frame
+> of the kretprobe_trampoline seems non-standard. So this marks it
+> is STACK_FRAME_NON_STANDARD() and undefine UNWIND_HINT_FUNC.
 
-Mentioning again for completeness of the review, reqs[i] can never be NULL here
-though req can be. And even in that case you never need to check req here.
+What does 'marks it is' mean?
 
-Feel free to ignore it if you want, we can always send a fixup patch later and
-discuss it further :)
+'undefine' UNWIND_HINT_FUNC?
 
-> +		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)))
-> +			failed = true;
-> +
-> +		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], !failed);
-> +		if (!failed)
-> +			j++;
-> +	}
-> +
-> +	return fail ? 0 : j;
+Doesn't the patch do the exact opposite:
 
-Since you don't return ETIMEDOUT anymore, you can simply return j now. And so we
-can work with a single failed argument and don't need both fail and failed.
+  > +#define UNWIND_HINT_FUNC \
+  > +	UNWIND_HINT(ORC_REG_SP, 8, UNWIND_HINT_TYPE_FUNC, 0)
 
-> +}
-> +
-> +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
-> +{
-> +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
-> +	struct virtqueue *vq = vi->vq;
-> +	struct virtio_i2c_req *reqs;
-> +	unsigned long time_left;
-> +	int ret;
-> +
-> +	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
-> +	if (!reqs)
-> +		return -ENOMEM;
-> +
-> +	ret = virtio_i2c_prepare_reqs(vq, reqs, msgs, num);
-> +	if (ret != num) {
-> +		ret = virtio_i2c_complete_reqs(vq, reqs, msgs, ret, true);
-> +		goto err_free;
-> +	}
-> +
-> +	reinit_completion(&vi->completion);
-> +	virtqueue_kick(vq);
-> +	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
-> +	ret = virtio_i2c_complete_reqs(vq, reqs, msgs, num, !time_left);
-> +
-> +	if (!time_left) {
-> +		ret = -ETIMEDOUT;
-> +		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
-> +	}
-> +
-> +err_free:
-> +	kfree(reqs);
-> +	return ret;
-> +}
+But it does undefine it in a specific spot:
 
-> diff --git a/include/uapi/linux/virtio_i2c.h b/include/uapi/linux/virtio_i2c.h
-> new file mode 100644
-> index 0000000..df936a2
-> --- /dev/null
-> +++ b/include/uapi/linux/virtio_i2c.h
-> @@ -0,0 +1,41 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later WITH Linux-syscall-note */
+
+
+> Anyway, with the frame pointer, FP unwinder can unwind the stack
+> frame correctly without that hint.
+> 
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Tested-by: Andrii Nakryik <andrii@kernel.org>
+
+I have to say these changelogs are very careless.
+
+> +#else
+> +
+
+In headers, in longer CPP blocks, please always mark the '#else' branch 
+with what it is the else branch of.
+
+See the output of:
+
+   kepler:~/tip> git grep '#else' arch/x86/include/asm/ | head
+
+> +#ifdef CONFIG_FRAME_POINTER
 > +/*
-> + * Definitions for virtio I2C Adpter
-> + *
-> + * Copyright (c) 2021 Intel Corporation. All rights reserved.
-> + */
-> +
-> +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
-> +#define _UAPI_LINUX_VIRTIO_I2C_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/const.h>
+> + * kretprobe_trampoline skips updating frame pointer. The frame pointer
+> + * saved in trampoline_handler points to the real caller function's
+> + * frame pointer. Thus the kretprobe_trampoline doesn't seems to have a
+> + * standard stack frame with CONFIG_FRAME_POINTER=y.
+> + * Let's mark it non-standard function. Anyway, FP unwinder can correctly
+> + * unwind without the hint.
 
-Both of these need to be the uapi headers as Andy said earlier and they better
-be in alphabetical order.
+s/doesn't seems to have a standard stack frame
+ /doesn't have a standard stack frame
 
-#include <uapi/linux/const.h>
-#include <uapi/linux/types.h>
+There's nothing 'seems' about the situation - it's a non-standard function 
+entry and stack frame situation, and the unwinder needs to know about it.
 
-Though in your support, I do see a lot of files in uapi/linux using the standard
-types.h, which looks wrong as that types.h is not a userspace ABI.
+> +STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
+> +#undef UNWIND_HINT_FUNC
+> +#define UNWIND_HINT_FUNC
+> +#endif
+>  /*
+>   * When a retprobed function returns, this code saves registers and
+>   * calls trampoline_handler() runs, which calls the kretprobe's handler.
+> @@ -1031,6 +1044,7 @@ asm(
+>  	/* We don't bother saving the ss register */
+>  #ifdef CONFIG_X86_64
+>  	"	pushq %rsp\n"
+> +	UNWIND_HINT_FUNC
+>  	"	pushfq\n"
+>  	SAVE_REGS_STRING
+>  	"	movq %rsp, %rdi\n"
+> @@ -1041,6 +1055,7 @@ asm(
+>  	"	popfq\n"
+>  #else
+>  	"	pushl %esp\n"
+> +	UNWIND_HINT_FUNC
+>  	"	pushfl\n"
+>  	SAVE_REGS_STRING
+>  	"	movl %esp, %eax\n"
 
--- 
-viresh
+Why not provide an appropriate annotation method in <asm/unwind_hints.h>, 
+so that other future code can use it too instead of reinventing the wheel?
+
+Thanks,
+
+	Ingo
