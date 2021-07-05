@@ -2,139 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF3B3BB71B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497663BB720
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhGEGVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 02:21:25 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:34004 "EHLO m43-7.mailgun.net"
+        id S229891AbhGEGXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 02:23:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229812AbhGEGVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 02:21:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625465928; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=yCrPkEAKmaz+cVp5YvGeM+Fn0+vuJCy4/YBCSelI6DE=;
- b=eqy7yHjsStQjjyK1QTQ4ZK8J0eZYTpZgycjZVQHI8h6lGMjyVEVmFcooE0e94b8sM+0PM2cU
- D4aF8Buhp+uL236cgAv8Ny3in/ccDRFXQTIsjcNqs54d0EFMM/aGe3+DH5CVx2GRPkJDLE3R
- 1O2oExAs/Ocxt6ypDZQrN3UKg2Q=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60e2a43e3a8b6d0a458b74d8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Jul 2021 06:18:38
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 147B1C4360C; Mon,  5 Jul 2021 06:18:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A775C433D3;
-        Mon,  5 Jul 2021 06:18:37 +0000 (UTC)
+        id S229813AbhGEGW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 02:22:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8354613D1;
+        Mon,  5 Jul 2021 06:20:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625466022;
+        bh=vNPUPQtYZbWQKtH0F5YHo4065tpzT1aYYV5EjWmsZ9M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uLyho5BYGuiJKbHvRpFnSU9+uJZaOUzovUVuWjpRI/wumD1/SCNSWPSx26R8q49OQ
+         PSrGHW3C+o1dPFk8gbH2/drdsnP0u6IinpD69TcgB/BnYou6gbAVNUMhXT4NrfV5Xj
+         dFcAGklvIec7toHFxZDzTgo/iBddL2bA8k4FEqAI=
+Date:   Mon, 5 Jul 2021 08:20:18 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Zhenguo Zhao <zhenguo6858@gmail.com>
+Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] tty: n_gsm: delete DISC command frame as requester
+Message-ID: <YOKkoi/etpUFbzSU@kroah.com>
+References: <1625452087-12655-1-git-send-email-zhenguo6858@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 05 Jul 2021 11:48:37 +0530
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
-        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
-        svarbanov@mm-sol.com
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mgautam@codeaurora.org, dianders@chromium.org, mka@chromium.org,
-        sanm@codeaurora.org
-Subject: Re: [PATCH v3 4/4] PCIe: qcom: Add support to control pipe clk mux
-In-Reply-To: <1624377651-30604-5-git-send-email-pmaliset@codeaurora.org>
-References: <1624377651-30604-1-git-send-email-pmaliset@codeaurora.org>
- <1624377651-30604-5-git-send-email-pmaliset@codeaurora.org>
-Message-ID: <c334a6d11fae5bd135a94ab5c66b3f97@codeaurora.org>
-X-Sender: pmaliset@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1625452087-12655-1-git-send-email-zhenguo6858@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-22 21:30, Prasad Malisetty wrote:
-> pipe-clk mux needs to switch between pipe_clk
-> and XO as part of LPM squence. This is done by setting
-> pipe_clk mux as parent of pipe_clk after phy init.
-> This is a new requirement for sc7280.
-> For accessing to DBI registers during L23,
-> need to switch the pipe clock with free-running
-> clock (TCXO) using GCC’s registers
+On Mon, Jul 05, 2021 at 10:28:07AM +0800, Zhenguo Zhao wrote:
+> From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
 > 
-> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+> as initiator,it need to send DISC command ,as requester,there is
+> no need to send the DISC control frame,it will cause redundant data.
+> 
+> Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
 > ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
+>  drivers/tty/n_gsm.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c
-> b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 8a7a300..80e9ee4 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -166,6 +166,9 @@ struct qcom_pcie_resources_2_7_0 {
->  	struct regulator_bulk_data supplies[2];
->  	struct reset_control *pci_reset;
->  	struct clk *pipe_clk;
-> +	struct clk *pipe_clk_mux;
-> +	struct clk *pipe_ext_src;
-> +	struct clk *ref_clk_src;
->  };
-> 
->  union qcom_pcie_resources {
-> @@ -1167,6 +1170,20 @@ static int qcom_pcie_get_resources_2_7_0(struct
-> qcom_pcie *pcie)
->  	if (ret < 0)
->  		return ret;
-> 
-> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
-> +		res->pipe_clk_mux = devm_clk_get(dev, "pipe_mux");
-> +		if (IS_ERR(res->pipe_clk_mux))
-> +			return PTR_ERR(res->pipe_clk_mux);
-> +
-> +		res->pipe_ext_src = devm_clk_get(dev, "phy_pipe");
-> +		if (IS_ERR(res->pipe_ext_src))
-> +			return PTR_ERR(res->pipe_ext_src);
-> +
-> +		res->ref_clk_src = devm_clk_get(dev, "ref");
-> +		if (IS_ERR(res->ref_clk_src))
-> +			return PTR_ERR(res->ref_clk_src);
-> +	}
-> +
->  	res->pipe_clk = devm_clk_get(dev, "pipe");
->  	return PTR_ERR_OR_ZERO(res->pipe_clk);
->  }
-> @@ -1255,6 +1272,11 @@ static void qcom_pcie_deinit_2_7_0(struct
-> qcom_pcie *pcie)
->  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+> diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+> index 5fea02c..f8e5935 100644
+> --- a/drivers/tty/n_gsm.c
+> +++ b/drivers/tty/n_gsm.c
+> @@ -2050,7 +2050,8 @@ static int gsm_disconnect(struct gsm_mux *gsm)
+>  	del_timer_sync(&gsm->t2_timer);
+>  	/* Now we are sure T2 has stopped */
+>  
+> -	gsm_dlci_begin_close(dlci);
+> +	if (gsm->initiator)
+> +		gsm_dlci_begin_close(dlci);
+>  	wait_event_interruptible(gsm->event,
+>  				dlci->state == DLCI_CLOSED);
+>  
+> @@ -3014,6 +3015,7 @@ static int gsmtty_open(struct tty_struct *tty, struct file *filp)
+>  static void gsmtty_close(struct tty_struct *tty, struct file *filp)
 >  {
->  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
-> +	struct dw_pcie *pci = pcie->pci;
-> +	struct device *dev = pci->dev;
-> +
-> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
-> +		clk_set_parent(res->pipe_clk_mux, res->pipe_ext_src);
-> 
->  	return clk_prepare_enable(res->pipe_clk);
+>  	struct gsm_dlci *dlci = tty->driver_data;
+> +	struct gsm_mux *gsm = dlci->gsm;
+>  
+>  	if (dlci == NULL)
+>  		return;
+> @@ -3024,7 +3026,8 @@ static void gsmtty_close(struct tty_struct *tty, struct file *filp)
+>  	mutex_unlock(&dlci->mutex);
+>  	if (tty_port_close_start(&dlci->port, tty, filp) == 0)
+>  		return;
+> -	gsm_dlci_begin_close(dlci);
+> +	if (gsm->initiator)
+> +		gsm_dlci_begin_close(dlci);
+>  	if (tty_port_initialized(&dlci->port) && C_HUPCL(tty))
+>  		tty_port_lower_dtr_rts(&dlci->port);
+>  	tty_port_close_end(&dlci->port, tty);
+> @@ -3035,10 +3038,12 @@ static void gsmtty_close(struct tty_struct *tty, struct file *filp)
+>  static void gsmtty_hangup(struct tty_struct *tty)
+>  {
+>  	struct gsm_dlci *dlci = tty->driver_data;
+> +	struct gsm_mux *gsm = dlci->gsm;
+>  	if (dlci->state == DLCI_CLOSED)
+>  		return;
+>  	tty_port_hangup(&dlci->port);
+> -	gsm_dlci_begin_close(dlci);
+> +	if (gsm->initiator)
+> +		gsm_dlci_begin_close(dlci);
 >  }
+>  
+>  static int gsmtty_write(struct tty_struct *tty, const unsigned char *buf,
+> -- 
+> 1.9.1
+> 
 
+Hi,
 
-Hi All,
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-Greetings of the day !!
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-Could you please provide your comments on updated change series
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
 
-Thanks
--Prasad
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
