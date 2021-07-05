@@ -2,108 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224C03BB6EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 07:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9006B3BB6EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 07:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhGEFgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 01:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhGEFgh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 01:36:37 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC4CC061762
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 22:34:01 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id a2so17255586pgi.6
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 22:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1Wsby3LClrEo2/xvJaYmxPCAce43LH7aBkEp9Egxfy4=;
-        b=ciOeWZgPMFrOVTP7nqd3vh4BK2H/kDoECH0M4NTEkvLjqklwcEvMZ6pOyuiZv+QQ6h
-         lDrBMGCeKRXaGAWDSu0UEiP0bU0dHHUbj1LyFXD8974EHU34QZf923FQPLIIHzmY+Flg
-         kSfePNmu2lWtckpm/B5Wfe4iQykGWcWzyPyRU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1Wsby3LClrEo2/xvJaYmxPCAce43LH7aBkEp9Egxfy4=;
-        b=szw4YksbYgALuV35mrJL4exVj63sSrCQ7N481S5uVjib84x7tH7s/GfPU7PYzleisz
-         26QlAavKQIB8ZCopAifWX6Q3zPrvPW0a59Z8CYSq2PB2aJog52ksVqL8sA6U0lxw+NaE
-         dSVNmZDFpMoj3qfJSdkqAHLJCPB1QwDP2QW1TNUhOzp5xWtTQIh/YHFJ86Urwfm+ysCy
-         gIzIgpMh1eLKdAObAFGJduX+JgziuobxY/bMZllcAe7qASt03t7dodcVHOmZf155su70
-         W+wCRJIQowpvPYATDmysGkQrdbmId/Tjs1Z4liez/nVMG9E5K80BurwSpRrWzJ85m7DE
-         mbRw==
-X-Gm-Message-State: AOAM532x8kuag7gl8V4aNmw8BwG68V/YO056fAg61fTUac8z2f9+mpX/
-        YawA5FQXXgXwK3pQ0ZNSBXYIhg==
-X-Google-Smtp-Source: ABdhPJzP2yjoBz66yyuwQKfBYNR+vQPbMTqUfKLq82KBIzHKMAhnU++++X2fY97oynm7v9ff5u19nQ==
-X-Received: by 2002:a63:fb11:: with SMTP id o17mr13787214pgh.177.1625463240848;
-        Sun, 04 Jul 2021 22:34:00 -0700 (PDT)
-Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:3fed:7130:60f:265a])
-        by smtp.gmail.com with ESMTPSA id x19sm6805245pfp.115.2021.07.04.22.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jul 2021 22:34:00 -0700 (PDT)
-From:   Alexandre Courbot <acourbot@chromium.org>
-To:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Tzung-Bi Shih <tzungbi@google.com>
-Subject: [PATCH v6 14/14] media: mtk-vcodec: enable MT8183 decoder
-Date:   Mon,  5 Jul 2021 14:32:58 +0900
-Message-Id: <20210705053258.1614177-15-acourbot@chromium.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-In-Reply-To: <20210705053258.1614177-1-acourbot@chromium.org>
-References: <20210705053258.1614177-1-acourbot@chromium.org>
+        id S229793AbhGEFnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 01:43:51 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:15992 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229734AbhGEFnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 01:43:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625463674; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=+oDSSXyT2xhBvBFnw/v2pl9Ou/LSQG1wXgB0Sra79+Y=; b=lflq6XzWAmxzwsvgNA7UsQe5B+fOVgDYxsG2jtMS3rCXX6Fbjlh5BUPhO6XmSC2FJyoyJFQ/
+ YD+ywcEobFqteBg7rcW1tMNv/XLWG5ie9GYaOGZcM/1dI+4tHs8LKUpLdSFhEwq05BhbB9oi
+ y2xn0C+raUY9ZbnMJySFaJeH/ww=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60e29b702a2a9a9761abe395 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Jul 2021 05:41:04
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 39643C433F1; Mon,  5 Jul 2021 05:41:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.50.35.89] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 41505C433D3;
+        Mon,  5 Jul 2021 05:41:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 41505C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH 1/2] soc: qcom: rpmhpd: Use corner in power_off
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210703005416.2668319-1-bjorn.andersson@linaro.org>
+ <20210703005416.2668319-2-bjorn.andersson@linaro.org>
+ <cacd1a1f-01c8-b913-23e5-538a772cd118@codeaurora.org>
+ <CAOCOHw4sufqC3=ixNud8Oz7vO0_ZcO8u5mqNQTKLZX4LGe9aow@mail.gmail.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <c4440f5e-592c-b849-3ca7-57e812de2df5@codeaurora.org>
+Date:   Mon, 5 Jul 2021 11:10:58 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOCOHw4sufqC3=ixNud8Oz7vO0_ZcO8u5mqNQTKLZX4LGe9aow@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunfei Dong <yunfei.dong@mediatek.com>
 
-Now that all the supporting blocks are present, enable decoder for
-MT8183.
 
-Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-[acourbot: refactor, cleanup and split]
-Co-developed-by: Alexandre Courbot <acourbot@chromium.org>
-Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
----
- drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c | 5 +++++
- 1 file changed, 5 insertions(+)
+On 7/5/2021 10:36 AM, Bjorn Andersson wrote:
+> On Sun, Jul 4, 2021 at 11:27 PM Rajendra Nayak <rnayak@codeaurora.org> wrote:
+>>
+>>
+>>
+>> On 7/3/2021 6:24 AM, Bjorn Andersson wrote:
+>>> rpmhpd_aggregate_corner() takes a corner as parameter, but in
+>>> rpmhpd_power_off() the code requests the level of the first corner
+>>> instead.
+>>>
+>>> In all (known) current cases the first corner has level 0, so this
+>>> change should be a nop, but in case that there's a power domain with a
+>>> non-zero lowest level this makes sure that rpmhpd_power_off() actually
+>>> requests the lowest level - which is the closest to "power off" we can
+>>> get.
+>>>
+>>> While touching the code, also skip the unnecessary zero-initialization
+>>> of "ret".
+>>>
+>>> Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
+>>> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>>> ---
+>>>    drivers/soc/qcom/rpmhpd.c | 5 ++---
+>>>    1 file changed, 2 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
+>>> index 2daa17ba54a3..fa209b479ab3 100644
+>>> --- a/drivers/soc/qcom/rpmhpd.c
+>>> +++ b/drivers/soc/qcom/rpmhpd.c
+>>> @@ -403,12 +403,11 @@ static int rpmhpd_power_on(struct generic_pm_domain *domain)
+>>>    static int rpmhpd_power_off(struct generic_pm_domain *domain)
+>>>    {
+>>>        struct rpmhpd *pd = domain_to_rpmhpd(domain);
+>>> -     int ret = 0;
+>>> +     int ret;
+>>>
+>>>        mutex_lock(&rpmhpd_lock);
+>>>
+>>> -     ret = rpmhpd_aggregate_corner(pd, pd->level[0]);
+>>> -
+>>> +     ret = rpmhpd_aggregate_corner(pd, 0);
+>>
+>> This won't work for cases where pd->level[0] != 0, rpmh would just ignore this and keep the
+>> resource at whatever corner it was previously at.
+>> (unless command DB tells you a 0 is 'valid' for a resource, sending a 0 is a nop)
+>> The right thing to do is to send in whatever command DB tells you is the lowest level that's valid,
+>> which is pd->level[0].
+>>
+> 
+> I'm afraid this doesn't make sense to me.
+> 
+> In rpmh_power_on() if cmd-db tells us that we have [0, 64, ...] and we
+> request 64 we rpmhpd_aggregate_corner(pd, 1); but in power off, if
+> cmd-db would provide [64, ...] we would end up sending
+> rpmhpd_aggregate_corner(pd, 64);
+> So in power_on we request the corner (i.e. index in the array provided
+> in cmd-db) and in power-off the same function takes the level?
 
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-index c8a84fa11e4a..55ae198dbcf9 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-@@ -374,12 +374,17 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
- }
- 
- extern const struct mtk_vcodec_dec_pdata mtk_vdec_8173_pdata;
-+extern const struct mtk_vcodec_dec_pdata mtk_vdec_8183_pdata;
- 
- static const struct of_device_id mtk_vcodec_match[] = {
- 	{
- 		.compatible = "mediatek,mt8173-vcodec-dec",
- 		.data = &mtk_vdec_8173_pdata,
- 	},
-+	{
-+		.compatible = "mediatek,mt8183-vcodec-dec",
-+		.data = &mtk_vdec_8183_pdata,
-+	},
- 	{},
- };
- 
+ah that's right, I did not read the commit log properly and got confused.
+Looks like this bug existed from the day this driver for merged :/, thanks
+for catching it.
+Does it make sense to also mark this fix for stable?
+
+> 
+> Can you please help me understand what the actual number we're
+> supposed to send to the RPMh is? Is it numbers in the range [0-15] or
+> is it numbers such as {0, 64, 128, ...}?
+> 
+> Afaict it's the prior (i.e. [0-15]), as this is what we currently do
+> in both power_on and set_performance_state, and it happens to be what
+> we send in power_off as long as the first level from cmd-db is 0.
+> 
+> Regards,
+> Bjorn
+> 
+>>
+>>>        if (!ret)
+>>>                pd->enabled = false;
+>>>
+>>>
+>>
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+
 -- 
-2.32.0.93.g670b81a890-goog
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
