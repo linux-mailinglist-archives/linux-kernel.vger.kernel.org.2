@@ -2,126 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046523BB9B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DF53BB9B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhGEJB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 05:01:59 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:35890 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230189AbhGEJB6 (ORCPT
+        id S230305AbhGEJCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 05:02:01 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:23410 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230208AbhGEJB7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 05:01:58 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210705085920epoutp039d587aa498b23bbb895d7f5552f9f70c~O2WjlPDST1930019300epoutp038
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 08:59:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210705085920epoutp039d587aa498b23bbb895d7f5552f9f70c~O2WjlPDST1930019300epoutp038
+        Mon, 5 Jul 2021 05:01:59 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210705085921epoutp04ad76375e4d7f45e14a58e8efa87e9061~O2Wknlv5G3036330363epoutp04h
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 08:59:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210705085921epoutp04ad76375e4d7f45e14a58e8efa87e9061~O2Wknlv5G3036330363epoutp04h
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1625475560;
-        bh=fctu0V/S79vb8UELNvNMxKR3h0pKZ3ff7qJEN3PAxZ4=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=aeq4W/uGTpT50B6BsFVUVkuzzeKKGULeyij1OF/WTQBJi7DtGupbnwj6kN3l+Q0mg
-         BumDak2Sih4Ivqu8dGg5YsK9Zqg2iIEpUFi0yWM/7mW55xDrZBe62T6WHKW9lwLbQ7
-         vBcljQX1BMWhUdRBJDwJfuhA+8GxtBBmGKY0EpKs=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        s=mail20170921; t=1625475561;
+        bh=2y/NVkLne+0y/XisEygWczbRR0MKGa628Bu0+nxLkNI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=V2FYXUfUE1W6xlEwJDXqcIAgdH9suW+UnRT9xXELpVaQKEC/gNkKqmA5daVO7jsSD
+         bMaee7b+lkWGnDrnOcgfm2G5bY0w0ENAHceeTZIe6AVuWqWbkA6CKO84k1bZ/G7Jpv
+         r4QzFp05vKSz4Jvmebe3dRrjbVUuUxrWtk2h8/Ho=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
         epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210705085919epcas1p118b04ea42c7de37c00f0dea6f6e8a549~O2WjDoeWf2231422314epcas1p1_;
-        Mon,  5 Jul 2021 08:59:19 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.159]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4GJKPL60wMz4x9QD; Mon,  5 Jul
-        2021 08:59:18 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FE.0F.09551.6E9C2E06; Mon,  5 Jul 2021 17:59:18 +0900 (KST)
+        20210705085920epcas1p12afb92abfbcef9927da7da9c48f520c5~O2WkIgz8s2231422314epcas1p1C;
+        Mon,  5 Jul 2021 08:59:20 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.160]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4GJKPM373pz4x9Q2; Mon,  5 Jul
+        2021 08:59:19 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B9.DA.09952.6E9C2E06; Mon,  5 Jul 2021 17:59:18 +0900 (KST)
 Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
         epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210705085918epcas1p1493a3b289b3144bf86e90893185c088a~O2Wh1JPK_1979719797epcas1p18;
+        20210705085918epcas1p17e0ac84d91c591897d00fbc3d3caa771~O2Wh52fKY2231422314epcas1p15;
         Mon,  5 Jul 2021 08:59:18 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
         epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210705085918epsmtrp20ea08e684e0f9583735adbfe438039a5~O2Wh0YIEp1532215322epsmtrp2T;
+        20210705085918epsmtrp2caefd19958129f7f5750f8fb94f29cfc~O2Wh5As2B1532215322epsmtrp2U;
         Mon,  5 Jul 2021 08:59:18 +0000 (GMT)
-X-AuditID: b6c32a36-2b3ff7000000254f-d8-60e2c9e6eeeb
+X-AuditID: b6c32a35-447ff700000026e0-12-60e2c9e68cfb
 Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F0.45.08289.6E9C2E06; Mon,  5 Jul 2021 17:59:18 +0900 (KST)
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        CC.C4.08394.6E9C2E06; Mon,  5 Jul 2021 17:59:18 +0900 (KST)
 Received: from localhost.localdomain (unknown [10.253.98.78]) by
         epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210705085917epsmtip28b3771bae4dad737725c410aa18a128c~O2WhnbRii2653026530epsmtip2j;
-        Mon,  5 Jul 2021 08:59:17 +0000 (GMT)
+        20210705085918epsmtip209624057555c41d1b2a653d34eae2c9b~O2Wht-FyX2867228672epsmtip2X;
+        Mon,  5 Jul 2021 08:59:18 +0000 (GMT)
 From:   Ohhoon Kwon <ohoono.kwon@samsung.com>
 To:     david@redhat.com, ohoono.kwon@samsung.com,
         akpm@linux-foundation.org, mhocko@suse.com
 Cc:     bhe@redhat.com, rppt@linux.ibm.com, ohkwon1043@gmail.com,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/3] mm: sparse: remove __section_nr() function
-Date:   Mon,  5 Jul 2021 17:55:35 +0900
-Message-Id: <20210705085538.14557-1-ohoono.kwon@samsung.com>
+Subject: [PATCH v2 1/3] mm: sparse: pass section_nr to section_mark_present
+Date:   Mon,  5 Jul 2021 17:55:36 +0900
+Message-Id: <20210705085538.14557-2-ohoono.kwon@samsung.com>
 X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBKsWRmVeSWpSXmKPExsWy7bCmvu6zk48SDBZskrOYs34Nm8X5B7/Y
+In-Reply-To: <20210705085538.14557-1-ohoono.kwon@samsung.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMKsWRmVeSWpSXmKPExsWy7bCmru6zk48SDP51qFnMWb+GzeL8g19s
+        Fl/X/2K2uLxrDpvFvTX/WS3u9zlY7N3va7Hr5wpmixtTGtgcOD12zrrL7rHp0yR2jxMzfrN4
+        TFh0gNHj/b6rbB59W1YxeqzfcpXF4/MmuQCOqBybjNTElNQihdS85PyUzLx0WyXv4HjneFMz
+        A0NdQ0sLcyWFvMTcVFslF58AXbfMHKDrlBTKEnNKgUIBicXFSvp2NkX5pSWpChn5xSW2SqkF
+        KTkFhgYFesWJucWleel6yfm5VoYGBkamQJUJORkXlj9jKegUqJi99AFjA+Nm3i5GTg4JAROJ
+        bcsnsYHYQgI7GCUW/1LqYuQCsj8xSiw/eo4dwvnGKDHp/mommI6zO/8wQyT2Mkr0vtjHBNey
+        7msbI0gVm4C2xP7eE8wgtohAtMTsqx1g3cwCBRIN/Z9YQGxhAW+J3dtegu1mEVCV6Ls0D6ye
+        V8BG4uC/BawQ2+QlVm84ABbnFLCV+PvqCQtE/C27xOtf4hC2i8TqRc1sELawxKvjW9ghbCmJ
+        z+/2soEcJyHQzyhxqG87K4QzgVFifVcjUBUHkGMv8f6SBYjJLKApsX6XPkSvosTO33MZIW7m
+        k3j3tYcVoppXoqNNCMJUlVj22wOiWlqib/plqAs8JJZ8vc4GCRKgRetuXmeewCg3C2HBAkbG
+        VYxiqQXFuempxYYFhsgRtokRnPq0THcwTnz7Qe8QIxMH4yFGCQ5mJRFekSmPEoR4UxIrq1KL
+        8uOLSnNSiw8xmgLDbiKzlGhyPjD55pXEG5oaGRsbW5iYmZuZGiuJ8+5kO5QgJJCeWJKanZpa
+        kFoE08fEwSnVwNTXlyojt+TLhvnhSWtiXnZZqstNUt28grE8JvjN7WONd3aVWD6eFnrTYuWM
+        KRXTb5zuKZncwDGn8XTe1nuRX44Jmv+a9KfBntfu7huRuEe7dCWbZ2juZp8s4jpTMtf37N+f
+        y4+n5DksOzqh+cPLSB5tFYYDmux/lJ7ttjnee65qkZ32l87zHLlWV+KmHtO5tDg/RJbv/cMN
+        djMy397x3Dv1cnFXaM6Ggg8JVjNNrztMe1mfEhe+1sa/qUbJovvR78P/74m6vVTVFZnwZt27
+        107CRhIzKqst/7Ian1Z3rtg9syNi07ZbV+cm5sv35pxsP3Qkruwfyx7uZWoiJ08KuLxVv77H
+        e9pvjuzfBq13inyUWIozEg21mIuKEwHAAghLBgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNLMWRmVeSWpSXmKPExsWy7bCSvO6zk48SDKbu4LKYs34Nm8X5B7/Y
         LL6u/8VscXnXHDaLe2v+s1rc73Ow2Lvf12LXzxXMFjemNLA5cHrsnHWX3WPTp0nsHidm/Gbx
-        mLDoAKPH+31X2Tz6tqxi9Fi/5SqLx+dNcgEcUTk2GamJKalFCql5yfkpmXnptkrewfHO8aZm
-        Boa6hpYW5koKeYm5qbZKLj4Bum6ZOUDXKSmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVIL
-        UnIKDA0K9IoTc4tL89L1kvNzrQwNDIxMgSoTcjKeTrzKXLCJreLQlUmsDYx7WboYOTkkBEwk
-        vhx/wd7FyMUhJLCDUWLJhW5WCOcTo8TTjrdsEM5nRolje58ww7SsOLgPqmUXo8SyQz9Z4Fom
-        35rFBlLFJqAtsb/3BFiHiEC0xOyrHUwgNrNAgURD/yew5cICThIdT8+C1bAIqEpMWr8EzOYV
-        sJHYNG8y1DZ5idUbDjCDLJAQOMcuceHLBajLXSQedN2AsoUlXh3fwg5hS0l8freXDaKhn1Hi
-        UN92VghnAqPE+q5GoCoOIMde4v0lCxCTWUBTYv0ufYheRYmdv+cyQhzKJ/Huaw8rRDWvREeb
-        EISpKrHstwdEtbRE3/TLbBC2h8SS3UfAbCGBWIlHZzqZJjDKzkKYv4CRcRWjWGpBcW56arFh
-        gRFyLG1iBCc5LbMdjJPeftA7xMjEwXiIUYKDWUmEV2TKowQh3pTEyqrUovz4otKc1OJDjKbA
-        8JrILCWanA9Ms3kl8YamRsbGxhYmZuZmpsZK4rw72Q4lCAmkJ5akZqemFqQWwfQxcXBKNTAp
-        zf59KvzKbyG12Ij3G6e+fVWys/pZatJ78yN/7E0ENr/pMvi+a46LW47+xKq55/XkLs86+DQ0
-        f3vvY/uzkx6KWglGupT4zvZQVeG/wxzDKVDZVsfJW+NweMvjlTEMN9riS2f+sHD5nKCxXe9h
-        zRvN8jc8oit2rvB+XfWeS6LK1aYwXiuM6fG7f6dlJ7FNv72P+53RfEaNRRnM2T0Tcxtslh+s
-        t/zUcH1z+T7fdffYJjB+OZATdPHaaU8+EVN1D/FonukKEitSTn+qLnvuUnau/8RCictnjjmY
-        9B2RkS3vEHxefePk6dVeDEwVy/O7PJT1fOdLSq8Ks3z6IXbpWh6hh4pPGE9yzD9ve6KU7awS
-        S3FGoqEWc1FxIgBnUxEi+wMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCLMWRmVeSWpSXmKPExsWy7bCSvO6zk48SDB5NZreYs34Nm8X5B7/Y
-        LL6u/8VscXnXHDaLe2v+s1rc73Ow2Lvf12LXzxXMFjemNLA5cHrsnHWX3WPTp0nsHidm/Gbx
-        mLDoAKPH+31X2Tz6tqxi9Fi/5SqLx+dNcgEcUVw2Kak5mWWpRfp2CVwZTydeZS7YxFZx6Mok
-        1gbGvSxdjJwcEgImEisO7mPvYuTiEBLYwSjxYe0qdoiEtMTTF7uAijiAbGGJw4eLIWo+MErc
-        7JjGClLDJqAtsb/3BDNIjYhAvMT8a2CtzAJlEldX/gUrERZwkuh4epYZxGYRUJWYtH4JmM0r
-        YCOxad5kZohV8hKrNxxgnsDIs4CRYRWjZGpBcW56brFhgVFearlecWJucWleul5yfu4mRnDA
-        aWntYNyz6oPeIUYmDsZDjBIczEoivCJTHiUI8aYkVlalFuXHF5XmpBYfYpTmYFES573QdTJe
-        SCA9sSQ1OzW1ILUIJsvEwSnVwJSVUXnt7anPeyuzK4wvawT0p6cmTRFctPIufy2LLIOy5jFx
-        DutZ7oyqPBqmyysDJ15QS5f+w7/Li31VbdcVniT1nTePbThqX/ZGMX5Cr2JK0DxG0Z9xuxc6
-        3fXt+dCk7T1p1hnhWKe9mVcfXDihZmEf9sV4acWu0/NN+EUNwnWvdZ+4dC7Jfp3BqTW3o87N
-        ud6awvZEU3Ff3rGo69L8TNE+Vywbhd4JvZ154bhtIvey5s6Kn69lwpOZXxYvrc58/PBa66/6
-        qUu+f/fl+5lcs7+dfXprsmv2Qe+2VZ9+cbgVbJ4qNLnKIP3i449J5XlrnVrDc1ezNE8yCozf
-        H3njxsFJUuvNd5t9Pj6zhd3sghJLcUaioRZzUXEiAEt4eYmnAgAA
-X-CMS-MailID: 20210705085918epcas1p1493a3b289b3144bf86e90893185c088a
+        mLDoAKPH+31X2Tz6tqxi9Fi/5SqLx+dNcgEcUVw2Kak5mWWpRfp2CVwZF5Y/YynoFKiYvfQB
+        YwPjZt4uRk4OCQETibM7/zB3MXJxCAnsZpTYvuAXC0RCWuLpi11ANgeQLSxx+HAxRM0HRoll
+        V84ygdSwCWhL7O89wQxSIyIQLzH/GjtImFmgTOLqyr+sILawgLfE7m0v2UBsFgFVib5L85hB
+        bF4BG4mD/xawQqySl1i94QBYnFPAVuLvqydga4WAaiZsCp3AyLeAkWEVo2RqQXFuem6xYYFh
+        Xmq5XnFibnFpXrpecn7uJkZweGpp7mDcvuqD3iFGJg7GQ4wSHMxKIrwiUx4lCPGmJFZWpRbl
+        xxeV5qQWH2KU5mBREue90HUyXkggPbEkNTs1tSC1CCbLxMEp1cDkKPbovkJ1/bWSd9m78rgk
+        pbc9YJPUkZ2/WH3rqp1b1YsXbbsXHHTsweQXpfmtDrm5ix17cr8aPvrjmlP86HDp46Kg5Vev
+        p8XevrxQ44/m5NKpz0P38Px5q+F6+jD72oS3U+Z8vnd31xaXhXf3CZQ7uwr2no5j0ZN/s+H+
+        jnWdBzaXOFzi+d7qKd7vz2+6ZIm2RmJUC2db8Ycd5xc9vc3r9fS50XzhpueOlxvMxM5N7cmb
+        KxSvIPu5drrT6/SuEyLh3hsuGT3eb6S2Y+b9mG2/WeQCdO8e6ZP4+rZxck3qpNwN/5cUpud8
+        XWN955/pxN4jJ9r1q0wPTHxyT/7vfobWpb6B7WWGf+UD33Q+W2XhocRSnJFoqMVcVJwIAHpO
+        NxO+AgAA
+X-CMS-MailID: 20210705085918epcas1p17e0ac84d91c591897d00fbc3d3caa771
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: SVC_REQ_APPROVE
 CMS-TYPE: 101P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210705085918epcas1p1493a3b289b3144bf86e90893185c088a
-References: <CGME20210705085918epcas1p1493a3b289b3144bf86e90893185c088a@epcas1p1.samsung.com>
+X-CMS-RootMailID: 20210705085918epcas1p17e0ac84d91c591897d00fbc3d3caa771
+References: <20210705085538.14557-1-ohoono.kwon@samsung.com>
+        <CGME20210705085918epcas1p17e0ac84d91c591897d00fbc3d3caa771@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series contains cleanups to remove __section_nr().
+With CONFIG_SPARSEMEM_EXTREME enabled, __section_nr() which converts
+mem_section to section_nr could be costly since it iterates all
+section roots to check if the given mem_section is in its range.
 
-There were no code changes but only some modifications on commit
-messages compared to the initial PATCH mailing list.
+On the other hand, __nr_to_section() which converts section_nr to
+mem_section can be done in O(1).
 
-Also, I appended acked-by's and reviewed-by's from the initial mailing
-list for convenience.
+Let's pass section_nr instead of mem_section ptr to
+section_mark_present() in order to reduce needless iterations.
 
-Ohhoon Kwon (3):
-  mm: sparse: pass section_nr to section_mark_present
-  mm: sparse: pass section_nr to find_memory_block
-  mm: sparse: remove __section_nr() function
+Signed-off-by: Ohhoon Kwon <ohoono.kwon@samsung.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+---
+ mm/sparse.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
- .../platforms/pseries/hotplug-memory.c        |  4 +--
- drivers/base/memory.c                         |  4 +--
- include/linux/memory.h                        |  2 +-
- include/linux/mmzone.h                        |  1 -
- mm/sparse.c                                   | 35 +++----------------
- 5 files changed, 9 insertions(+), 37 deletions(-)
-
+diff --git a/mm/sparse.c b/mm/sparse.c
+index 6326cdf36c4f..b4fae2fc6276 100644
+--- a/mm/sparse.c
++++ b/mm/sparse.c
+@@ -187,13 +187,14 @@ void __meminit mminit_validate_memmodel_limits(unsigned long *start_pfn,
+  * those loops early.
+  */
+ unsigned long __highest_present_section_nr;
+-static void section_mark_present(struct mem_section *ms)
++static void section_mark_present(unsigned long section_nr)
+ {
+-	unsigned long section_nr = __section_nr(ms);
++	struct mem_section *ms;
+ 
+ 	if (section_nr > __highest_present_section_nr)
+ 		__highest_present_section_nr = section_nr;
+ 
++	ms = __nr_to_section(section_nr);
+ 	ms->section_mem_map |= SECTION_MARKED_PRESENT;
+ }
+ 
+@@ -280,7 +281,7 @@ static void __init memory_present(int nid, unsigned long start, unsigned long en
+ 		if (!ms->section_mem_map) {
+ 			ms->section_mem_map = sparse_encode_early_nid(nid) |
+ 							SECTION_IS_ONLINE;
+-			section_mark_present(ms);
++			section_mark_present(section);
+ 		}
+ 	}
+ }
+@@ -934,7 +935,7 @@ int __meminit sparse_add_section(int nid, unsigned long start_pfn,
+ 
+ 	ms = __nr_to_section(section_nr);
+ 	set_section_nid(section_nr, nid);
+-	section_mark_present(ms);
++	section_mark_present(section_nr);
+ 
+ 	/* Align memmap to section boundary in the subsection case */
+ 	if (section_nr_to_pfn(section_nr) != start_pfn)
 -- 
 2.17.1
 
