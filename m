@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267443BC193
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 18:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372D23BC19D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 18:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbhGEQYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 12:24:39 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33055 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhGEQYi (ORCPT
+        id S229787AbhGEQ0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 12:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhGEQ0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 12:24:38 -0400
-Received: from mail-ed1-f72.google.com ([209.85.208.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1m0RM8-0004JF-79
-        for linux-kernel@vger.kernel.org; Mon, 05 Jul 2021 16:22:00 +0000
-Received: by mail-ed1-f72.google.com with SMTP id j15-20020a05640211cfb0290394f9de5750so9271488edw.16
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 09:22:00 -0700 (PDT)
+        Mon, 5 Jul 2021 12:26:35 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D68C061574;
+        Mon,  5 Jul 2021 09:23:58 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id l11so11972086pji.5;
+        Mon, 05 Jul 2021 09:23:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=WbUrP7Y0sRrdKlqhbUnIPWmq76CQq3wcNWXA/C3ACAQ=;
+        b=SaQWmM/rnFUK9aEkYTzgnwU2wnGb50mKTXoxxslKsLDqQ6cECW5e1qFW5Lu0dC20AY
+         NHSrrVetjfIdMjjcDleYrJozfCFSi6c8/3QWHPNdQ4fe/vr8DSSdy7JTJTXAnhjLPVVJ
+         Ihs4tGDhzgqXuIG9cDviagqLWLggt3Ds1N6SP9604GTr5PMn/zbt5aV8rtq+ZOauSRM4
+         w3XFsevpI+reRtuCr/Uy2en6/gVPQnlUx4G5y+pU9hdWW/YEo6KCotguyifnJX/dKnkJ
+         rU4yk1CJXjIvlya3Trwgh7WbkFGr6LDrMprR1LdjFERaI6YL2l9Rq+4Ebodv/co8lERw
+         a4sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sD/y1xlMgbYq3fBjsf0pX1g5M044zHykQS8WXVhlrdI=;
-        b=PX5nDmCynR2LWWmAz6YopAjRAC10tnmW3SP116TNL51kbGQGYvQXb8s8IiSzq2fcH4
-         Qa+wtdBwVQTJ6azanXw/4ZXFlEtjBAni6rZKX7je7yCy5L1yWAOvDE9YPogNkrLC0U95
-         XULCDEW0vgcWCCxvikdexWw3u3V5vB0Q6fM5pIdaydcnug+yRYeEK/vauQwnKiKlUd06
-         ULzs84YRc7BNzLlS+V6VRZMDem6xK6T0RxK4HRstRpaYxh2my6HfnpYu4UrOz+oqF1c1
-         gN1UiECgdfKzpY3Wqyxm87kUCxK4Lf6FFeMjgIkkD6IV5sSm0wl3mx7lNpliQ9ev3EcC
-         u5lw==
-X-Gm-Message-State: AOAM532f+ew1yRK84SgJLIz0LgvPxaPu+AnpKpl9/9295h52bMp3WQJ1
-        oysq6SScIMPZKOlYxiycRkIntVY/q4G8he2lvZYnXXuSCW2YTxgnI/G/lH981TWQhqnjZtUKJmN
-        AGSTBjh5/nZEQSXUtBp+ji9g/+jchmVdgvfTM5BPWBaO2OzuhRcUfKFh9/A==
-X-Received: by 2002:a50:ed82:: with SMTP id h2mr17295935edr.165.1625502120017;
-        Mon, 05 Jul 2021 09:22:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwCJTJVm2cXmAPIEVtM0YZG4CWbGju7SyX7A+wp+GUMWL0lWArHCZ3pGx2eLKBQqDAJd5M6pJn5KLDGPSPGTWY=
-X-Received: by 2002:a50:ed82:: with SMTP id h2mr17295906edr.165.1625502119732;
- Mon, 05 Jul 2021 09:21:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210514131750.52867-1-krzysztof.kozlowski@canonical.com>
- <2b427eca-fd6c-d099-337f-39cfbd85cb46@roeck-us.net> <a15e7f62-12a0-1ec7-5104-f01f9e3eccc7@canonical.com>
- <9d98ec40-757d-28c7-1669-a683b2cd3881@canonical.com> <b87bbb80-ed02-447d-f778-7997848731cd@roeck-us.net>
-In-Reply-To: <b87bbb80-ed02-447d-f778-7997848731cd@roeck-us.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date:   Mon, 5 Jul 2021 18:21:48 +0200
-Message-ID: <CA+Eumj4aZZPFFB-3PEeBVo6fXW_Fz97oswA3pZuu2aiysnp=nQ@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: ralink: of: fix build of rt2880_wdt watchdog module
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, John Crispin <john@phrozen.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=WbUrP7Y0sRrdKlqhbUnIPWmq76CQq3wcNWXA/C3ACAQ=;
+        b=bTgtTGbFumt1U8F0nACaZaliEODmqwd0QneUtLOR4dkETQq2EmkCIHsTkIQ+1pW7Vs
+         LQLk0Aoo2viUyqfBQTXShiIx4YuTUTCrYlwpHuSLcU8+SF8oH1iM1/Hd01w00Ed0d7jD
+         Iog9XEKWp1kCm50o4+h3gG+CXciiGvM0G/c0Fn929eGntIlcDxma0WefbjK8+t4AMOCj
+         eCnq9qMp08g6rpzHhWh/6ha1w8HnGOk8FvclxulijnUS4WungkBLtcO4uPJLX9tvEZAR
+         8gH0yoW68EL2XMR9EHCChJxbgydoBS+ztrDgWva4t8PYAZSMKLZdhO1ers7ESnDQh4UD
+         lMEQ==
+X-Gm-Message-State: AOAM533Qsn4Nuh6w/fcReQmDVt3cHImRElsfNdEtvn76Fx/NhLmLYB08
+        Zq7+c65Xy/hgVjfKsX3DjfhaVdHK1KhmOXES
+X-Google-Smtp-Source: ABdhPJzq9GaAjTzYnd7kxHpg2zk+4U3+wITTit/YfGnLQpWA7tjWuiDbupPbXMV9dV08BUrM/Q3b+g==
+X-Received: by 2002:a17:90a:9205:: with SMTP id m5mr16183192pjo.172.1625502237152;
+        Mon, 05 Jul 2021 09:23:57 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
+        by smtp.gmail.com with ESMTPSA id g1sm3066221pgs.23.2021.07.05.09.23.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 09:23:56 -0700 (PDT)
+Message-ID: <60e3321c.1c69fb81.a5947.772f@mx.google.com>
+Date:   Mon, 05 Jul 2021 09:23:56 -0700 (PDT)
+X-Google-Original-Date: Mon, 05 Jul 2021 16:23:51 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210705105957.1513284-1-sashal@kernel.org>
+Subject: RE: [PATCH 5.10 0/7] 5.10.48-rc1 review
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Sasha Levin <sashal@kernel.org>, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Jul 2021 at 18:08, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 7/5/21 8:15 AM, Krzysztof Kozlowski wrote:
-> > On 14/05/2021 16:04, Krzysztof Kozlowski wrote:
-> >> On 14/05/2021 09:48, Guenter Roeck wrote:
-> >>> On 5/14/21 6:17 AM, Krzysztof Kozlowski wrote:
-> >>>> When rt2880_wdt watchdog driver is built as a module, the
-> >>>> rt_sysc_membase needs to be exported (it is being used via inlined
-> >>>> rt_sysc_r32):
-> >>>>
-> >>>>     ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/rt2880_wdt.ko] undefined!
-> >>>>
-> >>>> Reported-by: kernel test robot <lkp@intel.com>
-> >>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> >>>
-> >>> Acked-by: Guenter Roeck <linux@roeck-us.net>
-> >>>
-> >>> I don't see a recent change in the code. Has that problem been there
-> >>> all along ?
-> >>
-> >> I think the problem was there always but 0-day builder did not hit it
-> >> until recently:
-> >> https://lore.kernel.org/lkml/202105082122.yrF7ploN-lkp@intel.com/
-> >
-> > Hi Guenter,
-> >
-> > It seems that patch was not applied. Anything to fix here?
-> >
-> I see commit fef532ea0cd8 ("MIPS: ralink: export rt_sysc_membase for
-> rt2880_wdt.c"). Does that not solve the problem ?
+On Mon,  5 Jul 2021 06:59:50 -0400, Sasha Levin <sashal@kernel.org> wrote:
+> 
+> This is the start of the stable review cycle for the 5.10.48 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed 07 Jul 2021 10:59:49 AM UTC.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.10.y&id2=v5.10.47
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
+> 
 
-Yes, that fixes it. It was sent later, though. :(
+5.10.48-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-Anyway, thanks!
-
-Best regards,
-Krzysztof
