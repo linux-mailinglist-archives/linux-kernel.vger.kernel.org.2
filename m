@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEF43BC2E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 20:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E61C3BC2E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 20:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhGESzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 14:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbhGESzT (ORCPT
+        id S229954AbhGESzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 14:55:45 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47392 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229773AbhGESzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 14:55:19 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3AAC061760
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 11:52:41 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id m12so1769394vst.8
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 11:52:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CsKdkHbuBPD2Gcdm0gZ0pxBBsvN9q/irczUpL7TbVnY=;
-        b=s6NbtxjP8I9FIBgeUHiGzKWBeDfHtboUVcxG6y7xNCM9n5TMHRghpBkPNGMmBwW12B
-         kGHI/yAkoiQl1PLnHvaxMDmccT3Y1m5cJm9PpOV98O90UzqBqjTOkb6ZnqdEVa4W+xNh
-         Vp4JZ6nygBZG7A6lEvBrTDpsg3e4gpZASz6u8WDxIaWsS/dv4/ZCvKfPwpRZpn8+Q/we
-         K0R3FtrUQeq6/BpXvMVXlft3pE/C1i9dEykhwTSHFKX9bfjoaUYp7l5LL2zP3ZIKmVdm
-         LuJ+LyjC8pFHm3fMYf5dg4LrZZBc5ztnSx0UtIZZyASSbGPAltfVUaQtcgn45vn+U0fW
-         9Fww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CsKdkHbuBPD2Gcdm0gZ0pxBBsvN9q/irczUpL7TbVnY=;
-        b=pBIjbEGZN4NQ10Ik1U3V9xq4AG35yLTfDoqQriGtveOZfX3au04WNGYGuXyPfnJhbx
-         HWJ9OqRjvO+LhDPvy7g+5KJQ6Ql1WsZ4L4p8nK6cJeSpHiCW7aFAYt7v/1Mdpk+ofOmr
-         qbmTnw0/DmNmQTVL940U0QVQrbNfq2XJ1HNO7nuQ9VaEdGffqhFab4eJQcMHWydyZKYm
-         x3YpLhB54XVG7MTJpEn28JOGQHb38f59N7ThA74UoMHbtmRfiBM4MziTvY48BLdSMcZY
-         KVfonv+f00nzYrUCRSuZXrMYUFBHtwRchDjwQMkZlNBZinIUsdnkSd6J/M4iVWBugZEs
-         m+0A==
-X-Gm-Message-State: AOAM533/cEZbACCCNzuFiQ76WbnCQiHcbjKaMa4/RbCZWL1hKbWq0q0/
-        5SxWNsV/Z85xP4MdQhKGWNmJMsZBT6HIMuB/chLmxw==
-X-Google-Smtp-Source: ABdhPJwLm8mKpOQUltOsVP1fdOymZXdXyoMOgOViH4N34T5gMl2NCQhyeRjsXINy7mBVKAtCCYNbbjI4KYLHcwGaIKQ=
-X-Received: by 2002:a67:f7c8:: with SMTP id a8mr5129788vsp.16.1625511160510;
- Mon, 05 Jul 2021 11:52:40 -0700 (PDT)
+        Mon, 5 Jul 2021 14:55:43 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 165IZHtI134717;
+        Mon, 5 Jul 2021 14:53:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=czo1vFpxqD713Z2zbAYdbC/AI+eQiwU5XzkJ7mBbe7k=;
+ b=WlhTUOZ/G4jMWjeuyd/Tt40oaC82am81sepq8/s/k9Hj3sGCJxVLNK36aQAEUeiGESTG
+ /UyHybELJWlmGrFY1RF4y0gqYbTgp5Mka9QJDecS7EuJAgnq8Km9wgZ//Jl2LMCbceGL
+ 0l5jw543+q4SmZ7X6hZJpFCspJXXy+P0dJGptfZbnwq34VI7nLI1+KP+hnS9aWKF0aXX
+ 1nLzgHw2vchb5S8pDhrtJ4hnwaKo3qHiiGPIIy5wJEX6eHs1yzsLuqid1u7vFkYWXgRj
+ agynqTfiYjaLJmPXDt5oZJpoShKMspVGN1o1uvLMHxA4Jtv8aZHS4OAXvRNEmd/VKOM8 tA== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39m0k73us7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 05 Jul 2021 14:53:02 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 165IqOrZ029046;
+        Mon, 5 Jul 2021 18:53:00 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03fra.de.ibm.com with ESMTP id 39jfh88gck-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 05 Jul 2021 18:53:00 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 165IqvBY33292622
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 5 Jul 2021 18:52:57 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 38EA54203F;
+        Mon,  5 Jul 2021 18:52:57 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E186342041;
+        Mon,  5 Jul 2021 18:52:56 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  5 Jul 2021 18:52:56 +0000 (GMT)
+From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To:     Christoph Hellwig <hch@lst.de>, <iommu@lists.linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: [RFC PATCH 0/1] dma-debug: fix check_for_illegal_area() in debug_dma_map_sg()
+Date:   Mon,  5 Jul 2021 20:52:51 +0200
+Message-Id: <20210705185252.4074653-1-gerald.schaefer@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210705171823.524171-1-phind.uet@gmail.com>
-In-Reply-To: <20210705171823.524171-1-phind.uet@gmail.com>
-From:   Neal Cardwell <ncardwell@google.com>
-Date:   Mon, 5 Jul 2021 14:52:23 -0400
-Message-ID: <CADVnQymo8xmN44zwvrpMLs0pxGt3XTT_vosR-1TJJURgVWO1ZA@mail.gmail.com>
-Subject: Re: [PATCH v5] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
-To:     Nguyen Dinh Phi <phind.uet@gmail.com>
-Cc:     yhs@fb.com, edumazet@google.com, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, ycheng@google.com, yyd@google.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: qHm7NlTafyVvKnbnd_SNpAa3ymBoTpkw
+X-Proofpoint-ORIG-GUID: qHm7NlTafyVvKnbnd_SNpAa3ymBoTpkw
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-05_10:2021-07-02,2021-07-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107050099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 1:18 PM Nguyen Dinh Phi <phind.uet@gmail.com> wrote:
->
-> This commit fixes a bug (found by syzkaller) that could cause spurious
-> double-initializations for congestion control modules, which could cause
-> memory leaks orother problems for congestion control modules (like CDG)
+The following warning occurred sporadically on s390:
+DMA-API: nvme 0006:00:00.0: device driver maps memory from kernel text or rodata [addr=0000000048cc5e2f] [len=131072]
+WARNING: CPU: 4 PID: 825 at kernel/dma/debug.c:1083 check_for_illegal_area+0xa8/0x138
 
-nit: typo: "orother" -> "or other"
+It is a false-positive warning, due to a broken logic in debug_dma_map_sg(),
+see patch description. In short, the check is mixing up kernel start address
+for sg elements with the length of possibly combined sg elements in the DMA
+address space.
 
-> that allocate memory in their init functions.
->
-> The buggy scenario constructed by syzkaller was something like:
->
-> (1) create a TCP socket
-> (2) initiate a TFO connect via sendto()
-> (3) while socket is in TCP_SYN_SENT, call setsockopt(TCP_CONGESTION),
->     which calls:
->        tcp_set_congestion_control() ->
->          tcp_reinit_congestion_control() ->
->            tcp_init_congestion_control()
-> (4) receive ACK, connection is established, call tcp_init_transfer(),
->     set icsk_ca_initialized=0 (without first calling cc->release()),
->     call tcp_init_congestion_control() again.
->
-> Note that in this sequence tcp_init_congestion_control() is called
-> twice without a cc->release() call in between. Thus, for CC modules
-> that allocate memory in their init() function, e.g, CDG, a memory leak
-> may occur. The syzkaller tool managed to find a reproducer that
-> triggered such a leak in CDG.
->
-> The bug was introduced when that commit 8919a9b31eb4 ("tcp: Only init
-> congestion control if not initialized already")
-> introduced icsk_ca_initialized and set icsk_ca_initialized to 0 in
-> tcp_init_transfer(), missing the possibility for a sequence like the
-> one above, where a process could call setsockopt(TCP_CONGESTION) in
-> state TCP_SYN_SENT (i.e. after the connect() or TFO open sendmsg()),
-> which would call tcp_init_congestion_control(). It did not intend to
-> reset any initialization that the user had already explicitly made;
-> it just missed the possibility of that particular sequence (which
-> syzkaller managed to find).
->
-> Fixes: 8919a9b31eb4 (tcp: Only init congestion control if not initialized already)
+I am a bit confused by the whole logic, and not sure what would be the best
+way to fix this. The false-postives should have been possible since commit
+884d05970bfb ("dma-debug: use sg_dma_len accessor"), which is included since
+2.6.31. Also, it seems to me that even before that commit, the check would
+have been wrong, or at least incomplete, because it is located in a loop
+that iterates over mapped_ents instead of nents. So it would not check all
+physical sg elements if any were combined in DMA address space.
 
-Style nit: I believe this Fixes line should have double quotes around
-the commit title, like:
+Gerald Schaefer (1):
+  dma-debug: fix check_for_illegal_area() in debug_dma_map_sg()
 
-  Fixes: 8919a9b31eb4 ("tcp: Only init congestion control if not
-initialized already")
+ kernel/dma/debug.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Otherwise, this looks good to me, and it passes our internal packetdrill tests.
+-- 
+2.25.1
 
-thanks,
-neal
