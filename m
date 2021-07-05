@@ -2,263 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBC73BBE50
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 16:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF533BBE52
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 16:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhGEOjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 10:39:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231539AbhGEOjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 10:39:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 483256195C;
-        Mon,  5 Jul 2021 14:37:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625495827;
-        bh=JuPCvcyURhAudU9gIfifiJz70vErFSX5KY1xpZ69oQE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hXMIokCtWBjuB6GeT17osWO4o+M4WTVprmbX6HmyFX2iwLY6fGid3IqphxI+aUr+G
-         SXN80pO6R1rR0pbW3tYvsxHOgQzssXxfjsZTPTjLx7mBM0XwgZyzpgfdakZPOOqrOa
-         TxR35ba/XrYqDc+HGrU7LiVf0313zhk3sNsXr34H7hQLpOX1h0SUph8JZjogBVcSPI
-         OdBpBhkd4+ShcGD1p8658+qyeJR7rxikwdLswlvLmkVnsH8KjPaEWc7tdjQ04LIr0u
-         VOCqQJ0rVrD5wn5R5tOcLgKaQ1RaPQuT0QCLhPPhknV7XMrHiz00wkyfrvtZWwVShZ
-         Yy13ixOum3DmQ==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] selftests/sgx: Trigger the reclaimer and #PF handler
-Date:   Mon,  5 Jul 2021 17:36:52 +0300
-Message-Id: <20210705143652.116125-5-jarkko@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210705143652.116125-1-jarkko@kernel.org>
-References: <20210705143652.116125-1-jarkko@kernel.org>
+        id S231576AbhGEOkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 10:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231467AbhGEOkU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 10:40:20 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04C8C061574;
+        Mon,  5 Jul 2021 07:37:43 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id e17so1024228plh.8;
+        Mon, 05 Jul 2021 07:37:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5AWHaVvPh49d+yaBwH+MAs4OHpj+/HGOPc2h2Rb/xD4=;
+        b=pXt7ANSog9P+dNjEnSHjySU2MSmjgnj4acVntPMYeTEW5v9QbswEW1HAaEmmNu8Eus
+         HVh6kSrA1cgPP7ph4IgCJsxKh0mWnFYFWj0H5Fk77Pavtbkl9jtLuAQaFYRVmgIx3ZdG
+         3lHZYDHlbUVK3R6wYCOcF2tJN8/mVoGt9m+RlNNPyfiasgb05tGyHYByPwB2ga4d5tFY
+         4IiKSn98ELn0Wo8yzRMnyG+bojKjeLb0LH989M1BJTRH0ZwnfcVIzfmlruH1qmXWWowT
+         sIslVjCwz1VbK+G+o3H1cNy1bvXPkPRJ4F3BuA3+XleXnOIIw+0wCcwhT3IighmI1FD7
+         ZqhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5AWHaVvPh49d+yaBwH+MAs4OHpj+/HGOPc2h2Rb/xD4=;
+        b=EqagKAMpCs+1LEw2mWUcDwVr/NZFnPRqef2iias1VPsuBId81SQjZxy48Y5NhjGeko
+         /xkzth4z9X6ihyt49yXaURXf8SCrX6FqFSomv70HCuxsGFQ2lds6psBoNIAVYJyYa1Wz
+         RZ7zPlvIZknzgMoMFLlQNzYxlXOrNmFP38JMmqcuxi3PbFRQz29dSOB83SHhVR7NRe9i
+         i41D2jyHmqvOvgrLS4nskaupl1S+Y/CLJ7bzQ7orOruvkxTASjuKlp0ews3uJPCUJYpF
+         aqX5XamiXXtvqfvFP+jXkxZAt6ZN9FmPzTaLC2UvGg1De/1ynPJ7REYAsCNE4jomuli9
+         ZZCQ==
+X-Gm-Message-State: AOAM532C+hMwzTCsO6njwTSnrXRk7C97OwELUjXxSdi8x580v+c+zeaf
+        zzrqgwneD0Isx5xvHzgEjyk=
+X-Google-Smtp-Source: ABdhPJytY/GUVq+b2uUVvcM6KpeDwzmzhxtujICoJEEYS6A9K+SdewcJ1MPvEcfgCjiW6T9BcrfoZQ==
+X-Received: by 2002:a17:90a:65c8:: with SMTP id i8mr15848356pjs.207.1625495863565;
+        Mon, 05 Jul 2021 07:37:43 -0700 (PDT)
+Received: from localhost ([2409:4042:2696:1624:5e13:abf4:6ecf:a1f1])
+        by smtp.gmail.com with ESMTPSA id fa22sm11398412pjb.42.2021.07.05.07.37.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 07:37:43 -0700 (PDT)
+Date:   Mon, 5 Jul 2021 20:07:39 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH v9 1/8] PCI: Add pcie_reset_flr to follow calling
+ convention of other reset methods
+Message-ID: <20210705143739.nghgqghnskp7emai@archlinux>
+References: <20210705142138.2651-1-ameynarkhede03@gmail.com>
+ <20210705142138.2651-2-ameynarkhede03@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705142138.2651-2-ameynarkhede03@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a heap for the test enclave, which has the same size as all
-available Enclave Page Cache (EPC) pages in the system. This will guarantee
-that all test_encl.elf pages *and* SGX Enclave Control Structure (SECS)
-have been swapped out by the page reclaimer during the load time. Actually,
-this adds a bit more stress than that since part of the EPC gets reserved
-for the Version Array (VA) pages.
+On 21/07/05 07:51PM, Amey Narkhede wrote:
+> Add has_pcie_flr bitfield in struct pci_dev to indicate support for PCIe
+> FLR to avoid reading PCI_EXP_DEVCAP multiple times.
+>
+> Currently there is separate function pcie_has_flr() to probe if PCIe FLR
+> is supported by the device which does not match the calling convention
+> followed by reset methods which use second function argument to decide
+> whether to probe or not. Add new function pcie_reset_flr() that follows
+> the calling convention of reset methods.
+>
+> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> ---
+>  drivers/crypto/cavium/nitrox/nitrox_main.c |  4 +-
+>  drivers/pci/pci.c                          | 59 +++++++++++-----------
+>  drivers/pci/pcie/aer.c                     | 12 ++---
+>  drivers/pci/probe.c                        |  6 ++-
+>  drivers/pci/quirks.c                       |  9 ++--
+>  include/linux/pci.h                        |  3 +-
+>  6 files changed, 45 insertions(+), 48 deletions(-)
+>
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+[...]
+> index 3a62d09b8..a95252113 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -1487,6 +1487,7 @@ void set_pcie_port_type(struct pci_dev *pdev)
+>  {
+>  	int pos;
+>  	u16 reg16;
+> +	u32 reg32;
+>  	int type;
+>  	struct pci_dev *parent;
+>
+> @@ -1497,8 +1498,9 @@ void set_pcie_port_type(struct pci_dev *pdev)
+>  	pdev->pcie_cap = pos;
+>  	pci_read_config_word(pdev, pos + PCI_EXP_FLAGS, &reg16);
+>  	pdev->pcie_flags_reg = reg16;
+> -	pci_read_config_word(pdev, pos + PCI_EXP_DEVCAP, &reg16);
+> -	pdev->pcie_mpss = reg16 & PCI_EXP_DEVCAP_PAYLOAD;
+> +	pci_read_config_dword(pdev, pos + PCI_EXP_DEVCAP, &reg32);
+> +	pdev->pcie_mpss = reg32 & PCI_EXP_DEVCAP_PAYLOAD;
+> +	pdev->has_pcie_flr = reg32 & PCI_EXP_DEVCAP_FLR ? 1 : 0;
+On the side note, removing ternary here as Alex suggested doesn't work
+for some reason.
+[...]
 
-For each test, the page fault handler gets triggered in two occasions:
-
-- When SGX_IOC_ENCLAVE_INIT is performed, SECS gets swapped in by the
-  page fault handler.
-- During the execution, each page that is referenced gets swapped in
-  by the page fault handler.
-
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- tools/testing/selftests/sgx/load.c      | 33 +++++++++++++++----
- tools/testing/selftests/sgx/main.c      | 42 ++++++++++++++++++++++++-
- tools/testing/selftests/sgx/main.h      |  3 +-
- tools/testing/selftests/sgx/sigstruct.c |  6 ++--
- 4 files changed, 74 insertions(+), 10 deletions(-)
-
-diff --git a/tools/testing/selftests/sgx/load.c b/tools/testing/selftests/sgx/load.c
-index 9946fab2a3d6..a312a132ac33 100644
---- a/tools/testing/selftests/sgx/load.c
-+++ b/tools/testing/selftests/sgx/load.c
-@@ -21,6 +21,8 @@
- 
- void encl_delete(struct encl *encl)
- {
-+	struct encl_segment *heap_seg = &encl->segment_tbl[encl->nr_segments - 1];
-+
- 	if (encl->encl_base)
- 		munmap((void *)encl->encl_base, encl->encl_size);
- 
-@@ -30,6 +32,8 @@ void encl_delete(struct encl *encl)
- 	if (encl->fd)
- 		close(encl->fd);
- 
-+	munmap(heap_seg->src, heap_seg->size);
-+
- 	if (encl->segment_tbl)
- 		free(encl->segment_tbl);
- 
-@@ -111,7 +115,10 @@ static bool encl_ioc_add_pages(struct encl *encl, struct encl_segment *seg)
- 	ioc.offset = seg->offset;
- 	ioc.length = seg->size;
- 	ioc.secinfo = (unsigned long)&secinfo;
--	ioc.flags = SGX_PAGE_MEASURE;
-+	if (seg->measure)
-+		ioc.flags = SGX_PAGE_MEASURE;
-+	else
-+		ioc.flags = 0;
- 
- 	rc = ioctl(encl->fd, SGX_IOC_ENCLAVE_ADD_PAGES, &ioc);
- 	if (rc < 0) {
-@@ -124,9 +131,10 @@ static bool encl_ioc_add_pages(struct encl *encl, struct encl_segment *seg)
- 
- 
- 
--bool encl_load(const char *path, struct encl *encl)
-+bool encl_load(const char *path, struct encl *encl, unsigned long heap_size)
- {
- 	const char device_path[] = "/dev/sgx_enclave";
-+	struct encl_segment *seg;
- 	Elf64_Phdr *phdr_tbl;
- 	off_t src_offset;
- 	Elf64_Ehdr *ehdr;
-@@ -188,6 +196,8 @@ bool encl_load(const char *path, struct encl *encl)
- 	ehdr = encl->bin;
- 	phdr_tbl = encl->bin + ehdr->e_phoff;
- 
-+	encl->nr_segments = 1; /* one for the heap */
-+
- 	for (i = 0; i < ehdr->e_phnum; i++) {
- 		Elf64_Phdr *phdr = &phdr_tbl[i];
- 
-@@ -203,7 +213,6 @@ bool encl_load(const char *path, struct encl *encl)
- 	for (i = 0, j = 0; i < ehdr->e_phnum; i++) {
- 		Elf64_Phdr *phdr = &phdr_tbl[i];
- 		unsigned int flags = phdr->p_flags;
--		struct encl_segment *seg;
- 
- 		if (phdr->p_type != PT_LOAD)
- 			continue;
-@@ -240,14 +249,26 @@ bool encl_load(const char *path, struct encl *encl)
- 		seg->offset = (phdr->p_offset & PAGE_MASK) - src_offset;
- 		seg->size = (phdr->p_filesz + PAGE_SIZE - 1) & PAGE_MASK;
- 		seg->src = encl->src + seg->offset;
-+		seg->measure = true;
- 
- 		j++;
- 	}
- 
--	assert(j == encl->nr_segments);
-+	assert(j == encl->nr_segments - 1);
-+
-+	seg = &encl->segment_tbl[j];
-+	seg->offset =  encl->segment_tbl[j - 1].offset + encl->segment_tbl[j - 1].size;
-+	seg->size = heap_size;
-+	seg->src = mmap(NULL, heap_size, PROT_READ | PROT_WRITE,
-+			MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-+	seg->prot = PROT_READ | PROT_WRITE;
-+	seg->flags = (SGX_PAGE_TYPE_REG << 8) | seg->prot;
-+	seg->measure = false;
-+
-+	if (seg->src == MAP_FAILED)
-+		goto err;
- 
--	encl->src_size = encl->segment_tbl[j - 1].offset +
--			 encl->segment_tbl[j - 1].size;
-+	encl->src_size = encl->segment_tbl[j].offset + encl->segment_tbl[j].size;
- 
- 	for (encl->encl_size = 4096; encl->encl_size < encl->src_size; )
- 		encl->encl_size <<= 1;
-diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
-index e252015e0c15..772ba1d72619 100644
---- a/tools/testing/selftests/sgx/main.c
-+++ b/tools/testing/selftests/sgx/main.c
-@@ -112,17 +112,57 @@ FIXTURE(enclave) {
- 	struct sgx_enclave_run run;
- };
- 
-+#define SGX_NR_ALL_PAGES_PATH "/sys/kernel/debug/x86/sgx_nr_all_pages"
-+
-+static int sysfs_get_ulong(const char *path, unsigned long *value)
-+{
-+	struct stat sbuf;
-+	ssize_t ret = 0;
-+	char buf[128];
-+	int fd;
-+
-+	ret = stat(path, &sbuf);
-+	if (ret)
-+		return ret;
-+
-+	fd = open(path, O_RDONLY);
-+	if (fd < 0)
-+		return fd;
-+
-+	ret = read(fd, buf, sizeof(buf));
-+	if (ret < 0)
-+		goto out;
-+
-+	/* Clear the read bytes count. */
-+	ret = 0;
-+
-+	errno = 0;
-+	*value = strtoul(buf, NULL, 0);
-+	if (errno)
-+		ret = -1;
-+
-+out:
-+	close(fd);
-+	return ret;
-+}
-+
- FIXTURE_SETUP(enclave)
- {
- 	Elf64_Sym *sgx_enter_enclave_sym = NULL;
-+	unsigned long nr_all_pages;
- 	struct vdso_symtab symtab;
- 	struct encl_segment *seg;
- 	char maps_line[256];
- 	FILE *maps_file;
- 	unsigned int i;
- 	void *addr;
-+	int ret;
-+
-+	ret = sysfs_get_ulong(SGX_NR_ALL_PAGES_PATH, &nr_all_pages);
-+	if (ret)
-+		ksft_exit_skip("Failed to read " SGX_NR_ALL_PAGES_PATH "\n");
- 
--	if (!encl_load("test_encl.elf", &self->encl)) {
-+	if (!encl_load("test_encl.elf", &self->encl, nr_all_pages * 4096)) {
- 		encl_delete(&self->encl);
- 		ksft_exit_skip("cannot load enclaves\n");
- 	}
-diff --git a/tools/testing/selftests/sgx/main.h b/tools/testing/selftests/sgx/main.h
-index 452d11dc4889..a286861dc289 100644
---- a/tools/testing/selftests/sgx/main.h
-+++ b/tools/testing/selftests/sgx/main.h
-@@ -12,6 +12,7 @@ struct encl_segment {
- 	size_t size;
- 	unsigned int prot;
- 	unsigned int flags;
-+	bool measure;
- };
- 
- struct encl {
-@@ -32,7 +33,7 @@ extern unsigned char sign_key[];
- extern unsigned char sign_key_end[];
- 
- void encl_delete(struct encl *ctx);
--bool encl_load(const char *path, struct encl *encl);
-+bool encl_load(const char *path, struct encl *encl, unsigned long heap_size);
- bool encl_measure(struct encl *encl);
- bool encl_build(struct encl *encl);
- 
-diff --git a/tools/testing/selftests/sgx/sigstruct.c b/tools/testing/selftests/sgx/sigstruct.c
-index 202a96fd81bf..50c5ab1aa6fa 100644
---- a/tools/testing/selftests/sgx/sigstruct.c
-+++ b/tools/testing/selftests/sgx/sigstruct.c
-@@ -296,8 +296,10 @@ static bool mrenclave_segment(EVP_MD_CTX *ctx, struct encl *encl,
- 		if (!mrenclave_eadd(ctx, seg->offset + offset, seg->flags))
- 			return false;
- 
--		if (!mrenclave_eextend(ctx, seg->offset + offset, seg->src + offset))
--			return false;
-+		if (seg->measure) {
-+			if (!mrenclave_eextend(ctx, seg->offset + offset, seg->src + offset))
-+				return false;
-+		}
- 	}
- 
- 	return true;
--- 
-2.32.0
-
+Thanks,
+Amey
