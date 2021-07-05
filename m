@@ -2,139 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80B63BBD83
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E4E3BBD81
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhGENd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 09:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhGENd6 (ORCPT
+        id S231177AbhGENco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 09:32:44 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9469 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230188AbhGENcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 09:33:58 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF7FC061574;
-        Mon,  5 Jul 2021 06:31:21 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id f13so5743975lfh.6;
-        Mon, 05 Jul 2021 06:31:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WqJSKXEq1qvxzt4fRoDnpx/9Q8+N8oW72HArhulx5c4=;
-        b=S5tyMH6tdDy8zu6XhKnUxvI8WfUNknC0197JRod1YHnrJ8jMpMeuShvMurJcL/XN61
-         PDaQQysmSZMu6p5Nyq+REnvvk+4w5EKJvCsGqhzt0N/KmSd205Vn3YI5lqBibyoMCN24
-         pLLaeuMtw8ipDdi7YiljZQg9WUchUHZWmUSGaYzedNYq/w2aLLE9n5K0I4YFRpw2eoc5
-         nlbPHLyXwo5YyivgVBjkqu+hvUk4WNcHlHhMoxg0BE7AzYlTqx26jXaQbVmzC9qpDiPz
-         OD+Be5fu6NJXk6/RDeeTHRLb2IaN6C0ktskTTMLMN84z3X8IZHe5xl68Rw9KeOwfoJbC
-         HAeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WqJSKXEq1qvxzt4fRoDnpx/9Q8+N8oW72HArhulx5c4=;
-        b=PIOxuuxWr16TVlARz4BcO6dI1xTN5SKjNT5LXS/4+5hC9+pAbGY1Y7s9pLJPlBtzwI
-         GaB7a5W+Bffy5oHQx2PN3BQElViYDUMwYVMlzKFchk7aIm9z+LLiQZX9ISj6nif9TEZ+
-         eile3hpH+guTkAEieDBtJBjfcbAXJWRkg6bwo0gyLphsRZjgoBGqb2ReRJiCMFRL2kzQ
-         KYtlWl8v3pO8BFRItzrOxnXMm1qbZW5bJLsY3JS4P6hDSU4Oygoss02/bPLUTDDYpojT
-         QX7q5EQHE35xSFQJleoXL49CUQNf05VVXUSaQUddNctl0Plr9ygspjt+gMGsfoNNgT1b
-         Gqjw==
-X-Gm-Message-State: AOAM5336hXtjzkcPUdRwWgA8mzkoGQhnuHq4/pHm2YYY2gL7aO3jSG8s
-        dnQnu+uoe+3mJ1+sq5tTDbE=
-X-Google-Smtp-Source: ABdhPJw+GZgQ+lQ0lANw8cUSXymS8JLjFao55geIUHEN5JpD1+kXXSNMY6a7Ute3/ROcp/zTpckg0Q==
-X-Received: by 2002:a05:6512:3b8c:: with SMTP id g12mr10741709lfv.551.1625491879881;
-        Mon, 05 Jul 2021 06:31:19 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.225.155])
-        by smtp.gmail.com with ESMTPSA id q21sm1090364lfp.233.2021.07.05.06.31.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 06:31:19 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 16:31:13 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+c87d2efb740931ec76c7@syzkaller.appspotmail.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] memory leak in kvm_dev_ioctl
-Message-ID: <20210705163113.367df3f1@gmail.com>
-In-Reply-To: <CACT4Y+aeiQ9=p6esuAseErekJnLzxFL1eG7qpWehZHUfb8UoNw@mail.gmail.com>
-References: <000000000000bfb6cf05c631db0b@google.com>
-        <20210703101243.45cbf143@gmail.com>
-        <CACT4Y+Yk5v3=2V_t77RSqACNYQb6PmDM0Mst6N1QEgz9CdYrqw@mail.gmail.com>
-        <20210705143652.56b3d68b@gmail.com>
-        <CACT4Y+aeiQ9=p6esuAseErekJnLzxFL1eG7qpWehZHUfb8UoNw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        Mon, 5 Jul 2021 09:32:43 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GJRL556JgzZqwB;
+        Mon,  5 Jul 2021 21:26:53 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 5 Jul 2021 21:30:04 +0800
+Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
+ (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 5 Jul
+ 2021 21:30:03 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <kbusch@kernel.org>, <axboe@fb.com>, <hch@lst.de>,
+        <sagi@grimberg.me>, <rakesh@tuxera.com>
+CC:     <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH] nvme-pci: Don't WARN_ON in nvme_reset_work if ctrl.state is not RESETTING
+Date:   Mon, 5 Jul 2021 21:38:29 +0800
+Message-ID: <20210705133829.349660-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Jul 2021 13:47:30 +0200
-Dmitry Vyukov <dvyukov@google.com> wrote:
+Followling process:
+nvme_probe
+  nvme_reset_ctrl
+    nvme_change_ctrl_state(ctrl, NVME_CTRL_RESETTING)
+    queue_work(nvme_reset_wq, &ctrl->reset_work)
 
-> On Mon, Jul 5, 2021 at 1:36 PM Pavel Skripkin <paskripkin@gmail.com>
-> wrote:
-> >
-> > On Mon, 5 Jul 2021 07:54:59 +0200
-> > Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > > On Sat, Jul 3, 2021 at 9:12 AM Pavel Skripkin
-> > > <paskripkin@gmail.com> wrote:
-> > > >
-> > > > On Fri, 02 Jul 2021 23:05:26 -0700
-> > > > syzbot <syzbot+c87d2efb740931ec76c7@syzkaller.appspotmail.com>
-> > > > wrote:
-> > > >
-> > > > > Hello,
-> > > > >
-> > > > > syzbot found the following issue on:
-> > > > >
-> > > > > HEAD commit:    e058a84b Merge tag 'drm-next-2021-07-01' of
-> > > > > git://anongit... git tree:       upstream
-> > > > > console output:
-> > > > > https://syzkaller.appspot.com/x/log.txt?x=171fbbdc300000
-> > > > > kernel config:
-> > > > > https://syzkaller.appspot.com/x/.config?x=8c46abb9076f44dc
-> > > > > dashboard link:
-> > > > > https://syzkaller.appspot.com/bug?extid=c87d2efb740931ec76c7
-> > > > > syz repro:
-> > > > > https://syzkaller.appspot.com/x/repro.syz?x=119d1efc300000 C
-> > > > > reproducer:
-> > > > > https://syzkaller.appspot.com/x/repro.c?x=16c58c28300000
-> > > > >
-> > > > > IMPORTANT: if you fix the issue, please add the following tag
-> > > > > to the commit: Reported-by:
-> > > > > syzbot+c87d2efb740931ec76c7@syzkaller.appspotmail.com
-> > > > >
-> > > >
-> > > > Corresponding fix was sent about 2 days ago
-> > > > https://patchwork.kernel.org/project/kvm/patch/20210701195500.27097-1-paskripkin@gmail.com/
-> > >
-> > > Hi Pavel,
-> > >
-> > > Thanks for checking. Let's tell syzbot about the fix:
-> > >
-> > > #syz fix: kvm: debugfs: fix memory leak in kvm_create_vm_debugfs
-> >
-> >
-> > Hi, Dmitry!
-> >
-> > Sorry for stupid question :)
-> >
-> > I don't see, that my patch was applied, so syzbot will save the
-> > patch name and will test it after it will be applied? I thought
-> > about sending `syz fix` command, but I was sure that syzbot takes
-> > only accepted patches.
-> 
-> Hi Pavel,
-> 
-> Please see if http://bit.do/syzbot#communication-with-syzbot answers
-> your questions.
+-------------->	nvme_remove
+		  nvme_change_ctrl_state(&dev->ctrl, NVME_CTRL_DELETING)
+worker_thread
+  process_one_work
+    nvme_reset_work
+    WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)
 
+, which will trigger WARN_ON in nvme_reset_work():
+[  127.534298] WARNING: CPU: 0 PID: 139 at drivers/nvme/host/pci.c:2594
+[  127.536161] CPU: 0 PID: 139 Comm: kworker/u8:7 Not tainted 5.13.0
+[  127.552518] Call Trace:
+[  127.552840]  ? kvm_sched_clock_read+0x25/0x40
+[  127.553936]  ? native_send_call_func_single_ipi+0x1c/0x30
+[  127.555117]  ? send_call_function_single_ipi+0x9b/0x130
+[  127.556263]  ? __smp_call_single_queue+0x48/0x60
+[  127.557278]  ? ttwu_queue_wakelist+0xfa/0x1c0
+[  127.558231]  ? try_to_wake_up+0x265/0x9d0
+[  127.559120]  ? ext4_end_io_rsv_work+0x160/0x290
+[  127.560118]  process_one_work+0x28c/0x640
+[  127.561002]  worker_thread+0x39a/0x700
+[  127.561833]  ? rescuer_thread+0x580/0x580
+[  127.562714]  kthread+0x18c/0x1e0
+[  127.563444]  ? set_kthread_struct+0x70/0x70
+[  127.564347]  ret_from_fork+0x1f/0x30
 
-Yes, it does. Thank you! 
+The preceding problem can be easily reproduced by executing following
+script (based on blktests suite):
+test() {
+  pdev="$(_get_pci_dev_from_blkdev)"
+  sysfs="/sys/bus/pci/devices/${pdev}"
+  for ((i = 0; i < 10; i++)); do
+    echo 1 > "$sysfs/remove"
+    echo 1 > /sys/bus/pci/rescan
+  done
+}
 
+Since the device ctrl could be updated as an non-RESETTING state by
+repeating probe/remove in userspace (which is a normal situation), we
+can replace stack dumping WARN_ON with a warnning message.
 
-With regards,
-Pavel Skripkin
+Fixes: 82b057caefaff ("nvme-pci: fix multiple ctrl removal schedulin")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ drivers/nvme/host/pci.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index a29b170701fc..966a4c84e699 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -2591,7 +2591,9 @@ static void nvme_reset_work(struct work_struct *work)
+ 	bool was_suspend = !!(dev->ctrl.ctrl_config & NVME_CC_SHN_NORMAL);
+ 	int result;
+ 
+-	if (WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)) {
++	if (dev->ctrl.state != NVME_CTRL_RESETTING) {
++		dev_warn(dev->ctrl.device, "ctrl state %d is not RESETTING\n",
++			 dev->ctrl.state);
+ 		result = -ENODEV;
+ 		goto out;
+ 	}
+-- 
+2.31.1
+
