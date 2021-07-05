@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9C93BC42A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 01:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663343BC42E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 01:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhGEXoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 19:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbhGEXog (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 19:44:36 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C76C061574;
-        Mon,  5 Jul 2021 16:41:59 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id q2so7503518iot.11;
-        Mon, 05 Jul 2021 16:41:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aCfTGlMojGH7q1QJXZeZs8QLZ5ZIdBw7e0CZiF3gsR8=;
-        b=JjR7sUvvS6kav5QF3hQkXuE/+JUWv711JB3bSDTJLFmmXRfe8IBINwG4J+7K/oC0UW
-         5SGp8XmW6FqI6C0v1XafKKDptZzdHb5XXHCc+YVxlYl3G7+LRs2L3qHYglIpWXf6+U3z
-         Mg73BE2DDh5AhQZZQJ2EmKmP0KvEPyiGmLU++YaWom97BaEeuTeGLaXhJP/Vw0V371xp
-         Hk/cUx8/9ueKxPwnS05kTay2OWmjl7NY9xDwPZcv2nmTY7SJKqwjlJ6VbVS5ixhg8X4H
-         4EJk6foOA1k0kLoxgmfiV8Lhar3bn2U6kvMEAFaYZqapEG/JvRDaUuLwnX6InCjza6sA
-         LBug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aCfTGlMojGH7q1QJXZeZs8QLZ5ZIdBw7e0CZiF3gsR8=;
-        b=dfw1NDR+sHsrQTswHRZfWDDMA+zTG8uMPq5EuXzJeajVQ7ur6TGTnAYkzAIW3EfcMv
-         sXkLzkNjhFUBtvl4az6k4Wi/AyD1t84KLRzmKYyfxZbg6AE3iGOLKOW6eZAt0MFzuZks
-         x0QeViX3ssk9BhcLMEzWZxwgi5Y3uZV6TKINiDGpmW5rml0FsiP6RpaTYCjR2N3FBYYR
-         Jv+QgxaTT4mKSPWKRn/uyUsm4K1y8ZGqno/v9YCL43uz0GDJU93W1tV5ojalZD5Ea9K9
-         Tw0eyV+keM0Aoo9fgeqnnMVS0wN7Q3uuvRz9VT1RrdLiF7lzhKTENxnRk7HMzOwGoTHh
-         i7TA==
-X-Gm-Message-State: AOAM530uiu8FU6LnaDcUJXfi5rmm4/FV5A9o5wCBXedsM0xGvolXD05E
-        GMyiHqukCLEfZ2o3jiWQShAdNCzwWqInWkK1fL+9IV5E/RKXig==
-X-Google-Smtp-Source: ABdhPJynnrHlYbTRez7VPIlllJLW8es4fJMVagRPEOAQTtm4CF98jEkHhN86FvCfmqUJtwiQ5lR4OASElEYtMx+3JuI=
-X-Received: by 2002:a6b:185:: with SMTP id 127mr6447845iob.64.1625528518759;
- Mon, 05 Jul 2021 16:41:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210704202756.29107-1-ojeda@kernel.org> <20210704202756.29107-16-ojeda@kernel.org>
- <20210705050518.GC30964@1wt.eu>
-In-Reply-To: <20210705050518.GC30964@1wt.eu>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 6 Jul 2021 01:41:47 +0200
-Message-ID: <CANiq72n5uxaQ52ME_WNfDQA5fZ=bNEr04Av7vz0AwWB8cOmCYQ@mail.gmail.com>
-Subject: Re: [PATCH 15/17] scripts: add `generate_rust_analyzer.py`
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
+        id S229783AbhGEXqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 19:46:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229698AbhGEXqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 19:46:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 990E96194B;
+        Mon,  5 Jul 2021 23:43:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625528632;
+        bh=ibsbKw0bGfPKvmgI3kyEe/l/cxv7GcL0No8b1zbzo54=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oLJF8GhqwAEQiSVCmVZy+4mz6k+qvPo8SHiNWKUFLVpovsIJNXFscqJMVfoTzMsiy
+         lZi8qAt5uzjEgZEN0Yuhlk5JuVp5g89TizGeqUrL6ysQGpTKMh69xdSsvZPmdWBKDr
+         ieD2Td6Tr9+ftYSnKvmiUTkosgmtmzywADx6L9qvYB7ljDMxp+v11AtkmJiWU2VaiX
+         fccO6g5TttNzfl6gerJFsbEvn1p+zU8aPb13EIq+qIawSmiJfMP8fIb5BGTjjaUXVG
+         c0WFA5Ta5MDgQM9zbcn8P3rzwZNHrmVCHc0HyfcbWRg+t2+5x9DWxc6x84YgygkL94
+         R8JhpcH0CBUgw==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        Boris-Chengbiao Zhou <bobo1239@web.de>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
-        Douglas Su <d0u9.su@outlook.com>, Yuki Okushi <jtitor@2k36.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH 1/2] rcu: Explain why rcu_all_qs() is a stub in preemptible TREE RCU
+Date:   Tue,  6 Jul 2021 01:43:43 +0200
+Message-Id: <20210705234344.104239-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 7:05 AM Willy Tarreau <w@1wt.eu> wrote:
->
-> You should probably add some doc about this, as I have no idea how
-> I'm supposed to use this from my editor.
+cond_resched() reports an RCU quiescent state only in non-preemptible
+TREE RCU implementation. Provide an explanation for the different
+behaviour in CONFIG_PREEMPT_RCU=y.
 
-Yeah, I can add a link to rust-analyzer's docs and/or the Language
-Server Protocol site, and perhaps a couple steps on how to set it up;
-but I would try to avoid repeating their documentation.
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+---
+ kernel/sched/core.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-Cheers,
-Miguel
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index cf16f8fda9a6..db374cb38eb2 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7780,6 +7780,19 @@ int __sched __cond_resched(void)
+ 		preempt_schedule_common();
+ 		return 1;
+ 	}
++	/*
++	 * A process spending a long time in the kernel space might
++	 * have too few opportunities to report quiescent states
++	 * when CONFIG_PREEMPT_RCU=n because then the tick can't know
++	 * if it's interrupting an RCU read side critical section. In the
++	 * absence of voluntary sleeps, the last resort resides in tracking
++	 * calls to cond_resched() which always imply quiescent states.
++	 *
++	 * On the other hand, preemptible RCU has a real RCU read side
++	 * tracking that allows the tick for reporting interrupted quiescent
++	 * states or, in the worst case, deferred quiescent states after
++	 * rcu_read_unlock().
++	 */
+ #ifndef CONFIG_PREEMPT_RCU
+ 	rcu_all_qs();
+ #endif
+-- 
+2.25.1
+
