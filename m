@@ -2,123 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25673BBC49
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAEF33BBC4C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhGELjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 07:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231338AbhGELjh (ORCPT
+        id S231191AbhGELkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 07:40:03 -0400
+Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:37419 "EHLO
+        outbound-smtp37.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231286AbhGELkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 07:39:37 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929E2C061574;
-        Mon,  5 Jul 2021 04:36:59 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id h6so24242310ljl.8;
-        Mon, 05 Jul 2021 04:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6n9dVwepW2FjWn98aPrmogm8bsjFfoTV2UF3IavtpKU=;
-        b=iijNDKQo8tLbJVp8lE1S5t6KOQ4t8YKsqj3h0olTZYFsz/rhkZlCyoypWY9WCnTq6p
-         B7pM6erBpyM10FzGUrRA4MJFbUcNv5DR6y/yuIulBQbGNZvoRu75wiBa/fEYGP2ptlfa
-         AWdUD+nh41rjI+d3LQ/L4TedJ+N69FAlp+HaurS0Ejy+CQJo7Qluu/N3GOEbR2sw4Xwa
-         0+v22SIaw3GI7Evx26aZ0GOIZthHx9I95MctYbu22u0i4KpW8n2V8N5ScMiJJ4j4osF1
-         yrumzlgk2q64NDZJsLF+v8Y4uRcg+utl3dQgmJ942bgUIF3j/7ZIkNMpqi/Cq7W51wzX
-         9TQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6n9dVwepW2FjWn98aPrmogm8bsjFfoTV2UF3IavtpKU=;
-        b=FR/bFDz9VEBT55tjEDlX8Hsi4Dd1epl5P6f7pDztzbQDs/RE5+FrX8DQ3rsWN1U3OC
-         QbvjzxF6It9nfBVesV9cllk+83nrxUASHKY3J+b2L6uI1iKpiOu8V/Ec21azITNPs1Lk
-         hsE5oIPlpCAHQpcwGA93Ldngh9ehM7dhDOrk4A9N51mr5S6F4ofymOSHFF8s1n7mpsV0
-         Ub6zUfakkm77++auEX+4S5pKxUVU1qsgNKIAa2cXqNmN+zQ3edzr3F7Kff6aZxwhGOuq
-         OOKkKtPO+Q6/jjFlKyuewUahJJ7B2KrW+TRpJt7qDRIi5l+QRqZBc+dUILpv5YoYfuSb
-         1gNg==
-X-Gm-Message-State: AOAM530SvrJb7QhaTs7JGTK2WqRuo1WCGCT2xQhGbBueTjnVpzsvRswA
-        IRxh4opdPxgrMBwJBqzusao=
-X-Google-Smtp-Source: ABdhPJzxNt/Bm1WIK489uKepp7pjOtTNS79kV94AAaObK8C4HOITdKddAFadyFTthO2rprZQNHKTaA==
-X-Received: by 2002:a2e:7310:: with SMTP id o16mr10733602ljc.383.1625485017609;
-        Mon, 05 Jul 2021 04:36:57 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.225.155])
-        by smtp.gmail.com with ESMTPSA id l6sm161923lfk.256.2021.07.05.04.36.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 04:36:57 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 14:36:52 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+c87d2efb740931ec76c7@syzkaller.appspotmail.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] memory leak in kvm_dev_ioctl
-Message-ID: <20210705143652.56b3d68b@gmail.com>
-In-Reply-To: <CACT4Y+Yk5v3=2V_t77RSqACNYQb6PmDM0Mst6N1QEgz9CdYrqw@mail.gmail.com>
-References: <000000000000bfb6cf05c631db0b@google.com>
-        <20210703101243.45cbf143@gmail.com>
-        <CACT4Y+Yk5v3=2V_t77RSqACNYQb6PmDM0Mst6N1QEgz9CdYrqw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        Mon, 5 Jul 2021 07:40:02 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id D8208199B
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 12:37:24 +0100 (IST)
+Received: (qmail 21946 invoked from network); 5 Jul 2021 11:37:24 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 5 Jul 2021 11:37:24 -0000
+Date:   Mon, 5 Jul 2021 12:37:23 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Marco Elver <elver@google.com>
+Cc:     akpm@linux-foundation.org, glider@google.com, dvyukov@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com, Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH] Revert "mm/page_alloc: make should_fail_alloc_page()
+ static"
+Message-ID: <20210705113723.GN3840@techsingularity.net>
+References: <20210705103806.2339467-1-elver@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210705103806.2339467-1-elver@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Jul 2021 07:54:59 +0200
-Dmitry Vyukov <dvyukov@google.com> wrote:
-
-> On Sat, Jul 3, 2021 at 9:12 AM Pavel Skripkin <paskripkin@gmail.com>
-> wrote:
-> >
-> > On Fri, 02 Jul 2021 23:05:26 -0700
-> > syzbot <syzbot+c87d2efb740931ec76c7@syzkaller.appspotmail.com>
-> > wrote:
-> >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    e058a84b Merge tag 'drm-next-2021-07-01' of
-> > > git://anongit... git tree:       upstream
-> > > console output:
-> > > https://syzkaller.appspot.com/x/log.txt?x=171fbbdc300000 kernel
-> > > config:
-> > > https://syzkaller.appspot.com/x/.config?x=8c46abb9076f44dc
-> > > dashboard link:
-> > > https://syzkaller.appspot.com/bug?extid=c87d2efb740931ec76c7 syz
-> > > repro: https://syzkaller.appspot.com/x/repro.syz?x=119d1efc300000
-> > > C reproducer:
-> > > https://syzkaller.appspot.com/x/repro.c?x=16c58c28300000
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to
-> > > the commit: Reported-by:
-> > > syzbot+c87d2efb740931ec76c7@syzkaller.appspotmail.com
-> > >
-> >
-> > Corresponding fix was sent about 2 days ago
-> > https://patchwork.kernel.org/project/kvm/patch/20210701195500.27097-1-paskripkin@gmail.com/
+On Mon, Jul 05, 2021 at 12:38:06PM +0200, Marco Elver wrote:
+> This reverts commit f7173090033c70886d925995e9dfdfb76dbb2441.
 > 
-> Hi Pavel,
+> Commit 76cd61739fd1 ("mm/error_inject: Fix allow_error_inject function
+> signatures") explicitly made should_fail_alloc_page() non-static, due to
+> worries of remaining compiler optimizations in the absence of function
+> side-effects while being noinline.
 > 
-> Thanks for checking. Let's tell syzbot about the fix:
+> Furthermore, kernel/bpf/verifier.c pushes should_fail_alloc_page onto
+> the btf_non_sleepable_error_inject BTF IDs set, which when enabling
+> CONFIG_DEBUG_INFO_BTF results in an error at the BTFIDS stage:
 > 
-> #syz fix: kvm: debugfs: fix memory leak in kvm_create_vm_debugfs
+>   FAILED unresolved symbol should_fail_alloc_page
+> 
+> To avoid the W=1 warning, add a function declaration right above the
+> function itself, with a comment it is required in a BTF IDs set.
+> 
+> Fixes: f7173090033c ("mm/page_alloc: make should_fail_alloc_page() static")
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Marco Elver <elver@google.com>
 
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
 
-Hi, Dmitry!
+Out of curiousity though, why does block/blk-core.c not require
+something similar for should_fail_bio?
 
-Sorry for stupid question :)
-
-I don't see, that my patch was applied, so syzbot will save the patch
-name and will test it after it will be applied? I thought about
-sending `syz fix` command, but I was sure that syzbot takes only
-accepted patches.
-
-
-
-With regards,
-Pavel Skripkin
+-- 
+Mel Gorman
+SUSE Labs
