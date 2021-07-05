@@ -2,94 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083583BBB32
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8A23BBB34
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhGEK1a convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 5 Jul 2021 06:27:30 -0400
-Received: from esa4.mentor.iphmx.com ([68.232.137.252]:32342 "EHLO
-        esa4.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230355AbhGEK13 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 06:27:29 -0400
-IronPort-SDR: x19yaK8FMMXdYeV1+rulOYinKUQYSerLHBbMLwZWLjGeiakKNX+rpghPmVQbddxZH6aeFfCrde
- nIY1uwZJthurM6LAekkrj6EoiCCnxGj2iT6WsL46LMLZ7qFhb7ZIsKT0S27k2b42Go63nDBQkY
- CQMH0QWmBvXnj6tq1XKLh8GKJgUCDL8gmXmb+fuWj3Coahzg4g78FfberLEgvhta/vhdUhSB9z
- puhk87FOZRdRkKeQMefCZxNq/0lsZJ6gvuwDMjErDwqiXn+ZmDlFwaLDht0QL/uLsRgEf3K20n
- VyM=
-X-IronPort-AV: E=Sophos;i="5.83,325,1616486400"; 
-   d="scan'208";a="63323899"
-Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
-  by esa4.mentor.iphmx.com with ESMTP; 05 Jul 2021 02:24:52 -0800
-IronPort-SDR: haRR03jtahUrQIuvRKMhvKdXpNT0JW6p+VmoLXe7rTcXIAmV54oYszJxU/ykcAm+2SSXUkPO+O
- zSJ4Ql9AAD4qzAKHfOdGsgAO3yzuHDm3cpmyUDmUQYkVVfrO/kiThKW3D0ep7oLewWYJjthArd
- eMLIAFtHcSSSRt3Bi/LDEl/U42dW6BZirc593WNgL76rB7JwKnFZItpH9i3QEfOCRDJPtNMyFq
- sEI8vlc0KpzI0WHp4qkWPqqxpwODeXWeRWi9ydhrfHMMyPCI/l8RP1gDKq7GtOMl+0VPanNg7X
- hyQ=
-From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
-To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-CC:     Macpaul Lin <macpaul.lin@mediatek.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, Felipe Balbi <balbi@kernel.org>,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>,
-        Eddie Hung <eddie.hung@mediatek.com>
-References: <20210603171507.22514-1-andrew_gabbasov@mentor.com> <20210604110503.GA23002@vmlxhi-102.adit-jv.com> <CACCg+XO+D+2SWJq0C=_sWXj53L1fh-wra8dmCb3VQ4bYCZQryA@mail.gmail.com> <20210702184957.4479-1-andrew_gabbasov@mentor.com> <20210702184957.4479-2-andrew_gabbasov@mentor.com> <YOKvz2WzYuV0PaXD@kroah.com>
-In-Reply-To: <YOKvz2WzYuV0PaXD@kroah.com>
-Subject: RE: [PATCH v4.14] usb: gadget: f_fs: Fix setting of device and driver data cross-references
-Date:   Mon, 5 Jul 2021 13:24:10 +0300
-Organization: Mentor Graphics Corporation
-Message-ID: <000001d77187$e9782dd0$bc688970$@mentor.com>
+        id S231136AbhGEK1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 06:27:35 -0400
+Received: from verein.lst.de ([213.95.11.211]:56421 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230355AbhGEK1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 06:27:34 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 9FCEF68AFE; Mon,  5 Jul 2021 12:24:55 +0200 (CEST)
+Date:   Mon, 5 Jul 2021 12:24:55 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Guoqing Jiang <jiangguoqing@kylinos.cn>
+Cc:     syzbot <syzbot+9ca43ff47167c0ee3466@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        hch@lst.de
+Subject: Re: [syzbot] general protection fault in blk_mq_run_hw_queues
+Message-ID: <20210705102455.GA13497@lst.de>
+References: <0000000000005093cb05c659dae4@google.com> <79eae2c8-3540-f257-6068-2620570fa7f7@kylinos.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHXb3MiK5x8JbQzK0Wthg8LyVovu6sz6U+AgABFBzA=
-Content-Language: en-us
-X-Originating-IP: [137.202.0.90]
-X-ClientProxiedBy: SVR-IES-MBX-03.mgc.mentorg.com (139.181.222.3) To
- svr-ies-mbx-01.mgc.mentorg.com (139.181.222.1)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <79eae2c8-3540-f257-6068-2620570fa7f7@kylinos.cn>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
+On Mon, Jul 05, 2021 at 02:00:17PM +0800, Guoqing Jiang wrote:
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> index 614d82e7fae4..d2548d36bf21 100644
+> --- a/drivers/block/nbd.c
+> +++ b/drivers/block/nbd.c
+> @@ -222,8 +222,8 @@ static void nbd_dev_remove(struct nbd_device *nbd)
+>
+>         if (disk) {
+>                 del_gendisk(disk);
+> -               blk_mq_free_tag_set(&nbd->tag_set);
+>                 blk_cleanup_disk(disk);
+> +               blk_mq_free_tag_set(&nbd->tag_set);
+>         }
+>
+> Also paride/pd.c needs the same change, is my understanding correct? 
+> Christoph.
 
-> -----Original Message-----
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Sent: Monday, July 05, 2021 10:08 AM
-> To: Gabbasov, Andrew <Andrew_Gabbasov@mentor.com>
-> Cc: Macpaul Lin <macpaul.lin@mediatek.com>; Eugeniu Rosca <erosca@de.adit-jv.com>; linux-usb@vger.kernel.org;
-> linux-kernel@vger.kernel.org; stable@vger.kernel.org; Felipe Balbi <balbi@kernel.org>; Eugeniu Rosca
-> <roscaeugeniu@gmail.com>; Eddie Hung <eddie.hung@mediatek.com>
-> Subject: Re: [PATCH v4.14] usb: gadget: f_fs: Fix setting of device and driver data cross-references
-> 
-> On Fri, Jul 02, 2021 at 01:49:57PM -0500, Andrew Gabbasov wrote:
-> > Fixes: 4b187fceec3c ("usb: gadget: FunctionFS: add devices management code")
-> > Fixes: 3262ad824307 ("usb: gadget: f_fs: Stop ffs_closed NULL pointer dereference")
-> > Fixes: cdafb6d8b8da ("usb: gadget: f_fs: Fix use-after-free in ffs_free_inst")
-> > Reported-by: Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
-> > Tested-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-> > Reviewed-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-> > Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-> > Link: https://lore.kernel.org/r/20210603171507.22514-1-andrew_gabbasov@mentor.com
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > (cherry-picked from commit ecfbd7b9054bddb12cea07fda41bb3a79a7b0149)
-> 
-> There is no such commit id in Linus's tree :(
-> 
-> Please resubmit with the correct id.
-
-This commit is not yet included to the mainline, it only exists in linux-next:
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=ecfbd7b9054bddb12cea07fda41bb3a79a7b0149
-
-Could you please advise if I need to somehow denote the linux-next repo in the "cherry picked from" line,
-or just remove this line, or so far wait and re-submit the patch after the original commit is merged to Linus' tree?
-BTW, I just noticed that the line contains incorrect "cherry-picked" instead of "cherry picked",
-so I'll have to re-submit the patch anyway ðŸ˜‰
-
-Thanks!
-
-Best regards,
-Andrew
-
+Yes.  Do you have a patch or should I send one?
