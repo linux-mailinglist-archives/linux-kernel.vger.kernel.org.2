@@ -2,171 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7D03BB9D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6843BB9DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbhGEJIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 05:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbhGEJH6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 05:07:58 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411AEC061760;
-        Mon,  5 Jul 2021 02:05:21 -0700 (PDT)
-Date:   Mon, 05 Jul 2021 09:05:19 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625475919;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=thE07WZP4wf0fIvtLf9G8CAydKbYEd6EINtpLSX7O3c=;
-        b=b3vGacI11kMu+DdP0LpXKdKxTeZpJ2+bQhvjgf52PRupOF9WH/pFkAnIas7G+EKGe/fBP2
-        AyWKqweQr4b+x0fV58IGRzh3mLuqdtG5o/O7ZF+3gd6y73RUBbsigA/LxH6DKaF2lksXJc
-        iuoUoLRgIG8YfK2HozR34xgOOU6TDhtg9wMqMxoQPQ//1qPV9WibUCRwt/2JAAP3uQt+wp
-        PgQ02qwPilhyGnc+ghwoAfEOPPQE4gYNHw30xWM2SKrfvrpmh0xrE4UnWjHtiWVZcMbsc3
-        z5WMGLztEOKrygDtVWFqgorjkxlHEhNV+RemJPG5go9mXwcofuJocC/K9JG8Aw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625475919;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=thE07WZP4wf0fIvtLf9G8CAydKbYEd6EINtpLSX7O3c=;
-        b=Ucocgz7qM6Zi9fXbA5YHCZZgQDS1IeiZKobPyv/JuD9MLeYWWPkDFw2ZZO1DJuZMs7XXHc
-        V/r/fnKYrogmt2DA==
-From:   "tip-bot2 for Xiongwei Song" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] locking/lockdep: Fix meaningless /proc/lockdep
- output of lock classes on !CONFIG_PROVE_LOCKING
-Cc:     Xiongwei Song <sxwjean@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Waiman Long <longman@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210629135916.308210-1-sxwjean@me.com>
-References: <20210629135916.308210-1-sxwjean@me.com>
+        id S230301AbhGEJKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 05:10:24 -0400
+Received: from mga05.intel.com ([192.55.52.43]:41923 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230121AbhGEJKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 05:10:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10035"; a="294590796"
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="294590796"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 02:07:46 -0700
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="485435002"
+Received: from elang-mobl.ger.corp.intel.com (HELO localhost) ([10.252.59.138])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 02:07:41 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, lyude@redhat.com
+Cc:     rnayak@codeaurora.org, tzimmermann@suse.de, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        abhinavk@codeaurora.org, khsieh@codeaurora.org,
+        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
+        rsubbia@codeaurora.org
+Subject: Re: [PATCH v2] drm/dp_mst: Fix return code on sideband message failure
+In-Reply-To: <1625008068-16458-1-git-send-email-khsieh@codeaurora.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <1625008068-16458-1-git-send-email-khsieh@codeaurora.org>
+Date:   Mon, 05 Jul 2021 12:07:38 +0300
+Message-ID: <87czrx9lid.fsf@intel.com>
 MIME-Version: 1.0
-Message-ID: <162547591914.395.12424245649522104664.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+On Tue, 29 Jun 2021, Kuogee Hsieh <khsieh@codeaurora.org> wrote:
+> From: Rajkumar Subbiah <rsubbia@codeaurora.org>
+>
+> Commit 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing +
+> selftests") added some debug code for sideband message tracing. But
+> it seems to have unintentionally changed the behavior on sideband message
+> failure. It catches and returns failure only if DRM_UT_DP is enabled.
+> Otherwise it ignores the error code and returns success. So on an MST
+> unplug, the caller is unaware that the clear payload message failed and
+> ends up waiting for 4 seconds for the response. Fixes the issue by
+> returning the proper error code.
+>
+> Changes in V2:
+> -- Revise commit text as review comment
+> -- add Fixes text
+>
+> Fixes: 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing + selftests")
+>
+> Signed-off-by: Rajkumar Subbiah <rsubbia@codeaurora.org>
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  drivers/gpu/drm/drm_dp_mst_topology.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> index 1590144..8d97430 100644
+> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> @@ -2887,11 +2887,13 @@ static int process_single_tx_qlock(struct drm_dp_mst_topology_mgr *mgr,
+>  	idx += tosend + 1;
+>  
+>  	ret = drm_dp_send_sideband_msg(mgr, up, chunk, idx);
+> -	if (unlikely(ret) && drm_debug_enabled(DRM_UT_DP)) {
+> -		struct drm_printer p = drm_debug_printer(DBG_PREFIX);
+> +	if (unlikely(ret)) {
+> +		if (drm_debug_enabled(DRM_UT_DP)) {
+> +			struct drm_printer p = drm_debug_printer(DBG_PREFIX);
+>  
+> -		drm_printf(&p, "sideband msg failed to send\n");
+> -		drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
+> +			drm_printf(&p, "sideband msg failed to send\n");
+> +			drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
+> +		}
+>  		return ret;
+>  	}
 
-Commit-ID:     4840ce2267f9d887f333d88a037c82c566f84081
-Gitweb:        https://git.kernel.org/tip/4840ce2267f9d887f333d88a037c82c566f84081
-Author:        Xiongwei Song <sxwjean@gmail.com>
-AuthorDate:    Tue, 29 Jun 2021 21:59:16 +08:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 05 Jul 2021 10:44:52 +02:00
+Seems like a sensible thing to do.
 
-locking/lockdep: Fix meaningless /proc/lockdep output of lock classes on !CONFIG_PROVE_LOCKING
+(I'd probably rip out the "unlikely" while at it, as it feels like
+unnecessary optimization, but *shrug*.)
 
-When enabling CONFIG_LOCK_STAT=y, then CONFIG_LOCKDEP=y is forcedly enabled,
-but CONFIG_PROVE_LOCKING is disabled.
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 
-We can get output from /proc/lockdep, which currently includes usages of
-lock classes. But the usages are meaningless, see the output below:
 
-	/ # cat /proc/lockdep
-	all lock classes:
-	ffffffff9af63350 ....: cgroup_mutex
-
-	ffffffff9af54eb8 ....: (console_sem).lock
-
-	ffffffff9af54e60 ....: console_lock
-
-	ffffffff9ae74c38 ....: console_owner_lock
-
-	ffffffff9ae74c80 ....: console_owner
-
-	ffffffff9ae66e60 ....: cpu_hotplug_lock
-
-Only one usage context for each lock, this is because each usage is only
-changed in mark_lock() that is in the CONFIG_PROVE_LOCKING=y section,
-however in the test situation, it's not.
-
-The fix is to move the usages reading and seq_print from the
-!CONFIG_PROVE_LOCKING section to its defined section.
-
-Also, locks_after list of lock_class is empty when !CONFIG_PROVE_LOCKING,
-so do the same thing as what have done for usages of lock classes.
-
-With this patch with !CONFIG_PROVE_LOCKING we can get the results below:
-
-	/ # cat /proc/lockdep
-	all lock classes:
-	ffffffff85163290: cgroup_mutex
-	ffffffff85154dd8: (console_sem).lock
-	ffffffff85154d80: console_lock
-	ffffffff85074b58: console_owner_lock
-	ffffffff85074ba0: console_owner
-	ffffffff85066d60: cpu_hotplug_lock
-
-... a class key and the relevant class name each line.
-
-Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Link: https://lore.kernel.org/r/20210629135916.308210-1-sxwjean@me.com
----
- kernel/locking/lockdep_proc.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
-index 8069783..b8d9a05 100644
---- a/kernel/locking/lockdep_proc.c
-+++ b/kernel/locking/lockdep_proc.c
-@@ -70,26 +70,28 @@ static int l_show(struct seq_file *m, void *v)
- #ifdef CONFIG_DEBUG_LOCKDEP
- 	seq_printf(m, " OPS:%8ld", debug_class_ops_read(class));
- #endif
--#ifdef CONFIG_PROVE_LOCKING
--	seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
--	seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
--#endif
-+	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
-+		seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
-+		seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
- 
--	get_usage_chars(class, usage);
--	seq_printf(m, " %s", usage);
-+		get_usage_chars(class, usage);
-+		seq_printf(m, " %s", usage);
-+	}
- 
- 	seq_printf(m, ": ");
- 	print_name(m, class);
- 	seq_puts(m, "\n");
- 
--	list_for_each_entry(entry, &class->locks_after, entry) {
--		if (entry->distance == 1) {
--			seq_printf(m, " -> [%p] ", entry->class->key);
--			print_name(m, entry->class);
--			seq_puts(m, "\n");
-+	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
-+		list_for_each_entry(entry, &class->locks_after, entry) {
-+			if (entry->distance == 1) {
-+				seq_printf(m, " -> [%p] ", entry->class->key);
-+				print_name(m, entry->class);
-+				seq_puts(m, "\n");
-+			}
- 		}
-+		seq_puts(m, "\n");
- 	}
--	seq_puts(m, "\n");
- 
- 	return 0;
- }
+-- 
+Jani Nikula, Intel Open Source Graphics Center
