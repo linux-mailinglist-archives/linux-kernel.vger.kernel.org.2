@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E4E3BBD81
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5B33BBD89
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhGENco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 09:32:44 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9469 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhGENcn (ORCPT
+        id S230513AbhGENhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 09:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230412AbhGENha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 09:32:43 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GJRL556JgzZqwB;
-        Mon,  5 Jul 2021 21:26:53 +0800 (CST)
-Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 5 Jul 2021 21:30:04 +0800
-Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
- (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 5 Jul
- 2021 21:30:03 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <kbusch@kernel.org>, <axboe@fb.com>, <hch@lst.de>,
-        <sagi@grimberg.me>, <rakesh@tuxera.com>
-CC:     <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH] nvme-pci: Don't WARN_ON in nvme_reset_work if ctrl.state is not RESETTING
-Date:   Mon, 5 Jul 2021 21:38:29 +0800
-Message-ID: <20210705133829.349660-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 5 Jul 2021 09:37:30 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C829FC061760
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 06:34:53 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id c28so9101517lfp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 06:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hTlomlxaU2sZDcUx321lrReHqUzaJljTL1EttP6LrNg=;
+        b=wATVQJOBTwBPm0B91WkEXJvOkVJloSHXKQoNIvaLvL4299yOzDpUCRUthmaoiyz72P
+         H8sOI5Tc18OtIml6K87TOhDCm1EruLas5coOZLshkz8uKpYlzZV1lyjo1CAoWb7R4+fb
+         LD/OlwAOPPxF4xk95pnXK07/hsKD48j4IZ2MCVPa/h8fvZNAWN043plC6HtOXnWLfXQV
+         oiAu9Y7RtnqpzfNZZeXHJC2+YDbLyfBX7MKDz7bWL21coatjiIrw1k+ShsaaTx7g4W6N
+         nmgviV+ruMF6i8gmY3up+NzKg8h4NAMui1zVYCA4l92mckGAJQwofh2k510g0RSO6jyA
+         AmRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hTlomlxaU2sZDcUx321lrReHqUzaJljTL1EttP6LrNg=;
+        b=QDNyIYyYLIAoAdsh09N87JQir4FVTV9NCcDDgLGo85DwjaOFaIEW0xyRQe8z+ocJIp
+         e88D3lvuSukigE1XNZBbHqbLflhFwVsH9BK7vAGolSruFY4WYETbLwQQKeWJjnLjvO0+
+         mRfle/kjaMSQV0D1FX4Toqr2jxzj3YOeDPoYD8SOdgaFCtAdViOw4FiN2dy/Y0LbilEM
+         RbzB1SWRlY+WCdz4hvAdlqehXwj6oKNiGqGs+FrDJ9lQqmYEdERimWdL0BaouSBcqeZr
+         5rvSVcJQhoPXD4uKc6SGqUFDm+SsEEEtYUIGmINFS5JG4FRsVNQJbRMD35n2zDuv7bHX
+         gLmg==
+X-Gm-Message-State: AOAM531/kXtVTKaRtLSSRgQzv4bAJqHCjyRJqvBwYZGr82ebe+ZBQeZI
+        uoqperZ7/6nyk4dgDdRIdMzd5A==
+X-Google-Smtp-Source: ABdhPJyGviPHrfmMtlEwyrVqsKtlbk8XSe4QwRB8Mq7TXi+VXzE3hHehjkoeOXMewOH+58O+KB7YMw==
+X-Received: by 2002:a19:f104:: with SMTP id p4mr10381901lfh.630.1625492091905;
+        Mon, 05 Jul 2021 06:34:51 -0700 (PDT)
+Received: from localhost.localdomain (81-227-43-49-no2784.tbcn.telia.com. [81.227.43.49])
+        by smtp.gmail.com with ESMTPSA id a5sm1167860lfj.190.2021.07.05.06.34.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 06:34:50 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH] regulator: fixed: Mark regulator-fixed-domain as deprecated
+Date:   Mon,  5 Jul 2021 15:34:41 +0200
+Message-Id: <20210705133441.11344-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema761-chm.china.huawei.com (10.1.198.203)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Followling process:
-nvme_probe
-  nvme_reset_ctrl
-    nvme_change_ctrl_state(ctrl, NVME_CTRL_RESETTING)
-    queue_work(nvme_reset_wq, &ctrl->reset_work)
+A power domain should not be modelled as a regulator, not even for the
+simplest case as recent discussions have concluded around the existing
+regulator-fixed-domain DT binding.
 
--------------->	nvme_remove
-		  nvme_change_ctrl_state(&dev->ctrl, NVME_CTRL_DELETING)
-worker_thread
-  process_one_work
-    nvme_reset_work
-    WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)
+Fortunately, there is only one user of the binding that was recently added.
+Therefore, let's mark the binding as deprecated to prevent it from being
+further used.
 
-, which will trigger WARN_ON in nvme_reset_work():
-[  127.534298] WARNING: CPU: 0 PID: 139 at drivers/nvme/host/pci.c:2594
-[  127.536161] CPU: 0 PID: 139 Comm: kworker/u8:7 Not tainted 5.13.0
-[  127.552518] Call Trace:
-[  127.552840]  ? kvm_sched_clock_read+0x25/0x40
-[  127.553936]  ? native_send_call_func_single_ipi+0x1c/0x30
-[  127.555117]  ? send_call_function_single_ipi+0x9b/0x130
-[  127.556263]  ? __smp_call_single_queue+0x48/0x60
-[  127.557278]  ? ttwu_queue_wakelist+0xfa/0x1c0
-[  127.558231]  ? try_to_wake_up+0x265/0x9d0
-[  127.559120]  ? ext4_end_io_rsv_work+0x160/0x290
-[  127.560118]  process_one_work+0x28c/0x640
-[  127.561002]  worker_thread+0x39a/0x700
-[  127.561833]  ? rescuer_thread+0x580/0x580
-[  127.562714]  kthread+0x18c/0x1e0
-[  127.563444]  ? set_kthread_struct+0x70/0x70
-[  127.564347]  ret_from_fork+0x1f/0x30
-
-The preceding problem can be easily reproduced by executing following
-script (based on blktests suite):
-test() {
-  pdev="$(_get_pci_dev_from_blkdev)"
-  sysfs="/sys/bus/pci/devices/${pdev}"
-  for ((i = 0; i < 10; i++)); do
-    echo 1 > "$sysfs/remove"
-    echo 1 > /sys/bus/pci/rescan
-  done
-}
-
-Since the device ctrl could be updated as an non-RESETTING state by
-repeating probe/remove in userspace (which is a normal situation), we
-can replace stack dumping WARN_ON with a warnning message.
-
-Fixes: 82b057caefaff ("nvme-pci: fix multiple ctrl removal schedulin")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- drivers/nvme/host/pci.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/regulator/fixed-regulator.yaml          | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index a29b170701fc..966a4c84e699 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -2591,7 +2591,9 @@ static void nvme_reset_work(struct work_struct *work)
- 	bool was_suspend = !!(dev->ctrl.ctrl_config & NVME_CC_SHN_NORMAL);
- 	int result;
+diff --git a/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml b/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml
+index 8850c01bd470..9b131c6facbc 100644
+--- a/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml
+@@ -57,12 +57,14 @@ properties:
+     maxItems: 1
  
--	if (WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)) {
-+	if (dev->ctrl.state != NVME_CTRL_RESETTING) {
-+		dev_warn(dev->ctrl.device, "ctrl state %d is not RESETTING\n",
-+			 dev->ctrl.state);
- 		result = -ENODEV;
- 		goto out;
- 	}
+   power-domains:
++    deprecated: true
+     description:
+       Power domain to use for enable control. This binding is only
+       available if the compatible is chosen to regulator-fixed-domain.
+     maxItems: 1
+ 
+   required-opps:
++    deprecated: true
+     description:
+       Performance state to use for enable control. This binding is only
+       available if the compatible is chosen to regulator-fixed-domain. The
 -- 
-2.31.1
+2.25.1
 
