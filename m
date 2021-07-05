@@ -2,133 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07293BBCB6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 14:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145003BBCC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 14:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbhGEMN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 08:13:57 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31278 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231183AbhGEMN4 (ORCPT
+        id S231324AbhGEMQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 08:16:39 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38380 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231183AbhGEMQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 08:13:56 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 165C4xRD026789;
-        Mon, 5 Jul 2021 08:11:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=rT2bG0AaHOmphmgPlSiIjTBX3srVtBH+NcWrjue833M=;
- b=WFSQg5zxFgctrD2xmPljwSpg3JclkimYzmSw6mbO4cRCHoXcWsvuNDWClpVsHzpjvqxX
- oUCD3oPrmtM3wOnnn3JE4iM2AnkJuWo4nsP0y8/fWNsIaK0Hs5pysvL/Zz4m+WAj/l00
- vr8axjys5guNVwH0CG53Es5jiS/ettKvOsZt59aIb3X4zVcm3GET5afpjQh+hKLpkxMG
- CDZamsBajnsNU1iNgxp+SY6z0QcuGS7oIM0OrpZyMUhD6AXHzTX48i9tuSQGo9IjS50q
- Txggv930qpZgFkIHV0zpbwtg7J5P572PlKTpFxmeWzrlVxfKgJf4wS+EQfc2uHSV66gJ Kg== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39kwgnfpbw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Jul 2021 08:11:18 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 165C72S9007087;
-        Mon, 5 Jul 2021 12:11:16 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 39jfh88dx5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Jul 2021 12:11:16 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 165CBCCD27656500
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 5 Jul 2021 12:11:13 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 669874C0EA;
-        Mon,  5 Jul 2021 12:11:12 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2C35E4C165;
-        Mon,  5 Jul 2021 12:11:12 +0000 (GMT)
-Received: from li-e35baacc-2106-11b2-a85c-8f97eb669a6e.ibm.com (unknown [9.145.18.84])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  5 Jul 2021 12:11:12 +0000 (GMT)
-Subject: Re: [PATCH 3/3] perf probe: Do not show @plt function by default
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-perf-users@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Stefan Liebler <stli@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-References: <162532651032.393143.4602033845482295575.stgit@devnote2>
- <162532653450.393143.12621329879630677469.stgit@devnote2>
-From:   Thomas Richter <tmricht@linux.ibm.com>
-Organization: IBM
-Message-ID: <9824bd00-3291-3a65-73f1-553410b8eb68@linux.ibm.com>
-Date:   Mon, 5 Jul 2021 14:11:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 5 Jul 2021 08:16:38 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1A4B41FE5C;
+        Mon,  5 Jul 2021 12:14:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625487241; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=46q8UclYEn65a49RzxpKI/3dVSD5yV+XW8jxkT70lDk=;
+        b=LwLfYCWKW/+5x3vgXSk4vBGsNTUGns4tt3Ud3OyKzn7K5g+KzJYN8Yu07Ynr8pqE4+z30E
+        MZyclKrwb6AFIM9xtCy1Q5JIGshdf+CLJ1YhIDTkzWgI6o9ibc9SS3V0mYkyiqhbqL+eEj
+        gtnOoUcSEAvihBdV74gm4+zm+HxGxe8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625487241;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=46q8UclYEn65a49RzxpKI/3dVSD5yV+XW8jxkT70lDk=;
+        b=NTXYH5qbA8GHY18kHZKtGWZKIrplep033FoShY4rOZHApntK9+lG4iZ+jcKmqkOOArqKSD
+        5j0pF7pKadwqBnBg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D301B1367E;
+        Mon,  5 Jul 2021 12:14:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id j9VzMYj34mCaFQAAGKfGzw
+        (envelope-from <ykaukab@suse.de>); Mon, 05 Jul 2021 12:14:00 +0000
+Date:   Mon, 5 Jul 2021 14:13:55 +0200
+From:   Mian Yousaf Kaukab <ykaukab@suse.de>
+To:     Bruno Thomsen <bruno.thomsen@gmail.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>, biwen.li@nxp.com
+Subject: Re: [PATCH v6] rtc: pcf2127: handle timestamp interrupts
+Message-ID: <20210705121355.GA82146@suse.de>
+References: <20210629150643.31551-1-ykaukab@suse.de>
+ <CAH+2xPAYD--=RWHTw8yuUGb7xKWUd+hGo7QHCsKzz8BNzNwUbA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <162532653450.393143.12621329879630677469.stgit@devnote2>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Kyk5OQU2UiQ9wfSrGk-ql_RJ1kVHcP4D
-X-Proofpoint-GUID: Kyk5OQU2UiQ9wfSrGk-ql_RJ1kVHcP4D
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-05_07:2021-07-02,2021-07-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 spamscore=0 clxscore=1011 lowpriorityscore=0 bulkscore=0
- impostorscore=0 mlxscore=0 malwarescore=0 phishscore=0 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107050065
+In-Reply-To: <CAH+2xPAYD--=RWHTw8yuUGb7xKWUd+hGo7QHCsKzz8BNzNwUbA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/3/21 5:35 PM, Masami Hiramatsu wrote:
-> From: Masami Hiramatsu <mhriamat@kernel.org>
+On Wed, Jun 30, 2021 at 08:26:04PM +0200, Bruno Thomsen wrote:
+> Den tir. 29. jun. 2021 kl. 17.06 skrev Mian Yousaf Kaukab <ykaukab@suse.de>:
+> >
+> > commit 03623b4b041c ("rtc: pcf2127: add tamper detection support")
+> > added support for timestamp interrupts. However they are not being
+> > handled in the irq handler. If a timestamp interrupt occurs it
+> > results in kernel disabling the interrupt and displaying the call
+> > trace:
+> >
+> > [  121.145580] irq 78: nobody cared (try booting with the "irqpoll" option)
+> > ...
+> > [  121.238087] [<00000000c4d69393>] irq_default_primary_handler threaded [<000000000a90d25b>] pcf2127_rtc_irq [rtc_pcf2127]
+> > [  121.248971] Disabling IRQ #78
+> >
+> > Handle timestamp interrupts in pcf2127_rtc_irq(). Save time stamp
+> > before clearing TSF1 and TSF2 flags so that it can't be overwritten.
+> > Set a flag to mark if the timestamp is valid and only report to sysfs
+> > if the flag is set. To mimic the hardware behavior, don’t save
+> > another timestamp until the first one has been read by the userspace.
+> >
+> > However, if the alarm irq is not configured, keep the old way of
+> > handling timestamp interrupt in the timestamp0 sysfs calls.
+> >
+> > Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+> > ---
+> > Sorry, once again compile tested only due to lack of hardware
+> > availability. Hopefully, I will be able to do some real tests tomorrow.
 > 
-> Fix the perf-probe --functions option do not show the PLT
-> stub symbols (*@plt) by default.
+> Hi Yousaf,
 > 
->   -----
->   $ ./perf probe -x /usr/lib64/libc-2.33.so -F | head
->   a64l
->   abort
->   abs
->   accept
->   accept4
->   access
->   acct
->   addmntent
->   addseverity
->   adjtime
->   -----
+> I have tested patch version 6 on an imx7 board with the pcf2127
+> chip using SPI interface and no alarm IRQ in the device tree.
+> The same board that produced an oops earlier, and now it's working
+> as expected. Both tamper events that occur when the device is
+> powered on and when an event happens with the device powered off.
 > 
-> Reported-by: Thomas Richter <tmricht@linux.ibm.com>
-> Signed-off-by: Masami Hiramatsu <mhriamat@kernel.org>
-> ---
->  tools/perf/builtin-probe.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/builtin-probe.c b/tools/perf/builtin-probe.c
-> index 2bfd41df621c..e1dd51f2874b 100644
-> --- a/tools/perf/builtin-probe.c
-> +++ b/tools/perf/builtin-probe.c
-> @@ -31,7 +31,7 @@
->  #include <linux/zalloc.h>
->  
->  #define DEFAULT_VAR_FILTER "!__k???tab_* & !__crc_*"
-> -#define DEFAULT_FUNC_FILTER "!_*"
-> +#define DEFAULT_FUNC_FILTER "!_* & !*@plt"
->  #define DEFAULT_LIST_FILTER "*"
->  
->  /* Session management structure */
-> 
+> Reviewed-by: Bruno Thomsen <bruno.thomsen@gmail.com>
+> Tested-by: Bruno Thomsen <bruno.thomsen@gmail.com>
+Thank you for reviewing and testing the patch!
+I have tested it with alarm irq configured and it works fine.
 
-Thanks, works again ...
-
--- 
-Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
---
-Vorsitzender des Aufsichtsrats: Gregor Pillen
-Geschäftsführung: Dirk Wittkopp
-Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+Alexandre, is it still possible to queue for v5.14?
+> 
+> /Bruno
+> 
+BR,
+Yousaf
