@@ -2,267 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07823BBD70
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410363BBD76
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhGENY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 09:24:58 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:16233 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230188AbhGENY4 (ORCPT
+        id S230431AbhGEN1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 09:27:36 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:40538 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230188AbhGEN1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 09:24:56 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Ueo5Qe6_1625491332;
-Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Ueo5Qe6_1625491332)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 05 Jul 2021 21:22:17 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        nvdimm@lists.linux.dev, Liu Bo <bo.liu@linux.alibaba.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Joseqh Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>
-Subject: [RFC PATCH v1.1 2/2] erofs: dax support for non-tailpacking regular file
-Date:   Mon,  5 Jul 2021 21:21:53 +0800
-Message-Id: <20210705132153.223839-1-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.4
-In-Reply-To: <20210704135056.42723-3-hsiangkao@linux.alibaba.com>
-References: <20210704135056.42723-3-hsiangkao@linux.alibaba.com>
+        Mon, 5 Jul 2021 09:27:36 -0400
+Received: by mail-ot1-f47.google.com with SMTP id d21-20020a9d72d50000b02904604cda7e66so18292192otk.7;
+        Mon, 05 Jul 2021 06:24:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wBFZgrsOPrbsUN1uPwodsfr1xtraggXX60tVKBlbJAE=;
+        b=ui6ffD0Aw8+5ke1KvHOZmydv/xAvupCwcfenFq7tjaZwA1WzTIBaMm0pvyNlSRWNi+
+         2O717kFhp8jZSs7DZr8+4g6iDHKyf4ghB+i57JDYWgXkWAR5xSOcfP0WffMF+RPYXMn7
+         +fAVu8dqnfUiR2TAClaNijmllRSX95+fH/bWWm1V+tApHmZmF42pQis/mcAc1ioIlIeJ
+         /8T8mCLbVET6JXVuFA8LsNVEqMVbYrKjpN65/Mg3bAYlLWwKXqqFkXoVP6gyQ8G3qlRB
+         ND53/af+w7mm6IDF+6QD0LIrIl7ftjhr4h6SHVhRUBgKjGes/foHgZfAVKmWvOO9ApHc
+         RY7g==
+X-Gm-Message-State: AOAM531Tx7yaoTDQKiHVzFHj1QMxK2YDO7oZoTCQSXYgDk8q79tpShRJ
+        3rtf7jkC9K85Pteg5L9QRuVUQ4mrcolRVDPUcbQ=
+X-Google-Smtp-Source: ABdhPJwNj0BbvjrdzGAJ0ts+MYxii4BhPeMSPLcInedbRaacxy889Ea/5IE4yjfljc9RQRrEmHU9dqUJ4e9Y66P1h4g=
+X-Received: by 2002:a05:6830:1d8:: with SMTP id r24mr11413386ota.206.1625491498880;
+ Mon, 05 Jul 2021 06:24:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1867445.PYKUYFuaPT@kreacher> <007101d77117$b3b837a0$1b28a6e0$@telus.net>
+In-Reply-To: <007101d77117$b3b837a0$1b28a6e0$@telus.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 5 Jul 2021 15:24:43 +0200
+Message-ID: <CAJZ5v0jH6pXs07r9xvUwUDWz7A8DbDO-2UfMUTmMygO1PJ76=Q@mail.gmail.com>
+Subject: Re: [PATCH v1 0/5] cpuidle: teo: Rework the idle state selection logic
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DAX is quite useful for some VM use cases in order to save guest
-memory extremely with minimal lightweight EROFS.
+On Sun, Jul 4, 2021 at 11:01 PM Doug Smythies <dsmythies@telus.net> wrote:
+>
+> Hi Rafael,
+>
+> On 2021.06.02 11:14 Rafael J. Wysocki wrote:
+>
+> > Hi All,
+> >
+> > This series of patches addresses some theoretical shortcoming in the
+> > TEO (Timer Events Oriented) cpuidle governor by reworking its idle
+> > state selection logic to some extent.
+> >
+> > Patches [1-2/5] are introductory cleanups and the substantial changes are
+> > made in patches [3-4/5] (please refer to the changelogs of these two
+> > patches for details).  The last patch only deals with documentation.
+> >
+> > Even though this work is mostly based on theoretical considerations, it
+> > shows a measurable reduction of the number of cases in which the
+> shallowest
+> > idle state is selected while it would be more beneficial to select a
+> deeper
+> > one or the deepest idle state is selected while it would be more
+> beneficial to
+> > select a shallower one, which should be a noticeable improvement.
+>
+> Do you have any test results to share? Or test methods that I can try?
+> I have done a few tests, and generally don't notice much difference.
+> Perhaps an increase in idle state 2 below (was to shallow) numbers.
+> I am searching for some results that would offset the below:
+>
+> The difficulty I am having with this patch set is the additional overhead
+> which becomes significant at the extremes, where idle state 0 is dominant.
+> Throughout the history of teo, I have used multiple one core pipe-tests
+> for this particular test. Some results:
+>
+> CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
+> HWP: disabled
+> CPU frequency scaling driver: intel_pstate, active, powersave
+> Pipe-tests are run forever, printing average loop time for the
+> Last 2.5 million loops. 1021 of those are again averaged.
+> Total = 2.5525e9 loops
+> The power and idle data is sampled for 100 minutes.
+>
+> Note 1: other tests were also done and also with passive,
+> schedutil, but it isn't relevant for this test because the
+> CPU frequency stays pinned at maximum.
+>
+> Note 2: I use TCC offset for thermal throttling, but I disabled it
+> for these tests, because the temperature needed to go higher
+> than my normal throttling point.
+>
+> Idle configuration 1: As a COMETLAKE processor, with 4 idle states.
+> Kernel 5.13-RC4.
+>
+> Before patch set average:
+> 2.8014 uSec/loop
+> 113.9 watts
+> Idle state 0 residency: 9.450%
+> Idle state 0 entries per minute: 256,812,896.6
+>
+> After patch set average:
+> 2.8264 uSec/loop, 0.89% slower
+> 114.0 watts
+> Idle state 0 residency: 8.677%
+> Idle state 0 entries per minute: 254,560,049.9
+>
+> Menu governor:
+> 2.8051 uSec/loop, 0.13% slower
+> 113.9 watts
+> Idle state 0 residency: 8.437%
+> Idle state 0 entries per minute: 256,436,417.2
+>
+> O.K., perhaps not so bad, but also not many idle states.
+>
+> Idle configuration 2: As a SKYLAKE processor, with 9 idle states.
+> i.e.:
+> /drivers/idle/intel_idle.c
+> static const struct x86_cpu_id intel_idle_ids[] __initconst
+> ...
+>    X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X, &idle_cpu_skx),
+> + X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE, &idle_cpu_skl),
+>
+> Purpose: To demonstrate increasing overhead as a function of number
+> of idle states.
+> Kernel 5.13.
+>
+> Before patch set average:
+> 2.8394 uSec/loop
+> 114.2 watts
+> Idle state 0 residency: 7.212%
+> Idle state 0 entries per minute: 253,391,954.3
+>
+> After patch set average:
+> 2.9103 uSec/loop, 2.5% slower
+> 114.4 watts, 0.18% more
+> Idle state 0 residency: 6.152%, 14.7% less.
+> Idle state 0 entries per minute: 244,024,752.1
+>
+> Menu governor:
+> 2.8141 uSec/loop, 0.89% faster
+> 113.9 watts,  0.26% less
+> Idle state 0 residency: 7.167%, 0.6% less
+> Idle state 0 entries per minute: 255,650,610.7
+>
+> Another potentially interesting test was the ebizzy test:
+> Records per second, averaged over many tests, varying
+> threads and intervals:
+>
+> passive, schedutil:
+> Before: 6771.977
+> After: 5502.643, -18.7%
+> Menu: 10728.89, +58.4%
+>
+> Active, powersave:
+> Before: 8361.82
+> After: 8463.31, +1.2%
+> Menu: 8225.58, -1.6%
+>
+> I think it has more to do with CPU scaling governors
+> than this patch set, so:
+>
+> performance:
+> Before: 12137.33
+> After: 12083.26, -0.4%
+> Menu: 11983.73, -1.3%
+>
+> These and other test results available here:
+> (encoded to prevent a barrage of bots)
+>
+> double u double u double u dot smythies dot com
+> /~doug/linux/idle/teo-2021-06/
+>
+> ... a day later ...
+>
+> I might have an answer to my own question.
+> By switching to cross core pipe-tests, and only loading down one
+> CPU per core, I was able to get a lot more activity in other idle states.
+> The test runs for 100 minutes, and the results change with time, but
+> I'll leave that investigation for another day (there is no throttling):
+>
+> 1st 50 tests:
+> Before: 3.888 uSec/loop
+> After: 3.764 uSec/loop
+> Menu: 3.464 uSec/loop
+>
+> Tests 50 to 100:
+> Before: 4.329 uSec/loop
+> After: 3.919 uSec/loop
+> Menu: 3.514 uSec/loop
+>
+> Tests 200 to 250:
+> Before: 5.089 uSec/loop
+> After: 4.364 uSec/loop
+> Menu: 4.619 uSec/loop
+>
+> Tests 280 to 330:
+> Before: 5.142 uSec/loop
+> After: 4.464 uSec/loop
+> Menu: 4.619 uSec/loop
+>
+> Notice that the "after" this patch set is applied eventually does
+> better than using the menu governor. Its processor package power
+> always remains less, than the menu governor.
 
-In order to prepare for such use cases, add preliminary dax support
-for non-tailpacking regular files for now.
+That's good news, thanks!
 
-Tested with the DRAM-emulated PMEM and the EROFS image generated by
-"mkfs.erofs -Enoinline_data enwik9.fsdax.img enwik9"
+> The results can be viewed graphically at the above link, but the
+> most dramatic results are:
+>
+> Idle state 3 above % goes from 70% to 5%.
+> Idle state 2 below % goes from 13% to less than 1%.
 
-Cc: nvdimm@lists.linux.dev
-Cc: linux-fsdevel@vger.kernel.org
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
-change since v1:
- - update missing hunks due to patch spliting...
-    bdev_dax_supported(...)
-    erofs_file_mmap(...)   
+This also looks promising.
 
- fs/erofs/data.c     | 43 +++++++++++++++++++++++++++++++++++++++++--
- fs/erofs/inode.c    |  5 +++++
- fs/erofs/internal.h |  2 ++
- fs/erofs/super.c    | 26 ++++++++++++++++++++++++--
- 4 files changed, 72 insertions(+), 4 deletions(-)
-
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index 0f82b4cb474c..c188c629be45 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -6,7 +6,7 @@
- #include "internal.h"
- #include <linux/prefetch.h>
- #include <linux/iomap.h>
--
-+#include <linux/dax.h>
- #include <trace/events/erofs.h>
- 
- static void erofs_readendio(struct bio *bio)
-@@ -323,6 +323,7 @@ static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- 		return ret;
- 
- 	iomap->bdev = inode->i_sb->s_bdev;
-+	iomap->dax_dev = EROFS_I_SB(inode)->dax_dev;
- 	iomap->offset = map.m_la;
- 	iomap->length = map.m_llen;
- 
-@@ -382,6 +383,11 @@ static ssize_t erofs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 	if (!iov_iter_count(to))
- 		return 0;
- 
-+#ifdef CONFIG_FS_DAX
-+	if (IS_DAX(iocb->ki_filp->f_mapping->host))
-+		return dax_iomap_rw(iocb, to, &erofs_iomap_ops);
-+#endif
-+
- 	if (iocb->ki_flags & IOCB_DIRECT) {
- 		int err = erofs_prepare_dio(iocb, to);
- 
-@@ -410,9 +416,42 @@ const struct address_space_operations erofs_raw_access_aops = {
- 	.direct_IO = noop_direct_IO,
- };
- 
-+#ifdef CONFIG_FS_DAX
-+static vm_fault_t erofs_dax_huge_fault(struct vm_fault *vmf,
-+		enum page_entry_size pe_size)
-+{
-+	return dax_iomap_fault(vmf, pe_size, NULL, NULL, &erofs_iomap_ops);
-+}
-+
-+static vm_fault_t erofs_dax_fault(struct vm_fault *vmf)
-+{
-+	return erofs_dax_huge_fault(vmf, PE_SIZE_PTE);
-+}
-+
-+static const struct vm_operations_struct erofs_dax_vm_ops = {
-+	.fault		= erofs_dax_fault,
-+	.huge_fault	= erofs_dax_huge_fault,
-+};
-+
-+static int erofs_file_mmap(struct file *file, struct vm_area_struct *vma)
-+{
-+	if (!IS_DAX(file_inode(file)))
-+		return generic_file_readonly_mmap(file, vma);
-+
-+	if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_MAYWRITE))
-+		return -EINVAL;
-+
-+	vma->vm_ops = &erofs_dax_vm_ops;
-+	vma->vm_flags |= VM_HUGEPAGE;
-+	return 0;
-+}
-+#else
-+#define erofs_file_mmap	generic_file_readonly_mmap
-+#endif
-+
- const struct file_operations erofs_file_fops = {
- 	.llseek		= generic_file_llseek,
- 	.read_iter	= erofs_file_read_iter,
--	.mmap		= generic_file_readonly_mmap,
-+	.mmap		= erofs_file_mmap,
- 	.splice_read	= generic_file_splice_read,
- };
-diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
-index 00edb7562fea..695b97acb9a6 100644
---- a/fs/erofs/inode.c
-+++ b/fs/erofs/inode.c
-@@ -174,6 +174,11 @@ static struct page *erofs_read_inode(struct inode *inode,
- 	inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec;
- 	inode->i_atime.tv_nsec = inode->i_ctime.tv_nsec;
- 
-+	inode->i_flags &= ~S_DAX;
-+	if (test_opt(&sbi->ctx, DAX) && S_ISREG(inode->i_mode) &&
-+	    vi->datalayout == EROFS_INODE_FLAT_PLAIN)
-+		inode->i_flags |= S_DAX;
-+
- 	if (!nblks)
- 		/* measure inode.i_blocks as generic filesystems */
- 		inode->i_blocks = roundup(inode->i_size, EROFS_BLKSIZ) >> 9;
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index 2669c785d548..8b0542d35148 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -83,6 +83,7 @@ struct erofs_sb_info {
- 
- 	struct erofs_sb_lz4_info lz4;
- #endif	/* CONFIG_EROFS_FS_ZIP */
-+	struct dax_device *dax_dev;
- 	u32 blocks;
- 	u32 meta_blkaddr;
- #ifdef CONFIG_EROFS_FS_XATTR
-@@ -115,6 +116,7 @@ struct erofs_sb_info {
- /* Mount flags set via mount options or defaults */
- #define EROFS_MOUNT_XATTR_USER		0x00000010
- #define EROFS_MOUNT_POSIX_ACL		0x00000020
-+#define EROFS_MOUNT_DAX			0x00000040
- 
- #define clear_opt(ctx, option)	((ctx)->mount_opt &= ~EROFS_MOUNT_##option)
- #define set_opt(ctx, option)	((ctx)->mount_opt |= EROFS_MOUNT_##option)
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index 8fc6c04b54f4..b44a964ab24f 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -11,6 +11,7 @@
- #include <linux/crc32c.h>
- #include <linux/fs_context.h>
- #include <linux/fs_parser.h>
-+#include <linux/dax.h>
- #include "xattr.h"
- 
- #define CREATE_TRACE_POINTS
-@@ -355,6 +356,7 @@ enum {
- 	Opt_user_xattr,
- 	Opt_acl,
- 	Opt_cache_strategy,
-+	Opt_dax,
- 	Opt_err
- };
- 
-@@ -370,6 +372,7 @@ static const struct fs_parameter_spec erofs_fs_parameters[] = {
- 	fsparam_flag_no("acl",		Opt_acl),
- 	fsparam_enum("cache_strategy",	Opt_cache_strategy,
- 		     erofs_param_cache_strategy),
-+	fsparam_flag("dax",             Opt_dax),
- 	{}
- };
- 
-@@ -410,6 +413,14 @@ static int erofs_fc_parse_param(struct fs_context *fc,
- 		ctx->cache_strategy = result.uint_32;
- #else
- 		errorfc(fc, "compression not supported, cache_strategy ignored");
-+#endif
-+		break;
-+	case Opt_dax:
-+#ifdef CONFIG_FS_DAX
-+		warnfc(fc, "DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
-+		set_opt(ctx, DAX);
-+#else
-+		errorfc(fc, "dax options not supported");
- #endif
- 		break;
- 	default:
-@@ -496,10 +507,17 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
- 		return -ENOMEM;
- 
- 	sb->s_fs_info = sbi;
-+	sbi->dax_dev = fs_dax_get_by_bdev(sb->s_bdev);
- 	err = erofs_read_superblock(sb);
- 	if (err)
- 		return err;
- 
-+	if (test_opt(ctx, DAX) &&
-+	    !bdev_dax_supported(sb->s_bdev, EROFS_BLKSIZ)) {
-+		errorfc(fc, "DAX unsupported by block device. Turning off DAX.");
-+		clear_opt(ctx, DAX);
-+	}
-+
- 	sb->s_flags |= SB_RDONLY | SB_NOATIME;
- 	sb->s_maxbytes = MAX_LFS_FILESIZE;
- 	sb->s_time_gran = 1;
-@@ -609,6 +627,8 @@ static void erofs_kill_sb(struct super_block *sb)
- 	sbi = EROFS_SB(sb);
- 	if (!sbi)
- 		return;
-+	if (sbi->dax_dev)
-+		fs_put_dax(sbi->dax_dev);
- 	kfree(sbi);
- 	sb->s_fs_info = NULL;
- }
-@@ -711,8 +731,8 @@ static int erofs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 
- static int erofs_show_options(struct seq_file *seq, struct dentry *root)
- {
--	struct erofs_sb_info *sbi __maybe_unused = EROFS_SB(root->d_sb);
--	struct erofs_fs_context *ctx __maybe_unused = &sbi->ctx;
-+	struct erofs_sb_info *sbi = EROFS_SB(root->d_sb);
-+	struct erofs_fs_context *ctx = &sbi->ctx;
- 
- #ifdef CONFIG_EROFS_FS_XATTR
- 	if (test_opt(ctx, XATTR_USER))
-@@ -734,6 +754,8 @@ static int erofs_show_options(struct seq_file *seq, struct dentry *root)
- 	else if (ctx->cache_strategy == EROFS_ZIP_CACHE_READAROUND)
- 		seq_puts(seq, ",cache_strategy=readaround");
- #endif
-+	if (test_opt(ctx, DAX))
-+		seq_puts(seq, ",dax");
- 	return 0;
- }
- 
--- 
-2.24.4
-
+Thank you for all of the results!
