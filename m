@@ -2,156 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C052D3BBBF9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F79B3BBC08
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhGELKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 07:10:12 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:10259 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbhGELKI (ORCPT
+        id S230479AbhGELS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 07:18:27 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33032 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230093AbhGELS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 07:10:08 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GJN6z6RkCz1CFPK;
-        Mon,  5 Jul 2021 19:02:03 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 5 Jul 2021 19:07:30 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 5 Jul 2021 19:07:29 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
-        <linux-mm@kvack.org>, Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH -next 3/3] kasan: arm64: Fix pcpu_page_first_chunk crash with KASAN_VMALLOC
-Date:   Mon, 5 Jul 2021 19:14:53 +0800
-Message-ID: <20210705111453.164230-4-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210705111453.164230-1-wangkefeng.wang@huawei.com>
-References: <20210705111453.164230-1-wangkefeng.wang@huawei.com>
+        Mon, 5 Jul 2021 07:18:26 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 6A6051FE65;
+        Mon,  5 Jul 2021 11:15:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625483748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sfatcCCgs2VzKb85jnyGEQBbLmIfD7PreoAG1YlqNFk=;
+        b=PQVzYEp+afL1R2rEBmC6vacczbFpu0v1ftG1mZjKjm7QZc4UmytR6L9GBcJ7IDY4AJhPje
+        gX2PtNcaisid5WSKglm5+b5K7ezcCURWRNvJ6XijdZb1K/hYTF5RSX5NSOenimpcsvWJKw
+        zBNnurX83mGUSRhg7TCclyHhPlLqX38=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625483748;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sfatcCCgs2VzKb85jnyGEQBbLmIfD7PreoAG1YlqNFk=;
+        b=+Hco9BasUJWicWcLSmzR+NYSaV1ZugbrYz+X8WdRuZW87cwnVKVD9dZTou0fYqEyRuDe/F
+        up1HoAxd3tY4V8CA==
+Received: from quack2.suse.cz (unknown [10.163.43.118])
+        by relay2.suse.de (Postfix) with ESMTP id 53F9CA3B8C;
+        Mon,  5 Jul 2021 11:15:48 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 2A2341E1139; Mon,  5 Jul 2021 13:15:48 +0200 (CEST)
+Date:   Mon, 5 Jul 2021 13:15:48 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jack@suse.cz
+Subject: Re: [PATCH 1/2] ext4: Fix use-after-free about sbi->s_mmp_tsk
+Message-ID: <20210705111548.GD15373@quack2.suse.cz>
+References: <20210629143603.2166962-1-yebin10@huawei.com>
+ <20210629143603.2166962-2-yebin10@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210629143603.2166962-2-yebin10@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With KASAN_VMALLOC and NEED_PER_CPU_PAGE_FIRST_CHUNK, it crashs,
+On Tue 29-06-21 22:36:02, Ye Bin wrote:
+> After merge 618f003199c6("ext4: fix memory leak in ext4_fill_super") commit,
+> we add delay in ext4_remount after "sb->s_flags |= SB_RDONLY", then
+> remount filesystem with read-only kasan report following warning:
+> [  888.695326] ==================================================================
+> [  888.696566] BUG: KASAN: use-after-free in kthread_stop+0x4c/0x2f0
+> [  888.697599] Write of size 4 at addr ffff8883849e0020 by task mount/2013
+> [  888.698707]
+> [  888.698982] CPU: 4 PID: 2013 Comm: mount Not tainted 4.19.95-00013-ga369a6189bbf-dirty #413
+> [  888.700376] Hardware name: QEMU Standard PC
+> [  888.702587] Call Trace:
+> [  888.703017]  dump_stack+0x108/0x15f
+> [  888.703615]  print_address_description+0xa5/0x372
+> [  888.704420]  kasan_report.cold+0x236/0x2a8
+> [  888.705761]  check_memory_region+0x240/0x270
+> [  888.706486]  kasan_check_write+0x20/0x30
+> [  888.707156]  kthread_stop+0x4c/0x2f0
+> [  888.707776]  ext4_stop_mmpd+0x32/0x90
+> [  888.708262]  ext4_remount.cold+0xf6/0x116
+> [  888.712671]  do_remount_sb+0xff/0x460
+> [  888.714007]  do_mount+0xce3/0x1be0
+> [  888.717749]  ksys_mount+0xb2/0x150
+> [  888.718163]  __x64_sys_mount+0x6a/0x80
+> [  888.718607]  do_syscall_64+0xd9/0x1f0
+> [  888.719047]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> As kmmpd will exit if filesystem is read-only. Then sbi->s_mmp_tsk become wild
+> ptr, lead to use-after-free. As kmmpd will exit by others(call ktread_stop)
+> or by itself. After 618f003199c6 commit we can trigger this issue very easy.
+> Before this commit also exist this issue.
+> If kmmpd exit by itself, after merge 618f003199c6 commit there will trigger UAF
+> when umount filesystem.
+> To fix this issue, introduce sbi->s_mmp_lock to protect sbi->s_mmp_tsk. If kmmpd
+> exit by itself, we set sbi->s_mmp_tsk with NULL, and release mmp buffer_head.
+> 
+> Fixes: 618f003199c6 ("ext4: fix memory leak in ext4_fill_super")
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>  fs/ext4/ext4.h  |  1 +
+>  fs/ext4/mmp.c   | 24 ++++++++++++++++++++++--
+>  fs/ext4/super.c |  1 +
+>  3 files changed, 24 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 8d3446746718..a479da37fed4 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1489,6 +1489,7 @@ struct ext4_sb_info {
+>  	struct completion s_kobj_unregister;
+>  	struct super_block *s_sb;
+>  	struct buffer_head *s_mmp_bh;
+> +	struct mutex s_mmp_lock;
+>  
+>  	/* Journaling */
+>  	struct journal_s *s_journal;
+> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+> index 6cb598b549ca..fc18a8c205c7 100644
+> --- a/fs/ext4/mmp.c
+> +++ b/fs/ext4/mmp.c
+> @@ -128,8 +128,9 @@ void __dump_mmp_msg(struct super_block *sb, struct mmp_struct *mmp,
+>  static int kmmpd(void *data)
+>  {
+>  	struct super_block *sb = (struct super_block *) data;
+> -	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+> -	struct buffer_head *bh = EXT4_SB(sb)->s_mmp_bh;
+> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
+> +	struct ext4_super_block *es = sbi->s_es;
+> +	struct buffer_head *bh = sbi->s_mmp_bh;
+>  	struct mmp_struct *mmp;
+>  	ext4_fsblk_t mmp_block;
+>  	u32 seq = 0;
+> @@ -245,16 +246,35 @@ static int kmmpd(void *data)
+>  	retval = write_mmp_block(sb, bh);
+>  
+>  exit_thread:
+> +	/*
+> +	 * Maybe s_mmp_tsk kthread is stoped by others or by itself. If exit
+> +	 * by itself then sbi->s_mmp_tsk will be wild ptr, so there is need
+> +	 * set sbi->s_mmp_tsk with NULL, and also release mmp buffer_head.
+> +	 */
+> +	while (!kthread_should_stop()) {
+> +		if (!mutex_trylock(&sbi->s_mmp_lock))
+> +			continue;
+> +
+> +		if (sbi->s_mmp_tsk) {
+> +			sbi->s_mmp_tsk = NULL;
+> +			brelse(bh);
+> +		}
+> +		mutex_unlock(&sbi->s_mmp_lock);
+> +		break;
+> +	}
+> +
+>  	return retval;
+>  }
 
-Unable to handle kernel paging request at virtual address ffff7000028f2000
-...
-swapper pgtable: 64k pages, 48-bit VAs, pgdp=0000000042440000
-[ffff7000028f2000] pgd=000000063e7c0003, p4d=000000063e7c0003, pud=000000063e7c0003, pmd=000000063e7b0003, pte=0000000000000000
-Internal error: Oops: 96000007 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper Not tainted 5.13.0-rc4-00003-gc6e6e28f3f30-dirty #62
-Hardware name: linux,dummy-virt (DT)
-pstate: 200000c5 (nzCv daIF -PAN -UAO -TCO BTYPE=--)
-pc : kasan_check_range+0x90/0x1a0
-lr : memcpy+0x88/0xf4
-sp : ffff80001378fe20
-...
-Call trace:
- kasan_check_range+0x90/0x1a0
- pcpu_page_first_chunk+0x3f0/0x568
- setup_per_cpu_areas+0xb8/0x184
- start_kernel+0x8c/0x328
+Honestly, this is just ugly. I think it would be saner if ext4_stop_mmpd()
+did:
 
-The vm area used in vm_area_register_early() has no kasan shadow memory,
-Let's add a new kasan_populate_early_vm_area_shadow() function to populate
-the vm area shadow memory to fix the issue.
+void ext4_stop_mmpd(struct ext4_sb_info *sbi)
+{
+	struct task_struct *tsk;
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- arch/arm64/mm/kasan_init.c | 18 ++++++++++++++++++
- include/linux/kasan.h      |  2 ++
- mm/kasan/init.c            |  5 +++++
- mm/vmalloc.c               |  1 +
- 4 files changed, 26 insertions(+)
+	mutex_lock(&sbi->s_mmp_lock);
+	tsk = sbi->s_mmp_tsk;
+	if (tsk) {
+		sbi->s_mmp_tsk = NULL;
+		get_task_struct(tsk);
+	}
+     	mutex_unlock(&sbi->s_mmp_lock);
+	if (tsk) {
+		kthread_stop(tsk);
+		put_task_struct(k);
+	}
+}
 
-diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-index 61b52a92b8b6..c295a256c573 100644
---- a/arch/arm64/mm/kasan_init.c
-+++ b/arch/arm64/mm/kasan_init.c
-@@ -287,6 +287,24 @@ static void __init kasan_init_depth(void)
- 	init_task.kasan_depth = 0;
- }
- 
-+#ifdef CONFIG_KASAN_VMALLOC
-+void __init __weak kasan_populate_early_vm_area_shadow(void *start,
-+						       unsigned long size)
-+{
-+	unsigned long shadow_start, shadow_end;
-+
-+	if (!is_vmalloc_or_module_addr(start))
-+		return;
-+
-+	shadow_start = (unsigned long)kasan_mem_to_shadow(start);
-+	shadow_start = ALIGN_DOWN(shadow_start, PAGE_SIZE);
-+	shadow_end = (unsigned long)kasan_mem_to_shadow(start + size);
-+	shadow_end = ALIGN(shadow_end, PAGE_SIZE);
-+	kasan_map_populate(shadow_start, shadow_end,
-+			   early_pfn_to_nid(virt_to_pfn(start)));
-+}
-+#endif
-+
- void __init kasan_init(void)
- {
- 	kasan_init_shadow();
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index 5310e217bd74..79d3895b0240 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -49,6 +49,8 @@ extern p4d_t kasan_early_shadow_p4d[MAX_PTRS_PER_P4D];
- int kasan_populate_early_shadow(const void *shadow_start,
- 				const void *shadow_end);
- 
-+void kasan_populate_early_vm_area_shadow(void *start, unsigned long size);
-+
- static inline void *kasan_mem_to_shadow(const void *addr)
- {
- 	return (void *)((unsigned long)addr >> KASAN_SHADOW_SCALE_SHIFT)
-diff --git a/mm/kasan/init.c b/mm/kasan/init.c
-index cc64ed6858c6..d39577d088a1 100644
---- a/mm/kasan/init.c
-+++ b/mm/kasan/init.c
-@@ -279,6 +279,11 @@ int __ref kasan_populate_early_shadow(const void *shadow_start,
- 	return 0;
- }
- 
-+void __init __weak kasan_populate_early_vm_area_shadow(void *start,
-+						       unsigned long size)
-+{
-+}
-+
- static void kasan_free_pte(pte_t *pte_start, pmd_t *pmd)
- {
- 	pte_t *pte;
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index a98cf97f032f..f19e07314ee5 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2249,6 +2249,7 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
- 	vm->addr = (void *)addr;
- 
- 	vm_area_add_early(vm);
-+	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
- }
- 
- static void vmap_init_free_space(void)
+And you leave freeing of 'bh' to exit path from kmmpd() which can also use
+normal locking scheme for zeroing s_mmp_tsk now.
+
+That being said for this scheme spinlock is enough, you don't need a mutex
+for s_mmp_lock.
+
+								Honza
+
+>  void ext4_stop_mmpd(struct ext4_sb_info *sbi)
+>  {
+> +	mutex_lock(&sbi->s_mmp_lock);
+>  	if (sbi->s_mmp_tsk) {
+>  		kthread_stop(sbi->s_mmp_tsk);
+>  		brelse(sbi->s_mmp_bh);
+>  		sbi->s_mmp_tsk = NULL;
+>  	}
+> +	mutex_unlock(&sbi->s_mmp_lock);
+>  }
+>  
+>  /*
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index c3942804b57f..5bc3230553fb 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -4786,6 +4786,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+>  	needs_recovery = (es->s_last_orphan != 0 ||
+>  			  ext4_has_feature_journal_needs_recovery(sb));
+>  
+> +	mutex_init(&sbi->s_mmp_lock);
+>  	if (ext4_has_feature_mmp(sb) && !sb_rdonly(sb))
+>  		if (ext4_multi_mount_protect(sb, le64_to_cpu(es->s_mmp_block)))
+>  			goto failed_mount3a;
+> -- 
+> 2.31.1
+> 
 -- 
-2.26.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
