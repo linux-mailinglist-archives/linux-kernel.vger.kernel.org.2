@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BAD3BB9A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905B03BB9AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhGEI6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 04:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhGEI6t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:58:49 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6787C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 01:56:12 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 62so9590262pgf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 01:56:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=al5EeP8QXH1RSq+yYN15w1dJ9cxYy0MXetYFBHF4BSo=;
-        b=qxMcLlfGOx0W2JA5nKbBKobaGjC/IWWZnUhRyQ6J3/Ux38uY7SbIZQH3eWvXKiXIIQ
-         gTGNHlA9cNQZVeFzOyeMFf9ipQXRGMbQSXZ2t2WUY/KqnsbKWGLA/xchnGdhv3D6T4Kh
-         9M8IM1PcZRSN9uXxO5MWZqMoyms6DbbXqgdZNYKQL8DycFbVx6So919oFjhW5IIeF1lw
-         jGNi7JgVNRAHGfoo4jHeLmEvz6DrG7P4icd03qbBvrWfQ4oL7/MkPb2HOE14rvSejuvZ
-         4Zr6BZusasXGeBGZLwNBTKfKoaupAg9r1YazNL/uwaIq7jNc+6NYfqeLazMFVV8Dshum
-         aL8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=al5EeP8QXH1RSq+yYN15w1dJ9cxYy0MXetYFBHF4BSo=;
-        b=Qk4hGaydxJTyvEN5zbX6z/FVUhqvXKliOw+FOY8A+vedr3hBNeThexa35oJ9YOyQuJ
-         CM2Lt4SH17l2uqtmvXaAgmC2p84mLtWrKBA89ab30wDfQFgaqnTSpl2DpfO58dbwF/Jv
-         35cTNJ77ks1aMivztnUb33fx9m91wVw4k1PGy+IXTJBlSIlZrBosYPmVBnJPR+glSKyJ
-         Z8vMEblFGR1hkSbV2gtezbOKpNgPPEe+sfWOCCsUWxLXhQanCj4E+djfwgoWGDzpybSc
-         vxiD+4nxj2B7ZD2fxDukwUmfiHCSa0Vu5qT4kRx0W/sA49iJVOiYGToqQKbPQDSty6EJ
-         D25g==
-X-Gm-Message-State: AOAM532A2/XokhbCoTAD/DRnQtzVmJhGDlbiQM3ZWvh0z36ADEJU1pBe
-        K5zMtkX0/0r/3qFe6MyPTeFabw==
-X-Google-Smtp-Source: ABdhPJyIQbG4Z5iuwB551KL53cMIMxfhI49MIvYS5ne9261aa9T6dN/WzZgpRpsdddED6oNm+/NA6w==
-X-Received: by 2002:a63:4c19:: with SMTP id z25mr14586040pga.160.1625475372402;
-        Mon, 05 Jul 2021 01:56:12 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id ga1sm10547756pjb.43.2021.07.05.01.56.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 01:56:11 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 14:26:10 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jie Deng <jie.deng@intel.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v13] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210705085610.okcvnhwhwehjiehy@vireshk-i7>
-References: <8908f35a741e25a630d521e1012494e67d31ea64.1625466616.git.jie.deng@intel.com>
- <20210705080245.yabjlrgje5l7vndt@vireshk-i7>
- <CAHp75Vf0_8+KW_cp2g0V1miMx1cegBdjLzBjTbtpmcmdCHQJxA@mail.gmail.com>
+        id S230244AbhGEI7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 04:59:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230121AbhGEI7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 04:59:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 765A1613C2;
+        Mon,  5 Jul 2021 08:57:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625475420;
+        bh=ZqjV6RrWkA7theMbsvZ8YZrCke0QXHtvRo3wcNk+Upk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FDMrGP9js/MZtQ/Ho77/c6GRBbjraVZgGhojOtutaYSGt24I4xbHtiq1lif8985y9
+         XFWGS7NOy5jhd8Ot4wjbzr9tWMk8qrleglrNJ/64p3/DDMB+05wlcmIXbsJ+eJAOkT
+         sv6KEaC2gujt5FpQCFWRUp2t1+OLRgP0XKZk8ZrqrtQsbna8/f1UPK+6ZWjUBaFT4B
+         bNMbqjxNUSWacN04vI3t/lt4l0zLx4ZUwygD1usCRyMkVNeWLkvpOcsg7LLJl3sGs9
+         mAnQNtddAWQyjQNOdcAPCe0j71nwQzvi0o0t/uVdc+6nfc71Na0r0rQeOFKQG8QXPe
+         DVrsLbBs3zfiw==
+Date:   Mon, 5 Jul 2021 01:56:59 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: initialize page->private when using for
+ our internal use
+Message-ID: <YOLJW0IgCagMk2tF@google.com>
+References: <20210705052216.831989-1-jaegeuk@kernel.org>
+ <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75Vf0_8+KW_cp2g0V1miMx1cegBdjLzBjTbtpmcmdCHQJxA@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-07-21, 11:45, Andy Shevchenko wrote:
-> On Mon, Jul 5, 2021 at 11:03 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > On 05-07-21, 14:53, Jie Deng wrote:
+On 07/05, Chao Yu wrote:
+> On 2021/7/5 13:22, Jaegeuk Kim wrote:
+> > We need to guarantee it's initially zero. Otherwise, it'll hurt entire flag
+> > operations.
 > 
-> > > +#include <linux/types.h>
-> > > +#include <linux/const.h>
-> >
-> > Both of these need to be the uapi headers as Andy said earlier
+> Oops, I didn't get the point, shouldn't .private be zero after page was
+> just allocated by filesystem? What's the case we will encounter stall
+> private data left in page?
+
+I'm seeing f2fs_migrate_page() has the newpage with some value without Private
+flag. That causes a kernel panic later due to wrong private flag used in f2fs.
+
 > 
-> They are already since this header _is_ UAPI,
-
-Ahh, there is some tricky header inclusion there :)
-
-> what you are suggesting is gonna not work,
-
-Why ?
-
-> although it's correct for in-kernel users of UAPI
-> headers.
-
--- 
-viresh
+> Cc Matthew Wilcox.
+> 
+> Thanks,
+> 
+> > 
+> > Fixes: b763f3bedc2d ("f2fs: restructure f2fs page.private layout")
+> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> > ---
+> >   fs/f2fs/data.c | 2 ++
+> >   fs/f2fs/f2fs.h | 5 ++++-
+> >   2 files changed, 6 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> > index 3a01a1b50104..d2cf48c5a2e4 100644
+> > --- a/fs/f2fs/data.c
+> > +++ b/fs/f2fs/data.c
+> > @@ -3819,6 +3819,8 @@ int f2fs_migrate_page(struct address_space *mapping,
+> >   		get_page(newpage);
+> >   	}
+> > +	/* guarantee to start from no stale private field */
+> > +	set_page_private(newpage, 0);
+> >   	if (PagePrivate(page)) {
+> >   		set_page_private(newpage, page_private(page));
+> >   		SetPagePrivate(newpage);
+> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > index 65befc68d88e..ee8eb33e2c25 100644
+> > --- a/fs/f2fs/f2fs.h
+> > +++ b/fs/f2fs/f2fs.h
+> > @@ -1331,7 +1331,8 @@ enum {
+> >   #define PAGE_PRIVATE_GET_FUNC(name, flagname) \
+> >   static inline bool page_private_##name(struct page *page) \
+> >   { \
+> > -	return test_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)) && \
+> > +	return PagePrivate(page) && \
+> > +		test_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)) && \
+> >   		test_bit(PAGE_PRIVATE_##flagname, &page_private(page)); \
+> >   }
+> > @@ -1341,6 +1342,7 @@ static inline void set_page_private_##name(struct page *page) \
+> >   	if (!PagePrivate(page)) { \
+> >   		get_page(page); \
+> >   		SetPagePrivate(page); \
+> > +		set_page_private(page, 0); \
+> >   	} \
+> >   	set_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)); \
+> >   	set_bit(PAGE_PRIVATE_##flagname, &page_private(page)); \
+> > @@ -1392,6 +1394,7 @@ static inline void set_page_private_data(struct page *page, unsigned long data)
+> >   	if (!PagePrivate(page)) {
+> >   		get_page(page);
+> >   		SetPagePrivate(page);
+> > +		set_page_private(page, 0);
+> >   	}
+> >   	set_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page));
+> >   	page_private(page) |= data << PAGE_PRIVATE_MAX;
+> > 
