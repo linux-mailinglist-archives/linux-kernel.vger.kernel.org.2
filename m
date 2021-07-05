@@ -2,137 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822723BC2D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 20:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991CC3BC2F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 21:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhGESpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 14:45:12 -0400
-Received: from mail-co1nam11on2086.outbound.protection.outlook.com ([40.107.220.86]:61632
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229939AbhGESpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 14:45:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BzRpAzmXRaOTS14cuQHyw3dTvaiQRQrVB9zv4KV1fA0XDd+CwHQCLT/nqNWuDwQABpUqoR4c4eMzPkp1pXalHNcYOr7KVUeFkTikOuUiVXaOw3w8EE8afr/KBXVVySGuYuMhYeuUtSn8Zx9gz9NgehpQ9pmWZgDRbMKZygPYii74MBpTVJZ5eXqeklbjXBksSTuFrNMfBlL25x5sZmddcEax78WV/yjhVnBCCemiZp+PeCO+1SVSBtGQ4Kmw/q8ruOl3pKm+Ptk3jsSb45QRN1kX2+6zL3f/By3oUJ+2TQnVlk3k6X+uVAwxpslT/QZysL1PBVZoBSVqpVX7uw7LAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4x4efp2EASe3YZSBENfHsKINqpJscTLCcEdV02Aqvc0=;
- b=mlaLleDDrrB4utH1pbiGdJOn5CgDlCcwAu2XfwpZ7Jx+f4ZGQEGNuv6whr927rILno5IQVdmHcofgvddzilGNsIct89BGThbD2Ul+GOdDcvDUg365nsqwQ+gg6rD1v4vElNzJd8zWkPQY4TYFj1So4f6vK48JCTDuShXy8nYxEL72CVmFbtquEegJBkWariJgWlRaT6xFhNbEt+5dWldE96TuT5pZGS7XUJN4Gp+02yfkPdpj8YD6IAFwn8xq6Q4jKOCUZdC+QKizlgpYeyRXDiJPCnB6BUPKzk8DYseppNRu9Eex0ljwi2m3d56apwzr3Ui6LQwisd6NX1GjtLkTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4x4efp2EASe3YZSBENfHsKINqpJscTLCcEdV02Aqvc0=;
- b=r94JfYCZ805djx4HsASX4lwYMt7Bfs5c2r/jF07KD1AFEc/N5OGP3twRTfu4f16XS0YBwRWXbv6zb6Wm7Ee/N+UIqozEzHy/c8U7zdxXMI2khpYCk7j4XfGBRS/ldH6IO1V+Qrnbl16muLDSue8RO/kpHpeP/MfCmWqMq97oBCo=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23) by MW3PR12MB4348.namprd12.prod.outlook.com
- (2603:10b6:303:5f::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20; Mon, 5 Jul
- 2021 18:42:32 +0000
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::d0a9:a5f1:ca5a:b439]) by MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::d0a9:a5f1:ca5a:b439%11]) with mapi id 15.20.4287.033; Mon, 5 Jul 2021
- 18:42:32 +0000
-Subject: Re: [PATCH] ASoC: add dai_reoder flag to reverse the stop sequence
-To:     Mark Brown <broonie@kernel.org>
-Cc:     peter.ujfalusi@ti.com, alsa-devel@alsa-project.org,
-        amistry@google.com, nartemiev@google.com,
-        Alexander.Deucher@amd.com, Basavaraj.Hiregoudar@amd.com,
-        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210705155830.24693-1-vijendar.mukunda@amd.com>
- <20210705174241.GF4574@sirena.org.uk>
-From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Message-ID: <7f1ad1b3-b509-24cf-00d8-f82766aae0d6@amd.com>
-Date:   Tue, 6 Jul 2021 00:30:10 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210705174241.GF4574@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.159.242]
-X-ClientProxiedBy: SGXP274CA0018.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::30)
- To MWHPR1201MB2557.namprd12.prod.outlook.com (2603:10b6:300:e4::23)
+        id S229910AbhGETGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 15:06:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229770AbhGETGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 15:06:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D07161978;
+        Mon,  5 Jul 2021 19:03:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625511844;
+        bh=o012umLuvyjggdb73nB1nx1kOYsPv1SNeUIs18hDcAw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GRwf1cGaUQnGNSK48BMiS8/L53RP5G/QW+0L7WarqJg3vdXhPi76IMHEfxJBcIPa3
+         O/IVWGS61Gw63qZ6P/lu+E1G7lOjBRQgMMYZUlxciRBcXpXeaEm0Nt8VlI20vyORW0
+         5Yt77iWQoVMzfxA0eNrndYooJS41ndFVzjZWCxmusBkktvSuT3rDjxcvXFg+FyE3zq
+         Tiys8WKwLxyKU0wwkmXs/VX0V/xsNc/cZvd76dhCDw80UkiEfPmHKQyUCziEG4n9+X
+         zngjj2Bp6GquWJbjoHo8XOCLo60dYdheBX5hvWTEA+kb21c5xQf9Khdj2j/E3DZMQq
+         mzeeqFIjv4raA==
+Date:   Mon, 5 Jul 2021 20:03:52 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Claire Chang <tientzu@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Qian Cai <quic_qiancai@quicinc.com>
+Subject: Re: [PATCH v15 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+Message-ID: <20210705190352.GA19461@willie-the-truck>
+References: <20210624155526.2775863-7-tientzu@chromium.org>
+ <YNvMDFWKXSm4LRfZ@Ryzen-9-3900X.localdomain>
+ <CALiNf2-a-haQN0-4+gX8+wa++52-0CnO2O4BEkxrQCxoTa_47w@mail.gmail.com>
+ <20210630114348.GA8383@willie-the-truck>
+ <YNyUQwiagNeZ9YeJ@Ryzen-9-3900X.localdomain>
+ <20210701074045.GA9436@willie-the-truck>
+ <ea28db1f-846e-4f0a-4f13-beb67e66bbca@kernel.org>
+ <20210702135856.GB11132@willie-the-truck>
+ <0f7bd903-e309-94a0-21d7-f0e8e9546018@arm.com>
+ <YN/7xcxt/XGAKceZ@Ryzen-9-3900X.localdomain>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.252.93.39] (165.204.159.242) by SGXP274CA0018.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Mon, 5 Jul 2021 18:42:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 91254533-20ef-4e27-9ab6-08d93fe4a5b7
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4348:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR12MB4348B83C753A87E1EF17EBEE971C9@MW3PR12MB4348.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zFWyB5dIiwTkVLj5dm54H4fc+BcZ5FaEjbaEi0+9UUnKJWLKDo1axCdrVw3AAL51Nou/SQRSo2hgxDgMs9m95/gCCA5AtvJiuuXEvVG4jX/Tg36NIOFjpBEO5SZtRHExBZLx3xJHGLfuwcjtVWxkrw02QMqNLspf83XPcrQsFTVWPNkwsEm+E6Dw6cCMJt0bs5cXN0dg5hqzbqI1KAX1Wker9Ar4z19+E+AKYvvImYPBmNQQxti0zarRBgb2wxEh9vQccUWH6BAmmcWF+iikDOVyaBN9/6csO0mtPj9BP6QNt4dxRkg81DYYNkWKTWZQt9RblQOOl/uRazUjjjmJgvEcXowoVbNn2y6cdl645a38jabyAJNbirfzHrHER1+jGAlqNXjVdyEUXV74YlDCe61R0WilAQCJqEPELFK4np+uUbXkLQH/z1y7bET1z9EdP97rKYQflnm7+0DdkarsOzCRO0Xi+90w1u/aZax96HEPD96ESR7xONlELVZ8e8/D/xTQrJuP2LTn/BjHasVLkHzejdwrqJP49N4PdgrVZD4OWbCD2bI11odwt+YFpv+samXdDLeANK48ehISHEQ2ND4AC5DpRsXMHZyrsE4KEE35LPXVVwLQQ5rmwzGWPBf8p0EEbQ/EiyxLoQsMt1ZaSq8V24sBoeE2PSR5VFWysnKcIAJ+8o3W/DrBdqXZDnwcYAixBAA/E+/EbtBoS8wQD/dxvE/Fu/+ae5/Wkd1hhuIazESN7of1R6RoBaUUGPX0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(136003)(376002)(366004)(53546011)(54906003)(31696002)(8676002)(8936002)(66946007)(5660300002)(36756003)(86362001)(186003)(478600001)(66556008)(16526019)(66476007)(4744005)(6486002)(4326008)(38100700002)(6666004)(316002)(83380400001)(7416002)(2906002)(16576012)(956004)(31686004)(6916009)(26005)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?cZKWxTE7ujhjkxwyueOXMZoUf8lFpBW9fuI3eHZx3gDJZ7X9tvE0HMUM?=
- =?Windows-1252?Q?dsgWMuMlJ3OoG8jzejQTJyYEFLu8K0oj64s4vKdDqm0fyi6qH9/Sa3EP?=
- =?Windows-1252?Q?NMThWqZyoKAmx2/FnOC2qUSt3Q8KNTP9dMICRIZmdfwhZKRQOAVws9MA?=
- =?Windows-1252?Q?DFEkZBonsHU2tPpOzxvSgM9vXKEndoC81WlXzf+myIqBM6W/OmD6t1dx?=
- =?Windows-1252?Q?R2WzRbDbB3Y15Ev0MVhbrzGaabEK6BPS3ygLJqf43xnYgUIXcyphx0gx?=
- =?Windows-1252?Q?hMfsr1i4bZYmRU7IJVH6iTjO0Rlb7APDz3tZqMdYli6nFpg1meFgemjI?=
- =?Windows-1252?Q?9Y1p4yWHx1vlqgyss6pxza4VTmS3UziapKpMvdJsVXXU8NDBZYkVMFHh?=
- =?Windows-1252?Q?qSPDBwr96mSdibqlPvBJow2+8Jr8kcPl+jjsRKCZoAQKIZcPhcfij4JF?=
- =?Windows-1252?Q?ub8bnbcrl5uUFv9rABlu4Cg3ZbZAO0KV86+8TdP2OsQL+7ZgxZMfEj1Q?=
- =?Windows-1252?Q?2puSW1/aEbb+8tYUMXSu+6mfCMtMkoRQQ7lvw66sLVGYfJ2rTlfEcuDK?=
- =?Windows-1252?Q?BdkN2h9INQ7Wpx/+1wfWWs92HlPFA8UeB3zjJoOpfeKZB0L8rPXvFHoK?=
- =?Windows-1252?Q?mScBy40v2Ny+degy0CD924lkZCtcrSHT3coJ+4PoheQnoy1j9saWH0Si?=
- =?Windows-1252?Q?zaIwe8lenDvgtIELM/nYKbIVXXjps+xQpQ0TcZ8al1llIO9Hqc51Uh6k?=
- =?Windows-1252?Q?huH4mTj0GHknNZf4c8bwOEmOKib7RN1fIetJWNLzGPbyyOo7cGIjb7OC?=
- =?Windows-1252?Q?8bvHIwXz+6HXNr81LG1exY80ReXLv2ljORbsqLZ0MMxufdkvp08NL7jF?=
- =?Windows-1252?Q?2B1dql9VmW7zyr932etf74eEh297Nx9gy1mwLB4JAlbrO731mYUdyQdD?=
- =?Windows-1252?Q?BqcAXyxUigTS0GuKK+gdgU+AEKqy1rIml832k9rtbCGnSHiINT0rdPkP?=
- =?Windows-1252?Q?mERcmw5fBy2Lz2GrP3DaGKucK/NEqDpO9QuKy9FniCb9b3+T9gD+LLh7?=
- =?Windows-1252?Q?2ZFa1+/2QrRI30YI5GNDYbEV0qw8Vn2IvC1v1RCUlQMVQ+2pllyJ+f2t?=
- =?Windows-1252?Q?XH6R5+4ofhI2chdQox5TI3/x2HBBYZ/L8VfBQG20Q8zORtIJ/lv4b3Dy?=
- =?Windows-1252?Q?cyE0npqsS46kw5VfMsLnuRb2YGOcVoRcjIq/uHMNq14aUcIY5PMwcKQ0?=
- =?Windows-1252?Q?xYgMtkfZp84grug3sMGlaXOS7RCJo/wLEKyMJ0tZoQz9fhl/D6BNAQn+?=
- =?Windows-1252?Q?kAiVX2EpbNFxlisoztImaBX521Zy++MfnevRuPVeiwZ65qce+hR5IJlb?=
- =?Windows-1252?Q?M1JxQui8kfE0BExXMqVG2RZV2gP9kfVocJhXeBxPYTIda0uFanmZwOyn?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91254533-20ef-4e27-9ab6-08d93fe4a5b7
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2021 18:42:31.9089
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CM+QE8kDbl7Q8lpXIlrkNOMTvS7d3+NLsRdkweN11Tso/rlXHqUL8QRi2yS77zU17z1Cn7voBPWlkX+lj5pP1w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4348
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YN/7xcxt/XGAKceZ@Ryzen-9-3900X.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/5/21 11:12 PM, Mark Brown wrote:
-> On Mon, Jul 05, 2021 at 09:28:28PM +0530, Vijendar Mukunda wrote:
-> 
->> @@ -982,6 +982,7 @@ struct snd_soc_card {
->>  	unsigned int disable_route_checks:1;
->>  	unsigned int probed:1;
->>  	unsigned int component_chaining:1;
->> +	unsigned int dai_reorder:1;
-> 
-> This feels like it should be a per dai_link option rather than a card
-> wide option - the system could have a mix of links that do and don't
-> want this depending on why it's an issue.  The name probably also wants
-> to be more specific to what's being reordered, something like
-> stop_dma_first for example since it's only for stops and moves the DMA
-> first.
-> 
-As per our understanding by going with card wide option is easier rather
-than checking dai link name for re-ordering the stop sequence for
-specific platforms.
-We will rename the flag as "stop_dma_fist" and will post the new version.
+Hi Nathan,
+
+I may have just spotted something in these logs...
+
+On Fri, Jul 02, 2021 at 10:55:17PM -0700, Nathan Chancellor wrote:
+> [    2.340956] pci 0000:0c:00.1: Adding to iommu group 4
+> [    2.340996] pci 0000:0c:00.2: Adding to iommu group 4
+> [    2.341038] pci 0000:0c:00.3: Adding to iommu group 4
+> [    2.341078] pci 0000:0c:00.4: Adding to iommu group 4
+> [    2.341122] pci 0000:0c:00.6: Adding to iommu group 4
+> [    2.341163] pci 0000:0d:00.0: Adding to iommu group 4
+> [    2.341203] pci 0000:0d:00.1: Adding to iommu group 4
+> [    2.361821] pci 0000:00:00.2: AMD-Vi: Found IOMMU cap 0x40
+> [    2.361839] pci 0000:00:00.2: AMD-Vi: Extended features (0x206d73ef22254ade):
+> [    2.361846]  PPR X2APIC NX GT IA GA PC GA_vAPIC
+> [    2.361861] AMD-Vi: Interrupt remapping enabled
+> [    2.361865] AMD-Vi: Virtual APIC enabled
+> [    2.361870] AMD-Vi: X2APIC enabled
+> [    2.362272] AMD-Vi: Lazy IO/TLB flushing enabled
+
+So at this point, the AMD IOMMU driver does:
+
+	swiotlb        = (iommu_default_passthrough() || sme_me_mask) ? 1 : 0;
+
+where 'swiotlb' is a global variable indicating whether or not swiotlb
+is in use. It's picked up a bit later on by pci_swiotlb_late_init(), which
+will call swiotlb_exit() if 'swiotlb' is false.
+
+Now, that used to work fine, because swiotlb_exit() clears
+'io_tlb_default_mem' to NULL, but now with the restricted DMA changes, I
+think that all the devices which have successfully probed beforehand will
+have stale pointers to the freed structure in their 'dev->dma_io_tlb_mem'
+field.
+
+Will
