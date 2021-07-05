@@ -2,141 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E421B3BB69F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 07:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB8B3BB6A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 07:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhGEFJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 01:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbhGEFJM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 01:09:12 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895BDC061574
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 22:06:35 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id l2so2687237edt.1
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 22:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pwU7NZpILHwuxQvC6Lvk3Ma8hMrwAx5T42zVR2BrMUY=;
-        b=O1ZR29mGahR/sf/UFQ1YZTuwuV7i5RhWT6ICqVBRF/cdBIcZZDI9F5LwYQHpVUdC5+
-         z2d/ctbQMR/5OQX/98SnR10Vugg6mILhf4qtfG9eI1VL5wlGfr2yqgofPz/slACFT8M0
-         B1v22KLCPYWnnsr1JIKn5KTdtqJCfafNAVdWECEsvFH8x2TEig7/nMdROkJR6LrqD3Ij
-         Upy7/lmNp7emLzmo5Fi2XyBS7dRf2WLlIj4H0egXE7jdtHW2CNVJCFtfOnazEg6Bfc/E
-         Y8EmiNAwxUumPbdTaCMqTe4s938ORY62ltNTT/4WTlG+d/jvjDZ50fwS72deX2xf8CKD
-         xm4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pwU7NZpILHwuxQvC6Lvk3Ma8hMrwAx5T42zVR2BrMUY=;
-        b=EeokxNnfY5ZyVTuTTmwcQ3P2XEZ2It4Oki5kZe7IQrIUuOLgLK52U8aZEh3GEDBAwn
-         o7Im3clnxMXs45vRMLM8hzrPzUsXGtV8+TpAu47lGnhuZ72QoNu9pLE1SyPjhokWW7Wx
-         RWVJ8Nf5hJlPti+s8GrqetrMYKBDpGJHGZNS0skyLhfYTfoEWCy9U8vD55r1aoAZVeaz
-         70PnJI0qp3jy5bu1ewwYKCbJfjbSrFD33v3CczlUwDHfMlPfzcc0H81SCMpYUbCy7T/S
-         VexM6+vIdV1RqTtdCUzj2ZyG684NTobfVYZ1ijdw7VNq0VOKCJREMhmvI0exkBOuNl9x
-         qVgg==
-X-Gm-Message-State: AOAM532PL/VYLNucBaISkJVkl/l/38fjc8Xw9EPEKOHMU+ps/12YjRPe
-        8FNnDBBmn86sKM1xb/cmJLWJnACScwlUNJHtZ4lblg==
-X-Google-Smtp-Source: ABdhPJxOe4uyRLXZP5DBGnuKo8jdCnnZ0LHyd7dOyBNxY/Rs3f6ueLDCA+FZnjpV2pJibiCF9kEN/HOSbWk3CbaxdmA=
-X-Received: by 2002:a05:6402:848:: with SMTP id b8mr13937264edz.44.1625461594122;
- Sun, 04 Jul 2021 22:06:34 -0700 (PDT)
+        id S229744AbhGEFMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 01:12:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229447AbhGEFMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 01:12:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 789E36135C;
+        Mon,  5 Jul 2021 05:09:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625461767;
+        bh=pn2qvBXexeI0yzGA82WBWM4m6Tz6lzaW+hkbRfk99nI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=r48oGfBwMgOHlRA3epCFe9xWwKhm03kkAFhotYy8soa0ZVj/GoEgD6dyDMskVEKKH
+         gQY6pft89OGrzJ9P/Ih3koXcV/Rb8qiYoJTH9LSwj5GtnFAChAJThY18NmkTB7qQYQ
+         0rgDNzSr5CF8KarYSuFPY9p/4dS03sQqgOwo8YzDQ3enqCW80ACFic2Av08aO+ajOP
+         x2kf/bjhHnhh7/ZmCjDEy6Wkv6oiy0ahJIqUOQkY3EsnwqvfdV7HGU5WtWf6E6piXd
+         YvEhFXLTazHR7tlI62EL/cl9QpYRudxd52oBywOtJ04VJmAPBuYBTYGmOIQEdGtTPt
+         YXixRBfb2YU7A==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] selftests/sgx: Fix Q1 and Q2 calculation in sigstruct.c
+Date:   Mon,  5 Jul 2021 08:09:21 +0300
+Message-Id: <20210705050922.63710-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210703005416.2668319-1-bjorn.andersson@linaro.org>
- <20210703005416.2668319-2-bjorn.andersson@linaro.org> <cacd1a1f-01c8-b913-23e5-538a772cd118@codeaurora.org>
-In-Reply-To: <cacd1a1f-01c8-b913-23e5-538a772cd118@codeaurora.org>
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-Date:   Mon, 5 Jul 2021 00:06:23 -0500
-Message-ID: <CAOCOHw4sufqC3=ixNud8Oz7vO0_ZcO8u5mqNQTKLZX4LGe9aow@mail.gmail.com>
-Subject: Re: [PATCH 1/2] soc: qcom: rpmhpd: Use corner in power_off
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 11:27 PM Rajendra Nayak <rnayak@codeaurora.org> wrote:
->
->
->
-> On 7/3/2021 6:24 AM, Bjorn Andersson wrote:
-> > rpmhpd_aggregate_corner() takes a corner as parameter, but in
-> > rpmhpd_power_off() the code requests the level of the first corner
-> > instead.
-> >
-> > In all (known) current cases the first corner has level 0, so this
-> > change should be a nop, but in case that there's a power domain with a
-> > non-zero lowest level this makes sure that rpmhpd_power_off() actually
-> > requests the lowest level - which is the closest to "power off" we can
-> > get.
-> >
-> > While touching the code, also skip the unnecessary zero-initialization
-> > of "ret".
-> >
-> > Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> >   drivers/soc/qcom/rpmhpd.c | 5 ++---
-> >   1 file changed, 2 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
-> > index 2daa17ba54a3..fa209b479ab3 100644
-> > --- a/drivers/soc/qcom/rpmhpd.c
-> > +++ b/drivers/soc/qcom/rpmhpd.c
-> > @@ -403,12 +403,11 @@ static int rpmhpd_power_on(struct generic_pm_domain *domain)
-> >   static int rpmhpd_power_off(struct generic_pm_domain *domain)
-> >   {
-> >       struct rpmhpd *pd = domain_to_rpmhpd(domain);
-> > -     int ret = 0;
-> > +     int ret;
-> >
-> >       mutex_lock(&rpmhpd_lock);
-> >
-> > -     ret = rpmhpd_aggregate_corner(pd, pd->level[0]);
-> > -
-> > +     ret = rpmhpd_aggregate_corner(pd, 0);
->
-> This won't work for cases where pd->level[0] != 0, rpmh would just ignore this and keep the
-> resource at whatever corner it was previously at.
-> (unless command DB tells you a 0 is 'valid' for a resource, sending a 0 is a nop)
-> The right thing to do is to send in whatever command DB tells you is the lowest level that's valid,
-> which is pd->level[0].
->
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-I'm afraid this doesn't make sense to me.
+Q1 and Q2 are numbers with *maximum* length of 384 bytes. If the calculated
+length of Q1 and Q2 is less than 384 bytes, things will go wrong.
 
-In rpmh_power_on() if cmd-db tells us that we have [0, 64, ...] and we
-request 64 we rpmhpd_aggregate_corner(pd, 1); but in power off, if
-cmd-db would provide [64, ...] we would end up sending
-rpmhpd_aggregate_corner(pd, 64);
-So in power_on we request the corner (i.e. index in the array provided
-in cmd-db) and in power-off the same function takes the level?
+E.g. if Q2 is 383 bytes, then
 
-Can you please help me understand what the actual number we're
-supposed to send to the RPMh is? Is it numbers in the range [0-15] or
-is it numbers such as {0, 64, 128, ...}?
+1. The bytes of q2 are copied to sigstruct->q2 in calc_q1q2().
+2. The entire sigstruct->q2 is reversed, which results it being
+   256 * Q2, given that the last byte of sigstruct->q2 is added
+   to before the bytes given by calc_q1q2().
 
-Afaict it's the prior (i.e. [0-15]), as this is what we currently do
-in both power_on and set_performance_state, and it happens to be what
-we send in power_off as long as the first level from cmd-db is 0.
+Either change in key or measurement can trigger the bug. E.g. an unmeasured
+heap could cause a devastating change in Q1 or Q2.
 
-Regards,
-Bjorn
+Reverse exactly the bytes of Q1 and Q2 in calc_q1q2() before returning to
+the caller.
 
->
-> >       if (!ret)
-> >               pd->enabled = false;
-> >
-> >
->
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+Fixes: dedde2634570 ("selftests/sgx: Trigger the reclaimer in the selftests")
+Link: https://lore.kernel.org/linux-sgx/20210301051836.30738-1-tianjia.zhang@linux.alibaba.com/
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+The original patch did a bad job explaining the code change but it
+turned out making sense. I wrote a new description. 
+
+v2:
+- Added a fixes tag.
+ tools/testing/selftests/sgx/sigstruct.c | 41 +++++++++++++------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
+
+diff --git a/tools/testing/selftests/sgx/sigstruct.c b/tools/testing/selftests/sgx/sigstruct.c
+index dee7a3d6c5a5..92bbc5a15c39 100644
+--- a/tools/testing/selftests/sgx/sigstruct.c
++++ b/tools/testing/selftests/sgx/sigstruct.c
+@@ -55,10 +55,27 @@ static bool alloc_q1q2_ctx(const uint8_t *s, const uint8_t *m,
+ 	return true;
+ }
+ 
++static void reverse_bytes(void *data, int length)
++{
++	int i = 0;
++	int j = length - 1;
++	uint8_t temp;
++	uint8_t *ptr = data;
++
++	while (i < j) {
++		temp = ptr[i];
++		ptr[i] = ptr[j];
++		ptr[j] = temp;
++		i++;
++		j--;
++	}
++}
++
+ static bool calc_q1q2(const uint8_t *s, const uint8_t *m, uint8_t *q1,
+ 		      uint8_t *q2)
+ {
+ 	struct q1q2_ctx ctx;
++	int len;
+ 
+ 	if (!alloc_q1q2_ctx(s, m, &ctx)) {
+ 		fprintf(stderr, "Not enough memory for Q1Q2 calculation\n");
+@@ -89,8 +106,10 @@ static bool calc_q1q2(const uint8_t *s, const uint8_t *m, uint8_t *q1,
+ 		goto out;
+ 	}
+ 
+-	BN_bn2bin(ctx.q1, q1);
+-	BN_bn2bin(ctx.q2, q2);
++	len = BN_bn2bin(ctx.q1, q1);
++	reverse_bytes(q1, len);
++	len = BN_bn2bin(ctx.q2, q2);
++	reverse_bytes(q2, len);
+ 
+ 	free_q1q2_ctx(&ctx);
+ 	return true;
+@@ -152,22 +171,6 @@ static RSA *gen_sign_key(void)
+ 	return key;
+ }
+ 
+-static void reverse_bytes(void *data, int length)
+-{
+-	int i = 0;
+-	int j = length - 1;
+-	uint8_t temp;
+-	uint8_t *ptr = data;
+-
+-	while (i < j) {
+-		temp = ptr[i];
+-		ptr[i] = ptr[j];
+-		ptr[j] = temp;
+-		i++;
+-		j--;
+-	}
+-}
+-
+ enum mrtags {
+ 	MRECREATE = 0x0045544145524345,
+ 	MREADD = 0x0000000044444145,
+@@ -367,8 +370,6 @@ bool encl_measure(struct encl *encl)
+ 	/* BE -> LE */
+ 	reverse_bytes(sigstruct->signature, SGX_MODULUS_SIZE);
+ 	reverse_bytes(sigstruct->modulus, SGX_MODULUS_SIZE);
+-	reverse_bytes(sigstruct->q1, SGX_MODULUS_SIZE);
+-	reverse_bytes(sigstruct->q2, SGX_MODULUS_SIZE);
+ 
+ 	EVP_MD_CTX_destroy(ctx);
+ 	RSA_free(key);
+-- 
+2.32.0
+
