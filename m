@@ -2,48 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443A43BBC70
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB1C3BBC71
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhGEL43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 07:56:29 -0400
-Received: from verein.lst.de ([213.95.11.211]:56725 "EHLO verein.lst.de"
+        id S231265AbhGEL5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 07:57:22 -0400
+Received: from mga14.intel.com ([192.55.52.115]:33481 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230174AbhGEL42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 07:56:28 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id B8CC268B05; Mon,  5 Jul 2021 13:53:49 +0200 (CEST)
-Date:   Mon, 5 Jul 2021 13:53:49 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     "Shivamurthy Shastri (sshivamurthy)" <sshivamurthy@micron.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "kbusch@kernel.org" <kbusch@kernel.org>,
-        "axboe@fb.com" <axboe@fb.com>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "shiva.linuxworks@gmail.com" <shiva.linuxworks@gmail.com>
-Subject: Re: [EXT] Re: [PATCH] nvme: Add abrupt shutdown support
-Message-ID: <20210705115349.GA20266@lst.de>
-References: <20210705101157.1009135-1-sshivamurthy@micron.com> <20210705101554.GA12803@lst.de> <BLAPR08MB6900B02E65B542A2C2F174E1B81C9@BLAPR08MB6900.namprd08.prod.outlook.com> <20210705104208.GA14891@lst.de> <BLAPR08MB690003D5D175FC784DE844F8B81C9@BLAPR08MB6900.namprd08.prod.outlook.com>
+        id S230174AbhGEL5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 07:57:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10035"; a="208785004"
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="208785004"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 04:54:44 -0700
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="485477393"
+Received: from sneftin-mobl.ger.corp.intel.com (HELO [10.185.169.17]) ([10.185.169.17])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 04:54:41 -0700
+Subject: Re: [Intel-wired-lan] [PATCH 2/2] igc: wait for the MAC copy when
+ enabled MAC passthrough
+To:     Aaron Ma <aaron.ma@canonical.com>, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Edri, Michael" <michael.edri@intel.com>,
+        "Ruinskiy, Dima" <dima.ruinskiy@intel.com>,
+        "Shalev, Avi" <avi.shalev@intel.com>,
+        "Ruinskiy, Dima" <dima.ruinskiy@intel.com>,
+        "Neftin, Sasha" <sasha.neftin@intel.com>
+References: <20210702045120.22855-1-aaron.ma@canonical.com>
+ <20210702045120.22855-2-aaron.ma@canonical.com>
+ <613e2106-940a-49ed-6621-0bb00bc7dca5@intel.com>
+ <ad3d2d01-1d0a-8887-b057-e6a9531a05f4@canonical.com>
+From:   "Neftin, Sasha" <sasha.neftin@intel.com>
+Message-ID: <f9f9408e-9ba3-7ed9-acc2-1c71913b04f0@intel.com>
+Date:   Mon, 5 Jul 2021 14:54:39 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BLAPR08MB690003D5D175FC784DE844F8B81C9@BLAPR08MB6900.namprd08.prod.outlook.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <ad3d2d01-1d0a-8887-b057-e6a9531a05f4@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 11:15:51AM +0000, Shivamurthy Shastri (sshivamurthy) wrote:
-> For systems with passive electronic components to handle power-loss/battery-removal,
-> CC.SHN=10b will help to achieve safer shutdown with relatively lower power back-up 
-> requirements (at lower cost).
+On 7/5/2021 10:38, Aaron Ma wrote:
 > 
-> The module parameter gives flexibility to the host to decide shutdown type even during
-> boot failure. 
+> 
+> On 7/4/21 1:36 PM, Neftin, Sasha wrote:
+>> On 7/2/2021 07:51, Aaron Ma wrote:
+>>> Such as dock hot plug event when runtime, for hardware implementation,
+>>> the MAC copy takes less than one second when BIOS enabled MAC 
+>>> passthrough.
+>>> After test on Lenovo TBT4 dock, 600ms is enough to update the
+>>> MAC address.
+>>> Otherwise ethernet fails to work.
+>>>
+>>> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+>>> ---
+>>>   drivers/net/ethernet/intel/igc/igc_main.c | 3 +++
+>>>   1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c 
+>>> b/drivers/net/ethernet/intel/igc/igc_main.c
+>>> index 606b72cb6193..c8bc5f089255 100644
+>>> --- a/drivers/net/ethernet/intel/igc/igc_main.c
+>>> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
+>>> @@ -5468,6 +5468,9 @@ static int igc_probe(struct pci_dev *pdev,
+>>>       memcpy(&hw->mac.ops, ei->mac_ops, sizeof(hw->mac.ops));
+>>>       memcpy(&hw->phy.ops, ei->phy_ops, sizeof(hw->phy.ops));
+>>> +    if (pci_is_thunderbolt_attached(pdev) > +        msleep(600);
+>> I believe it is a bit fragile. I would recommend here look for another 
+>> indication instead of delay. Can we poll for a 'pci_channel_io_normal' 
+>> state? (igc->pdev->error_state == pci_channel_io_normal)
+> 
+> Hi sasha,
+> In this situation, the error_state is always pci_channel_io_normal.
+Ok.
+> The delay is necessary.
+> 
+> Refer to "627239-Intel® Ethernet Controller 
+> I225-MAC-Address-Passthrough-rev1.2"
+> section "3.5
+>   Timing Considerations":
+Hello Aaron, Thanks to point me on this document. I see... This is 
+recommendation for Windows driver. Anyway, "delay" approach is 
+error-prone. We need rather ask for MNG FW confirmation (message) that 
+MAC address is copied.
+Can we call (in case we know that MNG FW copied MAC address):
+igc_rar_set (method from igc_mac.c), update the mac.addr and then 
+perform": memcpy(netdev->dev_addr, hw->mac.addr, netdev->addr_len);?
 
-If you have a device that always prefers an abrupt please introduce a TP
-in the NVMe technical working group so that the hosts automatically
-do the right thing.  Requiring sysadmin intervention using a global
-kernel parameter is not the way to do this.
+> "For hardware implementation,
+> 
+> when the operating system is already running, the MAC copy must happen 
+> not more than one
+> 
+> second after TBT link is established.
+> the I225 Windows driver prevents the operating
+> 
+> system from detecting the I225 for one second. This allows enough time 
+> for hardware to update the
+> 
+> MAC address."
+> 
+> Thanks sasha,
+> Aaron
+> 
+>>> +
+>>>       /* Initialize skew-specific constants */
+>>>       err = ei->get_invariants(hw);
+>>>       if (err)
+>>>
+>> Thanks Aaron,
+>> sasha
+Sasha
