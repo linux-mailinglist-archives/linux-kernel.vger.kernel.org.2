@@ -2,82 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6C73BB594
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 05:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5C83BB597
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 05:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhGEDbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 23:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbhGEDbd (ORCPT
+        id S229809AbhGEDcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 23:32:24 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13066 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229715AbhGEDcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 23:31:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05AEC061574
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 20:28:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tsupjwCoAwzMfXfYWo6zcCrLAv4Cwqx2uA7kRArVW0g=; b=ub8dPakj8xAaae+vJS+6H9BouS
-        HBbBXjnMUTBzSywbOxVzu8Ol9uLxyDgBdxAVyi3psJO4C397A4whzp0Sz7WK4Lwd5XJsULWLEdYW8
-        47awEXKNN2aFoNFO8WKfmMimUpUVVD/jf2GWchgeMry9nizzJD8zjreLQ9m7SZeu7tjxKnwIapayS
-        PvKKM4tTRCOSohApJFN7GenZOFCknkG+1Tp32LMy5x4fRQLlIJ+AcU9Qur+ngkG7d86RgK8qwEl/c
-        KnlgVnYrRlg1Gb9ve1g9nY4UUe60Y/bhzBbWajiaNnuMj8rkD8YF1gfPflg6/WMehcefJLDmENly4
-        TIG+51Cg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0FHd-009qpi-PO; Mon, 05 Jul 2021 03:28:39 +0000
-Date:   Mon, 5 Jul 2021 04:28:33 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] mm/thp: Make ALLOC_SPLIT_PTLOCKS dependent on
- USE_SPLIT_PTE_PTLOCKS
-Message-ID: <YOJ8YR8wWkiHsRTp@casper.infradead.org>
-References: <1621409586-5555-1-git-send-email-anshuman.khandual@arm.com>
- <YKZFRPqg4wKjOdVg@casper.infradead.org>
- <9d1ce685-e0fd-febd-5ff2-179f7fa6e3fa@arm.com>
- <YN27uc64s/yllfQR@casper.infradead.org>
- <45c1feaa-4bab-91d1-6962-81549d2b6d00@arm.com>
+        Sun, 4 Jul 2021 23:32:23 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GJB1R38GJzZnFs;
+        Mon,  5 Jul 2021 11:26:35 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 5 Jul 2021 11:29:45 +0800
+Received: from [127.0.0.1] (10.174.179.0) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 5 Jul 2021
+ 11:29:45 +0800
+Subject: Re: [PATCH -next 1/1] iomap: Fix a false positive of UBSAN in
+ iomap_seek_data()
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     "Darrick J . Wong" <djwong@kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210702092109.2601-1-thunder.leizhen@huawei.com>
+ <YN7dn08eeUXfixJ7@infradead.org>
+ <2ce02a7f-4b8b-5a86-13ee-097aff084f82@huawei.com>
+Message-ID: <9a619cb0-e998-83e5-8e42-d3606ab682e0@huawei.com>
+Date:   Mon, 5 Jul 2021 11:29:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <45c1feaa-4bab-91d1-6962-81549d2b6d00@arm.com>
+In-Reply-To: <2ce02a7f-4b8b-5a86-13ee-097aff084f82@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 08:57:54AM +0530, Anshuman Khandual wrote:
-> 
-> On 7/1/21 6:27 PM, Matthew Wilcox wrote:
-> > On Thu, Jul 01, 2021 at 10:51:27AM +0530, Anshuman Khandual wrote:
-> >>
-> >>
-> >> On 5/20/21 4:47 PM, Matthew Wilcox wrote:
-> >>> On Wed, May 19, 2021 at 01:03:06PM +0530, Anshuman Khandual wrote:
-> >>>> Split ptlocks need not be defined and allocated unless they are being used.
-> >>>> ALLOC_SPLIT_PTLOCKS is inherently dependent on USE_SPLIT_PTE_PTLOCKS. This
-> >>>> just makes it explicit and clear. While here drop the spinlock_t element
-> >>>> from the struct page when USE_SPLIT_PTE_PTLOCKS is not enabled.
-> >>>
-> >>> I didn't spot this email yesterday.  I'm not a fan.  Isn't struct page
-> >>> already complicated enough without adding another ifdef to it?  Surely
-> >>> there's a better way than this.
-> >>
-> >> This discussion thread just got dropped off the radar, sorry about it.
-> >> None of the spinlock_t elements are required unless split ptlocks are
-> >> in use. I understand your concern regarding yet another #ifdef in the
-> >> struct page definition. But this change is simple and minimal. Do you
-> >> have any other particular alternative in mind which I could explore ?
-> > 
-> > Do nothing?  I don't understand what problem you're trying to solve.
-> 
-> Currently there is an element (spinlock_t ptl) in the struct page for page
-> table lock. Although a struct page based spinlock is not even required in
-> case USE_SPLIT_PTE_PTLOCKS evaluates to be false. Is not that something to
-> be fixed here i.e drop the splinlock_t element if not required ?
 
-No?  It doesn't actually cause any problems, does it?
+
+On 2021/7/2 19:50, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2021/7/2 17:34, Christoph Hellwig wrote:
+>> We might as well just kill off the length variable while we're at it:
+> 
+> Hi, Christoph:
+>   Maybe you need to write a separate patch. Because the patch I sent is
+> to modify function iomap_seek_data(). I didn't look at the other functions.
+> In fact, both iomap_seek_data() and iomap_seek_hole() need to be modified.
+> The iomap_seek_data() may not be intuitive to delete the variable 'length'.
+> 
+> I'm now analyzing if the "if (length <= 0)" statement in iomap_seek_data()
+> is redundant (the condition is never true).
+
+I've thought about it, and that "if" statement can be removed as follows:
+
+diff --git a/fs/iomap/seek.c b/fs/iomap/seek.c
+index dab1b02eba5b..dc55f9ecd948 100644
+--- a/fs/iomap/seek.c
++++ b/fs/iomap/seek.c
+@@ -96,14 +96,13 @@ iomap_seek_data(struct inode *inode, loff_t offset, const struct iomap_ops *ops)
+ 		if (ret < 0)
+ 			return ret;
+ 		if (ret == 0)
+-			break;
++			return offset;
+
+ 		offset += ret;
+ 		length -= ret;
+ 	}
+
+-	if (length <= 0)
+-		return -ENXIO;
+-	return offset;
++	/* The end of the file is reached, and no data is found */
++	return -ENXIO;
+ }
+ EXPORT_SYMBOL_GPL(iomap_seek_data);
+
+
+
+> 
+>>
+>>
+>> diff --git a/fs/iomap/seek.c b/fs/iomap/seek.c
+>> index dab1b02eba5b7f..942e354e9e13e6 100644
+>> --- a/fs/iomap/seek.c
+>> +++ b/fs/iomap/seek.c
+>> @@ -35,23 +35,21 @@ loff_t
+>>  iomap_seek_hole(struct inode *inode, loff_t offset, const struct iomap_ops *ops)
+>>  {
+>>  	loff_t size = i_size_read(inode);
+>> -	loff_t length = size - offset;
+>>  	loff_t ret;
+>>  
+>>  	/* Nothing to be found before or beyond the end of the file. */
+>>  	if (offset < 0 || offset >= size)
+>>  		return -ENXIO;
+>>  
+>> -	while (length > 0) {
+>> -		ret = iomap_apply(inode, offset, length, IOMAP_REPORT, ops,
+>> -				  &offset, iomap_seek_hole_actor);
+>> +	while (offset < size) {
+>> +		ret = iomap_apply(inode, offset, size - offset, IOMAP_REPORT,
+>> +				  ops, &offset, iomap_seek_hole_actor);
+>>  		if (ret < 0)
+>>  			return ret;
+>>  		if (ret == 0)
+>>  			break;
+>>  
+>>  		offset += ret;
+>> -		length -= ret;
+>>  	}
+>>  
+>>  	return offset;
+>>
+>> .
+>>
+
