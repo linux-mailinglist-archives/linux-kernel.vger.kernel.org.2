@@ -2,273 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795483BBA2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6E03BBA3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbhGEJba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 05:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41702 "EHLO
+        id S230355AbhGEJhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 05:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbhGEJb3 (ORCPT
+        with ESMTP id S230262AbhGEJhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 05:31:29 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA818C061760
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 02:28:51 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id v5so21245560wrt.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 02:28:51 -0700 (PDT)
+        Mon, 5 Jul 2021 05:37:14 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2311C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 02:34:36 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id f20so8317724pfa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 02:34:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=TSo23r4HMhlRmv8GkSD5TaY3U4mSIRQESnluxSVgcTM=;
-        b=OJ99P33OuNVLmRaoRJ1rhppy7rZIJFWT7uf+bonGJUs413ismqSaKVRJle0n5qKVfJ
-         fvD2kOzOUJJsTmrs3Dje0uphJvkVltOZGKyi6Te3TkoKPrqrMAE9dCtv/+H6mBUtbf3q
-         q4AoNRRQE7foT5ZrLiVxt3/jq0excT+XtbTt9je8mdNwiWmgIU5IMSAMZyFVrCWHY/+m
-         LgFOzcgKHWBn2w49vh5iz/fvcNmV5VZ2KrcBWcJOE9cpK9JRHXXpBR/+qYog3rLhTW5T
-         QWX/2ImBPmj3A5AAtE+t4eXxs5i9x3nU6cghFbG3UXKExRXzODNYdUvoGAFcF0dmrciV
-         cpAA==
+        bh=1aD07N63usXYTFojXcF0wDROE3H1jpeyApc0ltbPbKs=;
+        b=RRqIDXLQbHRYtRG8tm92vuAETozyAxX4ZohUwmjo+h3GTwExA5yVINLWpuO5kmh/l5
+         kIzZ7jFdCcud6RtkRbSsW7oKnuDL8CfYWpRLZuGpz6M0vhwm8hZKv8g3DnEWFTE50g99
+         72CFGMiBNYVPItC7vqVzGngGGk0fZS4FtegLFiQxLvK/UosZa4nYW30TiR7O7Xto7wf2
+         BcgTfvbNn3Y8PrBHaml03BWlI2SuNtGzOgwlGq6P6m93vzR3QdLEQ7HnnJxgrEUKUTKp
+         a5CAojgd0lWl6BCtpZMx9MRXTC7n3WdwwsxpuXL/7XORKgeJrGpJNbVLpboNLTaAPQbi
+         pReA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=TSo23r4HMhlRmv8GkSD5TaY3U4mSIRQESnluxSVgcTM=;
-        b=C4Bqrm5SjkLldwgUe7QVXE4yMRYXrTVPXFyCcf9apTqX3dKRkltb4pavN2ZvYnGd+O
-         suP27cVr7+72QIwQQVMLvRN8EwTBytWZfcxKN2FMaXJ7dazJiPmTpOqgnPTZkm0pPARC
-         piN4X5owSIa031loBBqfQyRBbSBPsWZwEODPjxQehedz1JlrVIB7TfqenJ+aft97n4bF
-         L2NbElf4QbkeTKHyBepJiMZX6aS0OB5peaKQAjxinXy/2Nk2mpldXuPiV6YhZwQ4gxZQ
-         ccvfgAERBSV5tMIdZEsI6LFSRh/50eSh0qrZTWTevOw+P1XnRV76F/O+CZPlQBBpIpD9
-         cIDw==
-X-Gm-Message-State: AOAM531s2aoYO25vRjn6i8dBYoxL/kZWsgHwBKCsYjia4pTjiyxARCov
-        GA+GSC9OD744dF9oEydHCusDhg==
-X-Google-Smtp-Source: ABdhPJwQ20dqTNEDAOnkpM9p7zghGOE4JcK7bdZdI9J7lYKTdGeFkRCFGX7azvRPriyiM/HwejFunQ==
-X-Received: by 2002:a05:6000:12cf:: with SMTP id l15mr14536814wrx.24.1625477330164;
-        Mon, 05 Jul 2021 02:28:50 -0700 (PDT)
-Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
-        by smtp.gmail.com with ESMTPSA id r13sm2072969wrt.38.2021.07.05.02.28.49
+        bh=1aD07N63usXYTFojXcF0wDROE3H1jpeyApc0ltbPbKs=;
+        b=BnLX2uD90zCJDFAe3dQ2EvRDQW42KAMD/jbdNRdH536PWxSQ8vRo3K1cHN0yeQ0qCx
+         B5QUkMJ+HCv0QlvUMCUl5JfkiyVPWoM9RMWpl+H+iIObLEF6QrivJV03GMBET+XpVSoe
+         e9eU+AjGrbCR8MyXGF2M0SR5bYKaLZgSZ4jJfvWP7f6Uwz1uKxCTaH+wrslIK2Wima9t
+         9Yfk/KhCk2g8u6b3chjzjkfkp0g+uSdgYk6AjZRegZgw2IeZdy2WC8y4/8xiGlqzG2Cs
+         GCrBYM95zK5sXGr4Ywj4ujERQmlYGSdATpIPEAHa/6gjwh7KvzIs/koENf7to16u6Qxp
+         bhzA==
+X-Gm-Message-State: AOAM533U6JWkOFNibCsWxdM7RUx8DmXVHD3cyLbF+5stuZ836j2CS/nK
+        +02/pfasVVhPnn8M1hcWjiw0yjnvjT4xmQ==
+X-Google-Smtp-Source: ABdhPJwZATJ3l6n/mEpAMBGR7nuBEXrYanTEFN9zlhYSGJQ/sPISx5/HwTFACQM7nCXbgADNlkZEfw==
+X-Received: by 2002:a63:5d52:: with SMTP id o18mr14896205pgm.440.1625477676475;
+        Mon, 05 Jul 2021 02:34:36 -0700 (PDT)
+Received: from ubuntu.localdomain ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id c74sm12773742pfc.175.2021.07.05.02.34.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 02:28:49 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [GIT PULL] gpio: updates for v5.14
-Date:   Mon,  5 Jul 2021 11:28:48 +0200
-Message-Id: <20210705092848.14495-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
+        Mon, 05 Jul 2021 02:34:36 -0700 (PDT)
+From:   gushengxian <gushengxian507419@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com
+Cc:     linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] ALSA: usx2y: fix spelling mistakes
+Date:   Mon,  5 Jul 2021 02:34:19 -0700
+Message-Id: <20210705093419.664366-1-gushengxian507419@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+From: gushengxian <gushengxian@yulong.com>
 
-Please pull the following patches for the v5.14 merge window. We have one new
-driver, support for new models in existing ones, dt-bindings conversions for
-several modules and improvements all over the place.
+Fix some spelling mistakes as follows:
+wroong ==> wrong
+evrything ==> everything
 
-Details are in the signed tag.
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ sound/usb/usx2y/usbusx2yaudio.c | 2 +-
+ sound/usb/usx2y/usx2yhwdeppcm.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Best Regards,
-Bartosz Golaszewski
+diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
+index 6154662d3097..c39cc6851e2d 100644
+--- a/sound/usb/usx2y/usbusx2yaudio.c
++++ b/sound/usb/usx2y/usbusx2yaudio.c
+@@ -526,7 +526,7 @@ static int usx2y_urbs_start(struct snd_usx2y_substream *subs)
+  cleanup:
+ 	if (err) {
+ 		usx2y_subs_startup_finish(usx2y);
+-		usx2y_clients_stop(usx2y);		// something is completely wroong > stop evrything
++		usx2y_clients_stop(usx2y);	// something is completely wrong > stop everything
+ 	}
+ 	return err;
+ }
+diff --git a/sound/usb/usx2y/usx2yhwdeppcm.c b/sound/usb/usx2y/usx2yhwdeppcm.c
+index da643c2dbb12..db83522c1b49 100644
+--- a/sound/usb/usx2y/usx2yhwdeppcm.c
++++ b/sound/usb/usx2y/usx2yhwdeppcm.c
+@@ -480,7 +480,7 @@ static int usx2y_usbpcm_urbs_start(struct snd_usx2y_substream *subs)
+  cleanup:
+ 	if (err) {
+ 		usx2y_subs_startup_finish(usx2y);	// Call it now
+-		usx2y_clients_stop(usx2y);		// something is completely wroong > stop evrything
++		usx2y_clients_stop(usx2y);	// something is completely wrong > stop everything
+ 	}
+ 	return err;
+ }
+-- 
+2.25.1
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
-
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.14
-
-for you to fetch changes up to c34c1228fc1cfe83aed909995f5b82e0ab7cb977:
-
-  docs: driver-api: gpio: using-gpio.rst: avoid using ReST :doc:`foo` markup (2021-06-25 12:36:54 +0200)
-
-----------------------------------------------------------------
-gpio: updates for v5.14
-
-- new driver for the IDT 79RC3243x GPIO controller
-- device tree bindings coversion to YAML for the following drivers:
-  gpio-rk3328-grf, gpio-omap, gpio-davinci, gpio-zynq, gpio-stp, gpio-pcf857x
-- cleanup of probe functions in many drivers from Alexandru Ardelean, mostly
-  dropping unnecessary calls to platform_set_drvdata() and removing error
-  messages where none are needed (handled by the subsystem already)
-- several improvements to the core gpiolib and the sysfs interface code from
-  Andy Shevchenko
-- conversion of the gpio-xilinx driver to using the bitmap API + improvements
-  of suspend/resume handling + minor tweaks
-- convert the gpio-stmpe to using devres helpers exclusively in probe for
-  improved robustness
-- updates for the generic gpio-regmap driver
-- updates for the gpio-dwapb driver
-- support for a new model in gpio-pca953x
-- cleanups in gpio-tegra186, gpio-104-idio-16, gpio-mxs & gpio-xgene
-- slight code refactoring of the gpio-zynq driver
-- documentation fixes from Mauro Carvalho Chehab
-- a bunch of minor tweaks and improvements all over the place
-
-----------------------------------------------------------------
-Aleksander Jan Bajkowski (1):
-      dt-bindings: gpio: stp: convert to json-schema
-
-Alexandru Ardelean (23):
-      gpio: stmpe: fully use convert probe to device-managed
-      gpio: da9055: remove platform_set_drvdata() + cleanup probe
-      gpio: visconti: remove platform_set_drvdata() + cleanup probe
-      gpio: adp5520: cleanup probe error path + remove platform_set_drvdata()
-      gpio: altera-a10sr: remove platform_set_drvdata() + cleanup probe
-      gpio: bd9571mwv: remove platform_set_drvdata() + cleanup probe
-      gpio: tps68470: remove platform_set_drvdata() + cleanup probe
-      gpio: xgene: simplify probe, return devm_gpiochip_add_data() directly
-      gpio: da9052: remove platform_set_drvdata() + cleanup probe
-      gpio: gpio-tegra186: remove empty remove hook
-      gpio: gpio-tegra186: remove platform_set_drvdata() + cleanup probe
-      gpio: tps6586x: remove platform_set_drvdata() + cleanup probe
-      gpio: tc3589x: emove platform_set_drvdata() + cleanup probe
-      gpio: tps65218: remove platform_set_drvdata() + cleanup probe
-      gpio: tps65912: remove platform_set_drvdata() + cleanup probe
-      gpio: ath79: remove platform_set_drvdata() + cleanup probe
-      gpio: spear-spics: remove platform_set_drvdata() + cleanup probe
-      gpio: sprd: remove platform_set_drvdata() + cleanup probe
-      gpio: sta2x11: remove platform_set_drvdata() + cleanup probe
-      gpio: tps65910: remove platform_set_drvdata() + cleanup probe
-      gpio: wm831x: remove platform_set_drvdata() + cleanup probe
-      gpio: wm8994: remove platform_set_drvdata() + cleanup probe
-      gpio: wm8350: remove platform_set_drvdata() + cleanup probe
-
-Andy Shevchenko (13):
-      gpio: mockup: Switch to use gpiochip_get_desc()
-      gpiolib: Drop duplicate offset check in gpiochip_is_requested()
-      bitmap: Make bitmap_remap() and bitmap_bitremap() available to users
-      gpio: xilinx: Introduce xgpio_read_chan() / xgpio_write_chan()
-      gpio: xilinx: Switch to use bitmap APIs
-      gpio: xilinx: No need to disable IRQs in the handler
-      gpiolib: Make use of assign_bit() API (part 2)
-      gpiolib: Use sysfs_emit() in "show" functions
-      gpiolib: Split fastpath array to two
-      gpiolib: Switch to bitmap_alloc()
-      gpio: dwapb: Drop redundant check in dwapb_irq_set_type()
-      gpio: dwapb: Switch to use fwnode_irq_get()
-      gpio-dwapb: Drop unused headers and sort the rest
-
-Aswath Govindraju (1):
-      dt-bindings: gpio: gpio-davinci: Convert to json-schema
-
-Geert Uytterhoeven (1):
-      dt-bindings: gpio: pcf857x: Convert to json-schema
-
-Grygorii Strashko (1):
-      dt-bindings: gpio: omap: Convert to json-schema
-
-Jinchao Wang (1):
-      gpio: mxs: Prefer unsigned int to bare use of unsigned
-
-Johan Jonker (1):
-      dt-bindings: gpio: convert rk3328-grf-gpio.txt to YAML
-
-Matti Vaittinen (1):
-      gpio: gpio-regmap: Use devm_add_action_or_reset()
-
-Mauro Carvalho Chehab (2):
-      MAINTAINERS: update ti,omap-gpio.yaml reference
-      docs: driver-api: gpio: using-gpio.rst: avoid using ReST :doc:`foo` markup
-
-Michael Walle (1):
-      gpio: regmap: move drvdata to config data
-
-Navin Sankar Velliangiri (1):
-      gpio: 104-idio-16: Fix coding style issues
-
-Nobuhiro Iwamatsu (1):
-      dt-bindings: gpio: zynq: convert bindings to YAML
-
-Peter Robinson (1):
-      gpio: pca953x: Add support for the On Semi pca9655
-
-Srinivas Neeli (4):
-      gpio: zynq: use module_platform_driver to simplify the code
-      gpio: zynq: Check return value of pm_runtime_get_sync
-      gpio: zynq: Check return value of irq_get_irq_data
-      gpio: gpio-xilinx: update on suspend and resume calls
-
-Thomas Bogendoerfer (2):
-      gpio: Add support for IDT 79RC3243x GPIO controller
-      dt-bindings: gpio: Add devicetree binding for IDT 79RC32434 GPIO controller
-
-Wei Yongjun (1):
-      gpio: idt3243x: Fix return value check in idt_gpio_probe()
-
-Zhen Lei (1):
-      gpio: logicvc: Remove redundant error printing in logicvc_gpio_probe()
-
- .../devicetree/bindings/gpio/gpio-davinci.txt      | 167 ---------
- .../devicetree/bindings/gpio/gpio-davinci.yaml     | 185 ++++++++++
- .../devicetree/bindings/gpio/gpio-omap.txt         |  45 ---
- .../devicetree/bindings/gpio/gpio-pcf857x.txt      |  69 ----
- .../devicetree/bindings/gpio/gpio-stp-xway.txt     |  42 ---
- .../devicetree/bindings/gpio/gpio-stp-xway.yaml    |  99 ++++++
- .../devicetree/bindings/gpio/gpio-zynq.txt         |  36 --
- .../devicetree/bindings/gpio/gpio-zynq.yaml        |  59 ++++
- .../devicetree/bindings/gpio/idt,32434-gpio.yaml   |  67 ++++
- .../devicetree/bindings/gpio/nxp,pcf8575.yaml      | 103 ++++++
- .../bindings/gpio/rockchip,rk3328-grf-gpio.txt     |  32 --
- .../bindings/gpio/rockchip,rk3328-grf-gpio.yaml    |  50 +++
- .../devicetree/bindings/gpio/ti,omap-gpio.yaml     | 108 ++++++
- Documentation/driver-api/gpio/using-gpio.rst       |   4 +-
- MAINTAINERS                                        |   4 +-
- drivers/gpio/Kconfig                               |  12 +
- drivers/gpio/Makefile                              |   1 +
- drivers/gpio/gpio-104-idio-16.c                    |  23 +-
- drivers/gpio/gpio-adp5520.c                        |  18 +-
- drivers/gpio/gpio-altera-a10sr.c                   |  11 +-
- drivers/gpio/gpio-ath79.c                          |   9 +-
- drivers/gpio/gpio-bd9571mwv.c                      |  11 +-
- drivers/gpio/gpio-da9052.c                         |  11 +-
- drivers/gpio/gpio-da9055.c                         |  11 +-
- drivers/gpio/gpio-dwapb.c                          |  23 +-
- drivers/gpio/gpio-idt3243x.c                       | 206 +++++++++++
- drivers/gpio/gpio-logicvc.c                        |   4 +-
- drivers/gpio/gpio-mockup.c                         |   9 +-
- drivers/gpio/gpio-mxs.c                            |   4 +-
- drivers/gpio/gpio-pca953x.c                        |   1 +
- drivers/gpio/gpio-regmap.c                         |  32 +-
- drivers/gpio/gpio-spear-spics.c                    |  12 +-
- drivers/gpio/gpio-sprd.c                           |  10 +-
- drivers/gpio/gpio-sta2x11.c                        |  10 +-
- drivers/gpio/gpio-stmpe.c                          |  32 +-
- drivers/gpio/gpio-tc3589x.c                        |  11 +-
- drivers/gpio/gpio-tegra186.c                       |  14 +-
- drivers/gpio/gpio-tps65218.c                       |  13 +-
- drivers/gpio/gpio-tps6586x.c                       |  13 +-
- drivers/gpio/gpio-tps65910.c                       |  12 +-
- drivers/gpio/gpio-tps65912.c                       |  12 +-
- drivers/gpio/gpio-tps68470.c                       |  12 +-
- drivers/gpio/gpio-visconti.c                       |  10 +-
- drivers/gpio/gpio-wm831x.c                         |  12 +-
- drivers/gpio/gpio-wm8350.c                         |  12 +-
- drivers/gpio/gpio-wm8994.c                         |  13 +-
- drivers/gpio/gpio-xgene.c                          |  11 +-
- drivers/gpio/gpio-xilinx.c                         | 391 +++++++++++----------
- drivers/gpio/gpio-zynq.c                           |  32 +-
- drivers/gpio/gpiolib-sysfs.c                       |  34 +-
- drivers/gpio/gpiolib.c                             |  59 ++--
- include/linux/gpio/regmap.h                        |   6 +-
- lib/bitmap.c                                       |   5 +-
- 53 files changed, 1245 insertions(+), 947 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-omap.txt
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-pcf857x.txt
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-zynq.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio-zynq.yaml
- create mode 100644 Documentation/devicetree/bindings/gpio/idt,32434-gpio.yaml
- create mode 100644 Documentation/devicetree/bindings/gpio/nxp,pcf8575.yaml
- delete mode 100644 Documentation/devicetree/bindings/gpio/rockchip,rk3328-grf-gpio.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/rockchip,rk3328-grf-gpio.yaml
- create mode 100644 Documentation/devicetree/bindings/gpio/ti,omap-gpio.yaml
- create mode 100644 drivers/gpio/gpio-idt3243x.c
