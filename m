@@ -2,225 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EA23BC211
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 19:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2EA83BC213
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 19:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhGERLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 13:11:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59341 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229729AbhGERLq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 13:11:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625504948;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1cpP3oLwWEvN7Jmq0aeYg9XO29HaHfIVyRVLgI+GVHg=;
-        b=c2uWfbfKRC8wJTySBmNbN3TUxU4k9Slyo/x2euQbb/Ss1RRQ4SsJvmVMmaB1iMcTUQ4Vg2
-        JZSFMHHV5v1j9cmhigW1jLCrLprA4+EYSZC+sBI2+EqH79LZ5z7waLe4YqJD5AmYD23oHR
-        2qtzMXft/QboFwHOzMYEcJzyZk8n/do=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-430-oRzXhjJoNsm5hUpxnM37tQ-1; Mon, 05 Jul 2021 13:09:05 -0400
-X-MC-Unique: oRzXhjJoNsm5hUpxnM37tQ-1
-Received: by mail-ej1-f69.google.com with SMTP id gz14-20020a170907a04eb02904d8b261b40bso1844783ejc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 10:09:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1cpP3oLwWEvN7Jmq0aeYg9XO29HaHfIVyRVLgI+GVHg=;
-        b=WRweipiaJiN2G/9m++nBBe2aSjUhh6rNFYjj0AiIW5PJaWYvX7Z8ZPxbXtllQienBJ
-         8It83fS4xviedfuIsBIiK/xTykXIEVMOiLvPClKMTvxfvxCZjysJes2C9YObvFAtFa7Y
-         IfTfJknvtaR8pNIiEd/VbPWyQL/MTSMpnhuW1JBURt1ZWJEtNLsxsl3xe1duvb5x9bnA
-         8wxUD/BxkCv3mv46ncoi8YXXfNbGz38C7wSUSl+Svein7RWMBT8qp3LK5Hwip0PAov2Q
-         yIMM4vPfKRq1QiLaSC4JWxS2pC0AWTdSDMN5TLxFbzgTkcBBD4JWiVfqm1CjFcgrk3Qv
-         FXeA==
-X-Gm-Message-State: AOAM531tytIYSHs8Fj8aCEWfAkSLM9tZTvrbtkVuYyzwC8ww1F9H04h2
-        4oec8zYfbCd46zONNSQ7DuG3NWBBqSFFRTE3aBAgM4q5g0ga/+mFwUL0L+xmq/2QzVcNbLir18P
-        UTOoFMWR6DOcEv69L6sbJj6si
-X-Received: by 2002:a17:907:778a:: with SMTP id ky10mr14229497ejc.32.1625504944246;
-        Mon, 05 Jul 2021 10:09:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJznvs4TNbweq++v2M52oWrHrhml8/xf8BwbB+rq4lN75LXV93FLEJhvo1YPWvz+cU/HEU6hKw==
-X-Received: by 2002:a17:907:778a:: with SMTP id ky10mr14229485ejc.32.1625504944025;
-        Mon, 05 Jul 2021 10:09:04 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id x1sm5527174edd.25.2021.07.05.10.09.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Jul 2021 10:09:03 -0700 (PDT)
-Subject: Re: [PATCH AUTOSEL 5.13 31/59] platform/x86: asus-nb-wmi: Revert "add
- support for ASUS ROG Zephyrus G14 and G15"
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     "Luke D. Jones" <luke@ljones.dev>,
-        acpi4asus-user@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org
-References: <20210705152815.1520546-1-sashal@kernel.org>
- <20210705152815.1520546-31-sashal@kernel.org>
- <c8ecb9c4-d6b7-bff5-e070-2504069d57f5@redhat.com>
-Message-ID: <826c32c5-0b00-b3ad-008f-7264bf5254e6@redhat.com>
-Date:   Mon, 5 Jul 2021 19:09:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <c8ecb9c4-d6b7-bff5-e070-2504069d57f5@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S229753AbhGERNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 13:13:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:51116 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229689AbhGERNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 13:13:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EFAC46D;
+        Mon,  5 Jul 2021 10:10:40 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 05B693F694;
+        Mon,  5 Jul 2021 10:10:38 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, cristian.marussi@arm.com
+Subject: [RFC PATCH v2 0/8] Introduce atomic support for SCMI transports
+Date:   Mon,  5 Jul 2021 18:10:14 +0100
+Message-Id: <20210705171022.25861-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi all,
 
-On 7/5/21 7:08 PM, Hans de Goede wrote:
-> Hi,
-> 
-> On 7/5/21 5:27 PM, Sasha Levin wrote:
->> From: "Luke D. Jones" <luke@ljones.dev>
->>
->> [ Upstream commit 28117f3a5c3c8375a3304af76357d5bf9cf30f0b ]
->>
->> The quirks added to asus-nb-wmi for the ASUS ROG Zephyrus G14 and G15 are
->> wrong, they tell the asus-wmi code to use the vendor specific WMI backlight
->> interface. But there is no such interface on these laptops.
->>
->> As a side effect, these quirks stop the acpi_video driver to register since
->> they make acpi_video_get_backlight_type() return acpi_backlight_vendor,
->> leaving only the native AMD backlight driver in place, which is the one we
->> want. This happy coincidence is being replaced with a new quirk in
->> drivers/acpi/video_detect.c which actually sets the backlight_type to
->> acpi_backlight_native fixinf this properly. This reverts
->> commit 13bceda68fb9 ("platform/x86: asus-nb-wmi: add support for ASUS ROG
->> Zephyrus G14 and G15").
->>
->> Signed-off-by: Luke D. Jones <luke@ljones.dev>
->> Link: https://lore.kernel.org/r/20210419074915.393433-3-luke@ljones.dev
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> 
-> Note this should only be cherry-picked if commit 2dfbacc65d1d
-> ("ACPI: video: use native backlight for GA401/GA502/GA503"):
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2dfbacc65d1d2eae587ccb6b93f6280542641858
-> 
-> Is also being cherry-picked, since the quirk added in that commit
-> replaces the quirks which are being reverted here.
+This RFC series mainly aims to introduce atomic support for transports
+that can support it.
 
-p.s.
+At first in [1/8], as a closely related addition, it is introduced a
+common way for a transport to signal to the SCMI core that it does not
+offer completion interrupts, so that the usual polling behaviour based
+on .poll_done() will be required: this can be done enabling statically
+a global polling behaviour for the whole transport with flag
+scmi_desc.force_polling OR dynamically enabling at runtime such polling
+behaviour on a per-channel basis with scmi_chan_info.needs_polling,
+typically during .chan_setup(). The usual per-command polling selection
+behaviour based on hdr.poll_completion is preserved as before.
 
-The same remark also replies to the 5.12 and 5.10 cherry-picks of
-this commit.
+Then in [2/8], a transport that supports atomic operations on its tx path
+can now declare itself as .atomic_capable and as a consequence the SCMI
+core will refrain itself from sleeping on the correspondent rx-path.
 
+In [5/8] a simple method is introduced so that an SCMI driver can easily
+query the core to check if the currently used transport is configured to
+behave in an atomic manner: in this way, interested SCMI driver users, like
+Clock framework [6/8], can optionally support atomic operations when
+operating on an atomically configured transport.
 
+Finally there are 2 *tentative" patch for SMC transport: at first [7/8]
+ports SMC to use the common core completions when completion interrupt is
+available or otherwise revert to use common core polling mechanism above
+introduced; then in [8/8] SMC is converted to be .atomic_capable by
+substituting the mutexes with busy-waiting to keep the channel 'locked'.
 
->> ---
->>  drivers/platform/x86/asus-nb-wmi.c | 82 ------------------------------
->>  1 file changed, 82 deletions(-)
->>
->> diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
->> index b07b1288346e..0cb927f0f301 100644
->> --- a/drivers/platform/x86/asus-nb-wmi.c
->> +++ b/drivers/platform/x86/asus-nb-wmi.c
->> @@ -110,16 +110,6 @@ static struct quirk_entry quirk_asus_forceals = {
->>  	.wmi_force_als_set = true,
->>  };
->>  
->> -static struct quirk_entry quirk_asus_ga401i = {
->> -	.wmi_backlight_power = true,
->> -	.wmi_backlight_set_devstate = true,
->> -};
->> -
->> -static struct quirk_entry quirk_asus_ga502i = {
->> -	.wmi_backlight_power = true,
->> -	.wmi_backlight_set_devstate = true,
->> -};
->> -
->>  static struct quirk_entry quirk_asus_use_kbd_dock_devid = {
->>  	.use_kbd_dock_devid = true,
->>  };
->> @@ -430,78 +420,6 @@ static const struct dmi_system_id asus_quirks[] = {
->>  		},
->>  		.driver_data = &quirk_asus_forceals,
->>  	},
->> -	{
->> -		.callback = dmi_matched,
->> -		.ident = "ASUSTeK COMPUTER INC. GA401IH",
->> -		.matches = {
->> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
->> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IH"),
->> -		},
->> -		.driver_data = &quirk_asus_ga401i,
->> -	},
->> -	{
->> -		.callback = dmi_matched,
->> -		.ident = "ASUSTeK COMPUTER INC. GA401II",
->> -		.matches = {
->> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
->> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401II"),
->> -		},
->> -		.driver_data = &quirk_asus_ga401i,
->> -	},
->> -	{
->> -		.callback = dmi_matched,
->> -		.ident = "ASUSTeK COMPUTER INC. GA401IU",
->> -		.matches = {
->> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
->> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IU"),
->> -		},
->> -		.driver_data = &quirk_asus_ga401i,
->> -	},
->> -	{
->> -		.callback = dmi_matched,
->> -		.ident = "ASUSTeK COMPUTER INC. GA401IV",
->> -		.matches = {
->> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
->> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IV"),
->> -		},
->> -		.driver_data = &quirk_asus_ga401i,
->> -	},
->> -	{
->> -		.callback = dmi_matched,
->> -		.ident = "ASUSTeK COMPUTER INC. GA401IVC",
->> -		.matches = {
->> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
->> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IVC"),
->> -		},
->> -		.driver_data = &quirk_asus_ga401i,
->> -	},
->> -		{
->> -		.callback = dmi_matched,
->> -		.ident = "ASUSTeK COMPUTER INC. GA502II",
->> -		.matches = {
->> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
->> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA502II"),
->> -		},
->> -		.driver_data = &quirk_asus_ga502i,
->> -	},
->> -	{
->> -		.callback = dmi_matched,
->> -		.ident = "ASUSTeK COMPUTER INC. GA502IU",
->> -		.matches = {
->> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
->> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA502IU"),
->> -		},
->> -		.driver_data = &quirk_asus_ga502i,
->> -	},
->> -	{
->> -		.callback = dmi_matched,
->> -		.ident = "ASUSTeK COMPUTER INC. GA502IV",
->> -		.matches = {
->> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
->> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA502IV"),
->> -		},
->> -		.driver_data = &quirk_asus_ga502i,
->> -	},
->>  	{
->>  		.callback = dmi_matched,
->>  		.ident = "Asus Transformer T100TA / T100HA / T100CHI",
->>
+SMC changes have NOT been tested so far (I cannot), AND they are just a
+proposal at this stage to try to better abstract and unify behaviour with
+the SCMI core; both patches are completely intended as RFCs, though, not
+only regarding their implementation but even their mere existence is RFC:
+I mean maybe we just don't want to do such kind of unification/abstraction,
+and I can just drop those SMC patches if unwanted; any feedback welcome.
+
+Atomic support has been minimally tested against the upcoming virtio
+transport V5 series, while polling has been tested with mailbox transports.
+
+The series is based on SCMI VirtIO Transport support V5 [1] (since it will
+be the main prospective user of atomic mode) and, as such, it is also
+publicly available from ARM GitLab [2].
+(Note that in order to use/test atomic mode on virtio you'll have to enable
+ it setting .atomic_capable = true in virtio.c::scmi_virtio_desc)
+
+Given the RFC status of the series in general I still not have CCed any
+maintainer out of SCMI subsystem.
+
+Any feedback welcome.
+
+Thanks,
+
+Cristian
+
+---
+
+[1]:https://lore.kernel.org/linux-arm-kernel/20210705144914.35094-1-cristian.marussi@arm.com/
+[2]:https://gitlab.arm.com/linux-arm/linux-cm/-/commits/scmi_atomic_transport_V2_on_virtio/
+
+Cristian Marussi (8):
+  firmware: arm_scmi: Add configurable polling mode for transports
+  firmware: arm_scmi: Add support for atomic transports
+  include: trace: Add new scmi_xfer_response_wait event
+  firmware: arm_scmi: Use new trace event scmi_xfer_response_wait
+  firmware: arm_scmi: Add is_transport_atomic() handle method
+  clk: scmi: Support atomic enable/disable API
+  firmware: arm_scmi: Make smc transport use common completions
+  firmware: arm_scmi: Make smc transport atomic
+
+ drivers/clk/clk-scmi.c             |  44 ++++--
+ drivers/firmware/arm_scmi/common.h |  13 ++
+ drivers/firmware/arm_scmi/driver.c | 206 +++++++++++++++++++++++------
+ drivers/firmware/arm_scmi/smc.c    |  60 +++++----
+ include/linux/scmi_protocol.h      |   8 ++
+ include/trace/events/scmi.h        |  28 ++++
+ 6 files changed, 288 insertions(+), 71 deletions(-)
+
+-- 
+2.17.1
 
