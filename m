@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACF13BB9D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861AF3BB9DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbhGEJIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 05:08:07 -0400
-Received: from usmx01.baidu.com ([12.0.243.41]:39506 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230194AbhGEJIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 05:08:06 -0400
-X-Greylist: delayed 927 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Jul 2021 05:08:06 EDT
-Received: from BJHW-Mail-Ex14.internal.baidu.com (unknown [10.127.64.37])
-        by Forcepoint Email with ESMTPS id 870992DBA41C14F17D9D;
-        Mon,  5 Jul 2021 01:49:59 -0700 (PDT)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-Mail-Ex14.internal.baidu.com (10.127.64.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.10; Mon, 5 Jul 2021 16:49:57 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.4; Mon, 5 Jul 2021 16:49:57 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <lyude@redhat.com>, <christian.koenig@amd.com>,
-        <tzimmermann@suse.de>, <bskeggs@redhat.com>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>,
-        <nouveau-bounces@lists.freedesktop.org>,
-        "Cai Huoqing" <caihuoqing@baidu.com>
-Subject: [PATCH] drm/nouveau: remove unused varialble "struct device *dev"
-Date:   Mon, 5 Jul 2021 16:49:48 +0800
-Message-ID: <20210705084948.796-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S230312AbhGEJJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 05:09:58 -0400
+Received: from esa4.hc3370-68.iphmx.com ([216.71.155.144]:34767 "EHLO
+        esa4.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230121AbhGEJJ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 05:09:57 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Jul 2021 05:09:57 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1625476041;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=gpO5L/u3UREsXqa+45yj/y5IgBmcrphWeBHKfwFoxyU=;
+  b=Es70kj4GGmGn9R6aJt37KPYnfu+rQs5ThfsK494f+02NLiY8qGqE7kbz
+   gvpmpuqacOi1qAJTvEzh/89zaH4UbJCwqZYV/7xEEotCRqFoSgYa3wqc1
+   L+jJvZGfwSNli/U+2CjOAnKVRBdE2aX+yBjT83oAymRoZk/r7fGN2XVI+
+   8=;
+Authentication-Results: esa4.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: yAvmx3gRms4eoTLKidZquDxJgStGcrFGo3KXYKeFxjc8KgZLmpWIGNMk5ApCKEVqkS5fe6i97H
+ 2S4gql+jqdeG0yMEB5M9+W09Xu6R0Z1vcNifRPqIcRQFFhCOOymfE2DSVsNOlzV4l8MyCSYDcy
+ SY7Nwbr1lZIVgKSvcya3OwSlr+Mq/K/ITySj/1Pp+gGBO2adfg/n7P4qsMO9CEeOzULhc3zUar
+ G7w2hHcqc3Cb8+fS379AHbyXwheAcyxRb15j6lKdMPUrVPXweSd5vOqWrhc+tOIm3NgqCSL9Jg
+ 6hQ=
+X-SBRS: 5.1
+X-MesageID: 49192802
+X-Ironport-Server: esa4.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+IronPort-HdrOrdr: A9a23:032I/qASyTEq38blHemQ55DYdb4zR+YMi2TC1yhKJiC9Afbo8f
+ xG+85rrCMc6QxhP03I9urwW5VoLUm8yXcx2/h0AV7AZniChILLFuFfBOLZqlWKcREWtNQy6U
+ 4JSdkHNDSaNzVHZKjBjDVQX+xQouW6zA==
+X-IronPort-AV: E=Sophos;i="5.83,325,1616472000"; 
+   d="scan'208";a="49192802"
+Subject: Re: [PATCH] xen/events: reset active flag for lateeoi events later
+To:     Juergen Gross <jgross@suse.com>, <xen-devel@lists.xenproject.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Julien Grall <julien@xen.org>
+References: <20210623130913.9405-1-jgross@suse.com>
+From:   Ross Lagerwall <ross.lagerwall@citrix.com>
+Message-ID: <41f6aeaa-583f-9b00-7789-d8a6f751b49d@citrix.com>
+Date:   Mon, 5 Jul 2021 10:00:11 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex21.internal.baidu.com (172.31.51.15) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
-X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex14_2021-07-05 16:49:57:760
+In-Reply-To: <20210623130913.9405-1-jgross@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
----
- drivers/gpu/drm/nouveau/nouveau_bo.c | 4 ----
- 1 file changed, 4 deletions(-)
+On 2021-06-23 14:09, Juergen Gross wrote:
+> In order to avoid a race condition for user events when changing
+> cpu affinity reset the active flag only when EOI-ing the event.
+> 
+> This is working fine as all user events are lateeoi events. Note that
+> lateeoi_ack_mask_dynirq() is not modified as there is no explicit call
+> to xen_irq_lateeoi() expected later.
+> 
+> Reported-by: Julien Grall <julien@xen.org>
+> Fixes: b6622798bc50b62 ("xen/events: avoid handling the same event on two cpus at the same time")
+> Tested-by: Julien Grall <julien@xen.org>
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
-index 4f3a5357dd56..c5624048de5e 100644
---- a/drivers/gpu/drm/nouveau/nouveau_bo.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
-@@ -1242,7 +1242,6 @@ nouveau_ttm_tt_populate(struct ttm_device *bdev,
- {
-        struct ttm_tt *ttm_dma = (void *)ttm;
-        struct nouveau_drm *drm;
--       struct device *dev;
-        bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
+Hi Juergen,
 
-        if (ttm_tt_is_populated(ttm))
-@@ -1255,7 +1254,6 @@ nouveau_ttm_tt_populate(struct ttm_device *bdev,
-        }
+Are you planning on backporting this fix to releases <= 5.10?
 
-        drm = nouveau_bdev(bdev);
--       dev = drm->dev->dev;
+I think the fix may need some minor adjustment to make it work after
+"xen/events: fix setting irq affinity" since both lateeoi_ack_dynirq()
+and lateeoi_mask_ack_dynirq() were adjusted to call ack_dynirq().
 
-        return ttm_pool_alloc(&drm->ttm.bdev.pool, ttm, ctx);
- }
-@@ -1265,14 +1263,12 @@ nouveau_ttm_tt_unpopulate(struct ttm_device *bdev,
-                          struct ttm_tt *ttm)
- {
-        struct nouveau_drm *drm;
--       struct device *dev;
-        bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
-
-        if (slave)
-                return;
-
-        drm = nouveau_bdev(bdev);
--       dev = drm->dev->dev;
-
-        return ttm_pool_free(&drm->ttm.bdev.pool, ttm);
- }
---
-2.25.1
+Thanks,
+Ross
