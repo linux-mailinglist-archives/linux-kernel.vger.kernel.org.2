@@ -2,155 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9961B3BBE88
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 16:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5EE3BBE8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 16:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbhGEO6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 10:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231556AbhGEO6i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 10:58:38 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D254C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 07:56:01 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id c28so9503396lfp.11
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 07:56:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yv5RwknvEQySeDC9OAlYHWoQ26Z/PWkUBzvHahNxvFo=;
-        b=o7argocKDB8tA0Hdbbg7cYRYXiR4TrYWrlnGaXwlbSBE+9182XUWAaGXAKsmHF9gWa
-         6+F8kvkgN9Z1mxteEc7QQEHCy9rp2RTucLav4YDdjqFH6hnEmeazOTxljowuOhZW5BN4
-         GYKtQYrWOMvyOJCMbNhP2xui+KjGTezHKPmCW0/jNpMe1zq48A7iqemJZcmTN1lB+rc3
-         SXkP72xASEtmrnpPI7UqJCLakyi8rteoUObdFEk5lvSBoaj7yOWYGnUxK6qFqLESaF2q
-         R0qOUGR5UPc/pcsrTXjKgKWQxjoHI+AXRTzefAW5DWSXmsoJmVrzpvs5Uune5l182Q7Z
-         f7gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yv5RwknvEQySeDC9OAlYHWoQ26Z/PWkUBzvHahNxvFo=;
-        b=UnWMrEnY6sSoWCOuhLKvnO/bCsrXBtgF+HFQhE7hE68OtEgfTupHgysXGgKR5Knc8l
-         ys9qgAuhIs4FaFw4/odcOusTITeuKYz/YEk8h3PjrbCaoP4j2N/EmSVqKcjHrlF/2Wuc
-         UY0Vmw3q+4X2qOvbMExmyUfoJ11UEMyMxgCu+LERWGNyh4vMLxzVf70J0EQfDhKYvuOY
-         t7OJE5W8oEgaCd1w0jEUUowhJ1r6eTXOyRgiIayGmihWTOVfSooF8y8Ox9gvTl9Lm5RR
-         gIEMkWOaY2aV5XOXT3oz1URDvUydtbGEUDuek+gIIL4g4QnFii0F34D/2NAKpVhoNTMk
-         4syQ==
-X-Gm-Message-State: AOAM5326ACeiKEpAz+eBk5o2ZoWF+xPvfjb5R3jlv8XSof7X4vXFTHcw
-        rUOrayTao2Frt7yLcXFAp34=
-X-Google-Smtp-Source: ABdhPJy3Z4VavKV2wXCzPYEEL12FeAebb7ybftnLZKtrYVuiw6tAarZc320nEdLbps10ACRL2Qi3WQ==
-X-Received: by 2002:a05:6512:2601:: with SMTP id bt1mr10631219lfb.590.1625496959384;
-        Mon, 05 Jul 2021 07:55:59 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id i15sm1481816lja.135.2021.07.05.07.55.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 07:55:58 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH] mm/vmalloc: Use batched page requests in bulk-allocator
-Date:   Mon,  5 Jul 2021 16:55:47 +0200
-Message-Id: <20210705145547.41206-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S231702AbhGEPAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 11:00:17 -0400
+Received: from mga12.intel.com ([192.55.52.136]:65369 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231549AbhGEPAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 11:00:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10036"; a="188671938"
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="188671938"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 07:57:39 -0700
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="644215013"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 07:57:35 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m0Q2M-008hn9-8M; Mon, 05 Jul 2021 17:57:30 +0300
+Date:   Mon, 5 Jul 2021 17:57:30 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, mst@redhat.com,
+        jasowang@redhat.com, nickhu@andestech.com, green.hu@gmail.com,
+        deanbo422@gmail.com, akpm@linux-foundation.org,
+        yury.norov@gmail.com, ojeda@kernel.org, ndesaulniers@gooogle.com,
+        joe@perches.com, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next 0/2] refactor the ringtest testing for ptr_ring
+Message-ID: <YOMd2q8Mf08+QVQ2@smile.fi.intel.com>
+References: <1625457455-4667-1-git-send-email-linyunsheng@huawei.com>
+ <YOLXTB6VxtLBmsuC@smile.fi.intel.com>
+ <c6844e2b-530f-14b2-0ec3-d47574135571@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c6844e2b-530f-14b2-0ec3-d47574135571@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of simultaneous vmalloc allocations, for example it is 1GB and
-12 CPUs my system is able to hit "BUG: soft lockup" for !CONFIG_PREEMPT
-kernel.
+On Mon, Jul 05, 2021 at 08:06:50PM +0800, Yunsheng Lin wrote:
+> On 2021/7/5 17:56, Andy Shevchenko wrote:
+> > On Mon, Jul 05, 2021 at 11:57:33AM +0800, Yunsheng Lin wrote:
+> >> tools/include/* have a lot of abstract layer for building
+> >> kernel code from userspace, so reuse or add the abstract
+> >> layer in tools/include/ to build the ptr_ring for ringtest
+> >> testing.
+> > 
+> > ...
+> > 
+> >>  create mode 100644 tools/include/asm/cache.h
+> >>  create mode 100644 tools/include/asm/processor.h
+> >>  create mode 100644 tools/include/generated/autoconf.h
+> >>  create mode 100644 tools/include/linux/align.h
+> >>  create mode 100644 tools/include/linux/cache.h
+> >>  create mode 100644 tools/include/linux/slab.h
+> > 
+> > Maybe somebody can change this to be able to include in-tree headers directly?
+> 
+> If the above works, maybe the files in tools/include/* is not
+> necessary any more, just use the in-tree headers to compile
+> the user space app?
+> 
+> Or I missed something here?
 
-<snip>
-[   62.512621] RIP: 0010:__alloc_pages_bulk+0xa9f/0xbb0
-[   62.512628] Code: ff 8b 44 24 48 44 29 f8 83 f8 01 0f 84 ea fe ff ff e9 07 f6 ff ff 48 8b 44 24 60 48 89 28 e9 00 f9 ff ff fb 66 0f 1f 44 00 00 <e9> e8 fd ff ff 65 48 01 51 10 e9 3e fe ff ff 48 8b 44 24 78 4d 89
-[   62.512629] RSP: 0018:ffffa7bfc29ffd20 EFLAGS: 00000206
-[   62.512631] RAX: 0000000000000200 RBX: ffffcd5405421888 RCX: ffff8c36ffdeb928
-[   62.512632] RDX: 0000000000040000 RSI: ffffa896f06b2ff8 RDI: ffffcd5405421880
-[   62.512633] RBP: ffffcd5405421880 R08: 000000000000007d R09: ffffffffffffffff
-[   62.512634] R10: ffffffff9d63c084 R11: 00000000ffffffff R12: ffff8c373ffaeb80
-[   62.512635] R13: ffff8c36ffdf65f8 R14: ffff8c373ffaeb80 R15: 0000000000040000
-[   62.512637] FS:  0000000000000000(0000) GS:ffff8c36ffdc0000(0000) knlGS:0000000000000000
-[   62.512638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   62.512639] CR2: 000055c8e2fe8610 CR3: 0000000c13e10000 CR4: 00000000000006e0
-[   62.512641] Call Trace:
-[   62.512646]  __vmalloc_node_range+0x11c/0x2d0
-[   62.512649]  ? full_fit_alloc_test+0x140/0x140 [test_vmalloc]
-[   62.512654]  __vmalloc_node+0x4b/0x70
-[   62.512656]  ? fix_size_alloc_test+0x44/0x60 [test_vmalloc]
-[   62.512659]  fix_size_alloc_test+0x44/0x60 [test_vmalloc]
-[   62.512662]  test_func+0xe7/0x1f0 [test_vmalloc]
-[   62.512666]  ? fix_align_alloc_test+0x50/0x50 [test_vmalloc]
-[   62.512668]  kthread+0x11a/0x140
-[   62.512671]  ? set_kthread_struct+0x40/0x40
-[   62.512672]  ret_from_fork+0x22/0x30
-<snip>
+I don't know if it works or not or why that decision had been made to
+copy'n'paste headers (Yes, I know they have some modifications).
 
-To address this issue invoke a bulk-allocator many times until all pages
-are obtained, i.e. do batched page requests adding cond_resched() meanwhile
-to reschedule. Batched value is hard-coded and is 100 pages per call.
+Somebody needs to check that and see what can be done in order to avoid copying
+entire include into tools/include.
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- mm/vmalloc.c | 32 ++++++++++++++++++++++++++++----
- 1 file changed, 28 insertions(+), 4 deletions(-)
+> > Besides above, had you tested this with `make O=...`?
+> 
+> You are right, the generated/autoconf.h is in another directory
+> with `make O=...`.
+> 
+> Any nice idea to fix the above problem?
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index aaad569e8963..01ad46f97365 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2785,10 +2785,34 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
- 	 * to fails, fallback to a single page allocator that is
- 	 * more permissive.
- 	 */
--	if (!order)
--		nr_allocated = alloc_pages_bulk_array_node(
--			gfp, nid, nr_pages, pages);
--	else
-+	if (!order) {
-+		while (nr_allocated < nr_pages) {
-+			int nr, nr_pages_request;
-+
-+			/*
-+			 * A maximum allowed request is hard-coded and is 100
-+			 * pages per call. That is done in order to prevent a
-+			 * long preemption off scenario in the bulk-allocator
-+			 * so the range is [1:100].
-+			 */
-+			nr_pages_request = min(100, (int)(nr_pages - nr_allocated));
-+
-+			nr = alloc_pages_bulk_array_node(gfp, nid,
-+				nr_pages_request, pages + nr_allocated);
-+
-+			nr_allocated += nr;
-+
-+			if (gfpflags_allow_blocking(gfp))
-+				cond_resched();
-+
-+			/*
-+			 * If zero or pages were obtained partly,
-+			 * fallback to a single page allocator.
-+			 */
-+			if (nr != nr_pages_request)
-+				break;
-+		}
-+	} else
- 		/*
- 		 * Compound pages required for remap_vmalloc_page if
- 		 * high-order pages.
+No idea. But I consider breakage of O= is a show stopper.
+
 -- 
-2.20.1
+With Best Regards,
+Andy Shevchenko
+
 
