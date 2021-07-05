@@ -2,57 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EFC93BB70C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773C53BB710
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbhGEGFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 02:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbhGEGFS (ORCPT
+        id S229879AbhGEGJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 02:09:49 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:43864 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhGEGJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 02:05:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD6BC061574;
-        Sun,  4 Jul 2021 23:02:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+llhNOIjgCgyDen6/AZ5WQb/0oOeSbGr13Ghe4Awmp4=; b=eCBzb8B28v/eRtNCnOjYcGanZS
-        6AP+UD1taU3IRqjyHQpirdCiVXbJfwfRfhHR5uBol/N5GxDAeouoBRTNvB0VfGDNVKTlvRN25T7yx
-        y0LEs5m7ElpqdSY8DauR0oIplRS3ohiU8NOLRM8RYwmbeWGNwOCk/1o5LoCi2ijZi9gehQ7IHzEOJ
-        qwaxfwJawn99uEB40xJH5tVfezYopF0e0d8CtgUgdltEoRr6tArRcNgRIXNk+w1EebweqLkOvq3GF
-        dFFF9hQi2QtMn8zeRW+4Eh9DkfW/ve0r5vtWDEJDPPsj0WB1WGdsFy0lfYCZ4Sw3TJeaxvAn9TwAe
-        I/TiYzjQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0Hfk-009vtj-HO; Mon, 05 Jul 2021 06:01:41 +0000
-Date:   Mon, 5 Jul 2021 07:01:36 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, torvalds@linux-foundation.org
-Subject: Re: [PATCH v2 0/9] ARM: remove set_fs callers and implementation
-Message-ID: <YOKgQCTB6Rd+jIom@infradead.org>
-References: <20200918124624.1469673-1-arnd@arndb.de>
- <20200919052715.GF30063@infradead.org>
- <CAK8P3a1LM8SXbzcVv1B05fdmxBZ-PA+P4m4oP1Dgc4JmR2CGMw@mail.gmail.com>
+        Mon, 5 Jul 2021 02:09:47 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 16566tPA011962;
+        Mon, 5 Jul 2021 15:06:56 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 16566tPA011962
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1625465216;
+        bh=qWlGY0thC/WOpDJ6uEc+qlRqsEeRf+Hs11ZSahrMJe0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gsF7tIxs22j/kSmncsRIj/5BFqFEnaPJLvlgLH7A7t2OwiA5fM2Oq/xMsDD1knCVJ
+         JJ4qFCYeWkrwdwcQJEVqz1q8B0eSH34lK+gwvHxz80XP6sSWKjUJs64glU3T7sJJcx
+         LLtUnL+hagBj9E4SdJmAaeBX1t178vk6zKeNmgKMApB7d048e12KuUD/u0c/rn2e8X
+         mVL8mhGHwx0h1T5LWNXaW2/yz7+reNYR2WKG0/XTraQXdMMfwdMHtaDh2AlMB+MX+0
+         nXUEraHekX4ffYTdNxFpPUnIW1e0GQ1tVXBDYPBwXxa72KM3NzsK1gmh67WmWKKdVP
+         TiDsqBHsq/jDg==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: check duplicated syscall number in syscall table
+Date:   Mon,  5 Jul 2021 15:06:54 +0900
+Message-Id: <20210705060654.135741-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1LM8SXbzcVv1B05fdmxBZ-PA+P4m4oP1Dgc4JmR2CGMw@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just a ping if we're making some progress on this.  The m68knommu
-set_fs implementation is actively misleading, which lead to a problem
-this merge window so I'd really like to see this set merged.
+Currently, syscall{hdr,tbl}.sh sorts the entire syscall table, but you
+can assume it is already sorted by the syscall number.
 
-Also your improvements to the copy_from_kernel_nofaul loop would be
+The generated syscall table does not work if the same syscall number
+appers twice. Check it in the script.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ scripts/syscallhdr.sh | 2 +-
+ scripts/syscalltbl.sh | 7 ++++++-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/syscallhdr.sh b/scripts/syscallhdr.sh
+index 848ac2735115..22e34cd46b9b 100755
+--- a/scripts/syscallhdr.sh
++++ b/scripts/syscallhdr.sh
+@@ -69,7 +69,7 @@ guard=_UAPI_ASM_$(basename "$outfile" |
+ 	sed -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
+ 	-e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g')
+ 
+-grep -E "^[0-9A-Fa-fXx]+[[:space:]]+$abis" "$infile" | sort -n | {
++grep -E "^[0-9A-Fa-fXx]+[[:space:]]+$abis" "$infile" | {
+ 	echo "#ifndef $guard"
+ 	echo "#define $guard"
+ 	echo
+diff --git a/scripts/syscalltbl.sh b/scripts/syscalltbl.sh
+index aa6ab156301c..6abe143889ef 100755
+--- a/scripts/syscalltbl.sh
++++ b/scripts/syscalltbl.sh
+@@ -52,10 +52,15 @@ outfile="$2"
+ 
+ nxt=0
+ 
+-grep -E "^[0-9]+[[:space:]]+$abis" "$infile" | sort -n | {
++grep -E "^[0-9]+[[:space:]]+$abis" "$infile" | {
+ 
+ 	while read nr abi name native compat ; do
+ 
++		if [ $nxt -gt $nr ]; then
++			echo "error: $infile: syscall table is not sorted or duplicates the same syscall number" >&2
++			exit 1
++		fi
++
+ 		while [ $nxt -lt $nr ]; do
+ 			echo "__SYSCALL($nxt, sys_ni_syscall)"
+ 			nxt=$((nxt + 1))
+-- 
+2.27.0
+
