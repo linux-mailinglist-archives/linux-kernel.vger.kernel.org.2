@@ -2,192 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2C63BBD68
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07823BBD70
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231317AbhGENWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 09:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhGENW3 (ORCPT
+        id S231341AbhGENY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 09:24:58 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:16233 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230188AbhGENY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 09:22:29 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E77C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 06:19:51 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 67-20020a17090a0fc9b02901725ed49016so8901920pjz.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 06:19:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ojEoRzGurn3QAaEGGdfMVfemjm1jmrkP9t6VFr7qb00=;
-        b=U4wv3J93DkSk1dt6DYTPkffUJ4qM4e4bNR4iYDcZKx3/JbQpgQj9SdjrXF/ff+DBzZ
-         GgBUSIzyzGlxeIVI16nF7bZ1W6AEAA2aSQ14tF1RRQa9UX/BsIt3uBHCNwE7wfISI13U
-         tqp70v0XAXu0htxGv+pEtsFm6sKiSk92XUtLOgDpUKLVRlLHtH6F2gv2I8+3n3xg4fwv
-         QZyhuu9w+7M0EK+PsSy0Mu0I++pBtVIY9zjMsMGm2042tnzIFiuy8htMebUfqDZVqbm8
-         kRkm2W/R7GJyy3oWHmGFtdnz+x9r1K5O2wUPpsoeEQpx6N77QbZ1vIybZYQUDXXnIwkr
-         O29w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ojEoRzGurn3QAaEGGdfMVfemjm1jmrkP9t6VFr7qb00=;
-        b=WiYAuZBFLxAuw44BRgwT/gXcamxafMhdtYYMkEortRwGiUo0aRKV41o2hrQAQrM1WX
-         X4QDwOge0IlTuXrjat9bp58EgOd+rAWkVktgR/+HPU8yxsRdBvNKeBnIR9E7N6J7MtqF
-         n1LYJC2lpoa8EklR+ZrM8hVL5Z3BAP7kzUSK6ze+FCfp2N1o0Rlq61wsOtwykNVw3PhL
-         bHfIUJ6AWOBj1FzqaYrPoopniGm0VDgJRqBCNSwrHGKZHPLMFdxCb3Wxg8UO2TGT+gEu
-         VVGKoe9eH9lrQWmjVFPp977nH/kwBbqsm7I1xyKIyv+6Ntkmwo5tJ3M9JefDOJqwQ6SY
-         0ZmA==
-X-Gm-Message-State: AOAM533wPZHDJrAUoeVUdgmSAZN0rAqPJq81ADDKCjmjSmW/32i01ii6
-        yi+22nUyfUpOG6XhCsZmxpo=
-X-Google-Smtp-Source: ABdhPJyz1Mub+WVqATPtxGFRIMgrMWYf9YsA5TGZvOxFcDon5bLMemSd+bHGqC0CklRFcPkBSV5ylg==
-X-Received: by 2002:a17:902:9895:b029:128:cdfb:f389 with SMTP id s21-20020a1709029895b0290128cdfbf389mr12227555plp.45.1625491190951;
-        Mon, 05 Jul 2021 06:19:50 -0700 (PDT)
-Received: from localhost.lan ([2400:4070:175b:7500::7a7])
-        by smtp.gmail.com with ESMTPSA id p3sm21868605pjt.0.2021.07.05.06.19.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 06:19:50 -0700 (PDT)
-Received: from x2.lan (localhost [127.0.0.1])
-        by localhost.lan (Postfix) with ESMTPSA id 8F9B6900901;
-        Mon,  5 Jul 2021 13:19:48 +0000 (GMT)
-From:   Vincent Pelletier <plr.vincent@gmail.com>
-To:     Support Opensource <support.opensource@diasemi.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] regulator: da9063: Add support for full-current mode.
-Date:   Mon,  5 Jul 2021 13:19:44 +0000
-Message-Id: <58a4ef0f70b227a5da820ea51c7b3b60fa453b1e.1625490856.git.plr.vincent@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Mon, 5 Jul 2021 09:24:56 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Ueo5Qe6_1625491332;
+Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Ueo5Qe6_1625491332)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 05 Jul 2021 21:22:17 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     linux-erofs@lists.ozlabs.org
+Cc:     linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        nvdimm@lists.linux.dev, Liu Bo <bo.liu@linux.alibaba.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Joseqh Qi <joseph.qi@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [RFC PATCH v1.1 2/2] erofs: dax support for non-tailpacking regular file
+Date:   Mon,  5 Jul 2021 21:21:53 +0800
+Message-Id: <20210705132153.223839-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.4
+In-Reply-To: <20210704135056.42723-3-hsiangkao@linux.alibaba.com>
+References: <20210704135056.42723-3-hsiangkao@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In addition to the ability of merging some power outputs, this chip has
-an overdrive mode.
-BCORE1, BCORE2 and BPRO have this ability, in which case the legal
-current draw is increased from 2 amps to 2.5 amps (at the expense of
-a quiescent current increase), and the configurable current limits
-are doubled.
-If a current higher than maximum half-current mode is requested, enable
-overdrive, and scale the current limit down.
-Symetrically, scale the current limit up when querying a overdrive-enabled
-regulator.
+DAX is quite useful for some VM use cases in order to save guest
+memory extremely with minimal lightweight EROFS.
 
-Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
+In order to prepare for such use cases, add preliminary dax support
+for non-tailpacking regular files for now.
+
+Tested with the DRAM-emulated PMEM and the EROFS image generated by
+"mkfs.erofs -Enoinline_data enwik9.fsdax.img enwik9"
+
+Cc: nvdimm@lists.linux.dev
+Cc: linux-fsdevel@vger.kernel.org
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 ---
-V3 -> V4:
-- complete logic change: my original approach was backwards: the driver
-  should take full control the overdrive bit, and not depend on the state
-  it find the hardware in.
-V2 -> V3:
-- ACTUALLY skip DA9063_ID_BCORES_MERGED_OD when not full-current, and
-  vice-versa.
-- head put in brown paper bag
-V1 -> V2:
-- skip DA9063_ID_BCORES_MERGED_OD when not full-current, and vice-versa
-- cc linux-kernel ML
-- fix subject prefix
+change since v1:
+ - update missing hunks due to patch spliting...
+    bdev_dax_supported(...)
+    erofs_file_mmap(...)   
 
+ fs/erofs/data.c     | 43 +++++++++++++++++++++++++++++++++++++++++--
+ fs/erofs/inode.c    |  5 +++++
+ fs/erofs/internal.h |  2 ++
+ fs/erofs/super.c    | 26 ++++++++++++++++++++++++--
+ 4 files changed, 72 insertions(+), 4 deletions(-)
 
- drivers/regulator/da9063-regulator.c | 75 +++++++++++++++++++++++++++-
- 1 file changed, 73 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/regulator/da9063-regulator.c b/drivers/regulator/da9063-regulator.c
-index cf7d5341750e..4be7cfd06cd4 100644
---- a/drivers/regulator/da9063-regulator.c
-+++ b/drivers/regulator/da9063-regulator.c
-@@ -412,6 +412,77 @@ static int da9063_ldo_set_suspend_mode(struct regulator_dev *rdev,
- 	return regmap_field_write(regl->suspend_sleep, val);
+diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+index 0f82b4cb474c..c188c629be45 100644
+--- a/fs/erofs/data.c
++++ b/fs/erofs/data.c
+@@ -6,7 +6,7 @@
+ #include "internal.h"
+ #include <linux/prefetch.h>
+ #include <linux/iomap.h>
+-
++#include <linux/dax.h>
+ #include <trace/events/erofs.h>
+ 
+ static void erofs_readendio(struct bio *bio)
+@@ -323,6 +323,7 @@ static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+ 		return ret;
+ 
+ 	iomap->bdev = inode->i_sb->s_bdev;
++	iomap->dax_dev = EROFS_I_SB(inode)->dax_dev;
+ 	iomap->offset = map.m_la;
+ 	iomap->length = map.m_llen;
+ 
+@@ -382,6 +383,11 @@ static ssize_t erofs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ 	if (!iov_iter_count(to))
+ 		return 0;
+ 
++#ifdef CONFIG_FS_DAX
++	if (IS_DAX(iocb->ki_filp->f_mapping->host))
++		return dax_iomap_rw(iocb, to, &erofs_iomap_ops);
++#endif
++
+ 	if (iocb->ki_flags & IOCB_DIRECT) {
+ 		int err = erofs_prepare_dio(iocb, to);
+ 
+@@ -410,9 +416,42 @@ const struct address_space_operations erofs_raw_access_aops = {
+ 	.direct_IO = noop_direct_IO,
+ };
+ 
++#ifdef CONFIG_FS_DAX
++static vm_fault_t erofs_dax_huge_fault(struct vm_fault *vmf,
++		enum page_entry_size pe_size)
++{
++	return dax_iomap_fault(vmf, pe_size, NULL, NULL, &erofs_iomap_ops);
++}
++
++static vm_fault_t erofs_dax_fault(struct vm_fault *vmf)
++{
++	return erofs_dax_huge_fault(vmf, PE_SIZE_PTE);
++}
++
++static const struct vm_operations_struct erofs_dax_vm_ops = {
++	.fault		= erofs_dax_fault,
++	.huge_fault	= erofs_dax_huge_fault,
++};
++
++static int erofs_file_mmap(struct file *file, struct vm_area_struct *vma)
++{
++	if (!IS_DAX(file_inode(file)))
++		return generic_file_readonly_mmap(file, vma);
++
++	if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_MAYWRITE))
++		return -EINVAL;
++
++	vma->vm_ops = &erofs_dax_vm_ops;
++	vma->vm_flags |= VM_HUGEPAGE;
++	return 0;
++}
++#else
++#define erofs_file_mmap	generic_file_readonly_mmap
++#endif
++
+ const struct file_operations erofs_file_fops = {
+ 	.llseek		= generic_file_llseek,
+ 	.read_iter	= erofs_file_read_iter,
+-	.mmap		= generic_file_readonly_mmap,
++	.mmap		= erofs_file_mmap,
+ 	.splice_read	= generic_file_splice_read,
+ };
+diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
+index 00edb7562fea..695b97acb9a6 100644
+--- a/fs/erofs/inode.c
++++ b/fs/erofs/inode.c
+@@ -174,6 +174,11 @@ static struct page *erofs_read_inode(struct inode *inode,
+ 	inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec;
+ 	inode->i_atime.tv_nsec = inode->i_ctime.tv_nsec;
+ 
++	inode->i_flags &= ~S_DAX;
++	if (test_opt(&sbi->ctx, DAX) && S_ISREG(inode->i_mode) &&
++	    vi->datalayout == EROFS_INODE_FLAT_PLAIN)
++		inode->i_flags |= S_DAX;
++
+ 	if (!nblks)
+ 		/* measure inode.i_blocks as generic filesystems */
+ 		inode->i_blocks = roundup(inode->i_size, EROFS_BLKSIZ) >> 9;
+diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+index 2669c785d548..8b0542d35148 100644
+--- a/fs/erofs/internal.h
++++ b/fs/erofs/internal.h
+@@ -83,6 +83,7 @@ struct erofs_sb_info {
+ 
+ 	struct erofs_sb_lz4_info lz4;
+ #endif	/* CONFIG_EROFS_FS_ZIP */
++	struct dax_device *dax_dev;
+ 	u32 blocks;
+ 	u32 meta_blkaddr;
+ #ifdef CONFIG_EROFS_FS_XATTR
+@@ -115,6 +116,7 @@ struct erofs_sb_info {
+ /* Mount flags set via mount options or defaults */
+ #define EROFS_MOUNT_XATTR_USER		0x00000010
+ #define EROFS_MOUNT_POSIX_ACL		0x00000020
++#define EROFS_MOUNT_DAX			0x00000040
+ 
+ #define clear_opt(ctx, option)	((ctx)->mount_opt &= ~EROFS_MOUNT_##option)
+ #define set_opt(ctx, option)	((ctx)->mount_opt |= EROFS_MOUNT_##option)
+diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+index 8fc6c04b54f4..b44a964ab24f 100644
+--- a/fs/erofs/super.c
++++ b/fs/erofs/super.c
+@@ -11,6 +11,7 @@
+ #include <linux/crc32c.h>
+ #include <linux/fs_context.h>
+ #include <linux/fs_parser.h>
++#include <linux/dax.h>
+ #include "xattr.h"
+ 
+ #define CREATE_TRACE_POINTS
+@@ -355,6 +356,7 @@ enum {
+ 	Opt_user_xattr,
+ 	Opt_acl,
+ 	Opt_cache_strategy,
++	Opt_dax,
+ 	Opt_err
+ };
+ 
+@@ -370,6 +372,7 @@ static const struct fs_parameter_spec erofs_fs_parameters[] = {
+ 	fsparam_flag_no("acl",		Opt_acl),
+ 	fsparam_enum("cache_strategy",	Opt_cache_strategy,
+ 		     erofs_param_cache_strategy),
++	fsparam_flag("dax",             Opt_dax),
+ 	{}
+ };
+ 
+@@ -410,6 +413,14 @@ static int erofs_fc_parse_param(struct fs_context *fc,
+ 		ctx->cache_strategy = result.uint_32;
+ #else
+ 		errorfc(fc, "compression not supported, cache_strategy ignored");
++#endif
++		break;
++	case Opt_dax:
++#ifdef CONFIG_FS_DAX
++		warnfc(fc, "DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
++		set_opt(ctx, DAX);
++#else
++		errorfc(fc, "dax options not supported");
+ #endif
+ 		break;
+ 	default:
+@@ -496,10 +507,17 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+ 		return -ENOMEM;
+ 
+ 	sb->s_fs_info = sbi;
++	sbi->dax_dev = fs_dax_get_by_bdev(sb->s_bdev);
+ 	err = erofs_read_superblock(sb);
+ 	if (err)
+ 		return err;
+ 
++	if (test_opt(ctx, DAX) &&
++	    !bdev_dax_supported(sb->s_bdev, EROFS_BLKSIZ)) {
++		errorfc(fc, "DAX unsupported by block device. Turning off DAX.");
++		clear_opt(ctx, DAX);
++	}
++
+ 	sb->s_flags |= SB_RDONLY | SB_NOATIME;
+ 	sb->s_maxbytes = MAX_LFS_FILESIZE;
+ 	sb->s_time_gran = 1;
+@@ -609,6 +627,8 @@ static void erofs_kill_sb(struct super_block *sb)
+ 	sbi = EROFS_SB(sb);
+ 	if (!sbi)
+ 		return;
++	if (sbi->dax_dev)
++		fs_put_dax(sbi->dax_dev);
+ 	kfree(sbi);
+ 	sb->s_fs_info = NULL;
+ }
+@@ -711,8 +731,8 @@ static int erofs_statfs(struct dentry *dentry, struct kstatfs *buf)
+ 
+ static int erofs_show_options(struct seq_file *seq, struct dentry *root)
+ {
+-	struct erofs_sb_info *sbi __maybe_unused = EROFS_SB(root->d_sb);
+-	struct erofs_fs_context *ctx __maybe_unused = &sbi->ctx;
++	struct erofs_sb_info *sbi = EROFS_SB(root->d_sb);
++	struct erofs_fs_context *ctx = &sbi->ctx;
+ 
+ #ifdef CONFIG_EROFS_FS_XATTR
+ 	if (test_opt(ctx, XATTR_USER))
+@@ -734,6 +754,8 @@ static int erofs_show_options(struct seq_file *seq, struct dentry *root)
+ 	else if (ctx->cache_strategy == EROFS_ZIP_CACHE_READAROUND)
+ 		seq_puts(seq, ",cache_strategy=readaround");
+ #endif
++	if (test_opt(ctx, DAX))
++		seq_puts(seq, ",dax");
+ 	return 0;
  }
  
-+static unsigned int da9063_get_overdrive_mask(const struct regulator_desc *desc)
-+{
-+	switch (desc->id) {
-+	case DA9063_ID_BCORES_MERGED:
-+	case DA9063_ID_BCORE1:
-+		return DA9063_BCORE1_OD;
-+	case DA9063_ID_BCORE2:
-+		return DA9063_BCORE2_OD;
-+	case DA9063_ID_BPRO:
-+		return DA9063_BPRO_OD;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static int da9063_buck_set_current_limit(struct regulator_dev *rdev,
-+					 int min_uA, int max_uA)
-+{
-+	struct da9063_regulator *regl = rdev_get_drvdata(rdev);
-+	unsigned int mask, n_currents;
-+	int ret, overdrive;
-+	bool overdrive_changed = false;
-+
-+	mask = da9063_get_overdrive_mask(rdev->desc);
-+	if (mask) {
-+		n_currents = rdev->desc->n_current_limits;
-+		if (n_currents == 0)
-+			return -EINVAL;
-+		if (max_uA > rdev->desc->curr_table[n_currents - 1]) {
-+			overdrive = mask;
-+			min_uA /= 2; // XXX: rounding ?
-+			max_uA /= 2;
-+		} else {
-+			overdrive = 0;
-+		}
-+		ret = regmap_update_bits_check(regl->hw->regmap,
-+					       DA9063_REG_CONFIG_H, mask,
-+					       overdrive, &overdrive_changed);
-+		if (ret < 0)
-+			return ret;
-+	}
-+	ret = regulator_set_current_limit_regmap(rdev, min_uA, max_uA);
-+	if (ret < 0 && overdrive_changed)
-+		/* attempt to restore original overdrive state, ignore failure-
-+		 * on-failure
-+		 */
-+		regmap_update_bits(regl->hw->regmap, DA9063_REG_CONFIG_H,
-+				   mask, ~overdrive);
-+	return ret;
-+}
-+
-+static int da9063_buck_get_current_limit(struct regulator_dev *rdev)
-+{
-+	struct da9063_regulator *regl = rdev_get_drvdata(rdev);
-+	int val, ret, limit;
-+	unsigned int mask;
-+
-+	limit = regulator_get_current_limit_regmap(rdev);
-+	if (limit < 0)
-+		return limit;
-+	mask = da9063_get_overdrive_mask(rdev->desc);
-+	if (mask) {
-+		ret = regmap_read(regl->hw->regmap, DA9063_REG_CONFIG_H, &val);
-+		if (ret < 0)
-+			return ret;
-+		if (val & mask)
-+			limit *= 2;
-+	}
-+	return limit;
-+}
-+
- static const struct regulator_ops da9063_buck_ops = {
- 	.enable			= regulator_enable_regmap,
- 	.disable		= regulator_disable_regmap,
-@@ -419,8 +490,8 @@ static const struct regulator_ops da9063_buck_ops = {
- 	.get_voltage_sel	= regulator_get_voltage_sel_regmap,
- 	.set_voltage_sel	= regulator_set_voltage_sel_regmap,
- 	.list_voltage		= regulator_list_voltage_linear,
--	.set_current_limit	= regulator_set_current_limit_regmap,
--	.get_current_limit	= regulator_get_current_limit_regmap,
-+	.set_current_limit	= da9063_buck_set_current_limit,
-+	.get_current_limit	= da9063_buck_get_current_limit,
- 	.set_mode		= da9063_buck_set_mode,
- 	.get_mode		= da9063_buck_get_mode,
- 	.get_status		= da9063_buck_get_status,
 -- 
-2.32.0
+2.24.4
 
