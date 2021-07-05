@@ -2,99 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADC23BBC3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF72E3BBC3D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhGELgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 07:36:08 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56158 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhGELgH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 07:36:07 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4F8EC21CAE;
-        Mon,  5 Jul 2021 11:33:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625484809; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6J7FT459w1mR+ClPDnP6dAqMfQqmMt7HkiwXcKAL8XI=;
-        b=SoLAuhDilZO3LZtpt4jux0RYpV8oPebH+RX8X18PzGZv5kY1MJPsmYI5qgSSVgI/o6P8Ww
-        2zDNZ+tEgEasyx2UslzKa+2A72QjB5mDbsbz5cVliVnZWxzWlZk5GccbhseeWUHc3C7H1X
-        Jnn3qQe7LBsdeNq7ifY8aZuaigMbyNM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625484809;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6J7FT459w1mR+ClPDnP6dAqMfQqmMt7HkiwXcKAL8XI=;
-        b=FCGD4j/JA9AbbAcGHJZJIvK176cGAglcunPYzX8aqLIV8Yi6FnFew7rQ10B3CHdyUeFhuI
-        EHHnJseAY3sdGGAA==
-Received: from quack2.suse.cz (unknown [10.163.43.118])
-        by relay2.suse.de (Postfix) with ESMTP id 4142CA3B8A;
-        Mon,  5 Jul 2021 11:33:29 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 1C1911E1139; Mon,  5 Jul 2021 13:33:29 +0200 (CEST)
-Date:   Mon, 5 Jul 2021 13:33:29 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-Cc:     jack@suse.cz, rkovhaev@gmail.com, reiserfs-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Verify the items that we read from blocks
-Message-ID: <20210705113329.GE15373@quack2.suse.cz>
-References: <YN8rRYxhZvAa+VxU@fedora>
+        id S231324AbhGELgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 07:36:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231126AbhGELgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 07:36:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5033961279;
+        Mon,  5 Jul 2021 11:33:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625484818;
+        bh=JCzbfrOBLEoTbgD6Ln3Es2DOUH5lhf543Bz5pCxk8ng=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=jLGcleRG3bHdycKc+f5w7I/cPQkXKECKrOn7KDf8dDQ1lXJuG9XxiGqEHg8XBuMXg
+         XvjlTmPRS0d5XLk0/f2+kJMvK/ouPg7pqdfEmi5UNknyoTYX+lvHt/99vhRR2BaYfw
+         1GlmthWgxTVg62ebKiNrGiWh1MyO2sgMlZK50A8SbJEZPCVwPpFBWULOL+pVBd1QkE
+         oKpGaCeL5OslaTC/rG3tRjGeCkMUyW8bExim71Pn6AXzahNuxesqY2CuwYx17Dqgwa
+         Mpa4ryg3MYK6wABc99I2wu2ZYiL8oSjds8azi7O/pKnIdpyH+rY+XnTUEvkCgrEAY9
+         Prsqfvqf4PRIg==
+Subject: Re: [f2fs-dev] [PATCH] f2fs: initialize page->private when using for
+ our internal use
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210705052216.831989-1-jaegeuk@kernel.org>
+ <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
+ <YOLJW0IgCagMk2tF@google.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <e2fdf628-f25c-7495-cfd1-952899f7ff9a@kernel.org>
+Date:   Mon, 5 Jul 2021 19:33:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YN8rRYxhZvAa+VxU@fedora>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YOLJW0IgCagMk2tF@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On Fri 02-07-21 20:35:41, Shreyansh Chouhan wrote:
-> I was trying to work on this[1] bug. After a lot of reading the code and
-> running it under gdb, I found out that the error happens because
-> syzkaller creates a segment with raw binary data in the reproducer[2],
-> that has the wrong deh_location for the `..` directory item. (The value
-> is 0x5d (93), where as it should have been 0x20 (32).)
-
-First, I'd like to note that reiserfs is a legacy filesystem which gets
-little maintenance and I think distributions are close to disabling it in
-their default kernels if they didn't do it already. So I'm not sure how
-much is it worth it to do any larger fixes to it. But if you have a
-personal passion for reiserfs feel free to go ahead and try to fix these
-issues.
-
-> I think that the solution would involve checking the items that we read,
-> and verify that they are actually valid. But this check could actually
-> happen in two places:
+On 2021/7/5 16:56, Jaegeuk Kim wrote:
+> On 07/05, Chao Yu wrote:
+>> On 2021/7/5 13:22, Jaegeuk Kim wrote:
+>>> We need to guarantee it's initially zero. Otherwise, it'll hurt entire flag
+>>> operations.
+>>
+>> Oops, I didn't get the point, shouldn't .private be zero after page was
+>> just allocated by filesystem? What's the case we will encounter stall
+>> private data left in page?
 > 
-> - First idea would be to check as soon as we read a
->   block, and one way of doing that would be adding a wrapper around
->   ll_rw_block that validates the leaf node blocks that we read. The
->   benifits to this would be that since we're solving the problem at it's
->   root, very few functions would have to be changed. But I don't know
->   how much of a performance hit would it be.
+> I'm seeing f2fs_migrate_page() has the newpage with some value without Private
+> flag. That causes a kernel panic later due to wrong private flag used in f2fs.
 
-It depends on how heavy the checks are going to be but generally checking
-when loading from the disk is the way how most filesystems handle this.
+I'm not familiar with that part of codes, so Cc mm mailing list for help.
 
-> - Second idea would be to do these validation checks lazily. This should
->   be faster than the first idea, but this would involve changing the
->   code at more places than in the first idea.
+My question is newpage in .migrate_page() may contain non-zero value in .private
+field but w/o setting PagePrivate flag, is it a normal case?
+
+Thanks,
+
 > 
-> For how the validation happens, the first idea that comes to mind is
-> reading the item headers from the block that we read and verifying if
-> the header is valid, and if the items themselves are valid according to
-> the header.
-
-Looks sound.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>>
+>> Cc Matthew Wilcox.
+>>
+>> Thanks,
+>>
+>>>
+>>> Fixes: b763f3bedc2d ("f2fs: restructure f2fs page.private layout")
+>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>>> ---
+>>>    fs/f2fs/data.c | 2 ++
+>>>    fs/f2fs/f2fs.h | 5 ++++-
+>>>    2 files changed, 6 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+>>> index 3a01a1b50104..d2cf48c5a2e4 100644
+>>> --- a/fs/f2fs/data.c
+>>> +++ b/fs/f2fs/data.c
+>>> @@ -3819,6 +3819,8 @@ int f2fs_migrate_page(struct address_space *mapping,
+>>>    		get_page(newpage);
+>>>    	}
+>>> +	/* guarantee to start from no stale private field */
+>>> +	set_page_private(newpage, 0);
+>>>    	if (PagePrivate(page)) {
+>>>    		set_page_private(newpage, page_private(page));
+>>>    		SetPagePrivate(newpage);
+>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>> index 65befc68d88e..ee8eb33e2c25 100644
+>>> --- a/fs/f2fs/f2fs.h
+>>> +++ b/fs/f2fs/f2fs.h
+>>> @@ -1331,7 +1331,8 @@ enum {
+>>>    #define PAGE_PRIVATE_GET_FUNC(name, flagname) \
+>>>    static inline bool page_private_##name(struct page *page) \
+>>>    { \
+>>> -	return test_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)) && \
+>>> +	return PagePrivate(page) && \
+>>> +		test_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)) && \
+>>>    		test_bit(PAGE_PRIVATE_##flagname, &page_private(page)); \
+>>>    }
+>>> @@ -1341,6 +1342,7 @@ static inline void set_page_private_##name(struct page *page) \
+>>>    	if (!PagePrivate(page)) { \
+>>>    		get_page(page); \
+>>>    		SetPagePrivate(page); \
+>>> +		set_page_private(page, 0); \
+>>>    	} \
+>>>    	set_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)); \
+>>>    	set_bit(PAGE_PRIVATE_##flagname, &page_private(page)); \
+>>> @@ -1392,6 +1394,7 @@ static inline void set_page_private_data(struct page *page, unsigned long data)
+>>>    	if (!PagePrivate(page)) {
+>>>    		get_page(page);
+>>>    		SetPagePrivate(page);
+>>> +		set_page_private(page, 0);
+>>>    	}
+>>>    	set_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page));
+>>>    	page_private(page) |= data << PAGE_PRIVATE_MAX;
+>>>
