@@ -2,76 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BF13BBECF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 17:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5B23BBED2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 17:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231765AbhGEPYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 11:24:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231631AbhGEPYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 11:24:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 204BA61964;
-        Mon,  5 Jul 2021 15:21:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625498501;
-        bh=THseaQgjU2+y6NfeKYm0CL8Lzo+LwsyR7ZelOw0YQSM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jX4XEFFfA32WqrwBY+Ad9SF6YpaH86mzk4LTr7E7JrcnhX+F9zITx5oyWNv7a7lVU
-         eu3N9k+5Em2t4JGBPFcJD1/eNdROvhPy6Do/f16K0H4up4lY1EWeXT5OvkA69ytsyb
-         80YdYKLkL9WyNp61wsEBZXqva3sIXa6LDTuQ2Ee9UarisWj13K/+W8/WandjLn/rUv
-         WoJ/R+bjQiKQSmNnXZBIiQFh8iRKII3wgdJByQri+VwXq9FK3P356tOsd/qjgRLNbQ
-         K+YSErePd7PJFKSufys1NZy5lblwv09u//hO0czMilshGz2LuGyhalKFHcuhS+ED05
-         xgCfpj47hvJYw==
-Date:   Mon, 5 Jul 2021 16:21:36 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Xu, Yanfei" <yanfei.xu@windriver.com>, mingo@redhat.com,
-        longman@redhat.com, boqun.feng@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation/atomic_t: Document cmpxchg() vs
- try_cmpxchg()
-Message-ID: <20210705152136.GA19127@willie-the-truck>
-References: <20210630153516.832731403@infradead.org>
- <20210630154114.834438545@infradead.org>
- <cac55711-585a-4e08-3b5e-a6890e2f548d@windriver.com>
- <YOMQYQr1loxIuZbU@hirez.programming.kicks-ass.net>
- <YOMgPeMOmmiK3tXO@hirez.programming.kicks-ass.net>
+        id S231782AbhGEP0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 11:26:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42290 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231535AbhGEP0U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 11:26:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625498622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r2imsBDLHS8rC/hkSxHiuEVGdRV9OR2l0LhTihLqoT4=;
+        b=Unwb6ET9HOjfTYIqza2Fw9Pi1JhaNNTIA/ORnuPmhnr5PoJJAZ7NnPugZVtjnMrlz9yCQe
+        VrZPe1XM7+yx8AmnrBkqgl/EHBGIKZAT4MuuL/jxqgqt5CogRCvS77sM8rEpXvbHWscNJN
+        ECvt9HwgAbKQHiec3hZVXgHXWMtGD7o=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-3LyG42L3NOq-2bf94pPbYA-1; Mon, 05 Jul 2021 11:23:41 -0400
+X-MC-Unique: 3LyG42L3NOq-2bf94pPbYA-1
+Received: by mail-wm1-f72.google.com with SMTP id n37-20020a05600c3ba5b02901fe49ba3bd0so105259wms.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 08:23:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r2imsBDLHS8rC/hkSxHiuEVGdRV9OR2l0LhTihLqoT4=;
+        b=ug8r9ZEP8woZse+76r9tYkPAM0BTOzt5E6u4kWKx/8cXw30Oi0oNJD3J7Kdi/nSt1y
+         pcPacL51LVMSFoZ3lpFH4XpplopYWFZmDdRTOguEj6uPr88sBdF1YcrdSMjyyM76pWXO
+         TtjaLs3fz8cAfy90FJAk1sNMaBvmkD44GhllD+ewngtm07lqUSguYM44iIYIB7mz2Cw3
+         +5pJMTeBkHkZZnnC+EmBAaLXXG8PSQBANvXyQu65PQdJ+pZCCg+c4SdupXbWXNYIho7o
+         u6bbyURwkLfrsMEiddsvZP9avbzwGiDbBYNy3EQSxfZkr9IUqqrGsoHI5asYVMtYXVD/
+         NaFw==
+X-Gm-Message-State: AOAM5314ZV0MTircuY3oCgjOp9J7phaDbMTtoFtNB7BvIslCuZcmqzV1
+        0ZONFAgk3GgLas7+GtaxerinXk3AblR2Nj7Emv7tvxr+uQqc8Ht+r/jZkXQvsY5o+5vMvYoqPvg
+        /6uzMMm5Rp6a84Lgzc7XnPEhc
+X-Received: by 2002:a1c:ed08:: with SMTP id l8mr15084297wmh.38.1625498620562;
+        Mon, 05 Jul 2021 08:23:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJym7nxOUkrVOSJ373jn1gschu21kFntb7dSjS1xiqNy/Gh/kFjxLb5+nfUyvQAjU0bU2OESJg==
+X-Received: by 2002:a1c:ed08:: with SMTP id l8mr15084280wmh.38.1625498620313;
+        Mon, 05 Jul 2021 08:23:40 -0700 (PDT)
+Received: from steredhat (host-87-7-214-34.retail.telecomitalia.it. [87.7.214.34])
+        by smtp.gmail.com with ESMTPSA id y8sm13359781wrr.76.2021.07.05.08.23.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 08:23:39 -0700 (PDT)
+Date:   Mon, 5 Jul 2021 17:23:36 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [MASSMAIL KLMS]Re: [RFC PATCH v2 0/6] Improve SOCK_SEQPACKET
+ receive logic
+Message-ID: <20210705152336.ibv4ret3d2dyhdpc@steredhat>
+References: <20210704080820.88746-1-arseny.krasnov@kaspersky.com>
+ <20210704042843-mutt-send-email-mst@kernel.org>
+ <b427dee7-5c1b-9686-9004-05fa05d45b28@kaspersky.com>
+ <20210704055037-mutt-send-email-mst@kernel.org>
+ <c9f0d355-27a1-fb19-eac0-06a5d7648f5d@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <YOMgPeMOmmiK3tXO@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <c9f0d355-27a1-fb19-eac0-06a5d7648f5d@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 05:07:41PM +0200, Peter Zijlstra wrote:
-> On Mon, Jul 05, 2021 at 04:00:01PM +0200, Peter Zijlstra wrote:
-> 
-> > No, when try_cmpxchg() fails it will update oldp. This is the reason old
-> > is now a pointer too.
-> 
-> Since you're not the first person confused by this, does the below
-> clarify?
-> 
-> ---
-> Subject: Documentation/atomic_t: Document cmpxchg() vs try_cmpxchg()
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Mon Jul  5 17:00:24 CEST 2021
-> 
-> There seems to be a significant amount of confusion around the 'new'
-> try_cmpxchg(), despite this being more like the C11
-> atomic_compare_exchange_*() family. Add a few words of clarification
-> on how cmpxchg() and try_cmpxchg() relate to one another.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  Documentation/atomic_t.txt |   41 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
+On Mon, Jul 05, 2021 at 01:48:28PM +0300, Arseny Krasnov wrote:
+>
+>On 04.07.2021 12:54, Michael S. Tsirkin wrote:
+>> On Sun, Jul 04, 2021 at 12:23:03PM +0300, Arseny Krasnov wrote:
+>>> On 04.07.2021 11:30, Michael S. Tsirkin wrote:
+>>>> On Sun, Jul 04, 2021 at 11:08:13AM +0300, Arseny Krasnov wrote:
+>>>>> 	This patchset modifies receive logic for SOCK_SEQPACKET.
+>>>>> Difference between current implementation and this version is that
+>>>>> now reader is woken up when there is at least one RW packet in rx
+>>>>> queue of socket and data is copied to user's buffer, while merged
+>>>>> approach wake up user only when whole message is received and kept
+>>>>> in queue. New implementation has several advantages:
+>>>>>  1) There is no limit for message length. Merged approach requires
+>>>>>     that length must be smaller than 'peer_buf_alloc', otherwise
+>>>>>     transmission will stuck.
+>>>>>  2) There is no need to keep whole message in queue, thus no
+>>>>>     'kmalloc()' memory will be wasted until EOR is received.
+>>>>>
+>>>>>     Also new approach has some feature: as fragments of message
+>>>>> are copied until EOR is received, it is possible that part of
+>>>>> message will be already in user's buffer, while rest of message
+>>>>> still not received. And if user will be interrupted by signal or
+>>>>> timeout with part of message in buffer, it will exit receive loop,
+>>>>> leaving rest of message in queue. To solve this problem special
+>>>>> callback was added to transport: it is called when user was forced
+>>>>> to leave exit loop and tells transport to drop any packet until
+>>>>> EOR met.
+>>>> Sorry about commenting late in the game.  I'm a bit lost
+>>>>
+>>>>
+>>>> SOCK_SEQPACKET
+>>>> Provides sequenced, reliable, bidirectional, connection-mode transmission paths for records. A record can be sent using one or more output operations and received using one or more input operations, but a single operation never transfers part of more than one record. Record boundaries are visible to the receiver via the MSG_EOR flag.
+>>>>
+>>>> it's supposed to be reliable - how is it legal to drop packets?
+>>> Sorry, seems i need to rephrase description. "Packet" here means fragment of record(message) at transport
+>>>
+>>> layer. As this is SEQPACKET mode, receiver could get only whole message or error, so if only several fragments
+>>>
+>>> of message was copied (if signal received for example) we can't return it to user - it breaks SEQPACKET sense. I think,
+>>>
+>>> in this case we can drop rest of record's fragments legally.
+>>>
+>>>
+>>> Thank You
+>> Would not that violate the reliable property? IIUC it's only ok to
+>> return an error if socket gets closed. Just like e.g. TCP ...
+>>
+>Sorry for late answer, yes You're right, seems this is unwanted drop...
+>
+>Lets wait for Stefano Garzarella feedback
 
-With the "CMPXHG" typo fixed:
+It was the same concern I had with the series that introduced SEQPACKET 
+for vsock, which is why I suggested to wait until the message is 
+complete, before copying it to the user's buffer.
 
-Acked-by: Will Deacon <will@kernel.org>
+IIUC, with the current upstream implementation, we don't have this 
+problem, right?
 
-Will
+I'm not sure how to fix this, other than by keeping all the fragments 
+queued until we've successfully copied them to user space, which is what 
+we should do without this series applied IIUC.
+
+Stefano
+
