@@ -2,181 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C63B93BB96B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EAEE3BB972
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhGEIiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 04:38:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57980 "EHLO
+        id S230181AbhGEImN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 04:42:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbhGEIiH (ORCPT
+        with ESMTP id S230085AbhGEImN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:38:07 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C61C061574;
-        Mon,  5 Jul 2021 01:35:31 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id o10so16637920ils.6;
-        Mon, 05 Jul 2021 01:35:31 -0700 (PDT)
+        Mon, 5 Jul 2021 04:42:13 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D0FC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 01:39:36 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id q18-20020a1ce9120000b02901f259f3a250so10802329wmc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 01:39:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=d/z0wdGwqo9fBiWvUKCHWb/kQLPqJkEvWOdgihFLsj8=;
-        b=nnIo3J5eDnno109p9aSKDxVdvCbFHp1smIORXB6hZq5EJHpgLZSCO4qP5Zs/l1a6XV
-         HB8E3gbb9zLBNY+M89JdThVHsIUMNs8YWeIVS3vgcwqOMSy34psw+1t/dNaHc+RgCpGt
-         Ud6XtMDaWKU0aKQZlxLdbBKP71+N4ICCQyeG2NNdbYcPGjpJku68kl4nOv5pU62ibYT1
-         oToGm7yNkp15taLIWju8i0ZO5Ry08JoF3LMatsVsrVh9gFMz/wdk400nt1P/xbtP3FaZ
-         O5FMuRzJ/grWG1JJL08q+p47b8UrFJO14V+l+wjvzua9sliDAmZYOE0OQNatiTH03wr/
-         zmAg==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ak9LXPkYf1/cFqvnSLvtos9mdlfc8EfyJY+nrstneP4=;
+        b=MOgHD0Z0kUtKOhrYVsFspAOJnm+ZOqoedArM5UXhn5Sguld9nN/vqw+RcnaOfZm5D/
+         NBZOfZxj8/5Ejg0Wla3fK2kGw5T+HGt69gRVhjh1Na6eyeniBbmBu+yrucYQy9n6yFTN
+         BTUc7/4IgfjLil9rmq66t5Vuwr2G0S0TBL/x0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=d/z0wdGwqo9fBiWvUKCHWb/kQLPqJkEvWOdgihFLsj8=;
-        b=GCx5Ui9cjNUdP2ZZBX4mRYViR8JN3K+e04TAn7Zk2tCLEHpGFhPrkzk/Vvq8PhXhZC
-         mepfEgzENJS1jwDYcBWi58tXVpNPgTuNOezfDax3vD5FX1ENJomG7jxKpwBuJAlTzIqe
-         kDXYJoq1XJWbY69NDqZyD3UP0P9lS/Y+XPo5U5VLq8fW9zw3I1GGa8JAvk+RcitgXcZK
-         EMsAFlYxvHMxi6T1GYZErwK1pqs5tZSlt0f4tpdb6ztvTIvW4vqEPsC1Bc/TdwTsshiU
-         8n19CLv6SQjqxiRXOCp1fWxY5GAaNbVuT0wVgRcMoKNj9VcqVStmLZcH5vjGtLpPkhEv
-         8UYg==
-X-Gm-Message-State: AOAM5329s9oNhjasV606cFjZx/nzwa70DLA7ZDkaOSVgfyDl6vEnTYfH
-        Dvjv2plxgN+jHcj0rRrZzKiAXQ0mbGXgpPWC3hE=
-X-Google-Smtp-Source: ABdhPJz2XNkzxoMF2ciJoR4PMgzdzbrxMkwrN9p4oVhgaS5rrdQ8ctbDneqd2RHXne/ebOI01Evyw56XuTGLo2Wwkng=
-X-Received: by 2002:a05:6e02:1d0e:: with SMTP id i14mr3756014ila.150.1625474130559;
- Mon, 05 Jul 2021 01:35:30 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Ak9LXPkYf1/cFqvnSLvtos9mdlfc8EfyJY+nrstneP4=;
+        b=MHSL1fkpv6j+bszx8GdtxBiCbrQa58Zd9zc0w6Y1oWJieD3xTrza51iMG/61/P777o
+         lQEFtIuJ1bdctF2kLzufQf6U4Ym6JvW2hQZ/nu+pWg5aGpJMA8VOGvKdtCofrq++Foa6
+         KDgfa4Yf8aXoFTkfiT4PRkn+RCTKBKqxXFs/082lzyTyJ7NCTrvqsWZu/Q4nOnRrc7nk
+         E9ADwMfYGr3TZwSrAyj/L/d43O9PnzCoh5f8OB69vUKxaCpKp/lD+8XGCp+rwCsN9kEy
+         MRnllo0MTS1A6cOVxZMMCQaZf5r4AB4F67IAQVIDoNAM/KkvcJUYQCk9WgNi1K8RSfUE
+         BYAw==
+X-Gm-Message-State: AOAM531f9tbXanJg6F9d1QXmnkb9buHdmSRuwYwchvJI3+8xFi1Q+Kea
+        5Q0YZ8D6ORXlNgdc76Ikg8xoDA==
+X-Google-Smtp-Source: ABdhPJx7hFRAdzmbGBENiFTQOOg30rfAzVDo57GzgJvuc0lEFkgr7CcC97nN/cUh4c8WyN8qagKVEQ==
+X-Received: by 2002:a7b:cd06:: with SMTP id f6mr14114698wmj.64.1625474374972;
+        Mon, 05 Jul 2021 01:39:34 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id k12sm1697253wms.8.2021.07.05.01.39.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 01:39:34 -0700 (PDT)
+Date:   Mon, 5 Jul 2021 10:39:32 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, maarten.lankhorst@linux.intel.com,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: drm: screen stuck since commit f611b1e7624c: drm: Avoid circular
+ dependencies for CONFIG_FB
+Message-ID: <YOLFREpQgResMOHK@phenom.ffwll.local>
+Mail-Followup-To: Jani Nikula <jani.nikula@linux.intel.com>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, maarten.lankhorst@linux.intel.com,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@kernel.org>
+References: <YODLGdC73lLPpTL3@Red>
+ <87lf6l9nnh.fsf@intel.com>
 MIME-Version: 1.0
-References: <20210701154634.GA60743@bjorn-Precision-5520> <67a9e1fa.81a9.17a64c8e7f7.Coremail.chenhuacai@loongson.cn>
-In-Reply-To: <67a9e1fa.81a9.17a64c8e7f7.Coremail.chenhuacai@loongson.cn>
-From:   Art Nikpal <email2tema@gmail.com>
-Date:   Mon, 5 Jul 2021 16:35:19 +0800
-Message-ID: <CAKaHn9KxRrBsn4b9fSO1eDzM3XdV2GzfwVX+cGw9uS_eKg75dw@mail.gmail.com>
-Subject: Re: Re: [PATCH 0/4] PCI: replace dublicated MRRS limit quirks
-To:     =?UTF-8?B?6ZmI5Y2O5omN?= <chenhuacai@loongson.cn>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Yue Wang <yue.wang@amlogic.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Wilczynski <kw@linux.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, Artem Lapkin <art@khadas.com>,
-        Nick Xie <nick@khadas.com>, Gouwa Wang <gouwa@khadas.com>,
-        chenhuacai@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lf6l9nnh.fsf@intel.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Does that means keystone and Loongson has the same MRRS problem? And what=
- should I do now?
+On Mon, Jul 05, 2021 at 11:21:22AM +0300, Jani Nikula wrote:
+> On Sat, 03 Jul 2021, Corentin Labbe <clabbe.montjoie@gmail.com> wrote:
+> > Hello
+> >
+> > On next-20210701, my screen is stuck (see attached photo).
+> > I bisect the problem to:
+> > git bisect start
+> > # good: [62fb9874f5da54fdb243003b386128037319b219] Linux 5.13
+> > git bisect good 62fb9874f5da54fdb243003b386128037319b219
+> > # bad: [fb0ca446157a86b75502c1636b0d81e642fe6bf1] Add linux-next specific files for 20210701
+> > git bisect bad fb0ca446157a86b75502c1636b0d81e642fe6bf1
+> > # good: [f63c4fda987a19b1194cc45cb72fd5bf968d9d90] Merge remote-tracking branch 'rdma/for-next'
+> > git bisect good f63c4fda987a19b1194cc45cb72fd5bf968d9d90
+> > # bad: [49c8769be0b910d4134eba07cae5d9c71b861c4a] Merge remote-tracking branch 'drm/drm-next'
+> > git bisect bad 49c8769be0b910d4134eba07cae5d9c71b861c4a
+> > # good: [4e3db44a242a4e2afe33b59793898ecbb61d478e] Merge tag 'wireless-drivers-next-2021-06-25' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next
+> > git bisect good 4e3db44a242a4e2afe33b59793898ecbb61d478e
+> > # good: [5745d647d5563d3e9d32013ad4e5c629acff04d7] Merge tag 'amd-drm-next-5.14-2021-06-02' of https://gitlab.freedesktop.org/agd5f/linux into drm-next
+> > git bisect good 5745d647d5563d3e9d32013ad4e5c629acff04d7
+> > # bad: [8fe44c080a53ac0ccbe88053a2e40f9acca33091] drm/amdgpu/display: fold DRM_AMD_DC_DCN3_1 into DRM_AMD_DC_DCN
+> > git bisect bad 8fe44c080a53ac0ccbe88053a2e40f9acca33091
+> > # good: [2c1b1ac7084edf477309d27c02d9da7f79b33cec] drm/amdgpu/vcn: drop gfxoff control for VCN2+
+> > git bisect good 2c1b1ac7084edf477309d27c02d9da7f79b33cec
+> > # good: [2c1b1ac7084edf477309d27c02d9da7f79b33cec] drm/amdgpu/vcn: drop gfxoff control for VCN2+
+> > git bisect good 2c1b1ac7084edf477309d27c02d9da7f79b33cec
+> > # bad: [d4c9b03ff6a9914b55e4e23fcac11339a2706cc6] drm/amd/pm: Add renoir throttler translation
+> > git bisect bad d4c9b03ff6a9914b55e4e23fcac11339a2706cc6
+> > # bad: [691cf8cd7a531dbfcc29d09a23c509a86fd9b24f] drm/amdgpu: use correct rounding macro for 64-bit
+> > git bisect bad 691cf8cd7a531dbfcc29d09a23c509a86fd9b24f
+> > # bad: [2fdcb55dfc86835e4845e3f422180b5596d23cb4] drm/amdkfd: use resource cursor in svm_migrate_copy_to_vram v2
+> > git bisect bad 2fdcb55dfc86835e4845e3f422180b5596d23cb4
+> > # bad: [6c3f953381e526a1623d4575660afae8b19ffa20] drm/sti/sti_hqvdp: Fix incorrectly named function 'sti_hqvdp_vtg_cb()'
+> > git bisect bad 6c3f953381e526a1623d4575660afae8b19ffa20
+> > # bad: [5ea4dba68305d9648b9dba30036cc36d4e877bca] drm/msm/a6xx: add CONFIG_QCOM_LLCC dependency
+> > git bisect bad 5ea4dba68305d9648b9dba30036cc36d4e877bca
+> > # good: [4a888ba03fd97d1cb0253581973533965bf348c4] drm/vgem/vgem_drv: Standard comment blocks should not use kernel-doc format
+> > git bisect good 4a888ba03fd97d1cb0253581973533965bf348c4
+> > # good: [c5ef15ae09637fb51ae43e1d1d98329d67dd4fd6] video: fbdev: atyfb: mach64_cursor.c: deleted the repeated word
+> > git bisect good c5ef15ae09637fb51ae43e1d1d98329d67dd4fd6
+> > # bad: [f611b1e7624ccdbd495c19e9805629e22265aa16] drm: Avoid circular dependencies for CONFIG_FB
+> > git bisect bad f611b1e7624ccdbd495c19e9805629e22265aa16
+> > # good: [ff323d6d72e1e4971c8ba9e2f3cf8afc48f22383] video: fbdev: mb862xx: use DEVICE_ATTR_RO macro
+> > git bisect good ff323d6d72e1e4971c8ba9e2f3cf8afc48f22383
+> > # first bad commit: [f611b1e7624ccdbd495c19e9805629e22265aa16] drm: Avoid circular dependencies for CONFIG_FB
+> >
+> > reverting ff323d6d72e1e4971c8ba9e2f3cf8afc48f22383 lead to a correct boot (I got a viewable login prompt).
+> 
+> I presume that's a copy-paste error, and you mean
+> f611b1e7624ccdbd495c19e9805629e22265aa16, the first bad commit, i.e.
+> 
+> commit f611b1e7624ccdbd495c19e9805629e22265aa16
+> Author: Kees Cook <keescook@chromium.org>
+> Date:   Wed Jun 2 14:52:50 2021 -0700
+> 
+>     drm: Avoid circular dependencies for CONFIG_FB
+> 
+> > So ff323d6d72e1 cause this config change when compiling my defconfig:
+> > --- config.fbok	2021-07-03 21:31:08.527260693 +0200
+> > +++ config.fbko	2021-07-03 21:39:51.604275703 +0200
+> > -CONFIG_VT_HW_CONSOLE_BINDING=y
+> > +# CONFIG_VT_HW_CONSOLE_BINDING is not set
+> > -CONFIG_DRM_FBDEV_EMULATION=y
+> > -CONFIG_DRM_FBDEV_OVERALLOC=100
+> > -CONFIG_FB_NOTIFY=y
+> > -CONFIG_FB=y
+> > -# CONFIG_FIRMWARE_EDID is not set
+> > -CONFIG_FB_CFB_FILLRECT=y
+> > -CONFIG_FB_CFB_COPYAREA=y
+> > -CONFIG_FB_CFB_IMAGEBLIT=y
+> > -CONFIG_FB_SYS_FILLRECT=y
+> > -CONFIG_FB_SYS_COPYAREA=y
+> > -CONFIG_FB_SYS_IMAGEBLIT=y
+> > -# CONFIG_FB_FOREIGN_ENDIAN is not set
+> > -CONFIG_FB_SYS_FOPS=y
+> > -CONFIG_FB_DEFERRED_IO=y
+> > -CONFIG_FB_MODE_HELPERS=y
+> > -CONFIG_FB_TILEBLITTING=y
+> > -
+> > -#
+> > -# Frame buffer hardware drivers
+> > -#
+> > -# CONFIG_FB_CIRRUS is not set
+> > -# CONFIG_FB_PM2 is not set
+> > -# CONFIG_FB_CYBER2000 is not set
+> > -# CONFIG_FB_ARC is not set
+> > -# CONFIG_FB_ASILIANT is not set
+> > -# CONFIG_FB_IMSTT is not set
+> > -# CONFIG_FB_VGA16 is not set
+> > -# CONFIG_FB_UVESA is not set
+> > -# CONFIG_FB_VESA is not set
+> > -CONFIG_FB_EFI=y
+> > -# CONFIG_FB_N411 is not set
+> > -# CONFIG_FB_HGA is not set
+> > -# CONFIG_FB_OPENCORES is not set
+> > -# CONFIG_FB_S1D13XXX is not set
+> > -# CONFIG_FB_NVIDIA is not set
+> > -# CONFIG_FB_RIVA is not set
+> > -# CONFIG_FB_I740 is not set
+> > -# CONFIG_FB_LE80578 is not set
+> > -# CONFIG_FB_MATROX is not set
+> > -# CONFIG_FB_RADEON is not set
+> > -# CONFIG_FB_ATY128 is not set
+> > -# CONFIG_FB_ATY is not set
+> > -# CONFIG_FB_S3 is not set
+> > -# CONFIG_FB_SAVAGE is not set
+> > -# CONFIG_FB_SIS is not set
+> > -# CONFIG_FB_NEOMAGIC is not set
+> > -# CONFIG_FB_KYRO is not set
+> > -# CONFIG_FB_3DFX is not set
+> > -# CONFIG_FB_VOODOO1 is not set
+> > -# CONFIG_FB_VT8623 is not set
+> > -# CONFIG_FB_TRIDENT is not set
+> > -# CONFIG_FB_ARK is not set
+> > -# CONFIG_FB_PM3 is not set
+> > -# CONFIG_FB_CARMINE is not set
+> > -# CONFIG_FB_SMSCUFX is not set
+> > -# CONFIG_FB_UDL is not set
+> > -# CONFIG_FB_IBM_GXT4500 is not set
+> > -# CONFIG_FB_VIRTUAL is not set
+> > -# CONFIG_FB_METRONOME is not set
+> > -# CONFIG_FB_MB862XX is not set
+> > -# CONFIG_FB_SIMPLE is not set
+> > -# CONFIG_FB_SM712 is not set
+> > +# CONFIG_FB is not set
+> > -CONFIG_FRAMEBUFFER_CONSOLE=y
+> > -CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
+> > -# CONFIG_FRAMEBUFFER_CONSOLE_ROTATION is not set
+> > -# CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER is not set
+> > -
+> > -CONFIG_LOGO=y
+> > -# CONFIG_LOGO_LINUX_MONO is not set
+> > -# CONFIG_LOGO_LINUX_VGA16 is not set
+> > -CONFIG_LOGO_LINUX_CLUT224=y
+> > -# CONFIG_FB_SM750 is not set
+> > -# CONFIG_FONTS is not set
+> > -CONFIG_FONT_8x8=y
+> > +CONFIG_FONT_AUTOSELECT=y
+> >
+> > Adding CONFIG_FB to my defconfig fix also my boot.
+> 
+> Then you should do that. It's not like kconfig is UABI.
+> 
+> > But I still dont understand why the absence of CONFIG_FB led my screen stuck like this.
+> 
+> That's another question, and one uncovered, not caused, by the kconfig
+> change.
 
-Look like yes ! and  amlogic has the same problem.
-I think somebody need to rewrite it all to one common quirk for this proble=
-m.
+There have also been reports on old radeon that somehow the fbcon
+programming (just CONFIG_FB isn't enough) magically gets the gpu unstuck
+on boot/resume. If this is nv50+ it's less likely, because with atomic
+those different paths are gone.
 
-If no one has any objection, I can try to remake it again.
-
-On Fri, Jul 2, 2021 at 9:15 AM =E9=99=88=E5=8D=8E=E6=89=8D <chenhuacai@loon=
-gson.cn> wrote:
->
-> Hi, Bjorn,
->
-> &gt; -----=E5=8E=9F=E5=A7=8B=E9=82=AE=E4=BB=B6-----
-> &gt; =E5=8F=91=E4=BB=B6=E4=BA=BA: "Bjorn Helgaas" <helgaas@kernel.org>
-> &gt; =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2021-07-01 23:46:34 (=E6=98=9F=
-=E6=9C=9F=E5=9B=9B)
-> &gt; =E6=94=B6=E4=BB=B6=E4=BA=BA: "Artem Lapkin" <email2tema@gmail.com>
-> &gt; =E6=8A=84=E9=80=81: narmstrong@baylibre.com, yue.wang@Amlogic.com, k=
-hilman@baylibre.com, lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.c=
-om, jbrunet@baylibre.com, christianshewitt@gmail.com, martin.blumenstingl@g=
-ooglemail.com, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.=
-org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, art@k=
-hadas.com, nick@khadas.com, gouwa@khadas.com, "Huacai Chen" <chenhuacai@loo=
-ngson.cn>
-> &gt; =E4=B8=BB=E9=A2=98: Re: [PATCH 0/4] PCI: replace dublicated MRRS lim=
-it quirks
-> &gt;
-> &gt; [+cc Huacai]
-> &gt;
-> &gt; On Sat, Jun 19, 2021 at 02:39:48PM +0800, Artem Lapkin wrote:
-> &gt; &gt; Replace dublicated MRRS limit quirks by mrrs_limit_quirk from c=
-ore
-> &gt; &gt; * drivers/pci/controller/dwc/pci-keystone.c
-> &gt; &gt; * drivers/pci/controller/pci-loongson.c
-> &gt;
-> &gt; s/dublicated/duplicated/ (several occurrences)
-> &gt;
-> &gt; Capitalize subject lines.
-> &gt;
-> &gt; Use "git log --online" to learn conventions and follow them.
-> &gt;
-> &gt; Add "()" after function names.
-> &gt;
-> &gt; Capitalize acronyms appropriately (NVMe, MRRS, PCI, etc).
-> &gt;
-> &gt; End sentences with periods.
-> &gt;
-> &gt; A "move" patch must include both the removal and the addition and ma=
-ke
-> &gt; no changes to the code itself.
-> &gt;
-> &gt; Amlogic appears without explanation in 2/4.  Must be separate patch =
-to
-> &gt; address only that specific issue.  Should reference published erratu=
-m
-> &gt; if possible.  "Solves some issue" is not a compelling justification.
-> &gt;
-> &gt; The tree must be consistent and functionally the same or improved
-> &gt; after every patch.
-> &gt;
-> &gt; Add to pci_ids.h only if symbol used more than one place.
-> &gt;
-> &gt; See
-> &gt; https://lore.kernel.org/r/20210701074458.1809532-3-chenhuacai@loongs=
-on.cn,
-> &gt; which looks similar.  Combine efforts if possible and cc Huacai so
-> &gt; you're both aware of overlapping work.
-> &gt;
-> &gt; More hints in case they're useful:
-> &gt; https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-gl=
-aptop.roam.corp.google.com/
-> &gt;
-> &gt; &gt; Both ks_pcie_quirk loongson_mrrs_quirk was rewritten without an=
-y
-> &gt; &gt; functionality changes by one mrrs_limit_quirk
-> Does that means keystone and Loongson has the same MRRS problem? And what=
- should I do now?
->
-> Huacai
-> &gt; &gt;
-> &gt; &gt; Added DesignWare PCI controller which need same quirk for
-> &gt; &gt; * drivers/pci/controller/dwc/pci-meson.c (PCI_DEVICE_ID_SYNOPSY=
-S_HAPSUSB3)
-> &gt; &gt;
-> &gt; &gt; This quirk can solve some issue for Khadas VIM3/VIM3L(Amlogic)
-> &gt; &gt; with HDMI scrambled picture and nvme devices at intensive writi=
-ng...
-> &gt; &gt;
-> &gt; &gt; come from:
-> &gt; &gt; * https://lore.kernel.org/linux-pci/20210618063821.1383357-1-ar=
-t@khadas.com/
-> &gt; &gt;
-> &gt; &gt; Artem Lapkin (4):
-> &gt; &gt;  PCI: move Keystone and Loongson device IDs to pci_ids
-> &gt; &gt;  PCI: core: quirks: add mrrs_limit_quirk
-> &gt; &gt;  PCI: keystone move mrrs quirk to core
-> &gt; &gt;  PCI: loongson move mrrs quirk to core
-> &gt; &gt;
-> &gt; &gt; --
-> &gt; &gt; 2.25.1
-> &gt; &gt;
->
->
-> </chenhuacai@loongson.cn></email2tema@gmail.com></helgaas@kernel.org>
+Maybe to a bug report here about this: https://gitlab.freedesktop.org/drm/nouveau/-/issues
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
