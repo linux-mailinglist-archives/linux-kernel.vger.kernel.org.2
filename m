@@ -2,95 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44163BBDE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F363BBDEC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhGEN4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 09:56:30 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:36143 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231266AbhGEN43 (ORCPT
+        id S231336AbhGEN6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 09:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230414AbhGEN6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 09:56:29 -0400
-X-UUID: 47d8e4c82a8649c0bb9cd813dff420bc-20210705
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=tWi3mQSz+Lkgh0l0iwDGIwHxWLR6tJfo9WaRVowuGB8=;
-        b=dPu98BdeHWnRyxm+1sU6UNGnA2iaJesZdv5PEjiznJk4+WaIgUUTfKYe7REA1tXMI0nBZ/mgm7qTxliB8gbHMWMDscQngOVe2oHeLTNBNw0Cg+wb84GJcgcGYAFdQMR669u3ONnVB7MyagPlG0l7IXplHhnuzskqlLAM5MMHSEI=;
-X-UUID: 47d8e4c82a8649c0bb9cd813dff420bc-20210705
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <yee.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1313421630; Mon, 05 Jul 2021 21:53:48 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 5 Jul 2021 21:53:47 +0800
-Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 5 Jul 2021 21:53:47 +0800
-Message-ID: <da9034e02d0a2b5ce5fae01403a881e4d637ab16.camel@mediatek.com>
-Subject: Re: [PATCH v6 2/2] kasan: Add memzero int for unaligned size at
- DEBUG
-From:   Yee Lee <yee.lee@mediatek.com>
-To:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     LKML <linux-kernel@vger.kernel.org>, <nicholas.tang@mediatek.com>,
-        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
-        <chinwen.chang@mediatek.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:KASAN" <kasan-dev@googlegroups.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Date:   Mon, 5 Jul 2021 21:53:47 +0800
-In-Reply-To: <CA+fCnZfKAZuy9oyDpTgNUTcNz5gnfHpJK5WN-yBNDV5VF8cq0g@mail.gmail.com>
-References: <20210705103229.8505-1-yee.lee@mediatek.com>
-         <20210705103229.8505-3-yee.lee@mediatek.com>
-         <CA+fCnZdhrjo4RMBcj94MO7Huf_BVzaF5S_E97xS1vXGHoQdu5A@mail.gmail.com>
-         <CANpmjNNXbszUL4M+-swi7k28h=zuY-KTfw+6W90hk2mgxr8hRQ@mail.gmail.com>
-         <CA+fCnZfKAZuy9oyDpTgNUTcNz5gnfHpJK5WN-yBNDV5VF8cq0g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Mon, 5 Jul 2021 09:58:21 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB77C061574;
+        Mon,  5 Jul 2021 06:55:44 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id i13so10259619plb.10;
+        Mon, 05 Jul 2021 06:55:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=sBKxZg6PD9doHfQdDLNhOy+vX8H2bzlFPtwLXuBHOfQ=;
+        b=mzGzRfFR4HYCg1voRm8TggOSE31Dmlwt1B74jKu83Tjuw6zeC32fiQk7ez/KpMMYth
+         oxFxSZ4p+4ZIwBm16Z+/hLrfRsc/Agv+pqxQ3FKsBgmZq9+L4/O6LXyr6VDU6NJ93fxI
+         dgZCAc9Jf1TxUVZKk4syC4UlsZ9bvtUOYSUmQEQrTSjd6g31pRGMxKNvQclVhl/T5W76
+         hMqkaGDNsCJ75I2rQpB+hpLRxC5pCmN+hXZKhJZrQzGSUZSAH+mI4Xn5ZJVI99oZ/Lh8
+         gHFClXSbDFQqx8eBJYsVPRYiCAC63tb2TYQ2giuTt3ZLP6tHlBD/2W9Yw0Ph7UQRstfE
+         XcHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=sBKxZg6PD9doHfQdDLNhOy+vX8H2bzlFPtwLXuBHOfQ=;
+        b=L/073jq4xMQ0vXhwa1iu1BfIxAL4Ppoh0u8TFr4bkN8tesNu7TxM5c0vrrSOLtnfgL
+         uYzUusN7K69J+v4IFy1FMcsYVMtMne6VmNiXgRjYpWTc31O51tVX+MK4e0xl2RVb25/z
+         hL1nALxVveln96bMa8mpXNJQzldziwJe1dDzuFjVfFpxdMCY9fH/MT3XBjW1dexBy4wt
+         mWDlN/NuCJ4MUQ+zn5CMBY6h4g6EHWXQtRbf9aS8RbHuVRK2AZyVLquM7128XmeKOfPV
+         VU+BPNxI828uan4y+9KPD8mW172PP+pzeKySfZaRSIvnc3kF7teuwUiGBafnTCFd7Z1p
+         2n1g==
+X-Gm-Message-State: AOAM531HzJrj8BFOsEJqkBrvQwiUAs67km/5Izx7dtcKyQd5xa1R+Bq5
+        cR/n/7Qq37SCu9x/bJWsMDMHH/viFQy17E0U
+X-Google-Smtp-Source: ABdhPJz7te8zFZbrg8CVzPPMZiUpMmTHo7TVSCh6WhRbiPvrJPx+//4HWhWLYJri0SWRNLQJSdKPKg==
+X-Received: by 2002:a17:902:e309:b029:129:54da:782d with SMTP id q9-20020a170902e309b029012954da782dmr12711493plc.9.1625493343892;
+        Mon, 05 Jul 2021 06:55:43 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id h11sm12720391pfc.107.2021.07.05.06.55.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 06:55:43 -0700 (PDT)
+Message-ID: <60e30f5f.1c69fb81.9792f.5e75@mx.google.com>
+Date:   Mon, 05 Jul 2021 06:55:43 -0700 (PDT)
+X-Google-Original-Date: Mon, 05 Jul 2021 13:55:41 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210705105934.1513188-1-sashal@kernel.org>
+Subject: RE: [PATCH 5.12 0/7] 5.12.15-rc1 review
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Sasha Levin <sashal@kernel.org>, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmsgeW91LCBNYWNyby4gSSB0aG91Z2h0IG1lbWJlcnMgaW4gInN1Z2dlc3RlZC1ieSIgd291
-bGQgYmUgcHV0IGluDQp0aGUgbGlzdCBhcyB3ZWxsLi4uIEFuZCB0aGFuayB5b3UgZ3V5cyBmb3Ig
-dGhlIHJldmlldyB0aGVzZSBkYXlzLiANCg0KDQpAQW5kcmV3IE1vdG9tDQpIaSBBbmRyZXcsIA0K
-DQpDb3VsZCB5b3UgaGVscCB0byBwdXNoIHRoZSBwYXRjaGVzPyBXZSBhcmUgZGVhbGluZyB3aXRo
-IHRoZSBpc3N1ZSBhbmQgDQp3b3VsZCBiYWNrcG9ydCB0byBBbmRyb2lkIHBvcmplY3QgcmlnaHQg
-YWZ0ZXIgdGhlIGFjdGlvbi4NCkFwcHJlY2lhdGVkIQ0KDQoNCkJSLA0KWWVlIA0KDQoNCk9uIE1v
-biwgMjAyMS0wNy0wNSBhdCAxMzoyMyArMDIwMCwgQW5kcmV5IEtvbm92YWxvdiB3cm90ZToNCj4g
-T24gTW9uLCBKdWwgNSwgMjAyMSBhdCAxOjE4IFBNIE1hcmNvIEVsdmVyIDxlbHZlckBnb29nbGUu
-Y29tPiB3cm90ZToNCj4gPiANCj4gPiBPbiBNb24sIDUgSnVsIDIwMjEgYXQgMTM6MTIsIEFuZHJl
-eSBLb25vdmFsb3YgPGFuZHJleWtudmxAZ21haWwuY29tDQo+ID4gPiB3cm90ZToNCj4gPiBbLi4u
-XQ0KPiA+ID4gPiArICAgICAgIC8qDQo+ID4gPiA+ICsgICAgICAgICogRXhwbGljaXRseSBpbml0
-aWFsaXplIHRoZSBtZW1vcnkgd2l0aCB0aGUgcHJlY2lzZQ0KPiA+ID4gPiBvYmplY3Qgc2l6ZSB0
-bw0KPiA+ID4gPiArICAgICAgICAqIGF2b2lkIG92ZXJ3cml0aW5nIHRoZSBTTEFCIHJlZHpvbmUu
-IFRoaXMgZGlzYWJsZXMNCj4gPiA+ID4gaW5pdGlhbGl6YXRpb24gaW4NCj4gPiA+ID4gKyAgICAg
-ICAgKiB0aGUgYXJjaCBjb2RlIGFuZCBtYXkgdGh1cyBsZWFkIHRvIHBlcmZvcm1hbmNlDQo+ID4g
-PiA+IHBlbmFsdHkuIFRoZSBwZW5hbHR5DQo+ID4gPiA+ICsgICAgICAgICogaXMgYWNjZXB0ZWQg
-c2luY2UgU0xBQiByZWR6b25lcyBhcmVuJ3QgZW5hYmxlZCBpbg0KPiA+ID4gPiBwcm9kdWN0aW9u
-IGJ1aWxkcy4NCj4gPiA+ID4gKyAgICAgICAgKi8NCj4gPiA+ID4gKyAgICAgICBpZiAoX19zbHVi
-X2RlYnVnX2VuYWJsZWQoKSAmJg0KPiA+ID4gDQo+ID4gPiBXaGF0IGhhcHBlbmVkIHRvIHNsdWJf
-ZGVidWdfZW5hYmxlZF91bmxpa2VseSgpPyBXYXMgaXQgcmVuYW1lZD8NCj4gPiA+IFdoeT8gSQ0K
-PiA+ID4gZGlkbid0IHJlY2VpdmUgcGF0Y2ggIzEgb2YgdjYgKG5vciBvZiB2NSkuDQo+ID4gDQo+
-ID4gU29tZWJvZHkgaGFkIHRoZSBzYW1lIGlkZWEgd2l0aCB0aGUgaGVscGVyOg0KPiA+IGh0dHBz
-Oi8vbGttbC5rZXJuZWwub3JnL3IvWU9Lc0M3NWtKZkNad3lTREBlbHZlci5nb29nbGUuY29tDQo+
-ID4gYW5kIE1hdHRoZXcgZGlkbid0IGxpa2UgdGhlIF91bmxpa2VseSgpIHByZWZpeC4NCj4gPiAN
-Cj4gPiBXaGljaCBtZWFudCB3ZSBzaG91bGQganVzdCBtb3ZlIHRoZSBleGlzdGluZyBoZWxwZXIg
-aW50cm9kdWNlZCBpbg0KPiA+IHRoZQ0KPiA+IG1lcmdlIHdpbmRvdy4NCj4gPiANCj4gPiBQYXRj
-aCAxLzI6IA0KPiA+IGh0dHBzOi8vbGttbC5rZXJuZWwub3JnL3IvMjAyMTA3MDUxMDMyMjkuODUw
-NS0yLXllZS5sZWVAbWVkaWF0ZWsuY29tDQo+IA0KPiBHb3QgaXQuIFRoYW5rIHlvdSwgTWFyY28h
-DQo=
+On Mon,  5 Jul 2021 06:59:27 -0400, Sasha Levin <sashal@kernel.org> wrote:
+> 
+> This is the start of the stable review cycle for the 5.12.15 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed 07 Jul 2021 10:59:20 AM UTC.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.12.y&id2=v5.12.14
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
+> 
+
+5.12.15-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
