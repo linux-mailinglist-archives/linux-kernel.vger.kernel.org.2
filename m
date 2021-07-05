@@ -2,130 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDEE53BC2CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 20:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9913BC2D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 20:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhGESpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 14:45:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35685 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229939AbhGESpE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 14:45:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625510546;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hxieeAsO+aYesQyPodozZxutTsNb3aB6Ym4RXVeMxF8=;
-        b=Qc/Y976XLaN2XGyao14eqlGzITLS5A45gwE58S8bUhnWPgfFZIVx7eh/9B47/BYETMfMZg
-        m6/YYm7NI943rlW1nIG+b0Y6y0H0zj8gtyGVf+OnTgyw4QbcmM5LJkGXD1iJ80CT2u6k/M
-        NNozdGMJ5oF2mIRipO0CVqrEq6O4oCw=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-180-bm9IgCIvMu2ebXfgnZih0g-1; Mon, 05 Jul 2021 14:42:25 -0400
-X-MC-Unique: bm9IgCIvMu2ebXfgnZih0g-1
-Received: by mail-wr1-f71.google.com with SMTP id x8-20020a5d54c80000b029012583535285so6478451wrv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 11:42:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hxieeAsO+aYesQyPodozZxutTsNb3aB6Ym4RXVeMxF8=;
-        b=QcograKWNUZ+dFDTolpwwQJCRbCawfIwLs1EWeuquXyPUKQRRwBvIywnIHOGJ1NcwL
-         FEBSYLbiR12SkWVfCH4RLibirLTafh6t47w8XNummV1Hd657lJOXgXfrmOsDKs3BJjgv
-         W80oBVukI9Gt07xCPhaqUwTt1EJ+ox3lwqtV00ShJiKD881woMtkr1fdznGeRYWDkDS7
-         NNB5ez4P4tuan913C9O5GPME7xICwyjo5sRgm4MevIP9MjXRKQXyZ0IImdYmAdhN1b02
-         ++msL8nSgZAp+zkTPQ/aVhTMwpK6KuWvjVsaUqCYNAURKS43gFmO8P7+sK0piUgOI0i/
-         7SAA==
-X-Gm-Message-State: AOAM533Hab8UPHgmVQx3aq2hMvL6R96CHwqxK/b+8dtSOx102XfWXAed
-        ktV+sylcrNIVJV4GzKpRJiX1EFcWpU59nW/L9OliSxbXzWedii2vQbjqjmvZlpdc0fnrH7QrSxv
-        HPbbQPXmfnBKkSI8QvTRJ2J6b
-X-Received: by 2002:a05:600c:4fc7:: with SMTP id o7mr15993590wmq.16.1625510544103;
-        Mon, 05 Jul 2021 11:42:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzlJJFPAXlaTcZQswco9ajV7a/O8ZHwJcSxi3zqI4tlkfUQnVjdSqzPKdDB74yLS1uXV1+ndA==
-X-Received: by 2002:a05:600c:4fc7:: with SMTP id o7mr15993574wmq.16.1625510543917;
-        Mon, 05 Jul 2021 11:42:23 -0700 (PDT)
-Received: from redhat.com ([2.55.8.91])
-        by smtp.gmail.com with ESMTPSA id o3sm14223510wrw.56.2021.07.05.11.42.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 11:42:23 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 14:42:18 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org, jasowang@redhat.com, nickhu@andestech.com,
-        green.hu@gmail.com, deanbo422@gmail.com, akpm@linux-foundation.org,
-        yury.norov@gmail.com, ojeda@kernel.org, ndesaulniers@gooogle.com,
-        joe@perches.com, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next 0/2] refactor the ringtest testing for ptr_ring
-Message-ID: <20210705143952-mutt-send-email-mst@kernel.org>
-References: <1625457455-4667-1-git-send-email-linyunsheng@huawei.com>
- <YOLXTB6VxtLBmsuC@smile.fi.intel.com>
- <c6844e2b-530f-14b2-0ec3-d47574135571@huawei.com>
- <20210705142555-mutt-send-email-mst@kernel.org>
- <YONRKnDzCzSAXptx@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YONRKnDzCzSAXptx@smile.fi.intel.com>
+        id S230002AbhGESqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 14:46:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229874AbhGESqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 14:46:32 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A0E0613AE;
+        Mon,  5 Jul 2021 18:43:55 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m0TZR-00BZOL-DY; Mon, 05 Jul 2021 19:43:53 +0100
+Date:   Mon, 05 Jul 2021 19:43:53 +0100
+Message-ID: <87fsws8uty.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de
+Subject: Re: [irqchip: irq/irqchip-next] irqdomain: Protect the linear revmap with RCU
+In-Reply-To: <79ec0069-553b-cac1-5ec7-d68c757619a5@roeck-us.net>
+References: <162341967699.19906.3242958007782554792.tip-bot2@tip-bot2>
+        <20210705172352.GA56304@roeck-us.net>
+        <87h7h88wsd.wl-maz@kernel.org>
+        <79ec0069-553b-cac1-5ec7-d68c757619a5@roeck-us.net>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: linux@roeck-us.net, linux-kernel@vger.kernel.org, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 09:36:26PM +0300, Andy Shevchenko wrote:
-> On Mon, Jul 05, 2021 at 02:26:32PM -0400, Michael S. Tsirkin wrote:
-> > On Mon, Jul 05, 2021 at 08:06:50PM +0800, Yunsheng Lin wrote:
-> > > On 2021/7/5 17:56, Andy Shevchenko wrote:
-> > > > On Mon, Jul 05, 2021 at 11:57:33AM +0800, Yunsheng Lin wrote:
-> > > >> tools/include/* have a lot of abstract layer for building
-> > > >> kernel code from userspace, so reuse or add the abstract
-> > > >> layer in tools/include/ to build the ptr_ring for ringtest
-> > > >> testing.
-> > > > 
-> > > > ...
-> > > > 
-> > > >>  create mode 100644 tools/include/asm/cache.h
-> > > >>  create mode 100644 tools/include/asm/processor.h
-> > > >>  create mode 100644 tools/include/generated/autoconf.h
-> > > >>  create mode 100644 tools/include/linux/align.h
-> > > >>  create mode 100644 tools/include/linux/cache.h
-> > > >>  create mode 100644 tools/include/linux/slab.h
-> > > > 
-> > > > Maybe somebody can change this to be able to include in-tree headers directly?
-> > > 
-> > > If the above works, maybe the files in tools/include/* is not
-> > > necessary any more, just use the in-tree headers to compile
-> > > the user space app?
-> > > 
-> > > Or I missed something here?
+On Mon, 05 Jul 2021 19:23:27 +0100,
+Guenter Roeck <linux@roeck-us.net> wrote:
+> 
+> Hi Marc,
+> 
+> On 7/5/21 11:01 AM, Marc Zyngier wrote:
+> > Hi Guenter,
 > > 
-> > why would it work? kernel headers outside of uapi are not
-> > intended to be consumed by userspace.
+> > On Mon, 05 Jul 2021 18:23:52 +0100,
+> > Guenter Roeck <linux@roeck-us.net> wrote:
+> >> 
+> >> Hi,
+> >> 
+> >> On Fri, Jun 11, 2021 at 01:54:36PM -0000, irqchip-bot for Marc Zyngier wrote:
+> >>> The following commit has been merged into the irq/irqchip-next branch of irqchip:
+> >>> 
+> >>> Commit-ID:     d4a45c68dc81f9117ceaff9f058d5fae674181b9
+> >>> Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/d4a45c68dc81f9117ceaff9f058d5fae674181b9
+> >>> Author:        Marc Zyngier <maz@kernel.org>
+> >>> AuthorDate:    Mon, 05 Apr 2021 12:57:27 +01:00
+> >>> Committer:     Marc Zyngier <maz@kernel.org>
+> >>> CommitterDate: Thu, 10 Jun 2021 13:09:18 +01:00
+> >>> 
+> >>> irqdomain: Protect the linear revmap with RCU
+> >>> 
+> >>> It is pretty odd that the radix tree uses RCU while the linear
+> >>> portion doesn't, leading to potential surprises for the users,
+> >>> depending on how the irqdomain has been created.
+> >>> 
+> >>> Fix this by moving the update of the linear revmap under
+> >>> the mutex, and the lookup under the RCU read-side lock.
+> >>> 
+> >>> The mutex name is updated to reflect that it doesn't only
+> >>> cover the radix-tree anymore.
+> >>> 
+> >>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> >> 
+> >> This patch results in various RCU warnings when booting mipsel images
+> >> in qemu. I can not revert the patch due to subsequent changes, so I
+> >> don't know if a simple revert fixes the problem. Log messages and
+> >> bisect log see below.
+> > 
+> > Thanks for the heads up. Do you have a config file I can use to
+> > reproduce this? The QEMU invocation runes would certainly help too.
+> > 
+> > It strikes me that in drivers/irqchip/irq-mips-cpu.c,
+> > plat_irq_dispatch() now uses the irqdomain resolution before
+> > irq_enter() took place. That's certainly a latent bug. I'll fix that
+> > regardless, but I'd like to make sure this is what you are seeing too.
+> > 
 > 
-> The problem here, that we are almost getting two copies of the headers, and
-> tools are not in a good maintenance, so it's often desynchronized from the
-> actual Linux headers. This will become more and more diverse if we keep same
-> way of operation. So, I would rather NAK any new copies of the headers from
-> include/ to tools/include.
-
-We already have the copies
-yes they are not maintained well ... what's the plan then?
-NAK won't help us improve the situation.
-I would say copies are kind of okay just make sure they are
-built with kconfig. Then any breakage will be
-detected.
-
-> > > > Besides above, had you tested this with `make O=...`?
-> > > 
-> > > You are right, the generated/autoconf.h is in another directory
-> > > with `make O=...`.
-> > > 
-> > > Any nice idea to fix the above problem?
+> See http://server.roeck-us.net/qemu/mipsel/
 > 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+> config		Complete configuration file
+> defconfig	Shortened configuration file
+> rootfs.cpio	root file system (initrd)
+> run.sh		qemu run script (tested with qemu 4.2.1 and 6.0.0)
+> vmlinux		Kernel image experiencing the problem (v5.13-9883-gaf9efb8b661)
 > 
+> Hope this helps,
 
+It definitely helps, and confirms my hunch. With the patch below, I'm
+not getting the warnings anymore. I'm pretty sure a number of other
+MIPS systems suffer from similar issues, which I'll address similarly.
+
+Please let me know if that addresses the issue on your end.
+
+Thanks,
+
+	M.
+
+diff --git a/arch/mips/include/asm/irq.h b/arch/mips/include/asm/irq.h
+index d1477ecb1af9..57561e0e6e8d 100644
+--- a/arch/mips/include/asm/irq.h
++++ b/arch/mips/include/asm/irq.h
+@@ -57,6 +57,9 @@ asmlinkage void plat_irq_dispatch(void);
+ 
+ extern void do_IRQ(unsigned int irq);
+ 
++struct irq_domain;
++extern void do_domain_IRQ(struct irq_domain *domain, unsigned int irq);
++
+ extern void arch_init_irq(void);
+ extern void spurious_interrupt(void);
+ 
+diff --git a/arch/mips/kernel/irq.c b/arch/mips/kernel/irq.c
+index 85b6c60f285d..c76005cd3b79 100644
+--- a/arch/mips/kernel/irq.c
++++ b/arch/mips/kernel/irq.c
+@@ -21,6 +21,7 @@
+ #include <linux/kallsyms.h>
+ #include <linux/kgdb.h>
+ #include <linux/ftrace.h>
++#include <linux/irqdomain.h>
+ 
+ #include <linux/atomic.h>
+ #include <linux/uaccess.h>
+@@ -107,3 +108,16 @@ void __irq_entry do_IRQ(unsigned int irq)
+ 	irq_exit();
+ }
+ 
++void __irq_entry do_domain_IRQ(struct irq_domain *domain, unsigned int hwirq)
++{
++	struct irq_desc *desc;
++
++	irq_enter();
++	check_stack_overflow();
++
++	desc = irq_resolve_mapping(domain, hwirq);
++	if (likely(desc))
++		handle_irq_desc(desc);
++
++	irq_exit();
++}
+diff --git a/drivers/irqchip/irq-mips-cpu.c b/drivers/irqchip/irq-mips-cpu.c
+index 0bbb0b2d0dd5..0c7ae71a0af0 100644
+--- a/drivers/irqchip/irq-mips-cpu.c
++++ b/drivers/irqchip/irq-mips-cpu.c
+@@ -127,7 +127,6 @@ static struct irq_chip mips_mt_cpu_irq_controller = {
+ asmlinkage void __weak plat_irq_dispatch(void)
+ {
+ 	unsigned long pending = read_c0_cause() & read_c0_status() & ST0_IM;
+-	unsigned int virq;
+ 	int irq;
+ 
+ 	if (!pending) {
+@@ -137,12 +136,15 @@ asmlinkage void __weak plat_irq_dispatch(void)
+ 
+ 	pending >>= CAUSEB_IP;
+ 	while (pending) {
++		struct irq_domain *d;
++
+ 		irq = fls(pending) - 1;
+ 		if (IS_ENABLED(CONFIG_GENERIC_IRQ_IPI) && irq < 2)
+-			virq = irq_linear_revmap(ipi_domain, irq);
++			d = ipi_domain;
+ 		else
+-			virq = irq_linear_revmap(irq_domain, irq);
+-		do_IRQ(virq);
++			d = irq_domain;
++
++		do_domain_IRQ(d, irq);
+ 		pending &= ~BIT(irq);
+ 	}
+ }
+
+-- 
+Without deviation from the norm, progress is not possible.
