@@ -2,120 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BB03BB999
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFDA3BB99F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhGEIuF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 5 Jul 2021 04:50:05 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3355 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbhGEIuD (ORCPT
+        id S230220AbhGEIxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 04:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230101AbhGEIxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:50:03 -0400
-Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GJJqS2Hp9z6H8MM;
-        Mon,  5 Jul 2021 16:33:24 +0800 (CST)
-Received: from lhreml716-chm.china.huawei.com (10.201.108.67) by
- fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 5 Jul 2021 10:47:24 +0200
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- lhreml716-chm.china.huawei.com (10.201.108.67) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 5 Jul 2021 09:47:24 +0100
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2176.012; Mon, 5 Jul 2021 09:47:24 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "mgurtovoy@nvidia.com" <mgurtovoy@nvidia.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        liulongfang <liulongfang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        yuzenghui <yuzenghui@huawei.com>,
-        "Jonathan Cameron" <jonathan.cameron@huawei.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>
-Subject: RE: [RFC v2 1/4] hisi-acc-vfio-pci: add new vfio_pci driver for
- HiSilicon ACC devices
-Thread-Topic: [RFC v2 1/4] hisi-acc-vfio-pci: add new vfio_pci driver for
- HiSilicon ACC devices
-Thread-Index: AQHXbyjyY32E69+qSUOJDcpRvpWsY6syVlwAgAGohwA=
-Date:   Mon, 5 Jul 2021 08:47:23 +0000
-Message-ID: <fc9d6b0b82254fbdb1cc96365b5bdef3@huawei.com>
-References: <20210702095849.1610-1-shameerali.kolothum.thodi@huawei.com>
- <20210702095849.1610-2-shameerali.kolothum.thodi@huawei.com>
- <YOFdTnlkcDZzw4b/@unreal>
-In-Reply-To: <YOFdTnlkcDZzw4b/@unreal>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.83.49]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 5 Jul 2021 04:53:11 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15FFC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 01:50:34 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id p17-20020a17090b0111b02901723ab8d11fso11392136pjz.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 01:50:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FvrjfH1l3R1Ny9FwdhcW/69zM1+NBkCbF2wgXmSb3LI=;
+        b=qJEV7ygJ2Rr9BGE7vIYAqeyKleB50VSm0HUS/QeMwZMrj4bmPFM/G+8yNd6XbvboUx
+         iz5v8lY/b9ZI/Z6T/CfmZouo/4R5MuLgXVJQ0ipqj/8j/sALIM3ddicZlXLxeJIZblYP
+         Q1vfnc0MZoeXoHB/nzThc+knJBtkYfsAdufJiIgYAtIXzs5IyJFxblXOjvI/LK6Ti+vQ
+         bRAbtkhhv3PnntqB/Y7FQ/vY3vLgrteJHjZShOMo8W8mveST5bi+aPRLyC8Olhj8fDQx
+         +V71N+BLPH7Na3YFdk8V30HBS2fRkPSmjLAx7ieRaEX9RHwABQZJhE2ZfoQ7Acxc3FtH
+         zQRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FvrjfH1l3R1Ny9FwdhcW/69zM1+NBkCbF2wgXmSb3LI=;
+        b=dXeFFgQdA3bBRZp22U4OjAg3OpTk1Q25uzSsFbCqDqbUWYkKw1Bh1RWZnaX3BZDULX
+         Ezcp6twBmYr0FGx5/osKBx3KilXZ4RM56Jg0cO37kb/CBNOoOxThyJHBd5GGE/AeFy/V
+         Ts2oaqGVtm73ZKTUgGVUEpu2OLFL377Pvru6apF/ppU7xEdANv4UDb8amWIxQGuRxETN
+         NwLNqSsnPOjOPmC5MZmr3ewd7YRNgzf6NrX9wS7V+y6xT+sa1Wi5nyRRh/s3O6/0H0EG
+         u4sXVt1gurEWvlCjtBwHChuacfewv6S44E5DMZNW4RceypWR5rPfwdQKt5ruVUsG6ODW
+         qTdQ==
+X-Gm-Message-State: AOAM530cToWxnoru9a1Ap64ZxYg5Pzb3SurFuxdytyXEGTyvmEY0k07c
+        maezLpkuK+d4SaItsnrGEIcf22dz6a5P3TkbBVg=
+X-Google-Smtp-Source: ABdhPJy3zChhJxUZY+QjM9YwE4sziAHHpMOu4pQtCOFZihCMThvZJMy3zPSyq7usy8cXj4ry6TWkFrFbhh4IrsOu/kE=
+X-Received: by 2002:a17:902:e9c5:b029:128:d5ea:7ef5 with SMTP id
+ 5-20020a170902e9c5b0290128d5ea7ef5mr11777932plk.21.1625475034406; Mon, 05 Jul
+ 2021 01:50:34 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210705072716.2125074-1-elver@google.com>
+In-Reply-To: <20210705072716.2125074-1-elver@google.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 5 Jul 2021 11:49:58 +0300
+Message-ID: <CAHp75VeRosmsAdCD7W7o9upb+G-de-rwhjCnPtTra2FToEmytg@mail.gmail.com>
+Subject: Re: [PATCH] kasan: fix build by including kernel.h
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, pcc@google.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 5, 2021 at 10:28 AM Marco Elver <elver@google.com> wrote:
+>
+> The <linux/kasan.h> header relies on _RET_IP_ being defined, and had
+> been receiving that definition via inclusion of bug.h which includes
+> kernel.h. However, since f39650de687e that is no longer the case and get
+> the following build error when building CONFIG_KASAN_HW_TAGS on arm64:
+>
+>   In file included from arch/arm64/mm/kasan_init.c:10:
+>   ./include/linux/kasan.h: In function 'kasan_slab_free':
+>   ./include/linux/kasan.h:230:39: error: '_RET_IP_' undeclared (first use in this function)
+>     230 |   return __kasan_slab_free(s, object, _RET_IP_, init);
+>
+> Fix it by including kernel.h from kasan.h.
+
+...which I would like to avoid in the long term, but for now it's
+probably the best quick fix, otherwise it will require the real split
+of _RET_IP or at least rethinking its location.
+
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.org>
+Thanks!
+
+> Fixes: f39650de687e ("kernel.h: split out panic and oops helpers")
+
+P.S. I have tested the initial patch against full build of x86_64, and
+it was long time available for different CIs/build bots, none
+complained so far.
+
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>  include/linux/kasan.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 5310e217bd74..dd874a1ee862 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -3,6 +3,7 @@
+>  #define _LINUX_KASAN_H
+>
+>  #include <linux/bug.h>
+> +#include <linux/kernel.h>
+>  #include <linux/static_key.h>
+>  #include <linux/types.h>
+>
+> --
+> 2.32.0.93.g670b81a890-goog
+>
 
 
-> -----Original Message-----
-> From: Leon Romanovsky [mailto:leon@kernel.org]
-> Sent: 04 July 2021 08:04
-> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> Cc: kvm@vger.kernel.org; linux-kernel@vger.kernel.org;
-> linux-crypto@vger.kernel.org; alex.williamson@redhat.com; jgg@nvidia.com;
-> mgurtovoy@nvidia.com; Linuxarm <linuxarm@huawei.com>; liulongfang
-> <liulongfang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
-> yuzenghui <yuzenghui@huawei.com>; Jonathan Cameron
-> <jonathan.cameron@huawei.com>; Wangzhou (B) <wangzhou1@hisilicon.com>
-> Subject: Re: [RFC v2 1/4] hisi-acc-vfio-pci: add new vfio_pci driver for HiSilicon
-> ACC devices
-> 
-> On Fri, Jul 02, 2021 at 10:58:46AM +0100, Shameer Kolothum wrote:
-> > Add a vendor-specific vfio_pci driver for HiSilicon ACC devices.
-> > This will be extended in follow-up patches to add support for
-> > vfio live migration feature.
-> >
-> > Signed-off-by: Shameer Kolothum
-> <shameerali.kolothum.thodi@huawei.com>
-> > ---
-> >  drivers/vfio/pci/Kconfig             |   9 +++
-> >  drivers/vfio/pci/Makefile            |   2 +
-> >  drivers/vfio/pci/hisi_acc_vfio_pci.c | 100 +++++++++++++++++++++++++++
-> >  3 files changed, 111 insertions(+)
-> >  create mode 100644 drivers/vfio/pci/hisi_acc_vfio_pci.c
-> 
-> <...>
-> 
-> > +static const struct vfio_device_ops hisi_acc_vfio_pci_ops = {
-> > +	.name		= "hisi-acc-vfio-pci",
-> > +	.open		= hisi_acc_vfio_pci_open,
-> > +	.release	= vfio_pci_core_release,
-> > +	.ioctl		= vfio_pci_core_ioctl,
-> > +	.read		= vfio_pci_core_read,
-> > +	.write		= vfio_pci_core_write,
-> > +	.mmap		= vfio_pci_core_mmap,
-> > +	.request	= vfio_pci_core_request,
-> > +	.match		= vfio_pci_core_match,
-> > +	.reflck_attach	= vfio_pci_core_reflck_attach,
-> 
-> I don't remember what was proposed in vfio-pci-core conversion patches,
-> but would expect that default behaviour is to fallback to vfio_pci_core_* API
-> if ".release/.ioctl/e.t.c" are not redefined.
-
-Yes, that would be nice, but don't think it does that in latest(v4).
-
-Hi Max,
-Could we please consider fall back to the core defaults, may be check and assign defaults
-in vfio_pci_core_register_device() ?
-
-Thanks,
-Shameer
+-- 
+With Best Regards,
+Andy Shevchenko
