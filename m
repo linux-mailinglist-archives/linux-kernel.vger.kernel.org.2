@@ -2,105 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F343BBA50
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A524C3BBA4D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhGEJlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 05:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
+        id S230374AbhGEJlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 05:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbhGEJlU (ORCPT
+        with ESMTP id S230261AbhGEJlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 05:41:20 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8FBC061574;
-        Mon,  5 Jul 2021 02:38:43 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id b14-20020a17090a7aceb029017261c7d206so8408326pjl.5;
-        Mon, 05 Jul 2021 02:38:43 -0700 (PDT)
+        Mon, 5 Jul 2021 05:41:08 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 716E6C061760
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 02:38:30 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id v5so21281720wrt.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 02:38:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N8hIsrfFLK/2fysdRAf2HmCsPkpZLqChCVq+sN96CK0=;
-        b=ZfimxbTmkj7HgeUqV2zuTBqyMmPTk+kT/xnWRb5YOaRD2L0ZDEYBWaE8vAoETumG9Y
-         y9bO+O57OeKB0LcBJAP3vNCzvGz+Irsgih05umjacIU665atpiU+hsUTPhrYUhxBMf8E
-         WbPa4D4T1QAz0D/Ew6Zwf16xo8HjxEAi5+dQkF/W0J7ARTi6f3ObvvflVyCehgaT9J1f
-         EJa2/ugXZ1Qb5t51f5GKkQ60Lsla0764LPokF4fgCHseaTSc8fieunlbik515efim5Z/
-         cdkC8c7XGgACr1gDmNDCIlhVnqkeW9Ttaj9XNQo1qt1bJjfePmaLqNDXaDNZ8QAToe7F
-         nn7Q==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LDdjbER3ezDFScKXgmO5TeU2cTUwmoN1ugG4eC/4fRE=;
+        b=F0z7nalwgxiHBebhvwXGMOcu19AjtIyTZ8gOtgUmAecjEzdZ0JR51TdJqdpxokNcg8
+         aATi42Gc+mVeF6ctIyK+AnI++csxpuZsORaSpB1yR4YuJMrD9EUDqvUcw9rsrMPd9xb5
+         beXd5+zvcw0EHShwhNKAG3hBnZ9VZE+Iy5YRDviARu+TxH05NE3iI/517025+IC20RGP
+         xdLCEhkL0nnvibb8AX3UrW4JmfA0kwfKZzNJSuMrh7/P5bDFb2ZIPmR5wrNspvEuOOD0
+         Ka4srlJh74bUe81TROTgUv1DaE3jtze4c6sdINivmPr/5trNWMYR5pDzCgvbcQEYIoVq
+         vybw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N8hIsrfFLK/2fysdRAf2HmCsPkpZLqChCVq+sN96CK0=;
-        b=MPDFbJV3V4vh1Zs6LDqXTUGebMX6T3UtuYtyDm0TffI869SmPbDPjGmIjcrC8ToF/B
-         NZHOGzJ59WSYPQ1Q8hdaEb2+pUamI0Z2d8nY0ToMNsfzlDHGuraM4EwB7ZmGyMT+oC1S
-         65AIhoBi3c9Ud5WHbzMNKb6lB7a7NXJC4TLLJQU0VVbj4FXwzBjUn5VJrQuuNmpjusQB
-         v0OGdgGUCjxDLao2dAEOGs6MM56QKAPgWLWVF+jL4T45gksLKdVaNulxhkoMqOyN9kp1
-         lQhasqDVCg71ikOWNFLFE2Yb8C13FKB96jKjxMExtkRgam9Oe4vkJuDvs01cTYLDD+RE
-         tghw==
-X-Gm-Message-State: AOAM530j00kzXWn3VXOIndLPBhurvkcIPPz4S9S5PQewZRqtWE9g0H+o
-        wM0VdtKXZI0qh2uu+HYcQEdd12Sr2XI1lnDE9iw=
-X-Google-Smtp-Source: ABdhPJzAMt+FJukCPw3nefv6guPPNvSz9T/UHEsyqI80wJBwv2O7EwFmtiaowKJfv7zFQNdH6RNCJAM+d4KMe1sStAw=
-X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr14627083pja.181.1625477922944;
- Mon, 05 Jul 2021 02:38:42 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LDdjbER3ezDFScKXgmO5TeU2cTUwmoN1ugG4eC/4fRE=;
+        b=oZfohp2ON1Bk10VnjqtLPV1iWIPx9b1cJU5UUuhrf6YPhAp5//bY44z0sTt3KW3+4a
+         m9b/PaBY6qqqwEKC93hdB41ka6caYZazGb6R+rFVqcXi/WC7B7TYsmTUrqWdDxVW/y6A
+         963zJ5DiKMcZnSa2eFbl7RLNbVxYuEZ1jw3Imm8Z/Isg4OwA7ypu6EQuSjY8NTiE0x+J
+         chPWt5ub5OufVW1C/nu6HSzERwEldVa/js76YqKkWEEz+akjgqp1ZfTS4EKT8/490MHA
+         NuP7BRyTdtR163AyFeRdkqvGVhZp4QdGErtQY5XWCcLdN7N+fzMZM05WnMIUHGJ80IGl
+         xhlg==
+X-Gm-Message-State: AOAM532GJGBdm/jb9pUlnbsi7nPU89e5hAg1WoW97rLlhAcHaOkGjj6t
+        KBEGfXnRGilN2XnsE+8a9FIA9g==
+X-Google-Smtp-Source: ABdhPJwEyzHzFmiT+oW5m+5FMnPGW3fRamXe3P45E/02iLv4nXIRvBryOSt3r+S90wa5tYE9V3D+zg==
+X-Received: by 2002:a5d:5005:: with SMTP id e5mr14541216wrt.138.1625477909068;
+        Mon, 05 Jul 2021 02:38:29 -0700 (PDT)
+Received: from [192.168.1.9] (hst-221-44.medicom.bg. [84.238.221.44])
+        by smtp.googlemail.com with ESMTPSA id u2sm6553637wmc.42.2021.07.05.02.38.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Jul 2021 02:38:28 -0700 (PDT)
+Subject: Re: [PATCH v2 1/7] venus: firmware: enable no tz fw loading for
+ sc7280
+To:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org
+References: <1625126736-16266-1-git-send-email-dikshita@codeaurora.org>
+ <1625126736-16266-2-git-send-email-dikshita@codeaurora.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <512298bd-f357-d2e6-9b1b-3a8b674cd3f4@linaro.org>
+Date:   Mon, 5 Jul 2021 12:38:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <8908f35a741e25a630d521e1012494e67d31ea64.1625466616.git.jie.deng@intel.com>
- <20210705080245.yabjlrgje5l7vndt@vireshk-i7> <CAHp75Vf0_8+KW_cp2g0V1miMx1cegBdjLzBjTbtpmcmdCHQJxA@mail.gmail.com>
- <20210705085610.okcvnhwhwehjiehy@vireshk-i7>
-In-Reply-To: <20210705085610.okcvnhwhwehjiehy@vireshk-i7>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 5 Jul 2021 12:38:04 +0300
-Message-ID: <CAHp75VeE4Du29XJV54VWR4CH4yfCEqokRUFFRY_sdMKsp1oXyQ@mail.gmail.com>
-Subject: Re: [PATCH v13] i2c: virtio: add a virtio i2c frontend driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jie Deng <jie.deng@intel.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1625126736-16266-2-git-send-email-dikshita@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 11:56 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> On 05-07-21, 11:45, Andy Shevchenko wrote:
-> > On Mon, Jul 5, 2021 at 11:03 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > > On 05-07-21, 14:53, Jie Deng wrote:
-> >
-> > > > +#include <linux/types.h>
-> > > > +#include <linux/const.h>
-> > >
-> > > Both of these need to be the uapi headers as Andy said earlier
-> >
-> > They are already since this header _is_ UAPI,
->
-> Ahh, there is some tricky header inclusion there :)
->
-> > what you are suggesting is gonna not work,
->
-> Why ?
 
-Because we do not have "uapi" in the path in /usr/include on the real
-system where the linux-headers (or kernel-headers) package is
-installed.
 
-It's still possible that our installation hooks will remove that
-"uapi" from the headers, but I think it makes things too complicated.
+On 7/1/21 11:05 AM, Dikshita Agarwal wrote:
+> - Enable no tz FW loading.
+> - add routine to reset XTSS.
+> 
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> ---
+>  drivers/media/platform/qcom/venus/firmware.c     | 41 ++++++++++++++++++------
+>  drivers/media/platform/qcom/venus/hfi_venus_io.h |  2 ++
+>  2 files changed, 33 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
+> index 227bd3b..d5a4674 100644
+> --- a/drivers/media/platform/qcom/venus/firmware.c
+> +++ b/drivers/media/platform/qcom/venus/firmware.c
+> @@ -27,7 +27,12 @@
+>  static void venus_reset_cpu(struct venus_core *core)
+>  {
+>  	u32 fw_size = core->fw.mapped_mem_size;
+> -	void __iomem *wrapper_base = core->wrapper_base;
+> +	void __iomem *wrapper_base;
+> +
+> +	if (IS_V6(core))
+> +		wrapper_base = core->wrapper_tz_base;
+> +	else
+> +		wrapper_base = core->wrapper_base;
+>  
+>  	writel(0, wrapper_base + WRAPPER_FW_START_ADDR);
+>  	writel(fw_size, wrapper_base + WRAPPER_FW_END_ADDR);
+> @@ -35,11 +40,18 @@ static void venus_reset_cpu(struct venus_core *core)
+>  	writel(fw_size, wrapper_base + WRAPPER_CPA_END_ADDR);
+>  	writel(fw_size, wrapper_base + WRAPPER_NONPIX_START_ADDR);
+>  	writel(fw_size, wrapper_base + WRAPPER_NONPIX_END_ADDR);
+> -	writel(0x0, wrapper_base + WRAPPER_CPU_CGC_DIS);
+> -	writel(0x0, wrapper_base + WRAPPER_CPU_CLOCK_CONFIG);
+>  
+> -	/* Bring ARM9 out of reset */
+> -	writel(0, wrapper_base + WRAPPER_A9SS_SW_RESET);
+> +	if (IS_V6(core)) {
+> +		/* Bring XTSS out of reset */
+> +		writel(0, wrapper_base + WRAPPER_TZ_XTSS_SW_RESET);
+> +	}
+> +	else {
 
-> > although it's correct for in-kernel users of UAPI
-> > headers.
+} else {
+	...
+}
 
+> +		writel(0x0, wrapper_base + WRAPPER_CPU_CGC_DIS);
+> +		writel(0x0, wrapper_base + WRAPPER_CPU_CLOCK_CONFIG);
+> +
+> +		/* Bring ARM9 out of reset */
+> +		writel(0, wrapper_base + WRAPPER_A9SS_SW_RESET);
+> +	}
+>  }
+>  
+>  int venus_set_hw_state(struct venus_core *core, bool resume)
+> @@ -56,7 +68,9 @@ int venus_set_hw_state(struct venus_core *core, bool resume)
+>  	if (resume) {
+>  		venus_reset_cpu(core);
+>  	} else {
+> -		if (!IS_V6(core))
+> +		if (IS_V6(core))
+> +			writel(1, core->wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+> +		else
+>  			writel(1, core->wrapper_base + WRAPPER_A9SS_SW_RESET);
+>  	}
+>  
+> @@ -162,12 +176,19 @@ static int venus_shutdown_no_tz(struct venus_core *core)
+>  	u32 reg;
+>  	struct device *dev = core->fw.dev;
+>  	void __iomem *wrapper_base = core->wrapper_base;
+> +	void __iomem *wrapper_tz_base = core->wrapper_tz_base;
+>  
+> +	if (IS_V6(core)) {
+> +	/* Assert the reset to XTSS */
+
+insert one tab before comment
+
+> +		reg = readl_relaxed(wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+> +		reg |= WRAPPER_XTSS_SW_RESET_BIT;
+> +		writel_relaxed(reg, wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+> +	} else {
+>  	/* Assert the reset to ARM9 */
+
+insert one tab before comment
+
+> -	reg = readl_relaxed(wrapper_base + WRAPPER_A9SS_SW_RESET);
+> -	reg |= WRAPPER_A9SS_SW_RESET_BIT;
+> -	writel_relaxed(reg, wrapper_base + WRAPPER_A9SS_SW_RESET);
+> -
+> +		reg = readl_relaxed(wrapper_base + WRAPPER_A9SS_SW_RESET);
+> +		reg |= WRAPPER_A9SS_SW_RESET_BIT;
+> +		writel_relaxed(reg, wrapper_base + WRAPPER_A9SS_SW_RESET);
+> +	}
+>  	/* Make sure reset is asserted before the mapping is removed */
+>  	mb();
+>  
+> diff --git a/drivers/media/platform/qcom/venus/hfi_venus_io.h b/drivers/media/platform/qcom/venus/hfi_venus_io.h
+> index 300c6e47..9735a24 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_venus_io.h
+> +++ b/drivers/media/platform/qcom/venus/hfi_venus_io.h
+> @@ -149,6 +149,8 @@
+>  /* Wrapper TZ 6xx */
+>  #define WRAPPER_TZ_BASE_V6			0x000c0000
+>  #define WRAPPER_TZ_CPU_STATUS_V6		0x10
+> +#define WRAPPER_TZ_XTSS_SW_RESET		0x1000
+> +#define WRAPPER_XTSS_SW_RESET_BIT		BIT(0)
+>  
+>  /* Venus AON */
+>  #define AON_BASE_V6				0x000e0000
+> 
 
 -- 
-With Best Regards,
-Andy Shevchenko
+regards,
+Stan
