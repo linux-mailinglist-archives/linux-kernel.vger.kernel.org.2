@@ -2,111 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38273BB8A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D983BB8AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhGEIQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 04:16:42 -0400
-Received: from foss.arm.com ([217.140.110.172]:40288 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230000AbhGEIQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:16:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0FADD6E;
-        Mon,  5 Jul 2021 01:14:03 -0700 (PDT)
-Received: from [10.57.13.252] (unknown [10.57.13.252])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 702F53F694;
-        Mon,  5 Jul 2021 01:14:02 -0700 (PDT)
-Subject: Re: [PATCH AUTOSEL 5.12 62/80] sched/fair: Take thermal pressure into
- account while estimating energy
-To:     Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg KH <greg@kroah.com>
-References: <20210704230616.1489200-1-sashal@kernel.org>
- <20210704230616.1489200-62-sashal@kernel.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <54648043-4944-08f9-8ce8-8413d8037450@arm.com>
-Date:   Mon, 5 Jul 2021 09:13:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S230109AbhGEIUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 04:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230088AbhGEIUL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 04:20:11 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2A9C061760
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 01:17:34 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id l19so4601209plg.6
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 01:17:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ycqvGR4uCwQxn1/EAF7IRG0AULb2a94B4qsv3hxsOfE=;
+        b=eR+CpU7YULSDOIiz5d0LAtUHb02cQqpp43qMeHnf8Cr5TfTTATEGrdh/+MknfvizAG
+         /L3SdPlOru/sg0j0IU0wYIetfq4cWiFzZt1utJjXXC+kZll2d0YnJoDYpX+7g3Kf7Agt
+         I+N39APILITVQ/pbDV1sOxD9UeGOy2YJFX+z8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ycqvGR4uCwQxn1/EAF7IRG0AULb2a94B4qsv3hxsOfE=;
+        b=YilgqKUjTuJ3QOLEuq17QFdeUIOMMcd9Bj40S8tFFhnuPltxCP5/SHqWwwXfnU22I8
+         2EHBaxILEpNRKMDASIcdPmtcnj8TQibUPyfhzjlTl3hj+qsj4dfI0pUb1D/cHtVO/sf7
+         zbzUJurJtLVsO7K5Y/Vc6x003FxG0WfLPiU/w+cFd6PVtTW/IS/OSUv7nKyt+bsO14b5
+         rZVcAYy9PW8ml+u1WYo64x5XEq4IqaSDZIn5bLtgiSSNXe+iSElotGPf7him+nXpcPjo
+         vrIMpgGB8oFQFT1r8P99QALPFAc9bw6n+E37gXGZD4K0Ellh/4R3+KgIW//nGi/xWXPk
+         4VXA==
+X-Gm-Message-State: AOAM530JYqgs6EgPPnktoaxiDFrbUVCsWsueBotej1qQ7+lbiOu5TrVB
+        tlSYLNW7rn0qtkH2o7u0x7lHCA==
+X-Google-Smtp-Source: ABdhPJxlqvK3aZscWrH/uzl7CdUIO2CuF5GhXDcxIQ3RsB0muFjGsiUQDjKLR/8shvun/UWdZmu+/A==
+X-Received: by 2002:a17:903:2350:b029:129:586d:3b0e with SMTP id c16-20020a1709032350b0290129586d3b0emr11494239plh.44.1625473053786;
+        Mon, 05 Jul 2021 01:17:33 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:f583:59f2:3fb4:7996])
+        by smtp.gmail.com with ESMTPSA id x18sm7423708pfc.76.2021.07.05.01.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 01:17:33 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <robert.foss@linaro.org>
+Cc:     Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        linux-media@vger.kernel.org, tfiga@chromium.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: ov8856: Set default mbus format but allow caller to alter
+Date:   Mon,  5 Jul 2021 16:17:24 +0800
+Message-Id: <20210705081724.168523-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
 MIME-Version: 1.0
-In-Reply-To: <20210704230616.1489200-62-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sasha,
+Setting the value of V_WIN_OFF (0x3818) from 0x02 to 0x01 to use GRBG
+format still results in wrong color output if data is tuned in BGGR mode
+before.
 
-+CC Greg
+Set default mbus format for the supported modes, but allow the caller of
+set(get)_fmt to change the bayer format between BGGR and GRBG.
 
-On 7/5/21 12:05 AM, Sasha Levin wrote:
-> From: Lukasz Luba <lukasz.luba@arm.com>
-> 
-> [ Upstream commit 489f16459e0008c7a5c4c5af34bd80898aa82c2d ]
-> 
-> Energy Aware Scheduling (EAS) needs to be able to predict the frequency
-> requests made by the SchedUtil governor to properly estimate energy used
-> in the future. It has to take into account CPUs utilization and forecast
-> Performance Domain (PD) frequency. There is a corner case when the max
-> allowed frequency might be reduced due to thermal. SchedUtil is aware of
-> that reduced frequency, so it should be taken into account also in EAS
-> estimations.
-> 
-> SchedUtil, as a CPUFreq governor, knows the maximum allowed frequency of
-> a CPU, thanks to cpufreq_driver_resolve_freq() and internal clamping
-> to 'policy::max'. SchedUtil is responsible to respect that upper limit
-> while setting the frequency through CPUFreq drivers. This effective
-> frequency is stored internally in 'sugov_policy::next_freq' and EAS has
-> to predict that value.
-> 
-> In the existing code the raw value of arch_scale_cpu_capacity() is used
-> for clamping the returned CPU utilization from effective_cpu_util().
-> This patch fixes issue with too big single CPU utilization, by introducing
-> clamping to the allowed CPU capacity. The allowed CPU capacity is a CPU
-> capacity reduced by thermal pressure raw value.
-> 
-> Thanks to knowledge about allowed CPU capacity, we don't get too big value
-> for a single CPU utilization, which is then added to the util sum. The
-> util sum is used as a source of information for estimating whole PD energy.
-> To avoid wrong energy estimation in EAS (due to capped frequency), make
-> sure that the calculation of util sum is aware of allowed CPU capacity.
-> 
-> This thermal pressure might be visible in scenarios where the CPUs are not
-> heavily loaded, but some other component (like GPU) drastically reduced
-> available power budget and increased the SoC temperature. Thus, we still
-> use EAS for task placement and CPUs are not over-utilized.
-> 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Link: https://lore.kernel.org/r/20210614191128.22735-1-lukasz.luba@arm.com
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->   kernel/sched/fair.c | 11 ++++++++---
->   1 file changed, 8 insertions(+), 3 deletions(-)
+Set the default mbus format for 3264x2448 (and 1632x1224) to BGGR as the
+data sheet states the value of this reg should be 0x02 by default.
 
-It has been picked up automatically right?
-To make it fully working you need also this patch:
-https://lore.kernel.org/linux-pm/20210614191030.22241-1-lukasz.luba@arm.com/
+If new modes are added in the future, they can add the
+mipi_data_mbus_{format} settings into bayer_offset_configs to adjust their
+offset regs.
 
-It makes sure that the thermal pressure signal gets proper
-information also for CPUs which were offline and then wake-up.
-It has a proper fix tagging with commit hash id.
-That patch can be ported to stable: v5.6+
-I can send it to stable list. Please let me know if you need
-any help.
+Fixes: 2984b0ddd557 ("media: ov8856: Configure sensor for GRBG Bayer for all modes")
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+ drivers/media/i2c/ov8856.c | 83 +++++++++++++++++++++++++++++++++-----
+ 1 file changed, 72 insertions(+), 11 deletions(-)
 
-The same applies to patch which I found for v5.13-stable:
-[PATCH AUTOSEL 5.13 65/85] sched/fair: Take thermal pressure into 
-account while estimating energy
-https://lore.kernel.org/stable/20210704230420.1488358-65-sashal@kernel.org/T/#u
+diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+index 88e19f30d3762..5aac76cca6801 100644
+--- a/drivers/media/i2c/ov8856.c
++++ b/drivers/media/i2c/ov8856.c
+@@ -107,6 +107,11 @@ static const char * const ov8856_supply_names[] = {
+ 	"dvdd",		/* Digital core power */
+ };
+ 
++enum {
++	OV8856_MEDIA_BUS_FMT_SBGGR10_1X10,
++	OV8856_MEDIA_BUS_FMT_SGRBG10_1X10,
++};
++
+ struct ov8856_reg {
+ 	u16 address;
+ 	u8 val;
+@@ -145,6 +150,9 @@ struct ov8856_mode {
+ 
+ 	/* Number of data lanes */
+ 	u8 data_lanes;
++
++	/* Default MEDIA_BUS_FMT for this mode */
++	u32 default_mbus_index;
+ };
+ 
+ struct ov8856_mipi_data_rates {
+@@ -1055,7 +1063,7 @@ static const struct ov8856_reg lane_4_mode_3264x2448[] = {
+ 		{0x3810, 0x00},
+ 		{0x3811, 0x04},
+ 		{0x3812, 0x00},
+-		{0x3813, 0x01},
++		{0x3813, 0x02},
+ 		{0x3814, 0x01},
+ 		{0x3815, 0x01},
+ 		{0x3816, 0x00},
+@@ -1259,7 +1267,7 @@ static const struct ov8856_reg lane_4_mode_1632x1224[] = {
+ 		{0x3810, 0x00},
+ 		{0x3811, 0x02},
+ 		{0x3812, 0x00},
+-		{0x3813, 0x01},
++		{0x3813, 0x02},
+ 		{0x3814, 0x03},
+ 		{0x3815, 0x01},
+ 		{0x3816, 0x00},
+@@ -1372,6 +1380,19 @@ static const struct ov8856_reg lane_4_mode_1632x1224[] = {
+ 		{0x5e10, 0xfc}
+ };
+ 
++static const struct ov8856_reg mipi_data_mbus_sbggr10_1x10[] = {
++	{0x3813, 0x02},
++};
++
++static const struct ov8856_reg mipi_data_mbus_sgrbg10_1x10[] = {
++	{0x3813, 0x01},
++};
++
++static const u32 ov8856_mbus_codes[] = {
++	MEDIA_BUS_FMT_SBGGR10_1X10,
++	MEDIA_BUS_FMT_SGRBG10_1X10
++};
++
+ static const char * const ov8856_test_pattern_menu[] = {
+ 	"Disabled",
+ 	"Standard Color Bar",
+@@ -1380,6 +1401,17 @@ static const char * const ov8856_test_pattern_menu[] = {
+ 	"Bottom-Top Darker Color Bar"
+ };
+ 
++static const struct ov8856_reg_list bayer_offset_configs[] = {
++	[OV8856_MEDIA_BUS_FMT_SBGGR10_1X10] = {
++		.num_of_regs = ARRAY_SIZE(mipi_data_mbus_sbggr10_1x10),
++		.regs = mipi_data_mbus_sbggr10_1x10,
++	},
++	[OV8856_MEDIA_BUS_FMT_SGRBG10_1X10] = {
++		.num_of_regs = ARRAY_SIZE(mipi_data_mbus_sgrbg10_1x10),
++		.regs = mipi_data_mbus_sgrbg10_1x10,
++	}
++};
++
+ struct ov8856 {
+ 	struct v4l2_subdev sd;
+ 	struct media_pad pad;
+@@ -1399,6 +1431,9 @@ struct ov8856 {
+ 	/* Current mode */
+ 	const struct ov8856_mode *cur_mode;
+ 
++	/* Application specified mbus format */
++	u32 cur_mbus_index;
++
+ 	/* To serialize asynchronus callbacks */
+ 	struct mutex mutex;
+ 
+@@ -1450,6 +1485,7 @@ static const struct ov8856_lane_cfg lane_cfg_2 = {
+ 		},
+ 		.link_freq_index = 0,
+ 		.data_lanes = 2,
++		.default_mbus_index = OV8856_MEDIA_BUS_FMT_SGRBG10_1X10,
+ 	},
+ 	{
+ 		.width = 1640,
+@@ -1464,6 +1500,7 @@ static const struct ov8856_lane_cfg lane_cfg_2 = {
+ 		},
+ 		.link_freq_index = 1,
+ 		.data_lanes = 2,
++		.default_mbus_index = OV8856_MEDIA_BUS_FMT_SGRBG10_1X10,
+ 	}}
+ };
+ 
+@@ -1499,6 +1536,7 @@ static const struct ov8856_lane_cfg lane_cfg_4 = {
+ 			},
+ 			.link_freq_index = 0,
+ 			.data_lanes = 4,
++			.default_mbus_index = OV8856_MEDIA_BUS_FMT_SGRBG10_1X10,
+ 		},
+ 		{
+ 			.width = 1640,
+@@ -1513,6 +1551,7 @@ static const struct ov8856_lane_cfg lane_cfg_4 = {
+ 			},
+ 			.link_freq_index = 1,
+ 			.data_lanes = 4,
++			.default_mbus_index = OV8856_MEDIA_BUS_FMT_SGRBG10_1X10,
+ 		},
+ 		{
+ 			.width = 3264,
+@@ -1527,6 +1566,7 @@ static const struct ov8856_lane_cfg lane_cfg_4 = {
+ 			},
+ 			.link_freq_index = 0,
+ 			.data_lanes = 4,
++			.default_mbus_index = OV8856_MEDIA_BUS_FMT_SBGGR10_1X10,
+ 		},
+ 		{
+ 			.width = 1632,
+@@ -1541,6 +1581,7 @@ static const struct ov8856_lane_cfg lane_cfg_4 = {
+ 			},
+ 			.link_freq_index = 1,
+ 			.data_lanes = 4,
++			.default_mbus_index = OV8856_MEDIA_BUS_FMT_SBGGR10_1X10,
+ 		}}
+ };
+ 
+@@ -1904,12 +1945,21 @@ static int ov8856_init_controls(struct ov8856 *ov8856)
+ 	return 0;
+ }
+ 
+-static void ov8856_update_pad_format(const struct ov8856_mode *mode,
++static void ov8856_update_pad_format(struct ov8856 *ov8856,
++				     const struct ov8856_mode *mode,
+ 				     struct v4l2_mbus_framefmt *fmt)
+ {
++	int index;
++
+ 	fmt->width = mode->width;
+ 	fmt->height = mode->height;
+-	fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
++	for (index = 0; index < ARRAY_SIZE(ov8856_mbus_codes); ++index)
++		if (ov8856_mbus_codes[index] == fmt->code)
++			break;
++	if (index == ARRAY_SIZE(ov8856_mbus_codes))
++		index = mode->default_mbus_index;
++	fmt->code = ov8856_mbus_codes[index];
++	ov8856->cur_mbus_index = index;
+ 	fmt->field = V4L2_FIELD_NONE;
+ }
+ 
+@@ -1935,6 +1985,13 @@ static int ov8856_start_streaming(struct ov8856 *ov8856)
+ 		return ret;
+ 	}
+ 
++	reg_list = &bayer_offset_configs[ov8856->cur_mbus_index];
++	ret = ov8856_write_reg_list(ov8856, reg_list);
++	if (ret) {
++		dev_err(&client->dev, "failed to set mbus format");
++		return ret;
++	}
++
+ 	ret = __v4l2_ctrl_handler_setup(ov8856->sd.ctrl_handler);
+ 	if (ret)
+ 		return ret;
+@@ -2096,7 +2153,7 @@ static int ov8856_set_format(struct v4l2_subdev *sd,
+ 				      fmt->format.height);
+ 
+ 	mutex_lock(&ov8856->mutex);
+-	ov8856_update_pad_format(mode, &fmt->format);
++	ov8856_update_pad_format(ov8856, mode, &fmt->format);
+ 	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
+ 		*v4l2_subdev_get_try_format(sd, sd_state, fmt->pad) = fmt->format;
+ 	} else {
+@@ -2140,7 +2197,7 @@ static int ov8856_get_format(struct v4l2_subdev *sd,
+ 							  sd_state,
+ 							  fmt->pad);
+ 	else
+-		ov8856_update_pad_format(ov8856->cur_mode, &fmt->format);
++		ov8856_update_pad_format(ov8856, ov8856->cur_mode, &fmt->format);
+ 
+ 	mutex_unlock(&ov8856->mutex);
+ 
+@@ -2151,11 +2208,10 @@ static int ov8856_enum_mbus_code(struct v4l2_subdev *sd,
+ 				 struct v4l2_subdev_state *sd_state,
+ 				 struct v4l2_subdev_mbus_code_enum *code)
+ {
+-	/* Only one bayer order GRBG is supported */
+-	if (code->index > 0)
++	if (code->index >= ARRAY_SIZE(ov8856_mbus_codes))
+ 		return -EINVAL;
+ 
+-	code->code = MEDIA_BUS_FMT_SGRBG10_1X10;
++	code->code = ov8856_mbus_codes[code->index];
+ 
+ 	return 0;
+ }
+@@ -2165,11 +2221,15 @@ static int ov8856_enum_frame_size(struct v4l2_subdev *sd,
+ 				  struct v4l2_subdev_frame_size_enum *fse)
+ {
+ 	struct ov8856 *ov8856 = to_ov8856(sd);
++	int index;
+ 
+ 	if (fse->index >= ov8856->modes_size)
+ 		return -EINVAL;
+ 
+-	if (fse->code != MEDIA_BUS_FMT_SGRBG10_1X10)
++	for (index = 0; index < ARRAY_SIZE(ov8856_mbus_codes); ++index)
++		if (fse->code == ov8856_mbus_codes[index])
++			break;
++	if (index == ARRAY_SIZE(ov8856_mbus_codes))
+ 		return -EINVAL;
+ 
+ 	fse->min_width = ov8856->priv_lane->supported_modes[fse->index].width;
+@@ -2185,7 +2245,7 @@ static int ov8856_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
+ 	struct ov8856 *ov8856 = to_ov8856(sd);
+ 
+ 	mutex_lock(&ov8856->mutex);
+-	ov8856_update_pad_format(&ov8856->priv_lane->supported_modes[0],
++	ov8856_update_pad_format(ov8856, &ov8856->priv_lane->supported_modes[0],
+ 				 v4l2_subdev_get_try_format(sd, fh->state, 0));
+ 	mutex_unlock(&ov8856->mutex);
+ 
+@@ -2425,6 +2485,7 @@ static int ov8856_probe(struct i2c_client *client)
+ 
+ 	mutex_init(&ov8856->mutex);
+ 	ov8856->cur_mode = &ov8856->priv_lane->supported_modes[0];
++	ov8856->cur_mbus_index = ov8856->cur_mode->default_mbus_index;
+ 	ret = ov8856_init_controls(ov8856);
+ 	if (ret) {
+ 		dev_err(&client->dev, "failed to init controls: %d", ret);
+-- 
+2.32.0.93.g670b81a890-goog
 
-Regards,
-Lukasz
