@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1F13BC164
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 18:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A0D3BC16E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 18:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbhGEQL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 12:11:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229495AbhGEQL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 12:11:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62D73613AB;
-        Mon,  5 Jul 2021 16:09:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625501361;
-        bh=2XzMBDCWTuZKTJpPDkKpokzuPVPOTBI/2bclffIorx4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=u7D924a+RJH1J56edLLyj9U6oNbUsWpUHVDhsrgfQpJGWcXCcn7WbgahQeBWXD1bz
-         PCrSCeCTpGQkJZo3ZkfMiDVRRhV+nIhnT2wC1wo/IfLfyfRPV9VOBo9TIoH3Xm9URD
-         QXGL2qKbavinIC1Iik8uGys28/D8IEroD2tuTox4ZPCAPA32skpiohwQJgzXidUYAW
-         ryZr0JjzJHbzibg4KUyv8t/U9wtjtKwhY2RhJD3ACP5Fa3NHiIKtX2cQp0IqOYk/CF
-         momhsPDmeAgGI8YuLyeiHrsvpInbnw7lFVfCxk6tifSHxpSEc9ELsJykzl72cCpWba
-         xYTjLdDVji5Gw==
-Subject: Re: [f2fs-dev] [PATCH] f2fs: initialize page->private when using for
- our internal use
-To:     Matthew Wilcox <willy@infradead.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org
-References: <20210705052216.831989-1-jaegeuk@kernel.org>
- <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
- <YOLJW0IgCagMk2tF@google.com>
- <e2fdf628-f25c-7495-cfd1-952899f7ff9a@kernel.org>
- <YOLxZAnaKSwBIlK9@casper.infradead.org>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <5ab8d01a-8fac-60b2-9c2c-a32c5a81b394@kernel.org>
-Date:   Tue, 6 Jul 2021 00:09:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S229757AbhGEQOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 12:14:45 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:40548 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhGEQOo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 12:14:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=Q3YIK3t9z+fN5nGyXTdIuXppJPkxUCeL7c4AVzJi+kY=; b=l6HJ3DnwxZZU6aKXCzjaIRSBsT
+        LbVWl7FbsPNed0mxfaZYeSjZ9c+8xrk+2OoGr0VRbICRVllqYNWNz6P3qI5F5Hbi/yJzxfC6qaXyS
+        yOyg762Y2AC2DmygosBJ8ljHE2PFFwpGB/NqLv0FdY9n0GHIea2PFxVbdRewWp5Qfaxpo0Ckd70t3
+        /05fNLEg6T9pgswty+tL7OVFlueljO2/Vpr0wEVGZWABzpXmcDWH2YSCi2mFUZjSKnh1DHadyrHNn
+        JevsJ05ol0XwIxSLUv8X+oEfgDo9iidMUv0OITntKJuyIGvU4cnVPujmsLdCwWSMDnvqww98+xxsN
+        vOlYnjhA==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1m0RCQ-0002b1-IF; Mon, 05 Jul 2021 10:12:01 -0600
+To:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pci@vger.kernel.org
+References: <20210701095621.3129283-1-eric.dumazet@gmail.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <986ec985-a42c-9107-564d-5878a669388b@deltatee.com>
+Date:   Mon, 5 Jul 2021 10:11:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YOLxZAnaKSwBIlK9@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210701095621.3129283-1-eric.dumazet@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: linux-pci@vger.kernel.org, rafael@kernel.org, jglisse@redhat.com, gregkh@linuxfoundation.org, hch@lst.de, ira.weiny@intel.com, dan.j.williams@intel.com, edumazet@google.com, linux-kernel@vger.kernel.org, bhelgaas@google.com, eric.dumazet@gmail.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.4 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        MYRULES_URI_HASH,NICE_REPLY_A autolearn=no autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH] PCI/P2PDMA: finish RCU conversion of pdev->p2pdma
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/5 19:47, Matthew Wilcox wrote:
-> On Mon, Jul 05, 2021 at 07:33:35PM +0800, Chao Yu wrote:
->> On 2021/7/5 16:56, Jaegeuk Kim wrote:
->>> On 07/05, Chao Yu wrote:
->>>> On 2021/7/5 13:22, Jaegeuk Kim wrote:
->>>>> We need to guarantee it's initially zero. Otherwise, it'll hurt entire flag
->>>>> operations.
->>>>
->>>> Oops, I didn't get the point, shouldn't .private be zero after page was
->>>> just allocated by filesystem? What's the case we will encounter stall
->>>> private data left in page?
->>>
->>> I'm seeing f2fs_migrate_page() has the newpage with some value without Private
->>> flag. That causes a kernel panic later due to wrong private flag used in f2fs.
->>
->> I'm not familiar with that part of codes, so Cc mm mailing list for help.
->>
->> My question is newpage in .migrate_page() may contain non-zero value in .private
->> field but w/o setting PagePrivate flag, is it a normal case?
-> 
-> I think freshly allocated pages have a page->private of 0.  ie this
-> code in mm/page_alloc.c:
-> 
->                  page = rmqueue(ac->preferred_zoneref->zone, zone, order,
->                                  gfp_mask, alloc_flags, ac->migratetype);
->                  if (page) {
->                          prep_new_page(page, order, gfp_mask, alloc_flags);
-> 
-> where prep_new_page() calls post_alloc_hook() which contains:
->          set_page_private(page, 0);
-> 
-> Now, I do see in __buffer_migrate_page() (mm/migrate.c):
-> 
->          attach_page_private(newpage, detach_page_private(page));
-> 
-> but as far as I can tell, f2fs doesn't call any of the
-> buffer_migrate_page() paths.  So I'm not sure why you're seeing
-> a non-zero page->private.
 
-Well, that's strange.
 
-Jaegeuk, let's add a BUGON in f2fs to track the call path where newpage
-has non-zero private value? if this issue is reproducible.
-
-Thanks,
-
+On 2021-07-01 3:56 a.m., Eric Dumazet wrote:
+> From: Eric Dumazet <edumazet@google.com>
 > 
+> While looking at pci_alloc_p2pmem() I found rcu protection
+> was not properly applied there, as pdev->p2pdma was
+> potentially read multiple times.
+> 
+> I decided to fix pci_alloc_p2pmem(), add __rcu qualifier
+> to p2pdma field of struct pci_dev, and fix all
+> other accesses to this field with proper rcu verbs.
+> 
+> Fixes: 1570175abd16 ("PCI/P2PDMA: track pgmap references per resource, not globally")
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Cc: Logan Gunthorpe <logang@deltatee.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: "Jérôme Glisse" <jglisse@redhat.com>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Cc: linux-pci@vger.kernel.org
+
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+
+For history, though, Dan had originally suggested the full RCU
+protection is not necessary and it was only a barrier to force the NULL
+check on teardown to resolve:
+
+https://lore.kernel.org/nvdimm/CAPcyv4jZiK+OHjwNqDARv4g326AQZx7N_Lmxj1Zux_bX1T2CLQ@mail.gmail.com/
+
+Things may have changed since then and other uses might be racing with
+the teardown, so having it marked __rcu and fully protected sounds like
+a good idea to me.
+
+Logan
