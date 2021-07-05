@@ -2,82 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150AF3BB8F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C3C3BB8FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhGEIX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 04:23:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40910 "EHLO mail.kernel.org"
+        id S230374AbhGEIYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 04:24:12 -0400
+Received: from mga11.intel.com ([192.55.52.93]:27929 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230326AbhGEIXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:23:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDB1E61415;
-        Mon,  5 Jul 2021 08:20:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625473240;
-        bh=SYTTcfYK+j/Pfq7K8TLV5XJAAQ7TNgyPYPL1DmPYZgE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XzYLpu895mILIUYywEBwmybrW6CpN3rxcCI5ij4RLom+rSkB2Q2DJCJx4Gy9zEq7h
-         L3V+QgzuQMInQumSDAfCQsGT4uAaNHATlfcNLfaoQx3CSGJzNamYL/7PbChrq5Ho0D
-         pwBTyeK7JAxKO+Rju/SdF0fVyXFwIUWBKaeydOmPKbcA2j8gOyAN7B3WE4J3NCDbny
-         C4zyA+S6ZyKTgqI/FeuXj7hUULEEPtHFF1aLP+RNm9LpFJvoPiscuwFj03BkDE9cZO
-         y0Fkc/1nB/Ff8H/sU0EdJhT0NS+KtSwUKnkaSpNCyBQyLNeIgqEbUSzLOBrpD3awk2
-         q1KxGefktUAog==
-Received: from johan by xi with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1m0JqF-0004m3-IX; Mon, 05 Jul 2021 10:20:35 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] USB: serial: cp210x: determine fw version for CP2105 and CP2108
-Date:   Mon,  5 Jul 2021 10:20:15 +0200
-Message-Id: <20210705082015.18286-7-johan@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210705082015.18286-1-johan@kernel.org>
-References: <20210705082015.18286-1-johan@kernel.org>
+        id S230292AbhGEIYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 04:24:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10035"; a="205935693"
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="205935693"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 01:21:30 -0700
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="485423753"
+Received: from elang-mobl.ger.corp.intel.com (HELO localhost) ([10.252.59.138])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 01:21:25 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, maarten.lankhorst@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: drm: screen stuck since commit f611b1e7624c: drm: Avoid circular dependencies for CONFIG_FB
+In-Reply-To: <YODLGdC73lLPpTL3@Red>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <YODLGdC73lLPpTL3@Red>
+Date:   Mon, 05 Jul 2021 11:21:22 +0300
+Message-ID: <87lf6l9nnh.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CP2105, CP2108 and CP2102N have vendor requests that can be used to
-retrieve the firmware version. Having this information available is
-essential when trying to work around buggy firmware as a recent CP2102N
-regression showed.
+On Sat, 03 Jul 2021, Corentin Labbe <clabbe.montjoie@gmail.com> wrote:
+> Hello
+>
+> On next-20210701, my screen is stuck (see attached photo).
+> I bisect the problem to:
+> git bisect start
+> # good: [62fb9874f5da54fdb243003b386128037319b219] Linux 5.13
+> git bisect good 62fb9874f5da54fdb243003b386128037319b219
+> # bad: [fb0ca446157a86b75502c1636b0d81e642fe6bf1] Add linux-next specific files for 20210701
+> git bisect bad fb0ca446157a86b75502c1636b0d81e642fe6bf1
+> # good: [f63c4fda987a19b1194cc45cb72fd5bf968d9d90] Merge remote-tracking branch 'rdma/for-next'
+> git bisect good f63c4fda987a19b1194cc45cb72fd5bf968d9d90
+> # bad: [49c8769be0b910d4134eba07cae5d9c71b861c4a] Merge remote-tracking branch 'drm/drm-next'
+> git bisect bad 49c8769be0b910d4134eba07cae5d9c71b861c4a
+> # good: [4e3db44a242a4e2afe33b59793898ecbb61d478e] Merge tag 'wireless-drivers-next-2021-06-25' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next
+> git bisect good 4e3db44a242a4e2afe33b59793898ecbb61d478e
+> # good: [5745d647d5563d3e9d32013ad4e5c629acff04d7] Merge tag 'amd-drm-next-5.14-2021-06-02' of https://gitlab.freedesktop.org/agd5f/linux into drm-next
+> git bisect good 5745d647d5563d3e9d32013ad4e5c629acff04d7
+> # bad: [8fe44c080a53ac0ccbe88053a2e40f9acca33091] drm/amdgpu/display: fold DRM_AMD_DC_DCN3_1 into DRM_AMD_DC_DCN
+> git bisect bad 8fe44c080a53ac0ccbe88053a2e40f9acca33091
+> # good: [2c1b1ac7084edf477309d27c02d9da7f79b33cec] drm/amdgpu/vcn: drop gfxoff control for VCN2+
+> git bisect good 2c1b1ac7084edf477309d27c02d9da7f79b33cec
+> # good: [2c1b1ac7084edf477309d27c02d9da7f79b33cec] drm/amdgpu/vcn: drop gfxoff control for VCN2+
+> git bisect good 2c1b1ac7084edf477309d27c02d9da7f79b33cec
+> # bad: [d4c9b03ff6a9914b55e4e23fcac11339a2706cc6] drm/amd/pm: Add renoir throttler translation
+> git bisect bad d4c9b03ff6a9914b55e4e23fcac11339a2706cc6
+> # bad: [691cf8cd7a531dbfcc29d09a23c509a86fd9b24f] drm/amdgpu: use correct rounding macro for 64-bit
+> git bisect bad 691cf8cd7a531dbfcc29d09a23c509a86fd9b24f
+> # bad: [2fdcb55dfc86835e4845e3f422180b5596d23cb4] drm/amdkfd: use resource cursor in svm_migrate_copy_to_vram v2
+> git bisect bad 2fdcb55dfc86835e4845e3f422180b5596d23cb4
+> # bad: [6c3f953381e526a1623d4575660afae8b19ffa20] drm/sti/sti_hqvdp: Fix incorrectly named function 'sti_hqvdp_vtg_cb()'
+> git bisect bad 6c3f953381e526a1623d4575660afae8b19ffa20
+> # bad: [5ea4dba68305d9648b9dba30036cc36d4e877bca] drm/msm/a6xx: add CONFIG_QCOM_LLCC dependency
+> git bisect bad 5ea4dba68305d9648b9dba30036cc36d4e877bca
+> # good: [4a888ba03fd97d1cb0253581973533965bf348c4] drm/vgem/vgem_drv: Standard comment blocks should not use kernel-doc format
+> git bisect good 4a888ba03fd97d1cb0253581973533965bf348c4
+> # good: [c5ef15ae09637fb51ae43e1d1d98329d67dd4fd6] video: fbdev: atyfb: mach64_cursor.c: deleted the repeated word
+> git bisect good c5ef15ae09637fb51ae43e1d1d98329d67dd4fd6
+> # bad: [f611b1e7624ccdbd495c19e9805629e22265aa16] drm: Avoid circular dependencies for CONFIG_FB
+> git bisect bad f611b1e7624ccdbd495c19e9805629e22265aa16
+> # good: [ff323d6d72e1e4971c8ba9e2f3cf8afc48f22383] video: fbdev: mb862xx: use DEVICE_ATTR_RO macro
+> git bisect good ff323d6d72e1e4971c8ba9e2f3cf8afc48f22383
+> # first bad commit: [f611b1e7624ccdbd495c19e9805629e22265aa16] drm: Avoid circular dependencies for CONFIG_FB
+>
+> reverting ff323d6d72e1e4971c8ba9e2f3cf8afc48f22383 lead to a correct boot (I got a viewable login prompt).
 
-Determine and log the firmware version also for CP2105 and CP2108
-during type detection at probe.
+I presume that's a copy-paste error, and you mean
+f611b1e7624ccdbd495c19e9805629e22265aa16, the first bad commit, i.e.
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/cp210x.c | 5 +++++
- 1 file changed, 5 insertions(+)
+commit f611b1e7624ccdbd495c19e9805629e22265aa16
+Author: Kees Cook <keescook@chromium.org>
+Date:   Wed Jun 2 14:52:50 2021 -0700
 
-diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-index 6aaf54f16f8c..51670c80bf67 100644
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -399,6 +399,7 @@ struct cp210x_special_chars {
- };
- 
- /* CP210X_VENDOR_SPECIFIC values */
-+#define CP210X_GET_FW_VER	0x000E
- #define CP210X_READ_2NCONFIG	0x000E
- #define CP210X_GET_FW_VER_2N	0x0010
- #define CP210X_READ_LATCH	0x00C2
-@@ -2107,6 +2108,10 @@ static void cp210x_determine_type(struct usb_serial *serial)
- 	}
- 
- 	switch (priv->partnum) {
-+	case CP210X_PARTNUM_CP2105:
-+	case CP210X_PARTNUM_CP2108:
-+		cp210x_get_fw_version(serial, CP210X_GET_FW_VER);
-+		break;
- 	case CP210X_PARTNUM_CP2102N_QFN28:
- 	case CP210X_PARTNUM_CP2102N_QFN24:
- 	case CP210X_PARTNUM_CP2102N_QFN20:
+    drm: Avoid circular dependencies for CONFIG_FB
+
+> So ff323d6d72e1 cause this config change when compiling my defconfig:
+> --- config.fbok	2021-07-03 21:31:08.527260693 +0200
+> +++ config.fbko	2021-07-03 21:39:51.604275703 +0200
+> -CONFIG_VT_HW_CONSOLE_BINDING=y
+> +# CONFIG_VT_HW_CONSOLE_BINDING is not set
+> -CONFIG_DRM_FBDEV_EMULATION=y
+> -CONFIG_DRM_FBDEV_OVERALLOC=100
+> -CONFIG_FB_NOTIFY=y
+> -CONFIG_FB=y
+> -# CONFIG_FIRMWARE_EDID is not set
+> -CONFIG_FB_CFB_FILLRECT=y
+> -CONFIG_FB_CFB_COPYAREA=y
+> -CONFIG_FB_CFB_IMAGEBLIT=y
+> -CONFIG_FB_SYS_FILLRECT=y
+> -CONFIG_FB_SYS_COPYAREA=y
+> -CONFIG_FB_SYS_IMAGEBLIT=y
+> -# CONFIG_FB_FOREIGN_ENDIAN is not set
+> -CONFIG_FB_SYS_FOPS=y
+> -CONFIG_FB_DEFERRED_IO=y
+> -CONFIG_FB_MODE_HELPERS=y
+> -CONFIG_FB_TILEBLITTING=y
+> -
+> -#
+> -# Frame buffer hardware drivers
+> -#
+> -# CONFIG_FB_CIRRUS is not set
+> -# CONFIG_FB_PM2 is not set
+> -# CONFIG_FB_CYBER2000 is not set
+> -# CONFIG_FB_ARC is not set
+> -# CONFIG_FB_ASILIANT is not set
+> -# CONFIG_FB_IMSTT is not set
+> -# CONFIG_FB_VGA16 is not set
+> -# CONFIG_FB_UVESA is not set
+> -# CONFIG_FB_VESA is not set
+> -CONFIG_FB_EFI=y
+> -# CONFIG_FB_N411 is not set
+> -# CONFIG_FB_HGA is not set
+> -# CONFIG_FB_OPENCORES is not set
+> -# CONFIG_FB_S1D13XXX is not set
+> -# CONFIG_FB_NVIDIA is not set
+> -# CONFIG_FB_RIVA is not set
+> -# CONFIG_FB_I740 is not set
+> -# CONFIG_FB_LE80578 is not set
+> -# CONFIG_FB_MATROX is not set
+> -# CONFIG_FB_RADEON is not set
+> -# CONFIG_FB_ATY128 is not set
+> -# CONFIG_FB_ATY is not set
+> -# CONFIG_FB_S3 is not set
+> -# CONFIG_FB_SAVAGE is not set
+> -# CONFIG_FB_SIS is not set
+> -# CONFIG_FB_NEOMAGIC is not set
+> -# CONFIG_FB_KYRO is not set
+> -# CONFIG_FB_3DFX is not set
+> -# CONFIG_FB_VOODOO1 is not set
+> -# CONFIG_FB_VT8623 is not set
+> -# CONFIG_FB_TRIDENT is not set
+> -# CONFIG_FB_ARK is not set
+> -# CONFIG_FB_PM3 is not set
+> -# CONFIG_FB_CARMINE is not set
+> -# CONFIG_FB_SMSCUFX is not set
+> -# CONFIG_FB_UDL is not set
+> -# CONFIG_FB_IBM_GXT4500 is not set
+> -# CONFIG_FB_VIRTUAL is not set
+> -# CONFIG_FB_METRONOME is not set
+> -# CONFIG_FB_MB862XX is not set
+> -# CONFIG_FB_SIMPLE is not set
+> -# CONFIG_FB_SM712 is not set
+> +# CONFIG_FB is not set
+> -CONFIG_FRAMEBUFFER_CONSOLE=y
+> -CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
+> -# CONFIG_FRAMEBUFFER_CONSOLE_ROTATION is not set
+> -# CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER is not set
+> -
+> -CONFIG_LOGO=y
+> -# CONFIG_LOGO_LINUX_MONO is not set
+> -# CONFIG_LOGO_LINUX_VGA16 is not set
+> -CONFIG_LOGO_LINUX_CLUT224=y
+> -# CONFIG_FB_SM750 is not set
+> -# CONFIG_FONTS is not set
+> -CONFIG_FONT_8x8=y
+> +CONFIG_FONT_AUTOSELECT=y
+>
+> Adding CONFIG_FB to my defconfig fix also my boot.
+
+Then you should do that. It's not like kconfig is UABI.
+
+> But I still dont understand why the absence of CONFIG_FB led my screen stuck like this.
+
+That's another question, and one uncovered, not caused, by the kconfig
+change.
+
+
+BR,
+Jani.
+
+
 -- 
-2.31.1
-
+Jani Nikula, Intel Open Source Graphics Center
