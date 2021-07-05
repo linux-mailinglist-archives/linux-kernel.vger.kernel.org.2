@@ -2,130 +2,393 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F73C3BB807
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8023F3BB80D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhGEHok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 03:44:40 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:63072 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbhGEHoj (ORCPT
+        id S230087AbhGEHp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 03:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229884AbhGEHpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 03:44:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1625470921; x=1628062921;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=oN+CmVlIu09UCTNk0mqedlRbCDwPGEkJq9dVFVaU894=;
-        b=rwCrZmA9xBEwFtBK3DyjCjnaHtzoroEt5PJ2dIwfCgH80xExiclxJDsxQuErArb0
-        9IhRHh+pf/hwdHsd5hKFNRlQgwb/fiUbnW3Bdqjb1kyCSMLMIOusi4OBccbIshs9
-        JxwPFmHofuHOOdzkLRfSOWIoRcz9R3kbLDEEliLuWGA=;
-X-AuditID: c39127d2-a9fbd70000001c5e-35-60e2b7c9ac0e
-Received: from berlix.phytec.de (Berlix.phytec.de [172.16.0.117])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 3C.9C.07262.9C7B2E06; Mon,  5 Jul 2021 09:42:01 +0200 (CEST)
-Received: from Berlix.phytec.de (172.16.0.117) by Berlix.phytec.de
- (172.16.0.117) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 5 Jul 2021
- 09:42:01 +0200
-Received: from Berlix.phytec.de ([fe80::343f:7618:c7ce:97c9]) by
- berlix.phytec.de ([fe80::343f:7618:c7ce:97c9%3]) with mapi id 15.01.2176.009;
- Mon, 5 Jul 2021 09:42:01 +0200
-From:   =?utf-8?B?U3RlZmFuIFJpZWRtw7xsbGVy?= <S.Riedmueller@phytec.de>
-To:     "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>
-CC:     "mchehab@kernel.org" <mchehab@kernel.org>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "enrico.scholz@sigma-chemnitz.de" <enrico.scholz@sigma-chemnitz.de>
-Subject: Re: [PATCH v3 1/6] media: mt9p031: Read back the real clock rate
-Thread-Topic: [PATCH v3 1/6] media: mt9p031: Read back the real clock rate
-Thread-Index: AQHXbyjvr3JmbrJuK0Kpw6M9Mr9fS6sz2rqAgAAH6IA=
-Date:   Mon, 5 Jul 2021 07:42:01 +0000
-Message-ID: <a1380e68485ace5125031c1123896355936372d1.camel@phytec.de>
-References: <20210702095922.118614-1-s.riedmueller@phytec.de>
-         <20210702095922.118614-2-s.riedmueller@phytec.de>
-         <20210705071343.GR3@paasikivi.fi.intel.com>
-In-Reply-To: <20210705071343.GR3@paasikivi.fi.intel.com>
-Accept-Language: en-US, de-DE
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.0.116]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <833BD82E0235884898280C8D021A28D5@phytec.de>
-Content-Transfer-Encoding: base64
+        Mon, 5 Jul 2021 03:45:25 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8A6C061574;
+        Mon,  5 Jul 2021 00:42:48 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id w13so10720326wmc.3;
+        Mon, 05 Jul 2021 00:42:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jMNBXEo+xl1RdMF++ZgNqFOZjlT123x/o16EeLnZJHI=;
+        b=frygXrv0W9ilfZAwGNmWpXL4byAnCuKXVVXRktcfUW6y7Ft0MGTS+HJqikiADlg0P7
+         9g2ZkKyPGLCJCrU1qjEaDyScX9gz34NEZ5+HxU3kpdcL17QAd1ImMADkP6uMNWCDvepQ
+         3hq34oo3ilKtqynkR8Bmg8jJGjqXXn+QUgfktDZH7rbw3VB4oix8IL7kx6pqbDbKKjQc
+         uQ7wBFLsWS9XBWQkkuesA9QFb9lWGm+DekpeTRmYhXs0uj3peqg6O2z7db3c/XsJ7LvZ
+         Eb8colivkQn7Zyhq13j7TTjnU35mwOMTi904tceW6k1LuxLK7VZ366VnEIXWuLAGpyHC
+         4JZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=jMNBXEo+xl1RdMF++ZgNqFOZjlT123x/o16EeLnZJHI=;
+        b=PwxZrgrPjxUw5kYjsBaHgFaqJTQsjxRoY9CjnTLjO6xTI800lNkPKGWDhf5rTqgNkh
+         EEHMq5ThwhUKMieIdTsR1UbyHajpjgt9WNRqBCi1fsJtHdPUODiQ5kR868mdi65k8xJ8
+         Vu1GaLI8zJWVmIYZ8ffK2A+iqnK1Geq9K+/ED81VdaSJGjH608ndKk6NAB/LXNIYc9Rh
+         ToHeHqjhC6JsNMS2vWnxEg9/GYmfWHata+DmWZgCYoqVQuF2bv8izbS1bkDytJIa5HJu
+         87gNdH4EHZj5L5fWujxx5WkB4fymZ0XfpV7HaBbz1hR+XN8G60lxRVaUjLSTMxWhz36P
+         wDIw==
+X-Gm-Message-State: AOAM531Rbup0PuN9MChmlnII9Q8RLxrnf5l0nd5z6vIRBqt5C+ZUdmiP
+        G01DoD0c7779boZJkHcSsh8=
+X-Google-Smtp-Source: ABdhPJwZ0TIL8f6QP+9W/pqN7/9lhfXFjuj0xRF477Pw5Yfh5el45ZmAN2WhVy7igz8vSKnihODZYw==
+X-Received: by 2002:a7b:ca43:: with SMTP id m3mr13328109wml.74.1625470967161;
+        Mon, 05 Jul 2021 00:42:47 -0700 (PDT)
+Received: from gmail.com (178-164-188-14.pool.digikabel.hu. [178.164.188.14])
+        by smtp.gmail.com with ESMTPSA id j12sm12040602wro.82.2021.07.05.00.42.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 00:42:46 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 5 Jul 2021 09:42:44 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v8 04/13] kprobes: Add kretprobe_find_ret_addr() for
+ searching return address
+Message-ID: <YOK39GTuueIDeaJL@gmail.com>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+ <162399995900.506599.7731349506430654425.stgit@devnote2>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOIsWRmVeSWpSXmKPExsWyRoChVPfk9kcJBl/faVnMP3KO1WLvsQss
-        Fp0Tl7BbXN41h82iZ8NWVotlm/4wWbTuPcJu8WnLNyYHDo/ZHTNZPTat6mTzmHcy0GPFyv9M
-        Hp83yQWwRnHZpKTmZJalFunbJXBlNMzpZiz4JFcxodm6gbFHrouRk0NCwETi1pbjbF2MXBxC
-        AsuZJGZs3MsI4TxglPh5o50FwtnIKHFp01NWkBY2AReJz23f2EBsEQFHiVnPv7CCFDELrGSW
-        +Ph7BhNIQljAU+LquvNA3RxARV4SfSukIOqtJBZunswIEmYRUJF4vVQYJMwr4CZx6uQvZohd
-        Cxklft27yQyS4BSwkPg4qYEFxGYUkJXobHgHNp5ZQFxi07PvrBAvCEgs2XOeGcIWlXj5+B9U
-        XEGiraeTCWQXs4CmxPpd+hCmhUTPzRqIKYoSU7ofskOcIChxcuYTlgmM4rOQLJiF0DwLoXkW
-        kuZZSJoXMLKuYhTKzUzOTi3KzNYryKgsSU3WS0ndxAiM3MMT1S/tYOyb43GIkYmD8RCjBAez
-        kgivyJRHCUK8KYmVValF+fFFpTmpxYcYpTlYlMR5N/CWhAkJpCeWpGanphakFsFkmTg4pRoY
-        OR6wBKys7zmS0Pjy5tFHVToTanRrPtwNlZZ5GXHiCEuL5bTFrc1ev5Z2uDGsb4/a9z5XwOiu
-        9MFUy/LpD5YLR9QLflcovz1t/fJsae6kyZESOhwn5xz9mjilyfIW6xpvTn2J+a9Z4gRUZ/5f
-        7Oo8M1Sx6+c05jKRc37+Kls1Vbpn7ri9Ku+xEktxRqKhFnNRcSIAjhG0tMoCAAA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162399995900.506599.7731349506430654425.stgit@devnote2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgU2FrYXJpLA0KDQpPbiBNb24sIDIwMjEtMDctMDUgYXQgMTA6MTMgKzAzMDAsIFNha2FyaSBB
-aWx1cyB3cm90ZToNCj4gSGkgRW5yaWNvLA0KPiANCj4gT24gRnJpLCBKdWwgMDIsIDIwMjEgYXQg
-MTE6NTk6MTdBTSArMDIwMCwgU3RlZmFuIFJpZWRtdWVsbGVyIHdyb3RlOg0KPiA+IEZyb206IEVu
-cmljbyBTY2hvbHogPGVucmljby5zY2hvbHpAc2lnbWEtY2hlbW5pdHouZGU+DQo+ID4gDQo+ID4g
-VGhlIHJlYWwgYW5kIHJlcXVlc3RlZCBjbG9jayBjYW4gZGlmZmVyIGFuZCBiZWNhdXNlIGl0IGlz
-IHVzZWQgdG8NCj4gPiBjYWxjdWxhdGUgUExMIHZhbHVlcywgdGhlIHJlYWwgY2xvY2sgcmF0ZSBz
-aG91bGQgYmUgcmVhZC4NCj4gDQo+IERvIHlvdSBoYXZlIGEgc3lzdGVtIHdoZXJlIHRoaXMgaGFw
-cGVucz8gVGhhdCBzdWdnZXN0cyB0aGVyZSdzIGEgd3JvbmcNCj4gdmFsdWUgaW4gRFQuDQoNClRo
-ZSB1c2UgY2FzZSBoZXJlIGlzIHdoZW4gdGhlIGNsb2NrIGlzIHN1cHBsaWVkIGJ5IG9uZSBvZiB0
-aGUgY2xvY2sgb3V0cHV0cyBvZg0KYSBTT0Mgd2hpY2ggbWlnaHQgbm90IGhpdCB0aGUgcmVxdWVz
-dGVkIGZyZXF1ZW5jeSBleGFjdGx5IGR1ZSB0byBpbnRlcm5hbCBQTEwNCmNvbmZpZ3VyYXRpb24u
-IFNvIHRvIGdldCBhIGJldHRlciBwaXhlbCBjbG9jayB0aGUgYWN0dWFsIGNsb2NrIHJhdGUgaXMg
-cmVhZCB0bw0KY2FsY3VsYXRlIHRoZSBQTEwgcGFyYW1ldGVycyBvbiB0aGUgc2Vuc29yLiBBdCBs
-ZWFzdCB0aGF0J3MgdGhlIGlkZWEuDQoNClJlZ2FyZHMsDQpTdGVmYW4NCg0KPiANCj4gVGhlIHBy
-ZWZlcmVuY2Ugbm93YWRheXMgaXMgdG8gcmVseSBvbiBhc3NpZ25lZC1jbG9jay1yYXRlcywgZXZl
-biB0aG91Z2gNCj4gaXQncyBpbmhlcmVudGx5IHNvbWV3aGF0IHVucmVsaWFibGUsIGp1c3QgYXMg
-Y2xrX3NldF9yYXRlKCkuIFRoaXMgaXMgYW4NCj4gZXhpc3RpbmcgZHJpdmVyIHRob3VnaC4gVGhl
-IG9sZCBvbmVzIGNvdWxkIGJlIGtlcHQgZm9yIGNvbXBhdGliaWxpdHkgd2l0aA0KPiBvbGRlciBE
-VCBiaW5hcmllcy4NCj4gDQo+ID4gU2lnbmVkLW9mZi1ieTogRW5yaWNvIFNjaG9seiA8ZW5yaWNv
-LnNjaG9sekBzaWdtYS1jaGVtbml0ei5kZT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBTdGVmYW4gUmll
-ZG11ZWxsZXIgPHMucmllZG11ZWxsZXJAcGh5dGVjLmRlPg0KPiA+IFJldmlld2VkLWJ5OiBMYXVy
-ZW50IFBpbmNoYXJ0IDxsYXVyZW50LnBpbmNoYXJ0QGlkZWFzb25ib2FyZC5jb20+DQo+ID4gLS0t
-DQo+ID4gIGRyaXZlcnMvbWVkaWEvaTJjL210OXAwMzEuYyB8IDkgKysrKysrLS0tDQo+ID4gIDEg
-ZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEvaTJjL210OXAwMzEuYyBiL2RyaXZlcnMvbWVkaWEv
-aTJjL210OXAwMzEuYw0KPiA+IGluZGV4IDc3NTY3MzQxZWM5OC4uM2VhYWE4ZDQ0NTIzIDEwMDY0
-NA0KPiA+IC0tLSBhL2RyaXZlcnMvbWVkaWEvaTJjL210OXAwMzEuYw0KPiA+ICsrKyBiL2RyaXZl
-cnMvbWVkaWEvaTJjL210OXAwMzEuYw0KPiA+IEBAIC0yNTUsNiArMjU1LDcgQEAgc3RhdGljIGlu
-dCBtdDlwMDMxX2Nsa19zZXR1cChzdHJ1Y3QgbXQ5cDAzMSAqbXQ5cDAzMSkNCj4gPiAgDQo+ID4g
-IAlzdHJ1Y3QgaTJjX2NsaWVudCAqY2xpZW50ID0gdjRsMl9nZXRfc3ViZGV2ZGF0YSgmbXQ5cDAz
-MS0+c3ViZGV2KTsNCj4gPiAgCXN0cnVjdCBtdDlwMDMxX3BsYXRmb3JtX2RhdGEgKnBkYXRhID0g
-bXQ5cDAzMS0+cGRhdGE7DQo+ID4gKwl1bnNpZ25lZCBsb25nIGV4dF9mcmVxOw0KPiA+ICAJaW50
-IHJldDsNCj4gPiAgDQo+ID4gIAltdDlwMDMxLT5jbGsgPSBkZXZtX2Nsa19nZXQoJmNsaWVudC0+
-ZGV2LCBOVUxMKTsNCj4gPiBAQCAtMjY1LDEzICsyNjYsMTUgQEAgc3RhdGljIGludCBtdDlwMDMx
-X2Nsa19zZXR1cChzdHJ1Y3QgbXQ5cDAzMQ0KPiA+ICptdDlwMDMxKQ0KPiA+ICAJaWYgKHJldCA8
-IDApDQo+ID4gIAkJcmV0dXJuIHJldDsNCj4gPiAgDQo+ID4gKwlleHRfZnJlcSA9IGNsa19nZXRf
-cmF0ZShtdDlwMDMxLT5jbGspOw0KPiA+ICsNCj4gPiAgCS8qIElmIHRoZSBleHRlcm5hbCBjbG9j
-ayBmcmVxdWVuY3kgaXMgb3V0IG9mIGJvdW5kcyBmb3IgdGhlIFBMTCB1c2UNCj4gPiB0aGUNCj4g
-PiAgCSAqIHBpeGVsIGNsb2NrIGRpdmlkZXIgb25seSBhbmQgZGlzYWJsZSB0aGUgUExMLg0KPiA+
-ICAJICovDQo+ID4gLQlpZiAocGRhdGEtPmV4dF9mcmVxID4gbGltaXRzLmV4dF9jbG9ja19tYXgp
-IHsNCj4gPiArCWlmIChleHRfZnJlcSA+IGxpbWl0cy5leHRfY2xvY2tfbWF4KSB7DQo+ID4gIAkJ
-dW5zaWduZWQgaW50IGRpdjsNCj4gPiAgDQo+ID4gLQkJZGl2ID0gRElWX1JPVU5EX1VQKHBkYXRh
-LT5leHRfZnJlcSwgcGRhdGEtPnRhcmdldF9mcmVxKTsNCj4gPiArCQlkaXYgPSBESVZfUk9VTkRf
-VVAoZXh0X2ZyZXEsIHBkYXRhLT50YXJnZXRfZnJlcSk7DQo+ID4gIAkJZGl2ID0gcm91bmR1cF9w
-b3dfb2ZfdHdvKGRpdikgLyAyOw0KPiA+ICANCj4gPiAgCQltdDlwMDMxLT5jbGtfZGl2ID0gbWlu
-X3QodW5zaWduZWQgaW50LCBkaXYsIDY0KTsNCj4gPiBAQCAtMjgwLDcgKzI4Myw3IEBAIHN0YXRp
-YyBpbnQgbXQ5cDAzMV9jbGtfc2V0dXAoc3RydWN0IG10OXAwMzEgKm10OXAwMzEpDQo+ID4gIAkJ
-cmV0dXJuIDA7DQo+ID4gIAl9DQo+ID4gIA0KPiA+IC0JbXQ5cDAzMS0+cGxsLmV4dF9jbG9jayA9
-IHBkYXRhLT5leHRfZnJlcTsNCj4gPiArCW10OXAwMzEtPnBsbC5leHRfY2xvY2sgPSBleHRfZnJl
-cTsNCj4gPiAgCW10OXAwMzEtPnBsbC5waXhfY2xvY2sgPSBwZGF0YS0+dGFyZ2V0X2ZyZXE7DQo+
-ID4gIAltdDlwMDMxLT51c2VfcGxsID0gdHJ1ZTsNCj4gPiAgDQo=
+
+* Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Add kretprobe_find_ret_addr() for searching correct return address
+> from kretprobe instance list.
+
+A better changelog:
+
+   Add kretprobe_find_ret_addr() for searching the correct return address 
+   from the kretprobe instances list.
+
+But an explanation of *why* we want to add this function would be even 
+better. Is it a cleanup? Is it in preparation for future changes?
+
+Plus:
+
+>  include/linux/kprobes.h |   22 +++++++++++
+>  kernel/kprobes.c        |   91 ++++++++++++++++++++++++++++++++++-------------
+>  2 files changed, 87 insertions(+), 26 deletions(-)
+> 
+> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+> index 5ce677819a25..08d3415e4418 100644
+> --- a/include/linux/kprobes.h
+> +++ b/include/linux/kprobes.h
+> @@ -207,6 +207,14 @@ static nokprobe_inline void *kretprobe_trampoline_addr(void)
+>  	return dereference_kernel_function_descriptor(kretprobe_trampoline);
+>  }
+>  
+> +static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
+> +{
+> +	return (void *)addr == kretprobe_trampoline_addr();
+> +}
+> +
+> +unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
+> +				      struct llist_node **cur);
+
+These prototypes for helpers are put into a section of:
+
+  #ifdef CONFIG_KRETPROBES
+
+But:
+
+> +#if !defined(CONFIG_KRETPROBES)
+> +static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
+> +{
+> +	return false;
+> +}
+> +
+> +static nokprobe_inline
+> +unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
+> +				      struct llist_node **cur)
+> +{
+> +	return 0;
+> +}
+> +#endif
+
+Why does this use such a weird pattern? What is wrong with:
+
+   #ifndef CONFIG_KRETPROBES
+
+But more importantly, why isn't this in the regular '#else' block of the 
+CONFIG_KRETPROBES block you added the other functions to ??
+
+Why this intentional obfuscation combined with poor changelogs - is the 
+kprobes code too easy to read, does it have too few bugs?
+
+And this series is on v8 already, and nobody noticed this?
+
+> +/* This assumes the tsk is current or the task which is not running. */
+> +static unsigned long __kretprobe_find_ret_addr(struct task_struct *tsk,
+> +					       struct llist_node **cur)
+
+
+A better comment:
+
+    /* This assumes 'tsk' is the current task, or is not running. */
+
+We always escape variable names in English sentences. This is nothing new.
+
+> +			*cur = node;
+> +			return (unsigned long)ri->ret_addr;
+
+Don't just randomly add forced type casts (which are dangerous, 
+bug-inducing patterns of code) without examining whether it's justified.
+
+But a compiler warning is not justification!
+
+In this case the examination would involve:
+
+  kepler:~/tip> git grep -w ret_addr kernel/kprobes.c 
+
+  kernel/kprobes.c:               if (ri->ret_addr != kretprobe_trampoline_addr()) {
+  kernel/kprobes.c:                       return (unsigned long)ri->ret_addr;
+  kernel/kprobes.c:                       ri->ret_addr = correct_ret_addr;
+
+  kepler:~/tip> git grep -w correct_ret_addr kernel/kprobes.c 
+
+  kernel/kprobes.c:       kprobe_opcode_t *correct_ret_addr = NULL;
+  kernel/kprobes.c:       correct_ret_addr = (void *)__kretprobe_find_ret_addr(current, &node);
+  kernel/kprobes.c:       if (!correct_ret_addr) {
+  kernel/kprobes.c:                       ri->ret_addr = correct_ret_addr;
+  kernel/kprobes.c:       return (unsigned long)correct_ret_addr;
+
+what we can see here is unnecessary type confusion & friction of the first 
+degree:
+
+ - 'correct_ret_addr' is 'kprobe_opcode_t *' (which is good), but the newly 
+   introduced __kretprobe_find_ret_addr() function doesn't return such a 
+   type - why?
+
+ - struct_kretprobe_instance::ret_address has a 'kprobe_opcode_t *' type as 
+   well - which is good.
+
+ - kretprobe_find_ret_addr() uses 'unsigned long', but it returns the value 
+   to __kretprobe_trampoline_handler(), which does *another* forced type 
+   cast:
+
+  +       correct_ret_addr = (void *)__kretprobe_find_ret_addr(current, &node);
+
+
+So we have the following type conversions:
+
+  kprobe_opcode_t * => unsigned long => unsigned long => kprobe_opcode_t *
+
+Is there a technical reason why we cannot just use 'kprobe_opcode_t *'.
+
+All other type casts in the kprobes code should be reviewed as well.
+
+> -	BUG_ON(1);
+> +	return 0;
+
+And in the proper, intact type propagation model this would become
+'return NULL' - which is *far* more obviously a 'not found' condition
+than a random zero that might mean anything...
+
+> +unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
+> +				      struct llist_node **cur)
+> +{
+> +	struct kretprobe_instance *ri = NULL;
+> +	unsigned long ret;
+> +
+> +	do {
+> +		ret = __kretprobe_find_ret_addr(tsk, cur);
+> +		if (!ret)
+> +			return ret;
+> +		ri = container_of(*cur, struct kretprobe_instance, llist);
+> +	} while (ri->fp != fp);
+> +
+> +	return ret;
+
+Here I see another type model problem: why is the frame pointer 'void *', 
+which makes it way too easy to mix up with text pointers such as 
+'kprobe_opcode_t *'?
+
+In the x86 unwinder we use 'unsigned long *' as the frame pointer:
+
+     unsigned long *bp
+
+but it might also make sense to introduce a more opaque dedicated type 
+within the kprobes code, such as 'frame_pointer_t'.
+
+> +unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+> +					     void *frame_pointer)
+> +{
+> +	kprobe_opcode_t *correct_ret_addr = NULL;
+> +	struct kretprobe_instance *ri = NULL;
+> +	struct llist_node *first, *node = NULL;
+> +	struct kretprobe *rp;
+> +
+> +	/* Find correct address and all nodes for this frame. */
+> +	correct_ret_addr = (void *)__kretprobe_find_ret_addr(current, &node);
+> +	if (!correct_ret_addr) {
+> +		pr_err("Oops! Kretprobe fails to find correct return address.\n");
+
+Could we please make user-facing messages less random? Right now we have:
+
+  kepler:~/tip> git grep -E 'pr_.*\(' kernel/kprobes.c include/linux/kprobes.h include/asm-generic/kprobes.h $(find arch/ -name kprobes.c)
+
+  arch/arm64/kernel/probes/kprobes.c:             pr_warn("Unrecoverable kprobe detected.\n");
+  arch/csky/kernel/probes/kprobes.c:              pr_warn("Address not aligned.\n");
+  arch/csky/kernel/probes/kprobes.c:              pr_warn("Unrecoverable kprobe detected.\n");
+  arch/mips/kernel/kprobes.c:             pr_notice("Kprobes for ll and sc instructions are not"
+  arch/mips/kernel/kprobes.c:             pr_notice("Kprobes for branch delayslot are not supported\n");
+  arch/mips/kernel/kprobes.c:             pr_notice("Kprobes for compact branches are not supported\n");
+  arch/mips/kernel/kprobes.c:     pr_notice("%s: unaligned epc - sending SIGBUS.\n", current->comm);
+  arch/mips/kernel/kprobes.c:                     pr_notice("Kprobes: Error in evaluating branch\n");
+  arch/riscv/kernel/probes/kprobes.c:             pr_warn("Address not aligned.\n");
+  arch/riscv/kernel/probes/kprobes.c:             pr_warn("Unrecoverable kprobe detected.\n");
+  arch/s390/kernel/kprobes.c:             pr_err("Invalid kprobe detected.\n");
+  kernel/kprobes.c:               pr_debug("Failed to arm kprobe-ftrace at %pS (%d)\n",
+  kernel/kprobes.c:                       pr_debug("Failed to init kprobe-ftrace (%d)\n", ret);
+  kernel/kprobes.c:               pr_err("Oops! Kretprobe fails to find correct return address.\n");
+  kernel/kprobes.c:       pr_err("Dumping kprobe:\n");
+  kernel/kprobes.c:       pr_err("Name: %s\nOffset: %x\nAddress: %pS\n",
+  kernel/kprobes.c:               pr_err("kprobes: failed to populate blacklist: %d\n", err);
+  kernel/kprobes.c:               pr_err("Please take care of using kprobes.\n");
+  kernel/kprobes.c:               pr_warn("Kprobes globally enabled, but failed to arm %d out of %d probes\n",
+  kernel/kprobes.c:               pr_info("Kprobes globally enabled\n");
+  kernel/kprobes.c:               pr_warn("Kprobes globally disabled, but failed to disarm %d out of %d probes\n",
+  kernel/kprobes.c:               pr_info("Kprobes globally disabled\n");
+
+In particular, what users may see in their syslog, when the kprobes code 
+runs into trouble, is, roughly:
+
+  kepler:~/tip> git grep -E 'pr_.*\(' kernel/kprobes.c include/linux/kprobes.h include/asm-generic/kprobes.h $(find arch/ -name kprobes.c) | cut -d\" -f2
+
+  Unrecoverable kprobe detected.\n
+  Address not aligned.\n
+  Unrecoverable kprobe detected.\n
+  Kprobes for ll and sc instructions are not
+  Kprobes for branch delayslot are not supported\n
+  Kprobes for compact branches are not supported\n
+  %s: unaligned epc - sending SIGBUS.\n
+  Kprobes: Error in evaluating branch\n
+  Address not aligned.\n
+  Unrecoverable kprobe detected.\n
+  Invalid kprobe detected.\n
+  Failed to arm kprobe-ftrace at %pS (%d)\n
+  Failed to init kprobe-ftrace (%d)\n
+  Oops! Kretprobe fails to find correct return address.\n
+  Dumping kprobe:\n
+  Name: %s\nOffset: %x\nAddress: %pS\n
+  kprobes: failed to populate blacklist: %d\n
+  Please take care of using kprobes.\n
+  Kprobes globally enabled, but failed to arm %d out of %d probes\n
+  Kprobes globally enabled\n
+  Kprobes globally disabled, but failed to disarm %d out of %d probes\n
+  Kprobes globally disabled\n
+
+Ugh. Some of the messages don't even have 'kprobes' in them...
+
+So my suggestion would be:
+
+ - Introduce a subsystem syslog message prefix, via the standard pattern  of:
+
+     #define pr_fmt(fmt) "kprobes: " fmt
+
+ - Standardize the messages:
+
+    - Start each message with a key noun that stresses the nature of the 
+      failure.
+
+    - *Make each message self-explanatory*, don't leave users hanging in 
+      the air about what is going to happen next. Messages like:
+
+               Address not aligned.\n
+
+    - Check spelling. This:
+
+                pr_err("kprobes: failed to populate blacklist: %d\n", err);
+                pr_err("Please take care of using kprobes.\n");
+
+      should be on a single line and should probably say something like:
+
+                pr_err("kprobes: Failed to populate blacklist (error: %d), kprobes not restricted, be careful using them!.\n", err);
+
+      and if checkpatch complains that the line is 'too long', ignore 
+      checkpatch and keep the message self-contained.
+
+ - and most importantly: provide a suggested *resolution*. 
+   Passive-aggressive messages like:
+
+      Oops! Kretprobe fails to find correct return address.\n
+
+   are next to useless. Instead, always describe:
+
+     - what happened,
+     - what is the kernel going to do or not do,
+     - is the kernel fine,
+     - what can the user do about it.
+
+   In this case, a better message would be:
+
+      kretprobes: Return address not found, not executing handler. Kernel is probably fine, but check the system tool that did this.
+
+Each and every message should be reviewed & fixed to meet these standards - 
+or should be removed and replaced with a WARN_ON() if it's indicating an 
+internal bug that cannot be caused by kprobes using tools, such as this 
+one:
+
+> +		if (WARN_ON_ONCE(ri->fp != frame_pointer))
+> +			break;
+
+I can help double checking the fixed messages, if you are unsure about any 
+of them.
+
+> +	/* Recycle them.  */
+> +	while (first) {
+> +		ri = container_of(first, struct kretprobe_instance, llist);
+> +		first = first->next;
+>  
+>  		recycle_rp_inst(ri);
+>  	}
+
+It would be helpful to explain, a bit more verbose comment, what 
+'recycling' is in this context. The code is not very helpful:
+
+  NOKPROBE_SYMBOL(free_rp_inst_rcu);
+
+  static void recycle_rp_inst(struct kretprobe_instance *ri)
+  {
+          struct kretprobe *rp = get_kretprobe(ri);
+
+          if (likely(rp)) {
+                  freelist_add(&ri->freelist, &rp->freelist);
+          } else
+                  call_rcu(&ri->rcu, free_rp_inst_rcu);
+  }
+  NOKPROBE_SYMBOL(recycle_rp_inst);
+
+BTW., why are unnecessary curly braces used here?
+
+The kprobes code urgently needs a quality boost.
+
+Thanks,
+
+	Ingo
