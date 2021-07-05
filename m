@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8C33BC2D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 20:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7386F3BC2DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 20:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhGESsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 14:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
+        id S229884AbhGEStc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 14:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbhGESsS (ORCPT
+        with ESMTP id S229725AbhGEStb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 14:48:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13506C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 11:45:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aNDwCscw1p86DkXqINJ193YMMwMojg7IqAtfTHOFrf0=; b=tli0JQf63aKNQuU6V30vDNoLKW
-        xs1PRFkoJOOygR1Pe/ZKjRhuqlwLDKBN6y1ULUtJb/dYAbDQRHxf9AgySXqDNdzbFgtk8EDNx+JqV
-        iO7ICp+tFdRpf1XWxhgO2SAOSEG8V0KORR1aUAAh6ROogwS3XXW0GzzsqGrRYRkjIA/dwN5XJRFgO
-        DM6jIV+NFd2QqIpBA+rjPQS2f2455MclI6qONorqe5aHu8DjB3D4PlHvSMDCAVgzUNz+kAKyzX92g
-        b13se+6qajfCbSwFF1hA9kH/PbvTj34O0SD3hPjiWrz/IL2Quv0N+M8pd9z2xTXqmep1hBEKHyPM8
-        sX/mjbTA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0Taw-00AW2c-IU; Mon, 05 Jul 2021 18:45:30 +0000
-Date:   Mon, 5 Jul 2021 19:45:26 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Chao Yu <chao@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [f2fs-dev] [PATCH] f2fs: initialize page->private when using for
- our internal use
-Message-ID: <YONTRlrJugeVq6Fj@casper.infradead.org>
-References: <20210705052216.831989-1-jaegeuk@kernel.org>
- <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
- <YOLJW0IgCagMk2tF@google.com>
- <e2fdf628-f25c-7495-cfd1-952899f7ff9a@kernel.org>
- <YOLxZAnaKSwBIlK9@casper.infradead.org>
- <YONJpQapR7BRnW/J@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YONJpQapR7BRnW/J@google.com>
+        Mon, 5 Jul 2021 14:49:31 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99008C061574;
+        Mon,  5 Jul 2021 11:46:53 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id b8-20020a17090a4888b02901725eedd346so434231pjh.4;
+        Mon, 05 Jul 2021 11:46:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=MOUogTgzCZv9vKhYKCDd8pNGYOu1E0m2jZPnN2Zb2Jk=;
+        b=sO2gxYbMGStIX0AlCB8xqqCaEcGkzpcn9TwUrPcNf7sLJUwv8jx7nyep56Z+NBqjhA
+         z3QfUwd2TFR56ph8l8W8oqpV9RWvBY0yftPtNkcvY2fTPTZxj9mFuIRRP/0nevgZ06Vi
+         MmewXJ1UCu3H59B6/gG8S3Kovi1bBAkOngXujnMIfqXcJX/EmhmPJWQOw2LoKrn4CNoK
+         IyeOKVNBZLSYDUl8nETc8dy++lA7ZjDYghXaZJoTiKJljY7W24eQBhfkmQjUkXxp5k2q
+         rDIam0qlmkGK8L0PDH7OmoVlsmX20lSVUycgXcgpnA9PW+SR0niBDlay3Wt9KspjZ6si
+         hA1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=MOUogTgzCZv9vKhYKCDd8pNGYOu1E0m2jZPnN2Zb2Jk=;
+        b=YhzjISdY5JnjSMvkWUFsR7G6CRkj1oZiFBea/5igJHC0u8z2AUOR9voRbTzNhLFn38
+         dmBzF+YMnk59R7TQLfY/gTLQrXQcWf5Mr7eEzOOn6wXQzMBZFM6HQYfkii5T354sony7
+         13qUAOPRtjO/lc3ynNRJLG39vVLeCz4WJ8c1Gqf+EYwQQKvAs/C3uKE7xEcGRnXDF3hh
+         smnrPkAW+/X9kMWS7ElgUPECGjRmaZNRB4ZI9b3JNAUx/omnLF1l/J8ErrSvcGaQ6Vsy
+         LZWJ0fQuAvR5/rYrlDpIv2Y+XGi/faacMOCKwHEouIX+Lcb2hZmwbEnnfvt+ZPuM0+CL
+         2Uww==
+X-Gm-Message-State: AOAM531zYtNK6GlLrr1fBlJUDQPR9zL0WWkC//K8+zrsmCSh6MLYwlpS
+        9FvQXAgjPuqB8ymLUjLDW3PcfrEFgfkpGbV6
+X-Google-Smtp-Source: ABdhPJyGwVji8wQInlD9saxliQqDYbgS7WY925eKW/zKY5iOsYjua5xkrLlfVTL6Wc9hrPM2XZNtsQ==
+X-Received: by 2002:a17:90b:1115:: with SMTP id gi21mr450368pjb.116.1625510812635;
+        Mon, 05 Jul 2021 11:46:52 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id g11sm16922037pgj.3.2021.07.05.11.46.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 11:46:51 -0700 (PDT)
+Message-ID: <60e3539b.1c69fb81.e1511.17c0@mx.google.com>
+Date:   Mon, 05 Jul 2021 11:46:51 -0700 (PDT)
+X-Google-Original-Date: Mon, 05 Jul 2021 18:46:50 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210705105656.1512997-1-sashal@kernel.org>
+Subject: RE: [PATCH 5.13 0/2] 5.13.1-rc1 review
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Sasha Levin <sashal@kernel.org>, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 11:04:21AM -0700, Jaegeuk Kim wrote:
-> On 07/05, Matthew Wilcox wrote:
-> > I think freshly allocated pages have a page->private of 0.  ie this
-> > code in mm/page_alloc.c:
-> > 
-> >                 page = rmqueue(ac->preferred_zoneref->zone, zone, order,
-> >                                 gfp_mask, alloc_flags, ac->migratetype);
-> >                 if (page) {
-> >                         prep_new_page(page, order, gfp_mask, alloc_flags);
-> > 
-> > where prep_new_page() calls post_alloc_hook() which contains:
-> >         set_page_private(page, 0);
+On Mon,  5 Jul 2021 06:56:54 -0400, Sasha Levin <sashal@kernel.org> wrote:
 > 
-> Hmm, I can see it in 4.14 and 5.10 kernel.
+> This is the start of the stable review cycle for the 5.13.1 release.
+> There are 2 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> The trace is on:
+> Responses should be made by Wed 07 Jul 2021 10:49:46 AM UTC.
+> Anything received after that time might be too late.
 > 
->  30875 [ 1065.118750] c3     87  f2fs_migrate_page+0x354/0x45c
->  30876 [ 1065.123872] c3     87  move_to_new_page+0x70/0x30c
->  30877 [ 1065.128813] c3     87  migrate_pages+0x3a0/0x964
->  30878 [ 1065.133583] c3     87  compact_zone+0x608/0xb04
->  30879 [ 1065.138257] c3     87  kcompactd+0x378/0x4ec
->  30880 [ 1065.142664] c3     87  kthread+0x11c/0x12c
->  30881 [ 1065.146897] c3     87  ret_from_fork+0x10/0x18
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.13.y&id2=v5.13
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> and the diffstat can be found below.
 > 
->  It seems compaction_alloc() gets a free page which doesn't reset the fields?
+> Thanks,
+> Sasha
+> 
 
-I'm not really familiar with the compaction code.  Mel, I see a call
-to post_alloc_hook() in split_map_pages().  Are there other ways of
-getting the compaction code to allocate a page which don't go through
-split_map_pages()?
+5.13.1-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
+
