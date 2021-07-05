@@ -2,153 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D656D3BBB76
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9382C3BBB82
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhGEKsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 06:48:52 -0400
-Received: from angie.orcam.me.uk ([78.133.224.34]:60282 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhGEKsv (ORCPT
+        id S231250AbhGEKvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 06:51:11 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:16018 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230482AbhGEKvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 06:48:51 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 82FE092009C; Mon,  5 Jul 2021 12:46:13 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 7BD6092009B;
-        Mon,  5 Jul 2021 12:46:13 +0200 (CEST)
-Date:   Mon, 5 Jul 2021 12:46:13 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Nikolai Zhubr <zhubr.2@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-cc:     Arnd Bergmann <arnd@kernel.org>, x86@kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/PCI: Handle PIRQ routing tables with no router device
- given
-Message-ID: <alpine.DEB.2.21.2107051133010.33206@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Mon, 5 Jul 2021 06:51:09 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 5970675FD6;
+        Mon,  5 Jul 2021 13:48:31 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1625482111;
+        bh=r5Z1vzpteloz/5230YXT1DtK09ZfwpWzllYWGELadvQ=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=lBRCPbvL+OhqDXqtnOvFsBwWS1MIjNEI+9b5cqqKB5AylqgOtGwAhfbRfkrtI9kC2
+         Ow1Ma7MbK5pODy7JF7lLiHJ3kgeGkBCIRM6FeKL/UVRSU/COJr0aDjsfy/TBkTDpey
+         TYbifR0wiNkvIheTcUJFf470XUewWFYMhI9Jg0cZ73X3iftUXcSW5uFRqVhO5y9b6U
+         9OLShgveInxCunlShptWierzjPubf7v1428flenPj00F23d5Hz3XVZqbGWsBgdNnNF
+         9XIEUaTlwyUsG3/HE91mVoguJSV80cZc9KF0ePFeRPj9M4vsyLB2+FI6l+gRFBSipq
+         qRmcz/1M3orLA==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id A240775FAE;
+        Mon,  5 Jul 2021 13:48:30 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Mon, 5
+ Jul 2021 13:48:29 +0300
+Subject: Re: [MASSMAIL KLMS]Re: [RFC PATCH v2 0/6] Improve SOCK_SEQPACKET
+ receive logic
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210704080820.88746-1-arseny.krasnov@kaspersky.com>
+ <20210704042843-mutt-send-email-mst@kernel.org>
+ <b427dee7-5c1b-9686-9004-05fa05d45b28@kaspersky.com>
+ <20210704055037-mutt-send-email-mst@kernel.org>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <c9f0d355-27a1-fb19-eac0-06a5d7648f5d@kaspersky.com>
+Date:   Mon, 5 Jul 2021 13:48:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210704055037-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.64.121]
+X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/05/2021 10:23:33
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164836 [Jul 05 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_exist}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/05/2021 10:25:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 05.07.2021 7:14:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/07/05 06:23:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/05 06:33:00 #16857317
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PIRQ routing tables provided by the PCI BIOS usually specify the PCI 
-vendor:device ID as well as the bus address of the device implementing 
-the PIRQ router, e.g.:
 
-PCI: Interrupt Routing Table found at 0xc00fde10
-[...]
-PCI: Attempting to find IRQ router for [8086:7000]
-pci 0000:00:07.0: PIIX/ICH IRQ router [8086:7000]
+On 04.07.2021 12:54, Michael S. Tsirkin wrote:
+> On Sun, Jul 04, 2021 at 12:23:03PM +0300, Arseny Krasnov wrote:
+>> On 04.07.2021 11:30, Michael S. Tsirkin wrote:
+>>> On Sun, Jul 04, 2021 at 11:08:13AM +0300, Arseny Krasnov wrote:
+>>>> 	This patchset modifies receive logic for SOCK_SEQPACKET.
+>>>> Difference between current implementation and this version is that
+>>>> now reader is woken up when there is at least one RW packet in rx
+>>>> queue of socket and data is copied to user's buffer, while merged
+>>>> approach wake up user only when whole message is received and kept
+>>>> in queue. New implementation has several advantages:
+>>>>  1) There is no limit for message length. Merged approach requires
+>>>>     that length must be smaller than 'peer_buf_alloc', otherwise
+>>>>     transmission will stuck.
+>>>>  2) There is no need to keep whole message in queue, thus no
+>>>>     'kmalloc()' memory will be wasted until EOR is received.
+>>>>
+>>>>     Also new approach has some feature: as fragments of message
+>>>> are copied until EOR is received, it is possible that part of
+>>>> message will be already in user's buffer, while rest of message
+>>>> still not received. And if user will be interrupted by signal or
+>>>> timeout with part of message in buffer, it will exit receive loop,
+>>>> leaving rest of message in queue. To solve this problem special
+>>>> callback was added to transport: it is called when user was forced
+>>>> to leave exit loop and tells transport to drop any packet until
+>>>> EOR met.
+>>> Sorry about commenting late in the game.  I'm a bit lost
+>>>
+>>>
+>>> SOCK_SEQPACKET
+>>> Provides sequenced, reliable, bidirectional, connection-mode transmission paths for records. A record can be sent using one or more output operations and received using one or more input operations, but a single operation never transfers part of more than one record. Record boundaries are visible to the receiver via the MSG_EOR flag.
+>>>
+>>> it's supposed to be reliable - how is it legal to drop packets?
+>> Sorry, seems i need to rephrase description. "Packet" here means fragment of record(message) at transport
+>>
+>> layer. As this is SEQPACKET mode, receiver could get only whole message or error, so if only several fragments
+>>
+>> of message was copied (if signal received for example) we can't return it to user - it breaks SEQPACKET sense. I think,
+>>
+>> in this case we can drop rest of record's fragments legally.
+>>
+>>
+>> Thank You
+> Would not that violate the reliable property? IIUC it's only ok to
+> return an error if socket gets closed. Just like e.g. TCP ...
+>
+Sorry for late answer, yes You're right, seems this is unwanted drop...
 
-however in some cases they do not, in which case we fail to match the 
-router handler, e.g.:
+Lets wait for Stefano Garzarella feedback
 
-PCI: Interrupt Routing Table found at 0xc00fdae0
-[...]
-PCI: Attempting to find IRQ router for [0000:0000]
-PCI: Interrupt router not found at 00:00
 
-This is because we always match the vendor:device ID and the bus address 
-literally, even if they are all zeros.
+Thank You
 
-Handle this case then and iterate over all PCI devices until we find a 
-matching router handler if the vendor ID given by the routing table is 
-the invalid value of zero.
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
----
- arch/x86/pci/irq.c |   63 ++++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 43 insertions(+), 20 deletions(-)
-
-linux-x86-pirq-router-nodev.diff
-Index: linux-macro-ide-tty/arch/x86/pci/irq.c
-===================================================================
---- linux-macro-ide-tty.orig/arch/x86/pci/irq.c
-+++ linux-macro-ide-tty/arch/x86/pci/irq.c
-@@ -908,10 +908,32 @@ static struct pci_dev *pirq_router_dev;
-  *	chipset" ?
-  */
- 
-+static bool __init pirq_try_router(struct irq_router *r,
-+				   struct irq_routing_table *rt,
-+				   struct pci_dev *dev)
-+{
-+	struct irq_router_handler *h;
-+
-+	DBG(KERN_DEBUG "PCI: Trying IRQ router for [%04x:%04x]\n",
-+	    dev->vendor, dev->device);
-+
-+	for (h = pirq_routers; h->vendor; h++) {
-+		/* First look for a router match */
-+		if (rt->rtr_vendor == h->vendor &&
-+		    h->probe(r, dev, rt->rtr_device))
-+			return true;
-+		/* Fall back to a device match */
-+		if (dev->vendor == h->vendor &&
-+		    h->probe(r, dev, dev->device))
-+			return true;
-+	}
-+	return false;
-+}
-+
- static void __init pirq_find_router(struct irq_router *r)
- {
- 	struct irq_routing_table *rt = pirq_table;
--	struct irq_router_handler *h;
-+	struct pci_dev *dev;
- 
- #ifdef CONFIG_PCI_BIOS
- 	if (!rt->signature) {
-@@ -930,27 +952,28 @@ static void __init pirq_find_router(stru
- 	DBG(KERN_DEBUG "PCI: Attempting to find IRQ router for [%04x:%04x]\n",
- 	    rt->rtr_vendor, rt->rtr_device);
- 
--	pirq_router_dev = pci_get_domain_bus_and_slot(0, rt->rtr_bus,
--						      rt->rtr_devfn);
--	if (!pirq_router_dev) {
--		DBG(KERN_DEBUG "PCI: Interrupt router not found at "
--			"%02x:%02x\n", rt->rtr_bus, rt->rtr_devfn);
--		return;
-+	/* Use any vendor:device provided by the routing table or try all.  */
-+	if (rt->rtr_vendor) {
-+		dev = pci_get_domain_bus_and_slot(0, rt->rtr_bus,
-+						  rt->rtr_devfn);
-+		if (pirq_try_router(r, rt, dev))
-+			pirq_router_dev = dev;
-+	} else {
-+		for_each_pci_dev(dev) {
-+			if (pirq_try_router(r, rt, dev)) {
-+				pirq_router_dev = dev;
-+				break;
-+			}
-+		}
- 	}
- 
--	for (h = pirq_routers; h->vendor; h++) {
--		/* First look for a router match */
--		if (rt->rtr_vendor == h->vendor &&
--			h->probe(r, pirq_router_dev, rt->rtr_device))
--			break;
--		/* Fall back to a device match */
--		if (pirq_router_dev->vendor == h->vendor &&
--			h->probe(r, pirq_router_dev, pirq_router_dev->device))
--			break;
--	}
--	dev_info(&pirq_router_dev->dev, "%s IRQ router [%04x:%04x]\n",
--		 pirq_router.name,
--		 pirq_router_dev->vendor, pirq_router_dev->device);
-+	if (pirq_router_dev)
-+		dev_info(&pirq_router_dev->dev, "%s IRQ router [%04x:%04x]\n",
-+			 pirq_router.name,
-+			 pirq_router_dev->vendor, pirq_router_dev->device);
-+	else
-+		DBG(KERN_DEBUG "PCI: Interrupt router not found at "
-+		    "%02x:%02x\n", rt->rtr_bus, rt->rtr_devfn);
- 
- 	/* The device remains referenced for the kernel lifetime */
- }
+>
+>>>
+>>>> When EOR is found, this mode is disabled and normal packet
+>>>> processing started. Note, that when 'drop until EOR' mode is on,
+>>>> incoming packets still inserted in queue, reader will be woken up,
+>>>> tries to copy data, but nothing will be copied until EOR found.
+>>>> It was possible to drain such unneeded packets it rx work without
+>>>> kicking user, but implemented way is simplest. Anyway, i think
+>>>> such cases are rare.
+>>>>     New test also added - it tries to copy to invalid user's
+>>>> buffer.
+>>>>
+>>>> Arseny Krasnov (16):
+>>>>  af_vsock/virtio/vsock: change seqpacket receive logic
+>>>>  af_vsock/virtio/vsock: remove 'seqpacket_has_data' callback
+>>>>  virtio/vsock: remove 'msg_count' based logic
+>>>>  af_vsock/virtio/vsock: add 'seqpacket_drop()' callback
+>>>>  virtio/vsock: remove record size limit for SEQPACKET
+>>>>  vsock_test: SEQPACKET read to broken buffer
+>>>>
+>>>>  drivers/vhost/vsock.c                   |   2 +-
+>>>>  include/linux/virtio_vsock.h            |   7 +-
+>>>>  include/net/af_vsock.h                  |   4 +-
+>>>>  net/vmw_vsock/af_vsock.c                |  44 ++++----
+>>>>  net/vmw_vsock/virtio_transport.c        |   2 +-
+>>>>  net/vmw_vsock/virtio_transport_common.c | 103 ++++++++-----------
+>>>>  net/vmw_vsock/vsock_loopback.c          |   2 +-
+>>>>  tools/testing/vsock/vsock_test.c        | 120 ++++++++++++++++++++++
+>>>>  8 files changed, 193 insertions(+), 91 deletions(-)
+>>>>
+>>>>  v1 -> v2:
+>>>>  Patches reordered and reorganized.
+>>>>
+>>>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>>>> ---
+>>>>  cv.txt | 0
+>>>>  1 file changed, 0 insertions(+), 0 deletions(-)
+>>>>  create mode 100644 cv.txt
+>>>>
+>>>> diff --git a/cv.txt b/cv.txt
+>>>> new file mode 100644
+>>>> index 000000000000..e69de29bb2d1
+>>>> -- 
+>>>> 2.25.1
+>
