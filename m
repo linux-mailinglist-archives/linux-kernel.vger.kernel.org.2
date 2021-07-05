@@ -2,152 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B423BB5EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 05:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387F43BB5F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 05:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbhGEDtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Jul 2021 23:49:23 -0400
-Received: from mga17.intel.com ([192.55.52.151]:60703 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229652AbhGEDtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Jul 2021 23:49:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10035"; a="189297079"
-X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
-   d="scan'208";a="189297079"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jul 2021 20:46:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
-   d="scan'208";a="562384083"
-Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.58]) ([10.239.154.58])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Jul 2021 20:46:41 -0700
-Subject: Re: [PATCH v12] i2c: virtio: add a virtio i2c frontend driver
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org,
-        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, yu1.wang@intel.com, shuo.a.liu@intel.com,
-        conghui.chen@intel.com, viresh.kumar@linaro.org,
-        stefanha@redhat.com
-References: <f229cd761048bc143f88f33a3437bdbf891c39fd.1625214435.git.jie.deng@intel.com>
- <YN7jOm68fUL4UA2Q@smile.fi.intel.com>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <2cb3e0db-f24b-bd12-c1a0-3fc7516b38c5@intel.com>
-Date:   Mon, 5 Jul 2021 11:46:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        id S229807AbhGEDv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Jul 2021 23:51:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28798 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229722AbhGEDvZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Jul 2021 23:51:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625456928;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=25P6+qOObwDiaurdWnfUZ/5fIR3I7PXs4U3cGO2pDNQ=;
+        b=ZxfKnzuUsmBJ24UVTsrzkAeYBQNnDiNzUV/bqxYppgDq1SU3RyEdzt0Se4hoHuUpnk4G1x
+        Gltq3yKVXEelmzk5iBAO35A5/LKb2D4RbY1O6zdlmoHUos8D9oOYnEXkUw36XZInZOIaid
+        +p05T5anyVxz+wzT9RmF1sq4ZNfyDLQ=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-519-_HevpuGROUCrMfsWHfcTwg-1; Sun, 04 Jul 2021 23:48:47 -0400
+X-MC-Unique: _HevpuGROUCrMfsWHfcTwg-1
+Received: by mail-pg1-f199.google.com with SMTP id d28-20020a634f1c0000b02902238495b6a7so12713370pgb.16
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 20:48:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=25P6+qOObwDiaurdWnfUZ/5fIR3I7PXs4U3cGO2pDNQ=;
+        b=XDV0t7LLSEVWpxlqpdGd8AQBktLjxYj3FADhqIc9ZB74hJaMA7Bk477mHx3OZ2BNcq
+         bzgWVDcswJk+yS4eaZbpTcW11zAZVeOBVK/wfOUeBs/gbzSlgNl7DdjXdpr/1CNG9d1N
+         dcXHbwW5t1rfmp9ghULNz9/CmquAVJWDATJFdIOxdi2/P6WH2dm6ySpNpOI1K+9ENsfQ
+         WENJqL3mS9dMWHcUekbbSM0gOF3OMmtOK5m6KIuKU1D6ZplMPJjKtVuSQwj5E5ZmITPB
+         MxHhIquC/2+tAhNVQjtbEFhll/cD8pviXyx7YDkKDWkXlJvlw01P12KQNuL4h7ySy00i
+         7U1w==
+X-Gm-Message-State: AOAM531OCuY+Wo8a1yxQ5qU5Stcss/ukxsl+Mlo7AuTEn4XAvIf6nIl4
+        v1yMHVziAaMUSkaQbo/T3rAkmJ4FYmhqwitoiec7kUjJHhS2YYOYVpqZaYsJAQt79Iygdo68TIr
+        9F7TCV2OLsTEHG0YZcQTBaOyNFVGObqORaTxwGJG0TIFPs9WLSt7uGD5KOEQIkEZCtiIjBGAWlt
+        4u
+X-Received: by 2002:a63:f955:: with SMTP id q21mr13651952pgk.448.1625456926315;
+        Sun, 04 Jul 2021 20:48:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxh+8a0lcafys7ntL0qYOJsYQ0uxw1HqHLN2/UyNlqrNDJW0H4QdQRaegwbRorAJ1FTbNPV1A==
+X-Received: by 2002:a63:f955:: with SMTP id q21mr13651917pgk.448.1625456925713;
+        Sun, 04 Jul 2021 20:48:45 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id f193sm2380694pfa.185.2021.07.04.20.48.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Jul 2021 20:48:45 -0700 (PDT)
+Subject: Re: [RFC PATCH] vhost-vdpa: mark vhost device invalid to reflect vdpa
+ device unregistration
+To:     gautam.dawar@xilinx.com
+Cc:     martinh@xilinx.com, hanand@xilinx.com, gdawar@xilinx.com,
+        "Michael S. Tsirkin" <mst@redhat.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210704205205.6132-1-gdawar@xilinx.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <3d02b8f5-0a6b-e8d1-533d-8503da3fcc4e@redhat.com>
+Date:   Mon, 5 Jul 2021 11:48:36 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YN7jOm68fUL4UA2Q@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210704205205.6132-1-gdawar@xilinx.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021/7/2 17:58, Andy Shevchenko wrote:
-> On Fri, Jul 02, 2021 at 04:46:47PM +0800, Jie Deng wrote:
->> Add an I2C bus driver for virtio para-virtualization.
->>
->> The controller can be emulated by the backend driver in
->> any device model software by following the virtio protocol.
->>
->> The device specification can be found on
->> https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
->>
->> By following the specification, people may implement different
->> backend drivers to emulate different controllers according to
->> their needs.
-> ...
->
->> +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
->> +				    struct virtio_i2c_req *reqs,
->> +				    struct i2c_msg *msgs, int nr,
->> +				    bool fail)
->> +{
->> +	struct virtio_i2c_req *req;
->> +	bool failed = fail;
->> +	unsigned int len;
->> +	int i, j = 0;
->> +
->> +	for (i = 0; i < nr; i++) {
->> +		/* Detach the ith request from the vq */
->> +		req = virtqueue_get_buf(vq, &len);
->> +
->> +		/*
->> +		 * Condition (req && req == &reqs[i]) should always meet since
->> +		 * we have total nr requests in the vq.
->> +		 */
->> +		if (!failed && (WARN_ON(!(req && req == &reqs[i])) ||
->> +		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)))
->> +			failed = true;
-> ...and after failed is true, we are continuing the loop, why?
+ÔÚ 2021/7/5 ÉÏÎç4:52, gautam.dawar@xilinx.com Ð´µÀ:
+>   	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+> @@ -1091,11 +1122,13 @@ static void vhost_vdpa_remove(struct vdpa_device *vdpa)
+>   		opened = atomic_cmpxchg(&v->opened, 0, 1);
+>   		if (!opened)
+>   			break;
+> -		wait_for_completion_timeout(&v->completion,
+> -					    msecs_to_jiffies(1000));
+> -		dev_warn_once(&v->dev,
+> -			      "%s waiting for/dev/%s to be closed\n",
+> -			      __func__, dev_name(&v->dev));
+> +		if (!wait_for_completion_timeout(&v->completion,
+> +					    msecs_to_jiffies(1000))) {
+> +			dev_warn(&v->dev,
+> +				 "%s/dev/%s in use, continue..\n",
+> +				 __func__, dev_name(&v->dev));
+> +			break;
+> +		}
+>   	} while (1);
+>   
+>   	put_device(&v->dev);
+> +	v->dev_invalid = true;
 
 
-Still need to continue to do some cleanup.
+Besides the mapping handling mentioned by Michael. I think this can lead 
+use-after-free. put_device may release the memory.
 
+Another fundamental issue, vDPA is the parent of vhost-vDPA device. I'm 
+not sure the device core can allow the parent to go away first.
 
->
->> +		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], !failed);
->> +		if (!failed)
->> +			++j;
-> Besides better to read j++ the j itself can be renamed to something more
-> verbose.
-
-
-Will change it to j++.
-
-
->> +	}
->> +	return (fail ? -ETIMEDOUT : j);
-> Redundant parentheses.
-
-
-Will remove the parentheses.
-
-
->
->> +}
-> ...
->
->> +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
->> +	if (ret != num) {
->> +		virtio_i2c_complete_reqs(vq, reqs, msgs, ret, true);
-> Below you check the returned code, here is not.
-
-
-I will do some optimization here.
-
-
->
->> +		ret = 0;
->> +		goto err_free;
->> +	}
->> +
->> +	reinit_completion(&vi->completion);
->> +	virtqueue_kick(vq);
->> +
->> +	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
->> +	if (!time_left)
->> +		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
->> +
->> +	ret = virtio_i2c_complete_reqs(vq, reqs, msgs, num, !time_left);
->> +
->> +err_free:
->> +	kfree(reqs);
->> +	return ret;
->> +++ b/include/uapi/linux/virtio_i2c.h
->> +#include <linux/types.h>
->> +
->> +/* The bit 0 of the @virtio_i2c_out_hdr.@flags, used to group the requests */
->> +#define VIRTIO_I2C_FLAGS_FAIL_NEXT	BIT(0)
-> It's _BITUL() or so from linux/const.h.
-> https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/const.h#L28
-> You may not use internal definitions in UAPI headers.
-
-
-Let's use this _BITUL() from linux/const.h instead. Thank you !
+Thanks
 
 
