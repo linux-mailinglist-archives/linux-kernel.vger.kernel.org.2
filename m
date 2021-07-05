@@ -2,158 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A173BB675
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 06:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D973BB68F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 07:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhGEElW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 00:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhGEElU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 00:41:20 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE42DC061762
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 21:38:44 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id n11so10989008pjo.1
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 21:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9P2iB/sAd1xmJMgbCZUej24RLFJsagtt1uS0tyR4q8M=;
-        b=w2USAZ+ILD7DA3N5p2ftBJv8i0VXUjV8GESTg1sd/GdNGz+szkvOBjCkqy4uieeacq
-         yuHsKRxPBIfIuNdpT9RHjEcwAlVMrrBeDSXZOcXLwoYnQ2q00DBngXc8dKIP/tE7R+Cl
-         ql5k6+AyoWcCAEa/PdZWeI4ReVBr8J0bXlZBpZaChM3YI3jQ00sU3WRyU5xwSWAUPdv8
-         FA0cuLoHurAmzUXeKsIqWjlcR3Z3mSYDgM1+TaHxgmc7ZQK3su9Y2A9/SNzG1b7283hi
-         8+WcSc0ow4mNoffPvJFFgyvCVhdMqpBdp8np/3HfPnVBWqCgU8GxOuvBf/53g2p9QeOD
-         LWxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9P2iB/sAd1xmJMgbCZUej24RLFJsagtt1uS0tyR4q8M=;
-        b=oLVJ1KJmLTzUp1Hxiht/R128GcRUUCpWP7CrVzBtsYiw9msuz32iDVz5MsN5incxE5
-         HrL0pEfdFWm7la40e5Cta3HzNvrhCF3C2sOZS4+AOSyZ98sl0V5d8pM4FAN9ZVftrwGZ
-         lnJdifG5lEW3JXahBqhBnfH3cqxaMiB+sLQGnxjyfPa0DnmT+d3kTJ7gfImsIUrHq9hz
-         rykq9QrAAaemWrphZj+rQepz5Ul2dqOJd8k6b8Hh4utosI+PbApQWOuYgzIcbymMZTfY
-         B1I5NZ8b3vOc3T217qqbIH5KZ9EDaMxmY0qUYzcopdMwyx1iNRCG4aHhlYLiOYpAwFxj
-         CONg==
-X-Gm-Message-State: AOAM531sg1zsrYhm1AysKKXMAeneLT7pfFxoKRhRYVJO9I2U2revg7mk
-        QJRfhZhnLfbE2eagkL6ImrTArQ==
-X-Google-Smtp-Source: ABdhPJwEBRMtpmK0GGKvqO/i6O1rTEesHaW5t2Hr81oWZpzVJ53bBl9mHEGFdTTK+WdlprJcqIzZcQ==
-X-Received: by 2002:a17:90a:8e82:: with SMTP id f2mr13568598pjo.177.1625459924145;
-        Sun, 04 Jul 2021 21:38:44 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id l12sm10902491pff.105.2021.07.04.21.38.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jul 2021 21:38:43 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 10:08:41 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org,
-        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        stefanha@redhat.com
-Subject: Re: [PATCH v12] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210705043841.zujwo672nfdndpg2@vireshk-i7>
-References: <f229cd761048bc143f88f33a3437bdbf891c39fd.1625214435.git.jie.deng@intel.com>
- <20210705024056.ndth2bwn2itii5g3@vireshk-i7>
- <332af2be-0fb0-a846-8092-49d496fe8b6b@intel.com>
+        id S229757AbhGEFFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 01:05:37 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:57233 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229716AbhGEFFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 01:05:35 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 16552YmW031002;
+        Mon, 5 Jul 2021 07:02:34 +0200
+Date:   Mon, 5 Jul 2021 07:02:34 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     ojeda@kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        Boris-Chengbiao Zhou <bobo1239@web.de>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
+        Douglas Su <d0u9.su@outlook.com>, Yuki Okushi <jtitor@2k36.org>
+Subject: Re: [PATCH 13/17] docs: add Rust documentation
+Message-ID: <20210705050234.GB30964@1wt.eu>
+References: <20210704202756.29107-1-ojeda@kernel.org>
+ <20210704202756.29107-14-ojeda@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <332af2be-0fb0-a846-8092-49d496fe8b6b@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210704202756.29107-14-ojeda@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-07-21, 11:45, Jie Deng wrote:
-> On 2021/7/5 10:40, Viresh Kumar wrote:
-> > On 02-07-21, 16:46, Jie Deng wrote:
-> > The right way of doing this is is making this function return - Error on failure
-> > and 0 on success. There is no point returning number of successful additions
-> > here.
+On Sun, Jul 04, 2021 at 10:27:52PM +0200, ojeda@kernel.org wrote:
+> From: Miguel Ojeda <ojeda@kernel.org>
 > 
-> 
-> We need the number for virtio_i2c_complete_reqs to do cleanup. We don't have
-> to
-> 
-> do cleanup "num" times every time. Just do it as needed.
+> Most of the documentation for Rust is written within the source code
+> itself, as it is idiomatic for Rust projects. This applies to both
+> the shared infrastructure at `rust/` as well as any other Rust module
+> (e.g. drivers) written across the kernel.
+(...)
+> diff --git a/Documentation/rust/coding.rst b/Documentation/rust/coding.rst
+> new file mode 100644
+> index 00000000000..5cbe132f461
+> --- /dev/null
+> +++ b/Documentation/rust/coding.rst
+> @@ -0,0 +1,92 @@
+> +.. _rust_coding:
+> +
+> +Coding
+> +======
+> +
+> +This document describes how to write Rust code in the kernel.
+> +
+> +
+> +Coding style
+> +------------
+> +
+> +The code is automatically formatted using the ``rustfmt`` tool. This is very
+> +good news!
 
-If you do full cleanup here, then you won't required that at the caller site.
+Miguel, the wording and style in this file is not much welcome, it looks
+like a copy-paste of an e-mail in the doc. The exclamation above "this is
+a very good news" doesn't really belong to a doc, and for readers who don't
+understand why it appears as a good news to the writer, it probably is an
+even less good news.
 
-> > Moreover, on failures this needs to clean up (free the dmabufs) itself, just
-> > like you did i2c_put_dma_safe_msg_buf() at the end. The caller shouldn't be
-> > required to handle the error cases by freeing up resources.
-> 
-> 
-> This function will return the number of requests being successfully prepared
-> and make sure
-> 
-> resources of the failed request being freed. And virtio_i2c_complete_reqs
-> will free the
-> 
-> resources of those successful request.
+> +- If you contribute from time to time to the kernel, you do not need to learn
+> +  and remember one more style guide. You will also need less patch roundtrips
+> +  to land a change.
+> +
+> +- If you are a reviewer or a maintainer, you will not need to spend time on
+> +  pointing out style issues anymore.
+> +
+> +.. note:: Conventions on comments and documentation are not checked by
+> +  ``rustfmt``. Thus we still need to take care of those: please see
+> +  :ref:`Documentation/rust/docs.rst <rust_docs>`.
+> +
+> +We use the tool's default settings. This means we are following the idiomatic
+> +Rust style. For instance, we use 4 spaces for indentation rather than tabs.
+> +
+> +Typically, you will want to instruct your editor/IDE to format while you type,
 
-It just looks cleaner to give such responsibility to each and every function,
-i.e. if they fail, they should clean stuff up instead of the caller. That's the
-normal philosophy you will find across kernel in most of the cases.
- 
-> > > +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
-> > > +				    struct virtio_i2c_req *reqs,
-> > > +				    struct i2c_msg *msgs, int nr,
-> > > +				    bool fail)
-> > > +{
-> > > +	struct virtio_i2c_req *req;
-> > > +	bool failed = fail;
-> > > +	unsigned int len;
-> > > +	int i, j = 0;
-> > > +
-> > > +	for (i = 0; i < nr; i++) {
-> > > +		/* Detach the ith request from the vq */
-> > > +		req = virtqueue_get_buf(vq, &len);
-> > > +
-> > > +		/*
-> > > +		 * Condition (req && req == &reqs[i]) should always meet since
-> > > +		 * we have total nr requests in the vq.
-> > > +		 */
-> > > +		if (!failed && (WARN_ON(!(req && req == &reqs[i])) ||
-> > > +		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)))
-> > What about writing this as:
-> > 
-> > 		if (!failed && (WARN_ON(req != &reqs[i]) ||
-> > 		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)))
-> > 
-> > We don't need to check req here since if req is NULL, we will not do req->in_hdr
-> > at all.
-> 
-> 
-> It's right here just because the &reqs[i] will never be NULL in our case.
-> But if you see
-> 
-> "virtio_i2c_complete_reqs" as an independent function, you need to check the
-> 
-> req. From the perspective of the callee, you can't ask the caller always
-> give you
-> 
-> the non-NULL parameters.
+In general you should avoid "we" and "you" when writing documentation.
+Prefer passive forms instead, which do not place a barrier between those
+who teach and those who learn. It's generally considered more inclusive
+in that it makes the reader not feel outside of the team who wrote it.
 
-We need to keep this driver optimized in its current form. If you see your own
-argument here, then why don't you test vq or msgs for a valid pointer ? And even
-reqs.
+For example the last sentences above could be reworded like this:
 
-If we know for certain that this will never happen, then it should be optimized.
-But if you see a case where reqs[i] can be NULL here, then it would be fine.
+  The tool's default settings are used, which means the idiomatic Rust
+  style is followed. For instance, 4 spaces are used for indentation
+  rather than tabs.
 
-> And some tools may give warnings.
+  Typically editors/IDE will have to be instructed to format while typing.
+  (...)
 
-I don't see why a tool will raise an error here and if it does, then the tool is
-buggy and not the driver. And we don't need to take care of that.
+An additional note is that if the language imposes such unusual constraints
+on the editor, you should probably point to various known settins for most
+well-known editors.
 
--- 
-viresh
+> +when you save or at commit time. However, if for some reason you want
+> +to reformat the entire kernel Rust sources at some point, you may run::
+> +
+> +	make LLVM=1 rustfmt
+> +
+> +To check if everything is formatted (printing a diff otherwise), e.g. if you
+> +have configured a CI for a tree as a maintainer, you may run::
+> +
+> +	make LLVM=1 rustfmtcheck
+> +
+> +Like ``clang-format`` for the rest of the kernel, ``rustfmt`` works on
+> +individual files, and does not require a kernel configuration. Sometimes it may
+> +even work with broken code.
+
+You should also clearly indicate how to recheck (or adjust) individual
+files, not just say that the command supports it.
+
+Regards,
+Willy
