@@ -2,103 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9055C3BB8A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38273BB8A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhGEIMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 04:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbhGEIMH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:12:07 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A92AC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 01:09:30 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id d9so19991189ioo.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 01:09:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6ZBH9ykzeoMrqSlrgZpvseA7xgJC3UHZbKlTJSyxYYE=;
-        b=vMJVUcrQnNHyGr1e2E/BBoCJ6Ml9vmYjG8w3y4ezQrmHEogj/M4Ky5n/R11b3OUHP+
-         GA0To8jdS+EcmI5/P9/WIwMSOKXzdcpQ56ciPZXsLuzhCebjrvgAjKMVj0ZSx/Rh9bv+
-         oXlnbv/La5iOfvDexZJU47ZVPg07ff2LAUCfOgs6Y1t84ZdmUZwHHXcFdMnDGr08ohIi
-         jAg4g2iJ6DEwZqa8bdRZInOXHa9ciiu9rr19zEl8/2xix+m5y77dPZvww9IhHTwvkUIg
-         fume5Bf4qhsquNTGV8+6wI8MJW55gP3FMqs1E+rG3ZTrB4s3NzG7t1aErBKD70HBEFdZ
-         dY8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6ZBH9ykzeoMrqSlrgZpvseA7xgJC3UHZbKlTJSyxYYE=;
-        b=mlj8cszP8ZUpVpjCiLQu2Uo0Qw4wrkh5FJbf1S6z99FdSiLQDxsARlN/61d6HS0zAr
-         AF1idF8sOpGQZTNeiw8eaNJOBr/SoecU/fheeIWLFI4+2aFHvZoT+ZycyYlzCG+VGJUc
-         yOkaffIyVxz6E2wWJ4bFxKTRz2Tj5P68CZen8sRkQlxHGp7sG7CuzAVQJvEcM14bFIYV
-         yh1eEj/SK7/OJ3T69IStfU90/d4Xn1jDfw+hQXqLPQ8mBXwtVMjI4ZzrmPPAyTocxmWu
-         aZwy3bBgrxi2dA7FXzDbXO+VTQsRKcf0KilCfdXKJF9SOYlfXC65t0s1NRXhAc0LLaiT
-         Fb5A==
-X-Gm-Message-State: AOAM532FRdAozXAAHk4yQJkdaOtEF9p7+EJYWgFvLjpN7mBvJ8tEAhFn
-        wA5UDyYatKsszH9OsG8nnjRP7+8d+RSJk+xNk0vuyQ==
-X-Google-Smtp-Source: ABdhPJwhLvFCwfzhhvvHGLbA3HvWk2qBShYvoOt9KTiT7lVNLd4KXAYWkrfEYA95oI9qjWhL1m8bENMubRJRcwBEMEc=
-X-Received: by 2002:a5e:a612:: with SMTP id q18mr10954029ioi.76.1625472569703;
- Mon, 05 Jul 2021 01:09:29 -0700 (PDT)
+        id S230088AbhGEIQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 04:16:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:40288 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230000AbhGEIQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 04:16:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0FADD6E;
+        Mon,  5 Jul 2021 01:14:03 -0700 (PDT)
+Received: from [10.57.13.252] (unknown [10.57.13.252])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 702F53F694;
+        Mon,  5 Jul 2021 01:14:02 -0700 (PDT)
+Subject: Re: [PATCH AUTOSEL 5.12 62/80] sched/fair: Take thermal pressure into
+ account while estimating energy
+To:     Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg KH <greg@kroah.com>
+References: <20210704230616.1489200-1-sashal@kernel.org>
+ <20210704230616.1489200-62-sashal@kernel.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <54648043-4944-08f9-8ce8-8413d8037450@arm.com>
+Date:   Mon, 5 Jul 2021 09:13:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <1624428350-1424-1-git-send-email-kyrie.wu@mediatek.com>
- <1624428350-1424-2-git-send-email-kyrie.wu@mediatek.com> <CA+Px+wW6PrYihYo8F2Op8XPfVHMmO7ODRQrF75DQxc4gRM-qfg@mail.gmail.com>
- <1625039759.22769.3.camel@mhfsdcap03>
-In-Reply-To: <1625039759.22769.3.camel@mhfsdcap03>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Mon, 5 Jul 2021 16:09:18 +0800
-Message-ID: <CA+Px+wUXK2t42S0HgcOj7_kbkSskHGris5LBquTS3d+hi8kCaQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: mtk-jpeg: Add binding for MT8195 JPG
-To:     "kyrie.wu" <kyrie.wu@mediatek.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rick Chang <rick.chang@mediatek.com>,
-        Bin Liu <bin.liu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Tomasz Figa <tfiga@chromium.org>, xia.jiang@mediatek.com,
-        maoguang.meng@mediatek.com, srv_heupstream@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210704230616.1489200-62-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 3:56 PM kyrie.wu <kyrie.wu@mediatek.com> wrote:
-> Mt8195 has two hardwares, "mediatek,mt8195-jpgenc0" for hw0 and
-> "mediatek,mt8195-jpgenc1" for HW1. These two nodes will register
-> hardware interrupt, initialize clock, power domain, remap register base
-> addr and other operations. But the device node is not registered.
-> "mediatek,mt8195-jpgenc" will register the device node to represent jpeg
-> encode device. Then the component framework is used to manage the above
-> two hardwares.
-Please don't top-posting.  Inline your replies so that people can
-easily follow the discussion.
+Hi Sasha,
 
-I still don't quite understand why it needs to introduce 2 compatible
-strings.  If hw0 and hw1 are different from interrupts, clocks, power
-domain, and etc, couldn't you use the same compatible string (e.g.
-"mt8195-jpgenc") and provide them different DT attributes?
++CC Greg
 
-> On Fri, 2021-06-25 at 17:18 +0800, Tzung-Bi Shih wrote:
-> > On Wed, Jun 23, 2021 at 2:06 PM kyrie.wu <kyrie.wu@mediatek.com> wrote:
-> > >  Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > Note: the patch won't apply after [1].
-> >
-> > [1]: https://lore.kernel.org/patchwork/patch/1445298/
-> >
-> > >  Required properties:
-> > >  - compatible : "mediatek,mt2701-jpgenc"
-> > > +- compatible : "mediatek,mt8195-jpgenc"
-> > > +- compatible : "mediatek,mt8195-jpgenc0"
-> > > +- compatible : "mediatek,mt8195-jpgenc1"
-> > Why it needs 3 compatible strings?
+On 7/5/21 12:05 AM, Sasha Levin wrote:
+> From: Lukasz Luba <lukasz.luba@arm.com>
+> 
+> [ Upstream commit 489f16459e0008c7a5c4c5af34bd80898aa82c2d ]
+> 
+> Energy Aware Scheduling (EAS) needs to be able to predict the frequency
+> requests made by the SchedUtil governor to properly estimate energy used
+> in the future. It has to take into account CPUs utilization and forecast
+> Performance Domain (PD) frequency. There is a corner case when the max
+> allowed frequency might be reduced due to thermal. SchedUtil is aware of
+> that reduced frequency, so it should be taken into account also in EAS
+> estimations.
+> 
+> SchedUtil, as a CPUFreq governor, knows the maximum allowed frequency of
+> a CPU, thanks to cpufreq_driver_resolve_freq() and internal clamping
+> to 'policy::max'. SchedUtil is responsible to respect that upper limit
+> while setting the frequency through CPUFreq drivers. This effective
+> frequency is stored internally in 'sugov_policy::next_freq' and EAS has
+> to predict that value.
+> 
+> In the existing code the raw value of arch_scale_cpu_capacity() is used
+> for clamping the returned CPU utilization from effective_cpu_util().
+> This patch fixes issue with too big single CPU utilization, by introducing
+> clamping to the allowed CPU capacity. The allowed CPU capacity is a CPU
+> capacity reduced by thermal pressure raw value.
+> 
+> Thanks to knowledge about allowed CPU capacity, we don't get too big value
+> for a single CPU utilization, which is then added to the util sum. The
+> util sum is used as a source of information for estimating whole PD energy.
+> To avoid wrong energy estimation in EAS (due to capped frequency), make
+> sure that the calculation of util sum is aware of allowed CPU capacity.
+> 
+> This thermal pressure might be visible in scenarios where the CPUs are not
+> heavily loaded, but some other component (like GPU) drastically reduced
+> available power budget and increased the SoC temperature. Thus, we still
+> use EAS for task placement and CPUs are not over-utilized.
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Link: https://lore.kernel.org/r/20210614191128.22735-1-lukasz.luba@arm.com
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>   kernel/sched/fair.c | 11 ++++++++---
+>   1 file changed, 8 insertions(+), 3 deletions(-)
+
+It has been picked up automatically right?
+To make it fully working you need also this patch:
+https://lore.kernel.org/linux-pm/20210614191030.22241-1-lukasz.luba@arm.com/
+
+It makes sure that the thermal pressure signal gets proper
+information also for CPUs which were offline and then wake-up.
+It has a proper fix tagging with commit hash id.
+That patch can be ported to stable: v5.6+
+I can send it to stable list. Please let me know if you need
+any help.
+
+The same applies to patch which I found for v5.13-stable:
+[PATCH AUTOSEL 5.13 65/85] sched/fair: Take thermal pressure into 
+account while estimating energy
+https://lore.kernel.org/stable/20210704230420.1488358-65-sashal@kernel.org/T/#u
+
+Regards,
+Lukasz
