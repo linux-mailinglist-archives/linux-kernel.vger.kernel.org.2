@@ -2,113 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7894C3BC29D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 20:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71143BC2A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 20:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhGES3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 14:29:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48038 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229770AbhGES3R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 14:29:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625509599;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oRRrtMgruURgChxNxWwRZrL7plq4LfVLAvPpmCv92RU=;
-        b=XK91vIPuiVFWkedjaL15FkF9kQ0Lf63CoDdb5obdvVFh2eGhoPW1yPCYAKvSGuDryQ+hT/
-        GK/IuCui3kaWp+n8HJtjoc8rzSvJKVOhNMFptQVSMLLg8q275u3ZSROij6kfBLW8I43gQP
-        iN0DSt9gGyWn6236d84/Ceb7vdps9aA=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-170-IxRkIFwyPF2KJ4EMOJb4Hw-1; Mon, 05 Jul 2021 14:26:38 -0400
-X-MC-Unique: IxRkIFwyPF2KJ4EMOJb4Hw-1
-Received: by mail-wr1-f71.google.com with SMTP id p6-20020a5d45860000b02901258b6ae8a5so6471408wrq.15
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 11:26:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oRRrtMgruURgChxNxWwRZrL7plq4LfVLAvPpmCv92RU=;
-        b=q95FKyaaX0IIM+/gelIhjLldB8JRnL57zoVpNXEGdgWOhRH4Iv8hdAD4hjGtyMfrKf
-         dvmJHe1Hiambjvyc3ACPM0Xk8xvEcUu4MBJphRAh9vdX6v3P7j9dYovHrE8nfs4JFKUH
-         wsXFhfYfu8GiPvFhDdh/fd30RxPfma6s5QkXJmBFzxTfutpPKmMN2YOCkav8i/TxL+gu
-         MaOC643v9F2LQHMUh2W9qTTTJq5esuV+4WDkNL/4aQrHeRn5JEb30nT9Smisw1QwX2ts
-         2M3JV7KmYXo/HOZqdqC2KT/QEShTB4l/v402+8M1KPE9bbs+nuj4eKYGJzG5dMKEOEX8
-         805g==
-X-Gm-Message-State: AOAM532Yqff2PsODHQ+z7bHGYP8QkAubU/K8Yjbt8cj1/F/uW0TO/Pcb
-        pcc4Y8hqpbt31HaJ81hsj+z3RvqIXnEDMxnCePVYFxjj8+UJHbgGvRJ+LJfypIEOmf+w4Fab27A
-        JZy5JkJ04KUpPXh3ak/4EbqTc
-X-Received: by 2002:a1c:2142:: with SMTP id h63mr16343502wmh.84.1625509597503;
-        Mon, 05 Jul 2021 11:26:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxg6lV2mV2E4Ksstg1b9UaYYm1/na0HeVq/bH0oy4JNEBKaSdID8JncYLnj87O5OZ1B8dHdg==
-X-Received: by 2002:a1c:2142:: with SMTP id h63mr16343485wmh.84.1625509597375;
-        Mon, 05 Jul 2021 11:26:37 -0700 (PDT)
-Received: from redhat.com ([2.55.8.91])
-        by smtp.gmail.com with ESMTPSA id n8sm13899936wrt.95.2021.07.05.11.26.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 11:26:36 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 14:26:32 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        davem@davemloft.net, kuba@kernel.org, jasowang@redhat.com,
-        nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com,
-        akpm@linux-foundation.org, yury.norov@gmail.com, ojeda@kernel.org,
-        ndesaulniers@gooogle.com, joe@perches.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next 0/2] refactor the ringtest testing for ptr_ring
-Message-ID: <20210705142555-mutt-send-email-mst@kernel.org>
-References: <1625457455-4667-1-git-send-email-linyunsheng@huawei.com>
- <YOLXTB6VxtLBmsuC@smile.fi.intel.com>
- <c6844e2b-530f-14b2-0ec3-d47574135571@huawei.com>
+        id S229958AbhGESaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 14:30:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229734AbhGESaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 14:30:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 806B56196C;
+        Mon,  5 Jul 2021 18:27:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625509662;
+        bh=0nqfZ/KCF7agW0Kpzhwp3WsLtkBGdLLdBogUImYWf5I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KsgFp+lKiHt/k4fkAhVIoqwJCggTTMjGbRR+FrvV+RqmQCo4CZtV1Dp+lVn4CFDEV
+         zzo3PNFMoDpa9tigHnA4Ua+if9XWjM2+tfOanpVSRSXC7Rxy9RFG1qppYTS2RE1COy
+         HOVCkF04xQQqBozBWLOfDx9YAXTyWcFJOpNTuxH/nrEBcKrkjDx456P/FfP8fcT8jx
+         fA8Y2ife7aViDhAhNbdSckSouwLeAjRkCEPxw8YJcwduBTknvoZAqzVyjv+NyAj8bE
+         3WRJwELwyRuRk0ShGzT9e2E9CE8PjZRJcRxEEFfrvlkumIu13KCFlCX33bHNelBs2y
+         iJxbEz8b8uG2Q==
+Date:   Mon, 5 Jul 2021 21:27:37 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>, Linuxarm <linuxarm@huawei.com>,
+        liulongfang <liulongfang@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        yuzenghui <yuzenghui@huawei.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "Wangzhou (B)" <wangzhou1@hisilicon.com>
+Subject: Re: [RFC v2 1/4] hisi-acc-vfio-pci: add new vfio_pci driver for
+ HiSilicon ACC devices
+Message-ID: <YONPGcwjGH+gImDj@unreal>
+References: <20210702095849.1610-1-shameerali.kolothum.thodi@huawei.com>
+ <20210702095849.1610-2-shameerali.kolothum.thodi@huawei.com>
+ <YOFdTnlkcDZzw4b/@unreal>
+ <fc9d6b0b82254fbdb1cc96365b5bdef3@huawei.com>
+ <d02dff3a-8035-ced1-7fc3-fcff791f9203@nvidia.com>
+ <834a009bba0d4db1b7a1c32e8f20611d@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c6844e2b-530f-14b2-0ec3-d47574135571@huawei.com>
+In-Reply-To: <834a009bba0d4db1b7a1c32e8f20611d@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 08:06:50PM +0800, Yunsheng Lin wrote:
-> On 2021/7/5 17:56, Andy Shevchenko wrote:
-> > On Mon, Jul 05, 2021 at 11:57:33AM +0800, Yunsheng Lin wrote:
-> >> tools/include/* have a lot of abstract layer for building
-> >> kernel code from userspace, so reuse or add the abstract
-> >> layer in tools/include/ to build the ptr_ring for ringtest
-> >> testing.
-> > 
-> > ...
-> > 
-> >>  create mode 100644 tools/include/asm/cache.h
-> >>  create mode 100644 tools/include/asm/processor.h
-> >>  create mode 100644 tools/include/generated/autoconf.h
-> >>  create mode 100644 tools/include/linux/align.h
-> >>  create mode 100644 tools/include/linux/cache.h
-> >>  create mode 100644 tools/include/linux/slab.h
-> > 
-> > Maybe somebody can change this to be able to include in-tree headers directly?
+On Mon, Jul 05, 2021 at 10:18:59AM +0000, Shameerali Kolothum Thodi wrote:
 > 
-> If the above works, maybe the files in tools/include/* is not
-> necessary any more, just use the in-tree headers to compile
-> the user space app?
 > 
-> Or I missed something here?
+> > -----Original Message-----
+> > From: Max Gurtovoy [mailto:mgurtovoy@nvidia.com]
+> > Sent: 05 July 2021 10:42
+> > To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>;
+> > Leon Romanovsky <leon@kernel.org>
+> > Cc: kvm@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > linux-crypto@vger.kernel.org; alex.williamson@redhat.com; jgg@nvidia.com;
+> > Linuxarm <linuxarm@huawei.com>; liulongfang <liulongfang@huawei.com>;
+> > Zengtao (B) <prime.zeng@hisilicon.com>; yuzenghui
+> > <yuzenghui@huawei.com>; Jonathan Cameron
+> > <jonathan.cameron@huawei.com>; Wangzhou (B) <wangzhou1@hisilicon.com>
+> > Subject: Re: [RFC v2 1/4] hisi-acc-vfio-pci: add new vfio_pci driver for HiSilicon
+> > ACC devices
+> > 
+> > 
+> > On 7/5/2021 11:47 AM, Shameerali Kolothum Thodi wrote:
+> > >
+> > >> -----Original Message-----
+> > >> From: Leon Romanovsky [mailto:leon@kernel.org]
+> > >> Sent: 04 July 2021 08:04
+> > >> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+> > >> Cc: kvm@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > >> linux-crypto@vger.kernel.org; alex.williamson@redhat.com;
+> > jgg@nvidia.com;
+> > >> mgurtovoy@nvidia.com; Linuxarm <linuxarm@huawei.com>; liulongfang
+> > >> <liulongfang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
+> > >> yuzenghui <yuzenghui@huawei.com>; Jonathan Cameron
+> > >> <jonathan.cameron@huawei.com>; Wangzhou (B)
+> > <wangzhou1@hisilicon.com>
+> > >> Subject: Re: [RFC v2 1/4] hisi-acc-vfio-pci: add new vfio_pci driver for
+> > HiSilicon
+> > >> ACC devices
+> > >>
+> > >> On Fri, Jul 02, 2021 at 10:58:46AM +0100, Shameer Kolothum wrote:
+> > >>> Add a vendor-specific vfio_pci driver for HiSilicon ACC devices.
+> > >>> This will be extended in follow-up patches to add support for
+> > >>> vfio live migration feature.
+> > >>>
+> > >>> Signed-off-by: Shameer Kolothum
+> > >> <shameerali.kolothum.thodi@huawei.com>
+> > >>> ---
+> > >>>   drivers/vfio/pci/Kconfig             |   9 +++
+> > >>>   drivers/vfio/pci/Makefile            |   2 +
+> > >>>   drivers/vfio/pci/hisi_acc_vfio_pci.c | 100
+> > +++++++++++++++++++++++++++
+> > >>>   3 files changed, 111 insertions(+)
+> > >>>   create mode 100644 drivers/vfio/pci/hisi_acc_vfio_pci.c
+> > >> <...>
+> > >>
+> > >>> +static const struct vfio_device_ops hisi_acc_vfio_pci_ops = {
+> > >>> +	.name		= "hisi-acc-vfio-pci",
+> > >>> +	.open		= hisi_acc_vfio_pci_open,
+> > >>> +	.release	= vfio_pci_core_release,
+> > >>> +	.ioctl		= vfio_pci_core_ioctl,
+> > >>> +	.read		= vfio_pci_core_read,
+> > >>> +	.write		= vfio_pci_core_write,
+> > >>> +	.mmap		= vfio_pci_core_mmap,
+> > >>> +	.request	= vfio_pci_core_request,
+> > >>> +	.match		= vfio_pci_core_match,
+> > >>> +	.reflck_attach	= vfio_pci_core_reflck_attach,
+> > >> I don't remember what was proposed in vfio-pci-core conversion patches,
+> > >> but would expect that default behaviour is to fallback to vfio_pci_core_*
+> > API
+> > >> if ".release/.ioctl/e.t.c" are not redefined.
+> > > Yes, that would be nice, but don't think it does that in latest(v4).
+> > >
+> > > Hi Max,
+> > > Could we please consider fall back to the core defaults, may be check and
+> > assign defaults
+> > > in vfio_pci_core_register_device() ?
+> > 
+> > I don't see why we should do this.
+> > 
+> > vfio_pci_core.ko is just a library driver. It shouldn't decide for the
+> > vendor driver ops.
+> > 
+> > If a vendor driver would like to use its helper functions - great.
+> > 
+> > If it wants to override it - great.
+> > 
+> > If it wants to leave some op as NULL - it can do it also.
+> 
+> Based on the documentation of the vfio_device_ops callbacks,
+> It looks like we already have a precedence in the case of reflck_attach
+> callback where it uses the vfio core default one, if it is not implemented.
 
-why would it work? kernel headers outside of uapi are not
-intended to be consumed by userspace.
+The reflck_attach pattern is pretty common pattern in the kernel to provide fallback.
 
+> 
+> Also I would imagine that in majority use cases the vendor drivers will be
+> defaulting to core functions. 
 
+Right, this is whole idea of having core functionality in one place, if
+vendor wants/needs, he will overwrite.
+
+> 
+> I think, in any case, it would be good to update the Documentation based on
+> which way we end up doing this.
+
+The request to update Documentation can be seen as an example of
+choosing not-good API decisions. Expectation to see all drivers to
+use same callbacks with same vfio-core function calls sounds strange
+to me.
+
+Thanks
+
+> 
+> Thanks,
+> Shameer 
+> 
+>  
 > > 
-> > Besides above, had you tested this with `make O=...`?
-> 
-> You are right, the generated/autoconf.h is in another directory
-> with `make O=...`.
-> 
-> Any nice idea to fix the above problem?
-> 
 > > 
-
+> > >
+> > > Thanks,
+> > > Shameer
