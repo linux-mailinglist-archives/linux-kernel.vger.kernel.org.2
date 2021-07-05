@@ -2,94 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFDE3BB979
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B113BB98C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhGEIoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 04:44:20 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9465 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbhGEIoS (ORCPT
+        id S230191AbhGEIrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 04:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230164AbhGEIrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:44:18 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GJJxK6H6czZqtJ;
-        Mon,  5 Jul 2021 16:38:29 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 5 Jul 2021 16:41:40 +0800
-Received: from [10.174.176.221] (10.174.176.221) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 5 Jul 2021 16:41:39 +0800
-Subject: Re: [PATCH 2/3] dmaengine: usb-dmac: Fix PM reference leak in
- usb_dmac_probe()
-To:     Vinod Koul <vkoul@kernel.org>, Johan Hovold <johan@kernel.org>
-CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <michal.simek@xilinx.com>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <yi.zhang@huawei.com>
-References: <20210517081826.1564698-1-yukuai3@huawei.com>
- <20210517081826.1564698-3-yukuai3@huawei.com>
- <YLRfZfnuxc0+n/LN@vkoul-mobl.Dlink>
- <b6c340de-b0b5-6aad-94c0-03f062575b63@huawei.com>
- <YLSk/i6GmYWGEa9E@vkoul-mobl.Dlink> <YLSqD+9nZIWJpn+r@hovoldconsulting.com>
- <YLi4VGwzrat8wJHP@vkoul-mobl> <YL3TlDqe4KSr3ICl@hovoldconsulting.com>
- <YL3ynd1KiJoe9y6+@vkoul-mobl>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <c8fcdaa1-f053-47aa-2dad-521b8f34b8d1@huawei.com>
-Date:   Mon, 5 Jul 2021 16:41:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <YL3ynd1KiJoe9y6+@vkoul-mobl>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.221]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+        Mon, 5 Jul 2021 04:47:43 -0400
+Received: from mail-lj1-x249.google.com (mail-lj1-x249.google.com [IPv6:2a00:1450:4864:20::249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F59C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 01:45:06 -0700 (PDT)
+Received: by mail-lj1-x249.google.com with SMTP id v10-20020a2ea60a0000b029017fd05dc0aaso4308556ljp.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 01:45:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=XT1F6bsaZFgcmmxxyjZZuJTZD371QBzAaF2qKad4ZRA=;
+        b=vN2Y2GrXM9wFYnK8wro/zQ6xDDmrrViyrbnBQ/4RMgPlUiGyKcoYBPaG1wATVX1mUc
+         HLLbWWydLEqq+/RJ8CvpnNaii17d0JfOUVy3Mc9JbwsqeWqH7aKWjt7xHWqLYzdP6USq
+         myjSXPGUDxoAoC8er0ihCXFL4B1umZj8KSlEd2WQOO/OF3SD6fsbJlMNS+levqcWDZtE
+         P717hU7sFwpkOAu26fqpZOF5y9tekPitlEOa4PDHMpZcjdYNS0otmoJBrj16WB4XXwx7
+         yHqFBHAIswo7fFD3lYb5dIXaxP2ZnUxMyfYPPD+auIZzPgWS5+50kXLs82lARyxwGE1o
+         8LOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=XT1F6bsaZFgcmmxxyjZZuJTZD371QBzAaF2qKad4ZRA=;
+        b=epph25lCb+g9glY5EB+yI0RtHy7I/uzHgs/5dvP5VGe+Wp1e3hslkDvbJMluM/vGHe
+         NaJV1NtEQ/ZE5WO9V2Spw/67upO1Hhu9HeLmtZ6g5H5dM1ot6JM5kYR6Fkt023L06woa
+         CWM+LufYhuMZQ4CDDXFYbjPBoGWr5qx3vGGVFZrKAinLy0+mutJZfvX9WTpusWGpNp4v
+         LGhkH0uSH4EUrprUBAS9Rqz7D43aB0vzqdrrei/VKkY2axoEG6A5oBaQkkq+K8hKSxD1
+         hgVQiv8zc9oUmz/67eF/WgRujneYUcIkXUzyy/IYDpO/C1X4EXgrBGdQ+LxmL0hi3EMg
+         jeFA==
+X-Gm-Message-State: AOAM532vfUYBrHuO07P7woVX22FCAtw0Q6URudK7nX1XAiQKOc97SxFr
+        ybpSB7E3I14Pkc5fpLf8+afp2udcBg==
+X-Google-Smtp-Source: ABdhPJwJJ8IYO0yfnhbmAMrM9usbbtUz3OfJO2G4Ka8fzvRpGpNhtc7thfb1yiXSp6CO0GpfORq4d5EOjA==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:dddd:647c:7745:e5f7])
+ (user=elver job=sendgmr) by 2002:a19:6d01:: with SMTP id i1mr10104024lfc.422.1625474704103;
+ Mon, 05 Jul 2021 01:45:04 -0700 (PDT)
+Date:   Mon,  5 Jul 2021 10:44:52 +0200
+Message-Id: <20210705084453.2151729-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH v3 1/2] perf: Fix required permissions if sigtrap is requested
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, peterz@infradead.org
+Cc:     tglx@linutronix.de, mingo@kernel.org, dvyukov@google.com,
+        glider@google.com, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org,
+        linux-perf-users@vger.kernel.org, ebiederm@xmission.com,
+        omosnace@redhat.com, serge@hallyn.com,
+        linux-security-module@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Vinod
+If perf_event_open() is called with another task as target and
+perf_event_attr::sigtrap is set, and the target task's user does not
+match the calling user, also require the CAP_KILL capability or
+PTRACE_MODE_ATTACH permissions.
 
-Are you still intrested in accepting this patch?
+Otherwise, with the CAP_PERFMON capability alone it would be possible
+for a user to send SIGTRAP signals via perf events to another user's
+tasks. This could potentially result in those tasks being terminated if
+they cannot handle SIGTRAP signals.
 
-Thanks,
-Yu Kuai
+Note: The check complements the existing capability check, but is not
+supposed to supersede the ptrace_may_access() check. At a high level we
+now have:
 
-On 2021/06/07 18:19, Vinod Koul wrote:
-> On 07-06-21, 10:06, Johan Hovold wrote:
->> On Thu, Jun 03, 2021 at 04:39:08PM +0530, Vinod Koul wrote:
->>> On 31-05-21, 11:19, Johan Hovold wrote:
->>>> On Mon, May 31, 2021 at 02:27:34PM +0530, Vinod Koul wrote:
->>>>> On 31-05-21, 14:11, yukuai (C) wrote:
->>>>>> On 2021/05/31 12:00, Vinod Koul wrote:
->>>>>>> On 17-05-21, 16:18, Yu Kuai wrote:
->>>>>>>> pm_runtime_get_sync will increment pm usage counter even it failed.
->>>>>>>> Forgetting to putting operation will result in reference leak here.
->>>>>>>> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
->>>>>>>> counter balanced.
->>
->>>>> Yes the rumtime_pm is disabled on failure here and the count would have
->>>>> no consequence...
->>>>
->>>> You should still balance the PM usage counter as it isn't reset for
->>>> example when reloading the driver.
->>>
->>> Should I driver trust that on load PM usage counter is balanced and not
->>> to be reset..?
->>
->> Not sure what you're asking here. But a driver should never leave the PM
->> usage counter unbalanced.
-> 
-> Thinking about again, yes we should safely assume the counter is
-> balanced when driver loads.. so unloading while balancing sounds better
-> behaviour
-> 
-> Thanks
-> 
+	capable of CAP_PERFMON and (CAP_KILL if sigtrap)
+		OR
+	ptrace_may_access(...) // also checks for same thread-group and uid
+
+Fixes: 97ba62b27867 ("perf: Add support for SIGTRAP on perf events")
+Cc: <stable@vger.kernel.org> # 5.13+
+Reported-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Marco Elver <elver@google.com>
+---
+v3:
+* Upgrade ptrace mode check to ATTACH if attr.sigtrap, otherwise it's
+  possible to change the target task (send signal) even if only read
+  ptrace permissions were granted (reported by Eric W. Biederman).
+
+v2: https://lkml.kernel.org/r/20210701083842.580466-1-elver@google.com
+* Drop kill_capable() and just check CAP_KILL (reported by Ondrej Mosnacek).
+* Use ns_capable(__task_cred(task)->user_ns, CAP_KILL) to check for
+  capability in target task's ns (reported by Ondrej Mosnacek).
+
+v1: https://lkml.kernel.org/r/20210630093709.3612997-1-elver@google.com
+---
+ kernel/events/core.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index fe88d6eea3c2..f79ee82e644a 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -12152,10 +12152,33 @@ SYSCALL_DEFINE5(perf_event_open,
+ 	}
+ 
+ 	if (task) {
++		unsigned int ptrace_mode = PTRACE_MODE_READ_REALCREDS;
++		bool is_capable;
++
+ 		err = down_read_interruptible(&task->signal->exec_update_lock);
+ 		if (err)
+ 			goto err_file;
+ 
++		is_capable = perfmon_capable();
++		if (attr.sigtrap) {
++			/*
++			 * perf_event_attr::sigtrap sends signals to the other
++			 * task. Require the current task to also have
++			 * CAP_KILL.
++			 */
++			rcu_read_lock();
++			is_capable &= ns_capable(__task_cred(task)->user_ns, CAP_KILL);
++			rcu_read_unlock();
++
++			/*
++			 * If the required capabilities aren't available, checks
++			 * for ptrace permissions: upgrade to ATTACH, since
++			 * sending signals can effectively change the target
++			 * task.
++			 */
++			ptrace_mode = PTRACE_MODE_ATTACH_REALCREDS;
++		}
++
+ 		/*
+ 		 * Preserve ptrace permission check for backwards compatibility.
+ 		 *
+@@ -12165,7 +12188,7 @@ SYSCALL_DEFINE5(perf_event_open,
+ 		 * perf_event_exit_task() that could imply).
+ 		 */
+ 		err = -EACCES;
+-		if (!perfmon_capable() && !ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS))
++		if (!is_capable && !ptrace_may_access(task, ptrace_mode))
+ 			goto err_cred;
+ 	}
+ 
+-- 
+2.32.0.93.g670b81a890-goog
+
