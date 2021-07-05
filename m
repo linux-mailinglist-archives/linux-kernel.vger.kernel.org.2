@@ -2,65 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704C93BB734
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3033BB731
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhGEGe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 02:34:58 -0400
-Received: from static-190-25-223-138.static.etb.net.co ([190.25.223.138]:53880
-        "EHLO correo.hdv.gov.co" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229910AbhGEGe4 (ORCPT
+        id S229884AbhGEGdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 02:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229797AbhGEGdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 02:34:56 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by correo.hdv.gov.co (Postfix) with ESMTP id 7B0BA1DC2792;
-        Sat,  3 Jul 2021 12:52:28 -0500 (-05)
-Received: from correo.hdv.gov.co ([127.0.0.1])
-        by localhost (correo.hdv.gov.co [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 8YQGv3Ze4BxV; Sat,  3 Jul 2021 12:52:28 -0500 (-05)
-Received: from localhost (localhost [127.0.0.1])
-        by correo.hdv.gov.co (Postfix) with ESMTP id 73BE31878ADB;
-        Sat,  3 Jul 2021 11:04:21 -0500 (-05)
-DKIM-Filter: OpenDKIM Filter v2.10.3 correo.hdv.gov.co 73BE31878ADB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hdv.gov.co;
-        s=11DF984A-9D1F-11E6-B193-F2669FC4C452; t=1625328261;
-        bh=SKFadKgM92kiwue8eMLvzaTB0eiP/neKAp89ygsk9fM=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=jej/T5GtB1Og8zRwhZFGC5s92dUjYsJilrkH5rDDrHCSfRlU89JnQkN9nCtTRyq3s
-         fASVZsFp7G6yZP/Po4gAdg/rD5ZTi6II+41u49h5aINs9dkaPTaTNT4xoazG7R+ZmR
-         tXXYqddL+kyXkeKPp4A097RdgYvjXhI8/q+v/Ae8=
-X-Virus-Scanned: amavisd-new at correo.hdv.gov.co
-Received: from correo.hdv.gov.co ([127.0.0.1])
-        by localhost (correo.hdv.gov.co [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id JgpFB6pO3-mR; Sat,  3 Jul 2021 11:04:21 -0500 (-05)
-Received: from [172.20.10.6] (unknown [41.147.1.129])
-        by correo.hdv.gov.co (Postfix) with ESMTPSA id 46CBB18771A2;
-        Sat,  3 Jul 2021 10:10:43 -0500 (-05)
-Content-Type: text/plain; charset="iso-8859-1"
+        Mon, 5 Jul 2021 02:33:42 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F14C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 23:31:06 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id v7so17385493pgl.2
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 23:31:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wWMXmMCJoSZ9OCdipGCDRnC3WjS629PoEJ5rr2yZGV4=;
+        b=DkNMSvM96dm/AcUPUGEq9JBeaCg2RBULAlZIqhkyanmq/ooofwovzz1sIYEjs873Hy
+         hfEBAN6RtF0t5J86yneotbcmbmZzq0O3hj4ZljjxrqTM3IXpQJrnodt+Xb5GgW6QQe5p
+         cIrHyv3lrAXb2qZ14efevI+sKddKGnFRJFyEpvM1+7pWINYIv2NA0Ce9O75/33njDL7i
+         y99Glt8+3v+1ZCUoIR0bAnLi+lVKclqr98EkceNpSYW47BaMMJOf+0gM8qLTxP4qANrk
+         0EmPbLfPMNYyqnfq7aL56vC+OAJzTbQezhjtY0qK4Plk1T8ysZclL44NmcpHZloPEw66
+         ItJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wWMXmMCJoSZ9OCdipGCDRnC3WjS629PoEJ5rr2yZGV4=;
+        b=JAV/+F28ZEX+FIXsL6mjZrH4MmnBwSYS+fHaD+hgxMs0voMsO7oCjYpdvCEV3tncgk
+         sZH8xwaYO2MU6IEsT6zNAXCoM3n1JK37LHc12jOW9MZaWCc2VxjK2cuKAvIvk8Y6lfz5
+         lolSC/t78IkMBqI7BK7LCrc7wygRyhJCz7u43GcNbcNUO10xX546JKyerU7POCz2RdyZ
+         jmgksdCwdsO1XSDwrpE1uk78hir0vTDjzdylxj5P8l+2pbbREh6keZke9Lr9yiSh9y1h
+         ++bs2i9dk3EaWaoaYDukUFh1icNJElmWQyvsmENML52MHU+i7d++66AKsGL0zlvpGO34
+         DIMg==
+X-Gm-Message-State: AOAM530AoY7dfxIJZo2M/g3gl5ymr7/0DGABl2zOcZ5ehME/td6k5K6j
+        qtrNFKdTJs5c7HTJWsjlGdZmjA==
+X-Google-Smtp-Source: ABdhPJwjbeDpEwUGHX4wapdtd68i1JUGbnqyQuUWmDrUGIl18KntYn+5LqFO42LZddC9cRK1RvizQQ==
+X-Received: by 2002:a63:5a5b:: with SMTP id k27mr1117953pgm.294.1625466665652;
+        Sun, 04 Jul 2021 23:31:05 -0700 (PDT)
+Received: from localhost ([106.201.108.2])
+        by smtp.gmail.com with ESMTPSA id z20sm13337396pgk.36.2021.07.04.23.31.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Jul 2021 23:31:05 -0700 (PDT)
+Date:   Mon, 5 Jul 2021 12:01:03 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wsa@kernel.org,
+        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, yu1.wang@intel.com, shuo.a.liu@intel.com,
+        conghui.chen@intel.com, stefanha@redhat.com
+Subject: Re: [PATCH v12] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210705063103.4gnrnx6qwheq37lp@vireshk-i7>
+References: <f229cd761048bc143f88f33a3437bdbf891c39fd.1625214435.git.jie.deng@intel.com>
+ <YN7jOm68fUL4UA2Q@smile.fi.intel.com>
+ <20210705024340.mb5sv5epxbdatgsg@vireshk-i7>
+ <adb5a18f-cf48-3059-5541-fb6d7bafb8d2@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: my subject
-To:     Recipients <planeacion.arquitecto@hdv.gov.co>
-From:   planeacion.arquitecto@hdv.gov.co
-Date:   Sat, 03 Jul 2021 08:10:34 -0700
-Reply-To: callumfoundation05@outlook.com
-Message-Id: <20210703151044.46CBB18771A2@correo.hdv.gov.co>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <adb5a18f-cf48-3059-5541-fb6d7bafb8d2@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo,
+On 05-07-21, 14:21, Jie Deng wrote:
+> 
+> On 2021/7/5 10:43, Viresh Kumar wrote:
+> > On 02-07-21, 12:58, Andy Shevchenko wrote:
+> > > On Fri, Jul 02, 2021 at 04:46:47PM +0800, Jie Deng wrote:
+> > > > +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
+> > > > +				    struct virtio_i2c_req *reqs,
+> > > > +				    struct i2c_msg *msgs, int nr,
+> > > > +				    bool fail)
+> > > > +{
+> > > > +	struct virtio_i2c_req *req;
+> > > > +	bool failed = fail;
+> > Jie, you can actually get rid of this variable too. Jut rename fail to failed
+> > and everything shall work as you want.
+> 
+> 
+> Oh, You are not right. I just found we can't remove this variable. The
+> "fail" and "failed" have different
+> 
+> meanings for this function. We need fail to return the result.
 
- Sie haben eine Spende von 2.800.000,00 USD. Ich gewann die amerikanische L=
-otterie im Wert von 343 Millionen US-Dollar in Amerika und spendete einen T=
-eil davon an f=FCnf gl=FCckliche Menschen und Wohlt=E4tigkeitsorganisatione=
-n, die sich an meinen verstorbenen Enkel erinnern, der Anfang April vorzeit=
-ig geboren wurde und nur einen Tag lebte. F=FCr weitere Informationen wende=
-n Sie sich bitte an: callumfoundation05@outlook.com
+Ahh, yes. You are right. Maybe rename fail to timedout, it would make it more
+readable, else fail and failed look very similar.
+ 
+> > > > +	unsigned int len;
+> > > > +	int i, j = 0;
+> > > > +
+> > > > +	for (i = 0; i < nr; i++) {
+> > > > +		/* Detach the ith request from the vq */
+> > > > +		req = virtqueue_get_buf(vq, &len);
+> > > > +
+> > > > +		/*
+> > > > +		 * Condition (req && req == &reqs[i]) should always meet since
+> > > > +		 * we have total nr requests in the vq.
+> > > > +		 */
+> > > > +		if (!failed && (WARN_ON(!(req && req == &reqs[i])) ||
+> > > > +		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)))
+> > > > +			failed = true;
+> > > ...and after failed is true, we are continuing the loop, why?
+> > Actually this function can be called with fail set to true. We proceed as we
+> > need to call i2c_put_dma_safe_msg_buf() for all buffers we allocated earlier.
+> > 
+> > > > +		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], !failed);
+> > > > +		if (!failed)
+> > > > +			++j;
+> > > Besides better to read j++ the j itself can be renamed to something more
+> > > verbose.
+> > > 
+> > > > +	}
+> > > > +	return (fail ? -ETIMEDOUT : j);
+> > > Redundant parentheses.
+> > > 
+> > > > +}
 
- =
-
-
-Mit freundlichen Gr=FC=DFen
-Frau Lerynne West
+-- 
+viresh
