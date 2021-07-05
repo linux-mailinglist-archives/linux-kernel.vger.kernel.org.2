@@ -2,162 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FFA3BBAD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D963BBAE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhGEKKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 06:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50466 "EHLO
+        id S230438AbhGEKO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 06:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230501AbhGEKKB (ORCPT
+        with ESMTP id S230366AbhGEKO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 06:10:01 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D83AC061760
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 03:07:24 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so11483507pjo.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 03:07:24 -0700 (PDT)
+        Mon, 5 Jul 2021 06:14:27 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9E4C061760
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 03:11:50 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id k8so23944402lja.4
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 03:11:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=URzqQGQoXOhjWiVA59OemrOZ6RGERDqTdQyNEXeAAck=;
-        b=W+oJyrd0cywPJ2WKOIn0+/TZJnDNS67AnkdeDildmOBCR2YDCCSxGoymgaKDCH/Xs2
-         2Tt2Ykz8fdNewWrffXxMSL+OWuktoSP4WM0aP454Xp46wwMb5eQDfNyXE37UeyxZgEgh
-         ZqpnLRE0tGHO7RNqsdazo3gKrVWcANSkbLE+8=
+        d=kinvolk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=69UZcCblC7DITscasI5FJxuBm/RyIh3ZM+S6o0gf5ag=;
+        b=jGFLnkKsTRnv8cz3E4UqyqL0rq9KI/7H7ZEwo8Xmazs7PlNMGO9bCldgqjUX3bFqxJ
+         jfJwMK1UMO25c+TM8F0JW1CIukhzmDyna4CxN9og6txlvgZYYCuGoDpEK84RDMsFQg+D
+         lQK6yBejQGOaYSdtyADFbup1d8sl8tNMdccxU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=URzqQGQoXOhjWiVA59OemrOZ6RGERDqTdQyNEXeAAck=;
-        b=pv03NZ1Sq8PfT7U+Oz+LFNW2sOWCFvZ4ZYSg4fdtRMQ7mRrCNKm2rcy9Elnldf6nLS
-         hOaW2EDD0cNsZyZVzz/hVO1xb9nWPlv3OcUBx92ednhWfOF3kqaKvTd4j2S+384afDyH
-         6Ndt1CH5zSh+0NESTxOT1Jy46WbN5bniZ3Ja7y54KIQQ1v1EgDSIW0LSneKg0dubcjz0
-         vY1BVYdbgNH/EbZOlTb4Qhg2y253y1mXyzUGWX8wuycfDxTab5iWlBUvuakaL+O7vsqQ
-         A6jAJI0GtSEEWTrAYv6InCZgUdJwGEtyuXcN6Lr4+fuifkDGjvgC+km8Xe7lNaq5JCRM
-         k7DQ==
-X-Gm-Message-State: AOAM531jK3QYl16MT6O4s0vNZKDB/g4wU5PDifd4ODmOafty34PDm3kv
-        dYoOga5bDrzBdFSsxZVLHzTI9g==
-X-Google-Smtp-Source: ABdhPJzLaiyM+hJRO34T6/7krD6/7coonwGydXEI2SqB2V3Cc/mLh/HDAsZW7o4nnnI4Moc5m/2Myw==
-X-Received: by 2002:a17:902:bd03:b029:11c:d504:c1ce with SMTP id p3-20020a170902bd03b029011cd504c1cemr11838106pls.7.1625479643848;
-        Mon, 05 Jul 2021 03:07:23 -0700 (PDT)
-Received: from google.com ([2401:fa00:1:10:f66e:ef34:adcd:b33b])
-        by smtp.gmail.com with ESMTPSA id s126sm12354864pfb.164.2021.07.05.03.07.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 03:07:23 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 18:07:19 +0800
-From:   Chen-Yu Tsai <wenst@chromium.org>
-To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH 06/22] clk: mediatek: Add MT8195 audio src clock support
-Message-ID: <YOLZ12WWkk/0kAnd@google.com>
-References: <20210616224743.5109-1-chun-jie.chen@mediatek.com>
- <20210616224743.5109-7-chun-jie.chen@mediatek.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=69UZcCblC7DITscasI5FJxuBm/RyIh3ZM+S6o0gf5ag=;
+        b=nIYTm7l7kGCJ/PxQ24xHnO3J8czTeWH/Spkq4x+qQ1J//Qx/IOaiBew2qUOFRWJ76m
+         5TDk0IDHu+DQNLzv//6T+2UY9Zgc0jjOAOJgC2XAPUOyMHC8nOFfWKzXmxTsX9QA1++q
+         kR1SuNP3FYP0G1PYBCht8bOyzYuCQ9hKyJ0zsc1AcfA9BrMl+Q5Ikp3uZREuMWbDxIak
+         qNfQhmj1tK/HiS1wygY55VNar0ckN/F6jY629YZ7Pi/RyQvl9x5uTYtaEMpQzxFq+ESh
+         u9mFpRBSF+FeimGyZL2xe3O3midF0N7phicER9b0QeDZZrelrVS4DcEJWvNAahN1KVpO
+         K4qw==
+X-Gm-Message-State: AOAM533qEPZqH+wh3Im8Plkj3MtaIbufpsp4XEVe3UOYQV7dKsNbqKAR
+        xZsYZ6lUMDlt5IlewTQsRbQcaDKfrOfU3O8K2dWmbQ==
+X-Google-Smtp-Source: ABdhPJy8tQLyQnPzDq8CCLbBk58hYeMzZX/9JPQnd4jLwa7UW5WnK8IdeTzv1Ixh0amrYYCpAh3AOcvjurVbhgnDQKU=
+X-Received: by 2002:a2e:710f:: with SMTP id m15mr3282648ljc.327.1625479908365;
+ Mon, 05 Jul 2021 03:11:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616224743.5109-7-chun-jie.chen@mediatek.com>
+References: <20210702163744.265749-1-rodrigo@kinvolk.io> <6322ac90-3491-df4f-7505-db4081bacb79@gmail.com>
+In-Reply-To: <6322ac90-3491-df4f-7505-db4081bacb79@gmail.com>
+From:   Rodrigo Campos <rodrigo@kinvolk.io>
+Date:   Mon, 5 Jul 2021 12:11:12 +0200
+Message-ID: <CACaBj2b4PPrP442Kg4X8faOR27=5ozHjwja2FQLSsoOXL+uc8Q@mail.gmail.com>
+Subject: Re: [PATCH] seccomp_unotify.2: Add doc for SECCOMP_ADDFD_FLAG_SEND
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alban Crequy <alban@kinvolk.io>,
+        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
+        Sargun Dhillon <sargun@sargun.me>, linux-man@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, Jul 3, 2021 at 11:25 PM Alejandro Colomar (man-pages)
+<alx.manpages@gmail.com> wrote:
+>
+> Hi Rodrigo,
+>
+> On 7/2/21 6:37 PM, Rodrigo Campos wrote:
+> > This flag was recently added to Linux 5.14 by a patch I wrote:
+> >       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t/commit/?id=3D0ae71c7720e3ae3aabd2e8a072d27f7bd173d25c
+> >
+> > This patch adds documentation for the flag, the error code that the fla=
+g
+> > added and explains in the caveat when it is useful.
+> >
+> > Signed-off-by: Rodrigo Campos <rodrigo@kinvolk.io>
+> > ---
+> > Hi! Here goes the documentation for the flag I just added. Please feel =
+free to
+> > amend as you want and let me know if something is not clear :)
+>
+> Thanks for documenting your own addition!
+> That makes things much easier :-)
 
-On Thu, Jun 17, 2021 at 06:47:27AM +0800, Chun-Jie Chen wrote:
-> Add MT8195 audio src source clock provider
-> 
-> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-> ---
->  drivers/clk/mediatek/Kconfig              |  6 +++
->  drivers/clk/mediatek/Makefile             |  1 +
->  drivers/clk/mediatek/clk-mt8195-aud_src.c | 60 +++++++++++++++++++++++
->  3 files changed, 67 insertions(+)
->  create mode 100644 drivers/clk/mediatek/clk-mt8195-aud_src.c
-> 
-> diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
-> index e2bae9d490a4..62dd02bc2755 100644
-> --- a/drivers/clk/mediatek/Kconfig
-> +++ b/drivers/clk/mediatek/Kconfig
-> @@ -594,6 +594,12 @@ config COMMON_CLK_MT8195_AUDSYS
->  	help
->  	  This driver supports MediaTek MT8195 audsys clocks.
->  
-> +config COMMON_CLK_MT8195_AUDSYS_SRC
-> +	bool "Clock driver for MediaTek MT8195 audsys_src"
-> +	depends on COMMON_CLK_MT8195
-> +	help
-> +	  This driver supports MediaTek MT8195 audsys_src clocks.
-> +
+No problem, thank you! :)
 
-Same comments regarding the Kconfig symbol as the previous patch.
+>
+> It looks quite good to me.
 
->  config COMMON_CLK_MT8516
->  	bool "Clock driver for MediaTek MT8516"
->  	depends on ARCH_MEDIATEK || COMPILE_TEST
-> diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
-> index f27c04314186..52a5d3f49ff0 100644
-> --- a/drivers/clk/mediatek/Makefile
-> +++ b/drivers/clk/mediatek/Makefile
-> @@ -82,5 +82,6 @@ obj-$(CONFIG_COMMON_CLK_MT8192_VDECSYS) += clk-mt8192-vdec.o
->  obj-$(CONFIG_COMMON_CLK_MT8192_VENCSYS) += clk-mt8192-venc.o
->  obj-$(CONFIG_COMMON_CLK_MT8195) += clk-mt8195.o
->  obj-$(CONFIG_COMMON_CLK_MT8195_AUDSYS) += clk-mt8195-aud.o
-> +obj-$(CONFIG_COMMON_CLK_MT8195_AUDSYS_SRC) += clk-mt8195-aud_src.o
->  obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
->  obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
-> diff --git a/drivers/clk/mediatek/clk-mt8195-aud_src.c b/drivers/clk/mediatek/clk-mt8195-aud_src.c
-> new file mode 100644
-> index 000000000000..7cabe0d68825
-> --- /dev/null
-> +++ b/drivers/clk/mediatek/clk-mt8195-aud_src.c
-> @@ -0,0 +1,60 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +//
-> +// Copyright (c) 2021 MediaTek Inc.
-> +// Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/platform_device.h>
-> +
-> +#include "clk-mtk.h"
-> +#include "clk-gate.h"
-> +
-> +#include <dt-bindings/clock/mt8195-clk.h>
-> +
-> +static const struct mtk_gate_regs aud_src_cg_regs = {
-> +	.set_ofs = 0x1004,
-> +	.clr_ofs = 0x1004,
-> +	.sta_ofs = 0x1004,
-> +};
-> +
-> +#define GATE_AUD_SRC(_id, _name, _parent, _shift)			\
-> +	GATE_MTK(_id, _name, _parent, &aud_src_cg_regs, _shift, &mtk_clk_gate_ops_no_setclr)
-> +
-> +static const struct mtk_gate aud_src_clks[] = {
-> +	GATE_AUD_SRC(CLK_AUD_SRC_ASRC0, "aud_src_asrc0", "asm_h_sel", 0),
-> +	GATE_AUD_SRC(CLK_AUD_SRC_ASRC1, "aud_src_asrc1", "asm_h_sel", 1),
-> +	GATE_AUD_SRC(CLK_AUD_SRC_ASRC2, "aud_src_asrc2", "asm_h_sel", 2),
-> +	GATE_AUD_SRC(CLK_AUD_SRC_ASRC3, "aud_src_asrc3", "asm_h_sel", 3),
-> +	GATE_AUD_SRC(CLK_AUD_SRC_ASRC4, "aud_src_asrc4", "asm_h_sel", 4),
-> +	GATE_AUD_SRC(CLK_AUD_SRC_ASRC5, "aud_src_asrc5", "asm_h_sel", 5),
-> +	GATE_AUD_SRC(CLK_AUD_SRC_ASRC6, "aud_src_asrc6", "asm_h_sel", 6),
-> +	GATE_AUD_SRC(CLK_AUD_SRC_ASRC7, "aud_src_asrc7", "asm_h_sel", 7),
-> +	GATE_AUD_SRC(CLK_AUD_SRC_ASRC8, "aud_src_asrc8", "asm_h_sel", 8),
-> +	GATE_AUD_SRC(CLK_AUD_SRC_ASRC9, "aud_src_asrc9", "asm_h_sel", 9),
-> +	GATE_AUD_SRC(CLK_AUD_SRC_ASRC10, "aud_src_asrc10", "asm_h_sel", 10),
-> +	GATE_AUD_SRC(CLK_AUD_SRC_ASRC11, "aud_src_asrc11", "asm_h_sel", 11),
+Thanks! It helps to know that the explanation makes sense for others too :)
 
-And same thing about moving this into the audio driver. AFAICT there is
-no audio driver supporting this hardware block, so this will never get
-used.
+>
+> There are a few minor changes that I applied in a following patch.  I'll
+> explain why in your patch inline.  And then you have the diff below your
+> patch.
+
+Thanks very much for the explanations, I will try to remember for the
+next time. And thanks for sending the patch here :)
 
 
-Regards
-ChenYu
+Best,
+
+Rodrigo Campos
+---
+Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
+Gesch=C3=A4ftsf=C3=BChrer/Directors: Benjamin Owen Orndorff
+Registergericht/Court of registration: Amtsgericht Charlottenburg
+Registernummer/Registration number: HRB 171414 B
+Ust-ID-Nummer/VAT ID number: DE302207000
