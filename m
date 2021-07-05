@@ -2,52 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8A23BBB34
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8386E3BBAF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbhGEK1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 06:27:35 -0400
-Received: from verein.lst.de ([213.95.11.211]:56421 "EHLO verein.lst.de"
+        id S230508AbhGEKSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 06:18:50 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:32872 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230355AbhGEK1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 06:27:34 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9FCEF68AFE; Mon,  5 Jul 2021 12:24:55 +0200 (CEST)
-Date:   Mon, 5 Jul 2021 12:24:55 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Guoqing Jiang <jiangguoqing@kylinos.cn>
-Cc:     syzbot <syzbot+9ca43ff47167c0ee3466@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        hch@lst.de
-Subject: Re: [syzbot] general protection fault in blk_mq_run_hw_queues
-Message-ID: <20210705102455.GA13497@lst.de>
-References: <0000000000005093cb05c659dae4@google.com> <79eae2c8-3540-f257-6068-2620570fa7f7@kylinos.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <79eae2c8-3540-f257-6068-2620570fa7f7@kylinos.cn>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S230355AbhGEKSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 06:18:49 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D05121A16CD;
+        Mon,  5 Jul 2021 12:16:11 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 982711A045A;
+        Mon,  5 Jul 2021 12:16:11 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 650E6183ACDC;
+        Mon,  5 Jul 2021 18:16:09 +0800 (+08)
+From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+To:     davem@davemloft.net, joabreu@synopsys.com, kuba@kernel.org,
+        alexandre.torgue@st.com, peppe.cavallaro@st.com,
+        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org
+Cc:     boon.leong.ong@intel.com, weifeng.voon@intel.com,
+        vee.khee.wong@intel.com, tee.min.tan@intel.com,
+        mohammad.athari.ismail@intel.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        leoyang.li@nxp.com, qiangqing.zhang@nxp.com, rui.sousa@nxp.com,
+        xiaoliang.yang_1@nxp.com
+Subject: [PATCH v2 net-next 0/3] net: stmmac: re-configure tas basetime after ptp time adjust
+Date:   Mon,  5 Jul 2021 18:26:52 +0800
+Message-Id: <20210705102655.6280-1-xiaoliang.yang_1@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 02:00:17PM +0800, Guoqing Jiang wrote:
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index 614d82e7fae4..d2548d36bf21 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -222,8 +222,8 @@ static void nbd_dev_remove(struct nbd_device *nbd)
->
->         if (disk) {
->                 del_gendisk(disk);
-> -               blk_mq_free_tag_set(&nbd->tag_set);
->                 blk_cleanup_disk(disk);
-> +               blk_mq_free_tag_set(&nbd->tag_set);
->         }
->
-> Also paride/pd.c needs the same change, is my understanding correct? 
-> Christoph.
+If the DWMAC Ethernet device has already set the Qbv EST configuration
+before using ptp to synchronize the time adjustment, the Qbv base time
+may change to be the past time of the new current time. This is not
+allowed by hardware.
 
-Yes.  Do you have a patch or should I send one?
+This patch calculates and re-configures the Qbv basetime after ptp time
+adjustment.
+
+v1->v2:
+  Update est mutex lock to protect btr/ctr r/w to be atomic.
+  Add btr_reserve to store basetime from qopt and used as origin base
+time in Qbv re-configuration.
+
+Xiaoliang Yang (3):
+  net: stmmac: separate the tas basetime calculation function
+  net: stmmac: add mutex lock to protect est parameters
+  net: stmmac: ptp: update tas basetime after ptp adjust
+
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  3 ++
+ .../net/ethernet/stmicro/stmmac/stmmac_ptp.c  | 41 ++++++++++++++++-
+ .../net/ethernet/stmicro/stmmac/stmmac_tc.c   | 46 +++++++++++++------
+ include/linux/stmmac.h                        |  1 +
+ 4 files changed, 77 insertions(+), 14 deletions(-)
+
+-- 
+2.17.1
+
