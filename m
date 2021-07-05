@@ -2,222 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410363BBD76
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2756D3BBD7B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhGEN1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 09:27:36 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:40538 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhGEN1g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 09:27:36 -0400
-Received: by mail-ot1-f47.google.com with SMTP id d21-20020a9d72d50000b02904604cda7e66so18292192otk.7;
-        Mon, 05 Jul 2021 06:24:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wBFZgrsOPrbsUN1uPwodsfr1xtraggXX60tVKBlbJAE=;
-        b=ui6ffD0Aw8+5ke1KvHOZmydv/xAvupCwcfenFq7tjaZwA1WzTIBaMm0pvyNlSRWNi+
-         2O717kFhp8jZSs7DZr8+4g6iDHKyf4ghB+i57JDYWgXkWAR5xSOcfP0WffMF+RPYXMn7
-         +fAVu8dqnfUiR2TAClaNijmllRSX95+fH/bWWm1V+tApHmZmF42pQis/mcAc1ioIlIeJ
-         /8T8mCLbVET6JXVuFA8LsNVEqMVbYrKjpN65/Mg3bAYlLWwKXqqFkXoVP6gyQ8G3qlRB
-         ND53/af+w7mm6IDF+6QD0LIrIl7ftjhr4h6SHVhRUBgKjGes/foHgZfAVKmWvOO9ApHc
-         RY7g==
-X-Gm-Message-State: AOAM531Tx7yaoTDQKiHVzFHj1QMxK2YDO7oZoTCQSXYgDk8q79tpShRJ
-        3rtf7jkC9K85Pteg5L9QRuVUQ4mrcolRVDPUcbQ=
-X-Google-Smtp-Source: ABdhPJwNj0BbvjrdzGAJ0ts+MYxii4BhPeMSPLcInedbRaacxy889Ea/5IE4yjfljc9RQRrEmHU9dqUJ4e9Y66P1h4g=
-X-Received: by 2002:a05:6830:1d8:: with SMTP id r24mr11413386ota.206.1625491498880;
- Mon, 05 Jul 2021 06:24:58 -0700 (PDT)
+        id S230446AbhGENcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 09:32:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230188AbhGENcE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 09:32:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A942861376;
+        Mon,  5 Jul 2021 13:29:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625491767;
+        bh=9S3ZvOTf49yCGvZ6lL6Y2sz7nhvlfqmFceEOZmIIkzw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=U+vt1/n9Db8b1J6pbRXu8GhSaAiPe1bcVF6dfgiuVFL8djcuhicRpcgRnqbfVhPsC
+         QdrW8QtAu5qskKgoGy/PGPyKmswR55u6JSwlvFZDamfD2UQHx6BSKqxLd3/Qgao6Ha
+         uYxtUFhG6uPcwpgSknriXNCF2Md2kRBz7qb/QaH3OQk/+qMstZdq9rdiDvogvGasbq
+         2JKNDxdV4XiH/LlWTn3hsrhOnF5MoTRZtsk81Vx4cxS9j5SqK6TbuO25bB0v50clj0
+         u+0akaJDZ6Ge21CuORSjH+luZppwcKi/8I2VdIbrwZcTJrDvu/K2YO6it/Ahuda5Yc
+         z2RjfOEX+U6tg==
+Date:   Mon, 5 Jul 2021 18:59:23 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dma <dmaengine@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL]: dmaengine updates for v5.14-rc1
+Message-ID: <YOMJM1UjXOsbtIDe@matsya>
 MIME-Version: 1.0
-References: <1867445.PYKUYFuaPT@kreacher> <007101d77117$b3b837a0$1b28a6e0$@telus.net>
-In-Reply-To: <007101d77117$b3b837a0$1b28a6e0$@telus.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 5 Jul 2021 15:24:43 +0200
-Message-ID: <CAJZ5v0jH6pXs07r9xvUwUDWz7A8DbDO-2UfMUTmMygO1PJ76=Q@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] cpuidle: teo: Rework the idle state selection logic
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="mhApdVrgjPoJ8yOe"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 11:01 PM Doug Smythies <dsmythies@telus.net> wrote:
->
-> Hi Rafael,
->
-> On 2021.06.02 11:14 Rafael J. Wysocki wrote:
->
-> > Hi All,
-> >
-> > This series of patches addresses some theoretical shortcoming in the
-> > TEO (Timer Events Oriented) cpuidle governor by reworking its idle
-> > state selection logic to some extent.
-> >
-> > Patches [1-2/5] are introductory cleanups and the substantial changes are
-> > made in patches [3-4/5] (please refer to the changelogs of these two
-> > patches for details).  The last patch only deals with documentation.
-> >
-> > Even though this work is mostly based on theoretical considerations, it
-> > shows a measurable reduction of the number of cases in which the
-> shallowest
-> > idle state is selected while it would be more beneficial to select a
-> deeper
-> > one or the deepest idle state is selected while it would be more
-> beneficial to
-> > select a shallower one, which should be a noticeable improvement.
->
-> Do you have any test results to share? Or test methods that I can try?
-> I have done a few tests, and generally don't notice much difference.
-> Perhaps an increase in idle state 2 below (was to shallow) numbers.
-> I am searching for some results that would offset the below:
->
-> The difficulty I am having with this patch set is the additional overhead
-> which becomes significant at the extremes, where idle state 0 is dominant.
-> Throughout the history of teo, I have used multiple one core pipe-tests
-> for this particular test. Some results:
->
-> CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
-> HWP: disabled
-> CPU frequency scaling driver: intel_pstate, active, powersave
-> Pipe-tests are run forever, printing average loop time for the
-> Last 2.5 million loops. 1021 of those are again averaged.
-> Total = 2.5525e9 loops
-> The power and idle data is sampled for 100 minutes.
->
-> Note 1: other tests were also done and also with passive,
-> schedutil, but it isn't relevant for this test because the
-> CPU frequency stays pinned at maximum.
->
-> Note 2: I use TCC offset for thermal throttling, but I disabled it
-> for these tests, because the temperature needed to go higher
-> than my normal throttling point.
->
-> Idle configuration 1: As a COMETLAKE processor, with 4 idle states.
-> Kernel 5.13-RC4.
->
-> Before patch set average:
-> 2.8014 uSec/loop
-> 113.9 watts
-> Idle state 0 residency: 9.450%
-> Idle state 0 entries per minute: 256,812,896.6
->
-> After patch set average:
-> 2.8264 uSec/loop, 0.89% slower
-> 114.0 watts
-> Idle state 0 residency: 8.677%
-> Idle state 0 entries per minute: 254,560,049.9
->
-> Menu governor:
-> 2.8051 uSec/loop, 0.13% slower
-> 113.9 watts
-> Idle state 0 residency: 8.437%
-> Idle state 0 entries per minute: 256,436,417.2
->
-> O.K., perhaps not so bad, but also not many idle states.
->
-> Idle configuration 2: As a SKYLAKE processor, with 9 idle states.
-> i.e.:
-> /drivers/idle/intel_idle.c
-> static const struct x86_cpu_id intel_idle_ids[] __initconst
-> ...
->    X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X, &idle_cpu_skx),
-> + X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE, &idle_cpu_skl),
->
-> Purpose: To demonstrate increasing overhead as a function of number
-> of idle states.
-> Kernel 5.13.
->
-> Before patch set average:
-> 2.8394 uSec/loop
-> 114.2 watts
-> Idle state 0 residency: 7.212%
-> Idle state 0 entries per minute: 253,391,954.3
->
-> After patch set average:
-> 2.9103 uSec/loop, 2.5% slower
-> 114.4 watts, 0.18% more
-> Idle state 0 residency: 6.152%, 14.7% less.
-> Idle state 0 entries per minute: 244,024,752.1
->
-> Menu governor:
-> 2.8141 uSec/loop, 0.89% faster
-> 113.9 watts,  0.26% less
-> Idle state 0 residency: 7.167%, 0.6% less
-> Idle state 0 entries per minute: 255,650,610.7
->
-> Another potentially interesting test was the ebizzy test:
-> Records per second, averaged over many tests, varying
-> threads and intervals:
->
-> passive, schedutil:
-> Before: 6771.977
-> After: 5502.643, -18.7%
-> Menu: 10728.89, +58.4%
->
-> Active, powersave:
-> Before: 8361.82
-> After: 8463.31, +1.2%
-> Menu: 8225.58, -1.6%
->
-> I think it has more to do with CPU scaling governors
-> than this patch set, so:
->
-> performance:
-> Before: 12137.33
-> After: 12083.26, -0.4%
-> Menu: 11983.73, -1.3%
->
-> These and other test results available here:
-> (encoded to prevent a barrage of bots)
->
-> double u double u double u dot smythies dot com
-> /~doug/linux/idle/teo-2021-06/
->
-> ... a day later ...
->
-> I might have an answer to my own question.
-> By switching to cross core pipe-tests, and only loading down one
-> CPU per core, I was able to get a lot more activity in other idle states.
-> The test runs for 100 minutes, and the results change with time, but
-> I'll leave that investigation for another day (there is no throttling):
->
-> 1st 50 tests:
-> Before: 3.888 uSec/loop
-> After: 3.764 uSec/loop
-> Menu: 3.464 uSec/loop
->
-> Tests 50 to 100:
-> Before: 4.329 uSec/loop
-> After: 3.919 uSec/loop
-> Menu: 3.514 uSec/loop
->
-> Tests 200 to 250:
-> Before: 5.089 uSec/loop
-> After: 4.364 uSec/loop
-> Menu: 4.619 uSec/loop
->
-> Tests 280 to 330:
-> Before: 5.142 uSec/loop
-> After: 4.464 uSec/loop
-> Menu: 4.619 uSec/loop
->
-> Notice that the "after" this patch set is applied eventually does
-> better than using the menu governor. Its processor package power
-> always remains less, than the menu governor.
 
-That's good news, thanks!
+--mhApdVrgjPoJ8yOe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> The results can be viewed graphically at the above link, but the
-> most dramatic results are:
->
-> Idle state 3 above % goes from 70% to 5%.
-> Idle state 2 below % goes from 13% to less than 1%.
+Hello Linus,
 
-This also looks promising.
+This time around we have a smaller pull request than usual and this
+includes code removal, so should be good!
 
-Thank you for all of the results!
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dm=
+aengine-5.14-rc1
+
+for you to fetch changes up to 8d11cfb0c37547bd6b1cdc7c2653c1e6b5ec5abb:
+
+  dmaengine: imx-sdma: Remove platform data header (2021-06-24 16:44:38 +05=
+30)
+
+----------------------------------------------------------------
+dmaengine updates for v5.14-rc1
+
+New drivers/devices
+ - Support for QCOM SM8250 GPI DMA
+ - removal of shdma-of driver and binding
+
+Updates:
+ - arm-pl08x yaml binding move
+ - altera-msgdma gained DT support
+ - removal of imx-sdma platform data support
+ - idxd and xilinx driver updates
+
+----------------------------------------------------------------
+Andy Shevchenko (2):
+      dmaengine: Move kdoc description of struct dma_chan_percpu closer to =
+it
+      dmaengine: hsu: Account transferred bytes
+
+Austin Kim (1):
+      dmaengine: sf-pdma: apply proper spinlock flags in sf_pdma_prep_dma_m=
+emcpy()
+
+Corentin Labbe (1):
+      dt-bindings: dma: convert arm-pl08x to yaml
+
+Dave Jiang (1):
+      dmaengine: idxd: remove devm allocation for idxd->int_handles
+
+Geert Uytterhoeven (2):
+      dt-bindings: dmaengine: Remove SHDMA Device Tree bindings
+      dmaengine: sh: Remove unused shdma-of driver
+
+Jiapeng Chong (1):
+      dmaengine: idxd: Remove redundant variable cdev_ctx
+
+Konrad Dybcio (2):
+      dt-bindings: dmaengine: qcom: gpi: add compatible for sm8250
+      dmaengine: qcom: gpi: Add SM8250 compatible
+
+Laurent Pinchart (2):
+      dmaengine: xilinx: dpdma: Print channel number in kernel log messages
+      dmaengine: xilinx: dpdma: Print debug message when losing vsync race
+
+Michal Simek (2):
+      dmaengine: xilinx: dpdma: Use kernel type u32 over uint32_t
+      dmaengine: xilinx: dpdma: Fix spacing around addr[i-1]
+
+Olivier Dautricourt (3):
+      dt-bindings: dma: add schema for altera-msgdma
+      MAINTAINERS: add entry for Altera mSGDMA
+      dmaengine: altera-msgdma: add OF support
+
+Robin Gong (1):
+      dmaengine: fsl-qdma: check dma_set_mask return value
+
+Tony Lindgren (1):
+      dmaengine: ti: omap-dma: Skip pointless cpu_pm context restore on err=
+ors
+
+Vladimir Zapolskiy (1):
+      dmaengine: imx-sdma: Remove platform data header
+
+Yang Li (1):
+      dmaengine: xilinx: dpdma: fix kernel-doc
+
+Zou Wei (1):
+      dmaengine: sun4i: Use list_move_tail instead of list_del/list_add_tail
+
+ .../devicetree/bindings/dma/altr,msgdma.yaml       |  61 +++++++++
+ .../devicetree/bindings/dma/arm-pl08x.txt          |  59 ---------
+ .../devicetree/bindings/dma/arm-pl08x.yaml         | 136 +++++++++++++++++=
+++++
+ .../devicetree/bindings/dma/qcom,gpi.yaml          |   1 +
+ .../devicetree/bindings/dma/renesas,shdma.txt      |  84 -------------
+ MAINTAINERS                                        |   8 ++
+ drivers/dma/altera-msgdma.c                        |  20 +++
+ drivers/dma/fsl-qdma.c                             |   6 +-
+ drivers/dma/hsu/hsu.c                              |   3 +
+ drivers/dma/idxd/cdev.c                            |   2 -
+ drivers/dma/idxd/init.c                            |   3 +-
+ drivers/dma/imx-sdma.c                             |  56 ++++++++-
+ drivers/dma/qcom/gpi.c                             |   1 +
+ drivers/dma/sf-pdma/sf-pdma.c                      |   5 +-
+ drivers/dma/sh/Makefile                            |   2 +-
+ drivers/dma/sh/shdma-of.c                          |  76 ------------
+ drivers/dma/sun4i-dma.c                            |   5 +-
+ drivers/dma/ti/omap-dma.c                          |   3 +-
+ drivers/dma/xilinx/xilinx_dpdma.c                  |  44 ++++---
+ include/linux/dmaengine.h                          |  11 +-
+ include/linux/platform_data/dma-imx-sdma.h         |  60 ---------
+ 21 files changed, 333 insertions(+), 313 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/dma/altr,msgdma.yaml
+ delete mode 100644 Documentation/devicetree/bindings/dma/arm-pl08x.txt
+ create mode 100644 Documentation/devicetree/bindings/dma/arm-pl08x.yaml
+ delete mode 100644 Documentation/devicetree/bindings/dma/renesas,shdma.txt
+ delete mode 100644 drivers/dma/sh/shdma-of.c
+ delete mode 100644 include/linux/platform_data/dma-imx-sdma.h
+
+Thanks
+--=20
+~Vinod
+
+--mhApdVrgjPoJ8yOe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmDjCTMACgkQfBQHDyUj
+g0frVxAAua5p28hNLM4jlvtGMX3F5COoYq4KBxbXHyMyZAsD/N1aXi9FKd0SWJUU
+Op1hnQ33oMGgIcOjRGbbsZv+dC6Ku0PyRnEJgQC01n5ebfhHBj8rItlEU2Ysyrc+
+7iWd4ueMPfmZi3V/hP12OQqeBr+ZFmGoMJBioRFeXKwR/WSiSpvcgBveXNhdo5hd
+SbeAwGfDKGT2k8p6jxjx0WP3ib349oxtrKLTEPqV6uYomAo594dHrNUe6ElC3kF2
+wWnb/rKS4DRsztyR0I1FGvavnsDGLD9KYPUhIfTbHMs8k3oW3yzbXzr2Pqs2ACXM
++euftEqQZ+dB8XvVhuRfBYhkyLtwqkDgebxveWyixguqGnwtTGNu/41ElH/BGoUF
+fvMQ53fIwyoPAY2X+g45po2aCeupWYahVbDUX1vCNjYhqUU6j3UkhSlWZqxMTxna
++cQSAslsyfWzK+7XRUxsdAEHK5OfNKh2iSWw/m21K1h00a0de9GLOSJlXEnY5ssE
+mpWCN++tXNlgMTfEdOICWbyV+agGN+T+QX2vQ8YYy7mV9S8kJZYxPzCCTLt8hfuF
+yrgaj/UzScOA0l9Kk3axcjXugp+NRJSCLEgRP0uwRcErrRo3ea0xmdNh73VkAoCQ
+QtkuMJhqvLTB3meXaYy/IUX2l2rkMdH2DCM1/EjAS95PHVVp0Gw=
+=BLbi
+-----END PGP SIGNATURE-----
+
+--mhApdVrgjPoJ8yOe--
