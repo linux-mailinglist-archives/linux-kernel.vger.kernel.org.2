@@ -2,111 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C7E3BB70E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFC93BB70C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbhGEGGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 02:06:25 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:37061 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229734AbhGEGGX (ORCPT
+        id S229817AbhGEGFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 02:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhGEGFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 02:06:23 -0400
-X-UUID: a359db07d60241c1950bb2b35d7a9fde-20210705
-X-UUID: a359db07d60241c1950bb2b35d7a9fde-20210705
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 888824830; Mon, 05 Jul 2021 14:03:44 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 5 Jul 2021 14:03:42 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 5 Jul 2021 14:03:41 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     David Ahern <dsahern@gmail.com>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        <rocco.yue@gmail.com>, <chao.song@mediatek.com>,
-        <kuohong.wang@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
-        Rocco Yue <rocco.yue@mediatek.com>
-Subject: Re: [PATCH] net: ipv6: don't generate link-local address in any addr_gen_mode
-Date:   Mon, 5 Jul 2021 13:48:02 +0800
-Message-ID: <20210705054802.31052-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210701085117.19018-1-rocco.yue@mediatek.com>
-References: <20210701085117.19018-1-rocco.yue@mediatek.com>
+        Mon, 5 Jul 2021 02:05:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD6BC061574;
+        Sun,  4 Jul 2021 23:02:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+llhNOIjgCgyDen6/AZ5WQb/0oOeSbGr13Ghe4Awmp4=; b=eCBzb8B28v/eRtNCnOjYcGanZS
+        6AP+UD1taU3IRqjyHQpirdCiVXbJfwfRfhHR5uBol/N5GxDAeouoBRTNvB0VfGDNVKTlvRN25T7yx
+        y0LEs5m7ElpqdSY8DauR0oIplRS3ohiU8NOLRM8RYwmbeWGNwOCk/1o5LoCi2ijZi9gehQ7IHzEOJ
+        qwaxfwJawn99uEB40xJH5tVfezYopF0e0d8CtgUgdltEoRr6tArRcNgRIXNk+w1EebweqLkOvq3GF
+        dFFF9hQi2QtMn8zeRW+4Eh9DkfW/ve0r5vtWDEJDPPsj0WB1WGdsFy0lfYCZ4Sw3TJeaxvAn9TwAe
+        I/TiYzjQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m0Hfk-009vtj-HO; Mon, 05 Jul 2021 06:01:41 +0000
+Date:   Mon, 5 Jul 2021 07:01:36 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, torvalds@linux-foundation.org
+Subject: Re: [PATCH v2 0/9] ARM: remove set_fs callers and implementation
+Message-ID: <YOKgQCTB6Rd+jIom@infradead.org>
+References: <20200918124624.1469673-1-arnd@arndb.de>
+ <20200919052715.GF30063@infradead.org>
+ <CAK8P3a1LM8SXbzcVv1B05fdmxBZ-PA+P4m4oP1Dgc4JmR2CGMw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1LM8SXbzcVv1B05fdmxBZ-PA+P4m4oP1Dgc4JmR2CGMw@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-07-01 at 16:51 +0800, Rocco Yue wrote:
-> On Wed, 2021-06-30 at 22:41 -0600, David Ahern wrote:
->> On 6/30/21 9:39 PM, Rocco Yue wrote:
->>> 
->>> Hi David,
->>> 
->>> Thanks for your review.
->>> 
->>> This patch is different with IN6_ADDR_GEN_MODE_NONE.
->>> 
->>> When the addr_gen_mode == IN6_ADDR_GEN_MODE_NONE, the Linux kernel
->>> doesn't automatically generate the ipv6 link-local address.
->>> 
->> 
->> ...
->> 
->>> 
->>> After this patch, when the "disable_gen_linklocal_addr" value of a device
->>> is 1, no matter in which addr_gen_mode, the Linux kernel will not automatically
->>> generate an ipv6 link-local for this device.
->>> 
->> 
->> those 2 sentences are saying the same thing to me.
->> 
->> for your use case, why is setting addr_gen_mode == 1 for the device not
->> sufficient?
->> 
-> 
-> For mobile operators that don't need to support RFC7217, setting
-> addr_gen_mode == 1 is sufficient;
-> 
-> But for some other mobile operators that need to support RFC7217, such as AT&T,
-> the mobile device's addr_gen_mode will be switched to the
-> IN6_ADDR_GEN_MODE_STABLE_PRIVACY, instead of using IN6_ADDR_GEN_MODE_NONE.
-> The purpose is: in the IN6_ADDR_GEN_MODE_STABLE_PRIVACY mode, kernel can
-> gererate a stable privacy global ipv6 address after receiveing RA, and
-> network processes can use this global address to communicate with the
-> outside network.
-> 
-> Of course, mobile operators that need to support RFC7217 should also meet
-> the requirement of 3GPP TS 29.061, that is, MT should use IID assigned by
-> the GGSN to build its ipv6 link-local address and use this address to send RS.
-> We don't want the kernel to automatically generate an ipv6 link-local address
-> when addr_gen_mode == 2. Otherwise, using the stable privacy ipv6 link-local
-> address automatically generated by the kernel to send RS message, GGSN will
-> not be able to respond to the RS and reply a RA message.
-> 
-> Therefore, after this patch, kernel will not generate ipv6 link-local address
-> for the corresponding device when addr_gen_mode == 1 or addr_gen_mode == 2.
-> 
-> Thanks,
-> Rocco
-> 
+Just a ping if we're making some progress on this.  The m68knommu
+set_fs implementation is actively misleading, which lead to a problem
+this merge window so I'd really like to see this set merged.
 
-Hi David,
-
-Gentle ping for this patch.
-
-Thanks,
-Rocco
+Also your improvements to the copy_from_kernel_nofaul loop would be
