@@ -2,318 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550D13BC1AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 18:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE203BC1B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 18:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhGEQcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 12:32:18 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:44904 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhGEQcR (ORCPT
+        id S229734AbhGEQfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 12:35:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhGEQfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 12:32:17 -0400
-Received: by mail-ot1-f41.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so18775739otq.11;
-        Mon, 05 Jul 2021 09:29:39 -0700 (PDT)
+        Mon, 5 Jul 2021 12:35:32 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097E8C061574;
+        Mon,  5 Jul 2021 09:32:55 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id f12-20020a056830204cb029048bcf4c6bd9so6745641otp.8;
+        Mon, 05 Jul 2021 09:32:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Aqvkw1lY3fhwqDao9mNSUZTesdZ4dEBF2KprX5GlTbk=;
+        b=WPYXDu6AbKNfwfmTxx5U5jowbTWNLNWHY4v/88chMI5ESGrMkCZpvCNQXVxv25O2r1
+         R3EwQQxcbycHCs0RvBG5SXZ+eLv9uEaF6zT9ieQmMFPjrhzJo84NUnEUy3/yf4UaRl6a
+         /yEcoIdabu2cwZLDsUFAYnHezDBU1AiQxQJSxlZ1TG4PjexDi61NBQjjADW+Zwk6N/mn
+         +zbAXxUqMtEgsff6klulYR2TklVXVu5/07WFYWlTNz7JqbT1dnM5bM5BHkBtqAm/8ZQe
+         0M0ecK2ZrKUOxScqXPjaCTOEeYxYWmuM11QsQFT1alS/bJ4qHWqhk3FfI7XcV56sgmkx
+         twhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uWSRCfLxagZkfdRFTgzINTcfdXcwgBoSKQU0WAGpQpY=;
-        b=MsB07dn1BX2C6UhmA6RXM8LBE9Dd0x7cp9QUfo9dqqO8EtfketvB317Htcyjxt+0Zu
-         XRFVH2JTTfED3TvJPFZWWgeK6cU0k+moKBI8iQLfBy1fq/re/uAG0puUF+M7gQhf/BNi
-         ZBeWXhwQxDbxzIGyqjHIsX9dMckEnvobsrzR6Wg/2sPZ0eVZC9zpOCyHVki2S0QVpPPA
-         KQFxf2EDb+4bHRrP8X9WHKOx4MVBOg5qNFg+LU7wRX6XsSkKfVtB4qZ4LGn6ztDnwB1W
-         xXKhOn8ZaTLnwc2MAn3umLk1Y3ywI+3B0NrC6Bslq+gLwu/EuOmJusPWIAxbTPIgrUUV
-         ERFg==
-X-Gm-Message-State: AOAM530UIdqrYZpsf9EbwnHW16Yw5snE4bEgaJg1FAbc5CvznMHpDq0Q
-        uBskcIGQahXw5rkC10AYqqkMWA1Zuu3M1i8AdIw=
-X-Google-Smtp-Source: ABdhPJx1F1SVVzWzMpJdUgKTj03G56+dm5jBmfY0PdwDE69QEyl9UDvKVG4qFtvxu9DpOuZ+OC8WeWjo3CzRpQlTnG0=
-X-Received: by 2002:a9d:22a5:: with SMTP id y34mr984527ota.321.1625502578681;
- Mon, 05 Jul 2021 09:29:38 -0700 (PDT)
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Aqvkw1lY3fhwqDao9mNSUZTesdZ4dEBF2KprX5GlTbk=;
+        b=KGjanAhRZogPtQ03HsrNjDIO2W6uydKfEEcOdVBR/Te+ewpDTQxOhr0467yKHGeOZI
+         iIOkxAN/astpQmzgw8jqXYF3Qbr4pm+1uV/4foS8GVg4BCQzow0neAiY6Z64VDz10xZL
+         leYrRmCzdPNcR6HKRdVgcf7A9bccv/u7DaGfRi6rOWIrUNPmIGQYY/sEfGPPDyawnOuB
+         mMfEDVtPaRN14LNz3tXREySco85l17MbeN8Lv01bnZUajMr/BgOyinTrAu+A40Hjihwx
+         /YvUKvB0/Uxnfj4A7JC8pg0nLgWFbtZn6BlwTdj3WIoKo/dJPD13n8NjakeHQk0g3vOE
+         3bRA==
+X-Gm-Message-State: AOAM5310zFGzAU8VrIP4tybDHPGFFsGG8tcWlNB5wjVcIYS+9q4aEvG0
+        YD/MxZJNLXbqzhNoXCeZAyw=
+X-Google-Smtp-Source: ABdhPJyN7tjO8+xSwA7xOIkPWV9HQrPkeILuHIp+1Cp3hrTR1y16AJ1az2LbQ+eyu36luMml77Ixyw==
+X-Received: by 2002:a05:6830:1386:: with SMTP id d6mr11219313otq.115.1625502774349;
+        Mon, 05 Jul 2021 09:32:54 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x198sm1001722oif.23.2021.07.05.09.32.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Jul 2021 09:32:53 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, John Crispin <john@phrozen.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        kernel test robot <lkp@intel.com>
+References: <20210514131750.52867-1-krzysztof.kozlowski@canonical.com>
+ <2b427eca-fd6c-d099-337f-39cfbd85cb46@roeck-us.net>
+ <a15e7f62-12a0-1ec7-5104-f01f9e3eccc7@canonical.com>
+ <9d98ec40-757d-28c7-1669-a683b2cd3881@canonical.com>
+ <b87bbb80-ed02-447d-f778-7997848731cd@roeck-us.net>
+ <CA+Eumj4aZZPFFB-3PEeBVo6fXW_Fz97oswA3pZuu2aiysnp=nQ@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] MIPS: ralink: of: fix build of rt2880_wdt watchdog module
+Message-ID: <7fd17c09-5801-58d5-1b26-c67babcd90e0@roeck-us.net>
+Date:   Mon, 5 Jul 2021 09:32:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210624201802.3255370-1-swboyd@chromium.org> <CAPDyKFq3JAh8Ogts21P2bRkwKLGs4U9A1CmnMTbD-FacPTTYrg@mail.gmail.com>
-In-Reply-To: <CAPDyKFq3JAh8Ogts21P2bRkwKLGs4U9A1CmnMTbD-FacPTTYrg@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 5 Jul 2021 18:29:27 +0200
-Message-ID: <CAJZ5v0gDiJ14fkdmtsavnuNw0ATZqZFVFYagOzJ5GZYPZDVHhA@mail.gmail.com>
-Subject: Re: [PATCH v2] PM: domains: Shrink locking area of the gpd_list_lock
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Cc:     Kevin Hilman <khilman@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CA+Eumj4aZZPFFB-3PEeBVo6fXW_Fz97oswA3pZuu2aiysnp=nQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 12:41 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Thu, 24 Jun 2021 at 22:18, Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > On trogdor devices I see the following lockdep splat when stopping
-> > youtube with lockdep enabled in the kernel.
-> >
-> >  ======================================================
-> >  WARNING: possible circular locking dependency detected
-> >  5.13.0-rc2 #71 Not tainted
-> >  ------------------------------------------------------
-> >  ThreadPoolSingl/3969 is trying to acquire lock:
-> >  ffffff80d4d5c080 (&inst->lock#3){+.+.}-{3:3}, at: vdec_buf_cleanup+0x3c/0x17c [venus_dec]
-> >
-> >  but task is already holding lock:
-> >  ffffff80d3c3c4f8 (&q->mmap_lock){+.+.}-{3:3}, at: vb2_core_reqbufs+0xe4/0x390 [videobuf2_common]
-> >
-> >  which lock already depends on the new lock.
-> >
-> >  the existing dependency chain (in reverse order) is:
-> >
-> >  -> #5 (&q->mmap_lock){+.+.}-{3:3}:
-> >         __mutex_lock_common+0xcc/0xb88
-> >         mutex_lock_nested+0x5c/0x68
-> >         vb2_mmap+0xf4/0x290 [videobuf2_common]
-> >         v4l2_m2m_fop_mmap+0x44/0x50 [v4l2_mem2mem]
-> >         v4l2_mmap+0x5c/0xa4
-> >         mmap_region+0x310/0x5a4
-> >         do_mmap+0x348/0x43c
-> >         vm_mmap_pgoff+0xfc/0x178
-> >         ksys_mmap_pgoff+0x84/0xfc
-> >         __arm64_compat_sys_aarch32_mmap2+0x2c/0x38
-> >         invoke_syscall+0x54/0x110
-> >         el0_svc_common+0x88/0xf0
-> >         do_el0_svc_compat+0x28/0x34
-> >         el0_svc_compat+0x24/0x34
-> >         el0_sync_compat_handler+0xc0/0xf0
-> >         el0_sync_compat+0x19c/0x1c0
-> >
-> >  -> #4 (&mm->mmap_lock){++++}-{3:3}:
-> >         __might_fault+0x60/0x88
-> >         filldir64+0x124/0x3a0
-> >         dcache_readdir+0x7c/0x1ec
-> >         iterate_dir+0xc4/0x184
-> >         __arm64_sys_getdents64+0x78/0x170
-> >         invoke_syscall+0x54/0x110
-> >         el0_svc_common+0xa8/0xf0
-> >         do_el0_svc_compat+0x28/0x34
-> >         el0_svc_compat+0x24/0x34
-> >         el0_sync_compat_handler+0xc0/0xf0
-> >         el0_sync_compat+0x19c/0x1c0
-> >
-> >  -> #3 (&sb->s_type->i_mutex_key#3){++++}-{3:3}:
-> >         down_write+0x94/0x1f4
-> >         start_creating+0xb0/0x174
-> >         debugfs_create_dir+0x28/0x138
-> >         opp_debug_register+0x88/0xc0
-> >         _add_opp_dev+0x84/0x9c
-> >         _add_opp_table_indexed+0x16c/0x310
-> >         _of_add_table_indexed+0x70/0xb5c
-> >         dev_pm_opp_of_add_table_indexed+0x20/0x2c
-> >         of_genpd_add_provider_onecell+0xc4/0x1c8
-> >         rpmhpd_probe+0x21c/0x278
-> >         platform_probe+0xb4/0xd4
-> >         really_probe+0x140/0x35c
-> >         driver_probe_device+0x90/0xcc
-> >         __device_attach_driver+0xa4/0xc0
-> >         bus_for_each_drv+0x8c/0xd8
-> >         __device_attach+0xc4/0x150
-> >         device_initial_probe+0x20/0x2c
-> >         bus_probe_device+0x40/0xa4
-> >         device_add+0x22c/0x3fc
-> >         of_device_add+0x44/0x54
-> >         of_platform_device_create_pdata+0xb0/0xf4
-> >         of_platform_bus_create+0x1d0/0x350
-> >         of_platform_populate+0x80/0xd4
-> >         devm_of_platform_populate+0x64/0xb0
-> >         rpmh_rsc_probe+0x378/0x3dc
-> >         platform_probe+0xb4/0xd4
-> >         really_probe+0x140/0x35c
-> >         driver_probe_device+0x90/0xcc
-> >         __device_attach_driver+0xa4/0xc0
-> >         bus_for_each_drv+0x8c/0xd8
-> >         __device_attach+0xc4/0x150
-> >         device_initial_probe+0x20/0x2c
-> >         bus_probe_device+0x40/0xa4
-> >         device_add+0x22c/0x3fc
-> >         of_device_add+0x44/0x54
-> >         of_platform_device_create_pdata+0xb0/0xf4
-> >         of_platform_bus_create+0x1d0/0x350
-> >         of_platform_bus_create+0x21c/0x350
-> >         of_platform_populate+0x80/0xd4
-> >         of_platform_default_populate_init+0xb8/0xd4
-> >         do_one_initcall+0x1b4/0x400
-> >         do_initcall_level+0xa8/0xc8
-> >         do_initcalls+0x5c/0x9c
-> >         do_basic_setup+0x2c/0x38
-> >         kernel_init_freeable+0x1a4/0x1ec
-> >         kernel_init+0x20/0x118
-> >         ret_from_fork+0x10/0x30
-> >
-> >  -> #2 (gpd_list_lock){+.+.}-{3:3}:
-> >         __mutex_lock_common+0xcc/0xb88
-> >         mutex_lock_nested+0x5c/0x68
-> >         __genpd_dev_pm_attach+0x70/0x18c
-> >         genpd_dev_pm_attach_by_id+0xe4/0x158
-> >         genpd_dev_pm_attach_by_name+0x48/0x60
-> >         dev_pm_domain_attach_by_name+0x2c/0x38
-> >         dev_pm_opp_attach_genpd+0xac/0x160
-> >         vcodec_domains_get+0x94/0x14c [venus_core]
-> >         core_get_v4+0x150/0x188 [venus_core]
-> >         venus_probe+0x138/0x444 [venus_core]
-> >         platform_probe+0xb4/0xd4
-> >         really_probe+0x140/0x35c
-> >         driver_probe_device+0x90/0xcc
-> >         device_driver_attach+0x58/0x7c
-> >         __driver_attach+0xc8/0xe0
-> >         bus_for_each_dev+0x88/0xd4
-> >         driver_attach+0x30/0x3c
-> >         bus_add_driver+0x10c/0x1e0
-> >         driver_register+0x70/0x108
-> >         __platform_driver_register+0x30/0x3c
-> >         0xffffffde113e1044
-> >         do_one_initcall+0x1b4/0x400
-> >         do_init_module+0x64/0x1fc
-> >         load_module+0x17f4/0x1958
-> >         __arm64_sys_finit_module+0xb4/0xf0
-> >         invoke_syscall+0x54/0x110
-> >         el0_svc_common+0x88/0xf0
-> >         do_el0_svc_compat+0x28/0x34
-> >         el0_svc_compat+0x24/0x34
-> >         el0_sync_compat_handler+0xc0/0xf0
-> >         el0_sync_compat+0x19c/0x1c0
-> >
-> >  -> #1 (&opp_table->genpd_virt_dev_lock){+.+.}-{3:3}:
-> >         __mutex_lock_common+0xcc/0xb88
-> >         mutex_lock_nested+0x5c/0x68
-> >         _set_required_opps+0x74/0x120
-> >         _set_opp+0x94/0x37c
-> >         dev_pm_opp_set_rate+0xa0/0x194
-> >         core_clks_set_rate+0x28/0x58 [venus_core]
-> >         load_scale_v4+0x228/0x2b4 [venus_core]
-> >         session_process_buf+0x160/0x198 [venus_core]
-> >         venus_helper_vb2_buf_queue+0xcc/0x130 [venus_core]
-> >         vdec_vb2_buf_queue+0xc4/0x140 [venus_dec]
-> >         __enqueue_in_driver+0x164/0x188 [videobuf2_common]
-> >         vb2_core_qbuf+0x13c/0x47c [videobuf2_common]
-> >         vb2_qbuf+0x88/0xec [videobuf2_v4l2]
-> >         v4l2_m2m_qbuf+0x84/0x15c [v4l2_mem2mem]
-> >         v4l2_m2m_ioctl_qbuf+0x24/0x30 [v4l2_mem2mem]
-> >         v4l_qbuf+0x54/0x68
-> >         __video_do_ioctl+0x2bc/0x3bc
-> >         video_usercopy+0x558/0xb04
-> >         video_ioctl2+0x24/0x30
-> >         v4l2_ioctl+0x58/0x68
-> >         v4l2_compat_ioctl32+0x84/0xa0
-> >         __arm64_compat_sys_ioctl+0x12c/0x140
-> >         invoke_syscall+0x54/0x110
-> >         el0_svc_common+0x88/0xf0
-> >         do_el0_svc_compat+0x28/0x34
-> >         el0_svc_compat+0x24/0x34
-> >         el0_sync_compat_handler+0xc0/0xf0
-> >         el0_sync_compat+0x19c/0x1c0
-> >
-> >  -> #0 (&inst->lock#3){+.+.}-{3:3}:
-> >         __lock_acquire+0x248c/0x2d6c
-> >         lock_acquire+0x240/0x314
-> >         __mutex_lock_common+0xcc/0xb88
-> >         mutex_lock_nested+0x5c/0x68
-> >         vdec_buf_cleanup+0x3c/0x17c [venus_dec]
-> >         __vb2_queue_free+0x98/0x204 [videobuf2_common]
-> >         vb2_core_reqbufs+0x14c/0x390 [videobuf2_common]
-> >         vb2_reqbufs+0x58/0x74 [videobuf2_v4l2]
-> >         v4l2_m2m_reqbufs+0x58/0x90 [v4l2_mem2mem]
-> >         v4l2_m2m_ioctl_reqbufs+0x24/0x30 [v4l2_mem2mem]
-> >         v4l_reqbufs+0x58/0x6c
-> >         __video_do_ioctl+0x2bc/0x3bc
-> >         video_usercopy+0x558/0xb04
-> >         video_ioctl2+0x24/0x30
-> >         v4l2_ioctl+0x58/0x68
-> >         v4l2_compat_ioctl32+0x84/0xa0
-> >         __arm64_compat_sys_ioctl+0x12c/0x140
-> >         invoke_syscall+0x54/0x110
-> >         el0_svc_common+0x88/0xf0
-> >         do_el0_svc_compat+0x28/0x34
-> >         el0_svc_compat+0x24/0x34
-> >         el0_sync_compat_handler+0xc0/0xf0
-> >         el0_sync_compat+0x19c/0x1c0
-> >
-> >  other info that might help us debug this:
-> >
-> >  Chain exists of:
-> >    &inst->lock#3 --> &mm->mmap_lock --> &q->mmap_lock
-> >
-> >   Possible unsafe locking scenario:
-> >
-> >         CPU0                    CPU1
-> >         ----                    ----
-> >    lock(&q->mmap_lock);
-> >                                 lock(&mm->mmap_lock);
-> >                                 lock(&q->mmap_lock);
-> >    lock(&inst->lock#3);
-> >
-> >   *** DEADLOCK ***
-> >
-> >  1 lock held by ThreadPoolSingl/3969:
-> >   #0: ffffff80d3c3c4f8 (&q->mmap_lock){+.+.}-{3:3}, at: vb2_core_reqbufs+0xe4/0x390 [videobuf2_common]
-> >
-> >  stack backtrace:
-> >  CPU: 2 PID: 3969 Comm: ThreadPoolSingl Not tainted 5.13.0-rc2 #71
-> >  Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
-> >  Call trace:
-> >   dump_backtrace+0x0/0x1b4
-> >   show_stack+0x24/0x30
-> >   dump_stack+0xe0/0x15c
-> >   print_circular_bug+0x32c/0x388
-> >   check_noncircular+0x138/0x140
-> >   __lock_acquire+0x248c/0x2d6c
-> >   lock_acquire+0x240/0x314
-> >   __mutex_lock_common+0xcc/0xb88
-> >   mutex_lock_nested+0x5c/0x68
-> >   vdec_buf_cleanup+0x3c/0x17c [venus_dec]
-> >   __vb2_queue_free+0x98/0x204 [videobuf2_common]
-> >   vb2_core_reqbufs+0x14c/0x390 [videobuf2_common]
-> >   vb2_reqbufs+0x58/0x74 [videobuf2_v4l2]
-> >   v4l2_m2m_reqbufs+0x58/0x90 [v4l2_mem2mem]
-> >   v4l2_m2m_ioctl_reqbufs+0x24/0x30 [v4l2_mem2mem]
-> >   v4l_reqbufs+0x58/0x6c
-> >   __video_do_ioctl+0x2bc/0x3bc
-> >   video_usercopy+0x558/0xb04
-> >   video_ioctl2+0x24/0x30
-> >   v4l2_ioctl+0x58/0x68
-> >   v4l2_compat_ioctl32+0x84/0xa0
-> >   __arm64_compat_sys_ioctl+0x12c/0x140
-> >   invoke_syscall+0x54/0x110
-> >   el0_svc_common+0x88/0xf0
-> >   do_el0_svc_compat+0x28/0x34
-> >   el0_svc_compat+0x24/0x34
-> >   el0_sync_compat_handler+0xc0/0xf0
-> >   el0_sync_compat+0x19c/0x1c0
-> >
-> > The 'gpd_list_lock' is nominally named as such to protect the 'gpd_list'
-> > from concurrent access and mutation. Unfortunately, holding that mutex
-> > around various OPP framework calls leads to lockdep splats because now
-> > we're doing various operations in OPP core such as registering with
-> > debugfs while holding the list lock. We don't need to hold any list
-> > mutex while we're calling into OPP, so let's shrink the locking area of
-> > the 'gpd_list_lock' so that lockdep isn't triggered. This also helps
-> > reduce contention on this lock, which probably doesn't matter much but
-> > at least is nice to have.
-> >
-> > Cc: Len Brown <len.brown@intel.com>
-> > Cc: Pavel Machek <pavel@ucw.cz>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: <linux-pm@vger.kernel.org>
-> > Cc: Viresh Kumar <vireshk@kernel.org>
-> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
->
-> Thanks for fixing this!
->
-> As I said, when discussing the previous version, I am working on
-> additional improvements, but this should be a step in the right
-> direction.
->
-> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+On 7/5/21 9:21 AM, Krzysztof Kozlowski wrote:
+> On Mon, 5 Jul 2021 at 18:08, Guenter Roeck <linux@roeck-us.net> wrote:
+>>
+>> On 7/5/21 8:15 AM, Krzysztof Kozlowski wrote:
+>>> On 14/05/2021 16:04, Krzysztof Kozlowski wrote:
+>>>> On 14/05/2021 09:48, Guenter Roeck wrote:
+>>>>> On 5/14/21 6:17 AM, Krzysztof Kozlowski wrote:
+>>>>>> When rt2880_wdt watchdog driver is built as a module, the
+>>>>>> rt_sysc_membase needs to be exported (it is being used via inlined
+>>>>>> rt_sysc_r32):
+>>>>>>
+>>>>>>      ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/rt2880_wdt.ko] undefined!
+>>>>>>
+>>>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>>>>>
+>>>>> Acked-by: Guenter Roeck <linux@roeck-us.net>
+>>>>>
+>>>>> I don't see a recent change in the code. Has that problem been there
+>>>>> all along ?
+>>>>
+>>>> I think the problem was there always but 0-day builder did not hit it
+>>>> until recently:
+>>>> https://lore.kernel.org/lkml/202105082122.yrF7ploN-lkp@intel.com/
+>>>
+>>> Hi Guenter,
+>>>
+>>> It seems that patch was not applied. Anything to fix here?
+>>>
+>> I see commit fef532ea0cd8 ("MIPS: ralink: export rt_sysc_membase for
+>> rt2880_wdt.c"). Does that not solve the problem ?
+> 
+> Yes, that fixes it. It was sent later, though. :(
+> 
 
-Applied as 5.14-rc1 material, thanks!
+Happens to me all the time. What is important is that things are getting
+fixed. Personally I don't care that much for the credit.
+
+Note though that your patch subject was a bit misleading, and it may well
+be possible that the mips maintainers didn't realize that the fix needed
+to be applied to the mips tree. The subject line in the applied patch
+describes the change much better as it focuses on the change (what is done),
+while the subject line in your patch focuses on the impact (what it fixes).
+
+Guenter
