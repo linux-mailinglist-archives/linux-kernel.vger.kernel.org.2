@@ -2,150 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05ACA3BB68C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 07:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E3D3BB693
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 07:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhGEFFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 01:05:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229447AbhGEFFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 01:05:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8747613C8;
-        Mon,  5 Jul 2021 05:02:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625461366;
-        bh=zH8QyVNRpzQzn5HVPrOanQh9jYK7M7SHHxYoIiZK8tg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=G4a5/0srD+lqffD1gph0y1n7lGvJL2sOWMdF9K7UdeD9W5jQNU3Vdt1YYkahPCNm3
-         LcUnLA8ejvm9lUnvGtX9Tdk0MSyffLoPyjaSOVW1F+rRYc5DzB/7Kp8/RjuPBi0mn/
-         fc855jkoNWC/AAMcntWeL/uK83m/lyObr2gJ0N8W5gZh0bPUea1jndkVu3OPlVCNE7
-         usZSIzNQe8XU7UPJXJsK5KfSiubhJcz2EbvebKKsUmLC57yBJ1WgNaeeWwEABMBRPC
-         Td4ihoupTvKOiQP390mumaZ77Qss7+7GYdq/3F9cyNPiTx/iNvSTHfU0aSqhjmGbvK
-         gqEsfKIhURAUA==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests/sgx: Fix Q1 and Q2 calculation in sigstruct.c
-Date:   Mon,  5 Jul 2021 08:02:38 +0300
-Message-Id: <20210705050238.63064-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S229784AbhGEFH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 01:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhGEFH0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 01:07:26 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D24C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 22:04:49 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id p24so22951408ljj.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 22:04:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nzm0nWj/aTYJHOKXonLiG7z2GGnZubrdTmRQ0xRi/ZI=;
+        b=A7xlaSndZwByNH1ngHi12Wy4wDajC6l1MlhCftDjaKo5zes9hg+ZZImW9ll3V2hBiX
+         Y+iX+Fq9yigCH+771Lca7wXR92k0ABqkWePAkW9suWUo0E2GTeeqMYOeX9v5NysFKOnq
+         nAJp8E0T7iCgoGRwvXnArWptJ45g9Uibv9rCo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nzm0nWj/aTYJHOKXonLiG7z2GGnZubrdTmRQ0xRi/ZI=;
+        b=T7GSz9T+YZfYDBjX9i9nZhJPLu8bFyS1J4/UX21xOc3IePmkLhz1G8ug+C52ZMfEN7
+         /KdpyLHIeqm1JAcX2XNNY5BuFbl1J4O4Rm8THjI/rUzJ43rrUdx4LBbYosWiaBg9HnzP
+         JJZ3vKMXjWO0dFaeso0VKm+85N1He41XqtnvmMi+jDxafvla9JGJidlG3j09mm9ZR+Qp
+         40sVsTZiz1pbz8JVeOm5feyAQn/YaJ/rjkMHopR6VCLGxEj4XxLSbyjlMslHeeqT/oTg
+         pqCDcd5LrPTVvjny0x3rss7dI9lI2QaWod+Q5vRlqvcvqZvEbtKAVwd+fNnLBHSULQGA
+         LQRQ==
+X-Gm-Message-State: AOAM531m5pYdGBq0jjuYK9QX8AB+bCAp510xEwLyp7UE0jUN10cuh7aY
+        Jv8iREvxT46i8qIcaQG246F8onfdC4gDQA==
+X-Google-Smtp-Source: ABdhPJzBAI64Ui4pHiyw0dVQ2fWIX+pX1qJ1rKUJpj/FhZDH6V+78tD4sPA0Hh54B7/gUqaxqRq9Mg==
+X-Received: by 2002:a2e:9e04:: with SMTP id e4mr9557609ljk.431.1625461487911;
+        Sun, 04 Jul 2021 22:04:47 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id d5sm970730lfs.1.2021.07.04.22.04.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Jul 2021 22:04:47 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id bq39so17564222lfb.12
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 22:04:47 -0700 (PDT)
+X-Received: by 2002:a19:5e16:: with SMTP id s22mr9437459lfb.614.1625461486444;
+ Sun, 04 Jul 2021 22:04:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210519143011.1175546-1-acourbot@chromium.org>
+ <20210519143011.1175546-6-acourbot@chromium.org> <9b37044d-f909-9169-3d22-fa6c5f788822@collabora.com>
+In-Reply-To: <9b37044d-f909-9169-3d22-fa6c5f788822@collabora.com>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Mon, 5 Jul 2021 14:04:35 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MV35sJ-LY8w-nhpnndRHtJXapSN63xFzUiAbYQFLvm1dQ@mail.gmail.com>
+Message-ID: <CAPBb6MV35sJ-LY8w-nhpnndRHtJXapSN63xFzUiAbYQFLvm1dQ@mail.gmail.com>
+Subject: Re: [PATCH v5 05/14] media: mtk-vcodec: venc: support START and STOP commands
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Hi Dafna, sorry for (again) taking so long to come back to this! >_<
 
-Q1 and Q2 are numbers with *maximum* length of 384 bytes. If the calculated
-length of Q1 and Q2 is less than 384 bytes, things will go wrong.
+On Fri, May 28, 2021 at 4:03 PM Dafna Hirschfeld
+<dafna.hirschfeld@collabora.com> wrote:
+>
+> Hi,
+>
+> I applied this patchset and tested the stateful encoder on debian with the command:
+>
+> [gst-master] root@debian:~/gst-build# gst-launch-1.0 filesrc location=images/jelly-800-640.YU12 ! rawvideoparse width=800 height=640 format=i420 ! videoconvert ! v4l2h264enc ! h264parse ! mp4mux ! filesink location=jelly-800-640.mp4
+>
+> I get:
+>
+> Setting pipeline[   79.703879] [MTK_V4L2] level=0 fops_vcodec_open(),190: encoder capability 10000000
+>   to PAUSED ...
+> Pipeline is PREROLLING ...
+> Redistribute latency...
+> [   80.621076] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> [   80.631232] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> [   80.640878] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> [   80.650766] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> [   80.660430] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> [   80.670194] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> [   80.680967] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> [   80.691376] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> [   80.701718] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> [   80.712106] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> [   80.722272] [MTK_V4L2] level=0 mtk_venc_set_param(),371: fmt 0x3, P/L 0/0, w/h 800/640, buf 800/640, fps/bps 25/4000000, gop 0, i_period 0
+> Pipeline is PREROLLED ...
+> Setting pipeline to PLAYING ...
+> New clock: GstSystemClock
+> [   81.918747] [MTK_V4L2][ERROR] mtk_vcodec_wait_for_done_ctx:32: [3] ctx->type=1, cmd=1, wait_event_interruptible_timeout time=1000ms out 0 0!
+> [   81.931392] [MTK_VCODEC][ERROR][3]: h264_encode_frame() irq_status=0 failed
+> [   81.938470] [MTK_V4L2][ERROR] mtk_venc_worker:1219: venc_if_encode failed=-5
+> [   82.974746] [MTK_V4L2][ERROR] mtk_vcodec_wait_for_done_ctx:32: [3] ctx->type=1, cmd=1, wait_event_interruptible_timeout time=1000ms out 0 0!
+> [   82.987392] [MTK_VCODEC][ERROR][3]: h264_encode_frame() irq_status=0 failed
+> [   82.994471] [MTK_V4L2][ERROR] mtk_venc_worker:1219: venc_if_encode failed=-5
+> [  104.163977] cros-ec-dev cros-ec-dev.2.auto: Some logs may have been dropped...
+> 0:00:00.4 / 99:99:99.
+> 0:00:00.4 / 99:99:99.
+> 0:00:00.4 / 99:99:99.
+> 0:00:00.4 / 99:99:99.
+> 0:00:00.4 / 99:99:99.
+> 0:00:00.4 / 99:99:99.
+> 0:00:00.4 / 99:99:99.
+> 0:00:00.4 / 99:99:99.
+> 0:00:00.4 / 99:99:99.
+> 0:00:00.4 / 99:99:99.
+> ^Chandling interrupt.
+>
+> And then the streaming hangs. The same error happens without this patchset, but without
+> this patchset the statful encoder does not support V4L2_ENC_CMD_STOP/START needed by the spec.
+> I am not sure what cause the error and wether those mtk-iommu erros has to do with that. The issue
+> could also come from the mtk-vpu used by the encoder.
+> Do you have any idea where this can come from?
 
-E.g. if Q2 is 383 bytes, then
+Mmm, this looks like the firmware is unhappy about something and
+hangs. I wonder if the IOMMU messages above could not be linked to
+that, I remember seeing similar problems when the buffers were not
+properly synced on the device side.
 
-1. The bytes of q2 are copied to sigstruct->q2 in calc_q1q2().
-2. The entire sigstruct->q2 is reversed, which results it being
-   256 * Q2, given that the last byte of sigstruct->q2 is added
-   to before the bytes given by calc_q1q2().
+I'll try and see if I can deploy gstreamer on the old MT8173
+Chromebook I am using to see if I have more success here, but no
+guarantee I can test in the same conditions as you unfortunately. :/
 
-Either change in key or measurement can trigger the bug. E.g. an unmeasured
-heap could cause a devastating change in Q1 or Q2.
-
-Reverse exactly the bytes of Q1 and Q2 in calc_q1q2() before returning to
-the caller.
-
-Link: https://lore.kernel.org/linux-sgx/20210301051836.30738-1-tianjia.zhang@linux.alibaba.com/
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
-The original patch did a bad job explaining the code change but it
-turned out making sense. I wrote a new description. 
- tools/testing/selftests/sgx/sigstruct.c | 41 +++++++++++++------------
- 1 file changed, 21 insertions(+), 20 deletions(-)
-
-diff --git a/tools/testing/selftests/sgx/sigstruct.c b/tools/testing/selftests/sgx/sigstruct.c
-index dee7a3d6c5a5..92bbc5a15c39 100644
---- a/tools/testing/selftests/sgx/sigstruct.c
-+++ b/tools/testing/selftests/sgx/sigstruct.c
-@@ -55,10 +55,27 @@ static bool alloc_q1q2_ctx(const uint8_t *s, const uint8_t *m,
- 	return true;
- }
- 
-+static void reverse_bytes(void *data, int length)
-+{
-+	int i = 0;
-+	int j = length - 1;
-+	uint8_t temp;
-+	uint8_t *ptr = data;
-+
-+	while (i < j) {
-+		temp = ptr[i];
-+		ptr[i] = ptr[j];
-+		ptr[j] = temp;
-+		i++;
-+		j--;
-+	}
-+}
-+
- static bool calc_q1q2(const uint8_t *s, const uint8_t *m, uint8_t *q1,
- 		      uint8_t *q2)
- {
- 	struct q1q2_ctx ctx;
-+	int len;
- 
- 	if (!alloc_q1q2_ctx(s, m, &ctx)) {
- 		fprintf(stderr, "Not enough memory for Q1Q2 calculation\n");
-@@ -89,8 +106,10 @@ static bool calc_q1q2(const uint8_t *s, const uint8_t *m, uint8_t *q1,
- 		goto out;
- 	}
- 
--	BN_bn2bin(ctx.q1, q1);
--	BN_bn2bin(ctx.q2, q2);
-+	len = BN_bn2bin(ctx.q1, q1);
-+	reverse_bytes(q1, len);
-+	len = BN_bn2bin(ctx.q2, q2);
-+	reverse_bytes(q2, len);
- 
- 	free_q1q2_ctx(&ctx);
- 	return true;
-@@ -152,22 +171,6 @@ static RSA *gen_sign_key(void)
- 	return key;
- }
- 
--static void reverse_bytes(void *data, int length)
--{
--	int i = 0;
--	int j = length - 1;
--	uint8_t temp;
--	uint8_t *ptr = data;
--
--	while (i < j) {
--		temp = ptr[i];
--		ptr[i] = ptr[j];
--		ptr[j] = temp;
--		i++;
--		j--;
--	}
--}
--
- enum mrtags {
- 	MRECREATE = 0x0045544145524345,
- 	MREADD = 0x0000000044444145,
-@@ -367,8 +370,6 @@ bool encl_measure(struct encl *encl)
- 	/* BE -> LE */
- 	reverse_bytes(sigstruct->signature, SGX_MODULUS_SIZE);
- 	reverse_bytes(sigstruct->modulus, SGX_MODULUS_SIZE);
--	reverse_bytes(sigstruct->q1, SGX_MODULUS_SIZE);
--	reverse_bytes(sigstruct->q2, SGX_MODULUS_SIZE);
- 
- 	EVP_MD_CTX_destroy(ctx);
- 	RSA_free(key);
--- 
-2.32.0
-
+The MTK folks are the most qualified to look into this issue though.
+Yunfei, do you have any idea about why this is happening?
