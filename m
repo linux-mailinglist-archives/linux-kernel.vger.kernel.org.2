@@ -2,128 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A203BC202
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 19:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FA63BC20E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 19:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbhGERI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 13:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbhGERI0 (ORCPT
+        id S229811AbhGERKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 13:10:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36614 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229693AbhGERKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 13:08:26 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B79C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 10:05:49 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id s18so3691881ljg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 10:05:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YgGY083lvLVDzanfWlQ0rK3bjJx/pViz/NxffbwtZEQ=;
-        b=dBFd5kkN5R/6BKe/bT+G6lO1i/6O5lC1M2dHb+86aXA/WXTYGQb6mBc3jetstUJQnm
-         HXbWE5fWg3chcW44p0hQVeqQaFYNba7Bu5jYXfoTQJ+Sb0uvr/Tz0iCY3zHU6FKfVK1F
-         WAsVdYzyzp+Wg/yekGnJXyDYW7bjliIGD8bUNSz4dgPjFeuA8/pyigatlDWXSQqN/1SX
-         pf545g8syC+9gVQ+Xb++b/vT+AUytIT1bWfmsyfArGktScQSKysISgu63acfNQcl3WF+
-         1DYXueqii2NRqNJW60hBN+btFonBeKqfy0VMfH6dKXd/90tQhCSXqcQ8S/jEQIhn3xsZ
-         8Ynw==
+        Mon, 5 Jul 2021 13:10:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625504885;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WLgweaTFwFEgTKZQi0sNPpLZ/ToUk9Ou6e3vo2daig0=;
+        b=EA4hF4QwXamSWwY31anxsYv0k4GKfMlpM2/6dYcVOMwupKNZvyzsS5QTz8BIjqdZ/QeXt/
+        Qb94Iou2GPWFVLzb7x1tf2/4H81PxO/xCskECEIhXFHl+a78AGmGWr9EWAbSBaLT8+GcOB
+        rnuvDCH36kSs1UMQUiiO+gnzsOIJOoo=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-205-CKTcDOAKOqOo_tprAnK6zA-1; Mon, 05 Jul 2021 13:08:04 -0400
+X-MC-Unique: CKTcDOAKOqOo_tprAnK6zA-1
+Received: by mail-ej1-f71.google.com with SMTP id jl8-20020a17090775c8b02904db50c87233so1107418ejc.16
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 10:08:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YgGY083lvLVDzanfWlQ0rK3bjJx/pViz/NxffbwtZEQ=;
-        b=RHwEUb3Pm5bLhwn639dH3vX1MRZUuHHeliHepX+dd/uGVoQ2wy64kuIJvMksTSjeSu
-         5J8Uqoh4l6hQOsjuVg0iXvJslE/wpNyxd+MTt7vJBjDhLIMnwop3bxwHP/M0zm+3f+Bj
-         eCJFYrRitU2W6LnOsOZFPvYew23fcHnHMQK1RWdtZ1JxcKVwFxT6Yum/gPF+L9bEzj4m
-         8uBPa/PfrsrCT+FclWoj9xvKlxIVhuKmqOaSFmaSr2LGzwj1Ea93pzeUq3zPEfy0SFGu
-         SUl4d0VNKz2Z0JjokPap16q23QKYGZHHh9p9bbLxqjLPoovzk3X7xl20mF1JmR6xNQcN
-         7GEg==
-X-Gm-Message-State: AOAM533yZaoF3PH5Dny5izixYg/aFyJ1wSS9bEZRDVsPJap9gSghnzTH
-        B57em/vVIaTnLaiAK1HXxoc=
-X-Google-Smtp-Source: ABdhPJzj6R5GWsoGGDqn94UDvOZjb4i7iVY2GUrrj6lsJ5Pv6ar+475lKDyzdWG/6FUM0YFcm4Qa6A==
-X-Received: by 2002:a2e:7210:: with SMTP id n16mr4930887ljc.8.1625504747828;
-        Mon, 05 Jul 2021 10:05:47 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id k12sm578501lfv.14.2021.07.05.10.05.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 10:05:47 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH v2 2/2] mm/vmalloc: Remove gfpflags_allow_blocking() check
-Date:   Mon,  5 Jul 2021 19:05:37 +0200
-Message-Id: <20210705170537.43060-2-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210705170537.43060-1-urezki@gmail.com>
-References: <20210705170537.43060-1-urezki@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WLgweaTFwFEgTKZQi0sNPpLZ/ToUk9Ou6e3vo2daig0=;
+        b=ctBmu8PbrRu84xofGXibMOfnxlf18qWnp9nJA3sjsVGgr4fXUO3l3EY/TnQoaW/+uP
+         tGdEIcOdWGJEKDqcB+Lk7JEOuxoHI7oML21S/DJVBKhpGSqlDdOzTxe1+3kXRknpth2O
+         GXEvGfvw27RjSffscn3WJQ6lVH9fbhDVAhQGXFoILz9yGr78R+JTYLrjntjSMNnuW0ti
+         s/R9mMdytv2LWUvL6mKD9u83M8lwKZiD/zuqqfqpFp0hOmpU48z3rgwlpZSI/AeL+Q4L
+         SW3AE5h5iWGC2F2QWWiWzQxJ/+iaRB9nShRARczWhSPy87KBb/9NlLckWR5zZClRX6Gl
+         o5Yg==
+X-Gm-Message-State: AOAM5300GcERZpRZDMyGKLxyslor+yOIyHwEzurI3CSJbed7AW4chTKU
+        K1JFPevaFQXKY//xOcNF/v+6T0pUteFdGeRhR8qom9M94NvqldwEqBt3+Dh1pZAoScz10EyfKWz
+        rWObz7E+U79wzMkfxYL3dsENZ
+X-Received: by 2002:a17:906:c14e:: with SMTP id dp14mr13911416ejc.349.1625504883449;
+        Mon, 05 Jul 2021 10:08:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxjpYanp0l21slndEux6Cd4y9xPA6azwlvCw/hMav4smccH/M3DKFpEE/qiUNOWhzycClToDw==
+X-Received: by 2002:a17:906:c14e:: with SMTP id dp14mr13911405ejc.349.1625504883288;
+        Mon, 05 Jul 2021 10:08:03 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id j19sm5743230edr.64.2021.07.05.10.08.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Jul 2021 10:08:02 -0700 (PDT)
+Subject: Re: [PATCH AUTOSEL 5.13 31/59] platform/x86: asus-nb-wmi: Revert "add
+ support for ASUS ROG Zephyrus G14 and G15"
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     "Luke D. Jones" <luke@ljones.dev>,
+        acpi4asus-user@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org
+References: <20210705152815.1520546-1-sashal@kernel.org>
+ <20210705152815.1520546-31-sashal@kernel.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <c8ecb9c4-d6b7-bff5-e070-2504069d57f5@redhat.com>
+Date:   Mon, 5 Jul 2021 19:08:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210705152815.1520546-31-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get rid of gfpflags_allow_blocking() check from the vmalloc() path
-as it is supposed to be sleepable anyway. Thus remove it from the
-alloc_vmap_area() as well as from the vm_area_alloc_pages().
+Hi,
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- mm/vmalloc.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+On 7/5/21 5:27 PM, Sasha Levin wrote:
+> From: "Luke D. Jones" <luke@ljones.dev>
+> 
+> [ Upstream commit 28117f3a5c3c8375a3304af76357d5bf9cf30f0b ]
+> 
+> The quirks added to asus-nb-wmi for the ASUS ROG Zephyrus G14 and G15 are
+> wrong, they tell the asus-wmi code to use the vendor specific WMI backlight
+> interface. But there is no such interface on these laptops.
+> 
+> As a side effect, these quirks stop the acpi_video driver to register since
+> they make acpi_video_get_backlight_type() return acpi_backlight_vendor,
+> leaving only the native AMD backlight driver in place, which is the one we
+> want. This happy coincidence is being replaced with a new quirk in
+> drivers/acpi/video_detect.c which actually sets the backlight_type to
+> acpi_backlight_native fixinf this properly. This reverts
+> commit 13bceda68fb9 ("platform/x86: asus-nb-wmi: add support for ASUS ROG
+> Zephyrus G14 and G15").
+> 
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> Link: https://lore.kernel.org/r/20210419074915.393433-3-luke@ljones.dev
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 5297958ac7c5..93a9cbdba905 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -1479,6 +1479,7 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
- 				int node, gfp_t gfp_mask)
- {
- 	struct vmap_area *va;
-+	unsigned long freed;
- 	unsigned long addr;
- 	int purged = 0;
- 	int ret;
-@@ -1542,13 +1543,12 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
- 		goto retry;
- 	}
- 
--	if (gfpflags_allow_blocking(gfp_mask)) {
--		unsigned long freed = 0;
--		blocking_notifier_call_chain(&vmap_notify_list, 0, &freed);
--		if (freed > 0) {
--			purged = 0;
--			goto retry;
--		}
-+	freed = 0;
-+	blocking_notifier_call_chain(&vmap_notify_list, 0, &freed);
-+
-+	if (freed > 0) {
-+		purged = 0;
-+		goto retry;
- 	}
- 
- 	if (!(gfp_mask & __GFP_NOWARN) && printk_ratelimit())
-@@ -2834,9 +2834,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
- 		for (i = 0; i < (1U << order); i++)
- 			pages[nr_allocated + i] = page + i;
- 
--		if (gfpflags_allow_blocking(gfp))
--			cond_resched();
--
-+		cond_resched();
- 		nr_allocated += 1U << order;
- 	}
- 
--- 
-2.20.1
+Note this should only be cherry-picked if commit 2dfbacc65d1d
+("ACPI: video: use native backlight for GA401/GA502/GA503"):
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2dfbacc65d1d2eae587ccb6b93f6280542641858
+
+Is also being cherry-picked, since the quirk added in that commit
+replaces the quirks which are being reverted here.
+
+Regards,
+
+Hans
+
+
+
+> ---
+>  drivers/platform/x86/asus-nb-wmi.c | 82 ------------------------------
+>  1 file changed, 82 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
+> index b07b1288346e..0cb927f0f301 100644
+> --- a/drivers/platform/x86/asus-nb-wmi.c
+> +++ b/drivers/platform/x86/asus-nb-wmi.c
+> @@ -110,16 +110,6 @@ static struct quirk_entry quirk_asus_forceals = {
+>  	.wmi_force_als_set = true,
+>  };
+>  
+> -static struct quirk_entry quirk_asus_ga401i = {
+> -	.wmi_backlight_power = true,
+> -	.wmi_backlight_set_devstate = true,
+> -};
+> -
+> -static struct quirk_entry quirk_asus_ga502i = {
+> -	.wmi_backlight_power = true,
+> -	.wmi_backlight_set_devstate = true,
+> -};
+> -
+>  static struct quirk_entry quirk_asus_use_kbd_dock_devid = {
+>  	.use_kbd_dock_devid = true,
+>  };
+> @@ -430,78 +420,6 @@ static const struct dmi_system_id asus_quirks[] = {
+>  		},
+>  		.driver_data = &quirk_asus_forceals,
+>  	},
+> -	{
+> -		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA401IH",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IH"),
+> -		},
+> -		.driver_data = &quirk_asus_ga401i,
+> -	},
+> -	{
+> -		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA401II",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401II"),
+> -		},
+> -		.driver_data = &quirk_asus_ga401i,
+> -	},
+> -	{
+> -		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA401IU",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IU"),
+> -		},
+> -		.driver_data = &quirk_asus_ga401i,
+> -	},
+> -	{
+> -		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA401IV",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IV"),
+> -		},
+> -		.driver_data = &quirk_asus_ga401i,
+> -	},
+> -	{
+> -		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA401IVC",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IVC"),
+> -		},
+> -		.driver_data = &quirk_asus_ga401i,
+> -	},
+> -		{
+> -		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA502II",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA502II"),
+> -		},
+> -		.driver_data = &quirk_asus_ga502i,
+> -	},
+> -	{
+> -		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA502IU",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA502IU"),
+> -		},
+> -		.driver_data = &quirk_asus_ga502i,
+> -	},
+> -	{
+> -		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA502IV",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA502IV"),
+> -		},
+> -		.driver_data = &quirk_asus_ga502i,
+> -	},
+>  	{
+>  		.callback = dmi_matched,
+>  		.ident = "Asus Transformer T100TA / T100HA / T100CHI",
+> 
 
