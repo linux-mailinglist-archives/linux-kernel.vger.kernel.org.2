@@ -2,92 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C36D3BC377
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 22:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310163BC378
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 22:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbhGEUuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 16:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
+        id S230019AbhGEUu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 16:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhGEUuJ (ORCPT
+        with ESMTP id S229817AbhGEUu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 16:50:09 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF517C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 13:47:31 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id p16so6997991lfc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 13:47:31 -0700 (PDT)
+        Mon, 5 Jul 2021 16:50:56 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD931C061574;
+        Mon,  5 Jul 2021 13:48:17 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id u25so26117268ljj.11;
+        Mon, 05 Jul 2021 13:48:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=owhVWKFHyC3J6cH4NpobqXULLDkgBMIGsGNSqbFG3XY=;
-        b=BSa6nUfzprgzTdHEWOMOnQZNeKGkfS+raoadhZ5IYkwWNTWbbXvOWo6MFDhISb502k
-         te88t8goVaVMnOIRvcY0mNdFzdK5kAKeg1dju+bn/Ffq/U/+BFvHl1k5nP6vyDDNIzeN
-         x6PgrClLlMWC1gU67W0xpOQbjF/VZEfi3JfA841iE/EXaIKV91IK/YgM+8wo4wYZ3oC1
-         2ZyjzwxjhFaO3Cg1vN8mzfck6QqyNKu3KMfOYwdinUEecYExcNvLLIiFhsiNOHAYHd58
-         ZsaR3A89kREWM8b+d6sHvES+YgV8XK9N6s6xKVtQGe043+pmEGbzPEBfd8F02WhMDbI+
-         4XaA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JSiA5dyVn8zv0+eT4D7tVl3QtiwSLMc/3FaTxgI9gME=;
+        b=DK/4yX9kQqxPbVsJUNFEpx/Ad+HeaOjR9kQOdcGoxCP9UqNcruq1+KnMa8xY+VqKov
+         txOweGEupbFn8lqniF6EqC01CGAAPLvlNN7lXn4aeok/lQNQtC//rsZ71SFwwJng6tMo
+         WyD+qXCbEau9wMbtZV1l7YM4HorQeRci65zwYlNv0Yh+dFY/BkvJf3UTWu1XM+L2KV3i
+         xq0/MVLsUMz8atiG78qWEU7mFGRVN3pyUC1U+hJyg27Bi1dqP1qQdtIq761wpILFc5+u
+         QqDiTFZ8NTyFDnMCM45Ems+WPz2JwitIxYQO2+9a7kfd7h2sZhCod+RIHb6x5EMFdR4p
+         eLQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=owhVWKFHyC3J6cH4NpobqXULLDkgBMIGsGNSqbFG3XY=;
-        b=A9OnC0hPLWn78FWc4cK9wUmi/qYVwNVLwS2RSD+PX1H4teFzTVknc02TBYjsaFRTqW
-         3SUz81LpzGPfytQI0FKGAdCP6juDmcabd158c02ePsMfJ+rtw6uvW9s3PfeJpv6r117D
-         lJ3GkzFOX0hdH2m+AlW+3t7iwrBEtK1OU7LVJCNJj+GZqc2T8/q2FI6LAk3npjjMBWbM
-         dyIgzCnnuY8/Rm7E8lF4yXzS9AL8pxOBl3hJk+6pvcQXFTzxCnJYRhC5wJG2ePy0G6eX
-         sWXYDGgGsEMN7PB3CuykNs/DSsOC6qpMnMb/xUFypWEO4msFiatIVdiR0h3HqyEW4lsJ
-         BJcg==
-X-Gm-Message-State: AOAM532bE1AFEnebnI/Xcy1/amHNUwv6xTJ6k45xLJEd6Gc9BtQFtTBR
-        6SFnmD19TUVyJ9PDm4h8HIk=
-X-Google-Smtp-Source: ABdhPJzw9wLP5AtgjFm5rlh3Gh9CZFw6f6g0a83kkxQ8w6DcJZZAqZowRzR4YyaG81qS5iwuQcvEcA==
-X-Received: by 2002:a05:6512:686:: with SMTP id t6mr12101439lfe.5.1625518049895;
-        Mon, 05 Jul 2021 13:47:29 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.225.155])
-        by smtp.gmail.com with ESMTPSA id b19sm1506702ljo.37.2021.07.05.13.47.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 13:47:29 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     geert@linux-m68k.org, pstehlik@sophics.cz, milan.jurik@xylab.cz,
-        schmitz@debian.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH] m68k: emu: fix invalid free in nfeth_cleanup()
-Date:   Mon,  5 Jul 2021 23:47:27 +0300
-Message-Id: <20210705204727.10743-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JSiA5dyVn8zv0+eT4D7tVl3QtiwSLMc/3FaTxgI9gME=;
+        b=tGoERNkgCTFIzOxC+rJs1edd64ugL1vMTQ4uSF8ztOMLaoScfZBVs5wIhB/ZdN091N
+         eKFTmsYOQ8wBqUqGMSFT7LsXhCJzL3vAahlYwiA6WgXAnadxAcelZ3eelRasqVb6Fh3g
+         HI7yzKtKFclxyd10yd1Atkja/EMJl8lE+FqU13O6ny++3aWm/QqQiNhBKwqnH13H3qan
+         Ly2QIcBuCLw3T0dlv4yuIGzy3m0OQ+eibOpRVlEAtqtx470GIFKatOwR4p6qg6a1bGIC
+         KA4/ApZQjOf6OpJcq9oPCJf3A+WSVcIieZWeixFjH6tuGjbJoen6kixnigIZZEH+L49i
+         agsA==
+X-Gm-Message-State: AOAM530pie3wGy4sbhh9m6W4c1rQijM+8IjM1MMzEYWQpM6XKPkmuss+
+        s9L4B02tccmOJSzlRdjwhY5uw4L6TMZSk8s9OMUWKrHf
+X-Google-Smtp-Source: ABdhPJwbLlhoav8nYitmyBR+jEf/eZMPDb/uuQ16xtijRvjENbzkRcnREFQnPaAcgQ8V6Khukm5gkdLIVL4WjxKniD0=
+X-Received: by 2002:a2e:8e6d:: with SMTP id t13mr12241177ljk.26.1625518096113;
+ Mon, 05 Jul 2021 13:48:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <162532651032.393143.4602033845482295575.stgit@devnote2>
+In-Reply-To: <162532651032.393143.4602033845482295575.stgit@devnote2>
+From:   Namhyung Kim <namhyung@gmail.com>
+Date:   Mon, 5 Jul 2021 13:48:04 -0700
+Message-ID: <CAM9d7cj2H75byaNH-n4XeKbMu30j6_P3TAPwpoE9R1LXVTTSwQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] perf: Fix perf probe for Fedora34 glibc update
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Stefan Liebler <stli@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In for loop all nfeth_dev array members should be freed, not only
-the first one. Freeing only first array member can cause double-free bug.
+On Sat, Jul 3, 2021 at 8:36 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Hi Arnaldo,
+>
+> Here is a series of patches to fix the perf-probe error against the
+> Fedora34 glibc update, which moves most of symbols from .symtab to
+> .dynsym. The key is that the "most of" symbols moved, but it still
+> have some PLT symbols in .symtab. Thus the perf symbol-elf failes to
+> decode symbols.
 
-Fixes: 9cd7b148312f ("m68k/atari: ARAnyM - Add support for network
-access")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- arch/m68k/emu/nfeth.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Do you know what's the rationale of the move?
+Is it a change from glibc or Fedora?
 
-diff --git a/arch/m68k/emu/nfeth.c b/arch/m68k/emu/nfeth.c
-index d2875e32abfc..79e55421cfb1 100644
---- a/arch/m68k/emu/nfeth.c
-+++ b/arch/m68k/emu/nfeth.c
-@@ -254,8 +254,8 @@ static void __exit nfeth_cleanup(void)
- 
- 	for (i = 0; i < MAX_UNIT; i++) {
- 		if (nfeth_dev[i]) {
--			unregister_netdev(nfeth_dev[0]);
--			free_netdev(nfeth_dev[0]);
-+			unregister_netdev(nfeth_dev[i]);
-+			free_netdev(nfeth_dev[i]);
- 		}
- 	}
- 	free_irq(nfEtherIRQ, nfeth_interrupt);
--- 
-2.32.0
+Thanks,
+Namhyung
 
+
+>
+> Here is the original report from Thomas about this issue.
+>
+>  https://lore.kernel.org/linux-perf-users/f6752514-eaf9-371e-f81b-0d9e41ebae0c@linux.ibm.com/
+>
+> Thank you,
+>
+> ---
+>
+> Masami Hiramatsu (3):
+>       perf-probe: Fix debuginfo__new() to enable build-id based debuginfo
+>       perf symbol-elf: Decode dynsym even if symtab exists
+>       perf probe: Do not show @plt function by default
+>
+>
+>  tools/perf/builtin-probe.c     |    2 -
+>  tools/perf/util/probe-finder.c |    5 ++
+>  tools/perf/util/symbol-elf.c   |   82 ++++++++++++++++++++++++++--------------
+>  3 files changed, 60 insertions(+), 29 deletions(-)
+>
+> --
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
