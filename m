@@ -2,184 +2,550 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D3D3BBB99
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57DC53BBB97
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231241AbhGEK5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 06:57:21 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:3818 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230511AbhGEK5U (ORCPT
+        id S231191AbhGEK5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 06:57:18 -0400
+Received: from mail-lf1-f52.google.com ([209.85.167.52]:41505 "EHLO
+        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230511AbhGEK5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 06:57:20 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 165Aoism029967;
-        Mon, 5 Jul 2021 10:54:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=Y9EHETFA5HI8GtIzXM6TJaKtot31MBWUD2V8slHIEyQ=;
- b=iCL+VYvonL6TVjv6v8Yan3y1WxVPuNHeaHIQEmyHwvI47pbwWEu87swH4WusaNLfSAcm
- /FqD10UX+ieOnFDLKmF/lvCMjr8dQ/AbQ8e5RcguYcSRA5bD+pv7DYUyi1ONNk3eLESs
- 6F5IiwAt6EXzS2VRopzVTziZ0nL6WlP2MferQodx0KtzXhOT6U6aTvSC9Sypfd3jIeCT
- hHYrhWxPiKNNNz7tHNbZJLJSNZFKgUCrRL+W8rCYx/bfOXXLf1LwWmgiwbedQ8vwxT6K
- 9h0sWTHWRhP25RTPCqTAEyVjbXuZZNFiD2KVGh/q3zyGuwxmw5xJjzTIcesXKI+/3HKn xg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39jep1jdh1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 05 Jul 2021 10:54:41 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 165AkCe5098939;
-        Mon, 5 Jul 2021 10:54:40 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2049.outbound.protection.outlook.com [104.47.56.49])
-        by aserp3020.oracle.com with ESMTP id 39jfq6k4ew-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 05 Jul 2021 10:54:40 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A5AIDDGZC3pGPzyzyROkPEkXg53JZAo388I5QQ0JEWxQK7sbPy4ljYQ106A4rMvdT3Qk6/EuqWhKISxMOJbde7EbI+fa4Dpn2xKp+SFTQUjOxhRzz5tDQL6xuYEPEsPq2RW1hu8KappN4E/nt5xqcSl6PnHXux9DfCg4F5UvI50L8IxiCoBycxGXqMrTG6SIUkAH1f/eafaOsZ0QckZml10jQ4ZwuafiSsisYmaSOf9k+E7tYTmCVi0jfNKpCNCTbG1jATCM1L4Poz8j8YPt/I4GdvNNJNyBzKh/PmzGtzTGk7jhQznp/v7VzJ0HQthDKR7RVXkjAVCHZ7oLE14ZjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y9EHETFA5HI8GtIzXM6TJaKtot31MBWUD2V8slHIEyQ=;
- b=UxOe21k8A8SY9XjICQRUht5UHNejsKf8lGO3Ac43sy0vTiAslgPMnpmLz/4yNjQ0j8E7JpdvGg4gg9Q/afi5FIKoX8+v+O0/uxo5AiOAJ0c90devhzBdpRsSkImxKVvn22bcOhBRz5AFqwtOfn9fBo4AKVcOKBiR/JnH5LU9bi8sf1OiWsKYjsND7Xie6bE9Un5ptLgTDQrB/6m5Uhdtcb6n/zbSPL2KQfIBYWgqUNARxSTyi6R8HUvTXqMjmNNyO6URWE+dPW3KlUqFUXsejjT6nlRkIO23BwXYWlaXcNCmX7FaokNc33qXuPWU/SSE7x19HLSXjoCLjsCM/Ud35g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y9EHETFA5HI8GtIzXM6TJaKtot31MBWUD2V8slHIEyQ=;
- b=HR/8yICoDfzo4p/dhKSYh3Zdsohknl83JQ/1KelgySHgHKvuY+TrD0oST2tb8OFp1uFPwOZCmhaiqW/EpI+5R0j1lkh3oJzk9A6QR4GGlV+J7bNzE2V1WPpfuInyjoqcCAYzJW9SkKVvKqo1MNPSddZj0xS1pwX9UaZEFll3F5M=
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR1001MB2366.namprd10.prod.outlook.com
- (2603:10b6:301:33::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.27; Mon, 5 Jul
- 2021 10:54:34 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::3413:3c61:5067:ba73]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::3413:3c61:5067:ba73%5]) with mapi id 15.20.4287.033; Mon, 5 Jul 2021
- 10:54:34 +0000
-Date:   Mon, 5 Jul 2021 13:54:14 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Denis Efremov <denis.e.efremov@oracle.com>
-Cc:     Alexander Larkin <avlarkin82@gmail.com>, dmitry.torokhov@gmail.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        security@kernel.org,
-        Murray McAllister <murray.mcallister@gmail.com>
-Subject: Re: [PATCH] Input: joydev - prevent potential write out of bounds in
- ioctl
-Message-ID: <20210705105414.GG26672@kadam>
-References: <20210620120030.1513655-1-avlarkin82@gmail.com>
- <87e7ac83-4188-662b-d5ea-60957cc754e0@oracle.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87e7ac83-4188-662b-d5ea-60957cc754e0@oracle.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [102.222.70.252]
-X-ClientProxiedBy: JNXP275CA0036.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::24)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Mon, 5 Jul 2021 06:57:17 -0400
+Received: by mail-lf1-f52.google.com with SMTP id n14so31767624lfu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 03:54:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=gXvCFJPmQeAH4zMYDltqzgg925ckg8LhPaIEitgbYyk=;
+        b=jwnqjpqCGNs2yWxpvs+/34OcabeWrMx2VFH0uf99cfXoyxSe0htQDJ3a+XxpoTUpeJ
+         7jndZ3miiAtBbjXdKWHnmSf4IuLv6f8cvKw1NRYK8j+pcPziSpi/A0+OiGQfOZDsTyba
+         EvW6ykHNyp1y4Mylkx0dRnoQt7cY8akd8pQTXw+1HzJiqqf+UTpDTXXhezQHehhp8Rr/
+         2nw0hcEy/E2k1evm2qpG1onxFV/agx+qitYurcvqM0MHZ/LxU3fd/0Fzp2pHmObgSSCy
+         vIwCRGFiSS8+h5c+F3zWgj68f595IYghCrpoFLLOUs1D2WmZHobIxCiNIEr1swapA2pW
+         btQA==
+X-Gm-Message-State: AOAM531W0m8iAg6hXW5R9HD6Q91OBidqt0YpYXReJbyurls80+k09CyK
+        8JugszUtPJJ1Q0vdeDag2WY=
+X-Google-Smtp-Source: ABdhPJxlBL20Su+4w0+a1AbdLedCxoRmi8FhHEF1u0Wh/5DRS3XQdC8tH9rf/h+tKeCvFEx8lGH9sw==
+X-Received: by 2002:ac2:5396:: with SMTP id g22mr9961052lfh.641.1625482479664;
+        Mon, 05 Jul 2021 03:54:39 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
+        by smtp.gmail.com with ESMTPSA id p15sm1049262lfr.293.2021.07.05.03.54.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 03:54:38 -0700 (PDT)
+Date:   Mon, 5 Jul 2021 13:54:33 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-power@fi.rohmeurope.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: bd718x7: Suopport configuring UVP/OVP state
+Message-ID: <20210705105416.GA1189560@localhost.localdomain>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (102.222.70.252) by JNXP275CA0036.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Mon, 5 Jul 2021 10:54:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d6f37a06-61ac-4a65-251f-08d93fa34648
-X-MS-TrafficTypeDiagnostic: MWHPR1001MB2366:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR1001MB23660D2C05E07BF57AD80C6E8E1C9@MWHPR1001MB2366.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9Y/jyR+EfuodVi6u9hQenuG6XvjIKn19q3uvW2i5RmwH/FNJJ+jdi78zvxym8ATNv/EbB7BVAmsrB8203pIntpPgfjvoxXcP42rMihpj3QtK1M57Ibl02hr35jZuHW+kKFZi2cPeGDsIOZdPwReNPU8PIDE+ZrLphATFxUAE5GfHC7XBma5kUYYIDCGeP5XoiRaUZzorOKNpD0J4O2NhcXYMvqw+iVAiiEqTAlQyqN2tqf8CY6Qdr37qWHKiX+eczKnJ6ZdC6tNS5OqXS2iA40lOKukZoN1F1F1Oh2f2WR0/9URcwVxzVtsaxvGVR6nNNCmmo3CraYbAhVd1fq8WJibGH2541xLSOpU7H24dU4zdf45o+/Tw0Vbd5EvLPd2i5CDaml2TRgkl0yhK7QiPxSv3xCbhMngws6/dyzO8omIhxztXycoOjGx99X0mcRYUAWGvmOyj+ekiI/gfdxWS1YpCeE7Ws1bi6JQk12a/HQTYusdZNYovudWtDPYhK+vxIrVobgDO9nMo9MKn7hmW2gMKJmjlcyOep2EsoM3JjQlCrCvTe2S3TmPx4Us0c7sQxTWBQUcTptIaykuIXF6wIdiMnsz21EiEMiF+FbOegyvfDQeeOtZIIy9U7A2BnFiosJP6qyD2JicoJqIH18m/jcuBH5iZmDzJycjC0MSBzLLYDsNw51OceqEBIKPTsV4UE3jNa0sxgLBqRVf7BLmdHg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(366004)(346002)(396003)(376002)(26005)(44832011)(8936002)(38100700002)(66476007)(9686003)(38350700002)(53546011)(478600001)(33716001)(6666004)(55016002)(186003)(956004)(9576002)(16526019)(66946007)(54906003)(8676002)(83380400001)(52116002)(86362001)(33656002)(6636002)(6862004)(1076003)(316002)(5660300002)(66556008)(4326008)(6496006)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vHtlPIBLn0K9vXO4W6/67VfPbLcrfsKO/E977Wn+/lrEgHhLKlhQEXBy6Zbm?=
- =?us-ascii?Q?oMFH39aaAj9y+1Ky0Nbt8rKVHaCAYyweFxzDrAOQoXpEkixckO6Q+F4/LLwa?=
- =?us-ascii?Q?M3X3SAtUXrZ0XmdxQ3wfKnxzi3bsrYtYQCcTqRBnW8Zl+a9wXJXQ9gK/4QTn?=
- =?us-ascii?Q?jx050cIRZHw/VOuR3I/l2itghA9lYlLs0Bri5ApCjlFyUHfLO9EZZIe708Yf?=
- =?us-ascii?Q?LPfFtf69bAMHe54ffpacySIH8Yv3D55ORI7FwQzQfpwZ4cdo5oKW2kHjxtmF?=
- =?us-ascii?Q?JMDD3R1ENqAIjqar+qGbb/lVPK+FCaO9w6tJQ7Ink6CosD3VnTrOJ2ZXnj92?=
- =?us-ascii?Q?bECbGou11igC71v3t5PJUTiM2fjLnXLvkTvNT3jqO7PxuD+n8kKRKsEC6+jx?=
- =?us-ascii?Q?fhyXCg8R/lSnvp2jgF/U0pfrvyXMQtYwgShRPyZEJpCz6Njfu3qAlLaWGFkb?=
- =?us-ascii?Q?E3RsUi7BadeyhwDOn5Dp50QrW41PvXjNv0ab1t/3VLtren9rvO0i5zKNeRfY?=
- =?us-ascii?Q?MseL29ZMrXw7GFCQcympLmrOHc8/8oHGnHAjW85BmdRR58yULXovo4bzkzMw?=
- =?us-ascii?Q?m+Kfr45uzVWhF/QRQvfu5PYsCWHYogpsspCijPcVYlhP3iOBWVfP853CQhaj?=
- =?us-ascii?Q?BUr9IHFGcCfx9b7AW5Hw8CUE4d5nYBKPPP38UfRMs3CR1A6XyolrqlZddS4a?=
- =?us-ascii?Q?jYar7fkoTTeDiSoni0M1tBTLYMZ/odPOMICuj8NTnr2zo6dSNxRUU84Hdb2C?=
- =?us-ascii?Q?ynUBB6I6yyreQN7tMVEMf1UEksSIvyIGSOqcacmsexAX3J3OJpDrJp4HZjIc?=
- =?us-ascii?Q?q4K0fVnTxGbHgcvmNyTavU2toUmrq3HQZQLAz0TyWDz4QnVP2DO1IrTLd9oF?=
- =?us-ascii?Q?036fVXX7dbBV0EmO4VG7qIUNqZE5Sme/gUmdoVBioXxS2OROc3Ese4+bdaby?=
- =?us-ascii?Q?2zYbQZDYO8OYh5iyY8rPp0GVBjQhyvFuOz6qhyisvq6Xiw4sCeaQg5wvCw1E?=
- =?us-ascii?Q?Q6BLhYjwR2krV4vzWlJ09pug/diEgun7E4IFXGwgMHR1nZyJFOWY+/1w0aMl?=
- =?us-ascii?Q?nI3zvsjR0t7fOb2dBsOr5qT1xSgi/csVpOLE3p/CfJu/+aTYbX6G9zSisFdg?=
- =?us-ascii?Q?zIW6k4qv/gEyPILqSegNC+rm64AN8gyW7Bh0l/LyFIJRWYwZlyptmUU0hs73?=
- =?us-ascii?Q?mvtBpjKvG43ebBvT9Ve6YukaoJvHYXCFX5kl8vLhxmG8lNedh0w5XleFYSIx?=
- =?us-ascii?Q?CCJdwUYPm3WRDx5A+4xKB1PP3ewPv2mtHY4AGM0YM7XUc7fSfbf+ZlcR/mQu?=
- =?us-ascii?Q?r1lyRa16Ug2NGkqOOxg5mR5y?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d6f37a06-61ac-4a65-251f-08d93fa34648
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2021 10:54:34.6135
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kGENDI/DZQPS1SzRGoIi2G8CbN6kTWFuhJ7Nu07atOVbyguCDOO8pNmPbolC0dep6bKHjN9G/EEOHBsC4mGxAplOAwgXqw4mnhOD3FMYqZg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2366
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10035 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
- mlxscore=0 bulkscore=0 malwarescore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107050057
-X-Proofpoint-GUID: mToUNsDWubXcH4hRiePO2bn4VhLUFao7
-X-Proofpoint-ORIG-GUID: mToUNsDWubXcH4hRiePO2bn4VhLUFao7
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qcHopEYAB45HaUaB"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 03, 2021 at 07:21:58PM +0300, Denis Efremov wrote:
-> Hi,
-> 
-> On 6/20/21 3:00 PM, Alexander Larkin wrote:
-> >     The problem is that the check of user input values that is just
-> >     before the fixed line of code is for the part of first values
-> >     (before len or before len/2), but then the usage of all the values
-> >     including i >= len (or i >= len/2) could be.
-> >     Since the resulted array of values inited by default with some
-> >     good values, the fix is to ignore out of bounds values and
-> >     just to use only correct input values by user.
-> >     Originally detected by Murray with this simple poc
-> >     (If you run the following as an unprivileged user on a default install
-> >      it will instantly panic the system:
-> > 
-> > int main(void) {
-> > 	int fd, ret;
-> > 	unsigned int buffer[10000];
-> > 
-> > 	fd = open("/dev/input/js0", O_RDONLY);
-> > 	if (fd == -1)
-> > 		printf("Error opening file\n");
-> > 
-> > 	ret = ioctl(fd, JSIOCSBTNMAP & ~IOCSIZE_MASK, &buffer);
-> > 	printf("%d\n", ret);
-> > }
-> > 
-> > Fixes: 182d679b2298 ("Input: joydev - prevent potential read overflow in ioctl")
-> 
-> 
-> I'm not sure that this is a proper fixes tag. Seems like the bug is in the
-> code since the first commit (1da177e4c3f4). Maybe it's possible to add 2 fixes
-> tags just to notify developers that this bug is older than a 182d679b2298
-> partial fix.
 
-Normally just setting the fixes tag to my patch would be the correct
-thing to do.  But in this case, I didn't get a CVE for my patch so
-scripts which determine if a patch is required automatically might get
-confused?  It's not unusual to use two fixes tags so it might be a good
-idea in this case just to avoid any confusion.
+--qcHopEYAB45HaUaB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-regards,
-dan carpenter
+The ROHM BD71837/47/50/78 do support enabling/disabling the under/over
+voltage protection. Add support for enabling/disabling the protection
+according to the device-tree information.
 
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+Please note, this patch was created on regulator/for-next.
+I can rebase and resend after rc1 is out if needed.
+
+ drivers/regulator/bd718x7-regulator.c | 369 ++++++++++++++++++--------
+ 1 file changed, 260 insertions(+), 109 deletions(-)
+
+diff --git a/drivers/regulator/bd718x7-regulator.c b/drivers/regulator/bd71=
+8x7-regulator.c
+index b1eb46961993..d60fccedb250 100644
+--- a/drivers/regulator/bd718x7-regulator.c
++++ b/drivers/regulator/bd718x7-regulator.c
+@@ -55,7 +55,8 @@
+ #define BD718XX_HWOPNAME(swopname) swopname##_hwcontrol
+=20
+ #define BD718XX_OPS(name, _list_voltage, _map_voltage, _set_voltage_sel, \
+-		   _get_voltage_sel, _set_voltage_time_sel, _set_ramp_delay) \
++		   _get_voltage_sel, _set_voltage_time_sel, _set_ramp_delay, \
++		   _set_uvp, _set_ovp)				\
+ static const struct regulator_ops name =3D {			\
+ 	.enable =3D regulator_enable_regmap,			\
+ 	.disable =3D regulator_disable_regmap,			\
+@@ -66,6 +67,8 @@ static const struct regulator_ops name =3D {			\
+ 	.get_voltage_sel =3D (_get_voltage_sel),			\
+ 	.set_voltage_time_sel =3D (_set_voltage_time_sel),	\
+ 	.set_ramp_delay =3D (_set_ramp_delay),			\
++	.set_under_voltage_protection =3D (_set_uvp),		\
++	.set_over_voltage_protection =3D (_set_ovp),		\
+ };								\
+ 								\
+ static const struct regulator_ops BD718XX_HWOPNAME(name) =3D {	\
+@@ -76,6 +79,8 @@ static const struct regulator_ops BD718XX_HWOPNAME(name) =
+=3D {	\
+ 	.get_voltage_sel =3D (_get_voltage_sel),			\
+ 	.set_voltage_time_sel =3D (_set_voltage_time_sel),	\
+ 	.set_ramp_delay =3D (_set_ramp_delay),			\
++	.set_under_voltage_protection =3D (_set_uvp),		\
++	.set_over_voltage_protection =3D (_set_ovp),		\
+ }								\
+=20
+ /*
+@@ -154,17 +159,9 @@ static void voltage_change_done(struct regulator_dev *=
+rdev, unsigned int sel,
+ 		 * exceed it due to the scheduling.
+ 		 */
+ 		msleep(1);
+-		/*
+-		 * Note for next hacker. The PWRGOOD should not be masked on
+-		 * BD71847 so we will just unconditionally enable detection
+-		 * when voltage is set.
+-		 * If someone want's to disable PWRGOOD he must implement
+-		 * caching and restoring the old value here. I am not
+-		 * aware of such use-cases so for the sake of the simplicity
+-		 * we just always enable PWRGOOD here.
+-		 */
+-		ret =3D regmap_update_bits(rdev->regmap, BD718XX_REG_MVRFLTMASK2,
+-					 *mask, 0);
++
++		ret =3D regmap_clear_bits(rdev->regmap, BD718XX_REG_MVRFLTMASK2,
++					 *mask);
+ 		if (ret)
+ 			dev_err(&rdev->dev,
+ 				"Failed to re-enable voltage monitoring (%d)\n",
+@@ -208,12 +205,27 @@ static int voltage_change_prepare(struct regulator_de=
+v *rdev, unsigned int sel,
+ 		 * time configurable.
+ 		 */
+ 		if (new > now) {
++			int tmp;
++			int prot_bit;
+ 			int ldo_offset =3D rdev->desc->id - BD718XX_LDO1;
+=20
+-			*mask =3D BD718XX_LDO1_VRMON80 << ldo_offset;
+-			ret =3D regmap_update_bits(rdev->regmap,
+-						 BD718XX_REG_MVRFLTMASK2,
+-						 *mask, *mask);
++			prot_bit =3D BD718XX_LDO1_VRMON80 << ldo_offset;
++			ret =3D regmap_read(rdev->regmap, BD718XX_REG_MVRFLTMASK2,
++					  &tmp);
++			if (ret) {
++				dev_err(&rdev->dev,
++					"Failed to read voltage monitoring state\n");
++				return ret;
++			}
++
++			if (!(tmp & prot_bit)) {
++				/* We disable protection if it was enabled... */
++				ret =3D regmap_set_bits(rdev->regmap,
++						      BD718XX_REG_MVRFLTMASK2,
++						      prot_bit);
++				/* ...and we also want to re-enable it */
++				*mask =3D prot_bit;
++			}
+ 			if (ret) {
+ 				dev_err(&rdev->dev,
+ 					"Failed to stop voltage monitoring\n");
+@@ -266,99 +278,6 @@ static int bd71837_set_voltage_sel_pickable_restricted(
+ 	return regulator_set_voltage_sel_pickable_regmap(rdev, sel);
+ }
+=20
+-/*
+- * OPS common for BD71847 and BD71850
+- */
+-BD718XX_OPS(bd718xx_pickable_range_ldo_ops,
+-	    regulator_list_voltage_pickable_linear_range, NULL,
+-	    bd718xx_set_voltage_sel_pickable_restricted,
+-	    regulator_get_voltage_sel_pickable_regmap, NULL, NULL);
+-
+-/* BD71847 and BD71850 LDO 5 is by default OFF at RUN state */
+-static const struct regulator_ops bd718xx_ldo5_ops_hwstate =3D {
+-	.is_enabled =3D never_enabled_by_hwstate,
+-	.list_voltage =3D regulator_list_voltage_pickable_linear_range,
+-	.set_voltage_sel =3D bd718xx_set_voltage_sel_pickable_restricted,
+-	.get_voltage_sel =3D regulator_get_voltage_sel_pickable_regmap,
+-};
+-
+-BD718XX_OPS(bd718xx_pickable_range_buck_ops,
+-	    regulator_list_voltage_pickable_linear_range, NULL,
+-	    regulator_set_voltage_sel_pickable_regmap,
+-	    regulator_get_voltage_sel_pickable_regmap,
+-	    regulator_set_voltage_time_sel, NULL);
+-
+-BD718XX_OPS(bd718xx_ldo_regulator_ops, regulator_list_voltage_linear_range,
+-	    NULL, bd718xx_set_voltage_sel_restricted,
+-	    regulator_get_voltage_sel_regmap, NULL, NULL);
+-
+-BD718XX_OPS(bd718xx_ldo_regulator_nolinear_ops, regulator_list_voltage_tab=
+le,
+-	    NULL, bd718xx_set_voltage_sel_restricted,
+-	    regulator_get_voltage_sel_regmap, NULL, NULL);
+-
+-BD718XX_OPS(bd718xx_buck_regulator_ops, regulator_list_voltage_linear_rang=
+e,
+-	    NULL, regulator_set_voltage_sel_regmap,
+-	    regulator_get_voltage_sel_regmap, regulator_set_voltage_time_sel,
+-	    NULL);
+-
+-BD718XX_OPS(bd718xx_buck_regulator_nolinear_ops, regulator_list_voltage_ta=
+ble,
+-	    regulator_map_voltage_ascend, regulator_set_voltage_sel_regmap,
+-	    regulator_get_voltage_sel_regmap, regulator_set_voltage_time_sel,
+-	    NULL);
+-
+-/*
+- * OPS for BD71837
+- */
+-BD718XX_OPS(bd71837_pickable_range_ldo_ops,
+-	    regulator_list_voltage_pickable_linear_range, NULL,
+-	    bd71837_set_voltage_sel_pickable_restricted,
+-	    regulator_get_voltage_sel_pickable_regmap, NULL, NULL);
+-
+-BD718XX_OPS(bd71837_pickable_range_buck_ops,
+-	    regulator_list_voltage_pickable_linear_range, NULL,
+-	    bd71837_set_voltage_sel_pickable_restricted,
+-	    regulator_get_voltage_sel_pickable_regmap,
+-	    regulator_set_voltage_time_sel, NULL);
+-
+-BD718XX_OPS(bd71837_ldo_regulator_ops, regulator_list_voltage_linear_range,
+-	    NULL, bd71837_set_voltage_sel_restricted,
+-	    regulator_get_voltage_sel_regmap, NULL, NULL);
+-
+-BD718XX_OPS(bd71837_ldo_regulator_nolinear_ops, regulator_list_voltage_tab=
+le,
+-	    NULL, bd71837_set_voltage_sel_restricted,
+-	    regulator_get_voltage_sel_regmap, NULL, NULL);
+-
+-BD718XX_OPS(bd71837_buck_regulator_ops, regulator_list_voltage_linear_rang=
+e,
+-	    NULL, bd71837_set_voltage_sel_restricted,
+-	    regulator_get_voltage_sel_regmap, regulator_set_voltage_time_sel,
+-	    NULL);
+-
+-BD718XX_OPS(bd71837_buck_regulator_nolinear_ops, regulator_list_voltage_ta=
+ble,
+-	    regulator_map_voltage_ascend, bd71837_set_voltage_sel_restricted,
+-	    regulator_get_voltage_sel_regmap, regulator_set_voltage_time_sel,
+-	    NULL);
+-/*
+- * BD71837 bucks 3 and 4 support defining their enable/disable state also
+- * when buck enable state is under HW state machine control. In that case =
+the
+- * bit [2] in CTRL register is used to indicate if regulator should be ON.
+- */
+-static const struct regulator_ops bd71837_buck34_ops_hwctrl =3D {
+-	.is_enabled =3D bd71837_get_buck34_enable_hwctrl,
+-	.list_voltage =3D regulator_list_voltage_linear_range,
+-	.set_voltage_sel =3D regulator_set_voltage_sel_regmap,
+-	.get_voltage_sel =3D regulator_get_voltage_sel_regmap,
+-	.set_voltage_time_sel =3D regulator_set_voltage_time_sel,
+-	.set_ramp_delay =3D regulator_set_ramp_delay_regmap,
+-};
+-
+-/*
+- * OPS for all of the ICs - BD718(37/47/50)
+- */
+-BD718XX_OPS(bd718xx_dvs_buck_regulator_ops, regulator_list_voltage_linear_=
+range,
+-	    NULL, regulator_set_voltage_sel_regmap,
+-	    regulator_get_voltage_sel_regmap, regulator_set_voltage_time_sel,
+-	    /* bd718xx_buck1234_set_ramp_delay */ regulator_set_ramp_delay_regmap=
+);
+-
+ /*
+  * BD71837 BUCK1/2/3/4
+  * BD71847 BUCK1/2
+@@ -536,6 +455,238 @@ struct bd718xx_regulator_data {
+ 	int additional_init_amnt;
+ };
+=20
++static int bd718x7_xvp_sanity_check(struct regulator_dev *rdev, int lim_uV,
++				    int severity)
++{
++	/*
++	 * BD71837/47/50 ... (ICs supported by this driver) do not provide
++	 * warnings, only protection
++	 */
++	if (severity !=3D REGULATOR_SEVERITY_PROT) {
++		dev_err(&rdev->dev,
++			"Unsupported Under Voltage protection level\n");
++		return -EINVAL;
++	}
++
++	/*
++	 * And protection limit is not changeable. It can only be enabled
++	 * or disabled
++	 */
++	if (lim_uV)
++		return -EINVAL;
++
++	return 0;
++}
++
++static int bd718x7_set_ldo_uvp(struct regulator_dev *rdev, int lim_uV,
++			       int severity, bool enable)
++{
++	int ldo_offset =3D rdev->desc->id - BD718XX_LDO1;
++	int prot_bit, ret;
++
++	ret =3D bd718x7_xvp_sanity_check(rdev, lim_uV, severity);
++	if (ret)
++		return ret;
++
++	prot_bit =3D BD718XX_LDO1_VRMON80 << ldo_offset;
++
++	if (enable)
++		return regmap_clear_bits(rdev->regmap, BD718XX_REG_MVRFLTMASK2,
++					 prot_bit);
++
++	return regmap_set_bits(rdev->regmap, BD718XX_REG_MVRFLTMASK2,
++			       prot_bit);
++}
++
++static int bd718x7_get_buck_prot_reg(int id, int *reg)
++{
++
++	if (id > BD718XX_BUCK8) {
++		WARN_ON(id > BD718XX_BUCK8);
++		return -EINVAL;
++	}
++
++	if (id > BD718XX_BUCK4)
++		*reg =3D BD718XX_REG_MVRFLTMASK0;
++	else
++		*reg =3D BD718XX_REG_MVRFLTMASK1;
++
++	return 0;
++}
++
++static int bd718x7_get_buck_ovp_info(int id, int *reg, int *bit)
++{
++	int ret;
++
++	ret =3D bd718x7_get_buck_prot_reg(id, reg);
++	if (ret)
++		return ret;
++
++	*bit =3D BIT((id % 4) * 2 + 1);
++
++	return 0;
++}
++
++static int bd718x7_get_buck_uvp_info(int id, int *reg, int *bit)
++{
++	int ret;
++
++	ret =3D bd718x7_get_buck_prot_reg(id, reg);
++	if (ret)
++		return ret;
++
++	*bit =3D BIT((id % 4) * 2);
++
++	return 0;
++}
++
++static int bd718x7_set_buck_uvp(struct regulator_dev *rdev, int lim_uV,
++				int severity, bool enable)
++{
++	int bit, reg, ret;
++
++	ret =3D bd718x7_xvp_sanity_check(rdev, lim_uV, severity);
++	if (ret)
++		return ret;
++
++	ret =3D bd718x7_get_buck_uvp_info(rdev->desc->id, &reg, &bit);
++	if (ret)
++		return ret;
++
++	if (enable)
++		return regmap_clear_bits(rdev->regmap, reg, bit);
++
++	return regmap_set_bits(rdev->regmap, reg, bit);
++
++}
++
++static int bd718x7_set_buck_ovp(struct regulator_dev *rdev, int lim_uV,
++				int severity,
++				bool enable)
++{
++	int bit, reg, ret;
++
++	ret =3D bd718x7_xvp_sanity_check(rdev, lim_uV, severity);
++	if (ret)
++		return ret;
++
++	ret =3D bd718x7_get_buck_ovp_info(rdev->desc->id, &reg, &bit);
++	if (ret)
++		return ret;
++
++	if (enable)
++		return regmap_clear_bits(rdev->regmap, reg, bit);
++
++	return regmap_set_bits(rdev->regmap, reg, bit);
++}
++
++/*
++ * OPS common for BD71847 and BD71850
++ */
++BD718XX_OPS(bd718xx_pickable_range_ldo_ops,
++	    regulator_list_voltage_pickable_linear_range, NULL,
++	    bd718xx_set_voltage_sel_pickable_restricted,
++	    regulator_get_voltage_sel_pickable_regmap, NULL, NULL,
++	    bd718x7_set_ldo_uvp, NULL);
++
++/* BD71847 and BD71850 LDO 5 is by default OFF at RUN state */
++static const struct regulator_ops bd718xx_ldo5_ops_hwstate =3D {
++	.is_enabled =3D never_enabled_by_hwstate,
++	.list_voltage =3D regulator_list_voltage_pickable_linear_range,
++	.set_voltage_sel =3D bd718xx_set_voltage_sel_pickable_restricted,
++	.get_voltage_sel =3D regulator_get_voltage_sel_pickable_regmap,
++	.set_under_voltage_protection =3D bd718x7_set_ldo_uvp,
++};
++
++BD718XX_OPS(bd718xx_pickable_range_buck_ops,
++	    regulator_list_voltage_pickable_linear_range, NULL,
++	    regulator_set_voltage_sel_pickable_regmap,
++	    regulator_get_voltage_sel_pickable_regmap,
++	    regulator_set_voltage_time_sel, NULL, bd718x7_set_buck_uvp,
++	    bd718x7_set_buck_ovp);
++
++BD718XX_OPS(bd718xx_ldo_regulator_ops, regulator_list_voltage_linear_range,
++	    NULL, bd718xx_set_voltage_sel_restricted,
++	    regulator_get_voltage_sel_regmap, NULL, NULL, bd718x7_set_ldo_uvp,
++	    NULL);
++
++BD718XX_OPS(bd718xx_ldo_regulator_nolinear_ops, regulator_list_voltage_tab=
+le,
++	    NULL, bd718xx_set_voltage_sel_restricted,
++	    regulator_get_voltage_sel_regmap, NULL, NULL, bd718x7_set_ldo_uvp,
++	    NULL);
++
++BD718XX_OPS(bd718xx_buck_regulator_ops, regulator_list_voltage_linear_rang=
+e,
++	    NULL, regulator_set_voltage_sel_regmap,
++	    regulator_get_voltage_sel_regmap, regulator_set_voltage_time_sel,
++	    NULL, bd718x7_set_buck_uvp, bd718x7_set_buck_ovp);
++
++BD718XX_OPS(bd718xx_buck_regulator_nolinear_ops, regulator_list_voltage_ta=
+ble,
++	    regulator_map_voltage_ascend, regulator_set_voltage_sel_regmap,
++	    regulator_get_voltage_sel_regmap, regulator_set_voltage_time_sel,
++	    NULL, bd718x7_set_buck_uvp, bd718x7_set_buck_ovp);
++
++/*
++ * OPS for BD71837
++ */
++BD718XX_OPS(bd71837_pickable_range_ldo_ops,
++	    regulator_list_voltage_pickable_linear_range, NULL,
++	    bd71837_set_voltage_sel_pickable_restricted,
++	    regulator_get_voltage_sel_pickable_regmap, NULL, NULL,
++	    bd718x7_set_ldo_uvp, NULL);
++
++BD718XX_OPS(bd71837_pickable_range_buck_ops,
++	    regulator_list_voltage_pickable_linear_range, NULL,
++	    bd71837_set_voltage_sel_pickable_restricted,
++	    regulator_get_voltage_sel_pickable_regmap,
++	    regulator_set_voltage_time_sel, NULL, bd718x7_set_buck_uvp,
++	    bd718x7_set_buck_ovp);
++
++BD718XX_OPS(bd71837_ldo_regulator_ops, regulator_list_voltage_linear_range,
++	    NULL, bd71837_set_voltage_sel_restricted,
++	    regulator_get_voltage_sel_regmap, NULL, NULL, bd718x7_set_ldo_uvp,
++	    NULL);
++
++BD718XX_OPS(bd71837_ldo_regulator_nolinear_ops, regulator_list_voltage_tab=
+le,
++	    NULL, bd71837_set_voltage_sel_restricted,
++	    regulator_get_voltage_sel_regmap, NULL, NULL, bd718x7_set_ldo_uvp,
++	    NULL);
++
++BD718XX_OPS(bd71837_buck_regulator_ops, regulator_list_voltage_linear_rang=
+e,
++	    NULL, bd71837_set_voltage_sel_restricted,
++	    regulator_get_voltage_sel_regmap, regulator_set_voltage_time_sel,
++	    NULL, bd718x7_set_buck_uvp, bd718x7_set_buck_ovp);
++
++BD718XX_OPS(bd71837_buck_regulator_nolinear_ops, regulator_list_voltage_ta=
+ble,
++	    regulator_map_voltage_ascend, bd71837_set_voltage_sel_restricted,
++	    regulator_get_voltage_sel_regmap, regulator_set_voltage_time_sel,
++	    NULL, bd718x7_set_buck_uvp, bd718x7_set_buck_ovp);
++/*
++ * BD71837 bucks 3 and 4 support defining their enable/disable state also
++ * when buck enable state is under HW state machine control. In that case =
+the
++ * bit [2] in CTRL register is used to indicate if regulator should be ON.
++ */
++static const struct regulator_ops bd71837_buck34_ops_hwctrl =3D {
++	.is_enabled =3D bd71837_get_buck34_enable_hwctrl,
++	.list_voltage =3D regulator_list_voltage_linear_range,
++	.set_voltage_sel =3D regulator_set_voltage_sel_regmap,
++	.get_voltage_sel =3D regulator_get_voltage_sel_regmap,
++	.set_voltage_time_sel =3D regulator_set_voltage_time_sel,
++	.set_ramp_delay =3D regulator_set_ramp_delay_regmap,
++	.set_under_voltage_protection =3D bd718x7_set_buck_uvp,
++	.set_over_voltage_protection =3D bd718x7_set_buck_ovp,
++};
++
++/*
++ * OPS for all of the ICs - BD718(37/47/50)
++ */
++BD718XX_OPS(bd718xx_dvs_buck_regulator_ops, regulator_list_voltage_linear_=
+range,
++	    NULL, regulator_set_voltage_sel_regmap,
++	    regulator_get_voltage_sel_regmap, regulator_set_voltage_time_sel,
++	    regulator_set_ramp_delay_regmap, bd718x7_set_buck_uvp,
++	    bd718x7_set_buck_ovp);
++
++
++
+ /*
+  * There is a HW quirk in BD71837. The shutdown sequence timings for
+  * bucks/LDOs which are controlled via register interface are changed.
+
+base-commit: bfcce85026918c65441ebd3db4cb0d36c5dcda74
+--=20
+2.25.4
+
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--qcHopEYAB45HaUaB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmDi5OkACgkQeFA3/03a
+ocUX6Af/fspTfGdk5VqI17yUm67auUF1rsYRS9NA2y006USsijaHi1mnmSxRO8zQ
+Gm3VHclrtcYWrefwpf/ykLkzwqReyNzZ+o6Vd+shX9q81aTiCPvpz0hQVIxbXEA1
+3Ke2ZxeWJNUwcNP25yyGxBNw365ZP+pILQ/eN+7fYXbP//ZCldsiOtHVGZUs+5Iw
+r2N4Ca22Gx+YTgs7vS+OdZ8cacQmozzr6PPL6Me0nTvOFbSD3jt3NYF3NyqS0Rzo
+RJUxqQWU4sLpsfQ9o37zdeRi2BXPcjCKa9mRUJvnhhVz5dbRG46eV+6uJZ+Wg26P
+mbejR8HbMmgOTrE1luWq4kmUYsYYQw==
+=aAWq
+-----END PGP SIGNATURE-----
+
+--qcHopEYAB45HaUaB--
