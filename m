@@ -2,158 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6353BBB00
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4673BBB4A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhGEKTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 06:19:00 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:45270 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231181AbhGEKSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 06:18:55 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 30D55200690;
-        Mon,  5 Jul 2021 12:16:17 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C294D2015FC;
-        Mon,  5 Jul 2021 12:16:16 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 97381183ACDD;
-        Mon,  5 Jul 2021 18:16:14 +0800 (+08)
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     davem@davemloft.net, joabreu@synopsys.com, kuba@kernel.org,
-        alexandre.torgue@st.com, peppe.cavallaro@st.com,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org
-Cc:     boon.leong.ong@intel.com, weifeng.voon@intel.com,
-        vee.khee.wong@intel.com, tee.min.tan@intel.com,
-        mohammad.athari.ismail@intel.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        leoyang.li@nxp.com, qiangqing.zhang@nxp.com, rui.sousa@nxp.com,
-        xiaoliang.yang_1@nxp.com
-Subject: [PATCH v2 net-next 3/3] net: stmmac: ptp: update tas basetime after ptp adjust
-Date:   Mon,  5 Jul 2021 18:26:55 +0800
-Message-Id: <20210705102655.6280-4-xiaoliang.yang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210705102655.6280-1-xiaoliang.yang_1@nxp.com>
-References: <20210705102655.6280-1-xiaoliang.yang_1@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S231150AbhGEKgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 06:36:05 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:56953 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230521AbhGEKgE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 06:36:04 -0400
+X-UUID: 4b55a2b2358d48b3bde728d1ed5ef1f3-20210705
+X-UUID: 4b55a2b2358d48b3bde728d1ed5ef1f3-20210705
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <yee.lee@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1204610253; Mon, 05 Jul 2021 18:33:26 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 5 Jul 2021 18:33:25 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 5 Jul 2021 18:33:24 +0800
+From:   <yee.lee@mediatek.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <nicholas.Tang@mediatek.com>, <Kuan-Ying.lee@mediatek.com>,
+        <chinwen.chang@mediatek.com>, Yee Lee <yee.lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v6 0/2]  kasan: solve redzone overwritten issue at debug
+Date:   Mon, 5 Jul 2021 18:32:25 +0800
+Message-ID: <20210705103229.8505-1-yee.lee@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After adjusting the ptp time, the Qbv base time may be the past time
-of the new current time. dwmac5 hardware limited the base time cannot
-be set as past time. This patch add a btr_reserve to store the base
-time get from qopt, then calculate the base time and reset the Qbv
-configuration after ptp time adjust.
+From: Yee Lee <yee.lee@mediatek.com>
 
-Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Issue: In SLUB debug, hwtag kasan_unpoison() would overwrite the redzone
+in those objects with unaligned size.
+
+The first patch Introduces slub_debug_enable_unlikely() to check
+the state of debug mode.
+
+The second patch Adds memzero_explict() to separate the initialization for
+such condition. The new code path is executed about 1.1% during nromal
+booting process. The penalty is acceptable since it only works in debug
+mode.
+
+=============
+Exp: QEMUv5.2(+mte)/SLUB_debug mode
+code path exec : 941/80854 (1.1%)
+
+Changed since v6:
+ - Move helper instead of introducing a new one.
+
+Changed since v5:
+ - Fix format
+
+Changed since v4:
+ - Introduce slub_debug_enable_unlikly() to check the debug state.
+ - Include "slab.h" and Add slub_debug_enable_unlikly() to lead
+   the condition statement.
+ - Add comment block about this new code path in source code.
+
+Changed since v3:
+ - Apply IS_ENABLED to wrap codes under SLUB debug mode.
+ - Replace memset() by memzero_explict().
+
 ---
- .../net/ethernet/stmicro/stmmac/stmmac_ptp.c  | 41 ++++++++++++++++++-
- .../net/ethernet/stmicro/stmmac/stmmac_tc.c   |  6 ++-
- include/linux/stmmac.h                        |  1 +
- 3 files changed, 46 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-index 4e86cdf2bc9f..580cc035536b 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-@@ -62,7 +62,8 @@ static int stmmac_adjust_time(struct ptp_clock_info *ptp, s64 delta)
- 	u32 sec, nsec;
- 	u32 quotient, reminder;
- 	int neg_adj = 0;
--	bool xmac;
-+	bool xmac, est_rst = false;
-+	int ret;
- 
- 	xmac = priv->plat->has_gmac4 || priv->plat->has_xgmac;
- 
-@@ -75,10 +76,48 @@ static int stmmac_adjust_time(struct ptp_clock_info *ptp, s64 delta)
- 	sec = quotient;
- 	nsec = reminder;
- 
-+	/* If EST is enabled, disabled it before adjust ptp time. */
-+	if (priv->plat->est && priv->plat->est->enable) {
-+		est_rst = true;
-+		mutex_lock(&priv->plat->est->lock);
-+		priv->plat->est->enable = false;
-+		stmmac_est_configure(priv, priv->ioaddr, priv->plat->est,
-+				     priv->plat->clk_ptp_rate);
-+		mutex_unlock(&priv->plat->est->lock);
-+	}
-+
- 	spin_lock_irqsave(&priv->ptp_lock, flags);
- 	stmmac_adjust_systime(priv, priv->ptpaddr, sec, nsec, neg_adj, xmac);
- 	spin_unlock_irqrestore(&priv->ptp_lock, flags);
- 
-+	/* Caculate new basetime and re-configured EST after PTP time adjust. */
-+	if (est_rst) {
-+		struct timespec64 current_time, time;
-+		ktime_t current_time_ns, basetime;
-+		u64 cycle_time;
-+
-+		mutex_lock(&priv->plat->est->lock);
-+		priv->ptp_clock_ops.gettime64(&priv->ptp_clock_ops, &current_time);
-+		current_time_ns = timespec64_to_ktime(current_time);
-+		time.tv_nsec = priv->plat->est->btr_reserve[0];
-+		time.tv_sec = priv->plat->est->btr_reserve[1];
-+		basetime = timespec64_to_ktime(time);
-+		cycle_time = priv->plat->est->ctr[1] * NSEC_PER_SEC +
-+			     priv->plat->est->ctr[0];
-+		time = stmmac_calc_tas_basetime(basetime,
-+						current_time_ns,
-+						cycle_time);
-+
-+		priv->plat->est->btr[0] = (u32)time.tv_nsec;
-+		priv->plat->est->btr[1] = (u32)time.tv_sec;
-+		priv->plat->est->enable = true;
-+		ret = stmmac_est_configure(priv, priv->ioaddr, priv->plat->est,
-+					   priv->plat->clk_ptp_rate);
-+		mutex_unlock(&priv->plat->est->lock);
-+		if (ret)
-+			netdev_err(priv->dev, "failed to configure EST\n");
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-index b2a276aac724..c277595341ee 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-@@ -741,7 +741,7 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
- {
- 	u32 size, wid = priv->dma_cap.estwid, dep = priv->dma_cap.estdep;
- 	struct plat_stmmacenet_data *plat = priv->plat;
--	struct timespec64 time, current_time;
-+	struct timespec64 time, current_time, qopt_time;
- 	ktime_t current_time_ns;
- 	bool fpe = false;
- 	int i, ret = 0;
-@@ -850,6 +850,10 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
- 	priv->plat->est->btr[0] = (u32)time.tv_nsec;
- 	priv->plat->est->btr[1] = (u32)time.tv_sec;
- 
-+	qopt_time = ktime_to_timespec64(qopt->base_time);
-+	priv->plat->est->btr_reserve[0] = (u32)qopt_time.tv_nsec;
-+	priv->plat->est->btr_reserve[1] = (u32)qopt_time.tv_sec;
-+
- 	ctr = qopt->cycle_time;
- 	priv->plat->est->ctr[0] = do_div(ctr, NSEC_PER_SEC);
- 	priv->plat->est->ctr[1] = (u32)ctr;
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index c38b65aaf8c2..f5ae3cf05918 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -117,6 +117,7 @@ struct stmmac_axi {
- struct stmmac_est {
- 	struct mutex lock;
- 	int enable;
-+	u32 btr_reserve[2];
- 	u32 btr_offset[2];
- 	u32 btr[2];
- 	u32 ctr[2];
+Marco Elver (1):
+  mm: move helper to check slub_debug_enabled
+
+Yee Lee (1):
+  kasan: Add memzero int for unaligned size at DEBUG
+
+ mm/kasan/kasan.h | 12 ++++++++++++
+ mm/slab.h        | 15 +++++++++++----
+ mm/slub.c        | 14 --------------
+ 3 files changed, 23 insertions(+), 18 deletions(-)
+
 -- 
-2.17.1
+2.18.0
 
