@@ -2,766 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38393BBE78
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 16:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262BC3BBE7B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 16:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231806AbhGEOxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 10:53:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:48248 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231836AbhGEOxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 10:53:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A52761FB;
-        Mon,  5 Jul 2021 07:51:08 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C1373F694;
-        Mon,  5 Jul 2021 07:51:05 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        virtio-dev@lists.oasis-open.org
-Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
-        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com, cristian.marussi@arm.com,
-        igor.skalkin@opensynergy.com, peter.hilber@opensynergy.com,
-        alex.bennee@linaro.org, jean-philippe@linaro.org,
-        mikhail.golubev@opensynergy.com, anton.yakovlev@opensynergy.com,
-        Vasyl.Vavrychuk@opensynergy.com,
-        Andriy.Tryshnivskyy@opensynergy.com
-Subject: [PATCH v5 15/15] firmware: arm_scmi: Add virtio transport
-Date:   Mon,  5 Jul 2021 15:49:14 +0100
-Message-Id: <20210705144914.35094-16-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210705144914.35094-1-cristian.marussi@arm.com>
-References: <20210705144914.35094-1-cristian.marussi@arm.com>
+        id S231517AbhGEOz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 10:55:28 -0400
+Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:14972 "EHLO
+        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230504AbhGEOz1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 10:55:27 -0400
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 165ElruN025347;
+        Mon, 5 Jul 2021 14:52:44 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2107.outbound.protection.outlook.com [104.47.55.107])
+        by mx0a-0064b401.pphosted.com with ESMTP id 39kyka85cd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 05 Jul 2021 14:52:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WS0pP7l1s+ZvrkgqrHMQ13fO2Ppa4s/nri1pK5EFGswbInhv2bu4njqLksD7KFnSxGVq0OLe0Vyb2LU0sGBXffY4NqDSBdykdxid4fXCCznoxudY6b/KPR5oKG/zlPZFs3cphFzEAzg79+Tu/jseTH46vkWeN8c3NWbvDrKknf8gtQXjKhvuO9hQznQfSZycLtlu5jeW1wEVyqAJauDILSTQ4TIvwIsm2eio4WRzpZS0D2F4Dn5aoynh7AFBWkcmERkgEUTy2A4sA5DUCPrE4p9qtg2++JroEeN44hivHcfHMjDS04SEKE5hu/hJmIrhOMKmGMptNZqz58sqynOWug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RfSxz9/wyMS7GyWbZcN2o621C2pBNci3c0dTiugA6h0=;
+ b=d0HHGZU0blns8ki16xawYpnIPpGxTdIbLJ2YKJnNSf2lbxAr/LY7+ek0M20Vp1nULMCiIyMeOnXV/YnzACZEcgjGdnoIo0eVwAGtKxgMMA2k9/c3RSEeYymq0NsJLBTDS4uIloNC6+qv//V5OJ4DLYakRozmJy3Sj/3YEnFi7WYZX46kNV5jrKBh2XWcHvEnyu4fJYvuN4WltKpUKS6J8V17doWszDwCdQaFTWw5zNsGO/jSVZ3mqVSOIKFT3fNoO2xw7d5UnIrs72xZgZeHI1xwtxoqI9m33QpVU0e5re1GCMekw1UuUoc1LGy5AllEOXbgfDd25AopcjzDLVSfyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RfSxz9/wyMS7GyWbZcN2o621C2pBNci3c0dTiugA6h0=;
+ b=SUasgrgARzLUHVToveERTjlXvyeNdVN/qI20MvU/obB7dNvMwUYx/qX5vZkcoRsq0Nf8+LMbPZ/T4mmEkt4vxOpa8lomkcyuxW8PvAGOcVWW2+EMJeuqxqENoSHOLOaMWSb6rflCB3HPcVQ/CjjclZoM4OGbYzrP5psBkraMFY8=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from DM8PR11MB5734.namprd11.prod.outlook.com (2603:10b6:8:31::22) by
+ DM6PR11MB4201.namprd11.prod.outlook.com (2603:10b6:5:200::33) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4287.22; Mon, 5 Jul 2021 14:52:42 +0000
+Received: from DM8PR11MB5734.namprd11.prod.outlook.com
+ ([fe80::bce8:81f7:f5a1:af19]) by DM8PR11MB5734.namprd11.prod.outlook.com
+ ([fe80::bce8:81f7:f5a1:af19%6]) with mapi id 15.20.4287.033; Mon, 5 Jul 2021
+ 14:52:42 +0000
+Subject: Re: [RFC][PATCH 1/4] locking/mutex: Use try_cmpxchg()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, longman@redhat.com, boqun.feng@gmail.com,
+        will@kernel.org, linux-kernel@vger.kernel.org
+References: <20210630153516.832731403@infradead.org>
+ <20210630154114.834438545@infradead.org>
+ <cac55711-585a-4e08-3b5e-a6890e2f548d@windriver.com>
+ <YOMQYQr1loxIuZbU@hirez.programming.kicks-ass.net>
+From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
+Message-ID: <320cf54f-719c-8aa5-17af-455a53db4478@windriver.com>
+Date:   Mon, 5 Jul 2021 22:52:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <YOMQYQr1loxIuZbU@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR0302CA0002.apcprd03.prod.outlook.com
+ (2603:1096:202::12) To DM8PR11MB5734.namprd11.prod.outlook.com
+ (2603:10b6:8:31::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.160] (60.247.85.82) by HK2PR0302CA0002.apcprd03.prod.outlook.com (2603:1096:202::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.8 via Frontend Transport; Mon, 5 Jul 2021 14:52:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cd08e231-6104-4074-d43f-08d93fc48a8f
+X-MS-TrafficTypeDiagnostic: DM6PR11MB4201:
+X-Microsoft-Antispam-PRVS: <DM6PR11MB4201B55C025E18CB0124BBA6E41C9@DM6PR11MB4201.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1YzkcgrczaeTVWYPxJLtAEAdchmzi4NJO4LBapCCYfBO2o+3GTG7rdmHXC+kURhOV3DQIoLEZSaC/OF5PrdoWOGVd/Y6IxH8nQHhbxV6uR3EYt9T0R7r5dd/uDZNYgJpErCjxYpkM4JJBQ9w0eS7x3dvEJdWpiHxyhBGRTVbw8TMOfqK6KQ0Ge4lg/F/DLmRSNxdqHw/3qkBysAS3IlJh036fsPTFQABi4FY85RMbZiSlBgqofyPhcADKdEWXB3Jou5LjpLMhApzono63AUrHTxYQFWqqUlO/UDHdegIsANpAiu5vpa7CzpcE9XIC+G5kC/8Brj/IFyNwdWw9s6frbepAs5DTvzU4Wi1BN1Zp0AO81CpdQSnry1374Hdd5I29yGWeDCVJ/DXYe4HR7pyW+WhvWHrXO8GDIsBVnZnjD2eTV/dvQsBfZ5rAJm/jkfjFMhUs9StZGATE2+UdriNPsy+BKxxi54rWiO09VGZSf0VjiISxNyrZfAD0mCzSOy6aaoPOEac4qDWPc6eBl59gBjDgQgioCe85SG6cHxX7R2cDWw7ROo58scIss1d1VFTWWvn8Be837XdxYOKoaTaz64PiusTbLd8syYB6uTjM95VzjzJWvfecTLh5dBlRsXzaM5YrLhNiasjpM9lihGE8cYFV72pzh0O2DyzbORz1Hd6TiGdGNOol6TkACVUPq8jREh9+4X6DIN7Xj7edJiBP6eD2ShkJXtwHesRy9iR1kedt/421QT1EItdP9ZPnuhR1efijerE7JVpv42mPLv9tULiraCxl3LaOl8vUOBY5P8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39850400004)(396003)(366004)(346002)(36756003)(16526019)(6916009)(26005)(8676002)(66476007)(2616005)(53546011)(66556008)(956004)(478600001)(66946007)(8936002)(83380400001)(186003)(38100700002)(38350700002)(6486002)(4326008)(2906002)(16576012)(316002)(52116002)(6666004)(31696002)(5660300002)(86362001)(31686004)(6706004)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RHNvR2JTYWdja0owVmhodmxTM3JjMjhpeVdQY3lRVE9penBVMktDK3VrQkZp?=
+ =?utf-8?B?OUdyNnUvZGRoZjR0UDdYdVFHbjFZd2ZoMkp6RGxlU3gzZHBjRUVZeGpWQTlR?=
+ =?utf-8?B?WnBwaWJxYklDN2d6cVdTYW5tenlUV2RBN1lYaFZVcitUYlVFWmx4bUYwR0RC?=
+ =?utf-8?B?dTNCMFFLRm1vdmtTUlg2eDNhZUM2TWF0ODNxT3BKTGxka1lRWmNnaUIzUWxK?=
+ =?utf-8?B?REthMTNJTlRnOGNyVnJMcFVnR0wxWlpMbFNUN0pqb2hlVHdnMFd5ekM1THB5?=
+ =?utf-8?B?aVpyUE5iTXRUWUdaOWt0L2ZRQUpxRHhFejVma1JEbkJJMGIzdWNpZkZZdXBq?=
+ =?utf-8?B?bHhFTjlBZ2ljc3RvdDIzSmhjMmRsRURENjhGQWk0cXBGUzNDd3J1eUNZTFAy?=
+ =?utf-8?B?RW0zVnc5WHp5bnVPd3h1OURaektYcWREQ0t4OWlTMmNZaE05WWlaakgyNzlE?=
+ =?utf-8?B?bFJkWWN2aHRxZmFvc3ZsVitSTGhiUDZ6QnN4QnZaZnExRlhrOSs1cmlpUWhi?=
+ =?utf-8?B?bUg3ZTBCYSsrbWpJN2VSeVZ2eDVBbzZYdVY1WXJ1UVoybW9DUGZPdnlGcUxr?=
+ =?utf-8?B?ODNXTEI0QkYxZVpTY3BpakRMZXZGVTUwNklUTHpHQ0pFdnJjRzFLOUJHWWlD?=
+ =?utf-8?B?b3J2YzZ2bUxNVnprMDF2bVFlb2RtS3JEbW8rai9iMkg1dVB4NmRIUWdNRzJQ?=
+ =?utf-8?B?MW5zS3g5cHNHdFQ1MnhEUExHdzdJRnFKUU4yLzQyT3d4QVQ2VjRjSmsxemFw?=
+ =?utf-8?B?WVBYSEJ4QXo4TGM3L3FOOE1CWXRXNmJhS2JpLzY3aHNMSE1HY0pJbzEzUDRj?=
+ =?utf-8?B?MDBjd0RQTVYwam1IYVBPdnFRRkdNTnN2a080Y2cwUW9nelloZDZuM2xIRHZE?=
+ =?utf-8?B?UXl0ODJtZjk2U3JoZlJIS1hRN0VRSzlqR0lFam9uQTZENm9KZTVtelE4TjNN?=
+ =?utf-8?B?ZkxuRlcxMStnazFMRTZPNktkeTYrZEZ2b3AvTm9UdUxOTDRFVWVZWlNFZlpE?=
+ =?utf-8?B?RU13N1FBVXB4NHpPMk9iM1ZkRUd3NTJMUG5YWTZoRmR3RzZWamxIMWpjUFp2?=
+ =?utf-8?B?TC9td2FySm92MW9LNTZoWkNIWkZuU0x6Wi9La1BHRkx6L1lIeFBHenF0QkpD?=
+ =?utf-8?B?ODBpVUo4MHhpSCtKbTlKMXVPcHNueE1GV2pPelE3NXVZdnVXR3YvTmlSTXRR?=
+ =?utf-8?B?SVpIMnVESU5sQW5yWVhwZkhOczBtNHk3dEtZQUJQbGdJanNYT2tDZkc0YTRz?=
+ =?utf-8?B?eDhQK2VCRTBOS3dtSGt2MEFRK0V5ZG83c3MzUXhJWnBaSzlCNUVJY21PWmti?=
+ =?utf-8?B?Qi9mOE5IcUJrSkRzRHhYQ2szclcxbUhXZ01qNWhLRzFwNEVtamsrQlBiZmM4?=
+ =?utf-8?B?bVprVGRUL0hYa0NjQ1k3UHpHYmlWSzZMQTNWaVRyRm5Dc0N5SGJlamxWc0ZU?=
+ =?utf-8?B?bmVYRGRhN2lQZCttU0U3aTVTUk5GSk5sSnBVcDRSaDdHTGFHa1dRNUF2VU9w?=
+ =?utf-8?B?U2ZDVG5La2tjUllmWGFWUGVNalhmU2p2di93Vlp0U1p4UHhXVGZYVkRZb1Zm?=
+ =?utf-8?B?NTVjbENocEdVTVA4bTRHd2lMT29UdjNxM2dKTjFHVythSDNvMHhaVXRoZVAv?=
+ =?utf-8?B?QmtCeTN4dEFFRlFJWEp4aEd6YVhRcEN6THo5Q1l0QjdQeWNFUU9vSGxYZkIz?=
+ =?utf-8?B?MmpJTXdWcmRmY0RicGdRRTJ3U0E3emFYWlljNkJIN1h6bTFZUFNycWtSc2g3?=
+ =?utf-8?Q?3HZhAfTakoZ0EaGyucYGs8unro8Rl0IY+Bu9DBG?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd08e231-6104-4074-d43f-08d93fc48a8f
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5734.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2021 14:52:42.3822
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rCyc3JeBKiua46z9WKwX8Ncx648QwYR4CTeZydZ10mfAhxD75b26vOJObf75rzmWincTJx4HXP34Vv+lT49Dtw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4201
+X-Proofpoint-GUID: l6ER9bM3d-KI-FGYX_RWGyd-bqyba_ZR
+X-Proofpoint-ORIG-GUID: l6ER9bM3d-KI-FGYX_RWGyd-bqyba_ZR
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-05_08:2021-07-02,2021-07-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=997
+ suspectscore=0 mlxscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0
+ priorityscore=1501 clxscore=1015 spamscore=0 impostorscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107050079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Igor Skalkin <igor.skalkin@opensynergy.com>
 
-This transport enables communications with an SCMI platform through virtio;
-the SCMI platform will be represented by a virtio device.
 
-Implement an SCMI virtio driver according to the virtio SCMI device spec
-[1]. Virtio device id 32 has been reserved for the SCMI device [2].
+On 7/5/21 10:00 PM, Peter Zijlstra wrote:
+> [Please note: This e-mail is from an EXTERNAL e-mail address]
+> 
+> On Mon, Jul 05, 2021 at 07:59:12PM +0800, Xu, Yanfei wrote:
+>>
+>>
+>> On 6/30/21 11:35 PM, Peter Zijlstra wrote:
+>>> For simpler and better code.
+>>>
+>>> Signed-off-by: Peter Zijlstra (Intel)<peterz@infradead.org>
+>>> ---
+>>>    kernel/locking/mutex.c |   27 ++++++---------------------
+>>>    1 file changed, 6 insertions(+), 21 deletions(-)
+>>
+>> Hi Peter,
+>>
+>> I read the mutex codes today, and find there seems something wrong for the
+>> patch. Should we consider the race condition as blow?
+>>
+>>  From 4035f50c96e17cbe3febab768b64da5c000e5b76 Mon Sep 17 00:00:00 2001
+>> From: Yanfei Xu <yanfei.xu@windriver.com>
+>> Date: Mon, 5 Jul 2021 17:56:58 +0800
+>> Subject: [PATCH] locking/mutex: fix the endless loop when racing against
+>>   mutex.owner
+>>
+>> if a race condition happened on mutex.owner after we fetch its value,
+>> atomic_long_try_cmpxchg_acquire/release invoked on &mutex.owner will
+>> return false. Then we need to reassign the temporary variable which
+>> saves mutex.owner value if in loop, or it will lead an endless loop.
+> 
+> No, when try_cmpxchg() fails it will update oldp. This is the reason old
+> is now a pointer too.
 
-The virtio transport has one Tx channel (virtio cmdq, A2P channel) and
-at most one Rx channel (virtio eventq, P2A channel).
+Got it. Thanks!
 
-The following feature bit defined in [1] is not implemented:
-VIRTIO_SCMI_F_SHARED_MEMORY.
-
-The number of messages which can be pending simultaneously is restricted
-according to the virtqueue capacity negotiated at probing time.
-
-As soon as Rx channel message buffers are allocated or have been read
-out by the arm-scmi driver, feed them back to the virtio device.
-
-Since some virtio devices may not have the short response time exhibited
-by SCMI platforms using other transports, set a generous response
-timeout.
-
-SCMI polling mode is not supported by this virtio transport since deemed
-meaningless: polling mode operation is offered by the SCMI core to those
-transports that could not provide a completion interrupt on the TX path,
-which is never the case for virtio whose core callbacks can easily call
-into core scmi_rx_callback upon messages reception.
-
-[1] https://github.com/oasis-tcs/virtio-spec/blob/master/virtio-scmi.tex
-[2] https://www.oasis-open.org/committees/ballot.php?id=3496
-
-Signed-off-by: Igor Skalkin <igor.skalkin@opensynergy.com>
-[ Peter: Adapted patch for submission to upstream. ]
-Co-developed-by: Peter Hilber <peter.hilber@opensynergy.com>
-Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
-[ Cristian: simplified driver using new xfer delegation mechanism,
-	    changed link_supplier and channel available/setup logic ]
-Co-developed-by: Cristian Marussi <cristian.marussi@arm.com>
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- MAINTAINERS                        |   1 +
- drivers/firmware/arm_scmi/Kconfig  |  13 +
- drivers/firmware/arm_scmi/Makefile |   1 +
- drivers/firmware/arm_scmi/common.h |   3 +
- drivers/firmware/arm_scmi/driver.c |   3 +
- drivers/firmware/arm_scmi/virtio.c | 545 +++++++++++++++++++++++++++++
- include/uapi/linux/virtio_ids.h    |   1 +
- include/uapi/linux/virtio_scmi.h   |  23 ++
- 8 files changed, 590 insertions(+)
- create mode 100644 drivers/firmware/arm_scmi/virtio.c
- create mode 100644 include/uapi/linux/virtio_scmi.h
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 66d047dc6880..843e0cbf5a1f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17979,6 +17979,7 @@ F:	drivers/regulator/scmi-regulator.c
- F:	drivers/reset/reset-scmi.c
- F:	include/linux/sc[mp]i_protocol.h
- F:	include/trace/events/scmi.h
-+F:	include/uapi/linux/virtio_scmi.h
- 
- SYSTEM RESET/SHUTDOWN DRIVERS
- M:	Sebastian Reichel <sre@kernel.org>
-diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-index 1fdaa8ad7d3f..149b88f773a1 100644
---- a/drivers/firmware/arm_scmi/Kconfig
-+++ b/drivers/firmware/arm_scmi/Kconfig
-@@ -68,6 +68,19 @@ config ARM_SCMI_TRANSPORT_SMC
- 	  A matching DT entry will also be needed to indicate the effective
- 	  presence of this kind of transport.
- 
-+config ARM_SCMI_TRANSPORT_VIRTIO
-+	bool "SCMI transport based on VirtIO"
-+	depends on ARM_SCMI_PROTOCOL && VIRTIO
-+	select ARM_SCMI_HAVE_TRANSPORT
-+	select ARM_SCMI_HAVE_MSG
-+	help
-+	  This enables the virtio based transport for SCMI.
-+
-+	  If you want the ARM SCMI PROTOCOL stack to include support for a
-+	  transport based on VirtIO, answer Y.
-+	  A matching DT entry will also be needed to indicate the effective
-+	  presence of this kind of transport.
-+
- config ARM_SCMI_POWER_DOMAIN
- 	tristate "SCMI power domain driver"
- 	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
-diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-index aaad9f6589aa..1dcf123d64ab 100644
---- a/drivers/firmware/arm_scmi/Makefile
-+++ b/drivers/firmware/arm_scmi/Makefile
-@@ -5,6 +5,7 @@ scmi-transport-$(CONFIG_ARM_SCMI_HAVE_SHMEM) = shmem.o
- scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_MAILBOX) += mailbox.o
- scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_SMC) += smc.o
- scmi-transport-$(CONFIG_ARM_SCMI_HAVE_MSG) += msg.o
-+scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_VIRTIO) += virtio.o
- scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o
- scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
- 		    $(scmi-transport-y)
-diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index 1cd8e7141495..61f1d7e1742b 100644
---- a/drivers/firmware/arm_scmi/common.h
-+++ b/drivers/firmware/arm_scmi/common.h
-@@ -403,6 +403,9 @@ extern const struct scmi_desc scmi_mailbox_desc;
- #ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC
- extern const struct scmi_desc scmi_smc_desc;
- #endif
-+#ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
-+extern const struct scmi_desc scmi_virtio_desc;
-+#endif
- 
- void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr);
- void scmi_free_channel(struct scmi_chan_info *cinfo, struct idr *idr, int id);
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index f0325ef089fc..218901492229 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -2125,6 +2125,9 @@ static const struct of_device_id scmi_of_match[] = {
- #endif
- #ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC
- 	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
-+#endif
-+#ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
-+	{ .compatible = "arm,scmi-virtio", .data = &scmi_virtio_desc},
- #endif
- 	{ /* Sentinel */ },
- };
-diff --git a/drivers/firmware/arm_scmi/virtio.c b/drivers/firmware/arm_scmi/virtio.c
-new file mode 100644
-index 000000000000..62e9bd77fcc2
---- /dev/null
-+++ b/drivers/firmware/arm_scmi/virtio.c
-@@ -0,0 +1,545 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Virtio Transport driver for Arm System Control and Management Interface
-+ * (SCMI).
-+ *
-+ * Copyright (C) 2020-2021 OpenSynergy.
-+ * Copyright (C) 2021 ARM Ltd.
-+ */
-+
-+/**
-+ * DOC: Theory of Operation
-+ *
-+ * The scmi-virtio transport implements a driver for the virtio SCMI device.
-+ *
-+ * There is one Tx channel (virtio cmdq, A2P channel) and at most one Rx
-+ * channel (virtio eventq, P2A channel). Each channel is implemented through a
-+ * virtqueue. Access to each virtqueue is protected by spinlocks.
-+ */
-+
-+#include <linux/errno.h>
-+#include <linux/slab.h>
-+#include <linux/virtio.h>
-+#include <linux/virtio_config.h>
-+
-+#include <uapi/linux/virtio_ids.h>
-+#include <uapi/linux/virtio_scmi.h>
-+
-+#include "common.h"
-+
-+#define VIRTIO_SCMI_MAX_MSG_SIZE 128 /* Value may be increased. */
-+#define VIRTIO_SCMI_MAX_PDU_SIZE \
-+	(VIRTIO_SCMI_MAX_MSG_SIZE + SCMI_MSG_MAX_PROT_OVERHEAD)
-+#define DESCRIPTORS_PER_TX_MSG 2
-+
-+/**
-+ * struct scmi_vio_channel - Transport channel information
-+ *
-+ * @vqueue: Associated virtqueue
-+ * @cinfo: SCMI Tx or Rx channel
-+ * @free_list: List of unused scmi_vio_msg, maintained for Tx channels only
-+ * @is_rx: Whether channel is an Rx channel
-+ * @ready: Whether transport user is ready to hear about channel
-+ * @max_msg: Maximum number of pending messages for this channel.
-+ * @lock: Protects access to all members except ready.
-+ * @ready_lock: Protects access to ready. If required, it must be taken before
-+ *              lock.
-+ */
-+struct scmi_vio_channel {
-+	struct virtqueue *vqueue;
-+	struct scmi_chan_info *cinfo;
-+	struct list_head free_list;
-+	bool is_rx;
-+	bool ready;
-+	unsigned int max_msg;
-+	spinlock_t lock;
-+	spinlock_t ready_lock;
-+};
-+
-+/**
-+ * struct scmi_vio_msg - Transport PDU information
-+ *
-+ * @request: SDU used for commands
-+ * @input: SDU used for (delayed) responses and notifications
-+ * @list: List which scmi_vio_msg may be part of
-+ * @rx_len: Input SDU size in bytes, once input has been received
-+ */
-+struct scmi_vio_msg {
-+	struct scmi_msg_payld *request;
-+	struct scmi_msg_payld *input;
-+	struct list_head list;
-+	unsigned int rx_len;
-+};
-+
-+/* Only one SCMI VirtIO device can possibly exist */
-+static struct virtio_device *scmi_vdev;
-+
-+static bool scmi_vio_have_vq_rx(struct virtio_device *vdev)
-+{
-+	return virtio_has_feature(vdev, VIRTIO_SCMI_F_P2A_CHANNELS);
-+}
-+
-+static int scmi_vio_feed_vq_rx(struct scmi_vio_channel *vioch,
-+			       struct scmi_vio_msg *msg)
-+{
-+	struct scatterlist sg_in;
-+	int rc;
-+	unsigned long flags;
-+
-+	sg_init_one(&sg_in, msg->input, VIRTIO_SCMI_MAX_PDU_SIZE);
-+
-+	spin_lock_irqsave(&vioch->lock, flags);
-+
-+	rc = virtqueue_add_inbuf(vioch->vqueue, &sg_in, 1, msg, GFP_ATOMIC);
-+	if (rc)
-+		dev_err_once(vioch->cinfo->dev,
-+			     "failed to add to virtqueue (%d)\n", rc);
-+	else
-+		virtqueue_kick(vioch->vqueue);
-+
-+	spin_unlock_irqrestore(&vioch->lock, flags);
-+
-+	return rc;
-+}
-+
-+static void scmi_finalize_message(struct scmi_vio_channel *vioch,
-+				  struct scmi_vio_msg *msg)
-+{
-+	if (vioch->is_rx) {
-+		scmi_vio_feed_vq_rx(vioch, msg);
-+	} else {
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&vioch->lock, flags);
-+		list_add(&msg->list, &vioch->free_list);
-+		spin_unlock_irqrestore(&vioch->lock, flags);
-+	}
-+}
-+
-+static void scmi_process_vqueue_input(struct scmi_vio_channel *vioch,
-+				      struct scmi_vio_msg *msg)
-+{
-+	u32 msg_hdr;
-+	int ret;
-+	struct scmi_xfer *xfer = NULL;
-+
-+	msg_hdr = msg_read_header(msg->input);
-+	/*
-+	 * Acquire from the core transport layer a currently valid xfer
-+	 * descriptor associated to the received msg_hdr: it could be a
-+	 * previously allocated xfer for pending commands or a freshly
-+	 * allocated new xfer for notifications.
-+	 *
-+	 * Any concurrency or out-of-order condition between reponses and
-+	 * delayed responses is taken care by the core transaparently.
-+	 * Exclusive access is granted by the core till released.
-+	 */
-+	ret = scmi_transfer_lookup(vioch->cinfo, &msg_hdr, &xfer);
-+	if (ret) {
-+		dev_err(vioch->cinfo->dev,
-+			"cannot find valid xfer for hdr:0x%X\n", msg_hdr);
-+		scmi_finalize_message(vioch, msg);
-+		return;
-+	}
-+
-+	/* A valid xfer has been found, save msg for further processing */
-+	xfer->priv = msg;
-+
-+	/*
-+	 * Release xfer: if it had already timed out in the meantime on the TX
-+	 * path this will also cause it to be finally put.
-+	 */
-+	scmi_transfer_release(vioch->cinfo, xfer);
-+
-+	/* Deliver only DRESP, NOTIF and non-polled RESP */
-+	if (vioch->is_rx || !xfer->hdr.poll_completion)
-+		scmi_rx_callback(vioch->cinfo, msg_hdr);
-+	else
-+		dev_warn(vioch->cinfo->dev,
-+			 "Polling mode NOT supported. Dropped hdr:0X%X\n",
-+			 msg_hdr);
-+
-+	scmi_finalize_message(vioch, msg);
-+}
-+
-+static void scmi_vio_complete_cb(struct virtqueue *vqueue)
-+{
-+	unsigned long ready_flags;
-+	unsigned long flags;
-+	unsigned int length;
-+	struct scmi_vio_channel *vioch;
-+	struct scmi_vio_msg *msg;
-+	bool cb_enabled = true;
-+
-+	if (WARN_ON_ONCE(!vqueue->vdev->priv))
-+		return;
-+	vioch = &((struct scmi_vio_channel *)vqueue->vdev->priv)[vqueue->index];
-+
-+	for (;;) {
-+		spin_lock_irqsave(&vioch->ready_lock, ready_flags);
-+
-+		if (!vioch->ready) {
-+			if (!cb_enabled)
-+				(void)virtqueue_enable_cb(vqueue);
-+			goto unlock_ready_out;
-+		}
-+
-+		spin_lock_irqsave(&vioch->lock, flags);
-+		if (cb_enabled) {
-+			virtqueue_disable_cb(vqueue);
-+			cb_enabled = false;
-+		}
-+		msg = virtqueue_get_buf(vqueue, &length);
-+		if (!msg) {
-+			if (virtqueue_enable_cb(vqueue))
-+				goto unlock_out;
-+			cb_enabled = true;
-+		}
-+		spin_unlock_irqrestore(&vioch->lock, flags);
-+
-+		if (msg) {
-+			msg->rx_len = length;
-+			scmi_process_vqueue_input(vioch, msg);
-+		}
-+
-+		spin_unlock_irqrestore(&vioch->ready_lock, ready_flags);
-+	}
-+
-+unlock_out:
-+	spin_unlock_irqrestore(&vioch->lock, flags);
-+unlock_ready_out:
-+	spin_unlock_irqrestore(&vioch->ready_lock, ready_flags);
-+}
-+
-+static const char *const scmi_vio_vqueue_names[] = { "tx", "rx" };
-+
-+static vq_callback_t *scmi_vio_complete_callbacks[] = {
-+	scmi_vio_complete_cb,
-+	scmi_vio_complete_cb
-+};
-+
-+static unsigned int virtio_get_max_msg(struct scmi_chan_info *base_cinfo)
-+{
-+	struct scmi_vio_channel *vioch = base_cinfo->transport_info;
-+
-+	return vioch->max_msg;
-+}
-+
-+static int virtio_link_supplier(struct device *dev)
-+{
-+	if (!scmi_vdev) {
-+		dev_notice_once(dev,
-+				"Deferring probe after not finding a bound scmi-virtio device\n");
-+		return -EPROBE_DEFER;
-+	}
-+
-+	if (!device_link_add(dev, &scmi_vdev->dev,
-+			     DL_FLAG_AUTOREMOVE_CONSUMER)) {
-+		dev_err(dev, "Adding link to supplier virtio device failed\n");
-+		return -ECANCELED;
-+	}
-+
-+	return 0;
-+}
-+
-+static bool virtio_chan_available(struct device *dev, int idx)
-+{
-+	struct scmi_vio_channel *channels, *vioch = NULL;
-+
-+	if (WARN_ON_ONCE(!scmi_vdev))
-+		return false;
-+
-+	channels = (struct scmi_vio_channel *)scmi_vdev->priv;
-+
-+	switch (idx) {
-+	case VIRTIO_SCMI_VQ_TX:
-+		vioch = &channels[VIRTIO_SCMI_VQ_TX];
-+		break;
-+	case VIRTIO_SCMI_VQ_RX:
-+		if (scmi_vio_have_vq_rx(scmi_vdev))
-+			vioch = &channels[VIRTIO_SCMI_VQ_RX];
-+		break;
-+	default:
-+		return false;
-+	}
-+
-+	return vioch && !vioch->cinfo ? true : false;
-+}
-+
-+static int virtio_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
-+			     bool tx)
-+{
-+	unsigned long flags;
-+	struct scmi_vio_channel *vioch;
-+	int index = tx ? VIRTIO_SCMI_VQ_TX : VIRTIO_SCMI_VQ_RX;
-+	int i;
-+
-+	if (!scmi_vdev)
-+		return -EPROBE_DEFER;
-+
-+	vioch = &((struct scmi_vio_channel *)scmi_vdev->priv)[index];
-+
-+	for (i = 0; i < vioch->max_msg; i++) {
-+		struct scmi_vio_msg *msg;
-+
-+		msg = devm_kzalloc(cinfo->dev, sizeof(*msg), GFP_KERNEL);
-+		if (!msg)
-+			return -ENOMEM;
-+
-+		if (tx) {
-+			msg->request = devm_kzalloc(cinfo->dev,
-+						    VIRTIO_SCMI_MAX_PDU_SIZE,
-+						    GFP_KERNEL);
-+			if (!msg->request)
-+				return -ENOMEM;
-+		}
-+
-+		msg->input = devm_kzalloc(cinfo->dev, VIRTIO_SCMI_MAX_PDU_SIZE,
-+					  GFP_KERNEL);
-+		if (!msg->input)
-+			return -ENOMEM;
-+
-+		if (tx) {
-+			spin_lock_irqsave(&vioch->lock, flags);
-+			list_add_tail(&msg->list, &vioch->free_list);
-+			spin_unlock_irqrestore(&vioch->lock, flags);
-+		} else {
-+			scmi_vio_feed_vq_rx(vioch, msg);
-+		}
-+	}
-+
-+	spin_lock_irqsave(&vioch->lock, flags);
-+	cinfo->transport_info = vioch;
-+	/* Indirectly setting channel not available any more */
-+	vioch->cinfo = cinfo;
-+	spin_unlock_irqrestore(&vioch->lock, flags);
-+
-+	spin_lock_irqsave(&vioch->ready_lock, flags);
-+	vioch->ready = true;
-+	spin_unlock_irqrestore(&vioch->ready_lock, flags);
-+
-+	return 0;
-+}
-+
-+static int virtio_chan_free(int id, void *p, void *data)
-+{
-+	unsigned long flags;
-+	struct scmi_chan_info *cinfo = p;
-+	struct scmi_vio_channel *vioch = cinfo->transport_info;
-+
-+	spin_lock_irqsave(&vioch->ready_lock, flags);
-+	vioch->ready = false;
-+	spin_unlock_irqrestore(&vioch->ready_lock, flags);
-+
-+	scmi_free_channel(cinfo, data, id);
-+
-+	spin_lock_irqsave(&vioch->lock, flags);
-+	vioch->cinfo = NULL;
-+	spin_unlock_irqrestore(&vioch->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int virtio_send_message(struct scmi_chan_info *cinfo,
-+			       struct scmi_xfer *xfer)
-+{
-+	struct scmi_vio_channel *vioch = cinfo->transport_info;
-+	struct scatterlist sg_out;
-+	struct scatterlist sg_in;
-+	struct scatterlist *sgs[DESCRIPTORS_PER_TX_MSG] = { &sg_out, &sg_in };
-+	unsigned long flags;
-+	int rc;
-+	struct scmi_vio_msg *msg;
-+
-+	spin_lock_irqsave(&vioch->lock, flags);
-+
-+	if (list_empty(&vioch->free_list)) {
-+		spin_unlock_irqrestore(&vioch->lock, flags);
-+		return -EBUSY;
-+	}
-+
-+	msg = list_first_entry(&vioch->free_list, typeof(*msg), list);
-+	list_del(&msg->list);
-+
-+	msg_tx_prepare(msg->request, xfer);
-+
-+	sg_init_one(&sg_out, msg->request, msg_command_size(xfer));
-+	sg_init_one(&sg_in, msg->input, msg_response_size(xfer));
-+
-+	rc = virtqueue_add_sgs(vioch->vqueue, sgs, 1, 1, msg, GFP_ATOMIC);
-+	if (rc) {
-+		list_add(&msg->list, &vioch->free_list);
-+		dev_err_once(vioch->cinfo->dev,
-+			     "%s() failed to add to virtqueue (%d)\n", __func__,
-+			     rc);
-+	} else {
-+		virtqueue_kick(vioch->vqueue);
-+	}
-+
-+	spin_unlock_irqrestore(&vioch->lock, flags);
-+
-+	return rc;
-+}
-+
-+static void virtio_fetch_response(struct scmi_chan_info *cinfo,
-+				  struct scmi_xfer *xfer)
-+{
-+	struct scmi_vio_msg *msg = xfer->priv;
-+
-+	if (msg) {
-+		msg_fetch_response(msg->input, msg->rx_len, xfer);
-+		xfer->priv = NULL;
-+	}
-+}
-+
-+static void virtio_fetch_notification(struct scmi_chan_info *cinfo,
-+				      size_t max_len, struct scmi_xfer *xfer)
-+{
-+	struct scmi_vio_msg *msg = xfer->priv;
-+
-+	if (msg) {
-+		msg_fetch_notification(msg->input, msg->rx_len, max_len, xfer);
-+		xfer->priv = NULL;
-+	}
-+}
-+
-+static void dummy_clear_channel(struct scmi_chan_info *cinfo)
-+{
-+}
-+
-+static bool dummy_poll_done(struct scmi_chan_info *cinfo,
-+			    struct scmi_xfer *xfer)
-+{
-+	return true;
-+}
-+
-+static const struct scmi_transport_ops scmi_virtio_ops = {
-+	.link_supplier = virtio_link_supplier,
-+	.chan_available = virtio_chan_available,
-+	.chan_setup = virtio_chan_setup,
-+	.chan_free = virtio_chan_free,
-+	.get_max_msg = virtio_get_max_msg,
-+	.send_message = virtio_send_message,
-+	.fetch_response = virtio_fetch_response,
-+	.fetch_notification = virtio_fetch_notification,
-+	.clear_channel = dummy_clear_channel,
-+	.poll_done = dummy_poll_done,
-+};
-+
-+static int scmi_vio_probe(struct virtio_device *vdev)
-+{
-+	struct device *dev = &vdev->dev;
-+	struct scmi_vio_channel *channels;
-+	bool have_vq_rx;
-+	int vq_cnt;
-+	int i;
-+	int ret;
-+	struct virtqueue *vqs[VIRTIO_SCMI_VQ_MAX_CNT];
-+
-+	/* Only one SCMI VirtiO device allowed */
-+	if (scmi_vdev)
-+		return -EINVAL;
-+
-+	have_vq_rx = scmi_vio_have_vq_rx(vdev);
-+	vq_cnt = have_vq_rx ? VIRTIO_SCMI_VQ_MAX_CNT : 1;
-+
-+	channels = devm_kcalloc(dev, vq_cnt, sizeof(*channels), GFP_KERNEL);
-+	if (!channels)
-+		return -ENOMEM;
-+
-+	if (have_vq_rx)
-+		channels[VIRTIO_SCMI_VQ_RX].is_rx = true;
-+
-+	ret = virtio_find_vqs(vdev, vq_cnt, vqs, scmi_vio_complete_callbacks,
-+			      scmi_vio_vqueue_names, NULL);
-+	if (ret) {
-+		dev_err(dev, "Failed to get %d virtqueue(s)\n", vq_cnt);
-+		return ret;
-+	}
-+
-+	for (i = 0; i < vq_cnt; i++) {
-+		unsigned int sz;
-+
-+		spin_lock_init(&channels[i].lock);
-+		spin_lock_init(&channels[i].ready_lock);
-+		INIT_LIST_HEAD(&channels[i].free_list);
-+		channels[i].vqueue = vqs[i];
-+
-+		sz = virtqueue_get_vring_size(channels[i].vqueue);
-+		/* Tx messages need multiple descriptors. */
-+		if (!channels[i].is_rx)
-+			sz /= DESCRIPTORS_PER_TX_MSG;
-+
-+		if (sz > MSG_TOKEN_MAX) {
-+			dev_info_once(dev,
-+				      "%s virtqueue could hold %d messages. Only %ld allowed to be pending.\n",
-+				      channels[i].is_rx ? "rx" : "tx",
-+				      sz, MSG_TOKEN_MAX);
-+			sz = MSG_TOKEN_MAX;
-+		}
-+		channels[i].max_msg = sz;
-+	}
-+
-+	vdev->priv = channels;
-+	scmi_vdev = vdev;
-+
-+	return 0;
-+}
-+
-+static void scmi_vio_remove(struct virtio_device *vdev)
-+{
-+	vdev->config->reset(vdev);
-+	vdev->config->del_vqs(vdev);
-+	scmi_vdev = NULL;
-+}
-+
-+static int scmi_vio_validate(struct virtio_device *vdev)
-+{
-+	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1)) {
-+		dev_err(&vdev->dev,
-+			"device does not comply with spec version 1.x\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static unsigned int features[] = {
-+	VIRTIO_SCMI_F_P2A_CHANNELS,
-+};
-+
-+static const struct virtio_device_id id_table[] = {
-+	{ VIRTIO_ID_SCMI, VIRTIO_DEV_ANY_ID },
-+	{ 0 }
-+};
-+
-+static struct virtio_driver virtio_scmi_driver = {
-+	.driver.name = "scmi-virtio",
-+	.driver.owner = THIS_MODULE,
-+	.feature_table = features,
-+	.feature_table_size = ARRAY_SIZE(features),
-+	.id_table = id_table,
-+	.probe = scmi_vio_probe,
-+	.remove = scmi_vio_remove,
-+	.validate = scmi_vio_validate,
-+};
-+
-+static int __init virtio_scmi_init(void)
-+{
-+	return register_virtio_driver(&virtio_scmi_driver);
-+}
-+
-+static void __exit virtio_scmi_exit(void)
-+{
-+	unregister_virtio_driver(&virtio_scmi_driver);
-+}
-+
-+const struct scmi_desc scmi_virtio_desc = {
-+	.init = virtio_scmi_init,
-+	.exit = virtio_scmi_exit,
-+	.ops = &scmi_virtio_ops,
-+	.max_rx_timeout_ms = 60000, /* for non-realtime virtio devices */
-+	.max_msg = 0, /* overridden by virtio_get_max_msg() */
-+	.max_msg_size = VIRTIO_SCMI_MAX_MSG_SIZE,
-+	.using_xfers_delegation = true,
-+};
-diff --git a/include/uapi/linux/virtio_ids.h b/include/uapi/linux/virtio_ids.h
-index 4fe842c3a3a9..ead8178efffa 100644
---- a/include/uapi/linux/virtio_ids.h
-+++ b/include/uapi/linux/virtio_ids.h
-@@ -55,6 +55,7 @@
- #define VIRTIO_ID_FS			26 /* virtio filesystem */
- #define VIRTIO_ID_PMEM			27 /* virtio pmem */
- #define VIRTIO_ID_MAC80211_HWSIM	29 /* virtio mac80211-hwsim */
-+#define VIRTIO_ID_SCMI			32 /* virtio SCMI */
- #define VIRTIO_ID_BT			40 /* virtio bluetooth */
- 
- #endif /* _LINUX_VIRTIO_IDS_H */
-diff --git a/include/uapi/linux/virtio_scmi.h b/include/uapi/linux/virtio_scmi.h
-new file mode 100644
-index 000000000000..3eecca21981d
---- /dev/null
-+++ b/include/uapi/linux/virtio_scmi.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * Copyright (C) 2020 OpenSynergy GmbH
-+ */
-+
-+#ifndef _UAPI_LINUX_VIRTIO_SCMI_H
-+#define _UAPI_LINUX_VIRTIO_SCMI_H
-+
-+#include <linux/virtio_types.h>
-+
-+/* Device implements some SCMI notifications, or delayed responses. */
-+#define VIRTIO_SCMI_F_P2A_CHANNELS 0
-+
-+/* Device implements any SCMI statistics shared memory region */
-+#define VIRTIO_SCMI_F_SHARED_MEMORY 1
-+
-+/* Virtqueues */
-+
-+#define VIRTIO_SCMI_VQ_TX 0 /* cmdq */
-+#define VIRTIO_SCMI_VQ_RX 1 /* eventq */
-+#define VIRTIO_SCMI_VQ_MAX_CNT 2
-+
-+#endif /* _UAPI_LINUX_VIRTIO_SCMI_H */
--- 
-2.17.1
-
+Yanfei
+> 
