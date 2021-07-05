@@ -2,291 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776093BBD1B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 14:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BCA3BBD22
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 14:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbhGEMyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 08:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhGEMyP (ORCPT
+        id S231359AbhGEMzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 08:55:13 -0400
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:29575 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231253AbhGEMzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 08:54:15 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286D6C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 05:51:38 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id m12so1213593vst.8
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 05:51:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GqddWSm2FPSz+EL6oOH6eQyjrfFcGFuBCoGNvkQlAZg=;
-        b=wjTCKAgxDH8bCLIUNfz84Uurm9CXBNXGF2GsSYTFt0kGyEXKAdu8usV5QfpzJKTf+m
-         MOo8llghllGWkeg3InOtsvd5G57kmfsNqxGPaZj0J5dHv/h+e2Z600tzAf/dhcZPUXHs
-         t/xUOlPSE3on/V6xP6esD36G8bA9kwP6ctpU+UtnfUMCaJhVP8hxLUWAC87Ru3zJrT2C
-         ufojrzOzLZW7j6I1xTD9s97bbvHbIku5X+urisHHEy1HiIoVyJIq9Tf2s/pNk0nuig9i
-         lhdI4H3r0mLodS//M8b3ckJ6Jlk4NKLnmPdTooTCNlx+d0rknzqscBvZL1Em/7hEl63F
-         1DiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GqddWSm2FPSz+EL6oOH6eQyjrfFcGFuBCoGNvkQlAZg=;
-        b=opuKe7MqQUKmtzkede+eAt9oAmQHw4AOQX+ZvJjuLkIi48IwYp83oF5aspA06Ifv4U
-         JIkUkgATvE88V1I44AnBl4oFa/wg9Kc5SZ78sEx0vSsbbt5WYakdq1RkdTv1PBtZvllb
-         F6AB48knlShnYh5GdWZmtjh/0AKuItPmC/LUM7ujw1Mdign/k0RjY0TToOiAnf8IM4em
-         Bxd5S79WN4M3u3zarALSaVajMRwQ4rVwycyNWvgoJtf8c7CKQaSTW/LONLbf/Luw5Vs+
-         aHRwPpuuYM9WTMD70q6ImzrGDyKXtCMlTGcpSJoLROGUlly0U+XcSzEY/VB5wHl8bykt
-         L7UQ==
-X-Gm-Message-State: AOAM533cXtjsS5jzyOcmaKWnALKVYN2ysyYlExVuS07ZwSfaDVAOrWt2
-        lHYLE6WYC/QFOhK4NCcHcBU4/prXraYL2/pNjQxOcg==
-X-Google-Smtp-Source: ABdhPJxiRzUG5gCsyGMzdGj1GtV7a51L2WP/p/ePQkXAmeA6pwd3JmhvviOeBJdRQAbTLzLJ1ZG/G14OEZCVtgosxN8=
-X-Received: by 2002:a67:8c46:: with SMTP id o67mr8777375vsd.34.1625489497166;
- Mon, 05 Jul 2021 05:51:37 -0700 (PDT)
+        Mon, 5 Jul 2021 08:55:11 -0400
+Date:   Mon, 05 Jul 2021 12:52:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1625489553; bh=dq32cO+ZKMc2KufqrF4+FnLvbFSGJWzWZn6wbfbMESE=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=NsJzHSo68u3RONXSa1dsHMZ0kieV61sNhU2UxI7md1kCzE+xhhP+TgNVVpxDRdRQb
+         Sn3LLQT//Pmu3Ib0/flMZLDnR1bLKSB+7xpaeoo4JVSm14ld2ueHbTXw/Xt77Pel75
+         8i/oU66Blr2WCYv2KvXa31TJpaWuOv7TIpwxjmZqASWU1VVdbLLzZAAXD3edz9Evi/
+         j8DcH69GHS2ETAUUOXgVEEiT0ikHTY1FdFGNuOaEWHBrjsr3DT4ki70+lfwMuOiPt3
+         DVKHAEGwM9c9yY7xz9u1iKDGIagPe2Kb/ly9UAoWpctS+tNYsNKPEl1pLRosWbX28a
+         nKzSr5FL3ojLw==
+To:     John Wood <john.wood@gmx.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Arnd Bergmann <arnd@arndb.de>, Andi Kleen <ak@linux.intel.com>,
+        valdis.kletnieks@vt.edu,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH v8 3/8] security/brute: Detect a brute force attack
+Message-ID: <20210705124446.45320-1-alobakin@pm.me>
+In-Reply-To: <20210704140108.GA2742@ubuntu>
+References: <20210701234807.50453-1-alobakin@pm.me> <20210702145954.GA4513@ubuntu> <20210702170101.16116-1-alobakin@pm.me> <20210703105928.GA2830@ubuntu> <20210704140108.GA2742@ubuntu>
 MIME-Version: 1.0
-References: <20210705090050.15077-1-reniuschengl@gmail.com>
- <CAPDyKFotmw-HQpZKCOD_8kThEa0_KSPnn36FNFLKRyUHYRHQjQ@mail.gmail.com> <CAJU4x8u8JPBJ3V6MCi1XcO4Qim-COPuxOhTdUnor7JdNCUFb=w@mail.gmail.com>
-In-Reply-To: <CAJU4x8u8JPBJ3V6MCi1XcO4Qim-COPuxOhTdUnor7JdNCUFb=w@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 5 Jul 2021 14:50:59 +0200
-Message-ID: <CAPDyKFqXsn91BvkJXMYSnc7X=RP9DXxXp2nKMmv+aMPoNdK2Tw@mail.gmail.com>
-Subject: Re: [PATCH] [v2] mmc: sdhci-pci-gli: Improve Random 4K Read
- Performance of GL9763E
-To:     Renius Chen <reniuschengl@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <Ben.Chuang@genesyslogic.com.tw>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Jul 2021 at 12:59, Renius Chen <reniuschengl@gmail.com> wrote:
->
-> Ulf Hansson <ulf.hansson@linaro.org> =E6=96=BC 2021=E5=B9=B47=E6=9C=885=
-=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=886:03=E5=AF=AB=E9=81=93=EF=BC=
-=9A
+From: John Wood <john.wood@gmx.com>
+Date: Sun, 4 Jul 2021 16:01:08 +0200
+
+> On Sat, Jul 03, 2021 at 12:59:28PM +0200, John Wood wrote:
+> > Hi,
 > >
-> > On Mon, 5 Jul 2021 at 11:00, Renius Chen <reniuschengl@gmail.com> wrote=
-:
+> > On Fri, Jul 02, 2021 at 05:08:09PM +0000, Alexander Lobakin wrote:
 > > >
-> > > During a sequence of random 4K read operations, the performance will =
-be
-> > > reduced due to spending much time on entering/exiting the low power s=
-tate
-> > > between requests. We disable the low power state negotiation of GL976=
-3E
-> > > during a sequence of random 4K read operations to improve the perform=
-ance
-> > > and enable it again after the operations have finished.
-> > >
-> > > Signed-off-by: Renius Chen <reniuschengl@gmail.com>
-> > > ---
-> > >  drivers/mmc/host/sdhci-pci-gli.c | 68 ++++++++++++++++++++++++++++++=
-++
-> > >  1 file changed, 68 insertions(+)
-> > >
-> > > diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhc=
-i-pci-gli.c
-> > > index 302a7579a9b3..5f1f332b4241 100644
-> > > --- a/drivers/mmc/host/sdhci-pci-gli.c
-> > > +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> > > @@ -88,6 +88,9 @@
-> > >  #define PCIE_GLI_9763E_SCR      0x8E0
-> > >  #define   GLI_9763E_SCR_AXI_REQ           BIT(9)
-> > >
-> > > +#define PCIE_GLI_9763E_CFG       0x8A0
-> > > +#define   GLI_9763E_CFG_LPSN_DIS   BIT(12)
-> > > +
-> > >  #define PCIE_GLI_9763E_CFG2      0x8A4
-> > >  #define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
-> > >  #define   GLI_9763E_CFG2_L1DLY_MID 0x54
-> > > @@ -128,6 +131,11 @@
-> > >
-> > >  #define GLI_MAX_TUNING_LOOP 40
-> > >
-> > > +struct gli_host {
-> > > +       bool start_4k_r;
-> > > +       int continuous_4k_r;
-> > > +};
-> > > +
-> > >  /* Genesys Logic chipset */
-> > >  static inline void gl9750_wt_on(struct sdhci_host *host)
-> > >  {
-> > > @@ -691,6 +699,62 @@ static void sdhci_gl9763e_dumpregs(struct mmc_ho=
-st *mmc)
-> > >         sdhci_dumpregs(mmc_priv(mmc));
-> > >  }
-> > >
-> > > +static void gl9763e_set_low_power_negotiation(struct sdhci_pci_slot =
-*slot, bool enable)
-> > > +{
-> > > +       struct pci_dev *pdev =3D slot->chip->pdev;
-> > > +       u32 value;
-> > > +
-> > > +       pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-> > > +       value &=3D ~GLI_9763E_VHS_REV;
-> > > +       value |=3D FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W)=
-;
-> > > +       pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-> > > +
-> > > +       pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
-> > > +
-> > > +       if (enable)
-> > > +               value &=3D ~GLI_9763E_CFG_LPSN_DIS;
-> > > +       else
-> > > +               value |=3D GLI_9763E_CFG_LPSN_DIS;
-> > > +
-> > > +       pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
-> > > +
-> > > +       pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-> > > +       value &=3D ~GLI_9763E_VHS_REV;
-> > > +       value |=3D FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R)=
-;
-> > > +       pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-> > > +}
-> > > +
-> > > +static void gl9763e_request(struct mmc_host *mmc, struct mmc_request=
- *mrq)
-> > > +{
-> > > +       struct sdhci_host *host =3D mmc_priv(mmc);
-> > > +       struct mmc_command *cmd;
-> > > +       struct sdhci_pci_slot *slot =3D sdhci_priv(host);
-> > > +       struct gli_host *gli_host =3D sdhci_pci_priv(slot);
-> > > +
-> > > +       cmd =3D mrq->cmd;
-> > > +
-> > > +       if (cmd && (cmd->opcode =3D=3D MMC_READ_MULTIPLE_BLOCK) && (c=
-md->data->blocks =3D=3D 8)) {
-> > > +               gli_host->continuous_4k_r++;
-> > > +
-> > > +               if ((!gli_host->start_4k_r) && (gli_host->continuous_=
-4k_r >=3D 3)) {
-> > > +                       gl9763e_set_low_power_negotiation(slot, false=
-);
-> > > +
-> > > +                       gli_host->start_4k_r =3D true;
-> > > +               }
-> > > +       } else {
-> > > +               gli_host->continuous_4k_r =3D 0;
-> > > +
-> > > +               if (gli_host->start_4k_r)       {
-> > > +                       gl9763e_set_low_power_negotiation(slot, true)=
-;
-> > > +
-> > > +                       gli_host->start_4k_r =3D false;
-> > > +               }
-> > > +       }
+> > > On the other hand, it leaves a potentional window for attackers to
+> > > perform brute force from xattr-incapable filesystems. So at the end
+> > > of the day I think that the current implementation (a strong
+> > > rejection of such filesystems) is way more secure than having
+> > > a fallback I proposed.
 > >
-> > The above code is trying to figure out what kind of storage use case
-> > that is running, based on information about the buffers. This does not
-> > work, simply because the buffers don't give you all the information
-> > you need to make the right decisions.
+> > I've been thinking more about this: that the Brute LSM depends on xattr
+> > support and I don't like this part. I want that brute force attacks can
+> > be detected and mitigated on every system (with minimal dependencies).
+> > So, now I am working in a solution without this drawback. I have some
+> > ideas but I need to work on it.
+>
+> I have been coding and testing a bit my ideas but:
+>
+> Trying to track the applications faults info using kernel memory ends up
+> in an easy to abuse system (denied of service due to large amount of memo=
+r=3D
+> y
+> in use) :(
+>
+> So, I continue with the v8 idea: xattr to track application crashes info.
+>
+> > > I'm planning to make a patch which will eliminate such weird rootfs
+> > > type selection and just always use more feature-rich tmpfs if it's
+> > > compiled in. So, as an alternative, you could add it to your series
+> > > as a preparatory change and just add a Kconfig dependency on
+> > > CONFIG_TMPFS && CONFIG_TMPFS_XATTR to CONFIG_SECURITY_FORK_BRUTE
+> > > without messing with any fallbacks at all.
+> > > What do you think?
 > >
-> > Moreover, I am sure you would try to follow up with additional changes
-> > on top, trying to tweak the behaviour to fit another use case - and so
-> > on. My point is, this code doesn't belong in the lowest layer drivers.
-> >
-> > To move forward, I suggest you explore using runtime PM in combination
-> > with dev PM qos. In this way, the driver could implement a default
-> > behaviour, which can be tweaked from upper layer governors for
-> > example, but also from user space (via sysfs) allowing more
-> > flexibility and potentially support for various more use cases.
-> >
+> > Great. But I hope this patch will not be necessary for Brute LSM :)
 >
-> Hi Ulf,
->
-> Thanks for advice.
->
-> But we'll meet the performance issue only during a seqence of requests
-> of read commands with 4K data length.
->
-> So what we have to do is looking into the requests to monitor such
-> behaviors and disable the low power state negotiation of GL9763e. And
-> the information from the request buffer is sufficient for this
-> purpose.
->
-> We don't even care about if we disable the low power state negotiation
-> by a wrong decision because we'll enable it again by any requests
-> which are not read commands or their data length is not 4K. Disabling
-> the low power state negotiation of GL9763e not only has no side
-> effects but also helps its performance.
->
-> The behavior is only about the low power state negotiation of GL9763e
-> and 4K reads, and not related to runtime PM, so that we monitor the
-> requests and implement it in the driver of GL9763e.
+> My words are no longer valid ;)
 
-I don't agree, sorry.
+Ok, so here's the patch that prefers tmpfs for rootfs over ramfs
+if it's built-in (which is true for 99% of systems): [0]
 
-The request doesn't tell you about the behavior/performance of the
-eMMC/SD card. You can have some average idea, but things vary
-depending on what eMMC/SD card that is being used - and over time when
-the card gets used, for example.
+For now it hasn't been reviewed by anyone yet, will see. I'm running
+my system with this patch for several days already and there were no
+issues with rootfs or Brute so far.
 
-But, let's not discuss use cases and exactly how to tune the behavior,
-that's a separate discussion.
+[0] https://lore.kernel.org/lkml/20210702233727.21301-1-alobakin@pm.me/
 
-To repeat what I said, my main point is that this kind of code doesn't
-belong in the driver. Instead, please try using runtime PM and dev PM
-Qos.
+> Thanks,
+> John Wood
 
-A rather simple attempt would be to deploy runtime PM support and play
-with a default autosuspend timeout instead. Would that work for you?
+Thanks,
+Al
 
->
-> Due to this behavior will only affect our GL9763e but not other
-> devices, so we think it could be implemented in the lower layer driver
-> of GL9763e, but not higher level or user space. And we are trying to
-> modify only our sdhci-pci-gli.c but not other mmc common codes.
->
-
-That's exactly the problem.
-
-In principle, you want to apply some policy to balance performance vs
-the energy cost, which is a generic problem that all mmc drivers
-share.
-
-So far, the approach have been to run as fast as possible while there
-are requests in the queue - and then power off things with runtime PM,
-etc, after some period of idle. This certainly can be improved, but it
-needs to be done generically on not through independent hacks in
-drivers.
-
-Kind regards
-Uffe
-
-> Thank you!
->
-> > > +
-> > > +       sdhci_request(mmc, mrq);
-> > > +}
-> > > +
-> > > +
-> > >  static void sdhci_gl9763e_cqe_pre_enable(struct mmc_host *mmc)
-> > >  {
-> > >         struct cqhci_host *cq_host =3D mmc->cqe_private;
-> > > @@ -848,6 +912,9 @@ static int gli_probe_slot_gl9763e(struct sdhci_pc=
-i_slot *slot)
-> > >         gli_pcie_enable_msi(slot);
-> > >         host->mmc_host_ops.hs400_enhanced_strobe =3D
-> > >                                         gl9763e_hs400_enhanced_strobe=
-;
-> > > +
-> > > +       host->mmc_host_ops.request =3D gl9763e_request;
-> > > +
-> > >         gli_set_gl9763e(slot);
-> > >         sdhci_enable_v4_mode(host);
-> > >
-> > > @@ -913,4 +980,5 @@ const struct sdhci_pci_fixes sdhci_gl9763e =3D {
-> > >         .suspend        =3D sdhci_cqhci_gli_suspend,
-> > >  #endif
-> > >         .add_host       =3D gl9763e_add_host,
-> > > +       .priv_size      =3D sizeof(struct gli_host),
-> > >  };
-> > > --
-> >
-> > Kind regards
-> > Uffe
