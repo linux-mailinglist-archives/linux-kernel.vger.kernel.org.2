@@ -2,115 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A03E3BBDD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0193C3BBDDA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbhGENw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 09:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbhGENuz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 09:50:55 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CA1C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 06:48:18 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id ga42so11835312ejc.6
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 06:48:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kP18nSL4yfHQv9ME+MUCjrKTP7rxaCdOPNmhAXPVmKI=;
-        b=fmuGE1ysYO+Mobo+K0Vpwv/ccyW+mypGyqI4DtGOr0/IiAgkGTMK83a7ofHQ6tmwx5
-         Bmp6ZDJxJlnczf2chLMXtYfkKMtIVVUsRLf9uVLUdjCPxK08fPXE58ty7SeOmnsi1Dwi
-         Y7qcWjbEdM4wVXgnOlkLgx3kjlgdIi6NoGoBNlmf9cihxGDO4fo1DB69rd4nOx+A/SGU
-         xAfM5nz9qCvWCZmlXwiuS/KmDPh4k29X8J0re7uGrga0eO31KjRnlxaykNdMDDX1CWs0
-         ya9voAPuiBxwQW+UnC/3Ix1aiayVIwEVeYbxFqEvdrrpgW4+r7WBhLp8a/k4WijL8MOd
-         zqcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kP18nSL4yfHQv9ME+MUCjrKTP7rxaCdOPNmhAXPVmKI=;
-        b=EZVJ5jiqWGTmA1NpOQs9YxVcvylHK5K39mago/y3NXdgB0g35qhF1fpXTLLaMa+Qc/
-         D8pPBrvLnS2wyWP5pUmkBNp9iSoQgArsjJzIsfIiSnwRoirdsiRkINEBaDUqvq6FA6OQ
-         h76GI7zFnANoa5p5Ytz7QNt36+gRjOTNcff5ced8cyo8+mglD15dLjuHyXy9ZiK8Wwyn
-         PyuiRRU44GpiPmn8hXN29nURQdayj83ziOZs9n9cqUlm8YbdGl3GCaN8OkGFCPaPd0aT
-         CW2VQb7RklLMiVJPNkzZ5BWe1GPu3Y2ZsW1ktk96TCzp5RB3Co3422RpEUZRTAsj1mX6
-         I+hA==
-X-Gm-Message-State: AOAM531j5a9D3ZYFZp8IM5hI0jwaaffkm0oROhZYHnKibMPIODUHErZ8
-        jR+4uB540F9TllMJOGElyAgSGg==
-X-Google-Smtp-Source: ABdhPJxOhUS/fzy6YFFQmmWBdtQBVL8CVb03J52vY3k50zkwhi3g6jx3Ay48ggohYp5kAbAaIVAo/w==
-X-Received: by 2002:a17:906:b10e:: with SMTP id u14mr3867154ejy.522.1625492897197;
-        Mon, 05 Jul 2021 06:48:17 -0700 (PDT)
-Received: from localhost.localdomain ([89.18.44.40])
-        by smtp.gmail.com with ESMTPSA id cf29sm1557637edb.14.2021.07.05.06.48.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 06:48:16 -0700 (PDT)
-From:   Pavo Banicevic <pavo.banicevic@sartura.hr>
-To:     linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, geert+renesas@glider.be,
-        Max.Merchel@tq-group.com, linux@rempel-privat.de, daniel@0x0f.com,
-        shawnguo@kernel.org, sam@ravnborg.org, arnd@arndb.de,
-        krzysztof.kozlowski@canonical.com, pavo.banicevic@sartura.hr,
-        corbet@lwn.net, lee.jones@linaro.org, pavel@ucw.cz,
-        robh+dt@kernel.org, linux@roeck-us.net, jdelvare@suse.com,
-        goran.medic@sartura.hr, luka.perkov@sartura.hr,
-        luka.kovacic@sartura.hr
-Cc:     Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH v8 7/7] MAINTAINERS: Add an entry for the IEI WT61P803 PUZZLE driver
-Date:   Mon,  5 Jul 2021 15:49:39 +0200
-Message-Id: <20210705134939.28691-8-pavo.banicevic@sartura.hr>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210705134939.28691-1-pavo.banicevic@sartura.hr>
-References: <20210705134939.28691-1-pavo.banicevic@sartura.hr>
+        id S231401AbhGENx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 09:53:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:46936 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230500AbhGENx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 09:53:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB88AD6E;
+        Mon,  5 Jul 2021 06:50:51 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36B133F694;
+        Mon,  5 Jul 2021 06:50:48 -0700 (PDT)
+Subject: Re: [PATCH v2] drm/panfrost:report the full raw fault information
+ instead
+To:     Chunyou Tang <tangchunyou@163.com>
+Cc:     tomeu.vizoso@collabora.com, airlied@linux.ie,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        alyssa.rosenzweig@collabora.com,
+        ChunyouTang <tangchunyou@icubecorp.cn>
+References: <20210617062054.1864-1-tangchunyou@163.com>
+ <2dcbb36a-b550-4c9d-cff8-73ca4b5abb11@arm.com>
+ <20210619111852.00003e52@163.com>
+ <23f675e9-698d-840d-104f-33aa594dcb96@arm.com>
+ <20210622094000.00004f7e@163.com>
+ <04bc1306-f8a3-2e3c-b55d-030d1448fad2@arm.com>
+ <20210625174937.0000183f@163.com>
+ <14b2a3c8-4bc2-c8f9-627b-9ac5840cad11@arm.com>
+ <20210629110453.00007ace@163.com>
+ <3fe0e553-ac73-0d97-4404-c597fd4993a0@arm.com>
+ <20210702094023.00006ba3@163.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <3c68f653-708a-5de9-4227-2a8abc88dc74@arm.com>
+Date:   Mon, 5 Jul 2021 14:50:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210702094023.00006ba3@163.com>
+Content-Type: text/plain; charset=gb18030
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luka Kovacic <luka.kovacic@sartura.hr>
+On 02/07/2021 02:40, Chunyou Tang wrote:
+> Hi Steve,
+>> You didn't answer my previous question:
+>>
+>>> Is this device working with the kbase/DDK proprietary driver?
+> 
+> I don't know whether I used kbase/DDK,I only know I used the driver of
+> panfrost in linux 5.11.
 
-Add an entry for the IEI WT61P803 PUZZLE driver (MFD, HWMON, LED drivers).
+kbase is the Linux kernel driver for Arm's proprietary driver. The
+proprietary driver from Arm is often called "the [Mali] DDK" by Arm (or
+"the blob" by others). I guess "libmali.so" is the closest it has to a
+real name.
 
-Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
-Signed-off-by: Pavo Banicevic <pavo.banicevic@sartura.hr>
-Cc: Luka Perkov <luka.perkov@sartura.hr>
-Cc: Robert Marko <robert.marko@sartura.hr>
----
- MAINTAINERS | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+>> What you are describing sounds like a hardware integration issue, so
+>> it would be good to check that the hardware is working with the
+>> proprietary driver to rule that out. And perhaps there is something
+>> in the kbase for this device that is setting a chicken bit to 'fix'
+>> the coherency?
+> 
+> I don't have the proprietary driver,I only used driver in linux 5.11.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0cce91cd5624..bc6d0a23658d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8827,6 +8827,22 @@ F:	include/net/nl802154.h
- F:	net/ieee802154/
- F:	net/mac802154/
- 
-+IEI WT61P803 M801 MFD DRIVER
-+M:	Luka Kovacic <luka.kovacic@sartura.hr>
-+M:	Luka Perkov <luka.perkov@sartura.hr>
-+M:	Goran Medic <goran.medic@sartura.hr>
-+L:	linux-kernel@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/ABI/stable/sysfs-driver-iei-wt61p803-puzzle
-+F:	Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
-+F:	Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
-+F:	Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
-+F:	Documentation/hwmon/iei-wt61p803-puzzle-hwmon.rst
-+F:	drivers/hwmon/iei-wt61p803-puzzle-hwmon.c
-+F:	drivers/leds/leds-iei-wt61p803-puzzle.c
-+F:	drivers/mfd/iei-wt61p803-puzzle.c
-+F:	include/linux/mfd/iei-wt61p803-puzzle.h
-+
- IFE PROTOCOL
- M:	Yotam Gigi <yotam.gi@gmail.com>
- M:	Jamal Hadi Salim <jhs@mojatatu.com>
--- 
-2.31.1
+Interesting - I would have expected the initial hardware bring up to
+have happened with the proprietary driver from Arm. And my first step
+would be to check whether any workarounds for integration issues were
+applied in the kernel.
+
+I think we'd need some input from the people who did the hardware
+integration, and hopefully they would have access to the proprietary
+driver from Arm.
+
+Steve
+
+> Thinks very much!
+> 
+> Chunyou.
+> 
+> 
+> ÓÚ Thu, 1 Jul 2021 11:15:14 +0100
+> Steven Price <steven.price@arm.com> Ð´µÀ:
+> 
+>> On 29/06/2021 04:04, Chunyou Tang wrote:
+> 
+> 
+>>> Hi Steve,
+>>> 	thinks for your reply.
+>>> 	I set the pte in arm_lpae_prot_to_pte(),
+>>> ***********************************************************************
+>>> 	/*
+>>> 	 * Also Mali has its own notions of shareability wherein its
+>>> Inner
+>>> 	 * domain covers the cores within the GPU, and its Outer
+>>> domain is
+>>> 	 * "outside the GPU" (i.e. either the Inner or System
+>>> domain in CPU
+>>> 	 * terms, depending on coherency).
+>>> 	 */
+>>> 	if (prot & IOMMU_CACHE && data->iop.fmt != ARM_MALI_LPAE)
+>>> 		pte |= ARM_LPAE_PTE_SH_IS;
+>>> 	else
+>>> 		pte |= ARM_LPAE_PTE_SH_OS;
+>>> ***********************************************************************
+>>> I set pte |= ARM_LPAE_PTE_SH_NS.
+>>>
+>>> 	If I set pte to ARM_LPAE_PTE_SH_OS or
+>>> 	ARM_LPAE_PTE_SH_IS,whether I use singel core GPU or multi
+>>> core GPU,it will occur GPU Fault.
+>>> 	if I set pte to ARM_LPAE_PTE_SH_NS,whether I use singel core
+>>> 	GPU or multi core GPU,it will not occur GPU Fault.
+>>
+>> Hi,
+>>
+>> So this is a difference between Panfrost and kbase. Panfrost (well
+>> technically the IOMMU framework) enables the inner-shareable bit for
+>> all memory, whereas kbase only enables it for some memory types (the
+>> BASE_MEM_COHERENT_LOCAL flag in the UABI controls it). However this
+>> should only be a performance/power difference (and AFAIK probably an
+>> irrelevant one) and it's definitely required that "inner shareable"
+>> (i.e. within the GPU) works for communication between the different
+>> units of the GPU.
+>>
+>> You didn't answer my previous question:
+>>
+>>> Is this device working with the kbase/DDK proprietary driver?
+>>
+>> What you are describing sounds like a hardware integration issue, so
+>> it would be good to check that the hardware is working with the
+>> proprietary driver to rule that out. And perhaps there is something
+>> in the kbase for this device that is setting a chicken bit to 'fix'
+>> the coherency?
+>>
+>> Steve
+> 
+> 
 
