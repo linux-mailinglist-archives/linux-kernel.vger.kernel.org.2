@@ -2,119 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8C03BBAE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337BE3BBAE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230474AbhGEKPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 06:15:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230366AbhGEKPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 06:15:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 385D3613F3;
-        Mon,  5 Jul 2021 10:12:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625479964;
-        bh=9zmE0VZ4KzHVsemp5Tdz858sT5sH/HJRKbZtTp3SHKY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NYqY9lR5lKVot9XCsbnbUtJCyIwHVl15RHe4sTktbHXVnfonEeXGbOVJ9aojl6uS1
-         h8eqImiRy0ujk/4FG1aJ+Ozz4r00RNNT8RxzUhaSHA9cDBaGDh9viZ+kBHmo5ZzFI4
-         +Vzfa7fmn4ynfthYx+5intEXJVpGhl3Qzt+o3vNleOvzeODGLA8qHIbT7rsdjK/tMA
-         T4SuLNHg+g5eb7Moi2rBCqmtOK3sdp6ba5WEwTCJpjJPsJNLwgxWYRdsBMBJBa2Iau
-         U/FDfpeuQAyq55gu6GAxMXdeoirpv977to/gXU0kqPhT86popiROHm126/pNWaIuUn
-         N+SLCdeikhKsQ==
-Date:   Mon, 5 Jul 2021 06:12:43 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg KH <greg@kroah.com>
-Subject: Re: [PATCH AUTOSEL 5.12 62/80] sched/fair: Take thermal pressure
- into account while estimating energy
-Message-ID: <YOLbGx2d3lMTHF07@sashalap>
-References: <20210704230616.1489200-1-sashal@kernel.org>
- <20210704230616.1489200-62-sashal@kernel.org>
- <54648043-4944-08f9-8ce8-8413d8037450@arm.com>
+        id S230504AbhGEKP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 06:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230495AbhGEKP2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 06:15:28 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D73C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 03:12:51 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id h11so8990374qtp.5
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 03:12:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=gcwMBcSmaMLiD8XfVRoFi5proIxqfpmtjtERyIptF+Q=;
+        b=Hpx6tDvF0uTcDUXuHvphWnZmKL+rnZBfsz30fThX3vU3YFG2cz6r3yTo4kI09+gfQ6
+         5EAKLp5rVZu3NYw9sUnbsKcWEyfYGN+xvHz6yC6AbUDym8B6mhXjuLYQCEpryxFja6lb
+         lEWMNNAa+2xlYPe6zHHshYNiUMDG951J/mxP62BXNtD+v8ngZqMAjW5hq0jxno8YItgJ
+         p+TElcWODypW6a1WWYfK3JvZRgDQHcf7o/mlWPOdBfrXIa9ysd2wZkOrI3bz6NdrWDED
+         fotLqWzQT2V3pXEnReHpDRBCaXDtPl89y64RiU1Gx0H6jcw7BqyeiG28YP/kyDiGqVVq
+         h6qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=gcwMBcSmaMLiD8XfVRoFi5proIxqfpmtjtERyIptF+Q=;
+        b=QJrOlZidTYnTKkKPqxRP/sYDm/BgWfCiz5yihsoXL83eMbJe1HWd1xe8BwWhXFYUaT
+         f+f6XITcMXVS2nEL1yZxaTlEe/5m6WqJuzuz9xEVY3zWcn3vzlfHZkIwX1EngUlAvd+0
+         sQMjTkThKbB43MfnYBMFb3ASa/B2iQ7pDaCsEuj8dpXdYazyzrsNS5TmXOL/neGUUNbR
+         eYkyqY6qbtfY2nmn05HFsPqGCQcHDp1chxGGi5WPm+Jz8yIUpSpjYafeTVqw2LUFNK0e
+         7nhXUeOQZ3GeZAM79ZdibnV2rWpDPZVHPY1QGTSWzklXfglQYiXzizSV5B6jJHprU8wB
+         vkMg==
+X-Gm-Message-State: AOAM5305Ms7O0DHSbp5HkiZKRPQYXBeGa/40T5hg6MMlsaphjtBdWl+S
+        8JIQUtr/H9Z20FOIJptif4Ts7EkU808y/L0pwDU=
+X-Google-Smtp-Source: ABdhPJw4JB0hiKvJQsX4rrEJPK1jIjxtYsDqsx3aNrNcNEv8yHP4kGoGZb9HmD0dQvJpfbL3U5A931EqqURyvD12deo=
+X-Received: by 2002:ac8:424f:: with SMTP id r15mr384535qtm.338.1625479970800;
+ Mon, 05 Jul 2021 03:12:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <54648043-4944-08f9-8ce8-8413d8037450@arm.com>
+Received: by 2002:ac8:75c9:0:0:0:0:0 with HTTP; Mon, 5 Jul 2021 03:12:50 -0700 (PDT)
+From:   =?UTF-8?Q?S=C3=A9bastien_Bonou?= <sebastienbonou09@gmail.com>
+Date:   Mon, 5 Jul 2021 12:12:50 +0200
+Message-ID: <CAKvzVqUjt7LCX33-=kGN+M_9MLAfn6HcyEdReNy3VYBncDCToQ@mail.gmail.com>
+Subject: HELLO, INVESTMENT PROGET!
+To:     investmentproget <investmentproget@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 09:13:59AM +0100, Lukasz Luba wrote:
->Hi Sasha,
->
->+CC Greg
->
->On 7/5/21 12:05 AM, Sasha Levin wrote:
->>From: Lukasz Luba <lukasz.luba@arm.com>
->>
->>[ Upstream commit 489f16459e0008c7a5c4c5af34bd80898aa82c2d ]
->>
->>Energy Aware Scheduling (EAS) needs to be able to predict the frequency
->>requests made by the SchedUtil governor to properly estimate energy used
->>in the future. It has to take into account CPUs utilization and forecast
->>Performance Domain (PD) frequency. There is a corner case when the max
->>allowed frequency might be reduced due to thermal. SchedUtil is aware of
->>that reduced frequency, so it should be taken into account also in EAS
->>estimations.
->>
->>SchedUtil, as a CPUFreq governor, knows the maximum allowed frequency of
->>a CPU, thanks to cpufreq_driver_resolve_freq() and internal clamping
->>to 'policy::max'. SchedUtil is responsible to respect that upper limit
->>while setting the frequency through CPUFreq drivers. This effective
->>frequency is stored internally in 'sugov_policy::next_freq' and EAS has
->>to predict that value.
->>
->>In the existing code the raw value of arch_scale_cpu_capacity() is used
->>for clamping the returned CPU utilization from effective_cpu_util().
->>This patch fixes issue with too big single CPU utilization, by introducing
->>clamping to the allowed CPU capacity. The allowed CPU capacity is a CPU
->>capacity reduced by thermal pressure raw value.
->>
->>Thanks to knowledge about allowed CPU capacity, we don't get too big value
->>for a single CPU utilization, which is then added to the util sum. The
->>util sum is used as a source of information for estimating whole PD energy.
->>To avoid wrong energy estimation in EAS (due to capped frequency), make
->>sure that the calculation of util sum is aware of allowed CPU capacity.
->>
->>This thermal pressure might be visible in scenarios where the CPUs are not
->>heavily loaded, but some other component (like GPU) drastically reduced
->>available power budget and increased the SoC temperature. Thus, we still
->>use EAS for task placement and CPUs are not over-utilized.
->>
->>Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->>Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
->>Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
->>Link: https://lore.kernel.org/r/20210614191128.22735-1-lukasz.luba@arm.com
->>Signed-off-by: Sasha Levin <sashal@kernel.org>
->>---
->>  kernel/sched/fair.c | 11 ++++++++---
->>  1 file changed, 8 insertions(+), 3 deletions(-)
->
->It has been picked up automatically right?
->To make it fully working you need also this patch:
->https://lore.kernel.org/linux-pm/20210614191030.22241-1-lukasz.luba@arm.com/
->
->It makes sure that the thermal pressure signal gets proper
->information also for CPUs which were offline and then wake-up.
->It has a proper fix tagging with commit hash id.
->That patch can be ported to stable: v5.6+
->I can send it to stable list. Please let me know if you need
->any help.
->
->The same applies to patch which I found for v5.13-stable:
->[PATCH AUTOSEL 5.13 65/85] sched/fair: Take thermal pressure into 
->account while estimating energy
->https://lore.kernel.org/stable/20210704230420.1488358-65-sashal@kernel.org/T/#u
+ECONOMIC OPERATORS, BUSINESS OPERATORS, INDIVIDUALS, YOU ARE IN SHORT
+OF FUNDING OR ARE LOOKING FOR A LENDER TO INVEST IN YOUR PROJECT OR IN
+YOUR BUSINESS, WE "EUREX CONSULTING" EUROPEAN TRUST COMPANY HAVE THE
+POSSIBILITY OF ARANGERBILITY FOR YOU FINANCING OR INVESTMENTS WITH OUR
+ASIAN AND AFRICAN INVESTORS AND FUNDERS WITH THE BEST CONDITIONS AND
+RATES DEFINING ALL COMPETITION.
 
-I took that patch for 5.13-5.10, thanks!
+PLEASE SEND M YOUR PRIVATE / DIRECT PHONE NUMBER IN YOUR NEXT EMAIL TO
+ALLOW ME TO CHAT WITH YOU ON THE PHONE BEFORE ANY PROCEDURES.
+Reply to: investmentproget@gmail.com
 
--- 
-Thanks,
-Sasha
+THANK YOU.
