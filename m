@@ -2,78 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51043BBCF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 14:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E8C3BBCFD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 14:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhGEMoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 08:44:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49044 "EHLO mail.kernel.org"
+        id S231317AbhGEMrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 08:47:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:45706 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230247AbhGEMoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 08:44:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A79E4613B1;
-        Mon,  5 Jul 2021 12:41:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625488904;
-        bh=noq3mCTTwESC4Nxv5J1TF1BVeluE8yJc2357oDbEjv4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LSe03/Mey7kCOXEivXWoCpJ/mnTTIZuhzjLCs2Z3aAy/c/ioo45cOV1I71KbIvYmh
-         ytSuPXzTncRgagLln0dgoxZaEfa3/jeSju2LFwZS7IdaUDOFX63+IyqfiYGy9M6oLn
-         wclBtbaVfOacFoYfZxRJxYZKQZviahkV9rthvke4=
-Date:   Mon, 5 Jul 2021 14:41:40 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Thomas Backlund <tmb@iki.fi>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de
-Subject: Re: [PATCH 5.13 0/2] 5.13.1-rc1 review
-Message-ID: <YOL+BC88bdcaIOho@kroah.com>
-References: <20210705105656.1512997-1-sashal@kernel.org>
- <4c383f24-5423-e076-12fc-7c6511e34a96@iki.fi>
+        id S230326AbhGEMrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 08:47:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A5641042;
+        Mon,  5 Jul 2021 05:45:10 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D1063F73B;
+        Mon,  5 Jul 2021 05:45:07 -0700 (PDT)
+Subject: Re: [PATCH 2/3] PM: EM: Make em_cpu_energy() able to return bigger
+ values
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Cc:     Chris.Redpath@arm.com, morten.rasmussen@arm.com,
+        qperret@google.com, linux-pm@vger.kernel.org, peterz@infradead.org,
+        rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, mingo@redhat.com,
+        juri.lelli@redhat.com, rostedt@goodmis.org, segall@google.com,
+        mgorman@suse.de, bristot@redhat.com, CCj.Yeh@mediatek.com
+References: <20210625152603.25960-1-lukasz.luba@arm.com>
+ <20210625152603.25960-3-lukasz.luba@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <266f4b52-62c5-48bc-2680-1f09b6eb90cc@arm.com>
+Date:   Mon, 5 Jul 2021 14:44:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c383f24-5423-e076-12fc-7c6511e34a96@iki.fi>
+In-Reply-To: <20210625152603.25960-3-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 03:13:57PM +0300, Thomas Backlund wrote:
-> Den 5.7.2021 kl. 13:56, skrev Sasha Levin:
-> > 
-> > This is the start of the stable review cycle for the 5.13.1 release.
-> > There are 2 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed 07 Jul 2021 10:49:46 AM UTC.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> >          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.13.y&id2=v5.13
-> > or in the git tree and branch at:
-> >          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> > and the diffstat can be found below.
-> > 
-> > Thanks,
-> > Sasha
-> > 
-> 
-> This one should be added  too:
-> 
-> From 66d9282523b3228183b14d9f812872dd2620704d Mon Sep 17 00:00:00 2001
-> From: Mel Gorman <mgorman@techsingularity.net>
-> Date: Mon, 28 Jun 2021 16:02:19 +0100
-> Subject: [PATCH] mm/page_alloc: Correct return value of populated elements
-> if
->  bulk array is populated
-> 
-> 
-> to unbreak nfs in 5.13 series ...
-> 
-> the cause and fix is confirmed in several threads both on lkml and stable@
+On 25/06/2021 17:26, Lukasz Luba wrote:
+> The Energy Model (EM) em_cpu_energy() is responsible for providing good
+> estimation regarding CPUs energy. It contains proper data structures which
+> are then used during calculation. The values stored in there are in
+> milli-Watts precision (or in abstract scale) smaller that 0xffff, which use
 
-Now queued up, thanks.
+I guess you refer to 'if (... || power > EM_MAX_POWER)' check in
+em_create_perf_table() [kernel/power/energy_model.c].
 
-greg k-h
+> sufficient unsigned long even on 32-bit machines. There are scenarios where
+                                                              ^^^^^^^^^
+
+Can you describe these scenarios better with one example (EAS placement
+of an example task on a 2 PD system) which highlights the issue and how
+it this patch-set solves it?
+
+In this example you can list all the things which must be there to
+create a situation in EAS in which the patch-set helps.
+
+> we would like to provide calculated estimations in a better precision and
+> the values might be 1000 times bigger. This patch makes possible to use
+
+Where is this `1000` coming from?
+
+> quite big values for also 32-bit machines.
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  include/linux/energy_model.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> index 3f221dbf5f95..2016f5a706e0 100644
+> --- a/include/linux/energy_model.h
+> +++ b/include/linux/energy_model.h
+> @@ -101,7 +101,7 @@ void em_dev_unregister_perf_domain(struct device *dev);
+>   * Return: the sum of the energy consumed by the CPUs of the domain assuming
+>   * a capacity state satisfying the max utilization of the domain.
+>   */
+> -static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+> +static inline u64 em_cpu_energy(struct em_perf_domain *pd,
+>  				unsigned long max_util, unsigned long sum_util,
+>  				unsigned long allowed_cpu_cap)
+>  {
+> @@ -180,7 +180,7 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+>  	 *   pd_nrg = ------------------------                       (4)
+>  	 *                  scale_cpu
+>  	 */
+> -	return ps->cost * sum_util / scale_cpu;
+> +	return div_u64((u64)ps->cost * sum_util, scale_cpu);
+>  }
+>  
+>  /**
+> @@ -217,7 +217,7 @@ static inline struct em_perf_domain *em_pd_get(struct device *dev)
+>  {
+>  	return NULL;
+>  }
+> -static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+> +static inline u64 em_cpu_energy(struct em_perf_domain *pd,
+>  			unsigned long max_util, unsigned long sum_util,
+>  			unsigned long allowed_cpu_cap)
+>  {
+> 
+
