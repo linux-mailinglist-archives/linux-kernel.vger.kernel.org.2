@@ -2,425 +2,445 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E673BC2C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 20:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4ED93BC2CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 20:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbhGESmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 14:42:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59984 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229925AbhGESmK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 14:42:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625510372;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=P27lAGb3Z1pZkloYxihp2ej/JOVqW3He2+EbWRXyo5c=;
-        b=bJblHpuM3inFMoA2Fj5dfmmddf+32Z1ZBg9GNvkT4nUdZBMlVlULKI/fWszpKpka4oHM1s
-        ygEwC3v0Yco8t4fr597gOq6bvJQOvh0qMFvguckuf1DoH0L3bSumKs9gvGNsQVCGT8X+1E
-        3s0PimAUtKCWvtJH2W1DTrRnXMWQvO0=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-wTlqI1r5P6WC4P0ZSYVvRw-1; Mon, 05 Jul 2021 14:39:31 -0400
-X-MC-Unique: wTlqI1r5P6WC4P0ZSYVvRw-1
-Received: by mail-wr1-f72.google.com with SMTP id z2-20020a5d4d020000b0290130e19b0ddbso2851791wrt.17
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 11:39:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P27lAGb3Z1pZkloYxihp2ej/JOVqW3He2+EbWRXyo5c=;
-        b=cSAfItkY3DPyaZ6kuJ3kGWaFm7s1+yQoPiz4O2THZcPH77MmCygPGXryf8X+uDGoXd
-         DMZ5WlZumH1EYM7Z+pnm6gbSkMA3LV6oFcWLoPvGJfp1j2oc8pGIhckTg9m+nGIHgiVf
-         MzWWnQdrJGzKe/95i8MPjyz2r1MwtIW/gJNCoS/rWWDDYOoKW7giOF27q7OYf/yPq3gW
-         td9ye8Ut0m8r/Dp+eNkxa9dUGxlL24zdYGRUd9cj27y3+j3Vnnen5cf2im4SJsPQ+791
-         aLo2GOlLz9qaeUe30vtAlBGF/QCVw66TW0GwDCZXeu2L876BMqS96fDsOpnYsvweAACj
-         vkyA==
-X-Gm-Message-State: AOAM531SNLBtT5R8Itq5rHz1zV+xNiaKranGx05h3AGddYw2zioBH6pP
-        0P5EVcLLPUMspYDVUXO775BQfAhQq0sWpejAg5np/yrGypJxbyrbirseidBS5jRKd2Z7+Sg2ndo
-        jROiZ2tu43dOzCSzuE5YcispB
-X-Received: by 2002:a5d:4e43:: with SMTP id r3mr17183590wrt.132.1625510370601;
-        Mon, 05 Jul 2021 11:39:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrtozhzEhahH3HqGmuZo7LYjXYlNsNEOdbBeCkwrXeVzSLvDLYsuMA9sGM/h0rIpJ4UaWLmQ==
-X-Received: by 2002:a5d:4e43:: with SMTP id r3mr17183578wrt.132.1625510370425;
-        Mon, 05 Jul 2021 11:39:30 -0700 (PDT)
-Received: from redhat.com ([2.55.8.91])
-        by smtp.gmail.com with ESMTPSA id j37sm10742370wms.37.2021.07.05.11.39.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 11:39:29 -0700 (PDT)
-Date:   Mon, 5 Jul 2021 14:39:23 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, jasowang@redhat.com,
-        nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com,
-        akpm@linux-foundation.org, yury.norov@gmail.com,
-        andriy.shevchenko@linux.intel.com, ojeda@kernel.org,
-        ndesaulniers@gooogle.com, joe@perches.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next 1/2] tools: add missing infrastructure for
- building ptr_ring.h
-Message-ID: <20210705143144-mutt-send-email-mst@kernel.org>
-References: <1625457455-4667-1-git-send-email-linyunsheng@huawei.com>
- <1625457455-4667-2-git-send-email-linyunsheng@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1625457455-4667-2-git-send-email-linyunsheng@huawei.com>
+        id S229950AbhGESn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 14:43:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229725AbhGESn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 14:43:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F3B6611F1;
+        Mon,  5 Jul 2021 18:41:20 +0000 (UTC)
+From:   Clark Williams <williams@redhat.com>
+Subject: [ANNOUNCE] 4.19.196-rt83
+Date:   Mon, 05 Jul 2021 18:40:24 -0000
+Message-ID: <162551042457.563134.11799352893511886845@puck.lan>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Pavel Machek <pavel@denx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 11:57:34AM +0800, Yunsheng Lin wrote:
-> In order to build ptr_ring.h in userspace, the cacheline
-> aligning, cpu_relax() and slab related infrastructure is
-> needed, so add them in this patch.
-> 
-> As L1_CACHE_BYTES may be different for different arch, which
-> is mostly defined in include/generated/autoconf.h, so user may
-> need to do "make defconfig" before building a tool using the
-> API in linux/cache.h.
-> 
-> Also "linux/lockdep.h" is not added in "tools/include" yet,
-> so remove it in "linux/spinlock.h", and the only place using
-> "linux/spinlock.h" is tools/testing/radix-tree, removing that
-> does not break radix-tree testing.
-> 
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Hello RT-list!
 
-This is hard to review.
-Try to split this please. Functional changes separate from
-merely moving code around.
+I'm pleased to announce the 4.19.196-rt83 stable release.
+
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.19-rt
+  Head SHA1: 21461237b90cb7ed09209914627b570aac461e97
+
+Or to build 4.19.196-rt83 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.196.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.196-rt83.patch.xz
 
 
-> ---
->  tools/include/asm/cache.h          | 56 ++++++++++++++++++++++++
->  tools/include/asm/processor.h      | 36 ++++++++++++++++
->  tools/include/generated/autoconf.h |  1 +
->  tools/include/linux/align.h        | 15 +++++++
->  tools/include/linux/cache.h        | 87 ++++++++++++++++++++++++++++++++++++++
->  tools/include/linux/gfp.h          |  4 ++
->  tools/include/linux/slab.h         | 46 ++++++++++++++++++++
->  tools/include/linux/spinlock.h     |  2 -
->  8 files changed, 245 insertions(+), 2 deletions(-)
->  create mode 100644 tools/include/asm/cache.h
->  create mode 100644 tools/include/asm/processor.h
->  create mode 100644 tools/include/generated/autoconf.h
->  create mode 100644 tools/include/linux/align.h
->  create mode 100644 tools/include/linux/cache.h
->  create mode 100644 tools/include/linux/slab.h
-> 
-> diff --git a/tools/include/asm/cache.h b/tools/include/asm/cache.h
-> new file mode 100644
-> index 0000000..071e310
-> --- /dev/null
-> +++ b/tools/include/asm/cache.h
-> @@ -0,0 +1,56 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef __TOOLS_LINUX_ASM_CACHE_H
-> +#define __TOOLS_LINUX_ASM_CACHE_H
-> +
-> +#include <generated/autoconf.h>
-> +
-> +#if defined(__i386__) || defined(__x86_64__)
-> +#define L1_CACHE_SHIFT	(CONFIG_X86_L1_CACHE_SHIFT)
-> +#elif defined(__arm__)
-> +#define L1_CACHE_SHIFT	(CONFIG_ARM_L1_CACHE_SHIFT)
-> +#elif defined(__aarch64__)
-> +#define L1_CACHE_SHIFT	(6)
-> +#elif defined(__powerpc__)
-> +
-> +/* bytes per L1 cache line */
-> +#if defined(CONFIG_PPC_8xx)
-> +#define L1_CACHE_SHIFT	4
-> +#elif defined(CONFIG_PPC_E500MC)
-> +#define L1_CACHE_SHIFT	6
-> +#elif defined(CONFIG_PPC32)
-> +#if defined(CONFIG_PPC_47x)
-> +#define L1_CACHE_SHIFT	7
-> +#else
-> +#define L1_CACHE_SHIFT	5
-> +#endif
-> +#else /* CONFIG_PPC64 */
-> +#define L1_CACHE_SHIFT	7
-> +#endif
-> +
-> +#elif defined(__sparc__)
-> +#define L1_CACHE_SHIFT 5
-> +#elif defined(__alpha__)
-> +
-> +#if defined(CONFIG_ALPHA_GENERIC) || defined(CONFIG_ALPHA_EV6)
-> +#define L1_CACHE_SHIFT	6
-> +#else
-> +/* Both EV4 and EV5 are write-through, read-allocate,
-> +   direct-mapped, physical.
-> +*/
-> +#define L1_CACHE_SHIFT	5
-> +#endif
-> +
-> +#elif defined(__mips__)
-> +#define L1_CACHE_SHIFT	CONFIG_MIPS_L1_CACHE_SHIFT
-> +#elif defined(__ia64__)
-> +#define L1_CACHE_SHIFT	CONFIG_IA64_L1_CACHE_SHIFT
-> +#elif defined(__nds32__)
-> +#define L1_CACHE_SHIFT	5
-> +#else
-> +#define L1_CACHE_SHIFT	5
-> +#endif
-> +
-> +#define L1_CACHE_BYTES	(1 << L1_CACHE_SHIFT)
-> +
-> +#endif
-> diff --git a/tools/include/asm/processor.h b/tools/include/asm/processor.h
-> new file mode 100644
-> index 0000000..3198ad6
-> --- /dev/null
-> +++ b/tools/include/asm/processor.h
-> @@ -0,0 +1,36 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef __TOOLS_LINUX_ASM_PROCESSOR_H
-> +#define __TOOLS_LINUX_ASM_PROCESSOR_H
-> +
-> +#include <pthread.h>
-> +
-> +#if defined(__i386__) || defined(__x86_64__)
-> +#include "../../arch/x86/include/asm/vdso/processor.h"
-> +#elif defined(__arm__)
-> +#include "../../arch/arm/include/asm/vdso/processor.h"
-> +#elif defined(__aarch64__)
-> +#include "../../arch/arm64/include/asm/vdso/processor.h"
-> +#elif defined(__powerpc__)
-> +#include "../../arch/powerpc/include/vdso/processor.h"
-> +#elif defined(__s390__)
-> +#include "../../arch/s390/include/vdso/processor.h"
-> +#elif defined(__sh__)
-> +#include "../../arch/sh/include/asm/processor.h"
-> +#elif defined(__sparc__)
-> +#include "../../arch/sparc/include/asm/processor.h"
-> +#elif defined(__alpha__)
-> +#include "../../arch/alpha/include/asm/processor.h"
-> +#elif defined(__mips__)
-> +#include "../../arch/mips/include/asm/vdso/processor.h"
-> +#elif defined(__ia64__)
-> +#include "../../arch/ia64/include/asm/processor.h"
-> +#elif defined(__xtensa__)
-> +#include "../../arch/xtensa/include/asm/processor.h"
-> +#elif defined(__nds32__)
-> +#include "../../arch/nds32/include/asm/processor.h"
-> +#else
-> +#define cpu_relax()	sched_yield()
+You can also build from 4.19.195-rt82 by applying the incremental patch:
 
-Does this have a chance to work outside of kernel?
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/incr/patch-4.19.195-rt82-rt83.patch.xz
 
-> +#endif
+Enjoy!
+Clark
 
-did you actually test or even test build all these arches?
-Not sure we need to bother with hacks like these.
+Changes from v4.19.195-rt82:
+---
 
+Andreas Gruenbacher (1):
+      gfs2: Prevent direct-I/O write fallback errors from getting lost
 
-> +
-> +#endif
-> diff --git a/tools/include/generated/autoconf.h b/tools/include/generated/autoconf.h
-> new file mode 100644
-> index 0000000..c588a2f
-> --- /dev/null
-> +++ b/tools/include/generated/autoconf.h
-> @@ -0,0 +1 @@
-> +#include "../../../include/generated/autoconf.h"
-> diff --git a/tools/include/linux/align.h b/tools/include/linux/align.h
-> new file mode 100644
-> index 0000000..4e82cdf
-> --- /dev/null
-> +++ b/tools/include/linux/align.h
-> @@ -0,0 +1,15 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __TOOLS_LINUX_ALIGN_H
-> +#define __TOOLS_LINUX_ALIGN_H
-> +
-> +#include <linux/const.h>
-> +
-> +/* @a is a power of 2 value */
-> +#define ALIGN(x, a)		__ALIGN_KERNEL((x), (a))
-> +#define ALIGN_DOWN(x, a)	__ALIGN_KERNEL((x) - ((a) - 1), (a))
-> +#define __ALIGN_MASK(x, mask)	__ALIGN_KERNEL_MASK((x), (mask))
-> +#define PTR_ALIGN(p, a)		((typeof(p))ALIGN((unsigned long)(p), (a)))
-> +#define PTR_ALIGN_DOWN(p, a)	((typeof(p))ALIGN_DOWN((unsigned long)(p), (a)))
-> +#define IS_ALIGNED(x, a)		(((x) & ((typeof(x))(a) - 1)) == 0)
-> +
-> +#endif	/* _LINUX_ALIGN_H */
-> diff --git a/tools/include/linux/cache.h b/tools/include/linux/cache.h
-> new file mode 100644
-> index 0000000..8f86b1b
-> --- /dev/null
-> +++ b/tools/include/linux/cache.h
-> @@ -0,0 +1,87 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __TOOLS_LINUX__CACHE_H
-> +#define __TOOLS_LINUX__CACHE_H
-> +
-> +#include <asm/cache.h>
-> +
-> +#ifndef L1_CACHE_ALIGN
-> +#define L1_CACHE_ALIGN(x) __ALIGN_KERNEL(x, L1_CACHE_BYTES)
-> +#endif
-> +
-> +#ifndef SMP_CACHE_BYTES
-> +#define SMP_CACHE_BYTES L1_CACHE_BYTES
-> +#endif
-> +
-> +/*
-> + * __read_mostly is used to keep rarely changing variables out of frequently
-> + * updated cachelines. Its use should be reserved for data that is used
-> + * frequently in hot paths. Performance traces can help decide when to use
-> + * this. You want __read_mostly data to be tightly packed, so that in the
-> + * best case multiple frequently read variables for a hot path will be next
-> + * to each other in order to reduce the number of cachelines needed to
-> + * execute a critical path. We should be mindful and selective of its use.
-> + * ie: if you're going to use it please supply a *good* justification in your
-> + * commit log
-> + */
-> +#ifndef __read_mostly
-> +#define __read_mostly
-> +#endif
-> +
-> +/*
-> + * __ro_after_init is used to mark things that are read-only after init (i.e.
-> + * after mark_rodata_ro() has been called). These are effectively read-only,
-> + * but may get written to during init, so can't live in .rodata (via "const").
-> + */
-> +#ifndef __ro_after_init
-> +#define __ro_after_init __section(".data..ro_after_init")
-> +#endif
-> +
-> +#ifndef ____cacheline_aligned
-> +#define ____cacheline_aligned __attribute__((__aligned__(SMP_CACHE_BYTES)))
-> +#endif
-> +
-> +#ifndef ____cacheline_aligned_in_smp
-> +#ifdef CONFIG_SMP
-> +#define ____cacheline_aligned_in_smp ____cacheline_aligned
-> +#else
-> +#define ____cacheline_aligned_in_smp
-> +#endif /* CONFIG_SMP */
-> +#endif
-> +
-> +#ifndef __cacheline_aligned
-> +#define __cacheline_aligned					\
-> +  __attribute__((__aligned__(SMP_CACHE_BYTES),			\
-> +		 __section__(".data..cacheline_aligned")))
-> +#endif /* __cacheline_aligned */
-> +
-> +#ifndef __cacheline_aligned_in_smp
-> +#ifdef CONFIG_SMP
-> +#define __cacheline_aligned_in_smp __cacheline_aligned
-> +#else
-> +#define __cacheline_aligned_in_smp
-> +#endif /* CONFIG_SMP */
-> +#endif
-> +
-> +/*
-> + * The maximum alignment needed for some critical structures
-> + * These could be inter-node cacheline sizes/L3 cacheline
-> + * size etc.  Define this in asm/cache.h for your arch
-> + */
-> +#ifndef INTERNODE_CACHE_SHIFT
-> +#define INTERNODE_CACHE_SHIFT L1_CACHE_SHIFT
-> +#endif
-> +
-> +#if !defined(____cacheline_internodealigned_in_smp)
-> +#if defined(CONFIG_SMP)
-> +#define ____cacheline_internodealigned_in_smp \
-> +	__attribute__((__aligned__(1 << (INTERNODE_CACHE_SHIFT))))
-> +#else
-> +#define ____cacheline_internodealigned_in_smp
-> +#endif
-> +#endif
-> +
-> +#ifndef CONFIG_ARCH_HAS_CACHE_LINE_SIZE
-> +#define cache_line_size()	L1_CACHE_BYTES
-> +#endif
-> +
-> +#endif /* __LINUX_CACHE_H */
-> diff --git a/tools/include/linux/gfp.h b/tools/include/linux/gfp.h
-> index 2203075..d7041c0 100644
-> --- a/tools/include/linux/gfp.h
-> +++ b/tools/include/linux/gfp.h
-> @@ -1,4 +1,8 @@
->  #ifndef _TOOLS_INCLUDE_LINUX_GFP_H
->  #define _TOOLS_INCLUDE_LINUX_GFP_H
->  
-> +#include <linux/types.h>
-> +
-> +#define __GFP_ZERO		0x100u
-> +
->  #endif /* _TOOLS_INCLUDE_LINUX_GFP_H */
-> diff --git a/tools/include/linux/slab.h b/tools/include/linux/slab.h
-> new file mode 100644
-> index 0000000..f0b7da6
-> --- /dev/null
-> +++ b/tools/include/linux/slab.h
-> @@ -0,0 +1,46 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __TOOLS_LINUX_SLAB_H
-> +#define __TOOLS_LINUX_SLAB_H
-> +
-> +#include <linux/gfp.h>
-> +#include <linux/cache.h>
-> +
-> +static inline void *kmalloc(size_t size, gfp_t gfp)
-> +{
-> +	void *p;
-> +
-> +	p = memalign(SMP_CACHE_BYTES, size);
-> +	if (!p)
-> +		return p;
-> +
-> +	if (gfp & __GFP_ZERO)
-> +		memset(p, 0, size);
-> +
-> +	return p;
-> +}
-> +
-> +static inline void *kzalloc(size_t size, gfp_t flags)
-> +{
-> +	return kmalloc(size, flags | __GFP_ZERO);
-> +}
-> +
-> +static inline void *kmalloc_array(size_t n, size_t size, gfp_t flags)
-> +{
-> +	return kmalloc(n * size, flags);
-> +}
-> +
-> +static inline void *kcalloc(size_t n, size_t size, gfp_t flags)
-> +{
-> +	return kmalloc_array(n, size, flags | __GFP_ZERO);
-> +}
-> +
-> +static inline void kfree(void *p)
-> +{
-> +	free(p);
-> +}
-> +
-> +#define kvmalloc_array		kmalloc_array
-> +#define kvfree			kfree
-> +#define KMALLOC_MAX_SIZE	SIZE_MAX
-> +
-> +#endif
-> diff --git a/tools/include/linux/spinlock.h b/tools/include/linux/spinlock.h
-> index c934572..622266b 100644
-> --- a/tools/include/linux/spinlock.h
-> +++ b/tools/include/linux/spinlock.h
-> @@ -37,6 +37,4 @@ static inline bool arch_spin_is_locked(arch_spinlock_t *mutex)
->  	return true;
->  }
->  
-> -#include <linux/lockdep.h>
-> -
->  #endif
-> -- 
-> 2.7.4
+Andrew Lunn (1):
+      usb: core: hub: Disable autosuspend for Cypress CY7C65632
 
+Andrew Morton (1):
+      mm/slub.c: include swab.h
+
+Anirudh Rayabharam (1):
+      HID: usbhid: fix info leak in hid_submit_ctrl
+
+Antti Järvinen (1):
+      PCI: Mark TI C667X to avoid bus reset
+
+Arnaldo Carvalho de Melo (1):
+      tools headers UAPI: Sync linux/in.h copy with the kernel sources
+
+Arnd Bergmann (1):
+      ARM: 9081/1: fix gcc-10 thumb2-kernel regression
+
+Austin Kim (1):
+      net: ethtool: clear heap allocations for ethtool function
+
+Aya Levin (1):
+      net/mlx5e: Block offload of outer header csum for UDP tunnels
+
+Bixuan Cui (1):
+      HID: gt683r: add missing MODULE_DEVICE_TABLE
+
+Bumyong Lee (1):
+      dmaengine: pl330: fix wrong usage of spinlock flags in dma_cyclc
+
+Changbin Du (1):
+      net: make get_net_ns return error if NET_NS is disabled
+
+Chen Li (1):
+      radeon: use memcpy_to/fromio for UVD fw upload
+
+Chengyang Fan (1):
+      net: ipv4: fix memory leak in ip_mc_add1_src
+
+Chiqijun (1):
+      PCI: Work around Huawei Intelligent NIC VF FLR erratum
+
+Christian König (2):
+      drm/nouveau: wait for moving fence after pinning v2
+      drm/radeon: wait for moving fence after pinning
+
+Christophe JAILLET (4):
+      alx: Fix an error handling path in 'alx_probe()'
+      qlcnic: Fix an error handling path in 'qlcnic_probe()'
+      netxen_nic: Fix an error handling path in 'netxen_nic_probe()'
+      be2net: Fix an error handling path in 'be_probe()'
+
+Clark Williams (2):
+      Merge tag 'v4.19.196' into v4.19-rt
+      Linux 4.19.196-rt83
+
+Dan Carpenter (1):
+      afs: Fix an IS_ERR() vs NULL check
+
+Dan Robertson (1):
+      net: ieee802154: fix null deref in parse dev addr
+
+Dongliang Mu (1):
+      net: usb: fix possible use-after-free in smsc75xx_bind
+
+Du Cheng (1):
+      cfg80211: call cfg80211_leave_ocb when switching away from OCB
+
+Eric Auger (1):
+      KVM: arm/arm64: Fix KVM_VGIC_V3_ADDR_TYPE_REDIST read
+
+Eric Dumazet (5):
+      net/af_unix: fix a data-race in unix_dgram_sendmsg / unix_release_sock
+      inet: use bigger hash table for IP ID generation
+      inet: annotate date races around sk->sk_txhash
+      net/packet: annotate accesses to po->bind
+      net/packet: annotate accesses to po->ifindex
+
+Esben Haabendal (1):
+      net: ll_temac: Avoid ndo_start_xmit returning NETDEV_TX_BUSY
+
+Ewan D. Milne (1):
+      scsi: scsi_devinfo: Add blacklist entry for HPE OPEN-V
+
+Fabien Dessenne (1):
+      pinctrl: stm32: fix the reported number of GPIO lines per bank
+
+Fuad Tabba (1):
+      KVM: selftests: Fix kvm_check_cap() assertion
+
+Fugang Duan (1):
+      net: fec_ptp: add clock rate zero check
+
+Hannes Reinecke (3):
+      nvme-loop: reset queue count to 1 in nvme_loop_destroy_io_queues()
+      nvme-loop: clear NVME_LOOP_Q_LIVE when nvme_loop_configure_admin_queue() fails
+      nvme-loop: check for NVME_LOOP_Q_LIVE in nvme_loop_destroy_admin_queue()
+
+Hillf Danton (1):
+      gfs2: Fix use-after-free in gfs2_glock_shrink_scan
+
+Huy Nguyen (1):
+      net/mlx5e: Remove dependency in IPsec initialization flows
+
+Ido Schimmel (1):
+      rtnetlink: Fix regression in bridge VLAN configuration
+
+Jack Pham (1):
+      usb: dwc3: debugfs: Add and remove endpoint dirs dynamically
+
+Jack Yu (1):
+      ASoC: rt5659: Fix the lost powers for the HDA header
+
+Jakub Kicinski (1):
+      ptp: improve max_adj check against unreasonable values
+
+Jiapeng Chong (2):
+      ethernet: myri10ge: Fix missing error code in myri10ge_probe()
+      rtnetlink: Fix missing error code in rtnl_bridge_notify()
+
+Jisheng Zhang (1):
+      net: stmmac: dwmac1000: Fix extended MAC address registers definition
+
+Joakim Zhang (1):
+      net: fec_ptp: fix issue caused by refactor the fec_devtype
+
+Johan Hovold (1):
+      i2c: robotfuzz-osif: fix control-request directions
+
+Johannes Berg (3):
+      cfg80211: make certificate generation more robust
+      mac80211: remove warning in ieee80211_get_sband()
+      mac80211: drop multicast fragments
+
+Josh Triplett (1):
+      net: ipconfig: Don't override command-line hostnames or domains
+
+Kees Cook (5):
+      mm/slub: clarify verification reporting
+      r8152: Avoid memcpy() over-reading of ETH_SS_STATS
+      sh_eth: Avoid memcpy() over-reading of ETH_SS_STATS
+      r8169: Avoid memcpy() over-reading of ETH_SS_STATS
+      net: qed: Fix memcpy() overflow of qed_dcbx_params()
+
+Linyu Yuan (1):
+      net: cdc_eem: fix tx fixup skb leak
+
+Maciej Żenczykowski (1):
+      net: cdc_ncm: switch to eth%d interface naming
+
+Mark Bolhuis (1):
+      HID: Add BUS_VIRTUAL to hid_connect logging
+
+Maurizio Lombardi (1):
+      scsi: target: core: Fix warning on realtime kernels
+
+Maxim Mikityanskiy (2):
+      netfilter: synproxy: Fix out of bounds when parsing TCP options
+      sch_cake: Fix out of bounds when parsing TCP options and header
+
+Mikel Rychliski (1):
+      PCI: Add AMD RS690 quirk to enable 64-bit DMA
+
+Mimi Zohar (1):
+      module: limit enabling module.sig_enforce
+
+Nanyong Sun (1):
+      net: ipv4: fix memory leak in netlbl_cipsov4_add_std
+
+Nathan Chancellor (2):
+      Makefile: Move -Wno-unused-but-set-variable out of GCC only block
+      MIPS: generic: Update node names to avoid unit addresses
+
+Nikolay Aleksandrov (2):
+      net: bridge: fix vlan tunnel dst null pointer dereference
+      net: bridge: fix vlan tunnel dst refcnt when egressing
+
+Nirenjan Krishnan (1):
+      HID: quirks: Set INCREMENT_USAGE_ON_DUPLICATE for Saitek X65
+
+Norbert Slusarek (1):
+      can: bcm: fix infoleak in struct bcm_msg_head
+
+Paolo Abeni (1):
+      udp: fix race between close() and udp_abort()
+
+Pavel Skripkin (7):
+      net: rds: fix memory leak in rds_recvmsg
+      net: qrtr: fix OOB Read in qrtr_endpoint_post
+      net: hamradio: fix memory leak in mkiss_close
+      net: ethernet: fix potential use-after-free in ec_bhf_remove
+      can: mcba_usb: fix memory leak in mcba_usb
+      net: caif: fix memory leak in ldisc_open
+      nilfs2: fix memory leak in nilfs_sysfs_delete_device_group
+
+Pedro Tammela (1):
+      net: add documentation to socket.c
+
+Peter Chen (1):
+      usb: dwc3: core: fix kernel panic when do reboot
+
+Rafael J. Wysocki (1):
+      Revert "PCI: PM: Do not read power state in pci_enable_device_flags()"
+
+Randy Dunlap (2):
+      dmaengine: ALTERA_MSGDMA depends on HAS_IOMEM
+      dmaengine: QCOM_HIDMA_MGMT depends on HAS_IOMEM
+
+Riwen Lu (1):
+      hwmon: (scpi-hwmon) shows the negative temperature properly
+
+Sasha Levin (1):
+      Linux 4.19.196
+
+Sergio Paracuellos (1):
+      pinctrl: ralink: rt2880: avoid to error in calls is pin is already enabled
+
+Shalom Toledo (1):
+      ptp: ptp_clock: Publish scaled_ppm_to_ppb
+
+Shanker Donthineni (1):
+      PCI: Mark some NVIDIA GPUs to avoid bus reset
+
+Sriharsha Basavapatna (1):
+      PCI: Add ACS quirk for Broadcom BCM57414 NIC
+
+Srinivas Pandruvada (1):
+      HID: hid-sensor-hub: Return error for hid_set_field() failure
+
+Steven Rostedt (VMware) (3):
+      tracing: Do not stop recording cmdlines when tracing is off
+      tracing: Do not stop recording comms if the trace file is being read
+      tracing: Do no increment trace_clock_global() by one
+
+Sven Eckelmann (1):
+      batman-adv: Avoid WARN_ON timing related checks
+
+Tetsuo Handa (1):
+      can: bcm/raw/isotp: use per module netdevice notifier
+
+Thomas Gleixner (1):
+      x86/fpu: Reset state for all signal restore failures
+
+Toke Høiland-Jørgensen (1):
+      icmp: don't send out ICMP messages with a source address of 0.0.0.0
+
+Vineet Gupta (1):
+      ARCv2: save ABI registers across signal handling
+
+Yang Yingliang (1):
+      dmaengine: stedma40: add missing iounmap() on error in d40_probe()
+
+Yongqiang Liu (1):
+      ARM: OMAP2+: Fix build warning when mmc_omap is not built
+
+Zheng Yongjun (4):
+      net/x25: Return the correct errno code
+      net: Return the correct errno code
+      fib: Return the correct errno code
+      ping: Check return value of function 'ping_queue_rcv_skb'
+
+yangerkun (1):
+      mm/memory-failure: make sure wait for page writeback in memory_failure
+---
+Documentation/vm/slub.rst                          |  10 +-
+ Makefile                                           |   5 +-
+ arch/arc/include/uapi/asm/sigcontext.h             |   1 +
+ arch/arc/kernel/signal.c                           |  43 ++++
+ arch/arm/kernel/setup.c                            |  16 +-
+ arch/arm/mach-omap2/board-n8x0.c                   |   2 +-
+ arch/mips/generic/board-boston.its.S               |  10 +-
+ arch/mips/generic/board-ni169445.its.S             |  10 +-
+ arch/mips/generic/board-xilfpga.its.S              |  10 +-
+ arch/mips/generic/vmlinux.its.S                    |  10 +-
+ arch/x86/kernel/fpu/signal.c                       |  31 ++-
+ arch/x86/pci/fixup.c                               |  44 ++++
+ drivers/dma/Kconfig                                |   1 +
+ drivers/dma/pl330.c                                |   6 +-
+ drivers/dma/qcom/Kconfig                           |   1 +
+ drivers/dma/ste_dma40.c                            |   3 +
+ drivers/gpu/drm/nouveau/nouveau_prime.c            |  17 +-
+ drivers/gpu/drm/radeon/radeon_prime.c              |  16 +-
+ drivers/gpu/drm/radeon/radeon_uvd.c                |   4 +-
+ drivers/hid/hid-core.c                             |   3 +
+ drivers/hid/hid-gt683r.c                           |   1 +
+ drivers/hid/hid-ids.h                              |   1 +
+ drivers/hid/hid-quirks.c                           |   1 +
+ drivers/hid/hid-sensor-hub.c                       |  13 +-
+ drivers/hid/usbhid/hid-core.c                      |   2 +-
+ drivers/hwmon/scpi-hwmon.c                         |   9 +
+ drivers/i2c/busses/i2c-robotfuzz-osif.c            |   4 +-
+ drivers/net/caif/caif_serial.c                     |   1 +
+ drivers/net/can/usb/mcba_usb.c                     |  17 +-
+ drivers/net/ethernet/atheros/alx/main.c            |   1 +
+ drivers/net/ethernet/ec_bhf.c                      |   4 +-
+ drivers/net/ethernet/emulex/benet/be_main.c        |   1 +
+ drivers/net/ethernet/freescale/fec_ptp.c           |   8 +-
+ .../ethernet/mellanox/mlx5/core/en_accel/ipsec.c   |   3 -
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |   7 +-
+ drivers/net/ethernet/myricom/myri10ge/myri10ge.c   |   1 +
+ .../net/ethernet/qlogic/netxen/netxen_nic_main.c   |   2 +
+ drivers/net/ethernet/qlogic/qed/qed_dcbx.c         |   4 +-
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c   |   1 +
+ drivers/net/ethernet/realtek/r8169.c               |   2 +-
+ drivers/net/ethernet/renesas/sh_eth.c              |   2 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac1000.h    |   8 +-
+ drivers/net/ethernet/xilinx/ll_temac_main.c        |   5 +
+ drivers/net/hamradio/mkiss.c                       |   1 +
+ drivers/net/usb/cdc_eem.c                          |   2 +-
+ drivers/net/usb/cdc_ncm.c                          |   2 +-
+ drivers/net/usb/r8152.c                            |   2 +-
+ drivers/net/usb/smsc75xx.c                         |  10 +-
+ drivers/nvme/target/loop.c                         |   5 +-
+ drivers/pci/pci.c                                  |  16 +-
+ drivers/pci/quirks.c                               |  89 +++++++
+ drivers/pinctrl/stm32/pinctrl-stm32.c              |   9 +-
+ drivers/ptp/ptp_clock.c                            |   7 +-
+ drivers/scsi/scsi_devinfo.c                        |   1 +
+ drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c    |   2 +-
+ drivers/target/target_core_transport.c             |   4 +-
+ drivers/usb/core/hub.c                             |   7 +
+ drivers/usb/dwc3/core.c                            |   2 +-
+ drivers/usb/dwc3/debug.h                           |   3 +
+ drivers/usb/dwc3/debugfs.c                         |  21 +-
+ drivers/usb/dwc3/gadget.c                          |   3 +
+ fs/afs/main.c                                      |   4 +-
+ fs/gfs2/file.c                                     |   5 +-
+ fs/gfs2/glock.c                                    |   2 +-
+ fs/nilfs2/sysfs.c                                  |   1 +
+ include/linux/hid.h                                |   3 +-
+ include/linux/net.h                                |   6 +
+ include/linux/ptp_clock_kernel.h                   |   8 +
+ include/linux/socket.h                             |  14 +-
+ include/net/net_namespace.h                        |   7 +
+ include/net/sock.h                                 |  10 +-
+ include/uapi/linux/in.h                            |   3 +
+ kernel/module.c                                    |   9 +
+ kernel/trace/trace.c                               |  11 -
+ kernel/trace/trace_clock.c                         |   6 +-
+ localversion-rt                                    |   2 +-
+ mm/memory-failure.c                                |   7 +-
+ mm/slub.c                                          |  15 +-
+ net/batman-adv/bat_iv_ogm.c                        |   4 +-
+ net/bridge/br_private.h                            |   4 +-
+ net/bridge/br_vlan_tunnel.c                        |  38 +--
+ net/can/bcm.c                                      |  62 ++++-
+ net/can/raw.c                                      |  62 +++--
+ net/compat.c                                       |   2 +-
+ net/core/ethtool.c                                 |  10 +-
+ net/core/fib_rules.c                               |   2 +-
+ net/core/net_namespace.c                           |  12 +
+ net/core/rtnetlink.c                               |   4 +
+ net/ieee802154/nl802154.c                          |   9 +-
+ net/ipv4/cipso_ipv4.c                              |   1 +
+ net/ipv4/icmp.c                                    |   7 +
+ net/ipv4/igmp.c                                    |   1 +
+ net/ipv4/ipconfig.c                                |  13 +-
+ net/ipv4/ping.c                                    |  12 +-
+ net/ipv4/route.c                                   |  42 ++--
+ net/ipv4/udp.c                                     |  10 +
+ net/ipv6/udp.c                                     |   3 +
+ net/mac80211/ieee80211_i.h                         |   2 +-
+ net/mac80211/rx.c                                  |   9 +-
+ net/netfilter/nf_synproxy_core.c                   |   5 +
+ net/packet/af_packet.c                             |  32 +--
+ net/qrtr/qrtr.c                                    |   2 +-
+ net/rds/recv.c                                     |   2 +-
+ net/sched/sch_cake.c                               |   6 +-
+ net/socket.c                                       | 276 +++++++++++++++++++--
+ net/unix/af_unix.c                                 |   7 +-
+ net/wireless/Makefile                              |   2 +-
+ net/wireless/util.c                                |   3 +
+ net/x25/af_x25.c                                   |   2 +-
+ sound/soc/codecs/rt5659.c                          |  26 +-
+ tools/include/uapi/linux/in.h                      |   3 +
+ tools/testing/selftests/kvm/lib/kvm_util.c         |   2 +-
+ virt/kvm/arm/vgic/vgic-kvm-device.c                |   4 +-
+ 113 files changed, 1017 insertions(+), 304 deletions(-)
+---
