@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6209A3BBF72
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 17:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90B73BBF7B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 17:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231810AbhGEPcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 11:32:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56364 "EHLO mail.kernel.org"
+        id S232147AbhGEPcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 11:32:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232032AbhGEPbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 11:31:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1C3861975;
-        Mon,  5 Jul 2021 15:28:56 +0000 (UTC)
+        id S231932AbhGEPbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 11:31:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A8A561977;
+        Mon,  5 Jul 2021 15:28:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625498937;
-        bh=6ZrR1ymv8LTmt10RCYBoPgMQIITczbUgsWc1rlMEc7w=;
+        s=k20201202; t=1625498940;
+        bh=US1hJ2G3OSXq4i3pt6pdZkmGAzaPlgomDJpyu+3aiJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pL3pyrIsgEL9syPPf8OuHe7Nv/5KU3GpzFBanH3eqyHXI3RXZgeE58ZprBtEQLjSX
-         wyCoxJIi00tKrfOqX4+BRBx0xIhx7aJONWYCt/rE97JjujAjH3PHEHF25fnBDISoMr
-         pGzWdI04xa40IMfoBLpit1ZnrFxW1kvEHajNxqvL63uPf9gtUIVLeQ4iDxYcYfjuln
-         JS4q4++lj8iO83HGvj5fXkbcoZ+YQ2V35P2Mo1Ojp/Tsw3pARu+KuAwPxH5JS9nG6M
-         eJQ4s1k96eQVxSKVN317Byv0woVpl23nLqJW0vo/SeWKXjJ464zhz2bxznY/iJ84xZ
-         eKKCo9atrZ7kg==
+        b=NvBCGrvySMq/PrX46WykOWii0gJdqPnjFpc/GanOIKsdTfnBSZUzMr6qqCbZhEzCG
+         mtam0agDaAXkwunRqRFOrp7zqQhqUOAG2olzZ9MJHxfJ4zlQkUq4fX5rQF28R6v47P
+         4LxeUFmedLhmJFrHL7kLV0ZOwl1uyF+7nN62zatRpr++Ey8KjCvs0tzCb0kIGvSByV
+         C4Tjr5zelryZfxuqufcsfg4IAnvasxyTZus0EKz8O37lp4oTnyOv4BEu+ydZwxCPPt
+         ZQacHBC2L+8PO/umtGmGgUF6o4qMYz/rdbrhOyg9hVW1S4oNUIvt/0j1jSPy4rs+SK
+         +xrCv7QK/fZ7w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 32/59] platform/x86: toshiba_acpi: Fix missing error code in toshiba_acpi_setup_keyboard()
-Date:   Mon,  5 Jul 2021 11:27:48 -0400
-Message-Id: <20210705152815.1520546-32-sashal@kernel.org>
+Cc:     Hannes Reinecke <hare@suse.de>, James Smart <jsmart2021@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sasha Levin <sashal@kernel.org>, linux-nvme@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.13 34/59] nvmet-fc: do not check for invalid target port in nvmet_fc_handle_fcp_rqst()
+Date:   Mon,  5 Jul 2021 11:27:50 -0400
+Message-Id: <20210705152815.1520546-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210705152815.1520546-1-sashal@kernel.org>
 References: <20210705152815.1520546-1-sashal@kernel.org>
@@ -44,39 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit 28e367127718a9cb85d615a71e152f7acee41bfc ]
+[ Upstream commit 2a4a910aa4f0acc428dc8d10227c42e14ed21d10 ]
 
-The error code is missing in this code scenario, add the error code
-'-EINVAL' to the return value 'error'.
+When parsing a request in nvmet_fc_handle_fcp_rqst() we should not
+check for invalid target ports; if we do the command is aborted
+from the fcp layer, causing the host to assume a transport error.
+Rather we should still forward this request to the nvmet layer, which
+will then correctly fail the command with an appropriate error status.
 
-Eliminate the follow smatch warning:
-
-drivers/platform/x86/toshiba_acpi.c:2834 toshiba_acpi_setup_keyboard()
-warn: missing error code 'error'.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Link: https://lore.kernel.org/r/1622628348-87035-1-git-send-email-jiapeng.chong@linux.alibaba.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/toshiba_acpi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/nvme/target/fc.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
-index fa7232ad8c39..352508d30467 100644
---- a/drivers/platform/x86/toshiba_acpi.c
-+++ b/drivers/platform/x86/toshiba_acpi.c
-@@ -2831,6 +2831,7 @@ static int toshiba_acpi_setup_keyboard(struct toshiba_acpi_dev *dev)
+diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
+index 19e113240fff..22b5108168a6 100644
+--- a/drivers/nvme/target/fc.c
++++ b/drivers/nvme/target/fc.c
+@@ -2510,13 +2510,6 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
+ 	u32 xfrlen = be32_to_cpu(cmdiu->data_len);
+ 	int ret;
  
- 	if (!dev->info_supported && !dev->system_event_supported) {
- 		pr_warn("No hotkey query interface found\n");
-+		error = -EINVAL;
- 		goto err_remove_filter;
- 	}
+-	/*
+-	 * if there is no nvmet mapping to the targetport there
+-	 * shouldn't be requests. just terminate them.
+-	 */
+-	if (!tgtport->pe)
+-		goto transport_error;
+-
+ 	/*
+ 	 * Fused commands are currently not supported in the linux
+ 	 * implementation.
+@@ -2544,7 +2537,8 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
  
+ 	fod->req.cmd = &fod->cmdiubuf.sqe;
+ 	fod->req.cqe = &fod->rspiubuf.cqe;
+-	fod->req.port = tgtport->pe->port;
++	if (tgtport->pe)
++		fod->req.port = tgtport->pe->port;
+ 
+ 	/* clear any response payload */
+ 	memset(&fod->rspiubuf, 0, sizeof(fod->rspiubuf));
 -- 
 2.30.2
 
