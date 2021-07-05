@@ -2,222 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BAEE3BBE84
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 16:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9961B3BBE88
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 16:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbhGEO6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 10:58:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
+        id S231658AbhGEO6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 10:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbhGEO6H (ORCPT
+        with ESMTP id S231556AbhGEO6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 10:58:07 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EE2C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 07:55:29 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id o3-20020a4a84c30000b0290251d599f19bso1892280oog.8
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 07:55:29 -0700 (PDT)
+        Mon, 5 Jul 2021 10:58:38 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D254C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 07:56:01 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id c28so9503396lfp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 07:56:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vt6B/ZFWv7iTSgMPoA0D5VLEiybOK+YCjOBH+Il3S7o=;
-        b=iw3VrxU/7kWNX7p0s4iJCF2WQmq2nrkNNWjjHa9OlRb3BpvRhtZgjNugzi/hfTxYHP
-         Dp85myFBOAbH+VyehU5k9TNyW/HPfYPSVHBwLkKiexba3WzqE0SDLjt3JOH4a/wzELna
-         lNFwpIaVsXQCzR4zFDPmy+SxBT20c9Q/K6RJ5uUY81vfoDr7kI3Gl4HDJA084Tu1CUTp
-         2nXZkbAHesfsztEYOeb21Zh9917e3jRyIcBPQT/uV+izn6kw8oTvB4fu/wzcr8Pq5Ahj
-         ZSKwO0PRDtbmTEdEOwKp2CmHddImcncoP42OFftlNdDLjrImjouSOb8NUEHi5QLYrr7E
-         ssmg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yv5RwknvEQySeDC9OAlYHWoQ26Z/PWkUBzvHahNxvFo=;
+        b=o7argocKDB8tA0Hdbbg7cYRYXiR4TrYWrlnGaXwlbSBE+9182XUWAaGXAKsmHF9gWa
+         6+F8kvkgN9Z1mxteEc7QQEHCy9rp2RTucLav4YDdjqFH6hnEmeazOTxljowuOhZW5BN4
+         GYKtQYrWOMvyOJCMbNhP2xui+KjGTezHKPmCW0/jNpMe1zq48A7iqemJZcmTN1lB+rc3
+         SXkP72xASEtmrnpPI7UqJCLakyi8rteoUObdFEk5lvSBoaj7yOWYGnUxK6qFqLESaF2q
+         R0qOUGR5UPc/pcsrTXjKgKWQxjoHI+AXRTzefAW5DWSXmsoJmVrzpvs5Uune5l182Q7Z
+         f7gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=vt6B/ZFWv7iTSgMPoA0D5VLEiybOK+YCjOBH+Il3S7o=;
-        b=eTpKxgcGVwnrMBu/twj3Yxxnujj0gH4mYERLkNVkUK9zeIa0H9BT+0a43MTv3I+V7E
-         MPf2puBEtSqM1YFfmw54wOxTWzgpG1eS3GvAZaIePUUW/1cV1LBB94VwTYnyISuZblfv
-         GT0NHvc+iNF/Ofx9boU3ChBFqGLjaSIs/Z/wK7eSHMJm4+Xf+/rfSMcAmA9cD2tzKxGm
-         goh8hKtCsAzF4ZEKfOAL0d77zmvlEQcMVgFs30EgI3HlMrxGGnuyUGn3cXpQsh0dLlXU
-         HsvGCfXVmvTZgMhvzPZ/TwcnPQPzpAnCQDhrVTOA5oDU46uRv+Y4dXqBnqVeJuJeqXa5
-         j0TQ==
-X-Gm-Message-State: AOAM530fGTE/uPTXLWTiutR9t2KiWaPZVUPkii+OG6DT9HKcCgfB5Tee
-        2VRwX/MRRHy7YSccmttIKzI=
-X-Google-Smtp-Source: ABdhPJyaKuazjRvXU99E0LpcB7YvmGZQk8hR0kqaN6XKZerKhLs55BLxaOhGPQcXfeCP0kLUt5GiQg==
-X-Received: by 2002:a4a:1a84:: with SMTP id 126mr10293596oof.77.1625496928772;
-        Mon, 05 Jul 2021 07:55:28 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id bc39sm284564oob.4.2021.07.05.07.55.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Jul 2021 07:55:28 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v3 4/4] arm: extend pfn_valid to take into account freed
- memory map alignment
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210630071211.21011-1-rppt@kernel.org>
- <20210630071211.21011-5-rppt@kernel.org>
- <20210705042236.GA1463419@roeck-us.net> <YOKziNQzbfIuXgMV@kernel.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <c7d1e38d-6268-23bf-e24c-6c9e1703ea73@roeck-us.net>
-Date:   Mon, 5 Jul 2021 07:55:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=yv5RwknvEQySeDC9OAlYHWoQ26Z/PWkUBzvHahNxvFo=;
+        b=UnWMrEnY6sSoWCOuhLKvnO/bCsrXBtgF+HFQhE7hE68OtEgfTupHgysXGgKR5Knc8l
+         ys9qgAuhIs4FaFw4/odcOusTITeuKYz/YEk8h3PjrbCaoP4j2N/EmSVqKcjHrlF/2Wuc
+         UY0Vmw3q+4X2qOvbMExmyUfoJ11UEMyMxgCu+LERWGNyh4vMLxzVf70J0EQfDhKYvuOY
+         t7OJE5W8oEgaCd1w0jEUUowhJ1r6eTXOyRgiIayGmihWTOVfSooF8y8Ox9gvTl9Lm5RR
+         gIEMkWOaY2aV5XOXT3oz1URDvUydtbGEUDuek+gIIL4g4QnFii0F34D/2NAKpVhoNTMk
+         4syQ==
+X-Gm-Message-State: AOAM5326ACeiKEpAz+eBk5o2ZoWF+xPvfjb5R3jlv8XSof7X4vXFTHcw
+        rUOrayTao2Frt7yLcXFAp34=
+X-Google-Smtp-Source: ABdhPJy3Z4VavKV2wXCzPYEEL12FeAebb7ybftnLZKtrYVuiw6tAarZc320nEdLbps10ACRL2Qi3WQ==
+X-Received: by 2002:a05:6512:2601:: with SMTP id bt1mr10631219lfb.590.1625496959384;
+        Mon, 05 Jul 2021 07:55:59 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id i15sm1481816lja.135.2021.07.05.07.55.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 07:55:58 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH] mm/vmalloc: Use batched page requests in bulk-allocator
+Date:   Mon,  5 Jul 2021 16:55:47 +0200
+Message-Id: <20210705145547.41206-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <YOKziNQzbfIuXgMV@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/5/21 12:23 AM, Mike Rapoport wrote:
-> Hi Guenter,
-> 
-> On Sun, Jul 04, 2021 at 09:22:36PM -0700, Guenter Roeck wrote:
->> On Wed, Jun 30, 2021 at 10:12:11AM +0300, Mike Rapoport wrote:
->>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>
->>> When unused memory map is freed the preserved part of the memory map is
->>> extended to match pageblock boundaries because lots of core mm
->>> functionality relies on homogeneity of the memory map within pageblock
->>> boundaries.
->>>
->>> Since pfn_valid() is used to check whether there is a valid memory map
->>> entry for a PFN, make it return true also for PFNs that have memory map
->>> entries even if there is no actual memory populated there.
->>>
->>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->>> Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->>
->> With this patch in place, the romulus-bmc emulation in qemu gets the
->> following traceback:
->>
->> [    2.863406] WARNING: CPU: 0 PID: 1 at arch/arm/mm/ioremap.c:287 __arm_ioremap_pfn_caller+0xf0/0x1dc
-> ...
->> [    2.876683] ---[ end trace b2f74b8536829970 ]---
->> [    2.876911] fsi-master-acf gpio-fsi: ioremap failed for resource [mem 0x9ef00000-0x9effffff]
->> [    2.877492] fsi-master-acf gpio-fsi: Error -12 mapping coldfire memory
->> [    2.877689] fsi-master-acf: probe of gpio-fsi failed with error -12
->>
->> Reverting it fixes the problem. Also, the ioremap failure is no longer seen
->> after reverting this patch.
-> 
-> I believe this should fix it:
-> 
-Yes, it does.
+In case of simultaneous vmalloc allocations, for example it is 1GB and
+12 CPUs my system is able to hit "BUG: soft lockup" for !CONFIG_PREEMPT
+kernel.
 
->>From e2213b7e804daf0d31d47502379916f0542398bb Mon Sep 17 00:00:00 2001
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> Date: Mon, 5 Jul 2021 08:43:10 +0300
-> Subject: [PATCH] arm: ioremap: don't abuse pfn_valid() to check if pfn is in RAM
-> 
-> The semantics of pfn_valid() is to check presence of the memory map for a
-> PFN and not whether a PFN is in RAM. The memory map may be present for a
-> hole in the physical memory and if such hole corresponds to an MMIO range,
-> __arm_ioremap_pfn_caller() will produce a WARN() and fail:
-> 
-> [    2.863406] WARNING: CPU: 0 PID: 1 at arch/arm/mm/ioremap.c:287 __arm_ioremap_pfn_caller+0xf0/0x1dc
-> [    2.864812] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-09882-ga180bd1d7e16 #1
-> [    2.865263] Hardware name: Generic DT based system
-> [    2.865711] Backtrace:
-> [    2.866063] [<80b07e58>] (dump_backtrace) from [<80b080ac>] (show_stack+0x20/0x24)
-> [    2.866633]  r7:00000009 r6:0000011f r5:60000153 r4:80ddd1c0
-> [    2.866922] [<80b0808c>] (show_stack) from [<80b18df0>] (dump_stack_lvl+0x58/0x74)
-> [    2.867117] [<80b18d98>] (dump_stack_lvl) from [<80b18e20>] (dump_stack+0x14/0x1c)
-> [    2.867309]  r5:80118cac r4:80dc6774
-> [    2.867404] [<80b18e0c>] (dump_stack) from [<80122fcc>] (__warn+0xe4/0x150)
-> [    2.867583] [<80122ee8>] (__warn) from [<80b08850>] (warn_slowpath_fmt+0x88/0xc0)
-> [    2.867774]  r7:0000011f r6:80dc6774 r5:00000000 r4:814c4000
-> [    2.867917] [<80b087cc>] (warn_slowpath_fmt) from [<80118cac>] (__arm_ioremap_pfn_caller+0xf0/0x1dc)
-> [    2.868158]  r9:00000001 r8:9ef00000 r7:80e8b0d4 r6:0009ef00 r5:00000000 r4:00100000
-> [    2.868346] [<80118bbc>] (__arm_ioremap_pfn_caller) from [<80118df8>] (__arm_ioremap_caller+0x60/0x68)
-> [    2.868581]  r9:9ef00000 r8:821b6dc0 r7:00100000 r6:00000000 r5:815d1010 r4:80118d98
-> [    2.868761] [<80118d98>] (__arm_ioremap_caller) from [<80118fcc>] (ioremap+0x28/0x30)
-> [    2.868958] [<80118fa4>] (ioremap) from [<8062871c>] (__devm_ioremap_resource+0x154/0x1c8)
-> [    2.869169]  r5:815d1010 r4:814c5d2c
-> [    2.869263] [<806285c8>] (__devm_ioremap_resource) from [<8062899c>] (devm_ioremap_resource+0x14/0x18)
-> [    2.869495]  r9:9e9f57a0 r8:814c4000 r7:815d1000 r6:815d1010 r5:8177c078 r4:815cf400
-> [    2.869676] [<80628988>] (devm_ioremap_resource) from [<8091c6e4>] (fsi_master_acf_probe+0x1a8/0x5d8)
-> [    2.869909] [<8091c53c>] (fsi_master_acf_probe) from [<80723dbc>] (platform_probe+0x68/0xc8)
-> [    2.870124]  r9:80e9dadc r8:00000000 r7:815d1010 r6:810c1000 r5:815d1010 r4:00000000
-> [    2.870306] [<80723d54>] (platform_probe) from [<80721208>] (really_probe+0x1cc/0x470)
-> [    2.870512]  r7:815d1010 r6:810c1000 r5:00000000 r4:815d1010
-> [    2.870651] [<8072103c>] (really_probe) from [<807215cc>] (__driver_probe_device+0x120/0x1fc)
-> [    2.870872]  r7:815d1010 r6:810c1000 r5:810c1000 r4:815d1010
-> [    2.871013] [<807214ac>] (__driver_probe_device) from [<807216e8>] (driver_probe_device+0x40/0xd8)
-> [    2.871244]  r9:80e9dadc r8:00000000 r7:815d1010 r6:810c1000 r5:812feaa0 r4:812fe994
-> [    2.871428] [<807216a8>] (driver_probe_device) from [<80721a58>] (__driver_attach+0xa8/0x1d4)
-> [    2.871647]  r9:80e9dadc r8:00000000 r7:00000000 r6:810c1000 r5:815d1054 r4:815d1010
-> [    2.871830] [<807219b0>] (__driver_attach) from [<8071ee8c>] (bus_for_each_dev+0x88/0xc8)
-> [    2.872040]  r7:00000000 r6:814c4000 r5:807219b0 r4:810c1000
-> [    2.872194] [<8071ee04>] (bus_for_each_dev) from [<80722208>] (driver_attach+0x28/0x30)
-> [    2.872418]  r7:810a2aa0 r6:00000000 r5:821b6000 r4:810c1000
-> [    2.872570] [<807221e0>] (driver_attach) from [<8071f80c>] (bus_add_driver+0x114/0x200)
-> [    2.872788] [<8071f6f8>] (bus_add_driver) from [<80722ec4>] (driver_register+0x98/0x128)
-> [    2.873011]  r7:81011d0c r6:814c4000 r5:00000000 r4:810c1000
-> [    2.873167] [<80722e2c>] (driver_register) from [<80725240>] (__platform_driver_register+0x2c/0x34)
-> [    2.873408]  r5:814dcb80 r4:80f2a764
-> [    2.873513] [<80725214>] (__platform_driver_register) from [<80f2a784>] (fsi_master_acf_init+0x20/0x28)
-> [    2.873766] [<80f2a764>] (fsi_master_acf_init) from [<80f014a8>] (do_one_initcall+0x108/0x290)
-> [    2.874007] [<80f013a0>] (do_one_initcall) from [<80f01840>] (kernel_init_freeable+0x1ac/0x230)
-> [    2.874248]  r9:80e9dadc r8:80f3987c r7:80f3985c r6:00000007 r5:814dcb80 r4:80f627a4
-> [    2.874456] [<80f01694>] (kernel_init_freeable) from [<80b19f44>] (kernel_init+0x20/0x138)
-> [    2.874691]  r10:00000000 r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:80b19f24
-> [    2.874894]  r4:00000000
-> [    2.874977] [<80b19f24>] (kernel_init) from [<80100170>] (ret_from_fork+0x14/0x24)
-> [    2.875231] Exception stack(0x814c5fb0 to 0x814c5ff8)
-> [    2.875535] 5fa0:                                     00000000 00000000 00000000 00000000
-> [    2.875849] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> [    2.876133] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-> [    2.876363]  r5:80b19f24 r4:00000000
-> [    2.876683] ---[ end trace b2f74b8536829970 ]---
-> [    2.876911] fsi-master-acf gpio-fsi: ioremap failed for resource [mem 0x9ef00000-0x9effffff]
-> [    2.877492] fsi-master-acf gpio-fsi: Error -12 mapping coldfire memory
-> [    2.877689] fsi-master-acf: probe of gpio-fsi failed with error -12
-> 
-> Use memblock_is_map_memory() instead of pfn_valid() to check if a PFN is in
-> RAM or not.
-> 
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+<snip>
+[   62.512621] RIP: 0010:__alloc_pages_bulk+0xa9f/0xbb0
+[   62.512628] Code: ff 8b 44 24 48 44 29 f8 83 f8 01 0f 84 ea fe ff ff e9 07 f6 ff ff 48 8b 44 24 60 48 89 28 e9 00 f9 ff ff fb 66 0f 1f 44 00 00 <e9> e8 fd ff ff 65 48 01 51 10 e9 3e fe ff ff 48 8b 44 24 78 4d 89
+[   62.512629] RSP: 0018:ffffa7bfc29ffd20 EFLAGS: 00000206
+[   62.512631] RAX: 0000000000000200 RBX: ffffcd5405421888 RCX: ffff8c36ffdeb928
+[   62.512632] RDX: 0000000000040000 RSI: ffffa896f06b2ff8 RDI: ffffcd5405421880
+[   62.512633] RBP: ffffcd5405421880 R08: 000000000000007d R09: ffffffffffffffff
+[   62.512634] R10: ffffffff9d63c084 R11: 00000000ffffffff R12: ffff8c373ffaeb80
+[   62.512635] R13: ffff8c36ffdf65f8 R14: ffff8c373ffaeb80 R15: 0000000000040000
+[   62.512637] FS:  0000000000000000(0000) GS:ffff8c36ffdc0000(0000) knlGS:0000000000000000
+[   62.512638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   62.512639] CR2: 000055c8e2fe8610 CR3: 0000000c13e10000 CR4: 00000000000006e0
+[   62.512641] Call Trace:
+[   62.512646]  __vmalloc_node_range+0x11c/0x2d0
+[   62.512649]  ? full_fit_alloc_test+0x140/0x140 [test_vmalloc]
+[   62.512654]  __vmalloc_node+0x4b/0x70
+[   62.512656]  ? fix_size_alloc_test+0x44/0x60 [test_vmalloc]
+[   62.512659]  fix_size_alloc_test+0x44/0x60 [test_vmalloc]
+[   62.512662]  test_func+0xe7/0x1f0 [test_vmalloc]
+[   62.512666]  ? fix_align_alloc_test+0x50/0x50 [test_vmalloc]
+[   62.512668]  kthread+0x11a/0x140
+[   62.512671]  ? set_kthread_struct+0x40/0x40
+[   62.512672]  ret_from_fork+0x22/0x30
+<snip>
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+To address this issue invoke a bulk-allocator many times until all pages
+are obtained, i.e. do batched page requests adding cond_resched() meanwhile
+to reschedule. Batched value is hard-coded and is 100 pages per call.
 
-Thanks!
-Guenter
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ mm/vmalloc.c | 32 ++++++++++++++++++++++++++++----
+ 1 file changed, 28 insertions(+), 4 deletions(-)
 
-> ---
->   arch/arm/mm/ioremap.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mm/ioremap.c b/arch/arm/mm/ioremap.c
-> index 000e8210000b..80fb5a4a5c05 100644
-> --- a/arch/arm/mm/ioremap.c
-> +++ b/arch/arm/mm/ioremap.c
-> @@ -27,6 +27,7 @@
->   #include <linux/vmalloc.h>
->   #include <linux/io.h>
->   #include <linux/sizes.h>
-> +#include <linux/memblock.h>
->   
->   #include <asm/cp15.h>
->   #include <asm/cputype.h>
-> @@ -284,7 +285,8 @@ static void __iomem * __arm_ioremap_pfn_caller(unsigned long pfn,
->   	 * Don't allow RAM to be mapped with mismatched attributes - this
->   	 * causes problems with ARMv6+
->   	 */
-> -	if (WARN_ON(pfn_valid(pfn) && mtype != MT_MEMORY_RW))
-> +	if (WARN_ON(memblock_is_map_memory(PFN_PHYS(pfn)) &&
-> +		    mtype != MT_MEMORY_RW))
->   		return NULL;
->   
->   	area = get_vm_area_caller(size, VM_IOREMAP, caller);
-> 
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index aaad569e8963..01ad46f97365 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2785,10 +2785,34 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+ 	 * to fails, fallback to a single page allocator that is
+ 	 * more permissive.
+ 	 */
+-	if (!order)
+-		nr_allocated = alloc_pages_bulk_array_node(
+-			gfp, nid, nr_pages, pages);
+-	else
++	if (!order) {
++		while (nr_allocated < nr_pages) {
++			int nr, nr_pages_request;
++
++			/*
++			 * A maximum allowed request is hard-coded and is 100
++			 * pages per call. That is done in order to prevent a
++			 * long preemption off scenario in the bulk-allocator
++			 * so the range is [1:100].
++			 */
++			nr_pages_request = min(100, (int)(nr_pages - nr_allocated));
++
++			nr = alloc_pages_bulk_array_node(gfp, nid,
++				nr_pages_request, pages + nr_allocated);
++
++			nr_allocated += nr;
++
++			if (gfpflags_allow_blocking(gfp))
++				cond_resched();
++
++			/*
++			 * If zero or pages were obtained partly,
++			 * fallback to a single page allocator.
++			 */
++			if (nr != nr_pages_request)
++				break;
++		}
++	} else
+ 		/*
+ 		 * Compound pages required for remap_vmalloc_page if
+ 		 * high-order pages.
+-- 
+2.20.1
 
