@@ -2,254 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3345D3BB662
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 06:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E523BB666
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 06:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbhGEEea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 00:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
+        id S229725AbhGEEf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 00:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhGEEe2 (ORCPT
+        with ESMTP id S229495AbhGEEf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 00:34:28 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99763C061574;
-        Sun,  4 Jul 2021 21:31:51 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id n9so11446074qtk.7;
-        Sun, 04 Jul 2021 21:31:51 -0700 (PDT)
+        Mon, 5 Jul 2021 00:35:27 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301F4C061762
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 21:32:51 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id a14so9372245pls.4
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 21:32:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
-         :from:to:references:in-reply-to;
-        bh=GlYcJPEoHWUHQ7cx8FUdsWiY0c6tz5TYpEX2amx01CE=;
-        b=UJfAEhpbYg/lhNpSlEHMXn6YYZm/9AqVnI1A89T5O0qu7F7eR0h+Wa83yJS8fdVzkf
-         U5FSV+1T+6a05ZdsXwQZHqJBQHbOK33OgEySrikcSdb4NRbChXZEmdxJUQTRnzBV4enz
-         pyXqtl1X6NonF26LUypIppNOoLtjpX1Mn0hJ6WkMwwN6ebX7kJih+816pO+XdUSWMfpK
-         PCES9yBvlynBzk3yrx6uvT7zpJebZcIjss6v8epEvptvY44b7xDptplTJwWmPfO/eIXL
-         aToMWpIzWV9C9p9TYw1cK70xzKdAteQN3PLlq95+IhWXzN4ekK2zZV2vYT78gfU8vl5C
-         iyQQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hzs9/MPPqTbukCCd+SDEsivmHIJPRX7gx5UfTUvkO7w=;
+        b=Ue5aGYTLaC8HcxL1/2BoBxtkAQIa1ZkefHZUYkQVM3UWIPu1+OOnNUXWhl4DwwYb9G
+         dJNIXFekZQnf0jA9psHMJJlz+/O94nmrHk/TsGx2EIW6DcJuMX1ZjbJXyb+CUpJu3XC2
+         uFieHD3yOm4nNasAMUaTljWiY1Y/DNlsQCI2he5/6KAqy84hLw7iq0cj0TAFQnhjPj1U
+         MsatVP1pAbxSAK5M/6Sh9d1bPpnjFp/hFwryk/Qdrs2ChxdECWiBm+tM2saXf+2m8E2n
+         +OLVO2jEhIl3srKnuzvsBBw4R6bhp5OQud6XOiCwFAUYHu4kMGMRGcQGOaVplGdsOFrq
+         ynZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:cc:subject:from:to:references:in-reply-to;
-        bh=GlYcJPEoHWUHQ7cx8FUdsWiY0c6tz5TYpEX2amx01CE=;
-        b=bm3C+V8sEP+gfZ+ixJfbihpGhXy/AsNFGnCSdJwMxGCD1YfAysUNVxKh9zEiEDLKso
-         duIEJuDmguvsaFo2TGL9ouU57s+I9QQtqT/smpNNk5XXdeWcERlkVxtSpPdfggb9CSc2
-         qHmE2CEaY25Tt2Mh/Nv+fDgJomrPb0cwmcJty7sGW0wJAqB7iQeHJ3Of3oo+GRoYZ26n
-         JbQ/aLcz2ut5EbntxVaMr9fKZX8wM1nuQaLsEQr6XQuU0Xi20tV1oXP10DCwfoh3XmbO
-         p5MHSgIpBBFvTafva5dLKUdNKDvJz5C3qoPHt9TAQWJ+ku8vhwnF66OpKkwjkvOHF8Ip
-         6M1g==
-X-Gm-Message-State: AOAM531yAlhXlb4T7L+eGz4Kbf2eR+zIa+gVnwqoB/t1HS3z/UxvhypH
-        RRPDW/NkOy7H33H7EtBZE5w=
-X-Google-Smtp-Source: ABdhPJx6cfQqc61XC/zyXiNWPOvfB7wknYYj9fsUZlhO5Sivt9q0n8Yqw8kSGTJd02804z/5h222CA==
-X-Received: by 2002:ac8:67d9:: with SMTP id r25mr10922563qtp.111.1625459510618;
-        Sun, 04 Jul 2021 21:31:50 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id q184sm4945265qkd.35.2021.07.04.21.31.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Jul 2021 21:31:50 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 05 Jul 2021 00:31:49 -0400
-Message-Id: <CCKXB1Z0D45K.323FW46EK6841@shaak>
-Cc:     <peda@axentia.se>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 09/10] dt-bindings: iio: afe: add bindings for
- temperature-sense-rtd
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Jonathan Cameron" <jic23@kernel.org>
-References: <20210701010034.303088-1-liambeguin@gmail.com>
- <20210701010034.303088-10-liambeguin@gmail.com>
- <20210704180259.7cba5831@jic23-huawei>
-In-Reply-To: <20210704180259.7cba5831@jic23-huawei>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hzs9/MPPqTbukCCd+SDEsivmHIJPRX7gx5UfTUvkO7w=;
+        b=IxDp8yiVIcWkDuHMfh4e4//3ocxeqVFWjYyYOmqrikKi3WGUGYszca9LlIyUFmLgH5
+         zfZ8SAGZIBFT51JLD2BETAs7ItunT87J+Wd0vgf6FxJ6M2KggT65l+JOMkDpEFxwPAQ7
+         WS/QVybQYWON0adpwEHXxC93lpcpIMEFNkntdks41R7/aSuAx4jKpUzXGJ4LD7y9ggWB
+         uu7SxUqRa4Cf11D3QdF1IQCWk5lBEKQHvhZa+LdID2GXhDtPDKlia30cuilGDy7Wk1D9
+         +IOW+8/H+zxK8FoPXSmIGMm4UtUSZoSs+GBkGfWgyYwQgCECSVgqYtRv7TaN3XXczpQR
+         kFpg==
+X-Gm-Message-State: AOAM532q6AFhoXclF30Txf7DFIZJj/Nao0044bT1fgq7eWkaB/M2dlqT
+        4u5CJ6vOxOlnJ7Ki0dt/Pjql1Q==
+X-Google-Smtp-Source: ABdhPJx4oNRUqlZr1vQ97rs7GdaVbmtY4QFUJ4jxXHLPcFSeovx9yoMEHeGGNU0D5JbwmK+kl4s44A==
+X-Received: by 2002:a17:90a:d506:: with SMTP id t6mr12980439pju.26.1625459570574;
+        Sun, 04 Jul 2021 21:32:50 -0700 (PDT)
+Received: from localhost ([106.201.108.2])
+        by smtp.gmail.com with ESMTPSA id z20sm12768901pgk.36.2021.07.04.21.32.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Jul 2021 21:32:49 -0700 (PDT)
+Date:   Mon, 5 Jul 2021 10:02:48 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Hector Yuan <hector.yuan@mediatek.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>
+Subject: Re: [PATCH v12 1/2] cpufreq: mediatek-hw: Add support for CPUFREQ HW
+Message-ID: <20210705043248.sivxgodszzhrax2d@vireshk-i7>
+References: <1622307153-3639-1-git-send-email-hector.yuan@mediatek.com>
+ <1622307153-3639-2-git-send-email-hector.yuan@mediatek.com>
+ <20210614104058.jdwb7godqzhf7rgd@vireshk-i7>
+ <1624781848.1958.16.camel@mtkswgap22>
+ <20210628072641.amqk5d3svwolvhic@vireshk-i7>
+ <20210628090956.uwkrozdqvawsm3xp@bogus>
+ <20210629024719.nmcygaigtx5wn7g5@vireshk-i7>
+ <20210629090238.n23zcttkiqvzpbb5@bogus>
+ <20210629090522.jsiwkrki6lavo33z@vireshk-i7>
+ <1625418089.1958.48.camel@mtkswgap22>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1625418089.1958.48.camel@mtkswgap22>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun Jul 4, 2021 at 1:02 PM EDT, Jonathan Cameron wrote:
-> On Wed, 30 Jun 2021 21:00:33 -0400
-> Liam Beguin <liambeguin@gmail.com> wrote:
->
-> > From: Liam Beguin <lvb@xiphos.com>
-> >=20
-> > An ADC is often used to measure other quantities indirectly. This
-> > binding describe one case, the measurement of a temperature through the
-> > voltage across an RTD resistor such as a PT1000.
-> >=20
-> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> > ---
-> >  .../iio/afe/temperature-sense-rtd.yaml        | 101 ++++++++++++++++++
-> >  MAINTAINERS                                   |   7 ++
-> >  2 files changed, 108 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/afe/temperatu=
-re-sense-rtd.yaml
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/iio/afe/temperature-sens=
-e-rtd.yaml b/Documentation/devicetree/bindings/iio/afe/temperature-sense-rt=
-d.yaml
-> > new file mode 100644
-> > index 000000000000..e23e74e63ec5
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.y=
-aml
-> > @@ -0,0 +1,101 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/afe/temperature-sense-rtd.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Temperature Sense RTD
-> > +
-> > +maintainers:
-> > +  - Liam Beguin <lvb@xiphos.com>
-> > +
-> > +description: |
-> > +  RTDs (Resistance Temperature Detectors) are a kind of temperature se=
-nsors
-> > +  used to get a linear voltage to temperature reading within a give ra=
-nge
-> > +  (usually 0 to 100 degrees Celsius).
-> > +
-> > +  When an io-channel measures the output voltage across an RTD such as=
- a
-> > +  PT1000, the interesting measurement is almost always the correspondi=
-ng
-> > +  temperature, not the voltage output. This binding describes such a c=
-ircuit.
-> > +
-> > +  The general transfer function here is (using SI units)
-> > +
-> > +    V =3D R(T) * iexc
-> > +    R(T) =3D r0 * (1 + alpha * T)
-> > +    T =3D 1 / (alpha * r0 * iexc) * (V - r0 * iexc)
-> > +
-> > +  The following circuit matches what's in the examples section.
-> > +
-> > +           5V0
-> > +          -----
-> > +            |
-> > +        +---+----+
-> > +        |  R 5k  |
-> > +        +---+----+
-> > +            |
-> > +            V 1mA
-> > +            |
-> > +            +---- Vout
-> > +            |
-> > +        +---+----+
-> > +        | PT1000 |
-> > +        +---+----+
-> > +            |
-> > +          -----
-> > +           GND
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: temperature-sense-rtd
-> > +
-> > +  io-channels:
-> > +    maxItems: 1
-> > +    description: |
-> > +      Channel node of a voltage io-channel.
-> > +
-> > +  '#io-channel-cells':
-> > +    const: 1
->
-> Only 1 channel, so this should be 0. For consumers of this driver
-> they only need to identify the device, not the device + channel.
->
-> https://github.com/devicetree-org/dt-schema/blob/master/schemas/iio/iio.y=
-aml
->
+On 05-07-21, 01:01, Hector Yuan wrote:
+> Hi, Viresh:
+> 
+> OK, Thank you.
+> 
+> I'll add this routine in of.c.
+> May I know the below prototype is okay to you?
+> 
+> static int _of_get_related_cpus(const char *list_name, const char
+> *cell_name, int index, struct cpumask *m)
 
-Thanks for pointing that out. will fix.
+of_perf_domain_get_sharing_cpumask(int cpu, const char *list_name,
+        const char *cell_name, struct cpumask *cpumask);
 
-> > +
-> > +  excitation-current-microamp:
-> > +    description: The current fed through the RTD sensor.
-> > +
-> > +  alpha-ppm-per-celsius:
-> > +    description: |
-> > +      alpha can also be expressed in micro-ohms per ohm Celsius. It's =
-a linear
-> > +      approximation of the resistance versus temperature relationship
-> > +      between 0 and 100 degrees Celsius.
-> > +
-> > +      alpha =3D (R_100 - R_0) / (100 * R_0)
-> > +
-> > +      Where, R_100 is the resistance of the sensor at 100 degrees Cels=
-ius, and
-> > +      R_0 (or r-naught-ohms) is the resistance of the sensor at 0 degr=
-ees
-> > +      Celsius.
-> > +
-> > +      Pure platinum has an alpha of 3925. Industry standards such as I=
-EC60751
-> > +      and ASTM E-1137 specify an alpha of 3850.
-> > +
-> > +  r-naught-ohms:
-> > +    description: |
-> > +      Resistance of the sensor at 0 degrees Celsius.
-> > +      Common values are 100 for PT100, 500 for PT500, and 1000 for PT1=
-000
-> > +
-> > +additionalProperties: false
-> > +required:
-> > +  - compatible
-> > +  - io-channels
-> > +  - excitation-current-microamp
-> > +  - alpha-ppm-per-celsius
-> > +  - r-naught-ohms
-> > +
-> > +examples:
-> > +  - |
-> > +    pt1000_1: temperature-sensor0 {
-> > +        compatible =3D "temperature-sense-rtd";
-> > +        #io-channel-cells =3D <1>;
-> > +        io-channels =3D <&temp_adc1 0>;
-> > +
-> > +        excitation-current-microamp =3D <1000>; /* i =3D U/R =3D 5 / 5=
-000 */
-> > +        alpha-ppm-per-celsius =3D <3908>;
-> > +        r-naught-ohms =3D <1000>;
-> > +    };
-> > +...
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 9bf553e53f0f..ed80e671a16a 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -8897,6 +8897,13 @@ F:	Documentation/devicetree/bindings/iio/afe/cur=
-rent-sense-shunt.yaml
-> >  F:	Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
-> >  F:	drivers/iio/afe/iio-rescale.c
-> > =20
-> > +IIO UNIT CONVERTER (TEMPERATURE)
-> > +M:	Liam Beguin <liambeguin@gmail.com>
-> > +R:	Peter Rosin <peda@axentia.se>
-> > +L:	linux-iio@vger.kernel.org
-> > +S:	Maintained
-> > +F:	Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.yam=
-l
->
-> I'm not sure we'd normally bother with a MAINTAINERS entry when it is
-> just the binding doc
-> (as rest is in the driver). The binding doc itself has it's own local
-> maintainers entry
-> which is the more useful one.
->
+And actually add this in cpufreq.h, this doesn't have anything to do with OPP
+and I can assume that a platform not enabling the OPP functionality to end up
+using it later.
 
-You're right, it makes sense to drop the changes to MAINTAINERS as the
-information is already contained it the bindings.
-I added this after briefly talking about it with Peter.
+Rafael, will that be fine ? Or we add it in a completely new header ? The users
+are going to be cpufreq drivers only I believe.
 
-Thanks again for reviewing these changes,
-Liam
+> And maybe I have to find somewhere to update my
+> mtk_freq_domain_map[cpu]?
+> 
+> static int mtk_get_related_cpus(int index, struct cpufreq_mtk *c)
+> {
+> 	for_each_possible_cpu(cpu) {
+> 		cpumask_set_cpu(cpu, &c->related_cpus);//related_cpu can copy policy
+> cpus
+> 		mtk_freq_domain_map[cpu] = c;//need to find somewhere to assign
+> 
+> 	}
+> }
 
-> > +
-> >  IKANOS/ADI EAGLE ADSL USB DRIVER
-> >  M:	Matthieu Castet <castet.matthieu@free.fr>
-> >  M:	Stanislaw Gruszka <stf_xl@wp.pl>
+I am not sure I understood this part well.
 
+-- 
+viresh
