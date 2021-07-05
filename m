@@ -2,141 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038343BB6FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 07:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A6F3BB703
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 07:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhGEFvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 01:51:01 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:38710 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbhGEFu6 (ORCPT
+        id S229813AbhGEFyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 01:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhGEFyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 01:50:58 -0400
-Received: by mail-io1-f71.google.com with SMTP id r137-20020a6b2b8f0000b02904fb34cb474cso12763164ior.5
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 22:48:21 -0700 (PDT)
+        Mon, 5 Jul 2021 01:54:52 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBF2C061764
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Jul 2021 22:52:15 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id b18so4467920qkc.5
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Jul 2021 22:52:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=acFFnc2K12wOHUyfLNRwMWrK9e0gblQqV11SgKmI8t8=;
+        b=qEOzrR9a+4ilsVkLIVIgtyt2wnIvJylA4Q+fRNH77UxEzvOspq6FTxNHm9RaLYGyU5
+         knql8SMEKq0UJQXL0JiFFvBwC/32kq4G7gSn0UvPsrWHcdVWiLWCUY2y+xcnXHqhIE7d
+         UVfxOZjBLHN2YnoKiGusrPbe69gAvPXx+QSBurnKbdA+BYdz6Ur2EZIWZJ+fpnuImfJj
+         F1IN7AUFmEsiusHk4EOa+SmFPC1hJxNha0GpU9J4wM+7F0fd89JzMQZFy3vZ7SrsoDY4
+         e6xjsnLKzVrOIWMGqMc8kP2BPSiHMNv8Cdvnb3bpiqnpw4xv9sV2p4v4TqAky/okwnf8
+         BZ4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=wRSgNzZXH2xxp9K3H2BC2/fZmdd7h9FPY4SkTy/ARlg=;
-        b=WiQ2wbGt1EhxWsGmIpVVvfeDN1nlrAZgNKl6nBsFlRanGi/eUlUdlOSL2jZhj9vHDw
-         Cy14DzzZQiYWPnO4uDMAwuSmY3ZGVnMriyfylfW+EpBukLiX+H02Rz5jAagDHdMwt3Mk
-         eHpuYFEbo5BvRtpFSN+dm6dBomxo6ZIznzHuyPZUXiQs8TxRaXiltNs/xFvfpB0Tvlrn
-         wVZTNwGawuMlXMITOg1+7ysk3ZmQL4YgGfusFgzhFsQ0fCiaC7XmVGi0Bi001n0BU3mr
-         5JvgYIGEXu19IoyQd53BaiGyOSsk0+E4NCGwPnPcJzYDheqMxPyaV++m53b7w7JzzTF9
-         ir4Q==
-X-Gm-Message-State: AOAM532wcoiG06k3axCEmN7Lb4NsM4SzHybZ1eDXPYHaYrPMGEYIFweL
-        MCW8SHZ0spApYVClRGlo2yOOF2em/VARmWjeqG37OtwSVm0k
-X-Google-Smtp-Source: ABdhPJx8MTDtaDyq1AwLuBK3EUbZ1drIKYzESuDsgdBRQJmyLEgKVxTKAVtLLd1iQa5TnN6IbmgfwqQ0nOtnuI2ReYpleciqDPhX
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=acFFnc2K12wOHUyfLNRwMWrK9e0gblQqV11SgKmI8t8=;
+        b=Fo1o6XGUUOw0oTRM+VVqsExoZUGOA1H4aKQNuXQ/oxipMMD+hFPaqIjSIHPtFpUo2c
+         O5qiMXr/nwrzIqItWHttN31k7wFcZDT9iINI3hvZM8vTpSzR+KyD3qZQ/51cDlZJb8Kk
+         wlG9txB96Xb5HPHjYeJbIg0MLb8tudPwIXAcfeR9JeCligY022cJO+Bl1Mz/OQiJDrIg
+         q40ArGUK2/w7O2+dKIBS3KK8ZXM2bo48t6aZnd2IMNm8s+Ma+mpp+JdJreEu//LKtjjt
+         YGehaUaWJhl0/3Ml894pvqzgdN5lFiEw9CzM/8UmVCH2O7iZAvKIrgVCl2UmQ608cY0o
+         S89g==
+X-Gm-Message-State: AOAM531r4rK272/toheI6mgiFc/sR1SNlPrfIsIn96jASE7ptrGdZ4Ht
+        tQ8b6DUFJI36bDEOYzz8a7tykOmYv9a5wZQX2tsb6A==
+X-Google-Smtp-Source: ABdhPJwho7f9Ip5jWkMRZEL+efu46oF7eiub/QyUXkTCp/J+kZd/GLjbaHayu3WG8skHmrkLnRku1VTnFyenPekrvK0=
+X-Received: by 2002:a05:620a:1184:: with SMTP id b4mr7454309qkk.350.1625464334142;
+ Sun, 04 Jul 2021 22:52:14 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:347:: with SMTP id x7mr11026677jap.143.1625464100654;
- Sun, 04 Jul 2021 22:48:20 -0700 (PDT)
-Date:   Sun, 04 Jul 2021 22:48:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005093cb05c659dae4@google.com>
-Subject: [syzbot] general protection fault in blk_mq_run_hw_queues
-From:   syzbot <syzbot+9ca43ff47167c0ee3466@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000004e5ec705c6318557@google.com> <CACT4Y+YysFa1UzT6zw9GGns69WSFgqrL6P_LjUju6ujcJRTaeA@mail.gmail.com>
+ <d11c276d-65a0-5273-d797-1092e1e2692a@schaufler-ca.com> <CAHC9VhSq88YjA-VGSTKkc4hkc_KOK=mnoAYiX1us6O6U0gFzAQ@mail.gmail.com>
+In-Reply-To: <CAHC9VhSq88YjA-VGSTKkc4hkc_KOK=mnoAYiX1us6O6U0gFzAQ@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 5 Jul 2021 07:52:03 +0200
+Message-ID: <CACT4Y+bj4epytaY4hhEx5GF+Z2xcMnS4AEg=JcrTEnWvXWFuGQ@mail.gmail.com>
+Subject: Re: [syzbot] general protection fault in legacy_parse_param
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, Jul 4, 2021 at 4:14 PM Paul Moore <paul@paul-moore.com> wrote:
+>
+> On Sat, Jul 3, 2021 at 6:16 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> > On 7/2/2021 10:51 PM, Dmitry Vyukov wrote:
+> > > On Sat, Jul 3, 2021 at 7:41 AM syzbot
+> > > <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com> wrote:
+> > >> Hello,
+> > >>
+> > >> syzbot found the following issue on:
+> > >>
+> > >> HEAD commit:    62fb9874 Linux 5.13
+> > >> git tree:       upstream
+> > >> console output: https://syzkaller.appspot.com/x/log.txt?x=12ffa118300000
+> > >> kernel config:  https://syzkaller.appspot.com/x/.config?x=19404adbea015a58
+> > >> dashboard link: https://syzkaller.appspot.com/bug?extid=d1e3b1d92d25abf97943
+> > >> compiler:       Debian clang version 11.0.1-2
+> > >>
+> > >> Unfortunately, I don't have any reproducer for this issue yet.
+> > >>
+> > >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > >> Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
+> > > +Casey for what looks like a smackfs issue
+> >
+> > This is from the new mount infrastructure introduced by
+> > David Howells in November 2018. It makes sense that there
+> > may be a problem in SELinux as well, as the code was introduced
+> > by the same developer at the same time for the same purpose.
+> >
+> > > The crash was triggered by this test case:
+> > >
+> > > 21:55:33 executing program 1:
+> > > r0 = fsopen(&(0x7f0000000040)='ext3\x00', 0x1)
+> > > fsconfig$FSCONFIG_SET_STRING(r0, 0x1, &(0x7f00000002c0)='smackfsroot',
+> > > &(0x7f0000000300)='default_permissions', 0x0)
+> > >
+> > > And I think the issue is in smack_fs_context_parse_param():
+> > > https://elixir.bootlin.com/linux/latest/source/security/smack/smack_lsm.c#L691
+> > >
+> > > But it seems that selinux_fs_context_parse_param() contains the same issue:
+> > > https://elixir.bootlin.com/linux/latest/source/security/selinux/hooks.c#L2919
+> > > +So selinux maintainers as well.
+> > >
+> > >> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+> > >> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+> > >> CPU: 0 PID: 20300 Comm: syz-executor.1 Not tainted 5.13.0-syzkaller #0
+> > >> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > >> RIP: 0010:memchr+0x2f/0x70 lib/string.c:1054
+> > >> Code: 41 54 53 48 89 d3 41 89 f7 45 31 f6 49 bc 00 00 00 00 00 fc ff df 0f 1f 44 00 00 48 85 db 74 3b 48 89 fd 48 89 f8 48 c1 e8 03 <42> 0f b6 04 20 84 c0 75 0f 48 ff cb 48 8d 7d 01 44 38 7d 00 75 db
+> > >> RSP: 0018:ffffc90001dafd00 EFLAGS: 00010246
+> > >> RAX: 0000000000000000 RBX: 0000000000000013 RCX: dffffc0000000000
+> > >> RDX: 0000000000000013 RSI: 000000000000002c RDI: 0000000000000000
+> > >> RBP: 0000000000000000 R08: ffffffff81e171bf R09: ffffffff81e16f95
+> > >> R10: 0000000000000002 R11: ffff88807e96b880 R12: dffffc0000000000
+> > >> R13: ffff888020894000 R14: 0000000000000000 R15: 000000000000002c
+> > >> FS:  00007fe01ae27700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+> > >> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > >> CR2: 00000000005645a8 CR3: 0000000018afc000 CR4: 00000000001506f0
+> > >> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > >> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > >> Call Trace:
+> > >>  legacy_parse_param+0x461/0x7e0 fs/fs_context.c:537
+> > >>  vfs_parse_fs_param+0x1e5/0x460 fs/fs_context.c:117
+>
+> It's Sunday morning and perhaps my mind is not yet in a "hey, let's
+> look at VFS kernel code!" mindset, but I'm not convinced the problem
+> is the 'param->string = NULL' assignment in the LSM hooks.  In both
+> the case of SELinux and Smack that code ends up returning either a 0
+> (Smack) or a 1 (SELinux) - that's a little odd in it's own way, but I
+> don't believe it is relevant here - either way these return values are
+> not equal to -ENOPARAM so we should end up returning early from
+> vfs_parse_fs_param before it calls down into legacy_parse_param():
+>
+> Taken from https://elixir.bootlin.com/linux/latest/source/fs/fs_context.c#L109 :
+>
+>   ret = security_fs_context_parse_param(fc, param);
+>   if (ret != -ENOPARAM)
+>     /* Param belongs to the LSM or is disallowed by the LSM; so
+>      * don't pass to the FS.
+>      */
+>     return ret;
+>
+>   if (fc->ops->parse_param) {
+>     ret = fc->ops->parse_param(fc, param);
+>     if (ret != -ENOPARAM)
+>       return ret;
+>   }
 
-syzbot found the following issue on:
+Hi Paul,
 
-HEAD commit:    dbe69e43 Merge tag 'net-next-5.14' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12690d94300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ef0afdedbe2d773d
-dashboard link: https://syzkaller.appspot.com/bug?extid=9ca43ff47167c0ee3466
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ded6ac300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12af1344300000
+You are right.
+I almost connected the dots, but not exactly.
+Now that I read more code around, setting "param->string = NULL" in
+smack_fs_context_parse_param() looks correct to me (the fs copies and
+takes ownership of the string).
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9ca43ff47167c0ee3466@syzkaller.appspotmail.com
-
-netlink: 4 bytes leftover after parsing attributes in process `syz-executor092'.
-netlink: 4 bytes leftover after parsing attributes in process `syz-executor092'.
-nbd: socks must be embedded in a SOCK_ITEM attr
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 0 PID: 8422 Comm: syz-executor092 Tainted: G        W         5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:blk_mq_map_queue_type block/blk-mq.h:96 [inline]
-RIP: 0010:blk_mq_get_sq_hctx block/blk-mq.c:1663 [inline]
-RIP: 0010:blk_mq_run_hw_queues+0x14f/0x430 block/blk-mq.c:1682
-Code: 80 3c 08 00 74 08 48 89 ef e8 0d 0f dd fd 44 89 fb 48 c1 e3 02 48 03 5d 00 48 89 d8 48 c1 e8 03 48 bd 00 00 00 00 00 fc ff df <8a> 04 28 84 c0 0f 85 b7 02 00 00 8b 03 49 8d 1c c4 48 89 d8 48 c1
-RSP: 0018:ffffc9000183f160 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: dffffc0000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88801f912b38
-RBP: dffffc0000000000 R08: ffffffff83eb6412 R09: ffffed1003f22687
-R10: ffffed1003f22687 R11: 0000000000000000 R12: ffff88814615f4d8
-R13: 0000000000000000 R14: ffff88801f912af0 R15: 0000000000000000
-FS:  0000000001ab6300(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa915ace020 CR3: 0000000018231000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- blk_set_queue_dying block/blk-core.c:353 [inline]
- blk_cleanup_queue+0x9c/0x220 block/blk-core.c:380
- blk_cleanup_disk+0x3b/0x80 block/genhd.c:1324
- nbd_dev_remove drivers/block/nbd.c:226 [inline]
- nbd_put+0x9d/0x170 drivers/block/nbd.c:246
- nbd_genl_connect+0x17e7/0x1aa0 drivers/block/nbd.c:1957
- genl_family_rcv_msg_doit net/netlink/genetlink.c:739 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0xfb4/0x13c0 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x1f0/0x460 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x7de/0x9b0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0xaa6/0xe90 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:702 [inline]
- sock_sendmsg net/socket.c:722 [inline]
- ____sys_sendmsg+0x5a2/0x900 net/socket.c:2385
- ___sys_sendmsg net/socket.c:2439 [inline]
- __sys_sendmsg+0x319/0x400 net/socket.c:2468
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43fa29
-Code: 28 c3 e8 5a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffcd5946088 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 000000000043fa29
-RDX: 0000000000000000 RSI: 0000000020000b40 RDI: 0000000000000003
-RBP: 0000000000403490 R08: 0000000000000000 R09: 00000000004004a0
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403520
-R13: 0000000000000000 R14: 00000000004ad018 R15: 00000000004004a0
-Modules linked in:
----[ end trace d9ad06d2dab45e1b ]---
-RIP: 0010:blk_mq_map_queue_type block/blk-mq.h:96 [inline]
-RIP: 0010:blk_mq_get_sq_hctx block/blk-mq.c:1663 [inline]
-RIP: 0010:blk_mq_run_hw_queues+0x14f/0x430 block/blk-mq.c:1682
-Code: 80 3c 08 00 74 08 48 89 ef e8 0d 0f dd fd 44 89 fb 48 c1 e3 02 48 03 5d 00 48 89 d8 48 c1 e8 03 48 bd 00 00 00 00 00 fc ff df <8a> 04 28 84 c0 0f 85 b7 02 00 00 8b 03 49 8d 1c c4 48 89 d8 48 c1
-RSP: 0018:ffffc9000183f160 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: dffffc0000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88801f912b38
-RBP: dffffc0000000000 R08: ffffffff83eb6412 R09: ffffed1003f22687
-R10: ffffed1003f22687 R11: 0000000000000000 R12: ffff88814615f4d8
-R13: 0000000000000000 R14: ffff88801f912af0 R15: 0000000000000000
-FS:  0000000001ab6300(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa915ace020 CR3: 0000000018231000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+I don't see how the crash happened...
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> > >>  vfs_fsconfig_locked fs/fsopen.c:265 [inline]
+> > >>  __do_sys_fsconfig fs/fsopen.c:439 [inline]
+> > >>  __se_sys_fsconfig+0xba9/0xff0 fs/fsopen.c:314
+> > >>  do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
+> > >>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > >> RIP: 0033:0x4665d9
+> > >> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> > >> RSP: 002b:00007fe01ae27188 EFLAGS: 00000246 ORIG_RAX: 00000000000001af
+> > >> RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+> > >> RDX: 00000000200002c0 RSI: 0000000000000001 RDI: 0000000000000003
+> > >> RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+> > >> R10: 0000000020000300 R11: 0000000000000246 R12: 000000000056bf80
+> > >> R13: 00007ffd4bb7c5bf R14: 00007fe01ae27300 R15: 0000000000022000
+> > >> Modules linked in:
+> > >> ---[ end trace 5d7119165725bd63 ]---
+>
+> --
+> paul moore
+> www.paul-moore.com
