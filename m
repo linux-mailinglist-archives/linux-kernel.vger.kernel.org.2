@@ -2,189 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A524C3BBA4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D773BBA5D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbhGEJlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 05:41:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbhGEJlI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 05:41:08 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 716E6C061760
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 02:38:30 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id v5so21281720wrt.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 02:38:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LDdjbER3ezDFScKXgmO5TeU2cTUwmoN1ugG4eC/4fRE=;
-        b=F0z7nalwgxiHBebhvwXGMOcu19AjtIyTZ8gOtgUmAecjEzdZ0JR51TdJqdpxokNcg8
-         aATi42Gc+mVeF6ctIyK+AnI++csxpuZsORaSpB1yR4YuJMrD9EUDqvUcw9rsrMPd9xb5
-         beXd5+zvcw0EHShwhNKAG3hBnZ9VZE+Iy5YRDviARu+TxH05NE3iI/517025+IC20RGP
-         xdLCEhkL0nnvibb8AX3UrW4JmfA0kwfKZzNJSuMrh7/P5bDFb2ZIPmR5wrNspvEuOOD0
-         Ka4srlJh74bUe81TROTgUv1DaE3jtze4c6sdINivmPr/5trNWMYR5pDzCgvbcQEYIoVq
-         vybw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LDdjbER3ezDFScKXgmO5TeU2cTUwmoN1ugG4eC/4fRE=;
-        b=oZfohp2ON1Bk10VnjqtLPV1iWIPx9b1cJU5UUuhrf6YPhAp5//bY44z0sTt3KW3+4a
-         m9b/PaBY6qqqwEKC93hdB41ka6caYZazGb6R+rFVqcXi/WC7B7TYsmTUrqWdDxVW/y6A
-         963zJ5DiKMcZnSa2eFbl7RLNbVxYuEZ1jw3Imm8Z/Isg4OwA7ypu6EQuSjY8NTiE0x+J
-         chPWt5ub5OufVW1C/nu6HSzERwEldVa/js76YqKkWEEz+akjgqp1ZfTS4EKT8/490MHA
-         NuP7BRyTdtR163AyFeRdkqvGVhZp4QdGErtQY5XWCcLdN7N+fzMZM05WnMIUHGJ80IGl
-         xhlg==
-X-Gm-Message-State: AOAM532GJGBdm/jb9pUlnbsi7nPU89e5hAg1WoW97rLlhAcHaOkGjj6t
-        KBEGfXnRGilN2XnsE+8a9FIA9g==
-X-Google-Smtp-Source: ABdhPJwEyzHzFmiT+oW5m+5FMnPGW3fRamXe3P45E/02iLv4nXIRvBryOSt3r+S90wa5tYE9V3D+zg==
-X-Received: by 2002:a5d:5005:: with SMTP id e5mr14541216wrt.138.1625477909068;
-        Mon, 05 Jul 2021 02:38:29 -0700 (PDT)
-Received: from [192.168.1.9] (hst-221-44.medicom.bg. [84.238.221.44])
-        by smtp.googlemail.com with ESMTPSA id u2sm6553637wmc.42.2021.07.05.02.38.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Jul 2021 02:38:28 -0700 (PDT)
-Subject: Re: [PATCH v2 1/7] venus: firmware: enable no tz fw loading for
- sc7280
-To:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-References: <1625126736-16266-1-git-send-email-dikshita@codeaurora.org>
- <1625126736-16266-2-git-send-email-dikshita@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <512298bd-f357-d2e6-9b1b-3a8b674cd3f4@linaro.org>
-Date:   Mon, 5 Jul 2021 12:38:27 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230501AbhGEJlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 05:41:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230421AbhGEJlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 05:41:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68C9E613F3;
+        Mon,  5 Jul 2021 09:39:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625477942;
+        bh=vxAWY0ph6pmD3HQOObhs9oaejXG7EqWCVvjjXkEJ4tQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BHnV8OF0dDWQOPfKdV2ED8A+zfgkH6lFzOTOmc5wampmO/oBmLh42iS0nmVDrwXAO
+         pD3qLZ1ks4qecuJ6jb9VZoUKB2ajzvFdbTT0A2YJrRSvbEAEISAz3m6YFv4MNinVAM
+         iX7EKmsZ+R1ynxGrZG3rL45ZqkQ9V8oF+3Re0m4t1uQrnadJqzqFUpkhvNR8N1Jn4Q
+         FcIbHiVAWHo9tN6vZKQs/UsImjM/cxFr+z+LXiVijkGglArAA6Sl98+EmpuSBMgv9k
+         /RrxZouJfwqRxksPRuemsWSnaicuJaRIsRVtmrqN/7T8/TchLotdyGbrEJdsRxkYmw
+         co0OwDiJrwGxw==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1m0L43-002toh-3M; Mon, 05 Jul 2021 11:38:55 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH v12 0/9] Move Hisilicon 6421v600 SPMI and USB drivers  out of staging
+Date:   Mon,  5 Jul 2021 11:38:41 +0200
+Message-Id: <cover.1625477735.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <1625126736-16266-2-git-send-email-dikshita@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
+This series depends on a regression fix patch merged via the regulator's tree, not merged upstream yet:
 
-On 7/1/21 11:05 AM, Dikshita Agarwal wrote:
-> - Enable no tz FW loading.
-> - add routine to reset XTSS.
-> 
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> ---
->  drivers/media/platform/qcom/venus/firmware.c     | 41 ++++++++++++++++++------
->  drivers/media/platform/qcom/venus/hfi_venus_io.h |  2 ++
->  2 files changed, 33 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
-> index 227bd3b..d5a4674 100644
-> --- a/drivers/media/platform/qcom/venus/firmware.c
-> +++ b/drivers/media/platform/qcom/venus/firmware.c
-> @@ -27,7 +27,12 @@
->  static void venus_reset_cpu(struct venus_core *core)
->  {
->  	u32 fw_size = core->fw.mapped_mem_size;
-> -	void __iomem *wrapper_base = core->wrapper_base;
-> +	void __iomem *wrapper_base;
-> +
-> +	if (IS_V6(core))
-> +		wrapper_base = core->wrapper_tz_base;
-> +	else
-> +		wrapper_base = core->wrapper_base;
->  
->  	writel(0, wrapper_base + WRAPPER_FW_START_ADDR);
->  	writel(fw_size, wrapper_base + WRAPPER_FW_END_ADDR);
-> @@ -35,11 +40,18 @@ static void venus_reset_cpu(struct venus_core *core)
->  	writel(fw_size, wrapper_base + WRAPPER_CPA_END_ADDR);
->  	writel(fw_size, wrapper_base + WRAPPER_NONPIX_START_ADDR);
->  	writel(fw_size, wrapper_base + WRAPPER_NONPIX_END_ADDR);
-> -	writel(0x0, wrapper_base + WRAPPER_CPU_CGC_DIS);
-> -	writel(0x0, wrapper_base + WRAPPER_CPU_CLOCK_CONFIG);
->  
-> -	/* Bring ARM9 out of reset */
-> -	writel(0, wrapper_base + WRAPPER_A9SS_SW_RESET);
-> +	if (IS_V6(core)) {
-> +		/* Bring XTSS out of reset */
-> +		writel(0, wrapper_base + WRAPPER_TZ_XTSS_SW_RESET);
-> +	}
-> +	else {
+https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git/commit/?h=for-5.14&id=5db5dd5be70eaf808d9fd90174b957fc5c2912cb
 
-} else {
-	...
-}
+(the dependence is just because of a trivial merge conflict)
 
-> +		writel(0x0, wrapper_base + WRAPPER_CPU_CGC_DIS);
-> +		writel(0x0, wrapper_base + WRAPPER_CPU_CLOCK_CONFIG);
-> +
-> +		/* Bring ARM9 out of reset */
-> +		writel(0, wrapper_base + WRAPPER_A9SS_SW_RESET);
-> +	}
->  }
->  
->  int venus_set_hw_state(struct venus_core *core, bool resume)
-> @@ -56,7 +68,9 @@ int venus_set_hw_state(struct venus_core *core, bool resume)
->  	if (resume) {
->  		venus_reset_cpu(core);
->  	} else {
-> -		if (!IS_V6(core))
-> +		if (IS_V6(core))
-> +			writel(1, core->wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
-> +		else
->  			writel(1, core->wrapper_base + WRAPPER_A9SS_SW_RESET);
->  	}
->  
-> @@ -162,12 +176,19 @@ static int venus_shutdown_no_tz(struct venus_core *core)
->  	u32 reg;
->  	struct device *dev = core->fw.dev;
->  	void __iomem *wrapper_base = core->wrapper_base;
-> +	void __iomem *wrapper_tz_base = core->wrapper_tz_base;
->  
-> +	if (IS_V6(core)) {
-> +	/* Assert the reset to XTSS */
+This series contain the final bits needed for the USB3 bus to work
+without staging drivers on Hikey 970.
 
-insert one tab before comment
+v12:
+  - Added Mark Brown's ack to patch 5;
+  - Addressed a couple issues at the DT binding, as pointed by Rob Herring
+    (patch 1).
 
-> +		reg = readl_relaxed(wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
-> +		reg |= WRAPPER_XTSS_SW_RESET_BIT;
-> +		writel_relaxed(reg, wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
-> +	} else {
->  	/* Assert the reset to ARM9 */
+Mauro Carvalho Chehab (9):
+  staging: hi6421-spmi-pmic: rename GPIO IRQ OF node
+  staging: hi6421-spmi-pmic:  add a missing dot at copyright
+  regulator: hi6421v600-regulator: add a missing dot at copyright
+  staging: hikey9xx: split hi6421v600 irq into a separate driver
+  staging: hi6421-spmi-pmic: cleanup drvdata
+  staging: hi6421-spmi-pmic: rename spmi_device struct
+  mfd: hi6421-spmi-pmic: move driver from staging
+  dts: hisilicon: add support for the PMIC found on Hikey 970
+  dts: hisilicon: add support for USB3 on Hikey 970
 
-insert one tab before comment
-
-> -	reg = readl_relaxed(wrapper_base + WRAPPER_A9SS_SW_RESET);
-> -	reg |= WRAPPER_A9SS_SW_RESET_BIT;
-> -	writel_relaxed(reg, wrapper_base + WRAPPER_A9SS_SW_RESET);
-> -
-> +		reg = readl_relaxed(wrapper_base + WRAPPER_A9SS_SW_RESET);
-> +		reg |= WRAPPER_A9SS_SW_RESET_BIT;
-> +		writel_relaxed(reg, wrapper_base + WRAPPER_A9SS_SW_RESET);
-> +	}
->  	/* Make sure reset is asserted before the mapping is removed */
->  	mb();
->  
-> diff --git a/drivers/media/platform/qcom/venus/hfi_venus_io.h b/drivers/media/platform/qcom/venus/hfi_venus_io.h
-> index 300c6e47..9735a24 100644
-> --- a/drivers/media/platform/qcom/venus/hfi_venus_io.h
-> +++ b/drivers/media/platform/qcom/venus/hfi_venus_io.h
-> @@ -149,6 +149,8 @@
->  /* Wrapper TZ 6xx */
->  #define WRAPPER_TZ_BASE_V6			0x000c0000
->  #define WRAPPER_TZ_CPU_STATUS_V6		0x10
-> +#define WRAPPER_TZ_XTSS_SW_RESET		0x1000
-> +#define WRAPPER_XTSS_SW_RESET_BIT		BIT(0)
->  
->  /* Venus AON */
->  #define AON_BASE_V6				0x000e0000
-> 
+ .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 134 ++++++++
+ MAINTAINERS                                   |   7 +
+ .../boot/dts/hisilicon/hi3670-hikey970.dts    | 129 ++++++--
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  56 ++++
+ .../boot/dts/hisilicon/hikey970-pmic.dtsi     |  87 +++++
+ drivers/mfd/Kconfig                           |  16 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/hi6421-spmi-pmic.c                |  66 ++++
+ drivers/misc/Kconfig                          |  10 +
+ drivers/misc/Makefile                         |   1 +
+ drivers/misc/hi6421v600-irq.c                 | 313 ++++++++++++++++++
+ drivers/regulator/hi6421v600-regulator.c      |  12 +-
+ drivers/staging/Kconfig                       |   2 -
+ drivers/staging/Makefile                      |   1 -
+ drivers/staging/hikey9xx/Kconfig              |  19 --
+ drivers/staging/hikey9xx/Makefile             |   3 -
+ drivers/staging/hikey9xx/TODO                 |   5 -
+ drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 311 -----------------
+ .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 134 --------
+ include/linux/mfd/hi6421-spmi-pmic.h          |  30 --
+ 20 files changed, 807 insertions(+), 530 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+ create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+ create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
+ create mode 100644 drivers/misc/hi6421v600-irq.c
+ delete mode 100644 drivers/staging/hikey9xx/Kconfig
+ delete mode 100644 drivers/staging/hikey9xx/Makefile
+ delete mode 100644 drivers/staging/hikey9xx/TODO
+ delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+ delete mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+ delete mode 100644 include/linux/mfd/hi6421-spmi-pmic.h
 
 -- 
-regards,
-Stan
+2.31.1
+
+
