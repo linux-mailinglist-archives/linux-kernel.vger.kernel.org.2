@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D593BC252
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 19:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA42B3BC253
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 19:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbhGERgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 13:36:51 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34840 "EHLO
+        id S229757AbhGERiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 13:38:10 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34986 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhGERgv (ORCPT
+        with ESMTP id S229686AbhGERiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 13:36:51 -0400
+        Mon, 5 Jul 2021 13:38:10 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2891E1FECA;
-        Mon,  5 Jul 2021 17:34:13 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 4B9C01FECA;
+        Mon,  5 Jul 2021 17:35:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625506453; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1625506532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=oI6Ddl2MLi4Ixs/HxFg4qQr/qjhduWFJziDO527/URE=;
-        b=eMdlMKpx+m2BkHHqkY3tg30EWhQQa9pY5kky58QPMza4BaB4gfx990dp7PcqG4CkcCTd1v
-        skrGCzDuGn9uSQxIiqNq8v5LHhqoyHjLfQLtarncDrkNIgkOrBGxCJW52gDUIxpTpDv+3b
-        3eGvDQDA1S8S6s2BAd9wh0wUV5mPx20=
+        bh=ryy7NcUsppacpzOlj5/iwubqICXl6Yx5KFaoSBa4Zzc=;
+        b=kYsvwhnO/Fq/X2QpzzOAvsa243JXWUC7rQ0ElMluz0llKDzvGZVQoXd+L3iY7ayPN6W/TI
+        7xY5VQX2G1+O86n5LYiVQJeSKbNlgmuc/QDp2MUSBWNiPB1W074MK+PqpWPPNXfDSB4BQU
+        MVGm8hIMuhL5RBWhegZ9grOzliePNCI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625506453;
+        s=susede2_ed25519; t=1625506532;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=oI6Ddl2MLi4Ixs/HxFg4qQr/qjhduWFJziDO527/URE=;
-        b=2sq01ml3fN/VeDUzHV9zzuUZ/4TCAURnx15aBbqJDzyMQ8w/9X4mEM1KJI/C7IeubWRZO4
-        EhGaqcl15axqDEDA==
+        bh=ryy7NcUsppacpzOlj5/iwubqICXl6Yx5KFaoSBa4Zzc=;
+        b=+Rhz4haxULneTQOizAXuGRsydZLE+afsbIqfWgI2irkrRP9thXwo+rY5q6S0FW+VFTQl5C
+        MwJHSMgZ1ndKB4CA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 15C7FA3B8E;
-        Mon,  5 Jul 2021 17:34:13 +0000 (UTC)
-Date:   Mon, 05 Jul 2021 19:34:13 +0200
-Message-ID: <s5hv95o8y22.wl-tiwai@suse.de>
+        by relay2.suse.de (Postfix) with ESMTP id 384EBA3B8A;
+        Mon,  5 Jul 2021 17:35:32 +0000 (UTC)
+Date:   Mon, 05 Jul 2021 19:35:32 +0200
+Message-ID: <s5htul88xzv.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     gushengxian <gushengxian507419@gmail.com>
 Cc:     perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org,
         gushengxian <gushengxian@yulong.com>
-Subject: Re: [PATCH] ALSA: usb-audio: fix spelling mistakes
-In-Reply-To: <20210705120052.665212-1-gushengxian507419@gmail.com>
-References: <20210705120052.665212-1-gushengxian507419@gmail.com>
+Subject: Re: [PATCH] ALSA: emux: fix spelling mistakes
+In-Reply-To: <20210705125001.665734-1-gushengxian507419@gmail.com>
+References: <20210705125001.665734-1-gushengxian507419@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -52,18 +52,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 05 Jul 2021 14:00:52 +0200,
+On Mon, 05 Jul 2021 14:50:01 +0200,
 gushengxian wrote:
 > 
 > From: gushengxian <gushengxian@yulong.com>
 > 
 > Fix some spelling mistakes as follows:
-> altenate ==> alternate
-> compatbile ==> compatible
-> perfoms ==> performs
-> dont'register ==> don't register
-> periodicaly ==> periodically
-> arount ==> around
+> sensitivies ==> sensitivities
+> pararameters ==> parameters
+> approxmimation ==> approximation
+> silet ==> silent
 > 
 > Signed-off-by: gushengxian <gushengxian@yulong.com>
 
