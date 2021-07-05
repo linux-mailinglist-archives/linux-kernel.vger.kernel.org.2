@@ -2,90 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9663BB9BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FFD3BB9C1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhGEJDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 05:03:01 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49362 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbhGEJDA (ORCPT
+        id S230335AbhGEJDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 05:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230121AbhGEJDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 05:03:00 -0400
-Received: from mail-ot1-f69.google.com ([209.85.210.69])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <chris.chiu@canonical.com>)
-        id 1m0KSk-0006yJ-Cc
-        for linux-kernel@vger.kernel.org; Mon, 05 Jul 2021 09:00:22 +0000
-Received: by mail-ot1-f69.google.com with SMTP id q20-20020a9d7c940000b02903f5a4101f8eso12853188otn.17
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 02:00:22 -0700 (PDT)
+        Mon, 5 Jul 2021 05:03:35 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582DCC061574;
+        Mon,  5 Jul 2021 02:00:58 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id x16so16110120pfa.13;
+        Mon, 05 Jul 2021 02:00:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BHOc9bMVKoqm+NvC6FFa+oLqE9OfPnAlc6OXJXSBlr4=;
+        b=arXkm6K4q8szDA8QUlC/LWXrZ0jK1xMx4CmSn30PFLk1XUy6aClRHxeVQ4ye+UmBnR
+         QjLHZUMnztqyf7QK8HTU6fAXa4XOBEnX90f+if0zNidy3fVhHWQi1bgKA7ecguMMh+ea
+         GCVBMrO5YkhdE9YBMYf4vJ/HgGdGQyT88AYqLh+2+zUOWvpW+TZ03gd7mdt3R5/J7imY
+         DHa2HtMb0yECYJuRb+HlDXCWNoe6czeXpGqSQ05MYFEUDkg/1bdBDnOnc9CDpD20AuIn
+         ip4OhN5eod9xnM7qFbUyHP1WILzghWqniUZPnrPFWbGOqIlZieWMlL6efSigv2Vc1yDK
+         uydA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I6wYMggQL4Kc/x8xMyA7h2j3whmdqB7IgTt34u11Uos=;
-        b=dHY4WfwMkPQTHIFxM3ZBymaMexa7+NxJLF+oHwq+yANlsFQPUFDVEMaK0LhIpy7c19
-         8be4bBRnYFT4HAd205PVfsvSc9Fl9yYRpT/thUAwdK41OB8a1CqEwIqY0unfMPPbiQDO
-         eVCOa5oBcYoAJGMY4nj6OmVr7eoLL9JmeOdQpALPqHovi5SKt2+xnbRa8poKg+zgjA/a
-         qQneEAS+Tq5B1Syjijb+l5lXhQNqw9Ss2yM9sGOV8Pq+zjhv+It7dS/BVf/AtrtjjIHH
-         ANcHCObfsZjcAo91yI+yuWbMTeYyv40KIzmIS11Be9/ICiJuiA9e3HlZq3LWE4Fol7BL
-         K6XA==
-X-Gm-Message-State: AOAM533FTVunit4yFU+P0+HwvTKhRlnFRwEbPR9Y3YIA6HpGJNGReexq
-        mQ5x6hqT8lO+86BGlUDY6FO/Du2LAWw3H0Dm0DabTELLRDlYnz2yGsiZ4yD/XKwFoFjr6oMbMUd
-        jMeZ5nRtfX/wvBzcR1BhkFPxw2JLBXkMcG9sKJHS2m8Nqt8jr1DG3yO6Muw==
-X-Received: by 2002:a05:6830:1f19:: with SMTP id u25mr6524524otg.303.1625475621314;
-        Mon, 05 Jul 2021 02:00:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx9roYChfxAr/TO7KIQukCmHCx/xq1CtOLOyNW4WqCG9AUmbVemwjMekcOUHAfCzMs3mnJDH06AMTJrb7zjkaM=
-X-Received: by 2002:a05:6830:1f19:: with SMTP id u25mr6524509otg.303.1625475621095;
- Mon, 05 Jul 2021 02:00:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BHOc9bMVKoqm+NvC6FFa+oLqE9OfPnAlc6OXJXSBlr4=;
+        b=TIzNsv7V6mfiwOIdhtZ4biMXY9WRlkZhG9HuMZnIiB5axvSzPPYIYv5edtcDDKHSuA
+         QZc1323hGGWaxm56lYIEQ/Zk9J8W+6F54by82HeZBA/fmAbRzMN+Hb/wyd3ZuXU4CXKE
+         hQoQ8wKG186wDAgEk1k5bQXf6fwnTiC3AJ+l+HmpK/x3sGHDeLAA3mi455KH9ih+FPvl
+         8MjFWB3Ztdw+jC2Mdsr+rdzlH2YHN9KW25ZfaZxF7EDwdWkqFuCE1/bArDot2Li42UyE
+         v6g1IRSa5ID+9SDPeW6uqnDn2mWpW4K4oDb1sR3yMtlcsz0qfP+MgoPbqyzn1gFkQm+8
+         J7qw==
+X-Gm-Message-State: AOAM533glNw5LcfjBeq2xseUAw52oJaSFEIaqVm/MqaRcPImVS39xsos
+        H07gGBShwyYaAfjNwoGeHYY=
+X-Google-Smtp-Source: ABdhPJygkcnBmIDszIHhdojfZ+eMpUUaJLDB2Z8TEpuJycRkWTdxv9PNzkeRGNl95UDT0xlVuxawTQ==
+X-Received: by 2002:a63:164c:: with SMTP id 12mr14709144pgw.141.1625475657922;
+        Mon, 05 Jul 2021 02:00:57 -0700 (PDT)
+Received: from gli-System-Product-Name.genesyslogic.com.tw (60-251-58-169.HINET-IP.hinet.net. [60.251.58.169])
+        by smtp.gmail.com with ESMTPSA id j16sm13570816pgh.69.2021.07.05.02.00.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 02:00:57 -0700 (PDT)
+From:   Renius Chen <reniuschengl@gmail.com>
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben.Chuang@genesyslogic.com.tw,
+        Renius Chen <reniuschengl@gmail.com>
+Subject: [PATCH] [v2] mmc: sdhci-pci-gli: Improve Random 4K Read Performance of GL9763E
+Date:   Mon,  5 Jul 2021 17:00:50 +0800
+Message-Id: <20210705090050.15077-1-reniuschengl@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210701163354.118403-1-chris.chiu@canonical.com> <87v95thzu1.fsf@codeaurora.org>
-In-Reply-To: <87v95thzu1.fsf@codeaurora.org>
-From:   Chris Chiu <chris.chiu@canonical.com>
-Date:   Mon, 5 Jul 2021 17:00:10 +0800
-Message-ID: <CABTNMG2_Cb7RhguJZNKZxAna6oBaDPhomBWRreO-adFX2Erwkw@mail.gmail.com>
-Subject: Re: [PATCH] rtl8xxxu: disable interrupt_in transfer for 8188cu and 8192cu
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Jes.Sorensen@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        code@reto-schneider.ch, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 4:42 PM Kalle Valo <kvalo@codeaurora.org> wrote:
->
-> chris.chiu@canonical.com writes:
->
-> > From: Chris Chiu <chris.chiu@canonical.com>
-> >
-> > There will be crazy numbers of interrupts triggered by 8188cu and
-> > 8192cu module, around 8000~10000 interrupts per second, on the usb
-> > host controller. Compare with the vendor driver source code, it's
-> > mapping to the configuration CONFIG_USB_INTERRUPT_IN_PIPE and it is
-> > disabled by default.
-> >
-> > Since the interrupt transfer is neither used for TX/RX nor H2C
-> > commands. Disable it to avoid the confusing interrupts for the
-> > 8188cu and 8192cu module which I only have for verification.
->
-> The last paragraph is not entirely clear for me, can you elaborate it
-> more? What do you mean with "confusing interrupts"? And is this fixing
-> an actual user visible bug or are you just reducing the number of
-> interrupts?
->
-It's confusing because there are 8000~9000 interrupts per second even
-though the association is not done yet and no traffic is pumped. It's
-also way too many even the reception of the beacon frames triggers the
-interrupt. This huge number overwhelms the normal interrupt we
-expected from the register setting (only < 100/sec if runs with
-rtlwif/rtl8192cu driver instead). It's difficult to judge where/why
-the interrupts come from and what possible overhead it could possibly
-incur.
+During a sequence of random 4K read operations, the performance will be
+reduced due to spending much time on entering/exiting the low power state
+between requests. We disable the low power state negotiation of GL9763E
+during a sequence of random 4K read operations to improve the performance
+and enable it again after the operations have finished.
 
-> --
-> https://patchwork.kernel.org/project/linux-wireless/list/
->
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Signed-off-by: Renius Chen <reniuschengl@gmail.com>
+---
+ drivers/mmc/host/sdhci-pci-gli.c | 68 ++++++++++++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
+
+diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+index 302a7579a9b3..5f1f332b4241 100644
+--- a/drivers/mmc/host/sdhci-pci-gli.c
++++ b/drivers/mmc/host/sdhci-pci-gli.c
+@@ -88,6 +88,9 @@
+ #define PCIE_GLI_9763E_SCR	 0x8E0
+ #define   GLI_9763E_SCR_AXI_REQ	   BIT(9)
+ 
++#define PCIE_GLI_9763E_CFG       0x8A0
++#define   GLI_9763E_CFG_LPSN_DIS   BIT(12)
++
+ #define PCIE_GLI_9763E_CFG2      0x8A4
+ #define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
+ #define   GLI_9763E_CFG2_L1DLY_MID 0x54
+@@ -128,6 +131,11 @@
+ 
+ #define GLI_MAX_TUNING_LOOP 40
+ 
++struct gli_host {
++	bool start_4k_r;
++	int continuous_4k_r;
++};
++
+ /* Genesys Logic chipset */
+ static inline void gl9750_wt_on(struct sdhci_host *host)
+ {
+@@ -691,6 +699,62 @@ static void sdhci_gl9763e_dumpregs(struct mmc_host *mmc)
+ 	sdhci_dumpregs(mmc_priv(mmc));
+ }
+ 
++static void gl9763e_set_low_power_negotiation(struct sdhci_pci_slot *slot, bool enable)
++{
++	struct pci_dev *pdev = slot->chip->pdev;
++	u32 value;
++
++	pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
++	value &= ~GLI_9763E_VHS_REV;
++	value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
++	pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
++
++	pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
++
++	if (enable)
++		value &= ~GLI_9763E_CFG_LPSN_DIS;
++	else
++		value |= GLI_9763E_CFG_LPSN_DIS;
++
++	pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
++
++	pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
++	value &= ~GLI_9763E_VHS_REV;
++	value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
++	pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
++}
++
++static void gl9763e_request(struct mmc_host *mmc, struct mmc_request *mrq)
++{
++	struct sdhci_host *host = mmc_priv(mmc);
++	struct mmc_command *cmd;
++	struct sdhci_pci_slot *slot = sdhci_priv(host);
++	struct gli_host *gli_host = sdhci_pci_priv(slot);
++
++	cmd = mrq->cmd;
++
++	if (cmd && (cmd->opcode == MMC_READ_MULTIPLE_BLOCK) && (cmd->data->blocks == 8)) {
++		gli_host->continuous_4k_r++;
++
++		if ((!gli_host->start_4k_r) && (gli_host->continuous_4k_r >= 3)) {
++			gl9763e_set_low_power_negotiation(slot, false);
++
++			gli_host->start_4k_r = true;
++		}
++	} else {
++		gli_host->continuous_4k_r = 0;
++
++		if (gli_host->start_4k_r)	{
++			gl9763e_set_low_power_negotiation(slot, true);
++
++			gli_host->start_4k_r = false;
++		}
++	}
++
++	sdhci_request(mmc, mrq);
++}
++
++
+ static void sdhci_gl9763e_cqe_pre_enable(struct mmc_host *mmc)
+ {
+ 	struct cqhci_host *cq_host = mmc->cqe_private;
+@@ -848,6 +912,9 @@ static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
+ 	gli_pcie_enable_msi(slot);
+ 	host->mmc_host_ops.hs400_enhanced_strobe =
+ 					gl9763e_hs400_enhanced_strobe;
++
++	host->mmc_host_ops.request = gl9763e_request;
++
+ 	gli_set_gl9763e(slot);
+ 	sdhci_enable_v4_mode(host);
+ 
+@@ -913,4 +980,5 @@ const struct sdhci_pci_fixes sdhci_gl9763e = {
+ 	.suspend	= sdhci_cqhci_gli_suspend,
+ #endif
+ 	.add_host       = gl9763e_add_host,
++	.priv_size      = sizeof(struct gli_host),
+ };
+-- 
+2.27.0
+
