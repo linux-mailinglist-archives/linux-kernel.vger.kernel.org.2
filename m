@@ -2,155 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5DA53BBDA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA223BBDAB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhGENsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 09:48:50 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:60118 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230333AbhGENst (ORCPT
+        id S231296AbhGENur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 09:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230516AbhGENuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 09:48:49 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 165Dfe6r018914;
-        Mon, 5 Jul 2021 13:46:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=OgBR+w5wqEYeiJkrN9NqA3RpM5j0ilkWysKEav4gMfw=;
- b=ykMESTwUf+5JzeWHM9kHr798ReDfuw55KQ+LPpYABeofIko1vovN+2MK/hfJJZEjmivK
- qhGjFuReRo+HjulOavjlgjFCCgG9Nv0B0Dh2msG+fUvzYM+hr76fv0CvqIEAPBK6QuXV
- dFgq+PJsrvRtF6cBOgPSqLrbhiMbY3wFj9uXvn1gpMca4nWyjwIbq9hMUtTaSGljIU+Y
- bZ+mCByOdHBpulOIeezBBQw0EnT3tU3Z2gV2+GZND6cD8U9hzJ3JQD52AImP+xxThaoX
- 8AEa4uaXdDaOdqcPB/yL8qVqXVtkAvebrCEcUHq+BPsDaRUe6Y7pLA+EUiEGXuNyK/8b RQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39kw5k0skr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 05 Jul 2021 13:46:08 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 165DeDlu183501;
-        Mon, 5 Jul 2021 13:46:07 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2104.outbound.protection.outlook.com [104.47.70.104])
-        by aserp3020.oracle.com with ESMTP id 39jfq6vs3b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 05 Jul 2021 13:46:06 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jkDL52OEQ+lmGe2isFoSy2RPBJaZ+E4DwJb6hLFCuLDWJEiZ9mTg/nHJJ3/RgD9VpING4sQpGL1Goj+55JjIf2pzU9TKtApYBLOWqmrdRoxLCFKsTOO9ktveXg1QnfnPW3kdCT0SiGXJD1VmjZISNl85IufWftemCrilYXb0mhzEcmLQ74MjOQwf0LAavFgMYr52b71BRT8WnPg3ldNpaaDJhv4zLrw10c+hRGNlkRetE7Q7iWIftt3WAxxPj0szTT0SN4XOg+8psIlTCsYpNLS1Hf5h7EXSKdPV1GcPSA4K2IOBwIERCYUYdX4LNe4/+sy9Cg3FI+0QT/L86G3k6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OgBR+w5wqEYeiJkrN9NqA3RpM5j0ilkWysKEav4gMfw=;
- b=PJXi1UNODZrXpS4khVAWWEx9ABubqjYflYn1Pks90Mzq7laFEHbYjIjvDTcLHVLN25NxtYjTs94n4g7ohNaaluNWK9XwcBR6JALcju4/i8TydK0FRtGOj/dSKfiVxhd3FxGeinMi57+dXiDnAD28Uwxix14j3XD2TYqgcYduEbI6GdkCHTV2hz2PpDuL1bmj8WlmmVYR5OSCrvJAbxLs9gMCCuA01KhwVKltGief3eCE9XJYv6rcu3nkEFzEWLUqh2GLcpmZCRvhbQTVpfzHcG0GJDSW116/1MkIG2PJte1Uwh75xnl4RQ72iFCV88clBPihAJnjFJY6egL0szQB8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 5 Jul 2021 09:50:46 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A66C061762
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 06:48:09 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id m17so2177529edc.9
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 06:48:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OgBR+w5wqEYeiJkrN9NqA3RpM5j0ilkWysKEav4gMfw=;
- b=nsuTlZnxZ5k0FBLp7RgleC3VqF2bib7vL0wsU+57G0tm2Qs/uOVwi48SrATAF4AnF2NgdIeymcLcPBbR+nGqkaqRBX7YLS3Q0iASLxq1FU18iNnf8HX+Hs/PQYx1SNgfMVF06oRAH9nTFYpqmG6OZGuCi7Q1bQkqjIzodQkbeFA=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR10MB1773.namprd10.prod.outlook.com
- (2603:10b6:301:8::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22; Mon, 5 Jul
- 2021 13:46:05 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::3413:3c61:5067:ba73]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::3413:3c61:5067:ba73%5]) with mapi id 15.20.4287.033; Mon, 5 Jul 2021
- 13:46:05 +0000
-Date:   Mon, 5 Jul 2021 16:45:44 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: rtl8188eu: Remove an unused variable and
- some lines of code
-Message-ID: <20210705134544.GC26651@kadam>
-References: <20210705134151.15143-1-fmdefrancesco@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210705134151.15143-1-fmdefrancesco@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [102.222.70.252]
-X-ClientProxiedBy: JN2P275CA0024.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::36)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TkgjoBiZT+tKcnm7z9WAGyt2rcr4zjhxHUlq3d5ZD88=;
+        b=HhJ2RVN9syadDWTYvbHbxlvBV53TJrJrO4V4IyLg1XdAAHeCsHxr1Drfi6n/aPFtBs
+         WyPD7G+UC7ShK6csIfdnXnn9/85d75+B/l2/NGkkEMhiq5C4aqVoE7/lfCI5XBsWm9V2
+         bGYvmIrtMsH9QntBbs53qrC9gEYtI3x1vOwb3qchzJK+ltiA56dm5zPxHFAcP3h2lWs6
+         0rDQCDQs9VUtl27l2QBv/H+euh30XaWvwdDj7aubPe+W6tulbcr+bZDuuN726dab3y1d
+         URrPYNdRieyLRU5mvN3KEYnOe2s6RGhHtc8IwNfwcjL8sdLu126TmRj4iIPjOWp6T3Zv
+         e9BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TkgjoBiZT+tKcnm7z9WAGyt2rcr4zjhxHUlq3d5ZD88=;
+        b=pomoKEf6wQwEsu5alaxRbNckliT63R2KXbjz3brkVdm8VRHwYWQPHrv18fKvuICNyB
+         r7OWRkKyjdWXKvXlEbSCMLza4hzRBP+hoZHqEiz3efNMy53VVxYYn3fPcf2mtSN9yHoo
+         tWR5xFChcZqDJlTkzzNMKn5Kquwu1hP9s10p9ZzlFfttXZdyNX+wzJ27kazppsMPB3Z0
+         N5Vynb3yvM3YfZzNjSSfLBo1wI9j6jMlntlm1kk+QA4vt7ZQXNkiOLWE9HpWoJCGZqnN
+         TqrhY7LcjO7/u4o22Ticw0sSctgOnI4Rto38LuJhHaDgzxy0kVUy8xFJrLB7etyHWeZk
+         QU/A==
+X-Gm-Message-State: AOAM532J4lUCQ/Gf1yy1DM+jXGPfwciPAnGBq4/qKtNC8I1uXXpoIt4+
+        /ZZ/cnapLVzmKQkUXdgl7/zKwQ==
+X-Google-Smtp-Source: ABdhPJxamgcyzuojUncjcL2L66DdZbrFQAeHkW9otBtaW923SkWEnNq2fib4MBWf3JqZkJVhqxgCUQ==
+X-Received: by 2002:aa7:ccca:: with SMTP id y10mr16460065edt.47.1625492887768;
+        Mon, 05 Jul 2021 06:48:07 -0700 (PDT)
+Received: from localhost.localdomain ([89.18.44.40])
+        by smtp.gmail.com with ESMTPSA id cf29sm1557637edb.14.2021.07.05.06.48.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 06:48:07 -0700 (PDT)
+From:   Pavo Banicevic <pavo.banicevic@sartura.hr>
+To:     linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, geert+renesas@glider.be,
+        Max.Merchel@tq-group.com, linux@rempel-privat.de, daniel@0x0f.com,
+        shawnguo@kernel.org, sam@ravnborg.org, arnd@arndb.de,
+        krzysztof.kozlowski@canonical.com, pavo.banicevic@sartura.hr,
+        corbet@lwn.net, lee.jones@linaro.org, pavel@ucw.cz,
+        robh+dt@kernel.org, linux@roeck-us.net, jdelvare@suse.com,
+        goran.medic@sartura.hr, luka.perkov@sartura.hr,
+        luka.kovacic@sartura.hr
+Subject: [PATCH v8 0/7] Add support for the IEI WT61P803 PUZZLE MCU
+Date:   Mon,  5 Jul 2021 15:49:32 +0200
+Message-Id: <20210705134939.28691-1-pavo.banicevic@sartura.hr>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (102.222.70.252) by JN2P275CA0024.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Mon, 5 Jul 2021 13:46:00 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 31716fe4-02ed-4581-86ce-08d93fbb3c23
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1773:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR10MB177334CCC72A74B19263FC3F8E1C9@MWHPR10MB1773.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FTnPr9bYK/IwpG955rKFxXuPFg6vDZN9LJkPw5yiDDx6jWiKnjIODCVef7YBOHDW5Drw6V5qKANaQ0/hLp4BVxQJeS5sCciDcr6UILKQ8IIK6i/UAVZTsbuMAorbfFJfLb2RNzYZtpmU6cSxdyoikusDt9JBJDGfUUV1fEogQqiq7vVnn/cWg2q8JKhSUQPplwPtiG04TZw97y22KxHdFkehXbJSGIHmHmQ9/bEaUhN48rkCrdMV7wE8n+rV+imm8q1FB0zbdXjxoiMf0s4P2mr2LbYNrAWtkv4HV1xwBVFI0+OPt4vSwtSamZPm8d0ZTlRy4yn1+1e+iVH6UxI+yQBqtp6hidv8ncJ+UvC4+15KW0At93zIptk3wyEjdFlG/JpXMuto9pwxYiu9FIFA/ClHxuqvUTNdkf3rwmW6gTAuso2A6J3BFkV/obxFwBPHtaMFikw+17b2zlLTprEX+mGyg+mtlBIStgLs7JGwsgsDbObFfpB/zySw7NbIwJYY0jmP/gsmBYVIbPXLna4S5SaadJ4kkKd48eZqBFaW2UUQG/BKjCIV3L/xegHE/rPMSD5sbbS044o7HA1ScDcc8w8EE88ReK55lcDptkk7ccEFLPlts26Ll66AFCN1EiAfOb8MYFOPLTVpDpFT3yV9Uh31CeRPCQqH/eBGE3N40Y3JIvboG3JT5DKYTjjaJ2xef6XGc2vGtLh07XA9T96esA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39860400002)(136003)(366004)(396003)(478600001)(2906002)(9576002)(316002)(86362001)(38100700002)(38350700002)(16526019)(4744005)(5660300002)(66946007)(6496006)(8676002)(66476007)(26005)(33656002)(4326008)(9686003)(55016002)(66556008)(8936002)(956004)(6916009)(33716001)(1076003)(52116002)(186003)(6666004)(54906003)(44832011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6fzkdxn0P3ua72dgJsFMWROOCTkhK5fmVp56ypDrV7kCPRCPo7LrrImPnoFm?=
- =?us-ascii?Q?G1zUinC8xgdac3Gogzhe+LHOZfQ5lM/5Y9lbBZLc1zpStIDR9V+AT5dwjCZC?=
- =?us-ascii?Q?oCMp/dni1m19RhL807aln0ljDr8O3+D/dZdCsitjKC13XAUP2XQ07rEBqjnX?=
- =?us-ascii?Q?BS/RhzpP0n7fOnopK3lZsgtMEItNe2fSTVafAU+LXs6AQuLoRPP4haXkrJ6M?=
- =?us-ascii?Q?tY7mfta4Og7vmFrxQ1xo+S103wZYBC//vNNJn8G2F4hXGDoAPmfTrjag41cA?=
- =?us-ascii?Q?pCAZ/Q1uCJ3l2hUJDn1cpJ5igeHwavILv3DDqK2QboYMfxLBksylezlKHOAg?=
- =?us-ascii?Q?UNMhb/YkZauqllXghJ3HTu/efJGPlAFcqtHckq+h1BFMogM2vbAcLJq7yiaO?=
- =?us-ascii?Q?B/0Tnd3bR9MOa3cJoyupuB/nOYElX+dl5C/U68HHscf0LCMThkTODoqq9+bw?=
- =?us-ascii?Q?/zFHYzU1FNmLFec1MBzk0EtRDACyERm9DQfbIk1S6MLKjwqdGXVGumjHU4ar?=
- =?us-ascii?Q?SqEa+IEyQtBdBkjsRBHq0pxvoCDCUuaa+XeplF0O2aMbIPShgEG+tU/dOlP6?=
- =?us-ascii?Q?X1P+tXN8K/IYBSvo8U/45Dck+xF2jw4UMXmnjAy+1DgSmtDiux+8SoS0quVC?=
- =?us-ascii?Q?oIvTjYjb8yD7k3XsZjJMO9y5103tJM7AbSFZfaVRzBonVIsNHLKEFfPqZ1h0?=
- =?us-ascii?Q?kocArcpntHcCP2J5r5F7QlRAgymUqt+zcowW/akL+WBbkK/BLW0ctJSfr2sT?=
- =?us-ascii?Q?8dnWRCjV8RymlG5WKqzieUqStPykqulhfnXOelmtgruTvMpuWXJFRvPNgc1X?=
- =?us-ascii?Q?Gr/z74okjtMUAXAxFNWesFUPsIJebMXkhGKX3o6AAR/CfiPauJiVxtKSMePw?=
- =?us-ascii?Q?oPnUlNak8VJcAUSZ5houIUcYEMmZERZdSUxw/t+nQ0j3FNgiEz5cfub7wGWy?=
- =?us-ascii?Q?apGT3L7RDZapragUVTB4P384QvH4Z6kyZn/zFcqxMNx5ntcXT7KiV3F3buUP?=
- =?us-ascii?Q?8MiD1ukYFhMfjrkumOOzIsX7Xp1UQvgUI1tCcRrEUsHAI30F9ilDe7L9bHa6?=
- =?us-ascii?Q?9vXyNw0zftVTvw0eriap5aSEcosh0F4GtaiqqH5XQdSTdHOuCeNZeBiVKEzl?=
- =?us-ascii?Q?DcmHKf0wvv9g90m5gsOh/M3diakNWkXA45gHDthHEtPvV+oQzdAWIezto7Xy?=
- =?us-ascii?Q?Aw+6kQhH/gQ/Dsn2dBBldJb4vWkhJKZM2pi45tE39deWRAgy/eFf1THRnSS+?=
- =?us-ascii?Q?UwSZHkxt2J2E0hPefU+W5I7kNhC2GIkUaLD8KKQm2izTCsjsv6Dz/EGwV0kl?=
- =?us-ascii?Q?dNHxyinRnx80bgI0Pqdnt3SM?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 31716fe4-02ed-4581-86ce-08d93fbb3c23
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2021 13:46:05.1610
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kGreWrzisjgINWCoiLNGqGopeIrmPgUUYwQ/nnShwOFj2M/Ape4tTRV3KGHPB/79Xlb13+nQMhviPTVGNfZKWqSbigV+wAlbyw/uCufjiWg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1773
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10035 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
- mlxscore=0 bulkscore=0 malwarescore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107050073
-X-Proofpoint-GUID: DDwLxEXWP9-23pVdlxdgZmEXOhlW51Eo
-X-Proofpoint-ORIG-GUID: DDwLxEXWP9-23pVdlxdgZmEXOhlW51Eo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 03:41:51PM +0200, Fabio M. De Francesco wrote:
-> Remove set but unused iw_operation_mode[]. This driver doesn't support
-> SIOCSIWRATE.  It just returns zero and does nothing.  Change it to
-> return -ENOTSUPP instead.  (This is an API change but we don't expect it
-> to break anything).
-> 
-> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
+This patchset adds support for the IEI WT61P803 PUZZLE microcontroller,
+which enables some board specific features like fan and LED control,
+system power management and temperature sensor reading on some IEI
+Puzzle series boards.
 
-Thanks!
+The first board to use this functionality is IEI Puzzle-M801 1U
+Rackmount Network Appliance and is since v4 sent separately, as a
+standalone patch.
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Changes for v2:
+   - Use LAAs for local-mac-address and match reg values
+   - Code styling changes
+   - Error handling moved to the end of the function
+   - Define all magic numbers in the main header file
+   - Convert the driver to make it OF independent
+   - Refactor hwmon to use devm_hwmon_device_register_with_info()
+   - Reduce the number of mutex locks
+   - Allocate memory once for the response buffer
+   - Reduce managed memory allocations
+Changes for v3:
+   - Move iei-wt61p803-puzzle driver sysfs interface documentation to testing
+   - Change some internal functions to static
+   - Sync dt-bindings examples with the IEI Puzzle-M801 board dts
+   - Remove obsolete device tree properties and correct LED functions
+   - Reverse christmas tree variable declaration order, where possible
+   - MAC address sysfs function rewrite
+   - Fixed struct members size, where reasonable (MFD driver)
+   - Add an error check for hwmon_dev
+   - Use devm_led_classdev_register_ext() in the LED driver
+Changes for v4:
+   - Clean up sensible checks reported by checkpatch --strict
+   - Document the mutex lock usage in the LED driver
+   - Fix error handling and code styling issues in the HWMON driver
+   - Break up the patchset and send the IEI Puzzle-M801 board support
+     patch separately
+Changes for v5:
+   - Remove the return before goto to also fwnode_handle_put(child)
+     when ret is 0 (LED driver)
+   - Change unsigned char arrays to static where applicable
+   - Fix unconventional line indentations
+   - Remove unnecessary checks in the HWMON driver
+   - Remove unnecessary type casts
+   - Clear up command array assignments, where the command array is
+     modified before it is sent
+   - Resolve a checksum calculation issue
+   - Add Luka Perkov to MAINTAINERS
+Changes for v6:
+   - Use the container_of() macro to get the led_cdev parent struct
+   - Use %u instead of %lu in a printf() (LED driver)
+Changes for v7:
+   - Use the correct vendor title (IEI instead of iEi)
+   - Add missing properties to dt-bindings and fix styling issues
+   - Styling changes in the IEI WT61P803 PUZZLE HWMON driver
+   - Add missing commas in array definitions
+   - Check reply_size, where possible
+   - Clean up kernel-doc comments
+Changes for v8:
+   - Fix multiple style issues
+   - Reduce number of special allocations
+   - Remove unnecessary special state tracking with write/read commands
+   - Remove most of commands calls from probing of driver
+   - Add hwmon documentation file
+   - Replace some sprintf() calls with safer scnprintf()
+   - Remove unused defines
+   - Remove all explicit castings
+   - Shorter name of device for hwmon driver so snprintf() can
+     store device number
+   - Remove special kobj usage
+   - Use dev groups in place of deprecated device attributes
+   - Extend documentation for some descriptions of ABI documentation
+   - Add missing locking for response buffer in hwmon driver
+   - Fix inconsistency with license versions
+   - Check return value of iei_wt61p803_puzzle_sysfs_create()
+   - Remove unneeded initializations of reply_size variable in drivers
+   - Use define for fixed number of MAC addresses
+   - Reorder some variable declarations to follow preferred style
+   - Spell whole WoL acronym
+   - Drop __func__ from device error message
+   - Use sizeof() where it is possible
+   - Use hex_asc[] array for converting number to ascii value
+   - Remove unnecessary hwmon-sysfs.h include
+   - Stop being overly verbose when probing mfd driver
 
-regards,
-dan carpenter
+
+Luka Kovacic (7):
+  dt-bindings: Add IEI vendor prefix and IEI WT61P803 PUZZLE driver
+    bindings
+  drivers: mfd: Add a driver for IEI WT61P803 PUZZLE MCU
+  drivers: hwmon: Add the IEI WT61P803 PUZZLE HWMON driver
+  drivers: leds: Add the IEI WT61P803 PUZZLE LED driver
+  Documentation/ABI: Add iei-wt61p803-puzzle driver sysfs interface
+    documentation
+  Documentation/hwmon: Add iei-wt61p803-puzzle hwmon driver
+    documentation
+  MAINTAINERS: Add an entry for the IEI WT61P803 PUZZLE driver
+
+ .../testing/sysfs-driver-iei-wt61p803-puzzle  |  61 ++
+ .../hwmon/iei,wt61p803-puzzle-hwmon.yaml      |  53 +
+ .../leds/iei,wt61p803-puzzle-leds.yaml        |  44 +
+ .../bindings/mfd/iei,wt61p803-puzzle.yaml     |  82 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ .../hwmon/iei-wt61p803-puzzle-hwmon.rst       |  40 +
+ MAINTAINERS                                   |  16 +
+ drivers/hwmon/Kconfig                         |   8 +
+ drivers/hwmon/Makefile                        |   1 +
+ drivers/hwmon/iei-wt61p803-puzzle-hwmon.c     | 413 ++++++++
+ drivers/leds/Kconfig                          |   8 +
+ drivers/leds/Makefile                         |   1 +
+ drivers/leds/leds-iei-wt61p803-puzzle.c       | 156 +++
+ drivers/mfd/Kconfig                           |   8 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/iei-wt61p803-puzzle.c             | 908 ++++++++++++++++++
+ include/linux/mfd/iei-wt61p803-puzzle.h       |  66 ++
+ 17 files changed, 1868 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-iei-wt61p803-puzzle
+ create mode 100644 Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
+ create mode 100644 Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
+ create mode 100644 Documentation/hwmon/iei-wt61p803-puzzle-hwmon.rst
+ create mode 100644 drivers/hwmon/iei-wt61p803-puzzle-hwmon.c
+ create mode 100644 drivers/leds/leds-iei-wt61p803-puzzle.c
+ create mode 100644 drivers/mfd/iei-wt61p803-puzzle.c
+ create mode 100644 include/linux/mfd/iei-wt61p803-puzzle.h
+
+-- 
+2.31.1
 
