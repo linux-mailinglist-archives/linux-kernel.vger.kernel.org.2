@@ -2,172 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDEE3BBA6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530263BBA71
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbhGEJoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 05:44:19 -0400
-Received: from mail-sn1anam02on2053.outbound.protection.outlook.com ([40.107.96.53]:3687
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230000AbhGEJoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 05:44:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b7u3KRA7mxZV9yuqzmCA3T/pxGIod8DthexWMLAb1uzFmShE19xovBknbqKAe3KJHgdkPBdqtBUgFwsyMNcQxHZLJF6001g/G29ahWnWaLq0+eaRkgQ5N2cYG1GenZBBMraqwP+KZPF+aEr5eVWi3LScMSXwU1BhRvcQW23I+zHH6zHq8B6OJCH+756MGixjxRyfYXOXjkXipffXzW6TCHo4HIq8AnHjUyziaw6jQY0mcVlPwCo8FXyqpWhct5SunYi6b00EdgjQci+2LLwjbT+3OVpu4kiEgqbA7CgW8QwPCHFboGBAq/QuHFKaTW+McHvbK1rFrYRjM/dmthHLnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gbn8syCm8gctlvWh0rG7DiclEAaAGJgKoIFeHS1z0j4=;
- b=d+j4OuXPVqJMQ/bCIz3x4dRaTKKZG1CZ1JHkQjcX/n32NUIQkAk8+84spexRspPNtvhKa6Tx4zUSJzugdrzS4pj6c3MU0eTKpSJsmCqhxpoYvFq3GNggQDhtEe1ctRjgLx3MS9ABMK2q9Lur3R1ynQVt+3cXmYhoXLy4Nte+nabgkDhbxa62AWC1TexHhtoHVxTY11rN1jGaozCu5GT1OIghOeg4+TDpRvnp8gIpmX4gtnolgreNNfXbUEbLvLfuhwkhy78AiJXaPCz/BtEjQ2yoduKlmVYVIghQm2xLfH2JN4wr2G4fT8JYvuuB8lov9LEroG3cXuqLAedHePsMow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gbn8syCm8gctlvWh0rG7DiclEAaAGJgKoIFeHS1z0j4=;
- b=UV12jDBkShjJas7IOJwtkw/6ov+6rnKC8wgawoiBlFU7MjTqUzh1hQlA5kwCxdOR+B0AXwFjjlX8PgjGn3ndSBiq+SdqstzD6dGhisMnGWtUeuTIz/Q4qHq/Bm4ITTpdd8wHcg3aNeuMODLwRTUoVE2EGV8bIiLlcO/zaDdMcxUyVOvO8Jp80Xx+5EUf/PVzyQXSFe39usmzRQgcHExobhaZQz1RYg6H3JQufLM5WGgvD7Uo8CTNXW13pehV+jEneSqy4lUXr6JpWSeGEl2hIKDVGUIXI5ahXzi20vAMDS0YvqWRkojKnM8tWDBPiy4Tz6ogbHt9E+lkwW/0ronDXw==
-Received: from BN9PR03CA0682.namprd03.prod.outlook.com (2603:10b6:408:10e::27)
- by MW2PR12MB2457.namprd12.prod.outlook.com (2603:10b6:907:10::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Mon, 5 Jul
- 2021 09:41:37 +0000
-Received: from BN8NAM11FT062.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:10e:cafe::a1) by BN9PR03CA0682.outlook.office365.com
- (2603:10b6:408:10e::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23 via Frontend
- Transport; Mon, 5 Jul 2021 09:41:37 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT062.mail.protection.outlook.com (10.13.177.34) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4287.22 via Frontend Transport; Mon, 5 Jul 2021 09:41:37 +0000
-Received: from [172.27.15.98] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 5 Jul
- 2021 09:41:33 +0000
-Subject: Re: [RFC v2 1/4] hisi-acc-vfio-pci: add new vfio_pci driver for
- HiSilicon ACC devices
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-        "Leon Romanovsky" <leon@kernel.org>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>, Linuxarm <linuxarm@huawei.com>,
-        liulongfang <liulongfang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        yuzenghui <yuzenghui@huawei.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>
-References: <20210702095849.1610-1-shameerali.kolothum.thodi@huawei.com>
- <20210702095849.1610-2-shameerali.kolothum.thodi@huawei.com>
- <YOFdTnlkcDZzw4b/@unreal> <fc9d6b0b82254fbdb1cc96365b5bdef3@huawei.com>
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-ID: <d02dff3a-8035-ced1-7fc3-fcff791f9203@nvidia.com>
-Date:   Mon, 5 Jul 2021 12:41:30 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S230390AbhGEJqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 05:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230000AbhGEJqD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 05:46:03 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855ABC061760
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 02:43:26 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id u8so21276111wrq.8
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 02:43:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eS0sMkTK8rjemH9/gEUO8BHQe0Kh8hbGJ2b31RLH6BI=;
+        b=kasmQ0lDT3GCPw80x0UbxxX5qf9vNfEeYoOBwVkPpmbVVgazc8anwLhAX4n+GMvMl+
+         weBE/0sKZwU3CSlUY3eTP+DNFGWhIr5QW/cjIYocuLgrvfmQxUaqtDcXS/y4eOJZgOIh
+         CUX6AY6iht8DW48K9paxGH+2FJg0Y4qNjiM6YtcwuLFhhK59LvRtCj5zuN/q52ByiYgJ
+         K6s99j6WLqLOOhN8m2Hx1DdJRxbVCgN1fXLhsljkn34GuzdEUlOY1XBDlFdlZNYLA9B+
+         sJuOC+me9eOCTtVwYe9/z1/DkxJ556n5jek8CXrgKaEbELvwc+Z9q+MlewDdlpc4i43c
+         ZcOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eS0sMkTK8rjemH9/gEUO8BHQe0Kh8hbGJ2b31RLH6BI=;
+        b=BnJLhYVs9bMA9cQOPsDDNXZCAF0dQI9JwFKncHmVn+LwkDRGb+WDmv0nTcj3d9uNZ3
+         ckgishwYP4wtc4pXFm0UqjrZfEOFyjG83rhqj5ITXj+E/ksd6JMKfTe8VuONcDrUa8n4
+         nAJ8hkOWMBA96SU8OmSHQeFdcZi6dBiBnmm6Hx6oapJo4YVufAfMtTcMCklM+/SYb6sw
+         dUga69TSPvT9YQ6sQSGDi+HT7VMJFuoVHFG+0HT7wUKTA74+OkXJqIDsPdEg5UQLo3tm
+         5BFS3QhldSm/xA8GGSf9RQeyi9b0vUXzdtU+S1WqlaUH3MYRp0aSJLow+4wZvFlPQm+z
+         zjDg==
+X-Gm-Message-State: AOAM532Eoyjzm5ZEbRGOtYrxp3VPFd7GDQ4m0WuoxvdzyWF8ZQ1RFVKP
+        vig3CmKxdc5X4dyQAtxNJnHLtw==
+X-Google-Smtp-Source: ABdhPJwp1xUvayNOkLbjJDDeWqOWcmH3oIzXYTU2Vw6s+X2TzTl45+TwQuVejGNEi4ndxahtpAMb1w==
+X-Received: by 2002:a05:6000:120e:: with SMTP id e14mr14424301wrx.139.1625478205168;
+        Mon, 05 Jul 2021 02:43:25 -0700 (PDT)
+Received: from [192.168.1.9] (hst-221-44.medicom.bg. [84.238.221.44])
+        by smtp.googlemail.com with ESMTPSA id q7sm10042513wmq.33.2021.07.05.02.43.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Jul 2021 02:43:24 -0700 (PDT)
+Subject: Re: [PATCH v2 7/7] media: venus: Set buffer to FW based on FW min
+ count requirement.
+To:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org
+References: <1625126736-16266-1-git-send-email-dikshita@codeaurora.org>
+ <1625126736-16266-8-git-send-email-dikshita@codeaurora.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <58231cab-5160-d80a-7335-b5db796508e6@linaro.org>
+Date:   Mon, 5 Jul 2021 12:43:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <fc9d6b0b82254fbdb1cc96365b5bdef3@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1625126736-16266-8-git-send-email-dikshita@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7ac479fa-e0bc-4dde-d63f-08d93f991578
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2457:
-X-Microsoft-Antispam-PRVS: <MW2PR12MB24572C1F08D267BDA4D6B82EDE1C9@MW2PR12MB2457.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Knc6HUGR9p2H/f+QrSJyLTT0YUEr69EONq0+7vnO88KRQ9EYFWgT8bk6liZp/rzKt59k/IA+c81p44aEn3J6X60iHLI+w4cwbe3BYUF0TYbG4ihU49FqFYHmKV5ZPZGcg3lFS80f/p8KS/Ph4xW+Hk4fBkiW/+RVkOeL9YVcXgu52XOt1dYENlrRwXg+zun3PgYMuL7ZOfbhd/XoVKAH6FkXkJIbmj9Hb3bTO956wy21mvKriWbOQyxSwlFZgNSkLzMirN59JPu4xphJmix1lp+sKBzKTcwdB5Y5XUX03L73zZ8gaLS0s+bvVTaMmodF5FNn40C49QBWByyT+xpie86+jWPKe8IyBLOAbgADDrIprzJdLfQJAcNqtFebz+PUMtQr28Xzv6NjK9tIBt954mkaUihjPskvs63weWCpIDYq+/2ham5fImGyb5Jq7lgQFwWLUfGt5tEt7Rkn5yZj8z80HIivQ8+ez8T7nV5kRoacPX1CMVpyhvBGOvQrKXjhM4E3WvvB+3hLMNcRihDXEorAaHvygM4F0nQnoLQxUBwb4jUV/zo2aviClgq40UR5zq9g3N8N9Z7LuKT6uJ74c6I12mVT7vPdNkXPZ6gSiHmksmARX9p+MGd0n8EI2cBJM6e56BUnYUQf8gbsweoACTJKDfjIadgaqFGifEnrZgu7bxuN/5Hny7Wd2awFHQjylBaw84blSEGxJ7810J4lbWmE0PvGwTFjBuUs6OSZE30=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(6029001)(4636009)(136003)(39860400002)(396003)(346002)(376002)(46966006)(36840700001)(36756003)(7416002)(47076005)(31696002)(70206006)(53546011)(70586007)(186003)(26005)(4326008)(16526019)(36860700001)(82310400003)(110136005)(54906003)(82740400003)(5660300002)(478600001)(8936002)(356005)(16576012)(86362001)(316002)(36906005)(8676002)(7636003)(336012)(2906002)(426003)(2616005)(83380400001)(31686004)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2021 09:41:37.0014
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7ac479fa-e0bc-4dde-d63f-08d93f991578
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT062.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2457
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 7/5/2021 11:47 AM, Shameerali Kolothum Thodi wrote:
->
->> -----Original Message-----
->> From: Leon Romanovsky [mailto:leon@kernel.org]
->> Sent: 04 July 2021 08:04
->> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
->> Cc: kvm@vger.kernel.org; linux-kernel@vger.kernel.org;
->> linux-crypto@vger.kernel.org; alex.williamson@redhat.com; jgg@nvidia.com;
->> mgurtovoy@nvidia.com; Linuxarm <linuxarm@huawei.com>; liulongfang
->> <liulongfang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
->> yuzenghui <yuzenghui@huawei.com>; Jonathan Cameron
->> <jonathan.cameron@huawei.com>; Wangzhou (B) <wangzhou1@hisilicon.com>
->> Subject: Re: [RFC v2 1/4] hisi-acc-vfio-pci: add new vfio_pci driver for HiSilicon
->> ACC devices
->>
->> On Fri, Jul 02, 2021 at 10:58:46AM +0100, Shameer Kolothum wrote:
->>> Add a vendor-specific vfio_pci driver for HiSilicon ACC devices.
->>> This will be extended in follow-up patches to add support for
->>> vfio live migration feature.
->>>
->>> Signed-off-by: Shameer Kolothum
->> <shameerali.kolothum.thodi@huawei.com>
->>> ---
->>>   drivers/vfio/pci/Kconfig             |   9 +++
->>>   drivers/vfio/pci/Makefile            |   2 +
->>>   drivers/vfio/pci/hisi_acc_vfio_pci.c | 100 +++++++++++++++++++++++++++
->>>   3 files changed, 111 insertions(+)
->>>   create mode 100644 drivers/vfio/pci/hisi_acc_vfio_pci.c
->> <...>
->>
->>> +static const struct vfio_device_ops hisi_acc_vfio_pci_ops = {
->>> +	.name		= "hisi-acc-vfio-pci",
->>> +	.open		= hisi_acc_vfio_pci_open,
->>> +	.release	= vfio_pci_core_release,
->>> +	.ioctl		= vfio_pci_core_ioctl,
->>> +	.read		= vfio_pci_core_read,
->>> +	.write		= vfio_pci_core_write,
->>> +	.mmap		= vfio_pci_core_mmap,
->>> +	.request	= vfio_pci_core_request,
->>> +	.match		= vfio_pci_core_match,
->>> +	.reflck_attach	= vfio_pci_core_reflck_attach,
->> I don't remember what was proposed in vfio-pci-core conversion patches,
->> but would expect that default behaviour is to fallback to vfio_pci_core_* API
->> if ".release/.ioctl/e.t.c" are not redefined.
-> Yes, that would be nice, but don't think it does that in latest(v4).
->
-> Hi Max,
-> Could we please consider fall back to the core defaults, may be check and assign defaults
-> in vfio_pci_core_register_device() ?
 
-I don't see why we should do this.
+On 7/1/21 11:05 AM, Dikshita Agarwal wrote:
+> - Get the min buffer count required by FW from source event change
+>   and use the same value to decide actual buffer count and for
+>   buffer size calculation.
+> - Setup DPB and OPB buffers after session continue incase of
+>   reconfig.
+> 
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.h             |  1 +
+>  drivers/media/platform/qcom/venus/helpers.c          | 11 ++++++++++-
+>  drivers/media/platform/qcom/venus/hfi_helper.h       |  9 +++++++++
+>  drivers/media/platform/qcom/venus/hfi_msgs.c         |  7 +++++++
+>  drivers/media/platform/qcom/venus/hfi_plat_bufs.h    |  2 +-
+>  drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c | 14 +++++++++-----
+>  drivers/media/platform/qcom/venus/hfi_platform.h     |  3 ++-
+>  drivers/media/platform/qcom/venus/vdec.c             | 20 +++++++++++++-------
+>  8 files changed, 52 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> index 1ff20d9..b2b023e 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -403,6 +403,7 @@ struct venus_inst {
+>  	u32 width;
+>  	u32 height;
+>  	struct v4l2_rect crop;
+> +	u32 fw_min_cnt;
+>  	u32 out_width;
+>  	u32 out_height;
+>  	u32 colorspace;
+> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+> index ccf188a..a7c49ab 100644
+> --- a/drivers/media/platform/qcom/venus/helpers.c
+> +++ b/drivers/media/platform/qcom/venus/helpers.c
+> @@ -576,6 +576,7 @@ static int platform_get_bufreq(struct venus_inst *inst, u32 buftype,
+>  	struct hfi_plat_buffers_params params;
+>  	bool is_dec = inst->session_type == VIDC_SESSION_TYPE_DEC;
+>  	struct venc_controls *enc_ctr = &inst->controls.enc;
+> +	int ret = 0;
+>  
+>  	hfi_plat = hfi_platform_get(version);
+>  
+> @@ -610,7 +611,15 @@ static int platform_get_bufreq(struct venus_inst *inst, u32 buftype,
+>  		params.enc.is_tenbit = inst->bit_depth == VIDC_BITDEPTH_10;
+>  	}
+>  
+> -	return hfi_plat->bufreq(&params, inst->session_type, buftype, req);
+> +	if (buftype == HFI_BUFFER_OUTPUT || buftype == HFI_BUFFER_OUTPUT2 ||
+> +	    buftype == HFI_BUFFER_INTERNAL_SCRATCH_1(version))
+> +		req->count_min = inst->fw_min_cnt;
+> +
+> +	ret = hfi_plat->bufreq(&params, inst->session_type, buftype, req, inst->num_output_bufs);
 
-vfio_pci_core.ko is just a library driver. It shouldn't decide for the 
-vendor driver ops.
+I'm confused, inst->num_output_bufs is filled by calling
+venus_helper_get_bufreq() which itself is calling hfi_plat->bufreq().
+Could you explain the idea?
 
-If a vendor driver would like to use its helper functions - great.
+> +	if (buftype == HFI_BUFFER_OUTPUT || buftype == HFI_BUFFER_OUTPUT2)
+> +		if (inst->fw_min_cnt != req->count_min)
+> +			inst->fw_min_cnt = req->count_min;
+> +	return ret;
+>  }
+>  
+>  int venus_helper_get_bufreq(struct venus_inst *inst, u32 type,
+> diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
+> index 185c302..f2e8fad 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_helper.h
+> +++ b/drivers/media/platform/qcom/venus/hfi_helper.h
+> @@ -167,6 +167,7 @@
+>  #define HFI_PROPERTY_PARAM_VDEC_RECOVERY_POINT_SEI_EXTRADATA	0x120300c
+>  #define HFI_PROPERTY_PARAM_VDEC_THUMBNAIL_MODE			0x120300d
+>  #define HFI_PROPERTY_PARAM_VDEC_FRAME_ASSEMBLY			0x120300e
+> +#define HFI_PROPERTY_PARAM_VDEC_DPB_COUNTS				0x120300e
+>  #define HFI_PROPERTY_PARAM_VDEC_VC1_FRAMEDISP_EXTRADATA		0x1203011
+>  #define HFI_PROPERTY_PARAM_VDEC_VC1_SEQDISP_EXTRADATA		0x1203012
+>  #define HFI_PROPERTY_PARAM_VDEC_TIMESTAMP_EXTRADATA		0x1203013
+> @@ -906,6 +907,14 @@ struct hfi_extradata_input_crop {
+>  	u32 height;
+>  };
+>  
+> +struct hfi_dpb_counts {
+> +	u32 max_dpb_count;
+> +	u32 max_ref_frames;
+> +	u32 max_dec_buffering;
+> +	u32 max_reorder_frames;
+> +	u32 fw_min_cnt;
+> +};
+> +
+>  #define HFI_COLOR_FORMAT_MONOCHROME		0x01
+>  #define HFI_COLOR_FORMAT_NV12			0x02
+>  #define HFI_COLOR_FORMAT_NV21			0x03
+> diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.c b/drivers/media/platform/qcom/venus/hfi_msgs.c
+> index a2d436d..ed005d6 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_msgs.c
+> +++ b/drivers/media/platform/qcom/venus/hfi_msgs.c
+> @@ -32,6 +32,7 @@ static void event_seq_changed(struct venus_core *core, struct venus_inst *inst,
+>  	struct hfi_colour_space *colour_info;
+>  	struct hfi_buffer_requirements *bufreq;
+>  	struct hfi_extradata_input_crop *crop;
+> +	struct hfi_dpb_counts *dpb_count;
+>  	u8 *data_ptr;
+>  	u32 ptype;
+>  
+> @@ -110,6 +111,12 @@ static void event_seq_changed(struct venus_core *core, struct venus_inst *inst,
+>  			event.input_crop.height = crop->height;
+>  			data_ptr += sizeof(*crop);
+>  			break;
+> +		case HFI_PROPERTY_PARAM_VDEC_DPB_COUNTS:
+> +			data_ptr += sizeof(u32);
+> +			dpb_count = (struct hfi_dpb_counts *)data_ptr;
+> +			event.buf_count = dpb_count->fw_min_cnt;
+> +			data_ptr += sizeof(*dpb_count);
+> +			break;
+>  		default:
+>  			break;
+>  		}
+> diff --git a/drivers/media/platform/qcom/venus/hfi_plat_bufs.h b/drivers/media/platform/qcom/venus/hfi_plat_bufs.h
+> index 52a51a3..f40daa3 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_plat_bufs.h
+> +++ b/drivers/media/platform/qcom/venus/hfi_plat_bufs.h
+> @@ -33,6 +33,6 @@ struct hfi_plat_buffers_params {
+>  };
+>  
+>  int hfi_plat_bufreq_v6(struct hfi_plat_buffers_params *params, u32 session_type,
+> -		       u32 buftype, struct hfi_buffer_requirements *bufreq);
+> +		       u32 buftype, struct hfi_buffer_requirements *bufreq, u32 num_output_bufs);
+>  
+>  #endif
+> diff --git a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c b/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+> index 479178b..2d50949 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+> +++ b/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+> @@ -1164,7 +1164,7 @@ static int output_buffer_count(u32 session_type, u32 codec)
+>  			output_min_count = 6;
+>  			break;
+>  		case V4L2_PIX_FMT_VP9:
+> -			output_min_count = 9;
+> +			output_min_count = 11;
+>  			break;
+>  		case V4L2_PIX_FMT_H264:
+>  		case V4L2_PIX_FMT_HEVC:
+> @@ -1180,7 +1180,7 @@ static int output_buffer_count(u32 session_type, u32 codec)
+>  }
+>  
+>  static int bufreq_dec(struct hfi_plat_buffers_params *params, u32 buftype,
+> -		      struct hfi_buffer_requirements *bufreq)
+> +		      struct hfi_buffer_requirements *bufreq, u32 num_output_bufs)
+>  {
+>  	enum hfi_version version = params->version;
+>  	u32 codec = params->codec;
+> @@ -1213,6 +1213,10 @@ static int bufreq_dec(struct hfi_plat_buffers_params *params, u32 buftype,
+>  	}
+>  
+>  	out_min_count = output_buffer_count(VIDC_SESSION_TYPE_DEC, codec);
+> +	/* Max of driver and FW count */
+> +	out_min_count = max(out_min_count, bufreq->count_min);
+> +	/* Max of FW and client count */
+> +	out_min_count = max(out_min_count, num_output_bufs);
+>  
+>  	bufreq->type = buftype;
+>  	bufreq->region_size = 0;
+> @@ -1237,7 +1241,7 @@ static int bufreq_dec(struct hfi_plat_buffers_params *params, u32 buftype,
+>  	} else if (buftype == HFI_BUFFER_INTERNAL_SCRATCH(version)) {
+>  		bufreq->size = dec_ops->scratch(width, height, is_interlaced);
+>  	} else if (buftype == HFI_BUFFER_INTERNAL_SCRATCH_1(version)) {
+> -		bufreq->size = dec_ops->scratch1(width, height, out_min_count,
+> +		bufreq->size = dec_ops->scratch1(width, height, VB2_MAX_FRAME,
+>  						 is_secondary_output,
+>  						 num_vpp_pipes);
+>  	} else if (buftype == HFI_BUFFER_INTERNAL_PERSIST_1) {
+> @@ -1318,10 +1322,10 @@ static int bufreq_enc(struct hfi_plat_buffers_params *params, u32 buftype,
+>  }
+>  
+>  int hfi_plat_bufreq_v6(struct hfi_plat_buffers_params *params, u32 session_type,
+> -		       u32 buftype, struct hfi_buffer_requirements *bufreq)
+> +		       u32 buftype, struct hfi_buffer_requirements *bufreq, u32 num_output_bufs)
+>  {
+>  	if (session_type == VIDC_SESSION_TYPE_DEC)
+> -		return bufreq_dec(params, buftype, bufreq);
+> +		return bufreq_dec(params, buftype, bufreq, num_output_bufs);
+>  	else
+>  		return bufreq_enc(params, buftype, bufreq);
+>  }
+> diff --git a/drivers/media/platform/qcom/venus/hfi_platform.h b/drivers/media/platform/qcom/venus/hfi_platform.h
+> index ef768bf..89fa3bd 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_platform.h
+> +++ b/drivers/media/platform/qcom/venus/hfi_platform.h
+> @@ -51,7 +51,8 @@ struct hfi_platform {
+>  	void (*codecs)(u32 *enc_codecs, u32 *dec_codecs, u32 *count);
+>  	const struct hfi_plat_caps *(*capabilities)(unsigned int *entries);
+>  	int (*bufreq)(struct hfi_plat_buffers_params *params, u32 session_type,
+> -		      u32 buftype, struct hfi_buffer_requirements *bufreq);
+> +		      u32 buftype, struct hfi_buffer_requirements *bufreq,
+> +		      u32 num_output_bufs);
+>  };
+>  
+>  extern const struct hfi_platform hfi_plat_v4;
+> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> index 892be8d..3e91d8c 100644
+> --- a/drivers/media/platform/qcom/venus/vdec.c
+> +++ b/drivers/media/platform/qcom/venus/vdec.c
+> @@ -988,23 +988,23 @@ static int vdec_start_capture(struct venus_inst *inst)
+>  	if (ret)
+>  		goto err;
+>  
+> +	venus_pm_load_scale(inst);
+> +
+> +	inst->next_buf_last = false;
+> +
+>  	ret = venus_helper_alloc_dpb_bufs(inst);
+>  	if (ret)
+>  		goto err;
+>  
+> -	ret = venus_helper_queue_dpb_bufs(inst);
+> +	ret = hfi_session_continue(inst);
+>  	if (ret)
+>  		goto free_dpb_bufs;
+>  
+> -	ret = venus_helper_process_initial_cap_bufs(inst);
+> +	ret = venus_helper_queue_dpb_bufs(inst);
+>  	if (ret)
+>  		goto free_dpb_bufs;
+>  
+> -	venus_pm_load_scale(inst);
+> -
+> -	inst->next_buf_last = false;
+> -
+> -	ret = hfi_session_continue(inst);
+> +	ret = venus_helper_process_initial_cap_bufs(inst);
+>  	if (ret)
+>  		goto free_dpb_bufs;
+>  
+> @@ -1411,6 +1411,11 @@ static void vdec_event_change(struct venus_inst *inst,
+>  		inst->crop.height = ev_data->height;
+>  	}
+>  
+> +	inst->fw_min_cnt = ev_data->buf_count;
+> +	//overwriting this to 11 for vp9 due to fw bug
+> +	if(inst->hfi_codec == HFI_VIDEO_CODEC_VP9)
+> +		inst->fw_min_cnt = 11;
+> +
+>  	inst->out_width = ev_data->width;
+>  	inst->out_height = ev_data->height;
+>  
+> @@ -1514,6 +1519,7 @@ static void vdec_inst_init(struct venus_inst *inst)
+>  	inst->crop.top = 0;
+>  	inst->crop.width = inst->width;
+>  	inst->crop.height = inst->height;
+> +	inst->fw_min_cnt = 8;
+>  	inst->out_width = frame_width_min(inst);
+>  	inst->out_height = frame_height_min(inst);
+>  	inst->fps = 30;
+> 
 
-If it wants to override it - great.
-
-If it wants to leave some op as NULL - it can do it also.
-
-
->
-> Thanks,
-> Shameer
+-- 
+regards,
+Stan
