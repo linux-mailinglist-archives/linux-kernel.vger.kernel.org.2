@@ -2,148 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7F73BB969
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63B93BB96B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhGEIhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 04:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57872 "EHLO
+        id S230223AbhGEIiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 04:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbhGEIhi (ORCPT
+        with ESMTP id S230085AbhGEIiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:37:38 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD4DC061574;
-        Mon,  5 Jul 2021 01:35:01 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id g8-20020a1c9d080000b02901f13dd1672aso8636878wme.0;
-        Mon, 05 Jul 2021 01:35:01 -0700 (PDT)
+        Mon, 5 Jul 2021 04:38:07 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C61C061574;
+        Mon,  5 Jul 2021 01:35:31 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id o10so16637920ils.6;
+        Mon, 05 Jul 2021 01:35:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vGRWvdOK1PgDadGaQtrO3gHLl2eTZPMYHv0bkQBzh00=;
-        b=iS+lH8U9/XgWWefVhtVSlFRj5PsQkAjqPPdERklq6ayKTQPmRvs4vnr3SDUy2vNTRw
-         f/GdEj1zz4eBn4lZumC+4tZ6ruSYP5Q6MA/CWiyF/15wvxgxkTHVtGfTldj9fvRByZGj
-         94YaWvJSt6d+yNDl+FRC2sKu/FDI3T3FyLr+OT7lh+sA88G5p6nwESmiYD6Aybw09+aC
-         5CgMTBLfnSe7MOqW6a0cvFo8cFrFCzFkn0vXOiQ7RcnM1LE14HgfDTXFk+MCgcrv3kZ6
-         N5tCNlehjL+RxKFY6uKc5V3N2I0Q2ow68v3wn+8+nhS6Y9va5Z3r7c1bVPbPfKIuF/Y1
-         drFg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=d/z0wdGwqo9fBiWvUKCHWb/kQLPqJkEvWOdgihFLsj8=;
+        b=nnIo3J5eDnno109p9aSKDxVdvCbFHp1smIORXB6hZq5EJHpgLZSCO4qP5Zs/l1a6XV
+         HB8E3gbb9zLBNY+M89JdThVHsIUMNs8YWeIVS3vgcwqOMSy34psw+1t/dNaHc+RgCpGt
+         Ud6XtMDaWKU0aKQZlxLdbBKP71+N4ICCQyeG2NNdbYcPGjpJku68kl4nOv5pU62ibYT1
+         oToGm7yNkp15taLIWju8i0ZO5Ry08JoF3LMatsVsrVh9gFMz/wdk400nt1P/xbtP3FaZ
+         O5FMuRzJ/grWG1JJL08q+p47b8UrFJO14V+l+wjvzua9sliDAmZYOE0OQNatiTH03wr/
+         zmAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=vGRWvdOK1PgDadGaQtrO3gHLl2eTZPMYHv0bkQBzh00=;
-        b=b4y462iJ2QD5oS4KXuhdjrDhpql2hgENnkkf7QDrhzFRlUzFe+dWxh35b6iZjsI3hX
-         /C0SoQMo2gmtMvJru8m7DF+ApO0zDjkRX/nP93PnosHHqUnYYZE3riqOq4J2H+E4qsyO
-         lgV6OGhS4XwZqleJZlroQOA6oHde8aGlIQsYJmhlGZhqS4vfZnLed9WSSlOObWmAxgR0
-         K6HOnDhqfh5ZPwzw7JUxsdLJvJ08gXeMSFW2yHCJXwQi/hep2KRj2owWnE/5fNQPrnlg
-         unQD8Mui6GoIhLP1weXV+qn8n++ikLn19zDVObt389Fo71auJasPE7E64RPXjdL0hG6l
-         UHVw==
-X-Gm-Message-State: AOAM530pvpVXYirVmJbcEXRHxgg4jdRC6Qlv2Jfxpcvquw9UtaqPozO8
-        gSPVzUAwFHnaU59wyN1Zapg=
-X-Google-Smtp-Source: ABdhPJwoW+wrIqWbqydnd2SnNFn+Rr7wab7v4jWy971rPZ7WDn00TetlfWn+CwRfKmrKoYP01daj9w==
-X-Received: by 2002:a1c:9dce:: with SMTP id g197mr13985028wme.149.1625474100512;
-        Mon, 05 Jul 2021 01:35:00 -0700 (PDT)
-Received: from gmail.com (178-164-188-14.pool.digikabel.hu. [178.164.188.14])
-        by smtp.gmail.com with ESMTPSA id a9sm12092809wrv.37.2021.07.05.01.34.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 01:35:00 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 5 Jul 2021 10:34:58 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v8 13/13] x86/kprobes: Fixup return address in
- generic trampoline handler
-Message-ID: <YOLEMvR1bCQiIMcl@gmail.com>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
- <162400004562.506599.7549585083316952768.stgit@devnote2>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=d/z0wdGwqo9fBiWvUKCHWb/kQLPqJkEvWOdgihFLsj8=;
+        b=GCx5Ui9cjNUdP2ZZBX4mRYViR8JN3K+e04TAn7Zk2tCLEHpGFhPrkzk/Vvq8PhXhZC
+         mepfEgzENJS1jwDYcBWi58tXVpNPgTuNOezfDax3vD5FX1ENJomG7jxKpwBuJAlTzIqe
+         kDXYJoq1XJWbY69NDqZyD3UP0P9lS/Y+XPo5U5VLq8fW9zw3I1GGa8JAvk+RcitgXcZK
+         EMsAFlYxvHMxi6T1GYZErwK1pqs5tZSlt0f4tpdb6ztvTIvW4vqEPsC1Bc/TdwTsshiU
+         8n19CLv6SQjqxiRXOCp1fWxY5GAaNbVuT0wVgRcMoKNj9VcqVStmLZcH5vjGtLpPkhEv
+         8UYg==
+X-Gm-Message-State: AOAM5329s9oNhjasV606cFjZx/nzwa70DLA7ZDkaOSVgfyDl6vEnTYfH
+        Dvjv2plxgN+jHcj0rRrZzKiAXQ0mbGXgpPWC3hE=
+X-Google-Smtp-Source: ABdhPJz2XNkzxoMF2ciJoR4PMgzdzbrxMkwrN9p4oVhgaS5rrdQ8ctbDneqd2RHXne/ebOI01Evyw56XuTGLo2Wwkng=
+X-Received: by 2002:a05:6e02:1d0e:: with SMTP id i14mr3756014ila.150.1625474130559;
+ Mon, 05 Jul 2021 01:35:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162400004562.506599.7549585083316952768.stgit@devnote2>
+References: <20210701154634.GA60743@bjorn-Precision-5520> <67a9e1fa.81a9.17a64c8e7f7.Coremail.chenhuacai@loongson.cn>
+In-Reply-To: <67a9e1fa.81a9.17a64c8e7f7.Coremail.chenhuacai@loongson.cn>
+From:   Art Nikpal <email2tema@gmail.com>
+Date:   Mon, 5 Jul 2021 16:35:19 +0800
+Message-ID: <CAKaHn9KxRrBsn4b9fSO1eDzM3XdV2GzfwVX+cGw9uS_eKg75dw@mail.gmail.com>
+Subject: Re: Re: [PATCH 0/4] PCI: replace dublicated MRRS limit quirks
+To:     =?UTF-8?B?6ZmI5Y2O5omN?= <chenhuacai@loongson.cn>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Yue Wang <yue.wang@amlogic.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        linux-kernel@vger.kernel.org, Artem Lapkin <art@khadas.com>,
+        Nick Xie <nick@khadas.com>, Gouwa Wang <gouwa@khadas.com>,
+        chenhuacai@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Does that means keystone and Loongson has the same MRRS problem? And what=
+ should I do now?
 
-* Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Look like yes ! and  amlogic has the same problem.
+I think somebody need to rewrite it all to one common quirk for this proble=
+m.
 
-> In x86, kretprobe trampoline address on the stack frame will
-> be replaced with the real return address after returning from
-> trampoline_handler. Before fixing the return address, the real
-> return address can be found in the current->kretprobe_instances.
-> 
-> However, since there is a window between updating the
-> current->kretprobe_instances and fixing the address on the stack,
-> if an interrupt caused at that timing and the interrupt handler
-> does stacktrace, it may fail to unwind because it can not get
-> the correct return address from current->kretprobe_instances.
-> 
-> This will minimize that window by fixing the return address
-> right before updating current->kretprobe_instances.
+If no one has any objection, I can try to remake it again.
 
-Is there still a window? I.e. is it "minimized" (to how big of a window?), 
-or eliminated?
-
-> +void arch_kretprobe_fixup_return(struct pt_regs *regs,
-> +				 unsigned long correct_ret_addr)
-> +{
-> +	unsigned long *frame_pointer;
-> +
-> +	frame_pointer = ((unsigned long *)&regs->sp) + 1;
-> +
-> +	/* Replace fake return address with real one. */
-> +	*frame_pointer = correct_ret_addr;
-
-Firstly, why does &regs->sp have to be forced to 'unsigned long *'? 
-
-pt_regs::sp is 'unsigned long' on both 32-bit and 64-bit kernels AFAICS.
-
-Secondly, the new code modified by your patch now looks like this:
-
-        frame_pointer = ((unsigned long *)&regs->sp) + 1;
- 
-+       kretprobe_trampoline_handler(regs, frame_pointer);
-
-where:
-
-+void arch_kretprobe_fixup_return(struct pt_regs *regs,
-+                                unsigned long correct_ret_addr)
-+{
-+       unsigned long *frame_pointer;
-+
-+       frame_pointer = ((unsigned long *)&regs->sp) + 1;
-+
-+       /* Replace fake return address with real one. */
-+       *frame_pointer = correct_ret_addr;
-+}
-
-So we first do:
-
-        frame_pointer = ((unsigned long *)&regs->sp) + 1;
-
-... and pass that in to arch_kretprobe_fixup_return() as 
-'correct_ret_addr', which does:
-
-+       frame_pointer = ((unsigned long *)&regs->sp) + 1;
-+	*frame_pointer = correct_ret_addr;
-
-... which looks like the exact same thing as:
-
-	*frame_pointer = frame_pointer;
-
-... obfuscated through a thick layer of type casts?
-
-Thanks,
-
-	Ingo
+On Fri, Jul 2, 2021 at 9:15 AM =E9=99=88=E5=8D=8E=E6=89=8D <chenhuacai@loon=
+gson.cn> wrote:
+>
+> Hi, Bjorn,
+>
+> &gt; -----=E5=8E=9F=E5=A7=8B=E9=82=AE=E4=BB=B6-----
+> &gt; =E5=8F=91=E4=BB=B6=E4=BA=BA: "Bjorn Helgaas" <helgaas@kernel.org>
+> &gt; =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2021-07-01 23:46:34 (=E6=98=9F=
+=E6=9C=9F=E5=9B=9B)
+> &gt; =E6=94=B6=E4=BB=B6=E4=BA=BA: "Artem Lapkin" <email2tema@gmail.com>
+> &gt; =E6=8A=84=E9=80=81: narmstrong@baylibre.com, yue.wang@Amlogic.com, k=
+hilman@baylibre.com, lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.c=
+om, jbrunet@baylibre.com, christianshewitt@gmail.com, martin.blumenstingl@g=
+ooglemail.com, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.=
+org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, art@k=
+hadas.com, nick@khadas.com, gouwa@khadas.com, "Huacai Chen" <chenhuacai@loo=
+ngson.cn>
+> &gt; =E4=B8=BB=E9=A2=98: Re: [PATCH 0/4] PCI: replace dublicated MRRS lim=
+it quirks
+> &gt;
+> &gt; [+cc Huacai]
+> &gt;
+> &gt; On Sat, Jun 19, 2021 at 02:39:48PM +0800, Artem Lapkin wrote:
+> &gt; &gt; Replace dublicated MRRS limit quirks by mrrs_limit_quirk from c=
+ore
+> &gt; &gt; * drivers/pci/controller/dwc/pci-keystone.c
+> &gt; &gt; * drivers/pci/controller/pci-loongson.c
+> &gt;
+> &gt; s/dublicated/duplicated/ (several occurrences)
+> &gt;
+> &gt; Capitalize subject lines.
+> &gt;
+> &gt; Use "git log --online" to learn conventions and follow them.
+> &gt;
+> &gt; Add "()" after function names.
+> &gt;
+> &gt; Capitalize acronyms appropriately (NVMe, MRRS, PCI, etc).
+> &gt;
+> &gt; End sentences with periods.
+> &gt;
+> &gt; A "move" patch must include both the removal and the addition and ma=
+ke
+> &gt; no changes to the code itself.
+> &gt;
+> &gt; Amlogic appears without explanation in 2/4.  Must be separate patch =
+to
+> &gt; address only that specific issue.  Should reference published erratu=
+m
+> &gt; if possible.  "Solves some issue" is not a compelling justification.
+> &gt;
+> &gt; The tree must be consistent and functionally the same or improved
+> &gt; after every patch.
+> &gt;
+> &gt; Add to pci_ids.h only if symbol used more than one place.
+> &gt;
+> &gt; See
+> &gt; https://lore.kernel.org/r/20210701074458.1809532-3-chenhuacai@loongs=
+on.cn,
+> &gt; which looks similar.  Combine efforts if possible and cc Huacai so
+> &gt; you're both aware of overlapping work.
+> &gt;
+> &gt; More hints in case they're useful:
+> &gt; https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-gl=
+aptop.roam.corp.google.com/
+> &gt;
+> &gt; &gt; Both ks_pcie_quirk loongson_mrrs_quirk was rewritten without an=
+y
+> &gt; &gt; functionality changes by one mrrs_limit_quirk
+> Does that means keystone and Loongson has the same MRRS problem? And what=
+ should I do now?
+>
+> Huacai
+> &gt; &gt;
+> &gt; &gt; Added DesignWare PCI controller which need same quirk for
+> &gt; &gt; * drivers/pci/controller/dwc/pci-meson.c (PCI_DEVICE_ID_SYNOPSY=
+S_HAPSUSB3)
+> &gt; &gt;
+> &gt; &gt; This quirk can solve some issue for Khadas VIM3/VIM3L(Amlogic)
+> &gt; &gt; with HDMI scrambled picture and nvme devices at intensive writi=
+ng...
+> &gt; &gt;
+> &gt; &gt; come from:
+> &gt; &gt; * https://lore.kernel.org/linux-pci/20210618063821.1383357-1-ar=
+t@khadas.com/
+> &gt; &gt;
+> &gt; &gt; Artem Lapkin (4):
+> &gt; &gt;  PCI: move Keystone and Loongson device IDs to pci_ids
+> &gt; &gt;  PCI: core: quirks: add mrrs_limit_quirk
+> &gt; &gt;  PCI: keystone move mrrs quirk to core
+> &gt; &gt;  PCI: loongson move mrrs quirk to core
+> &gt; &gt;
+> &gt; &gt; --
+> &gt; &gt; 2.25.1
+> &gt; &gt;
+>
+>
+> </chenhuacai@loongson.cn></email2tema@gmail.com></helgaas@kernel.org>
