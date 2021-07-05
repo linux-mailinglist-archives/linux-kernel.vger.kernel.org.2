@@ -2,123 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3973BBD12
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 14:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 776093BBD1B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 14:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhGEMwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 08:52:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59112 "EHLO
+        id S231274AbhGEMyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 08:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhGEMwn (ORCPT
+        with ESMTP id S230188AbhGEMyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 08:52:43 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C509DC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 05:50:06 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d12so16611009pfj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 05:50:06 -0700 (PDT)
+        Mon, 5 Jul 2021 08:54:15 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286D6C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 05:51:38 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id m12so1213593vst.8
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 05:51:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P/OhSljFKvJ8s/xQJe9TTLKP+beZTqshfCthmBpxxQM=;
-        b=Y2pi5D8FSIjjrKR+q1/+F3sQa9rdj7oshTcPa066nIKzhblm76GPPpYWXToYwjocrP
-         lP17807WPvcZQTQJa6rOrgQizlZmJ41lM5CCHjfw9bn3VNOfMNCtFgyZbyYnqFq4cFee
-         n3sRk2bY7TqSnLP5Z/usJgaLe9ByHa59ME9vlZKdxX/J/br0aziRALxa6a2FcuJF0YzJ
-         FoAJDYqgxCmgltXTJ8gmnjohG1NgAB9InScYo9IBxRUmuuT3AX0oTCrm8ueOzShV3tmh
-         lb9yXGNZK4S6vBvhALmK7g463lBicQJLgI2w4rdWimiKRDOeUBB4Bpmc/KDQ+Y9Pc81P
-         Ewew==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GqddWSm2FPSz+EL6oOH6eQyjrfFcGFuBCoGNvkQlAZg=;
+        b=wjTCKAgxDH8bCLIUNfz84Uurm9CXBNXGF2GsSYTFt0kGyEXKAdu8usV5QfpzJKTf+m
+         MOo8llghllGWkeg3InOtsvd5G57kmfsNqxGPaZj0J5dHv/h+e2Z600tzAf/dhcZPUXHs
+         t/xUOlPSE3on/V6xP6esD36G8bA9kwP6ctpU+UtnfUMCaJhVP8hxLUWAC87Ru3zJrT2C
+         ufojrzOzLZW7j6I1xTD9s97bbvHbIku5X+urisHHEy1HiIoVyJIq9Tf2s/pNk0nuig9i
+         lhdI4H3r0mLodS//M8b3ckJ6Jlk4NKLnmPdTooTCNlx+d0rknzqscBvZL1Em/7hEl63F
+         1DiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=P/OhSljFKvJ8s/xQJe9TTLKP+beZTqshfCthmBpxxQM=;
-        b=OjLPBHwWKJtVOWJYcqqZVE0MeBvwAARr/NqFqXTWPEm0+DxG7d/JjDagw+6fox/1ES
-         MxnKwtFiovP8I2MZs2gH0ZRIaxD9XC2oVN9MSHe1SxLsDaGQvAl8FLxWw5htGMwLFGxy
-         JPQHTPC/XrhqUOV+kaUud4sy0rDXwBhtzaGlo9SQmswK7M4qWoJPjrcgSdZiPQVQIWDQ
-         HP/k/CN/XKFpwbrdYnaV5z3VglsFw8jaDkSLls3QWpL2Kq1lrYCSetQNNI7BBKsNszs+
-         OL165cSxRa8Po1JmGSHAWKlJ7MnJRiB6R3UZnQjZKSsvzVvFeKkjjdTkHnQDayJm7Tbb
-         I2MA==
-X-Gm-Message-State: AOAM530WZP/gv2CAB8SQo2UvfMuELXgPPR6TzB4KRVF23Y929xK+xnc/
-        /o24tWzcCUlF+2PwC6tP4gs=
-X-Google-Smtp-Source: ABdhPJw/Qs42c82N08XA5EQNBqJYXcrmgmOvonnDxR3ChWlSLH5/pLjqGG91RJvnGHf7YzPrLUcw8g==
-X-Received: by 2002:a62:1514:0:b029:31d:c27f:1daf with SMTP id 20-20020a6215140000b029031dc27f1dafmr7429219pfv.4.1625489406296;
-        Mon, 05 Jul 2021 05:50:06 -0700 (PDT)
-Received: from ubuntu.localdomain ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id j19sm14015260pgm.44.2021.07.05.05.50.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 05:50:05 -0700 (PDT)
-From:   gushengxian <gushengxian507419@gmail.com>
-To:     perex@perex.cz, tiwai@suse.com
-Cc:     linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] ALSA: emux: fix spelling mistakes
-Date:   Mon,  5 Jul 2021 05:50:01 -0700
-Message-Id: <20210705125001.665734-1-gushengxian507419@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GqddWSm2FPSz+EL6oOH6eQyjrfFcGFuBCoGNvkQlAZg=;
+        b=opuKe7MqQUKmtzkede+eAt9oAmQHw4AOQX+ZvJjuLkIi48IwYp83oF5aspA06Ifv4U
+         JIkUkgATvE88V1I44AnBl4oFa/wg9Kc5SZ78sEx0vSsbbt5WYakdq1RkdTv1PBtZvllb
+         F6AB48knlShnYh5GdWZmtjh/0AKuItPmC/LUM7ujw1Mdign/k0RjY0TToOiAnf8IM4em
+         Bxd5S79WN4M3u3zarALSaVajMRwQ4rVwycyNWvgoJtf8c7CKQaSTW/LONLbf/Luw5Vs+
+         aHRwPpuuYM9WTMD70q6ImzrGDyKXtCMlTGcpSJoLROGUlly0U+XcSzEY/VB5wHl8bykt
+         L7UQ==
+X-Gm-Message-State: AOAM533cXtjsS5jzyOcmaKWnALKVYN2ysyYlExVuS07ZwSfaDVAOrWt2
+        lHYLE6WYC/QFOhK4NCcHcBU4/prXraYL2/pNjQxOcg==
+X-Google-Smtp-Source: ABdhPJxiRzUG5gCsyGMzdGj1GtV7a51L2WP/p/ePQkXAmeA6pwd3JmhvviOeBJdRQAbTLzLJ1ZG/G14OEZCVtgosxN8=
+X-Received: by 2002:a67:8c46:: with SMTP id o67mr8777375vsd.34.1625489497166;
+ Mon, 05 Jul 2021 05:51:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210705090050.15077-1-reniuschengl@gmail.com>
+ <CAPDyKFotmw-HQpZKCOD_8kThEa0_KSPnn36FNFLKRyUHYRHQjQ@mail.gmail.com> <CAJU4x8u8JPBJ3V6MCi1XcO4Qim-COPuxOhTdUnor7JdNCUFb=w@mail.gmail.com>
+In-Reply-To: <CAJU4x8u8JPBJ3V6MCi1XcO4Qim-COPuxOhTdUnor7JdNCUFb=w@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 5 Jul 2021 14:50:59 +0200
+Message-ID: <CAPDyKFqXsn91BvkJXMYSnc7X=RP9DXxXp2nKMmv+aMPoNdK2Tw@mail.gmail.com>
+Subject: Re: [PATCH] [v2] mmc: sdhci-pci-gli: Improve Random 4K Read
+ Performance of GL9763E
+To:     Renius Chen <reniuschengl@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <Ben.Chuang@genesyslogic.com.tw>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+On Mon, 5 Jul 2021 at 12:59, Renius Chen <reniuschengl@gmail.com> wrote:
+>
+> Ulf Hansson <ulf.hansson@linaro.org> =E6=96=BC 2021=E5=B9=B47=E6=9C=885=
+=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=886:03=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+> >
+> > On Mon, 5 Jul 2021 at 11:00, Renius Chen <reniuschengl@gmail.com> wrote=
+:
+> > >
+> > > During a sequence of random 4K read operations, the performance will =
+be
+> > > reduced due to spending much time on entering/exiting the low power s=
+tate
+> > > between requests. We disable the low power state negotiation of GL976=
+3E
+> > > during a sequence of random 4K read operations to improve the perform=
+ance
+> > > and enable it again after the operations have finished.
+> > >
+> > > Signed-off-by: Renius Chen <reniuschengl@gmail.com>
+> > > ---
+> > >  drivers/mmc/host/sdhci-pci-gli.c | 68 ++++++++++++++++++++++++++++++=
+++
+> > >  1 file changed, 68 insertions(+)
+> > >
+> > > diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhc=
+i-pci-gli.c
+> > > index 302a7579a9b3..5f1f332b4241 100644
+> > > --- a/drivers/mmc/host/sdhci-pci-gli.c
+> > > +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> > > @@ -88,6 +88,9 @@
+> > >  #define PCIE_GLI_9763E_SCR      0x8E0
+> > >  #define   GLI_9763E_SCR_AXI_REQ           BIT(9)
+> > >
+> > > +#define PCIE_GLI_9763E_CFG       0x8A0
+> > > +#define   GLI_9763E_CFG_LPSN_DIS   BIT(12)
+> > > +
+> > >  #define PCIE_GLI_9763E_CFG2      0x8A4
+> > >  #define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
+> > >  #define   GLI_9763E_CFG2_L1DLY_MID 0x54
+> > > @@ -128,6 +131,11 @@
+> > >
+> > >  #define GLI_MAX_TUNING_LOOP 40
+> > >
+> > > +struct gli_host {
+> > > +       bool start_4k_r;
+> > > +       int continuous_4k_r;
+> > > +};
+> > > +
+> > >  /* Genesys Logic chipset */
+> > >  static inline void gl9750_wt_on(struct sdhci_host *host)
+> > >  {
+> > > @@ -691,6 +699,62 @@ static void sdhci_gl9763e_dumpregs(struct mmc_ho=
+st *mmc)
+> > >         sdhci_dumpregs(mmc_priv(mmc));
+> > >  }
+> > >
+> > > +static void gl9763e_set_low_power_negotiation(struct sdhci_pci_slot =
+*slot, bool enable)
+> > > +{
+> > > +       struct pci_dev *pdev =3D slot->chip->pdev;
+> > > +       u32 value;
+> > > +
+> > > +       pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
+> > > +       value &=3D ~GLI_9763E_VHS_REV;
+> > > +       value |=3D FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W)=
+;
+> > > +       pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
+> > > +
+> > > +       pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
+> > > +
+> > > +       if (enable)
+> > > +               value &=3D ~GLI_9763E_CFG_LPSN_DIS;
+> > > +       else
+> > > +               value |=3D GLI_9763E_CFG_LPSN_DIS;
+> > > +
+> > > +       pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
+> > > +
+> > > +       pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
+> > > +       value &=3D ~GLI_9763E_VHS_REV;
+> > > +       value |=3D FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R)=
+;
+> > > +       pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
+> > > +}
+> > > +
+> > > +static void gl9763e_request(struct mmc_host *mmc, struct mmc_request=
+ *mrq)
+> > > +{
+> > > +       struct sdhci_host *host =3D mmc_priv(mmc);
+> > > +       struct mmc_command *cmd;
+> > > +       struct sdhci_pci_slot *slot =3D sdhci_priv(host);
+> > > +       struct gli_host *gli_host =3D sdhci_pci_priv(slot);
+> > > +
+> > > +       cmd =3D mrq->cmd;
+> > > +
+> > > +       if (cmd && (cmd->opcode =3D=3D MMC_READ_MULTIPLE_BLOCK) && (c=
+md->data->blocks =3D=3D 8)) {
+> > > +               gli_host->continuous_4k_r++;
+> > > +
+> > > +               if ((!gli_host->start_4k_r) && (gli_host->continuous_=
+4k_r >=3D 3)) {
+> > > +                       gl9763e_set_low_power_negotiation(slot, false=
+);
+> > > +
+> > > +                       gli_host->start_4k_r =3D true;
+> > > +               }
+> > > +       } else {
+> > > +               gli_host->continuous_4k_r =3D 0;
+> > > +
+> > > +               if (gli_host->start_4k_r)       {
+> > > +                       gl9763e_set_low_power_negotiation(slot, true)=
+;
+> > > +
+> > > +                       gli_host->start_4k_r =3D false;
+> > > +               }
+> > > +       }
+> >
+> > The above code is trying to figure out what kind of storage use case
+> > that is running, based on information about the buffers. This does not
+> > work, simply because the buffers don't give you all the information
+> > you need to make the right decisions.
+> >
+> > Moreover, I am sure you would try to follow up with additional changes
+> > on top, trying to tweak the behaviour to fit another use case - and so
+> > on. My point is, this code doesn't belong in the lowest layer drivers.
+> >
+> > To move forward, I suggest you explore using runtime PM in combination
+> > with dev PM qos. In this way, the driver could implement a default
+> > behaviour, which can be tweaked from upper layer governors for
+> > example, but also from user space (via sysfs) allowing more
+> > flexibility and potentially support for various more use cases.
+> >
+>
+> Hi Ulf,
+>
+> Thanks for advice.
+>
+> But we'll meet the performance issue only during a seqence of requests
+> of read commands with 4K data length.
+>
+> So what we have to do is looking into the requests to monitor such
+> behaviors and disable the low power state negotiation of GL9763e. And
+> the information from the request buffer is sufficient for this
+> purpose.
+>
+> We don't even care about if we disable the low power state negotiation
+> by a wrong decision because we'll enable it again by any requests
+> which are not read commands or their data length is not 4K. Disabling
+> the low power state negotiation of GL9763e not only has no side
+> effects but also helps its performance.
+>
+> The behavior is only about the low power state negotiation of GL9763e
+> and 4K reads, and not related to runtime PM, so that we monitor the
+> requests and implement it in the driver of GL9763e.
 
-Fix some spelling mistakes as follows:
-sensitivies ==> sensitivities
-pararameters ==> parameters
-approxmimation ==> approximation
-silet ==> silent
+I don't agree, sorry.
 
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- sound/synth/emux/emux_nrpn.c | 2 +-
- sound/synth/emux/soundfont.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+The request doesn't tell you about the behavior/performance of the
+eMMC/SD card. You can have some average idea, but things vary
+depending on what eMMC/SD card that is being used - and over time when
+the card gets used, for example.
 
-diff --git a/sound/synth/emux/emux_nrpn.c b/sound/synth/emux/emux_nrpn.c
-index 7eed5791972c..8056422ed7c5 100644
---- a/sound/synth/emux/emux_nrpn.c
-+++ b/sound/synth/emux/emux_nrpn.c
-@@ -69,7 +69,7 @@ static const int gs_sense[] =
- 	DEF_FX_VIBRATE, DEF_FX_VIBDEPTH, DEF_FX_VIBDELAY
- };
- 
--/* effect sensitivies for XG controls:
-+/* effect sensitivities for XG controls:
-  * adjusted for chaos 8MB soundfonts
-  */
- static const int xg_sense[] =
-diff --git a/sound/synth/emux/soundfont.c b/sound/synth/emux/soundfont.c
-index da3cf8912463..16f00097cb95 100644
---- a/sound/synth/emux/soundfont.c
-+++ b/sound/synth/emux/soundfont.c
-@@ -108,7 +108,7 @@ snd_soundfont_close_check(struct snd_sf_list *sflist, int client)
-  * Deal with a soundfont patch.  Any driver could use these routines
-  * although it was designed for the AWE64.
-  *
-- * The sample_write and callargs pararameters allow a callback into
-+ * The sample_write and callargs parameters allow a callback into
-  * the actual driver to write sample data to the board or whatever
-  * it wants to do with it.
-  */
-@@ -799,7 +799,7 @@ snd_sf_linear_to_log(unsigned int amount, int offset, int ratio)
- 		amount <<= 1;
- 	s = (amount >> 24) & 0x7f;
- 	low = (amount >> 16) & 0xff;
--	/* linear approxmimation by lower 8 bit */
-+	/* linear approximation by lower 8 bit */
- 	v = (log_tbl[s + 1] * low + log_tbl[s] * (0x100 - low)) >> 8;
- 	v -= offset;
- 	v = (v * ratio) >> 16;
-@@ -1433,7 +1433,7 @@ snd_sf_free(struct snd_sf_list *sflist)
- 
- /*
-  * Remove all samples
-- * The soundcard should be silet before calling this function.
-+ * The soundcard should be silent before calling this function.
-  */
- int
- snd_soundfont_remove_samples(struct snd_sf_list *sflist)
--- 
-2.25.1
+But, let's not discuss use cases and exactly how to tune the behavior,
+that's a separate discussion.
 
+To repeat what I said, my main point is that this kind of code doesn't
+belong in the driver. Instead, please try using runtime PM and dev PM
+Qos.
+
+A rather simple attempt would be to deploy runtime PM support and play
+with a default autosuspend timeout instead. Would that work for you?
+
+>
+> Due to this behavior will only affect our GL9763e but not other
+> devices, so we think it could be implemented in the lower layer driver
+> of GL9763e, but not higher level or user space. And we are trying to
+> modify only our sdhci-pci-gli.c but not other mmc common codes.
+>
+
+That's exactly the problem.
+
+In principle, you want to apply some policy to balance performance vs
+the energy cost, which is a generic problem that all mmc drivers
+share.
+
+So far, the approach have been to run as fast as possible while there
+are requests in the queue - and then power off things with runtime PM,
+etc, after some period of idle. This certainly can be improved, but it
+needs to be done generically on not through independent hacks in
+drivers.
+
+Kind regards
+Uffe
+
+> Thank you!
+>
+> > > +
+> > > +       sdhci_request(mmc, mrq);
+> > > +}
+> > > +
+> > > +
+> > >  static void sdhci_gl9763e_cqe_pre_enable(struct mmc_host *mmc)
+> > >  {
+> > >         struct cqhci_host *cq_host =3D mmc->cqe_private;
+> > > @@ -848,6 +912,9 @@ static int gli_probe_slot_gl9763e(struct sdhci_pc=
+i_slot *slot)
+> > >         gli_pcie_enable_msi(slot);
+> > >         host->mmc_host_ops.hs400_enhanced_strobe =3D
+> > >                                         gl9763e_hs400_enhanced_strobe=
+;
+> > > +
+> > > +       host->mmc_host_ops.request =3D gl9763e_request;
+> > > +
+> > >         gli_set_gl9763e(slot);
+> > >         sdhci_enable_v4_mode(host);
+> > >
+> > > @@ -913,4 +980,5 @@ const struct sdhci_pci_fixes sdhci_gl9763e =3D {
+> > >         .suspend        =3D sdhci_cqhci_gli_suspend,
+> > >  #endif
+> > >         .add_host       =3D gl9763e_add_host,
+> > > +       .priv_size      =3D sizeof(struct gli_host),
+> > >  };
+> > > --
+> >
+> > Kind regards
+> > Uffe
