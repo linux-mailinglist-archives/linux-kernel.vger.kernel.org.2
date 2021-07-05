@@ -2,76 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252D73BB608
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 05:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05633BB610
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 06:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbhGEEBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 00:01:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:36700 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229716AbhGEEBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 00:01:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6AB291063;
-        Sun,  4 Jul 2021 20:58:31 -0700 (PDT)
-Received: from [10.163.88.246] (unknown [10.163.88.246])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E8ED53F694;
-        Sun,  4 Jul 2021 20:58:28 -0700 (PDT)
-Subject: Re: [PATCH] mm/debug_vm_pgtable: Fix corrupted PG_arch_1 by
- set_pmd_at()
-To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, shan.gavin@gmail.com
-References: <20210702103225.51448-1-gshan@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <33cfab46-3b9b-0088-17b5-bc821c74aefb@arm.com>
-Date:   Mon, 5 Jul 2021 09:29:16 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229693AbhGEEIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 00:08:14 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6392 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhGEEIM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 00:08:12 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GJBpS5YRFz76sn;
+        Mon,  5 Jul 2021 12:02:08 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 5 Jul 2021 12:05:34 +0800
+Received: from [127.0.0.1] (10.174.179.0) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 5 Jul 2021
+ 12:05:33 +0800
+Subject: Re: [PATCH -next 1/1] iomap: Fix a false positive of UBSAN in
+ iomap_seek_data()
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210702092109.2601-1-thunder.leizhen@huawei.com>
+ <YN7dn08eeUXfixJ7@infradead.org>
+ <2ce02a7f-4b8b-5a86-13ee-097aff084f82@huawei.com>
+ <9a619cb0-e998-83e5-8e42-d3606ab682e0@huawei.com>
+ <YOJ/2xrQ75Ttp6R3@casper.infradead.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <a322bf41-f1d0-eac7-20d9-b4273ce122d0@huawei.com>
+Date:   Mon, 5 Jul 2021 12:05:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210702103225.51448-1-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YOJ/2xrQ75Ttp6R3@casper.infradead.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Gavin,
 
-On 7/2/21 4:02 PM, Gavin Shan wrote:
-> There are two addresses selected: random virtual address and physical
-> address corresponding to kernel symbol @start_kernel. During the PMD
-> tests in pmd_advanced_tests(), the physical address is aligned down
-> to the starting address of the huge page, whose size is 512MB on ARM64
-> when we have 64KB base page size. After that, set_pmd_at() is called
-> to populate the PMD entry. PG_arch_1, PG_dcache_clean on ARM64, is
-> set to the page flags. Unforunately, the page, corresponding to the
-> starting address of the huge page could be owned by buddy. It means
-> PG_arch_1 can be unconditionally set to page owned by buddy.
-> 
-> Afterwards, the page with PG_arch_1 set is fetched from buddy's free
-> area list, but fails the checking. It leads to the following warning
-> on ARM64:
-> 
->    BUG: Bad page state in process memhog  pfn:08000
->    page:0000000015c0a628 refcount:0 mapcount:0 \
->         mapping:0000000000000000 index:0x1 pfn:0x8000
->    flags: 0x7ffff8000000800(arch_1|node=0|zone=0|lastcpupid=0xfffff)
->    raw: 07ffff8000000800 dead000000000100 dead000000000122 0000000000000000
->    raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
->    page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
 
-Does this problem happen right after the boot ? OR you ran some tests
-and workloads to trigger this ? IIRC never seen this before on arm64.
-Does this happen on other archs too ?
+On 2021/7/5 11:43, Matthew Wilcox wrote:
+> On Mon, Jul 05, 2021 at 11:29:44AM +0800, Leizhen (ThunderTown) wrote:
+>> I've thought about it, and that "if" statement can be removed as follows:
+> 
+> I think this really misses Christoph's point.  He's looking for
+> something more like this:
+
+Yes, I know that. I need to get rid of the "if" judgment first, and then I can
+modify iomap_seek_data() according to Christoph's point. Otherwise there are too
+many conversions from "length" to "size - offset" and the code doesn't look clear.
 
 > 
-> This fixes the issue by calling flush_dcache_page() after each call
-> to set_{pud, pmd, pte}_at() because PG_arch_1 isn't needed in any case.
+> @@ -83,27 +83,23 @@ loff_t
+>  iomap_seek_data(struct inode *inode, loff_t offset, const struct iomap_ops *ops)
+>  {
+>         loff_t size = i_size_read(inode);
+> -       loff_t length = size - offset;
+>         loff_t ret;
+> 
+>         /* Nothing to be found before or beyond the end of the file. */
+>         if (offset < 0 || offset >= size)
+>                 return -ENXIO;
+> 
+> -       while (length > 0) {
+> +       while (offset < size) {
+>                 ret = iomap_apply(inode, offset, length, IOMAP_REPORT, ops,
+>                                   &offset, iomap_seek_data_actor);
+>                 if (ret < 0)
+>                         return ret;
+>                 if (ret == 0)
+> -                       break;
+> +                       return offset;
+> 
+>                 offset += ret;
+> -               length -= ret;
+>         }
+> 
+> -       if (length <= 0)
+> -               return -ENXIO;
+> -       return offset;
+> +       return -ENXIO;
+>  }
+>  EXPORT_SYMBOL_GPL(iomap_seek_data);
+> 
+> (not even slightly tested)
+> 
+> .
+> 
 
-This (arm64 specific solution) might cause some side effects on other
-platforms ? The solution here needs to be generic enough. I will take
-a look into this patch but probably later this week or next week.
-
-- Anshuman
