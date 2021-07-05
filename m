@@ -2,124 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497663BB720
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCFBE3BB723
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 08:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhGEGXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 02:23:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53026 "EHLO mail.kernel.org"
+        id S229898AbhGEGYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 02:24:34 -0400
+Received: from mga17.intel.com ([192.55.52.151]:55416 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229813AbhGEGW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 02:22:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8354613D1;
-        Mon,  5 Jul 2021 06:20:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625466022;
-        bh=vNPUPQtYZbWQKtH0F5YHo4065tpzT1aYYV5EjWmsZ9M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uLyho5BYGuiJKbHvRpFnSU9+uJZaOUzovUVuWjpRI/wumD1/SCNSWPSx26R8q49OQ
-         PSrGHW3C+o1dPFk8gbH2/drdsnP0u6IinpD69TcgB/BnYou6gbAVNUMhXT4NrfV5Xj
-         dFcAGklvIec7toHFxZDzTgo/iBddL2bA8k4FEqAI=
-Date:   Mon, 5 Jul 2021 08:20:18 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zhenguo Zhao <zhenguo6858@gmail.com>
-Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] tty: n_gsm: delete DISC command frame as requester
-Message-ID: <YOKkoi/etpUFbzSU@kroah.com>
-References: <1625452087-12655-1-git-send-email-zhenguo6858@gmail.com>
+        id S229797AbhGEGYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 02:24:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10035"; a="189308641"
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="189308641"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jul 2021 23:21:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,325,1616482800"; 
+   d="scan'208";a="562409078"
+Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.58]) ([10.239.154.58])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Jul 2021 23:21:53 -0700
+Subject: Re: [PATCH v12] i2c: virtio: add a virtio i2c frontend driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wsa@kernel.org,
+        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, yu1.wang@intel.com, shuo.a.liu@intel.com,
+        conghui.chen@intel.com, stefanha@redhat.com
+References: <f229cd761048bc143f88f33a3437bdbf891c39fd.1625214435.git.jie.deng@intel.com>
+ <YN7jOm68fUL4UA2Q@smile.fi.intel.com>
+ <20210705024340.mb5sv5epxbdatgsg@vireshk-i7>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <adb5a18f-cf48-3059-5541-fb6d7bafb8d2@intel.com>
+Date:   Mon, 5 Jul 2021 14:21:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1625452087-12655-1-git-send-email-zhenguo6858@gmail.com>
+In-Reply-To: <20210705024340.mb5sv5epxbdatgsg@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 10:28:07AM +0800, Zhenguo Zhao wrote:
-> From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
-> 
-> as initiator,it need to send DISC command ,as requester,there is
-> no need to send the DISC control frame,it will cause redundant data.
-> 
-> Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
-> ---
->  drivers/tty/n_gsm.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-> index 5fea02c..f8e5935 100644
-> --- a/drivers/tty/n_gsm.c
-> +++ b/drivers/tty/n_gsm.c
-> @@ -2050,7 +2050,8 @@ static int gsm_disconnect(struct gsm_mux *gsm)
->  	del_timer_sync(&gsm->t2_timer);
->  	/* Now we are sure T2 has stopped */
->  
-> -	gsm_dlci_begin_close(dlci);
-> +	if (gsm->initiator)
-> +		gsm_dlci_begin_close(dlci);
->  	wait_event_interruptible(gsm->event,
->  				dlci->state == DLCI_CLOSED);
->  
-> @@ -3014,6 +3015,7 @@ static int gsmtty_open(struct tty_struct *tty, struct file *filp)
->  static void gsmtty_close(struct tty_struct *tty, struct file *filp)
->  {
->  	struct gsm_dlci *dlci = tty->driver_data;
-> +	struct gsm_mux *gsm = dlci->gsm;
->  
->  	if (dlci == NULL)
->  		return;
-> @@ -3024,7 +3026,8 @@ static void gsmtty_close(struct tty_struct *tty, struct file *filp)
->  	mutex_unlock(&dlci->mutex);
->  	if (tty_port_close_start(&dlci->port, tty, filp) == 0)
->  		return;
-> -	gsm_dlci_begin_close(dlci);
-> +	if (gsm->initiator)
-> +		gsm_dlci_begin_close(dlci);
->  	if (tty_port_initialized(&dlci->port) && C_HUPCL(tty))
->  		tty_port_lower_dtr_rts(&dlci->port);
->  	tty_port_close_end(&dlci->port, tty);
-> @@ -3035,10 +3038,12 @@ static void gsmtty_close(struct tty_struct *tty, struct file *filp)
->  static void gsmtty_hangup(struct tty_struct *tty)
->  {
->  	struct gsm_dlci *dlci = tty->driver_data;
-> +	struct gsm_mux *gsm = dlci->gsm;
->  	if (dlci->state == DLCI_CLOSED)
->  		return;
->  	tty_port_hangup(&dlci->port);
-> -	gsm_dlci_begin_close(dlci);
-> +	if (gsm->initiator)
-> +		gsm_dlci_begin_close(dlci);
->  }
->  
->  static int gsmtty_write(struct tty_struct *tty, const unsigned char *buf,
-> -- 
-> 1.9.1
-> 
 
-Hi,
+On 2021/7/5 10:43, Viresh Kumar wrote:
+> On 02-07-21, 12:58, Andy Shevchenko wrote:
+>> On Fri, Jul 02, 2021 at 04:46:47PM +0800, Jie Deng wrote:
+>>> +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
+>>> +				    struct virtio_i2c_req *reqs,
+>>> +				    struct i2c_msg *msgs, int nr,
+>>> +				    bool fail)
+>>> +{
+>>> +	struct virtio_i2c_req *req;
+>>> +	bool failed = fail;
+> Jie, you can actually get rid of this variable too. Jut rename fail to failed
+> and everything shall work as you want.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Oh, You are not right. I just found we can't remove this variable. The 
+"fail" and "failed" have different
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
+meanings for this function. We need fail to return the result.
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
 
-thanks,
-
-greg k-h's patch email bot
+>>> +	unsigned int len;
+>>> +	int i, j = 0;
+>>> +
+>>> +	for (i = 0; i < nr; i++) {
+>>> +		/* Detach the ith request from the vq */
+>>> +		req = virtqueue_get_buf(vq, &len);
+>>> +
+>>> +		/*
+>>> +		 * Condition (req && req == &reqs[i]) should always meet since
+>>> +		 * we have total nr requests in the vq.
+>>> +		 */
+>>> +		if (!failed && (WARN_ON(!(req && req == &reqs[i])) ||
+>>> +		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)))
+>>> +			failed = true;
+>> ...and after failed is true, we are continuing the loop, why?
+> Actually this function can be called with fail set to true. We proceed as we
+> need to call i2c_put_dma_safe_msg_buf() for all buffers we allocated earlier.
+>
+>>> +		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], !failed);
+>>> +		if (!failed)
+>>> +			++j;
+>> Besides better to read j++ the j itself can be renamed to something more
+>> verbose.
+>>
+>>> +	}
+>>> +	return (fail ? -ETIMEDOUT : j);
+>> Redundant parentheses.
+>>
+>>> +}
