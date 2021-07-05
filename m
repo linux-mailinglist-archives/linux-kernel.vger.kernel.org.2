@@ -2,118 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636483BBC62
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25113BBC67
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 13:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbhGELuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 07:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45026 "EHLO
+        id S231364AbhGELun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 07:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230367AbhGELuU (ORCPT
+        with ESMTP id S230367AbhGELun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 07:50:20 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADB0C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 04:47:43 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id f20so12046346qtk.10
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 04:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2anXc9o1J5CUj8jZ7vD+flFV6tAYlW07LvmjqUmo+tI=;
-        b=oxBNCd9Z7tczjNhggQLh1dJeHudhfX2gRTQ8wDfrhGLFD0rWLTz17tCZHuyEXiaOKY
-         mV/71KSXIKh0Ix007SELqjmbtfIE6GumGUOFFS4rITFAx2a1l+2afvUiK0mK10flTjla
-         tHvrupXy90S/hoD/eaatukQegq06J0gcsEaLn+C6PcI6qW4gebM13Z5b3zsX8HWZSr+y
-         Fem1uNfSMB/ftuT3uGabU+vw2I+jE2to+2tVq6REqGfzUCaFJjut7w2pMLGGYES7ElP9
-         XXRfg2PwFy2BOFmkKYjb394ND5hZV70MiX+bPzydnDGQ3s9pSxczREa4AA0tXwgHY8kx
-         KxUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2anXc9o1J5CUj8jZ7vD+flFV6tAYlW07LvmjqUmo+tI=;
-        b=R9/8lG2zjg4bSGd+ziiRdEdSefB8jcSrtp5UNA/BJBaAKpDZh9womEIYVBKGfLJWxn
-         73zu7/t3Kn5swG7gNdg7+bEqdJP5cpT9M5HWRO9Dpi3KMXNdXWeAOadYItV7DgpJzONf
-         BrXxf8r8O/iKNHfksGJkWVE4D04fQJCcO1djewiFTHMWSPxeDLGVRbKSdC6gMPQOGVfF
-         z5jJ0JIQRGXakUkLoKX8iQcVJ5ZQifZ6ZL4mffZQQfHOPlXRsDI40qhrCaPTv2KLffYE
-         +J8cFkR2i2ACZ5Z3H1hsnx05CSck2FDDanvXULu6bxbZWYz5N3qzqKYO+8Iadx8h8epu
-         wBiA==
-X-Gm-Message-State: AOAM5304ctFX9uU0AUJvcqRY6qKuk7lLZOiyKa6vckTB2GfuKfXCi4ot
-        VymhPZNywnINN5OCK8TbfiNL4nPnhFV+d3MGXTCP+A==
-X-Google-Smtp-Source: ABdhPJyHoyhfKlNbJ2OsQycTXwCVU8GNncHeEg3OytdDPbIjB4lfgNxZkC9kiRwZKQa/qKaVC/xOeHXux5M2duVYUe4=
-X-Received: by 2002:ac8:60ca:: with SMTP id i10mr9991952qtm.43.1625485662468;
- Mon, 05 Jul 2021 04:47:42 -0700 (PDT)
+        Mon, 5 Jul 2021 07:50:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E834C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 04:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EwWN7+UAKQIxLsDpSIp+JET9XMdfQgDUShXvpWDBlhk=; b=eAwDlJOBU+Tx+dEU6uv0PcpZ5Z
+        RasJ+GroFUsGWxd2fKjoXsLzNuziTWVLUWfQutkeScELYfij7yZ7HJykLLat5dLYOcHcAvrHwDQwU
+        W1CdwKpLbG4hh5TtyOOLcasY8ml+FqSPjWqH8XaH8/hkTt4v96+Ef5IeS+AurC8CDoczbLR9f7ubh
+        mGx5mtZ7RbC++4TlVSaPOwifGtDvKqJWcQiiQ3oAFxNyUYBX1J/INz+UfIMpO79Tcc67eKXlrKkG5
+        cphdgL9rx/FDAFW4Z26AGNEqDbHAU/OgDLaArnEVfPfpK10O4WOojU0P9+IYI6yTwpEfBFK+ogBhX
+        +itC8tLQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m0N4m-00AD6s-JQ; Mon, 05 Jul 2021 11:47:50 +0000
+Date:   Mon, 5 Jul 2021 12:47:48 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org
+Subject: Re: [f2fs-dev] [PATCH] f2fs: initialize page->private when using for
+ our internal use
+Message-ID: <YOLxZAnaKSwBIlK9@casper.infradead.org>
+References: <20210705052216.831989-1-jaegeuk@kernel.org>
+ <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
+ <YOLJW0IgCagMk2tF@google.com>
+ <e2fdf628-f25c-7495-cfd1-952899f7ff9a@kernel.org>
 MIME-Version: 1.0
-References: <000000000000bfb6cf05c631db0b@google.com> <20210703101243.45cbf143@gmail.com>
- <CACT4Y+Yk5v3=2V_t77RSqACNYQb6PmDM0Mst6N1QEgz9CdYrqw@mail.gmail.com> <20210705143652.56b3d68b@gmail.com>
-In-Reply-To: <20210705143652.56b3d68b@gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 5 Jul 2021 13:47:30 +0200
-Message-ID: <CACT4Y+aeiQ9=p6esuAseErekJnLzxFL1eG7qpWehZHUfb8UoNw@mail.gmail.com>
-Subject: Re: [syzbot] memory leak in kvm_dev_ioctl
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     syzbot <syzbot+c87d2efb740931ec76c7@syzkaller.appspotmail.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e2fdf628-f25c-7495-cfd1-952899f7ff9a@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 1:36 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> On Mon, 5 Jul 2021 07:54:59 +0200
-> Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> > On Sat, Jul 3, 2021 at 9:12 AM Pavel Skripkin <paskripkin@gmail.com>
-> > wrote:
-> > >
-> > > On Fri, 02 Jul 2021 23:05:26 -0700
-> > > syzbot <syzbot+c87d2efb740931ec76c7@syzkaller.appspotmail.com>
-> > > wrote:
-> > >
-> > > > Hello,
-> > > >
-> > > > syzbot found the following issue on:
-> > > >
-> > > > HEAD commit:    e058a84b Merge tag 'drm-next-2021-07-01' of
-> > > > git://anongit... git tree:       upstream
-> > > > console output:
-> > > > https://syzkaller.appspot.com/x/log.txt?x=171fbbdc300000 kernel
-> > > > config:
-> > > > https://syzkaller.appspot.com/x/.config?x=8c46abb9076f44dc
-> > > > dashboard link:
-> > > > https://syzkaller.appspot.com/bug?extid=c87d2efb740931ec76c7 syz
-> > > > repro: https://syzkaller.appspot.com/x/repro.syz?x=119d1efc300000
-> > > > C reproducer:
-> > > > https://syzkaller.appspot.com/x/repro.c?x=16c58c28300000
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to
-> > > > the commit: Reported-by:
-> > > > syzbot+c87d2efb740931ec76c7@syzkaller.appspotmail.com
-> > > >
-> > >
-> > > Corresponding fix was sent about 2 days ago
-> > > https://patchwork.kernel.org/project/kvm/patch/20210701195500.27097-1-paskripkin@gmail.com/
-> >
-> > Hi Pavel,
-> >
-> > Thanks for checking. Let's tell syzbot about the fix:
-> >
-> > #syz fix: kvm: debugfs: fix memory leak in kvm_create_vm_debugfs
->
->
-> Hi, Dmitry!
->
-> Sorry for stupid question :)
->
-> I don't see, that my patch was applied, so syzbot will save the patch
-> name and will test it after it will be applied? I thought about
-> sending `syz fix` command, but I was sure that syzbot takes only
-> accepted patches.
+On Mon, Jul 05, 2021 at 07:33:35PM +0800, Chao Yu wrote:
+> On 2021/7/5 16:56, Jaegeuk Kim wrote:
+> > On 07/05, Chao Yu wrote:
+> > > On 2021/7/5 13:22, Jaegeuk Kim wrote:
+> > > > We need to guarantee it's initially zero. Otherwise, it'll hurt entire flag
+> > > > operations.
+> > > 
+> > > Oops, I didn't get the point, shouldn't .private be zero after page was
+> > > just allocated by filesystem? What's the case we will encounter stall
+> > > private data left in page?
+> > 
+> > I'm seeing f2fs_migrate_page() has the newpage with some value without Private
+> > flag. That causes a kernel panic later due to wrong private flag used in f2fs.
+> 
+> I'm not familiar with that part of codes, so Cc mm mailing list for help.
+> 
+> My question is newpage in .migrate_page() may contain non-zero value in .private
+> field but w/o setting PagePrivate flag, is it a normal case?
 
-Hi Pavel,
+I think freshly allocated pages have a page->private of 0.  ie this
+code in mm/page_alloc.c:
 
-Please see if http://bit.do/syzbot#communication-with-syzbot answers
-your questions.
+                page = rmqueue(ac->preferred_zoneref->zone, zone, order,
+                                gfp_mask, alloc_flags, ac->migratetype);
+                if (page) {
+                        prep_new_page(page, order, gfp_mask, alloc_flags);
+
+where prep_new_page() calls post_alloc_hook() which contains:
+        set_page_private(page, 0);
+
+Now, I do see in __buffer_migrate_page() (mm/migrate.c):
+
+        attach_page_private(newpage, detach_page_private(page));
+
+but as far as I can tell, f2fs doesn't call any of the
+buffer_migrate_page() paths.  So I'm not sure why you're seeing
+a non-zero page->private.
