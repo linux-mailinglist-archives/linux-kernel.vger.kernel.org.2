@@ -2,99 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD783BB959
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE4E3BB95E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbhGEIeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 04:34:25 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3354 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbhGEIeX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:34:23 -0400
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GJJTP1dRRz6H8Lx;
-        Mon,  5 Jul 2021 16:17:45 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 5 Jul 2021 10:31:45 +0200
-Received: from localhost (10.47.85.51) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 5 Jul 2021
- 09:31:45 +0100
-Date:   Mon, 5 Jul 2021 09:31:29 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Andreas Kemnade <andreas@kemnade.info>, <robh+dt@kernel.org>,
-        <lars@metafoo.de>, <sre@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <leonard.crestez@nxp.com>,
-        <letux-kernel@openphoenux.org>
-Subject: Re: [PATCH 2/4] mfd: rn5t618: Add of compatibles for ADC and power
-Message-ID: <20210705093129.00005aab@Huawei.com>
-In-Reply-To: <YOK2aKYU6TK1GO7H@dell>
-References: <20210703084224.31623-1-andreas@kemnade.info>
-        <20210703084224.31623-3-andreas@kemnade.info>
-        <20210703170405.60828c57@jic23-huawei>
-        <YOK2aKYU6TK1GO7H@dell>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S230218AbhGEIey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 04:34:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230114AbhGEIex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 04:34:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F6D261374;
+        Mon,  5 Jul 2021 08:32:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625473936;
+        bh=/AgnkzuMvDPW3umEWUlJz3KteQYiDoT9pBzOhGC/svI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NpVOFaFot8/5u9vTh+tHSj4iDhPO8PR4GJaRYLEdSrEBlBHUkrnxhDjNXnuHcn0VH
+         owbQkiyq8lD/ZjS1857Ar3ZLSMuMXtQrrOp0lbFtEEiFsRqhJFQFNZcaScJ5HwdHuh
+         N61IgSpxiMcx3/Twv0crQuqt0ufjB48fYqfauNno=
+Date:   Mon, 5 Jul 2021 10:32:14 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] USB: serial: cp210x: fixes and CP2105/CP2108 fw
+ version
+Message-ID: <YOLDjgUFoIbWjilh@kroah.com>
+References: <20210705082015.18286-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.85.51]
-X-ClientProxiedBy: lhreml710-chm.china.huawei.com (10.201.108.61) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705082015.18286-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Jul 2021 08:36:08 +0100
-Lee Jones <lee.jones@linaro.org> wrote:
-
-> On Sat, 03 Jul 2021, Jonathan Cameron wrote:
+On Mon, Jul 05, 2021 at 10:20:09AM +0200, Johan Hovold wrote:
+> Here are couple of minor fixes and some cleanups related to the recent
+> regression which broke RTS control on some CP2102N devices with buggy
+> firmware.
 > 
-> > On Sat,  3 Jul 2021 10:42:22 +0200
-> > Andreas Kemnade <andreas@kemnade.info> wrote:
-> >   
-> > > This allows having devicetree nodes for the subdevices.
-> > > 
-> > > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> > > ---
-> > >  drivers/mfd/rn5t618.c | 6 ++++--
-> > >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/mfd/rn5t618.c b/drivers/mfd/rn5t618.c
-> > > index 384acb459427..b916c7471ca3 100644
-> > > --- a/drivers/mfd/rn5t618.c
-> > > +++ b/drivers/mfd/rn5t618.c
-> > > @@ -24,8 +24,10 @@ static const struct mfd_cell rn5t618_cells[] = {
-> > >  };
-> > >  
-> > >  static const struct mfd_cell rc5t619_cells[] = {
-> > > -	{ .name = "rn5t618-adc" },
-> > > -	{ .name = "rn5t618-power" },
-> > > +	{ .name = "rn5t618-adc",
-> > > +	  .of_compatible = "ricoh,rc5t619-adc" },  
-> > 
-> > Odd to have a name of 618 and a compatible of 619.  Why?
-> > Definitely deserves a comment if this is necessary for some reason!  
+> In case we run into another one of these, let's log the firmware
+> version also for CP2105 and CP2108 for which it can be retrieved.
 > 
-> Actually this is the norm.  We have lots of drivers named after the
-> *first* device they supported before expansion.
-
-Ah. I'd missed that this cells array is specific to the 5t619, though if
-the driver is the same I'd also expect it to be needed for the 5t618 entry.
-
+> Johan
 > 
-> > > +	{ .name = "rn5t618-power",
-> > > +	  .of_compatible = "ricoh,rc5t619-power" },
-> > >  	{ .name = "rn5t618-regulator" },
-> > >  	{ .name = "rc5t619-rtc" },
-> > >  	{ .name = "rn5t618-wdt" },  
-> >   
 > 
+> Changes in v2
+>  - keep the special-chars error message to make it more obvious that
+>    continuing on errors is intentional (1/6) (Greg)
 
+Thanks for the change, looks good to me!
+
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
