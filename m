@@ -2,375 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB3E3BB83B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A12C03BB838
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbhGEHxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 03:53:10 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:48889 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230118AbhGEHxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 03:53:02 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4GJHsq0tQgz9w26;
-        Mon,  5 Jul 2021 09:50:23 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Tam2UUuaBn17; Mon,  5 Jul 2021 09:50:23 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4GJHsj6TnwzBCjY;
-        Mon,  5 Jul 2021 09:50:17 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D2B188B778;
-        Mon,  5 Jul 2021 09:50:17 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id qkrSTSnDvtsr; Mon,  5 Jul 2021 09:50:17 +0200 (CEST)
-Received: from po9473vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A75C38B763;
-        Mon,  5 Jul 2021 09:50:17 +0200 (CEST)
-Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id A1DFE663F7; Mon,  5 Jul 2021 07:50:17 +0000 (UTC)
-Message-Id: <181132a31da827043f4f2a780f8319581ca134d3.1625471053.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <b864a92693ca8413ef0b19f0c12065c212899b6e.1625471053.git.christophe.leroy@csgroup.eu>
-References: <b864a92693ca8413ef0b19f0c12065c212899b6e.1625471053.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 4/4] powerpc/ptdump: Convert powerpc to GENERIC_PTDUMP
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon,  5 Jul 2021 07:50:17 +0000 (UTC)
+        id S230106AbhGEHw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 03:52:59 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:63388 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhGEHw5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 03:52:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1625471419; x=1628063419;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=oogMehEDsCkbfzRhFf1VEz10kYjp8oG0WM32FUe0mbY=;
+        b=Tl7aY5rQj8rk+Ao+YrGcTI5+1RLuj3Fe/g73G/Pkb6JbmFRhqwLwDYo8OQk789YZ
+        Xdr6v1L5z/csxjlFuVlGFg8eD2brP0JYPBdEzw1JSl7ybsBYB11Jl7BOC5WkfDdm
+        hpxaeID4XskdVIM+/UJ/jayxgAFMnDP8dDw3Tnu8MNo=;
+X-AuditID: c39127d2-a77bc70000001c5e-71-60e2b9bb436a
+Received: from berlix.phytec.de (Berlix.phytec.de [172.16.0.117])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 78.EC.07262.BB9B2E06; Mon,  5 Jul 2021 09:50:19 +0200 (CEST)
+Received: from Berlix.phytec.de (172.16.0.117) by Berlix.phytec.de
+ (172.16.0.117) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 5 Jul 2021
+ 09:50:19 +0200
+Received: from Berlix.phytec.de ([fe80::343f:7618:c7ce:97c9]) by
+ berlix.phytec.de ([fe80::343f:7618:c7ce:97c9%3]) with mapi id 15.01.2176.009;
+ Mon, 5 Jul 2021 09:50:19 +0200
+From:   Yunus Bas <Y.Bas@phytec.de>
+To:     "lee.jones@linaro.org" <lee.jones@linaro.org>
+CC:     "daniel.thompson@linaro.org" <daniel.thompson@linaro.org>,
+        "stwiss.opensource@diasemi.com" <stwiss.opensource@diasemi.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mfd: mfd-core: Change "Failed to locate of_node" warning
+ to debug
+Thread-Topic: [PATCH] mfd: mfd-core: Change "Failed to locate of_node" warning
+ to debug
+Thread-Index: AQHXYo50G4kKLVAcj0qT5KJGCUbALasXsyMAgAALWACAEsq3gIAAaGmAgAEqgoCAADpBgIAAG2MAgAHE0ICAAWbwAIAAXhiAgAAJhgCAA/HSgIAAAecAgAAFSgA=
+Date:   Mon, 5 Jul 2021 07:50:19 +0000
+Message-ID: <614d720b0f468334e74a4e29b626d498f25a7c31.camel@phytec.de>
+References: <03cb3befabdda032b1ec9d97b4daac69fa23c759.camel@phytec.de>
+         <YNsid9K4PdUJbKqs@dell>
+         <5a718e7812f2ce46347ae94fda6175f38c65359e.camel@phytec.de>
+         <20210630105557.eaktwdz5p6yzuron@maple.lan> <YNxktsFmlzLcn4+Y@dell>
+         <9b5d0003cce92cad57e7712d1e46c78c10f1a0ab.camel@phytec.de>
+         <20210702125920.fydyfhwqe7tyr7oi@maple.lan> <YN9cl1/7k/UlllSq@dell>
+         <20210702191012.mecgw577ggkabxr6@maple.lan>
+         <c2ca83c4d67a47a8e104e5c54a4920cac56312b1.camel@phytec.de>
+         <YOK1RvQI1rHvaXEy@dell>
+In-Reply-To: <YOK1RvQI1rHvaXEy@dell>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.16.0.116]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D4D4A0B6C4B1CC4EAA083F63282F3454@phytec.de>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDIsWRmVeSWpSXmKPExsWyRoChVHf3zkcJBlfW6ViceXOX3eL+16OM
+        Fpd3zWGzuPp7PYsDi8eKT/oed67tYfP4vEkugDmKyyYlNSezLLVI3y6BK+P3h48sBQ3CFVMX
+        XmdpYDwg1MXIySEhYCJxsf0TexcjF4eQwHImiYlTl7JCOA8YJebPv80C4WwEclZNZ+xi5OBg
+        E1CUuHIrH6RbRMBQYsmJp2A1zAIHGSW2blnBBlIjLBAhMW+5BkRNpMTCBZfANogIdDFKvP93
+        iQUkwSKgInFl3jVWkHpeATeJEz0WELs+M0v8+NEMVsMJVNP9eC0ziM0oICuxYcN5MJtZQFxi
+        07PvrBAvCEgs2QMRlxAQlXj5+B9UXEGiraeTCWQ+s4CmxPpd+hCtFhKf2t4yQtiKElO6H7KD
+        2LwCghInZz5hmcAoPgvJhlkI3bOQdM9C0j0LSfcCRtZVjEK5mcnZqUWZ2XoFGZUlqcl6Kamb
+        GIExeHii+qUdjH1zPA4xMnEwHmKU4GBWEuEVmfIoQYg3JbGyKrUoP76oNCe1+BCjNAeLkjjv
+        Bt6SMCGB9MSS1OzU1ILUIpgsEwenVANj4ovTTDcS9/IHvZJWavrEdfSKzqGTMUfubV3FxHF0
+        66uKBWcfVrG6ppt5zfsY8i54Y3e+Bu+k2H1fvmY4MV77eydr3ZKux25rfrD+MJswUdTxkMjP
+        lz/9d9V8Drp2yGRFkVjpr/kRgVPOtKRGr/96vMlZskKed9IUdR8ZbdWQlPBZVYvbLSp7lViK
+        MxINtZiLihMBxHw3nK8CAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch converts powerpc to the generic PTDUMP implementation.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/Kconfig            |   2 +
- arch/powerpc/Kconfig.debug      |  30 -------
- arch/powerpc/mm/Makefile        |   2 +-
- arch/powerpc/mm/mmu_decl.h      |   2 +-
- arch/powerpc/mm/ptdump/Makefile |   9 ++-
- arch/powerpc/mm/ptdump/ptdump.c | 136 ++++++++------------------------
- 6 files changed, 46 insertions(+), 135 deletions(-)
-
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 0104345d0a65..dc1ab533a1cf 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -123,6 +123,7 @@ config PPC
- 	select ARCH_HAS_COPY_MC			if PPC64
- 	select ARCH_HAS_DEBUG_VIRTUAL
- 	select ARCH_HAS_DEBUG_VM_PGTABLE
-+	select ARCH_HAS_DEBUG_WX		if STRICT_KERNEL_RWX
- 	select ARCH_HAS_DEVMEM_IS_ALLOWED
- 	select ARCH_HAS_DMA_MAP_DIRECT 		if PPC_PSERIES
- 	select ARCH_HAS_ELF_RANDOMIZE
-@@ -182,6 +183,7 @@ config PPC
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_IRQ_SHOW_LEVEL
- 	select GENERIC_PCI_IOMAP		if PCI
-+	select GENERIC_PTDUMP
- 	select GENERIC_SMP_IDLE_THREAD
- 	select GENERIC_STRNCPY_FROM_USER
- 	select GENERIC_STRNLEN_USER
-diff --git a/arch/powerpc/Kconfig.debug b/arch/powerpc/Kconfig.debug
-index 205cd77f321f..192f0ed0097f 100644
---- a/arch/powerpc/Kconfig.debug
-+++ b/arch/powerpc/Kconfig.debug
-@@ -365,36 +365,6 @@ config FAIL_IOMMU
- 
- 	  If you are unsure, say N.
- 
--config PPC_PTDUMP
--	bool "Export kernel pagetable layout to userspace via debugfs"
--	depends on DEBUG_KERNEL && DEBUG_FS
--	help
--	  This option exports the state of the kernel pagetables to a
--	  debugfs file. This is only useful for kernel developers who are
--	  working in architecture specific areas of the kernel - probably
--	  not a good idea to enable this feature in a production kernel.
--
--	  If you are unsure, say N.
--
--config PPC_DEBUG_WX
--	bool "Warn on W+X mappings at boot"
--	depends on PPC_PTDUMP && STRICT_KERNEL_RWX
--	help
--	  Generate a warning if any W+X mappings are found at boot.
--
--	  This is useful for discovering cases where the kernel is leaving
--	  W+X mappings after applying NX, as such mappings are a security risk.
--
--	  Note that even if the check fails, your kernel is possibly
--	  still fine, as W+X mappings are not a security hole in
--	  themselves, what they do is that they make the exploitation
--	  of other unfixed kernel bugs easier.
--
--	  There is no runtime or memory usage effect of this option
--	  once the kernel has booted up - it's a one time check.
--
--	  If in doubt, say "Y".
--
- config PPC_FAST_ENDIAN_SWITCH
- 	bool "Deprecated fast endian-switch syscall"
- 	depends on DEBUG_KERNEL && PPC_BOOK3S_64
-diff --git a/arch/powerpc/mm/Makefile b/arch/powerpc/mm/Makefile
-index eae4ec2988fc..df8172da2301 100644
---- a/arch/powerpc/mm/Makefile
-+++ b/arch/powerpc/mm/Makefile
-@@ -18,5 +18,5 @@ obj-$(CONFIG_PPC_MM_SLICES)	+= slice.o
- obj-$(CONFIG_HUGETLB_PAGE)	+= hugetlbpage.o
- obj-$(CONFIG_NOT_COHERENT_CACHE) += dma-noncoherent.o
- obj-$(CONFIG_PPC_COPRO_BASE)	+= copro_fault.o
--obj-$(CONFIG_PPC_PTDUMP)	+= ptdump/
-+obj-$(CONFIG_PTDUMP_CORE)	+= ptdump/
- obj-$(CONFIG_KASAN)		+= kasan/
-diff --git a/arch/powerpc/mm/mmu_decl.h b/arch/powerpc/mm/mmu_decl.h
-index 7dac910c0b21..dd1cabc2ea0f 100644
---- a/arch/powerpc/mm/mmu_decl.h
-+++ b/arch/powerpc/mm/mmu_decl.h
-@@ -180,7 +180,7 @@ static inline void mmu_mark_rodata_ro(void) { }
- void __init mmu_mapin_immr(void);
- #endif
- 
--#ifdef CONFIG_PPC_DEBUG_WX
-+#ifdef CONFIG_DEBUG_WX
- void ptdump_check_wx(void);
- #else
- static inline void ptdump_check_wx(void) { }
-diff --git a/arch/powerpc/mm/ptdump/Makefile b/arch/powerpc/mm/ptdump/Makefile
-index 712762be3cb1..4050cbb55acf 100644
---- a/arch/powerpc/mm/ptdump/Makefile
-+++ b/arch/powerpc/mm/ptdump/Makefile
-@@ -5,5 +5,10 @@ obj-y	+= ptdump.o
- obj-$(CONFIG_4xx)		+= shared.o
- obj-$(CONFIG_PPC_8xx)		+= 8xx.o
- obj-$(CONFIG_PPC_BOOK3E_MMU)	+= shared.o
--obj-$(CONFIG_PPC_BOOK3S_32)	+= shared.o bats.o segment_regs.o
--obj-$(CONFIG_PPC_BOOK3S_64)	+= book3s64.o hashpagetable.o
-+obj-$(CONFIG_PPC_BOOK3S_32)	+= shared.o
-+obj-$(CONFIG_PPC_BOOK3S_64)	+= book3s64.o
-+
-+ifdef CONFIG_PTDUMP_DEBUGFS
-+obj-$(CONFIG_PPC_BOOK3S_32)	+= bats.o segment_regs.o
-+obj-$(CONFIG_PPC_BOOK3S_64)	+= hashpagetable.o
-+endif
-diff --git a/arch/powerpc/mm/ptdump/ptdump.c b/arch/powerpc/mm/ptdump/ptdump.c
-index fb531bc64fc5..8d0c724b0c18 100644
---- a/arch/powerpc/mm/ptdump/ptdump.c
-+++ b/arch/powerpc/mm/ptdump/ptdump.c
-@@ -16,6 +16,7 @@
- #include <linux/io.h>
- #include <linux/mm.h>
- #include <linux/highmem.h>
-+#include <linux/ptdump.h>
- #include <linux/sched.h>
- #include <linux/seq_file.h>
- #include <asm/fixmap.h>
-@@ -54,6 +55,7 @@
-  *
-  */
- struct pg_state {
-+	struct ptdump_state ptdump;
- 	struct seq_file *seq;
- 	const struct addr_marker *marker;
- 	unsigned long start_address;
-@@ -204,10 +206,10 @@ static void note_page_update_state(struct pg_state *st, unsigned long addr, int
- 	}
- }
- 
--static void note_page(struct pg_state *st, unsigned long addr,
--		      int level, u64 val, unsigned long page_size)
-+static void note_page(struct ptdump_state *pt_st, unsigned long addr, int level, u64 val)
- {
- 	u64 flag = level >= 0 ? val & pg_level[level].mask : 0;
-+	struct pg_state *st = container_of(pt_st, struct pg_state, ptdump);
- 
- 	/* At first no level is set */
- 	if (st->level == -1) {
-@@ -245,94 +247,6 @@ static void note_page(struct pg_state *st, unsigned long addr,
- 	}
- }
- 
--static void walk_pte(struct pg_state *st, pmd_t *pmd, unsigned long start)
--{
--	pte_t *pte = pte_offset_kernel(pmd, 0);
--	unsigned long addr;
--	unsigned int i;
--
--	for (i = 0; i < PTRS_PER_PTE; i++, pte++) {
--		addr = start + i * PAGE_SIZE;
--		note_page(st, addr, 4, pte_val(*pte), PAGE_SIZE);
--
--	}
--}
--
--static void walk_hugepd(struct pg_state *st, hugepd_t *phpd, unsigned long start,
--			int pdshift, int level)
--{
--#ifdef CONFIG_ARCH_HAS_HUGEPD
--	unsigned int i;
--	int shift = hugepd_shift(*phpd);
--	int ptrs_per_hpd = pdshift - shift > 0 ? 1 << (pdshift - shift) : 1;
--
--	if (start & ((1 << shift) - 1))
--		return;
--
--	for (i = 0; i < ptrs_per_hpd; i++) {
--		unsigned long addr = start + (i << shift);
--		pte_t *pte = hugepte_offset(*phpd, addr, pdshift);
--
--		note_page(st, addr, level + 1, pte_val(*pte), 1 << shift);
--	}
--#endif
--}
--
--static void walk_pmd(struct pg_state *st, pud_t *pud, unsigned long start)
--{
--	pmd_t *pmd = pmd_offset(pud, 0);
--	unsigned long addr;
--	unsigned int i;
--
--	for (i = 0; i < PTRS_PER_PMD; i++, pmd++) {
--		addr = start + i * PMD_SIZE;
--		if (!pmd_none(*pmd) && !pmd_is_leaf(*pmd))
--			/* pmd exists */
--			walk_pte(st, pmd, addr);
--		else
--			note_page(st, addr, 3, pmd_val(*pmd), PMD_SIZE);
--	}
--}
--
--static void walk_pud(struct pg_state *st, p4d_t *p4d, unsigned long start)
--{
--	pud_t *pud = pud_offset(p4d, 0);
--	unsigned long addr;
--	unsigned int i;
--
--	for (i = 0; i < PTRS_PER_PUD; i++, pud++) {
--		addr = start + i * PUD_SIZE;
--		if (!pud_none(*pud) && !pud_is_leaf(*pud))
--			/* pud exists */
--			walk_pmd(st, pud, addr);
--		else
--			note_page(st, addr, 2, pud_val(*pud), PUD_SIZE);
--	}
--}
--
--static void walk_pagetables(struct pg_state *st)
--{
--	unsigned int i;
--	unsigned long addr = st->start_address & PGDIR_MASK;
--	pgd_t *pgd = pgd_offset_k(addr);
--
--	/*
--	 * Traverse the linux pagetable structure and dump pages that are in
--	 * the hash pagetable.
--	 */
--	for (i = pgd_index(addr); i < PTRS_PER_PGD; i++, pgd++, addr += PGDIR_SIZE) {
--		p4d_t *p4d = p4d_offset(pgd, 0);
--
--		if (p4d_none(*p4d) || p4d_is_leaf(*p4d))
--			note_page(st, addr, 1, p4d_val(*p4d), PGDIR_SIZE);
--		else if (is_hugepd(__hugepd(p4d_val(*p4d))))
--			walk_hugepd(st, (hugepd_t *)p4d, addr, PGDIR_SHIFT, 1);
--		else
--			/* p4d exists */
--			walk_pud(st, p4d, addr);
--	}
--}
--
- static void populate_markers(void)
- {
- 	int i = 0;
-@@ -383,17 +297,24 @@ static int ptdump_show(struct seq_file *m, void *v)
- 		.seq = m,
- 		.marker = address_markers,
- 		.level = -1,
--		.start_address = IS_ENABLED(CONFIG_PPC64) ? PAGE_OFFSET : TASK_SIZE,
-+		.ptdump = {
-+			.note_page = note_page,
-+			.range = (struct ptdump_range[]){
-+				{TASK_SIZE, ~0UL},
-+				{0, 0}
-+			}
-+		}
- 	};
- 
- #ifdef CONFIG_PPC64
- 	if (!radix_enabled())
--		st.start_address = KERN_VIRT_START;
-+		st.ptdump.range.start = KERN_VIRT_START;
-+	else
-+		st.ptdump.range.start = PAGE_OFFSET;
- #endif
- 
- 	/* Traverse kernel page tables */
--	walk_pagetables(&st);
--	note_page(&st, 0, -1, 0, 0);
-+	ptdump_walk_pgd(&st.ptdump, &init_mm, NULL);
- 	return 0;
- }
- 
-@@ -409,23 +330,34 @@ static void build_pgtable_complete_mask(void)
- 				pg_level[i].mask |= pg_level[i].flag[j].mask;
- }
- 
--#ifdef CONFIG_PPC_DEBUG_WX
-+#ifdef CONFIG_DEBUG_WX
- void ptdump_check_wx(void)
- {
- 	struct pg_state st = {
- 		.seq = NULL,
--		.marker = address_markers,
-+		.marker = (struct addr_marker[]) {
-+			{ 0, NULL},
-+			{ -1, NULL},
-+		},
- 		.level = -1,
- 		.check_wx = true,
--		.start_address = IS_ENABLED(CONFIG_PPC64) ? PAGE_OFFSET : TASK_SIZE,
-+		.ptdump = {
-+			.note_page = note_page,
-+			.range = (struct ptdump_range[]){
-+				{TASK_SIZE, ~0UL},
-+				{0, 0}
-+			}
-+		}
- 	};
- 
- #ifdef CONFIG_PPC64
- 	if (!radix_enabled())
--		st.start_address = KERN_VIRT_START;
-+		st.ptdump.range.start = KERN_VIRT_START;
-+	else
-+		st.ptdump.range.start = PAGE_OFFSET;
- #endif
- 
--	walk_pagetables(&st);
-+	ptdump_walk_pgd(&st.ptdump, &init_mm, NULL);
- 
- 	if (st.wx_pages)
- 		pr_warn("Checked W+X mappings: FAILED, %lu W+X pages found\n",
-@@ -439,8 +371,10 @@ static int ptdump_init(void)
- {
- 	populate_markers();
- 	build_pgtable_complete_mask();
--	debugfs_create_file("kernel_page_tables", 0400, NULL, NULL,
--			    &ptdump_fops);
-+
-+	if (IS_ENABLED(CONFIG_PTDUMP_DEBUGFS))
-+		debugfs_create_file("kernel_page_tables", 0400, NULL, NULL, &ptdump_fops);
-+
- 	return 0;
- }
- device_initcall(ptdump_init);
--- 
-2.25.0
-
+QW0gTW9udGFnLCBkZW0gMDUuMDcuMjAyMSB1bSAwODozMSArMDEwMCBzY2hyaWViIExlZSBKb25l
+czoNCj4gT24gTW9uLCAwNSBKdWwgMjAyMSwgWXVudXMgQmFzIHdyb3RlOg0KPiANCj4gPiBUaGFu
+ayB5b3UgZm9yIHRoZSBjbGFyaWZpY2F0aW9uLiBJJ20gbm93IGF3YXJlIG9uIGhvdyB0byBoYW5k
+bGUNCj4gPiBNRkQncw0KPiA+IGluIHRoZSBkZXZpY2V0cmVlLiBCdXQgZ2l2ZW4gdGhpcywgdGhl
+IGRlZmF1bHQgYmVoYXZpb3Igb2YgTUZEJ3MNCj4gPiBzaG91bGQNCj4gPiBkZWZpbml0ZWx5IGJl
+IGRvY3VtZW50ZWQgc2luY2UgaSBjb3VsZCBzZWUgbWFueSBvdGhlciBkZXZpY2V0cmVlDQo+ID4g
+ZXhhbXBsZXMgaGFuZGxpbmcgdGhpcyBhbHNvIG5vdCBpbiB0aGUgcHJvcGVyIG1hbm5lci4NCj4g
+DQo+IEluIHRoZSA4IHllYXJzIEkndmUgYmVlbiB3b3JraW5nIHdpdGggRFQgYW5kIE1GRCwgdGhp
+cyBpcyB0aGUgZmlyc3QNCj4gdGltZSB0aGlzIHBhcnRpY3VsYXIgaXNzdWUgaGFzIGFyaXNlbiwg
+YnV0IGlmIHlvdSdkIGxpa2UgdG8gc3VibWl0DQo+IHN1Y2ggYSBkb2N1bWVudCwgaXQgd2lsbCBi
+ZSBjb25zaWRlcmVkIGZvciBpbmNsdXNpb24uDQoNClRoaXMgaXMgYmVjYXVzZSBvbiBvbGRlciBr
+ZXJuZWwgdmVyc2lvbnMgKG9yIGF0IGxlYXN0IG9uIHRoZSBsYXN0IExUUykNCnRoZXJlIHdhcyBu
+byB3YXJuaW5nIGluIHRoZSBmaXJzdCBwbGFjZS4gVGhlIHdhcm5pbmcgd2FzIGFkZGVkIHdpdGgg
+dGhlDQpmb2xsb3dpbmcgcGF0Y2ggb2YgeW91cnM6DQoNCkNvbW1pdCA0NjZhNjJkNzY0MmYgKCJt
+ZmQ6IGNvcmU6IE1ha2UgYSBiZXN0IGVmZm9ydCBhdHRlbXB0IHRvIG1hdGNoDQpkZXZpY2VzIHdp
+dGggdGhlIGNvcnJlY3Qgb2Zfbm9kZXMiKQ0KDQp3aGljaCB3YXMgYWRkZWQgYXJvdW5kIGxhc3Qg
+eWVhci4NCg0KPiANCj4gUmVhbGx5IHBsZWFzZWQgeW91IGhhdmUgdGhpcyBmaWd1cmVkIG91dCB0
+aG91Z2guDQo+IA0KDQotLSANCk1pdCBmcmV1bmRsaWNoZW4gR3LDvMOfZW4NCll1bnVzIEJhcw0K
+DQotU29mdHdhcmUgRW5naW5lZXItDQpQSFlURUMgTWVzc3RlY2huaWsgR21iSA0KUm9iZXJ0LUtv
+Y2gtU3RyLiAzOQ0KNTUxMjkgTWFpbnoNCkdlcm1hbnkNClRlbC46ICs0OSAoMCk2MTMxIDkyMjEt
+IDQ2Ng0KV2ViOiB3d3cucGh5dGVjLmRlDQoNClNpZSBmaW5kZW4gdW5zIGF1Y2ggYXVmOiBGYWNl
+Ym9vaywgTGlua2VkSW4sIFhpbmcsIFlvdVR1YmUNCg0KUEhZVEVDIE1lc3N0ZWNobmlrIEdtYkgg
+fCBSb2JlcnQtS29jaC1TdHIuIDM5IHwgNTUxMjkgTWFpbnosIEdlcm1hbnkNCkdlc2Now6RmdHNm
+w7xocmVyOiBEaXBsLi1JbmcuIE1pY2hhZWwgTWl0ZXpraSwgRGlwbC4tSW5nLiBCb2RvIEh1YmVy
+IHwNCkhhbmRlbHNyZWdpc3RlciBNYWlueiBIUkIgNDY1NiB8IEZpbmFuemFtdCBNYWlueiB8IFN0
+Lk5yLiAyNjY1MDA2MDgsIERFDQoxNDkwNTk4NTUNClRoaXMgRS1NYWlsIG1heSBjb250YWluIGNv
+bmZpZGVudGlhbCBvciBwcml2aWxlZ2VkIGluZm9ybWF0aW9uLiBJZiB5b3UNCmFyZSBub3QgdGhl
+IGludGVuZGVkIHJlY2lwaWVudCAob3IgaGF2ZSByZWNlaXZlZCB0aGlzIEUtTWFpbCBpbiBlcnJv
+cikNCnBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBpbW1lZGlhdGVseSBhbmQgZGVzdHJveSB0aGlz
+IEUtTWFpbC4gQW55DQp1bmF1dGhvcml6ZWQgY29weWluZywgZGlzY2xvc3VyZSBvciBkaXN0cmli
+dXRpb24gb2YgdGhlIG1hdGVyaWFsIGluDQp0aGlzIEUtTWFpbCBpcyBzdHJpY3RseSBmb3JiaWRk
+ZW4uDQoNCg==
