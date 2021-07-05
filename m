@@ -2,191 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDEC3BC30C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 21:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5381D3BC33D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 21:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhGETVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 15:21:24 -0400
-Received: from mail-co1nam11on2083.outbound.protection.outlook.com ([40.107.220.83]:63646
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229743AbhGETVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 15:21:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=akjRyXi2x3nNnA8z6WwtpE2UVytwcE8Jo/TWzZKHQB9aMr+0YXp4UFzz4iWZI72M2nsQx6i2RqDGnEPFgeKSEDdg1fRE0qGKZSsmm8KVZbzCRAQ6/Pj4JZJgbgyctIfJiO3b7gEJhRdCRt8HoAnapQNU4LTQ784WhW1wn/pi9RohmwV5AW+Rr1mXkpwnc/rWBjv0lw3Vu5uMuVFvuofBePHOawXFkIjgDXLMKQ6gn+aB3wEgCDDQ7BTQp1gGy9//S1b+Tm39Pz0g5wFGt1mhD3y72LFUSym1aWb2DyoHaMVmrlI5iicKu8+gi68L7f9h1E6zMu+wvDDOGj8Rx0SSSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tCzDYKXSFIcS9VH4CmffsV2tIamCctDj26XHKnbnVkw=;
- b=oaWd6IAdK81zD0yhZ9CCEE9xMu+A0Q/6pQLqVvG8Xtt3KxC5OpEmzL2CcdtYaq4Bn1OsgWjXUEP9zae61gj99f+7Dhqt3Z4SeQ8efu8kbHTshlhKUDwOZnbJe7RvtfymU7TzAHbsICss+NzoJ+FABlBl0LiOyL/+C/W8BZDcslJpQTY7BG++ROTxQIq09BakIQY+VlKrQYRNxBrei2RpDK3uQ0FfTjBm4FnSvAjD1iZdSgyFigorQsBSJ+SOWSi+WGpj68mM8qhfilrNx/3JGAUZDy7MGCsUqxAv169bNS1zNASGJdF1VMgy68YPsZl8Y04azcA/3BQ35XWzVldrWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tCzDYKXSFIcS9VH4CmffsV2tIamCctDj26XHKnbnVkw=;
- b=u37b9iZqGaQAoPb93h4c9gE9JAduQEfl3oEOcQrx0cukcPQGOFeRIXEsZZMSrFuAY0wcbb/QDug7I6V/TT+Sp4PvLOk4yv5xxRG9lv5gCAVnOeWf17oKu4EY13O7vZi9SGSigvDdzgIfcCgAWmEYzPOEN8hAJ1l8aAvV5nxUZ/U=
-Received: from BN9PR03CA0748.namprd03.prod.outlook.com (2603:10b6:408:110::33)
- by MN2PR12MB3214.namprd12.prod.outlook.com (2603:10b6:208:106::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Mon, 5 Jul
- 2021 19:18:42 +0000
-Received: from BN8NAM11FT003.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:110:cafe::9) by BN9PR03CA0748.outlook.office365.com
- (2603:10b6:408:110::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23 via Frontend
- Transport; Mon, 5 Jul 2021 19:18:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BN8NAM11FT003.mail.protection.outlook.com (10.13.177.90) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4287.22 via Frontend Transport; Mon, 5 Jul 2021 19:18:42 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 5 Jul 2021
- 14:18:41 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Mon, 5 Jul 2021 14:18:31 -0500
-From:   Vijendar Mukunda <vijendar.mukunda@amd.com>
-To:     <broonie@kernel.org>, <peter.ujfalusi@ti.com>,
-        <alsa-devel@alsa-project.org>
-CC:     <amistry@google.com>, <nartemiev@google.com>,
-        <Alexander.Deucher@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
-        <Sunil-kumar.Dommati@amd.com>,
-        "Vijendar Mukunda" <Vijendar.Mukunda@amd.com>,
-        Vijendar Mukunda <vijendar.mukunda@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] ASoC: add stop_dma_first flag to reverse the stop sequence
-Date:   Tue, 6 Jul 2021 01:06:17 +0530
-Message-ID: <20210705193620.1144-1-vijendar.mukunda@amd.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4d672c81-a918-4de5-d237-08d93fe9b3b8
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3214:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB3214506F95CE0305EB9E8204971C9@MN2PR12MB3214.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fyGIdyP5G1BbNm1E/EoTd2kYAeeE/OWvcTTSsSJxioCQiwjD1qPQ7xNUrPWnghb2JSGbb72J5RYU0Og6KG9Nej0d5/vwvpNir+XzhNDmAgqPeumzReJx8Kv4KqtgzKeOGscDA2IHjTLOp3b/6nICixizF495mTvYb2PclVZHomHthGpSw7BrG47dTubnJIFiy8MiDnZO6dDYdvRzpP6XZIQORH9vwQ4LqebX41b/thBQGdojHypRdbbOHnsoz8XZMt4d3of6W7TWxn3j2BRm5lFJMUJsp62ECzhZzZ7r8Uoz/Ik6ug77nEbedDWs8MZE3ibMSdUSUXvADCuj72MLSiTTH5E66flIT9BZalCOnm2sXdFH9cOfLsD6eqI70XXFQoeYgnpRMciIYUt7Fie+yUi1Eby/WHtSVwDfoZpjd3ChP/B1aVKD+ViNALKQtT4LlM4JPluNNPz8hhVP9xUbQGt+/4IJx6kuYbU9EhqFjzzjOIuni4J86Nn28p9xohSmJFpVccJos/P+qmcXxiCqnbpfh/WS6utW02KEAivh0iIRgCjmf4waBURfdk3HQustc+98+D5VDg9x8/JqoyWElfzbjivK/oUr9yU1gjauyxaDEG4sCysPxO6thm3BZL+VXbGLSjFio/4Hh76Vo21SPFpSAK+Os0XXZc3pQHQfh8upmuHgfAH3TchHzrVyjZTejH2f8AuJrgIbbE4h6rDDtjREDEVTABZbV4C4s6nEKC8=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(396003)(136003)(46966006)(36840700001)(186003)(70586007)(44832011)(6666004)(70206006)(1076003)(7416002)(316002)(81166007)(8676002)(83380400001)(82740400003)(26005)(36756003)(356005)(47076005)(2906002)(110136005)(2616005)(54906003)(5660300002)(86362001)(336012)(82310400003)(4326008)(8936002)(7696005)(426003)(36860700001)(478600001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2021 19:18:42.4270
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d672c81-a918-4de5-d237-08d93fe9b3b8
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT003.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3214
+        id S229907AbhGETrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 15:47:25 -0400
+Received: from flippiebewealthmgr.xyz ([185.31.160.196]:53360 "EHLO
+        host.flippiebewealthmgr.xyz" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229852AbhGETrZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 15:47:25 -0400
+Received: from flippiebewealthmgr.xyz (ec2-54-210-195-65.compute-1.amazonaws.com [54.210.195.65])
+        by host.flippiebewealthmgr.xyz (Postfix) with ESMTPA id 45CC515F335
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 22:02:08 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.flippiebewealthmgr.xyz 45CC515F335
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=flippiebewealthmgr.xyz; s=default; t=1625511728;
+        bh=9G86e92kIq/Gm9ou9607oUaenJE7el5MfLTN8tJRQJU=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=jsYXE12mLoyy/2+sKRIzvVniJlCHkMwy96khGBn7TyDsqYVoIw/fJqniRxJ9dK/iI
+         bRvbqH8fOn+sYBVSTLkYFAiTP9hib8hyu/BbvMWMdlemhVBbbar0VcUnGR/HBnOlxY
+         i0wVSyjR/7wMx2gVvaIzNVkcjpQCz1tFHZvwVbss=
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.flippiebewealthmgr.xyz 45CC515F335
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=flippiebewealthmgr.xyz; s=default; t=1625511728;
+        bh=9G86e92kIq/Gm9ou9607oUaenJE7el5MfLTN8tJRQJU=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=jsYXE12mLoyy/2+sKRIzvVniJlCHkMwy96khGBn7TyDsqYVoIw/fJqniRxJ9dK/iI
+         bRvbqH8fOn+sYBVSTLkYFAiTP9hib8hyu/BbvMWMdlemhVBbbar0VcUnGR/HBnOlxY
+         i0wVSyjR/7wMx2gVvaIzNVkcjpQCz1tFHZvwVbss=
+Reply-To: jothammasuku18@flippiebecker.com
+From:   Jotham Masuku <jothammasuku18@flippiebewealthmgr.xyz>
+To:     linux-kernel@vger.kernel.org
+Subject: Get back to me
+Date:   05 Jul 2021 19:02:07 +0000
+Message-ID: <20210705190207.0D4EEE4328B69BB0@flippiebewealthmgr.xyz>
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Hello there,
 
-On stream stop, currently CPU DAI stop sequence invoked first
-followed by DMA. For Few platforms, it is required to stop the
-DMA first before stopping CPU DAI.
+I hope this message finds you in good spirits especially during=20
+this challenging time of coronavirus pandemic. I hope you and=20
+your family are well and keeping safe. Anyway, I am Jotham=20
+Masuku, a wealth manager working with Flippiebecker Wealth in=20
+South Africa. I got your contact through a b2b online business=20
+directory when searching for business minded people in your=20
+country. I am contacting you because one of my high profile=20
+clients is interested in investing abroad and has asked me to=20
+look for individuals and companies in your country with=20
+productive business ideas and projects that he can invest in. He=20
+wants to invest a substantial amount of asset abroad. I thought I=20
+should contact you to see if you are interested in this=20
+opportunity.
 
-For Stoneyridge platform, it is required to invoke DMA driver stop
-first rather than invoking DWC I2S controller stop.
-Introduced new flag in sound card structure for reordering stop sequence.
-Based on flag check, ASoC core will re-order the stop requence.
+I have decided to keep this proposal very brief for now but I=20
+will be happy to share more information and details upon=20
+receiving a response from you to indicate your interest. I am=20
+looking forward to hearing back from you so that we can plan a=20
+strategy that will be beneficial to all parties. Please be kind=20
+to also provide your direct contact telephone number for a verbal=20
+discussion.
 
-Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
----
-v1 -> v2: renamed flag as "stop_dma_fist"
-          fixed build error by removing extra + symbol 
-          sound/soc/soc-pcm.c:1019:3: error: expected expression before 'struct'
-          1019 | + struct snd_soc_card *card = rtd->card;  
- include/sound/soc.h                  |  1 +
- sound/soc/amd/acp-da7219-max98357a.c |  1 +
- sound/soc/soc-pcm.c                  | 23 +++++++++++++++++------
- 3 files changed, 19 insertions(+), 6 deletions(-)
+Best regards
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 675849d07284..aa63282aac2c 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -982,6 +982,7 @@ struct snd_soc_card {
- 	unsigned int disable_route_checks:1;
- 	unsigned int probed:1;
- 	unsigned int component_chaining:1;
-+	unsigned int stop_dma_first:1;
- 
- 	void *drvdata;
- };
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index 84e3906abd4f..a2bf49f81a80 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -742,6 +742,7 @@ static int cz_probe(struct platform_device *pdev)
- 	if (!machine)
- 		return -ENOMEM;
- 	card->dev = &pdev->dev;
-+	cz_card.stop_dma_first = true;
- 	platform_set_drvdata(pdev, card);
- 	snd_soc_card_set_drvdata(card, machine);
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 46513bb97904..062fb6fcc03f 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1015,6 +1015,8 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 
- static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- {
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct snd_soc_card *card = rtd->card;
- 	int ret = -EINVAL, _ret = 0;
- 	int rollback = 0;
- 
-@@ -1055,14 +1057,23 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		ret = snd_soc_pcm_dai_trigger(substream, cmd, rollback);
--		if (ret < 0)
--			break;
-+		if (card->stop_dma_first) {
-+			ret = snd_soc_pcm_component_trigger(substream, cmd, rollback);
-+			if (ret < 0)
-+				break;
- 
--		ret = snd_soc_pcm_component_trigger(substream, cmd, rollback);
--		if (ret < 0)
--			break;
-+			ret = snd_soc_pcm_dai_trigger(substream, cmd, rollback);
-+			if (ret < 0)
-+				break;
-+		} else {
-+			ret = snd_soc_pcm_dai_trigger(substream, cmd, rollback);
-+			if (ret < 0)
-+				break;
- 
-+			ret = snd_soc_pcm_component_trigger(substream, cmd, rollback);
-+			if (ret < 0)
-+				break;
-+		}
- 		ret = snd_soc_link_trigger(substream, cmd, rollback);
- 		break;
- 	}
--- 
-2.17.1
-
+J Masuku
+Flippiebecker Wealth
