@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27853BBABC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D393BBAC2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 12:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbhGEKGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 06:06:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230476AbhGEKGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 06:06:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE968613C8;
-        Mon,  5 Jul 2021 10:03:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625479414;
-        bh=Q8/L2LRHglK2rXQ7PV40+1czQBiJ/w+Kx+K0KseNmao=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XVf7rhMls18J9mYaKp4sO/vU7UNqO27Sea2F2RLPt6xM22kkJlLVMKD0NPBSdCzqw
-         Ey/aI6wwkszdnn6rA/wC1ltyHxN0h+EY6dduRVFqDg9wqqo+CE7nb4doc/j3w6UQv4
-         HLDnq16sZ3HLpRqccxQ8XPHzPlTBhPDkYHv+q1/L1otOHzgye1yO7mNZjbo96iF0YH
-         PdsJI0dunM2qwyyhZljvTfXZ+SmMDUhs0lkC2lw0V11llGuXcmZs5lzMKnVBrGkmAY
-         I7Qxt5vwMRb0LAdEGEr0z7sHvzNa7iHUKy/PfUT4Y9dpuk2ISXFjetSouZ64vLASs0
-         XTG3BLYVVehbw==
-Date:   Mon, 5 Jul 2021 19:03:28 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v8 03/13] kprobes: treewide: Remove
- trampoline_address from kretprobe_trampoline_handler()
-Message-Id: <20210705190328.8cf3fb4397500f2dafb761f0@kernel.org>
-In-Reply-To: <YOKut2jZ4f+oSKAI@gmail.com>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
-        <162399994996.506599.17672270294950096639.stgit@devnote2>
-        <YOKut2jZ4f+oSKAI@gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        id S230505AbhGEKGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 06:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230366AbhGEKGv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 06:06:51 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C74C061574;
+        Mon,  5 Jul 2021 03:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=956zj6j30tlRZ1w7O85satSsrvmOb1dPD6tACO1pQag=; b=cZuA4cgxAzY/zyq6CS7qt/ZP14
+        AgGHO874BNBzPsWE7OUsSNXUXPE22cvBZLS3FY5eH0cdyehJCq/j9G1CAbonr8YYTVEWH7NQ+P7L1
+        mMJk3jLB4dlNQ7ZvyTyq6Zf711XxhvQ+LCX04izSQivtwSDxrl1ZUN06/QK5QdUWPL2Q=;
+Received: from p200300ccff0e44001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0e:4400:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1m0LSJ-0006aN-L5; Mon, 05 Jul 2021 12:03:59 +0200
+Date:   Mon, 5 Jul 2021 12:03:58 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>, <robh+dt@kernel.org>,
+        <lars@metafoo.de>, <sre@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <leonard.crestez@nxp.com>,
+        <letux-kernel@openphoenux.org>
+Subject: Re: [PATCH 2/4] mfd: rn5t618: Add of compatibles for ADC and power
+Message-ID: <20210705120358.6bf737f7@aktux>
+In-Reply-To: <20210705093129.00005aab@Huawei.com>
+References: <20210703084224.31623-1-andreas@kemnade.info>
+        <20210703084224.31623-3-andreas@kemnade.info>
+        <20210703170405.60828c57@jic23-huawei>
+        <YOK2aKYU6TK1GO7H@dell>
+        <20210705093129.00005aab@Huawei.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ingo,
+On Mon, 5 Jul 2021 09:31:29 +0100
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 
-On Mon, 5 Jul 2021 09:03:19 +0200
-Ingo Molnar <mingo@kernel.org> wrote:
-
+> On Mon, 5 Jul 2021 08:36:08 +0100
+> Lee Jones <lee.jones@linaro.org> wrote:
 > 
-> * Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > On Sat, 03 Jul 2021, Jonathan Cameron wrote:
+> >   
+> > > On Sat,  3 Jul 2021 10:42:22 +0200
+> > > Andreas Kemnade <andreas@kemnade.info> wrote:
+> > >     
+> > > > This allows having devicetree nodes for the subdevices.
+> > > > 
+> > > > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> > > > ---
+> > > >  drivers/mfd/rn5t618.c | 6 ++++--
+> > > >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/mfd/rn5t618.c b/drivers/mfd/rn5t618.c
+> > > > index 384acb459427..b916c7471ca3 100644
+> > > > --- a/drivers/mfd/rn5t618.c
+> > > > +++ b/drivers/mfd/rn5t618.c
+> > > > @@ -24,8 +24,10 @@ static const struct mfd_cell rn5t618_cells[] = {
+> > > >  };
+> > > >  
+> > > >  static const struct mfd_cell rc5t619_cells[] = {
+> > > > -	{ .name = "rn5t618-adc" },
+> > > > -	{ .name = "rn5t618-power" },
+> > > > +	{ .name = "rn5t618-adc",
+> > > > +	  .of_compatible = "ricoh,rc5t619-adc" },    
+> > > 
+> > > Odd to have a name of 618 and a compatible of 619.  Why?
+> > > Definitely deserves a comment if this is necessary for some reason!    
+> > 
+> > Actually this is the norm.  We have lots of drivers named after the
+> > *first* device they supported before expansion.  
 > 
-> > --- a/include/linux/kprobes.h
-> > +++ b/include/linux/kprobes.h
-> > @@ -197,15 +197,23 @@ extern void arch_prepare_kretprobe(struct kretprobe_instance *ri,
-> >  				   struct pt_regs *regs);
-> >  extern int arch_trampoline_kprobe(struct kprobe *p);
-> >  
-> > +void kretprobe_trampoline(void);
-> > +/*
-> > + * Since some architecture uses structured function pointer,
-> > + * use dereference_function_descriptor() to get real function address.
-> > + */
-> > +static nokprobe_inline void *kretprobe_trampoline_addr(void)
-> > +{
-> > +	return dereference_kernel_function_descriptor(kretprobe_trampoline);
-> > +}
+> Ah. I'd missed that this cells array is specific to the 5t619, though if
+> the driver is the same I'd also expect it to be needed for the 5t618 entry.
 > 
-> Could we please also make 'kretprobe_trampoline' harder to use 
-> accidentally, such by naming it appropriately?
-> 
-> __kretprobe_trampoline would be a good first step I guess.
+Well, yes, it is needed for the 5t618 also. But if I would add it, it
+would be untested. And that second shorter array is also used for the
+rn5t567 which does not have an ADC, So I we need three arrays there.
 
-Good idea! Let me update it.
-
-Thank you,
-
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Regards,
+Andreas
