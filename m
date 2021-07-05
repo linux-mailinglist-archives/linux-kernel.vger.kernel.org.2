@@ -2,132 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6623BB7D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B163BB7E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 09:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbhGEHcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 03:32:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58206 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229982AbhGEHce (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 03:32:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625470198;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TrSBmzvOS6/PS/ey8rda3qmHumcD6j+TIXTeJ0gyPEk=;
-        b=BslUoJ2n+c5ICoq+zmAWHxkPXeHlImCeMXh0mih86rbJIjYC1wiJw2/0+ELciLOdnUvMbq
-        Rv+IQagi9kflh4Z/vYdUAVuSDhi2/r17ZKaafOGedp/WVcHEyeCb6G0iNxOSgxN1BT3KIH
-        ZQwluFHGZ5nXofJbJvciLOKTvouVoS4=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-38-BFHTaInEN4OXjVih5s6qkg-1; Mon, 05 Jul 2021 03:29:56 -0400
-X-MC-Unique: BFHTaInEN4OXjVih5s6qkg-1
-Received: by mail-pf1-f198.google.com with SMTP id d22-20020a056a0024d6b0290304cbae6fdcso11444086pfv.21
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 00:29:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=TrSBmzvOS6/PS/ey8rda3qmHumcD6j+TIXTeJ0gyPEk=;
-        b=NXOS11YTI9lZ/jKJxZrydPC+Z+6u0P6RQKeLweEhr1WG1EFxiSXxBJOeR7PTa3jGBP
-         je2BpiPG/Rbd1qOhidqx6KaWEn+ODQYXtfsMVSzcXB9aQbPb1G/pTPGS780WGPWiQjMG
-         BoIwlntXxOMDFVHGtP0mxmgbfpg5Q4jRTB79TLa0Qa6Zg9myaPcVt5ur3AXtNpXaYacq
-         ssfBWQ9EP3FHqKNIWmk9Cl3zMW48o6d9Y+QgGE6CEdxjbz9xeHeT873qu0QWe/FeQHq1
-         JbclqwJ5RSpmM0kU7D3VCBVs253tw3GswvGcoxia6C3kOG1OhrsFjMC6zwQxr5cXcBVb
-         OCmQ==
-X-Gm-Message-State: AOAM53313bCMZtsEoWmNoXB4xEukQT5e2Z8jj1VcsuwFvcpjvf1U636J
-        mQ9yDP9/JVQL1v747g3HmdyzmHv7u5aZzLsbHpIlwmLfGr4brIhSo70SA7xomqulk5CupOkIhC4
-        QR6nP4Q7SD3aeqV/zohGpIQzN
-X-Received: by 2002:a62:e40c:0:b029:317:3367:c5db with SMTP id r12-20020a62e40c0000b02903173367c5dbmr13828153pfh.62.1625470195672;
-        Mon, 05 Jul 2021 00:29:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyyPuvIjsJjbwagcjsnQti/B3SFzhjFQwJhjth684dqQCP2e9nWAUj+nOHvnbWfsYhmocWiLA==
-X-Received: by 2002:a62:e40c:0:b029:317:3367:c5db with SMTP id r12-20020a62e40c0000b02903173367c5dbmr13828142pfh.62.1625470195452;
-        Mon, 05 Jul 2021 00:29:55 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id z76sm11997064pfc.173.2021.07.05.00.29.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Jul 2021 00:29:54 -0700 (PDT)
-Subject: Re: [PATCH 2/2] vdpa: vp_vdpa: don't use hard-coded maximum virtqueue
- size
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, xieyongji@bytedance.com,
-        stefanha@redhat.com
-References: <20210705071910.31965-1-jasowang@redhat.com>
- <20210705071910.31965-2-jasowang@redhat.com>
- <20210705032602-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <02139c5f-92c5-eda6-8d2d-8e1b6ac70f3e@redhat.com>
-Date:   Mon, 5 Jul 2021 15:29:47 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S230083AbhGEHdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 03:33:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229975AbhGEHdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 03:33:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BAC4F6135D;
+        Mon,  5 Jul 2021 07:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625470232;
+        bh=NiW/HXfBqch2oY+lEOTlQYrXSsK64D3GwvR6BGZndyA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NY9EFz6AZqrFYFDfqnsVvqYabkcRKqofUQMVRgEUMX11+CK/ioJgr0Q316XZaOeXF
+         cyGQH9s4RQUTgLnAUUuKfXNUY1yPDkK5M41JGvqF2aRqIoYkmqQiVBm/nFu0TAa8IS
+         DQDSuP/3GsXF9VoPTthvFnvvIRyGWUcL55W3VJAM=
+Date:   Mon, 5 Jul 2021 09:30:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dipen Patel <dipenp@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, warthog618@gmail.com,
+        devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+        robh+dt@kernel.org
+Subject: Re: [RFC 02/11] drivers: Add HTE subsystem
+Message-ID: <YOK1Fq45P/DeqxAA@kroah.com>
+References: <20210625235532.19575-1-dipenp@nvidia.com>
+ <20210625235532.19575-3-dipenp@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20210705032602-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210625235532.19575-3-dipenp@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 25, 2021 at 04:55:23PM -0700, Dipen Patel wrote:
+> +static void hte_chip_dbgfs_init(struct hte_device *gdev)
+> +{
+> +	const struct hte_chip *chip = gdev->chip;
+> +	const char *name = chip->name ? chip->name : dev_name(chip->dev);
+> +
+> +	gdev->dbg_root = debugfs_create_dir(name, hte_root);
+> +	if (!gdev->dbg_root)
+> +		return;
 
-ÔÚ 2021/7/5 ÏÂÎç3:26, Michael S. Tsirkin Ð´µÀ:
-> On Mon, Jul 05, 2021 at 03:19:10PM +0800, Jason Wang wrote:
->> This patch switch to read virtqueue size from the capability instead
->> of depending on the hardcoded value. This allows the per virtqueue
->> size could be advertised.
->>
->> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> So let's add an ioctl for this? It's really a bug we don't..
-
-
-As explained in patch 1. Qemu doesn't use VHOST_VDPA_GET_VRING_NUM 
-actually. Instead it checks the result VHOST_VDPA_SET_VRING_NUM.
-
-So I change VHOST_VDPA_GET_VRING_NUM to return the minimal size of all 
-the virtqueues.
-
-If you wish we can add a VHOST_VDPA_GET_VRING_NUM2, but I'm not sure it 
-will have a user or not.
-
-Thanks
+No need to check for this, if it fails, your other debugfs calls
+will handle it just fine.
 
 
->
->> ---
->>   drivers/vdpa/virtio_pci/vp_vdpa.c | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/vp_vdpa.c
->> index 2926641fb586..198f7076e4d9 100644
->> --- a/drivers/vdpa/virtio_pci/vp_vdpa.c
->> +++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
->> @@ -18,7 +18,6 @@
->>   #include <linux/virtio_pci.h>
->>   #include <linux/virtio_pci_modern.h>
->>   
->> -#define VP_VDPA_QUEUE_MAX 256
->>   #define VP_VDPA_DRIVER_NAME "vp_vdpa"
->>   #define VP_VDPA_NAME_SIZE 256
->>   
->> @@ -197,7 +196,10 @@ static void vp_vdpa_set_status(struct vdpa_device *vdpa, u8 status)
->>   
->>   static u16 vp_vdpa_get_vq_num_max(struct vdpa_device *vdpa, u16 qid)
->>   {
->> -	return VP_VDPA_QUEUE_MAX;
->> +	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
->> +	struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
->> +
->> +	return vp_modern_get_queue_size(mdev, qid);
->>   }
->>   
->>   static int vp_vdpa_get_vq_state(struct vdpa_device *vdpa, u16 qid,
->> -- 
->> 2.25.1
+> +
+> +	debugfs_create_atomic_t("ts_requested", 0444, gdev->dbg_root,
+> +				&gdev->ts_req);
+> +	debugfs_create_u32("total_ts", 0444, gdev->dbg_root,
+> +			   &gdev->nlines);
+> +}
+> +
+> +static void hte_ts_dbgfs_init(const char *name, struct hte_ts_info *ei)
+> +{
+> +	if (!ei->gdev->dbg_root || !name)
+> +		return;
+> +
+> +	ei->ts_dbg_root = debugfs_create_dir(name, ei->gdev->dbg_root);
+> +	if (!ei->ts_dbg_root)
+> +		return;
 
+Again, no need to check.
+
+> +
+> +	debugfs_create_size_t("ts_buffer_depth", 0444, ei->ts_dbg_root,
+> +			      &ei->buf->datum_len);
+> +	debugfs_create_size_t("ts_buffer_watermark", 0444, ei->ts_dbg_root,
+> +			      &ei->buf->watermark);
+> +	debugfs_create_atomic_t("dropped_timestamps", 0444, ei->ts_dbg_root,
+> +				&ei->dropped_ts);
+> +}
+> +
+> +static inline void hte_dbgfs_deinit(struct dentry *root)
+> +{
+> +	if (!root)
+> +		return;
+
+No need to check this.
+
+> +
+> +	debugfs_remove_recursive(root);
+
+Do not wrap a single call with another call :)
+
+
+thanks,
+
+greg k-h
