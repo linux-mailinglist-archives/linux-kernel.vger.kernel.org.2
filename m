@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966EA3BB9D3
+	by mail.lfdr.de (Postfix) with ESMTP id ED7D03BB9D5
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbhGEJIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 05:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
+        id S230356AbhGEJIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 05:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhGEJH5 (ORCPT
+        with ESMTP id S230149AbhGEJH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 05:07:57 -0400
+        Mon, 5 Jul 2021 05:07:58 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1478C061574;
-        Mon,  5 Jul 2021 02:05:20 -0700 (PDT)
-Date:   Mon, 05 Jul 2021 09:05:18 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411AEC061760;
+        Mon,  5 Jul 2021 02:05:21 -0700 (PDT)
+Date:   Mon, 05 Jul 2021 09:05:19 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1625475919;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Vxp5ZmFmJXLy1bBL/+qPFQqgIwidQ9KVwDt8lG23pVk=;
-        b=is9SjZBMnFg5arnGwxrLl38cpBjhQPiJNegIW4lBOUvqvtuj/fDLKV+ycghnlhOjkSyoa1
-        uLvyjGQCWaOXGnfD/m23z/qL61VWgNVLxL9Cr+jTvrRgv9F8nCfU5mAV0LKLpzQuX3TCS8
-        inAUjqttzrg9DDxyO2HlMr6oy/BKOSddl/eY2DIx3dUGyotlARjCNRgLT1i68bQa/NA2FI
-        q86/K3rGCtYmDIeYaq2IcBm1N0F4qJlXjrL2RI6iH9elqqldWSPl5URqlFAr5H35MFJ467
-        kG7Yb+BNRA37aK0dE/CF4AncE4Xgm3nPk5eDLcHDiaPPj7+q8L3+GPojVcPkRw==
+        bh=thE07WZP4wf0fIvtLf9G8CAydKbYEd6EINtpLSX7O3c=;
+        b=b3vGacI11kMu+DdP0LpXKdKxTeZpJ2+bQhvjgf52PRupOF9WH/pFkAnIas7G+EKGe/fBP2
+        AyWKqweQr4b+x0fV58IGRzh3mLuqdtG5o/O7ZF+3gd6y73RUBbsigA/LxH6DKaF2lksXJc
+        iuoUoLRgIG8YfK2HozR34xgOOU6TDhtg9wMqMxoQPQ//1qPV9WibUCRwt/2JAAP3uQt+wp
+        PgQ02qwPilhyGnc+ghwoAfEOPPQE4gYNHw30xWM2SKrfvrpmh0xrE4UnWjHtiWVZcMbsc3
+        z5WMGLztEOKrygDtVWFqgorjkxlHEhNV+RemJPG5go9mXwcofuJocC/K9JG8Aw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1625475919;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,23 +36,24 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Vxp5ZmFmJXLy1bBL/+qPFQqgIwidQ9KVwDt8lG23pVk=;
-        b=jC3nFpJEb8SfQ42kS7A3SUnbSBWf/gIsdDt7vgRILBpsIYTa2kI3lqxjkANVYxt2B+ZuEF
-        siC3+Ryat0oJG/Bw==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+        bh=thE07WZP4wf0fIvtLf9G8CAydKbYEd6EINtpLSX7O3c=;
+        b=Ucocgz7qM6Zi9fXbA5YHCZZgQDS1IeiZKobPyv/JuD9MLeYWWPkDFw2ZZO1DJuZMs7XXHc
+        V/r/fnKYrogmt2DA==
+From:   "tip-bot2 for Xiongwei Song" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] jump_label: Fix jump_label_text_reserved() vs __init
-Cc:     kernel test robot <oliver.sang@intel.com>,
+Subject: [tip: locking/urgent] locking/lockdep: Fix meaningless /proc/lockdep
+ output of lock classes on !CONFIG_PROVE_LOCKING
+Cc:     Xiongwei Song <sxwjean@gmail.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
+        Waiman Long <longman@redhat.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210628113045.045141693@infradead.org>
-References: <20210628113045.045141693@infradead.org>
+In-Reply-To: <20210629135916.308210-1-sxwjean@me.com>
+References: <20210629135916.308210-1-sxwjean@me.com>
 MIME-Version: 1.0
-Message-ID: <162547591863.395.5604953628514940849.tip-bot2@tip-bot2>
+Message-ID: <162547591914.395.12424245649522104664.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,76 +64,109 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/urgent branch of tip:
 
-Commit-ID:     9e667624c291753b8a5128f620f493d0b5226063
-Gitweb:        https://git.kernel.org/tip/9e667624c291753b8a5128f620f493d0b5226063
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 28 Jun 2021 13:24:10 +02:00
+Commit-ID:     4840ce2267f9d887f333d88a037c82c566f84081
+Gitweb:        https://git.kernel.org/tip/4840ce2267f9d887f333d88a037c82c566f84081
+Author:        Xiongwei Song <sxwjean@gmail.com>
+AuthorDate:    Tue, 29 Jun 2021 21:59:16 +08:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 05 Jul 2021 10:46:20 +02:00
+CommitterDate: Mon, 05 Jul 2021 10:44:52 +02:00
 
-jump_label: Fix jump_label_text_reserved() vs __init
+locking/lockdep: Fix meaningless /proc/lockdep output of lock classes on !CONFIG_PROVE_LOCKING
 
-It turns out that jump_label_text_reserved() was reporting __init text
-as being reserved past the time when the __init text was freed and
-re-used.
+When enabling CONFIG_LOCK_STAT=y, then CONFIG_LOCKDEP=y is forcedly enabled,
+but CONFIG_PROVE_LOCKING is disabled.
 
-For a long time, this resulted in, at worst, not being able to kprobe
-text that happened to land at the re-used address. However a recent
-commit e7bf1ba97afd ("jump_label, x86: Emit short JMP") made it a
-fatal mistake because it now needs to read the instruction in order to
-determine the conflict -- an instruction that's no longer there.
+We can get output from /proc/lockdep, which currently includes usages of
+lock classes. But the usages are meaningless, see the output below:
 
-Fixes: 4c3ef6d79328 ("jump label: Add jump_label_text_reserved() to reserve jump points")
-Reported-by: kernel test robot <oliver.sang@intel.com>
+	/ # cat /proc/lockdep
+	all lock classes:
+	ffffffff9af63350 ....: cgroup_mutex
+
+	ffffffff9af54eb8 ....: (console_sem).lock
+
+	ffffffff9af54e60 ....: console_lock
+
+	ffffffff9ae74c38 ....: console_owner_lock
+
+	ffffffff9ae74c80 ....: console_owner
+
+	ffffffff9ae66e60 ....: cpu_hotplug_lock
+
+Only one usage context for each lock, this is because each usage is only
+changed in mark_lock() that is in the CONFIG_PROVE_LOCKING=y section,
+however in the test situation, it's not.
+
+The fix is to move the usages reading and seq_print from the
+!CONFIG_PROVE_LOCKING section to its defined section.
+
+Also, locks_after list of lock_class is empty when !CONFIG_PROVE_LOCKING,
+so do the same thing as what have done for usages of lock classes.
+
+With this patch with !CONFIG_PROVE_LOCKING we can get the results below:
+
+	/ # cat /proc/lockdep
+	all lock classes:
+	ffffffff85163290: cgroup_mutex
+	ffffffff85154dd8: (console_sem).lock
+	ffffffff85154d80: console_lock
+	ffffffff85074b58: console_owner_lock
+	ffffffff85074ba0: console_owner
+	ffffffff85066d60: cpu_hotplug_lock
+
+... a class key and the relevant class name each line.
+
+Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Link: https://lore.kernel.org/r/20210628113045.045141693@infradead.org
+Acked-by: Waiman Long <longman@redhat.com>
+Link: https://lore.kernel.org/r/20210629135916.308210-1-sxwjean@me.com
 ---
- kernel/jump_label.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ kernel/locking/lockdep_proc.c | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/jump_label.c b/kernel/jump_label.c
-index bdb0681..b156e15 100644
---- a/kernel/jump_label.c
-+++ b/kernel/jump_label.c
-@@ -316,14 +316,16 @@ static int addr_conflict(struct jump_entry *entry, void *start, void *end)
- }
+diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
+index 8069783..b8d9a05 100644
+--- a/kernel/locking/lockdep_proc.c
++++ b/kernel/locking/lockdep_proc.c
+@@ -70,26 +70,28 @@ static int l_show(struct seq_file *m, void *v)
+ #ifdef CONFIG_DEBUG_LOCKDEP
+ 	seq_printf(m, " OPS:%8ld", debug_class_ops_read(class));
+ #endif
+-#ifdef CONFIG_PROVE_LOCKING
+-	seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
+-	seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
+-#endif
++	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
++		seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
++		seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
  
- static int __jump_label_text_reserved(struct jump_entry *iter_start,
--		struct jump_entry *iter_stop, void *start, void *end)
-+		struct jump_entry *iter_stop, void *start, void *end, bool init)
- {
- 	struct jump_entry *iter;
+-	get_usage_chars(class, usage);
+-	seq_printf(m, " %s", usage);
++		get_usage_chars(class, usage);
++		seq_printf(m, " %s", usage);
++	}
  
- 	iter = iter_start;
- 	while (iter < iter_stop) {
--		if (addr_conflict(iter, start, end))
--			return 1;
-+		if (init || !jump_entry_is_init(iter)) {
-+			if (addr_conflict(iter, start, end))
-+				return 1;
-+		}
- 		iter++;
+ 	seq_printf(m, ": ");
+ 	print_name(m, class);
+ 	seq_puts(m, "\n");
+ 
+-	list_for_each_entry(entry, &class->locks_after, entry) {
+-		if (entry->distance == 1) {
+-			seq_printf(m, " -> [%p] ", entry->class->key);
+-			print_name(m, entry->class);
+-			seq_puts(m, "\n");
++	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
++		list_for_each_entry(entry, &class->locks_after, entry) {
++			if (entry->distance == 1) {
++				seq_printf(m, " -> [%p] ", entry->class->key);
++				print_name(m, entry->class);
++				seq_puts(m, "\n");
++			}
+ 		}
++		seq_puts(m, "\n");
  	}
+-	seq_puts(m, "\n");
  
-@@ -562,7 +564,7 @@ static int __jump_label_mod_text_reserved(void *start, void *end)
- 
- 	ret = __jump_label_text_reserved(mod->jump_entries,
- 				mod->jump_entries + mod->num_jump_entries,
--				start, end);
-+				start, end, mod->state == MODULE_STATE_COMING);
- 
- 	module_put(mod);
- 
-@@ -788,8 +790,9 @@ early_initcall(jump_label_init_module);
-  */
- int jump_label_text_reserved(void *start, void *end)
- {
-+	bool init = system_state < SYSTEM_RUNNING;
- 	int ret = __jump_label_text_reserved(__start___jump_table,
--			__stop___jump_table, start, end);
-+			__stop___jump_table, start, end, init);
- 
- 	if (ret)
- 		return ret;
+ 	return 0;
+ }
