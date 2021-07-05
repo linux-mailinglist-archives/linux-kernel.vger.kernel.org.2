@@ -2,149 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBFF3BBD9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A178E3BBD9E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhGENnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 09:43:14 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:39139 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbhGENnM (ORCPT
+        id S231215AbhGENof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 09:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230414AbhGENoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 09:43:12 -0400
-Received: from mail-wr1-f53.google.com ([209.85.221.53]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1N3K9E-1l0UWe1aM6-010IjX; Mon, 05 Jul 2021 15:40:34 +0200
-Received: by mail-wr1-f53.google.com with SMTP id a8so10464501wrp.5;
-        Mon, 05 Jul 2021 06:40:34 -0700 (PDT)
-X-Gm-Message-State: AOAM5312NSuiTRLaXwtWGn3ouRkovfw5RGiLfxR7t1USIXWU7nIa8lMO
-        37VMDtuuzEb/AUW+7a4OvYLxygpymMkUG5hCX0g=
-X-Google-Smtp-Source: ABdhPJyNk0E58GdhdijG+SWnLfymVKXZ/4Aj/5fDKjXY6B+nWTKh9KhTnS5biw+IyDgpCND/EK/0PkvZ8uhiQ+fkLjc=
-X-Received: by 2002:adf:fd8e:: with SMTP id d14mr16484625wrr.361.1625492433851;
- Mon, 05 Jul 2021 06:40:33 -0700 (PDT)
+        Mon, 5 Jul 2021 09:44:34 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC1BC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 06:41:57 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id hr1so25717522ejc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 06:41:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9JHSRbS7NzwHOfcGTHTpIoJzU8cGwqoybTQ0iNhpmp8=;
+        b=V00TjrjEPngzpp26pcn5bMd8IyM2kRvIpqIyvPL4/YXEIofYPCqaD1gdzSEA/6VjJw
+         norapAyVzg6NV0t7kmFhOfmWwO4aPd94feeqG6PvZ3NDFC3sSQwX2ai0PV1N0kvAcbHL
+         QjarAg79J2Sek5cPRI1OeBAYohaBocNWdBB4Y9YgtNBUAx9dN/+R4v1wxBy+rgxnz5sb
+         ZFd7ZbZuOtf+qCWrglEEmSz9PM/d7G7+LzIIW5IXj72c9J6DZEbWGtWf76NmC4Ygjx1L
+         6uYBiGD+TlzDwk0C7nRdkt6y3HDOGcHVZH48fvtqvsSBu8xhlYtNPKHNyDdwQ7zM9Bpy
+         Oniw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9JHSRbS7NzwHOfcGTHTpIoJzU8cGwqoybTQ0iNhpmp8=;
+        b=XzhGMn0jgBDFkMpdi06FoUMOV4S4Ehk7KHjFWA1NR3oPz66L6YTY2CpIUwLUptPa0D
+         63I7jZ8JLFg7S+BEl+VCSD8/Ksk6jsvt7VQqK9dgEabrqJqGLr56X/4sGxRJBpN4G+jz
+         N0ux4/52fG161lfjJzMudfEbIJbPhOnDkv6Z0w/W9hbpop22ius6h2criTwaaIaIuS6+
+         1sdp6EdJuTARgPZbFRfiG5EZefXGwlKNW6e4IyxUI5amwJzhC7rl0URM8Wb7RAGbxm7o
+         LjC75saAXLx331HfY1kqkIskrtombf8/cboGMwAsEDqSsKg/7eJ3MbkqzHXjxMxbY9fT
+         aYuQ==
+X-Gm-Message-State: AOAM532sIzRhV7vicVgmtNYVpQEjLpJdQM3KDRBJ4DOaHQZMS3TEHgHJ
+        Zskf3IYEDkSj+BMe4+wwLhA=
+X-Google-Smtp-Source: ABdhPJy7HtDdoNPcI9gmDtyg+rKd2ud+Mw/9PYbnSCPNP9O+2wdbCZjJMD1SBlmsWz0UW3Gm85ybng==
+X-Received: by 2002:a17:906:2bdb:: with SMTP id n27mr13478817ejg.312.1625492516004;
+        Mon, 05 Jul 2021 06:41:56 -0700 (PDT)
+Received: from linux.local (host-80-181-152-252.retail.telecomitalia.it. [80.181.152.252])
+        by smtp.gmail.com with ESMTPSA id u4sm4369663eje.81.2021.07.05.06.41.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 06:41:55 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v2] staging: rtl8188eu: Remove an unused variable and some lines of code
+Date:   Mon,  5 Jul 2021 15:41:51 +0200
+Message-Id: <20210705134151.15143-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <linux-audit/audit-kernel/issues/131@github.com>
- <linux-audit/audit-kernel/issues/131/872191450@github.com> <YN9V/qM0mxIYXt3h@yury-ThinkPad>
-In-Reply-To: <YN9V/qM0mxIYXt3h@yury-ThinkPad>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 5 Jul 2021 15:40:17 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0L4YU2q6WCZviNJGzAuQniwrZDKc7w1nHMB276hZzG6Q@mail.gmail.com>
-Message-ID: <CAK8P3a0L4YU2q6WCZviNJGzAuQniwrZDKc7w1nHMB276hZzG6Q@mail.gmail.com>
-Subject: Re: [linux-audit/audit-kernel] BUG: audit_classify_syscall() fails to
- properly handle 64-bit syscalls when executing as 32-bit application on ARM (#131)
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        "linux-audit/audit-kernel" 
-        <reply+ADSN7RXLQ62LNLD2MK5HFHF65GIU3EVBNHHDPMBXHU@reply.github.com>,
-        "linux-audit/audit-kernel" <audit-kernel@noreply.github.com>,
-        Mention <mention@noreply.github.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Alexander Graf <agraf@suse.de>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        Andreas Schwab <schwab@suse.de>,
-        Andrew Pinski <pinskia@gmail.com>,
-        Bamvor Zhangjian <bamv2005@gmail.com>,
-        Chris Metcalf <cmetcalf@mellanox.com>,
-        Christoph Muellner <christoph.muellner@theobroma-systems.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Florian Weimer <fweimer@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        James Hogan <james.hogan@imgtec.com>,
-        James Morse <james.morse@arm.com>,
-        Joseph Myers <joseph@codesourcery.com>,
-        Lin Yongting <linyongting@huawei.com>,
-        Manuel Montezelo <manuel.montezelo@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Nathan_Lynch <Nathan_Lynch@mentor.com>,
-        Philipp Tomsich <philipp.tomsich@theobroma-systems.com>,
-        Prasun Kapoor <Prasun.Kapoor@caviumnetworks.com>,
-        Ramana Radhakrishnan <ramana.gcc@googlemail.com>,
-        Steve Ellcey <sellcey@caviumnetworks.com>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:4neMM1Yflvb8OYyphwzh3kNyrS00gfy3pXY+JOvgQOo2HdCol4T
- OoSWKtp+/a6zVxNFHFIlN7DKcHI4ypXElXuRdPACfRqxUnN2rR7/yOaZ/i+af3vYULyskau
- tlFH1A2oVc9mOGCnLTYa9cjuylhsGPmplEUqJDhYACYGEzCveILkTtMe2wzLnw20XPCq45t
- +UMqMDdjNldhgWu9Hm6sA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vwfYswzw0Fc=:IZluxWwcJlLRV+zd98tvzP
- dYsBLW5fOMQ9eSu59bQQtsUccti8o3+Dbwu0RkNUnTICiW4WNv+WjLnKZNwKS+McN1W1g26H5
- EyTSvmsSuzhSR4FckbRT6our87By9Y6ukU5W0gfqU/y8/FSqxESuu/Oe81Y0nOH1D1Jgu95uR
- RmSfMZyfi6oOSEvWBrPqXrSw6OrwZS9s4lQYTjL/dA54n/YC8esPwZ86LfCl/qtExSADszUrT
- 8lLcyzWdD9/kDMxEpxZKNITKg1JbVwaJstQTA/fqXI4MPae1r0eYC+0Znir4Uva0vJ8fhkK+r
- G7abCiUvwt/mx5nzuUNqxKISHJ9nQT2T/O6M1ZDZbgzxSlJQw4HTyBfwW7UknA9CB95rflbi0
- F1ZgX1ujXl70R1Fgg6aacJjgNdfHXvDDxFBAI2O1sWCaBFrTebEIfxdsPyXg9AKIFLmZq1owD
- WwIUsM9TdADVu/vBEmBmxigVK297HDhy21CWDor4Ctrj7oKcmJjQM/ugEo2thN4EBHV2sIRNH
- Ol2b5/F+bf2QRnEtYn4vLeCkFCz73SUz5LWzrv391IBF+EZEcTNWsk69/d6P4y999G6p8Y6JS
- eDU8Fh8FCc0iEadTpnHumeisPMDV1bsxLKCGJtTXVqlqzMAtLVztKuSlo0njZOxPL2TwLQvlQ
- g8C9x7AX0NehAiZjRQgWLYB0JdzyARnMnRHyPiKuNl/UgfqTMsR6Z8KVXhtkL2h4SoI3Pgk1Y
- GFY0nb3VDm69OtdZwpCOhBxK7eGggHAtqbVN2R62lTVe1AlzFdj23AtfnOKqCwsHL6vQkIZ1G
- uEZRMAZIrxROd0nAccYD/SJs5uDRn80ttvBOWu05VQx2EciasQwhwdkL6AOwH9oa94xhp1bqi
- y1/mahy1bG0LuzwoOILYzB0zsdEPdJI0+UZMf7BBgnKy4w1Uqy96E03IFUtJMorZXctrsqsg1
- Q7NPpC8Z+V7gzGEUI8GsmG/InCBK6cZiUaNJ5R79xCkJMhgjY4h8p
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 8:07 PM Yury Norov <yury.norov@gmail.com> wrote:
-> On Thu, Jul 01, 2021 at 05:08:45AM -0700, Paul Moore wrote:
->
-> To Catalin, Arnd:
->
-> At least Marvell, Samsung, Huawei, Cisco and Weiyuchen's employer
-> actively use and develop arm64/ilp32. I receive feedback / bugrepotrs
-> on ilp32 every 4-6 month. Is that enough for you to reconsider
-> including the project into the mainline?
->
-> For me, having different versions of ILP32 is more dangerous in this
-> situation, than upstreaming the project and fixing 2-3 bugs a year.
+Remove set but unused iw_operation_mode[]. This driver doesn't support
+SIOCSIWRATE.  It just returns zero and does nothing.  Change it to
+return -ENOTSUPP instead.  (This is an API change but we don't expect it
+to break anything).
 
-I think the overall tradeoff is not that different from what it was in the
-past. Keeping it out of the tree clearly creates extra work both for you
-and the users, but reduces the overhead for everyone else, who
-can ignore that corner case. We have tried removing both x86-x32
-support and arm64 big-endian support from the kernel not that long
-ago. Both have considerably more impact on kernel maintenance than
-your aarch64-ilp32 work, and they probably even have fewer users,
-but we always ended up keeping the status quo.
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
 
-However, there are clearly some changes that happened over the
-past few years that may be relevant here:
+v1->v2: Delete rtw_wx_set_rate() and its association with command
+SIOCSIWRATE as suggested by Dan Carpenter <dan.carpenter@oracle.com>
 
-- The expectation in the past was that ilp32 support would eventually
-   go away as users move on to full 64-bit support. It has survived a
-   lot longer than I would have guessed, but I still find it hard to tell
-   whether this would continue. What's more important than the current
-   number of users is how many of those you expect to run linux-6.x
-   or linux-7.x with aarch64-ilp32 in the future.
+ .../staging/rtl8188eu/os_dep/ioctl_linux.c    | 80 -------------------
+ 1 file changed, 80 deletions(-)
 
-- Another thing that has changed is that we now have a rough timeline
-  for aarch32 support to be removed from future Arm processors. If
-  no Armv9 processors after 2022 support Aarch32 mode, we may see
-  interest in ilp32 mode go up between 2025 and 2030 when those
-  processors make it into more markets.
+diff --git a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+index b958a8d882b0..eef8ed71cdef 100644
+--- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
++++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+@@ -46,11 +46,6 @@ static u32 rtw_rates[] = {1000000, 2000000, 5500000, 11000000,
+ 	6000000, 9000000, 12000000, 18000000, 24000000, 36000000,
+ 	48000000, 54000000};
+ 
+-static const char * const iw_operation_mode[] = {
+-	"Auto", "Ad-Hoc", "Managed",  "Master", "Repeater",
+-	"Secondary", "Monitor"
+-};
+-
+ void indicate_wx_scan_complete_event(struct adapter *padapter)
+ {
+ 	union iwreq_data wrqu;
+@@ -1262,80 +1257,6 @@ static int rtw_wx_get_essid(struct net_device *dev,
+ 	return 0;
+ }
+ 
+-static int rtw_wx_set_rate(struct net_device *dev,
+-			   struct iw_request_info *a,
+-			   union iwreq_data *wrqu, char *extra)
+-{
+-	int i;
+-	u8 datarates[NumRates];
+-	u32	target_rate = wrqu->bitrate.value;
+-	u32	fixed = wrqu->bitrate.fixed;
+-	u32	ratevalue = 0;
+-	u8 mpdatarate[NumRates] = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0xff};
+-
+-	if (target_rate == -1) {
+-		ratevalue = 11;
+-		goto set_rate;
+-	}
+-	target_rate /= 100000;
+-
+-	switch (target_rate) {
+-	case 10:
+-		ratevalue = 0;
+-		break;
+-	case 20:
+-		ratevalue = 1;
+-		break;
+-	case 55:
+-		ratevalue = 2;
+-		break;
+-	case 60:
+-		ratevalue = 3;
+-		break;
+-	case 90:
+-		ratevalue = 4;
+-		break;
+-	case 110:
+-		ratevalue = 5;
+-		break;
+-	case 120:
+-		ratevalue = 6;
+-		break;
+-	case 180:
+-		ratevalue = 7;
+-		break;
+-	case 240:
+-		ratevalue = 8;
+-		break;
+-	case 360:
+-		ratevalue = 9;
+-		break;
+-	case 480:
+-		ratevalue = 10;
+-		break;
+-	case 540:
+-		ratevalue = 11;
+-		break;
+-	default:
+-		ratevalue = 11;
+-		break;
+-	}
+-
+-set_rate:
+-
+-	for (i = 0; i < NumRates; i++) {
+-		if (ratevalue == mpdatarate[i]) {
+-			datarates[i] = mpdatarate[i];
+-			if (fixed == 0)
+-				break;
+-		} else {
+-			datarates[i] = 0xff;
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+ static int rtw_wx_get_rate(struct net_device *dev,
+ 			   struct iw_request_info *info,
+ 			   union iwreq_data *wrqu, char *extra)
+@@ -2715,7 +2636,6 @@ static iw_handler rtw_handlers[] = {
+ 	IW_HANDLER(SIOCSIWESSID, rtw_wx_set_essid),
+ 	IW_HANDLER(SIOCGIWESSID, rtw_wx_get_essid),
+ 	IW_HANDLER(SIOCGIWNICKN, rtw_wx_get_nick),
+-	IW_HANDLER(SIOCSIWRATE, rtw_wx_set_rate),
+ 	IW_HANDLER(SIOCGIWRATE, rtw_wx_get_rate),
+ 	IW_HANDLER(SIOCSIWRTS, rtw_wx_set_rts),
+ 	IW_HANDLER(SIOCGIWRTS, rtw_wx_get_rts),
+-- 
+2.32.0
 
-- On the other hand, interest in not just 32-bit hardware running Linux
-  but also in 32-bit user space is already declining overall. We'll
-  probably still see some 10 to 20 years of 32-bit user space
-  deployments on (mostly) memory constrained systems, but this
-  is getting increasingly obscure as more applications run into
-  virtual memory space restrictions (3GB or 4GB typically) before
-  they exceed the available RAM. On RV64 and ARCv3, there is
-  already a conclusion that they will not support 32-bit user space,
-  neither ilp32 style on 64-bit instructions nor with hardware support
-  for RV32/ARC32 binaries. I expect the same for Loongarch.
-
-          Arnd
