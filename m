@@ -2,112 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8203BBE96
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 17:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDCAE3BBE9B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 17:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231572AbhGEPDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 11:03:32 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:52558 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231477AbhGEPDc (ORCPT
+        id S231556AbhGEPHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 11:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231477AbhGEPHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 11:03:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1625497253; x=1628089253;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=sJtekkatkpR88tRBQo72WpmNZEJLRJmbr73Ad/WikqY=;
-        b=gS2Z23hOBZpiU6vp26a/OGRGozaqmQRw2vCbY/8qZgFOIXy+JfnALkhIteJPwkkw
-        qk2ADTaotsRgoEjf8y7T8WPKn6UW+O9jbczK6cXK9Xi9pKawI5GR+MPTHrhlI5dZ
-        wQjiaMK/+DhClQAw/zPDzJ8cDVuJpWUv+YGMmsfWjJA=;
-X-AuditID: c39127d2-a9fbd70000001c5e-c7-60e31ea5c2bd
-Received: from berlix.phytec.de (Berlix.phytec.de [172.16.0.117])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 1B.F0.07262.5AE13E06; Mon,  5 Jul 2021 17:00:53 +0200 (CEST)
-Received: from Berlix.phytec.de (172.16.0.117) by Berlix.phytec.de
- (172.16.0.117) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 5 Jul 2021
- 17:00:53 +0200
-Received: from Berlix.phytec.de ([fe80::343f:7618:c7ce:97c9]) by
- berlix.phytec.de ([fe80::343f:7618:c7ce:97c9%3]) with mapi id 15.01.2176.009;
- Mon, 5 Jul 2021 17:00:53 +0200
-From:   =?utf-8?B?U3RlZmFuIFJpZWRtw7xsbGVy?= <S.Riedmueller@phytec.de>
-To:     "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>
-CC:     "mchehab@kernel.org" <mchehab@kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 3/6] dt-bindings: media: mt9p031: Add missing required
- properties
-Thread-Topic: [PATCH v3 3/6] dt-bindings: media: mt9p031: Add missing required
- properties
-Thread-Index: AQHXbyjvLwsYo70UyUKz+ZFwlE79BqsviLMAgATUjAA=
-Date:   Mon, 5 Jul 2021 15:00:53 +0000
-Message-ID: <104e925e7b13d358a30d19fddf0211dceef3b349.camel@phytec.de>
-References: <20210702095922.118614-1-s.riedmueller@phytec.de>
-         <20210702095922.118614-4-s.riedmueller@phytec.de>
-         <YN8RWoy0xryBw3bL@pendragon.ideasonboard.com>
-In-Reply-To: <YN8RWoy0xryBw3bL@pendragon.ideasonboard.com>
-Accept-Language: en-US, de-DE
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.0.116]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <904DE4C659053443B204D82422732F63@phytec.de>
-Content-Transfer-Encoding: base64
+        Mon, 5 Jul 2021 11:07:01 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3C2C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 08:04:23 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id t14-20020a05600c198eb029020c8aac53d4so4067126wmq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 08:04:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=At8qjqAN8f+W2do/QMp0ecm1lFUsBPDE6HfKaXVwDro=;
+        b=v70/7r/s5wRbr8RuYY9kFjI9ukbImPIQ/c7UM51DPMnhqQ8aGT5Y5doykcqmdROjRp
+         tPe0aDlCtGnP2mHC1BFVc56zsN1PN2nQK8+6Yt47G0MMLUBwH+o0TcgUqcCCi2k6g/pd
+         q/wMTzyH0JhU7XDljO1Lvb85MQH1W/VkWc0gPHu/TxP1aefn26mA9czSSMMTUKwGwka2
+         Lr+Sj/4BA6TbNQiACnCLr+dDBBVAGX5m0OqkkBdHdD3XfJ+vaVUgKWB+lydypAeZmrCD
+         NjF0Zu5PLT4ihbdIqwFr/Zid9HY/ipmw778GpoNHtjrbGrf9f100X+Y9rlFxQCdSvPIf
+         QMeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=At8qjqAN8f+W2do/QMp0ecm1lFUsBPDE6HfKaXVwDro=;
+        b=hHkQpFOuYKUB7A7IYF7nVXyp/F1pJzW0UVmX6VbY9U7eN1QAO+7pD14LkLdqa0a+Qe
+         8qj094FQbLF5maMiAzrsHbhOPuJUozC/8s9wc9uVtw2Xqdhjiy8oOkkfTnrPReEzFdH0
+         SD5iRc3teiqLrVjvOcwJzrvNMlEn8+g0e4K3vggeJdkPALILygX6+jMSIHh4QxB2XOXR
+         fyes6uYahvaGLIMC/FL8PYBjAK2kzghT2RVf6XL7BrEc/k0Oe9olujkECdgxtej1uy/Z
+         HqOCMTCnh+Ft0TsHK+qp51s7HBHVKrGabR4lR/CB9QHyQjNnBYvoF5i/MV6Rye5wYGo3
+         0I6A==
+X-Gm-Message-State: AOAM531I/Zr3Y6x/UQtL4eEDoN3fqvERGIJ+7MQrE/WmgLF+rcZr7OUp
+        teb3x6UMhceefIAC2DFLTz8MTg==
+X-Google-Smtp-Source: ABdhPJwzZh/4D5yDZ6JWELeJ85BkGi++TNbYqVr3hQUWFfFvywLWOhctBGjSFPQzNDxcQe5nTQ3xAA==
+X-Received: by 2002:a7b:c15a:: with SMTP id z26mr15436389wmi.109.1625497462273;
+        Mon, 05 Jul 2021 08:04:22 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:3207:330f:6162:ea09])
+        by smtp.gmail.com with ESMTPSA id t9sm14493333wmq.14.2021.07.05.08.04.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 08:04:21 -0700 (PDT)
+Date:   Mon, 5 Jul 2021 17:04:16 +0200
+From:   Marco Elver <elver@google.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        Daniel Axtens <dja@axtens.net>
+Subject: Re: [PATCH -next 3/3] kasan: arm64: Fix pcpu_page_first_chunk crash
+ with KASAN_VMALLOC
+Message-ID: <YOMfcE7V7lSE3N/z@elver.google.com>
+References: <20210705111453.164230-1-wangkefeng.wang@huawei.com>
+ <20210705111453.164230-4-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDIsWRmVeSWpSXmKPExsWyRoChVHep3OMEgxkPJS3mHznHatE5cQm7
-        xeVdc9gsejZsZbVYtukPk0Xr3iPsFp+2fGNyYPeY3TGT1WPTqk42j3knAz0+b5ILYInisklJ
-        zcksSy3St0vgynh/7h1jwR7hioOzHBoY/wh1MXJwSAiYSGx75t/FyMUhJLCcSWLnxqPsEM4D
-        Rol5N25CORsZJR4fOcbaxcjJwSbgIvG57RsbSLeIgLfEzzlOIDXMAteYJBp+zWMBqREWiJLY
-        /2EqWL2IQLTEl5croWwribmt/8FsFgEViTf7OlhA5vAKuEk8/2YCsWsxo8TUf73MIDWcQPVT
-        dm9kArEZBWQlOhvegdnMAuISm559B5sjISAgsWTPeWYIW1Ti5eN/UHEFibaeTiaQ+cwCmhLr
-        d+lDmBYSb5tZIaYoSkzpfsgOYvMKCEqcnPmEZQKj+CwkC2YhNM9CaJ6FpHkWkuYFjKyrGIVy
-        M5OzU4sys/UKMipLUpP1UlI3MQJj9PBE9Us7GPvmeBxiZOJgPMQowcGsJMIrMuVRghBvSmJl
-        VWpRfnxRaU5q8SFGaQ4WJXHeDbwlYUIC6YklqdmpqQWpRTBZJg5OqQbGmeGi0V+5ln11DNHI
-        DNE58DU29ICKkXR++YtrGou1LvIyOjn+/8J3J1vze0bC4XrZbPldCdrT2m3+HDjDwndl6aXD
-        AUvnHX3ZwH71/X+pTGvdE/6l8qKzi9ucj6g+2ckh3Jh/d9/zn6derzl8SybaIzigts75dEKF
-        svB8P5veNF42E6N7F52UWIozEg21mIuKEwGSH7vPvwIAAA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705111453.164230-4-wangkefeng.wang@huawei.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTGF1cmVudCwNCg0KT24gRnJpLCAyMDIxLTA3LTAyIGF0IDE2OjE1ICswMzAwLCBMYXVyZW50
-IFBpbmNoYXJ0IHdyb3RlOg0KPiBIaSBTdGVmYW4sDQo+IA0KPiBUaGFuayB5b3UgZm9yIHRoZSBw
-YXRjaC4NCj4gDQo+IE9uIEZyaSwgSnVsIDAyLCAyMDIxIGF0IDExOjU5OjE5QU0gKzAyMDAsIFN0
-ZWZhbiBSaWVkbXVlbGxlciB3cm90ZToNCj4gPiBBZGQgbWlzc2luZyByZXF1aXJlZCBjbG9ja3Mg
-YW5kIHN1cHBseSByZWd1bGF0b3IgcHJvcGVydGllcyBmb3IgdGhlDQo+ID4gc2Vuc29yIGlucHV0
-IGNsb2NrIGFuZCB2ZGQsIHZkZF9pbyBhbmQgdmFhIHN1cHBseSByZWd1bGF0b3JzLg0KPiANCj4g
-Q2FuIEkgdm9sdW50ZWVyIHlvdSB0byBjb252ZXJ0IHRoZXNlIGJpbmRpbmdzIHRvIFlBTUwgZmly
-c3QsIGFuZCBhZGQgdGhlDQo+IHByb3BlcnRpZXMgb24gdG9wID8gOi0pDQoNClN1cmUsIEkgY2Fu
-IGdpdmUgaXQgYSB0cnkgOi0pDQoNClJlZ2FyZHMsDQpTdGVmYW4NCg0KPiANCj4gPiBTaWduZWQt
-b2ZmLWJ5OiBTdGVmYW4gUmllZG11ZWxsZXIgPHMucmllZG11ZWxsZXJAcGh5dGVjLmRlPg0KPiA+
-IC0tLQ0KPiA+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9pMmMvbXQ5cDAzMS50eHQg
-ICAgICAgIHwgMTIgKysrKysrKysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxMiBpbnNlcnRp
-b25zKCspDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9tZWRpYS9pMmMvbXQ5cDAzMS50eHQNCj4gPiBiL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9tZWRpYS9pMmMvbXQ5cDAzMS50eHQNCj4gPiBpbmRleCBjYjYwNDQzZmY3
-OGYuLjQ0MzdkMGUzMTQ3ZCAxMDA2NDQNCj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3MvbWVkaWEvaTJjL210OXAwMzEudHh0DQo+ID4gKysrIGIvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lZGlhL2kyYy9tdDlwMDMxLnR4dA0KPiA+IEBAIC05LDYg
-KzksMTIgQEAgUmVxdWlyZWQgUHJvcGVydGllczoNCj4gPiAgCShhKSAiYXB0aW5hLG10OXAwMzEi
-IGZvciBtdDlwMDMxIHNlbnNvcg0KPiA+ICAJKGIpICJhcHRpbmEsbXQ5cDAzMW0iIGZvciBtdDlw
-MDMxbSBzZW5zb3INCj4gPiAgDQo+ID4gKy0gY2xvY2tzOiBSZWZlcmVuY2UgdG8gdGhlIHNlbnNv
-ciBpbnB1dCBjbG9jaw0KPiA+ICsNCj4gPiArLSB2ZGQtc3VwcGx5OiBWREQgc3VwcGx5IHJlZ3Vs
-YXRvcg0KPiA+ICstIHZkZF9pby1zdXBwbHk6IFZERF9JTyBzdXBwbHkgcmVndWxhdG9yDQo+ID4g
-Ky0gdmFhLXN1cHBseTogVkFBIHN1cHBseSByZWd1bGF0b3INCj4gPiArDQo+ID4gIC0gaW5wdXQt
-Y2xvY2stZnJlcXVlbmN5OiBJbnB1dCBjbG9jayBmcmVxdWVuY3kuDQo+ID4gIA0KPiA+ICAtIHBp
-eGVsLWNsb2NrLWZyZXF1ZW5jeTogUGl4ZWwgY2xvY2sgZnJlcXVlbmN5Lg0KPiA+IEBAIC0yOSw2
-ICszNSwxMiBAQCBFeGFtcGxlOg0KPiA+ICAJCQlyZWcgPSA8MHg1ZD47DQo+ID4gIAkJCXJlc2V0
-LWdwaW9zID0gPCZncGlvMyAzMCAwPjsNCj4gPiAgDQo+ID4gKwkJCWNsb2NrcyA9IDwmc2Vuc29y
-X2Nsaz47DQo+ID4gKw0KPiA+ICsJCQl2ZGQtc3VwcGx5ID0gPCZyZWdfdmRkPjsNCj4gPiArCQkJ
-dmRkX2lvLXN1cHBseSA9IDwmcmVnX3ZkZF9pbz47DQo+ID4gKwkJCXZhYS1zdXBwbHkgPSA8JnJl
-Z192YWE+Ow0KPiA+ICsNCj4gPiAgCQkJcG9ydCB7DQo+ID4gIAkJCQltdDlwMDMxXzE6IGVuZHBv
-aW50IHsNCj4gPiAgCQkJCQlpbnB1dC1jbG9jay1mcmVxdWVuY3kgPSA8NjAwMDAwMD47DQo=
+On Mon, Jul 05, 2021 at 07:14PM +0800, Kefeng Wang wrote:
+[...]
+> +#ifdef CONFIG_KASAN_VMALLOC
+> +void __init __weak kasan_populate_early_vm_area_shadow(void *start,
+> +						       unsigned long size)
+
+This should probably not be __weak, otherwise you now have 2 __weak
+functions.
+
+> +{
+> +	unsigned long shadow_start, shadow_end;
+> +
+> +	if (!is_vmalloc_or_module_addr(start))
+> +		return;
+> +
+> +	shadow_start = (unsigned long)kasan_mem_to_shadow(start);
+> +	shadow_start = ALIGN_DOWN(shadow_start, PAGE_SIZE);
+> +	shadow_end = (unsigned long)kasan_mem_to_shadow(start + size);
+> +	shadow_end = ALIGN(shadow_end, PAGE_SIZE);
+> +	kasan_map_populate(shadow_start, shadow_end,
+> +			   early_pfn_to_nid(virt_to_pfn(start)));
+> +}
+> +#endif
+
+This function looks quite generic -- would any of this also apply to
+other architectures? I see that ppc and sparc at least also define
+CONFIG_NEED_PER_CPU_PAGE_FIRST_CHUNK.
+
+>  void __init kasan_init(void)
+>  {
+>  	kasan_init_shadow();
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 5310e217bd74..79d3895b0240 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -49,6 +49,8 @@ extern p4d_t kasan_early_shadow_p4d[MAX_PTRS_PER_P4D];
+>  int kasan_populate_early_shadow(const void *shadow_start,
+>  				const void *shadow_end);
+>  
+> +void kasan_populate_early_vm_area_shadow(void *start, unsigned long size);
+> +
+>  static inline void *kasan_mem_to_shadow(const void *addr)
+>  {
+>  	return (void *)((unsigned long)addr >> KASAN_SHADOW_SCALE_SHIFT)
+> diff --git a/mm/kasan/init.c b/mm/kasan/init.c
+> index cc64ed6858c6..d39577d088a1 100644
+> --- a/mm/kasan/init.c
+> +++ b/mm/kasan/init.c
+> @@ -279,6 +279,11 @@ int __ref kasan_populate_early_shadow(const void *shadow_start,
+>  	return 0;
+>  }
+>  
+> +void __init __weak kasan_populate_early_vm_area_shadow(void *start,
+> +						       unsigned long size)
+> +{
+> +}
+
+I'm just wondering if this could be a generic function, perhaps with an
+appropriate IS_ENABLED() check of a generic Kconfig option
+(CONFIG_NEED_PER_CPU_PAGE_FIRST_CHUNK ?) to short-circuit it, if it's
+not only an arm64 problem.
+
+But I haven't looked much further, so would appeal to you to either
+confirm or reject this idea.
+
+Thanks,
+-- Marco
