@@ -2,253 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39643BBA5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA533BBA62
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhGEJl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 05:41:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230439AbhGEJlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 05:41:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 668A2613E7;
-        Mon,  5 Jul 2021 09:39:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625477943;
-        bh=3wkeS6LjECniYU0Q4Rka5Hwi5+LM8FaepjAduPS6+SM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MLTtYfv6wCLFusCeVqOGFPTekN7Lc/68befOg9rdTC7i3askWx3S/pzlZtZj6gham
-         Id6yd6O1AePFfmzdecxIo/JJ6z/SU6pvywMujxvFJAGvIaF0OodXwwjrbcODnjb4MS
-         ekKiccPqzAPNsYBf7Kc2ddDhqNURS9S8N1HPW0k6rQRzkbq2ABdVdrnUi4eadb1hix
-         6mG06/OGmNc2Co9HXVDmJjAmgLkBZKbdCnzsAzSO+DXCHggFHfCswT5s80VsQuvPn6
-         w+dXI97cgwX10LZ2uo/Ee/diaJkCunF9YDgqHFoXSQllhpEMaMBwg9DcHEwJGcyxmX
-         yzewHTKl42UUQ==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1m0L43-002tp8-IN; Mon, 05 Jul 2021 11:38:55 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v12 9/9] dts: hisilicon: add support for USB3 on Hikey 970
-Date:   Mon,  5 Jul 2021 11:38:50 +0200
-Message-Id: <eeb2ba484877aaf5137d5ea8fd991a8efb3ffc69.1625477735.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1625477735.git.mchehab+huawei@kernel.org>
-References: <cover.1625477735.git.mchehab+huawei@kernel.org>
+        id S231165AbhGEJmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 05:42:00 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:21060 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231128AbhGEJlw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 05:41:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1625477954;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TY5EkOc9okoLZd/wY+wEHiildtLYbg/afKDcRCDbWtg=;
+        b=AI/0WeQJzm28AqQoncoOcA7CBjJemj1hYt5Xeaq5Ln0HfrR8oP202LOVz9G1AMnguHpuQg
+        Ja8bAQfm8BtQrrS1fXg4884VaHfL1pmsKuwa8vbsrgxwCr0hdZgHwf6DXGXo50SaitfCEN
+        DNMOnWhirRu6SZyMj9HXtZF3WcmnueE=
+Received: from EUR02-VE1-obe.outbound.protection.outlook.com
+ (mail-ve1eur02lp2050.outbound.protection.outlook.com [104.47.6.50]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-25-evL8Y2SMPl6Rx_8c2bufvg-1; Mon, 05 Jul 2021 11:39:13 +0200
+X-MC-Unique: evL8Y2SMPl6Rx_8c2bufvg-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bYSnJtDEcTMUDBtZ25zwcO7MrYdFm+0VBkIYcfSlawqlVugHt5Fn4CGi6y2lxwKPjHbV++b/YKHyjEK/mF2asClInVT2sHQgFk1fpk6v0cI18l2YQWtyLUSpN7BpaAqJeMtnaPXU9ALKZYxFk4pY2mdYRgraGW5BOJmchfhHurKUR4H5NyGHwbQjI7JtUwLikuvFvJZBRTjl3YDwDkNtEZYcgf8yoyF/XDMBROL5wUzmRpjX4BXwBbuNmrHM8fpuHnLAc4fAn17mdiC1aj4oEvl2sbDlsVGRVvg6A9QzwtMkmVvIeo5FHhC4iQgC25VI1EWlvlAHe+qBoxyTHWbfxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lglnIG06rXl/GMh5LxzDacerLqpLD8ueThLbPWDR4UM=;
+ b=F6vNyuiLDWGFHnPk5d8/sKNMeTaMikwelVVzpP1GjYU8NymznxACojmqTvliEYy7/ZT612p8jUTvHdXBIXP+2QgoAwRFowqBjoTP46xRo/r4ITucPhXHa6XqUeMd7QR/FsWQQ490lZIBBHsgA1UXYRdMRIRRczVMi3MMPU22uphlOGnVh5pm2owanPbVztszEBYFb+565jkRsJl1EXhDh4HCucBCq4emKam+7W6roR08iZVfQP5iISbYX89e5FLNOGzpFbX/81gQR7W1a1B0f/yADlZsBUiiOQ5kRy6HIGddkG6jfdm9umNtbYWrr9M6X1mMkBHr/c5bh6KaDBHU7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM0PR04MB5650.eurprd04.prod.outlook.com (2603:10a6:208:128::18)
+ by AM0PR0402MB3730.eurprd04.prod.outlook.com (2603:10a6:208:12::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Mon, 5 Jul
+ 2021 09:39:12 +0000
+Received: from AM0PR04MB5650.eurprd04.prod.outlook.com
+ ([fe80::55a8:3faa:c572:5e98]) by AM0PR04MB5650.eurprd04.prod.outlook.com
+ ([fe80::55a8:3faa:c572:5e98%7]) with mapi id 15.20.4287.033; Mon, 5 Jul 2021
+ 09:39:12 +0000
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     linux-crypto@vger.kernel.org, dhowells@redhat.com,
+        davem@davemloft.net, vt@altlinux.org,
+        tianjia.zhang@linux.alibaba.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org
+References: <20210420114124.9684-1-varad.gautam@suse.com>
+ <20210420114124.9684-14-varad.gautam@suse.com>
+ <20210514104535.q4zjtshxroruvoz3@gondor.apana.org.au>
+From:   Varad Gautam <varad.gautam@suse.com>
+Subject: Re: [PATCH v3 13/18] crypto: rsa-psspad: Get signature parameters
+ from a given signature
+Message-ID: <9af846ac-ad96-f59e-d89e-0c75bb75416c@suse.com>
+Date:   Mon, 5 Jul 2021 11:39:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <20210514104535.q4zjtshxroruvoz3@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [95.90.166.153]
+X-ClientProxiedBy: AM9P192CA0009.EURP192.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21d::14) To AM0PR04MB5650.eurprd04.prod.outlook.com
+ (2603:10a6:208:128::18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.77.52] (95.90.166.153) by AM9P192CA0009.EURP192.PROD.OUTLOOK.COM (2603:10a6:20b:21d::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23 via Frontend Transport; Mon, 5 Jul 2021 09:39:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ace4eef7-f159-4a68-047d-08d93f98bea5
+X-MS-TrafficTypeDiagnostic: AM0PR0402MB3730:
+X-Microsoft-Antispam-PRVS: <AM0PR0402MB3730BFBE4C4F4DC9253211F1E01C9@AM0PR0402MB3730.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2WhTkvQ3q+Y2tma8JQw7MZmhiOQzDsuIWtG0n+k+v5VCjUa8g4BgoPVmsgjaLVilISffJN8T+z9tOonHhJsXTpBgNjNTpIjb7eV65aTYx9U8rs/A2ocdDjDB8hSYjESOi6XAwOisltPQBXlX8JsQXA9+2ffqpYL+1kbYV765ek5ES/B1yF5v22Z41BLKlXFDzFVUl6F+Y0s4QiiVln/Nct5ESf2bdX5fHnIpYIM99uNHwWRObNq1+I7bMKiDcKFkyJFG943o72VsY70riUAqRWf/+v86aDd7pJTQCzeveYfkI2xsFkV8JSbBkQTokDaiwNrOVnTggu8OuZNKkvsPDLyysG+MYi0ff20mmLrGFGwkPTT/f6zIPWk2yvFsUmBCOQ5eAKospRqU20Mot4f2TIIi/I89rLAWLMEGCugYm50PSjZlfBDW+yK6xswQSmKnRTwkKGgXw8jAunJ6b6WRpECS08v3Eh5jMlRHRoGM/BJzV0ZWpBg3CPwj/i1pydiTXQFR6bsy8ISSAfIQf4Irrfuw0GoFGJR1E9P6keo5NcR1u9Zyf2IUw0QmW72k9yWqnlOZ/WWxbK3JGcsSbOZRR6qYRnI9VfgR8q89sirUcey3SuAy09OJ97LK0EaZtLoCvJyKMEXJnR7WyRGtc0yf24A1fbhLNxuIMdyK8ZDasWCWTqjMgCNd37VKl+W0dMdIkmTDvct5OwPQct3HXoRLHAmf92TbmyH0TW7jQIyZX5M=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5650.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(396003)(346002)(366004)(39860400002)(31686004)(2906002)(44832011)(66476007)(66946007)(38100700002)(186003)(16526019)(36756003)(66556008)(86362001)(5660300002)(83380400001)(8676002)(8936002)(53546011)(16576012)(6916009)(316002)(4326008)(26005)(31696002)(66574015)(478600001)(6486002)(2616005)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tBBjqR1AXbYPzkwCN5YkXMNrfXRxW0R1Vej1SSNx7qa8q2m0ylf/48bLqGrO?=
+ =?us-ascii?Q?So1bqBVxyPcFDHJ5byhu1tE6CpqvIuBljfJCk6djalhQ+FpOmRbHX1j/wAV8?=
+ =?us-ascii?Q?30SZUOw93/D5zIyfCtMgmME7XpEfHGUpsNK1ddiGVGyB9eXHN7zLXmsrJurN?=
+ =?us-ascii?Q?16aZNGvQ41EOfYbV1PCOUpHuufAeiSlE1SpD87vdYZqcpXpRjbleCSvl3twl?=
+ =?us-ascii?Q?qe0Lpa3fxmXmjVWoVM0B2vKAW9mchp4ZULwhdSP2xFRQWCaGM3jjPoHtj0tJ?=
+ =?us-ascii?Q?OJ2lkBHDkn3i7mzKCxdbMl0KIsbbUFRRq8Lh0IsVNDSoTxYRf9ZSasUt8qEz?=
+ =?us-ascii?Q?mRkUGWLm7mKUQPL9Tb2HdIMUmQhTcPmsFZpjGubtus7ag2BDC3fudFZ/AVoI?=
+ =?us-ascii?Q?rwBnm+aRsuDLE2AWSAeimjJLarW+0Yt9flCV1L4xR2TRkndA6PeG9ajwRV+u?=
+ =?us-ascii?Q?BfGQs6MYW4EmvxStgaGePWwc73VrypbFbUFJ1xKFh8K7u+/ftqOb7M0lBZiC?=
+ =?us-ascii?Q?e1m0gwSzaTkuUfGYXlxII0vRtZsshR/gx4JVLT+IV1fp2qgB+nv8vvZ/mRNj?=
+ =?us-ascii?Q?Watr7mvqMsw0+iu8ZCHPlBGyNv6qIy1kfsRw7o/5hVBNsdhBmVX64mN0uSKj?=
+ =?us-ascii?Q?6U50Ii0waXu+A5RrmXWh54NiqyhbahjzZxPh3FXiGOn5o0ABG5BooQgAj4LN?=
+ =?us-ascii?Q?9aH/KBUaCtM5HVNYNRF2WXz2b60wY+VoiKeAmI8gSrFY64lpvT4hC8lzTz/N?=
+ =?us-ascii?Q?CIZZ9XHM0EkZBBVJjDswzhmO4YtV0qCxNET74zpSwgl34tSI8oPkzQY6MNNv?=
+ =?us-ascii?Q?SVXsXVeoRsjO//s2e321esUiZIxDJQALOyepZ6/KKGWwQN8GdnPiq/wDl1q+?=
+ =?us-ascii?Q?mlBH6Cj/RdsTlzZxnBSGPXpi7pY7FcuWdkPmCLsk8FW32AZ2RblUiEdomqA5?=
+ =?us-ascii?Q?6RzFmltI4dEIt7AXsgQGuPjEKU9rRr8YaovKNSavgjD2xIkwzHnnmLFbjoMJ?=
+ =?us-ascii?Q?tWTff7/OMqz3ix9L989QiAV78d0usWd2LGp+OMsmLNszkPVxBDs1qgpUoyeF?=
+ =?us-ascii?Q?0iDc9Y1o/FAlJ5PRJVv44yKKGgQ7cVGEY4tkLgtAdTqbi6VzhuxmIHfQmVA0?=
+ =?us-ascii?Q?OiYyHZI5YZAOMOK4IFZpiWbxVaiCYHoZp9zCFnxmeKh9zZPsxx/Tu+aFRLjY?=
+ =?us-ascii?Q?WSTaxEurbprqxh+s64Nd5cfv3rvaWnU88n9TiLTalgDVrrhFhyqm4iLOt+el?=
+ =?us-ascii?Q?pRlRs1imrOUrCWAvhevgRZti0I6ZAVZebTqCJFARAEB6sC4lvihtPfrpm9ic?=
+ =?us-ascii?Q?HR0yr+vDPrbsYvgVW0vpaJOt?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ace4eef7-f159-4a68-047d-08d93f98bea5
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5650.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2021 09:39:11.8518
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VevZiQgIXTs5dhK89M8JcLGvzNfm1XdyccHPSUN2sqRH+NX3Bidht5rcImfUNTvu6i+ZK3lYBIVJpdp65JH8jA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0402MB3730
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the USB3 bindings for Kirin 970 phy and Hikey 970 board.
+Hi Herbert,
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../boot/dts/hisilicon/hi3670-hikey970.dts    | 107 ++++++++++++++++++
- arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  56 +++++++++
- 2 files changed, 163 insertions(+)
+On 5/14/21 12:45 PM, Herbert Xu wrote:
+> On Tue, Apr 20, 2021 at 01:41:18PM +0200, Varad Gautam wrote:
+>>
+>> +static int psspad_set_sig_params(struct crypto_akcipher *tfm,
+>> +				 const void *sig,
+>> +				 unsigned int siglen)
+>> +{
+>> +	struct akcipher_instance *inst =3D akcipher_alg_instance(tfm);
+>> +	struct rsapad_inst_ctx *ictx =3D akcipher_instance_ctx(inst);
+>> +	const struct public_key_signature *s =3D sig;
+>> +
+>> +	if (!sig)
+>> +		return -EINVAL;
+>> +
+>> +	ictx->salt_len =3D s->salt_length;
+>> +	ictx->mgf_hash_algo =3D s->mgf_hash_algo;
+>=20
+> Is there any reason why this couldn't be embedded into the key
+> instead?
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-index 5e6d7b329771..9e3dfe877ebe 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-@@ -53,6 +53,30 @@ wlan_en: wlan-en-1-8v {
- 		startup-delay-us = <70000>;
- 		enable-active-high;
- 	};
-+
-+	hikey_usbhub: hikey_usbhub {
-+		compatible = "hisilicon,kirin970_hikey_usbhub";
-+
-+		typec-vbus-gpios = <&gpio26 1 0>;
-+		otg-switch-gpios = <&gpio4 2 0>;
-+		hub_reset_en_gpio = <&gpio0 3 0>;
-+		hub-vdd-supply = <&ldo17>;
-+		usb-role-switch;
-+
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			hikey_usb_ep0: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&dwc3_role_switch>;
-+			};
-+			hikey_usb_ep1: endpoint@1 {
-+				reg = <1>;
-+				remote-endpoint = <&rt1711h_ep>;
-+			};
-+		};
-+	};
- };
- 
- /*
-@@ -430,3 +454,86 @@ &uart6 {
- 	label = "LS-UART1";
- 	status = "okay";
- };
-+
-+&usb_phy {
-+	phy-supply = <&ldo17>;
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+
-+	rt1711h: rt1711h@4e {
-+		compatible = "richtek,rt1711h";
-+		reg = <0x4e>;
-+		status = "okay";
-+		interrupt-parent = <&gpio27>;
-+		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&usb_cfg_func>;
-+
-+		usb_con: connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			data-role = "dual";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)
-+				PDO_VAR(5000, 5000, 1000)>;
-+			op-sink-microwatt = <10000000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				port@1 {
-+					reg = <1>;
-+					usb_con_ss: endpoint {
-+						remote-endpoint = <&dwc3_ss>;
-+					};
-+				};
-+			};
-+		};
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			rt1711h_ep: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&hikey_usb_ep1>;
-+			};
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	/* USB HUB is on this bus at address 0x44 */
-+	status = "okay";
-+};
-+
-+&dwc3 { /* USB */
-+	dr_mode = "otg";
-+	maximum-speed = "super-speed";
-+	phy_type = "utmi";
-+	snps,dis-del-phy-power-chg-quirk;
-+	snps,dis_u2_susphy_quirk;
-+	snps,dis_u3_susphy_quirk;
-+	snps,tx_de_emphasis_quirk;
-+	snps,tx_de_emphasis = <1>;
-+	snps,dis-split-quirk;
-+	snps,gctl-reset-quirk;
-+	usb-role-switch;
-+	role-switch-default-mode = "host";
-+	port {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		dwc3_role_switch: endpoint@0 {
-+			reg = <0>;
-+			remote-endpoint = <&hikey_usb_ep0>;
-+		};
-+
-+		dwc3_ss: endpoint@1 {
-+			reg = <1>;
-+			remote-endpoint = <&usb_con_ss>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index 8830795c8efc..6476149d99e3 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -8,6 +8,7 @@
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/hi3670-clock.h>
-+#include <dt-bindings/usb/pd.h>
- 
- / {
- 	compatible = "hisilicon,hi3670";
-@@ -785,5 +786,60 @@ i2c4: i2c@fdf0d000 {
- 			pinctrl-0 = <&i2c4_pmx_func &i2c4_cfg_func>;
- 			status = "disabled";
- 		};
-+
-+		usb3_otg_bc: usb3_otg_bc@ff200000 {
-+			compatible = "syscon", "simple-mfd";
-+			reg = <0x0 0xff200000 0x0 0x1000>;
-+
-+			usb_phy: usbphy {
-+				compatible = "hisilicon,hi3670-usb-phy";
-+				#phy-cells = <0>;
-+				hisilicon,pericrg-syscon = <&crg_ctrl>;
-+				hisilicon,pctrl-syscon = <&pctrl>;
-+				hisilicon,sctrl-syscon = <&sctrl>;
-+				hisilicon,eye-diagram-param = <0xFDFEE4>;
-+				hisilicon,tx-vboost-lvl = <0x5>;
-+			};
-+		};
-+
-+		usb31_misc_rst: usb31_misc_rst_controller {
-+			compatible = "hisilicon,hi3660-reset";
-+			#reset-cells = <2>;
-+			hisi,rst-syscon = <&usb3_otg_bc>;
-+		};
-+
-+		usb3: hisi_dwc3 {
-+			compatible = "hisilicon,hi3670-dwc3";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			ranges;
-+
-+			clocks = <&crg_ctrl HI3670_CLK_GATE_ABB_USB>,
-+				  <&crg_ctrl HI3670_HCLK_GATE_USB3OTG>,
-+				  <&crg_ctrl HI3670_CLK_GATE_USB3OTG_REF>,
-+				  <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			clock-names = "clk_gate_abb_usb",
-+				      "hclk_gate_usb3otg",
-+				      "clk_gate_usb3otg_ref",
-+				      "aclk_gate_usb3dvfs";
-+
-+			assigned-clocks = <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			assigned-clock-rates = <238000000>;
-+			resets = <&crg_rst 0x90 6>,
-+				 <&crg_rst 0x90 7>,
-+				 <&usb31_misc_rst 0xA0 8>,
-+				 <&usb31_misc_rst 0xA0 9>;
-+
-+			dwc3: usb@ff100000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x0 0xff100000 0x0 0x100000>;
-+
-+				interrupts = <0 159 IRQ_TYPE_LEVEL_HIGH>,
-+					    <0 161 IRQ_TYPE_LEVEL_HIGH>;
-+
-+				phys = <&usb_phy>;
-+				phy-names = "usb3-phy";
-+			};
-+		};
- 	};
- };
--- 
-2.31.1
+Sorry about the delay, do you mean setting these as part of
+rsapad_set_pub_key()?=20
+
+The same pubkey can be used to verify both PSS and PKCSv1.5 style signature=
+s,
+so I don't see the signature params (salt length / mgf hash) being a part
+of the pkey state.
+
+Thanks,
+Varad
+
+>=20
+> Thanks,
+>=20
+
+--=20
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5
+90409 N=C3=BCrnberg
+Germany
+
+HRB 36809, AG N=C3=BCrnberg
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
