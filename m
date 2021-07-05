@@ -2,106 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C70E3BBD39
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509653BBD41
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 15:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbhGENDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 09:03:41 -0400
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:17588 "EHLO
-        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhGENDk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 09:03:40 -0400
-Received: from localhost.localdomain (unknown [113.118.122.203])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id C6A8CE03BD;
-        Mon,  5 Jul 2021 21:00:58 +0800 (CST)
-From:   Ding Hui <dinghui@sangfor.com.cn>
-To:     tony.luck@intel.com, bp@alien8.de, bp@suse.de,
-        naoya.horiguchi@nec.com, osalvador@suse.de, peterz@infradead.org
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        hpa@zytor.com, youquan.song@intel.com, huangcun@sangfor.com.cn,
-        stable@vger.kernel.org, Ding Hui <dinghui@sangfor.com.cn>
-Subject: [PATCH v1] x86/mce: Fix endless loop when run task works after #MC
-Date:   Mon,  5 Jul 2021 20:59:21 +0800
-Message-Id: <20210705125921.936-1-dinghui@sangfor.com.cn>
-X-Mailer: git-send-email 2.17.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQxhDT1ZJHUxOHR0eTkJMSk5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PVE6Sjo6Tz9WTRkWFEMTGU8T
-        SRIwCzhVSlVKTUlOT0JLS05CTU5KVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
-        QVlKSkhVSkpDVUpJSVVJS0hZV1kIAVlBSE9CSTcG
-X-HM-Tid: 0a7a76c1f02a2c17kusnc6a8ce03bd
+        id S231366AbhGENF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 09:05:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230472AbhGENF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 09:05:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 681BD61447;
+        Mon,  5 Jul 2021 13:03:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625490201;
+        bh=JAhM9uLnVQdWyUIJvWzQUlT2ptJXIZ6NsbSZCd1vRmw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=joYZP1uH+TarU+TSon38rp2wt+bjwtNuJciGpFjdb3F1K3fX3tezOnUFc8Ios6DNY
+         obi/Cbw3FuWNceIPuQebcJ1j2whR8GVHHpwvg6UWRL3aa9ZL+d9Btb1Ye+sCPDHrga
+         y2b1NOizE+V2lzA7/2Tm9JYAAxXQaajaD/JbktNOmRmAe6gUywNXk7BwbZIzeLSwGY
+         UQcS+bTw3qcin+aDxqzBTlSZwA1WUPe1oNAN43pAZ9AQLQvyl1afov3v8a2s4j/HFw
+         ljIvlxl3lmPfo9n4YWXx0ToIwJ7KHaAYHEjfLTo5CkCxZOloaTU0ZxtZ06YYrSElFR
+         c+iJniV0iYxHA==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Cc:     sumit.semwal@linaro.org, christian.koenig@amd.com,
+        daniel.vetter@ffwll.ch, galpress@amazon.com, sleybo@amazon.com,
+        dri-devel@lists.freedesktop.org, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        dledford@redhat.com, airlied@gmail.com, alexander.deucher@amd.com,
+        leonro@nvidia.com, hch@lst.de, amd-gfx@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
+Date:   Mon,  5 Jul 2021 16:03:12 +0300
+Message-Id: <20210705130314.11519-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently we encounter multi #MC on the same task when it's
-task_work_run() has not been called, current->mce_kill_me was
-added to task_works list more than once, that make a circular
-linked task_works, so task_work_run() will do a endless loop.
+Hi,
+I'm sending v4 of this patch-set following the long email thread.
+I want to thank Jason for reviewing v3 and pointing out the errors, saving
+us time later to debug it :)
 
-More seriously, the SIGBUS signal can not be delivered to the
-userspace task which tigger the #MC and I met #MC flood.
+I consulted with Christian on how to fix patch 2 (the implementation) and
+at the end of the day I shamelessly copied the relevant content from
+amdgpu_vram_mgr_alloc_sgt() and amdgpu_dma_buf_attach(), regarding the
+usage of dma_map_resource() and pci_p2pdma_distance_many(), respectively.
 
-I borrowed mce_kill_me.func to check whether current->mce_kill_me
-has been added to task_works, prevent duplicate addition. When
-work function be called, the task_works must has been taken,
-so it is safe to be cleared in callback.
+I also made a few improvements after looking at the relevant code in amdgpu.
+The details are in the changelog of patch 2.
 
-Fixed: commit 5567d11c21a1 ("x86/mce: Send #MC singal from task work")
-Cc: <stable@vger.kernel.org> #v5.8+
-Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
----
- arch/x86/kernel/cpu/mce/core.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+I took the time to write an import code into the driver, allowing me to
+check real P2P with two Gaudi devices, one as exporter and the other as
+importer. I'm not going to include the import code in the product, it was
+just for testing purposes (although I can share it if anyone wants).
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 22791aadc085..32fb9ded6b85 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1250,6 +1250,7 @@ static void __mc_scan_banks(struct mce *m, struct pt_regs *regs, struct mce *fin
- 
- static void kill_me_now(struct callback_head *ch)
- {
-+	WRITE_ONCE(ch->func, NULL);
- 	force_sig(SIGBUS);
- }
- 
-@@ -1259,6 +1260,8 @@ static void kill_me_maybe(struct callback_head *cb)
- 	int flags = MF_ACTION_REQUIRED;
- 	int ret;
- 
-+	WRITE_ONCE(cb->func, NULL);
-+
- 	pr_err("Uncorrected hardware memory error in user-access at %llx", p->mce_addr);
- 
- 	if (!p->mce_ripv)
-@@ -1289,17 +1292,20 @@ static void kill_me_maybe(struct callback_head *cb)
- 
- static void queue_task_work(struct mce *m, int kill_current_task)
- {
-+	struct callback_head ch;
-+
- 	current->mce_addr = m->addr;
- 	current->mce_kflags = m->kflags;
- 	current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
- 	current->mce_whole_page = whole_page(m);
- 
- 	if (kill_current_task)
--		current->mce_kill_me.func = kill_me_now;
-+		ch.func = kill_me_now;
- 	else
--		current->mce_kill_me.func = kill_me_maybe;
-+		ch.func = kill_me_maybe;
- 
--	task_work_add(current, &current->mce_kill_me, TWA_RESUME);
-+	if (!cmpxchg(&current->mce_kill_me.func, NULL, ch.func))
-+		task_work_add(current, &current->mce_kill_me, TWA_RESUME);
- }
- 
- /*
+I run it on a bare-metal environment with IOMMU enabled, on a sky-lake CPU
+with a white-listed PCIe bridge (to make the pci_p2pdma_distance_many happy).
+
+Greg, I hope this will be good enough for you to merge this code.
+
+Thanks,
+Oded
+
+Oded Gabbay (1):
+  habanalabs: define uAPI to export FD for DMA-BUF
+
+Tomer Tayar (1):
+  habanalabs: add support for dma-buf exporter
+
+ drivers/misc/habanalabs/Kconfig             |   1 +
+ drivers/misc/habanalabs/common/habanalabs.h |  26 ++
+ drivers/misc/habanalabs/common/memory.c     | 480 +++++++++++++++++++-
+ drivers/misc/habanalabs/gaudi/gaudi.c       |   1 +
+ drivers/misc/habanalabs/goya/goya.c         |   1 +
+ include/uapi/misc/habanalabs.h              |  28 +-
+ 6 files changed, 532 insertions(+), 5 deletions(-)
+
 -- 
-2.17.1
+2.25.1
 
