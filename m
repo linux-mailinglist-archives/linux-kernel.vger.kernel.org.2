@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905B03BB9AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 10:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9663BB9BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 11:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbhGEI7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 04:59:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230121AbhGEI7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:59:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 765A1613C2;
-        Mon,  5 Jul 2021 08:57:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625475420;
-        bh=ZqjV6RrWkA7theMbsvZ8YZrCke0QXHtvRo3wcNk+Upk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FDMrGP9js/MZtQ/Ho77/c6GRBbjraVZgGhojOtutaYSGt24I4xbHtiq1lif8985y9
-         XFWGS7NOy5jhd8Ot4wjbzr9tWMk8qrleglrNJ/64p3/DDMB+05wlcmIXbsJ+eJAOkT
-         sv6KEaC2gujt5FpQCFWRUp2t1+OLRgP0XKZk8ZrqrtQsbna8/f1UPK+6ZWjUBaFT4B
-         bNMbqjxNUSWacN04vI3t/lt4l0zLx4ZUwygD1usCRyMkVNeWLkvpOcsg7LLJl3sGs9
-         mAnQNtddAWQyjQNOdcAPCe0j71nwQzvi0o0t/uVdc+6nfc71Na0r0rQeOFKQG8QXPe
-         DVrsLbBs3zfiw==
-Date:   Mon, 5 Jul 2021 01:56:59 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [f2fs-dev] [PATCH] f2fs: initialize page->private when using for
- our internal use
-Message-ID: <YOLJW0IgCagMk2tF@google.com>
-References: <20210705052216.831989-1-jaegeuk@kernel.org>
- <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
+        id S230195AbhGEJDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 05:03:01 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49362 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230211AbhGEJDA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 05:03:00 -0400
+Received: from mail-ot1-f69.google.com ([209.85.210.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <chris.chiu@canonical.com>)
+        id 1m0KSk-0006yJ-Cc
+        for linux-kernel@vger.kernel.org; Mon, 05 Jul 2021 09:00:22 +0000
+Received: by mail-ot1-f69.google.com with SMTP id q20-20020a9d7c940000b02903f5a4101f8eso12853188otn.17
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 02:00:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I6wYMggQL4Kc/x8xMyA7h2j3whmdqB7IgTt34u11Uos=;
+        b=dHY4WfwMkPQTHIFxM3ZBymaMexa7+NxJLF+oHwq+yANlsFQPUFDVEMaK0LhIpy7c19
+         8be4bBRnYFT4HAd205PVfsvSc9Fl9yYRpT/thUAwdK41OB8a1CqEwIqY0unfMPPbiQDO
+         eVCOa5oBcYoAJGMY4nj6OmVr7eoLL9JmeOdQpALPqHovi5SKt2+xnbRa8poKg+zgjA/a
+         qQneEAS+Tq5B1Syjijb+l5lXhQNqw9Ss2yM9sGOV8Pq+zjhv+It7dS/BVf/AtrtjjIHH
+         ANcHCObfsZjcAo91yI+yuWbMTeYyv40KIzmIS11Be9/ICiJuiA9e3HlZq3LWE4Fol7BL
+         K6XA==
+X-Gm-Message-State: AOAM533FTVunit4yFU+P0+HwvTKhRlnFRwEbPR9Y3YIA6HpGJNGReexq
+        mQ5x6hqT8lO+86BGlUDY6FO/Du2LAWw3H0Dm0DabTELLRDlYnz2yGsiZ4yD/XKwFoFjr6oMbMUd
+        jMeZ5nRtfX/wvBzcR1BhkFPxw2JLBXkMcG9sKJHS2m8Nqt8jr1DG3yO6Muw==
+X-Received: by 2002:a05:6830:1f19:: with SMTP id u25mr6524524otg.303.1625475621314;
+        Mon, 05 Jul 2021 02:00:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx9roYChfxAr/TO7KIQukCmHCx/xq1CtOLOyNW4WqCG9AUmbVemwjMekcOUHAfCzMs3mnJDH06AMTJrb7zjkaM=
+X-Received: by 2002:a05:6830:1f19:: with SMTP id u25mr6524509otg.303.1625475621095;
+ Mon, 05 Jul 2021 02:00:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
+References: <20210701163354.118403-1-chris.chiu@canonical.com> <87v95thzu1.fsf@codeaurora.org>
+In-Reply-To: <87v95thzu1.fsf@codeaurora.org>
+From:   Chris Chiu <chris.chiu@canonical.com>
+Date:   Mon, 5 Jul 2021 17:00:10 +0800
+Message-ID: <CABTNMG2_Cb7RhguJZNKZxAna6oBaDPhomBWRreO-adFX2Erwkw@mail.gmail.com>
+Subject: Re: [PATCH] rtl8xxxu: disable interrupt_in transfer for 8188cu and 8192cu
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Jes.Sorensen@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        code@reto-schneider.ch, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/05, Chao Yu wrote:
-> On 2021/7/5 13:22, Jaegeuk Kim wrote:
-> > We need to guarantee it's initially zero. Otherwise, it'll hurt entire flag
-> > operations.
-> 
-> Oops, I didn't get the point, shouldn't .private be zero after page was
-> just allocated by filesystem? What's the case we will encounter stall
-> private data left in page?
+On Fri, Jul 2, 2021 at 4:42 PM Kalle Valo <kvalo@codeaurora.org> wrote:
+>
+> chris.chiu@canonical.com writes:
+>
+> > From: Chris Chiu <chris.chiu@canonical.com>
+> >
+> > There will be crazy numbers of interrupts triggered by 8188cu and
+> > 8192cu module, around 8000~10000 interrupts per second, on the usb
+> > host controller. Compare with the vendor driver source code, it's
+> > mapping to the configuration CONFIG_USB_INTERRUPT_IN_PIPE and it is
+> > disabled by default.
+> >
+> > Since the interrupt transfer is neither used for TX/RX nor H2C
+> > commands. Disable it to avoid the confusing interrupts for the
+> > 8188cu and 8192cu module which I only have for verification.
+>
+> The last paragraph is not entirely clear for me, can you elaborate it
+> more? What do you mean with "confusing interrupts"? And is this fixing
+> an actual user visible bug or are you just reducing the number of
+> interrupts?
+>
+It's confusing because there are 8000~9000 interrupts per second even
+though the association is not done yet and no traffic is pumped. It's
+also way too many even the reception of the beacon frames triggers the
+interrupt. This huge number overwhelms the normal interrupt we
+expected from the register setting (only < 100/sec if runs with
+rtlwif/rtl8192cu driver instead). It's difficult to judge where/why
+the interrupts come from and what possible overhead it could possibly
+incur.
 
-I'm seeing f2fs_migrate_page() has the newpage with some value without Private
-flag. That causes a kernel panic later due to wrong private flag used in f2fs.
-
-> 
-> Cc Matthew Wilcox.
-> 
-> Thanks,
-> 
-> > 
-> > Fixes: b763f3bedc2d ("f2fs: restructure f2fs page.private layout")
-> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > ---
-> >   fs/f2fs/data.c | 2 ++
-> >   fs/f2fs/f2fs.h | 5 ++++-
-> >   2 files changed, 6 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> > index 3a01a1b50104..d2cf48c5a2e4 100644
-> > --- a/fs/f2fs/data.c
-> > +++ b/fs/f2fs/data.c
-> > @@ -3819,6 +3819,8 @@ int f2fs_migrate_page(struct address_space *mapping,
-> >   		get_page(newpage);
-> >   	}
-> > +	/* guarantee to start from no stale private field */
-> > +	set_page_private(newpage, 0);
-> >   	if (PagePrivate(page)) {
-> >   		set_page_private(newpage, page_private(page));
-> >   		SetPagePrivate(newpage);
-> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > index 65befc68d88e..ee8eb33e2c25 100644
-> > --- a/fs/f2fs/f2fs.h
-> > +++ b/fs/f2fs/f2fs.h
-> > @@ -1331,7 +1331,8 @@ enum {
-> >   #define PAGE_PRIVATE_GET_FUNC(name, flagname) \
-> >   static inline bool page_private_##name(struct page *page) \
-> >   { \
-> > -	return test_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)) && \
-> > +	return PagePrivate(page) && \
-> > +		test_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)) && \
-> >   		test_bit(PAGE_PRIVATE_##flagname, &page_private(page)); \
-> >   }
-> > @@ -1341,6 +1342,7 @@ static inline void set_page_private_##name(struct page *page) \
-> >   	if (!PagePrivate(page)) { \
-> >   		get_page(page); \
-> >   		SetPagePrivate(page); \
-> > +		set_page_private(page, 0); \
-> >   	} \
-> >   	set_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page)); \
-> >   	set_bit(PAGE_PRIVATE_##flagname, &page_private(page)); \
-> > @@ -1392,6 +1394,7 @@ static inline void set_page_private_data(struct page *page, unsigned long data)
-> >   	if (!PagePrivate(page)) {
-> >   		get_page(page);
-> >   		SetPagePrivate(page);
-> > +		set_page_private(page, 0);
-> >   	}
-> >   	set_bit(PAGE_PRIVATE_NOT_POINTER, &page_private(page));
-> >   	page_private(page) |= data << PAGE_PRIVATE_MAX;
-> > 
+> --
+> https://patchwork.kernel.org/project/linux-wireless/list/
+>
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
