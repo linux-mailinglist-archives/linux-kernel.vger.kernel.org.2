@@ -2,605 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABADC3BBE85
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 16:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BAEE3BBE84
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Jul 2021 16:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbhGEO6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 10:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbhGEO6I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231602AbhGEO6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 5 Jul 2021 10:58:08 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11AF6C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 07:55:31 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1m0Q0G-0007rp-4w; Mon, 05 Jul 2021 16:55:20 +0200
-Message-ID: <0fc1f5043eeedb0c40ae9f76e245c648e0c88cde.camel@pengutronix.de>
-Subject: Re: [PATCH V8 3/4] soc: imx: Add generic blk-ctl driver
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        p.zabel@pengutronix.de, krzk@kernel.org, agx@sigxcpu.org,
-        marex@denx.de, andrew.smirnov@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, ping.bai@nxp.com,
-        frieder.schrempf@kontron.de, aford173@gmail.com, abel.vesa@nxp.com,
-        jagan@amarulasolutions.com, Peng Fan <peng.fan@nxp.com>
-Date:   Mon, 05 Jul 2021 16:55:17 +0200
-In-Reply-To: <20210629072941.7980-4-peng.fan@oss.nxp.com>
-References: <20210629072941.7980-1-peng.fan@oss.nxp.com>
-         <20210629072941.7980-4-peng.fan@oss.nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230504AbhGEO6H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 10:58:07 -0400
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EE2C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 07:55:29 -0700 (PDT)
+Received: by mail-oo1-xc33.google.com with SMTP id o3-20020a4a84c30000b0290251d599f19bso1892280oog.8
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 07:55:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vt6B/ZFWv7iTSgMPoA0D5VLEiybOK+YCjOBH+Il3S7o=;
+        b=iw3VrxU/7kWNX7p0s4iJCF2WQmq2nrkNNWjjHa9OlRb3BpvRhtZgjNugzi/hfTxYHP
+         Dp85myFBOAbH+VyehU5k9TNyW/HPfYPSVHBwLkKiexba3WzqE0SDLjt3JOH4a/wzELna
+         lNFwpIaVsXQCzR4zFDPmy+SxBT20c9Q/K6RJ5uUY81vfoDr7kI3Gl4HDJA084Tu1CUTp
+         2nXZkbAHesfsztEYOeb21Zh9917e3jRyIcBPQT/uV+izn6kw8oTvB4fu/wzcr8Pq5Ahj
+         ZSKwO0PRDtbmTEdEOwKp2CmHddImcncoP42OFftlNdDLjrImjouSOb8NUEHi5QLYrr7E
+         ssmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vt6B/ZFWv7iTSgMPoA0D5VLEiybOK+YCjOBH+Il3S7o=;
+        b=eTpKxgcGVwnrMBu/twj3Yxxnujj0gH4mYERLkNVkUK9zeIa0H9BT+0a43MTv3I+V7E
+         MPf2puBEtSqM1YFfmw54wOxTWzgpG1eS3GvAZaIePUUW/1cV1LBB94VwTYnyISuZblfv
+         GT0NHvc+iNF/Ofx9boU3ChBFqGLjaSIs/Z/wK7eSHMJm4+Xf+/rfSMcAmA9cD2tzKxGm
+         goh8hKtCsAzF4ZEKfOAL0d77zmvlEQcMVgFs30EgI3HlMrxGGnuyUGn3cXpQsh0dLlXU
+         HsvGCfXVmvTZgMhvzPZ/TwcnPQPzpAnCQDhrVTOA5oDU46uRv+Y4dXqBnqVeJuJeqXa5
+         j0TQ==
+X-Gm-Message-State: AOAM530fGTE/uPTXLWTiutR9t2KiWaPZVUPkii+OG6DT9HKcCgfB5Tee
+        2VRwX/MRRHy7YSccmttIKzI=
+X-Google-Smtp-Source: ABdhPJyaKuazjRvXU99E0LpcB7YvmGZQk8hR0kqaN6XKZerKhLs55BLxaOhGPQcXfeCP0kLUt5GiQg==
+X-Received: by 2002:a4a:1a84:: with SMTP id 126mr10293596oof.77.1625496928772;
+        Mon, 05 Jul 2021 07:55:28 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bc39sm284564oob.4.2021.07.05.07.55.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Jul 2021 07:55:28 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v3 4/4] arm: extend pfn_valid to take into account freed
+ memory map alignment
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210630071211.21011-1-rppt@kernel.org>
+ <20210630071211.21011-5-rppt@kernel.org>
+ <20210705042236.GA1463419@roeck-us.net> <YOKziNQzbfIuXgMV@kernel.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <c7d1e38d-6268-23bf-e24c-6c9e1703ea73@roeck-us.net>
+Date:   Mon, 5 Jul 2021 07:55:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <YOKziNQzbfIuXgMV@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peng,
+On 7/5/21 12:23 AM, Mike Rapoport wrote:
+> Hi Guenter,
+> 
+> On Sun, Jul 04, 2021 at 09:22:36PM -0700, Guenter Roeck wrote:
+>> On Wed, Jun 30, 2021 at 10:12:11AM +0300, Mike Rapoport wrote:
+>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>
+>>> When unused memory map is freed the preserved part of the memory map is
+>>> extended to match pageblock boundaries because lots of core mm
+>>> functionality relies on homogeneity of the memory map within pageblock
+>>> boundaries.
+>>>
+>>> Since pfn_valid() is used to check whether there is a valid memory map
+>>> entry for a PFN, make it return true also for PFNs that have memory map
+>>> entries even if there is no actual memory populated there.
+>>>
+>>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+>>> Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>
+>> With this patch in place, the romulus-bmc emulation in qemu gets the
+>> following traceback:
+>>
+>> [    2.863406] WARNING: CPU: 0 PID: 1 at arch/arm/mm/ioremap.c:287 __arm_ioremap_pfn_caller+0xf0/0x1dc
+> ...
+>> [    2.876683] ---[ end trace b2f74b8536829970 ]---
+>> [    2.876911] fsi-master-acf gpio-fsi: ioremap failed for resource [mem 0x9ef00000-0x9effffff]
+>> [    2.877492] fsi-master-acf gpio-fsi: Error -12 mapping coldfire memory
+>> [    2.877689] fsi-master-acf: probe of gpio-fsi failed with error -12
+>>
+>> Reverting it fixes the problem. Also, the ioremap failure is no longer seen
+>> after reverting this patch.
+> 
+> I believe this should fix it:
+> 
+Yes, it does.
 
-Am Dienstag, dem 29.06.2021 um 15:29 +0800 schrieb Peng Fan (OSS):
-> From: Peng Fan <peng.fan@nxp.com>
+>>From e2213b7e804daf0d31d47502379916f0542398bb Mon Sep 17 00:00:00 2001
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> Date: Mon, 5 Jul 2021 08:43:10 +0300
+> Subject: [PATCH] arm: ioremap: don't abuse pfn_valid() to check if pfn is in RAM
 > 
-> The i.MX8MM introduces an IP named BLK_CTL and usually is comprised of
-> some GPRs.
+> The semantics of pfn_valid() is to check presence of the memory map for a
+> PFN and not whether a PFN is in RAM. The memory map may be present for a
+> hole in the physical memory and if such hole corresponds to an MMIO range,
+> __arm_ioremap_pfn_caller() will produce a WARN() and fail:
 > 
-> The GPRs has some clock bits and reset bits, but here we take it
-> as virtual PDs, because of the clock and power domain A/B lock issue
-> when taking it as a clock controller.
+> [    2.863406] WARNING: CPU: 0 PID: 1 at arch/arm/mm/ioremap.c:287 __arm_ioremap_pfn_caller+0xf0/0x1dc
+> [    2.864812] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-09882-ga180bd1d7e16 #1
+> [    2.865263] Hardware name: Generic DT based system
+> [    2.865711] Backtrace:
+> [    2.866063] [<80b07e58>] (dump_backtrace) from [<80b080ac>] (show_stack+0x20/0x24)
+> [    2.866633]  r7:00000009 r6:0000011f r5:60000153 r4:80ddd1c0
+> [    2.866922] [<80b0808c>] (show_stack) from [<80b18df0>] (dump_stack_lvl+0x58/0x74)
+> [    2.867117] [<80b18d98>] (dump_stack_lvl) from [<80b18e20>] (dump_stack+0x14/0x1c)
+> [    2.867309]  r5:80118cac r4:80dc6774
+> [    2.867404] [<80b18e0c>] (dump_stack) from [<80122fcc>] (__warn+0xe4/0x150)
+> [    2.867583] [<80122ee8>] (__warn) from [<80b08850>] (warn_slowpath_fmt+0x88/0xc0)
+> [    2.867774]  r7:0000011f r6:80dc6774 r5:00000000 r4:814c4000
+> [    2.867917] [<80b087cc>] (warn_slowpath_fmt) from [<80118cac>] (__arm_ioremap_pfn_caller+0xf0/0x1dc)
+> [    2.868158]  r9:00000001 r8:9ef00000 r7:80e8b0d4 r6:0009ef00 r5:00000000 r4:00100000
+> [    2.868346] [<80118bbc>] (__arm_ioremap_pfn_caller) from [<80118df8>] (__arm_ioremap_caller+0x60/0x68)
+> [    2.868581]  r9:9ef00000 r8:821b6dc0 r7:00100000 r6:00000000 r5:815d1010 r4:80118d98
+> [    2.868761] [<80118d98>] (__arm_ioremap_caller) from [<80118fcc>] (ioremap+0x28/0x30)
+> [    2.868958] [<80118fa4>] (ioremap) from [<8062871c>] (__devm_ioremap_resource+0x154/0x1c8)
+> [    2.869169]  r5:815d1010 r4:814c5d2c
+> [    2.869263] [<806285c8>] (__devm_ioremap_resource) from [<8062899c>] (devm_ioremap_resource+0x14/0x18)
+> [    2.869495]  r9:9e9f57a0 r8:814c4000 r7:815d1000 r6:815d1010 r5:8177c078 r4:815cf400
+> [    2.869676] [<80628988>] (devm_ioremap_resource) from [<8091c6e4>] (fsi_master_acf_probe+0x1a8/0x5d8)
+> [    2.869909] [<8091c53c>] (fsi_master_acf_probe) from [<80723dbc>] (platform_probe+0x68/0xc8)
+> [    2.870124]  r9:80e9dadc r8:00000000 r7:815d1010 r6:810c1000 r5:815d1010 r4:00000000
+> [    2.870306] [<80723d54>] (platform_probe) from [<80721208>] (really_probe+0x1cc/0x470)
+> [    2.870512]  r7:815d1010 r6:810c1000 r5:00000000 r4:815d1010
+> [    2.870651] [<8072103c>] (really_probe) from [<807215cc>] (__driver_probe_device+0x120/0x1fc)
+> [    2.870872]  r7:815d1010 r6:810c1000 r5:810c1000 r4:815d1010
+> [    2.871013] [<807214ac>] (__driver_probe_device) from [<807216e8>] (driver_probe_device+0x40/0xd8)
+> [    2.871244]  r9:80e9dadc r8:00000000 r7:815d1010 r6:810c1000 r5:812feaa0 r4:812fe994
+> [    2.871428] [<807216a8>] (driver_probe_device) from [<80721a58>] (__driver_attach+0xa8/0x1d4)
+> [    2.871647]  r9:80e9dadc r8:00000000 r7:00000000 r6:810c1000 r5:815d1054 r4:815d1010
+> [    2.871830] [<807219b0>] (__driver_attach) from [<8071ee8c>] (bus_for_each_dev+0x88/0xc8)
+> [    2.872040]  r7:00000000 r6:814c4000 r5:807219b0 r4:810c1000
+> [    2.872194] [<8071ee04>] (bus_for_each_dev) from [<80722208>] (driver_attach+0x28/0x30)
+> [    2.872418]  r7:810a2aa0 r6:00000000 r5:821b6000 r4:810c1000
+> [    2.872570] [<807221e0>] (driver_attach) from [<8071f80c>] (bus_add_driver+0x114/0x200)
+> [    2.872788] [<8071f6f8>] (bus_add_driver) from [<80722ec4>] (driver_register+0x98/0x128)
+> [    2.873011]  r7:81011d0c r6:814c4000 r5:00000000 r4:810c1000
+> [    2.873167] [<80722e2c>] (driver_register) from [<80725240>] (__platform_driver_register+0x2c/0x34)
+> [    2.873408]  r5:814dcb80 r4:80f2a764
+> [    2.873513] [<80725214>] (__platform_driver_register) from [<80f2a784>] (fsi_master_acf_init+0x20/0x28)
+> [    2.873766] [<80f2a764>] (fsi_master_acf_init) from [<80f014a8>] (do_one_initcall+0x108/0x290)
+> [    2.874007] [<80f013a0>] (do_one_initcall) from [<80f01840>] (kernel_init_freeable+0x1ac/0x230)
+> [    2.874248]  r9:80e9dadc r8:80f3987c r7:80f3985c r6:00000007 r5:814dcb80 r4:80f627a4
+> [    2.874456] [<80f01694>] (kernel_init_freeable) from [<80b19f44>] (kernel_init+0x20/0x138)
+> [    2.874691]  r10:00000000 r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:80b19f24
+> [    2.874894]  r4:00000000
+> [    2.874977] [<80b19f24>] (kernel_init) from [<80100170>] (ret_from_fork+0x14/0x24)
+> [    2.875231] Exception stack(0x814c5fb0 to 0x814c5ff8)
+> [    2.875535] 5fa0:                                     00000000 00000000 00000000 00000000
+> [    2.875849] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> [    2.876133] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> [    2.876363]  r5:80b19f24 r4:00000000
+> [    2.876683] ---[ end trace b2f74b8536829970 ]---
+> [    2.876911] fsi-master-acf gpio-fsi: ioremap failed for resource [mem 0x9ef00000-0x9effffff]
+> [    2.877492] fsi-master-acf gpio-fsi: Error -12 mapping coldfire memory
+> [    2.877689] fsi-master-acf: probe of gpio-fsi failed with error -12
 > 
-> For some bits, it might be good to also make it as a reset controller,
-> but to i.MX8MM, we not add that support for now.
+> Use memblock_is_map_memory() instead of pfn_valid() to check if a PFN is in
+> RAM or not.
 > 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Thanks!
+Guenter
+
 > ---
->  drivers/soc/imx/Makefile  |   2 +-
->  drivers/soc/imx/blk-ctl.c | 324 ++++++++++++++++++++++++++++++++++++++
->  drivers/soc/imx/blk-ctl.h |  85 ++++++++++
->  3 files changed, 410 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/soc/imx/blk-ctl.c
->  create mode 100644 drivers/soc/imx/blk-ctl.h
+>   arch/arm/mm/ioremap.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/soc/imx/Makefile b/drivers/soc/imx/Makefile
-> index 078dc918f4f3..d3d2b49a386c 100644
-> --- a/drivers/soc/imx/Makefile
-> +++ b/drivers/soc/imx/Makefile
-> @@ -4,4 +4,4 @@ obj-$(CONFIG_ARCH_MXC) += soc-imx.o
->  endif
->  obj-$(CONFIG_HAVE_IMX_GPC) += gpc.o
->  obj-$(CONFIG_IMX_GPCV2_PM_DOMAINS) += gpcv2.o
-> -obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o
-> +obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o blk-ctl.o
-> diff --git a/drivers/soc/imx/blk-ctl.c b/drivers/soc/imx/blk-ctl.c
-> new file mode 100644
-> index 000000000000..cec1884202e0
-> --- /dev/null
-> +++ b/drivers/soc/imx/blk-ctl.c
-> @@ -0,0 +1,324 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright 2021 NXP.
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/pm_domain.h>
-> +#include <linux/regmap.h>
-> +#include <linux/slab.h>
-> +
-> +#include "blk-ctl.h"
-> +
-> +static inline struct imx_blk_ctl_domain *to_imx_blk_ctl_pd(struct generic_pm_domain *genpd)
-> +{
-> +	return container_of(genpd, struct imx_blk_ctl_domain, genpd);
-> +}
-> +
-> +static int imx_blk_ctl_enable_hsk(struct device *dev)
-> +{
-> +	struct imx_blk_ctl *blk_ctl = dev_get_drvdata(dev);
-> +	const struct imx_blk_ctl_hw *hw = blk_ctl->dev_data->hw_hsk;
-> +	struct regmap *regmap = blk_ctl->regmap;
-> +	int ret;
-> +
-> +	if (hw->flags & IMX_BLK_CTL_PD_RESET) {
-> +		ret = regmap_update_bits(regmap, hw->rst_offset, hw->rst_mask, hw->rst_mask);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	ret = regmap_update_bits(regmap, hw->offset, hw->mask, hw->mask);
-> +
-> +	/* Wait for handshake */
-> +	udelay(5);
-> +
-> +	return ret;
-> +}
-> +
-> +static int imx_blk_ctl_power_on(struct generic_pm_domain *domain)
-> +{
-> +	struct imx_blk_ctl_domain *pd = to_imx_blk_ctl_pd(domain);
-> +	struct imx_blk_ctl *blk_ctl = pd->blk_ctl;
-> +	struct regmap *regmap = blk_ctl->regmap;
-> +	const struct imx_blk_ctl_hw *hw = &blk_ctl->dev_data->pds[pd->id];
-> +	int ret;
-> +
-> +	mutex_lock(&blk_ctl->lock);
-> +
-> +	ret = clk_bulk_prepare_enable(blk_ctl->num_clks, blk_ctl->clks);
-
-I'm still not a fan of enabling all the clocks going into the blk-ctl
-to power up/down one specific domain. It's not really a problem with
-clocks, where the parents are always on, as the clock gate/ungate is
-pretty cheap, but as soon as you get to something like the display
-pixel clock, where the parent PLL may be shut down, the clock enable
-may easily be the most costly operation of this whole function, even if
-this specific clock isn't even needed for the domain in question.
-
-> +	if (ret) {
-> +		mutex_unlock(&blk_ctl->lock);
-> +		return ret;
-> +	}
-> +
-> +	if (hw->flags & IMX_BLK_CTL_PD_HANDSHAKE) {
-> +		ret = imx_blk_ctl_enable_hsk(blk_ctl->dev);
-> +		if (ret)
-> +			dev_err(blk_ctl->dev, "Handshake failed when power on\n");
-> +
-> +		/* Expected, handshake already handle reset*/
-> +		goto disable_clk;
-> +	}
-> +
-> +	if (hw->flags & IMX_BLK_CTL_PD_RESET) {
-> +		ret = regmap_clear_bits(regmap, hw->rst_offset, hw->rst_mask);
-> +		if (ret)
-> +			goto disable_clk;
-> +
-> +		/* Wait for reset propagate */
-> +		udelay(5);
-> +
-> +		ret = regmap_update_bits(regmap, hw->rst_offset, hw->rst_mask, hw->rst_mask);
-> +		if (ret)
-> +			goto disable_clk;
-> +	}
-> +
-> +	ret = regmap_update_bits(regmap, hw->offset, hw->mask, hw->mask);
+> diff --git a/arch/arm/mm/ioremap.c b/arch/arm/mm/ioremap.c
+> index 000e8210000b..80fb5a4a5c05 100644
+> --- a/arch/arm/mm/ioremap.c
+> +++ b/arch/arm/mm/ioremap.c
+> @@ -27,6 +27,7 @@
+>   #include <linux/vmalloc.h>
+>   #include <linux/io.h>
+>   #include <linux/sizes.h>
+> +#include <linux/memblock.h>
+>   
+>   #include <asm/cp15.h>
+>   #include <asm/cputype.h>
+> @@ -284,7 +285,8 @@ static void __iomem * __arm_ioremap_pfn_caller(unsigned long pfn,
+>   	 * Don't allow RAM to be mapped with mismatched attributes - this
+>   	 * causes problems with ARMv6+
+>   	 */
+> -	if (WARN_ON(pfn_valid(pfn) && mtype != MT_MEMORY_RW))
+> +	if (WARN_ON(memblock_is_map_memory(PFN_PHYS(pfn)) &&
+> +		    mtype != MT_MEMORY_RW))
+>   		return NULL;
+>   
+>   	area = get_vm_area_caller(size, VM_IOREMAP, caller);
 > 
-
-I find this very hard to follow and reason about. Why do we even need
-those different paths for domains with or without the handshake?
-
-Shouldn't it be enough to just be enough to do the following in all
-cases:
-1. release sft reset
-2. enable sft clock
-3. wait a little for reset to propagate or ADB to ack power up
-
-> +disable_clk:
-> +	clk_bulk_disable_unprepare(blk_ctl->num_clks, blk_ctl->clks);
-> +
-> +	mutex_unlock(&blk_ctl->lock);
-> +
-> +	return ret;
-> +}
-> +
-> +static int imx_blk_ctl_power_off(struct generic_pm_domain *domain)
-> +{
-> +	struct imx_blk_ctl_domain *pd = to_imx_blk_ctl_pd(domain);
-> +	struct imx_blk_ctl *blk_ctl = pd->blk_ctl;
-> +	struct regmap *regmap = blk_ctl->regmap;
-> +	const struct imx_blk_ctl_hw *hw = &blk_ctl->dev_data->pds[pd->id];
-> +	int ret = 0;
-> +
-> +	mutex_lock(&blk_ctl->lock);
-> +
-> +	ret = clk_bulk_prepare_enable(blk_ctl->num_clks, blk_ctl->clks);
-> +	if (ret) {
-> +		mutex_unlock(&blk_ctl->lock);
-> +		return ret;
-> +	}
-> +
-> +	if (!(hw->flags & IMX_BLK_CTL_PD_HANDSHAKE)) {
-> +		ret = regmap_clear_bits(regmap, hw->offset, hw->mask);
-> +		if (ret)
-> +			goto disable_clk;
-> +
-> +		if (hw->flags & IMX_BLK_CTL_PD_RESET) {
-> +			ret = regmap_clear_bits(regmap, hw->rst_offset, hw->rst_mask);
-> +			if (ret)
-> +				goto disable_clk;
-> +		}
-> +	} else {
-> +		ret = imx_blk_ctl_enable_hsk(blk_ctl->dev);
-
-Why would we need to enable the handshake again in the power DOWN path?
-The clock/reset bits should still be set from the power up. The power
-down should probably just be a no-op for the blk-ctl bus domains, to
-allow the proper ADB handshake in the PGC domain power-down.
-
-> +		if (ret)
-> +			dev_err(blk_ctl->dev, "Handshake failed when power off\n");
-> +	}
-> +
-> +disable_clk:
-> +	clk_bulk_disable_unprepare(blk_ctl->num_clks, blk_ctl->clks);
-> +
-> +	mutex_unlock(&blk_ctl->lock);
-> +
-> +	return ret;
-> +}
-> +
-> +static int imx_blk_ctl_probe(struct platform_device *pdev)
-> +{
-> +	struct imx_blk_ctl_domain *domain = pdev->dev.platform_data;
-> +	struct imx_blk_ctl *blk_ctl = domain->blk_ctl;
-> +	struct generic_pm_domain *parent_genpd;
-> +	struct device *dev = &pdev->dev;
-> +	struct device *active_pd;
-> +	int ret;
-> +
-> +	pdev->dev.of_node = blk_ctl->dev->of_node;
-> +
-> +	if (domain->hw->active_pd_name) {
-> +		active_pd = dev_pm_domain_attach_by_name(dev, domain->hw->active_pd_name);
-> +		if (IS_ERR_OR_NULL(active_pd)) {
-> +			ret = PTR_ERR(active_pd) ? : -ENODATA;
-> +			pdev->dev.of_node = NULL;
-
-This is extremely ugly. I think we should not even have separate
-platform drivers for the blk-ctl domains, there is just no reason for
-it. See below for more comments in that direction.
- 
-> +			return ret;
-> +		}
-> +
-> +		domain->active_pd = active_pd;
-> +	} else {
-> +		if (!blk_ctl->bus_domain) {
-> +			pdev->dev.of_node = NULL;
-> +			return -EPROBE_DEFER;
-> +		}
-> +	}
-> +
-> +	if (domain->hw->active_pd_name)
-> +		parent_genpd = pd_to_genpd(active_pd->pm_domain);
-> +	else
-> +		parent_genpd = blk_ctl->bus_domain;
-> +
-> +	if (pm_genpd_add_subdomain(parent_genpd, &domain->genpd)) {
-> +		dev_warn(dev, "failed to add subdomain: %s\n", domain->genpd.name);
-
-I don't see where the dispmix_bus domain and clock is kept enabled. I
-would guess that the bus domain should be some kind of parent to the
-lcdif and mipi domains, as I don't think it would be okay to disable
-the bus clock, while any of the peripherals in the dispmix complex are
-still active. Am I missing something here?
-
-> +	} else {
-> +		mutex_lock(&blk_ctl->lock);
-> +		domain->hooked = true;
-> +		mutex_unlock(&blk_ctl->lock);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int imx_blk_ctl_remove(struct platform_device *pdev)
-> +{
-> +	struct imx_blk_ctl_domain *domain = pdev->dev.platform_data;
-> +	struct imx_blk_ctl *blk_ctl = domain->blk_ctl;
-> +	struct generic_pm_domain *parent_genpd;
-> +	struct device *active_pd;
-> +
-> +	if (domain->hw->active_pd_name)
-> +		parent_genpd = pd_to_genpd(active_pd->pm_domain);
-
-This has probably never been tested. active_pd is undefined at this
-point, so will most likely lead to a kernel crash.
-> +	else
-> +		parent_genpd = blk_ctl->bus_domain;
-> +
-> +	pm_genpd_remove_subdomain(parent_genpd, &domain->genpd);
-> +
-> +	mutex_lock(&blk_ctl->lock);
-> +	domain->hooked = false;
-> +	mutex_unlock(&blk_ctl->lock);
-> +
-> +	if (domain->hw->active_pd_name)
-> +		dev_pm_domain_detach(domain->active_pd, false);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct platform_device_id imx_blk_ctl_id[] = {
-> +	{ "imx-vpumix-blk-ctl", },
-> +	{ "imx-dispmix-blk-ctl", },
-> +	{ },
-> +};
-> +
-> +static struct platform_driver imx_blk_ctl_driver = {
-> +	.driver = {
-> +		.name = "imx-blk-ctl",
-> +	},
-> +	.probe    = imx_blk_ctl_probe,
-> +	.remove   = imx_blk_ctl_remove,
-> +	.id_table = imx_blk_ctl_id,
-> +};
-> +builtin_platform_driver(imx_blk_ctl_driver)
-> +
-> +static struct generic_pm_domain *imx_blk_ctl_genpd_xlate(struct of_phandle_args *genpdspec,
-> +							 void *data)
-> +{
-> +	struct genpd_onecell_data *genpd_data = data;
-> +	unsigned int idx = genpdspec->args[0];
-> +	struct imx_blk_ctl_domain *domain;
-> +	struct generic_pm_domain *genpd = ERR_PTR(-EPROBE_DEFER);
-> +
-> +	if (genpdspec->args_count != 1)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	if (idx >= genpd_data->num_domains)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	if (!genpd_data->domains[idx])
-> +		return ERR_PTR(-ENOENT);
-> +
-> +	domain = to_imx_blk_ctl_pd(genpd_data->domains[idx]);
-> +
-> +	mutex_lock(&domain->blk_ctl->lock);
-> +	if (domain->hooked)
-> +		genpd = genpd_data->domains[idx];
-> +	mutex_unlock(&domain->blk_ctl->lock);
-> +
-> +	return genpd;
-> +}
-> +
-> +int imx_blk_ctl_register(struct device *dev)
-> +{
-> +	struct imx_blk_ctl *blk_ctl = dev_get_drvdata(dev);
-> +	const struct imx_blk_ctl_dev_data *dev_data = blk_ctl->dev_data;
-> +	int num = dev_data->pds_num;
-> +	struct imx_blk_ctl_domain *domain;
-> +	struct generic_pm_domain *genpd;
-> +	struct platform_device *pd_pdev;
-> +	int domain_index;
-> +	int i, ret;
-> +
-> +	blk_ctl->onecell_data.num_domains = num;
-> +	blk_ctl->onecell_data.xlate = imx_blk_ctl_genpd_xlate;
-> +	blk_ctl->onecell_data.domains = devm_kcalloc(dev, num, sizeof(struct generic_pm_domain *),
-> +						     GFP_KERNEL);
-> +	if (!blk_ctl->onecell_data.domains)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < num; i++) {
-> +		domain_index = dev_data->pds[i].id;
-> +		if (domain_index >= num) {
-> +			dev_warn(dev, "Domain index %d is out of bounds\n", domain_index);
-> +			continue;
-> +		}
-> +
-> +		domain = devm_kzalloc(dev, sizeof(struct imx_blk_ctl_domain), GFP_KERNEL);
-> +		if (!domain)
-> +			goto error;
-> +
-> +		pd_pdev = platform_device_alloc(dev_data->name, domain_index);
-> +		if (!pd_pdev) {
-> +			dev_err(dev, "Failed to allocate platform device\n");
-> +			goto error;
-> +		}
-
-We don't need a full blow platform device and a driver for the
-individual domains. The only point where we need the device is to
-attach the parent PGC power domains and for this we only need a
-device. 
-
-So we could either have a dummy device for this usage in the domain or
-we could even reuse the device in the genpd, which is initialized in
-pm_genpd_init.
-
-Now while I think about it... genpd_dev_pm_attach_by_name already
-allocates the virtual dummy device. I don't think we need to do
-anything here on our own. Just get rid of the platform device and
-driver.
-
-> +
-> +		pd_pdev->dev.platform_data = domain;
-> +
-> +		domain->blk_ctl = blk_ctl;
-> +		domain->hw = &dev_data->pds[i];
-> +		domain->id = domain_index;
-> +		domain->genpd.name = dev_data->pds[i].name;
-> +		domain->genpd.power_off = imx_blk_ctl_power_off;
-> +		domain->genpd.power_on = imx_blk_ctl_power_on;
-> +		domain->dev = &pd_pdev->dev;
-> +		domain->hooked = false;
-> +
-> +		ret = pm_genpd_init(&domain->genpd, NULL, true);
-> +		pd_pdev->dev.parent = dev;
-> +
-> +		if (domain->hw->flags & IMX_BLK_CTL_PD_HANDSHAKE)
-> +			blk_ctl->bus_domain = &domain->genpd;
-> +
-> +		ret = platform_device_add(pd_pdev);
-> +		if (ret) {
-> +			platform_device_put(pd_pdev);
-> +			goto error;
-> +		}
-
-There is really no need for the complexity with the hooked property
-(the mutex around the read/write access still doesn't make it properly
-thread safe) and the blk-ctl domain probe/remove calls. Just handle
-everything within this loop. This would make the driver a whole lot
-more easy to follow.
-
-> +		blk_ctl->onecell_data.domains[i] = &domain->genpd;
-> +	}
-> +
-> +	return of_genpd_add_provider_onecell(dev->of_node, &blk_ctl->onecell_data);
-> +
-> +error:
-> +	for (; i >= 0; i--) {
-> +		genpd = blk_ctl->onecell_data.domains[i];
-> +		if (!genpd)
-> +			continue;
-> +		domain = to_imx_blk_ctl_pd(genpd);
-> +		if (domain->dev)
-> +			platform_device_put(to_platform_device(domain->dev));
-> +	}
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(imx_blk_ctl_register);
-> +
-> +const struct dev_pm_ops imx_blk_ctl_pm_ops = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
-> +};
-> +EXPORT_SYMBOL_GPL(imx_blk_ctl_pm_ops);
-
-This code is linked into the same module as the platform driver using
-it. So there is no need to export those symbols and expose them to the
-whole kernel.
-
-> diff --git a/drivers/soc/imx/blk-ctl.h b/drivers/soc/imx/blk-ctl.h
-> new file mode 100644
-> index 000000000000..6780d00ec8c5
-> --- /dev/null
-> +++ b/drivers/soc/imx/blk-ctl.h
-> @@ -0,0 +1,85 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __SOC_IMX_BLK_CTL_H
-> +#define __SOC_IMX_BLK_CTL_H
-> +
-> +enum imx_blk_ctl_pd_type {
-> +	BLK_CTL_PD,
-> +};
-> +
-> +struct imx_blk_ctl_hw {
-> +	int type;
-
-Initialized, but unused.
-
-> +	char *name;
-> +	char *active_pd_name;
-> +	u32 offset;
-> +	u32 mask;
-
-offset and mask are way too generic names. I had to spend some time
-reading the driver to find out that those are the clock enable bits.
-This should be clear from the naming.
-
-> +	u32 flags; 
-> +	u32 id;
-> +	u32 rst_offset;
-> +	u32 rst_mask;
-> +	u32 errata;
-
-Unused.
-
-> +};
-> +
-> +struct imx_blk_ctl_domain {
-> +	struct generic_pm_domain genpd;
-> +	struct device *active_pd;
-> +	struct imx_blk_ctl *blk_ctl;
-> +	struct imx_blk_ctl_hw *hw;
-> +	struct device *dev;
-> +	bool hooked;
-> +	u32 id;
-
-There are already a lot of pointers between the different structures.
-Why do we need those id properties? You should be able to get to all
-needed information by chasing pointers, instead of  indexing into
-arrays. Really the only point where a id->domain mapping is done should
-be the xlate function.
-
-> +};
-> +
-> +struct imx_blk_ctl_dev_data {
-> +	struct regmap_config config;
-> +	struct imx_blk_ctl_hw *pds;
-> +	struct imx_blk_ctl_hw *hw_hsk;
-> +	u32 pds_num;
-> +	u32 max_num;
-> +	char *name;
-> +};
-> +
-> +struct imx_blk_ctl {
-> +	struct device *dev;
-> +	struct regmap *regmap;
-> +	struct genpd_onecell_data onecell_data;
-> +	const struct imx_blk_ctl_dev_data *dev_data;
-> +	struct clk_bulk_data *clks;
-> +	u32 num_clks;
-> +	struct generic_pm_domain *bus_domain;
-
-There should be nothing special about the bus domain at all. Right now
-this permeates through the whole driver that the bus domain is somehow
-special. It should just be a parent domain of the other domains, or
-kept alive via some other appropriate means.
-
-> +
-> +	struct mutex lock;
-
-This mutex is only used in the common blk-ctl code, but is initialized
-in imx8mm_blk_ctrl_probe. This seems very inconsistent. I would have
-expected this mutex to be initialized in imx_blk_ctl_register. However,
-once you get rid of the hooked and bus domain magic, this mutex may as
-well be per-domain, at which point I think you don't even need the
-mutex, as the genpd locking should be enough then.
-
-> +};
-> +
-> +#define IMX_BLK_CTL(_type, _name, _active_pd, _id, _offset, _mask, _rst_offset, _rst_mask,	\
-> +		    _flags, _errata)								\
-> +	{											\
-> +		.type = _type,									\
-> +		.name = _name,									\
-> +		.active_pd_name = _active_pd,							\
-> +		.id = _id,									\
-> +		.offset = _offset,								\
-> +		.mask = _mask,									\
-> +		.flags = _flags,								\
-> +		.rst_offset = _rst_offset,							\
-> +		.rst_mask = _rst_mask,								\
-> +		.errata = _errata,								\
-> +	}
-> +
-> +#define IMX_BLK_CTL_PD(_name, _active_pd, _id, _offset, _mask, _rst_offset, _rst_mask, _flags)	\
-> +	IMX_BLK_CTL(BLK_CTL_PD, _name, _active_pd, _id, _offset, _mask, _rst_offset,		\
-> +		    _rst_mask, _flags, 0)
-> +
-> +#define IMX_BLK_CTL_PD_ERRATA(_name, _active_pd, _id, _offset, _mask, _rst_offset, _rst_mask,	\
-> +			      _flags, _errata)							\
-> +	IMX_BLK_CTL(BLK_CTL_PD, _name, _active_pd, _id, _offset, _mask, _rst_offset,		\
-> +		    _rst_mask, _flags, _errata)
-> +
-> +int imx_blk_ctl_register(struct device *dev);
-> +
-> +#define IMX_BLK_CTL_PD_HANDSHAKE	BIT(0)
-> +#define IMX_BLK_CTL_PD_RESET		BIT(1)
-> +#define IMX_BLK_CTL_PD_BUS		BIT(2)
-> +
-> +const extern struct dev_pm_ops imx_blk_ctl_pm_ops;
-> +
-> +#endif
-
 
