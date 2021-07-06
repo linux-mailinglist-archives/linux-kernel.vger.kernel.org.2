@@ -2,196 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04ED43BDEA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 22:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB41B3BDEAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 22:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbhGFVCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 17:02:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
+        id S230189AbhGFVCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 17:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbhGFVCA (ORCPT
+        with ESMTP id S229781AbhGFVCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 17:02:00 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E9DC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 13:59:20 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id x3so4274806pll.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 13:59:20 -0700 (PDT)
+        Tue, 6 Jul 2021 17:02:19 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8824AC061574;
+        Tue,  6 Jul 2021 13:59:40 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id i94so529329wri.4;
+        Tue, 06 Jul 2021 13:59:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0PBoIcqbc65Ea7VP0qFC6aAUDYW+WwmHWgilnraPFf8=;
-        b=bag2+61IEn5zv40WALO9seg3t+Bh91fFOJVgNqS2ojhXIWZao47sLkLmcRAjniRsnY
-         GUa7BZqHypqGUwZrDw0RlN3eLhqykQfy0ktv6tC2tZ2W6KiwCc2GzVmiMrtiowk7NkDn
-         Vl5Lz7Rujnw5Q0p2jLBH8nl+KL/9N/j0ejdI3ZcVZLNbQ7Jp01dMF24pordORzYJrYU9
-         lvXbVbKpGmZxYMPJS/hxQ+05ehQt5LvofS/r56y/wOhNMqSUFoWJyvuoCwZp3CsNck7z
-         dDCx3jBv3Zm1+LaSkNQ3VKzlLj/gPei5L01ZhhgBWXlw6ETiw671j8JDDIEt2yyiez85
-         5cFQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3h/6CdNDLiatwRf8U9GgK4AELHJbmk24hBENxY/7j7E=;
+        b=UH36vNJusLOCUOUwMAuunT0VngPTD7q/CvY7dPiGEu4wV671ahgXwVcsuR3AVeIgwW
+         O5ZY/h8IP0esQUob5EjhGQDkiDAe0xMCC5h7xvwSEgQdRfXc/gy4BtcGWVDHdQrUi0w3
+         nH5S94v7jjNpKY2zQuvzrcfVfJ6lCQzhcIm/5z1g6Uj+Sb1q/CQkHJYVI7V3qvDnitew
+         DuWXo2veftgK0nXtYi68G+DQh6ZLDcJSciobgEAj9cLQ5gJr0ZNpoop4QASVCQTlWLBp
+         wpl0ybs0GxdMJJLLPPbElGscDhPGC/LIxcVY5YIeSyPOExOuD2XRjJjxmsuQPRG4n/DU
+         1goQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=0PBoIcqbc65Ea7VP0qFC6aAUDYW+WwmHWgilnraPFf8=;
-        b=NlPDxtN6GV2ZlaMQFdB6FwD+6QeGt5iKAmWIh6mzkULKV9TtK9cC6b0R7cArqxWND9
-         CK3IsBKf5zwH7ptuyHIwwA/gbXSEaUY6iIPBxIggJQ6M8eBDY7TygvE7urcSsxacb2PC
-         X2+tmf8UVyTdXhXniiwx272YJxFmuxJt3c86r6qUk7kKcEEtU757JnJ0jw3csVTR1VIN
-         YNDrQhGcSfh1+QzykgV62N/QjO+zd9zM1AfR10/+4BDwMiu0Mf71dP6HJSk3z1E44yOk
-         u3qhGoDjKaPMxKZwW0dZK85RXelUt3gMVY60xh8JaEORSf3xZABE1R5+bcsQyHAgHmrI
-         vDmA==
-X-Gm-Message-State: AOAM532XD2n7dGQ1vFQGc/wtRzW0y40ZRh7uursi41S9S92VOwen3ef+
-        VbkcN2Ik08o02FA7ZYhMdEKePA==
-X-Google-Smtp-Source: ABdhPJzzExInJYeXPhXIYEiGqFxMLYlqTWxOzHBELFSbWOSs+Pnp5HP64Icyydt2eV1nPtBl/uv8fg==
-X-Received: by 2002:a17:90a:8417:: with SMTP id j23mr17733738pjn.168.1625605160144;
-        Tue, 06 Jul 2021 13:59:20 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id g17sm20738691pgh.61.2021.07.06.13.59.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3h/6CdNDLiatwRf8U9GgK4AELHJbmk24hBENxY/7j7E=;
+        b=hH0HtnaZsks6uMXwaWdnSG9ul/kOXQmX6KHVM62BW4U9LrWDv8P+et18UxO+Zebj2j
+         U/HFk9aPCCa85f0xVkS/MOKjKjnfIEa20RPWizjEqBDPqi95LvyW/jiy7nTTyygIhLgv
+         uVxTVDRVyz3vSd+CynXxTvlg74EaTVMgiyWguN9O7ChLl2mRBSUuWs3JdTkeDMYmGuOI
+         1djmgTQMGfSvOyYpy0t9YzV+Lt2MHpRQ8oKQrHebTPfP3RG6Szhuu1pyKeKBFMTJvbtF
+         t30er1jyMEkZMUAShpf4ZiYRG5l1d0rDD1v2EtRVdA6GId1Urn8+Kdzq0FcKJcIaHe+o
+         GPCg==
+X-Gm-Message-State: AOAM531GoEmIdOwR9xI5ETtizq5XnrDDbxHXoohg5dXbrYEtJfSC+Om5
+        kX4Joi1hfnfDblmAwbKD5/s=
+X-Google-Smtp-Source: ABdhPJyd0hCpYCFEGL2lgKo/Ar2zGNSYdm0NWjrV/EQfjjtLmHlBp45grUwOhTOWAoKQ5OOuAVRo/Q==
+X-Received: by 2002:adf:e605:: with SMTP id p5mr24541624wrm.396.1625605179250;
+        Tue, 06 Jul 2021 13:59:39 -0700 (PDT)
+Received: from masalkhi.fritz.box (dslb-178-005-073-162.178.005.pools.vodafone-ip.de. [178.5.73.162])
+        by smtp.gmail.com with ESMTPSA id o17sm3944676wmh.19.2021.07.06.13.59.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 13:59:19 -0700 (PDT)
-Date:   Tue, 06 Jul 2021 13:59:19 -0700 (PDT)
-X-Google-Original-Date: Tue, 06 Jul 2021 13:59:17 PDT (-0700)
-Subject:     Re: [PATCH v7 0/8] RISC-V CPU Idle Support
-In-Reply-To: <CAAhSdy00KAqg37PCAGwNXt_2HTpxGY68yTPNHDEbrSwdiLa2jw@mail.gmail.com>
-CC:     Anup Patel <Anup.Patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, daniel.lezcano@linaro.org,
-        ulf.hansson@linaro.org, rjw@rjwysocki.net, pavel@ucw.cz,
-        robh+dt@kernel.org, milun.tripathy@gmail.com,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        liush@allwinnertech.com, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     anup@brainfault.org
-Message-ID: <mhng-baa27714-d293-409b-9c07-6b2d1043bfad@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Tue, 06 Jul 2021 13:59:38 -0700 (PDT)
+From:   Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
+To:     arnd@arndb.de
+Cc:     hch@infradead.org, axboe@kernel.dk, bernie@develer.com,
+        linux-parisc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dan.carpenter@oracle.com
+Subject: Re: div_u64/do_div stack size usage, was Re: [v3] block: Removed a warning while compiling with a cross compiler for parisc
+Date:   Tue,  6 Jul 2021 22:59:27 +0200
+Message-Id: <20210706205927.4407-1-abd.masalkhi@gmail.com>
+X-Mailer: git-send-email 2.29.0.rc1.dirty
+In-Reply-To: <CAK8P3a2mAQOnTxBhVzVA8q8O-uVrdidCN5h5-T2dc0=Wet2uPQ@mail.gmail.com>
+References: <CAK8P3a2mAQOnTxBhVzVA8q8O-uVrdidCN5h5-T2dc0=Wet2uPQ@mail.gmail.com>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Jun 2021 21:49:11 PDT (-0700), anup@brainfault.org wrote:
-> Hi Palmer,
->
-> On Thu, Jun 10, 2021 at 10:52 AM Anup Patel <anup.patel@wdc.com> wrote:
->>
->> This series adds RISC-V CPU Idle support using SBI HSM suspend function.
->> The RISC-V SBI CPU idle driver added by this series is highly inspired
->> from the ARM PSCI CPU idle driver.
->>
->> At high-level, this series includes the following changes:
->> 1) Preparatory arch/riscv patches (Patches 1 to 3)
->> 2) Defines for RISC-V SBI HSM suspend (Patch 4)
->> 3) Preparatory patch to share code between RISC-V SBI CPU idle driver
->>    and ARM PSCI CPU idle driver (Patch 5)
->> 4) RISC-V SBI CPU idle driver and related DT bindings (Patches 6 to 7)
->>
->> These patches can be found in riscv_sbi_hsm_suspend_v7 branch at
->> https://github.com/avpatel/linux
->>
->> Special thanks Sandeep Tripathy for providing early feeback on SBI HSM
->> support in all above projects (RISC-V SBI specification, OpenSBI, and
->> Linux RISC-V).
->>
->> Changes since v6:
->>  - Fixed error reported by "make DT_CHECKER_FLAGS=-m dt_binding_check"
->>
->> Changes since v5:
->>  - Rebased on Linux-5.13-rc5
->>  - Removed unnecessary exports from PATCH5
->>  - Removed stray ";" from PATCH5
->>  - Moved sbi_cpuidle_pd_power_off() under "#ifdef CONFIG_DT_IDLE_GENPD"
->>    in PATCH6
->>
->> Changes since v4:
->>  - Rebased on Linux-5.13-rc2
->>  - Renamed all dt_idle_genpd functions to have "dt_idle_" prefix
->>  - Added MAINTAINERS file entry for dt_idle_genpd
->>
->> Changes since v3:
->>  - Rebased on Linux-5.13-rc2
->>  - Fixed __cpu_resume_enter() which was broken due to XIP kernel support
->>  - Removed "struct dt_idle_genpd_ops" abstraction which simplifies code
->>    sharing between ARM PSCI and RISC-V SBI drivers in PATCH5
->>
->> Changes since v2:
->>  - Rebased on Linux-5.12-rc3
->>  - Updated PATCH7 to add common DT bindings for both ARM and RISC-V
->>    idle states
->>  - Added "additionalProperties = false" for both idle-states node and
->>    child nodes in PATCH7
->>
->> Changes since v1:
->>  - Fixex minor typo in PATCH1
->>  - Use just "idle-states" as DT node name for CPU idle states
->>  - Added documentation for "cpu-idle-states" DT property in
->>    devicetree/bindings/riscv/cpus.yaml
->>  - Added documentation for "riscv,sbi-suspend-param" DT property in
->>    devicetree/bindings/riscv/idle-states.yaml
->>
->> Anup Patel (8):
->>   RISC-V: Enable CPU_IDLE drivers
->>   RISC-V: Rename relocate() and make it global
->>   RISC-V: Add arch functions for non-retentive suspend entry/exit
->>   RISC-V: Add SBI HSM suspend related defines
->>   cpuidle: Factor-out power domain related code from PSCI domain driver
->>   cpuidle: Add RISC-V SBI CPU idle driver
->>   dt-bindings: Add common bindings for ARM and RISC-V idle states
->>   RISC-V: Enable RISC-V SBI CPU Idle driver for QEMU virt machine
->
-> Can you please review this series ?
->
-> It would be nice to consider this series for Linux-5.14.
+I have compiled the kernel with a cross compiler hppa-linux-gnu- (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0 and the conficuration was the default, Build for generic-32bit "generic-32bit_defconfig"
 
-I'd assumed this one was part of the 0.3.0 freeze.
-
->
-> Regards,
-> Anup
->
->>
->>  .../bindings/arm/msm/qcom,idle-state.txt      |   2 +-
->>  .../devicetree/bindings/arm/psci.yaml         |   2 +-
->>  .../bindings/{arm => cpu}/idle-states.yaml    | 228 ++++++-
->>  .../devicetree/bindings/riscv/cpus.yaml       |   6 +
->>  MAINTAINERS                                   |  14 +
->>  arch/riscv/Kconfig                            |   7 +
->>  arch/riscv/Kconfig.socs                       |   3 +
->>  arch/riscv/configs/defconfig                  |  13 +-
->>  arch/riscv/configs/rv32_defconfig             |   6 +-
->>  arch/riscv/include/asm/asm.h                  |  17 +
->>  arch/riscv/include/asm/cpuidle.h              |  24 +
->>  arch/riscv/include/asm/sbi.h                  |  27 +-
->>  arch/riscv/include/asm/suspend.h              |  35 +
->>  arch/riscv/kernel/Makefile                    |   2 +
->>  arch/riscv/kernel/asm-offsets.c               |   3 +
->>  arch/riscv/kernel/cpu_ops_sbi.c               |   2 +-
->>  arch/riscv/kernel/head.S                      |  18 +-
->>  arch/riscv/kernel/process.c                   |   3 +-
->>  arch/riscv/kernel/suspend.c                   |  86 +++
->>  arch/riscv/kernel/suspend_entry.S             | 123 ++++
->>  drivers/cpuidle/Kconfig                       |   9 +
->>  drivers/cpuidle/Kconfig.arm                   |   1 +
->>  drivers/cpuidle/Kconfig.riscv                 |  15 +
->>  drivers/cpuidle/Makefile                      |   5 +
->>  drivers/cpuidle/cpuidle-psci-domain.c         | 138 +---
->>  drivers/cpuidle/cpuidle-psci.h                |  15 +-
->>  drivers/cpuidle/cpuidle-sbi.c                 | 626 ++++++++++++++++++
->>  drivers/cpuidle/dt_idle_genpd.c               | 177 +++++
->>  drivers/cpuidle/dt_idle_genpd.h               |  50 ++
->>  29 files changed, 1472 insertions(+), 185 deletions(-)
->>  rename Documentation/devicetree/bindings/{arm => cpu}/idle-states.yaml (74%)
->>  create mode 100644 arch/riscv/include/asm/cpuidle.h
->>  create mode 100644 arch/riscv/include/asm/suspend.h
->>  create mode 100644 arch/riscv/kernel/suspend.c
->>  create mode 100644 arch/riscv/kernel/suspend_entry.S
->>  create mode 100644 drivers/cpuidle/Kconfig.riscv
->>  create mode 100644 drivers/cpuidle/cpuidle-sbi.c
->>  create mode 100644 drivers/cpuidle/dt_idle_genpd.c
->>  create mode 100644 drivers/cpuidle/dt_idle_genpd.h
->>
->> --
->> 2.25.1
->>
+Abd-Arhman
