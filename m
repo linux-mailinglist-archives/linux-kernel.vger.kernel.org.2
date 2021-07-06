@@ -2,123 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B373BD5FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29CAE3BD577
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242237AbhGFM0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245171AbhGFMMa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 08:12:30 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B781DC061762;
-        Tue,  6 Jul 2021 05:00:26 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id h1-20020a17090a3d01b0290172d33bb8bcso1373648pjc.0;
-        Tue, 06 Jul 2021 05:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vrJqpbX+WWnMqAWnWXX6YjNds91UcrnpbpdIVx8fXWI=;
-        b=ccoO4qSCaNLuC6Ruooedshrw/mmQ/wzbQbvFchhCRtKnlNncae0TDfWSjBMdaSoJh6
-         7O2nS7DskIYbvnRwlDgLPpmEhSXlr3XWUeHmnERD95qLqndGyXAa+Z84gmpmusJ/fPMS
-         ZGUDiCWo91YVbc1jSBptfohZnZArDIB8GlWMGs9QuEsUPzHlekA0zQKD8LCqxa78+Vne
-         UopKgOJ3lh/6jmGv3jR/zKiYMz1VmM1EWjTvyMkSFiMPmqwpivQy9LLCWpoz9tQQT25x
-         w90VIMGSfYO/4l53g8e+CdFthM1nSzNIzxA5vNh4+gdQDxL3CNh3VVTynBlsysE5JU+t
-         4siw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vrJqpbX+WWnMqAWnWXX6YjNds91UcrnpbpdIVx8fXWI=;
-        b=RlEiCA3rVtTFUkeqPCXgoioz2RTOlyVlWoHFo6eQbQyHMTJPY+KXA4h/iOMJC/6Cxc
-         j5l1Mv1gNE7bFRYs76eUe8yE8EH3c6xelh3geX5GeHcjbreN394BIB6C4wovnEZ8z6XX
-         mm4M3lgIzg6mphdSuCAu6pWe5X/ZumDFhBiUCLQTokVQrELvf2X4W8YFXyjaFQMY5FNE
-         cuNyxt96dFTJEzihAyvuQc8S2m0ihT4U6PeDPsNd7uWNSOs0mEY89PRVeXJmUPi7jUi7
-         Tjb4nj0umKYX7zHAOO4SWivU0xzgHg7ifJto5xksbz9s8PmOGUlpTz2hAGNqFl42h0gw
-         cI6w==
-X-Gm-Message-State: AOAM533va3o8e+JrzUG0Qd+d6oh+lVllL/9o5Hyks/hDd18+7xVrnOWq
-        8dN71xNuADQvRTmw+giq6cMoU0/fVU6ZVxe0
-X-Google-Smtp-Source: ABdhPJxzROSEFb31vpIuXWTOuM1UhmLn8mNFGLDCdL6iFim6982PAotoXnhyrxlvumxXYlTIuKhFeQ==
-X-Received: by 2002:a17:90b:1904:: with SMTP id mp4mr19774531pjb.29.1625572825663;
-        Tue, 06 Jul 2021 05:00:25 -0700 (PDT)
-Received: from [127.0.0.1] ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id w14sm20344583pgo.75.2021.07.06.05.00.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 05:00:25 -0700 (PDT)
-Subject: Re: [PATCH v3] block: fix the problem of io_ticks becoming smaller
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1625521646-1069-1-git-send-email-brookxu.cn@gmail.com>
- <YOPpM6et9rFNrBOn@infradead.org>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <38566226-a5d3-35c3-3e06-cdf7f3f71609@gmail.com>
-Date:   Tue, 6 Jul 2021 20:00:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233103AbhGFMWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:22:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:39928 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243070AbhGFMDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 08:03:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A9D411FB;
+        Tue,  6 Jul 2021 05:00:34 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.31.83])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B83D3F73B;
+        Tue,  6 Jul 2021 05:00:33 -0700 (PDT)
+Date:   Tue, 6 Jul 2021 13:00:30 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Anatoly Pugachev <matorola@gmail.com>,
+        Peter Zijlstra <peterz@lists.infradead.org>
+Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        debian-sparc <debian-sparc@lists.debian.org>
+Subject: Re: [sparc64] locking/atomic, kernel OOPS on running stress-ng
+Message-ID: <20210706120030.GB69200@C02TD0UTHF1T.local>
+References: <CADxRZqzcrnSMzy50T+kWb_mQVguWDCMu6RoXsCc+-fNDPYXbaw@mail.gmail.com>
+ <20210705195638.GA53988@C02TD0UTHF1T.local>
+ <20210706091104.GA69200@C02TD0UTHF1T.local>
+ <CADxRZqxNdYBAs1daPJTAPKGeJx30D+v7xz87K2sB_dXYKdTrVg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YOPpM6et9rFNrBOn@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADxRZqxNdYBAs1daPJTAPKGeJx30D+v7xz87K2sB_dXYKdTrVg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Christoph Hellwig wrote on 2021/7/6 13:25:
-> On Tue, Jul 06, 2021 at 05:47:26AM +0800, brookxu wrote:
->> From: Chunguang Xu <brookxu@tencent.com>
->>
->> On the IO submission path, blk_account_io_start() may interrupt
->> the system interruption. When the interruption returns, the value
->> of part->stamp may have been updated by other cores, so the time
->> value collected before the interruption may be less than part->
->> stamp. So when this happens, we should do nothing to make io_ticks
->> more accurate? For kernels less than 5.0, this may cause io_ticks
->> to become smaller, which in turn may cause abnormal ioutil values.
->>
->> v3: update the commit log
->> v2: sorry, fix compile error due to the missed ')'
->>
->> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+On Tue, Jul 06, 2021 at 02:51:06PM +0300, Anatoly Pugachev wrote:
+> On Tue, Jul 6, 2021 at 12:11 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> > Fixes: ff5b4f1ed580c59d ("locking/atomic: sparc: move to ARCH_ATOMIC")
+> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> > Reported-by: Anatoly Pugachev <matorola@gmail.com>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Peter Zijlstra <peterz@lists.infradead.org>
+> > ---
+> >  arch/sparc/include/asm/cmpxchg_64.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/sparc/include/asm/cmpxchg_64.h b/arch/sparc/include/asm/cmpxchg_64.h
+> > index 8c39a9981187..12d00a42c0a3 100644
+> > --- a/arch/sparc/include/asm/cmpxchg_64.h
+> > +++ b/arch/sparc/include/asm/cmpxchg_64.h
+> > @@ -201,7 +201,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
+> >  #define arch_cmpxchg64_local(ptr, o, n)                                        \
+> >    ({                                                                   \
+> >         BUILD_BUG_ON(sizeof(*(ptr)) != 8);                              \
+> > -       cmpxchg_local((ptr), (o), (n));                                 \
+> > +       arch_cmpxchg_local((ptr), (o), (n));                                    \
+> >    })
+> >  #define arch_cmpxchg64(ptr, o, n)      arch_cmpxchg64_local((ptr), (o), (n))
 > 
-> The change looks good:
 > 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> 
-> Although I still have trouble understanding the commit log, especially
-> the last sentence.
+> Mark, thanks, fixed...
+> tested on git kernel 5.13.0-11788-g79160a603bdb-dirty (dirty - cause
+> patch has been applied).
 
-Thanks for your time，5b18b5a73760 ("block: delete part_round_stats and
-switch to less precise counting") Merged in 5.0-rc1. Before that, we relied
-on in_flight to count the disk's io_ticks，as follows:
+Great! Thanks for confirming.
 
-static void part_round_stats_single(struct request_queue *q,
-				    struct hd_struct *part, unsigned long now,
-				    unsigned int inflight)
-{
-	if (inflight) {
-		__part_stat_add(part, time_in_queue,
-				inflight * (now - part->stamp));
-		__part_stat_add(part, io_ticks, (now - part->stamp));
-	}
-	part->stamp = now;
-}
+Peter, are you happy to pick that (full commit in last mail), or should
+I send a new copy?
 
-The value of io_ticks should increase monotonically before the count wraps
-around. However, due to the reasons mentioned above, the interrupt on the
-IO submission path may cause the time obtained before the interrupt to be
-less than part->stamp after the interrupt returns, resulting in the value
-of io_ticks becoming smaller than the previous value. If the user task
-periodically samples /proc/diskstats and calculates ioutil, since io_ticks
-increases non-monotonously, the difference between adjacent times may be
-negative, which in turn makes ioutil abnormal.Fortunately, this problem
-can be easily circumvented.
-
-
+Thanks,
+Mark.
