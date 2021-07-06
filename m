@@ -2,150 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DE73BD9EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A703BD9EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232545AbhGFPTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:19:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35878 "EHLO
+        id S232394AbhGFPTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 11:19:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32479 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232124AbhGFPTB (ORCPT
+        by vger.kernel.org with ESMTP id S232124AbhGFPTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:19:01 -0400
+        Tue, 6 Jul 2021 11:19:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625584582;
+        s=mimecast20190719; t=1625584632;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=71X87AHnd420IiBmxRAPwo5IaTjIGnXDVEPdKZi7cp0=;
-        b=ABp7Yhq2CMnAb5X9pobrW9+XYt4JGTHWouPLJOodn7qop3P2+Hra6OURX3LUNIeEvtZT9G
-        iYuSDHiCWKLLqTC2mdgDl4Gtzpkw+fY20wA0xBjusTeUBDgWAhIyF+97b7KSiLdRHDsXIx
-        tKFhGvHPFIBT0MGCROuo660C/bFvE28=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-hGMztoRqNJGkziWrZ70pxQ-1; Tue, 06 Jul 2021 11:16:19 -0400
-X-MC-Unique: hGMztoRqNJGkziWrZ70pxQ-1
-Received: by mail-wr1-f72.google.com with SMTP id t12-20020adff04c0000b029013253c3389dso2863235wro.7
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 08:16:19 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kcnccMysOp1L+/3Bdn/WYRvS1AGXRx1BBrpcB7l7eXU=;
+        b=PN9+kev+aU0SiwQKMoGeRatxVcCzRy2ofSEndswqxywg9cBxQMRSbNM+zgskhjLWlCXr5I
+        aw6E2rMlvK0r1ZVtnSauK7o/Q+qVS+fUQhjdNnYVAlnNtkp02sg1wPzqEusANMHzwIAtHw
+        lb8EiQdPE8VPXRajVcdWmTEgK0e+Txw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-380-kPPbErHROcaBz9Oqylk2IA-1; Tue, 06 Jul 2021 11:17:08 -0400
+X-MC-Unique: kPPbErHROcaBz9Oqylk2IA-1
+Received: by mail-wr1-f69.google.com with SMTP id k3-20020a5d52430000b0290138092aea94so495363wrc.20
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 08:17:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=71X87AHnd420IiBmxRAPwo5IaTjIGnXDVEPdKZi7cp0=;
-        b=nO/NHFjp28MjHkkTdxjQbnu5kFpmsyOqi4FfrSVGdJSAuRJIzWJBjAh7LuyVHR+911
-         2ePzmmspL/CQG3HI1DvDP/mjHj1hQxWA8n1OWa/wVzEaGDnLLNy6JDufLApHfpLb/xH+
-         31MdUj7ktifMqMkWI7EXBZsWYASXA6NNED9sWBzcx417Gsc4bjh50OQ5s8s2l6/inApT
-         fZmaBwIIJV27KCcs/WGzJy0CEd/j+2F6yq1POWUjAN35MqJnspOwkNT5IAwoP7qPXNt0
-         ikBbh4Q5kd3t/3YN0nAPlvg/keLK6EYqO5xlE5i4XY+4p1UidIlbsM7lT/y7Rc80+WDH
-         w6Dw==
-X-Gm-Message-State: AOAM531f3UTlpFZ3ILZXn1v/i7Uj7UmICwNU833AwdELtvEleTa4oybG
-        4bKZmfPCRt+SngL2pFX/IRYU2+eywPGs3m33KInKms9xwTuNu48kp+yIwh7L3n7vgp1Lmn7Tj24
-        rtiXgTuCS3aIIPB3+JkjocsEanYCEDoQ3TQ+5TtyUHweaxZ2Q3ygh0BF/IIiL/lMWM+RneZW6
-X-Received: by 2002:a5d:6d8d:: with SMTP id l13mr22173425wrs.358.1625584578413;
-        Tue, 06 Jul 2021 08:16:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxP2q9obcq0LO4UQaDXIQuHFm/CNB5B6GxvBQJVGiqU3pFDNi1cYBEl3Oz37XJl1vWGiG3waA==
-X-Received: by 2002:a5d:6d8d:: with SMTP id l13mr22173399wrs.358.1625584578220;
-        Tue, 06 Jul 2021 08:16:18 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id k6sm15971138wrx.41.2021.07.06.08.16.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 08:16:17 -0700 (PDT)
-Subject: Re: [PATCH] KVM: s390: Enable specification exception interpretation
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        "open list:KERNEL VIRTUAL MACHINE for s390 (KVM/s390)" 
-        <kvm@vger.kernel.org>,
-        "open list:S390" <linux-s390@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210706114714.3936825-1-scgl@linux.ibm.com>
- <87k0m3hd7h.fsf@redhat.com> <194128c1-8886-5b8b-2249-5ec58b8e7adb@de.ibm.com>
- <be78ce5d-92e4-36bd-aa28-e32db0342a44@redhat.com>
- <45690e80-5c7c-1e11-99d5-c0d1482755ad@de.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <c7d61761-3426-6e44-99a8-7aa9e1cad5b6@redhat.com>
-Date:   Tue, 6 Jul 2021 17:16:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kcnccMysOp1L+/3Bdn/WYRvS1AGXRx1BBrpcB7l7eXU=;
+        b=n8ahk2LVPU0xMMT7tziYxPq/M1jkmdX+FQlT6LWjdSCaalKbxbfpf+WMljpTzCLanA
+         an4oO0Wwx1qUFAAtCi6F2zrl5e03xBroF97dGVLnLxRXXtiKjwidBFNb+dgGwNV/Go7c
+         1DlGz/MqzFQoR2FY1Hz18/AjaJ/YZF4XWNmElUdkTD3bvK65BoWZna5rucXHgnAj4vjN
+         UN9OL0TtwMBo7ZQwSPwN+DFWhw9FafkPZP7bu3+koNU1OinMrri8bug2isJVvF5QSvJd
+         +La7qDcIEOWDEkl/5qNRN6pkyLwWhZ1EQeus9kxDy+jRNq8f+Yd28x8ci24M0Gj9zs48
+         qT2Q==
+X-Gm-Message-State: AOAM533zwtDgLCysTXlA4r1HUkNpuxUzWM+rIgj/iaWBpyiamYQb9ZQy
+        nqEpyoAz3pEhNkaVtvGl/6F8b7AHQl+8gO+YyzdXrSEPW9Fut9HCDI0+WSXo8Z7Pek34OanEBhG
+        xNUIHWToOYtrh68WY3AMt0QAj
+X-Received: by 2002:a5d:4812:: with SMTP id l18mr4641114wrq.68.1625584627317;
+        Tue, 06 Jul 2021 08:17:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwcrdaKcb6CHyKadW9nQ873wqxA27FWocGpKVUVstjhygzwG5+/BVlyQ2TNVSS7KzcvGTMS+A==
+X-Received: by 2002:a5d:4812:: with SMTP id l18mr4641093wrq.68.1625584627184;
+        Tue, 06 Jul 2021 08:17:07 -0700 (PDT)
+Received: from krava.redhat.com ([185.153.78.55])
+        by smtp.gmail.com with ESMTPSA id i11sm3548118wmg.18.2021.07.06.08.17.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 08:17:06 -0700 (PDT)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>, nakamura.shun@fujitsu.com,
+        linux-perf-users@vger.kernel.org
+Subject: [RFCv2 0/7] libperf: Add leader/group info to perf_evsel
+Date:   Tue,  6 Jul 2021 17:16:57 +0200
+Message-Id: <20210706151704.73662-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <45690e80-5c7c-1e11-99d5-c0d1482755ad@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.07.21 14:02, Christian Borntraeger wrote:
-> 
-> 
-> On 06.07.21 13:59, David Hildenbrand wrote:
->> On 06.07.21 13:56, Christian Borntraeger wrote:
->>>
->>>
->>> On 06.07.21 13:52, Cornelia Huck wrote:
->>>> On Tue, Jul 06 2021, Janis Schoetterl-Glausch <scgl@linux.ibm.com> wrote:
->>>>
->>>>> When this feature is enabled the hardware is free to interpret
->>>>> specification exceptions generated by the guest, instead of causing
->>>>> program interruption interceptions.
->>>>>
->>>>> This benefits (test) programs that generate a lot of specification
->>>>> exceptions (roughly 4x increase in exceptions/sec).
->>>>>
->>>>> Interceptions will occur as before if ICTL_PINT is set,
->>>>> i.e. if guest debug is enabled.
->>>>>
->>>>> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
->>>>> ---
->>>>> I'll additionally send kvm-unit-tests for testing this feature.
->>>>>
->>>>>     arch/s390/include/asm/kvm_host.h | 1 +
->>>>>     arch/s390/kvm/kvm-s390.c         | 2 ++
->>>>>     arch/s390/kvm/vsie.c             | 2 ++
->>>>>     3 files changed, 5 insertions(+)
->>>>
->>>> (...)
->>>>
->>>>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
->>>>> index b655a7d82bf0..aadd589a3755 100644
->>>>> --- a/arch/s390/kvm/kvm-s390.c
->>>>> +++ b/arch/s390/kvm/kvm-s390.c
->>>>> @@ -3200,6 +3200,8 @@ static int kvm_s390_vcpu_setup(struct kvm_vcpu *vcpu)
->>>>>             vcpu->arch.sie_block->ecb |= ECB_SRSI;
->>>>>         if (test_kvm_facility(vcpu->kvm, 73))
->>>>>             vcpu->arch.sie_block->ecb |= ECB_TE;
->>>>> +    if (!kvm_is_ucontrol(vcpu->kvm))
->>>>> +        vcpu->arch.sie_block->ecb |= ECB_SPECI;
->>>>
->>>> Does this exist for any hardware version (i.e. not guarded by a cpu
->>>> feature?)
->>>
->>> Not for all hardware versions, but also no indication. The architecture
->>> says that the HW is free to do this or not. (which makes the vsie code
->>> simpler).
->>
->> I remember the architecture said at some point to never set undefined bits - and this bit is undefined on older HW generations. I might be wrong, though.
-> 
-> I can confirm that this bit will be ignored on older machines. The notion of
-> never setting undefined bits comes from "you never know what this bit will
-> change in future machines". Now we know :-)
+hi,
+moving leader/group info to libperf's perf_evsel.
 
-Well, okay then :)
+This was asked for by Shunsuke [1] and is on my list
+as a prereq for event parsing move to libperf.
 
-So the plan for vSIE is to always keep it disabled? IIUC, one could 
-similarly always forward the bit of set.
+I still need to do more tests, but I'd like to check
+with you guys if there's any feedback on this first.
+
+Also available in:
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  libperf/groups
+
+v2 change:
+  - repost due to smtp failures, no changes
+
+thanks,
+jirka
 
 
--- 
-Thanks,
+[1] https://lore.kernel.org/linux-perf-users/OSBPR01MB46005B38568E90509946ECA9F7319@OSBPR01MB4600.jpnprd01.prod.outlook.com/
 
-David / dhildenb
+
+---
+Jiri Olsa (7):
+      libperf: Change tests to single static and shared binaries
+      libperf: Move idx to perf_evsel::idx
+      libperf: Move leader to perf_evsel::leader
+      libperf: Move nr_groups to evlist::nr_groups
+      libperf: Add perf_evlist__set_leader function
+      libperF: Add group support to perf_evsel__open
+      libperf: Add tests for perf_evlist__set_leader function
+
+ tools/lib/perf/Build                     |  2 ++
+ tools/lib/perf/Makefile                  | 30 +++++++++++++++++++++++++-----
+ tools/lib/perf/evlist.c                  | 22 ++++++++++++++++++++++
+ tools/lib/perf/evsel.c                   | 33 +++++++++++++++++++++++++++++----
+ tools/lib/perf/include/internal/evlist.h |  2 ++
+ tools/lib/perf/include/internal/evsel.h  |  5 ++++-
+ tools/lib/perf/include/internal/tests.h  |  4 ++--
+ tools/lib/perf/include/perf/evlist.h     |  1 +
+ tools/lib/perf/libperf.map               |  1 +
+ tools/lib/perf/tests/Build               |  5 +++++
+ tools/lib/perf/tests/Makefile            | 40 ----------------------------------------
+ tools/lib/perf/tests/main.c              | 15 +++++++++++++++
+ tools/lib/perf/tests/test-cpumap.c       |  3 ++-
+ tools/lib/perf/tests/test-evlist.c       | 30 +++++++++++++++++++++++-------
+ tools/lib/perf/tests/test-evsel.c        |  3 ++-
+ tools/lib/perf/tests/test-threadmap.c    |  3 ++-
+ tools/lib/perf/tests/tests.h             | 10 ++++++++++
+ tools/perf/arch/x86/util/iostat.c        |  4 ++--
+ tools/perf/builtin-diff.c                |  4 ++--
+ tools/perf/builtin-record.c              |  4 ++--
+ tools/perf/builtin-report.c              |  8 ++++----
+ tools/perf/builtin-script.c              |  9 +++++----
+ tools/perf/builtin-stat.c                | 12 ++++++------
+ tools/perf/builtin-top.c                 | 10 +++++-----
+ tools/perf/tests/bpf.c                   |  2 +-
+ tools/perf/tests/evsel-roundtrip-name.c  |  6 +++---
+ tools/perf/tests/mmap-basic.c            |  8 ++++----
+ tools/perf/tests/parse-events.c          | 74 +++++++++++++++++++++++++++++++++++++-------------------------------------
+ tools/perf/tests/pfm.c                   |  4 ++--
+ tools/perf/ui/browsers/annotate.c        |  2 +-
+ tools/perf/util/annotate.c               |  8 ++++----
+ tools/perf/util/auxtrace.c               | 12 ++++++------
+ tools/perf/util/cgroup.c                 |  2 +-
+ tools/perf/util/evlist.c                 | 44 +++++++++++++-------------------------------
+ tools/perf/util/evlist.h                 |  2 --
+ tools/perf/util/evsel.c                  | 32 +++++++++++++++++++++++++-------
+ tools/perf/util/evsel.h                  | 14 ++++++++------
+ tools/perf/util/header.c                 | 18 +++++++++---------
+ tools/perf/util/metricgroup.c            | 22 +++++++++++-----------
+ tools/perf/util/parse-events.c           |  8 ++++----
+ tools/perf/util/pfm.c                    |  2 +-
+ tools/perf/util/python.c                 |  2 +-
+ tools/perf/util/record.c                 |  6 +++---
+ tools/perf/util/stat-shadow.c            |  2 +-
+ tools/perf/util/stat.c                   |  2 +-
+ tools/perf/util/stream.c                 |  2 +-
+ 46 files changed, 310 insertions(+), 224 deletions(-)
+ create mode 100644 tools/lib/perf/tests/Build
+ delete mode 100644 tools/lib/perf/tests/Makefile
+ create mode 100644 tools/lib/perf/tests/main.c
+ create mode 100644 tools/lib/perf/tests/tests.h
 
