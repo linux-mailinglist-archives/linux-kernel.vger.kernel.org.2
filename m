@@ -2,73 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C733BC8BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735693BC8E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbhGFJ7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 05:59:20 -0400
-Received: from outbound-smtp08.blacknight.com ([46.22.139.13]:43235 "EHLO
-        outbound-smtp08.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231181AbhGFJ7U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 05:59:20 -0400
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp08.blacknight.com (Postfix) with ESMTPS id F0F321C34FD
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 10:56:40 +0100 (IST)
-Received: (qmail 25785 invoked from network); 6 Jul 2021 09:56:40 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Jul 2021 09:56:40 -0000
-Date:   Tue, 6 Jul 2021 10:56:39 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Qiang.Zhang@windriver.com
-Subject: Re: [PATCH V2] mm: add GFP_ATOMIC flag after local_lock_irqsave
-Message-ID: <20210706095639.GS3840@techsingularity.net>
-References: <1625563471-3873-1-git-send-email-wangqing@vivo.com>
+        id S231244AbhGFKDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 06:03:39 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:37218 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231181AbhGFKDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 06:03:37 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GJyk209BMzBBw2;
+        Tue,  6 Jul 2021 12:00:58 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id qHKQQz_Am4dH; Tue,  6 Jul 2021 12:00:57 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GJyk16G08zBBv0;
+        Tue,  6 Jul 2021 12:00:57 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 76A2E8B79C;
+        Tue,  6 Jul 2021 12:00:56 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id JB5RtjTJp_qu; Tue,  6 Jul 2021 12:00:56 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 48C198B794;
+        Tue,  6 Jul 2021 12:00:51 +0200 (CEST)
+Subject: Re: [PATCH 4/4] bpf powerpc: Add addr > TASK_SIZE_MAX explicit check
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        naveen.n.rao@linux.ibm.com, mpe@ellerman.id.au, ast@kernel.org,
+        daniel@iogearbox.net
+Cc:     songliubraving@fb.com, netdev@vger.kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, kpsingh@kernel.org,
+        paulus@samba.org, sandipan@linux.ibm.com, yhs@fb.com,
+        bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kafai@fb.com,
+        linux-kernel@vger.kernel.org
+References: <20210706073211.349889-1-ravi.bangoria@linux.ibm.com>
+ <20210706073211.349889-5-ravi.bangoria@linux.ibm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <74f55f12-c7da-a06d-c3a5-6869b907e3f6@csgroup.eu>
+Date:   Tue, 6 Jul 2021 12:00:50 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <1625563471-3873-1-git-send-email-wangqing@vivo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210706073211.349889-5-ravi.bangoria@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 05:24:31PM +0800, Wang Qing wrote:
-> prep_new_page() will allocate memory in some scenarios. 
-> 
-> Call Trace:
-> __dump_stack lib/dump_stack.c:79 [inline]
-> dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
-> ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
-> prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
-> __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
-> alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
-> stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
-> save_stack+0x15e/0x1e0 mm/page_owner.c:120
-> __set_page_owner+0x50/0x290 mm/page_owner.c:181
-> prep_new_page mm/page_alloc.c:2445 [inline]
-> __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
-> 
-> So we add GFP_ATOMIC and remove GFP_KERNEL flag.
-> 
-> Reported-and-tested-by: syzbot+b07d8440edb5f8988eea@syzkaller.appspotmail.com
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-This will pass in the wrong flags to kasan potentially and the wrong GFP
-mask will be stored in page_owner->gfp_mask. If you think this is the
-best approach, the flags should be set to GFP_ATOMIC at the places page
-owner allocates memory (stack_depot_save?). The caveat there is that
-page owner tracking may be impaired if the atomic allocations fail. That
-brings us back to either disabling the bulk allocator if page owner
-tracking is enabled or doing the enabling/disabling only when page owner
-tracking is enabled and goto the point where pagesets.lock is taken and
-PCP looked up with a comment stating that it incurs a performance
-penalty that is acceptable when page owner tracking is on.
 
--- 
-Mel Gorman
-SUSE Labs
+Le 06/07/2021 à 09:32, Ravi Bangoria a écrit :
+> On PowerPC with KUAP enabled, any kernel code which wants to
+> access userspace needs to be surrounded by disable-enable KUAP.
+> But that is not happening for BPF_PROBE_MEM load instruction.
+> So, when BPF program tries to access invalid userspace address,
+> page-fault handler considers it as bad KUAP fault:
+> 
+>    Kernel attempted to read user page (d0000000) - exploit attempt? (uid: 0)
+> 
+> Considering the fact that PTR_TO_BTF_ID (which uses BPF_PROBE_MEM
+> mode) could either be a valid kernel pointer or NULL but should
+> never be a pointer to userspace address, execute BPF_PROBE_MEM load
+> only if addr > TASK_SIZE_MAX, otherwise set dst_reg=0 and move on.
+> 
+> This will catch NULL, valid or invalid userspace pointers. Only bad
+> kernel pointer will be handled by BPF exception table.
+> 
+> [Alexei suggested for x86]
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+> ---
+>   arch/powerpc/net/bpf_jit_comp64.c | 38 +++++++++++++++++++++++++++++++
+>   1 file changed, 38 insertions(+)
+> 
+> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> index 1884c6dca89a..46becae76210 100644
+> --- a/arch/powerpc/net/bpf_jit_comp64.c
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> @@ -753,6 +753,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>   		/* dst = *(u8 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_B:
+>   		case BPF_LDX | BPF_PROBE_MEM | BPF_B:
+> +			if (BPF_MODE(code) == BPF_PROBE_MEM) {
+> +				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
+> +				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
+> +				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
+> +				PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
+> +				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
+
+Prefered way to clear a register is to do 'li reg, 0'
+
+> +				PPC_JMP((ctx->idx + 2) * 4);
+> +			}
+>   			EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
+>   			if (insn_is_zext(&insn[i + 1]))
+>   				addrs[++i] = ctx->idx * 4;
+> @@ -763,6 +771,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>   		/* dst = *(u16 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_H:
+>   		case BPF_LDX | BPF_PROBE_MEM | BPF_H:
+> +			if (BPF_MODE(code) == BPF_PROBE_MEM) {
+> +				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
+> +				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
+> +				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
+> +				PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
+> +				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
+> +				PPC_JMP((ctx->idx + 2) * 4);
+> +			}
+
+That code seems strictly identical to the previous one and the next one.
+Can you refactor in a function ?
+
+>   			EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
+>   			if (insn_is_zext(&insn[i + 1]))
+>   				addrs[++i] = ctx->idx * 4;
+> @@ -773,6 +789,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>   		/* dst = *(u32 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_W:
+>   		case BPF_LDX | BPF_PROBE_MEM | BPF_W:
+> +			if (BPF_MODE(code) == BPF_PROBE_MEM) {
+> +				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
+> +				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
+> +				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
+> +				PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
+> +				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
+> +				PPC_JMP((ctx->idx + 2) * 4);
+> +			}
+>   			EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
+>   			if (insn_is_zext(&insn[i + 1]))
+>   				addrs[++i] = ctx->idx * 4;
+> @@ -783,6 +807,20 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>   		/* dst = *(u64 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_DW:
+>   		case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
+> +			if (BPF_MODE(code) == BPF_PROBE_MEM) {
+> +				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
+> +				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
+> +				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
+> +				if (off % 4)
+
+That test is worth a comment.
+
+And I'd prefer
+
+	if (off & 3) {
+		PPC_BCC(COND_GT, (ctx->idx + 5) * 4);
+		EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
+		PPC_JMP((ctx->idx + 3) * 4);
+	} else {
+		PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
+		EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
+		PPC_JMP((ctx->idx + 2) * 4);
+	}
+
+> +					PPC_BCC(COND_GT, (ctx->idx + 5) * 4);
+> +				else
+> +					PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
+> +				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
+
+Use PPC_RAW_LI(dst_reg, 0);
+
+> +				if (off % 4)
+> +					PPC_JMP((ctx->idx + 3) * 4);
+> +				else
+> +					PPC_JMP((ctx->idx + 2) * 4);
+> +			}
+>   			PPC_BPF_LL(dst_reg, src_reg, off);
+>   			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
+>   			if (ret)
+> 
