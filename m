@@ -2,94 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDB43BDF7A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 00:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10B33BDF80
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 00:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhGFWrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 18:47:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbhGFWrj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 18:47:39 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DECC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 15:44:59 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id a6so710173ioe.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 15:44:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oy/NbPha7b/BONvLyNa1xrM1PBZ2k6dYZjtt+utPBZM=;
-        b=JGZ9ksaddAO9fnE5nnkcHxs0/dp1klhlPuH1Z2t+KM6YWDmKADig6x30c7IQzPtH3m
-         dIBO2bH+abJaIRrvH+GOZOkhZnf7i9HW4a8UWvXl6PT3VGzisPOBiVhgWhAqtmWlkknv
-         b06XfGCsqM9pV8PF7CS6yVxMkyBuv2WpBI9Ag=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oy/NbPha7b/BONvLyNa1xrM1PBZ2k6dYZjtt+utPBZM=;
-        b=R77iNYMzPPOa2the3sGFlbk6apwA1ijo59EsEz/vgZeEW0XxkguPKGmUEtGR2jjo2w
-         aISSyAT9666qSdeDs90mCY0WEAQ1RWhm6q3fI/jmseVuArNS+Mi82hi4fxdakaD+6/lr
-         vMkoYwVkjRsr74Q5q4Ny3V29Mtc8ZTo2ZQOJP4+Z4ezPf96AUzgMj4b2CbdcUWgD9e8Y
-         4mMhEUI/r70jcA3DyeHYFQsKqwl31ZwqWWViEAsseyCM3P5YtbCSf6m2U++zEsgGz1Wn
-         JtmMWsdrQuDlZRpEIJOa25J96w28kk32JsSEZ3hW+snKYigBF8Tdy4V4qpdJtOl9OHRP
-         bskw==
-X-Gm-Message-State: AOAM530NNVh1bwpWs0nHIqNoouadjWZOuHeGwYJip9dvq0xEXrzEvHHl
-        UmQj9vRrLUXnyX/plf/9e2fG4g==
-X-Google-Smtp-Source: ABdhPJyhe/fo3HRhK6AzpN3ofWSJhebcPRa5pE552qi6VAcK16E/JoN3r0HfvekOjsOzYVi1rYtThA==
-X-Received: by 2002:a05:6638:501:: with SMTP id i1mr10242846jar.67.1625611499449;
-        Tue, 06 Jul 2021 15:44:59 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id q7sm7370504ilv.17.2021.07.06.15.44.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 15:44:59 -0700 (PDT)
-Subject: Re: [PATCH 5.4 0/6] 5.4.130-rc1 review
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210705110029.1513384-1-sashal@kernel.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <86ad6fc1-b7c7-7fa8-0d61-cbafbbfddda9@linuxfoundation.org>
-Date:   Tue, 6 Jul 2021 16:44:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229935AbhGFWxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 18:53:42 -0400
+Received: from mga18.intel.com ([134.134.136.126]:31331 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229753AbhGFWxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 18:53:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="196488367"
+X-IronPort-AV: E=Sophos;i="5.83,329,1616482800"; 
+   d="scan'208";a="196488367"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 15:50:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,329,1616482800"; 
+   d="scan'208";a="627825471"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by orsmga005.jf.intel.com with ESMTP; 06 Jul 2021 15:50:53 -0700
+Date:   Tue, 6 Jul 2021 15:51:27 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Eduardo Habkost <ehabkost@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tony Luck <tony.luck@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Victor Ding <victording@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Anand K Mistry <amistry@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH 4/4] x86/tsx: Add cmdline tsx=fake to not clear CPUID
+ bits RTM and HLE
+Message-ID: <20210706225127.kyn7amrln6ydfcig@gupta-dev2.localdomain>
+References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+ <de6b97a567e273adff1f5268998692bad548aa10.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+ <20210706195233.h6w4cm73oktfqpgz@habkost.net>
+ <20210706211606.ezme3xvwztagbjqy@gupta-dev2.localdomain>
+ <CAOpTY_pmNah_OCzk3XRyTsgkCPdJD1tp2RxKHMieFQM1s-tQNA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210705110029.1513384-1-sashal@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAOpTY_pmNah_OCzk3XRyTsgkCPdJD1tp2RxKHMieFQM1s-tQNA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/5/21 5:00 AM, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 5.4.130 release.
-> There are 6 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed 07 Jul 2021 11:00:14 AM UTC.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.4.y&id2=v5.4.129
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
+On 06.07.2021 17:19, Eduardo Habkost wrote:
+>On Tue, Jul 6, 2021 at 5:15 PM Pawan Gupta
+><pawan.kumar.gupta@linux.intel.com> wrote:
+>>
+>> On 06.07.2021 15:52, Eduardo Habkost wrote:
+>> >On Wed, Jun 09, 2021 at 02:14:39PM -0700, Pawan Gupta wrote:
+>> >> On CPUs that deprecated TSX, clearing the enumeration bits CPUID.RTM and
+>> >> CPUID.HLE may not be desirable in some corner cases. Like a saved guest
+>> >> would refuse to resume if it was saved before the microcode update
+>> >> that deprecated TSX.
+>> >
+>> >Why is a global option necessary to allow those guests to be
+>> >resumed?  Why can't KVM_GET_SUPPORTED_CPUID always return the HLE
+>> >and RTM bits as supported when the host CPU has them?
+>>
+>> Yes, the global option is unnecessary and this patch was dropped in v2.
+>
+>Was the behaviour this patch originally tried to fix changed in v2 as
+>well? Is it going to be possible to resume a HLE=1,RTM=1 VM on a
+>TSX_FORCE_ABORT=1 host with no extra kernel command line options
+>needed?
 
-Compiled and booted on my test system. No dmesg regressions.
+The problem it tried to solve is still present, but the global switch
+was thought to be unnecessary. I see that Paolo has some suggestions to
+fix this in the userspace.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+Thanks,
+Pawan
