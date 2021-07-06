@@ -2,267 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B133BDEF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 23:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFAE3BDEF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 23:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhGFVhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 17:37:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32993 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229811AbhGFVhF (ORCPT
+        id S229987AbhGFVjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 17:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhGFVjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 17:37:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625607266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hy6kcB3MWGmQBDSvkn9YWzp9imXowxOywbrwsmGu+rk=;
-        b=VVXAmZTlfEOKWezrBMnzAet0EUsKVHPyFlKbLG622ssDVLjrm54/SMET55xSzmV6/1SKQm
-        9bPCYbAOlM4BabBfgPd5uF37g+ww+it2/jsEUzxc14piIleN2kMr5581MexLzRw0JPpde0
-        baKIyzwJn/ztMDFpG2uw+MJYaE2Hqp0=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-168--nLGMDEmOXKU8OWshbnOlA-1; Tue, 06 Jul 2021 17:34:24 -0400
-X-MC-Unique: -nLGMDEmOXKU8OWshbnOlA-1
-Received: by mail-oi1-f199.google.com with SMTP id w2-20020aca62020000b029024073490067so449866oib.21
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 14:34:24 -0700 (PDT)
+        Tue, 6 Jul 2021 17:39:10 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AA9C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 14:36:30 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id s17so1016480oij.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 14:36:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g1JVJiy081ll+MGQFYrIQnx64nTijHCUrQkv8Wk47Uc=;
+        b=SyDsjtI7l4Qry4skD2wvLmbuIkvNN1DlMY1bPGWVilUzHBLHLszzbhcD+3jRO1BOeL
+         lPlxDNr9OBbxW7Z4hlnB9l48IidslH2YiYqrethULXiC1PNWksDnRHAeao6WJawnXMNd
+         1CCd7Akwq1gi9MNdYTkbDsmSHc0mGNT0DCDNTAOSAUbdYORIfQAqrlv+kEyM+BltHMrD
+         lwqGEKx+C7f4LfErjREh2fdktEV49PtQKKMkYjan0SLl4E4KU/d2PUfDCskbx3eEj3Vc
+         Rx7q4Tj40TD2dFd/+OuyoTCY1cDXjN/i4QianJReUl7zhzm2mzMaWDbTrh9HtraTluUN
+         ntjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Hy6kcB3MWGmQBDSvkn9YWzp9imXowxOywbrwsmGu+rk=;
-        b=m2oEuOImH1at2inuO7FPEwJvW9aK4V5H9Ce+h8SgxbGEke6cjA3T7e+HZvxppR2lQE
-         ohloWupC+iP/zkAAVuPXwINInk1gPQ+QyuXfkJKKnzRSLBFtgyP4cgm/aIAvBpTSIGkx
-         SNuTAd1mgG3fXh1rtg9NckFsF7AcuO7xczQjkIkWwMgAVZy2kJzgvjbhtKm60ZSCd5OM
-         +TiCyCFUZEbOiCf5EcjxmroYU7w/m8m3hrRxppomWoTkkZ3dQEm6nzvaT7sIuopi8LfH
-         7NAlmC06UDRCwgwR+OWLc0//hEnqFP+FdYDbc4MDgb7BvHDzzH/9u1C/9+StupWdow8q
-         NWGw==
-X-Gm-Message-State: AOAM530DF+jWamkWsN1vpeqc/Rx+yhBAA6ia20hwUy5t7HnCifuBiBZf
-        ai0Q1aWTr2oBL9tq5T1+RrN19+DYFIQRaFz7dar6WskwLTjAToM6ZJ1vVTagUKTnH/630XYrB4q
-        BCUD1l1R1pNpTSw8y/MJxP+rd
-X-Received: by 2002:a05:6830:4039:: with SMTP id i25mr7708072ots.187.1625607264268;
-        Tue, 06 Jul 2021 14:34:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyOPGU1f+ioZoUD9Gk09GX58M3FzDXJit2VBvWEDVdm0mrij5IOIC0yKFhYZIkQYwfMFoijGw==
-X-Received: by 2002:a05:6830:4039:: with SMTP id i25mr7708058ots.187.1625607264072;
-        Tue, 06 Jul 2021 14:34:24 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id s2sm3082387ook.24.2021.07.06.14.34.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 14:34:23 -0700 (PDT)
-Subject: Re: [PATCH v8 5/5] fpga: versal-fpga: Add versal fpga manager driver
-To:     Nava kishore Manne <nava.manne@xilinx.com>, robh+dt@kernel.org,
-        michal.simek@xilinx.com, mdf@kernel.org, arnd@arndb.de,
-        rajan.vaja@xilinx.com, gregkh@linuxfoundation.org,
-        amit.sunil.dhamne@xilinx.com, tejas.patel@xilinx.com,
-        zou_wei@huawei.com, lakshmi.sai.krishna.potthuri@xilinx.com,
-        ravi.patel@xilinx.com, iwamatsu@nigauri.org,
-        wendy.liang@xilinx.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org, git@xilinx.com,
-        chinnikishore369@gmail.com
-Cc:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-References: <20210626155248.5004-1-nava.manne@xilinx.com>
- <20210626155248.5004-6-nava.manne@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <4429c722-52f3-2e16-3a53-910345507d3e@redhat.com>
-Date:   Tue, 6 Jul 2021 14:34:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g1JVJiy081ll+MGQFYrIQnx64nTijHCUrQkv8Wk47Uc=;
+        b=RLD2YTTgyA1F3EJZQDCb3BER31aemHPlsDDU2sQedi+VUpxvIgjBBqGEU4peeUU1gy
+         d4dEyQom+WzzCioJpmjLUAvcXU7xwCELp6a39sUlN7HrhEVHzWAX53z7tZmoU0z1RQus
+         hPugvp2ydSp9JI1Hb2fws8y9tX1jJnfPTJ77jcrOCEIFI/HnomosQONU3QOf0bMH73V2
+         Z5ZsvfDdLygDOOVtBjp8k0rRtKFlmEUmbwMv0U2W9qliwVc40ztSwj6yuLJt7dWS8RTc
+         YNtcGIyxwxeq5nkMq+uZeAtjPmuRQyJDDM1eTYsTNhHBukSwe2Ov4rzaEw52SFt1n5JJ
+         k0Ow==
+X-Gm-Message-State: AOAM532I4KEQ5pmjehotM/OtlBL0Nm87Sbe9IC14qrlG1npbpIVjYgpi
+        /8NM8dtYg3r5zd5AjbXnWghGtw==
+X-Google-Smtp-Source: ABdhPJxF6cWhxvYgLYDEaV3IFuw7TC+iaZZc2k3kqPOFIabTy82sv63HUgNyNOI+CBJ6updHj0tIvA==
+X-Received: by 2002:a05:6808:f0a:: with SMTP id m10mr302995oiw.145.1625607390057;
+        Tue, 06 Jul 2021 14:36:30 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id v134sm289352oie.28.2021.07.06.14.36.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 14:36:29 -0700 (PDT)
+Date:   Tue, 6 Jul 2021 16:36:26 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Rob Clark <robdclark@chromium.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Eric Anholt <eric@anholt.net>,
+        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "moderated list:ARM SMMU DRIVERS" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Will Deacon <will@kernel.org>,
+        Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Subject: Re: [PATCH v5 0/5] iommu/arm-smmu: adreno-smmu page fault handling
+Message-ID: <YOTM2g9t0/gvNxuh@yoga>
+References: <20210610214431.539029-1-robdclark@gmail.com>
+ <2016473f-2b38-f049-1e8d-04bdf5af6cea@linaro.org>
+ <CAF6AEGu6Wt+FDh_Kp8GrZB9TV7ufTuidmqBfkzA9rcCJc7zSQQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210626155248.5004-6-nava.manne@xilinx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGu6Wt+FDh_Kp8GrZB9TV7ufTuidmqBfkzA9rcCJc7zSQQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun 04 Jul 13:20 CDT 2021, Rob Clark wrote:
 
-On 6/26/21 8:52 AM, Nava kishore Manne wrote:
-> Add support for Xilinx Versal FPGA manager.
->
-> PDI source type can be DDR, OCM, QSPI flash etc..
-> But driver allocates memory always from DDR, Since driver supports only
-> DDR source type.
->
-> Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> Reviewed-by: Moritz Fischer <mdf@kernel.org>
-> ---
-> Changes for v2:
->                -Updated the Fpga Mgr registrations call's
->                 to 5.11
->                -Fixed some minor coding issues as suggested by
->                 Moritz.
->
-> Changes for v3:
->                -Rewritten the Versal fpga Kconfig contents.
->
-> Changes for v4:
->                -Rebased the changes on linux-next.
->                 No functional changes.
->
-> Changes for v5:
->                -None.
->
-> Changes for v6:
->                -None.
->
-> Changes for v7:
->                -Updated driver to remove unwated priv struct dependency.
->
-> Changes for v8:
->                -None.
->
->   drivers/fpga/Kconfig       |  9 ++++
->   drivers/fpga/Makefile      |  1 +
->   drivers/fpga/versal-fpga.c | 96 ++++++++++++++++++++++++++++++++++++++
->   3 files changed, 106 insertions(+)
->   create mode 100644 drivers/fpga/versal-fpga.c
->
-> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> index 8cd454ee20c0..16793bfc2bb4 100644
-> --- a/drivers/fpga/Kconfig
-> +++ b/drivers/fpga/Kconfig
-> @@ -234,4 +234,13 @@ config FPGA_MGR_ZYNQMP_FPGA
->   	  to configure the programmable logic(PL) through PS
->   	  on ZynqMP SoC.
->   
-> +config FPGA_MGR_VERSAL_FPGA
-> +	tristate "Xilinx Versal FPGA"
-> +	depends on ARCH_ZYNQMP || COMPILE_TEST
-Shouldn't this depend on ZYNQMP_FIRMWARE ?
-> +	help
-> +	  Select this option to enable FPGA manager driver support for
-> +	  Xilinx Versal SoC. This driver uses the firmware interface to
-> +	  configure the programmable logic(PL).
-> +
-> +	  To compile this as a module, choose M here.
->   endif # FPGA
-> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-> index 18dc9885883a..0bff783d1b61 100644
-> --- a/drivers/fpga/Makefile
-> +++ b/drivers/fpga/Makefile
-> @@ -18,6 +18,7 @@ obj-$(CONFIG_FPGA_MGR_TS73XX)		+= ts73xx-fpga.o
->   obj-$(CONFIG_FPGA_MGR_XILINX_SPI)	+= xilinx-spi.o
->   obj-$(CONFIG_FPGA_MGR_ZYNQ_FPGA)	+= zynq-fpga.o
->   obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+= zynqmp-fpga.o
-> +obj-$(CONFIG_FPGA_MGR_VERSAL_FPGA)      += versal-fpga.o
-The other CONFIG_FPGA_MGR* configs are alphabetical, versal should follow.
->   obj-$(CONFIG_ALTERA_PR_IP_CORE)         += altera-pr-ip-core.o
->   obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
->   
-> diff --git a/drivers/fpga/versal-fpga.c b/drivers/fpga/versal-fpga.c
-> new file mode 100644
-> index 000000000000..1bd312a31b23
-> --- /dev/null
-> +++ b/drivers/fpga/versal-fpga.c
-> @@ -0,0 +1,96 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2019-2021 Xilinx, Inc.
-> + */
-> +
-> +#include <linux/dma-mapping.h>
-> +#include <linux/fpga/fpga-mgr.h>
-> +#include <linux/io.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of_address.h>
-> +#include <linux/string.h>
-> +#include <linux/firmware/xlnx-zynqmp.h>
-> +
-> +static int versal_fpga_ops_write_init(struct fpga_manager *mgr,
-> +				      struct fpga_image_info *info,
-> +				      const char *buf, size_t size)
-> +{
-> +	return 0;
-> +}
-> +
-These empty ops should go away with my wrappers patchset
-> +static int versal_fpga_ops_write(struct fpga_manager *mgr,
-> +				 const char *buf, size_t size)
-> +{
-> +	dma_addr_t dma_addr = 0;
-> +	char *kbuf;
-> +	int ret;
-> +
-> +	kbuf = dma_alloc_coherent(mgr->dev.parent, size, &dma_addr, GFP_KERNEL);
-> +	if (!kbuf)
-> +		return -ENOMEM;
-> +
-> +	memcpy(kbuf, buf, size);
-> +	ret = zynqmp_pm_load_pdi(PDI_SRC_DDR, dma_addr);
-why isn't the size passed ?
-> +	dma_free_coherent(mgr->dev.parent, size, kbuf, dma_addr);
-> +
-> +	return ret;
-> +}
-> +
-> +static int versal_fpga_ops_write_complete(struct fpga_manager *mgr,
-> +					  struct fpga_image_info *info)
-> +{
-> +	return 0;
-> +}
-> +
-> +static enum fpga_mgr_states versal_fpga_ops_state(struct fpga_manager *mgr)
-> +{
-> +	return FPGA_MGR_STATE_UNKNOWN;
-> +}
-> +
-> +static const struct fpga_manager_ops versal_fpga_ops = {
-> +	.state = versal_fpga_ops_state,
-> +	.write_init = versal_fpga_ops_write_init,
-> +	.write = versal_fpga_ops_write,
-> +	.write_complete = versal_fpga_ops_write_complete,
-> +};
-> +
-> +static int versal_fpga_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct fpga_manager *mgr;
-> +	int ret;
-> +
-> +	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
-> +	if (ret < 0) {
-> +		dev_err(dev, "no usable DMA configuration\n");
-> +		return ret;
-> +	}
-> +
-> +	mgr = devm_fpga_mgr_create(dev, "Xilinx Versal FPGA Manager",
-> +				   &versal_fpga_ops, NULL);
-> +	if (!mgr)
-> +		return -ENOMEM;
-> +
-> +	return devm_fpga_mgr_register(dev, mgr);
-> +}
-> +
-> +static const struct of_device_id versal_fpga_of_match[] = {
-> +	{ .compatible = "xlnx,versal-fpga", },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, versal_fpga_of_match);
-needs #if defined(CONFIG_OF) wrapper
-> +
-> +static struct platform_driver versal_fpga_driver = {
-> +	.probe = versal_fpga_probe,
-> +	.driver = {
-> +		.name = "versal_fpga_manager",
-> +		.of_match_table = of_match_ptr(versal_fpga_of_match),
-> +	},
-> +};
-> +module_platform_driver(versal_fpga_driver);
-> +
-> +MODULE_AUTHOR("Nava kishore Manne <nava.manne@xilinx.com>");
-> +MODULE_AUTHOR("Appana Durga Kedareswara rao <appanad.durga.rao@xilinx.com>");
+> I suspect you are getting a dpu fault, and need:
+> 
+> https://lore.kernel.org/linux-arm-msm/CAF6AEGvTjTUQXqom-xhdh456tdLscbVFPQ+iud1H1gHc8A2=hA@mail.gmail.com/
+> 
+> I suppose Bjorn was expecting me to send that patch
+> 
 
-Rao - needs to be capitalized ?
+No, I left that discussion with the same understanding as you... But I
+ended up side tracked by some other craziness.
 
-Tom
+Did you post this somewhere or would you still like me to test it and
+spin a patch?
 
-> +MODULE_DESCRIPTION("Xilinx Versal FPGA Manager");
-> +MODULE_LICENSE("GPL");
+Regards,
+Bjorn
 
+> BR,
+> -R
+> 
+> On Sun, Jul 4, 2021 at 5:53 AM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > Hi,
+> >
+> > I've had splash screen disabled on my RB3. However once I've enabled it,
+> > I've got the attached crash during the boot on the msm/msm-next. It
+> > looks like it is related to this particular set of changes.
+> >
+> > On 11/06/2021 00:44, Rob Clark wrote:
+> > > From: Rob Clark <robdclark@chromium.org>
+> > >
+> > > This picks up an earlier series[1] from Jordan, and adds additional
+> > > support needed to generate GPU devcore dumps on iova faults.  Original
+> > > description:
+> > >
+> > > This is a stack to add an Adreno GPU specific handler for pagefaults. The first
+> > > patch starts by wiring up report_iommu_fault for arm-smmu. The next patch adds
+> > > a adreno-smmu-priv function hook to capture a handful of important debugging
+> > > registers such as TTBR0, CONTEXTIDR, FSYNR0 and others. This is used by the
+> > > third patch to print more detailed information on page fault such as the TTBR0
+> > > for the pagetable that caused the fault and the source of the fault as
+> > > determined by a combination of the FSYNR1 register and an internal GPU
+> > > register.
+> > >
+> > > This code provides a solid base that we can expand on later for even more
+> > > extensive GPU side page fault debugging capabilities.
+> > >
+> > > v5: [Rob] Use RBBM_STATUS3.SMMU_STALLED_ON_FAULT to detect case where
+> > >      GPU snapshotting needs to avoid crashdumper, and check the
+> > >      RBBM_STATUS3.SMMU_STALLED_ON_FAULT in GPU hang irq paths
+> > > v4: [Rob] Add support to stall SMMU on fault, and let the GPU driver
+> > >      resume translation after it has had a chance to snapshot the GPUs
+> > >      state
+> > > v3: Always clear FSR even if the target driver is going to handle resume
+> > > v2: Fix comment wording and function pointer check per Rob Clark
+> > >
+> > > [1] https://lore.kernel.org/dri-devel/20210225175135.91922-1-jcrouse@codeaurora.org/
+> > >
+> > > Jordan Crouse (3):
+> > >    iommu/arm-smmu: Add support for driver IOMMU fault handlers
+> > >    iommu/arm-smmu-qcom: Add an adreno-smmu-priv callback to get pagefault
+> > >      info
+> > >    drm/msm: Improve the a6xx page fault handler
+> > >
+> > > Rob Clark (2):
+> > >    iommu/arm-smmu-qcom: Add stall support
+> > >    drm/msm: devcoredump iommu fault support
+> > >
+> > >   drivers/gpu/drm/msm/adreno/a5xx_gpu.c       |  23 +++-
+> > >   drivers/gpu/drm/msm/adreno/a6xx_gpu.c       | 110 +++++++++++++++++++-
+> > >   drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c |  42 ++++++--
+> > >   drivers/gpu/drm/msm/adreno/adreno_gpu.c     |  15 +++
+> > >   drivers/gpu/drm/msm/msm_gem.h               |   1 +
+> > >   drivers/gpu/drm/msm/msm_gem_submit.c        |   1 +
+> > >   drivers/gpu/drm/msm/msm_gpu.c               |  48 +++++++++
+> > >   drivers/gpu/drm/msm/msm_gpu.h               |  17 +++
+> > >   drivers/gpu/drm/msm/msm_gpummu.c            |   5 +
+> > >   drivers/gpu/drm/msm/msm_iommu.c             |  22 +++-
+> > >   drivers/gpu/drm/msm/msm_mmu.h               |   5 +-
+> > >   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c  |  50 +++++++++
+> > >   drivers/iommu/arm/arm-smmu/arm-smmu.c       |   9 +-
+> > >   drivers/iommu/arm/arm-smmu/arm-smmu.h       |   2 +
+> > >   include/linux/adreno-smmu-priv.h            |  38 ++++++-
+> > >   15 files changed, 367 insertions(+), 21 deletions(-)
+> > >
+> >
+> >
+> > --
+> > With best wishes
+> > Dmitry
