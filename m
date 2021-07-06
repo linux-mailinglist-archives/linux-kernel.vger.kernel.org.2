@@ -2,101 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107A53BD7B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A31563BD7C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhGFN0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 09:26:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45452 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231248AbhGFN0j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 09:26:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625577840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sqq825G+li9OjVk5eaykIR+on9NrEBX7TA9mjDioEsU=;
-        b=XzUfaVdd8psHMn90T6bz3eC9ZTdsxDnndbcIXPIUZ+rCHACpeYFnef++S9kU2qOrupLVuI
-        kOdtLqs1iovwQxtVEeGidjcwz2U+HXOUnFH6PyiQQ7/MbxKjB220Mybi4fd0VFsxwo3+KB
-        J3QtiAGzI9nZISFpXPtFWOe2zGycwtk=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-543-tqJq4Ei8OZioB-RZITA9PQ-1; Tue, 06 Jul 2021 09:23:59 -0400
-X-MC-Unique: tqJq4Ei8OZioB-RZITA9PQ-1
-Received: by mail-ej1-f69.google.com with SMTP id ia10-20020a170907a06ab02904baf8000951so4215322ejc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 06:23:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sqq825G+li9OjVk5eaykIR+on9NrEBX7TA9mjDioEsU=;
-        b=rD6ZgpPRviUzs7iRRazR+z5K36u4FvjICxctAGe839XKQJusglUba+LvXx8hQS9plR
-         IcqMBgBM1g2kPenz1X96XMU2tgTbTw9t9V03feH+WX9EnbtS3EDbGzmhpZG3Qa13Fhdb
-         xLIplXkD+lbx4eKkHnQ2HOzuFe/Vm6I0xB+5EdWLUpLjenGcRmpU8cov4RoOhRVCkHE6
-         2XJwCmSvCvGyiFD/atyji2kSo7knwJDHDOd4naSUCEgLi+RdlE8LWXquQPHYMucjHQFb
-         Yw2o2hvni5h+/ijsap62bHIl6bPaXLE2k9vWTG87NSxaeRomNM9zwfTowg70GL17XD04
-         Owkw==
-X-Gm-Message-State: AOAM531DbgJb2DxMuxFlrWxJqJk2f3PCZu0U/Cklm0jm/15um9baHzgf
-        JRuMbE+AjJ0ZCgRFlaKaNuBRs4/Sl/9gMRv67kz0jvYzdXZ+zHl/Uenna7txESL0voRPm2Lcy9I
-        tMipQuuT4giRixTUWMMUWkO9v
-X-Received: by 2002:a17:906:2b0c:: with SMTP id a12mr11089869ejg.429.1625577838102;
-        Tue, 06 Jul 2021 06:23:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwpRHqxBDqgfllzawdsQdoN6ohItuD1Gz4sLZ7t9zIW0XkC+Apu6iTpuhuyoOIKoLxmFrKCxA==
-X-Received: by 2002:a17:906:2b0c:: with SMTP id a12mr11089840ejg.429.1625577837885;
-        Tue, 06 Jul 2021 06:23:57 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id e2sm5733462ejt.113.2021.07.06.06.23.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 06:23:57 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 08/69] KVM: TDX: add trace point before/after TDX
- SEAMCALLs
-To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <28a0ae6b767260fcb410c6ddff7de84f4e13062c.1625186503.git.isaku.yamahata@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <03a48573-85b2-f908-f058-205e9aa02787@redhat.com>
-Date:   Tue, 6 Jul 2021 15:23:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231846AbhGFN1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 09:27:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231415AbhGFN1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 09:27:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE61061164;
+        Tue,  6 Jul 2021 13:24:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625577874;
+        bh=1b6k92EMOVzHgyTq1RFb48ZKUcEXJlaaPAFN5oqwmF4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tx92MCkf/DXZd6nh5mgnaOshLB4ggq26FqyP7BRdqm4hXED58hUYg3wTzF/ZikCOl
+         U+1P1/gbNfCqV4xnZ7pHjCf8/b987/nQ/mVKU1HbWyoJyOKg9fJOcN462l6+qNBbsk
+         mG027LEWXpfZtreWSaiuUnUFKCuYwjJn+lLcTB45MSBdJeGNl0JTrXgxYvizMLKavG
+         ZjJErAdgAQUwjFypjPCvRFBu+p+iugJjiDv/3nE/dAIeatFPDVEKPcPUEgF80LgmiZ
+         dhxesW61+bCVt47G9QVFd9FVhqxuurozkVLZ3Q4Ql0HvqNzplvnBtOnAkUoP1it1tH
+         ndRwRZDbWWvhQ==
+Date:   Tue, 6 Jul 2021 14:24:23 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Claire Chang <tientzu@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Qian Cai <quic_qiancai@quicinc.com>
+Subject: Re: [PATCH v15 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+Message-ID: <20210706132422.GA20327@willie-the-truck>
+References: <CALiNf2-a-haQN0-4+gX8+wa++52-0CnO2O4BEkxrQCxoTa_47w@mail.gmail.com>
+ <20210630114348.GA8383@willie-the-truck>
+ <YNyUQwiagNeZ9YeJ@Ryzen-9-3900X.localdomain>
+ <20210701074045.GA9436@willie-the-truck>
+ <ea28db1f-846e-4f0a-4f13-beb67e66bbca@kernel.org>
+ <20210702135856.GB11132@willie-the-truck>
+ <0f7bd903-e309-94a0-21d7-f0e8e9546018@arm.com>
+ <YN/7xcxt/XGAKceZ@Ryzen-9-3900X.localdomain>
+ <20210705190352.GA19461@willie-the-truck>
+ <20210706044848.GA13640@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <28a0ae6b767260fcb410c6ddff7de84f4e13062c.1625186503.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210706044848.GA13640@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
-> +	trace_kvm_tdx_seamcall_enter(smp_processor_id(), op,
-> +				     rcx, rdx, r8, r9, r10);
-> +	err = __seamcall(op, rcx, rdx, r8, r9, r10, ex);
-> +	if (ex)
-> +		trace_kvm_tdx_seamcall_exit(smp_processor_id(), op, err, ex->rcx,
-> +					    ex->rdx, ex->r8, ex->r9, ex->r10,
-> +					    ex->r11);
-> +	else
-> +		trace_kvm_tdx_seamcall_exit(smp_processor_id(), op, err,
-> +					    0, 0, 0, 0, 0, 0);
+On Tue, Jul 06, 2021 at 06:48:48AM +0200, Christoph Hellwig wrote:
+> On Mon, Jul 05, 2021 at 08:03:52PM +0100, Will Deacon wrote:
+> > So at this point, the AMD IOMMU driver does:
+> > 
+> > 	swiotlb        = (iommu_default_passthrough() || sme_me_mask) ? 1 : 0;
+> > 
+> > where 'swiotlb' is a global variable indicating whether or not swiotlb
+> > is in use. It's picked up a bit later on by pci_swiotlb_late_init(), which
+> > will call swiotlb_exit() if 'swiotlb' is false.
+> > 
+> > Now, that used to work fine, because swiotlb_exit() clears
+> > 'io_tlb_default_mem' to NULL, but now with the restricted DMA changes, I
+> > think that all the devices which have successfully probed beforehand will
+> > have stale pointers to the freed structure in their 'dev->dma_io_tlb_mem'
+> > field.
+> 
+> Yeah.  I don't think we can do that anymore, and I also think it is
+> a bad idea to start with.
 
-Would it make sense to do the zeroing of ex directly in __seamcall in 
-case there is an error?
+I've had a crack at reworking things along the following lines:
 
-Otherwise looks good.
+  - io_tlb_default_mem now lives in the BSS, the flexible array member
+    is now a pointer and that part is allocated dynamically (downside of
+    this is an extra indirection to get at the slots).
 
-Paolo
+  - io_tlb_default_mem.nslabs tells you whether the thing is valid
 
+  - swiotlb_exit() frees the slots array and clears the rest of the
+    structure to 0. I also extended it to free the actual slabs, but I'm
+    not sure why it wasn't doing that before.
+
+So a non-NULL dev->dma_io_tlb_mem should always be valid to follow.
+
+Untested diff below... Nathan, it would be ace if you're brave enough
+to give this a shot.
+
+Will
+
+--->8
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index bbad7c559901..9e1218f89e4b 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -2820,7 +2820,7 @@ void device_initialize(struct device *dev)
+ 	dev->dma_coherent = dma_default_coherent;
+ #endif
+ #ifdef CONFIG_SWIOTLB
+-	dev->dma_io_tlb_mem = io_tlb_default_mem;
++	dev->dma_io_tlb_mem = &io_tlb_default_mem;
+ #endif
+ }
+ EXPORT_SYMBOL_GPL(device_initialize);
+diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+index 785ec7e8be01..f06d9b4f1e0f 100644
+--- a/drivers/xen/swiotlb-xen.c
++++ b/drivers/xen/swiotlb-xen.c
+@@ -164,7 +164,7 @@ int __ref xen_swiotlb_init(void)
+ 	int rc = -ENOMEM;
+ 	char *start;
+ 
+-	if (io_tlb_default_mem != NULL) {
++	if (io_tlb_default_mem.nslabs) {
+ 		pr_warn("swiotlb buffer already initialized\n");
+ 		return -EEXIST;
+ 	}
+@@ -547,7 +547,7 @@ xen_swiotlb_sync_sg_for_device(struct device *dev, struct scatterlist *sgl,
+ static int
+ xen_swiotlb_dma_supported(struct device *hwdev, u64 mask)
+ {
+-	return xen_phys_to_dma(hwdev, io_tlb_default_mem->end - 1) <= mask;
++	return xen_phys_to_dma(hwdev, io_tlb_default_mem.end - 1) <= mask;
+ }
+ 
+ const struct dma_map_ops xen_swiotlb_dma_ops = {
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index 39284ff2a6cd..b0cb2a9973f4 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -103,9 +103,9 @@ struct io_tlb_mem {
+ 		phys_addr_t orig_addr;
+ 		size_t alloc_size;
+ 		unsigned int list;
+-	} slots[];
++	} *slots;
+ };
+-extern struct io_tlb_mem *io_tlb_default_mem;
++extern struct io_tlb_mem io_tlb_default_mem;
+ 
+ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+ {
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 0ffbaae9fba2..91cd1d413027 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -70,7 +70,7 @@
+ 
+ enum swiotlb_force swiotlb_force;
+ 
+-struct io_tlb_mem *io_tlb_default_mem;
++struct io_tlb_mem io_tlb_default_mem;
+ 
+ /*
+  * Max segment that we can provide which (if pages are contingous) will
+@@ -101,7 +101,7 @@ early_param("swiotlb", setup_io_tlb_npages);
+ 
+ unsigned int swiotlb_max_segment(void)
+ {
+-	return io_tlb_default_mem ? max_segment : 0;
++	return io_tlb_default_mem.nslabs ? max_segment : 0;
+ }
+ EXPORT_SYMBOL_GPL(swiotlb_max_segment);
+ 
+@@ -134,9 +134,9 @@ void __init swiotlb_adjust_size(unsigned long size)
+ 
+ void swiotlb_print_info(void)
+ {
+-	struct io_tlb_mem *mem = io_tlb_default_mem;
++	struct io_tlb_mem *mem = &io_tlb_default_mem;
+ 
+-	if (!mem) {
++	if (!mem->nslabs) {
+ 		pr_warn("No low mem\n");
+ 		return;
+ 	}
+@@ -163,11 +163,11 @@ static inline unsigned long nr_slots(u64 val)
+  */
+ void __init swiotlb_update_mem_attributes(void)
+ {
+-	struct io_tlb_mem *mem = io_tlb_default_mem;
++	struct io_tlb_mem *mem = &io_tlb_default_mem;
+ 	void *vaddr;
+ 	unsigned long bytes;
+ 
+-	if (!mem || mem->late_alloc)
++	if (!mem->nslabs || mem->late_alloc)
+ 		return;
+ 	vaddr = phys_to_virt(mem->start);
+ 	bytes = PAGE_ALIGN(mem->nslabs << IO_TLB_SHIFT);
+@@ -201,25 +201,24 @@ static void swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
+ 
+ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+ {
+-	struct io_tlb_mem *mem;
++	struct io_tlb_mem *mem = &io_tlb_default_mem;
+ 	size_t alloc_size;
+ 
+ 	if (swiotlb_force == SWIOTLB_NO_FORCE)
+ 		return 0;
+ 
+ 	/* protect against double initialization */
+-	if (WARN_ON_ONCE(io_tlb_default_mem))
++	if (WARN_ON_ONCE(mem->nslabs))
+ 		return -ENOMEM;
+ 
+-	alloc_size = PAGE_ALIGN(struct_size(mem, slots, nslabs));
+-	mem = memblock_alloc(alloc_size, PAGE_SIZE);
+-	if (!mem)
++	alloc_size = PAGE_ALIGN(array_size(sizeof(*mem->slots), nslabs));
++	mem->slots = memblock_alloc(alloc_size, PAGE_SIZE);
++	if (!mem->slots)
+ 		panic("%s: Failed to allocate %zu bytes align=0x%lx\n",
+ 		      __func__, alloc_size, PAGE_SIZE);
+ 
+ 	swiotlb_init_io_tlb_mem(mem, __pa(tlb), nslabs, false);
+ 
+-	io_tlb_default_mem = mem;
+ 	if (verbose)
+ 		swiotlb_print_info();
+ 	swiotlb_set_max_segment(mem->nslabs << IO_TLB_SHIFT);
+@@ -304,26 +303,24 @@ swiotlb_late_init_with_default_size(size_t default_size)
+ int
+ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
+ {
+-	struct io_tlb_mem *mem;
++	struct io_tlb_mem *mem = &io_tlb_default_mem;
+ 	unsigned long bytes = nslabs << IO_TLB_SHIFT;
+ 
+ 	if (swiotlb_force == SWIOTLB_NO_FORCE)
+ 		return 0;
+ 
+ 	/* protect against double initialization */
+-	if (WARN_ON_ONCE(io_tlb_default_mem))
++	if (WARN_ON_ONCE(mem->nslabs))
+ 		return -ENOMEM;
+ 
+-	mem = (void *)__get_free_pages(GFP_KERNEL,
+-		get_order(struct_size(mem, slots, nslabs)));
+-	if (!mem)
++	mem->slots = (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO,
++		get_order(array_size(sizeof(*mem->slots), nslabs)));
++	if (!mem->slots)
+ 		return -ENOMEM;
+ 
+-	memset(mem, 0, sizeof(*mem));
+ 	set_memory_decrypted((unsigned long)tlb, bytes >> PAGE_SHIFT);
+ 	swiotlb_init_io_tlb_mem(mem, virt_to_phys(tlb), nslabs, true);
+ 
+-	io_tlb_default_mem = mem;
+ 	swiotlb_print_info();
+ 	swiotlb_set_max_segment(mem->nslabs << IO_TLB_SHIFT);
+ 	return 0;
+@@ -331,18 +328,23 @@ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
+ 
+ void __init swiotlb_exit(void)
+ {
+-	struct io_tlb_mem *mem = io_tlb_default_mem;
+-	size_t size;
++	struct io_tlb_mem *mem = &io_tlb_default_mem;
++	size_t tbl_size, slots_size;
+ 
+-	if (!mem)
++	if (!mem->nslabs)
+ 		return;
+ 
+-	size = struct_size(mem, slots, mem->nslabs);
+-	if (mem->late_alloc)
+-		free_pages((unsigned long)mem, get_order(size));
+-	else
+-		memblock_free_late(__pa(mem), PAGE_ALIGN(size));
+-	io_tlb_default_mem = NULL;
++	tbl_size = mem->end - mem->start;
++	slots_size = array_size(sizeof(*mem->slots), mem->nslabs);
++	if (mem->late_alloc) {
++		free_pages((unsigned long)mem->start, get_order(tbl_size));
++		free_pages((unsigned long)mem->slots, get_order(slots_size));
++	} else {
++		memblock_free_late(__pa(mem->start), PAGE_ALIGN(tbl_size));
++		memblock_free_late(__pa(mem->slots), PAGE_ALIGN(slots_size));
++	}
++
++	memset(mem, 0, sizeof(*mem));
+ }
+ 
+ /*
+@@ -682,7 +684,9 @@ size_t swiotlb_max_mapping_size(struct device *dev)
+ 
+ bool is_swiotlb_active(struct device *dev)
+ {
+-	return dev->dma_io_tlb_mem != NULL;
++	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
++
++	return mem && mem->nslabs;
+ }
+ EXPORT_SYMBOL_GPL(is_swiotlb_active);
+ 
+@@ -697,10 +701,10 @@ static void swiotlb_create_debugfs_files(struct io_tlb_mem *mem)
+ 
+ static int __init swiotlb_create_default_debugfs(void)
+ {
+-	struct io_tlb_mem *mem = io_tlb_default_mem;
++	struct io_tlb_mem *mem = &io_tlb_default_mem;
+ 
+ 	debugfs_dir = debugfs_create_dir("swiotlb", NULL);
+-	if (mem) {
++	if (mem->nslabs) {
+ 		mem->debugfs = debugfs_dir;
+ 		swiotlb_create_debugfs_files(mem);
+ 	}
+@@ -754,10 +758,17 @@ static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
+ 	 * to it.
+ 	 */
+ 	if (!mem) {
+-		mem = kzalloc(struct_size(mem, slots, nslabs), GFP_KERNEL);
++		mem = kzalloc(sizeof(*mem), GFP_KERNEL);
+ 		if (!mem)
+ 			return -ENOMEM;
+ 
++		mem->slots = kzalloc(array_size(sizeof(*mem->slots), nslabs),
++				     GFP_KERNEL);
++		if (!mem->slots) {
++			kfree(mem);
++			return -ENOMEM;
++		}
++
+ 		set_memory_decrypted((unsigned long)phys_to_virt(rmem->base),
+ 				     rmem->size >> PAGE_SHIFT);
+ 		swiotlb_init_io_tlb_mem(mem, rmem->base, nslabs, false);
+@@ -781,7 +792,7 @@ static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
+ static void rmem_swiotlb_device_release(struct reserved_mem *rmem,
+ 					struct device *dev)
+ {
+-	dev->dma_io_tlb_mem = io_tlb_default_mem;
++	dev->dma_io_tlb_mem = &io_tlb_default_mem;
+ }
+ 
+ static const struct reserved_mem_ops rmem_swiotlb_ops = {
