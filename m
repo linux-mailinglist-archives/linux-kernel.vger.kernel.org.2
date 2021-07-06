@@ -2,161 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225BF3BDEB4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 23:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936F93BDEBB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 23:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhGFVGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 17:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhGFVGr (ORCPT
+        id S230184AbhGFVIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 17:08:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57639 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229781AbhGFVId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 17:06:47 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB36C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 14:04:08 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id u18so150660lff.9
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 14:04:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GCr9dR1B9S9xq9AszxUseP+SiyvelPfjfJ3LYfvLk30=;
-        b=YTZ+5+qz57rgaRvigWO+axhDE6L/fF5mjwph4prQN7ju5u0+amqQ6czi4/Lc1SYQgW
-         NqJSaAtqLmUdy8IVyuzwtoZseQ/lsl+IiAJNIxZh8f8E29qlGqzpT8p9JvVVgB5V+ZuU
-         o1Nij7KOqASObEvNoHQs+3O2lwNLhXoD7kzX5vwAGyjSOPo3gUsP+w6XVlsfAEfJ7k71
-         m75lkW/tKPnRDOYBIq5OqMw1O1CQAiYkIU2p/nWps+4ksrY9sjg430sZxv6g31tDjPxi
-         NpzMR2/4Fi1nMHGF0FDovSfD/ybOh4GKFxE1OdRd63nznPPlJbMWSiI/zQdmDFVHwhP/
-         m1aw==
+        Tue, 6 Jul 2021 17:08:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625605553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0pCkeqTi9Z8pnCLX4xKb6CHs6Mz5uaIewNQ5zoX9f/k=;
+        b=FchJAjcI+qfFQhnyWvqd75jNbnmpaRGkrvaukQ3o0lBq22FBUJa9d+X6U+hVnGzPh66cyi
+        zYz9MC3Kw3M8PzBHFyJOCjUb4K/8DAUmQNMPYJy8beoi7pPhfNHVb5I2pbiQtmaALBY9rx
+        FX1Fr/etK3aSZudUwJPn4V5kUjCegyk=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-336-7o_E3h6hNsaQ6dhLNBJJkQ-1; Tue, 06 Jul 2021 17:05:52 -0400
+X-MC-Unique: 7o_E3h6hNsaQ6dhLNBJJkQ-1
+Received: by mail-wm1-f70.google.com with SMTP id j38-20020a05600c1c26b02901dbf7d18ff8so1590289wms.8
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 14:05:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GCr9dR1B9S9xq9AszxUseP+SiyvelPfjfJ3LYfvLk30=;
-        b=eEy0UNoHtrhficV9U5MeqUqv7oxUXd4IMWKx4EsH2PjtYtnKhUGkfDXbrNowGDFWVD
-         fV8rCDWH/HDvlK+B6DIpCsadHbbvkp5sS0ueGVV1KcHjnIiOF62SyjJnR+D7NxnTz/C0
-         wsMxj0Or6gAGpQtxGwZ8CopxSMKQi0uwI0yEjeyoeL9419e+JwybvoQASeK1RWHVCVbR
-         +jEVjSl+n7E6AosEwu0gxVsS6Xb2vgWNUUhoifHp90GD9bFgaf2xscGuyMr7PBdRa4T8
-         WVMDnRmWVaSIjYLefEbMFhk2lQcjB17192ed2HvaTtpMTtdIOJCwBdlHM3P47JWZuvxk
-         YNiw==
-X-Gm-Message-State: AOAM532YEbHjSH2R6aWiCNnKXfAWC+BJbgKRy6hFXWK5+uiTKoULBYgh
-        lIG6YLrGOXjvHaMCYaBkPDjp4N4U9QszJIFM2eiRgw==
-X-Google-Smtp-Source: ABdhPJyQY/P067tXLBOneScrLN2H7JnhxkuJjO0A7ZDRwnec+6MHaVd2CnVvcnLxIBIeYHDuBCOWVBUBBIjPebRPw6o=
-X-Received: by 2002:a05:6512:22cc:: with SMTP id g12mr8444627lfu.535.1625605446875;
- Tue, 06 Jul 2021 14:04:06 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0pCkeqTi9Z8pnCLX4xKb6CHs6Mz5uaIewNQ5zoX9f/k=;
+        b=Z9fgcJ/v17/7fWi4E0M0S4zqcxCKhRa/Wx2k7P4rDCTA8Kwtm9cmVT3QBEC9t0f8Ep
+         hE+4Dw8lXp/StIKimpLkpszRRuWx4etnz4e3QLzMmOQzm1jQP0/M+/rA2nfgkQoHsEbQ
+         jQFgP1AmpEPg7fBia7si3k39Ij6SoPbi1vtP6jOpmkIZ1C47sRMXBnraTeFd4QQarDWI
+         bTPkosxILpRVwpHMwLy1Dj2RxIngCCv8WrY2uxXQJ2LWRqqxZ+U4+9VpBwTNmV1vc5us
+         1C/oePtTB5nxlj/ZFIb+nQYfO39WU+OehM1pOUL+6JW+8iUXzKPMA+YWXdC+mitdjfRX
+         dC9w==
+X-Gm-Message-State: AOAM53027csaRd0FH2Ho6/6u3D4dEM9miaA84Q2F3f/NPfPtL6q+YXnD
+        2nA7iOOi5qSqOqdw1X5BW9eycWRzNIDw2HFIcD28nSNF0Z/fanQxhtd2cnp+sxACthdmfqpa7Eh
+        U3UAX0oZydO5AMlRUc2GPmmGC
+X-Received: by 2002:a5d:4906:: with SMTP id x6mr24381036wrq.387.1625605551506;
+        Tue, 06 Jul 2021 14:05:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzOhrydYavVx/+sIKU6aLtGvSDAD3WCi7G8LjuQ9+fVE5Y2AH5nCrrkIIkx8wYFJ5sw9P49rw==
+X-Received: by 2002:a5d:4906:: with SMTP id x6mr24381018wrq.387.1625605551291;
+        Tue, 06 Jul 2021 14:05:51 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id t9sm18899868wmq.14.2021.07.06.14.05.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 14:05:50 -0700 (PDT)
+To:     Eduardo Habkost <ehabkost@redhat.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tony Luck <tony.luck@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Victor Ding <victording@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Anand K Mistry <amistry@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+ <de6b97a567e273adff1f5268998692bad548aa10.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
+ <20210706195233.h6w4cm73oktfqpgz@habkost.net>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 4/4] x86/tsx: Add cmdline tsx=fake to not clear CPUID bits
+ RTM and HLE
+Message-ID: <4cc2c5fe-2153-05c5-dedd-8cb650753740@redhat.com>
+Date:   Tue, 6 Jul 2021 23:05:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210630013421.735092-1-john.stultz@linaro.org>
- <20210630013421.735092-2-john.stultz@linaro.org> <ab35ed32-ead4-3dc4-550d-55f288810220@amd.com>
- <CALAqxLXWDKp3BZJdO3nVd9vSVV6B+bWnTy+oP6bzBB6H3Yf4eA@mail.gmail.com> <6a472a24-a40f-1160-70dd-5cb9e9ae85f1@amd.com>
-In-Reply-To: <6a472a24-a40f-1160-70dd-5cb9e9ae85f1@amd.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Tue, 6 Jul 2021 14:03:58 -0700
-Message-ID: <CALAqxLXrCto31uie37Y4HjaD=2XyqkeR=HH5A6Z+drQtyYBKFg@mail.gmail.com>
-Subject: Re: [PATCH v9 1/5] drm: Add a sharable drm page-pool implementation
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210706195233.h6w4cm73oktfqpgz@habkost.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 11:52 PM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 01.07.21 um 00:24 schrieb John Stultz:
-> > On Wed, Jun 30, 2021 at 2:10 AM Christian K=C3=B6nig
-> > <christian.koenig@amd.com> wrote:
-> >> Am 30.06.21 um 03:34 schrieb John Stultz:
-> >>> +static unsigned long page_pool_size; /* max size of the pool */
-> >>> +
-> >>> +MODULE_PARM_DESC(page_pool_size, "Number of pages in the drm page po=
-ol");
-> >>> +module_param(page_pool_size, ulong, 0644);
-> >>> +
-> >>> +static atomic_long_t nr_managed_pages;
-> >>> +
-> >>> +static struct mutex shrinker_lock;
-> >>> +static struct list_head shrinker_list;
-> >>> +static struct shrinker mm_shrinker;
-> >>> +
-> >>> +/**
-> >>> + * drm_page_pool_set_max - Sets maximum size of all pools
-> >>> + *
-> >>> + * Sets the maximum number of pages allows in all pools.
-> >>> + * This can only be set once, and the first caller wins.
-> >>> + */
-> >>> +void drm_page_pool_set_max(unsigned long max)
-> >>> +{
-> >>> +     if (!page_pool_size)
-> >>> +             page_pool_size =3D max;
-> >>> +}
-> >>> +
-> >>> +/**
-> >>> + * drm_page_pool_get_max - Maximum size of all pools
-> >>> + *
-> >>> + * Return the maximum number of pages allows in all pools
-> >>> + */
-> >>> +unsigned long drm_page_pool_get_max(void)
-> >>> +{
-> >>> +     return page_pool_size;
-> >>> +}
-> >> Well in general I don't think it is a good idea to have getters/setter=
-s
-> >> for one line functionality, similar applies to locking/unlocking the
-> >> mutex below.
-> >>
-> >> Then in this specific case what those functions do is to aid
-> >> initializing the general pool manager and that in turn should absolute=
-ly
-> >> not be exposed.
-> >>
-> >> The TTM pool manager exposes this as function because initializing the
-> >> pool manager is done in one part of the module and calculating the
-> >> default value for the pages in another one. But that is not something =
-I
-> >> would like to see here.
-> > So, I guess I'm not quite clear on what you'd like to see...
-> >
-> > Part of what I'm balancing here is the TTM subsystem normally sets a
-> > global max size, whereas the old ION pool didn't have caps (instead
-> > just relying on the shrinker when needed).
-> > So I'm trying to come up with a solution that can serve both uses. So
-> > I've got this drm_page_pool_set_max() function to optionally set the
-> > maximum value, which is called in the TTM initialization path or set
-> > the boot argument. But for systems that use the dmabuf system heap,
-> > but don't use TTM, no global limit is enforced.
->
-> Yeah, exactly that's what I'm trying to prevent.
->
-> See if we have the same functionality used by different use cases we
-> should not have different behavior depending on what drivers are loaded.
->
-> Is it a problem if we restrict the ION pool to 50% of system memory as
-> well? If yes than I would rather drop the limit from TTM and only rely
-> on the shrinker there as well.
+On 06/07/21 21:52, Eduardo Habkost wrote:
+> On Wed, Jun 09, 2021 at 02:14:39PM -0700, Pawan Gupta wrote:
+>> On CPUs that deprecated TSX, clearing the enumeration bits CPUID.RTM and
+>> CPUID.HLE may not be desirable in some corner cases. Like a saved guest
+>> would refuse to resume if it was saved before the microcode update
+>> that deprecated TSX.
+> Why is a global option necessary to allow those guests to be
+> resumed?  Why can't KVM_GET_SUPPORTED_CPUID always return the HLE
+> and RTM bits as supported when the host CPU has them?
 
-Would having the default value as a config option (still overridable
-via boot argument) be an acceptable solution?
+It's a bit tricky, because HLE and RTM won't really behave well.  An old 
+guest that sees RTM=1 might end up retrying and aborting transactions 
+too much.  So I'm not sure that a QEMU "-cpu host" guest should have HLE 
+and RTM enabled.
 
-Thanks again for the feedback!
+So it makes sense to handle it in userspace, with one of the two 
+following possibilities:
 
-thanks
--john
+- userspace sees TSX_FORCE_ABORT and if so it somehow "discourages" 
+setting HLE/RTM, even though they are shown as supported
+
+- userspace sees TSX_FORCE_ABORT and if so it knows HLE/RTM can be set, 
+even though they are discouraged in general
+
+In any case, KVM's "supported CPUID" is based on the host features but 
+independent.  KVM can decide to show or hide the hardware HLE and RTM 
+bits independent of the host tsx= setting; it may make sense to hide the 
+bits via a module parameter, but in any case this patch is not needed.
+
+Paolo
+
