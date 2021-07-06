@@ -2,98 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DB13BC94E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D8C3BC95C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhGFKRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 06:17:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231225AbhGFKRv (ORCPT
+        id S231330AbhGFKT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 06:19:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35073 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231225AbhGFKTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 06:17:51 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2137C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 03:15:11 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id i94so25432406wri.4
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 03:15:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=2y61eIOXeRoS1J9Ah3VdS858qMxJwWTMN0TN21jX/as=;
-        b=p0owoCIm/1D1Bn0eTvL99Bxxwva6n+a38rPHcVMtZw6d6dYx0sYie63u+NxBV7lzQi
-         y+xHnWpwfXWpI/05pDcRse84P0lKjyUQRW7k9enkV8m2MwZt1le5zS0GPxt34Utq64t8
-         7vbC5d59QoqNbLEXA7iSG5nc9bzdjqEwyHFglRmLbttucjbPzhNpl3WyzGz+hTNJ72r5
-         1n4tBV7+vr1PBvDWxF1gYcL24BS3KrW0hK+grwVg1vrsg+dRkYdjWFETa/uqwTVXfLDx
-         oyctNcHSKQ2o4aO106IHzCTPXRVhECtNKnsArv31pFkosn2DZg/3iSg5QndSGYFsb6Qi
-         4vpg==
+        Tue, 6 Jul 2021 06:19:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625566637;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=INwuWCTHwJkWzRGLe4lZtLxvqZwOmxhVQyrISiNn7GA=;
+        b=OhU66HeExE0sCoWFYFrPd7hB6GEQ32nAUKmekOMPkwj8mHTZKmaHwrc9CG6CnvjWjSOtJK
+        jbsdsLPa6cu9fuj1YCclYC/l7JmcB7pTx0qDwZUOtAceQt32gtMSwqHfxkJurUem+cydmA
+        bmjMBvTKdSoiZ3fcwO4MlydhsPg7ryU=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-377-P_u3xkfZOteMTP3ok4L45w-1; Tue, 06 Jul 2021 06:17:16 -0400
+X-MC-Unique: P_u3xkfZOteMTP3ok4L45w-1
+Received: by mail-ej1-f71.google.com with SMTP id p5-20020a17090653c5b02903db1cfa514dso5619634ejo.13
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 03:17:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=2y61eIOXeRoS1J9Ah3VdS858qMxJwWTMN0TN21jX/as=;
-        b=KLOFjaVvuFCA46qNXIZx4Ia0nAKb14xYzzGqeyUP3GbLMd/BGMNXwGPfq0xD5FtYgh
-         wCNiyBBhFiz1QeWrRGavps2tJoG/2/6cS7lAdjtQYXQmpKEkrtCuJh9hTUKoXuJw8ydO
-         lbep88DudZVoNErPrhWcbnqaxKTFG5oeZMBBMndloy0R+X3yvlxmRkVT7NsIoXuqwjG3
-         U3sVinFWiO3jubPiuu5isC6DThTpiUCWOxKcmUXb8h2gFMiJX557h5UDcxMDvXKsixPp
-         bpvogQVcw3e7qrP8txwO7mFZ++cbtXsV0PypMXv9Mek9qq9TNYA8pgndcaeb0e94BMts
-         uAqw==
-X-Gm-Message-State: AOAM532cVxJwiNWxO+5PjcWNPpveO0GdNHkfrc/BR1mmW9O6xMJz/NLT
-        IYDguQ3ufJ+5X3llbykSQ70lgQ==
-X-Google-Smtp-Source: ABdhPJyhoBLX9YpczREivBIqkjXikuPUmLPhwlmXcBfMnD5Zk+VhqM4LkYkC3rCJFCXTwc7Q4mserA==
-X-Received: by 2002:adf:d214:: with SMTP id j20mr16335482wrh.392.1625566510485;
-        Tue, 06 Jul 2021 03:15:10 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id e9sm1931168wra.15.2021.07.06.03.15.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 03:15:09 -0700 (PDT)
-Date:   Tue, 6 Jul 2021 11:15:08 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [GIT PULL] kgdb changes for v5.14
-Message-ID: <20210706101508.4jha4mm6kbcdpvdt@maple.lan>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=INwuWCTHwJkWzRGLe4lZtLxvqZwOmxhVQyrISiNn7GA=;
+        b=qXyqij4HEci+3xKajY07Nc3Z2yxcuGNPzLUIu1WznbNsfcMAk8QjOfbpoi+8xsRIgg
+         kwjJkBWJ/IpKOh8MzAljU7xCESWtEcxiqsOOOycfllx5eTCrRzpQe1ooPMRpIGjTGFfQ
+         Jr58iuZhpQdYQskKWxMbp3w3jjZf7Bn2/bTDMw4UQrNeOCizSi0LmeVEVafjpJs9Jr0G
+         ft6IadPEJaYCvHe3bU54Q+apj9tL+HqPs4Y7ZU8PvwXQttWoADoLr+dz68n1EszJUB2j
+         cfstgMoii4r6paekcHcH6oER364ork/mDjJPGILOnT9h3jZ2OYlm2n3YU1gnL9SZMSEM
+         vpuQ==
+X-Gm-Message-State: AOAM5332O+k2ugEbnvwsOikvpJp+TDRh4gHflZh5qVNw3X+hLeNFzhUr
+        tX8iXNkZfmylpWj+q6fevRgUVlSmeMpl4JMET6LOPmtdAY2fmcpBMeg4OcS+hNBN0zDbSVVhcAU
+        3jCCYfSTYNeO4PVdYD1QHATV9KZmzB9IzZTN36EzT6UhMA31LHo7j05sLqxTKZosAmm/ZIeDZoR
+        I4
+X-Received: by 2002:a17:907:2cc7:: with SMTP id hg7mr17836144ejc.214.1625566634618;
+        Tue, 06 Jul 2021 03:17:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzODed5Lb8yuTqOS3XYtFe5hErRKmr4FBZqB2ys62JHdkriDCMOZx6jCuBdpWFd6OUr/kVCQQ==
+X-Received: by 2002:a17:907:2cc7:: with SMTP id hg7mr17836102ejc.214.1625566634231;
+        Tue, 06 Jul 2021 03:17:14 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id x18sm5481719ejb.111.2021.07.06.03.17.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 03:17:13 -0700 (PDT)
+Subject: Re: [PATCH 2/3] asus-wmi: Add dgpu disable method
+To:     =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>,
+        "Luke D. Jones" <luke@ljones.dev>
+Cc:     corentin.chary@gmail.com, mgross@linux.intel.com,
+        jdelvare@suse.com, linux@roeck-us.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210704222148.880848-1-luke@ljones.dev>
+ <20210704222148.880848-3-luke@ljones.dev>
+ <knw744OJB1AYrrFpo77N1Eei0JZC3SjKzg6SMoMhOsEchAiE8-klOIPTyFCAUSiVeTopPNqgFSefQJ2av6Gs_cS4TuIRXVQcHUxvw8YvSl0=@protonmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e933f74e-50d3-8de9-258a-a4000f3b6403@redhat.com>
+Date:   Tue, 6 Jul 2021 12:17:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <knw744OJB1AYrrFpo77N1Eei0JZC3SjKzg6SMoMhOsEchAiE8-klOIPTyFCAUSiVeTopPNqgFSefQJ2av6Gs_cS4TuIRXVQcHUxvw8YvSl0=@protonmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 8124c8a6b35386f73523d27eacb71b5364a68c4c:
+Hi,
 
-  Linux 5.13-rc4 (2021-05-30 11:58:25 -1000)
+Barnabás made some good points which I missed.
 
-are available in the Git repository at:
+See me reply inline.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/danielt/linux.git/ tags/kgdb-5.14-rc1
+On 7/5/21 2:47 AM, Barnabás Pőcze wrote:
+> Hi
+> 
+> I have added a couple comments inline.
+> 
+> 
+> 2021. július 5., hétfő 0:21 keltezéssel, Luke D. Jones írta:
+> 
 
-for you to fetch changes up to c8daba4640ac9619f9cb34ca7c314ff1eaff5f33:
+<snip>
 
-  kgdb: Fix fall-through warning for Clang (2021-06-01 10:34:35 +0100)
+>> +static ssize_t dgpu_disable_store(struct device *dev,
+>> +				    struct device_attribute *attr,
+>> +				    const char *buf, size_t count)
+>> +{
+>> +	int result;
+>> +	u8 disable;
+>> +	struct asus_wmi *asus = dev_get_drvdata(dev);
+>> +
+>> +	result = kstrtou8(buf, 10, &disable);
+> 
+> You could use `kstrtobool()`. I think that would be better since it accepts
+> 'y', 'n', etc. in addition to 0 and 1.
 
-----------------------------------------------------------------
-kgdb patches for 5.14
+Good point and the same applies to patch 1/3.
 
-This was a extremely quiet cycle for kgdb. This PR consists of two
-patches that between them address spelling errors and a switch
-fallthrough warning.
+>> +	if (result < 0)
+>> +		return result;
+>> +
+>> +	if (disable > 1 || disable < 0)
+>> +		return -EINVAL;
+>> +
+>> +	asus->dgpu_disable_mode = disable;
+>> +	/*
+>> +	 * The ACPI call used does not save the mode unless the call is run twice.
+>> +	 * Once to disable, then once to check status and save - this is two code
+>> +	 * paths in the method in the ACPI dumps.
+>> +	*/
+>> +	dgpu_disable_write(asus);
+>> +	dgpu_disable_write(asus);
+> 
+> Is there any reason the potential error codes are not returned?
 
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+Good question.
 
-----------------------------------------------------------------
-Gustavo A. R. Silva (1):
-      kgdb: Fix fall-through warning for Clang
+<snip>
 
-Zhen Lei (1):
-      kgdb: Fix spelling mistakes
+>> @@ -2699,6 +2792,10 @@ static int asus_wmi_add(struct platform_device *pdev)
+>>  	if (err)
+>>  		goto fail_platform;
+>>
+>> +	err = dgpu_disable_check_present(asus);
+>> +	if (err)
+>> +		goto fail_dgpu_disable;
+>> +
+> 
+> Should this really be considered a "fatal" error?
 
- include/linux/kgdb.h           | 8 ++++----
- kernel/debug/debug_core.c      | 3 ++-
- kernel/debug/kdb/kdb_main.c    | 8 ++++----
- kernel/debug/kdb/kdb_private.h | 2 +-
- 4 files changed, 11 insertions(+), 10 deletions(-)
+Well dgpu_disable_check_present() does already contain:
+
+		if (err == -ENODEV)
+			return 0;
+
+IOW it only returns an error on unexpected errors and asus_wmi_add()
+already contains a couple of other foo_present() checks which are
+dealt with in the same way, so this is consistent with that and
+being consistent is good, so I think this is fine.
+
+Regards,
+
+Hans
+
+
