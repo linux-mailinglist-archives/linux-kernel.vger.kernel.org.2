@@ -2,161 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587393BCB10
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03E73BCB14
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhGFK7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 06:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38976 "EHLO
+        id S231516AbhGFK7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 06:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbhGFK7j (ORCPT
+        with ESMTP id S231630AbhGFK7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 06:59:39 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64442C061766
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 03:57:00 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id p8so25581091wrr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 03:57:00 -0700 (PDT)
+        Tue, 6 Jul 2021 06:59:47 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905E9C061574;
+        Tue,  6 Jul 2021 03:57:09 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id w22so8181810qtj.8;
+        Tue, 06 Jul 2021 03:57:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l+H215FJz8pJPI4hh9v/iWNuVbn0nifA4Jaafd28qC4=;
-        b=UCSZee8bkwQhVbXkWa9n6dda1YB5cGQkIPiVKhb8KKz80S/zIXHEgxifSSr+8L29bp
-         bwv7fkXzMNhKGGQN2c3BmsUcjrj/WCoXm6Ben2qP8+Bg0YH95vQBsFhGIbEyGr/lrU1Q
-         Ln5txN4w7J+T5EMRaT/NpEGp+Hm9dI3o+V77bGk/sdRf0SYC4Lr7n5Wxc/3RjcZaFj49
-         pMNis8YQVecjuUzjIFQPnwBJPdiGSBK5ZHDxUgMGNPSzs1az976bZyXyvd6ztydUQ9Xm
-         nwGGg1WV1KPpW+turyU66Gq6SgHBmHxg/+HCmUj/1/PNr7tZsqoiZrxGaduOWyUClunz
-         BuDQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JkSvEYz3RxmiVyBOaotyMVwPxMuIkXjED/WpnZlsv+k=;
+        b=TPKj95Aa52oFXx0y5cdAHDIljPwLgZyBeIv/qOBghV/G9AC5Hv2sw7lUAhpcFDdAv8
+         o818pDv1lchuG1X27vjIaG+8iIDf9mpxtrSalZbqkBKYKG8vlNc8a9AK4DaLtnA4vsx6
+         VKYQCywDFwk5FDGb9bNcBtmcd505k89e4LuGfikBmwLyrumYv0r880Vksay7VZYui07y
+         pPvlVZhfnUdgToHec4g2AJfDoN7r83J0Iykydf4JbZfafO/v5vJpnFN7kcoopljKHAKZ
+         eUOO3c3XA96rEXYrT0HVgvLJtW8pWkMYgiXBz2OtfaaglcC8rxyx+paiYliUEnvIPf/j
+         dSRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l+H215FJz8pJPI4hh9v/iWNuVbn0nifA4Jaafd28qC4=;
-        b=jbfUfbr4uwDg+P2Sc0W3/reCQ8YqOfFfURAKiOzP9jFUus804RC6yp2XyO+vdCa4cE
-         fqnsh/A618yJA/+ID/dWPEfPtzVpYwnNyH2TreMfPJ9UtZyXYiidNtU3fgy9QUBu2ifU
-         xy39Gb3yW7UJJM49TBmAtoQ4K0OY9R6vpRJoS8PAnAJfQR5QbPqH8Y0lUklZ3z/6d5QJ
-         ekT7R/pGP0gf/Q42Hfu0h5KjuRCU2/aCW3ZeHZp7pp118d1PHRYFuf6DTc9/SIMBB4oL
-         QjX46NsuUNekyBym4uZHrHGMwLAVAB4nZ2CA8/3Kxb5kP3cQO0Qxlp7dqmkiYNBBrFoY
-         mlPw==
-X-Gm-Message-State: AOAM5303Ya9KezzezTQRa52CqP6bORbGXCNCFCxwAKo7ejtlDAA/YLq+
-        78Rxth66eY6BvrwVua6jp20kow==
-X-Google-Smtp-Source: ABdhPJwMhrNwpvhovE9XwK0jC9OIuq8TBsnt9DrnKno6fhX9rnIZO8Cd1er4LBIyS1GM0G/5i1HmFw==
-X-Received: by 2002:a5d:4711:: with SMTP id y17mr21172584wrq.355.1625569018612;
-        Tue, 06 Jul 2021 03:56:58 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id o3sm16468134wrw.56.2021.07.06.03.56.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Jul 2021 03:56:57 -0700 (PDT)
-Subject: Re: [PATCH] bus: Make remove callback return void
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Geoff Levand <geoff@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Johannes Thumshirn <morbidrsa@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jon Mason <jdmason@kudzu.us>, Allen Hubbe <allenbh@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-staging@lists.linux.dev, greybus-dev@lists.linaro.org,
-        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-serial@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-References: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <bd408732-a23d-d3e6-3786-ea9fbf114d50@linaro.org>
-Date:   Tue, 6 Jul 2021 11:56:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JkSvEYz3RxmiVyBOaotyMVwPxMuIkXjED/WpnZlsv+k=;
+        b=C+ywF16x785m2EZAMiBs5sP0daKPQozB/QLm+divkl7nwzzLTQnMPtlh3JmbZga2sK
+         dZIq5uF22qliNcuCopMg13Wz6kDSULfaBGWq+KpTWKz0TE9aaYI6xdAlYM+u+0bxyUN5
+         CvqAfQhEPfnJ7tqWf4jTmYQw6eENjmT2viYyk0a9tAX5wKKv2Z1VOtfMn8SJuJE24Jfz
+         o9TOQKmaplxApH71Q5piwzk17e69BGI8ynrR8D21wA1MeDWFkbUYbGV7tAkgvFtQmEkG
+         t/5EubJ5tYCSpe2kA4RmpvnMXLp9DqEW/ueo5clD0tcEUfRhL4Nw6yzxV0bYgrMeRxSq
+         ow+w==
+X-Gm-Message-State: AOAM533BGAAGQnP65jJjDOcyVVIY64TVaGw05IerDJEpqp6YiXN0MSrC
+        GG3X6FnzBp3gxv3ncmWir+eIUYrcGwRO9V5Dnl8=
+X-Google-Smtp-Source: ABdhPJzmLnm8I7wyX9zaibyB+BPknknkHo+oqt2anOVAN47jt+UVptfYzh7OOv9dfZV67itQZOtotQ+7OyAGFM/bAvI=
+X-Received: by 2002:ac8:5806:: with SMTP id g6mr16710670qtg.112.1625569028356;
+ Tue, 06 Jul 2021 03:57:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210705090050.15077-1-reniuschengl@gmail.com>
+ <CAPDyKFotmw-HQpZKCOD_8kThEa0_KSPnn36FNFLKRyUHYRHQjQ@mail.gmail.com>
+ <CAJU4x8u8JPBJ3V6MCi1XcO4Qim-COPuxOhTdUnor7JdNCUFb=w@mail.gmail.com>
+ <CAPDyKFqXsn91BvkJXMYSnc7X=RP9DXxXp2nKMmv+aMPoNdK2Tw@mail.gmail.com>
+ <CAJU4x8srB7skGFVcj1SPrzEZSnVkwKiW3OPN0GQxvgtRG7GAAQ@mail.gmail.com>
+ <CAPDyKFq0yHxX7wb4XGeiMiSGGiOf8RKJ5ahhFQ+_vodqnyPV9Q@mail.gmail.com>
+ <CAJU4x8uGxb5VD1WVV5-QeLkVzuuR09-NacL-9nuXe8Zofzb2=w@mail.gmail.com> <CAPDyKFpvCFYQVEp77hiRHY6CVDej-ffF5UE=LH=HSGcqMZA02w@mail.gmail.com>
+In-Reply-To: <CAPDyKFpvCFYQVEp77hiRHY6CVDej-ffF5UE=LH=HSGcqMZA02w@mail.gmail.com>
+From:   Renius Chen <reniuschengl@gmail.com>
+Date:   Tue, 6 Jul 2021 18:56:57 +0800
+Message-ID: <CAJU4x8t+aOqq82EJMUNDpWiE3GPeyZkjFhy=AkmctcDE3mx6fA@mail.gmail.com>
+Subject: Re: [PATCH] [v2] mmc: sdhci-pci-gli: Improve Random 4K Read
+ Performance of GL9763E
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <Ben.Chuang@genesyslogic.com.tw>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ulf Hansson <ulf.hansson@linaro.org> =E6=96=BC 2021=E5=B9=B47=E6=9C=886=E6=
+=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=886:08=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> [...]
+>
+> > > > Thanks for your explanation.
+> > > >
+> > > > I think there may be some misunderstandings here.
+> > >
+> > > I fully understand what you want to do.
+> > >
+> > > >
+> > > > Our purpose is to avoid our GL9763e from entering ASPM L1 state dur=
+ing
+> > > > a sequence of 4K read requests. So we don't have to consider about =
+the
+> > > > behavior/performance of the eMMC/SD card and what eMMC/SD card that=
+ is
+> > > > being used. We just need to know what kind of requests we are
+> > > > receiving now from the PCIe root port.
+> > > >
+> > > > Besides, the APSM L1 is purely hardware behavior in GL9763e and has=
+ no
+> > > > corresponding relationship with runtime PM. It's not activated by
+> > > > driver and the behaviors are not handled by software. I think runti=
+me
+> > > > PM is used to handle the behaviors of D0/D3 of the device, but not =
+the
+> > > > link status of ASPM L0s, L1, etc.
+> > >
+> > > Maybe runtime PM isn't the perfect fit for this type of use case.
+> > >
+> > > That still doesn't matter to to me, I will not accept this kind of
+> > > governor/policy based code for use cases, in drivers. It doesn't
+> > > belong there.
+> > >
+> >
+> > Hi Ulf,
+> >
+> > The behavior of this patch is to set the value of a GL9763e vendor
+> > specified register. Why it doesn't belong to GL9763e driver but other
+> > common codes?
+>
+> Let me try one more time.
+>
+> The code that is needed to put the GL9763e HW into low power state
+> (writing to GL9763e specific register) certainly belongs in the
+> driver.
+>
+> The code that monitors for a specific use case does not.
+>
+> >
+> > > >
+> > > > I agree that the policy of balancing performance vs the energy cost=
+ is
+> > > > a generic problem that all mmc drivers share. But our driver of
+> > > > GL9763e is a host driver, the setting in this patch is also only fo=
+r
+> > > > GL9763e, could not be used by other devices. It depends on our
+> > > > specific hardware design so that it is not a generic solution or
+> > > > policy. So I think to implement such a patch in our specific GL9763=
+e
+> > > > driver to execute the specific actions just for our hardware design=
+ is
+> > > > reasonable.
+> > >
+> > > From the use case point of view, the GL9763e hardware design isn't at
+> > > all specific.
+> > >
+> > > In many cases, controllers/platforms have support for low power state=
+s
+> > > that one want to enter to avoid wasting energy. The difficult part is
+> > > to know *when* it makes sense to enter a low power state, as it also
+> > > introduces a latency when the power needs to be restored for the
+> > > device, to allow it to serve a new request.
+> > >
+> > > To me, it sounds like you may have been too aggressive on avoid
+> > > wasting energy. If I understand correctly the idle period you use is
+> > > 20/21 us, while most other drivers use 50-100 ms as idle period.
+> > >
+> >
+> > Yes, according to our customer's test for the GL9763e, if the ASPM L1
+> > entry delay of GL9763e, which is the idle period you mentioned, is
+> > larger than 20/21 us, it will not pass the PLT test. The PLT is
+> > requested by Google for evaluating the product's battery life. The
+> > product won't be accepted by Google if it fails the PLT test. So we
+> > set the ASPM L1 entry delay to 20/21us.
+> >
+> > With such a short idle period, during 4K reads, the idle time between
+> > the read requests will be larger than 20/21us, so GL9763e will enter
+> > ASPM L1 very frequently to impact the performance.
+> >
+> > The bad performance of 4K reads was highlighted by Google, too. Our
+> > customer has to pass both the PLT test and 4K read performance test by
+> > Google's request. So after some discussions with our customer and
+> > Google, we decided to submit such a patch to get the best balance to
+> > satisfy Google's requiremnet.
+> >
+> > The function and the register is vendor specified of GL9763e, so we
+> > access it in the vendor driver of GL9763e. Add some functions in other
+> > mmc general codes to do something only for GL9763e and can not be
+> > applied by other devices might be a little bit strange and difficult
+> > to implement and design?
+>
+> I haven't said implementation need to be easy, but suggest a few
+> options to move forward.
+>
+> What did state and I am not going to change my opinion on this, is the
+> governor code that monitors for use cases, don't belong in the driver.
+>
+
+Hi Ulf,
 
 
-On 06/07/2021 10:50, Uwe Kleine-König wrote:
-> The driver core ignores the return value of this callback because there
-> is only little it can do when a device disappears.
-> 
-> This is the final bit of a long lasting cleanup quest where several
-> buses were converted to also return void from their remove callback.
-> Additionally some resource leaks were fixed that were caused by drivers
-> returning an error code in the expectation that the driver won't go
-> away.
-> 
-> With struct bus_type::remove returning void it's prevented that newly
-> implemented buses return an ignored error code and so don't anticipate
-> wrong expectations for driver authors.
-> 
-> Signed-off-by: Uwe Kleine-König<u.kleine-koenig@pengutronix.de>
-> ---
-...
+Thanks, I understand what you mean.
 
->   drivers/slimbus/core.c                    | 4 +---
+I simply searched for the keyword "MMC_READ_MULTIPLE_BLOCK" in the
+drivers/mmc/host folder, and found that in some SD/MMC host controller
+driver codes such as alcor.c, cavium.c, ...etc, there are also
+behaviors for monitoring the request in their driver. What's the
+difference between theirs and ours?
 
-for slimbus changes:
+And if the code that monitors the requstes does not belong the driver,
+where should I implement the code and how to add some functions only
+for GL9763e in that place, in your opinion?
 
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Thanks for clarifying my questions.
 
+
+Best regards,
+
+Renius
+
+> Kind regards
+> Uffe
