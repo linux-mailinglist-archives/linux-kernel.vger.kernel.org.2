@@ -2,199 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CF63BD943
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57593BD897
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbhGFPAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231937AbhGFPAc (ORCPT
+        id S232136AbhGFOpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:45:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40419 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232564AbhGFOoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:00:32 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9328AC061797
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 07:09:37 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id x22-20020a9d6d960000b0290474a76f8bd4so20058648otp.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:09:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oa36JT6ZXXdeNbOW7MRMPItJC85KRkSUT3t0lipsRGE=;
-        b=I3PSWk0qdtLFBmphAZxkzdBLbBanHnSZ0lDy0Hh/Ww45NThwfPWgOKeOhk0qySlDno
-         N76byVhIjKXABiEeqkETac6DodkM4w9tLHdTxMThwhYfWv577ISzp1xMGs578F8PpfZ1
-         q9Lvgwe7Uqz9k9WBl4dQSoOJQ0Uhiw8dS3XsY=
+        Tue, 6 Jul 2021 10:44:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625582488;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3XDR4t5i3p70PJH/UTW7pBWWy4YfeP9y6sBia6H04go=;
+        b=gz1pyKHPcb9kY3EKgQ6AkcuAyVSPAGGM1cKNjMwGCTKOrN989SDJPycmTH8pnpMqJ3WeUe
+        XfWSifJA1VEaiqDdHFioM+qzVk8w3QyyfZItFstQRdq12/neV8wa5Au7bcU1HwqR/fzHnk
+        uakQNtFhNPmK9QgIL2aEF0peAyjAfQQ=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-198-WOnMi9yhMJe_OU-F7MEOkg-1; Tue, 06 Jul 2021 10:09:36 -0400
+X-MC-Unique: WOnMi9yhMJe_OU-F7MEOkg-1
+Received: by mail-ej1-f72.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so5857727ejz.5
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:09:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oa36JT6ZXXdeNbOW7MRMPItJC85KRkSUT3t0lipsRGE=;
-        b=dfQprv/aUx7OB4LxEdTcXamBC86QyF5oWWvrBPNM6mxR95Gqdvw6ySAxv2yIdHdVJm
-         eUhYjP5ICLFbsj7DjYvzgl07KszBqFJ7Y6KDpXijqRjt5tK9n3gJ5uVDmxtmqgJ37Xp+
-         5P2CLjXGfEpwkgilpOkzq73dcGx3UAolc4HiQlW+4WoEukstEzV7UVFuJLO+N7SrEyqe
-         PIVK8TD9SbH6fWZjKKKOJjXdeMXiNNPk6nosfJ4m9ZInmL3aqcukMqNzQL+BT+b08/Jg
-         Gm/TrvoWgtWffhk+m2MHo6p1OhJ38/YPGxeVGed/GNhEi5H1G9jMIGWhJPI/ylc7JbU2
-         roig==
-X-Gm-Message-State: AOAM530tDO6Mupf3erYNrzhr8xL6ZP3rQDiU7LXzKrNsiDsaFQ79wDKo
-        beOM73uWFlg70vApTpQdqObxjzNOTmz0CtfwoYWvvQ==
-X-Google-Smtp-Source: ABdhPJwzXN/NwcfTnIiFRue1K5cnhWHoor7mzX3yGgIo+ac7YSL8ymVa3l8VD8fedtiFTq2s+GtWnKhr2VvW4LOuy6E=
-X-Received: by 2002:a05:6830:2366:: with SMTP id r6mr15034001oth.188.1625580576688;
- Tue, 06 Jul 2021 07:09:36 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3XDR4t5i3p70PJH/UTW7pBWWy4YfeP9y6sBia6H04go=;
+        b=mxRgaZOlusjP0opHCEUywVQOLzdj22jIInjUd2bM+yH54X2/pgkhdpZHHe3zlFZeYl
+         2tmjXEnKMZOb/Imcm+tbjfZS29unwpHUGeaaTBlbLg/OmW/5kdjo9MiAcIYfLNoxqNFN
+         ZxMyNeHSL4+f0ZMyuZ3Kxaj/ensFbiqbl7d16COHlMcLcqR6zMIC9rNSbnb4jH2NKRxx
+         FXSmDz6hMNYKxENZq/fuO2XVcyFAlJpYmMOQvf6EwRGJBEwIT5ssI+poaq5YzcfORib1
+         0WhtWOeAmMw+TVghgrOmrVc5x/VRnhPJUIu58ar06XIodf8Dpzv9BqjxdOs7fAcdLIBq
+         SnVw==
+X-Gm-Message-State: AOAM533Y8KzrEAsvolLuVViVmZzXE9ODLoyBAQDrHN70aidMjgZG1aPw
+        Zy1u/dCOIRcfAnDivss0Tddh5wAJcI301I0DhlxkN2kIkGIs0kHyX+jKC4KwFlBV0OBVePtOcOI
+        acjVGGTHeyHKaSHciW/N1gjLl
+X-Received: by 2002:a05:6402:7cf:: with SMTP id u15mr23179788edy.197.1625580575281;
+        Tue, 06 Jul 2021 07:09:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy5IMU/pbxNHRaQUxdaB6tteA2kmm8Z+qw9Gju74ueIGFGdIm3nk3TPo1cMh4ZN602R18Aytw==
+X-Received: by 2002:a05:6402:7cf:: with SMTP id u15mr23179752edy.197.1625580575064;
+        Tue, 06 Jul 2021 07:09:35 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id jx17sm5780741ejc.60.2021.07.06.07.09.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 07:09:34 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 32/69] KVM: x86: Allow host-initiated WRMSR to set
+ X2APIC regardless of CPUID
+To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <9b00cb86878e9986f47a0febce3c0d2872d91443.1625186503.git.isaku.yamahata@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <21864cc4-56ed-096b-c3ff-9fc742d68624@redhat.com>
+Date:   Tue, 6 Jul 2021 16:09:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210705130314.11519-1-ogabbay@kernel.org> <YOQXBWpo3whVjOyh@phenom.ffwll.local>
- <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
- <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
- <CAKMK7uHpKFVm55O_NB=WYCsv0iUt92ZUn6eCzifH=unbhe3J8g@mail.gmail.com>
- <CAKMK7uFGr=ugyKj0H3ctbh28Jnr25vAgXPBaDBMmfErCxYVo3w@mail.gmail.com> <20210706134430.GL4604@ziepe.ca>
-In-Reply-To: <20210706134430.GL4604@ziepe.ca>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Tue, 6 Jul 2021 16:09:25 +0200
-Message-ID: <CAKMK7uFEZjp2_WBhtkVxSNQ-1WcBSr3NDotY0fjz0iLRw8Barw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9b00cb86878e9986f47a0febce3c0d2872d91443.1625186503.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 3:44 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Tue, Jul 06, 2021 at 02:07:16PM +0200, Daniel Vetter wrote:
->
-> > On the "rdma-core" idea, afaik rdma NIC do not have fully programmable
-> > cores in their hw, for which you'd need some kind of compiler to make
-> > use of the hardware and the interfaces the kernel provides? So not
-> > really compareable, but also my understanding is that rdma-core does
-> > actually allow you to reasonable use&drive all the hw features and
-> > kernel interfaces fully.
->
-> The whole HPC stack has speciality compilers of course. OpenMP, PGAS,
-> etc. These compilers map onto library primitives that eventually boil
-> down into rdma-core calls. Even the HW devices have various
-> programmability that are being targetted with compilers now. People
-> are making NIC devices with ARM cores/etc - P4 is emerging for some
-> packet processing tasks.
+On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
+> Let userspace, or in the case of TDX, KVM itself, enable X2APIC even if
+> X2APIC is not reported as supported in the guest's CPU model.  KVM
+> generally does not force specific ordering between ioctls(), e.g. this
+> forces userspace to configure CPUID before MSRs.
 
-Well it depends which compilers we're talking about here, and what
-kind of features. Higher level compilers that break down some fancy
-language like OpenMP into what that actually should do on a given
-hardware like gpu, or rdma-connected cluster, or whatever, we really
-don't care about. You don't need that to drive the hardware. Usually
-that stuff works by breaking some of the code down into cpu compiler
-IR (most of this is built on top of LLVM IR nowadays), interspersed
-with library calls to the runtime.
+You already have to do this, see for example MSR_IA32_PERF_CAPABILITIES:
 
-Now the thing I care about here is if things doen't get compiled down
-to cpu code, but to some other IR (SPIR-V is starting to win, but very
-often ist still a hacked up version of LLVM IR), which then in a
-hw-specific backend gets compiled down to instructions that run on the
-hw. I had no idea that rdma NICs can do that, but it sounds like? I
-guess maybe some openmpi operations could be done directly on the rdma
-chip, but I'm not sure why you'd want a backend compiler here.
+                 struct kvm_msr_entry msr_ent = {.index = msr, .data = 0};
 
-Anyway, for anything that works like a gpu accelerator, like 3d accel,
-or parallel compute accel (aka gpgpu) or spatial compute accel (aka
-NN/AI) or maybe even fpga accel most of the magic to use the hardware
-is in this backend compiler, which translates from an IR into whatever
-your accelerator consumes. That's the part we really care about for
-modern accelerators because without that defacto the hardware is
-useless. Generally these chips have full-blown, if special purpose
-ISA, with register files, spilling, branches, loops and other control
-flow (sometimes only execution masks on simpler hw).
+                 if (!msr_info->host_initiated)
+                         return 1;
+                 if (guest_cpuid_has(vcpu, X86_FEATURE_PDCM) && kvm_get_msr_feature(&msr_ent))
+                         return 1;
+                 if (data & ~msr_ent.data)
+                         return 1;
 
-> rdma-core can drive all the kernel interfaces with at least an ioctl
-> wrapper, and it has a test suite that tries to cover this. It does not
-> exercise the full HW capability, programmability, etc of every single
-> device.
->
-> I actually don't entirely know what everyone has built on top of
-> rdma-core, or how I'd try to map it the DRI ideas you are trying to
-> explain.
->
-> Should we ban all Intel RDMA drivers because they are shipping
-> proprietary Intel HPC compilers and proprietary Intel MPI which drives
-> their RDMA HW? Or is that OK because there are open analogs for some
-> of that stuff? And yes, the open versions are inferior in various
-> metrics.
->
-> Pragmatically what I want to see is enough RDMA common/open user space
-> to understand the uAPI and thus more about how the kernel driver
-> works. Forcing everyone into rdma-core has already prevented a number
-> of uAPI mistakes in drivers that would have been bad - so at least
-> this level really is valuable.
->
-> > So we actually want less on dri-devel, because for compute/accel chips
-> > we're currently happy with a vendor userspace. It just needs to be
-> > functional and complete, and open in its entirety.
->
-> In a sense yes: DRI doesn't insist on a single code base to act as the
-> kernel interface, but that is actually the thing that has brought the
-> most value to RDMA, IMHO.
+Is this patch necessary?  If not, I think it can be dropped.
 
-So in practice we're not that different in DRI wrt userspace - if
-there is an established cross-vendor project in the given area, we do
-expect the userspace side to be merged there. And nowadays most of the
-feature work is done that way, it's just that we don't have a single
-project like rdma-core for this. We do still allow per-driver submit
-interfaces because hw is just not standardized enough there, the
-standards are at a higher level. Which is why it just doesn't make
-sense to talk about a kernel driver as something that's useful
-stand-alone at all.
+Paolo
 
-> We've certainly had some interesting successes because of this. The
-> first submission for AWS's EFA driver proposed to skip the rdma-core
-> step, which was rejected. However since EFA has been in that ecosystem
-> it has benefited greatly, I think.
->
-> However, in another sense no: RDMA hasn't been blocking, say Intel,
-> just because they have built proprietary stuff on top of our open
-> stack.
+> And for TDX, vCPUs
+> will always run with X2APIC enabled, e.g. KVM will want/need to enable
+> X2APIC from time zero.
 
-Oh we allow this too. We only block the initial submission if the
-proprietary stuff is the only thing out there.
-
-> Honestly, I think GPU is approaching this backwards. Wayland should
-> have been designed to prevent proprietary userspace stacks.
-
-That's not possible without some serious cans of worms though. Wayland
-is a protocol, and you can't forbid people from implementing it.
-Otherwise all the compatible open implementations of closed protocols
-wouldn't be possible either.
-
-Now the implementation is a different thing, and there a few
-compositors have succumbed to market pressure and enabled the nvidia
-stack, as a mostly separate piece from supporting the open stack. And
-that's largely because nvidia managed to completely kill the open
-source r/e effort through firmware licensing and crypto-key based
-verified loading, so unless you install the proprietary stack you
-actually can't make use of the hardware at all - well display works
-without the firmware, but 3d/compute just doesn't. So you just can't
-use nvidia hw without accepting their proprietary driver licenses and
-all that entails for the latest hardware.
-
-So I'm not clear what you're suggesting here we should do different.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
