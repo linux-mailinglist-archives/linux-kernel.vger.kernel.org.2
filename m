@@ -2,116 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9233BD5D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE36E3BD576
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235792AbhGFM14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245147AbhGFMM3 (ORCPT
+        id S1344483AbhGFMWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:22:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27805 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242402AbhGFMCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 08:12:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840FDC061574;
-        Tue,  6 Jul 2021 04:59:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Fz8nF0VvqASVf4DbdzvDOafrQ9TSRbCa0m4+JXcIrn0=; b=SBM+5pSXppWogXeoTfoIyFNkHB
-        XKLpcFUeu4QHdxqUQYpq5/S6lr25MvHybzFvvfwTkwSKIdDzAgOHZfnr2KlLz/2/zR3Lwzb/ikYVx
-        Bdt10jcYODzGKXZQljrIxfTlBPYXB36oZnNwD5Kuvai4a9t3Qoi9bLjrbmTuIJk3I+yAVeX+UO6d7
-        Hbo/86Qsn04ajnJbmi1md9nkse6oxQNQGt+RP9hR3QVEuT5zNkqYDacL1yFi7LCHzn0IPji2lxh51
-        Z7AlbJrtqx9fEpsV8T9Et8TGJKzVqRmMjzituz/jXXLXasiP+QpGt7SSlbE0SyVL+vIGKqstMq967
-        wHIzxW9A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0jjE-00BHHR-Io; Tue, 06 Jul 2021 11:59:08 +0000
-Date:   Tue, 6 Jul 2021 12:59:04 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next 1/1] iomap: Fix a false positive of UBSAN in
- iomap_seek_data()
-Message-ID: <YORFiMS+HD3dg2Su@casper.infradead.org>
-References: <20210702092109.2601-1-thunder.leizhen@huawei.com>
- <YN9vZfo+84gizjtf@casper.infradead.org>
- <492c7a7b-6f2e-de45-c733-51c80422305e@huawei.com>
- <YOQ5nuuoBVHABK1C@casper.infradead.org>
+        Tue, 6 Jul 2021 08:02:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625572795;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uW+E9jScNZ5agh1jL2MsJyyJ0npRr318JrpawlDgYKM=;
+        b=GF1mC7uCBZnNzh96WqufvL/F+t/2rhzn82Y2RIz0hLnxzaSO7lFYSnkL7YMziy6EWJ5PVT
+        Y7AFqTP0ZmXGs0rxbo1ayMccKaBOjcRy39/a+eqX4PyxVo/HJG6eCpwGrR8IbeVTY8hSir
+        FNsQB59tlOvtu7kvQ+yChFkUf8H709o=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-357-wDdpgtkON2STTvkG7kr7BA-1; Tue, 06 Jul 2021 07:59:54 -0400
+X-MC-Unique: wDdpgtkON2STTvkG7kr7BA-1
+Received: by mail-wm1-f69.google.com with SMTP id t12-20020a7bc3cc0000b02901f290c9c44eso824789wmj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 04:59:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=uW+E9jScNZ5agh1jL2MsJyyJ0npRr318JrpawlDgYKM=;
+        b=etL/BJ8JLUbvidmV4Mn1tZpz+1maEMsSa8s539pZRO7rO/I0ZQLLA2t5eE3f7cqUXd
+         bQDUNqIn0/65TKGaXq4Jm+oGT+60bmYw6cJL54SkXA8eVS7KUKCjE3NvprQ5Pn6c6Gsp
+         z9v0bZh64sq9+L/ri2zuXDfLkUaNJcqLc/S8x7bw605T+0MAkwDmSwAX7oPM9eRJP1uQ
+         TzsCZ5HA0ChmggdFIWkEv/sklbEo1vLOMBokNrwTflc8ZlBhdb1rr7eOM+W3EtBtS/7Q
+         GXxHwaV2H0yNYJWde2hlgyS59Ee+iaExRfXMquTonKdDedCzko2oJpNUEN78vMnv7bBx
+         BvRQ==
+X-Gm-Message-State: AOAM530lDuh52Zq9TrBzq8TADdRoKPGdm1xSDRa/k+T2pFRjby1eS+5L
+        0n5RLx7rotYdH1128F/0WwZdVOkJxUt+8uPlSqL02ZPk0zAi8c/FqOQ+xh6qowV13UVjYlkVjHq
+        jDc6laNh9h3Xmidv6SjEVfeMl7CPUJW9My2/wROmCfcf+WM+4jFg0puZIDoc6CGDqO9Aq7VUI
+X-Received: by 2002:a5d:69c9:: with SMTP id s9mr21255009wrw.155.1625572793166;
+        Tue, 06 Jul 2021 04:59:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy2u4QcVp8Z//R1GNAmE7RUOVZhrVIPxFfJvCNi9/yctbFPEoASdoc9aUnMXgr/0BSKnUccmw==
+X-Received: by 2002:a5d:69c9:: with SMTP id s9mr21254984wrw.155.1625572792939;
+        Tue, 06 Jul 2021 04:59:52 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
+        by smtp.gmail.com with ESMTPSA id h13sm5700227wrs.68.2021.07.06.04.59.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 04:59:52 -0700 (PDT)
+Subject: Re: [PATCH] KVM: s390: Enable specification exception interpretation
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        "open list:KERNEL VIRTUAL MACHINE for s390 (KVM/s390)" 
+        <kvm@vger.kernel.org>,
+        "open list:S390" <linux-s390@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210706114714.3936825-1-scgl@linux.ibm.com>
+ <87k0m3hd7h.fsf@redhat.com> <194128c1-8886-5b8b-2249-5ec58b8e7adb@de.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <be78ce5d-92e4-36bd-aa28-e32db0342a44@redhat.com>
+Date:   Tue, 6 Jul 2021 13:59:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOQ5nuuoBVHABK1C@casper.infradead.org>
+In-Reply-To: <194128c1-8886-5b8b-2249-5ec58b8e7adb@de.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 12:08:14PM +0100, Matthew Wilcox wrote:
-> On Mon, Jul 05, 2021 at 11:35:08AM +0800, Leizhen (ThunderTown) wrote:
-> > 
-> > 
-> > On 2021/7/3 3:56, Matthew Wilcox wrote:
-> > > On Fri, Jul 02, 2021 at 05:21:09PM +0800, Zhen Lei wrote:
-> > >> Move the evaluation expression "size - offset" after the "if (offset < 0)"
-> > >> judgment statement to eliminate a false positive produced by the UBSAN.
-> > >>
-> > >> No functional changes.
-> > >>
-> > >> ==========================================================================
-> > >> UBSAN: Undefined behaviour in fs/iomap.c:1435:9
-> > >> signed integer overflow:
-> > >> 0 - -9223372036854775808 cannot be represented in type 'long long int'
-> > > 
-> > > I don't understand.  I thought we defined the behaviour of signed
-> > > integer overflow in the kernel with whatever-the-gcc-flag-is?
-> > 
-> > -9223372036854775808 ==> 0x8000000000000000 ==> -0
-
-(actually, this is incorrect.  think about how twos-complement
-arithmetic works.  first you negate every bit, so 8000..000 turns into
-7fff..fff, then you add one, returning to 8000..000, so -LLONG_MIN ==
-LLONG_MIN)
-
-> > I don't fully understand what you mean. This is triggered by explicit error
-> > injection '-0' at runtime, which should not be detected by compilation options.
+On 06.07.21 13:56, Christian Borntraeger wrote:
 > 
-> We use -fwrapv on the gcc command line:
 > 
-> '-fwrapv'
->      This option instructs the compiler to assume that signed arithmetic
->      overflow of addition, subtraction and multiplication wraps around
->      using twos-complement representation.  This flag enables some
->      optimizations and disables others.
+> On 06.07.21 13:52, Cornelia Huck wrote:
+>> On Tue, Jul 06 2021, Janis Schoetterl-Glausch <scgl@linux.ibm.com> wrote:
+>>
+>>> When this feature is enabled the hardware is free to interpret
+>>> specification exceptions generated by the guest, instead of causing
+>>> program interruption interceptions.
+>>>
+>>> This benefits (test) programs that generate a lot of specification
+>>> exceptions (roughly 4x increase in exceptions/sec).
+>>>
+>>> Interceptions will occur as before if ICTL_PINT is set,
+>>> i.e. if guest debug is enabled.
+>>>
+>>> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+>>> ---
+>>> I'll additionally send kvm-unit-tests for testing this feature.
+>>>
+>>>    arch/s390/include/asm/kvm_host.h | 1 +
+>>>    arch/s390/kvm/kvm-s390.c         | 2 ++
+>>>    arch/s390/kvm/vsie.c             | 2 ++
+>>>    3 files changed, 5 insertions(+)
+>>
+>> (...)
+>>
+>>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+>>> index b655a7d82bf0..aadd589a3755 100644
+>>> --- a/arch/s390/kvm/kvm-s390.c
+>>> +++ b/arch/s390/kvm/kvm-s390.c
+>>> @@ -3200,6 +3200,8 @@ static int kvm_s390_vcpu_setup(struct kvm_vcpu *vcpu)
+>>>    		vcpu->arch.sie_block->ecb |= ECB_SRSI;
+>>>    	if (test_kvm_facility(vcpu->kvm, 73))
+>>>    		vcpu->arch.sie_block->ecb |= ECB_TE;
+>>> +	if (!kvm_is_ucontrol(vcpu->kvm))
+>>> +		vcpu->arch.sie_block->ecb |= ECB_SPECI;
+>>
+>> Does this exist for any hardware version (i.e. not guarded by a cpu
+>> feature?)
 > 
-> > lseek(r1, 0x8000000000000000, 0x3)
-> 
-> I'll see about adding this to xfstests ...
+> Not for all hardware versions, but also no indication. The architecture
+> says that the HW is free to do this or not. (which makes the vsie code
+> simpler).
 
-I have and it doesn't produce the problem.  My config:
+I remember the architecture said at some point to never set undefined 
+bits - and this bit is undefined on older HW generations. I might be 
+wrong, though.
 
-CONFIG_UBSAN=y
-# CONFIG_UBSAN_TRAP is not set
-CONFIG_CC_HAS_UBSAN_BOUNDS=y
-CONFIG_UBSAN_BOUNDS=y
-CONFIG_UBSAN_ONLY_BOUNDS=y
-CONFIG_UBSAN_SHIFT=y
-CONFIG_UBSAN_DIV_ZERO=y
-CONFIG_UBSAN_BOOL=y
-CONFIG_UBSAN_ENUM=y
-# CONFIG_UBSAN_ALIGNMENT is not set
-CONFIG_UBSAN_SANITIZE_ALL=y
-# CONFIG_TEST_UBSAN is not set
+(I though HW learned the lesson to always use proper feature indications 
+along with new features)
 
-I even went as far as adding printks to be sure I'm hitting it:
 
-hole length 0x8000000000000000
-data length 0x8000000000000000
+-- 
+Thanks,
 
-Are you compiling with:
-KBUILD_CFLAGS   += -fno-strict-overflow
+David / dhildenb
 
-Or have you done something weird?  What compiler version are you using?
