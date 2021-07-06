@@ -2,163 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB553BDEEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 23:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B133BDEF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 23:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhGFVgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 17:36:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52424 "EHLO
+        id S229884AbhGFVhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 17:37:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32993 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229781AbhGFVgR (ORCPT
+        by vger.kernel.org with ESMTP id S229811AbhGFVhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 17:36:17 -0400
+        Tue, 6 Jul 2021 17:37:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625607218;
+        s=mimecast20190719; t=1625607266;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WYXYXa+th2cYeV7B6S0tgQlmASzmnAP4QbXludRovGE=;
-        b=E9mT4GXO6bHnr2GGo2X3sp9hr7HlWZs/FEF/1+SII9VIQ+EIr4SIxmBsl345rdplj7TGOr
-        yKUcQj8E/lU215/tY4AiAEPwdjgOcReeANbp5hFva2Gg48ZcvoJRNcO2YC8sWRwgWCw5ax
-        GuUrLtwesDMcXJYlMf82Cuc1jakh/g8=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-300-ngitzSKOMZufYcKmF-q8WA-1; Tue, 06 Jul 2021 17:33:37 -0400
-X-MC-Unique: ngitzSKOMZufYcKmF-q8WA-1
-Received: by mail-lf1-f72.google.com with SMTP id x5-20020a0565121305b029032696702876so54448lfu.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 14:33:36 -0700 (PDT)
+        bh=Hy6kcB3MWGmQBDSvkn9YWzp9imXowxOywbrwsmGu+rk=;
+        b=VVXAmZTlfEOKWezrBMnzAet0EUsKVHPyFlKbLG622ssDVLjrm54/SMET55xSzmV6/1SKQm
+        9bPCYbAOlM4BabBfgPd5uF37g+ww+it2/jsEUzxc14piIleN2kMr5581MexLzRw0JPpde0
+        baKIyzwJn/ztMDFpG2uw+MJYaE2Hqp0=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-168--nLGMDEmOXKU8OWshbnOlA-1; Tue, 06 Jul 2021 17:34:24 -0400
+X-MC-Unique: -nLGMDEmOXKU8OWshbnOlA-1
+Received: by mail-oi1-f199.google.com with SMTP id w2-20020aca62020000b029024073490067so449866oib.21
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 14:34:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WYXYXa+th2cYeV7B6S0tgQlmASzmnAP4QbXludRovGE=;
-        b=qH7UBxNxu1cnv9+slh33UpKezqwYDmEiia0nY4ECQ7ExJAF84KAqmI3wvQZCiLKBcV
-         XriEgoszQkQbk5uU9RqdRCLTq8sk0Pcglw1z7itGRFWzW0rjalSzDn3KOT3witLxTFu3
-         /xvOJMtaee0nWIi9FB1NDfkyBMpBS87LQkb5LocLKd3H6oLoFWO36trfyk4nivPnamLF
-         sty1vJxp04nXPDtIRsuQ6XMrVyr+AraNE8r7T8LtSCCwqIFvWYRjxZl6CKnl0WQeCwNG
-         5F3mEMgXG04djuEzK9+XkkjA1eA5698tPtvbKOrShLv3bHo+hk5ln6RpP55B0CuyCjWV
-         oiiA==
-X-Gm-Message-State: AOAM531hDkamGPAiqeUWNUyNTPiu3F3iVIpE/l+96vc4+0BKZp+5Tu9Y
-        rLW3mfRQVrUy/hynYImDRg1dU8UjbUUUNK3fZkeAMG0S+shLExpbPl1YGCKqeATDQsd0SAITKVD
-        mHcSCUCWmSTNxsxzmOOjyru6fM+EfjHHvCg1iU2k3
-X-Received: by 2002:a2e:8001:: with SMTP id j1mr17136826ljg.332.1625607215517;
-        Tue, 06 Jul 2021 14:33:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz4lvwBEiKDKHJqTeJvqU552DWCIoa0gwphzHoaDY6oDwfysF/qgeGW16LxF1TghHCckBp9oqxbf93Crjo/a/0=
-X-Received: by 2002:a2e:8001:: with SMTP id j1mr17136776ljg.332.1625607215277;
- Tue, 06 Jul 2021 14:33:35 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Hy6kcB3MWGmQBDSvkn9YWzp9imXowxOywbrwsmGu+rk=;
+        b=m2oEuOImH1at2inuO7FPEwJvW9aK4V5H9Ce+h8SgxbGEke6cjA3T7e+HZvxppR2lQE
+         ohloWupC+iP/zkAAVuPXwINInk1gPQ+QyuXfkJKKnzRSLBFtgyP4cgm/aIAvBpTSIGkx
+         SNuTAd1mgG3fXh1rtg9NckFsF7AcuO7xczQjkIkWwMgAVZy2kJzgvjbhtKm60ZSCd5OM
+         +TiCyCFUZEbOiCf5EcjxmroYU7w/m8m3hrRxppomWoTkkZ3dQEm6nzvaT7sIuopi8LfH
+         7NAlmC06UDRCwgwR+OWLc0//hEnqFP+FdYDbc4MDgb7BvHDzzH/9u1C/9+StupWdow8q
+         NWGw==
+X-Gm-Message-State: AOAM530DF+jWamkWsN1vpeqc/Rx+yhBAA6ia20hwUy5t7HnCifuBiBZf
+        ai0Q1aWTr2oBL9tq5T1+RrN19+DYFIQRaFz7dar6WskwLTjAToM6ZJ1vVTagUKTnH/630XYrB4q
+        BCUD1l1R1pNpTSw8y/MJxP+rd
+X-Received: by 2002:a05:6830:4039:: with SMTP id i25mr7708072ots.187.1625607264268;
+        Tue, 06 Jul 2021 14:34:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyOPGU1f+ioZoUD9Gk09GX58M3FzDXJit2VBvWEDVdm0mrij5IOIC0yKFhYZIkQYwfMFoijGw==
+X-Received: by 2002:a05:6830:4039:: with SMTP id i25mr7708058ots.187.1625607264072;
+        Tue, 06 Jul 2021 14:34:24 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id s2sm3082387ook.24.2021.07.06.14.34.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 14:34:23 -0700 (PDT)
+Subject: Re: [PATCH v8 5/5] fpga: versal-fpga: Add versal fpga manager driver
+To:     Nava kishore Manne <nava.manne@xilinx.com>, robh+dt@kernel.org,
+        michal.simek@xilinx.com, mdf@kernel.org, arnd@arndb.de,
+        rajan.vaja@xilinx.com, gregkh@linuxfoundation.org,
+        amit.sunil.dhamne@xilinx.com, tejas.patel@xilinx.com,
+        zou_wei@huawei.com, lakshmi.sai.krishna.potthuri@xilinx.com,
+        ravi.patel@xilinx.com, iwamatsu@nigauri.org,
+        wendy.liang@xilinx.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-fpga@vger.kernel.org, git@xilinx.com,
+        chinnikishore369@gmail.com
+Cc:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+References: <20210626155248.5004-1-nava.manne@xilinx.com>
+ <20210626155248.5004-6-nava.manne@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <4429c722-52f3-2e16-3a53-910345507d3e@redhat.com>
+Date:   Tue, 6 Jul 2021 14:34:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
- <de6b97a567e273adff1f5268998692bad548aa10.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
- <20210706195233.h6w4cm73oktfqpgz@habkost.net> <4cc2c5fe-2153-05c5-dedd-8cb650753740@redhat.com>
-In-Reply-To: <4cc2c5fe-2153-05c5-dedd-8cb650753740@redhat.com>
-From:   Eduardo Habkost <ehabkost@redhat.com>
-Date:   Tue, 6 Jul 2021 17:33:19 -0400
-Message-ID: <CAOpTY_qdbbnauTkbjkz+cZmo8=Hz6qqLNY6i6uamqhcty=Q1sw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] x86/tsx: Add cmdline tsx=fake to not clear CPUID bits
- RTM and HLE
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tony Luck <tony.luck@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Victor Ding <victording@google.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Anand K Mistry <amistry@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210626155248.5004-6-nava.manne@xilinx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 5:05 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+
+On 6/26/21 8:52 AM, Nava kishore Manne wrote:
+> Add support for Xilinx Versal FPGA manager.
 >
-> On 06/07/21 21:52, Eduardo Habkost wrote:
-> > On Wed, Jun 09, 2021 at 02:14:39PM -0700, Pawan Gupta wrote:
-> >> On CPUs that deprecated TSX, clearing the enumeration bits CPUID.RTM and
-> >> CPUID.HLE may not be desirable in some corner cases. Like a saved guest
-> >> would refuse to resume if it was saved before the microcode update
-> >> that deprecated TSX.
-> > Why is a global option necessary to allow those guests to be
-> > resumed?  Why can't KVM_GET_SUPPORTED_CPUID always return the HLE
-> > and RTM bits as supported when the host CPU has them?
+> PDI source type can be DDR, OCM, QSPI flash etc..
+> But driver allocates memory always from DDR, Since driver supports only
+> DDR source type.
 >
-> It's a bit tricky, because HLE and RTM won't really behave well.  An old
-> guest that sees RTM=1 might end up retrying and aborting transactions
-> too much.  So I'm not sure that a QEMU "-cpu host" guest should have HLE
-> and RTM enabled.
-
-Is the purpose of GET_SUPPORTED_CPUID to return what is supported by
-KVM, or to return what "-cpu host" should enable by default? They are
-conflicting requirements in this case.
-
+> Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> Reviewed-by: Moritz Fischer <mdf@kernel.org>
+> ---
+> Changes for v2:
+>                -Updated the Fpga Mgr registrations call's
+>                 to 5.11
+>                -Fixed some minor coding issues as suggested by
+>                 Moritz.
 >
-> So it makes sense to handle it in userspace, with one of the two
-> following possibilities:
+> Changes for v3:
+>                -Rewritten the Versal fpga Kconfig contents.
 >
-> - userspace sees TSX_FORCE_ABORT and if so it somehow "discourages"
-> setting HLE/RTM, even though they are shown as supported
+> Changes for v4:
+>                -Rebased the changes on linux-next.
+>                 No functional changes.
 >
-> - userspace sees TSX_FORCE_ABORT and if so it knows HLE/RTM can be set,
-> even though they are discouraged in general
-
-In either case, we can make new userspace behave well. I'm worried
-about existing userspace:
-
-Returning HLE=1,RTM=1 in GET_SUPPORTED_CPUID makes existing userspace
-take bad decisions until it's updated.
-
-Returning HLE=0,RTM=0 in GET_SUPPORTED_CPUID prevents existing
-userspace from resuming existing VMs (despite being technically
-possible).
-
-The first option has an easy workaround that doesn't require a
-software update (disabling HLE/RTM in the VM configuration). The
-second option doesn't have a workaround. I'm inclined towards the
-first option.
-
-
+> Changes for v5:
+>                -None.
 >
-> In any case, KVM's "supported CPUID" is based on the host features but
-> independent.  KVM can decide to show or hide the hardware HLE and RTM
-> bits independent of the host tsx= setting; it may make sense to hide the
-> bits via a module parameter, but in any case this patch is not needed.
+> Changes for v6:
+>                -None.
 >
-> Paolo
+> Changes for v7:
+>                -Updated driver to remove unwated priv struct dependency.
 >
+> Changes for v8:
+>                -None.
+>
+>   drivers/fpga/Kconfig       |  9 ++++
+>   drivers/fpga/Makefile      |  1 +
+>   drivers/fpga/versal-fpga.c | 96 ++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 106 insertions(+)
+>   create mode 100644 drivers/fpga/versal-fpga.c
+>
+> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> index 8cd454ee20c0..16793bfc2bb4 100644
+> --- a/drivers/fpga/Kconfig
+> +++ b/drivers/fpga/Kconfig
+> @@ -234,4 +234,13 @@ config FPGA_MGR_ZYNQMP_FPGA
+>   	  to configure the programmable logic(PL) through PS
+>   	  on ZynqMP SoC.
+>   
+> +config FPGA_MGR_VERSAL_FPGA
+> +	tristate "Xilinx Versal FPGA"
+> +	depends on ARCH_ZYNQMP || COMPILE_TEST
+Shouldn't this depend on ZYNQMP_FIRMWARE ?
+> +	help
+> +	  Select this option to enable FPGA manager driver support for
+> +	  Xilinx Versal SoC. This driver uses the firmware interface to
+> +	  configure the programmable logic(PL).
+> +
+> +	  To compile this as a module, choose M here.
+>   endif # FPGA
+> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+> index 18dc9885883a..0bff783d1b61 100644
+> --- a/drivers/fpga/Makefile
+> +++ b/drivers/fpga/Makefile
+> @@ -18,6 +18,7 @@ obj-$(CONFIG_FPGA_MGR_TS73XX)		+= ts73xx-fpga.o
+>   obj-$(CONFIG_FPGA_MGR_XILINX_SPI)	+= xilinx-spi.o
+>   obj-$(CONFIG_FPGA_MGR_ZYNQ_FPGA)	+= zynq-fpga.o
+>   obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+= zynqmp-fpga.o
+> +obj-$(CONFIG_FPGA_MGR_VERSAL_FPGA)      += versal-fpga.o
+The other CONFIG_FPGA_MGR* configs are alphabetical, versal should follow.
+>   obj-$(CONFIG_ALTERA_PR_IP_CORE)         += altera-pr-ip-core.o
+>   obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
+>   
+> diff --git a/drivers/fpga/versal-fpga.c b/drivers/fpga/versal-fpga.c
+> new file mode 100644
+> index 000000000000..1bd312a31b23
+> --- /dev/null
+> +++ b/drivers/fpga/versal-fpga.c
+> @@ -0,0 +1,96 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2019-2021 Xilinx, Inc.
+> + */
+> +
+> +#include <linux/dma-mapping.h>
+> +#include <linux/fpga/fpga-mgr.h>
+> +#include <linux/io.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of_address.h>
+> +#include <linux/string.h>
+> +#include <linux/firmware/xlnx-zynqmp.h>
+> +
+> +static int versal_fpga_ops_write_init(struct fpga_manager *mgr,
+> +				      struct fpga_image_info *info,
+> +				      const char *buf, size_t size)
+> +{
+> +	return 0;
+> +}
+> +
+These empty ops should go away with my wrappers patchset
+> +static int versal_fpga_ops_write(struct fpga_manager *mgr,
+> +				 const char *buf, size_t size)
+> +{
+> +	dma_addr_t dma_addr = 0;
+> +	char *kbuf;
+> +	int ret;
+> +
+> +	kbuf = dma_alloc_coherent(mgr->dev.parent, size, &dma_addr, GFP_KERNEL);
+> +	if (!kbuf)
+> +		return -ENOMEM;
+> +
+> +	memcpy(kbuf, buf, size);
+> +	ret = zynqmp_pm_load_pdi(PDI_SRC_DDR, dma_addr);
+why isn't the size passed ?
+> +	dma_free_coherent(mgr->dev.parent, size, kbuf, dma_addr);
+> +
+> +	return ret;
+> +}
+> +
+> +static int versal_fpga_ops_write_complete(struct fpga_manager *mgr,
+> +					  struct fpga_image_info *info)
+> +{
+> +	return 0;
+> +}
+> +
+> +static enum fpga_mgr_states versal_fpga_ops_state(struct fpga_manager *mgr)
+> +{
+> +	return FPGA_MGR_STATE_UNKNOWN;
+> +}
+> +
+> +static const struct fpga_manager_ops versal_fpga_ops = {
+> +	.state = versal_fpga_ops_state,
+> +	.write_init = versal_fpga_ops_write_init,
+> +	.write = versal_fpga_ops_write,
+> +	.write_complete = versal_fpga_ops_write_complete,
+> +};
+> +
+> +static int versal_fpga_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct fpga_manager *mgr;
+> +	int ret;
+> +
+> +	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+> +	if (ret < 0) {
+> +		dev_err(dev, "no usable DMA configuration\n");
+> +		return ret;
+> +	}
+> +
+> +	mgr = devm_fpga_mgr_create(dev, "Xilinx Versal FPGA Manager",
+> +				   &versal_fpga_ops, NULL);
+> +	if (!mgr)
+> +		return -ENOMEM;
+> +
+> +	return devm_fpga_mgr_register(dev, mgr);
+> +}
+> +
+> +static const struct of_device_id versal_fpga_of_match[] = {
+> +	{ .compatible = "xlnx,versal-fpga", },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, versal_fpga_of_match);
+needs #if defined(CONFIG_OF) wrapper
+> +
+> +static struct platform_driver versal_fpga_driver = {
+> +	.probe = versal_fpga_probe,
+> +	.driver = {
+> +		.name = "versal_fpga_manager",
+> +		.of_match_table = of_match_ptr(versal_fpga_of_match),
+> +	},
+> +};
+> +module_platform_driver(versal_fpga_driver);
+> +
+> +MODULE_AUTHOR("Nava kishore Manne <nava.manne@xilinx.com>");
+> +MODULE_AUTHOR("Appana Durga Kedareswara rao <appanad.durga.rao@xilinx.com>");
 
--- 
-Eduardo
+Rao - needs to be capitalized ?
+
+Tom
+
+> +MODULE_DESCRIPTION("Xilinx Versal FPGA Manager");
+> +MODULE_LICENSE("GPL");
 
