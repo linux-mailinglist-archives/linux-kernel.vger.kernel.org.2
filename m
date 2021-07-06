@@ -2,92 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8C33BDB78
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 18:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346B43BDB79
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 18:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhGFQfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 12:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
+        id S230245AbhGFQgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 12:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbhGFQfg (ORCPT
+        with ESMTP id S230038AbhGFQgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 12:35:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F074EC061574;
-        Tue,  6 Jul 2021 09:32:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=8g1rbS4pTPzctrCvZ4zRcoNhzl4NCCSOb3dD7gmNVm4=; b=AeKal7gC3SV9eUl8DIeb48eZ9b
-        +/fvNBYasBBCOjxeewGdUtdzxa4M8Ajc6xJ01jzXCnsdNnlSavPGRnIkkDbqKSb+QIunuD2Uf8mTf
-        pCfLJfCbSH7aIWNtPQTwcBOvovlyMoIOScwqgC9oGYFYGRUYWR9HoFom3sS+frBWCmtzjw7FRg0ar
-        oHhdTUIK4WXoRsHGddPwGCceitYerrsVtsLTe+4OrRhDfhgb4X4e6R3srC7hoyqEQ9LyUm7sl+m1s
-        RYZoSJrLRa5Usyo8X4m8wrjHgOulPh+yjrJjy8x/I+QyTROiB6m1nYgOzY9/hYCvzzWHv31SVsfaI
-        qgk9jVZQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0nzl-00BZbz-L2; Tue, 06 Jul 2021 16:32:29 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 2/2] iomap: Remove length variable in iomap_seek_hole()
-Date:   Tue,  6 Jul 2021 17:31:57 +0100
-Message-Id: <20210706163158.2758223-2-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210706163158.2758223-1-willy@infradead.org>
-References: <20210706163158.2758223-1-willy@infradead.org>
+        Tue, 6 Jul 2021 12:36:25 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38410C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 09:33:46 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1m0o10-00050V-GR; Tue, 06 Jul 2021 18:33:42 +0200
+Message-ID: <678b4197893029819040781305d87d2cc566d293.camel@pengutronix.de>
+Subject: Re: [PATCH 0/2] drm/etnaviv: add GC7000 r6202 support
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Michael Walle <michael@walle.cc>, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Lukas F . Hartmann" <lukas@mntre.com>
+Date:   Tue, 06 Jul 2021 18:33:39 +0200
+In-Reply-To: <20210618120433.14746-1-michael@walle.cc>
+References: <20210618120433.14746-1-michael@walle.cc>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's no need to calculate and maintain 'length'.  It's shorter and
-simpler code to just calculate size - offset each time around the loop.
+Am Freitag, dem 18.06.2021 um 14:04 +0200 schrieb Michael Walle:
+> This is the first step to bring GPU support to the NXP LS1028A SoC. It
+> features a Mali DP500, a Vivante GC7000 and has one DisplayPort output
+> which is driven by a Cadence MHDP controller and PHY.
+> 
+> This was briefly tested with glmark2, a patched mesa kmsro driver [1]
+> to support the mali DP500/GC7000 duo, fixes from mesa merge request
+> 9255 [2] and using ETNA_MESA_DEBUG=no_supertile,no_ts.
+> 
+> [1] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/11419
+> [2] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/9255
+> 
+> Michael Walle (2):
+>   drm/etnaviv: add HWDB entry for GC7000 r6202
+>   drm/etnaviv: add clock gating workaround for GC7000 r6202
+> 
+>  drivers/gpu/drm/etnaviv/etnaviv_gpu.c  |  6 +++++
+>  drivers/gpu/drm/etnaviv/etnaviv_hwdb.c | 31 ++++++++++++++++++++++++++
+>  2 files changed, 37 insertions(+)
 
-Suggested-by: Christoph Hellwig <hch@lst.de>
-Reported-by: Zhen Lei <thunder.leizhen@huawei.com>
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/iomap/seek.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Thanks, I've applied this series to my etnaviv/next branch.
 
-diff --git a/fs/iomap/seek.c b/fs/iomap/seek.c
-index 241169b49af8..4f711e1269e0 100644
---- a/fs/iomap/seek.c
-+++ b/fs/iomap/seek.c
-@@ -35,23 +35,21 @@ loff_t
- iomap_seek_hole(struct inode *inode, loff_t offset, const struct iomap_ops *ops)
- {
- 	loff_t size = i_size_read(inode);
--	loff_t length = size - offset;
- 	loff_t ret;
- 
- 	/* Nothing to be found before or beyond the end of the file. */
- 	if (offset < 0 || offset >= size)
- 		return -ENXIO;
- 
--	while (length > 0) {
--		ret = iomap_apply(inode, offset, length, IOMAP_REPORT, ops,
--				  &offset, iomap_seek_hole_actor);
-+	while (offset < size) {
-+		ret = iomap_apply(inode, offset, size - offset, IOMAP_REPORT,
-+				ops, &offset, iomap_seek_hole_actor);
- 		if (ret < 0)
- 			return ret;
- 		if (ret == 0)
- 			break;
- 
- 		offset += ret;
--		length -= ret;
- 	}
- 
- 	return offset;
--- 
-2.30.2
+Regards,
+Lucas
 
