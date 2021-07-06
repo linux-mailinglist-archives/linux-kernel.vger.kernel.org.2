@@ -2,74 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352D53BDDF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA363BDDF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231785AbhGFTXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 15:23:10 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45102 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231773AbhGFTXI (ORCPT
+        id S231891AbhGFTVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 15:21:50 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:41376 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231774AbhGFTVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 15:23:08 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 166JKL7Z013101
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 6 Jul 2021 15:20:22 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6EFB115C3CC6; Tue,  6 Jul 2021 15:20:21 -0400 (EDT)
-Date:   Tue, 6 Jul 2021 15:20:21 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Gruber <j4n6ru@gmail.com>
-Cc:     adilger.kernel@dilger.ca, trivial@kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: Fix comments and spaces to follow coding style
-Message-ID: <YOSs9Qu1YpvPAP6v@mit.edu>
-References: <20210706183900.310975-1-j4n6ru@gmail.com>
+        Tue, 6 Jul 2021 15:21:49 -0400
+Received: from [10.137.112.111] (unknown [131.107.147.111])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4E1F320B7188;
+        Tue,  6 Jul 2021 12:19:10 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4E1F320B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1625599150;
+        bh=HAyiPMPlknf585eyjiByUkZYMcEfesGAqJ5IRtDhZNY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=cw2ZMpdXbJc2YaqalFiZFCL2zmBUDnNh/RiSOFP2Wggm2eE5TVzXqFerw1CYvhy+/
+         eM0D7iqhnJp4l+wiiEIS643DB+s02Ry+iUnZuuvIAZWpprtuo1IQsAaTcaUnoEgaiZ
+         0zAPn4Sm907XkbmpCgwGjJNxKOgAohrkVfrMmvgs=
+Subject: Re: [PATCH v3 2/3] ima: Return int in the functions to measure a
+ buffer
+To:     Roberto Sassu <roberto.sassu@huawei.com>, zohar@linux.ibm.com,
+        paul@paul-moore.com
+Cc:     stephen.smalley.work@gmail.com, prsriva02@gmail.com,
+        tusharsu@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
+References: <20210705090922.3321178-1-roberto.sassu@huawei.com>
+ <20210705090922.3321178-3-roberto.sassu@huawei.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <5bc9d707-b193-6111-fea6-50c70e6f2245@linux.microsoft.com>
+Date:   Tue, 6 Jul 2021 12:21:04 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210706183900.310975-1-j4n6ru@gmail.com>
+In-Reply-To: <20210705090922.3321178-3-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 08:39:00PM +0200, Jan Gruber wrote:
-> This commit addresses two whitespace issues as well as
-> instances of the following coding style issue regarding
-> block comments, which were identified by checkpatch.pl:
+On 7/5/2021 2:09 AM, Roberto Sassu wrote:
+> ima_measure_critical_data() and process_buffer_measurement() currently
+> don't return a result. A caller wouldn't be able to know whether those
+> functions were executed successfully.
 > 
-> "WARNING: Block comments use a trailing */ on a separate line"
+> This patch modifies the return type from void to int, and returns 0 if the
+> buffer has been successfully measured, a negative value otherwise.
 > 
-> The changes aim at making the code more pleasant to read
-> and to eliminate warnings
+> Also, this patch does not modify the behavior of existing callers by
+> processing the returned value. For those, the return value is ignored.
 > 
-> Signed-off-by: Jan Gruber <j4n6ru@gmail.com>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>   include/linux/ima.h               | 15 +++++++-----
+>   security/integrity/ima/ima.h      | 10 ++++----
+>   security/integrity/ima/ima_main.c | 40 ++++++++++++++++++-------------
+>   3 files changed, 37 insertions(+), 28 deletions(-)
 
-Please don't send "checkpatch.pl --file" patches for the ext4 file
-system; if you must, please focus on files in the drivers directory,
-where they are more welcome.  If developers are making changes to a
-file, fixing some checkpatch.pl whines is fine, but white-sapace only
-changes just obfuscates "git blame" code archology, and so the costs
-far outwieghs the costs.  "Fix" is also not the right verb to use.
-For more information please see [1].
+Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 
-[1] https://gist.github.com/17twenty/8154928
+  -lakshmi
 
-If you are looking for subtantive ways of contributing to the ext4
-file system, feel free to look at various syzbot warnings[2] and try
-to figure out what is going on there.
-
-[2] https://syzkaller.appspot.com/upstream
-
-(In some cases, the syzbot complaint has already been fixed, and it's
-just a matter of letting syzbot knoww that it has since been fixed by
-a particular commit.  See [3] for more details.)
-
-[3] https://github.com/google/syzkaller/blob/master/docs/syzbot.md
-
-Cheers,
-
-						- Ted
+> 
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index 81e830d01ced..60492263aa64 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -35,10 +35,10 @@ extern void ima_post_path_mknod(struct user_namespace *mnt_userns,
+>   extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
+>   extern int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size);
+>   extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
+> -extern void ima_measure_critical_data(const char *event_label,
+> -				      const char *event_name,
+> -				      const void *buf, size_t buf_len,
+> -				      bool hash);
+> +extern int ima_measure_critical_data(const char *event_label,
+> +				     const char *event_name,
+> +				     const void *buf, size_t buf_len,
+> +				     bool hash);
+>   
+>   #ifdef CONFIG_IMA_APPRAISE_BOOTPARAM
+>   extern void ima_appraise_parse_cmdline(void);
+> @@ -144,10 +144,13 @@ static inline int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size
+>   
+>   static inline void ima_kexec_cmdline(int kernel_fd, const void *buf, int size) {}
+>   
+> -static inline void ima_measure_critical_data(const char *event_label,
+> +static inline int ima_measure_critical_data(const char *event_label,
+>   					     const char *event_name,
+>   					     const void *buf, size_t buf_len,
+> -					     bool hash) {}
+> +					     bool hash)
+> +{
+> +	return -ENOENT;
+> +}
+>   
+>   #endif /* CONFIG_IMA */
+>   
+> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+> index f0e448ed1f9f..03db221324c3 100644
+> --- a/security/integrity/ima/ima.h
+> +++ b/security/integrity/ima/ima.h
+> @@ -264,11 +264,11 @@ void ima_store_measurement(struct integrity_iint_cache *iint, struct file *file,
+>   			   struct evm_ima_xattr_data *xattr_value,
+>   			   int xattr_len, const struct modsig *modsig, int pcr,
+>   			   struct ima_template_desc *template_desc);
+> -void process_buffer_measurement(struct user_namespace *mnt_userns,
+> -				struct inode *inode, const void *buf, int size,
+> -				const char *eventname, enum ima_hooks func,
+> -				int pcr, const char *func_data,
+> -				bool buf_hash);
+> +int process_buffer_measurement(struct user_namespace *mnt_userns,
+> +			       struct inode *inode, const void *buf, int size,
+> +			       const char *eventname, enum ima_hooks func,
+> +			       int pcr, const char *func_data,
+> +			       bool buf_hash);
+>   void ima_audit_measurement(struct integrity_iint_cache *iint,
+>   			   const unsigned char *filename);
+>   int ima_alloc_init_template(struct ima_event_data *event_data,
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index 8ef1fa357e0c..b512c06d8ee1 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -827,7 +827,7 @@ int ima_post_load_data(char *buf, loff_t size,
+>   	return 0;
+>   }
+>   
+> -/*
+> +/**
+>    * process_buffer_measurement - Measure the buffer or the buffer data hash
+>    * @mnt_userns:	user namespace of the mount the inode was found from
+>    * @inode: inode associated with the object being measured (NULL for KEY_CHECK)
+> @@ -840,12 +840,15 @@ int ima_post_load_data(char *buf, loff_t size,
+>    * @buf_hash: measure buffer data hash
+>    *
+>    * Based on policy, either the buffer data or buffer data hash is measured
+> + *
+> + * Return: 0 if the buffer has been successfully measured, a negative value
+> + * otherwise.
+>    */
+> -void process_buffer_measurement(struct user_namespace *mnt_userns,
+> -				struct inode *inode, const void *buf, int size,
+> -				const char *eventname, enum ima_hooks func,
+> -				int pcr, const char *func_data,
+> -				bool buf_hash)
+> +int process_buffer_measurement(struct user_namespace *mnt_userns,
+> +			       struct inode *inode, const void *buf, int size,
+> +			       const char *eventname, enum ima_hooks func,
+> +			       int pcr, const char *func_data,
+> +			       bool buf_hash)
+>   {
+>   	int ret = 0;
+>   	const char *audit_cause = "ENOMEM";
+> @@ -867,7 +870,7 @@ void process_buffer_measurement(struct user_namespace *mnt_userns,
+>   	u32 secid;
+>   
+>   	if (!ima_policy_flag)
+> -		return;
+> +		return -ENOENT;
+>   
+>   	template = ima_template_desc_buf();
+>   	if (!template) {
+> @@ -889,7 +892,7 @@ void process_buffer_measurement(struct user_namespace *mnt_userns,
+>   					secid, 0, func, &pcr, &template,
+>   					func_data);
+>   		if (!(action & IMA_MEASURE))
+> -			return;
+> +			return -ENOENT;
+>   	}
+>   
+>   	if (!pcr)
+> @@ -937,7 +940,7 @@ void process_buffer_measurement(struct user_namespace *mnt_userns,
+>   					func_measure_str(func),
+>   					audit_cause, ret, 0, ret);
+>   
+> -	return;
+> +	return ret;
+>   }
+>   
+>   /**
+> @@ -977,18 +980,21 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
+>    * and extend the pcr.  Examples of critical data could be various data
+>    * structures, policies, and states stored in kernel memory that can
+>    * impact the integrity of the system.
+> + *
+> + * Return: 0 if the buffer has been successfully measured, a negative value
+> + * otherwise.
+>    */
+> -void ima_measure_critical_data(const char *event_label,
+> -			       const char *event_name,
+> -			       const void *buf, size_t buf_len,
+> -			       bool hash)
+> +int ima_measure_critical_data(const char *event_label,
+> +			      const char *event_name,
+> +			      const void *buf, size_t buf_len,
+> +			      bool hash)
+>   {
+>   	if (!event_name || !event_label || !buf || !buf_len)
+> -		return;
+> +		return -ENOPARAM;
+>   
+> -	process_buffer_measurement(&init_user_ns, NULL, buf, buf_len, event_name,
+> -				   CRITICAL_DATA, 0, event_label,
+> -				   hash);
+> +	return process_buffer_measurement(&init_user_ns, NULL, buf, buf_len,
+> +					  event_name, CRITICAL_DATA, 0,
+> +					  event_label, hash);
+>   }
+>   
+>   static int __init init_ima(void)
+> 
