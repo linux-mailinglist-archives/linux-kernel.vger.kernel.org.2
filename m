@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933E83BDF4E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 00:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 367FD3BDF50
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 00:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhGFWRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 18:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
+        id S229982AbhGFWSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 18:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhGFWRG (ORCPT
+        with ESMTP id S229753AbhGFWSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 18:17:06 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0919CC061574;
-        Tue,  6 Jul 2021 15:14:26 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id h6so552939iok.6;
-        Tue, 06 Jul 2021 15:14:26 -0700 (PDT)
+        Tue, 6 Jul 2021 18:18:37 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78835C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 15:15:58 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so373966otl.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 15:15:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zZMeMLgvnFQxAN+r/nqeEif6VMjZ3hc66qsD3h/Fku8=;
-        b=jzN2EbBCq0JE8rlKq9vRSKpiPtfTi4wMf5ip4XlDiS6quuADQsEqOqAG+nIafZ6ika
-         ewGp+f+w7EbdXZ/4lDpzf7vdxUq5LTPGXOekUS/BLEBscyBXxcxB4RDNfLbY7VhlU7Sn
-         6BuLD81sdTECS6vS3IzT22wMjaAAltHGKg+WMMTMaOjPKovZUTT+e7i4Ktl8kJwTwWR8
-         MIvCAqPOEQcpfEvPWYdLpd0hnH5GFg6ewcZ9QVsQ9vBWvdjtpOsSPCwgI4wFU+yCSclr
-         LSBxIPfc2vtwZ1xK1EOJnXQ21VCI0sqGPGi/7OrNcLuwHZ4leZSmP+E6pIzxiN8vsfvg
-         l7IA==
+        d=linuxtx.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4pk6Sq7/DdUaC7GkGc4VzxZTNhY8KMhDPrLUMFvev0s=;
+        b=Hq1uiaI75WO3E4BVIgeQ0zAv2baYsrbDYbxxcM98u4EqkBIlHWhGTnZ+gSCXCJWi79
+         04GcafYYpPf8L3bqPAxh1FE4biwDDHeVAyrIsh6TLbHWCln3H6xH+P3FiqvIGWmRBhHW
+         UPKoYxxGKIMoq4sg6cMlXj8mu7zrHt49uvYa8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zZMeMLgvnFQxAN+r/nqeEif6VMjZ3hc66qsD3h/Fku8=;
-        b=rwbK4TzzfjpxmirDFihf43S5z6ldr5ShUFH28FWLdr5+sUCCO46yKmmeWHoV139+t9
-         u9Zr/q/eGHWXwcHhM6Lth53EDDIdEhny+PdoedZLjxjXuxy4pL8QbCNgZ9bwqWi8YGxM
-         UYal7nfG6oMnXEgVKRiGzs17AraMUpXcLumZZHgSQ4J49EV1O1lSKNv5K9fVd65CNtfU
-         iUswD+//GDeYnzFfzaQ7Z8n3rLFg3bNuJU6/uIKp86Rh/cPDndY1Jdp6Y/XmYlgQiMPF
-         wz7W3jMFa3q66/QksmaOdSUSCA+LEm4sOif0EahzYv3Ir/dhyz+JxfbBJtvTpE2Mj2SG
-         s89A==
-X-Gm-Message-State: AOAM531F5x49bMD6pru1QxiqYT9fha6q84ts5TToE0N6bpXbm/0A9Xnb
-        ukO/6PnQkG1pJnUXfv0bNNCT6diOseMk0+kEh5GCfovhegI=
-X-Google-Smtp-Source: ABdhPJyGODwa3HfoBD9iPuy6GWsnQTK3XwFeInq5yi393y5Nb26tFQ4WxUBe1pcxLgU6bRwPu9PrYoZc8V9QiKhmncg=
-X-Received: by 2002:a02:cc07:: with SMTP id n7mr2885107jap.41.1625609665356;
- Tue, 06 Jul 2021 15:14:25 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4pk6Sq7/DdUaC7GkGc4VzxZTNhY8KMhDPrLUMFvev0s=;
+        b=l3CHXZy1kmz95Rb8v3k7xNfDMD8iF8kIjun5znmnOTAE4DrP55fzSq9RrNmQx70LQB
+         hqf2EYCrctOTDK1dIA7HPm/BUGedUV642yf9XNJrgphaSWeGYirIqgqL/sPz903CKwjW
+         K8M55a9DX8U8Q5eOJZZ6OcA8rz+7dvC4fZ9g7/2AYOWl4zlvJb8eU90RoCxC1ZTFABaQ
+         7XEiJi/y7Y+wMTx59fd/eyibYBRXTdeaM5FWfGAqa4YEizls6gMUZu2nZvmQDnR+DgE5
+         junRbhC9LywLI6PLSvn5HSGcQ1uZaXSJWsCCJ2Hhwh7iTkVDcjS66A0s3N/kruF3T35D
+         4skQ==
+X-Gm-Message-State: AOAM532vURXUu1BCIJsM28SfayqmswZKb4BYlU7lWfmRFQ7c0YnkJE1U
+        hdIlkItHs6+XldEmbwdaHK8u1Q==
+X-Google-Smtp-Source: ABdhPJwpJL51bCm1sdJCF2o/TPvKub6NbwooJ4g6637IJu8FcOK8BJDuutsJlvxI5XIA04eHhlUazA==
+X-Received: by 2002:a05:6830:1e62:: with SMTP id m2mr16437384otr.290.1625609757652;
+        Tue, 06 Jul 2021 15:15:57 -0700 (PDT)
+Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
+        by smtp.gmail.com with ESMTPSA id r186sm3679913oia.6.2021.07.06.15.15.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 15:15:57 -0700 (PDT)
+Date:   Tue, 6 Jul 2021 17:15:55 -0500
+From:   Justin Forbes <jmforbes@linuxtx.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de
+Subject: Re: [PATCH 5.12 0/7] 5.12.15-rc1 review
+Message-ID: <YOTWGzxh0XpYLlmT@fedora64.linuxtx.org>
+References: <20210705105934.1513188-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20210704202756.29107-1-ojeda@kernel.org> <20210704202756.29107-17-ojeda@kernel.org>
- <CAKY_9u1WN1nK3fdS0WDVgc4umYrCMVxODn3wG0rtctJzgNE5Ag@mail.gmail.com>
-In-Reply-To: <CAKY_9u1WN1nK3fdS0WDVgc4umYrCMVxODn3wG0rtctJzgNE5Ag@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 7 Jul 2021 00:14:14 +0200
-Message-ID: <CANiq72k5+0RLJU6_agbFK6c61ogRt6ASGuXfRWAKYJPwqtB8BA@mail.gmail.com>
-Subject: Re: [PATCH 16/17] MAINTAINERS: Rust
-To:     Pedro Tammela <pctammela@gmail.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705105934.1513188-1-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 2:26 AM Pedro Tammela <pctammela@gmail.com> wrote:
->
-> Does this mean that development will be done exclusively on GitHub?
-> If affirmative, is there a bot that will replicate the messages in the
-> mailing list?
+On Mon, Jul 05, 2021 at 06:59:27AM -0400, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 5.12.15 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed 07 Jul 2021 10:59:20 AM UTC.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.12.y&id2=v5.12.14
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
+> 
 
-Development has happened mainly in GitHub so far, but we have accepted
-patches from the ML and we can do their reviews there too.
+Tested rc1 against the Fedora build system (aarch64, armv7, ppc64le,
+s390x, x86_64), and boot tested x86_64. No regressions noted.
 
-We do not have a bot to replicate reviews into the mailing list nor
-any fancy bidirectional sync, though.
-
-If this is deemed unacceptable by Linus et. al., we can do development
-in the ML as usual -- we do not really mind one way or the other (and,
-in fact, we discussed moving things to a git.kernel.org tree too).
-
-The main point of GitHub/GitLab/etc. for us so far is having an issue
-tracker and some kind of CI.
-
-Cheers,
-Miguel
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
