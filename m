@@ -2,152 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5329E3BDEC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 23:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0E53BDECD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 23:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhGFVLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 17:11:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60955 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229781AbhGFVLr (ORCPT
+        id S230004AbhGFVRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 17:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229879AbhGFVRw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 17:11:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625605747;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KBq+Giaoz3hgDlNlhhTm/jlI5hfT1qo7ZASPTogNz/Q=;
-        b=c1SGu5xsUzCShc2/RFsnOU1I3fHrRctFFpWBNo3RaKrC+uQ2j3lDsriA/kCry2lDgTnPxF
-        9EtKgE6nEPH02fGAXUgXVBp+uHuBg2bzFUbk7sJPIH9IBc+4mfQk8P2Vy2uBLjN6yk6bjf
-        h1WurIjks/FqrgMBdCqfd9XGzFX3U1Y=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-25-68cgntaqPzKe7w5mbdX23w-1; Tue, 06 Jul 2021 17:09:06 -0400
-X-MC-Unique: 68cgntaqPzKe7w5mbdX23w-1
-Received: by mail-oo1-f71.google.com with SMTP id 127-20020a4a15850000b029024c83573b9dso11200985oon.23
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 14:09:06 -0700 (PDT)
+        Tue, 6 Jul 2021 17:17:52 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DDDC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 14:15:12 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id w15-20020a056830144fb02904af2a0d96f3so165830otp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 14:15:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xIjT/sBHJXjEFjRplpqxe3dXJOAOtIbCbm1/QruaXLI=;
+        b=RAkqqjXwrM6iUcf4C2PO/bAO5ZwBDkES0GDc6hW7OW32sQPEYuHYBoBduI250xRAG5
+         9pkyB5uuCqtDg/p4iXcxbH9Z1QRxnzpRZSe+j2vxeiSmZaE3gP18mJd/xcKjAvHV8bOy
+         btYXsqbfPmrGqfQbmgtQMWJ+Z5w8k1cPFnN3o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=KBq+Giaoz3hgDlNlhhTm/jlI5hfT1qo7ZASPTogNz/Q=;
-        b=PEgLQPH7t1r8ej7OQxzFO7Ldd/xJotfGjqzL4op0sUaYvb2OWHhfi4BZAK+9xxy3MN
-         RFR2J3FY7LQPU+aXU5h40YeiRxHMpFdp3Gn06dBGKOPwKOaL85zNlwJYZKrJejZR3juY
-         9oRc5//aaAN8B7XrQ0WOMIHgep62CGwIxxPQZiibCzKX5bu35HyEcKgic/QwyJkcgQI2
-         JmmZy3wfDEFMZO54dF/0b+0lMegBC07mtdVpp3P5HT1OxStcodUuwB+/KN7Ml240Ld7T
-         k1jH3C0TbCIHnHokoImxxi3JaMP1enCL24rW9+HdGci826tFArKPV2Yeq1wk6KSfuRzI
-         albg==
-X-Gm-Message-State: AOAM533qRHPV63DzddxyWYtDXyRgialbjhFI8Y9PAsOK/RFvHp40IqDx
-        D02+0qWaZ+upcV3cj9zA07LBu2YLBUppsnJyxZHLQc0EPcwIZKcPPgquFp/0A5QcKUx3SGge3yj
-        bcVY+MbgFJJYXdEs6ZUkQUTK6
-X-Received: by 2002:a9d:19c1:: with SMTP id k59mr16511365otk.172.1625605745647;
-        Tue, 06 Jul 2021 14:09:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxk4J/5k+hZaRqOe7DiEQdTLOYWgGDrZytbu3TZBL4euG3qmbddzWCvvzY2VZzrTnwph+BIPA==
-X-Received: by 2002:a9d:19c1:: with SMTP id k59mr16511339otk.172.1625605745493;
-        Tue, 06 Jul 2021 14:09:05 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 76sm1521355otj.28.2021.07.06.14.09.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 14:09:05 -0700 (PDT)
-Subject: Re: [PATCH v8 4/5] dt-bindings: firmware: Remove
- xlnx,zynqmp-firmware.txt file
-To:     Nava kishore Manne <nava.manne@xilinx.com>, robh+dt@kernel.org,
-        michal.simek@xilinx.com, mdf@kernel.org, arnd@arndb.de,
-        rajan.vaja@xilinx.com, gregkh@linuxfoundation.org,
-        amit.sunil.dhamne@xilinx.com, tejas.patel@xilinx.com,
-        zou_wei@huawei.com, lakshmi.sai.krishna.potthuri@xilinx.com,
-        ravi.patel@xilinx.com, iwamatsu@nigauri.org,
-        wendy.liang@xilinx.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org, git@xilinx.com,
-        chinnikishore369@gmail.com
-References: <20210626155248.5004-1-nava.manne@xilinx.com>
- <20210626155248.5004-5-nava.manne@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <a2a71d30-97da-0b1e-7942-f7dd63b0ddab@redhat.com>
-Date:   Tue, 6 Jul 2021 14:09:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xIjT/sBHJXjEFjRplpqxe3dXJOAOtIbCbm1/QruaXLI=;
+        b=h48UgxFTEMRrTjgf+HbnWudy+GeRWYnNSf9299PY/0GxkfXK4nZVrKdHj0LojsCa/2
+         KrLMEAGA84/eYtUFz7X7gQrPPmbvSUauK4DWiZKNv4Z0FpHAqrp5FgUV+R4ZrT+HlSsF
+         v9lrV8DcwbfjeujSjwd+HrTIDx1vMopezXWdrbf6ZPXA3tExAEguT+d5Nl9GiakpLRvu
+         aOog3mkUFWKN4EAouY8wrCgE64tPbab68hUtWSURhKHuVoGOQOhTnS7Ts5+cDJI18lr6
+         AiynzX6oTZEswFnxTqjessnzmfR9Vu8iJC+TsbmRZUwkqxGRwJqieUqqLFAMAyAprd7o
+         fSzw==
+X-Gm-Message-State: AOAM530A+Qxp0m7sgmaUl2z3ga2DzqWWO/HIocFzX6P0+dmuITP6WwuZ
+        eIEL2F8K2pfJXijDJdCu16VgQrhBotQBv7JBiWCA6A==
+X-Google-Smtp-Source: ABdhPJzQRomLtHp/v5BB4qJrTZ0fnAfav/eGEc9VqP9SfaPAf/7GIQUh7zTDva0IVwhe7V7p5AhdlU5if5vICDmb99g=
+X-Received: by 2002:a9d:27a4:: with SMTP id c33mr16838523otb.281.1625606112115;
+ Tue, 06 Jul 2021 14:15:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210626155248.5004-5-nava.manne@xilinx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210630013421.735092-1-john.stultz@linaro.org>
+ <20210630013421.735092-2-john.stultz@linaro.org> <ab35ed32-ead4-3dc4-550d-55f288810220@amd.com>
+ <CALAqxLXWDKp3BZJdO3nVd9vSVV6B+bWnTy+oP6bzBB6H3Yf4eA@mail.gmail.com>
+ <6a472a24-a40f-1160-70dd-5cb9e9ae85f1@amd.com> <CALAqxLXrCto31uie37Y4HjaD=2XyqkeR=HH5A6Z+drQtyYBKFg@mail.gmail.com>
+In-Reply-To: <CALAqxLXrCto31uie37Y4HjaD=2XyqkeR=HH5A6Z+drQtyYBKFg@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Tue, 6 Jul 2021 23:15:00 +0200
+Message-ID: <CAKMK7uH+X8dvrD1=rpmozGvC5R88BOFL--_m9ezbgQjaSjGQ_w@mail.gmail.com>
+Subject: Re: [PATCH v9 1/5] drm: Add a sharable drm page-pool implementation
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 6/26/21 8:52 AM, Nava kishore Manne wrote:
-> The funtionality of xlnx,zynqmp-firmware.txt is replaced with
-
-functionality
-
-Tom
-
-> xlnx,zynqmp-firmware.yaml bindings so this patch removes the
-> zynqmp-firmware.txt file
+On Tue, Jul 6, 2021 at 11:04 PM John Stultz <john.stultz@linaro.org> wrote:
+> On Wed, Jun 30, 2021 at 11:52 PM Christian K=C3=B6nig
+> <christian.koenig@amd.com> wrote:
+> >
+> > Am 01.07.21 um 00:24 schrieb John Stultz:
+> > > On Wed, Jun 30, 2021 at 2:10 AM Christian K=C3=B6nig
+> > > <christian.koenig@amd.com> wrote:
+> > >> Am 30.06.21 um 03:34 schrieb John Stultz:
+> > >>> +static unsigned long page_pool_size; /* max size of the pool */
+> > >>> +
+> > >>> +MODULE_PARM_DESC(page_pool_size, "Number of pages in the drm page =
+pool");
+> > >>> +module_param(page_pool_size, ulong, 0644);
+> > >>> +
+> > >>> +static atomic_long_t nr_managed_pages;
+> > >>> +
+> > >>> +static struct mutex shrinker_lock;
+> > >>> +static struct list_head shrinker_list;
+> > >>> +static struct shrinker mm_shrinker;
+> > >>> +
+> > >>> +/**
+> > >>> + * drm_page_pool_set_max - Sets maximum size of all pools
+> > >>> + *
+> > >>> + * Sets the maximum number of pages allows in all pools.
+> > >>> + * This can only be set once, and the first caller wins.
+> > >>> + */
+> > >>> +void drm_page_pool_set_max(unsigned long max)
+> > >>> +{
+> > >>> +     if (!page_pool_size)
+> > >>> +             page_pool_size =3D max;
+> > >>> +}
+> > >>> +
+> > >>> +/**
+> > >>> + * drm_page_pool_get_max - Maximum size of all pools
+> > >>> + *
+> > >>> + * Return the maximum number of pages allows in all pools
+> > >>> + */
+> > >>> +unsigned long drm_page_pool_get_max(void)
+> > >>> +{
+> > >>> +     return page_pool_size;
+> > >>> +}
+> > >> Well in general I don't think it is a good idea to have getters/sett=
+ers
+> > >> for one line functionality, similar applies to locking/unlocking the
+> > >> mutex below.
+> > >>
+> > >> Then in this specific case what those functions do is to aid
+> > >> initializing the general pool manager and that in turn should absolu=
+tely
+> > >> not be exposed.
+> > >>
+> > >> The TTM pool manager exposes this as function because initializing t=
+he
+> > >> pool manager is done in one part of the module and calculating the
+> > >> default value for the pages in another one. But that is not somethin=
+g I
+> > >> would like to see here.
+> > > So, I guess I'm not quite clear on what you'd like to see...
+> > >
+> > > Part of what I'm balancing here is the TTM subsystem normally sets a
+> > > global max size, whereas the old ION pool didn't have caps (instead
+> > > just relying on the shrinker when needed).
+> > > So I'm trying to come up with a solution that can serve both uses. So
+> > > I've got this drm_page_pool_set_max() function to optionally set the
+> > > maximum value, which is called in the TTM initialization path or set
+> > > the boot argument. But for systems that use the dmabuf system heap,
+> > > but don't use TTM, no global limit is enforced.
+> >
+> > Yeah, exactly that's what I'm trying to prevent.
+> >
+> > See if we have the same functionality used by different use cases we
+> > should not have different behavior depending on what drivers are loaded=
+.
+> >
+> > Is it a problem if we restrict the ION pool to 50% of system memory as
+> > well? If yes than I would rather drop the limit from TTM and only rely
+> > on the shrinker there as well.
 >
-> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> ---
-> Changes for v8:
->                -Removed xlnx,zynqmp-firmware.txt as suggested by rob.
->
->   .../firmware/xilinx/xlnx,zynqmp-firmware.txt  | 44 -------------------
->   1 file changed, 44 deletions(-)
->   delete mode 100644 Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.txt
->
-> diff --git a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.txt b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.txt
-> deleted file mode 100644
-> index 18c3aea90df2..000000000000
-> --- a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.txt
-> +++ /dev/null
-> @@ -1,44 +0,0 @@
-> ------------------------------------------------------------------
-> -Device Tree Bindings for the Xilinx Zynq MPSoC Firmware Interface
-> ------------------------------------------------------------------
-> -
-> -The zynqmp-firmware node describes the interface to platform firmware.
-> -ZynqMP has an interface to communicate with secure firmware. Firmware
-> -driver provides an interface to firmware APIs. Interface APIs can be
-> -used by any driver to communicate to PMUFW(Platform Management Unit).
-> -These requests include clock management, pin control, device control,
-> -power management service, FPGA service and other platform management
-> -services.
-> -
-> -Required properties:
-> - - compatible:	Must contain any of below:
-> -		"xlnx,zynqmp-firmware" for Zynq Ultrascale+ MPSoC
-> -		"xlnx,versal-firmware" for Versal
-> - - method:	The method of calling the PM-API firmware layer.
-> -		Permitted values are:
-> -		  - "smc" : SMC #0, following the SMCCC
-> -		  - "hvc" : HVC #0, following the SMCCC
-> -
-> --------
-> -Example
-> --------
-> -
-> -Zynq Ultrascale+ MPSoC
-> -----------------------
-> -firmware {
-> -	zynqmp_firmware: zynqmp-firmware {
-> -		compatible = "xlnx,zynqmp-firmware";
-> -		method = "smc";
-> -		...
-> -	};
-> -};
-> -
-> -Versal
-> -------
-> -firmware {
-> -	versal_firmware: versal-firmware {
-> -		compatible = "xlnx,versal-firmware";
-> -		method = "smc";
-> -		...
-> -	};
-> -};
+> Would having the default value as a config option (still overridable
+> via boot argument) be an acceptable solution?
 
+We're also trying to get ttm over to the shrinker model, and a first
+cut of that even landed, but didn't really work out yet. So maybe just
+aiming for the shrinker? I do agree this should be consistent across
+the board, otherwise we're just sharing code but not actually sharing
+functionality, which is a recipe for disaster because one side will
+end up breaking the other side's use-case.
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
