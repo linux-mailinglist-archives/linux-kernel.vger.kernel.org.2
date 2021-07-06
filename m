@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F91E3BDFE3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 01:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1572E3BDFEC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 01:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhGFXzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 19:55:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50744 "EHLO mail.kernel.org"
+        id S229996AbhGFX6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 19:58:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:52440 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229986AbhGFXy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 19:54:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91B3F61C1E;
-        Tue,  6 Jul 2021 23:52:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625615540;
-        bh=pvy0OPqS/Ta1U4D+VI4UxmGLp8LJAq/PH3Q3HZqVzN8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PiXx+uhwWkplQzsxsJyNpzYNiITUxIR5arH4ptWSUzZjg9V98YnF9yTYEDmPg1hvr
-         t9ewtEZ11Axikj4R+2Z4tIr8MoYJMxvX91uGTsn/tnueES3DOpfEMfk+liC983yJM3
-         8fRSYIZaRJLEITWamcI8wIQkbsNQiasqpsnwBzQhRuv9LHDNaWuelNeTvZFPiBv0dR
-         DTtehpC8i6eNWUKzdrau6cDBgGr5IuElTVYBNkmBFo8hOAw5GDSxsZk/1arL40zXUV
-         hRok1UYaF89u90bdJmTVAnSKnhX2f5wU/05ZpVa1NiZItINih42yL6vU7TEvUarPSH
-         5Wo6zdz9ltYgw==
-Date:   Wed, 7 Jul 2021 02:52:17 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Borislav Petkov <bp@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] selftests/sgx: Fix Q1 and Q2 calculation in
- sigstruct.c
-Message-ID: <20210706235217.6mre4arpgfsrdxm4@kernel.org>
-References: <20210705143652.116125-1-jarkko@kernel.org>
- <20210705143652.116125-3-jarkko@kernel.org>
- <4303b822-5861-ba2c-f620-0e752e499329@intel.com>
+        id S229834AbhGFX6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 19:58:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 36E7BD6E;
+        Tue,  6 Jul 2021 16:55:28 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4ECF63F694;
+        Tue,  6 Jul 2021 16:55:27 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+Subject: Re: [tip: sched/core] sched/core: Initialize the idle task with preemption disabled
+In-Reply-To: <20210706194456.GA1823793@roeck-us.net>
+References: <20210512094636.2958515-1-valentin.schneider@arm.com> <162081815405.29796.14574924529325899839.tip-bot2@tip-bot2> <20210706194456.GA1823793@roeck-us.net>
+Date:   Wed, 07 Jul 2021 00:55:20 +0100
+Message-ID: <87fswr6lqv.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4303b822-5861-ba2c-f620-0e752e499329@intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 01:53:20PM -0700, Dave Hansen wrote:
-> On 7/5/21 7:36 AM, Jarkko Sakkinen wrote:
-> > From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> > 
-> > Q1 and Q2 are numbers with *maximum* length of 384 bytes. If the calculated
-> > length of Q1 and Q2 is less than 384 bytes, things will go wrong.
-> > 
-> > E.g. if Q2 is 383 bytes, then
-> > 
-> > 1. The bytes of q2 are copied to sigstruct->q2 in calc_q1q2().
-> > 2. The entire sigstruct->q2 is reversed, which results it being
-> >    256 * Q2, given that the last byte of sigstruct->q2 is added
-> >    to before the bytes given by calc_q1q2().
-> > 
-> > Either change in key or measurement can trigger the bug. E.g. an unmeasured
-> > heap could cause a devastating change in Q1 or Q2.
-> > 
-> > Reverse exactly the bytes of Q1 and Q2 in calc_q1q2() before returning to
-> > the caller.
-> > 
-> > Fixes: 2adcba79e69d ("selftests/x86: Add a selftest for SGX")
-> > Link: https://lore.kernel.org/linux-sgx/20210301051836.30738-1-tianjia.zhang@linux.alibaba.com/
-> > Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> 
-> This looks fine, but can I suggest a Subject: tweak?
-> 
-> 	selftests/sgx: Fix calculations for sub-maximum field sizes
 
-WFM
+Hi Guenter,
 
-> 
-> In any case:
-> 
-> Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
+On 06/07/21 12:44, Guenter Roeck wrote:
+> This patch results in several messages similar to the following
+> when booting s390 images in qemu.
+>
+> [    1.690807] BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+> [    1.690925] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 1, name: swapper/0
+> [    1.691053] no locks held by swapper/0/1.
+> [    1.691310] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-11788-g79160a603bdb #1
+> [    1.691469] Hardware name: QEMU 2964 QEMU (KVM/Linux)
+> [    1.691612] Call Trace:
+> [    1.691718]  [<0000000000d98bb0>] show_stack+0x90/0xf8
+> [    1.692040]  [<0000000000da894c>] dump_stack_lvl+0x74/0xa8
+> [    1.692134]  [<0000000000187e52>] ___might_sleep+0x15a/0x170
+> [    1.692228]  [<000000000014f588>] cpus_read_lock+0x38/0xc0
+> [    1.692320]  [<0000000000182e8a>] smpboot_register_percpu_thread+0x2a/0x160
+> [    1.692412]  [<00000000014814b8>] cpuhp_threads_init+0x28/0x60
+> [    1.692505]  [<0000000001487a30>] smp_init+0x28/0x90
+> [    1.692597]  [<00000000014779a6>] kernel_init_freeable+0x1f6/0x270
+> [    1.692689]  [<0000000000db7466>] kernel_init+0x2e/0x160
+> [    1.692779]  [<0000000000103618>] __ret_from_fork+0x40/0x58
+> [    1.692870]  [<0000000000dc6e12>] ret_from_fork+0xa/0x30
+>
+> Reverting this patch fixes the problem.
+> Bisect log is attached.
+>
+> Guenter
+>
 
-Thank you.
+Thanks for the report.
 
-/Jarkko
+So somehow the init task ends up with a non-zero preempt_count()? Per
+FORK_PREEMPT_COUNT we should exit __ret_from_fork() with a zero count, are
+you hitting the WARN_ONCE() in finish_task_switch()?
+
+Does CONFIG_DEBUG_PREEMPT=y yield anything interesting?
+
+I can't make sense of this right now, but it's a bit late :) I'll grab some
+toolchain+qemu tomorrow and go poke at it (and while at it I need to do the
+same with powerpc).
