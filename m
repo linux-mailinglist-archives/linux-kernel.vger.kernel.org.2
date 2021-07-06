@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E928E3BC9F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD953BCA00
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhGFKeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 06:34:46 -0400
-Received: from mga07.intel.com ([134.134.136.100]:19772 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231216AbhGFKep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 06:34:45 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10036"; a="272938292"
-X-IronPort-AV: E=Sophos;i="5.83,328,1616482800"; 
-   d="scan'208";a="272938292"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 03:32:07 -0700
-X-IronPort-AV: E=Sophos;i="5.83,328,1616482800"; 
-   d="scan'208";a="410451609"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 03:32:05 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m0iMx-009HlJ-S2; Tue, 06 Jul 2021 13:31:59 +0300
-Date:   Tue, 6 Jul 2021 13:31:59 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Trent Piepho <tpiepho@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        id S231391AbhGFKfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 06:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231216AbhGFKfr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 06:35:47 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A47C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 03:33:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=n2Vzx/jD6M+1KgcgpN/qKExJDJdXYiAmzmysfJfl01o=; b=n2viB8M4RXVDiYLyvvYbcTNk3V
+        A8ED53F16U0tzR1oqzalTVtNxY6CqG8RT3RRiyHx9Bp0s5oLHeakV28w6smscQiQ/bQnKfQQsWPch
+        JZEBlV9ueq0x0+chJEIyG0NhmnrJdFyON/uSXcOTpdx1Urmtagd+XyxdudMeh6r1qhRu35H45muhL
+        /XW32kjz3gapDCvQhLZ9S7IhY/R81+UdFtOgaj4Z6dj7U1Q0C6PYAOMJ9yJqu+6CZ8MWaMejr1OdZ
+        orh8JFn17EqmlfPnSAd2lLUpaxQjyrL/gZ50A2V9VHR9xEmK+GxcyOJfqjvwaMR4fKY6zgGzJKwU5
+        u1DAOP2g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m0iO2-00F17E-Ea; Tue, 06 Jul 2021 10:33:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 05EEC300233;
+        Tue,  6 Jul 2021 12:33:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E708F200D9D6C; Tue,  6 Jul 2021 12:33:04 +0200 (CEST)
+Date:   Tue, 6 Jul 2021 12:33:04 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] math: Make RATIONAL tristate
-Message-ID: <YOQxH7mnEPEm4pFA@smile.fi.intel.com>
-References: <20210706100945.3803694-1-geert@linux-m68k.org>
- <20210706100945.3803694-2-geert@linux-m68k.org>
+Subject: Re: RCU vs data_race()
+Message-ID: <YOQxYJaypdsmqhlX@hirez.programming.kicks-ass.net>
+References: <YMxYR33XEfVg6AoD@hirez.programming.kicks-ass.net>
+ <YMxgbuEdrq8k3eZp@elver.google.com>
+ <YMyC0iux0wKzc1JG@hirez.programming.kicks-ass.net>
+ <20210618204800.GK4397@paulmck-ThinkPad-P17-Gen-1>
+ <YM+TlNDJm1Jx1WQW@hirez.programming.kicks-ass.net>
+ <20210620210127.GR4397@paulmck-ThinkPad-P17-Gen-1>
+ <YNA/gkHbq46A/21C@hirez.programming.kicks-ass.net>
+ <20210621133757.GS4397@paulmck-ThinkPad-P17-Gen-1>
+ <YOQNgsS9Tjt4aDmG@hirez.programming.kicks-ass.net>
+ <CANpmjNNRAJ34KUF-1hWrP3F0Ooy4oi6kbH82WWpDxmVqVSj4SA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210706100945.3803694-2-geert@linux-m68k.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CANpmjNNRAJ34KUF-1hWrP3F0Ooy4oi6kbH82WWpDxmVqVSj4SA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 12:09:44PM +0200, Geert Uytterhoeven wrote:
-> All but one symbols that select RATIONAL are tristate, but RATIONAL
-> itself is bool.  Change it to tristate, so the rational fractions
-> support code can be modular if no builtin code relies on it.
-
-Works for me,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> Exposed by commit b6c75c4afceb8bc0 ("lib/math/rational: add Kunit test
-> cases") and CONFIG_KUNIT_ALL_TESTS=m.
+On Tue, Jul 06, 2021 at 10:44:46AM +0200, Marco Elver wrote:
+> On Tue, 6 Jul 2021 at 10:00, Peter Zijlstra <peterz@infradead.org> wrote:
+> [...]
+> > In that case, would not an explicit: data_debug(addr) call (implemented
+> > by KASAN/KCSAN/whoever), which would report whatever knowledge they have
+> > about that address, be even more useful?
 > 
-> v2:
->   - Drop compile-testing and help text.
-> ---
->  lib/math/Kconfig    | 2 +-
->  lib/math/rational.c | 3 +++
->  2 files changed, 4 insertions(+), 1 deletion(-)
+> KCSAN/KASAN report data-races/memory errors as soon as they encounter
+> them, but before they do, cannot give you any more than that (metadata
+> if it exists, but not sure it can be interpreted in any useful way
+> before an error occurs).
 > 
-> diff --git a/lib/math/Kconfig b/lib/math/Kconfig
-> index f19bc9734fa7cc4b..0634b428d0cb7f86 100644
-> --- a/lib/math/Kconfig
-> +++ b/lib/math/Kconfig
-> @@ -14,4 +14,4 @@ config PRIME_NUMBERS
->  	  If unsure, say N.
->  
->  config RATIONAL
-> -	bool
-> +	tristate
-> diff --git a/lib/math/rational.c b/lib/math/rational.c
-> index c0ab51d8fbb98d17..ec59d426ea638b0f 100644
-> --- a/lib/math/rational.c
-> +++ b/lib/math/rational.c
-> @@ -13,6 +13,7 @@
->  #include <linux/export.h>
->  #include <linux/minmax.h>
->  #include <linux/limits.h>
-> +#include <linux/module.h>
->  
->  /*
->   * calculate best rational approximation for a given fraction
-> @@ -106,3 +107,5 @@ void rational_best_approximation(
->  }
->  
->  EXPORT_SYMBOL(rational_best_approximation);
-> +
-> +MODULE_LICENSE("GPL v2");
-> -- 
-> 2.25.1
-> 
+> But maybe I misunderstood. Is data_debug() meant to not return
+> anything and instead just be a "fake access"?
 
--- 
-With Best Regards,
-Andy Shevchenko
+Mostly just print any meta data that you might have. Like who allocated
+it, or which code touched it. I'm thinking KASAN/KCSAN need to keep
+track of such stuff for when a violation is detected.
 
+If I understand Paul right; and there's a fair chance I didn't; I tihnk
+the issue is that when RCU finds a double call_rcu() (or some other
+fail), it has very little clue how we got there, and any addition
+information might be useful.
 
