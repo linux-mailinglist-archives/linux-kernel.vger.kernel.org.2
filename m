@@ -2,233 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2B63BDE24
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E873BDE26
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhGFTrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 15:47:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:48994 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229781AbhGFTrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 15:47:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D6301042;
-        Tue,  6 Jul 2021 12:44:43 -0700 (PDT)
-Received: from [10.57.7.228] (unknown [10.57.7.228])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2253A3F5A1;
-        Tue,  6 Jul 2021 12:44:39 -0700 (PDT)
-Subject: Re: [PATCH 2/3] PM: EM: Make em_cpu_energy() able to return bigger
- values
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     linux-kernel@vger.kernel.org, Chris.Redpath@arm.com,
-        morten.rasmussen@arm.com, qperret@google.com,
-        linux-pm@vger.kernel.org, peterz@infradead.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, vincent.guittot@linaro.org,
-        mingo@redhat.com, juri.lelli@redhat.com, rostedt@goodmis.org,
-        segall@google.com, mgorman@suse.de, bristot@redhat.com,
-        CCj.Yeh@mediatek.com
-References: <20210625152603.25960-1-lukasz.luba@arm.com>
- <20210625152603.25960-3-lukasz.luba@arm.com>
- <266f4b52-62c5-48bc-2680-1f09b6eb90cc@arm.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <5c6a952e-b274-2b62-4008-5eadec64ac76@arm.com>
-Date:   Tue, 6 Jul 2021 20:44:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S230019AbhGFTrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 15:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229996AbhGFTrj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 15:47:39 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D37FC061574;
+        Tue,  6 Jul 2021 12:45:00 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id s24so595496oiw.2;
+        Tue, 06 Jul 2021 12:45:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VDT2EKZr0mFzA5pyWa2j4CBNO8C6UHwZ7iEcd8ZzoX8=;
+        b=G7gJMG/GvB3BwBxp1ktAJNUd2aFFJbaQJ3ypv6kNS3b8h0uX6tJ6uUGZtQpZhyzNOW
+         KV5PkbeHvwkQN/9RKSZERFup1S7ZYWVmcqGR8GMTIGo0T5rBKsU5rzO3ffwYbbWwX+P6
+         CxO7a88lqaXbOQ3Q5I9QEmFRUoEJj0aOKNq+JsoXTW9rFtZujAgibY0Pc1xwrNEFf4XG
+         eMIwOuuET2WDRSXfU2QOvpcPH62UDSmtQAHHQ55ztQcz5MLIUwy6wZgybiXZY4AHZCqn
+         FneyVDAvCnDrgeDpDTcBUHZ46/1+QhvRSmLrKw0fLmcr3YkMPChCCMGyApi0HynnsieZ
+         dQaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=VDT2EKZr0mFzA5pyWa2j4CBNO8C6UHwZ7iEcd8ZzoX8=;
+        b=N1xJEXD7r9qZp4Gd+k7DvhXa8zE+cCFXOnVZv65yWgaKLy33LT4BbXMhCBHsEmUtRu
+         LlxvzYcqLr9u1vPO6eGuYrWezvO/kv4jRbSEu85PwZxjK4MsIgKg8xd80JOsDcVy6Mmz
+         VRcEwwM/zJ7xI1WaZ2apfWN+ozvfIRtq0xuSHRabF8c7rccskclMNSKzC7+LNq94QoUH
+         n9Slzal1k4LqEMVFzbwzzpVy2eQEAzjUek1khvQe5vHCf8XOvzEuAwJA4tOAVkKW5a2c
+         gdPR7r/Xb/xX7ZJWn18RaLdzoNfkJS0ez+h9lAreKRvl4CjX5okGi/7e1aAOr/lqwfN6
+         I6GA==
+X-Gm-Message-State: AOAM533A3pmC2cV8GhTwEw/5cO1f45Mz5n4xoQslXS0sGVO7876GVBPo
+        QDQz0Sz3ZQfO38/UDwrdrmlKGfit46U=
+X-Google-Smtp-Source: ABdhPJyE2ChEsutojy4zEIhnuyGFQj+//h56zhKnxKP8nQCrcdt0pS46YuDlRUKvxH6I3z2ld+3zBQ==
+X-Received: by 2002:aca:b609:: with SMTP id g9mr1691984oif.141.1625600699290;
+        Tue, 06 Jul 2021 12:44:59 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h3sm3503862oti.34.2021.07.06.12.44.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 12:44:58 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 6 Jul 2021 12:44:56 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+Subject: Re: [tip: sched/core] sched/core: Initialize the idle task with
+ preemption disabled
+Message-ID: <20210706194456.GA1823793@roeck-us.net>
+References: <20210512094636.2958515-1-valentin.schneider@arm.com>
+ <162081815405.29796.14574924529325899839.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-In-Reply-To: <266f4b52-62c5-48bc-2680-1f09b6eb90cc@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162081815405.29796.14574924529325899839.tip-bot2@tip-bot2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 7/5/21 1:44 PM, Dietmar Eggemann wrote:
-> On 25/06/2021 17:26, Lukasz Luba wrote:
->> The Energy Model (EM) em_cpu_energy() is responsible for providing good
->> estimation regarding CPUs energy. It contains proper data structures which
->> are then used during calculation. The values stored in there are in
->> milli-Watts precision (or in abstract scale) smaller that 0xffff, which use
+On Wed, May 12, 2021 at 11:15:54AM -0000, tip-bot2 for Valentin Schneider wrote:
+> The following commit has been merged into the sched/core branch of tip:
 > 
-> I guess you refer to 'if (... || power > EM_MAX_POWER)' check in
-> em_create_perf_table() [kernel/power/energy_model.c].
-
-Correct
-
+> Commit-ID:     f1a0a376ca0c4ef1fc3d24e3e502acbb5b795674
+> Gitweb:        https://git.kernel.org/tip/f1a0a376ca0c4ef1fc3d24e3e502acbb5b795674
+> Author:        Valentin Schneider <valentin.schneider@arm.com>
+> AuthorDate:    Wed, 12 May 2021 10:46:36 +01:00
+> Committer:     Ingo Molnar <mingo@kernel.org>
+> CommitterDate: Wed, 12 May 2021 13:01:45 +02:00
 > 
->> sufficient unsigned long even on 32-bit machines. There are scenarios where
->                                                                ^^^^^^^^^
+> sched/core: Initialize the idle task with preemption disabled
 > 
-> Can you describe these scenarios better with one example (EAS placement
-> of an example task on a 2 PD system) which highlights the issue and how
-> it this patch-set solves it?
-
-There are two places in the code where it makes a difference:
-
-1. In the find_energy_efficient_cpu() where we are searching for
-best_delta. We might suffer there when two PDs return the same result,
-like in the example below.
-
-Scenario:
-Low utilized system e.g. ~200 sum_util for PD0 and ~220 for PD1. There
-are quite a few small tasks ~10-15 util. These tasks would suffer for
-the rounding error. Such system utilization has been seen while playing
-some simple games. In such condition our partner reported 5..10mA less
-battery drain.
-
-Some details:
-We have two Perf Domains (PDs): PD0 (big) and PD1 (little)
-Let's compare w/o patch set ('old') and w/ patch set ('new')
-We are comparing energy w/ task and w/o task placed in the PDs
-
-a) 'old' w/o patch set, PD0
-task_util = 13
-cost = 480
-sum_util_w/o_task = 215
-sum_util_w_task = 228
-scale_cpu = 1024
-energy_w/o_task = 480 * 215 / 1024 = 100.78 => 100
-energy_w_task = 480 * 228 / 1024 = 106.87 => 106
-energy_diff = 106 - 100 = 6 (this is equal to 'old' PD1's energy_diff in 
-'c)')
-
-b) 'new' w/ patch set, PD0
-task_util = 13
-cost = 480 * 10000 = 4800000
-sum_util_w/o_task = 215
-sum_util_w_task = 228
-energy_w/o_task = 4800000 * 215 / 1024 = 1007812
-energy_w_task = 4800000 * 228 / 1024  = 1068750
-energy_diff = 1068750 - 1007812 = 60938 (this is not equal to 'new' 
-PD1's energy_diff in 'd)')
-
-c) 'old' w/o patch set, PD1
-task_util = 13
-cost = 160
-sum_util_w/o_task = 283
-sum_util_w_task = 293
-scale_cpu = 355
-energy_w/o_task = 160 * 283 / 355 = 127.55 => 127
-energy_w_task = 160 * 296 / 355 = 133.41 => 133
-energy_diff = 133 - 127 = 6 (this is equal to 'old' PD0's energy_diff in 
-'a)')
-
-d) 'new' w/ patch set, PD1
-task_util = 13
-cost = 160 * 10000 = 1600000
-sum_util_w/o_task = 283
-sum_util_w_task = 293
-scale_cpu = 355
-(no '/ scale_cpu' needed here)
-energy_w/o_task = 1600000 * 283 / 355 = 1275492
-energy_w_task = 1600000 * 296 / 355 =   1334084
-energy_diff = 1334084 - 1275492 = 58592 (this is not equal to 'new' 
-PD0's energy_diff in 'b)')
-
-2. Difference in the the last feec() step: margin filter
-With the patch set the margin comparison also has better resolution,
-so it's possible to hit better placement thanks to that.
-
-Please see the traces below.
-How to interpret these values:
-In the first trace below, there is diff=124964 and margin=123381
-the EM 'cost' is multiplied by 10000, so we we divide these two,
-it will be '12 > 12', so it won't be placed into the better PD
-with lower best delta.
-
-In the last 2 examples you would see close values in the
-prev_delta=49390 best_delta=43945
-Without the patch they would be rounded to
-prev_delta=4 best_delta=4
-and the task might be placed wrongly.
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   systemd-logind-440     [000] d..5    82.164218: compute_energy: 
-energy=43945, sum_util=9 cpu=4
-   systemd-logind-440     [000] d..5    82.164232: compute_energy: 
-energy=766601, sum_util=157 cpu=4
-   systemd-logind-440     [000] d..5    82.164242: compute_energy: 
-energy=766601, sum_util=157 cpu=4
-   systemd-logind-440     [000] d..5    82.164253: compute_energy: 
-energy=1207500, sum_util=299 cpu=0
-   systemd-logind-440     [000] d..5    82.164263: compute_energy: 
-energy=1805192, sum_util=447 cpu=0
-   systemd-logind-440     [000] d..5    82.164273: select_task_rq_fair: 
-EAS: prev_delta=722656 best_delta=597692 diff=124964 margin=123381
-   systemd-logind-440     [000] d..5    82.164278: select_task_rq_fair: 
-EAS: hit!!!
-
-
-   systemd-logind-440     [000] d.h4   134.954038: compute_energy: 
-energy=366210, sum_util=75 cpu=4
-   systemd-logind-440     [000] d.h4   134.954067: compute_energy: 
-energy=463867, sum_util=95 cpu=4
-   systemd-logind-440     [000] d.h4   134.954090: compute_energy: 
-energy=463867, sum_util=95 cpu=4
-   systemd-logind-440     [000] d.h4   134.954117: compute_energy: 
-energy=257347, sum_util=99 cpu=0
-   systemd-logind-440     [000] d.h4   134.954137: compute_energy: 
-energy=309336, sum_util=119 cpu=0
-   systemd-logind-440     [000] d.h4   134.954160: select_task_rq_fair: 
-EAS: prev_delta=97657 best_delta=51989 diff=45668 margin=45075
-   systemd-logind-440     [000] d.h4   134.954171: select_task_rq_fair: 
-EAS: hit!!!
-
-
-           <idle>-0       [001] d.s4   226.019763: compute_energy: 
-energy=0, sum_util=0 cpu=4
-           <idle>-0       [001] d.s4   226.019790: compute_energy: 
-energy=43945, sum_util=9 cpu=4
-           <idle>-0       [001] d.s4   226.019817: compute_energy: 
-energy=5198, sum_util=2 cpu=0
-           <idle>-0       [001] d.s4   226.019838: compute_energy: 
-energy=54588, sum_util=21 cpu=0
-           <idle>-0       [001] d.s4   226.019858: compute_energy: 
-energy=54588, sum_util=21 cpu=0
-           <idle>-0       [001] d.s4   226.019881: select_task_rq_fair: 
-EAS: prev_delta=49390 best_delta=43945 diff=5445 margin=3411
-           <idle>-0       [001] d.s4   226.019891: select_task_rq_fair: 
-EAS: hit!!!
-
-
-           <idle>-0       [001] d.s4   270.019780: compute_energy: 
-energy=0, sum_util=0 cpu=4
-           <idle>-0       [001] d.s4   270.019807: compute_energy: 
-energy=43945, sum_util=9 cpu=4
-           <idle>-0       [001] d.s4   270.019833: compute_energy: 
-energy=5198, sum_util=2 cpu=0
-           <idle>-0       [001] d.s4   270.019854: compute_energy: 
-energy=54588, sum_util=21 cpu=0
-           <idle>-0       [001] d.s4   270.019874: compute_energy: 
-energy=54588, sum_util=21 cpu=0
-           <idle>-0       [001] d.s4   270.019897: select_task_rq_fair: 
-EAS: prev_delta=49390 best_delta=43945 diff=5445 margin=3411
-           <idle>-0       [001] d.s4   270.019908: select_task_rq_fair: 
-EAS: hit!!!
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
+> As pointed out by commit
 > 
-> In this example you can list all the things which must be there to
-> create a situation in EAS in which the patch-set helps.
-
-I hope the description above now add more light into this issue.
-
+>   de9b8f5dcbd9 ("sched: Fix crash trying to dequeue/enqueue the idle thread")
 > 
->> we would like to provide calculated estimations in a better precision and
->> the values might be 1000 times bigger. This patch makes possible to use
+> init_idle() can and will be invoked more than once on the same idle
+> task. At boot time, it is invoked for the boot CPU thread by
+> sched_init(). Then smp_init() creates the threads for all the secondary
+> CPUs and invokes init_idle() on them.
 > 
-> Where is this `1000` coming from?
+> As the hotplug machinery brings the secondaries to life, it will issue
+> calls to idle_thread_get(), which itself invokes init_idle() yet again.
+> In this case it's invoked twice more per secondary: at _cpu_up(), and at
+> bringup_cpu().
+> 
+> Given smp_init() already initializes the idle tasks for all *possible*
+> CPUs, no further initialization should be required. Now, removing
+> init_idle() from idle_thread_get() exposes some interesting expectations
+> with regards to the idle task's preempt_count: the secondary startup always
+> issues a preempt_disable(), requiring some reset of the preempt count to 0
+> between hot-unplug and hotplug, which is currently served by
+> idle_thread_get() -> idle_init().
+> 
+> Given the idle task is supposed to have preemption disabled once and never
+> see it re-enabled, it seems that what we actually want is to initialize its
+> preempt_count to PREEMPT_DISABLED and leave it there. Do that, and remove
+> init_idle() from idle_thread_get().
+> 
+> Secondary startups were patched via coccinelle:
+> 
+>   @begone@
+>   @@
+> 
+>   -preempt_disable();
+>   ...
+>   cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
+> 
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> Acked-by: Peter Zijlstra <peterz@infradead.org>
+> Link: https://lore.kernel.org/r/20210512094636.2958515-1-valentin.schneider@arm.com
 
-It's just a statement that in the next patches we would increase the
-resolution by a few orders of magnitude. In patch 3/3 it's 10000.
-I can align with that value also in this statement.
+This patch results in several messages similar to the following
+when booting s390 images in qemu.
 
-Thank you Dietmar for having a look at this!
+[    1.690807] BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+[    1.690925] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 1, name: swapper/0
+[    1.691053] no locks held by swapper/0/1.
+[    1.691310] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-11788-g79160a603bdb #1
+[    1.691469] Hardware name: QEMU 2964 QEMU (KVM/Linux)
+[    1.691612] Call Trace:
+[    1.691718]  [<0000000000d98bb0>] show_stack+0x90/0xf8
+[    1.692040]  [<0000000000da894c>] dump_stack_lvl+0x74/0xa8
+[    1.692134]  [<0000000000187e52>] ___might_sleep+0x15a/0x170
+[    1.692228]  [<000000000014f588>] cpus_read_lock+0x38/0xc0
+[    1.692320]  [<0000000000182e8a>] smpboot_register_percpu_thread+0x2a/0x160
+[    1.692412]  [<00000000014814b8>] cpuhp_threads_init+0x28/0x60
+[    1.692505]  [<0000000001487a30>] smp_init+0x28/0x90
+[    1.692597]  [<00000000014779a6>] kernel_init_freeable+0x1f6/0x270
+[    1.692689]  [<0000000000db7466>] kernel_init+0x2e/0x160
+[    1.692779]  [<0000000000103618>] __ret_from_fork+0x40/0x58
+[    1.692870]  [<0000000000dc6e12>] ret_from_fork+0xa/0x30
 
-Regards,
-Lukasz
+Reverting this patch fixes the problem.
+Bisect log is attached.
 
+Guenter
+
+---
+# bad: [007b350a58754a93ca9fe50c498cc27780171153] Merge tag 'dlm-5.14' of git://git.kernel.org/pub/scm/linux/kernel/git/teigland/linux-dlm
+# good: [62fb9874f5da54fdb243003b386128037319b219] Linux 5.13
+git bisect start '007b350a5875' '62fb9874f5da'
+# bad: [36824f198c621cebeb22966b5e244378fa341295] Merge tag 'for-linus' of git://git.kernel.org/pub/scm/virt/kvm/kvm
+git bisect bad 36824f198c621cebeb22966b5e244378fa341295
+# bad: [9269d27e519ae9a89be8d288f59d1ec573b0c686] Merge tag 'timers-nohz-2021-06-28' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+git bisect bad 9269d27e519ae9a89be8d288f59d1ec573b0c686
+# good: [69609a91ac1d82f9c958a762614edfe0ac8498e3] Merge tag 'spi-v5.14' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi
+git bisect good 69609a91ac1d82f9c958a762614edfe0ac8498e3
+# good: [a15286c63d113d4296c58867994cd266a28f5d6d] Merge tag 'locking-core-2021-06-28' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+git bisect good a15286c63d113d4296c58867994cd266a28f5d6d
+# bad: [0159bb020ca9a43b17aa9149f1199643c1d49426] Documentation: Add usecases, design and interface for core scheduling
+git bisect bad 0159bb020ca9a43b17aa9149f1199643c1d49426
+# good: [97886d9dcd86820bdbc1fa73b455982809cbc8c2] sched: Migration changes for core scheduling
+git bisect good 97886d9dcd86820bdbc1fa73b455982809cbc8c2
+# bad: [fcb501704554eebfd27e3220b0540997fd2b24a8] delayacct: Document task_delayacct sysctl
+git bisect bad fcb501704554eebfd27e3220b0540997fd2b24a8
+# bad: [cc00c1988801dc71f63bb7bad019e85046865095] sched: Fix leftover comment typos
+git bisect bad cc00c1988801dc71f63bb7bad019e85046865095
+# good: [7ac592aa35a684ff1858fb9ec282886b9e3575ac] sched: prctl() core-scheduling interface
+git bisect good 7ac592aa35a684ff1858fb9ec282886b9e3575ac
+# bad: [f1a0a376ca0c4ef1fc3d24e3e502acbb5b795674] sched/core: Initialize the idle task with preemption disabled
+git bisect bad f1a0a376ca0c4ef1fc3d24e3e502acbb5b795674
+# good: [9f26990074931bbf797373e53104216059b300b1] kselftest: Add test for core sched prctl interface
+git bisect good 9f26990074931bbf797373e53104216059b300b1
+# first bad commit: [f1a0a376ca0c4ef1fc3d24e3e502acbb5b795674] sched/core: Initialize the idle task with preemption disabled
