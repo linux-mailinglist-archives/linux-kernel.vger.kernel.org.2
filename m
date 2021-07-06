@@ -2,97 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00BD53BC6B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 08:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1163C3BC6B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 08:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbhGFGff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 02:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36994 "EHLO
+        id S230130AbhGFGmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 02:42:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbhGFGfe (ORCPT
+        with ESMTP id S230086AbhGFGmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 02:35:34 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17CF6C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 23:32:55 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id p21so14664502lfj.13
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 23:32:54 -0700 (PDT)
+        Tue, 6 Jul 2021 02:42:50 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE519C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 23:40:10 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id i13so11428373plb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 23:40:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0R9RNAketJhxYpc/XXD+X4512dTYOq/NUYNFt1MPbwc=;
-        b=B8ONM1o9nZAeCeMY9N+sTVw8QDWQGNs9iT4EDMGWlhkKRw06xoZT4OBOILhByeMJHb
-         32YcMzeZygkOePUB0aDQVWuU2sFGi4KgVjiLMcOD3tmateFpL4TPmS1U8yBTgobPjLGD
-         LNSXkqvaE+BurAez6phiDmblXCk3L0ApZp0W4CgnmZRiiqo6Lt6O3luOLrxwijC68WAY
-         eo/n8IaRtTWBKqmnULCDR9SV3QlgK/YY0N1w+YQGITrC6pbbWM7PSsR9G/a+XXHA/MFw
-         kyLTM3HaD4hCdbYp1AiAQtB/TGV/gE6AHwVups8hPGasLinXzcaKHHToUKffjz6iT06U
-         nWiA==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=RnfC90qmrJRM/A3hqOe/93Ug+s8qei2DZtNwiknaExQ=;
+        b=rfDHuSYDvco53PrlcQNTQIw/rO1D+x/M6kaA1somiOMKXkWvB/Q7EwEyjLCFBWa8tW
+         n0YBhjyg8v42iLVSS60G/6V5ESwnL3geAdaz97hXM8ODbU+w+0ZsRQj0rtr+Q0i/AS8x
+         aairMi8rBOcZKZRG6bnSBj4m7IJoOpKflp2PUSzDnxb23QcfUXRge5bNVgU6tr5up4Dv
+         bYGzZOdcskDE+v8KjSnS+JRv6ByFpDaqTcyQXIl4Z5ygCex04/juUp4xJUwTmnwLw6u9
+         8/BXHb+cNmBQfsYPeyEbFu1p7/CZloQYs9AseWp1xQgyiHawdkbVz8AgwbsydDpB6PQQ
+         BjCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0R9RNAketJhxYpc/XXD+X4512dTYOq/NUYNFt1MPbwc=;
-        b=RnWKHZykhJWQSjhzAeEm9feX9SIcWDRzRaRjGHe+OZw5a1XKmNzyhGveL8zyzrkX1Z
-         Q8F5cA0aWIWw/tlY6XbNXEkHYjHmciqgM5lk8VrTanhdeiqnAYxm5cFPGijXboh1n2jN
-         QCPFfsb7xkULhMO3ES/5tN+FTW6Z9dDDl9HNiCL2gimcrRT7/pCpZRmVlXNQOVkVzhLE
-         cQ8ljHDdprwNcsUzpfFYyEdnGkf6Mg3fE6JPY39ONLwXFuttFs3BL4x2MV7bWn7cnT00
-         wNsmdaA+9nQKufMga1WKqDdOF4cZj8ybmleSIvZVsmGmiyb4dpBPFChb6P3dh4qxI1/o
-         aUsQ==
-X-Gm-Message-State: AOAM532OALHDXlQzkTqC20YBgv9yhxVNc3fzp8KK/UbXS2KVqMCt5sIS
-        TFDXzFheQtcfU6rvCZr2Lq0oRrdkSld+AaDSxnw=
-X-Google-Smtp-Source: ABdhPJwyNf1lJvyheN+sv5QtdqylQin6D6vIJM9g/ClU3NRET+VB8Pp/HQbZqRgr3qWk2pmYcUnEARBO3W2TrAD89HM=
-X-Received: by 2002:a19:4f57:: with SMTP id a23mr8787392lfk.408.1625553173232;
- Mon, 05 Jul 2021 23:32:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <1625111646-3955-1-git-send-email-u0084500@gmail.com>
- <CAFRkauCNf6fP8zAz+0gY_Vzb_wCtVyYqLjw8s1T+t2s=bR0RQw@mail.gmail.com>
- <CADiBU3_dCNvZRwewiztB0UGFvDz3g5sw-q+95sg9akqte1YJsA@mail.gmail.com>
- <CADiBU3-i2tg33iCjX83NEYAhYYabnHjL129+tOm9_h=MrPhraw@mail.gmail.com> <20210705165255.GD4574@sirena.org.uk>
-In-Reply-To: <20210705165255.GD4574@sirena.org.uk>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Tue, 6 Jul 2021 14:32:41 +0800
-Message-ID: <CADiBU39oN-OeHnw8xgJY21YX_uDyXBNRZPC8maG79fF806hLyw@mail.gmail.com>
-Subject: Re: [PATCH] regulator: rt5033: Use linear ranges to map all voltage selection
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Axel Lin <axel.lin@ingics.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=RnfC90qmrJRM/A3hqOe/93Ug+s8qei2DZtNwiknaExQ=;
+        b=je1bTEqK3VLuis0kXr3jpUf/Yv2NW2X+ds1k1cZs8AmU/iv0UdPDRRiyq1MTs9nSR7
+         5tCDpG/WaQHBw3g6sPX9k1W1l5oZ1kDH5Magr5VkQMqgXXdyblBDDN6BUmz/CgNN1UU1
+         uoikg7kNRCUe0gw13YhJvwla8SyJfDUePcjF2EtApGpVBEj2q4uYLs2qT3i8fAXClIqw
+         CUpwbsDXaVAXT4WXM7eeuQuT1LXW9ectbFX0YGx+/yPfAU1O7eGmrHMnm2G4HwQzlTRg
+         UjDuC8W+M7IZgdMERbf9nOW40N/820DyWORAH5DY9meKqieSDgnB+Zlf4OSiGXkI/YBa
+         Yn+Q==
+X-Gm-Message-State: AOAM530QCpwcVt39oy7vL6ZuE1zlIHqabWWX4mhbc+jsV3T4r1IC/LBm
+        6150QRUAVBc/jGlYc8TmCKI=
+X-Google-Smtp-Source: ABdhPJwS/TL6GSdJ9UJz79AMLTNaG3F0oGhQYz0lOsx6ZNd8CZPH04S2lKOnnCe5a4cVP8dWIFMWkA==
+X-Received: by 2002:a17:90a:df10:: with SMTP id gp16mr2922095pjb.164.1625553610207;
+        Mon, 05 Jul 2021 23:40:10 -0700 (PDT)
+Received: from localhost (g164.115-65-218.ppp.wakwak.ne.jp. [115.65.218.164])
+        by smtp.gmail.com with ESMTPSA id m7sm7357158pjf.8.2021.07.05.23.40.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 23:40:09 -0700 (PDT)
+Date:   Tue, 6 Jul 2021 15:40:07 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Openrisc <openrisc@lists.librecores.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        ChiYuan Huang <cy_huang@richtek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Gabriel Somlo <gsomlo@gmail.com>,
+        Mateusz Holenko <mholenko@antmicro.com>
+Subject: [GIT PULL] OpenRISC updates for 5.14
+Message-ID: <YOP6x0Mz8aBv9x18@antec>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B47=E6=9C=886=E6=97=A5=
- =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=8812:53=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Fri, Jul 02, 2021 at 11:47:50PM +0800, ChiYuan Huang wrote:
-> > ChiYuan Huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=881=
-=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=881:53=E5=AF=AB=E9=81=93=EF=BC=
-=9A
-> > > Axel Lin <axel.lin@ingics.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=881=E6=
-=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8812:41=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> > > From the regulator register in probe, it will get the current voltage
-> > > from the IC.
-> > > If the vout sel is not is over N_VOLTAGES, it will return the error n=
-umber.
->
-> > > But as I think it's the side effect to change the vout step num.
-> > > To use the linear range is just to guarantee all vout sel range are i=
-ncluded.
->
-> > > That's my initial thoughts.
->
-> >    Like as you said,  the first revision is from 2014.
-> > It is almost EOL for this product.
-> > To fix this seems redundant.
->
-> Even if something is old it's still posible that people can use it, and
-> if someone's done the work to fix it then why not?
+Hi Linus,
 
-Got it, I'll send the v2 patch to fix it.
-Thanks.
+Please consider for pull
+
+The following changes since commit 614124bea77e452aa6df7a8714e8bc820b489922:
+
+  Linux 5.13-rc5 (2021-06-06 15:47:27 -0700)
+
+are available in the Git repository at:
+
+  git://github.com/openrisc/linux.git tags/for-linus
+
+for you to fetch changes up to ad4e600cbf897f47525b342cd4b02e88ed300a83:
+
+  drivers/soc/litex: remove 8-bit subregister option (2021-06-11 04:35:40 +0900)
+
+----------------------------------------------------------------
+OpenRISC updates for 5.14
+
+One change to simplify Litex CSR (MMIO register) access by limiting them
+to 32-bit offsets.  Now this is agreed among Litex hardware and kernel
+developers it will allow us to start upstreaming other Litex peripheral
+drivers.
+
+----------------------------------------------------------------
+Gabriel Somlo (1):
+      drivers/soc/litex: remove 8-bit subregister option
+
+ drivers/soc/litex/Kconfig          |  12 -----
+ drivers/soc/litex/litex_soc_ctrl.c |   3 +-
+ include/linux/litex.h              | 103 ++++++-------------------------------
+ 3 files changed, 16 insertions(+), 102 deletions(-)
