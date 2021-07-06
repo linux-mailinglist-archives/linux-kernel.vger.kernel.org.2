@@ -2,167 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57CEA3BD325
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29703BD2BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236547AbhGFLsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237063AbhGFLfw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:35:52 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D2BC025474;
-        Tue,  6 Jul 2021 04:19:56 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id j16-20020a05600c1c10b0290204b096b0caso1988246wms.1;
-        Tue, 06 Jul 2021 04:19:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TBpIdd3w4EmoKqEbW/BZLpVWyxmjxkVlYmKKxNmRAGs=;
-        b=N+gzKC0Z+TLx4EVOYrpeodOG9kqL2O+hnJQ+5hS8ySCTWQc6nhp5Tvn3ujyDzQAHCo
-         ZWHRLJ5Ik3XlTKzgigdSPOLEK9yViA53g8RIqyyWvLJ+vM9zqu/0/PBReDvkuFKVso1B
-         AGTpv6yuhdPZqRrPG5RskiMwvMXxdj4uSuFp8v9LCpQ6pRutc9e+osA7Xs2qSWBEE4dh
-         h4eIODblSFMTUUI25MRMw0RopkQJyyvwBoB6iCV9bJgUtgLYD02To6H27A3ZDHDQgmYQ
-         6PpEoQnFaKJfygsMIpHen2X68Xs/5ncAlvYGrsnX8CQgjIqfZtoVw7pMZe0J3ePN6jQw
-         G60A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TBpIdd3w4EmoKqEbW/BZLpVWyxmjxkVlYmKKxNmRAGs=;
-        b=XHIHlKFendywTHWO8CqNQHLGMfwvYNrT8JBNV2XVXQ8AjV49pCDcXhkMOaQbe3c82X
-         gCFiwke0ArK5Ntb4GXj1FqswlvQ9TWW5hz5LuE9qqp0RphSO80F+GzU+FA3fBPAV/Py+
-         7b2GuH1lmuuE7/hPlX6jBbjGKgafAovundU75mZ4FJpmjc2UIbWF7qCsGd2F0L0qGvXD
-         eNXhktimO0GRrCBA+bpC6tUIdIbbPi2kZhYNoaQnu+Ufwj+We+qA6DP+FADcbWrjrdS9
-         YFj8UZXHSDx19t9ZS2BNj6JHk1cm0YvZ/OeeyDOFrqb5YL5inF+wKhzbBbQgiVkRGDqZ
-         j1eA==
-X-Gm-Message-State: AOAM532++KNV6o3+nYAjvkknsPXa7auTnExtdokslp9rEwwZSe+duMR0
-        FlzvWGsgFtU4dO7DEItA9EE=
-X-Google-Smtp-Source: ABdhPJwWZW6uE+qpJMpNIRo+zpfm8e6b5TBp6hQTWoVQek+iG3AtgJH7ekQHoPlpcSLjU6msHrli5w==
-X-Received: by 2002:a05:600c:2292:: with SMTP id 18mr19388741wmf.179.1625570394987;
-        Tue, 06 Jul 2021 04:19:54 -0700 (PDT)
-Received: from masalkhi.fritz.box (dslb-178-005-073-162.178.005.pools.vodafone-ip.de. [178.5.73.162])
-        by smtp.gmail.com with ESMTPSA id p7sm5142931wrr.21.2021.07.06.04.19.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 04:19:54 -0700 (PDT)
-From:   Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-To:     axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com, kbuild@lists.01.org, lkp@intel.com,
-        Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-Subject: [PATCH v3] block: Removed a warning while compiling with a cross compiler for parisc
-Date:   Tue,  6 Jul 2021 13:19:12 +0200
-Message-Id: <20210706111912.97611-1-abd.masalkhi@gmail.com>
-X-Mailer: git-send-email 2.29.0.rc1.dirty
+        id S239709AbhGFLpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:45:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235877AbhGFLaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:30:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC6F861DED;
+        Tue,  6 Jul 2021 11:22:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625570525;
+        bh=aexcraR/jbiLJzmmi7c4a7TbhA2dKFC0BduVigO9NaY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hqD3J6CTlJT7VFwPvCMwF99SAsbyhhoGtdHU2Zref+t6RlTBodNu1GMjUMAWhuOxa
+         43U8LErN90PEKaY4ecyegwYQgh44g/LNYUjVYzRfPwg7DktVsQOgcaImICq+gGsjv5
+         DSftfsyRbpqWCPhyJrfNvaHj47f+wd6hrXW43682j7itxB2OVSMFZaMM5alsvqPTg5
+         0yEZzZ2DehDuyChV29EJ047QQXHD/vWXNEat3ax0mD/beLMBKhp1hxycDf9J7Dcehx
+         y3NOZL8Wru9e2g1UIHaksPf8npumggcVWgg04fRF+M47pT+L93hnsgWe/YDyFQqOoQ
+         n3WL3bFGfOxXw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Tian Tao <tiantao6@hisilicon.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.10 001/137] drm/etnaviv: fix NULL check before some freeing functions is not needed
+Date:   Tue,  6 Jul 2021 07:19:47 -0400
+Message-Id: <20210706112203.2062605-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have compiled the kernel with a cross compiler "hppa-linux-gnu-" v9.3.0
-on x86-64 host machine. I got the following warning:
+From: Tian Tao <tiantao6@hisilicon.com>
 
-block/genhd.c: In function ‘diskstats_show’:
-block/genhd.c:1227:1: warning: the frame size of 1688 bytes is larger
-than 1280 bytes [-Wframe-larger-than=]
- 1227  |  }
+[ Upstream commit 7d614ab2f20503ed8766363d41f8607337571adf ]
 
-By Reduced the stack footprint, using new printf specifier to print the
-bdevname and wrapping div_u64 function with a non-inline wrapper function,
-the warning was not emitted anymore.
+fixed the below warning:
+drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c:84:2-8: WARNING: NULL check
+before some freeing functions is not needed.
 
-Signed-off-by: Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Acked-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/genhd.c | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+ drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 79aa40b4c39c..0b091f572bc5 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1106,6 +1106,11 @@ const struct device_type disk_type = {
- };
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+index 4aa3426a9ba4..059ec31d532d 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+@@ -77,8 +77,7 @@ static void etnaviv_gem_prime_release(struct etnaviv_gem_object *etnaviv_obj)
+ 	/* Don't drop the pages for imported dmabuf, as they are not
+ 	 * ours, just free the array we allocated:
+ 	 */
+-	if (etnaviv_obj->pages)
+-		kvfree(etnaviv_obj->pages);
++	kvfree(etnaviv_obj->pages);
  
- #ifdef CONFIG_PROC_FS
-+static noinline u64 call_div_u64(u64 dividend, u32 divisor)
-+{
-+	return div_u64(dividend, divisor);
-+}
-+
- /*
-  * aggregate disk stat collector.  Uses the same stats that the sysfs
-  * entries do, above, but makes them available through one seq_file.
-@@ -1117,7 +1122,6 @@ static int diskstats_show(struct seq_file *seqf, void *v)
- {
- 	struct gendisk *gp = v;
- 	struct block_device *hd;
--	char buf[BDEVNAME_SIZE];
- 	unsigned int inflight;
- 	struct disk_stats stat;
- 	unsigned long idx;
-@@ -1140,40 +1144,39 @@ static int diskstats_show(struct seq_file *seqf, void *v)
- 		else
- 			inflight = part_in_flight(hd);
- 
--		seq_printf(seqf, "%4d %7d %s "
-+		seq_printf(seqf, "%4d %7d %pg "
- 			   "%lu %lu %lu %u "
- 			   "%lu %lu %lu %u "
- 			   "%u %u %u "
- 			   "%lu %lu %lu %u "
- 			   "%lu %u"
- 			   "\n",
--			   MAJOR(hd->bd_dev), MINOR(hd->bd_dev),
--			   disk_name(gp, hd->bd_partno, buf),
-+			   MAJOR(hd->bd_dev), MINOR(hd->bd_dev), hd,
- 			   stat.ios[STAT_READ],
- 			   stat.merges[STAT_READ],
- 			   stat.sectors[STAT_READ],
--			   (unsigned int)div_u64(stat.nsecs[STAT_READ],
--							NSEC_PER_MSEC),
-+			   (unsigned int)call_div_u64(stat.nsecs[STAT_READ],
-+						      NSEC_PER_MSEC),
- 			   stat.ios[STAT_WRITE],
- 			   stat.merges[STAT_WRITE],
- 			   stat.sectors[STAT_WRITE],
--			   (unsigned int)div_u64(stat.nsecs[STAT_WRITE],
--							NSEC_PER_MSEC),
-+			   (unsigned int)call_div_u64(stat.nsecs[STAT_WRITE],
-+						      NSEC_PER_MSEC),
- 			   inflight,
- 			   jiffies_to_msecs(stat.io_ticks),
--			   (unsigned int)div_u64(stat.nsecs[STAT_READ] +
--						 stat.nsecs[STAT_WRITE] +
--						 stat.nsecs[STAT_DISCARD] +
--						 stat.nsecs[STAT_FLUSH],
--							NSEC_PER_MSEC),
-+			   (unsigned int)call_div_u64(stat.nsecs[STAT_READ] +
-+						      stat.nsecs[STAT_WRITE] +
-+						      stat.nsecs[STAT_DISCARD] +
-+						      stat.nsecs[STAT_FLUSH],
-+						      NSEC_PER_MSEC),
- 			   stat.ios[STAT_DISCARD],
- 			   stat.merges[STAT_DISCARD],
- 			   stat.sectors[STAT_DISCARD],
--			   (unsigned int)div_u64(stat.nsecs[STAT_DISCARD],
--						 NSEC_PER_MSEC),
-+			   (unsigned int)call_div_u64(stat.nsecs[STAT_DISCARD],
-+						      NSEC_PER_MSEC),
- 			   stat.ios[STAT_FLUSH],
--			   (unsigned int)div_u64(stat.nsecs[STAT_FLUSH],
--						 NSEC_PER_MSEC)
-+			   (unsigned int)call_div_u64(stat.nsecs[STAT_FLUSH],
-+						      NSEC_PER_MSEC)
- 			);
- 	}
- 	rcu_read_unlock();
+ 	drm_prime_gem_destroy(&etnaviv_obj->base, etnaviv_obj->sgt);
+ }
 -- 
-2.29.0.rc1.dirty
+2.30.2
 
