@@ -2,200 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D4D3BCB62
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EA03BCB6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhGFLJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:09:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231216AbhGFLJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:09:34 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FEFA61A33;
-        Tue,  6 Jul 2021 11:06:56 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1m0iuk-00Bf9z-EM; Tue, 06 Jul 2021 12:06:54 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com,
-        Guenter Roeck <linux@roeck-us.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Serge Semin <fancer.lancer@gmail.com>
-Subject: [PATCH] irqchip/mips: Fix RCU violation when using irqdomain lookup on interrupt entry
-Date:   Tue,  6 Jul 2021 12:06:47 +0100
-Message-Id: <20210706110647.3979002-1-maz@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S231771AbhGFLLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229834AbhGFLLV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:11:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBEDC061574;
+        Tue,  6 Jul 2021 04:08:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ujhsZIEffiBU8YDQW2JxEemVJB22hCG0N5jEdqMO6sY=; b=oHTNsFlvR32AIvh3SJZS+oIKYM
+        N/D7UTCrnz4Efptg6IgjxFJNuVX2VsZi7A3VcMx6bXy0bebWiNRzvO2KaS90p4FO1Qo6X+pCW1pRi
+        DX9Uk+MWeLXpIIYqyAr7Id0a5+LVsVefLII4v9w8UX7eQfXKW4LOr+R5/Zgh8CtO3R7LyiZJruzhq
+        fTaDV4JxeCigEKhsRnIA9gGuZmhICV/SRALP2ToY3GPALHUI7tZaVCoNvPeFPY5q1sPYom1YyjUK3
+        yAYq8hLUFi0BP7Oox2P6guqXozOFtzV/yaLDhqYbKtXBZM1RgraQ7udD/VaRolaydb40+hbAFZvd6
+        f2Y9xEWg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m0iw2-00BAUP-KO; Tue, 06 Jul 2021 11:08:17 +0000
+Date:   Tue, 6 Jul 2021 12:08:14 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next 1/1] iomap: Fix a false positive of UBSAN in
+ iomap_seek_data()
+Message-ID: <YOQ5nuuoBVHABK1C@casper.infradead.org>
+References: <20210702092109.2601-1-thunder.leizhen@huawei.com>
+ <YN9vZfo+84gizjtf@casper.infradead.org>
+ <492c7a7b-6f2e-de45-c733-51c80422305e@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de, kernel-team@android.com, linux@roeck-us.net, tsbogend@alpha.franken.de, fancer.lancer@gmail.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <492c7a7b-6f2e-de45-c733-51c80422305e@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since d4a45c68dc81 ("irqdomain: Protect the linear revmap with RCU"),
-any irqdomain lookup requires the RCU read lock to be held.
+On Mon, Jul 05, 2021 at 11:35:08AM +0800, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2021/7/3 3:56, Matthew Wilcox wrote:
+> > On Fri, Jul 02, 2021 at 05:21:09PM +0800, Zhen Lei wrote:
+> >> Move the evaluation expression "size - offset" after the "if (offset < 0)"
+> >> judgment statement to eliminate a false positive produced by the UBSAN.
+> >>
+> >> No functional changes.
+> >>
+> >> ==========================================================================
+> >> UBSAN: Undefined behaviour in fs/iomap.c:1435:9
+> >> signed integer overflow:
+> >> 0 - -9223372036854775808 cannot be represented in type 'long long int'
+> > 
+> > I don't understand.  I thought we defined the behaviour of signed
+> > integer overflow in the kernel with whatever-the-gcc-flag-is?
+> 
+> -9223372036854775808 ==> 0x8000000000000000 ==> -0
+> 
+> I don't fully understand what you mean. This is triggered by explicit error
+> injection '-0' at runtime, which should not be detected by compilation options.
 
-This assumes that the architecture code will be structured such as
-irq_enter() will be called *before* the interrupt is looked up
-in the irq domain. However, this isn't the case for MIPS, and a number
-of drivers are structured to do it the other way around when handling
-an interrupt in their root irqchip (secondary irqchips are OK by
-construction).
+We use -fwrapv on the gcc command line:
 
-This results in a RCU splat on a lockdep-enabled kernel when the kernel
-takes an interrupt from idle, as reported by Guenter Roeck.
+'-fwrapv'
+     This option instructs the compiler to assume that signed arithmetic
+     overflow of addition, subtraction and multiplication wraps around
+     using twos-complement representation.  This flag enables some
+     optimizations and disables others.
 
-Note that this could have fired previously if any driver had used
-tree-based irqdomain, which always had the RCU requirement.
+> lseek(r1, 0x8000000000000000, 0x3)
 
-To solve this, provide a MIPS-specific helper (do_domain_IRQ())
-as the pendent of do_IRQ() that will do thing in the right order
-(and maybe save some cycles in the process).
-
-Ideally, MIPS would be moved over to using handle_domain_irq(),
-but that's much more ambitious.
-
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Serge Semin <fancer.lancer@gmail.com>
-Link: https://lore.kernel.org/r/20210705172352.GA56304@roeck-us.net
----
- arch/mips/include/asm/irq.h      |  3 +++
- arch/mips/kernel/irq.c           | 14 ++++++++++++++
- drivers/irqchip/irq-mips-cpu.c   | 10 ++++++----
- drivers/irqchip/irq-mips-gic.c   |  8 ++++----
- drivers/irqchip/irq-pic32-evic.c |  5 ++---
- 5 files changed, 29 insertions(+), 11 deletions(-)
-
-diff --git a/arch/mips/include/asm/irq.h b/arch/mips/include/asm/irq.h
-index d1477ecb1af9..57561e0e6e8d 100644
---- a/arch/mips/include/asm/irq.h
-+++ b/arch/mips/include/asm/irq.h
-@@ -57,6 +57,9 @@ asmlinkage void plat_irq_dispatch(void);
- 
- extern void do_IRQ(unsigned int irq);
- 
-+struct irq_domain;
-+extern void do_domain_IRQ(struct irq_domain *domain, unsigned int irq);
-+
- extern void arch_init_irq(void);
- extern void spurious_interrupt(void);
- 
-diff --git a/arch/mips/kernel/irq.c b/arch/mips/kernel/irq.c
-index 85b6c60f285d..c76005cd3b79 100644
---- a/arch/mips/kernel/irq.c
-+++ b/arch/mips/kernel/irq.c
-@@ -21,6 +21,7 @@
- #include <linux/kallsyms.h>
- #include <linux/kgdb.h>
- #include <linux/ftrace.h>
-+#include <linux/irqdomain.h>
- 
- #include <linux/atomic.h>
- #include <linux/uaccess.h>
-@@ -107,3 +108,16 @@ void __irq_entry do_IRQ(unsigned int irq)
- 	irq_exit();
- }
- 
-+void __irq_entry do_domain_IRQ(struct irq_domain *domain, unsigned int hwirq)
-+{
-+	struct irq_desc *desc;
-+
-+	irq_enter();
-+	check_stack_overflow();
-+
-+	desc = irq_resolve_mapping(domain, hwirq);
-+	if (likely(desc))
-+		handle_irq_desc(desc);
-+
-+	irq_exit();
-+}
-diff --git a/drivers/irqchip/irq-mips-cpu.c b/drivers/irqchip/irq-mips-cpu.c
-index 0bbb0b2d0dd5..0c7ae71a0af0 100644
---- a/drivers/irqchip/irq-mips-cpu.c
-+++ b/drivers/irqchip/irq-mips-cpu.c
-@@ -127,7 +127,6 @@ static struct irq_chip mips_mt_cpu_irq_controller = {
- asmlinkage void __weak plat_irq_dispatch(void)
- {
- 	unsigned long pending = read_c0_cause() & read_c0_status() & ST0_IM;
--	unsigned int virq;
- 	int irq;
- 
- 	if (!pending) {
-@@ -137,12 +136,15 @@ asmlinkage void __weak plat_irq_dispatch(void)
- 
- 	pending >>= CAUSEB_IP;
- 	while (pending) {
-+		struct irq_domain *d;
-+
- 		irq = fls(pending) - 1;
- 		if (IS_ENABLED(CONFIG_GENERIC_IRQ_IPI) && irq < 2)
--			virq = irq_linear_revmap(ipi_domain, irq);
-+			d = ipi_domain;
- 		else
--			virq = irq_linear_revmap(irq_domain, irq);
--		do_IRQ(virq);
-+			d = irq_domain;
-+
-+		do_domain_IRQ(d, irq);
- 		pending &= ~BIT(irq);
- 	}
- }
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index b146e069bf5b..54c7092cc61d 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -169,8 +169,8 @@ static void gic_handle_shared_int(bool chained)
- 			generic_handle_domain_irq(gic_irq_domain,
- 						  GIC_SHARED_TO_HWIRQ(intr));
- 		else
--			do_IRQ(irq_find_mapping(gic_irq_domain,
--						GIC_SHARED_TO_HWIRQ(intr)));
-+			do_domain_IRQ(gic_irq_domain,
-+				      GIC_SHARED_TO_HWIRQ(intr));
- 	}
- }
- 
-@@ -320,8 +320,8 @@ static void gic_handle_local_int(bool chained)
- 			generic_handle_domain_irq(gic_irq_domain,
- 						  GIC_LOCAL_TO_HWIRQ(intr));
- 		else
--			do_IRQ(irq_find_mapping(gic_irq_domain,
--						GIC_LOCAL_TO_HWIRQ(intr)));
-+			do_domain_IRQ(gic_irq_domain,
-+				      GIC_LOCAL_TO_HWIRQ(intr));
- 	}
- }
- 
-diff --git a/drivers/irqchip/irq-pic32-evic.c b/drivers/irqchip/irq-pic32-evic.c
-index 34c4b4ffacd1..1d9bb28d13e5 100644
---- a/drivers/irqchip/irq-pic32-evic.c
-+++ b/drivers/irqchip/irq-pic32-evic.c
-@@ -42,11 +42,10 @@ static void __iomem *evic_base;
- 
- asmlinkage void __weak plat_irq_dispatch(void)
- {
--	unsigned int irq, hwirq;
-+	unsigned int hwirq;
- 
- 	hwirq = readl(evic_base + REG_INTSTAT) & 0xFF;
--	irq = irq_linear_revmap(evic_irq_domain, hwirq);
--	do_IRQ(irq);
-+	do_domain_IRQ(evic_irq_domain, hwirq);
- }
- 
- static struct evic_chip_data *irqd_to_priv(struct irq_data *data)
--- 
-2.30.2
-
+I'll see about adding this to xfstests ...
