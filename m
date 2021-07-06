@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B003BD600
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108753BD611
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239973AbhGFM0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55238 "EHLO
+        id S243639AbhGFM3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245564AbhGFMM6 (ORCPT
+        with ESMTP id S240116AbhGFMYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 08:12:58 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B17C03DC80
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 05:08:55 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d12so19274668pfj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 05:08:55 -0700 (PDT)
+        Tue, 6 Jul 2021 08:24:53 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1259C0613B7;
+        Tue,  6 Jul 2021 05:15:49 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id p9so795522pjl.3;
+        Tue, 06 Jul 2021 05:15:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=6JWokwgpWa/kqSQrF9XnkQnxgxlRMc8jy6B5qssDqmw=;
-        b=hF1X1Mm6nQqL72WU6+FEst5a2fqJjiKPaO8ykKpH2thiwFObKEHsmhZ+Nphw/ooymk
-         Q/lgUZlN3xAsLGWa8AiVqARmmkLjq9b6j4DTCXbUKVa36b19XJCCl07vjWos2pVhxEuR
-         ktJtVGG9bIb3wCDiMOP6PFVUgmtS55ZA/4tX0LRSSDVFo4Li3/vQLjHpEIT/Z9kU+72B
-         sXc8HhxpcBCc7qKnxnxGwyUmYp+KN8irX4Q5SPGWHrY9XoMHFwEJFOVZkSb+XyOaL23H
-         N4vQZKQgI2j3rWFNuDGNqzOtWd2AgCfEaMRtnn9SrjsrZf8jnko5V0+VpDc+W97QrGgA
-         oRiw==
+        bh=t8B/nC3iwzTJBYhCF0Zlx4z9CIpEdQIQ4kfF+EVdryY=;
+        b=IhvAskayk+s8h6vWaMytLpo6Okl7xxG4T+63UvntJBQNO0Pebn4QOdiUBbOOu31k1T
+         OoUtIX1t7ONJHxz8y1FSEM+aLNzeQVeklREEGe+SVAw3W+mKDRXiTIUje9gw/tXjauWi
+         H+Zy5yXkKNAFvejZn4LPPELAa+VxEpAfY31+59cW5cbxh5YvC/rcodQ+NiYQfTKxsprG
+         z7436QqEQDscSeUoBKnPGTbkrezZ+jhrwcOEiAQJpWa2aDFvyrHgVXj/32H+IxPDm0G1
+         rsNBc//C+jcteZpM2MpBexntmwlPtKioRqWz/p2an0XRu6biiMOnpoGWXrDzPa8YvTsE
+         eOcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=6JWokwgpWa/kqSQrF9XnkQnxgxlRMc8jy6B5qssDqmw=;
-        b=Lt+GR48ZmaHprXmPM2Co5HQXXtj5DVXCyx1A7X4UW1dKoLSa5MGLZWrj3AvnAXEHEd
-         NajsTF2FBKDoyAPjSA5wmjVPzOAnTNUjvn9RXCIWP8xCx+vV2ALKQVP7eCc4VB5Gf4Ay
-         T99ZHNetOTJgWqU4beB+6dkd0fk4VeVewqVvmQR37FVgmi7jk1Nro0ThOar+qPp+eiOm
-         LHAZ06huMbK0Ej7OhtC7aCrIXtrrEQGB9ZZzwyF2NzN2fw2ONYzq72QmN10SVWt1kals
-         53FreVKzWOet70A+9LYJJmXh5bGgK1gH5XeuiA1BAGB75ot7d0Fa1jlcw5bbgJEb6wB1
-         iaZg==
-X-Gm-Message-State: AOAM532Uh4Oxp0W9Oh6x8kxORdF3uzyhAdl0UianNtV7vNA7HKrJweMH
-        5nTBXTIjIzrLXUg5Y2kV/Vo=
-X-Google-Smtp-Source: ABdhPJybpvS5xRr/UE+uiFLksiGMagfYUn86GdtZRneeqO2d61T4E/kCp/WuLUHtQujFOrlb2U1SKg==
-X-Received: by 2002:a63:5652:: with SMTP id g18mr20670740pgm.178.1625573334819;
-        Tue, 06 Jul 2021 05:08:54 -0700 (PDT)
-Received: from ubuntu.localdomain ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id l23sm2756638pjy.43.2021.07.06.05.08.52
+        bh=t8B/nC3iwzTJBYhCF0Zlx4z9CIpEdQIQ4kfF+EVdryY=;
+        b=KH0KKFvZ7xmBLGva92G3RL4UceBkjuGnF9kLvr4HsCbeYIXilUyBlqi1bBTdGwr19v
+         QCtQts7Ycloqb7X/T4lJB4XonGChnesrS7qyKrt0uef0eO5ARcRTev4n0xgSlVfdsW8U
+         JBY0UMUJ1c3qpjFaI4HM3afVGC9C/8Ivs/4iGQClQ2GJ15pfBBODDOtldlhQQKaNzE4+
+         d0CM3Ve55QDBD/MIiK7WlTFHEopufeYkVnhpa9RTQXW2cu91orn5VZt6ZlO7BUYVefu4
+         6sgXn14WERsgivL4JY0q+urqJDKphLbNMV1w/vmfqkwPx+mQg4e3jRBtZHg5SB59NpOJ
+         CRUw==
+X-Gm-Message-State: AOAM532rKnjMMeAKJsRzbDdaqnH6YWHvOLWMM79kOXa/xbIUByt0f9Re
+        jXvQqjE9ogr3UtHDVJb0hHXoEVEvN/wTplc9
+X-Google-Smtp-Source: ABdhPJxy1BMiRChdvYZvP8fbQDWUn9suWXI3HNAWgKPQ/pXtaIt/6Mh/F5J0tVUvykg707mD59dDAQ==
+X-Received: by 2002:a17:90a:aa8a:: with SMTP id l10mr20420625pjq.227.1625573749103;
+        Tue, 06 Jul 2021 05:15:49 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.93])
+        by smtp.gmail.com with ESMTPSA id a31sm18427991pgm.73.2021.07.06.05.15.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 05:08:54 -0700 (PDT)
-From:   Gu Shengxian <gushengxian507419@gmail.com>
-To:     perex@perex.cz, tiwai@suse.com, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com
-Cc:     linux-kernel@vger.kernel.org, Gu Shengxian <gushengxian@yulong.com>
-Subject: [PATCH] ASoC: cygnus:fix spelling mistakes
-Date:   Tue,  6 Jul 2021 20:08:49 +0800
-Message-Id: <20210706120849.9939-1-gushengxian507419@gmail.com>
+        Tue, 06 Jul 2021 05:15:48 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        =?UTF-8?q?Frank=20Sch=C3=A4fer?= <fschaefer.oss@googlemail.com>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [media] em28xx-input: fix refcount bug in em28xx_usb_disconnect
+Date:   Tue,  6 Jul 2021 20:15:05 +0800
+Message-Id: <20210706121505.641603-1-mudongliangabcd@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -62,43 +63,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gu Shengxian <gushengxian@yulong.com>
+If em28xx_ir_init fails, it would decrease the refcount of dev. However,
+in the em28xx_ir_fini, when ir is NULL, it goes to ref_put and decrease
+the refcount of dev. This will lead to a refcount bug.
 
-controlable ==> controllable
-caputure ==> capture
+Fix this bug by returning 0 when ir is NULL in the em28xx_ir_fini. To
+simplify the refcount issue, move the kref_get after the input
+extension is successfully initialized and remove the kref_put in the
+error handling code.
 
-Signed-off-by: Gu Shengxian <gushengxian@yulong.com>
+refcount_t: underflow; use-after-free.
+WARNING: CPU: 0 PID: 7 at lib/refcount.c:28 refcount_warn_saturate+0x18e/0x1a0 lib/refcount.c:28
+Modules linked in:
+CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.13.0 #3
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:refcount_warn_saturate+0x18e/0x1a0 lib/refcount.c:28
+Call Trace:
+  kref_put.constprop.0+0x60/0x85 include/linux/kref.h:69
+  em28xx_usb_disconnect.cold+0xd7/0xdc drivers/media/usb/em28xx/em28xx-cards.c:4150
+  usb_unbind_interface+0xbf/0x3a0 drivers/usb/core/driver.c:458
+  __device_release_driver drivers/base/dd.c:1201 [inline]
+  device_release_driver_internal+0x22a/0x230 drivers/base/dd.c:1232
+  bus_remove_device+0x108/0x160 drivers/base/bus.c:529
+  device_del+0x1fe/0x510 drivers/base/core.c:3540
+  usb_disable_device+0xd1/0x1d0 drivers/usb/core/message.c:1419
+  usb_disconnect+0x109/0x330 drivers/usb/core/hub.c:2221
+  hub_port_connect drivers/usb/core/hub.c:5151 [inline]
+  hub_port_connect_change drivers/usb/core/hub.c:5440 [inline]
+  port_event drivers/usb/core/hub.c:5586 [inline]
+  hub_event+0xf81/0x1d40 drivers/usb/core/hub.c:5668
+  process_one_work+0x2c9/0x610 kernel/workqueue.c:2276
+  process_scheduled_works kernel/workqueue.c:2338 [inline]
+  worker_thread+0x333/0x5b0 kernel/workqueue.c:2424
+  kthread+0x188/0x1d0 kernel/kthread.c:319
+  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Fixes: 47677e51e2a4 ("[media] em28xx: Only deallocate struct em28xx after finishing all extensions")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 ---
- sound/soc/bcm/cygnus-ssp.c | 2 +-
- sound/soc/bcm/cygnus-ssp.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/usb/em28xx/em28xx-input.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
-index fca5a3f2eec5..383d824fbbb2 100644
---- a/sound/soc/bcm/cygnus-ssp.c
-+++ b/sound/soc/bcm/cygnus-ssp.c
-@@ -1327,7 +1327,7 @@ static int cygnus_ssp_probe(struct platform_device *pdev)
- 	if (IS_ERR(cygaud->i2s_in))
- 		return PTR_ERR(cygaud->i2s_in);
+diff --git a/drivers/media/usb/em28xx/em28xx-input.c b/drivers/media/usb/em28xx/em28xx-input.c
+index 59529cbf9cd0..f741be9583a8 100644
+--- a/drivers/media/usb/em28xx/em28xx-input.c
++++ b/drivers/media/usb/em28xx/em28xx-input.c
+@@ -708,7 +708,6 @@ static int em28xx_ir_init(struct em28xx *dev)
+ 		return 0;
+ 	}
  
--	/* Tri-state all controlable pins until we know that we need them */
-+	/* Tri-state all controllable pins until we know that we need them */
- 	writel(CYGNUS_SSP_TRISTATE_MASK,
- 			cygaud->audio + AUD_MISC_SEROUT_OE_REG_BASE);
+-	kref_get(&dev->ref);
+ 	INIT_DELAYED_WORK(&dev->buttons_query_work, em28xx_query_buttons);
  
-diff --git a/sound/soc/bcm/cygnus-ssp.h b/sound/soc/bcm/cygnus-ssp.h
-index 33dd34305928..0bd2d6708fe0 100644
---- a/sound/soc/bcm/cygnus-ssp.h
-+++ b/sound/soc/bcm/cygnus-ssp.h
-@@ -37,7 +37,7 @@ struct ringbuf_regs {
- 	unsigned wraddr;
- 	unsigned baseaddr;
- 	unsigned endaddr;
--	unsigned fmark;   /* freemark for play, fullmark for caputure */
-+	unsigned fmark;   /* freemark for play, fullmark for capture */
- 	unsigned period_bytes;
- 	unsigned buf_size;
- };
+ 	if (dev->board.buttons)
+@@ -833,6 +832,9 @@ static int em28xx_ir_init(struct em28xx *dev)
+ 
+ 	dev_info(&dev->intf->dev, "Input extension successfully initialized\n");
+ 
++	/* Only increase refcount when this function is executed successfully */
++	kref_get(&dev->ref);
++
+ 	return 0;
+ 
+ error:
+@@ -842,7 +844,6 @@ static int em28xx_ir_init(struct em28xx *dev)
+ 	kfree(ir);
+ ref_put:
+ 	em28xx_shutdown_buttons(dev);
+-	kref_put(&dev->ref, em28xx_free_device);
+ 	return err;
+ }
+ 
+@@ -861,7 +862,7 @@ static int em28xx_ir_fini(struct em28xx *dev)
+ 
+ 	/* skip detach on non attached boards */
+ 	if (!ir)
+-		goto ref_put;
++		return 0;
+ 
+ 	rc_unregister_device(ir->rc);
+ 
+@@ -871,7 +872,6 @@ static int em28xx_ir_fini(struct em28xx *dev)
+ 	kfree(ir);
+ 	dev->ir = NULL;
+ 
+-ref_put:
+ 	kref_put(&dev->ref, em28xx_free_device);
+ 
+ 	return 0;
 -- 
 2.25.1
 
