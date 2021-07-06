@@ -2,144 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F013BC486
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 03:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB6D3BC482
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 03:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbhGFBOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 21:14:43 -0400
-Received: from regular1.263xmail.com ([211.150.70.199]:47200 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbhGFBOl (ORCPT
+        id S229812AbhGFBOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 21:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhGFBOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 21:14:41 -0400
-X-Greylist: delayed 454 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Jul 2021 21:14:40 EDT
-Received: from localhost (unknown [192.168.167.69])
-        by regular1.263xmail.com (Postfix) with ESMTP id 9A18F128E;
-        Tue,  6 Jul 2021 09:04:25 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from [172.16.12.76] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P12345T139823465625344S1625533463012840_;
-        Tue, 06 Jul 2021 09:04:24 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <7837a5db55880232f5007aae733043e7>
-X-RL-SENDER: hjc@rock-chips.com
-X-SENDER: hjc@rock-chips.com
-X-LOGIN-NAME: hjc@rock-chips.com
-X-FST-TO: hjc@rock-chips.com
-X-RCPT-COUNT: 14
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Subject: Re: [PATCH 2/2] drm/rockchip: dw_hdmi: add rk3568 support
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        heiko@sntech.de, airlied@linux.ie, daniel@ffwll.ch,
-        robh+dt@kernel.org,
-        =?UTF-8?B?5pON55Ge5p2w?= <algea.cao@rock-chips.com>,
-        =?UTF-8?B?6Zer5a2d5Yab?= <andy.yan@rock-chips.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-References: <20210705140304.652929-1-benjamin.gaignard@collabora.com>
- <20210705140304.652929-3-benjamin.gaignard@collabora.com>
-From:   Huang Jiachai <hjc@rock-chips.com>
-Message-ID: <2658816b-e6c1-06f7-03c2-3ec76fa49217@rock-chips.com>
-Date:   Tue, 6 Jul 2021 09:04:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 5 Jul 2021 21:14:36 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF51C061574;
+        Mon,  5 Jul 2021 18:11:58 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso896708pjp.5;
+        Mon, 05 Jul 2021 18:11:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NwQaLt08jBec11KMF4e1SB6lInafR9MTNHkp/3GAlCs=;
+        b=GrH7hbBZRjhmUoQzTYxVhnvJrgTf6HEZuivxzAFryLBr+X+CbRKtUf0W4ybY+myvtc
+         sh+IvumMoC8jOMd/iaFUBaJj2JK5QJqd2nHYthE2Mbj0XQ2lZdyg5UoYliOT+gC064at
+         FJtsxcQk3V6in/tiOY36+CqYpQS1ngOkdobFQwX2NdPRBtXY66JWP4nAHnv+9qlIzFVu
+         jntzgNiRwql5L6++9YGAsjdPpwb9vb02QEuu8d09qpY2LZ53Z8cnRGo5Qkanr5K8a2bb
+         Btf3/rp5VzC7jgC7ZxU02+TYGUaGdtKZY62GnqjxIez6rxevnD2fPW04Xpy5F7QBGcjO
+         QD5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NwQaLt08jBec11KMF4e1SB6lInafR9MTNHkp/3GAlCs=;
+        b=iijGrmtJBo0efwHYYfGV1BxN9eRbndGvGTi0nfa1b+LjCy4Da7PdcW0SULcXF+v3/6
+         NUFISz94WAoWE1cwmrfKRlGue7CFdta6k/wXBh8fK6wwVUd4mb9t/7mdLKzz8Mul8W7o
+         1HlflDl2f8/YdB4V/RKrfElqLBUXzZidp5z5ghx04+EnWSqcPSg8GRGoSWqIDkOaDWrW
+         55F5wAEeJg9fnEZxLWLjnzth7Y8R5hwPIgj4XdrxZOg80CTXaCPYVielZjaRZ7lEVOzx
+         o905zeVSKh6jzfqnUqplCODCvdMWUFVwT/ZwUWOhKFgzhhTXnKkyQQEjQC4kLSyNwNBZ
+         VqZA==
+X-Gm-Message-State: AOAM533seO2fEOYvzy2MDzB7F5YqOc01xhABRccs3tVdb+rqRc8yyAM8
+        BxK9D4cJ8fNLVRIToG5Tzps=
+X-Google-Smtp-Source: ABdhPJxyVBLkpgGVc/tcOrtl50EC8uoGSyLEDjcPeC7u5xbnkGWbldxhnRLLRWu2eDHWgIkL8CZNiA==
+X-Received: by 2002:a17:903:2341:b029:129:33d3:60ee with SMTP id c1-20020a1709032341b029012933d360eemr14771858plh.66.1625533918176;
+        Mon, 05 Jul 2021 18:11:58 -0700 (PDT)
+Received: from ubuntu.localdomain ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id o16sm9017810pjw.51.2021.07.05.18.11.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 18:11:57 -0700 (PDT)
+From:   gushengxian <gushengxian507419@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
+Subject: [PATCH v2] tools: bpftool: close va_list 'ap' by va_end()
+Date:   Mon,  5 Jul 2021 18:11:50 -0700
+Message-Id: <20210706011150.670544-1-gushengxian507419@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210705140304.652929-3-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add algea.cao and andy.yan
+From: gushengxian <gushengxian@yulong.com>
 
-在 2021/7/5 22:03, Benjamin Gaignard 写道:
-> Add a new dw_hdmi_plat_data struct and new compatible for rk3568.
->
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->   drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c | 28 +++++++++++++++++++++
->   1 file changed, 28 insertions(+)
->
-> diff --git a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
-> index 830bdd5e9b7ce..5817c3a9fe64b 100644
-> --- a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
-> +++ b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
-> @@ -50,6 +50,10 @@
->   #define RK3399_GRF_SOC_CON20		0x6250
->   #define RK3399_HDMI_LCDC_SEL		BIT(6)
->   
-> +#define RK3568_GRF_VO_CON1		0x0364
-> +#define RK3568_HDMI_SDAIN_MSK		BIT(15)
-> +#define RK3568_HDMI_SCLIN_MSK		BIT(14)
-> +
->   #define HIWORD_UPDATE(val, mask)	(val | (mask) << 16)
->   
->   /**
-> @@ -467,6 +471,19 @@ static const struct dw_hdmi_plat_data rk3399_hdmi_drv_data = {
->   	.use_drm_infoframe = true,
->   };
->   
-> +static struct rockchip_hdmi_chip_data rk3568_chip_data = {
-> +	.lcdsel_grf_reg = -1,
-> +};
-> +
-> +static const struct dw_hdmi_plat_data rk3568_hdmi_drv_data = {
-> +	.mode_valid = dw_hdmi_rockchip_mode_valid,
-> +	.mpll_cfg   = rockchip_mpll_cfg,
-> +	.cur_ctr    = rockchip_cur_ctr,
-> +	.phy_config = rockchip_phy_config,
-> +	.phy_data = &rk3568_chip_data,
-> +	.use_drm_infoframe = true,
-> +};
-> +
->   static const struct of_device_id dw_hdmi_rockchip_dt_ids[] = {
->   	{ .compatible = "rockchip,rk3228-dw-hdmi",
->   	  .data = &rk3228_hdmi_drv_data
-> @@ -480,6 +497,9 @@ static const struct of_device_id dw_hdmi_rockchip_dt_ids[] = {
->   	{ .compatible = "rockchip,rk3399-dw-hdmi",
->   	  .data = &rk3399_hdmi_drv_data
->   	},
-> +	{ .compatible = "rockchip,rk3568-dw-hdmi",
-> +	  .data = &rk3568_hdmi_drv_data
-> +	},
->   	{},
->   };
->   MODULE_DEVICE_TABLE(of, dw_hdmi_rockchip_dt_ids);
-> @@ -536,6 +556,14 @@ static int dw_hdmi_rockchip_bind(struct device *dev, struct device *master,
->   		return ret;
->   	}
->   
-> +	if (hdmi->chip_data == &rk3568_chip_data) {
-> +		regmap_write(hdmi->regmap, RK3568_GRF_VO_CON1,
-> +			     HIWORD_UPDATE(RK3568_HDMI_SDAIN_MSK |
-> +					   RK3568_HDMI_SCLIN_MSK,
-> +					   RK3568_HDMI_SDAIN_MSK |
-> +					   RK3568_HDMI_SCLIN_MSK));
-> +	}
-> +
->   	hdmi->phy = devm_phy_optional_get(dev, "hdmi");
->   	if (IS_ERR(hdmi->phy)) {
->   		ret = PTR_ERR(hdmi->phy);
+va_list 'ap' was opened but not closed by va_end(). It should be
+closed by va_end() before return.
 
+According to suggestion of Daniel Borkmann <daniel@iogearbox.net>.
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ tools/bpf/bpftool/jit_disasm.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
+index e7e7eee9f172..24734f2249d6 100644
+--- a/tools/bpf/bpftool/jit_disasm.c
++++ b/tools/bpf/bpftool/jit_disasm.c
+@@ -43,11 +43,13 @@ static int fprintf_json(void *out, const char *fmt, ...)
+ {
+ 	va_list ap;
+ 	char *s;
++	int err;
+ 
+ 	va_start(ap, fmt);
+-	if (vasprintf(&s, fmt, ap) < 0)
+-		return -1;
++	err = vasprintf(&s, fmt, ap);
+ 	va_end(ap);
++	if (err < 0)
++		return -1;
+ 
+ 	if (!oper_count) {
+ 		int i;
 -- 
-Best Regard
-
-黄家钗
-Sandy Huang
-Addr: 福州市鼓楼区铜盘路软件大道89号福州软件园A区21号楼(350003)
-       No. 21 Building, A District, No.89,software Boulevard Fuzhou,Fujian,PRC
-Tel：+86 0591-87884919  8690
-E-mail：hjc@rock-chips.com
-
-
+2.25.1
 
