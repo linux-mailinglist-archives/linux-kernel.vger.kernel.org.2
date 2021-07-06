@@ -2,201 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB603BD876
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FB43BD8AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232554AbhGFOmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:42:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25061 "EHLO
+        id S231707AbhGFOpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:45:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35993 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232540AbhGFOmB (ORCPT
+        by vger.kernel.org with ESMTP id S232936AbhGFOpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:42:01 -0400
+        Tue, 6 Jul 2021 10:45:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625582362;
+        s=mimecast20190719; t=1625582580;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FVD9TqsR7wtGDSSt+t/Z7VBCz1UEwKOtSU1PtxApYio=;
-        b=K/vbmkpDwm/BalC7v5xzYLGF7v+TkdhoQOX6mjkTwwCHe6iX/5Sm5M3FvaJsGDmECpAWJS
-        F7YWELq6c7qvGkAPfrR1W1Od5Vtqw+lc5DzhgjRgQOP1iXJEhK+MUGJ5z2Q0tIOJAuGdVH
-        iHK9NJlUe3h3RA9HYglhKXKS5raSSmI=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-hM__pBntPm2K0ibDJRdFBA-1; Tue, 06 Jul 2021 09:49:10 -0400
-X-MC-Unique: hM__pBntPm2K0ibDJRdFBA-1
-Received: by mail-ed1-f69.google.com with SMTP id w15-20020a05640234cfb02903951279f8f3so10849651edc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 06:49:10 -0700 (PDT)
+        bh=hIGlWplN3h4+H7k0zEf33Wa5rvWTcEsOsBYR4qfAjpI=;
+        b=Pe+of7FlJbsK2KCgzqKjj5XxtJjjJz3rMPQG4d0cZTtAoCn/ngqZJ5KOvZ1HHvnS19B2Zo
+        rXKeCHWQ/hSbGWNlnnQfjyG15d4GGrx4Nd2HzhM3UpC8kdC48+1/kwMxmCSVpXCk0BbFsm
+        KlgmybBAVK7maZNhnbykrx1Ga5/XQ6I=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-ASxvRmmNMk6LRvJQpPr0Tg-1; Tue, 06 Jul 2021 09:52:11 -0400
+X-MC-Unique: ASxvRmmNMk6LRvJQpPr0Tg-1
+Received: by mail-oi1-f200.google.com with SMTP id r3-20020aca44030000b02902241b7398a8so14444159oia.19
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 06:52:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FVD9TqsR7wtGDSSt+t/Z7VBCz1UEwKOtSU1PtxApYio=;
-        b=jIkEK/dvKnuivf6tyGeMceG1+H5W7BArVcmIqh81plkzlk7qxcZj+3EqB0V2bXCHrt
-         mzhloMthxESJ3vqZlAksRTODPvL/fGvzKVrJLJk9fBzW9gbpMq7Q15ruxX6M+i8aplvG
-         d9BtF9mQegUf8IXX8eeMPIwzYKBRDQf2trZbpr2YYSDNF6WEj69wZyBMWOh3/8hUiGHM
-         9jwXwZA4NqOaS7zDu4q1ln2buhW6Uluor343istalAljn43F1DKCLq1FPMpXD8BiBkqq
-         06ICtKgVpGH6EJOorfZQugK85jWK/zHA9WApSQZUUrZTAgUYSlGT/t7LBZHcnIomj9f1
-         qEhQ==
-X-Gm-Message-State: AOAM533rJJyAqKaVC7w4rbwD8zWSDiVHO8Jk2CMEV9zPEmDjUi8GOKjc
-        LKzh80oC7i//j61lG3TrkEXvKqXQ1WRKGptW3sq0veKdJiLW5ealpky+6f7Slp6+e/ZZDjlmyBx
-        driimWQl3Ynd53As6IgbykwTM
-X-Received: by 2002:aa7:c352:: with SMTP id j18mr23030795edr.67.1625579349199;
-        Tue, 06 Jul 2021 06:49:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxVIRP6ue1K57TsRTQJSKe9wx0COm06+wt55p48m0rGCp8nMOwTch6OatisHhgPcK2HEdUxjQ==
-X-Received: by 2002:aa7:c352:: with SMTP id j18mr23030760edr.67.1625579349029;
-        Tue, 06 Jul 2021 06:49:09 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id ak16sm4357263ejc.17.2021.07.06.06.49.07
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=hIGlWplN3h4+H7k0zEf33Wa5rvWTcEsOsBYR4qfAjpI=;
+        b=om0G14kqgBaJaUt6dftZsg650r0yasUiU4nP6cKnUoL7rhvTyzkPj8w9vErPOMvO9m
+         Dk+Cgsg6fpAwm9rpRhYF/MsyGSNezxmYZ+VzKEiT2WtxvaBvT6wBLzFABzPfQN4kJRoB
+         RtS+/ndA49EuSfFaY2UT1m7qCaJan02CceBL0g1NW07oXR+6+IZZkAHOm8+5ZS4/vtcf
+         RdXWvXYOw9vHL+/XX4F+7tDpbtq5O7ZzX2OZS0HVru+bVs8/gUe6n1fUwnP3FwB4dR5J
+         dr/vVLiW6feJjQCEU3yMrlESNhhMWDX1Rdhc1uS0f+99DceJ0CABpOciO0Q0ldaNWotx
+         hDrQ==
+X-Gm-Message-State: AOAM532wO+SlKgbXMdkhXgWStI7oTv0QMaHS1+cJIsbDV15NSgoBLNvK
+        dof6FTB87u74buZtxm4C8oBQVSc8CTVeGKSkQTX1k++2kXrVfSl02P/8rM6wNScTts1QRxVAR93
+        gBMHNkd/lh7u4ERdytOPiQ2JW
+X-Received: by 2002:a9d:8d3:: with SMTP id 77mr903118otf.6.1625579531236;
+        Tue, 06 Jul 2021 06:52:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzsEe7Coa/1uFo0NgCw7WGdJ4W6Zi4fbDPurzCeh25mF9UZO/rfDPRn55ROq89hhBabddzPfQ==
+X-Received: by 2002:a9d:8d3:: with SMTP id 77mr903109otf.6.1625579531076;
+        Tue, 06 Jul 2021 06:52:11 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id w16sm1202113oik.15.2021.07.06.06.52.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 06:49:08 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 21/69] KVM: Add max_vcpus field in common 'struct
- kvm'
-To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <bf7685a4665a4f70259b0cd5f7d11a162753278c.1625186503.git.isaku.yamahata@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b6323953-1766-ff6a-2b3c-428606144e5f@redhat.com>
-Date:   Tue, 6 Jul 2021 15:49:07 +0200
+        Tue, 06 Jul 2021 06:52:10 -0700 (PDT)
+Subject: Re: [PATCH] bus: Make remove callback return void
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Wu Hao <hao.wu@intel.com>,
+        Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org
+References: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <4c7210e4-76e4-07fe-a40c-a58e331d0a6e@redhat.com>
+Date:   Tue, 6 Jul 2021 06:52:09 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <bf7685a4665a4f70259b0cd5f7d11a162753278c.1625186503.git.isaku.yamahata@intel.com>
+In-Reply-To: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please replace "Add" with "Move" and add a couple lines to the commit 
-message.
 
-Paolo
-
-On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
-> 
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+On 7/6/21 2:50 AM, Uwe Kleine-König wrote:
+> The driver core ignores the return value of this callback because there
+> is only little it can do when a device disappears.
+>
+> This is the final bit of a long lasting cleanup quest where several
+> buses were converted to also return void from their remove callback.
+> Additionally some resource leaks were fixed that were caused by drivers
+> returning an error code in the expectation that the driver won't go
+> away.
+>
+> With struct bus_type::remove returning void it's prevented that newly
+> implemented buses return an ignored error code and so don't anticipate
+> wrong expectations for driver authors.
+>
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 > ---
->   arch/arm64/include/asm/kvm_host.h | 3 ---
->   arch/arm64/kvm/arm.c              | 7 ++-----
->   arch/arm64/kvm/vgic/vgic-init.c   | 6 +++---
->   include/linux/kvm_host.h          | 1 +
->   virt/kvm/kvm_main.c               | 3 ++-
->   5 files changed, 8 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 7cd7d5c8c4bc..96a0dc3a8780 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -106,9 +106,6 @@ struct kvm_arch {
->   	/* VTCR_EL2 value for this VM */
->   	u64    vtcr;
->   
-> -	/* The maximum number of vCPUs depends on the used GIC model */
-> -	int max_vcpus;
-> -
->   	/* Interrupt controller */
->   	struct vgic_dist	vgic;
->   
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index e720148232a0..a46306cf3106 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -145,7 +145,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->   	kvm_vgic_early_init(kvm);
->   
->   	/* The maximum number of VCPUs is limited by the host's GIC model */
-> -	kvm->arch.max_vcpus = kvm_arm_default_max_vcpus();
-> +	kvm->max_vcpus = kvm_arm_default_max_vcpus();
->   
->   	set_default_spectre(kvm);
->   
-> @@ -220,7 +220,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->   	case KVM_CAP_MAX_VCPUS:
->   	case KVM_CAP_MAX_VCPU_ID:
->   		if (kvm)
-> -			r = kvm->arch.max_vcpus;
-> +			r = kvm->max_vcpus;
->   		else
->   			r = kvm_arm_default_max_vcpus();
->   		break;
-> @@ -299,9 +299,6 @@ int kvm_arch_vcpu_precreate(struct kvm *kvm, unsigned int id)
->   	if (irqchip_in_kernel(kvm) && vgic_initialized(kvm))
->   		return -EBUSY;
->   
-> -	if (id >= kvm->arch.max_vcpus)
-> -		return -EINVAL;
-> -
->   	return 0;
->   }
->   
-> diff --git a/arch/arm64/kvm/vgic/vgic-init.c b/arch/arm64/kvm/vgic/vgic-init.c
-> index 58cbda00e56d..089ac00c55d7 100644
-> --- a/arch/arm64/kvm/vgic/vgic-init.c
-> +++ b/arch/arm64/kvm/vgic/vgic-init.c
-> @@ -97,11 +97,11 @@ int kvm_vgic_create(struct kvm *kvm, u32 type)
->   	ret = 0;
->   
->   	if (type == KVM_DEV_TYPE_ARM_VGIC_V2)
-> -		kvm->arch.max_vcpus = VGIC_V2_MAX_CPUS;
-> +		kvm->max_vcpus = VGIC_V2_MAX_CPUS;
->   	else
-> -		kvm->arch.max_vcpus = VGIC_V3_MAX_CPUS;
-> +		kvm->max_vcpus = VGIC_V3_MAX_CPUS;
->   
-> -	if (atomic_read(&kvm->online_vcpus) > kvm->arch.max_vcpus) {
-> +	if (atomic_read(&kvm->online_vcpus) > kvm->max_vcpus) {
->   		ret = -E2BIG;
->   		goto out_unlock;
->   	}
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index e87f07c5c601..ddd4d0f68cdf 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -544,6 +544,7 @@ struct kvm {
->   	 * and is accessed atomically.
->   	 */
->   	atomic_t online_vcpus;
-> +	int max_vcpus;
->   	int created_vcpus;
->   	int last_boosted_vcpu;
->   	struct list_head vm_list;
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index dc752d0bd3ec..52d40ea75749 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -910,6 +910,7 @@ static struct kvm *kvm_create_vm(unsigned long type)
->   	mutex_init(&kvm->irq_lock);
->   	mutex_init(&kvm->slots_lock);
->   	INIT_LIST_HEAD(&kvm->devices);
-> +	kvm->max_vcpus = KVM_MAX_VCPUS;
->   
->   	BUILD_BUG_ON(KVM_MEM_SLOTS_NUM > SHRT_MAX);
->   
-> @@ -3329,7 +3330,7 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, u32 id)
->   		return -EINVAL;
->   
->   	mutex_lock(&kvm->lock);
-> -	if (kvm->created_vcpus == KVM_MAX_VCPUS) {
-> +	if (kvm->created_vcpus >= kvm->max_vcpus) {
->   		mutex_unlock(&kvm->lock);
->   		return -EINVAL;
->   	}
-> 
+> Hello,
+>
+> this patch depends on "PCI: endpoint: Make struct pci_epf_driver::remove
+> return void" that is not yet applied, see
+> https://lore.kernel.org/r/20210223090757.57604-1-u.kleine-koenig@pengutronix.de.
+>
+> I tested it using allmodconfig on amd64 and arm, but I wouldn't be
+> surprised if I still missed to convert a driver. So it would be great to
+> get this into next early after the merge window closes.
+>
+> I send this mail to all people that get_maintainer.pl emits for this
+> patch. I wonder how many recipents will refuse this mail because of the
+> long Cc: list :-)
+>
+> Best regards
+> Uwe
+
+>   drivers/fpga/dfl.c                        | 4 +---
+Reviewed-by: Tom Rix <trix@redhat.com>
 
