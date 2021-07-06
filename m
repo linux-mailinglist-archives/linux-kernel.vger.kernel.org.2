@@ -2,66 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C90E3BD6C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B0C3BD705
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238144AbhGFMqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:46:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236988AbhGFMqi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 08:46:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B705361C89;
-        Tue,  6 Jul 2021 12:43:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625575439;
-        bh=nwvOkJ+F4QjiF8fh8gKZ9edl/Xfc+oYRAgBD8OQ7gSM=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=ZHJuRZOdaqa+m6Q9NiUzlYqj8gCeTCM1U9+v3eqEhmEV8ILAGAtSLxhPI9TAW1nSJ
-         iiJ6sXoEfGV8cy7cJdzjUxwGXOrFZ1e/76JCaI/UkG905yzwSkHp9ZfvPiQP0Td7os
-         YLdWGci+fkRHuQZFrjIIyemluKMGohWin756NL2aj8zoxdpZHtUsJJaThqYFk+bDoQ
-         SqJfZVf9maXLdC8OEfvIM69p14WndOHozwoU7fwdtzrE7nf/5pU8sQANj2mjELgrmh
-         Smm2BHbyAWaOnZYieZpcBFbWfZRDKeCHLKgNau//PJZjDK8cXRBL427wApBxc1dA9W
-         gjoMJwkZvqOpA==
-Received: by mail-ot1-f44.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so21439718oti.2;
-        Tue, 06 Jul 2021 05:43:59 -0700 (PDT)
-X-Gm-Message-State: AOAM530YU19W1NJ0w5r5IAK60h0cYufbGmLitwn3yO8WZToG59lkWtb5
-        pdPSYu1k8gMtUq5712cOdU3+czzkDqsZnX2UO3Q=
-X-Google-Smtp-Source: ABdhPJyf62PRFT6h7jdgxj8GHwgtbQJ8Q9Eq0NWfVX8aIXw5K03OksUYcrdEWkYgKybIO7uTUmj4Tk8Ud0BO1SKk9SM=
-X-Received: by 2002:a9d:3644:: with SMTP id w62mr14724460otb.205.1625575439094;
- Tue, 06 Jul 2021 05:43:59 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:ac9:4443:0:0:0:0:0 with HTTP; Tue, 6 Jul 2021 05:43:58 -0700 (PDT)
-In-Reply-To: <20210706120501.28776-1-colin.king@canonical.com>
-References: <20210706120501.28776-1-colin.king@canonical.com>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Tue, 6 Jul 2021 21:43:58 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd9=fQv2jqSUkeavnccvTd8n5ShpCW=jFC5ikx_=Bo=G3A@mail.gmail.com>
-Message-ID: <CAKYAXd9=fQv2jqSUkeavnccvTd8n5ShpCW=jFC5ikx_=Bo=G3A@mail.gmail.com>
-Subject: Re: [PATCH][next] ksmbd: Fix read on the uninitialized pointer sess
-To:     Colin King <colin.king@canonical.com>
-Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steve French <sfrench@samba.org>,
-        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S238169AbhGFMus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:50:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240767AbhGFMs4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 08:48:56 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532ECC08EBAF
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 05:44:50 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id x12-20020a05620a448cb02903b3dabbe857so16558636qkp.15
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 05:44:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=W5WGGuw9mY9cDhR3LIq+HgKfjZfrhsSy4zPxklG3/y4=;
+        b=EQU42SklHQrQl7lnVUDrNZLaovJjv8Z7V7jBtK+lwezdrBXs7OsWVleySoh+SHope4
+         FfzlmD1BqKIvBfLRcjKmIRE/OnQO2P4TWjjA/IcgTEcx2etAEcmpcz+ELTcRer3gTUjG
+         4ji0EMks2knMHOiPyk0GRjNZ5IVaDcEPlHC4Czu3Qot9takA3DmcgHhfouDhSdOkz7yZ
+         DOeNH1GVRq7WFfHiYlFfFIDezihAePz4FIkgrxmxqp5JFzoRQtY2xASa/5tU74+/LN2g
+         rJPoCwZ//EndvQb/EfYd74lxCo4lX6GDN01CoD0Tq1efTtK+0lU02i1MDTAbBDAU4z/s
+         ZHng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=W5WGGuw9mY9cDhR3LIq+HgKfjZfrhsSy4zPxklG3/y4=;
+        b=Fy01pVgC6auWtQ2p7ECbxxRA0h6F4Kr24mfWo8JoErP6LHfB1uqdhHTuOU/F24PCSt
+         Zn0OV2cjpiIsWNcdjI9ITGpRhQeS2DV4KJl24zFeah/SrTrCL6af11aBvXECpgIohLxS
+         43dnzbfL9aJxXriWYXzmKDE0kENQrfUN62fqiIZh1o/FkjLBGUHYe7IDI5d53yDHjCv2
+         Z0hfZSsPtSFpEMOb9+3YR3AHiGdZHMcxx0r+/wQ2PGzVcZZUIHvMQ52Ehz2p2HZnVrCc
+         UhbD8DNqYcgiQB6uGASr05Byan2U3taaa4yVBSL85VIWn2v9iTzs9MtHFX/ofvby0wSH
+         XlwQ==
+X-Gm-Message-State: AOAM533mWJT6pqK9jik8lpaLm94+bpCMdXCuBWpeA3ua7WXKeQx9uTsJ
+        Dc3dZ9wCDKfVBnqnD6zQm0l2lXmNRGqO
+X-Google-Smtp-Source: ABdhPJxyBXA+rOueMg9oLrtfXHHTafUJJ35UOWa3x4KFwlyFK6zIz9RkGjzLMyfyKfBxnyw6oU6IV0QIWw8cpA==
+X-Received: from lerobert.c.googlers.com ([fda3:e722:ac3:cc00:12:b22d:c0a8:2e6])
+ (user=lerobert job=sendgmr) by 2002:ad4:59cf:: with SMTP id
+ el15mr13422561qvb.55.1625575489452; Tue, 06 Jul 2021 05:44:49 -0700 (PDT)
+Date:   Tue,  6 Jul 2021 12:44:40 +0000
+Message-Id: <20210706124440.3247283-1-lerobert@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH] ALSA: compress: allow to leave draining state when pausing in draining
+From:   Robert Lee <lerobert@google.com>
+To:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        carterhsu@google.com, zxinhui@google.com, bubblefang@google.com,
+        Robert Lee <lerobert@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Colin,
+When compress offload pauses in draining state, not all platforms
+need to keep in draining state. Some platforms may call drain or
+partial drain again when resume from pause in draining, so it needs
+to wake up from snd_compress_wait_for_drain() in this case.
 
-2021-07-06 21:05 GMT+09:00, Colin King <colin.king@canonical.com>:
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There is a error handling case that passes control to label out_err
-> without pointer sess being assigned a value. The unassigned pointer
-> may be any garbage value and so the test of rc < 0 && sess maybe
-> true leading to sess being passed to the call to ksmbd_session_destroy.
-> Fix this by setting sess to NULL in this corner case.
->
-> Addresses-Coverity: ("Uninitialized pointer read")
-> Fixes: f5a544e3bab7 ("ksmbd: add support for SMB3 multichannel")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-I will apply this patch. Thanks for your patch!
+Call API snd_compr_leave_draining_in_pause(), if the platform
+doesn't need to keep in draining state when pause in draining
+state.
+
+Signed-off-by: Robert Lee <lerobert@google.com>
+---
+ include/sound/compress_driver.h | 14 ++++++++++++++
+ sound/core/compress_offload.c   |  7 ++++++-
+ 2 files changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index 277087f635f3..e16524a93a14 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -145,6 +145,7 @@ struct snd_compr_ops {
+  * @lock: device lock
+  * @device: device id
+  * @use_pause_in_draining: allow pause in draining, true when set
++ * @leave_draining_in_pause: leave draining state when pausing in draining
+  */
+ struct snd_compr {
+ 	const char *name;
+@@ -156,6 +157,7 @@ struct snd_compr {
+ 	struct mutex lock;
+ 	int device;
+ 	bool use_pause_in_draining;
++	bool leave_draining_in_pause;
+ #ifdef CONFIG_SND_VERBOSE_PROCFS
+ 	/* private: */
+ 	char id[64];
+@@ -182,6 +184,18 @@ static inline void snd_compr_use_pause_in_draining(struct snd_compr_stream *subs
+ 	substream->device->use_pause_in_draining = true;
+ }
+ 
++/**
++ * snd_compr_leave_draining_in_pause - Leave draining state when pause in draining
++ * @substream: compress substream to set
++ *
++ * In some platform, we need to leave draining state when we use pause in draining.
++ * Add API to allow leave draining state.
++ */
++static inline void snd_compr_leave_draining_in_pause(struct snd_compr_stream *substream)
++{
++	substream->device->leave_draining_in_pause = true;
++}
++
+ /* dsp driver callback apis
+  * For playback: driver should call snd_compress_fragment_elapsed() to let the
+  * framework know that a fragment has been consumed from the ring buffer
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index 21ce4c056a92..9c7bd4db6ecd 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -719,8 +719,13 @@ static int snd_compr_pause(struct snd_compr_stream *stream)
+ 		if (!stream->device->use_pause_in_draining)
+ 			return -EPERM;
+ 		retval = stream->ops->trigger(stream, SNDRV_PCM_TRIGGER_PAUSE_PUSH);
+-		if (!retval)
++		if (!retval) {
+ 			stream->pause_in_draining = true;
++			if (stream->device->leave_draining_in_pause) {
++				stream->runtime->state = SNDRV_PCM_STATE_PAUSED;
++				wake_up(&stream->runtime->sleep);
++			}
++		}
+ 		break;
+ 	default:
+ 		return -EPERM;
+-- 
+2.32.0.93.g670b81a890-goog
+
