@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481753BC5F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 07:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B0E3BC5F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 07:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhGFFNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 01:13:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230004AbhGFFNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 01:13:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DEE76198D;
-        Tue,  6 Jul 2021 05:10:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625548255;
-        bh=5WR28VC8jPXn2qMGrHg8NPIQISa/BFrzapW1vbjsOoY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UH15tlyS5QBbtsSxnEAc4oZ1Ddyp7I4+YNavkMwrZ4G0DXRl7TViu10+dpqC+/CF+
-         fJYbK37bs9Hiw+vqZ0GE928iHSUM1DfFbgOCtZoNgrMloVtzw8ADotnKXdfZ6aUf5t
-         UuAihk4k81g/Ch0w1ylM04Oc7+5xjUcOU/F6ueGw=
-Date:   Tue, 6 Jul 2021 07:10:53 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sunip Mukherjee <sunipkmukherjee@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Char Driver for Silicon Labs Si446x Transceivers
-Message-ID: <YOPl3dXamM3FERYT@kroah.com>
-References: <CADLJR24hQya0MkJhdDAJ0KO4MG+Fj4tRU5dNrbNdD9DMG_gLHg@mail.gmail.com>
+        id S230034AbhGFFPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 01:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230004AbhGFFPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 01:15:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB942C061574;
+        Mon,  5 Jul 2021 22:13:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HL8TXzIMAEiDs6New4fpmFiNo+lUInfaBflRDKvoc5k=; b=Qqqd5AK6Xkl+I69DpgFLrt62cS
+        irSXMGizexUgIJpRLMozac0yiTiKfkl+RqrMjK5r2HjQU8ufQQ0O1zrZu9uDmxmNRsKRsgg4u4TMB
+        1pQuwNXfkdf1DXCoMkOniI71yUgy9/g1nSppJ6OKxoI7BQVQIWoJHz21LOt0cAc696R6r06SF25uV
+        8Xhv9aBWOFu3JgM1tQi6gGYdqU7h3BSVLXSai43OxDyCHT7OwxgRlA+3KMTSf9NstDnHuCmicMVRr
+        r/c7SFMwFZSFNuDYaVYFxhhz6TWgQ8x4wgyijn85M5cBqp5snoJSMGK1WHo7l2YRv8066aWZ4940U
+        ze2anFgw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m0dNZ-00Ar8t-QF; Tue, 06 Jul 2021 05:12:24 +0000
+Date:   Tue, 6 Jul 2021 06:12:17 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Rajat Asthana <thisisrast7@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Rajat Asthana <rajatasthana4@gmail.com>, axboe@kernel.dk,
+        damien.lemoal@wdc.com, jack@suse.cz, rafael@kernel.org,
+        syzbot+7d6c5587ec9cff5be65c@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
+        linux-block@vger.kernel.org, hare@suse.de,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] block: Avoid accessing an already freed kobject in
+ delete_partition
+Message-ID: <YOPmMZdMQgXAyEMO@infradead.org>
+References: <20210702231228.261460-1-rajatasthana4@gmail.com>
+ <YN/1DOeSA5ODf1AV@infradead.org>
+ <0c623d71-6d99-2e0d-4d8b-63a1ff814dc1@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CADLJR24hQya0MkJhdDAJ0KO4MG+Fj4tRU5dNrbNdD9DMG_gLHg@mail.gmail.com>
+In-Reply-To: <0c623d71-6d99-2e0d-4d8b-63a1ff814dc1@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 06:09:28PM -0400, Sunip Mukherjee wrote:
-> Hi,
+On Tue, Jul 06, 2021 at 06:31:11AM +0530, Rajat Asthana wrote:
 > 
-> I am very new to the kernel community; this is my first message in the
-> LKML so my apologies if I am doing things wrong.
 > 
-> I have been using an Si4463 transceiver for UHF communication with a
-> cubesat I developed. I could not find any code to control the
-> transceiver on Linux. The closest thing I could find was an AVR
-> implementation by Zak Kemble
-> (https://blog.zakkemble.net/si4463-radio-library-avr-arduino/).
-> I followed the API docs and rewrote the whole thing at first for
-> userland only (can be found here:
-> https://github.com/SPACE-HAUC/si446x_linux/releases/tag/v3.1), and
-> then I decided it would be a great learning opportunity for me to port
-> it to the kernel.
+> On 03/07/21 10:56 am, Christoph Hellwig wrote:
+> > This should be fixed properly by:
+> > 
+> > "block: check disk exist before trying to add partition"
 > 
-> The kernel port has gone mostly smoothly. The transceiver communicates
-> with the host MCU over SPI, and requires a pin for RESET, and another
-> pin for IRQ.
-> I have implemented the driver to provide a char device (/dev/si446x#)
-> to the userland for open, read, write, poll and ioctl.
-> I had initially set up a pull request for the driver and the device
-> tree overlay to the Raspberry Pi kernel community. They have agreed to
-> accept the device tree overlay for the device, however the driver
-> needs to be included by the Linux Kernel community. I want to use this
-> opportunity to find some people who have access to a Si446x
-> transceiver and a Raspberry Pi, so that the code I have can be tested,
-> and if deemed worthy, included in the kernel tree.
+> Hi Christoph, thanks a lot for suggesting this fix. I have been
+> working on implementing this and have tried the following:
+> - I checked if the the kobject of device structure embedded in
+>   gendisk structure is not NULL, to add the partition.
+>   This didn't work.
 > 
-> My code is hosted here: https://github.com/sunipkmukherjee/silabs.git
+> - Then I checked the if kobject of the block_device struct (part0)
+>   embedded in the gendisk struct is not NULL, to add the partition.
+>   This also didn't work.
 > 
-> Any suggestions/criticisms are welcome.
+> - Then I checked the i_state of the bd_inode field of block_device
+>   struct embedded in the gendisk struct. I checked if the I_FREEING or
+>   I_WILL_FREE fields are not set. The reason behind doing this was
+>   to confirm that we only create partition on the disks which are not
+>   being freed.
+> 
+> Am I going in the right direction? Can you point me to the correct
+> direction if I am not?
 
-If you post it in a patch form, as described in our documentation, I
-will be glad to review it.  Otherwise just looking at a random github
-repo is quite difficult and provides no way to give proper feedback.
-
-Instructions on how to make a patch and submit it and the proper format
-for everything can be found in the Documentation/SubmittingPatches file.
-
-thanks,
-
-greg k-h
-
+No.  There should be no need to check anything, but the code needs
+to ensure that the block device is alive.  I think the above mentioned
+patch (now in Jens' tree) does that, so please try it.
