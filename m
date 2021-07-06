@@ -2,164 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2823BDE3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA363BDE44
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 22:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbhGFUBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 16:01:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52910 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229781AbhGFUBA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 16:01:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625601500;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AKyr7OEj24r1mpGOY586UciDza+JOs3ExGG+z5RqyrI=;
-        b=buPna19l3kR58QijDdDxtgy+CckV3lIjvbWPMayN5eDyybw0qHqD9qF3+49zj80PsHI8k0
-        Lje/RZAmw8GIobSkFYL1N2l2KBGRsiYlS9hscfAnZUC/YXo1I3oFyEs+3sP5itaRLkQYTY
-        tCd7LaGd/CG6u/n3pJW4BW2ZrQpzz4g=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-585-TrLyaPSkN6mAECru2Y_lFQ-1; Tue, 06 Jul 2021 15:58:19 -0400
-X-MC-Unique: TrLyaPSkN6mAECru2Y_lFQ-1
-Received: by mail-wr1-f70.google.com with SMTP id t12-20020adff04c0000b029013253c3389dso67704wro.7
-        for <Linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 12:58:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AKyr7OEj24r1mpGOY586UciDza+JOs3ExGG+z5RqyrI=;
-        b=rZRtJG2oPDp5EZV5BvQKpV41AfkIoYWT4I7qSXLnURZebOVOJhmXnKK7w4J8JBgVmP
-         8mM3g3sUuq7JHovVst3Tf+Ptugxs1JVabqVgECmwPa3PIldZktcQaiJGKsu6KU/jrhdt
-         UBLW7v3dwKwFyXNItiGPY51/IjLC61wZvVOmqTsp0RfIr3Q6ZRZT4llfQaFZO44xqb7g
-         FwgZ/0wQiVvzA2Lr+SiRmzv0yjIOPX/FyD9kRhXQD/rrzbHo1cc4gSeKgQ3gGvudp0V1
-         dUpFQDoQYF5KR7KnDcfmv4+KX1iZFgclCtojkmb/e4WHcnJgD5zpDMxLOfazDP7J3pUb
-         sjOA==
-X-Gm-Message-State: AOAM5318eGZdBxRaxG7f2IghYWgYlO5GN8/CqzRo5NHXU/EwpTiGx52L
-        1WmEFGI10y10jcO9peUpsktpUqQXFZtvYqorPK5QfxtcOflAgyIEtg+4r241/TbZe4yNtK53T3F
-        g+Og/L+icQ9+0LqLBUIqQoAFr
-X-Received: by 2002:adf:e5ce:: with SMTP id a14mr23387127wrn.226.1625601498436;
-        Tue, 06 Jul 2021 12:58:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxagVpDNkJSrfonuLwtNYmVHZ5dcJDC8ukGdzgc0GnuVAtzcdxSgYGoaFOOVGqxhvNFybi3lw==
-X-Received: by 2002:adf:e5ce:: with SMTP id a14mr23387107wrn.226.1625601498244;
-        Tue, 06 Jul 2021 12:58:18 -0700 (PDT)
-Received: from krava ([185.153.78.55])
-        by smtp.gmail.com with ESMTPSA id 16sm16244896wmk.18.2021.07.06.12.58.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 12:58:17 -0700 (PDT)
-Date:   Tue, 6 Jul 2021 21:58:15 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH] perf list: Skip the invalid hybrid pmu
-Message-ID: <YOS1119y56eH0Uyv@krava>
-References: <20210610051646.4003-1-yao.jin@linux.intel.com>
+        id S230061AbhGFUKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 16:10:19 -0400
+Received: from mout.gmx.net ([212.227.15.19]:59881 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229781AbhGFUKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 16:10:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1625602048;
+        bh=1XW4QZUxLpFU4VF+uKupXJzAACbI5Ar5k3bwRpoIlt4=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=VlWxhhV85iaV8MR4pMaByPrCBvpJwPDbBIsgC24N0y73Q0hpopw4GxU53Se9e5/AE
+         4HRhUlGrqmUfLLPNHuavLAaA9JErcX5+Tm72Om8j/UmfS50pzTafUOE4HSjy2pMTal
+         g+YJBKxAOHKQvaj+X2izW20twA4wPgu6XY0OoPOM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.216.125]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MYeMj-1lfjvP0nyd-00ViSa; Tue, 06
+ Jul 2021 19:56:32 +0200
+Message-ID: <289873432407e0569401c8894843d7004b59d90b.camel@gmx.de>
+Subject: Re: [RFC v2 00/34] SLUB: reduce irq disabled scope and make it RT
+ compatible
+From:   Mike Galbraith <efault@gmx.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>
+Date:   Tue, 06 Jul 2021 19:56:29 +0200
+In-Reply-To: <206d6a81e08cb23a2c97e67335be6017e938bac5.camel@gmx.de>
+References: <20210609113903.1421-1-vbabka@suse.cz>
+         <20210702182944.lqa7o2a25to6czju@linutronix.de>
+         <206d6a81e08cb23a2c97e67335be6017e938bac5.camel@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610051646.4003-1-yao.jin@linux.intel.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Pyc2JwVoSC5bEXh9SltN3cjAdn1IIP3fzD+eYhnrLmjmsRO/VLP
+ 7FqwdgZRZaAvAxWbRkL0qV99b8uJ7dPz4XXCl9v91XLPtGuG89T+alvMs/7LoTW0DzEI/Un
+ RXJw4tYegxY7Y+QlSTKEqdYOEKP30HCVIOwwLrLAFPl4jf6ETUdEePuPOqW5/M91BJtfHj8
+ F7n0nRl3/9868p+n/SL5Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JBolOfj4P2M=:8a7COoJT3GfYPhAuXFoUX9
+ lXlsIpUyDLE+VHD16pAoSoPYtHIUHIGnkyMnfOx5GbS5dzE4wozl+cHPKZ18fxG0wqugfhLZj
+ CJ5sQDQ8mCoFuEMWA3zSQ7fTDbpfM/p31OC+LTCrj+eNS0MLoblu17ICtsyWId8gWwtO9arRr
+ K+NRe082fQMaUSZR1KMgW84slvtoJSOSxPPfclDZxIqVtVQZ3ajA7YE5xQlqDi2EYb2CCHINO
+ XHv8R2D70t0uLZguxd3t1d1AfjvkKKGffUlPl4hJyuTgkFRNrqDJpzpN6WsrtnMFB7loTpfUs
+ XEOfoCUt3sRBs2IYfgiG1GZWh3/NDbN4uYOcEYrUtsSGMYS/KT4CI0aWxxC7jZ4NGuPVNtgAT
+ cpbIojFLcvLpoiHAKKzB3rOLhbZl58O7Vnh4y1PJ45DR7ERLeQuVsc/I+THTF8k6rAGTDJciI
+ 5JC6ywOVG4hI6wFIuNuEXeY2xsmfUuDOdPOcY8s1HJAcz2xmFMKcgqIG2o1TnwJimwXBCrn9k
+ KNxZELbsM8fsXYqAzAKuBtGL+qzg0ea3GLoQ7xnErfaYt6dEVl7ZSCV7xKamtev7A+dnn5bx3
+ 84DY3O2VaJr5qKug5XCA7JZ/9FYavcesFGjIAqm/97ecgMRGs+fhpLjLpR7vCvpNRLI1kLrz1
+ lbizix3ajtlNO4L+7J0NqRniSOekyhlOrzyRpaj3GqkPpe0XVF01XEoWmoTu7mhCd/SjDx7ev
+ j4k7OB3VRZy0GCxRYu1ffu5oZOifLU3kLa1gwZh2I8m+KD322vDJQpXkP5/rv6N4IYROlX7f1
+ tJs7IGHndCSUD0N2rFYZtJj1MpR7UOtKI9fHpl3dhEUA38AqcafXMCWPPDQlmLpuKcR++Wtlq
+ xnWPEAgsFaJ1AvL3/yjrgaOuBYxwjQjEbo2kIrkbgfs32MTpW2PikTgwI5hg1LMa2S51yppya
+ wAGo5dnypU6c6TQ/SVkBfDD1KSlfq0zK4wUDe5Sm9sKgekDRvXQ8o/fXxb4H9nvPB9fnY9wXG
+ Jx/Tt/OKuXRum1wtcT2M5bhT0OJtB9svj2T9Xqt1ivh8AHlJ4tnSeUIZjfZqZGwZOvyW7Mh2p
+ 06sMYpmegzqmO93BuO76UXhZEGqvybCcD4G
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 01:16:46PM +0800, Jin Yao wrote:
-> On hybrid platform, such as Alderlake, if atom CPUs are offlined,
-> the kernel still exports the sysfs path '/sys/devices/cpu_atom/' for
-> 'cpu_atom' pmu but the file '/sys/devices/cpu_atom/cpus' is empty,
-> which indicates this is an invalid pmu.
-> 
-> The perf-list needs to check and skip the invalid hybrid pmu.
-> 
-> Before:
-> 
->   # perf list
->   ...
->   branch-instructions OR cpu_atom/branch-instructions/ [Kernel PMU event]
->   branch-instructions OR cpu_core/branch-instructions/ [Kernel PMU event]
->   branch-misses OR cpu_atom/branch-misses/           [Kernel PMU event]
->   branch-misses OR cpu_core/branch-misses/           [Kernel PMU event]
->   bus-cycles OR cpu_atom/bus-cycles/                 [Kernel PMU event]
->   bus-cycles OR cpu_core/bus-cycles/                 [Kernel PMU event]
->   ...
-> 
-> The cpu_atom events are still displayed even if atom CPUs are offlined.
-> 
-> After:
-> 
->   # perf list
->   ...
->   branch-instructions OR cpu_core/branch-instructions/ [Kernel PMU event]
->   branch-misses OR cpu_core/branch-misses/           [Kernel PMU event]
->   bus-cycles OR cpu_core/bus-cycles/                 [Kernel PMU event]
->   ...
-> 
-> Now only cpu_core events are displayed.
-> 
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> ---
->  tools/perf/util/pmu-hybrid.c | 11 +++++++++++
->  tools/perf/util/pmu-hybrid.h |  2 ++
->  tools/perf/util/pmu.c        |  3 +++
->  3 files changed, 16 insertions(+)
-> 
-> diff --git a/tools/perf/util/pmu-hybrid.c b/tools/perf/util/pmu-hybrid.c
-> index f51ccaac60ee..fcc1182f8fe5 100644
-> --- a/tools/perf/util/pmu-hybrid.c
-> +++ b/tools/perf/util/pmu-hybrid.c
-> @@ -87,3 +87,14 @@ char *perf_pmu__hybrid_type_to_pmu(const char *type)
->  	free(pmu_name);
->  	return NULL;
->  }
-> +
-> +bool perf_pmu__is_invalid_hybrid(const char *name)
-> +{
-> +	if (strncmp(name, "cpu_", 4))
-> +		return false;
-> +
-> +	if (perf_pmu__hybrid_mounted(name))
-> +		return false;
-> +
-> +	return true;
-> +}
-> diff --git a/tools/perf/util/pmu-hybrid.h b/tools/perf/util/pmu-hybrid.h
-> index 2b186c26a43e..8261a312c854 100644
-> --- a/tools/perf/util/pmu-hybrid.h
-> +++ b/tools/perf/util/pmu-hybrid.h
-> @@ -30,4 +30,6 @@ static inline int perf_pmu__hybrid_pmu_num(void)
->  	return num;
->  }
->  
-> +bool perf_pmu__is_invalid_hybrid(const char *name);
-> +
->  #endif /* __PMU_HYBRID_H */
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index 88c8ecdc60b0..281670e9c4bd 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -1604,6 +1604,9 @@ void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
->  	pmu = NULL;
->  	j = 0;
->  	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
-> +		if (perf_pmu__is_invalid_hybrid(pmu->name))
-> +			continue;
+On Mon, 2021-07-05 at 18:00 +0200, Mike Galbraith wrote:
+> On Fri, 2021-07-02 at 20:29 +0200, Sebastian Andrzej Siewior wrote:
+> >
+> > > The remaining patches to upstream from the RT tree are small ones
+> > > related to KConfig. The patch that restricts PREEMPT_RT to SLUB
+> > > (not SLAB or SLOB) makes sense. The patch that disables
+> > > CONFIG_SLUB_CPU_PARTIAL with PREEMPT_RT could perhaps be re-
+> > > evaluated as the series also addresses some latency issues with
+> > > percpu partial slabs.
+> >
+> > With that series the PARTIAL slab can be indeed enabled. I have
+> > (had)
+> > a half done series where I had PARTIAL enabled and noticed a slight
+> > increase in latency so made it "default y on !RT". It wasn't
+> > dramatic
+> > but appeared to be outside of noise.
+>
+> I'm seeing warnings/explosions while exercising box IFF PARTIAL slab
+> thingy is enabled.  I aborted -PARTIAL after a little over 4 hours,
+> whereas the longest survival of 4 +PARTIAL runs was 50 minutes, so
+> I'm fairly confident that PARTIAL really really is the trigger.
 
-hum why not detect it in pmu_lookup early on
-and not add that pmu at all?
+Resurrecting local exclusion around unfreeze_partials() seems to have
+put an end to that.  Guess I can chop these trees down now.
 
-thanks,
-jirka
+=2D--
+ mm/slub.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-> +
->  		list_for_each_entry(alias, &pmu->aliases, list) {
->  			char *name = alias->desc ? alias->name :
->  				format_alias(buf, sizeof(buf), pmu, alias);
-> -- 
-> 2.17.1
-> 
+=2D-- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2497,7 +2497,9 @@ static void put_cpu_partial(struct kmem_
+ 				 * partial array is full. Move the existing
+ 				 * set to the per node partial list.
+ 				 */
++				local_lock(&s->cpu_slab->lock);
+ 				unfreeze_partials(s);
++				local_unlock(&s->cpu_slab->lock);
+ 				oldpage =3D NULL;
+ 				pobjects =3D 0;
+ 				pages =3D 0;
+@@ -2579,7 +2581,9 @@ static void flush_cpu_slab(struct work_s
+ 	if (c->page)
+ 		flush_slab(s, c, true);
+
++	local_lock(&s->cpu_slab->lock);
+ 	unfreeze_partials(s);
++	local_unlock(&s->cpu_slab->lock);
+ }
+
+ static bool has_cpu_slab(int cpu, struct kmem_cache *s)
+@@ -3358,13 +3362,12 @@ static __always_inline void do_slab_free
+ 		 * we need to take the local_lock. We shouldn't simply defer to
+ 		 * __slab_free() as that wouldn't use the cpu freelist at all.
+ 		 */
+-		unsigned long flags;
+ 		void **freelist;
+
+-		local_lock_irqsave(&s->cpu_slab->lock, flags);
++		local_lock(&s->cpu_slab->lock);
+ 		c =3D this_cpu_ptr(s->cpu_slab);
+ 		if (unlikely(page !=3D c->page)) {
+-			local_unlock_irqrestore(&s->cpu_slab->lock, flags);
++			local_unlock(&s->cpu_slab->lock);
+ 			goto redo;
+ 		}
+ 		tid =3D c->tid;
+@@ -3374,7 +3377,7 @@ static __always_inline void do_slab_free
+ 		c->freelist =3D head;
+ 		c->tid =3D next_tid(tid);
+
+-		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
++		local_unlock(&s->cpu_slab->lock);
+ #endif
+ 		stat(s, FREE_FASTPATH);
+ 	} else
+@@ -3601,7 +3604,7 @@ int kmem_cache_alloc_bulk(struct kmem_ca
+ 				slab_want_init_on_alloc(flags, s));
+ 	return i;
+ error:
+-	local_unlock_irq(&s->cpu_slab->lock);
++	slub_put_cpu_ptr(s->cpu_slab);
+ 	slab_post_alloc_hook(s, objcg, flags, i, p, false);
+ 	__kmem_cache_free_bulk(s, i, p);
+ 	return 0;
 
