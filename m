@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C453BD3CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792033BD3CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239900AbhGFMAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:00:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
+        id S239860AbhGFL77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:59:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237173AbhGFLf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237174AbhGFLf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Jul 2021 07:35:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83F3C61EC6;
-        Tue,  6 Jul 2021 11:25:52 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFB1961EC9;
+        Tue,  6 Jul 2021 11:25:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570753;
-        bh=hJvUjptkuHe8DrOfp/X28AnaU9SsW4Do5T0kzTafEU8=;
+        s=k20201202; t=1625570755;
+        bh=ufUr61OH30M4Hxk7SL0COsncKi5k41MsTd6RCQQpcUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bZtZljUiyxqxDtC2YdpbBvW+l3JBKBESxob6u9/E8UY8dEyBe5SCnMweRXbcAAmOn
-         biFYGZBzZuNGEuorsQeBfI0bE+oS+EhA5TT6/7kx5QUncoB9lMKZ4T6TgZidVWSAYd
-         jGM8SoRgP2hNiY9Ej6KF3+qGIRr+rJWblTK6Dq744e2If+Iprx6AUseT7NSrx0VGYi
-         KwkAHO9UM4IXXbBB+L2G+NurAn/0GZUffJmvnPgtPExAJ5Gh4jNEGdPZBPnIfka00t
-         O5IXTjZIbykeXt4k9dqUQFD+FZMG2B3VuZOlSIHg87nUM1N7eO+qhQiCBjTddPNYde
-         O7zvZG176hm7g==
+        b=sxz7gOW7Gk4EmnLB8zV1Z2yD94UV2siopSq2Q5iUJU8iw7bz5QwRWX0LknOcTxlLc
+         0QIUUkwW7A6KDlIpaMjfDjyHzNe7999TwQmPMuiwJz5HuIwehXwTYsQ+dYmECflo1g
+         8QX8w7D8880VLmS7smgplda6pfcTiJrQLv033ROJKOM+DaYlQmeURg9ukteSMxMCbx
+         uEjkpkBOauQ0MGTAJeAw5qfi9Xdeh0yO9d1CZBPozWKJwQF9gguM46u0uaDf4dXocv
+         PyLtJt+6/buK+QJJE5JjFT+5/4JhgFafv9vWlJffwfISezqXpw0HwjnyC2ySl2dhJu
+         JXEYXSbMncM5A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Minchan Kim <minchan@kernel.org>, Paul Moore <paul@paul-moore.com>,
-        Sasha Levin <sashal@kernel.org>, selinux@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 40/74] selinux: use __GFP_NOWARN with GFP_NOWAIT in the AVC
-Date:   Tue,  6 Jul 2021 07:24:28 -0400
-Message-Id: <20210706112502.2064236-40-sashal@kernel.org>
+Cc:     Mark Yacoub <markyacoub@chromium.org>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.4 42/74] drm/amd/display: Verify Gamma & Degamma LUT sizes in amdgpu_dm_atomic_check
+Date:   Tue,  6 Jul 2021 07:24:30 -0400
+Message-Id: <20210706112502.2064236-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112502.2064236-1-sashal@kernel.org>
 References: <20210706112502.2064236-1-sashal@kernel.org>
@@ -41,130 +44,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Minchan Kim <minchan@kernel.org>
+From: Mark Yacoub <markyacoub@chromium.org>
 
-[ Upstream commit 648f2c6100cfa18e7dfe43bc0b9c3b73560d623c ]
+[ Upstream commit 03fc4cf45d30533d54f0f4ebc02aacfa12f52ce2 ]
 
-In the field, we have seen lots of allocation failure from the call
-path below.
+For each CRTC state, check the size of Gamma and Degamma LUTs  so
+unexpected and larger sizes wouldn't slip through.
 
-06-03 13:29:12.999 1010315 31557 31557 W Binder  : 31542_2: page allocation failure: order:0, mode:0x800(GFP_NOWAIT), nodemask=(null),cpuset=background,mems_allowed=0
-...
-...
-06-03 13:29:12.999 1010315 31557 31557 W Call trace:
-06-03 13:29:12.999 1010315 31557 31557 W         : dump_backtrace.cfi_jt+0x0/0x8
-06-03 13:29:12.999 1010315 31557 31557 W         : dump_stack+0xc8/0x14c
-06-03 13:29:12.999 1010315 31557 31557 W         : warn_alloc+0x158/0x1c8
-06-03 13:29:12.999 1010315 31557 31557 W         : __alloc_pages_slowpath+0x9d8/0xb80
-06-03 13:29:12.999 1010315 31557 31557 W         : __alloc_pages_nodemask+0x1c4/0x430
-06-03 13:29:12.999 1010315 31557 31557 W         : allocate_slab+0xb4/0x390
-06-03 13:29:12.999 1010315 31557 31557 W         : ___slab_alloc+0x12c/0x3a4
-06-03 13:29:12.999 1010315 31557 31557 W         : kmem_cache_alloc+0x358/0x5e4
-06-03 13:29:12.999 1010315 31557 31557 W         : avc_alloc_node+0x30/0x184
-06-03 13:29:12.999 1010315 31557 31557 W         : avc_update_node+0x54/0x4f0
-06-03 13:29:12.999 1010315 31557 31557 W         : avc_has_extended_perms+0x1a4/0x460
-06-03 13:29:12.999 1010315 31557 31557 W         : selinux_file_ioctl+0x320/0x3d0
-06-03 13:29:12.999 1010315 31557 31557 W         : __arm64_sys_ioctl+0xec/0x1fc
-06-03 13:29:12.999 1010315 31557 31557 W         : el0_svc_common+0xc0/0x24c
-06-03 13:29:12.999 1010315 31557 31557 W         : el0_svc+0x28/0x88
-06-03 13:29:12.999 1010315 31557 31557 W         : el0_sync_handler+0x8c/0xf0
-06-03 13:29:12.999 1010315 31557 31557 W         : el0_sync+0x1a4/0x1c0
-..
-..
-06-03 13:29:12.999 1010315 31557 31557 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:12.999 1010315 31557 31557 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:12.999 1010315 31557 31557 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:12.999 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:12.999 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:12.999 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:12.999 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:12.999 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:12.999 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:12.999 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:12.999 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:12.999 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:13.000 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:13.000 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:13.000 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:13.000 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:13.000 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:13.000 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:13.000 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:13.000 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:13.000 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:13.000 10230 30892 30892 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:13.000 10230 30892 30892 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
-06-03 13:29:13.000 10230 30892 30892 W node 0  : slabs: 57, objs: 2907, free: 0
-06-03 13:29:13.000 10230 30892 30892 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
-06-03 13:29:13.000 10230 30892 30892 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
+TEST: IGT:kms_color::pipe-invalid-gamma-lut-sizes
 
-Based on [1], selinux is tolerate for failure of memory allocation.
-Then, use __GFP_NOWARN together.
+v2: fix assignments in if clauses, Mark's email.
 
-[1] 476accbe2f6e ("selinux: use GFP_NOWAIT in the AVC kmem_caches")
-
-Signed-off-by: Minchan Kim <minchan@kernel.org>
-[PM: subj fix, line wraps, normalized commit refs]
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/selinux/avc.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  4 ++
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h |  1 +
+ .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 41 ++++++++++++++++---
+ 3 files changed, 40 insertions(+), 6 deletions(-)
 
-diff --git a/security/selinux/avc.c b/security/selinux/avc.c
-index d18cb32a242a..4a744b1cebc8 100644
---- a/security/selinux/avc.c
-+++ b/security/selinux/avc.c
-@@ -294,26 +294,27 @@ static struct avc_xperms_decision_node
- 	struct avc_xperms_decision_node *xpd_node;
- 	struct extended_perms_decision *xpd;
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index fca466d4806b..11da904fcb7e 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -7407,6 +7407,10 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
+ 		    old_crtc_state->vrr_enabled == new_crtc_state->vrr_enabled)
+ 			continue;
  
--	xpd_node = kmem_cache_zalloc(avc_xperms_decision_cachep, GFP_NOWAIT);
-+	xpd_node = kmem_cache_zalloc(avc_xperms_decision_cachep,
-+				     GFP_NOWAIT | __GFP_NOWARN);
- 	if (!xpd_node)
- 		return NULL;
++		ret = amdgpu_dm_verify_lut_sizes(new_crtc_state);
++		if (ret)
++			goto fail;
++
+ 		if (!new_crtc_state->enable)
+ 			continue;
  
- 	xpd = &xpd_node->xpd;
- 	if (which & XPERMS_ALLOWED) {
- 		xpd->allowed = kmem_cache_zalloc(avc_xperms_data_cachep,
--						GFP_NOWAIT);
-+						GFP_NOWAIT | __GFP_NOWARN);
- 		if (!xpd->allowed)
- 			goto error;
- 	}
- 	if (which & XPERMS_AUDITALLOW) {
- 		xpd->auditallow = kmem_cache_zalloc(avc_xperms_data_cachep,
--						GFP_NOWAIT);
-+						GFP_NOWAIT | __GFP_NOWARN);
- 		if (!xpd->auditallow)
- 			goto error;
- 	}
- 	if (which & XPERMS_DONTAUDIT) {
- 		xpd->dontaudit = kmem_cache_zalloc(avc_xperms_data_cachep,
--						GFP_NOWAIT);
-+						GFP_NOWAIT | __GFP_NOWARN);
- 		if (!xpd->dontaudit)
- 			goto error;
- 	}
-@@ -341,7 +342,7 @@ static struct avc_xperms_node *avc_xperms_alloc(void)
- {
- 	struct avc_xperms_node *xp_node;
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+index c8c525a2b505..54163c970e7a 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+@@ -387,6 +387,7 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+ #define MAX_COLOR_LEGACY_LUT_ENTRIES 256
  
--	xp_node = kmem_cache_zalloc(avc_xperms_cachep, GFP_NOWAIT);
-+	xp_node = kmem_cache_zalloc(avc_xperms_cachep, GFP_NOWAIT | __GFP_NOWARN);
- 	if (!xp_node)
- 		return xp_node;
- 	INIT_LIST_HEAD(&xp_node->xpd_head);
-@@ -497,7 +498,7 @@ static struct avc_node *avc_alloc_node(struct selinux_avc *avc)
- {
- 	struct avc_node *node;
+ void amdgpu_dm_init_color_mod(void);
++int amdgpu_dm_verify_lut_sizes(const struct drm_crtc_state *crtc_state);
+ int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc);
+ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+ 				      struct dc_plane_state *dc_plane_state);
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+index 2233d293a707..6acc460a3e98 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+@@ -277,6 +277,37 @@ static int __set_input_tf(struct dc_transfer_func *func,
+ 	return res ? 0 : -ENOMEM;
+ }
  
--	node = kmem_cache_zalloc(avc_node_cachep, GFP_NOWAIT);
-+	node = kmem_cache_zalloc(avc_node_cachep, GFP_NOWAIT | __GFP_NOWARN);
- 	if (!node)
- 		goto out;
++/**
++ * Verifies that the Degamma and Gamma LUTs attached to the |crtc_state| are of
++ * the expected size.
++ * Returns 0 on success.
++ */
++int amdgpu_dm_verify_lut_sizes(const struct drm_crtc_state *crtc_state)
++{
++	const struct drm_color_lut *lut = NULL;
++	uint32_t size = 0;
++
++	lut = __extract_blob_lut(crtc_state->degamma_lut, &size);
++	if (lut && size != MAX_COLOR_LUT_ENTRIES) {
++		DRM_DEBUG_DRIVER(
++			"Invalid Degamma LUT size. Should be %u but got %u.\n",
++			MAX_COLOR_LUT_ENTRIES, size);
++		return -EINVAL;
++	}
++
++	lut = __extract_blob_lut(crtc_state->gamma_lut, &size);
++	if (lut && size != MAX_COLOR_LUT_ENTRIES &&
++	    size != MAX_COLOR_LEGACY_LUT_ENTRIES) {
++		DRM_DEBUG_DRIVER(
++			"Invalid Gamma LUT size. Should be %u (or %u for legacy) but got %u.\n",
++			MAX_COLOR_LUT_ENTRIES, MAX_COLOR_LEGACY_LUT_ENTRIES,
++			size);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ /**
+  * amdgpu_dm_update_crtc_color_mgmt: Maps DRM color management to DC stream.
+  * @crtc: amdgpu_dm crtc state
+@@ -311,14 +342,12 @@ int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc)
+ 	bool is_legacy;
+ 	int r;
  
+-	degamma_lut = __extract_blob_lut(crtc->base.degamma_lut, &degamma_size);
+-	if (degamma_lut && degamma_size != MAX_COLOR_LUT_ENTRIES)
+-		return -EINVAL;
++	r = amdgpu_dm_verify_lut_sizes(&crtc->base);
++	if (r)
++		return r;
+ 
++	degamma_lut = __extract_blob_lut(crtc->base.degamma_lut, &degamma_size);
+ 	regamma_lut = __extract_blob_lut(crtc->base.gamma_lut, &regamma_size);
+-	if (regamma_lut && regamma_size != MAX_COLOR_LUT_ENTRIES &&
+-	    regamma_size != MAX_COLOR_LEGACY_LUT_ENTRIES)
+-		return -EINVAL;
+ 
+ 	has_degamma =
+ 		degamma_lut && !__is_lut_linear(degamma_lut, degamma_size);
 -- 
 2.30.2
 
