@@ -2,70 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81F83BDA63
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B183BDA67
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbhGFPnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:43:43 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:43014 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231689AbhGFPnm (ORCPT
+        id S232705AbhGFPqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 11:46:03 -0400
+Received: from lilium.sigma-star.at ([109.75.188.150]:40566 "EHLO
+        lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231689AbhGFPqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:43:42 -0400
-Received: from [10.0.0.178] (c-67-168-106-253.hsd1.wa.comcast.net [67.168.106.253])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8DB0120B7188;
-        Tue,  6 Jul 2021 08:41:03 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8DB0120B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1625586063;
-        bh=FXa3SB2i+RiGoeKML7scN56hG2dTps93chghEwKXFwI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ZT1tH4M9oi2ubnBW4DEEpT8Z1Qsiz2HpOHFXUAasnsqb8a8E4fO6QIAfnGMIXbwuu
-         Me7tmy0hrMR1sOtDy2BHvEi5ilk5QRL1Huv+bVMc/ze3DkbfUSLb563At1Dy+pKHLf
-         3o7CZfb29iboGM9nvDyllpxt12otjAENKhGrp6x0=
-Subject: Re: [PATCH 03/19] drivers/hv: minimal mshv module (/dev/mshv/)
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, mikelley@microsoft.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        vkuznets@redhat.com, ligrassi@microsoft.com, kys@microsoft.com
-References: <1622241819-21155-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1622241819-21155-4-git-send-email-nunodasneves@linux.microsoft.com>
- <20210627120004.u4pn3stgcny2zl4i@liuwe-devbox-debian-v2>
-From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Message-ID: <c88d08ee-b559-f1a3-b53c-d740f60273e3@linux.microsoft.com>
-Date:   Tue, 6 Jul 2021 08:41:03 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 6 Jul 2021 11:46:02 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lilium.sigma-star.at (Postfix) with ESMTP id 150C21817A0E0;
+        Tue,  6 Jul 2021 17:43:22 +0200 (CEST)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id j54DG_-NXlGP; Tue,  6 Jul 2021 17:43:21 +0200 (CEST)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id OKmDGjH1yhZa; Tue,  6 Jul 2021 17:43:21 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     kishon@ti.com
+Cc:     lorenzo.pieralisi@arm.com, kw@linux.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
+Subject: [PATCH] misc: pci_endpoint_test: Ensure relationship between miscdev and PCI
+Date:   Tue,  6 Jul 2021 17:43:10 +0200
+Message-Id: <20210706154310.26773-1-richard@nod.at>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210627120004.u4pn3stgcny2zl4i@liuwe-devbox-debian-v2>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Set the parent pointer of the misc device to ensure a relationship
+between PCI and misc dev. That way it is possible to see in
+/sys/class/misc/ which pci_endpoint_test instance serves what
+PCI device.
 
-On 6/27/2021 5:00 AM, Wei Liu wrote:
-> On Fri, May 28, 2021 at 03:43:23PM -0700, Nuno Das Neves wrote:
-> [...]
->> +
->> +static int
->> +__init mshv_init(void)
->> +{
->> +	int ret;
-> 
-> Please check if Linux is running on Microsoft Hypervisor here. If not,
-> this module should not be loaded.
-> 
-> Something like:
-> 
->        if (!hv_is_hyperv_initialized())
->                return -ENODEV;
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/misc/pci_endpoint_test.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Good point - will do.
+diff --git a/drivers/misc/pci_endpoint_test.c b/drivers/misc/pci_endpoint=
+_test.c
+index 1b2868ca4f2a..d1137a95ad02 100644
+--- a/drivers/misc/pci_endpoint_test.c
++++ b/drivers/misc/pci_endpoint_test.c
+@@ -862,6 +862,7 @@ static int pci_endpoint_test_probe(struct pci_dev *pd=
+ev,
+ 		err =3D -ENOMEM;
+ 		goto err_release_irq;
+ 	}
++	misc_device->parent =3D &pdev->dev;
+ 	misc_device->fops =3D &pci_endpoint_test_fops,
+=20
+ 	err =3D misc_register(misc_device);
+--=20
+2.26.2
 
-> 
-> Wei.
-> 
