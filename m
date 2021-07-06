@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2B73BCB4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296AB3BCB51
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231857AbhGFLDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
+        id S231889AbhGFLDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbhGFLDn (ORCPT
+        with ESMTP id S231848AbhGFLDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:03:43 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA0BC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 04:01:04 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id h6so7371714iok.6
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 04:01:04 -0700 (PDT)
+        Tue, 6 Jul 2021 07:03:46 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C03C061764
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 04:01:08 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id g22so24464934iom.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 04:01:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+HHpMaVaRdcfE11Iv9zB2/7DEGNbwGm556b5Rknsy4U=;
-        b=sZaUCdrrS3e1iP5DPMjU61A5DEXd+QmYzjBzm1GL2Me4/JyUDJN0ev3edXVJGIGmkm
-         8l7fy5hX3An2cIInjdvXVT9Tn+5aQnD3MzSPn8V2wnLhPFsbWWHF577BOAPtkRnqGHtf
-         W2LlWCGJz3xMgpRK8DgdIFHn15khciULuguy/j56gDktDWMlJ45x71MEV7Qo728tSvmb
-         AJrZ3DqI254Ds24HVNPXhN9HDro7EUgxHUZNbPHejS1s2amJgmlCsT8dMQ2zVO3TGrYN
-         Vj6kB29JnaR2v1rPV6e9t1AVzsVUzHxteeYGlSl2cQR7UcDuyR6XSPdYxdt1FvspOGNE
-         lnuQ==
+        bh=FYk8/MFnVtA7gBfngdQB39lzbb1HLN8KQZCQ/UZ++gI=;
+        b=mqRfuAl9FMaPmM8mndYbPgNaTr/4muXGUtAj0aCIVo1DzDJZHyZxeNF57pK/mEv4G2
+         bCYhHwF3fX7HA8RxBT8bMsEaXi5swrk6OA2lSrk7s9Bd3Y1QYqzG8ChA2G1FIhPDgDs6
+         Mftlv3kB7UFCoozmFUffi/lYHnU1fchrthktlfUbcONCXWyLYtWUsMJsZNM169S4pNZd
+         QxaLqqDFtyZ8OuBFNuBPSLrOHtb8+4L6a5s7/JrMGfJj+pvUNYtDQHNz2oqYH9mjum96
+         VNtiixoAp3LPgG7Roj8oGTOI8UBQWLwtgFEkf+QxM1lQjGOY+BIkqTtd06ukNz327txp
+         bWkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+HHpMaVaRdcfE11Iv9zB2/7DEGNbwGm556b5Rknsy4U=;
-        b=uYMhm8ob8C2L6m64oZ+lNRsru+uWpyyNUoIQ6DO7Q85g9cuHAFC0Xa1I9uWi4jJ97O
-         yZPkf4D6+lDWL8UhDDtk/DKqn5s8puw0SELkiPMVE2KT3lGoIAoOB+d0jAZLGloJzWey
-         B4Sb0BD7LHHONRZp668hU6xaz+vf3xfUjBQa87OqkBE1D6PYt0PQ2KQkbmHlLKVNL4ub
-         5cvRbKzwzAel8H2E6AkGMZuewpzU9vN/cBK5iasFl4CFZuASOHAL0Bz18Jzgv72FtWxU
-         LlPwjpIo9j6Pfzmk/ogY1V1GNkKy6XQyIvMHd86SCBWd3BtJuYeTQ8alLW08POEusmTv
-         7REQ==
-X-Gm-Message-State: AOAM530ndIwWCOB8ydkeeerxC2fRdtJEjWTiGbsOt11LtoHuEafavS7a
-        frBrL7DYOztnCW+RkU9JtL6ukBFELMmT/gUfzhStUg==
-X-Google-Smtp-Source: ABdhPJyd/zvHxz1L15JJizqajXWHQOOj/R3I+VJVejLEkbQuqbmJ5EorzShywsBzz0vI7SHNU/hc0pqJ92aAQ3OEINM=
-X-Received: by 2002:a02:c73b:: with SMTP id h27mr9187900jao.126.1625569263462;
- Tue, 06 Jul 2021 04:01:03 -0700 (PDT)
+        bh=FYk8/MFnVtA7gBfngdQB39lzbb1HLN8KQZCQ/UZ++gI=;
+        b=XRN94eDgqrBC0yCUCY5FOckngxqXR3zLDseTWdoJknxixy9kERFGrBSESraTm1ABgl
+         J90VTPFu4G+Z7ekNvmytdlnnqURnXIbLDibkaPimidIJUIe83LEvNUSn8iBMxM6OEsLF
+         NPPSnoUcNeXxRxnbgJNCRvPkiDo5aOZNx58O5IHDUGCevQ2aHrrpsg5nFwH6V5yERpmK
+         iXEIZ3VK2pP8jdUKds8VKv8JtTdKPsZHPe7JEAqnQNWFPUJL9JhSTquUyK4asMAxQMQ7
+         hJoNT9ycM+FioIszdXxEbtATdWT6Wwqz/ftf46cfVwbFkpufS9CkUjuLLuVCMX1iJbQM
+         Xr3Q==
+X-Gm-Message-State: AOAM531gF6ZhCPTPNu2ZNoU8M5HaxMsE3onAW6ZRZt2QHQk8MQlm73Zj
+        s09ykKUSDYRNBXJ8ZTWMh6Gbeg9/NZTXifmx8TNHlw==
+X-Google-Smtp-Source: ABdhPJwfVqDJZJ8YMxlfHDI/5iWfU93hNngTm71CYO5d2lEfAycitsV1Wbt0lZDaTUxVYOgEgo1j1trbkKDAIraFWas=
+X-Received: by 2002:a5d:96cb:: with SMTP id r11mr586569iol.53.1625569267395;
+ Tue, 06 Jul 2021 04:01:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <1625038079-25815-1-git-send-email-kyrie.wu@mediatek.com> <1625038079-25815-8-git-send-email-kyrie.wu@mediatek.com>
-In-Reply-To: <1625038079-25815-8-git-send-email-kyrie.wu@mediatek.com>
+References: <1625038079-25815-1-git-send-email-kyrie.wu@mediatek.com> <1625038079-25815-9-git-send-email-kyrie.wu@mediatek.com>
+In-Reply-To: <1625038079-25815-9-git-send-email-kyrie.wu@mediatek.com>
 From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Tue, 6 Jul 2021 19:00:52 +0800
-Message-ID: <CA+Px+wXt0QFi+AsMmFvwhPZe8ef3sfAJFrVkdgaofUMMHeQ3Vg@mail.gmail.com>
-Subject: Re: [PATCH v2,7/9] media: mtk-jpegenc: Use component framework to
- manage each hardware information
+Date:   Tue, 6 Jul 2021 19:00:56 +0800
+Message-ID: <CA+Px+wVwuujSM2MN3VC=kAAU4+M8ZwDhVE3WbUe9R39EuEWDuQ@mail.gmail.com>
+Subject: Re: [PATCH v2,8/9] media: mtk-jpegenc: Generalize jpegenc HW
+ operations interfaces
 To:     "kyrie.wu" <kyrie.wu@mediatek.com>
 Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -71,131 +71,14 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, Jun 30, 2021 at 3:28 PM kyrie.wu <kyrie.wu@mediatek.com> wrote:
-> +static  const struct of_device_id mtk_jpegenc_drv_ids[] = {
-Remove the extra space between "static" and "const".
+> Generalizes jpegenc select/deselect HW and set params interfaces.
+No code is using the functions.  The patch needs to be submitted with
+other patches.
 
-> +       {
-> +               .compatible = "mediatek,mt8195-jpgenc0",
-> +               .data = (void *)MTK_JPEGENC_HW0,
-> +       },
-> +       {
-> +               .compatible = "mediatek,mt8195-jpgenc1",
-> +               .data = (void *)MTK_JPEGENC_HW1,
-> +       },
-> +       {},
-> +};
-Should be guarded by CONFIG_OF.
-
-> +static struct component_match *mtk_jpegenc_match_add(struct mtk_jpeg_dev *jpeg)
+> +static int mtk_jpeg_select_hw(struct mtk_jpeg_ctx *ctx)
 > +{
-> +       struct device *dev = jpeg->dev;
-> +       struct component_match *match = NULL;
+> +       int hw_id = -1;
 > +       int i;
-> +       char compatible[128] = {0};
-It doesn't need to be initialized.
-
-> +
-> +       for (i = 0; i < ARRAY_SIZE(mtk_jpegenc_drv_ids); i++) {
-> +               struct device_node *comp_node;
-> +               enum mtk_jpegenc_hw_id comp_idx;
-> +               const struct of_device_id *of_id;
-> +
-> +               memcpy(compatible, mtk_jpegenc_drv_ids[i].compatible,
-> +                      sizeof(mtk_jpegenc_drv_ids[i].compatible));
-Shouldn't rely on the source length.  Also needs to use strcpy-family
-for better handling the NULL terminator.
-
-> +               if (!of_device_is_available(comp_node)) {
-> +                       of_node_put(comp_node);
-> +                       v4l2_err(&jpeg->v4l2_dev, "Fail to get jpeg enc HW node\n");
-To be consistent, use "Failed".
-
-> +               of_id = of_match_node(mtk_jpegenc_drv_ids, comp_node);
-> +               if (!of_id) {
-> +                       v4l2_err(&jpeg->v4l2_dev, "Failed to get match node\n");
-> +                       return ERR_PTR(-EINVAL);
-Shouldn't it call of_node_put() before returning?
-
-> +               comp_idx = (enum mtk_jpegenc_hw_id)of_id->data;
-> +               v4l2_info(&jpeg->v4l2_dev, "Get component:hw_id(%d),jpeg_dev(0x%p),comp_node(0x%p)\n",
-> +                         comp_idx, jpeg, comp_node);
-> +
-> +               jpeg->component_node[comp_idx] = comp_node;
-> +
-> +               component_match_add_release(dev, &match, mtk_vdec_release_of,
-> +                                           mtk_vdec_compare_of, comp_node);
-Shouldn't it need to break if it already found?
-
-> +       if (!jpeg->variant->is_encoder) {
-> +               res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +               jpeg->reg_base[MTK_JPEGENC_HW0] =
-> +                       devm_ioremap_resource(&pdev->dev, res);
-If !is_encoder, why is it still using MTK_JPEGENC_HW0?
-
-> +               if (IS_ERR(jpeg->reg_base[MTK_JPEGENC_HW0])) {
-> +                       ret = PTR_ERR(jpeg->reg_base[MTK_JPEGENC_HW0]);
-> +                       return ret;
-Just return the PTR_ERR if it doesn't need to goto.
-
-> -       pm_runtime_enable(&pdev->dev);
-> +       if (jpeg->variant->is_encoder) {
-> +               match = mtk_jpegenc_match_add(jpeg);
-> +               if (IS_ERR_OR_NULL(match))
-> +                       goto err_vfd_jpeg_register;
-> +
-> +               video_set_drvdata(jpeg->vdev, jpeg);
-> +               platform_set_drvdata(pdev, jpeg);
-> +               ret = component_master_add_with_match(&pdev->dev,
-> +                                                     &mtk_jpegenc_ops, match);
-> +               if (ret < 0)
-> +                       goto err_vfd_jpeg_register;
-Shouldn't it call of_node_put() for un-doing mtk_jpegenc_match_add()?
-
-> --- a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.h
-> +++ b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.h
-> @@ -125,6 +125,8 @@ struct mtk_jpegenc_pm {
->   * @larb:              SMI device
->   * @job_timeout_work:  IRQ timeout structure
->   * @variant:           driver variant to be used
-> + * @irqlock:           spinlock protecting for irq
-> + * @dev_mutex:         the mutex protecting for device
-The patch adds more than 2 fields in the struct.  They also need short
-descriptions here.
-
->   */
->  struct mtk_jpeg_dev {
->         struct mutex            lock;
-> @@ -136,12 +138,18 @@ struct mtk_jpeg_dev {
->         void                    *alloc_ctx;
->         struct video_device     *vdev;
->         struct device           *larb;
-> -       struct delayed_work job_timeout_work;
->         const struct mtk_jpeg_variant *variant;
->
-> +       struct clk              *clk_jpeg;
-It is not used.
-
->  /**
->   * struct mtk_jpeg_fmt - driver's internal color format data
->   * @fourcc:    the fourcc code, 0 if not applicable
-> @@ -194,6 +204,7 @@ struct mtk_jpeg_q_data {
->   * @enc_quality:       jpeg encoder quality
->   * @restart_interval:  jpeg encoder restart interval
->   * @ctrl_hdl:          controls handler
-> + * @done_queue_lock:   spinlock protecting for buffer done queue
-Probably put in the wrong patch?
-
-> +int mtk_jpegenc_init_pm(struct mtk_jpeg_dev *mtkdev)
-> +{
-> +       struct platform_device *pdev;
-> +       struct mtk_jpegenc_pm *pm;
-> +       struct mtk_jpegenc_clk *jpegenc_clk;
-> +       struct mtk_jpegenc_clk_info *clk_info;
-> +       int i, ret;
-> +
-> +       pdev = mtkdev->plat_dev;
-> +       pm->dev = &pdev->dev;
-> +       pm = &mtkdev->pm;
-> +       pm->mtkdev = mtkdev;
-> +       jpegenc_clk = &pm->venc_clk;
-Could they be inlined to above where the variables are declared.
+> +       unsigned long flags;
+> +       struct mtk_jpeg_dev *jpeg = ctx->jpeg, *comp_jpeg = NULL;
+comp_jpeg doesn't need to be initialized.
