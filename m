@@ -2,152 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C0F3BC88D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC793BC88B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbhGFJhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 05:37:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230472AbhGFJhv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 05:37:51 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA1BC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 02:35:12 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id s13so2561201uao.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 02:35:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SXqwOn58K4bez2IaGk1hVoc+0xrkve7opqyDbkX7Ms4=;
-        b=tymmw5VmQEBCE986F9OJ8F5dTtj4590Z3nqXzjYUTNo0Tiyb9C0sFF9kHTledf4evn
-         6PvenrC7i/9tWPieXAgP01bkaOFWMgsUJ1SYzBofhVD8bcpx4zJYhHYUCTKqWXbOR0Fi
-         4eK7mun6PtvclC4AWKToLEbHW2bRCZAHnkQ8ucAJ91f8dMgqlHWX8s57THckO4ldr7+F
-         OKIKeC4SoKNkxPK2tbVVh3k0XQqsiTdXBNl7eE39n/5M86wVMd+h2ONL2dPQvPgAomaP
-         ALaS4gamp5uI+WYhUhtT7By5ceqQs3zpaLE+1ZHlIL4EYiUPbuXYwbrZKKQ+Kc5Jsbso
-         Lqjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SXqwOn58K4bez2IaGk1hVoc+0xrkve7opqyDbkX7Ms4=;
-        b=WPJWi/e3xQBP7qO+shoCTkuZPcE4ohIOxUzYdnA/ZtRSrbli5um/stK2f9FCxJ8m+V
-         HlyOIIPONsngkRYCyKHEn7m5LYnu5fEaQ0CfIUWetofcGLsFg0KLCHgK/MlIrMmHQgTF
-         9Cyv29kKrZGrqXTF/H5E9egmyh8TuWmq4+Y2gV1HT5d8vbtsKusUOppchv+2kuikbR9A
-         +K6/tj5oLRME6H/XpZ7vAGd2M+0BFTPu9tKhj0npRkMXzTQsnyjn4hsH1/A81giya+QZ
-         TEldOBny3I6XCbU49skxygQpR6dGuB9FbsJYRMzevA/sjUF278HimCGW4oakSucSX4LJ
-         MRoQ==
-X-Gm-Message-State: AOAM53294A+SnepbMe3rrHbPlXV0uJgZKiiH6Za0LNok+JYkM1SEOQlH
-        GqynYNdhebWzpf6FTqw0L0NoDxw5ugI6efO5WyChhw==
-X-Google-Smtp-Source: ABdhPJzYZij73W64wi+SYiXYynJ/JRSXn6bM612f+3l4Wpzg6H2eDk4zuUvR7jGIZsYLPRAbMGvp1xqPWbqYjQSO1a4=
-X-Received: by 2002:ab0:76d0:: with SMTP id w16mr5882760uaq.15.1625564111999;
- Tue, 06 Jul 2021 02:35:11 -0700 (PDT)
+        id S231190AbhGFJhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 05:37:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230472AbhGFJhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 05:37:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4310061208;
+        Tue,  6 Jul 2021 09:35:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625564110;
+        bh=mQbkEf+ed0hVXdTImvG+dp6bEhg44Im5KM3W9AhPp3E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=O8NktNF+kNCqJCzfOQluTZJcDj0kPCTMiWWkBdkkmVotyDcVQh74zKw/zdYyfTzPY
+         8mYyhCEXjKSk0Ijr+z38h5EO3/RnCNA6UdMeHu5EHUSGpjAoaQ918nqkIF+hBSvHr7
+         +9QvK4zUaOtwHpU5nQ23nSGjSvUej9K7TdAaWS1P+XgL9u1NSStnPZRJbCpDo8WDb3
+         u6n6Ks28odV9ttXfoMAqPEuysgRAtZu6Wmvj7J5ek7jAqL5/Jn5UkaY4SBnId2YyYJ
+         lOIByvzJkzj8rv1oLuSyc0d6VuGv/Kl522Gsjmi5/Qtux2/smRmfAjFq6GO0Yv6xYn
+         lHU204HvTb1fQ==
+Date:   Tue, 6 Jul 2021 11:35:03 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Xiaowei Song <songxiaowei@hisilicon.com>,
+        Dejin Zheng <zhengdejin5@gmail.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Binghui Wang <wangbinghui@hisilicon.com>, linuxarm@huawei.com
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mauro.chehab@huawei.com
+Subject: Possible issue at the kirin-pcie driver
+Message-ID: <20210706113503.66091e94@coco.lan>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <CWXP265MB268049D9AB181062DA7F6DDBC4009@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <CWXP265MB26807AC3C130772D789D0AABC41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <CAPDyKFq44ZuXXUDQV34NSW-ixB9GAZfDx+dx-Kb8O7=LQ1TSHQ@mail.gmail.com> <CWXP265MB26803EFAC659676EC0914F97C41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-In-Reply-To: <CWXP265MB26803EFAC659676EC0914F97C41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 6 Jul 2021 11:34:35 +0200
-Message-ID: <CAPDyKFpAULWZTfWGutpJY+qrRJP1+XpKwsjFUXGG7+xyrKsvxg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: block: Differentiate busy and non-TRAN state
-To:     =?UTF-8?Q?Christian_L=C3=B6hle?= <CLoehle@hyperstone.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Avri Altman <Avri.Altman@wdc.com>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Jul 2021 at 11:09, Christian L=C3=B6hle <CLoehle@hyperstone.com> =
-wrote:
->
-> Hey Uffe,
->
-> >> +static int is_return_to_tran_cmd(struct mmc_command *cmd)
-> >> +{
-> >> +       /*
-> >> +        * Cards will never return to TRAN after completing
-> >> +        * identification commands or MMC_SEND_STATUS if they are not =
-selected.
-> >> +        */
-> >> +       switch (cmd->opcode) {
-> >> +       case MMC_GO_IDLE_STATE:
-> >> +       case MMC_SEND_OP_COND:
-> >> +       case MMC_ALL_SEND_CID:
-> >> +       case MMC_SET_RELATIVE_ADDR:
-> >> +       case MMC_SET_DSR:
-> >> +       case MMC_SLEEP_AWAKE:
-> >> +       case MMC_SELECT_CARD:
-> >> +       case MMC_SEND_CSD:
-> >> +       case MMC_SEND_CID:
-> >> +       case MMC_SEND_STATUS:
-> >> +       case MMC_GO_INACTIVE_STATE:
-> >> +       case MMC_APP_CMD:
-> >> +               return false;
-> >> +       default:
-> >> +               return true;
-> >> +       }
-> >> +}
-> >>
-> >What exactly are you trying to do with the user space program through
-> >the mmc ioctl with all these commands? The mmc ioctl interface is not
-> >designed to be used like that.
-> >
-> >In principle, it looks like we should support a complete
-> >re-initialization of the card. I am sorry, but no thanks! This doesn't
-> >work, but more importantly, this should be managed solely by the
-> >kernel, in my opinion.
->
-> Doing initialization itself through ioctl is silly, I agree, and does
-> not work on other ends. This patch is not about that. it just explicitly =
-disables
-> any CMD13 polling for TRAN for some of those commands. the behavior
-> for such commands thus is the same as without the patch.
+Hi,
 
-You are right.
+I was asked by Rob Herring to convert the kiring-pcie driver on two parts,
+splitting the PHY logic from it, in order to be able to add PHY support 
+for Hikey 970 at drivers/pci/controller/dwc/pcie-kirin.c.
 
-But, what I think is bothering me with the approach, is that it looks
-like we are starting to add special treatment of a whole bunch of
-different commands.
+While doing so, I noticed something weird issue at the driver, with regards
+to a certain register (PCIE_APB_PHY_STATUS0), as shown below:
 
-> The reason for this patch is to not run into the race condition that a
-> following (ioctl) command will be rejected because the card is in e.g. PR=
-OG state
-> of a previous ioctl command. As stated earlier, I encountered this a lot =
-when
-> doing a unlock force erase -> lock/set, in both scenarios, issued as two =
-single
-> ioctl commands and bundled together.
+...
 
-I understand. I would rather see a patch that adds support, explicitly
-for this case.
+	#define PCIE_APB_PHY_STATUS0	0x400
+...
+	static inline u32 kirin_apb_ctrl_readl(struct kirin_pcie *kirin_pcie, u32 reg)
+	{
+		return readl(kirin_pcie->apb_base + reg);
+	}
+...
+	static inline u32 kirin_apb_phy_readl(struct kirin_pcie *kirin_pcie, u32 reg)
+	{
+		return readl(kirin_pcie->phy_base + reg);
+	}
+...
+	static int kirin_pcie_phy_init(struct kirin_pcie *kirin_pcie)
+	{
+...
+		reg_val = kirin_apb_phy_readl(kirin_pcie, PCIE_APB_PHY_STATUS0);
+		if (reg_val & PIPE_CLK_STABLE) {
+                	dev_err(dev, "PIPE clk is not stable\n");
+			return -EINVAL;
+		}
+	}
+...
+	static int kirin_pcie_link_up(struct dw_pcie *pci)
+	{
+		struct kirin_pcie *kirin_pcie = to_kirin_pcie(pci);
+		u32 val = kirin_apb_ctrl_readl(kirin_pcie, PCIE_APB_PHY_STATUS0);
+	
+		if ((val & PCIE_LINKUP_ENABLE) == PCIE_LINKUP_ENABLE)
+			return 1;
 
-> But this race condition exists on any (non-R1b/ RPBM) currently. As there=
- is
-> no CMD13 polling happening after the response (or whenever the driver mar=
-ks
-> the request as done), the card's status is therefore generally unknown.
+		return 0;
 
-So the commands to unlock/lock, etc, don't have R1B, but can still
-cause the card to become busy after the response has been delivered,
-right?
+		u32 val = kirin_apb_ctrl_readl(kirin_pcie, PCIE_APB_PHY_STATUS0);
 
-As I said, then please add this as an explicit check to do polling,
-then I would be happy. :-)
+		if ((val & PCIE_LINKUP_ENABLE) == PCIE_LINKUP_ENABLE)
+			return 1;
 
->
-> So in short I don;t want to do anything too crazy from userspace, but the
-> alternative now is to do like 100ms sleeps in the hope that the card is
-> actually finished with the issued command (not just the host driver so to=
- say).
+Basically, the code at kirin_pcie_phy_init() use this register as if it is 
+part of the PHY memory region (0xf3f20000 + 0x400), while the code at 
+kirin_pcie_link_up() considers is as belonging to the APB memory
+region (0xff3fe000 + 0x400).
 
-Yeah, that sounds suboptimal, we can do better than that.
+It sounds to me that there's a mistake somewhere. I mean, either:
 
-Kind regards
-Uffe
+1. there is a cut-and-paste error, caused it to access the wrong memory
+   region, e.g. at kirin_pcie_link_up() the logic should be:
+
+	u32 val = kirin_apb_phy_readl(kirin_pcie, PCIE_APB_PHY_STATUS0);
+
+   instead of:
+
+	u32 val = kirin_apb_ctrl_readl(kirin_pcie, PCIE_APB_PHY_STATUS0);
+
+   (or the reverse)
+
+2. Both memory regions have a register at address 0x400 with similar
+   names that ended being merged into the same macro;
+
+3. the register for APB PHY status0 is duplicated on both regions and,
+   on both, they are at region_base + 0x400.
+
+I suspect that it is (1), but, as I don't have any datasheets or
+register map, I can't tell for sure.
+
+Could someone with access to the datahseets shed the light?
+
+Thanks,
+Mauro
