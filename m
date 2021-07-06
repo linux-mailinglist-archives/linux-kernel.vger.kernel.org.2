@@ -2,99 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB4A3BC7C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1C33BC7D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbhGFI06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 04:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhGFI04 (ORCPT
+        id S230447AbhGFI25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 04:28:57 -0400
+Received: from mail-pl1-f181.google.com ([209.85.214.181]:35785 "EHLO
+        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230400AbhGFI2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 04:26:56 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78711C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 01:24:17 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id h18-20020a05600c3512b029020e4ceb9588so1065298wmq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 01:24:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=VsBR1kPAqwaus4wsl3eEy2clPsB8g8F67D4/h57x3zg=;
-        b=VXCDKOvpY81S1qjLmasFSh3RxuTWbWxgzyVPBPxUrknaDN9viJmuLPjO4gorF/kH1c
-         0SXlnrpiGiUA06z1hAtso5FwQ1/lK/oW1WsSULD54XSv761Ta4PZtFfVTctLwZXtoIIG
-         esHaMInPPeJ6xo+/YU7GZdzBvTz0UzTrSGBDn1kfsuY2eWvTGLzagXF/gNZi98PPzHnJ
-         qb8rRsIIHlfBa6zuMUULMGwOTqz15J8Z+TNEwL4Dvii5LsOUGqZxBnO1mLVheDdQDur8
-         tDHSKfNr6lCK8ogdK4gB9F0fcqwheFKKbe+wf99Xc6IFGBqafj91Kh5e6F06FXqyS2um
-         esxw==
+        Tue, 6 Jul 2021 04:28:53 -0400
+Received: by mail-pl1-f181.google.com with SMTP id b5so11613441plg.2;
+        Tue, 06 Jul 2021 01:26:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=VsBR1kPAqwaus4wsl3eEy2clPsB8g8F67D4/h57x3zg=;
-        b=t1pySWzzy4eRr0NoAODeW7Xlf0QwcldTJ0KbbZQb/DZZmLKpoGBeWC9LGm6kX0h0m9
-         kYKb256Umhrz8Lq09zGSRZqxngKYPnXjAlrLGfkEx7JktVbNpwXt6DL4eYL0Ns+MP6Hx
-         fYXqHTK0Cjd9VEdnNeOLekegRvWw/eAozwfFBRBqrAMg4YW3OEQkPhGhaBYtNrdH7NfN
-         4vjBnWvJXiqhNiuwj87JPhgbvAJSoi83j0nfuU9CcI/8jXI4Y9PyWmGudQzMVND+Y/68
-         4t5MrVE7UaLAXM5eUb/+3FVVBR5D2NqumJo6pI8uPrH2O6oUq8pq8JVjObo3CPl2MGAW
-         /c2Q==
-X-Gm-Message-State: AOAM530v0muoadvmDehiA9cwN+6C629sySzN/BWe3UoELX4yjTpAcJ0k
-        q/fLIVmwQVcWpK8UAc+YEPQuIA==
-X-Google-Smtp-Source: ABdhPJz5lArn57Cztz9ZpGcnXAU1wOJbT3fcbyZm+nijyI1OCAMBgVRZ75DjTMizZi9vXX1wbNOqPQ==
-X-Received: by 2002:a05:600c:3b0b:: with SMTP id m11mr3408106wms.25.1625559855954;
-        Tue, 06 Jul 2021 01:24:15 -0700 (PDT)
-Received: from dell ([109.180.115.218])
-        by smtp.gmail.com with ESMTPSA id d3sm7670088wrx.77.2021.07.06.01.24.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 01:24:15 -0700 (PDT)
-Date:   Tue, 6 Jul 2021 09:24:13 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     cy_huang <u0084500@gmail.com>
-Cc:     broonie@kernel.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com, axel.lin@ingics.com, cy_huang@richtek.com
-Subject: Re: [PATCH v2] regulator: rt5033: Use linear ranges to map all
- voltage selection
-Message-ID: <YOQTLWsXpTOK58dr@dell>
-References: <1625553939-9109-1-git-send-email-u0084500@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qabbY+pEzBX5IabOFy4EagDM+c+oQRQVcWIiQMtPGRg=;
+        b=ZejeOlc7CtGvJ7gMs7RU4kkBRSCPAPyCzrcSj2MjP940+jjoKDaICEw498qvwr/on1
+         gLE1nYi4sHD2cgFiwauZby0wA1Jhksm0fMjthDl9y81dz/twGWyVq/TdHIVvqLuzjvLn
+         1KUCKoDTXW4yq+vH2dD3zZh5EM9KYrYaaKm1sWmd+abGMulpeftfa4lQ8fbMrwNw+UX2
+         EGIYJJJCYklDk1XVEhWfGgO37BYyQMkLMFGHZw9hvQE4/RDMq32I2IHGMTYmAg1PA+zL
+         F95OiS/F3Y+Cytqaytv8BVYBxZ3oOf71ha8BvQGTnP3PpiXgQsP0KrDN0+LwmpIfkkLh
+         /XEg==
+X-Gm-Message-State: AOAM532EO/9na2h+6lgEoNm9QaCtgjqkZGmIsrl8T2Vx1be93St9sQi0
+        +H4luca46IDYu+y/GFXn1lM=
+X-Google-Smtp-Source: ABdhPJyNc3BK2TXYevT7SstZQep53CWbA0XwUTRU/qUJj+GSi9cfM3os4sgERAEFaWn3nAQAfRibtw==
+X-Received: by 2002:a17:902:be0d:b029:11d:6614:88cd with SMTP id r13-20020a170902be0db029011d661488cdmr15980079pls.40.1625559974416;
+        Tue, 06 Jul 2021 01:26:14 -0700 (PDT)
+Received: from [10.101.46.79] (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
+        by smtp.gmail.com with ESMTPSA id gk20sm13457113pjb.17.2021.07.06.01.26.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 01:26:14 -0700 (PDT)
+Subject: Re: [PATCH 0/2] thermal: int340x: processor_thermal: Add additional
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        daniel.lezcano@linaro.org, amitk@kernel.org, rui.zhang@intel.com
+References: <20210517061441.1921901-1-srinivas.pandruvada@linux.intel.com>
+From:   You-Sheng Yang <vicamo.yang@canonical.com>
+Message-ID: <4d0a0a3a-432f-95af-7a98-21277c81d2e3@canonical.com>
+Date:   Tue, 6 Jul 2021 16:26:11 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210517061441.1921901-1-srinivas.pandruvada@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1625553939-9109-1-git-send-email-u0084500@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 06 Jul 2021, cy_huang wrote:
+Works for me for bringing up PCI MMIO based thermal device.
 
-> From: ChiYuan Huang <cy_huang@richtek.com>
+Tested-by: You-Sheng Yang <vicamo.yang@canonical.com>
+
+On 5/17/21 2:14 PM, Srinivas Pandruvada wrote:
+> Add additional attributes to RFIM, which use mailbox commands. 
 > 
-> Instead of linear mapping, Use linear range to map all voltage selection.
+> Srinivas Pandruvada (2):
+>   thermal: int340x: processor_thermal: Export mailbox interface
+>   thermal: int340x: processor_thermal: Export additional attributes
 > 
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> ---
-> Since v2
-> - recover the volt number back in rt5033-private.h
-> - Add the n_voltages from v1 back.
+>  .../processor_thermal_device.h                |  2 +
+>  .../int340x_thermal/processor_thermal_mbox.c  | 12 +++-
+>  .../int340x_thermal/processor_thermal_rfim.c  | 55 +++++++++++++++++++
+>  3 files changed, 66 insertions(+), 3 deletions(-)
 > 
-> Even though commit 6549c46af855 ("regulator: rt5033: Fix n_voltages settings for BUCK and LDO")
-> can fix the linear mapping to the correct min/max voltage
-> But there're still non-step ranges for the reserved value.
-> 
-> To use the linear range can fix it for mapping all voltage selection.
-> ---
->  drivers/regulator/rt5033-regulator.c | 21 +++++++++++++++------
-
->  include/linux/mfd/rt5033-private.h   |  4 ++--
-
-Acked-by: Lee Jones <lee.jones@linaro.org>
-
->  2 files changed, 17 insertions(+), 8 deletions(-)
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
