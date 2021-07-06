@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11973BC80E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1FB3BC811
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbhGFIri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 04:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhGFIrh (ORCPT
+        id S230434AbhGFIs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 04:48:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25557 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230295AbhGFIsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 04:47:37 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA832C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 01:44:58 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id x22-20020a9d6d960000b0290474a76f8bd4so19257877otp.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 01:44:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CgrItQJr2ir+Fs/SeQicLPg9OYSx68QtKgebdUSItu8=;
-        b=RAjEOAebi4J3YM9YGSPzmzivXE1//ZDLDl19txj0j0LF91GQGcSY4RN9tLtpGezFmd
-         mudvebEncqvwkD/pbQpVpOnRcuCipeuawtE5MyIEhRUTCdCt+UiBe3IC3s9rjXrd/GH/
-         UYDaOJFcn6QbQGfqkBCEUbMbbNqu7QG06FUI8oSkQgVH5FimZlVs6Yw/U4cgZir6By4F
-         qk7J/Y5mRmq7wZcgFbbWA840bIRSxKxJXd8IvChoPZqIwW7frY/Z0k+gLw2pckPUVfAz
-         AlELsB2BQR5AZbGmGitW3WYA0fmJ0BxkxfkUv3KJoiLxylk8mZsFcZhqFdqb/PE9GSwY
-         /uaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CgrItQJr2ir+Fs/SeQicLPg9OYSx68QtKgebdUSItu8=;
-        b=UxG/Ox3EquudGD2DHK9oim1raaFKcglgeL/nZTeSPo2b7Wn1vHUTwjPeo3QkRT2UZ+
-         6tmRwSpeHlrQhmPzFS9RZH05p6k1EJWQXSnovrY8ZynlHYmvWNc4THnPdryl3LyWwlKV
-         Z24wSaIpD4QEN7DkL830Wg2XKoSIaoQgULjirq97jOukXHjN0vGk+aPGchgIDUTZZYBr
-         dLxjftbAPGZaZXUYOj4JXg7faydtiAYKEFrXrcldmWWpDnP1BbEI83CdfDxClVoBlfNq
-         CAz5eNWKKZP1nL10iCvd6wE/jyDc6u6u5dKIaqLUN/wid/RLb7fpJw36sYyR6HrXRIqg
-         cboQ==
-X-Gm-Message-State: AOAM531AC4p9/Kt7QH7tTIn5GKnC3szByZu3l7hWsXFSfMANcKgRVQ39
-        TSGrRXpyIAmuz7doMogMJ2gzscW0D7BptiOdY50d+A==
-X-Google-Smtp-Source: ABdhPJzbuFxwRRs4m/6lag2YCxJxLxrIDyq/gj/ZvUkCTURxi8MHrihzPivvkcuVUqHnfltrGQm2ZWnTZmFJCGWA9Y4=
-X-Received: by 2002:a9d:d04:: with SMTP id 4mr14800001oti.251.1625561097822;
- Tue, 06 Jul 2021 01:44:57 -0700 (PDT)
+        Tue, 6 Jul 2021 04:48:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625561145;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TmP/CP+r95G7grSdPIW18dia2dKSqY5syV3kf7Ux4EM=;
+        b=GdSW6oqNEcupBQEiXETQCqhfTDzKZnkfTVyfMv4WAbmA7JUxu6A95OEcN1LEoboPa49IlM
+        Uy0KnoN01TsCOodNR0hxc3cPK+lg475Zx9DXBQVt207D3Q8Z3xjxUtNuCIUfncRoHUudpd
+        +EPDGI7QLZ/i2wL8R22d/VJlV019LvA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-_MVr4dIrOki0r5CkufaFbA-1; Tue, 06 Jul 2021 04:45:44 -0400
+X-MC-Unique: _MVr4dIrOki0r5CkufaFbA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD0AC9126B;
+        Tue,  6 Jul 2021 08:45:42 +0000 (UTC)
+Received: from T590 (ovpn-12-27.pek2.redhat.com [10.72.12.27])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 84E6B2EB17;
+        Tue,  6 Jul 2021 08:45:35 +0000 (UTC)
+Date:   Tue, 6 Jul 2021 16:45:30 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Sagi Grimberg <sagi@grimberg.me>
+Subject: Re: [PATCH 2/2] nvme-fc: Wait with a timeout for queue to freeze
+Message-ID: <YOQYKn+POVR2g/h1@T590>
+References: <20210625101649.49296-1-dwagner@suse.de>
+ <20210625101649.49296-3-dwagner@suse.de>
+ <YNp50pmlzN6M0kNX@T590>
+ <20210705162519.qqlklisxcsiopflw@beryllium.lan>
+ <YOQGRwLfLaFGqlVA@T590>
+ <20210706081010.dqmg7bxik5gnym5k@beryllium.lan>
 MIME-Version: 1.0
-References: <YMxYR33XEfVg6AoD@hirez.programming.kicks-ass.net>
- <YMxgbuEdrq8k3eZp@elver.google.com> <YMyC0iux0wKzc1JG@hirez.programming.kicks-ass.net>
- <20210618204800.GK4397@paulmck-ThinkPad-P17-Gen-1> <YM+TlNDJm1Jx1WQW@hirez.programming.kicks-ass.net>
- <20210620210127.GR4397@paulmck-ThinkPad-P17-Gen-1> <YNA/gkHbq46A/21C@hirez.programming.kicks-ass.net>
- <20210621133757.GS4397@paulmck-ThinkPad-P17-Gen-1> <YOQNgsS9Tjt4aDmG@hirez.programming.kicks-ass.net>
-In-Reply-To: <YOQNgsS9Tjt4aDmG@hirez.programming.kicks-ass.net>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 6 Jul 2021 10:44:46 +0200
-Message-ID: <CANpmjNNRAJ34KUF-1hWrP3F0Ooy4oi6kbH82WWpDxmVqVSj4SA@mail.gmail.com>
-Subject: Re: RCU vs data_race()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210706081010.dqmg7bxik5gnym5k@beryllium.lan>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Jul 2021 at 10:00, Peter Zijlstra <peterz@infradead.org> wrote:
-[...]
-> In that case, would not an explicit: data_debug(addr) call (implemented
-> by KASAN/KCSAN/whoever), which would report whatever knowledge they have
-> about that address, be even more useful?
+On Tue, Jul 06, 2021 at 10:10:10AM +0200, Daniel Wagner wrote:
+> On Tue, Jul 06, 2021 at 03:29:11PM +0800, Ming Lei wrote:
+> > > and this seems to confirm, no I/O in flight.
+> > 
+> > What is the output of the following command after the hang is triggered?
+> > 
+> > (cd /sys/kernel/debug/block/nvme0n1 && find . -type f -exec grep -aH . {} \;)
+> > 
+> > Suppose the hang disk is nvme0n1.
+> 
+> see attachement
+> 
+> > No, percpu_ref_is_zero() is fine to be called in atomic mode.
+> 
+> Okay, that is what I hoped for :)
 
-KCSAN/KASAN report data-races/memory errors as soon as they encounter
-them, but before they do, cannot give you any more than that (metadata
-if it exists, but not sure it can be interpreted in any useful way
-before an error occurs).
+> /sys/kernel/debug/block/nvme0c0n1# find . -type f -exec grep -aH . {} \;
 
-But maybe I misunderstood. Is data_debug() meant to not return
-anything and instead just be a "fake access"?
+It is the mpath device's debugfs, what is output for the nvmef's
+debugfs?
 
-For those, we already have various existing primitives:
-
--- KCSAN: ASSERT_EXCLUSIVE_{ACCESS,WRITER}()
-(https://www.kernel.org/doc/html/latest/dev-tools/kcsan.html#race-detection-beyond-data-races)
-
--- All sanitizers (KASAN & KCSAN right now): <linux/instrumented.h>:
-instrument_*() calls, for generic explicit instrumentation.
-
--- For sanitizer-specific checks, there's everything else in
-<linux/{kasan,kcsan}-checks.h>, but instrumented.h should be
-preferred.
 
 Thanks,
--- Marco
+Ming
+
