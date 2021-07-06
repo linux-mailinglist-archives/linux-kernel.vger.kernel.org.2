@@ -2,436 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36F83BC8A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C9E3BC8A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbhGFJup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 05:50:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57128 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231177AbhGFJup (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 05:50:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625564886;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2xR95T2J3dWhMOyNl49XXMuxn8gzB+hpEf04jtC4aNI=;
-        b=J5mAMQghO7kr1NHKRGJ6DTN5HAzV6Eoz1yMKbLw/fbo9OGRuOClm9fmbTn71fXiGMR8vJr
-        ukhMkRwkZMTdV6T9JQkr5gQyOeaRg22QVofZjAKNO2XBMPZFeLq+/+pI/KnE8p1NJTQirv
-        ZJr4lsfghPaTCBjAbF7G8IKIkZ7RIEg=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-em4T-xXNOmyojz5O6ZGPZQ-1; Tue, 06 Jul 2021 05:48:05 -0400
-X-MC-Unique: em4T-xXNOmyojz5O6ZGPZQ-1
-Received: by mail-ej1-f70.google.com with SMTP id og25-20020a1709071dd9b02904c99c7e61f1so5636483ejc.18
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 02:48:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2xR95T2J3dWhMOyNl49XXMuxn8gzB+hpEf04jtC4aNI=;
-        b=LDw3HESHdzNgNA4vD1yHe5s4WfJ2H5M1p/E0G6Vis15rC5Fd+V0GC3plcOG6WZ67oH
-         BULolSWpp58BMUNMhTFXO3D0zI+X+NUfsfkIrpRnPEsi99S0B8rkEqfq+tdsbg16HrCM
-         4+kypjeKq1i6naaFeatr6eVEMdp/luCOrneIMFrmN1Q/tSZLqh7QjeDqy8NDzb2mvyqK
-         ztf5hKHB9C6opUF3+gd2xHahsidmg1JvWn9yCYXHZDtqbWGhDILsOr5TF68DjxQYh1ai
-         rKAiRu3931B+zTX+/mivPslOj6iGqCij1Et7SHeMsfeh3uAR5McoUaBPCQkarplZ483K
-         5mng==
-X-Gm-Message-State: AOAM533CYvBC7bfxlw0IWjX1Elx8uF/qtHdow3Jh12gd59bkMowsq9oh
-        Hb4kmjLZ8nmXlZfMMf7+HlkQxiuMvlH0m9a/Ea/8flrKmysbx5hi6/OqjO16CMZalXV4FcZXbI/
-        qSBAAh0X2PsjpftgLngTn3F4D
-X-Received: by 2002:a50:81c1:: with SMTP id 59mr22123099ede.3.1625564882425;
-        Tue, 06 Jul 2021 02:48:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/wh8Kr3Twf9rZNj9LR3LOBsk2U7y25jp5IO7hbmm8Zb1hsGe/IrwHr+OIYzLulBIuPNZX1A==
-X-Received: by 2002:a50:81c1:: with SMTP id 59mr22123071ede.3.1625564882226;
-        Tue, 06 Jul 2021 02:48:02 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id dd24sm5446528ejb.10.2021.07.06.02.48.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 02:48:01 -0700 (PDT)
-Subject: Re: [PATCH v1 5/6] platform/x86: intel_tdx_attest: Add TDX Guest
- attestation interface driver
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org
-References: <cover.1624719668.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <f23e348d7fe48c5e926fb8cfa02a33726835a950.1624719668.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <c6e53fcf-c4eb-064a-787f-632a4b0c02bc@redhat.com>
-Date:   Tue, 6 Jul 2021 11:48:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <f23e348d7fe48c5e926fb8cfa02a33726835a950.1624719668.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+        id S231235AbhGFJvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 05:51:20 -0400
+Received: from mail-eopbgr70042.outbound.protection.outlook.com ([40.107.7.42]:14150
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231159AbhGFJvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 05:51:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cMAY7RMx6TwgGRPmsyTK9c/B1MUPoPtj6IVMDWcRs6rxHTholDAz06uLYM0TsF0W8M97Rls+CdaU/YYFsyD6apEpesoGPaH281N8MrTZOu15fV/wmBl63zaeRKybHSEwdnFHOcmLw4vPoumkipqzVcOizbftSMsfMk/ArWfZvNx72O59QGOKPB/p3aj9/1CRhQhTyScD6+0I0J/WU8ZmHgT7H7s7DDOu8Y87HAOSdcbTQ/zsVRtPVtquL1DlUg2N7B1Wr9XzM5Xl1C9L5SLVORVPpAS1oVsbSdaZ8Zig1WMBkA3/Ols0dvtvNmcd42tbDRdOQsTV1SxGtN19ktfzdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LXRFJbJ0Pq6spil27GGHUbjyNQmNBwOVBMoBNWKTtog=;
+ b=MBTw/2Eb+x8J3aTQsRw9A1Rr2GyeTnsvToaRNr16t/p8XBVIF/5ld8RTb8TwRgO/QBXYfGwjRM4x7JMX1+i0z3VesJV5g/v7IBTPzJ7ctDQX6qkr1v6L/0flHFttxykp33cTLhdq1uRL6WBf8eFuYOZZWlUgbWIlMseBjWLf8s8zjzRq7eGyemkWEK4GJpZoZoruwgIxqCD8dGCu1OQM0Z4yLAmq6pAsNtVo2Sxd93UYGsbsVVepuVcArFp3dQIdR0oVpaupXyVtIur4BHhX4A4QGk2Cc+CSZ8UPeN3W1CzB525SP1D8mejq4rSRZZYojee5YkuozJhI5DBM8VvZtw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LXRFJbJ0Pq6spil27GGHUbjyNQmNBwOVBMoBNWKTtog=;
+ b=fjdQatmxc/wsquVMnTJbZ2w/q4Q2NIPvaeZYduwBRikf324bMjoMElSxgQ9T5pAgFaTeEyww7a2YfyFYMtw+I6o5ui22bVy0zCSUeyG2iGatU5D+z+4k1u0iYYYfCMMobPy4DgybRbJrUKLyKMIRNTT1A4Ah2sTMHgEpnp6WtNo=
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB8PR04MB5883.eurprd04.prod.outlook.com (2603:10a6:10:b1::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.27; Tue, 6 Jul
+ 2021 09:48:38 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::f5e8:4886:3923:e92e]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::f5e8:4886:3923:e92e%8]) with mapi id 15.20.4264.035; Tue, 6 Jul 2021
+ 09:48:38 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     John Garry <john.garry@huawei.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
+CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH V3 0/4] tools: perf: Add JSON metrics for i.MX8M platforms
+Thread-Topic: [PATCH V3 0/4] tools: perf: Add JSON metrics for i.MX8M
+ platforms
+Thread-Index: AQHW9JtY/Flb1M5HB066RDaFAFubB6s2l3KAgAAW5jA=
+Date:   Tue, 6 Jul 2021 09:48:38 +0000
+Message-ID: <DB8PR04MB67958A087F20D46867066B2CE61B9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20210127105734.12198-1-qiangqing.zhang@nxp.com>
+ <a35ea181-4beb-31d0-dd97-6d587b642a6e@huawei.com>
+In-Reply-To: <a35ea181-4beb-31d0-dd97-6d587b642a6e@huawei.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1e541e93-efbd-4e44-a34e-08d940633b00
+x-ms-traffictypediagnostic: DB8PR04MB5883:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB8PR04MB5883802B3F1A8D3BA7C702B7E61B9@DB8PR04MB5883.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2449;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: F7Shaqj+H8xkm7fruGD9K4UxOse1kdIAef0CqEaK15ocMjbxh53OAowY7iyQm7WXpvS9duFK/InmwWqgVCFwxwBLtm01mlsqxqEesHIpZS4WpuPdsQWobkcT1R9rjuPTsbaUxQy8IepRNZyRzMXalCa6+xLSmG+yC0lOUJk7W6Ltka01X+DF6jy2atAmkw5WwmEEfDTf4GFi6Oe+Gc7GtxZcEmsaAnC8tW2yRWq/YwEiNi23lqOvH5i/1PJRIBPqOFo5WApLD1RGtuKgHfqLPSAjA9T+38zcQZ8RrDt/4vzdko/S56DzETigmazVZCEWhfcOkQQt6IkmsA8J/yRDv/S0JeTIhU9nm6H6/V5m1/xp/G6CN45AykvBUQck42rL9ND0LzRSRd0V8zFziPw3tjtjZ3yVPQyt+A3rtOWneI6NU3KlREI8HavuaO+bB85RqhfakHNoZlmCeDov/Rg3F9tdFWDVlIk8uyKt0NNqtz0TTF5FhGc0kg2xruwy1KehcAoJGDNCuiTSqffe0FzZo5F3+UyxTf+mUXX0PXYo+9G1HRgD7IjD5Sngv/h/+LOAi5nfX80eG5cNlXOCb5WoBlsr8yCYf7m/KKlQGh+PpdClsbKYftOkdvlOsDUMX7lkdzdCPlPtdbVcQ/HY2V8h1sJUBPWiVGRtm9cO0TIUE+ZraFCDm6n4B/GFiUBDkilDItr8HOMf+yTA3F1Nu4L74Bun2tFeO+UNhQgu0Um+cq+GcJ67l7965+zXT86WmLekz3EguQyjB9LHU1TKfKHKVw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(39860400002)(366004)(346002)(8676002)(186003)(5660300002)(71200400001)(6506007)(33656002)(53546011)(7696005)(921005)(86362001)(45080400002)(66556008)(66446008)(66476007)(55016002)(64756008)(966005)(2906002)(9686003)(7416002)(316002)(110136005)(122000001)(478600001)(83380400001)(76116006)(38100700002)(52536014)(8936002)(26005)(4326008)(66946007)(54906003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?UDRUTFoyaVhVTXJGeXRLbkRBUDc3a0dvSE5uYnlIMFpYMTN4eS9sTWpTekpx?=
+ =?gb2312?B?QVJpMUc1ODg0SGFxdHJwNnMxODJpVFhTaklIOStDWHphdFRkTUNDekozWitn?=
+ =?gb2312?B?d2E0RUt3V2JlMUh2bDVBbno4S3Ewclc2Rk5uYjRaaUsxZHIrUDd1eHF3bHJa?=
+ =?gb2312?B?bDZ4eEU0WE1tVXU2MzJDZUNrb253b21EQUhSUWdHd2tIRGRJVnREWm5tbXlv?=
+ =?gb2312?B?eTBMZHBncHR5Z1p2TjhiZVVnZUd3T09ZeEdWazF4L0lEU2xXRjNkS2VaTVI5?=
+ =?gb2312?B?VEhtTm85RzI0aVpVSldEVmNiSEdUekJKdkFOK0ZXRFV0STZSeFJ0cFU3TStB?=
+ =?gb2312?B?N1hWczhEaGh4dGE1UzM0TTRoTHVmUTA2REQxV1dBV1N4N2xNSk9NNXh5WERs?=
+ =?gb2312?B?MzJiSUxUOFpkbXB6dkg1aytIcW04bUZ1WXdkYUZkQ05uNW5jY1dkdWlKZWkr?=
+ =?gb2312?B?RnpLKzRlRElhTGMxMVJ2Y2k1OEtsMmJyYkJFR1VGTUtqb2thS2ZRdkc4Ykha?=
+ =?gb2312?B?K0VtTDhGOVcvaUdReXc1WXNHenM5OHAxVXNSUk55dEcvQlkvcnV1KzgwWjBx?=
+ =?gb2312?B?UVpxMlk1VXhqZE5SRnloMWNFajZWMi9OcmlhNTkzOTlQZ0tuYkMxSWdHTHBw?=
+ =?gb2312?B?QjVIS3IwWSs2VVpzT2pvMVZCUDJZNW9HQkEwOXRRaU80eklGRytISzlIeEZv?=
+ =?gb2312?B?NVhMK255eGZaMm9OMXcveHlwUVBNdmVNNG9XRXBvd1hVeG50V0NEVnJYUDdI?=
+ =?gb2312?B?azljUzVQbWovWTd2RWdBMXE0UEdpSUhDUUxyVGl6OTZKU2xONG1lNm9KSTlv?=
+ =?gb2312?B?QVVCc0pEV0Q3d3Fjc1FvQkpNSmk5MkVFQXdQS3hLLzNveFJoNlZraTZjclB6?=
+ =?gb2312?B?RlZPRkxUUnd3YUNVNTJpR2UyL2cxdTErNW1JTlhNQlpYK3RmMTZ4V01qcTZR?=
+ =?gb2312?B?NXhxODFCUys2ZnQ1Vlh0Z2VGak1sYkVxZEhWbWNaU0hQZkp2TElVcVNlNlMy?=
+ =?gb2312?B?TFViYmJESm5Md1hWZEsyWEhnN1IzWXp4YUlOMTdtUFVzWHZMM1JZdzU5YUQ2?=
+ =?gb2312?B?TDRhVUtsYUd6QXFHUjlReVYvZm1tb2k2dFlSRmlCRDlQQmdoRGRmWTR6UkEx?=
+ =?gb2312?B?Vy9BZFpDOFZ0b2ZvYnJ3Z3o2NmdYa2EvbWxJOFdkVmpmbkhYbVNQS3NSejk0?=
+ =?gb2312?B?bHFPZkRKUUlhSGtpRXNHdnZHQWh1LzM5VnhwV1NrM1ZNQ0xheFNiNUlrM1Yz?=
+ =?gb2312?B?dTB4Ykt1MGE0b1lPZjRjRnlieHZqNFl0YVYxVGZQN3g2SHpOc1UzZWgvSVNx?=
+ =?gb2312?B?dmsyRTBzQlQ2RHN5REJJNktNTUlZS0tNZDBYQ2xDN3hqZjkvbWc2UXBORU4y?=
+ =?gb2312?B?Ym9tamVPSkhoWnlXUVUrTTdJNzRNMnovK0ZYdG4yLzZqQ3ZZc0RTRXJ5bzRD?=
+ =?gb2312?B?N3dmc2czRlVzbGdQdHpHNVpCeDU0WW01LzlHemNDaXJPYUdZWVlUMDUrT2lQ?=
+ =?gb2312?B?Y2h5L1dTdHBGRTRYWDZzU01rYVJQdHI3ZStUY1NBQU5XRVpNWmw5SG4yQnlO?=
+ =?gb2312?B?M1VHemZBQktvcDFzVnR0b1FyMXRyZnpkM1dwN1J5Q1pHZjlwcFcxS2hpcVZB?=
+ =?gb2312?B?MHVFclFFMncrNENYUnF0RWVqZzA3K0lGUDNrRmZlTTRVcW9TaFBPL2QvaXBP?=
+ =?gb2312?B?TVZHbi8rM2FjanhPOHdWUHM5eVhFdFkzQWE5WVpNQXk2ZFFMUWwwNG55Q3hk?=
+ =?gb2312?Q?nbQF4QHGx9J66nvnJdrs2Mck8j1CGUsZbsBq+ps?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e541e93-efbd-4e44-a34e-08d940633b00
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2021 09:48:38.4487
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XFNoHpitDBQrv1xf4/mzz39hgB86Rm+rMRLInOomTAuG7MyQS05PcDjNue42RmzjCS0L3E5D2K51snCLMnfUGA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5883
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 6/26/21 5:11 PM, Kuppuswamy Sathyanarayanan wrote:
-> TDX guest supports encrypted disk as root or secondary drives.
-> Decryption keys required to access such drives are usually maintained
-> by 3rd party key servers. Attestation is required by 3rd party key
-> servers to get the key for an encrypted disk volume, or possibly other
-> encrypted services. Attestation is used to prove to the key server that
-> the TD guest is running in a valid TD and the kernel and virtual BIOS
-> and other environment are secure.
-> 
-> During the boot process various components before the kernel accumulate
-> hashes in the TDX module, which can then combined into a report. This
-> would typically include a hash of the bios, bios configuration, boot
-> loader, command line, kernel, initrd.  After checking the hashes the
-> key server will securely release the keys.
-> 
-> The actual details of the attestation protocol depend on the particular
-> key server configuration, but some parts are common and need to
-> communicate with the TDX module.
-> 
-> This communication is implemented in the attestation driver.
-> 
-> The supported steps are:
-> 
->   1. TD guest generates the TDREPORT that contains version information
->      about the Intel TDX module, measurement of the TD, along with a
->      TD-specified nonce.
->   2. TD guest shares the TDREPORT with TD host via GetQuote hypercall
->      which is used by the host to generate a quote via quoting
->      enclave (QE).
->   3. Quote generation completion notification is sent to TD OS via
->      callback interrupt vector configured by TD using
->      SetupEventNotifyInterrupt hypercall.
->   4. After receiving the generated TDQUOTE, a remote verifier can be
->      used to verify the quote and confirm the trustworthiness of the
->      TD.
-> 
-> Attestation agent uses IOCTLs implemented by the attestation driver to
-> complete the various steps of the attestation process.
-> 
-> Also note that, explicit access permissions are not enforced in this
-> driver because the quote and measurements are not a secret. However
-> the access permissions of the device node can be used to set any
-> desired access policy. The udev default is usually root access
-> only.
-> 
-> TDX_CMD_GEN_QUOTE IOCTL can be used to create an computation on the
-> host, but TDX assumes that the host is able to deal with malicious
-> guest flooding it anyways.
-> 
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: Mark Gross <mgross@linux.intel.com>
-> Cc: platform-driver-x86@vger.kernel.org
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-
-You have only send this single patch of the 6 patch series to me /
-to platform-driver-x86@vger.kernel.org, you did not send any of the
-other patches, including the cover-letter to me nor to the
-platform-driver-x86 list.
-
-This means I don't have any context for this patch.
-Worse this also means I won't receive any replies to the other emails
-in this thread, thus missing out on any relevant discussion about
-this series unless I manually search the archives for this which
-I do not have time for.
-
-So I'm simply going to drop this patch, for the next version please
-make sure that you send the entire series, including the cover-letter
-to me and to the platform-driver-x86 list.
-
-Since this is part of a series, I assume that the code relies on
-functions exported in earlier patches in the series, so that this
-cannot be merged as a standalone patch ?
-
-I also noticed that this patch introduces new userspace API in the
-form of a new misc-device with IOCTLs, this is lacking 2 very
-important things:
-
-1. ioctls are generally seen as usually not the best interface to use
-for new userspace API due to there multiplexing behavior where there is
-no strong type checking on the passed arguments. Why did you e.g. not
-choose to use a sysfs attribute interface instead ? Please explain
-why this was done in the commit message for the next version.
-
-2. Please add some documentation for the new userspace API.
-
-Regards,
-
-Hans
-
-
-
-
-
-
-
-
-
-
-
-> ---
->  drivers/platform/x86/Kconfig            |   9 ++
->  drivers/platform/x86/Makefile           |   1 +
->  drivers/platform/x86/intel_tdx_attest.c | 171 ++++++++++++++++++++++++
->  include/uapi/misc/tdx.h                 |  20 +++
->  4 files changed, 201 insertions(+)
->  create mode 100644 drivers/platform/x86/intel_tdx_attest.c
->  create mode 100644 include/uapi/misc/tdx.h
-> 
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index 60592fb88e7a..7d01c473aef6 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1301,6 +1301,15 @@ config INTEL_SCU_IPC_UTIL
->  	  low level access for debug work and updating the firmware. Say
->  	  N unless you will be doing this on an Intel MID platform.
->  
-> +config INTEL_TDX_ATTESTATION
-> +	tristate "Intel TDX attestation driver"
-> +	depends on INTEL_TDX_GUEST
-> +	help
-> +	  The TDX attestation driver provides IOCTL or MMAP interfaces to
-> +	  the user to request TDREPORT from the TDX module or request quote
-> +	  from VMM. It is mainly used to get secure disk decryption keys from
-> +	  the key server.
-> +
->  config INTEL_TELEMETRY
->  	tristate "Intel SoC Telemetry Driver"
->  	depends on X86_64
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-> index dcc8cdb95b4d..83439990ae47 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -138,6 +138,7 @@ obj-$(CONFIG_INTEL_SCU_PCI)		+= intel_scu_pcidrv.o
->  obj-$(CONFIG_INTEL_SCU_PLATFORM)	+= intel_scu_pltdrv.o
->  obj-$(CONFIG_INTEL_SCU_WDT)		+= intel_scu_wdt.o
->  obj-$(CONFIG_INTEL_SCU_IPC_UTIL)	+= intel_scu_ipcutil.o
-> +obj-$(CONFIG_INTEL_TDX_ATTESTATION)	+= intel_tdx_attest.o
->  obj-$(CONFIG_INTEL_TELEMETRY)		+= intel_telemetry_core.o \
->  					   intel_telemetry_pltdrv.o \
->  					   intel_telemetry_debugfs.o
-> diff --git a/drivers/platform/x86/intel_tdx_attest.c b/drivers/platform/x86/intel_tdx_attest.c
-> new file mode 100644
-> index 000000000000..a0225d053851
-> --- /dev/null
-> +++ b/drivers/platform/x86/intel_tdx_attest.c
-> @@ -0,0 +1,171 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * intel_tdx_attest.c - TDX guest attestation interface driver.
-> + *
-> + * Implements user interface to trigger attestation process and
-> + * read the TD Quote result.
-> + *
-> + * Copyright (C) 2020 Intel Corporation
-> + *
-> + * Author:
-> + *     Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> + */
-> +
-> +#define pr_fmt(fmt) "x86/tdx: attest: " fmt
-> +
-> +#include <linux/module.h>
-> +#include <linux/miscdevice.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/fs.h>
-> +#include <linux/mm.h>
-> +#include <linux/slab.h>
-> +#include <linux/set_memory.h>
-> +#include <linux/io.h>
-> +#include <asm/apic.h>
-> +#include <asm/tdx.h>
-> +#include <asm/irq_vectors.h>
-> +#include <uapi/misc/tdx.h>
-> +
-> +#define VERSION				"1.0"
-> +
-> +/* Used in Quote memory allocation */
-> +#define QUOTE_SIZE			(2 * PAGE_SIZE)
-> +
-> +/* Mutex to synchronize attestation requests */
-> +static DEFINE_MUTEX(attestation_lock);
-> +/* Completion object to track attestation status */
-> +static DECLARE_COMPLETION(attestation_done);
-> +
-> +static void attestation_callback_handler(void)
-> +{
-> +	complete(&attestation_done);
-> +}
-> +
-> +static long tdg_attest_ioctl(struct file *file, unsigned int cmd,
-> +			     unsigned long arg)
-> +{
-> +	u64 data = virt_to_phys(file->private_data);
-> +	void __user *argp = (void __user *)arg;
-> +	u8 *reportdata;
-> +	long ret = 0;
-> +
-> +	mutex_lock(&attestation_lock);
-> +
-> +	reportdata = kzalloc(TDX_TDREPORT_LEN, GFP_KERNEL);
-> +	if (!reportdata) {
-> +		mutex_unlock(&attestation_lock);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	switch (cmd) {
-> +	case TDX_CMD_GET_TDREPORT:
-> +		if (copy_from_user(reportdata, argp, TDX_REPORT_DATA_LEN)) {
-> +			ret = -EFAULT;
-> +			break;
-> +		}
-> +
-> +		/* Generate TDREPORT_STRUCT */
-> +		if (tdx_mcall_tdreport(data, virt_to_phys(reportdata))) {
-> +			ret = -EIO;
-> +			break;
-> +		}
-> +
-> +		if (copy_to_user(argp, file->private_data, TDX_TDREPORT_LEN))
-> +			ret = -EFAULT;
-> +		break;
-> +	case TDX_CMD_GEN_QUOTE:
-> +		if (copy_from_user(reportdata, argp, TDX_REPORT_DATA_LEN)) {
-> +			ret = -EFAULT;
-> +			break;
-> +		}
-> +
-> +		/* Generate TDREPORT_STRUCT */
-> +		if (tdx_mcall_tdreport(data, virt_to_phys(reportdata))) {
-> +			ret = -EIO;
-> +			break;
-> +		}
-> +
-> +		ret = set_memory_decrypted((unsigned long)file->private_data,
-> +					   1UL << get_order(QUOTE_SIZE));
-> +		if (ret)
-> +			break;
-> +
-> +		/* Submit GetQuote Request */
-> +		if (tdx_hcall_get_quote(data)) {
-> +			ret = -EIO;
-> +			goto done;
-> +		}
-> +
-> +		/* Wait for attestation completion */
-> +		wait_for_completion_interruptible(&attestation_done);
-> +
-> +		if (copy_to_user(argp, file->private_data, QUOTE_SIZE))
-> +			ret = -EFAULT;
-> +done:
-> +		ret = set_memory_encrypted((unsigned long)file->private_data,
-> +					   1UL << get_order(QUOTE_SIZE));
-> +
-> +		break;
-> +	case TDX_CMD_GET_QUOTE_SIZE:
-> +		if (put_user(QUOTE_SIZE, (u64 __user *)argp))
-> +			ret = -EFAULT;
-> +
-> +		break;
-> +	default:
-> +		pr_err("cmd %d not supported\n", cmd);
-> +		break;
-> +	}
-> +
-> +	mutex_unlock(&attestation_lock);
-> +
-> +	kfree(reportdata);
-> +
-> +	return ret;
-> +}
-> +
-> +static int tdg_attest_open(struct inode *inode, struct file *file)
-> +{
-> +	/*
-> +	 * Currently tdg_event_notify_handler is only used in attestation
-> +	 * driver. But, WRITE_ONCE is used as benign data race notice.
-> +	 */
-> +	WRITE_ONCE(tdg_event_notify_handler, attestation_callback_handler);
-> +
-> +	file->private_data = (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO,
-> +						      get_order(QUOTE_SIZE));
-> +
-> +	return !file->private_data ? -ENOMEM : 0;
-> +}
-> +
-> +static int tdg_attest_release(struct inode *inode, struct file *file)
-> +{
-> +	/*
-> +	 * Currently tdg_event_notify_handler is only used in attestation
-> +	 * driver. But, WRITE_ONCE is used as benign data race notice.
-> +	 */
-> +	WRITE_ONCE(tdg_event_notify_handler, NULL);
-> +	free_pages((unsigned long)file->private_data, get_order(QUOTE_SIZE));
-> +	file->private_data = NULL;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct file_operations tdg_attest_fops = {
-> +	.owner		= THIS_MODULE,
-> +	.open		= tdg_attest_open,
-> +	.release	= tdg_attest_release,
-> +	.unlocked_ioctl	= tdg_attest_ioctl,
-> +	.llseek		= no_llseek,
-> +};
-> +
-> +static struct miscdevice tdg_attest_device = {
-> +	.minor          = MISC_DYNAMIC_MINOR,
-> +	.name           = "tdx-attest",
-> +	.fops           = &tdg_attest_fops,
-> +};
-> +module_misc_device(tdg_attest_device);
-> +
-> +MODULE_AUTHOR("Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>");
-> +MODULE_DESCRIPTION("TDX attestation driver ver " VERSION);
-> +MODULE_VERSION(VERSION);
-> +MODULE_LICENSE("GPL");
-> diff --git a/include/uapi/misc/tdx.h b/include/uapi/misc/tdx.h
-> new file mode 100644
-> index 000000000000..9afbef9079c1
-> --- /dev/null
-> +++ b/include/uapi/misc/tdx.h
-> @@ -0,0 +1,20 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +#ifndef _UAPI_MISC_TDX_H
-> +#define _UAPI_MISC_TDX_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/ioctl.h>
-> +
-> +/* Input report data length for TDX_CMD_GET_TDREPORT IOCTL request */
-> +#define TDX_REPORT_DATA_LEN		64
-> +/* Output report data length after TDX_CMD_GET_TDREPORT IOCTL execution */
-> +#define TDX_TDREPORT_LEN		1024
-> +
-> +/* IOCTL to request TDREPORT data from TDX Module */
-> +#define TDX_CMD_GET_TDREPORT		_IOWR('T', 0x01, __u64)
-> +/* IOCTL to request Quote from VMM using report data */
-> +#define TDX_CMD_GEN_QUOTE		_IOR('T', 0x02, __u64)
-> +/* Get current size of quote */
-> +#define TDX_CMD_GET_QUOTE_SIZE		_IOR('T', 0x03, __u64)
-> +
-> +#endif /* _UAPI_MISC_TDX_H */
-> 
-
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEpvaG4gR2FycnkgPGpvaG4u
+Z2FycnlAaHVhd2VpLmNvbT4NCj4gU2VudDogMjAyMcTqN9TCNsjVIDE2OjI0DQo+IFRvOiBKb2Fr
+aW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPjsgd2lsbEBrZXJuZWwub3JnOw0KPiBt
+YXRoaWV1LnBvaXJpZXJAbGluYXJvLm9yZzsgbGVvLnlhbkBsaW5hcm8ub3JnOyBwZXRlcnpAaW5m
+cmFkZWFkLm9yZzsNCj4gbWluZ29AcmVkaGF0LmNvbTsgYWNtZUBrZXJuZWwub3JnOyBtYXJrLnJ1
+dGxhbmRAYXJtLmNvbTsNCj4gYWxleGFuZGVyLnNoaXNoa2luQGxpbnV4LmludGVsLmNvbTsgam9s
+c2FAcmVkaGF0LmNvbTsNCj4gbmFtaHl1bmdAa2VybmVsLm9yZzsgc2hhd25ndW9Aa2VybmVsLm9y
+Zzsgcy5oYXVlckBwZW5ndXRyb25peC5kZQ0KPiBDYzoga2VybmVsQHBlbmd1dHJvbml4LmRlOyBm
+ZXN0ZXZhbUBnbWFpbC5jb207IGRsLWxpbnV4LWlteA0KPiA8bGludXgtaW14QG54cC5jb20+OyBr
+amFpbkBsaW51eC5pYm0uY29tOw0KPiBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5v
+cmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCBW
+MyAwLzRdIHRvb2xzOiBwZXJmOiBBZGQgSlNPTiBtZXRyaWNzIGZvciBpLk1YOE0NCj4gcGxhdGZv
+cm1zDQo+IA0KPiBPbiAyNy8wMS8yMDIxIDEwOjU3LCBKb2FraW0gWmhhbmcgd3JvdGU6DQo+ID4g
+QWRkIEpTT04gbWV0cmljcyBmb3IgaS5NWDhNIHBsYXRmb3Jtcy4NCj4gPg0KPiANCj4gSGkgSm9h
+a2ltLA0KPiANCj4gSSBoYXZlIGRvbmUgc29tZSByZXdvcmsgdG8gdGhlIG1ldHJpY2dyb3VwIHN5
+cyBldmVudCBzdXBwb3J0Lg0KPiANCj4gSWYgeW91IGhhdmUgYSBjaGFuY2UsIGl0IHdvdWxkIGJl
+IGFwcHJlY2lhdGVkIGlmIHlvdSBjb3VsZCB0ZXN0IHRoaXMgZm9sbG93aW5nDQo+IHNlcmllcyBm
+b3IgdGhlc2UgaW14OCBtZXRyaWNzK2V2ZW50czoNCj4gDQo+IGh0dHBzOi8vZXVyMDEuc2FmZWxp
+bmtzLnByb3RlY3Rpb24ub3V0bG9vay5jb20vP3VybD1odHRwcyUzQSUyRiUyRmdpdGh1Yi5jDQo+
+IG9tJTJGaGlzaWxpY29uJTJGa2VybmVsLWRldiUyRmNvbW1pdHMlMkZwcml2YXRlLXRvcGljLXBl
+cmYtNS4xMy1zeXMtcmV3cmkNCj4gdGUtMyZhbXA7ZGF0YT0wNCU3QzAxJTdDcWlhbmdxaW5nLnpo
+YW5nJTQwbnhwLmNvbSU3Q2JmMzU1MTcxMzNjMw0KPiA0OGViZDU4ZTA4ZDk0MDU4Nzg3NSU3QzY4
+NmVhMWQzYmMyYjRjNmZhOTJjZDk5YzVjMzAxNjM1JTdDMCU3QzANCj4gJTdDNjM3NjExNTcwOTky
+NzYyNzk4JTdDVW5rbm93biU3Q1RXRnBiR1pzYjNkOGV5SldJam9pTUM0d0xqQQ0KPiB3TURBaUxD
+SlFJam9pVjJsdU16SWlMQ0pCVGlJNklrMWhhV3dpTENKWFZDSTZNbjAlM0QlN0MxMDAwJmFtcDtz
+DQo+IGRhdGE9UnpOYVhadWJUcmhPME1SbDJzRDQ1djdWYnMxS2d6UldDUnltVFFJSkxaTSUzRCZh
+bXA7cmVzZXINCj4gdmVkPTANCg0KSGkgSm9obiwNCg0KSSBvbmx5IG5lZWQgYnVpbGQgcGVyZiB0
+b29sIHdpdGggYWJvdmUgY29kZSwgbm8gbmVlZCB0byB1cGRhdGUgdGhlIGtlcm5lbCwgcmlnaHQ/
+DQoNCkJlc3QgUmVnYXJkcywNCkpvYWtpbSBaaGFuZw0KPiBUaGFua3MsDQo+IEpvaG4NCj4gDQo+
+ID4gQ2hhbmdlTG9nczoNCj4gPiBWMS0+VjI6DQo+ID4gCSogcmVtb3ZlIGJvYXJkIGxldmVsIG1l
+dHJpY3MgKGJhbmR3aWR0aCBtZXRyaWNzKS4NCj4gPiBWMi0+VjM6DQo+ID4gCSogQWRkIHRoZSBt
+aXNzaW5nICJTY2FsZVVuaXQiLg0KPiA+DQo+ID4gSm9ha2ltIFpoYW5nICg0KToNCj4gPiAgICBw
+ZXJmIHZlbmRvciBldmVudHM6IEZpeCBpbmRlbnRhdGlvbiBvZiBicmFja2V0cyBpbiBpbXg4bW0g
+bWV0cmljcw0KPiA+ICAgIHBlcmYgdmVuZG9yIGV2ZW50czogQWRkIEpTT04gbWV0cmljcyBmb3Ig
+aW14OG1uIEREUiBQZXJmDQo+ID4gICAgcGVyZiB2ZW5kb3IgZXZlbnRzOiBBZGQgSlNPTiBtZXRy
+aWNzIGZvciBpbXg4bXEgRERSIFBlcmYNCj4gPiAgICBwZXJmIHZlbmRvciBldmVudHM6IEFkZCBK
+U09OIG1ldHJpY3MgZm9yIGlteDhtcCBERFIgUGVyZg0KDQo=
