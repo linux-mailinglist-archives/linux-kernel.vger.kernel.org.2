@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231AD3BD581
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C453BD3CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244146AbhGFMVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:21:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47550 "EHLO mail.kernel.org"
+        id S239900AbhGFMAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:00:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237172AbhGFLf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237173AbhGFLf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Jul 2021 07:35:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7228961EB7;
-        Tue,  6 Jul 2021 11:25:51 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83F3C61EC6;
+        Tue,  6 Jul 2021 11:25:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570752;
-        bh=5tDp/ZueAwz4bjmm/8YY1xZ7y9gXCB+4EX/TPbZVNk0=;
+        s=k20201202; t=1625570753;
+        bh=hJvUjptkuHe8DrOfp/X28AnaU9SsW4Do5T0kzTafEU8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AY4yKzukE8h/dLQteHUOUUZspIAy7nlqrAAf05bwDkSrT/Zp/4I7CxFjy0h3qSSj0
-         5V2jFYIigC3Qw7SiuVEwks0joiWyAY6kvSPCvZVlw6YDZp0z9nkbsSi0mGIuWpk6Vd
-         9msgG1AglgNorW7aluf3dCoTtuIp815cLvSRhxFfQ/SRkrqUejYYzxI6nKTonlLaVi
-         wBoKI0vxhmNbwLqQUTuOFVHQSMEsNtMrBGHpFDEmGtEYUwS4ULBhHKDGFscZJ3Ijed
-         sZHmso5IO3wozXGsMtJ7z0vj0uHByDyLYsUROrpkJjqlM3AFHwWJcTM+ePAauFampk
-         ZogTiEefxi7qA==
+        b=bZtZljUiyxqxDtC2YdpbBvW+l3JBKBESxob6u9/E8UY8dEyBe5SCnMweRXbcAAmOn
+         biFYGZBzZuNGEuorsQeBfI0bE+oS+EhA5TT6/7kx5QUncoB9lMKZ4T6TgZidVWSAYd
+         jGM8SoRgP2hNiY9Ej6KF3+qGIRr+rJWblTK6Dq744e2If+Iprx6AUseT7NSrx0VGYi
+         KwkAHO9UM4IXXbBB+L2G+NurAn/0GZUffJmvnPgtPExAJ5Gh4jNEGdPZBPnIfka00t
+         O5IXTjZIbykeXt4k9dqUQFD+FZMG2B3VuZOlSIHg87nUM1N7eO+qhQiCBjTddPNYde
+         O7zvZG176hm7g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 39/74] fjes: check return value after calling platform_get_resource()
-Date:   Tue,  6 Jul 2021 07:24:27 -0400
-Message-Id: <20210706112502.2064236-39-sashal@kernel.org>
+Cc:     Minchan Kim <minchan@kernel.org>, Paul Moore <paul@paul-moore.com>,
+        Sasha Levin <sashal@kernel.org>, selinux@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 40/74] selinux: use __GFP_NOWARN with GFP_NOWAIT in the AVC
+Date:   Tue,  6 Jul 2021 07:24:28 -0400
+Message-Id: <20210706112502.2064236-40-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112502.2064236-1-sashal@kernel.org>
 References: <20210706112502.2064236-1-sashal@kernel.org>
@@ -42,35 +41,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Minchan Kim <minchan@kernel.org>
 
-[ Upstream commit f18c11812c949553d2b2481ecaa274dd51bed1e7 ]
+[ Upstream commit 648f2c6100cfa18e7dfe43bc0b9c3b73560d623c ]
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+In the field, we have seen lots of allocation failure from the call
+path below.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+06-03 13:29:12.999 1010315 31557 31557 W Binder  : 31542_2: page allocation failure: order:0, mode:0x800(GFP_NOWAIT), nodemask=(null),cpuset=background,mems_allowed=0
+...
+...
+06-03 13:29:12.999 1010315 31557 31557 W Call trace:
+06-03 13:29:12.999 1010315 31557 31557 W         : dump_backtrace.cfi_jt+0x0/0x8
+06-03 13:29:12.999 1010315 31557 31557 W         : dump_stack+0xc8/0x14c
+06-03 13:29:12.999 1010315 31557 31557 W         : warn_alloc+0x158/0x1c8
+06-03 13:29:12.999 1010315 31557 31557 W         : __alloc_pages_slowpath+0x9d8/0xb80
+06-03 13:29:12.999 1010315 31557 31557 W         : __alloc_pages_nodemask+0x1c4/0x430
+06-03 13:29:12.999 1010315 31557 31557 W         : allocate_slab+0xb4/0x390
+06-03 13:29:12.999 1010315 31557 31557 W         : ___slab_alloc+0x12c/0x3a4
+06-03 13:29:12.999 1010315 31557 31557 W         : kmem_cache_alloc+0x358/0x5e4
+06-03 13:29:12.999 1010315 31557 31557 W         : avc_alloc_node+0x30/0x184
+06-03 13:29:12.999 1010315 31557 31557 W         : avc_update_node+0x54/0x4f0
+06-03 13:29:12.999 1010315 31557 31557 W         : avc_has_extended_perms+0x1a4/0x460
+06-03 13:29:12.999 1010315 31557 31557 W         : selinux_file_ioctl+0x320/0x3d0
+06-03 13:29:12.999 1010315 31557 31557 W         : __arm64_sys_ioctl+0xec/0x1fc
+06-03 13:29:12.999 1010315 31557 31557 W         : el0_svc_common+0xc0/0x24c
+06-03 13:29:12.999 1010315 31557 31557 W         : el0_svc+0x28/0x88
+06-03 13:29:12.999 1010315 31557 31557 W         : el0_sync_handler+0x8c/0xf0
+06-03 13:29:12.999 1010315 31557 31557 W         : el0_sync+0x1a4/0x1c0
+..
+..
+06-03 13:29:12.999 1010315 31557 31557 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
+06-03 13:29:12.999 1010315 31557 31557 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
+06-03 13:29:12.999 1010315 31557 31557 W node 0  : slabs: 57, objs: 2907, free: 0
+06-03 13:29:12.999 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
+06-03 13:29:12.999 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
+06-03 13:29:12.999 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
+06-03 13:29:12.999 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
+06-03 13:29:12.999 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
+06-03 13:29:12.999 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
+06-03 13:29:12.999 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
+06-03 13:29:12.999 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
+06-03 13:29:12.999 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
+06-03 13:29:13.000 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
+06-03 13:29:13.000 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
+06-03 13:29:13.000 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
+06-03 13:29:13.000 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
+06-03 13:29:13.000 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
+06-03 13:29:13.000 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
+06-03 13:29:13.000 1010161 10686 10686 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
+06-03 13:29:13.000 1010161 10686 10686 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
+06-03 13:29:13.000 1010161 10686 10686 W node 0  : slabs: 57, objs: 2907, free: 0
+06-03 13:29:13.000 10230 30892 30892 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
+06-03 13:29:13.000 10230 30892 30892 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
+06-03 13:29:13.000 10230 30892 30892 W node 0  : slabs: 57, objs: 2907, free: 0
+06-03 13:29:13.000 10230 30892 30892 W SLUB    : Unable to allocate memory on node -1, gfp=0x900(GFP_NOWAIT|__GFP_ZERO)
+06-03 13:29:13.000 10230 30892 30892 W cache   : avc_node, object size: 72, buffer size: 80, default order: 0, min order: 0
+
+Based on [1], selinux is tolerate for failure of memory allocation.
+Then, use __GFP_NOWARN together.
+
+[1] 476accbe2f6e ("selinux: use GFP_NOWAIT in the AVC kmem_caches")
+
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+[PM: subj fix, line wraps, normalized commit refs]
+Signed-off-by: Paul Moore <paul@paul-moore.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/fjes/fjes_main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ security/selinux/avc.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/fjes/fjes_main.c b/drivers/net/fjes/fjes_main.c
-index 91a1059517f5..b89b4a3800a4 100644
---- a/drivers/net/fjes/fjes_main.c
-+++ b/drivers/net/fjes/fjes_main.c
-@@ -1262,6 +1262,10 @@ static int fjes_probe(struct platform_device *plat_dev)
- 	adapter->interrupt_watch_enable = false;
+diff --git a/security/selinux/avc.c b/security/selinux/avc.c
+index d18cb32a242a..4a744b1cebc8 100644
+--- a/security/selinux/avc.c
++++ b/security/selinux/avc.c
+@@ -294,26 +294,27 @@ static struct avc_xperms_decision_node
+ 	struct avc_xperms_decision_node *xpd_node;
+ 	struct extended_perms_decision *xpd;
  
- 	res = platform_get_resource(plat_dev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		err = -EINVAL;
-+		goto err_free_control_wq;
-+	}
- 	hw->hw_res.start = res->start;
- 	hw->hw_res.size = resource_size(res);
- 	hw->hw_res.irq = platform_get_irq(plat_dev, 0);
+-	xpd_node = kmem_cache_zalloc(avc_xperms_decision_cachep, GFP_NOWAIT);
++	xpd_node = kmem_cache_zalloc(avc_xperms_decision_cachep,
++				     GFP_NOWAIT | __GFP_NOWARN);
+ 	if (!xpd_node)
+ 		return NULL;
+ 
+ 	xpd = &xpd_node->xpd;
+ 	if (which & XPERMS_ALLOWED) {
+ 		xpd->allowed = kmem_cache_zalloc(avc_xperms_data_cachep,
+-						GFP_NOWAIT);
++						GFP_NOWAIT | __GFP_NOWARN);
+ 		if (!xpd->allowed)
+ 			goto error;
+ 	}
+ 	if (which & XPERMS_AUDITALLOW) {
+ 		xpd->auditallow = kmem_cache_zalloc(avc_xperms_data_cachep,
+-						GFP_NOWAIT);
++						GFP_NOWAIT | __GFP_NOWARN);
+ 		if (!xpd->auditallow)
+ 			goto error;
+ 	}
+ 	if (which & XPERMS_DONTAUDIT) {
+ 		xpd->dontaudit = kmem_cache_zalloc(avc_xperms_data_cachep,
+-						GFP_NOWAIT);
++						GFP_NOWAIT | __GFP_NOWARN);
+ 		if (!xpd->dontaudit)
+ 			goto error;
+ 	}
+@@ -341,7 +342,7 @@ static struct avc_xperms_node *avc_xperms_alloc(void)
+ {
+ 	struct avc_xperms_node *xp_node;
+ 
+-	xp_node = kmem_cache_zalloc(avc_xperms_cachep, GFP_NOWAIT);
++	xp_node = kmem_cache_zalloc(avc_xperms_cachep, GFP_NOWAIT | __GFP_NOWARN);
+ 	if (!xp_node)
+ 		return xp_node;
+ 	INIT_LIST_HEAD(&xp_node->xpd_head);
+@@ -497,7 +498,7 @@ static struct avc_node *avc_alloc_node(struct selinux_avc *avc)
+ {
+ 	struct avc_node *node;
+ 
+-	node = kmem_cache_zalloc(avc_node_cachep, GFP_NOWAIT);
++	node = kmem_cache_zalloc(avc_node_cachep, GFP_NOWAIT | __GFP_NOWARN);
+ 	if (!node)
+ 		goto out;
+ 
 -- 
 2.30.2
 
