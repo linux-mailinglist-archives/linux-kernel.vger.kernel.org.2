@@ -2,65 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DF03BC4E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 04:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64A83BC4E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 04:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhGFCvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 22:51:19 -0400
-Received: from mail-m176231.qiye.163.com ([59.111.176.231]:20270 "EHLO
-        mail-m176231.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbhGFCvS (ORCPT
+        id S229953AbhGFCxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 22:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229781AbhGFCxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 22:51:18 -0400
-X-Greylist: delayed 437 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Jul 2021 22:51:18 EDT
-DKIM-Signature: a=rsa-sha256;
-        b=bwodXl/XnhU0wPZNZRW5HpfN7xYtE7Bo59sLyLCA1iYSSvfXo9EM35QTkkaajxe9fZv9rcU4hS9L3lI/fEFe+1pCtqLOHg3ww2uyN5z2ZI/0jnGy8iRPPuwLegVN3pUNwxsRB20uFuEAZ9UdLL4PvsDbeFbfR03oWmRpOr6Bdb4=;
-        c=relaxed/relaxed; s=default; d=vivo.com; v=1;
-        bh=KrYjTwf7UCi1FnHY5Gd7bUkuDbkut/mEO8upxNqtuXI=;
-        h=date:mime-version:subject:message-id:from;
-Received: from vivo.com (localhost [127.0.0.1])
-        by mail-m176231.qiye.163.com (Hmail) with ESMTP id 76B276C00E2;
-        Tue,  6 Jul 2021 10:48:38 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <ACIApACiD5wc1jenFSSg*4pr.3.1625539718472.Hmail.wangqing@vivo.com>
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>
-Cc:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gYmxvY2s6IG5iZDogZml4IG9yZGVyIG9mIGNsZWFuaW5nIHVwIHRoZSBxdWV1ZSBhbmQgZnJlZWluZyB0aGUgdGFnc2V0?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.213.83.158
-In-Reply-To: <d32f0c7c-4cbc-d754-817b-1c3f58a3e776@linux.dev>
-MIME-Version: 1.0
-Received: from wangqing@vivo.com( [58.213.83.158) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 6 Jul 2021 10:48:38 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
-Date:   Tue, 6 Jul 2021 10:48:38 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGR9JT1YYQhlOGktMSxlOHRpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKQ1VLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1PQ0JDSk1JTU5LN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6ODI6Czo4Ej9ODBhKER4VPSgoHFFPCwlVSFVKTUlOTkhCTEpDTExIVTMWGhIXVQwaFRwKEhUc
-        Ow0SDRRVGBQWRVlXWRILWUFZTkNVSUpIVUNIVUpOQ1lXWQgBWUFISk9INwY+
-X-HM-Tid: 0a7a79b7ad5bd9a9kuws76b276c00e2
+        Mon, 5 Jul 2021 22:53:32 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47CFC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 19:50:53 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 62so11960176pgf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 19:50:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lIXqQi/VnPHzZeruihX8nLIui/MmMXv26mgdU/RgQ6M=;
+        b=zZFIeq72Wp9m5jNgscZ9Bv9/G1lXEVNNwdHvYk0DF7nojW0FAE/2XWhHrUHiKciIcs
+         u266cQvhJOQzJPkLZ3q+TiatY00UaxDxGF5yBHMZ5wE6FcbLIPJR/H/OTZ+Oi45+EV0B
+         y4QMPrVYwp9pnzUFhq+hitiWvccthjY1iUDj22y8uNLJDIuF2bGIqEU9VGFG7dPCPRQ4
+         n5ysiXl8UvIH5iQcMQZXix39x5zZXvoW7YPkMOVuwNYuNqvYtFUYXZvGmLf/KVHAGzfM
+         UUXD7NYPZNQtt/aMwM4mA8KDnt99BJgzXMg9jLqqxWBvdledT01QV/ldWBA5iQ3janQt
+         lQJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=lIXqQi/VnPHzZeruihX8nLIui/MmMXv26mgdU/RgQ6M=;
+        b=tuuoRwwipemkU6x0+OnYh+uHl9JtGNilM0RnIhwVyt9FwP2mu8StlgS6EoCq9iWKYD
+         7JlEzTyCfctNxXqwqp7f+azI7+wFKP5vXm8oUS6QJ0Pj45sGeXVb7c8eeQP024E0aGC/
+         GctOmI2noQ5bvn+JzovjRaJljSm5TbfmfW7yZAukB6mlQuQ12VrOmQLFTFPh0KtocZD1
+         JCduwSj5hoAHUE8ifJ0KvMu1MIqjqqgxn3/VBM7jA1gCPtgHdtm5lUv304yJNU2zYK/f
+         teSuZ++aR9QfttnAcENsxsI4KKYBjITaCRglGwEEISfEFup2XcZXBuQfkvtw0QKijdbO
+         Qb1w==
+X-Gm-Message-State: AOAM531nFTew/CyijqeFoRuJbji6ckuBjUD7AYIskZu9D5qOiUFAPmEX
+        s2vzMVIlb2hBqHPBif9VIo4x0Q==
+X-Google-Smtp-Source: ABdhPJytLcRvjhxn91dZbgaia0xwZwtD1o/tV66+LCngqTZyrWehLbrRGf9o01tWGNXQ2V2v9O0+dQ==
+X-Received: by 2002:a63:582:: with SMTP id 124mr18656741pgf.299.1625539853303;
+        Mon, 05 Jul 2021 19:50:53 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id q12sm16775395pgc.25.2021.07.05.19.50.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 19:50:52 -0700 (PDT)
+Date:   Mon, 05 Jul 2021 19:50:52 -0700 (PDT)
+X-Google-Original-Date: Mon, 05 Jul 2021 18:41:59 PDT (-0700)
+Subject:     Re: [PATCH] riscv: Introduce structure that group all variables regarding kernel mapping
+In-Reply-To: <20210617135307.1972069-1-alex@ghiti.fr>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        alex@ghiti.fr
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alex@ghiti.fr
+Message-ID: <mhng-25d4bee5-acf1-41f3-8ce4-272faded7946@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj4KPk9uIDcvNS8yMSA1OjI1IFBNLCBXYW5nIFFpbmcgd3JvdGU6Cj4+IE11c3QgcmVsZWFzZSB0
-aGUgcXVldWUgYmVmb3JlIGZyZWVpbmcgdGhlIHRhZ3NldC4KPj4KPj4gRml4ZXM6IDFjOTk1MDJm
-YWUzNSAoImxvb3A6IHVzZSBibGtfbXFfYWxsb2NfZGlzayBhbmQgYmxrX2NsZWFudXBfZGlzayIp
-Cj4+IFJlcG9ydGVkLWFuZC10ZXN0ZWQtYnk6IHN5emJvdCs5Y2E0M2ZmNDcxNjdjMGVlMzQ2NkBz
-eXprYWxsZXIuYXBwc3BvdG1haWwuY29tCj4KPkRpZCBzeXpib3QgYWN0dWFsbHkgdGVzdCB0aGUg
-Y2hhbmdlPwoKWWVzLCBJIGhhdmUgaW5pdGlhdGVkIHRoZSB0ZXN0LCBhbmQgZGlkIG5vdCByZXBv
-cnQgdGhpcyBlcnJvciBhZ2FpbiwgYnV0IHN0aWxsIHJlcG9ydGVkIG90aGVyIGtub3duIGVycm9y
-cywKc28gSSB0aGluayB0aGUgdGVzdCBwYXNzZWQuIEFuZCB0aGlzIGlzIGFuIG9idmlvdXMgcHJv
-YmxlbSwgaXQgbmVlZHMgdG8gYmUgZml4ZWQgYW55d2F5LgoKPgo+PiBTaWduZWQtb2ZmLWJ5OiBX
-YW5nIFFpbmcgPHdhbmdxaW5nQHZpdm8uY29tPgo+PiBTaWduZWQtb2ZmLWJ5OiBHdW9xaW5nIEpp
-YW5nIDxndW9xaW5nLmppYW5nQGNsb3VkLmlvbm9zLmNvbT4KPgo+SSBkb24ndCBtaW5kIHlvdSBz
-ZW50IGl0IHF1aWNrbHksIGJ1dCBwbHMgcmVtb3ZlIG15IG91dGRhdGVkIG1haWwgYWNjb3VudC4K
-ClNvcnJ5IGFib3V0IHRoaXMsIHlvdSBjYW4gcmUtaW5pdGlhdGUgYSBwYXRjaCBpZiB5b3UgZG9u
-J3QgbWluZCwgCmFzIGlmIHlvdSBzdGlsbCBoYXZlIG9uZSB0aGluZyB0byBtb2RpZnkuCgpRaW5n
-Cj4KPkd1b3FpbmcKDQoNCg==
+On Thu, 17 Jun 2021 06:53:07 PDT (-0700), alex@ghiti.fr wrote:
+> We have a lot of variables that are used to hold kernel mapping addresses,
+> offsets between physical and virtual mappings and some others used for XIP
+> kernels: they are all defined at different places in mm/init.c, so group
+> them into a single structure with, for some of them, more explicit and concise
+> names.
+>
+> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> ---
+>  arch/riscv/include/asm/page.h      | 60 ++++++++++--------
+>  arch/riscv/kernel/asm-offsets.c    |  2 +
+>  arch/riscv/kernel/head.S           |  4 +-
+>  arch/riscv/kernel/kexec_relocate.S |  4 +-
+>  arch/riscv/kernel/machine_kexec.c  |  2 +-
+>  arch/riscv/mm/init.c               | 98 +++++++++++-------------------
+>  arch/riscv/mm/physaddr.c           |  2 +-
+>  arch/riscv/mm/ptdump.c             |  2 +-
+>  8 files changed, 78 insertions(+), 96 deletions(-)
+
+There were some conflicts, but I've fixed them up and put it on 
+for-next.
+
+Thanks!
