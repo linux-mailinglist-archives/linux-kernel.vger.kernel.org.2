@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 509A13BD7A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811573BD7A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbhGFNXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 09:23:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25568 "EHLO
+        id S231748AbhGFNXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 09:23:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29019 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231317AbhGFNX3 (ORCPT
+        by vger.kernel.org with ESMTP id S231317AbhGFNXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 09:23:29 -0400
+        Tue, 6 Jul 2021 09:23:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625577650;
+        s=mimecast20190719; t=1625577652;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=aPcv2FhczGXfb0Fzq3d94pKmcL+xjGfR4nhsVcDzM9M=;
-        b=fiEebRwShKQh6K/8P8nh+da/AKtoIo98rGbsa6zzsJWTi67aZQxDbwvfHTHIYG9GiRls51
-        lqM3sLGxqBYKp5kopBRp+kz8rA3/UQ6p3jb9Fr0AkPQxPUslSPCKCQCRJqY8kIcIuJuiIs
-        UA/yNZfNxVK69gwRf71vc9ZiVMW3IzY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-P5xsMqllNmCKUYdalV9Zeg-1; Tue, 06 Jul 2021 09:20:49 -0400
-X-MC-Unique: P5xsMqllNmCKUYdalV9Zeg-1
-Received: by mail-wr1-f69.google.com with SMTP id w4-20020a05600018c4b0290134e4f784e8so2022075wrq.10
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 06:20:49 -0700 (PDT)
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OtJX128tv+UNtyzf1HLYJY3jxB5LgvqObhQjAuBIOkU=;
+        b=C0mA2lsL15P+VB/U7VxRnnnrQ6QBEEjIB30ZwWaivy+xv5y2+NY68qVfRyPZ4nosFDZtE6
+        0qJkzTDik8XJNsuV+9KB+6dJIVtbnByuHjmDxD7/ZZdQ3IU5r2UPWzTUNjVppLfhiVX7wV
+        n8bsBbegeTkmk7WSBlhRnaYC50sF+fI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-rtmX5-fWPtCa5n1_r7fn5Q-1; Tue, 06 Jul 2021 09:20:51 -0400
+X-MC-Unique: rtmX5-fWPtCa5n1_r7fn5Q-1
+Received: by mail-wm1-f71.google.com with SMTP id l3-20020a05600c1d03b029021076e2b2f6so772285wms.4
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 06:20:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aPcv2FhczGXfb0Fzq3d94pKmcL+xjGfR4nhsVcDzM9M=;
-        b=X8iak2XAtop3DP8JMGpGt09srTsqN0LN+z1bqjn8pb3FOQbcVvccPqh+613SgC/gnL
-         8SaJyEnQ4UPS6uo/TQro2aKIeSI3pukH6AcoXFm7sJWU9STi2NkeFpYTcgkKNM9VFuaQ
-         Xa1dYuHs2fygp5Gyk8WGgU7cER5zSnVGI0WrkiquacZnot6raNTwZCqBnGiy+Dzi/OA1
-         Y+yGKLtvw1yv0BIqJ7MYV7sKuJhu8wINmO0AO02AuX9mALnWed4BIGqp2C7rGr4NA6oV
-         qRO/Pe7ToBe08MDn5jTCg6l9gCqAMMHO0uSKlX7BKK+DTW0rK3n3Gs4CjvuiMpcTasy8
-         xxQg==
-X-Gm-Message-State: AOAM532TcM8IcMs9ljQvvdgrhLJjN6yJkCnCdTeCXhbH/XzfT7gf+xcE
-        Sm6RcAXUfHi+HWiqvLSA6URe34/B7OzbgvrIz0U87O2ab31DK1qXHB9KA+GY/KA3xMA8RIOravk
-        wwwzB8dsc5P1onlVPOMM20eVT
-X-Received: by 2002:adf:c44d:: with SMTP id a13mr3522825wrg.65.1625577647647;
-        Tue, 06 Jul 2021 06:20:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwylK30BjEpW908s11UIhAqOA43+SdndFo+8zImmidNjvWKJqWylu7jYy268GXLwqWqFAqnvg==
-X-Received: by 2002:adf:c44d:: with SMTP id a13mr3522803wrg.65.1625577647512;
-        Tue, 06 Jul 2021 06:20:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OtJX128tv+UNtyzf1HLYJY3jxB5LgvqObhQjAuBIOkU=;
+        b=RTwYUzS831RlIQo8xHqlm06YQ6u4vdQ0uw5FdIw+VwDsR3qDA4mshPC1pzcTLfD1K1
+         GJ4SRWCXl9itl15c1vRrlhLDb3sBeC/TEVAtYo6K8XAPB8Bcyncal9msTCCZT2BUIiQP
+         vuHFbnneE6lA3ArPhfsac1M/vgDlKFFeZVEP4pjHQ3Zrhu8duOi2zDYnYuZX8mmDOATN
+         6P5rCeM9ZrGcIzPJ7GUVevjK4bDsT8dt1rVVONB3yXZ7R4pgR5bOXM0mc3M7qCZrxmXv
+         1llmwrB2dO2jlVLcu0hvjyAFNBOC/gfSjtTCxJt9OeMCV4hqY6ny3+onFam62ohM3USc
+         UY6w==
+X-Gm-Message-State: AOAM53352ZjwgiG/RdyZMLB6VKdrLROvbb2xJ62y8RW3EOupKHwNdoGK
+        rRaey7VJMHtWQMBqBbQPEtRtkWZkW4cccChytooHnavE+QLps0CuevuYMI2FXEe5fK1BQbS7nek
+        Th4+7E/iUuo45NK8J2xCIB6Vd
+X-Received: by 2002:a05:600c:3541:: with SMTP id i1mr675548wmq.135.1625577650220;
+        Tue, 06 Jul 2021 06:20:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyImga9cAVnlM75/yPCPHh8g0C4NvxvA/LG4JAlzDlm/I0ZjmTVqx9CCjrGoDXKK+hUIn0i/A==
+X-Received: by 2002:a05:600c:3541:: with SMTP id i1mr675517wmq.135.1625577650003;
+        Tue, 06 Jul 2021 06:20:50 -0700 (PDT)
 Received: from krava.redhat.com ([185.153.78.55])
-        by smtp.gmail.com with ESMTPSA id t11sm17119412wrz.7.2021.07.06.06.20.45
+        by smtp.gmail.com with ESMTPSA id t11sm17119412wrz.7.2021.07.06.06.20.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 06:20:47 -0700 (PDT)
+        Tue, 06 Jul 2021 06:20:49 -0700 (PDT)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
@@ -62,95 +63,297 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Michael Petlan <mpetlan@redhat.com>,
         Ian Rogers <irogers@google.com>, nakamura.shun@fujitsu.com,
         linux-perf-users@vger.kernel.org
-Subject: [RFC 0/7] libperf: Add leader/group info to perf_evsel
-Date:   Tue,  6 Jul 2021 15:20:36 +0200
-Message-Id: <20210706132043.70195-1-jolsa@kernel.org>
+Subject: [PATCH 1/7] libperf: Change tests to single static and shared binaries
+Date:   Tue,  6 Jul 2021 15:20:37 +0200
+Message-Id: <20210706132043.70195-2-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210706132043.70195-1-jolsa@kernel.org>
+References: <20210706132043.70195-1-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi,
-moving leader/group info to libperf's perf_evsel.
+Make tests to be two binaries 'tests_static' and 'tests_shared',
+so the maintenance is easier.
 
-This was asked for by Shunsuke [1] and is on my list
-as a prereq for event parsing move to libperf.
+Adding tests under libperf build system, so we define all the
+flags just once.
 
-I still need to do more tests, but I'd like to check
-with you guys if there's any feedback on this first.
+Adding make-tests tule to just compile tests without running them.
 
-Also available in:
-  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-  libperf/groups
-
-thanks,
-jirka
-
-
-[1] https://lore.kernel.org/linux-perf-users/OSBPR01MB46005B38568E90509946ECA9F7319@OSBPR01MB4600.jpnprd01.prod.outlook.com/
-
-
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
-Jiri Olsa (7):
-      libperf: Change tests to single static and shared binaries
-      libperf: Move idx to perf_evsel::idx
-      libperf: Move leader to perf_evsel::leader
-      libperf: Move nr_groups to evlist::nr_groups
-      libperf: Add perf_evlist__set_leader function
-      libperF: Add group support to perf_evsel__open
-      libperf: Add tests for perf_evlist__set_leader function
-
- tools/lib/perf/Build                     |  2 ++
- tools/lib/perf/Makefile                  | 30 +++++++++++++++++++++++++-----
- tools/lib/perf/evlist.c                  | 22 ++++++++++++++++++++++
- tools/lib/perf/evsel.c                   | 33 +++++++++++++++++++++++++++++----
- tools/lib/perf/include/internal/evlist.h |  2 ++
- tools/lib/perf/include/internal/evsel.h  |  5 ++++-
- tools/lib/perf/include/internal/tests.h  |  4 ++--
- tools/lib/perf/include/perf/evlist.h     |  1 +
- tools/lib/perf/libperf.map               |  1 +
- tools/lib/perf/tests/Build               |  5 +++++
- tools/lib/perf/tests/Makefile            | 40 ----------------------------------------
- tools/lib/perf/tests/main.c              | 15 +++++++++++++++
- tools/lib/perf/tests/test-cpumap.c       |  3 ++-
- tools/lib/perf/tests/test-evlist.c       | 30 +++++++++++++++++++++++-------
- tools/lib/perf/tests/test-evsel.c        |  3 ++-
- tools/lib/perf/tests/test-threadmap.c    |  3 ++-
- tools/lib/perf/tests/tests.h             | 10 ++++++++++
- tools/perf/arch/x86/util/iostat.c        |  4 ++--
- tools/perf/builtin-diff.c                |  4 ++--
- tools/perf/builtin-record.c              |  4 ++--
- tools/perf/builtin-report.c              |  8 ++++----
- tools/perf/builtin-script.c              |  9 +++++----
- tools/perf/builtin-stat.c                | 12 ++++++------
- tools/perf/builtin-top.c                 | 10 +++++-----
- tools/perf/tests/bpf.c                   |  2 +-
- tools/perf/tests/evsel-roundtrip-name.c  |  6 +++---
- tools/perf/tests/mmap-basic.c            |  8 ++++----
- tools/perf/tests/parse-events.c          | 74 +++++++++++++++++++++++++++++++++++++-------------------------------------
- tools/perf/tests/pfm.c                   |  4 ++--
- tools/perf/ui/browsers/annotate.c        |  2 +-
- tools/perf/util/annotate.c               |  8 ++++----
- tools/perf/util/auxtrace.c               | 12 ++++++------
- tools/perf/util/cgroup.c                 |  2 +-
- tools/perf/util/evlist.c                 | 44 +++++++++++++-------------------------------
- tools/perf/util/evlist.h                 |  2 --
- tools/perf/util/evsel.c                  | 32 +++++++++++++++++++++++++-------
- tools/perf/util/evsel.h                  | 14 ++++++++------
- tools/perf/util/header.c                 | 18 +++++++++---------
- tools/perf/util/metricgroup.c            | 22 +++++++++++-----------
- tools/perf/util/parse-events.c           |  8 ++++----
- tools/perf/util/pfm.c                    |  2 +-
- tools/perf/util/python.c                 |  2 +-
- tools/perf/util/record.c                 |  6 +++---
- tools/perf/util/stat-shadow.c            |  2 +-
- tools/perf/util/stat.c                   |  2 +-
- tools/perf/util/stream.c                 |  2 +-
- 46 files changed, 310 insertions(+), 224 deletions(-)
+ tools/lib/perf/Build                    |  2 ++
+ tools/lib/perf/Makefile                 | 30 +++++++++++++++----
+ tools/lib/perf/include/internal/tests.h |  4 +--
+ tools/lib/perf/tests/Build              |  5 ++++
+ tools/lib/perf/tests/Makefile           | 40 -------------------------
+ tools/lib/perf/tests/main.c             | 15 ++++++++++
+ tools/lib/perf/tests/test-cpumap.c      |  3 +-
+ tools/lib/perf/tests/test-evlist.c      |  3 +-
+ tools/lib/perf/tests/test-evsel.c       |  3 +-
+ tools/lib/perf/tests/test-threadmap.c   |  3 +-
+ tools/lib/perf/tests/tests.h            | 10 +++++++
+ 11 files changed, 67 insertions(+), 51 deletions(-)
  create mode 100644 tools/lib/perf/tests/Build
  delete mode 100644 tools/lib/perf/tests/Makefile
  create mode 100644 tools/lib/perf/tests/main.c
  create mode 100644 tools/lib/perf/tests/tests.h
+
+diff --git a/tools/lib/perf/Build b/tools/lib/perf/Build
+index 2ef9a4ec6d99..e8f5b7fb9973 100644
+--- a/tools/lib/perf/Build
++++ b/tools/lib/perf/Build
+@@ -11,3 +11,5 @@ libperf-y += lib.o
+ $(OUTPUT)zalloc.o: ../../lib/zalloc.c FORCE
+ 	$(call rule_mkdir)
+ 	$(call if_changed_dep,cc_o_c)
++
++tests-y += tests/
+diff --git a/tools/lib/perf/Makefile b/tools/lib/perf/Makefile
+index 3718d65cffac..08fe6e3c4089 100644
+--- a/tools/lib/perf/Makefile
++++ b/tools/lib/perf/Makefile
+@@ -52,6 +52,8 @@ else
+   Q = @
+ endif
+ 
++TEST_ARGS := $(if $(V),-v)
++
+ # Set compile option CFLAGS
+ ifdef EXTRA_CFLAGS
+   CFLAGS := $(EXTRA_CFLAGS)
+@@ -136,12 +138,30 @@ all: fixdep
+ 
+ clean: $(LIBAPI)-clean
+ 	$(call QUIET_CLEAN, libperf) $(RM) $(LIBPERF_A) \
+-                *.o *~ *.a *.so *.so.$(VERSION) *.so.$(LIBPERF_VERSION) .*.d .*.cmd LIBPERF-CFLAGS $(LIBPERF_PC)
+-	$(Q)$(MAKE) -C tests clean
++                *.o *~ *.a *.so *.so.$(VERSION) *.so.$(LIBPERF_VERSION) .*.d .*.cmd tests/*.o LIBPERF-CFLAGS $(LIBPERF_PC) \
++                $(TESTS_STATIC) $(TESTS_SHARED)
++
++TESTS_IN = tests-in.o
++
++TESTS_STATIC = $(OUTPUT)tests-static
++TESTS_SHARED = $(OUTPUT)tests-shared
++
++$(TESTS_IN): FORCE
++	$(Q)$(MAKE) $(build)=tests
++
++$(TESTS_STATIC): $(TESTS_IN) $(LIBPERF_A) $(LIBAPI)
++	$(QUIET_LINK)$(CC) -o $@ $^
++
++$(TESTS_SHARED): $(TESTS_IN) $(LIBAPI)
++	$(QUIET_LINK)$(CC) -o $@ -L$(if $(OUTPUT),$(OUTPUT),.) $^ -lperf
++
++make-tests: libs $(TESTS_SHARED) $(TESTS_STATIC)
+ 
+-tests: libs
+-	$(Q)$(MAKE) -C tests
+-	$(Q)$(MAKE) -C tests run
++tests: make-tests
++	@echo "running static:"
++	@./$(TESTS_STATIC) $(TEST_ARGS)
++	@echo "running dynamic:"
++	@LD_LIBRARY_PATH=. ./$(TESTS_SHARED) $(TEST_ARGS)
+ 
+ $(LIBPERF_PC):
+ 	$(QUIET_GEN)sed -e "s|@PREFIX@|$(prefix)|" \
+diff --git a/tools/lib/perf/include/internal/tests.h b/tools/lib/perf/include/internal/tests.h
+index 29425c2dabe1..61052099225b 100644
+--- a/tools/lib/perf/include/internal/tests.h
++++ b/tools/lib/perf/include/internal/tests.h
+@@ -5,8 +5,8 @@
+ #include <stdio.h>
+ #include <unistd.h>
+ 
+-int tests_failed;
+-int tests_verbose;
++extern int tests_failed;
++extern int tests_verbose;
+ 
+ static inline int get_verbose(char **argv, int argc)
+ {
+diff --git a/tools/lib/perf/tests/Build b/tools/lib/perf/tests/Build
+new file mode 100644
+index 000000000000..56e81378d443
+--- /dev/null
++++ b/tools/lib/perf/tests/Build
+@@ -0,0 +1,5 @@
++tests-y += main.o
++tests-y += test-evsel.o
++tests-y += test-evlist.o
++tests-y += test-cpumap.o
++tests-y += test-threadmap.o
+diff --git a/tools/lib/perf/tests/Makefile b/tools/lib/perf/tests/Makefile
+deleted file mode 100644
+index b536cc9a26dd..000000000000
+--- a/tools/lib/perf/tests/Makefile
++++ /dev/null
+@@ -1,40 +0,0 @@
+-# SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+-
+-TESTS = test-cpumap test-threadmap test-evlist test-evsel
+-
+-TESTS_SO := $(addsuffix -so,$(TESTS))
+-TESTS_A  := $(addsuffix -a,$(TESTS))
+-
+-TEST_ARGS := $(if $(V),-v)
+-
+-# Set compile option CFLAGS
+-ifdef EXTRA_CFLAGS
+-  CFLAGS := $(EXTRA_CFLAGS)
+-else
+-  CFLAGS := -g -Wall
+-endif
+-
+-all:
+-
+-include $(srctree)/tools/scripts/Makefile.include
+-
+-INCLUDE = -I$(srctree)/tools/lib/perf/include -I$(srctree)/tools/include -I$(srctree)/tools/lib
+-
+-$(TESTS_A): FORCE
+-	$(QUIET_LINK)$(CC) $(INCLUDE) $(CFLAGS) -o $@ $(subst -a,.c,$@) ../libperf.a $(LIBAPI)
+-
+-$(TESTS_SO): FORCE
+-	$(QUIET_LINK)$(CC) $(INCLUDE) $(CFLAGS) -L.. -o $@ $(subst -so,.c,$@) $(LIBAPI) -lperf
+-
+-all: $(TESTS_A) $(TESTS_SO)
+-
+-run:
+-	@echo "running static:"
+-	@for i in $(TESTS_A); do ./$$i $(TEST_ARGS); done
+-	@echo "running dynamic:"
+-	@for i in $(TESTS_SO); do LD_LIBRARY_PATH=../ ./$$i $(TEST_ARGS); done
+-
+-clean:
+-	$(call QUIET_CLEAN, tests)$(RM) $(TESTS_A) $(TESTS_SO)
+-
+-.PHONY: all clean FORCE
+diff --git a/tools/lib/perf/tests/main.c b/tools/lib/perf/tests/main.c
+new file mode 100644
+index 000000000000..56423fd4db19
+--- /dev/null
++++ b/tools/lib/perf/tests/main.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <internal/tests.h>
++#include "tests.h"
++
++int tests_failed;
++int tests_verbose;
++
++int main(int argc, char **argv)
++{
++	__T("test cpumap", !test_cpumap(argc, argv));
++	__T("test threadmap", !test_threadmap(argc, argv));
++	__T("test evlist", !test_evlist(argc, argv));
++	__T("test evsel", !test_evsel(argc, argv));
++	return 0;
++}
+diff --git a/tools/lib/perf/tests/test-cpumap.c b/tools/lib/perf/tests/test-cpumap.c
+index c70e9e03af3e..d39378eaf897 100644
+--- a/tools/lib/perf/tests/test-cpumap.c
++++ b/tools/lib/perf/tests/test-cpumap.c
+@@ -3,6 +3,7 @@
+ #include <stdio.h>
+ #include <perf/cpumap.h>
+ #include <internal/tests.h>
++#include "tests.h"
+ 
+ static int libperf_print(enum libperf_print_level level,
+ 			 const char *fmt, va_list ap)
+@@ -10,7 +11,7 @@ static int libperf_print(enum libperf_print_level level,
+ 	return vfprintf(stderr, fmt, ap);
+ }
+ 
+-int main(int argc, char **argv)
++int test_cpumap(int argc, char **argv)
+ {
+ 	struct perf_cpu_map *cpus;
+ 
+diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
+index e2ac0b7f432e..7435529fb21c 100644
+--- a/tools/lib/perf/tests/test-evlist.c
++++ b/tools/lib/perf/tests/test-evlist.c
+@@ -18,6 +18,7 @@
+ #include <perf/event.h>
+ #include <internal/tests.h>
+ #include <api/fs/fs.h>
++#include "tests.h"
+ 
+ static int libperf_print(enum libperf_print_level level,
+ 			 const char *fmt, va_list ap)
+@@ -397,7 +398,7 @@ static int test_mmap_cpus(void)
+ 	return 0;
+ }
+ 
+-int main(int argc, char **argv)
++int test_evlist(int argc, char **argv)
+ {
+ 	__T_START;
+ 
+diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
+index 288b5feaefe2..a184e4861627 100644
+--- a/tools/lib/perf/tests/test-evsel.c
++++ b/tools/lib/perf/tests/test-evsel.c
+@@ -6,6 +6,7 @@
+ #include <perf/threadmap.h>
+ #include <perf/evsel.h>
+ #include <internal/tests.h>
++#include "tests.h"
+ 
+ static int libperf_print(enum libperf_print_level level,
+ 			 const char *fmt, va_list ap)
+@@ -184,7 +185,7 @@ static int test_stat_user_read(int event)
+ 	return 0;
+ }
+ 
+-int main(int argc, char **argv)
++int test_evsel(int argc, char **argv)
+ {
+ 	__T_START;
+ 
+diff --git a/tools/lib/perf/tests/test-threadmap.c b/tools/lib/perf/tests/test-threadmap.c
+index 384471441b48..5e2a0291e94c 100644
+--- a/tools/lib/perf/tests/test-threadmap.c
++++ b/tools/lib/perf/tests/test-threadmap.c
+@@ -3,6 +3,7 @@
+ #include <stdio.h>
+ #include <perf/threadmap.h>
+ #include <internal/tests.h>
++#include "tests.h"
+ 
+ static int libperf_print(enum libperf_print_level level,
+ 			 const char *fmt, va_list ap)
+@@ -10,7 +11,7 @@ static int libperf_print(enum libperf_print_level level,
+ 	return vfprintf(stderr, fmt, ap);
+ }
+ 
+-int main(int argc, char **argv)
++int test_threadmap(int argc, char **argv)
+ {
+ 	struct perf_thread_map *threads;
+ 
+diff --git a/tools/lib/perf/tests/tests.h b/tools/lib/perf/tests/tests.h
+new file mode 100644
+index 000000000000..604838f21b2b
+--- /dev/null
++++ b/tools/lib/perf/tests/tests.h
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef TESTS_H
++#define TESTS_H
++
++int test_cpumap(int argc, char **argv);
++int test_threadmap(int argc, char **argv);
++int test_evlist(int argc, char **argv);
++int test_evsel(int argc, char **argv);
++
++#endif /* TESTS_H */
+-- 
+2.31.1
 
