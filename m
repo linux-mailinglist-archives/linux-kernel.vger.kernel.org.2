@@ -2,168 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D8E3BDDEA
+	by mail.lfdr.de (Postfix) with ESMTP id D2C113BDDEB
 	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbhGFTSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 15:18:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52284 "EHLO mail.kernel.org"
+        id S231895AbhGFTSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 15:18:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:48580 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231698AbhGFTSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 15:18:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC86B61C7A;
-        Tue,  6 Jul 2021 19:15:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625598942;
-        bh=AtH56eW72m8BpdbGWiJELuMI6J92ShZ97mnSWwRKvQo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZvqvC7ZLKHZD4VdrsKjXLa3kJgUGINBTZa2kp84Tex81UNAgSWqDIu7Pk5LatqtYg
-         Lor8u/FIhzBBOp5XHa4K0yA+TP/MkyRoqhegOFxTnKi5O8W9nT8iSCNsAySJznsjvN
-         GCpqC7Yo2p2oR+WuAR4uUbFMxFTPN15vWhLlLv86agNeNWN6gAYs/vloO+3qy8Ra3w
-         IOe6JYTQ6PYMv932akm6WRhhp/mXg+ciJXl1so4jBrksgjhqy69iATN5lszUqV/Sl+
-         Nd69lYy8+q4EDIPfBT6cSi2SF18gDtX7O49dSIK4OnhKL305jGXOLw2E++iaPTs9aU
-         r4i6Fl3E9rByA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6135D40B1A; Tue,  6 Jul 2021 16:15:39 -0300 (-03)
-Date:   Tue, 6 Jul 2021 16:15:39 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, maddy@linux.vnet.ibm.com,
-        atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
-        ravi.bangoria@linux.ibm.com, linux-perf-users@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, rnsastry@linux.ibm.com,
-        "Paul A. Clarke" <pc@us.ibm.com>
-Subject: Re: [PATCH] perf script python: Fix buffer size to report iregs in
- perf script
-Message-ID: <YOSr25+a+r3MF2Ob@kernel.org>
-References: <20210628062341.155839-1-kjain@linux.ibm.com>
- <20210628144937.GE142768@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
- <ee98968a-f343-a68e-9a3e-58e97dc130c8@linux.ibm.com>
- <c6fb2136-21e1-325a-f7f7-9745dbe29661@linux.ibm.com>
+        id S231701AbhGFTSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 15:18:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4132F1042;
+        Tue,  6 Jul 2021 12:15:54 -0700 (PDT)
+Received: from [10.57.40.45] (unknown [10.57.40.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FABB3F5A1;
+        Tue,  6 Jul 2021 12:15:52 -0700 (PDT)
+Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Chen Huang <chenhuang5@huawei.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
+ <YNP6/p/yJzLLr8M8@casper.infradead.org> <YNQuZ8ykN7aR+1MP@infradead.org>
+ <YNRpYli/5/GWvaTT@casper.infradead.org>
+ <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
+ <YNSyZaZtPTmTa5P8@zeniv-ca.linux.org.uk> <20210624185554.GC25097@arm.com>
+ <e8e87aba-22f7-d039-ceaa-a93591b04b1e@arm.com>
+ <20210625103905.GA20835@arm.com>
+ <7f14271a-9b2f-1afc-3caf-c4e5b36efa73@arm.com>
+ <20210706175052.GD15218@arm.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <dd30df30-5271-2724-48eb-9f47c5f3e1aa@arm.com>
+Date:   Tue, 6 Jul 2021 20:15:47 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c6fb2136-21e1-325a-f7f7-9745dbe29661@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210706175052.GD15218@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jul 06, 2021 at 05:26:12PM +0530, kajoljain escreveu:
+On 2021-07-06 18:50, Catalin Marinas wrote:
+> On Mon, Jun 28, 2021 at 05:22:30PM +0100, Robin Murphy wrote:
+>> diff --git a/arch/arm64/lib/copy_to_user.S b/arch/arm64/lib/copy_to_user.S
+>> index 043da90f5dd7..cfb598ae4812 100644
+>> --- a/arch/arm64/lib/copy_to_user.S
+>> +++ b/arch/arm64/lib/copy_to_user.S
+>> @@ -32,7 +32,7 @@
+>>   	.endm
+>>   	.macro strh1 reg, ptr, val
+>> -	user_ldst 9998f, sttrh, \reg, \ptr, \val
+>> +	user_ldst 9997f, sttrh, \reg, \ptr, \val
+>>   	.endm
+>>   	.macro ldr1 reg, ptr, val
+>> @@ -40,7 +40,7 @@
+>>   	.endm
+>>   	.macro str1 reg, ptr, val
+>> -	user_ldst 9998f, sttr, \reg, \ptr, \val
+>> +	user_ldst 9997f, sttr, \reg, \ptr, \val
+>>   	.endm
+>>   	.macro ldp1 reg1, reg2, ptr, val
+>> @@ -48,12 +48,14 @@
+>>   	.endm
+>>   	.macro stp1 reg1, reg2, ptr, val
+>> -	user_stp 9998f, \reg1, \reg2, \ptr, \val
+>> +	user_stp 9997f, \reg1, \reg2, \ptr, \val
+>>   	.endm
+>>   end	.req	x5
+>> +srcin	.req	x15
+>>   SYM_FUNC_START(__arch_copy_to_user)
+>>   	add	end, x0, x2
+>> +	mov	srcin, x1
+>>   #include "copy_template.S"
+>>   	mov	x0, #0
+>>   	ret
+>> @@ -62,6 +64,12 @@ EXPORT_SYMBOL(__arch_copy_to_user)
+>>   	.section .fixup,"ax"
+>>   	.align	2
+>> +9997:	cmp	dst, dstin
+>> +	b.ne	9998f
+>> +	// Before being absolutely sure we couldn't copy anything, try harder
+>> +	ldrb	tmp1w, [srcin]
+>> +USER(9998f, sttrb tmp1w, [dstin])
+>> +	add	dst, dstin, #1
+>>   9998:	sub	x0, end, dst			// bytes not copied
+>>   	ret
+>>   	.previous
 > 
-> 
-> On 6/29/21 12:39 PM, kajoljain wrote:
-> > 
-> > 
-> > On 6/28/21 8:19 PM, Paul A. Clarke wrote:
-> >> On Mon, Jun 28, 2021 at 11:53:41AM +0530, Kajol Jain wrote:
-> >>> Commit 48a1f565261d ("perf script python: Add more PMU fields
-> >>> to event handler dict") added functionality to report fields like
-> >>> weight, iregs, uregs etc via perf report.
-> >>> That commit predefined buffer size to 512 bytes to print those fields.
-> >>>
-> >>> But incase of powerpc, since we added extended regs support
-> >>> in commits:
-> >>>
-> >>> Commit 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
-> >>> Counter SPRs as part of extended regs")
-> >>> Commit d735599a069f ("powerpc/perf: Add extended regs support for
-> >>> power10 platform")
-> >>>
-> >>> Now iregs can carry more bytes of data and this predefined buffer size
-> >>> can result to data loss in perf script output.
-> >>>
-> >>> Patch resolve this issue by making buffer size dynamic based on number
-> >>> of registers needed to print. It also changed return type for function
-> >>> "regs_map" from int to void, as the return value is not being used by
-> >>> the caller function "set_regs_in_dict".
-> >>>
-> >>> Fixes: 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
-> >>> Counter SPRs as part of extended regs")
-> >>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-> >>> ---
-> >>>  .../util/scripting-engines/trace-event-python.c | 17 ++++++++++++-----
-> >>>  1 file changed, 12 insertions(+), 5 deletions(-)
-> >>>
-> >>> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-> >>> index 4e4aa4c97ac5..c8c9706b4643 100644
-> >>> --- a/tools/perf/util/scripting-engines/trace-event-python.c
-> >>> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
-> >> [...]
-> >>> @@ -713,7 +711,16 @@ static void set_regs_in_dict(PyObject *dict,
-> >>>  			     struct evsel *evsel)
-> >>>  {
-> >>>  	struct perf_event_attr *attr = &evsel->core.attr;
-> >>> -	char bf[512];
-> >>> +
-> >>> +	/*
-> >>> +	 * Here value 28 is a constant size which can be used to print
-> >>> +	 * one register value and its corresponds to:
-> >>> +	 * 16 chars is to specify 64 bit register in hexadecimal.
-> >>> +	 * 2 chars is for appending "0x" to the hexadecimal value and
-> >>> +	 * 10 chars is for register name.
-> >>> +	 */
-> >>> +	int size = __sw_hweight64(attr->sample_regs_intr) * 28;
-> >>> +	char bf[size];
-> >>
-> >> I propose using a template rather than a magic number here. Something like:
-> >> const char reg_name_tmpl[] = "10 chars  ";
-> >> const char reg_value_tmpl[] = "0x0123456789abcdef";
-> >> const int size = __sw_hweight64(attr->sample_regs_intr) +
-> >>                  sizeof reg_name_tmpl + sizeof reg_value_tmpl;
-> >>
-> > 
-> > Hi Paul,
-> >    Thanks for reviewing the patch. Yes these are
-> > some standardization we can do by creating macros for different
-> > fields.
-> > The basic idea is, we want to provide significant buffer size
-> > based on number of registers present in sample_regs_intr to accommodate
-> > all data.
-> > 
-> 
-> Hi Arnaldo/Jiri,
->    Is the approach used in this patch looks fine to you?
+> I think it's worth doing the copy_to_user() fallback in a loop until it
+> faults or hits the end of the buffer. This would solve the problem we
+> currently have with writing more bytes than actually reported. The
+> copy_from_user() is not necessary, a byte would suffice.
 
-Yeah, and the comment you provide right above it explains it, so I think
-that is enough, ok?
+The thing is, we don't really have that problem since the set_fs cleanup 
+removed IMP-DEF STP behaviour from the picture - even with the current 
+mess we could perfectly well know which of the two STTRs faulted if we 
+just put a little more effort in. Even, at worst, simply this:
 
-- Arnaldo
- 
-> Thanks,
-> Kajol Jain
-> 
-> > But before going to optimizing code, Arnaldo/Jiri, is this approach looks good to you?
-> > 
-> >> Pardon my ignorance, but is there no separation/whitespace between the name
-> >> and the value?
-> > 
-> > This is how we will get data via perf script
-> > 
-> > r0:0xc000000000112008
-> > r1:0xc000000023b37920
-> > r2:0xc00000000144c900
-> > r3:0xc0000000bc566120
-> > r4:0xc0000000c5600000
-> > r5:0x2606c6506ca
-> > r6:0xc000000023b378f8
-> > r7:0xfffffd9f93a48f0e
-> > .....
-> > 
-> >  And is there some significance to 10 characters for the
-> >> register name, or is that a magic number?
-> > 
-> > Most of the register name are within 10 characters, basically we are giving this
-> > magic number to make sure we have enough space in buffer to contain all registers
-> > name with colon.
-> > 
-> > Thanks,
-> > Kajol Jain
-> >  
-> >>
-> >> PC
-> >>
+diff --git a/arch/arm64/include/asm/asm-uaccess.h 
+b/arch/arm64/include/asm/asm-uaccess.h
+index ccedf548dac9..7513758bab3a 100644
+--- a/arch/arm64/include/asm/asm-uaccess.h
++++ b/arch/arm64/include/asm/asm-uaccess.h
+@@ -74,8 +74,9 @@ alternative_else_nop_endif
 
--- 
+         .macro user_stp l, reg1, reg2, addr, post_inc
+  8888:          sttr    \reg1, [\addr];
+-8889:          sttr    \reg2, [\addr, #8];
+-               add     \addr, \addr, \post_inc;
++               add     \addr, \addr, \post_inc / 2;
++8889:          sttr    \reg2, [\addr];
++               add     \addr, \addr, \post_inc / 2;
 
-- Arnaldo
+                 _asm_extable    8888b,\l;
+                 _asm_extable    8889b,\l;
+
+But yuck... If you think the potential under-reporting is worth fixing 
+right now, rather than just letting it disappear in a future rewrite, 
+then I'd still rather do it by passing the actual fault address to the 
+current copy_to_user fixup. A retry loop could still technically 
+under-report if the page disappears (or tag changes) between faulting on 
+the second word of a pair and retrying from the first, so we'd want to 
+pin the initial fault down to a single access anyway. All the loop would 
+achieve after that is potentially fill in an extra 1-7 bytes right up to 
+the offending page/tag boundary for the sake of being nice, which I 
+remain unconvinced is worth the bother :)
+
+Cheers,
+Robin.
