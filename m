@@ -2,139 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6AE3BC5F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 07:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481753BC5F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 07:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhGFFLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 01:11:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23016 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229963AbhGFFLt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 01:11:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625548150;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BGDuAhHTOm13+rlbOsExkzDR8UOrKEAH7+Oj+upM9IQ=;
-        b=H7BGhtOFBUomybDFX7J2q9ef6qp5EuuOw0UT6pgpuIyQY10/FxvE9349egM6CO7YKy2S1J
-        aJ6FUER2DfHn0AiirOAsQMOkj0UOWc1e9h9gmQc18wyHmX6FqckITLA2hFnSD2hdLYBoJT
-        tr13K0vHb8MM5dezEC773R5ikbGVRJQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-7-oQuSJVvANW-9LswbWmaYFw-1; Tue, 06 Jul 2021 01:09:06 -0400
-X-MC-Unique: oQuSJVvANW-9LswbWmaYFw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43D7A800C78;
-        Tue,  6 Jul 2021 05:09:05 +0000 (UTC)
-Received: from [10.64.54.119] (vpn2-54-119.bne.redhat.com [10.64.54.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 246855C1D0;
-        Tue,  6 Jul 2021 05:09:02 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH] mm/debug_vm_pgtable: Fix corrupted PG_arch_1 by
- set_pmd_at()
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, shan.gavin@gmail.com
-References: <20210702103225.51448-1-gshan@redhat.com>
- <33cfab46-3b9b-0088-17b5-bc821c74aefb@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <8e7d7ea3-8412-4c6c-0489-5c9f795a6f35@redhat.com>
-Date:   Tue, 6 Jul 2021 15:09:00 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        id S230029AbhGFFNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 01:13:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230004AbhGFFNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 01:13:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DEE76198D;
+        Tue,  6 Jul 2021 05:10:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625548255;
+        bh=5WR28VC8jPXn2qMGrHg8NPIQISa/BFrzapW1vbjsOoY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UH15tlyS5QBbtsSxnEAc4oZ1Ddyp7I4+YNavkMwrZ4G0DXRl7TViu10+dpqC+/CF+
+         fJYbK37bs9Hiw+vqZ0GE928iHSUM1DfFbgOCtZoNgrMloVtzw8ADotnKXdfZ6aUf5t
+         UuAihk4k81g/Ch0w1ylM04Oc7+5xjUcOU/F6ueGw=
+Date:   Tue, 6 Jul 2021 07:10:53 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sunip Mukherjee <sunipkmukherjee@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: Char Driver for Silicon Labs Si446x Transceivers
+Message-ID: <YOPl3dXamM3FERYT@kroah.com>
+References: <CADLJR24hQya0MkJhdDAJ0KO4MG+Fj4tRU5dNrbNdD9DMG_gLHg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <33cfab46-3b9b-0088-17b5-bc821c74aefb@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADLJR24hQya0MkJhdDAJ0KO4MG+Fj4tRU5dNrbNdD9DMG_gLHg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
-
-On 7/5/21 1:59 PM, Anshuman Khandual wrote:
-> On 7/2/21 4:02 PM, Gavin Shan wrote:
->> There are two addresses selected: random virtual address and physical
->> address corresponding to kernel symbol @start_kernel. During the PMD
->> tests in pmd_advanced_tests(), the physical address is aligned down
->> to the starting address of the huge page, whose size is 512MB on ARM64
->> when we have 64KB base page size. After that, set_pmd_at() is called
->> to populate the PMD entry. PG_arch_1, PG_dcache_clean on ARM64, is
->> set to the page flags. Unforunately, the page, corresponding to the
->> starting address of the huge page could be owned by buddy. It means
->> PG_arch_1 can be unconditionally set to page owned by buddy.
->>
->> Afterwards, the page with PG_arch_1 set is fetched from buddy's free
->> area list, but fails the checking. It leads to the following warning
->> on ARM64:
->>
->>     BUG: Bad page state in process memhog  pfn:08000
->>     page:0000000015c0a628 refcount:0 mapcount:0 \
->>          mapping:0000000000000000 index:0x1 pfn:0x8000
->>     flags: 0x7ffff8000000800(arch_1|node=0|zone=0|lastcpupid=0xfffff)
->>     raw: 07ffff8000000800 dead000000000100 dead000000000122 0000000000000000
->>     raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
->>     page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
+On Mon, Jul 05, 2021 at 06:09:28PM -0400, Sunip Mukherjee wrote:
+> Hi,
 > 
-> Does this problem happen right after the boot ? OR you ran some tests
-> and workloads to trigger this ? IIRC never seen this before on arm64.
-> Does this happen on other archs too ?
+> I am very new to the kernel community; this is my first message in the
+> LKML so my apologies if I am doing things wrong.
 > 
-
-The page flag (PG_arch_1) is corrupted during boot on ARM64 where
-64KB base page size is selected, but the failing page check happens
-when the page is pulled from buddy's free area list by "memhog".
-I don't think other platform has same issue.
-
->>
->> This fixes the issue by calling flush_dcache_page() after each call
->> to set_{pud, pmd, pte}_at() because PG_arch_1 isn't needed in any case.
+> I have been using an Si4463 transceiver for UHF communication with a
+> cubesat I developed. I could not find any code to control the
+> transceiver on Linux. The closest thing I could find was an AVR
+> implementation by Zak Kemble
+> (https://blog.zakkemble.net/si4463-radio-library-avr-arduino/).
+> I followed the API docs and rewrote the whole thing at first for
+> userland only (can be found here:
+> https://github.com/SPACE-HAUC/si446x_linux/releases/tag/v3.1), and
+> then I decided it would be a great learning opportunity for me to port
+> it to the kernel.
 > 
-> This (arm64 specific solution) might cause some side effects on other
-> platforms ? The solution here needs to be generic enough. I will take
-> a look into this patch but probably later this week or next week.
+> The kernel port has gone mostly smoothly. The transceiver communicates
+> with the host MCU over SPI, and requires a pin for RESET, and another
+> pin for IRQ.
+> I have implemented the driver to provide a char device (/dev/si446x#)
+> to the userland for open, read, write, poll and ioctl.
+> I had initially set up a pull request for the driver and the device
+> tree overlay to the Raspberry Pi kernel community. They have agreed to
+> accept the device tree overlay for the device, however the driver
+> needs to be included by the Linux Kernel community. I want to use this
+> opportunity to find some people who have access to a Si446x
+> transceiver and a Raspberry Pi, so that the code I have can be tested,
+> and if deemed worthy, included in the kernel tree.
 > 
+> My code is hosted here: https://github.com/sunipkmukherjee/silabs.git
+> 
+> Any suggestions/criticisms are welcome.
 
-Apart from the overhead of flushing the dcache introduced by flush_dcache_page().
-I don't think there is any side-effect. By the way, I'm working on a series
-to fix this issue and another issue. I will post the series for review pretty
-soon and it's going to fix the following issues:
+If you post it in a patch form, as described in our documentation, I
+will be glad to review it.  Otherwise just looking at a random github
+repo is quite difficult and provides no way to give proper feedback.
 
-(1) Current code is organized in relaxed fashion. All information are maintained
-     in variables in debug_vm_pgtable(). The variables are passed to test functions.
-     It make the code hard to be maintained in long term. So I will introduce a
-     dedicated data struct (struct vm_pgtable_debug), as place holder for various
-     information.
+Instructions on how to make a patch and submit it and the proper format
+for everything can be found in the Documentation/SubmittingPatches file.
 
-(2) With the data struct, I'm able to allocate page, to be used by set_{pud, pmd, pte}_at()
-     because the target page is accessed on ARM64. The PG_arch_1 flag is set to
-     the page and the corresponding iCache is flush if execution permission is given.
-     There are two issues if the page used by set_{pud, pmd, pte}_at() wasn't allocated
-     from buddy: (a) the PG_arch_1 flag corruption as this patch tries to fix; (b) kernel
-     crash because of invalid page fault on accessing the target page. The page isn't
-     mapped if CONFIG_DEBUG_PAGEALLOC is enabled.
+thanks,
 
-     start_kernel
-     mm_init
-     mem_init
-     memblock_free_all
-     free_low_memory_core_early
-     __free_memory_core
-     __free_pages_memory
-     memblock_free_pages
-     __free_pages_core
-     __free_pages_ok
-     free_pages_prepare
-     debug_pagealloc_unmap_pages           # The page is unmapped here
-
-Thanks,
-Gavin
+greg k-h
 
