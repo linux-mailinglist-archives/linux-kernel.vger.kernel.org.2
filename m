@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 281473BDF74
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 00:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 449D43BDF76
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 00:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhGFWqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 18:46:23 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33486 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229753AbhGFWqW (ORCPT
+        id S230002AbhGFWqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 18:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhGFWqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 18:46:22 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 166MY5Cp039007;
-        Tue, 6 Jul 2021 18:43:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=MTLF/iktgurESX2nGHjEtGHHzr6BAtGzZtB5nv43H5U=;
- b=g5tWmnfiW2NOO90R3HvhtmDIslLUuuxKAi+Njg+8bE0YSvo1nJ+ORaaVoUV0FU3vKwXY
- C5zwT4hZidemFMu3M4ajnHw6bJbWoi3UriZaXPVo7xpK6PDMMvcBmdZumk9rfOJpAd10
- Pe2vwvRchpMH6lwCcBnF+7wzN+zlzsqDG9kkMRPLiMdfXBCdIsErj6Ko3KXr/gh9ZIPi
- JjZO6hhg1oeAYrmbpAXCQhGDH08SJP7M8h8eUejtyAphyGYZZ9Z5IxXqg2Pyp9yu3Z4D
- GyGWOmeeM6z+0fJGDsBUdwiWV5sRmbnRblIlClWUM6cxMzqTw9O8VQCtwsF0nhRQtOVf 5A== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39mts004dt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 18:43:42 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 166MbqVN024231;
-        Tue, 6 Jul 2021 22:43:41 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma04dal.us.ibm.com with ESMTP id 39jfhcd36x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 22:43:41 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 166MheMs44499414
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 6 Jul 2021 22:43:40 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 66D83B2066;
-        Tue,  6 Jul 2021 22:43:40 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2361CB2068;
-        Tue,  6 Jul 2021 22:43:40 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.163.230])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue,  6 Jul 2021 22:43:40 +0000 (GMT)
-Subject: Re: [PATCH] s390/vfio-ap: do not use open locks during
- VFIO_GROUP_NOTIFY_SET_KVM notification
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Halil Pasic <pasic@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pasic@linux.vnet.ibm.com,
-        jjherne@linux.ibm.com
-References: <20210625220758.80365-1-akrowiak@linux.ibm.com>
- <20210628222923.21a257c8.pasic@linux.ibm.com>
- <25edecce-0795-3b00-a155-bfcc8499f1be@linux.ibm.com>
- <20210701003941.685c524c.pasic@linux.ibm.com>
- <8b742188-d8a2-cf4e-e9de-0ca6f3d829b3@linux.ibm.com>
- <20210705141348.GN4459@nvidia.com>
- <11025fe5-0751-b7ab-9250-b21c10382edd@linux.ibm.com>
- <20210706134939.GX4459@nvidia.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <f958be51-a5fd-a755-f1de-a580f9ccbace@linux.ibm.com>
-Date:   Tue, 6 Jul 2021 18:43:39 -0400
+        Tue, 6 Jul 2021 18:46:47 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963E6C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 15:44:07 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id k6so442670ilo.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 15:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BfXcL7huu5M2SLxozu50mak+1t631nohpB9hTGnfHZg=;
+        b=I+/jY/Vk8K1384CAuY0qbG5FUveKWBqhN2IUMCRD7dzJfCtTNjahYWDg6A+60UIDT6
+         6Mtmfj/NpWbm/pCGmZWT0CdUjc8AOzOMndVgsD+Z1ittWzo3Otjpu4XvDYG+vuX66r8B
+         NjzqXAacq8AwtRrDV7WMDZuVkxYEGZF4V6U8M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BfXcL7huu5M2SLxozu50mak+1t631nohpB9hTGnfHZg=;
+        b=aPoMrj53FhWDyrc8T+KuNHEURiBfD1H9iVDs2jqZ2WUuJjwf9fjIdQCEbc+PZWVYaS
+         mOj0ew0j9IWuF0k/9pawAJCUV7vZRs+LIl/wgCtUbTs939iFZ5wBAtSYL3DwRy5X6qt1
+         bDOQ5JE7xd0OLVGpQkcGwU5z7YKI8mI0FWb1zFoxcAl2ieB1lRcB8Cnr+9Z88pyC3zTZ
+         Pu11HBbqnsDQqz3iks3e/2Wg+PRg7hi3ELm4N+S9HlAMqY8eOHTDE+O4eq5k7msJTevq
+         KAeE5KuwLMrwoNMyPYxhaUQ3X+LMuz8vtAWrW45E4r+AGbDehmNYjUyeimL4I6KEcUCo
+         ax5g==
+X-Gm-Message-State: AOAM533zOM5gpLj1M2PSQsXtWyfeUtHddGYNmrmsoj8TeV2xu5YSNQ8R
+        vU3tHYUzBS4UKcjU+sM1+qsaUA==
+X-Google-Smtp-Source: ABdhPJwmjJwaAGZxWB8A/HAmyvL57E6r7M6K6qUNZvFtCD4XeneukmP98O+ICOswN5B8qtjhmjv8RA==
+X-Received: by 2002:a92:ac06:: with SMTP id r6mr15447597ilh.74.1625611447073;
+        Tue, 06 Jul 2021 15:44:07 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id q6sm9206853ilt.41.2021.07.06.15.44.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 15:44:06 -0700 (PDT)
+Subject: Re: [PATCH 5.12 0/7] 5.12.15-rc1 review
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210705105934.1513188-1-sashal@kernel.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <4d001b78-a369-d7dd-0b5f-1d2992742864@linuxfoundation.org>
+Date:   Tue, 6 Jul 2021 16:44:06 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210706134939.GX4459@nvidia.com>
+In-Reply-To: <20210705105934.1513188-1-sashal@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 3Vm9dF-9DIevD65to1lZ8T0qNlDddDuV
-X-Proofpoint-GUID: 3Vm9dF-9DIevD65to1lZ8T0qNlDddDuV
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-06_13:2021-07-06,2021-07-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
- phishscore=0 priorityscore=1501 clxscore=1015 adultscore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107060106
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/5/21 4:59 AM, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 5.12.15 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed 07 Jul 2021 10:59:20 AM UTC.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.12.y&id2=v5.12.14
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
+> 
 
+Compiled and booted on my test system. No dmesg regressions.
 
-On 7/6/21 9:49 AM, Jason Gunthorpe wrote:
-> On Tue, Jul 06, 2021 at 09:39:29AM -0400, Tony Krowiak wrote:
->>
->> On 7/5/21 10:13 AM, Jason Gunthorpe wrote:
->>> On Thu, Jul 01, 2021 at 10:28:52AM -0400, Tony Krowiak wrote:
->>>
->>>>> I think Jason was talking about open coding locks in general.
->>>> That may be so, but his comments were in support of his
->>>> statement that the  mutex + wait_queue did not resolve
->>>> the issue reported vai the lockdep splat because it turned
->>>> off lockdep.
->>> Rgiht, if this used to be proper locks and lockdep complained then
->>> whatever potential deadlock it found is not magically removed by going
->>> to a wait_queue. It just removes the lockdep annotations that would
->>> identify the issue early.
->>>
->>> This is why people should not open code locks, it completely defeats
->>> lockdep. That alone is merit enough for this patch.
->> When you use the phrase "open code locks", to what are you
->> specifically referring? I am confused by the use of the phrase
->> "open code" in this context because open coding, at least as
->> I understand it, has to do with data analysis.
-> "open code" here means you write the algorithm of a standard lock in
-> your own functions instead of calling the standard library.
->
-> Testing/setting the busy and sleeping on a wait_event is exactly a
-> standard lock.
->
-> Ie if I write
->
->     for (len = 0; str[len] != 0; len++)
->             ;
->
-> Then I have open coded strlen()
->
-> Jason
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Thanks for the explanation.
+thanks,
+-- Shuah
 
 
