@@ -2,126 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984D43BDA30
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD9B3BDA39
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232625AbhGFPb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:31:27 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:39903 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231773AbhGFPbY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:31:24 -0400
-Received: by mail-oi1-f170.google.com with SMTP id b2so24979106oiy.6;
-        Tue, 06 Jul 2021 08:28:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=djILV2ZTCAiQFmxRl7gNQdjv1pea/PEm/sUtUv5E55c=;
-        b=OTtZtRBkJhhvirZXUynUZxJDyiQlwjl5wxo0mtAO+4JO2g3k8/8CCd2anUnq1AKl/5
-         mW7vVpVUrbv6gDiAjAOjtvVaSsUUBQYZ8fBxKYdIgcpfWLIZd9TG8+WZh5Iej53cBHyS
-         T2Z6m3vetX06dGXrfkzl4/lLNNiKklf3UlPR1h9VftIOI8vtf5iJ52vqlDylW2y/rwcf
-         UZwh5MRQsi1FyYBp9FEzovsQgYuv3vdEUQ5NEPLKZyJCjUYta4+VeXSUUOfdlav5MNjg
-         KXBurk7lHf4Z3bxhoCkP+hswSFlewzdzgE0U5s1Rj60WQsEwjAOx2jfddrWw6gxxjNWP
-         tedg==
-X-Gm-Message-State: AOAM530d3V1pNWvYid3WTcNQPMMs6EJRba9CDdLcoNoq5aByl20Yemlz
-        wIb3is6+QA9Qmafbkl50nCzO2ffA8WpSKC90TpE=
-X-Google-Smtp-Source: ABdhPJyKKRg/nmhU3LnNi8n7HVcwiy5Yv15l8jBQtjaBy8mf8K7onM340jjQZuWRa+e311tjvirZ8148VDkeAgqL4gw=
-X-Received: by 2002:aca:c457:: with SMTP id u84mr5393364oif.69.1625585325117;
- Tue, 06 Jul 2021 08:28:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210706131828.22309-1-lukasz.luba@arm.com>
-In-Reply-To: <20210706131828.22309-1-lukasz.luba@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 6 Jul 2021 17:28:34 +0200
-Message-ID: <CAJZ5v0ga1O9Y9Lam=BoXofE7sjTNpYVSTjAWvSGZ+j__aCeXJw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/6] Introduce Active Stats framework with CPU
- performance statistics
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Chris Redpath <Chris.Redpath@arm.com>, Beata.Michalska@arm.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Amit Kachhap <amit.kachhap@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232218AbhGFPd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 11:33:56 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:49426 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231773AbhGFPdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 11:33:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625585475; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=1mcO67hemLr0DFEPPwQ5FKW1ObS3TcM9AHhhIEEK0h8=; b=dAWdCvMeND0fRkrR3WEatBkJ2r5w82ikgi8UJdi4EPGVqSuzc3+iqMrwHlePmHQ7VM0BdSar
+ o6k6f6XhnDZQxpNR1ANYR6SD8zDa8HKzyztEmGULWiABbVN9XiiYbCY78NO+r0m4k7UEB0QT
+ UtiN1rTowSW5CJgycndC+68Ucnk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60e477255e3e57240b4f5282 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Jul 2021 15:30:45
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C4935C433F1; Tue,  6 Jul 2021 15:30:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B04E6C433F1;
+        Tue,  6 Jul 2021 15:30:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B04E6C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        lyude@redhat.com
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, rsubbia@codeaurora.org,
+        rnayak@codeaurora.org, freedreno@lists.freedesktop.org,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, jani.nikula@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] drm/dp_mst: Fix return code on sideband message failure
+Date:   Tue,  6 Jul 2021 08:30:34 -0700
+Message-Id: <1625585434-9562-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 3:18 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> Hi all,
->
-> This patch set introduces a new mechanism: Active Stats framework (ASF), which
-> gathers and maintains statistics of CPU performance - time residency at each
-> performance state.
->
-> The ASF tracks all the frequency transitions as well as CPU
-> idle entry/exit events for all CPUs. Based on that it accounts the active
-> (non-idle) residency time for each CPU at each frequency. This information can
-> be used by some other subsystems (like thermal governor) to enhance their
-> estimations about CPU usage at a given period.
+From: Rajkumar Subbiah <rsubbia@codeaurora.org>
 
-This seems to mean that what is needed is something like the cpufreq
-stats but only collected during the time when CPUs are not in idle
-states.
+Commit 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing +
+selftests") added some debug code for sideband message tracing. But
+it seems to have unintentionally changed the behavior on sideband message
+failure. It catches and returns failure only if DRM_UT_DP is enabled.
+Otherwise it ignores the error code and returns success. So on an MST
+unplug, the caller is unaware that the clear payload message failed and
+ends up waiting for 4 seconds for the response. Fixes the issue by
+returning the proper error code.
 
-> Does it fix something in mainline?
-> Yes, there is thermal governor Intelligent Power Allocation (IPA), which
-> estimates the CPUs power used in the past. IPA is sampling the CPU utilization
-> and frequency and relies on the info available at the time of sampling
-> and this imposes the estimation errors.
-> The use of ASF solve the issue and enables IPA to make better estimates.
+Changes in V2:
+-- Revise commit text as review comment
+-- add Fixes text
 
-Obviously the IPA is not used on all platforms where cpufreq and
-cpuidle are used.  What platforms are going to benefit from this
-change?
+Changes in V3:
+-- remove "unlikely" optimization
 
-> Why it couldn't be done using existing frameworks?
-> The CPUFreq and CPUIdle statistics are not combined, so it is not possible
-> to derive the information on how long exactly the CPU was running with a given
-> frequency.
+Fixes: 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing + selftests")
 
-But it doesn't mean that the statistics could not be combined.
+Signed-off-by: Rajkumar Subbiah <rsubbia@codeaurora.org>
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
 
-For instance, the frequency of the CPU cannot change via cpufreq when
-active_stats_cpu_idle_enter() is running, so instead of using an
-entirely new framework for collecting statistics it might update the
-existing cpufreq stats to register that event.
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/gpu/drm/drm_dp_mst_topology.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-And analogously for the wakeup.
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index 1590144..df91110 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -2887,11 +2887,13 @@ static int process_single_tx_qlock(struct drm_dp_mst_topology_mgr *mgr,
+ 	idx += tosend + 1;
+ 
+ 	ret = drm_dp_send_sideband_msg(mgr, up, chunk, idx);
+-	if (unlikely(ret) && drm_debug_enabled(DRM_UT_DP)) {
+-		struct drm_printer p = drm_debug_printer(DBG_PREFIX);
++	if (ret) {
++		if (drm_debug_enabled(DRM_UT_DP)) {
++			struct drm_printer p = drm_debug_printer(DBG_PREFIX);
+ 
+-		drm_printf(&p, "sideband msg failed to send\n");
+-		drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
++			drm_printf(&p, "sideband msg failed to send\n");
++			drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
++		}
+ 		return ret;
+ 	}
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-> This new framework combines that information and provides
-> it in a handy way.
-
-I'm not convinced about the last piece.
-
-> IMHO it has to be implemented as a new framework, next to
-> CPUFreq and CPUIdle, due to a clean design and not just hooks from thermal
-> governor into the frequency change and idle code paths.
-
-As far as the design is concerned, I'm not sure if I agree with it.
-
-From my perspective it's all a 1000-line patch that I have to read and
-understand to figure out what the design is.
-
-> Tha patch 4/6 introduces a new API for cooling devices, which allows to
-> stop tracking the freq and idle statistics.
->
-> The patch set contains also a patches 5/6 6/6 which adds the new power model
-> based on ASF into the cpufreq cooling (used by thermal governor IPA).
-> It is added as ifdef option, since Active Stats might be not compiled in.
-> The ASF is a compile time option, but that might be changed and IPA could
-> select it, which would allow to remove some redundant code from
-> cpufreq_cooling.c.
->
-> Comments and suggestions are very welcome.
-
-I'm totally not convinced that it is necessary to put the extra 1000
-lines of code into the kernel to address the problem at hand.
