@@ -2,133 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED133BC795
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 09:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1B73BC797
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhGFICG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 04:02:06 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:50452 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhGFICD (ORCPT
+        id S230433AbhGFICq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 04:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230303AbhGFICp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 04:02:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1625558364; x=1628150364;
-        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=UOUTgJ8RahJkBeCcIbg9erq0mOjJVyHTXXxvfhdSYjs=;
-        b=ISgn0sLJHEdy0ExaQ5/1sI/rfvUwaRnn6+ZVJKWPxDyzsKPdpbMDQrWirmb8kJSM
-        SOxE4/q6MCH5eo9GWFqpgVFaq/VpJrqIKd/JZxuNjT+vIzKbPOsPHLPkoLHARWXQ
-        dvQaKeZ9dPr0Qlj+uwgKlVg54TyA6qclkRv3Hb/qxlY=;
-X-AuditID: c39127d2-a9fbd70000001c5e-58-60e40d5c7881
-Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 4C.25.07262.C5D04E06; Tue,  6 Jul 2021 09:59:24 +0200 (CEST)
-Received: from lws-ybas.phytec.de ([172.16.21.122])
-          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
-          with ESMTP id 2021070609592372-1097775 ;
-          Tue, 6 Jul 2021 09:59:23 +0200 
-From:   Yunus Bas <y.bas@phytec.de>
-To:     sam@ravnborg.org, laurent.pinchart@ideasonboard.com,
-        thierry.reding@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch
-Subject: [PATCH v3 2/2] drm/panel: simple: Add support for EDT ETM0350G0DH6 panel
-Date:   Tue, 6 Jul 2021 09:59:08 +0200
-Message-Id: <20210706075908.907659-2-y.bas@phytec.de>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210706075908.907659-1-y.bas@phytec.de>
-References: <20210706075908.907659-1-y.bas@phytec.de>
+        Tue, 6 Jul 2021 04:02:45 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A79D1C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 01:00:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Fnyolh74ErD433UyCKYW1UcltgOqGwfIFxvvtVPYM6g=; b=j5/MpJ4aANLe2U2DkLFi34L3xj
+        WxIHgR362Y5c25eymBr3Qp6AfvwT5UX2dXb4DxoSu+9/9IyKaKmEJHm8AhCFLSNOYKQ3zQlRjtbta
+        nLSQva1yXN5G2FEBotlvWC/9oNC8bt6Ok8t9KHdAXWPs62VPs24um8iYLMxJnQX9r004Ov2WdgR3Z
+        Dojr6Z+aQC4Ph1/Scj67HacavvqLdUlMK7LtgLSDZ4/WltNnSI3fez75dXP/LMFw6jZj5uqU9TJ0z
+        XlS6lObuPVvKgNifW/oRgQMgiZrs8/M8g1uSUNIQz8UoWSFxf39cedN+5wYlZmV0pokkXDrsgox7j
+        EU0628rw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m0fzu-00Eyna-LG; Tue, 06 Jul 2021 08:00:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3B915300233;
+        Tue,  6 Jul 2021 10:00:02 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 21AF1200E1E7B; Tue,  6 Jul 2021 10:00:02 +0200 (CEST)
+Date:   Tue, 6 Jul 2021 10:00:02 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: RCU vs data_race()
+Message-ID: <YOQNgsS9Tjt4aDmG@hirez.programming.kicks-ass.net>
+References: <YMxYR33XEfVg6AoD@hirez.programming.kicks-ass.net>
+ <YMxgbuEdrq8k3eZp@elver.google.com>
+ <YMyC0iux0wKzc1JG@hirez.programming.kicks-ass.net>
+ <20210618204800.GK4397@paulmck-ThinkPad-P17-Gen-1>
+ <YM+TlNDJm1Jx1WQW@hirez.programming.kicks-ass.net>
+ <20210620210127.GR4397@paulmck-ThinkPad-P17-Gen-1>
+ <YNA/gkHbq46A/21C@hirez.programming.kicks-ass.net>
+ <20210621133757.GS4397@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 06.07.2021 09:59:23,
-        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 06.07.2021 09:59:24
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGLMWRmVeSWpSXmKPExsWyRoCBSzeG90mCwaTbzBa9504yWfzfNpHZ
-        4srX92wWnROXsFtc3jWHzWLFz62MFj93zWNxYPfY+20Bi8fOWXfZPWZ3zGT12P7tAavH/e7j
-        TB5Lpl1l8/i8SS6APYrLJiU1J7MstUjfLoEr49/KI6wF2wQr/l29ztTAeISvi5GDQ0LARGLX
-        ducuRk4OIYFtjBILp5tB2OcZJSY95gKx2QQUJc7ffsvaxcjFISIwgVGidfFdFpAEs4CqxMun
-        U8FsYYFAies9d5lAbBYBFYmurlY2kPm8AqYSV/5zg4QlBOQlTq49zAQS5hQwk7h3NQpilanE
-        numnWEFsXgFBiZMzn7CArJIQuMIo8fXZVGaIXiGJ04vPMkOs1ZZYtvA18wRGgVlIemYhSS1g
-        ZFrFKJSbmZydWpSZrVeQUVmSmqyXkrqJERjWhyeqX9rB2DfH4xAjEwfjIUYJDmYlEV6RKY8S
-        hHhTEiurUovy44tKc1KLDzFKc7AoifNu4C0JExJITyxJzU5NLUgtgskycXBKNTB2imZtZ4l8
-        lTPH5bT20w3Ldplr9XG2rFf3eD/Lq0jxmCinosMc6YWeL298cLzM/lv17cFFH09wJkve2rbg
-        E4u/skL85UT3J4xP1z44p7w867mYsd2jed8itS6qMc59m8fwd1L5qQeLV3r7PI2SWySyIia+
-        /UGS2UyrCWw/VaT3d+aXTHGKUfJUYinOSDTUYi4qTgQAkKPrq1kCAAA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621133757.GS4397@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Riedmueller <s.riedmueller@phytec.de>
 
-This patch adds support for the EDT ETM0350G0DH6 3.5" (320x240) lcd
-panel to DRM simple panel driver.
+Sorry for the late reply, thread got snowed under :/
 
-Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-Signed-off-by: Yunus Bas <y.bas@phytec.de>
----
-Changes in v3:
-- No changes in general, added additional maintainers and also sending
-to general kernel mailing list
----
- drivers/gpu/drm/panel/panel-simple.c | 29 ++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+On Mon, Jun 21, 2021 at 06:37:57AM -0700, Paul E. McKenney wrote:
+> On Mon, Jun 21, 2021 at 09:28:02AM +0200, Peter Zijlstra wrote:
+> > On Sun, Jun 20, 2021 at 02:01:27PM -0700, Paul E. McKenney wrote:
+> > > On Sun, Jun 20, 2021 at 09:14:28PM +0200, Peter Zijlstra wrote:
+> > 
+> > > > I don't buy that argument. pr_err() (or worse) is not supposed to
+> > > > happen, ever. If it does, *that* is a far worse condition that any data
+> > > > race possibly found by kcsan.
+> > > > 
+> > > > So the only way the pr_err() expression itself can lead to kcsan
+> > > > determining a data-race, if something far worse triggered the pr_err()
+> > > > itself.
+> > > 
+> > > Earlier, you said pr_warn().  Above, I said pr_*().  Now you say
+> > > pr_err().  But OK...
+> > 
+> > Same, thing.. also Sundays aren't great for details it seems :-)
+> 
+> I know that feeling!  ;-)
+> 
+> > > Let's take for example the pr_err() in __call_rcu(), that is, the
+> > > double-free diagnostic.  A KCSAN warning on the unmarked load from
+> > > head->func could give valuable information on the whereabouts of the
+> > > other code interfering with the callback.  Blanket disabling of KCSAN
+> > > across all pr_err() calls (let alone all pr_*() calls) would be the
+> > > opposite of helpful.
+> > 
+> > I'm confused. That pr_err() should never happen in a correct program. If
+> > it happens, fix it and any data race as a consequence of that pr_err()
+> > no longer exists either.
+> > 
+> > I fundementally don't see the relevance of a possible data race from a
+> > statement that should never happen in a correct program to begin with.
+> > 
+> > Why do you think otherwise?
+> 
+> Because detection of that data race can provide valuable debugging help.
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/p=
-anel-simple.c
-index 07433bff6c2b..8aba473a7592 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -1929,6 +1929,32 @@ static const struct panel=5Fdesc edt=5Fet035012dm6 =
-=3D {
- 	.bus=5Fflags =3D DRM=5FBUS=5FFLAG=5FDE=5FLOW | DRM=5FBUS=5FFLAG=5FPIXDATA=
-=5FSAMPLE=5FPOSEDGE,
- };
-=20
-+static const struct drm=5Fdisplay=5Fmode edt=5Fetm0350g0dh6=5Fmode =3D {
-+	.clock =3D 6520,
-+	.hdisplay =3D 320,
-+	.hsync=5Fstart =3D 320 + 20,
-+	.hsync=5Fend =3D 320 + 20 + 68,
-+	.htotal =3D 320 + 20 + 68,
-+	.vdisplay =3D 240,
-+	.vsync=5Fstart =3D 240 + 4,
-+	.vsync=5Fend =3D 240 + 4 + 18,
-+	.vtotal =3D 240 + 4 + 18,
-+	.flags =3D DRM=5FMODE=5FFLAG=5FNVSYNC | DRM=5FMODE=5FFLAG=5FNHSYNC,
-+};
-+
-+static const struct panel=5Fdesc edt=5Fetm0350g0dh6 =3D {
-+	.modes =3D &edt=5Fetm0350g0dh6=5Fmode,
-+	.num=5Fmodes =3D 1,
-+	.bpc =3D 6,
-+	.size =3D {
-+		.width =3D 70,
-+		.height =3D 53,
-+	},
-+	.bus=5Fformat =3D MEDIA=5FBUS=5FFMT=5FRGB888=5F1X24,
-+	.bus=5Fflags =3D DRM=5FBUS=5FFLAG=5FDE=5FHIGH | DRM=5FBUS=5FFLAG=5FPIXDAT=
-A=5FDRIVE=5FNEGEDGE,
-+	.connector=5Ftype =3D DRM=5FMODE=5FCONNECTOR=5FDPI,
-+};
-+
- static const struct drm=5Fdisplay=5Fmode edt=5Fetm043080dh6gp=5Fmode =3D {
- 	.clock =3D 10870,
- 	.hdisplay =3D 480,
-@@ -4355,6 +4381,9 @@ static const struct of=5Fdevice=5Fid platform=5Fof=5F=
-match[] =3D {
- 	}, {
- 		.compatible =3D "edt,et035012dm6",
- 		.data =3D &edt=5Fet035012dm6,
-+	}, {
-+		.compatible =3D "edt,etm0350g0dh6",
-+		.data =3D &edt=5Fetm0350g0dh6,
- 	}, {
- 		.compatible =3D "edt,etm043080dh6gp",
- 		.data =3D &edt=5Fetm043080dh6gp,
---=20
-2.30.0
+In that case, would not an explicit: data_debug(addr) call (implemented
+by KASAN/KCSAN/whoever), which would report whatever knowledge they have
+about that address, be even more useful?
 
+Then you don't need to hope that there's a data race of sorts in order
+to obtain said information.
+
+That is; if you want information, explicitly asking for it seems *much*
+better than hoping.
