@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6F43BD364
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1A23BD366
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233589AbhGFLvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:51:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
+        id S236639AbhGFLv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:51:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237338AbhGFLgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:36:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A90461D61;
-        Tue,  6 Jul 2021 11:26:59 +0000 (UTC)
+        id S237352AbhGFLgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:36:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56DFA61EFD;
+        Tue,  6 Jul 2021 11:27:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570819;
-        bh=I+FqOmRyObkijY/msE33fTQdbnQudaAaFYANp9Xw0cE=;
+        s=k20201202; t=1625570826;
+        bh=OM0QNoOAzXMgTPxuxyfZQkJXBzjgf6bYaRl08h2/2Kc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ju+S44O8CKqiVS/948b6X2Oj4LyjKV4p28ClVd+ylW6NG2tWlxBzKfeVKh98y4AvR
-         LiMnYnkwNKIpOmwOA9AHeXxdN640MB5pbY/iLSdRRbFtM0W3lNnk0UfVCPoTHcp35M
-         sqpRwl9fPaGxsi8wOeS689Sib8ZkJaRkoYjhUd0OgumVdz0SZyNMl3CfpW7Gb1V1wx
-         FBsjD4J5+TM9uzyt9/O8wfHe3O3o4ro5IgrWCqatFUGhEnsSXCYB/sgeYsc3Z4XM7R
-         pgmy+mV5xaeCsy4zAyXz9NuAzAsqnQHx9OJq7fve2eWm2DM92su//qiDmVWeL/5tJd
-         zNqXKJEHLK0Cg==
+        b=lkxd74rtOsgWxJy6S2HizIW2Vi6zNeSI9WBF/CTUab0m9NchmvK+jNiclAEulgmJ/
+         gTPPK7rfIOFoV+F7UZKiEOEjRS574Cb5Rmr+7yC3DD0WYa9OdgnYmSOY+GkodSh73I
+         u1HwZ9msHc+iU5EoUU+lKWN+TrPFqnMtx7VNMVxvhyiZ2mUbvajXUTtRQIPbums+Ek
+         zNI9n7LhRpyD+QOsDhw+FERS8n3ccH8BGyekgYcl+H33sb/rv6/Lo7YmSiNgXfA4iw
+         twBgGB7elH0FxUr+4zbWCL8vkchh4r4xUp7GMcHarOT+OJi6FtfcgHfQXzK2A0xNsq
+         TApFp9bnqNRvg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 16/55] e100: handle eeprom as little endian
-Date:   Tue,  6 Jul 2021 07:25:59 -0400
-Message-Id: <20210706112638.2065023-16-sashal@kernel.org>
+Cc:     Joe Thornber <ejt@redhat.com>, Mike Snitzer <snitzer@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, dm-devel@redhat.com
+Subject: [PATCH AUTOSEL 4.19 21/55] dm space maps: don't reset space map allocation cursor when committing
+Date:   Tue,  6 Jul 2021 07:26:04 -0400
+Message-Id: <20210706112638.2065023-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112638.2065023-1-sashal@kernel.org>
 References: <20210706112638.2065023-1-sashal@kernel.org>
@@ -43,67 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesse Brandeburg <jesse.brandeburg@intel.com>
+From: Joe Thornber <ejt@redhat.com>
 
-[ Upstream commit d4ef55288aa2e1b76033717242728ac98ddc4721 ]
+[ Upstream commit 5faafc77f7de69147d1e818026b9a0cbf036a7b2 ]
 
-Sparse tool was warning on some implicit conversions from
-little endian data read from the EEPROM on the e100 cards.
+Current commit code resets the place where the search for free blocks
+will begin back to the start of the metadata device.  There are a couple
+of repercussions to this:
 
-Fix these by being explicit about the conversions using
-le16_to_cpu().
+- The first allocation after the commit is likely to take longer than
+  normal as it searches for a free block in an area that is likely to
+  have very few free blocks (if any).
 
-Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+- Any free blocks it finds will have been recently freed.  Reusing them
+  means we have fewer old copies of the metadata to aid recovery from
+  hardware error.
+
+Fix these issues by leaving the cursor alone, only resetting when the
+search hits the end of the metadata device.
+
+Signed-off-by: Joe Thornber <ejt@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e100.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/md/persistent-data/dm-space-map-disk.c     | 9 ++++++++-
+ drivers/md/persistent-data/dm-space-map-metadata.c | 9 ++++++++-
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
-index 78b44d787638..bf64fab38385 100644
---- a/drivers/net/ethernet/intel/e100.c
-+++ b/drivers/net/ethernet/intel/e100.c
-@@ -1398,7 +1398,7 @@ static int e100_phy_check_without_mii(struct nic *nic)
- 	u8 phy_type;
- 	int without_mii;
+diff --git a/drivers/md/persistent-data/dm-space-map-disk.c b/drivers/md/persistent-data/dm-space-map-disk.c
+index bf4c5e2ccb6f..e0acae7a3815 100644
+--- a/drivers/md/persistent-data/dm-space-map-disk.c
++++ b/drivers/md/persistent-data/dm-space-map-disk.c
+@@ -171,6 +171,14 @@ static int sm_disk_new_block(struct dm_space_map *sm, dm_block_t *b)
+ 	 * Any block we allocate has to be free in both the old and current ll.
+ 	 */
+ 	r = sm_ll_find_common_free_block(&smd->old_ll, &smd->ll, smd->begin, smd->ll.nr_blocks, b);
++	if (r == -ENOSPC) {
++		/*
++		 * There's no free block between smd->begin and the end of the metadata device.
++		 * We search before smd->begin in case something has been freed.
++		 */
++		r = sm_ll_find_common_free_block(&smd->old_ll, &smd->ll, 0, smd->begin, b);
++	}
++
+ 	if (r)
+ 		return r;
  
--	phy_type = (nic->eeprom[eeprom_phy_iface] >> 8) & 0x0f;
-+	phy_type = (le16_to_cpu(nic->eeprom[eeprom_phy_iface]) >> 8) & 0x0f;
+@@ -199,7 +207,6 @@ static int sm_disk_commit(struct dm_space_map *sm)
+ 		return r;
  
- 	switch (phy_type) {
- 	case NoSuchPhy: /* Non-MII PHY; UNTESTED! */
-@@ -1518,7 +1518,7 @@ static int e100_phy_init(struct nic *nic)
- 		mdio_write(netdev, nic->mii.phy_id, MII_BMCR, bmcr);
- 	} else if ((nic->mac >= mac_82550_D102) || ((nic->flags & ich) &&
- 	   (mdio_read(netdev, nic->mii.phy_id, MII_TPISTATUS) & 0x8000) &&
--		(nic->eeprom[eeprom_cnfg_mdix] & eeprom_mdix_enabled))) {
-+	   (le16_to_cpu(nic->eeprom[eeprom_cnfg_mdix]) & eeprom_mdix_enabled))) {
- 		/* enable/disable MDI/MDI-X auto-switching. */
- 		mdio_write(netdev, nic->mii.phy_id, MII_NCONFIG,
- 				nic->mii.force_media ? 0 : NCONFIG_AUTO_SWITCH);
-@@ -2264,9 +2264,9 @@ static int e100_asf(struct nic *nic)
- {
- 	/* ASF can be enabled from eeprom */
- 	return (nic->pdev->device >= 0x1050) && (nic->pdev->device <= 0x1057) &&
--	   (nic->eeprom[eeprom_config_asf] & eeprom_asf) &&
--	   !(nic->eeprom[eeprom_config_asf] & eeprom_gcl) &&
--	   ((nic->eeprom[eeprom_smbus_addr] & 0xFF) != 0xFE);
-+	   (le16_to_cpu(nic->eeprom[eeprom_config_asf]) & eeprom_asf) &&
-+	   !(le16_to_cpu(nic->eeprom[eeprom_config_asf]) & eeprom_gcl) &&
-+	   ((le16_to_cpu(nic->eeprom[eeprom_smbus_addr]) & 0xFF) != 0xFE);
- }
+ 	memcpy(&smd->old_ll, &smd->ll, sizeof(smd->old_ll));
+-	smd->begin = 0;
+ 	smd->nr_allocated_this_transaction = 0;
  
- static int e100_up(struct nic *nic)
-@@ -2922,7 +2922,7 @@ static int e100_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	r = sm_disk_get_nr_free(sm, &nr_free);
+diff --git a/drivers/md/persistent-data/dm-space-map-metadata.c b/drivers/md/persistent-data/dm-space-map-metadata.c
+index 9e3c64ec2026..da439ac85796 100644
+--- a/drivers/md/persistent-data/dm-space-map-metadata.c
++++ b/drivers/md/persistent-data/dm-space-map-metadata.c
+@@ -452,6 +452,14 @@ static int sm_metadata_new_block_(struct dm_space_map *sm, dm_block_t *b)
+ 	 * Any block we allocate has to be free in both the old and current ll.
+ 	 */
+ 	r = sm_ll_find_common_free_block(&smm->old_ll, &smm->ll, smm->begin, smm->ll.nr_blocks, b);
++	if (r == -ENOSPC) {
++		/*
++		 * There's no free block between smm->begin and the end of the metadata device.
++		 * We search before smm->begin in case something has been freed.
++		 */
++		r = sm_ll_find_common_free_block(&smm->old_ll, &smm->ll, 0, smm->begin, b);
++	}
++
+ 	if (r)
+ 		return r;
  
- 	/* Wol magic packet can be enabled from eeprom */
- 	if ((nic->mac >= mac_82558_D101_A4) &&
--	   (nic->eeprom[eeprom_id] & eeprom_id_wol)) {
-+	   (le16_to_cpu(nic->eeprom[eeprom_id]) & eeprom_id_wol)) {
- 		nic->flags |= wol_magic;
- 		device_set_wakeup_enable(&pdev->dev, true);
- 	}
+@@ -503,7 +511,6 @@ static int sm_metadata_commit(struct dm_space_map *sm)
+ 		return r;
+ 
+ 	memcpy(&smm->old_ll, &smm->ll, sizeof(smm->old_ll));
+-	smm->begin = 0;
+ 	smm->allocated_this_transaction = 0;
+ 
+ 	return 0;
 -- 
 2.30.2
 
