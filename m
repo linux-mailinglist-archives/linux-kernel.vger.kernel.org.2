@@ -2,175 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1924D3BD78D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB9F3BD791
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbhGFNTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 09:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231248AbhGFNTw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 09:19:52 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E118C061760
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 06:17:12 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id l17-20020a9d6a910000b029048a51f0bc3cso9736733otq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 06:17:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U9D/asRW8RIRRhOKKkNY/c0bgyv3JnZBPRvStuSKb28=;
-        b=cB9WV9sNtYm4EIQPRYYsOGXCyC85KX4IvPilkqi+DXH4BpSsZyGkNpW3uSI8JnhhUm
-         Uoplzu3pWcmKt7UBmyg4GG/1Ehm8EZCdN1AUKXSFMtmPdYVFA4tSUwyZPyO+z/eahKfZ
-         PrBc3UQ6AHFgqTPV3OhYjDG9m5j2bWR34qSio=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U9D/asRW8RIRRhOKKkNY/c0bgyv3JnZBPRvStuSKb28=;
-        b=SHTEP/ocmE4sKDmK9tjLkzRJMq54+YN3ICP3DC/IggMwjFCLmrhQsjYz9/pQucmGYF
-         gUpufpEa+2vB4hkBdrPadYRCUl0JDsD7BjNMC+8SHOZSGQDkKNgYkxSC7CQVFFYNaqFj
-         d0txjl7iy2kdmxldRzNm0UWxkt8UEASJhLxRVrygyQwIqcjLfMu2o9wffwTRJBFmL9pL
-         HtMYtTW951YozRUdFjwgP16GCSGp3OL2bsf7D+f+3u6JavJ85vIbNLFqEIf7QvuRtsAq
-         3VQqgY5+rjX0NfTF8gCS9gepixt+ZRyAg53WRa4U0h5vSE1T2m1emCSQj8tC+mcdoKPr
-         vEhg==
-X-Gm-Message-State: AOAM531inK7iq903se/jTVKAJs7t2zHH9UhL+QHlz1/uNgNYDbhWeq+A
-        Ci5+IKm4V/wSo8ILka2C9nnCUJuk4DPE836FnIVJpA==
-X-Google-Smtp-Source: ABdhPJyhU38uAVUSjr8gRwHKDTIhLNjZ02bjGpdJaQ/Zri9HQUmeedc5h+sEGm5UwpWhHyQGUQa0Ps8orpOzhY8rJNs=
-X-Received: by 2002:a05:6830:2366:: with SMTP id r6mr14854251oth.188.1625577431903;
- Tue, 06 Jul 2021 06:17:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210705130314.11519-1-ogabbay@kernel.org> <YOQXBWpo3whVjOyh@phenom.ffwll.local>
- <20210706122110.GA18273@lst.de> <YORLTmyoXDtoM9Ta@phenom.ffwll.local> <CAFCwf114KEH-kO6w+nmbqKKdaGuqy3iOpHJi=5ZWqT3cgDm4Cw@mail.gmail.com>
-In-Reply-To: <CAFCwf114KEH-kO6w+nmbqKKdaGuqy3iOpHJi=5ZWqT3cgDm4Cw@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 6 Jul 2021 15:17:00 +0200
-Message-ID: <CAKMK7uHfCbNQJwbXgLC9ibk71kVG7TBK4bfFxzX82ziSgqG9nw@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231630AbhGFNVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 09:21:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:42098 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231550AbhGFNVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 09:21:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F95D1FB;
+        Tue,  6 Jul 2021 06:18:39 -0700 (PDT)
+Received: from e123648.arm.com (unknown [10.57.7.228])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 233EE3F73B;
+        Tue,  6 Jul 2021 06:18:36 -0700 (PDT)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org
+Cc:     linux-pm@vger.kernel.org, amitk@kernel.org, rui.zhang@intel.com,
+        lukasz.luba@arm.com, dietmar.eggemann@arm.com,
+        Chris.Redpath@arm.com, Beata.Michalska@arm.com,
+        viresh.kumar@linaro.org, rjw@rjwysocki.net, amit.kachhap@gmail.com
+Subject: [RFC PATCH v2 0/6] Introduce Active Stats framework with CPU performance statistics
+Date:   Tue,  6 Jul 2021 14:18:22 +0100
+Message-Id: <20210706131828.22309-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 2:46 PM Oded Gabbay <oded.gabbay@gmail.com> wrote:
->
-> On Tue, Jul 6, 2021 at 3:23 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Tue, Jul 06, 2021 at 02:21:10PM +0200, Christoph Hellwig wrote:
-> > > On Tue, Jul 06, 2021 at 10:40:37AM +0200, Daniel Vetter wrote:
-> > > > > Greg, I hope this will be good enough for you to merge this code.
-> > > >
-> > > > So we're officially going to use dri-devel for technical details review
-> > > > and then Greg for merging so we don't have to deal with other merge
-> > > > criteria dri-devel folks have?
-> > > >
-> > > > I don't expect anything less by now, but it does make the original claim
-> > > > that drivers/misc will not step all over accelerators folks a complete
-> > > > farce under the totally-not-a-gpu banner.
-> > > >
-> > > > This essentially means that for any other accelerator stack that doesn't
-> > > > fit the dri-devel merge criteria, even if it's acting like a gpu and uses
-> > > > other gpu driver stuff, you can just send it to Greg and it's good to go.
-> > > >
-> > > > There's quite a lot of these floating around actually (and many do have
-> > > > semi-open runtimes, like habanalabs have now too, just not open enough to
-> > > > be actually useful). It's going to be absolutely lovely having to explain
-> > > > to these companies in background chats why habanalabs gets away with their
-> > > > stack and they don't.
-> > >
-> > > FYI, I fully agree with Daniel here.  Habanlabs needs to open up their
-> > > runtime if they want to push any additional feature in the kernel.
-> > > The current situation is not sustainable.
-> Well, that's like, your opinion...
->
-> >
-> > Before anyone replies: The runtime is open, the compiler is still closed.
-> > This has become the new default for accel driver submissions, I think
-> > mostly because all the interesting bits for non-3d accelerators are in the
-> > accel ISA, and no longer in the runtime. So vendors are fairly happy to
-> > throw in the runtime as a freebie.
-> >
-> > It's still incomplete, and it's still useless if you want to actually hack
-> > on the driver stack.
-> > -Daniel
-> > --
-> I don't understand what's not sustainable here.
->
-> There is zero code inside the driver that communicates or interacts
-> with our TPC code (TPC is the Tensor Processing Core).
-> Even submitting works to the TPC is done via a generic queue
-> interface. And that queue IP is common between all our engines
-> (TPC/DMA/NIC). The driver provides all the specs of that queue IP,
-> because the driver's code is handling that queue. But why is the TPC
-> compiler code even relevant here ?
+Hi all,
 
-Can I use the hw how it's intended to be used without it?
+This patch set introduces a new mechanism: Active Stats framework (ASF), which
+gathers and maintains statistics of CPU performance - time residency at each
+performance state.
 
-If the answer is no, then essentially what you're doing with your
-upstream driver is getting all the benefits of an upstream driver,
-while upstream gets nothing. We can't use your stack, not as-is. Sure
-we can use the queue, but we can't actually submit anything
-interesting. And I'm pretty sure the point of your hw is to do more
-than submit no-op packets to a queue.
+The ASF tracks all the frequency transitions as well as CPU
+idle entry/exit events for all CPUs. Based on that it accounts the active
+(non-idle) residency time for each CPU at each frequency. This information can
+be used by some other subsystems (like thermal governor) to enhance their
+estimations about CPU usage at a given period.
 
-This is all "I want my cake and eat it too" approach to upstreaming,
-and it's totally fine attitude to have, but if you don't see why
-there's maybe an different side to it then I don't get what you're
-arguing. Upstream isn't free lunch for nothing.
+Does it fix something in mainline?
+Yes, there is thermal governor Intelligent Power Allocation (IPA), which
+estimates the CPUs power used in the past. IPA is sampling the CPU utilization
+and frequency and relies on the info available at the time of sampling
+and this imposes the estimation errors.
+The use of ASF solve the issue and enables IPA to make better estimates.
 
-Frankly I'm starting to assume you're arguing this all in bad faith
-just because habanalabds doesn't want to actually have an open driver
-stack, so any attack is good, no matter what. Which is also what
-everyone else does who submits their accel driver to upstream, and
-which gets us back to the starting point of this sub-thread of me
-really appreciation how this will improve background discussions going
-forward for everyone.
+Why it couldn't be done using existing frameworks?
+The CPUFreq and CPUIdle statistics are not combined, so it is not possible
+to derive the information on how long exactly the CPU was running with a given
+frequency. This new framework combines that information and provides
+it in a handy way. IMHO it has to be implemented as a new framework, next to
+CPUFreq and CPUIdle, due to a clean design and not just hooks from thermal
+governor into the frequency change and idle code paths.
 
-Like if the requirement for accel drivers truly is that you can submit
-a dummy command to the queues then I have about 5-10 drivers at least
-I could merge instantly. For something like the intel gpu driver it
-would be about 50 lines of code (including all the structure boiler
-plate the ioctls require)in userspace to submit a dummy queue command.
-GPU and accel vendors would really love that, because it would allow
-them to freeload on upstream and do essentially nothing in return.
+Tha patch 4/6 introduces a new API for cooling devices, which allows to
+stop tracking the freq and idle statistics.
 
-And we'd end up with an unmaintainable disaster of a gpu or well
-accelerator subsystem because there's nothing you can change or
-improve because all the really useful bits of the stack are closed.
-And ofc that's not any companies problem anymore, so ofc you with the
-habanalabs hat on don't care and call this *extreme*.
+The patch set contains also a patches 5/6 6/6 which adds the new power model
+based on ASF into the cpufreq cooling (used by thermal governor IPA).
+It is added as ifdef option, since Active Stats might be not compiled in.
+The ASF is a compile time option, but that might be changed and IPA could
+select it, which would allow to remove some redundant code from
+cpufreq_cooling.c.
 
-> btw, you can today see our TPC code at
-> https://github.com/HabanaAI/Habana_Custom_Kernel
-> There is a link there to the TPC user guide and link to download the
-> LLVM compiler.
+Comments and suggestions are very welcome.
 
-I got stuck clicking links before I found the source for that llvm
-compiler. Can you give me a direct link to the repo with sourcecode
-instead please?
+Changelog:
+v2:
+- added interface for cooling devices to support custom setup used
+  by IPA, which requires Active Stats alocated and running; when IPA
+  is not working Active Stats are deactivated
+- added mechanism to stop tracking CPU freq and idle changes in Active Stats
+  when there are no clients of this information
+- removed spinlock in idle path (and hotplug) and redesigned how Active Stats
+  Monitor (ASM) tracks the changed performance; ASM no longer can update
+  local ASM stats in periodic check; only CPU entering/exiting idle can do that
+v1:
+- basic implementation which can be found at [1]
 
-Thanks, Daniel
+
+Regards,
+Lukasz Luba
+
+[1] https://lore.kernel.org/linux-pm/20210622075925.16189-1-lukasz.luba@arm.com/
+
+Lukasz Luba (6):
+  PM: Introduce Active Stats framework
+  cpuidle: Add Active Stats calls tracking idle entry/exit
+  cpufreq: Add Active Stats calls tracking frequency changes
+  thermal: Add interface to cooling devices to handle governor change
+  thermal/core/power allocator: Prepare power actors and calm down when
+    not used
+  thermal: cpufreq_cooling: Improve power estimation based on Active
+    Stats framework
+
+ Documentation/power/active_stats.rst  | 128 ++++
+ Documentation/power/index.rst         |   1 +
+ MAINTAINERS                           |   8 +
+ drivers/cpufreq/cpufreq.c             |   5 +
+ drivers/cpuidle/cpuidle.c             |   5 +
+ drivers/thermal/cpufreq_cooling.c     | 132 ++++
+ drivers/thermal/gov_power_allocator.c |  71 ++
+ include/linux/active_stats.h          | 131 ++++
+ include/linux/thermal.h               |   1 +
+ kernel/power/Kconfig                  |   9 +
+ kernel/power/Makefile                 |   1 +
+ kernel/power/active_stats.c           | 921 ++++++++++++++++++++++++++
+ 12 files changed, 1413 insertions(+)
+ create mode 100644 Documentation/power/active_stats.rst
+ create mode 100644 include/linux/active_stats.h
+ create mode 100644 kernel/power/active_stats.c
+
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.17.1
+
