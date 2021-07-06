@@ -2,207 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE933BC86B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADC13BC874
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhGFJWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 05:22:17 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:23822 "EHLO m43-7.mailgun.net"
+        id S231162AbhGFJZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 05:25:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:35456 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230472AbhGFJWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 05:22:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625563178; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=tVNox5UxH1mduv7g7ycIOmhCnRCLc2A4EM1ABCiryh8=;
- b=fOL3z31cIEsRmZvVLymtjSH8NaPoqiX1K16Ewdb9e9Qz+vz6pUvAOHMIcYERsQLJ7kXIvxIH
- nYjKMAvL551nipQhj82HbI9WBFKqCN+j+TsFvY/Z4VZoSs4AG4Wu1g+u9qDhfW5jKnKoYydE
- LFfw3FlktpqiM0qGGliMA/KvgMY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60e42020c4cc543602c3521e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Jul 2021 09:19:28
- GMT
-Sender: rojay=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D5EF9C433D3; Tue,  6 Jul 2021 09:19:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rojay)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5C752C433F1;
-        Tue,  6 Jul 2021 09:19:27 +0000 (UTC)
+        id S230515AbhGFJZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 05:25:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6667531B;
+        Tue,  6 Jul 2021 02:22:46 -0700 (PDT)
+Received: from [10.57.40.45] (unknown [10.57.40.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E78723F5A1;
+        Tue,  6 Jul 2021 02:22:44 -0700 (PDT)
+Subject: Re: [RFC PATCH 1/1] dma-debug: fix check_for_illegal_area() in
+ debug_dma_map_sg()
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        iommu@lists.linux-foundation.org
+Cc:     linux-s390 <linux-s390@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+References: <20210705185252.4074653-1-gerald.schaefer@linux.ibm.com>
+ <20210705185252.4074653-2-gerald.schaefer@linux.ibm.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <3bb87b4c-f646-20fe-7cc5-c7449432811e@arm.com>
+Date:   Tue, 6 Jul 2021 10:22:40 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210705185252.4074653-2-gerald.schaefer@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 06 Jul 2021 14:49:27 +0530
-From:   rojay@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com
-Subject: Re: [PATCH V3 1/3] arm64: dts: sc7280: Add QSPI node
-In-Reply-To: <98befc79fc039496b0c12d7983319c92@codeaurora.org>
-References: <20210604135439.19119-1-rojay@codeaurora.org>
- <20210604135439.19119-2-rojay@codeaurora.org> <YLxHTDxVcSvVxsd5@builder.lan>
- <98befc79fc039496b0c12d7983319c92@codeaurora.org>
-Message-ID: <2ad7a00924b5065bf61c47e8b6d24339@codeaurora.org>
-X-Sender: rojay@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-08 13:37, rojay@codeaurora.org wrote:
-> On 2021-06-06 09:25, Bjorn Andersson wrote:
->> On Fri 04 Jun 08:54 CDT 2021, Roja Rani Yarubandi wrote:
->> 
->>> Add QSPI DT node for SC7280 SoC.
->>> 
->>> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
->>> ---
->>> Changes in V3:
->>>  - Broken the huge V2 patch into 3 smaller patches.
->>>    1. QSPI DT nodes
->>>    2. QUP wrapper_0 DT nodes
->>>    3. QUP wrapper_1 DT nodes
->>> 
->>> Changes in V2:
->>>  - As per Doug's comments removed pinmux/pinconf subnodes.
->>>  - As per Doug's comments split of SPI, UART nodes has been done.
->>>  - Moved QSPI node before aps_smmu as per the order.
->>> 
->>>  arch/arm64/boot/dts/qcom/sc7280-idp.dts | 29 ++++++++++++
->>>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 61 
->>> +++++++++++++++++++++++++
->>>  2 files changed, 90 insertions(+)
->>> 
->>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts 
->>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->>> index 3900cfc09562..d0edffc15736 100644
->>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->>> @@ -268,6 +268,22 @@ pmr735b_die_temp {
->>>  		};
->>>  };
->>> 
->>> +&qspi {
->>> +	status = "okay";
->>> +	pinctrl-names = "default";
->>> +	pinctrl-0 = <&qspi_clk>, <&qspi_cs0>, <&qspi_data01>;
->>> +
->>> +	flash@0 {
->>> +		compatible = "jedec,spi-nor";
->>> +		reg = <0>;
->>> +
->>> +		/* TODO: Increase frequency after testing */
->>> +		spi-max-frequency = <25000000>;
->>> +		spi-tx-bus-width = <2>;
->>> +		spi-rx-bus-width = <2>;
->>> +	};
->>> +};
->>> +
->>>  &qupv3_id_0 {
->>>  	status = "okay";
->>>  };
->>> @@ -278,6 +294,19 @@ &uart5 {
->>> 
->>>  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
->>> 
->>> +&qspi_cs0 {
->>> +	bias-disable;
->>> +};
->>> +
->>> +&qspi_clk {
->>> +	bias-disable;
->>> +};
->>> +
->>> +&qspi_data01 {
->>> +	/* High-Z when no transfers; nice to park the lines */
->>> +	bias-pull-up;
->>> +};
->>> +
->>>  &qup_uart5_default {
->>>  	tx {
->>>  		pins = "gpio46";
->>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>> index 6c9d5eb93f93..3047ab802cd2 100644
->>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>> @@ -1061,6 +1061,42 @@ apss_merge_funnel_in: endpoint {
->>>  			};
->>>  		};
->>> 
->>> +		qspi_opp_table: qspi-opp-table {
->> 
->> This node doesn't represents anything on the mmio bus, so it shouldn't
->> live in in /soc. Can't you move it into &qspi?
->> 
->> Regards,
->> Bjorn
->> 
+On 2021-07-05 19:52, Gerald Schaefer wrote:
+> The following warning occurred sporadically on s390:
+> DMA-API: nvme 0006:00:00.0: device driver maps memory from kernel text or rodata [addr=0000000048cc5e2f] [len=131072]
+> WARNING: CPU: 4 PID: 825 at kernel/dma/debug.c:1083 check_for_illegal_area+0xa8/0x138
 > 
-> Sure, will move it into qspi node.
+> It is a false-positive warning, due to a broken logic in debug_dma_map_sg().
+> check_for_illegal_area() should check for overlay of sg elements with kernel
+> text or rodata. It is called with sg_dma_len(s) instead of s->length as
+> parameter. After the call to ->map_sg(), sg_dma_len() contains the length
+> of possibly combined sg elements in the DMA address space, and not the
+> individual sg element length, which would be s->length.
 > 
-> Thanks,
-> Roja
+> The check will then use the kernel start address of an sg element, and add
+> the DMA length for overlap check, which can result in the false-positive
+> warning because the DMA length can be larger than the actual single sg
+> element length in kernel address space.
 > 
+> In addition, the call to check_for_illegal_area() happens in the iteration
+> over mapped_ents, which will not include all individual sg elements if
+> any of them were combined in ->map_sg().
+> 
+> Fix this by using s->length instead of sg_dma_len(s). Also put the call to
+> check_for_illegal_area() in a separate loop, iterating over all the
+> individual sg elements ("nents" instead of "mapped_ents").
+> 
+> Fixes: 884d05970bfb ("dma-debug: use sg_dma_len accessor")
+> Tested-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> ---
+>   kernel/dma/debug.c | 10 ++++++----
+>   1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+> index 14de1271463f..d7d44b7fe7e2 100644
+> --- a/kernel/dma/debug.c
+> +++ b/kernel/dma/debug.c
+> @@ -1299,6 +1299,12 @@ void debug_dma_map_sg(struct device *dev, struct scatterlist *sg,
+>   	if (unlikely(dma_debug_disabled()))
+>   		return;
+>   
+> +	for_each_sg(sg, s, nents, i) {
+> +		if (!PageHighMem(sg_page(s))) {
+> +			check_for_illegal_area(dev, sg_virt(s), s->length);
+> +		}
+> +	}
+> +
+>   	for_each_sg(sg, s, mapped_ents, i) {
+>   		entry = dma_entry_alloc();
+>   		if (!entry)
+> @@ -1316,10 +1322,6 @@ void debug_dma_map_sg(struct device *dev, struct scatterlist *sg,
+>   
+>   		check_for_stack(dev, sg_page(s), s->offset);
 
-Hi Bjorn,
+Strictly this should probably be moved to the new loop as well, as it is 
+similarly concerned with validating the source segments rather than the 
+DMA mappings - I think with virtually-mapped stacks it might technically 
+be possible for a stack page to be physically adjacent to a "valid" page 
+such that it could get merged and overlooked if it were near the end of 
+the list, although in fairness that would probably be indicative of 
+something having gone far more fundamentally wrong. Otherwise, the 
+overall reasoning looks sound to me.
 
-Moving "qspi_opp_table" inside &qspi node causing this warning:
-arch/arm64/boot/dts/qcom/sc7280.dtsi:1055.35-1072.6: Warning 
-(spi_bus_reg): /soc@0/spi@88dc000/qspi-opp-table: missing or empty reg 
-property
+Robin.
 
-Shall I keep the qspi-opp-table out of &qspi node?
-
-Thanks,
-Roja
-
->>> +			compatible = "operating-points-v2";
->>> +
->>> +			opp-75000000 {
->>> +				opp-hz = /bits/ 64 <75000000>;
->>> +				required-opps = <&rpmhpd_opp_low_svs>;
->>> +			};
->>> +
->>> +			opp-150000000 {
->>> +				opp-hz = /bits/ 64 <150000000>;
->>> +				required-opps = <&rpmhpd_opp_svs>;
->>> +			};
->>> +
->>> +			opp-300000000 {
->>> +				opp-hz = /bits/ 64 <300000000>;
->>> +				required-opps = <&rpmhpd_opp_nom>;
->>> +			};
->>> +		};
->>> +
->>> +		qspi: spi@88dc000 {
->>> +			compatible = "qcom,qspi-v1";
->>> +			reg = <0 0x088dc000 0 0x1000>;
->>> +			#address-cells = <1>;
->>> +			#size-cells = <0>;
->>> +			interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
->>> +			clocks = <&gcc GCC_QSPI_CNOC_PERIPH_AHB_CLK>,
->>> +				 <&gcc GCC_QSPI_CORE_CLK>;
->>> +			clock-names = "iface", "core";
->>> +			interconnects = <&gem_noc MASTER_APPSS_PROC 0
->>> +					&cnoc2 SLAVE_QSPI_0 0>;
->>> +			interconnect-names = "qspi-config";
->>> +			power-domains = <&rpmhpd SC7280_CX>;
->>> +			operating-points-v2 = <&qspi_opp_table>;
->>> +			status = "disabled";
->>> +		};
+>   
+> -		if (!PageHighMem(sg_page(s))) {
+> -			check_for_illegal_area(dev, sg_virt(s), sg_dma_len(s));
+> -		}
+> -
+>   		check_sg_segment(dev, s);
+>   
+>   		add_dma_entry(entry);
+> 
