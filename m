@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EDA3BC85A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 620803BC860
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhGFJOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 05:14:52 -0400
-Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:42290 "EHLO
-        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230472AbhGFJOv (ORCPT
+        id S231162AbhGFJSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 05:18:17 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:44713 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230295AbhGFJSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 05:14:51 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id 9CBFE18E069
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 10:12:12 +0100 (IST)
-Received: (qmail 24893 invoked from network); 6 Jul 2021 09:12:12 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Jul 2021 09:12:12 -0000
-Date:   Tue, 6 Jul 2021 10:12:11 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org
-Subject: Re: [f2fs-dev] [PATCH] f2fs: initialize page->private when using for
- our internal use
-Message-ID: <20210706091211.GR3840@techsingularity.net>
-References: <20210705052216.831989-1-jaegeuk@kernel.org>
- <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
- <YOLJW0IgCagMk2tF@google.com>
- <e2fdf628-f25c-7495-cfd1-952899f7ff9a@kernel.org>
- <YOLxZAnaKSwBIlK9@casper.infradead.org>
- <YONJpQapR7BRnW/J@google.com>
- <YONTRlrJugeVq6Fj@casper.infradead.org>
+        Tue, 6 Jul 2021 05:18:16 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6AFA45C015E;
+        Tue,  6 Jul 2021 05:15:38 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 06 Jul 2021 05:15:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=48vfVUC0kax3M2am+zLH+pUycfW
+        DdICUD8aQ9fF4L6o=; b=aVHqpnJ1+5By/6nnWox6m+pTsSy/MY8Y6f2ZOjRLKZX
+        1Nv7dqrhClG1bmZgeRxRkAIb5Zp3GDhQykyG1dAFpzrZs0jo1aUp2L3GgXw+Vs/p
+        CPV19bOFcq1J5S5O+EYrKnx4uyL6kocIGPk0BN49lFyYDNzLUhaCDjO5XEQZaJN5
+        ddw1TTUmjNYztjxUrKzX5ev3Xd4hwVZFmY6cHuMFuqJiFQKxMlgDiaddT8cFLb7p
+        kk595jXJsmYXa9UJjeJFIY1ZAxol6AiNv30939EDn2s2RNZUVxoNG1sA06hIkxhx
+        byUcrBSEQbOyIi+U1Hh7CvgNMQQmkF2l2+mxuT64RLg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=48vfVU
+        C0kax3M2am+zLH+pUycfWDdICUD8aQ9fF4L6o=; b=ff1+7Iz+J36EiOzgMJPfth
+        duJzJ24FuEMCaGcwm+/t75epGmkuQmcLRolbVQYydJFyYtbLqM3l8YchX5c3IBcP
+        PCHqIldStLjUa2KfFmzx61zfFsPFiOIzmGxXZTRdNTBTU7xqlRE1OE1vEpS9iBQZ
+        DGu+zr7WOdCfpupiEGAhefniFxbljaJZVImNBgIJMVf6w16OkTYHMQ1JGTi/N5ZG
+        gWw5qiL1gaqdaV2XtQvfJF8qZqlBE4SxJ1VRS5tYrc/uE6rpRdQALwOq3b4FgG7b
+        s26CdAOb/ARIBttlXAEwGPSKexXN6rQdbGSJKcy789oUED+WCpKXaoHxQ7xnazlw
+        ==
+X-ME-Sender: <xms:OR_kYD3C98irnpTSJZogm39l6GRREOl2pnvadsiHWekihbcB1TJQug>
+    <xme:OR_kYCGeMmgsO59vLdcSC6B8sGypuDq56gXdigKnLFiNjqGAwOUUAPqxkYo94P_Ib
+    ff1cdI9EHNHf29KQTI>
+X-ME-Received: <xmr:OR_kYD5SazNhB--FiuF7Bq6udRZxv1Felkkwx0QhWqWIOtunUanGuyD7-FovnPSsGBr27PspsUj5c5Dv7ZON0TNafE8m1I-4mhYw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeejiedgudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
+    ertddtvdenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
+    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeelkeeghefhuddtleejgfeljeffhe
+    ffgfeijefhgfeufefhtdevteegheeiheegudenucevlhhushhtvghrufhiiigvpedtnecu
+    rfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:OR_kYI0koSq-GldDyWYV_n5gTtbyVIqpNy-x7-OtsKu7Dxw76qrYrQ>
+    <xmx:OR_kYGECsyE-NZu9d6ZPPsxnRCHqRsJKTlEtOZ04ZgUAmAFvlG-Zdw>
+    <xmx:OR_kYJ_Frf2j23PV6vr9n5RthLuMaM6Ejex7Vm4JVkyLTFw5Nmu7ag>
+    <xmx:Oh_kYDMA-ubPTmPS3euDhXImj7YCK-KpyrYlSKSwLhCQ0NJZXut54w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 6 Jul 2021 05:15:37 -0400 (EDT)
+Date:   Tue, 6 Jul 2021 11:15:35 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc:     emma@anholt.net, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org
+Subject: Re: [PATCH] drm/vc4: hdmi: Limit noise when deferring snd card
+ registration
+Message-ID: <20210706091535.vstqragvgj7upspg@gilmour>
+References: <20210629121723.11523-1-nsaenzju@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="lkfucjtgrfhp3gma"
 Content-Disposition: inline
-In-Reply-To: <YONTRlrJugeVq6Fj@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210629121723.11523-1-nsaenzju@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 07:45:26PM +0100, Matthew Wilcox wrote:
-> On Mon, Jul 05, 2021 at 11:04:21AM -0700, Jaegeuk Kim wrote:
-> > On 07/05, Matthew Wilcox wrote:
-> > > I think freshly allocated pages have a page->private of 0.  ie this
-> > > code in mm/page_alloc.c:
-> > > 
-> > >                 page = rmqueue(ac->preferred_zoneref->zone, zone, order,
-> > >                                 gfp_mask, alloc_flags, ac->migratetype);
-> > >                 if (page) {
-> > >                         prep_new_page(page, order, gfp_mask, alloc_flags);
-> > > 
-> > > where prep_new_page() calls post_alloc_hook() which contains:
-> > >         set_page_private(page, 0);
-> > 
-> > Hmm, I can see it in 4.14 and 5.10 kernel.
-> > 
-> > The trace is on:
-> > 
-> >  30875 [ 1065.118750] c3     87  f2fs_migrate_page+0x354/0x45c
-> >  30876 [ 1065.123872] c3     87  move_to_new_page+0x70/0x30c
-> >  30877 [ 1065.128813] c3     87  migrate_pages+0x3a0/0x964
-> >  30878 [ 1065.133583] c3     87  compact_zone+0x608/0xb04
-> >  30879 [ 1065.138257] c3     87  kcompactd+0x378/0x4ec
-> >  30880 [ 1065.142664] c3     87  kthread+0x11c/0x12c
-> >  30881 [ 1065.146897] c3     87  ret_from_fork+0x10/0x18
-> > 
-> >  It seems compaction_alloc() gets a free page which doesn't reset the fields?
-> 
-> I'm not really familiar with the compaction code.  Mel, I see a call
-> to post_alloc_hook() in split_map_pages().  Are there other ways of
-> getting the compaction code to allocate a page which don't go through
-> split_map_pages()?
 
-I don't *think* so but I didn't look too hard as I had limited time
-available before a meeting. compaction_alloc calls isolate_freepages
-and that calls split_map_pages whether fast or slow isolating pages. The
-problem *may* be in split_page because only the head page gets order set
-to 0 but it's a bad fit because tail pages should be cleared of private
-state by del_page_from_free_list. It might be worth adding a debugging
-patch to split_pages that prints a warning once if a tail page has private
-state and dump the contents of private to see if it looks like an order.
+--lkfucjtgrfhp3gma
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Mel Gorman
-SUSE Labs
+On Tue, Jun 29, 2021 at 02:17:23PM +0200, Nicolas Saenz Julienne wrote:
+> We don't want to print an error message each time
+> devm_snd_soc_register_card() returns -EPROBE_DEFER, the function will
+> most likely succeed some time in the future, once the missing resources
+> are available. So use dev_err_probe(), which will redirect the messages
+> to the debug log level in such case.
+>=20
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+
+Applied, thanks
+Maxime
+
+--lkfucjtgrfhp3gma
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYOQfNwAKCRDj7w1vZxhR
+xWMuAP4r6Wvi1HAnDqMSYIt0qoz1TV1NnQxzcM7Dl2gpIi8sKgEAwYd6ZGeDAvhT
+haavcV61qlzcNE/nqiUsJxh7CMCS4Qg=
+=guzd
+-----END PGP SIGNATURE-----
+
+--lkfucjtgrfhp3gma--
