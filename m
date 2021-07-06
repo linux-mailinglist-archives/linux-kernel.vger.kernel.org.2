@@ -2,343 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976BA3BD88A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7953BD895
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232260AbhGFOnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:43:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbhGFOnA (ORCPT
+        id S231367AbhGFOpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:45:07 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:61778 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232395AbhGFOoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:43:00 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D411AC08EC26;
-        Tue,  6 Jul 2021 07:40:21 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id a6so1194254plh.11;
-        Tue, 06 Jul 2021 07:40:21 -0700 (PDT)
+        Tue, 6 Jul 2021 10:44:06 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 166EZZk8003195;
+        Tue, 6 Jul 2021 14:41:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=awwcBrcsoTb7EFRfvUxWJDz62aQpd3P60lF63yPHPE4=;
+ b=A3uOwrgHMacRo/mD8ixVUqeTCxkEdB5heoXAakHLOxA2yGixk5eI9pvMo+9enG30GE0U
+ sHpvvfTZBzYrLx2IVFn/rDhpDisn2YZGOuonxn65SAd43zU+n4w2i79wFfJxlFJ+GLuD
+ nuBUkzSCKcaVU0R8ovoXNFznU57QTewvhGx2I3QHHqZAMInN/Lw1rEP6IP91oO/v2vR3
+ WnKkosdW9gxdMAryIk858c3OGA+kixlqdkRwU7sJ/j/GipgKBhiN3okAv2IRLJsSE2tj
+ vpehdD1mu8zLkw2lKLlOfSrvFlq3BJp3zyqPu72o/lpKaAH5m2XwgLnE+TY+HQ9l5FEs Dg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39m2smj0p9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Jul 2021 14:41:20 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 166Ea68T092534;
+        Tue, 6 Jul 2021 14:41:19 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
+        by userp3030.oracle.com with ESMTP id 39jd11enb2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Jul 2021 14:41:19 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LwpM4wFZB2m+EcNC332Gr8JRLly9etwX2Bgt2fr2HcK2RgpVrx/EffAac+80PteEkH1Kvgm+fUVnJScK0o/tMAbNb+tsW1Ksrc6EdgnHGs8y0+gg1sMa9apXCt8S+dSyjodyRpjjzPuMvJhH1lalJRIqdrAPhw5PgLloh60MbfPkWPsZuBfSMtvgEUfGiVih9MX2xYW6HiruD+Kx8+5VS0xu7F0U7Lz+KS2OzrKBGoyC9mp9M3qF5fYIgugYFb6iTwLe7AQ5uACPsRegwgAw/WWYgpm1U3JliVno1MCo+bOh/nvbr05k5V14yMMPqkW+tOBT2wOjMkwC3pJ22uYm8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=awwcBrcsoTb7EFRfvUxWJDz62aQpd3P60lF63yPHPE4=;
+ b=W6cRk1LvAVi0uRKFoptKrL33uPuT0d1JVslt/lzuoJujpfFqZfBt+fI8pw/WZb5xK+McnxYCKAzu8m5+0ovdb+WxYTCT3n8rBqgOWwNUw5LaS8kDN/HiydFX/YmKSc3ZdCrtpQ4fvU6SYKZ7bSVAQPGOCxcjY/O/lHdYse72p2Iyk3HAqNA4cyulWDFDGlnqenyCW1H8WzabnqMGG5uB0o4kKE5OxpMzsyGcFLoyyvYz3h4WdfthOR2JI3rWreJwfwq6SJYs3RR11mU6nYMyimqHTFttrc3JfIpw0/7t9Tqx/NN6fc/ctZvSE7Rk+1g/f3U4yHICnNco5GTpGFPSkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:cc:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IQPIWc/c0+2ShSq50h2b41ngXFIaNGiDTzVj8B68k/o=;
-        b=n6hufDiisg4uE/JhCcce91LhJk01wes6cD3y5wl+LeNuAYqHWsOp2cQs9LgXeQ/M6C
-         CDYeeNnJoexnVFy4yMm5BwRz60noSkrlQeAtKHSRMurAnh0E5IaQJVGuUb8VrKM655GK
-         01ZEDy3xyzH2gqXhUs/70EcqL2qnMtg0QX6GxmH0CiDdEU0TapnDignRZtkTJYnfh8x6
-         skmlPQ4PTkHL2HsT7C6wFpthTtcaO3EisW/ndR8tKQNbPzR69kDfHV3Ig1oFYRvGsYTG
-         1jufiZ//GL2uDOvb5KnOFbhkPFtyL1I7MDoWFrxkuywJ/HKl40j8FVEG/EI7fhLPs9Fp
-         gauw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:cc:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IQPIWc/c0+2ShSq50h2b41ngXFIaNGiDTzVj8B68k/o=;
-        b=MmpYJxMlpbWNO6qoD0Qm+vm2cqIOyhOAv2pqbSMRdbOUcrahgNaxZZPP9xKmKNMT6+
-         8fQbqDVdtZTKdxXfbnpkMaGyy+Tc/ECKIXxpTjowNizgrY8RLC83Hv2GvB3ANh54SvM2
-         FA+mHLw/ScAztc/0bZo0UtP1jNkprbrpp3qx5erlOIn8tHtBFFaYribxqYU3he7yTP04
-         rHqqWK3y71CqEgIWyq/NwO8C8yZYGuezNM7KdtH2gEFw0kOa9ACF/WJuKM7QGw0c6I6o
-         J3AlI4aE+0YEM4mY0GCMISaRk70K1cD80VtFmD9kUm8c3SU2dRnZ8F1d1cTzWe9EFg0U
-         FHbA==
-X-Gm-Message-State: AOAM531+bvI4BtVhhjrGy++GQr4NK9xZENPuhCaSECy4gQhnNZlO/r7M
-        BG6vGhCu151rQj5ZwCpjb8k=
-X-Google-Smtp-Source: ABdhPJwB8Ir+4nG1Revw6uT2qeUxdtVYg+s5W5mbFN4xEET6hrXNgCcX3mi97mZ736XXWN62uUCqhg==
-X-Received: by 2002:a17:902:c38c:b029:128:fd55:f54b with SMTP id g12-20020a170902c38cb0290128fd55f54bmr17124695plg.24.1625582421281;
-        Tue, 06 Jul 2021 07:40:21 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id g38sm19058912pgg.63.2021.07.06.07.40.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 07:40:20 -0700 (PDT)
-Subject: Re: [PATCH v7 0/5] drm: address potential UAF bugs with drm_master
- ptrs
-To:     Daniel Vetter <daniel@ffwll.ch>, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
-        sumit.semwal@linaro.org, christian.koenig@amd.com
-References: <20210701165358.19053-1-desmondcheongzx@gmail.com>
- <YN9kAFcfGoB13x7f@phenom.ffwll.local>
- <ae76290d-26e9-a011-dcdd-b5d48c80912e@gmail.com>
- <YOMYgytOSPM+D6eZ@phenom.ffwll.local>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org, emil.l.velikov@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Message-ID: <59101934-8e71-a23c-b4c2-b69b0e0fe5bc@gmail.com>
-Date:   Tue, 6 Jul 2021 22:40:15 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=awwcBrcsoTb7EFRfvUxWJDz62aQpd3P60lF63yPHPE4=;
+ b=yv43WjXo9+VcCsjaRD08CICMC7qzAoWkIiJ7kYbgAF1Qor/ONKpJdFdHuOibP8/gvqQmk2shd7IcOPvQZJQHyqW66XExS8V7DPZwvcyOocqGK0IXF5tIgwxGmpKfKfDngHQVRm0Jfn9oOHPhXttko+8qVO3nqHS0hC/V1AvPoLE=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR1001MB2256.namprd10.prod.outlook.com
+ (2603:10b6:301:31::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Tue, 6 Jul
+ 2021 14:41:16 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::3413:3c61:5067:ba73]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::3413:3c61:5067:ba73%5]) with mapi id 15.20.4287.033; Tue, 6 Jul 2021
+ 14:41:16 +0000
+Date:   Tue, 6 Jul 2021 17:40:56 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Marco Elver <elver@google.com>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, hare@suse.de,
+        martin.petersen@oracle.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [GIT PULL] first round of SCSI updates for the 5.13+ merge window
+Message-ID: <20210706144056.GE26651@kadam>
+References: <e118d4b2fb924156f791564483336e7125276c47.camel@HansenPartnership.com>
+ <YORh1+8Mk5RYCzx7@elver.google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YORh1+8Mk5RYCzx7@elver.google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0023.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::16)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-In-Reply-To: <YOMYgytOSPM+D6eZ@phenom.ffwll.local>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (102.222.70.252) by JNAP275CA0023.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19 via Frontend Transport; Tue, 6 Jul 2021 14:41:09 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6796fb74-422e-4ffe-c848-08d9408c1c3b
+X-MS-TrafficTypeDiagnostic: MWHPR1001MB2256:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR1001MB225641F602023A67E4D00DD48E1B9@MWHPR1001MB2256.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PfoQovxupyW6h/edQL/lLvoJ51NCdySvNPtQKyfomv/IiN/kqbTwsm1TTKbhi4TRy7mXKQprGHDS2FKb/TCISKr0bcIhJ9a7OIjzUI48zQksOWAn5+1PvZdhM29UT/h4sF2vVAPBziB7pe23AO8hKpK7RlE3QRIc4i/5+j7vLKRwa+VtQ0YKyWzqvVJtax44nq/8GqDvulHyipZWbjyEHrFZ5jPDRB246t5UFYcuyIxFXhHsICaTfyVvFXFewTKTJF+yADUNahdUbLqtK2XLxuI2Wms8acRUJ32mn8KTFEMxd3zzSEY7k0jyR+GxH65xITCuFOBeq99UZSE18TvMBp1SI449eUNtloaB0UXoOqIquGiTVHjLaoga1gF1bO2hl+/fRGZJdkjhMdx6Ytx2HCvwWj5ctEvGzUWvK1CgNYxJrVMfNNNxyy5Ua+PGGB+u4ctNslYXd/y5jhNboY0iRLcShrfyxAR/XM+6LRZ3WNssEypLsKLTH5jA0OqWdEe2VBJDRJQ+PWWgt6iRLN42R0gZc0crtLfhK1wr0h9CMb3l4AYwpwLUR55G62ep7bXM9SHAQ/6JofnAAHk6F71kO9Y2cF4MMvL9yRPULhLOGPyGxDkTYUw/6xSrO2RnIpSsOuSEujQfEWdwDiSaPi6Tc+wyuYjPfxVkL9Zw0VrOVSoqi/7DflVaUKU3T/bLF/Lqcn3xrnjmqSPRSnR8k60ZrkPNOsOotJKPc7SJI3Osp9ff9KMk7yfkwRt+sJ3n1r9YSFoyr8+vlguogOhHUNkDgA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(39860400002)(366004)(346002)(376002)(66556008)(316002)(5660300002)(478600001)(2906002)(966005)(8676002)(83380400001)(9576002)(66946007)(6916009)(8936002)(54906003)(6666004)(4326008)(86362001)(55016002)(66476007)(9686003)(26005)(6496006)(1076003)(186003)(38100700002)(956004)(44832011)(33716001)(52116002)(33656002)(38350700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PogvlLlcDf2Nifte6plDCRgxvz3+qfEvO2F0w9mFKHY4agksEdA1ifp6XdLt?=
+ =?us-ascii?Q?8UKmRcdOwdrNps2OFfzw94yuJO/PuHlGjqbREHkVox/jQojipyYHZfEgwf3f?=
+ =?us-ascii?Q?50YUCjCdCNlNrACHr8DwKIrA01ZT2J5O0jbKUzirhf9M6/ws7znoJqmeYE97?=
+ =?us-ascii?Q?ShIohBWMySlv5X/yigL7u6zlMxq+aK7ZFhY/ill9nJXxkMx9Ee6Zi7UBSiLA?=
+ =?us-ascii?Q?tjVRWerDq8KOiEpCqz6Q/vhwVo/kymCd3LefNj90I5aDEvYAC45sfpIKjT4G?=
+ =?us-ascii?Q?VbPdiCZdr4F/5g/1ogG7XMtye8MzEOiLRjWxkPhE/lEkGk5LDVaixGZ2fz/V?=
+ =?us-ascii?Q?LnQ2KnnJZsalVj3QNFbUOfJrDuYPOsgn+aO83G+Eg71tG6Mm//WZ7v8G3taX?=
+ =?us-ascii?Q?UEPyEgwBhixUwRiGAFguAAP6I4i6/OvYMG3/CT2p5YuEGvk+y5C6ylOC1s8O?=
+ =?us-ascii?Q?t4yJu0nna4ArXgi5Ma6pXPsT/Tqai0xjz5dYmhTFNCPwAm/wmOQkIS7Ozc3e?=
+ =?us-ascii?Q?UVdx3yp29Tu5cTi65YoXrMi5QRKhz6oNtHus/Cytw/8ds93iIbb10sioF1TQ?=
+ =?us-ascii?Q?NpXQWxJjFgCC7EKkJePLRgNUWOECYjRQzpw2YMKCCU4XdNnB2ogoH8r9Sr0N?=
+ =?us-ascii?Q?g9370Viwpo4p9DeycZYPv5HMsMXxil6YpNK5R4iUJRahjOgNlYdemRWYEnXe?=
+ =?us-ascii?Q?UEho0f6G7cMwGC+PVitP1dH3x2qR/zDBlFJl6V71gXJIBDE66U1TVeQsqR5+?=
+ =?us-ascii?Q?WLrGtAkauSkgZHeTD+nTe4bYOWOnAbWqxn28M7pckXX0cGzHMWxEwwf3DRdT?=
+ =?us-ascii?Q?JAillafzs//AiL6NMNDJynswRbtTR1TDuPKmVYk6VfeVQ4cTHXR8C2bOsvro?=
+ =?us-ascii?Q?w+Vm2Iiena3K3kCaf4BNFwhch8/3ykzPcf3OYXoK2v25NvbGkPRkMmzNK0/M?=
+ =?us-ascii?Q?/Ha8KPCSqqvmH/dAtzII3pOogUnOqOPVAN+R/mB5tYsleD+FH7WIKQmx6NDT?=
+ =?us-ascii?Q?U+pYm827CEgb8GM2Kux4h1Xf+p776WEq2aNg9bo0JsdyESAa9uj7SToXT7Fa?=
+ =?us-ascii?Q?vvbmiQpW60Xe2O2QtTJGfrMDJOEAn0XavdEi2/s4VJrPSqPWihIDG+8vKR1L?=
+ =?us-ascii?Q?C0fwQQ6v5DVG4etToSS7jvPzkEi4ONGLrIuTLZn/lTkljM8q5DppiD1tG8qx?=
+ =?us-ascii?Q?zpa6jUD/nFMz/l7ShzYBvJgGz8GEPZVuAiFNtgbKs0BWJ5RzdtAfu9kB3JjC?=
+ =?us-ascii?Q?LpD/sAZ4v3ADV1t7SUQN4Hpncb9Mi+nvT2f8nQyKRRMkBPP6tWae14s6vfev?=
+ =?us-ascii?Q?Kz582ze+t7PqQNNgqtZlLVin?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6796fb74-422e-4ffe-c848-08d9408c1c3b
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2021 14:41:16.6023
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Z89EEP7WhcwEIT7224roXeNC/l+PLTAWlvn8/pvgnW6KGwLJn/U+cMPCUkHSXYK3TZc+zsprBz9kHrL6hMTmKi2J/oPdv6PU5J/p6zasnH0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2256
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10037 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
+ suspectscore=0 phishscore=0 mlxscore=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107060068
+X-Proofpoint-GUID: CX-z2UKS6lA8nN_cpItW-nZsnA1BD3tU
+X-Proofpoint-ORIG-GUID: CX-z2UKS6lA8nN_cpItW-nZsnA1BD3tU
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/7/21 10:34 pm, Daniel Vetter wrote:
-> On Mon, Jul 05, 2021 at 10:15:45AM +0800, Desmond Cheong Zhi Xi wrote:
->> On 3/7/21 3:07 am, Daniel Vetter wrote:
->>> On Fri, Jul 02, 2021 at 12:53:53AM +0800, Desmond Cheong Zhi Xi wrote:
->>>> This patch series addresses potential use-after-free errors when dereferencing pointers to struct drm_master. These were identified after one such bug was caught by Syzbot in drm_getunique():
->>>> https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
->>>>
->>>> The series is broken up into five patches:
->>>>
->>>> 1. Move a call to drm_is_current_master() out from a section locked by &dev->mode_config.mutex in drm_mode_getconnector(). This patch does not apply to stable.
->>>>
->>>> 2. Move a call to _drm_lease_held() out from the section locked by &dev->mode_config.idr_mutex in __drm_mode_object_find().
->>>>
->>>> 3. Implement a locked version of drm_is_current_master() function that's used within drm_auth.c.
->>>>
->>>> 4. Serialize drm_file.master by introducing a new lock that's held whenever the value of drm_file.master changes.
->>>>
->>>> 5. Identify areas in drm_lease.c where pointers to struct drm_master are dereferenced, and ensure that the master pointers are not freed during use.
->>>>
->>>> Changes in v6 -> v7:
->>>> - Patch 2:
->>>> Modify code alignment as suggested by the intel-gfx CI.
->>>>
->>>> Update commit message based on the changes to patch 5.
->>>>
->>>> - Patch 4:
->>>> Add patch 4 to the series. This patch adds a new lock to serialize drm_file.master, in response to the lockdep splat by the intel-gfx CI.
->>>>
->>>> - Patch 5:
->>>> Move kerneldoc comment about protecting drm_file.master with drm_device.master_mutex into patch 4.
->>>>
->>>> Update drm_file_get_master to use the new drm_file.master_lock instead of drm_device.master_mutex, in response to the lockdep splat by the intel-gfx CI.
->>>
->>> So there's another one now because master->leases is protected by the
->>> mode_config.idr_mutex, and that's a bit awkward to untangle.
->>>
->>> Also I'm really surprised that there was now lockdep through the atomic
->>> code anywhere. The reason seems to be that somehow CI reboot first before
->>> it managed to run any of the kms_atomic tests, and we can only hit this
->>> when we go through the atomic kms ioctl, the legacy kms ioctl don't have
->>> that specific issue.
->>>
->>> Anyway I think this approach doesn't look too workable, and we need
->>> something new.
->>>
->>> But first things first: Are you still on board working on this? You
->>> started with a simple patch to fix a UAF bug, now we're deep into
->>> reworking tricky locking ... If you feel like you want out I'm totally
->>> fine with that.
->>>
->>
->> Hi Daniel,
->>
->> Thanks for asking, but I'm committed to seeing this through :) In fact, I
->> really appreciate all your guidance and patience as the simple patch evolved
->> into the current state of things.
+On Tue, Jul 06, 2021 at 03:59:51PM +0200, 'Marco Elver' via syzkaller-bugs wrote:
+> On Fri, Jul 02, 2021 at 09:11AM +0100, James Bottomley wrote:
+> [...]
+> >       scsi: core: Kill DRIVER_SENSE
+> [...]
 > 
-> Cool, it's definitely been fun trying to figure out a good solution for
-> this tricky problem here :-)
+> As of this being merged, most of our syzbot instances are broken with:
 > 
->>> Anyway, I think we need to split drm_device->master_mutex up into two
->>> parts:
->>>
->>> - One part that protects the actual access/changes, which I think for
->>>     simplicity we'll just leave as the current lock. That lock is a very
->>>     inner lock, since for the drm_lease.c stuff it has to nest within
->>>     mode_config.idr_mutex even.
->>>
->>> - Now the issue with checking master status/leases/whatever as an
->>>     innermost lock is that you can race, it's a classic time of check vs
->>>     time of use race: By the time we actually use the thing we validate
->>>     we'er allowed to use, we might now have access anymore. There's two
->>>     reasons for that:
->>>
->>>     * DROPMASTER ioctl could remove the master rights, which removes access
->>>       rights also for all leases
->>>
->>>     * REVOKE_LEASE ioctl can do the same but only for a specific lease
->>>
->>>     This is the thing we're trying to protect against in fbcon code, but
->>>     that's very spotty protection because all the ioctls by other users
->>>     aren't actually protected against this.
->>>
->>>     So I think for this we need some kind of big reader lock.
->>>
->>> Now for the implementation, there's a few things:
->>>
->>> - I think best option for this big reader lock would be to just use srcu.
->>>     We only need to flush out all current readers when we drop master or
->>>     revoke a lease, so synchronize_srcu is perfectly good enough for this
->>>     purpose.
->>>
->>> - The fbdev code would switch over to srcu in
->>>     drm_master_internal_acquire() and drm_master_internal_release(). Ofc
->>>     within drm_master_internal_acquire we'd still need to check master
->>>     status with the normal master_mutex.
->>>
->>> - While we revamp all this we should fix the ioctl checks in drm_ioctl.c.
->>>     Just noticed that drm_ioctl_permit() could and should be unexported,
->>>     last user was removed.
->>>
->>>     Within drm_ioctl_kernel we'd then replace the check for
->>>     drm_is_current_master with the drm_master_internal_acquire/release.
->>>
->>> - This alone does nothing, we still need to make sure that dropmaster and
->>>     revoke_lease ioctl flush out all other access before they return to
->>>     userspace. We can't just call synchronize_srcu because due to the ioctl
->>>     code in drm_ioctl_kernel we're in that sruc section, we'd need to add a
->>>     DRM_MASTER_FLUSH ioctl flag which we'd check only when DRM_MASTER is
->>>     set, and use to call synchronize_srcu. Maybe wrap that in a
->>>     drm_master_flush or so, or perhaps a drm_master_internal_release_flush.
->>>
->>> - Also maybe we should drop the _internal_ from that name. Feels a bit
->>>     wrong when we're also going to use this in the ioctl handler.
->>>
->>> Thoughts? Totally silly and overkill?
->>>
->>> Cheers, Daniel
->>>
->>>
->>
->> Just some thoughts on the previous approach before we move on to something
->> new. Regarding the lockdep warning for mode_config.idr_mutex, I think that's
->> resolvable now by simply removing patch 2, which is no longer really
->> necessary with the introduction of a new mutex at the bottom of the lock
->> hierarchy in patch 4.
+> | Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
+> | CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.13.0-syzkaller #0
+> | Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> | Call Trace:
+> |  __dump_stack lib/dump_stack.c:79 [inline]
+> |  dump_stack_lvl+0x6e/0x91 lib/dump_stack.c:96
+> |  panic+0x192/0x4c7 kernel/panic.c:232
+> |  mount_block_root+0x268/0x31a init/do_mounts.c:439
+> |  mount_root+0x162/0x18d init/do_mounts.c:555
+> |  prepare_namespace+0x1ff/0x234 init/do_mounts.c:607
+> |  kernel_init_freeable+0x2c4/0x2d6 init/main.c:1604
+> |  kernel_init+0x1a/0x1c0 init/main.c:1483
+> |  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 > 
-> Oh I missed that, this is essentially part-way to what I'm describing
-> above.
-> 
->> I was hesitant to create a new mutex (especially since this means that
->> drm_file.master is now protected by either of two mutexes), but it's
->> probably the smallest fix in terms of code churn. Is that approach no good?
-> 
-> That's the other approach I considered. It solves the use-after-free
-> issue, but while I was musing all the different issues here I realized
-> that we might as well use the opportunity to plug a few functional races
-> around drm_device ownership rules.
-> 
+> I've bisected the problem to 464a00c9e0ad ("scsi: core: Kill DRIVER_SENSE"):
 
-Ah, right, that sounds like a good thing to do. I suspect that I might 
-have misunderstood what we're trying to achieve, so to clarify:
+Here is one of syzbot reports.
 
-Is the issue that DROPMASTER ioctl/REVOKE_LEASE ioctl may be called 
-concurrently with other ioctls, so we have to ensure that these other 
-ioctl cmds are not running with outdated permissions (by ensuring 
-they've been flushed out) once dropmaster/revoke_lease successfully 
-return to the user?
+https://groups.google.com/g/syzkaller-bugs/c/6aqmRNRYI7E/m/V7BNerRfDAAJ
 
-If that's the case, then something that confuses me is why we'd want to 
-use the srcu read lock in drm_master_internal_acquire. The function 
-returns true only if dev->master is not set. Wouldn't this mean that 
-between a successful call to drm_master_internal_acquire/release, 
-there's no master that would be affected by DROPMASTER/REVOKE_LEASE?
+If you look at the console output link, init_mount() is failing with
+-ENXIO.  It looks the sda drive is not found at all.  It's supposed to
+print a list of available partitions but the list is empty.
 
-I'm also confused as to how drm_master_internal_acquire/release can 
-replace the check for drm_is_current_master.
-
-> I do think it works. One thing I'd change is make it a spinlock - that
-> wayy it's very clear that it's a tiny inner lock that's really only meant
-> to protect the ->master pointer.
-> >> Otherwise, on a high level, I think using an srcu mechanism makes a 
-lot of
->> sense to me to address the issue of data items being reclaimed while some
->> readers still have references to them.
->>
->> The implementation details seem sound to me too, but I'll need to code it up
->> a bit before I can comment further.
-> 
-> So maybe this is complete overkill, but what about three locks :-)
-> 
-> - innermost spinlock, just to protect against use-after-free until we
->    successfully got a reference. Essentially this is the lookup lock -
->    maybe we could call it master_lookup_lock for clarity?
-> 
-> - mutex like we have right now to make sure master state is consistent
->    when someone races set/dropmaster in userspace. This would be the only
->    write lock we have.
-> 
-> - new srcu to make sure that after a dropmaster/revoke-lease all previous
->    users calls are flushed out with synchronize_srcu(). Essentially this
->    wouldn't be a lock, but more a barrier. So maybe should call it
->    master_barrier_srcu or so? fbdev emulation in drm_client would use this,
->    and also drm_ioctl code to plug the race I've spotted.
-> 
-> So maybe refresh your series with just the pieces you think we need for
-> the master lookup spinlock, and we try to land that first?
-> 
-
-But besides the clarification above, this plan and the change to a 
-spinlock sound good, I'll update the series accordingly.
-
-> I do agree this should work against the use-after-free.
-> 
-> Cheers, Daniel
-> 
->>
->> Best wishes,
->> Desmond
->>
->>>> Changes in v5 -> v6:
->>>> - Patch 2:
->>>> Add patch 2 to the series. This patch moves the call to _drm_lease_held out from the section locked by &dev->mode_config.idr_mutex in __drm_mode_object_find.
->>>>
->>>> - Patch 5:
->>>> Clarify the kerneldoc for dereferencing drm_file.master, as suggested by Daniel Vetter.
->>>>
->>>> Refactor error paths with goto labels so that each function only has a single drm_master_put(), as suggested by Emil Velikov.
->>>>
->>>> Modify comparison to NULL into "!master", as suggested by the intel-gfx CI.
->>>>
->>>> Changes in v4 -> v5:
->>>> - Patch 1:
->>>> Add patch 1 to the series. The changes in patch 1 do not apply to stable because they apply to new changes in the drm-misc-next branch. This patch moves the call to drm_is_current_master in drm_mode_getconnector out from the section locked by &dev->mode_config.mutex.
->>>>
->>>> Additionally, added a missing semicolon to the patch, caught by the intel-gfx CI.
->>>>
->>>> - Patch 3:
->>>> Move changes to drm_connector.c into patch 1.
->>>>
->>>> Changes in v3 -> v4:
->>>> - Patch 3:
->>>> Move the call to drm_is_current_master in drm_mode_getconnector out from the section locked by &dev->mode_config.mutex. As suggested by Daniel Vetter. This avoids a circular lock lock dependency as reported here https://patchwork.freedesktop.org/patch/440406/
->>>>
->>>> Additionally, inside drm_is_current_master, instead of grabbing &fpriv->master->dev->master_mutex, we grab &fpriv->minor->dev->master_mutex to avoid dereferencing a null ptr if fpriv->master is not set.
->>>>
->>>> - Patch 5:
->>>> Modify kerneldoc formatting.
->>>>
->>>> Additionally, add a file_priv->master NULL check inside drm_file_get_master, and handle the NULL result accordingly in drm_lease.c. As suggested by Daniel Vetter.
->>>>
->>>> Changes in v2 -> v3:
->>>> - Patch 3:
->>>> Move the definition of drm_is_current_master and the _locked version higher up in drm_auth.c to avoid needing a forward declaration of drm_is_current_master_locked. As suggested by Daniel Vetter.
->>>>
->>>> - Patch 5:
->>>> Instead of leaking drm_device.master_mutex into drm_lease.c to protect drm_master pointers, add a new drm_file_get_master() function that returns drm_file->master while increasing its reference count, to prevent drm_file->master from being freed. As suggested by Daniel Vetter.
->>>>
->>>> Changes in v1 -> v2:
->>>> - Patch 5:
->>>> Move the lock and assignment before the DRM_DEBUG_LEASE in drm_mode_get_lease_ioctl, as suggested by Emil Velikov.
->>>>
->>>> Desmond Cheong Zhi Xi (5):
->>>>     drm: avoid circular locks in drm_mode_getconnector
->>>>     drm: separate locks in __drm_mode_object_find
->>>>     drm: add a locked version of drm_is_current_master
->>>>     drm: serialize drm_file.master with a master lock
->>>>     drm: protect drm_master pointers in drm_lease.c
->>>>
->>>>    drivers/gpu/drm/drm_auth.c        | 86 +++++++++++++++++++++++--------
->>>>    drivers/gpu/drm/drm_connector.c   |  5 +-
->>>>    drivers/gpu/drm/drm_file.c        |  1 +
->>>>    drivers/gpu/drm/drm_lease.c       | 81 ++++++++++++++++++++++-------
->>>>    drivers/gpu/drm/drm_mode_object.c | 10 ++--
->>>>    include/drm/drm_auth.h            |  1 +
->>>>    include/drm/drm_file.h            | 18 +++++--
->>>>    7 files changed, 153 insertions(+), 49 deletions(-)
->>>>
->>>> -- 
->>>> 2.25.1
->>>>
->>>
->>
-> 
+regards,
+dan carpenter
 
