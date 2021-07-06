@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF053BD6B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD3C3BD6B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhGFMng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:43:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38876 "EHLO
+        id S235659AbhGFMnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:43:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24532 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345729AbhGFMgV (ORCPT
+        by vger.kernel.org with ESMTP id S231772AbhGFMg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 08:36:21 -0400
+        Tue, 6 Jul 2021 08:36:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625574822;
+        s=mimecast20190719; t=1625574828;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dVlH/6kj9+mnyRDPxoOEz2Sc597z9B9MJB0mv+AaqxY=;
-        b=SvX6Gl1lBLLUx27scBHSVcn0NHzq97l1MgJPw++eexPR2udO+7M/hNIOIT8uGk9Ot8A5sk
-        meiB/UUSCeccY0GygxHJATFqDgevlJ4H1TwuqldzuQlTYHk7ULuy1VBdE6jlHB3ao92vSx
-        EvDmmBUPoDKslHtvI1VMk8KldrPPkQg=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-125-3jLnMM0FOm2i4yYlBfzw7w-1; Tue, 06 Jul 2021 08:33:41 -0400
-X-MC-Unique: 3jLnMM0FOm2i4yYlBfzw7w-1
-Received: by mail-ej1-f71.google.com with SMTP id my13-20020a1709065a4db02904dca50901ebso1459594ejc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 05:33:41 -0700 (PDT)
+        bh=NJLDkY2gPeOkvFS4cKNtvwysWqnJZP3On3EDRZyLY2Y=;
+        b=YiixaekAtgOGJTogJaa1sfrZOY8AzbnVkmEk5KfhguwZIjDqZIRE1WWaWif94UkTc98jJ2
+        14qAbqkoXuXze0WoFA+KIpYtpxqLbzFLYIjpgzKc0Omf+Ht+z4ok8RFRcDS5o9OW69IlfE
+        JDt4Nnm/SwRopCfDbLvHjLbm6TQR36A=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-s2dNATCBN0OtrBFp5Q_K7g-1; Tue, 06 Jul 2021 08:33:46 -0400
+X-MC-Unique: s2dNATCBN0OtrBFp5Q_K7g-1
+Received: by mail-ej1-f72.google.com with SMTP id v5-20020a1709068585b02904eb913da73bso87089ejx.8
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 05:33:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=dVlH/6kj9+mnyRDPxoOEz2Sc597z9B9MJB0mv+AaqxY=;
-        b=oS5Vto/aWa4lzQJYOgMmj0ocKGiSblHUOU7046YGTTcY1LUO7H05phowbKcihMRVPP
-         N7iMN7+DEAExo+Ki2KzCuZ6kAMunpYkhtXp6WADmoDWCEJsyOz1V4G5ZQQUe8JDlwMjR
-         bffsKEWedZrBEz1hxC1liie+gXOdqdfQe5nouWdIYvzHxwJySP/nnj2IWXoAZMAzsABM
-         YEnlLYh89cV57ITRaM7hEseTyI96FMf6hYwueOy1X74mB+DOYQs2XVxJBWDY8F6EBc0e
-         p6FqtJETw+w35qMx7A26Y1WjLcltdChWj2UFczh2wJ1+SartpkEDR4Xk4dmAtSUR3utC
-         gqzg==
-X-Gm-Message-State: AOAM533GHC5Rk5bAXNZSBkQ7OIXJYYzVxZz258xwE5kZrOj2D3GZM2ja
-        sPMj5+QBrDLKvyt9kmh5Hew6HUeDE3L8+8X5kyPmZCrtJaW+reYIW4+Se8WpOv0CFIHjFlh1hrr
-        7VSR0cMgsyk5MVbU/a3ekFJJm
-X-Received: by 2002:a17:907:1dc9:: with SMTP id og9mr12829874ejc.152.1625574817768;
-        Tue, 06 Jul 2021 05:33:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz1jC3LOqlbUFJVvvl3ZZxtzmEkvsUYpeUri3OeGjcSrYQXCvfrJPaspHJQfuTfCdWG9cik5g==
-X-Received: by 2002:a17:907:1dc9:: with SMTP id og9mr12829844ejc.152.1625574817565;
-        Tue, 06 Jul 2021 05:33:37 -0700 (PDT)
+        bh=NJLDkY2gPeOkvFS4cKNtvwysWqnJZP3On3EDRZyLY2Y=;
+        b=HjnZCr+gBgs53iwwSrrVeVorhf5q0FdHLJBriN3zJxukwm/aUyHJsedpOuh+LsqUiC
+         PK4VeAzItTqtpl43t5B7qALNOgh00RcpW7x61+5HuScufd8DMNLdB303puRr8WF/g7K4
+         zE8MY+XXpmAuaeeAotmSp1m56iaWaJwLB/GKm6nw1TpUvbTMeL3a+oQ9VpHNUuMUsFWP
+         Q9mZvVtKPmEi19J5RoGqOFhbcdS8Mgn3PhuV8c+fApHqlkLhYmDT3VkFoRedjIOcMwIh
+         IYP4blbOKybxuBhQ9uLl6ytYdVsU6UJjZ9QmKarX5CueV8c7DcKmKyt2ek0kg0HPoQqi
+         vDwQ==
+X-Gm-Message-State: AOAM532cmgJYDL7XGm0NvilcTbwdBJdVxHWO0vXh6910rRXpGDNWF68A
+        ERKyqceQY4nEL7yhnt6qJ6+cpqauQhMhLcpwG/YQSOugMjjr9o+IzhjrC0/A0n3JNlLUNPieVuw
+        WOaGsTuFyy9D8hK2YLhA4W8FR
+X-Received: by 2002:a50:ed82:: with SMTP id h2mr22762105edr.165.1625574825853;
+        Tue, 06 Jul 2021 05:33:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwrGvPa3AW6VZ51OAEcOUS0D09XGWsEEMzPBFmzWvZmeih97PLkwzzf0GvX9ZuaFSxWSaqFmg==
+X-Received: by 2002:a50:ed82:: with SMTP id h2mr22762082edr.165.1625574825715;
+        Tue, 06 Jul 2021 05:33:45 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id l16sm5338164ejb.26.2021.07.06.05.33.36
+        by smtp.gmail.com with ESMTPSA id s7sm5884278ejd.88.2021.07.06.05.33.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 05:33:36 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 01/69] KVM: TDX: introduce config for KVM TDX
- support
+        Tue, 06 Jul 2021 05:33:45 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 03/69] KVM: X86: move out the definition
+ vmcs_hdr/vmcs from kvm to x86
 To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H . Peter Anvin" <hpa@zytor.com>,
@@ -66,14 +66,14 @@ To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     isaku.yamahata@gmail.com
 References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <2f265006e5cee03a5a48448c51c3632391e58ec7.1625186503.git.isaku.yamahata@intel.com>
+ <62b61eb968f867518aedd98a0753b7fd29958efb.1625186503.git.isaku.yamahata@intel.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <bb3920be-1e53-6b5a-1b68-1fcb5d9d627c@redhat.com>
-Date:   Tue, 6 Jul 2021 14:33:35 +0200
+Message-ID: <ecb20c33-0f45-2c96-24bd-3099891bbb97@redhat.com>
+Date:   Tue, 6 Jul 2021 14:33:43 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <2f265006e5cee03a5a48448c51c3632391e58ec7.1625186503.git.isaku.yamahata@intel.com>
+In-Reply-To: <62b61eb968f867518aedd98a0753b7fd29958efb.1625186503.git.isaku.yamahata@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -84,36 +84,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
 > From: Isaku Yamahata <isaku.yamahata@intel.com>
 > 
-> Add new config KVM_INTEL_TDX for KVM TDX support.  This patch introduce
-> a config only.  Later patch will implement feature depends on it.
+> This is preparation for TDX support.
+> 
+> Because SEAMCALL instruction requires VMX enabled, it needs to initialize
+> struct vmcs and load it before SEAMCALL instruction.[1] [2]  Move out the
+> definition of vmcs into a common x86 header, arch/x86/include/asm/vmx.h, so
+> that seamloader code can share the same definition.
+> 
+> [1] Intel Trust Domain CPU Architectural Extensions
+> https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-cpu-architectural-specification.pdf
+> 
+> [2] TDX Module spec
+> https://software.intel.com/content/dam/develop/external/us/en/documents/tdx-module-1eas-v0.85.039.pdf
 > 
 > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 > ---
->   arch/x86/kvm/Kconfig | 11 +++++++++++
->   1 file changed, 11 insertions(+)
+>   arch/x86/include/asm/vmx.h | 11 +++++++++++
+>   arch/x86/kvm/vmx/vmcs.h    | 11 -----------
+>   2 files changed, 11 insertions(+), 11 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-> index f6b93a35ce14..66622901bf7d 100644
-> --- a/arch/x86/kvm/Kconfig
-> +++ b/arch/x86/kvm/Kconfig
-> @@ -96,6 +96,17 @@ config X86_SGX_KVM
+> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
+> index 0ffaa3156a4e..035dfdafa2c1 100644
+> --- a/arch/x86/include/asm/vmx.h
+> +++ b/arch/x86/include/asm/vmx.h
+> @@ -17,6 +17,17 @@
+>   #include <uapi/asm/vmx.h>
+>   #include <asm/vmxfeatures.h>
 >   
->   	  If unsure, say N.
+> +struct vmcs_hdr {
+> +	u32 revision_id:31;
+> +	u32 shadow_vmcs:1;
+> +};
+> +
+> +struct vmcs {
+> +	struct vmcs_hdr hdr;
+> +	u32 abort;
+> +	char data[];
+> +};
+> +
+>   #define VMCS_CONTROL_BIT(x)	BIT(VMX_FEATURE_##x & 0x1f)
 >   
-> +config KVM_INTEL_TDX
-> +	bool "Trusted Domain eXtensions(TDX) Host support"
-> +	depends on KVM_INTEL && X86_64
-> +	select FW_LOADER
-> +
-> +	help
-> +	  Extends KVM on Intel processors to support Trusted Domain Extensions.
-> +	  Intel Trust Domain eXtensions(TDX) is an architecture based on CPU
-> +	  instructions and TDX module to deploy hardware-isolated virtual
-> +	  machines(VMs) which is called Trust Domains(TDs).
-> +
->   config KVM_AMD
->   	tristate "KVM for AMD processors support"
->   	depends on KVM
+>   /*
+> diff --git a/arch/x86/kvm/vmx/vmcs.h b/arch/x86/kvm/vmx/vmcs.h
+> index 1472c6c376f7..ac09bc4996a5 100644
+> --- a/arch/x86/kvm/vmx/vmcs.h
+> +++ b/arch/x86/kvm/vmx/vmcs.h
+> @@ -11,17 +11,6 @@
+>   
+>   #include "capabilities.h"
+>   
+> -struct vmcs_hdr {
+> -	u32 revision_id:31;
+> -	u32 shadow_vmcs:1;
+> -};
+> -
+> -struct vmcs {
+> -	struct vmcs_hdr hdr;
+> -	u32 abort;
+> -	char data[];
+> -};
+> -
+>   DECLARE_PER_CPU(struct vmcs *, current_vmcs);
+>   
+>   /*
 > 
 
 Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
