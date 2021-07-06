@@ -2,83 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 498D43BD84D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBDA3BD856
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbhGFOg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:36:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31902 "EHLO
+        id S232259AbhGFOhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:37:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55175 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231569AbhGFOgn (ORCPT
+        by vger.kernel.org with ESMTP id S232245AbhGFOhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:36:43 -0400
+        Tue, 6 Jul 2021 10:37:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625582044;
+        s=mimecast20190719; t=1625582102;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YoXkhBMvrhpzdBeMeudXyap/G4h+/3QJ3JCELWVi84c=;
-        b=jCciEw9aui9fs/pPNe71D+diMP9vsL3wbH2s4jMqd+Y841KtcBN7nxJuU9NFsBsb2Lz/Su
-        kwwzKpe9SW3a0V5nP98C4tDStnlhN+Wi6abx0cxoe1yUprtYwgocpKuTOLIeOPoc6OJlWf
-        sTh1hldHOm4rspIZSd2yqHAJNWHTc1Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-115-HaG8VabsOHGs3_PDf83gSA-1; Tue, 06 Jul 2021 10:17:46 -0400
-X-MC-Unique: HaG8VabsOHGs3_PDf83gSA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1DB9581840A;
-        Tue,  6 Jul 2021 14:17:45 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 658F760CC6;
-        Tue,  6 Jul 2021 14:17:41 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 5A9AA416F5D2; Tue,  6 Jul 2021 11:17:23 -0300 (-03)
-Date:   Tue, 6 Jul 2021 11:17:23 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Nitesh Lal <nilal@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [patch 0/5] optionally sync per-CPU vmstats counter on return to
- userspace
-Message-ID: <20210706141723.GA68914@fuller.cnet>
-References: <20210701210336.358118649@fuller.cnet>
- <20210702123032.GA72061@lothringen>
- <20210702152816.GA4122@fuller.cnet>
- <20210706130925.GC107277@lothringen>
- <20210706140550.GA64308@fuller.cnet>
- <20210706140920.GA68399@fuller.cnet>
+        bh=HgpykafpViSKKg/vT0c+K8niR3uhRG40sTK1NxePChg=;
+        b=OK/vLpwgFh8VsPP9lT8xi02bPe+Sq3PShK6Gnj9Jc9J/VLHIfMxJl6aRgExNCdAPUNfTFM
+        FFwKyTTiXSVKHTiec5dyzv4sYZO6ugcDy6YURGHgHatxsesqk8zLgLzqJAkYLqcAl3YUlS
+        FqXPmckVFM2pKenOba4xriOqdawsKpQ=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-589-su_XvzeSMQicAo6raj4yMA-1; Tue, 06 Jul 2021 10:17:58 -0400
+X-MC-Unique: su_XvzeSMQicAo6raj4yMA-1
+Received: by mail-ej1-f71.google.com with SMTP id my13-20020a1709065a4db02904dca50901ebso1588932ejc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:17:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HgpykafpViSKKg/vT0c+K8niR3uhRG40sTK1NxePChg=;
+        b=M5XTuwAJL25kpV5tryGrDAxGGPX6/UIEyuJPaA5YTS33PGDHgIc8FyPXc61MVPv6EU
+         L+/swK/+idpJ6LuPzgENqmnx8Kf+7Ybp9cQS6pkNEH1tVFSOpz8vafkIuj0Gfz/09P4U
+         JrrXelcWZ0lD7qOFhbNOk+rWBQCR8dFju3P7ymMYTNqFea7fUndcCKR9nVhkwpz2/Lxr
+         tIKTrVa8Ojs+kkRW+3idJ1SHBnd5kgo5qTyOokX+1hEGWwNi1dOm+qPxRkvP/nEvrz0r
+         Qt/otCK4r7FVzZ24wdRTysIQm4a3JM5h7LejGp1fYuezCgr0TvYVb8xXS8CWwJ/T0LUR
+         pP7Q==
+X-Gm-Message-State: AOAM531B2XgrqqDClbUJAGwODqZV95myfJ28o9jJFQx3GRCVAeqdEE2/
+        FUeY2Mnx16WSZ456LEkqnRu51fkE1JwqwcEETKR9TVRBMgaZESdX2pP5dMTEjOX+dCf0zvjZwfN
+        J4MEzDj9t/8Ur45zQABsdTNxX
+X-Received: by 2002:a17:907:3f93:: with SMTP id hr19mr5978930ejc.174.1625581077642;
+        Tue, 06 Jul 2021 07:17:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxP8Cjndmhd1l2fvfJwWimt9VGxUlRqCL0hmiWaSy8opx1DXsrM7zvmzJ1dfy99qJTnxD2Gog==
+X-Received: by 2002:a17:907:3f93:: with SMTP id hr19mr5978899ejc.174.1625581077455;
+        Tue, 06 Jul 2021 07:17:57 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id rp5sm4136176ejb.63.2021.07.06.07.17.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 07:17:56 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 63/69] KVM: VMX: Move .get_interrupt_shadow()
+ implementation to common VMX code
+To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <11a3389da6184785b238b0d5a7f60279aa0a93b1.1625186503.git.isaku.yamahata@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <3343767a-f7b3-715b-8d99-9821a458a708@redhat.com>
+Date:   Tue, 6 Jul 2021 16:17:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210706140920.GA68399@fuller.cnet>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <11a3389da6184785b238b0d5a7f60279aa0a93b1.1625186503.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 11:09:20AM -0300, Marcelo Tosatti wrote:
-> > > And I suspect some other people won't like much a new extension
-> > > to isolcpus.
-> > 
-> > Why is that so? 
+On 03/07/21 00:05, isaku.yamahata@intel.com wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
 > 
-> Ah, yes, that would be PeterZ.
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>   arch/x86/kvm/vmx/common.h | 14 ++++++++++++++
+>   arch/x86/kvm/vmx/vmx.c    | 10 +---------
+>   2 files changed, 15 insertions(+), 9 deletions(-)
 > 
-> IIRC his main point was that its not runtime changeable.
-> We can (partially fix that), if that is the case.
+> diff --git a/arch/x86/kvm/vmx/common.h b/arch/x86/kvm/vmx/common.h
+> index 755aaec85199..817ff3e74933 100644
+> --- a/arch/x86/kvm/vmx/common.h
+> +++ b/arch/x86/kvm/vmx/common.h
+> @@ -120,6 +120,20 @@ static inline int __vmx_handle_ept_violation(struct kvm_vcpu *vcpu, gpa_t gpa,
+>   	return kvm_mmu_page_fault(vcpu, gpa, error_code, NULL, 0);
+>   }
+>   
+> +static inline u32 __vmx_get_interrupt_shadow(struct kvm_vcpu *vcpu)
+> +{
+> +	u32 interruptibility;
+> +	int ret = 0;
+> +
+> +	interruptibility = vmread32(vcpu, GUEST_INTERRUPTIBILITY_INFO);
+> +	if (interruptibility & GUEST_INTR_STATE_STI)
+> +		ret |= KVM_X86_SHADOW_INT_STI;
+> +	if (interruptibility & GUEST_INTR_STATE_MOV_SS)
+> +		ret |= KVM_X86_SHADOW_INT_MOV_SS;
+> +
+> +	return ret;
+> +}
+> +
+>   static inline u32 vmx_encode_ar_bytes(struct kvm_segment *var)
+>   {
+>   	u32 ar;
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index d69d4dc7c071..d31cace67907 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -1467,15 +1467,7 @@ void vmx_set_rflags(struct kvm_vcpu *vcpu, unsigned long rflags)
+>   
+>   u32 vmx_get_interrupt_shadow(struct kvm_vcpu *vcpu)
+>   {
+> -	u32 interruptibility = vmcs_read32(GUEST_INTERRUPTIBILITY_INFO);
+> -	int ret = 0;
+> -
+> -	if (interruptibility & GUEST_INTR_STATE_STI)
+> -		ret |= KVM_X86_SHADOW_INT_STI;
+> -	if (interruptibility & GUEST_INTR_STATE_MOV_SS)
+> -		ret |= KVM_X86_SHADOW_INT_MOV_SS;
+> -
+> -	return ret;
+> +	return __vmx_get_interrupt_shadow(vcpu);
+>   }
+>   
+>   void vmx_set_interrupt_shadow(struct kvm_vcpu *vcpu, int mask)
 > 
-> Peter, was that the only problem you saw with isolcpus interface?
 
-Oh, and BTW, isolcpus=managed_irq flag was recently added due to another
-isolation bug.
+Is there any reason to add the __ version, since at this point 
+kvm_x86_ops is already pointing to vt_get_interrupt_shadow?
 
-This problem is the same category, so i don't see why it should be
-treated especially (yes, i agree isolcpus= interface should be 
-improved, but thats what is available today).
+Paolo
 
