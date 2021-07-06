@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523153BD8F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 563963BD8F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232403AbhGFOww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:52:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26562 "EHLO
+        id S232529AbhGFOxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:53:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31299 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231509AbhGFOwp (ORCPT
+        by vger.kernel.org with ESMTP id S232440AbhGFOwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:52:45 -0400
+        Tue, 6 Jul 2021 10:52:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625583005;
+        s=mimecast20190719; t=1625583015;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TdTS8kT288fhAyYKqmagb6J2AHHMMCxI0DtI3y4+rk0=;
-        b=OOP+bky2RWCbVBKCKzIgm2jEm/dHR1Nt0x2FW5H1Ue/yEMFckNMDs8tGoCu8Ujz210k1BP
-        MxdmXthX+OstqFWcRwBbStpnifUvSg7+jigwArp+PFAbCeMwJNxkuZfVBPJkSrYH1hjzcm
-        BhbWdyt8YYDjbsqHf/oh0BjGLPKIP00=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-229-r0etMxAxOhGjghxbuh0DaQ-1; Tue, 06 Jul 2021 10:50:04 -0400
-X-MC-Unique: r0etMxAxOhGjghxbuh0DaQ-1
-Received: by mail-wm1-f72.google.com with SMTP id m5-20020a05600c3b05b029020c34fd31cfso1206640wms.4
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:50:04 -0700 (PDT)
+        bh=s5YRgxjBVFyVrsecYfIDXV3/UmWdoKFIP6xE5czOL/I=;
+        b=C+5oIvcsExb6HTA4JNTUPGu/Xz8twfOTMZRl2650xREe8vIAu04Qs6wMYPqRwwXFTLaG/B
+        5XVR2J92D0Y2XdIP2WB2GUjr4CAFp7TgEsBQztfXesPuFS7KHEnvawm0iYgW1G1n1EAC27
+        Qflc9cKtP/e9fdlUD5v4ySvMa6cq9go=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-185-cdEXeeCnO5GgY0su-p87Bw-1; Tue, 06 Jul 2021 10:50:14 -0400
+X-MC-Unique: cdEXeeCnO5GgY0su-p87Bw-1
+Received: by mail-wm1-f70.google.com with SMTP id k16-20020a7bc3100000b02901d849b41038so1183315wmj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:50:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=TdTS8kT288fhAyYKqmagb6J2AHHMMCxI0DtI3y4+rk0=;
-        b=aR7XGRHEP5THVlt4SHp3g/h9sNR4ACFtpTNGAMOs++TPO1euYFVuhyfjarygQmSeIS
-         hOOOAqND6Mtn3SwToElu8RNgA7N3Osdh/KygRTy8WiaLbU9rY8aGAjOFnwkeeVsU/HaH
-         RXLokOWtI73CvRD/GEb3zgGzK3ErGHdl+hU+eSFfSnnjpW1+l3TqZkbMgJOj7fKMVHdq
-         xJeklsNYjl3qZ/lVZBUwbV0qtODQxqLnGoGOGebGl6WE3MTPsuLThzE7kv7J761NT4W2
-         sULO99sdw3o+yFdBeG/tgoHxfuSmS6p2AIF9IBHuMqsvy6V9uth8P4/fN0ex1doSMTj9
-         +Y0g==
-X-Gm-Message-State: AOAM532FqxyTrHRsj9W7VFLrHyvLjWuiMO6Yo15kLKHp/nVdTZ4qWTNd
-        26EPr9VUDdp7S44xWPipB47w88bqKN5GswfB3JRalpkWOJGMnBz6ZuDiwNKdGd+eCDpwajBBFkz
-        XR4kQr6FRWdNHsGKi7dJ+Bmde
-X-Received: by 2002:a05:600c:19d1:: with SMTP id u17mr20881430wmq.177.1625583003530;
-        Tue, 06 Jul 2021 07:50:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwcFU4w1Goi12UWvOnmDkmQSuExGESuRg8DpVmkjziNO9hSb2+42NzC5kTSrUCWvAby/xRO0w==
-X-Received: by 2002:a05:600c:19d1:: with SMTP id u17mr20881409wmq.177.1625583003387;
-        Tue, 06 Jul 2021 07:50:03 -0700 (PDT)
+        bh=s5YRgxjBVFyVrsecYfIDXV3/UmWdoKFIP6xE5czOL/I=;
+        b=RNGft0DtCpH/nBu7eUub2FGTo75dJ1g6jn2qq+tNjCjFHqZkq3HCoawsN6NvoE9XIU
+         3f9Xg+GHGvghTJQsYHHewTT+jQ+qU/YOrcRfHH+gJdCImC3By92pCasS7bqlEIQ4OsYi
+         TU/G8gsRPtgkFKfy2Sc8t9x5KUKb5RWoOifrOyEZQv/NgeZyi/fyJJRlQ5g/enFaZ9WW
+         PRvpRAGjEFEFPDvrEAsNOqNWof4tiqMb5Y4IYgJVQWJyB/8rNEMxqjXzJmfJb9HA3Fq9
+         1O/Yx1qEu7drgFsJwy5+s5dynaNcFSoUpbEGvgGSlaalTDufINUe1ovyIpB34JBJFBHq
+         AyOw==
+X-Gm-Message-State: AOAM533DK0BGgW7cp58GUeTRU7y1VzyvdHBiXd0aEb1G+vFntiRC2pX7
+        aEFTBtpvPnuuDKStnY80P71Ze+NM3SDcUURtMa7aFso8BxEditbohJZxCgi8V26Jqwcx1Fe/VHp
+        +Xs5aDQ5ENbppIoKbYMVHa45A
+X-Received: by 2002:a5d:530f:: with SMTP id e15mr21899224wrv.217.1625583013664;
+        Tue, 06 Jul 2021 07:50:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyJUXd4AsURshO/WOcPijFSw+4/Maf9g/IRtAdvHhF7Ym+8rdnyoGw/RRjS3QkvtHK5WXo4aA==
+X-Received: by 2002:a5d:530f:: with SMTP id e15mr21899201wrv.217.1625583013504;
+        Tue, 06 Jul 2021 07:50:13 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id o19sm3097448wmc.12.2021.07.06.07.50.02
+        by smtp.gmail.com with ESMTPSA id w8sm18306728wrt.83.2021.07.06.07.50.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 07:50:02 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 49/69] KVM: VMX: Modify NMI and INTR handlers to
- take intr_info as param
+        Tue, 06 Jul 2021 07:50:12 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 37/69] KVM: x86: Check for pending APICv interrupt
+ in kvm_vcpu_has_events()
 To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H . Peter Anvin" <hpa@zytor.com>,
@@ -67,14 +67,14 @@ To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
 Cc:     isaku.yamahata@gmail.com,
         Sean Christopherson <sean.j.christopherson@intel.com>
 References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <19efa94306ba82e433602af45d122265fa39b0c4.1625186503.git.isaku.yamahata@intel.com>
+ <489df8a1b8fb43677c2c2c5347398ce985713577.1625186503.git.isaku.yamahata@intel.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <d3bfe742-151f-d33c-c7c7-0ca9e64b34fa@redhat.com>
-Date:   Tue, 6 Jul 2021 16:50:01 +0200
+Message-ID: <02369ee0-8e21-2b30-03c6-94bb885a0ffb@redhat.com>
+Date:   Tue, 6 Jul 2021 16:50:11 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <19efa94306ba82e433602af45d122265fa39b0c4.1625186503.git.isaku.yamahata@intel.com>
+In-Reply-To: <489df8a1b8fb43677c2c2c5347398ce985713577.1625186503.git.isaku.yamahata@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -85,63 +85,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
 > From: Sean Christopherson <sean.j.christopherson@intel.com>
 > 
-> Pass intr_info to the NMI and INTR handlers instead of pulling it from
-> vcpu_vmx in preparation for sharing the bulk of the handlers with TDX.
+> Return true for kvm_vcpu_has_events() if the vCPU has a pending APICv
+> interrupt to support TDX's usage of APICv.  Unlike VMX, TDX doesn't have
+> access to vmcs.GUEST_INTR_STATUS and so can't emulate posted interrupts,
+> i.e. needs to generate a posted interrupt and more importantly can't
+> manually move requested interrupts into the vIRR (which it also doesn't
+> have access to).
 > 
 > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 > ---
->   arch/x86/kvm/vmx/vmx.c | 15 +++++++--------
->   1 file changed, 7 insertions(+), 8 deletions(-)
+>   arch/x86/kvm/x86.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 7ce15a2c3490..e08f85c93e55 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6404,25 +6404,24 @@ static void handle_interrupt_nmi_irqoff(struct kvm_vcpu *vcpu,
->   	kvm_after_interrupt(vcpu);
->   }
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index f1d5e0a53640..92d5a6649a21 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -11341,7 +11341,9 @@ static inline bool kvm_vcpu_has_events(struct kvm_vcpu *vcpu)
 >   
-> -static void handle_exception_nmi_irqoff(struct vcpu_vmx *vmx)
-> +static void handle_exception_nmi_irqoff(struct kvm_vcpu *vcpu, u32 intr_info)
->   {
->   	const unsigned long nmi_entry = (unsigned long)asm_exc_nmi_noist;
-> -	u32 intr_info = vmx_get_intr_info(&vmx->vcpu);
+>   	if (kvm_arch_interrupt_allowed(vcpu) &&
+>   	    (kvm_cpu_has_interrupt(vcpu) ||
+> -	    kvm_guest_apic_has_interrupt(vcpu)))
+> +	     kvm_guest_apic_has_interrupt(vcpu) ||
+> +	     (vcpu->arch.apicv_active &&
+> +	      kvm_x86_ops.dy_apicv_has_pending_interrupt(vcpu))))
+>   		return true;
 >   
->   	/* if exit due to PF check for async PF */
->   	if (is_page_fault(intr_info))
-> -		vmx->vcpu.arch.apf.host_apf_flags = kvm_read_and_reset_apf_flags();
-> +		vcpu->arch.apf.host_apf_flags = kvm_read_and_reset_apf_flags();
->   	/* Handle machine checks before interrupts are enabled */
->   	else if (is_machine_check(intr_info))
->   		kvm_machine_check();
->   	/* We need to handle NMIs before interrupts are enabled */
->   	else if (is_nmi(intr_info))
-> -		handle_interrupt_nmi_irqoff(&vmx->vcpu, nmi_entry);
-> +		handle_interrupt_nmi_irqoff(vcpu, nmi_entry);
->   }
->   
-> -static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
-> +static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu,
-> +					     u32 intr_info)
->   {
-> -	u32 intr_info = vmx_get_intr_info(vcpu);
->   	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
->   	gate_desc *desc = (gate_desc *)host_idt_base + vector;
->   
-> @@ -6438,9 +6437,9 @@ static void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
->   	struct vcpu_vmx *vmx = to_vmx(vcpu);
->   
->   	if (vmx->exit_reason.basic == EXIT_REASON_EXTERNAL_INTERRUPT)
-> -		handle_external_interrupt_irqoff(vcpu);
-> +		handle_external_interrupt_irqoff(vcpu, vmx_get_intr_info(vcpu));
->   	else if (vmx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI)
-> -		handle_exception_nmi_irqoff(vmx);
-> +		handle_exception_nmi_irqoff(vcpu, vmx_get_intr_info(vcpu));
->   }
->   
->   /*
+>   	if (kvm_hv_has_stimer_pending(vcpu))
 > 
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+Please remove "dy_" from the name of the callback, and use the static 
+call.  Also, if it makes sense, please consider using the same test as 
+for patch 38 to choose *between* either kvm_cpu_has_interrupt() + 
+kvm_guest_apic_has_interrupt() or 
+kvm_x86_ops.dy_apicv_has_pending_interrupt().
+
+Paolo
 
