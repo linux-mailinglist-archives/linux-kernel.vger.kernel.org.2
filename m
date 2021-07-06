@@ -2,173 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C99A3BCA14
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE733BCA30
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbhGFKig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 06:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbhGFKif (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 06:38:35 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78213C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 03:35:56 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id q17so5096628wrv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 03:35:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6xuYHcNFKOKQBrKUFUDH+4OX/ZzxgolWWFVCDDtB2Y0=;
-        b=Yt+wwRbDrooYfJ07+RIOcvlbNAmDArbrvJ7r1S0Vf2cjg/rLU7fAYgPxXpkS/Es1c/
-         LcGWWFOVsEF/0XQJw8Ic4i6Dtc59Y/PIazeWXS81o/I5/ykvg7NDoqtNhU6ZQY0qgpts
-         hX13gyhgO6x+I73AAGb4ZN/+qaseZR6quq5U1fL8NFgVa2YoJXURs1gKcClPP7oowGFt
-         CUO7YRn27lhbGlEADkw/xBbGzLYaM6sE1cZhR+vatbGDVqfyXQOHsgSlmcoOTDifCPOm
-         ISHjTYrtj1Tj6vkK+FyowiPdLCC1ljyYKvKt5eTXHZu+z0mb6AF50iygoibOaTtpwXde
-         Om/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6xuYHcNFKOKQBrKUFUDH+4OX/ZzxgolWWFVCDDtB2Y0=;
-        b=nJKlu0aK8isL4bNmwD9rJ71wl3gdINV74r54TZD2Y3XqDexyuhSfrOhOvf0TIG+Ndg
-         UxbXVwnOO51n06uZTLGwmr7e6cpzO87w+v38dABnMSUwFJkij764DawtZNiwGvrgf5d0
-         s3g+JASxahI9onkz0i+l1RBBHogXxVk8+VIUckx8GuorLGo80jBSrKxk3F9fzyPjG/Qi
-         NzmU7ayc4Ur9dX5LAOXHZMr2LgWRkU9hp/Wmd6u9j+vVtLhkO2rnbxTFBNjtQCL2Pu9M
-         RyKPwoW1vuSH7UbS3ur88HfdDHjd9B6U1dgj0+JAJZqcdF77aOguFq2kiCiiXWo8g0Sy
-         XpNA==
-X-Gm-Message-State: AOAM530inahte1S+KnuBmW/np4Q0ZnPnZAF44lV1ZDN9WivDfTxaUfdp
-        eUCoKP7W432gF9zMjONsgQ0AIg==
-X-Google-Smtp-Source: ABdhPJxx+Xr4AcuLpRSkCC4EtytSRujE0SZ0zcPphvKN4FEK+8OpQKjY5aHg/Lctw2KdmVZr98nK+A==
-X-Received: by 2002:a05:6000:12d0:: with SMTP id l16mr21397024wrx.189.1625567755049;
-        Tue, 06 Jul 2021 03:35:55 -0700 (PDT)
-Received: from dell ([109.180.115.218])
-        by smtp.gmail.com with ESMTPSA id l9sm16428319wrp.14.2021.07.06.03.35.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 03:35:54 -0700 (PDT)
-Date:   Tue, 6 Jul 2021 11:35:52 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Geoff Levand <geoff@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-acpi@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-cxl@vger.kernel.org,
-        nvdimm@lists.linux.dev, dmaengine@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net, linux-fpga@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-i3c@lists.infradead.org,
-        industrypack-devel@lists.sourceforge.net,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        netdev@vger.kernel.org, linux-ntb@googlegroups.com,
-        linux-pci@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
-        greybus-dev@lists.linaro.org, target-devel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-serial@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH] bus: Make remove callback return void
-Message-ID: <YOQxRS8HLTYthWNn@dell>
-References: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
+        id S231489AbhGFKjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 06:39:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231400AbhGFKi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 06:38:58 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 463E7619AA;
+        Tue,  6 Jul 2021 10:36:20 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m0iR8-00BeiL-2H; Tue, 06 Jul 2021 11:36:18 +0100
+From:   Marc Zyngier <maz@kernel.org>
+Date:   Tue, 06 Jul 2021 11:36:17 +0100
+Message-ID: <87czrv91b2.wl-maz@kernel.org>
+rom:    Marc Zyngier <maz@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jerome Forissier <jerome@forissier.org>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH v2 0/7] Asynchronous notifications from secure world
+In-Reply-To: <CAFA6WYMSAM2MDOXnhjuZFov3BtF8-nihZRUpR8ciUWsL4_nCWA@mail.gmail.com>
+References: <20210616103649.2662395-1-jens.wiklander@linaro.org>
+        <CAFA6WYMrxNfR09doWQgYKCQSYKyUMVKqSTPuRYn=-nueY9pSvQ@mail.gmail.com>
+        <CAHUa44EeAENHv+CxtXeLuqX_NGWW6w-6P8D-BLsb69+XmGaqEQ@mail.gmail.com>
+        <CAFA6WYMSAM2MDOXnhjuZFov3BtF8-nihZRUpR8ciUWsL4_nCWA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: sumit.garg@linaro.org, jens.wiklander@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, op-tee@lists.trustedfirmware.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, jerome@forissier.org, etienne.carriere@linaro.org, vincent.guittot@linaro.org, robh+dt@kernel.org, corbet@lwn.net, ardb@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 06 Jul 2021, Uwe Kleine-König wrote:
+On Tue, 06 Jul 2021 08:25:26 +0100,
+Sumit Garg <sumit.garg@linaro.org> wrote:
+> 
+> On Thu, 17 Jun 2021 at 11:40, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+> >
+> > Hi Sumit,
+> >
+> > On Thu, Jun 17, 2021 at 6:33 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+> > >
+> > > Hi Jens,
+> > >
+> > > On Wed, 16 Jun 2021 at 16:07, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+> > > >
+> > > > Hi all,
+> > > >
+> > > > This adds support for asynchronous notifications from OP-TEE in secure
+> > > > world to the OP-TEE driver. This allows a design with a top half and bottom
+> > > > half type of driver where the top half runs in secure interrupt context and
+> > > > a notifications tells normal world to schedule a yielding call to do the
+> > > > bottom half processing.
+> > > >
+> > > > An interrupt is used to notify the driver that there are asynchronous
+> > > > notifications pending.
+> > > >
+> > >
+> > > It looks like a nice feature. I would like to get hands on with this.
+> > > Can I test this feature on Qemu?
+> >
+> > Absolutely, you can get this into the normal OP-TEE development repo setup with:
+> > repo init -u https://github.com/OP-TEE/manifest.git -m default.xml
+> > repo sync
+> > Update optee_os with
+> > https://github.com/jenswi-linaro/optee_os/tree/async_notif_v2
+> > Update linux with https://github.com/jenswi-linaro/linux-1/tree/async_notif_v2
+> > cd build
+> > make all -j...
+> > make run-only
+> >
+> > If you type anything at the secure console you'll notice how it
+> > changes behaviour once the Linux kernel has booted.
+> >
+> 
+> Thanks for sharing instructions as I now got some time to test and
+> deep dive into this feature. It looks like a pretty useful feature to
+> realize interrupt support in the secure world in its true sense. This
+> feature works for me as per your instructions.
+> 
+> I could recognise it's requirement from the time while I was playing
+> with secure timer interrupt support for OP-TEE RNG driver on
+> Developerbox. In that case I had to strip down the secure interrupt
+> handler to a minimum that would just collect entropy and dump into the
+> secure buffer. But with asynchronous notifications support, I could
+> add more functionality like entropy health tests in the bottom half
+> instead of doing those health tests while retrieving entropy from the
+> secure world.
+> 
+> Given that, have you explored the possibility to leverage SGI rather
+> than a platform specific SPI for notifying the normal world? If it's
+> possible to leverage Architecture specific SGI for this purpose then I
 
-> The driver core ignores the return value of this callback because there
-> is only little it can do when a device disappears.
-> 
-> This is the final bit of a long lasting cleanup quest where several
-> buses were converted to also return void from their remove callback.
-> Additionally some resource leaks were fixed that were caused by drivers
-> returning an error code in the expectation that the driver won't go
-> away.
-> 
-> With struct bus_type::remove returning void it's prevented that newly
-> implemented buses return an ignored error code and so don't anticipate
-> wrong expectations for driver authors.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
-> Hello,
-> 
-> this patch depends on "PCI: endpoint: Make struct pci_epf_driver::remove
-> return void" that is not yet applied, see
-> https://lore.kernel.org/r/20210223090757.57604-1-u.kleine-koenig@pengutronix.de.
-> 
-> I tested it using allmodconfig on amd64 and arm, but I wouldn't be
-> surprised if I still missed to convert a driver. So it would be great to
-> get this into next early after the merge window closes.
-> 
-> I send this mail to all people that get_maintainer.pl emits for this
-> patch. I wonder how many recipents will refuse this mail because of the
-> long Cc: list :-)
-> 
-> Best regards
-> Uwe
-> 
->  arch/arm/common/locomo.c                  | 3 +--
->  arch/arm/common/sa1111.c                  | 4 +---
->  arch/arm/mach-rpc/ecard.c                 | 4 +---
->  arch/mips/sgi-ip22/ip22-gio.c             | 3 +--
->  arch/parisc/kernel/drivers.c              | 5 ++---
->  arch/powerpc/platforms/ps3/system-bus.c   | 3 +--
->  arch/powerpc/platforms/pseries/ibmebus.c  | 3 +--
->  arch/powerpc/platforms/pseries/vio.c      | 3 +--
->  drivers/acpi/bus.c                        | 3 +--
->  drivers/amba/bus.c                        | 4 +---
->  drivers/base/auxiliary.c                  | 4 +---
->  drivers/base/isa.c                        | 4 +---
->  drivers/base/platform.c                   | 4 +---
->  drivers/bcma/main.c                       | 6 ++----
->  drivers/bus/sunxi-rsb.c                   | 4 +---
->  drivers/cxl/core.c                        | 3 +--
->  drivers/dax/bus.c                         | 4 +---
->  drivers/dma/idxd/sysfs.c                  | 4 +---
->  drivers/firewire/core-device.c            | 4 +---
->  drivers/firmware/arm_scmi/bus.c           | 4 +---
->  drivers/firmware/google/coreboot_table.c  | 4 +---
->  drivers/fpga/dfl.c                        | 4 +---
->  drivers/hid/hid-core.c                    | 4 +---
->  drivers/hid/intel-ish-hid/ishtp/bus.c     | 4 +---
->  drivers/hv/vmbus_drv.c                    | 5 +----
->  drivers/hwtracing/intel_th/core.c         | 4 +---
->  drivers/i2c/i2c-core-base.c               | 5 +----
->  drivers/i3c/master.c                      | 4 +---
->  drivers/input/gameport/gameport.c         | 3 +--
->  drivers/input/serio/serio.c               | 3 +--
->  drivers/ipack/ipack.c                     | 4 +---
->  drivers/macintosh/macio_asic.c            | 4 +---
->  drivers/mcb/mcb-core.c                    | 4 +---
->  drivers/media/pci/bt8xx/bttv-gpio.c       | 3 +--
->  drivers/memstick/core/memstick.c          | 3 +--
+What does "Architecture specific SGI" mean?
 
->  drivers/mfd/mcp-core.c                    | 3 +--
+> think this feature will come automatically enabled for every platform
+> without the need to reserve a platform specific SPI.
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
+That old chestnut again...
+
+- How do you discover that the secure side has graced you with a
+  Group-1 SGI (no, you can't use one of the first 8)? for both DT and
+  ACPI?
+
+- How do you find which CPUs are targeted by this SGI? All? One? A
+  subset? What is the expected behaviour with CPU hotplug? How can the
+  NS side (Linux) can inform the secure side about the CPUs it wants
+  to use?
+
+- Is there any case where you would instead need a level interrupt
+  (which a SGI cannot provide)?
+
+In general, cross world SGIs are a really bad idea. Yes, some people
+like them. I still think they are misguided, and I don't intend to
+provide a generic request interface for this.
+
+	M.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Without deviation from the norm, progress is not possible.
