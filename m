@@ -2,176 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE4D3BD6F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D38E3BD70D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236991AbhGFMsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:48:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240814AbhGFMsl (ORCPT
+        id S241367AbhGFMvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:51:50 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3369 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239589AbhGFMvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 08:48:41 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F87C0225A8
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 05:41:12 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id t14-20020a05600c198eb029020c8aac53d4so4193626wmq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 05:41:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hRu/rrECnrx/6rDYLkqHGSqwS0EdaL46bywJDkHS8nI=;
-        b=A/Mi8xG/jIlYJ+6yfkfZ/NNXm7mu7DHNJaeqjA+dLchP0zt4JrHU9eIL3h+/nvEr79
-         T1rC+ILs46rmaj89/17s9Bg+OsODYSOuDRDNtkcF6rFcBoW3uKNU9YiyG2DL79HEwatj
-         7d4EVG1bqR3Dxi8vxrTYFK9aBpJIqLS1+Zi2HeiO1KXQOXJvx8P7gZm3I1ekA/rGBMn+
-         Rq8KoRCf9vd7rZk/4eWP5MBLWASDB77A1UsDSsoo7eeAnIfH6MV8UTStV1FvV9X4bb+J
-         nSHPdPYcWYbHd6lO57Bgi8cZuUSWvN5fk7B+JkXC7f+6W7u+rPkQ3pqYxNp0JKRPUKbK
-         Mmag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hRu/rrECnrx/6rDYLkqHGSqwS0EdaL46bywJDkHS8nI=;
-        b=sSygWGd3MAqWpCOy4JfvkJbGssKMBy58lIfm0cjH9EdP93nHsaG/nEx7XWs4WtHemq
-         OZ/EABSQnb0THKeBRkNIbGXX0TNjSJYBZvZJH1PO9ZY14q/YHI8b/tWMDa/yEIE/pwaY
-         MB+SyCya5Y3N+26feMYP21m6oUvWOm4siL/3peXd65EWpX6isSf097U3aYjXVxAML6fJ
-         k1Pt401PTFK4pM3q9/Occ5MmLAH8zAa0IVMeKPMT1q4q6OQm7VE3tqoKx3NgpBaC3NfS
-         88p6GeMGKZZl7ICjfb+KEwpGDMYOSQu2ye9HsPRgcj8hyWaH/pXsMOBC2zqy35orAcES
-         LFgg==
-X-Gm-Message-State: AOAM532/sAYUhRa/6AvsGk4NA7dTtOVyUhc2TgwKMHSFVeCC6MnsXzq7
-        qavgPs9k0BeuHvGer1LQIZrm4Q==
-X-Google-Smtp-Source: ABdhPJykZRhTNi+DMbVdlg1f9P6ncOKxO5R4KfG+BCmqTv5c10YAQ66qYsZy3VvRGb57i2RhvlqoLw==
-X-Received: by 2002:a05:600c:2f17:: with SMTP id r23mr168794wmn.185.1625575270808;
-        Tue, 06 Jul 2021 05:41:10 -0700 (PDT)
-Received: from localhost.localdomain (hst-221-27.medicom.bg. [84.238.221.27])
-        by smtp.gmail.com with ESMTPSA id n18sm2585979wms.3.2021.07.06.05.41.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 05:41:10 -0700 (PDT)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-api@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v2 5/5] venus: Add a handling of QC10C compressed format
-Date:   Tue,  6 Jul 2021 15:40:34 +0300
-Message-Id: <20210706124034.773503-6-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210706124034.773503-1-stanimir.varbanov@linaro.org>
-References: <20210706124034.773503-1-stanimir.varbanov@linaro.org>
+        Tue, 6 Jul 2021 08:51:36 -0400
+Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GK2GW3z2Lz6J695;
+        Tue,  6 Jul 2021 20:40:51 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 6 Jul 2021 14:48:56 +0200
+Received: from [10.47.92.124] (10.47.92.124) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 6 Jul 2021
+ 13:48:55 +0100
+Subject: Re: [PATCH V3 0/4] tools: perf: Add JSON metrics for i.MX8M platforms
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
+CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210127105734.12198-1-qiangqing.zhang@nxp.com>
+ <a35ea181-4beb-31d0-dd97-6d587b642a6e@huawei.com>
+ <DB8PR04MB67958A087F20D46867066B2CE61B9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <7cd02103-66e8-b544-3483-8c6c2134067c@huawei.com>
+ <DB8PR04MB67958BF70501FB79BFC6F786E61B9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <6e2fab9a-ba7b-98b6-69c1-cc19e8c32ea4@huawei.com>
+Date:   Tue, 6 Jul 2021 13:41:45 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <DB8PR04MB67958BF70501FB79BFC6F786E61B9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.92.124]
+X-ClientProxiedBy: lhreml741-chm.china.huawei.com (10.201.108.191) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds QC10C compressed pixel format in the Venus driver, and
-make it possible to discover from v4l2 clients.
+On 06/07/2021 13:28, Joakim Zhang wrote:
+>> right?
+>>
+>> Right, just userspace perf tool needs rebuild. Same kernel which you used
+>> before should be ok.
+> Hi John,
+> 
+> Test env:
+> perf version 5.13.rc7.gf9a8701c7091
+> 5.13.0-rc1-next-20210514
+> 
+> I tested on i.MX8MQ, i.MX8MM and i.MX8MP, there is no function breakage, but I have not verified metric includes "duration_time" event.
+> 
 
-Note: The QC10C format shouldn't be possible to discpver by the
-client if the decoded bitstream is not 10-bits.
+ok, I appreciate that.
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/helpers.c | 23 ++-------------------
- drivers/media/platform/qcom/venus/vdec.c    | 19 ++++++++++++++---
- 2 files changed, 18 insertions(+), 24 deletions(-)
+ > but I have not verified metric includes "duration_time" event.
 
-diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
-index 49d720fd9a9d..b48bf52481ba 100644
---- a/drivers/media/platform/qcom/venus/helpers.c
-+++ b/drivers/media/platform/qcom/venus/helpers.c
-@@ -563,6 +563,8 @@ static u32 to_hfi_raw_fmt(u32 v4l2_fmt)
- 		return HFI_COLOR_FORMAT_NV21;
- 	case V4L2_PIX_FMT_QC08C:
- 		return HFI_COLOR_FORMAT_NV12_UBWC;
-+	case V4L2_PIX_FMT_QC10C:
-+		return HFI_COLOR_FORMAT_YUV420_TP10_UBWC;
- 	default:
- 		break;
- 	}
-@@ -1675,27 +1677,6 @@ int venus_helper_get_out_fmts(struct venus_inst *inst, u32 v4l2_fmt,
- 	if (!caps)
- 		return -EINVAL;
- 
--	if (inst->bit_depth == VIDC_BITDEPTH_10 &&
--	    inst->session_type == VIDC_SESSION_TYPE_DEC) {
--		found_ubwc =
--			find_fmt_from_caps(caps, HFI_BUFFER_OUTPUT,
--					   HFI_COLOR_FORMAT_YUV420_TP10_UBWC);
--		found = find_fmt_from_caps(caps, HFI_BUFFER_OUTPUT2,
--					   HFI_COLOR_FORMAT_NV12);
--		if (found_ubwc && found) {
--			/*
--			 * Hard-code DPB buffers to be 10bit UBWC and decoder
--			 * output buffers in 8bit NV12 until V4L2 is able to
--			 * expose compressed/tiled formats to applications.
--			 */
--			*out_fmt = HFI_COLOR_FORMAT_YUV420_TP10_UBWC;
--			*out2_fmt = HFI_COLOR_FORMAT_NV12;
--			return 0;
--		}
--
--		return -EINVAL;
--	}
--
- 	if (ubwc) {
- 		ubwc_fmt = fmt | HFI_COLOR_FORMAT_UBWC_BASE;
- 		found_ubwc = find_fmt_from_caps(caps, HFI_BUFFER_OUTPUT,
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index 989a75dc5bf0..c4d5bde860d7 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -35,6 +35,10 @@ static const struct venus_format vdec_formats[] = {
- 		.num_planes = 1,
- 		.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
- 	}, {
-+		.pixfmt = V4L2_PIX_FMT_QC10C,
-+		.num_planes = 1,
-+		.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
-+	},{
- 		.pixfmt = V4L2_PIX_FMT_NV12,
- 		.num_planes = 1,
- 		.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
-@@ -114,6 +118,10 @@ find_format(struct venus_inst *inst, u32 pixfmt, u32 type)
- 	    !venus_helper_check_format(inst, fmt[i].pixfmt))
- 		return NULL;
- 
-+	if (V4L2_TYPE_IS_CAPTURE(type) && fmt[i].pixfmt == V4L2_PIX_FMT_QC10C &&
-+	    !(inst->bit_depth == VIDC_BITDEPTH_10))
-+		return NULL;
-+
- 	return &fmt[i];
- }
- 
-@@ -133,11 +141,16 @@ find_format_by_index(struct venus_inst *inst, unsigned int index, u32 type)
- 		if (fmt[i].type != type)
- 			continue;
- 
--		if (V4L2_TYPE_IS_OUTPUT(type))
-+		if (V4L2_TYPE_IS_OUTPUT(type)) {
- 			valid = venus_helper_check_codec(inst, fmt[i].pixfmt);
--		else if (V4L2_TYPE_IS_CAPTURE(type))
-+		} else if (V4L2_TYPE_IS_CAPTURE(type)) {
- 			valid = venus_helper_check_format(inst, fmt[i].pixfmt);
- 
-+			if (fmt[i].pixfmt == V4L2_PIX_FMT_QC10C &&
-+			    !(inst->bit_depth == VIDC_BITDEPTH_10))
-+				valid = false;
-+		}
-+
- 		if (k == index && valid)
- 			break;
- 		if (valid)
-@@ -1496,7 +1509,7 @@ static const struct hfi_inst_ops vdec_hfi_ops = {
- static void vdec_inst_init(struct venus_inst *inst)
- {
- 	inst->hfi_codec = HFI_VIDEO_CODEC_H264;
--	inst->fmt_out = &vdec_formats[7];
-+	inst->fmt_out = &vdec_formats[8];
- 	inst->fmt_cap = &vdec_formats[0];
- 	inst->width = frame_width_min(inst);
- 	inst->height = ALIGN(frame_height_min(inst), 32);
--- 
-2.25.1
+I didn't think that any imx8 metrics included duration_time. Anyway, 
+I'll ensure that metrics which contain "duration_time" would not break.
+
+> A nitpick, there is no comma at the end of "Unit".
+
+I'll check it.
+
+Thanks a lot,
+John
 
