@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458C83BD85C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F22733BD866
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbhGFOiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:38:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41237 "EHLO
+        id S232360AbhGFOka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:40:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34326 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232261AbhGFOiW (ORCPT
+        by vger.kernel.org with ESMTP id S231707AbhGFOk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:38:22 -0400
+        Tue, 6 Jul 2021 10:40:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625582143;
+        s=mimecast20190719; t=1625582269;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=L/tN+7auaRQ4j3gGQQVbtbHULR6FDj/ZnvpQ9ApaAA0=;
-        b=W0FIR+7Q9orp5yr/LGxeMQeGHX/uxqGPpx4Fish2uloE2oErnJ7Rpy0kaD/L2gaB36IS8l
-        xA+ex1esqg/7lWRrgzVYqB0lsWOqhF0MqnEkbxO/O8hExvhMOq7k68oKXJBR4gb4anRZ1T
-        WE3pC5f2DtyagdIIk+/seTarQzQIZWo=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-s02Iwsv7NSiiWWTwJiFZpQ-1; Tue, 06 Jul 2021 09:45:13 -0400
-X-MC-Unique: s02Iwsv7NSiiWWTwJiFZpQ-1
-Received: by mail-ej1-f69.google.com with SMTP id q8-20020a170906a088b02904be5f536463so5834446ejy.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 06:45:13 -0700 (PDT)
+        bh=CQBCB+bMahID1ZaCZKHNYR0DExf7wMJRe389TSgL0HE=;
+        b=YXf9IgeCgP8PLmGtTyboO6+Wj6kgvOmRN4TDsoQbT2X5ECcWu1TKoDtvOpduJJuyvsSsAx
+        fE/BH9XWiBpKuVLaHw61S/Heu2wD3qseAZeBimHEMSf5+LPTLif5OrhIE2/4bmhbRjhMiv
+        xBisZbqL+/tlrqqglhwGuQ3tX6Sc7Rg=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-255-VAKsg1tsM6GvlTRk0-hWzA-1; Tue, 06 Jul 2021 09:47:35 -0400
+X-MC-Unique: VAKsg1tsM6GvlTRk0-hWzA-1
+Received: by mail-ed1-f70.google.com with SMTP id w15-20020a05640234cfb02903951279f8f3so10847260edc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 06:47:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=L/tN+7auaRQ4j3gGQQVbtbHULR6FDj/ZnvpQ9ApaAA0=;
-        b=qH8bP7FfPfyO3NIBj90LiTsKqrHXKB9eiExcohR13ocKawa51patCOhr4xitkiWhlq
-         ecOYDaZ/qIjyvSGyjp+M4rdO1Xb4J1qMaEAxb7LOu2bUUOG1E4DoIO4XoqrB/UYc+3Xi
-         j0slrzbc+FiAgnSG66m0H0oNqA2xoQeK6x0GIWrfM5mpHjH47EN7PmDXLh/L83azWHl9
-         w86xWV4C8/wUN7l7wS97T6esRDGHaQ0Yf77IcuBCecG9PhVr1qxTdyBXRB4CwHl4tMPu
-         tu2RvWiCCvBtz2OJdT5BE0O3T7/cLN56e9TvsBddpFqgpXJj3dwMn/8PngaFm+7vQtBJ
-         NAsQ==
-X-Gm-Message-State: AOAM531/kXRWRVMB8FOR8osg0ME9Pt+dp6bNAnAixZMi4/7kWsyTzBDz
-        ykSz4dN+fwsgQFgXkDqSQCP1c4DKkOVNhJuBmpvitK59GrSQzCE54X8m3uctSWrp0LPsZ/jd2fR
-        f/M3EPzmunJ3CA4cL+REpP+md
-X-Received: by 2002:a17:906:2844:: with SMTP id s4mr18562464ejc.263.1625579112465;
-        Tue, 06 Jul 2021 06:45:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzvP5PJngSaVi8a1gurvl/kRFC/ktOYyC+zcQJS653+dvBM8kyMH/tfEXevqDTM2dmCu5Bpnw==
-X-Received: by 2002:a17:906:2844:: with SMTP id s4mr18562439ejc.263.1625579112243;
-        Tue, 06 Jul 2021 06:45:12 -0700 (PDT)
+        bh=CQBCB+bMahID1ZaCZKHNYR0DExf7wMJRe389TSgL0HE=;
+        b=dYuu64FyFPif1AmvbEuP9XAMcSQ7ASCpgnVxnnkti+d62fMOC+Tvh7fYduM7n2CNu6
+         vRlJGh+x3uOMx9ddeJwpa0Q50v9fcqugR7Zqu6eppEgb77DpPb6TNUV5w2kcuopkCEVF
+         MPIrrz0Nsw2kJ5cKKyy+AfFvT49uQwLPd/bJ162/89uBKIxVQUJwv/VNuhRNrwstjOCN
+         VJf5x+QS/Au0BOYIdQ7L512Dmc+a+FGmdBYEWu2sAQOyY414j0xA0WdOhvsfvWEAL7Ap
+         d5js5B3CSOwFRKqc8j55t1VhQl0OpFGLOv2yADHgJc9l9VQoLKxsoEYLxuGKLwrv1cp4
+         dbQg==
+X-Gm-Message-State: AOAM532dk8Dx9bXE0Y1k7W92A8WTMoHsUXI2ccX4Kaf1w62Q1vmvILal
+        hJKYFDCik7oYXpr2mU7ZRJMboGwb6UCQ/wpRlj89/ObL0UMfu4JQMVKzN9GPAPbux7JvB3Dh9BT
+        r2EbHh2XIM+GC2qkgX22ghrv7
+X-Received: by 2002:a05:6402:100e:: with SMTP id c14mr22590648edu.51.1625579254002;
+        Tue, 06 Jul 2021 06:47:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwXX0V6NyZLkesT4JsBq/0laHKl+IOkz9sbNFzot2uERrrxaV2JlFVgf9Huw20vMU9mmk7FAQ==
+X-Received: by 2002:a05:6402:100e:: with SMTP id c14mr22590627edu.51.1625579253872;
+        Tue, 06 Jul 2021 06:47:33 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id cz9sm3252955edb.76.2021.07.06.06.45.10
+        by smtp.gmail.com with ESMTPSA id cz9sm3256609edb.76.2021.07.06.06.47.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 06:45:11 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 17/69] KVM: Add infrastructure and macro to mark VM
- as bugged
+        Tue, 06 Jul 2021 06:47:33 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 18/69] KVM: Export kvm_make_all_cpus_request() for
+ use in marking VMs as bugged
 To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H . Peter Anvin" <hpa@zytor.com>,
@@ -67,14 +67,14 @@ To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
 Cc:     isaku.yamahata@gmail.com,
         Sean Christopherson <sean.j.christopherson@intel.com>
 References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <3a0998645c328bf0895f1290e61821b70f048549.1625186503.git.isaku.yamahata@intel.com>
+ <1d8cbbc8065d831343e70b5dcaea92268145eef1.1625186503.git.isaku.yamahata@intel.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1b69fd9b-fbe9-5fbc-83ed-4805e022e17d@redhat.com>
-Date:   Tue, 6 Jul 2021 15:45:09 +0200
+Message-ID: <f70c6603-a6af-9090-68e7-d9238a9b1054@redhat.com>
+Date:   Tue, 6 Jul 2021 15:47:31 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <3a0998645c328bf0895f1290e61821b70f048549.1625186503.git.isaku.yamahata@intel.com>
+In-Reply-To: <1d8cbbc8065d831343e70b5dcaea92268145eef1.1625186503.git.isaku.yamahata@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -85,124 +85,19 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
 > From: Sean Christopherson <sean.j.christopherson@intel.com>
 > 
+> Export kvm_make_all_cpus_request() and hoist the request helper
+> declarations of request up to the KVM_REQ_* definitions in preparation
+> for adding a "VM bugged" framework.  The framework will add KVM_BUG()
+> and KVM_BUG_ON() as alternatives to full BUG()/BUG_ON() for cases where
+> KVM has definitely hit a bug (in itself or in silicon) and the VM is all
+> but guaranteed to be hosed.  Marking a VM bugged will trigger a request
+> to all vCPUs to allow arch code to forcefully evict each vCPU from its
+> run loop.
+> 
 > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   include/linux/kvm_host.h | 29 ++++++++++++++++++++++++++++-
->   virt/kvm/kvm_main.c      | 10 +++++-----
->   2 files changed, 33 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 8583ed3ff344..09618f8a1338 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -149,6 +149,7 @@ static inline bool is_error_page(struct page *page)
->   #define KVM_REQ_MMU_RELOAD        (1 | KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
->   #define KVM_REQ_UNBLOCK           2
->   #define KVM_REQ_UNHALT            3
-> +#define KVM_REQ_VM_BUGGED         (4 | KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
->   #define KVM_REQUEST_ARCH_BASE     8
->   
->   #define KVM_ARCH_REQ_FLAGS(nr, flags) ({ \
-> @@ -585,6 +586,8 @@ struct kvm {
->   	pid_t userspace_pid;
->   	unsigned int max_halt_poll_ns;
->   	u32 dirty_ring_size;
-> +
-> +	bool vm_bugged;
->   };
->   
->   #define kvm_err(fmt, ...) \
-> @@ -613,6 +616,31 @@ struct kvm {
->   #define vcpu_err(vcpu, fmt, ...)					\
->   	kvm_err("vcpu%i " fmt, (vcpu)->vcpu_id, ## __VA_ARGS__)
->   
-> +bool kvm_make_all_cpus_request(struct kvm *kvm, unsigned int req);
-> +static inline void kvm_vm_bugged(struct kvm *kvm)
-> +{
-> +	kvm->vm_bugged = true;
-> +	kvm_make_all_cpus_request(kvm, KVM_REQ_VM_BUGGED);
-> +}
-> +
-> +#define KVM_BUG(cond, kvm, fmt...)				\
-> +({								\
-> +	int __ret = (cond);					\
-> +								\
-> +	if (WARN_ONCE(__ret && !(kvm)->vm_bugged, fmt))		\
-> +		kvm_vm_bugged(kvm);				\
-> +	unlikely(__ret);					\
-> +})
-> +
-> +#define KVM_BUG_ON(cond, kvm)					\
-> +({								\
-> +	int __ret = (cond);					\
-> +								\
-> +	if (WARN_ON_ONCE(__ret && !(kvm)->vm_bugged))		\
-> +		kvm_vm_bugged(kvm);				\
-> +	unlikely(__ret);					\
-> +})
-> +
->   static inline bool kvm_dirty_log_manual_protect_and_init_set(struct kvm *kvm)
->   {
->   	return !!(kvm->manual_dirty_log_protect & KVM_DIRTY_LOG_INITIALLY_SET);
-> @@ -930,7 +958,6 @@ void *kvm_mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc);
->   bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
->   				 struct kvm_vcpu *except,
->   				 unsigned long *vcpu_bitmap, cpumask_var_t tmp);
-> -bool kvm_make_all_cpus_request(struct kvm *kvm, unsigned int req);
->   bool kvm_make_all_cpus_request_except(struct kvm *kvm, unsigned int req,
->   				      struct kvm_vcpu *except);
->   bool kvm_make_cpus_request_mask(struct kvm *kvm, unsigned int req,
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 751d1f6890b0..dc752d0bd3ec 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -3435,7 +3435,7 @@ static long kvm_vcpu_ioctl(struct file *filp,
->   	struct kvm_fpu *fpu = NULL;
->   	struct kvm_sregs *kvm_sregs = NULL;
->   
-> -	if (vcpu->kvm->mm != current->mm)
-> +	if (vcpu->kvm->mm != current->mm || vcpu->kvm->vm_bugged)
->   		return -EIO;
->   
->   	if (unlikely(_IOC_TYPE(ioctl) != KVMIO))
-> @@ -3641,7 +3641,7 @@ static long kvm_vcpu_compat_ioctl(struct file *filp,
->   	void __user *argp = compat_ptr(arg);
->   	int r;
->   
-> -	if (vcpu->kvm->mm != current->mm)
-> +	if (vcpu->kvm->mm != current->mm || vcpu->kvm->vm_bugged)
->   		return -EIO;
->   
->   	switch (ioctl) {
-> @@ -3707,7 +3707,7 @@ static long kvm_device_ioctl(struct file *filp, unsigned int ioctl,
->   {
->   	struct kvm_device *dev = filp->private_data;
->   
-> -	if (dev->kvm->mm != current->mm)
-> +	if (dev->kvm->mm != current->mm || dev->kvm->vm_bugged)
->   		return -EIO;
->   
->   	switch (ioctl) {
-> @@ -3991,7 +3991,7 @@ static long kvm_vm_ioctl(struct file *filp,
->   	void __user *argp = (void __user *)arg;
->   	int r;
->   
-> -	if (kvm->mm != current->mm)
-> +	if (kvm->mm != current->mm || kvm->vm_bugged)
->   		return -EIO;
->   	switch (ioctl) {
->   	case KVM_CREATE_VCPU:
-> @@ -4189,7 +4189,7 @@ static long kvm_vm_compat_ioctl(struct file *filp,
->   	struct kvm *kvm = filp->private_data;
->   	int r;
->   
-> -	if (kvm->mm != current->mm)
-> +	if (kvm->mm != current->mm || kvm->vm_bugged)
->   		return -EIO;
->   	switch (ioctl) {
->   	case KVM_GET_DIRTY_LOG: {
-> 
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+This should be _before_ patch 17, not after.
+
+Paolo
 
