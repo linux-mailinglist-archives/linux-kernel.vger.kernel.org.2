@@ -2,105 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1413BC727
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 09:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F2D3BC75B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 09:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhGFHcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 03:32:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53704 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230203AbhGFHcD (ORCPT
+        id S230251AbhGFHlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 03:41:31 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:41563 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230223AbhGFHl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 03:32:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625556565;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nw0P33cYxqMaEBdimkgujl5GLUpaC+SctslNj38QzXU=;
-        b=fLF8gNYMcFRT67r4SF1S3XCeEnwp9ryoUzwfTJBqdcKvYFLtZKpaxjzw1ifTUtPnXwPY2w
-        Bz2BKuTkgv/V8kvo22sKHeizI0RC8X/8+9ak1p+dLOiPbj7i/iiL/fxmzh0FtKs8MwrNse
-        a/x/6fC/RuKqI0jZJIWfq/Y3Ve5J42Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-567-qsHgqo21NZyc2_bgpJSftQ-1; Tue, 06 Jul 2021 03:29:24 -0400
-X-MC-Unique: qsHgqo21NZyc2_bgpJSftQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59F6A1932480;
-        Tue,  6 Jul 2021 07:29:22 +0000 (UTC)
-Received: from T590 (ovpn-12-27.pek2.redhat.com [10.72.12.27])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 671C55D6A1;
-        Tue,  6 Jul 2021 07:29:16 +0000 (UTC)
-Date:   Tue, 6 Jul 2021 15:29:11 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-Subject: Re: [PATCH 2/2] nvme-fc: Wait with a timeout for queue to freeze
-Message-ID: <YOQGRwLfLaFGqlVA@T590>
-References: <20210625101649.49296-1-dwagner@suse.de>
- <20210625101649.49296-3-dwagner@suse.de>
- <YNp50pmlzN6M0kNX@T590>
- <20210705162519.qqlklisxcsiopflw@beryllium.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210705162519.qqlklisxcsiopflw@beryllium.lan>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Tue, 6 Jul 2021 03:41:28 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210706073848epoutp03276d01a2efaf88760c484023725d5c74~PI5iCrPGj2869328693epoutp03X
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 07:38:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210706073848epoutp03276d01a2efaf88760c484023725d5c74~PI5iCrPGj2869328693epoutp03X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1625557128;
+        bh=cP5ZlOCRAkS9lKbZXZkQSFyovcLDaJGiU1V4dksqdHM=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=eidCqGDV6Kz+MDjdq5iuyIdEJmRkO8QXdwORyYDD/jYGKQI/Q2JM43ZtvKT+0W4Xc
+         Mm29J6fXFQLQiYeQiwcQkwV5LDFnI1SDIHLuSbKLyAos0XwHSFhp21b/h/ukyy8Skl
+         fyurvbB8KJ5NU54A8w5Sxt2CnFa2EIcbMbHirnDk=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20210706073847epcas5p4b26e0f57bb307f3749ad0868fda7ea26~PI5hoZDBn0528305283epcas5p4M;
+        Tue,  6 Jul 2021 07:38:47 +0000 (GMT)
+Received: from epsmges5p3new.samsung.com (unknown [182.195.40.193]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4GJvYx1zRlz4x9Pv; Tue,  6 Jul
+        2021 07:38:45 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        06.8D.09452.48804E06; Tue,  6 Jul 2021 16:38:44 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210706061710epcas5p2c11d1bf5afb14774c4d4db93f2b83b33~PHyQeDf1i2786927869epcas5p2C;
+        Tue,  6 Jul 2021 06:17:10 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210706061710epsmtrp1323044d3ecd1bd7481868b90de0d9536~PHyQePzVF1995919959epsmtrp1K;
+        Tue,  6 Jul 2021 06:17:10 +0000 (GMT)
+X-AuditID: b6c32a4b-429ff700000024ec-6f-60e408842d0f
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        19.DF.08289.665F3E06; Tue,  6 Jul 2021 15:17:10 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210706061709epsmtip18a1e2d49c75ba0984cba352dd875adac~PHyPJP0i_0738307383epsmtip15;
+        Tue,  6 Jul 2021 06:17:08 +0000 (GMT)
+From:   Tamseel Shams <m.shams@samsung.com>
+To:     krzysztof.kozlowski@canonical.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
+        Tamseel Shams <m.shams@samsung.com>
+Subject: [PATCH v3] serial: samsung: Checks the return value of function
+Date:   Tue,  6 Jul 2021 11:49:09 +0530
+Message-Id: <20210706061909.17555-1-m.shams@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrAKsWRmVeSWpSXmKPExsWy7bCmum4Lx5MEgxXTuCwezNvGZtG8eD2b
+        xbu5MhYb3/5gstj0+BqrxeVdc9gsZpzfx2RxZnEvu8Xd1sXsDpwesxp62Tw2repk89g/dw27
+        x+Yl9R59W1YxenzeJBfAFpVjk5GamJJapJCal5yfkpmXbqvkHRzvHG9qZmCoa2hpYa6kkJeY
+        m2qr5OIToOuWmQN0k5JCWWJOKVAoILG4WEnfzqYov7QkVSEjv7jEVim1ICWnwNCoQK84Mbe4
+        NC9dLzk/18rQwMDIFKgyISdj596XrAXT+CrOXX3P3MD4k7uLkZNDQsBE4vSjM2xdjFwcQgK7
+        GSUO7pjHDOF8YpR4dWc7E4TzmVFiJtAzMC0Xbz9mgUjsYpR42DITymlhkvj47ghQFQcHm4Cm
+        xPHzYDtEBCIlPuzZBDaWWeAko8TezQ0sIAlhAQ+JefOmgdWzCKhKzDvMDGLyClhIzGnLh9gl
+        L7F6wwGwVgmBQ+wS7ScvsUIkXCRWfznNAmELS7w6voUdwpaSeNnfBmXnS8yft4oZwq6QWHnh
+        DZRtL3HgyhwWkF3MQGeu36UPEZaVmHpqHROIzSzAJ9H7+wkTRJxXYsc8GFtR4v/ufqjx4hLv
+        VkyBOsdDoq3rPyOILSQQK3H39B7WCYyysxA2LGBkXMUomVpQnJueWmxaYJyXWo4cT5sYwUlN
+        y3sH46MHH/QOMTJxMB5ilOBgVhLhFZnyKEGINyWxsiq1KD++qDQntfgQoykwxCYyS4km5wPT
+        al5JvKGpkZmZgaWBqbGFmaGSOO9S9kMJQgLpiSWp2ampBalFMH1MHJxSDUwX/+2OX24xfeb6
+        WeZb+FWDTeR1TvlfM3Hb/iD0T/T8Sj/TJEtTj4+2ySwn7j6Q8w65943Ha6GE5qM71T78wsc0
+        PuacUDliLHlz3bfkQkdFBQXhZ1pvP+yKYLtvvLXV+Niu6zesIlZ9+fSi1uuQXlKwn2dY6sfD
+        r9avvv888P9tZr27GwXzEw98rZF5aMvDWGXrtviUyPNyFt+Aop+u9yR2lBtGKAo5ZR0qf6zr
+        cFa04P3F4Nt7XjKtfpH2+bLdOrczGXsenr7+8wy3gcEriV1zbL7uP5BY8/DSse1HX8caqdmp
+        HlmZrrvy99KpU1d+vK0+8fW9qLlNu66eWVL0+eWCU3uTRb9kSjY53osSMt3JocRSnJFoqMVc
+        VJwIAM1ZEKTzAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupiluLIzCtJLcpLzFFi42LZdlhJTjft6+MEg+XnJSwezNvGZtG8eD2b
+        xbu5MhYb3/5gstj0+BqrxeVdc9gsZpzfx2RxZnEvu8Xd1sXsDpwesxp62Tw2repk89g/dw27
+        x+Yl9R59W1YxenzeJBfAFsVlk5Kak1mWWqRvl8CVsXPvS9aCaXwV566+Z25g/MndxcjJISFg
+        InHx9mOWLkYuDiGBHYwSkz+eZodIiEtM+7WfEcIWllj57zk7RFETk8Skls+sXYwcHGwCmhLH
+        z4MNEhGIlli8+RAjSA2zwHlGiZ3HVzOBJIQFPCTmzZvGBlLPIqAqMe8wM4jJK2AhMactH2K8
+        vMTqDQeYJzDyLGBkWMUomVpQnJueW2xYYJSXWq5XnJhbXJqXrpecn7uJERxcWlo7GPes+qB3
+        iJGJg/EQowQHs5IIr8iURwlCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeS90nYwXEkhPLEnNTk0t
+        SC2CyTJxcEo1MBXK/r3nnXpi/47/t2auuWCf8VTW/7eF6vOXJmzRm04et3DlV67vsiy70WZl
+        9eowO1Os7AfBVcz26ay30j/pV+yP97wwI2aj1st9fYyGK4Wv39j/fdL7Jsds7t5/pW9+l+kx
+        qN+Ynh/f9PHM9K1W5ryrp3tMy93T5T837pfhXJeKa0ptT+1XVafMVJS7Pf/7FOG7nHuqpHj9
+        hFqd2dbb86td67nwscTyz9Hj/r9V//3RLFt9Im2XYHN7VMHyLbVF7KwfH4qV9ZVv4/humX86
+        3Gfdd7NyvlyR0Dc+qZszrnpW/9E1TT5xhkVY/nCEU7dKTrHjyaKrHB1b/yi/vRcdGm/m8ajO
+        wzMlecVdr5gnSizFGYmGWsxFxYkAJgN4fp0CAAA=
+X-CMS-MailID: 20210706061710epcas5p2c11d1bf5afb14774c4d4db93f2b83b33
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210706061710epcas5p2c11d1bf5afb14774c4d4db93f2b83b33
+References: <CGME20210706061710epcas5p2c11d1bf5afb14774c4d4db93f2b83b33@epcas5p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 06:34:00PM +0200, Daniel Wagner wrote:
-> On Tue, Jun 29, 2021 at 09:39:30AM +0800, Ming Lei wrote:
-> > Can you investigate a bit on why there is the hang? FC shouldn't use
-> > managed IRQ, so the interrupt won't be shutdown.
-> 
-> So far, I was not able to figure out why this hangs. In my test setup I
-> don't have to do any I/O, I just toggle the remote port.
-> 
->   grep busy /sys/kernel/debug/block/*/hctx*/tags | grep -v busy=0
-> 
-> and this seems to confirm, no I/O in flight.
+"uart_add_one_port" function call may fail and return
+some error code, so adding a check for return value.
+If it is returning some error code, then displaying the
+result, unregistering the driver and then returning from
+probe function with error code.
 
-What is the output of the following command after the hang is triggered?
+Signed-off-by: Tamseel Shams <m.shams@samsung.com>
+---
+Changes since v1:
+1. Added support to unregister driver on failure of "uart_add_one_port"
+function call.
+2. Commit message updated.
 
-(cd /sys/kernel/debug/block/nvme0n1 && find . -type f -exec grep -aH . {} \;)
+Changes since v2:
+1. Added support to unwind clocks on failure of "uart_add_one_port"
+function call.
 
-Suppose the hang disk is nvme0n1.
+ drivers/tty/serial/samsung_tty.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-> 
-> So I started to look at the q_usage_counter. The obvious observational
-> is that counter is not 0. The least bit is set, thus we are in atomic
-> mode. 
-> 
-> (gdb) p/x *((struct request_queue*)0xffff8ac992fbef20)->q_usage_counter->data
-> $10 = {
->   count = {
->     counter = 0x8000000000000001
->   }, 
->   release = 0xffffffffa02e78b0, 
->   confirm_switch = 0x0, 
->   force_atomic = 0x0, 
->   allow_reinit = 0x1, 
->   rcu = {
->     next = 0x0, 
->     func = 0x0
->   }, 
->   ref = 0xffff8ac992fbef30
-> }
-> 
-> I am a bit confused about the percpu-refcount API. My naive
-> interpretation is that when we are in atomic mode percpu_ref_is_zero()
-> can't be used. But this seems rather strange. I must miss something.
-
-No, percpu_ref_is_zero() is fine to be called in atomic mode.
-
-
-Thanks,
-Ming
+diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+index 9fbc61151c2e..a3f3a17fb54b 100644
+--- a/drivers/tty/serial/samsung_tty.c
++++ b/drivers/tty/serial/samsung_tty.c
+@@ -2253,7 +2253,11 @@ static int s3c24xx_serial_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	dev_dbg(&pdev->dev, "%s: adding port\n", __func__);
+-	uart_add_one_port(&s3c24xx_uart_drv, &ourport->port);
++	ret = uart_add_one_port(&s3c24xx_uart_drv, &ourport->port);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Failed to add uart port, err %d\n", ret);
++		goto add_port_error;
++	}
+ 	platform_set_drvdata(pdev, &ourport->port);
+ 
+ 	/*
+@@ -2272,6 +2276,17 @@ static int s3c24xx_serial_probe(struct platform_device *pdev)
+ 	probe_index++;
+ 
+ 	return 0;
++
++add_port_error:
++	ourport->port.mapbase = 0;
++	clk_disable_unprepare(ourport->clk);
++	clk_put(ourport->clk);
++	if (!IS_ERR(ourport->baudclk)) {
++		clk_disable_unprepare(ourport->baudclk);
++		clk_put(ourport->baudclk);
++	}
++	uart_unregister_driver(&s3c24xx_uart_drv);
++	return ret;
+ }
+ 
+ static int s3c24xx_serial_remove(struct platform_device *dev)
+-- 
+2.17.1
 
