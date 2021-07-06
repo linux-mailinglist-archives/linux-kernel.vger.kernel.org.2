@@ -2,180 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F573BD84A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7603BD878
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbhGFOgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:36:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54775 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232218AbhGFOgE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:36:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625582005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+TFQQRr4n0iTcvgZJfJSvRK8tc2ECNv5rYzqu0pkJ5A=;
-        b=NxJvDVwcxLzCmpjxm6F8L4eKIW2KFfW46HX8b110437LrQPCDjPea+/3ZsEXOLw3JdUmV9
-        qis35E/Qwxu1LOCiqHyAYCQYykx7IqjcZY7ShyUV+7etnvJEH721o6hxUvWfN3i2oehi6S
-        VYTlYPoPEH06lnh9yWLLiFz0244kowE=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-P4OhN_qSMRes23dITwIzDg-1; Tue, 06 Jul 2021 10:03:13 -0400
-X-MC-Unique: P4OhN_qSMRes23dITwIzDg-1
-Received: by mail-ed1-f72.google.com with SMTP id i8-20020a50fc080000b02903989feb4920so5385891edr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:03:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+TFQQRr4n0iTcvgZJfJSvRK8tc2ECNv5rYzqu0pkJ5A=;
-        b=KubtNJB+WG5L5PTbMAlsfpoWDH22nUcb7b6TIV3rY8bwnrYDRmCl9tVQZNp99WWdO/
-         eQaYp+7fjQEP5ZgYBxaQVRZ9NFP9BlG38SxhP5a7K9A2j9h81GxLm3JYvzlTk4+Dcshq
-         Rgp4G3m4K3mgsAkuvmDGkCe4Yve+v9+bt1I5c6rE2pUlkhTxRthGewd0nOK+betD/jFV
-         zwpeWWWrTlqnAanGtZW/U+4eNhNYDQUhAhclJPmkMKH1UXkBhvMR7pFWDtGXYL7OXGQ5
-         ZsVztVCSi4jFy/oxQUYirqnUoxKjJWpUFFDo0CKM5bnwlz+0fAmfrOR4aJoiWR9LBUKx
-         YwkQ==
-X-Gm-Message-State: AOAM530BFmpuvA13z9npGY2ogSqiaYBF8epSXU74mMGq/GOH7TYYtPqF
-        sbF31Lv7/37bZUp2QLjpDJRU2UTYwUuFWcJbZoybvIcL8TgROlkiQqx7OMCw9i7GcAnwwaScL0q
-        tToupuTQPUIu7NXBQH5xpTj6D
-X-Received: by 2002:a17:906:6047:: with SMTP id p7mr18568843ejj.206.1625580191678;
-        Tue, 06 Jul 2021 07:03:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzundaRNXGNxnhRDhaYJpqcazvdtwjIQgZqHVgRq8AvEcPWbLzzoTG7559L3pCBjZpMZPNGUQ==
-X-Received: by 2002:a17:906:6047:: with SMTP id p7mr18568797ejj.206.1625580191361;
-        Tue, 06 Jul 2021 07:03:11 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b5sm3300742ejz.122.2021.07.06.07.03.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 07:03:10 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 28/69] KVM: Add per-VM flag to mark read-only
- memory as unsupported
-To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>
-Cc:     isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <1eb584469b41775380ab0a5a5d31a64e344b1b95.1625186503.git.isaku.yamahata@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8c57204e-385e-1f54-cb15-760e174d122e@redhat.com>
-Date:   Tue, 6 Jul 2021 16:03:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232598AbhGFOmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:42:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232569AbhGFOmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 10:42:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EDBB619B4;
+        Tue,  6 Jul 2021 14:03:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625580217;
+        bh=SlVNiPbVwivuijrsvG9rmj7KMdvuRpGvNZME7KtyPLE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dWfAm7VKcJ8uQmZAof7gx5Uelo11PLuriPZYcIK4GYL5p1y5TioA4vtoBMx5nsz+m
+         oN0cZelDqlNppqjqvLvsbfgavFhe/YQUlMBypxvww9q1ZQa+Mknon43OETnZ3wlZil
+         mmDihmTprS+HqDQpz2n0KPrud4LIFF11CmGeOsXKAgwgk+evnNlbFblPezDSR47cG3
+         8v6xBdikj8t2p7BljGrdDMKZarxDV8RdQ665zqiUd/CHF0+lHwD07u3/Q8HgnJyn4s
+         3rdV7B7c37CYkKfjQyGrsPZvtOV0yiZF/O+pzXKS6TBMOy45EtJxovKtTCSTPrlkJz
+         8TotspibDvbRQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3E6EC5C034D; Tue,  6 Jul 2021 07:03:37 -0700 (PDT)
+Date:   Tue, 6 Jul 2021 07:03:37 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: RCU vs data_race()
+Message-ID: <20210706140337.GZ4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <YMxgbuEdrq8k3eZp@elver.google.com>
+ <YMyC0iux0wKzc1JG@hirez.programming.kicks-ass.net>
+ <20210618204800.GK4397@paulmck-ThinkPad-P17-Gen-1>
+ <YM+TlNDJm1Jx1WQW@hirez.programming.kicks-ass.net>
+ <20210620210127.GR4397@paulmck-ThinkPad-P17-Gen-1>
+ <YNA/gkHbq46A/21C@hirez.programming.kicks-ass.net>
+ <20210621133757.GS4397@paulmck-ThinkPad-P17-Gen-1>
+ <YOQNgsS9Tjt4aDmG@hirez.programming.kicks-ass.net>
+ <CANpmjNNRAJ34KUF-1hWrP3F0Ooy4oi6kbH82WWpDxmVqVSj4SA@mail.gmail.com>
+ <YOQxYJaypdsmqhlX@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <1eb584469b41775380ab0a5a5d31a64e344b1b95.1625186503.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOQxYJaypdsmqhlX@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
+On Tue, Jul 06, 2021 at 12:33:04PM +0200, Peter Zijlstra wrote:
+> On Tue, Jul 06, 2021 at 10:44:46AM +0200, Marco Elver wrote:
+> > On Tue, 6 Jul 2021 at 10:00, Peter Zijlstra <peterz@infradead.org> wrote:
+> > [...]
+> > > In that case, would not an explicit: data_debug(addr) call (implemented
+> > > by KASAN/KCSAN/whoever), which would report whatever knowledge they have
+> > > about that address, be even more useful?
+> > 
+> > KCSAN/KASAN report data-races/memory errors as soon as they encounter
+> > them, but before they do, cannot give you any more than that (metadata
+> > if it exists, but not sure it can be interpreted in any useful way
+> > before an error occurs).
+> > 
+> > But maybe I misunderstood. Is data_debug() meant to not return
+> > anything and instead just be a "fake access"?
 > 
-> Add a flag for TDX to flag RO memory as unsupported and propagate it to
-> KVM_MEM_READONLY to allow reporting RO memory as unsupported on a per-VM
-> basis.  TDX1 doesn't expose permission bits to the VMM in the SEPT
-> tables, i.e. doesn't support read-only private memory.
+> Mostly just print any meta data that you might have. Like who allocated
+> it, or which code touched it. I'm thinking KASAN/KCSAN need to keep
+> track of such stuff for when a violation is detected.
 > 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->   arch/x86/kvm/x86.c       | 4 +++-
->   include/linux/kvm_host.h | 4 ++++
->   virt/kvm/kvm_main.c      | 8 +++++---
->   3 files changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index cd9407982366..87212d7563ae 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3897,7 +3897,6 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->   	case KVM_CAP_ASYNC_PF_INT:
->   	case KVM_CAP_GET_TSC_KHZ:
->   	case KVM_CAP_KVMCLOCK_CTRL:
-> -	case KVM_CAP_READONLY_MEM:
->   	case KVM_CAP_HYPERV_TIME:
->   	case KVM_CAP_IOAPIC_POLARITY_IGNORED:
->   	case KVM_CAP_TSC_DEADLINE_TIMER:
-> @@ -4009,6 +4008,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->   		if (static_call(kvm_x86_is_vm_type_supported)(KVM_X86_TDX_VM))
->   			r |= BIT(KVM_X86_TDX_VM);
->   		break;
-> +	case KVM_CAP_READONLY_MEM:
-> +		r = kvm && kvm->readonly_mem_unsupported ? 0 : 1;
-> +		break;
->   	default:
->   		break;
->   	}
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index ddd4d0f68cdf..7ee7104b4b59 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -597,6 +597,10 @@ struct kvm {
->   	unsigned int max_halt_poll_ns;
->   	u32 dirty_ring_size;
->   
-> +#ifdef __KVM_HAVE_READONLY_MEM
-> +	bool readonly_mem_unsupported;
-> +#endif
-> +
->   	bool vm_bugged;
->   };
->   
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 52d40ea75749..63d0c2833913 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -1258,12 +1258,14 @@ static void update_memslots(struct kvm_memslots *slots,
->   	}
->   }
->   
-> -static int check_memory_region_flags(const struct kvm_userspace_memory_region *mem)
-> +static int check_memory_region_flags(struct kvm *kvm,
-> +				     const struct kvm_userspace_memory_region *mem)
->   {
->   	u32 valid_flags = KVM_MEM_LOG_DIRTY_PAGES;
->   
->   #ifdef __KVM_HAVE_READONLY_MEM
-> -	valid_flags |= KVM_MEM_READONLY;
-> +	if (!kvm->readonly_mem_unsupported)
-> +		valid_flags |= KVM_MEM_READONLY;
->   #endif
->   
->   	if (mem->flags & ~valid_flags)
-> @@ -1436,7 +1438,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
->   	int as_id, id;
->   	int r;
->   
-> -	r = check_memory_region_flags(mem);
-> +	r = check_memory_region_flags(kvm, mem);
->   	if (r)
->   		return r;
->   
-> 
+> If I understand Paul right; and there's a fair chance I didn't; I tihnk
+> the issue is that when RCU finds a double call_rcu() (or some other
+> fail), it has very little clue how we got there, and any addition
+> information might be useful.
 
-For all these flags, which of these limitations will be common to SEV-ES 
-and SEV-SNP (ExtINT injection, MCE injection, changing TSC, read-only 
-memory, dirty logging)?  Would it make sense to use vm_type instead of 
-all of them?  I guess this also guides the choice of whether to use a 
-single vm-type for TDX and SEV-SNP or two.  Probably two is better, and 
-there can be static inline bool functions to derive the support flags 
-from the vm-type.
+If it is a current reference, we know that reference is relevant.
+After all, if the structure is being passed to call_rcu(), then there
+better not not be something else referencing it right now.  But the
+historical data you are (I think?) asking for might be completely
+irrelevant due to its having happened too long ago.
 
-Paolo
-
+							Thanx, Paul
