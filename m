@@ -2,179 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278EF3BC743
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 09:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5128E3BC749
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 09:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbhGFHgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 03:36:14 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14304 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230367AbhGFHgM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 03:36:12 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1667Wf0L143497;
-        Tue, 6 Jul 2021 03:33:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=Gew95MZVARp719IXqnhXu+l8ESoMwp/ceIvRn2Onm3g=;
- b=olfjstCWcoU196d8uV0n9vh3QwTaArdfTeZPWU3iGrKgDYWiPFFEpeZCLsStFDMWibmB
- hn45bHPPo1dAr7l41tB0CzU5PcUJB9I9rt7WHvUKwNj5yoWLMjTQAXJSqcKR4T7v4FX8
- viJU1LzdQVVOsxQV/2h2R+s63hYJmJhYsAczl5mSCep+6wjIB3Mwfaep85GHHG/o2HzC
- JBZa/+RePWzA+2Q2vMOAWprOBJVNreEhCpiyzS6GMdQkAXUU3DoY8+QQt6mMM0wM7+rl
- d9tgrCyT+iW9pR/isOCDosA/kVK0NmVzRGkn6e6y5iQNJEqgxv4q+n3i7YEfQ3tRdzUQ oA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39mbkds3mw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 03:33:03 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1667X3SR145418;
-        Tue, 6 Jul 2021 03:33:03 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39mbkds3m8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 03:33:02 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1667FkG0013626;
-        Tue, 6 Jul 2021 07:33:01 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 39jfh88kpt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 07:33:01 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1667WwAH23265774
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 6 Jul 2021 07:32:58 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F255D52052;
-        Tue,  6 Jul 2021 07:32:57 +0000 (GMT)
-Received: from bangoria.ibmuc.com (unknown [9.199.43.134])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id A32C552059;
-        Tue,  6 Jul 2021 07:32:51 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-To:     naveen.n.rao@linux.ibm.com, mpe@ellerman.id.au, ast@kernel.org,
-        daniel@iogearbox.net
-Cc:     ravi.bangoria@linux.ibm.com, sandipan@linux.ibm.com,
-        paulus@samba.org, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] bpf powerpc: Add addr > TASK_SIZE_MAX explicit check
-Date:   Tue,  6 Jul 2021 13:02:11 +0530
-Message-Id: <20210706073211.349889-5-ravi.bangoria@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210706073211.349889-1-ravi.bangoria@linux.ibm.com>
-References: <20210706073211.349889-1-ravi.bangoria@linux.ibm.com>
+        id S230414AbhGFHgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 03:36:48 -0400
+Received: from mga02.intel.com ([134.134.136.20]:54950 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230274AbhGFHgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 03:36:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10036"; a="196236943"
+X-IronPort-AV: E=Sophos;i="5.83,328,1616482800"; 
+   d="scan'208";a="196236943"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 00:33:54 -0700
+X-IronPort-AV: E=Sophos;i="5.83,328,1616482800"; 
+   d="scan'208";a="486033596"
+Received: from liujing-mobl.ccr.corp.intel.com (HELO [10.238.130.207]) ([10.238.130.207])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 00:33:52 -0700
+Subject: Re: [PATCH RFC 2/7] kvm: x86: Introduce XFD MSRs as passthrough to
+ guest
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jing2.liu@intel.com
+References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
+ <20210207154256.52850-3-jing2.liu@linux.intel.com>
+ <YKwd5OTXr97Fxfok@google.com>
+ <d6e7328d-335f-b244-48d7-4ffe8b04fb05@intel.com>
+ <3c63438b-2a42-0b81-f002-b937095570e1@linux.intel.com>
+ <895e41d7-b64c-e398-c4e2-6309c747068d@intel.com>
+From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
+Message-ID: <7a59f745-6ffa-ae5f-fd66-9fca9ae95533@linux.intel.com>
+Date:   Tue, 6 Jul 2021 15:33:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <895e41d7-b64c-e398-c4e2-6309c747068d@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: qesT2bE4nOfw031iJk2-FJ_fyRTXBqXS
-X-Proofpoint-ORIG-GUID: t__WcHqeh_O8KkfEbK3T3y00H-PG9cSJ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-06_02:2021-07-02,2021-07-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- lowpriorityscore=0 clxscore=1015 mlxlogscore=999 phishscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 adultscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107060037
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On PowerPC with KUAP enabled, any kernel code which wants to
-access userspace needs to be surrounded by disable-enable KUAP.
-But that is not happening for BPF_PROBE_MEM load instruction.
-So, when BPF program tries to access invalid userspace address,
-page-fault handler considers it as bad KUAP fault:
 
-  Kernel attempted to read user page (d0000000) - exploit attempt? (uid: 0)
 
-Considering the fact that PTR_TO_BTF_ID (which uses BPF_PROBE_MEM
-mode) could either be a valid kernel pointer or NULL but should
-never be a pointer to userspace address, execute BPF_PROBE_MEM load
-only if addr > TASK_SIZE_MAX, otherwise set dst_reg=0 and move on.
+On 6/30/2021 1:58 AM, Dave Hansen wrote:
+> On 6/27/21 7:00 PM, Liu, Jing2 wrote:
+>> On 6/24/2021 1:50 AM, Dave Hansen wrote:
+>>> On 5/24/21 2:43 PM, Sean Christopherson wrote:
+>>>> On Sun, Feb 07, 2021, Jing Liu wrote:
+>>>>> Passthrough both MSRs to let guest access and write without vmexit.
+>>>> Why?  Except for read-only MSRs, e.g. MSR_CORE_C1_RES,
+>>>> passthrough MSRs are costly to support because KVM must context
+>>>> switch the MSR (which, by the by, is completely missing from the
+>>>> patch).
+>>>>
+>>>> In other words, if these MSRs are full RW passthrough, guests
+>>>> with XFD enabled will need to load the guest value on entry, save
+>>>> the guest value on exit, and load the host value on exit.  That's
+>>>> in the neighborhood of a 40% increase in latency for a single
+>>>> VM-Enter/VM-Exit roundtrip (~1500 cycles =>
+>>>>> 2000 cycles).
+>>> I'm not taking a position as to whether these _should_ be passthrough or
+>>> not.  But, if they are, I don't think you strictly need to do the
+>>> RDMSR/WRMSR at VM-Exit time.
+>> Hi Dave,
+>>
+>> Thanks for reviewing the patches.
+>>
+>> When vmexit, clearing XFD (because KVM thinks guest has requested AMX) can
+>> be deferred to the time when host does XSAVES, but this means need a new
+>> flag in common "fpu" structure or a common macro per thread which works
+>> only dedicated for KVM case, and check the flag in 1) switch_fpu_prepare()
+>> 2) kernel_fpu_begin() . This is the concern to me.
+> Why is this a concern?  You're worried about finding a single bit worth
+> of space somewhere?
+A bit of flag can be found so far though the space is somehow nervous. 
+What I
+am worrying about is, we introduce a flag per thread and add the check 
+in core
+place like softirq path and context switch path, to handle a case only 
+for KVM
+thread + XFD=1 + AMX usage in guest. This is not a quite frequent case 
+but we
+need check every time for every thread.
 
-This will catch NULL, valid or invalid userspace pointers. Only bad
-kernel pointer will be handled by BPF exception table.
+I am considering using XGETBV(1) (~24 cycles) to detect if KVM really need
+wrmsr(0) to clear XFD for guest AMX state when vmexit. And this is not a 
+quite
+frequent case I think. Only one concern is, does/will kernel check 
+somewhere that
+thread's memory fpu buffer is already large but thread's XFD=1? (I 
+believe not)
 
-[Alexei suggested for x86]
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
----
- arch/powerpc/net/bpf_jit_comp64.c | 38 +++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+Thanks,
+Jing
 
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index 1884c6dca89a..46becae76210 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -753,6 +753,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 		/* dst = *(u8 *)(ul) (src + off) */
- 		case BPF_LDX | BPF_MEM | BPF_B:
- 		case BPF_LDX | BPF_PROBE_MEM | BPF_B:
-+			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-+				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
-+				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
-+				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
-+				PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
-+				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
-+				PPC_JMP((ctx->idx + 2) * 4);
-+			}
- 			EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
- 			if (insn_is_zext(&insn[i + 1]))
- 				addrs[++i] = ctx->idx * 4;
-@@ -763,6 +771,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 		/* dst = *(u16 *)(ul) (src + off) */
- 		case BPF_LDX | BPF_MEM | BPF_H:
- 		case BPF_LDX | BPF_PROBE_MEM | BPF_H:
-+			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-+				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
-+				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
-+				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
-+				PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
-+				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
-+				PPC_JMP((ctx->idx + 2) * 4);
-+			}
- 			EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
- 			if (insn_is_zext(&insn[i + 1]))
- 				addrs[++i] = ctx->idx * 4;
-@@ -773,6 +789,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 		/* dst = *(u32 *)(ul) (src + off) */
- 		case BPF_LDX | BPF_MEM | BPF_W:
- 		case BPF_LDX | BPF_PROBE_MEM | BPF_W:
-+			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-+				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
-+				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
-+				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
-+				PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
-+				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
-+				PPC_JMP((ctx->idx + 2) * 4);
-+			}
- 			EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
- 			if (insn_is_zext(&insn[i + 1]))
- 				addrs[++i] = ctx->idx * 4;
-@@ -783,6 +807,20 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 		/* dst = *(u64 *)(ul) (src + off) */
- 		case BPF_LDX | BPF_MEM | BPF_DW:
- 		case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
-+			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-+				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
-+				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
-+				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
-+				if (off % 4)
-+					PPC_BCC(COND_GT, (ctx->idx + 5) * 4);
-+				else
-+					PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
-+				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
-+				if (off % 4)
-+					PPC_JMP((ctx->idx + 3) * 4);
-+				else
-+					PPC_JMP((ctx->idx + 2) * 4);
-+			}
- 			PPC_BPF_LL(dst_reg, src_reg, off);
- 			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
- 			if (ret)
--- 
-2.26.3
+>   
 
