@@ -2,104 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F733BC47B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 03:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F013BC486
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 03:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhGFBD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 21:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhGFBD4 (ORCPT
+        id S229869AbhGFBOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 21:14:43 -0400
+Received: from regular1.263xmail.com ([211.150.70.199]:47200 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhGFBOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 21:03:56 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D44C061574;
-        Mon,  5 Jul 2021 18:01:19 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id v7so19863960pgl.2;
-        Mon, 05 Jul 2021 18:01:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=W2+AYYofJ+i/1cuwRg61KlRr9Zka6oqIudL2SUcZpBE=;
-        b=No6NE/548bzly3HYgmlVYu9tCB7/LM6hGfO04rBB75EJ15NDkWjcKzRbInlqQvei1D
-         VteBFJEIPqCH7k5z+KEgf3JNATEuHqKJedwM3wtt6O7xUiqWHMqwEWdFgh6Xz75AWeNP
-         9CsVoT/sP5Wy76VKaFOOYJclrJLX/mBJp77wVna/ar2W9ohxVO2GoUdHmwSkWRm2hCv6
-         JVmSVhVx+z7+AG31it+rGbolw4tSE9bAK2UYtrIOHZtJ1vFYSVXrMLcyxJmuQe1E3otq
-         37JlO6ggRL/+CilEFkSHD7lTGiR7sot2h2liHZ3/8j07gt1ML6J3Tayh1KXz1PZegGmI
-         aw5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=W2+AYYofJ+i/1cuwRg61KlRr9Zka6oqIudL2SUcZpBE=;
-        b=ZnSJQ6BkwVdilaY12t2u1yaHOkvj8syFbdRiQDYDI80zAGIKTMjvzx9CjpxPR0qw8E
-         F3AYafcMhQYt8FkfLSSXjLtQseuFawQoDzrveDAXRuQN3Z96Ah0dTNbrMAiENl2zbdsZ
-         ow93S4y3MWJBVtu1OosnrYzYWNay1j3yiyuo/qHOuW8PgCqPYqwbzRMF9On51Hanq9mI
-         YOoutMfdmuN68+EHXDABTO17q3ZCo4vPMKKaKScQwRHtHvdxQDksZ0h2Iv99NAVRy49B
-         Ea28sGiRiydErdMPhk8sGiEikO12VueNcxP1U53JucLwItDbiq0TYV990IS9OwIB+6j/
-         0euw==
-X-Gm-Message-State: AOAM530LeVzPNE6sdmX0f8/laPg1rDZyd8/VPysI7pv0qInKRnz9G1/Q
-        giNa4GwLB6RMLmhXU+HxQL8=
-X-Google-Smtp-Source: ABdhPJyakDnYiSU123gmIaGGm2KFblaAwv8xMnHUd2dRdan+8hvomba5FWnMECWaEJ3UPdHxAZoZxA==
-X-Received: by 2002:a62:34c7:0:b029:28e:addf:f17a with SMTP id b190-20020a6234c70000b029028eaddff17amr17864664pfa.62.1625533278750;
-        Mon, 05 Jul 2021 18:01:18 -0700 (PDT)
-Received: from [192.168.1.18] ([122.163.155.135])
-        by smtp.gmail.com with ESMTPSA id g12sm664919pjk.25.2021.07.05.18.01.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Jul 2021 18:01:18 -0700 (PDT)
-Subject: Re: [PATCH] block: Avoid accessing an already freed kobject in
- delete_partition
-To:     Christoph Hellwig <hch@infradead.org>,
-        Rajat Asthana <rajatasthana4@gmail.com>
-Cc:     axboe@kernel.dk, damien.lemoal@wdc.com, jack@suse.cz,
-        rafael@kernel.org,
-        syzbot+7d6c5587ec9cff5be65c@syzkaller.appspotmail.com,
-        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
-        linux-block@vger.kernel.org, hare@suse.de,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20210702231228.261460-1-rajatasthana4@gmail.com>
- <YN/1DOeSA5ODf1AV@infradead.org>
-From:   Rajat Asthana <thisisrast7@gmail.com>
-Message-ID: <0c623d71-6d99-2e0d-4d8b-63a1ff814dc1@gmail.com>
-Date:   Tue, 6 Jul 2021 06:31:11 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Mon, 5 Jul 2021 21:14:41 -0400
+X-Greylist: delayed 454 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Jul 2021 21:14:40 EDT
+Received: from localhost (unknown [192.168.167.69])
+        by regular1.263xmail.com (Postfix) with ESMTP id 9A18F128E;
+        Tue,  6 Jul 2021 09:04:25 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from [172.16.12.76] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P12345T139823465625344S1625533463012840_;
+        Tue, 06 Jul 2021 09:04:24 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <7837a5db55880232f5007aae733043e7>
+X-RL-SENDER: hjc@rock-chips.com
+X-SENDER: hjc@rock-chips.com
+X-LOGIN-NAME: hjc@rock-chips.com
+X-FST-TO: hjc@rock-chips.com
+X-RCPT-COUNT: 14
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [PATCH 2/2] drm/rockchip: dw_hdmi: add rk3568 support
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        heiko@sntech.de, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org,
+        =?UTF-8?B?5pON55Ge5p2w?= <algea.cao@rock-chips.com>,
+        =?UTF-8?B?6Zer5a2d5Yab?= <andy.yan@rock-chips.com>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20210705140304.652929-1-benjamin.gaignard@collabora.com>
+ <20210705140304.652929-3-benjamin.gaignard@collabora.com>
+From:   Huang Jiachai <hjc@rock-chips.com>
+Message-ID: <2658816b-e6c1-06f7-03c2-3ec76fa49217@rock-chips.com>
+Date:   Tue, 6 Jul 2021 09:04:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YN/1DOeSA5ODf1AV@infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210705140304.652929-3-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+add algea.cao and andy.yan
+
+在 2021/7/5 22:03, Benjamin Gaignard 写道:
+> Add a new dw_hdmi_plat_data struct and new compatible for rk3568.
+>
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+>   drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c | 28 +++++++++++++++++++++
+>   1 file changed, 28 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+> index 830bdd5e9b7ce..5817c3a9fe64b 100644
+> --- a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+> +++ b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+> @@ -50,6 +50,10 @@
+>   #define RK3399_GRF_SOC_CON20		0x6250
+>   #define RK3399_HDMI_LCDC_SEL		BIT(6)
+>   
+> +#define RK3568_GRF_VO_CON1		0x0364
+> +#define RK3568_HDMI_SDAIN_MSK		BIT(15)
+> +#define RK3568_HDMI_SCLIN_MSK		BIT(14)
+> +
+>   #define HIWORD_UPDATE(val, mask)	(val | (mask) << 16)
+>   
+>   /**
+> @@ -467,6 +471,19 @@ static const struct dw_hdmi_plat_data rk3399_hdmi_drv_data = {
+>   	.use_drm_infoframe = true,
+>   };
+>   
+> +static struct rockchip_hdmi_chip_data rk3568_chip_data = {
+> +	.lcdsel_grf_reg = -1,
+> +};
+> +
+> +static const struct dw_hdmi_plat_data rk3568_hdmi_drv_data = {
+> +	.mode_valid = dw_hdmi_rockchip_mode_valid,
+> +	.mpll_cfg   = rockchip_mpll_cfg,
+> +	.cur_ctr    = rockchip_cur_ctr,
+> +	.phy_config = rockchip_phy_config,
+> +	.phy_data = &rk3568_chip_data,
+> +	.use_drm_infoframe = true,
+> +};
+> +
+>   static const struct of_device_id dw_hdmi_rockchip_dt_ids[] = {
+>   	{ .compatible = "rockchip,rk3228-dw-hdmi",
+>   	  .data = &rk3228_hdmi_drv_data
+> @@ -480,6 +497,9 @@ static const struct of_device_id dw_hdmi_rockchip_dt_ids[] = {
+>   	{ .compatible = "rockchip,rk3399-dw-hdmi",
+>   	  .data = &rk3399_hdmi_drv_data
+>   	},
+> +	{ .compatible = "rockchip,rk3568-dw-hdmi",
+> +	  .data = &rk3568_hdmi_drv_data
+> +	},
+>   	{},
+>   };
+>   MODULE_DEVICE_TABLE(of, dw_hdmi_rockchip_dt_ids);
+> @@ -536,6 +556,14 @@ static int dw_hdmi_rockchip_bind(struct device *dev, struct device *master,
+>   		return ret;
+>   	}
+>   
+> +	if (hdmi->chip_data == &rk3568_chip_data) {
+> +		regmap_write(hdmi->regmap, RK3568_GRF_VO_CON1,
+> +			     HIWORD_UPDATE(RK3568_HDMI_SDAIN_MSK |
+> +					   RK3568_HDMI_SCLIN_MSK,
+> +					   RK3568_HDMI_SDAIN_MSK |
+> +					   RK3568_HDMI_SCLIN_MSK));
+> +	}
+> +
+>   	hdmi->phy = devm_phy_optional_get(dev, "hdmi");
+>   	if (IS_ERR(hdmi->phy)) {
+>   		ret = PTR_ERR(hdmi->phy);
+
+-- 
+Best Regard
+
+黄家钗
+Sandy Huang
+Addr: 福州市鼓楼区铜盘路软件大道89号福州软件园A区21号楼(350003)
+       No. 21 Building, A District, No.89,software Boulevard Fuzhou,Fujian,PRC
+Tel：+86 0591-87884919  8690
+E-mail：hjc@rock-chips.com
 
 
-On 03/07/21 10:56 am, Christoph Hellwig wrote:
-> This should be fixed properly by:
-> 
-> "block: check disk exist before trying to add partition"
 
-Hi Christoph, thanks a lot for suggesting this fix. I have been
-working on implementing this and have tried the following:
-- I checked if the the kobject of device structure embedded in
-   gendisk structure is not NULL, to add the partition.
-   This didn't work.
-
-- Then I checked the if kobject of the block_device struct (part0)
-   embedded in the gendisk struct is not NULL, to add the partition.
-   This also didn't work.
-
-- Then I checked the i_state of the bd_inode field of block_device
-   struct embedded in the gendisk struct. I checked if the I_FREEING or
-   I_WILL_FREE fields are not set. The reason behind doing this was
-   to confirm that we only create partition on the disks which are not
-   being freed.
-
-Am I going in the right direction? Can you point me to the correct
-direction if I am not?
-
-thanks
--- Rajat
