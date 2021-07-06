@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249CA3BD3F5
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3FE3BD3F6
 	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243018AbhGFMDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:03:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47602 "EHLO mail.kernel.org"
+        id S243097AbhGFMDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:03:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237350AbhGFLgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237361AbhGFLgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Jul 2021 07:36:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C6DC61D69;
-        Tue,  6 Jul 2021 11:27:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 852BC61D6A;
+        Tue,  6 Jul 2021 11:27:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570824;
-        bh=iE1uZEN03gdh5TfHgLtScKuza8LStCEMMCFNO29xh+w=;
+        s=k20201202; t=1625570827;
+        bh=rz6HuaKLWeUglRhVWMbMuuqcGoxkJpO71ZRphdknjdA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qiVmAYRsU3rum/wCN2BaSLIuN6RgGaLzIUeHpesm48LQnmEKRXWR5m2VSfjoay8JQ
-         dM/LEcuVIqtIrDeeeP2ai94kHEJxo+IVm1BsAC/R27fcwRtHEOs8gzrdq9ppltKSL6
-         gtICHobUMY9BXcTwEOmIYc/JDt7xDAJ+BYwi+jntks6zaSwRENxGwuBUK5JPCSCgKX
-         VYz2ZnA7nqAjvKUAb98SM+1IXrs1cpu9nItPHab9XMsJ9RjZEnizhppElNrxH+S0+L
-         iVw1YZTayOjbmYhJbWgQugSrNbYy0zU6LYrsWB6oWV3EWjR9IDgar+t1qX3SF0K8E9
-         sFkPGv0TEvGLg==
+        b=Bif97AyVpmR8s26zNCYryq+DBBo3rIWU9kIpOtOsff6uPg6Ur+D/ANXWIDVMtQmgx
+         K/56s4TpjdXAjPAF5EgNVw3er21isf46rwjyobUj78p8sPEW9R7I+Vd8buqV4ZvZi1
+         0B5vKPqxazsi1QWdaAV2u09O2QOwteXAvvmCpzIHMoVdfbi3xQKR5+ost7TIstt/BY
+         LPO4cDJLHwx3HmVPtWJ0DUAQxGvHFV+A2v/8q4V7mwMEfk9G0iZiZVtKLJxszw5XYZ
+         yy9gdpixGupZwDASBKYlVJJLRmuyxXkUF3QXnVPHeKl9cnK0OG8S6FTWhHvcCFQBCG
+         NKGIMCXXNE6Eg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 20/55] RDMA/cxgb4: Fix missing error code in create_qp()
-Date:   Tue,  6 Jul 2021 07:26:03 -0400
-Message-Id: <20210706112638.2065023-20-sashal@kernel.org>
+Cc:     Radim Pavlik <radim.pavlik@tbs-biometrics.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linux-gpio@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 22/55] pinctrl: mcp23s08: fix race condition in irq handler
+Date:   Tue,  6 Jul 2021 07:26:05 -0400
+Message-Id: <20210706112638.2065023-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112638.2065023-1-sashal@kernel.org>
 References: <20210706112638.2065023-1-sashal@kernel.org>
@@ -43,38 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Radim Pavlik <radim.pavlik@tbs-biometrics.com>
 
-[ Upstream commit aeb27bb76ad8197eb47890b1ff470d5faf8ec9a5 ]
+[ Upstream commit 897120d41e7afd9da435cb00041a142aeeb53c07 ]
 
-The error code is missing in this code scenario so 0 will be returned. Add
-the error code '-EINVAL' to the return value 'ret'.
+Checking value of MCP_INTF in mcp23s08_irq suggests that the handler may be
+called even when there is no interrupt pending.
 
-Eliminates the follow smatch warning:
+But the actual interrupt could happened between reading MCP_INTF and MCP_GPIO.
+In this situation we got nothing from MCP_INTF, but the event gets acknowledged
+on the expander by reading MCP_GPIO. This leads to losing events.
 
-drivers/infiniband/hw/cxgb4/qp.c:298 create_qp() warn: missing error code 'ret'.
+Fix the problem by not reading any register until we see something in MCP_INTF.
 
-Link: https://lore.kernel.org/r/1622545669-20625-1-git-send-email-jiapeng.chong@linux.alibaba.com
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+The error was reproduced and fix tested on MCP23017.
+
+Signed-off-by: Radim Pavlik <radim.pavlik@tbs-biometrics.com>
+Link: https://lore.kernel.org/r/AM7PR06MB6769E1183F68DEBB252F665ABA3E9@AM7PR06MB6769.eurprd06.prod.outlook.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/qp.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pinctrl/pinctrl-mcp23s08.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
-index caa6a502c37e..20e3128f59b1 100644
---- a/drivers/infiniband/hw/cxgb4/qp.c
-+++ b/drivers/infiniband/hw/cxgb4/qp.c
-@@ -295,6 +295,7 @@ static int create_qp(struct c4iw_rdev *rdev, struct t4_wq *wq,
- 	if (user && (!wq->sq.bar2_pa || (need_rq && !wq->rq.bar2_pa))) {
- 		pr_warn("%s: sqid %u or rqid %u not in BAR2 range\n",
- 			pci_name(rdev->lldi.pdev), wq->sq.qid, wq->rq.qid);
-+		ret = -EINVAL;
- 		goto free_dma;
- 	}
+diff --git a/drivers/pinctrl/pinctrl-mcp23s08.c b/drivers/pinctrl/pinctrl-mcp23s08.c
+index 5b5a4323ae63..f22999129269 100644
+--- a/drivers/pinctrl/pinctrl-mcp23s08.c
++++ b/drivers/pinctrl/pinctrl-mcp23s08.c
+@@ -458,6 +458,11 @@ static irqreturn_t mcp23s08_irq(int irq, void *data)
+ 	if (mcp_read(mcp, MCP_INTF, &intf))
+ 		goto unlock;
  
++	if (intf == 0) {
++		/* There is no interrupt pending */
++		return IRQ_HANDLED;
++	}
++
+ 	if (mcp_read(mcp, MCP_INTCAP, &intcap))
+ 		goto unlock;
+ 
+@@ -475,11 +480,6 @@ static irqreturn_t mcp23s08_irq(int irq, void *data)
+ 	mcp->cached_gpio = gpio;
+ 	mutex_unlock(&mcp->lock);
+ 
+-	if (intf == 0) {
+-		/* There is no interrupt pending */
+-		return IRQ_HANDLED;
+-	}
+-
+ 	dev_dbg(mcp->chip.parent,
+ 		"intcap 0x%04X intf 0x%04X gpio_orig 0x%04X gpio 0x%04X\n",
+ 		intcap, intf, gpio_orig, gpio);
 -- 
 2.30.2
 
