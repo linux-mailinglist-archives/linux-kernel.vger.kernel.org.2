@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E3F3BCF92
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AEA3BCF93
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235126AbhGFL3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:29:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54674 "EHLO mail.kernel.org"
+        id S235153AbhGFL3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:29:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233025AbhGFLTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232549AbhGFLTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Jul 2021 07:19:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B274461CBB;
-        Tue,  6 Jul 2021 11:16:57 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ADE661C54;
+        Tue,  6 Jul 2021 11:17:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570218;
-        bh=fKUD4iN2+LvMxirRuESye6PTUzOC5Oed4ow7L8huVTo=;
+        s=k20201202; t=1625570221;
+        bh=EPOCnEXw8/VmsiNiam4/FX7tIxHAadbJoZ0kZXZvbMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YZR4i4UU28UA2HMnd8EOnI0Uh4ntp4dZBJMqMG3s8O5P19Wzya/M9RQAwsr1+t06J
-         f2G8Wj+yzgwpWnCWHoRIwcB/XWVx406QffUA8u+K+xdRknXeQsoEZe8E84I3VBFW3d
-         7K4/LPcFXmdqSR+NpK0MMBYpBEi9o6ww4t2WaWJLi7qtzEjbiOOKE9fEoS+LYLc9Cs
-         zqWvHmcEbxR1/2GYB76XhbahBVg4r8AMrNUNbcBANq4lJOxrRmVvnedQIUGlr0H3xQ
-         TxbdP9RqgV7Q1mo462iYozIUchAjcnK3xqSOITMOxFFLtHuVwEmejB/LGmiSFQ0SSl
-         BRa2zRjdT6mug==
+        b=i/PathUgbcCHYu0G8qDiOVX4KDtvoTI0UtNUgZVzI5GNChRA4j2A7edQDnyzNcd9N
+         Ix5IrCo3/bf+FErARCeErlbibRl+IK9JMX5ODl72Fq7KOcrzxhIUE1qsMaT34ZCbt0
+         3JqbmIjtujCsIUslqirycPQY6KX+zo1/Nvx8Q7QV1O60cS9DRT5f3ilO7uOD6GWhaH
+         A0qlcqUvuMBlt63OaX266863cYsue5jxXDTyKHhPRzkoL6aN4eUNzKXJtpb91ssdYe
+         ErJ9OOePb+te9/rg6f2ATIzYHXjTOZ1CUuoT5CfBUPz3s8nOdXIP/hRRYgXDkDewPF
+         cXmrD9S7UAGzg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 126/189] net: sched: fix error return code in tcf_del_walker()
-Date:   Tue,  6 Jul 2021 07:13:06 -0400
-Message-Id: <20210706111409.2058071-126-sashal@kernel.org>
+Cc:     "Stanley.Yang" <Stanley.Yang@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.13 128/189] drm/amdgpu: fix bad address translation for sienna_cichlid
+Date:   Tue,  6 Jul 2021 07:13:08 -0400
+Message-Id: <20210706111409.2058071-128-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111409.2058071-1-sashal@kernel.org>
 References: <20210706111409.2058071-1-sashal@kernel.org>
@@ -43,34 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: "Stanley.Yang" <Stanley.Yang@amd.com>
 
-[ Upstream commit 55d96f72e8ddc0a294e0b9c94016edbb699537e1 ]
+[ Upstream commit 6ec598cc9dfbf40433e94a2ed1a622e3ef80268b ]
 
-When nla_put_u32() fails, 'ret' could be 0, it should
-return error code in tcf_del_walker().
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Stanley.Yang <Stanley.Yang@amd.com>
+Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/act_api.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_umc.h | 5 +++++
+ drivers/gpu/drm/amd/amdgpu/umc_v8_7.c   | 2 +-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/net/sched/act_api.c b/net/sched/act_api.c
-index f6d5755d669e..d17a66aab8ee 100644
---- a/net/sched/act_api.c
-+++ b/net/sched/act_api.c
-@@ -381,7 +381,8 @@ static int tcf_del_walker(struct tcf_idrinfo *idrinfo, struct sk_buff *skb,
- 	}
- 	mutex_unlock(&idrinfo->lock);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_umc.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_umc.h
+index bbcccf53080d..e5a75fb788dd 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_umc.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_umc.h
+@@ -21,6 +21,11 @@
+ #ifndef __AMDGPU_UMC_H__
+ #define __AMDGPU_UMC_H__
  
--	if (nla_put_u32(skb, TCA_FCNT, n_i))
-+	ret = nla_put_u32(skb, TCA_FCNT, n_i);
-+	if (ret)
- 		goto nla_put_failure;
- 	nla_nest_end(skb, nest);
++/*
++ * (addr / 256) * 4096, the higher 26 bits in ErrorAddr
++ * is the index of 4KB block
++ */
++#define ADDR_OF_4KB_BLOCK(addr)			(((addr) & ~0xffULL) << 4)
+ /*
+  * (addr / 256) * 8192, the higher 26 bits in ErrorAddr
+  * is the index of 8KB block
+diff --git a/drivers/gpu/drm/amd/amdgpu/umc_v8_7.c b/drivers/gpu/drm/amd/amdgpu/umc_v8_7.c
+index 89d20adfa001..af59a35788e3 100644
+--- a/drivers/gpu/drm/amd/amdgpu/umc_v8_7.c
++++ b/drivers/gpu/drm/amd/amdgpu/umc_v8_7.c
+@@ -234,7 +234,7 @@ static void umc_v8_7_query_error_address(struct amdgpu_device *adev,
+ 		err_addr &= ~((0x1ULL << lsb) - 1);
+ 
+ 		/* translate umc channel address to soc pa, 3 parts are included */
+-		retired_page = ADDR_OF_8KB_BLOCK(err_addr) |
++		retired_page = ADDR_OF_4KB_BLOCK(err_addr) |
+ 				ADDR_OF_256B_BLOCK(channel_index) |
+ 				OFFSET_IN_256B_BLOCK(err_addr);
  
 -- 
 2.30.2
