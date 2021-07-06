@@ -2,148 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F2F3BDD27
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 20:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1423BDD35
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 20:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhGFS3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 14:29:05 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:58867 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231276AbhGFS3C (ORCPT
+        id S231258AbhGFSe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 14:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229954AbhGFSe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 14:29:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1625595985; x=1657131985;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=U7Rcd/MP3s8gvcjpjJD6UAS6NcP8vBtrbPVW9dx8gOY=;
-  b=PbpB1cN4v8hwLNJtrfUq1U9yEb21rY8+M1U5cKbSA1GcoNdBjM7Wajg9
-   h7ndkfZY6bRIrIplfC+b0RxwpjAZPx/+pWydBdgOaC+FVgzKOXWohyXeC
-   oT+e7uLpjpnb3aC8pv5PzoHcCRUazciZXhuha+kQ9DpIJcvNP9BZpiIpH
-   3qt2xoKG5bPGw17T4S8+rW7bLrfZJdF43wE9i7fR9dyOy2nQ19wJ7hvcS
-   mfctX1uUgh0x3g3C7/9Em22TFkPgmqis+2eanYJq115GLZ0uceakmz3Z4
-   pIEDiIRxwMDbm2cNz1yxTMvp5KcgNX9djvXp8MrYXL8oPa9DkQIQiS7Ig
-   w==;
-IronPort-SDR: UlVVTEIViv34vI9BTvhv70JrNudAJmwikWialDzUdHgvzaz+u8227B8lCjyxWF5xEOozsMVi1X
- Dxs0jV+0LLf2QO1ASYT5LqDYmTUsfrT/dKVn8Xn1Csl1E7AYBBNIboHOUZBxz8zhVwEDKmGXA9
- kMco3jf3eGs8xe8326vurNHhOQpPnIoX0Yflzc+GFVbhIQmk4m7dLPFIG2aWnEqhEJH1oyLYID
- Csd9rR7pL1GWturs5IGBJkxHhfVxS2/3kmxDnfTlq16zRxP1JZ0E0xKxemM9ivN1gH6RzFHuvX
- inA=
-X-IronPort-AV: E=Sophos;i="5.83,329,1616428800"; 
-   d="scan'208";a="277649165"
-Received: from mail-mw2nam08lp2175.outbound.protection.outlook.com (HELO NAM04-MW2-obe.outbound.protection.outlook.com) ([104.47.73.175])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Jul 2021 02:26:25 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TZFMvUMKViovqqCVUaDU6UpSccjNr+mSAryCeaXqLmDcTCcl4iBiLVOqqSTiCMJliZt2IxJh5dbDGIr5px+yc0oNTzrEg0ehEwJ0GBvWV4Ycn9bZ+S8T+AB1TZqq+kSKSeXNtZ89qm77zPZI2j9V6ZMsUOdAE33PdeXxJUTM46j6qEZSgln3/4NjhdbJt28mAaIuvk+bCePUbAV/7mm7ujUqy6F+90B6HYFTyEk4wtpE20wyJmkg/rCRpWfoWXI+aWAEltf1Lr0ovqsuvmjOf4xiMzNPGmTgUAcmPV4X9Ff69b6fLuX9iRoyJZx0Sabl/fnWtsej1/E4XO+T6LFEjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U7Rcd/MP3s8gvcjpjJD6UAS6NcP8vBtrbPVW9dx8gOY=;
- b=dgOFjtFU9epODu1mj9b/X1dEYy26wG19J/1u5Mv10A+HmfwrYKqxZA4Gg78BHl8r5u5vbd+X+TMiPfjYc7zuuRypasuteJG9wRKOsEb1d1mHy4UV2THW+BKFAgnphnW0sxNLNjAnHsu82aY0VkWVP3DbSG8DviIqG3nasm58V+9EVdYQUoyInIPo9wq3VOQcVltQ8A2gLgBXcqymJfzepTeFoajekYcLqaF62z79zazBMwAYSB8gmvXL3uRJ6bm8RXSOtdCET+e+s8XqTUOsK823ePOmeynuAE27VSsfCR/00EniIVq/4l1RGmRM1eMsOg8qWR+ttvMrYmBPWueIvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Tue, 6 Jul 2021 14:34:27 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D73C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 11:31:48 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id y4so20255424pfi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 11:31:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U7Rcd/MP3s8gvcjpjJD6UAS6NcP8vBtrbPVW9dx8gOY=;
- b=Q7Wtv5loL2wOk9uhRyBpXgYN4MsgfqpIpzld4Ux2bMGKMm68GK4KRckyocyQA7Io2dUftBYjy4+C5yFe5hTgn1ZdvKcOJp32gPu1A9LsasKMytGDwbfPhvVgseMV7A7pOUpNNqvf68nAgro9oE72yRpkrO13VBGAk6tPPtvrQHs=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by SJ0PR04MB7423.namprd04.prod.outlook.com (2603:10b6:a03:29c::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.24; Tue, 6 Jul
- 2021 18:26:22 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::c026:2bf9:70fc:4999]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::c026:2bf9:70fc:4999%6]) with mapi id 15.20.4287.033; Tue, 6 Jul 2021
- 18:26:22 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Colin King <colin.king@canonical.com>,
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xS4jmUfoYf+qsHEX1NkazSuwR3nlQAXkZMVvUw/VAUw=;
+        b=WvzI34BCNFC58UqM62eaC15I3Yl4gCH/I8Ta5Ki1kdgAdDX/cqsF343tDXX9SeXxjE
+         a8pdPzapSJ/sQt5ALbN0TSo27XMUHAhF+ez6o1TqVZ0w34FyFoB2xXLpSFnx+kAoI1Oa
+         /2QK4caLLF12JWPBYN7cBaevzABXzTT6p2tWO4RfsWJPrgJzAY9QsaEw4MwwoHGjZjND
+         H+aa1hpGfvT+9YIcsPNAoK1a9s92DpckoP2b2Wv7OA4c2l3ABp1equdZgsXeTEcw/jWG
+         mVVlxVe1jSXOTMYW+Th87k0OQhmUJk8cdCf+SRPXnXQsphxTzFJuGNNuThCnpUmmJqv3
+         6b6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xS4jmUfoYf+qsHEX1NkazSuwR3nlQAXkZMVvUw/VAUw=;
+        b=Dbh+wNXbKPIJpebKCSfwXpMGBavzkZmEcT/umxZQNHXthyk3kYh1NzOsZWIZ6IEL2n
+         iZCst2KQ7LIRwFkELKLihe+MuXwtmvpMmEDpOF9EJRiwMqHN4lQIg63b4Hj+6vyqzJ7r
+         IJtHtAVksbfwjvXmlyqdbFWttm6Am2qeeAvvXAHwALfZPSoHGciSO1wmkCZ253JEN5UU
+         qSMcro8xg+tmDGjMdKwi7KFj8HPJRsAzPP0QRLXXCIdDjrxb4+333JBr+ucvGR04b9cV
+         c/TIFYgF4LpPUvkPfjsxcUbIvTZ1t5PUnA08/TCisNSNLjWWa+XuYwBEZMAYTHoEX9Zd
+         w7Ig==
+X-Gm-Message-State: AOAM532OXQTiPE3qHEy6WdefdCdy4hNCWw3SnWWZiJDVJnwvh+EWXTqe
+        rqXf6XOkXd3slH+IeQZ9iEGHAQ==
+X-Google-Smtp-Source: ABdhPJxCLr3QP1MrQQwgN3RYMUf8nARhv0A5jCkgz/6YUMgwNC9ne4TbUPIgRuDm3nikL4Z47miuFA==
+X-Received: by 2002:a63:5a59:: with SMTP id k25mr10017534pgm.423.1625596307999;
+        Tue, 06 Jul 2021 11:31:47 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id n33sm19327390pgm.55.2021.07.06.11.31.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 11:31:47 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1m0prF-004Wdb-Bw; Tue, 06 Jul 2021 15:31:45 -0300
+Date:   Tue, 6 Jul 2021 15:31:45 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
         Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] nvmet: remove redundant assignments of variable
- status
-Thread-Topic: [PATCH][next] nvmet: remove redundant assignments of variable
- status
-Thread-Index: AQHXcncrWvc0ckRe8UGBmMjb9aYIlA==
-Date:   Tue, 6 Jul 2021 18:26:21 +0000
-Message-ID: <BYAPR04MB49658C0C1319D1A8B30C7DAB861B9@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <20210706145650.32555-1-colin.king@canonical.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e41bf8a3-0c08-4960-90a8-08d940ab8e4a
-x-ms-traffictypediagnostic: SJ0PR04MB7423:
-x-microsoft-antispam-prvs: <SJ0PR04MB742384E7DC95BEE5FC859B25861B9@SJ0PR04MB7423.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:556;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zLvI2Wk9UAnHYzPXnoDN0XzueR3yl8/LBhMm/PwEPIeelUrHoDSENnwuMMTPOHlQ0ar2rrbekCbd0C0bx52SE2hddcCNlBG6D0RAAbhEwLkkXGrBDTOXf8d0s5UZFLBepHmzHp5PA+S4nNaj9wAwsq60Bj4as51OnKKTtl4iYs1zm8Jl79POGW6x5agFrOSA+acutFJptxhUhuQMP0wpCdQRIwBgXaEjtlGddVWtuJhc9rVC9AFdEP7/djQDMM7hpQA92wHC/KHrZFntH+Ap+7h78gZnJbQ+y1U6/RyNsAX2vRMGleDkwpa20lKeL8oEnwl7KSWv8uqqo5llz3vj+lNw8PT0bl2nkPk2eao0dppYLpZHA24CS9/WxEqMp1zvVV6Kf2DhAuhTXkdE1qbnbuLiW668hYTT7Ew+2Ij6SjEVYP9aHg2MZOFzUwbhFTz2T0QFrOsCErhqo0T4c/WAnebZ33ZM7OCPS4RYV+6rXqIX4QKvuzQXS9mdDlVtjg2pFNXgYNPRV9CXJeXcA6urQgtVuWG077WgEV6G98uP9yoIs4g719Yceb+oO5VssdyDV8b+FNzD46RmRr+KOg/fxdDtjDXnzp15riitVbXo1X1K6LrWL4NGt/muYo3eLRygB8XShgJG1u2rBZexSFNXGQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(346002)(39860400002)(396003)(9686003)(55016002)(53546011)(6506007)(86362001)(64756008)(8676002)(478600001)(38100700002)(2906002)(26005)(186003)(33656002)(83380400001)(4744005)(5660300002)(4326008)(122000001)(8936002)(66476007)(52536014)(76116006)(110136005)(7696005)(66446008)(66556008)(66946007)(316002)(71200400001)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?cC/HwhrQCIy7b4SRhTFNHo2bnMqjfchIaoA33cz9CxT4fz0cSIffLmiGOnhs?=
- =?us-ascii?Q?Uq6lzU+vKTuU65XBdlNunMPo5f/zgo22sEKqrNXViUJ4qYvv75wypXHjpO7K?=
- =?us-ascii?Q?j5Ey+cUNSVDMaiRds0b0BLaXDldWvl9Ypc5eMXWU9VN/4JFHaNfaOKh5Dr34?=
- =?us-ascii?Q?eQFje9zmOOO6JQlD5M6DZKV8/Ng6vUePXaOs+PqJ0hi3s1EtFiJWTcVGayFC?=
- =?us-ascii?Q?7VIceqvjHeaJ/clbQjL0FPxYqM1yq8CX4B7VR3htAURWhbVIpurjR1dvKquo?=
- =?us-ascii?Q?kq34aRsRuZVTUkmnI1Uac8HF7svBY8bToouExFawvXVI5a7GFsKizXYHW5gT?=
- =?us-ascii?Q?cz9kRGvnQUMHfBLL5Y+r3lUdU+acrwS5dSMwfrJNGFgUg6UnSIOoNiykgitP?=
- =?us-ascii?Q?ahQDualuReSc8cZyFQ/rBLXEgVRSSWoLYtIWM/SAm8cEXj6rGY9sN8c1pF+d?=
- =?us-ascii?Q?J80BGMQ29aMTvYv02dde312Uj0PIGKO8JCuV3PUV8DjdqRX9ExQWRFhUKL5q?=
- =?us-ascii?Q?bZrXtOAi7gwxW9V/npiNqiGAByWLnAH7966+FOOXbO5b79qBWM+IdsWWjf6N?=
- =?us-ascii?Q?0+eunSEHY/uU3kKijG4ANKdZirayS9qW+VPQ1a2FlVpxkz6oh46andSpOey0?=
- =?us-ascii?Q?NbzeZbTZ5/TTtfFwoKcZpBWzE7yMrD0BpvV5jHIXPe1H4NYZx2wZ71kv/AUA?=
- =?us-ascii?Q?OIiKO8r7KhPUwnyNfrJsdU2I23mWezNrHBOMNhIyhQDyHKS286GU9dnCw5JU?=
- =?us-ascii?Q?3ar1vDzKhjx25BRKh3r8a3JyDEv3Fl4t5taP7HKhpOuPBK5ntflG74S/AcIX?=
- =?us-ascii?Q?x3M7MYfwxnf58D0kCabv/hFKktHJdvZ4mjSTPWwZy8k5HVW2QTjQRfdBngz6?=
- =?us-ascii?Q?gyk336T8oNeeVIVocXyMZxfDuy6E3w527QRHk3M3/niUPK+SEkicu4rysD/W?=
- =?us-ascii?Q?oPngDYcMwxFCWxnxkse61jaMAZl6SsVNtNWRqvEEQ2EJHbNi+Hxji3Lze5oy?=
- =?us-ascii?Q?O8Uua8uSNkNMU99DaXxxaqrkg6igtptMJKPj780fIDGPKuOC/9T5NijGLJNw?=
- =?us-ascii?Q?mttjXQynnvanjAg0SlfhdbU8AD1ZVmvhYflWInJKnCRF4XF9aohXI3OFeT/6?=
- =?us-ascii?Q?uUZ770TwuO0hPCJqdfQjPRlUXwTxEuECaEcVs1RYM/ehm686Wrt+AWMExarJ?=
- =?us-ascii?Q?T8pI61V/HnqFIU7WtVEqIfwsI0FPvo5vR7tqVdzZgG3RSurgDiKGiu1c467T?=
- =?us-ascii?Q?0rMFUC2XCfMAKWUuevd/2Zltk5eSiNZdZUZfwaC2paFqxuQu6faZTF2P+oGp?=
- =?us-ascii?Q?1ads1bRveWoAXSsqBxRTi8bi?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
+Message-ID: <20210706183145.GT4604@ziepe.ca>
+References: <20210705130314.11519-1-ogabbay@kernel.org>
+ <YOQXBWpo3whVjOyh@phenom.ffwll.local>
+ <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
+ <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
+ <20210706142357.GN4604@ziepe.ca>
+ <CAKMK7uELNzwUe+hhVWRg=Pk5Wt_vOOX922H48Kd6dTyO2PeBbg@mail.gmail.com>
+ <20210706152542.GP4604@ziepe.ca>
+ <CAKMK7uH7Ar6+uAOU_Sj-mf89V9WCru+66CV5bO9h-WAAv7Mgdg@mail.gmail.com>
+ <20210706162953.GQ4604@ziepe.ca>
+ <CAKMK7uGXUgjyjch57J3UnC7SA3-4g87Ft7tLjj9fFkgyKkKdrg@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e41bf8a3-0c08-4960-90a8-08d940ab8e4a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2021 18:26:21.9523
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eC2LY8sX1vEuLzeEweMBYI4Zjf0NZhKJ2ZQ/rOXE2zZRF+H1HxJsk5l/Pfgytgw6VBjFYhkK+xaMRImbkNqZss7cQPxCW4FhFd2/1H8Ljr4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7423
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uGXUgjyjch57J3UnC7SA3-4g87Ft7tLjj9fFkgyKkKdrg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/6/21 07:56, Colin King wrote:=0A=
-> From: Colin Ian King <colin.king@canonical.com>=0A=
->=0A=
-> There are two occurrances where variable status is being assigned a=0A=
-> value that is never read and it is being re-assigned a new value=0A=
-> almost immediately afterwards on an error exit path. The assignments=0A=
-> are redundant and can be removed.=0A=
->=0A=
-> Addresses-Coverity: ("Unused value")=0A=
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>=0A=
-=0A=
-For now looks good.=0A=
-=0A=
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>=0A=
-=0A=
+On Tue, Jul 06, 2021 at 07:35:55PM +0200, Daniel Vetter wrote:
+
+> Yup. We dont care about any of the fancy pieces you build on top, nor
+> does the compiler need to be the optimizing one. Just something that's
+> good enough to drive the hw in some demons to see how it works and all
+> that. Generally that's also not that hard to reverse engineer, if
+> someone is bored enough, the real fancy stuff tends to be in how you
+> optimize the generated code. And make it fit into the higher levels
+> properly.
+
+Seems reasonable to me
+
+> And it's not just nvidia, it's pretty much everyone. Like a soc
+> company I don't want to know started collaborating with upstream and
+> the reverse-engineered mesa team on a kernel driver, seems to work
+> pretty well for current hardware. 
+
+What I've seen is that this only works with customer demand. Companies
+need to hear from their customers that upstream is what is needed, and
+companies cannot properly hear that until they are at least already
+partially invested in the upstream process and have the right
+customers that are sophisticated enough to care.
+
+Embedded makes everything 10x worse because too many customers just
+don't care about upstream, you can hack your way through everything,
+and indulge in single generation thinking. Fork the whole kernel for 3
+years, EOL, no problem!
+
+It is the enterprise world, particularly with an opinionated company
+like RH saying NO stuck in the middle that really seems to drive
+things toward upstream.
+
+Yes, vendors can work around Red Hat's No (and NVIDIA GPU is such an
+example) but it is incredibly time consuming, expensive and becoming
+more and more difficult every year.
+
+The big point is this:
+
+> But also nvidia is never going to sell you that as the officially
+> supported thing, unless your ask comes back with enormous amounts of
+> sold hardware.
+
+I think this is at the core of Linux's success in the enterprise
+world. Big customers who care demanding open source. Any vendor, even
+nvidia will want to meet customer demands.
+
+IHMO upstream success is found by motivating the customer to demand
+and make it "easy" for the vendor to supply it.
+
+Jason
