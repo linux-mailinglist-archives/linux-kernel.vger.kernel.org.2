@@ -2,146 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA003BD884
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD553BD8D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232580AbhGFOmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:42:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54118 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232600AbhGFOmq (ORCPT
+        id S232110AbhGFOtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231877AbhGFOtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:42:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625582407;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1f7UONqM89FkJImoQjQslwhMUM1DR3oNSRiU3y3RxGU=;
-        b=VjTk1r/A3m/zGEoL7ZrqbcRuS4usQ/kWARR+KYP6+LXLMVToXbyAzmtOw6JA+TAqwc0duT
-        ne2Z4PNs2FvgdmrqbxW+mFTMKGF+Wi+lAJSQMDftV+jXaWnL/0Lwh4NGulJvRQfX2YSh6x
-        Umk7T6aNaqX1MQpY/OIwZnGuSU5WHAY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-3RjgmylcOHeQDcT89JEE1Q-1; Tue, 06 Jul 2021 10:09:42 -0400
-X-MC-Unique: 3RjgmylcOHeQDcT89JEE1Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 961F61023F47;
-        Tue,  6 Jul 2021 14:09:41 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6177A6E0B6;
-        Tue,  6 Jul 2021 14:09:37 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 34E02416F5D2; Tue,  6 Jul 2021 11:09:20 -0300 (-03)
-Date:   Tue, 6 Jul 2021 11:09:20 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Nitesh Lal <nilal@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [patch 0/5] optionally sync per-CPU vmstats counter on return to
- userspace
-Message-ID: <20210706140920.GA68399@fuller.cnet>
-References: <20210701210336.358118649@fuller.cnet>
- <20210702123032.GA72061@lothringen>
- <20210702152816.GA4122@fuller.cnet>
- <20210706130925.GC107277@lothringen>
- <20210706140550.GA64308@fuller.cnet>
+        Tue, 6 Jul 2021 10:49:51 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11428C0613A9
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 07:47:13 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id r132so6654183yba.5
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:47:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oa36JT6ZXXdeNbOW7MRMPItJC85KRkSUT3t0lipsRGE=;
+        b=I3PSWk0qdtLFBmphAZxkzdBLbBanHnSZ0lDy0Hh/Ww45NThwfPWgOKeOhk0qySlDno
+         N76byVhIjKXABiEeqkETac6DodkM4w9tLHdTxMThwhYfWv577ISzp1xMGs578F8PpfZ1
+         q9Lvgwe7Uqz9k9WBl4dQSoOJQ0Uhiw8dS3XsY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oa36JT6ZXXdeNbOW7MRMPItJC85KRkSUT3t0lipsRGE=;
+        b=nChzcLdvs0f51vfVCykQ/7VHvwbyI5CWh3YYHYWFXnN3+UCLh3Dk70gbGH2sLLA+rQ
+         QB437WSX2VO5mEsHVCp3Kf/kBY3bxEpzIgUOx/DpLo7GNTWs4J2KmVgYYJg1SEpJFys7
+         qOeplwOvmGeWagTv+xyeOTu71mLB7XBSsbQ/NHkUiDtNvQdy4ZNSeMFBNXmimzsi4lm5
+         VgWZw3jlMaFAeTZ/opEmpnE1wQYZ/dMfI1n2pJ77MhZ4FGD5Cw4HdggsErhve7zbIr41
+         8R3ZS0KOOrcIBgdm9DRB+k/FkeA2kOGVERZhWq3DxDyHXgcerajiobubB2pMVGld1h/q
+         1k8w==
+X-Gm-Message-State: AOAM531gfFZ+HIp5qOuJJOpok4xmDhkBrAoSwZKIfs3CsepCavDKraUt
+        vdmoRwFm/EIA/khryPMwvzyC+vK36AaUjoCsoF1TAqwGg4E=
+X-Google-Smtp-Source: ABdhPJwzXN/NwcfTnIiFRue1K5cnhWHoor7mzX3yGgIo+ac7YSL8ymVa3l8VD8fedtiFTq2s+GtWnKhr2VvW4LOuy6E=
+X-Received: by 2002:a05:6830:2366:: with SMTP id r6mr15034001oth.188.1625580576688;
+ Tue, 06 Jul 2021 07:09:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210706140550.GA64308@fuller.cnet>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20210705130314.11519-1-ogabbay@kernel.org> <YOQXBWpo3whVjOyh@phenom.ffwll.local>
+ <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
+ <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
+ <CAKMK7uHpKFVm55O_NB=WYCsv0iUt92ZUn6eCzifH=unbhe3J8g@mail.gmail.com>
+ <CAKMK7uFGr=ugyKj0H3ctbh28Jnr25vAgXPBaDBMmfErCxYVo3w@mail.gmail.com> <20210706134430.GL4604@ziepe.ca>
+In-Reply-To: <20210706134430.GL4604@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue, 6 Jul 2021 16:09:25 +0200
+Message-ID: <CAKMK7uFEZjp2_WBhtkVxSNQ-1WcBSr3NDotY0fjz0iLRw8Barw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 11:05:50AM -0300, Marcelo Tosatti wrote:
-> On Tue, Jul 06, 2021 at 03:09:25PM +0200, Frederic Weisbecker wrote:
-> > On Fri, Jul 02, 2021 at 12:28:16PM -0300, Marcelo Tosatti wrote:
-> > > 
-> > > Hi Frederic,
-> > > 
-> > > On Fri, Jul 02, 2021 at 02:30:32PM +0200, Frederic Weisbecker wrote:
-> > > > On Thu, Jul 01, 2021 at 06:03:36PM -0300, Marcelo Tosatti wrote:
-> > > > > The logic to disable vmstat worker thread, when entering
-> > > > > nohz full, does not cover all scenarios. For example, it is possible
-> > > > > for the following to happen:
-> > > > > 
-> > > > > 1) enter nohz_full, which calls refresh_cpu_vm_stats, syncing the stats.
-> > > > > 2) app runs mlock, which increases counters for mlock'ed pages.
-> > > > > 3) start -RT loop
-> > > > > 
-> > > > > Since refresh_cpu_vm_stats from nohz_full logic can happen _before_
-> > > > > the mlock, vmstat shepherd can restart vmstat worker thread on
-> > > > > the CPU in question.
-> > > > >  
-> > > > > To fix this, optionally sync the vmstat counters when returning
-> > > > > from userspace, controllable by a new "vmstat_sync" isolcpus
-> > > > > flags (default off).
-> > > > 
-> > > > Wasn't the plan for such finegrained isolation features to do it at
-> > > > the per task level using prctl()?
-> > > 
-> > > Yes, but its orthogonal: when we integrate the finegrained isolation
-> > > interface, will be able to use this code (to sync vmstat counters
-> > > on return to userspace) only when userspace informs that it has entered
-> > > isolated mode, so you don't incur the performance penalty of frequent
-> > > vmstat counter writes when not using isolated apps.
-> > > 
-> > > This is what the full task isolation task patchset mode is doing
-> > > as well (CC'ing Alex BTW).
-> > 
-> > Right there can be two ways:
-> 
-> 
->   * An isolcpus flag to request sync of vmstat on all exits
->     to userspace.
-> > * A prctl request to sync vmstat only on exit from that prctl
-> > * A prctl request to sync vmstat on all subsequent exit from
-> >   kernel space.
-> 
-> * A prctl to expose "vmstat is out of sync" information 
-> to userspace, so that it can be queried and flushed
-> (Christoph's suggestion:
-> https://www.spinics.net/lists/linux-mm/msg243788.html).
-> 
-> > > This will require modifying applications (and the new kernel with the
-> > > exposed interface).
-> > > 
-> > > But there is demand for fixing this now, for currently existing
-> > > binary only applications.
-> > 
-> > I would agree if it were a regression but it's not. It's merely
-> > a new feature and we don't want to rush on a broken interface.
-> 
-> Well, people out there need it in some form (vmstat sync).
-> Can we please agree on an acceptable way to allow this.
-> 
-> Why its a broken interface? It has good qualities IMO:
-> 
-> - Its well contained (if you don't need, don't use it).
-> - Does not require modifying -RT applications.
-> - Works well for a set of applications (where the overhead of
-> syncing vmstat is largely irrelevant, but the vmstat_worker 
-> interruption is).
-> 
-> And its patchset integrates part another piece of full task isolation.
-> 
-> > And I suspect some other people won't like much a new extension
-> > to isolcpus.
-> 
-> Why is that so? 
+On Tue, Jul 6, 2021 at 3:44 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Tue, Jul 06, 2021 at 02:07:16PM +0200, Daniel Vetter wrote:
+>
+> > On the "rdma-core" idea, afaik rdma NIC do not have fully programmable
+> > cores in their hw, for which you'd need some kind of compiler to make
+> > use of the hardware and the interfaces the kernel provides? So not
+> > really compareable, but also my understanding is that rdma-core does
+> > actually allow you to reasonable use&drive all the hw features and
+> > kernel interfaces fully.
+>
+> The whole HPC stack has speciality compilers of course. OpenMP, PGAS,
+> etc. These compilers map onto library primitives that eventually boil
+> down into rdma-core calls. Even the HW devices have various
+> programmability that are being targetted with compilers now. People
+> are making NIC devices with ARM cores/etc - P4 is emerging for some
+> packet processing tasks.
 
-Ah, yes, that would be PeterZ.
+Well it depends which compilers we're talking about here, and what
+kind of features. Higher level compilers that break down some fancy
+language like OpenMP into what that actually should do on a given
+hardware like gpu, or rdma-connected cluster, or whatever, we really
+don't care about. You don't need that to drive the hardware. Usually
+that stuff works by breaking some of the code down into cpu compiler
+IR (most of this is built on top of LLVM IR nowadays), interspersed
+with library calls to the runtime.
 
-IIRC his main point was that its not runtime changeable.
-We can (partially fix that), if that is the case.
+Now the thing I care about here is if things doen't get compiled down
+to cpu code, but to some other IR (SPIR-V is starting to win, but very
+often ist still a hacked up version of LLVM IR), which then in a
+hw-specific backend gets compiled down to instructions that run on the
+hw. I had no idea that rdma NICs can do that, but it sounds like? I
+guess maybe some openmpi operations could be done directly on the rdma
+chip, but I'm not sure why you'd want a backend compiler here.
 
-Peter, was that the only problem you saw with isolcpus interface?
+Anyway, for anything that works like a gpu accelerator, like 3d accel,
+or parallel compute accel (aka gpgpu) or spatial compute accel (aka
+NN/AI) or maybe even fpga accel most of the magic to use the hardware
+is in this backend compiler, which translates from an IR into whatever
+your accelerator consumes. That's the part we really care about for
+modern accelerators because without that defacto the hardware is
+useless. Generally these chips have full-blown, if special purpose
+ISA, with register files, spilling, branches, loops and other control
+flow (sometimes only execution masks on simpler hw).
 
+> rdma-core can drive all the kernel interfaces with at least an ioctl
+> wrapper, and it has a test suite that tries to cover this. It does not
+> exercise the full HW capability, programmability, etc of every single
+> device.
+>
+> I actually don't entirely know what everyone has built on top of
+> rdma-core, or how I'd try to map it the DRI ideas you are trying to
+> explain.
+>
+> Should we ban all Intel RDMA drivers because they are shipping
+> proprietary Intel HPC compilers and proprietary Intel MPI which drives
+> their RDMA HW? Or is that OK because there are open analogs for some
+> of that stuff? And yes, the open versions are inferior in various
+> metrics.
+>
+> Pragmatically what I want to see is enough RDMA common/open user space
+> to understand the uAPI and thus more about how the kernel driver
+> works. Forcing everyone into rdma-core has already prevented a number
+> of uAPI mistakes in drivers that would have been bad - so at least
+> this level really is valuable.
+>
+> > So we actually want less on dri-devel, because for compute/accel chips
+> > we're currently happy with a vendor userspace. It just needs to be
+> > functional and complete, and open in its entirety.
+>
+> In a sense yes: DRI doesn't insist on a single code base to act as the
+> kernel interface, but that is actually the thing that has brought the
+> most value to RDMA, IMHO.
+
+So in practice we're not that different in DRI wrt userspace - if
+there is an established cross-vendor project in the given area, we do
+expect the userspace side to be merged there. And nowadays most of the
+feature work is done that way, it's just that we don't have a single
+project like rdma-core for this. We do still allow per-driver submit
+interfaces because hw is just not standardized enough there, the
+standards are at a higher level. Which is why it just doesn't make
+sense to talk about a kernel driver as something that's useful
+stand-alone at all.
+
+> We've certainly had some interesting successes because of this. The
+> first submission for AWS's EFA driver proposed to skip the rdma-core
+> step, which was rejected. However since EFA has been in that ecosystem
+> it has benefited greatly, I think.
+>
+> However, in another sense no: RDMA hasn't been blocking, say Intel,
+> just because they have built proprietary stuff on top of our open
+> stack.
+
+Oh we allow this too. We only block the initial submission if the
+proprietary stuff is the only thing out there.
+
+> Honestly, I think GPU is approaching this backwards. Wayland should
+> have been designed to prevent proprietary userspace stacks.
+
+That's not possible without some serious cans of worms though. Wayland
+is a protocol, and you can't forbid people from implementing it.
+Otherwise all the compatible open implementations of closed protocols
+wouldn't be possible either.
+
+Now the implementation is a different thing, and there a few
+compositors have succumbed to market pressure and enabled the nvidia
+stack, as a mostly separate piece from supporting the open stack. And
+that's largely because nvidia managed to completely kill the open
+source r/e effort through firmware licensing and crypto-key based
+verified loading, so unless you install the proprietary stack you
+actually can't make use of the hardware at all - well display works
+without the firmware, but 3d/compute just doesn't. So you just can't
+use nvidia hw without accepting their proprietary driver licenses and
+all that entails for the latest hardware.
+
+So I'm not clear what you're suggesting here we should do different.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
