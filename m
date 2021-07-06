@@ -2,151 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19633BC6A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 08:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A86B3BC6AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 08:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230181AbhGFGYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 02:24:49 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:41705 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230490AbhGFGYD (ORCPT
+        id S230115AbhGFGbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 02:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230036AbhGFGbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 02:24:03 -0400
-X-UUID: 02874489df5e40ac97263657c24eaf20-20210706
-X-UUID: 02874489df5e40ac97263657c24eaf20-20210706
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 998959620; Tue, 06 Jul 2021 14:21:22 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 6 Jul 2021 14:21:20 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 6 Jul 2021 14:21:20 +0800
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Subject: [v13 21/21] clk: mediatek: Add MT8192 vencsys clock support
-Date:   Tue, 6 Jul 2021 14:19:20 +0800
-Message-ID: <20210706061920.16013-22-chun-jie.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210706061920.16013-1-chun-jie.chen@mediatek.com>
-References: <20210706061920.16013-1-chun-jie.chen@mediatek.com>
+        Tue, 6 Jul 2021 02:31:15 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57156C061574;
+        Mon,  5 Jul 2021 23:28:37 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 62so12365473pgf.1;
+        Mon, 05 Jul 2021 23:28:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TR1u3sRWI99pfiHxerbHetS8AvWmZAq6Zxi2S+X7xBM=;
+        b=BQSTFgo8lk6p20yznXf61GjDalo7+DJT77UfsbMMDIVKg+ZeuSARuEpiNW+FopzG0M
+         fMHX0VUVQEKOkm1sMk4dYQgU92097mXX5LCZvJHsvqScg0+4CSLwbqeie33KmahF2Hqm
+         mtQwpCrLhvlRBqZ1iQbtct0GVl/VR3SWOti2J4pIfNonVAGIHFNZd6/C8HmGaWhj+Qhu
+         sAOkSXAGsmGw/ui3jghF5kRpM4B/e47EpSGmjQDDre4QiFcxNYBPjUXN+5QzcREuL7hY
+         Z324CvpI76ydg1mPXq3k9vh9nxTZJaTsy8f8HpWfdhV6JhFeByVjkipSKlgqlU1vVgeS
+         7pkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TR1u3sRWI99pfiHxerbHetS8AvWmZAq6Zxi2S+X7xBM=;
+        b=cb/z71QdoQM6H88kZgU/m2fjR1EqGcE0UaPVgTho2OvbsdCttrSsOZHjjc/owLDfJL
+         bBL4m0YqF5l9fccRjgENyDgaZpbITQhUfLb2sNcjrFUPEeejFofjF2aJVWyqbh79qCqQ
+         tFVmYu3TwwoQ1YUZGS4cTCMJYF3Mak5ByAI9TPjW7//q+OZLwtvOBJz9L8bybxfisHSO
+         Tbh9A2VNNsYFzPhjLRUUWwe1R6YPsAaTCoYhXrvJx4tSPzZQzsmsNRTcf3t5Z1SSJOq3
+         WxCVD8PqaDOnPehw6wnjhYB8O9Q5nxa+pL9vYDE+fAM81wDG9YPyBedsmnaC4hA6Zfhe
+         zsuw==
+X-Gm-Message-State: AOAM533fFAT2+FsmBqm6vbO12aEDnSYR7s06F6th2BMxJMoTqYrIVEiZ
+        5wXbKx5PzcOhtl8AdUUAkJE=
+X-Google-Smtp-Source: ABdhPJxCDmVS+t99ctOzw46/3vLLmdX3xjcfGpkIDs27q6CAVrMSuEbFcDMQjaEeDoAnGDHcX6V5uA==
+X-Received: by 2002:a63:284:: with SMTP id 126mr19484412pgc.347.1625552916756;
+        Mon, 05 Jul 2021 23:28:36 -0700 (PDT)
+Received: from [192.168.1.18] ([122.163.155.135])
+        by smtp.gmail.com with ESMTPSA id v21sm1524566pju.47.2021.07.05.23.28.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Jul 2021 23:28:35 -0700 (PDT)
+Subject: Re: [PATCH] block: Avoid accessing an already freed kobject in
+ delete_partition
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Rajat Asthana <rajatasthana4@gmail.com>, axboe@kernel.dk,
+        damien.lemoal@wdc.com, jack@suse.cz, rafael@kernel.org,
+        syzbot+7d6c5587ec9cff5be65c@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
+        linux-block@vger.kernel.org, hare@suse.de,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20210702231228.261460-1-rajatasthana4@gmail.com>
+ <YN/1DOeSA5ODf1AV@infradead.org>
+ <0c623d71-6d99-2e0d-4d8b-63a1ff814dc1@gmail.com>
+ <YOPmMZdMQgXAyEMO@infradead.org>
+From:   Rajat Asthana <thisisrast7@gmail.com>
+Message-ID: <067affa2-827e-06b2-dbc4-c4ae897e1a1a@gmail.com>
+Date:   Tue, 6 Jul 2021 11:58:30 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <YOPmMZdMQgXAyEMO@infradead.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MT8192 vencsys clock provider
+> No.  There should be no need to check anything, but the code needs
+> to ensure that the block device is alive.  I think the above mentioned
+> patch (now in Jens' tree) does that, so please try it.
 
-Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
----
- drivers/clk/mediatek/Kconfig           |  6 +++
- drivers/clk/mediatek/Makefile          |  1 +
- drivers/clk/mediatek/clk-mt8192-venc.c | 53 ++++++++++++++++++++++++++
- 3 files changed, 60 insertions(+)
- create mode 100644 drivers/clk/mediatek/clk-mt8192-venc.c
+Ah! yes, found the patch. I should have checked earlier.
 
-diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
-index 31779f2c5c83..576babd86f98 100644
---- a/drivers/clk/mediatek/Kconfig
-+++ b/drivers/clk/mediatek/Kconfig
-@@ -574,6 +574,12 @@ config COMMON_CLK_MT8192_VDECSYS
- 	help
- 	  This driver supports MediaTek MT8192 vdecsys and vdecsys_soc clocks.
- 
-+config COMMON_CLK_MT8192_VENCSYS
-+	bool "Clock driver for MediaTek MT8192 vencsys"
-+	depends on COMMON_CLK_MT8192
-+	help
-+	  This driver supports MediaTek MT8192 vencsys clocks.
-+
- config COMMON_CLK_MT8516
- 	bool "Clock driver for MediaTek MT8516"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
-diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
-index 887dd6bcf7f2..15bc045f0b71 100644
---- a/drivers/clk/mediatek/Makefile
-+++ b/drivers/clk/mediatek/Makefile
-@@ -79,5 +79,6 @@ obj-$(CONFIG_COMMON_CLK_MT8192_MMSYS) += clk-mt8192-mm.o
- obj-$(CONFIG_COMMON_CLK_MT8192_MSDC) += clk-mt8192-msdc.o
- obj-$(CONFIG_COMMON_CLK_MT8192_SCP_ADSP) += clk-mt8192-scp_adsp.o
- obj-$(CONFIG_COMMON_CLK_MT8192_VDECSYS) += clk-mt8192-vdec.o
-+obj-$(CONFIG_COMMON_CLK_MT8192_VENCSYS) += clk-mt8192-venc.o
- obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
- obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
-diff --git a/drivers/clk/mediatek/clk-mt8192-venc.c b/drivers/clk/mediatek/clk-mt8192-venc.c
-new file mode 100644
-index 000000000000..c0d867bff09e
---- /dev/null
-+++ b/drivers/clk/mediatek/clk-mt8192-venc.c
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Copyright (c) 2021 MediaTek Inc.
-+// Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-+
-+#include <linux/clk-provider.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+
-+#include "clk-mtk.h"
-+#include "clk-gate.h"
-+
-+#include <dt-bindings/clock/mt8192-clk.h>
-+
-+static const struct mtk_gate_regs venc_cg_regs = {
-+	.set_ofs = 0x4,
-+	.clr_ofs = 0x8,
-+	.sta_ofs = 0x0,
-+};
-+
-+#define GATE_VENC(_id, _name, _parent, _shift)	\
-+	GATE_MTK(_id, _name, _parent, &venc_cg_regs, _shift, &mtk_clk_gate_ops_setclr_inv)
-+
-+static const struct mtk_gate venc_clks[] = {
-+	GATE_VENC(CLK_VENC_SET0_LARB, "venc_set0_larb", "venc_sel", 0),
-+	GATE_VENC(CLK_VENC_SET1_VENC, "venc_set1_venc", "venc_sel", 4),
-+	GATE_VENC(CLK_VENC_SET2_JPGENC, "venc_set2_jpgenc", "venc_sel", 8),
-+	GATE_VENC(CLK_VENC_SET5_GALS, "venc_set5_gals", "venc_sel", 28),
-+};
-+
-+static const struct mtk_clk_desc venc_desc = {
-+	.clks = venc_clks,
-+	.num_clks = ARRAY_SIZE(venc_clks),
-+};
-+
-+static const struct of_device_id of_match_clk_mt8192_venc[] = {
-+	{
-+		.compatible = "mediatek,mt8192-vencsys",
-+		.data = &venc_desc,
-+	}, {
-+		/* sentinel */
-+	}
-+};
-+
-+static struct platform_driver clk_mt8192_venc_drv = {
-+	.probe = mtk_clk_simple_probe,
-+	.driver = {
-+		.name = "clk-mt8192-venc",
-+		.of_match_table = of_match_clk_mt8192_venc,
-+	},
-+};
-+
-+builtin_platform_driver(clk_mt8192_venc_drv);
--- 
-2.18.0
+thanks
+-- Rajat
+
+
 
