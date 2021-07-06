@@ -2,121 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241A23BDEA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 22:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04ED43BDEA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 22:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbhGFU4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 16:56:06 -0400
-Received: from mga05.intel.com ([192.55.52.43]:29324 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229781AbhGFU4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 16:56:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="294834127"
-X-IronPort-AV: E=Sophos;i="5.83,329,1616482800"; 
-   d="scan'208";a="294834127"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 13:53:23 -0700
-X-IronPort-AV: E=Sophos;i="5.83,329,1616482800"; 
-   d="scan'208";a="486526274"
-Received: from thaovo-mobl1.amr.corp.intel.com (HELO [10.209.81.14]) ([10.209.81.14])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 13:53:22 -0700
-Subject: Re: [PATCH 2/4] selftests/sgx: Fix Q1 and Q2 calculation in
- sigstruct.c
-To:     Jarkko Sakkinen <jarkko@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Borislav Petkov <bp@suse.de>, linux-kernel@vger.kernel.org
-References: <20210705143652.116125-1-jarkko@kernel.org>
- <20210705143652.116125-3-jarkko@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <4303b822-5861-ba2c-f620-0e752e499329@intel.com>
-Date:   Tue, 6 Jul 2021 13:53:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210705143652.116125-3-jarkko@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S230162AbhGFVCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 17:02:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229781AbhGFVCA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 17:02:00 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E9DC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 13:59:20 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id x3so4274806pll.5
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 13:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0PBoIcqbc65Ea7VP0qFC6aAUDYW+WwmHWgilnraPFf8=;
+        b=bag2+61IEn5zv40WALO9seg3t+Bh91fFOJVgNqS2ojhXIWZao47sLkLmcRAjniRsnY
+         GUa7BZqHypqGUwZrDw0RlN3eLhqykQfy0ktv6tC2tZ2W6KiwCc2GzVmiMrtiowk7NkDn
+         Vl5Lz7Rujnw5Q0p2jLBH8nl+KL/9N/j0ejdI3ZcVZLNbQ7Jp01dMF24pordORzYJrYU9
+         lvXbVbKpGmZxYMPJS/hxQ+05ehQt5LvofS/r56y/wOhNMqSUFoWJyvuoCwZp3CsNck7z
+         dDCx3jBv3Zm1+LaSkNQ3VKzlLj/gPei5L01ZhhgBWXlw6ETiw671j8JDDIEt2yyiez85
+         5cFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=0PBoIcqbc65Ea7VP0qFC6aAUDYW+WwmHWgilnraPFf8=;
+        b=NlPDxtN6GV2ZlaMQFdB6FwD+6QeGt5iKAmWIh6mzkULKV9TtK9cC6b0R7cArqxWND9
+         CK3IsBKf5zwH7ptuyHIwwA/gbXSEaUY6iIPBxIggJQ6M8eBDY7TygvE7urcSsxacb2PC
+         X2+tmf8UVyTdXhXniiwx272YJxFmuxJt3c86r6qUk7kKcEEtU757JnJ0jw3csVTR1VIN
+         YNDrQhGcSfh1+QzykgV62N/QjO+zd9zM1AfR10/+4BDwMiu0Mf71dP6HJSk3z1E44yOk
+         u3qhGoDjKaPMxKZwW0dZK85RXelUt3gMVY60xh8JaEORSf3xZABE1R5+bcsQyHAgHmrI
+         vDmA==
+X-Gm-Message-State: AOAM532XD2n7dGQ1vFQGc/wtRzW0y40ZRh7uursi41S9S92VOwen3ef+
+        VbkcN2Ik08o02FA7ZYhMdEKePA==
+X-Google-Smtp-Source: ABdhPJzzExInJYeXPhXIYEiGqFxMLYlqTWxOzHBELFSbWOSs+Pnp5HP64Icyydt2eV1nPtBl/uv8fg==
+X-Received: by 2002:a17:90a:8417:: with SMTP id j23mr17733738pjn.168.1625605160144;
+        Tue, 06 Jul 2021 13:59:20 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id g17sm20738691pgh.61.2021.07.06.13.59.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 13:59:19 -0700 (PDT)
+Date:   Tue, 06 Jul 2021 13:59:19 -0700 (PDT)
+X-Google-Original-Date: Tue, 06 Jul 2021 13:59:17 PDT (-0700)
+Subject:     Re: [PATCH v7 0/8] RISC-V CPU Idle Support
+In-Reply-To: <CAAhSdy00KAqg37PCAGwNXt_2HTpxGY68yTPNHDEbrSwdiLa2jw@mail.gmail.com>
+CC:     Anup Patel <Anup.Patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, daniel.lezcano@linaro.org,
+        ulf.hansson@linaro.org, rjw@rjwysocki.net, pavel@ucw.cz,
+        robh+dt@kernel.org, milun.tripathy@gmail.com,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        liush@allwinnertech.com, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     anup@brainfault.org
+Message-ID: <mhng-baa27714-d293-409b-9c07-6b2d1043bfad@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/5/21 7:36 AM, Jarkko Sakkinen wrote:
-> From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> 
-> Q1 and Q2 are numbers with *maximum* length of 384 bytes. If the calculated
-> length of Q1 and Q2 is less than 384 bytes, things will go wrong.
-> 
-> E.g. if Q2 is 383 bytes, then
-> 
-> 1. The bytes of q2 are copied to sigstruct->q2 in calc_q1q2().
-> 2. The entire sigstruct->q2 is reversed, which results it being
->    256 * Q2, given that the last byte of sigstruct->q2 is added
->    to before the bytes given by calc_q1q2().
-> 
-> Either change in key or measurement can trigger the bug. E.g. an unmeasured
-> heap could cause a devastating change in Q1 or Q2.
-> 
-> Reverse exactly the bytes of Q1 and Q2 in calc_q1q2() before returning to
-> the caller.
-> 
-> Fixes: 2adcba79e69d ("selftests/x86: Add a selftest for SGX")
-> Link: https://lore.kernel.org/linux-sgx/20210301051836.30738-1-tianjia.zhang@linux.alibaba.com/
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+On Mon, 21 Jun 2021 21:49:11 PDT (-0700), anup@brainfault.org wrote:
+> Hi Palmer,
+>
+> On Thu, Jun 10, 2021 at 10:52 AM Anup Patel <anup.patel@wdc.com> wrote:
+>>
+>> This series adds RISC-V CPU Idle support using SBI HSM suspend function.
+>> The RISC-V SBI CPU idle driver added by this series is highly inspired
+>> from the ARM PSCI CPU idle driver.
+>>
+>> At high-level, this series includes the following changes:
+>> 1) Preparatory arch/riscv patches (Patches 1 to 3)
+>> 2) Defines for RISC-V SBI HSM suspend (Patch 4)
+>> 3) Preparatory patch to share code between RISC-V SBI CPU idle driver
+>>    and ARM PSCI CPU idle driver (Patch 5)
+>> 4) RISC-V SBI CPU idle driver and related DT bindings (Patches 6 to 7)
+>>
+>> These patches can be found in riscv_sbi_hsm_suspend_v7 branch at
+>> https://github.com/avpatel/linux
+>>
+>> Special thanks Sandeep Tripathy for providing early feeback on SBI HSM
+>> support in all above projects (RISC-V SBI specification, OpenSBI, and
+>> Linux RISC-V).
+>>
+>> Changes since v6:
+>>  - Fixed error reported by "make DT_CHECKER_FLAGS=-m dt_binding_check"
+>>
+>> Changes since v5:
+>>  - Rebased on Linux-5.13-rc5
+>>  - Removed unnecessary exports from PATCH5
+>>  - Removed stray ";" from PATCH5
+>>  - Moved sbi_cpuidle_pd_power_off() under "#ifdef CONFIG_DT_IDLE_GENPD"
+>>    in PATCH6
+>>
+>> Changes since v4:
+>>  - Rebased on Linux-5.13-rc2
+>>  - Renamed all dt_idle_genpd functions to have "dt_idle_" prefix
+>>  - Added MAINTAINERS file entry for dt_idle_genpd
+>>
+>> Changes since v3:
+>>  - Rebased on Linux-5.13-rc2
+>>  - Fixed __cpu_resume_enter() which was broken due to XIP kernel support
+>>  - Removed "struct dt_idle_genpd_ops" abstraction which simplifies code
+>>    sharing between ARM PSCI and RISC-V SBI drivers in PATCH5
+>>
+>> Changes since v2:
+>>  - Rebased on Linux-5.12-rc3
+>>  - Updated PATCH7 to add common DT bindings for both ARM and RISC-V
+>>    idle states
+>>  - Added "additionalProperties = false" for both idle-states node and
+>>    child nodes in PATCH7
+>>
+>> Changes since v1:
+>>  - Fixex minor typo in PATCH1
+>>  - Use just "idle-states" as DT node name for CPU idle states
+>>  - Added documentation for "cpu-idle-states" DT property in
+>>    devicetree/bindings/riscv/cpus.yaml
+>>  - Added documentation for "riscv,sbi-suspend-param" DT property in
+>>    devicetree/bindings/riscv/idle-states.yaml
+>>
+>> Anup Patel (8):
+>>   RISC-V: Enable CPU_IDLE drivers
+>>   RISC-V: Rename relocate() and make it global
+>>   RISC-V: Add arch functions for non-retentive suspend entry/exit
+>>   RISC-V: Add SBI HSM suspend related defines
+>>   cpuidle: Factor-out power domain related code from PSCI domain driver
+>>   cpuidle: Add RISC-V SBI CPU idle driver
+>>   dt-bindings: Add common bindings for ARM and RISC-V idle states
+>>   RISC-V: Enable RISC-V SBI CPU Idle driver for QEMU virt machine
+>
+> Can you please review this series ?
+>
+> It would be nice to consider this series for Linux-5.14.
 
-This looks fine, but can I suggest a Subject: tweak?
+I'd assumed this one was part of the 0.3.0 freeze.
 
-	selftests/sgx: Fix calculations for sub-maximum field sizes
-
-In any case:
-
-Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
+>
+> Regards,
+> Anup
+>
+>>
+>>  .../bindings/arm/msm/qcom,idle-state.txt      |   2 +-
+>>  .../devicetree/bindings/arm/psci.yaml         |   2 +-
+>>  .../bindings/{arm => cpu}/idle-states.yaml    | 228 ++++++-
+>>  .../devicetree/bindings/riscv/cpus.yaml       |   6 +
+>>  MAINTAINERS                                   |  14 +
+>>  arch/riscv/Kconfig                            |   7 +
+>>  arch/riscv/Kconfig.socs                       |   3 +
+>>  arch/riscv/configs/defconfig                  |  13 +-
+>>  arch/riscv/configs/rv32_defconfig             |   6 +-
+>>  arch/riscv/include/asm/asm.h                  |  17 +
+>>  arch/riscv/include/asm/cpuidle.h              |  24 +
+>>  arch/riscv/include/asm/sbi.h                  |  27 +-
+>>  arch/riscv/include/asm/suspend.h              |  35 +
+>>  arch/riscv/kernel/Makefile                    |   2 +
+>>  arch/riscv/kernel/asm-offsets.c               |   3 +
+>>  arch/riscv/kernel/cpu_ops_sbi.c               |   2 +-
+>>  arch/riscv/kernel/head.S                      |  18 +-
+>>  arch/riscv/kernel/process.c                   |   3 +-
+>>  arch/riscv/kernel/suspend.c                   |  86 +++
+>>  arch/riscv/kernel/suspend_entry.S             | 123 ++++
+>>  drivers/cpuidle/Kconfig                       |   9 +
+>>  drivers/cpuidle/Kconfig.arm                   |   1 +
+>>  drivers/cpuidle/Kconfig.riscv                 |  15 +
+>>  drivers/cpuidle/Makefile                      |   5 +
+>>  drivers/cpuidle/cpuidle-psci-domain.c         | 138 +---
+>>  drivers/cpuidle/cpuidle-psci.h                |  15 +-
+>>  drivers/cpuidle/cpuidle-sbi.c                 | 626 ++++++++++++++++++
+>>  drivers/cpuidle/dt_idle_genpd.c               | 177 +++++
+>>  drivers/cpuidle/dt_idle_genpd.h               |  50 ++
+>>  29 files changed, 1472 insertions(+), 185 deletions(-)
+>>  rename Documentation/devicetree/bindings/{arm => cpu}/idle-states.yaml (74%)
+>>  create mode 100644 arch/riscv/include/asm/cpuidle.h
+>>  create mode 100644 arch/riscv/include/asm/suspend.h
+>>  create mode 100644 arch/riscv/kernel/suspend.c
+>>  create mode 100644 arch/riscv/kernel/suspend_entry.S
+>>  create mode 100644 drivers/cpuidle/Kconfig.riscv
+>>  create mode 100644 drivers/cpuidle/cpuidle-sbi.c
+>>  create mode 100644 drivers/cpuidle/dt_idle_genpd.c
+>>  create mode 100644 drivers/cpuidle/dt_idle_genpd.h
+>>
+>> --
+>> 2.25.1
+>>
