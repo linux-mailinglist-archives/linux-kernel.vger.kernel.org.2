@@ -2,60 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754643BD610
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536273BD60F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243087AbhGFM2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:28:44 -0400
-Received: from verein.lst.de ([213.95.11.211]:33252 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236451AbhGFMYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243047AbhGFM2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:28:37 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42354 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236533AbhGFMYD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Jul 2021 08:24:03 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9F9BF68C7B; Tue,  6 Jul 2021 14:21:11 +0200 (CEST)
-Date:   Tue, 6 Jul 2021 14:21:10 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Oded Gabbay <ogabbay@kernel.org>, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, galpress@amazon.com, sleybo@amazon.com,
-        dri-devel@lists.freedesktop.org, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        dledford@redhat.com, airlied@gmail.com, alexander.deucher@amd.com,
-        leonro@nvidia.com, hch@lst.de, amd-gfx@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <20210706122110.GA18273@lst.de>
-References: <20210705130314.11519-1-ogabbay@kernel.org> <YOQXBWpo3whVjOyh@phenom.ffwll.local>
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id E9B9C2268E;
+        Tue,  6 Jul 2021 12:21:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625574081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Aan1cXxL9cGbh1ZIWdDquBEBFJ6tOJ0dEGiZCExfdPk=;
+        b=Gzk09SPy9r7nBaOoFRzQ1o4vTDZ7iPcOFQ1ohOQjGNbvSWq/jgngkFMSbN6mToryBZ3lWF
+        u6VMkY331ZVy601UsysUGXESBNLZSYcR1Jfh5SGLNamu45LpLq7CWTG0yNbDuRhauWBDC8
+        7uXVf43sir8hoYJZVj5WGNpTyaz2mgU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625574081;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Aan1cXxL9cGbh1ZIWdDquBEBFJ6tOJ0dEGiZCExfdPk=;
+        b=1jMACZT9F8Q3ycI2hz/rH/kIDTg2mcyNSDY5Ea2v++3lCNDte3a2PSHA4pH+9/1Bg06/gy
+        Ny643wCDws67o3Cw==
+Received: from localhost (unknown [10.163.25.122])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id CAEE4A3EF0;
+        Tue,  6 Jul 2021 12:21:21 +0000 (UTC)
+Date:   Tue, 6 Jul 2021 14:21:21 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Sagi Grimberg <sagi@grimberg.me>
+Subject: Re: [PATCH 2/2] nvme-fc: Wait with a timeout for queue to freeze
+Message-ID: <20210706122121.qicyihexk2qawvef@beryllium.lan>
+References: <20210625101649.49296-1-dwagner@suse.de>
+ <20210625101649.49296-3-dwagner@suse.de>
+ <YNp50pmlzN6M0kNX@T590>
+ <20210705162519.qqlklisxcsiopflw@beryllium.lan>
+ <YOQGRwLfLaFGqlVA@T590>
+ <20210706081010.dqmg7bxik5gnym5k@beryllium.lan>
+ <YOQYKn+POVR2g/h1@T590>
+ <20210706085906.asz7cp7ydiid6yz5@beryllium.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YOQXBWpo3whVjOyh@phenom.ffwll.local>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210706085906.asz7cp7ydiid6yz5@beryllium.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 10:40:37AM +0200, Daniel Vetter wrote:
-> > Greg, I hope this will be good enough for you to merge this code.
-> 
-> So we're officially going to use dri-devel for technical details review
-> and then Greg for merging so we don't have to deal with other merge
-> criteria dri-devel folks have?
-> 
-> I don't expect anything less by now, but it does make the original claim
-> that drivers/misc will not step all over accelerators folks a complete
-> farce under the totally-not-a-gpu banner.
-> 
-> This essentially means that for any other accelerator stack that doesn't
-> fit the dri-devel merge criteria, even if it's acting like a gpu and uses
-> other gpu driver stuff, you can just send it to Greg and it's good to go.
-> 
-> There's quite a lot of these floating around actually (and many do have
-> semi-open runtimes, like habanalabs have now too, just not open enough to
-> be actually useful). It's going to be absolutely lovely having to explain
-> to these companies in background chats why habanalabs gets away with their
-> stack and they don't.
-
-FYI, I fully agree with Daniel here.  Habanlabs needs to open up their
-runtime if they want to push any additional feature in the kernel.
-The current situation is not sustainable.
+A nvme_start_freeze() before nvme_wait_freeze() fixes the hangers. It is this
+simple?
