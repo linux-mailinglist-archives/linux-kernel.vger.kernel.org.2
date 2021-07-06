@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EFB3BC751
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 09:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7E43BC73B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 09:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhGFHiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 03:38:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbhGFHiL (ORCPT
+        id S230313AbhGFHf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 03:35:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17948 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230282AbhGFHfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 03:38:11 -0400
-X-Greylist: delayed 2173 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 06 Jul 2021 00:35:33 PDT
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF17C061574;
-        Tue,  6 Jul 2021 00:35:32 -0700 (PDT)
-Received: from ip4d14bdef.dynamic.kabel-deutschland.de ([77.20.189.239] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1m0f36-0003rt-0K; Tue, 06 Jul 2021 08:59:16 +0200
-To:     Jonathan Corbet <corbet@lwn.net>, Nishanth Menon <nm@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-spdx@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, Rahul T R <r-ravikumar@ti.com>
-References: <20210703012931.30604-1-nm@ti.com> <875yxokdd0.fsf@meer.lwn.net>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [PATCH] LICENSES/dual/CC-BY-4.0: Lets switch to utf-8
-Message-ID: <0a2d0601-3668-2e1a-b86d-f8336a502d9d@leemhuis.info>
-Date:   Tue, 6 Jul 2021 08:59:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 6 Jul 2021 03:35:55 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1667WfZi143499;
+        Tue, 6 Jul 2021 03:32:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=lZ4qsYbOJ5hS/I1BBboGbRI6TUSy9NGSN+NVfKexDWc=;
+ b=PhCbiGcZuCjrVr7RVfiKZTdhjQC3hcHQGkqVQK+GlCErkl3PRk7yidz2Zj6VhzcN3E+I
+ O5Z5aQVri6V8RH0x9gqMmp7ydfOHU0BETz73vt/IZCKNRGBxuBr6DkP7NhVqijQIaeo5
+ JagX461F/wtMPROuDPFsESpn6nklVRqfG6bcvjuFmxU6WsHUV/wme/tuuLMMeGYlWvWJ
+ KH5xWNzmsoZc6j+QkiLgA7CsH6G+U1Wy+t3CjuNIBzxhHhY8BesuyBqwjvGgPQANTtth
+ metdNZ9WJ51Fxc7tKpVsmrZDl8XFRDgy+n22H4lpG7ldvPNRvl05480It8lPCrdrYk7t nA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39mbkds3bu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Jul 2021 03:32:43 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1667WhJ6143675;
+        Tue, 6 Jul 2021 03:32:43 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39mbkds393-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Jul 2021 03:32:43 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1667WXwa011758;
+        Tue, 6 Jul 2021 07:32:33 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06fra.de.ibm.com with ESMTP id 39jf5hgknw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Jul 2021 07:32:33 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1667WUGT21758398
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 6 Jul 2021 07:32:30 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6E35752051;
+        Tue,  6 Jul 2021 07:32:30 +0000 (GMT)
+Received: from bangoria.ibmuc.com (unknown [9.199.43.134])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 2464C5204E;
+        Tue,  6 Jul 2021 07:32:23 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+To:     naveen.n.rao@linux.ibm.com, mpe@ellerman.id.au, ast@kernel.org,
+        daniel@iogearbox.net
+Cc:     ravi.bangoria@linux.ibm.com, sandipan@linux.ibm.com,
+        paulus@samba.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] bpf powerpc: Add BPF_PROBE_MEM support for 64bit JIT
+Date:   Tue,  6 Jul 2021 13:02:07 +0530
+Message-Id: <20210706073211.349889-1-ravi.bangoria@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <875yxokdd0.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-BS
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1625556933;c72e8bf1;
-X-HE-SMSGID: 1m0f36-0003rt-0K
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: TQkSYD5K5pP8OT5IyTc7z8mncuFrIcBn
+X-Proofpoint-ORIG-GUID: eiPqO5UqTagzaLt96Gqsr8r_wUgwew9O
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-06_02:2021-07-02,2021-07-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 mlxlogscore=880 phishscore=0
+ priorityscore=1501 spamscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107060037
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.07.21 17:08, Jonathan Corbet wrote:
-> Nishanth Menon <nm@ti.com> writes:
-> 
->> Lets drop the unicode characters that peeped in and replace with
->> equivalent utf-8 characters. This makes the CC-BY-4.0 file inline with
->> rest of license files.
->>
->> This messes up code such as scripts/spdxcheck.py which assumed utf-8
->> LICENSE files.
->>
->> Fixes: bc41a7f36469 ("LICENSES: Add the CC-BY-4.0 license")
-> 
-> So...this file *is* in UTF-8; I'm finding your changelog a bit
-> confusing. 
+Patch #1, #2 are simple cleanup patches. Patch #3 adds
+BPF_PROBE_MEM support with PowerPC 64bit JIT compiler.
+Patch #4 adds explicit addr > TASK_SIZE_MAX check to
+handle bad userspace pointers.
 
-Ahh, I'm not the only one here.
+Ravi Bangoria (4):
+  bpf powerpc: Remove unused SEEN_STACK
+  bpf powerpc: Remove extra_pass from bpf_jit_build_body()
+  bpf powerpc: Add BPF_PROBE_MEM support for 64bit JIT
+  bpf powerpc: Add addr > TASK_SIZE_MAX explicit check
 
->> Cc: Thorsten Leemhuis <linux@leemhuis.info>
->> CC: Thomas Gleixner <tglx@linutronix.de>
->> CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> CC: Christoph Hellwig <hch@lst.de>
->> Cc: Jonathan Corbet <corbet@lwn.net>
->>
->> Reported-by: Rahul T R <r-ravikumar@ti.com>
->> Signed-off-by: Nishanth Menon <nm@ti.com>
->> ---
->> also see: https://lore.kernel.org/linux-spdx/20210703012128.27946-1-nm@ti.com/T/#u
->>
->>  LICENSES/dual/CC-BY-4.0 | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/LICENSES/dual/CC-BY-4.0 b/LICENSES/dual/CC-BY-4.0
->> index 45a81b8e4669..869cad3d1643 100644
->> --- a/LICENSES/dual/CC-BY-4.0
->> +++ b/LICENSES/dual/CC-BY-4.0
->> @@ -392,7 +392,7 @@ Section 8 -- Interpretation.
->>  Creative Commons is not a party to its public
->>  licenses. Notwithstanding, Creative Commons may elect to apply one of
->>  its public licenses to material it publishes and in those instances
->> -will be considered the “Licensor.” The text of the Creative Commons
->> +will be considered the "Licensor." The text of the Creative Commons
+ arch/powerpc/net/bpf_jit.h        |   8 ++-
+ arch/powerpc/net/bpf_jit_comp.c   |  25 ++++++--
+ arch/powerpc/net/bpf_jit_comp32.c |   4 +-
+ arch/powerpc/net/bpf_jit_comp64.c | 100 +++++++++++++++++++++++++++++-
+ 4 files changed, 124 insertions(+), 13 deletions(-)
 
-FWIW, I kinda like that the text (apart from the intro) up to now is
-identical to the official license text (where I copied it from iirc when
-I added it), but well, the type of quotes really shouldn't matter, so:
+-- 
+2.26.3
 
-Acked-by: Thorsten Leemhuis <linux@leemhuis.info>
-
-> It seems that what you're really doing is replacing "smart quotes" with
-> the basic ASCII variety?  That seems like a fine thing to do, but that's
-> not really what the changelog says.
-
-Thx for handling this, Jon.
-
-> [...]
-
-Ciao, Thorsten
