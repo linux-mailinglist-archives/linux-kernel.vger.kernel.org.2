@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D5E3BC7D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBF23BC7DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbhGFIbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 04:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230356AbhGFIbg (ORCPT
+        id S230462AbhGFIeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 04:34:16 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3366 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230356AbhGFIeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 04:31:36 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2C2C061574;
-        Tue,  6 Jul 2021 01:28:56 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id f17so7274068pfj.8;
-        Tue, 06 Jul 2021 01:28:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=J2tGUbG+Wytqc+476/++1CACVBlZ75emW59na3YRlEg=;
-        b=AmZA1/Dfb6g6UIWzEppKBmTWnke2q/qrUWsQWwNt9DA+UDTBt73g/IPlDO3GWkoyfz
-         K0MLYfzEOPTnZrKhHYEkkyQMj+UNpoDnznzUT3xw7Y1b8D/aL81YQVvQk91lsv2KHYgb
-         RgOOWgCFU93+zEmLYAVbs3j/f3lyrxF+l+qTAbnHIXxMjE1eoSxNY3dPxRkip9sMUVcP
-         wcgblnDTtfk3I4Fm1jV3s5J7Dm4dP8e8EtFHeZeU52HPUA0prDFxDPHt9QKp91cV+8C7
-         NbweUXdxs+ZHX1TABNLttesx1nyhTJPLxV6SFKjyOSQaIvm03eNBzRWIp93ef+SJYMN4
-         2WNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J2tGUbG+Wytqc+476/++1CACVBlZ75emW59na3YRlEg=;
-        b=QmIa6uAUYRrL/KWhx9BXNFlboSHoRVKtIn4ytX0fsxdTIAwASKkh773gplwUHZzGNX
-         p1nteXKitNGEFKMsYlcjWO/+wmNNW3BYOjPRn9I0G14uQpklieRLRBv9ThoJaFFpJBN7
-         tmTG05tXpuSYCLu8FTvYM9dOPXtNr+k6vll3HmLYtQ6cgyPDyY1+svUtSLMAhC1GSOYV
-         SJY7fw7tjOXrhdxuca/FWD71wedShknpe/Txtwy7VrHTVkLueziUQ/2sDMsyVzZH+Z/Q
-         KXzBkREFjQlZm+luYNwP8s/bXEt2bvxMsikHjELAWLBQ2QztFyRyzK/yUJNFd9eRNKdl
-         cy8w==
-X-Gm-Message-State: AOAM533nWU/P7yEHfyaVUPlTCqPgEpA66o9nrtMmrVj2f8PH3pqvYSuj
-        hjJrGHUhPB/Kpzgq3Wdl/u4=
-X-Google-Smtp-Source: ABdhPJwI/xtmjCCiI7aBIswYg+N4dDu3PCJvOF2JH+ytaLekcGGRh0k3cKqeg957nxmsFIPoEg6qxQ==
-X-Received: by 2002:a63:af53:: with SMTP id s19mr18285303pgo.147.1625560136445;
-        Tue, 06 Jul 2021 01:28:56 -0700 (PDT)
-Received: from [10.101.46.79] (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
-        by smtp.gmail.com with ESMTPSA id i8sm15067817pfo.154.2021.07.06.01.28.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 01:28:56 -0700 (PDT)
-Subject: Re: [PATCH 0/2] thermal: int340x: processor_thermal: Add new PCI MMIO
- based thermal driver
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        daniel.lezcano@linaro.org, rui.zhang@intel.com, amitk@kernel.org
-References: <20210525204811.3793651-1-srinivas.pandruvada@linux.intel.com>
-From:   You-Sheng Yang <vicamo@gmail.com>
-Message-ID: <e4a407a4-aca4-0abd-8946-af34c3c16c4a@gmail.com>
-Date:   Tue, 6 Jul 2021 16:28:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 6 Jul 2021 04:34:15 -0400
+Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GJwVY182vz6GCGS;
+        Tue,  6 Jul 2021 16:20:53 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 6 Jul 2021 10:31:36 +0200
+Received: from [10.47.92.124] (10.47.92.124) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 6 Jul 2021
+ 09:31:35 +0100
+Subject: Re: [PATCH V3 0/4] tools: perf: Add JSON metrics for i.MX8M platforms
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>, <will@kernel.org>,
+        <mathieu.poirier@linaro.org>, <leo.yan@linaro.org>,
+        <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <shawnguo@kernel.org>,
+        <s.hauer@pengutronix.de>
+CC:     <kernel@pengutronix.de>, <festevam@gmail.com>, <linux-imx@nxp.com>,
+        <kjain@linux.ibm.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210127105734.12198-1-qiangqing.zhang@nxp.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <a35ea181-4beb-31d0-dd97-6d587b642a6e@huawei.com>
+Date:   Tue, 6 Jul 2021 09:24:25 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20210525204811.3793651-1-srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210127105734.12198-1-qiangqing.zhang@nxp.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.92.124]
+X-ClientProxiedBy: lhreml741-chm.china.huawei.com (10.201.108.191) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Verified this initialize [8086:461d] correctly. An additional thermal
-zone TCPU_PCI added.
+On 27/01/2021 10:57, Joakim Zhang wrote:
+> Add JSON metrics for i.MX8M platforms.
+> 
 
-Tested-by: You-Sheng Yang <vicamo.yang@canonical.com>
+Hi Joakim,
 
-On 5/26/21 4:48 AM, Srinivas Pandruvada wrote:
-> This series adds a new thermal driver, which uses PCI MMIO for temperature and trips. To reuse
-> the code the first patch just reorganizes the existing code.
+I have done some rework to the metricgroup sys event support.
+
+If you have a chance, it would be appreciated if you could test this 
+following series for these imx8 metrics+events:
+
+https://github.com/hisilicon/kernel-dev/commits/private-topic-perf-5.13-sys-rewrite-3
+
+Thanks,
+John
+
+> ChangeLogs:
+> V1->V2:
+> 	* remove board level metrics (bandwidth metrics).
+> V2->V3:
+> 	* Add the missing "ScaleUnit".
 > 
-> This series needs the following patch to cleanly apply:
-> [PATCH 1/2] thermal: int340x: processor_thermal: Export mailbox interface
-> sent on 16th May, 21.
-> 
-> Srinivas Pandruvada (2):
->   thermal: int340x: processor_thermal: Split enumeration and processing
->     part
->   thermal: int340x: processor_thermal: Add PCI MMIO based thermal driver
-> 
->  .../thermal/intel/int340x_thermal/Makefile    |   3 +
->  .../intel/int340x_thermal/int3401_thermal.c   |  82 ++++
->  .../processor_thermal_device.c                | 289 ++------------
->  .../processor_thermal_device.h                |   9 +-
->  .../processor_thermal_device_pci.c            | 371 ++++++++++++++++++
->  .../processor_thermal_device_pci_legacy.c     | 163 ++++++++
->  6 files changed, 658 insertions(+), 259 deletions(-)
->  create mode 100644 drivers/thermal/intel/int340x_thermal/int3401_thermal.c
->  create mode 100644 drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
->  create mode 100644 drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci_legacy.c
-> 
+> Joakim Zhang (4):
+>    perf vendor events: Fix indentation of brackets in imx8mm metrics
+>    perf vendor events: Add JSON metrics for imx8mn DDR Perf
+>    perf vendor events: Add JSON metrics for imx8mq DDR Perf
+>    perf vendor events: Add JSON metrics for imx8mp DDR Perf
+
