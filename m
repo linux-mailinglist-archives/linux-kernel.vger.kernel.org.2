@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCB33BD0BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4993BD095
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235773AbhGFLe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:34:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35448 "EHLO mail.kernel.org"
+        id S235885AbhGFLed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:34:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234494AbhGFLYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:24:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 874F061CEF;
-        Tue,  6 Jul 2021 11:18:33 +0000 (UTC)
+        id S234527AbhGFLYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:24:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17EB161C81;
+        Tue,  6 Jul 2021 11:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570314;
-        bh=0I6sraG7t8CfgmD4CJhp+GC2kCQuB1+mEYLSPFGqnhs=;
+        s=k20201202; t=1625570316;
+        bh=LlINakK7vPhAHS2AjT7/SVE6Zsa9OiC3yVd1oojOPFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iwhr8ai6xUZSz3qGl7wKDfrrBRluCJZbE/Ar4cBba6bhLbeYfMo2wZUupxdl5wDUQ
-         L8I2z9CSRNaUWfgtp7FM4euxUeK2u79QJ24gtUmGAJ4HnjJcwG/hUW/LhYCn+qF3Fa
-         Ju32vVEkJTgrOcecYT3qlBO8DCoT1e0thD+uh0whX1ub6BCSfAn0Um8QIlAvTT5nCg
-         8kZNoOmnyPUXmcjUdYWVumDgUQJJxjpCSknf5Kl6Fn6UPOJJ630SnZz6GcpYd3wR2O
-         icP7gAIkWNZQSOMVcMHeZGKkPLUZac/Cto0JMZKCfyiLlPRyP4+5HpR4T8wONZYt4I
-         sr2bAYIEDPcnQ==
+        b=e1HAEE/EwbQg00paw0PVuhF6kK2Zv0LnLuuyMjIw8m2HY4U1up+n5Lcb7UT0V4eLZ
+         Oa3qbvaKfZvCTsKX4dO+T62gar/3A9Czw6acLhHey3PCYjSOF2z6TRDpProX5eXgar
+         s+CAQTOw/G0autAXwSbXYrp44/zMs+LrY6FmqHU+mMSLivm2g9HQtJhnivqeJEtF8D
+         KFJFaPEOnnSt/5HlfqKNNy9udpP+v8gGeswOQNsEKknqkaqhxY9wG6bf9hOkPyBO1g
+         WanPF3K03JF5PQuuIljNdY2SkSrSmuq3UAvjJhz/+okQ/MADtkcCiLeHamfRnBsLXv
+         osa7FBuIu0K4Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Brandon Syu <Brandon.Syu@amd.com>,
-        Wenjing Liu <Wenjing.Liu@amd.com>,
-        Wayne Lin <waynelin@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        kernel test robot <lkp@intel.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Sasha Levin <sashal@kernel.org>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.12 005/160] drm/amd/display: fix HDCP reset sequence on reinitialize
-Date:   Tue,  6 Jul 2021 07:15:51 -0400
-Message-Id: <20210706111827.2060499-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 007/160] drm/vc4: fix argument ordering in vc4_crtc_get_margins()
+Date:   Tue,  6 Jul 2021 07:15:53 -0400
+Message-Id: <20210706111827.2060499-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111827.2060499-1-sashal@kernel.org>
 References: <20210706111827.2060499-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -47,39 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brandon Syu <Brandon.Syu@amd.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 99c248c41c2199bd34232ce8e729d18c4b343b64 ]
+[ Upstream commit e590c2b03a6143ba93ddad306bc9eaafa838c020 ]
 
-[why]
-When setup is called after hdcp has already setup,
-it would cause to disable HDCP flow won’t execute.
+Cppcheck complains that the declaration doesn't match the function
+definition.  Obviously "left" should come before "right".  The caller
+and the function implementation are done this way, it's just the
+declaration which is wrong so this doesn't affect runtime.
 
-[how]
-Don't clean up hdcp content to be 0.
-
-Signed-off-by: Brandon Syu <Brandon.Syu@amd.com>
-Reviewed-by: Wenjing Liu <Wenjing.Liu@amd.com>
-Acked-by: Wayne Lin <waynelin@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://patchwork.freedesktop.org/patch/msgid/YH/720FD978TPhHp@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/modules/hdcp/hdcp.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/vc4/vc4_drv.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp.c b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp.c
-index 20e554e771d1..fa8aeec304ef 100644
---- a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp.c
-+++ b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp.c
-@@ -260,7 +260,6 @@ enum mod_hdcp_status mod_hdcp_setup(struct mod_hdcp *hdcp,
- 	struct mod_hdcp_output output;
- 	enum mod_hdcp_status status = MOD_HDCP_STATUS_SUCCESS;
+diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
+index a7500716cf3f..5dceadc61600 100644
+--- a/drivers/gpu/drm/vc4/vc4_drv.h
++++ b/drivers/gpu/drm/vc4/vc4_drv.h
+@@ -825,7 +825,7 @@ void vc4_crtc_destroy_state(struct drm_crtc *crtc,
+ void vc4_crtc_reset(struct drm_crtc *crtc);
+ void vc4_crtc_handle_vblank(struct vc4_crtc *crtc);
+ void vc4_crtc_get_margins(struct drm_crtc_state *state,
+-			  unsigned int *right, unsigned int *left,
++			  unsigned int *left, unsigned int *right,
+ 			  unsigned int *top, unsigned int *bottom);
  
--	memset(hdcp, 0, sizeof(struct mod_hdcp));
- 	memset(&output, 0, sizeof(output));
- 	hdcp->config = *config;
- 	HDCP_TOP_INTERFACE_TRACE(hdcp);
+ /* vc4_debugfs.c */
 -- 
 2.30.2
 
