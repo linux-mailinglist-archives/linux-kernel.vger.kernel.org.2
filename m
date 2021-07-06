@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4993BD095
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81753BD0BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235885AbhGFLed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:34:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35480 "EHLO mail.kernel.org"
+        id S236126AbhGFLeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:34:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234527AbhGFLYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:24:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17EB161C81;
-        Tue,  6 Jul 2021 11:18:36 +0000 (UTC)
+        id S234629AbhGFLYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:24:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAE2F61D03;
+        Tue,  6 Jul 2021 11:18:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570316;
-        bh=LlINakK7vPhAHS2AjT7/SVE6Zsa9OiC3yVd1oojOPFI=;
+        s=k20201202; t=1625570325;
+        bh=0TEEtHfReXo4F18sk6Sba1Yo0FUOojEbgub7tLSmUa8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e1HAEE/EwbQg00paw0PVuhF6kK2Zv0LnLuuyMjIw8m2HY4U1up+n5Lcb7UT0V4eLZ
-         Oa3qbvaKfZvCTsKX4dO+T62gar/3A9Czw6acLhHey3PCYjSOF2z6TRDpProX5eXgar
-         s+CAQTOw/G0autAXwSbXYrp44/zMs+LrY6FmqHU+mMSLivm2g9HQtJhnivqeJEtF8D
-         KFJFaPEOnnSt/5HlfqKNNy9udpP+v8gGeswOQNsEKknqkaqhxY9wG6bf9hOkPyBO1g
-         WanPF3K03JF5PQuuIljNdY2SkSrSmuq3UAvjJhz/+okQ/MADtkcCiLeHamfRnBsLXv
-         osa7FBuIu0K4Q==
+        b=anKbKc+742Aeholnx4xqGRip0GWMoaDxdig64/MRhcLINz+aPNliZycBSFUqCFSxQ
+         fZxQ1WAwpZKL8Ki7cdE4+whZ7RXAMmYc75bIxjGivRYhchaKHwtIOKY93Sqm9cSK6p
+         LdLdqyi1AndAiVDB6u3Y+ko0MVkd+QzmboPJNRRTVHvGmLRFWk9qoLW31mTz+/Ox1H
+         R6w+0/Fj2fMPE4OsvWuk/qkSbmji3V6rrwPcxCgJLKQDVANCGamSxTtWVsmd4ZhWLx
+         73HFTGtrvl4oTF80pJCIUIJvuKfdx2/0+JzmNj5xbRiEPLTYkGDA3/EuWrraeQO7b2
+         +JC3qZYj1Vn4Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        kernel test robot <lkp@intel.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Sasha Levin <sashal@kernel.org>,
+Cc:     Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
+        Aric Cyr <Aric.Cyr@amd.com>, Stylon Wang <stylon.wang@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.12 007/160] drm/vc4: fix argument ordering in vc4_crtc_get_margins()
-Date:   Tue,  6 Jul 2021 07:15:53 -0400
-Message-Id: <20210706111827.2060499-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 013/160] drm/amd/display: fix use_max_lb flag for 420 pixel formats
+Date:   Tue,  6 Jul 2021 07:15:59 -0400
+Message-Id: <20210706111827.2060499-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111827.2060499-1-sashal@kernel.org>
 References: <20210706111827.2060499-1-sashal@kernel.org>
@@ -44,37 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
 
-[ Upstream commit e590c2b03a6143ba93ddad306bc9eaafa838c020 ]
+[ Upstream commit 8809a7a4afe90ad9ffb42f72154d27e7c47551ae ]
 
-Cppcheck complains that the declaration doesn't match the function
-definition.  Obviously "left" should come before "right".  The caller
-and the function implementation are done this way, it's just the
-declaration which is wrong so this doesn't affect runtime.
+Right now the flag simply selects memory config 0 when flag is true
+however 420 modes benefit more from memory config 3.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/YH/720FD978TPhHp@mwanda
+Signed-off-by: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
+Reviewed-by: Aric Cyr <Aric.Cyr@amd.com>
+Acked-by: Stylon Wang <stylon.wang@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_drv.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
-index a7500716cf3f..5dceadc61600 100644
---- a/drivers/gpu/drm/vc4/vc4_drv.h
-+++ b/drivers/gpu/drm/vc4/vc4_drv.h
-@@ -825,7 +825,7 @@ void vc4_crtc_destroy_state(struct drm_crtc *crtc,
- void vc4_crtc_reset(struct drm_crtc *crtc);
- void vc4_crtc_handle_vblank(struct vc4_crtc *crtc);
- void vc4_crtc_get_margins(struct drm_crtc_state *state,
--			  unsigned int *right, unsigned int *left,
-+			  unsigned int *left, unsigned int *right,
- 			  unsigned int *top, unsigned int *bottom);
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c
+index efa86d5c6847..98ab4b776924 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_dscl.c
+@@ -496,10 +496,13 @@ static enum lb_memory_config dpp1_dscl_find_lb_memory_config(struct dcn10_dpp *d
+ 	int vtaps_c = scl_data->taps.v_taps_c;
+ 	int ceil_vratio = dc_fixpt_ceil(scl_data->ratios.vert);
+ 	int ceil_vratio_c = dc_fixpt_ceil(scl_data->ratios.vert_c);
+-	enum lb_memory_config mem_cfg = LB_MEMORY_CONFIG_0;
  
- /* vc4_debugfs.c */
+-	if (dpp->base.ctx->dc->debug.use_max_lb)
+-		return mem_cfg;
++	if (dpp->base.ctx->dc->debug.use_max_lb) {
++		if (scl_data->format == PIXEL_FORMAT_420BPP8
++				|| scl_data->format == PIXEL_FORMAT_420BPP10)
++			return LB_MEMORY_CONFIG_3;
++		return LB_MEMORY_CONFIG_0;
++	}
+ 
+ 	dpp->base.caps->dscl_calc_lb_num_partitions(
+ 			scl_data, LB_MEMORY_CONFIG_1, &num_part_y, &num_part_c);
 -- 
 2.30.2
 
