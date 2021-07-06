@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F1D3BD3BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E70A3BD4AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239091AbhGFL73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:59:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47600 "EHLO mail.kernel.org"
+        id S237134AbhGFMQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:16:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237055AbhGFLfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:35:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2980A61CAF;
-        Tue,  6 Jul 2021 11:25:19 +0000 (UTC)
+        id S237069AbhGFLfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:35:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99C9D61CDD;
+        Tue,  6 Jul 2021 11:25:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570720;
-        bh=dSmWd6JDaIXsyNmO6nukxpLK2YjQpLaYW/+Aqz8eNic=;
+        s=k20201202; t=1625570721;
+        bh=QPgQE2G1/gCeuN/4WN1kwXiMfVifxrdMfmmLcWoYOf8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JnhtvgpNmzBtdNU3I8ZaM6oWiGqxIVshZOQcks4ayFK2NFt1NeQ+rGs8Yi9tRMR51
-         09MvhxjGFrsgrLorR+fqU5iEtXR/C6tRe4z8ovLjeQnQ+0CO56bE3nUawXusI1kcUq
-         fo78xXNaQPkwro+McbPvYtse2iRMFzd2f3i0e6k9n8Tcgn3ozsGzOww0YX2uiNWrpd
-         ZYnqMmNoETAsKUrBPlwk9/hpqD9GF9rYzLx036rMlMrJJyQ7RLwQDzwAUlF3QLT57A
-         lXUAjdvUcx6iovu7uxp7UuRdILmxvf8zWR92Eb/3/FGr1arOR6ag93TMSU7opA9PtW
-         hX1v4bJS/XsAg==
+        b=DRWqc8bbvOxzVj9IzbXjPTJD8/9AqXkU5IAhz+Es6FbBXOuoeVJESdB6al4BH9Cih
+         G5on2aKtzwPdHp8gerKKzt+BMu/e+3sVg6a/21EGNjSGz0Ew3fuNuFWh5BeLzZLOoM
+         5D4JEIYV7+EA4VYIbW9cEUWFpIeFkF14Iq1zHXRA82NXXyx9zCNck5IilHmQtdK62b
+         89ztS3zCYck1y/Rx6TeSFmBttwlgkY9xtZyWO1VNxqZWzGbtXuLnihArf5LR2i7M87
+         GxfMqX3FCAsbyRiM6vVywy9YwjPWif9ZQ2jvDMOZxaOKTKTQ2HsWA8KXY+Yw8NFiAX
+         v45Nit+3bhVgQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wang Li <wangli74@huawei.com>, Hulk Robot <hulkci@huawei.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 13/74] drm/mediatek: Fix PM reference leak in mtk_crtc_ddp_hw_init()
-Date:   Tue,  6 Jul 2021 07:24:01 -0400
-Message-Id: <20210706112502.2064236-13-sashal@kernel.org>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        reiserfs-devel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 14/74] reiserfs: add check for invalid 1st journal block
+Date:   Tue,  6 Jul 2021 07:24:02 -0400
+Message-Id: <20210706112502.2064236-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112502.2064236-1-sashal@kernel.org>
 References: <20210706112502.2064236-1-sashal@kernel.org>
@@ -45,36 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Li <wangli74@huawei.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 69777e6ca396f0a7e1baff40fcad4a9d3d445b7a ]
+[ Upstream commit a149127be52fa7eaf5b3681a0317a2bbb772d5a9 ]
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
+syzbot reported divide error in reiserfs.
+The problem was in incorrect journal 1st block.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Li <wangli74@huawei.com>
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Syzbot's reproducer manualy generated wrong superblock
+with incorrect 1st block. In journal_init() wasn't
+any checks about this particular case.
+
+For example, if 1st journal block is before superblock
+1st block, it can cause zeroing important superblock members
+in do_journal_end().
+
+Link: https://lore.kernel.org/r/20210517121545.29645-1-paskripkin@gmail.com
+Reported-by: syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/reiserfs/journal.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index f9455f2724d2..f370d41b3d04 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -240,7 +240,7 @@ static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *mtk_crtc)
- 		drm_connector_list_iter_end(&conn_iter);
+diff --git a/fs/reiserfs/journal.c b/fs/reiserfs/journal.c
+index 4b3e3e73b512..09ad022a78a5 100644
+--- a/fs/reiserfs/journal.c
++++ b/fs/reiserfs/journal.c
+@@ -2763,6 +2763,20 @@ int journal_init(struct super_block *sb, const char *j_dev_name,
+ 		goto free_and_return;
  	}
  
--	ret = pm_runtime_get_sync(crtc->dev->dev);
-+	ret = pm_runtime_resume_and_get(crtc->dev->dev);
- 	if (ret < 0) {
- 		DRM_ERROR("Failed to enable power domain: %d\n", ret);
- 		return ret;
++	/*
++	 * Sanity check to see if journal first block is correct.
++	 * If journal first block is invalid it can cause
++	 * zeroing important superblock members.
++	 */
++	if (!SB_ONDISK_JOURNAL_DEVICE(sb) &&
++	    SB_ONDISK_JOURNAL_1st_BLOCK(sb) < SB_JOURNAL_1st_RESERVED_BLOCK(sb)) {
++		reiserfs_warning(sb, "journal-1393",
++				 "journal 1st super block is invalid: 1st reserved block %d, but actual 1st block is %d",
++				 SB_JOURNAL_1st_RESERVED_BLOCK(sb),
++				 SB_ONDISK_JOURNAL_1st_BLOCK(sb));
++		goto free_and_return;
++	}
++
+ 	if (journal_init_dev(sb, journal, j_dev_name) != 0) {
+ 		reiserfs_warning(sb, "sh-462",
+ 				 "unable to initialize journal device");
 -- 
 2.30.2
 
