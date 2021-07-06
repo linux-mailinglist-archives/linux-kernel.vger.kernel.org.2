@@ -2,178 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE49E3BD9E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC183BD9D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhGFPRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:17:36 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33768 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhGFPR3 (ORCPT
+        id S232624AbhGFPPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 11:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232454AbhGFPPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:17:29 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E54631FF83;
-        Tue,  6 Jul 2021 13:52:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625579564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q5f1LbCjS19naTSoFESy0vSf6+nQCjxcCvLGSFudqS0=;
-        b=Qdua2UOSBG514HrgXVAdYTdFHv7+oPhHQ0sjPvbOz2Z7xwbJcyQmtuPQ+7zubd5U2IgR8j
-        DkiaBuoLTF79f2vSw8eIO86rholBVgv/+auCqSvUknZRXkQzITIHwZEPpLzOwTcuUDpKmp
-        a8ZWUI1NsOaj9wjPNlxpsGBZZ7+rgAA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625579564;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q5f1LbCjS19naTSoFESy0vSf6+nQCjxcCvLGSFudqS0=;
-        b=+D5BDnA47QVUw1qPePfb8jdDeS7x5g4zbKe1K8WzZ+jsVOyS7MibfsEC+LNFXe9+osVx+G
-        Eo3IVICa1W1H39Dw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 6FC2F133D0;
-        Tue,  6 Jul 2021 13:52:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id ANkxGCxg5GCPKAAAGKfGzw
-        (envelope-from <lhenriques@suse.de>); Tue, 06 Jul 2021 13:52:44 +0000
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 1835e700;
-        Tue, 6 Jul 2021 13:52:43 +0000 (UTC)
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Jeff Layton <jlayton@kernel.org>, Ilya Dryomov <idryomov@gmail.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luis Henriques <lhenriques@suse.de>, stable@vger.kernel.org
-Subject: [PATCH v3 2/2] ceph: reduce contention in ceph_check_delayed_caps()
-Date:   Tue,  6 Jul 2021 14:52:42 +0100
-Message-Id: <20210706135242.9978-3-lhenriques@suse.de>
-In-Reply-To: <20210706135242.9978-1-lhenriques@suse.de>
-References: <20210706135242.9978-1-lhenriques@suse.de>
+        Tue, 6 Jul 2021 11:15:32 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39863C0613E3
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 06:54:54 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id g12so14439961qtb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 06:54:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F7pVFly65mtrw4yvfSLy/OKy9AWKG24c85UMsxt0WZw=;
+        b=gYf94+BMIGsQpJS3uV3ohuMRMLOEFz0kdysTKDKnloRFgs0LhgoRcqPW98PUrU+dx6
+         E3OOKrVJV1BTd2elUyjb8G6xfJzPFdvehJAilfpTM9RS4gfQVAvkYNKGiyCJGug87J6k
+         YPq+yFMHPSe1tFJNbPKeZAhUsLvOhG/JZZZww+IcGnL/e9f9w8Z2RP4h4m2+YNHDT4Xi
+         aRg/PM4bau3ZfwjJIhVR625Zv1Lq+m19yfd3/4kopcBskBTAcwccdEdO9LAmSJrnc844
+         kpItX9Ulfg4csgBtST5Xn7ZpOiEeWyWeCZZL/jYKlVlhcziFr98+RBkzrzJm3IFtppAf
+         vOgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F7pVFly65mtrw4yvfSLy/OKy9AWKG24c85UMsxt0WZw=;
+        b=V8Cjk8Tw5eQirxzjBrKIfXk0KLCTq5KuXQeACjZ2WvHquV1jR8KRGD+pqLE4d0FAeQ
+         LRvZzKJs3gFkehlp9Lng3V2E47ERRYRijwdcnmINNfWMXWXmp/9RSdeu4g7CFDOYtBmn
+         PaOPBYvNSJXsC4ZDxLM+FXSsdu9uwU/B7zXNLXeOP0XRqkNQQ7OUoSQZFoGPRtrpkcjK
+         mOCkgs1G9opLMPVPfAK5GNfx5q6Hf5X3jM8vzE7ckubBeeeaOQmoOJxFlZD0DggXscXg
+         sSf9Rc2hJLjMiE6rWyV4xSicVz7OxxCTv6kxvse5waD8XWeCKVAoRLY8Xg7brTXfuJt+
+         leGQ==
+X-Gm-Message-State: AOAM530WrrCAm0Kc1zPNzwVTzECfMz3k5/+IFFwVpqF1JNj8U/+xoYlY
+        FxxjLp7123l5iRo9/XDr/YMBpg==
+X-Google-Smtp-Source: ABdhPJz13olZ+JJKFkbBuIPKQTyNwX1MXRn+mR8LaT47LKm2ZWHADKQroBueZGYoVGCTJKDq+xeMwA==
+X-Received: by 2002:ac8:5045:: with SMTP id h5mr17280817qtm.178.1625579693287;
+        Tue, 06 Jul 2021 06:54:53 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id t20sm1900660qtx.48.2021.07.06.06.54.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 06:54:52 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1m0lXH-004QmP-Kc; Tue, 06 Jul 2021 10:54:51 -0300
+Date:   Tue, 6 Jul 2021 10:54:51 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Oded Gabbay <ogabbay@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Tomer Tayar <ttayar@habana.ai>
+Subject: Re: [PATCH v4 2/2] habanalabs: add support for dma-buf exporter
+Message-ID: <20210706135451.GM4604@ziepe.ca>
+References: <20210705130314.11519-1-ogabbay@kernel.org>
+ <20210705130314.11519-3-ogabbay@kernel.org>
+ <20210705165226.GJ4604@ziepe.ca>
+ <CAFCwf100mkROMw9+2LgW7d3jKnaeZ4nmfWm7HtXuUE7NF4B8pg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf100mkROMw9+2LgW7d3jKnaeZ4nmfWm7HtXuUE7NF4B8pg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function ceph_check_delayed_caps() is called from the mdsc->delayed_work
-workqueue and it can be kept looping for quite some time if caps keep
-being added back to the mdsc->cap_delay_list.  This may result in the
-watchdog tainting the kernel with the softlockup flag.
+On Tue, Jul 06, 2021 at 12:44:49PM +0300, Oded Gabbay wrote:
 
-This patch breaks this loop if the caps have been recently (i.e. during
-the loop execution).  Any new caps added to the list will be handled in
-the next run.
+> > > +     /* In case we got a large memory area to export, we need to divide it
+> > > +      * to smaller areas because each entry in the dmabuf sgt can only
+> > > +      * describe unsigned int.
+> > > +      */
+> >
+> > Huh? This is forming a SGL, it should follow the SGL rules which means
+> > you have to fragment based on the dma_get_max_seg_size() of the
+> > importer device.
+> >
+> hmm
+> I don't see anyone in drm checking this value (and using it) when
+> creating the SGL when exporting dmabuf. (e.g.
+> amdgpu_vram_mgr_alloc_sgt)
 
-Cc: stable@vger.kernel.org
-Link: https://tracker.ceph.com/issues/46284
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
----
- fs/ceph/caps.c       | 17 ++++++++++++++++-
- fs/ceph/mds_client.c |  7 ++++---
- fs/ceph/super.h      |  2 +-
- 3 files changed, 21 insertions(+), 5 deletions(-)
+For dmabuf the only importer is RDMA and it doesn't care, but you
+certainly should not introduce a hardwired constant instead of using
+the correct function.
 
-diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-index a5e93b185515..c79b8dff25d7 100644
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -4224,11 +4224,19 @@ void ceph_handle_caps(struct ceph_mds_session *session,
- 
- /*
-  * Delayed work handler to process end of delayed cap release LRU list.
-+ *
-+ * If new caps are added to the list while processing it, these won't get
-+ * processed in this run.  In this case, the ci->i_hold_caps_max will be
-+ * returned so that the work can be scheduled accordingly.
-  */
--void ceph_check_delayed_caps(struct ceph_mds_client *mdsc)
-+unsigned long ceph_check_delayed_caps(struct ceph_mds_client *mdsc)
- {
- 	struct inode *inode;
- 	struct ceph_inode_info *ci;
-+	struct ceph_mount_options *opt = mdsc->fsc->mount_options;
-+	unsigned long delay_max = opt->caps_wanted_delay_max * HZ;
-+	unsigned long loop_start = jiffies;
-+	unsigned long delay = 0;
- 
- 	dout("check_delayed_caps\n");
- 	spin_lock(&mdsc->cap_delay_lock);
-@@ -4236,6 +4244,11 @@ void ceph_check_delayed_caps(struct ceph_mds_client *mdsc)
- 		ci = list_first_entry(&mdsc->cap_delay_list,
- 				      struct ceph_inode_info,
- 				      i_cap_delay_list);
-+		if (time_before(loop_start, ci->i_hold_caps_max - delay_max)) {
-+			dout("%s caps added recently.  Exiting loop", __func__);
-+			delay = ci->i_hold_caps_max;
-+			break;
-+		}
- 		if ((ci->i_ceph_flags & CEPH_I_FLUSH) == 0 &&
- 		    time_before(jiffies, ci->i_hold_caps_max))
- 			break;
-@@ -4252,6 +4265,8 @@ void ceph_check_delayed_caps(struct ceph_mds_client *mdsc)
- 		}
- 	}
- 	spin_unlock(&mdsc->cap_delay_lock);
-+
-+	return delay;
- }
- 
- /*
-diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-index f5dc58a05f9f..a6f985786d68 100644
---- a/fs/ceph/mds_client.c
-+++ b/fs/ceph/mds_client.c
-@@ -4519,11 +4519,12 @@ static void schedule_delayed(struct ceph_mds_client *mdsc, unsigned long delay)
- 
- static void delayed_work(struct work_struct *work)
- {
--	int i;
- 	struct ceph_mds_client *mdsc =
- 		container_of(work, struct ceph_mds_client, delayed_work.work);
-+	unsigned long delay;
- 	int renew_interval;
- 	int renew_caps;
-+	int i;
- 
- 	dout("mdsc delayed_work\n");
- 
-@@ -4563,7 +4564,7 @@ static void delayed_work(struct work_struct *work)
- 	}
- 	mutex_unlock(&mdsc->mutex);
- 
--	ceph_check_delayed_caps(mdsc);
-+	delay = ceph_check_delayed_caps(mdsc);
- 
- 	ceph_queue_cap_reclaim_work(mdsc);
- 
-@@ -4571,7 +4572,7 @@ static void delayed_work(struct work_struct *work)
- 
- 	maybe_recover_session(mdsc);
- 
--	schedule_delayed(mdsc, 0);
-+	schedule_delayed(mdsc, delay);
- }
- 
- int ceph_mdsc_init(struct ceph_fs_client *fsc)
-diff --git a/fs/ceph/super.h b/fs/ceph/super.h
-index 839e6b0239ee..3b5207c82767 100644
---- a/fs/ceph/super.h
-+++ b/fs/ceph/super.h
-@@ -1170,7 +1170,7 @@ extern void ceph_flush_snaps(struct ceph_inode_info *ci,
- extern bool __ceph_should_report_size(struct ceph_inode_info *ci);
- extern void ceph_check_caps(struct ceph_inode_info *ci, int flags,
- 			    struct ceph_mds_session *session);
--extern void ceph_check_delayed_caps(struct ceph_mds_client *mdsc);
-+extern unsigned long ceph_check_delayed_caps(struct ceph_mds_client *mdsc);
- extern void ceph_flush_dirty_caps(struct ceph_mds_client *mdsc);
- extern int  ceph_drop_caps_for_unlink(struct inode *inode);
- extern int ceph_encode_inode_release(void **p, struct inode *inode,
+Jason
