@@ -2,258 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB5B3BD79D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509A13BD7A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhGFNVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 09:21:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:42200 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231935AbhGFNVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 09:21:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81F131FB;
-        Tue,  6 Jul 2021 06:18:54 -0700 (PDT)
-Received: from e123648.arm.com (unknown [10.57.7.228])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 584153F73B;
-        Tue,  6 Jul 2021 06:18:52 -0700 (PDT)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org
-Cc:     linux-pm@vger.kernel.org, amitk@kernel.org, rui.zhang@intel.com,
-        lukasz.luba@arm.com, dietmar.eggemann@arm.com,
-        Chris.Redpath@arm.com, Beata.Michalska@arm.com,
-        viresh.kumar@linaro.org, rjw@rjwysocki.net, amit.kachhap@gmail.com
-Subject: [RFC PATCH v2 6/6] thermal: cpufreq_cooling: Improve power estimation based on Active Stats framework
-Date:   Tue,  6 Jul 2021 14:18:28 +0100
-Message-Id: <20210706131828.22309-7-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210706131828.22309-1-lukasz.luba@arm.com>
-References: <20210706131828.22309-1-lukasz.luba@arm.com>
+        id S231537AbhGFNXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 09:23:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25568 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231317AbhGFNX3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 09:23:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625577650;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aPcv2FhczGXfb0Fzq3d94pKmcL+xjGfR4nhsVcDzM9M=;
+        b=fiEebRwShKQh6K/8P8nh+da/AKtoIo98rGbsa6zzsJWTi67aZQxDbwvfHTHIYG9GiRls51
+        lqM3sLGxqBYKp5kopBRp+kz8rA3/UQ6p3jb9Fr0AkPQxPUslSPCKCQCRJqY8kIcIuJuiIs
+        UA/yNZfNxVK69gwRf71vc9ZiVMW3IzY=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-263-P5xsMqllNmCKUYdalV9Zeg-1; Tue, 06 Jul 2021 09:20:49 -0400
+X-MC-Unique: P5xsMqllNmCKUYdalV9Zeg-1
+Received: by mail-wr1-f69.google.com with SMTP id w4-20020a05600018c4b0290134e4f784e8so2022075wrq.10
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 06:20:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aPcv2FhczGXfb0Fzq3d94pKmcL+xjGfR4nhsVcDzM9M=;
+        b=X8iak2XAtop3DP8JMGpGt09srTsqN0LN+z1bqjn8pb3FOQbcVvccPqh+613SgC/gnL
+         8SaJyEnQ4UPS6uo/TQro2aKIeSI3pukH6AcoXFm7sJWU9STi2NkeFpYTcgkKNM9VFuaQ
+         Xa1dYuHs2fygp5Gyk8WGgU7cER5zSnVGI0WrkiquacZnot6raNTwZCqBnGiy+Dzi/OA1
+         Y+yGKLtvw1yv0BIqJ7MYV7sKuJhu8wINmO0AO02AuX9mALnWed4BIGqp2C7rGr4NA6oV
+         qRO/Pe7ToBe08MDn5jTCg6l9gCqAMMHO0uSKlX7BKK+DTW0rK3n3Gs4CjvuiMpcTasy8
+         xxQg==
+X-Gm-Message-State: AOAM532TcM8IcMs9ljQvvdgrhLJjN6yJkCnCdTeCXhbH/XzfT7gf+xcE
+        Sm6RcAXUfHi+HWiqvLSA6URe34/B7OzbgvrIz0U87O2ab31DK1qXHB9KA+GY/KA3xMA8RIOravk
+        wwwzB8dsc5P1onlVPOMM20eVT
+X-Received: by 2002:adf:c44d:: with SMTP id a13mr3522825wrg.65.1625577647647;
+        Tue, 06 Jul 2021 06:20:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwylK30BjEpW908s11UIhAqOA43+SdndFo+8zImmidNjvWKJqWylu7jYy268GXLwqWqFAqnvg==
+X-Received: by 2002:adf:c44d:: with SMTP id a13mr3522803wrg.65.1625577647512;
+        Tue, 06 Jul 2021 06:20:47 -0700 (PDT)
+Received: from krava.redhat.com ([185.153.78.55])
+        by smtp.gmail.com with ESMTPSA id t11sm17119412wrz.7.2021.07.06.06.20.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 06:20:47 -0700 (PDT)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>, nakamura.shun@fujitsu.com,
+        linux-perf-users@vger.kernel.org
+Subject: [RFC 0/7] libperf: Add leader/group info to perf_evsel
+Date:   Tue,  6 Jul 2021 15:20:36 +0200
+Message-Id: <20210706132043.70195-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cpufreq_cooling has dedicated APIs for thermal governor called
-Intelligent Power Allocation (IPA). IPA needs the CPUs power used by the
-devices in the past.  Based on this, IPA tries to estimate the power
-budget, allocate new budget and split it across cooling devices for the
-next period (keeping the system in the thermal envelope).  When the input
-power estimated value has big error, the whole mechanism does not work
-properly. The current power estimation assumes constant frequency during
-the whole IPA period (e.g. 100ms). This can cause big error in the power
-estimation, especially when SchedUtil governor is used and frequency is
-often adjusted to the current need. This can be visible in periodic
-workloads, when the frequency oscillates between two OPPs and IPA samples
-the lower frequency.
+hi,
+moving leader/group info to libperf's perf_evsel.
 
-This patch introduces a new mechanism which solves this frequency
-sampling problem. It uses Active Stats framework to track and account
-the CPU power used for a given IPA period.
+This was asked for by Shunsuke [1] and is on my list
+as a prereq for event parsing move to libperf.
 
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+I still need to do more tests, but I'd like to check
+with you guys if there's any feedback on this first.
+
+Also available in:
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  libperf/groups
+
+thanks,
+jirka
+
+
+[1] https://lore.kernel.org/linux-perf-users/OSBPR01MB46005B38568E90509946ECA9F7319@OSBPR01MB4600.jpnprd01.prod.outlook.com/
+
+
 ---
- drivers/thermal/cpufreq_cooling.c | 132 ++++++++++++++++++++++++++++++
- 1 file changed, 132 insertions(+)
+Jiri Olsa (7):
+      libperf: Change tests to single static and shared binaries
+      libperf: Move idx to perf_evsel::idx
+      libperf: Move leader to perf_evsel::leader
+      libperf: Move nr_groups to evlist::nr_groups
+      libperf: Add perf_evlist__set_leader function
+      libperF: Add group support to perf_evsel__open
+      libperf: Add tests for perf_evlist__set_leader function
 
-diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-index eeb4e4b76c0b..90dca20e458a 100644
---- a/drivers/thermal/cpufreq_cooling.c
-+++ b/drivers/thermal/cpufreq_cooling.c
-@@ -10,6 +10,7 @@
-  *		Viresh Kumar <viresh.kumar@linaro.org>
-  *
-  */
-+#include <linux/active_stats.h>
- #include <linux/cpu.h>
- #include <linux/cpufreq.h>
- #include <linux/cpu_cooling.h>
-@@ -61,6 +62,7 @@ struct time_in_idle {
-  * @policy: cpufreq policy.
-  * @idle_time: idle time stats
-  * @qos_req: PM QoS contraint to apply
-+ * @ast_mon: Active Stats Monitor array of pointers
-  *
-  * This structure is required for keeping information of each registered
-  * cpufreq_cooling_device.
-@@ -75,6 +77,9 @@ struct cpufreq_cooling_device {
- 	struct time_in_idle *idle_time;
- #endif
- 	struct freq_qos_request qos_req;
-+#ifdef CONFIG_ACTIVE_STATS
-+	struct active_stats_monitor **ast_mon;
-+#endif
- };
- 
- #ifdef CONFIG_THERMAL_GOV_POWER_ALLOCATOR
-@@ -124,6 +129,107 @@ static u32 cpu_power_to_freq(struct cpufreq_cooling_device *cpufreq_cdev,
- 	return cpufreq_cdev->em->table[i].frequency;
- }
- 
-+#ifdef CONFIG_ACTIVE_STATS
-+static u32 account_cpu_power(struct active_stats_monitor *ast_mon,
-+			     struct em_perf_domain *em)
-+{
-+	u64 single_power, residency, total_time;
-+	struct active_stats_state *result;
-+	u32 power = 0;
-+	int i;
-+
-+	mutex_lock(&ast_mon->lock);
-+	result = ast_mon->snapshot.result;
-+	total_time = ast_mon->local_period;
-+
-+	for (i = 0; i < ast_mon->states_count; i++) {
-+		residency = result->residency[i];
-+		single_power = em->table[i].power * residency;
-+		single_power = div64_u64(single_power, total_time);
-+		power += (u32)single_power;
-+	}
-+
-+	mutex_unlock(&ast_mon->lock);
-+
-+	return power;
-+}
-+
-+static u32 get_power_est(struct cpufreq_cooling_device *cdev)
-+{
-+	int num_cpus, ret, i;
-+	u32 total_power = 0;
-+
-+	num_cpus = cpumask_weight(cdev->policy->related_cpus);
-+
-+	for (i = 0; i < num_cpus; i++) {
-+		ret = active_stats_cpu_update_monitor(cdev->ast_mon[i]);
-+		if (ret)
-+			return 0;
-+
-+		total_power += account_cpu_power(cdev->ast_mon[i], cdev->em);
-+	}
-+
-+	return total_power;
-+}
-+
-+static int cpufreq_get_requested_power(struct thermal_cooling_device *cdev,
-+				       u32 *power)
-+{
-+	struct cpufreq_cooling_device *cpufreq_cdev = cdev->devdata;
-+	struct cpufreq_policy *policy = cpufreq_cdev->policy;
-+
-+	*power = get_power_est(cpufreq_cdev);
-+
-+	trace_thermal_power_cpu_get_power(policy->related_cpus, 0, 0, 0,
-+					  *power);
-+
-+	return 0;
-+}
-+
-+static void clean_cpu_monitoring(struct cpufreq_cooling_device *cdev)
-+{
-+	int num_cpus, i;
-+
-+	if (!cdev->ast_mon)
-+		return;
-+
-+	num_cpus = cpumask_weight(cdev->policy->related_cpus);
-+
-+	for (i = 0; i < num_cpus; i++)
-+		active_stats_cpu_free_monitor(cdev->ast_mon[i++]);
-+
-+	kfree(cdev->ast_mon);
-+	cdev->ast_mon = NULL;
-+}
-+
-+static int setup_cpu_monitoring(struct cpufreq_cooling_device *cdev)
-+{
-+	int cpu, cpus, i = 0;
-+
-+	if (cdev->ast_mon)
-+		return 0;
-+
-+	cpus = cpumask_weight(cdev->policy->related_cpus);
-+
-+	cdev->ast_mon = kcalloc(cpus, sizeof(struct active_stats_monitor *),
-+				GFP_KERNEL);
-+	if (!cdev->ast_mon)
-+		return -ENOMEM;
-+
-+	for_each_cpu(cpu, cdev->policy->related_cpus) {
-+		cdev->ast_mon[i] = active_stats_cpu_setup_monitor(cpu);
-+		if (IS_ERR_OR_NULL(cdev->ast_mon[i++]))
-+			goto cleanup;
-+	}
-+
-+	return 0;
-+
-+cleanup:
-+	clean_cpu_monitoring(cdev);
-+	return -EINVAL;
-+}
-+#else
-+
- /**
-  * get_load() - get load for a cpu
-  * @cpufreq_cdev: struct cpufreq_cooling_device for the cpu
-@@ -184,6 +290,15 @@ static u32 get_dynamic_power(struct cpufreq_cooling_device *cpufreq_cdev,
- 	return (raw_cpu_power * cpufreq_cdev->last_load) / 100;
- }
- 
-+static void clean_cpu_monitoring(struct cpufreq_cooling_device *cpufreq_cdev)
-+{
-+}
-+
-+static int setup_cpu_monitoring(struct cpufreq_cooling_device *cpufreq_cdev)
-+{
-+	return 0;
-+}
-+
- /**
-  * cpufreq_get_requested_power() - get the current power
-  * @cdev:	&thermal_cooling_device pointer
-@@ -252,6 +367,7 @@ static int cpufreq_get_requested_power(struct thermal_cooling_device *cdev,
- 
- 	return 0;
- }
-+#endif
- 
- /**
-  * cpufreq_state2power() - convert a cpu cdev state to power consumed
-@@ -323,6 +439,20 @@ static int cpufreq_power2state(struct thermal_cooling_device *cdev,
- 	return 0;
- }
- 
-+static int cpufreq_change_governor(struct thermal_cooling_device *cdev,
-+				   bool governor_up)
-+{
-+	struct cpufreq_cooling_device *cpufreq_cdev = cdev->devdata;
-+	int ret = 0;
-+
-+	if (governor_up)
-+		ret = setup_cpu_monitoring(cpufreq_cdev);
-+	else
-+		clean_cpu_monitoring(cpufreq_cdev);
-+
-+	return ret;
-+}
-+
- static inline bool em_is_sane(struct cpufreq_cooling_device *cpufreq_cdev,
- 			      struct em_perf_domain *em) {
- 	struct cpufreq_policy *policy;
-@@ -566,6 +696,7 @@ __cpufreq_cooling_register(struct device_node *np,
- 		cooling_ops->get_requested_power = cpufreq_get_requested_power;
- 		cooling_ops->state2power = cpufreq_state2power;
- 		cooling_ops->power2state = cpufreq_power2state;
-+		cooling_ops->change_governor = cpufreq_change_governor;
- 	} else
- #endif
- 	if (policy->freq_table_sorted == CPUFREQ_TABLE_UNSORTED) {
-@@ -690,6 +821,7 @@ void cpufreq_cooling_unregister(struct thermal_cooling_device *cdev)
- 
- 	thermal_cooling_device_unregister(cdev);
- 	freq_qos_remove_request(&cpufreq_cdev->qos_req);
-+	clean_cpu_monitoring(cpufreq_cdev);
- 	free_idle_time(cpufreq_cdev);
- 	kfree(cpufreq_cdev);
- }
--- 
-2.17.1
+ tools/lib/perf/Build                     |  2 ++
+ tools/lib/perf/Makefile                  | 30 +++++++++++++++++++++++++-----
+ tools/lib/perf/evlist.c                  | 22 ++++++++++++++++++++++
+ tools/lib/perf/evsel.c                   | 33 +++++++++++++++++++++++++++++----
+ tools/lib/perf/include/internal/evlist.h |  2 ++
+ tools/lib/perf/include/internal/evsel.h  |  5 ++++-
+ tools/lib/perf/include/internal/tests.h  |  4 ++--
+ tools/lib/perf/include/perf/evlist.h     |  1 +
+ tools/lib/perf/libperf.map               |  1 +
+ tools/lib/perf/tests/Build               |  5 +++++
+ tools/lib/perf/tests/Makefile            | 40 ----------------------------------------
+ tools/lib/perf/tests/main.c              | 15 +++++++++++++++
+ tools/lib/perf/tests/test-cpumap.c       |  3 ++-
+ tools/lib/perf/tests/test-evlist.c       | 30 +++++++++++++++++++++++-------
+ tools/lib/perf/tests/test-evsel.c        |  3 ++-
+ tools/lib/perf/tests/test-threadmap.c    |  3 ++-
+ tools/lib/perf/tests/tests.h             | 10 ++++++++++
+ tools/perf/arch/x86/util/iostat.c        |  4 ++--
+ tools/perf/builtin-diff.c                |  4 ++--
+ tools/perf/builtin-record.c              |  4 ++--
+ tools/perf/builtin-report.c              |  8 ++++----
+ tools/perf/builtin-script.c              |  9 +++++----
+ tools/perf/builtin-stat.c                | 12 ++++++------
+ tools/perf/builtin-top.c                 | 10 +++++-----
+ tools/perf/tests/bpf.c                   |  2 +-
+ tools/perf/tests/evsel-roundtrip-name.c  |  6 +++---
+ tools/perf/tests/mmap-basic.c            |  8 ++++----
+ tools/perf/tests/parse-events.c          | 74 +++++++++++++++++++++++++++++++++++++-------------------------------------
+ tools/perf/tests/pfm.c                   |  4 ++--
+ tools/perf/ui/browsers/annotate.c        |  2 +-
+ tools/perf/util/annotate.c               |  8 ++++----
+ tools/perf/util/auxtrace.c               | 12 ++++++------
+ tools/perf/util/cgroup.c                 |  2 +-
+ tools/perf/util/evlist.c                 | 44 +++++++++++++-------------------------------
+ tools/perf/util/evlist.h                 |  2 --
+ tools/perf/util/evsel.c                  | 32 +++++++++++++++++++++++++-------
+ tools/perf/util/evsel.h                  | 14 ++++++++------
+ tools/perf/util/header.c                 | 18 +++++++++---------
+ tools/perf/util/metricgroup.c            | 22 +++++++++++-----------
+ tools/perf/util/parse-events.c           |  8 ++++----
+ tools/perf/util/pfm.c                    |  2 +-
+ tools/perf/util/python.c                 |  2 +-
+ tools/perf/util/record.c                 |  6 +++---
+ tools/perf/util/stat-shadow.c            |  2 +-
+ tools/perf/util/stat.c                   |  2 +-
+ tools/perf/util/stream.c                 |  2 +-
+ 46 files changed, 310 insertions(+), 224 deletions(-)
+ create mode 100644 tools/lib/perf/tests/Build
+ delete mode 100644 tools/lib/perf/tests/Makefile
+ create mode 100644 tools/lib/perf/tests/main.c
+ create mode 100644 tools/lib/perf/tests/tests.h
 
