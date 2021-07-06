@@ -2,200 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765133BDCA1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 20:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FD13BDCD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 20:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhGFSFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 14:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbhGFSFy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 14:05:54 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899B0C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 11:03:15 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id l21so235662oig.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 11:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dktWyNUxLR/AUElofB65u1HHbgT9UFWQxsLDt5+3GUI=;
-        b=ZIIokBg2jBdWhCL7gcGwLmSOV/agdcYoB8F8XpjDEzGo/EAdbxyLxT2KnOuf5bltwl
-         pm+fOZsYW3HUoIFT3TIvRq2nRbvDgFJ8xTd28wsNILl09Ma0QamzwXibQlK77/l+SPuM
-         Yen/KPmVu+16q5wchrC9LcRS3jJH6JO4ussxE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dktWyNUxLR/AUElofB65u1HHbgT9UFWQxsLDt5+3GUI=;
-        b=JAKBkH0MD+4qba84s4vvpCWFuwQhuJF2LyRKAcJ25RBO4smaNzF4F5WzeKUyIPiSH/
-         v8yi+Fs7bMTwkAjHUjZC2kxl1IhwI9C0Yy21zJEzZOET1S/OvHDYbMQzeXiQ1jmqstOE
-         yOZQ7gFCKXo+buFbv2YAJm3MmMoq67VWrMs+Vkr3OSpQm3f5jwbERDhitD8Mnfe818l1
-         l4WEIrXBGmNfa9fZjYnenRYV+PWyQYftYkU/ZIXDBj81rogTarcJ4vx1e4oKyEeql7wx
-         odI3y+CnYuTT+kRhPIAKdxiA79u5dK4j0yxfXDYf8/mWKc647E35Jl+RnTNPSl1po9qU
-         6Enw==
-X-Gm-Message-State: AOAM531+zhBpAplqYcrlaTeBWyeFU4wzciyLWtx5xRR6eUx4i6putZuX
-        GXGtTxmrXiLxVH2e8kPg/pU7FMQmcMn57jLQDzikeQ==
-X-Google-Smtp-Source: ABdhPJyoboKypUddRjaA6y8obByeJeHKz79Uj26M4/V8g6nwCtOZ07vtesXFU4/AmECSu0n8jYcSgN9fkXKjIXlafdU=
-X-Received: by 2002:aca:eb43:: with SMTP id j64mr1370482oih.101.1625594594921;
- Tue, 06 Jul 2021 11:03:14 -0700 (PDT)
+        id S231205AbhGFSQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 14:16:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229954AbhGFSQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 14:16:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25A7461C5B;
+        Tue,  6 Jul 2021 18:13:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625595208;
+        bh=bHnAYckIVuxZO/9EYFsl7HYVNOh8BlvdmxqH2jLYj0w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wZTv+P/O3sFBTABPV/Ms+tyI3IwjDMuI7vshyy+Ueww8rIBnsrifIQ0R8hzB45qCC
+         J7J0kCybSxSpAk2NEbe7NNI56603ce7K82mjHLewVn/bMELGQZl1+eBAvRmOIPXUO/
+         OYwAbBYVlOXFP7P5KJ406DlnBUY7idEGPVrZ714k=
+Date:   Tue, 6 Jul 2021 20:13:24 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, balbi@kernel.org,
+        robh+dt@kernel.org, frowand.list@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        jackp@codeaurora.org, fntoth@gmail.com
+Subject: Re: [PATCH v12 3/6] usb: dwc3: Resize TX FIFOs to meet EP bursting
+ requirements
+Message-ID: <YOSdRKTy3+CdV/UF@kroah.com>
+References: <1625218655-14180-1-git-send-email-wcheng@codeaurora.org>
+ <1625218655-14180-4-git-send-email-wcheng@codeaurora.org>
 MIME-Version: 1.0
-References: <20210705130314.11519-1-ogabbay@kernel.org> <YOQXBWpo3whVjOyh@phenom.ffwll.local>
- <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
- <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
- <20210706142357.GN4604@ziepe.ca> <CAKMK7uELNzwUe+hhVWRg=Pk5Wt_vOOX922H48Kd6dTyO2PeBbg@mail.gmail.com>
- <20210706152542.GP4604@ziepe.ca> <CAKMK7uH7Ar6+uAOU_Sj-mf89V9WCru+66CV5bO9h-WAAv7Mgdg@mail.gmail.com>
- <20210706162953.GQ4604@ziepe.ca> <CAKMK7uGXUgjyjch57J3UnC7SA3-4g87Ft7tLjj9fFkgyKkKdrg@mail.gmail.com>
-In-Reply-To: <CAKMK7uGXUgjyjch57J3UnC7SA3-4g87Ft7tLjj9fFkgyKkKdrg@mail.gmail.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Tue, 6 Jul 2021 20:03:03 +0200
-Message-ID: <CAKMK7uHA7otRWTcMBDG4CNxNCs9GriOdGvWad4Fx-Y0teJuLxA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1625218655-14180-4-git-send-email-wcheng@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I should stop typing and prep dinner, but I found some too hilarious
-typos below.
+On Fri, Jul 02, 2021 at 02:37:32AM -0700, Wesley Cheng wrote:
+> Some devices have USB compositions which may require multiple endpoints
+> that support EP bursting.  HW defined TX FIFO sizes may not always be
+> sufficient for these compositions.  By utilizing flexible TX FIFO
+> allocation, this allows for endpoints to request the required FIFO depth to
+> achieve higher bandwidth.  With some higher bMaxBurst configurations, using
+> a larger TX FIFO size results in better TX throughput.
+> 
+> By introducing the check_config() callback, the resizing logic can fetch
+> the maximum number of endpoints used in the USB composition (can contain
+> multiple configurations), which helps ensure that the resizing logic can
+> fulfill the configuration(s), or return an error to the gadget layer
+> otherwise during bind time.
+> 
+> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> ---
+>  drivers/usb/dwc3/core.c   |   9 ++
+>  drivers/usb/dwc3/core.h   |  15 ++++
+>  drivers/usb/dwc3/ep0.c    |   2 +
+>  drivers/usb/dwc3/gadget.c | 221 ++++++++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 247 insertions(+)
+> 
+> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+> index e0a8e79..a7bcdb9d 100644
+> --- a/drivers/usb/dwc3/core.c
+> +++ b/drivers/usb/dwc3/core.c
+> @@ -1267,6 +1267,7 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+>  	u8			rx_max_burst_prd;
+>  	u8			tx_thr_num_pkt_prd;
+>  	u8			tx_max_burst_prd;
+> +	u8			tx_fifo_resize_max_num;
+>  	const char		*usb_psy_name;
+>  	int			ret;
+>  
+> @@ -1282,6 +1283,8 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+>  	 */
+>  	hird_threshold = 12;
+>  
+> +	tx_fifo_resize_max_num = 6;
+> +
 
-On Tue, Jul 6, 2021 at 7:35 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
->
-> On Tue, Jul 6, 2021 at 6:29 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Tue, Jul 06, 2021 at 05:49:01PM +0200, Daniel Vetter wrote:
-> >
-> > > The other thing to keep in mind is that one of these drivers supports
-> > > 25 years of product generations, and the other one doesn't.
-> >
-> > Sure, but that is the point, isn't it? To have an actually useful
-> > thing you need all of this mess
-> >
-> > > > My argument is that an in-tree open kernel driver is a big help to
-> > > > reverse engineering an open userspace. Having the vendors
-> > > > collaboration to build that monstrous thing can only help the end goal
-> > > > of an end to end open stack.
-> > >
-> > > Not sure where this got lost, but we're totally fine with vendors
-> > > using the upstream driver together with their closed stack. And most
-> > > of the drivers we do have in upstream are actually, at least in parts,
-> > > supported by the vendor. E.g. if you'd have looked the drm/arm driver
-> > > you picked is actually 100% written by ARM engineers. So kinda
-> > > unfitting example.
-> >
-> > So the argument with Habana really boils down to how much do they need
-> > to show in the open source space to get a kernel driver? You want to
-> > see the ISA or compiler at least?
->
-> Yup. We dont care about any of the fancy pieces you build on top, nor
-> does the compiler need to be the optimizing one. Just something that's
-> good enough to drive the hw in some demons to see how it works and all
+No comment as to why 6 was picked, like the other defaults in this
+function?
 
-s/demons/demos/ but hw tends to be funky enough that either fits :-)
-
-> that. Generally that's also not that hard to reverse engineer, if
-> someone is bored enough, the real fancy stuff tends to be in how you
-> optimize the generated code. And make it fit into the higher levels
-> properly.
->
-> > That at least doesn't seem "extreme" to me.
-> >
-> > > > For instance a vendor with an in-tree driver has a strong incentive to
-> > > > sort out their FW licensing issues so it can be redistributed.
-> > >
-> > > Nvidia has been claiming to try and sort out the FW problem for years.
-> > > They even managed to release a few things, but I think the last one is
-> > > 2-3 years late now. Partially the reason is that there don't have a
-> > > stable api between the firmware and driver, it's all internal from the
-> > > same source tree, and they don't really want to change that.
-> >
-> > Right, companies have no incentive to work in a sane way if they have
-> > their own parallel world. I think drawing them part by part into the
-> > standard open workflows and expectations is actually helpful to
-> > everyone.
->
-> Well we do try to get them on board part-by-part generally starting
-> with the kernel and ending with a proper compiler instead of the usual
-> llvm hack job, but for whatever reasons they really like their
-> in-house stuff, see below for what I mean.
->
-> > > > > I don't think the facts on the ground support your claim here, aside
-> > > > > from the practical problem that nvidia is unwilling to even create an
-> > > > > open driver to begin with. So there isn't anything to merge.
-> > > >
-> > > > The internet tells me there is nvgpu, it doesn't seem to have helped.
-> > >
-> > > Not sure which one you mean, but every once in a while they open up a
-> > > few headers, or a few programming specs, or a small driver somewhere
-> > > for a very specific thing, and then it dies again or gets obfuscated
-> > > for the next platform, or just never updated. I've never seen anything
-> > > that comes remotely to something complete, aside from tegra socs,
-> > > which are fully supported in upstream afaik.
-> >
-> > I understand nvgpu is the tegra driver that people actualy
-> > use. nouveau may have good tegra support but is it used in any actual
-> > commercial product?
->
-> I think it was almost the case. Afaik they still have their internal
-> userspace stack working on top of nvidia, at least last year someone
-> fixed up a bunch of issues in the tegra+nouveau combo to enable format
-> modifiers properly across the board. But also nvidia is never going to
-> sell you that as the officially supported thing, unless your ask comes
-> back with enormous amounts of sold hardware.
->
-> And it's not just nvidia, it's pretty much everyone. Like a soc
-> company I don't want to know started collaborating with upstream and
-
-s/know/name/ I do know them unfortunately quite well ...
-
-Cheers, Daniel
-
-> the reverse-engineered mesa team on a kernel driver, seems to work
-> pretty well for current hardware. But for the next generation they
-> decided it's going to be again only their in-house tree that
-> completele ignores drivers/gpu/drm, and also tosses all the
-> foundational work they helped build on the userspace side. And this is
-> consistent across all companies, over the last 20 years I know of
-> (often non-public) stories across every single company where they
-> decided that all the time invested into community/upstream
-> collaboration isn't useful anymore, we go all vendor solo for the next
-> one.
->
-> Most of those you luckily don't hear about anymore, all it results in
-> the upstream driver being 1-2 years late or so. But even the good ones
-> where we collaborate well can't seem to help themselves and want to
-> throw it all away every few years.
-> -Daniel
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+Why was 6 picked?
 
 
+>  	dwc->maximum_speed = usb_get_maximum_speed(dev);
+>  	dwc->max_ssp_rate = usb_get_maximum_ssp_rate(dev);
+>  	dwc->dr_mode = usb_get_dr_mode(dev);
+> @@ -1325,6 +1328,10 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+>  				&tx_thr_num_pkt_prd);
+>  	device_property_read_u8(dev, "snps,tx-max-burst-prd",
+>  				&tx_max_burst_prd);
+> +	dwc->do_fifo_resize = device_property_read_bool(dev,
+> +							"tx-fifo-resize");
+> +	device_property_read_u8(dev, "tx-fifo-max-num",
+> +				&tx_fifo_resize_max_num);
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+So you overwrite the "max" with whatever is given to you?  What if
+tx-fifo-resize is not enabled?
+
+thanks,
+
+greg k-h
