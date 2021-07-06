@@ -2,247 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9F73BC666
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 08:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F147B3BC669
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 08:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhGFGV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 02:21:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37805 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230249AbhGFGVZ (ORCPT
+        id S230201AbhGFGWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 02:22:51 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:37952 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230138AbhGFGWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 02:21:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625552326;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qHjYf26nDQF8IxrBuohCHfhS/U3Bnml2w07ftwA7X+w=;
-        b=CaYmMvDYZwKPPIRq8fpqNNVBynOop5X4cX2pF+sahiGj4KO0fuQvg5zVqWsOVeorOwhfZ5
-        1LZa8ek94dOGsvFNh21gEDdVpzygARHerzBLsTIXl8mLKIpJywq9uvLuO8OHSbnjp0hTx3
-        hGQBHKvygLm5mFdMQToL+mfDMPpBFPM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-Eo_T1f37OX6II2fr5ElcwA-1; Tue, 06 Jul 2021 02:18:45 -0400
-X-MC-Unique: Eo_T1f37OX6II2fr5ElcwA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 73ECD100CEC0;
-        Tue,  6 Jul 2021 06:18:44 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-119.bne.redhat.com [10.64.54.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7399060583;
-        Tue,  6 Jul 2021 06:18:41 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, shan.gavin@gmail.com, chuhu@redhat.com
-Subject: [PATCH 12/12] mm/debug_vm_pgtable: Fix corrupted page flag
-Date:   Tue,  6 Jul 2021 14:17:48 +0800
-Message-Id: <20210706061748.161258-13-gshan@redhat.com>
-In-Reply-To: <20210706061748.161258-1-gshan@redhat.com>
-References: <20210706061748.161258-1-gshan@redhat.com>
+        Tue, 6 Jul 2021 02:22:49 -0400
+X-UUID: 1109c59dd0d54c58ac84cd727afea75b-20210706
+X-UUID: 1109c59dd0d54c58ac84cd727afea75b-20210706
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1120509484; Tue, 06 Jul 2021 14:20:04 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 6 Jul 2021 14:20:04 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 6 Jul 2021 14:20:04 +0800
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [v13 00/21] Mediatek MT8192 clock support
+Date:   Tue, 6 Jul 2021 14:18:59 +0800
+Message-ID: <20210706061920.16013-1-chun-jie.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In page table entry modifying tests, set_{pud, pmd, pte}_at() are
-used to populate the page table entries. On ARM64, PG_arch_1 is
-set to the target page flag if execution permission is given. The
-page flag is kept when the page is free'd to buddy's free area
-list. However, it will trigger page checking failure when it's
-pulled from the buddy's free area list, as the following warning
-messages indicate.
+this patch series is based on 5.13-rc3.
 
-   BUG: Bad page state in process memhog  pfn:08000
-   page:0000000015c0a628 refcount:0 mapcount:0 \
-        mapping:0000000000000000 index:0x1 pfn:0x8000
-   flags: 0x7ffff8000000800(arch_1|node=0|zone=0|lastcpupid=0xfffff)
-   raw: 07ffff8000000800 dead000000000100 dead000000000122 0000000000000000
-   raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
-   page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
+changes since v12:
+-  move audsys binding to "mediatek,audsys.txt" (patch 3)
 
-This fixes the issue by clearing PG_arch_1 through flush_dcache_page(),
-right after set_{pud, pmd, pte}_at() is called.
+changes since v11:
+- move mmsys binding to "mediatek,mmsys.txt" (patch 2)
+- fix new DT binding error (patch 1)
 
-Signed-off-by: Gavin Shan <gshan@redhat.com>
----
- mm/debug_vm_pgtable.c | 36 ++++++++++++++++++++++++++++++++----
- 1 file changed, 32 insertions(+), 4 deletions(-)
+change since v10:
+- refine binding document in patch 1 (drop the 'oneOf')
 
-diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-index 1fd6d73d2152..de6f99382b4b 100644
---- a/mm/debug_vm_pgtable.c
-+++ b/mm/debug_vm_pgtable.c
-@@ -29,6 +29,8 @@
- #include <linux/start_kernel.h>
- #include <linux/sched/mm.h>
- #include <linux/io.h>
-+
-+#include <asm/cacheflush.h>
- #include <asm/pgalloc.h>
- #include <asm/tlbflush.h>
- 
-@@ -110,6 +112,7 @@ static void __init pte_basic_tests(struct vm_pgtable_debug *debug, int idx)
- 
- static void __init pte_advanced_tests(struct vm_pgtable_debug *debug)
- {
-+	struct page *page;
- 	pte_t pte;
- 
- 	/*
-@@ -119,13 +122,17 @@ static void __init pte_advanced_tests(struct vm_pgtable_debug *debug)
- 	 */
- 
- 	pr_debug("Validating PTE advanced\n");
--	if (debug->pte_pfn == ULONG_MAX) {
-+
-+	page = (debug->pte_pfn != ULONG_MAX) ?
-+	       pfn_to_page(debug->pte_pfn) : NULL;
-+	if (!page) {
- 		pr_debug("%s: Skipped\n", __func__);
- 		return;
- 	}
- 
- 	pte = pfn_pte(debug->pte_pfn, debug->page_prot);
- 	set_pte_at(debug->mm, debug->vaddr, debug->ptep, pte);
-+	flush_dcache_page(page);
- 	ptep_set_wrprotect(debug->mm, debug->vaddr, debug->ptep);
- 	pte = ptep_get(debug->ptep);
- 	WARN_ON(pte_write(pte));
-@@ -137,6 +144,7 @@ static void __init pte_advanced_tests(struct vm_pgtable_debug *debug)
- 	pte = pte_wrprotect(pte);
- 	pte = pte_mkclean(pte);
- 	set_pte_at(debug->mm, debug->vaddr, debug->ptep, pte);
-+	flush_dcache_page(page);
- 	pte = pte_mkwrite(pte);
- 	pte = pte_mkdirty(pte);
- 	ptep_set_access_flags(debug->vma, debug->vaddr, debug->ptep, pte, 1);
-@@ -149,6 +157,7 @@ static void __init pte_advanced_tests(struct vm_pgtable_debug *debug)
- 	pte = pfn_pte(debug->pte_pfn, debug->page_prot);
- 	pte = pte_mkyoung(pte);
- 	set_pte_at(debug->mm, debug->vaddr, debug->ptep, pte);
-+	flush_dcache_page(page);
- 	ptep_test_and_clear_young(debug->vma, debug->vaddr, debug->ptep);
- 	pte = ptep_get(debug->ptep);
- 	WARN_ON(pte_young(pte));
-@@ -207,6 +216,7 @@ static void __init pmd_basic_tests(struct vm_pgtable_debug *debug, int idx)
- 
- static void __init pmd_advanced_tests(struct vm_pgtable_debug *debug)
- {
-+	struct page *page;
- 	pmd_t pmd;
- 	unsigned long vaddr = (debug->vaddr & HPAGE_PMD_MASK);
- 
-@@ -214,7 +224,10 @@ static void __init pmd_advanced_tests(struct vm_pgtable_debug *debug)
- 		return;
- 
- 	pr_debug("Validating PMD advanced\n");
--	if (debug->pmd_pfn == ULONG_MAX) {
-+
-+	page = (debug->pmd_pfn != ULONG_MAX) ?
-+	       pfn_to_page(debug->pmd_pfn) : NULL;
-+	if (!page) {
- 		pr_debug("%s: Skipped\n", __func__);
- 		return;
- 	}
-@@ -223,6 +236,7 @@ static void __init pmd_advanced_tests(struct vm_pgtable_debug *debug)
- 
- 	pmd = pfn_pmd(debug->pmd_pfn, debug->page_prot);
- 	set_pmd_at(debug->mm, vaddr, debug->pmdp, pmd);
-+	flush_dcache_page(page);
- 	pmdp_set_wrprotect(debug->mm, vaddr, debug->pmdp);
- 	pmd = READ_ONCE(*(debug->pmdp));
- 	WARN_ON(pmd_write(pmd));
-@@ -234,6 +248,7 @@ static void __init pmd_advanced_tests(struct vm_pgtable_debug *debug)
- 	pmd = pmd_wrprotect(pmd);
- 	pmd = pmd_mkclean(pmd);
- 	set_pmd_at(debug->mm, vaddr, debug->pmdp, pmd);
-+	flush_dcache_page(page);
- 	pmd = pmd_mkwrite(pmd);
- 	pmd = pmd_mkdirty(pmd);
- 	pmdp_set_access_flags(debug->vma, vaddr, debug->pmdp, pmd, 1);
-@@ -246,6 +261,7 @@ static void __init pmd_advanced_tests(struct vm_pgtable_debug *debug)
- 	pmd = pmd_mkhuge(pfn_pmd(debug->pmd_pfn, debug->page_prot));
- 	pmd = pmd_mkyoung(pmd);
- 	set_pmd_at(debug->mm, vaddr, debug->pmdp, pmd);
-+	flush_dcache_page(page);
- 	pmdp_test_and_clear_young(debug->vma, vaddr, debug->pmdp);
- 	pmd = READ_ONCE(*(debug->pmdp));
- 	WARN_ON(pmd_young(pmd));
-@@ -332,6 +348,7 @@ static void __init pud_basic_tests(struct vm_pgtable_debug *debug, int idx)
- 
- static void __init pud_advanced_tests(struct vm_pgtable_debug *debug)
- {
-+	struct page *page;
- 	unsigned long vaddr = (debug->vaddr & HPAGE_PUD_MASK);
- 	pud_t pud;
- 
-@@ -339,13 +356,17 @@ static void __init pud_advanced_tests(struct vm_pgtable_debug *debug)
- 		return;
- 
- 	pr_debug("Validating PUD advanced\n");
--	if (debug->pud_pfn == ULONG_MAX) {
-+
-+	page = (debug->pud_pfn != ULONG_MAX) ?
-+	       pfn_to_page(debug->pud_pfn) : NULL;
-+	if (!page) {
- 		pr_debug("%s: Skipped\n", __func__);
- 		return;
- 	}
- 
- 	pud = pfn_pud(debug->pud_pfn, debug->page_prot);
- 	set_pud_at(debug->mm, vaddr, debug->pudp, pud);
-+	flush_dcache_page(page);
- 	pudp_set_wrprotect(debug->mm, vaddr, debug->pudp);
- 	pud = READ_ONCE(*(debug->pudp));
- 	WARN_ON(pud_write(pud));
-@@ -359,6 +380,7 @@ static void __init pud_advanced_tests(struct vm_pgtable_debug *debug)
- 	pud = pud_wrprotect(pud);
- 	pud = pud_mkclean(pud);
- 	set_pud_at(debug->mm, vaddr, debug->pudp, pud);
-+	flush_dcache_page(page);
- 	pud = pud_mkwrite(pud);
- 	pud = pud_mkdirty(pud);
- 	pudp_set_access_flags(debug->vma, vaddr, debug->pudp, pud, 1);
-@@ -374,6 +396,7 @@ static void __init pud_advanced_tests(struct vm_pgtable_debug *debug)
- 	pud = pfn_pud(debug->pud_pfn, debug->page_prot);
- 	pud = pud_mkyoung(pud);
- 	set_pud_at(debug->mm, vaddr, debug->pudp, pud);
-+	flush_dcache_page(page);
- 	pudp_test_and_clear_young(debug->vma, vaddr, debug->pudp);
- 	pud = READ_ONCE(*(debug->pudp));
- 	WARN_ON(pud_young(pud));
-@@ -588,10 +611,14 @@ static void __init pgd_populate_tests(struct vm_pgtable_debug *debug) { }
- 
- static void __init pte_clear_tests(struct vm_pgtable_debug *debug)
- {
-+	struct page *page;
- 	pte_t pte;
- 
- 	pr_debug("Validating PTE clear\n");
--	if (debug->pte_pfn == ULONG_MAX) {
-+
-+	page = (debug->pte_pfn != ULONG_MAX) ?
-+	       pfn_to_page(debug->pte_pfn) : NULL;
-+	if (!page) {
- 		pr_debug("%s: Skipped\n", __func__);
- 		return;
- 	}
-@@ -601,6 +628,7 @@ static void __init pte_clear_tests(struct vm_pgtable_debug *debug)
- 	pte = __pte(pte_val(pte) | RANDOM_ORVALUE);
- #endif
- 	set_pte_at(debug->mm, debug->vaddr, debug->ptep, pte);
-+	flush_dcache_page(page);
- 	barrier();
- 	pte_clear(debug->mm, debug->vaddr, debug->ptep);
- 	pte = ptep_get(debug->ptep);
+change since v9:
+- combine similiar dt-binding file for system and functional clock
+- change api of getting regmap if it's not a syscon node (patch 3)
+
+change since v8:
+- fix mm dt-binding file conflict.
+
+reason for sending v8:
+- due to this patch series including dt-binding file, so add
+device tree reviewer to mail list, no change between [1] and v8.
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=454523
+
+reason for resending v7:
+- add review history from series below
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=405295
+
+change since v6:
+- update from series below
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=405295
+- fix DT bindings fail
+- fix checkpatch warning
+- update mux ops without gate control
+
+change since v5:
+- remove unused clocks by rolling Tinghan's patches[1][2] into series
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=398781
+[2] https://patchwork.kernel.org/project/linux-mediatek/list/?series=405143
+- remove dts related patches from series
+
+change since v4:
+- merge some subsystem into same driver
+- add a generic probe function to reduce duplicated code
+
+changes since v3:
+- add critical clocks
+- split large patches into small ones
+
+changes since v2:
+- update and split dt-binding documents by functionalities
+- add error checking in probe() function
+- fix incorrect clock relation and add critical clocks
+- update license identifier and minor fix of coding style
+
+changes since v1:
+- fix asymmetrical control of PLL
+- have en_mask used as divider enable mask on all MediaTek SoC
+
+Chun-Jie Chen (21):
+  dt-bindings: ARM: Mediatek: Add new document bindings of MT8192 clock
+  dt-bindings: ARM: Mediatek: Add mmsys document binding for MT8192
+  dt-bindings: ARM: Mediatek: Add audsys document binding for MT8192
+  clk: mediatek: Add dt-bindings of MT8192 clocks
+  clk: mediatek: Get regmap without syscon compatible check
+  clk: mediatek: Fix asymmetrical PLL enable and disable control
+  clk: mediatek: Add configurable enable control to mtk_pll_data
+  clk: mediatek: Add mtk_clk_simple_probe() to simplify clock providers
+  clk: mediatek: Add MT8192 basic clocks support
+  clk: mediatek: Add MT8192 audio clock support
+  clk: mediatek: Add MT8192 camsys clock support
+  clk: mediatek: Add MT8192 imgsys clock support
+  clk: mediatek: Add MT8192 imp i2c wrapper clock support
+  clk: mediatek: Add MT8192 ipesys clock support
+  clk: mediatek: Add MT8192 mdpsys clock support
+  clk: mediatek: Add MT8192 mfgcfg clock support
+  clk: mediatek: Add MT8192 mmsys clock support
+  clk: mediatek: Add MT8192 msdc clock support
+  clk: mediatek: Add MT8192 scp adsp clock support
+  clk: mediatek: Add MT8192 vdecsys clock support
+  clk: mediatek: Add MT8192 vencsys clock support
+
+ .../bindings/arm/mediatek/mediatek,audsys.txt |    1 +
+ .../bindings/arm/mediatek/mediatek,mmsys.txt  |    1 +
+ .../arm/mediatek/mediatek,mt8192-clock.yaml   |  199 +++
+ .../mediatek/mediatek,mt8192-sys-clock.yaml   |   65 +
+ drivers/clk/mediatek/Kconfig                  |   80 +
+ drivers/clk/mediatek/Makefile                 |   13 +
+ drivers/clk/mediatek/clk-cpumux.c             |    2 +-
+ drivers/clk/mediatek/clk-mt8192-aud.c         |  118 ++
+ drivers/clk/mediatek/clk-mt8192-cam.c         |  107 ++
+ drivers/clk/mediatek/clk-mt8192-img.c         |   70 +
+ .../clk/mediatek/clk-mt8192-imp_iic_wrap.c    |  119 ++
+ drivers/clk/mediatek/clk-mt8192-ipe.c         |   57 +
+ drivers/clk/mediatek/clk-mt8192-mdp.c         |   82 +
+ drivers/clk/mediatek/clk-mt8192-mfg.c         |   50 +
+ drivers/clk/mediatek/clk-mt8192-mm.c          |  108 ++
+ drivers/clk/mediatek/clk-mt8192-msdc.c        |   85 ++
+ drivers/clk/mediatek/clk-mt8192-scp_adsp.c    |   50 +
+ drivers/clk/mediatek/clk-mt8192-vdec.c        |   94 ++
+ drivers/clk/mediatek/clk-mt8192-venc.c        |   53 +
+ drivers/clk/mediatek/clk-mt8192.c             | 1326 +++++++++++++++++
+ drivers/clk/mediatek/clk-mtk.c                |   25 +-
+ drivers/clk/mediatek/clk-mtk.h                |   28 +-
+ drivers/clk/mediatek/clk-mux.c                |   11 +-
+ drivers/clk/mediatek/clk-mux.h                |   18 +-
+ drivers/clk/mediatek/clk-pll.c                |   31 +-
+ drivers/clk/mediatek/reset.c                  |    2 +-
+ include/dt-bindings/clock/mt8192-clk.h        |  585 ++++++++
+ 27 files changed, 3356 insertions(+), 24 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.yaml
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-aud.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-cam.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-img.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-imp_iic_wrap.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-ipe.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-mdp.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-mfg.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-mm.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-msdc.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-scp_adsp.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-vdec.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-venc.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192.c
+ create mode 100644 include/dt-bindings/clock/mt8192-clk.h
+
 -- 
-2.23.0
+2.18.0
 
