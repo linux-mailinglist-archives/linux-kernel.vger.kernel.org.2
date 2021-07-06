@@ -2,74 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5573BC7F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F543BC809
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhGFIk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 04:40:28 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:10310 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbhGFIk1 (ORCPT
+        id S230521AbhGFInv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 04:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230491AbhGFInt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 04:40:27 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GJwn34Tnnz76SN;
-        Tue,  6 Jul 2021 16:33:27 +0800 (CST)
-Received: from dggpeml500018.china.huawei.com (7.185.36.186) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 6 Jul 2021 16:37:46 +0800
-Received: from huawei.com (10.67.174.153) by dggpeml500018.china.huawei.com
- (7.185.36.186) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 6 Jul 2021
- 16:37:45 +0800
-From:   Zhang Qiao <zhangqiao22@huawei.com>
-To:     <mingo@redhat.com>, <peterz@infradead.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>
-CC:     <pjt@google.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] sched: Dec __cfs_bandwith_used in destroy_cfs_bandwidth()
-Date:   Tue, 6 Jul 2021 16:38:20 +0800
-Message-ID: <20210706083820.41358-1-zhangqiao22@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
+        Tue, 6 Jul 2021 04:43:49 -0400
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09181C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 01:41:11 -0700 (PDT)
+Received: by mail-vk1-xa2d.google.com with SMTP id k16so4290358vke.10
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 01:41:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Xs0RpwlA6WTOw/ERwYypx9u87kguf+u5/j03m73M4fY=;
+        b=AVHbPaqPIkfWQ0MNrI11bmb4iF+duXq2YIl+bBKksqUlw2O8NylYmSuVo8mB1KFVEu
+         Ux3KEr7ecU2HPCsGfE7mGIQayqxERDuK3zy3Ki4l09LqdB7T/nEq7ccY+M/hwNhNfPE/
+         IvqdDL/dt1kLE7Y4bTLGb9DtmG/sN8G0HI7mHIyNMbOKzM+WJxql3MaAWfOGOXjsYGP2
+         uOeucYzyhYmBJL5v0ViY/i10gdtCAG6cm6/CnzaC6NlRcpb6blXPnZivhYUOEKV+TNRF
+         kwY79RpD7LaeeuNiI63r2sjC2c4km1VKbGEG+m9iG6WOPNqRYWDSCizm3Xy1AXSuzlU3
+         dNnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Xs0RpwlA6WTOw/ERwYypx9u87kguf+u5/j03m73M4fY=;
+        b=B/Ur2MA3wynl1xwAevf907/PGTGpavf2xuaUDLX2oKscL+ULiBrGSIwB477iz6Kp2m
+         crO7dH2EzfUhzz9/xMllnR/itiIzGTtpxozvvWuHEDQo9533brYLoTRXUpgIZf1j06wh
+         gzHMe4wJBPGz3MbspSmRuPnTSVsE/3bIGg7ZRAQbNs4CJJdxu2HrstAuG+naLbVxX2VQ
+         Bsj1qCLVi2y8wV8ceeOyB3yDvnfWkeQ4Gab/RV5xJI091VZuvEhsCotoZiuV9XTXzcG1
+         b6O3h5YjRTNR+6ApNzsEDVmYZTQiiVCA+KPmSmCefT/FXoTjzCOlpxz73MI4odfpVbdT
+         wZkw==
+X-Gm-Message-State: AOAM532Ka1URC7yBHsRVNM1RhHBSGV8yqaR6WRBfIeA2ouiAvV4wkUJ3
+        BdEGV/zactcEEG3oHijz9PZvif+50Mpnf1st1eiRSg==
+X-Google-Smtp-Source: ABdhPJx2NBe+23V1wjwA/oLVG448+9TGvolKnkDzjzwuacqtXPjo2IcohGMq7A1EkoyByjeQ3UdgEu2KTI4qwqUVlmM=
+X-Received: by 2002:a1f:cf47:: with SMTP id f68mr12267032vkg.7.1625560870031;
+ Tue, 06 Jul 2021 01:41:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.153]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500018.china.huawei.com (7.185.36.186)
-X-CFilter-Loop: Reflected
+References: <CWXP265MB268049D9AB181062DA7F6DDBC4009@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+ <CWXP265MB26807AC3C130772D789D0AABC41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+In-Reply-To: <CWXP265MB26807AC3C130772D789D0AABC41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 6 Jul 2021 10:40:33 +0200
+Message-ID: <CAPDyKFq44ZuXXUDQV34NSW-ixB9GAZfDx+dx-Kb8O7=LQ1TSHQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: block: Differentiate busy and non-TRAN state
+To:     =?UTF-8?Q?Christian_L=C3=B6hle?= <CLoehle@hyperstone.com>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Avri Altman <Avri.Altman@wdc.com>,
+        Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__cfs_bandwith_uesd is a static_key to control cfs bandwidth
-feature. When adding a cfs_bandwidth group, we need increase
-the key, and decrease it when removing. But currently when we
-remove a cfs_bandwidth group, we don't decrease the key and
-this switch will always be on even if there is no cfs bandwidth
-group in the system.
-Therefore, when removing a cfs bandwidth group, we decrease
-__cfs_bandwith_used by calling cfs_bandwidth_usage_dec().
+On Tue, 6 Jul 2021 at 10:20, Christian L=C3=B6hle <CLoehle@hyperstone.com> =
+wrote:
+>
+> Prevent race condition with ioctl commands
+>
+> Wait for both, a card no longer signalling busy
+> and it being returned back to TRAN state.
+> A card not signaling busy does not mean it is
+> ready to accept new regular commands.
+> Instead for a command to be done it should not only
+> no longer signal busy but also return back to TRAN state,
+> at least for commands that eventually transition back
+> to TRAN. Otherwise the next ioctl command may be rejected
+> as the card is still in PROG state after the previous command.
+>
+> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+> ---
+>  drivers/mmc/core/block.c | 84 +++++++++++++++++++++++++++++++++++-----
+>  include/linux/mmc/mmc.h  |  9 +++--
+>  2 files changed, 80 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 88f4c215caa6..dda10ccee37f 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -411,7 +411,32 @@ static int mmc_blk_ioctl_copy_to_user(struct mmc_ioc=
+_cmd __user *ic_ptr,
+>         return 0;
+>  }
+>
+> -static int card_busy_detect(struct mmc_card *card, unsigned int timeout_=
+ms,
+> +static int is_return_to_tran_cmd(struct mmc_command *cmd)
+> +{
+> +       /*
+> +        * Cards will never return to TRAN after completing
+> +        * identification commands or MMC_SEND_STATUS if they are not sel=
+ected.
+> +        */
+> +       switch (cmd->opcode) {
+> +       case MMC_GO_IDLE_STATE:
+> +       case MMC_SEND_OP_COND:
+> +       case MMC_ALL_SEND_CID:
+> +       case MMC_SET_RELATIVE_ADDR:
+> +       case MMC_SET_DSR:
+> +       case MMC_SLEEP_AWAKE:
+> +       case MMC_SELECT_CARD:
+> +       case MMC_SEND_CSD:
+> +       case MMC_SEND_CID:
+> +       case MMC_SEND_STATUS:
+> +       case MMC_GO_INACTIVE_STATE:
+> +       case MMC_APP_CMD:
+> +               return false;
+> +       default:
+> +               return true;
+> +       }
+> +}
 
-Fixes: 56f570e512ee ("sched: use jump labels to reduce overhead when bandwidth control is inactive")
-Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
----
- kernel/sched/fair.c | 3 +++
- 1 file changed, 3 insertions(+)
+What exactly are you trying to do with the user space program through
+the mmc ioctl with all these commands? The mmc ioctl interface is not
+designed to be used like that.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 103e31e53e2b..857e8908b7f7 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5344,6 +5344,9 @@ static void destroy_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
- 	if (!cfs_b->throttled_cfs_rq.next)
- 		return;
- 
-+	if (cfs_b->quota != RUNTIME_INF)
-+		cfs_bandwidth_usage_dec();
-+
- 	hrtimer_cancel(&cfs_b->period_timer);
- 	hrtimer_cancel(&cfs_b->slack_timer);
- }
--- 
-2.18.0.huawei.25
+In principle, it looks like we should support a complete
+re-initialization of the card. I am sorry, but no thanks! This doesn't
+work, but more importantly, this should be managed solely by the
+kernel, in my opinion.
 
+> +
+> +static int card_poll_until_tran(struct mmc_card *card, unsigned int time=
+out_ms,
+>                             u32 *resp_errs)
+>  {
+>         unsigned long timeout =3D jiffies + msecs_to_jiffies(timeout_ms);
+> @@ -433,8 +458,7 @@ static int card_busy_detect(struct mmc_card *card, un=
+signed int timeout_ms,
+>                         *resp_errs |=3D status;
+>
+>                 /*
+> -                * Timeout if the device never becomes ready for data and=
+ never
+> -                * leaves the program state.
+> +                * Timeout if the device never returns to TRAN state.
+>                  */
+>                 if (done) {
+>                         dev_err(mmc_dev(card->host),
+> @@ -442,6 +466,41 @@ static int card_busy_detect(struct mmc_card *card, u=
+nsigned int timeout_ms,
+>                                  __func__, status);
+>                         return -ETIMEDOUT;
+>                 }
+> +       } while (R1_CURRENT_STATE(status) !=3D R1_STATE_TRAN);
+> +
+> +       return err;
+> +}
+> +
+> +static int card_busy_detect(struct mmc_card *card, unsigned int timeout_=
+ms,
+> +                           u32 *resp_errs)
+> +{
+> +       unsigned long timeout =3D jiffies + msecs_to_jiffies(timeout_ms);
+> +       int err =3D 0;
+> +       u32 status;
+> +
+> +       do {
+> +               bool done =3D time_after(jiffies, timeout);
+> +
+> +               err =3D __mmc_send_status(card, &status, 5);
+> +               if (err) {
+> +                       dev_err(mmc_dev(card->host),
+> +                               "error %d requesting status\n", err);
+> +                       return err;
+> +               }
+> +
+> +               /* Accumulate any response error bits seen */
+> +               if (resp_errs)
+> +                       *resp_errs |=3D status;
+> +
+> +               /*
+> +                * Timeout if the device never becomes ready for data.
+> +                */
+> +               if (done) {
+> +                       dev_err(mmc_dev(card->host),
+> +                               "Card remained busy! %s status: %#x\n",
+> +                                __func__, status);
+> +                       return -ETIMEDOUT;
+> +               }
+>         } while (!mmc_ready_for_data(status));
+>
+>         return err;
+> @@ -596,12 +655,19 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *car=
+d, struct mmc_blk_data *md,
+>
+>         if (idata->rpmb || (cmd.flags & MMC_RSP_R1B) =3D=3D MMC_RSP_R1B) =
+{
+>                 /*
+> -                * Ensure RPMB/R1B command has completed by polling CMD13
+> -                * "Send Status".
+> +                * Ensure card is no longer signalling busy by polling CM=
+D13.
+>                  */
+>                 err =3D card_busy_detect(card, MMC_BLK_TIMEOUT_MS, NULL);
+>         }
+>
+> +       if (is_return_to_tran_cmd(&cmd)) {
+> +               /*
+> +                * Ensure card has returned back to TRAN state (e.g. from=
+ PROG)
+> +                * and is ready to accept a new command.
+> +                */
+> +               err =3D card_poll_until_tran(card, MMC_BLK_TIMEOUT_MS, NU=
+LL);
+> +       }
+> +
+>         return err;
+>  }
+>
+> @@ -1630,7 +1696,7 @@ static int mmc_blk_fix_state(struct mmc_card *card,=
+ struct request *req)
+>
+>         mmc_blk_send_stop(card, timeout);
+>
+> -       err =3D card_busy_detect(card, timeout, NULL);
+> +       err =3D card_poll_until_tran(card, timeout, NULL);
+>
+>         mmc_retune_release(card->host);
+>
+> @@ -1662,7 +1728,7 @@ static void mmc_blk_read_single(struct mmc_queue *m=
+q, struct request *req)
+>                         goto error_exit;
+>
+>                 if (!mmc_host_is_spi(host) &&
+> -                   !mmc_ready_for_data(status)) {
+> +                   !mmc_tran_and_ready_for_data(status)) {
+>                         err =3D mmc_blk_fix_state(card, req);
+>                         if (err)
+>                                 goto error_exit;
+> @@ -1784,7 +1850,7 @@ static void mmc_blk_mq_rw_recovery(struct mmc_queue=
+ *mq, struct request *req)
+>
+>         /* Try to get back to "tran" state */
+>         if (!mmc_host_is_spi(mq->card->host) &&
+> -           (err || !mmc_ready_for_data(status)))
+> +           (err || !mmc_tran_and_ready_for_data(status)))
+>                 err =3D mmc_blk_fix_state(mq->card, req);
+>
+>         /*
+> @@ -1854,7 +1920,7 @@ static int mmc_blk_card_busy(struct mmc_card *card,=
+ struct request *req)
+>         if (mmc_host_is_spi(card->host) || rq_data_dir(req) =3D=3D READ)
+>                 return 0;
+>
+> -       err =3D card_busy_detect(card, MMC_BLK_TIMEOUT_MS, &status);
+> +       err =3D card_poll_until_tran(card, MMC_BLK_TIMEOUT_MS, &status);
+>
+>         /*
+>          * Do not assume data transferred correctly if there are any erro=
+r bits
+> diff --git a/include/linux/mmc/mmc.h b/include/linux/mmc/mmc.h
+> index d9a65c6a8816..9ae27504cbc9 100644
+> --- a/include/linux/mmc/mmc.h
+> +++ b/include/linux/mmc/mmc.h
+> @@ -163,10 +163,11 @@ static inline bool mmc_op_multi(u32 opcode)
+>
+>  static inline bool mmc_ready_for_data(u32 status)
+>  {
+> -       /*
+> -        * Some cards mishandle the status bits, so make sure to check bo=
+th the
+> -        * busy indication and the card state.
+> -        */
+> +       return status & R1_READY_FOR_DATA;
+
+mmc_ready_for_data() is also being called from mmc_busy_cb(). The
+check for R1_STATE_TRAN is needed there.
+
+> +}
+> +
+> +static inline bool mmc_tran_and_ready_for_data(u32 status)
+> +{
+>         return status & R1_READY_FOR_DATA &&
+>                R1_CURRENT_STATE(status) =3D=3D R1_STATE_TRAN;
+>  }
+> --
+
+Kind regards
+Uffe
