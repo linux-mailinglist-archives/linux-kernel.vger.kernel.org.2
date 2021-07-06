@@ -2,63 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECAB73BD996
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CEA3BD9B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbhGFPOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:14:17 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35389 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbhGFPON (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:14:13 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1m0mjV-0005Xt-73; Tue, 06 Jul 2021 15:11:33 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-pwm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] pwm: core: remove redundant assignment to pointer pwm
-Date:   Tue,  6 Jul 2021 16:11:32 +0100
-Message-Id: <20210706151133.33175-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S232575AbhGFPOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 11:14:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232549AbhGFPOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 11:14:23 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2ED2C619AE;
+        Tue,  6 Jul 2021 15:11:43 +0000 (UTC)
+Date:   Tue, 6 Jul 2021 11:11:36 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
+ entry
+Message-ID: <20210706111136.7c5e9843@oasis.local.home>
+In-Reply-To: <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+        <162400002631.506599.2413605639666466945.stgit@devnote2>
+        <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
+        <20210706004257.9e282b98f447251a380f658f@kernel.org>
+        <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, 6 Jul 2021 09:55:03 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-The pointer pwm is being initialized with a value that is never read and
-it is being updated later with a new value. The initialization is
-redundant and can be removed.
+> > But I'm not so sure how ftrace treat it. It seems that the return_to_handler()
+> > doesn't care such case. (anyway, return_to_handler() does not return but jump
+> > to the original call-site, in that case, the information will be lost.)  
+> 
+> I find it bothersome (OCD, sorry :-) that both return trampolines behave
+> differently. Doubly so because I know people (Steve in particular) have
+> been talking about unifying them.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/pwm/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+They were developed separately, and designed differently with different
+goals in mind. Yes, I want to unify them, but trying to get the
+different goals together, compounded by the fact that almost every arch
+also implemented them differently (in which case, we need to find a way
+to do it one arch at a time), makes the process extremely frustrating.
 
-diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-index a28c8639af5b..35e894f4a379 100644
---- a/drivers/pwm/core.c
-+++ b/drivers/pwm/core.c
-@@ -846,7 +846,7 @@ EXPORT_SYMBOL_GPL(of_pwm_get);
-  */
- static struct pwm_device *acpi_pwm_get(const struct fwnode_handle *fwnode)
- {
--	struct pwm_device *pwm = ERR_PTR(-ENODEV);
-+	struct pwm_device *pwm;
- 	struct fwnode_reference_args args;
- 	struct pwm_chip *chip;
- 	int ret;
--- 
-2.31.1
+> 
+> Steve, can you clarify the ftrace side here? Afaict return_to_handler()
+> is similarly affected.
 
+I'm not exactly sure what the issue is. As Masami stated, kretprobe
+uses a ret to return to the calling function, but ftrace uses a jmp.
+
+kretprobe return tracing is more complex than the function graph return
+tracing is (which is one of the issues I need to overcome to unify
+them), and when the function graph return trampoline was created, it
+did things as simple as possible (and before ORC existed).
+
+Is this something to worry about now, or should we look to fix his in
+the unifying process?
+
+-- Steve
