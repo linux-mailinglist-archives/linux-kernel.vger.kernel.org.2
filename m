@@ -2,200 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5D03BDE3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2823BDE3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbhGFT6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 15:58:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27496 "EHLO
+        id S230012AbhGFUBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 16:01:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52910 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230109AbhGFT6e (ORCPT
+        by vger.kernel.org with ESMTP id S229781AbhGFUBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 15:58:34 -0400
+        Tue, 6 Jul 2021 16:01:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625601355;
+        s=mimecast20190719; t=1625601500;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=H5hr1jkfiR6AahtYXG4oxTXgC9cQ55LO9WjbhjrCQHU=;
-        b=IKmlBAxOHpC7flZWfqV/sn3LcuEIkP5nlhLXwqTVCulfiQVyH2tprDqBAsjSQM8uJHgSw6
-        XXz1u5y2FPfEI1zw0Zll7L4s23QEqfyndNlXEYyp91e2XJ3zUhJ0+gbdQy5ejvaBTWFPft
-        j1oylRTfJM0FPYIgFd0n8k0ixHTBPk4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-418-g1jsj-a7M_2awig4YWxuig-1; Tue, 06 Jul 2021 15:55:53 -0400
-X-MC-Unique: g1jsj-a7M_2awig4YWxuig-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C60521084F4C;
-        Tue,  6 Jul 2021 19:55:52 +0000 (UTC)
-Received: from localhost (ovpn-113-53.rdu2.redhat.com [10.10.113.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 10BA22EB38;
-        Tue,  6 Jul 2021 19:55:48 +0000 (UTC)
-From:   Bruno Meneguele <bmeneg@redhat.com>
-To:     sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bruno Meneguele <bmeneg@redhat.com>
-Subject: [PATCH v2 2/2] power: supply: bq24735: add watchdog timer delay support
-Date:   Tue,  6 Jul 2021 16:55:27 -0300
-Message-Id: <20210706195527.371108-3-bmeneg@redhat.com>
-In-Reply-To: <20210706195527.371108-1-bmeneg@redhat.com>
-References: <20210706195527.371108-1-bmeneg@redhat.com>
+        bh=AKyr7OEj24r1mpGOY586UciDza+JOs3ExGG+z5RqyrI=;
+        b=buPna19l3kR58QijDdDxtgy+CckV3lIjvbWPMayN5eDyybw0qHqD9qF3+49zj80PsHI8k0
+        Lje/RZAmw8GIobSkFYL1N2l2KBGRsiYlS9hscfAnZUC/YXo1I3oFyEs+3sP5itaRLkQYTY
+        tCd7LaGd/CG6u/n3pJW4BW2ZrQpzz4g=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-TrLyaPSkN6mAECru2Y_lFQ-1; Tue, 06 Jul 2021 15:58:19 -0400
+X-MC-Unique: TrLyaPSkN6mAECru2Y_lFQ-1
+Received: by mail-wr1-f70.google.com with SMTP id t12-20020adff04c0000b029013253c3389dso67704wro.7
+        for <Linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 12:58:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AKyr7OEj24r1mpGOY586UciDza+JOs3ExGG+z5RqyrI=;
+        b=rZRtJG2oPDp5EZV5BvQKpV41AfkIoYWT4I7qSXLnURZebOVOJhmXnKK7w4J8JBgVmP
+         8mM3g3sUuq7JHovVst3Tf+Ptugxs1JVabqVgECmwPa3PIldZktcQaiJGKsu6KU/jrhdt
+         UBLW7v3dwKwFyXNItiGPY51/IjLC61wZvVOmqTsp0RfIr3Q6ZRZT4llfQaFZO44xqb7g
+         FwgZ/0wQiVvzA2Lr+SiRmzv0yjIOPX/FyD9kRhXQD/rrzbHo1cc4gSeKgQ3gGvudp0V1
+         dUpFQDoQYF5KR7KnDcfmv4+KX1iZFgclCtojkmb/e4WHcnJgD5zpDMxLOfazDP7J3pUb
+         sjOA==
+X-Gm-Message-State: AOAM5318eGZdBxRaxG7f2IghYWgYlO5GN8/CqzRo5NHXU/EwpTiGx52L
+        1WmEFGI10y10jcO9peUpsktpUqQXFZtvYqorPK5QfxtcOflAgyIEtg+4r241/TbZe4yNtK53T3F
+        g+Og/L+icQ9+0LqLBUIqQoAFr
+X-Received: by 2002:adf:e5ce:: with SMTP id a14mr23387127wrn.226.1625601498436;
+        Tue, 06 Jul 2021 12:58:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxagVpDNkJSrfonuLwtNYmVHZ5dcJDC8ukGdzgc0GnuVAtzcdxSgYGoaFOOVGqxhvNFybi3lw==
+X-Received: by 2002:adf:e5ce:: with SMTP id a14mr23387107wrn.226.1625601498244;
+        Tue, 06 Jul 2021 12:58:18 -0700 (PDT)
+Received: from krava ([185.153.78.55])
+        by smtp.gmail.com with ESMTPSA id 16sm16244896wmk.18.2021.07.06.12.58.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 12:58:17 -0700 (PDT)
+Date:   Tue, 6 Jul 2021 21:58:15 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH] perf list: Skip the invalid hybrid pmu
+Message-ID: <YOS1119y56eH0Uyv@krava>
+References: <20210610051646.4003-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210610051646.4003-1-yao.jin@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BQ24735 charger allows the user to set the watchdog timer delay between
-two consecutives ChargeCurrent or ChargeVoltage command writes, if the IC
-doesn't receive any command before the timeout happens, the charge is turned
-off.
+On Thu, Jun 10, 2021 at 01:16:46PM +0800, Jin Yao wrote:
+> On hybrid platform, such as Alderlake, if atom CPUs are offlined,
+> the kernel still exports the sysfs path '/sys/devices/cpu_atom/' for
+> 'cpu_atom' pmu but the file '/sys/devices/cpu_atom/cpus' is empty,
+> which indicates this is an invalid pmu.
+> 
+> The perf-list needs to check and skip the invalid hybrid pmu.
+> 
+> Before:
+> 
+>   # perf list
+>   ...
+>   branch-instructions OR cpu_atom/branch-instructions/ [Kernel PMU event]
+>   branch-instructions OR cpu_core/branch-instructions/ [Kernel PMU event]
+>   branch-misses OR cpu_atom/branch-misses/           [Kernel PMU event]
+>   branch-misses OR cpu_core/branch-misses/           [Kernel PMU event]
+>   bus-cycles OR cpu_atom/bus-cycles/                 [Kernel PMU event]
+>   bus-cycles OR cpu_core/bus-cycles/                 [Kernel PMU event]
+>   ...
+> 
+> The cpu_atom events are still displayed even if atom CPUs are offlined.
+> 
+> After:
+> 
+>   # perf list
+>   ...
+>   branch-instructions OR cpu_core/branch-instructions/ [Kernel PMU event]
+>   branch-misses OR cpu_core/branch-misses/           [Kernel PMU event]
+>   bus-cycles OR cpu_core/bus-cycles/                 [Kernel PMU event]
+>   ...
+> 
+> Now only cpu_core events are displayed.
+> 
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+>  tools/perf/util/pmu-hybrid.c | 11 +++++++++++
+>  tools/perf/util/pmu-hybrid.h |  2 ++
+>  tools/perf/util/pmu.c        |  3 +++
+>  3 files changed, 16 insertions(+)
+> 
+> diff --git a/tools/perf/util/pmu-hybrid.c b/tools/perf/util/pmu-hybrid.c
+> index f51ccaac60ee..fcc1182f8fe5 100644
+> --- a/tools/perf/util/pmu-hybrid.c
+> +++ b/tools/perf/util/pmu-hybrid.c
+> @@ -87,3 +87,14 @@ char *perf_pmu__hybrid_type_to_pmu(const char *type)
+>  	free(pmu_name);
+>  	return NULL;
+>  }
+> +
+> +bool perf_pmu__is_invalid_hybrid(const char *name)
+> +{
+> +	if (strncmp(name, "cpu_", 4))
+> +		return false;
+> +
+> +	if (perf_pmu__hybrid_mounted(name))
+> +		return false;
+> +
+> +	return true;
+> +}
+> diff --git a/tools/perf/util/pmu-hybrid.h b/tools/perf/util/pmu-hybrid.h
+> index 2b186c26a43e..8261a312c854 100644
+> --- a/tools/perf/util/pmu-hybrid.h
+> +++ b/tools/perf/util/pmu-hybrid.h
+> @@ -30,4 +30,6 @@ static inline int perf_pmu__hybrid_pmu_num(void)
+>  	return num;
+>  }
+>  
+> +bool perf_pmu__is_invalid_hybrid(const char *name);
+> +
+>  #endif /* __PMU_HYBRID_H */
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index 88c8ecdc60b0..281670e9c4bd 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -1604,6 +1604,9 @@ void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
+>  	pmu = NULL;
+>  	j = 0;
+>  	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
+> +		if (perf_pmu__is_invalid_hybrid(pmu->name))
+> +			continue;
 
-This patch adds the support to the user to change the default/POR value with
-four discrete values:
+hum why not detect it in pmu_lookup early on
+and not add that pmu at all?
 
-  0 - disabled
-  1 - enabled, 44 sec
-  2 - enabled, 88 sec
-  3 - enabled, 175 sec (default at POR)
+thanks,
+jirka
 
-These are the options supported in the ChargeOptions register bits 13&14.
-
-Also, this patch make one additional check when poll-interval is set by the
-user: if the interval set is greater than the WDT timeout it'll fail during
-the probe stage, preventing the user to set non-compatible values between
-the two options.
-
-Signed-off-by: Bruno Meneguele <bmeneg@redhat.com>
----
-Changelog:
-  v1 - corrected the type of new bq24735_platform member wdt_timeout 
-
- .../bindings/power/supply/bq24735.yaml        | 13 +++++
- drivers/power/supply/bq24735-charger.c        | 48 +++++++++++++++++++
- include/linux/power/bq24735-charger.h         |  1 +
- 3 files changed, 62 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/power/supply/bq24735.yaml b/Documentation/devicetree/bindings/power/supply/bq24735.yaml
-index 131be6782c4b..62399efab467 100644
---- a/Documentation/devicetree/bindings/power/supply/bq24735.yaml
-+++ b/Documentation/devicetree/bindings/power/supply/bq24735.yaml
-@@ -56,6 +56,19 @@ properties:
-       The POR value is 0x1000h. This number is in mA (e.g. 8064).
-       See the spec for more information about the InputCurrent (0x3fh) register.
- 
-+  ti,wdt-timeout:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Used to control and set the charger watchdog delay between consecutive
-+      charge voltage and charge current commands.
-+      This value must be:
-+        0 - disabled
-+        1 - 44 seconds
-+        2 - 88 seconds
-+        3 - 175 seconds
-+      The POR value is 0x11 (3).
-+      See the spec for more information about the ChargeOptions(0x12h) register.
-+
-   ti,external-control:
-     type: boolean
-     description: |
-diff --git a/drivers/power/supply/bq24735-charger.c b/drivers/power/supply/bq24735-charger.c
-index 3ce36d09c017..88f1cb1e9fee 100644
---- a/drivers/power/supply/bq24735-charger.c
-+++ b/drivers/power/supply/bq24735-charger.c
-@@ -45,6 +45,8 @@
- /* ChargeOptions bits of interest */
- #define BQ24735_CHARGE_OPT_CHG_DISABLE	(1 << 0)
- #define BQ24735_CHARGE_OPT_AC_PRESENT	(1 << 4)
-+#define BQ24735_CHARGE_OPT_WDT_OFFSET	13
-+#define BQ24735_CHARGE_OPT_WDT		(3 << BQ24735_CHARGE_OPT_WDT_OFFSET)
- 
- struct bq24735 {
- 	struct power_supply		*charger;
-@@ -156,6 +158,20 @@ static int bq24735_config_charger(struct bq24735 *charger)
- 		}
- 	}
- 
-+	if (pdata->wdt_timeout) {
-+		value = pdata->wdt_timeout;
-+
-+		ret = bq24735_update_word(charger->client, BQ24735_CHARGE_OPT,
-+					  BQ24735_CHARGE_OPT_WDT,
-+					  (value << BQ24735_CHARGE_OPT_WDT_OFFSET));
-+		if (ret < 0) {
-+			dev_err(&charger->client->dev,
-+				"Failed to write watchdog timer: %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -347,6 +363,17 @@ static struct bq24735_platform *bq24735_parse_dt_data(struct i2c_client *client)
- 	if (!ret)
- 		pdata->input_current = val;
- 
-+	ret = of_property_read_u32(np, "ti,wdt-timeout", &val);
-+	if (!ret) {
-+		if (val <= 3) {
-+			pdata->wdt_timeout = val;
-+		} else {
-+			dev_warn(&client->dev,
-+				 "Invalid value for ti,wdt-timeout: %d",
-+				 val);
-+		}
-+	}
-+
- 	pdata->ext_control = of_property_read_bool(np, "ti,external-control");
- 
- 	return pdata;
-@@ -476,6 +503,27 @@ static int bq24735_charger_probe(struct i2c_client *client,
- 			return 0;
- 		if (!charger->poll_interval)
- 			return 0;
-+		if (charger->pdata->wdt_timeout) {
-+			int wdt_ms;
-+
-+			switch (charger->pdata->wdt_timeout) {
-+			case 1:
-+				wdt_ms = 44000;
-+				break;
-+			case 2:
-+				wdt_ms = 88000;
-+				break;
-+			case 3:
-+				wdt_ms = 175000;
-+				break;
-+			}
-+
-+			if (charger->poll_interval > wdt_ms) {
-+				dev_err(&client->dev,
-+					"Poll interval greater than WDT timeout\n");
-+				return -EINVAL;
-+			}
-+		}
- 
- 		ret = devm_delayed_work_autocancel(&client->dev, &charger->poll,
- 						   bq24735_poll);
-diff --git a/include/linux/power/bq24735-charger.h b/include/linux/power/bq24735-charger.h
-index 321dd009ce66..ce5a030ca111 100644
---- a/include/linux/power/bq24735-charger.h
-+++ b/include/linux/power/bq24735-charger.h
-@@ -12,6 +12,7 @@ struct bq24735_platform {
- 	uint32_t charge_current;
- 	uint32_t charge_voltage;
- 	uint32_t input_current;
-+	uint32_t wdt_timeout;
- 
- 	const char *name;
- 
--- 
-2.31.1
+> +
+>  		list_for_each_entry(alias, &pmu->aliases, list) {
+>  			char *name = alias->desc ? alias->name :
+>  				format_alias(buf, sizeof(buf), pmu, alias);
+> -- 
+> 2.17.1
+> 
 
