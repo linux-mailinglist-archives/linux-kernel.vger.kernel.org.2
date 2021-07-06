@@ -2,290 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F543BC809
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C1B3BC806
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbhGFInv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 04:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
+        id S230498AbhGFInW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 04:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230491AbhGFInt (ORCPT
+        with ESMTP id S230439AbhGFInV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 04:43:49 -0400
-Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09181C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 01:41:11 -0700 (PDT)
-Received: by mail-vk1-xa2d.google.com with SMTP id k16so4290358vke.10
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 01:41:10 -0700 (PDT)
+        Tue, 6 Jul 2021 04:43:21 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4137EC061760
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 01:40:42 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id n9so7735062wrs.13
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 01:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Xs0RpwlA6WTOw/ERwYypx9u87kguf+u5/j03m73M4fY=;
-        b=AVHbPaqPIkfWQ0MNrI11bmb4iF+duXq2YIl+bBKksqUlw2O8NylYmSuVo8mB1KFVEu
-         Ux3KEr7ecU2HPCsGfE7mGIQayqxERDuK3zy3Ki4l09LqdB7T/nEq7ccY+M/hwNhNfPE/
-         IvqdDL/dt1kLE7Y4bTLGb9DtmG/sN8G0HI7mHIyNMbOKzM+WJxql3MaAWfOGOXjsYGP2
-         uOeucYzyhYmBJL5v0ViY/i10gdtCAG6cm6/CnzaC6NlRcpb6blXPnZivhYUOEKV+TNRF
-         kwY79RpD7LaeeuNiI63r2sjC2c4km1VKbGEG+m9iG6WOPNqRYWDSCizm3Xy1AXSuzlU3
-         dNnw==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JLlTuAeFJ55bKl70feqPAdDJNogiM+fpe/R9P7DcSms=;
+        b=LRnsqjRbV1SjBgROJlBIakdBOYICsTI8ulzfPsgIQuMlSJ8mh2dRGC7U1wsehHvWvI
+         IyKsCEPEE7aj2cDyk/ASRk28e+xTY39qV9bf/70BQD/NFfB3eA0zVAekYrESOuCPHLQL
+         fqnRDhDxHDjGgI1GsURpOfaynvOOqUO2t/nUg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Xs0RpwlA6WTOw/ERwYypx9u87kguf+u5/j03m73M4fY=;
-        b=B/Ur2MA3wynl1xwAevf907/PGTGpavf2xuaUDLX2oKscL+ULiBrGSIwB477iz6Kp2m
-         crO7dH2EzfUhzz9/xMllnR/itiIzGTtpxozvvWuHEDQo9533brYLoTRXUpgIZf1j06wh
-         gzHMe4wJBPGz3MbspSmRuPnTSVsE/3bIGg7ZRAQbNs4CJJdxu2HrstAuG+naLbVxX2VQ
-         Bsj1qCLVi2y8wV8ceeOyB3yDvnfWkeQ4Gab/RV5xJI091VZuvEhsCotoZiuV9XTXzcG1
-         b6O3h5YjRTNR+6ApNzsEDVmYZTQiiVCA+KPmSmCefT/FXoTjzCOlpxz73MI4odfpVbdT
-         wZkw==
-X-Gm-Message-State: AOAM532Ka1URC7yBHsRVNM1RhHBSGV8yqaR6WRBfIeA2ouiAvV4wkUJ3
-        BdEGV/zactcEEG3oHijz9PZvif+50Mpnf1st1eiRSg==
-X-Google-Smtp-Source: ABdhPJx2NBe+23V1wjwA/oLVG448+9TGvolKnkDzjzwuacqtXPjo2IcohGMq7A1EkoyByjeQ3UdgEu2KTI4qwqUVlmM=
-X-Received: by 2002:a1f:cf47:: with SMTP id f68mr12267032vkg.7.1625560870031;
- Tue, 06 Jul 2021 01:41:10 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=JLlTuAeFJ55bKl70feqPAdDJNogiM+fpe/R9P7DcSms=;
+        b=h5rBUH6CAKjrRUMWkPWY1S1sZAcmB2QjT6SXBQojw+ECZko2hQ1Or/lCnbmPNE+Qt3
+         fIJBkXNNX8dwJgThHNvRf/1aR8CiBMxj5q5YPalcQzUZ2ZKvi/jTBUOqEcJYygHxzFjz
+         yuER9w8PA0x947u3vAv0fef+Kg+Gm4qOZtFCJlaJw6P/wK1QAs7Qv1BjLAANxCLGFnay
+         sPF5b59h39Hm03SH11xTXTlNNF4ZIDFgjFzm0Qkuyw9YaM+pH+w1uZ6r47tGfG1WLNpe
+         8r8RUVINbDmgtzgbIaHUXHoXDn0Ke42ekNB1or7rO1Al5S/zj9dBurMfrzJqaRd+OK21
+         eO2Q==
+X-Gm-Message-State: AOAM530qG5Hjni7evR2LJLg9QLGuF74HzytDOQtriGUGdL4wcnwde0HF
+        JzqLqOsT+BacbgnbceiDJADVfw==
+X-Google-Smtp-Source: ABdhPJw0uQEuhFtLZ/yp2rlntAi8MREzCiqyFoKyRYiByd6f3gcRZqvzyCKHQD5Nm2De5YPjEiQssQ==
+X-Received: by 2002:a05:6000:18c8:: with SMTP id w8mr12110209wrq.90.1625560840330;
+        Tue, 06 Jul 2021 01:40:40 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id b8sm2176254wmb.20.2021.07.06.01.40.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 01:40:39 -0700 (PDT)
+Date:   Tue, 6 Jul 2021 10:40:37 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        daniel.vetter@ffwll.ch, galpress@amazon.com, sleybo@amazon.com,
+        dri-devel@lists.freedesktop.org, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        dledford@redhat.com, airlied@gmail.com, alexander.deucher@amd.com,
+        leonro@nvidia.com, hch@lst.de, amd-gfx@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
+Message-ID: <YOQXBWpo3whVjOyh@phenom.ffwll.local>
+Mail-Followup-To: Oded Gabbay <ogabbay@kernel.org>,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        galpress@amazon.com, sleybo@amazon.com,
+        dri-devel@lists.freedesktop.org, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        dledford@redhat.com, airlied@gmail.com, alexander.deucher@amd.com,
+        leonro@nvidia.com, hch@lst.de, amd-gfx@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+References: <20210705130314.11519-1-ogabbay@kernel.org>
 MIME-Version: 1.0
-References: <CWXP265MB268049D9AB181062DA7F6DDBC4009@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <CWXP265MB26807AC3C130772D789D0AABC41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-In-Reply-To: <CWXP265MB26807AC3C130772D789D0AABC41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 6 Jul 2021 10:40:33 +0200
-Message-ID: <CAPDyKFq44ZuXXUDQV34NSW-ixB9GAZfDx+dx-Kb8O7=LQ1TSHQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: block: Differentiate busy and non-TRAN state
-To:     =?UTF-8?Q?Christian_L=C3=B6hle?= <CLoehle@hyperstone.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Avri Altman <Avri.Altman@wdc.com>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705130314.11519-1-ogabbay@kernel.org>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Jul 2021 at 10:20, Christian L=C3=B6hle <CLoehle@hyperstone.com> =
-wrote:
->
-> Prevent race condition with ioctl commands
->
-> Wait for both, a card no longer signalling busy
-> and it being returned back to TRAN state.
-> A card not signaling busy does not mean it is
-> ready to accept new regular commands.
-> Instead for a command to be done it should not only
-> no longer signal busy but also return back to TRAN state,
-> at least for commands that eventually transition back
-> to TRAN. Otherwise the next ioctl command may be rejected
-> as the card is still in PROG state after the previous command.
->
-> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
-> ---
->  drivers/mmc/core/block.c | 84 +++++++++++++++++++++++++++++++++++-----
->  include/linux/mmc/mmc.h  |  9 +++--
->  2 files changed, 80 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 88f4c215caa6..dda10ccee37f 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -411,7 +411,32 @@ static int mmc_blk_ioctl_copy_to_user(struct mmc_ioc=
-_cmd __user *ic_ptr,
->         return 0;
->  }
->
-> -static int card_busy_detect(struct mmc_card *card, unsigned int timeout_=
-ms,
-> +static int is_return_to_tran_cmd(struct mmc_command *cmd)
-> +{
-> +       /*
-> +        * Cards will never return to TRAN after completing
-> +        * identification commands or MMC_SEND_STATUS if they are not sel=
-ected.
-> +        */
-> +       switch (cmd->opcode) {
-> +       case MMC_GO_IDLE_STATE:
-> +       case MMC_SEND_OP_COND:
-> +       case MMC_ALL_SEND_CID:
-> +       case MMC_SET_RELATIVE_ADDR:
-> +       case MMC_SET_DSR:
-> +       case MMC_SLEEP_AWAKE:
-> +       case MMC_SELECT_CARD:
-> +       case MMC_SEND_CSD:
-> +       case MMC_SEND_CID:
-> +       case MMC_SEND_STATUS:
-> +       case MMC_GO_INACTIVE_STATE:
-> +       case MMC_APP_CMD:
-> +               return false;
-> +       default:
-> +               return true;
-> +       }
-> +}
+On Mon, Jul 05, 2021 at 04:03:12PM +0300, Oded Gabbay wrote:
+> Hi,
+> I'm sending v4 of this patch-set following the long email thread.
+> I want to thank Jason for reviewing v3 and pointing out the errors, saving
+> us time later to debug it :)
+> 
+> I consulted with Christian on how to fix patch 2 (the implementation) and
+> at the end of the day I shamelessly copied the relevant content from
+> amdgpu_vram_mgr_alloc_sgt() and amdgpu_dma_buf_attach(), regarding the
+> usage of dma_map_resource() and pci_p2pdma_distance_many(), respectively.
+> 
+> I also made a few improvements after looking at the relevant code in amdgpu.
+> The details are in the changelog of patch 2.
+> 
+> I took the time to write an import code into the driver, allowing me to
+> check real P2P with two Gaudi devices, one as exporter and the other as
+> importer. I'm not going to include the import code in the product, it was
+> just for testing purposes (although I can share it if anyone wants).
+> 
+> I run it on a bare-metal environment with IOMMU enabled, on a sky-lake CPU
+> with a white-listed PCIe bridge (to make the pci_p2pdma_distance_many happy).
+> 
+> Greg, I hope this will be good enough for you to merge this code.
 
-What exactly are you trying to do with the user space program through
-the mmc ioctl with all these commands? The mmc ioctl interface is not
-designed to be used like that.
+So we're officially going to use dri-devel for technical details review
+and then Greg for merging so we don't have to deal with other merge
+criteria dri-devel folks have?
 
-In principle, it looks like we should support a complete
-re-initialization of the card. I am sorry, but no thanks! This doesn't
-work, but more importantly, this should be managed solely by the
-kernel, in my opinion.
+I don't expect anything less by now, but it does make the original claim
+that drivers/misc will not step all over accelerators folks a complete
+farce under the totally-not-a-gpu banner.
 
-> +
-> +static int card_poll_until_tran(struct mmc_card *card, unsigned int time=
-out_ms,
->                             u32 *resp_errs)
->  {
->         unsigned long timeout =3D jiffies + msecs_to_jiffies(timeout_ms);
-> @@ -433,8 +458,7 @@ static int card_busy_detect(struct mmc_card *card, un=
-signed int timeout_ms,
->                         *resp_errs |=3D status;
->
->                 /*
-> -                * Timeout if the device never becomes ready for data and=
- never
-> -                * leaves the program state.
-> +                * Timeout if the device never returns to TRAN state.
->                  */
->                 if (done) {
->                         dev_err(mmc_dev(card->host),
-> @@ -442,6 +466,41 @@ static int card_busy_detect(struct mmc_card *card, u=
-nsigned int timeout_ms,
->                                  __func__, status);
->                         return -ETIMEDOUT;
->                 }
-> +       } while (R1_CURRENT_STATE(status) !=3D R1_STATE_TRAN);
-> +
-> +       return err;
-> +}
-> +
-> +static int card_busy_detect(struct mmc_card *card, unsigned int timeout_=
-ms,
-> +                           u32 *resp_errs)
-> +{
-> +       unsigned long timeout =3D jiffies + msecs_to_jiffies(timeout_ms);
-> +       int err =3D 0;
-> +       u32 status;
-> +
-> +       do {
-> +               bool done =3D time_after(jiffies, timeout);
-> +
-> +               err =3D __mmc_send_status(card, &status, 5);
-> +               if (err) {
-> +                       dev_err(mmc_dev(card->host),
-> +                               "error %d requesting status\n", err);
-> +                       return err;
-> +               }
-> +
-> +               /* Accumulate any response error bits seen */
-> +               if (resp_errs)
-> +                       *resp_errs |=3D status;
-> +
-> +               /*
-> +                * Timeout if the device never becomes ready for data.
-> +                */
-> +               if (done) {
-> +                       dev_err(mmc_dev(card->host),
-> +                               "Card remained busy! %s status: %#x\n",
-> +                                __func__, status);
-> +                       return -ETIMEDOUT;
-> +               }
->         } while (!mmc_ready_for_data(status));
->
->         return err;
-> @@ -596,12 +655,19 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *car=
-d, struct mmc_blk_data *md,
->
->         if (idata->rpmb || (cmd.flags & MMC_RSP_R1B) =3D=3D MMC_RSP_R1B) =
-{
->                 /*
-> -                * Ensure RPMB/R1B command has completed by polling CMD13
-> -                * "Send Status".
-> +                * Ensure card is no longer signalling busy by polling CM=
-D13.
->                  */
->                 err =3D card_busy_detect(card, MMC_BLK_TIMEOUT_MS, NULL);
->         }
->
-> +       if (is_return_to_tran_cmd(&cmd)) {
-> +               /*
-> +                * Ensure card has returned back to TRAN state (e.g. from=
- PROG)
-> +                * and is ready to accept a new command.
-> +                */
-> +               err =3D card_poll_until_tran(card, MMC_BLK_TIMEOUT_MS, NU=
-LL);
-> +       }
-> +
->         return err;
->  }
->
-> @@ -1630,7 +1696,7 @@ static int mmc_blk_fix_state(struct mmc_card *card,=
- struct request *req)
->
->         mmc_blk_send_stop(card, timeout);
->
-> -       err =3D card_busy_detect(card, timeout, NULL);
-> +       err =3D card_poll_until_tran(card, timeout, NULL);
->
->         mmc_retune_release(card->host);
->
-> @@ -1662,7 +1728,7 @@ static void mmc_blk_read_single(struct mmc_queue *m=
-q, struct request *req)
->                         goto error_exit;
->
->                 if (!mmc_host_is_spi(host) &&
-> -                   !mmc_ready_for_data(status)) {
-> +                   !mmc_tran_and_ready_for_data(status)) {
->                         err =3D mmc_blk_fix_state(card, req);
->                         if (err)
->                                 goto error_exit;
-> @@ -1784,7 +1850,7 @@ static void mmc_blk_mq_rw_recovery(struct mmc_queue=
- *mq, struct request *req)
->
->         /* Try to get back to "tran" state */
->         if (!mmc_host_is_spi(mq->card->host) &&
-> -           (err || !mmc_ready_for_data(status)))
-> +           (err || !mmc_tran_and_ready_for_data(status)))
->                 err =3D mmc_blk_fix_state(mq->card, req);
->
->         /*
-> @@ -1854,7 +1920,7 @@ static int mmc_blk_card_busy(struct mmc_card *card,=
- struct request *req)
->         if (mmc_host_is_spi(card->host) || rq_data_dir(req) =3D=3D READ)
->                 return 0;
->
-> -       err =3D card_busy_detect(card, MMC_BLK_TIMEOUT_MS, &status);
-> +       err =3D card_poll_until_tran(card, MMC_BLK_TIMEOUT_MS, &status);
->
->         /*
->          * Do not assume data transferred correctly if there are any erro=
-r bits
-> diff --git a/include/linux/mmc/mmc.h b/include/linux/mmc/mmc.h
-> index d9a65c6a8816..9ae27504cbc9 100644
-> --- a/include/linux/mmc/mmc.h
-> +++ b/include/linux/mmc/mmc.h
-> @@ -163,10 +163,11 @@ static inline bool mmc_op_multi(u32 opcode)
->
->  static inline bool mmc_ready_for_data(u32 status)
->  {
-> -       /*
-> -        * Some cards mishandle the status bits, so make sure to check bo=
-th the
-> -        * busy indication and the card state.
-> -        */
-> +       return status & R1_READY_FOR_DATA;
+This essentially means that for any other accelerator stack that doesn't
+fit the dri-devel merge criteria, even if it's acting like a gpu and uses
+other gpu driver stuff, you can just send it to Greg and it's good to go.
 
-mmc_ready_for_data() is also being called from mmc_busy_cb(). The
-check for R1_STATE_TRAN is needed there.
+There's quite a lot of these floating around actually (and many do have
+semi-open runtimes, like habanalabs have now too, just not open enough to
+be actually useful). It's going to be absolutely lovely having to explain
+to these companies in background chats why habanalabs gets away with their
+stack and they don't.
 
-> +}
-> +
-> +static inline bool mmc_tran_and_ready_for_data(u32 status)
-> +{
->         return status & R1_READY_FOR_DATA &&
->                R1_CURRENT_STATE(status) =3D=3D R1_STATE_TRAN;
->  }
-> --
+Or maybe we should just merge them all and give up on the idea of having
+open cross-vendor driver stacks for these accelerators.
 
-Kind regards
-Uffe
+Thanks, Daniel
+
+> 
+> Thanks,
+> Oded
+> 
+> Oded Gabbay (1):
+>   habanalabs: define uAPI to export FD for DMA-BUF
+> 
+> Tomer Tayar (1):
+>   habanalabs: add support for dma-buf exporter
+> 
+>  drivers/misc/habanalabs/Kconfig             |   1 +
+>  drivers/misc/habanalabs/common/habanalabs.h |  26 ++
+>  drivers/misc/habanalabs/common/memory.c     | 480 +++++++++++++++++++-
+>  drivers/misc/habanalabs/gaudi/gaudi.c       |   1 +
+>  drivers/misc/habanalabs/goya/goya.c         |   1 +
+>  include/uapi/misc/habanalabs.h              |  28 +-
+>  6 files changed, 532 insertions(+), 5 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
