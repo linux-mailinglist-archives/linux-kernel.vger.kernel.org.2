@@ -2,66 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531AB3BDB38
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 18:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC5D3BDB3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 18:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhGFQST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 12:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbhGFQSS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 12:18:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A410C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 09:15:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=z9qBV+8yQywjnr/4m/XD3TNlrsIbjWArlkEXhe7Hso4=; b=uTcHLO2iE4gcad6oNx+qi1y2tw
-        nOA8vR33HWE2re49H+UFYco+LIw4xed7vt/288EsYhpv37A9Hx6aZXtLWoz0qTGTan7ZL7KjQyS3J
-        6qsAKBeqHA5aXuC8bDJiHqKuxiUGUc49x1tUBJMdJpaCU+72TKYR8STkkHAzjyvbVzUOrxnY7QU4b
-        xXJz5WiZXttA3evmrv3M7FsehVqDkaCGOgHGW8I/HkQd3kUVIaBEwrzzIKUblicg/L1JZG8A4BwJI
-        yUfQuleGZidjWhF2d5Q6QH4Ev9udYEcNikwHTyDh6Cb5+r6dqTUn0vGZsX+0QVVx8dcrfgpJRD6iT
-        kOAXwJFA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0njJ-00BYlR-O1; Tue, 06 Jul 2021 16:15:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 49EA0300130;
-        Tue,  6 Jul 2021 18:15:24 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 36EED201C57F9; Tue,  6 Jul 2021 18:15:24 +0200 (CEST)
-Date:   Tue, 6 Jul 2021 18:15:24 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Nitesh Lal <nilal@redhat.com>
-Subject: Re: [patch 0/5] optionally sync per-CPU vmstats counter on return to
- userspace
-Message-ID: <YOSBnMNNeVseeGZK@hirez.programming.kicks-ass.net>
-References: <20210701210336.358118649@fuller.cnet>
- <20210702123032.GA72061@lothringen>
- <20210702152816.GA4122@fuller.cnet>
- <20210706130925.GC107277@lothringen>
- <20210706140550.GA64308@fuller.cnet>
- <20210706140920.GA68399@fuller.cnet>
+        id S230006AbhGFQUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 12:20:21 -0400
+Received: from mga17.intel.com ([192.55.52.151]:37909 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229773AbhGFQUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 12:20:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="189522771"
+X-IronPort-AV: E=Sophos;i="5.83,328,1616482800"; 
+   d="scan'208";a="189522771"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 09:17:41 -0700
+X-IronPort-AV: E=Sophos;i="5.83,328,1616482800"; 
+   d="scan'208";a="486328230"
+Received: from aantonov-mobl.ccr.corp.intel.com (HELO [10.249.229.136]) ([10.249.229.136])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 09:17:39 -0700
+Subject: Re: [PATCH] perf/x86/intel/uncore: Fix IIO cleanup mapping procedure
+ for SNR/ICX
+To:     "Liang, Kan" <kan.liang@linux.intel.com>, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     ak@linux.intel.com, alexey.v.bayduraev@linux.intel.com
+References: <20210706090723.41850-1-alexander.antonov@linux.intel.com>
+ <3d634baf-8abe-480d-61ed-ade1945324ee@linux.intel.com>
+From:   Alexander Antonov <alexander.antonov@linux.intel.com>
+Message-ID: <0292c242-dc53-253d-da87-710b001aa3e7@linux.intel.com>
+Date:   Tue, 6 Jul 2021 19:17:36 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210706140920.GA68399@fuller.cnet>
+In-Reply-To: <3d634baf-8abe-480d-61ed-ade1945324ee@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 11:09:20AM -0300, Marcelo Tosatti wrote:
-> Peter, was that the only problem you saw with isolcpus interface?
 
-It needs to die, it's a piece of crap. Use cpusets already.
+On 7/6/2021 5:12 PM, Liang, Kan wrote:
+>
+>
+> On 7/6/2021 5:07 AM, alexander.antonov@linux.intel.com wrote:
+>> From: Alexander Antonov <alexander.antonov@linux.intel.com>
+>>
+>> Cleanup mapping procedure for IIO PMU is needed to free memory which was
+>> allocated for topology data and for attributes in IIO mapping
+>> attribute_group.
+>> Current implementation of this procedure for Snowridge and Icelake 
+>> Server
+>> platforms doesn't free allocated memory that can be a reason for memory
+>> leak issue.
+>> Fix the issue with IIO cleanup mapping procedure for these platforms
+>> to release allocated memory.
+>>
+>> Fixes: 10337e95e04c ("perf/x86/intel/uncore: Enable I/O stacks to IIO 
+>> PMON mapping on ICX")
+>>
+>> Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
+>
+> The patch looks good to me.
+>
+> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+>
+>
+> With this fix, there will be several similar codes repeat, e.g., 
+> XXX_iio_set_mapping() and XXX_iio_cleanup_mapping(), for SKX, ICX, and 
+> SNR for now.
+> I guess there will be more for the future platforms. Have you 
+> considered to add a macro or something to reduce the code repetition?
+>
+> Thanks,
+> Kan
+
+That's a good idea.
+I suggest to do it together with enabling of mapping on future 
+platforms. What do you think?
+
+Thanks,
+Alexander
+
+>
+>> ---
+>>   arch/x86/events/intel/uncore_snbep.c | 40 +++++++++++++++++++---------
+>>   1 file changed, 28 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/arch/x86/events/intel/uncore_snbep.c 
+>> b/arch/x86/events/intel/uncore_snbep.c
+>> index bb6eb1e5569c..54cdbb96e628 100644
+>> --- a/arch/x86/events/intel/uncore_snbep.c
+>> +++ b/arch/x86/events/intel/uncore_snbep.c
+>> @@ -3836,26 +3836,32 @@ pmu_iio_set_mapping(struct intel_uncore_type 
+>> *type, struct attribute_group *ag)
+>>       return ret;
+>>   }
+>>   -static int skx_iio_set_mapping(struct intel_uncore_type *type)
+>> -{
+>> -    return pmu_iio_set_mapping(type, &skx_iio_mapping_group);
+>> -}
+>> -
+>> -static void skx_iio_cleanup_mapping(struct intel_uncore_type *type)
+>> +static void
+>> +pmu_iio_cleanup_mapping(struct intel_uncore_type *type, struct 
+>> attribute_group *ag)
+>>   {
+>> -    struct attribute **attr = skx_iio_mapping_group.attrs;
+>> +    struct attribute **attr = ag->attrs;
+>>         if (!attr)
+>>           return;
+>>         for (; *attr; attr++)
+>>           kfree((*attr)->name);
+>> -    kfree(attr_to_ext_attr(*skx_iio_mapping_group.attrs));
+>> -    kfree(skx_iio_mapping_group.attrs);
+>> -    skx_iio_mapping_group.attrs = NULL;
+>> +    kfree(attr_to_ext_attr(*ag->attrs));
+>> +    kfree(ag->attrs);
+>> +    ag->attrs = NULL;
+>>       kfree(type->topology);
+>>   }
+>>   +static int skx_iio_set_mapping(struct intel_uncore_type *type)
+>> +{
+>> +    return pmu_iio_set_mapping(type, &skx_iio_mapping_group);
+>> +}
+>> +
+>> +static void skx_iio_cleanup_mapping(struct intel_uncore_type *type)
+>> +{
+>> +    pmu_iio_cleanup_mapping(type, &skx_iio_mapping_group);
+>> +}
+>> +
+>>   static struct intel_uncore_type skx_uncore_iio = {
+>>       .name            = "iio",
+>>       .num_counters        = 4,
+>> @@ -4499,6 +4505,11 @@ static int snr_iio_set_mapping(struct 
+>> intel_uncore_type *type)
+>>       return pmu_iio_set_mapping(type, &snr_iio_mapping_group);
+>>   }
+>>   +static void snr_iio_cleanup_mapping(struct intel_uncore_type *type)
+>> +{
+>> +    pmu_iio_cleanup_mapping(type, &snr_iio_mapping_group);
+>> +}
+>> +
+>>   static struct intel_uncore_type snr_uncore_iio = {
+>>       .name            = "iio",
+>>       .num_counters        = 4,
+>> @@ -4515,7 +4526,7 @@ static struct intel_uncore_type snr_uncore_iio = {
+>>       .attr_update        = snr_iio_attr_update,
+>>       .get_topology        = snr_iio_get_topology,
+>>       .set_mapping        = snr_iio_set_mapping,
+>> -    .cleanup_mapping    = skx_iio_cleanup_mapping,
+>> +    .cleanup_mapping    = snr_iio_cleanup_mapping,
+>>   };
+>>     static struct intel_uncore_type snr_uncore_irp = {
+>> @@ -5090,6 +5101,11 @@ static int icx_iio_set_mapping(struct 
+>> intel_uncore_type *type)
+>>       return pmu_iio_set_mapping(type, &icx_iio_mapping_group);
+>>   }
+>>   +static void icx_iio_cleanup_mapping(struct intel_uncore_type *type)
+>> +{
+>> +    pmu_iio_cleanup_mapping(type, &icx_iio_mapping_group);
+>> +}
+>> +
+>>   static struct intel_uncore_type icx_uncore_iio = {
+>>       .name            = "iio",
+>>       .num_counters        = 4,
+>> @@ -5107,7 +5123,7 @@ static struct intel_uncore_type icx_uncore_iio = {
+>>       .attr_update        = icx_iio_attr_update,
+>>       .get_topology        = icx_iio_get_topology,
+>>       .set_mapping        = icx_iio_set_mapping,
+>> -    .cleanup_mapping    = skx_iio_cleanup_mapping,
+>> +    .cleanup_mapping    = icx_iio_cleanup_mapping,
+>>   };
+>>     static struct intel_uncore_type icx_uncore_irp = {
+>>
+>> base-commit: 3dbdb38e286903ec220aaf1fb29a8d94297da246
+>>
