@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7CFE3BD367
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C373BD389
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbhGFLwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:52:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
+        id S240430AbhGFL4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:56:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237400AbhGFLgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:36:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF4FB61CD6;
-        Tue,  6 Jul 2021 11:27:24 +0000 (UTC)
+        id S237435AbhGFLgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:36:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2506961D81;
+        Tue,  6 Jul 2021 11:27:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570845;
-        bh=YLXnt5wG5jvESbfEUk+/masoINAD5jvQEUvbk327gPg=;
+        s=k20201202; t=1625570860;
+        bh=IRPEpEYxB0BX+tGtZoRbR9CFvmpTsjSrVMI6u1tpC74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eZYXSP+DIFQRp6+pRyghziw7trqm1JdM6jTG1BBO5IVggUNNyk/AOiWDVD5m3euxS
-         ot19yc8izGeWN+fTGzFpdfmHlJw+LpeDXlsOcdwBJZo5fvM3DgT/PXj0XMnkjypWWm
-         SPaYeL4GHN8Lw62eI0zvTS6OxQXf2gM4sRrxB3GmGoU7OcgCFDwoHnz1H2SHGm3UM1
-         Ut48oEs9mGTmuqQogLrKYVluwGrJiCkHuNhLVKJrYRBU9gqAoFIl/yjQ7XlqDUhrsP
-         aiMNuPX5CIVM8DUqYfBGYr1vOkZ2YtH/nUvBFmfTmN+1a5CVSd7/icIJeJfDKofDED
-         4AE1+w2t9tlbw==
+        b=bPnsi8lnLDTEpIAlVZbSLsQ2YAAyKkqp89U2J93iO1qQVdDqb0BZcGUFnOzM+KA3s
+         6Ob2R5vjJAAvmC5EtlobCRwowTVoXEh9l6NWVEzjduRjp0vgXT3YrG6nnv3unsD6qs
+         MBdYlU0WvAL/SMi5KPBqBaVJCkCkdIGu/3BEQIKdVGybUsPuDjb3mcrAvaA1dyVL5X
+         Siw+uiZlTA1Ruy0B5DGwOIYApex/sQZ5GucIqDMIwkRip78Ozq/HVijHmzLlwFyZRN
+         JOYtxBxSoj8dBc2XSXNzafgQgVeQD/JnLJetl8PMEEgyXUl2iRPkI7vQjqTlJ5DVkg
+         62L067S9edMnA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Huang Pei <huangpei@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 37/55] MIPS: add PMD table accounting into MIPS'pmd_alloc_one
-Date:   Tue,  6 Jul 2021 07:26:20 -0400
-Message-Id: <20210706112638.2065023-37-sashal@kernel.org>
+Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 49/55] RDMA/cma: Fix rdma_resolve_route() memory leak
+Date:   Tue,  6 Jul 2021 07:26:32 -0400
+Message-Id: <20210706112638.2065023-49-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112638.2065023-1-sashal@kernel.org>
 References: <20210706112638.2065023-1-sashal@kernel.org>
@@ -42,48 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Pei <huangpei@loongson.cn>
+From: Gerd Rausch <gerd.rausch@oracle.com>
 
-[ Upstream commit ed914d48b6a1040d1039d371b56273d422c0081e ]
+[ Upstream commit 74f160ead74bfe5f2b38afb4fcf86189f9ff40c9 ]
 
-This fixes Page Table accounting bug.
+Fix a memory leak when "mda_resolve_route() is called more than once on
+the same "rdma_cm_id".
 
-MIPS is the ONLY arch just defining __HAVE_ARCH_PMD_ALLOC_ONE alone.
-Since commit b2b29d6d011944 (mm: account PMD tables like PTE tables),
-"pmd_free" in asm-generic with PMD table accounting and "pmd_alloc_one"
-in MIPS without PMD table accounting causes PageTable accounting number
-negative, which read by global_zone_page_state(), always returns 0.
+This is possible if cma_query_handler() triggers the
+RDMA_CM_EVENT_ROUTE_ERROR flow which puts the state machine back and
+allows rdma_resolve_route() to be called again.
 
-Signed-off-by: Huang Pei <huangpei@loongson.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Link: https://lore.kernel.org/r/f6662b7b-bdb7-2706-1e12-47c61d3474b6@oracle.com
+Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/pgalloc.h | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/cma.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
-index 39b9f311c4ef..f800872f867b 100644
---- a/arch/mips/include/asm/pgalloc.h
-+++ b/arch/mips/include/asm/pgalloc.h
-@@ -93,11 +93,15 @@ do {							\
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 8cdf933310d1..842a30947bdc 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2558,7 +2558,8 @@ static int cma_resolve_ib_route(struct rdma_id_private *id_priv, int timeout_ms)
  
- static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
- {
--	pmd_t *pmd;
-+	pmd_t *pmd = NULL;
-+	struct page *pg;
+ 	cma_init_resolve_route_work(work, id_priv);
  
--	pmd = (pmd_t *) __get_free_pages(GFP_KERNEL, PMD_ORDER);
--	if (pmd)
-+	pg = alloc_pages(GFP_KERNEL | __GFP_ACCOUNT, PMD_ORDER);
-+	if (pg) {
-+		pgtable_pmd_page_ctor(pg);
-+		pmd = (pmd_t *)page_address(pg);
- 		pmd_init((unsigned long)pmd, (unsigned long)invalid_pte_table);
-+	}
- 	return pmd;
- }
- 
+-	route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
++	if (!route->path_rec)
++		route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
+ 	if (!route->path_rec) {
+ 		ret = -ENOMEM;
+ 		goto err1;
 -- 
 2.30.2
 
