@@ -2,69 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83623BC6F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 09:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE62D3BC6F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 09:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhGFHE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 03:04:58 -0400
-Received: from mail-vs1-f44.google.com ([209.85.217.44]:36401 "EHLO
-        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbhGFHE5 (ORCPT
+        id S230218AbhGFHIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 03:08:06 -0400
+Received: from regular1.263xmail.com ([211.150.70.204]:46414 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230138AbhGFHIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 03:04:57 -0400
-Received: by mail-vs1-f44.google.com with SMTP id g25so2295026vss.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 00:02:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9xIwHt5PeAkDjNM0GumPVX7YcEcAvNDDYFz3rxhdD9Y=;
-        b=B/Jt2iBduh+0lqoEiClMUYZMTU+5Yn0Ix1Qb7v5g03f2Gm0jOob7u/jXV9rMOBe1oB
-         XaveknRNVOOF87Pb7TKc+DhgTmXlyjkW2qkcCu0Ag+LMHrEblhbqVGo9urPp6hE1z8aC
-         FGcgaPaN/amDxhqWJLPCGHu36fvM9QihrM7kBqa8vh8F48+5ALIW/715CwQZiRMFQW8V
-         trHksTdfPB+NY36KTqzK/0c6MvQS/GsnouBJshfEK4vCz1qkuLiXpC3oRx1q1LUASWxk
-         OTeCy1+Ke16EhMp7PRCFmRCt8jQCx0Fxz8SWcu6xU7nhBfOMX4D7ekBKCEarzzOmIHmE
-         kCaw==
-X-Gm-Message-State: AOAM533RXa+CbHr49+he6ORD7ZbJuQcnFnMR9hvaUxi9/Fn+flfGUn/I
-        IANjhcvFarkqvkqK3lXeKSqDCar7fFYuUiuEJbs=
-X-Google-Smtp-Source: ABdhPJwnML5SWGn0qF4isgulOhytCA8swwd1O/FeaZOMpZYf4vXlJfE7PIkxUiW+3hjI+6B7ZBztsOp7S4Y5DihWY3A=
-X-Received: by 2002:a67:db05:: with SMTP id z5mr13391517vsj.18.1625554939386;
- Tue, 06 Jul 2021 00:02:19 -0700 (PDT)
+        Tue, 6 Jul 2021 03:08:02 -0400
+Received: from localhost (unknown [192.168.167.172])
+        by regular1.263xmail.com (Postfix) with ESMTP id 0224F681;
+        Tue,  6 Jul 2021 15:05:16 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from [172.16.12.64] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P31478T139654521145088S1625555114518632_;
+        Tue, 06 Jul 2021 15:05:15 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <b7d86f5378007744ff140b6568f87285>
+X-RL-SENDER: shawn.lin@rock-chips.com
+X-SENDER: lintao@rock-chips.com
+X-LOGIN-NAME: shawn.lin@rock-chips.com
+X-FST-TO: ulf.hansson@linaro.org
+X-RCPT-COUNT: 8
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Message-ID: <8d310df9-2139-e5ff-e0ee-205ffc1778a2@rock-chips.com>
+Date:   Tue, 6 Jul 2021 15:05:15 +0800
 MIME-Version: 1.0
-References: <20210705204727.10743-1-paskripkin@gmail.com>
-In-Reply-To: <20210705204727.10743-1-paskripkin@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 6 Jul 2021 09:02:08 +0200
-Message-ID: <CAMuHMdVKgW42GCwntSawRXNvRejm90zhuY9_X_u1OxfDj40aTA@mail.gmail.com>
-Subject: Re: [PATCH] m68k: emu: fix invalid free in nfeth_cleanup()
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Petr Stehlik <pstehlik@sophics.cz>, milan.jurik@xylab.cz,
-        Michael Schmitz <schmitz@debian.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101
+ Thunderbird/90.0
+Cc:     shawn.lin@rock-chips.com, Adrian Hunter <adrian.hunter@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Christian Lohle <CLoehle@hyperstone.com>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+Subject: Re: [PATCH 0/3] mmc: core: Avoid hogging the CPU while polling for
+ busy
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+References: <20210702134229.357717-1-ulf.hansson@linaro.org>
+From:   Shawn Lin <shawn.lin@rock-chips.com>
+In-Reply-To: <20210702134229.357717-1-ulf.hansson@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 10:47 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
-> In for loop all nfeth_dev array members should be freed, not only
-> the first one. Freeing only first array member can cause double-free bug.
->
-> Fixes: 9cd7b148312f ("m68k/atari: ARAnyM - Add support for network
-> access")
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+On 2021/7/2 21:42, Ulf Hansson wrote:
+> Step by step, code that have been dealing sending CMD13 to poll the card for
+> busy, have been moved to use the common mmc_poll_for_busy() loop. This helps to
+> avoid hogging the CPU, for example, as it inserts a small delay in between each
+> polling attempt. Additionally, it avoids open coding.
+> 
+> This series takes the next and final step, by moving the mmc block device layer
+> from its own busy polling loop, into using the common code.
+> 
+> Please test and review!
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.15 branch.
+Hi Ulf,
 
-Gr{oetje,eeting}s,
+This patch-set looks good,
 
-                        Geert
+Reviewed-by: Shawn Lin <shawn.lin@rock-chips.com>
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> Kind regards
+> Uffe
+> 
+> Ulf Hansson (3):
+>    mmc: core: Avoid hogging the CPU while polling for busy in the I/O err
+>      path
+>    mmc: core: Avoid hogging the CPU while polling for busy for mmc ioctls
+>    mmc: core: Avoid hogging the CPU while polling for busy after I/O
+>      writes
+> 
+>   drivers/mmc/core/block.c   | 74 +++++++++++++++++---------------------
+>   drivers/mmc/core/mmc_ops.c |  5 ++-
+>   drivers/mmc/core/mmc_ops.h |  1 +
+>   3 files changed, 37 insertions(+), 43 deletions(-)
+> 
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
