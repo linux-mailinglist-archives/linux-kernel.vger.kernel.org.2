@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B7C3BD440
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE483BD403
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239176AbhGFMGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:06:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47550 "EHLO mail.kernel.org"
+        id S239914AbhGFME2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:04:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237242AbhGFLgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:36:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E7B861ED8;
-        Tue,  6 Jul 2021 11:26:23 +0000 (UTC)
+        id S237253AbhGFLgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:36:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 700F861ED3;
+        Tue,  6 Jul 2021 11:26:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570784;
-        bh=5+gQWr/yUf/ad/b9w3djbtGAt44Gg7Xp0cfmZQse++Y=;
+        s=k20201202; t=1625570788;
+        bh=YKDKaRGl7fO7ELmzr9hBkOFhBeqnWCkO4x0aW4zfCPE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nV/i5M/vFzMohMGNJ3ycSjTlgtjpEkQAV22VTTKT+Ji6l9E9o+XmLT9QJ6RlKEyRK
-         zOqxXN06molmzF5YVA7HM+TPktN1PCPA5Ozh+n6m/Xaa+O7asimgqQOCdwBIoy/IEv
-         gmfh+Dk7jIn/cQ2GjOxF0YFnPaiwajaF21Qk2j3jNez0CCORi2wyecQGGWX2KmOVEp
-         7YDMgfumACHsq/S9heKoxcp8PdLBXKVknRTJW8EKRCiu7SqHhUmB8zaZF8a1AzPcDL
-         fX0geepjWR0ldHJDDvjplq8B6qmcsZQLxt8r9uxyvqsRVn49/5WTxmIH8r+KT8by0y
-         P0VDl1TXXjsvg==
+        b=LV5S6k/nPF7tUbmUa1I+tjokFUrBsh9V/vgIDhZ/o/hF5Iw35csRC6Y4HUanRDH7L
+         M9Dr9DXL/f5S+gGjO3LcwUPdDTBEFnSXYdayJODuFzFa2qfcGUgUtj3A4tM8S+YhZS
+         tJIRebgctlR+T0AyrHxhxVDjNsMhtt3labW8nAoVCMR9vYINSDQxNBhz0a7voolQRi
+         9EwAyqU9/3V/4+ksZd9Lh9oX0NsgNxCoMpK/1PORj5JIp7EUw+oRsgn/s2SYzhMO1m
+         VHGxCke2/N/0EHKj3vZnOHOS60wnscEXpXOw47pHcRM/2DgQh/IQ3mHLiiWxbtWVc4
+         1JvdOpLfy9iFQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sean Young <sean@mess.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 64/74] media, bpf: Do not copy more entries than user space requested
-Date:   Tue,  6 Jul 2021 07:24:52 -0400
-Message-Id: <20210706112502.2064236-64-sashal@kernel.org>
+Cc:     "mark-yw.chen" <mark-yw.chen@mediatek.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-bluetooth@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 67/74] Bluetooth: btusb: Fixed too many in-token issue for Mediatek Chip.
+Date:   Tue,  6 Jul 2021 07:24:55 -0400
+Message-Id: <20210706112502.2064236-67-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112502.2064236-1-sashal@kernel.org>
 References: <20210706112502.2064236-1-sashal@kernel.org>
@@ -42,41 +45,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: "mark-yw.chen" <mark-yw.chen@mediatek.com>
 
-[ Upstream commit 647d446d66e493d23ca1047fa8492b0269674530 ]
+[ Upstream commit 8454ed9ff9647e31e061fb5eb2e39ce79bc5e960 ]
 
-The syscall bpf(BPF_PROG_QUERY, &attr) should use the prog_cnt field to
-see how many entries user space provided and return ENOSPC if there are
-more programs than that. Before this patch, this is not checked and
-ENOSPC is never returned.
+This patch reduce in-token during download patch procedure.
+Don't submit urb for polling event before sending hci command.
 
-Note that one lirc device is limited to 64 bpf programs, and user space
-I'm aware of -- ir-keytable -- always gives enough space for 64 entries
-already. However, we should not copy program ids than are requested.
-
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20210623213754.632-1-sean@mess.org
+Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/rc/bpf-lirc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/bluetooth/btusb.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/rc/bpf-lirc.c b/drivers/media/rc/bpf-lirc.c
-index 0a0ce620e4a2..d5f839fdcde7 100644
---- a/drivers/media/rc/bpf-lirc.c
-+++ b/drivers/media/rc/bpf-lirc.c
-@@ -329,7 +329,8 @@ int lirc_prog_query(const union bpf_attr *attr, union bpf_attr __user *uattr)
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index b467fd05c5e8..27ff7a6e2fc9 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -2700,11 +2700,6 @@ static int btusb_mtk_hci_wmt_sync(struct hci_dev *hdev,
+ 	struct btmtk_wmt_hdr *hdr;
+ 	int err;
+ 
+-	/* Submit control IN URB on demand to process the WMT event */
+-	err = btusb_mtk_submit_wmt_recv_urb(hdev);
+-	if (err < 0)
+-		return err;
+-
+ 	/* Send the WMT command and wait until the WMT event returns */
+ 	hlen = sizeof(*hdr) + wmt_params->dlen;
+ 	if (hlen > 255)
+@@ -2726,6 +2721,11 @@ static int btusb_mtk_hci_wmt_sync(struct hci_dev *hdev,
+ 		return err;
  	}
  
- 	if (attr->query.prog_cnt != 0 && prog_ids && cnt)
--		ret = bpf_prog_array_copy_to_user(progs, prog_ids, cnt);
-+		ret = bpf_prog_array_copy_to_user(progs, prog_ids,
-+						  attr->query.prog_cnt);
- 
- unlock:
- 	mutex_unlock(&ir_raw_handler_lock);
++	/* Submit control IN URB on demand to process the WMT event */
++	err = btusb_mtk_submit_wmt_recv_urb(hdev);
++	if (err < 0)
++		return err;
++
+ 	/* The vendor specific WMT commands are all answered by a vendor
+ 	 * specific event and will have the Command Status or Command
+ 	 * Complete as with usual HCI command flow control.
 -- 
 2.30.2
 
