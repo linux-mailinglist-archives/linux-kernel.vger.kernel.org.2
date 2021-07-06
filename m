@@ -2,161 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851413BC852
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE44A3BC856
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhGFJL7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Jul 2021 05:11:59 -0400
-Received: from de-smtp-delivery-105.mimecast.com ([194.104.109.105]:37691 "EHLO
-        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231146AbhGFJL6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 05:11:58 -0400
-Received: from GBR01-CWL-obe.outbound.protection.outlook.com
- (mail-cwlgbr01lp2051.outbound.protection.outlook.com [104.47.20.51]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-23-mL_Z4pCcNlGQcH_aagBqFQ-1; Tue, 06 Jul 2021 11:09:17 +0200
-X-MC-Unique: mL_Z4pCcNlGQcH_aagBqFQ-1
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
- by CWXP265MB4006.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:123::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.33; Tue, 6 Jul
- 2021 09:09:16 +0000
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::259d:65ac:ae6d:409d]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::259d:65ac:ae6d:409d%9]) with mapi id 15.20.4287.033; Tue, 6 Jul 2021
- 09:09:16 +0000
-From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Avri Altman <Avri.Altman@wdc.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] mmc: block: Differentiate busy and non-TRAN state
-Thread-Topic: [PATCH] mmc: block: Differentiate busy and non-TRAN state
-Thread-Index: AQHXbl0Q77+Qfc7HWE6ez2HIF5qrJas1omGlgAAGD4CAAADv5A==
-Date:   Tue, 6 Jul 2021 09:09:16 +0000
-Message-ID: <CWXP265MB26803EFAC659676EC0914F97C41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-References: <CWXP265MB268049D9AB181062DA7F6DDBC4009@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <CWXP265MB26807AC3C130772D789D0AABC41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<CAPDyKFq44ZuXXUDQV34NSW-ixB9GAZfDx+dx-Kb8O7=LQ1TSHQ@mail.gmail.com>
-In-Reply-To: <CAPDyKFq44ZuXXUDQV34NSW-ixB9GAZfDx+dx-Kb8O7=LQ1TSHQ@mail.gmail.com>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [185.80.168.10]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7fe5bb83-1a84-4cc9-cb0c-08d9405dbb05
-x-ms-traffictypediagnostic: CWXP265MB4006:
-x-microsoft-antispam-prvs: <CWXP265MB4006DBD9C8AAD1F10FB4DCD4C41B9@CWXP265MB4006.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:9508
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0
-x-microsoft-antispam-message-info: OayZVYdoJchMqzsG5wcp7dO/2wFZKlneIVtZLlM81qxgAVpxzKdf8VQurqGaVXXo8VlCYo4YYZ+WSrogdqenGwH2uFEFyxw768Lqw0t2b6RvMSaE1rJ2yu4d7NKKjswBbt8o3yM+ZczHC5vx9e2O2PzBgiK56Xiq3+lMo3SNSj8EiZ3eH6EOvwtH1CbbXTRMJT0LTEE4/GZjTkHjjW/hSF3zc/5XkIhLGgJeQVumfZSFQlAYyK/ojhbaOESKgAqwjokF0OdG6DcP2iFjbbFY/F/L6GS14Isn9GhOPxYFPjta/iyXeCBgrxL81cbAWKX6DXX+gyBthaRa2FTZVzApCm3mx83KDzxFqZ2EKu9VUVfBLZ5nhfQ7CYRAdJ7M1nW3EFLbUdy5LREe+Ladf8GSeykgfcfcSwtuX0uBu1BIEK30MSbaq6Nfbq1EbikYjzbOfuCqkb/LmO2qfEZAQsM1+iuV9kYoanjD5TcjzTjXsFMbud+XLDgXml9Xu4CDzoFp+JgGqUYJTpPBO8PnMPNuhw0SKlz5t303ZZH1bl2DwTKYMtXor5+vfALeLJ31l1vgVSvK5/cFwuEHglgDE3DIhdpneSNdFeTUNpX3pViOCR+hZKfNLr/v83bshBG35ZPlrO87ZS0o6hlDT4TraQV4Mg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(39830400003)(396003)(366004)(376002)(346002)(86362001)(2906002)(478600001)(7696005)(186003)(91956017)(71200400001)(6506007)(8936002)(52536014)(9686003)(4326008)(55016002)(66446008)(66946007)(316002)(76116006)(66476007)(64756008)(66556008)(8676002)(38100700002)(122000001)(83380400001)(33656002)(54906003)(6916009)(26005)(5660300002);DIR:OUT;SFP:1101
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?bbPhBamf1xsh7aMSid7wRkPTbiwqbe4uZNmoeOQ/wXz1tEF/ze2tb2ETUn?=
- =?iso-8859-1?Q?iEBAq412VK4okL6nMutbtNnN+o1XzN7VYNqbB7eWxWnQQiwteyBgNhprBF?=
- =?iso-8859-1?Q?RaIdqWuygJz6gIuKfey1at60oz+I29eQSSxesoIOU+HQT048BcvfnQfLJF?=
- =?iso-8859-1?Q?beYnx4Xbt7sc5gtzo8aj3VGi7P6aYuJ2wRDlhQ9H6zBzbEGLcrsyeCMBfk?=
- =?iso-8859-1?Q?DkASSSYIrA+g87+oEuuOHuaxY4xPA1KB5tH27jaNxwpN5nnPzmUUSwsWVl?=
- =?iso-8859-1?Q?mVMT/Zyi4t16+l+n/gAJCPd+i6zcpJcTe2lEhXSSspJcdiGR6Kl/y6z5Gk?=
- =?iso-8859-1?Q?ijFmJa2iRGVJIj34iCyZDW2xgzMl1DSfjRWfI2GVGIUGBw6sTK+6TBHfQd?=
- =?iso-8859-1?Q?eDhAftgYqTe4qCsLkkRt8k2KNP6E0wVEu3dnPeaViqGw1+OlAv5gCPfLyv?=
- =?iso-8859-1?Q?j1vsp6vZHkU4mRLqtdA6KiM9IyE8IwsS0ngISAHNXi2aJRf+jzk0yWCiQX?=
- =?iso-8859-1?Q?5IPADOz8zHod2Rw7UfBW0VykraeNKmcjU/HkduBuZTlX80bujmMAoDgoKS?=
- =?iso-8859-1?Q?bTkKliE6/4BzdAwgvdtNIp+9eVuu5HQW9xb7jxQ6VNQ70FwyNxYzJThGQ9?=
- =?iso-8859-1?Q?gLJ/ioR3wpkF0YyAGkSBsNXTxST/GS41u7GepmgIjCTZlr1u1ZMF5U8h2p?=
- =?iso-8859-1?Q?1RPrZ6bGiyOBkfOn9PUfCAS8J4zXeJeTIIKNHU4nVR+Ge8DZVjkMHbm6d3?=
- =?iso-8859-1?Q?Y58KFEXnqjyTUx4rChl6XKSSQv82c9TafJYYpKjz+Gk/i42oZYadcCS4KO?=
- =?iso-8859-1?Q?NzH1LibQpv0bnMEm6S4I6EaTFG6cQMxkVK6etu/hellGlGrT/xFBhd84wC?=
- =?iso-8859-1?Q?1YNhnCFJ8vu3TmARQF4FFGhQ3WevhewZl0KitaO5hQqDllGO13b6Vop21n?=
- =?iso-8859-1?Q?fpEmOhHswrWBE33nCeu3FHLpmHk3T64oUlAuMSxpp0aPL8Z4g1hSCGOpkW?=
- =?iso-8859-1?Q?EhpbSl5rMyyV6vfWSlZicGB8qmpBzvJz83aX3YSKh3O8fAxP/adhDJmvpA?=
- =?iso-8859-1?Q?YOsfi3PgohEPjqd2VyTMyRRQXOSqOiu06rXB57UOqRWLtnxMEQjI1j+V4q?=
- =?iso-8859-1?Q?OaesP7Hzmoio+C9NT+daWfYwPmwE1S0UBobweM9nnv0t40LDxPRYML1QgQ?=
- =?iso-8859-1?Q?iNuuqZmGLA/olBNOphstp7cZ1bAINQUOAIwnoYFFne+prPbbGkb+N796Kk?=
- =?iso-8859-1?Q?BpVzFSSOwScp82QwNvBKfrt6rlhbtLbi76vMb77pBvjtL0YxjYqeMRQ25P?=
- =?iso-8859-1?Q?VOp9sXQsHU2C6eOV/rnO4gmRR+tW/j5/Yq0gocnzy+cCacw=3D?=
-x-ms-exchange-transport-forked: True
+        id S230527AbhGFJOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 05:14:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:35272 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230295AbhGFJOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 05:14:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DFF731B;
+        Tue,  6 Jul 2021 02:11:27 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.31.83])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2003C3F5A1;
+        Tue,  6 Jul 2021 02:11:25 -0700 (PDT)
+Date:   Tue, 6 Jul 2021 10:11:20 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Anatoly Pugachev <matorola@gmail.com>,
+        Peter Zijlstra <peterz@lists.infradead.org>
+Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        debian-sparc <debian-sparc@lists.debian.org>
+Subject: Re: [sparc64] locking/atomic, kernel OOPS on running stress-ng
+Message-ID: <20210706091104.GA69200@C02TD0UTHF1T.local>
+References: <CADxRZqzcrnSMzy50T+kWb_mQVguWDCMu6RoXsCc+-fNDPYXbaw@mail.gmail.com>
+ <20210705195638.GA53988@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-X-OriginatorOrg: hyperstone.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7fe5bb83-1a84-4cc9-cb0c-08d9405dbb05
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2021 09:09:16.2624
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UEGVgZC7J9Tr6+jVbMT/3y5QL6As+qTnPCFFidWHwjJMq8bbzzFuTmEarBTsArds6v4blD6uSgUqZ+g+oeLxhQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB4006
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: hyperstone.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705195638.GA53988@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Uffe,
+On Mon, Jul 05, 2021 at 08:56:54PM +0100, Mark Rutland wrote:
+> On Mon, Jul 05, 2021 at 06:16:49PM +0300, Anatoly Pugachev wrote:
+> > Hello!
+> 
+> Hi Anatoly,
+> 
+> > latest sparc64 git kernel produces the following OOPS on running stress-ng as :
+> > 
+> > $ stress-ng -v --mmap 1 -t 30s
+> > 
+> > kernel OOPS (console logs):
+> > 
+> > [   27.276719] Unable to handle kernel NULL pointer dereference
+> > [   27.276782] tsk->{mm,active_mm}->context = 00000000000003cb
+> > [   27.276818] tsk->{mm,active_mm}->pgd = fff800003a2a0000
+> > [   27.276853]               \|/ ____ \|/
+> > [   27.276853]               "@'/ .. \`@"
+> > [   27.276853]               /_| \__/ |_\
+> > [   27.276853]                  \__U_/
+> > [   27.276927] stress-ng(928): Oops [#1]
+> 
+> I can reproduce this under QEMU; following your bisection (and working
+> around the missing ifdeferry that breaks bisection), I can confirm that
+> the first broken commit is:
+> 
+>   ff5b4f1ed580 ("locking/atomic: sparc: move to ARCH_ATOMIC")
+> 
+> Sorry about this.
+>  
+> > Can someone please look at this commit ids?
+> 
+> From digging into this, I can't spot an obvious bug in the commit above.
 
->> +static int is_return_to_tran_cmd(struct mmc_command *cmd)
->> +{
->> +       /*
->> +        * Cards will never return to TRAN after completing
->> +        * identification commands or MMC_SEND_STATUS if they are not selected.
->> +        */
->> +       switch (cmd->opcode) {
->> +       case MMC_GO_IDLE_STATE:
->> +       case MMC_SEND_OP_COND:
->> +       case MMC_ALL_SEND_CID:
->> +       case MMC_SET_RELATIVE_ADDR:
->> +       case MMC_SET_DSR:
->> +       case MMC_SLEEP_AWAKE:
->> +       case MMC_SELECT_CARD:
->> +       case MMC_SEND_CSD:
->> +       case MMC_SEND_CID:
->> +       case MMC_SEND_STATUS:
->> +       case MMC_GO_INACTIVE_STATE:
->> +       case MMC_APP_CMD:
->> +               return false;
->> +       default:
->> +               return true;
->> +       }
->> +}
->>
->What exactly are you trying to do with the user space program through
->the mmc ioctl with all these commands? The mmc ioctl interface is not
->designed to be used like that.
->
->In principle, it looks like we should support a complete
->re-initialization of the card. I am sorry, but no thanks! This doesn't
->work, but more importantly, this should be managed solely by the
->kernel, in my opinion.
+Looking again with fresh eyes, there is a trivial bug after all.
 
-Doing initialization itself through ioctl is silly, I agree, and does
-not work on other ends. This patch is not about that. it just explicitly disables
-any CMD13 polling for TRAN for some of those commands. the behavior
-for such commands thus is the same as without the patch.
-The reason for this patch is to not run into the race condition that a 
-following (ioctl) command will be rejected because the card is in e.g. PROG state
-of a previous ioctl command. As stated earlier, I encountered this a lot when
-doing a unlock force erase -> lock/set, in both scenarios, issued as two single
-ioctl commands and bundled together.
-But this race condition exists on any (non-R1b/ RPBM) currently. As there is
-no CMD13 polling happening after the response (or whenever the driver marks
-the request as done), the card's status is therefore generally unknown.
+Could you give the patch below a spin? It works for me locally under
+QEMU.
 
-So in short I don;t want to do anything too crazy from userspace, but the
-alternative now is to do like 100ms sleeps in the hope that the card is
-actually finished with the issued command (not just the host driver so to say).
+Sorry again about this!
 
-Kind Regards,
-Christian
-Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-Managing Directors: Dr. Jan Peter Berns.
-Commercial register of local courts: Freiburg HRB381782
+Thanks,
+Mark
+---->8----
+From afb683b2ce749dca426d27f05af3ea08455a52d7 Mon Sep 17 00:00:00 2001
+From: Mark Rutland <mark.rutland@arm.com>
+Date: Tue, 6 Jul 2021 09:55:56 +0100
+Subject: [PATCH] locking/atomic: sparc: fix arch_cmpxchg64_local()
+
+Anatoly reports that since commit:
+
+  ff5b4f1ed580c59d ("locking/atomic: sparc: move to ARCH_ATOMIC")
+
+... it's possible to reliably trigger an oops by running:
+
+  stress-ng -v --mmap 1 -t 30s
+
+... which results in a NULL pointer dereference in
+__split_huge_pmd_locked().
+
+The underlying problem is that commit ff5b4f1ed580c59d left
+arch_cmpxchg64_local() defined in terms of cmpxchg_local() rather than
+arch_cmpxchg_local(). In <asm-generic/atomic-instrumented.h> we wrap
+these with macros which use identically-named variables. When
+cmpxchg_local() nests inside cmpxchg64_local(), this casues it to use an
+unitialized variable as the pointer, which can be NULL.
+
+This can also be seen in pmdp_establish(), where the compiler can
+generate the pointer with a `clr` instruction:
+
+0000000000000360 <pmdp_establish>:
+ 360:   9d e3 bf 50     save  %sp, -176, %sp
+ 364:   fa 5e 80 00     ldx  [ %i2 ], %i5
+ 368:   82 10 00 1b     mov  %i3, %g1
+ 36c:   84 10 20 00     clr  %g2
+ 370:   c3 f0 90 1d     casx  [ %g2 ], %i5, %g1
+ 374:   80 a7 40 01     cmp  %i5, %g1
+ 378:   32 6f ff fc     bne,a   %xcc, 368 <pmdp_establish+0x8>
+ 37c:   fa 5e 80 00     ldx  [ %i2 ], %i5
+ 380:   d0 5e 20 40     ldx  [ %i0 + 0x40 ], %o0
+ 384:   96 10 00 1b     mov  %i3, %o3
+ 388:   94 10 00 1d     mov  %i5, %o2
+ 38c:   92 10 00 19     mov  %i1, %o1
+ 390:   7f ff ff 84     call  1a0 <__set_pmd_acct>
+ 394:   b0 10 00 1d     mov  %i5, %i0
+ 398:   81 cf e0 08     return  %i7 + 8
+ 39c:   01 00 00 00     nop
+
+This patch fixes the problem by defining arch_cmpxchg64_local() in terms
+of arch_cmpxchg_local(), avoiding potential shadowing, and resulting in
+working cmpxchg64_local() and variants, e.g.
+
+0000000000000360 <pmdp_establish>:
+ 360:   9d e3 bf 50     save  %sp, -176, %sp
+ 364:   fa 5e 80 00     ldx  [ %i2 ], %i5
+ 368:   82 10 00 1b     mov  %i3, %g1
+ 36c:   c3 f6 90 1d     casx  [ %i2 ], %i5, %g1
+ 370:   80 a7 40 01     cmp  %i5, %g1
+ 374:   32 6f ff fd     bne,a   %xcc, 368 <pmdp_establish+0x8>
+ 378:   fa 5e 80 00     ldx  [ %i2 ], %i5
+ 37c:   d0 5e 20 40     ldx  [ %i0 + 0x40 ], %o0
+ 380:   96 10 00 1b     mov  %i3, %o3
+ 384:   94 10 00 1d     mov  %i5, %o2
+ 388:   92 10 00 19     mov  %i1, %o1
+ 38c:   7f ff ff 85     call  1a0 <__set_pmd_acct>
+ 390:   b0 10 00 1d     mov  %i5, %i0
+ 394:   81 cf e0 08     return  %i7 + 8
+ 398:   01 00 00 00     nop
+ 39c:   01 00 00 00     nop
+
+Fixes: ff5b4f1ed580c59d ("locking/atomic: sparc: move to ARCH_ATOMIC")
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Reported-by: Anatoly Pugachev <matorola@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Peter Zijlstra <peterz@lists.infradead.org>
+---
+ arch/sparc/include/asm/cmpxchg_64.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/sparc/include/asm/cmpxchg_64.h b/arch/sparc/include/asm/cmpxchg_64.h
+index 8c39a9981187..12d00a42c0a3 100644
+--- a/arch/sparc/include/asm/cmpxchg_64.h
++++ b/arch/sparc/include/asm/cmpxchg_64.h
+@@ -201,7 +201,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
+ #define arch_cmpxchg64_local(ptr, o, n)					\
+   ({									\
+ 	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
+-	cmpxchg_local((ptr), (o), (n));					\
++	arch_cmpxchg_local((ptr), (o), (n));					\
+   })
+ #define arch_cmpxchg64(ptr, o, n)	arch_cmpxchg64_local((ptr), (o), (n))
+ 
+-- 
+2.11.0
 
