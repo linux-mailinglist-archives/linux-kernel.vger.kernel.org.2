@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406D03BD340
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84FC3BD33B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232413AbhGFLup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:50:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47578 "EHLO mail.kernel.org"
+        id S241304AbhGFLu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:50:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237250AbhGFLgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:36:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A1B261EE9;
-        Tue,  6 Jul 2021 11:26:26 +0000 (UTC)
+        id S237261AbhGFLgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:36:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC8A261EE8;
+        Tue,  6 Jul 2021 11:26:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570787;
-        bh=eSSeVjX4tABcygdynp3aCwh5KTzk60SBxkDdrdVEiRs=;
+        s=k20201202; t=1625570789;
+        bh=kd+FoFbVXUKm0zQWMlCwp3ZNy6/THo/mmLuN2xDBe9Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K+3Wgea/axzVa6Wvx+T0F8rq35JWKiN2x75OHBc17Tfs2egdchJp5GP/UDzk8bx09
-         roULUIlGn5WC0Q54b9giWF2MZ1o/mmS1SwUI/0NFPF/V1OFQHGa0rKsXmx3mIh8Zx8
-         KcdF4la9ZSL6ke10PMHtS6KXkPE0d73q4bJ4oL1SEqSkeLj2LgABdbOQ+HXkI/VA/n
-         fX3UXKNV3iH5Czknw1QYRB7N+BVTNlpFf+2QCXC5VDcqlWazEflPpg/bL/FVN0umEr
-         Kdu6OTQbba6rBbD3ywVEenIXNe+UZ8ralW/VJFophUoaOdEK241UYEhXw7LHtQ2j6y
-         iwblqLxPsdQUQ==
+        b=HSSRavsBIsVljpBZqDueLtoADxLGiy6EDXRbl3tQT/mu/144rE3PRHt8yV9Z7/xP0
+         94hPVSRwLdh0zV7LVp5kzbb9/w6xrgUCPOLCGWWx3rBbmW/2jhhSwnuIl6n2wwbnW5
+         c1QX9FA5M4XgeUNt5GqATWXNugHuxQHLQcGuIODMEzyMQ+3ew6BFvYvU3blR+c+sP0
+         R6vIyA6KMuGXYHBcqYHyNg5E0RXlrmlCuLK9+t9DB1tUwaO+van3au2REpG4CngeSF
+         Te7H6CUO3hrcYvrx1dBril5OH4KES5HqNpJMXPp1gOEFawfAQGaGFAIghbgUfxBRsJ
+         aJvjexQZC+mIg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 66/74] RDMA/cma: Fix rdma_resolve_route() memory leak
-Date:   Tue,  6 Jul 2021 07:24:54 -0400
-Message-Id: <20210706112502.2064236-66-sashal@kernel.org>
+Cc:     Yu Liu <yudiliu@google.com>, Miao-chen Chou <mcchou@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 68/74] Bluetooth: Fix the HCI to MGMT status conversion table
+Date:   Tue,  6 Jul 2021 07:24:56 -0400
+Message-Id: <20210706112502.2064236-68-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112502.2064236-1-sashal@kernel.org>
 References: <20210706112502.2064236-1-sashal@kernel.org>
@@ -42,39 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gerd Rausch <gerd.rausch@oracle.com>
+From: Yu Liu <yudiliu@google.com>
 
-[ Upstream commit 74f160ead74bfe5f2b38afb4fcf86189f9ff40c9 ]
+[ Upstream commit 4ef36a52b0e47c80bbfd69c0cce61c7ae9f541ed ]
 
-Fix a memory leak when "mda_resolve_route() is called more than once on
-the same "rdma_cm_id".
+0x2B, 0x31 and 0x33 are reserved for future use but were not present in
+the HCI to MGMT conversion table, this caused the conversion to be
+incorrect for the HCI status code greater than 0x2A.
 
-This is possible if cma_query_handler() triggers the
-RDMA_CM_EVENT_ROUTE_ERROR flow which puts the state machine back and
-allows rdma_resolve_route() to be called again.
-
-Link: https://lore.kernel.org/r/f6662b7b-bdb7-2706-1e12-47c61d3474b6@oracle.com
-Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+Signed-off-by: Yu Liu <yudiliu@google.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/cma.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/bluetooth/mgmt.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 92428990f0cc..ec9e9598894f 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -2719,7 +2719,8 @@ static int cma_resolve_ib_route(struct rdma_id_private *id_priv,
- 
- 	cma_init_resolve_route_work(work, id_priv);
- 
--	route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
-+	if (!route->path_rec)
-+		route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
- 	if (!route->path_rec) {
- 		ret = -ENOMEM;
- 		goto err1;
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 5fce559a61bf..bbe59cad95c2 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -219,12 +219,15 @@ static u8 mgmt_status_table[] = {
+ 	MGMT_STATUS_TIMEOUT,		/* Instant Passed */
+ 	MGMT_STATUS_NOT_SUPPORTED,	/* Pairing Not Supported */
+ 	MGMT_STATUS_FAILED,		/* Transaction Collision */
++	MGMT_STATUS_FAILED,		/* Reserved for future use */
+ 	MGMT_STATUS_INVALID_PARAMS,	/* Unacceptable Parameter */
+ 	MGMT_STATUS_REJECTED,		/* QoS Rejected */
+ 	MGMT_STATUS_NOT_SUPPORTED,	/* Classification Not Supported */
+ 	MGMT_STATUS_REJECTED,		/* Insufficient Security */
+ 	MGMT_STATUS_INVALID_PARAMS,	/* Parameter Out Of Range */
++	MGMT_STATUS_FAILED,		/* Reserved for future use */
+ 	MGMT_STATUS_BUSY,		/* Role Switch Pending */
++	MGMT_STATUS_FAILED,		/* Reserved for future use */
+ 	MGMT_STATUS_FAILED,		/* Slot Violation */
+ 	MGMT_STATUS_FAILED,		/* Role Switch Failed */
+ 	MGMT_STATUS_INVALID_PARAMS,	/* EIR Too Large */
 -- 
 2.30.2
 
