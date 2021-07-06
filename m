@@ -2,133 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086323BC80A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDFE3BC827
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbhGFIoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 04:44:19 -0400
-Received: from mail-lf1-f49.google.com ([209.85.167.49]:46803 "EHLO
-        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhGFIoR (ORCPT
+        id S230472AbhGFI6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 04:58:34 -0400
+Received: from gateway22.websitewelcome.com ([192.185.47.48]:33963 "EHLO
+        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230295AbhGFI6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 04:44:17 -0400
-Received: by mail-lf1-f49.google.com with SMTP id p21so15225951lfj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 01:41:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NyUpgfzCUbJx1C57gm9KmP1EbMgOX/TnxFpGGqR1W7U=;
-        b=UOAZUMhyYCAW3UICa+4oY8T0moHJlvTiXihYIPpk4vkr2IsQCAuCWCQ8CHbw8+/qlj
-         5QTMH4KCBHZ0lP3msjKr73Fgeud978PM0dEiShoW/YOkeo4bMohuHDHoVD1IwShIJG0k
-         CL5gqaM56KM6/grt38aTyt//FibfGN43ouZvo57swJc0x28TjytNy2tYplFoQVlAtel0
-         YfIw+N4H224sqPMT44TKBModZa2WkRe2aNC+1Lspw6aP3AxtCJyqzmBQFqS/3N14E8uP
-         AOQtKt5N8AhQ9RD7VUoQ1lwqg4uM5GWrCHFIJsoNC5R4syCXJDuqzNdxnVolhMTvl6cN
-         PJAA==
-X-Gm-Message-State: AOAM531NIUUp74pBfnG6BF8t6wfC5DIJLV981+UjLOYtyvZmFj5/CL4p
-        4X7YqXuLO9juHQziCPSsD1VYTpSDaNYTeg==
-X-Google-Smtp-Source: ABdhPJyrCnpayMZF8BAxaUeSsgl6Jw5KXb3K8o0HCVElnzLw9m6ceJtMPpVKQxvfuZDf5ZJW72Timw==
-X-Received: by 2002:a05:6512:3499:: with SMTP id v25mr13816233lfr.612.1625560897161;
-        Tue, 06 Jul 2021 01:41:37 -0700 (PDT)
-Received: from localhost (88-112-11-80.elisa-laajakaista.fi. [88.112.11.80])
-        by smtp.gmail.com with ESMTPSA id p14sm444396lfc.23.2021.07.06.01.41.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 01:41:36 -0700 (PDT)
-From:   Hannu Hartikainen <hannu@hrtk.in>
-To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
-Cc:     Hannu Hartikainen <hannu@hrtk.in>
-Subject: [PATCH] get_maintainer: only show lkml as last resort
-Date:   Tue,  6 Jul 2021 11:33:55 +0300
-Message-Id: <20210706083354.214826-1-hannu@hrtk.in>
-X-Mailer: git-send-email 2.32.0
+        Tue, 6 Jul 2021 04:58:33 -0400
+X-Greylist: delayed 1259 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Jul 2021 04:58:33 EDT
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway22.websitewelcome.com (Postfix) with ESMTP id F128814AB9
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 03:34:53 -0500 (CDT)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id 0gXdmaomCK61i0gXdm0jru; Tue, 06 Jul 2021 03:34:53 -0500
+X-Authority-Reason: nr=8
+Received: from host-95-244-220-40.retail.telecomitalia.it ([95.244.220.40]:40218 helo=x1.bristot.me)
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1m0gXc-001fP3-BI; Tue, 06 Jul 2021 03:34:52 -0500
+Subject: Re: kvm-vm boot fail: ttm_bo_cleanup_memtype_use?
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <8c1ea35a-9ec9-bf11-ace4-8c604b04bbc3@kernel.org>
+ <fef73358-748f-f1d0-bca9-43efa6497f44@amd.com>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+Message-ID: <ab86c676-2753-6670-87de-57e1043c61c3@kernel.org>
+Date:   Tue, 6 Jul 2021 10:34:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <fef73358-748f-f1d0-bca9-43efa6497f44@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 95.244.220.40
+X-Source-L: No
+X-Exim-ID: 1m0gXc-001fP3-BI
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-95-244-220-40.retail.telecomitalia.it (x1.bristot.me) [95.244.220.40]:40218
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 3
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The documentation implies that patches should be primarily sent to a
-subsystem-specific mailing list [0]. Make get_maintainer only return the
-generic linux-kernel@vger.kernel.org ("THE REST") list when no other
-matching mailing list is found.
+On 7/6/21 8:53 AM, Christian König wrote:
+> Hi Daniel,
+> 
+> looks like a simple missing NULL check to me. Please test the attached patch.
+> 
 
-Most patches sent to lkml today are also sent to some other list. This
-change should lower the message volume on lkml in the long run, making
-the list more useful for those cases where it's the only option.
+It works!
 
-[0]: Documentation/process/submitting-patches.rst:
-> You should also normally choose at least one mailing list to receive a
-> copy of your patch set. linux-kernel@vger.kernel.org functions as a
-> list of last resort, but the volume on that list has caused a number of
-> developers to tune it out. Look in the MAINTAINERS file for a
-> subsystem-specific list; your patch will probably get more attention
-> there.
+Feel free to add:
 
-Signed-off-by: Hannu Hartikainen <hannu@hrtk.in>
----
+Reported-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Tested-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-I'm not sure if this is technically the best solution so I'm looking
-forward to review comments. But process-wise I think this should be a
-good change. Looking at tutorials and such, many people seem to just
-blindly run scripts/get_maintainer.pl and send their patches to all the
-addresses the script outputs. This must inflate the list a lot, making
-it difficult to follow and making it much more difficult to get readers
-for patches belonging to the list (including this one, ironically).
+> We recently changed the structure of the resources, so probably introduced while
+> doing that.
+> 
+> Christian.
 
- scripts/get_maintainer.pl | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
-
-diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-index 2075db0c08b8..c0a8dd5dfdbf 100755
---- a/scripts/get_maintainer.pl
-+++ b/scripts/get_maintainer.pl
-@@ -627,6 +627,7 @@ my %email_hash_address;
- my @email_to = ();
- my %hash_list_to;
- my @list_to = ();
-+my @list_the_rest_to = ();
- my @scm = ();
- my @web = ();
- my @subsystem = ();
-@@ -951,6 +952,11 @@ sub get_maintainers {
- 	}
-     }
- 
-+    # if no other list would be printed, fall back to THE REST
-+    if (scalar(@list_to) == 0) {
-+	@list_to = @list_the_rest_to
-+    }
-+
-     foreach my $email (@email_to, @list_to) {
- 	$email->[0] = deduplicate_email($email->[0]);
-     }
-@@ -1303,10 +1309,6 @@ sub get_list_role {
- 
-     my $subsystem = get_subsystem_name($index);
- 
--    if ($subsystem eq "THE REST") {
--	$subsystem = "";
--    }
--
-     return $subsystem;
- }
- 
-@@ -1355,8 +1357,13 @@ sub add_categories {
- 				}
- 			    } else {
- 				$hash_list_to{lc($list_address)} = 1;
--				push(@list_to, [$list_address,
--						"open list${list_role}"]);
-+				if ($list_role eq ":THE REST") {
-+				    push(@list_the_rest_to, [$list_address,
-+							     "open list"]);
-+				} else {
-+				    push(@list_to, [$list_address,
-+						    "open list${list_role}"]);
-+				}
- 			    }
- 			}
- 		    }
--- 
-2.32.0
-
+Thanks!
+-- Daniel
