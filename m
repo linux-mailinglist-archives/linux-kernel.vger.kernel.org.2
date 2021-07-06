@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15783BD40E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3773BD40B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241633AbhGFMBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:01:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47550 "EHLO mail.kernel.org"
+        id S240985AbhGFMAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:00:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237461AbhGFLgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237492AbhGFLgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Jul 2021 07:36:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BD3B61F2C;
-        Tue,  6 Jul 2021 11:28:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B224D61F03;
+        Tue,  6 Jul 2021 11:28:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570884;
-        bh=dVBJfQRirVoOIzRNPs88vxExJ0Go3B8dpqE3QDSy/mw=;
+        s=k20201202; t=1625570888;
+        bh=3IVAtzPpxoEBVV2EqKmnxyEFuGzcWDzdLnb0XTy4L4c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fs+yZ+OS3phuozim1/teBeLGWgU2V0YhWs0dCx9yWUo7J14zRERdC1hkhqPn+XRoH
-         rWqrq9EMXY1+pLPoY7jAcEAyI0GNepqT4n96tUxUuKf+3WdJvDHJzvmNtQMWB28gGw
-         KFTRevd02OOfFmFZoyYifX20ImVc8y6Bje6dDREeJ5lBT9MewC1HjX2xr+n0mO5vFF
-         o0z3vTgW0EYBD+Eah4nxgE16PonBq8b4lALcXdUrRlvZWnDkduDf18Pd0Y/t3pv4Q7
-         RpQHZXuGKi99Tg7fQ/nBiYWTpnCZqSiOs6HPPIVvxoaQUQC/cmWn0NXW3OUIOriJLd
-         /5EO2DLJv1MEA==
+        b=lcYeJYB1Lj092JR+sQQyetyHyHZGJGSasy7OvoMnOauV8zexBqidtaV/EuGWmnGOJ
+         p4s3+nISQgAB56wRP0acgywIdERM4zoDn04VThyvCxeAZd2qJrH5VJ+Ie5S+QKbhmY
+         p0jT6E4wycVvZYvx0gef9ds7J8LQz+MWu+ZfrPoCyH6uleD/iBYiJ2Xl8zoTDZ8WF1
+         URslWVkXrTuT5VklWyBvE9z9zSoAmr1+HPZar+xF4x4Zf/X1B2PspeXHpDyHbZzNxQ
+         keIsJyp4TOBFsnlnQoKz+QYYn0MVSMPTVDWQ3zTpMEvj3OLYImb8WP6G37zPAqvFbV
+         O/M5fOW9nPtJQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
-        reiserfs-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 11/45] reiserfs: add check for invalid 1st journal block
-Date:   Tue,  6 Jul 2021 07:27:15 -0400
-Message-Id: <20210706112749.2065541-11-sashal@kernel.org>
+Cc:     Arturo Giusti <koredump@protonmail.com>, Jan Kara <jack@suse.cz>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 14/45] udf: Fix NULL pointer dereference in udf_symlink function
+Date:   Tue,  6 Jul 2021 07:27:18 -0400
+Message-Id: <20210706112749.2065541-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112749.2065541-1-sashal@kernel.org>
 References: <20210706112749.2065541-1-sashal@kernel.org>
@@ -43,55 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Arturo Giusti <koredump@protonmail.com>
 
-[ Upstream commit a149127be52fa7eaf5b3681a0317a2bbb772d5a9 ]
+[ Upstream commit fa236c2b2d4436d9f19ee4e5d5924e90ffd7bb43 ]
 
-syzbot reported divide error in reiserfs.
-The problem was in incorrect journal 1st block.
+In function udf_symlink, epos.bh is assigned with the value returned
+by udf_tgetblk. The function udf_tgetblk is defined in udf/misc.c
+and returns the value of sb_getblk function that could be NULL.
+Then, epos.bh is used without any check, causing a possible
+NULL pointer dereference when sb_getblk fails.
 
-Syzbot's reproducer manualy generated wrong superblock
-with incorrect 1st block. In journal_init() wasn't
-any checks about this particular case.
+This fix adds a check to validate the value of epos.bh.
 
-For example, if 1st journal block is before superblock
-1st block, it can cause zeroing important superblock members
-in do_journal_end().
-
-Link: https://lore.kernel.org/r/20210517121545.29645-1-paskripkin@gmail.com
-Reported-by: syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=213083
+Signed-off-by: Arturo Giusti <koredump@protonmail.com>
 Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/reiserfs/journal.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ fs/udf/namei.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/reiserfs/journal.c b/fs/reiserfs/journal.c
-index 2be907231375..1a6e6343fed3 100644
---- a/fs/reiserfs/journal.c
-+++ b/fs/reiserfs/journal.c
-@@ -2769,6 +2769,20 @@ int journal_init(struct super_block *sb, const char *j_dev_name,
- 		goto free_and_return;
- 	}
- 
-+	/*
-+	 * Sanity check to see if journal first block is correct.
-+	 * If journal first block is invalid it can cause
-+	 * zeroing important superblock members.
-+	 */
-+	if (!SB_ONDISK_JOURNAL_DEVICE(sb) &&
-+	    SB_ONDISK_JOURNAL_1st_BLOCK(sb) < SB_JOURNAL_1st_RESERVED_BLOCK(sb)) {
-+		reiserfs_warning(sb, "journal-1393",
-+				 "journal 1st super block is invalid: 1st reserved block %d, but actual 1st block is %d",
-+				 SB_JOURNAL_1st_RESERVED_BLOCK(sb),
-+				 SB_ONDISK_JOURNAL_1st_BLOCK(sb));
-+		goto free_and_return;
-+	}
-+
- 	if (journal_init_dev(sb, journal, j_dev_name) != 0) {
- 		reiserfs_warning(sb, "sh-462",
- 				 "unable to initialize journal device");
+diff --git a/fs/udf/namei.c b/fs/udf/namei.c
+index 041bf34f781f..d5516f025bad 100644
+--- a/fs/udf/namei.c
++++ b/fs/udf/namei.c
+@@ -956,6 +956,10 @@ static int udf_symlink(struct inode *dir, struct dentry *dentry,
+ 				iinfo->i_location.partitionReferenceNum,
+ 				0);
+ 		epos.bh = udf_tgetblk(sb, block);
++		if (unlikely(!epos.bh)) {
++			err = -ENOMEM;
++			goto out_no_entry;
++		}
+ 		lock_buffer(epos.bh);
+ 		memset(epos.bh->b_data, 0x00, bsize);
+ 		set_buffer_uptodate(epos.bh);
 -- 
 2.30.2
 
