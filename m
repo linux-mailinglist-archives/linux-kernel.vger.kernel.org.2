@@ -2,57 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4140A3BD7D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45393BD762
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232071AbhGFNcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 09:32:35 -0400
-Received: from static-190-25-223-138.static.etb.net.co ([190.25.223.138]:57296
-        "EHLO correo.hdv.gov.co" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231453AbhGFNce (ORCPT
+        id S233210AbhGFNEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 09:04:16 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:44064 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233137AbhGFNEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 09:32:34 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by correo.hdv.gov.co (Postfix) with ESMTP id A06222249672;
-        Tue,  6 Jul 2021 06:14:40 -0500 (-05)
-Received: from correo.hdv.gov.co ([127.0.0.1])
-        by localhost (correo.hdv.gov.co [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Q-R13CkgZqt0; Tue,  6 Jul 2021 06:14:40 -0500 (-05)
-Received: from localhost (localhost [127.0.0.1])
-        by correo.hdv.gov.co (Postfix) with ESMTP id 52DB5224361B;
-        Tue,  6 Jul 2021 05:37:13 -0500 (-05)
-DKIM-Filter: OpenDKIM Filter v2.10.3 correo.hdv.gov.co 52DB5224361B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hdv.gov.co;
-        s=11DF984A-9D1F-11E6-B193-F2669FC4C452; t=1625567833;
-        bh=Po3+jYC7/Rg7V8Ibt2yKIqN5eintSYPogxawXJ1TVGE=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=jIqod/Ewu6VIhQj5xjGs6LOCveHC+pKSosj6X9PpW3SUVlou6oEr9Hj0xGspOcLAm
-         hYlMgAQDaHOXhw/TjjYErvJMAiM6vCbBUqrh9zEktIPB0w639VioKSNwkjgxuy8B3r
-         nqSCHOKYpeCbb49QoNb3AKu9HhzbEWk0iExunoSg=
-X-Virus-Scanned: amavisd-new at correo.hdv.gov.co
-Received: from correo.hdv.gov.co ([127.0.0.1])
-        by localhost (correo.hdv.gov.co [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id dJCaGHxqBM2o; Tue,  6 Jul 2021 05:37:13 -0500 (-05)
-Received: from [10.2.201.73] (unknown [154.13.1.65])
-        by correo.hdv.gov.co (Postfix) with ESMTPSA id C8E9B224494F;
-        Tue,  6 Jul 2021 05:18:35 -0500 (-05)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: RE:
-To:     Recipients <planeacion.arquitecto@hdv.gov.co>
-From:   planeacion.arquitecto@hdv.gov.co
-Date:   Tue, 06 Jul 2021 12:18:21 +0200
-Reply-To: lerynnewest0027@gmail.com
-Message-Id: <20210706101835.C8E9B224494F@correo.hdv.gov.co>
+        Tue, 6 Jul 2021 09:04:04 -0400
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 06 Jul 2021 06:01:24 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 06 Jul 2021 06:01:22 -0700
+X-QCInternal: smtphost
+Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 06 Jul 2021 18:30:42 +0530
+Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
+        id 2DD123A90; Tue,  6 Jul 2021 18:30:41 +0530 (IST)
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+To:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pratham Pratap <prathampratap@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: [PATCH v5 0/3] Add DT bindings and DT nodes for USB in SC7280
+Date:   Tue,  6 Jul 2021 18:30:10 +0530
+Message-Id: <1625576413-12324-1-git-send-email-sanm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-F=C3=BCr Sie wurde eine Spende in H=C3=B6he von 2.800.000,00 =E2=82=AC gesp=
-endet. Bitte antworten Sie auf diese E-Mail, um die Spenderin (MRS. LERYNNE=
- WEST) f=C3=BCr weitere Informationen zu gespendeten Mitteln zu kontaktiere=
-n.
+This series includes usb controller and phy binding updates
+for SC7280 SoC and DT chnages for SC7280 SoC and SC7280 IDP board.
 
-Sch=C3=B6ne Gr=C3=BC=C3=9Fe
+changes in v5:
+ Added patch for usb3-dp phy bindings for SC7280.
+ Changed qmp usb phy to usb dp phy combo node as per Stephen's comments.
+ Changed dwc to usb and added SC7280 compatible as per Bjorn's comments.
+
+changes in v4:
+ changed usb3-phy to lanes in qmp phy node as it was causing probe failure.
+
+changes in v3:
+  Moved the board specific changes to separate patch.
+  Addressed comments from Matthias in v2.
+
+changes in v2:
+  Dropped dt bindings patches as they are already merged in linux-next.
+  Addressed comments from Matthias in v1.
+
+Sandeep Maheswaram (3):
+  dt-bindings: phy: qcom,qmp-usb3-dp: Add support for SC7280
+  arm64: dts: qcom: sc7280: Add USB related nodes
+  arm64: dts: qcom: sc7280: Add USB nodes for IDP board
+
+ .../bindings/phy/qcom,qmp-usb3-dp-phy.yaml         |   1 +
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts            |  39 +++++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 164 +++++++++++++++++++++
+ 3 files changed, 204 insertions(+)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
