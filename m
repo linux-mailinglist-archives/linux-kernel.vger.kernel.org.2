@@ -2,75 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29CAE3BD577
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DA13BD59E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233103AbhGFMWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:22:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:39928 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243070AbhGFMDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 08:03:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A9D411FB;
-        Tue,  6 Jul 2021 05:00:34 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.31.83])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B83D3F73B;
-        Tue,  6 Jul 2021 05:00:33 -0700 (PDT)
-Date:   Tue, 6 Jul 2021 13:00:30 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Anatoly Pugachev <matorola@gmail.com>,
-        Peter Zijlstra <peterz@lists.infradead.org>
-Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        debian-sparc <debian-sparc@lists.debian.org>
-Subject: Re: [sparc64] locking/atomic, kernel OOPS on running stress-ng
-Message-ID: <20210706120030.GB69200@C02TD0UTHF1T.local>
-References: <CADxRZqzcrnSMzy50T+kWb_mQVguWDCMu6RoXsCc+-fNDPYXbaw@mail.gmail.com>
- <20210705195638.GA53988@C02TD0UTHF1T.local>
- <20210706091104.GA69200@C02TD0UTHF1T.local>
- <CADxRZqxNdYBAs1daPJTAPKGeJx30D+v7xz87K2sB_dXYKdTrVg@mail.gmail.com>
+        id S235004AbhGFMXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:23:33 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49020 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240413AbhGFMFb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 08:05:31 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 166BX2Sn106333;
+        Tue, 6 Jul 2021 08:02:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=NXMdCkMgA33HuT+2agyePyQ+fT/a6X6lPI3oa21I3gA=;
+ b=k2N+uYnH2bvkI8DKYgy7RIBLQqbrKvPXfVFBrxVZL+XZ0UsQ6o8r714QyaS3WKRs+5CA
+ RBUx1OJfJur3wzWVa394UVLr91fX5Z+ehFhB5q9cfn2VCHdDze+aBx61BXtPcemoYe/Y
+ yxoNUCaug7NNO0lMStM7lTHbvB80M9pOiRLC4urUbwMHuFn+SCvdoWpamkvKi2qvIaPc
+ 7zt9wWCROanAzU7Pvb+Urz1DhLVuGLh+M61Nh9yh6hSraqI70NC4WaXsLk/15r6bRwyI
+ n5ZaoKUlfNOpzNRMQbCChxomJa8ipPq3YppK/0KLHP2M4Qn1bXK63kg+w+ur25vHlgrF Rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39mk51ejtj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Jul 2021 08:02:52 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 166BX2oE106289;
+        Tue, 6 Jul 2021 08:02:51 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39mk51ejrb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Jul 2021 08:02:51 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 166C2aNp003579;
+        Tue, 6 Jul 2021 12:02:49 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 39jfh8s7xx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Jul 2021 12:02:49 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 166C2kfc34013592
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 6 Jul 2021 12:02:46 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 30F2342054;
+        Tue,  6 Jul 2021 12:02:46 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9C00F42049;
+        Tue,  6 Jul 2021 12:02:45 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.59.107])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  6 Jul 2021 12:02:45 +0000 (GMT)
+Subject: Re: [PATCH] KVM: s390: Enable specification exception interpretation
+To:     David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        "open list:KERNEL VIRTUAL MACHINE for s390 (KVM/s390)" 
+        <kvm@vger.kernel.org>,
+        "open list:S390" <linux-s390@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210706114714.3936825-1-scgl@linux.ibm.com>
+ <87k0m3hd7h.fsf@redhat.com> <194128c1-8886-5b8b-2249-5ec58b8e7adb@de.ibm.com>
+ <be78ce5d-92e4-36bd-aa28-e32db0342a44@redhat.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <45690e80-5c7c-1e11-99d5-c0d1482755ad@de.ibm.com>
+Date:   Tue, 6 Jul 2021 14:02:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADxRZqxNdYBAs1daPJTAPKGeJx30D+v7xz87K2sB_dXYKdTrVg@mail.gmail.com>
+In-Reply-To: <be78ce5d-92e4-36bd-aa28-e32db0342a44@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: c2tgzHEfCztvcrjwQLr8eDVlPfvWx8xZ
+X-Proofpoint-GUID: iCHuPW6M_aJ-0TGdJpErHSbbr7ZeoUI4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-06_06:2021-07-02,2021-07-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 mlxlogscore=999 bulkscore=0 spamscore=0 priorityscore=1501
+ clxscore=1015 phishscore=0 adultscore=0 lowpriorityscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107060057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 02:51:06PM +0300, Anatoly Pugachev wrote:
-> On Tue, Jul 6, 2021 at 12:11 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> > Fixes: ff5b4f1ed580c59d ("locking/atomic: sparc: move to ARCH_ATOMIC")
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > Reported-by: Anatoly Pugachev <matorola@gmail.com>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Peter Zijlstra <peterz@lists.infradead.org>
-> > ---
-> >  arch/sparc/include/asm/cmpxchg_64.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/sparc/include/asm/cmpxchg_64.h b/arch/sparc/include/asm/cmpxchg_64.h
-> > index 8c39a9981187..12d00a42c0a3 100644
-> > --- a/arch/sparc/include/asm/cmpxchg_64.h
-> > +++ b/arch/sparc/include/asm/cmpxchg_64.h
-> > @@ -201,7 +201,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
-> >  #define arch_cmpxchg64_local(ptr, o, n)                                        \
-> >    ({                                                                   \
-> >         BUILD_BUG_ON(sizeof(*(ptr)) != 8);                              \
-> > -       cmpxchg_local((ptr), (o), (n));                                 \
-> > +       arch_cmpxchg_local((ptr), (o), (n));                                    \
-> >    })
-> >  #define arch_cmpxchg64(ptr, o, n)      arch_cmpxchg64_local((ptr), (o), (n))
+
+
+On 06.07.21 13:59, David Hildenbrand wrote:
+> On 06.07.21 13:56, Christian Borntraeger wrote:
+>>
+>>
+>> On 06.07.21 13:52, Cornelia Huck wrote:
+>>> On Tue, Jul 06 2021, Janis Schoetterl-Glausch <scgl@linux.ibm.com> wrote:
+>>>
+>>>> When this feature is enabled the hardware is free to interpret
+>>>> specification exceptions generated by the guest, instead of causing
+>>>> program interruption interceptions.
+>>>>
+>>>> This benefits (test) programs that generate a lot of specification
+>>>> exceptions (roughly 4x increase in exceptions/sec).
+>>>>
+>>>> Interceptions will occur as before if ICTL_PINT is set,
+>>>> i.e. if guest debug is enabled.
+>>>>
+>>>> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+>>>> ---
+>>>> I'll additionally send kvm-unit-tests for testing this feature.
+>>>>
+>>>>    arch/s390/include/asm/kvm_host.h | 1 +
+>>>>    arch/s390/kvm/kvm-s390.c         | 2 ++
+>>>>    arch/s390/kvm/vsie.c             | 2 ++
+>>>>    3 files changed, 5 insertions(+)
+>>>
+>>> (...)
+>>>
+>>>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+>>>> index b655a7d82bf0..aadd589a3755 100644
+>>>> --- a/arch/s390/kvm/kvm-s390.c
+>>>> +++ b/arch/s390/kvm/kvm-s390.c
+>>>> @@ -3200,6 +3200,8 @@ static int kvm_s390_vcpu_setup(struct kvm_vcpu *vcpu)
+>>>>            vcpu->arch.sie_block->ecb |= ECB_SRSI;
+>>>>        if (test_kvm_facility(vcpu->kvm, 73))
+>>>>            vcpu->arch.sie_block->ecb |= ECB_TE;
+>>>> +    if (!kvm_is_ucontrol(vcpu->kvm))
+>>>> +        vcpu->arch.sie_block->ecb |= ECB_SPECI;
+>>>
+>>> Does this exist for any hardware version (i.e. not guarded by a cpu
+>>> feature?)
+>>
+>> Not for all hardware versions, but also no indication. The architecture
+>> says that the HW is free to do this or not. (which makes the vsie code
+>> simpler).
 > 
-> 
-> Mark, thanks, fixed...
-> tested on git kernel 5.13.0-11788-g79160a603bdb-dirty (dirty - cause
-> patch has been applied).
+> I remember the architecture said at some point to never set undefined bits - and this bit is undefined on older HW generations. I might be wrong, though.
 
-Great! Thanks for confirming.
-
-Peter, are you happy to pick that (full commit in last mail), or should
-I send a new copy?
-
-Thanks,
-Mark.
+I can confirm that this bit will be ignored on older machines. The notion of
+never setting undefined bits comes from "you never know what this bit will
+change in future machines". Now we know :-)
