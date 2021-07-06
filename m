@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A7F3BCF97
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6C93BCFB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234169AbhGFLar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:30:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35434 "EHLO mail.kernel.org"
+        id S234686AbhGFLbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:31:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234475AbhGFLYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:24:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1453C61CCB;
-        Tue,  6 Jul 2021 11:18:30 +0000 (UTC)
+        id S234524AbhGFLYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:24:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF3B661D00;
+        Tue,  6 Jul 2021 11:18:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570311;
-        bh=epLAffIQc77bcA44wYbXzn+8dh4Eepktdm8W90mUD4c=;
+        s=k20201202; t=1625570315;
+        bh=43o12DKparZTph3QHIxzT2RGZNQMhr45ctVvpCSwr1E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kQXlZ61oIYUGX17vPtS1S8vUWkh8KHDQrbhln33IA/+haqgJQof19qPDYZJb57/1L
-         4A+92eDHMWmxV1TF3yuC1TtA9jpCL9zpW1ninAAYxxJDF9+tPGGTXjW4V2bu8io+n+
-         qEwILY+jA25lVAvzxShBXyqJCZzMj6UT9sBEb8WcA8JD39cOFzPOt6vTRrf1k+3ds4
-         u4GonmnU54B4dfp88/OoZYFV/4hVROEi6DJ0gO6fKrrYsfPBwyqRw1h6Ia856aTk2l
-         4KmnXfy+sD4cujlnXqUhLEoUqgFt7bW45JBGk/QhXUpEk1miKRZ4XtqQ3ufKS+VCwC
-         enopPndhZwKAQ==
+        b=B5J/KunLp3ThfmRRvyXiprGXXfOCmo2ooA0m8xwnacA3ctGfYSrWbqBo/CfsWrbvW
+         3yv47z/TuJpmA0CpopC0M/lTNmmI3k6NaDp7cp48PVFGu3THwjAmP+BMpFub7pd1jC
+         ZldrBRLZ+jtQkl3Ywn6ryuRNgV0Lo+cQoZ82PexB3x8gl439au/jWwtXAMeXJLPsIq
+         malMN275pl5mJES4qLMWbn9U0VHlI8PMIaM7/lYMeUgWYQLbm5P2LZAR4rYnOIl2We
+         9asyusO7gkrykMzIczgJwiDKC4MC3h1qaUPRgM5pJKPlYnvdqHCYy3AGZR0m7iMVn+
+         dbbBS4pmjjK5A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Sasha Levin <sashal@kernel.org>,
+Cc:     Jack Zhang <Jack.Zhang1@amd.com>, Emily Deng <Emily.Deng@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.12 003/160] drm/zte: Don't select DRM_KMS_FB_HELPER
-Date:   Tue,  6 Jul 2021 07:15:49 -0400
-Message-Id: <20210706111827.2060499-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 006/160] drm/amd/amdgpu/sriov disable all ip hw status by default
+Date:   Tue,  6 Jul 2021 07:15:52 -0400
+Message-Id: <20210706111827.2060499-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111827.2060499-1-sashal@kernel.org>
 References: <20210706111827.2060499-1-sashal@kernel.org>
@@ -43,33 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Zimmermann <tzimmermann@suse.de>
+From: Jack Zhang <Jack.Zhang1@amd.com>
 
-[ Upstream commit a50e74bec1d17e95275909660c6b43ffe11ebcf0 ]
+[ Upstream commit 95ea3dbc4e9548d35ab6fbf67675cef8c293e2f5 ]
 
-Selecting DRM_FBDEV_EMULATION will include the correct settings for
-fbdev emulation. Drivers should not override this.
+Disable all ip's hw status to false before any hw_init.
+Only set it to true until its hw_init is executed.
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210415110040.23525-4-tzimmermann@suse.de
+The old 5.9 branch has this change but somehow the 5.11 kernrel does
+not have this fix.
+
+Without this change, sriov tdr have gfx IB test fail.
+
+Signed-off-by: Jack Zhang <Jack.Zhang1@amd.com>
+Review-by: Emily Deng <Emily.Deng@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/zte/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/zte/Kconfig b/drivers/gpu/drm/zte/Kconfig
-index 90ebaedc11fd..aa8594190b50 100644
---- a/drivers/gpu/drm/zte/Kconfig
-+++ b/drivers/gpu/drm/zte/Kconfig
-@@ -3,7 +3,6 @@ config DRM_ZTE
- 	tristate "DRM Support for ZTE SoCs"
- 	depends on DRM && ARCH_ZX
- 	select DRM_KMS_CMA_HELPER
--	select DRM_KMS_FB_HELPER
- 	select DRM_KMS_HELPER
- 	select SND_SOC_HDMI_CODEC if SND_SOC
- 	select VIDEOMODE_HELPERS
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index 85d90e857693..a32b41e4c24e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -2818,7 +2818,7 @@ static int amdgpu_device_ip_reinit_early_sriov(struct amdgpu_device *adev)
+ 		AMD_IP_BLOCK_TYPE_IH,
+ 	};
+ 
+-	for (i = 0; i < ARRAY_SIZE(ip_order); i++) {
++	for (i = 0; i < adev->num_ip_blocks; i++) {
+ 		int j;
+ 		struct amdgpu_ip_block *block;
+ 
 -- 
 2.30.2
 
