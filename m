@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF25D3BD3C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCF83BD56A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239498AbhGFL7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:59:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47624 "EHLO mail.kernel.org"
+        id S1343870AbhGFMVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:21:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237086AbhGFLfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:35:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E95561E9D;
-        Tue,  6 Jul 2021 11:25:24 +0000 (UTC)
+        id S237091AbhGFLfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:35:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D8B361E9F;
+        Tue,  6 Jul 2021 11:25:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570725;
-        bh=S3q5+8GXB75Xf7g+Pzl9qYFzT+wHQlfna6ymitQ/T3o=;
+        s=k20201202; t=1625570726;
+        bh=M6GNRjaiGoU075Gb/3SUC/E2uZ2SyiNzb2Ji1eBbKpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M+Iizmi6FcwFiApRJK/mOd03wcH84r3Q9o+jXzPvE57SNCxWhCOpPzYcp66ucHUxm
-         F/dO9oSwoyszEYy69/iz2iDSbWwStEAgnGvDy/kpL7ahcCJbIfXoFFc7Z2hLyCnlls
-         z+iWYPfQg0vnvQ+5gE4m8I4zPkh+8eGijc0NSwyjogZVJ5Z9NDZijiOR5nLcAzRp6c
-         s40IspVAO6oTUEYkGUczgdLALJTZXCIRenE1+7+s4N+Fl67vQTKvfUPmUUeZl93ItT
-         5VpmTvKNalMN/DpvHxwKtmXi+CizYMWC/B+H66atHUzaYDeN3ctD3hjeZPLrmNgFNX
-         kn37PWdXpEMTg==
+        b=ICQOGvK9lL9b8NK65n69Mwrb57nyGxfjp34Jh3PvYY2RjEWaNpNhmGokrRZcD4Y6H
+         w20PE7NF1ZoIo5BcguYQQggMfCv22nLinwlyCOESbGW+yAQtgDKER8idwnjlg+l1v8
+         xoB3tMhSqoT67ApE2a/ZFgSSMEF/Oso1X3sSXhFRp5NRtDGYi7lCbg/2UUwjY+g8r1
+         I5rJYcDBPtT182xes7Ns6C3FqkgIK1vSqXkBbS/5n+lHGwRAdMRzlIp3Dz7ESQDz3W
+         ykszEL7ChODElj6fxtybZrdXv0Hsufd/CKWhsnk7NhR+rO+rwgfq/HsWxOE30y3tko
+         UqG/72vb/jXdA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dongseok Yi <dseok.yi@samsung.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Willem de Bruijn <willemb@google.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 17/74] bpf: Check for BPF_F_ADJ_ROOM_FIXED_GSO when bpf_skb_change_proto
-Date:   Tue,  6 Jul 2021 07:24:05 -0400
-Message-Id: <20210706112502.2064236-17-sashal@kernel.org>
+Cc:     Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [PATCH AUTOSEL 5.4 18/74] drm/sched: Avoid data corruptions
+Date:   Tue,  6 Jul 2021 07:24:06 -0400
+Message-Id: <20210706112502.2064236-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112502.2064236-1-sashal@kernel.org>
 References: <20210706112502.2064236-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -44,119 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongseok Yi <dseok.yi@samsung.com>
+From: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
 
-[ Upstream commit fa7b83bf3b156c767f3e4a25bbf3817b08f3ff8e ]
+[ Upstream commit 0b10ab80695d61422337ede6ff496552d8ace99d ]
 
-In the forwarding path GRO -> BPF 6 to 4 -> GSO for TCP traffic, the
-coalesced packet payload can be > MSS, but < MSS + 20.
+Wait for all dependencies of a job  to complete before
+killing it to avoid data corruptions.
 
-bpf_skb_proto_6_to_4() will upgrade the MSS and it can be > the payload
-length. After then tcp_gso_segment checks for the payload length if it
-is <= MSS. The condition is causing the packet to be dropped.
-
-tcp_gso_segment():
-        [...]
-        mss = skb_shinfo(skb)->gso_size;
-        if (unlikely(skb->len <= mss))
-                goto out;
-        [...]
-
-Allow to upgrade/downgrade MSS only when BPF_F_ADJ_ROOM_FIXED_GSO is
-not set.
-
-Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Link: https://lore.kernel.org/bpf/1620804453-57566-1-git-send-email-dseok.yi@samsung.com
+Signed-off-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210519141407.88444-1-andrey.grodzovsky@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/filter.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/scheduler/sched_entity.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 108bcf600052..823e77846525 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -2833,7 +2833,7 @@ static int bpf_skb_net_hdr_pop(struct sk_buff *skb, u32 off, u32 len)
- 	return ret;
- }
- 
--static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
-+static int bpf_skb_proto_4_to_6(struct sk_buff *skb, u64 flags)
+diff --git a/drivers/gpu/drm/scheduler/sched_entity.c b/drivers/gpu/drm/scheduler/sched_entity.c
+index 1a5153197fe9..57f9baad9e36 100644
+--- a/drivers/gpu/drm/scheduler/sched_entity.c
++++ b/drivers/gpu/drm/scheduler/sched_entity.c
+@@ -235,11 +235,16 @@ static void drm_sched_entity_kill_jobs_cb(struct dma_fence *f,
+ static void drm_sched_entity_kill_jobs(struct drm_sched_entity *entity)
  {
- 	const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
- 	u32 off = skb_mac_header_len(skb);
-@@ -2862,7 +2862,9 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
- 		}
+ 	struct drm_sched_job *job;
++	struct dma_fence *f;
+ 	int r;
  
- 		/* Due to IPv6 header, MSS needs to be downgraded. */
--		skb_decrease_gso_size(shinfo, len_diff);
-+		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
-+			skb_decrease_gso_size(shinfo, len_diff);
+ 	while ((job = to_drm_sched_job(spsc_queue_pop(&entity->job_queue)))) {
+ 		struct drm_sched_fence *s_fence = job->s_fence;
+ 
++		/* Wait for all dependencies to avoid data corruptions */
++		while ((f = job->sched->ops->dependency(job, entity)))
++			dma_fence_wait(f, false);
 +
- 		/* Header must be checked, and gso_segs recomputed. */
- 		shinfo->gso_type |= SKB_GSO_DODGY;
- 		shinfo->gso_segs = 0;
-@@ -2874,7 +2876,7 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
- 	return 0;
- }
+ 		drm_sched_fence_scheduled(s_fence);
+ 		dma_fence_set_error(&s_fence->finished, -ESRCH);
  
--static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
-+static int bpf_skb_proto_6_to_4(struct sk_buff *skb, u64 flags)
- {
- 	const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
- 	u32 off = skb_mac_header_len(skb);
-@@ -2903,7 +2905,9 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
- 		}
- 
- 		/* Due to IPv4 header, MSS can be upgraded. */
--		skb_increase_gso_size(shinfo, len_diff);
-+		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
-+			skb_increase_gso_size(shinfo, len_diff);
-+
- 		/* Header must be checked, and gso_segs recomputed. */
- 		shinfo->gso_type |= SKB_GSO_DODGY;
- 		shinfo->gso_segs = 0;
-@@ -2915,17 +2919,17 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
- 	return 0;
- }
- 
--static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto)
-+static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto, u64 flags)
- {
- 	__be16 from_proto = skb->protocol;
- 
- 	if (from_proto == htons(ETH_P_IP) &&
- 	      to_proto == htons(ETH_P_IPV6))
--		return bpf_skb_proto_4_to_6(skb);
-+		return bpf_skb_proto_4_to_6(skb, flags);
- 
- 	if (from_proto == htons(ETH_P_IPV6) &&
- 	      to_proto == htons(ETH_P_IP))
--		return bpf_skb_proto_6_to_4(skb);
-+		return bpf_skb_proto_6_to_4(skb, flags);
- 
- 	return -ENOTSUPP;
- }
-@@ -2935,7 +2939,7 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
- {
- 	int ret;
- 
--	if (unlikely(flags))
-+	if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO)))
- 		return -EINVAL;
- 
- 	/* General idea is that this helper does the basic groundwork
-@@ -2955,7 +2959,7 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
- 	 * that. For offloads, we mark packet as dodgy, so that headers
- 	 * need to be verified first.
- 	 */
--	ret = bpf_skb_proto_xlat(skb, proto);
-+	ret = bpf_skb_proto_xlat(skb, proto, flags);
- 	bpf_compute_data_pointers(skb);
- 	return ret;
- }
 -- 
 2.30.2
 
