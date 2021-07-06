@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DBE3BD6DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A2A3BD6B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240803AbhGFMrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240725AbhGFMrm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 08:47:42 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81247C0A8887;
-        Tue,  6 Jul 2021 05:29:32 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id r26so20486846lfp.2;
-        Tue, 06 Jul 2021 05:29:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d5Qtd3fuR7kMLaMb3nhIpOHtCY+/u+6q3WDsXYoZ2b4=;
-        b=pjf0hNOGG6UM0WfHp6uBP4xQtp6m3wjS3+XEiteAXm78Zyisok6ONiWWhMsX4xPHxi
-         xfUW5MfTmSTfpjLcJBaOMu/9cBGdSO0Cv4Fzhnv4boQ9kBxVQx1cKgR6aq9ATokyS7hi
-         /XeZ+ThGyFCJVmcYHKBNL0EfR1qj5yCgNZreE3LqN/cUT2JwvXbKII664V7XlUBlbaFq
-         psHji5XzpZmmO2T7mbr6nKRd8iwrT/N8xK68uY1nBbwPmV3CVW4zb7TxTC3BVyn2mZhe
-         4+eg32KLEsgwaxl9BFmznWqoXYsmZlT45OGHQg6aeJOvpVTawDES9iTsUBkSkFxL/J2k
-         H04Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d5Qtd3fuR7kMLaMb3nhIpOHtCY+/u+6q3WDsXYoZ2b4=;
-        b=QrbiyZRAHg5kTjfFCysl6s8/s6Ymjc7TzyD/XxO44XqnfRq56BiWlLSI2NLGvfxhWM
-         VJkMOXDpyepU72IJ9i6GkIa7wLeW2k3O/npnIbCWOWsb47CqpBC/TYcvr8AbHmL/yOl7
-         YkaVbJ9PERCJuHvzZS4/As3RAsc6+y/EA+EWNr9igb1yKDfkepFRHl4PRwapA7w+mNQ1
-         9zBIYpwOczKAkGIbX2eUujaaoKF5xmJrhyb8b574OpMOaEtFmaj8f07n5CnDXe7C1tuG
-         FuVjx+ZkHJHjELo8+gDjHfppjBTI/q9eVjMny8//eVoW8T2PgKA1YHHitD9xti0nXwt9
-         V1fQ==
-X-Gm-Message-State: AOAM531fjWWWBAoJxJFD0KfhJzz9kbfxiVR/tnq2nlK5f7D95sABlieu
-        uNqbV4Yj1UrIuuJ8tKv9ex7yHl050I9q9OH0RgE=
-X-Google-Smtp-Source: ABdhPJzPPY1f+Jc0yJPnPF3OoWS8rSMKFE7ihL9VNpXMJTOvEK41TxqiwlHIBiniW0a7tG/oumOwHZEl/rysJD3cTDA=
-X-Received: by 2002:a05:6512:1583:: with SMTP id bp3mr10083480lfb.500.1625574570856;
- Tue, 06 Jul 2021 05:29:30 -0700 (PDT)
+        id S240511AbhGFMnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:43:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233684AbhGFMdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 08:33:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDD5D619C8;
+        Tue,  6 Jul 2021 12:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625574667;
+        bh=Me4h8Svxr0oEY24HAdRXkrZoovr8uE/hMjWWvsAowfw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HFt0g9haQ8yyxZbpnpFN9XSyMBSA/1s8NBR8RYEIjUmHvOMolZj8hsmjpDRONuKMD
+         OAmsDyP0LBvkfs/mKR2/rQ3X9oG/rLM/8C1zuripKBsxY0TTeUEbEPW3nZoQ83De/b
+         GYfN+kFYYX1LIpMAglDitkCIDVOR2RPni4wY/Hkb5nGmEBvs6aQBhMP84WLL0pw97r
+         apiYmJqdf7zH8pAmz6OY4QFjZvvFiZevggUHwxC9/wS/CDSnJXydFpbGTnx32lqvzC
+         lS8OQsinI0qoXoTed8W6mq4UNUZ7q4vMmd8AugjxqSGXLaznMXu9DP/xKpsBfJlkz4
+         XEUuJlzvx9iuA==
+Date:   Tue, 6 Jul 2021 13:30:35 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Cc:     peter.ujfalusi@ti.com, alsa-devel@alsa-project.org,
+        amistry@google.com, nartemiev@google.com,
+        Alexander.Deucher@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: add dai_reoder flag to reverse the stop sequence
+Message-ID: <20210706123035.GE4529@sirena.org.uk>
+References: <20210705155830.24693-1-vijendar.mukunda@amd.com>
+ <20210705174241.GF4574@sirena.org.uk>
+ <7f1ad1b3-b509-24cf-00d8-f82766aae0d6@amd.com>
+ <20210705192952.GI4574@sirena.org.uk>
+ <48b0a8e6-ca29-3f77-2689-ad7515f8743b@amd.com>
 MIME-Version: 1.0
-References: <20210706114028.132-1-alistair@alistair23.me>
-In-Reply-To: <20210706114028.132-1-alistair@alistair23.me>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 6 Jul 2021 09:29:19 -0300
-Message-ID: <CAOMZO5CEeBWEaRWXpfgjR+q0QnpPmoyGN+ShjCHNzoSqk_iW0Q@mail.gmail.com>
-Subject: Re: [PATCH v3] ARM: dts: imx7d-remarkable2: Add WiFi support
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, alistair23@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9l24NVCWtSuIVIod"
+Content-Disposition: inline
+In-Reply-To: <48b0a8e6-ca29-3f77-2689-ad7515f8743b@amd.com>
+X-Cookie: Some restrictions may apply.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alistair,
 
-On Tue, Jul 6, 2021 at 8:40 AM Alistair Francis <alistair@alistair23.me> wrote:
+--9l24NVCWtSuIVIod
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +       wifi_pwrseq: wifi_pwrseq {
-> +               compatible = "mmc-pwrseq-simple";
-> +               pinctrl-names = "default";
-> +               pinctrl-0 = <&pinctrl_wifi>;
-> +               reset-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
-> +               clocks = <&clks IMX7D_CLKO2_ROOT_DIV>;
+On Tue, Jul 06, 2021 at 01:40:59AM +0530, Mukunda,Vijendar wrote:
 
-Don't you need to select the osc32 as the parent clock?
+> To make AMD specific platform change(which uses ACP 2.x IP), As per our
+> understanding we should only update the flag in ACP DMA driver by adding
+> flag in snd_pcm_substream structure rather than adding flag in card
+> structure.
+> Please suggest us, if there is any better place holder to add
+> "stop_dma_first" flag.
 
-This is what we do on arch/arm/boot/dts/imx7d-pico.dtsi and
-arch/arm/boot/dts/imx7d-nitrogen7.dts:
+I'd expect this to be configured by the machine driver in the dai_link.
+It might need copying over to the substream for runtime use but the core
+should do that.
 
-&clks {
-assigned-clocks = <&clks IMX7D_CLKO2_ROOT_SRC>,
-  <&clks IMX7D_CLKO2_ROOT_DIV>;
-assigned-clock-parents = <&clks IMX7D_CKIL>;
-assigned-clock-rates = <0>, <32768>;
-};
+--9l24NVCWtSuIVIod
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDkTOoACgkQJNaLcl1U
+h9CD0Af6Aml9JrNZjaM7DWoPKWUc6A7Eh7aC5xXuVGPp6bPnt7nmt48yswr6l9nS
+FYAFulGmlW7KmNOXQ2sLEbdmNQvWyKdKbQyfsLr3KqaKkhYkVL/c6oPjzrx9jQL2
+2C05Ofe+Aue2VoT+6LXeeHcrJc4zzXkdgWw7Q1amvV+uBKSyN8T1QCjaAvh2cpKl
+2CZsZZz8Eq6PAvoBhvEVLjjQgrAeW5+V3BfYvWdwhEhhiTitz7MoWLO5ntq0/+qJ
+43mjCbqPLFYaUcvqriafZqW6xArg5WexmDC9NiNuCuyffjW36AQxkfizIPKZAFx8
+yZrsX1SAYkBUtZQ9wUITPEq8kM+/Ng==
+=gGgo
+-----END PGP SIGNATURE-----
+
+--9l24NVCWtSuIVIod--
