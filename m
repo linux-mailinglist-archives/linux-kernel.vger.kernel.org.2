@@ -2,73 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DE43BDB51
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 18:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D963BDB52
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 18:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbhGFQ2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 12:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
+        id S230093AbhGFQ3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 12:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbhGFQ2s (ORCPT
+        with ESMTP id S229773AbhGFQ3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 12:28:48 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BD3C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 09:26:07 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id f30so39324921lfj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 09:26:07 -0700 (PDT)
+        Tue, 6 Jul 2021 12:29:07 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6401EC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 09:26:25 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id w74so3303662oiw.8
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 09:26:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=VskNJnFdZjobVAie+OLtdcHGu53JqC+q6PUY5ScpxQY=;
-        b=p3EEllZoBm/qyIYP49rtbJ125L0ObMN0PiypKpygDRi2SL1dDVPpQpJQcUxALpIPIx
-         GtIIxo+l1jTbSkQP/6COM/meKL/BOxBlsnsiTyHDhqU5i9GyxXNVP9qtIvya3rl8TgeI
-         YaHjU1uifzNUqa2SLvwjbjrMcgdKu+04XUcH2t6+4qXnzqpqSZb4IuYQqJ9IRxMnE9O2
-         28//CTZU1zVuI2+RIBc2zve3Z9zXnWZqWOv7B1h1HL9qd6OPIeLZUKNoiAmdY3xOKTwJ
-         dreJcT5M6cS6eU3t4T/5WWsjrLBWqrSu5b/7Gfl0uF0+aLCNZLTaLZP3wUPccBvqCvTP
-         AyZw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xNz5hC6gd0RICEGuO8Kja9lfPwHmN+gkPzAwiuNbxcM=;
+        b=ZbiaI59teQehGCROuzgxise6D+/ebTp3pHt/2fmm8meseWDiuHBtMb2mFp22SaWCk+
+         8Vi3h2u/6cDhasQQk5g/XRBi7a5xNAisj1g+ULwR3lQXwk2f/XXZKAzcyPjYrOeyL8UB
+         FjazDuWnZkVDvZt8Y0KUTGNmFXGf2G16vpTFM9Ebz6cUVeO+eKQk/D4neDL1MvCzLLku
+         8/qJvq1qEwEKUwcS2k06UjPD4a2+BvNsl1GhMAThANkA15sKsFWdldaAc5BMGGIZpObQ
+         RKZj/nGlH8vMLE2gqHoTELipQ7J6j2fCMsNrUIA06jy9DVGL/R4HpTXhC1yBZRWsQYip
+         sW8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=VskNJnFdZjobVAie+OLtdcHGu53JqC+q6PUY5ScpxQY=;
-        b=PL7v6zgTItT0MpsTymm3LVWPi49KQZiwneImAQjlWW8Fl+BVax15R2Er/Vm2zzK36c
-         HqHmlTOMdqBWRlEYtDvFMdOSLq4jPgmTb/QTRB+kL7SlDS6GszwYrebHOPDZeBIXgaJb
-         DEPUhN0DDijpELwsBDbkwvg0vjUBU4IpIFSWTAe0cuHkq/thB2qKlWosdI513LwfAJCK
-         z0dadlo0yN8Fw58FV86eNbxlMbwLv/Bp6p3DOoKrfItnROlX2DEcNXUmCsOPT3Pikk5r
-         OcdU5X+LJ5fh0uUHVMozQTY0t6RBvzMOmY6sOg4lPHGTdvsJly52tny/Z+sv6D9/+eMd
-         /43w==
-X-Gm-Message-State: AOAM530ciYqEi/ucebcTtvvNFBD6QIH6V8yeTAdQyEO1/mKq8/7/lRAK
-        wab33IVnHdTfFt8oW2R9JmsXWlokwD8+LFldacg=
-X-Google-Smtp-Source: ABdhPJzsa32PF2+9t2VqODyiTinhHDDJMWqLIFw3fyrpfTK2jNEVdrLuyVkq1wpQ4cknbNwO35j7G3PEc+C8vP9APy4=
-X-Received: by 2002:a05:6512:543:: with SMTP id h3mr7954865lfl.396.1625588766024;
- Tue, 06 Jul 2021 09:26:06 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=xNz5hC6gd0RICEGuO8Kja9lfPwHmN+gkPzAwiuNbxcM=;
+        b=N2SACNsUor3pMzDmOMnpzYdLUJYGvDuW+BOkNow69E+DmhAJ4x3AM8yMrmIJJCZmHB
+         0LUR9IZYz9keON5PSfffMMVsifZvU0uOxyJoMiFWnrHYVV6O8wWHDlTmMP/ZYbYLT1UK
+         yoX6tRcgSIjAzPMY8iBnBaW/fKSK7gEd9tFbS0P3Qx1BkHIJVJ13JCxY+c2tAHyscESV
+         EJHII8KmOCx4bsjwydmowqU1wKJK9WaCyMZME4BQtA6k4L6v3ktjILOMLQutTVsOjDds
+         FnddJQVjUJHXddc5W/lzn0WKwRyOZqW0KLBDY0lxrDuZ258lP+ruSJnDXT+p8veC4FNn
+         lJHg==
+X-Gm-Message-State: AOAM532MpCbcROWPwacV6L6sMuLszY5niwHPDc4VcrLUod0kHCtu81NK
+        /2yXCZdiZyMx5IUeaAD9azA=
+X-Google-Smtp-Source: ABdhPJyr0KilJxGDDxi92JYBtK6XSjfvtjCWsUVJDIcARXhdENVebdhJRrNevs2yUdXcyUWTznCK7Q==
+X-Received: by 2002:aca:1809:: with SMTP id h9mr1114359oih.4.1625588784716;
+        Tue, 06 Jul 2021 09:26:24 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f20sm120586otq.35.2021.07.06.09.26.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 09:26:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Paul Walmsley <paul.walmsley@sifive.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH] riscv: Disable STACKPROTECTOR_PER_TASK if GCC_PLUGIN_RANDSTRUCT is enabled
+Date:   Tue,  6 Jul 2021 09:26:21 -0700
+Message-Id: <20210706162621.940924-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a05:6504:1729:0:0:0:0 with HTTP; Tue, 6 Jul 2021 09:26:05
- -0700 (PDT)
-Reply-To: mrmichelduku@outlook.com
-From:   michel <dukum3787@gmail.com>
-Date:   Tue, 6 Jul 2021 16:26:05 +0000
-Message-ID: <CAGA50MFRcLWWgf0_f2Yny0TdkuWZhs-z+tEFmdYNrzCQ_ZMzUw@mail.gmail.com>
-Subject: Please respond urgently
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+riscv uses the value of TSK_STACK_CANARY to set
+stack-protector-guard-offset. With GCC_PLUGIN_RANDSTRUCT enabled, that
+value is non-deterministic, and with riscv:allmodconfig often results
+in build errors such as
 
-With due respect to your person, I seek for your urgent assistance in
-transferring the sum of $11.3million to your private account for our
-mutual benefit.The money has been here in our Bank lying dormant for
-years without anybody coming for the claim. I want to release the
-money to you as the relative to our deceased customer (the account
-owner) who unfortunately lost his life and entire family in a plane
-crash since October 2005.
+cc1: error: '8120' is not a valid offset in '-mstack-protector-guard-offset='
 
-By indicating your interest I will send you the full details on how
-the business will be executed.
+Enable STACKPROTECTOR_PER_TASK only if GCC_PLUGIN_RANDSTRUCT is disabled
+to fix the problem.
 
-Best Regards,
-Michel Duku.
+Fixes: fea2fed201ee5 ("riscv: Enable per-task stack canaries")
+Cc: Guo Ren <guoren@linux.alibaba.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ arch/riscv/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 469a70bd8da6..3afb84fa2190 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -486,6 +486,7 @@ config CC_HAVE_STACKPROTECTOR_TLS
+ 
+ config STACKPROTECTOR_PER_TASK
+ 	def_bool y
++	depends on !GCC_PLUGIN_RANDSTRUCT
+ 	depends on STACKPROTECTOR && CC_HAVE_STACKPROTECTOR_TLS
+ 
+ config PHYS_RAM_BASE_FIXED
+-- 
+2.25.1
+
