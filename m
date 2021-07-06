@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9483BCB42
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698123BCB45
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbhGFLD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39862 "EHLO
+        id S231753AbhGFLDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231585AbhGFLDY (ORCPT
+        with ESMTP id S231743AbhGFLD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:03:24 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3345BC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 04:00:45 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id b5so20105369ilc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 04:00:45 -0700 (PDT)
+        Tue, 6 Jul 2021 07:03:29 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 765ACC061765
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 04:00:50 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id k11so24393617ioa.5
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 04:00:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=P2F0q5cZ9T+aDZo1I+E0xv2Xq6Jm2e2tnmFxq3cllbI=;
-        b=tCQM7yBc/bQ13X5waUlFbZymap0CF6b6FUaiEV7Gq8d2wIyBm4a7rI0s/XybyekfEO
-         qga43qmEuv9trvJi/Ti6iFVmocWx2eINCikZOweZ1cJ2RLQSWi4OGXQLwxLSpYZWeybE
-         AEJo8+NzojUauT3afjB0gfSsVK/NH9SdwZy2Z48R8ELAFrK86ycUo/RQ4t4tFscY8FYM
-         RN304eIOMjMENMfhw0zzcnLanc12KMt2V3jAVbSiSDlqQpSTo5G2dj9GzXDHES46Fz7K
-         ZuJfJb5ranuW2mMC+SBAmlwQLfx42Ax410mijiXeBkv3wEx9/mwLnUarqg0WNFUTlEB0
-         nt7A==
+        bh=eEmJIJa0v/rePle6ZiJmkXBLf0tXP2KOovjivMZBv80=;
+        b=QwfTscdCnYxl5W3v0uqo+Vp9odw4vdnPwAoBVqUYPoMBhGwbWub8cjaVgWVSAKbUP/
+         jjvblrcSDn3hzJET+O5YGqybeZbrnheV73a9Q63Tk6gBUVkpPogvHBkJVuIUso1Als8p
+         OqwFZLETeRJmiP4aLUbJAzic7A1tPzcnwKeqxKPFNJURtV04Vlw3zRjQHhYPI3JPJUja
+         bszPardb0bXROaBdbxG6zb+PManXPuXffhjcOjmWYt7Wday1lhU7QujyJDMdtqgK3P/8
+         YAV8gT1rW7h9DsJ6BfiJTLQgb866FGNuY29J/iPSihEQY+mZ3vwAxv+JmMNH2We+ebGF
+         T0rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=P2F0q5cZ9T+aDZo1I+E0xv2Xq6Jm2e2tnmFxq3cllbI=;
-        b=o69b9rNBEk2nfiaev/LEaVfqECO8uDzZsM9bU2e3ca2rCJ7aKkP7M0sivuWR7lFBxH
-         MSZnajcCyOL1jc+x+CwtGBzDlXBqbyHn5Pg1rJK7FvXsNonDq9TgtosykGW9Wp4ms/rM
-         l2RYU3KcOtqskgIEBlc61K5gR/l4nMifi3mDlx8u3wF1PwRYXQm1S/tk8q+BYk1cCQ0t
-         FMHk0Usr4TaVCvc5JOong9XC5zdVMnECqWVOwKCCE/Uhhwp4HbFVjIsEDtInjLHQmfUm
-         3v627WncTjM6BgjQf2qAEtcwiiXCF9UHhjTc/enCuII3IOhuuIjyrjw9t2eOSId6eKXv
-         BUGw==
-X-Gm-Message-State: AOAM531eBgcLMZMHP22q8ehsUvFE8yDJJrHMwNfmIej4lSbNMESdrbEN
-        qvOoaUbbaACg+ZUyaCi2MUxFgx8ctZmGmB1q3ZOrJA==
-X-Google-Smtp-Source: ABdhPJxrPo4pvRFB799x153C5Tr+j48o7WaiBw2A0cw/K3H5RqT0t6YjU2ISyDzqXLYFdafdRoUc/AEvCMTHyEXE5bI=
-X-Received: by 2002:a92:c952:: with SMTP id i18mr14007199ilq.218.1625569244459;
- Tue, 06 Jul 2021 04:00:44 -0700 (PDT)
+        bh=eEmJIJa0v/rePle6ZiJmkXBLf0tXP2KOovjivMZBv80=;
+        b=kimh1MuNaaZspyntRj/Z+FY4q7zuDBrXGnujJ/dIYNHj7PepXbWojCt6N0B1mi7Odq
+         pVzcQma9xFXTVhQwWGpKURaKkd/hLQ1HEEnqc9Zyys4HSkIvZ8D/XRxxx/dF4+JBoZZr
+         s4AHaq8oGBmzEp71b9KIN/rX0srYAV/M9FiNCpI4uyHb7R4prXdeapoAZH4p+mEjG3e1
+         XD8hP6huqgeR1ne7I6v2UswWCs/F2zu1QD7zwb0X978jKZheG9ZiHbuX5RsgdyrKWo9X
+         wisZEeaRkRc+/J+LP1Ix1ivIqv/WnnVukaOTLQ0xUM2zYKiXNrfwx6h6B+fZx7c8Fpl3
+         N/ew==
+X-Gm-Message-State: AOAM531XxF+oZ63wKdjd/peevmU8PajH0lpncqt9Eq6V3WItbge+qwA9
+        bRFfHNJ6R03v28Xd8GXVcsUQEkvafSdKUNTXfGLSaQ==
+X-Google-Smtp-Source: ABdhPJxvj13Qe7ShtfOQOOMs44W/5ZrbsATHscYcUYaEOc5irj6+5wlNH6VxwLBPlwT/L07LNCOgx7R1idVY9sS9l5Y=
+X-Received: by 2002:a02:b155:: with SMTP id s21mr12465245jah.50.1625569249677;
+ Tue, 06 Jul 2021 04:00:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <1625038079-25815-1-git-send-email-kyrie.wu@mediatek.com> <1625038079-25815-4-git-send-email-kyrie.wu@mediatek.com>
-In-Reply-To: <1625038079-25815-4-git-send-email-kyrie.wu@mediatek.com>
+References: <1625038079-25815-1-git-send-email-kyrie.wu@mediatek.com> <1625038079-25815-5-git-send-email-kyrie.wu@mediatek.com>
+In-Reply-To: <1625038079-25815-5-git-send-email-kyrie.wu@mediatek.com>
 From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Tue, 6 Jul 2021 19:00:33 +0800
-Message-ID: <CA+Px+wUPX0My5+7gBBo5N0Qf4VbpK96=vS8_F6xrRt+-T9O-3g@mail.gmail.com>
-Subject: Re: [PATCH v2,3/9] media: mtk-jpegenc: remove redundant code of irq
+Date:   Tue, 6 Jul 2021 19:00:38 +0800
+Message-ID: <CA+Px+wW-L__+mGpvA3P0C7KQh=mJrQ2g0ciPVO=rKnueONqo0A@mail.gmail.com>
+Subject: Re: [PATCH v2,4/9] media: mtk-jpegenc: Refactor jpeg clock interface
 To:     "kyrie.wu" <kyrie.wu@mediatek.com>
 Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -70,6 +70,80 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, Jun 30, 2021 at 3:28 PM kyrie.wu <kyrie.wu@mediatek.com> wrote:
-> the func of jpgenc irq handler would not compatible, remove those
-> code.
-Need more explanation about why as I believe it is non-backward compatible.
+> Using the needed param for lock on/off function.
+The description makes less sense.
+
+The patch is more than a "refactor".  Please change the title accordingly.
+
+>  static void mtk_jpeg_clk_on(struct mtk_jpeg_dev *jpeg)
+>  {
+> -       int ret;
+> +       struct mtk_jpeg_dev *comp_dev;
+> +       struct mtk_jpegenc_pm *pm;
+> +       struct mtk_jpegenc_clk *jpegclk;
+> +       struct mtk_jpegenc_clk_info *clk_info;
+> +       int ret, i;
+> +
+> +       if (jpeg->variant->is_encoder) {
+> +               for (i = 0; i < MTK_JPEGENC_HW_MAX; i++) {
+> +                       comp_dev = jpeg->hw_dev[i];
+> +                       if (!comp_dev) {
+> +                               dev_err(jpeg->dev, "Failed to get hw dev\n");
+> +                               return;
+> +                       }
+> +
+> +                       pm = &comp_dev->pm;
+> +                       jpegclk = &pm->venc_clk;
+> +                       clk_info = jpegclk->clk_info;
+> +                       ret = clk_prepare_enable(clk_info->jpegenc_clk);
+> +                       if (ret) {
+> +                               dev_err(jpeg->dev, "jpegenc clk enable %d %s fail\n",
+> +                                      i, jpegclk->clk_info->clk_name);
+> +                               return;
+> +                       }
+> +               }
+> +               return;
+> +       }
+Doesn't it need to call clk_disable_unprepare() in the error paths?
+
+> +                       pm = &comp_dev->pm;
+> +                       jpegclk = &pm->venc_clk;
+> +                       clk_disable_unprepare(jpegclk->clk_info->jpegenc_clk);
+Consistency issue: mtk_jpeg_clk_on() has struct mtk_jpegenc_clk_info
+*clk_info.  Why not also have the local variable here?
+
+Is it a good idea to just separate functions for ->is_encoder for
+mtk_jpeg_clk_on() and mtk_jpeg_clk_off()?  For example,
+mtk_jpegenc_clk_on() and mtk_jpegdec_clk_on().
+
+> +/** * struct mtk_jpegenc_clk_info - Structure used to store clock name */
+> +struct mtk_jpegenc_clk_info {
+> +       const char      *clk_name;
+> +       struct clk      *jpegenc_clk;
+> +};
+> +
+> +/* struct mtk_vcodec_clk - Structure used to store vcodec clock information */
+> +struct mtk_jpegenc_clk {
+> +       struct mtk_jpegenc_clk_info     *clk_info;
+> +       int     clk_num;
+> +};
+> +
+> +/** * struct mtk_vcodec_pm - Power management data structure */
+> +struct mtk_jpegenc_pm {
+> +       struct mtk_jpegenc_clk  venc_clk;
+> +       struct device   *dev;
+> +       struct mtk_jpeg_dev     *mtkdev;
+> +};
+> +
+>  /**
+>   * struct mtk_jpeg_dev - JPEG IP abstraction
+>   * @lock:              the mutex protecting this structure
+> @@ -103,6 +128,9 @@ struct mtk_jpeg_dev {
+>         struct device           *larb;
+>         struct delayed_work job_timeout_work;
+>         const struct mtk_jpeg_variant *variant;
+> +
+> +       struct mtk_jpeg_dev *hw_dev[MTK_JPEGENC_HW_MAX];
+> +       struct mtk_jpegenc_pm pm;
+>  };
+If the declaration cannot align, using 1-space is sufficient.
