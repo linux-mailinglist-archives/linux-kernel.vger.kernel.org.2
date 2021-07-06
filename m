@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB6D3BC482
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 03:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537B03BC489
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 03:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhGFBOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 21:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
+        id S229880AbhGFBPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 21:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhGFBOg (ORCPT
+        with ESMTP id S229774AbhGFBPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 21:14:36 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF51C061574;
-        Mon,  5 Jul 2021 18:11:58 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso896708pjp.5;
-        Mon, 05 Jul 2021 18:11:58 -0700 (PDT)
+        Mon, 5 Jul 2021 21:15:43 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F18C061574;
+        Mon,  5 Jul 2021 18:13:05 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso533879wmh.4;
+        Mon, 05 Jul 2021 18:13:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NwQaLt08jBec11KMF4e1SB6lInafR9MTNHkp/3GAlCs=;
-        b=GrH7hbBZRjhmUoQzTYxVhnvJrgTf6HEZuivxzAFryLBr+X+CbRKtUf0W4ybY+myvtc
-         sh+IvumMoC8jOMd/iaFUBaJj2JK5QJqd2nHYthE2Mbj0XQ2lZdyg5UoYliOT+gC064at
-         FJtsxcQk3V6in/tiOY36+CqYpQS1ngOkdobFQwX2NdPRBtXY66JWP4nAHnv+9qlIzFVu
-         jntzgNiRwql5L6++9YGAsjdPpwb9vb02QEuu8d09qpY2LZ53Z8cnRGo5Qkanr5K8a2bb
-         Btf3/rp5VzC7jgC7ZxU02+TYGUaGdtKZY62GnqjxIez6rxevnD2fPW04Xpy5F7QBGcjO
-         QD5w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m0N4qW96377LDnYOmu1AZzljNDTveYKSNvIdFPUdlig=;
+        b=Y3x3AGs7sJA067LDVJVliGi+M6O7BVtzWWKCrFU3+dhMD/cZCmz6XdKFg45EWaxHm7
+         i6/ubsiZ67Zy6J8Ll3c0Doe7Ilvrf6pjlckyHX+JRCIdvCJSUgSU55rmQ55KA4e6I8Gm
+         Fsb9EM29DOrh2PIxTXtCH8q36OTP98+f2CyRm0T5fLdAYWtre0mWEYpcXltA6S7Wti+d
+         yNPhgOLwSvG1GmDNgOgjlvsLzj/KXAY1tfgB7TsERvIR5CKPCJLup/qhzykMt8oCAlOO
+         l72varmgltyHzmCYyj7KYGzqKtNTDlRhClNhKFZMszXgvM61LMHJUkbvekEk99fUGByJ
+         Z16Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NwQaLt08jBec11KMF4e1SB6lInafR9MTNHkp/3GAlCs=;
-        b=iijGrmtJBo0efwHYYfGV1BxN9eRbndGvGTi0nfa1b+LjCy4Da7PdcW0SULcXF+v3/6
-         NUFISz94WAoWE1cwmrfKRlGue7CFdta6k/wXBh8fK6wwVUd4mb9t/7mdLKzz8Mul8W7o
-         1HlflDl2f8/YdB4V/RKrfElqLBUXzZidp5z5ghx04+EnWSqcPSg8GRGoSWqIDkOaDWrW
-         55F5wAEeJg9fnEZxLWLjnzth7Y8R5hwPIgj4XdrxZOg80CTXaCPYVielZjaRZ7lEVOzx
-         o905zeVSKh6jzfqnUqplCODCvdMWUFVwT/ZwUWOhKFgzhhTXnKkyQQEjQC4kLSyNwNBZ
-         VqZA==
-X-Gm-Message-State: AOAM533seO2fEOYvzy2MDzB7F5YqOc01xhABRccs3tVdb+rqRc8yyAM8
-        BxK9D4cJ8fNLVRIToG5Tzps=
-X-Google-Smtp-Source: ABdhPJxyVBLkpgGVc/tcOrtl50EC8uoGSyLEDjcPeC7u5xbnkGWbldxhnRLLRWu2eDHWgIkL8CZNiA==
-X-Received: by 2002:a17:903:2341:b029:129:33d3:60ee with SMTP id c1-20020a1709032341b029012933d360eemr14771858plh.66.1625533918176;
-        Mon, 05 Jul 2021 18:11:58 -0700 (PDT)
-Received: from ubuntu.localdomain ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id o16sm9017810pjw.51.2021.07.05.18.11.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 18:11:57 -0700 (PDT)
-From:   gushengxian <gushengxian507419@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-Subject: [PATCH v2] tools: bpftool: close va_list 'ap' by va_end()
-Date:   Mon,  5 Jul 2021 18:11:50 -0700
-Message-Id: <20210706011150.670544-1-gushengxian507419@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m0N4qW96377LDnYOmu1AZzljNDTveYKSNvIdFPUdlig=;
+        b=g53IkR3YnXusKRFwvN5SjJ+iUFNta6fjAgaUWkhQ1i3pR2N977iw+gc/Rpo/HY267m
+         B7g/4fSFyYaAVMKaxlmedAhs2wAGB1CMAF1co+0yXhWUvKwdbudU56fMqUDYdXvOFB9d
+         4Yr5l1/FcjyVIsIoKFxllcwEVSget4OxssjFfVYcIVun2AzIHF4PgxbsMGMQvwUWsI9B
+         8j3EDCF3+Fwl1Oc2j/6qBSmqF+i2/HPCjAysIrA3iKoM4/k7sZJZCCjQb69STiujTYUj
+         rdZ6BLJeNCbIgYQ39/Aswek0vAU0JYN9aeInOFcK0pr5MypCmA1akMQjCPp6/fZurWKT
+         VAhw==
+X-Gm-Message-State: AOAM533EJaqauOPFP3ndU7kNZXTJaqcDuTePyeRzGBMK4c22vjS9sfbb
+        f11kdKoWisnz7eXjL+79AEZy/qI2kwW+WeSa+pCJJAlRJwk=
+X-Google-Smtp-Source: ABdhPJyDL99iAb7T5XgOjwgwxXQ9a81rXj2Ygh9fQ8mZJBhoq9S6AKW8VyoSJjHjhzcL7bULoUqgXH6WbqWaxeyGhZc=
+X-Received: by 2002:a1c:988a:: with SMTP id a132mr1710418wme.175.1625533983814;
+ Mon, 05 Jul 2021 18:13:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210705123405.6089-1-yajun.deng@linux.dev>
+In-Reply-To: <20210705123405.6089-1-yajun.deng@linux.dev>
+From:   Xin Long <lucien.xin@gmail.com>
+Date:   Mon, 5 Jul 2021 21:12:54 -0400
+Message-ID: <CADvbK_dXKK4-t02hUDMPf_O=L8WD7_=aH7c9VmL0ZgtVE_4nUg@mail.gmail.com>
+Subject: Re: [PATCH] net: Fix called net_enable_timestamp() in sctp_copy_sock()
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        mathew.j.martineau@linux.intel.com,
+        Eric Dumazet <edumazet@google.com>, aahringo@redhat.com,
+        linmiaohe@huawei.com, Florian Westphal <fw@strlen.de>,
+        xiangxia.m.yue@gmail.com, Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-sctp @ vger . kernel . org" <linux-sctp@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+On Mon, Jul 5, 2021 at 8:34 AM Yajun Deng <yajun.deng@linux.dev> wrote:
+>
+> Add sock_needs_netstamp() judgment condition when need to call
+> net_enable_timestamp().
+Why do we need this when it always returns true for SCTP?
 
-va_list 'ap' was opened but not closed by va_end(). It should be
-closed by va_end() before return.
-
-According to suggestion of Daniel Borkmann <daniel@iogearbox.net>.
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- tools/bpf/bpftool/jit_disasm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
-index e7e7eee9f172..24734f2249d6 100644
---- a/tools/bpf/bpftool/jit_disasm.c
-+++ b/tools/bpf/bpftool/jit_disasm.c
-@@ -43,11 +43,13 @@ static int fprintf_json(void *out, const char *fmt, ...)
- {
- 	va_list ap;
- 	char *s;
-+	int err;
- 
- 	va_start(ap, fmt);
--	if (vasprintf(&s, fmt, ap) < 0)
--		return -1;
-+	err = vasprintf(&s, fmt, ap);
- 	va_end(ap);
-+	if (err < 0)
-+		return -1;
- 
- 	if (!oper_count) {
- 		int i;
--- 
-2.25.1
-
+>
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> ---
+>  include/net/sock.h | 1 +
+>  net/core/sock.c    | 2 +-
+>  net/sctp/socket.c  | 2 +-
+>  3 files changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index 8bdd80027ffb..e36563576758 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -2757,6 +2757,7 @@ int sock_bindtoindex(struct sock *sk, int ifindex, bool lock_sk);
+>  void sock_set_timestamp(struct sock *sk, int optname, bool valbool);
+>  int sock_set_timestamping(struct sock *sk, int optname, int val);
+>
+> +bool sock_needs_netstamp(const struct sock *sk);
+>  void sock_enable_timestamps(struct sock *sk);
+>  void sock_no_linger(struct sock *sk);
+>  void sock_set_keepalive(struct sock *sk);
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index ba1c0f75cd45..ce6ec9f8ac7c 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -429,7 +429,7 @@ static int sock_set_timeout(long *timeo_p, sockptr_t optval, int optlen,
+>         return 0;
+>  }
+>
+> -static bool sock_needs_netstamp(const struct sock *sk)
+> +bool sock_needs_netstamp(const struct sock *sk)
+>  {
+>         switch (sk->sk_family) {
+>         case AF_UNSPEC:
+> diff --git a/net/sctp/socket.c b/net/sctp/socket.c
+> index e64e01f61b11..30d90735beb0 100644
+> --- a/net/sctp/socket.c
+> +++ b/net/sctp/socket.c
+> @@ -9449,7 +9449,7 @@ void sctp_copy_sock(struct sock *newsk, struct sock *sk,
+>         newinet->mc_index = 0;
+>         newinet->mc_list = NULL;
+>
+> -       if (newsk->sk_flags & SK_FLAGS_TIMESTAMP)
+> +       if (sock_needs_netstamp(newsk) && newsk->sk_flags & SK_FLAGS_TIMESTAMP)
+>                 net_enable_timestamp();
+>
+>         /* Set newsk security attributes from original sk and connection
+> --
+> 2.32.0
+>
