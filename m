@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757053BD567
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6493BD405
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245214AbhGFMVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:21:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
+        id S239708AbhGFL7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:59:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237113AbhGFLfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:35:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D193361C9E;
-        Tue,  6 Jul 2021 11:25:32 +0000 (UTC)
+        id S237125AbhGFLf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:35:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E33DF61241;
+        Tue,  6 Jul 2021 11:25:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570733;
-        bh=m3J9UNyQjPyxEdeBDHGCu5rS6SkucFEvaf5a6IRbY/w=;
+        s=k20201202; t=1625570739;
+        bh=THJPcmkfH78OpzqAj5LeSvs8Vk5FqCJ8OEAfz0IuGEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qHRnBZJL1K5ZG4pyfXr7gbDtbfY0EQ8usd20/oVCba9xELsROnuyWNscM/pzmUyPQ
-         T2dJYWhPrQ3lmlT+CXww3kIdwq4AvuuCUVUvLCovKsusbS4/GjhZHZii+H57FbK2SU
-         XcdxPjyKbrgz4ieTFJHafNIMjCSQs583dLo7cWJnfmzuWdSbBALKh0BW2GKVcfOvvx
-         9GeZ8MGK1Xl0crG7HYmvJnhxoGWquoyL6HMfnoPW+iC15r5m2nNHmcdOWCpVZQdJ4Z
-         HrOkJULO0/W6/iBqsTXwwFjmOB04xjWD/dkVnStvD8myPQ/oFNmPuKj6UIKIiQ7PHo
-         j8qiCmx552OLw==
+        b=II7KLIrFe1I+kakvVOq5pGocpd0nw2PYFuSPIIes6v7MGlpKyaBairJ58nuQsJ1wm
+         H57IBaZI8XOGXxXdIF1PrmtN2mzdn99N7Un/fK84ZM/ssGCgUfR90aWYrAS2SFuNVP
+         8LvKbwo4l5cBENKtE++TQNSoZPzWjGlSa7FD3mcT9yoPCrC73VqFhGK2yW7iCXr6/R
+         J0QLQTnV77+kf+ghUnSfpd4eJQ2ZZDFC5n8DqETV/Tk9IHjAKl13jjKqLWugwPbDx3
+         K5kxuY4hIX1vzrCcKJB6MXOZmxPspj0WQuMxOU4TMSwiKkv2wcH4PmfkkaHEkSrFZu
+         MUqxCNvTpTHAw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, linux-clk@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 24/74] clk: tegra: Ensure that PLLU configuration is applied properly
-Date:   Tue,  6 Jul 2021 07:24:12 -0400
-Message-Id: <20210706112502.2064236-24-sashal@kernel.org>
+Cc:     Liwei Song <liwei.song@windriver.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 29/74] ice: set the value of global config lock timeout longer
+Date:   Tue,  6 Jul 2021 07:24:17 -0400
+Message-Id: <20210706112502.2064236-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112502.2064236-1-sashal@kernel.org>
 References: <20210706112502.2064236-1-sashal@kernel.org>
@@ -43,59 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Liwei Song <liwei.song@windriver.com>
 
-[ Upstream commit a7196048cd5168096c2c4f44a3939d7a6dcd06b9 ]
+[ Upstream commit fb3612840d4f587a0af9511a11d7989d1fa48206 ]
 
-The PLLU (USB) consists of the PLL configuration itself and configuration
-of the PLLU outputs. The PLLU programming is inconsistent on T30 vs T114,
-where T114 immediately bails out if PLLU is enabled and T30 re-enables
-a potentially already enabled PLL (left after bootloader) and then fully
-reprograms it, which could be unsafe to do. The correct way should be to
-skip enabling of the PLL if it's already enabled and then apply
-configuration to the outputs. This patch doesn't fix any known problems,
-it's a minor improvement.
+It may need hold Global Config Lock a longer time when download DDP
+package file, extend the timeout value to 5000ms to ensure that
+download can be finished before other AQ command got time to run,
+this will fix the issue below when probe the device, 5000ms is a test
+value that work with both Backplane and BreakoutCable NVM image:
 
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+ice 0000:f4:00.0: VSI 12 failed lan queue config, error ICE_ERR_CFG
+ice 0000:f4:00.0: Failed to delete VSI 12 in FW - error: ICE_ERR_AQ_TIMEOUT
+ice 0000:f4:00.0: probe failed due to setup PF switch: -12
+ice: probe of 0000:f4:00.0 failed with error -12
+
+Signed-off-by: Liwei Song <liwei.song@windriver.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/tegra/clk-pll.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_type.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/tegra/clk-pll.c b/drivers/clk/tegra/clk-pll.c
-index 80f640d9ea71..24ecfc114d41 100644
---- a/drivers/clk/tegra/clk-pll.c
-+++ b/drivers/clk/tegra/clk-pll.c
-@@ -1089,7 +1089,8 @@ static int clk_pllu_enable(struct clk_hw *hw)
- 	if (pll->lock)
- 		spin_lock_irqsave(pll->lock, flags);
+diff --git a/drivers/net/ethernet/intel/ice/ice_type.h b/drivers/net/ethernet/intel/ice/ice_type.h
+index 6667d17a4206..0b2e657b96eb 100644
+--- a/drivers/net/ethernet/intel/ice/ice_type.h
++++ b/drivers/net/ethernet/intel/ice/ice_type.h
+@@ -48,7 +48,7 @@ enum ice_aq_res_ids {
+ /* FW update timeout definitions are in milliseconds */
+ #define ICE_NVM_TIMEOUT			180000
+ #define ICE_CHANGE_LOCK_TIMEOUT		1000
+-#define ICE_GLOBAL_CFG_LOCK_TIMEOUT	3000
++#define ICE_GLOBAL_CFG_LOCK_TIMEOUT	5000
  
--	_clk_pll_enable(hw);
-+	if (!clk_pll_is_enabled(hw))
-+		_clk_pll_enable(hw);
- 
- 	ret = clk_pll_wait_for_lock(pll);
- 	if (ret < 0)
-@@ -1706,15 +1707,13 @@ static int clk_pllu_tegra114_enable(struct clk_hw *hw)
- 		return -EINVAL;
- 	}
- 
--	if (clk_pll_is_enabled(hw))
--		return 0;
--
- 	input_rate = clk_hw_get_rate(__clk_get_hw(osc));
- 
- 	if (pll->lock)
- 		spin_lock_irqsave(pll->lock, flags);
- 
--	_clk_pll_enable(hw);
-+	if (!clk_pll_is_enabled(hw))
-+		_clk_pll_enable(hw);
- 
- 	ret = clk_pll_wait_for_lock(pll);
- 	if (ret < 0)
+ enum ice_aq_res_access_type {
+ 	ICE_RES_READ = 1,
 -- 
 2.30.2
 
