@@ -2,157 +2,384 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDA93BDE66
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 22:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9B33BDE6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 22:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhGFUW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 16:22:29 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:49434 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229986AbhGFUW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 16:22:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625602789; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=bVsxEM7GBkgihUbSf5tSkkwxcoMoVHENciajGKiwiQA=; b=ofbfwM47CxfN5LaZkparvRaHg5GMDw1Ob300Nc7hID31hzy/XlHhhPQzJE5iEvmByFncFSUw
- rHDzo0i1Y+Sej8HvNsfW3PYginJLXnCEPcCrGl/Es6wiBmwdQP4NNqJURXdgbdFaUJZcK9Os
- plzsD4Ch0/WPQ/eISU3WQVQ18mc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60e4bae0f30429861410fb7d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Jul 2021 20:19:44
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2ED16C4360C; Tue,  6 Jul 2021 20:19:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.110.78.185] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C4A73C4360C;
-        Tue,  6 Jul 2021 20:19:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C4A73C4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v12 3/6] usb: dwc3: Resize TX FIFOs to meet EP bursting
- requirements
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, balbi@kernel.org,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        jackp@codeaurora.org, fntoth@gmail.com
-References: <1625218655-14180-1-git-send-email-wcheng@codeaurora.org>
- <1625218655-14180-4-git-send-email-wcheng@codeaurora.org>
- <YOSdRKTy3+CdV/UF@kroah.com>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <2ee71465-d921-8904-2009-1e46ad1a988b@codeaurora.org>
-Date:   Tue, 6 Jul 2021 13:19:38 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YOSdRKTy3+CdV/UF@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S229949AbhGFU1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 16:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229781AbhGFU1i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 16:27:38 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131ABC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 13:24:59 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso190181pjp.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 13:24:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0izMGTh8ou5Xq2yCd4cihz/v3sEIBPLGO+FSBZ094Yg=;
+        b=i7cYd8L3i2G716sPBECp2JBNaFa+jkUdiYjfmAr2oDi4AHpEAtDrMXA/2jKaJLbhNF
+         HGCwRmvZJ+PENhZ4DjN7GD1DS/7xPVcnm7AaDl8R5RAC7PJpNNzAtN068B11tGcScmXS
+         12V6Eh/Ut68IEj75taDEtp5rwBRKm39BPQqXMhiZXi7FOqkgFjEYoqFfuI5ULXDz6usR
+         +8Q56Z0t3fMBNuXxQBDc4E5UNsp6EcGIMTDTAbRCdGqM7M7wvLXSSSJYUHsg7Snr54+L
+         K3YWY6y79WQeJ8Tvs1joyZZt4cOo42+VcVEB3PcoSoCKzoaJVRXo7PuLUA2sG9XDcJIU
+         7atQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=0izMGTh8ou5Xq2yCd4cihz/v3sEIBPLGO+FSBZ094Yg=;
+        b=nbVgjQW/LnsTMl4tS69fPniIf7jE90bFkoKDldGbySBkMAE0J3C2DmpH3u1l8sPjZ/
+         QpkaQbtoUxs7hzp/4+7VnuMNsBv8fD9eaIc51qGHujdnL+JfFPmFR7laRCsZ+hyouMOi
+         Xr25L3enq5ug46oX8ERMLl/jNR58zjp5zM9ITL+zgsFkk82SfRA9x0hEHoP48oKJBsdZ
+         d9qfMbdzahTV1yFTRybkVG6yXyuugrASnxbhbfNeo2ATJx2vUd0yI+92Own09ypntkbA
+         aMIqvxt/w0BwbvclTpJJ/3m5Zeb1wlZeNhyom+HTnDVS6QezymbwEGY/gnNW6+pQtxNP
+         rJeg==
+X-Gm-Message-State: AOAM530q7qpB1+5rRz5/1f+ppio7RNnCxxutAWdXgbnl1cDJ8qe3kak8
+        RuQuO9KykZkarpeHatM5zayF9Q==
+X-Google-Smtp-Source: ABdhPJwFKRHA6EJk5eTGfXOmfPuFnl7TXw+TMlibe2I2pexT3PuwHhOrTbyqYOHnk7CJ632baOsBeQ==
+X-Received: by 2002:a17:90a:7801:: with SMTP id w1mr22122422pjk.179.1625603098198;
+        Tue, 06 Jul 2021 13:24:58 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id x19sm13214562pfp.115.2021.07.06.13.24.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 13:24:57 -0700 (PDT)
+Date:   Tue, 06 Jul 2021 13:24:57 -0700 (PDT)
+X-Google-Original-Date: Tue, 06 Jul 2021 12:54:32 PDT (-0700)
+Subject:     Re: [PATCH -next v2] riscv: add VMAP_STACK overflow detection
+In-Reply-To: <20210621032855.130650-1-tongtiangen@huawei.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tongtiangen@huawei.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     tongtiangen@huawei.com
+Message-ID: <mhng-368361db-377b-4667-8fcd-11770c6672ae@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/6/2021 11:13 AM, Greg KH wrote:
-> On Fri, Jul 02, 2021 at 02:37:32AM -0700, Wesley Cheng wrote:
->> Some devices have USB compositions which may require multiple endpoints
->> that support EP bursting.  HW defined TX FIFO sizes may not always be
->> sufficient for these compositions.  By utilizing flexible TX FIFO
->> allocation, this allows for endpoints to request the required FIFO depth to
->> achieve higher bandwidth.  With some higher bMaxBurst configurations, using
->> a larger TX FIFO size results in better TX throughput.
->>
->> By introducing the check_config() callback, the resizing logic can fetch
->> the maximum number of endpoints used in the USB composition (can contain
->> multiple configurations), which helps ensure that the resizing logic can
->> fulfill the configuration(s), or return an error to the gadget layer
->> otherwise during bind time.
->>
->> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
->> ---
->>  drivers/usb/dwc3/core.c   |   9 ++
->>  drivers/usb/dwc3/core.h   |  15 ++++
->>  drivers/usb/dwc3/ep0.c    |   2 +
->>  drivers/usb/dwc3/gadget.c | 221 ++++++++++++++++++++++++++++++++++++++++++++++
->>  4 files changed, 247 insertions(+)
->>
->> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
->> index e0a8e79..a7bcdb9d 100644
->> --- a/drivers/usb/dwc3/core.c
->> +++ b/drivers/usb/dwc3/core.c
->> @@ -1267,6 +1267,7 @@ static void dwc3_get_properties(struct dwc3 *dwc)
->>  	u8			rx_max_burst_prd;
->>  	u8			tx_thr_num_pkt_prd;
->>  	u8			tx_max_burst_prd;
->> +	u8			tx_fifo_resize_max_num;
->>  	const char		*usb_psy_name;
->>  	int			ret;
->>  
->> @@ -1282,6 +1283,8 @@ static void dwc3_get_properties(struct dwc3 *dwc)
->>  	 */
->>  	hird_threshold = 12;
->>  
->> +	tx_fifo_resize_max_num = 6;
->> +
-
-Hi Greg,
-> 
-> No comment as to why 6 was picked, like the other defaults in this
-> function?
-> 
-> Why was 6 picked?
-> 
-> 
-Talked with Thinh about this sometime back about why 6 was picked.  It
-was just an arbitrary setting we decided on throughout our testing, as
-that was what provided the best tput numbers for our system.  Hence why
-it was suggested to have a separate property, so other vendors can set
-this to accommodate their difference in HW latencies.
-
->>  	dwc->maximum_speed = usb_get_maximum_speed(dev);
->>  	dwc->max_ssp_rate = usb_get_maximum_ssp_rate(dev);
->>  	dwc->dr_mode = usb_get_dr_mode(dev);
->> @@ -1325,6 +1328,10 @@ static void dwc3_get_properties(struct dwc3 *dwc)
->>  				&tx_thr_num_pkt_prd);
->>  	device_property_read_u8(dev, "snps,tx-max-burst-prd",
->>  				&tx_max_burst_prd);
->> +	dwc->do_fifo_resize = device_property_read_bool(dev,
->> +							"tx-fifo-resize");
->> +	device_property_read_u8(dev, "tx-fifo-max-num",
->> +				&tx_fifo_resize_max_num);
-> 
-> So you overwrite the "max" with whatever is given to you?  What if
-> tx-fifo-resize is not enabled?
+On Sun, 20 Jun 2021 20:28:55 PDT (-0700), tongtiangen@huawei.com wrote:
+> This patch adds stack overflow detection to riscv, usable when
+> CONFIG_VMAP_STACK=y.
 >
-If tx-fifo-resize is not enabled, then there shouldn't be anything that
-will reference this property.  As mentioned in the previous comment, HW
-vendors may not need a FIFO size of 6 max packets for their particular
-system, so they should be able to program this to their needs.
+> Overflow is detected in kernel exception entry(kernel/entry.S), if the kernel
+> stack is overflow and been detected, the overflow handler is invoked on a
+> per-cpu overflow stack. This approach preserves GPRs and the original exception
+> information.
+>
+> The overflow detect is performed before any attempt is made to access the stack
+> and the principle of stack overflow detection: kernel stacks are aligned to
+> double their size, enabling overflow to be detected with a single bit test. For
+> example, a 16K stack is aligned to 32K, ensuring that bit 14 of the SP must be
+> zero. On an overflow (or underflow), this bit is flipped. Thus, overflow (of
+> less than the size of the stack) can be detected by testing whether this bit is
+> set.
+>
+> This gives us a useful error message on stack overflow, as can be trigger with
+> the LKDTM overflow test:
+>
+> [  388.053267] lkdtm: Performing direct entry EXHAUST_STACK
+> [  388.053663] lkdtm: Calling function with 1024 frame size to depth 32 ...
+> [  388.054016] lkdtm: loop 32/32 ...
+> [  388.054186] lkdtm: loop 31/32 ...
+> [  388.054491] lkdtm: loop 30/32 ...
+> [  388.054672] lkdtm: loop 29/32 ...
+> [  388.054859] lkdtm: loop 28/32 ...
+> [  388.055010] lkdtm: loop 27/32 ...
+> [  388.055163] lkdtm: loop 26/32 ...
+> [  388.055309] lkdtm: loop 25/32 ...
+> [  388.055481] lkdtm: loop 24/32 ...
+> [  388.055653] lkdtm: loop 23/32 ...
+> [  388.055837] lkdtm: loop 22/32 ...
+> [  388.056015] lkdtm: loop 21/32 ...
+> [  388.056188] lkdtm: loop 20/32 ...
+> [  388.058145] Insufficient stack space to handle exception!
+> [  388.058153] Task stack:     [0xffffffd014260000..0xffffffd014264000]
+> [  388.058160] Overflow stack: [0xffffffe1f8d2c220..0xffffffe1f8d2d220]
+> [  388.058168] CPU: 0 PID: 89 Comm: bash Not tainted 5.12.0-rc8-dirty #90
+> [  388.058175] Hardware name: riscv-virtio,qemu (DT)
+> [  388.058187] epc : number+0x32/0x2c0
+> [  388.058247]  ra : vsnprintf+0x2ae/0x3f0
+> [  388.058255] epc : ffffffe0002d38f6 ra : ffffffe0002d814e sp : ffffffd01425ffc0
+> [  388.058263]  gp : ffffffe0012e4010 tp : ffffffe08014da00 t0 : ffffffd0142606e8
+> [  388.058271]  t1 : 0000000000000000 t2 : 0000000000000000 s0 : ffffffd014260070
+> [  388.058303]  s1 : ffffffd014260158 a0 : ffffffd01426015e a1 : ffffffd014260158
+> [  388.058311]  a2 : 0000000000000013 a3 : ffff0a01ffffff10 a4 : ffffffe000c398e0
+> [  388.058319]  a5 : 511b02ec65f3e300 a6 : 0000000000a1749a a7 : 0000000000000000
+> [  388.058327]  s2 : ffffffff000000ff s3 : 00000000ffff0a01 s4 : ffffffe0012e50a8
+> [  388.058335]  s5 : 0000000000ffff0a s6 : ffffffe0012e50a8 s7 : ffffffe000da1cc0
+> [  388.058343]  s8 : ffffffffffffffff s9 : ffffffd0142602b0 s10: ffffffd0142602a8
+> [  388.058351]  s11: ffffffd01426015e t3 : 00000000000f0000 t4 : ffffffffffffffff
+> [  388.058359]  t5 : 000000000000002f t6 : ffffffd014260158
+> [  388.058366] status: 0000000000000100 badaddr: ffffffd01425fff8 cause: 000000000000000f
+> [  388.058374] Kernel panic - not syncing: Kernel stack overflow
+> [  388.058381] CPU: 0 PID: 89 Comm: bash Not tainted 5.12.0-rc8-dirty #90
+> [  388.058387] Hardware name: riscv-virtio,qemu (DT)
+> [  388.058393] Call Trace:
+> [  388.058400] [<ffffffe000004944>] walk_stackframe+0x0/0xce
+> [  388.058406] [<ffffffe0006f0b28>] dump_backtrace+0x38/0x46
+> [  388.058412] [<ffffffe0006f0b46>] show_stack+0x10/0x18
+> [  388.058418] [<ffffffe0006f3690>] dump_stack+0x74/0x8e
+> [  388.058424] [<ffffffe0006f0d52>] panic+0xfc/0x2b2
+> [  388.058430] [<ffffffe0006f0acc>] print_trace_address+0x0/0x24
+> [  388.058436] [<ffffffe0002d814e>] vsnprintf+0x2ae/0x3f0
+> [  388.058956] SMP: stopping secondary CPUs
+>
+> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> ---
+>
+> v2:
+> * 1. fix tests fail if STRICT_KERNEL_RWX=n.
+>   2. fix W=1 build warning.
+>
+>  arch/riscv/Kconfig                      |   1 +
+>  arch/riscv/include/asm/asm-prototypes.h |   3 +
+>  arch/riscv/include/asm/thread_info.h    |  15 ++++
+>  arch/riscv/kernel/entry.S               | 108 ++++++++++++++++++++++++
+>  arch/riscv/kernel/traps.c               |  35 ++++++++
+>  arch/riscv/kernel/vmlinux.lds.S         |   2 +-
+>  6 files changed, 163 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index a97b03164080..c28284f45434 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -70,6 +70,7 @@ config RISCV
+>  	select HAVE_ARCH_MMAP_RND_BITS if MMU
+>  	select HAVE_ARCH_SECCOMP_FILTER
+>  	select HAVE_ARCH_TRACEHOOK
+> +	select HAVE_ARCH_VMAP_STACK if MMU && 64BIT
+>  	select HAVE_ASM_MODVERSIONS
+>  	select HAVE_CONTEXT_TRACKING
+>  	select HAVE_DEBUG_KMEMLEAK
+> diff --git a/arch/riscv/include/asm/asm-prototypes.h b/arch/riscv/include/asm/asm-prototypes.h
+> index 2a652b0c987d..ef386fcf3939 100644
+> --- a/arch/riscv/include/asm/asm-prototypes.h
+> +++ b/arch/riscv/include/asm/asm-prototypes.h
+> @@ -25,4 +25,7 @@ DECLARE_DO_ERROR_INFO(do_trap_ecall_s);
+>  DECLARE_DO_ERROR_INFO(do_trap_ecall_m);
+>  DECLARE_DO_ERROR_INFO(do_trap_break);
+>
+> +asmlinkage unsigned long get_overflow_stack(void);
+> +asmlinkage void handle_bad_stack(struct pt_regs *regs);
+> +
+>  #endif /* _ASM_RISCV_PROTOTYPES_H */
+> diff --git a/arch/riscv/include/asm/thread_info.h b/arch/riscv/include/asm/thread_info.h
+> index 0e549a3089b3..60da0dcacf14 100644
+> --- a/arch/riscv/include/asm/thread_info.h
+> +++ b/arch/riscv/include/asm/thread_info.h
+> @@ -19,6 +19,21 @@
+>  #endif
+>  #define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
+>
+> +/*
+> + * By aligning VMAP'd stacks to 2 * THREAD_SIZE, we can detect overflow by
+> + * checking sp & (1 << THREAD_SHIFT), which we can do cheaply in the entry
+> + * assembly.
+> + */
+> +#ifdef CONFIG_VMAP_STACK
+> +#define THREAD_ALIGN            (2 * THREAD_SIZE)
+> +#else
+> +#define THREAD_ALIGN            THREAD_SIZE
+> +#endif
+> +
+> +#define THREAD_SHIFT            (PAGE_SHIFT + THREAD_SIZE_ORDER)
+> +#define OVERFLOW_STACK_SIZE     SZ_4K
+> +#define SHADOW_OVERFLOW_STACK_SIZE (1024)
+> +
+>  #ifndef __ASSEMBLY__
+>
+>  #include <asm/processor.h>
+> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+> index 80d5a9e017b0..98f502654edd 100644
+> --- a/arch/riscv/kernel/entry.S
+> +++ b/arch/riscv/kernel/entry.S
+> @@ -30,6 +30,15 @@ ENTRY(handle_exception)
+>  _restore_kernel_tpsp:
+>  	csrr tp, CSR_SCRATCH
+>  	REG_S sp, TASK_TI_KERNEL_SP(tp)
+> +
+> +#ifdef CONFIG_VMAP_STACK
+> +	addi sp, sp, -(PT_SIZE_ON_STACK)
+> +	srli sp, sp, THREAD_SHIFT
+> +	andi sp, sp, 0x1
+> +	bnez sp, handle_kernel_stack_overflow
+> +	REG_L sp, TASK_TI_KERNEL_SP(tp)
+> +#endif
+> +
+>  _save_context:
+>  	REG_S sp, TASK_TI_USER_SP(tp)
+>  	REG_L sp, TASK_TI_KERNEL_SP(tp)
+> @@ -376,6 +385,105 @@ handle_syscall_trace_exit:
+>  	call do_syscall_trace_exit
+>  	j ret_from_exception
+>
+> +#ifdef CONFIG_VMAP_STACK
+> +handle_kernel_stack_overflow:
+> +	la sp, shadow_stack
+> +	addi sp, sp, SHADOW_OVERFLOW_STACK_SIZE
+> +
+> +	//save caller register to shadow stack
+> +	addi sp, sp, -(PT_SIZE_ON_STACK)
+> +	REG_S x1,  PT_RA(sp)
+> +	REG_S x5,  PT_T0(sp)
+> +	REG_S x6,  PT_T1(sp)
+> +	REG_S x7,  PT_T2(sp)
+> +	REG_S x10, PT_A0(sp)
+> +	REG_S x11, PT_A1(sp)
+> +	REG_S x12, PT_A2(sp)
+> +	REG_S x13, PT_A3(sp)
+> +	REG_S x14, PT_A4(sp)
+> +	REG_S x15, PT_A5(sp)
+> +	REG_S x16, PT_A6(sp)
+> +	REG_S x17, PT_A7(sp)
+> +	REG_S x28, PT_T3(sp)
+> +	REG_S x29, PT_T4(sp)
+> +	REG_S x30, PT_T5(sp)
+> +	REG_S x31, PT_T6(sp)
+> +
+> +	la ra, restore_caller_reg
+> +	tail get_overflow_stack
+> +
+> +restore_caller_reg:
+> +	//save per-cpu overflow stack
+> +	REG_S a0, -8(sp)
+> +	//restore caller register from shadow_stack
+> +	REG_L x1,  PT_RA(sp)
+> +	REG_L x5,  PT_T0(sp)
+> +	REG_L x6,  PT_T1(sp)
+> +	REG_L x7,  PT_T2(sp)
+> +	REG_L x10, PT_A0(sp)
+> +	REG_L x11, PT_A1(sp)
+> +	REG_L x12, PT_A2(sp)
+> +	REG_L x13, PT_A3(sp)
+> +	REG_L x14, PT_A4(sp)
+> +	REG_L x15, PT_A5(sp)
+> +	REG_L x16, PT_A6(sp)
+> +	REG_L x17, PT_A7(sp)
+> +	REG_L x28, PT_T3(sp)
+> +	REG_L x29, PT_T4(sp)
+> +	REG_L x30, PT_T5(sp)
+> +	REG_L x31, PT_T6(sp)
+> +
+> +	//load per-cpu overflow stack
+> +	REG_L sp, -8(sp)
+> +	addi sp, sp, -(PT_SIZE_ON_STACK)
+> +
+> +	//save context to overflow stack
+> +	REG_S x1,  PT_RA(sp)
+> +	REG_S x3,  PT_GP(sp)
+> +	REG_S x5,  PT_T0(sp)
+> +	REG_S x6,  PT_T1(sp)
+> +	REG_S x7,  PT_T2(sp)
+> +	REG_S x8,  PT_S0(sp)
+> +	REG_S x9,  PT_S1(sp)
+> +	REG_S x10, PT_A0(sp)
+> +	REG_S x11, PT_A1(sp)
+> +	REG_S x12, PT_A2(sp)
+> +	REG_S x13, PT_A3(sp)
+> +	REG_S x14, PT_A4(sp)
+> +	REG_S x15, PT_A5(sp)
+> +	REG_S x16, PT_A6(sp)
+> +	REG_S x17, PT_A7(sp)
+> +	REG_S x18, PT_S2(sp)
+> +	REG_S x19, PT_S3(sp)
+> +	REG_S x20, PT_S4(sp)
+> +	REG_S x21, PT_S5(sp)
+> +	REG_S x22, PT_S6(sp)
+> +	REG_S x23, PT_S7(sp)
+> +	REG_S x24, PT_S8(sp)
+> +	REG_S x25, PT_S9(sp)
+> +	REG_S x26, PT_S10(sp)
+> +	REG_S x27, PT_S11(sp)
+> +	REG_S x28, PT_T3(sp)
+> +	REG_S x29, PT_T4(sp)
+> +	REG_S x30, PT_T5(sp)
+> +	REG_S x31, PT_T6(sp)
+> +
+> +	REG_L s0, TASK_TI_KERNEL_SP(tp)
+> +	csrr s1, CSR_STATUS
+> +	csrr s2, CSR_EPC
+> +	csrr s3, CSR_TVAL
+> +	csrr s4, CSR_CAUSE
+> +	csrr s5, CSR_SCRATCH
+> +	REG_S s0, PT_SP(sp)
+> +	REG_S s1, PT_STATUS(sp)
+> +	REG_S s2, PT_EPC(sp)
+> +	REG_S s3, PT_BADADDR(sp)
+> +	REG_S s4, PT_CAUSE(sp)
+> +	REG_S s5, PT_TP(sp)
+> +	move a0, sp
+> +	tail handle_bad_stack
+> +#endif
+> +
+>  END(handle_exception)
+>
+>  ENTRY(ret_from_fork)
+> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+> index 7bc88d8aab97..0a98fd0ddfe9 100644
+> --- a/arch/riscv/kernel/traps.c
+> +++ b/arch/riscv/kernel/traps.c
+> @@ -203,3 +203,38 @@ int is_valid_bugaddr(unsigned long pc)
+>  void __init trap_init(void)
+>  {
+>  }
+> +
+> +#ifdef CONFIG_VMAP_STACK
+> +static DEFINE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)],
+> +		overflow_stack)__aligned(16);
+> +/*
+> + * shadow stack, handled_ kernel_ stack_ overflow(in kernel/entry.S) is used
+> + * to get per-cpu overflow stack(get_overflow_stack).
+> + */
+> +long shadow_stack[SHADOW_OVERFLOW_STACK_SIZE/sizeof(long)];
+> +asmlinkage unsigned long get_overflow_stack(void)
+> +{
+> +	return (unsigned long)this_cpu_ptr(overflow_stack) +
+> +		OVERFLOW_STACK_SIZE;
+> +}
+> +
+> +asmlinkage void handle_bad_stack(struct pt_regs *regs)
+> +{
+> +	unsigned long tsk_stk = (unsigned long)current->stack;
+> +	unsigned long ovf_stk = (unsigned long)this_cpu_ptr(overflow_stack);
+> +
+> +	console_verbose();
+> +
+> +	pr_emerg("Insufficient stack space to handle exception!\n");
+> +	pr_emerg("Task stack:     [0x%016lx..0x%016lx]\n",
+> +			tsk_stk, tsk_stk + THREAD_SIZE);
+> +	pr_emerg("Overflow stack: [0x%016lx..0x%016lx]\n",
+> +			ovf_stk, ovf_stk + OVERFLOW_STACK_SIZE);
+> +
+> +	__show_regs(regs);
+> +	panic("Kernel stack overflow");
+> +
+> +	for (;;)
+> +		wait_for_interrupt();
+> +}
+> +#endif
+> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+> index 891742ff75a7..502d0826ecb1 100644
+> --- a/arch/riscv/kernel/vmlinux.lds.S
+> +++ b/arch/riscv/kernel/vmlinux.lds.S
+> @@ -117,7 +117,7 @@ SECTIONS
+>  	. = ALIGN(SECTION_ALIGN);
+>  	_data = .;
+>
+> -	RW_DATA(L1_CACHE_BYTES, PAGE_SIZE, THREAD_SIZE)
+> +	RW_DATA(L1_CACHE_BYTES, PAGE_SIZE, THREAD_ALIGN)
+>  	.sdata : {
+>  		__global_pointer$ = . + 0x800;
+>  		*(.sdata*)
 
-If someone programs to this a large number, the logic works where it
-will allocate based off the space left after ensuring enough space for 1
-FIFO per ep.
-
-Thanks
-Wesley Cheng
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Thanks, this is on for-next.
