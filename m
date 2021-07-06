@@ -2,67 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2DE3BC60D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 07:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC223BC612
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 07:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhGFF2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 01:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhGFF2F (ORCPT
+        id S230093AbhGFF3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 01:29:36 -0400
+Received: from angie.orcam.me.uk ([78.133.224.34]:60336 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230008AbhGFF3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 01:28:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CC2C061574;
-        Mon,  5 Jul 2021 22:25:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=V9RQWVqTQeoAkXWE4Ne/8f/6vQUcvWf8z6pk/6TsLT0=; b=g787ZCRwxrrOMFbum+GrK7ZTBw
-        HhsrDl6Ucf1UNaYQJZTcDWa7fcb+NxrQv1VXAVkCNyKeeYJro3+P5MZcSb/dogGbNtfH3EXf9HFD1
-        esxHkyJccGdewMrAdZVvGQ0OvDLPQYnQTLmsecxcqZtEahFR+Mo6FT765bhN0sPwq+msyDz6DkfMK
-        YKozDJoKMrhkkrmoRPqaSfMl1YJsz8R3WDVt2j5qSt4+y18lbr2LZ1fJ/XUnb9jxjwHThWcZ0DJZ/
-        MBwY10Bth1TMSk53G/n468zN1q5st7NXtgf3xexqzFcxpxoaC7DlDovv4hqi1ZHO7/BqaHZTn1h54
-        YnlQWIJw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0dZz-00Ardc-Db; Tue, 06 Jul 2021 05:25:11 +0000
-Date:   Tue, 6 Jul 2021 06:25:07 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] block: fix the problem of io_ticks becoming smaller
-Message-ID: <YOPpM6et9rFNrBOn@infradead.org>
-References: <1625521646-1069-1-git-send-email-brookxu.cn@gmail.com>
+        Tue, 6 Jul 2021 01:29:36 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id D51A692009C; Tue,  6 Jul 2021 07:26:56 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id CD9A992009B;
+        Tue,  6 Jul 2021 07:26:56 +0200 (CEST)
+Date:   Tue, 6 Jul 2021 07:26:56 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Jean Delvare <jdelvare@suse.com>
+cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] firmware: dmi: Avoid (some) empty names in kernel log
+Message-ID: <alpine.DEB.2.21.2107051831260.33206@angie.orcam.me.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1625521646-1069-1-git-send-email-brookxu.cn@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 05:47:26AM +0800, brookxu wrote:
-> From: Chunguang Xu <brookxu@tencent.com>
-> 
-> On the IO submission path, blk_account_io_start() may interrupt
-> the system interruption. When the interruption returns, the value
-> of part->stamp may have been updated by other cores, so the time
-> value collected before the interruption may be less than part->
-> stamp. So when this happens, we should do nothing to make io_ticks
-> more accurate? For kernels less than 5.0, this may cause io_ticks
-> to become smaller, which in turn may cause abnormal ioutil values.
-> 
-> v3: update the commit log
-> v2: sorry, fix compile error due to the missed ')'
-> 
-> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Hi,
 
-The change looks good:
+ I've noticed one of my systems shows this output in the kernel log:
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Legacy DMI 2.0 present.
+DMI:  /i430HX, BIOS 4.51 PG 05/13/98
 
-Although I still have trouble understanding the commit log, especially
-the last sentence.
+which leaves something to desire.  While the contents of /sys/firmware/dmi 
+remain the main source of DMI data, along with output from `dmidecode', 
+the summary from the kernel log is often readily available with various 
+reports, making it a point of easy reference.  Therefore I think empty 
+names are best avoided if possible.
+
+ The system in question is a Tyan Tomcat IV S1564D mainboard, which has 
+its System Information all empty, not unreasonably as it was sold as a 
+bare board for field integration rather that a complete system.  It does 
+have the manufacturer correctly recorded with Base Board Information 
+though.
+
+ I have therefore made this mini patch series, with 2/2 printing the board 
+manufacturer if none has been given for the system, and including 1/2 as 
+well to prevent a trailing slash with an empty board name, following my 
+observation made with an unrelated issue where the reporter included a log 
+with just "/" shown as the system name.
+
+ See individual change descriptions for further details.
+
+ Please apply.
+
+  Maciej
