@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 462B63BD09C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4DF3BD09B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236355AbhGFLfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:35:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35434 "EHLO mail.kernel.org"
+        id S236328AbhGFLfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:35:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234782AbhGFLZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:25:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D660D61D21;
-        Tue,  6 Jul 2021 11:18:57 +0000 (UTC)
+        id S234801AbhGFLZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:25:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 647EF61D2A;
+        Tue,  6 Jul 2021 11:19:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570338;
-        bh=TAJ0SnSUpJfc+Cqj1aFA6K5OlqU8tHyKbd/ynWD3xIA=;
+        s=k20201202; t=1625570341;
+        bh=IFG7ElW86piU0V3nsWrsJoKtuF6YvL1FgXA/ieXfuD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EOOnijytyUGR46N6F5olBHG4A0awPJ2ztqIQUxDSx5cPovdZbxprXoEYuZRX2TrsC
-         t5EWkXkDrPDj2h70nY2qF6G5LwCNezLZflvZkO75Cce+l/fP6RRYEmDKzlDANsEz4H
-         k0WFcBEc3OwQ0MPkLIwNA01vWJfUMKVTYizmR7GGGsFQinKAeZRnvWuuB2yAbJHb++
-         PlyMUYn5Uunu2Xmu4d3CmYd/T1b4jECTS6c/7J+vazTvE/okNuNdkqim3ZGxCZMSC2
-         b+98V59NzRkOhTH/J+1ZfwaB7URvqp131sgT30F4z1wHxrFD6Ss4MR18P/wCRmRbbO
-         WV/iRgv2drZCA==
+        b=p/gFODX3sAoW9skIaOgBkC1lxYNXOFnFAE3JJ0+mtH7sd3S/8Q8pBgTmeirx52C/U
+         p1b1733oz0heUf5qwK7f8AbItQLWsJcaRPSxy13FBXkpp3FXQDBqeH0A+Y9rU2m9X9
+         l9iqtkiMbNL44PKG0w7T9qYhyNdl08izHzHx+HcU3/Gv77Fw+LeSK3Rb59n2rBVp++
+         OIlbNMO99ChWsiRS8w46ifluyLScOCtw5A+q4O8R9wsra5cgHRF7zSS8CySAM4P2Py
+         JCtBRS89bbuJQfhgEtzy4Bu0zlUmclp1j7YTGKux/6BGJjCHGUt1AgwhpLl9qbnO6v
+         DDlvFs2h2WBBg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
-        reiserfs-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 023/160] reiserfs: add check for invalid 1st journal block
-Date:   Tue,  6 Jul 2021 07:16:09 -0400
-Message-Id: <20210706111827.2060499-23-sashal@kernel.org>
+Cc:     Xie Yongji <xieyongji@bytedance.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH AUTOSEL 5.12 025/160] drm/virtio: Fix double free on probe failure
+Date:   Tue,  6 Jul 2021 07:16:11 -0400
+Message-Id: <20210706111827.2060499-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111827.2060499-1-sashal@kernel.org>
 References: <20210706111827.2060499-1-sashal@kernel.org>
@@ -43,55 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Xie Yongji <xieyongji@bytedance.com>
 
-[ Upstream commit a149127be52fa7eaf5b3681a0317a2bbb772d5a9 ]
+[ Upstream commit cec7f1774605a5ef47c134af62afe7c75c30b0ee ]
 
-syzbot reported divide error in reiserfs.
-The problem was in incorrect journal 1st block.
+The virtio_gpu_init() will free vgdev and vgdev->vbufs on failure.
+But such failure will be caught by virtio_gpu_probe() and then
+virtio_gpu_release() will be called to do some cleanup which
+will free vgdev and vgdev->vbufs again. So let's set dev->dev_private
+to NULL to avoid double free.
 
-Syzbot's reproducer manualy generated wrong superblock
-with incorrect 1st block. In journal_init() wasn't
-any checks about this particular case.
-
-For example, if 1st journal block is before superblock
-1st block, it can cause zeroing important superblock members
-in do_journal_end().
-
-Link: https://lore.kernel.org/r/20210517121545.29645-1-paskripkin@gmail.com
-Reported-by: syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/20210517084913.403-2-xieyongji@bytedance.com
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/reiserfs/journal.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/gpu/drm/virtio/virtgpu_kms.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/reiserfs/journal.c b/fs/reiserfs/journal.c
-index e98f99338f8f..df5fc12a6cee 100644
---- a/fs/reiserfs/journal.c
-+++ b/fs/reiserfs/journal.c
-@@ -2760,6 +2760,20 @@ int journal_init(struct super_block *sb, const char *j_dev_name,
- 		goto free_and_return;
- 	}
- 
-+	/*
-+	 * Sanity check to see if journal first block is correct.
-+	 * If journal first block is invalid it can cause
-+	 * zeroing important superblock members.
-+	 */
-+	if (!SB_ONDISK_JOURNAL_DEVICE(sb) &&
-+	    SB_ONDISK_JOURNAL_1st_BLOCK(sb) < SB_JOURNAL_1st_RESERVED_BLOCK(sb)) {
-+		reiserfs_warning(sb, "journal-1393",
-+				 "journal 1st super block is invalid: 1st reserved block %d, but actual 1st block is %d",
-+				 SB_JOURNAL_1st_RESERVED_BLOCK(sb),
-+				 SB_ONDISK_JOURNAL_1st_BLOCK(sb));
-+		goto free_and_return;
-+	}
-+
- 	if (journal_init_dev(sb, journal, j_dev_name) != 0) {
- 		reiserfs_warning(sb, "sh-462",
- 				 "unable to initialize journal device");
+diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
+index aa532ad31a23..f3379059f324 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_kms.c
++++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
+@@ -234,6 +234,7 @@ int virtio_gpu_init(struct drm_device *dev)
+ err_vbufs:
+ 	vgdev->vdev->config->del_vqs(vgdev->vdev);
+ err_vqs:
++	dev->dev_private = NULL;
+ 	kfree(vgdev);
+ 	return ret;
+ }
 -- 
 2.30.2
 
