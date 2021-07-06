@@ -2,124 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537B03BC489
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 03:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1E83BC48E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 03:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbhGFBPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 21:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
+        id S229811AbhGFBSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 21:18:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhGFBPn (ORCPT
+        with ESMTP id S229733AbhGFBST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 21:15:43 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F18C061574;
-        Mon,  5 Jul 2021 18:13:05 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso533879wmh.4;
-        Mon, 05 Jul 2021 18:13:05 -0700 (PDT)
+        Mon, 5 Jul 2021 21:18:19 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCDAC061574;
+        Mon,  5 Jul 2021 18:15:41 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id bq39so22708878lfb.12;
+        Mon, 05 Jul 2021 18:15:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m0N4qW96377LDnYOmu1AZzljNDTveYKSNvIdFPUdlig=;
-        b=Y3x3AGs7sJA067LDVJVliGi+M6O7BVtzWWKCrFU3+dhMD/cZCmz6XdKFg45EWaxHm7
-         i6/ubsiZ67Zy6J8Ll3c0Doe7Ilvrf6pjlckyHX+JRCIdvCJSUgSU55rmQ55KA4e6I8Gm
-         Fsb9EM29DOrh2PIxTXtCH8q36OTP98+f2CyRm0T5fLdAYWtre0mWEYpcXltA6S7Wti+d
-         yNPhgOLwSvG1GmDNgOgjlvsLzj/KXAY1tfgB7TsERvIR5CKPCJLup/qhzykMt8oCAlOO
-         l72varmgltyHzmCYyj7KYGzqKtNTDlRhClNhKFZMszXgvM61LMHJUkbvekEk99fUGByJ
-         Z16Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xG6P1+sDQl4jEV3cq/HGM+DddaPYqM/HhUpbXndOJ58=;
+        b=HhsZ0ceURhcOFz0Vj0ytT1juZaq7agnU9T1ESybefYQGZPdHYOu6SPYBjEIBXwZMyw
+         zfpxxRW6w5uHhpT63pNPeB0Q7av4f6MWeAVz9f+hnbqjeMDogGshggk8FRMk8Vt0l3NX
+         0mc6lfcyV3/RE+2cNDGfY/6Z+22eoBmtqwxxpCwoPDHIw+K1CD9xvdbU0BKZ/qEbsINs
+         l4RqAxTy6eHzaeAzw0ado/C4Ns0k6POG/PmsXeW8nDWWSQggOjnhBytjgw4xPZRkS64x
+         cyzfsWt8kW9ncdpiz/KehBgmmyoQPzGncWOjuKoRPsSUVyqojrK1y6EhIiu9BXxYdRyM
+         q7Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m0N4qW96377LDnYOmu1AZzljNDTveYKSNvIdFPUdlig=;
-        b=g53IkR3YnXusKRFwvN5SjJ+iUFNta6fjAgaUWkhQ1i3pR2N977iw+gc/Rpo/HY267m
-         B7g/4fSFyYaAVMKaxlmedAhs2wAGB1CMAF1co+0yXhWUvKwdbudU56fMqUDYdXvOFB9d
-         4Yr5l1/FcjyVIsIoKFxllcwEVSget4OxssjFfVYcIVun2AzIHF4PgxbsMGMQvwUWsI9B
-         8j3EDCF3+Fwl1Oc2j/6qBSmqF+i2/HPCjAysIrA3iKoM4/k7sZJZCCjQb69STiujTYUj
-         rdZ6BLJeNCbIgYQ39/Aswek0vAU0JYN9aeInOFcK0pr5MypCmA1akMQjCPp6/fZurWKT
-         VAhw==
-X-Gm-Message-State: AOAM533EJaqauOPFP3ndU7kNZXTJaqcDuTePyeRzGBMK4c22vjS9sfbb
-        f11kdKoWisnz7eXjL+79AEZy/qI2kwW+WeSa+pCJJAlRJwk=
-X-Google-Smtp-Source: ABdhPJyDL99iAb7T5XgOjwgwxXQ9a81rXj2Ygh9fQ8mZJBhoq9S6AKW8VyoSJjHjhzcL7bULoUqgXH6WbqWaxeyGhZc=
-X-Received: by 2002:a1c:988a:: with SMTP id a132mr1710418wme.175.1625533983814;
- Mon, 05 Jul 2021 18:13:03 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xG6P1+sDQl4jEV3cq/HGM+DddaPYqM/HhUpbXndOJ58=;
+        b=aZ5lMsgsazkX1O0KedjGWpwVVGYMXR33h7FjbfbJaoaG7jQxNSDa+5AnB9HE/L0kUM
+         vb43WFyluDbEJbfUYiegYe185+QjWepgGPBrd9lK3hMVf5R724ywYURA0hrp3c/agiJ+
+         hBWj7hbCI+S20CvtIyX587AHquIsUMrqpjJ/3rAs/RLgoxuvijNLrgFA1gW1tym+SphL
+         8nsBWMV+RQQ5U+U7A8DUairL58e5hSjFVBUWZa4yI49ezpj2kt5ykPJkXrK/oURtB47e
+         dTW61Mh2PbJJYnCOmX8Pz4mfTZiZSjtnwq1EjEnFfuSsUSxvhptTzbYHCqmSXxxDFx+7
+         OIAA==
+X-Gm-Message-State: AOAM5319fthad/HkAclvA6+KUJToXdy6JSN6vtp2hkfgbimXhowGdi6F
+        IJggWxyX3MkNh/50TX6R4ed5FfXWSIs=
+X-Google-Smtp-Source: ABdhPJx0b1UAbp7vUWsVA5lY+rJ5RQHv58/MSrNSLpj0P8z7RSnb7ral8ckTetYkrbknjOFXB26Q0Q==
+X-Received: by 2002:a05:6512:3c89:: with SMTP id h9mr12102895lfv.17.1625534140087;
+        Mon, 05 Jul 2021 18:15:40 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
+        by smtp.googlemail.com with ESMTPSA id a8sm1532867ljq.127.2021.07.05.18.15.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Jul 2021 18:15:39 -0700 (PDT)
+Subject: Re: [PATCH v3 05/12] usb: otg-fsm: Fix hrtimer list corruption
+To:     Peter Chen <peter.chen@kernel.org>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210704225433.32029-1-digetx@gmail.com>
+ <20210704225433.32029-6-digetx@gmail.com> <20210706005739.GA19143@nchen>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <04a679be-ec66-f71f-5b61-59b8ef82e128@gmail.com>
+Date:   Tue, 6 Jul 2021 04:15:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210705123405.6089-1-yajun.deng@linux.dev>
-In-Reply-To: <20210705123405.6089-1-yajun.deng@linux.dev>
-From:   Xin Long <lucien.xin@gmail.com>
-Date:   Mon, 5 Jul 2021 21:12:54 -0400
-Message-ID: <CADvbK_dXKK4-t02hUDMPf_O=L8WD7_=aH7c9VmL0ZgtVE_4nUg@mail.gmail.com>
-Subject: Re: [PATCH] net: Fix called net_enable_timestamp() in sctp_copy_sock()
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        mathew.j.martineau@linux.intel.com,
-        Eric Dumazet <edumazet@google.com>, aahringo@redhat.com,
-        linmiaohe@huawei.com, Florian Westphal <fw@strlen.de>,
-        xiangxia.m.yue@gmail.com, Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-sctp @ vger . kernel . org" <linux-sctp@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210706005739.GA19143@nchen>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 8:34 AM Yajun Deng <yajun.deng@linux.dev> wrote:
->
-> Add sock_needs_netstamp() judgment condition when need to call
-> net_enable_timestamp().
-Why do we need this when it always returns true for SCTP?
+06.07.2021 03:57, Peter Chen пишет:
+> On 21-07-05 01:54:26, Dmitry Osipenko wrote:
+>> The HNP work can be re-scheduled while it's still in-fly. This results in
+>> re-initialization of the busy work, resetting the hrtimer's list node of
+>> the work and crashing kernel with null dereference within kernel/timer
+>> once work's timer is expired. It's very easy to trigger this problem by
+>> re-plugging USB cable quickly. Initialize HNP work only once to fix this
+>> trouble.
+>>
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> 
+> Acked-by: Peter Chen <peter.chen@kernel.org>
+> 
+> It is better to append kernel dump if you have v4 patchset.
 
->
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  include/net/sock.h | 1 +
->  net/core/sock.c    | 2 +-
->  net/sctp/socket.c  | 2 +-
->  3 files changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 8bdd80027ffb..e36563576758 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -2757,6 +2757,7 @@ int sock_bindtoindex(struct sock *sk, int ifindex, bool lock_sk);
->  void sock_set_timestamp(struct sock *sk, int optname, bool valbool);
->  int sock_set_timestamping(struct sock *sk, int optname, int val);
->
-> +bool sock_needs_netstamp(const struct sock *sk);
->  void sock_enable_timestamps(struct sock *sk);
->  void sock_no_linger(struct sock *sk);
->  void sock_set_keepalive(struct sock *sk);
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index ba1c0f75cd45..ce6ec9f8ac7c 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -429,7 +429,7 @@ static int sock_set_timeout(long *timeo_p, sockptr_t optval, int optlen,
->         return 0;
->  }
->
-> -static bool sock_needs_netstamp(const struct sock *sk)
-> +bool sock_needs_netstamp(const struct sock *sk)
->  {
->         switch (sk->sk_family) {
->         case AF_UNSPEC:
-> diff --git a/net/sctp/socket.c b/net/sctp/socket.c
-> index e64e01f61b11..30d90735beb0 100644
-> --- a/net/sctp/socket.c
-> +++ b/net/sctp/socket.c
-> @@ -9449,7 +9449,7 @@ void sctp_copy_sock(struct sock *newsk, struct sock *sk,
->         newinet->mc_index = 0;
->         newinet->mc_list = NULL;
->
-> -       if (newsk->sk_flags & SK_FLAGS_TIMESTAMP)
-> +       if (sock_needs_netstamp(newsk) && newsk->sk_flags & SK_FLAGS_TIMESTAMP)
->                 net_enable_timestamp();
->
->         /* Set newsk security attributes from original sk and connection
-> --
-> 2.32.0
->
+The stacktrace isn't very useful because it crashes within a hrtimer
+code from a work thread, i.e. it doesn't point at usb at all. It
+actually took me some effort to find where the bug was.
