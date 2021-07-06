@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DAE3BD3D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15783BD40E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240465AbhGFMAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:00:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47596 "EHLO mail.kernel.org"
+        id S241633AbhGFMBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:01:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237451AbhGFLgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:36:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59CAE61D9E;
-        Tue,  6 Jul 2021 11:27:52 +0000 (UTC)
+        id S237461AbhGFLgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:36:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BD3B61F2C;
+        Tue,  6 Jul 2021 11:28:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570873;
-        bh=MfhOHP9+n0LI8xfLnM2mS/CsEj2P2NLk0DnPZEVhPb8=;
+        s=k20201202; t=1625570884;
+        bh=dVBJfQRirVoOIzRNPs88vxExJ0Go3B8dpqE3QDSy/mw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sGCvHIRoDqUfvaj+k5sM2a/WVoaWYVzTOIiibXO68p5Uj/kLKQE6GUheRgQZH2mYt
-         BaL0p8LMzAH9hRkpSsJWo9eDhMp9gdhoNQ4SPUqS/29OGkfa5oZShp0gMCLwWpIOJr
-         fbFhYmM316Aiv8V3kP6CFI/jXGoRnnNIJmHYrO8l+jjlv18bsFXG6gVAIynUELcxcL
-         waaua0QunxTkHdbNa5GgxM6jC+Wy6nCXlSdp5yeZp7aIoQclzpD90JsBCeVk35KI9W
-         QLSxS8kxpB5S6O16f8/DixNx95qy2GHN+tep/sQLOE0pz6KtgBHF7hRZqxvJIWsNAA
-         8mR86YJ3jVozw==
+        b=Fs+yZ+OS3phuozim1/teBeLGWgU2V0YhWs0dCx9yWUo7J14zRERdC1hkhqPn+XRoH
+         rWqrq9EMXY1+pLPoY7jAcEAyI0GNepqT4n96tUxUuKf+3WdJvDHJzvmNtQMWB28gGw
+         KFTRevd02OOfFmFZoyYifX20ImVc8y6Bje6dDREeJ5lBT9MewC1HjX2xr+n0mO5vFF
+         o0z3vTgW0EYBD+Eah4nxgE16PonBq8b4lALcXdUrRlvZWnDkduDf18Pd0Y/t3pv4Q7
+         RpQHZXuGKi99Tg7fQ/nBiYWTpnCZqSiOs6HPPIVvxoaQUQC/cmWn0NXW3OUIOriJLd
+         /5EO2DLJv1MEA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Stefan Agner <stefan@agner.ch>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.14 02/45] drm/mxsfb: Don't select DRM_KMS_FB_HELPER
-Date:   Tue,  6 Jul 2021 07:27:06 -0400
-Message-Id: <20210706112749.2065541-2-sashal@kernel.org>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        reiserfs-devel@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 11/45] reiserfs: add check for invalid 1st journal block
+Date:   Tue,  6 Jul 2021 07:27:15 -0400
+Message-Id: <20210706112749.2065541-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112749.2065541-1-sashal@kernel.org>
 References: <20210706112749.2065541-1-sashal@kernel.org>
@@ -45,34 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Zimmermann <tzimmermann@suse.de>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 13b29cc3a722c2c0bc9ab9f72f9047d55d08a2f9 ]
+[ Upstream commit a149127be52fa7eaf5b3681a0317a2bbb772d5a9 ]
 
-Selecting DRM_FBDEV_EMULATION will include the correct settings for
-fbdev emulation. Drivers should not override this.
+syzbot reported divide error in reiserfs.
+The problem was in incorrect journal 1st block.
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Acked-by: Stefan Agner <stefan@agner.ch>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210415110040.23525-3-tzimmermann@suse.de
+Syzbot's reproducer manualy generated wrong superblock
+with incorrect 1st block. In journal_init() wasn't
+any checks about this particular case.
+
+For example, if 1st journal block is before superblock
+1st block, it can cause zeroing important superblock members
+in do_journal_end().
+
+Link: https://lore.kernel.org/r/20210517121545.29645-1-paskripkin@gmail.com
+Reported-by: syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mxsfb/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ fs/reiserfs/journal.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/drivers/gpu/drm/mxsfb/Kconfig b/drivers/gpu/drm/mxsfb/Kconfig
-index e9a8d90e6723..3ed6849d63cb 100644
---- a/drivers/gpu/drm/mxsfb/Kconfig
-+++ b/drivers/gpu/drm/mxsfb/Kconfig
-@@ -9,7 +9,6 @@ config DRM_MXSFB
- 	depends on COMMON_CLK
- 	select DRM_MXS
- 	select DRM_KMS_HELPER
--	select DRM_KMS_FB_HELPER
- 	select DRM_KMS_CMA_HELPER
- 	select DRM_PANEL
- 	help
+diff --git a/fs/reiserfs/journal.c b/fs/reiserfs/journal.c
+index 2be907231375..1a6e6343fed3 100644
+--- a/fs/reiserfs/journal.c
++++ b/fs/reiserfs/journal.c
+@@ -2769,6 +2769,20 @@ int journal_init(struct super_block *sb, const char *j_dev_name,
+ 		goto free_and_return;
+ 	}
+ 
++	/*
++	 * Sanity check to see if journal first block is correct.
++	 * If journal first block is invalid it can cause
++	 * zeroing important superblock members.
++	 */
++	if (!SB_ONDISK_JOURNAL_DEVICE(sb) &&
++	    SB_ONDISK_JOURNAL_1st_BLOCK(sb) < SB_JOURNAL_1st_RESERVED_BLOCK(sb)) {
++		reiserfs_warning(sb, "journal-1393",
++				 "journal 1st super block is invalid: 1st reserved block %d, but actual 1st block is %d",
++				 SB_JOURNAL_1st_RESERVED_BLOCK(sb),
++				 SB_ONDISK_JOURNAL_1st_BLOCK(sb));
++		goto free_and_return;
++	}
++
+ 	if (journal_init_dev(sb, journal, j_dev_name) != 0) {
+ 		reiserfs_warning(sb, "sh-462",
+ 				 "unable to initialize journal device");
 -- 
 2.30.2
 
