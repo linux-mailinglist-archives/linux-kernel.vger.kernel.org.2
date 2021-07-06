@@ -2,287 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2F53BC507
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 05:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDA03BC509
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 05:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhGFDOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 23:14:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230032AbhGFDOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 23:14:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 396256197E;
-        Tue,  6 Jul 2021 03:12:08 +0000 (UTC)
-From:   Huacai Chen <chenhuacai@loongson.cn>
-To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH 9/9] irqchip: Add Loongson PCH LPC controller support
-Date:   Tue,  6 Jul 2021 11:09:04 +0800
-Message-Id: <20210706030904.1411775-10-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210706030904.1411775-1-chenhuacai@loongson.cn>
-References: <20210706030904.1411775-1-chenhuacai@loongson.cn>
+        id S230088AbhGFDQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 23:16:13 -0400
+Received: from mail-m176231.qiye.163.com ([59.111.176.231]:50510 "EHLO
+        mail-m176231.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229938AbhGFDQM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 23:16:12 -0400
+DKIM-Signature: a=rsa-sha256;
+        b=kOpD+bSmG3W51I6RUJ2k7CEdrhlKqDaBu98yANcCoOuaRFNlF8y2V1M+tzJwr66uTucGr+KOIffjkt7F/udKvbe6d5wom/D10b6yq6diyrQ7jl/A7uhpMv9F0hILGXpEsOwTr/YArh0yWUr1xFonBtS/R/ObEY+EtYNTcPfO8lk=;
+        c=relaxed/relaxed; s=default; d=vivo.com; v=1;
+        bh=VNQVfa44qct0jHNvGO//4uyYAll2BIsmx0UDLI9rjcU=;
+        h=date:mime-version:subject:message-id:from;
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-m176231.qiye.163.com (Hmail) with ESMTP id 444486C00F7;
+        Tue,  6 Jul 2021 11:13:33 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AAIAAQC9D3YcoTdKLKLdcarM.3.1625541213263.Hmail.wangqing@vivo.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?B?UmU6UmU6IFJlOiBbUGhpc2hpbmcgUmlza10gW0V4dGVybmFsXSBbUEFUQ0hdIG1tOiBhZGQgR0ZQX0FUT01JQyBmbGFnIGFmdGVyIGxvY2FsX2xvY2tfaXJxc2F2ZQ==?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.213.83.158
+In-Reply-To: <CAMZfGtXSg8YbNDFQ8xtvYd-5aDf3g255Pxo+fKSS_YME11dMaQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from wangqing@vivo.com( [58.213.83.158) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 6 Jul 2021 11:13:33 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
+Date:   Tue, 6 Jul 2021 11:13:33 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQ0NIGlZDSUhPSUhKHkNLHkpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1PQ0JCSUpNQ09DN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6OjI6Oio4Qj9IIhgULx8wNzA3HxgaCTZVSFVKTUlOTk9KSUpITkJDVTMWGhIXVQwaFRwKEhUc
+        Ow0SDRRVGBQWRVlXWRILWUFZTkNVSUpIVUNIVUpOQ1lXWQgBWUFOSkhCNwY+
+X-HM-Tid: 0a7a79ce7c63d9a9kuws444486c00f7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are preparing to add new Loongson (based on LoongArch, not MIPS)
-support. This patch add Loongson PCH LPC interrupt controller support.
-
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
----
- drivers/irqchip/Kconfig                |   8 +
- drivers/irqchip/Makefile               |   1 +
- drivers/irqchip/irq-loongson-pch-lpc.c | 204 +++++++++++++++++++++++++
- 3 files changed, 213 insertions(+)
- create mode 100644 drivers/irqchip/irq-loongson-pch-lpc.c
-
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 895b19fcea59..2ba0f341d976 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -592,6 +592,14 @@ config LOONGSON_PCH_MSI
- 	help
- 	  Support for the Loongson PCH MSI Controller.
- 
-+config LOONGSON_PCH_LPC
-+	bool "Loongson PCH LPC Controller"
-+	depends on MACH_LOONGSON64
-+	default MACH_LOONGSON64
-+	select IRQ_DOMAIN_HIERARCHY
-+	help
-+	  Support for the Loongson PCH LPC Controller.
-+
- config MST_IRQ
- 	bool "MStar Interrupt Controller"
- 	depends on ARCH_MEDIATEK || ARCH_MSTARV7 || COMPILE_TEST
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index eb3fdc6fe808..6fd07980fa47 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -112,6 +112,7 @@ obj-$(CONFIG_LOONGSON_HTPIC)		+= irq-loongson-htpic.o
- obj-$(CONFIG_LOONGSON_HTVEC)		+= irq-loongson-htvec.o
- obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
- obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
-+obj-$(CONFIG_LOONGSON_PCH_LPC)		+= irq-loongson-pch-lpc.o
- obj-$(CONFIG_MST_IRQ)			+= irq-mst-intc.o
- obj-$(CONFIG_SL28CPLD_INTC)		+= irq-sl28cpld.o
- obj-$(CONFIG_MACH_REALTEK_RTL)		+= irq-realtek-rtl.o
-diff --git a/drivers/irqchip/irq-loongson-pch-lpc.c b/drivers/irqchip/irq-loongson-pch-lpc.c
-new file mode 100644
-index 000000000000..e0ec073b1ec2
---- /dev/null
-+++ b/drivers/irqchip/irq-loongson-pch-lpc.c
-@@ -0,0 +1,204 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  Copyright (C) 2020, Jianmin Lv <lvjianmin@loongson.cn>
-+ *  Loongson LPC support
-+ */
-+
-+#define pr_fmt(fmt) "lpc: " fmt
-+
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
-+#include <linux/irqchip.h>
-+#include <linux/irqchip/chained_irq.h>
-+#include <linux/irqdomain.h>
-+#include <linux/kernel.h>
-+#include <linux/syscore_ops.h>
-+
-+/* Registers */
-+#define LPC_INT_CTL		0x00
-+#define LPC_INT_ENA		0x04
-+#define LPC_INT_STS		0x08
-+#define LPC_INT_CLR		0x0c
-+#define LPC_INT_POL		0x10
-+#define LPC_COUNT		16
-+
-+struct pch_lpc {
-+	void __iomem		*base;
-+	struct irq_domain	*lpc_domain;
-+	struct fwnode_handle	*domain_handle;
-+	raw_spinlock_t		lpc_lock;
-+	u32			saved_reg_ctl;
-+	u32			saved_reg_ena;
-+	u32			saved_reg_pol;
-+};
-+
-+struct pch_lpc *pch_lpc_priv;
-+
-+static void ack_lpc_irq(struct irq_data *d)
-+{
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&pch_lpc_priv->lpc_lock, flags);
-+	writel(0x1 << d->irq, pch_lpc_priv->base + LPC_INT_CLR);
-+	raw_spin_unlock_irqrestore(&pch_lpc_priv->lpc_lock, flags);
-+}
-+static void mask_lpc_irq(struct irq_data *d)
-+{
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&pch_lpc_priv->lpc_lock, flags);
-+	writel(readl(pch_lpc_priv->base + LPC_INT_ENA) & (~(0x1 << (d->irq))),
-+			pch_lpc_priv->base + LPC_INT_ENA);
-+	raw_spin_unlock_irqrestore(&pch_lpc_priv->lpc_lock, flags);
-+}
-+
-+static void mask_ack_lpc_irq(struct irq_data *d)
-+{
-+}
-+
-+static void unmask_lpc_irq(struct irq_data *d)
-+{
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&pch_lpc_priv->lpc_lock, flags);
-+	writel(readl(pch_lpc_priv->base + LPC_INT_ENA) | (0x1 << (d->irq)),
-+			pch_lpc_priv->base + LPC_INT_ENA);
-+	raw_spin_unlock_irqrestore(&pch_lpc_priv->lpc_lock, flags);
-+}
-+
-+static struct irq_chip pch_lpc_irq_chip = {
-+	.name			= "PCH LPC",
-+	.irq_mask		= mask_lpc_irq,
-+	.irq_unmask		= unmask_lpc_irq,
-+	.irq_ack		= ack_lpc_irq,
-+	.irq_mask_ack		= mask_ack_lpc_irq,
-+	.irq_eoi		= unmask_lpc_irq,
-+	.flags			= IRQCHIP_SKIP_SET_WAKE,
-+};
-+
-+static void lpc_irq_dispatch(struct irq_desc *desc)
-+{
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	u32 pending;
-+
-+	chained_irq_enter(chip, desc);
-+
-+	pending = readl(pch_lpc_priv->base + LPC_INT_ENA);
-+	pending &= readl(pch_lpc_priv->base + LPC_INT_STS);
-+	if (!pending)
-+		spurious_interrupt();
-+
-+	while (pending) {
-+		int bit = __ffs(pending);
-+
-+		generic_handle_irq(bit);
-+		pending &= ~BIT(bit);
-+	}
-+	chained_irq_exit(chip, desc);
-+}
-+
-+static int pch_lpc_map(struct irq_domain *d, unsigned int irq,
-+			irq_hw_number_t hw)
-+{
-+	irq_set_chip_and_handler(irq, &pch_lpc_irq_chip, handle_level_irq);
-+	return 0;
-+}
-+
-+static const struct irq_domain_ops pch_lpc_domain_ops = {
-+	.map = pch_lpc_map,
-+	.xlate = irq_domain_xlate_onecell,
-+};
-+
-+static void pch_lpc_reset(struct pch_lpc *priv)
-+{
-+	/* Enable the LPC interrupt, bit31: en  bit30: edge */
-+	writel(0x80000000, priv->base + LPC_INT_CTL);
-+	writel(0, priv->base + LPC_INT_ENA);
-+	/* Clear all 18-bit interrpt bit */
-+	writel(0x3ffff, priv->base + LPC_INT_CLR);
-+}
-+
-+static int pch_lpc_disabled(struct pch_lpc *priv)
-+{
-+	return (readl(priv->base + LPC_INT_ENA) == 0xffffffff) &&
-+			(readl(priv->base + LPC_INT_STS) == 0xffffffff);
-+}
-+
-+static int pch_lpc_suspend(void)
-+{
-+	pch_lpc_priv->saved_reg_ctl = readl(pch_lpc_priv->base + LPC_INT_CTL);
-+	pch_lpc_priv->saved_reg_ena = readl(pch_lpc_priv->base + LPC_INT_ENA);
-+	pch_lpc_priv->saved_reg_pol = readl(pch_lpc_priv->base + LPC_INT_POL);
-+	return 0;
-+}
-+
-+static void pch_lpc_resume(void)
-+{
-+	writel(pch_lpc_priv->saved_reg_ctl, pch_lpc_priv->base + LPC_INT_CTL);
-+	writel(pch_lpc_priv->saved_reg_ena, pch_lpc_priv->base + LPC_INT_ENA);
-+	writel(pch_lpc_priv->saved_reg_pol, pch_lpc_priv->base + LPC_INT_POL);
-+}
-+
-+static struct syscore_ops pch_lpc_syscore_ops = {
-+	.suspend = pch_lpc_suspend,
-+	.resume = pch_lpc_resume,
-+};
-+
-+struct fwnode_handle *pch_lpc_acpi_init(struct fwnode_handle *parent,
-+					struct acpi_madt_lpc_pic *acpi_pchlpc)
-+{
-+	int parent_irq;
-+	struct pch_lpc *priv;
-+	struct irq_fwspec fwspec;
-+
-+	if (!acpi_pchlpc)
-+		return NULL;
-+
-+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return NULL;
-+
-+	raw_spin_lock_init(&priv->lpc_lock);
-+
-+	priv->base = ioremap(acpi_pchlpc->address, acpi_pchlpc->size);
-+	if (!priv->base)
-+		goto free_priv;
-+
-+	if (pch_lpc_disabled(priv)) {
-+		pr_err("Failed to get LPC status\n");
-+		goto iounmap_base;
-+	}
-+
-+	priv->domain_handle = irq_domain_alloc_fwnode((phys_addr_t *)priv);
-+	if (!priv->domain_handle) {
-+		pr_err("Unable to allocate domain handle\n");
-+		goto iounmap_base;
-+	}
-+	priv->lpc_domain = irq_domain_add_legacy(NULL, LPC_COUNT, 0, 0,
-+						&pch_lpc_domain_ops,
-+						priv);
-+	if (!priv->lpc_domain) {
-+		pr_err("Failed to create IRQ domain\n");
-+		goto iounmap_base;
-+	}
-+	pch_lpc_reset(priv);
-+
-+	fwspec.fwnode = parent;
-+	fwspec.param[0] = GSI_MIN_PCH_IRQ + acpi_pchlpc->cascade;
-+	fwspec.param[1] = IRQ_TYPE_LEVEL_HIGH;
-+	fwspec.param_count = 2;
-+	parent_irq = irq_create_fwspec_mapping(&fwspec);
-+	irq_set_chained_handler_and_data(parent_irq, lpc_irq_dispatch, priv);
-+	pch_lpc_priv = priv;
-+
-+	register_syscore_ops(&pch_lpc_syscore_ops);
-+
-+	return priv->domain_handle;
-+
-+iounmap_base:
-+	iounmap(priv->base);
-+free_priv:
-+	kfree(priv);
-+
-+	return NULL;
-+}
--- 
-2.27.0
-
+Cj5PbiBUdWUsIEp1bCA2LCAyMDIxIGF0IDEwOjQxIEFNIOeOi+aTjiA8d2FuZ3FpbmdAdml2by5j
+b20+IHdyb3RlOgo+Pgo+Pgo+PiA+T24gTW9uLCBKdWwgNSwgMjAyMSBhdCA5OjU3IFBNIFdhbmcg
+UWluZyA8d2FuZ3FpbmdAdml2by5jb20+IHdyb3RlOgo+PiA+Pgo+PiA+PiBVc2UgR0ZQX0FUT01J
+QyB3aGVuIGxvY2FsX2xvY2tfaXJxc2F2ZSBpbiBfX2FsbG9jX3BhZ2VzX2J1bGsKPj4gPj4KPj4g
+Pj4gUmVwb3J0ZWQtYnk6IHN5emJvdCtlNDU5MTlkYjJlYWI1ZTgzNzY0NkBzeXprYWxsZXIuYXBw
+c3BvdG1haWwuY29tCj4+ID4+IFNpZ25lZC1vZmYtYnk6IFdhbmcgUWluZyA8d2FuZ3FpbmdAdml2
+by5jb20+Cj4+ID4+IC0tLQo+PiA+PiAgbW0vcGFnZV9hbGxvYy5jIHwgMiArLQo+PiA+PiAgMSBm
+aWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4+ID4+Cj4+ID4+IGRp
+ZmYgLS1naXQgYS9tbS9wYWdlX2FsbG9jLmMgYi9tbS9wYWdlX2FsbG9jLmMKPj4gPj4gaW5kZXgg
+ZDZlOTRjYy4uMzAxNmJhNQo+PiA+PiAtLS0gYS9tbS9wYWdlX2FsbG9jLmMKPj4gPj4gKysrIGIv
+bW0vcGFnZV9hbGxvYy5jCj4+ID4+IEBAIC01MzA5LDcgKzUzMDksNyBAQCB1bnNpZ25lZCBsb25n
+IF9fYWxsb2NfcGFnZXNfYnVsayhnZnBfdCBnZnAsIGludCBwcmVmZXJyZWRfbmlkLAo+PiA+PiAg
+ICAgICAgICAgICAgICAgfQo+PiA+PiAgICAgICAgICAgICAgICAgbnJfYWNjb3VudCsrOwo+PiA+
+Pgo+PiA+PiAtICAgICAgICAgICAgICAgcHJlcF9uZXdfcGFnZShwYWdlLCAwLCBnZnAsIDApOwo+
+PiA+PiArICAgICAgICAgICAgICAgcHJlcF9uZXdfcGFnZShwYWdlLCAwLCBnZnAgfCBHRlBfQVRP
+TUlDLCAwKTsKPj4gPgo+PiA+SGkgV2FuZyBRaW5nLAo+PiA+Cj4+ID5JIGRpZG4ndCBnZXQgdGhl
+IHBvaW50IGhlcmUuIElJVUMsIHByZXBfbmV3X3BhZ2UoKSB3aWxsIG5vdCBhbGxvY2F0ZQo+PiA+
+bWVtb3J5LiBTbyB3aHkgZG8gd2UgbmVlZCBHRlBfQVRPTUlDPyBXaGF0IEkgbWlzc2VkIGhlcmU/
+Cj4+ID4KPj4gPlRoYW5rcy4KPj4KPj4gcHJlcF9uZXdfcGFnZSgpIHdpbGwgYWxsb2NhdGUgbWVt
+b3J5IGluIHNvbWUgc2NlbmFyaW9zLiBGb3IgZGV0YWlscywKPj4geW91IGNhbiBjaGVjayB0aGUg
+YnVncyBkZXRlY3RlZCBieSBzeXprYWxsZXI6Cj4+IGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNwb3Qu
+Y29tL2J1Zz9pZD05MWMyMDMwMjQxYWRhMGU1ZDIxODc3ZjhmMmY0NGM5OGNmZmMwNGJiCj4+Cj4+
+IENhbGwgVHJhY2U6Cj4+ICBfX2R1bXBfc3RhY2sgbGliL2R1bXBfc3RhY2suYzo3OSBbaW5saW5l
+XQo+PiAgZHVtcF9zdGFja19sdmwrMHhjZC8weDEzNCBsaWIvZHVtcF9zdGFjay5jOjk2Cj4+ICBf
+X19taWdodF9zbGVlcC5jb2xkKzB4MWYxLzB4MjM3IGtlcm5lbC9zY2hlZC9jb3JlLmM6OTE1Mwo+
+PiAgcHJlcGFyZV9hbGxvY19wYWdlcysweDNkYS8weDU4MCBtbS9wYWdlX2FsbG9jLmM6NTE3OQo+
+PiAgX19hbGxvY19wYWdlcysweDEyZi8weDUwMCBtbS9wYWdlX2FsbG9jLmM6NTM3NQo+PiAgYWxs
+b2NfcGFnZXMrMHgxOGMvMHgyYTAgbW0vbWVtcG9saWN5LmM6MjI3Mgo+PiAgc3RhY2tfZGVwb3Rf
+c2F2ZSsweDM5ZC8weDRlMCBsaWIvc3RhY2tkZXBvdC5jOjMwMwo+PiAgc2F2ZV9zdGFjaysweDE1
+ZS8weDFlMCBtbS9wYWdlX293bmVyLmM6MTIwCj4+ICBfX3NldF9wYWdlX293bmVyKzB4NTAvMHgy
+OTAgbW0vcGFnZV9vd25lci5jOjE4MQo+PiAgcHJlcF9uZXdfcGFnZSBtbS9wYWdlX2FsbG9jLmM6
+MjQ0NSBbaW5saW5lXQo+PiAgX19hbGxvY19wYWdlc19idWxrKzB4OGI5LzB4MTg3MCBtbS9wYWdl
+X2FsbG9jLmM6NTMxMwo+Cj5Hb3QgaXQuIEJ1dCBJIGRvbid0IHRoaW5rIHRoZSBmaXggeW91IG1l
+bnRpb25lZCBhYm92ZSB3YXMKPmFwcHJvcHJpYXRlLiBXaGF0IGlmIEdGUF9LRVJORUwgfCBHRlBf
+QVRPTUlDPwoKWWVzIGFncmVlLCBidXQgSSBoYXZlbid0IGZpZ3VyZWQgb3V0IHdoYXQgd2lsbCBo
+YXBwZW4gdGhpcyB3YXksIAp0aGUgdGVzdCBoYXMgYmVlbiBwYXNzZWQgaW4gc3l6a2FsbGVyLgpP
+ciBob3cgYWJvdXQgZ2ZwIHwgR0ZQX0FUT01JQyAmIH5HRlBfS0VSTkVMID8KClRoYW5rcywKClFp
+bmcKPgo+VGhhbmtzLgo+Cj4+Cj4+IFRoYW5rcy4KPj4KPj4gUWluZwo+Pgo+PiA+Cj4+ID4+ICAg
+ICAgICAgICAgICAgICBpZiAocGFnZV9saXN0KQo+PiA+PiAgICAgICAgICAgICAgICAgICAgICAg
+ICBsaXN0X2FkZCgmcGFnZS0+bHJ1LCBwYWdlX2xpc3QpOwo+PiA+PiAgICAgICAgICAgICAgICAg
+ZWxzZQo+PiA+PiAtLQo+PiA+PiAyLjcuNAo+PiA+Pgo+Pgo+PgoNCg0K
