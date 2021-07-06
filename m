@@ -2,104 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491A03BC843
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D4F3BC84B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhGFJIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 05:08:50 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:34872 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230295AbhGFJIu (ORCPT
+        id S231145AbhGFJKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 05:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230295AbhGFJKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 05:08:50 -0400
-X-UUID: a40910a74eb44e2d8bd1078bd86f64ec-20210706
-X-UUID: a40910a74eb44e2d8bd1078bd86f64ec-20210706
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 947538566; Tue, 06 Jul 2021 17:06:09 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 6 Jul 2021 17:06:07 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 6 Jul 2021 17:06:07 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <samitolvanen@google.com>
-CC:     <clang-built-linux@googlegroups.com>, <keescook@chromium.org>,
-        <lecopzer.chen@mediatek.com>, <linux-kbuild@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <masahiroy@kernel.org>,
-        <michal.lkml@markovi.net>, <nathan@kernel.org>,
-        <ndesaulniers@google.com>, <yj.chiang@mediatek.com>
-Subject: Re: [PATCH v3 1/2] Kbuild: lto: add CONFIG_MAKE_VERSION
-Date:   Tue, 6 Jul 2021 17:06:07 +0800
-Message-ID: <20210706090607.19421-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <CABCJKudYQV6Nt=Qq+zY=9JF1WmLVLnx+--3mJA9dkhLMhMvuFg@mail.gmail.com>
-References: <CABCJKudYQV6Nt=Qq+zY=9JF1WmLVLnx+--3mJA9dkhLMhMvuFg@mail.gmail.com>
+        Tue, 6 Jul 2021 05:10:01 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0522C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 02:07:21 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id f13so10297071lfh.6
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 02:07:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X/3HzjS40NCzeCxcicoEsvFijQpXDThbZ/r8InzKdlc=;
+        b=e1zNBH9vDY0TRtaFRs+O1SVfb//TvklWU2MYVnDt39eqZ/HX7JlEcg+Tlm/9p31a/z
+         CnlGOqXMya3RDLPBteSg7gvFvEx31Ps6yyaCvwJJvl6r4hKb3q1Q0bPlTbJwh8udkprf
+         4nfyX87h0i7G1AceII8sU+xH4bd2Km6m6k2+k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X/3HzjS40NCzeCxcicoEsvFijQpXDThbZ/r8InzKdlc=;
+        b=poHiz88GFxqWcFfy+NOJZVaRsb9YP3MsGT9e4uQhsAsRplcmdm/qKwx4bM7B62VXEK
+         PbkN1D0DAoru89E6EJeMKGow0HdSj9c9HArOM5yuaduoJGIsXdIy/wyXSOWqXy68XHjh
+         5h+S3/OtoQA5ZzKd30NRgZ4cZxHYHJwzNf2v8gHcMctqivGogoy6sGWysoYovdzavfhN
+         GPWCEpLcrFtlG1wRcgrgHMFzsBdY9zIsbPxArXnmJKbUaRmjXWZhokqfaK/obkXstS20
+         0GfeSpb+PARVlcHyH4gMgSol0gy6ZkzPUqawN7kpo6rweVk00xv2twwQNqQeIkL9ok+V
+         S2jQ==
+X-Gm-Message-State: AOAM532iB49fCTyjNlkoIbCggWF+v+FNSKI5z/54pcY8EiBLKEOKNuJY
+        NJMaM0rQ8GCSdPvZKLWX00IKvJrIK+WAdiSjkefxQA==
+X-Google-Smtp-Source: ABdhPJysvxKwdpFsCEfj9/EBHKTte7fcaL772GEGT+XYjWLqMbh2CPlWIhbJho7kLQMGyI3WRJwcsoA0w7pyzu7pM0Y=
+X-Received: by 2002:a05:6512:6d0:: with SMTP id u16mr1458924lff.587.1625562440122;
+ Tue, 06 Jul 2021 02:07:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20210616224743.5109-1-chun-jie.chen@mediatek.com> <20210616224743.5109-10-chun-jie.chen@mediatek.com>
+In-Reply-To: <20210616224743.5109-10-chun-jie.chen@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Tue, 6 Jul 2021 17:07:09 +0800
+Message-ID: <CAGXv+5F0hTL2Meafo6cQ4FaAMkU+nRZBcnLgeXOgrHAttrNkBQ@mail.gmail.com>
+Subject: Re: [PATCH 09/22] clk: mediatek: Add MT8195 imgsys clock support
+To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Sun, Jul 4, 2021 at 7:03 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > On Fri, Jul 2, 2021 at 12:29 PM Lecopzer Chen
-> > <lecopzer.chen@mediatek.com> wrote:
-> > >
-> > > To check the GNU make version. Used by the LTO Kconfig.
-> > >
-> > > LTO with MODVERSIONS will fail in generating correct CRC because
-> > > the makefile rule doesn't work for make with version 3.8X.[1]
-> > >
-> > > Thus we need to check make version during selecting on LTO Kconfig.
-> > > Add CONFIG_MAKE_VERSION which means MAKE_VERSION in canonical digits
-> > > for arithmetic comparisons.
-> > >
-> > > [1] https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/
-> > > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> > > ---
-> >
-> >
-> > NACK.
-> >
-> > "Let's add MAKE_VERSION >= 40200 restriction
-> > just because I cannot write correct code that
-> > works for older Make" is a horrible idea.
-> >
-> > Also, Kconfig is supposed to check the compiler
-> > (or toolchains) capability, not host tool versions.
-> 
-> I feel like requiring a Make that's half a decade old for a feature
-> that also requires a toolchain released last October ago isn't
-> entirely unreasonable.
-> 
-> That being said, if Masahiro prefers not to rely on the wildcard
-> function's behavior here, which is a reasonable request, we could
-> simply use the shell to test for the file's existence:
-> 
-> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> index 34d257653fb4..c6bd62f518ff 100644
-> --- a/scripts/Makefile.build
-> +++ b/scripts/Makefile.build
-> @@ -388,7 +388,7 @@ ifeq ($(CONFIG_LTO_CLANG) $(CONFIG_MODVERSIONS),y y)
->        cmd_update_lto_symversions =                                     \
->         rm -f $@.symversions                                            \
->         $(foreach n, $(filter-out FORCE,$^),                            \
-> -               $(if $(wildcard $(n).symversions),                      \
-> +               $(if $(shell test -s $(n).symversions && echo y),       \
->                         ; cat $(n).symversions >> $@.symversions))
->  else
->        cmd_update_lto_symversions = echo >/dev/null
-> 
-> This is not quite as efficient as using wildcard, but should work with
-> older Make versions too. Thoughts?
-> 
+Hi,
 
+On Thu, Jun 17, 2021 at 7:01 AM Chun-Jie Chen
+<chun-jie.chen@mediatek.com> wrote:
+>
+> Add MT8195 imgsys clock providers
+>
+> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> ---
+>  drivers/clk/mediatek/Kconfig          |  6 ++
+>  drivers/clk/mediatek/Makefile         |  1 +
+>  drivers/clk/mediatek/clk-mt8195-img.c | 98 +++++++++++++++++++++++++++
+>  3 files changed, 105 insertions(+)
+>  create mode 100644 drivers/clk/mediatek/clk-mt8195-img.c
+>
+> diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
+> index 6a6e496d08a4..f92d0b6b7eec 100644
+> --- a/drivers/clk/mediatek/Kconfig
+> +++ b/drivers/clk/mediatek/Kconfig
+> @@ -612,6 +612,12 @@ config COMMON_CLK_MT8195_CCUSYS
+>         help
+>           This driver supports MediaTek MT8195 ccusys clocks.
+>
+> +config COMMON_CLK_MT8195_IMGSYS
+> +       bool "Clock driver for MediaTek MT8195 imgsys"
+> +       depends on COMMON_CLK_MT8195
+> +       help
+> +         This driver supports MediaTek MT8195 imgsys clocks.
+> +
+>  config COMMON_CLK_MT8516
+>         bool "Clock driver for MediaTek MT8516"
+>         depends on ARCH_MEDIATEK || COMPILE_TEST
+> diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
+> index bb8aac6f9185..1768eda917c2 100644
+> --- a/drivers/clk/mediatek/Makefile
+> +++ b/drivers/clk/mediatek/Makefile
+> @@ -85,5 +85,6 @@ obj-$(CONFIG_COMMON_CLK_MT8195_AUDSYS) += clk-mt8195-aud.o
+>  obj-$(CONFIG_COMMON_CLK_MT8195_AUDSYS_SRC) += clk-mt8195-aud_src.o
+>  obj-$(CONFIG_COMMON_CLK_MT8195_CAMSYS) += clk-mt8195-cam.o
+>  obj-$(CONFIG_COMMON_CLK_MT8195_CCUSYS) += clk-mt8195-ccu.o
+> +obj-$(CONFIG_COMMON_CLK_MT8195_IMGSYS) += clk-mt8195-img.o
+>  obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
+>  obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
+> diff --git a/drivers/clk/mediatek/clk-mt8195-img.c b/drivers/clk/mediatek/clk-mt8195-img.c
+> new file mode 100644
+> index 000000000000..923fa82aedae
+> --- /dev/null
+> +++ b/drivers/clk/mediatek/clk-mt8195-img.c
+> @@ -0,0 +1,98 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +//
+> +// Copyright (c) 2021 MediaTek Inc.
+> +// Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include "clk-mtk.h"
+> +#include "clk-gate.h"
+> +
+> +#include <dt-bindings/clock/mt8195-clk.h>
+> +
+> +static const struct mtk_gate_regs img_cg_regs = {
+> +       .set_ofs = 0x4,
+> +       .clr_ofs = 0x8,
+> +       .sta_ofs = 0x0,
+> +};
+> +
+> +#define GATE_IMG(_id, _name, _parent, _shift)                  \
+> +       GATE_MTK(_id, _name, _parent, &img_cg_regs, _shift, &mtk_clk_gate_ops_setclr)
+> +
+> +static const struct mtk_gate img_clks[] = {
+> +       GATE_IMG(CLK_IMG_LARB9, "img_larb9", "img_sel", 0),
+> +       GATE_IMG(CLK_IMG_TRAW0, "img_traw0", "img_sel", 1),
+> +       GATE_IMG(CLK_IMG_TRAW1, "img_traw1", "img_sel", 2),
+> +       GATE_IMG(CLK_IMG_TRAW2, "img_traw2", "img_sel", 3),
+> +       GATE_IMG(CLK_IMG_TRAW3, "img_traw3", "img_sel", 4),
+> +       GATE_IMG(CLK_IMG_DIP0, "img_dip0", "img_sel", 8),
+> +       GATE_IMG(CLK_IMG_WPE0, "img_wpe0", "img_sel", 9),
+> +       GATE_IMG(CLK_IMG_IPE, "img_ipe", "img_sel", 10),
+> +       GATE_IMG(CLK_IMG_DIP1, "img_dip1", "img_sel", 11),
+> +       GATE_IMG(CLK_IMG_WPE1, "img_wpe1", "img_sel", 12),
+> +       GATE_IMG(CLK_IMG_GALS, "img_gals", "img_sel", 31),
+> +};
+> +
+> +static const struct mtk_gate img1_dip_top_clks[] = {
+> +       GATE_IMG(CLK_IMG1_DIP_TOP_LARB10, "img1_dip_top_larb10", "img_sel", 0),
+> +       GATE_IMG(CLK_IMG1_DIP_TOP_DIP_TOP, "img1_dip_top_dip_top", "img_sel", 1),
+> +};
+> +
+> +static const struct mtk_gate img1_dip_nr_clks[] = {
+> +       GATE_IMG(CLK_IMG1_DIP_NR_RESERVE, "img1_dip_nr_reserve", "img_sel", 0),
 
-I've tested this in both make-4.3 and 3.81, and the CRC is correct.
-But I'm not sure if anyone would have the "arg list too long" issue.
+Adding a clock for a bit that is named "reserved" is sort of weird.
+Does it actually exist and function?
 
-Tested-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+Otherwise,
+
+Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
