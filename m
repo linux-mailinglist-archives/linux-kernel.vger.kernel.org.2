@@ -2,153 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B24A3BDFB6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 01:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C37B83BDFBB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 01:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbhGFXTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 19:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhGFXTh (ORCPT
+        id S230089AbhGFXXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 19:23:05 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:42192 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229991AbhGFXXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 19:19:37 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FB5C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 16:16:57 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id oj10-20020a17090b4d8ab0290172f77377ebso466716pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 16:16:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vhWcX4wZI8Gd9j2rinjQwhp8HvDxjLKtRKdl01al6B4=;
-        b=qA3fpEsAe6jsvhZqMAy6cwl8yXzdWfXG00y18wEaoGed37IU/nSfIFlFZLqJ+/lVHW
-         mi8cOgkmwjFMQMYZ174Wqm+ZObPLCa7TZadgFajCo+wukrWzsWmRSiOQs7+sOtOjGzCK
-         oTPhS5XuCMSwsSjJNI0wLlaZHxqserpJlr1ywLWTf9+B6EYGmwMZ/9oyDCYKSLd+wYFv
-         37T/s1Kz9X5nVDp1MncjRkNMgW1lHoPZA2Tnc7HLhFE8xFJmS3gehdrBXMG4hup/4aIw
-         LC+VBRzu32Ox/V2hhCnsFFaRGNVgb35g9NVckInof+vYLHfMpI98JywoK0zdTIMCnfPH
-         NM9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=vhWcX4wZI8Gd9j2rinjQwhp8HvDxjLKtRKdl01al6B4=;
-        b=Jixsm3N2nUSyOdBRIvI8p9n9TU12rW8ExjMroVm9QoogAS/Qv4q0xh+oxRuMSuM7AS
-         Ax1qPtO9rro5fx09y7MjPpR31wxbcpFYdbaZfRlcefcitBYkRYNvxlDGcQKAaUNGzm60
-         jcpoqDEe6D+qm52bAfgAv2DJy3aMpbuXMJ9OymlpFUs/aBa8zjsB+1BpcXEm8oi9pEu7
-         2GN+ABhcFFXI4jilezXmezyQOnDl239WqxUdS/CwfvVWnTzvp1XwHz9Er7zbegqCHZYd
-         O/jLWZwussr0cJDNYw3MjvGMSnESxIG5Ytz8rpqxBBfA5fTfEceEXs8GTkqhZXhhGjLp
-         q+Cw==
-X-Gm-Message-State: AOAM53358i5Y6UHiKyX9qkzAp/ceJnB4mH8wXaudSUlj8kCPpSs8gSQk
-        kCo4El+FORZSdW8ICLhb0lJ0AA==
-X-Google-Smtp-Source: ABdhPJw+S8scqaWlE3MYzQi76RwysDGhn8KLP6B59eb0mJaDLXFWOIh5UV7dvcXMehttPkOYFKPZ6A==
-X-Received: by 2002:a17:90a:6a0e:: with SMTP id t14mr5449215pjj.19.1625613416939;
-        Tue, 06 Jul 2021 16:16:56 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id w123sm18350483pff.152.2021.07.06.16.16.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 16:16:56 -0700 (PDT)
-Date:   Tue, 06 Jul 2021 16:16:56 -0700 (PDT)
-X-Google-Original-Date: Tue, 06 Jul 2021 16:16:35 PDT (-0700)
-Subject:     Re: [PATCH v2] dt-bindings: riscv: add starfive jh7100 bindings
-In-Reply-To: <20210625071240.577796-1-drew@beagleboard.org>
-CC:     robh+dt@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        michael.zhu@starfivetech.com, geert@linux-m68k.org,
-        tekkamanninja@gmail.com, kernel@esmil.dk,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, drew@beagleboard.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     drew@beagleboard.org
-Message-ID: <mhng-7fbbd583-fe4e-4f11-a028-3df3eca4ab41@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Tue, 6 Jul 2021 19:23:04 -0400
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        by linux.microsoft.com (Postfix) with ESMTPSA id EEDBB20B8763;
+        Tue,  6 Jul 2021 16:20:24 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EEDBB20B8763
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1625613625;
+        bh=+B2RyBYE0y86L8yJkdHeDMZTG4ZuIZ21amffRovnID0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=i8+3otj2+n6kuZyF3CxQ3ICAGTAFbCGsxjhAichRnN5quDMAf7WJMNGGpTj+mFh6W
+         XnYk+qVNIWJXayNCBPdx7X0B3L/NVFf8F3OzroPT8pygwnI15nC6/pYEI6ieIS7cC6
+         fQw/OEkcRdvTzAtv/fSXOnkuUyC7083HO7zFdgow=
+Received: by mail-oi1-f179.google.com with SMTP id h9so1253019oih.4;
+        Tue, 06 Jul 2021 16:20:24 -0700 (PDT)
+X-Gm-Message-State: AOAM531CYhO4IwMRTEvjQ7SdI0hfu19EALz6XsjBcRqpOCzSwzRdByPs
+        mLfT7ALRX+Ub+3WwH6j97uyGFINR7mpSt98vDHs=
+X-Google-Smtp-Source: ABdhPJwvODCWG0AeXR+9oECO+x2o6a1FUtOPxOFl78LnDVCsndsRrY7L/qQ1u0pK80Ldg6T8UkI2OFAHz5YoRYK66/Y=
+X-Received: by 2002:a17:90a:650b:: with SMTP id i11mr22926182pjj.39.1625613613347;
+ Tue, 06 Jul 2021 16:20:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
+ <20210702153947.7b44acdf@linux.microsoft.com> <20210706155131.GS22278@shell.armlinux.org.uk>
+In-Reply-To: <20210706155131.GS22278@shell.armlinux.org.uk>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Wed, 7 Jul 2021 01:19:37 +0200
+X-Gmail-Original-Message-ID: <CAFnufp1hM6WRDigAsSfM94yneRhkmxBoGG7NxRUkbfTR2WQvyA@mail.gmail.com>
+Message-ID: <CAFnufp1hM6WRDigAsSfM94yneRhkmxBoGG7NxRUkbfTR2WQvyA@mail.gmail.com>
+Subject: Re: [PATCH net-next RFC 0/2] add elevated refcnt support for page pool
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        feng.tang@intel.com, Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Jun 2021 00:12:42 PDT (-0700), drew@beagleboard.org wrote:
-> Add DT binding documentation for the StarFive JH7100 Soc [1] and the
-> BeagleV Starlight JH7100 board [2].
+On Tue, Jul 6, 2021 at 5:51 PM Russell King (Oracle)
+<linux@armlinux.org.uk> wrote:
 >
-> [1] https://github.com/starfive-tech/beaglev_doc
-> [2] https://github.com/beagleboard/beaglev-starlight
+> On Fri, Jul 02, 2021 at 03:39:47PM +0200, Matteo Croce wrote:
+> > On Wed, 30 Jun 2021 17:17:54 +0800
+> > Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> >
+> > > This patchset adds elevated refcnt support for page pool
+> > > and enable skb's page frag recycling based on page pool
+> > > in hns3 drvier.
+> > >
+> > > Yunsheng Lin (2):
+> > >   page_pool: add page recycling support based on elevated refcnt
+> > >   net: hns3: support skb's frag page recycling based on page pool
+> > >
+> > >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  79 +++++++-
+> > >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   3 +
+> > >  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
+> > >  drivers/net/ethernet/marvell/mvneta.c              |   6 +-
+> > >  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +-
+> > >  include/linux/mm_types.h                           |   2 +-
+> > >  include/linux/skbuff.h                             |   4 +-
+> > >  include/net/page_pool.h                            |  30 ++-
+> > >  net/core/page_pool.c                               | 215
+> > > +++++++++++++++++---- 9 files changed, 285 insertions(+), 57
+> > > deletions(-)
+> > >
+> >
+> > Interesting!
+> > Unfortunately I'll not have access to my macchiatobin anytime soon, can
+> > someone test the impact, if any, on mvpp2?
 >
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> ---
-> v2 changes:
-> - removed "items:" entry that only had "const: starfive,jh7100"
-> - correct typo in Description:
+> I'll try to test. Please let me know what kind of testing you're
+> looking for (I haven't been following these patches, sorry.)
 >
-> Results of running checks:
->
->   $ make -j8 ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- dt_binding_check \
->   DT_SCHEMA_FILES=Documentation/devicetree/bindings/riscv/starfive.yaml
->   DTEX    Documentation/devicetree/bindings/riscv/starfive.example.dts
->   DTC     Documentation/devicetree/bindings/riscv/starfive.example.dt.yaml
->   CHECK   Documentation/devicetree/bindings/riscv/starfive.example.dt.yaml
->
->   $ make -j8 ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- dtbs_check \
->   DT_SCHEMA_FILES=Documentation/devicetree/bindings/riscv/starfive.yaml
->   DTC     arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dt.yaml
->   CHECK   arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dt.yaml
->
-> The dts file is from vendor repo and is being cleaned up right now in
-> preperation for submitting to the mailing list:
-> https://github.com/starfive-tech/linux/tree/beaglev/arch/riscv/boot/dts/starfive
->
->  .../devicetree/bindings/riscv/starfive.yaml   | 27 +++++++++++++++++++
->  1 file changed, 27 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/riscv/starfive.yaml
->
-> diff --git a/Documentation/devicetree/bindings/riscv/starfive.yaml b/Documentation/devicetree/bindings/riscv/starfive.yaml
-> new file mode 100644
-> index 000000000000..68954d0a7108
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/riscv/starfive.yaml
-> @@ -0,0 +1,27 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/riscv/starfive.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: StarFive SoC-based boards
-> +
-> +maintainers:
-> +  - Michael Zhu <michael.zhu@starfivetech.com>
-> +  - Drew Fustini <drew@beagleboard.org>
-> +
-> +description:
-> +  StarFive SoC-based boards
-> +
-> +properties:
-> +  $nodename:
-> +    const: '/'
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: beagle,beaglev-starlight-jh7100
-> +          - const: starfive,jh7100
 
-The SiFive boards have
+A drop test or L2 routing will be enough.
+BTW I should have the macchiatobin back on friday.
 
-    oneOf:
-      - items:
-          - enum:
-              - sifive,hifive-unleashed-a00
-          - const: sifive,fu540-c000
-          - const: sifive,fu540
-
-IIUC there's no practical difference between a single-option enum and 
-the const, but it does bring up the board version number.  Is there any 
-revision number on the beaglev boards?
-
-> +
-> +additionalProperties: true
-> +
-> +...
-
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
-
-as I'm assuming this is targeted towards the DT tree.  Thanks!
+Regards,
+-- 
+per aspera ad upstream
