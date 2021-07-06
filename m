@@ -2,92 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D02C3BDD64
+	by mail.lfdr.de (Postfix) with ESMTP id 559913BDD65
 	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 20:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhGFSoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 14:44:39 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:36525 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230084AbhGFSoi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 14:44:38 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.west.internal (Postfix) with ESMTP id D21E42B006E7;
-        Tue,  6 Jul 2021 14:41:58 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 06 Jul 2021 14:41:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=R968ytTOlwNw+2WYjcHp6doapxo
-        hJ0BvC2hmSpYueUU=; b=EUWVdeZHzeCas1GdVUpvefEtK+dgpSZHLPM+ZjqZwbD
-        XZjtNQ0pdNaWq8Iymll4qYN/q3H3VLwS1yWdN2m3DbeZV8u8xIR1a5+Y2/FjvF07
-        O9K1a95IAm75CE2QctM5ru4WcagKQH2Qdh4rQqv27l9Z1r4YJyjq8ZE+KIJk4D9p
-        d1mP1uSwYGd6wYdUPQKSa44YvbgTCZ9GopKXOwGVOciBEGliTW3XkpPgJxtX11NN
-        BY7ndhAFlol5WglJ3KrCFyqLrNrV0kro1q9okC2fY1iLnqBvDmUjWiQZ/o8Pkoaz
-        tXnKK1Yw/754LxL1LkWbKaCChq3EOulRWVuSqiiLPUw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=R968yt
-        TOlwNw+2WYjcHp6doapxohJ0BvC2hmSpYueUU=; b=iKP2Uunlg15jYviPB8n3Iq
-        /nn83ZoIWP4dO1dWBgLOjQOyH8iJT883cvD0J+qMvO8lvPnsMmABmFdLdhh3wxfr
-        yEEJAXah/cr9RFTVBwWeKj9eKNS9H5NJzOSnvmd3k9MCwn3gn+m2r3jYePh1SPdM
-        Y1XU9HTOpbtrBnAxHSVluz5dA5jIdamqxO656Zw5bGBfUBywFFckBvYJCj52E49u
-        8N/hn1H/s5xDwADEH4S+Q0G9/Pv7o8P23wQ6W/jDeSHw9BqZVTqiyZGhDZ6hCll9
-        G5k6MOwbUK0XyaexZ2o0XThZpKqJs+ZoiXrVZAR1TvRHK6/BmiJyvM61hEYM2RmQ
-        ==
-X-ME-Sender: <xms:9aPkYByvaqyciX7IwxEWGTSRxGd7WVhfin-5QEeaxxamRBfS5ps5tw>
-    <xme:9aPkYBTThUAyb5RYoOTZBEXGM_zDfNLfHCjHYg0-fzZPrfZ7eXK5G07muinH2L98G
-    IBfG7OVRcMlgQ>
-X-ME-Received: <xmr:9aPkYLUvb5ohLvgcru6oW58qPl9HOdLlsfV_wkBHrOytYZ2-T0JxRP1aZKvgaPch40wrPiuET5EAea-iGqisCxZuuw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtddtgdekiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepmfhrohgrhhdq
-    jfgrrhhtmhgrnhcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnh
-    eplefggeejffdtgeeutdefveevhfdtfeeufeefjefhleduuefgieegveelueejteffnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgse
-    hkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:9aPkYDha89voidcSbI0bVumsrjhdHyzWvuhpJu3uiAtk2KBDoQusLg>
-    <xmx:9aPkYDB-j0Fg0F2PdgfHDBL21dWB-z6J9vArRVZLdYdaie319UUVFQ>
-    <xmx:9aPkYMJ2nkrG5wkIqQYbDXCwZobdh9Dg6Cce7lcaipu82lxxjuE_pg>
-    <xmx:9qPkYLYpP6oJhzu0-jubpTnx1mGEBQ3_EtnduXiao0bf6argWNu_OTUmNyc>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 6 Jul 2021 14:41:57 -0400 (EDT)
-Date:   Tue, 6 Jul 2021 20:41:54 +0200
-From:   Kroah-Hartman <greg@kroah.com>
-To:     Norbert Manthey <nmanthey@amazon.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "foersleo@amazon.de" <foersleo@amazon.de>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        "Gustavo A. R. Silva" <garsilva@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: Coverity Scan model file, license, public access
-Message-ID: <YOSj8kjDtjmUtcVP@kroah.com>
-References: <d7f096ee-7a9b-684e-433a-f8f3f0e6288d@amazon.de>
- <YOSKuEcPoy/dw0st@kroah.com>
- <6f1cb856-fc72-cfd1-9bdd-b4dbf58c558c@amazon.de>
+        id S231528AbhGFSqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 14:46:13 -0400
+Received: from mga07.intel.com ([134.134.136.100]:59003 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230084AbhGFSqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 14:46:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="273020027"
+X-IronPort-AV: E=Sophos;i="5.83,329,1616482800"; 
+   d="scan'208";a="273020027"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 11:43:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,329,1616482800"; 
+   d="scan'208";a="627769895"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga005.jf.intel.com with ESMTP; 06 Jul 2021 11:43:32 -0700
+Received: from [10.209.95.225] (kliang2-MOBL.ccr.corp.intel.com [10.209.95.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 27F055808AE;
+        Tue,  6 Jul 2021 11:43:32 -0700 (PDT)
+Subject: Re: [PATCH] perf/x86/intel/uncore: Fix IIO cleanup mapping procedure
+ for SNR/ICX
+To:     Alexander Antonov <alexander.antonov@linux.intel.com>,
+        peterz@infradead.org, linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     ak@linux.intel.com, alexey.v.bayduraev@linux.intel.com
+References: <20210706090723.41850-1-alexander.antonov@linux.intel.com>
+ <3d634baf-8abe-480d-61ed-ade1945324ee@linux.intel.com>
+ <0292c242-dc53-253d-da87-710b001aa3e7@linux.intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <99baf5a8-3d20-d9ff-95ee-b31d4a2c59bb@linux.intel.com>
+Date:   Tue, 6 Jul 2021 14:43:30 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6f1cb856-fc72-cfd1-9bdd-b4dbf58c558c@amazon.de>
+In-Reply-To: <0292c242-dc53-253d-da87-710b001aa3e7@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 08:34:16PM +0200, Norbert Manthey wrote:
-> With respect to sharing the results: we are allowed to upstream fixes
-> that we find with the tool. We contributed in that way already, e.g. [2].
 
-Yes, that is how many companies do this and have for a long time
-(Canonical does this a lot).  But that puts all the work on you, and you
-can not share the results of the tool with anyone, so you are forced to
-do the work to fix problems the tool reports, which feels really wrong
-when you are dealing with a scan of a public source tree...
 
-thanks,
+On 7/6/2021 12:17 PM, Alexander Antonov wrote:
+> 
+> On 7/6/2021 5:12 PM, Liang, Kan wrote:
+>>
+>>
+>> On 7/6/2021 5:07 AM, alexander.antonov@linux.intel.com wrote:
+>>> From: Alexander Antonov <alexander.antonov@linux.intel.com>
+>>>
+>>> Cleanup mapping procedure for IIO PMU is needed to free memory which was
+>>> allocated for topology data and for attributes in IIO mapping
+>>> attribute_group.
+>>> Current implementation of this procedure for Snowridge and Icelake 
+>>> Server
+>>> platforms doesn't free allocated memory that can be a reason for memory
+>>> leak issue.
+>>> Fix the issue with IIO cleanup mapping procedure for these platforms
+>>> to release allocated memory.
+>>>
+>>> Fixes: 10337e95e04c ("perf/x86/intel/uncore: Enable I/O stacks to IIO 
+>>> PMON mapping on ICX")
+>>>
+>>> Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
+>>
+>> The patch looks good to me.
+>>
+>> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+>>
+>>
+>> With this fix, there will be several similar codes repeat, e.g., 
+>> XXX_iio_set_mapping() and XXX_iio_cleanup_mapping(), for SKX, ICX, and 
+>> SNR for now.
+>> I guess there will be more for the future platforms. Have you 
+>> considered to add a macro or something to reduce the code repetition?
+>>
+>> Thanks,
+>> Kan
+> 
+> That's a good idea.
+> I suggest to do it together with enabling of mapping on future 
+> platforms. What do you think?
+> 
 
-greg k-h
+It's OK for me.
+
+Thanks.
+Kan
+> 
+>>
+>>> ---
+>>>   arch/x86/events/intel/uncore_snbep.c | 40 +++++++++++++++++++---------
+>>>   1 file changed, 28 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/arch/x86/events/intel/uncore_snbep.c 
+>>> b/arch/x86/events/intel/uncore_snbep.c
+>>> index bb6eb1e5569c..54cdbb96e628 100644
+>>> --- a/arch/x86/events/intel/uncore_snbep.c
+>>> +++ b/arch/x86/events/intel/uncore_snbep.c
+>>> @@ -3836,26 +3836,32 @@ pmu_iio_set_mapping(struct intel_uncore_type 
+>>> *type, struct attribute_group *ag)
+>>>       return ret;
+>>>   }
+>>>   -static int skx_iio_set_mapping(struct intel_uncore_type *type)
+>>> -{
+>>> -    return pmu_iio_set_mapping(type, &skx_iio_mapping_group);
+>>> -}
+>>> -
+>>> -static void skx_iio_cleanup_mapping(struct intel_uncore_type *type)
+>>> +static void
+>>> +pmu_iio_cleanup_mapping(struct intel_uncore_type *type, struct 
+>>> attribute_group *ag)
+>>>   {
+>>> -    struct attribute **attr = skx_iio_mapping_group.attrs;
+>>> +    struct attribute **attr = ag->attrs;
+>>>         if (!attr)
+>>>           return;
+>>>         for (; *attr; attr++)
+>>>           kfree((*attr)->name);
+>>> -    kfree(attr_to_ext_attr(*skx_iio_mapping_group.attrs));
+>>> -    kfree(skx_iio_mapping_group.attrs);
+>>> -    skx_iio_mapping_group.attrs = NULL;
+>>> +    kfree(attr_to_ext_attr(*ag->attrs));
+>>> +    kfree(ag->attrs);
+>>> +    ag->attrs = NULL;
+>>>       kfree(type->topology);
+>>>   }
+>>>   +static int skx_iio_set_mapping(struct intel_uncore_type *type)
+>>> +{
+>>> +    return pmu_iio_set_mapping(type, &skx_iio_mapping_group);
+>>> +}
+>>> +
+>>> +static void skx_iio_cleanup_mapping(struct intel_uncore_type *type)
+>>> +{
+>>> +    pmu_iio_cleanup_mapping(type, &skx_iio_mapping_group);
+>>> +}
+>>> +
+>>>   static struct intel_uncore_type skx_uncore_iio = {
+>>>       .name            = "iio",
+>>>       .num_counters        = 4,
+>>> @@ -4499,6 +4505,11 @@ static int snr_iio_set_mapping(struct 
+>>> intel_uncore_type *type)
+>>>       return pmu_iio_set_mapping(type, &snr_iio_mapping_group);
+>>>   }
+>>>   +static void snr_iio_cleanup_mapping(struct intel_uncore_type *type)
+>>> +{
+>>> +    pmu_iio_cleanup_mapping(type, &snr_iio_mapping_group);
+>>> +}
+>>> +
+>>>   static struct intel_uncore_type snr_uncore_iio = {
+>>>       .name            = "iio",
+>>>       .num_counters        = 4,
+>>> @@ -4515,7 +4526,7 @@ static struct intel_uncore_type snr_uncore_iio = {
+>>>       .attr_update        = snr_iio_attr_update,
+>>>       .get_topology        = snr_iio_get_topology,
+>>>       .set_mapping        = snr_iio_set_mapping,
+>>> -    .cleanup_mapping    = skx_iio_cleanup_mapping,
+>>> +    .cleanup_mapping    = snr_iio_cleanup_mapping,
+>>>   };
+>>>     static struct intel_uncore_type snr_uncore_irp = {
+>>> @@ -5090,6 +5101,11 @@ static int icx_iio_set_mapping(struct 
+>>> intel_uncore_type *type)
+>>>       return pmu_iio_set_mapping(type, &icx_iio_mapping_group);
+>>>   }
+>>>   +static void icx_iio_cleanup_mapping(struct intel_uncore_type *type)
+>>> +{
+>>> +    pmu_iio_cleanup_mapping(type, &icx_iio_mapping_group);
+>>> +}
+>>> +
+>>>   static struct intel_uncore_type icx_uncore_iio = {
+>>>       .name            = "iio",
+>>>       .num_counters        = 4,
+>>> @@ -5107,7 +5123,7 @@ static struct intel_uncore_type icx_uncore_iio = {
+>>>       .attr_update        = icx_iio_attr_update,
+>>>       .get_topology        = icx_iio_get_topology,
+>>>       .set_mapping        = icx_iio_set_mapping,
+>>> -    .cleanup_mapping    = skx_iio_cleanup_mapping,
+>>> +    .cleanup_mapping    = icx_iio_cleanup_mapping,
+>>>   };
+>>>     static struct intel_uncore_type icx_uncore_irp = {
+>>>
+>>> base-commit: 3dbdb38e286903ec220aaf1fb29a8d94297da246
+>>>
