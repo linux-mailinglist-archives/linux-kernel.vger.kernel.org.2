@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28EAD3BD096
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71DC93BD0BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236151AbhGFLel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:34:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35636 "EHLO mail.kernel.org"
+        id S236174AbhGFLeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:34:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234657AbhGFLYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:24:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 609D761D13;
-        Tue,  6 Jul 2021 11:18:46 +0000 (UTC)
+        id S234736AbhGFLZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:25:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FA3461D05;
+        Tue,  6 Jul 2021 11:18:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570327;
-        bh=MaeIWtLhtIZhFqpcnfSychCtPCsJtn+TIlgkZ58IfsA=;
+        s=k20201202; t=1625570332;
+        bh=1t40GFUdfFHXYov82Lchb4r/peMxoMO2yy/t5xvZifk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OmUgd2lcIFH+BTOW0rcN9pkDp6EzSMkBuaOiLtvpIowVSPOZV83mBRuANwzJRhOOX
-         a9w+++YfMe3QmbwGu0zmRfDgBZyE05PeutlasfxOM+kK4bB3c/YJzBQe6/xAoeag6S
-         9Ui3iy9L9O/RDNm6nm4avV2nSNExQVAABIcElHw/gMvNEz/CAgthIQtKv/CIv0oXyS
-         QDqJc4cEpKZAUuoZTeHGtH+iIkuw0AukiMzW+f+gTlLqWB9IvzCBmEBfkLz/70fn1R
-         soyrWeK9PrwA2NIESCeOBOxWbKnGInoOwXUvRreeGI2dhgO+uZ/sAepFE13MZ8SuRZ
-         q3wov4eUaD/og==
+        b=Jp6C0zK3EAlTC9XBcGbSlCBCmEuU97JhGZd5KpKt56SH0PAluLv8BOYlzw1rayH3Q
+         OoURS97zCGo24YZdAfJT5ePuHuiHYEn4PhmS+r/8RdhaXcwWBHpRWeq9VE12nrO3t6
+         2dCtRJDPzajB+E8Q7DVlt69ruEOgoh6ZcjxesIqOy3LXw4zTx74xzxT8chkEqoWwgc
+         Dps4TdEv22ejF+M7+BuWzSEjC7xCKvIDcBT7KTB5c4EiLV8HPfBcn0i/LInLu52YeH
+         n3gPnSU8WlZp0mbCVAc0AqIz0AFdzlq4c5oeJJ2YLc+AlMjR6bUiyw4e1TD1tzP+T/
+         yeUw1cS0l5mUQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+Cc:     Zou Wei <zou_wei@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+        "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 014/160] clk: renesas: rcar-usb2-clock-sel: Fix error handling in .probe()
-Date:   Tue,  6 Jul 2021 07:16:00 -0400
-Message-Id: <20210706111827.2060499-14-sashal@kernel.org>
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 018/160] atm: nicstar: Fix possible use-after-free in nicstar_cleanup()
+Date:   Tue,  6 Jul 2021 07:16:04 -0400
+Message-Id: <20210706111827.2060499-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111827.2060499-1-sashal@kernel.org>
 References: <20210706111827.2060499-1-sashal@kernel.org>
@@ -43,81 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit a20a40a8bbc2cf4b29d7248ea31e974e9103dd7f ]
+[ Upstream commit 34e7434ba4e97f4b85c1423a59b2922ba7dff2ea ]
 
-The error handling paths after pm_runtime_get_sync() have no refcount
-decrement, which leads to refcount leak.
+This module's remove path calls del_timer(). However, that function
+does not wait until the timer handler finishes. This means that the
+timer handler may still be running after the driver's remove function
+has finished, which would result in a use-after-free.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Link: https://lore.kernel.org/r/20210415073338.22287-1-dinghao.liu@zju.edu.cn
-[geert: Remove now unused variable priv]
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Fix by calling del_timer_sync(), which makes sure the timer handler
+has finished, and unable to re-schedule itself.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/renesas/rcar-usb2-clock-sel.c | 24 ++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ drivers/atm/nicstar.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/renesas/rcar-usb2-clock-sel.c b/drivers/clk/renesas/rcar-usb2-clock-sel.c
-index 3abafd78f7c8..8b4e43659023 100644
---- a/drivers/clk/renesas/rcar-usb2-clock-sel.c
-+++ b/drivers/clk/renesas/rcar-usb2-clock-sel.c
-@@ -128,10 +128,8 @@ static int rcar_usb2_clock_sel_resume(struct device *dev)
- static int rcar_usb2_clock_sel_remove(struct platform_device *pdev)
+diff --git a/drivers/atm/nicstar.c b/drivers/atm/nicstar.c
+index 5c7e4df159b9..b015c3e14336 100644
+--- a/drivers/atm/nicstar.c
++++ b/drivers/atm/nicstar.c
+@@ -299,7 +299,7 @@ static void __exit nicstar_cleanup(void)
  {
- 	struct device *dev = &pdev->dev;
--	struct usb2_clock_sel_priv *priv = platform_get_drvdata(pdev);
+ 	XPRINTK("nicstar: nicstar_cleanup() called.\n");
  
- 	of_clk_del_provider(dev->of_node);
--	clk_hw_unregister(&priv->hw);
- 	pm_runtime_put(dev);
- 	pm_runtime_disable(dev);
+-	del_timer(&ns_timer);
++	del_timer_sync(&ns_timer);
  
-@@ -164,9 +162,6 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
- 	if (IS_ERR(priv->rsts))
- 		return PTR_ERR(priv->rsts);
+ 	pci_unregister_driver(&nicstar_driver);
  
--	pm_runtime_enable(dev);
--	pm_runtime_get_sync(dev);
--
- 	clk = devm_clk_get(dev, "usb_extal");
- 	if (!IS_ERR(clk) && !clk_prepare_enable(clk)) {
- 		priv->extal = !!clk_get_rate(clk);
-@@ -183,6 +178,8 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
- 		return -ENOENT;
- 	}
- 
-+	pm_runtime_enable(dev);
-+	pm_runtime_get_sync(dev);
- 	platform_set_drvdata(pdev, priv);
- 	dev_set_drvdata(dev, priv);
- 
-@@ -193,11 +190,20 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
- 	init.num_parents = 0;
- 	priv->hw.init = &init;
- 
--	clk = clk_register(NULL, &priv->hw);
--	if (IS_ERR(clk))
--		return PTR_ERR(clk);
-+	ret = devm_clk_hw_register(NULL, &priv->hw);
-+	if (ret)
-+		goto pm_put;
-+
-+	ret = of_clk_add_hw_provider(np, of_clk_hw_simple_get, &priv->hw);
-+	if (ret)
-+		goto pm_put;
-+
-+	return 0;
- 
--	return of_clk_add_hw_provider(np, of_clk_hw_simple_get, &priv->hw);
-+pm_put:
-+	pm_runtime_put(dev);
-+	pm_runtime_disable(dev);
-+	return ret;
- }
- 
- static const struct dev_pm_ops rcar_usb2_clock_sel_pm_ops = {
 -- 
 2.30.2
 
