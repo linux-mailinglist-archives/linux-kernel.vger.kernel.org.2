@@ -2,101 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB7D3BDFA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 01:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6484B3BDFAB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 01:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhGFXOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 19:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhGFXN7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 19:13:59 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775A3C061574;
-        Tue,  6 Jul 2021 16:11:19 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GKJFv3Y82z9t0k;
-        Wed,  7 Jul 2021 09:11:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1625613075;
-        bh=0y4+TCTSpG29+lkSp8FnnBkU1yCSP9lCF2dUAo7xvW8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ViqpqNhOkmGk6omv3MdO5Xo9wzGltRzja/ebfjSkKjwXsDh8SnDomwNtOtFV7P0l8
-         0SI+j1dqdYD3EvS5ylVxiXGBjIYXWL4zYeMqW9i1s4uSsCiq4S6FWj8YAHsZcpd+Ff
-         7O3qsli2GO3Vltvsm4oOHmzrgJNj1OOxW2gUDcezL6xZat2zMH9RYkoEfK3xtIH/O5
-         NEJlHihHrBDv9QJIf95ZdlAkQ+YtzaHP+5xebkYFXYu/mgPxyo8qEkS0WxZQimaD/M
-         BPy9+sfLywWcGUA5wszMOUOhXeF1SCGNOu++jzK93dOraCRHwxbT5k0/zzZ7TdVUzE
-         pl4ajkiIBPccw==
-Date:   Wed, 7 Jul 2021 09:11:13 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Paul Blakey <paulb@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the net tree
-Message-ID: <20210707091113.366cf39e@canb.auug.org.au>
+        id S229953AbhGFXRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 19:17:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55440 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229753AbhGFXRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 19:17:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EAEB61C83;
+        Tue,  6 Jul 2021 23:14:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625613273;
+        bh=T73yaSFXrDNYxqB9hxov58NWOm4NhSguozQkp5Mm6FY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rYjYsWEKG4YbDT0a7BIv3ZMCc8gClTx2L30QzT8UyjfAe1NZQ2/WR8PwLrZD/mOOD
+         6tbGvUpm2flRzhJce7wfaQxf4GBrJQm/ggo/uGsJl/iHilvdrZVg49/jOIKKTqnACK
+         tIyGA6pFu7FvnmWfAc4riV0an2V8w4LOqEbfLNEQHkqf9PdSiOMIG6j1wGfEMlOY+p
+         6ijN4nrnxJAY/RxQgrw/MPDh6DZLPjlaxLBljocdpOJI4UEH3g9gaCOUl2i3YgP3nQ
+         55zr26riv20uiSmJDX9E1Cp6X0bny1ETnAPggRrOSQxc2WBJbAiMGOOB7X/4bXQ6FM
+         boNqt2C5sDYUQ==
+Date:   Tue, 6 Jul 2021 16:14:32 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     <davem@davemloft.net>, <jiri@nvidia.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <lipeng321@huawei.com>,
+        <chenhao288@hisilicon.com>
+Subject: Re: [RFC PATCH net-next 3/8] net: hns3: add support for devlink get
+ info for PF
+Message-ID: <20210706161432.7196c6b4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1625553692-2773-4-git-send-email-huangguangbin2@huawei.com>
+References: <1625553692-2773-1-git-send-email-huangguangbin2@huawei.com>
+        <1625553692-2773-4-git-send-email-huangguangbin2@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vfgil2FE8QCzHJVA55lNhey";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vfgil2FE8QCzHJVA55lNhey
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 6 Jul 2021 14:41:27 +0800 Guangbin Huang wrote:
+> +	return devlink_info_version_running_put(req, "fw-version", version_str);
 
-Hi all,
-
-After merging the net tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
-
-net/core/dev.c: In function 'gro_list_prepare':
-net/core/dev.c:6015:51: error: 'TC_SKB_EXT' undeclared (first use in this f=
-unction)
- 6015 |    struct tc_skb_ext *skb_ext =3D skb_ext_find(skb, TC_SKB_EXT);
-      |                                                   ^~~~~~~~~~
-net/core/dev.c:6015:51: note: each undeclared identifier is reported only o=
-nce for each function it appears in
-net/core/dev.c:6020:19: error: invalid use of undefined type 'struct tc_skb=
-_ext'
- 6020 |     diffs |=3D p_ext->chain ^ skb_ext->chain;
-      |                   ^~
-net/core/dev.c:6020:36: error: invalid use of undefined type 'struct tc_skb=
-_ext'
- 6020 |     diffs |=3D p_ext->chain ^ skb_ext->chain;
-      |                                    ^~
-
-Caused by commit
-
-  8550ff8d8c75 ("skbuff: Release nfct refcount on napi stolen or re-used sk=
-bs")
-
-I have used the net tree from next-20210706 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/vfgil2FE8QCzHJVA55lNhey
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDk4xEACgkQAVBC80lX
-0Gx3Tgf/a3fFpCF2jwJceBG4ctxIl23QAOO40LJKLb3hvj0QRwCZ0fYIwJ1s5Ry7
-SMzsPNqR7LvJUNBwv8FDfAZ0QozlOq9e+Xw8dW5st/aqD/UNe5GIWKqMhIO6xdEV
-01QonBEvDYu0m+ILRaitTihG1x146CvFzXuAGkUkN8TV37QqRjbUEjh2Qi+aXX4y
-lj0Oerp5xDiWaxnX8QZt6adfSVZLHoMLzfTFKIt+BYQsJTVsgh96GbF28bDYdW0G
-Ai0XLK3SDPXNZD+D3hnKhE8td9iC4HfsVmJdXW1j/jwVLF3+yRSZqkavhMKGbC/M
-b5LQWoO/U7YzCn5XANcftL/dIkVuQQ==
-=+SRs
------END PGP SIGNATURE-----
-
---Sig_/vfgil2FE8QCzHJVA55lNhey--
+Please use one of the existing names instead of "fw-version",
+e.g. DEVLINK_INFO_VERSION_GENERIC_FW.
