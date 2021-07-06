@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3FE3BD3F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276A43BD3F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243097AbhGFMDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:03:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47622 "EHLO mail.kernel.org"
+        id S242754AbhGFMC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:02:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237361AbhGFLgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:36:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 852BC61D6A;
-        Tue,  6 Jul 2021 11:27:06 +0000 (UTC)
+        id S237366AbhGFLgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:36:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7548361D76;
+        Tue,  6 Jul 2021 11:27:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570827;
-        bh=rz6HuaKLWeUglRhVWMbMuuqcGoxkJpO71ZRphdknjdA=;
+        s=k20201202; t=1625570831;
+        bh=OL9rfOiKRWJSA82b/JX3hAoWKFX5BaIrY0X3ziJ21aE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bif97AyVpmR8s26zNCYryq+DBBo3rIWU9kIpOtOsff6uPg6Ur+D/ANXWIDVMtQmgx
-         K/56s4TpjdXAjPAF5EgNVw3er21isf46rwjyobUj78p8sPEW9R7I+Vd8buqV4ZvZi1
-         0B5vKPqxazsi1QWdaAV2u09O2QOwteXAvvmCpzIHMoVdfbi3xQKR5+ost7TIstt/BY
-         LPO4cDJLHwx3HmVPtWJ0DUAQxGvHFV+A2v/8q4V7mwMEfk9G0iZiZVtKLJxszw5XYZ
-         yy9gdpixGupZwDASBKYlVJJLRmuyxXkUF3QXnVPHeKl9cnK0OG8S6FTWhHvcCFQBCG
-         NKGIMCXXNE6Eg==
+        b=K26RXOjEIiOXLqt1DXOIrq+4Z7ijan04DS4x/vCsov2WmYlw23QWCJTTBXmv3tmK5
+         0UrZeA//q+WkYYXdEsQwthOBq59zBD5ht5gkZbgXDg+Qiyq/3g6AIun0RmB8ofV5pf
+         eNHWpMQBSPNk39HUun1Xc+k8ecMA+psCaVo57EllCaU+6UJsaqsnrzO2WUgIJ/X/5h
+         UpuvqvpVhttBrm0uYawDKzbRyhu96XodcItVA3nAZ7G1wNhRV//k/3SNP+0/6ozXZt
+         P564dd1t+6cYuCkj0p7FpucRIaccssUuqWF9PqKrRf/S7tSBc6TVl5bOmiXVbITaAQ
+         vwZ/9zp/cdmzQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Radim Pavlik <radim.pavlik@tbs-biometrics.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linux-gpio@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 22/55] pinctrl: mcp23s08: fix race condition in irq handler
-Date:   Tue,  6 Jul 2021 07:26:05 -0400
-Message-Id: <20210706112638.2065023-22-sashal@kernel.org>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 25/55] net: bcmgenet: check return value after calling platform_get_resource()
+Date:   Tue,  6 Jul 2021 07:26:08 -0400
+Message-Id: <20210706112638.2065023-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112638.2065023-1-sashal@kernel.org>
 References: <20210706112638.2065023-1-sashal@kernel.org>
@@ -42,57 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Radim Pavlik <radim.pavlik@tbs-biometrics.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 897120d41e7afd9da435cb00041a142aeeb53c07 ]
+[ Upstream commit 74325bf0104573c6dfce42837139aeef3f34be76 ]
 
-Checking value of MCP_INTF in mcp23s08_irq suggests that the handler may be
-called even when there is no interrupt pending.
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-But the actual interrupt could happened between reading MCP_INTF and MCP_GPIO.
-In this situation we got nothing from MCP_INTF, but the event gets acknowledged
-on the expander by reading MCP_GPIO. This leads to losing events.
-
-Fix the problem by not reading any register until we see something in MCP_INTF.
-
-The error was reproduced and fix tested on MCP23017.
-
-Signed-off-by: Radim Pavlik <radim.pavlik@tbs-biometrics.com>
-Link: https://lore.kernel.org/r/AM7PR06MB6769E1183F68DEBB252F665ABA3E9@AM7PR06MB6769.eurprd06.prod.outlook.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/pinctrl-mcp23s08.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/broadcom/genet/bcmmii.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/pinctrl/pinctrl-mcp23s08.c b/drivers/pinctrl/pinctrl-mcp23s08.c
-index 5b5a4323ae63..f22999129269 100644
---- a/drivers/pinctrl/pinctrl-mcp23s08.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08.c
-@@ -458,6 +458,11 @@ static irqreturn_t mcp23s08_irq(int irq, void *data)
- 	if (mcp_read(mcp, MCP_INTF, &intf))
- 		goto unlock;
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmmii.c b/drivers/net/ethernet/broadcom/genet/bcmmii.c
+index a5049d637791..494601c39b84 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmmii.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmmii.c
+@@ -428,6 +428,10 @@ static int bcmgenet_mii_register(struct bcmgenet_priv *priv)
+ 	int id, ret;
  
-+	if (intf == 0) {
-+		/* There is no interrupt pending */
-+		return IRQ_HANDLED;
+ 	pres = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!pres) {
++		dev_err(&pdev->dev, "Invalid resource\n");
++		return -EINVAL;
 +	}
-+
- 	if (mcp_read(mcp, MCP_INTCAP, &intcap))
- 		goto unlock;
+ 	memset(&res, 0, sizeof(res));
+ 	memset(&ppd, 0, sizeof(ppd));
  
-@@ -475,11 +480,6 @@ static irqreturn_t mcp23s08_irq(int irq, void *data)
- 	mcp->cached_gpio = gpio;
- 	mutex_unlock(&mcp->lock);
- 
--	if (intf == 0) {
--		/* There is no interrupt pending */
--		return IRQ_HANDLED;
--	}
--
- 	dev_dbg(mcp->chip.parent,
- 		"intcap 0x%04X intf 0x%04X gpio_orig 0x%04X gpio 0x%04X\n",
- 		intcap, intf, gpio_orig, gpio);
 -- 
 2.30.2
 
