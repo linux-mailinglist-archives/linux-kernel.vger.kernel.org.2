@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75383BCF95
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3C23BCF78
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235324AbhGFL3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:29:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56654 "EHLO mail.kernel.org"
+        id S235357AbhGFL35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:29:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234156AbhGFLXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:23:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA19D61CF6;
-        Tue,  6 Jul 2021 11:18:13 +0000 (UTC)
+        id S234253AbhGFLYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:24:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7DFD61C50;
+        Tue,  6 Jul 2021 11:18:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570294;
-        bh=0XRFg5hIq6dpQhf6aGNiDBR8wtXCngnhyGCW3ADbjSA=;
+        s=k20201202; t=1625570297;
+        bh=uXyehvhxji5nxNlI6Visv+ZBvQp8neZul+MBmBZLS0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I/SBOK4r4sJj2SL73IkYkBCghYPt7Moun1BR21+2T6lUageP0eWks4rxqS2zXgP1K
-         Bf8RASvsKmvBPnSFqh9qTx5sXxMmaDQDFQEezpmf+ZLiRfDqqxkChFxve2dgEQmnrn
-         HJW1HhA5VwoMzDN5cfMjLGFv3dqUvzn9p1WYNQk9xFU52DMElB2jQbiY92OFh33Msb
-         ar7PylZGsP+HXxaX+32/JxWk+0rPLQLjfvXiiWj9/7ADu22x5l+GjTmZC2BRzDl3/m
-         u0T3wrJ6tia+t5FJYBEobfiZeRnqh+yEnI+6LJQemAZS9XRKwof81zKHm3j9BOaC7s
-         NNks1vEFIkDnw==
+        b=srl27JOIyHQoJSV+CKnFgYp2O+4oh9bPa4pzA78QkQdB4YmilUZM7pM4IWPyEsqVe
+         meVjP62qYS3F3AimE6XxdqOGvCGchJzRLNqdpGvI55yoCGGD3/o4nnlniNTfbqGfps
+         HBIYPZaoz03/8PPQxPES/b1ye3K1E0m7umbUFjI+4QRphfC10SQFZYwuqJ4udSqlYc
+         MzmyiiJBtpvOvsU+uU0vziOjx79CeQcFyHm8+HnTco20QtQMQq1czrrFNkjYXvuCJN
+         QLWOY5DndADBLJ2d5sk67pse2M6xu6SQ40K2AdasKxxRgotdV56QZ1lE9dSLkJkuil
+         0m85qv/2SvAgQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Rustam Kovhaev <rkovhaev@gmail.com>,
-        syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 183/189] bpf: Fix false positive kmemleak report in bpf_ringbuf_area_alloc()
-Date:   Tue,  6 Jul 2021 07:14:03 -0400
-Message-Id: <20210706111409.2058071-183-sashal@kernel.org>
+Cc:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Ilja Van Sprundel <ivansprundel@ioactive.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, linux-sctp@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.13 185/189] sctp: validate from_addr_param return
+Date:   Tue,  6 Jul 2021 07:14:05 -0400
+Message-Id: <20210706111409.2058071-185-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111409.2058071-1-sashal@kernel.org>
 References: <20210706111409.2058071-1-sashal@kernel.org>
@@ -46,108 +44,238 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 
-[ Upstream commit ccff81e1d028bbbf8573d3364a87542386c707bf ]
+[ Upstream commit 0c5dc070ff3d6246d22ddd931f23a6266249e3db ]
 
-kmemleak scans struct page, but it does not scan the page content. If we
-allocate some memory with kmalloc(), then allocate page with alloc_page(),
-and if we put kmalloc pointer somewhere inside that page, kmemleak will
-report kmalloc pointer as a false positive.
+Ilja reported that, simply putting it, nothing was validating that
+from_addr_param functions were operating on initialized memory. That is,
+the parameter itself was being validated by sctp_walk_params, but it
+doesn't check for types and their specific sizes and it could be a 0-length
+one, causing from_addr_param to potentially work over the next parameter or
+even uninitialized memory.
 
-We can instruct kmemleak to scan the memory area by calling kmemleak_alloc()
-and kmemleak_free(), but part of struct bpf_ringbuf is mmaped to user space,
-and if struct bpf_ringbuf changes we would have to revisit and review size
-argument in kmemleak_alloc(), because we do not want kmemleak to scan the
-user space memory. Let's simplify things and use kmemleak_not_leak() here.
+The fix here is to, in all calls to from_addr_param, check if enough space
+is there for the wanted IP address type.
 
-For posterity, also adding additional prior analysis from Andrii:
-
-  I think either kmemleak or syzbot are misreporting this. I've added a
-  bunch of printks around all allocations performed by BPF ringbuf. [...]
-  On repro side I get these two warnings:
-
-  [vmuser@archvm bpf]$ sudo ./repro
-  BUG: memory leak
-  unreferenced object 0xffff88810d538c00 (size 64):
-    comm "repro", pid 2140, jiffies 4294692933 (age 14.540s)
-    hex dump (first 32 bytes):
-      00 af 19 04 00 ea ff ff c0 ae 19 04 00 ea ff ff  ................
-      80 ae 19 04 00 ea ff ff c0 29 2e 04 00 ea ff ff  .........)......
-    backtrace:
-      [<0000000077bfbfbd>] __bpf_map_area_alloc+0x31/0xc0
-      [<00000000587fa522>] ringbuf_map_alloc.cold.4+0x48/0x218
-      [<0000000044d49e96>] __do_sys_bpf+0x359/0x1d90
-      [<00000000f601d565>] do_syscall_64+0x2d/0x40
-      [<0000000043d3112a>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-  BUG: memory leak
-  unreferenced object 0xffff88810d538c80 (size 64):
-    comm "repro", pid 2143, jiffies 4294699025 (age 8.448s)
-    hex dump (first 32 bytes):
-      80 aa 19 04 00 ea ff ff 00 ab 19 04 00 ea ff ff  ................
-      c0 ab 19 04 00 ea ff ff 80 44 28 04 00 ea ff ff  .........D(.....
-    backtrace:
-      [<0000000077bfbfbd>] __bpf_map_area_alloc+0x31/0xc0
-      [<00000000587fa522>] ringbuf_map_alloc.cold.4+0x48/0x218
-      [<0000000044d49e96>] __do_sys_bpf+0x359/0x1d90
-      [<00000000f601d565>] do_syscall_64+0x2d/0x40
-      [<0000000043d3112a>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-  Note that both reported leaks (ffff88810d538c80 and ffff88810d538c00)
-  correspond to pages array bpf_ringbuf is allocating and tracking properly
-  internally. Note also that syzbot repro doesn't close FD of created BPF
-  ringbufs, and even when ./repro itself exits with error, there are still
-  two forked processes hanging around in my system. So clearly ringbuf maps
-  are alive at that point. So reporting any memory leak looks weird at that
-  point, because that memory is being used by active referenced BPF ringbuf.
-
-  It's also a question why repro doesn't clean up its forks. But if I do a
-  `pkill repro`, I do see that all the allocated memory is /properly/ cleaned
-  up [and the] "leaks" are deallocated properly.
-
-  BTW, if I add close() right after bpf() syscall in syzbot repro, I see that
-  everything is immediately deallocated, like designed. And no memory leak
-  is reported. So I don't think the problem is anywhere in bpf_ringbuf code,
-  rather in the leak detection and/or repro itself.
-
-Reported-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-[ Daniel: also included analysis from Andrii to the commit log ]
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/CAEf4BzYk+dqs+jwu6VKXP-RttcTEGFe+ySTGWT9CRNkagDiJVA@mail.gmail.com
-Link: https://lore.kernel.org/lkml/YNTAqiE7CWJhOK2M@nuc10
-Link: https://lore.kernel.org/lkml/20210615101515.GC26027@arm.com
-Link: https://syzkaller.appspot.com/bug?extid=5d895828587f49e7fe9b
-Link: https://lore.kernel.org/bpf/20210626181156.1873604-1-rkovhaev@gmail.com
+Reported-by: Ilja Van Sprundel <ivansprundel@ioactive.com>
+Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/ringbuf.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/net/sctp/structs.h |  2 +-
+ net/sctp/bind_addr.c       | 19 +++++++++++--------
+ net/sctp/input.c           |  6 ++++--
+ net/sctp/ipv6.c            |  7 ++++++-
+ net/sctp/protocol.c        |  7 ++++++-
+ net/sctp/sm_make_chunk.c   | 29 ++++++++++++++++-------------
+ 6 files changed, 44 insertions(+), 26 deletions(-)
 
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index 84b3b35fc0d0..9e0c10c6892a 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -8,6 +8,7 @@
- #include <linux/vmalloc.h>
- #include <linux/wait.h>
- #include <linux/poll.h>
-+#include <linux/kmemleak.h>
- #include <uapi/linux/btf.h>
+diff --git a/include/net/sctp/structs.h b/include/net/sctp/structs.h
+index 1aa585216f34..d49593c72a55 100644
+--- a/include/net/sctp/structs.h
++++ b/include/net/sctp/structs.h
+@@ -461,7 +461,7 @@ struct sctp_af {
+ 					 int saddr);
+ 	void		(*from_sk)	(union sctp_addr *,
+ 					 struct sock *sk);
+-	void		(*from_addr_param) (union sctp_addr *,
++	bool		(*from_addr_param) (union sctp_addr *,
+ 					    union sctp_addr_param *,
+ 					    __be16 port, int iif);
+ 	int		(*to_addr_param) (const union sctp_addr *,
+diff --git a/net/sctp/bind_addr.c b/net/sctp/bind_addr.c
+index 53e5ed79f63f..59e653b528b1 100644
+--- a/net/sctp/bind_addr.c
++++ b/net/sctp/bind_addr.c
+@@ -270,22 +270,19 @@ int sctp_raw_to_bind_addrs(struct sctp_bind_addr *bp, __u8 *raw_addr_list,
+ 		rawaddr = (union sctp_addr_param *)raw_addr_list;
  
- #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
-@@ -105,6 +106,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
- 	rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
- 		  VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
- 	if (rb) {
-+		kmemleak_not_leak(pages);
- 		rb->pages = pages;
- 		rb->nr_pages = nr_pages;
- 		return rb;
+ 		af = sctp_get_af_specific(param_type2af(param->type));
+-		if (unlikely(!af)) {
++		if (unlikely(!af) ||
++		    !af->from_addr_param(&addr, rawaddr, htons(port), 0)) {
+ 			retval = -EINVAL;
+-			sctp_bind_addr_clean(bp);
+-			break;
++			goto out_err;
+ 		}
+ 
+-		af->from_addr_param(&addr, rawaddr, htons(port), 0);
+ 		if (sctp_bind_addr_state(bp, &addr) != -1)
+ 			goto next;
+ 		retval = sctp_add_bind_addr(bp, &addr, sizeof(addr),
+ 					    SCTP_ADDR_SRC, gfp);
+-		if (retval) {
++		if (retval)
+ 			/* Can't finish building the list, clean up. */
+-			sctp_bind_addr_clean(bp);
+-			break;
+-		}
++			goto out_err;
+ 
+ next:
+ 		len = ntohs(param->length);
+@@ -294,6 +291,12 @@ int sctp_raw_to_bind_addrs(struct sctp_bind_addr *bp, __u8 *raw_addr_list,
+ 	}
+ 
+ 	return retval;
++
++out_err:
++	if (retval)
++		sctp_bind_addr_clean(bp);
++
++	return retval;
+ }
+ 
+ /********************************************************************
+diff --git a/net/sctp/input.c b/net/sctp/input.c
+index d508f6f3dd08..8924e2e142c8 100644
+--- a/net/sctp/input.c
++++ b/net/sctp/input.c
+@@ -1131,7 +1131,8 @@ static struct sctp_association *__sctp_rcv_init_lookup(struct net *net,
+ 		if (!af)
+ 			continue;
+ 
+-		af->from_addr_param(paddr, params.addr, sh->source, 0);
++		if (!af->from_addr_param(paddr, params.addr, sh->source, 0))
++			continue;
+ 
+ 		asoc = __sctp_lookup_association(net, laddr, paddr, transportp);
+ 		if (asoc)
+@@ -1174,7 +1175,8 @@ static struct sctp_association *__sctp_rcv_asconf_lookup(
+ 	if (unlikely(!af))
+ 		return NULL;
+ 
+-	af->from_addr_param(&paddr, param, peer_port, 0);
++	if (af->from_addr_param(&paddr, param, peer_port, 0))
++		return NULL;
+ 
+ 	return __sctp_lookup_association(net, laddr, &paddr, transportp);
+ }
+diff --git a/net/sctp/ipv6.c b/net/sctp/ipv6.c
+index bd08807c9e44..5c6f5ced9cfa 100644
+--- a/net/sctp/ipv6.c
++++ b/net/sctp/ipv6.c
+@@ -551,15 +551,20 @@ static void sctp_v6_to_sk_daddr(union sctp_addr *addr, struct sock *sk)
+ }
+ 
+ /* Initialize a sctp_addr from an address parameter. */
+-static void sctp_v6_from_addr_param(union sctp_addr *addr,
++static bool sctp_v6_from_addr_param(union sctp_addr *addr,
+ 				    union sctp_addr_param *param,
+ 				    __be16 port, int iif)
+ {
++	if (ntohs(param->v6.param_hdr.length) < sizeof(struct sctp_ipv6addr_param))
++		return false;
++
+ 	addr->v6.sin6_family = AF_INET6;
+ 	addr->v6.sin6_port = port;
+ 	addr->v6.sin6_flowinfo = 0; /* BUG */
+ 	addr->v6.sin6_addr = param->v6.addr;
+ 	addr->v6.sin6_scope_id = iif;
++
++	return true;
+ }
+ 
+ /* Initialize an address parameter from a sctp_addr and return the length
+diff --git a/net/sctp/protocol.c b/net/sctp/protocol.c
+index 6f2bbfeec3a4..25192b378e2e 100644
+--- a/net/sctp/protocol.c
++++ b/net/sctp/protocol.c
+@@ -254,14 +254,19 @@ static void sctp_v4_to_sk_daddr(union sctp_addr *addr, struct sock *sk)
+ }
+ 
+ /* Initialize a sctp_addr from an address parameter. */
+-static void sctp_v4_from_addr_param(union sctp_addr *addr,
++static bool sctp_v4_from_addr_param(union sctp_addr *addr,
+ 				    union sctp_addr_param *param,
+ 				    __be16 port, int iif)
+ {
++	if (ntohs(param->v4.param_hdr.length) < sizeof(struct sctp_ipv4addr_param))
++		return false;
++
+ 	addr->v4.sin_family = AF_INET;
+ 	addr->v4.sin_port = port;
+ 	addr->v4.sin_addr.s_addr = param->v4.addr.s_addr;
+ 	memset(addr->v4.sin_zero, 0, sizeof(addr->v4.sin_zero));
++
++	return true;
+ }
+ 
+ /* Initialize an address parameter from a sctp_addr and return the length
+diff --git a/net/sctp/sm_make_chunk.c b/net/sctp/sm_make_chunk.c
+index 5b44d228b6ca..f33a870b483d 100644
+--- a/net/sctp/sm_make_chunk.c
++++ b/net/sctp/sm_make_chunk.c
+@@ -2346,11 +2346,13 @@ int sctp_process_init(struct sctp_association *asoc, struct sctp_chunk *chunk,
+ 
+ 	/* Process the initialization parameters.  */
+ 	sctp_walk_params(param, peer_init, init_hdr.params) {
+-		if (!src_match && (param.p->type == SCTP_PARAM_IPV4_ADDRESS ||
+-		    param.p->type == SCTP_PARAM_IPV6_ADDRESS)) {
++		if (!src_match &&
++		    (param.p->type == SCTP_PARAM_IPV4_ADDRESS ||
++		     param.p->type == SCTP_PARAM_IPV6_ADDRESS)) {
+ 			af = sctp_get_af_specific(param_type2af(param.p->type));
+-			af->from_addr_param(&addr, param.addr,
+-					    chunk->sctp_hdr->source, 0);
++			if (!af->from_addr_param(&addr, param.addr,
++						 chunk->sctp_hdr->source, 0))
++				continue;
+ 			if (sctp_cmp_addr_exact(sctp_source(chunk), &addr))
+ 				src_match = 1;
+ 		}
+@@ -2531,7 +2533,8 @@ static int sctp_process_param(struct sctp_association *asoc,
+ 			break;
+ do_addr_param:
+ 		af = sctp_get_af_specific(param_type2af(param.p->type));
+-		af->from_addr_param(&addr, param.addr, htons(asoc->peer.port), 0);
++		if (!af->from_addr_param(&addr, param.addr, htons(asoc->peer.port), 0))
++			break;
+ 		scope = sctp_scope(peer_addr);
+ 		if (sctp_in_scope(net, &addr, scope))
+ 			if (!sctp_assoc_add_peer(asoc, &addr, gfp, SCTP_UNCONFIRMED))
+@@ -2632,15 +2635,13 @@ static int sctp_process_param(struct sctp_association *asoc,
+ 		addr_param = param.v + sizeof(struct sctp_addip_param);
+ 
+ 		af = sctp_get_af_specific(param_type2af(addr_param->p.type));
+-		if (af == NULL)
++		if (!af)
+ 			break;
+ 
+-		af->from_addr_param(&addr, addr_param,
+-				    htons(asoc->peer.port), 0);
++		if (!af->from_addr_param(&addr, addr_param,
++					 htons(asoc->peer.port), 0))
++			break;
+ 
+-		/* if the address is invalid, we can't process it.
+-		 * XXX: see spec for what to do.
+-		 */
+ 		if (!af->addr_valid(&addr, NULL, NULL))
+ 			break;
+ 
+@@ -3054,7 +3055,8 @@ static __be16 sctp_process_asconf_param(struct sctp_association *asoc,
+ 	if (unlikely(!af))
+ 		return SCTP_ERROR_DNS_FAILED;
+ 
+-	af->from_addr_param(&addr, addr_param, htons(asoc->peer.port), 0);
++	if (!af->from_addr_param(&addr, addr_param, htons(asoc->peer.port), 0))
++		return SCTP_ERROR_DNS_FAILED;
+ 
+ 	/* ADDIP 4.2.1  This parameter MUST NOT contain a broadcast
+ 	 * or multicast address.
+@@ -3331,7 +3333,8 @@ static void sctp_asconf_param_success(struct sctp_association *asoc,
+ 
+ 	/* We have checked the packet before, so we do not check again.	*/
+ 	af = sctp_get_af_specific(param_type2af(addr_param->p.type));
+-	af->from_addr_param(&addr, addr_param, htons(bp->port), 0);
++	if (!af->from_addr_param(&addr, addr_param, htons(bp->port), 0))
++		return;
+ 
+ 	switch (asconf_param->param_hdr.type) {
+ 	case SCTP_PARAM_ADD_IP:
 -- 
 2.30.2
 
