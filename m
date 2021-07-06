@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970343BD3A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674723BD3AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235627AbhGFL5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:57:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47570 "EHLO mail.kernel.org"
+        id S236110AbhGFL6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:58:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236919AbhGFLfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236928AbhGFLfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Jul 2021 07:35:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2951361C37;
-        Tue,  6 Jul 2021 11:24:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E35361C1F;
+        Tue,  6 Jul 2021 11:24:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570683;
-        bh=cfQLf0CNjvX9usKRmNl6F+fRQFClk36DT6igCS92lEQ=;
+        s=k20201202; t=1625570686;
+        bh=bsEnOKTKubeAnXdjd1dwyP1b4t3xhg2iwVST1V6/ve8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VsAfsZHCXWjl8E1+UvjGwFUjvE8zFIu1K2I0MBPrz8MGw781rr/pgcJXXTfHK2HRu
-         D0hxWOxIKcIv4+lcTm7pIrP4aYRVk2fznL2fijpc20NVvKr0cbEsvk8uVZFt1Xlz4R
-         I+1Fu9x0lpQbXqxZ8mOl4jP3tmojU3D36MqiV36swkQ772dhg+aD+Tqqca6xFYDkes
-         9S9i+izUquqkqb1GDVPUGhOrQw5inlgYsM803lBYIHmH9rhXczzQC9MYXNU2HniCdS
-         N/CNuvPCmwDBQDgtzLBGswLzLBvUjxTU6v+IxIXxTFVMLDgcg6NfwlFttBXO6C7gPY
-         RMa9KW76xU0tg==
+        b=Awu3giRoKaE/m2D2jgbF+wZLN0TKnNZlTWmZlQGr8ei+ypsoCrkfV+0qTf27ukFSk
+         bqRA6dXHTTMs1Fk6nN72I7ggXd0DSIg9uF5pNSjpuo0PFA23y9yJq5pd8VGfQ9/oQf
+         geBrqJy0ghtAuoaLCHQiEhWJjhaZquF2oiei3ZURHnm6i9ewn77UtARgEu5thVrvVU
+         MhRewS8BKx8lAHNwQnUSrnVBvNYVfe33Bgk5vWjN6dongQa2o+t2OdRB3oSuAG5rPH
+         Chz99lNZtyTc50ItPwe8LCILNeMNJ55h8ybdJNf7o+UmDhOu1QfKIa8tdpi+GQf+GB
+         pm/fZqtJGSOxw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kiran K <kiran.k@intel.com>,
-        Lokendra Singh <lokendra.singh@intel.com>,
+Cc:     Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 123/137] Bluetooth: Fix alt settings for incoming SCO with transparent coding format
-Date:   Tue,  6 Jul 2021 07:21:49 -0400
-Message-Id: <20210706112203.2062605-123-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 126/137] Bluetooth: L2CAP: Fix invalid access if ECRED Reconfigure fails
+Date:   Tue,  6 Jul 2021 07:21:52 -0400
+Message-Id: <20210706112203.2062605-126-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112203.2062605-1-sashal@kernel.org>
 References: <20210706112203.2062605-1-sashal@kernel.org>
@@ -44,143 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kiran K <kiran.k@intel.com>
+From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-[ Upstream commit 06d213d8a89a6f55b708422c3dda2b22add10748 ]
+[ Upstream commit 1fa20d7d4aad02206e84b74915819fbe9f81dab3 ]
 
-For incoming SCO connection with transparent coding format, alt setting
-of CVSD is getting applied instead of Transparent.
+The use of l2cap_chan_del is not safe under a loop using
+list_for_each_entry.
 
-Before fix:
-< HCI Command: Accept Synchron.. (0x01|0x0029) plen 21  #2196 [hci0] 321.342548
-        Address: 1C:CC:D6:E2:EA:80 (Xiaomi Communications Co Ltd)
-        Transmit bandwidth: 8000
-        Receive bandwidth: 8000
-        Max latency: 13
-        Setting: 0x0003
-          Input Coding: Linear
-          Input Data Format: 1's complement
-          Input Sample Size: 8-bit
-          # of bits padding at MSB: 0
-          Air Coding Format: Transparent Data
-        Retransmission effort: Optimize for link quality (0x02)
-        Packet type: 0x003f
-          HV1 may be used
-          HV2 may be used
-          HV3 may be used
-          EV3 may be used
-          EV4 may be used
-          EV5 may be used
-> HCI Event: Command Status (0x0f) plen 4               #2197 [hci0] 321.343585
-      Accept Synchronous Connection Request (0x01|0x0029) ncmd 1
-        Status: Success (0x00)
-> HCI Event: Synchronous Connect Comp.. (0x2c) plen 17  #2198 [hci0] 321.351666
-        Status: Success (0x00)
-        Handle: 257
-        Address: 1C:CC:D6:E2:EA:80 (Xiaomi Communications Co Ltd)
-        Link type: eSCO (0x02)
-        Transmission interval: 0x0c
-        Retransmission window: 0x04
-        RX packet length: 60
-        TX packet length: 60
-        Air mode: Transparent (0x03)
-........
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2336 [hci0] 321.383655
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2337 [hci0] 321.389558
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2338 [hci0] 321.393615
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2339 [hci0] 321.393618
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2340 [hci0] 321.393618
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2341 [hci0] 321.397070
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2342 [hci0] 321.403622
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2343 [hci0] 321.403625
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2344 [hci0] 321.403625
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2345 [hci0] 321.403625
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2346 [hci0] 321.404569
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2347 [hci0] 321.412091
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2348 [hci0] 321.413626
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2349 [hci0] 321.413630
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2350 [hci0] 321.413630
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2351 [hci0] 321.419674
-
-After fix:
-
-< HCI Command: Accept Synchronou.. (0x01|0x0029) plen 21  #309 [hci0] 49.439693
-        Address: 1C:CC:D6:E2:EA:80 (Xiaomi Communications Co Ltd)
-        Transmit bandwidth: 8000
-        Receive bandwidth: 8000
-        Max latency: 13
-        Setting: 0x0003
-          Input Coding: Linear
-          Input Data Format: 1's complement
-          Input Sample Size: 8-bit
-          # of bits padding at MSB: 0
-          Air Coding Format: Transparent Data
-        Retransmission effort: Optimize for link quality (0x02)
-        Packet type: 0x003f
-          HV1 may be used
-          HV2 may be used
-          HV3 may be used
-          EV3 may be used
-          EV4 may be used
-          EV5 may be used
-> HCI Event: Command Status (0x0f) plen 4                 #310 [hci0] 49.440308
-      Accept Synchronous Connection Request (0x01|0x0029) ncmd 1
-        Status: Success (0x00)
-> HCI Event: Synchronous Connect Complete (0x2c) plen 17  #311 [hci0] 49.449308
-        Status: Success (0x00)
-        Handle: 257
-        Address: 1C:CC:D6:E2:EA:80 (Xiaomi Communications Co Ltd)
-        Link type: eSCO (0x02)
-        Transmission interval: 0x0c
-        Retransmission window: 0x04
-        RX packet length: 60
-        TX packet length: 60
-        Air mode: Transparent (0x03)
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #312 [hci0] 49.450421
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #313 [hci0] 49.457927
-> HCI Event: Max Slots Change (0x1b) plen 3               #314 [hci0] 49.460345
-        Handle: 256
-        Max slots: 5
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #315 [hci0] 49.465453
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #316 [hci0] 49.470502
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #317 [hci0] 49.470519
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #318 [hci0] 49.472996
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #319 [hci0] 49.480412
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #320 [hci0] 49.480492
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #321 [hci0] 49.487989
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #322 [hci0] 49.490303
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #323 [hci0] 49.495496
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #324 [hci0] 49.500304
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #325 [hci0] 49.500311
-
-Signed-off-by: Kiran K <kiran.k@intel.com>
-Signed-off-by: Lokendra Singh <lokendra.singh@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/bluetooth/l2cap_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 4676e4b0be2b..3bb7308e3eca 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4360,12 +4360,12 @@ static void hci_sync_conn_complete_evt(struct hci_dev *hdev,
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index cdc386337173..17520133093a 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -6237,7 +6237,7 @@ static inline int l2cap_ecred_reconf_rsp(struct l2cap_conn *conn,
+ 					 struct l2cap_cmd_hdr *cmd, u16 cmd_len,
+ 					 u8 *data)
+ {
+-	struct l2cap_chan *chan;
++	struct l2cap_chan *chan, *tmp;
+ 	struct l2cap_ecred_conn_rsp *rsp = (void *) data;
+ 	u16 result;
  
- 	bt_dev_dbg(hdev, "SCO connected with air mode: %02x", ev->air_mode);
+@@ -6251,7 +6251,7 @@ static inline int l2cap_ecred_reconf_rsp(struct l2cap_conn *conn,
+ 	if (!result)
+ 		return 0;
  
--	switch (conn->setting & SCO_AIRMODE_MASK) {
--	case SCO_AIRMODE_CVSD:
-+	switch (ev->air_mode) {
-+	case 0x02:
- 		if (hdev->notify)
- 			hdev->notify(hdev, HCI_NOTIFY_ENABLE_SCO_CVSD);
- 		break;
--	case SCO_AIRMODE_TRANSP:
-+	case 0x03:
- 		if (hdev->notify)
- 			hdev->notify(hdev, HCI_NOTIFY_ENABLE_SCO_TRANSP);
- 		break;
+-	list_for_each_entry(chan, &conn->chan_l, list) {
++	list_for_each_entry_safe(chan, tmp, &conn->chan_l, list) {
+ 		if (chan->ident != cmd->ident)
+ 			continue;
+ 
 -- 
 2.30.2
 
