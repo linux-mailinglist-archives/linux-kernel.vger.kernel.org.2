@@ -2,206 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A283BDA7B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA143BDA89
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbhGFPvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
+        id S232333AbhGFPzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 11:55:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhGFPvw (ORCPT
+        with ESMTP id S231771AbhGFPzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:51:52 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4A5C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 08:49:13 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id f12-20020a056830204cb029048bcf4c6bd9so9929689otp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 08:49:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9Lz1C2Jg0D1JZ1ELvAKDI4J04OIYXO0SeOh8EZaA3Mg=;
-        b=VdDtwm/D83TJXUbV95JXQXWh8E3k45oG2fRtUIaudvPnJl1nn8ZENseETR2AfGF7Fh
-         Z9CYBStDvLuPedqiTHMmfMEOpCaLTnt3AubNp7t+mogVZyL5uLbWqkXnmu2IapAEZw/A
-         e7NU/V4E0AoVg9zPdo1692x8C9W8o3OhPR6UQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9Lz1C2Jg0D1JZ1ELvAKDI4J04OIYXO0SeOh8EZaA3Mg=;
-        b=Anhgll+QHLfyvTU4hHps1WM6dU1TfLKaxPOCPJMXT5YsbkV8jlqGaoeTeRl0LpmbXc
-         egWGaYZG2gvT0YWZ6WTi8a0rotbV2MmcHfKaOHdpQ3qnhrcvs/4ZEF+uK+700eygFvGG
-         JvGzKOkTuh3q/OXRn4VmswJ1bLHxaRI1zTXOEEulgMqWNJHL74wNtnlVV13ZTXG5Rlg7
-         aIFvv16pXGOVOt620JsjZpJgSIe0qUjQCD41qJ6LtRR28GCu8tcDzHHisqj5JtVKs1vd
-         9kc4vdDwVVsi9vV0f4stsujwPfFzxGHEoUCj3O9wiDF7S0g9nXyxJOT0Mx1P90FBlX3L
-         fYUQ==
-X-Gm-Message-State: AOAM531rkoN3pAPiVKtCcTc+JNypUv+LZvBf7xo8llcuzstmBcFDTBjC
-        cItzkHvtUvIloc1LCKMmNkLzFXlTgYDHIIazqMuWnA==
-X-Google-Smtp-Source: ABdhPJyL0zpOk57gvxAoXPVwnOIH61HfNC4Ne6EU1r5lEUqaZg7uANzEfYAF67zrYyTHpZfkojmnHOlqQHemdgOPDZw=
-X-Received: by 2002:a9d:27a4:: with SMTP id c33mr15781208otb.281.1625586552803;
- Tue, 06 Jul 2021 08:49:12 -0700 (PDT)
+        Tue, 6 Jul 2021 11:55:10 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08943C061574;
+        Tue,  6 Jul 2021 08:52:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=jQt99NgdA5zk5MNb3W23mzSm+lOurEhPK4FFEJDPGCo=; b=WYXv6cFivX25YM9Q9tFxdb3LS
+        NqAgKaKwmxfzJwrBhjtgPOf7o5K279yQa1OjjdEgMXAAddquN9Hu9QgR7JiOD8LLcNq1cjLPYKBAk
+        G+zYgYdv1CgEVt4tfys8OHgMCJGedZb2s/PD3Fy/IEFynDGxbCrHHG2aoNiRfENQ4QGZs4dTW7FOh
+        aIn8XLlijX+t4x6cai4MIdjn7KmI4sHfrcBCqr8FjNRCS/kOZ7JO+pgQr/Zsgvpds7S12Ehkq36+B
+        9xnOJtmr6nrxY1nEzTfr5VK6XD5nCLQn61Q9akG+xo8bk/DJHW4i+LRB/LHAmCx9x0+tg8lhIyLEn
+        1hBR2TnCw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45802)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1m0nMK-0006xE-2g; Tue, 06 Jul 2021 16:51:40 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1m0nMB-00028N-Me; Tue, 06 Jul 2021 16:51:31 +0100
+Date:   Tue, 6 Jul 2021 16:51:31 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>, mw@semihalf.com,
+        Sven Auhagen <sven.auhagen@voleatech.de>, davem@davemloft.net,
+        kuba@kernel.org, linuxarm@openeuler.org, yisen.zhuang@huawei.com,
+        salil.mehta@huawei.com, thomas.petazzoni@bootlin.com,
+        hawk@kernel.org, ilias.apalodimas@linaro.org, ast@kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com,
+        akpm@linux-foundation.org, peterz@infradead.org, will@kernel.org,
+        willy@infradead.org, vbabka@suse.cz, fenghua.yu@intel.com,
+        guro@fb.com, peterx@redhat.com, feng.tang@intel.com, jgg@ziepe.ca,
+        mcroce@microsoft.com, hughd@google.com, jonathan.lemon@gmail.com,
+        alobakin@pm.me, willemb@google.com, wenxu@ucloud.cn,
+        cong.wang@bytedance.com, haokexin@gmail.com, nogikh@google.com,
+        elver@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next RFC 0/2] add elevated refcnt support for page
+ pool
+Message-ID: <20210706155131.GS22278@shell.armlinux.org.uk>
+References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
+ <20210702153947.7b44acdf@linux.microsoft.com>
 MIME-Version: 1.0
-References: <20210705130314.11519-1-ogabbay@kernel.org> <YOQXBWpo3whVjOyh@phenom.ffwll.local>
- <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
- <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
- <20210706142357.GN4604@ziepe.ca> <CAKMK7uELNzwUe+hhVWRg=Pk5Wt_vOOX922H48Kd6dTyO2PeBbg@mail.gmail.com>
- <20210706152542.GP4604@ziepe.ca>
-In-Reply-To: <20210706152542.GP4604@ziepe.ca>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Tue, 6 Jul 2021 17:49:01 +0200
-Message-ID: <CAKMK7uH7Ar6+uAOU_Sj-mf89V9WCru+66CV5bO9h-WAAv7Mgdg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210702153947.7b44acdf@linux.microsoft.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 5:25 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> On Tue, Jul 06, 2021 at 04:39:19PM +0200, Daniel Vetter wrote:
-> > On Tue, Jul 6, 2021 at 4:23 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > >
-> > > On Tue, Jul 06, 2021 at 12:36:51PM +0200, Daniel Vetter wrote:
-> > >
-> > > > If that means AI companies don't want to open our their hw specs
-> > > > enough to allow that, so be it - all you get in that case is
-> > > > offloading the kernel side  of the stack for convenience, with zero
-> > > > long term prospects to ever make this into a cross vendor subsystem
-> > > > stack that does something useful.
-> > >
-> > > I don't think this is true at all - nouveau is probably the best
-> > > example.
-> > >
-> > > nouveau reverse engineered a userspace stack for one of these devices.
-> > >
-> > > How much further ahead would they have been by now if they had a
-> > > vendor supported, fully featured, open kernel driver to build the
-> > > userspace upon?
-> >
-> > There is actually tons of example here, most of the arm socs have
-> > fully open kernel drivers, supported by the vendor (out of tree).
->
-> I choose nouveau because of this:
->
-> $ git ls-files drivers/gpu/drm/arm/ | xargs wc -l
->  15039 total
-> $ git ls-files drivers/gpu/drm/nouveau/ | xargs wc -l
->  204198 total
+On Fri, Jul 02, 2021 at 03:39:47PM +0200, Matteo Croce wrote:
+> On Wed, 30 Jun 2021 17:17:54 +0800
+> Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> 
+> > This patchset adds elevated refcnt support for page pool
+> > and enable skb's page frag recycling based on page pool
+> > in hns3 drvier.
+> > 
+> > Yunsheng Lin (2):
+> >   page_pool: add page recycling support based on elevated refcnt
+> >   net: hns3: support skb's frag page recycling based on page pool
+> > 
+> >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  79 +++++++-
+> >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   3 +
+> >  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
+> >  drivers/net/ethernet/marvell/mvneta.c              |   6 +-
+> >  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +-
+> >  include/linux/mm_types.h                           |   2 +-
+> >  include/linux/skbuff.h                             |   4 +-
+> >  include/net/page_pool.h                            |  30 ++-
+> >  net/core/page_pool.c                               | 215
+> > +++++++++++++++++---- 9 files changed, 285 insertions(+), 57
+> > deletions(-)
+> > 
+> 
+> Interesting!
+> Unfortunately I'll not have access to my macchiatobin anytime soon, can
+> someone test the impact, if any, on mvpp2?
 
-drm/arm is the arm display driver, which isn't actually shipping
-anywhere afaik. Also it's not including the hdmi/dp output drivers,
-those are generally external on socs, but integrated in discrete gpu.
+I'll try to test. Please let me know what kind of testing you're
+looking for (I haven't been following these patches, sorry.)
 
-The other thing to keep in mind is that one of these drivers supports
-25 years of product generations, and the other one doesn't. So I think
-adding it all up it's not that much different. Last time I looked if
-you look at just command submission and rendering/compute, and not
-include display, which heavily skews the stats, it's about 10% kernel,
-90% userspace driver parts. Not including anything that's shared,
-which is most of it (compiler frontend, intermediate optimizer, entire
-runtime/state tracker and all the integration and glue pieces
-largely).
-
-> At 13x the size of mali this is not just some easy to wire up memory
-> manager and command submission. And after all that typing it still
-> isn't very good. The fully supported AMD vendor driver is over 3
-> million lines, so nouveau probably needs to grow several times.
-
-AMD is 3 million lines the size because it includes per-generation
-generated header files.
-
-And of course once you throw an entire vendor team at a driver all
-those engineers will produce something, and there's the usual that the
-last 10% of features produce about 90% of the complexity and code
-problem. E.g. the kbase driver for arm mali gpu is 20x the size of the
-in-tree panfrost driver - they need to keep typing to justify their
-continued employement, or something like that. Usually it's because
-they reinvent the world.
-
-> My argument is that an in-tree open kernel driver is a big help to
-> reverse engineering an open userspace. Having the vendors
-> collaboration to build that monstrous thing can only help the end goal
-> of an end to end open stack.
-
-Not sure where this got lost, but we're totally fine with vendors
-using the upstream driver together with their closed stack. And most
-of the drivers we do have in upstream are actually, at least in parts,
-supported by the vendor. E.g. if you'd have looked the drm/arm driver
-you picked is actually 100% written by ARM engineers. So kinda
-unfitting example.
-
-> For instance a vendor with an in-tree driver has a strong incentive to
-> sort out their FW licensing issues so it can be redistributed.
-
-Nvidia has been claiming to try and sort out the FW problem for years.
-They even managed to release a few things, but I think the last one is
-2-3 years late now. Partially the reason is that there don't have a
-stable api between the firmware and driver, it's all internal from the
-same source tree, and they don't really want to change that.
-
-> I'm not sure about this all or nothing approach. AFAIK DRM has the
-> worst problems with out of tree drivers right now.
-
-Well I guess someone could stand up a drivers/totally-not-gpu and just
-let the flood in. Even duplicated drivers and everything included,
-because the vendor drivers are better. Worth a shot, we've practically
-started this already, I'm just not going to help with the cleanup.
-
-> > Where it would have helped is if this open driver would come with
-> > redistributable firmware, because that is right now the thing making
-> > nouveau reverse-engineering painful enough to be non-feasible. Well
-> > not the reverse-engineering, but the "shipping the result as a working
-> > driver stack".
->
-> I don't think much of the out of tree but open drivers. The goal must
-> be to get vendors in tree.
-
-Agreed. We actually got them in-tree largely. Nvidia even contributes
-the oddball thing, and I think the tegra line is still fully supported
-in upstream with the upstream driver.
-
-I'm not sure the bleak picture you're drawing is reality, aside from
-the fact that Nvidia discrete gpu drivers being a disaster with no
-redistributable firmware, no open kernel driver that works, and
-nothing else really either.
-
-> I would applaud Habana for getting an intree driver at least, even if
-> the userspace is not what we'd all want to see.
->
-> > I don't think the facts on the ground support your claim here, aside
-> > from the practical problem that nvidia is unwilling to even create an
-> > open driver to begin with. So there isn't anything to merge.
->
-> The internet tells me there is nvgpu, it doesn't seem to have helped.
-
-Not sure which one you mean, but every once in a while they open up a
-few headers, or a few programming specs, or a small driver somewhere
-for a very specific thing, and then it dies again or gets obfuscated
-for the next platform, or just never updated. I've never seen anything
-that comes remotely to something complete, aside from tegra socs,
-which are fully supported in upstream afaik.
--Daniel
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
