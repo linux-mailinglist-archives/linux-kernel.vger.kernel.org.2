@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7253BC471
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 02:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AB13BC478
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 02:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhGFAyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 20:54:54 -0400
-Received: from ozlabs.org ([203.11.71.1]:55495 "EHLO ozlabs.org"
+        id S229812AbhGFBAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 21:00:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229733AbhGFAyv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 20:54:51 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GJkXr10JYz9sXN;
-        Tue,  6 Jul 2021 10:52:12 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1625532732;
-        bh=z/DZ35sugsGXHcXx3xGhUN/XMaBXjJOnze8Ymh5hl3E=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qkT75D4Kv/izygeFpA5Ia9FGu2gWvh7uKrlwOITtRyIXvXesJpNgsyMs6+9GuSSc8
-         vfzuSZJaRY1ChaVNtHClH18wbdj5Kvzfrs0VxvP9d83MQJi6v3/jJEJny0M34zeV10
-         yrH99MTayQLCJqBlRQhXKKyWjWMY4ldZg2o0eAPvi5gpiCzMZQB5owYx4HIxrjDR0Y
-         gEw4Tx2sUvYuZ5SLtheRRXKFAuHjA3QdO28bXnfwdBl02FAGYjHRkJzZ4JXSLPPIi5
-         T9hQZYplmiLPCFz41qyan/0yErlx97IT1D7wC1UMLhiPPg+pyDX3LSMQMftxkesyI5
-         JO9oXXr/VlW9A==
-Date:   Tue, 6 Jul 2021 10:52:11 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the amdgpu tree with Linus' tree
-Message-ID: <20210706105211.58372119@canb.auug.org.au>
+        id S229722AbhGFBAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 21:00:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A021F6195E;
+        Tue,  6 Jul 2021 00:57:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625533065;
+        bh=3sZXtqzPBmQeDtxCNP5rxxVJeRlFAwqPjm3IYlPYZLg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dq0wOX39lFI1rViG4OrBnjClqeJW3nZ6ovSvlw0cGfvB/K7EZnA2KWFcshzstdftr
+         HBhNWQle5uDA/IYsbJJe66Z3i7Clq7NeQVE0ulqNAg9P0Ffqics1ANoyUh5mfCEMlG
+         mit6X+HBvVHHxhehKOAc7ro31jW7FEeOJbLylbc1PUAF3FPnSTYyU//AONbpKd/N+q
+         AxGU7cixYxF1iN13OsBzD2PsXkcd9VGZJTikRuI1SglIba7jKpUGU1JGE03XYv1lQr
+         PAE1FCLFp/94YhmxXxGjYQKcXvclDu/mA7cPXD1rURIycDkxfFf57vW+gpL/9Ovo2l
+         POJBzuN21/m5A==
+Date:   Tue, 6 Jul 2021 08:57:39 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v3 05/12] usb: otg-fsm: Fix hrtimer list corruption
+Message-ID: <20210706005739.GA19143@nchen>
+References: <20210704225433.32029-1-digetx@gmail.com>
+ <20210704225433.32029-6-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/L.fLIj=vi9/QZ.jIHcYgX/d";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210704225433.32029-6-digetx@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/L.fLIj=vi9/QZ.jIHcYgX/d
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 21-07-05 01:54:26, Dmitry Osipenko wrote:
+> The HNP work can be re-scheduled while it's still in-fly. This results in
+> re-initialization of the busy work, resetting the hrtimer's list node of
+> the work and crashing kernel with null dereference within kernel/timer
+> once work's timer is expired. It's very easy to trigger this problem by
+> re-plugging USB cable quickly. Initialize HNP work only once to fix this
+> trouble.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-Hi all,
+Acked-by: Peter Chen <peter.chen@kernel.org>
 
-Today's linux-next merge of the amdgpu tree got a conflict in:
+It is better to append kernel dump if you have v4 patchset.
 
-  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+Peter
 
-between commit:
+> ---
+>  drivers/usb/common/usb-otg-fsm.c | 6 +++++-
+>  include/linux/usb/otg-fsm.h      | 1 +
+>  2 files changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/common/usb-otg-fsm.c b/drivers/usb/common/usb-otg-fsm.c
+> index 3740cf95560e..0697fde51d00 100644
+> --- a/drivers/usb/common/usb-otg-fsm.c
+> +++ b/drivers/usb/common/usb-otg-fsm.c
+> @@ -193,7 +193,11 @@ static void otg_start_hnp_polling(struct otg_fsm *fsm)
+>  	if (!fsm->host_req_flag)
+>  		return;
+>  
+> -	INIT_DELAYED_WORK(&fsm->hnp_polling_work, otg_hnp_polling_work);
+> +	if (!fsm->hnp_work_inited) {
+> +		INIT_DELAYED_WORK(&fsm->hnp_polling_work, otg_hnp_polling_work);
+> +		fsm->hnp_work_inited = true;
+> +	}
+> +
+>  	schedule_delayed_work(&fsm->hnp_polling_work,
+>  					msecs_to_jiffies(T_HOST_REQ_POLL));
+>  }
+> diff --git a/include/linux/usb/otg-fsm.h b/include/linux/usb/otg-fsm.h
+> index 3aee78dda16d..784659d4dc99 100644
+> --- a/include/linux/usb/otg-fsm.h
+> +++ b/include/linux/usb/otg-fsm.h
+> @@ -196,6 +196,7 @@ struct otg_fsm {
+>  	struct mutex lock;
+>  	u8 *host_req_flag;
+>  	struct delayed_work hnp_polling_work;
+> +	bool hnp_work_inited;
+>  	bool state_changed;
+>  };
+>  
+> -- 
+> 2.32.0
+> 
 
-  e058a84bfddc ("Merge tag 'drm-next-2021-07-01' of git://anongit.freedeskt=
-op.org/drm/drm")
+-- 
 
-from the origin tree and commit:
+Thanks,
+Peter Chen
 
-  8c21fc49a8e6 ("drm/amdkfd: add owner ref param to get hmm pages")
-
-from the amdgpu tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-index 307d22abd814,2e9ad6e0dfbb..000000000000
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-@@@ -695,9 -692,8 +691,9 @@@ int amdgpu_ttm_tt_get_user_pages(struc
-  	readonly =3D amdgpu_ttm_tt_is_readonly(ttm);
-  	r =3D amdgpu_hmm_range_get_pages(&bo->notifier, mm, pages, start,
-  				       ttm->num_pages, &gtt->range, readonly,
-- 				       true);
- -				       false, NULL);
- -out_putmm:
-++				       true, NULL);
- +out_unlock:
- +	mmap_read_unlock(mm);
-  	mmput(mm);
- =20
-  	return r;
-
---Sig_/L.fLIj=vi9/QZ.jIHcYgX/d
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDjqTsACgkQAVBC80lX
-0GyOMQf/SwJeBNy9zwnKww2yAKpgIHm1EWwe2gcB0WUZt7xZAIqz8QpH5cAjkocI
-vplUIVTI/OAuvuMJ/rd/fQTJ0jXTTcCOGOy7u5/2sKya37taRmcWY0C4ybDGnT9D
-V8ge8n6GC8JrPP683EpIW+NEf0yIqZ+m5pme2/cR01A2oeYvMxuAczctqmi0fFPH
-3gNP1H/mgszf5rUzhHk+H74eJjdz4jxNrC92HCle2C1ERnB9jC2ey37yCMUfb8wb
-7eNv0UQslffwl4gEPVgfmfMIAkGgsf0givoTc4lQLzXLpmvWiqAweZiRfaex/3v0
-uDNOSvqh3R6dqsoZ2/0SIKPNyldOrA==
-=JOzK
------END PGP SIGNATURE-----
-
---Sig_/L.fLIj=vi9/QZ.jIHcYgX/d--
