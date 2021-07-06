@@ -2,244 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2663BD8A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643443BD847
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbhGFOpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:45:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59565 "EHLO
+        id S231720AbhGFOgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:36:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49827 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232631AbhGFOnN (ORCPT
+        by vger.kernel.org with ESMTP id S232318AbhGFOfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:43:13 -0400
+        Tue, 6 Jul 2021 10:35:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625582434;
+        s=mimecast20190719; t=1625581681;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NHx89jgg+s1tGwoFUM1nmd6dYpOTFpPK4p0VQ+8MqkM=;
-        b=RwXqnYt15F/GAhocoXVF+k8KvBQQ/cgJyn3Kyr1at91Fg2QK/o71OAdJTv7FBbigxYoQgB
-        T+FduNmQoGvdUO1lwtm8KLPdwB3xj/gugL3hSNqI0Tbf2aV17x3w/UASf9LwF1nGrNhi0K
-        MOwya1ZWODBriw8jddwDfP7BjJkY5ZM=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-a5Y3LPiqP8iMryfi_wtbag-1; Tue, 06 Jul 2021 10:10:24 -0400
-X-MC-Unique: a5Y3LPiqP8iMryfi_wtbag-1
-Received: by mail-oi1-f199.google.com with SMTP id n84-20020acaef570000b029022053bcedd7so14473634oih.17
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:10:24 -0700 (PDT)
+        bh=jP5DGGxJWoHogq5jV5uZ5mGaY2kRQONzJzlVOQeyzM0=;
+        b=jONxPTpgylrsDkjyeSzbSIq+5ybobqnG0YL1rqRJSXpf1kEGD8mBfNmHozcTygte1IgzR1
+        n7ipIVAqNqtdKz/fz5ObP6eTuXYcaVtC6mZth1vNgj4iJUOQCc/vdCcebzQNU8HEm+kHii
+        GBDJdCkdD84vOvxGFjyUinw/UY6cWqE=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-s1IvoWJxOV-_X_JwGsrtiw-1; Tue, 06 Jul 2021 10:11:01 -0400
+X-MC-Unique: s1IvoWJxOV-_X_JwGsrtiw-1
+Received: by mail-ed1-f72.google.com with SMTP id i8-20020a50fc080000b02903989feb4920so5400518edr.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:11:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=NHx89jgg+s1tGwoFUM1nmd6dYpOTFpPK4p0VQ+8MqkM=;
-        b=QGZzFQgTJy83FFsrHkEQYAI3mdgnrWB94+O13qnjlPB44jpwPSXvQ4Hc71MrBw66qf
-         8yADLg0vXDwQRMMkEwZyziig8WGx6brp1BA3+3u/3JfqbCgHkF0Gn6KQBiWYmQyTmBmW
-         bgOlMUzpv0uilSauxPI6iowcqy9gr7dHFqVeRlZhbn7hJVwkqa2DAE70HvOboXU/xt1E
-         S9d0cPF1Wlct8EDMH7y7XJ+dP2Ec9vdLlOkqe7s3vlS5YGC8aM8VcFPJuRWZa1BN709a
-         Y+jhuuy/KsQYi/MNidfqDNvbSXN9u5Iz258h3IPmluWD4X888pqz4VdJ1VT3y9nv6ZEf
-         hyDg==
-X-Gm-Message-State: AOAM5327nCAcMiydS0UNV4lKjRDwecFvWFrqOB8EPBPa+KJTXnnfd0hN
-        skhJ+2WCdQGalLeyvWDHRIRbKayuJ9nzBBEaMVHuH932VFrwWHknIuvxzChWOXtt4M9hg18sY7v
-        d14pMJGMRz1shHzwp99iv1vzC
-X-Received: by 2002:aca:d9d7:: with SMTP id q206mr8464525oig.93.1625580624132;
-        Tue, 06 Jul 2021 07:10:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJydwYnoxxkt+tI3dKHZhxx+PKB9tAQtQwvI7A11IgHI60BOdfFuzpvLSzk2QkjyMCcJT8KvOQ==
-X-Received: by 2002:aca:d9d7:: with SMTP id q206mr8464502oig.93.1625580623944;
-        Tue, 06 Jul 2021 07:10:23 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id x29sm2811045ooj.10.2021.07.06.07.10.22
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jP5DGGxJWoHogq5jV5uZ5mGaY2kRQONzJzlVOQeyzM0=;
+        b=JZ9xPERTOXWtMGSm1K0eC8MuQDZecimTU9o7F3yqMmkSD0GHDE+SRjlbrjtwF25URn
+         rsuWqrjWzDA8Tg3w1oH+Al4HIAPDO4K1mDfb1AB4AICg1w0xsD0qM+wP+xQ7/cM5DxnM
+         0Qnw89JRvXvEu08zBozjGXBMG+yW3d/6re0NEUT4pKuycYT05bvRf5cZwaABuqFo+ug7
+         VIuNVoi6d3PrQemKltdPkQEwCJlypRD/Y1iEEco/VWgoUWohKDMmDTI6DZSznzExsviX
+         4ZEQ+VlVGXFvf1AhjKN+C2Ln+/sxTkCiMvCbrBxzBGsYkSWvDCA2hkq2WrFz1JScs/k3
+         56cQ==
+X-Gm-Message-State: AOAM533yTm2LxE5Hl9EJye2G0CdOTeMfiozGTkm2tfKNdeHdoFUBPKpH
+        pnnWjh24UQNRGKIzC1PuQchhoPZCtKnv8E7RbSD/dFFsCpJ5dgjp9SczgfyM8VRS5xgV4OJm+a7
+        HSeibMIQ5g/JSKeAYEeWDLi2A
+X-Received: by 2002:a17:906:dc91:: with SMTP id cs17mr18827618ejc.389.1625580659905;
+        Tue, 06 Jul 2021 07:10:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy3OchyKJxg4IMKf3xa49iq+6B/OGalJj/TJI+5nrz+mfJ2AakBWeZtDiyZEdBBtoYaxp7Pkw==
+X-Received: by 2002:a17:906:dc91:: with SMTP id cs17mr18827594ejc.389.1625580659732;
+        Tue, 06 Jul 2021 07:10:59 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id lz19sm5925092ejb.48.2021.07.06.07.10.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 07:10:23 -0700 (PDT)
-Subject: Re: [PATCH v4 1/4] fpga: dfl: expose feature revision from struct
- dfl_device
-To:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>,
-        Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>
-References: <20210705101645.2040106-1-martin@geanix.com>
- <20210705101645.2040106-2-martin@geanix.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <93a8e949-ec25-d00d-4740-72d9e18ebb68@redhat.com>
-Date:   Tue, 6 Jul 2021 07:10:21 -0700
+        Tue, 06 Jul 2021 07:10:58 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 33/69] KVM: x86: Add kvm_x86_ops .cache_gprs() and
+ .flush_gprs()
+To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <1d51898908a53120e3c60944108730e1922c2206.1625186503.git.isaku.yamahata@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <71ea2142-b299-0fbf-c6f5-5146ad8370a6@redhat.com>
+Date:   Tue, 6 Jul 2021 16:10:56 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210705101645.2040106-2-martin@geanix.com>
+In-Reply-To: <1d51898908a53120e3c60944108730e1922c2206.1625186503.git.isaku.yamahata@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/5/21 3:16 AM, Martin Hundebøll wrote:
-> From: Martin Hundebøll <mhu@silicom.dk>
->
-> DFL device drivers have a common need for checking feature revision
-> information from the DFL header, as well as other common DFL information
-> like the already exposed feature id and type.
->
-> This patch exposes the feature revision information directly via the DFL
-> device data structure.
->
-> Since the DFL core code has already read the DFL header, this this patch
-> saves additional mmio reads from DFL device drivers too.
->
-> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
-> Acked-by: Wu Hao <hao.wu@intel.com>
-> Acked-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+> 
+> Add hooks to cache and flush GPRs and invoke them from KVM_GET_REGS and
+> KVM_SET_REGS respecitively.  TDX will use the hooks to read/write GPRs
+> from TDX-SEAM on-demand (for debug TDs).
+> 
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 > ---
->
-> Changes since v3:
->   * Added Hao's Acked-by
->   * Added Matthew's Acked-by
->
-> Changes since v2:
->   * Reworded commit message as per Hao's suggestion
->
-> Changes since v1:
->   * This patch replaces the previous patch 2 and exposes the feature
->     revision through struct dfl_device instead of a helper reading from
->     io-mem
->
->   drivers/fpga/dfl.c  | 27 +++++++++++++++++----------
->   drivers/fpga/dfl.h  |  1 +
->   include/linux/dfl.h |  1 +
->   3 files changed, 19 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
-> index 511b20ff35a3..9381c579d1cd 100644
-> --- a/drivers/fpga/dfl.c
-> +++ b/drivers/fpga/dfl.c
-> @@ -381,6 +381,7 @@ dfl_dev_add(struct dfl_feature_platform_data *pdata,
+>   arch/x86/include/asm/kvm_host.h | 2 ++
+>   arch/x86/kvm/x86.c              | 6 ++++++
+>   2 files changed, 8 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 00333af724d7..9791c4bb5198 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1248,6 +1248,8 @@ struct kvm_x86_ops {
+>   	void (*set_gdt)(struct kvm_vcpu *vcpu, struct desc_ptr *dt);
+>   	void (*sync_dirty_debug_regs)(struct kvm_vcpu *vcpu);
+>   	void (*set_dr7)(struct kvm_vcpu *vcpu, unsigned long value);
+> +	void (*cache_gprs)(struct kvm_vcpu *vcpu);
+> +	void (*flush_gprs)(struct kvm_vcpu *vcpu);
+>   	void (*cache_reg)(struct kvm_vcpu *vcpu, enum kvm_reg reg);
+>   	unsigned long (*get_rflags)(struct kvm_vcpu *vcpu);
+>   	void (*set_rflags)(struct kvm_vcpu *vcpu, unsigned long rflags);
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index c231a88d5946..f7ae0a47e555 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9850,6 +9850,9 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
 >   
->   	ddev->type = feature_dev_id_type(pdev);
->   	ddev->feature_id = feature->id;
-> +	ddev->revision = feature->revision;
->   	ddev->cdev = pdata->dfl_cdev;
->   
->   	/* add mmio resource */
-> @@ -717,6 +718,7 @@ struct build_feature_devs_info {
->    */
->   struct dfl_feature_info {
->   	u16 fid;
-> +	u8 rev;
-
-In other places 'revision' is the element name.
-
-For consistency, change rev to revision
-
->   	struct resource mmio_res;
->   	void __iomem *ioaddr;
->   	struct list_head node;
-> @@ -796,6 +798,7 @@ static int build_info_commit_dev(struct build_feature_devs_info *binfo)
->   		/* save resource information for each feature */
->   		feature->dev = fdev;
->   		feature->id = finfo->fid;
-> +		feature->revision = finfo->rev;
->   
->   		/*
->   		 * the FIU header feature has some fundamental functions (sriov
-> @@ -910,19 +913,17 @@ static void build_info_free(struct build_feature_devs_info *binfo)
->   	devm_kfree(binfo->dev, binfo);
->   }
->   
-> -static inline u32 feature_size(void __iomem *start)
-> +static inline u32 feature_size(u64 value)
-
-The return type should match its use in create_feature_instance 
-'resource_size_t'
-
-change u32 to resource_size_t
-
-Tom
-
+>   static void __get_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
 >   {
-> -	u64 v = readq(start + DFH);
-> -	u32 ofst = FIELD_GET(DFH_NEXT_HDR_OFST, v);
-> +	u32 ofst = FIELD_GET(DFH_NEXT_HDR_OFST, value);
->   	/* workaround for private features with invalid size, use 4K instead */
->   	return ofst ? ofst : 4096;
->   }
->   
-> -static u16 feature_id(void __iomem *start)
-> +static u16 feature_id(u64 value)
->   {
-> -	u64 v = readq(start + DFH);
-> -	u16 id = FIELD_GET(DFH_ID, v);
-> -	u8 type = FIELD_GET(DFH_TYPE, v);
-> +	u16 id = FIELD_GET(DFH_ID, value);
-> +	u8 type = FIELD_GET(DFH_TYPE, value);
->   
->   	if (type == DFH_TYPE_FIU)
->   		return FEATURE_ID_FIU_HEADER;
-> @@ -1021,10 +1022,15 @@ create_feature_instance(struct build_feature_devs_info *binfo,
->   	unsigned int irq_base, nr_irqs;
->   	struct dfl_feature_info *finfo;
->   	int ret;
-> +	u8 rev;
-> +	u64 v;
+> +	if (kvm_x86_ops.cache_gprs)
+> +		kvm_x86_ops.cache_gprs(vcpu);
 > +
-> +	v = readq(binfo->ioaddr + ofst);
-> +	rev = FIELD_GET(DFH_REVISION, v);
+>   	if (vcpu->arch.emulate_regs_need_sync_to_vcpu) {
+>   		/*
+>   		 * We are here if userspace calls get_regs() in the middle of
+> @@ -9924,6 +9927,9 @@ static void __set_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
 >   
->   	/* read feature size and id if inputs are invalid */
-> -	size = size ? size : feature_size(binfo->ioaddr + ofst);
-> -	fid = fid ? fid : feature_id(binfo->ioaddr + ofst);
-> +	size = size ? size : feature_size(v);
-> +	fid = fid ? fid : feature_id(v);
+>   	vcpu->arch.exception.pending = false;
 >   
->   	if (binfo->len - ofst < size)
->   		return -EINVAL;
-> @@ -1038,6 +1044,7 @@ create_feature_instance(struct build_feature_devs_info *binfo,
->   		return -ENOMEM;
+> +	if (kvm_x86_ops.flush_gprs)
+> +		kvm_x86_ops.flush_gprs(vcpu);
+> +
+>   	kvm_make_request(KVM_REQ_EVENT, vcpu);
+>   }
 >   
->   	finfo->fid = fid;
-> +	finfo->rev = rev;
->   	finfo->mmio_res.start = binfo->start + ofst;
->   	finfo->mmio_res.end = finfo->mmio_res.start + size - 1;
->   	finfo->mmio_res.flags = IORESOURCE_MEM;
-> @@ -1166,7 +1173,7 @@ static int parse_feature_private(struct build_feature_devs_info *binfo,
->   {
->   	if (!is_feature_dev_detected(binfo)) {
->   		dev_err(binfo->dev, "the private feature 0x%x does not belong to any AFU.\n",
-> -			feature_id(binfo->ioaddr + ofst));
-> +			feature_id(readq(binfo->ioaddr + ofst)));
->   		return -EINVAL;
->   	}
->   
-> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> index 2b82c96ba56c..422157cfd742 100644
-> --- a/drivers/fpga/dfl.h
-> +++ b/drivers/fpga/dfl.h
-> @@ -243,6 +243,7 @@ struct dfl_feature_irq_ctx {
->   struct dfl_feature {
->   	struct platform_device *dev;
->   	u16 id;
-> +	u8 revision;
->   	int resource_index;
->   	void __iomem *ioaddr;
->   	struct dfl_feature_irq_ctx *irq_ctx;
-> diff --git a/include/linux/dfl.h b/include/linux/dfl.h
-> index 6cc10982351a..431636a0dc78 100644
-> --- a/include/linux/dfl.h
-> +++ b/include/linux/dfl.h
-> @@ -38,6 +38,7 @@ struct dfl_device {
->   	int id;
->   	u16 type;
->   	u16 feature_id;
-> +	u8 revision;
->   	struct resource mmio_res;
->   	int *irqs;
->   	unsigned int num_irqs;
+> 
+
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
