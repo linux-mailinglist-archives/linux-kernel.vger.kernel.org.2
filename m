@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E373BD4AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F1D3BD3BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbhGFMQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:16:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47598 "EHLO mail.kernel.org"
+        id S239091AbhGFL73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:59:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237043AbhGFLfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237055AbhGFLfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Jul 2021 07:35:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E27661CAB;
-        Tue,  6 Jul 2021 11:25:16 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2980A61CAF;
+        Tue,  6 Jul 2021 11:25:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570717;
-        bh=D0aqLcDHnyIhmX9cVux80w3kOxWK9bN3LSxoqo//I1U=;
+        s=k20201202; t=1625570720;
+        bh=dSmWd6JDaIXsyNmO6nukxpLK2YjQpLaYW/+Aqz8eNic=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dlgd3e8cXxKAh/DcSldA6/q/BirDY4z/bbcH035wplHVYwY/HyryUEdPNeLEctLno
-         Z1JIsU7kDNr5SAIytGS7QuzEsJVusFzZ/m8cSNrDaeij+QPKQPJ+xUaJUvGjf24+F1
-         wh309Vb/T8YxI7GOSMnPIUdg/u+K7bP+WvUv6NO7kahEBgmHHFlzCR6GEF6IcfS+dG
-         MwVXu1HQUbX/NWzhf1HajzgU3Cbz1pZw2buUWqgU7oOS69eJszud1kW9bjW+UJWfQE
-         ZtcsP81t9o0X91RhhnylmdD5fpFfUQ8PXdUsd3R207kzaoyg1qhQDZb6nfO1yzDQWT
-         XMaya/b7wsp8A==
+        b=JnhtvgpNmzBtdNU3I8ZaM6oWiGqxIVshZOQcks4ayFK2NFt1NeQ+rGs8Yi9tRMR51
+         09MvhxjGFrsgrLorR+fqU5iEtXR/C6tRe4z8ovLjeQnQ+0CO56bE3nUawXusI1kcUq
+         fo78xXNaQPkwro+McbPvYtse2iRMFzd2f3i0e6k9n8Tcgn3ozsGzOww0YX2uiNWrpd
+         ZYnqMmNoETAsKUrBPlwk9/hpqD9GF9rYzLx036rMlMrJJyQ7RLwQDzwAUlF3QLT57A
+         lXUAjdvUcx6iovu7uxp7UuRdILmxvf8zWR92Eb/3/FGr1arOR6ag93TMSU7opA9PtW
+         hX1v4bJS/XsAg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zou Wei <zou_wei@huawei.com>, Hulk Robot <hulkci@huawei.com>,
-        "David S . Miller" <davem@davemloft.net>,
+Cc:     Wang Li <wangli74@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
         Sasha Levin <sashal@kernel.org>,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 11/74] atm: nicstar: Fix possible use-after-free in nicstar_cleanup()
-Date:   Tue,  6 Jul 2021 07:23:59 -0400
-Message-Id: <20210706112502.2064236-11-sashal@kernel.org>
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 13/74] drm/mediatek: Fix PM reference leak in mtk_crtc_ddp_hw_init()
+Date:   Tue,  6 Jul 2021 07:24:01 -0400
+Message-Id: <20210706112502.2064236-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112502.2064236-1-sashal@kernel.org>
 References: <20210706112502.2064236-1-sashal@kernel.org>
@@ -43,39 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Wang Li <wangli74@huawei.com>
 
-[ Upstream commit 34e7434ba4e97f4b85c1423a59b2922ba7dff2ea ]
+[ Upstream commit 69777e6ca396f0a7e1baff40fcad4a9d3d445b7a ]
 
-This module's remove path calls del_timer(). However, that function
-does not wait until the timer handler finishes. This means that the
-timer handler may still be running after the driver's remove function
-has finished, which would result in a use-after-free.
-
-Fix by calling del_timer_sync(), which makes sure the timer handler
-has finished, and unable to re-schedule itself.
+pm_runtime_get_sync will increment pm usage counter even it failed.
+Forgetting to putting operation will result in reference leak here.
+Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+counter balanced.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Wang Li <wangli74@huawei.com>
+Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/atm/nicstar.c | 2 +-
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/atm/nicstar.c b/drivers/atm/nicstar.c
-index bb9835c62641..5ec7b6a60145 100644
---- a/drivers/atm/nicstar.c
-+++ b/drivers/atm/nicstar.c
-@@ -297,7 +297,7 @@ static void __exit nicstar_cleanup(void)
- {
- 	XPRINTK("nicstar: nicstar_cleanup() called.\n");
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+index f9455f2724d2..f370d41b3d04 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+@@ -240,7 +240,7 @@ static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *mtk_crtc)
+ 		drm_connector_list_iter_end(&conn_iter);
+ 	}
  
--	del_timer(&ns_timer);
-+	del_timer_sync(&ns_timer);
- 
- 	pci_unregister_driver(&nicstar_driver);
- 
+-	ret = pm_runtime_get_sync(crtc->dev->dev);
++	ret = pm_runtime_resume_and_get(crtc->dev->dev);
+ 	if (ret < 0) {
+ 		DRM_ERROR("Failed to enable power domain: %d\n", ret);
+ 		return ret;
 -- 
 2.30.2
 
