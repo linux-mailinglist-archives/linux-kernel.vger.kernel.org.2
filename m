@@ -2,103 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA143BDA89
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1523BDA91
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232333AbhGFPzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
+        id S232792AbhGFPzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 11:55:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231771AbhGFPzK (ORCPT
+        with ESMTP id S232749AbhGFPzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:55:10 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08943C061574;
-        Tue,  6 Jul 2021 08:52:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=jQt99NgdA5zk5MNb3W23mzSm+lOurEhPK4FFEJDPGCo=; b=WYXv6cFivX25YM9Q9tFxdb3LS
-        NqAgKaKwmxfzJwrBhjtgPOf7o5K279yQa1OjjdEgMXAAddquN9Hu9QgR7JiOD8LLcNq1cjLPYKBAk
-        G+zYgYdv1CgEVt4tfys8OHgMCJGedZb2s/PD3Fy/IEFynDGxbCrHHG2aoNiRfENQ4QGZs4dTW7FOh
-        aIn8XLlijX+t4x6cai4MIdjn7KmI4sHfrcBCqr8FjNRCS/kOZ7JO+pgQr/Zsgvpds7S12Ehkq36+B
-        9xnOJtmr6nrxY1nEzTfr5VK6XD5nCLQn61Q9akG+xo8bk/DJHW4i+LRB/LHAmCx9x0+tg8lhIyLEn
-        1hBR2TnCw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45802)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1m0nMK-0006xE-2g; Tue, 06 Jul 2021 16:51:40 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1m0nMB-00028N-Me; Tue, 06 Jul 2021 16:51:31 +0100
-Date:   Tue, 6 Jul 2021 16:51:31 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>, mw@semihalf.com,
-        Sven Auhagen <sven.auhagen@voleatech.de>, davem@davemloft.net,
-        kuba@kernel.org, linuxarm@openeuler.org, yisen.zhuang@huawei.com,
-        salil.mehta@huawei.com, thomas.petazzoni@bootlin.com,
-        hawk@kernel.org, ilias.apalodimas@linaro.org, ast@kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com,
-        akpm@linux-foundation.org, peterz@infradead.org, will@kernel.org,
-        willy@infradead.org, vbabka@suse.cz, fenghua.yu@intel.com,
-        guro@fb.com, peterx@redhat.com, feng.tang@intel.com, jgg@ziepe.ca,
-        mcroce@microsoft.com, hughd@google.com, jonathan.lemon@gmail.com,
-        alobakin@pm.me, willemb@google.com, wenxu@ucloud.cn,
-        cong.wang@bytedance.com, haokexin@gmail.com, nogikh@google.com,
-        elver@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next RFC 0/2] add elevated refcnt support for page
- pool
-Message-ID: <20210706155131.GS22278@shell.armlinux.org.uk>
-References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
- <20210702153947.7b44acdf@linux.microsoft.com>
+        Tue, 6 Jul 2021 11:55:39 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147EDC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 08:53:01 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id s17so25118194oij.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 08:53:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XWcbFbfZlrlLCI/ycorf+8mN/ARHdyCO3tRbWLAh3y4=;
+        b=btW4iaoBA6H16g/oM/vv8wk2tqtkbRuVH7mGj2o+MbQM8BPIaU4hAnrGsLSqNyzHQw
+         Xq2O8dxuedqFF1OlFjHtwDmzMOk8jtJXy9/FcwH6bADMxafS3ucOYBnryWdpf6eKiACK
+         PqyFOw4DBfJAFrezaW0uTHh6SMhuzrdtU4nzw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XWcbFbfZlrlLCI/ycorf+8mN/ARHdyCO3tRbWLAh3y4=;
+        b=QzfkXBufcm3D4cTxk9kZZ7IyFqeVJdMNg5N+Ezteu+tDkAKPCkE9TIGbFdvgQwGdxv
+         ohylIhjFpdnjPiJK7NAJ9bJzu2chd7qAYGxss0ZuL0CSLizWTsNJoEr7eOqM7hIJ0nSi
+         QAA1up/5QKPoIx8YI0aYEK96SpvfI4X9tG6D6hRiDx7bA9TJnjw+Rz6Zn//1pRX1xle7
+         CGINAZnFowNQnUKv2kt9dF3s54sPXlFhYWoLbxMXIEhEfHnR7PUalqQeYc6Epy3VJmhN
+         ecnoiCF6EwwAGmmrEUr+hj8yKYfVG4PjIz4tFObvHqBx0HCOU2g0Qxy0tYwDC3sVbAPx
+         JeLw==
+X-Gm-Message-State: AOAM530D/qizP1DWt2qjXvjazVhifHLJSFSAWKZaFwCbxfzKEYqiD9wQ
+        pbel1ktULuF/3+F4EBXlMfDOzDnWHIKV7X1sqTw9MA==
+X-Google-Smtp-Source: ABdhPJyMlusETpcXtsnqCiAk+OopudLRY4A9CkBdCgD60xRQZGC4LmqWGj4zTblayJ8/FWZnB2m0tkh2JLhKv7RvdNE=
+X-Received: by 2002:aca:5793:: with SMTP id l141mr953303oib.14.1625586780449;
+ Tue, 06 Jul 2021 08:53:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210702153947.7b44acdf@linux.microsoft.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20210705130314.11519-1-ogabbay@kernel.org> <YOQXBWpo3whVjOyh@phenom.ffwll.local>
+ <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
+ <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
+ <CAKMK7uHpKFVm55O_NB=WYCsv0iUt92ZUn6eCzifH=unbhe3J8g@mail.gmail.com>
+ <CAKMK7uFGr=ugyKj0H3ctbh28Jnr25vAgXPBaDBMmfErCxYVo3w@mail.gmail.com>
+ <20210706134430.GL4604@ziepe.ca> <CAKMK7uFEZjp2_WBhtkVxSNQ-1WcBSr3NDotY0fjz0iLRw8Barw@mail.gmail.com>
+ <20210706145617.GO4604@ziepe.ca>
+In-Reply-To: <20210706145617.GO4604@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue, 6 Jul 2021 17:52:49 +0200
+Message-ID: <CAKMK7uETz8dqCyfVHa=Af4nNizrwZNaLLPVE0bW35=50o2nT1Q@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 03:39:47PM +0200, Matteo Croce wrote:
-> On Wed, 30 Jun 2021 17:17:54 +0800
-> Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> 
-> > This patchset adds elevated refcnt support for page pool
-> > and enable skb's page frag recycling based on page pool
-> > in hns3 drvier.
-> > 
-> > Yunsheng Lin (2):
-> >   page_pool: add page recycling support based on elevated refcnt
-> >   net: hns3: support skb's frag page recycling based on page pool
-> > 
-> >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  79 +++++++-
-> >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   3 +
-> >  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
-> >  drivers/net/ethernet/marvell/mvneta.c              |   6 +-
-> >  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +-
-> >  include/linux/mm_types.h                           |   2 +-
-> >  include/linux/skbuff.h                             |   4 +-
-> >  include/net/page_pool.h                            |  30 ++-
-> >  net/core/page_pool.c                               | 215
-> > +++++++++++++++++---- 9 files changed, 285 insertions(+), 57
-> > deletions(-)
-> > 
-> 
-> Interesting!
-> Unfortunately I'll not have access to my macchiatobin anytime soon, can
-> someone test the impact, if any, on mvpp2?
+On Tue, Jul 6, 2021 at 4:56 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> On Tue, Jul 06, 2021 at 04:09:25PM +0200, Daniel Vetter wrote:
+> > Anyway, for anything that works like a gpu accelerator, like 3d accel,
+> > or parallel compute accel (aka gpgpu) or spatial compute accel (aka
+> > NN/AI) or maybe even fpga accel most of the magic to use the hardware
+> > is in this backend compiler, which translates from an IR into whatever
+> > your accelerator consumes. That's the part we really care about for
+> > modern accelerators because without that defacto the hardware is
+> > useless. Generally these chips have full-blown, if special purpose
+> > ISA, with register files, spilling, branches, loops and other control
+> > flow (sometimes only execution masks on simpler hw).
+>
+> I don't know if I see it so clearly as you do - at the end of the day
+> the user keys in the program in some proprietary (or open!) language
+> and and wack of propritary magic transforms it to "make it work".
+>
+> There are many barriers that prevent someone without the secret
+> knowledge from duplicating the end result of a working program. An
+> accelerator ISA is certainly one example, but I wouldn't overly focus
+> on it as the only blocker.
 
-I'll try to test. Please let me know what kind of testing you're
-looking for (I haven't been following these patches, sorry.)
+Well we don't, we do just ask for the full driver stack to make the hw
+work. It's just that in the past most vendors choose to leave out the
+compiler/ISA from their open stack/specs. Well except nvidia, which
+still chooses to leave out everything aside from some very, very
+minimal thing around documenting display functionality.
 
+> Like you said below the NVIDIA GPU ISA seems known but the HW is still
+> not really useful for other reasons.
+>
+> Habana seems to have gone the other way, the HW is fully useful but we
+> don't have the ISA transformation and other details.
+
+You can actually use nvidia gpus, they're fully functional.
+
+If you install the blobby stack. Which is exactly the same thing as
+with habanalabs, plus/minus a few things at the fringes.
+
+In the end it's about drawing the line somewhere, so maybe we should
+merge the nvidia glue code that makes their blobby stack work better
+with upstream? There's quite a few pieces there, e.g. their display
+driver is by design a userspace driver, whereas with kernel
+modesetting it needs to be in the kernel to expose the common kms
+ioctl interfaces, so they've built up a glue layer to forward
+everything to userspace and back. On windows it works because there
+kernel code can have growing stacks and fun stuff like that, at least
+that's my understanding. Not really an option to just run the code in
+linux.
+
+I'm pretty sure nvidia would appreciate that, and maybe every once in
+a while they open up a header for a generation or two of products like
+they've done in the past.
+
+> Both cases seem to have ended up with something useless, and I have a
+> hard time saying nouveau has more right to be in the kernel tree than
+> Habana does.
+>
+> > > Honestly, I think GPU is approaching this backwards. Wayland should
+> > > have been designed to prevent proprietary userspace stacks.
+> >
+> > That's not possible without some serious cans of worms though. Wayland
+> > is a protocol, and you can't forbid people from implementing it.
+> > Otherwise all the compatible open implementations of closed protocols
+> > wouldn't be possible either.
+>
+> Well, in many ways so is Linux, but nobody would seriously
+> re-implement Linux just to produce a driver.
+
+Well in the gpu space for 2+ decades nvidia has been setting the
+standard, and the open stack has been trying to catch up by
+reimplementing the entire thing. It took a fair while.
+
+> > So I'm not clear what you're suggesting here we should do different.
+>
+> Not enabling proprietary stacks as above would be a good start.
+
+I'm still not sure what exactly you mean here. Like on the 3d side
+there's opengl and vulkan, and nvidia just has an entirely different
+implementation of that compared to any of the open drivers. That is a
+bit less code than linux, but it's not small, and reimplementing over
+decades is pretty much what happened. And if it's not allowed we'd
+actually not have an open 3d gpu stack at all, because only very
+recently did we get an agreement around the tracemark/licensing issues
+of that stuff with Khronos. Recently compared to the history of opengl
+at least.
+
+So I'm still not clear what exactly it is you're suggesting we should
+do? Not implement the industry standards for 3d (and accept we stay
+irrelevant forever)? Reject nvidia blobs harder than we do already?
+Distros will continue to ship an auto-installer for that stack, at
+least some, so we're pretty much maxed out already. Like in what way
+do you think the upstream stack does enable the proprietary nvidia
+stack? Should we permanently ban any contributions from anyone with an
+@nvidia.com address, even if it helps the open stack improve?
+
+Like I'm not seeing something concrete that could be done, which would
+actually prevent nvidia from having their completely independent
+stack, with exact same functionality and not a line of code shared.
+Which is were we are right now. The only thing where we could be more
+strict is to reject any contributions from them at all, just because
+we don't like them. That seems a bit too extreme
+-Daniel
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
