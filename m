@@ -2,27 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC223BD7F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE94F3BD7F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232152AbhGFNnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 09:43:20 -0400
-Received: from relay.sw.ru ([185.231.240.75]:36062 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232064AbhGFNnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232128AbhGFNnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 6 Jul 2021 09:43:15 -0400
-X-Greylist: delayed 1047 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Jul 2021 09:43:15 EDT
+Received: from relay.sw.ru ([185.231.240.75]:36054 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232106AbhGFNnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 09:43:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=virtuozzo.com; s=relay; h=MIME-Version:Message-Id:Date:Subject:From:
-        Content-Type; bh=zYN3y6K/Ru9pQCFBk1RENryPpJolMihOWyrIBqKeHAs=; b=XpVGZ1TNzgAa
-        HS2iTgdubgzW26aKd5UbMIb4b3ZiYUYCj4zWSkxoB/iMNwoufRImmMsdzSnelRiDK8q8FTox4fNgH
-        R2Kj/H/OsVIUZMNgbSgODzTY/CK/SLFBx6r5r1iSNO0smRxCLQJrQurtOdRs9C2WpJO+SFm0P9rjJ
-        QD3ZU=;
+        Content-Type; bh=Gr/c5AJsfFUWC5R2kC+uemsBZtl8wZmZPqeMQkw+uws=; b=mmyJ1z7Rf+OH
+        MHZQl9TJIzmAv/zjEjl8wAq4IQhyMAqnAUEsNxQ7udG0QB14y7XbwxnbVRJ4VKsdadjDIhSmy7Hsv
+        PJM70dSaYd15irwLCEQutD3MLrp8lB7st+Q4tV0qXx/A8Am6E+7EFz1rjzpbY3oNDOIWwQSiCCZr+
+        VvfiY=;
 Received: from [192.168.15.247] (helo=mikhalitsyn-laptop.sw.ru)
         by relay.sw.ru with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <alexander.mikhalitsyn@virtuozzo.com>)
-        id 1m0l2a-0034RU-31; Tue, 06 Jul 2021 16:23:08 +0300
+        id 1m0l2b-0034RU-Eh; Tue, 06 Jul 2021 16:23:09 +0300
 From:   Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
@@ -30,11 +29,10 @@ Cc:     Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
         Milton Miller <miltonm@bga.com>,
         Jack Miller <millerjo@us.ibm.com>,
         Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        stable@vger.kernel.org
-Subject: [PATCH 1/2] shm: skip shm_destroy if task IPC namespace was changed
-Date:   Tue,  6 Jul 2021 16:22:58 +0300
-Message-Id: <20210706132259.71740-2-alexander.mikhalitsyn@virtuozzo.com>
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>
+Subject: [PATCH 2/2] ipc: WARN if trying to remove ipc object which is absent
+Date:   Tue,  6 Jul 2021 16:22:59 +0300
+Message-Id: <20210706132259.71740-3-alexander.mikhalitsyn@virtuozzo.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210706132259.71740-1-alexander.mikhalitsyn@virtuozzo.com>
 References: <20210706132259.71740-1-alexander.mikhalitsyn@virtuozzo.com>
@@ -44,53 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Task may change IPC namespace by doing setns() but sysvshm
-objects remains at the origin IPC namespace (=IPC namespace
-where task was when shmget() was called). Let's skip forced
-shm destroy in such case because we can't determine IPC
-namespace by shm only. These problematic sysvshm's will
-be destroyed on ipc namespace cleanup.
+Lets produce a warning if we trying to remove non-existing
+IPC object from IPC namespace kht/idr structures.
 
-Fixes: ab602f79915 ("shm: make exit_shm work proportional to task activity")
+This allows to catch possible bugs when ipc_rmid() function was
+called with inconsistent struct ipc_ids*, struct kern_ipc_perm*
+arguments.
+
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Milton Miller <miltonm@bga.com>
 Cc: Jack Miller <millerjo@us.ibm.com>
 Cc: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
 Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>
-Cc: stable@vger.kernel.org
 Signed-off-by: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
 ---
- ipc/shm.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ ipc/util.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/ipc/shm.c b/ipc/shm.c
-index 748933e376ca..70a41171b8bb 100644
---- a/ipc/shm.c
-+++ b/ipc/shm.c
-@@ -173,6 +173,14 @@ static inline struct shmid_kernel *shm_obtain_object_check(struct ipc_namespace
- 	return container_of(ipcp, struct shmid_kernel, shm_perm);
+diff --git a/ipc/util.c b/ipc/util.c
+index 0027e47626b7..45bb8ce6c42c 100644
+--- a/ipc/util.c
++++ b/ipc/util.c
+@@ -447,8 +447,8 @@ static int ipcget_public(struct ipc_namespace *ns, struct ipc_ids *ids,
+ static void ipc_kht_remove(struct ipc_ids *ids, struct kern_ipc_perm *ipcp)
+ {
+ 	if (ipcp->key != IPC_PRIVATE)
+-		rhashtable_remove_fast(&ids->key_ht, &ipcp->khtnode,
+-				       ipc_kht_params);
++		WARN_ON(rhashtable_remove_fast(&ids->key_ht, &ipcp->khtnode,
++				       ipc_kht_params));
  }
  
-+static inline bool is_shm_in_ns(struct ipc_namespace *ns, struct shmid_kernel *shp)
-+{
-+	int idx = ipcid_to_idx(shp->shm_perm.id);
-+	struct shmid_kernel *tshp = shm_obtain_object(ns, idx);
-+
-+	return !IS_ERR(tshp) && tshp == shp;
-+}
-+
- /*
-  * shm_lock_(check_) routines are called in the paths where the rwsem
-  * is not necessarily held.
-@@ -415,7 +423,7 @@ void exit_shm(struct task_struct *task)
- 	list_for_each_entry_safe(shp, n, &task->sysvshm.shm_clist, shm_clist) {
- 		shp->shm_creator = NULL;
+ /**
+@@ -498,7 +498,7 @@ void ipc_rmid(struct ipc_ids *ids, struct kern_ipc_perm *ipcp)
+ {
+ 	int idx = ipcid_to_idx(ipcp->id);
  
--		if (shm_may_destroy(ns, shp)) {
-+		if (is_shm_in_ns(ns, shp) && shm_may_destroy(ns, shp)) {
- 			shm_lock_by_ptr(shp);
- 			shm_destroy(ns, shp);
- 		}
+-	idr_remove(&ids->ipcs_idr, idx);
++	WARN_ON(idr_remove(&ids->ipcs_idr, idx) != ipcp);
+ 	ipc_kht_remove(ids, ipcp);
+ 	ids->in_use--;
+ 	ipcp->deleted = true;
 -- 
 2.31.1
 
