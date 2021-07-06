@@ -2,64 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9A73BDC5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 19:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D78A3BDC63
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 19:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhGFReV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 13:34:21 -0400
-Received: from verein.lst.de ([213.95.11.211]:34456 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229949AbhGFReU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 13:34:20 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 80C3868BEB; Tue,  6 Jul 2021 19:31:37 +0200 (CEST)
-Date:   Tue, 6 Jul 2021 19:31:37 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <20210706173137.GA7840@lst.de>
-References: <20210705130314.11519-1-ogabbay@kernel.org> <YOQXBWpo3whVjOyh@phenom.ffwll.local> <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com> <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com> <20210706142357.GN4604@ziepe.ca> <CAKMK7uELNzwUe+hhVWRg=Pk5Wt_vOOX922H48Kd6dTyO2PeBbg@mail.gmail.com> <20210706152542.GP4604@ziepe.ca> <CAKMK7uH7Ar6+uAOU_Sj-mf89V9WCru+66CV5bO9h-WAAv7Mgdg@mail.gmail.com> <CAKMK7uGvO0h7iZ3vKGe8GouESkr79y1gP1JXbfV82sRiaT-d1A@mail.gmail.com> <20210706172828.GR4604@ziepe.ca>
+        id S230501AbhGFRiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 13:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229949AbhGFRiF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 13:38:05 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991C7C061574;
+        Tue,  6 Jul 2021 10:35:25 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id hc16so35411054ejc.12;
+        Tue, 06 Jul 2021 10:35:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rzTl/84YKN02YpAuy0KqaRqKVDD2jRop8NkpUhp1Su4=;
+        b=nBTP6+Lg0F+ps4zkUIrLODN5eB+Xg5+exkspQs0pM4g3HipT1hQxgSsmJjMz97+Dxl
+         7zVX/JLkcWAy8Yss9rPZWJEhErmDqQMHrNVbvYK2CVSrslk0qSllF4SD7KY8rnpvG6/Q
+         +fwllJGXE4RFrWaQolw4nW61e3tvokXWfpod3FSzvoC3xdIq60N8IJ25xoG+aly1Z6JD
+         4SkqqngaEc7Ay0M44HTvzc1qr1/Vk6L3fMwp4F9uXup19KxS9Jkii1oaOQEzJUmFAEdJ
+         eCvb35HFAIQQnKSlJk3nN0uTMsRUXex/KIkZiMjEXb41qBXhWtbv5eOwHCgoTH39wU3t
+         plMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rzTl/84YKN02YpAuy0KqaRqKVDD2jRop8NkpUhp1Su4=;
+        b=JPDn3joAe6knrSyIHwAefIkAGcAQYfe6kO3GTs14EuJlydV26bJnhgUeAGbjoyBW20
+         5Q8HL3rbPhGjACe8lDTPReGi20eAajF4vz4WwZNESNAM1YC2sXH+T8kY7vYjwMcp3Vnk
+         zWVZJW4SvxqDz1wXz+mcx3OMdHoELXvg/exzThGtMdzTDk5vXoFhzBv9UtpCaen9RxgC
+         io8MC1FfUEhpz8KqbQrLznLArFPSZ0rQ71vcNaoGSrUCggPTCs7ekXq5qDDwo9yWIUVv
+         QuoNnG6hRpf6nMfVV4lnM8BjmXRLYkNx9LuK4zXo1YrLR01iGbUtBeqxnsWvJR9AvM+W
+         yFdQ==
+X-Gm-Message-State: AOAM532+QxO6heufjgeUa6opq4nTd977VW1uzRhzo4lxWm4c/+OW3EqL
+        0Xw9IMbTcIZUwFcisBOiqdu3KNW+mCJ0VolqBf8=
+X-Google-Smtp-Source: ABdhPJxMdUhnBmUkMeuKVgXzWFzoHuBNWhriV2UA3IQbKroOcsdBo9msapOY2k7XuE4F3cBAjySiTqC6UyNCZ9v6LLg=
+X-Received: by 2002:a17:907:60d6:: with SMTP id hv22mr16725922ejc.80.1625592923424;
+ Tue, 06 Jul 2021 10:35:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210706172828.GR4604@ziepe.ca>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20210706161234.GA797557@bjorn-Precision-5520>
+In-Reply-To: <20210706161234.GA797557@bjorn-Precision-5520>
+From:   Matt Turner <mattst88@gmail.com>
+Date:   Tue, 6 Jul 2021 10:35:11 -0700
+Message-ID: <CAEdQ38HxsK+mvXWmxDbRMG_oKw7zPdaYnZ10f307771aBic8Gw@mail.gmail.com>
+Subject: Re: add linux-alpha archives to lore.kernel.org?
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        linux-alpha <linux-alpha@vger.kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 02:28:28PM -0300, Jason Gunthorpe wrote:
-> > Also on your claim that drivers/gpu is a non-upstream disaster: I've
-> > also learned that that for drivers/rdma there's the upstream driver,
-> > and then there's the out-of-tree hackjob the vendor actually
-> > supports.
-> 
-> In the enterprise world everyone has their out of tree backport
-> drivers. It varies on the vendor how much deviation there is from the
-> upstream driver and what commercial support relationship the vendor
-> has with the enterprise distros.
+On Tue, Jul 6, 2021 at 9:12 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> Is there any interest in adding linux-alpha archives to
+> lore.kernel.org?  See https://korg.docs.kernel.org/lore.html for
+> details.
 
-I think he means the Mellanox OFED stack, which is a complete and utter
-mess and which gets force fed by Mellanox/Nvidia on unsuspecting
-customers.  I know many big HPC sites that ignore it, but a lot of
-enterprise customers are dumb enought to deploy it.
+Yes, that would be nice!
