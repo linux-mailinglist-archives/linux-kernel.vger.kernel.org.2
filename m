@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC4B3BD9DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A23D3BD9E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232265AbhGFPRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232037AbhGFPRD (ORCPT
+        id S231860AbhGFPSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 11:18:44 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:4749 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231748AbhGFPSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:17:03 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6416C0613E0;
-        Tue,  6 Jul 2021 08:14:23 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id d2so2863163wrn.0;
-        Tue, 06 Jul 2021 08:14:23 -0700 (PDT)
+        Tue, 6 Jul 2021 11:18:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DgjljfmGgSx9QEsOVA6OlKs2IlS/qr/eXPZE0FkrXyg=;
-        b=mM29XqYWQPm+Tom9Y5OS+sukydghYiDLIULz6QS2lw7Uvb1ZqlQIDlu9YXk4zFZ+k7
-         uZgNOY3AWdZEGFzgeaDsNhQdT0BzKmn6QObEnfQRUeHSEOvKZM8JQ3xoKwBs+1G6OP8z
-         zrVEFr7gNPufKrkhQE+Q+0N0+Ivc1kDu4ppye2Va73C2YYAExQOAoI/3+3vf4eAeCngo
-         2s1xY9t02b6WEzuw6/aBdDl0BYNLYtMB+ggPiuA1/60UxvWt88UBf0ti3xr2PYznlG9k
-         Afh94gHmMW+xxVsi78k2zCVzAQ+zElk+nqZZSVJnuPOQV4z3ujQiEtYSmevqP01Ft0rM
-         0DWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DgjljfmGgSx9QEsOVA6OlKs2IlS/qr/eXPZE0FkrXyg=;
-        b=mACIeR4VlIq1+b+QMFUlKy+9iNiIaUt3DsYkaqcn2o7gaE3JGwp531x2eOipcS1RS0
-         TwZ308ijzL0FMQ2orzpYGBQ0HCu4tNErDBYiru7KemXnFf1XRR8gS8/DXAZd+pmqaefj
-         up0CTrxVqo6mgT0c0L3vgB3Npb79aFE8KwVpEmHqQM8wm64dqXVHYuaK6KhFzsQhgAHf
-         r/Q4B+9BkY8zJfqOrS5SUDM7f/dBBezTLLivNEXnyyBZc5NjOuGKwXDBp5gOcNwPbQe+
-         7P1uZ5OFTaoVVw8Ie0Eupa34cb5MZy8UGOWIA9ryhy7b2b2k8n6uO863kydyvtZTBLNO
-         jh1Q==
-X-Gm-Message-State: AOAM533hjMiJqY3DKmo4mlt9lOOaE49+ZOEQtk7m0Zk2O/FC6+cf5tc6
-        8q6Jj29VcdlW72qWzLzSIMQ=
-X-Google-Smtp-Source: ABdhPJzau4ygOdzbje3ufpsMlCIHsY3m+TjCycdriA59yVS0Ue6Jl9IlcBsUquztXDmLe5yQF2a3+g==
-X-Received: by 2002:a5d:6ac4:: with SMTP id u4mr3972919wrw.166.1625584462255;
-        Tue, 06 Jul 2021 08:14:22 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id h9sm15840112wmb.35.2021.07.06.08.14.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 08:14:21 -0700 (PDT)
-Date:   Tue, 6 Jul 2021 16:14:20 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de
-Subject: Re: [PATCH 5.10 0/7] 5.10.48-rc1 review
-Message-ID: <YORzTK+qJrbMo8IM@debian>
-References: <20210705105957.1513284-1-sashal@kernel.org>
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1625584563; x=1657120563;
+  h=date:from:to:cc:message-id:references:mime-version:
+   in-reply-to:subject;
+  bh=9L58hslPpBOMuTGHIF6YSUe5tTDWwiAmUslPAdS4H0o=;
+  b=E+r/NCWpy3sQllHIQn6+Oj5mnQhbACOApa4ZnjkJmjoZzQCWJWXfRI97
+   w9UcNJbe/TVC5L7gCAJbYvpwupEsZ+PSfXuDUiNpogDctuvPO3H+kaBL4
+   yHFJvKC3+KJZR3BqmgCNDMKKnSNRRFVQogFYSogxeV3j7ju9zN3j7drvR
+   o=;
+X-IronPort-AV: E=Sophos;i="5.83,328,1616457600"; 
+   d="scan'208";a="120509746"
+Subject: Re: [PATCH v4 0/4] Add support for XMM fast hypercalls
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 06 Jul 2021 15:15:56 +0000
+Received: from EX13D28EUC003.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id 25A1BA07A0;
+        Tue,  6 Jul 2021 15:15:48 +0000 (UTC)
+Received: from u366d62d47e3651.ant.amazon.com (10.43.160.66) by
+ EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Tue, 6 Jul 2021 15:15:40 +0000
+Date:   Tue, 6 Jul 2021 17:15:36 +0200
+From:   Siddharth Chandrasekaran <sidcha@amazon.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+CC:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Siddharth Chandrasekaran <sidcha.dev@gmail.com>,
+        Alexander Graf <graf@amazon.com>,
+        Evgeny Iakovlev <eyakovl@amazon.de>,
+        Liran Alon <liran@amazon.com>,
+        Ioannis Aslanidis <iaslan@amazon.de>,
+        <linux-hyperv@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>
+Message-ID: <20210706151535.GA28697@u366d62d47e3651.ant.amazon.com>
+References: <cover.1622019133.git.sidcha@amazon.de>
+ <20210630115559.GA32360@u366d62d47e3651.ant.amazon.com>
+ <f318fd42-6b98-1a82-f334-d05f4e6cb715@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210705105957.1513284-1-sashal@kernel.org>
+In-Reply-To: <f318fd42-6b98-1a82-f334-d05f4e6cb715@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.43.160.66]
+X-ClientProxiedBy: EX13D05UWB003.ant.amazon.com (10.43.161.26) To
+ EX13D28EUC003.ant.amazon.com (10.43.164.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sasha,
-
-On Mon, Jul 05, 2021 at 06:59:50AM -0400, Sasha Levin wrote:
+On Tue, Jul 06, 2021 at 05:04:59PM +0200, Paolo Bonzini wrote:
+> On 30/06/21 13:56, Siddharth Chandrasekaran wrote:
+> > On Wed, May 26, 2021 at 10:56:07AM +0200, Siddharth Chandrasekaran wrote:
+> > > Hyper-V supports the use of XMM registers to perform fast hypercalls.
+> > > This allows guests to take advantage of the improved performance of the
+> > > fast hypercall interface even though a hypercall may require more than
+> > > (the current maximum of) two general purpose registers.
+> > > 
+> > > The XMM fast hypercall interface uses an additional six XMM registers
+> > > (XMM0 to XMM5) to allow the caller to pass an input parameter block of
+> > > up to 112 bytes. Hyper-V can also return data back to the guest in the
+> > > remaining XMM registers that are not used by the current hypercall.
+> > > 
+> > > Although the Hyper-v TLFS mentions that a guest cannot use this feature
+> > > unless the hypervisor advertises support for it, some hypercalls which
+> > > we plan on upstreaming in future uses them anyway. This patchset adds
+> > > necessary infrastructure for handling input/output via XMM registers and
+> > > patches kvm_hv_flush_tlb() to use xmm input arguments.
+> > 
+> > Hi Paolo,
+> > 
+> > Are you expecting more reviews on these patches?
 > 
-> This is the start of the stable review cycle for the 5.10.48 release.
-> There are 7 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed 07 Jul 2021 10:59:49 AM UTC.
-> Anything received after that time might be too late.
+> They are part of 5.14 already. :)
 
-Build test:
-mips (gcc version 11.1.1 20210702): 63 configs -> no failure
-arm (gcc version 11.1.1 20210702): 105 configs -> no new failure
-arm64 (gcc version 11.1.1 20210702): 3 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+Ahh, I see them now. I was expecting them to show up in master - that was
+the confusion.
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
-arm64: Booted on rpi4b (4GB model). No regression.
+Thanks! :)
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+~ Sid
 
---
-Regards
-Sudip
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
