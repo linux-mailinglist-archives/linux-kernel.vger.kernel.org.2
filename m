@@ -2,153 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E2E3BD47C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA733BD47E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243973AbhGFMKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:10:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51461 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231548AbhGFL6A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:58:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625572521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ekaSBwRSsDtmUBzMzvteWh+vl9RVfK9dJAN2VWd9G3M=;
-        b=Ze/bpwBcr10LHD8okdaKe99FOYHFrcoVKTP3ogZKT+jMUf5peiBcloldftZc13PVgzTKG4
-        qTmpa++mbAM1MoUP3tNOiFwFSm1JcZw9z6mICz0NDg6ZOKPFeYc0vEZm5DYbQwsFIV+mLl
-        7fbiNuYo5pEwBWgQ6r/tuzUeGU+pXak=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-ZbPvQcVfPqWA3Q9biudUjg-1; Tue, 06 Jul 2021 07:55:20 -0400
-X-MC-Unique: ZbPvQcVfPqWA3Q9biudUjg-1
-Received: by mail-wr1-f71.google.com with SMTP id g4-20020a5d64e40000b029013398ce8904so2407833wri.16
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 04:55:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ekaSBwRSsDtmUBzMzvteWh+vl9RVfK9dJAN2VWd9G3M=;
-        b=N/oxh0FLKIlbqzpn0SROW2yYwThzE40tqqMGofOUeYt+mErA7e/nv2tUOGbalc78Gl
-         OltQ8dWP6qRU4YnH9YAVydCA8oAeZMe3X266oXzkeehy0DYfMRTSXj+bLbikGlJ3OhnL
-         SWxw11gJ56QhxzKWiF1nNLYFauvZjaesH6jwZh1JoBgphcZWNd7wJPsjQiK6eokfF8s6
-         WQaA9oMLHvGYBs7iIXbDtUijMHODgFVF8ahGppPQIrpOIeOOWONyP0GiEIfiuo73M6Bo
-         wiI4DS0MEzjHUuj0GcM/YVZgzJpBIIQ4WokmQeNlPnpXMxGsRgckGC+wj3WW79cdI8Jd
-         Vf5Q==
-X-Gm-Message-State: AOAM530GZQY2VlHJXwxrIh8Pio2Oiqldul9YbFa55gCkleReJsVM3z58
-        pkPEiyVh3RSpLG3vm3VL9xir9yfMbpt+iUB+9+Q+GUx9oUGzv1nCozzy1eKzhgi+7QSzaLgJH7c
-        VzB56UeSOUI0QfRIZTrF6XuCHKSQP8LrUralIi89EJd7zz/cLiylMRBstTcv1ZITIrZ2IKqqG
-X-Received: by 2002:a1c:7510:: with SMTP id o16mr190052wmc.137.1625572518872;
-        Tue, 06 Jul 2021 04:55:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyGQpsRZ++S+YiSMEDriBlOwEF/OUEzifhLn67uvRKBjHvT1wB1/7FMOZUybC5IurPe6tt8kg==
-X-Received: by 2002:a1c:7510:: with SMTP id o16mr190029wmc.137.1625572518636;
-        Tue, 06 Jul 2021 04:55:18 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id i12sm1689249wrp.57.2021.07.06.04.55.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 04:55:18 -0700 (PDT)
-Subject: Re: [PATCH] KVM: s390: Enable specification exception interpretation
-To:     Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        "open list:KERNEL VIRTUAL MACHINE for s390 (KVM/s390)" 
-        <kvm@vger.kernel.org>,
-        "open list:S390" <linux-s390@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210706114714.3936825-1-scgl@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <967b92c6-e7ab-2a58-57e6-2945b7ceb94e@redhat.com>
-Date:   Tue, 6 Jul 2021 13:55:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S244006AbhGFMKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:10:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237525AbhGFL63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:58:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6F8861179;
+        Tue,  6 Jul 2021 11:55:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625572549;
+        bh=JXmBsXYXG9KG7U5AjlAUHgTa15XndAwh6xpRx35ssAo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JbOfwmVF4OkhS5vWEeG1/y6EzbbSwmaGz+O2PUgdxW8i2J5XsnE7M6+ypvPxZiLBM
+         3klouA+VESkfgGkHYyVBVx5HAXAMNeDdkwIVUlkmZB4SfoyyvNJwuuVLQZl1sl9nsf
+         0qQ7VeJLZSks0CiTqNdrnJgOXjaWxCHUW29odk/ZYWRSc+mczvm80gi1qDhbm2bNPq
+         XWfnvdeAJB7ZdvMhgvuqLB+U0egmAIOso0LHfx4nboab6JTrLN15TfrTVD7LgBqzzZ
+         nemt4h8ofc9CIUk76G2oifZwmbZ+SizUH2SPthodth6U5RWSM+ykcrqZnKpIuDWzz+
+         uyTdLgzFUAD1w==
+Date:   Tue, 6 Jul 2021 12:55:17 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Peter Chen <peter.chen@nxp.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth@vger.kernel.org
+Subject: Re: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x
+ powerup sequence
+Message-ID: <20210706115517.GB4529@sirena.org.uk>
+References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
+ <20210621223141.1638189-3-dmitry.baryshkov@linaro.org>
+ <CAPDyKFo6dmjw0TnaK7=35dq5Si_6YYpeeSa=gU++1od7WkQZ7A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210706114714.3936825-1-scgl@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="24zk1gE8NUlDmwG9"
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFo6dmjw0TnaK7=35dq5Si_6YYpeeSa=gU++1od7WkQZ7A@mail.gmail.com>
+X-Cookie: Some restrictions may apply.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.07.21 13:47, Janis Schoetterl-Glausch wrote:
-> When this feature is enabled the hardware is free to interpret
-> specification exceptions generated by the guest, instead of causing
-> program interruption interceptions.
-> 
-> This benefits (test) programs that generate a lot of specification
-> exceptions (roughly 4x increase in exceptions/sec).
-> 
-> Interceptions will occur as before if ICTL_PINT is set,
-> i.e. if guest debug is enabled.
-> 
-> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
-> ---
-> I'll additionally send kvm-unit-tests for testing this feature.
-> 
->   arch/s390/include/asm/kvm_host.h | 1 +
->   arch/s390/kvm/kvm-s390.c         | 2 ++
->   arch/s390/kvm/vsie.c             | 2 ++
->   3 files changed, 5 insertions(+)
-> 
-> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-> index 9b4473f76e56..3a5b5084cdbe 100644
-> --- a/arch/s390/include/asm/kvm_host.h
-> +++ b/arch/s390/include/asm/kvm_host.h
-> @@ -244,6 +244,7 @@ struct kvm_s390_sie_block {
->   	__u8	fpf;			/* 0x0060 */
->   #define ECB_GS		0x40
->   #define ECB_TE		0x10
-> +#define ECB_SPECI	0x08
->   #define ECB_SRSI	0x04
->   #define ECB_HOSTPROTINT	0x02
->   	__u8	ecb;			/* 0x0061 */
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index b655a7d82bf0..aadd589a3755 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -3200,6 +3200,8 @@ static int kvm_s390_vcpu_setup(struct kvm_vcpu *vcpu)
->   		vcpu->arch.sie_block->ecb |= ECB_SRSI;
->   	if (test_kvm_facility(vcpu->kvm, 73))
->   		vcpu->arch.sie_block->ecb |= ECB_TE;
-> +	if (!kvm_is_ucontrol(vcpu->kvm))
-> +		vcpu->arch.sie_block->ecb |= ECB_SPECI;
->   
->   	if (test_kvm_facility(vcpu->kvm, 8) && vcpu->kvm->arch.use_pfmfi)
->   		vcpu->arch.sie_block->ecb2 |= ECB2_PFMFI;
-> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
-> index 4002a24bc43a..acda4b6fc851 100644
-> --- a/arch/s390/kvm/vsie.c
-> +++ b/arch/s390/kvm/vsie.c
-> @@ -510,6 +510,8 @@ static int shadow_scb(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
->   			prefix_unmapped(vsie_page);
->   		scb_s->ecb |= ECB_TE;
->   	}
-> +	/* specification exception interpretation */
-> +	scb_s->ecb |= scb_o->ecb & ECB_SPECI;
->   	/* branch prediction */
->   	if (test_kvm_facility(vcpu->kvm, 82))
->   		scb_s->fpf |= scb_o->fpf & FPF_BPBC;
-> 
 
-I assume this is a new CPU feature, right? If so
+--24zk1gE8NUlDmwG9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-a) How can we check whether we can actually safely enable it. (which 
-facility do we have to check)
-b) Do we have to handle vSIE? Do we have to indicate a CPU feature that 
-unlocks this feature?
+On Tue, Jul 06, 2021 at 09:54:03AM +0200, Ulf Hansson wrote:
+> On Tue, 22 Jun 2021 at 00:32, Dmitry Baryshkov
 
--- 
-Thanks,
+> > Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
+> > being controlled through the UART and WiFi being present on PCIe
+> > bus. Both blocks share common power sources. Add device driver handling
+> > power sequencing of QCA6390/1.
 
-David / dhildenb
+> Power sequencing of discoverable buses have been discussed several
+> times before at LKML. The last attempt [1] I am aware of, was in 2017
+> from Peter Chen. I don't think there is a common solution, yet.
 
+This feels a bit different to the power sequencing problem - it's not
+exposing the individual inputs to the device but rather is a block that
+manages everything but needs a bit of a kick to get things going (I'd
+guess that with ACPI it'd be triggered via AML).  It's in the same space
+but it's not quite the same issue I think, something that can handle
+control of the individual resources might still struggle with this.
+
+--24zk1gE8NUlDmwG9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDkRKQACgkQJNaLcl1U
+h9A9oAf/QENRZjXRFVPDjWc5SZZ1jRLz0JmogYRWNMICgbOtz1VBdXoNW/Lww3pt
+dke5UKjZ+XQkNR3aavlJL+PatLcw5KcLLIM7q6seqDtyV3oesMqPe4eHpf7E8niH
+RlrkwxoSHb3r7/tYFr2TNDxL1ZuQKEOT1Bn1tcNP4krJ4sa2M4sYmM7XV4VdFlkE
+/ymTDt9FrU/lQZHkT414lAI615+uJqFaRn17h6TnrC0MhELJ/BoLo62tBWaO0gtv
+sey70r+PcIRzS6p/iA8i+HHNTfR5EiVnBF3tVidPeOwt8Haj8TfhdDGbvzeAuaDc
+sia1bg8tC8v+IFLkdkwWFG7TzvN8ZQ==
+=L8x2
+-----END PGP SIGNATURE-----
+
+--24zk1gE8NUlDmwG9--
