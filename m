@@ -2,177 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F86A3BC657
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 08:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FC43BC65A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 08:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbhGFGTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 02:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbhGFGTc (ORCPT
+        id S230121AbhGFGUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 02:20:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31296 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230048AbhGFGUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 02:19:32 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3E6C061760
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 23:16:54 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id q16so19112512qke.10
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 23:16:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RoGi9t0tW2ZKROiX5vNisDNKd+fSc5OvBjzFvq9gYvY=;
-        b=Gzikz/eEBoqeajZIRReKOOFftA9UC4oI3fDNZSYLwbrN7EhOyOoeZZbyAq7/X0gOp/
-         7ZHFoxagwFKR/kNQPsReYVp3UN8qK9Wmq++mMcdbCp3Z+7soiKCdhZjBi3Jdt5HMmaTD
-         ancHpki5hiBvZImHkvRiV/fWyF/dRYbykcoNMcYvE5RuDT41CvD1ZtMMRUcwM1r6PsLf
-         TH86Owk2G9QAGXBUBGHjv6E+xPI+6s8ykNNsYJpb6GEkk5yWJZUasI0+A04RwOHtPTRX
-         g1z5Y2RRQXZsY8Z59zqhUIJNciL3iOeVw/NFnKBOtubTMxsg804Wrn5vu2rzv8oh5XQ6
-         /P6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RoGi9t0tW2ZKROiX5vNisDNKd+fSc5OvBjzFvq9gYvY=;
-        b=NgfCEwuyxfanU6JCvXPi8LLcgL5qiHDh5C8ARWgmtLl8kHde04EUb309sNNehd42RO
-         SyX3e9kH+HQQqTvnbmYHRB6++dQcKnmFHUmpLkqERZcnDaNsbysjtsQuSmchnsUw7/ss
-         PTgd0kp0+Yyb48iHOe7sF4vNcdqmx7D6lmhEB39zKI+pLhGDZJNUm0NEad87RxJA56K9
-         rAsFvOQORijhWqAizoteT/MS0c2Pwfb0HpNoon+mdtr97v+GPyHCzYbwyByuxyS4TP8t
-         YjjPKTeuTadYyMmd41Zs7gfJkgrkYhzgV27HxgEbc+xjkwCFCgt6ZlUnw+Q1VTLpRlM5
-         l05w==
-X-Gm-Message-State: AOAM533aaLtvjzcmfj5QiZzxNmBcSbnUVrC2fudhtDpNxmJH+CtORReg
-        uKUz+s/byc5qdGJ1i1f6iHDX+dCI4ILG7tgUSqt2Lg==
-X-Google-Smtp-Source: ABdhPJyElgbPmnSLXpF3gDkS9q6qlbT44UUR+C2RdRC7k5GdNuckFsTGeES9VmBRwkAuEmhnnRsNMypzRe7fvelAWWo=
-X-Received: by 2002:a37:6614:: with SMTP id a20mr10617401qkc.501.1625552213306;
- Mon, 05 Jul 2021 23:16:53 -0700 (PDT)
+        Tue, 6 Jul 2021 02:20:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625552285;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+ru+U+Oc29lc1AvLWBgfwb6rzCmttJjIzNLEviVazlo=;
+        b=jQdCzGc26QR62tmPI6cR1aS3rJbWzA9PzXffhJrFGOnRpfmnyu71SUDgugTjFvuoGjwpR5
+        3LSP09f0WpVeXEQh2agGLNfrTtcnzy6oG/kBuCmGwcaz0ya5wozhwN7mb7pA/oTcBqOGhj
+        ljvIpI3HhikPZ+wLSuXjLZKnJLUH4HA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-M9hHX5HRMdijwX-T4bPiOQ-1; Tue, 06 Jul 2021 02:18:01 -0400
+X-MC-Unique: M9hHX5HRMdijwX-T4bPiOQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71C94801B1C;
+        Tue,  6 Jul 2021 06:18:00 +0000 (UTC)
+Received: from gshan.redhat.com (vpn2-54-119.bne.redhat.com [10.64.54.119])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A17102C00F;
+        Tue,  6 Jul 2021 06:17:57 +0000 (UTC)
+From:   Gavin Shan <gshan@redhat.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        akpm@linux-foundation.org, shan.gavin@gmail.com, chuhu@redhat.com
+Subject: [PATCH 00/12] mm/debug_vm_pgtable: Enhancements
+Date:   Tue,  6 Jul 2021 14:17:36 +0800
+Message-Id: <20210706061748.161258-1-gshan@redhat.com>
 MIME-Version: 1.0
-References: <20210705084453.2151729-1-elver@google.com> <20210705084453.2151729-2-elver@google.com>
-In-Reply-To: <20210705084453.2151729-2-elver@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 6 Jul 2021 08:16:39 +0200
-Message-ID: <CACT4Y+ZjjuW5wZ-QsYj7btZYYyNEiSnGh6JtV3bmSNx9mY_bZw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] perf: Refactor permissions check into perf_check_permission()
-To:     Marco Elver <elver@google.com>
-Cc:     peterz@infradead.org, tglx@linutronix.de, mingo@kernel.org,
-        glider@google.com, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org,
-        linux-perf-users@vger.kernel.org, ebiederm@xmission.com,
-        omosnace@redhat.com, serge@hallyn.com,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 10:45 AM Marco Elver <elver@google.com> wrote:
->
-> Refactor the permission check in perf_event_open() into a helper
-> perf_check_permission(). This makes the permission check logic more
-> readable (because we no longer have a negated disjunction). Add a
-> comment mentioning the ptrace check also checks the uid.
->
-> No functional change intended.
->
-> Signed-off-by: Marco Elver <elver@google.com>
+There are couple of issues with current implementations and this series
+tries to resolve the issues:
 
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+  (a) All needed information are scattered in variables, passed to various
+      test functions. The code is organized in pretty much relaxed fashion.
 
-> ---
-> v3:
-> * Introduce this patch to refactor the permissions checking logic to
->   make it more readable (reported by Eric W. Biederman).
-> ---
->  kernel/events/core.c | 58 ++++++++++++++++++++++++--------------------
->  1 file changed, 32 insertions(+), 26 deletions(-)
->
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index f79ee82e644a..3008b986994b 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -11912,6 +11912,37 @@ __perf_event_ctx_lock_double(struct perf_event *group_leader,
->         return gctx;
->  }
->
-> +static bool
-> +perf_check_permission(struct perf_event_attr *attr, struct task_struct *task)
-> +{
-> +       unsigned int ptrace_mode = PTRACE_MODE_READ_REALCREDS;
-> +       bool is_capable = perfmon_capable();
-> +
-> +       if (attr->sigtrap) {
-> +               /*
-> +                * perf_event_attr::sigtrap sends signals to the other task.
-> +                * Require the current task to also have CAP_KILL.
-> +                */
-> +               rcu_read_lock();
-> +               is_capable &= ns_capable(__task_cred(task)->user_ns, CAP_KILL);
-> +               rcu_read_unlock();
-> +
-> +               /*
-> +                * If the required capabilities aren't available, checks for
-> +                * ptrace permissions: upgrade to ATTACH, since sending signals
-> +                * can effectively change the target task.
-> +                */
-> +               ptrace_mode = PTRACE_MODE_ATTACH_REALCREDS;
-> +       }
-> +
-> +       /*
-> +        * Preserve ptrace permission check for backwards compatibility. The
-> +        * ptrace check also includes checks that the current task and other
-> +        * task have matching uids, and is therefore not done here explicitly.
-> +        */
-> +       return is_capable || ptrace_may_access(task, ptrace_mode);
-> +}
-> +
->  /**
->   * sys_perf_event_open - open a performance event, associate it to a task/cpu
->   *
-> @@ -12152,43 +12183,18 @@ SYSCALL_DEFINE5(perf_event_open,
->         }
->
->         if (task) {
-> -               unsigned int ptrace_mode = PTRACE_MODE_READ_REALCREDS;
-> -               bool is_capable;
-> -
->                 err = down_read_interruptible(&task->signal->exec_update_lock);
->                 if (err)
->                         goto err_file;
->
-> -               is_capable = perfmon_capable();
-> -               if (attr.sigtrap) {
-> -                       /*
-> -                        * perf_event_attr::sigtrap sends signals to the other
-> -                        * task. Require the current task to also have
-> -                        * CAP_KILL.
-> -                        */
-> -                       rcu_read_lock();
-> -                       is_capable &= ns_capable(__task_cred(task)->user_ns, CAP_KILL);
-> -                       rcu_read_unlock();
-> -
-> -                       /*
-> -                        * If the required capabilities aren't available, checks
-> -                        * for ptrace permissions: upgrade to ATTACH, since
-> -                        * sending signals can effectively change the target
-> -                        * task.
-> -                        */
-> -                       ptrace_mode = PTRACE_MODE_ATTACH_REALCREDS;
-> -               }
-> -
->                 /*
-> -                * Preserve ptrace permission check for backwards compatibility.
-> -                *
->                  * We must hold exec_update_lock across this and any potential
->                  * perf_install_in_context() call for this new event to
->                  * serialize against exec() altering our credentials (and the
->                  * perf_event_exit_task() that could imply).
->                  */
->                 err = -EACCES;
-> -               if (!is_capable && !ptrace_may_access(task, ptrace_mode))
-> +               if (!perf_check_permission(&attr, task))
->                         goto err_cred;
->         }
->
-> --
-> 2.32.0.93.g670b81a890-goog
->
+  (b) The page isn't allocated from buddy during page table entry modifying
+      tests. The page can be invalid, conflicting to the implementations
+      of set_{pud, pmd, pte}_at() on ARM64. The target page is accessed
+      so that the iCache can be flushed when execution permission is given
+      on ARM64. Besides, the target page can be unmapped and access to
+      it causes kernel crash.
+
+"struct vm_pgtable_debug" is introduced to address issue (a). For issue
+(b), the used page is allocated from buddy in page table entry modifying
+tests. The corresponding tets will be skipped if we fail to allocate the
+(huge) page. For other test cases, the original page around to kernel
+symbol (@start_kernel) is still used.
+
+The patches are organized as below. PATCH[2-10] could be combined to one
+patch, but it will make the review harder:
+
+  PATCH[1] introduces "struct vm_pgtable_debug" as place holder of all
+           needed information. With it, the old and new implementation
+           can coexist.
+  PATCH[2-10] uses "struct vm_pgtable_debug" in various test functions.
+  PATCH[11] removes the old implementation.
+  PATCH[12] fixes the issue of corrupted page flag for ARM64
+
+
+Gavin Shan (12):
+  mm/debug_vm_pgtable: Introduce struct vm_pgtable_debug
+  mm/debug_vm_pgtable: Use struct vm_pgtable_debug in basic tests
+  mm/debug_vm_pgtable: Use struct vm_pgtable_debug in leaf and savewrite
+    tests
+  mm/debug_vm_pgtable: Use struct vm_pgtable_debug in protnone and
+    devmap tests
+  mm/vm_debug_pgtable: Use struct vm_pgtable_debug in soft_dirty and
+    swap tests
+  mm/debug_vm_pgtable: Use struct vm_pgtable_debug in migration and thp
+    tests
+  mm/debug_vm_pgtable: Use struct vm_pgtable_debug in PTE modifying
+    tests
+  mm/debug_vm_pgtable: Use struct vm_pgtable_debug in PMD modifying
+    tests
+  mm/vm_debug_pgtable: Use struct vm_pgtable_debug in PUD modifying
+    tests
+  mm/debug_vm_pgtable: Use struct vm_pgtable_debug in PGD and P4D
+    modifying tests
+  mm/debug_vm_pgtable: Remove unused code
+  mm/debug_vm_pgtable: Fix corrupted page flag
+
+ mm/debug_vm_pgtable.c | 875 ++++++++++++++++++++++++------------------
+ 1 file changed, 500 insertions(+), 375 deletions(-)
+
+-- 
+2.23.0
+
