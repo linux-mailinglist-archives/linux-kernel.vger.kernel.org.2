@@ -2,86 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD953BCA00
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 768463BCA02
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbhGFKfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 06:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbhGFKfr (ORCPT
+        id S231405AbhGFKgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 06:36:09 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:51949 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231216AbhGFKgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 06:35:47 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A47C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 03:33:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=n2Vzx/jD6M+1KgcgpN/qKExJDJdXYiAmzmysfJfl01o=; b=n2viB8M4RXVDiYLyvvYbcTNk3V
-        A8ED53F16U0tzR1oqzalTVtNxY6CqG8RT3RRiyHx9Bp0s5oLHeakV28w6smscQiQ/bQnKfQQsWPch
-        JZEBlV9ueq0x0+chJEIyG0NhmnrJdFyON/uSXcOTpdx1Urmtagd+XyxdudMeh6r1qhRu35H45muhL
-        /XW32kjz3gapDCvQhLZ9S7IhY/R81+UdFtOgaj4Z6dj7U1Q0C6PYAOMJ9yJqu+6CZ8MWaMejr1OdZ
-        orh8JFn17EqmlfPnSAd2lLUpaxQjyrL/gZ50A2V9VHR9xEmK+GxcyOJfqjvwaMR4fKY6zgGzJKwU5
-        u1DAOP2g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0iO2-00F17E-Ea; Tue, 06 Jul 2021 10:33:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 05EEC300233;
-        Tue,  6 Jul 2021 12:33:04 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E708F200D9D6C; Tue,  6 Jul 2021 12:33:04 +0200 (CEST)
-Date:   Tue, 6 Jul 2021 12:33:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: RCU vs data_race()
-Message-ID: <YOQxYJaypdsmqhlX@hirez.programming.kicks-ass.net>
-References: <YMxYR33XEfVg6AoD@hirez.programming.kicks-ass.net>
- <YMxgbuEdrq8k3eZp@elver.google.com>
- <YMyC0iux0wKzc1JG@hirez.programming.kicks-ass.net>
- <20210618204800.GK4397@paulmck-ThinkPad-P17-Gen-1>
- <YM+TlNDJm1Jx1WQW@hirez.programming.kicks-ass.net>
- <20210620210127.GR4397@paulmck-ThinkPad-P17-Gen-1>
- <YNA/gkHbq46A/21C@hirez.programming.kicks-ass.net>
- <20210621133757.GS4397@paulmck-ThinkPad-P17-Gen-1>
- <YOQNgsS9Tjt4aDmG@hirez.programming.kicks-ass.net>
- <CANpmjNNRAJ34KUF-1hWrP3F0Ooy4oi6kbH82WWpDxmVqVSj4SA@mail.gmail.com>
+        Tue, 6 Jul 2021 06:36:08 -0400
+Received: by mail-il1-f198.google.com with SMTP id w19-20020a056e0213f3b02901ee5bb29e91so12312160ilj.18
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 03:33:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HTEh+SMOm59WI4CodXAnvM9DEZpap7cETt1TV35bhnU=;
+        b=L2Pw4/cfTWiaXb1/K1Ph5h6bmE+/QbfHxNvWu7Q1SVWAC7vDyyo5UIEQpkcm+3vMGk
+         CuWynH9AW1WD72hRbclcvJ3nRjmtDqyVovidNYTtLLuaZUr5vJoitOJbHfrDzsB7U+p8
+         jzyz0J9VUzjnjmiDnG0vkGMeimiQovYkutwl2Pkk4z69B1wKRndldANS26RGY2GPSSjt
+         tTlFftdgfKpnTxnKqwtzb5/+MoPvSAUw7o+IOFdHJbFvMDh2Fvb0/bzzbs+kIfrjNkbt
+         kt/unBKGHgMRHy+jExKY1oQVKtm87/1zIRPyIMBwj5uJU3F5hCIFGEOT85JTBTzu6lrE
+         T8tA==
+X-Gm-Message-State: AOAM532CvjAhDz8k0YugUWgIXRbSUKqP2GnAdZxcXZLsIe0jbkVL4vf8
+        xs4RyBgriohaBX7C2eAcMGsw7ovQrE407xJvmxTSQ9rzWHaG
+X-Google-Smtp-Source: ABdhPJxwZ6ebRQZi8N2jP4eLnHB684uP4HD+NZUVQmbxC6t/NQpf2rarA4672EzSlXNxDEIM03HUvvp1tNcmrzAepD/FURGxq2Wx
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNNRAJ34KUF-1hWrP3F0Ooy4oi6kbH82WWpDxmVqVSj4SA@mail.gmail.com>
+X-Received: by 2002:a02:ce94:: with SMTP id y20mr3518795jaq.18.1625567609708;
+ Tue, 06 Jul 2021 03:33:29 -0700 (PDT)
+Date:   Tue, 06 Jul 2021 03:33:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ef663405c671f3a5@google.com>
+Subject: [syzbot] upstream boot error: BUG: sleeping function called from
+ invalid context in stack_depot_save
+From:   syzbot <syzbot+0fb43da032dd2c0d2dbb@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 10:44:46AM +0200, Marco Elver wrote:
-> On Tue, 6 Jul 2021 at 10:00, Peter Zijlstra <peterz@infradead.org> wrote:
-> [...]
-> > In that case, would not an explicit: data_debug(addr) call (implemented
-> > by KASAN/KCSAN/whoever), which would report whatever knowledge they have
-> > about that address, be even more useful?
-> 
-> KCSAN/KASAN report data-races/memory errors as soon as they encounter
-> them, but before they do, cannot give you any more than that (metadata
-> if it exists, but not sure it can be interpreted in any useful way
-> before an error occurs).
-> 
-> But maybe I misunderstood. Is data_debug() meant to not return
-> anything and instead just be a "fake access"?
+Hello,
 
-Mostly just print any meta data that you might have. Like who allocated
-it, or which code touched it. I'm thinking KASAN/KCSAN need to keep
-track of such stuff for when a violation is detected.
+syzbot found the following issue on:
 
-If I understand Paul right; and there's a fair chance I didn't; I tihnk
-the issue is that when RCU finds a double call_rcu() (or some other
-fail), it has very little clue how we got there, and any addition
-information might be useful.
+HEAD commit:    79160a60 Merge tag 'usb-5.14-rc1' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11052e78300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4c86f97408164ca1
+dashboard link: https://syzkaller.appspot.com/bug?extid=0fb43da032dd2c0d2dbb
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0fb43da032dd2c0d2dbb@syzkaller.appspotmail.com
+
+BUG: sleeping function called from invalid context at mm/page_alloc.c:5178
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 2, name: kthreadd
+1 lock held by kthreadd/2:
+ #0: ffff8880b9c31660 (lock#2){....}-{2:2}, at: __alloc_pages_bulk+0x4ad/0x1870 mm/page_alloc.c:5290
+irq event stamp: 1804
+hardirqs last  enabled at (1803): [<ffffffff81ba1f82>] slab_alloc_node mm/slab.c:3256 [inline]
+hardirqs last  enabled at (1803): [<ffffffff81ba1f82>] kmem_cache_alloc_node_trace+0x412/0x5d0 mm/slab.c:3617
+hardirqs last disabled at (1804): [<ffffffff81b17107>] __alloc_pages_bulk+0x1017/0x1870 mm/page_alloc.c:5290
+softirqs last  enabled at (1716): [<ffffffff812b1cec>] memcpy include/linux/fortify-string.h:191 [inline]
+softirqs last  enabled at (1716): [<ffffffff812b1cec>] fpu__copy+0x16c/0x660 arch/x86/kernel/fpu/core.c:241
+softirqs last disabled at (1714): [<ffffffff812b1c21>] fpu__copy+0xa1/0x660 arch/x86/kernel/fpu/core.c:229
+CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
+ ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
+ prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5178
+ __alloc_pages+0x12f/0x500 mm/page_alloc.c:5374
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
+ stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
+ save_stack+0x15e/0x1e0 mm/page_owner.c:120
+ __set_page_owner+0x50/0x290 mm/page_owner.c:181
+ prep_new_page mm/page_alloc.c:2444 [inline]
+ __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5312
+ alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
+ vm_area_alloc_pages mm/vmalloc.c:2793 [inline]
+ __vmalloc_area_node mm/vmalloc.c:2863 [inline]
+ __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2966
+ alloc_thread_stack_node kernel/fork.c:245 [inline]
+ dup_task_struct kernel/fork.c:875 [inline]
+ copy_process+0x8db/0x74d0 kernel/fork.c:1952
+ kernel_clone+0xe7/0xac0 kernel/fork.c:2509
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2561
+ create_kthread kernel/kthread.c:342 [inline]
+ kthreadd+0x4ea/0x750 kernel/kthread.c:685
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+============================================
+WARNING: possible recursive locking detected
+5.13.0-syzkaller #0 Tainted: G        W        
+--------------------------------------------
+kthreadd/2 is trying to acquire lock:
+ffff8880b9c31660 (lock#2){....}-{2:2}, at: rmqueue_pcplist mm/page_alloc.c:3674 [inline]
+ffff8880b9c31660 (lock#2){....}-{2:2}, at: rmqueue mm/page_alloc.c:3712 [inline]
+ffff8880b9c31660 (lock#2){....}-{2:2}, at: get_page_from_freelist+0x486/0x2f80 mm/page_alloc.c:4174
+
+but task is already holding lock:
+ffff8880b9c31660 (lock#2){....}-{2:2}, at: __alloc_pages_bulk+0x4ad/0x1870 mm/page_alloc.c:5290
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(lock#2);
+  lock(lock#2);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+1 lock held by kthreadd/2:
+ #0: ffff8880b9c31660 (lock#2){....}-{2:2}, at: __alloc_pages_bulk+0x4ad/0x1870 mm/page_alloc.c:5290
+
+stack backtrace:
+CPU: 0 PID: 2 Comm: kthreadd Tainted: G        W         5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
+ print_deadlock_bug kernel/locking/lockdep.c:2944 [inline]
+ check_deadlock kernel/locking/lockdep.c:2987 [inline]
+ validate_chain kernel/locking/lockdep.c:3776 [inline]
+ __lock_acquire.cold+0x149/0x3ab kernel/locking/lockdep.c:5015
+ lock_acquire kernel/locking/lockdep.c:5625 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+ local_lock_acquire include/linux/local_lock_internal.h:42 [inline]
+ rmqueue_pcplist mm/page_alloc.c:3674 [inline]
+ rmqueue mm/page_alloc.c:3712 [inline]
+ get_page_from_freelist+0x4aa/0x2f80 mm/page_alloc.c:4174
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5385
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
+ stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
+ save_stack+0x15e/0x1e0 mm/page_owner.c:120
+ __set_page_owner+0x50/0x290 mm/page_owner.c:181
+ prep_new_page mm/page_alloc.c:2444 [inline]
+ __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5312
+ alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
+ vm_area_alloc_pages mm/vmalloc.c:2793 [inline]
+ __vmalloc_area_node mm/vmalloc.c:2863 [inline]
+ __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2966
+ alloc_thread_stack_node kernel/fork.c:245 [inline]
+ dup_task_struct kernel/fork.c:875 [inline]
+ copy_process+0x8db/0x74d0 kernel/fork.c:1952
+ kernel_clone+0xe7/0xac0 kernel/fork.c:2509
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2561
+ create_kthread kernel/kthread.c:342 [inline]
+ kthreadd+0x4ea/0x750 kernel/kthread.c:685
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
