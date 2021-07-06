@@ -2,128 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C913BDC97
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 20:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2493BDC9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 20:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhGFSCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 14:02:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhGFSCQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 14:02:16 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7013AC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 10:59:37 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id g4so21052981qkl.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 10:59:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QafN6h6Co6NuKaJg6KsXY/qvYmait2ZxGzl1LH+hKGc=;
-        b=o+6yrnhyDXWJv8oLffV4OzrBks140sBzkKRa/BHDPAgco6gkcsk/KfM0urmbG1ZpZp
-         aNfP9t5Y248cSGYMNP5udtisN7IexW8dI/evhDcabpX78aqPc3z4PUkjqOFT88k3q2UU
-         VMDnrscsVmrIJXOn1Tl4GknyaQqnihC5TNeBzt7oxN9cnepeiC33KAZ1WQv24bEg5Ptl
-         wh50zYlI3opLL0jj7l3ICvX3darwow+ATpP8HNytVg4jpuzFtVevfPbuvYAuE+UIH3oi
-         0+6FwhgS8LlAzXLg8Hrg7kDb7r475k6OOP9fsruyXhd5J6BvIkWbmMJ01HjVqF1+s9dG
-         KB4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QafN6h6Co6NuKaJg6KsXY/qvYmait2ZxGzl1LH+hKGc=;
-        b=Hv4dEdbTOmn1DQ04noz4GzLQsdatRQEcrBhIvFGvSFbs0NWpS4NSYkXHtF9+GhX5Eb
-         q5uToy5XKY56XZqBsl77mpwJf5UPOHhRuqbcHOfqTdw8ivNnNJzKWN73J0aA7T33QIHa
-         kWXHoLGkuJNiUoEzGxFIlyQyIi+xu2H+nIoEG30ctw9NCyBTQWh6aGtoPbKWNPVwi+K+
-         VMc5oTafUEn7065nNfKli0130DuVZz8+TMKMcfcXfwJIEq91oROTB9bur6wHNW4AT8+T
-         NObaqYpjnB1yU9UzW+bkbw7aNgWwRAWgEErkN+geCehJDxrZIhO82/MMdVv51RO+yCA/
-         l/Aw==
-X-Gm-Message-State: AOAM530rEng5jNlMFSWGQzEClQ3Cgc95jn2ykKo1/FDqO42Pg8ArAosz
-        zfnXfkYDosdeKGTUHEzpj8oEMw==
-X-Google-Smtp-Source: ABdhPJyVxfP24yiWMaxghSmvMQwbby4otQnbgBhcVo8qVKROchOHAE6ChpAWAzTpF2fYkJyDXgbw1w==
-X-Received: by 2002:a37:c448:: with SMTP id h8mr10568428qkm.191.1625594376601;
-        Tue, 06 Jul 2021 10:59:36 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id 16sm5697170qty.15.2021.07.06.10.59.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 10:59:36 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1m0pM7-004W2s-6g; Tue, 06 Jul 2021 14:59:35 -0300
-Date:   Tue, 6 Jul 2021 14:59:35 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <20210706175935.GS4604@ziepe.ca>
-References: <YOQXBWpo3whVjOyh@phenom.ffwll.local>
- <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
- <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
- <20210706142357.GN4604@ziepe.ca>
- <CAKMK7uELNzwUe+hhVWRg=Pk5Wt_vOOX922H48Kd6dTyO2PeBbg@mail.gmail.com>
- <20210706152542.GP4604@ziepe.ca>
- <CAKMK7uH7Ar6+uAOU_Sj-mf89V9WCru+66CV5bO9h-WAAv7Mgdg@mail.gmail.com>
- <CAKMK7uGvO0h7iZ3vKGe8GouESkr79y1gP1JXbfV82sRiaT-d1A@mail.gmail.com>
- <20210706172828.GR4604@ziepe.ca>
- <20210706173137.GA7840@lst.de>
+        id S230247AbhGFSFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 14:05:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:47540 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229938AbhGFSFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 14:05:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60B191042;
+        Tue,  6 Jul 2021 11:03:03 -0700 (PDT)
+Received: from [10.57.40.45] (unknown [10.57.40.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E7FE3F5A1;
+        Tue,  6 Jul 2021 11:03:02 -0700 (PDT)
+Subject: Re: [PATCH] iommu: Fallback to default setting when def_domain_type()
+ callback returns 0
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, will@kernel.org,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210706065106.271765-1-kai.heng.feng@canonical.com>
+ <d9fa9a62-6522-7d26-0cca-16f6886136ec@arm.com>
+ <CAAd53p7ZXWkD8DiL0kMP8dZA5qFGRcdAMizv3THgo2XABPe25g@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <55a31c97-a3f4-97d7-0663-13c15b68d5c0@arm.com>
+Date:   Tue, 6 Jul 2021 19:02:57 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210706173137.GA7840@lst.de>
+In-Reply-To: <CAAd53p7ZXWkD8DiL0kMP8dZA5qFGRcdAMizv3THgo2XABPe25g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 07:31:37PM +0200, Christoph Hellwig wrote:
-> On Tue, Jul 06, 2021 at 02:28:28PM -0300, Jason Gunthorpe wrote:
-> > > Also on your claim that drivers/gpu is a non-upstream disaster: I've
-> > > also learned that that for drivers/rdma there's the upstream driver,
-> > > and then there's the out-of-tree hackjob the vendor actually
-> > > supports.
-> > 
-> > In the enterprise world everyone has their out of tree backport
-> > drivers. It varies on the vendor how much deviation there is from the
-> > upstream driver and what commercial support relationship the vendor
-> > has with the enterprise distros.
+On 2021-07-06 17:21, Kai-Heng Feng wrote:
+> On Tue, Jul 6, 2021 at 5:27 PM Robin Murphy <robin.murphy@arm.com> wrote:
+>>
+>> On 2021-07-06 07:51, Kai-Heng Feng wrote:
+>>> Commit 28b41e2c6aeb ("iommu: Move def_domain type check for untrusted
+>>> device into core") not only moved the check for untrusted device to
+>>> IOMMU core, it also introduced a behavioral change by returning
+>>> def_domain_type() directly without checking its return value. That makes
+>>> many devices no longer use the default IOMMU setting.
+>>>
+>>> So revert back to the old behavior which defaults to
+>>> iommu_def_domain_type when driver callback returns 0.
+>>>
+>>> Fixes: 28b41e2c6aeb ("iommu: Move def_domain type check for untrusted device into core")
+>>
+>> Are you sure about that? From that same commit:
+>>
+>> @@ -1507,7 +1509,7 @@ static int iommu_alloc_default_domain(struct
+>> iommu_group *group,
+>>           if (group->default_domain)
+>>                   return 0;
+>>
+>> -       type = iommu_get_def_domain_type(dev);
+>> +       type = iommu_get_def_domain_type(dev) ? : iommu_def_domain_type;
+>>
+>>           return iommu_group_alloc_default_domain(dev->bus, group, type);
+>>    }
+>>
+>> AFAICS the other two callers should also handle 0 correctly. Have you
+>> seen a problem in practice?
 > 
-> I think he means the Mellanox OFED stack, which is a complete and utter
-> mess and which gets force fed by Mellanox/Nvidia on unsuspecting
-> customers.  I know many big HPC sites that ignore it, but a lot of
-> enterprise customers are dumb enought to deploy it.
+> Thanks for pointing out how the return value is being handled by the callers.
+> However, the same check is missing in probe_get_default_domain_type():
+> static int probe_get_default_domain_type(struct device *dev, void *data)
+> {
+>          struct __group_domain_type *gtype = data;
+>          unsigned int type = iommu_get_def_domain_type(dev);
+> ...
+> }
 
-No, I don't think so. While MOFED is indeed a giant mess, the mlx5
-upstream driver is not some token effort to generate good will and
-Mellanox certainly does provide full commercial support for the mlx5
-drivers shipped inside various enterprise distros.
+I'm still not following - the next line right after that is "if (type)", 
+which means it won't touch gtype, and if that happens for every 
+iteration, probe_alloc_default_domain() subsequently hits its "if 
+(!gtype.type)" condition and still ends up with iommu_def_domain_type. 
+This *was* one of the other two callers I was talking about (the second 
+being iommu_change_dev_def_domain()), and in fact on second look I think 
+your proposed change will actually break this logic, since it's 
+necessary to differentiate between a specific type being requested for 
+the given device, and a "don't care" response which only implies to use 
+the global default type if it's still standing after *all* the 
+appropriate devices have been queried.
 
-MOFED also doesn't have a big functional divergance from RDMA
-upstream, and it is not mandatory just to use the hardware.
+> I personally prefer the old way instead of open coding with ternary
+> operator, so I'll do that in v2.
+> 
+> In practice, this causes a kernel panic when probing Realtek WiFi.
+> Because of the bug, dma_ops isn't set by probe_finalize(),
+> dma_map_single() falls back to swiotlb which isn't set and caused a
+> kernel panic.
 
-I can not say the same about other company's RDMA driver
-distributions, Daniel's description of "minimal effort to get
-goodwill" would match others much better.
+Hmm, but if that's the case, wouldn't it still be a problem anyway if 
+the end result was IOMMU_DOMAIN_IDENTITY? I can't claim to fully 
+understand the x86 swiotlb and no_iommu dance, but nothing really stands 
+out to give me confidence that it handles the passthrough options correctly.
 
-You are right that there are a lot of enterprise customers who deploy
-the MOFED. I can't agree with their choices, but they are not forced
-into using it anymore.
+Robin.
 
-Jason
+> I didn't attach the panic log because the system simply is frozen at
+> that point so the message is not logged to the storage.
+> I'll see if I can find another way to collect the log and attach it in v2.
+> 
+> Kai-Heng
+> 
+>>
+>> Robin.
+>>
+>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>>> ---
+>>>    drivers/iommu/iommu.c | 5 +++--
+>>>    1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>>> index 5419c4b9f27a..faac4f795025 100644
+>>> --- a/drivers/iommu/iommu.c
+>>> +++ b/drivers/iommu/iommu.c
+>>> @@ -1507,14 +1507,15 @@ EXPORT_SYMBOL_GPL(fsl_mc_device_group);
+>>>    static int iommu_get_def_domain_type(struct device *dev)
+>>>    {
+>>>        const struct iommu_ops *ops = dev->bus->iommu_ops;
+>>> +     unsigned int type = 0;
+>>>
+>>>        if (dev_is_pci(dev) && to_pci_dev(dev)->untrusted)
+>>>                return IOMMU_DOMAIN_DMA;
+>>>
+>>>        if (ops->def_domain_type)
+>>> -             return ops->def_domain_type(dev);
+>>> +             type = ops->def_domain_type(dev);
+>>>
+>>> -     return 0;
+>>> +     return (type == 0) ? iommu_def_domain_type : type;
+>>>    }
+>>>
+>>>    static int iommu_group_alloc_default_domain(struct bus_type *bus,
+>>>
