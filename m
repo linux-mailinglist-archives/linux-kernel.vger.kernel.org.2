@@ -2,119 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4873BD8B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C3F3BD86E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232939AbhGFOqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232803AbhGFOpy (ORCPT
+        id S232320AbhGFOlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:41:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54204 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232378AbhGFOkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:45:54 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AA1C08EA70
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 07:37:03 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id c15so12107807pls.13
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:37:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YFV6rk8SCk3lOjLONoCa6QpHpLH5GrV0fP6FZz2KGC4=;
-        b=i36XoWKRqU8KJek9jwEW2vzH1kXRjuehGEigeg5Akp/37tkny8vakSr0jIAXiOGu1u
-         GHL0ilRliQ9oc9iQmH0an9uV7JDwd/mzX3DacIwdaf7HcjAKD8DG/JUXrWtMORT34TXg
-         BYTz5cnKNmWDAd3HuxUJ6kG/qwZoiWbpmkdvRPgflY5DbEzGQI/QtT0N02w4M1gse04r
-         jsMypKxf5auUb2hsbqD5cFX7qeepAXsueX82eDVDxqpjWSWLMJVdOufDNgfIs7QguF2V
-         gCqp8r5nbz2rp8BmskQCVyWGVWJsMkQ7QtZ+ygTqYTusq6gu7yTTPo1WNdN0ZZrvKsSb
-         lqLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YFV6rk8SCk3lOjLONoCa6QpHpLH5GrV0fP6FZz2KGC4=;
-        b=RemmrPb6qZzAs1jPXDqj6eND/dv1ugum6iEzhNInWz2Q2ceoTRxO1/EbKRmrqf+Tvc
-         7jUCd2d1s1mLSX6Sjpnoq6TOYHLF5jOswQT1v9LyMTF6nRstp/f71dkreBZ4IQKG5p6Y
-         btMn0jlB3eX5iq5XGqP/L1dQZf4yPE3qqqrN4tFvIgnKUhWQH1CPeXgZQInw+puXBVR4
-         p5cDDjy4tQKivLA3UTYBPsFxnZ0Yx5942rLLrQQu9nrbQrEwkCbXmDoNMfXUEJEOtfxc
-         zK3ZBeZReJ5SUCcTU3WrmWpmWECYBLhZWqysrkNg1512Y/2eiWhiMizN7QsoB4yH1zJW
-         l+mg==
-X-Gm-Message-State: AOAM530NNXWOfDdsbu3/NyNzqWVRdg5NMjR8PGPGwwLajAPgg9EZ+wAT
-        LHV48mnlrpxjhuu09wYJ/2EqKvUl2Hs6Fw==
-X-Google-Smtp-Source: ABdhPJz1CsC+M5B6A7qlNZPYOtCZ1RD0GqU6WwjApjr7wLD9E1k97rwxhSXS/QrhzlkoPkDPUTVSHw==
-X-Received: by 2002:a0c:c401:: with SMTP id r1mr18387245qvi.46.1625581438559;
-        Tue, 06 Jul 2021 07:23:58 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id b25sm6994985qkk.111.2021.07.06.07.23.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 07:23:58 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1m0lzR-004RHF-1S; Tue, 06 Jul 2021 11:23:57 -0300
-Date:   Tue, 6 Jul 2021 11:23:57 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <20210706142357.GN4604@ziepe.ca>
-References: <20210705130314.11519-1-ogabbay@kernel.org>
- <YOQXBWpo3whVjOyh@phenom.ffwll.local>
- <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
- <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
+        Tue, 6 Jul 2021 10:40:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625582284;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=KjCstSouDZkw7Bqtv4k/PxEoOLOmqdR6D9R+ZD8bKSg=;
+        b=LUSy9DaGD0DakqVcp9uKO9ZNQpU31Z0AGjDiZoJ8pzxtNxeZOEDAzFTHVKJRhh3UXR6hbO
+        /7iOVHT/k3f25K3lrsd38B0FmcM/MMbC4OsHEd/lGqLoHxwyjRT53Umn/DqmdDfHL3WYeH
+        kIze1LvAZ8rtrsqzGCtIko9teqBoPv4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-3K1ssg56Mmm2C-jJyGK8MQ-1; Tue, 06 Jul 2021 10:26:42 -0400
+X-MC-Unique: 3K1ssg56Mmm2C-jJyGK8MQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF307800D62;
+        Tue,  6 Jul 2021 14:26:40 +0000 (UTC)
+Received: from eperezma.remote.csb (ovpn-113-20.ams2.redhat.com [10.36.113.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F08B860583;
+        Tue,  6 Jul 2021 14:26:35 +0000 (UTC)
+From:   =?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>
+To:     mst@redhat.com, linux-kernel@vger.kernel.org
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>
+Subject: [PATCH 0/2] tools/virtio: fix compilation
+Date:   Tue,  6 Jul 2021 16:26:30 +0200
+Message-Id: <20210706142632.670483-1-eperezma@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 12:36:51PM +0200, Daniel Vetter wrote:
+Virtio testing tools cannot build. Fixing.=0D
+=0D
+Comments are welcome, specially in case I missed use of stub lockdep.h.=0D
+=0D
+I couldn't try some of the tools, that already did not compile on 5.13:=0D
+gpio, liblockdep, selftests, bpf, tracing.=0D
+=0D
+Eugenio P=C3=A9rez (2):=0D
+  tools: Remove lockdep.h and its include from spinlock.h=0D
+  vringh: Include spinlock.h=0D
+=0D
+ include/linux/vringh.h                   |  1 +=0D
+ tools/include/linux/spinlock.h           |  2 --=0D
+ tools/testing/radix-tree/linux/lockdep.h | 11 -----------=0D
+ 3 files changed, 1 insertion(+), 13 deletions(-)=0D
+ delete mode 100644 tools/testing/radix-tree/linux/lockdep.h=0D
+=0D
+-- =0D
+2.27.0=0D
+=0D
 
-> If that means AI companies don't want to open our their hw specs
-> enough to allow that, so be it - all you get in that case is
-> offloading the kernel side  of the stack for convenience, with zero
-> long term prospects to ever make this into a cross vendor subsystem
-> stack that does something useful.
-
-I don't think this is true at all - nouveau is probably the best
-example.
-
-nouveau reverse engineered a userspace stack for one of these devices.
-
-How much further ahead would they have been by now if they had a
-vendor supported, fully featured, open kernel driver to build the
-userspace upon?
-
-> open up your hw enough for that, I really don't see the point in
-> merging such a driver, it'll be an unmaintainable stack by anyone else
-> who's not having access to those NDA covered specs and patents and
-> everything.
-
-My perspective from RDMA is that the drivers are black boxes. I can
-hack around the interface layers but there is a lot of wild stuff in
-there that can't be understood without access to the HW documentation.
-
-I think only HW that has open specs, like say NVMe, can really be
-properly community oriented. Otherwise we have to work in a community
-partnership with the vendor.
-
-Jason
