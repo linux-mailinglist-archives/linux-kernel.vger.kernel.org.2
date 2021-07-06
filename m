@@ -2,159 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81FF3BDD13
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 20:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F2F3BDD27
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 20:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhGFSZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 14:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231187AbhGFSZT (ORCPT
+        id S231355AbhGFS3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 14:29:05 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:58867 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231276AbhGFS3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 14:25:19 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6E4C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 11:22:40 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id l17-20020a9d6a910000b029048a51f0bc3cso10749470otq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 11:22:40 -0700 (PDT)
+        Tue, 6 Jul 2021 14:29:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1625595985; x=1657131985;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=U7Rcd/MP3s8gvcjpjJD6UAS6NcP8vBtrbPVW9dx8gOY=;
+  b=PbpB1cN4v8hwLNJtrfUq1U9yEb21rY8+M1U5cKbSA1GcoNdBjM7Wajg9
+   h7ndkfZY6bRIrIplfC+b0RxwpjAZPx/+pWydBdgOaC+FVgzKOXWohyXeC
+   oT+e7uLpjpnb3aC8pv5PzoHcCRUazciZXhuha+kQ9DpIJcvNP9BZpiIpH
+   3qt2xoKG5bPGw17T4S8+rW7bLrfZJdF43wE9i7fR9dyOy2nQ19wJ7hvcS
+   mfctX1uUgh0x3g3C7/9Em22TFkPgmqis+2eanYJq115GLZ0uceakmz3Z4
+   pIEDiIRxwMDbm2cNz1yxTMvp5KcgNX9djvXp8MrYXL8oPa9DkQIQiS7Ig
+   w==;
+IronPort-SDR: UlVVTEIViv34vI9BTvhv70JrNudAJmwikWialDzUdHgvzaz+u8227B8lCjyxWF5xEOozsMVi1X
+ Dxs0jV+0LLf2QO1ASYT5LqDYmTUsfrT/dKVn8Xn1Csl1E7AYBBNIboHOUZBxz8zhVwEDKmGXA9
+ kMco3jf3eGs8xe8326vurNHhOQpPnIoX0Yflzc+GFVbhIQmk4m7dLPFIG2aWnEqhEJH1oyLYID
+ Csd9rR7pL1GWturs5IGBJkxHhfVxS2/3kmxDnfTlq16zRxP1JZ0E0xKxemM9ivN1gH6RzFHuvX
+ inA=
+X-IronPort-AV: E=Sophos;i="5.83,329,1616428800"; 
+   d="scan'208";a="277649165"
+Received: from mail-mw2nam08lp2175.outbound.protection.outlook.com (HELO NAM04-MW2-obe.outbound.protection.outlook.com) ([104.47.73.175])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Jul 2021 02:26:25 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TZFMvUMKViovqqCVUaDU6UpSccjNr+mSAryCeaXqLmDcTCcl4iBiLVOqqSTiCMJliZt2IxJh5dbDGIr5px+yc0oNTzrEg0ehEwJ0GBvWV4Ycn9bZ+S8T+AB1TZqq+kSKSeXNtZ89qm77zPZI2j9V6ZMsUOdAE33PdeXxJUTM46j6qEZSgln3/4NjhdbJt28mAaIuvk+bCePUbAV/7mm7ujUqy6F+90B6HYFTyEk4wtpE20wyJmkg/rCRpWfoWXI+aWAEltf1Lr0ovqsuvmjOf4xiMzNPGmTgUAcmPV4X9Ff69b6fLuX9iRoyJZx0Sabl/fnWtsej1/E4XO+T6LFEjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U7Rcd/MP3s8gvcjpjJD6UAS6NcP8vBtrbPVW9dx8gOY=;
+ b=dgOFjtFU9epODu1mj9b/X1dEYy26wG19J/1u5Mv10A+HmfwrYKqxZA4Gg78BHl8r5u5vbd+X+TMiPfjYc7zuuRypasuteJG9wRKOsEb1d1mHy4UV2THW+BKFAgnphnW0sxNLNjAnHsu82aY0VkWVP3DbSG8DviIqG3nasm58V+9EVdYQUoyInIPo9wq3VOQcVltQ8A2gLgBXcqymJfzepTeFoajekYcLqaF62z79zazBMwAYSB8gmvXL3uRJ6bm8RXSOtdCET+e+s8XqTUOsK823ePOmeynuAE27VSsfCR/00EniIVq/4l1RGmRM1eMsOg8qWR+ttvMrYmBPWueIvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OK8/u6FR6IpmADEYbANCYO9TQlI0qE21fTDfkShK+ww=;
-        b=i2uwcoMcfmddzZeAHZK1nfTlzTrcH3Xa0nFzzRahmaAfnFbZ68H1NXl7/68l7dEhM3
-         RL8FkYrZANRxwovACIlM2R3e1/MjAAIMfE9j8tCNZk7dABUspRv6crMr60ddwmIPY8is
-         Q2DruqlbI4mA+yQxIGeRMloOxy3Y8SbM3f8rm9UflLj3/nFp724kbXxYscvaX166X8hC
-         Xcvdf/qNTBIXFRlu8+Nof/UF6+rFu/j1Xdv4hyiduIjZVtdd1UBSgaTCw6lCn1hvkQA5
-         DEEYYhnOaKQz9hTKpSbIQOnesyFVkzOreospuF8amsijc1r3K/9HmpKT9baHkWXl8qz5
-         tBXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OK8/u6FR6IpmADEYbANCYO9TQlI0qE21fTDfkShK+ww=;
-        b=ucI2jOgwift84y5T1PInxwrr/a9X7NWMog/detl69zn+bSH4HdovwUZ7iBuTGN2Gh0
-         ZGpDO2AnQL8iIj8j25WJcETYV92nTxDMJMLkPORsokQfqtzJx9aMexuPUec/UBDySpOv
-         xsgX5+Snom1c2W7OTG672BRVn87vCG19ZGYzSEC2RNez8QVg7CYIrCyoBWnZ/WmEGOHW
-         Eycl4Se5BbageSpQk6oPQ8hNh69Vv/I1zoLa43l/uYg2GBNqFplsz6SshWXlkISjRqAF
-         NI058k0BZihmrsYe5Jt28Lr+SP9FCorbTEKEi9BNs7ohm+nwwU9cKh406b4vNBdAmzjk
-         euzA==
-X-Gm-Message-State: AOAM531lvY/KYPGnjOp+/562r19p7kZWYPd50MHfaXFcD3HKnj+nDYQG
-        GhkwLhnHNVffXtT9oYoPpDo=
-X-Google-Smtp-Source: ABdhPJy1ILFMoHId2malZq/x/NjqLyJnNQQy1RJyU1KDpdtikVIydjlZPxQ8diM4yNY23veWaMIYMw==
-X-Received: by 2002:a9d:73c1:: with SMTP id m1mr13047814otk.162.1625595759545;
-        Tue, 06 Jul 2021 11:22:39 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p26sm1640176otp.59.2021.07.06.11.22.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 11:22:38 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] mtd: core: handle flashes without OTP gracefully
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Tudor.Ambarus@microchip.com, michael@walle.cc,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        richard@nod.at, vigneshr@ti.com
-References: <20210702093841.32307-1-michael@walle.cc>
- <9bb2acac-aeb8-d2b2-8df0-9acfd972ec5d@microchip.com>
- <9F46D75C-D00D-4577-A337-7411049EC7D9@walle.cc>
- <8da3d84e-dfbf-2030-98b4-148362d22f52@microchip.com>
- <2716acf0-fcf1-d2ef-83be-152d0300d687@roeck-us.net>
- <20210706182908.3cf82669@xps13>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <d35a1f0d-5a26-82d5-c051-3d9094449602@roeck-us.net>
-Date:   Tue, 6 Jul 2021 11:22:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210706182908.3cf82669@xps13>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U7Rcd/MP3s8gvcjpjJD6UAS6NcP8vBtrbPVW9dx8gOY=;
+ b=Q7Wtv5loL2wOk9uhRyBpXgYN4MsgfqpIpzld4Ux2bMGKMm68GK4KRckyocyQA7Io2dUftBYjy4+C5yFe5hTgn1ZdvKcOJp32gPu1A9LsasKMytGDwbfPhvVgseMV7A7pOUpNNqvf68nAgro9oE72yRpkrO13VBGAk6tPPtvrQHs=
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
+ by SJ0PR04MB7423.namprd04.prod.outlook.com (2603:10b6:a03:29c::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.24; Tue, 6 Jul
+ 2021 18:26:22 +0000
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::c026:2bf9:70fc:4999]) by BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::c026:2bf9:70fc:4999%6]) with mapi id 15.20.4287.033; Tue, 6 Jul 2021
+ 18:26:22 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Colin King <colin.king@canonical.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] nvmet: remove redundant assignments of variable
+ status
+Thread-Topic: [PATCH][next] nvmet: remove redundant assignments of variable
+ status
+Thread-Index: AQHXcncrWvc0ckRe8UGBmMjb9aYIlA==
+Date:   Tue, 6 Jul 2021 18:26:21 +0000
+Message-ID: <BYAPR04MB49658C0C1319D1A8B30C7DAB861B9@BYAPR04MB4965.namprd04.prod.outlook.com>
+References: <20210706145650.32555-1-colin.king@canonical.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e41bf8a3-0c08-4960-90a8-08d940ab8e4a
+x-ms-traffictypediagnostic: SJ0PR04MB7423:
+x-microsoft-antispam-prvs: <SJ0PR04MB742384E7DC95BEE5FC859B25861B9@SJ0PR04MB7423.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:556;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: zLvI2Wk9UAnHYzPXnoDN0XzueR3yl8/LBhMm/PwEPIeelUrHoDSENnwuMMTPOHlQ0ar2rrbekCbd0C0bx52SE2hddcCNlBG6D0RAAbhEwLkkXGrBDTOXf8d0s5UZFLBepHmzHp5PA+S4nNaj9wAwsq60Bj4as51OnKKTtl4iYs1zm8Jl79POGW6x5agFrOSA+acutFJptxhUhuQMP0wpCdQRIwBgXaEjtlGddVWtuJhc9rVC9AFdEP7/djQDMM7hpQA92wHC/KHrZFntH+Ap+7h78gZnJbQ+y1U6/RyNsAX2vRMGleDkwpa20lKeL8oEnwl7KSWv8uqqo5llz3vj+lNw8PT0bl2nkPk2eao0dppYLpZHA24CS9/WxEqMp1zvVV6Kf2DhAuhTXkdE1qbnbuLiW668hYTT7Ew+2Ij6SjEVYP9aHg2MZOFzUwbhFTz2T0QFrOsCErhqo0T4c/WAnebZ33ZM7OCPS4RYV+6rXqIX4QKvuzQXS9mdDlVtjg2pFNXgYNPRV9CXJeXcA6urQgtVuWG077WgEV6G98uP9yoIs4g719Yceb+oO5VssdyDV8b+FNzD46RmRr+KOg/fxdDtjDXnzp15riitVbXo1X1K6LrWL4NGt/muYo3eLRygB8XShgJG1u2rBZexSFNXGQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(346002)(39860400002)(396003)(9686003)(55016002)(53546011)(6506007)(86362001)(64756008)(8676002)(478600001)(38100700002)(2906002)(26005)(186003)(33656002)(83380400001)(4744005)(5660300002)(4326008)(122000001)(8936002)(66476007)(52536014)(76116006)(110136005)(7696005)(66446008)(66556008)(66946007)(316002)(71200400001)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?cC/HwhrQCIy7b4SRhTFNHo2bnMqjfchIaoA33cz9CxT4fz0cSIffLmiGOnhs?=
+ =?us-ascii?Q?Uq6lzU+vKTuU65XBdlNunMPo5f/zgo22sEKqrNXViUJ4qYvv75wypXHjpO7K?=
+ =?us-ascii?Q?j5Ey+cUNSVDMaiRds0b0BLaXDldWvl9Ypc5eMXWU9VN/4JFHaNfaOKh5Dr34?=
+ =?us-ascii?Q?eQFje9zmOOO6JQlD5M6DZKV8/Ng6vUePXaOs+PqJ0hi3s1EtFiJWTcVGayFC?=
+ =?us-ascii?Q?7VIceqvjHeaJ/clbQjL0FPxYqM1yq8CX4B7VR3htAURWhbVIpurjR1dvKquo?=
+ =?us-ascii?Q?kq34aRsRuZVTUkmnI1Uac8HF7svBY8bToouExFawvXVI5a7GFsKizXYHW5gT?=
+ =?us-ascii?Q?cz9kRGvnQUMHfBLL5Y+r3lUdU+acrwS5dSMwfrJNGFgUg6UnSIOoNiykgitP?=
+ =?us-ascii?Q?ahQDualuReSc8cZyFQ/rBLXEgVRSSWoLYtIWM/SAm8cEXj6rGY9sN8c1pF+d?=
+ =?us-ascii?Q?J80BGMQ29aMTvYv02dde312Uj0PIGKO8JCuV3PUV8DjdqRX9ExQWRFhUKL5q?=
+ =?us-ascii?Q?bZrXtOAi7gwxW9V/npiNqiGAByWLnAH7966+FOOXbO5b79qBWM+IdsWWjf6N?=
+ =?us-ascii?Q?0+eunSEHY/uU3kKijG4ANKdZirayS9qW+VPQ1a2FlVpxkz6oh46andSpOey0?=
+ =?us-ascii?Q?NbzeZbTZ5/TTtfFwoKcZpBWzE7yMrD0BpvV5jHIXPe1H4NYZx2wZ71kv/AUA?=
+ =?us-ascii?Q?OIiKO8r7KhPUwnyNfrJsdU2I23mWezNrHBOMNhIyhQDyHKS286GU9dnCw5JU?=
+ =?us-ascii?Q?3ar1vDzKhjx25BRKh3r8a3JyDEv3Fl4t5taP7HKhpOuPBK5ntflG74S/AcIX?=
+ =?us-ascii?Q?x3M7MYfwxnf58D0kCabv/hFKktHJdvZ4mjSTPWwZy8k5HVW2QTjQRfdBngz6?=
+ =?us-ascii?Q?gyk336T8oNeeVIVocXyMZxfDuy6E3w527QRHk3M3/niUPK+SEkicu4rysD/W?=
+ =?us-ascii?Q?oPngDYcMwxFCWxnxkse61jaMAZl6SsVNtNWRqvEEQ2EJHbNi+Hxji3Lze5oy?=
+ =?us-ascii?Q?O8Uua8uSNkNMU99DaXxxaqrkg6igtptMJKPj780fIDGPKuOC/9T5NijGLJNw?=
+ =?us-ascii?Q?mttjXQynnvanjAg0SlfhdbU8AD1ZVmvhYflWInJKnCRF4XF9aohXI3OFeT/6?=
+ =?us-ascii?Q?uUZ770TwuO0hPCJqdfQjPRlUXwTxEuECaEcVs1RYM/ehm686Wrt+AWMExarJ?=
+ =?us-ascii?Q?T8pI61V/HnqFIU7WtVEqIfwsI0FPvo5vR7tqVdzZgG3RSurgDiKGiu1c467T?=
+ =?us-ascii?Q?0rMFUC2XCfMAKWUuevd/2Zltk5eSiNZdZUZfwaC2paFqxuQu6faZTF2P+oGp?=
+ =?us-ascii?Q?1ads1bRveWoAXSsqBxRTi8bi?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e41bf8a3-0c08-4960-90a8-08d940ab8e4a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2021 18:26:21.9523
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eC2LY8sX1vEuLzeEweMBYI4Zjf0NZhKJ2ZQ/rOXE2zZRF+H1HxJsk5l/Pfgytgw6VBjFYhkK+xaMRImbkNqZss7cQPxCW4FhFd2/1H8Ljr4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7423
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/6/21 9:29 AM, Miquel Raynal wrote:
-> Hi Guenter,
-> 
-> Guenter Roeck <linux@roeck-us.net> wrote on Sat, 3 Jul 2021 10:26:06
-> -0700:
-> 
->> On 7/3/21 9:42 AM, Tudor.Ambarus@microchip.com wrote:
->>> On 7/3/21 7:08 PM, Michael Walle wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>>
->>>> Am 3. Juli 2021 11:56:14 MESZ schrieb Tudor.Ambarus@microchip.com:
->>>>> On 7/2/21 12:38 PM, Michael Walle wrote:
->>>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
->>>>> know the content is safe
->>>>>>
->>>>>> There are flash drivers which registers the OTP callbacks although
->>>>> the
->>>>>> flash doesn't support OTP regions and return -ENODATA for these
->>>>>> callbacks if there is no OTP. If this happens, the probe of the whole
->>>>>
->>>>> why do they register the OTP callback if they don't support OTP?
->>>>
->>>> I don't know. But I certainly won't touch that code :p
->>>
->>> why? :D
->>>    
->>>>
->>>>   
->>>>>> flash will fail. Fix it by handling the ENODATA return code and skip
->>>>>> the OTP region nvmem setup.
->>>>>>
->>>>>> Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
->>>>>> Reported-by: Guenter Roeck <linux@roeck-us.net>
->>>>>> Signed-off-by: Michael Walle <michael@walle.cc>
->>>>>> ---
->>>>>>    drivers/mtd/mtdcore.c | 10 ++++++++--
->>>>>>    1 file changed, 8 insertions(+), 2 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
->>>>>> index b5ccd3037788..6881d1423dd6 100644
->>>>>> --- a/drivers/mtd/mtdcore.c
->>>>>> +++ b/drivers/mtd/mtdcore.c
->>>>>> @@ -880,7 +880,10 @@ static int mtd_otp_nvmem_add(struct mtd_info
->>>>> *mtd)
->>>>>>
->>>>>>           if (mtd->_get_user_prot_info && mtd->_read_user_prot_reg) {
->>>>>>                   size = mtd_otp_size(mtd, true);
->>>>>> -               if (size < 0)
->>>>>> +               /* ENODATA means there is no OTP region */
->>>>>> +               if (size == -ENODATA)
->>>>>
->>>>> If no OTP data, maybe it's more appropriate for the clients to just
->>>>> return a retlen of 0.
->>>>
->>>> you mean already checking ENODATA in mtd_otp_size() and return 0. That would also make the hunk below unnecessary. I'll change it.
->>>
->>> I've thought about:
->>>
->>> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
->>> index 54f92d09d9cf..9419b33d7238 100644
->>> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
->>> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
->>> @@ -2314,7 +2314,7 @@ static int cfi_intelext_otp_walk(struct mtd_info *mtd, loff_t from, size_t len,
->>>    >          /* Check that we actually have some OTP registers */
->>>           if (!extp || !(extp->FeatureSupport & 64) || !extp->NumProtectionFields)
->>> -               return -ENODATA;
->>> +               return 0;
->>>    
->>
->> There are various places where this is called, including code returning information
->> to userspace. That means you'd be changing the ABI to userspace which would now suddenly
->> return 0 instead of -ENODATA.
-> 
-> Yeah let's avoid this if possible, even though I liked Tudor's approach.
-> 
-> Would Michael proposal of checking it in mtd_otp_size() still affect
-> userspace? If not, having a single check over the -ENODATA return code
-> seems attractive.
-> 
-
-The check in mtd_otp_nvmem_add() does not affect userspace.
-
-Guenter
+On 7/6/21 07:56, Colin King wrote:=0A=
+> From: Colin Ian King <colin.king@canonical.com>=0A=
+>=0A=
+> There are two occurrances where variable status is being assigned a=0A=
+> value that is never read and it is being re-assigned a new value=0A=
+> almost immediately afterwards on an error exit path. The assignments=0A=
+> are redundant and can be removed.=0A=
+>=0A=
+> Addresses-Coverity: ("Unused value")=0A=
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>=0A=
+=0A=
+For now looks good.=0A=
+=0A=
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>=0A=
+=0A=
