@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C64B3BCAE1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5423BCAE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbhGFKwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 06:52:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231753AbhGFKwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 06:52:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 932BE619C3;
-        Tue,  6 Jul 2021 10:49:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625568594;
-        bh=bPKQG7VMSSD0/w80TXY6qN1X/ZiWRyDZ2D5tRURQYPk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tA6MLSx4ezUqNV9nz99ni3dC//5IdrSKEZx+qd9oK7btksPTPA9/u8z8D40imzky8
-         U87OblPdTzumM4K/2ZIrpZ2z8HKk0KPws6PuFQ5a6qRnIjHI6cNSLIm6U3/ri1Pl/j
-         HCjGcaFq6qY6QEHfRJAAorpg2KWXydeaQ26Qs4G9QCpXmFvh8a0mf+XtQdmBb7yK5r
-         DI4KyalVQT43VwBWA9i/EgJijoyoBxs1h0O3H4ybEbCI/bssHcKt1HykaTS0R3vwWo
-         U4Lgu2Hx7nPUrFdKoBOw692vEXKEJKOugPzAAoQEjVzY2JEZFNhRzDPGoVgEA0i/9Q
-         7vuyU6jH6P6OA==
-Date:   Tue, 6 Jul 2021 16:19:50 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     Johan Hovold <johan@kernel.org>, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, michal.simek@xilinx.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, yi.zhang@huawei.com
-Subject: Re: [PATCH 2/3] dmaengine: usb-dmac: Fix PM reference leak in
- usb_dmac_probe()
-Message-ID: <YOQ1TufSjoXDJBBj@matsya>
-References: <20210517081826.1564698-1-yukuai3@huawei.com>
- <20210517081826.1564698-3-yukuai3@huawei.com>
- <YLRfZfnuxc0+n/LN@vkoul-mobl.Dlink>
- <b6c340de-b0b5-6aad-94c0-03f062575b63@huawei.com>
- <YLSk/i6GmYWGEa9E@vkoul-mobl.Dlink>
- <YLSqD+9nZIWJpn+r@hovoldconsulting.com>
- <YLi4VGwzrat8wJHP@vkoul-mobl>
- <YL3TlDqe4KSr3ICl@hovoldconsulting.com>
- <YL3ynd1KiJoe9y6+@vkoul-mobl>
- <c8fcdaa1-f053-47aa-2dad-521b8f34b8d1@huawei.com>
+        id S231556AbhGFKxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 06:53:33 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:54394 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231361AbhGFKxc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 06:53:32 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 166AofKQ120207;
+        Tue, 6 Jul 2021 05:50:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1625568641;
+        bh=YupTXfbCyy05B3KqZZW7b3hS1qPuZGuK9+S4VX2p/J4=;
+        h=From:To:CC:Subject:Date;
+        b=DSYm27J6mAOBI48g8TUnj4rBg1ygFjoi9zB3JwpevYCJOPhaI47GaFpdnE1jmHbET
+         INh0sajCh58AeIIf7FdUkQjx7DUeuLX/cZ2XvcMy/qu4QrlI5RX5Hb474SiW3DbdxG
+         o85FfMeOmqf4OH33g1Hd6S/K9mAOBgpQ0oDP9J9c=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 166AoffZ125987
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 6 Jul 2021 05:50:41 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 6 Jul
+ 2021 05:50:41 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 6 Jul 2021 05:50:40 -0500
+Received: from a0393678-ssd.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 166Aoar1015822;
+        Tue, 6 Jul 2021 05:50:37 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tom Joseph <tjoseph@cadence.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Nadeem Athani <nadeem@cadence.com>
+Subject: [PATCH 0/5] PCI: Add support for J7200 and AM64
+Date:   Tue, 6 Jul 2021 16:20:30 +0530
+Message-ID: <20210706105035.9915-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c8fcdaa1-f053-47aa-2dad-521b8f34b8d1@huawei.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-07-21, 16:41, yukuai (C) wrote:
-> Hi, Vinod
-> 
-> Are you still intrested in accepting this patch?
+This series adds the compatible specific to J7200 and AM64 and
+applies the erratas and configuration specific to them.
 
-- Please do not top post
+This series also includes Nadeem's patch that adds a quirk in
+Cadence driver which is used by J7200 [1].
 
-- yes, pls rebase and resend
+The DT binding for both J7200 and AM64 is already merged.
 
-> On 2021/06/07 18:19, Vinod Koul wrote:
-> > On 07-06-21, 10:06, Johan Hovold wrote:
-> > > On Thu, Jun 03, 2021 at 04:39:08PM +0530, Vinod Koul wrote:
-> > > > On 31-05-21, 11:19, Johan Hovold wrote:
-> > > > > On Mon, May 31, 2021 at 02:27:34PM +0530, Vinod Koul wrote:
-> > > > > > On 31-05-21, 14:11, yukuai (C) wrote:
-> > > > > > > On 2021/05/31 12:00, Vinod Koul wrote:
-> > > > > > > > On 17-05-21, 16:18, Yu Kuai wrote:
-> > > > > > > > > pm_runtime_get_sync will increment pm usage counter even it failed.
-> > > > > > > > > Forgetting to putting operation will result in reference leak here.
-> > > > > > > > > Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-> > > > > > > > > counter balanced.
-> > > 
-> > > > > > Yes the rumtime_pm is disabled on failure here and the count would have
-> > > > > > no consequence...
-> > > > > 
-> > > > > You should still balance the PM usage counter as it isn't reset for
-> > > > > example when reloading the driver.
-> > > > 
-> > > > Should I driver trust that on load PM usage counter is balanced and not
-> > > > to be reset..?
-> > > 
-> > > Not sure what you're asking here. But a driver should never leave the PM
-> > > usage counter unbalanced.
-> > 
-> > Thinking about again, yes we should safely assume the counter is
-> > balanced when driver loads.. so unloading while balancing sounds better
-> > behaviour
-> > 
-> > Thanks
-> > 
+[1] -> https://lore.kernel.org/r/20210528155626.21793-1-nadeem@cadence.com
+
+Kishon Vijay Abraham I (4):
+  PCI: j721e: Add PCIe support for J7200
+  PCI: j721e: Add PCIe support for AM64
+  misc: pci_endpoint_test: Do not request or allocate IRQs in probe
+  misc: pci_endpoint_test: Add deviceID for AM64 and J7200
+
+Nadeem Athani (1):
+  PCI: cadence: Add quirk flag to set minimum delay in LTSSM
+    Detect.Quiet state
+
+ drivers/misc/pci_endpoint_test.c              | 27 ++++++--
+ drivers/pci/controller/cadence/pci-j721e.c    | 63 +++++++++++++++++--
+ .../pci/controller/cadence/pcie-cadence-ep.c  |  4 ++
+ .../controller/cadence/pcie-cadence-host.c    |  3 +
+ drivers/pci/controller/cadence/pcie-cadence.c | 17 +++++
+ drivers/pci/controller/cadence/pcie-cadence.h | 15 +++++
+ 6 files changed, 119 insertions(+), 10 deletions(-)
 
 -- 
-~Vinod
+2.17.1
+
