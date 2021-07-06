@@ -2,171 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4FE3BD734
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42253BD73B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236774AbhGFMxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240408AbhGFMxg (ORCPT
+        id S231782AbhGFMzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:55:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37414 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232340AbhGFMzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 08:53:36 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E17CC061765
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 05:50:57 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id gb6so17332021ejc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 05:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T4j1RX/4vxQmgSfWiJVIbkm3BekbD4J1+8zX+K8GVHA=;
-        b=WU/h2d84gwLmZE0PbbvGiG50douLmYVV5vrIcXRSV0wto/x0xQ8gTyNbUDw044mqQJ
-         0MiHY1UlEcdksNDY+HJ+8uCUFDy3qYyTfZLT3LV7ZHnUOfd/VW31CTHNv2E/p/lbpMfN
-         BaG2JAz2sM8CCX/pzy9k/dc+yiC4Gixrd8/maBGCOMYokl1gF84qbzZLeItKIHBonmMU
-         pzxuzhaa9J03k22JxwRDPnU+s8hFl8QI1b4swolMQLDd8HBjlM9HBpF0YkgSVKWgtfIA
-         QECgbxSlEYaycZfGTVvY4jc9gO+NpPOsNQV6A/hggJ4JOc4KYd18vDQzL+uPEp79WOgz
-         Q8mQ==
+        Tue, 6 Jul 2021 08:55:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625575979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JMk3jJazj16aYKwIRLSlPWAyzqY2mNy2vWTan63fswE=;
+        b=RQjkHKVPWUkgsl/fWLhxMKa3d3rACm4kX7g5XQk+6+WQ3mrjKzKpKw1RTdd1y5Z99sr8K8
+        7buJJMS2EOFDhpeXb9LOfOK6EvqoGtSmKTyqFWJuCNnCzWNKY3QRiOjiC2csQXFYlzmBd6
+        aLcH9GJgRP2lPDzg1b9V3+UgdYmsR/4=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-EiMoJQUTM1WC6I6FYrpyow-1; Tue, 06 Jul 2021 08:52:55 -0400
+X-MC-Unique: EiMoJQUTM1WC6I6FYrpyow-1
+Received: by mail-qk1-f197.google.com with SMTP id c3-20020a37b3030000b02903ad0001a2e8so16604596qkf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 05:52:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T4j1RX/4vxQmgSfWiJVIbkm3BekbD4J1+8zX+K8GVHA=;
-        b=b5GUg4ASulEOhATKoiaZGWezp+AEW/n6oS51WmPfygcUQ2kNN24RE7MusfsrMfN8Ai
-         kNQkaIg2/bRXMZnj83nDIUbSdVAULdRtK4sB45XACJo836NyF39qZDse01Fgpa8y0/Kb
-         X7cw6dM89wPK+vLmTJLlCCttmMCG3aM3w1SuBPcWhxqvrfSCuGeLBm0UMjGeS6LW1F1j
-         LwzuD62nrZfL+aVzdrusxuc5qUkQzSSVdUVkTU7ir3CKuUBe0orzV4PECYf3zsp/XF8O
-         52k1EMZN3d9SIpFYV9XAmvlJRYoCgeYh+RWBP4HCh8biVwIJrFi/tca3rMyU7bgzVGNw
-         gSLQ==
-X-Gm-Message-State: AOAM532jZl11UbsI0NA5C07Rc2qxxCV6+a4TEKcr0/AkpePaDSRdsmXq
-        h/+7VRHHkimG8bAyGfPTlTOjLfPzWpBtaIDjIPYA
-X-Google-Smtp-Source: ABdhPJxb5ymVgv/EPwejbN2/uGp8bQsc3v8V3IPMaTZlLQQ7amZy2CayzGiVgUsfD7rJOTFn6HYIr3bnLREGEKC4j3Q=
-X-Received: by 2002:a17:907:10d8:: with SMTP id rv24mr17992943ejb.542.1625575855534;
- Tue, 06 Jul 2021 05:50:55 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=JMk3jJazj16aYKwIRLSlPWAyzqY2mNy2vWTan63fswE=;
+        b=Jmb3UTphEB2lVoLW3XHssmcumwCFWMObHkSQT+SKiLaL7+11VJHNUYvqEt5knPxosS
+         EqOyyXjJ3bNhSjFm4S1OG0hTFRP5ZGQHO+oh8ieU6z/rvnoLZSTdZMvxE5YG+C6vrryh
+         AnaWHYlLlVi+Y2MyNAqIzOgg1RfPtAjCkXxLgYInwweYbKDpos81/TAbntviTxKvsdCL
+         UmAFtokKN56NZBXIpFnuZHdusiseQH2fdLC+6V9ZNQTcAeXFfKb+Deq+alqRzsWu6X2q
+         56hnWwy6lMDCEIekV8A4sScl5tmTwA+iJ5pPVFvP7jC0L4MMBNwyFmII2ok60O1UC3Q5
+         N1gw==
+X-Gm-Message-State: AOAM531FcGY+G43aasL9e80qkj+VpBzwyWRsJG2t5d1XEijlEeKzUOdf
+        HVafEO5wnztcT/8cBk/ZA36M/xkRVrASOHlRCAfm8VwMU54t5oR/6YF7AaZElIm1QlDSV3M+xBQ
+        UhKdFxG4+FXyIRTWVV30N6Z6E
+X-Received: by 2002:a05:620a:40ce:: with SMTP id g14mr19870681qko.436.1625575975431;
+        Tue, 06 Jul 2021 05:52:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxfFLOq8iuPYvq5Ae0PBBM8i+ZbdcXtcX0M0SCs3X6yrGwqOC2cqwB5LHVJynkFkoMjjqnstQ==
+X-Received: by 2002:a05:620a:40ce:: with SMTP id g14mr19870659qko.436.1625575975241;
+        Tue, 06 Jul 2021 05:52:55 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id q12sm2273286qkn.47.2021.07.06.05.52.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 05:52:54 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] locking/rwsem: Remove an unused parameter of rwsem_wake()
+To:     Yehan Xu <yehanxu1@gmail.com>, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org
+Cc:     boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
+        xuyehan <xuyehan@xiaomi.com>
+References: <1625547043-28103-1-git-send-email-yehanxu1@gmail.com>
+Message-ID: <a9be100c-b7b5-4353-37ea-e88d06bc5d2f@redhat.com>
+Date:   Tue, 6 Jul 2021 08:52:53 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <0000000000004e5ec705c6318557@google.com> <CACT4Y+YysFa1UzT6zw9GGns69WSFgqrL6P_LjUju6ujcJRTaeA@mail.gmail.com>
- <d11c276d-65a0-5273-d797-1092e1e2692a@schaufler-ca.com> <CAHC9VhSq88YjA-VGSTKkc4hkc_KOK=mnoAYiX1us6O6U0gFzAQ@mail.gmail.com>
- <CACT4Y+bj4epytaY4hhEx5GF+Z2xcMnS4AEg=JcrTEnWvXWFuGQ@mail.gmail.com>
-In-Reply-To: <CACT4Y+bj4epytaY4hhEx5GF+Z2xcMnS4AEg=JcrTEnWvXWFuGQ@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 6 Jul 2021 08:50:44 -0400
-Message-ID: <CAHC9VhQLi+1r3BmSeQre+EEtEyvhSmmT-ABLjvzk0J-J9v9URw@mail.gmail.com>
-Subject: Re: [syzbot] general protection fault in legacy_parse_param
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>,
-        syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1625547043-28103-1-git-send-email-yehanxu1@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 1:52 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> On Sun, Jul 4, 2021 at 4:14 PM Paul Moore <paul@paul-moore.com> wrote:
-> > On Sat, Jul 3, 2021 at 6:16 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> > > On 7/2/2021 10:51 PM, Dmitry Vyukov wrote:
-> > > > On Sat, Jul 3, 2021 at 7:41 AM syzbot
-> > > > <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com> wrote:
-> > > >> Hello,
-> > > >>
-> > > >> syzbot found the following issue on:
-> > > >>
-> > > >> HEAD commit:    62fb9874 Linux 5.13
-> > > >> git tree:       upstream
-> > > >> console output: https://syzkaller.appspot.com/x/log.txt?x=12ffa118300000
-> > > >> kernel config:  https://syzkaller.appspot.com/x/.config?x=19404adbea015a58
-> > > >> dashboard link: https://syzkaller.appspot.com/bug?extid=d1e3b1d92d25abf97943
-> > > >> compiler:       Debian clang version 11.0.1-2
-> > > >>
-> > > >> Unfortunately, I don't have any reproducer for this issue yet.
-> > > >>
-> > > >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > >> Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
-> > > > +Casey for what looks like a smackfs issue
-> > >
-> > > This is from the new mount infrastructure introduced by
-> > > David Howells in November 2018. It makes sense that there
-> > > may be a problem in SELinux as well, as the code was introduced
-> > > by the same developer at the same time for the same purpose.
-> > >
-> > > > The crash was triggered by this test case:
-> > > >
-> > > > 21:55:33 executing program 1:
-> > > > r0 = fsopen(&(0x7f0000000040)='ext3\x00', 0x1)
-> > > > fsconfig$FSCONFIG_SET_STRING(r0, 0x1, &(0x7f00000002c0)='smackfsroot',
-> > > > &(0x7f0000000300)='default_permissions', 0x0)
-> > > >
-> > > > And I think the issue is in smack_fs_context_parse_param():
-> > > > https://elixir.bootlin.com/linux/latest/source/security/smack/smack_lsm.c#L691
-> > > >
-> > > > But it seems that selinux_fs_context_parse_param() contains the same issue:
-> > > > https://elixir.bootlin.com/linux/latest/source/security/selinux/hooks.c#L2919
-> > > > +So selinux maintainers as well.
-> > > >
-> > > >> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-> > > >> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-> > > >> CPU: 0 PID: 20300 Comm: syz-executor.1 Not tainted 5.13.0-syzkaller #0
-> > > >> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > > >> RIP: 0010:memchr+0x2f/0x70 lib/string.c:1054
-> > > >> Code: 41 54 53 48 89 d3 41 89 f7 45 31 f6 49 bc 00 00 00 00 00 fc ff df 0f 1f 44 00 00 48 85 db 74 3b 48 89 fd 48 89 f8 48 c1 e8 03 <42> 0f b6 04 20 84 c0 75 0f 48 ff cb 48 8d 7d 01 44 38 7d 00 75 db
-> > > >> RSP: 0018:ffffc90001dafd00 EFLAGS: 00010246
-> > > >> RAX: 0000000000000000 RBX: 0000000000000013 RCX: dffffc0000000000
-> > > >> RDX: 0000000000000013 RSI: 000000000000002c RDI: 0000000000000000
-> > > >> RBP: 0000000000000000 R08: ffffffff81e171bf R09: ffffffff81e16f95
-> > > >> R10: 0000000000000002 R11: ffff88807e96b880 R12: dffffc0000000000
-> > > >> R13: ffff888020894000 R14: 0000000000000000 R15: 000000000000002c
-> > > >> FS:  00007fe01ae27700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-> > > >> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > >> CR2: 00000000005645a8 CR3: 0000000018afc000 CR4: 00000000001506f0
-> > > >> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > >> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > >> Call Trace:
-> > > >>  legacy_parse_param+0x461/0x7e0 fs/fs_context.c:537
-> > > >>  vfs_parse_fs_param+0x1e5/0x460 fs/fs_context.c:117
-> >
-> > It's Sunday morning and perhaps my mind is not yet in a "hey, let's
-> > look at VFS kernel code!" mindset, but I'm not convinced the problem
-> > is the 'param->string = NULL' assignment in the LSM hooks.  In both
-> > the case of SELinux and Smack that code ends up returning either a 0
-> > (Smack) or a 1 (SELinux) - that's a little odd in it's own way, but I
-> > don't believe it is relevant here - either way these return values are
-> > not equal to -ENOPARAM so we should end up returning early from
-> > vfs_parse_fs_param before it calls down into legacy_parse_param():
-> >
-> > Taken from https://elixir.bootlin.com/linux/latest/source/fs/fs_context.c#L109 :
-> >
-> >   ret = security_fs_context_parse_param(fc, param);
-> >   if (ret != -ENOPARAM)
-> >     /* Param belongs to the LSM or is disallowed by the LSM; so
-> >      * don't pass to the FS.
-> >      */
-> >     return ret;
-> >
-> >   if (fc->ops->parse_param) {
-> >     ret = fc->ops->parse_param(fc, param);
-> >     if (ret != -ENOPARAM)
-> >       return ret;
-> >   }
+On 7/6/21 12:50 AM, Yehan Xu wrote:
+> From: xuyehan <xuyehan@xiaomi.com>
 >
-> Hi Paul,
+> The 2nd parameter 'count' is not used in this function.
+> The places where the function is called are also modified.
 >
-> You are right.
-> I almost connected the dots, but not exactly.
-> Now that I read more code around, setting "param->string = NULL" in
-> smack_fs_context_parse_param() looks correct to me (the fs copies and
-> takes ownership of the string).
+> Signed-off-by: xuyehan <xuyehan@xiaomi.com>
+> ---
+>   kernel/locking/rwsem.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 >
-> I don't see how the crash happened...
+> diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+> index 16bfbb1..8a595b6 100644
+> --- a/kernel/locking/rwsem.c
+> +++ b/kernel/locking/rwsem.c
+> @@ -1165,7 +1165,7 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
+>    * handle waking up a waiter on the semaphore
+>    * - up_read/up_write has decremented the active part of count if we come here
+>    */
+> -static struct rw_semaphore *rwsem_wake(struct rw_semaphore *sem, long count)
+> +static struct rw_semaphore *rwsem_wake(struct rw_semaphore *sem)
+>   {
+>   	unsigned long flags;
+>   	DEFINE_WAKE_Q(wake_q);
+> @@ -1297,7 +1297,7 @@ static inline void __up_read(struct rw_semaphore *sem)
+>   	if (unlikely((tmp & (RWSEM_LOCK_MASK|RWSEM_FLAG_WAITERS)) ==
+>   		      RWSEM_FLAG_WAITERS)) {
+>   		clear_nonspinnable(sem);
+> -		rwsem_wake(sem, tmp);
+> +		rwsem_wake(sem);
+>   	}
+>   }
+>   
+> @@ -1319,7 +1319,7 @@ static inline void __up_write(struct rw_semaphore *sem)
+>   	rwsem_clear_owner(sem);
+>   	tmp = atomic_long_fetch_add_release(-RWSEM_WRITER_LOCKED, &sem->count);
+>   	if (unlikely(tmp & RWSEM_FLAG_WAITERS))
+> -		rwsem_wake(sem, tmp);
+> +		rwsem_wake(sem);
+>   }
+>   
+>   /*
 
-FWIW, I poked around a bit too and couldn't see anything obvious
-either, but I can't pretend to know as much about the VFS layer as the
-VFS folks.  Hopefully they might have better luck.
+Right, the count parameter was added in the past for some optimization 
+which had since been taken out. So it is no longer needed.
 
--- 
-paul moore
-www.paul-moore.com
+Acked-by: Waiman Long <longman@redhat.com>
+
