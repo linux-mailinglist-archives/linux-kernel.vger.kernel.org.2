@@ -2,167 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976733BD852
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCAFE3BD8B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbhGFOhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:37:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22241 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232073AbhGFOhU (ORCPT
+        id S232912AbhGFOqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232909AbhGFOqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:37:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625582081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G/gssxW/mbIhY3PmRppDUAwsg3OaI9WCT71TjUjACeA=;
-        b=fGV5nQt+jG4lfliGdO5oXqzy686K3xlWrtU7PvrFWMm/S+M/xKsJ+6SUtfN2cpfTHaY+qL
-        i6uW9U2yIT2F61Q79NTi52Zb04lfTtoqUU1eTuyBoWUedq8czIA6Q5k683RBOaaKue1c/S
-        eN5MfPn0pm39zEJGlSW7Ezyu9Hi/R7M=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-602-hQ_vxDyrMBGLxmDoFgC3jg-1; Tue, 06 Jul 2021 10:34:40 -0400
-X-MC-Unique: hQ_vxDyrMBGLxmDoFgC3jg-1
-Received: by mail-wm1-f71.google.com with SMTP id p3-20020a05600c3583b02901f55d71e34aso1012174wmq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:34:40 -0700 (PDT)
+        Tue, 6 Jul 2021 10:46:02 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43359C05BD13;
+        Tue,  6 Jul 2021 07:34:56 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id u14so21544480pga.11;
+        Tue, 06 Jul 2021 07:34:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mARFh6+7tn007k6JVuJELUR7h4Zv3keBjqK+Epxvigc=;
+        b=R//2YuHT/dHU6CRVRht4GHW2zLFpZFpbmaofQan8eke06UMAr0gqHkf5W3RqFX77Mj
+         OGKy0Kt8NlahKfqlF/yc1Q7VxTkpXrHtkMGhGl5reGGzBFF5fmWU+CVc37IWrDQWuNCv
+         WdEfA0zH9UHW41r0uQyK46paZFfJ7zHiHOH5Bh1Fhjm0xBnY/1iFUQSEyhXCPlXZxfB5
+         7vxvY3EgrhR8D3p5y+62at7kxDDeAS4ZWLPyGY1iYrbmCA6WMsry0K7s1QuBlIEWSdz7
+         663pP5ZMkHW20WbpqXLkgaM10AK3J0SR284B9agVT0ZphQi/3DijH7wKw6YMrHXpg2bM
+         +gtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=G/gssxW/mbIhY3PmRppDUAwsg3OaI9WCT71TjUjACeA=;
-        b=iv4HwIIBegeBUw3DlpkIkk7GkhkFGZq0qiG3HmD4VF/Z40PZ7okx28ps/V5YUAuEo6
-         YFX3yKsNkmsrKCJU4x8SNHANr2On/x2W7krhVgimkyyXGGK/OEhni2wZquG51xNBnUC5
-         bc3gSdwjZa2Lhf7mg5QcKahB5ZefE2TrUC5isTMW9lnHHoB271xgcD869ZVBZeM4WxnO
-         Jo5Ptwfcj9W7d5BOSZol0aI9JHrZYcszjewEXYCJYtIFGXkn01Pu2w+lyn2b0qrxblyb
-         s0V4/L8uQF9KcacgvQqCSUX0Ld4PUIlHZISTrMjZ7cAPzqSKXZqha/7nCMhYt4fCP/Gy
-         qWLg==
-X-Gm-Message-State: AOAM5310DLh4O6t3g20GhnOt4Y8hF+eLCOfQ7uSoDykIon/NBTYC73xu
-        6NGf+Ma0MafxzCAqn9murG7Zd05zX3G6cozWwpMWyBVGMq9nr+NS1tHfQLP9vM8Yb8sNhn3xvuS
-        hTO0vPzLI+lFrnG8lP2XgQebj
-X-Received: by 2002:a05:6000:1787:: with SMTP id e7mr21954377wrg.167.1625582079466;
-        Tue, 06 Jul 2021 07:34:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyta9Y16G3a+VI4XCXTFQBPTRZDYBxdBee0/p86BqoXT5KemnytIPbM4B6FvK7NsjZAlgpykw==
-X-Received: by 2002:a05:6000:1787:: with SMTP id e7mr21954354wrg.167.1625582079256;
-        Tue, 06 Jul 2021 07:34:39 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id w1sm15936566wmi.13.2021.07.06.07.34.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 07:34:38 -0700 (PDT)
-To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <ac17ee5e713b83ce64626b7b39c40515d98db09f.1625186503.git.isaku.yamahata@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [RFC PATCH v2 35/69] KVM: x86: Introduce vm_teardown() hook in
- kvm_arch_vm_destroy()
-Message-ID: <98e17bdc-cc91-f225-b24a-d64e052e1b3d@redhat.com>
-Date:   Tue, 6 Jul 2021 16:34:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=mARFh6+7tn007k6JVuJELUR7h4Zv3keBjqK+Epxvigc=;
+        b=pfS+C8SiL++x1Y3451jIxZb1pRah++DOUaxfyJ9C8l/df0G2Mti4Nj9N3jkxIkxHeU
+         z0GMQydxC7S72gXHmWK7UhygE+NUJxb56RNoo0EhMZPpvSZV9z0Xa18yMmK3/1LEOsey
+         in1ip1sTupkJ+XFE93FPb99hwp9BbtMyNepmMNS1NI4SFbJfJDJQAz0VfZZTJKU5UlTW
+         3u4kb3JWUjFjUyS1fVL+Cr1IF1tD3GPsRR1nGMZMqn/y/W1O7QVQWVV6t5G0M3v8Ctu6
+         +9dMossgLXsaCblGXPreCiYC3wlQSlJwqYfvVyAUUpLqrp6+XLKypxU9ZXhG18lDibkj
+         k7dw==
+X-Gm-Message-State: AOAM532krdTUQLoJIdN8mHb0HR3YZkVsRllLaiqvY5wleG5v5j0mu+my
+        IkUjrLlqMcFyJQrhsg+9SGNQ1So/dkZJ1w==
+X-Google-Smtp-Source: ABdhPJyK77XLAqQvpf6bTNIYIMaJ+t/cKqv1bFbVE28bpXc73I5rkI9L22JXByqBKB98fjDpaFHJ4A==
+X-Received: by 2002:a63:d511:: with SMTP id c17mr21273492pgg.219.1625582095691;
+        Tue, 06 Jul 2021 07:34:55 -0700 (PDT)
+Received: from localhost.lan (p1284205-ipngn14601marunouchi.tokyo.ocn.ne.jp. [153.205.193.205])
+        by smtp.gmail.com with ESMTPSA id b18sm3314789pjq.2.2021.07.06.07.34.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 07:34:54 -0700 (PDT)
+Received: from x2.lan (localhost [127.0.0.1])
+        by localhost.lan (Postfix) with ESMTPSA id 6BD16900904;
+        Tue,  6 Jul 2021 14:34:52 +0000 (GMT)
+From:   Vincent Pelletier <plr.vincent@gmail.com>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Opensource [Steve Twiss]" <stwiss.opensource@diasemi.com>
+Subject: [PATCH 1/3] mfd: da9063: Add HWMON dependencies
+Date:   Tue,  6 Jul 2021 14:34:47 +0000
+Message-Id: <850a353432cd676f96889cede291232abf58918d.1625581991.git.plr.vincent@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <ac17ee5e713b83ce64626b7b39c40515d98db09f.1625186503.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
-> -static void svm_vm_destroy(struct kvm *kvm)
-> +static void svm_vm_teardown(struct kvm *kvm)
->   {
->   	avic_vm_destroy(kvm);
->   	sev_vm_destroy(kvm);
->   }
+From: "Opensource [Steve Twiss]" <stwiss.opensource@diasemi.com>
 
-Please keep "destroy" as is and use "free" from the final step.
+Dependencies required for DA9063 HWMON support.
 
-> +static void svm_vm_destroy(struct kvm *kvm)
-> +{
-> +
+Signed-off-by: Opensource [Steve Twiss] <stwiss.opensource@diasemi.com>
 
-Please remove the empty lines.
+Directly set da9063->t_offset.
+Let MFD probe succeed even if DA9063_REG_T_OFFSET cannot be read.
 
-Paolo
+Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
+---
+Changes in v2:
+- registers.h changes moved from patch 2
 
-> +}
-> +
->   static bool svm_is_vm_type_supported(unsigned long type)
->   {
->   	return type == KVM_X86_LEGACY_VM;
-> @@ -4456,6 +4461,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
->   	.is_vm_type_supported = svm_is_vm_type_supported,
->   	.vm_size = sizeof(struct kvm_svm),
->   	.vm_init = svm_vm_init,
-> +	.vm_teardown = svm_vm_teardown,
->   	.vm_destroy = svm_vm_destroy,
->   
->   	.prepare_guest_switch = svm_prepare_guest_switch,
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 84c2df824ecc..36756a356704 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6995,6 +6995,16 @@ static int vmx_vm_init(struct kvm *kvm)
->   	return 0;
->   }
->   
-> +static void vmx_vm_teardown(struct kvm *kvm)
-> +{
-> +
-> +}
-> +
-> +static void vmx_vm_destroy(struct kvm *kvm)
-> +{
-> +
-> +}
-> +
->   static int __init vmx_check_processor_compat(void)
->   {
->   	struct vmcs_config vmcs_conf;
-> @@ -7613,6 +7623,8 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
->   	.is_vm_type_supported = vmx_is_vm_type_supported,
->   	.vm_size = sizeof(struct kvm_vmx),
->   	.vm_init = vmx_vm_init,
-> +	.vm_teardown = vmx_vm_teardown,
-> +	.vm_destroy = vmx_vm_destroy,
->   
->   	.vcpu_create = vmx_create_vcpu,
->   	.vcpu_free = vmx_free_vcpu,
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index da9f1081cb03..4b436cae1732 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -11043,7 +11043,7 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
->   		__x86_set_memory_region(kvm, TSS_PRIVATE_MEMSLOT, 0, 0);
->   		mutex_unlock(&kvm->slots_lock);
->   	}
-> -	static_call_cond(kvm_x86_vm_destroy)(kvm);
-> +	static_call(kvm_x86_vm_teardown)(kvm);
->   	kvm_free_msr_filter(srcu_dereference_check(kvm->arch.msr_filter, &kvm->srcu, 1));
->   	kvm_pic_destroy(kvm);
->   	kvm_ioapic_destroy(kvm);
-> @@ -11054,6 +11054,7 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
->   	kvm_page_track_cleanup(kvm);
->   	kvm_xen_destroy_vm(kvm);
->   	kvm_hv_destroy_vm(kvm);
-> +	static_call_cond(kvm_x86_vm_destroy)(kvm);
->   }
->   
->   void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
-> 
+Originally submitted by Steve Twiss in 2014:
+  https://marc.info/?l=linux-kernel&m=139560864709852&w=2
+
+ drivers/mfd/da9063-core.c            |  8 +++++++
+ include/linux/mfd/da9063/core.h      |  3 +++
+ include/linux/mfd/da9063/registers.h | 34 ++++++++++++++++++++++++++++
+ 3 files changed, 45 insertions(+)
+
+diff --git a/drivers/mfd/da9063-core.c b/drivers/mfd/da9063-core.c
+index df407c3afce3..14c2a8df9ae3 100644
+--- a/drivers/mfd/da9063-core.c
++++ b/drivers/mfd/da9063-core.c
+@@ -197,6 +197,14 @@ int da9063_device_init(struct da9063 *da9063, unsigned int irq)
+ 		}
+ 	}
+ 
++	ret = regmap_read(da9063->regmap, DA9063_REG_T_OFFSET, &da9063->t_offset);
++	if (ret < 0) {
++		da9063->t_offset = 0;
++		dev_warn(da9063->dev,
++			 "Temperature trimming value cannot be read (defaulting to 0)\n");
++		ret = 0;
++	}
++
+ 	return ret;
+ }
+ 
+diff --git a/include/linux/mfd/da9063/core.h b/include/linux/mfd/da9063/core.h
+index fa7a43f02f27..c0c57c6f6230 100644
+--- a/include/linux/mfd/da9063/core.h
++++ b/include/linux/mfd/da9063/core.h
+@@ -85,6 +85,9 @@ struct da9063 {
+ 	int		chip_irq;
+ 	unsigned int	irq_base;
+ 	struct regmap_irq_chip_data *regmap_irq;
++
++	/* Trimming */
++	int		t_offset;
+ };
+ 
+ int da9063_device_init(struct da9063 *da9063, unsigned int irq);
+diff --git a/include/linux/mfd/da9063/registers.h b/include/linux/mfd/da9063/registers.h
+index 6e0f66a2e727..297631ddda39 100644
+--- a/include/linux/mfd/da9063/registers.h
++++ b/include/linux/mfd/da9063/registers.h
+@@ -512,6 +512,7 @@
+ 
+ /* DA9063_REG_GPIO_0_1 (addr=0x15) */
+ #define	DA9063_GPIO0_PIN_MASK			0x03
++#define	DA9063_GPIO0_PIN_MASK_SHIFT		0
+ #define		DA9063_GPIO0_PIN_ADCIN1		0x00
+ #define		DA9063_GPIO0_PIN_GPI		0x01
+ #define		DA9063_GPIO0_PIN_GPO_OD		0x02
+@@ -523,6 +524,7 @@
+ #define		DA9063_GPIO0_TYPE_GPO_VDD_IO2	0x04
+ #define	DA9063_GPIO0_NO_WAKEUP			0x08
+ #define	DA9063_GPIO1_PIN_MASK			0x30
++#define	DA9063_GPIO1_PIN_MASK_SHIFT		4
+ #define		DA9063_GPIO1_PIN_ADCIN2_COMP	0x00
+ #define		DA9063_GPIO1_PIN_GPI		0x10
+ #define		DA9063_GPIO1_PIN_GPO_OD		0x20
+@@ -536,6 +538,7 @@
+ 
+ /* DA9063_REG_GPIO_2_3 (addr=0x16) */
+ #define	DA9063_GPIO2_PIN_MASK			0x03
++#define	DA9063_GPIO2_PIN_MASK_SHIFT		0
+ #define		DA9063_GPIO2_PIN_ADCIN3		0x00
+ #define		DA9063_GPIO2_PIN_GPI		0x01
+ #define		DA9063_GPIO2_PIN_GPO_PSS	0x02
+@@ -851,6 +854,7 @@
+ #define	DA9063_VSYS_VAL_BASE			0x00
+ 
+ /* DA9063_REG_ADC_RES_L (addr=0x37) */
++#define	DA9063_ADC_RES_L_SHIFT			6
+ #define	DA9063_ADC_RES_L_BITS			2
+ #define	DA9063_ADC_RES_L_MASK			0xC0
+ 
+@@ -1014,6 +1018,36 @@
+ #define DA9063_GPIO_DIM				0x80
+ #define DA9063_GPIO_PWM_MASK			0x7F
+ 
++/* DA9063_REG_ADC_CFG (addr=0xC9) */
++#define DA9063_REG_ADCIN1_CUR_MASK		0x03
++#define DA9063_REG_ADCIN1_CUR_SHIFT		0
++#define		DA9063_ADCIN1_CUR_1UA		0x00
++#define		DA9063_ADCIN1_CUR_2UA		0x01
++#define		DA9063_ADCIN1_CUR_10UA		0x02
++#define		DA9063_ADCIN1_CUR_40UA		0x03
++#define DA9063_REG_ADCIN2_CUR_MASK		0x0C
++#define DA9063_REG_ADCIN2_CUR_SHIFT		2
++#define		DA9063_ADCIN2_CUR_1UA		0x00
++#define		DA9063_ADCIN2_CUR_2UA		0x01
++#define		DA9063_ADCIN2_CUR_10UA		0x02
++#define		DA9063_ADCIN2_CUR_40UA		0x03
++#define DA9063_REG_ADCIN3_CUR_MASK		0x10
++#define DA9063_REG_ADCIN3_CUR_SHIFT		4
++#define		DA9063_ADCIN3_CUR_10UA		0x00
++#define		DA9063_ADCIN3_CUR_40UA		0x01
++#define DA9063_REG_ADCIN1_DEB_MASK		0x20
++#define DA9063_REG_ADCIN1_DEB_SHIFT		5
++#define		DA9063_ADCIN1_DEB_OFF		0x00
++#define		DA9063_ADCIN1_DEB_ON		0x01
++#define DA9063_REG_ADCIN2_DEB_MASK		0x40
++#define DA9063_REG_ADCIN2_DEB_SHIFT		6
++#define		DA9063_ADCIN2_DEB_OFF		0x00
++#define		DA9063_ADCIN2_DEB_ON		0x01
++#define DA9063_REG_ADCIN3_DEB_MASK		0x80
++#define DA9063_REG_ADCIN3_DEB_SHIFT		7
++#define		DA9063_ADCIN3_DEB_OFF		0x00
++#define		DA9063_ADCIN3_DEB_ON		0x01
++
+ /* DA9063_REG_CONFIG_H (addr=0x10D) */
+ #define DA9063_PWM_CLK_MASK			0x01
+ #define		DA9063_PWM_CLK_PWM2MHZ		0x00
+-- 
+2.32.0
 
