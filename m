@@ -2,235 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 915673BC850
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851413BC852
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbhGFJLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 05:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbhGFJLq (ORCPT
+        id S231175AbhGFJL7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Jul 2021 05:11:59 -0400
+Received: from de-smtp-delivery-105.mimecast.com ([194.104.109.105]:37691 "EHLO
+        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231146AbhGFJL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 05:11:46 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B4FC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 02:09:07 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id s18so6414395ljg.7
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 02:09:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=x41Yq1mRaRCaSbb6nX6qnut930aY0jVFr07ZUi2uqCg=;
-        b=r6lzHYjOwE2KjPN1STxtE/ergUPhUI0WWp+p/Nga/w3gKiuPQDNDMKdbb7viGQZggx
-         YEuHKfvenA0O1MWTjtF1ufEJMyGDQymOAgMc7XtRzQt/jFBccjax/gz7FjEIa5WzkrGo
-         Hq51kY66Zx1jYRoKkVurqNnHE9lxyn6+bkFAL3T6wGmNcW0IlU1WuFFQCAsvDcVADYDq
-         BqUv8s0sHI6OtpDU9VA9W9otb2kVAHQ3VcdW9IMVtnZSrs1osmibaMT8X+8JMETAJdI7
-         Pvlrnz2+d9BQpiNxRnhUcrcvrZIRN/QiH8uqewRmjVMY55cTWrCaiRyFqKK8zwownZ2t
-         xlQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=x41Yq1mRaRCaSbb6nX6qnut930aY0jVFr07ZUi2uqCg=;
-        b=n2CeSVOuyHkp23nJ7dJBJg9pWRdejw+Inhix2CQyei5dykmyzATyay6VPIZoMkkq5g
-         /q8vLqR7aPIChNmc2SeOt9tFX6rIizdtS5bR8LvFyIV/4zdQ7rq0XOudor0F71yofQnx
-         jAtmoGC2BP4CldNrI54eQF+htJqUaSRteSGfYs9govj3HnyMufNgmMw4PfbkDeNDoPtG
-         cfhpMIybUVfyclRrUUKnx4lwutV0oCn0NrpZFxJGZJjEWUkQAWp3Nv9apwIWIjf81ZP8
-         za/ByrP7VOC5JqCxRBDvPbIAx4HahaEpcDEeP9HyCYZmWNr9rfK0gxNi9tNHzRTUN3uy
-         /wkA==
-X-Gm-Message-State: AOAM530/X9pQrqCDxTP633tajuqkwqJ5zWRysFMCQ/LF/w8KWUEKlBiM
-        0ZPz64uMYPJ8Fnhch/zvJRL5jo0bQmGAG3R4+T+Lsg==
-X-Google-Smtp-Source: ABdhPJxwi92RErzqosMZnb4u11sTRG4WlUWEEpuM5LsKky9V0FAqc+EVhVi0+41I6vLwmx84CfJMajygC++CfqTk1Ho=
-X-Received: by 2002:a05:651c:1422:: with SMTP id u34mr706649lje.221.1625562545823;
- Tue, 06 Jul 2021 02:09:05 -0700 (PDT)
+        Tue, 6 Jul 2021 05:11:58 -0400
+Received: from GBR01-CWL-obe.outbound.protection.outlook.com
+ (mail-cwlgbr01lp2051.outbound.protection.outlook.com [104.47.20.51]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-23-mL_Z4pCcNlGQcH_aagBqFQ-1; Tue, 06 Jul 2021 11:09:17 +0200
+X-MC-Unique: mL_Z4pCcNlGQcH_aagBqFQ-1
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
+ by CWXP265MB4006.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:123::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.33; Tue, 6 Jul
+ 2021 09:09:16 +0000
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d%9]) with mapi id 15.20.4287.033; Tue, 6 Jul 2021
+ 09:09:16 +0000
+From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Avri Altman <Avri.Altman@wdc.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH] mmc: block: Differentiate busy and non-TRAN state
+Thread-Topic: [PATCH] mmc: block: Differentiate busy and non-TRAN state
+Thread-Index: AQHXbl0Q77+Qfc7HWE6ez2HIF5qrJas1omGlgAAGD4CAAADv5A==
+Date:   Tue, 6 Jul 2021 09:09:16 +0000
+Message-ID: <CWXP265MB26803EFAC659676EC0914F97C41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+References: <CWXP265MB268049D9AB181062DA7F6DDBC4009@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+ <CWXP265MB26807AC3C130772D789D0AABC41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<CAPDyKFq44ZuXXUDQV34NSW-ixB9GAZfDx+dx-Kb8O7=LQ1TSHQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFq44ZuXXUDQV34NSW-ixB9GAZfDx+dx-Kb8O7=LQ1TSHQ@mail.gmail.com>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [185.80.168.10]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7fe5bb83-1a84-4cc9-cb0c-08d9405dbb05
+x-ms-traffictypediagnostic: CWXP265MB4006:
+x-microsoft-antispam-prvs: <CWXP265MB4006DBD9C8AAD1F10FB4DCD4C41B9@CWXP265MB4006.GBRP265.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: OayZVYdoJchMqzsG5wcp7dO/2wFZKlneIVtZLlM81qxgAVpxzKdf8VQurqGaVXXo8VlCYo4YYZ+WSrogdqenGwH2uFEFyxw768Lqw0t2b6RvMSaE1rJ2yu4d7NKKjswBbt8o3yM+ZczHC5vx9e2O2PzBgiK56Xiq3+lMo3SNSj8EiZ3eH6EOvwtH1CbbXTRMJT0LTEE4/GZjTkHjjW/hSF3zc/5XkIhLGgJeQVumfZSFQlAYyK/ojhbaOESKgAqwjokF0OdG6DcP2iFjbbFY/F/L6GS14Isn9GhOPxYFPjta/iyXeCBgrxL81cbAWKX6DXX+gyBthaRa2FTZVzApCm3mx83KDzxFqZ2EKu9VUVfBLZ5nhfQ7CYRAdJ7M1nW3EFLbUdy5LREe+Ladf8GSeykgfcfcSwtuX0uBu1BIEK30MSbaq6Nfbq1EbikYjzbOfuCqkb/LmO2qfEZAQsM1+iuV9kYoanjD5TcjzTjXsFMbud+XLDgXml9Xu4CDzoFp+JgGqUYJTpPBO8PnMPNuhw0SKlz5t303ZZH1bl2DwTKYMtXor5+vfALeLJ31l1vgVSvK5/cFwuEHglgDE3DIhdpneSNdFeTUNpX3pViOCR+hZKfNLr/v83bshBG35ZPlrO87ZS0o6hlDT4TraQV4Mg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(39830400003)(396003)(366004)(376002)(346002)(86362001)(2906002)(478600001)(7696005)(186003)(91956017)(71200400001)(6506007)(8936002)(52536014)(9686003)(4326008)(55016002)(66446008)(66946007)(316002)(76116006)(66476007)(64756008)(66556008)(8676002)(38100700002)(122000001)(83380400001)(33656002)(54906003)(6916009)(26005)(5660300002);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?bbPhBamf1xsh7aMSid7wRkPTbiwqbe4uZNmoeOQ/wXz1tEF/ze2tb2ETUn?=
+ =?iso-8859-1?Q?iEBAq412VK4okL6nMutbtNnN+o1XzN7VYNqbB7eWxWnQQiwteyBgNhprBF?=
+ =?iso-8859-1?Q?RaIdqWuygJz6gIuKfey1at60oz+I29eQSSxesoIOU+HQT048BcvfnQfLJF?=
+ =?iso-8859-1?Q?beYnx4Xbt7sc5gtzo8aj3VGi7P6aYuJ2wRDlhQ9H6zBzbEGLcrsyeCMBfk?=
+ =?iso-8859-1?Q?DkASSSYIrA+g87+oEuuOHuaxY4xPA1KB5tH27jaNxwpN5nnPzmUUSwsWVl?=
+ =?iso-8859-1?Q?mVMT/Zyi4t16+l+n/gAJCPd+i6zcpJcTe2lEhXSSspJcdiGR6Kl/y6z5Gk?=
+ =?iso-8859-1?Q?ijFmJa2iRGVJIj34iCyZDW2xgzMl1DSfjRWfI2GVGIUGBw6sTK+6TBHfQd?=
+ =?iso-8859-1?Q?eDhAftgYqTe4qCsLkkRt8k2KNP6E0wVEu3dnPeaViqGw1+OlAv5gCPfLyv?=
+ =?iso-8859-1?Q?j1vsp6vZHkU4mRLqtdA6KiM9IyE8IwsS0ngISAHNXi2aJRf+jzk0yWCiQX?=
+ =?iso-8859-1?Q?5IPADOz8zHod2Rw7UfBW0VykraeNKmcjU/HkduBuZTlX80bujmMAoDgoKS?=
+ =?iso-8859-1?Q?bTkKliE6/4BzdAwgvdtNIp+9eVuu5HQW9xb7jxQ6VNQ70FwyNxYzJThGQ9?=
+ =?iso-8859-1?Q?gLJ/ioR3wpkF0YyAGkSBsNXTxST/GS41u7GepmgIjCTZlr1u1ZMF5U8h2p?=
+ =?iso-8859-1?Q?1RPrZ6bGiyOBkfOn9PUfCAS8J4zXeJeTIIKNHU4nVR+Ge8DZVjkMHbm6d3?=
+ =?iso-8859-1?Q?Y58KFEXnqjyTUx4rChl6XKSSQv82c9TafJYYpKjz+Gk/i42oZYadcCS4KO?=
+ =?iso-8859-1?Q?NzH1LibQpv0bnMEm6S4I6EaTFG6cQMxkVK6etu/hellGlGrT/xFBhd84wC?=
+ =?iso-8859-1?Q?1YNhnCFJ8vu3TmARQF4FFGhQ3WevhewZl0KitaO5hQqDllGO13b6Vop21n?=
+ =?iso-8859-1?Q?fpEmOhHswrWBE33nCeu3FHLpmHk3T64oUlAuMSxpp0aPL8Z4g1hSCGOpkW?=
+ =?iso-8859-1?Q?EhpbSl5rMyyV6vfWSlZicGB8qmpBzvJz83aX3YSKh3O8fAxP/adhDJmvpA?=
+ =?iso-8859-1?Q?YOsfi3PgohEPjqd2VyTMyRRQXOSqOiu06rXB57UOqRWLtnxMEQjI1j+V4q?=
+ =?iso-8859-1?Q?OaesP7Hzmoio+C9NT+daWfYwPmwE1S0UBobweM9nnv0t40LDxPRYML1QgQ?=
+ =?iso-8859-1?Q?iNuuqZmGLA/olBNOphstp7cZ1bAINQUOAIwnoYFFne+prPbbGkb+N796Kk?=
+ =?iso-8859-1?Q?BpVzFSSOwScp82QwNvBKfrt6rlhbtLbi76vMb77pBvjtL0YxjYqeMRQ25P?=
+ =?iso-8859-1?Q?VOp9sXQsHU2C6eOV/rnO4gmRR+tW/j5/Yq0gocnzy+cCacw=3D?=
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
-References: <20210706085652.GF2022171@shao2-debian>
-In-Reply-To: <20210706085652.GF2022171@shao2-debian>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 6 Jul 2021 11:08:54 +0200
-Message-ID: <CAKfTPtBnEmMFwCWD3sGP=vrbG8tkLncKbjStYLN+od3z0K=RrA@mail.gmail.com>
-Subject: Re: [sched/fair] 1c35b07e6d: RIP:native_queued_spin_lock_slowpath
-To:     kernel test robot <rong.a.chen@intel.com>
-Cc:     Odin Ugedal <odin@uged.al>, Peter Zijlstra <peterz@infradead.org>,
-        Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kbuild test robot <lkp@intel.com>, ltp@lists.linux.it,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Chen Yu <yu.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: hyperstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7fe5bb83-1a84-4cc9-cb0c-08d9405dbb05
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2021 09:09:16.2624
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UEGVgZC7J9Tr6+jVbMT/3y5QL6As+qTnPCFFidWHwjJMq8bbzzFuTmEarBTsArds6v4blD6uSgUqZ+g+oeLxhQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB4006
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hyperstone.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rong
+Hey Uffe,
 
-On Tue, 6 Jul 2021 at 10:56, kernel test robot <rong.a.chen@intel.com> wrot=
-e:
+>> +static int is_return_to_tran_cmd(struct mmc_command *cmd)
+>> +{
+>> +       /*
+>> +        * Cards will never return to TRAN after completing
+>> +        * identification commands or MMC_SEND_STATUS if they are not selected.
+>> +        */
+>> +       switch (cmd->opcode) {
+>> +       case MMC_GO_IDLE_STATE:
+>> +       case MMC_SEND_OP_COND:
+>> +       case MMC_ALL_SEND_CID:
+>> +       case MMC_SET_RELATIVE_ADDR:
+>> +       case MMC_SET_DSR:
+>> +       case MMC_SLEEP_AWAKE:
+>> +       case MMC_SELECT_CARD:
+>> +       case MMC_SEND_CSD:
+>> +       case MMC_SEND_CID:
+>> +       case MMC_SEND_STATUS:
+>> +       case MMC_GO_INACTIVE_STATE:
+>> +       case MMC_APP_CMD:
+>> +               return false;
+>> +       default:
+>> +               return true;
+>> +       }
+>> +}
+>>
+>What exactly are you trying to do with the user space program through
+>the mmc ioctl with all these commands? The mmc ioctl interface is not
+>designed to be used like that.
 >
-> Greeting,
->
-> FYI, we noticed the following commit (built with gcc-9):
->
-> commit: 1c35b07e6d3986474e5635be566e7bc79d97c64d ("sched/fair: Ensure _su=
-m and _avg values stay consistent")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>In principle, it looks like we should support a complete
+>re-initialization of the card. I am sorry, but no thanks! This doesn't
+>work, but more importantly, this should be managed solely by the
+>kernel, in my opinion.
 
-I don't think this commit is the real culprit as it mainly replaces a
-sub by a mul whereas the dmesg mentioned spinlock deadlock . Have you
-bisect the problem down to this commit or you faced the problem while
-testing latest master branch ?
+Doing initialization itself through ioctl is silly, I agree, and does
+not work on other ends. This patch is not about that. it just explicitly disables
+any CMD13 polling for TRAN for some of those commands. the behavior
+for such commands thus is the same as without the patch.
+The reason for this patch is to not run into the race condition that a 
+following (ioctl) command will be rejected because the card is in e.g. PROG state
+of a previous ioctl command. As stated earlier, I encountered this a lot when
+doing a unlock force erase -> lock/set, in both scenarios, issued as two single
+ioctl commands and bundled together.
+But this race condition exists on any (non-R1b/ RPBM) currently. As there is
+no CMD13 polling happening after the response (or whenever the driver marks
+the request as done), the card's status is therefore generally unknown.
 
->
->
-> in testcase: ltp
-> version: ltp-x86_64-14c1f76-1_20210703
-> with following parameters:
->
->         disk: 1HDD
->         fs: ext4
->         test: dio-01
->         ucode: 0xe2
->
-> test-description: The LTP testsuite contains a collection of tools for te=
-sting the Linux kernel and related features.
-> test-url: http://linux-test-project.github.io/
->
->
-> on test machine: 8 threads Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz with 2=
-8G memory
->
-> caused below changes (please refer to attached dmesg/kmsg for entire log/=
-backtrace):
->
->
->
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
->
->
-> [  160.446205]
-> [  160.451594] <<<test_output>>>
-> [  160.451595]
-> [  178.116525] ------------[ cut here ]------------
-> [  203.592757] NMI watchdog: Watchdog detected hard LOCKUP on cpu 3
-> [  203.592758] Modules linked in: dm_mod btrfs blake2b_generic xor zstd_c=
-ompress raid6_pq libcrc32c ipmi_devintf ipmi_msghandler sd_mod t10_pi sg in=
-tel_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerclamp corete=
-mp i915 kvm_intel kvm irqbypass crct10dif_pclmul crc32_pclmul crc32c_intel =
-ghash_clmulni_intel mei_wdt intel_gtt drm_kms_helper ahci rapl syscopyarea =
-libahci sysfillrect intel_cstate sysimgblt mei_me fb_sys_fops wmi_bmof drm =
-intel_uncore libata mei joydev intel_pch_thermal wmi video intel_pmc_core a=
-cpi_pad ip_tables
-> [  203.592770] CPU: 3 PID: 3103 Comm: diotest6 Tainted: G          I     =
-  5.13.0-rc6-00076-g1c35b07e6d39 #1
-> [  203.592770] Hardware name: Dell Inc. OptiPlex 7040/0Y7WYT, BIOS 1.2.8 =
-01/26/2016
-> [  203.592771] RIP: 0010:native_queued_spin_lock_slowpath (kbuild/src/con=
-sumer/kernel/locking/qspinlock.c:382 kbuild/src/consumer/kernel/locking/qsp=
-inlock.c:315)
-> [ 203.592771] Code: 6c f0 0f ba 2f 08 0f 92 c0 0f b6 c0 c1 e0 08 89 c2 8b=
- 07 30 e4 09 d0 a9 00 01 ff ff 75 46 85 c0 74 0e 8b 07 84 c0 74 08 f3 90 <8=
-b> 07 84 c0 75 f8 b8 01 00 00 00 66 89 07 c3 8b 37 b8 00 02 00 00
-> All code
-> =3D=3D=3D=3D=3D=3D=3D=3D
->    0:   6c                      insb   (%dx),%es:(%rdi)
->    1:   f0 0f ba 2f 08          lock btsl $0x8,(%rdi)
->    6:   0f 92 c0                setb   %al
->    9:   0f b6 c0                movzbl %al,%eax
->    c:   c1 e0 08                shl    $0x8,%eax
->    f:   89 c2                   mov    %eax,%edx
->   11:   8b 07                   mov    (%rdi),%eax
->   13:   30 e4                   xor    %ah,%ah
->   15:   09 d0                   or     %edx,%eax
->   17:   a9 00 01 ff ff          test   $0xffff0100,%eax
->   1c:   75 46                   jne    0x64
->   1e:   85 c0                   test   %eax,%eax
->   20:   74 0e                   je     0x30
->   22:   8b 07                   mov    (%rdi),%eax
->   24:   84 c0                   test   %al,%al
->   26:   74 08                   je     0x30
->   28:   f3 90                   pause
->   2a:*  8b 07                   mov    (%rdi),%eax              <-- trapp=
-ing instruction
->   2c:   84 c0                   test   %al,%al
->   2e:   75 f8                   jne    0x28
->   30:   b8 01 00 00 00          mov    $0x1,%eax
->   35:   66 89 07                mov    %ax,(%rdi)
->   38:   c3                      retq
->   39:   8b 37                   mov    (%rdi),%esi
->   3b:   b8 00 02 00 00          mov    $0x200,%eax
->
-> Code starting with the faulting instruction
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->    0:   8b 07                   mov    (%rdi),%eax
->    2:   84 c0                   test   %al,%al
->    4:   75 f8                   jne    0xfffffffffffffffe
->    6:   b8 01 00 00 00          mov    $0x1,%eax
->    b:   66 89 07                mov    %ax,(%rdi)
->    e:   c3                      retq
->    f:   8b 37                   mov    (%rdi),%esi
->   11:   b8 00 02 00 00          mov    $0x200,%eax
-> [  203.592772] RSP: 0018:ffffc90001f032d8 EFLAGS: 00000002
-> [  203.592773] RAX: 0000000000000101 RBX: ffff88810d4a0000 RCX: ffff88875=
-9cc0000
-> [  203.592773] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88875=
-9ceba80
-> [  203.592774] RBP: ffffc90001f032e8 R08: ffff888759ceb420 R09: ffff88875=
-9ceb420
-> [  203.592774] R10: ffff88810cc01500 R11: 0000000000000000 R12: ffff88875=
-9ceba80
-> [  203.592774] R13: 0000000000000000 R14: 0000000000000087 R15: ffff88810=
-d4a0c8c
-> [  203.592775] FS:  00007fc252ae2740(0000) GS:ffff888759cc0000(0000) knlG=
-S:0000000000000000
-> [  203.592775] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  203.592776] CR2: 00007fa0a4d577f8 CR3: 000000074d22a005 CR4: 000000000=
-03706e0
-> [  203.592776] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000000=
-0000000
-> [  203.592776] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000000000=
-0000400
-> [  203.592777] Call Trace:
-> [  203.592777] _raw_spin_lock (kbuild/src/consumer/arch/x86/include/asm/p=
-aravirt.h:585 kbuild/src/consumer/arch/x86/include/asm/qspinlock.h:51 kbuil=
-d/src/consumer/include/asm-generic/qspinlock.h:85 kbuild/src/consumer/inclu=
-de/linux/spinlock.h:183 kbuild/src/consumer/include/linux/spinlock_api_smp.=
-h:143 kbuild/src/consumer/kernel/locking/spinlock.c:151)
-> [  203.592777] raw_spin_rq_lock_nested (kbuild/src/consumer/arch/x86/incl=
-ude/asm/preempt.h:85 kbuild/src/consumer/kernel/sched/core.c:462)
-> [  203.592778] try_to_wake_up (kbuild/src/consumer/kernel/sched/sched.h:1=
-536 kbuild/src/consumer/kernel/sched/sched.h:1611 kbuild/src/consumer/kerne=
-l/sched/core.c:3555 kbuild/src/consumer/kernel/sched/core.c:3835)
-> [  203.592778] __queue_work (kbuild/src/consumer/arch/x86/include/asm/par=
-avirt.h:590 kbuild/src/consumer/arch/x86/include/asm/qspinlock.h:56 kbuild/=
-src/consumer/include/linux/spinlock.h:212 kbuild/src/consumer/include/linux=
-/spinlock_api_smp.h:151 kbuild/src/consumer/kernel/workqueue.c:1501)
-> [  203.592778] queue_work_on (kbuild/src/consumer/kernel/workqueue.c:1526=
-)
->
->
-> To reproduce:
->
->         git clone https://github.com/intel/lkp-tests.git
->         cd lkp-tests
->         bin/lkp install                job.yaml  # job file is attached i=
-n this email
->         bin/lkp split-job --compatible job.yaml  # generate the yaml file=
- for lkp run
->         bin/lkp run                    generated-yaml-file
->
->
->
-> ---
-> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Ce=
-nter
-> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corpora=
-tion
->
-> Thanks,
-> Rong Chen
->
+So in short I don;t want to do anything too crazy from userspace, but the
+alternative now is to do like 100ms sleeps in the hope that the card is
+actually finished with the issued command (not just the host driver so to say).
+
+Kind Regards,
+Christian
+Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+Managing Directors: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
+
