@@ -2,166 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F120D3BC90F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC823BC90D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhGFKL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 06:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbhGFKLZ (ORCPT
+        id S231281AbhGFKLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 06:11:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43544 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231221AbhGFKLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 06:11:25 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B9FC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 03:08:46 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id g24so4117932vsa.10
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 03:08:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PEeLkirnfCYQuHYnsGsdZPBzkk8jMtMxsiPF74aFxoU=;
-        b=lV08qaQEyrd56tWjENCu7ugufvgUr7HBL7oNTdTFz0/BrRJr1meUQ1LdLQm3dBXuki
-         Z0dpOKR7iFK7UxVMCCBvuKM3DW19IyWJKqMEfc09wqrbrDrmeVymbMJIcZrITV9YZUUf
-         Wlr6Rm0RsRZO++QhT5U6M6fD66yMlGWzCW4d4VRzUUEIKXMCgvDBxYFfiofbfESYgolm
-         GeCtUWklFwr6xz3pOUDO714+v5NgLt5PFcHs+LZACSdYSRePXOVVM+P8gFBb50yoxkio
-         VHvDBDAtM1FSYb/GjzAtwbwT9fIg/YsMrF8vBiKdO56Zs1osEYr6iIHe/p5fm7pmrdaz
-         IJYw==
+        Tue, 6 Jul 2021 06:11:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625566118;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fkUL5b8YgAi/G+425pjIUtZ7clWR3x75JHUPwUSdKOA=;
+        b=SNx4q0MTCxoOHntz24HVkFm49v4oLqpbvfZAAZaDpBNxHOEZoP1HVfSwYDQZoteV5nsuce
+        GRCvv+5TJzwIpneUmy468TQNT5fL5BPhQkH9H8RMAi1eZYOsI0G8L2s3skerdmsOG3tDAi
+        NL0NpTtPQNy7rZmeRpy07DperLJcOw4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-189-gpfRjyj3MMuUyWRQI5iz_Q-1; Tue, 06 Jul 2021 06:08:36 -0400
+X-MC-Unique: gpfRjyj3MMuUyWRQI5iz_Q-1
+Received: by mail-ej1-f69.google.com with SMTP id de27-20020a1709069bdbb02904dedfc43879so1162181ejc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 03:08:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PEeLkirnfCYQuHYnsGsdZPBzkk8jMtMxsiPF74aFxoU=;
-        b=PSiqZ5DI7IYgraIhBdOLNX5NrBa+Qvjtue4J+Wq7DcRVfgXImh32secRD4GFdkiTW9
-         OqBgJVHxjVufU7KAje40A8H2/HhhXYqZN+5ydA3ZkJmjGXkR3gSYB+ej1QO5uwreb6Gh
-         8FnhOlvU7PpQKMbPqIiKGzZjAS0PFLVQ+XIjlQpdM89o7ujPiJkVodGNzIAmldBcoOwW
-         8duKSVfUzVwh3MAGwP2Ml2zISquPaub0WOC+Vvjb5fTgYccwdxWrXypUhc91AB9038lJ
-         gyhACkmAqxEEeyX5WUHTPwtxodJ/3yrbJ6WWyqSKDT5yaKVj4Q/TFbuRJh6E6aS4t/2Q
-         MwFA==
-X-Gm-Message-State: AOAM530t4ERgp2hgMROBuTagUUmH2IayaENyseVF3rYEQ0CIG8awP29p
-        n2s0emtc8ZFBesSUtRNTRgqDKxUw2PXG+WtGxpOf3g==
-X-Google-Smtp-Source: ABdhPJzpIivUn9UvwbUvVupnSMxfes8KAUG1L6DuN/3A5ndBfwCuMDkJBSZ1u8lYbldRIQOX0G6wA92ucPASKf925XM=
-X-Received: by 2002:a67:8095:: with SMTP id b143mr14129643vsd.48.1625566125254;
- Tue, 06 Jul 2021 03:08:45 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fkUL5b8YgAi/G+425pjIUtZ7clWR3x75JHUPwUSdKOA=;
+        b=Sy5qkcGkzQfgcT33ROnqE07IjGUSI0Re6ceCFMdlpY4o5+zBQ0xVURrRUr7ty7m320
+         0SjIBl2maFshuoYH4iFQGMcHZ/jnVwbYXy4kZ+v694VHZtiXQKqubZdLLuGSrBQ+uCUA
+         Z9aKn4QX9O8NqXnKbw0lwFQME1h31c3LzlWE2rybCY0wOaFR7bLq2/TGjUEJC7KFBssU
+         mpb2Bs1nb+mg90+Y9w+x4eRZ5TtGXkE9PBAya42u6IlTV5QgP6blysp8kk475KfF68+s
+         BWthU63NmxiL/5d/Xxrq9U/riVBXQCFLnajAv/RT+wJw4amwhk02CrHuGjqNIKhf/K9g
+         fjUw==
+X-Gm-Message-State: AOAM533JtkVZL4F0DMym2rJAy5IctK3TwMwCkaAAQ6QPz3Bq7MHjLSjy
+        zqbQovP0GptP4mcMq6SVB7uE+bu8W/mH2hC7nH8Iw6AMFYbqfuOjLrlMOusiPRXmYSEVhSTc2Qo
+        KMhHrx/pJdEe6lX7Ko7guSx1yK21z0wO2cN5Yyn0H2JZPmfsnTDMr3R3y4ICJxGazcm1r6pi3dk
+        oq
+X-Received: by 2002:a17:906:1284:: with SMTP id k4mr13111095ejb.329.1625566115602;
+        Tue, 06 Jul 2021 03:08:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyI2oIY2Q+GKYwex6EIiIxA4L1dDu4N//GmIomNoCTAnkVBF4rfHyYmntgD3gGsPyBHTM8GOA==
+X-Received: by 2002:a17:906:1284:: with SMTP id k4mr13111077ejb.329.1625566115426;
+        Tue, 06 Jul 2021 03:08:35 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id t27sm5442382eje.86.2021.07.06.03.08.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 03:08:35 -0700 (PDT)
+Subject: Re: [PATCH 1/3] asus-wmi: Add panel overdrive functionality
+To:     "Luke D. Jones" <luke@ljones.dev>
+Cc:     corentin.chary@gmail.com, mgross@linux.intel.com,
+        jdelvare@suse.com, linux@roeck-us.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210704222148.880848-1-luke@ljones.dev>
+ <20210704222148.880848-2-luke@ljones.dev>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <176320b4-7461-3a97-2958-0c35dbdac0ae@redhat.com>
+Date:   Tue, 6 Jul 2021 12:08:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210705090050.15077-1-reniuschengl@gmail.com>
- <CAPDyKFotmw-HQpZKCOD_8kThEa0_KSPnn36FNFLKRyUHYRHQjQ@mail.gmail.com>
- <CAJU4x8u8JPBJ3V6MCi1XcO4Qim-COPuxOhTdUnor7JdNCUFb=w@mail.gmail.com>
- <CAPDyKFqXsn91BvkJXMYSnc7X=RP9DXxXp2nKMmv+aMPoNdK2Tw@mail.gmail.com>
- <CAJU4x8srB7skGFVcj1SPrzEZSnVkwKiW3OPN0GQxvgtRG7GAAQ@mail.gmail.com>
- <CAPDyKFq0yHxX7wb4XGeiMiSGGiOf8RKJ5ahhFQ+_vodqnyPV9Q@mail.gmail.com> <CAJU4x8uGxb5VD1WVV5-QeLkVzuuR09-NacL-9nuXe8Zofzb2=w@mail.gmail.com>
-In-Reply-To: <CAJU4x8uGxb5VD1WVV5-QeLkVzuuR09-NacL-9nuXe8Zofzb2=w@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 6 Jul 2021 12:08:08 +0200
-Message-ID: <CAPDyKFpvCFYQVEp77hiRHY6CVDej-ffF5UE=LH=HSGcqMZA02w@mail.gmail.com>
-Subject: Re: [PATCH] [v2] mmc: sdhci-pci-gli: Improve Random 4K Read
- Performance of GL9763E
-To:     Renius Chen <reniuschengl@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <Ben.Chuang@genesyslogic.com.tw>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210704222148.880848-2-luke@ljones.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
+Hi,
 
-> > > Thanks for your explanation.
-> > >
-> > > I think there may be some misunderstandings here.
-> >
-> > I fully understand what you want to do.
-> >
-> > >
-> > > Our purpose is to avoid our GL9763e from entering ASPM L1 state during
-> > > a sequence of 4K read requests. So we don't have to consider about the
-> > > behavior/performance of the eMMC/SD card and what eMMC/SD card that is
-> > > being used. We just need to know what kind of requests we are
-> > > receiving now from the PCIe root port.
-> > >
-> > > Besides, the APSM L1 is purely hardware behavior in GL9763e and has no
-> > > corresponding relationship with runtime PM. It's not activated by
-> > > driver and the behaviors are not handled by software. I think runtime
-> > > PM is used to handle the behaviors of D0/D3 of the device, but not the
-> > > link status of ASPM L0s, L1, etc.
-> >
-> > Maybe runtime PM isn't the perfect fit for this type of use case.
-> >
-> > That still doesn't matter to to me, I will not accept this kind of
-> > governor/policy based code for use cases, in drivers. It doesn't
-> > belong there.
-> >
->
-> Hi Ulf,
->
-> The behavior of this patch is to set the value of a GL9763e vendor
-> specified register. Why it doesn't belong to GL9763e driver but other
-> common codes?
+One more remark inline:
 
-Let me try one more time.
+On 7/5/21 12:21 AM, Luke D. Jones wrote:
+> Some ASUS ROG laptops have the ability to drive the display panel
+> a a higher rate to eliminate or reduce ghosting.
+> 
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> ---
+>  drivers/platform/x86/asus-wmi.c            | 92 ++++++++++++++++++++++
+>  include/linux/platform_data/x86/asus-wmi.h |  1 +
+>  2 files changed, 93 insertions(+)
+> 
+> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+> index ebaeb7bb80f5..2468076d6cd8 100644
+> --- a/drivers/platform/x86/asus-wmi.c
+> +++ b/drivers/platform/x86/asus-wmi.c
 
-The code that is needed to put the GL9763e HW into low power state
-(writing to GL9763e specific register) certainly belongs in the
-driver.
+<snip>
 
-The code that monitors for a specific use case does not.
+> +static ssize_t panel_od_show(struct device *dev,
+> +				   struct device_attribute *attr, char *buf)
+> +{
+> +	struct asus_wmi *asus = dev_get_drvdata(dev);
+> +	u8 mode = asus->panel_overdrive;
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "%d\n", mode);
 
->
-> > >
-> > > I agree that the policy of balancing performance vs the energy cost is
-> > > a generic problem that all mmc drivers share. But our driver of
-> > > GL9763e is a host driver, the setting in this patch is also only for
-> > > GL9763e, could not be used by other devices. It depends on our
-> > > specific hardware design so that it is not a generic solution or
-> > > policy. So I think to implement such a patch in our specific GL9763e
-> > > driver to execute the specific actions just for our hardware design is
-> > > reasonable.
-> >
-> > From the use case point of view, the GL9763e hardware design isn't at
-> > all specific.
-> >
-> > In many cases, controllers/platforms have support for low power states
-> > that one want to enter to avoid wasting energy. The difficult part is
-> > to know *when* it makes sense to enter a low power state, as it also
-> > introduces a latency when the power needs to be restored for the
-> > device, to allow it to serve a new request.
-> >
-> > To me, it sounds like you may have been too aggressive on avoid
-> > wasting energy. If I understand correctly the idle period you use is
-> > 20/21 us, while most other drivers use 50-100 ms as idle period.
-> >
->
-> Yes, according to our customer's test for the GL9763e, if the ASPM L1
-> entry delay of GL9763e, which is the idle period you mentioned, is
-> larger than 20/21 us, it will not pass the PLT test. The PLT is
-> requested by Google for evaluating the product's battery life. The
-> product won't be accepted by Google if it fails the PLT test. So we
-> set the ASPM L1 entry delay to 20/21us.
->
-> With such a short idle period, during 4K reads, the idle time between
-> the read requests will be larger than 20/21us, so GL9763e will enter
-> ASPM L1 very frequently to impact the performance.
->
-> The bad performance of 4K reads was highlighted by Google, too. Our
-> customer has to pass both the PLT test and 4K read performance test by
-> Google's request. So after some discussions with our customer and
-> Google, we decided to submit such a patch to get the best balance to
-> satisfy Google's requiremnet.
->
-> The function and the register is vendor specified of GL9763e, so we
-> access it in the vendor driver of GL9763e. Add some functions in other
-> mmc general codes to do something only for GL9763e and can not be
-> applied by other devices might be a little bit strange and difficult
-> to implement and design?
+As Barnabás pointed out in his review of patch 2/3, please
+use sysfs_emit here.
 
-I haven't said implementation need to be easy, but suggest a few
-options to move forward.
+Regards,
 
-What did state and I am not going to change my opinion on this, is the
-governor code that monitors for use cases, don't belong in the driver.
+Hans
 
-Kind regards
-Uffe
