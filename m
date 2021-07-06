@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31EE83BC87A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A413BC87D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhGFJ21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 05:28:27 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:37785 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230515AbhGFJ20 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 05:28:26 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id F3AE2580643;
-        Tue,  6 Jul 2021 05:25:47 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 06 Jul 2021 05:25:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=RYFK3uCIujEv/Omrcqdc0v+UNeD
-        +JKOwGd/0E/VyQU0=; b=oYQ67i1GUdsIuy+ixvHZuCFmIQgsKX1uYJMW5bYOmVx
-        pa40wfpOy+Ramx6TdveFQ4aV5+baLZack23w5Tb/+BV3DOU3U9oEoKKaQNj+czf6
-        zeDTQeIWgDzNfcd7jNKpNf0T7BHcvijCHgPTC3+l7Bhaq//uaDohx/ZyhpMpAu+T
-        WsZjTYZq+zf4GOLKjdVa5NOEGAOHjeG/hHnOAxHeEfTRpGLe+OUeSNPutsfh6kUT
-        DJyQXU2a6EqHSOk9GgeVeaahxng7FeAZjr8onY8YqQdKl0St7MZ0udBfqQPAi0oj
-        u6RshDsmmCIN3OelwrhFA2dzd3hsJkW/MINkShBqEmw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=RYFK3u
-        CIujEv/Omrcqdc0v+UNeD+JKOwGd/0E/VyQU0=; b=pI3t0Dhy8ZLRdX1SOnf4vu
-        HQvBZGHxELLTWsdIc1rTblVBAeS2d/pZ5nTQXzefMkRXjzprqg8+X0JablzhU79/
-        PEt0MZL6giANwMURDhnYL9xNWATUi6Rk9nHziP8UftMiFzgxRhnA+YbsiCuSFxs7
-        G7z7gjH5R+PLKehi9jwl+uU4agNOkYM0zobwTs3SH29AbPnvmK+ywAbiiZINYeqa
-        3EJDvz7Xmb/yKvFXn3AG9TShWaqnO70Pm9ilc2u5fvpAfGYgarvibLJVCR5vCgqS
-        3a5l8wvd6qME1BJ+JsdcuuOWvuZWw6gdgXZvX+7t1Fc9dEAZoq8HfZBRK4aEfRkA
-        ==
-X-ME-Sender: <xms:miHkYFoWiiST6153DgPO_6z2OY3GTbQoBqOZ8hWF6K0Nb5uNEXotdw>
-    <xme:miHkYHp8zo12v2b_EFSf39UqzGaTvPH09M_jT8Xx5-GsvUHTR_zKnQ99xjniJTt6r
-    Qc2YmHm8IuzCQQog6Y>
-X-ME-Received: <xmr:miHkYCP0mGizCKwljLKbabZ3EearEw3K0toi3qFj9r2IwV2YRkckveH2XDZQI6haFXVf4erVJUf1oBu2DpaeO0D0jR1odpOkt5CA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeejiedguddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:miHkYA7RnqMLq-DA7SioIvXwWP1RzuRMOHSc4HuQBt_ztYzOUEMMYQ>
-    <xmx:miHkYE5bnXMJfB0y7-toAM3yVaWhg8MhbVzNLiLmt172hWxVN80NYA>
-    <xmx:miHkYIiQ1upEtMsJAi9oueDaR0XXbMPgVMGOYs-Wa2gl6R3FJD-UYw>
-    <xmx:myHkYPIqduI6ijFReLDNLKKo-3CpTZApzS0vaPf8U2AmmKMtR5ENjQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 6 Jul 2021 05:25:45 -0400 (EDT)
-Date:   Tue, 6 Jul 2021 11:25:43 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Emma Anholt <emma@anholt.net>, Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>
-Subject: Re: [PATCH] drm: vc4: Fix pixel-wrap issue with DVP teardown
-Message-ID: <20210706092543.ek2by2utlc75bhl5@gilmour>
-References: <20210628130533.144617-1-maxime@cerno.tech>
+        id S231190AbhGFJaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 05:30:25 -0400
+Received: from foss.arm.com ([217.140.110.172]:35536 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230472AbhGFJaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 05:30:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D37E31B;
+        Tue,  6 Jul 2021 02:27:45 -0700 (PDT)
+Received: from [10.57.40.45] (unknown [10.57.40.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1E473F5A1;
+        Tue,  6 Jul 2021 02:27:44 -0700 (PDT)
+Subject: Re: [PATCH] iommu: Fallback to default setting when def_domain_type()
+ callback returns 0
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, joro@8bytes.org,
+        will@kernel.org
+Cc:     "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210706065106.271765-1-kai.heng.feng@canonical.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <d9fa9a62-6522-7d26-0cca-16f6886136ec@arm.com>
+Date:   Tue, 6 Jul 2021 10:27:43 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="syhha5txe3pcjom5"
-Content-Disposition: inline
-In-Reply-To: <20210628130533.144617-1-maxime@cerno.tech>
+In-Reply-To: <20210706065106.271765-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-07-06 07:51, Kai-Heng Feng wrote:
+> Commit 28b41e2c6aeb ("iommu: Move def_domain type check for untrusted
+> device into core") not only moved the check for untrusted device to
+> IOMMU core, it also introduced a behavioral change by returning
+> def_domain_type() directly without checking its return value. That makes
+> many devices no longer use the default IOMMU setting.
+> 
+> So revert back to the old behavior which defaults to
+> iommu_def_domain_type when driver callback returns 0.
+> 
+> Fixes: 28b41e2c6aeb ("iommu: Move def_domain type check for untrusted device into core")
 
---syhha5txe3pcjom5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Are you sure about that? From that same commit:
 
-On Mon, Jun 28, 2021 at 03:05:33PM +0200, Maxime Ripard wrote:
-> From: Tim Gover <tim.gover@raspberrypi.com>
->=20
-> Adjust the DVP enable/disable sequence to avoid a pixel getting stuck
-> in an internal, non resettable FIFO within PixelValve when changing
-> HDMI resolution.
->=20
-> The blank pixels features of the DVP can prevent signals back to
-> pixelvalve causing it to not clear the FIFO. Adjust the ordering
-> and timing of operations to ensure the clear signal makes it through to
-> pixelvalve.
->=20
-> Signed-off-by: Tim Gover <tim.gover@raspberrypi.com>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+@@ -1507,7 +1509,7 @@ static int iommu_alloc_default_domain(struct 
+iommu_group *group,
+         if (group->default_domain)
+                 return 0;
 
-Applied
+-       type = iommu_get_def_domain_type(dev);
++       type = iommu_get_def_domain_type(dev) ? : iommu_def_domain_type;
 
-Maxime
+         return iommu_group_alloc_default_domain(dev->bus, group, type);
+  }
 
---syhha5txe3pcjom5
-Content-Type: application/pgp-signature; name="signature.asc"
+AFAICS the other two callers should also handle 0 correctly. Have you 
+seen a problem in practice?
 
------BEGIN PGP SIGNATURE-----
+Robin.
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYOQhlwAKCRDj7w1vZxhR
-xao8AP9+kYodDYwWLfugATpx8VVY3PsupvsBakFbW5ld3V/tuAEAyfAh/FA8fkKm
-feVkdag9TFy5cwdssnuGqcGo32zZ5wA=
-=eRuZ
------END PGP SIGNATURE-----
-
---syhha5txe3pcjom5--
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>   drivers/iommu/iommu.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 5419c4b9f27a..faac4f795025 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -1507,14 +1507,15 @@ EXPORT_SYMBOL_GPL(fsl_mc_device_group);
+>   static int iommu_get_def_domain_type(struct device *dev)
+>   {
+>   	const struct iommu_ops *ops = dev->bus->iommu_ops;
+> +	unsigned int type = 0;
+>   
+>   	if (dev_is_pci(dev) && to_pci_dev(dev)->untrusted)
+>   		return IOMMU_DOMAIN_DMA;
+>   
+>   	if (ops->def_domain_type)
+> -		return ops->def_domain_type(dev);
+> +		type = ops->def_domain_type(dev);
+>   
+> -	return 0;
+> +	return (type == 0) ? iommu_def_domain_type : type;
+>   }
+>   
+>   static int iommu_group_alloc_default_domain(struct bus_type *bus,
+> 
