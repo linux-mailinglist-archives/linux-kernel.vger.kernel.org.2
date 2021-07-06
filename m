@@ -2,92 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7B93BD8AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976733BD852
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbhGFOqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232771AbhGFOps (ORCPT
+        id S232202AbhGFOhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:37:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22241 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232073AbhGFOhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:45:48 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E2AC05BD0D
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 07:34:25 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso1670444wmc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:34:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Dnxcz/j4jG7HOHqQqtlrR1/gzrXIHBGiVaeaud+bq1k=;
-        b=ZiPC5E1vvjR+gWMyDSxYovoTYlmZkcT0KsnREYe9VplS0xxrBAQpNLBpBLa8rGfk2L
-         r5o4PQfdkNYqTbAL70aohbU9JJvyCl8gWTiCricSt9hkBS+MpZVNRGC1croOmTbR9mMN
-         nZ77ToVsVEZmMMgi2hByimoSm6KMJccSasCUXcNV2xbY3afowZAu5bbnDkojVu6ApOoa
-         ynh7OQoh1g4fVfliqRvd3iJDkD6dRv6fHJaZ/lrUwWCDHcCrEKq7UKBEft//LbaFi6mn
-         UmVaXxx7+Lj3ZylhOVuoLMNMIKJU+MKmWSxGtG8TPcr5XD5yD/YCce5i3xUi5elcM+Z2
-         hK1g==
+        Tue, 6 Jul 2021 10:37:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625582081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=G/gssxW/mbIhY3PmRppDUAwsg3OaI9WCT71TjUjACeA=;
+        b=fGV5nQt+jG4lfliGdO5oXqzy686K3xlWrtU7PvrFWMm/S+M/xKsJ+6SUtfN2cpfTHaY+qL
+        i6uW9U2yIT2F61Q79NTi52Zb04lfTtoqUU1eTuyBoWUedq8czIA6Q5k683RBOaaKue1c/S
+        eN5MfPn0pm39zEJGlSW7Ezyu9Hi/R7M=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-602-hQ_vxDyrMBGLxmDoFgC3jg-1; Tue, 06 Jul 2021 10:34:40 -0400
+X-MC-Unique: hQ_vxDyrMBGLxmDoFgC3jg-1
+Received: by mail-wm1-f71.google.com with SMTP id p3-20020a05600c3583b02901f55d71e34aso1012174wmq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:34:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Dnxcz/j4jG7HOHqQqtlrR1/gzrXIHBGiVaeaud+bq1k=;
-        b=Zw0/4y3Fd01UkA48QR8jNQBeoRp3lnMLLTvnbTFVH9gr4kVADcv4a2PTyyzwjn+lM+
-         rjtrZGo495BTRZoeYHmsNS4aTbStjKZXyCDTBqJ2v6M1EQt1yUh6wx8Qcsh/iv1o+Dfg
-         UKz5lxP6r6eRtjF07Juam4t2tq9e9yVj1qoC4hFoECDIL706H8r9DMCK7DAVVwmPcZv5
-         N0RuXVf0gXFoLLxzTWBjmLzdlblvhXSU+5CD2EWLAmsPzXillo1oZ5ZjJqcSNeAlPn2w
-         EARh3Px0eSl0e+yQh4RtVTap0TEjvb0bnazoQ+24Ziddhs3CbAp5M2rqrjKDhrxo4gj+
-         MTaQ==
-X-Gm-Message-State: AOAM532StTvxJw6jTWHcLgMDiPzIQBDNybHCI1Z6GRdW3X3BNNAhT6W1
-        5sp3bhPNiTDYBxn1tSd47dptAg==
-X-Google-Smtp-Source: ABdhPJxfaenUatsMwKqcqHPDvtnSYMFEMLRXvzeRlYaQpb+QZ5H8KRAvj//aDlwQjov+ZhP4O6Ga4A==
-X-Received: by 2002:a1c:638a:: with SMTP id x132mr1153093wmb.90.1625582063590;
-        Tue, 06 Jul 2021 07:34:23 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:396a:6bf2:9c33:26ce])
-        by smtp.gmail.com with ESMTPSA id b8sm3351889wmb.20.2021.07.06.07.34.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 07:34:22 -0700 (PDT)
-Date:   Tue, 6 Jul 2021 16:34:17 +0200
-From:   Marco Elver <elver@google.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, hare@suse.de,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [GIT PULL] first round of SCSI updates for the 5.13+ merge window
-Message-ID: <YORp6acYukSgM2PO@elver.google.com>
-References: <e118d4b2fb924156f791564483336e7125276c47.camel@HansenPartnership.com>
- <YORh1+8Mk5RYCzx7@elver.google.com>
- <yq1wnq3ed3i.fsf@ca-mkp.ca.oracle.com>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G/gssxW/mbIhY3PmRppDUAwsg3OaI9WCT71TjUjACeA=;
+        b=iv4HwIIBegeBUw3DlpkIkk7GkhkFGZq0qiG3HmD4VF/Z40PZ7okx28ps/V5YUAuEo6
+         YFX3yKsNkmsrKCJU4x8SNHANr2On/x2W7krhVgimkyyXGGK/OEhni2wZquG51xNBnUC5
+         bc3gSdwjZa2Lhf7mg5QcKahB5ZefE2TrUC5isTMW9lnHHoB271xgcD869ZVBZeM4WxnO
+         Jo5Ptwfcj9W7d5BOSZol0aI9JHrZYcszjewEXYCJYtIFGXkn01Pu2w+lyn2b0qrxblyb
+         s0V4/L8uQF9KcacgvQqCSUX0Ld4PUIlHZISTrMjZ7cAPzqSKXZqha/7nCMhYt4fCP/Gy
+         qWLg==
+X-Gm-Message-State: AOAM5310DLh4O6t3g20GhnOt4Y8hF+eLCOfQ7uSoDykIon/NBTYC73xu
+        6NGf+Ma0MafxzCAqn9murG7Zd05zX3G6cozWwpMWyBVGMq9nr+NS1tHfQLP9vM8Yb8sNhn3xvuS
+        hTO0vPzLI+lFrnG8lP2XgQebj
+X-Received: by 2002:a05:6000:1787:: with SMTP id e7mr21954377wrg.167.1625582079466;
+        Tue, 06 Jul 2021 07:34:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyta9Y16G3a+VI4XCXTFQBPTRZDYBxdBee0/p86BqoXT5KemnytIPbM4B6FvK7NsjZAlgpykw==
+X-Received: by 2002:a05:6000:1787:: with SMTP id e7mr21954354wrg.167.1625582079256;
+        Tue, 06 Jul 2021 07:34:39 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id w1sm15936566wmi.13.2021.07.06.07.34.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 07:34:38 -0700 (PDT)
+To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <ac17ee5e713b83ce64626b7b39c40515d98db09f.1625186503.git.isaku.yamahata@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [RFC PATCH v2 35/69] KVM: x86: Introduce vm_teardown() hook in
+ kvm_arch_vm_destroy()
+Message-ID: <98e17bdc-cc91-f225-b24a-d64e052e1b3d@redhat.com>
+Date:   Tue, 6 Jul 2021 16:34:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <yq1wnq3ed3i.fsf@ca-mkp.ca.oracle.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <ac17ee5e713b83ce64626b7b39c40515d98db09f.1625186503.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 10:27AM -0400, Martin K. Petersen wrote:
-> Marco,
->
-> > On Fri, Jul 02, 2021 at 09:11AM +0100, James Bottomley wrote:
-> > [...]
-> >>       scsi: core: Kill DRIVER_SENSE
-> > [...]
-> >
-> > As of this being merged, most of our syzbot instances are broken with:
->
-> I believe this should fix it:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git/commit/?h=5.14/scsi-queue&id=c43ddbf97f46b93727718408d60a47ce8c08f30c
+On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
+> -static void svm_vm_destroy(struct kvm *kvm)
+> +static void svm_vm_teardown(struct kvm *kvm)
+>   {
+>   	avic_vm_destroy(kvm);
+>   	sev_vm_destroy(kvm);
+>   }
 
-Indeed it does! For "scsi: virtio_scsi: Do not overwrite SCSI status":
+Please keep "destroy" as is and use "free" from the final step.
 
-	Tested-by: Marco Elver <elver@google.com>
+> +static void svm_vm_destroy(struct kvm *kvm)
+> +{
+> +
 
-Thanks,
--- Marco
+Please remove the empty lines.
+
+Paolo
+
+> +}
+> +
+>   static bool svm_is_vm_type_supported(unsigned long type)
+>   {
+>   	return type == KVM_X86_LEGACY_VM;
+> @@ -4456,6 +4461,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+>   	.is_vm_type_supported = svm_is_vm_type_supported,
+>   	.vm_size = sizeof(struct kvm_svm),
+>   	.vm_init = svm_vm_init,
+> +	.vm_teardown = svm_vm_teardown,
+>   	.vm_destroy = svm_vm_destroy,
+>   
+>   	.prepare_guest_switch = svm_prepare_guest_switch,
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 84c2df824ecc..36756a356704 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6995,6 +6995,16 @@ static int vmx_vm_init(struct kvm *kvm)
+>   	return 0;
+>   }
+>   
+> +static void vmx_vm_teardown(struct kvm *kvm)
+> +{
+> +
+> +}
+> +
+> +static void vmx_vm_destroy(struct kvm *kvm)
+> +{
+> +
+> +}
+> +
+>   static int __init vmx_check_processor_compat(void)
+>   {
+>   	struct vmcs_config vmcs_conf;
+> @@ -7613,6 +7623,8 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
+>   	.is_vm_type_supported = vmx_is_vm_type_supported,
+>   	.vm_size = sizeof(struct kvm_vmx),
+>   	.vm_init = vmx_vm_init,
+> +	.vm_teardown = vmx_vm_teardown,
+> +	.vm_destroy = vmx_vm_destroy,
+>   
+>   	.vcpu_create = vmx_create_vcpu,
+>   	.vcpu_free = vmx_free_vcpu,
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index da9f1081cb03..4b436cae1732 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -11043,7 +11043,7 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
+>   		__x86_set_memory_region(kvm, TSS_PRIVATE_MEMSLOT, 0, 0);
+>   		mutex_unlock(&kvm->slots_lock);
+>   	}
+> -	static_call_cond(kvm_x86_vm_destroy)(kvm);
+> +	static_call(kvm_x86_vm_teardown)(kvm);
+>   	kvm_free_msr_filter(srcu_dereference_check(kvm->arch.msr_filter, &kvm->srcu, 1));
+>   	kvm_pic_destroy(kvm);
+>   	kvm_ioapic_destroy(kvm);
+> @@ -11054,6 +11054,7 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
+>   	kvm_page_track_cleanup(kvm);
+>   	kvm_xen_destroy_vm(kvm);
+>   	kvm_hv_destroy_vm(kvm);
+> +	static_call_cond(kvm_x86_vm_destroy)(kvm);
+>   }
+>   
+>   void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
+> 
+
