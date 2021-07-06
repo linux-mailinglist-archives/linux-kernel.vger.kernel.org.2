@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88503BCF9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A7F3BCF97
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234347AbhGFLax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:30:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35428 "EHLO mail.kernel.org"
+        id S234169AbhGFLar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:30:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234471AbhGFLYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234475AbhGFLYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Jul 2021 07:24:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E91261CC8;
-        Tue,  6 Jul 2021 11:18:28 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1453C61CCB;
+        Tue,  6 Jul 2021 11:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570309;
-        bh=LfGM5sFaMdk8HgCqOUksC356f/Tvj0fPbKK+2H6H4OY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Ps/+4GQxSz0L7IPE3f/sgCsYbqO7y3lckoNg0GaOJfvZZr3ynPoZasBErR+vjVXLk
-         ncyANhyLFeW0lhP9Hka2Ek4Ss9L+Viu+r1E9Ln4SUTCXb8oYeleB87uDmnfp9ETAgA
-         LPuf03RcJ9zRQWYYA4OvawCAyrkoKjqQVXT2GnMevj+XDNXzhI/FHgeYn+fZzfczh4
-         G3rRyZVbjRlMI3GoduYdbgtnzksL1WIT/hmL6Ldwhijn8m1KcKJwgMWkPF50X1aL64
-         dg2LWAVIAUPnati3Eg1hTT7iYYR5ry6WKg5MMd+WYrkVVTQiO3UBJOgsYvKYVnVc4S
-         tSbN4Cml02UPA==
+        s=k20201202; t=1625570311;
+        bh=epLAffIQc77bcA44wYbXzn+8dh4Eepktdm8W90mUD4c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=kQXlZ61oIYUGX17vPtS1S8vUWkh8KHDQrbhln33IA/+haqgJQof19qPDYZJb57/1L
+         4A+92eDHMWmxV1TF3yuC1TtA9jpCL9zpW1ninAAYxxJDF9+tPGGTXjW4V2bu8io+n+
+         qEwILY+jA25lVAvzxShBXyqJCZzMj6UT9sBEb8WcA8JD39cOFzPOt6vTRrf1k+3ds4
+         u4GonmnU54B4dfp88/OoZYFV/4hVROEi6DJ0gO6fKrrYsfPBwyqRw1h6Ia856aTk2l
+         4KmnXfy+sD4cujlnXqUhLEoUqgFt7bW45JBGk/QhXUpEk1miKRZ4XtqQ3ufKS+VCwC
+         enopPndhZwKAQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tian Tao <tiantao6@hisilicon.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>, etnaviv@lists.freedesktop.org,
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Sasha Levin <sashal@kernel.org>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.12 001/160] drm/etnaviv: fix NULL check before some freeing functions is not needed
-Date:   Tue,  6 Jul 2021 07:15:47 -0400
-Message-Id: <20210706111827.2060499-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 003/160] drm/zte: Don't select DRM_KMS_FB_HELPER
+Date:   Tue,  6 Jul 2021 07:15:49 -0400
+Message-Id: <20210706111827.2060499-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210706111827.2060499-1-sashal@kernel.org>
+References: <20210706111827.2060499-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -43,36 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tian Tao <tiantao6@hisilicon.com>
+From: Thomas Zimmermann <tzimmermann@suse.de>
 
-[ Upstream commit 7d614ab2f20503ed8766363d41f8607337571adf ]
+[ Upstream commit a50e74bec1d17e95275909660c6b43ffe11ebcf0 ]
 
-fixed the below warning:
-drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c:84:2-8: WARNING: NULL check
-before some freeing functions is not needed.
+Selecting DRM_FBDEV_EMULATION will include the correct settings for
+fbdev emulation. Drivers should not override this.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210415110040.23525-4-tzimmermann@suse.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/zte/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
-index b390dd4d60b7..d741b1d735f7 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
-@@ -80,8 +80,7 @@ static void etnaviv_gem_prime_release(struct etnaviv_gem_object *etnaviv_obj)
- 	/* Don't drop the pages for imported dmabuf, as they are not
- 	 * ours, just free the array we allocated:
- 	 */
--	if (etnaviv_obj->pages)
--		kvfree(etnaviv_obj->pages);
-+	kvfree(etnaviv_obj->pages);
- 
- 	drm_prime_gem_destroy(&etnaviv_obj->base, etnaviv_obj->sgt);
- }
+diff --git a/drivers/gpu/drm/zte/Kconfig b/drivers/gpu/drm/zte/Kconfig
+index 90ebaedc11fd..aa8594190b50 100644
+--- a/drivers/gpu/drm/zte/Kconfig
++++ b/drivers/gpu/drm/zte/Kconfig
+@@ -3,7 +3,6 @@ config DRM_ZTE
+ 	tristate "DRM Support for ZTE SoCs"
+ 	depends on DRM && ARCH_ZX
+ 	select DRM_KMS_CMA_HELPER
+-	select DRM_KMS_FB_HELPER
+ 	select DRM_KMS_HELPER
+ 	select SND_SOC_HDMI_CODEC if SND_SOC
+ 	select VIDEOMODE_HELPERS
 -- 
 2.30.2
 
