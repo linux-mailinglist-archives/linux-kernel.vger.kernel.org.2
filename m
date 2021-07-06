@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B783BD31C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8590C3BD32A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235540AbhGFLsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:48:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47606 "EHLO mail.kernel.org"
+        id S233400AbhGFLtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:49:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237056AbhGFLfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:35:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C83D261C6C;
-        Tue,  6 Jul 2021 11:25:17 +0000 (UTC)
+        id S237083AbhGFLfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:35:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08DC261E5F;
+        Tue,  6 Jul 2021 11:25:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570718;
-        bh=ppceDNdzdKWA3ASmqleqCUSg/GjatIfNhTui98Vl9wk=;
+        s=k20201202; t=1625570723;
+        bh=7TqA3fICyE5j+6j+x3Ixd7Q4PekYwAIpdQ7n4fQORYo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YCq+2/HuptHS+YpjNOIIlzP7UsepGh7SZf5FlHQbRLSjVNva3wte79a4QhB94pLwI
-         b1JWFE4EnGMWvBReI53DcIqaxCFvEsW97XC0rPH+vXKngHIaIavFtW7kADkvoVARph
-         xeFQIcJ+/IOTCOAQPGHI2zlO7H4fLNvx3yGFJDH7eDCVGzLDYvQ7UTf9axK0QXXLZp
-         JnF+djX6vR/UG3TjX+lTA1SbFQgrMSeamT/NmzAC44amvOSTWc8r6L6iuPaOsVKsiO
-         3mjVAxeaZHQOYQpXngHedRAFgnwQdXcKbVAF35hlFiL39br8HZq4B0HnbyomNMVct4
-         oAMJCYEgtZsug==
+        b=WlGseABzUrz+9EfWJEcIbzOKU/dBvaEooEkO7/K0A2VpyfSsk3F4+frlaewgUGhQ0
+         RAlWyzirbZk7MDP51GhonR/WHsv9Wu1oyuCw+pflmtoJvkCtWnZP8tVUUOq7cZjQMW
+         jAQHMknJBl4cWW5piukjEu215O1pt5y8yMYWcW179bwroOSARDJvq+iKIAX8MTCkAS
+         TUwqmSqwzktob8YnZQdo8RCsM0wpOYAV66aBadYAgtn96o3VUiabcbhh9rUfT73FQv
+         w4heApoeWUqp1TKCXv2hxd8CDZXtvcvUjXSvymyb4xzIDHoQWsWQWRuuqxCveoNM0J
+         Gh+d6GydAZTEQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 12/74] net: Treat __napi_schedule_irqoff() as __napi_schedule() on PREEMPT_RT
-Date:   Tue,  6 Jul 2021 07:24:00 -0400
-Message-Id: <20210706112502.2064236-12-sashal@kernel.org>
+Cc:     Xie Yongji <xieyongji@bytedance.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH AUTOSEL 5.4 16/74] drm/virtio: Fix double free on probe failure
+Date:   Tue,  6 Jul 2021 07:24:04 -0400
+Message-Id: <20210706112502.2064236-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112502.2064236-1-sashal@kernel.org>
 References: <20210706112502.2064236-1-sashal@kernel.org>
@@ -44,62 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Xie Yongji <xieyongji@bytedance.com>
 
-[ Upstream commit 8380c81d5c4fced6f4397795a5ae65758272bbfd ]
+[ Upstream commit cec7f1774605a5ef47c134af62afe7c75c30b0ee ]
 
-__napi_schedule_irqoff() is an optimized version of __napi_schedule()
-which can be used where it is known that interrupts are disabled,
-e.g. in interrupt-handlers, spin_lock_irq() sections or hrtimer
-callbacks.
+The virtio_gpu_init() will free vgdev and vgdev->vbufs on failure.
+But such failure will be caught by virtio_gpu_probe() and then
+virtio_gpu_release() will be called to do some cleanup which
+will free vgdev and vgdev->vbufs again. So let's set dev->dev_private
+to NULL to avoid double free.
 
-On PREEMPT_RT enabled kernels this assumptions is not true. Force-
-threaded interrupt handlers and spinlocks are not disabling interrupts
-and the NAPI hrtimer callback is forced into softirq context which runs
-with interrupts enabled as well.
-
-Chasing all usage sites of __napi_schedule_irqoff() is a whack-a-mole
-game so make __napi_schedule_irqoff() invoke __napi_schedule() for
-PREEMPT_RT kernels.
-
-The callers of ____napi_schedule() in the networking core have been
-audited and are correct on PREEMPT_RT kernels as well.
-
-Reported-by: Juri Lelli <juri.lelli@redhat.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Juri Lelli <juri.lelli@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/20210517084913.403-2-xieyongji@bytedance.com
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/dev.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/virtio/virtgpu_kms.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index e226f266da9e..3810eaf89b26 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -5972,11 +5972,18 @@ EXPORT_SYMBOL(napi_schedule_prep);
-  * __napi_schedule_irqoff - schedule for receive
-  * @n: entry to schedule
-  *
-- * Variant of __napi_schedule() assuming hard irqs are masked
-+ * Variant of __napi_schedule() assuming hard irqs are masked.
-+ *
-+ * On PREEMPT_RT enabled kernels this maps to __napi_schedule()
-+ * because the interrupt disabled assumption might not be true
-+ * due to force-threaded interrupts and spinlock substitution.
-  */
- void __napi_schedule_irqoff(struct napi_struct *n)
- {
--	____napi_schedule(this_cpu_ptr(&softnet_data), n);
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		____napi_schedule(this_cpu_ptr(&softnet_data), n);
-+	else
-+		__napi_schedule(n);
+diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
+index 5c0249d3bd53..0727791872f5 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_kms.c
++++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
+@@ -218,6 +218,7 @@ int virtio_gpu_init(struct drm_device *dev)
+ err_vbufs:
+ 	vgdev->vdev->config->del_vqs(vgdev->vdev);
+ err_vqs:
++	dev->dev_private = NULL;
+ 	kfree(vgdev);
+ 	return ret;
  }
- EXPORT_SYMBOL(__napi_schedule_irqoff);
- 
 -- 
 2.30.2
 
