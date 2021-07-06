@@ -2,138 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CFE3BD933
+	by mail.lfdr.de (Postfix) with ESMTP id EA3B73BD935
 	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhGFO71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:59:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbhGFO7F (ORCPT
+        id S232301AbhGFO7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:59:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33144 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232166AbhGFO7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:59:05 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098C9C06139F
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 07:56:20 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id g3so21011264ilj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:56:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a8/qLLqO6eL91stH3wL0KRpl9T08Ic+NpnQGQ6x06VA=;
-        b=j2sPe5/YeFhkbk8Ao1wBoSJI3mHjTKeYtGS/ylikxffAh4pjlXAic9iDxRv5Mv0c88
-         o5b7lMNG7FTsdoBh7D7HFqLBpXx4OWDvWQolA2AYbIKyYGFb/BJCIZ86BrUQNsb/C3Zk
-         XsAk6eIa1iX7IreWpvN3CU6N8yZIaUepsXSqCVxrBMKOSQwVo+4QlVdlIX3ICQnCZ+RN
-         LgJrLxii8/f54h0waeGuOrMJGYXgQlD5kGp/v5vw+plNVj3amj0GPy79B+VVJnzMwf0X
-         slP6aAspIJPeReLpfjtTCTHLR7t2wU8m1oRA1naFZ3fVxAxznodtagNFx7SXVX3ixwEZ
-         eBuQ==
+        Tue, 6 Jul 2021 10:59:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625583388;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bmTD9d3ct3Nzqp4lHcZstPNwokD1nD5SFrbRvU2bNOw=;
+        b=HdoK/xj0Cee8MPs1J+eQsH6XRQT8Oy638C4j8JvlA56qmvZUuY4FHG2wj4GNcXD+ACM38y
+        FVjvqHX7q+emX/LO8IFexUjlfwH4rqaf2iUSb/1ed13tILcomHQg7wVdaYVyRL74HDtpZF
+        O5W9ZMAZfcNuBaGmCmecwAJLYaMzwfo=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-JeCTRKbFOz638G5Yb0_EnA-1; Tue, 06 Jul 2021 10:56:27 -0400
+X-MC-Unique: JeCTRKbFOz638G5Yb0_EnA-1
+Received: by mail-ot1-f72.google.com with SMTP id l8-20020a0568301548b02904ad8104e567so966262otp.20
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:56:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a8/qLLqO6eL91stH3wL0KRpl9T08Ic+NpnQGQ6x06VA=;
-        b=nWvvOlrh7wLuyEO2MFFj8uG0L/q98u9NrwZtbfxEZhcnJ0NqpMrjV9QRAF3x6yyko0
-         J1BC/6kGasTXeKKTW9YLJtkggGeugB+3peLR8a3aDwCAw2TGVMv9ZMAXhEJsyUnDhn0s
-         KPlBlDOSdy2N4vfb73j9PbQC1wXIsveRskn6gbcO4HoYf0LO+nsouufPJoRRpCH5FCJJ
-         zW/EKLo9ZVpYybFN800ZTVHS+dI8mSlB2ESYR7YiZBQC/IjaFP4ZOV0S0v0ZdS52RFtD
-         ESbrfe3yNrFdWvbDLj3lABYEw2PMMI69/Gv/m1hsz/doCHfB73Tu0KfFMzkAiOm5O4w2
-         L/VQ==
-X-Gm-Message-State: AOAM531JEwxvJGAX/fL9u+8cVFehk8yaguao43RfoBWzSwjb+w8W0D8c
-        j4+ArGqRb5geuKeTrozmJroZrg==
-X-Google-Smtp-Source: ABdhPJwog3epP3zDyPdL9Dn1Mv3QQbO1xKAP/j5dh3/z+a/bJ15P6+dhr9KB3Du7HHV3+Ab4fMGLOg==
-X-Received: by 2002:a92:dd05:: with SMTP id n5mr14308230ilm.72.1625583379441;
-        Tue, 06 Jul 2021 07:56:19 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id l18sm8626632ilo.64.2021.07.06.07.56.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 07:56:19 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1m0mUj-004Rth-V9; Tue, 06 Jul 2021 11:56:17 -0300
-Date:   Tue, 6 Jul 2021 11:56:17 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <20210706145617.GO4604@ziepe.ca>
-References: <20210705130314.11519-1-ogabbay@kernel.org>
- <YOQXBWpo3whVjOyh@phenom.ffwll.local>
- <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
- <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
- <CAKMK7uHpKFVm55O_NB=WYCsv0iUt92ZUn6eCzifH=unbhe3J8g@mail.gmail.com>
- <CAKMK7uFGr=ugyKj0H3ctbh28Jnr25vAgXPBaDBMmfErCxYVo3w@mail.gmail.com>
- <20210706134430.GL4604@ziepe.ca>
- <CAKMK7uFEZjp2_WBhtkVxSNQ-1WcBSr3NDotY0fjz0iLRw8Barw@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=bmTD9d3ct3Nzqp4lHcZstPNwokD1nD5SFrbRvU2bNOw=;
+        b=HLW1Uo+Q/Hdw0DxiaBqGTrhyXnu0FFUPfMAqSCW1/k5ryFpxQQm5uJnBAqnIGdbL3E
+         W6TZZ+l09l93VDtB1UZxwHiWmFqeaYT8eAg1O7eOLwGxqiX7vbW98NjW0uuNxdhpyajw
+         JeUNQtv3ZmoewJLxjmC9jOBoFRx1+l7AhHd8csgPa7Uq+uddVB7vAS8ZsQsPe4dAYL0m
+         smcZnDpBf7f6yRJmrX6zTMa9hsObVfEODVZqjSy4yi1XINQ1WRCPXbo08V7AJoy+CCX7
+         0IUBSxY1h+UC8RSTldcbmsUzHcsd7sabmyuAGhrvEhEh9xYLmhmnwirxjrVAzuvwdcw3
+         YN7A==
+X-Gm-Message-State: AOAM5327mlVh7YPFZvzcA9zkfHSubLMwMIvSfkpluBS4S+SRqF0FFJkK
+        +DMJpggVVbWYIXC9W5yTWVAFiI4jt9O/xLa8TxySrFfxH/rHJynCxmlBvYEC7rQCOn+tvd+G8TH
+        Ae1RaVlHJaTyB9nLsWuDbNnxA
+X-Received: by 2002:a9d:39e3:: with SMTP id y90mr15636563otb.257.1625583386896;
+        Tue, 06 Jul 2021 07:56:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz5dETXDuVxi+74WVF9c6JzTEDL9DAQXIGplmTSwxU4guGmmD+27n0PY+BPl3Ej51FuHkIPvA==
+X-Received: by 2002:a9d:39e3:: with SMTP id y90mr15636547otb.257.1625583386688;
+        Tue, 06 Jul 2021 07:56:26 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id t5sm3289348otk.39.2021.07.06.07.56.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 07:56:26 -0700 (PDT)
+Subject: Re: [PATCH v4 2/4] spi: spi-altera-dfl: support n5010 feature
+ revision
+To:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>,
+        Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
+References: <20210705101645.2040106-1-martin@geanix.com>
+ <20210705101645.2040106-3-martin@geanix.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <d6250f86-db93-bcc2-d46e-6dba30976cc4@redhat.com>
+Date:   Tue, 6 Jul 2021 07:56:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uFEZjp2_WBhtkVxSNQ-1WcBSr3NDotY0fjz0iLRw8Barw@mail.gmail.com>
+In-Reply-To: <20210705101645.2040106-3-martin@geanix.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 04:09:25PM +0200, Daniel Vetter wrote:
-> Anyway, for anything that works like a gpu accelerator, like 3d accel,
-> or parallel compute accel (aka gpgpu) or spatial compute accel (aka
-> NN/AI) or maybe even fpga accel most of the magic to use the hardware
-> is in this backend compiler, which translates from an IR into whatever
-> your accelerator consumes. That's the part we really care about for
-> modern accelerators because without that defacto the hardware is
-> useless. Generally these chips have full-blown, if special purpose
-> ISA, with register files, spilling, branches, loops and other control
-> flow (sometimes only execution masks on simpler hw).
 
-I don't know if I see it so clearly as you do - at the end of the day
-the user keys in the program in some proprietary (or open!) language
-and and wack of propritary magic transforms it to "make it work".
+On 7/5/21 3:16 AM, Martin Hundebøll wrote:
+> From: Martin Hundebøll <mhu@silicom.dk>
+>
+> The Max10 BMC on the Silicom n5010 PAC is slightly different than the
+> existing BMCs, so use a dedicated feature revision detect it.
+>
+> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+> Reviewed-by: Moritz Fischer <mdf@kernel.org>
+> ---
+>
+> Changes since v3:
+>   * Changed "BMC's" to "BMCs"
+>   * Added Moritz' Reviewed-by
+>
+> Changes since v2:
+>   * None
+>
+> Changes since v1:
+>   * use feature revision from struct dfl_device instead of reading it
+>     from io-mem
+>
+>   drivers/spi/spi-altera-dfl.c | 15 +++++++++++++--
+>   1 file changed, 13 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/spi/spi-altera-dfl.c b/drivers/spi/spi-altera-dfl.c
+> index 3e32e4fe5895..f6cf7c8d9dac 100644
+> --- a/drivers/spi/spi-altera-dfl.c
+> +++ b/drivers/spi/spi-altera-dfl.c
+> @@ -111,6 +111,13 @@ static struct spi_board_info m10_bmc_info = {
+>   	.chip_select = 0,
+>   };
+>   
+> +static struct spi_board_info m10_n5010_bmc_info = {
+> +	.modalias = "m10-n5010",
+> +	.max_speed_hz = 12500000,
+> +	.bus_num = 0,
+> +	.chip_select = 0,
+> +};
 
-There are many barriers that prevent someone without the secret
-knowledge from duplicating the end result of a working program. An
-accelerator ISA is certainly one example, but I wouldn't overly focus
-on it as the only blocker.
+Other then the modalias, this is exactly the same as m10_bmc_info.
 
-Like you said below the NVIDIA GPU ISA seems known but the HW is still
-not really useful for other reasons.
+Why not set platform_data?
 
-Habana seems to have gone the other way, the HW is fully useful but we
-don't have the ISA transformation and other details.
+> +
+>   static void config_spi_master(void __iomem *base, struct spi_master *master)
+>   {
+>   	u64 v;
+> @@ -130,6 +137,7 @@ static void config_spi_master(void __iomem *base, struct spi_master *master)
+>   
+>   static int dfl_spi_altera_probe(struct dfl_device *dfl_dev)
+>   {
+> +	struct spi_board_info *board_info = &m10_bmc_info;
+>   	struct device *dev = &dfl_dev->dev;
+>   	struct spi_master *master;
+>   	struct altera_spi *hw;
+> @@ -172,9 +180,12 @@ static int dfl_spi_altera_probe(struct dfl_device *dfl_dev)
+>   		goto exit;
+>   	}
+>   
+> -	if (!spi_new_device(master,  &m10_bmc_info)) {
+> +	if (dfl_dev->revision == FME_FEATURE_REV_MAX10_SPI_N5010)
+> +		board_info = &m10_n5010_bmc_info;
 
-Both cases seem to have ended up with something useless, and I have a
-hard time saying nouveau has more right to be in the kernel tree than
-Habana does.
+The revision is board parameter, I think this check could be improved.
 
-> > Honestly, I think GPU is approaching this backwards. Wayland should
-> > have been designed to prevent proprietary userspace stacks.
-> 
-> That's not possible without some serious cans of worms though. Wayland
-> is a protocol, and you can't forbid people from implementing it.
-> Otherwise all the compatible open implementations of closed protocols
-> wouldn't be possible either.
+There should be a
 
-Well, in many ways so is Linux, but nobody would seriously
-re-implement Linux just to produce a driver.
+#define FME_FATURE_REV_MAX10_SPI_D5005 0
 
-> So I'm not clear what you're suggesting here we should do different.
+And it checked here instead of setting above.
 
-Not enabling proprietary stacks as above would be a good start.
+And -EINVAL returned if the revision is not known.
 
-Jason
+> +
+> +	if (!spi_new_device(master, board_info)) {
+>   		dev_err(dev, "%s failed to create SPI device: %s\n",
+> -			__func__, m10_bmc_info.modalias);
+> +			__func__, board_info->modalias);
+
+Why isn't this error handled ?
+
+Tom
+
+>   	}
+>   
+>   	return 0;
+
