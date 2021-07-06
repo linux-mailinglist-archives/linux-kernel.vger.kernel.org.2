@@ -2,124 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58683BD739
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E883BD6EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236012AbhGFMzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:55:06 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:46848 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235125AbhGFMzD (ORCPT
+        id S240114AbhGFMsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240138AbhGFMsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 08:55:03 -0400
-X-UUID: cbc380d870e948d9afe3487eb0f8f4d8-20210706
-X-UUID: cbc380d870e948d9afe3487eb0f8f4d8-20210706
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1261492797; Tue, 06 Jul 2021 20:52:21 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 6 Jul 2021 20:52:20 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 6 Jul 2021 20:52:19 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     David Ahern <dsahern@gmail.com>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        <rocco.yue@gmail.com>, <chao.song@mediatek.com>,
-        <kuohong.wang@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
-        Rocco Yue <rocco.yue@mediatek.com>
-Subject: Re: [PATCH] net: ipv6: don't generate link-local address in any addr_gen_mode
-Date:   Tue, 6 Jul 2021 20:37:02 +0800
-Message-ID: <20210706123702.29375-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <62c9f5b7-84bd-d809-4e33-39fed7a9d780@gmail.com>
-References: <62c9f5b7-84bd-d809-4e33-39fed7a9d780@gmail.com>
+        Tue, 6 Jul 2021 08:48:40 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6419C05BD36
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 05:41:07 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id t14-20020a05600c198eb029020c8aac53d4so4193163wmq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 05:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZnlHLNnJd5GU0c7sfvbRXRKe3J+7AIP690BFavXKv1w=;
+        b=Tgdihnyrz7EvhoXM7zBn/7wdjxTn+9+TZAnba00UOq7jgBqH6P/RLawu3OCcSSkS5r
+         uT3uVAay9MiFXblkJgnjCsSyVvtuMpADlgH6oG1B02sTNA2s2UMFXxoWHKlJZknNk6Hp
+         cAb3kKvRh/tgoiFtFBf09SjMGCwyD9QmHby5qIf+TgbD2EWZlvb2wCV1WfJIr+zJ4jDu
+         a2x68i1M5MHokjcsbpqiMQQ5R1kYLQQP/dOilQdz6FBptzuHgnekoyaCWgVd9HCuBG80
+         Mw+snaA+Gosk9GobmtcCGtOP2IbKgiZQFx7cDhQ95ZEx/jUyaEO872DCzVvJcqgXA4yB
+         s5bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZnlHLNnJd5GU0c7sfvbRXRKe3J+7AIP690BFavXKv1w=;
+        b=ow3DsKL3LVwApT9cQr/yBkOT7F+1ptNcMbenVLCBmT2W7BQdWCRaaxV4Vl9T3DNXyS
+         0jXlnGzRxIprm0I2GMV+rbdx8wyQZduDLc1E2GViYTU04aMsBx8GR/PmQJ4jSKITxLCv
+         HPjPzW/eq45LTRHUN2tQDZpWUrX3apmusO281OuAfew/c84JR4QL2EyIyaLhXFzZrsK9
+         IxnxWCHmOp1c5jxYruHEjxnHT0FwlyjjRUVQ1WvY8bJ12pXJMI6KzWjR6YcE2YJqfseT
+         SqmF/uXihfJu8o9GKYZ6wd2nE4UfVdkrzcSmHguyqKI20c8jBbRXOjqxfKUhctwi4+jQ
+         FXrw==
+X-Gm-Message-State: AOAM533mjzJa8aAfPpb9R7cNdf/UyPedgdtdEyVppZwRbBMscTFM0Yrw
+        6b3XdtROmEYxNhj2+Fxdcmi06A==
+X-Google-Smtp-Source: ABdhPJzWRZPLxPm5pkjpVSedfMNIICVpLIX53ZmQsrzAHGeoZVifZhAkmLeC18AjdSgx43eqXYMCPw==
+X-Received: by 2002:a05:600c:a45:: with SMTP id c5mr442364wmq.153.1625575266517;
+        Tue, 06 Jul 2021 05:41:06 -0700 (PDT)
+Received: from localhost.localdomain (hst-221-27.medicom.bg. [84.238.221.27])
+        by smtp.gmail.com with ESMTPSA id n18sm2585979wms.3.2021.07.06.05.41.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 05:41:06 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-api@vger.kernel.org
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH v2 0/5] Qualcomm custom compressed pixfmt
+Date:   Tue,  6 Jul 2021 15:40:29 +0300
+Message-Id: <20210706124034.773503-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-07-05 at 10:35 -0600, David Ahern wrote:
-> On 7/1/21 2:51 AM, Rocco Yue wrote:
->> On Wed, 2021-06-30 at 22:41 -0600, David Ahern wrote:
->> 
->> For mobile operators that don't need to support RFC7217, setting
->> addr_gen_mode == 1 is sufficient;
->> 
->> But for some other mobile operators that need to support RFC7217, such as AT&T,
->> the mobile device's addr_gen_mode will be switched to the
->> IN6_ADDR_GEN_MODE_STABLE_PRIVACY, instead of using IN6_ADDR_GEN_MODE_NONE.
->> The purpose is: in the IN6_ADDR_GEN_MODE_STABLE_PRIVACY mode, kernel can
->> gererate a stable privacy global ipv6 address after receiveing RA, and
->> network processes can use this global address to communicate with the
->> outside network.
->> 
->> Of course, mobile operators that need to support RFC7217 should also meet
->> the requirement of 3GPP TS 29.061, that is, MT should use IID assigned by
->> the GGSN to build its ipv6 link-local address and use this address to send RS.
->> We don't want the kernel to automatically generate an ipv6 link-local address
->> when addr_gen_mode == 2. Otherwise, using the stable privacy ipv6 link-local
->> address automatically generated by the kernel to send RS message, GGSN will
->> not be able to respond to the RS and reply a RA message.
->> 
->> Therefore, after this patch, kernel will not generate ipv6 link-local address
->> for the corresponding device when addr_gen_mode == 1 or addr_gen_mode == 2.
->> 
-> 
-> I think another addr_gen_mode is better than a separate sysctl. It looks
-> like IN6_ADDR_GEN_MODE_STABLE_PRIVACY and IN6_ADDR_GEN_MODE_RANDOM are
-> the ones used for RAs, so add something like:
-> 
-> IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA,
-> IN6_ADDR_GEN_MODE_RANDOM_NO_LLA,
-> 
-> to in6_addr_gen_mode.
-> 
+Hello,
 
-Hi David,
+Changes since v1:
+ * rename QC8C to QC08C
+ * rewrite the documentation part
+ * handle correctly QC10C compressed format in the driver
+ * correct compressed 10-bit formats for Venus v4 and v6
 
-Thanks for your reply.
+Regards,
+Stan
 
-According to your suggestion, I checked the ipv6 code again. In my
-opinion, adding another addr_gen_mode may not be suitable.
+v1: https://patchwork.linuxtv.org/project/linux-media/list/?series=5331
 
-(1)
-In the user space, the process enable the ipv6 stable privacy mode by
-setting the "/proc/sys/net/ipv6/conf/<iface>/stable_secret".
+Stanimir Varbanov (5):
+  v4l: Add Qualcomm custom compressed pixel formats
+  venus: helpers: Add helper to check supported pixel formats
+  venus: Add a handling of QC08C compressed format
+  venus: hfi_platform: Correct supported compressed format
+  venus: Add a handling of QC10C compressed format
 
-In the kernel, the addr_gen_mode of a networking device is switched to
-IN6_ADDR_GEN_MODE_STABLE_PRIVACY by judging the bool value of
-"cnf.stable_secret.initialized".
+ .../media/v4l/pixfmt-reserved.rst             | 18 +++++++
+ drivers/media/platform/qcom/venus/helpers.c   | 48 +++++++++++--------
+ drivers/media/platform/qcom/venus/helpers.h   |  1 +
+ .../platform/qcom/venus/hfi_platform_v4.c     |  4 +-
+ .../platform/qcom/venus/hfi_platform_v6.c     |  4 +-
+ drivers/media/platform/qcom/venus/vdec.c      | 31 ++++++++++--
+ drivers/media/v4l2-core/v4l2-ioctl.c          |  2 +
+ include/uapi/linux/videodev2.h                |  2 +
+ 8 files changed, 82 insertions(+), 28 deletions(-)
 
-So, although adding an additional IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA,
-user space process has some trouble to let kernel switch the iface's
-addr_gen_mode to the IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA.
+-- 
+2.25.1
 
-This is not as flexible as adding a separate sysctl.
-
-(2)
-After adding "proc/sys/net/ipv6/<iface>/disable_gen_linklocal_addr",
-so that kernel can keep the original code logic of the stable_secret
-proc file, and expand when the subsequent kernel adds a new add_gen_mode
-more flexibility and applicability.
-
-And we only need to care about the networking device that do not
-generate an ipv6 link-local address, and not the addr_gen_mode that
-this device is using.
-
-Maybe adding a separate sysctl is a better choice.
-Looking forward to your professional reply again.
-
-Thanks,
-Rocco
