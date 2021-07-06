@@ -2,220 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C193BD8CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186253BD8EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhGFOrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:47:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45348 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232591AbhGFOrb (ORCPT
+        id S232029AbhGFOvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:51:14 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:61358 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231551AbhGFOvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:47:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625582692;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RAANL4ig1HFdU+pXl5/Z5A9qLIXjsKRkhJhRaPBHzvA=;
-        b=Zo4HWaIBiLYRGZGB14J+8ar2zVQirS0gJGbCvt4U2q43c65dxMttCZwRFx89wAM/Qb2sz+
-        TvPKARDXcwYE+oQSlA/9V+SfTy2vf4RZv/3lIqZHdQHlr1PLY54OfB3QMdIAZxxa5To9Bt
-        HLOk5m1gmrHbB4Gu7eEXTqMVaAOCVdQ=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-316-gO_SocMxPMCSVH0-beNd2A-1; Tue, 06 Jul 2021 10:44:50 -0400
-X-MC-Unique: gO_SocMxPMCSVH0-beNd2A-1
-Received: by mail-wr1-f69.google.com with SMTP id j1-20020adfb3010000b02901232ed22e14so7266707wrd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:44:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RAANL4ig1HFdU+pXl5/Z5A9qLIXjsKRkhJhRaPBHzvA=;
-        b=oLjVXA8/Fc89Nn5ZM0FWJvJUx7oBFZeSLwg9hA+LjBDutgVJZc464QL2deGty3BKKA
-         zzHxToJdiwZFycXhlJ/2qImyG4Yxdzm+04CBeInLrE13HOvheiH3IIkSnoexwrhOionr
-         SUt6DPKmnUl0sqNEqqpiS3mIAJuO54Zp6VoC0GvY4jy7pTNP9ntWRgBJRbx72rzZ7FAN
-         0CxqzckdShYnrDdCN71cAJfi7lEGAcLoKWifvxmoYIJwjxSQRCIPjv0+qDtvkA8ROPOc
-         suz9WDurRdu84KiFDLhDIyXA/pPeVrbK/WuwtFvlaWykToTc8FACfXPBjnVhp/Hyj4Sx
-         pHfA==
-X-Gm-Message-State: AOAM532Lhs1xhDZAuWwXvEVoyNru21g6LXy2PCfp0fD/tDLxltV4niEs
-        PYV7BLtrnNW73sVz/yOzWgpM+Wskrmtgq0NlY4MO0RS9UIa94Olw6TAm3hVZNcNPlj4j1mpWLWK
-        l4HeAjYhf5E+AiasuGVDMQm3D
-X-Received: by 2002:a05:600c:ad3:: with SMTP id c19mr21226883wmr.69.1625582689519;
-        Tue, 06 Jul 2021 07:44:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz0IeWtlA758g39xd1jxRJjtpW/ewYlmZtgGi39cOuioAM+potjWdZNbp6tHpknbjVwPqzAaw==
-X-Received: by 2002:a05:600c:ad3:: with SMTP id c19mr21226860wmr.69.1625582689359;
-        Tue, 06 Jul 2021 07:44:49 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id z4sm15796600wrp.46.2021.07.06.07.44.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 07:44:48 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 57/69] KVM: VMX: Move register caching logic to
- common code
-To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <088bc637ef2c0f40f33a3f7c6a8ed0ed844ad111.1625186503.git.isaku.yamahata@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <ba82dedb-9193-2497-b35d-4978af302c5e@redhat.com>
-Date:   Tue, 6 Jul 2021 16:44:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 6 Jul 2021 10:51:12 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 166Ea92x007666;
+        Tue, 6 Jul 2021 14:46:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=WU+kWS+XFwScrBHDFLuHuPL8XAeR1HWcalcFJDsg5/A=;
+ b=ljpM98954IvHlAJtclNXnzXU4bMz9wn7GaK8celDgHItU3i1yeDwdbg+ZsQDArrXuQxC
+ imZllZaAKMFdKATE7d+bWo7vBXIAwdwVF1/FfCFHJA93dK6oHtjqfLzp9ME8PDtvW0oU
+ vwgmGG5Ae5vTrDfFJurOG6byc3EyZv7ptrcTPlrt9HZNzqwTo6ptBTANNS+Yq4LW1t0s
+ bQr20/8oupHA8HBMaN6kHlhIFv4cBiL6xSPakuRkKkMKBkajaaTxP5f55D4yO+Sazp/v
+ 1rgLevs4fkbDwG2oMpadh3Ks2Kz+bojXWijZEvR+FL8TPeUtG5shX3/KbABlhjeop55v HA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39kq8eb22y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Jul 2021 14:46:30 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 166EaUSp016951;
+        Tue, 6 Jul 2021 14:46:29 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
+        by userp3020.oracle.com with ESMTP id 39k1nv635h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Jul 2021 14:46:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZGnTw1swKcW5ip8J4JmjZSqOFUFv+Z7J0PAEOYO/6hNXTzdXvOLrNAirdhv4zbr3UlF/r/p0OOemrO1JjsCFhreATieBhz99voxQU8q71X2xJBRqcWi9BYHQGz4JFV25lrk2xgYgIyzQI0DvhF6Nhfl5NAaL8TKU270O+sVU6vjQtOiMbQLUrw38R2ETunyQaEdc36d4X7G9z7nj4KZK2nex88XVBhoDHfx6IErHoiASubQvLS2egua3f35RIDd3Hj3KPM3df+KHKhDv26uaQiAB1nut5eGzEop+G1jrRAh+YMaaoJudf/FpfaA6A07165gif9un55Ti8lm2F6rjjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WU+kWS+XFwScrBHDFLuHuPL8XAeR1HWcalcFJDsg5/A=;
+ b=UPgeZ49NT7JcUfjo6Rpw3D3Et0hbOa8BX0EQbXpm271GjU+mNAgIK/fdGjUB4fjn87bVL0qASWFDfEOlxs7zWPaTJBHG3V/enVlRnUfKdIvKRYOHjabeMr5PUChKJH/dOR5xnJ+EjH8cAxdYX65PQbxo3oEBDo5bQBP/n0XWzOyNwPabFdnOJeanH2JYLpnqGeY05OKkSSfZtsibhQPwV+C+hNy3OTusnOR+iVbEs93rY+ND+KH3vKd93+AGI0T8jo86akEFjQkqPdEoveBT5G8g5YLEcBbuQJQuXECUYyQjdR1OCyau+KWI+V/Sm8GXRdBWXGp6DD7Pcm/4zCwrIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WU+kWS+XFwScrBHDFLuHuPL8XAeR1HWcalcFJDsg5/A=;
+ b=dTxG3qWmEG98UvY0KgSxasmXk1z+hyVb1s/lfz6eLJJ97qyZaYDWAzWGs/1d1V9te3baS2j8lKrSOJGfiA0OU3ovAL3oqigBm8H/6DnuIJy/c84pLBc7FWGhY036bxMmM2VrrFd9FrMna/eKWOvp0ktvvP3s9Tnwp1JESmmtrPc=
+Authentication-Results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
+ by BY5PR10MB4148.namprd10.prod.outlook.com (2603:10b6:a03:211::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16; Tue, 6 Jul
+ 2021 14:46:23 +0000
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::8111:d8f1:c262:808d]) by BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::8111:d8f1:c262:808d%6]) with mapi id 15.20.4287.033; Tue, 6 Jul 2021
+ 14:46:23 +0000
+Date:   Tue, 6 Jul 2021 10:46:07 -0400
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
+        heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
+        peterz@infradead.org, benh@kernel.crashing.org,
+        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
+        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
+        Frank Rowand <frowand.list@gmail.com>, mingo@kernel.org,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Saravana Kannan <saravanak@google.com>, mpe@ellerman.id.au,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bskeggs@redhat.com, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Thierry Reding <treding@nvidia.com>,
+        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        Jianxiong Gao <jxgao@google.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        maarten.lankhorst@linux.intel.com, airlied@linux.ie,
+        Dan Williams <dan.j.williams@intel.com>,
+        linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, rodrigo.vivi@intel.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Claire Chang <tientzu@chromium.org>,
+        boris.ostrovsky@oracle.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        jgross@suse.com, Nicolas Boichat <drinkcat@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, xypron.glpk@gmx.de,
+        Tom Lendacky <thomas.lendacky@amd.com>, bauerman@linux.ibm.com
+Subject: Re: [PATCH v15 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+Message-ID: <YORsr0h7u5l9DZwh@char.us.oracle.com>
+References: <20210701074045.GA9436@willie-the-truck>
+ <ea28db1f-846e-4f0a-4f13-beb67e66bbca@kernel.org>
+ <20210702135856.GB11132@willie-the-truck>
+ <0f7bd903-e309-94a0-21d7-f0e8e9546018@arm.com>
+ <YN/7xcxt/XGAKceZ@Ryzen-9-3900X.localdomain>
+ <20210705190352.GA19461@willie-the-truck>
+ <20210706044848.GA13640@lst.de>
+ <20210706132422.GA20327@willie-the-truck>
+ <a59f771f-3289-62f0-ca50-8f3675d9b166@arm.com>
+ <20210706140513.GA26498@lst.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210706140513.GA26498@lst.de>
+X-ClientProxiedBy: SA9PR13CA0101.namprd13.prod.outlook.com
+ (2603:10b6:806:24::16) To BYAPR10MB2999.namprd10.prod.outlook.com
+ (2603:10b6:a03:85::27)
 MIME-Version: 1.0
-In-Reply-To: <088bc637ef2c0f40f33a3f7c6a8ed0ed844ad111.1625186503.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from char.us.oracle.com (138.3.200.56) by SA9PR13CA0101.namprd13.prod.outlook.com (2603:10b6:806:24::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.12 via Frontend Transport; Tue, 6 Jul 2021 14:46:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3025c928-428b-4e34-408e-08d9408cd2e6
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4148:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR10MB41488CBFBBC87F5A0D8771B6891B9@BY5PR10MB4148.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zF6soiZvqQ5qK3hqPmokbLbv7oSQfaV92o/5XjwtoXrBZWQFQPz+wW678QL4wTY5k5ZCfXWq5Lq8r4W+6DdO4dp4dxT8OB58Qh+3Gso3HkYUhPjLIE4B3WSMht+E6V+A++qEKz7lO+Ds8jc3+wCUe9nxeH8NXRt1e5eQQf4lv1u4r5rYwv+vRBuTDJbDeTolJnrd23RSyc9mRbqkBgaFHGOxk9ymj3WWeRQy5iPzm0N4KjQm5Lkwa22g394xGUcVc2U99x/DCRYK7HF/t3m+UbpBTQkqE6XV/IPx6WP2XFykVTYnOSnvXfJDdRq1839Pt/59hqSvHEqIyalZiSqlBNNkobvj01ky0rmuES6qv9YstFZUyoLeDdg2AF/pjXiMStTZXEWwgu9ZPSLUIqq9AOudfPABjkgIv8PuX4QyU/NVpy3H7nIkXVayYXsnBCWR6peYbPOhnkJzKXZRLAHu5znTwPFliuTJhcrz/7wVY2EV4Z1SbIz6cQUCv5ttLigzaKaAvQWAv0t2PsnxDoubqArLdRhhwwXGS5WtmNrWAR91QOwAnqK9cEq0MzipvpCbeV6qDNwSkbnGqyDCyIAQt4+Qdz+N3zQEKt29hNwn118pkmgo4V17rlN5f2aIyfkV2IQDgq+9HVmDEMAxSXy/ag2XjG18zq0IKJ/ddCL0H7ylKJVOQfi0Y8uhxTCv18JSiJ3hwKZVHt6KsTdU8FvNhw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(346002)(396003)(136003)(376002)(4326008)(26005)(52116002)(7696005)(956004)(478600001)(66476007)(7416002)(186003)(7406005)(7366002)(86362001)(6916009)(38350700002)(38100700002)(5660300002)(55016002)(8936002)(54906003)(2906002)(66556008)(8676002)(316002)(66946007)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ylmDwz4fIvOiYvZenj2A98Qc4waYmu0qu9/y10agl2MovOknW/kj9bS4dIKy?=
+ =?us-ascii?Q?kzOMtO6hZE/AtHsmdBqyFsgdnfYcpE5Sp0BNocjxGTT0irDdAd9MNu+Zjg5s?=
+ =?us-ascii?Q?J0nWMeE6ReYK5jYw8Q8488gHHxN805F8JpvsyzWk/9P4PlR9peIU/x2XDeRT?=
+ =?us-ascii?Q?PElgi1zHnvjyncWax6mYAlgxusncGDEZHPkI3g9cqdrUxsK5T63iNXOjQeND?=
+ =?us-ascii?Q?X2OH3l6sC1hjDvC2gxupEHJPgB0vQmdo7YDJOvSqs+glaIuqW+IfQxcXK6Or?=
+ =?us-ascii?Q?sxQm1ieS8n1xc0ZQD+zAiOT0bg3+LTYaGiO3f3jPk+cEPzeQAIiZY/qTA2Vc?=
+ =?us-ascii?Q?PHyzUMD+nar9xGaOTvtvmh0Td2Mfv35JASQr5NpY29dh7s4Klrcniy74BOf1?=
+ =?us-ascii?Q?u7s2ppj7XsT4xUqSxQJKSPMAn9xnQfNKgVNl4D8BN0mXzQv9smLhlJhE7h66?=
+ =?us-ascii?Q?fdIwcvJp3+Hb0GH+uMslBX4I3nYNSde9d+YKYY0zhlZ7xZ6QFgzYAr+35dSa?=
+ =?us-ascii?Q?GwlxnQfMcV6TMtnShlFSmc4xoTkUgozMyB+fYab7X91e/t6CKtA0WeTZnW3A?=
+ =?us-ascii?Q?MUp3YncCSSmEl+Bn2dBW+aR6GDLpZoqaaWivOlHmm0VLZjgb7B1CNsBw4zOg?=
+ =?us-ascii?Q?YIPqDTMvrceomjZuZmPRNjkXE8m3bLNchfsW+4XaEmU34JHjrg1RMlUpaIAX?=
+ =?us-ascii?Q?AjvmEiXWEhqwHfkvcJkooJGhfla+7D5wZUVA3Oqr4GHJbqSRB1HVViIVd8Pt?=
+ =?us-ascii?Q?fhq96k43i7HKe/nLQZxvIBP9dACKZW6kqjrOBc4szQM9NeD28ER9cK7gFX/Z?=
+ =?us-ascii?Q?wBj8f3Kd+InP9LraK+pVLaQkizpgNEBy5Khp8LNFwKx2QBsIDRRHe/ph3s6S?=
+ =?us-ascii?Q?GGO+JAt6nz61QJ3A6IM+wjxwtQxJWPTxRPMyX5DvrHbN3Umq/yPviooWlcg0?=
+ =?us-ascii?Q?3UyFGhYKnKEVLCItFWZVhMr9c9m1RKMmw/80PCQThGkW/KDxP44B0pgQe1wx?=
+ =?us-ascii?Q?K0rDHqi80QRNtpL/WpPBJ9dS6rwPzgKNfuhmMlqZRfLmtwpqdIiVl7K5r5X5?=
+ =?us-ascii?Q?N7gBvdec0XcBKzaxQi97BsNnG4mvBkgns6pdXToh+XpyLGUOF13XQBKuzElF?=
+ =?us-ascii?Q?xHwGFixJJTfRqlAXZRkxIqOR3QWOGz7uPvEG2R+upn/90caFAztXOWhblXTS?=
+ =?us-ascii?Q?PUb0BTERL55p1lxuNz7fKdZ9A7SckPqeT+pxjosxGWgt0KF6e/dp5rMZMTE1?=
+ =?us-ascii?Q?gZ3mCx6mOReNtlBLTB+MxqKkf1CtyBgkdxWfhIONaPMpJa1i269Tg39PX6FK?=
+ =?us-ascii?Q?WZoteRTQ6Xr9npwaCdc1oV3m?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3025c928-428b-4e34-408e-08d9408cd2e6
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2021 14:46:23.0788
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aWnBQz0Nm3vUrv9srYd4Kk1ov4KnDekN5v7MvGmwZCxRwUoX4n3GZhCUf/xMSE5l+zgBcq4SLUcaR4pDsl9LNA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4148
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10037 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 phishscore=0
+ adultscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107060068
+X-Proofpoint-GUID: EICPB_qXh3tYgTdDU7lDjxv4jJl8DKoT
+X-Proofpoint-ORIG-GUID: EICPB_qXh3tYgTdDU7lDjxv4jJl8DKoT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/07/21 00:05, isaku.yamahata@intel.com wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
+On Tue, Jul 06, 2021 at 04:05:13PM +0200, Christoph Hellwig wrote:
+> On Tue, Jul 06, 2021 at 03:01:04PM +0100, Robin Murphy wrote:
+> > FWIW I was pondering the question of whether to do something along those 
+> > lines or just scrap the default assignment entirely, so since I hadn't got 
+> > round to saying that I've gone ahead and hacked up the alternative 
+> > (similarly untested) for comparison :)
+> >
+> > TBH I'm still not sure which one I prefer...
 > 
-> Move the guts of vmx_cache_reg() to vt_cache_reg() in preparation for
-> reusing the bulk of the code for TDX, which can access guest state for
-> debug TDs.
-> 
-> Use kvm_x86_ops.cache_reg() in ept_update_paging_mode_cr0() rather than
-> trying to expose vt_cache_reg() to vmx.c, even though it means taking a
-> retpoline.  The code runs if and only if EPT is enabled but unrestricted
-> guest.  Only one generation of CPU, Nehalem, supports EPT but not
-> unrestricted guest, and disabling unrestricted guest without also
-> disabling EPT is, to put it bluntly, dumb.
-> 
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/vmx/main.c | 37 +++++++++++++++++++++++++++++++++++-
->   arch/x86/kvm/vmx/vmx.c  | 42 +----------------------------------------
->   2 files changed, 37 insertions(+), 42 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> index 0d8d2a0a2979..b619615f77de 100644
-> --- a/arch/x86/kvm/vmx/main.c
-> +++ b/arch/x86/kvm/vmx/main.c
-> @@ -341,7 +341,42 @@ static void vt_sync_dirty_debug_regs(struct kvm_vcpu *vcpu)
->   
->   static void vt_cache_reg(struct kvm_vcpu *vcpu, enum kvm_reg reg)
->   {
-> -	vmx_cache_reg(vcpu, reg);
-> +	unsigned long guest_owned_bits;
-> +
-> +	kvm_register_mark_available(vcpu, reg);
-> +
-> +	switch (reg) {
-> +	case VCPU_REGS_RSP:
-> +		vcpu->arch.regs[VCPU_REGS_RSP] = vmcs_readl(GUEST_RSP);
-> +		break;
-> +	case VCPU_REGS_RIP:
-> +		vcpu->arch.regs[VCPU_REGS_RIP] = vmcs_readl(GUEST_RIP);
-> +		break;
-> +	case VCPU_EXREG_PDPTR:
-> +		if (enable_ept)
-> +			ept_save_pdptrs(vcpu);
-> +		break;
-> +	case VCPU_EXREG_CR0:
-> +		guest_owned_bits = vcpu->arch.cr0_guest_owned_bits;
-> +
-> +		vcpu->arch.cr0 &= ~guest_owned_bits;
-> +		vcpu->arch.cr0 |= vmcs_readl(GUEST_CR0) & guest_owned_bits;
-> +		break;
-> +	case VCPU_EXREG_CR3:
-> +		if (is_unrestricted_guest(vcpu) ||
-> +		    (enable_ept && is_paging(vcpu)))
-> +			vcpu->arch.cr3 = vmcs_readl(GUEST_CR3);
-> +		break;
-> +	case VCPU_EXREG_CR4:
-> +		guest_owned_bits = vcpu->arch.cr4_guest_owned_bits;
-> +
-> +		vcpu->arch.cr4 &= ~guest_owned_bits;
-> +		vcpu->arch.cr4 |= vmcs_readl(GUEST_CR4) & guest_owned_bits;
-> +		break;
-> +	default:
-> +		KVM_BUG_ON(1, vcpu->kvm);
-> +		break;
-> +	}
->   }
->   
->   static unsigned long vt_get_rflags(struct kvm_vcpu *vcpu)
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index e315a46d1566..3c3bfc80d2bb 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -2326,46 +2326,6 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   	return ret;
->   }
->   
-> -static void vmx_cache_reg(struct kvm_vcpu *vcpu, enum kvm_reg reg)
-> -{
-> -	unsigned long guest_owned_bits;
-> -
-> -	kvm_register_mark_available(vcpu, reg);
-> -
-> -	switch (reg) {
-> -	case VCPU_REGS_RSP:
-> -		vcpu->arch.regs[VCPU_REGS_RSP] = vmcs_readl(GUEST_RSP);
-> -		break;
-> -	case VCPU_REGS_RIP:
-> -		vcpu->arch.regs[VCPU_REGS_RIP] = vmcs_readl(GUEST_RIP);
-> -		break;
-> -	case VCPU_EXREG_PDPTR:
-> -		if (enable_ept)
-> -			ept_save_pdptrs(vcpu);
-> -		break;
-> -	case VCPU_EXREG_CR0:
-> -		guest_owned_bits = vcpu->arch.cr0_guest_owned_bits;
-> -
-> -		vcpu->arch.cr0 &= ~guest_owned_bits;
-> -		vcpu->arch.cr0 |= vmcs_readl(GUEST_CR0) & guest_owned_bits;
-> -		break;
-> -	case VCPU_EXREG_CR3:
-> -		if (is_unrestricted_guest(vcpu) ||
-> -		    (enable_ept && is_paging(vcpu)))
-> -			vcpu->arch.cr3 = vmcs_readl(GUEST_CR3);
-> -		break;
-> -	case VCPU_EXREG_CR4:
-> -		guest_owned_bits = vcpu->arch.cr4_guest_owned_bits;
-> -
-> -		vcpu->arch.cr4 &= ~guest_owned_bits;
-> -		vcpu->arch.cr4 |= vmcs_readl(GUEST_CR4) & guest_owned_bits;
-> -		break;
-> -	default:
-> -		KVM_BUG_ON(1, vcpu->kvm);
-> -		break;
-> -	}
-> -}
-> -
->   static __init int vmx_disabled_by_bios(void)
->   {
->   	return !boot_cpu_has(X86_FEATURE_MSR_IA32_FEAT_CTL) ||
-> @@ -3066,7 +3026,7 @@ static void ept_update_paging_mode_cr0(unsigned long *hw_cr0,
->   	struct vcpu_vmx *vmx = to_vmx(vcpu);
->   
->   	if (!kvm_register_is_available(vcpu, VCPU_EXREG_CR3))
-> -		vmx_cache_reg(vcpu, VCPU_EXREG_CR3);
-> +		kvm_x86_ops.cache_reg(vcpu, VCPU_EXREG_CR3);
->   	if (!(cr0 & X86_CR0_PG)) {
->   		/* From paging/starting to nonpaging */
->   		exec_controls_setbit(vmx, CPU_BASED_CR3_LOAD_EXITING |
-> 
+> Claire did implement something like your suggestion originally, but
+> I don't really like it as it doesn't scale for adding multiple global
+> pools, e.g. for the 64-bit addressable one for the various encrypted
+> secure guest schemes.
 
-This shows the problem with #including vmx.c.  You should have a .h file 
-for both vmx.h and main.h (e.g. kvm_intel.h), so that here you can just 
-use vt_cache_reg.
+Couple of things:
+ - I am not pushing to Linus the Claire's patchset until we have a
+   resolution on this. I hope you all agree that is a sensible way
+   forward as much as I hate doing that.
 
-Paolo
+ - I like Robin's fix as it is simplest looking. Would love to see if it
+   does fix the problem.
+
+ - Christopher - we can always add multiple pools as the next milestone
+   and just focus on this feature getting tested extensively during this
+   release.
+
+ - Would it be worth (for future or maybe in another tiny fix) to also add
+   a printk in swiotlb when we de-allocate the buffer so when someone looks
+   through the `dmesg` it becomes much easier to diagnose issues?
 
