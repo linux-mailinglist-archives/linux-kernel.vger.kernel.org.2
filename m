@@ -2,198 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D1D3BD487
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9DB3BD48C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237104AbhGFMN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:13:57 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6798 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S238044AbhGFL7I (ORCPT
+        id S238091AbhGFMOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:14:11 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21666 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238270AbhGFL7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:59:08 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 166BY7sq093435;
-        Tue, 6 Jul 2021 07:56:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : references : message-id : date : mime-version : in-reply-to :
+        Tue, 6 Jul 2021 07:59:15 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 166BY0cp145616;
+        Tue, 6 Jul 2021 07:56:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
  content-type : content-transfer-encoding; s=pp1;
- bh=eAxSoAMfy4WoRm6Nob+I0xEpZ8yxFb5egnCHiA4R4fk=;
- b=hdM04e1/UZOt5sSzBvmJyJ5K7lIPw2Ck6xURH6ihBj6phyEslpAdtkhpWlaKodXE4Gdj
- EtZb2H+Jy2qy2zDvqeNfQDXPD5SvpuniGKJAcl/24kqciBY4ZcdnxeBma+5btMiietnZ
- FzDEXOOMJ/8yXAb66N1lBSNtDWlitJ0a5luYJ6QcTNgGQw4GOMtl0Kyxw7sKC9kRHShD
- AisACQ5S94u+NmYxL0hMhgb28idH99ZOANQ7b/cKm5+SNzof7Hf5dU7OmOhXQOFBNHrZ
- BIvb7NbPG4k2DBM+4smkpE9cxu+leCohz3FCrz91XWgnOnsrfMleZg2acHbpG9bcqfox Cg== 
+ bh=gkLeR13YxhYrgL4g74DrTzLLScBKEIu6g8/xpzgKjLk=;
+ b=j+H+xyNmF3EC3IaH+Z2hJdRgu1I4DvdP+lx7J8HPk3vTuWNzsm8tiIhGLdDfI9hc145Y
+ 8MJ0DXOdmYBcGx2JiA4EzxFeC8o01LKGpj76zvmSNxOv6zt7E53hPaOqsmPMh3WL00qv
+ V85QDuVZzEjYnKQUABXu5e+O1Fd07WJGFTUefpxqzoW+6QXR7MAswmdsId9fGXay92tD
+ 9LhxnvzdKHyTl2ZUMp3f9dtZHEcRaCBRQbbGNY0Ju6xB7VXL1DNfv2aI1cnw20HA9925
+ ngTWYGWJyxblZd1nrcmNJtMXhU3eiKh1WRIlKI7/w6sChbVcGxfClMITfj62b1hfqW3f rg== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39m8xsub6y-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39mn8ejuev-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 07:56:20 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 166BYXce097140;
-        Tue, 6 Jul 2021 07:56:20 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39m8xsub6s-1
+        Tue, 06 Jul 2021 07:56:34 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 166BZJFZ153218;
+        Tue, 6 Jul 2021 07:56:34 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39mn8ejued-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 07:56:20 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 166BpoYh011922;
-        Tue, 6 Jul 2021 11:56:19 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma04dal.us.ibm.com with ESMTP id 39jfhbtn83-1
+        Tue, 06 Jul 2021 07:56:33 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 166BrgmJ017146;
+        Tue, 6 Jul 2021 11:56:32 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma02fra.de.ibm.com with ESMTP id 39jfh88npa-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 11:56:19 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 166BuI1p22937970
+        Tue, 06 Jul 2021 11:56:31 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 166BuSdS30736734
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 6 Jul 2021 11:56:18 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 101776A057;
-        Tue,  6 Jul 2021 11:56:18 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0BBCF6A051;
-        Tue,  6 Jul 2021 11:56:13 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.34.44])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue,  6 Jul 2021 11:56:13 +0000 (GMT)
-Subject: Re: [PATCH] perf script python: Fix buffer size to report iregs in
- perf script
-From:   kajoljain <kjain@linux.ibm.com>
-To:     "acme@kernel.org" <acme@kernel.org>, Jiri Olsa <jolsa@redhat.com>
-Cc:     maddy@linux.vnet.ibm.com, atrajeev@linux.vnet.ibm.com,
-        linux-kernel@vger.kernel.org, ravi.bangoria@linux.ibm.com,
-        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        rnsastry@linux.ibm.com, "Paul A. Clarke" <pc@us.ibm.com>
-References: <20210628062341.155839-1-kjain@linux.ibm.com>
- <20210628144937.GE142768@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
- <ee98968a-f343-a68e-9a3e-58e97dc130c8@linux.ibm.com>
-Message-ID: <c6fb2136-21e1-325a-f7f7-9745dbe29661@linux.ibm.com>
-Date:   Tue, 6 Jul 2021 17:26:12 +0530
+        Tue, 6 Jul 2021 11:56:28 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AFA5C4204B;
+        Tue,  6 Jul 2021 11:56:28 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EB9FA4203F;
+        Tue,  6 Jul 2021 11:56:27 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.59.107])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  6 Jul 2021 11:56:27 +0000 (GMT)
+Subject: Re: [PATCH] KVM: s390: Enable specification exception interpretation
+To:     Cornelia Huck <cohuck@redhat.com>,
+        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        "open list:KERNEL VIRTUAL MACHINE for s390 (KVM/s390)" 
+        <kvm@vger.kernel.org>,
+        "open list:S390" <linux-s390@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210706114714.3936825-1-scgl@linux.ibm.com>
+ <87k0m3hd7h.fsf@redhat.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <194128c1-8886-5b8b-2249-5ec58b8e7adb@de.ibm.com>
+Date:   Tue, 6 Jul 2021 13:56:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <ee98968a-f343-a68e-9a3e-58e97dc130c8@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <87k0m3hd7h.fsf@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Dac3meT_7Ga6DLoLLfplXyxG3mVH09dk
-X-Proofpoint-GUID: TPByq9dt2-DxNkKd4cHAZxd3TRrruSwA
+X-Proofpoint-ORIG-GUID: V6HInOxZM1vGFMPqZz6fMyWexx0GtlcK
+X-Proofpoint-GUID: vLYuAiXOLm4-i88ytUi1aRGxCzE46Md9
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-07-06_06:2021-07-02,2021-07-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- malwarescore=0 phishscore=0 priorityscore=1501 spamscore=0 impostorscore=0
- mlxlogscore=999 suspectscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107060057
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
+ phishscore=0 clxscore=1015 impostorscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107060057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 6/29/21 12:39 PM, kajoljain wrote:
+On 06.07.21 13:52, Cornelia Huck wrote:
+> On Tue, Jul 06 2021, Janis Schoetterl-Glausch <scgl@linux.ibm.com> wrote:
 > 
-> 
-> On 6/28/21 8:19 PM, Paul A. Clarke wrote:
->> On Mon, Jun 28, 2021 at 11:53:41AM +0530, Kajol Jain wrote:
->>> Commit 48a1f565261d ("perf script python: Add more PMU fields
->>> to event handler dict") added functionality to report fields like
->>> weight, iregs, uregs etc via perf report.
->>> That commit predefined buffer size to 512 bytes to print those fields.
->>>
->>> But incase of powerpc, since we added extended regs support
->>> in commits:
->>>
->>> Commit 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
->>> Counter SPRs as part of extended regs")
->>> Commit d735599a069f ("powerpc/perf: Add extended regs support for
->>> power10 platform")
->>>
->>> Now iregs can carry more bytes of data and this predefined buffer size
->>> can result to data loss in perf script output.
->>>
->>> Patch resolve this issue by making buffer size dynamic based on number
->>> of registers needed to print. It also changed return type for function
->>> "regs_map" from int to void, as the return value is not being used by
->>> the caller function "set_regs_in_dict".
->>>
->>> Fixes: 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
->>> Counter SPRs as part of extended regs")
->>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
->>> ---
->>>  .../util/scripting-engines/trace-event-python.c | 17 ++++++++++++-----
->>>  1 file changed, 12 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
->>> index 4e4aa4c97ac5..c8c9706b4643 100644
->>> --- a/tools/perf/util/scripting-engines/trace-event-python.c
->>> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
->> [...]
->>> @@ -713,7 +711,16 @@ static void set_regs_in_dict(PyObject *dict,
->>>  			     struct evsel *evsel)
->>>  {
->>>  	struct perf_event_attr *attr = &evsel->core.attr;
->>> -	char bf[512];
->>> +
->>> +	/*
->>> +	 * Here value 28 is a constant size which can be used to print
->>> +	 * one register value and its corresponds to:
->>> +	 * 16 chars is to specify 64 bit register in hexadecimal.
->>> +	 * 2 chars is for appending "0x" to the hexadecimal value and
->>> +	 * 10 chars is for register name.
->>> +	 */
->>> +	int size = __sw_hweight64(attr->sample_regs_intr) * 28;
->>> +	char bf[size];
+>> When this feature is enabled the hardware is free to interpret
+>> specification exceptions generated by the guest, instead of causing
+>> program interruption interceptions.
 >>
->> I propose using a template rather than a magic number here. Something like:
->> const char reg_name_tmpl[] = "10 chars  ";
->> const char reg_value_tmpl[] = "0x0123456789abcdef";
->> const int size = __sw_hweight64(attr->sample_regs_intr) +
->>                  sizeof reg_name_tmpl + sizeof reg_value_tmpl;
+>> This benefits (test) programs that generate a lot of specification
+>> exceptions (roughly 4x increase in exceptions/sec).
 >>
+>> Interceptions will occur as before if ICTL_PINT is set,
+>> i.e. if guest debug is enabled.
+>>
+>> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+>> ---
+>> I'll additionally send kvm-unit-tests for testing this feature.
+>>
+>>   arch/s390/include/asm/kvm_host.h | 1 +
+>>   arch/s390/kvm/kvm-s390.c         | 2 ++
+>>   arch/s390/kvm/vsie.c             | 2 ++
+>>   3 files changed, 5 insertions(+)
 > 
-> Hi Paul,
->    Thanks for reviewing the patch. Yes these are
-> some standardization we can do by creating macros for different
-> fields.
-> The basic idea is, we want to provide significant buffer size
-> based on number of registers present in sample_regs_intr to accommodate
-> all data.
+> (...)
 > 
+>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+>> index b655a7d82bf0..aadd589a3755 100644
+>> --- a/arch/s390/kvm/kvm-s390.c
+>> +++ b/arch/s390/kvm/kvm-s390.c
+>> @@ -3200,6 +3200,8 @@ static int kvm_s390_vcpu_setup(struct kvm_vcpu *vcpu)
+>>   		vcpu->arch.sie_block->ecb |= ECB_SRSI;
+>>   	if (test_kvm_facility(vcpu->kvm, 73))
+>>   		vcpu->arch.sie_block->ecb |= ECB_TE;
+>> +	if (!kvm_is_ucontrol(vcpu->kvm))
+>> +		vcpu->arch.sie_block->ecb |= ECB_SPECI;
+> 
+> Does this exist for any hardware version (i.e. not guarded by a cpu
+> feature?)
 
-Hi Arnaldo/Jiri,
-   Is the approach used in this patch looks fine to you?
-
-Thanks,
-Kajol Jain
-
-> But before going to optimizing code, Arnaldo/Jiri, is this approach looks good to you?
+Not for all hardware versions, but also no indication. The architecture
+says that the HW is free to do this or not. (which makes the vsie code
+simpler).
 > 
->> Pardon my ignorance, but is there no separation/whitespace between the name
->> and the value?
+>>   
+>>   	if (test_kvm_facility(vcpu->kvm, 8) && vcpu->kvm->arch.use_pfmfi)
+>>   		vcpu->arch.sie_block->ecb2 |= ECB2_PFMFI;
 > 
-> This is how we will get data via perf script
-> 
-> r0:0xc000000000112008
-> r1:0xc000000023b37920
-> r2:0xc00000000144c900
-> r3:0xc0000000bc566120
-> r4:0xc0000000c5600000
-> r5:0x2606c6506ca
-> r6:0xc000000023b378f8
-> r7:0xfffffd9f93a48f0e
-> .....
-> 
->  And is there some significance to 10 characters for the
->> register name, or is that a magic number?
-> 
-> Most of the register name are within 10 characters, basically we are giving this
-> magic number to make sure we have enough space in buffer to contain all registers
-> name with colon.
-> 
-> Thanks,
-> Kajol Jain
->  
->>
->> PC
->>
