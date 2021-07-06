@@ -2,103 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC48D3BDA5B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EA33BDA58
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhGFPmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:42:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:45252 "EHLO foss.arm.com"
+        id S232683AbhGFPl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 11:41:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232291AbhGFPmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:42:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D04E3106F;
-        Tue,  6 Jul 2021 08:39:26 -0700 (PDT)
-Received: from [10.57.40.45] (unknown [10.57.40.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 793C53F73B;
-        Tue,  6 Jul 2021 08:39:19 -0700 (PDT)
-Subject: Re: [PATCH v15 06/12] swiotlb: Use is_swiotlb_force_bounce for
- swiotlb data bouncing
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Will Deacon <will@kernel.org>, heikki.krogerus@linux.intel.com,
-        thomas.hellstrom@linux.intel.com, peterz@infradead.org,
-        benh@kernel.crashing.org, joonas.lahtinen@linux.intel.com,
-        dri-devel@lists.freedesktop.org, chris@chris-wilson.co.uk,
-        grant.likely@arm.com, paulus@samba.org,
-        Frank Rowand <frowand.list@gmail.com>, mingo@kernel.org,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Saravana Kannan <saravanak@google.com>, mpe@ellerman.id.au,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        bskeggs@redhat.com, linux-pci@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Thierry Reding <treding@nvidia.com>,
-        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        Jianxiong Gao <jxgao@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        maarten.lankhorst@linux.intel.com, airlied@linux.ie,
-        Dan Williams <dan.j.williams@intel.com>,
-        linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, rodrigo.vivi@intel.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Claire Chang <tientzu@chromium.org>,
-        boris.ostrovsky@oracle.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        jgross@suse.com, Nicolas Boichat <drinkcat@chromium.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, xypron.glpk@gmx.de,
-        Tom Lendacky <thomas.lendacky@amd.com>, bauerman@linux.ibm.com
-References: <YNyUQwiagNeZ9YeJ@Ryzen-9-3900X.localdomain>
- <20210701074045.GA9436@willie-the-truck>
- <ea28db1f-846e-4f0a-4f13-beb67e66bbca@kernel.org>
- <20210702135856.GB11132@willie-the-truck>
- <0f7bd903-e309-94a0-21d7-f0e8e9546018@arm.com>
- <YN/7xcxt/XGAKceZ@Ryzen-9-3900X.localdomain>
- <20210705190352.GA19461@willie-the-truck> <20210706044848.GA13640@lst.de>
- <20210706132422.GA20327@willie-the-truck>
- <a59f771f-3289-62f0-ca50-8f3675d9b166@arm.com>
- <20210706140513.GA26498@lst.de>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <bb32d5a6-2b34-4524-e171-3e9f5f4d3a94@arm.com>
-Date:   Tue, 6 Jul 2021 16:39:11 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231689AbhGFPl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 11:41:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D213A61A46;
+        Tue,  6 Jul 2021 15:39:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625585956;
+        bh=C5TxgHCUYQtTJww8peg9FcreqZqhtW6SRaHn8e3V6C4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mgRXkAjuhq1sIVlATFBGyh4eVjNQp3T6DS7kumrou9plECr7EY38lMfhS8MQXeAHH
+         Vuh2+69g5Id8P4HBnB+K5eTMb9Ef3wSr6W++W2J2OzdWdTIw6hekSIlYWsYKDrz/9A
+         bfenmJkU0frmxzIyk0Ybbf/dCNgnVwiJohbU30+4=
+Date:   Tue, 6 Jul 2021 17:39:13 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/4] x86/sgx: Add sgx_nr_all_pages to the debugfs
+Message-ID: <YOR5Ia4XnZhiDNQX@kroah.com>
+References: <20210705143652.116125-1-jarkko@kernel.org>
+ <20210705143652.116125-2-jarkko@kernel.org>
+ <b8a31e6e-90e8-f93f-e6b2-e72801fb31e4@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210706140513.GA26498@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b8a31e6e-90e8-f93f-e6b2-e72801fb31e4@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-06 15:05, Christoph Hellwig wrote:
-> On Tue, Jul 06, 2021 at 03:01:04PM +0100, Robin Murphy wrote:
->> FWIW I was pondering the question of whether to do something along those
->> lines or just scrap the default assignment entirely, so since I hadn't got
->> round to saying that I've gone ahead and hacked up the alternative
->> (similarly untested) for comparison :)
->>
->> TBH I'm still not sure which one I prefer...
+On Tue, Jul 06, 2021 at 07:56:40AM -0700, Dave Hansen wrote:
+> On 7/5/21 7:36 AM, Jarkko Sakkinen wrote:
+> > Create /sys/kernel/debug/x86/sgx_nr_all_pages, which reports total
+> > number of EPC pages available in the system.
+> Could we flesh this out a bit, please?
 > 
-> Claire did implement something like your suggestion originally, but
-> I don't really like it as it doesn't scale for adding multiple global
-> pools, e.g. for the 64-bit addressable one for the various encrypted
-> secure guest schemes.
+> What's the value here when userspace could just re-enumerate the EPC
+> size from CPUID?
+> 
+> I'd really appreciate if we could draw parallels between these additions
+> to the "SGX VM" and their analogs in the "core VM".  In this case, I
+> think the closest analog is probably "MemTotal" in /proc/meminfo.
+> 
+> Second, how is this going to be used?
+> 
+> Third, is this going to be the ABI forever?
 
-Ah yes, that had slipped my mind, and it's a fair point indeed. Since 
-we're not concerned with a minimal fix for backports anyway I'm more 
-than happy to focus on Will's approach. Another thing is that that looks 
-to take us a quiet step closer to the possibility of dynamically 
-resizing a SWIOTLB pool, which is something that some of the hypervisor 
-protection schemes looking to build on top of this series may want to 
-explore at some point.
+debugfs is never a stable abi.  If it is being used as such, then the
+kernel code is wrong.  This better just be debugging stuff only.
 
-Robin.
+thanks,
+
+greg k-h
