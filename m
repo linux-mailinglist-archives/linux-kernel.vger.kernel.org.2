@@ -2,167 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768463BCA02
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C99A3BCA14
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbhGFKgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 06:36:09 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:51949 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbhGFKgI (ORCPT
+        id S231338AbhGFKig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 06:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231216AbhGFKif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 06:36:08 -0400
-Received: by mail-il1-f198.google.com with SMTP id w19-20020a056e0213f3b02901ee5bb29e91so12312160ilj.18
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 03:33:29 -0700 (PDT)
+        Tue, 6 Jul 2021 06:38:35 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78213C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 03:35:56 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id q17so5096628wrv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 03:35:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6xuYHcNFKOKQBrKUFUDH+4OX/ZzxgolWWFVCDDtB2Y0=;
+        b=Yt+wwRbDrooYfJ07+RIOcvlbNAmDArbrvJ7r1S0Vf2cjg/rLU7fAYgPxXpkS/Es1c/
+         LcGWWFOVsEF/0XQJw8Ic4i6Dtc59Y/PIazeWXS81o/I5/ykvg7NDoqtNhU6ZQY0qgpts
+         hX13gyhgO6x+I73AAGb4ZN/+qaseZR6quq5U1fL8NFgVa2YoJXURs1gKcClPP7oowGFt
+         CUO7YRn27lhbGlEADkw/xBbGzLYaM6sE1cZhR+vatbGDVqfyXQOHsgSlmcoOTDifCPOm
+         ISHjTYrtj1Tj6vkK+FyowiPdLCC1ljyYKvKt5eTXHZu+z0mb6AF50iygoibOaTtpwXde
+         Om/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=HTEh+SMOm59WI4CodXAnvM9DEZpap7cETt1TV35bhnU=;
-        b=L2Pw4/cfTWiaXb1/K1Ph5h6bmE+/QbfHxNvWu7Q1SVWAC7vDyyo5UIEQpkcm+3vMGk
-         CuWynH9AW1WD72hRbclcvJ3nRjmtDqyVovidNYTtLLuaZUr5vJoitOJbHfrDzsB7U+p8
-         jzyz0J9VUzjnjmiDnG0vkGMeimiQovYkutwl2Pkk4z69B1wKRndldANS26RGY2GPSSjt
-         tTlFftdgfKpnTxnKqwtzb5/+MoPvSAUw7o+IOFdHJbFvMDh2Fvb0/bzzbs+kIfrjNkbt
-         kt/unBKGHgMRHy+jExKY1oQVKtm87/1zIRPyIMBwj5uJU3F5hCIFGEOT85JTBTzu6lrE
-         T8tA==
-X-Gm-Message-State: AOAM532CvjAhDz8k0YugUWgIXRbSUKqP2GnAdZxcXZLsIe0jbkVL4vf8
-        xs4RyBgriohaBX7C2eAcMGsw7ovQrE407xJvmxTSQ9rzWHaG
-X-Google-Smtp-Source: ABdhPJxwZ6ebRQZi8N2jP4eLnHB684uP4HD+NZUVQmbxC6t/NQpf2rarA4672EzSlXNxDEIM03HUvvp1tNcmrzAepD/FURGxq2Wx
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6xuYHcNFKOKQBrKUFUDH+4OX/ZzxgolWWFVCDDtB2Y0=;
+        b=nJKlu0aK8isL4bNmwD9rJ71wl3gdINV74r54TZD2Y3XqDexyuhSfrOhOvf0TIG+Ndg
+         UxbXVwnOO51n06uZTLGwmr7e6cpzO87w+v38dABnMSUwFJkij764DawtZNiwGvrgf5d0
+         s3g+JASxahI9onkz0i+l1RBBHogXxVk8+VIUckx8GuorLGo80jBSrKxk3F9fzyPjG/Qi
+         NzmU7ayc4Ur9dX5LAOXHZMr2LgWRkU9hp/Wmd6u9j+vVtLhkO2rnbxTFBNjtQCL2Pu9M
+         RyKPwoW1vuSH7UbS3ur88HfdDHjd9B6U1dgj0+JAJZqcdF77aOguFq2kiCiiXWo8g0Sy
+         XpNA==
+X-Gm-Message-State: AOAM530inahte1S+KnuBmW/np4Q0ZnPnZAF44lV1ZDN9WivDfTxaUfdp
+        eUCoKP7W432gF9zMjONsgQ0AIg==
+X-Google-Smtp-Source: ABdhPJxx+Xr4AcuLpRSkCC4EtytSRujE0SZ0zcPphvKN4FEK+8OpQKjY5aHg/Lctw2KdmVZr98nK+A==
+X-Received: by 2002:a05:6000:12d0:: with SMTP id l16mr21397024wrx.189.1625567755049;
+        Tue, 06 Jul 2021 03:35:55 -0700 (PDT)
+Received: from dell ([109.180.115.218])
+        by smtp.gmail.com with ESMTPSA id l9sm16428319wrp.14.2021.07.06.03.35.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 03:35:54 -0700 (PDT)
+Date:   Tue, 6 Jul 2021 11:35:52 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Geoff Levand <geoff@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-acpi@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-cxl@vger.kernel.org,
+        nvdimm@lists.linux.dev, dmaengine@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net, linux-fpga@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-i3c@lists.infradead.org,
+        industrypack-devel@lists.sourceforge.net,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-ntb@googlegroups.com,
+        linux-pci@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-scsi@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
+        greybus-dev@lists.linaro.org, target-devel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-serial@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Subject: Re: [PATCH] bus: Make remove callback return void
+Message-ID: <YOQxRS8HLTYthWNn@dell>
+References: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-X-Received: by 2002:a02:ce94:: with SMTP id y20mr3518795jaq.18.1625567609708;
- Tue, 06 Jul 2021 03:33:29 -0700 (PDT)
-Date:   Tue, 06 Jul 2021 03:33:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ef663405c671f3a5@google.com>
-Subject: [syzbot] upstream boot error: BUG: sleeping function called from
- invalid context in stack_depot_save
-From:   syzbot <syzbot+0fb43da032dd2c0d2dbb@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 06 Jul 2021, Uwe Kleine-König wrote:
 
-syzbot found the following issue on:
+> The driver core ignores the return value of this callback because there
+> is only little it can do when a device disappears.
+> 
+> This is the final bit of a long lasting cleanup quest where several
+> buses were converted to also return void from their remove callback.
+> Additionally some resource leaks were fixed that were caused by drivers
+> returning an error code in the expectation that the driver won't go
+> away.
+> 
+> With struct bus_type::remove returning void it's prevented that newly
+> implemented buses return an ignored error code and so don't anticipate
+> wrong expectations for driver authors.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
+> Hello,
+> 
+> this patch depends on "PCI: endpoint: Make struct pci_epf_driver::remove
+> return void" that is not yet applied, see
+> https://lore.kernel.org/r/20210223090757.57604-1-u.kleine-koenig@pengutronix.de.
+> 
+> I tested it using allmodconfig on amd64 and arm, but I wouldn't be
+> surprised if I still missed to convert a driver. So it would be great to
+> get this into next early after the merge window closes.
+> 
+> I send this mail to all people that get_maintainer.pl emits for this
+> patch. I wonder how many recipents will refuse this mail because of the
+> long Cc: list :-)
+> 
+> Best regards
+> Uwe
+> 
+>  arch/arm/common/locomo.c                  | 3 +--
+>  arch/arm/common/sa1111.c                  | 4 +---
+>  arch/arm/mach-rpc/ecard.c                 | 4 +---
+>  arch/mips/sgi-ip22/ip22-gio.c             | 3 +--
+>  arch/parisc/kernel/drivers.c              | 5 ++---
+>  arch/powerpc/platforms/ps3/system-bus.c   | 3 +--
+>  arch/powerpc/platforms/pseries/ibmebus.c  | 3 +--
+>  arch/powerpc/platforms/pseries/vio.c      | 3 +--
+>  drivers/acpi/bus.c                        | 3 +--
+>  drivers/amba/bus.c                        | 4 +---
+>  drivers/base/auxiliary.c                  | 4 +---
+>  drivers/base/isa.c                        | 4 +---
+>  drivers/base/platform.c                   | 4 +---
+>  drivers/bcma/main.c                       | 6 ++----
+>  drivers/bus/sunxi-rsb.c                   | 4 +---
+>  drivers/cxl/core.c                        | 3 +--
+>  drivers/dax/bus.c                         | 4 +---
+>  drivers/dma/idxd/sysfs.c                  | 4 +---
+>  drivers/firewire/core-device.c            | 4 +---
+>  drivers/firmware/arm_scmi/bus.c           | 4 +---
+>  drivers/firmware/google/coreboot_table.c  | 4 +---
+>  drivers/fpga/dfl.c                        | 4 +---
+>  drivers/hid/hid-core.c                    | 4 +---
+>  drivers/hid/intel-ish-hid/ishtp/bus.c     | 4 +---
+>  drivers/hv/vmbus_drv.c                    | 5 +----
+>  drivers/hwtracing/intel_th/core.c         | 4 +---
+>  drivers/i2c/i2c-core-base.c               | 5 +----
+>  drivers/i3c/master.c                      | 4 +---
+>  drivers/input/gameport/gameport.c         | 3 +--
+>  drivers/input/serio/serio.c               | 3 +--
+>  drivers/ipack/ipack.c                     | 4 +---
+>  drivers/macintosh/macio_asic.c            | 4 +---
+>  drivers/mcb/mcb-core.c                    | 4 +---
+>  drivers/media/pci/bt8xx/bttv-gpio.c       | 3 +--
+>  drivers/memstick/core/memstick.c          | 3 +--
 
-HEAD commit:    79160a60 Merge tag 'usb-5.14-rc1' of git://git.kernel.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11052e78300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4c86f97408164ca1
-dashboard link: https://syzkaller.appspot.com/bug?extid=0fb43da032dd2c0d2dbb
+>  drivers/mfd/mcp-core.c                    | 3 +--
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0fb43da032dd2c0d2dbb@syzkaller.appspotmail.com
+Acked-by: Lee Jones <lee.jones@linaro.org>
 
-BUG: sleeping function called from invalid context at mm/page_alloc.c:5178
-in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 2, name: kthreadd
-1 lock held by kthreadd/2:
- #0: ffff8880b9c31660 (lock#2){....}-{2:2}, at: __alloc_pages_bulk+0x4ad/0x1870 mm/page_alloc.c:5290
-irq event stamp: 1804
-hardirqs last  enabled at (1803): [<ffffffff81ba1f82>] slab_alloc_node mm/slab.c:3256 [inline]
-hardirqs last  enabled at (1803): [<ffffffff81ba1f82>] kmem_cache_alloc_node_trace+0x412/0x5d0 mm/slab.c:3617
-hardirqs last disabled at (1804): [<ffffffff81b17107>] __alloc_pages_bulk+0x1017/0x1870 mm/page_alloc.c:5290
-softirqs last  enabled at (1716): [<ffffffff812b1cec>] memcpy include/linux/fortify-string.h:191 [inline]
-softirqs last  enabled at (1716): [<ffffffff812b1cec>] fpu__copy+0x16c/0x660 arch/x86/kernel/fpu/core.c:241
-softirqs last disabled at (1714): [<ffffffff812b1c21>] fpu__copy+0xa1/0x660 arch/x86/kernel/fpu/core.c:229
-CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
- ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
- prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5178
- __alloc_pages+0x12f/0x500 mm/page_alloc.c:5374
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
- stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
- save_stack+0x15e/0x1e0 mm/page_owner.c:120
- __set_page_owner+0x50/0x290 mm/page_owner.c:181
- prep_new_page mm/page_alloc.c:2444 [inline]
- __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5312
- alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
- vm_area_alloc_pages mm/vmalloc.c:2793 [inline]
- __vmalloc_area_node mm/vmalloc.c:2863 [inline]
- __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2966
- alloc_thread_stack_node kernel/fork.c:245 [inline]
- dup_task_struct kernel/fork.c:875 [inline]
- copy_process+0x8db/0x74d0 kernel/fork.c:1952
- kernel_clone+0xe7/0xac0 kernel/fork.c:2509
- kernel_thread+0xb5/0xf0 kernel/fork.c:2561
- create_kthread kernel/kthread.c:342 [inline]
- kthreadd+0x4ea/0x750 kernel/kthread.c:685
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-============================================
-WARNING: possible recursive locking detected
-5.13.0-syzkaller #0 Tainted: G        W        
---------------------------------------------
-kthreadd/2 is trying to acquire lock:
-ffff8880b9c31660 (lock#2){....}-{2:2}, at: rmqueue_pcplist mm/page_alloc.c:3674 [inline]
-ffff8880b9c31660 (lock#2){....}-{2:2}, at: rmqueue mm/page_alloc.c:3712 [inline]
-ffff8880b9c31660 (lock#2){....}-{2:2}, at: get_page_from_freelist+0x486/0x2f80 mm/page_alloc.c:4174
-
-but task is already holding lock:
-ffff8880b9c31660 (lock#2){....}-{2:2}, at: __alloc_pages_bulk+0x4ad/0x1870 mm/page_alloc.c:5290
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(lock#2);
-  lock(lock#2);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-1 lock held by kthreadd/2:
- #0: ffff8880b9c31660 (lock#2){....}-{2:2}, at: __alloc_pages_bulk+0x4ad/0x1870 mm/page_alloc.c:5290
-
-stack backtrace:
-CPU: 0 PID: 2 Comm: kthreadd Tainted: G        W         5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
- print_deadlock_bug kernel/locking/lockdep.c:2944 [inline]
- check_deadlock kernel/locking/lockdep.c:2987 [inline]
- validate_chain kernel/locking/lockdep.c:3776 [inline]
- __lock_acquire.cold+0x149/0x3ab kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- local_lock_acquire include/linux/local_lock_internal.h:42 [inline]
- rmqueue_pcplist mm/page_alloc.c:3674 [inline]
- rmqueue mm/page_alloc.c:3712 [inline]
- get_page_from_freelist+0x4aa/0x2f80 mm/page_alloc.c:4174
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5385
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
- stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
- save_stack+0x15e/0x1e0 mm/page_owner.c:120
- __set_page_owner+0x50/0x290 mm/page_owner.c:181
- prep_new_page mm/page_alloc.c:2444 [inline]
- __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5312
- alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
- vm_area_alloc_pages mm/vmalloc.c:2793 [inline]
- __vmalloc_area_node mm/vmalloc.c:2863 [inline]
- __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2966
- alloc_thread_stack_node kernel/fork.c:245 [inline]
- dup_task_struct kernel/fork.c:875 [inline]
- copy_process+0x8db/0x74d0 kernel/fork.c:1952
- kernel_clone+0xe7/0xac0 kernel/fork.c:2509
- kernel_thread+0xb5/0xf0 kernel/fork.c:2561
- create_kthread kernel/kthread.c:342 [inline]
- kthreadd+0x4ea/0x750 kernel/kthread.c:685
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
