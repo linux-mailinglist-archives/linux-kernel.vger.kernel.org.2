@@ -2,361 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04633BC8B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492413BC8B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhGFJ40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 05:56:26 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:20903 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230472AbhGFJ4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 05:56:25 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4GJyYj4Cr1zBBJS;
-        Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id oQkE2M0fqy9u; Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4GJyYj3BH9zBBJJ;
-        Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 579238B79E;
-        Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 8NcbPEjczuQZ; Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5597F8B794;
-        Tue,  6 Jul 2021 11:53:44 +0200 (CEST)
-Subject: Re: [PATCH 3/4] bpf powerpc: Add BPF_PROBE_MEM support for 64bit JIT
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        naveen.n.rao@linux.ibm.com, mpe@ellerman.id.au, ast@kernel.org,
-        daniel@iogearbox.net
-Cc:     songliubraving@fb.com, netdev@vger.kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kpsingh@kernel.org,
-        paulus@samba.org, sandipan@linux.ibm.com, yhs@fb.com,
-        bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kafai@fb.com,
-        linux-kernel@vger.kernel.org
-References: <20210706073211.349889-1-ravi.bangoria@linux.ibm.com>
- <20210706073211.349889-4-ravi.bangoria@linux.ibm.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <2bfcb782-3133-2db2-31a7-6886156d2048@csgroup.eu>
-Date:   Tue, 6 Jul 2021 11:53:43 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+        id S231259AbhGFJ4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 05:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231233AbhGFJ4r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 05:56:47 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14997C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 02:54:09 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id v5so25345176wrt.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 02:54:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=g0tC4MUw9+SlqVFCUMsi7lqIq0CVDtng7PTCdgO5oEU=;
+        b=S+dyx3xgcpj4V3ANCC/A6Amv96T6RfsrHnI9Uz0FsZM7M1pQr864n7wdcaBDSg5Vbd
+         lSGSdbe5aZ7zVjxxd8F3zNng8k7IdH9JrfTHCb6mrD9gTr8Xuf7RacFgLdU5FwOZMpDE
+         /5SWAXvxFc6XhtmPg+H9EO6ov+vEG+E41XGQweMOGVHNECJ6mUL4VfMJ8L1FScR+leFe
+         0WRWQ4MGc4yS43o/cqzD1xSwhjXiUjKMSdBvuTAKvIfDabwOnMUx3BlyDP7xrVSCBsPl
+         YoqCvWxCZ8hn7ZglybVg4QTJlaFVIBsgzc8hxEma6a1XaJhJr1SyqaPdJ1wk96tEEFo/
+         s4aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=g0tC4MUw9+SlqVFCUMsi7lqIq0CVDtng7PTCdgO5oEU=;
+        b=tmF0T7LLBQyZitutOsoDb7Ayc3dEzxy8fT9m5hjgNxSgVoSYPNG0eR6QIeWVyMfr+0
+         dJpVVZGsApOKG7Rmdn3CnJGEW2Iv3dSvqAEBbKT0y7v7U78PZrNyizDPlLz5vl/1GETg
+         NJV0lpA332TVWk4Y2kzzVPhsdkNe1uaDPgddUtvsiDfhkPg5nS9efQ6n68nzK2QYbpGV
+         +GYy0pnbyuVwmC1TLqPtle/waco9QRcxn5ISIW9Q94vNAy7bamJ971KkREyB+2hmcfA3
+         vD0sWV9V+jJDt2dhv9BMMnLTiow+7tWI61iy941fsTclGvaGVb4M2IcbhgUcqwfeKVak
+         39vA==
+X-Gm-Message-State: AOAM530d1pX0eftbZKeVhNvUULjv/LQOU1Jc6vEk5pgkPA/1ReBYgifm
+        ZnQcRx8n0n2s0ROcuObCxzc1HQ==
+X-Google-Smtp-Source: ABdhPJw1OVsLKqTJI+QcQyufAyhgXFbBXCF9GbXQs8fIfbWhEVMa+N/VRwbpAMfkQ9yGFvibeQJX3g==
+X-Received: by 2002:adf:fb51:: with SMTP id c17mr21148359wrs.106.1625565246820;
+        Tue, 06 Jul 2021 02:54:06 -0700 (PDT)
+Received: from ?IPv6:2001:861:44c0:66c0:7257:ae4e:a17f:5800? ([2001:861:44c0:66c0:7257:ae4e:a17f:5800])
+        by smtp.gmail.com with ESMTPSA id e23sm2264839wme.31.2021.07.06.02.54.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 02:54:06 -0700 (PDT)
+Subject: Re: [PATCH 0/4] PCI: replace dublicated MRRS limit quirks
+To:     Art Nikpal <email2tema@gmail.com>,
+        Huacai Chen <chenhuacai@gmail.com>
+Cc:     =?UTF-8?B?6ZmI5Y2O5omN?= <chenhuacai@loongson.cn>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Yue Wang <yue.wang@amlogic.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Artem Lapkin <art@khadas.com>, Nick Xie <nick@khadas.com>,
+        Gouwa Wang <gouwa@khadas.com>
+References: <20210701154634.GA60743@bjorn-Precision-5520>
+ <67a9e1fa.81a9.17a64c8e7f7.Coremail.chenhuacai@loongson.cn>
+ <CAKaHn9KxRrBsn4b9fSO1eDzM3XdV2GzfwVX+cGw9uS_eKg75dw@mail.gmail.com>
+ <CAAhV-H5M5Qf01DTD8ULGGGnv2kc2exRgXCLyNOOaqRL=dZ77xQ@mail.gmail.com>
+ <CAKaHn9+iHk3UtovWU+WE2mXD9oTZD9UdxrYuLB2Odgbr91Gs-Q@mail.gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <1271fa28-dddd-01a3-5ad5-e3b4898f5482@baylibre.com>
+Date:   Tue, 6 Jul 2021 11:54:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210706073211.349889-4-ravi.bangoria@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+In-Reply-To: <CAKaHn9+iHk3UtovWU+WE2mXD9oTZD9UdxrYuLB2Odgbr91Gs-Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+On 06/07/2021 08:06, Art Nikpal wrote:
+>> But, Loongson platform has newer revision of hardware, and the MRRS
+>> quirk has changed, please see:
+>> https://patchwork.kernel.org/project/linux-pci/list/?series=509497
+>> Huacai
+> 
+> OK! tnx for information ! maybe we can cooperate and make one
+> universal quirk for all
 
-Le 06/07/2021 à 09:32, Ravi Bangoria a écrit :
-> BPF load instruction with BPF_PROBE_MEM mode can cause a fault
-> inside kernel. Append exception table for such instructions
-> within BPF program.
+In their Designware PCIe controller driver, amlogic sets the Max_Payload_Size & Max_Read_Request_Size to 256:
+https://elixir.bootlin.com/linux/latest/source/drivers/pci/controller/dwc/pci-meson.c#L260
+https://elixir.bootlin.com/linux/latest/source/drivers/pci/controller/dwc/pci-meson.c#L276
+in their root port PCIe Express Device Control Register.
 
-Can you do the same for 32bit ?
+Looking at the Synopsys DW-PCIe Databook, Max_Payload_Size & Max_Read_Request_Size are used to decompose into AXI burst,
+but it seems the Max_Payload_Size & Max_Read_Request_Size are set by default to 512 but the internal Max_Payload_Size_Supported
+is set to 256, thus changing these values to 256 at runtime to match and optimize bandwidth.
+
+It's said, "Reducing Outbound Decomposition" :
+ - "Ensure that your application master does not generate bursts of size greater than or equal to Max_Payload_Size"
+ - "Program your PCIe system with a larger value of Max_Payload_Size without exceeding Max_Payload_Size_Supported"
+ - "Program your PCIe system with a larger value of Max_Read_Request without exceeding Max_Payload_Size_Supported:
+
+So leaving 512 in Max_Payload_Size & Max_Read_Request leads to Outbound Decomposition which decreases PCIe link and degrades
+the AXI bus by doubling the bursts, leading to this fix to avoid overflowing the AXI bus.
+
+So it seems to be still needed, I assume this *should* be handled in the core somehow to propagate these settings to child endpoints to match
+the root port Max_Payload_Size & Max_Read_Request sizes.
+
+Maybe by adding a core function to set these values instead of using the dw_pcie_find_capability() & dw_pcie_write/readl_dbi() helpers
+and set a state on the root port to propagate the value ?
+
+Neil
 
 > 
-> Unlike other archs which uses extable 'fixup' field to pass dest_reg
-> and nip, BPF exception table on PowerPC follows the generic PowerPC
-> exception table design, where it populates both fixup and extable
-> sections witin BPF program. fixup section contains two instructions,
-> first instruction clears dest_reg and 2nd jumps to next instruction
-> in the BPF code. extable 'insn' field contains relative offset of
-> the instruction and 'fixup' field contains relative offset of the
-> fixup entry. Example layout of BPF program with extable present:
-> 
->               +------------------+
->               |                  |
->               |                  |
->     0x4020 -->| ld   r27,4(r3)   |
->               |                  |
->               |                  |
->     0x40ac -->| lwz  r3,0(r4)    |
->               |                  |
->               |                  |
->               |------------------|
->     0x4280 -->| xor r27,r27,r27  |  \ fixup entry
->               | b   0x4024       |  /
->     0x4288 -->| xor r3,r3,r3     |
->               | b   0x40b0       |
->               |------------------|
->     0x4290 -->| insn=0xfffffd90  |  \ extable entry
->               | fixup=0xffffffec |  /
->     0x4298 -->| insn=0xfffffe14  |
->               | fixup=0xffffffec |
->               +------------------+
-> 
->     (Addresses shown here are chosen random, not real)
-> 
-> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-> ---
->   arch/powerpc/net/bpf_jit.h        |  5 ++-
->   arch/powerpc/net/bpf_jit_comp.c   | 25 +++++++++----
->   arch/powerpc/net/bpf_jit_comp32.c |  2 +-
->   arch/powerpc/net/bpf_jit_comp64.c | 60 ++++++++++++++++++++++++++++++-
->   4 files changed, 83 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
-> index 411c63d945c7..e9408ad190d3 100644
-> --- a/arch/powerpc/net/bpf_jit.h
-> +++ b/arch/powerpc/net/bpf_jit.h
-> @@ -141,8 +141,11 @@ struct codegen_context {
->   	unsigned int idx;
->   	unsigned int stack_size;
->   	int b2p[ARRAY_SIZE(b2p)];
-> +	unsigned int exentry_idx;
->   };
->   
-> +#define BPF_FIXUP_LEN	8 /* Two instructions */
-> +
->   static inline void bpf_flush_icache(void *start, void *end)
->   {
->   	smp_wmb();	/* smp write barrier */
-> @@ -166,7 +169,7 @@ static inline void bpf_clear_seen_register(struct codegen_context *ctx, int i)
->   
->   void bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 func);
->   int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
-> -		       u32 *addrs);
-> +		       u32 *addrs, int pass);
->   void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx);
->   void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx);
->   void bpf_jit_realloc_regs(struct codegen_context *ctx);
-> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-> index a9585e52a88d..3ebd8897cf09 100644
-> --- a/arch/powerpc/net/bpf_jit_comp.c
-> +++ b/arch/powerpc/net/bpf_jit_comp.c
-> @@ -89,6 +89,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
->   {
->   	u32 proglen;
->   	u32 alloclen;
-> +	u32 extable_len = 0;
-> +	u32 fixup_len = 0;
+> On Tue, Jul 6, 2021 at 9:36 AM Huacai Chen <chenhuacai@gmail.com> wrote:
+>>
+>> Hi, Art,
+>>
+>> On Mon, Jul 5, 2021 at 4:35 PM Art Nikpal <email2tema@gmail.com> wrote:
+>>>
+>>>> Does that means keystone and Loongson has the same MRRS problem? And what should I do now?
+>>>
+>>> Look like yes ! and  amlogic has the same problem.
+>>> I think somebody need to rewrite it all to one common quirk for this problem.
+>>>
+>>> If no one has any objection, I can try to remake it again.
+>> But, Loongson platform has newer revision of hardware, and the MRRS
+>> quirk has changed, please see:
+>> https://patchwork.kernel.org/project/linux-pci/list/?series=509497
+>>
+>> Huacai
+>>>
+>>> On Fri, Jul 2, 2021 at 9:15 AM 陈华才 <chenhuacai@loongson.cn> wrote:
+>>>>
+>>>> Hi, Bjorn,
+>>>>
+>>>> &gt; -----原始邮件-----
+>>>> &gt; 发件人: "Bjorn Helgaas" <helgaas@kernel.org>
+>>>> &gt; 发送时间: 2021-07-01 23:46:34 (星期四)
+>>>> &gt; 收件人: "Artem Lapkin" <email2tema@gmail.com>
+>>>> &gt; 抄送: narmstrong@baylibre.com, yue.wang@Amlogic.com, khilman@baylibre.com, lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com, jbrunet@baylibre.com, christianshewitt@gmail.com, martin.blumenstingl@googlemail.com, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, art@khadas.com, nick@khadas.com, gouwa@khadas.com, "Huacai Chen" <chenhuacai@loongson.cn>
+>>>> &gt; 主题: Re: [PATCH 0/4] PCI: replace dublicated MRRS limit quirks
+>>>> &gt;
+>>>> &gt; [+cc Huacai]
+>>>> &gt;
+>>>> &gt; On Sat, Jun 19, 2021 at 02:39:48PM +0800, Artem Lapkin wrote:
+>>>> &gt; &gt; Replace dublicated MRRS limit quirks by mrrs_limit_quirk from core
+>>>> &gt; &gt; * drivers/pci/controller/dwc/pci-keystone.c
+>>>> &gt; &gt; * drivers/pci/controller/pci-loongson.c
+>>>> &gt;
+>>>> &gt; s/dublicated/duplicated/ (several occurrences)
+>>>> &gt;
+>>>> &gt; Capitalize subject lines.
+>>>> &gt;
+>>>> &gt; Use "git log --online" to learn conventions and follow them.
+>>>> &gt;
+>>>> &gt; Add "()" after function names.
+>>>> &gt;
+>>>> &gt; Capitalize acronyms appropriately (NVMe, MRRS, PCI, etc).
+>>>> &gt;
+>>>> &gt; End sentences with periods.
+>>>> &gt;
+>>>> &gt; A "move" patch must include both the removal and the addition and make
+>>>> &gt; no changes to the code itself.
+>>>> &gt;
+>>>> &gt; Amlogic appears without explanation in 2/4.  Must be separate patch to
+>>>> &gt; address only that specific issue.  Should reference published erratum
+>>>> &gt; if possible.  "Solves some issue" is not a compelling justification.
+>>>> &gt;
+>>>> &gt; The tree must be consistent and functionally the same or improved
+>>>> &gt; after every patch.
+>>>> &gt;
+>>>> &gt; Add to pci_ids.h only if symbol used more than one place.
+>>>> &gt;
+>>>> &gt; See
+>>>> &gt; https://lore.kernel.org/r/20210701074458.1809532-3-chenhuacai@loongson.cn,
+>>>> &gt; which looks similar.  Combine efforts if possible and cc Huacai so
+>>>> &gt; you're both aware of overlapping work.
+>>>> &gt;
+>>>> &gt; More hints in case they're useful:
+>>>> &gt; https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com/
+>>>> &gt;
+>>>> &gt; &gt; Both ks_pcie_quirk loongson_mrrs_quirk was rewritten without any
+>>>> &gt; &gt; functionality changes by one mrrs_limit_quirk
+>>>> Does that means keystone and Loongson has the same MRRS problem? And what should I do now?
+>>>>
+>>>> Huacai
+>>>> &gt; &gt;
+>>>> &gt; &gt; Added DesignWare PCI controller which need same quirk for
+>>>> &gt; &gt; * drivers/pci/controller/dwc/pci-meson.c (PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3)
+>>>> &gt; &gt;
+>>>> &gt; &gt; This quirk can solve some issue for Khadas VIM3/VIM3L(Amlogic)
+>>>> &gt; &gt; with HDMI scrambled picture and nvme devices at intensive writing...
+>>>> &gt; &gt;
+>>>> &gt; &gt; come from:
+>>>> &gt; &gt; * https://lore.kernel.org/linux-pci/20210618063821.1383357-1-art@khadas.com/
+>>>> &gt; &gt;
+>>>> &gt; &gt; Artem Lapkin (4):
+>>>> &gt; &gt;  PCI: move Keystone and Loongson device IDs to pci_ids
+>>>> &gt; &gt;  PCI: core: quirks: add mrrs_limit_quirk
+>>>> &gt; &gt;  PCI: keystone move mrrs quirk to core
+>>>> &gt; &gt;  PCI: loongson move mrrs quirk to core
+>>>> &gt; &gt;
+>>>> &gt; &gt; --
+>>>> &gt; &gt; 2.25.1
+>>>> &gt; &gt;
+>>>>
+>>>>
+>>>> </chenhuacai@loongson.cn></email2tema@gmail.com></helgaas@kernel.org>
 
-Setting those to 0 doesn't seem to be needed, as it doesn't seem to exist any path to skip the 
-setting below. You should not perform unnecessary init at declaration as it is error prone.
-
->   	u8 *image = NULL;
->   	u32 *code_base;
->   	u32 *addrs;
-> @@ -131,7 +133,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
->   		image = jit_data->image;
->   		bpf_hdr = jit_data->header;
->   		proglen = jit_data->proglen;
-> -		alloclen = proglen + FUNCTION_DESCR_SIZE;
->   		extra_pass = true;
->   		goto skip_init_ctx;
->   	}
-> @@ -149,7 +150,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
->   	cgctx.stack_size = round_up(fp->aux->stack_depth, 16);
->   
->   	/* Scouting faux-generate pass 0 */
-> -	if (bpf_jit_build_body(fp, 0, &cgctx, addrs)) {
-> +	if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0)) {
->   		/* We hit something illegal or unsupported. */
->   		fp = org_fp;
->   		goto out_addrs;
-> @@ -162,7 +163,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
->   	 */
->   	if (cgctx.seen & SEEN_TAILCALL) {
->   		cgctx.idx = 0;
-> -		if (bpf_jit_build_body(fp, 0, &cgctx, addrs)) {
-> +		if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0)) {
->   			fp = org_fp;
->   			goto out_addrs;
->   		}
-> @@ -177,8 +178,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
->   	bpf_jit_build_prologue(0, &cgctx);
->   	bpf_jit_build_epilogue(0, &cgctx);
->   
-> +	fixup_len = fp->aux->num_exentries * BPF_FIXUP_LEN;
-> +	extable_len = fp->aux->num_exentries * sizeof(struct exception_table_entry);
-> +
->   	proglen = cgctx.idx * 4;
-> -	alloclen = proglen + FUNCTION_DESCR_SIZE;
-> +	alloclen = proglen + FUNCTION_DESCR_SIZE + fixup_len + extable_len;
->   
->   	bpf_hdr = bpf_jit_binary_alloc(alloclen, &image, 4, bpf_jit_fill_ill_insns);
->   	if (!bpf_hdr) {
-> @@ -186,6 +190,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
->   		goto out_addrs;
->   	}
->   
-> +	if (extable_len) {
-> +		fp->aux->extable = (void *)image + FUNCTION_DESCR_SIZE +
-> +				   proglen + fixup_len;
-> +	}
-> +
->   skip_init_ctx:
->   	code_base = (u32 *)(image + FUNCTION_DESCR_SIZE);
->   
-> @@ -210,7 +219,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
->   		/* Now build the prologue, body code & epilogue for real. */
->   		cgctx.idx = 0;
->   		bpf_jit_build_prologue(code_base, &cgctx);
-> -		bpf_jit_build_body(fp, code_base, &cgctx, addrs);
-> +		if (bpf_jit_build_body(fp, code_base, &cgctx, addrs, pass)) {
-> +			bpf_jit_binary_free(bpf_hdr);
-> +			fp = org_fp;
-> +			goto out_addrs;
-> +		}
->   		bpf_jit_build_epilogue(code_base, &cgctx);
->   
->   		if (bpf_jit_enable > 1)
-> @@ -234,7 +247,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
->   
->   	fp->bpf_func = (void *)image;
->   	fp->jited = 1;
-> -	fp->jited_len = alloclen;
-> +	fp->jited_len = proglen + FUNCTION_DESCR_SIZE;
->   
->   	bpf_flush_icache(bpf_hdr, (u8 *)bpf_hdr + (bpf_hdr->pages * PAGE_SIZE));
->   	if (!fp->is_func || extra_pass) {
-
-This hunk does not apply on latest powerpc tree. You are missing commit 62e3d4210ac9c
-
-
-> diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-> index 1f81bea35aab..23ab5620a45a 100644
-> --- a/arch/powerpc/net/bpf_jit_comp32.c
-> +++ b/arch/powerpc/net/bpf_jit_comp32.c
-> @@ -266,7 +266,7 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
->   
->   /* Assemble the body code between the prologue & epilogue */
->   int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
-> -		       u32 *addrs)
-> +		       u32 *addrs, int pass)
->   {
->   	const struct bpf_insn *insn = fp->insnsi;
->   	int flen = fp->len;
-> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-> index 984177d9d394..1884c6dca89a 100644
-> --- a/arch/powerpc/net/bpf_jit_comp64.c
-> +++ b/arch/powerpc/net/bpf_jit_comp64.c
-> @@ -270,9 +270,51 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
->   	/* out: */
->   }
->   
-> +static int add_extable_entry(struct bpf_prog *fp, u32 *image, int pass,
-> +			     u32 code, struct codegen_context *ctx, int dst_reg)
-> +{
-> +	off_t offset;
-> +	unsigned long pc;
-> +	struct exception_table_entry *ex;
-> +	u32 *fixup;
-> +
-> +	/* Populate extable entries only in the last pass */
-> +	if (pass != 2 || BPF_MODE(code) != BPF_PROBE_MEM)
-
-'code' is only used for that test, can you do the test before calling add_extable_entry() ?
-
-> +		return 0;
-> +
-> +	if (!fp->aux->extable ||
-> +	    WARN_ON_ONCE(ctx->exentry_idx >= fp->aux->num_exentries))
-> +		return -EINVAL;
-> +
-> +	pc = (unsigned long)&image[ctx->idx - 1];
-
-You should call this function before incrementing ctx->idx
-
-> +
-> +	fixup = (void *)fp->aux->extable -
-> +		(fp->aux->num_exentries * BPF_FIXUP_LEN) +
-> +		(ctx->exentry_idx * BPF_FIXUP_LEN);
-> +
-> +	fixup[0] = PPC_RAW_XOR(dst_reg, dst_reg, dst_reg);
-
-Prefered way to clear a reg in according to ISA is to do 'li reg, 0'
-
-> +	fixup[1] = (PPC_INST_BRANCH |
-> +		   (((long)(pc + 4) - (long)&fixup[1]) & 0x03fffffc));
-
-Would be nice if we could have a PPC_RAW_BRANCH() stuff, we could do something like 
-PPC_RAW_BRANCH((long)(pc + 4) - (long)&fixup[1])
-
-
-> +
-> +	ex = &fp->aux->extable[ctx->exentry_idx];
-> +
-> +	offset = pc - (long)&ex->insn;
-> +	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
-> +		return -ERANGE;
-> +	ex->insn = offset;
-> +
-> +	offset = (long)fixup - (long)&ex->fixup;
-> +	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
-> +		return -ERANGE;
-> +	ex->fixup = offset;
-> +
-> +	ctx->exentry_idx++;
-> +	return 0;
-> +}
-> +
->   /* Assemble the body code between the prologue & epilogue */
->   int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
-> -		       u32 *addrs)
-> +		       u32 *addrs, int pass)
->   {
->   	const struct bpf_insn *insn = fp->insnsi;
->   	int flen = fp->len;
-> @@ -710,25 +752,41 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->   		 */
->   		/* dst = *(u8 *)(ul) (src + off) */
->   		case BPF_LDX | BPF_MEM | BPF_B:
-> +		case BPF_LDX | BPF_PROBE_MEM | BPF_B:
-
-Could do:
-+		case BPF_LDX | BPF_PROBE_MEM | BPF_B:
-+			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
-+			if (ret)
-+				return ret;
-   		case BPF_LDX | BPF_MEM | BPF_B:
-
->   			EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
->   			if (insn_is_zext(&insn[i + 1]))
->   				addrs[++i] = ctx->idx * 4;
-> +			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
-> +			if (ret)
-> +				return ret;
->   			break;
->   		/* dst = *(u16 *)(ul) (src + off) */
->   		case BPF_LDX | BPF_MEM | BPF_H:
-> +		case BPF_LDX | BPF_PROBE_MEM | BPF_H:
->   			EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
->   			if (insn_is_zext(&insn[i + 1]))
->   				addrs[++i] = ctx->idx * 4;
-> +			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
-> +			if (ret)
-> +				return ret;
->   			break;
->   		/* dst = *(u32 *)(ul) (src + off) */
->   		case BPF_LDX | BPF_MEM | BPF_W:
-> +		case BPF_LDX | BPF_PROBE_MEM | BPF_W:
->   			EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
->   			if (insn_is_zext(&insn[i + 1]))
->   				addrs[++i] = ctx->idx * 4;
-> +			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
-> +			if (ret)
-> +				return ret;
->   			break;
->   		/* dst = *(u64 *)(ul) (src + off) */
->   		case BPF_LDX | BPF_MEM | BPF_DW:
-> +		case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
->   			PPC_BPF_LL(dst_reg, src_reg, off);
-> +			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
-> +			if (ret)
-> +				return ret;
->   			break;
->   
->   		/*
-> 
