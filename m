@@ -2,69 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB41B3BDEAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 22:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE833BDEB6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 23:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhGFVCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 17:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34698 "EHLO
+        id S230195AbhGFVFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 17:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbhGFVCT (ORCPT
+        with ESMTP id S229807AbhGFVFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 17:02:19 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8824AC061574;
-        Tue,  6 Jul 2021 13:59:40 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id i94so529329wri.4;
-        Tue, 06 Jul 2021 13:59:40 -0700 (PDT)
+        Tue, 6 Jul 2021 17:05:09 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 640C0C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 14:02:30 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id t24-20020a9d7f980000b029046f4a1a5ec4so160511otp.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 14:02:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3h/6CdNDLiatwRf8U9GgK4AELHJbmk24hBENxY/7j7E=;
-        b=UH36vNJusLOCUOUwMAuunT0VngPTD7q/CvY7dPiGEu4wV671ahgXwVcsuR3AVeIgwW
-         O5ZY/h8IP0esQUob5EjhGQDkiDAe0xMCC5h7xvwSEgQdRfXc/gy4BtcGWVDHdQrUi0w3
-         nH5S94v7jjNpKY2zQuvzrcfVfJ6lCQzhcIm/5z1g6Uj+Sb1q/CQkHJYVI7V3qvDnitew
-         DuWXo2veftgK0nXtYi68G+DQh6ZLDcJSciobgEAj9cLQ5gJr0ZNpoop4QASVCQTlWLBp
-         wpl0ybs0GxdMJJLLPPbElGscDhPGC/LIxcVY5YIeSyPOExOuD2XRjJjxmsuQPRG4n/DU
-         1goQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M6tpPDKSyclPkpydXHW+7x354s3vmNtT37qSCP18M/g=;
+        b=euDsx0wv6JsNg+UuOnI+iHIY6OjuCQ3qFs0aM3Fwkh/Bpa5NrpflciBSAU+Ve7fi2+
+         ghiy0GAdgFios/9AWztTGbNmNMnzeCGRNl75SJYHXhO8kgZAhc85/YnuOfUJJ9pSdWnb
+         +4W4BoYnJ6wS90A7QdTBO6QpXtJ5jaU1TycU74waSoGu+py4PKvbBb1EzddVU7rk9LuX
+         13BekPIxnNTRW6Y5TX6KLCofcRila7N3ncr6KwaLfXNyQvxFeGHG+zZtFLYdh/klZWlK
+         1xqyih0ha36ZE5448N0u5WhQxFfADW81LzsZjYExUX+ckkuHQ1muTpf030dGnIKrUiEB
+         xkQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3h/6CdNDLiatwRf8U9GgK4AELHJbmk24hBENxY/7j7E=;
-        b=hH0HtnaZsks6uMXwaWdnSG9ul/kOXQmX6KHVM62BW4U9LrWDv8P+et18UxO+Zebj2j
-         U/HFk9aPCCa85f0xVkS/MOKjKjnfIEa20RPWizjEqBDPqi95LvyW/jiy7nTTyygIhLgv
-         uVxTVDRVyz3vSd+CynXxTvlg74EaTVMgiyWguN9O7ChLl2mRBSUuWs3JdTkeDMYmGuOI
-         1djmgTQMGfSvOyYpy0t9YzV+Lt2MHpRQ8oKQrHebTPfP3RG6Szhuu1pyKeKBFMTJvbtF
-         t30er1jyMEkZMUAShpf4ZiYRG5l1d0rDD1v2EtRVdA6GId1Urn8+Kdzq0FcKJcIaHe+o
-         GPCg==
-X-Gm-Message-State: AOAM531GoEmIdOwR9xI5ETtizq5XnrDDbxHXoohg5dXbrYEtJfSC+Om5
-        kX4Joi1hfnfDblmAwbKD5/s=
-X-Google-Smtp-Source: ABdhPJyd0hCpYCFEGL2lgKo/Ar2zGNSYdm0NWjrV/EQfjjtLmHlBp45grUwOhTOWAoKQ5OOuAVRo/Q==
-X-Received: by 2002:adf:e605:: with SMTP id p5mr24541624wrm.396.1625605179250;
-        Tue, 06 Jul 2021 13:59:39 -0700 (PDT)
-Received: from masalkhi.fritz.box (dslb-178-005-073-162.178.005.pools.vodafone-ip.de. [178.5.73.162])
-        by smtp.gmail.com with ESMTPSA id o17sm3944676wmh.19.2021.07.06.13.59.38
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M6tpPDKSyclPkpydXHW+7x354s3vmNtT37qSCP18M/g=;
+        b=QZhHZ/tsjKhZfuPAOqtcl26Cvw2OIj2eQYd0i6GAs3rcZySVtI7DEJkV4bjXKI+cMN
+         f3GMPD+wTYYLXBKF69CBKKUe6omOe/5Ev45cJL7gtB77uSYzE+eGm+YZEDlN41pDwh/T
+         ARHr69jGsTlAGtQiRQxKd/5Ufk4cl3739VmgvXa/B+H+v+8LNWukVbBGHIW/cCvsXhVl
+         oLwXfUdFeRHoeAet+DRtZLQLelfRbIBoyANdLmn31MKSwgnqzufJuSAKvzIFdtjCArNQ
+         NybFszZbfmrAwXq5Y2FaIspCrEhqWBV2PJfbODCIILpkAXk4FQD/lsABpJQ0Xjf4bCIR
+         TGPg==
+X-Gm-Message-State: AOAM53127TEz96+FRsUKACISxhZjbTc6VkOIiXdjpnckSEeQOqTZN6qy
+        t+dATz+RFQDHZIVTLHnUaSit9Q==
+X-Google-Smtp-Source: ABdhPJwBGd2mCyBY0IVJtj8TwxaCHznMMLoEapifmCIIHFqK2e9hQi1ZsGCI7mwLGuxPrVZI7lG/Lg==
+X-Received: by 2002:a05:6830:1bed:: with SMTP id k13mr10376346otb.271.1625605349603;
+        Tue, 06 Jul 2021 14:02:29 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 3sm2987863oob.1.2021.07.06.14.02.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 13:59:38 -0700 (PDT)
-From:   Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-To:     arnd@arndb.de
-Cc:     hch@infradead.org, axboe@kernel.dk, bernie@develer.com,
-        linux-parisc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dan.carpenter@oracle.com
-Subject: Re: div_u64/do_div stack size usage, was Re: [v3] block: Removed a warning while compiling with a cross compiler for parisc
-Date:   Tue,  6 Jul 2021 22:59:27 +0200
-Message-Id: <20210706205927.4407-1-abd.masalkhi@gmail.com>
-X-Mailer: git-send-email 2.29.0.rc1.dirty
-In-Reply-To: <CAK8P3a2mAQOnTxBhVzVA8q8O-uVrdidCN5h5-T2dc0=Wet2uPQ@mail.gmail.com>
-References: <CAK8P3a2mAQOnTxBhVzVA8q8O-uVrdidCN5h5-T2dc0=Wet2uPQ@mail.gmail.com>
+        Tue, 06 Jul 2021 14:02:29 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
+        Suman Anna <s-anna@ti.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: [GIT PULL] remoteproc updates for v5.14
+Date:   Tue,  6 Jul 2021 16:02:28 -0500
+Message-Id: <20210706210228.1229484-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have compiled the kernel with a cross compiler hppa-linux-gnu- (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0 and the conficuration was the default, Build for generic-32bit "generic-32bit_defconfig"
+The following changes since commit c16ced60f3bf4aeba85e638f2186c468d7892ee0:
 
-Abd-Arhman
+  dt-bindings: remoteproc: k3-r5f: Update bindings for AM64x SoCs (2021-05-27 22:10:22 -0500)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rproc-v5.14
+
+for you to fetch changes up to aef6a521e5bf61b3be4567f6c88776956a6d8b32:
+
+  remoteproc: qcom: pas: Add SC8180X adsp, cdsp and mpss (2021-06-25 17:43:35 -0500)
+
+----------------------------------------------------------------
+remoteproc updates for v5.14
+
+This adds support for controlling the PRU and R5F clusters on the TI
+AM64x, the remote processor in i.MX7ULP, i.MX8MN/P and i.MX8ULP NXP and
+the audio, compute and modem remoteprocs in the Qualcomm SC8180x
+platform.
+
+It fixes improper ordering of cdev and device creation of the remoteproc
+control interface and it fixes resource leaks in the error handling path
+of rproc_add() and the Qualcomm modem and wifi remoteproc drivers.
+
+Lastly it fixes a few build warnings and replace the dummy parameter
+passed in the mailbox api of the stm32 driver to something not living on
+the stack.
+
+----------------------------------------------------------------
+Arnaud Pouliquen (1):
+      remoteproc: stm32: fix mbox_send_message call
+
+Arnd Bergmann (1):
+      remoteproc: stm32: fix phys_addr_t format string
+
+Bjorn Andersson (3):
+      Merge tag '20210327143117.1840-2-s-anna@ti.com' into rproc-next
+      dt-bindings: remoteproc: qcom: pas: Add SC8180X adsp, cdsp and mpss
+      remoteproc: qcom: pas: Add SC8180X adsp, cdsp and mpss
+
+Christophe JAILLET (1):
+      remoteproc: k3-r5: Fix an error message
+
+Manivannan Sadhasivam (1):
+      dt-bindings: remoteproc: qcom: pas: Convert binding to YAML
+
+Peng Fan (11):
+      dt-bindings: remoteproc: imx_rproc: add fsl,auto-boot property
+      dt-bindings: remoteproc: imx_rproc: add i.MX7ULP support
+      dt-bindings: remoteproc: imx_rproc: support i.MX8MN/P
+      remoteproc: imx_rproc: parse fsl,auto-boot
+      remoteproc: imx_rproc: initial support for mutilple start/stop method
+      remoteproc: imx_rproc: make clk optional
+      remoteproc: imx_rproc: support i.MX7ULP
+      remoteproc: imx_rproc: support i.MX8MN/P
+      remoteproc: imx-rproc: Fix IMX_REMOTEPROC configuration
+      dt-bindings: remoteproc: imx_rproc: support i.MX8ULP
+      remoteproc: imx_rproc: support i.MX8ULP
+
+Siddharth Gupta (4):
+      remoteproc: core: Move cdev add before device add
+      remoteproc: core: Move validate before device add
+      remoteproc: core: Fix cdev remove and rproc del
+      remoteproc: core: Cleanup device in case of failure
+
+Stephan Gerhold (3):
+      soc: qcom: smem_state: Add devm_qcom_smem_state_get()
+      remoteproc: qcom_q6v5: Use devm_qcom_smem_state_get() to fix missing put()
+      remoteproc: qcom_wcnss: Use devm_qcom_smem_state_get()
+
+Suman Anna (6):
+      remoteproc: Add kernel-doc comment for is_iomem
+      remoteproc: Fix various kernel-doc warnings
+      remoteproc: k3-r5: Extend support to R5F clusters on AM64x SoCs
+      dt-bindings: remoteproc: qcom: pas: Fix indentation warnings
+      dt-bindings: remoteproc: pru: Update bindings for K3 AM64x SoCs
+      remoteproc: pru: Add support for various PRU cores on K3 AM64x SoCs
+
+Yassine Oudjana (1):
+      dt-bindings: remoteproc: qcom: pas: Add power domains for MSM8996
+
+ .../bindings/remoteproc/fsl,imx-rproc.yaml         |  12 +-
+ .../devicetree/bindings/remoteproc/qcom,adsp.txt   | 228 ---------
+ .../devicetree/bindings/remoteproc/qcom,adsp.yaml  | 547 +++++++++++++++++++++
+ .../bindings/remoteproc/ti,pru-rproc.yaml          |   5 +
+ drivers/remoteproc/Kconfig                         |   1 +
+ drivers/remoteproc/imx_rproc.c                     | 209 ++++++--
+ drivers/remoteproc/pru_rproc.c                     |   3 +
+ drivers/remoteproc/qcom_q6v5.c                     |   2 +-
+ drivers/remoteproc/qcom_q6v5_pas.c                 |  22 +
+ drivers/remoteproc/qcom_wcnss.c                    |   5 +-
+ drivers/remoteproc/remoteproc_cdev.c               |   2 +-
+ drivers/remoteproc/remoteproc_core.c               |  72 ++-
+ drivers/remoteproc/remoteproc_elf_loader.c         |  12 +-
+ drivers/remoteproc/remoteproc_virtio.c             |   6 +-
+ drivers/remoteproc/stm32_rproc.c                   |  16 +-
+ drivers/remoteproc/ti_k3_r5_remoteproc.c           | 151 ++++--
+ drivers/soc/qcom/smem_state.c                      |  36 ++
+ include/linux/remoteproc.h                         |  50 +-
+ include/linux/soc/qcom/smem_state.h                |   8 +
+ 19 files changed, 1028 insertions(+), 359 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
