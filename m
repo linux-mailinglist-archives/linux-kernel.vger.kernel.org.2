@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C8C3BC501
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 05:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A6C3BC503
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 05:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhGFDNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 23:13:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39914 "EHLO mail.kernel.org"
+        id S230008AbhGFDOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 23:14:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229959AbhGFDNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 23:13:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E46426197E;
-        Tue,  6 Jul 2021 03:10:51 +0000 (UTC)
+        id S229827AbhGFDOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 23:14:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6D446197F;
+        Tue,  6 Jul 2021 03:11:22 +0000 (UTC)
 From:   Huacai Chen <chenhuacai@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
         Huacai Chen <chenhuacai@gmail.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH 5/9] irqchip/loongson-htvec: Add ACPI init support
-Date:   Tue,  6 Jul 2021 11:09:00 +0800
-Message-Id: <20210706030904.1411775-6-chenhuacai@loongson.cn>
+Subject: [PATCH 6/9] irqchip/loongson-liointc: Add ACPI init support
+Date:   Tue,  6 Jul 2021 11:09:01 +0800
+Message-Id: <20210706030904.1411775-7-chenhuacai@loongson.cn>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210706030904.1411775-1-chenhuacai@loongson.cn>
 References: <20210706030904.1411775-1-chenhuacai@loongson.cn>
@@ -37,156 +37,200 @@ add ACPI init support.
 
 Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
- drivers/irqchip/irq-loongson-htvec.c | 102 ++++++++++++++++++++++++++-
- 1 file changed, 101 insertions(+), 1 deletion(-)
+ drivers/irqchip/irq-loongson-liointc.c | 140 +++++++++++++++++++++++--
+ 1 file changed, 132 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loongson-htvec.c
-index 60a335d7e64e..69452d4a33c0 100644
---- a/drivers/irqchip/irq-loongson-htvec.c
-+++ b/drivers/irqchip/irq-loongson-htvec.c
+diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
+index 649c58391618..591fc1192e73 100644
+--- a/drivers/irqchip/irq-loongson-liointc.c
++++ b/drivers/irqchip/irq-loongson-liointc.c
 @@ -1,6 +1,8 @@
  // SPDX-License-Identifier: GPL-2.0
  /*
   *  Copyright (C) 2020, Jiaxun Yang <jiaxun.yang@flygoat.com>
 + *			Jianmin Lv <lvjianmin@loongson.cn>
 + *			Huacai Chen <chenhuacai@loongson.cn>
-  *  Loongson HyperTransport Interrupt Vector support
+  *  Loongson Local IO Interrupt Controller support
   */
  
-@@ -16,22 +18,27 @@
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
-+#include <linux/syscore_ops.h>
+@@ -19,7 +21,7 @@
+ #include <loongson.h>
  
- /* Registers */
- #define HTVEC_EN_OFF		0x20
- #define HTVEC_MAX_PARENT_IRQ	8
--
- #define VEC_COUNT_PER_REG	32
- #define VEC_REG_IDX(irq_id)	((irq_id) / VEC_COUNT_PER_REG)
- #define VEC_REG_BIT(irq_id)	((irq_id) % VEC_COUNT_PER_REG)
-+#define HTVEC_SIZE		0x400
+ #define LIOINTC_CHIP_IRQ	32
+-#define LIOINTC_NUM_PARENT 4
++#define LIOINTC_NUM_PARENT	4
+ #define LIOINTC_NUM_CORES	4
  
- struct htvec {
- 	int			num_parents;
- 	void __iomem		*base;
- 	struct irq_domain	*htvec_domain;
- 	raw_spinlock_t		htvec_lock;
-+	struct fwnode_handle	*domain_handle;
-+	u32			saved_vec_en[HTVEC_MAX_PARENT_IRQ];
- };
+ #define LIOINTC_INTC_CHIP_START	0x20
+@@ -53,7 +55,7 @@ static void liointc_chained_handle_irq(struct irq_desc *desc)
+ 	struct liointc_handler_data *handler = irq_desc_get_handler_data(desc);
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+ 	struct irq_chip_generic *gc = handler->priv->gc;
+-	int core = get_ebase_cpunum() % LIOINTC_NUM_CORES;
++	int core = cpu_logical_map(smp_processor_id()) % LIOINTC_NUM_CORES;
+ 	u32 pending;
  
-+struct htvec *htvec_priv;
-+
- static void htvec_irq_dispatch(struct irq_desc *desc)
- {
- 	int i;
-@@ -155,6 +162,31 @@ static void htvec_reset(struct htvec *priv)
- 	}
+ 	chained_irq_enter(chip, desc);
+@@ -143,8 +145,12 @@ static void liointc_resume(struct irq_chip_generic *gc)
+ 	irq_gc_unlock_irqrestore(gc, flags);
  }
  
-+static int htvec_suspend(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < htvec_priv->num_parents; i++)
-+		htvec_priv->saved_vec_en[i] = readl(htvec_priv->base + HTVEC_EN_OFF + 4 * i);
-+
-+	return 0;
-+}
-+
-+static void htvec_resume(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < htvec_priv->num_parents; i++)
-+		writel(htvec_priv->saved_vec_en[i], htvec_priv->base + HTVEC_EN_OFF + 4 * i);
-+}
-+
-+static struct syscore_ops htvec_syscore_ops = {
-+	.suspend = htvec_suspend,
-+	.resume = htvec_resume,
-+};
+-static const char * const parent_names[] = {"int0", "int1", "int2", "int3"};
+-static const char * const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
++static int parent_irq[LIOINTC_NUM_PARENT];
++static u32 parent_int_map[LIOINTC_NUM_PARENT];
++static const char *const parent_names[] = {"int0", "int1", "int2", "int3"};
++static const char *const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
 +
 +#ifdef CONFIG_OF
-+
- static int htvec_of_init(struct device_node *node,
- 				struct device_node *parent)
- {
-@@ -202,6 +234,10 @@ static int htvec_of_init(struct device_node *node,
- 		irq_set_chained_handler_and_data(parent_irq[i],
- 						 htvec_irq_dispatch, priv);
  
-+	htvec_priv = priv;
-+
-+	register_syscore_ops(&htvec_syscore_ops);
-+
- 	return 0;
+ static void __iomem *liointc_get_reg_byname(struct device_node *node,
+ 						const char *name)
+@@ -165,8 +171,6 @@ static int __init liointc_of_init(struct device_node *node,
+ 	struct irq_chip_type *ct;
+ 	struct liointc_priv *priv;
+ 	void __iomem *base;
+-	u32 of_parent_int_map[LIOINTC_NUM_PARENT];
+-	int parent_irq[LIOINTC_NUM_PARENT];
+ 	bool have_parent = FALSE;
+ 	int sz, i, err = 0;
  
- irq_dispose:
-@@ -216,3 +252,67 @@ static int htvec_of_init(struct device_node *node,
- }
+@@ -210,7 +214,7 @@ static int __init liointc_of_init(struct device_node *node,
  
- IRQCHIP_DECLARE(htvec, "loongson,htvec-1.0", htvec_of_init);
+ 	sz = of_property_read_variable_u32_array(node,
+ 						"loongson,parent_int_map",
+-						&of_parent_int_map[0],
++						&parent_int_map[0],
+ 						LIOINTC_NUM_PARENT,
+ 						LIOINTC_NUM_PARENT);
+ 	if (sz < 4) {
+@@ -220,7 +224,7 @@ static int __init liointc_of_init(struct device_node *node,
+ 	}
+ 
+ 	for (i = 0; i < LIOINTC_NUM_PARENT; i++)
+-		priv->handler[i].parent_int_map = of_parent_int_map[i];
++		priv->handler[i].parent_int_map = parent_int_map[i];
+ 
+ 	/* Setup IRQ domain */
+ 	domain = irq_domain_add_linear(node, 32,
+@@ -310,3 +314,123 @@ static int __init liointc_of_init(struct device_node *node,
+ IRQCHIP_DECLARE(loongson_liointc_1_0, "loongson,liointc-1.0", liointc_of_init);
+ IRQCHIP_DECLARE(loongson_liointc_1_0a, "loongson,liointc-1.0a", liointc_of_init);
+ IRQCHIP_DECLARE(loongson_liointc_2_0, "loongson,liointc-2.0", liointc_of_init);
 +
 +#endif
 +
 +#ifdef CONFIG_ACPI
 +
-+struct fwnode_handle *htvec_acpi_init(struct fwnode_handle *parent,
-+					struct acpi_madt_ht_pic *acpi_htvec)
++struct fwnode_handle *liointc_acpi_init(struct acpi_madt_lio_pic *acpi_liointc)
 +{
-+	int i, parent_irq[8];
-+	struct htvec *priv;
-+	struct irq_fwspec fwspec;
++	int i, err;
++	void __iomem *base;
++	struct irq_chip_generic *gc;
++	struct irq_chip_type *ct;
++	struct irq_domain *domain;
++	struct liointc_priv *priv;
++	struct fwnode_handle *domain_handle;
++
++	parent_int_map[0] = acpi_liointc->cascade_map[0];
++	parent_int_map[1] = acpi_liointc->cascade_map[1];
++
++	parent_irq[0] = LOONGSON_CPU_IRQ_BASE + acpi_liointc->cascade[0];
++	if (!cpu_has_extioi)
++		parent_irq[1] = LOONGSON_CPU_IRQ_BASE + acpi_liointc->cascade[1];
 +
 +	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
 +	if (!priv)
 +		return NULL;
 +
-+	priv->num_parents = HTVEC_MAX_PARENT_IRQ;
-+	priv->base = ioremap(acpi_htvec->address, acpi_htvec->size);
++	base = ioremap(acpi_liointc->address, acpi_liointc->size);
++	if (!base)
++		goto out_free_priv;
 +
-+	/* Interrupt may come from any of the 8 interrupt lines */
-+	for (i = 0; i < priv->num_parents; i++)
-+		parent_irq[i] = acpi_htvec->cascade[i];
++	for (i = 0; i < LIOINTC_NUM_CORES; i++)
++		priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS;
 +
-+	priv->domain_handle = irq_domain_alloc_fwnode(priv->base);
-+	if (!priv->domain_handle) {
++	domain_handle = irq_domain_alloc_fwnode((phys_addr_t *)priv);
++	if (!domain_handle) {
 +		pr_err("Unable to allocate domain handle\n");
-+		goto iounmap_base;
++		return NULL;
 +	}
++
++	for (i = 0; i < LIOINTC_NUM_PARENT; i++)
++		priv->handler[i].parent_int_map = parent_int_map[i];
 +
 +	/* Setup IRQ domain */
-+	priv->htvec_domain = irq_domain_create_linear(priv->domain_handle,
-+					(VEC_COUNT_PER_REG * priv->num_parents),
-+					&htvec_domain_ops, priv);
-+	if (!priv->htvec_domain) {
-+		pr_err("loongson-htvec: cannot add IRQ domain\n");
-+		goto iounmap_base;
++	domain = irq_domain_create_linear(domain_handle, LIOINTC_CHIP_IRQ,
++					&irq_generic_chip_ops, priv);
++	if (!domain) {
++		pr_err("loongson-liointc: cannot add IRQ domain\n");
++		goto out_iounmap;
 +	}
 +
-+	htvec_reset(priv);
++	err = irq_alloc_domain_generic_chips(domain, LIOINTC_CHIP_IRQ, 1,
++					"LIOINTC", handle_level_irq,
++					0, IRQ_NOPROBE, 0);
++	if (err) {
++		pr_err("loongson-liointc: unable to register IRQ domain\n");
++		goto out_free_domain;
++	}
 +
-+	for (i = 0; i < priv->num_parents; i++) {
-+		fwspec.fwnode = parent;
-+		fwspec.param[0] = parent_irq[i];
-+		fwspec.param_count = 1;
-+		parent_irq[i] = irq_create_fwspec_mapping(&fwspec);
++
++	/* Disable all IRQs */
++	writel(0xffffffff, base + LIOINTC_REG_INTC_DISABLE);
++	/* Set to level triggered */
++	writel(0x0, base + LIOINTC_REG_INTC_EDGE);
++
++	/* Generate parent INT part of map cache */
++	for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
++		u32 pending = priv->handler[i].parent_int_map;
++
++		while (pending) {
++			int bit = __ffs(pending);
++
++			priv->map_cache[bit] = BIT(i) << LIOINTC_SHIFT_INTx;
++			pending &= ~BIT(bit);
++		}
++	}
++
++	for (i = 0; i < LIOINTC_CHIP_IRQ; i++) {
++		/* Generate core part of map cache */
++		priv->map_cache[i] |= BIT(loongson_sysconf.boot_cpu_id);
++		writeb(priv->map_cache[i], base + i);
++	}
++
++	gc = irq_get_domain_generic_chip(domain, 0);
++	gc->private = priv;
++	gc->reg_base = base;
++	gc->domain = domain;
++	gc->resume = liointc_resume;
++
++	ct = gc->chip_types;
++	ct->regs.enable = LIOINTC_REG_INTC_ENABLE;
++	ct->regs.disable = LIOINTC_REG_INTC_DISABLE;
++	ct->chip.irq_unmask = irq_gc_unmask_enable_reg;
++	ct->chip.irq_mask = irq_gc_mask_disable_reg;
++	ct->chip.irq_mask_ack = irq_gc_mask_disable_reg;
++
++	gc->mask_cache = 0;
++	priv->gc = gc;
++
++	for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
++		if (parent_irq[i] <= 0)
++			continue;
++
++		priv->handler[i].priv = priv;
 +		irq_set_chained_handler_and_data(parent_irq[i],
-+						 htvec_irq_dispatch, priv);
++				liointc_chained_handle_irq, &priv->handler[i]);
 +	}
 +
-+	htvec_priv = priv;
++	return domain_handle;
 +
-+	register_syscore_ops(&htvec_syscore_ops);
-+
-+	return htvec_priv->domain_handle;
-+
-+iounmap_base:
-+	iounmap(priv->base);
-+	priv->domain_handle = NULL;
++out_free_domain:
++	irq_domain_remove(domain);
++out_iounmap:
++	iounmap(base);
++out_free_priv:
 +	kfree(priv);
 +
 +	return NULL;
