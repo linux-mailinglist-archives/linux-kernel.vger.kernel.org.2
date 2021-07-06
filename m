@@ -2,175 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BB63BD8BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B9A3BD859
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233016AbhGFOqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233014AbhGFOqF (ORCPT
+        id S232262AbhGFOh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:37:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27540 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232261AbhGFOhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:46:05 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621FBC05BD14;
-        Tue,  6 Jul 2021 07:34:56 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id f20so11743189pfa.1;
-        Tue, 06 Jul 2021 07:34:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=WYmJLY9bc2BaxeUu/qUZgzgqMbq0sZhiO+uLD5KZhTI=;
-        b=ZNkrNEr4KGmj/2fbW0eQVTlsGzbWi+ILb/P7fMlYTTx3z8cJ4p3qPVCAK5AtpSjjkG
-         qmFt8s4FqTZquMymHNcfGjyBL39NROLfYMUK6QayOInSZxdscwD8o4f+srDi7tonnvDk
-         bdX0W38B6Rm0Y4UxV/T774m12JqoN/OC5O5ZpBZflMzHywoiIgKG4z2alTqAPqKGfmyG
-         lZtuy+PahUk7bVkk7A1Q7UdFqt1NU8jlGa25x5hB9beiJLpkKdVCaJav4eGlxl84H5R7
-         BDdhxWcTv4wuO5vUiZFs8gJ5bIhrpL2AbLKKNUoPc9pJc8StWdgnzeGQo3hV0S8Ewznq
-         Dw4w==
+        Tue, 6 Jul 2021 10:37:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625582114;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SadklWu5h42Kr+n17qV7by5TT0XeZa9ds78ScI/5JFI=;
+        b=jT9eCeOi/WTmkOgz+PWPyMjhng9yuKRMmzj02wW7crx/zp9fem5DJW4CoiDbBDcpg23o68
+        bE3/iNIhvppuBiTbUx0g2Lam8Rps9bJnZDZTbHbD8XK9oV4zoBDK79o2agRZgS/XvoOPdq
+        FRV16H0m7ZfjktpFexIPpHrWEY6ucdw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-rcHx6rF0NCmZyc8pJPm5QQ-1; Tue, 06 Jul 2021 10:35:13 -0400
+X-MC-Unique: rcHx6rF0NCmZyc8pJPm5QQ-1
+Received: by mail-ed1-f70.google.com with SMTP id p19-20020aa7c4d30000b0290394bdda6d9cso10849092edr.21
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:35:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WYmJLY9bc2BaxeUu/qUZgzgqMbq0sZhiO+uLD5KZhTI=;
-        b=icWV8e4VPtKle9fieclclzzZbOj1v1UReprMNA0xb3ENjtheNQ4yIvD9fPntvjwHwI
-         WnBCI4rCW9ja+krr66NtOFeETB1Era6yTWUvXtHd7wFySZCWOqU/4I5J+V83k9Xa9yZi
-         XZX24e7v/akdIpM15Pi5y4wDZAQuP8hiyuj1foxHCgMAa6YFz2XRUpbwrzoB+ZFFIxNS
-         g5iv21WQ5biFjGzcMmqFCoWlMTrYmhk73+wwsZp5q8dgbleVIr2Z0iGaZf88+VBbUX6F
-         ijLhPmTQACffHaWnWKuXxyXtnpAyISzDlAN8OlZIb3jbHRsnSrUo9MZLKE22hc8iGWqI
-         aLvA==
-X-Gm-Message-State: AOAM533VpiDT3Iohl01fNffjio5kIkIzPHe74rWHFfE1BWZgXqQ1LEsU
-        8JaKRIDGeZlORW9RvdNQMR3aZDNjIbCSwSM8q4s=
-X-Google-Smtp-Source: ABdhPJxEIhdcXf+hrUDe0sA7qtmyBbbwvJXcsFj8Gz6ye56LODeb0rpJ8lI5n8p4reZ8UtNRbgYlHQ==
-X-Received: by 2002:a62:37c2:0:b029:2ff:f7dd:1620 with SMTP id e185-20020a6237c20000b02902fff7dd1620mr20773671pfa.33.1625582095926;
-        Tue, 06 Jul 2021 07:34:55 -0700 (PDT)
-Received: from localhost.lan ([2400:4070:175b:7500::7a7])
-        by smtp.gmail.com with ESMTPSA id e2sm19785718pgh.5.2021.07.06.07.34.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 07:34:54 -0700 (PDT)
-Received: from x2.lan (localhost [127.0.0.1])
-        by localhost.lan (Postfix) with ESMTPSA id 89D18902A2B;
-        Tue,  6 Jul 2021 14:34:52 +0000 (GMT)
-From:   Vincent Pelletier <plr.vincent@gmail.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Opensource [Steve Twiss]" <stwiss.opensource@diasemi.com>
-Subject: [PATCH 3/3] Documentation: hwmon: New information for DA9063
-Date:   Tue,  6 Jul 2021 14:34:49 +0000
-Message-Id: <089cba74f35e1f7cb07064fa336518d853c8d569.1625581991.git.plr.vincent@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <850a353432cd676f96889cede291232abf58918d.1625581991.git.plr.vincent@gmail.com>
-References: <850a353432cd676f96889cede291232abf58918d.1625581991.git.plr.vincent@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SadklWu5h42Kr+n17qV7by5TT0XeZa9ds78ScI/5JFI=;
+        b=L5hDHp7XBZ+WFbpI29ntcQOqkHY5Nx7xLJSB/4lMwuZsiDCYvD43gziucb3Stkp2jA
+         QzK5YkPf9kBdtm3/0LzeMwbLnUjdIz4taQ7ZToU0DSDDpOQVvjX61/LQYkzjKlu8Pakv
+         LauWuNfnTBT/n0FfDLDFy7goPA/9iYMey95DqIxpHkYuzE2z/+Z3Q/PusaZS5gWfTvZO
+         qsnhsSjK1qZ6bektShbhhmmr1sK30ddh8G/KIkgU+XUksAuVGy+jm5viNZgCmXevpBqp
+         9jL7A9FxTvsn1XcygQiZjThqsFQt1LwTMbW4SVysfs8Qv+r5+jqv4l6PAdJiL4YrAXx4
+         f7Tg==
+X-Gm-Message-State: AOAM530Jagd+4ILnWbpRgvCKYMFkyVg4mp8+Qp1pqRaVdE9+yVyZnwQ8
+        Mjw0wuleZJNuZ+IH63inuhrV4JIvw5n4MwDY5Kt4zbYLlr1QFIfaHAeR20xdAX6N4nBeywgygGt
+        xYt/10K1WGvcHV7nNOekIz9LS
+X-Received: by 2002:a17:906:7b4f:: with SMTP id n15mr18484076ejo.42.1625582111850;
+        Tue, 06 Jul 2021 07:35:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyX/hN6grD9bMUghxfplyXRvID/QOIo0cYh5JzubHTBO/PXsUDzoj4n1GCTZJLcwlRuSvxCcQ==
+X-Received: by 2002:a17:906:7b4f:: with SMTP id n15mr18484049ejo.42.1625582111659;
+        Tue, 06 Jul 2021 07:35:11 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id d18sm1023485ejr.50.2021.07.06.07.35.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 07:35:11 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 38/69] KVM: x86: Add option to force LAPIC
+ expiration wait
+To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <357378fcb6e3e2becb6d4f00a5c3d2b00b2c566b.1625186503.git.isaku.yamahata@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a349d5bf-b85c-34c3-bb88-523df23a2985@redhat.com>
+Date:   Tue, 6 Jul 2021 16:35:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <357378fcb6e3e2becb6d4f00a5c3d2b00b2c566b.1625186503.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Opensource [Steve Twiss]" <stwiss.opensource@diasemi.com>
+On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+> 
+> Add an option to skip the IRR check in kvm_wait_lapic_expire().  This
+> will be used by TDX to wait if there is an outstanding notification for
+> a TD, i.e. a virtual interrupt is being triggered via posted interrupt
+> processing.  KVM TDX doesn't emulate PI processing, i.e. there will
+> never be a bit set in IRR/ISR, so the default behavior for APICv of
+> querying the IRR doesn't work as intended.
+> 
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 
-Addition of HWMON documentation for the DA9063 driver.
+Is there a better (existing after the previous patches) flag to test, or 
+possibly can it use vm_type following the suggestion I gave for patch 28?
 
-Signed-off-by: Opensource [Steve Twiss] <stwiss.opensource@diasemi.com>
+Paolo
 
-Updated temperature formula, as of datasheet rev 2.3.
-Converted to ReStructuredText.
-
-Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
----
-Changes in v2:
-- ReST-ified
-
-Originally submitted by Steve Twiss in 2014:
-  https://marc.info/?l=linux-kernel&m=139560868209856&w=2
-
- Documentation/hwmon/da9063.rst | 73 ++++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
- create mode 100644 Documentation/hwmon/da9063.rst
-
-diff --git a/Documentation/hwmon/da9063.rst b/Documentation/hwmon/da9063.rst
-new file mode 100644
-index 000000000000..aae69c58a5d6
---- /dev/null
-+++ b/Documentation/hwmon/da9063.rst
-@@ -0,0 +1,73 @@
-+Kernel driver da9063-hwmon
-+==========================
-+
-+Supported chips:
-+
-+  * Dialog Semiconductor DA9063 PMIC
-+
-+    Prefix: 'da9063'
-+
-+    Datasheet: Publicly available at the Dialog Semiconductor website:
-+
-+	http://www.dialog-semiconductor.com/products/power-management/DA9063
-+
-+Authors:
-+	- S Twiss <stwiss.opensource@diasemi.com>
-+	- Vincent Pelletier <plr.vincent@gmail.com>
-+
-+Description
-+-----------
-+
-+The DA9063 PMIC provides a general purpose ADC with 10 bits of resolution.
-+It uses track and hold circuitry with an analogue input multiplexer which
-+allows the conversion of up to 9 different inputs:
-+
-+- Channel  0: VSYS_RES	measurement of the system VDD (2.5 - 5.5V)
-+- Channel  1: ADCIN1_RES	high impedance input (0 - 2.5V)
-+- Channel  2: ADCIN2_RES	high impedance input (0 - 2.5V)
-+- Channel  3: ADCIN3_RES	high impedance input (0 - 2.5V)
-+- Channel  4: Tjunc	measurement of internal temperature sensor
-+- Channel  5: VBBAT	measurement of the backup battery voltage (0 - 5.0V)
-+- Channel  6: N/A	Reserved
-+- Channel  7: N/A	Reserved
-+- Channel  8: MON1_RES	group 1 internal regulators voltage (0 - 5.0V)
-+- Channel  9: MON2_RES	group 2 internal regulators voltage (0 - 5.0V)
-+- Channel 10: MON3_RES	group 3 internal regulators voltage (0 - 5.0V)
-+
-+The MUX selects from and isolates the 9 inputs and presents the channel to
-+be measured to the ADC input. When selected, an input amplifier on the VSYS
-+channel subtracts the VDDCORE reference voltage and scales the signal to the
-+correct value for the ADC.
-+
-+The analog ADC includes current sources at ADC_IN1, ADC_IN2 and ADC_IN3 to
-+support resistive measurements.
-+
-+Channels 1, 2 and 3 current source capability can be set through the ADC
-+thresholds ADC_CFG register and values for ADCIN1_CUR, ADCIN2_CUR and
-+ADCIN3_CUR. Settings for ADCIN1_CUR and ADCIN2_CUR are 1.0, 2.0, 10 and
-+40 micro Amps. The setting for ADCIN3_CUR is 10 micro Amps.
-+
-+Voltage Monitoring
-+------------------
-+
-+The manual measurement allows monitoring of the system voltage VSYS, the
-+auxiliary channels ADCIN1, ADCIN2 and ADCIN3, and a VBBAT measurement of
-+the backup battery voltage (0 - 5.0V). The manual measurements store 10
-+bits of ADC resolution.
-+
-+The manual ADC measurements attributes described above are supported by
-+the driver.
-+
-+The automatic ADC measurement is not supported by the driver.
-+
-+Temperature Monitoring
-+----------------------
-+
-+Temperatures are sampled by a 10 bit ADC.  Junction temperatures
-+are monitored by the ADC channels.
-+
-+The junction temperature is calculated:
-+
-+	Degrees celsius = -0.398 * (ADC_RES - T_OFFSET) + 330;
-+
-+The junction temperature attribute is supported by the driver.
--- 
-2.32.0
+> ---
+>   arch/x86/kvm/lapic.c   | 4 ++--
+>   arch/x86/kvm/lapic.h   | 2 +-
+>   arch/x86/kvm/svm/svm.c | 2 +-
+>   arch/x86/kvm/vmx/vmx.c | 2 +-
+>   4 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index 977a704e3ff1..3cfc0485a46e 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -1622,12 +1622,12 @@ static void __kvm_wait_lapic_expire(struct kvm_vcpu *vcpu)
+>   		__wait_lapic_expire(vcpu, tsc_deadline - guest_tsc);
+>   }
+>   
+> -void kvm_wait_lapic_expire(struct kvm_vcpu *vcpu)
+> +void kvm_wait_lapic_expire(struct kvm_vcpu *vcpu, bool force_wait)
+>   {
+>   	if (lapic_in_kernel(vcpu) &&
+>   	    vcpu->arch.apic->lapic_timer.expired_tscdeadline &&
+>   	    vcpu->arch.apic->lapic_timer.timer_advance_ns &&
+> -	    lapic_timer_int_injected(vcpu))
+> +	    (force_wait || lapic_timer_int_injected(vcpu)))
+>   		__kvm_wait_lapic_expire(vcpu);
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_wait_lapic_expire);
+> diff --git a/arch/x86/kvm/lapic.h b/arch/x86/kvm/lapic.h
+> index 997c45a5963a..2bd32d86ad6f 100644
+> --- a/arch/x86/kvm/lapic.h
+> +++ b/arch/x86/kvm/lapic.h
+> @@ -233,7 +233,7 @@ static inline int kvm_lapic_latched_init(struct kvm_vcpu *vcpu)
+>   
+>   bool kvm_apic_pending_eoi(struct kvm_vcpu *vcpu, int vector);
+>   
+> -void kvm_wait_lapic_expire(struct kvm_vcpu *vcpu);
+> +void kvm_wait_lapic_expire(struct kvm_vcpu *vcpu, bool force_wait);
+>   
+>   void kvm_bitmap_or_dest_vcpus(struct kvm *kvm, struct kvm_lapic_irq *irq,
+>   			      unsigned long *vcpu_bitmap);
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index bcc3fc4872a3..b12bfdbc394b 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3774,7 +3774,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>   	clgi();
+>   	kvm_load_guest_xsave_state(vcpu);
+>   
+> -	kvm_wait_lapic_expire(vcpu);
+> +	kvm_wait_lapic_expire(vcpu, false);
+>   
+>   	/*
+>   	 * If this vCPU has touched SPEC_CTRL, restore the guest's value if
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 36756a356704..7ce15a2c3490 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6727,7 +6727,7 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+>   	if (enable_preemption_timer)
+>   		vmx_update_hv_timer(vcpu);
+>   
+> -	kvm_wait_lapic_expire(vcpu);
+> +	kvm_wait_lapic_expire(vcpu, false);
+>   
+>   	/*
+>   	 * If this vCPU has touched SPEC_CTRL, restore the guest's value if
+> 
 
