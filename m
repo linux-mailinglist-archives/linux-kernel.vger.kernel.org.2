@@ -2,93 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 906933BDACB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877B73BDAD1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 18:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhGFQBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 12:01:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43835 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230110AbhGFQBM (ORCPT
+        id S230228AbhGFQDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 12:03:25 -0400
+Received: from smtprelay0156.hostedemail.com ([216.40.44.156]:47534 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230231AbhGFQDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 12:01:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625587113;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CtgBxXlhJt8Wtll8aba26kDe6OF3hHBqz0hVb5nuD0E=;
-        b=PnML8WqNifp7Om7/+Ec2pSuYDNB+uaoz1KBIn7uY3FdZA0tzCw+t576SGc1TKVVwp0mY4j
-        60WLYJB20QCCDPN3KzYRpWCLRcrDrgDEzN+M/IS5Z0KONG+u6WTMFrsIYzpstSo9hfMJtH
-        XuweCNEdpEKO2Rau91pFehh+ziSvNXQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-161-3tmVkwYNON-NoZjdKr8Puw-1; Tue, 06 Jul 2021 11:58:30 -0400
-X-MC-Unique: 3tmVkwYNON-NoZjdKr8Puw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1302E362F8;
-        Tue,  6 Jul 2021 15:58:28 +0000 (UTC)
-Received: from localhost (ovpn-113-13.ams2.redhat.com [10.36.113.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9A55719D9D;
-        Tue,  6 Jul 2021 15:58:27 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     kernel@pengutronix.de, Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] s390/cio: Make struct css_driver::remove return
- void
-In-Reply-To: <20210706154803.1631813-2-u.kleine-koenig@pengutronix.de>
-Organization: Red Hat GmbH
-References: <20210706154803.1631813-1-u.kleine-koenig@pengutronix.de>
- <20210706154803.1631813-2-u.kleine-koenig@pengutronix.de>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Tue, 06 Jul 2021 17:58:25 +0200
-Message-ID: <87zguzfn8e.fsf@redhat.com>
+        Tue, 6 Jul 2021 12:03:24 -0400
+Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 2B597100EAD6D;
+        Tue,  6 Jul 2021 16:00:44 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf20.hostedemail.com (Postfix) with ESMTPA id 9376518A60C;
+        Tue,  6 Jul 2021 16:00:43 +0000 (UTC)
+Message-ID: <19a701a8d5837088aa7d8ba594c228c0e040e747.camel@perches.com>
+Subject: Re: [PATCH] get_maintainer: only show lkml as last resort
+From:   Joe Perches <joe@perches.com>
+To:     Hannu Hartikainen <hannu@hrtk.in>, linux-kernel@vger.kernel.org
+Date:   Tue, 06 Jul 2021 09:00:42 -0700
+In-Reply-To: <20210706083354.214826-1-hannu@hrtk.in>
+References: <20210706083354.214826-1-hannu@hrtk.in>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 9376518A60C
+X-Spam-Status: No, score=-2.90
+X-Stat-Signature: n5tjdm7htxehmtn9hrpae81gxzq3ssjy
+X-Rspamd-Server: rspamout03
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18UX6e3BY9qM1T/GKO0oXiBBiwTc4OcKyY=
+X-HE-Tag: 1625587243-747413
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06 2021, Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>=
- wrote:
-
-> The driver core ignores the return value of css_remove()
-> (because there is only little it can do when a device disappears) and
-> there are no pci_epf_drivers with a remove callback.
-
-s/pci_epf/css/
-
->
-> So make it impossible for future drivers to return an unused error code
-> by changing the remove prototype to return void.
->
-> The real motivation for this change is the quest to make struct
-> bus_type::remove return void, too.
->
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+On Tue, 2021-07-06 at 11:33 +0300, Hannu Hartikainen wrote:
+> The documentation implies that patches should be primarily sent to a
+> subsystem-specific mailing list [0]. Make get_maintainer only return the
+> generic linux-kernel@vger.kernel.org ("THE REST") list when no other
+> matching mailing list is found.
+> 
+> Most patches sent to lkml today are also sent to some other list. This
+> change should lower the message volume on lkml in the long run, making
+> the list more useful for those cases where it's the only option.
+> 
+> [0]: Documentation/process/submitting-patches.rst:
+> > You should also normally choose at least one mailing list to receive a
+> > copy of your patch set. linux-kernel@vger.kernel.org functions as a
+> > list of last resort, but the volume on that list has caused a number of
+> > developers to tune it out. Look in the MAINTAINERS file for a
+> > subsystem-specific list; your patch will probably get more attention
+> > there.
+> 
+> Signed-off-by: Hannu Hartikainen <hannu@hrtk.in>
 > ---
->  drivers/s390/cio/chsc_sch.c     | 3 +--
->  drivers/s390/cio/css.c          | 7 ++++---
->  drivers/s390/cio/css.h          | 2 +-
->  drivers/s390/cio/device.c       | 5 ++---
->  drivers/s390/cio/eadm_sch.c     | 4 +---
->  drivers/s390/cio/vfio_ccw_drv.c | 3 +--
->  6 files changed, 10 insertions(+), 14 deletions(-)
+> 
+> I'm not sure if this is technically the best solution so I'm looking
+> forward to review comments. But process-wise I think this should be a
+> good change.
 
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Almost no one reads lkml directly anyway and I rather like that lkml
+gets all copies.
+
+This allows lore.kernel.org/lkml to have a relatively complete searchable
+database of all kernel related patch submissions.
+
+Another solution might be an searchable aggregation mechanism at lore,
+but I believe one currently does not exist.
+
+That _might_ allow a similar search mechanism.
+
+> diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
+
+The proposed patch seems overly complicated.
+
 
