@@ -2,45 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576903BDE50
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 22:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDA93BDE66
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 22:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbhGFUTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 16:19:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbhGFUTw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 16:19:52 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7302C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 13:17:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=24DiGvb3bNj3woHW5ajaP60VvbnhCq7gaBZxkab0T04=; b=FPS4kdnpn+Rd0yLKaMmPxepqVe
-        NyT2S/XG+z4aMKBrL5SadlsofjlATPJSOZgYs14XxTsOMBbKcqMjoJFB56khuz7r3Dcjo6XEQ3ZFm
-        0dV7KquK+8epmZ/IPhdpBzeT7wSXxu9rSRE3JP8h7zKN/eXGSLll0fIhbchaEkTLvH9G8/9ce7Wof
-        cPQu97QJvwZ0+ukfLcp4WIv3VMtCjcdNqX8titQnZxgn5eVeACwy3YlVwuno6XcBwg0HQFhfpofZE
-        m6a5T+92B9x9tb0gHv8JETAX09gko+mhT2+ct0+rlkPGmF9lMVsd2kPhu23DE7A7z/TaBj6AD7RNw
-        WTlr5QBg==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0rVH-00Ckxk-Ve; Tue, 06 Jul 2021 20:17:12 +0000
-Subject: Re: Char Driver for Silicon Labs Si446x Transceivers
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Sunip Mukherjee <sunipkmukherjee@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <CADLJR24hQya0MkJhdDAJ0KO4MG+Fj4tRU5dNrbNdD9DMG_gLHg@mail.gmail.com>
- <YOPl3dXamM3FERYT@kroah.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <fe95e46b-fbc9-6411-0e4c-7b72040cddc5@infradead.org>
-Date:   Tue, 6 Jul 2021 13:17:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S230159AbhGFUW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 16:22:29 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:49434 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229986AbhGFUW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 16:22:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625602789; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=bVsxEM7GBkgihUbSf5tSkkwxcoMoVHENciajGKiwiQA=; b=ofbfwM47CxfN5LaZkparvRaHg5GMDw1Ob300Nc7hID31hzy/XlHhhPQzJE5iEvmByFncFSUw
+ rHDzo0i1Y+Sej8HvNsfW3PYginJLXnCEPcCrGl/Es6wiBmwdQP4NNqJURXdgbdFaUJZcK9Os
+ plzsD4Ch0/WPQ/eISU3WQVQ18mc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60e4bae0f30429861410fb7d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Jul 2021 20:19:44
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2ED16C4360C; Tue,  6 Jul 2021 20:19:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.78.185] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C4A73C4360C;
+        Tue,  6 Jul 2021 20:19:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C4A73C4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v12 3/6] usb: dwc3: Resize TX FIFOs to meet EP bursting
+ requirements
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, balbi@kernel.org,
+        robh+dt@kernel.org, frowand.list@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        jackp@codeaurora.org, fntoth@gmail.com
+References: <1625218655-14180-1-git-send-email-wcheng@codeaurora.org>
+ <1625218655-14180-4-git-send-email-wcheng@codeaurora.org>
+ <YOSdRKTy3+CdV/UF@kroah.com>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <2ee71465-d921-8904-2009-1e46ad1a988b@codeaurora.org>
+Date:   Tue, 6 Jul 2021 13:19:38 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YOPl3dXamM3FERYT@kroah.com>
+In-Reply-To: <YOSdRKTy3+CdV/UF@kroah.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,51 +68,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/5/21 10:10 PM, Greg KH wrote:
-> On Mon, Jul 05, 2021 at 06:09:28PM -0400, Sunip Mukherjee wrote:
->> Hi,
->>
->> I am very new to the kernel community; this is my first message in the
->> LKML so my apologies if I am doing things wrong.
->>
->> I have been using an Si4463 transceiver for UHF communication with a
->> cubesat I developed. I could not find any code to control the
->> transceiver on Linux. The closest thing I could find was an AVR
->> implementation by Zak Kemble
->> (https://blog.zakkemble.net/si4463-radio-library-avr-arduino/).
->> I followed the API docs and rewrote the whole thing at first for
->> userland only (can be found here:
->> https://github.com/SPACE-HAUC/si446x_linux/releases/tag/v3.1), and
->> then I decided it would be a great learning opportunity for me to port
->> it to the kernel.
->>
->> The kernel port has gone mostly smoothly. The transceiver communicates
->> with the host MCU over SPI, and requires a pin for RESET, and another
->> pin for IRQ.
->> I have implemented the driver to provide a char device (/dev/si446x#)
->> to the userland for open, read, write, poll and ioctl.
->> I had initially set up a pull request for the driver and the device
->> tree overlay to the Raspberry Pi kernel community. They have agreed to
->> accept the device tree overlay for the device, however the driver
->> needs to be included by the Linux Kernel community. I want to use this
->> opportunity to find some people who have access to a Si446x
->> transceiver and a Raspberry Pi, so that the code I have can be tested,
->> and if deemed worthy, included in the kernel tree.
->>
->> My code is hosted here: https://github.com/sunipkmukherjee/silabs.git
->>
->> Any suggestions/criticisms are welcome.
-> 
-> If you post it in a patch form, as described in our documentation, I
-> will be glad to review it.  Otherwise just looking at a random github
-> repo is quite difficult and provides no way to give proper feedback.
-> 
-> Instructions on how to make a patch and submit it and the proper format
-> for everything can be found in the Documentation/SubmittingPatches file.
 
-which is now known as Documentation/process/submitting-patches.rst
 
+On 7/6/2021 11:13 AM, Greg KH wrote:
+> On Fri, Jul 02, 2021 at 02:37:32AM -0700, Wesley Cheng wrote:
+>> Some devices have USB compositions which may require multiple endpoints
+>> that support EP bursting.  HW defined TX FIFO sizes may not always be
+>> sufficient for these compositions.  By utilizing flexible TX FIFO
+>> allocation, this allows for endpoints to request the required FIFO depth to
+>> achieve higher bandwidth.  With some higher bMaxBurst configurations, using
+>> a larger TX FIFO size results in better TX throughput.
+>>
+>> By introducing the check_config() callback, the resizing logic can fetch
+>> the maximum number of endpoints used in the USB composition (can contain
+>> multiple configurations), which helps ensure that the resizing logic can
+>> fulfill the configuration(s), or return an error to the gadget layer
+>> otherwise during bind time.
+>>
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>> ---
+>>  drivers/usb/dwc3/core.c   |   9 ++
+>>  drivers/usb/dwc3/core.h   |  15 ++++
+>>  drivers/usb/dwc3/ep0.c    |   2 +
+>>  drivers/usb/dwc3/gadget.c | 221 ++++++++++++++++++++++++++++++++++++++++++++++
+>>  4 files changed, 247 insertions(+)
+>>
+>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+>> index e0a8e79..a7bcdb9d 100644
+>> --- a/drivers/usb/dwc3/core.c
+>> +++ b/drivers/usb/dwc3/core.c
+>> @@ -1267,6 +1267,7 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+>>  	u8			rx_max_burst_prd;
+>>  	u8			tx_thr_num_pkt_prd;
+>>  	u8			tx_max_burst_prd;
+>> +	u8			tx_fifo_resize_max_num;
+>>  	const char		*usb_psy_name;
+>>  	int			ret;
+>>  
+>> @@ -1282,6 +1283,8 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+>>  	 */
+>>  	hird_threshold = 12;
+>>  
+>> +	tx_fifo_resize_max_num = 6;
+>> +
+
+Hi Greg,
+> 
+> No comment as to why 6 was picked, like the other defaults in this
+> function?
+> 
+> Why was 6 picked?
+> 
+> 
+Talked with Thinh about this sometime back about why 6 was picked.  It
+was just an arbitrary setting we decided on throughout our testing, as
+that was what provided the best tput numbers for our system.  Hence why
+it was suggested to have a separate property, so other vendors can set
+this to accommodate their difference in HW latencies.
+
+>>  	dwc->maximum_speed = usb_get_maximum_speed(dev);
+>>  	dwc->max_ssp_rate = usb_get_maximum_ssp_rate(dev);
+>>  	dwc->dr_mode = usb_get_dr_mode(dev);
+>> @@ -1325,6 +1328,10 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+>>  				&tx_thr_num_pkt_prd);
+>>  	device_property_read_u8(dev, "snps,tx-max-burst-prd",
+>>  				&tx_max_burst_prd);
+>> +	dwc->do_fifo_resize = device_property_read_bool(dev,
+>> +							"tx-fifo-resize");
+>> +	device_property_read_u8(dev, "tx-fifo-max-num",
+>> +				&tx_fifo_resize_max_num);
+> 
+> So you overwrite the "max" with whatever is given to you?  What if
+> tx-fifo-resize is not enabled?
+>
+If tx-fifo-resize is not enabled, then there shouldn't be anything that
+will reference this property.  As mentioned in the previous comment, HW
+vendors may not need a FIFO size of 6 max packets for their particular
+system, so they should be able to program this to their needs.
+
+If someone programs to this a large number, the logic works where it
+will allocate based off the space left after ensuring enough space for 1
+FIFO per ep.
+
+Thanks
+Wesley Cheng
 
 -- 
-~Randy
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
