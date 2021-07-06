@@ -2,152 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD3C3BD6B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84543BD6DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235659AbhGFMnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:43:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24532 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231772AbhGFMg1 (ORCPT
+        id S240725AbhGFMsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238118AbhGFMs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 08:36:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625574828;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NJLDkY2gPeOkvFS4cKNtvwysWqnJZP3On3EDRZyLY2Y=;
-        b=YiixaekAtgOGJTogJaa1sfrZOY8AzbnVkmEk5KfhguwZIjDqZIRE1WWaWif94UkTc98jJ2
-        14qAbqkoXuXze0WoFA+KIpYtpxqLbzFLYIjpgzKc0Omf+Ht+z4ok8RFRcDS5o9OW69IlfE
-        JDt4Nnm/SwRopCfDbLvHjLbm6TQR36A=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-166-s2dNATCBN0OtrBFp5Q_K7g-1; Tue, 06 Jul 2021 08:33:46 -0400
-X-MC-Unique: s2dNATCBN0OtrBFp5Q_K7g-1
-Received: by mail-ej1-f72.google.com with SMTP id v5-20020a1709068585b02904eb913da73bso87089ejx.8
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 05:33:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NJLDkY2gPeOkvFS4cKNtvwysWqnJZP3On3EDRZyLY2Y=;
-        b=HjnZCr+gBgs53iwwSrrVeVorhf5q0FdHLJBriN3zJxukwm/aUyHJsedpOuh+LsqUiC
-         PK4VeAzItTqtpl43t5B7qALNOgh00RcpW7x61+5HuScufd8DMNLdB303puRr8WF/g7K4
-         zE8MY+XXpmAuaeeAotmSp1m56iaWaJwLB/GKm6nw1TpUvbTMeL3a+oQ9VpHNUuMUsFWP
-         Q9mZvVtKPmEi19J5RoGqOFhbcdS8Mgn3PhuV8c+fApHqlkLhYmDT3VkFoRedjIOcMwIh
-         IYP4blbOKybxuBhQ9uLl6ytYdVsU6UJjZ9QmKarX5CueV8c7DcKmKyt2ek0kg0HPoQqi
-         vDwQ==
-X-Gm-Message-State: AOAM532cmgJYDL7XGm0NvilcTbwdBJdVxHWO0vXh6910rRXpGDNWF68A
-        ERKyqceQY4nEL7yhnt6qJ6+cpqauQhMhLcpwG/YQSOugMjjr9o+IzhjrC0/A0n3JNlLUNPieVuw
-        WOaGsTuFyy9D8hK2YLhA4W8FR
-X-Received: by 2002:a50:ed82:: with SMTP id h2mr22762105edr.165.1625574825853;
-        Tue, 06 Jul 2021 05:33:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrGvPa3AW6VZ51OAEcOUS0D09XGWsEEMzPBFmzWvZmeih97PLkwzzf0GvX9ZuaFSxWSaqFmg==
-X-Received: by 2002:a50:ed82:: with SMTP id h2mr22762082edr.165.1625574825715;
-        Tue, 06 Jul 2021 05:33:45 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id s7sm5884278ejd.88.2021.07.06.05.33.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 05:33:45 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 03/69] KVM: X86: move out the definition
- vmcs_hdr/vmcs from kvm to x86
-To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <62b61eb968f867518aedd98a0753b7fd29958efb.1625186503.git.isaku.yamahata@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <ecb20c33-0f45-2c96-24bd-3099891bbb97@redhat.com>
-Date:   Tue, 6 Jul 2021 14:33:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 6 Jul 2021 08:48:26 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE898C061765;
+        Tue,  6 Jul 2021 05:33:52 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GK26P1v4dz9sX1;
+        Tue,  6 Jul 2021 22:33:48 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1625574829;
+        bh=VGuOeIqkazX8k29lkDzUILpLEfjuYJcx8ISaTeaCME8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HWW7gTj27qzjWR4gfnWEWYl7wMXYPbOpKMl0YmaZI1vhQ1ci6BeQ1lhH0EdwD7GGy
+         MoNIbq80xB7wGr9urSzkufIasyTLq5qUJFKD1LjiIYSHx4CDTqOnmerGFuZ3DmmzYo
+         W1JAbQH0Ts+xNcahg1ygz9Bz8cvcqz9ncmbBKEhxvlXO4kNKiM4DbPqRvp3M4Uw1Bj
+         hKuwtGZPScgbOMijJqfSHSG7o5L7lYlAwe9dbodouNq6wgcwbdwmzGH9yEXJDfrrV7
+         OQHY2QEwNRqd1yapSwg4F83AlLPtTmUvcyjjuFzB8+KmPqc8SQCHb64g8WxA4LlLA6
+         e+ZJug+FmVXxw==
+Date:   Tue, 6 Jul 2021 22:33:46 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Stefan Richter <stefanr@s5r6.in-berlin.de>
+Cc:     linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: linux-next: removed trees
+Message-ID: <20210706223346.2792923c@canb.auug.org.au>
+In-Reply-To: <20210705220935.4d24a7af@kant>
+References: <20210514123221.7c21393f@canb.auug.org.au>
+        <20210705215743.40b26667@kant>
+        <20210705220935.4d24a7af@kant>
 MIME-Version: 1.0
-In-Reply-To: <62b61eb968f867518aedd98a0753b7fd29958efb.1625186503.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/pC15r9W+6cV18QOuFaK9qls";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> This is preparation for TDX support.
-> 
-> Because SEAMCALL instruction requires VMX enabled, it needs to initialize
-> struct vmcs and load it before SEAMCALL instruction.[1] [2]  Move out the
-> definition of vmcs into a common x86 header, arch/x86/include/asm/vmx.h, so
-> that seamloader code can share the same definition.
-> 
-> [1] Intel Trust Domain CPU Architectural Extensions
-> https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-cpu-architectural-specification.pdf
-> 
-> [2] TDX Module spec
-> https://software.intel.com/content/dam/develop/external/us/en/documents/tdx-module-1eas-v0.85.039.pdf
-> 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/include/asm/vmx.h | 11 +++++++++++
->   arch/x86/kvm/vmx/vmcs.h    | 11 -----------
->   2 files changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
-> index 0ffaa3156a4e..035dfdafa2c1 100644
-> --- a/arch/x86/include/asm/vmx.h
-> +++ b/arch/x86/include/asm/vmx.h
-> @@ -17,6 +17,17 @@
->   #include <uapi/asm/vmx.h>
->   #include <asm/vmxfeatures.h>
->   
-> +struct vmcs_hdr {
-> +	u32 revision_id:31;
-> +	u32 shadow_vmcs:1;
-> +};
-> +
-> +struct vmcs {
-> +	struct vmcs_hdr hdr;
-> +	u32 abort;
-> +	char data[];
-> +};
-> +
->   #define VMCS_CONTROL_BIT(x)	BIT(VMX_FEATURE_##x & 0x1f)
->   
->   /*
-> diff --git a/arch/x86/kvm/vmx/vmcs.h b/arch/x86/kvm/vmx/vmcs.h
-> index 1472c6c376f7..ac09bc4996a5 100644
-> --- a/arch/x86/kvm/vmx/vmcs.h
-> +++ b/arch/x86/kvm/vmx/vmcs.h
-> @@ -11,17 +11,6 @@
->   
->   #include "capabilities.h"
->   
-> -struct vmcs_hdr {
-> -	u32 revision_id:31;
-> -	u32 shadow_vmcs:1;
-> -};
-> -
-> -struct vmcs {
-> -	struct vmcs_hdr hdr;
-> -	u32 abort;
-> -	char data[];
-> -};
-> -
->   DECLARE_PER_CPU(struct vmcs *, current_vmcs);
->   
->   /*
-> 
+--Sig_/pC15r9W+6cV18QOuFaK9qls
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+Hi Stefan,
 
+On Mon, 5 Jul 2021 22:09:35 +0200 Stefan Richter <stefanr@s5r6.in-berlin.de=
+> wrote:
+>
+> On Jul 05 Stefan Richter wrote:
+> >=20
+> > Would you be OK with adding linux1394.git (for-next branch) back to
+> > linux-next?  There are two patches queued and I am finally aiming to get
+> > them merged. :-) =20
+>=20
+> (PS, this is for the /next/ merge window after 5.14 is final, not for the
+> current window anymore of course.)
+
+In that case, I will add it after the merge window closes, please
+remind me if I forget.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/pC15r9W+6cV18QOuFaK9qls
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDkTaoACgkQAVBC80lX
+0GyA0wf+JRzscs1JUh1m39W6cLntSS4tpIf4W44QwhiA6FU0jtPZx1flPQ/D14a+
+5O6Z/AGeObZzcpTUCEyyU6BfwX5hXYvqK5z9OHbi/Ans4IQ+A0zBS0zgbqvn7o6Z
+tBf+iEl88qs7q6T4B7IQwyCPt2BnbLgg+SlYMC/FMjm4MjHxWT2QvTkTOrIxMsGM
+cMdHZLaojGpVAdW1prF++rMLHyDaD6wLr88PHzWzIV34zXsd85O4ij3bgr+QkSy/
+jEyl6vOIdG5RksPlRbTAACSiiQWFVym9ANQ7jjTeTvwEtf5ddjN9Ef8DMutflLig
+sDL80l0gdQXZ+uw9SyLmAw+Tzr34bQ==
+=MqA3
+-----END PGP SIGNATURE-----
+
+--Sig_/pC15r9W+6cV18QOuFaK9qls--
