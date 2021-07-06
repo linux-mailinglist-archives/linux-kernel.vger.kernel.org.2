@@ -2,74 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E5B3BDDCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 725463BDDCF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbhGFTKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 15:10:21 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:45485 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231590AbhGFTKU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 15:10:20 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4GKBrm0xkKz1qtQY;
-        Tue,  6 Jul 2021 21:07:35 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4GKBrl5Kw0z1r6PF;
-        Tue,  6 Jul 2021 21:07:35 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id fw-QNfhDit5D; Tue,  6 Jul 2021 21:07:34 +0200 (CEST)
-X-Auth-Info: hqIQnrhVC+qQkOv/oIdG6t6LH5c2HROoPvvXkgRTysOBYhEovzDSoGAHzQryEqTD
-Received: from igel.home (ppp-46-244-191-40.dynamic.mnet-online.de [46.244.191.40])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Tue,  6 Jul 2021 21:07:34 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id D078B2C0B25; Tue,  6 Jul 2021 21:07:33 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>, linux-efi@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] RISC-V: load initrd wherever it fits into memory
-References: <20210629134018.62859-1-xypron.glpk@gmx.de>
-X-Yow:  How many retired bricklayers from FLORIDA are out purchasing
- PENCIL SHARPENERS right NOW??
-Date:   Tue, 06 Jul 2021 21:07:33 +0200
-In-Reply-To: <20210629134018.62859-1-xypron.glpk@gmx.de> (Heinrich
-        Schuchardt's message of "Tue, 29 Jun 2021 15:40:18 +0200")
-Message-ID: <877di3mfbe.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S231789AbhGFTKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 15:10:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231696AbhGFTKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 15:10:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B3A461C6C;
+        Tue,  6 Jul 2021 19:08:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625598483;
+        bh=MjH1pdpU6zd+3cbzssyYOuUlfBCKTP3izuXWlT48B+o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=egTtBvRXYsoMcyWWRJlWB0QsvJol9J5F44R7NnLcxoRcjOH4VaUHeX4tjZZBC09Kz
+         /1W/2x8JBFqkl/1t4EqaDxg46XS3VuCy1fxRMDI6+NzmpzebkFJXpBBngZFAV2BEki
+         LAMGGHkgFHTbLfjOrdEw9+m/bSGqM2mIYxkM+DLje+T5kQzycIbH4nojFDwh+akPkp
+         8PMwVxQMQHsKQiE0ALCRPVTR/OBHi5KI52smHRT5+CDP2dJiRg3qCKngWeepVV/aHG
+         rC+uWtL0rBSczD6omOSBBew6uomS7+9zH4/fxzqtZT/oyEhK5y+LydhLFxFodxOhf/
+         R4OeC0epltR0Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4844A40B1A; Tue,  6 Jul 2021 16:08:00 -0300 (-03)
+Date:   Tue, 6 Jul 2021 16:08:00 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Justin M. Forbes" <jforbes@fedoraproject.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jmforbes@linuxtx.org
+Subject: Re: [PATCH] Fix the perf trace link location
+Message-ID: <YOSqEDU+MjOS29fd@kernel.org>
+References: <20210706185952.116121-1-jforbes@fedoraproject.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210706185952.116121-1-jforbes@fedoraproject.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jun 29 2021, Heinrich Schuchardt wrote:
+Em Tue, Jul 06, 2021 at 01:59:51PM -0500, Justin M. Forbes escreveu:
+> The install perf_dlfilter.h patch included what seems to be
+> a typo in the Makefile.perf, which changed the location of the trace
+> link from '$(DESTDIR_SQ)$(bindir_SQ)/trace' to
+> '$(DESTDIR_SQ)$(dir_SQ)/trace' This reverts it back to the correct
+> location.
 
-> Requiring that initrd is loaded below RAM start + 256 MiB led to failure
-> to boot SUSE Linux with GRUB on QEMU, cf.
-> https://lists.gnu.org/archive/html/grub-devel/2021-06/msg00037.html
->
-> Remove the constraint.
->
-> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
-> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Thanks, applied!
 
-With that patch the image in
-http://download.opensuse.org/ports/riscv/tumbleweed/iso/ work again.
-
-Andreas.
+- Arnaldo
+ 
+> Fixes: 0beb218315e06 ("perf build: Install perf_dlfilter.h")
+> Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
+> ---
+>  tools/perf/Makefile.perf | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index c9e0de5b00c1..a1b9be78a1e0 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -923,7 +923,7 @@ install-tools: all install-gtk
+>  	$(call QUIET_INSTALL, binaries) \
+>  		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(bindir_SQ)'; \
+>  		$(INSTALL) $(OUTPUT)perf '$(DESTDIR_SQ)$(bindir_SQ)'; \
+> -		$(LN) '$(DESTDIR_SQ)$(bindir_SQ)/perf' '$(DESTDIR_SQ)$(dir_SQ)/trace'; \
+> +		$(LN) '$(DESTDIR_SQ)$(bindir_SQ)/perf' '$(DESTDIR_SQ)$(bindir_SQ)/trace'; \
+>  		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(includedir_SQ)/perf'; \
+>  		$(INSTALL) util/perf_dlfilter.h -t '$(DESTDIR_SQ)$(includedir_SQ)/perf'
+>  ifndef NO_PERF_READ_VDSO32
+> -- 
+> 2.31.1
+> 
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+
+- Arnaldo
