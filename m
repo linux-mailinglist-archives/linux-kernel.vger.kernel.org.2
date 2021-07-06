@@ -2,67 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7523BC648
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 08:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C494B3BC651
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 08:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhGFGMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 02:12:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230036AbhGFGMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 02:12:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D78D61260;
-        Tue,  6 Jul 2021 06:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625551815;
-        bh=M2lK1b9EGojPTJ/A+cveyvV8XRcYU8n/juDcPlQdMUg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HWcWwIRkTXLYCodfMNNH9E3hcDvhPK+bd+ARPazmvcAkKaLmaRnjRlj2nM4OJPCDG
-         cMg7g1wJwk8n/XXpbhHXpoGwxjiAR+hgeiUFsG27IfT9HLEX0wSpo99yDX9Bcq4fyr
-         iXTIf8VXTBzvs0JvX5btfcEnlb2wuJ0byES2Vl7ptCX6sKFMrmcyFil+o8yG86s+k4
-         hV5ekhTqv6gB0lMW6aQUvIaDIYycgaS09v2WjipaEYn+AQrId1kyUg7flTfBO+FQef
-         UILOMtHRy2Vt1+hvDPVir6UjVpWTgYiZC+I9eFY5/k+d0z6xazHTRyyloCpK+IM7ZH
-         B36Qzb1+rgzjw==
-Date:   Tue, 6 Jul 2021 09:10:10 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the memblock-fixes tree
-Message-ID: <YOPzwg7DeU1gobIr@kernel.org>
-References: <20210706080621.5d497973@canb.auug.org.au>
+        id S230093AbhGFGSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 02:18:35 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:41597 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230036AbhGFGSe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 02:18:34 -0400
+Received: from grover.RMN.KIBA.LAB.jp (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 1666FVP2027052;
+        Tue, 6 Jul 2021 15:15:32 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 1666FVP2027052
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1625552132;
+        bh=SaZceyP9xTNKX1lHjMBQfVI/q1r1Z78diQ9ERG7Nkf8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iYG/HxDOubc6dgXk1mZwI3zy1oeVGM6COzaVP2BleYmx6VH7T37IW32dI0yE2N+yh
+         veXZOHPEDTlH28wYiFevBMCJVhjPTrMbEE35RaEukHeSkTETSYAwdtVju0pk6LGW+A
+         dEl2h9Xn72W+0idoDHEVBXnjbeyj09E0xbXX1LBMalvmco3+rF5Wj0wRzJoWlNA7P1
+         QymfcIHzpKFbfNerjZw0hVEETYyc5ETnQ+eAl9e93TuPplUdW6qsSRRfBSF/33DCq/
+         74CoWTSYhpUc3cZ/+22o3L4kX/dfoIDzvmMaBkrbRphmZUHJR18NZT8Waq6UVEdZWI
+         TYAqKv8oK9JeA==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts: add generic syscallnr.sh
+Date:   Tue,  6 Jul 2021 15:15:29 +0900
+Message-Id: <20210706061530.501176-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210706080621.5d497973@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Like syscallhdr.sh and syscalltbl.sh, add a simple script to generate
+the __NR_syscalls, which should not be exported to userspace.
 
-On Tue, Jul 06, 2021 at 08:06:21AM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> In commit
-> 
->   24caecffab46 ("arm: ioremap: don't abuse pfn_valid() to check if pfn is in RAM")
-> 
-> Fixes tag
-> 
->   Fixes: 30603c5a0c9a ("arm: ioremap: don't abuse pfn_valid() to check if pfn
-> 
-> has these problem(s):
-> 
->   - Target SHA1 does not exist
-> 
-> I could not easily find the actual commit that was meant.
-> 
-> Also, please do not split Fixes tags over more than one line.
+This script is useful to replace arch/mips/kernel/syscalls/syscallnr.sh,
+refactor arch/s390/kernel/syscalls/syscalltbl, and eliminate the code
+surrounded by #ifdef __KERNEL__ / #endif from exported uapi/asm/unistd_*.h
+files.
 
-Should be fixed now.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
+ scripts/syscallnr.sh | 74 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 74 insertions(+)
+ create mode 100644 scripts/syscallnr.sh
+
+diff --git a/scripts/syscallnr.sh b/scripts/syscallnr.sh
+new file mode 100644
+index 000000000000..3aa29e0dcc52
+--- /dev/null
++++ b/scripts/syscallnr.sh
+@@ -0,0 +1,74 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Generate a syscall number header.
++#
++# Each line of the syscall table should have the following format:
++#
++# NR ABI NAME [NATIVE] [COMPAT]
++#
++# NR       syscall number
++# ABI      ABI name
++# NAME     syscall name
++# NATIVE   native entry point (optional)
++# COMPAT   compat entry point (optional)
++set -e
++
++usage() {
++	echo >&2 "usage: $0 [--abis ABIS] [--prefix PREFIX] INFILE OUTFILE" >&2
++	echo >&2
++	echo >&2 "  INFILE    input syscall table"
++	echo >&2 "  OUTFILE   output header file"
++	echo >&2
++	echo >&2 "options:"
++	echo >&2 "  --abis ABIS        ABI(s) to handle (By default, all lines are handled)"
++	echo >&2 "  --prefix PREFIX    The prefix to the macro like __NR_<PREFIX><NAME>"
++	exit 1
++}
++
++# default unless specified by options
++abis=
++prefix=
++
++while [ $# -gt 0 ]
++do
++	case $1 in
++	--abis)
++		abis=$(echo "($2)" | tr ',' '|')
++		shift 2;;
++	--prefix)
++		prefix=$2
++		shift 2;;
++	-*)
++		echo "$1: unknown option" >&2
++		usage;;
++	*)
++		break;;
++	esac
++done
++
++if [ $# -ne 2 ]; then
++	usage
++fi
++
++infile="$1"
++outfile="$2"
++
++guard=_ASM_$(basename "$outfile" |
++	sed -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
++	-e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g')
++
++grep -E "^[0-9A-Fa-fXx]+[[:space:]]+$abis" "$infile" | sort -n | {
++	echo "#ifndef $guard"
++	echo "#define $guard"
++	echo
++
++	max=0
++	while read nr abi name native compat ; do
++		max=$nr
++	done
++
++	echo "#define __NR_${prefix}syscalls $(($max + 1))"
++	echo
++	echo "#endif /* $guard */"
++} > "$outfile"
 -- 
-Sincerely yours,
-Mike.
+2.27.0
+
