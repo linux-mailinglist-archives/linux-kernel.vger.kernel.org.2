@@ -2,251 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E1D3BD887
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F573BD84A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232602AbhGFOm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:42:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:43808 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232527AbhGFOmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:42:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E5E031B;
-        Tue,  6 Jul 2021 07:01:18 -0700 (PDT)
-Received: from [10.57.40.45] (unknown [10.57.40.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 461163F73B;
-        Tue,  6 Jul 2021 07:01:11 -0700 (PDT)
-Subject: Re: [PATCH v15 06/12] swiotlb: Use is_swiotlb_force_bounce for
- swiotlb data bouncing
-To:     Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>
-Cc:     heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
-        peterz@infradead.org, benh@kernel.crashing.org,
-        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
-        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
-        Frank Rowand <frowand.list@gmail.com>, mingo@kernel.org,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Saravana Kannan <saravanak@google.com>, mpe@ellerman.id.au,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        bskeggs@redhat.com, linux-pci@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Thierry Reding <treding@nvidia.com>,
-        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        Jianxiong Gao <jxgao@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        maarten.lankhorst@linux.intel.com, airlied@linux.ie,
-        Dan Williams <dan.j.williams@intel.com>,
-        linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, rodrigo.vivi@intel.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Claire Chang <tientzu@chromium.org>,
-        boris.ostrovsky@oracle.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        jgross@suse.com, Nicolas Boichat <drinkcat@chromium.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, xypron.glpk@gmx.de,
-        Tom Lendacky <thomas.lendacky@amd.com>, bauerman@linux.ibm.com
-References: <CALiNf2-a-haQN0-4+gX8+wa++52-0CnO2O4BEkxrQCxoTa_47w@mail.gmail.com>
- <20210630114348.GA8383@willie-the-truck>
- <YNyUQwiagNeZ9YeJ@Ryzen-9-3900X.localdomain>
- <20210701074045.GA9436@willie-the-truck>
- <ea28db1f-846e-4f0a-4f13-beb67e66bbca@kernel.org>
- <20210702135856.GB11132@willie-the-truck>
- <0f7bd903-e309-94a0-21d7-f0e8e9546018@arm.com>
- <YN/7xcxt/XGAKceZ@Ryzen-9-3900X.localdomain>
- <20210705190352.GA19461@willie-the-truck> <20210706044848.GA13640@lst.de>
- <20210706132422.GA20327@willie-the-truck>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <a59f771f-3289-62f0-ca50-8f3675d9b166@arm.com>
-Date:   Tue, 6 Jul 2021 15:01:04 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+        id S232318AbhGFOgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:36:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54775 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232218AbhGFOgE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 10:36:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625582005;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+TFQQRr4n0iTcvgZJfJSvRK8tc2ECNv5rYzqu0pkJ5A=;
+        b=NxJvDVwcxLzCmpjxm6F8L4eKIW2KFfW46HX8b110437LrQPCDjPea+/3ZsEXOLw3JdUmV9
+        qis35E/Qwxu1LOCiqHyAYCQYykx7IqjcZY7ShyUV+7etnvJEH721o6hxUvWfN3i2oehi6S
+        VYTlYPoPEH06lnh9yWLLiFz0244kowE=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-P4OhN_qSMRes23dITwIzDg-1; Tue, 06 Jul 2021 10:03:13 -0400
+X-MC-Unique: P4OhN_qSMRes23dITwIzDg-1
+Received: by mail-ed1-f72.google.com with SMTP id i8-20020a50fc080000b02903989feb4920so5385891edr.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:03:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+TFQQRr4n0iTcvgZJfJSvRK8tc2ECNv5rYzqu0pkJ5A=;
+        b=KubtNJB+WG5L5PTbMAlsfpoWDH22nUcb7b6TIV3rY8bwnrYDRmCl9tVQZNp99WWdO/
+         eQaYp+7fjQEP5ZgYBxaQVRZ9NFP9BlG38SxhP5a7K9A2j9h81GxLm3JYvzlTk4+Dcshq
+         Rgp4G3m4K3mgsAkuvmDGkCe4Yve+v9+bt1I5c6rE2pUlkhTxRthGewd0nOK+betD/jFV
+         zwpeWWWrTlqnAanGtZW/U+4eNhNYDQUhAhclJPmkMKH1UXkBhvMR7pFWDtGXYL7OXGQ5
+         ZsVztVCSi4jFy/oxQUYirqnUoxKjJWpUFFDo0CKM5bnwlz+0fAmfrOR4aJoiWR9LBUKx
+         YwkQ==
+X-Gm-Message-State: AOAM530BFmpuvA13z9npGY2ogSqiaYBF8epSXU74mMGq/GOH7TYYtPqF
+        sbF31Lv7/37bZUp2QLjpDJRU2UTYwUuFWcJbZoybvIcL8TgROlkiQqx7OMCw9i7GcAnwwaScL0q
+        tToupuTQPUIu7NXBQH5xpTj6D
+X-Received: by 2002:a17:906:6047:: with SMTP id p7mr18568843ejj.206.1625580191678;
+        Tue, 06 Jul 2021 07:03:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzundaRNXGNxnhRDhaYJpqcazvdtwjIQgZqHVgRq8AvEcPWbLzzoTG7559L3pCBjZpMZPNGUQ==
+X-Received: by 2002:a17:906:6047:: with SMTP id p7mr18568797ejj.206.1625580191361;
+        Tue, 06 Jul 2021 07:03:11 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id b5sm3300742ejz.122.2021.07.06.07.03.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 07:03:10 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 28/69] KVM: Add per-VM flag to mark read-only
+ memory as unsupported
+To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>
+Cc:     isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <1eb584469b41775380ab0a5a5d31a64e344b1b95.1625186503.git.isaku.yamahata@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8c57204e-385e-1f54-cb15-760e174d122e@redhat.com>
+Date:   Tue, 6 Jul 2021 16:03:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210706132422.GA20327@willie-the-truck>
+In-Reply-To: <1eb584469b41775380ab0a5a5d31a64e344b1b95.1625186503.git.isaku.yamahata@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-06 14:24, Will Deacon wrote:
-> On Tue, Jul 06, 2021 at 06:48:48AM +0200, Christoph Hellwig wrote:
->> On Mon, Jul 05, 2021 at 08:03:52PM +0100, Will Deacon wrote:
->>> So at this point, the AMD IOMMU driver does:
->>>
->>> 	swiotlb        = (iommu_default_passthrough() || sme_me_mask) ? 1 : 0;
->>>
->>> where 'swiotlb' is a global variable indicating whether or not swiotlb
->>> is in use. It's picked up a bit later on by pci_swiotlb_late_init(), which
->>> will call swiotlb_exit() if 'swiotlb' is false.
->>>
->>> Now, that used to work fine, because swiotlb_exit() clears
->>> 'io_tlb_default_mem' to NULL, but now with the restricted DMA changes, I
->>> think that all the devices which have successfully probed beforehand will
->>> have stale pointers to the freed structure in their 'dev->dma_io_tlb_mem'
->>> field.
->>
->> Yeah.  I don't think we can do that anymore, and I also think it is
->> a bad idea to start with.
+On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
 > 
-> I've had a crack at reworking things along the following lines:
+> Add a flag for TDX to flag RO memory as unsupported and propagate it to
+> KVM_MEM_READONLY to allow reporting RO memory as unsupported on a per-VM
+> basis.  TDX1 doesn't expose permission bits to the VMM in the SEPT
+> tables, i.e. doesn't support read-only private memory.
 > 
->    - io_tlb_default_mem now lives in the BSS, the flexible array member
->      is now a pointer and that part is allocated dynamically (downside of
->      this is an extra indirection to get at the slots).
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>   arch/x86/kvm/x86.c       | 4 +++-
+>   include/linux/kvm_host.h | 4 ++++
+>   virt/kvm/kvm_main.c      | 8 +++++---
+>   3 files changed, 12 insertions(+), 4 deletions(-)
 > 
->    - io_tlb_default_mem.nslabs tells you whether the thing is valid
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index cd9407982366..87212d7563ae 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -3897,7 +3897,6 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>   	case KVM_CAP_ASYNC_PF_INT:
+>   	case KVM_CAP_GET_TSC_KHZ:
+>   	case KVM_CAP_KVMCLOCK_CTRL:
+> -	case KVM_CAP_READONLY_MEM:
+>   	case KVM_CAP_HYPERV_TIME:
+>   	case KVM_CAP_IOAPIC_POLARITY_IGNORED:
+>   	case KVM_CAP_TSC_DEADLINE_TIMER:
+> @@ -4009,6 +4008,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>   		if (static_call(kvm_x86_is_vm_type_supported)(KVM_X86_TDX_VM))
+>   			r |= BIT(KVM_X86_TDX_VM);
+>   		break;
+> +	case KVM_CAP_READONLY_MEM:
+> +		r = kvm && kvm->readonly_mem_unsupported ? 0 : 1;
+> +		break;
+>   	default:
+>   		break;
+>   	}
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index ddd4d0f68cdf..7ee7104b4b59 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -597,6 +597,10 @@ struct kvm {
+>   	unsigned int max_halt_poll_ns;
+>   	u32 dirty_ring_size;
+>   
+> +#ifdef __KVM_HAVE_READONLY_MEM
+> +	bool readonly_mem_unsupported;
+> +#endif
+> +
+>   	bool vm_bugged;
+>   };
+>   
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 52d40ea75749..63d0c2833913 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -1258,12 +1258,14 @@ static void update_memslots(struct kvm_memslots *slots,
+>   	}
+>   }
+>   
+> -static int check_memory_region_flags(const struct kvm_userspace_memory_region *mem)
+> +static int check_memory_region_flags(struct kvm *kvm,
+> +				     const struct kvm_userspace_memory_region *mem)
+>   {
+>   	u32 valid_flags = KVM_MEM_LOG_DIRTY_PAGES;
+>   
+>   #ifdef __KVM_HAVE_READONLY_MEM
+> -	valid_flags |= KVM_MEM_READONLY;
+> +	if (!kvm->readonly_mem_unsupported)
+> +		valid_flags |= KVM_MEM_READONLY;
+>   #endif
+>   
+>   	if (mem->flags & ~valid_flags)
+> @@ -1436,7 +1438,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
+>   	int as_id, id;
+>   	int r;
+>   
+> -	r = check_memory_region_flags(mem);
+> +	r = check_memory_region_flags(kvm, mem);
+>   	if (r)
+>   		return r;
+>   
 > 
->    - swiotlb_exit() frees the slots array and clears the rest of the
->      structure to 0. I also extended it to free the actual slabs, but I'm
->      not sure why it wasn't doing that before.
-> 
-> So a non-NULL dev->dma_io_tlb_mem should always be valid to follow.
 
-FWIW I was pondering the question of whether to do something along those 
-lines or just scrap the default assignment entirely, so since I hadn't 
-got round to saying that I've gone ahead and hacked up the alternative 
-(similarly untested) for comparison :)
+For all these flags, which of these limitations will be common to SEV-ES 
+and SEV-SNP (ExtINT injection, MCE injection, changing TSC, read-only 
+memory, dirty logging)?  Would it make sense to use vm_type instead of 
+all of them?  I guess this also guides the choice of whether to use a 
+single vm-type for TDX and SEV-SNP or two.  Probably two is better, and 
+there can be static inline bool functions to derive the support flags 
+from the vm-type.
 
-TBH I'm still not sure which one I prefer...
+Paolo
 
-Robin.
-
------>8-----
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index ea5b85354526..394abf184c1a 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -2847,9 +2847,6 @@ void device_initialize(struct device *dev)
-      defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
-  	dev->dma_coherent = dma_default_coherent;
-  #endif
--#ifdef CONFIG_SWIOTLB
--	dev->dma_io_tlb_mem = io_tlb_default_mem;
--#endif
-  }
-  EXPORT_SYMBOL_GPL(device_initialize);
-
-diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index 39284ff2a6cd..620f16d89a98 100644
---- a/include/linux/swiotlb.h
-+++ b/include/linux/swiotlb.h
-@@ -107,16 +107,21 @@ struct io_tlb_mem {
-  };
-  extern struct io_tlb_mem *io_tlb_default_mem;
-
-+static inline struct io_tlb_mem *dev_iotlb_mem(struct device *dev)
-+{
-+	return dev->dma_io_tlb_mem ?: io_tlb_default_mem;
-+}
-+
-  static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t 
-paddr)
-  {
--	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-+	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
-
-  	return mem && paddr >= mem->start && paddr < mem->end;
-  }
-
-  static inline bool is_swiotlb_force_bounce(struct device *dev)
-  {
--	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-+	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
-
-  	return mem && mem->force_bounce;
-  }
-@@ -167,7 +172,7 @@ bool swiotlb_free(struct device *dev, struct page 
-*page, size_t size);
-
-  static inline bool is_swiotlb_for_alloc(struct device *dev)
-  {
--	return dev->dma_io_tlb_mem->for_alloc;
-+	return dev_iotlb_mem(dev)->for_alloc;
-  }
-  #else
-  static inline struct page *swiotlb_alloc(struct device *dev, size_t size)
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index b7f76bca89bf..f4942149f87d 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -359,7 +359,7 @@ static unsigned int swiotlb_align_offset(struct 
-device *dev, u64 addr)
-  static void swiotlb_bounce(struct device *dev, phys_addr_t tlb_addr, 
-size_t size,
-  			   enum dma_data_direction dir)
-  {
--	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-+	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
-  	int index = (tlb_addr - mem->start) >> IO_TLB_SHIFT;
-  	phys_addr_t orig_addr = mem->slots[index].orig_addr;
-  	size_t alloc_size = mem->slots[index].alloc_size;
-@@ -440,7 +440,7 @@ static unsigned int wrap_index(struct io_tlb_mem 
-*mem, unsigned int index)
-  static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
-  			      size_t alloc_size)
-  {
--	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-+	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
-  	unsigned long boundary_mask = dma_get_seg_boundary(dev);
-  	dma_addr_t tbl_dma_addr =
-  		phys_to_dma_unencrypted(dev, mem->start) & boundary_mask;
-@@ -522,7 +522,7 @@ phys_addr_t swiotlb_tbl_map_single(struct device 
-*dev, phys_addr_t orig_addr,
-  		size_t mapping_size, size_t alloc_size,
-  		enum dma_data_direction dir, unsigned long attrs)
-  {
--	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-+	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
-  	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
-  	unsigned int i;
-  	int index;
-@@ -565,7 +565,7 @@ phys_addr_t swiotlb_tbl_map_single(struct device 
-*dev, phys_addr_t orig_addr,
-
-  static void swiotlb_release_slots(struct device *dev, phys_addr_t 
-tlb_addr)
-  {
--	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-+	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
-  	unsigned long flags;
-  	unsigned int offset = swiotlb_align_offset(dev, tlb_addr);
-  	int index = (tlb_addr - offset - mem->start) >> IO_TLB_SHIFT;
-@@ -682,7 +682,7 @@ size_t swiotlb_max_mapping_size(struct device *dev)
-
-  bool is_swiotlb_active(struct device *dev)
-  {
--	return dev->dma_io_tlb_mem != NULL;
-+	return dev_iotlb_mem(dev) != NULL;
-  }
-  EXPORT_SYMBOL_GPL(is_swiotlb_active);
-
-@@ -729,7 +729,7 @@ static void rmem_swiotlb_debugfs_init(struct 
-reserved_mem *rmem)
-
-  struct page *swiotlb_alloc(struct device *dev, size_t size)
-  {
--	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-+	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
-  	phys_addr_t tlb_addr;
-  	int index;
-
-@@ -792,7 +792,7 @@ static int rmem_swiotlb_device_init(struct 
-reserved_mem *rmem,
-  static void rmem_swiotlb_device_release(struct reserved_mem *rmem,
-  					struct device *dev)
-  {
--	dev->dma_io_tlb_mem = io_tlb_default_mem;
-+	dev->dma_io_tlb_mem = NULL;
-  }
-
-  static const struct reserved_mem_ops rmem_swiotlb_ops = {
