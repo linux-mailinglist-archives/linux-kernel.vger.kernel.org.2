@@ -2,98 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92093BDE31
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5DD53BDE32
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhGFTxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 15:53:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:49122 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229793AbhGFTxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 15:53:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B2AA31042;
-        Tue,  6 Jul 2021 12:51:04 -0700 (PDT)
-Received: from [10.57.7.228] (unknown [10.57.7.228])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D085C3F5A1;
-        Tue,  6 Jul 2021 12:51:01 -0700 (PDT)
-Subject: Re: [PATCH 3/3] PM: EM: Increase energy calculation precision
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Chris.Redpath@arm.com, morten.rasmussen@arm.com,
-        qperret@google.com, linux-pm@vger.kernel.org, peterz@infradead.org,
-        rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        vincent.guittot@linaro.org, mingo@redhat.com,
-        juri.lelli@redhat.com, rostedt@goodmis.org, segall@google.com,
-        mgorman@suse.de, bristot@redhat.com, CCj.Yeh@mediatek.com
-References: <20210625152603.25960-1-lukasz.luba@arm.com>
- <20210625152603.25960-4-lukasz.luba@arm.com>
- <be567416-e7ac-e672-ddfe-f9175ba1c016@arm.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <fa2bac05-1992-9166-0b5f-2477af39bb55@arm.com>
-Date:   Tue, 6 Jul 2021 20:51:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S230015AbhGFTxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 15:53:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36331 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229793AbhGFTxx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 15:53:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625601073;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KD/nFtPKzzaehoLBwu24EojRDDCS0FChBm++HFWjNI0=;
+        b=EEcFKKGdvAah50sz7/MeQkStIPv/4x46sG+kJ6Gl3c+WBk5GnC2vjfTUKamzkc/Vwikshg
+        1TKmb+RpiJf+69CpuA+m1E43loNDATvJzyc13XFhp5nlZTR+hKoBXDg1J56C3dp6/ghgBF
+        BJQxT3sK28+aU1R67ejNnx41QAZbSyA=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-176-IFQHTD30MCiuxRGCnhfskg-1; Tue, 06 Jul 2021 15:51:12 -0400
+X-MC-Unique: IFQHTD30MCiuxRGCnhfskg-1
+Received: by mail-wr1-f72.google.com with SMTP id p6-20020a5d45860000b02901258b6ae8a5so53145wrq.15
+        for <Linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 12:51:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KD/nFtPKzzaehoLBwu24EojRDDCS0FChBm++HFWjNI0=;
+        b=IAcRksYhhCiTnfaozW2k+WtJxbn1Ogex2lkUJYv68pzvo3TW6r8eZrvdf+ITuruFYq
+         QwNS+zQkiQwDOeTLVIpR1QgOkK3c3HDs3AjAw6TQZn6E/bVFuD72M0n95SCzfDhVfZO2
+         2FE8T2akQHMJxAJD9mM3oAcnG0LXUSK0i2lPeIQP9CagER1F/lyITHvqGl+u/dS+A021
+         MlGArfDU+8P7WikvmVFhJ9hmFCndrvMYh5OQw0QHZu1vkcCb3wzNg6RL9TOcxhez4alD
+         tk8y8HVQnQdK2CFSRwA5ZjDCI75of+vn3Q4I6CZSyDVfZcZ2jrBe7qn8DZZsz/2jWzSm
+         XxpA==
+X-Gm-Message-State: AOAM531NQNhCnQBx/mXkJhP4v+gAPJJADz/sB50tlnSfbX3G+cLb0zXH
+        73wU7v4sLumKtFPbGAY7f0V/D/DeV07T8WjBL88ymyPDaHfW+15heQs3ieUVDN8lgNGKMMMNjrR
+        QVn+2TTN0tCVYQ1TE0xVbVmAB
+X-Received: by 2002:a05:600c:2482:: with SMTP id 2mr2559861wms.174.1625601071417;
+        Tue, 06 Jul 2021 12:51:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxwJRCUStq9O0+B+mBjfj4o6KshwQ9dO9xLRf5wU1TyWxHOFc3Zntv4aZffa++6+JwdJa+o/A==
+X-Received: by 2002:a05:600c:2482:: with SMTP id 2mr2559840wms.174.1625601071192;
+        Tue, 06 Jul 2021 12:51:11 -0700 (PDT)
+Received: from krava ([185.153.78.55])
+        by smtp.gmail.com with ESMTPSA id i15sm17581582wro.3.2021.07.06.12.51.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 12:51:10 -0700 (PDT)
+Date:   Tue, 6 Jul 2021 21:51:07 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH] perf stat: Merge uncore events by default for hybrid
+ platform
+Message-ID: <YOS0K0f+cAKdCHe+@krava>
+References: <20210616063004.2824-1-yao.jin@linux.intel.com>
+ <ac00637c-af58-6dba-67b7-95887bae3b99@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <be567416-e7ac-e672-ddfe-f9175ba1c016@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ac00637c-af58-6dba-67b7-95887bae3b99@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 06, 2021 at 10:32:57AM +0800, Jin, Yao wrote:
+> Hi,
+> 
+> On 6/16/2021 2:30 PM, Jin Yao wrote:
+> > On hybrid platform, by default stat aggregates and reports the event counts
+> > per pmu. For example,
+> > 
+> >    # perf stat -e cycles -a true
+> > 
+> >     Performance counter stats for 'system wide':
+> > 
+> >             1,400,445      cpu_core/cycles/
+> >               680,881      cpu_atom/cycles/
+> > 
+> >           0.001770773 seconds time elapsed
+> > 
+> > While for uncore events, that's not a suitable method. Uncore has nothing
+> > to do with hybrid. So for uncore events, we aggregate event counts from all
+> > PMUs and report the counts without PMUs.
+> > 
+> > Before:
+> > 
+> >    # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
+> > 
+> >     Performance counter stats for 'system wide':
+> > 
+> >                 2,058      uncore_arb_0/event=0x81,umask=0x1/
+> >                 2,028      uncore_arb_1/event=0x81,umask=0x1/
+> >                     0      uncore_arb_0/event=0x84,umask=0x1/
+> >                     0      uncore_arb_1/event=0x84,umask=0x1/
+> > 
+> >           0.000614498 seconds time elapsed
+> > 
+> > After:
+> > 
+> >    # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
+> > 
+> >     Performance counter stats for 'system wide':
+> > 
+> >                 3,996      arb/event=0x81,umask=0x1/
+> >                     0      arb/event=0x84,umask=0x1/
+> > 
+> >           0.000630046 seconds time elapsed
+> > 
+> > Of course, we also keep the '--no-merge' still works for uncore events.
+> > 
+> >    # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ --no-merge true
+> > 
+> >     Performance counter stats for 'system wide':
+> > 
+> >                 1,952      uncore_arb_0/event=0x81,umask=0x1/
+> >                 1,921      uncore_arb_1/event=0x81,umask=0x1/
+> >                     0      uncore_arb_0/event=0x84,umask=0x1/
+> >                     0      uncore_arb_1/event=0x84,umask=0x1/
+> > 
+> >           0.000575536 seconds time elapsed
+> > 
+> > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> > ---
+> >   tools/perf/builtin-stat.c      |  3 ---
+> >   tools/perf/util/stat-display.c | 29 +++++++++++++++++++++++++----
+> >   2 files changed, 25 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> > index f9f74a514315..b67a44982b61 100644
+> > --- a/tools/perf/builtin-stat.c
+> > +++ b/tools/perf/builtin-stat.c
+> > @@ -2442,9 +2442,6 @@ int cmd_stat(int argc, const char **argv)
+> >   	evlist__check_cpu_maps(evsel_list);
+> > -	if (perf_pmu__has_hybrid())
+> > -		stat_config.no_merge = true;
+> > -
+> >   	/*
+> >   	 * Initialize thread_map with comm names,
+> >   	 * so we could print it out on output.
+> > diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+> > index b759dfd633b4..c6070f4684ca 100644
+> > --- a/tools/perf/util/stat-display.c
+> > +++ b/tools/perf/util/stat-display.c
+> > @@ -595,6 +595,19 @@ static void collect_all_aliases(struct perf_stat_config *config, struct evsel *c
+> >   	}
+> >   }
+> > +static bool is_uncore(struct evsel *evsel)
+> > +{
+> > +	struct perf_pmu *pmu;
+> > +
+> > +	if (evsel->pmu_name) {
+> > +		pmu = perf_pmu__find(evsel->pmu_name);
+
+evsel__find_pmu might be one line shorter? ;-)
 
 
-On 7/5/21 1:45 PM, Dietmar Eggemann wrote:
-> On 25/06/2021 17:26, Lukasz Luba wrote:
->> The Energy Model (EM) provides useful information about device power in
->> each performance state to other subsystems like: Energy Aware Scheduler
->> (EAS). The energy calculation in EAS does arithmetic operation based on
->> the EM em_cpu_energy(). Current implementation of that function uses
->> em_perf_state::cost as a pre-computed cost coefficient equal to:
->> cost = power * max_frequency / frequency.
->> The 'power' is expressed in milli-Watts (or in abstract scale).
->>
->> There are corner cases then the EAS energy calculation for two Performance
->              ^^^^^^^^^^^^
-> 
-> Again, an easy to understand example to describe in which situation this
-> change would bring a benefit would help.
-> 
->> Domains (PDs) return the same value, e.g. 10mW. The EAS compares these
->> values to choose smaller one. It might happen that this values are equal
->> due to rounding error. In such scenario, we need better precision, e.g.
->> 10000 times better. To provide this possibility increase the precision on
->> the em_perf_state::cost.
->>
->> This patch allows to avoid the rounding to milli-Watt errors, which might
->> occur in EAS energy estimation for each Performance Domains (PD). The
->> rounding error is common for small tasks which have small utilization
->> values.
-> 
-> What's the influence of the CPU utilization 'cpu_util_next()' here?
-> 
-> compute_energy()
->      em_cpu_energy()
->              return ps->cost * sum_util / scale_cpu
->                                ^^^^^^^^
+> > +		if (pmu)
+> > +			return pmu->is_uncore;
+> > +	}
+> > +
+> > +	return false;
+> > +}
+> > +
+> >   static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
+> >   			    void (*cb)(struct perf_stat_config *config, struct evsel *counter, void *data,
+> >   				       bool first),
+> > @@ -603,10 +616,18 @@ static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
+> >   	if (counter->merged_stat)
+> >   		return false;
+> >   	cb(config, counter, data, true);
+> > -	if (config->no_merge)
+> > -		uniquify_event_name(counter);
+> > -	else if (counter->auto_merge_stats)
+> > -		collect_all_aliases(config, counter, cb, data);
+> > +	if (perf_pmu__has_hybrid()) {
+> > +		if (config->no_merge || !is_uncore(counter))
 
-This is the place where the rounding error triggers. If sum_util is
-small and scale_cpu is e.g. 1024, then we have a small fraction here.
-It depends on the EM 'cost', but for most platforms we have small
-power and cost values, so we suffer this rounding.
-The example that I gave in my response in patch 2/3 shows this.
+hum, this is all the same except for the !is_uncore condition, right?
 
->> The rest of the EM code doesn't change, em_perf_state::power is still
->> expressed in milli-Watts (or in abstract scale). Thus, all existing
->> platforms don't have to change their reported power. The same applies to
+could we just add 'config->no_merge || hybrid_uniquify(count)'
+
+that would cover both perf_pmu__has_hybrid and !is_uncore conditions?
+
+jirka
+
+> > +			uniquify_event_name(counter);
+> > +		else if (counter->auto_merge_stats)
+> > +			collect_all_aliases(config, counter, cb, data);
+> > +	} else {
+> > +		if (config->no_merge)
+> > +			uniquify_event_name(counter);
+> > +		else if (counter->auto_merge_stats)
+> > +			collect_all_aliases(config, counter, cb, data);
+> > +	}
+> > +
+> >   	return true;
+> >   }
+> > 
 > 
-> Not only existing platforms since there are no changes. So why
-> highlighting `existing` here.?
+> Any comments for this patch? :)
+> 
+> Thanks
+> Jin Yao
+> 
 
-I just wanted to be clear that it doesn't affect existing platforms
-at all. We don't require to report power in better resolution e.g.
-micro-Watts.
-Also, the clients in the kernel won't be affected, since they use
-EM 'power' filed, not 'cost'.
