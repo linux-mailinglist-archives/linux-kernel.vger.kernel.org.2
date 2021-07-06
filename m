@@ -2,264 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23FEF3BD92C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CFE3BD933
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhGFO7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:59:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28635 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231493AbhGFO6w (ORCPT
+        id S232274AbhGFO71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231755AbhGFO7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:58:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625583373;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KUEPkdf2rzvjptwOm0DguI5Fsj71Wg4RO38W/Ug9+f0=;
-        b=KxkaCaltB2ZE3PMaexuTkjDrNW4V7obW2WfRiy5VCMK1lEtVkpejIwtK+P6N3TF37Ho1TV
-        kOqpoxYFF9ueNEpO8ZoOMImEvR55TLIgLjyBCuCLdz2LegUrjAQt75l9/U2RBomKhMyFpg
-        h45/V4LtMpWR5ChGRuhJfIjMACbH2A0=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-NhOaRjUlO9GMDADdPBJ28A-1; Tue, 06 Jul 2021 10:56:12 -0400
-X-MC-Unique: NhOaRjUlO9GMDADdPBJ28A-1
-Received: by mail-ed1-f71.google.com with SMTP id s6-20020a0564020146b029039578926b8cso8064847edu.20
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:56:11 -0700 (PDT)
+        Tue, 6 Jul 2021 10:59:05 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098C9C06139F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 07:56:20 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id g3so21011264ilj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:56:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a8/qLLqO6eL91stH3wL0KRpl9T08Ic+NpnQGQ6x06VA=;
+        b=j2sPe5/YeFhkbk8Ao1wBoSJI3mHjTKeYtGS/ylikxffAh4pjlXAic9iDxRv5Mv0c88
+         o5b7lMNG7FTsdoBh7D7HFqLBpXx4OWDvWQolA2AYbIKyYGFb/BJCIZ86BrUQNsb/C3Zk
+         XsAk6eIa1iX7IreWpvN3CU6N8yZIaUepsXSqCVxrBMKOSQwVo+4QlVdlIX3ICQnCZ+RN
+         LgJrLxii8/f54h0waeGuOrMJGYXgQlD5kGp/v5vw+plNVj3amj0GPy79B+VVJnzMwf0X
+         slP6aAspIJPeReLpfjtTCTHLR7t2wU8m1oRA1naFZ3fVxAxznodtagNFx7SXVX3ixwEZ
+         eBuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KUEPkdf2rzvjptwOm0DguI5Fsj71Wg4RO38W/Ug9+f0=;
-        b=LX3kvh699WGsIkMExLTIjFsigtFR/nRxlhjb1V2hy1fggabvuaq8/dTl/GxiJSX25c
-         RC0+UjlhrGSaNDd6V6H6x19NeYZPCNgIYuUa9AGM6e7/mrcc4W4lU4A9o8UH19+5LT8y
-         uJkYSkN5/TINqoytk8akLygBP0+k4t4kBPTAVk7aszbpGZ1Bd3YHn/e3HjY89Sq1bRh7
-         2VCLIbsHnQIRWCwPDzOxdji7XmF8bMN0rpjN4HIywJr1sp0Gk7HtI+/uOl5arJF/ub2h
-         EosLYuNJdIwOCHWNPCjFJoycQ11WvXXgVHlrvtWOEm3fkvi79Aw5Ll20c66uZ7oUaeuG
-         c7UA==
-X-Gm-Message-State: AOAM531d7SQbjhFzLaco8wUewr6eDWVKCRySi46n2RBVMG0C7iLmiNG+
-        iQNij86mTizt/vKum8kxgDEE/PrZ8/k48ZAWHr31yJO4+PtlgOSFxaaZWD6TsyDHb7PgAEtZ9If
-        tttdQdxdR69F9kiI7/QtoLspu
-X-Received: by 2002:a17:906:2552:: with SMTP id j18mr10887696ejb.199.1625583371029;
-        Tue, 06 Jul 2021 07:56:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwVqr9MREHDsbIstBVC6+m6GTlR07Ik7ygsS9hb74hhhq00636GIdnNZWXOllPaVB/P2V5sBQ==
-X-Received: by 2002:a17:906:2552:: with SMTP id j18mr10887684ejb.199.1625583370845;
-        Tue, 06 Jul 2021 07:56:10 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id d22sm6002762ejj.47.2021.07.06.07.56.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 07:56:09 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 43/69] KVM: x86/mmu: Allow non-zero init value for
- shadow PTE
-To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <2a12f8867229459dba2da233bf7762cb1ac2722c.1625186503.git.isaku.yamahata@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c27da555-b0f2-045c-d577-7e9afb858da1@redhat.com>
-Date:   Tue, 6 Jul 2021 16:56:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a8/qLLqO6eL91stH3wL0KRpl9T08Ic+NpnQGQ6x06VA=;
+        b=nWvvOlrh7wLuyEO2MFFj8uG0L/q98u9NrwZtbfxEZhcnJ0NqpMrjV9QRAF3x6yyko0
+         J1BC/6kGasTXeKKTW9YLJtkggGeugB+3peLR8a3aDwCAw2TGVMv9ZMAXhEJsyUnDhn0s
+         KPlBlDOSdy2N4vfb73j9PbQC1wXIsveRskn6gbcO4HoYf0LO+nsouufPJoRRpCH5FCJJ
+         zW/EKLo9ZVpYybFN800ZTVHS+dI8mSlB2ESYR7YiZBQC/IjaFP4ZOV0S0v0ZdS52RFtD
+         ESbrfe3yNrFdWvbDLj3lABYEw2PMMI69/Gv/m1hsz/doCHfB73Tu0KfFMzkAiOm5O4w2
+         L/VQ==
+X-Gm-Message-State: AOAM531JEwxvJGAX/fL9u+8cVFehk8yaguao43RfoBWzSwjb+w8W0D8c
+        j4+ArGqRb5geuKeTrozmJroZrg==
+X-Google-Smtp-Source: ABdhPJwog3epP3zDyPdL9Dn1Mv3QQbO1xKAP/j5dh3/z+a/bJ15P6+dhr9KB3Du7HHV3+Ab4fMGLOg==
+X-Received: by 2002:a92:dd05:: with SMTP id n5mr14308230ilm.72.1625583379441;
+        Tue, 06 Jul 2021 07:56:19 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id l18sm8626632ilo.64.2021.07.06.07.56.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 07:56:19 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1m0mUj-004Rth-V9; Tue, 06 Jul 2021 11:56:17 -0300
+Date:   Tue, 6 Jul 2021 11:56:17 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
+Message-ID: <20210706145617.GO4604@ziepe.ca>
+References: <20210705130314.11519-1-ogabbay@kernel.org>
+ <YOQXBWpo3whVjOyh@phenom.ffwll.local>
+ <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
+ <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
+ <CAKMK7uHpKFVm55O_NB=WYCsv0iUt92ZUn6eCzifH=unbhe3J8g@mail.gmail.com>
+ <CAKMK7uFGr=ugyKj0H3ctbh28Jnr25vAgXPBaDBMmfErCxYVo3w@mail.gmail.com>
+ <20210706134430.GL4604@ziepe.ca>
+ <CAKMK7uFEZjp2_WBhtkVxSNQ-1WcBSr3NDotY0fjz0iLRw8Barw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <2a12f8867229459dba2da233bf7762cb1ac2722c.1625186503.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uFEZjp2_WBhtkVxSNQ-1WcBSr3NDotY0fjz0iLRw8Barw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
+On Tue, Jul 06, 2021 at 04:09:25PM +0200, Daniel Vetter wrote:
+> Anyway, for anything that works like a gpu accelerator, like 3d accel,
+> or parallel compute accel (aka gpgpu) or spatial compute accel (aka
+> NN/AI) or maybe even fpga accel most of the magic to use the hardware
+> is in this backend compiler, which translates from an IR into whatever
+> your accelerator consumes. That's the part we really care about for
+> modern accelerators because without that defacto the hardware is
+> useless. Generally these chips have full-blown, if special purpose
+> ISA, with register files, spilling, branches, loops and other control
+> flow (sometimes only execution masks on simpler hw).
+
+I don't know if I see it so clearly as you do - at the end of the day
+the user keys in the program in some proprietary (or open!) language
+and and wack of propritary magic transforms it to "make it work".
+
+There are many barriers that prevent someone without the secret
+knowledge from duplicating the end result of a working program. An
+accelerator ISA is certainly one example, but I wouldn't overly focus
+on it as the only blocker.
+
+Like you said below the NVIDIA GPU ISA seems known but the HW is still
+not really useful for other reasons.
+
+Habana seems to have gone the other way, the HW is fully useful but we
+don't have the ISA transformation and other details.
+
+Both cases seem to have ended up with something useless, and I have a
+hard time saying nouveau has more right to be in the kernel tree than
+Habana does.
+
+> > Honestly, I think GPU is approaching this backwards. Wayland should
+> > have been designed to prevent proprietary userspace stacks.
 > 
-> TDX will run with EPT violation #VEs enabled, which means KVM needs to
-> set the "suppress #VE" bit in unused PTEs to avoid unintentionally
-> reflecting not-present EPT violations into the guest.
-> 
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/mmu.h      |  1 +
->   arch/x86/kvm/mmu/mmu.c  | 50 +++++++++++++++++++++++++++++++++++------
->   arch/x86/kvm/mmu/spte.c | 10 +++++++++
->   arch/x86/kvm/mmu/spte.h |  2 ++
->   4 files changed, 56 insertions(+), 7 deletions(-)
+> That's not possible without some serious cans of worms though. Wayland
+> is a protocol, and you can't forbid people from implementing it.
+> Otherwise all the compatible open implementations of closed protocols
+> wouldn't be possible either.
 
-Please ensure that this also works for tdp_mmu.c (if anything, consider 
-supporting TDX only for TDP MMU; it's quite likely that mmu.c support 
-for EPT/NPT will go away).
+Well, in many ways so is Linux, but nobody would seriously
+re-implement Linux just to produce a driver.
 
-Paolo
+> So I'm not clear what you're suggesting here we should do different.
 
-> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> index 69b82857acdb..6ec8d9fdff35 100644
-> --- a/arch/x86/kvm/mmu.h
-> +++ b/arch/x86/kvm/mmu.h
-> @@ -61,6 +61,7 @@ static __always_inline u64 rsvd_bits(int s, int e)
->   
->   void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_mask);
->   void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only);
-> +void kvm_mmu_set_spte_init_value(u64 init_value);
->   
->   void
->   reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context);
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 631b92e6e9ba..1c40dfd05979 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -550,9 +550,9 @@ static int mmu_spte_clear_track_bits(u64 *sptep)
->   	u64 old_spte = *sptep;
->   
->   	if (!spte_has_volatile_bits(old_spte))
-> -		__update_clear_spte_fast(sptep, 0ull);
-> +		__update_clear_spte_fast(sptep, shadow_init_value);
->   	else
-> -		old_spte = __update_clear_spte_slow(sptep, 0ull);
-> +		old_spte = __update_clear_spte_slow(sptep, shadow_init_value);
->   
->   	if (!is_shadow_present_pte(old_spte))
->   		return 0;
-> @@ -582,7 +582,7 @@ static int mmu_spte_clear_track_bits(u64 *sptep)
->    */
->   static void mmu_spte_clear_no_track(u64 *sptep)
->   {
-> -	__update_clear_spte_fast(sptep, 0ull);
-> +	__update_clear_spte_fast(sptep, shadow_init_value);
->   }
->   
->   static u64 mmu_spte_get_lockless(u64 *sptep)
-> @@ -660,6 +660,42 @@ static void walk_shadow_page_lockless_end(struct kvm_vcpu *vcpu)
->   	local_irq_enable();
->   }
->   
-> +static inline void kvm_init_shadow_page(void *page)
-> +{
-> +#ifdef CONFIG_X86_64
-> +	int ign;
-> +
-> +	asm volatile (
-> +		"rep stosq\n\t"
-> +		: "=c"(ign), "=D"(page)
-> +		: "a"(shadow_init_value), "c"(4096/8), "D"(page)
-> +		: "memory"
-> +	);
-> +#else
-> +	BUG();
-> +#endif
-> +}
-> +
-> +static int mmu_topup_shadow_page_cache(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm_mmu_memory_cache *mc = &vcpu->arch.mmu_shadow_page_cache;
-> +	int start, end, i, r;
-> +
-> +	if (shadow_init_value)
-> +		start = kvm_mmu_memory_cache_nr_free_objects(mc);
-> +
-> +	r = kvm_mmu_topup_memory_cache(mc, PT64_ROOT_MAX_LEVEL);
-> +	if (r)
-> +		return r;
-> +
-> +	if (shadow_init_value) {
-> +		end = kvm_mmu_memory_cache_nr_free_objects(mc);
-> +		for (i = start; i < end; i++)
-> +			kvm_init_shadow_page(mc->objects[i]);
-> +	}
-> +	return 0;
-> +}
-> +
->   static int mmu_topup_memory_caches(struct kvm_vcpu *vcpu, bool maybe_indirect)
->   {
->   	int r;
-> @@ -669,8 +705,7 @@ static int mmu_topup_memory_caches(struct kvm_vcpu *vcpu, bool maybe_indirect)
->   				       1 + PT64_ROOT_MAX_LEVEL + PTE_PREFETCH_NUM);
->   	if (r)
->   		return r;
-> -	r = kvm_mmu_topup_memory_cache(&vcpu->arch.mmu_shadow_page_cache,
-> -				       PT64_ROOT_MAX_LEVEL);
-> +	r = mmu_topup_shadow_page_cache(vcpu);
->   	if (r)
->   		return r;
->   	if (maybe_indirect) {
-> @@ -3041,7 +3076,7 @@ static int fast_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->   	struct kvm_shadow_walk_iterator iterator;
->   	struct kvm_mmu_page *sp;
->   	int ret = RET_PF_INVALID;
-> -	u64 spte = 0ull;
-> +	u64 spte = shadow_init_value;
->   	uint retry_count = 0;
->   
->   	if (!page_fault_can_be_fast(error_code))
-> @@ -5383,7 +5418,8 @@ int kvm_mmu_create(struct kvm_vcpu *vcpu)
->   	vcpu->arch.mmu_page_header_cache.kmem_cache = mmu_page_header_cache;
->   	vcpu->arch.mmu_page_header_cache.gfp_zero = __GFP_ZERO;
->   
-> -	vcpu->arch.mmu_shadow_page_cache.gfp_zero = __GFP_ZERO;
-> +	if (!shadow_init_value)
-> +		vcpu->arch.mmu_shadow_page_cache.gfp_zero = __GFP_ZERO;
->   
->   	vcpu->arch.mmu = &vcpu->arch.root_mmu;
->   	vcpu->arch.walk_mmu = &vcpu->arch.root_mmu;
-> diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-> index 66d43cec0c31..0b931f1c2210 100644
-> --- a/arch/x86/kvm/mmu/spte.c
-> +++ b/arch/x86/kvm/mmu/spte.c
-> @@ -34,6 +34,7 @@ u64 __read_mostly shadow_mmio_access_mask;
->   u64 __read_mostly shadow_present_mask;
->   u64 __read_mostly shadow_me_mask;
->   u64 __read_mostly shadow_acc_track_mask;
-> +u64 __read_mostly shadow_init_value;
->   
->   u64 __read_mostly shadow_nonpresent_or_rsvd_mask;
->   u64 __read_mostly shadow_nonpresent_or_rsvd_lower_gfn_mask;
-> @@ -211,6 +212,14 @@ u64 kvm_mmu_changed_pte_notifier_make_spte(u64 old_spte, kvm_pfn_t new_pfn)
->   	return new_spte;
->   }
->   
-> +void kvm_mmu_set_spte_init_value(u64 init_value)
-> +{
-> +	if (WARN_ON(!IS_ENABLED(CONFIG_X86_64) && init_value))
-> +		init_value = 0;
-> +	shadow_init_value = init_value;
-> +}
-> +EXPORT_SYMBOL_GPL(kvm_mmu_set_spte_init_value);
-> +
->   static u8 kvm_get_shadow_phys_bits(void)
->   {
->   	/*
-> @@ -355,6 +364,7 @@ void kvm_mmu_reset_all_pte_masks(void)
->   	shadow_present_mask	= PT_PRESENT_MASK;
->   	shadow_acc_track_mask	= 0;
->   	shadow_me_mask		= sme_me_mask;
-> +	shadow_init_value	= 0;
->   
->   	shadow_host_writable_mask = DEFAULT_SPTE_HOST_WRITEABLE;
->   	shadow_mmu_writable_mask  = DEFAULT_SPTE_MMU_WRITEABLE;
-> diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-> index bca0ba11cccf..f88cf3db31c7 100644
-> --- a/arch/x86/kvm/mmu/spte.h
-> +++ b/arch/x86/kvm/mmu/spte.h
-> @@ -152,6 +152,8 @@ extern u64 __read_mostly shadow_mmio_access_mask;
->   extern u64 __read_mostly shadow_present_mask;
->   extern u64 __read_mostly shadow_me_mask;
->   
-> +extern u64 __read_mostly shadow_init_value;
-> +
->   /*
->    * SPTEs in MMUs without A/D bits are marked with SPTE_TDP_AD_DISABLED_MASK;
->    * shadow_acc_track_mask is the set of bits to be cleared in non-accessed
-> 
+Not enabling proprietary stacks as above would be a good start.
 
+Jason
