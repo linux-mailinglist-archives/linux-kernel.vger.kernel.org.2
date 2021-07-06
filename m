@@ -2,67 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098B73BCEEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B77D3BD085
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234412AbhGFL1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:27:36 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55724 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233319AbhGFLUq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:20:46 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1m0j5W-0004Ns-Us; Tue, 06 Jul 2021 11:18:03 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
+        id S235352AbhGFLeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:34:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232508AbhGFLS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:18:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7535E61C66;
+        Tue,  6 Jul 2021 11:15:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625570149;
+        bh=bCoeEDpeakw8Oebug4Gh/pTMiYMIT4eJH2E2tGUXFGE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=kWcBZ/IxVu2u0SHlZu8DV1mfSubKI/X66B1ObOF2wONtL6OSkXisVWU9bakvCHtQu
+         Dqa/NixufAEx7GBu/Y29cT6s7kS7VyBVUp/HGwYTkOHkIvw0aw3/G9YJtksHndfCsu
+         pIitcOuPjQ8eROcYL3oUkwVjsXKR624+2upNu6We12J4wyQ3lnEeDVs9EKtUP7KfKs
+         51Ju2INMumMI8jOPuQ/wrpl8XZ3zI3pXwpEY4+vMf4pOK33Lgy/gkuBNCWKDXn5mV1
+         tdJB0dNba67eAOGTD8kmKI1NOz55QykjeKUZ73LfMS3vR6b8EXX2pEjyCLU8Wdvqza
+         GVvIg14ZHehWw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Andreas Roeseler <andreas.a.roeseler@gmail.com>,
         "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] octeontx2-pf: Fix assigned error return value that is never used
-Date:   Tue,  6 Jul 2021 12:18:02 +0100
-Message-Id: <20210706111802.27114-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.13 072/189] icmp: fix lib conflict with trinity
+Date:   Tue,  6 Jul 2021 07:12:12 -0400
+Message-Id: <20210706111409.2058071-72-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210706111409.2058071-1-sashal@kernel.org>
+References: <20210706111409.2058071-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Andreas Roeseler <andreas.a.roeseler@gmail.com>
 
-Currently when the call to otx2_mbox_alloc_msg_cgx_mac_addr_update fails
-the error return variable rc is being assigned -ENOMEM and does not
-return early. rc is then re-assigned and the error case is not handled
-correctly. Fix this by returning -ENOMEM rather than assigning rc.
+[ Upstream commit e32ea44c7ae476f4c90e35ab0a29dc8ff082bc11 ]
 
-Addresses-Coverity: ("Unused value")
-Fixes: 79d2be385e9e ("octeontx2-pf: offload DMAC filters to CGX/RPM block")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Including <linux/in.h> and <netinet/in.h> in the dependencies breaks
+compilation of trinity due to multiple definitions. <linux/in.h> is only
+used in <linux/icmp.h> to provide the definition of the struct in_addr,
+but this can be substituted out by using the datatype __be32.
+
+Signed-off-by: Andreas Roeseler <andreas.a.roeseler@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_dmac_flt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/uapi/linux/icmp.h | 3 +--
+ net/ipv4/icmp.c           | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_dmac_flt.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_dmac_flt.c
-index ffe3e94562d0..383a6b5cb698 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_dmac_flt.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_dmac_flt.c
-@@ -161,7 +161,7 @@ int otx2_dmacflt_update(struct otx2_nic *pf, u8 *mac, u8 bit_pos)
+diff --git a/include/uapi/linux/icmp.h b/include/uapi/linux/icmp.h
+index c1da8244c5e1..163c0998aec9 100644
+--- a/include/uapi/linux/icmp.h
++++ b/include/uapi/linux/icmp.h
+@@ -20,7 +20,6 @@
  
- 	if (!req) {
- 		mutex_unlock(&pf->mbox.lock);
--		rc = -ENOMEM;
-+		return -ENOMEM;
- 	}
+ #include <linux/types.h>
+ #include <asm/byteorder.h>
+-#include <linux/in.h>
+ #include <linux/if.h>
+ #include <linux/in6.h>
  
- 	ether_addr_copy(req->mac_addr, mac);
+@@ -154,7 +153,7 @@ struct icmp_ext_echo_iio {
+ 		struct {
+ 			struct icmp_ext_echo_ctype3_hdr ctype3_hdr;
+ 			union {
+-				struct in_addr	ipv4_addr;
++				__be32		ipv4_addr;
+ 				struct in6_addr	ipv6_addr;
+ 			} ip_addr;
+ 		} addr;
+diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
+index 752e392083e6..0a57f1892e7e 100644
+--- a/net/ipv4/icmp.c
++++ b/net/ipv4/icmp.c
+@@ -1066,7 +1066,7 @@ static bool icmp_echo(struct sk_buff *skb)
+ 			if (ident_len != sizeof(iio->ident.addr.ctype3_hdr) +
+ 					 sizeof(struct in_addr))
+ 				goto send_mal_query;
+-			dev = ip_dev_find(net, iio->ident.addr.ip_addr.ipv4_addr.s_addr);
++			dev = ip_dev_find(net, iio->ident.addr.ip_addr.ipv4_addr);
+ 			break;
+ #if IS_ENABLED(CONFIG_IPV6)
+ 		case ICMP_AFI_IP6:
 -- 
-2.31.1
+2.30.2
 
