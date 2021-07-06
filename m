@@ -2,227 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13933BC5E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 07:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BDD3BC5F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 07:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhGFFIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 01:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
+        id S230032AbhGFFLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 01:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhGFFIR (ORCPT
+        with ESMTP id S229963AbhGFFLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 01:08:17 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C9CC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 22:05:39 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id i20so31793389ejw.4
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 22:05:38 -0700 (PDT)
+        Tue, 6 Jul 2021 01:11:14 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6D1C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 22:08:36 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id x12so26238307eds.5
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 22:08:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1aY9pV+Xms1QWJkFh6PFiUFJO/L6VxJrfdxhBvw2IIs=;
-        b=a4viW667C4I0pe8u9HVEYVeW0P8W1WaQELYx+duLGcVGEI7cxpgzuhlIyRaf1O3ODi
-         nfrCDosDZMhdQ3A4gl4ZTc+vbpSMzIgi4M28qlvzD3bRFL8qvEaxLzXw3iet/bQFmqel
-         qNXI2VzoWX3tnn2rXq6DCD4GP0eFAmLcd5CYbMvo3BxqLBRNCrYZJu/U8AX840BNiS4l
-         cCwX0SCHyHHZQnjwWIkHJlJMi9AqilRgR02tKz0IzbwXTxE0OfiKwUTGr6E2/bo9Z1if
-         AitU4zWRvVeEANnpQdcWEahXVbicTzhvA+Ne56IZvrdsQDc/uGBZ6Om4g5QCmkmE0qOD
-         zl/g==
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hHDoPT8iUz2log46tTS8ycTrhaIwizguIXYNV7edjjE=;
+        b=JCCtu2wGVFJZgpEGTqAkc+Hdcsyxk5AXJ5mP1deFHLUiIHDF/bvi7ZyonumSV0sgrx
+         mdcJlXdIjdFtNWVPiiNLY1laaueR1B5lcsmBy3MnQ8nJq2zRefSRDb0uMGsI12Umtcyd
+         /Yz3ZzCMiCFUWdrhNteirK40vSDbjeG47nKTdwJNkvm9e6RSMmAwpA160vAH3sg8jB8d
+         VpNE3CBGzYQsbgxwnRpxqpMUmmu0MGHart5Y9QS4+N00Kv+VRw5qBqaYEd4ZlLf5aIyM
+         1SXiTikEp5m5jwLQHflvVxE3wwgwgzk35j5oPcYmB5QfP90G6MnOatgLfGwmoIuK8/8A
+         52yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1aY9pV+Xms1QWJkFh6PFiUFJO/L6VxJrfdxhBvw2IIs=;
-        b=tHZgGGOQga8axDo4xSW535+/A0Dbd/w6yOx6DLcen3MvdFBR3DgcUrGF0aFLM4Y2ov
-         LIr+LAybu2jrGgYor+1UDETBlKYrWuiDEitv2c8GhayFRcB62z/Fq2dgTFV/c/nfWDpl
-         9RHFVrnC+mQqT92NMHy0vCfJ+mxhy+OqnSzS94h67p85dxFw4AZL/TYsAO+CbY4WbfHP
-         Y1SZQi2tj1DZDL08OQJOZZfLUCKLU7zOI39RppS3N27Aa818TAdCys5/6hnvRniR35VZ
-         3dzlGH87teJwOXPEGCHBFh/6YxRKI4zGjqJhBad/y6iRKR/jIvW9qgvTx7r8BVy2Aqut
-         NJ1Q==
-X-Gm-Message-State: AOAM533WjAdka7qWrmcwfH7Z+r6s7w9XNsuVT/oK/oQQKg8+I9fwS8F0
-        eCA3pc9sImQ/SCQSsgK9gZKSfXNKllsGS20sj4Y0HQ==
-X-Google-Smtp-Source: ABdhPJzi6kwPz8i2CQ8xiuuCmR4LYMA7Lx9B13lKNAKf2U73odGkdr7KNONhaLDi7D0Uxkr/f0qFWHShrFwuelwfkg4=
-X-Received: by 2002:a17:906:fcb5:: with SMTP id qw21mr11690543ejb.375.1625547937417;
- Mon, 05 Jul 2021 22:05:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hHDoPT8iUz2log46tTS8ycTrhaIwizguIXYNV7edjjE=;
+        b=DJ+k6dB4qtuThuBaiu2jVN8s3OhcOrgJxfX5gKAvu0jUo2M+CY6Vk1X+STf607wdFJ
+         9gXFy0Ci8sGIVz+VcPM9p0CfO1Q5mwm2yHEhJOCDWSp1PFWxOU6Q8Q98OI7fxN3mo6fG
+         nSm/p5HG+hakixw+9dDAAL0kHMTOWxeIxjioaU2XIRiqPiR6ua9f3vIUX+A/QJ6Qpcsw
+         CfhB09v/MYSC+lIxE7tyPFEHFFwZw0r+9I7GTcPeKP9xWNIWOrW6gidgfj8tv2j1hryv
+         Y9Q6R9J/Q/oxiR5KeJOo3sTUY3a00oeq5NoqjPvqd8U+K8p828y+xw8MVeE7kabcwFLO
+         atFg==
+X-Gm-Message-State: AOAM532T8RvPSNbLh2DoybhVmX5CDZPoaW/bWiT+GLAO1eTaXG0rYKds
+        DsO8kBI3ac8Pf37VB6B23+2IAQ==
+X-Google-Smtp-Source: ABdhPJwyp3Apk1jDojmHuKYLDDgPLaspCJ6RGNGPcbNEiWvYDS/C/H03DJrEohUbtDrkJ7c5bT6abA==
+X-Received: by 2002:a05:6402:268f:: with SMTP id w15mr4187001edd.206.1625548114831;
+        Mon, 05 Jul 2021 22:08:34 -0700 (PDT)
+Received: from jwang-Latitude-5491.fritz.box ([2001:16b8:499a:fc00:3532:1608:3da2:d7a9])
+        by smtp.gmail.com with ESMTPSA id t11sm1967582edr.34.2021.07.05.22.08.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 22:08:34 -0700 (PDT)
+From:   Jack Wang <jinpu.wang@ionos.com>
+To:     linux-edac@vger.kernel.org
+Cc:     yazen.ghannam@amd.com, bp@alien8.de, tony.luck@intel.com,
+        mchehab@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] EDAC/amd64: Do not load EDAC driver when running as a guest
+Date:   Tue,  6 Jul 2021 07:08:33 +0200
+Message-Id: <20210706050833.9852-1-jinpu.wang@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210705110029.1513384-1-sashal@kernel.org>
-In-Reply-To: <20210705110029.1513384-1-sashal@kernel.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 6 Jul 2021 10:35:25 +0530
-Message-ID: <CA+G9fYsd03U9XLBuk4b+VasOUwcF1w0BaUe_Ct9caYGkG_AVJg@mail.gmail.com>
-Subject: Re: [PATCH 5.4 0/6] 5.4.130-rc1 review
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Jul 2021 at 16:30, Sasha Levin <sashal@kernel.org> wrote:
->
->
-> This is the start of the stable review cycle for the 5.4.130 release.
-> There are 6 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed 07 Jul 2021 11:00:14 AM UTC.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git/patch/?id=3Dlinux-5.4.y&id2=3Dv5.4.129
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> Thanks,
-> Sasha
+Similar to commit f0a029fff4a5 ("EDAC/Intel: Do not load EDAC driver when running as a guest")
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+There's little to no point in loading an EDAC driver running in a guest.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Add a check in each of the Intel EDAC drivers for X86_FEATURE_HYPERVISOR
+and simply return -ENODEV in the init routine.
 
-## Build
-* kernel: 5.4.130-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.4.y
-* git commit: 730ab99d05cb6e5857910adb0a22eba8d08ee621
-* git describe: v5.4.129-6-g730ab99d05cb
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-29-6-g730ab99d05cb
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+---
+ drivers/edac/amd64_edac.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-## No regressions (compared to v5.4.129)
+diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+index f0d8f60acee1..cdb14575ef31 100644
+--- a/drivers/edac/amd64_edac.c
++++ b/drivers/edac/amd64_edac.c
+@@ -3942,6 +3942,9 @@ static int __init amd64_edac_init(void)
+ 	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+ 		return -EBUSY;
+ 
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
++
+ 	if (!x86_match_cpu(amd64_cpuids))
+ 		return -ENODEV;
+ 
+-- 
+2.25.1
 
-## No fixes (compared to v5.4.129)
-
-## Test result summary
- total: 71569, pass: 58697, fail: 518, skip: 10733, xfail: 1621,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 192 total, 191 passed, 1 failed
-* arm64: 26 total, 25 passed, 1 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 15 total, 14 passed, 1 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 26 total, 25 passed, 1 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* perf/Zstd-perf.data-compression
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
