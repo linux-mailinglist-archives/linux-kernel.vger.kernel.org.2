@@ -2,96 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E048F3BDDB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BDD3BDE05
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231585AbhGFTDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 15:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhGFTDM (ORCPT
+        id S229787AbhGFT1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 15:27:19 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:60153 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230195AbhGFT1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 15:03:12 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF0BC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 12:00:33 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id b2so422903oiy.6
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 12:00:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MYqXeCbxfuybGK62bv3hAjB3EwNsrsPCCNHRlyOcG8Q=;
-        b=SZDOnd82dh3+2n0fe48q5ZarUx6lX6BybOllKe1C3ezf752oddc2y8MINhFxAt3mIz
-         qf6lyXwFzTHDe/G6j3FnMtjEeRoG2k+4weigV0vGziiwFm86Wc1YCzC9J4chsa1HUBYu
-         CTDlWF1xKDjkcHKq3gPXddE0tCz2RKSWLxf4A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=MYqXeCbxfuybGK62bv3hAjB3EwNsrsPCCNHRlyOcG8Q=;
-        b=Ullk55nv3wgERgV3GVos9zQ2p8RlX468o/e4wY5RW8od+nzDePSbM88IbK/yKhTdG4
-         vk3qgDA6M6jzWWME4HGSWe5SlCrkNIK1FEbgk+pLc7qA5YDHC7TC7e1wwYYBTCP3fo4z
-         45miRXWl6BBOtMybuu/v3f0YjxXcv3fMkKKRoXj6xleeUMY4ngXS2fEyOMmRCwcWLk+i
-         jDjdnHpUN9EfRgKIkoKcYcueii31BgP69Y+k/7xy8/s5tkUKrT4/VhYdAtZE3bNBTaMO
-         OciK0Df8CGvcfBL5YCi1JOeq13bMIOi/1+AfaCliUQ+DucX1UlAr6fMWaWTZbxRhDJio
-         ZKCg==
-X-Gm-Message-State: AOAM530ksW+D1kDzlOv2rgSoOD98LS8VxPuZMKGU4TNwEffIGAM8dPgR
-        8LoTrdBd0C5IQaIPP1X4OVnDNA==
-X-Google-Smtp-Source: ABdhPJwNSVBif6ncE0Xa4cvgNggvIOjnq3TNMxm/WAFC8jYHux3tTbOntJHGKfqlEknZOlPLy3FpFw==
-X-Received: by 2002:aca:c74a:: with SMTP id x71mr1553537oif.35.1625598032637;
-        Tue, 06 Jul 2021 12:00:32 -0700 (PDT)
-Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
-        by smtp.gmail.com with ESMTPSA id q26sm3470186oiw.25.2021.07.06.12.00.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 12:00:32 -0700 (PDT)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-From:   "Justin M. Forbes" <jforbes@fedoraproject.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jforbes@fedoraproject.org, jmforbes@linuxtx.org
-Subject: [PATCH] Fix the perf trace link location
-Date:   Tue,  6 Jul 2021 13:59:51 -0500
-Message-Id: <20210706185952.116121-1-jforbes@fedoraproject.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 6 Jul 2021 15:27:16 -0400
+Received: from mail-wr1-f49.google.com ([209.85.221.49]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MQ5nK-1lnfo124Ho-00M3LV; Tue, 06 Jul 2021 19:35:21 +0200
+Received: by mail-wr1-f49.google.com with SMTP id i94so27029273wri.4;
+        Tue, 06 Jul 2021 10:35:21 -0700 (PDT)
+X-Gm-Message-State: AOAM533ss/yHIZt/vz+SRPk9Dk5YCs2sewg3+3MKFgUhleIl8PDtZP0F
+        TlhrT4jCoIgFLijE/9icVGK04CTM/GlOrPr9jQ0=
+X-Google-Smtp-Source: ABdhPJxihhB6pAlSqg5TCWb1uOqDtAR681g/7nJAg+M4cbpSiCJILLocGjrsG1M7XBi00jNJbolYnKwzxwMuWr6BZPM=
+X-Received: by 2002:a5d:6485:: with SMTP id o5mr23976504wri.286.1625592921101;
+ Tue, 06 Jul 2021 10:35:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <YORh3XGNiRKzjDbS@infradead.org> <20210706153054.145461-1-abd.masalkhi@gmail.com>
+ <YOSMct1YHs++E1vt@infradead.org>
+In-Reply-To: <YOSMct1YHs++E1vt@infradead.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 6 Jul 2021 19:35:05 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2mAQOnTxBhVzVA8q8O-uVrdidCN5h5-T2dc0=Wet2uPQ@mail.gmail.com>
+Message-ID: <CAK8P3a2mAQOnTxBhVzVA8q8O-uVrdidCN5h5-T2dc0=Wet2uPQ@mail.gmail.com>
+Subject: Re: div_u64/do_div stack size usage, was Re: [v3] block: Removed a
+ warning while compiling with a cross compiler for parisc
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Bernardo Innocenti <bernie@develer.com>,
+        "torvalds@linux-foundation.org Abd-Alrhman Masalkhi" 
+        <abd.masalkhi@gmail.com>, Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Parisc List <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:t6riS402GfG5/lDaaFu72j+ZZl/prBu5e4jk9mBJ9ICY2T2/Wjj
+ r27vWivFr8SLRbiImKrfNj7d95huCn+cUewC9t7gZp5D6uPBko++ZtxV+lumoHybiU1ham5
+ FtTXsOhg6GIlB7yn8KW1P4eF3hEUU9v3UtWhHGhCGDKKr5J1lZKu2RBOR8b5w42vJr3D4dz
+ kkJg8FC6DKIVdtkAgOpYQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8CUTNqg4JMs=:U6Dyr3Gs6w4LhWoWb4cjNT
+ 1Fxe825DEDSEHL69tbVt08365ceqwdibPFqNhetQWeModsKuSLrcFuejru69DGrEMqFcsn+5V
+ 8GdZp+hwkKfPNOy/DGWoI+e5HuDlBaFMv0X6sOXioY+NjNOsZU1EbSoQzFumzpo7qch0w+z9s
+ Gz150o82xIBoZ8rucsbw6my7sgdbzBjw2s5l9Ip39BwkVm6Bk9FV4+u42tUFO6jwJCehQqICB
+ XiUq4g5+OdTv16hWlYxyVDbNSf2BTbxdkmRDxV60458sk5OTW+Fxkth0X1muBknfIkG0oVold
+ HMOtCQHGd/etTAeOiCJPsxBeqXhsN3YyfMzR7wg/bWatVpzWuVEUDXYv6AvrHC5Jfvq3Ry2X7
+ DtnZcXc4SWYWAApTuITKIrjXc+HvQUEvEEdVC4WThbQuYFxkcqq0vG4dZAo2y3QlW6nRjxLdy
+ 30EwIkztQholYsO205H5gScPlsYeWLDXs3yxJ/7YgacgYymt2yj+8xx+HXAzgBojIKQE62Uxj
+ Fs8G/m5kmTyODi9KX6zXmvayapKGyFSegxCQ/vda50LAxUML0V/ebZGi2K3zKZoTL3F/6wgca
+ bdwvOORsMEl8eP8VsEheo9TzSxXzQj4py9y5wUVI/isvy+pQb1zVqRkiwVz2bX0x1P+Q6KFUD
+ aee+KW5QzgUZ5pZCBuc4wVNyaS8vUm1hHxjtyKAmzsMvz8p8RB4fiaSfO55riUvEDgsaCMmP5
+ nGYZgUcd7xMsy+7h3yfkYEr5HHglyykYn6N/qwbvewoMhVc1xkjjsFqDfz4iosb48AXNnjEuH
+ obcyQKanfVj0yvLOOGRyfylTJDRkRNTpcjH6SPq3bFueHwZ2cnr68Abmm4CayuWFlXjE3dY5U
+ +JOF0tcirT0q2Hdh5fWwGcmcPDnftgNzJBpCbgV1jTsXmoAF+R2bXBv1f2/5iY1DoL2xWde8o
+ HjKF5NV5pcSF/LteBicR9BXSg3jqnaA9x+xe/z1+UuliYXdhsJyWf
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The install perf_dlfilter.h patch included what seems to be
-a typo in the Makefile.perf, which changed the location of the trace
-link from '$(DESTDIR_SQ)$(bindir_SQ)/trace' to
-'$(DESTDIR_SQ)$(dir_SQ)/trace' This reverts it back to the correct
-location.
+On Tue, Jul 6, 2021 at 7:03 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Tue, Jul 06, 2021 at 05:30:54PM +0200, Abd-Alrhman Masalkhi wrote:
+> > Thank you for your comment, the div_u64 function is called 5 times
+> > inside diskstats_show function, so I have made a test case; I have
+> > replaced one call with a constant number then I have compiled the
+> > kernel, the result was instead of emitting "the frame size of 1656
+> > bytes is larger than 1280 bytes" warning, it has emitted "the frame
+> > size of 1328 bytes is larger than 1280 bytes" warning, so I came to the
+> > conclusion that each call to div_u64 will add 328 bytes to the stack
+> > frame of diskstats_show function, since it is an inlined function. so I
+> > thought it might be the solution that to preventing div_u64 to be
+> > inlined in diskstats_show function.
+>
+> Adding a bunch of relevant parties to the CC list - any idea how we
+> can make the generic do_div / div_u64 not use up such gigantic amounts
+> of stack?
 
-Fixes: 0beb218315e06 ("perf build: Install perf_dlfilter.h")
-Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
----
- tools/perf/Makefile.perf | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I've seen variations of this problem many times, though usually not
+involving do_div().
 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index c9e0de5b00c1..a1b9be78a1e0 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -923,7 +923,7 @@ install-tools: all install-gtk
- 	$(call QUIET_INSTALL, binaries) \
- 		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(bindir_SQ)'; \
- 		$(INSTALL) $(OUTPUT)perf '$(DESTDIR_SQ)$(bindir_SQ)'; \
--		$(LN) '$(DESTDIR_SQ)$(bindir_SQ)/perf' '$(DESTDIR_SQ)$(dir_SQ)/trace'; \
-+		$(LN) '$(DESTDIR_SQ)$(bindir_SQ)/perf' '$(DESTDIR_SQ)$(bindir_SQ)/trace'; \
- 		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(includedir_SQ)/perf'; \
- 		$(INSTALL) util/perf_dlfilter.h -t '$(DESTDIR_SQ)$(includedir_SQ)/perf'
- ifndef NO_PERF_READ_VDSO32
--- 
-2.31.1
+My guess is that this is happening here because of a combination of
+things, most of the time it doesn't get nearly as bad:
 
+- parisc has larger stack frames than others
+- ilog2() as used in __div64_const32() is somewhat unreliable, it may
+  end up determining that its input is a __builtin_constant_p(), but then
+  still produce code for the non-constant case when the caller is
+  only partially inlined
+- Some compiler options make the problem worse by increasing the
+  pressure on the register allocator.
+- Some compiler targets don't deal well with register pressure and
+  use more stack slots than they really should.
+
+If you have the .config file that triggers this and the exact compiler
+version, I can have a closer look to narrow down which of these
+are part of the problem for that particular file.
+
+One thing we did on ARM OABI (which does not deal well with
+64-bit math) was to turn off the inline version of __arch_xprod_64
+and instead use an extern function for do_div().
+
+       Arnd
