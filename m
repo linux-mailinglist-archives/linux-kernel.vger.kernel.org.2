@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9DD3BD9F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146333BD9F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232755AbhGFPUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:20:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52019 "EHLO
+        id S232706AbhGFPUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 11:20:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59380 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232706AbhGFPUS (ORCPT
+        by vger.kernel.org with ESMTP id S232741AbhGFPUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:20:18 -0400
+        Tue, 6 Jul 2021 11:20:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625584659;
+        s=mimecast20190719; t=1625584665;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IFMht/JUz7O/5nFRrh0iKmB3u/zFGuN/em4/0cNuWEQ=;
-        b=ai1/MTJuKyQMEvfAHmW186Pizkwo84SddSVKqLR+gzghUBeupk2SPPB/Eg1pAythcF+Uo9
-        Wc47n0NPlpcQ+4BRN7JTuebRFsnOyw28RaPOvefqb5pTJhZr7R2YtBJgVL+TP9qb76TJLv
-        98tC/GKMgQ2BfSvYbHVnz36c2bdGwhc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406-bn4QdPAXNTO38CGYJCmBRQ-1; Tue, 06 Jul 2021 11:17:38 -0400
-X-MC-Unique: bn4QdPAXNTO38CGYJCmBRQ-1
-Received: by mail-wr1-f70.google.com with SMTP id w4-20020a05600018c4b0290134e4f784e8so2148747wrq.10
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 08:17:37 -0700 (PDT)
+        bh=tOpmQlI5h4Fk2I5eFc58+NXtZElRb7F5uumjvKfZx3U=;
+        b=AqRMRJ2SUdPjB1480qVwSeTjJwS/WhDGK5rvNiGJJEq4Y6lXMtqgR2YaT61eOGFYp7DWFs
+        uNY/xXZs7uGHLRePRFoiiuGjHivMyZxuDlsReObMDHWiK+ZKP+bG6nn6Mf9QSL1RCE/axf
+        Y2GClgY+piJsY63J85K8JrcecmuLHcc=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-341-kYfdQf_yMQaHjmRxfbQJEw-1; Tue, 06 Jul 2021 11:17:44 -0400
+X-MC-Unique: kYfdQf_yMQaHjmRxfbQJEw-1
+Received: by mail-wr1-f72.google.com with SMTP id z2-20020a5d4d020000b0290130e19b0ddbso3657009wrt.17
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 08:17:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IFMht/JUz7O/5nFRrh0iKmB3u/zFGuN/em4/0cNuWEQ=;
-        b=jNU3txbnXp1twsO5jJK6ibxd78Awr1WOIASIN6iaYe2mgicRwi4W8h/Ucepah7B6eo
-         Ya0Ly5PhLpplUcNp4iEQOtSvBcl16DTvaL0YOssOWHnzgq0v8R20Pqs6uJkFKWGP9+lY
-         aDoigsuGd2A+/5n/cIlkjZM4fyrZ4DB8wzkj8TDrNMXwKldxU/V17HeWif5m7uXkiSEu
-         AvO33XJ09mrD1veH99GGaF5SucQB47no3j+eYLeuCjPCE0Dedi2hh1HqIsAjRTn6iiXR
-         cQlBU5p9ZVU7YXfRb2RHR0MnW/U3mqxUedHBUH8dAKSJoFO30l8rDifFArFfjrRNyAmU
-         6NpQ==
-X-Gm-Message-State: AOAM532CuCFkeye44og1fslQKwQoaJjdr4VEwoK2CSn+CgOzSic1VTKr
-        LU1UeO5FxhARGYdzck6pr+ZV/rn2TGoYiLpaBP4oQe1zNgpRJrk8Gi3tv3MKBB7DzZPKDICsdHQ
-        IcU9LaPiErAIApbhTUgMomKKA
-X-Received: by 2002:adf:e488:: with SMTP id i8mr22509312wrm.285.1625584656748;
-        Tue, 06 Jul 2021 08:17:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzku1fDOAQdLnC5XD15reX31b2TvZmtZUwP1ceW+OZO4hS0W5Q6FPzoZ9UQ647ToJGgaE3Lyg==
-X-Received: by 2002:adf:e488:: with SMTP id i8mr22509297wrm.285.1625584656594;
-        Tue, 06 Jul 2021 08:17:36 -0700 (PDT)
+        bh=tOpmQlI5h4Fk2I5eFc58+NXtZElRb7F5uumjvKfZx3U=;
+        b=n0zIPJMBiDX5BAXgaswPuQzJjV+HhzepttY7q4eBTmDRm6PDnUnvqM5eb81pMFwp38
+         26tBbBnqOkLpN95DWwx3+NmqDbmcUqARfNgmSbvWFNZXiXktvSDJ/1ZmQiP31Vl1+kzA
+         W6gQ5TeRJq0+rEfTyAYXXewQNUBHhfUZ/dN2JvcS028skArpac/64Ja9X1UlxWYoW95X
+         AmXnLXTiWvfDAlZ5eLSPwsrK0cAGMVZquEq4SJk76Dla7bXQn8GY+flzPWDBKLtC3j5D
+         ZUalljlBgFgAEmD0/STXUQlXCUv7Z60cuig6VxuDJIVI3++8/lZ6Gd+/jKiT/fjnKv/F
+         lOsA==
+X-Gm-Message-State: AOAM533w6zkovGBn6uCn65sFvpOVGGHZYjKUQrdcCp1wUhKH1ihZB/ta
+        ErQS/d4dompOtokzg/+6BT30sTpOVMhRLriOF/jH6Zk7LVI89vA4CeyH/Ee7jngw7Fd6zJ/h36c
+        tcS5pmGhfwMuW4rlP6qxr7+yU
+X-Received: by 2002:adf:b605:: with SMTP id f5mr22556352wre.419.1625584663831;
+        Tue, 06 Jul 2021 08:17:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJym7QwnyWtDGr1euiYitV0KsusQCfpn9O/KHd8Nc1oxvOHqwOetCq9HmAYhF9E0dn4ELzf9cQ==
+X-Received: by 2002:adf:b605:: with SMTP id f5mr22556334wre.419.1625584663684;
+        Tue, 06 Jul 2021 08:17:43 -0700 (PDT)
 Received: from krava.redhat.com ([185.153.78.55])
-        by smtp.gmail.com with ESMTPSA id t9sm17042895wrq.92.2021.07.06.08.17.35
+        by smtp.gmail.com with ESMTPSA id d24sm3151612wmb.42.2021.07.06.08.17.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 08:17:36 -0700 (PDT)
+        Tue, 06 Jul 2021 08:17:43 -0700 (PDT)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
@@ -63,9 +63,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Michael Petlan <mpetlan@redhat.com>,
         Ian Rogers <irogers@google.com>, nakamura.shun@fujitsu.com,
         linux-perf-users@vger.kernel.org
-Subject: [PATCH 4/7] libperf: Move nr_groups to evlist::nr_groups
-Date:   Tue,  6 Jul 2021 17:17:01 +0200
-Message-Id: <20210706151704.73662-5-jolsa@kernel.org>
+Subject: [PATCH 5/7] libperf: Add perf_evlist__set_leader function
+Date:   Tue,  6 Jul 2021 17:17:02 +0200
+Message-Id: <20210706151704.73662-6-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210706151704.73662-1-jolsa@kernel.org>
 References: <20210706151704.73662-1-jolsa@kernel.org>
@@ -75,282 +75,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Moving evsel::nr_groups to perf_evsel::nr_groups, so we can move
-the group interface to libperf.
+Moving the implementation of evlist__set_leader under
+the new libperf perf_evlist__set_leader function with
+the same functionality and as exported API.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
+ tools/lib/perf/evlist.c                  | 21 +++++++++++++++++++++
  tools/lib/perf/include/internal/evlist.h |  1 +
- tools/perf/builtin-record.c              |  2 +-
- tools/perf/builtin-report.c              |  2 +-
- tools/perf/tests/bpf.c                   |  2 +-
- tools/perf/tests/parse-events.c          | 22 +++++++++++-----------
- tools/perf/tests/pfm.c                   |  4 ++--
- tools/perf/util/evlist.c                 |  4 ++--
+ tools/lib/perf/include/perf/evlist.h     |  1 +
+ tools/lib/perf/libperf.map               |  1 +
+ tools/perf/util/evlist.c                 | 19 +------------------
  tools/perf/util/evlist.h                 |  1 -
- tools/perf/util/header.c                 |  4 ++--
  tools/perf/util/parse-events.c           |  2 +-
- tools/perf/util/pfm.c                    |  2 +-
- 11 files changed, 23 insertions(+), 23 deletions(-)
+ 7 files changed, 26 insertions(+), 20 deletions(-)
 
+diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
+index 68b90bbf0ffb..e37dfad31383 100644
+--- a/tools/lib/perf/evlist.c
++++ b/tools/lib/perf/evlist.c
+@@ -642,3 +642,24 @@ perf_evlist__next_mmap(struct perf_evlist *evlist, struct perf_mmap *map,
+ 
+ 	return overwrite ? evlist->mmap_ovw_first : evlist->mmap_first;
+ }
++
++void __perf_evlist__set_leader(struct list_head *list)
++{
++	struct perf_evsel *evsel, *leader;
++
++	leader = list_entry(list->next, struct perf_evsel, node);
++	evsel = list_entry(list->prev, struct perf_evsel, node);
++
++	leader->nr_members = evsel->idx - leader->idx + 1;
++
++	__perf_evlist__for_each_entry(list, evsel)
++		evsel->leader = leader;
++}
++
++void perf_evlist__set_leader(struct perf_evlist *evlist)
++{
++	if (evlist->nr_entries) {
++		evlist->nr_groups = evlist->nr_entries > 1 ? 1 : 0;
++		__perf_evlist__set_leader(&evlist->entries);
++	}
++}
 diff --git a/tools/lib/perf/include/internal/evlist.h b/tools/lib/perf/include/internal/evlist.h
-index 212c29063ad4..f16fa9877d27 100644
+index f16fa9877d27..f366dbad6a88 100644
 --- a/tools/lib/perf/include/internal/evlist.h
 +++ b/tools/lib/perf/include/internal/evlist.h
-@@ -16,6 +16,7 @@ struct perf_mmap_param;
- struct perf_evlist {
- 	struct list_head	 entries;
- 	int			 nr_entries;
-+	int			 nr_groups;
- 	bool			 has_user_cpus;
- 	struct perf_cpu_map	*cpus;
- 	struct perf_cpu_map	*all_cpus;
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 6a8cc191849f..ee2a5cacbdfc 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -1776,7 +1776,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		rec->tool.ordered_events = false;
- 	}
+@@ -127,4 +127,5 @@ int perf_evlist__id_add_fd(struct perf_evlist *evlist,
  
--	if (!rec->evlist->nr_groups)
-+	if (!rec->evlist->core.nr_groups)
- 		perf_header__clear_feat(&session->header, HEADER_GROUP_DESC);
+ void perf_evlist__reset_id_hash(struct perf_evlist *evlist);
  
- 	if (data->is_pipe) {
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index f45887eb0910..9a4d8e928f46 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -1426,7 +1426,7 @@ int cmd_report(int argc, const char **argv)
++void __perf_evlist__set_leader(struct list_head *list);
+ #endif /* __LIBPERF_INTERNAL_EVLIST_H */
+diff --git a/tools/lib/perf/include/perf/evlist.h b/tools/lib/perf/include/perf/evlist.h
+index 0a7479dc13bf..9ca399d49bb4 100644
+--- a/tools/lib/perf/include/perf/evlist.h
++++ b/tools/lib/perf/include/perf/evlist.h
+@@ -46,4 +46,5 @@ LIBPERF_API struct perf_mmap *perf_evlist__next_mmap(struct perf_evlist *evlist,
+ 	     (pos) != NULL;						\
+ 	     (pos) = perf_evlist__next_mmap((evlist), (pos), overwrite))
  
- 	setup_forced_leader(&report, session->evlist);
- 
--	if (symbol_conf.group_sort_idx && !session->evlist->nr_groups) {
-+	if (symbol_conf.group_sort_idx && !session->evlist->core.nr_groups) {
- 		parse_options_usage(NULL, options, "group-sort-idx", 0);
- 		ret = -EINVAL;
- 		goto error;
-diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
-index c72adbd67386..33bda9c26542 100644
---- a/tools/perf/tests/bpf.c
-+++ b/tools/perf/tests/bpf.c
-@@ -151,7 +151,7 @@ static int do_test(struct bpf_object *obj, int (*func)(void),
- 	}
- 
- 	evlist__splice_list_tail(evlist, &parse_state.list);
--	evlist->nr_groups = parse_state.nr_groups;
-+	evlist->core.nr_groups = parse_state.nr_groups;
- 
- 	evlist__config(evlist, &opts, NULL);
- 
-diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
-index a28688b054f5..56a7b6a14195 100644
---- a/tools/perf/tests/parse-events.c
-+++ b/tools/perf/tests/parse-events.c
-@@ -49,7 +49,7 @@ static int test__checkevent_tracepoint(struct evlist *evlist)
- 	struct evsel *evsel = evlist__first(evlist);
- 
- 	TEST_ASSERT_VAL("wrong number of entries", 1 == evlist->core.nr_entries);
--	TEST_ASSERT_VAL("wrong number of groups", 0 == evlist->nr_groups);
-+	TEST_ASSERT_VAL("wrong number of groups", 0 == evlist->core.nr_groups);
- 	TEST_ASSERT_VAL("wrong type", PERF_TYPE_TRACEPOINT == evsel->core.attr.type);
- 	TEST_ASSERT_VAL("wrong sample_type",
- 		PERF_TP_SAMPLE_TYPE == evsel->core.attr.sample_type);
-@@ -62,7 +62,7 @@ static int test__checkevent_tracepoint_multi(struct evlist *evlist)
- 	struct evsel *evsel;
- 
- 	TEST_ASSERT_VAL("wrong number of entries", evlist->core.nr_entries > 1);
--	TEST_ASSERT_VAL("wrong number of groups", 0 == evlist->nr_groups);
-+	TEST_ASSERT_VAL("wrong number of groups", 0 == evlist->core.nr_groups);
- 
- 	evlist__for_each_entry(evlist, evsel) {
- 		TEST_ASSERT_VAL("wrong type",
-@@ -668,7 +668,7 @@ static int test__group1(struct evlist *evlist)
- 	struct evsel *evsel, *leader;
- 
- 	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
--	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->nr_groups);
-+	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->core.nr_groups);
- 
- 	/* instructions:k */
- 	evsel = leader = evlist__first(evlist);
-@@ -710,7 +710,7 @@ static int test__group2(struct evlist *evlist)
- 	struct evsel *evsel, *leader;
- 
- 	TEST_ASSERT_VAL("wrong number of entries", 3 == evlist->core.nr_entries);
--	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->nr_groups);
-+	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->core.nr_groups);
- 
- 	/* faults + :ku modifier */
- 	evsel = leader = evlist__first(evlist);
-@@ -765,7 +765,7 @@ static int test__group3(struct evlist *evlist __maybe_unused)
- 	struct evsel *evsel, *leader;
- 
- 	TEST_ASSERT_VAL("wrong number of entries", 5 == evlist->core.nr_entries);
--	TEST_ASSERT_VAL("wrong number of groups", 2 == evlist->nr_groups);
-+	TEST_ASSERT_VAL("wrong number of groups", 2 == evlist->core.nr_groups);
- 
- 	/* group1 syscalls:sys_enter_openat:H */
- 	evsel = leader = evlist__first(evlist);
-@@ -857,7 +857,7 @@ static int test__group4(struct evlist *evlist __maybe_unused)
- 	struct evsel *evsel, *leader;
- 
- 	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
--	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->nr_groups);
-+	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->core.nr_groups);
- 
- 	/* cycles:u + p */
- 	evsel = leader = evlist__first(evlist);
-@@ -901,7 +901,7 @@ static int test__group5(struct evlist *evlist __maybe_unused)
- 	struct evsel *evsel, *leader;
- 
- 	TEST_ASSERT_VAL("wrong number of entries", 5 == evlist->core.nr_entries);
--	TEST_ASSERT_VAL("wrong number of groups", 2 == evlist->nr_groups);
-+	TEST_ASSERT_VAL("wrong number of groups", 2 == evlist->core.nr_groups);
- 
- 	/* cycles + G */
- 	evsel = leader = evlist__first(evlist);
-@@ -987,7 +987,7 @@ static int test__group_gh1(struct evlist *evlist)
- 	struct evsel *evsel, *leader;
- 
- 	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
--	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->nr_groups);
-+	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->core.nr_groups);
- 
- 	/* cycles + :H group modifier */
- 	evsel = leader = evlist__first(evlist);
-@@ -1027,7 +1027,7 @@ static int test__group_gh2(struct evlist *evlist)
- 	struct evsel *evsel, *leader;
- 
- 	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
--	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->nr_groups);
-+	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->core.nr_groups);
- 
- 	/* cycles + :G group modifier */
- 	evsel = leader = evlist__first(evlist);
-@@ -1067,7 +1067,7 @@ static int test__group_gh3(struct evlist *evlist)
- 	struct evsel *evsel, *leader;
- 
- 	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
--	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->nr_groups);
-+	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->core.nr_groups);
- 
- 	/* cycles:G + :u group modifier */
- 	evsel = leader = evlist__first(evlist);
-@@ -1107,7 +1107,7 @@ static int test__group_gh4(struct evlist *evlist)
- 	struct evsel *evsel, *leader;
- 
- 	TEST_ASSERT_VAL("wrong number of entries", 2 == evlist->core.nr_entries);
--	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->nr_groups);
-+	TEST_ASSERT_VAL("wrong number of groups", 1 == evlist->core.nr_groups);
- 
- 	/* cycles:G + :uG group modifier */
- 	evsel = leader = evlist__first(evlist);
-diff --git a/tools/perf/tests/pfm.c b/tools/perf/tests/pfm.c
-index acd50944f6af..e8fd0da0762b 100644
---- a/tools/perf/tests/pfm.c
-+++ b/tools/perf/tests/pfm.c
-@@ -96,7 +96,7 @@ static int test__pfm_events(void)
- 				count_pfm_events(&evlist->core),
- 				table[i].nr_events);
- 		TEST_ASSERT_EQUAL(table[i].events,
--				evlist->nr_groups,
-+				evlist->core.nr_groups,
- 				0);
- 
- 		evlist__delete(evlist);
-@@ -180,7 +180,7 @@ static int test__pfm_group(void)
- 				count_pfm_events(&evlist->core),
- 				table[i].nr_events);
- 		TEST_ASSERT_EQUAL(table[i].events,
--				evlist->nr_groups,
-+				evlist->core.nr_groups,
- 				table[i].nr_groups);
- 
- 		evlist__delete(evlist);
++LIBPERF_API void perf_evlist__set_leader(struct perf_evlist *evlist);
+ #endif /* __LIBPERF_EVLIST_H */
+diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+index c0c7ceb11060..71468606e8a7 100644
+--- a/tools/lib/perf/libperf.map
++++ b/tools/lib/perf/libperf.map
+@@ -45,6 +45,7 @@ LIBPERF_0.0.1 {
+ 		perf_evlist__munmap;
+ 		perf_evlist__filter_pollfd;
+ 		perf_evlist__next_mmap;
++		perf_evlist__set_leader;
+ 		perf_mmap__consume;
+ 		perf_mmap__read_init;
+ 		perf_mmap__read_done;
 diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 9cb663882273..752f64afd622 100644
+index 752f64afd622..47581a237c7a 100644
 --- a/tools/perf/util/evlist.c
 +++ b/tools/perf/util/evlist.c
-@@ -240,7 +240,7 @@ void __evlist__set_leader(struct list_head *list)
+@@ -223,26 +223,9 @@ int __evlist__set_tracepoints_handlers(struct evlist *evlist,
+ 	return err;
+ }
+ 
+-void __evlist__set_leader(struct list_head *list)
+-{
+-	struct evsel *evsel, *leader;
+-
+-	leader = list_entry(list->next, struct evsel, core.node);
+-	evsel = list_entry(list->prev, struct evsel, core.node);
+-
+-	leader->core.nr_members = evsel->core.idx - leader->core.idx + 1;
+-
+-	__evlist__for_each_entry(list, evsel) {
+-		evsel->core.leader = &leader->core;
+-	}
+-}
+-
  void evlist__set_leader(struct evlist *evlist)
  {
- 	if (evlist->core.nr_entries) {
--		evlist->nr_groups = evlist->core.nr_entries > 1 ? 1 : 0;
-+		evlist->core.nr_groups = evlist->core.nr_entries > 1 ? 1 : 0;
- 		__evlist__set_leader(&evlist->core.entries);
- 	}
+-	if (evlist->core.nr_entries) {
+-		evlist->core.nr_groups = evlist->core.nr_entries > 1 ? 1 : 0;
+-		__evlist__set_leader(&evlist->core.entries);
+-	}
++	perf_evlist__set_leader(&evlist->core);
  }
-@@ -1748,7 +1748,7 @@ bool evlist__exclude_kernel(struct evlist *evlist)
-  */
- void evlist__force_leader(struct evlist *evlist)
- {
--	if (!evlist->nr_groups) {
-+	if (!evlist->core.nr_groups) {
- 		struct evsel *leader = evlist__first(evlist);
  
- 		evlist__set_leader(evlist);
+ int __evlist__add_default(struct evlist *evlist, bool precise)
 diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index 2073cfa79f79..cb2bf5f4866a 100644
+index cb2bf5f4866a..5c22383489ae 100644
 --- a/tools/perf/util/evlist.h
 +++ b/tools/perf/util/evlist.h
-@@ -50,7 +50,6 @@ enum bkw_mmap_state {
+@@ -201,7 +201,6 @@ void evlist__set_selected(struct evlist *evlist, struct evsel *evsel);
+ int evlist__create_maps(struct evlist *evlist, struct target *target);
+ int evlist__apply_filters(struct evlist *evlist, struct evsel **err_evsel);
  
- struct evlist {
- 	struct perf_evlist core;
--	int		 nr_groups;
- 	bool		 enabled;
- 	int		 id_pos;
- 	int		 is_pos;
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index a1056540c13b..44249027507a 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -778,7 +778,7 @@ static int write_pmu_mappings(struct feat_fd *ff,
- static int write_group_desc(struct feat_fd *ff,
- 			    struct evlist *evlist)
- {
--	u32 nr_groups = evlist->nr_groups;
-+	u32 nr_groups = evlist->core.nr_groups;
- 	struct evsel *evsel;
- 	int ret;
+-void __evlist__set_leader(struct list_head *list);
+ void evlist__set_leader(struct evlist *evlist);
  
-@@ -2735,7 +2735,7 @@ static int process_group_desc(struct feat_fd *ff, void *data __maybe_unused)
- 	 * Rebuild group relationship based on the group_desc
- 	 */
- 	session = container_of(ff->ph, struct perf_session, header);
--	session->evlist->nr_groups = nr_groups;
-+	session->evlist->core.nr_groups = nr_groups;
- 
- 	i = nr = 0;
- 	evlist__for_each_entry(session->evlist, evsel) {
+ u64 __evlist__combined_sample_type(struct evlist *evlist);
 diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 6fb1830097cb..f6d77cb44007 100644
+index f6d77cb44007..e5eae23cfceb 100644
 --- a/tools/perf/util/parse-events.c
 +++ b/tools/perf/util/parse-events.c
-@@ -2285,7 +2285,7 @@ int __parse_events(struct evlist *evlist, const char *str,
- 	if (!ret) {
- 		struct evsel *last;
+@@ -1833,7 +1833,7 @@ void parse_events__set_leader(char *name, struct list_head *list,
+ 	if (parse_events__set_leader_for_uncore_aliase(name, list, parse_state))
+ 		return;
  
--		evlist->nr_groups += parse_state.nr_groups;
-+		evlist->core.nr_groups += parse_state.nr_groups;
- 		last = evlist__last(evlist);
- 		last->cmdline_group_boundary = true;
- 
-diff --git a/tools/perf/util/pfm.c b/tools/perf/util/pfm.c
-index 6eef6dfeaa57..dd9ed56e0504 100644
---- a/tools/perf/util/pfm.c
-+++ b/tools/perf/util/pfm.c
-@@ -110,7 +110,7 @@ int parse_libpfm_events_option(const struct option *opt, const char *str,
- 				   "cannot close a non-existing event group\n");
- 				goto error;
- 			}
--			evlist->nr_groups++;
-+			evlist->core.nr_groups++;
- 			grp_leader = NULL;
- 			grp_evt = -1;
- 		}
+-	__evlist__set_leader(list);
++	__perf_evlist__set_leader(list);
+ 	leader = list_entry(list->next, struct evsel, core.node);
+ 	leader->group_name = name ? strdup(name) : NULL;
+ }
 -- 
 2.31.1
 
