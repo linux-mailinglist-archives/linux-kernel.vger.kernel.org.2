@@ -2,137 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E06C3BD745
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 572AE3BD74C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhGFNAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 09:00:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41968 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231772AbhGFNAU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 09:00:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625576261;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DnLEnBkgsWGks2sHBISFH7oG7rJthzexSBxylFpgy8c=;
-        b=hwEYJs8vFzR90U3gkrpXqxkyDk7phi7KmMRVwj1ayTZytYBX2QTOpbdvQnNo5+b4o3e11T
-        sxyly3Tue65DPH4pwyBq4USz2pMuOZGVj+vLrBVS8BhfaaJhgTRjLNvSqGS1SQk2e71l+M
-        O21rU5+uiVlGn8YBjAvI3pSpFBAEJFw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-376-7K3utxn8N8qBK5eVBcp0Qg-1; Tue, 06 Jul 2021 08:57:40 -0400
-X-MC-Unique: 7K3utxn8N8qBK5eVBcp0Qg-1
-Received: by mail-ed1-f71.google.com with SMTP id w1-20020a0564022681b0290394cedd8a6aso10728625edd.14
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 05:57:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DnLEnBkgsWGks2sHBISFH7oG7rJthzexSBxylFpgy8c=;
-        b=bTJUe0RG/XJGqpOKXGtxRRahzUiqgdrNitLRdASpVSEqyBnv2TYFQ6GIc3BzS0plKh
-         p/J3aSiiM5icpR90E5hLGeb+pXBGYHWrU3/nmmS/oTENhtGvURf8Zjzb7jcydeHWL6n4
-         m51YEmmtdfDH1PIrPtYFeKN7PxfNhh3BGR1VXMG7kOeI1siZnnzE86tFLrrPB6YcRgS/
-         fs/ZMgrD+dMBY7HnEhw8vw52iOA9zJsB/BX3S9Mlzip46WL+EipIGl0VGdA9xhYKuHbE
-         gjaAm+KcGtvip7+xYxp2GPl2XCLYTHBBJRnVXdXsJYHMLK+1e6/6f5+YitzQFE0PJ07G
-         c8Ng==
-X-Gm-Message-State: AOAM533TWcgHWMhXjAUlNOqlHYMYaRZS3+iPpgGHJzQkV4b5YkHJhvZt
-        eitld4u3YCzdVFQT/uwn01hT5WVpqVtzSG2P0XAt3LL7zZNfXHH/o+xc7/uXUwAIlvEFMxxnNvT
-        FsCRN76WXm1UDjYKuz075xYxy
-X-Received: by 2002:a17:906:b41:: with SMTP id v1mr12889603ejg.358.1625576259478;
-        Tue, 06 Jul 2021 05:57:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxLQcQder9RFUtT7E4Nw+mEzCcjU4QaMy7Fr1/rzumUzfDh/6aFBYLjWRGoNaZd0i8PucyR4A==
-X-Received: by 2002:a17:906:b41:: with SMTP id v1mr12889588ejg.358.1625576259322;
-        Tue, 06 Jul 2021 05:57:39 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id c9sm2891218ejs.28.2021.07.06.05.57.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 05:57:38 -0700 (PDT)
-To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com, Xiaoyao Li <xiaoyao.li@intel.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <e777bbbe10b1ec2c37d85dcca2e175fe3bc565ec.1625186503.git.isaku.yamahata@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [RFC PATCH v2 06/69] KVM: TDX: add a helper function for kvm to
- call seamcall
-Message-ID: <364da5f9-41eb-74b6-db38-397c8a64b538@redhat.com>
-Date:   Tue, 6 Jul 2021 14:57:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <e777bbbe10b1ec2c37d85dcca2e175fe3bc565ec.1625186503.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S232409AbhGFNAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 09:00:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231614AbhGFNAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 09:00:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95072619B2;
+        Tue,  6 Jul 2021 12:57:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625576277;
+        bh=tXJG+vlNUQuSlsOGmqvU6o9KMiZhzD6lIR38SC/vSio=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JdckYc3K8x8Unj771PzniuMxFqJCDQ00CQleN9+z74naWEyY6Yqc14+V3OZhT/75a
+         pDuFZq/PfVSKtR0rsC4l183ob4gwqMU4w8F3qYWmjWNveAqS95siHZtoXfBiTstsw+
+         J7xE14wMb2/2gtYaX20z9Gvsq4sBSfUixb8AyjF25YnS26QbF64AVuZPXG9sjPhJFq
+         ZO8MbM7S6uUEXFXcaMhadQ2+as58hzWLBlyqGpOAjvxX1RvwfcheuahNvxTc4nqOPY
+         QwOASxp7i0AsbkBCJ/NJrbY1q2noOyiGh0OfWxdqdES4hmA7P3P0lWISRy5IYc58hR
+         620aCKEn0JAKw==
+Date:   Tue, 6 Jul 2021 21:57:53 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v8 13/13] x86/kprobes: Fixup return address in
+ generic trampoline handler
+Message-Id: <20210706215753.c7cad02afdeda48bf801d294@kernel.org>
+In-Reply-To: <YOLEMvR1bCQiIMcl@gmail.com>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+        <162400004562.506599.7549585083316952768.stgit@devnote2>
+        <YOLEMvR1bCQiIMcl@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
-> +
-> +.Lseamcall:
-> +	seamcall
-> +	jmp	.Lseamcall_ret
-> +.Lspurious_fault:
-> +	call	kvm_spurious_fault
-> +.Lseamcall_ret:
-> +
-> +	movq    (FRAME_OFFSET + 8)(%rsp), %rdi
-> +	testq   %rdi, %rdi
-> +	jz 1f
-> +
-> +	/* If ex is non-NULL, store extra return values into it. */
-> +	movq    %rcx, TDX_SEAM_rcx(%rdi)
-> +	movq    %rdx, TDX_SEAM_rdx(%rdi)
-> +	movq    %r8,  TDX_SEAM_r8(%rdi)
-> +	movq    %r9,  TDX_SEAM_r9(%rdi)
-> +	movq    %r10, TDX_SEAM_r10(%rdi)
-> +	movq    %r11, TDX_SEAM_r11(%rdi)
-> +
-> +1:
-> +	FRAME_END
-> +	ret
-> +
-> +	_ASM_EXTABLE(.Lseamcall, .Lspurious_fault)
+On Mon, 5 Jul 2021 10:34:58 +0200
+Ingo Molnar <mingo@kernel.org> wrote:
 
-Please use local labels and avoid unnecessary jmp, for example
+> 
+> * Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > In x86, kretprobe trampoline address on the stack frame will
+> > be replaced with the real return address after returning from
+> > trampoline_handler. Before fixing the return address, the real
+> > return address can be found in the current->kretprobe_instances.
+> > 
+> > However, since there is a window between updating the
+> > current->kretprobe_instances and fixing the address on the stack,
+> > if an interrupt caused at that timing and the interrupt handler
+> > does stacktrace, it may fail to unwind because it can not get
+> > the correct return address from current->kretprobe_instances.
+> > 
+> > This will minimize that window by fixing the return address
+> > right before updating current->kretprobe_instances.
+> 
+> Is there still a window? I.e. is it "minimized" (to how big of a window?), 
+> or eliminated?
 
-1:
-	seamcall
-	movq	(FRAME_OFFSET + 8)(%rsp), %rdi
-	testq	%rdi, %rdi
-	jz	2f
+Oh, this will eliminate the window, because the return address is
+fixed before updating the 'current->kretprobe_instance'.
 
-	/* If ex is non-NULL, store extra return values into it. */
-	movq    %rcx, TDX_SEAM_rcx(%rdi)
-	movq    %rdx, TDX_SEAM_rdx(%rdi)
-	movq    %r8,  TDX_SEAM_r8(%rdi)
-	movq    %r9,  TDX_SEAM_r9(%rdi)
-	movq    %r10, TDX_SEAM_r10(%rdi)
-	movq    %r11, TDX_SEAM_r11(%rdi)
-2:
-	FRAME_END
-	ret
-3:
-	/* Probably it helps to write an error code in %rax? */
-	movq	$0x4000000500000000, %rax
-	cmpb	$0, kvm_rebooting
-	jne	2b
-	ud2
-	_ASM_EXTABLE(1b, 3b)
 
-Paolo
+> 
+> > +void arch_kretprobe_fixup_return(struct pt_regs *regs,
+> > +				 unsigned long correct_ret_addr)
+> > +{
+> > +	unsigned long *frame_pointer;
+> > +
+> > +	frame_pointer = ((unsigned long *)&regs->sp) + 1;
+> > +
+> > +	/* Replace fake return address with real one. */
+> > +	*frame_pointer = correct_ret_addr;
+> 
+> Firstly, why does &regs->sp have to be forced to 'unsigned long *'? 
+> 
+> pt_regs::sp is 'unsigned long' on both 32-bit and 64-bit kernels AFAICS.
 
+Ah, right.
+
+> 
+> Secondly, the new code modified by your patch now looks like this:
+> 
+>         frame_pointer = ((unsigned long *)&regs->sp) + 1;
+>  
+> +       kretprobe_trampoline_handler(regs, frame_pointer);
+> 
+> where:
+> 
+> +void arch_kretprobe_fixup_return(struct pt_regs *regs,
+> +                                unsigned long correct_ret_addr)
+> +{
+> +       unsigned long *frame_pointer;
+> +
+> +       frame_pointer = ((unsigned long *)&regs->sp) + 1;
+> +
+> +       /* Replace fake return address with real one. */
+> +       *frame_pointer = correct_ret_addr;
+> +}
+> 
+> So we first do:
+> 
+>         frame_pointer = ((unsigned long *)&regs->sp) + 1;
+> 
+> ... and pass that in to arch_kretprobe_fixup_return() as 
+> 'correct_ret_addr', which does:
+
+No, 'correct_ret_addr' is found from 'current->kretprobe_instances'
+
+        /* Find correct address and all nodes for this frame. */
+        correct_ret_addr = (void *)__kretprobe_find_ret_addr(current, &node);
+
+> 
+> +       frame_pointer = ((unsigned long *)&regs->sp) + 1;
+> +	*frame_pointer = correct_ret_addr;
+> 
+> ... which looks like the exact same thing as:
+> 
+> 	*frame_pointer = frame_pointer;
+> 
+> ... obfuscated through a thick layer of type casts?
+
+Thus it will be the same thing as
+
+	*frame_pointer = __kretprobe_find_ret_addr(current, &node);
+
+Actually, this is a bit confusing because same 'frame_pointer' is
+calcurated twice from 'regs->sp'. This is because the return address
+is stored at 'frame_pointer' or not depends on the architecture.
+
+
+Thank you,
+
+> 
+> Thanks,
+> 
+> 	Ingo
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
