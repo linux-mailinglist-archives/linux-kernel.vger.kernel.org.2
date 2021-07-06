@@ -2,176 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F543BDA07
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309FF3BDA1E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbhGFPYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:24:06 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:33302 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231715AbhGFPYE (ORCPT
+        id S232063AbhGFP20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 11:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231715AbhGFP2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:24:04 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 166F6dNG025235;
-        Tue, 6 Jul 2021 17:21:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=lLGR8C8rrnqtM2RD7BZasUGPpC8PxB8+w4cxLfW4Uq4=;
- b=tSDbaBK/81YI+n/PD1miwCO7NPWX/60hIbjZxNkPQ/LqsLqWVXQxH67ZBY0WsKMbPs3k
- DdXewsocnRWz0SBY3UVw0yPc9g7GGO5MfUbROJpb+Vyrxd2wceFKI5XqSXy5TlArOJhl
- fC3C4P4infB9Aof1zyEdQai5CHmteGc1ZiR5VFf/T0GQtA91gNwy8JFZY8tTlspsmQvZ
- ggqIDDg9K+P4EZAnHi0PxocE0fFU15C8adoHfyEwa7jPL/1O4g+F4XuAcl9g5FqnpjaG
- l9WlIv+OByPh9kRs4+Z6Dg2LtvqTuelJ615eZatsLhNZXOQTLX8DNoXt8Cizq3NreBsg Ig== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39mneb9f4k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 17:21:07 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C1CFC10002A;
-        Tue,  6 Jul 2021 17:21:04 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A430621BF5A;
-        Tue,  6 Jul 2021 17:21:04 +0200 (CEST)
-Received: from lmecxl0951.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 6 Jul
- 2021 17:21:03 +0200
-Subject: Re: [PATCH] drm/stm: ltdc: improve pm_runtime to stop clocks
-To:     Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>,
-        "Philippe CORNU - foss" <philippe.cornu@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Yannick FERTRE <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>,
-        Marek Vasut <marex@denx.de>,
-        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>
-References: <20210629115709.16145-1-raphael.gallais-pou@foss.st.com>
-From:   yannick Fertre <yannick.fertre@foss.st.com>
-Message-ID: <40f82de6-5340-347a-ae37-32c0928a5536@foss.st.com>
-Date:   Tue, 6 Jul 2021 17:21:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 6 Jul 2021 11:28:24 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152A3C061762
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 08:25:46 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id p9so1112724pjl.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 08:25:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kBvoTSBcOt78f+hoOE9oCqUZer2JVIUIWKm+LE7tBB8=;
+        b=X163Xk+G02T/FYeziNGDwCPOc6BLNJpmRANJZemVrSobPquSFvpYvLg7I+/xXol03F
+         kgToG/GWqTW22vdfS86rrDbHG+VIoJpV7F3ia6ZGlrrWTBFKBlA1qJfDU2QYjFMxw9bn
+         18zM+SC3OK5PBTSWnVn9GnFtpVk1NhRB4WRRd6zVs3M5rR6QpNocNXBiV7EL2h8le3Ow
+         jvZU/A0iyEbkwxC5Yua5tblx9J0ejeZ7v4lloFM8eg/sgExGmReJOD+eEQ6g9p7ckBea
+         AQnNsdBTVeckFCBTYdf84UR54cEJl3YU8s6gAghdvxWN3OAHAx/OxyzWsnveJxZQA+4F
+         K0qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kBvoTSBcOt78f+hoOE9oCqUZer2JVIUIWKm+LE7tBB8=;
+        b=iLRkXb//OKY3Qu9FA0wILwPHAcuXwmpq7gZiZpHF4nc/b6LIBpF0pBrX/qSuYnCfnG
+         I/HM+0JS4TrhwfHIBD+Snt6fSmOhHE/Ap9RxTfUo2+HWrV/+EB7asmcW4WmS3Nq6pA9n
+         NrMAD5pFoUCtGQX5MaoNyHxYTPNg+VQEnNTim/wu61LazjmWOfr2uUr13Znw1VlniOtF
+         8DyNAB251t3tiaAWCJorHYFoOJmTq2yEQ3vLK4Cui9KWAOz3ww0YPAqEeBJgDtsibGL/
+         lSK5+1TQJ89j+55zF5/YsN0MrGPieVptckYePEMk/t8wqsJ6crHzFVjf4udXUZum5k8/
+         4uNQ==
+X-Gm-Message-State: AOAM531cEqUab/p5Q2pQKXhHsF/dhZf/HakiFSzQ9A3zfCGFxnvJLCEZ
+        ihtO/NT5u70F6K8YzVw92ug39w==
+X-Google-Smtp-Source: ABdhPJxrcXwOAFPmP3ClDrDAEt0u9Z/9YZvGne/AXypBqtfhopbFKVCe78sZDR5N+5fl5a1I4tI3yA==
+X-Received: by 2002:a17:90a:8417:: with SMTP id j23mr1072739pjn.210.1625585145462;
+        Tue, 06 Jul 2021 08:25:45 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id m18sm17872288pff.88.2021.07.06.08.25.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 08:25:44 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1m0mxC-004SbX-Ps; Tue, 06 Jul 2021 12:25:42 -0300
+Date:   Tue, 6 Jul 2021 12:25:42 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
+Message-ID: <20210706152542.GP4604@ziepe.ca>
+References: <20210705130314.11519-1-ogabbay@kernel.org>
+ <YOQXBWpo3whVjOyh@phenom.ffwll.local>
+ <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
+ <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
+ <20210706142357.GN4604@ziepe.ca>
+ <CAKMK7uELNzwUe+hhVWRg=Pk5Wt_vOOX922H48Kd6dTyO2PeBbg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210629115709.16145-1-raphael.gallais-pou@foss.st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-06_07:2021-07-06,2021-07-06 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uELNzwUe+hhVWRg=Pk5Wt_vOOX922H48Kd6dTyO2PeBbg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raphaël,
+On Tue, Jul 06, 2021 at 04:39:19PM +0200, Daniel Vetter wrote:
+> On Tue, Jul 6, 2021 at 4:23 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Tue, Jul 06, 2021 at 12:36:51PM +0200, Daniel Vetter wrote:
+> >
+> > > If that means AI companies don't want to open our their hw specs
+> > > enough to allow that, so be it - all you get in that case is
+> > > offloading the kernel side  of the stack for convenience, with zero
+> > > long term prospects to ever make this into a cross vendor subsystem
+> > > stack that does something useful.
+> >
+> > I don't think this is true at all - nouveau is probably the best
+> > example.
+> >
+> > nouveau reverse engineered a userspace stack for one of these devices.
+> >
+> > How much further ahead would they have been by now if they had a
+> > vendor supported, fully featured, open kernel driver to build the
+> > userspace upon?
+> 
+> There is actually tons of example here, most of the arm socs have
+> fully open kernel drivers, supported by the vendor (out of tree).
 
-thanks for the patch.
+I choose nouveau because of this:
 
-Tested-by: Yannick Fertre <yannick.fertre@foss.st.com>
+$ git ls-files drivers/gpu/drm/arm/ | xargs wc -l
+ 15039 total
+$ git ls-files drivers/gpu/drm/nouveau/ | xargs wc -l
+ 204198 total
 
+At 13x the size of mali this is not just some easy to wire up memory
+manager and command submission. And after all that typing it still
+isn't very good. The fully supported AMD vendor driver is over 3
+million lines, so nouveau probably needs to grow several times.
 
+My argument is that an in-tree open kernel driver is a big help to
+reverse engineering an open userspace. Having the vendors
+collaboration to build that monstrous thing can only help the end goal
+of an end to end open stack.
 
-On 6/29/21 1:58 PM, Raphael GALLAIS-POU - foss wrote:
-> Bugzilla ticket: https://intbugzilla.st.com/show_bug.cgi?id=60620
-> Gerrit patch: https://gerrit.st.com/c/mpu/oe/st/linux-stm32/+/208093/
-> 
-> In the LTDC driver, pm_runtime_get_sync was wrongly used and caused the
-> LTDC pixel clock to be systematically enabled in the clock summary.
-> 
-> After one simple use of the LTDC by activating and deactivating,
-> the clock summary results as below:
-> 
-> ~# cat /sys/kernel/debug/clk/clk_summary | grep ltdc
->          ltdc_px               1        1        0    29700000          0     0  50000         N
->                ltdc            0        0        0   133250000          0     0  50000         N
-> 
-> By doing so, pm_runtime_get_sync only increments the clock counter when
-> the driver was in not active, displaying the right information when the
-> LTDC is not in use, resulting of the below clock summary after deactivation
-> of the LTDC.
-> 
-> ~# cat /sys/kernel/debug/clk/clk_summary | grep ltdc
->          ltdc_px               0        0        0    29700000          0     0  50000         N
->                ltdc            0        0        0   133250000          0     0  50000         N
-> 
-> The clocks are activated either by the crtc_set_nofb function or
-> by the crtc_atomic_enable function. A check of pm_runtime activity must
-> be done before set clocks on. This check must also be done for others
-> functions which access registers.
-> 
-> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-> ---
->   drivers/gpu/drm/stm/ltdc.c | 21 ++++++++++++++++++++-
->   1 file changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-> index 08b71248044d..bf9d18023698 100644
-> --- a/drivers/gpu/drm/stm/ltdc.c
-> +++ b/drivers/gpu/drm/stm/ltdc.c
-> @@ -425,10 +425,17 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
->   {
->   	struct ltdc_device *ldev = crtc_to_ltdc(crtc);
->   	struct drm_device *ddev = crtc->dev;
-> +	int ret;
->   
->   	DRM_DEBUG_DRIVER("\n");
->   
-> -	pm_runtime_get_sync(ddev->dev);
-> +	if (!pm_runtime_active(ddev->dev)) {
-> +		ret = pm_runtime_get_sync(ddev->dev);
-> +		if (ret) {
-> +			DRM_ERROR("Failed to set mode, cannot get sync\n");
-> +			return;
-> +		}
-> +	}
->   
->   	/* Sets the background color value */
->   	reg_write(ldev->regs, LTDC_BCCR, BCCR_BCBLACK);
-> @@ -783,6 +790,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
->   	struct drm_plane_state *newstate = drm_atomic_get_new_plane_state(state,
->   									  plane);
->   	struct drm_framebuffer *fb = newstate->fb;
-> +	struct drm_device *ddev = plane->dev;
->   	u32 lofs = plane->index * LAY_OFS;
->   	u32 x0 = newstate->crtc_x;
->   	u32 x1 = newstate->crtc_x + newstate->crtc_w - 1;
-> @@ -792,6 +800,11 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
->   	u32 val, pitch_in_bytes, line_length, paddr, ahbp, avbp, bpcr;
->   	enum ltdc_pix_fmt pf;
->   
-> +	if (!pm_runtime_active(ddev->dev)) {
-> +		DRM_DEBUG_DRIVER("crtc not activated");
-> +		return;
-> +	}
-> +
->   	if (!newstate->crtc || !fb) {
->   		DRM_DEBUG_DRIVER("fb or crtc NULL");
->   		return;
-> @@ -897,8 +910,14 @@ static void ltdc_plane_atomic_disable(struct drm_plane *plane,
->   	struct drm_plane_state *oldstate = drm_atomic_get_old_plane_state(state,
->   									  plane);
->   	struct ltdc_device *ldev = plane_to_ltdc(plane);
-> +	struct drm_device *ddev = plane->dev;
->   	u32 lofs = plane->index * LAY_OFS;
->   
-> +	if (!pm_runtime_active(ddev->dev)) {
-> +		DRM_DEBUG_DRIVER("crtc already deactivated");
-> +		return;
-> +	}
-> +
->   	/* disable layer */
->   	reg_clear(ldev->regs, LTDC_L1CR + lofs, LXCR_LEN);
->   
-> 
+For instance a vendor with an in-tree driver has a strong incentive to
+sort out their FW licensing issues so it can be redistributed.
+
+I'm not sure about this all or nothing approach. AFAIK DRM has the
+worst problems with out of tree drivers right now.
+
+> Where it would have helped is if this open driver would come with
+> redistributable firmware, because that is right now the thing making
+> nouveau reverse-engineering painful enough to be non-feasible. Well
+> not the reverse-engineering, but the "shipping the result as a working
+> driver stack".
+
+I don't think much of the out of tree but open drivers. The goal must
+be to get vendors in tree.
+
+I would applaud Habana for getting an intree driver at least, even if
+the userspace is not what we'd all want to see.
+
+> I don't think the facts on the ground support your claim here, aside
+> from the practical problem that nvidia is unwilling to even create an
+> open driver to begin with. So there isn't anything to merge.
+
+The internet tells me there is nvgpu, it doesn't seem to have helped.
+
+Jason
