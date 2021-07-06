@@ -2,223 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492413BC8B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB243BC8BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhGFJ4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 05:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbhGFJ4r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 05:56:47 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14997C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 02:54:09 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id v5so25345176wrt.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 02:54:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g0tC4MUw9+SlqVFCUMsi7lqIq0CVDtng7PTCdgO5oEU=;
-        b=S+dyx3xgcpj4V3ANCC/A6Amv96T6RfsrHnI9Uz0FsZM7M1pQr864n7wdcaBDSg5Vbd
-         lSGSdbe5aZ7zVjxxd8F3zNng8k7IdH9JrfTHCb6mrD9gTr8Xuf7RacFgLdU5FwOZMpDE
-         /5SWAXvxFc6XhtmPg+H9EO6ov+vEG+E41XGQweMOGVHNECJ6mUL4VfMJ8L1FScR+leFe
-         0WRWQ4MGc4yS43o/cqzD1xSwhjXiUjKMSdBvuTAKvIfDabwOnMUx3BlyDP7xrVSCBsPl
-         YoqCvWxCZ8hn7ZglybVg4QTJlaFVIBsgzc8hxEma6a1XaJhJr1SyqaPdJ1wk96tEEFo/
-         s4aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=g0tC4MUw9+SlqVFCUMsi7lqIq0CVDtng7PTCdgO5oEU=;
-        b=tmF0T7LLBQyZitutOsoDb7Ayc3dEzxy8fT9m5hjgNxSgVoSYPNG0eR6QIeWVyMfr+0
-         dJpVVZGsApOKG7Rmdn3CnJGEW2Iv3dSvqAEBbKT0y7v7U78PZrNyizDPlLz5vl/1GETg
-         NJV0lpA332TVWk4Y2kzzVPhsdkNe1uaDPgddUtvsiDfhkPg5nS9efQ6n68nzK2QYbpGV
-         +GYy0pnbyuVwmC1TLqPtle/waco9QRcxn5ISIW9Q94vNAy7bamJ971KkREyB+2hmcfA3
-         vD0sWV9V+jJDt2dhv9BMMnLTiow+7tWI61iy941fsTclGvaGVb4M2IcbhgUcqwfeKVak
-         39vA==
-X-Gm-Message-State: AOAM530d1pX0eftbZKeVhNvUULjv/LQOU1Jc6vEk5pgkPA/1ReBYgifm
-        ZnQcRx8n0n2s0ROcuObCxzc1HQ==
-X-Google-Smtp-Source: ABdhPJw1OVsLKqTJI+QcQyufAyhgXFbBXCF9GbXQs8fIfbWhEVMa+N/VRwbpAMfkQ9yGFvibeQJX3g==
-X-Received: by 2002:adf:fb51:: with SMTP id c17mr21148359wrs.106.1625565246820;
-        Tue, 06 Jul 2021 02:54:06 -0700 (PDT)
-Received: from ?IPv6:2001:861:44c0:66c0:7257:ae4e:a17f:5800? ([2001:861:44c0:66c0:7257:ae4e:a17f:5800])
-        by smtp.gmail.com with ESMTPSA id e23sm2264839wme.31.2021.07.06.02.54.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 02:54:06 -0700 (PDT)
-Subject: Re: [PATCH 0/4] PCI: replace dublicated MRRS limit quirks
-To:     Art Nikpal <email2tema@gmail.com>,
-        Huacai Chen <chenhuacai@gmail.com>
-Cc:     =?UTF-8?B?6ZmI5Y2O5omN?= <chenhuacai@loongson.cn>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Yue Wang <yue.wang@amlogic.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Wilczynski <kw@linux.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Artem Lapkin <art@khadas.com>, Nick Xie <nick@khadas.com>,
-        Gouwa Wang <gouwa@khadas.com>
-References: <20210701154634.GA60743@bjorn-Precision-5520>
- <67a9e1fa.81a9.17a64c8e7f7.Coremail.chenhuacai@loongson.cn>
- <CAKaHn9KxRrBsn4b9fSO1eDzM3XdV2GzfwVX+cGw9uS_eKg75dw@mail.gmail.com>
- <CAAhV-H5M5Qf01DTD8ULGGGnv2kc2exRgXCLyNOOaqRL=dZ77xQ@mail.gmail.com>
- <CAKaHn9+iHk3UtovWU+WE2mXD9oTZD9UdxrYuLB2Odgbr91Gs-Q@mail.gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <1271fa28-dddd-01a3-5ad5-e3b4898f5482@baylibre.com>
-Date:   Tue, 6 Jul 2021 11:54:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231274AbhGFJ5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 05:57:43 -0400
+Received: from mout.gmx.net ([212.227.15.15]:37943 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231271AbhGFJ5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 05:57:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1625565279;
+        bh=HfI1fnAl8yXB7R6zw/6uGgLzJrfs1z8CTgu8YasTu8A=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=MSlfUBxlZvS9mg5TyrL+qgBsEYkpw4pJrf77rmAC5efOCMZRz1SimhrVBzBlfzexm
+         N0Vc0qlII3AwMyvyBydEaA3hHmZZ80sWLMbCshTfUFT2bI7V4ONGaTvyKJb0bgLnFS
+         7MBKVYOKio+OM1q8fonyXBi4c68oVIXrGC7TcR/c=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [80.245.79.159] ([80.245.79.159]) by web-mail.gmx.net
+ (3c-app-gmx-bs60.server.lan [172.19.170.144]) (via HTTP); Tue, 6 Jul 2021
+ 11:54:39 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAKaHn9+iHk3UtovWU+WE2mXD9oTZD9UdxrYuLB2Odgbr91Gs-Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Message-ID: <trinity-cc8f5927-9aaf-43ae-a107-6a6229f1b481-1625565279264@3c-app-gmx-bs60>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Subject: BUG: MTK DRM/HDMI broken on 5.13 (mt7623/bpi-r2)
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 6 Jul 2021 11:54:39 +0200
+Importance: normal
+Sensitivity: Normal
+X-Priority: 3
+X-Provags-ID: V03:K1:OoEQiM/tnR+cNPyCdrhP49bAjgvwQ+lcL2OS2XXYultpQRZ3iKmx2n0JXV3n3Fd/VHVP9
+ URFMBbMlD29B8YWbPuG94J3F5zWccIqeUBT1b3/QLw7EcLA1JrI3PjO+FQx3imeyC8zgfU+KOerU
+ SBvcaufgt9H7rbyrAH7vebZLBS9lGqXs77pGRfMkntQEsAfeL8lO7PqFYuVKbfqsm2saOSxPGiZz
+ 1ywjhxyBlAPnO/j9ixwng5+18VP/dFCoD3JyS/5IHrvnwd1vKJnHRUax54UOu+AonufbuKYhQFcx
+ Nc=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NiH7UObdIF4=:Bg0EwcLfhCF2bM3KUv6JSd
+ Q39d+oRzZNlz2GzCi6t2BMIrQIiPhiBUPc+0wnnrteIX6OuFa45YuJBgPrfIBXx6tguKBCp49
+ TGWem2GBYxZzGvsBFmWJaAF+PZ1qESJlVy8Erlqquwecq4q5ec2f4NZHwL+6bXn6MQh94FTb/
+ 7VCcOdZyhkZO12oi2vioRCcbwlqJBQt93keYwD5q9PXa8u2ES4hzaLLkfRKigJffBXop14S7w
+ ndcMLVDhRQ7RoEmE0z2jLSVoHqogiW4s/4lx5h2SfSX4GjxKOZYcdan9jjHgyljizL6ZqnSHk
+ vwlmTHtLChPXl7RdigxxPSyrmPsUH0CaPXY2O6i1obnMglJjNTehzP28kTKvH7KgE/1YGNe5F
+ Shf/BUgVaLsdnU239JwpE7RIaZI5legkv8qnx5icFi/uZL0oXWHIzGkkV2uWeXE6JvcX/HV71
+ 0q1qoLQb/ONFD9IFKO1+L0UDKuymVbAOXZAOxqvYXYXL4NhSMFA4aNdoAc+oqZmqdzzsJMnuS
+ jkrlfwdVRbCwremdvuZFG1yW6qXDPaIT/LV9PRnZR9a5GXNhcCZsf/nWPPbcw8C81mY+5EMB0
+ G87A0GZyvJboKu0tRvYvq71SZ4cDqgxutnJA5PwydKQbCxKiS75ao4pj7Hy78hw2KYOe1041Z
+ kEJQh3d7E+fMzyvRIHjiTrdZrFlFt02GNS+gu9Tvot+F/VfteqJIdJkTFVu8T5NP7KR6wj+oY
+ nkDj8u7qnn14WAyEqge63SRfsb/Yx6NNhTzlhkAoCTUHv8qr31k9Hcqpg/LhlnIrLwcqOm8I9
+ uk9Inzb0MBA89p4qj/3aVdcWSy1ZeHIldpXz6EqZ4EWd1qPCV8=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 06/07/2021 08:06, Art Nikpal wrote:
->> But, Loongson platform has newer revision of hardware, and the MRRS
->> quirk has changed, please see:
->> https://patchwork.kernel.org/project/linux-pci/list/?series=509497
->> Huacai
-> 
-> OK! tnx for information ! maybe we can cooperate and make one
-> universal quirk for all
+i've noticed that HDMI is broken at least on my board (Bananapi-r2,mt7623)=
+ on 5.13.
 
-In their Designware PCIe controller driver, amlogic sets the Max_Payload_Size & Max_Read_Request_Size to 256:
-https://elixir.bootlin.com/linux/latest/source/drivers/pci/controller/dwc/pci-meson.c#L260
-https://elixir.bootlin.com/linux/latest/source/drivers/pci/controller/dwc/pci-meson.c#L276
-in their root port PCIe Express Device Control Register.
+after some research i noticed that it is working till
 
-Looking at the Synopsys DW-PCIe Databook, Max_Payload_Size & Max_Read_Request_Size are used to decompose into AXI burst,
-but it seems the Max_Payload_Size & Max_Read_Request_Size are set by default to 512 but the internal Max_Payload_Size_Supported
-is set to 256, thus changing these values to 256 at runtime to match and optimize bandwidth.
+commit 2e477391522354e763aa62ee3e281c1ad9e8eb1b
+Author: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Date:   Tue Mar 30 13:09:02 2021 +0200
 
-It's said, "Reducing Outbound Decomposition" :
- - "Ensure that your application master does not generate bursts of size greater than or equal to Max_Payload_Size"
- - "Program your PCIe system with a larger value of Max_Payload_Size without exceeding Max_Payload_Size_Supported"
- - "Program your PCIe system with a larger value of Max_Read_Request without exceeding Max_Payload_Size_Supported:
+    drm/mediatek: Don't support hdmi connector creation
 
-So leaving 512 in Max_Payload_Size & Max_Read_Request leads to Outbound Decomposition which decreases PCIe link and degrades
-the AXI bus by doubling the bursts, leading to this fix to avoid overflowing the AXI bus.
 
-So it seems to be still needed, I assume this *should* be handled in the core somehow to propagate these settings to child endpoints to match
-the root port Max_Payload_Size & Max_Read_Request sizes.
+which is the last of mtk-drm-next-5.13 [1] so i guess a problem with core-=
+patches
 
-Maybe by adding a core function to set these values instead of using the dw_pcie_find_capability() & dw_pcie_write/readl_dbi() helpers
-and set a state on the root port to propagate the value ?
+dmesg shows the following:
 
-Neil
+[    7.071342] mediatek-drm mediatek-drm.1.auto: bound 14007000.ovl (ops m=
+tk_dis
+p_ovl_component_ops)
+[    7.080330] mediatek-drm mediatek-drm.1.auto: bound 14008000.rdma (ops =
+mtk_di
+sp_rdma_component_ops)
+[    7.089429] mediatek-drm mediatek-drm.1.auto: bound 1400b000.color (ops=
+ mtk_d
+isp_color_component_ops)
+[    7.098689] mediatek-drm mediatek-drm.1.auto: bound 14012000.rdma (ops =
+mtk_di
+sp_rdma_component_ops)
+[    7.107814] mediatek-drm mediatek-drm.1.auto: bound 14014000.dpi (ops m=
+tk_dpi
+_component_ops)
+[    7.116338] mediatek-drm mediatek-drm.1.auto: Not creating crtc 1 becau=
+se com
+ponent 9 is disabled or missing
+....
+[   38.403957] Console: switching to colour frame buffer device 160x64
+[   48.516398] [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
+[   48.516422] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC=
+:41:cr
+tc-0] commit wait timed out
+[   58.756384] [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
+[   58.756399] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CONN=
+ECTOR:
+32:HDMI-A-1] commit wait timed out
+[   68.996384] [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
+[   68.996399] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [PLAN=
+E:33:p
+lane-0] commit wait timed out
+[   68.996423] [drm:mtk_drm_crtc_atomic_begin] *ERROR* new event while the=
+re is
+still a pending event
+[   69.106385] ------------[ cut here ]------------
+[   69.106392] WARNING: CPU: 2 PID: 7 at drivers/gpu/drm/drm_atomic_helper=
+.c:151
+1 drm_atomic_helper_wait_for_vblanks.part.0+0x2a0/0x2a8
+[   69.106414] [CRTC:41:crtc-0] vblank wait timed out
 
-> 
-> On Tue, Jul 6, 2021 at 9:36 AM Huacai Chen <chenhuacai@gmail.com> wrote:
->>
->> Hi, Art,
->>
->> On Mon, Jul 5, 2021 at 4:35 PM Art Nikpal <email2tema@gmail.com> wrote:
->>>
->>>> Does that means keystone and Loongson has the same MRRS problem? And what should I do now?
->>>
->>> Look like yes ! and  amlogic has the same problem.
->>> I think somebody need to rewrite it all to one common quirk for this problem.
->>>
->>> If no one has any objection, I can try to remake it again.
->> But, Loongson platform has newer revision of hardware, and the MRRS
->> quirk has changed, please see:
->> https://patchwork.kernel.org/project/linux-pci/list/?series=509497
->>
->> Huacai
->>>
->>> On Fri, Jul 2, 2021 at 9:15 AM 陈华才 <chenhuacai@loongson.cn> wrote:
->>>>
->>>> Hi, Bjorn,
->>>>
->>>> &gt; -----原始邮件-----
->>>> &gt; 发件人: "Bjorn Helgaas" <helgaas@kernel.org>
->>>> &gt; 发送时间: 2021-07-01 23:46:34 (星期四)
->>>> &gt; 收件人: "Artem Lapkin" <email2tema@gmail.com>
->>>> &gt; 抄送: narmstrong@baylibre.com, yue.wang@Amlogic.com, khilman@baylibre.com, lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com, jbrunet@baylibre.com, christianshewitt@gmail.com, martin.blumenstingl@googlemail.com, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, art@khadas.com, nick@khadas.com, gouwa@khadas.com, "Huacai Chen" <chenhuacai@loongson.cn>
->>>> &gt; 主题: Re: [PATCH 0/4] PCI: replace dublicated MRRS limit quirks
->>>> &gt;
->>>> &gt; [+cc Huacai]
->>>> &gt;
->>>> &gt; On Sat, Jun 19, 2021 at 02:39:48PM +0800, Artem Lapkin wrote:
->>>> &gt; &gt; Replace dublicated MRRS limit quirks by mrrs_limit_quirk from core
->>>> &gt; &gt; * drivers/pci/controller/dwc/pci-keystone.c
->>>> &gt; &gt; * drivers/pci/controller/pci-loongson.c
->>>> &gt;
->>>> &gt; s/dublicated/duplicated/ (several occurrences)
->>>> &gt;
->>>> &gt; Capitalize subject lines.
->>>> &gt;
->>>> &gt; Use "git log --online" to learn conventions and follow them.
->>>> &gt;
->>>> &gt; Add "()" after function names.
->>>> &gt;
->>>> &gt; Capitalize acronyms appropriately (NVMe, MRRS, PCI, etc).
->>>> &gt;
->>>> &gt; End sentences with periods.
->>>> &gt;
->>>> &gt; A "move" patch must include both the removal and the addition and make
->>>> &gt; no changes to the code itself.
->>>> &gt;
->>>> &gt; Amlogic appears without explanation in 2/4.  Must be separate patch to
->>>> &gt; address only that specific issue.  Should reference published erratum
->>>> &gt; if possible.  "Solves some issue" is not a compelling justification.
->>>> &gt;
->>>> &gt; The tree must be consistent and functionally the same or improved
->>>> &gt; after every patch.
->>>> &gt;
->>>> &gt; Add to pci_ids.h only if symbol used more than one place.
->>>> &gt;
->>>> &gt; See
->>>> &gt; https://lore.kernel.org/r/20210701074458.1809532-3-chenhuacai@loongson.cn,
->>>> &gt; which looks similar.  Combine efforts if possible and cc Huacai so
->>>> &gt; you're both aware of overlapping work.
->>>> &gt;
->>>> &gt; More hints in case they're useful:
->>>> &gt; https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com/
->>>> &gt;
->>>> &gt; &gt; Both ks_pcie_quirk loongson_mrrs_quirk was rewritten without any
->>>> &gt; &gt; functionality changes by one mrrs_limit_quirk
->>>> Does that means keystone and Loongson has the same MRRS problem? And what should I do now?
->>>>
->>>> Huacai
->>>> &gt; &gt;
->>>> &gt; &gt; Added DesignWare PCI controller which need same quirk for
->>>> &gt; &gt; * drivers/pci/controller/dwc/pci-meson.c (PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3)
->>>> &gt; &gt;
->>>> &gt; &gt; This quirk can solve some issue for Khadas VIM3/VIM3L(Amlogic)
->>>> &gt; &gt; with HDMI scrambled picture and nvme devices at intensive writing...
->>>> &gt; &gt;
->>>> &gt; &gt; come from:
->>>> &gt; &gt; * https://lore.kernel.org/linux-pci/20210618063821.1383357-1-art@khadas.com/
->>>> &gt; &gt;
->>>> &gt; &gt; Artem Lapkin (4):
->>>> &gt; &gt;  PCI: move Keystone and Loongson device IDs to pci_ids
->>>> &gt; &gt;  PCI: core: quirks: add mrrs_limit_quirk
->>>> &gt; &gt;  PCI: keystone move mrrs quirk to core
->>>> &gt; &gt;  PCI: loongson move mrrs quirk to core
->>>> &gt; &gt;
->>>> &gt; &gt; --
->>>> &gt; &gt; 2.25.1
->>>> &gt; &gt;
->>>>
->>>>
->>>> </chenhuacai@loongson.cn></email2tema@gmail.com></helgaas@kernel.org>
+so i guess the breaking commit may be this:
 
+$ git logone -S"drm_crtc_commit_wait" -- drivers/gpu/drm/
+b99c2c95412c 2021-01-11 drm: Introduce a drm_crtc_commit_wait helper
+
+in drivers/gpu/drm/drm_atomic{,_helper}.c
+
+but i cannot confirm it because my git bisect does strange things (after d=
+efining 5.13 as bad and the 2e4773915223 as good, second step is before th=
+e good commit till the end, last steps are 5.11...). sorry, i'm still new =
+to bisect.
+
+the fix is targeting to 5.12-rc2, is guess because CK Hu's tree is based o=
+n this...but the fix was not included in 5.12-rc2 (only after 5.12.0...got=
+ it by merging 5.12.14)
+
+maybe you can help me?
+
+regards Frank
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git=
+/log/?h=3Dmediatek-drm-next-5.13
