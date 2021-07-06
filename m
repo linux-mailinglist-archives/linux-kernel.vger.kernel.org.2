@@ -2,132 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A824D3BC4A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 03:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2933BC4AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 04:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbhGFBxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 21:53:09 -0400
-Received: from mga17.intel.com ([192.55.52.151]:33050 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229733AbhGFBxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 21:53:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10036"; a="189418844"
-X-IronPort-AV: E=Sophos;i="5.83,327,1616482800"; 
-   d="scan'208";a="189418844"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 18:50:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,327,1616482800"; 
-   d="scan'208";a="562831796"
-Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.58]) ([10.239.154.58])
-  by fmsmga001.fm.intel.com with ESMTP; 05 Jul 2021 18:50:24 -0700
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNrw4rxihFLuqLtY@ninjato> <20210629101627.kwc2rszborc3kvjs@vireshk-i7>
- <YNr0uDx1fv+Gjd7m@ninjato> <20210629103014.nlk3mpetydc4mi6l@vireshk-i7>
- <YNr5Jf3WDTH7U5b7@ninjato> <YNr5ZRhT3qn+e9/m@ninjato>
- <20210705121832.fmye5xnlbydoc5ir@vireshk-i7>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <29f27ee2-5a65-f635-0b0a-d35d7c4839fb@intel.com>
-Date:   Tue, 6 Jul 2021 09:50:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        id S229811AbhGFCEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 22:04:25 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6067 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229740AbhGFCEY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 22:04:24 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GJlyn4blMzXpV9;
+        Tue,  6 Jul 2021 09:56:17 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 6 Jul 2021 10:01:44 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 6 Jul 2021 10:01:43 +0800
+Subject: Re: [PATCH 5.10 0/7] 5.10.48-rc1 review
+To:     Sasha Levin <sashal@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>
+References: <20210705105957.1513284-1-sashal@kernel.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <bcd71d67-82ae-7406-c88a-790e01b50268@huawei.com>
+Date:   Tue, 6 Jul 2021 10:01:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210705121832.fmye5xnlbydoc5ir@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210705105957.1513284-1-sashal@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021/7/5 20:18, Viresh Kumar wrote:
-> On 29-06-21, 12:43, Wolfram Sang wrote:
->>>  From the spec:
->>>
->>> The case when ``length of \field{write_buf}''=0, and at the same time,
->>> ``length of \field{read_buf}''=0 doesn't make any sense.
->>>
->>> I mentioned this in my first reply and to my understanding I did not get
->>> a reply that this has changed meanwhile.
->>>
->> Also, this code as mentioned before:
->>
->>> +             if (!msgs[i].len)
->>> +                     break;
->> I hope this can extended in the future to allow zero-length messages. If
->> this is impossible we need to set an adapter quirk instead.
-> Wolfram,
->
-> I stumbled again upon this while working at the backend implementation.
->
-> If you look at i2c_smbus_xfer_emulated(), the command is always sent via
-> msgbuf0[0]. Even in the case of I2C_SMBUS_QUICK, where we set msg[0].len = 0, we
-> still send the buf. This is really confusing :(
->
-> Do I understand correctly that we always need to send msg[0].buf even when
-> msg[0].len is 0 ?
->
-> If so, it would be difficult to implement this with the current i2c virtio
-> specification, as the msg.len isn't really passed from guest to host, rather it
-> is inferred using the length of the buffer itself. And so we can't really pass a
-> buffer if length is 0.
->
-> Moreover, the driver uses i2c_get_dma_safe_msg_buf(), which also depends on the
-> length parameter here to allocate the buffer and copy data to it.
->
-> All in all, the latest version of the driver doesn't work with "i2cdetect -q <bus>".
->
-> To make it work, I had to add this:
->
-> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
-> index 731267d42292..5b8bd98ae38e 100644
-> --- a/drivers/i2c/busses/i2c-virtio.c
-> +++ b/drivers/i2c/busses/i2c-virtio.c
-> @@ -73,6 +73,9 @@ static int virtio_i2c_prepare_reqs(struct virtqueue *vq,
->                  sg_init_one(&out_hdr, &reqs[i].out_hdr, sizeof(reqs[i].out_hdr));
->                  sgs[outcnt++] = &out_hdr;
->
-> +               if (!msgs[i].len)
-> +                       msgs[i].len = 1;
-> +
->                  if (msgs[i].len) {
->                          reqs[i].buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
->                          if (!reqs[i].buf)
->
-> which made it I2C_SMBUS_BYTE instead of I2C_SMBUS_QUICK.
->
-> What should we do here Wolfram?
->
->
-> Jie, while wolfram comes back and replies to this, I think you need to switch
-> back to NOT supporting zero length transfer and set update virtio_i2c_func() to
-> return:
->
->          I2C_FUNC_I2C | (I2C_FUNC_SMBUS_EMUL & ~I2C_FUNC_SMBUS_QUICK);
->
-> Support for zero-length transfers and I2C_FUNC_SMBUS_QUICK can be added
-> separately.
->
-> Thanks.
 
+On 2021/7/5 18:59, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 5.10.48 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed 07 Jul 2021 10:59:49 AM UTC.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.10.y&id2=v5.10.47
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
+> 
 
-It's OK to me. Let's see what Wolfram says when he comes back.
+Tested on arm64 and x86 for 5.10.48-rc1,
 
-I will send the updated version then.
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.48-rc1
+Commit: dd50b7327ff62c603651aef64089569dd293b34d
+Compiler: gcc version 7.3.0 (GCC)
 
-Thanks.
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
