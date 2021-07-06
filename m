@@ -2,140 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C494B3BC651
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 08:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58C83BC653
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 08:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhGFGSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 02:18:35 -0400
-Received: from conuserg-10.nifty.com ([210.131.2.77]:41597 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbhGFGSe (ORCPT
+        id S230109AbhGFGTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 02:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230036AbhGFGTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 02:18:34 -0400
-Received: from grover.RMN.KIBA.LAB.jp (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 1666FVP2027052;
-        Tue, 6 Jul 2021 15:15:32 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 1666FVP2027052
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1625552132;
-        bh=SaZceyP9xTNKX1lHjMBQfVI/q1r1Z78diQ9ERG7Nkf8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=iYG/HxDOubc6dgXk1mZwI3zy1oeVGM6COzaVP2BleYmx6VH7T37IW32dI0yE2N+yh
-         veXZOHPEDTlH28wYiFevBMCJVhjPTrMbEE35RaEukHeSkTETSYAwdtVju0pk6LGW+A
-         dEl2h9Xn72W+0idoDHEVBXnjbeyj09E0xbXX1LBMalvmco3+rF5Wj0wRzJoWlNA7P1
-         QymfcIHzpKFbfNerjZw0hVEETYyc5ETnQ+eAl9e93TuPplUdW6qsSRRfBSF/33DCq/
-         74CoWTSYhpUc3cZ/+22o3L4kX/dfoIDzvmMaBkrbRphmZUHJR18NZT8Waq6UVEdZWI
-         TYAqKv8oK9JeA==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scripts: add generic syscallnr.sh
-Date:   Tue,  6 Jul 2021 15:15:29 +0900
-Message-Id: <20210706061530.501176-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Tue, 6 Jul 2021 02:19:02 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6910AC061760
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 23:16:24 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id a6so4000283qka.4
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 23:16:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i2kc2sPl4mFDGHgoHEBwsK+YcufyFuxpzKrHOh0bOKs=;
+        b=Ap8WxFAvaIZM4zzGb0DkHCpmL312tWNnt5K315MXMLh9mc+84ugfzkt3WZRQVA8oq/
+         e6ZpWCb/lLpnF2aB95WwZQfG36GfvsnkubQCFEgeost/pPZfWx+1vQeBPkIpes0e97Vm
+         NmEizRgK1jeMQK3+KzXLHwhUypPtMSoNSVu2ibj/OYVFZus9423wM7b8I9yk9d5TrG4I
+         mE/tP4aiwXr1iOZgxZL9/xZGcRKIJw4cwLThiDcsd7QwrBfLLI6yjla9fNtmzmAfs83k
+         TPX+o92klxpBprGGkvoJ0OmtdaY+1Ytopb8gx+BPoJffue0ecqEWzxWxrYt6Yezdao1X
+         ltPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i2kc2sPl4mFDGHgoHEBwsK+YcufyFuxpzKrHOh0bOKs=;
+        b=KQ5QWkIeVkBTjK7Qcaa5K4/ipLYCzookfEIKnfcQ3Jpbc/sAbLijIDpv/cHmol5rVs
+         4fQywnaxJkzWPVmzh5IdyVfOr6pz5DmMWlAxJUpUkubjwnnz8Hasj3HTmwN4X0n7YjhT
+         IqTJpw/NgODqOHaWWQW8jNNk7K1W24ch2CpoCiOAwHaac0LqvosiyID7DBXZ5b9rthuy
+         uibV12EJl/bjVtf+x+76ez2oVIL5o+nuziGlwoOaraDuiT+r4DQdX5gc3UNNQVVpo+/F
+         XBJZw/oBZlvFDBw/MiQ37fNNcHAuYcPKnNPSpbRlEgtwGydx55524WdWHo7tdiYb6QSy
+         2roA==
+X-Gm-Message-State: AOAM53080K/ibGnXClvVZEQTejUyU5RSrQ/5A5MaDFwVkngnXvnc2/iw
+        4ZBs6E8bHZuc6S4yqzUoP1Zk8cL/Hk48OcpdXYLLQw==
+X-Google-Smtp-Source: ABdhPJzJHfpJ8Cjm37K+ccfE6AIF+fG3X6FSoU1q9BaLRf381cZW/GWLOQl/+5H+zXoOBoiZUrijopPlskRAaVNY7GM=
+X-Received: by 2002:a37:6888:: with SMTP id d130mr18540942qkc.265.1625552183218;
+ Mon, 05 Jul 2021 23:16:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210705084453.2151729-1-elver@google.com>
+In-Reply-To: <20210705084453.2151729-1-elver@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 6 Jul 2021 08:16:07 +0200
+Message-ID: <CACT4Y+bQovD7=CZajMJ_AZz=Rf37HpDQiTp0qnhi-GhuP0Xdeg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] perf: Fix required permissions if sigtrap is requested
+To:     Marco Elver <elver@google.com>
+Cc:     peterz@infradead.org, tglx@linutronix.de, mingo@kernel.org,
+        glider@google.com, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org,
+        linux-perf-users@vger.kernel.org, ebiederm@xmission.com,
+        omosnace@redhat.com, serge@hallyn.com,
+        linux-security-module@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like syscallhdr.sh and syscalltbl.sh, add a simple script to generate
-the __NR_syscalls, which should not be exported to userspace.
+On Mon, Jul 5, 2021 at 10:45 AM Marco Elver <elver@google.com> wrote:
+>
+> If perf_event_open() is called with another task as target and
+> perf_event_attr::sigtrap is set, and the target task's user does not
+> match the calling user, also require the CAP_KILL capability or
+> PTRACE_MODE_ATTACH permissions.
+>
+> Otherwise, with the CAP_PERFMON capability alone it would be possible
+> for a user to send SIGTRAP signals via perf events to another user's
+> tasks. This could potentially result in those tasks being terminated if
+> they cannot handle SIGTRAP signals.
+>
+> Note: The check complements the existing capability check, but is not
+> supposed to supersede the ptrace_may_access() check. At a high level we
+> now have:
+>
+>         capable of CAP_PERFMON and (CAP_KILL if sigtrap)
+>                 OR
+>         ptrace_may_access(...) // also checks for same thread-group and uid
+>
+> Fixes: 97ba62b27867 ("perf: Add support for SIGTRAP on perf events")
+> Cc: <stable@vger.kernel.org> # 5.13+
+> Reported-by: Dmitry Vyukov <dvyukov@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
 
-This script is useful to replace arch/mips/kernel/syscalls/syscallnr.sh,
-refactor arch/s390/kernel/syscalls/syscalltbl, and eliminate the code
-surrounded by #ifdef __KERNEL__ / #endif from exported uapi/asm/unistd_*.h
-files.
+Acked-by: Dmitry Vyukov <dvyukov@google.com>
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- scripts/syscallnr.sh | 74 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 74 insertions(+)
- create mode 100644 scripts/syscallnr.sh
-
-diff --git a/scripts/syscallnr.sh b/scripts/syscallnr.sh
-new file mode 100644
-index 000000000000..3aa29e0dcc52
---- /dev/null
-+++ b/scripts/syscallnr.sh
-@@ -0,0 +1,74 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Generate a syscall number header.
-+#
-+# Each line of the syscall table should have the following format:
-+#
-+# NR ABI NAME [NATIVE] [COMPAT]
-+#
-+# NR       syscall number
-+# ABI      ABI name
-+# NAME     syscall name
-+# NATIVE   native entry point (optional)
-+# COMPAT   compat entry point (optional)
-+set -e
-+
-+usage() {
-+	echo >&2 "usage: $0 [--abis ABIS] [--prefix PREFIX] INFILE OUTFILE" >&2
-+	echo >&2
-+	echo >&2 "  INFILE    input syscall table"
-+	echo >&2 "  OUTFILE   output header file"
-+	echo >&2
-+	echo >&2 "options:"
-+	echo >&2 "  --abis ABIS        ABI(s) to handle (By default, all lines are handled)"
-+	echo >&2 "  --prefix PREFIX    The prefix to the macro like __NR_<PREFIX><NAME>"
-+	exit 1
-+}
-+
-+# default unless specified by options
-+abis=
-+prefix=
-+
-+while [ $# -gt 0 ]
-+do
-+	case $1 in
-+	--abis)
-+		abis=$(echo "($2)" | tr ',' '|')
-+		shift 2;;
-+	--prefix)
-+		prefix=$2
-+		shift 2;;
-+	-*)
-+		echo "$1: unknown option" >&2
-+		usage;;
-+	*)
-+		break;;
-+	esac
-+done
-+
-+if [ $# -ne 2 ]; then
-+	usage
-+fi
-+
-+infile="$1"
-+outfile="$2"
-+
-+guard=_ASM_$(basename "$outfile" |
-+	sed -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
-+	-e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g')
-+
-+grep -E "^[0-9A-Fa-fXx]+[[:space:]]+$abis" "$infile" | sort -n | {
-+	echo "#ifndef $guard"
-+	echo "#define $guard"
-+	echo
-+
-+	max=0
-+	while read nr abi name native compat ; do
-+		max=$nr
-+	done
-+
-+	echo "#define __NR_${prefix}syscalls $(($max + 1))"
-+	echo
-+	echo "#endif /* $guard */"
-+} > "$outfile"
--- 
-2.27.0
-
+> ---
+> v3:
+> * Upgrade ptrace mode check to ATTACH if attr.sigtrap, otherwise it's
+>   possible to change the target task (send signal) even if only read
+>   ptrace permissions were granted (reported by Eric W. Biederman).
+>
+> v2: https://lkml.kernel.org/r/20210701083842.580466-1-elver@google.com
+> * Drop kill_capable() and just check CAP_KILL (reported by Ondrej Mosnacek).
+> * Use ns_capable(__task_cred(task)->user_ns, CAP_KILL) to check for
+>   capability in target task's ns (reported by Ondrej Mosnacek).
+>
+> v1: https://lkml.kernel.org/r/20210630093709.3612997-1-elver@google.com
+> ---
+>  kernel/events/core.c | 25 ++++++++++++++++++++++++-
+>  1 file changed, 24 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index fe88d6eea3c2..f79ee82e644a 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -12152,10 +12152,33 @@ SYSCALL_DEFINE5(perf_event_open,
+>         }
+>
+>         if (task) {
+> +               unsigned int ptrace_mode = PTRACE_MODE_READ_REALCREDS;
+> +               bool is_capable;
+> +
+>                 err = down_read_interruptible(&task->signal->exec_update_lock);
+>                 if (err)
+>                         goto err_file;
+>
+> +               is_capable = perfmon_capable();
+> +               if (attr.sigtrap) {
+> +                       /*
+> +                        * perf_event_attr::sigtrap sends signals to the other
+> +                        * task. Require the current task to also have
+> +                        * CAP_KILL.
+> +                        */
+> +                       rcu_read_lock();
+> +                       is_capable &= ns_capable(__task_cred(task)->user_ns, CAP_KILL);
+> +                       rcu_read_unlock();
+> +
+> +                       /*
+> +                        * If the required capabilities aren't available, checks
+> +                        * for ptrace permissions: upgrade to ATTACH, since
+> +                        * sending signals can effectively change the target
+> +                        * task.
+> +                        */
+> +                       ptrace_mode = PTRACE_MODE_ATTACH_REALCREDS;
+> +               }
+> +
+>                 /*
+>                  * Preserve ptrace permission check for backwards compatibility.
+>                  *
+> @@ -12165,7 +12188,7 @@ SYSCALL_DEFINE5(perf_event_open,
+>                  * perf_event_exit_task() that could imply).
+>                  */
+>                 err = -EACCES;
+> -               if (!perfmon_capable() && !ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS))
+> +               if (!is_capable && !ptrace_may_access(task, ptrace_mode))
+>                         goto err_cred;
+>         }
+>
+> --
+> 2.32.0.93.g670b81a890-goog
+>
