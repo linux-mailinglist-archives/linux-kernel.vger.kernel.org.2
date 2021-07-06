@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143513BCF94
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658BB3BCF74
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235174AbhGFL3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:29:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55498 "EHLO mail.kernel.org"
+        id S235243AbhGFL3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:29:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233803AbhGFLWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:22:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41F6A61CDB;
-        Tue,  6 Jul 2021 11:18:01 +0000 (UTC)
+        id S232538AbhGFLXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:23:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAAA461CE8;
+        Tue,  6 Jul 2021 11:18:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570282;
-        bh=GYfW7dDEKAxf/1FNAoEHaTuUPMHdDRsQ8Z9BIspg7rc=;
+        s=k20201202; t=1625570284;
+        bh=uukFyebvLjMkKGfyTL+jcY1K9MuCKoKq1HHkshqZF1s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aQDs58u/5BIOtVq/QDB4OqyEste16kp65RFZRXXkIGxO4UbLtkcrMiX4oYuWPcPIU
-         3yQEzBaDBWtv9Gr10AZyLbTs1grU/MYgkLcnm8Plq/qOPefnxVNRjxjKdQWyxWkJVy
-         TPAAW6zHUJZE8e0opOasGX9HY8vMO/ppMUALIazZ4wBTGnV5LQRZ+5kIFyLeSKMFwv
-         zZcQPfz3I2DVNm8hMa7pkQ9TxG28xd5mNlf2xXBxOOR6siiWLvgFHqJRUbCbdxXwp5
-         AFxqNNy2KRn9hmPlN74I73aj0+2+cZesSg6fbFdqwJKKzK4ovkzNk8+5ubgPiBLTNC
-         b6H7353G7qdzw==
+        b=asABJulQJUBuAamn5gPAM2dSs/t/+fEdZ+R4DIjRWpV/5/7zCIxWbNOCtWAo6Nz2i
+         9IKT55YvtMF0Jk1+P3bDM2Q4GaX4vTZCoBycc/kTrXwHSZhpdFMyvbKiUs0FREJWwM
+         sOXxFmIqwJP/4YGmnuluflXwYB9XbePz09lh+K86plO2b1RPgkZb5idKQgFdQqYHrS
+         PrSXmN5MkUKTBPUsIBz2jw/JKZZJnzhFdQWAN7HnX4KyG65uWTIPTHzMiLuewaftq4
+         6AmI34syZCu67M127EIjcCkGmnfofjp8H/A0BjeEJOHGAN4VAH6LDPWlmYr/I6TzVQ
+         Xd6lxzzLZqzkw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kiran K <kiran.k@intel.com>,
-        Lokendra Singh <lokendra.singh@intel.com>,
+Cc:     Daniel Lenski <dlenski@gmail.com>,
         Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 173/189] Bluetooth: Fix alt settings for incoming SCO with transparent coding format
-Date:   Tue,  6 Jul 2021 07:13:53 -0400
-Message-Id: <20210706111409.2058071-173-sashal@kernel.org>
+        linux-bluetooth@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.13 175/189] Bluetooth: btusb: Add a new QCA_ROME device (0cf3:e500)
+Date:   Tue,  6 Jul 2021 07:13:55 -0400
+Message-Id: <20210706111409.2058071-175-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111409.2058071-1-sashal@kernel.org>
 References: <20210706111409.2058071-1-sashal@kernel.org>
@@ -44,143 +43,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kiran K <kiran.k@intel.com>
+From: Daniel Lenski <dlenski@gmail.com>
 
-[ Upstream commit 06d213d8a89a6f55b708422c3dda2b22add10748 ]
+[ Upstream commit 0324d19cb99804d99e42c990b8b1e191575a091b ]
 
-For incoming SCO connection with transparent coding format, alt setting
-of CVSD is getting applied instead of Transparent.
+This patch adds the 0cf3:e500 Bluetooth device (from a QCA9377 board) as a
+QCA_ROME device.  It appears to be functionally identical to another device
+ID, also from a QCA9377 board, which was previously marked as QCA_ROME in
+0a03f98b98c201191e3ba15a0e33f46d8660e1fd
+("Bluetooth: Add a new 04ca:3015 QCA_ROME device").
 
-Before fix:
-< HCI Command: Accept Synchron.. (0x01|0x0029) plen 21  #2196 [hci0] 321.342548
-        Address: 1C:CC:D6:E2:EA:80 (Xiaomi Communications Co Ltd)
-        Transmit bandwidth: 8000
-        Receive bandwidth: 8000
-        Max latency: 13
-        Setting: 0x0003
-          Input Coding: Linear
-          Input Data Format: 1's complement
-          Input Sample Size: 8-bit
-          # of bits padding at MSB: 0
-          Air Coding Format: Transparent Data
-        Retransmission effort: Optimize for link quality (0x02)
-        Packet type: 0x003f
-          HV1 may be used
-          HV2 may be used
-          HV3 may be used
-          EV3 may be used
-          EV4 may be used
-          EV5 may be used
-> HCI Event: Command Status (0x0f) plen 4               #2197 [hci0] 321.343585
-      Accept Synchronous Connection Request (0x01|0x0029) ncmd 1
-        Status: Success (0x00)
-> HCI Event: Synchronous Connect Comp.. (0x2c) plen 17  #2198 [hci0] 321.351666
-        Status: Success (0x00)
-        Handle: 257
-        Address: 1C:CC:D6:E2:EA:80 (Xiaomi Communications Co Ltd)
-        Link type: eSCO (0x02)
-        Transmission interval: 0x0c
-        Retransmission window: 0x04
-        RX packet length: 60
-        TX packet length: 60
-        Air mode: Transparent (0x03)
-........
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2336 [hci0] 321.383655
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2337 [hci0] 321.389558
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2338 [hci0] 321.393615
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2339 [hci0] 321.393618
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2340 [hci0] 321.393618
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2341 [hci0] 321.397070
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2342 [hci0] 321.403622
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2343 [hci0] 321.403625
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2344 [hci0] 321.403625
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2345 [hci0] 321.403625
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2346 [hci0] 321.404569
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2347 [hci0] 321.412091
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2348 [hci0] 321.413626
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2349 [hci0] 321.413630
-> SCO Data RX: Handle 257 flags 0x00 dlen 48            #2350 [hci0] 321.413630
-< SCO Data TX: Handle 257 flags 0x00 dlen 60            #2351 [hci0] 321.419674
+Without this patch, the WiFi side of the QCA9377 board is slow or unusable
+when the Bluetooth side is in use.
 
-After fix:
+See https://askubuntu.com/a/1137852 for another report of QCA_ROME fixing
+this issue for this device ID.
 
-< HCI Command: Accept Synchronou.. (0x01|0x0029) plen 21  #309 [hci0] 49.439693
-        Address: 1C:CC:D6:E2:EA:80 (Xiaomi Communications Co Ltd)
-        Transmit bandwidth: 8000
-        Receive bandwidth: 8000
-        Max latency: 13
-        Setting: 0x0003
-          Input Coding: Linear
-          Input Data Format: 1's complement
-          Input Sample Size: 8-bit
-          # of bits padding at MSB: 0
-          Air Coding Format: Transparent Data
-        Retransmission effort: Optimize for link quality (0x02)
-        Packet type: 0x003f
-          HV1 may be used
-          HV2 may be used
-          HV3 may be used
-          EV3 may be used
-          EV4 may be used
-          EV5 may be used
-> HCI Event: Command Status (0x0f) plen 4                 #310 [hci0] 49.440308
-      Accept Synchronous Connection Request (0x01|0x0029) ncmd 1
-        Status: Success (0x00)
-> HCI Event: Synchronous Connect Complete (0x2c) plen 17  #311 [hci0] 49.449308
-        Status: Success (0x00)
-        Handle: 257
-        Address: 1C:CC:D6:E2:EA:80 (Xiaomi Communications Co Ltd)
-        Link type: eSCO (0x02)
-        Transmission interval: 0x0c
-        Retransmission window: 0x04
-        RX packet length: 60
-        TX packet length: 60
-        Air mode: Transparent (0x03)
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #312 [hci0] 49.450421
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #313 [hci0] 49.457927
-> HCI Event: Max Slots Change (0x1b) plen 3               #314 [hci0] 49.460345
-        Handle: 256
-        Max slots: 5
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #315 [hci0] 49.465453
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #316 [hci0] 49.470502
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #317 [hci0] 49.470519
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #318 [hci0] 49.472996
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #319 [hci0] 49.480412
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #320 [hci0] 49.480492
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #321 [hci0] 49.487989
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #322 [hci0] 49.490303
-< SCO Data TX: Handle 257 flags 0x00 dlen 60              #323 [hci0] 49.495496
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #324 [hci0] 49.500304
-> SCO Data RX: Handle 257 flags 0x00 dlen 60              #325 [hci0] 49.500311
+/sys/kernel/debug/usb/devices:
 
-Signed-off-by: Kiran K <kiran.k@intel.com>
-Signed-off-by: Lokendra Singh <lokendra.singh@intel.com>
+T:  Bus=05 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
+D:  Ver= 2.01 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=0cf3 ProdID=e500 Rev= 0.01
+C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+
+Signed-off-by: Daniel Lenski <dlenski@gmail.com>
 Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/bluetooth/btusb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 016b2999f219..47166cea68bb 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4404,12 +4404,12 @@ static void hci_sync_conn_complete_evt(struct hci_dev *hdev,
- 
- 	bt_dev_dbg(hdev, "SCO connected with air mode: %02x", ev->air_mode);
- 
--	switch (conn->setting & SCO_AIRMODE_MASK) {
--	case SCO_AIRMODE_CVSD:
-+	switch (ev->air_mode) {
-+	case 0x02:
- 		if (hdev->notify)
- 			hdev->notify(hdev, HCI_NOTIFY_ENABLE_SCO_CVSD);
- 		break;
--	case SCO_AIRMODE_TRANSP:
-+	case 0x03:
- 		if (hdev->notify)
- 			hdev->notify(hdev, HCI_NOTIFY_ENABLE_SCO_TRANSP);
- 		break;
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 99fd88f7653d..90872099d9c3 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -270,6 +270,8 @@ static const struct usb_device_id blacklist_table[] = {
+ 						     BTUSB_WIDEBAND_SPEECH },
+ 	{ USB_DEVICE(0x0cf3, 0xe360), .driver_info = BTUSB_QCA_ROME |
+ 						     BTUSB_WIDEBAND_SPEECH },
++	{ USB_DEVICE(0x0cf3, 0xe500), .driver_info = BTUSB_QCA_ROME |
++						     BTUSB_WIDEBAND_SPEECH },
+ 	{ USB_DEVICE(0x0489, 0xe092), .driver_info = BTUSB_QCA_ROME |
+ 						     BTUSB_WIDEBAND_SPEECH },
+ 	{ USB_DEVICE(0x0489, 0xe09f), .driver_info = BTUSB_QCA_ROME |
 -- 
 2.30.2
 
