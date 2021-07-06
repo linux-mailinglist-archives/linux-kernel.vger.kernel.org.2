@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C6F3BD377
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B84D3BD374
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233639AbhGFLyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:54:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47624 "EHLO mail.kernel.org"
+        id S235587AbhGFLxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:53:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237483AbhGFLgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237500AbhGFLgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Jul 2021 07:36:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E70E61DAA;
-        Tue,  6 Jul 2021 11:28:06 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B592261F1E;
+        Tue,  6 Jul 2021 11:28:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570887;
-        bh=/igo3ebrR8QciGvy20obvHxH2VztbqWyx4RvM716H/k=;
+        s=k20201202; t=1625570894;
+        bh=XVELak/A53j3wbXPO7smMGauYy+KwP/a/wsJCFJNp/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=enCVLrdzdys7bePbjp4KXHF6YUFxdoCFp/7qdr0mOj5DrY0VQU0ALCbO1QzdCjGaG
-         h5tkraxepNg3wLGOC0c0ZUaC2UgIpAXa+4Yucf5q5/UvCn+xoTFar3C+WVX3roiFau
-         CPUqiyDF/KX+zRe+2EXJji+MWbm6HrK0+UO8DPvrdgpl3mVK66Ny+ZHqHGI6THSxlR
-         wKUOg8HI6MKXSm5ek8KiAoUkk3p1/CEC8ix4XO88LJbVtZziygMZwYlGMMiOci74HX
-         OQ8IIDajBOZBtnus4iHMO8zBM+3GTffO+OIZHn5149P/ZQG6vYoqHS37FeKYnAWmhm
-         o6fSVFsUXVTcA==
+        b=ETaDQgFa1mpNsygMtB96S7inywHFqjOqQ2CIWnX4tEFrTWtSwth157LY2Aya2vH3u
+         FPHkBBi+u2kaV2X4rKVibikF/iTFNIUjrlsrZVaExGaRzoM8pKEOV4WvrwNVQ3xyjn
+         e5G2qnfsaYppNGizdmNIY5qV8rMbt8yXQBsfrtUhkcf04PR3hS4vfsq5IpDLNSf+FI
+         hgqHr1RKwYsUaun0q0MtFoXDgYURiApW5vKtLow1j8fKckmrP2z5ArPZneHboHgAAE
+         0hw5fLaNRGjz+rLoi5WK54NwEjAfhiBqB2DZ0WJgMdQKe5kCDgKCi48mK2KMxph35A
+         uSoGE+NRkm5Jg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xie Yongji <xieyongji@bytedance.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH AUTOSEL 4.14 13/45] drm/virtio: Fix double free on probe failure
-Date:   Tue,  6 Jul 2021 07:27:17 -0400
-Message-Id: <20210706112749.2065541-13-sashal@kernel.org>
+Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 19/45] RDMA/cxgb4: Fix missing error code in create_qp()
+Date:   Tue,  6 Jul 2021 07:27:23 -0400
+Message-Id: <20210706112749.2065541-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112749.2065541-1-sashal@kernel.org>
 References: <20210706112749.2065541-1-sashal@kernel.org>
@@ -44,36 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie Yongji <xieyongji@bytedance.com>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit cec7f1774605a5ef47c134af62afe7c75c30b0ee ]
+[ Upstream commit aeb27bb76ad8197eb47890b1ff470d5faf8ec9a5 ]
 
-The virtio_gpu_init() will free vgdev and vgdev->vbufs on failure.
-But such failure will be caught by virtio_gpu_probe() and then
-virtio_gpu_release() will be called to do some cleanup which
-will free vgdev and vgdev->vbufs again. So let's set dev->dev_private
-to NULL to avoid double free.
+The error code is missing in this code scenario so 0 will be returned. Add
+the error code '-EINVAL' to the return value 'ret'.
 
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Link: http://patchwork.freedesktop.org/patch/msgid/20210517084913.403-2-xieyongji@bytedance.com
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+Eliminates the follow smatch warning:
+
+drivers/infiniband/hw/cxgb4/qp.c:298 create_qp() warn: missing error code 'ret'.
+
+Link: https://lore.kernel.org/r/1622545669-20625-1-git-send-email-jiapeng.chong@linux.alibaba.com
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/virtio/virtgpu_kms.c | 1 +
+ drivers/infiniband/hw/cxgb4/qp.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
-index e1a5e74f4080..edca3e827369 100644
---- a/drivers/gpu/drm/virtio/virtgpu_kms.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
-@@ -237,6 +237,7 @@ int virtio_gpu_driver_load(struct drm_device *dev, unsigned long flags)
- err_vbufs:
- 	vgdev->vdev->config->del_vqs(vgdev->vdev);
- err_vqs:
-+	dev->dev_private = NULL;
- 	kfree(vgdev);
- 	return ret;
- }
+diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
+index 15a867d62d02..325561580729 100644
+--- a/drivers/infiniband/hw/cxgb4/qp.c
++++ b/drivers/infiniband/hw/cxgb4/qp.c
+@@ -277,6 +277,7 @@ static int create_qp(struct c4iw_rdev *rdev, struct t4_wq *wq,
+ 	if (user && (!wq->sq.bar2_pa || !wq->rq.bar2_pa)) {
+ 		pr_warn("%s: sqid %u or rqid %u not in BAR2 range\n",
+ 			pci_name(rdev->lldi.pdev), wq->sq.qid, wq->rq.qid);
++		ret = -EINVAL;
+ 		goto free_dma;
+ 	}
+ 
 -- 
 2.30.2
 
