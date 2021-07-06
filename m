@@ -2,98 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA733BD47E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D1D3BD487
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244006AbhGFMKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:10:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237525AbhGFL63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:58:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6F8861179;
-        Tue,  6 Jul 2021 11:55:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625572549;
-        bh=JXmBsXYXG9KG7U5AjlAUHgTa15XndAwh6xpRx35ssAo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JbOfwmVF4OkhS5vWEeG1/y6EzbbSwmaGz+O2PUgdxW8i2J5XsnE7M6+ypvPxZiLBM
-         3klouA+VESkfgGkHYyVBVx5HAXAMNeDdkwIVUlkmZB4SfoyyvNJwuuVLQZl1sl9nsf
-         0qQ7VeJLZSks0CiTqNdrnJgOXjaWxCHUW29odk/ZYWRSc+mczvm80gi1qDhbm2bNPq
-         XWfnvdeAJB7ZdvMhgvuqLB+U0egmAIOso0LHfx4nboab6JTrLN15TfrTVD7LgBqzzZ
-         nemt4h8ofc9CIUk76G2oifZwmbZ+SizUH2SPthodth6U5RWSM+ykcrqZnKpIuDWzz+
-         uyTdLgzFUAD1w==
-Date:   Tue, 6 Jul 2021 12:55:17 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Peter Chen <peter.chen@nxp.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-bluetooth@vger.kernel.org
-Subject: Re: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x
- powerup sequence
-Message-ID: <20210706115517.GB4529@sirena.org.uk>
-References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
- <20210621223141.1638189-3-dmitry.baryshkov@linaro.org>
- <CAPDyKFo6dmjw0TnaK7=35dq5Si_6YYpeeSa=gU++1od7WkQZ7A@mail.gmail.com>
+        id S237104AbhGFMN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:13:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6798 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238044AbhGFL7I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:59:08 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 166BY7sq093435;
+        Tue, 6 Jul 2021 07:56:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=eAxSoAMfy4WoRm6Nob+I0xEpZ8yxFb5egnCHiA4R4fk=;
+ b=hdM04e1/UZOt5sSzBvmJyJ5K7lIPw2Ck6xURH6ihBj6phyEslpAdtkhpWlaKodXE4Gdj
+ EtZb2H+Jy2qy2zDvqeNfQDXPD5SvpuniGKJAcl/24kqciBY4ZcdnxeBma+5btMiietnZ
+ FzDEXOOMJ/8yXAb66N1lBSNtDWlitJ0a5luYJ6QcTNgGQw4GOMtl0Kyxw7sKC9kRHShD
+ AisACQ5S94u+NmYxL0hMhgb28idH99ZOANQ7b/cKm5+SNzof7Hf5dU7OmOhXQOFBNHrZ
+ BIvb7NbPG4k2DBM+4smkpE9cxu+leCohz3FCrz91XWgnOnsrfMleZg2acHbpG9bcqfox Cg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39m8xsub6y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Jul 2021 07:56:20 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 166BYXce097140;
+        Tue, 6 Jul 2021 07:56:20 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39m8xsub6s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Jul 2021 07:56:20 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 166BpoYh011922;
+        Tue, 6 Jul 2021 11:56:19 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma04dal.us.ibm.com with ESMTP id 39jfhbtn83-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Jul 2021 11:56:19 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 166BuI1p22937970
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 6 Jul 2021 11:56:18 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 101776A057;
+        Tue,  6 Jul 2021 11:56:18 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0BBCF6A051;
+        Tue,  6 Jul 2021 11:56:13 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.34.44])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue,  6 Jul 2021 11:56:13 +0000 (GMT)
+Subject: Re: [PATCH] perf script python: Fix buffer size to report iregs in
+ perf script
+From:   kajoljain <kjain@linux.ibm.com>
+To:     "acme@kernel.org" <acme@kernel.org>, Jiri Olsa <jolsa@redhat.com>
+Cc:     maddy@linux.vnet.ibm.com, atrajeev@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org, ravi.bangoria@linux.ibm.com,
+        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        rnsastry@linux.ibm.com, "Paul A. Clarke" <pc@us.ibm.com>
+References: <20210628062341.155839-1-kjain@linux.ibm.com>
+ <20210628144937.GE142768@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+ <ee98968a-f343-a68e-9a3e-58e97dc130c8@linux.ibm.com>
+Message-ID: <c6fb2136-21e1-325a-f7f7-9745dbe29661@linux.ibm.com>
+Date:   Tue, 6 Jul 2021 17:26:12 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="24zk1gE8NUlDmwG9"
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFo6dmjw0TnaK7=35dq5Si_6YYpeeSa=gU++1od7WkQZ7A@mail.gmail.com>
-X-Cookie: Some restrictions may apply.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <ee98968a-f343-a68e-9a3e-58e97dc130c8@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Dac3meT_7Ga6DLoLLfplXyxG3mVH09dk
+X-Proofpoint-GUID: TPByq9dt2-DxNkKd4cHAZxd3TRrruSwA
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-06_06:2021-07-02,2021-07-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ malwarescore=0 phishscore=0 priorityscore=1501 spamscore=0 impostorscore=0
+ mlxlogscore=999 suspectscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107060057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---24zk1gE8NUlDmwG9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Jul 06, 2021 at 09:54:03AM +0200, Ulf Hansson wrote:
-> On Tue, 22 Jun 2021 at 00:32, Dmitry Baryshkov
+On 6/29/21 12:39 PM, kajoljain wrote:
+> 
+> 
+> On 6/28/21 8:19 PM, Paul A. Clarke wrote:
+>> On Mon, Jun 28, 2021 at 11:53:41AM +0530, Kajol Jain wrote:
+>>> Commit 48a1f565261d ("perf script python: Add more PMU fields
+>>> to event handler dict") added functionality to report fields like
+>>> weight, iregs, uregs etc via perf report.
+>>> That commit predefined buffer size to 512 bytes to print those fields.
+>>>
+>>> But incase of powerpc, since we added extended regs support
+>>> in commits:
+>>>
+>>> Commit 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
+>>> Counter SPRs as part of extended regs")
+>>> Commit d735599a069f ("powerpc/perf: Add extended regs support for
+>>> power10 platform")
+>>>
+>>> Now iregs can carry more bytes of data and this predefined buffer size
+>>> can result to data loss in perf script output.
+>>>
+>>> Patch resolve this issue by making buffer size dynamic based on number
+>>> of registers needed to print. It also changed return type for function
+>>> "regs_map" from int to void, as the return value is not being used by
+>>> the caller function "set_regs_in_dict".
+>>>
+>>> Fixes: 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
+>>> Counter SPRs as part of extended regs")
+>>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+>>> ---
+>>>  .../util/scripting-engines/trace-event-python.c | 17 ++++++++++++-----
+>>>  1 file changed, 12 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
+>>> index 4e4aa4c97ac5..c8c9706b4643 100644
+>>> --- a/tools/perf/util/scripting-engines/trace-event-python.c
+>>> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
+>> [...]
+>>> @@ -713,7 +711,16 @@ static void set_regs_in_dict(PyObject *dict,
+>>>  			     struct evsel *evsel)
+>>>  {
+>>>  	struct perf_event_attr *attr = &evsel->core.attr;
+>>> -	char bf[512];
+>>> +
+>>> +	/*
+>>> +	 * Here value 28 is a constant size which can be used to print
+>>> +	 * one register value and its corresponds to:
+>>> +	 * 16 chars is to specify 64 bit register in hexadecimal.
+>>> +	 * 2 chars is for appending "0x" to the hexadecimal value and
+>>> +	 * 10 chars is for register name.
+>>> +	 */
+>>> +	int size = __sw_hweight64(attr->sample_regs_intr) * 28;
+>>> +	char bf[size];
+>>
+>> I propose using a template rather than a magic number here. Something like:
+>> const char reg_name_tmpl[] = "10 chars  ";
+>> const char reg_value_tmpl[] = "0x0123456789abcdef";
+>> const int size = __sw_hweight64(attr->sample_regs_intr) +
+>>                  sizeof reg_name_tmpl + sizeof reg_value_tmpl;
+>>
+> 
+> Hi Paul,
+>    Thanks for reviewing the patch. Yes these are
+> some standardization we can do by creating macros for different
+> fields.
+> The basic idea is, we want to provide significant buffer size
+> based on number of registers present in sample_regs_intr to accommodate
+> all data.
+> 
 
-> > Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
-> > being controlled through the UART and WiFi being present on PCIe
-> > bus. Both blocks share common power sources. Add device driver handling
-> > power sequencing of QCA6390/1.
+Hi Arnaldo/Jiri,
+   Is the approach used in this patch looks fine to you?
 
-> Power sequencing of discoverable buses have been discussed several
-> times before at LKML. The last attempt [1] I am aware of, was in 2017
-> from Peter Chen. I don't think there is a common solution, yet.
+Thanks,
+Kajol Jain
 
-This feels a bit different to the power sequencing problem - it's not
-exposing the individual inputs to the device but rather is a block that
-manages everything but needs a bit of a kick to get things going (I'd
-guess that with ACPI it'd be triggered via AML).  It's in the same space
-but it's not quite the same issue I think, something that can handle
-control of the individual resources might still struggle with this.
-
---24zk1gE8NUlDmwG9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDkRKQACgkQJNaLcl1U
-h9A9oAf/QENRZjXRFVPDjWc5SZZ1jRLz0JmogYRWNMICgbOtz1VBdXoNW/Lww3pt
-dke5UKjZ+XQkNR3aavlJL+PatLcw5KcLLIM7q6seqDtyV3oesMqPe4eHpf7E8niH
-RlrkwxoSHb3r7/tYFr2TNDxL1ZuQKEOT1Bn1tcNP4krJ4sa2M4sYmM7XV4VdFlkE
-/ymTDt9FrU/lQZHkT414lAI615+uJqFaRn17h6TnrC0MhELJ/BoLo62tBWaO0gtv
-sey70r+PcIRzS6p/iA8i+HHNTfR5EiVnBF3tVidPeOwt8Haj8TfhdDGbvzeAuaDc
-sia1bg8tC8v+IFLkdkwWFG7TzvN8ZQ==
-=L8x2
------END PGP SIGNATURE-----
-
---24zk1gE8NUlDmwG9--
+> But before going to optimizing code, Arnaldo/Jiri, is this approach looks good to you?
+> 
+>> Pardon my ignorance, but is there no separation/whitespace between the name
+>> and the value?
+> 
+> This is how we will get data via perf script
+> 
+> r0:0xc000000000112008
+> r1:0xc000000023b37920
+> r2:0xc00000000144c900
+> r3:0xc0000000bc566120
+> r4:0xc0000000c5600000
+> r5:0x2606c6506ca
+> r6:0xc000000023b378f8
+> r7:0xfffffd9f93a48f0e
+> .....
+> 
+>  And is there some significance to 10 characters for the
+>> register name, or is that a magic number?
+> 
+> Most of the register name are within 10 characters, basically we are giving this
+> magic number to make sure we have enough space in buffer to contain all registers
+> name with colon.
+> 
+> Thanks,
+> Kajol Jain
+>  
+>>
+>> PC
+>>
