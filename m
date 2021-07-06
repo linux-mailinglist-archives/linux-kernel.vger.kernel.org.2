@@ -2,164 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242143BC8B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04633BC8B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbhGFJzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 05:55:35 -0400
-Received: from mail-eopbgr70043.outbound.protection.outlook.com ([40.107.7.43]:45058
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231159AbhGFJzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 05:55:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MQTbntJk+2N5U5qx9tfUR0as4kDHYRE98azs6Qm1Nple2IEIy7I810FhIWqmmtB61Y7H156NTGSgcwfbGRqdaN9bpQaH7KzmesqU5z2xz3Dg72D2OEao0Ym95ksKwfPjH0R//HrDv+Tep+6RmZ8Qv2Ywp1/4HygZGg0e5JJxbVcSFEAGYf5PqOkLnaDg1NfixV0+LqwaybMU6GwyIQTcBLTARQNuRKNW0zhaLPcQctIJgfsbgugGk1bD0Gxh0n2FovZZEfSeNc44Q3iGYRUue8Aj6awGF0WiBGQaIFc5YFlxznqobK5MdCsOpnjcskx9h7wHei5aM9hbvSLEmZkbtQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J/7SZkqHjnYKcx9ZiJlug8t4FXZTdtiC81dCsPV0BI8=;
- b=fy3wr6uIraOWvRw1mJIQF3m3iqGK3/JqPA/eVL9IrEVuSh0GtkywJjXesWB7plPlZbSairRjPpSSVoQzwmiIxEzI9NX4Qz1Fih8YAl29CLYnmli+pltGKfOdzJip9EY583gOsdzA7xrSj6j623kMjjhaGNFRXHoYXA1PkTFCwZqea+pj9VPyRuTk4ta0GGd8VWyVEXeYTnX/fxkIBMLfqx/dbp5OF0a+Qq1m5I8RkmbAYnmFjV5j5sAYUfppQiiSM5oeSzs81mAjIodbYModAt9ylJDezwRTXTrh4o4nC3onQSj0yIwaxVWx26uChYu59+o0C2pMFSuJKq+kzgNkRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J/7SZkqHjnYKcx9ZiJlug8t4FXZTdtiC81dCsPV0BI8=;
- b=BwjxulcpCU6kcXCRZTvmx+x/5oFFQDxY9u6ztaIXcNCRu9JTU0GEa2t2Wb5yaG34U4/cy7o8WdJEMgW7qlIvxygxlvavwKkj+hpJ/vVJg7FWd/rsZKFNVLjWb3T8UwXka/BjGxkizhAB3NndjuOdh4xXKJDPZTT2Bd+vUlbOAXM=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB8PR04MB5804.eurprd04.prod.outlook.com (2603:10a6:10:a6::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22; Tue, 6 Jul
- 2021 09:52:51 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c445:d742:eb76:86dd]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c445:d742:eb76:86dd%9]) with mapi id 15.20.4287.033; Tue, 6 Jul 2021
- 09:52:51 +0000
-From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Len Brown <len.brown@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] PM: domains: not update genpd status when power on fail
-Thread-Topic: [PATCH] PM: domains: not update genpd status when power on fail
-Thread-Index: AQHXckmzmQAhEjXvb0Cm5ZNUmczSP6s1sncAgAABPOA=
-Date:   Tue, 6 Jul 2021 09:52:51 +0000
-Message-ID: <DB6PR0402MB2760C8EBCF384C19789BBBC5881B9@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <20210706100519.13851-1-peng.fan@oss.nxp.com>
- <CAPDyKFo-r0b1+wwoAyi8VRQpeAbXaxnDeFXGrjZV-zaqWZ7ojQ@mail.gmail.com>
-In-Reply-To: <CAPDyKFo-r0b1+wwoAyi8VRQpeAbXaxnDeFXGrjZV-zaqWZ7ojQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=oss.nxp.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c2af06cc-1fe0-4bbc-0fdf-08d94063d1dd
-x-ms-traffictypediagnostic: DB8PR04MB5804:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB8PR04MB58046286E22E124C09225F87C91B9@DB8PR04MB5804.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: y5HkXeH9Ne0rh5mTuctz/gtdBjRWTN0/xWX1bHu9QESSCJ7VIB4IONxXpoLLkGEfTrk5/l3y+xYx/PwqycCs0452I0AiTa3S3KSX5jIHuzsAkusfet79v/5RzYcbEPJC71BgmbMGvEkcUG09+n3zgMvQ2zRY0Md+UUdxEAKIOXDJV5ohkX7JywTY0MyXatOQSw49qX8U/OL+KMlPeTsODHObGGbERLkrz4F6/WlIwwSuRqaZo7rPGxQPU3k+DAJnyZVB03Lix6LvBRnBmTPgA9Lmhl+rJkIdJ/3p9tLFa6f/pEU0QU9rXUg9UddcaP7IxxNGLEp7/wPju0DaJSDEvOXGA1fz3CaGo783s12ttaJk/Zp+SwKtyGiuMvIMVamjdu8Aw5w4LCgyiGRCU6ALOy4gNJVh3AHES6Oh3AgkSM9vXWvQzMqYgko6/zovmwj0mNscbqkdOobWfiWsz6eITo8IZckpON2Jmsx8DGUezaQTGmH9sAuL4MBQvP7PurlVvSKNT+h/FJg9LXz7268JBMg1LFXohT8AxF4VxDEUkCVnN5w0DKvitlB2NHo7jPp1ZZAAuDdAOEt5pvqLN2qGTbVYUO+77J/g2kdRrBf309a0h1xtgBKunONd5/GIn9bYCqju7nBGEZ+sycNpCqT7LZHvBl8uPQy1B4zo4Ob3oO+ThooRwXC/VnduR/ALMFVAwG8gIj2C4vOlP8wkmEDC5aMbWdO3JH7KLAmGtqAeWBWq4oHz8nn/0JFr5xha31YPcRmDuKkkg8JIMAZ17wKWfA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(366004)(346002)(136003)(110136005)(8936002)(6506007)(33656002)(54906003)(71200400001)(15650500001)(478600001)(4326008)(2906002)(83380400001)(86362001)(26005)(316002)(66476007)(55016002)(38100700002)(66946007)(8676002)(52536014)(7696005)(64756008)(966005)(76116006)(186003)(66556008)(122000001)(5660300002)(66446008)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WGxYbjQxaTRpUlpPY2tiUkpnU3JSUzJxWjRFRklFcGhETTl0Ukc5WmdRdW9D?=
- =?utf-8?B?SXJqZlFJTllaRnl4VUhQNmlVSTZEYUZoc29RcHlnWmdZMXc0OGJEbCtWbXJU?=
- =?utf-8?B?VXRMQWs0Q3gxd2U0bUhhT3JEaDBhd0t2QXJTRWtGanNLSGN2Lzh4SHJwNmlP?=
- =?utf-8?B?dGhEb2dDVTBEN1FLUDNabHgxSE84Q3J4aHc1dVBRcVFITS9VeWJJNW1TMnVk?=
- =?utf-8?B?TWFNNWpiTzZIR1RSYXl5cEVKMGNydjBia3pJZHVoblhmN0w5OE5haXFESkxR?=
- =?utf-8?B?UVcxTHN1V3dCaXl5c1p0c3NmK2R6WjBVOWFlVG5QeWNKeWhrZm82aHRHZkxY?=
- =?utf-8?B?RVkyR2dLcEsyemVBK2E3VEhRdmlCTkRoZHpXc2lMdG42Y0xBRUtCTDRmNjhZ?=
- =?utf-8?B?VmNObitMTkRrV0w2ckR3M1BDc3JleUJNbFRNUGYyNzZxQldIdHdOYXp6MSt4?=
- =?utf-8?B?VitSQUNORkZyTUpDQnRSdnlWSXp6VFlzakpSYzVOMW1WVkp2RmxnQ0c4OG81?=
- =?utf-8?B?NWRJc01sZWNQRnM2NFkyNmpqWUJLZE4wRE4zVmgrdFllVzkwNFh1bi9sQk00?=
- =?utf-8?B?K2s5aEFjUTNhZ0ZKL1d5Wk9FeHp3NXB4dXFyaFZoR3BzVlM4cXVvSUlsOVpz?=
- =?utf-8?B?NXFwaG4yeGp5OE1Fek5SZTRvS3ByNEFjMzM1Wm45eCtDUVRBUkU2K0Q4dEhN?=
- =?utf-8?B?YWh6Rk5yN05YSHBxSExaVmxQT1hVZk5vNWtwMkNOVFZMSm9UNUtqN3FMeHh2?=
- =?utf-8?B?eThSdG1hdzJ0MW9McEp4RkllZjVORU5QOU41UmRLWVlxT2VXbTY5eHhacWdK?=
- =?utf-8?B?Y29IS0lwSlhTM2cxRHBwbzkremZaUzBSVTlVTytDbEFhVTZSMHZmbndaTDJ5?=
- =?utf-8?B?L1BsSHZpT3pweHd3ZXhkWnpZQjdjNTl0cmY4TTRqY05hcy9NTTZGUkFoalBq?=
- =?utf-8?B?WjNVT285bnJOb1cwUnNBK2gwa0dxc2MvZStRVE0xTU9Pa3FnU3F0cElkcXg4?=
- =?utf-8?B?bm1PeWk0UXJyZlBOUjZRdGYvODRDbTJPcDUvYUZaNTJKakJMVmdCV1Mzem5a?=
- =?utf-8?B?cDRKRTJpMlg5OFo4UTdrMUFPR0FVVHp0Y3pHSHhhSjR4MTRJeEM3Z1JLZnpr?=
- =?utf-8?B?K1JvcUEwUW1nSkNwWWVEMllVQyttanEwSjVGdElTSjJ4VUVKMjE0SFF6aDZa?=
- =?utf-8?B?UlZPTEIyenVva0VXamRaeXBDajhma3gvWUc3a3YwTXYrZXZLQXR2Sk8rYXpR?=
- =?utf-8?B?c25ROFNNdVNCZ3AwckN5VHNJZ1M2MVZGcEwyWCtWMFl5ZE95N1pFcEZGTjF2?=
- =?utf-8?B?d0RKVFpjVlZBN3huYUxrVWFualc1dXZrUEwvYzZsL0NGWnFiUUp3d202dllX?=
- =?utf-8?B?cWJLbDYyU0d5NDl3MWdqYmtKV3ZtU1MyRnJqZ2NFUjdvMkcxUG03dzBzTkRI?=
- =?utf-8?B?RFdwRk5GSUdVcHdzK2hDUkppKzhCVDZnamw1RTUyNmI3YkxPem04elB4TW9m?=
- =?utf-8?B?QmUwZ3J1M1BFd3JSaUVlSmpqZXU1RklDTnA2L3J3WENsK2RJa3dTYmdiVXVR?=
- =?utf-8?B?Ti9PNXZWcUxEN05UZmJYem9UcXJVR1VRZFNuWWl5Z3Q1S3VkQ2twbk5SNEE3?=
- =?utf-8?B?TXEwR3RDODV1Y2Vkcko4YjUrVzhMSVVIZ1k2STJiNGFLNGFZNkgxb0VpODdI?=
- =?utf-8?B?L3BnUjBaOWxzU1Bqa3F2bTZMbklOVTZZeTcwaStrMFBiRjJGclBPTCtmcnJB?=
- =?utf-8?Q?RVUpSl0DO4xb2TKFh3f+wZagyn4xefaRU8Xuuqt?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S231245AbhGFJ40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 05:56:26 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:20903 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230472AbhGFJ4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 05:56:25 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GJyYj4Cr1zBBJS;
+        Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id oQkE2M0fqy9u; Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GJyYj3BH9zBBJJ;
+        Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 579238B79E;
+        Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 8NcbPEjczuQZ; Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5597F8B794;
+        Tue,  6 Jul 2021 11:53:44 +0200 (CEST)
+Subject: Re: [PATCH 3/4] bpf powerpc: Add BPF_PROBE_MEM support for 64bit JIT
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        naveen.n.rao@linux.ibm.com, mpe@ellerman.id.au, ast@kernel.org,
+        daniel@iogearbox.net
+Cc:     songliubraving@fb.com, netdev@vger.kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, kpsingh@kernel.org,
+        paulus@samba.org, sandipan@linux.ibm.com, yhs@fb.com,
+        bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kafai@fb.com,
+        linux-kernel@vger.kernel.org
+References: <20210706073211.349889-1-ravi.bangoria@linux.ibm.com>
+ <20210706073211.349889-4-ravi.bangoria@linux.ibm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <2bfcb782-3133-2db2-31a7-6886156d2048@csgroup.eu>
+Date:   Tue, 6 Jul 2021 11:53:43 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2af06cc-1fe0-4bbc-0fdf-08d94063d1dd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2021 09:52:51.5471
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VQAVBVk3eLqdMD+H9wPYbAj3RO7ZCr7lSgqYaf6BT0opQCRdgi3SGnjn6lhbUmA2O0Q70slJLb/oTZXETZjAFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5804
+In-Reply-To: <20210706073211.349889-4-ravi.bangoria@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgVWxmLA0KDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIFBNOiBkb21haW5zOiBub3QgdXBkYXRl
-IGdlbnBkIHN0YXR1cyB3aGVuIHBvd2VyIG9uDQo+IGZhaWwNCj4gDQo+IE9uIFR1ZSwgNiBKdWwg
-MjAyMSBhdCAxMTozMSwgPHBlbmcuZmFuQG9zcy5ueHAuY29tPiB3cm90ZToNCj4gPg0KPiA+IEZy
-b206IFBlbmcgRmFuIDxwZW5nLmZhbkBueHAuY29tPg0KPiA+DQo+ID4gV2hlbiBfZ2VucGRfcG93
-ZXJfb24gZmFpbCwgdGhlIGdlbmVyaWMgcG93ZXIgZG9tYWluIHN0YXR1cyBzaG91bGQgbm90DQo+
-ID4gYmUgY2hhbmdlZCB0byBHRU5QRF9TVEFURV9PTi4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6
-IFBlbmcgRmFuIDxwZW5nLmZhbkBueHAuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL2Jhc2Uv
-cG93ZXIvZG9tYWluLmMgfCA2ICsrKystLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRp
-b25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvYmFz
-ZS9wb3dlci9kb21haW4uYyBiL2RyaXZlcnMvYmFzZS9wb3dlci9kb21haW4uYw0KPiA+IGluZGV4
-IGFiMGI3NDBjYzBmMS4uNzU0YTVkMzg0NDc5IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvYmFz
-ZS9wb3dlci9kb21haW4uYw0KPiA+ICsrKyBiL2RyaXZlcnMvYmFzZS9wb3dlci9kb21haW4uYw0K
-PiA+IEBAIC0xMTAxLDYgKzExMDEsNyBAQCBzdGF0aWMgdm9pZCBnZW5wZF9zeW5jX3Bvd2VyX29u
-KHN0cnVjdA0KPiBnZW5lcmljX3BtX2RvbWFpbiAqZ2VucGQsIGJvb2wgdXNlX2xvY2ssDQo+ID4g
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1bnNpZ25lZCBpbnQgZGVwdGgpICB7DQo+
-ID4gICAgICAgICBzdHJ1Y3QgZ3BkX2xpbmsgKmxpbms7DQo+ID4gKyAgICAgICBpbnQgcmV0Ow0K
-PiA+DQo+ID4gICAgICAgICBpZiAoZ2VucGRfc3RhdHVzX29uKGdlbnBkKSkNCj4gPiAgICAgICAg
-ICAgICAgICAgcmV0dXJuOw0KPiA+IEBAIC0xMTE3LDggKzExMTgsOSBAQCBzdGF0aWMgdm9pZCBn
-ZW5wZF9zeW5jX3Bvd2VyX29uKHN0cnVjdA0KPiBnZW5lcmljX3BtX2RvbWFpbiAqZ2VucGQsIGJv
-b2wgdXNlX2xvY2ssDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgZ2VucGRfdW5sb2NrKGxp
-bmstPnBhcmVudCk7DQo+ID4gICAgICAgICB9DQo+ID4NCj4gPiAtICAgICAgIF9nZW5wZF9wb3dl
-cl9vbihnZW5wZCwgZmFsc2UpOw0KPiA+IC0gICAgICAgZ2VucGQtPnN0YXR1cyA9IEdFTlBEX1NU
-QVRFX09OOw0KPiA+ICsgICAgICAgcmV0ID0gX2dlbnBkX3Bvd2VyX29uKGdlbnBkLCBmYWxzZSk7
-DQo+ID4gKyAgICAgICBpZiAoIXJldCkNCj4gDQo+IFRvIHN1cHBvcnQgdGhpcyBlcnJvciBwYXRo
-LCBhIGxvdCBtb3JlIGNvZGUgbmVlZHMgdG8gYmUgYWRkZWQuIEp1c3QNCj4gaGF2ZSBhIGxvb2sg
-YXQgdGhlIGNhbGxlcnMgb2YgZ2VucGRfc3luY19wb3dlcl9vbigpIGFuZCBjb21wYXJlIGl0DQo+
-IHdpdGggZ2VucGRfcG93ZXJfb24oKS4NCj4gDQo+IEluIG15IG9waW5pb24sIHN1cHBvcnRpbmcg
-dGhpcyBlcnJvciBwYXRoIGlzbid0IHJlYWxseSB3b3J0aCBpdCwgYXQNCj4gbGVhc3QgdW50aWwg
-c29tZW9uZSBjb21lcyB3aXRoIGEgdmFsaWQgdXNlIGNhc2UuIERvIHlvdSBoYXZlIG9uZSAtIG9y
-DQo+IGRpZCB5b3Ugc2VuZCB0aGUgJHN1YmplY3QgcGF0Y2ggYmFzZWQgc29sZWx5IG9uIGNvZGUg
-aW5zcGVjdGlvbj8NCg0KVGhpcyBpcyB0d28gcGF0Y2hzZXQ6DQpodHRwczovL3BhdGNod29yay5r
-ZXJuZWwub3JnL3Byb2plY3QvbGludXgtYXJtLWtlcm5lbC9wYXRjaC8yMDIxMDYwNDExMTAwNS42
-ODA0LTEtcGVuZy5mYW5Ab3NzLm54cC5jb20vDQpodHRwczovL3BhdGNod29yay5rZXJuZWwub3Jn
-L3Byb2plY3QvbGludXgtYXJtLWtlcm5lbC9jb3Zlci8yMDIxMDYyOTA3Mjk0MS43OTgwLTEtcGVu
-Zy5mYW5Ab3NzLm54cC5jb20vDQoNCkkgY29sbGVjdGVkIGluIGdpdGh1YiB3aXRoIGEgZmV3IGZp
-eGVzOg0KaHR0cHM6Ly9naXRodWIuY29tL01yVmFuL2xpbnV4L3RyZWUvbGludXgtbmV4dC1tYXN0
-ZXItNjI4LWJsay1jdGwtdGVzdA0KDQoNCkluIG15IHRlc3QsIHdoZW4gc3VzcGVuZC9yZXN1bWUs
-IEkgc2VlDQpwZ2NfdnB1X2gxL2cxL2cyIGhhcyBzdGF0dXMgb24sIGJ1dCBhY3R1YWxseSB0aGV5
-IGFyZSBub3Qgb24gaW4gaGFyZHdhcmUuDQpCZWNhdXNlIHZwdW1peF9ibGtfY3RsIGJ1cyBkb21h
-aW4gaXMgbm90IG9uLCBwZ2NfdnB1X2gxL2cxL2cyIHJ1bnRpbWUNCnBvd2VyIG9mZiB3aWxsIGZh
-aWwuDQoNClRoYW5rcywNClBlbmcuDQoNCj4gDQo+ID4gKyAgICAgICAgICAgICAgIGdlbnBkLT5z
-dGF0dXMgPSBHRU5QRF9TVEFURV9PTjsNCj4gPiAgfQ0KPiA+DQo+ID4gIC8qKg0KPiA+IC0tDQo+
-ID4gMi4zMC4wDQo+ID4NCj4gDQo+IEtpbmQgcmVnYXJkcw0KPiBVZmZlDQo=
+
+
+Le 06/07/2021 à 09:32, Ravi Bangoria a écrit :
+> BPF load instruction with BPF_PROBE_MEM mode can cause a fault
+> inside kernel. Append exception table for such instructions
+> within BPF program.
+
+Can you do the same for 32bit ?
+
+> 
+> Unlike other archs which uses extable 'fixup' field to pass dest_reg
+> and nip, BPF exception table on PowerPC follows the generic PowerPC
+> exception table design, where it populates both fixup and extable
+> sections witin BPF program. fixup section contains two instructions,
+> first instruction clears dest_reg and 2nd jumps to next instruction
+> in the BPF code. extable 'insn' field contains relative offset of
+> the instruction and 'fixup' field contains relative offset of the
+> fixup entry. Example layout of BPF program with extable present:
+> 
+>               +------------------+
+>               |                  |
+>               |                  |
+>     0x4020 -->| ld   r27,4(r3)   |
+>               |                  |
+>               |                  |
+>     0x40ac -->| lwz  r3,0(r4)    |
+>               |                  |
+>               |                  |
+>               |------------------|
+>     0x4280 -->| xor r27,r27,r27  |  \ fixup entry
+>               | b   0x4024       |  /
+>     0x4288 -->| xor r3,r3,r3     |
+>               | b   0x40b0       |
+>               |------------------|
+>     0x4290 -->| insn=0xfffffd90  |  \ extable entry
+>               | fixup=0xffffffec |  /
+>     0x4298 -->| insn=0xfffffe14  |
+>               | fixup=0xffffffec |
+>               +------------------+
+> 
+>     (Addresses shown here are chosen random, not real)
+> 
+> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+> ---
+>   arch/powerpc/net/bpf_jit.h        |  5 ++-
+>   arch/powerpc/net/bpf_jit_comp.c   | 25 +++++++++----
+>   arch/powerpc/net/bpf_jit_comp32.c |  2 +-
+>   arch/powerpc/net/bpf_jit_comp64.c | 60 ++++++++++++++++++++++++++++++-
+>   4 files changed, 83 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
+> index 411c63d945c7..e9408ad190d3 100644
+> --- a/arch/powerpc/net/bpf_jit.h
+> +++ b/arch/powerpc/net/bpf_jit.h
+> @@ -141,8 +141,11 @@ struct codegen_context {
+>   	unsigned int idx;
+>   	unsigned int stack_size;
+>   	int b2p[ARRAY_SIZE(b2p)];
+> +	unsigned int exentry_idx;
+>   };
+>   
+> +#define BPF_FIXUP_LEN	8 /* Two instructions */
+> +
+>   static inline void bpf_flush_icache(void *start, void *end)
+>   {
+>   	smp_wmb();	/* smp write barrier */
+> @@ -166,7 +169,7 @@ static inline void bpf_clear_seen_register(struct codegen_context *ctx, int i)
+>   
+>   void bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 func);
+>   int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
+> -		       u32 *addrs);
+> +		       u32 *addrs, int pass);
+>   void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx);
+>   void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx);
+>   void bpf_jit_realloc_regs(struct codegen_context *ctx);
+> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+> index a9585e52a88d..3ebd8897cf09 100644
+> --- a/arch/powerpc/net/bpf_jit_comp.c
+> +++ b/arch/powerpc/net/bpf_jit_comp.c
+> @@ -89,6 +89,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   {
+>   	u32 proglen;
+>   	u32 alloclen;
+> +	u32 extable_len = 0;
+> +	u32 fixup_len = 0;
+
+Setting those to 0 doesn't seem to be needed, as it doesn't seem to exist any path to skip the 
+setting below. You should not perform unnecessary init at declaration as it is error prone.
+
+>   	u8 *image = NULL;
+>   	u32 *code_base;
+>   	u32 *addrs;
+> @@ -131,7 +133,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   		image = jit_data->image;
+>   		bpf_hdr = jit_data->header;
+>   		proglen = jit_data->proglen;
+> -		alloclen = proglen + FUNCTION_DESCR_SIZE;
+>   		extra_pass = true;
+>   		goto skip_init_ctx;
+>   	}
+> @@ -149,7 +150,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   	cgctx.stack_size = round_up(fp->aux->stack_depth, 16);
+>   
+>   	/* Scouting faux-generate pass 0 */
+> -	if (bpf_jit_build_body(fp, 0, &cgctx, addrs)) {
+> +	if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0)) {
+>   		/* We hit something illegal or unsupported. */
+>   		fp = org_fp;
+>   		goto out_addrs;
+> @@ -162,7 +163,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   	 */
+>   	if (cgctx.seen & SEEN_TAILCALL) {
+>   		cgctx.idx = 0;
+> -		if (bpf_jit_build_body(fp, 0, &cgctx, addrs)) {
+> +		if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0)) {
+>   			fp = org_fp;
+>   			goto out_addrs;
+>   		}
+> @@ -177,8 +178,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   	bpf_jit_build_prologue(0, &cgctx);
+>   	bpf_jit_build_epilogue(0, &cgctx);
+>   
+> +	fixup_len = fp->aux->num_exentries * BPF_FIXUP_LEN;
+> +	extable_len = fp->aux->num_exentries * sizeof(struct exception_table_entry);
+> +
+>   	proglen = cgctx.idx * 4;
+> -	alloclen = proglen + FUNCTION_DESCR_SIZE;
+> +	alloclen = proglen + FUNCTION_DESCR_SIZE + fixup_len + extable_len;
+>   
+>   	bpf_hdr = bpf_jit_binary_alloc(alloclen, &image, 4, bpf_jit_fill_ill_insns);
+>   	if (!bpf_hdr) {
+> @@ -186,6 +190,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   		goto out_addrs;
+>   	}
+>   
+> +	if (extable_len) {
+> +		fp->aux->extable = (void *)image + FUNCTION_DESCR_SIZE +
+> +				   proglen + fixup_len;
+> +	}
+> +
+>   skip_init_ctx:
+>   	code_base = (u32 *)(image + FUNCTION_DESCR_SIZE);
+>   
+> @@ -210,7 +219,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   		/* Now build the prologue, body code & epilogue for real. */
+>   		cgctx.idx = 0;
+>   		bpf_jit_build_prologue(code_base, &cgctx);
+> -		bpf_jit_build_body(fp, code_base, &cgctx, addrs);
+> +		if (bpf_jit_build_body(fp, code_base, &cgctx, addrs, pass)) {
+> +			bpf_jit_binary_free(bpf_hdr);
+> +			fp = org_fp;
+> +			goto out_addrs;
+> +		}
+>   		bpf_jit_build_epilogue(code_base, &cgctx);
+>   
+>   		if (bpf_jit_enable > 1)
+> @@ -234,7 +247,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   
+>   	fp->bpf_func = (void *)image;
+>   	fp->jited = 1;
+> -	fp->jited_len = alloclen;
+> +	fp->jited_len = proglen + FUNCTION_DESCR_SIZE;
+>   
+>   	bpf_flush_icache(bpf_hdr, (u8 *)bpf_hdr + (bpf_hdr->pages * PAGE_SIZE));
+>   	if (!fp->is_func || extra_pass) {
+
+This hunk does not apply on latest powerpc tree. You are missing commit 62e3d4210ac9c
+
+
+> diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
+> index 1f81bea35aab..23ab5620a45a 100644
+> --- a/arch/powerpc/net/bpf_jit_comp32.c
+> +++ b/arch/powerpc/net/bpf_jit_comp32.c
+> @@ -266,7 +266,7 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
+>   
+>   /* Assemble the body code between the prologue & epilogue */
+>   int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
+> -		       u32 *addrs)
+> +		       u32 *addrs, int pass)
+>   {
+>   	const struct bpf_insn *insn = fp->insnsi;
+>   	int flen = fp->len;
+> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> index 984177d9d394..1884c6dca89a 100644
+> --- a/arch/powerpc/net/bpf_jit_comp64.c
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> @@ -270,9 +270,51 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
+>   	/* out: */
+>   }
+>   
+> +static int add_extable_entry(struct bpf_prog *fp, u32 *image, int pass,
+> +			     u32 code, struct codegen_context *ctx, int dst_reg)
+> +{
+> +	off_t offset;
+> +	unsigned long pc;
+> +	struct exception_table_entry *ex;
+> +	u32 *fixup;
+> +
+> +	/* Populate extable entries only in the last pass */
+> +	if (pass != 2 || BPF_MODE(code) != BPF_PROBE_MEM)
+
+'code' is only used for that test, can you do the test before calling add_extable_entry() ?
+
+> +		return 0;
+> +
+> +	if (!fp->aux->extable ||
+> +	    WARN_ON_ONCE(ctx->exentry_idx >= fp->aux->num_exentries))
+> +		return -EINVAL;
+> +
+> +	pc = (unsigned long)&image[ctx->idx - 1];
+
+You should call this function before incrementing ctx->idx
+
+> +
+> +	fixup = (void *)fp->aux->extable -
+> +		(fp->aux->num_exentries * BPF_FIXUP_LEN) +
+> +		(ctx->exentry_idx * BPF_FIXUP_LEN);
+> +
+> +	fixup[0] = PPC_RAW_XOR(dst_reg, dst_reg, dst_reg);
+
+Prefered way to clear a reg in according to ISA is to do 'li reg, 0'
+
+> +	fixup[1] = (PPC_INST_BRANCH |
+> +		   (((long)(pc + 4) - (long)&fixup[1]) & 0x03fffffc));
+
+Would be nice if we could have a PPC_RAW_BRANCH() stuff, we could do something like 
+PPC_RAW_BRANCH((long)(pc + 4) - (long)&fixup[1])
+
+
+> +
+> +	ex = &fp->aux->extable[ctx->exentry_idx];
+> +
+> +	offset = pc - (long)&ex->insn;
+> +	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
+> +		return -ERANGE;
+> +	ex->insn = offset;
+> +
+> +	offset = (long)fixup - (long)&ex->fixup;
+> +	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
+> +		return -ERANGE;
+> +	ex->fixup = offset;
+> +
+> +	ctx->exentry_idx++;
+> +	return 0;
+> +}
+> +
+>   /* Assemble the body code between the prologue & epilogue */
+>   int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
+> -		       u32 *addrs)
+> +		       u32 *addrs, int pass)
+>   {
+>   	const struct bpf_insn *insn = fp->insnsi;
+>   	int flen = fp->len;
+> @@ -710,25 +752,41 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>   		 */
+>   		/* dst = *(u8 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_B:
+> +		case BPF_LDX | BPF_PROBE_MEM | BPF_B:
+
+Could do:
++		case BPF_LDX | BPF_PROBE_MEM | BPF_B:
++			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
++			if (ret)
++				return ret;
+   		case BPF_LDX | BPF_MEM | BPF_B:
+
+>   			EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
+>   			if (insn_is_zext(&insn[i + 1]))
+>   				addrs[++i] = ctx->idx * 4;
+> +			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
+> +			if (ret)
+> +				return ret;
+>   			break;
+>   		/* dst = *(u16 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_H:
+> +		case BPF_LDX | BPF_PROBE_MEM | BPF_H:
+>   			EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
+>   			if (insn_is_zext(&insn[i + 1]))
+>   				addrs[++i] = ctx->idx * 4;
+> +			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
+> +			if (ret)
+> +				return ret;
+>   			break;
+>   		/* dst = *(u32 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_W:
+> +		case BPF_LDX | BPF_PROBE_MEM | BPF_W:
+>   			EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
+>   			if (insn_is_zext(&insn[i + 1]))
+>   				addrs[++i] = ctx->idx * 4;
+> +			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
+> +			if (ret)
+> +				return ret;
+>   			break;
+>   		/* dst = *(u64 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_DW:
+> +		case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
+>   			PPC_BPF_LL(dst_reg, src_reg, off);
+> +			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
+> +			if (ret)
+> +				return ret;
+>   			break;
+>   
+>   		/*
+> 
