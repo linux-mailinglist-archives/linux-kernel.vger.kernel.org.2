@@ -2,119 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1183BDB68
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 18:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0423BDB6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 18:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhGFQbw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Jul 2021 12:31:52 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:56745 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbhGFQbv (ORCPT
+        id S230154AbhGFQch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 12:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230149AbhGFQce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 12:31:51 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id D93D7100004;
-        Tue,  6 Jul 2021 16:29:09 +0000 (UTC)
-Date:   Tue, 6 Jul 2021 18:29:08 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Tudor.Ambarus@microchip.com, michael@walle.cc,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        richard@nod.at, vigneshr@ti.com
-Subject: Re: [PATCH] mtd: core: handle flashes without OTP gracefully
-Message-ID: <20210706182908.3cf82669@xps13>
-In-Reply-To: <2716acf0-fcf1-d2ef-83be-152d0300d687@roeck-us.net>
-References: <20210702093841.32307-1-michael@walle.cc>
-        <9bb2acac-aeb8-d2b2-8df0-9acfd972ec5d@microchip.com>
-        <9F46D75C-D00D-4577-A337-7411049EC7D9@walle.cc>
-        <8da3d84e-dfbf-2030-98b4-148362d22f52@microchip.com>
-        <2716acf0-fcf1-d2ef-83be-152d0300d687@roeck-us.net>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 6 Jul 2021 12:32:34 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A72C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 09:29:55 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id z1so21408428ils.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 09:29:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=etYc22i2Gl0Nevaba6RCpVnI4CJLkrAbQx/tp++WzW4=;
+        b=QT4qJl6Njzuv/rc+EW47j005Go9tPi24idYG9F2hf6+7AESajcYJswCFXElQ8kFMby
+         3vxITIhL6oD5OvTn6ePN1zoUacBrQ5ffu1dB4JcTCI57bv9vthhfZgYhhhNqU+ePgyil
+         0oVjqkgbSnNJaSikDXvfN1uGA2r2rilepOECvDPAFz+i4YUySzo8ix4MsE7aC86tV60X
+         iOE8CYqdzDybuCrmVxoL7WfhOPJx1E5WRlC0HlQ7DGrGnVNsT3Zk+Wbe3rSxO2v/33RX
+         olRWd/DC6AGXPPFAvSitPnP8EShIrJOMYVTSz6I/9NOxcUk33s+sqTV1aJkNsz27Dc/v
+         M/dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=etYc22i2Gl0Nevaba6RCpVnI4CJLkrAbQx/tp++WzW4=;
+        b=VaBWuvVQaz45GMqVaUM3gd6jtiDJsii7ixx99f/d/0/HaHvAR3dCC4POtoavjt9aqU
+         FFGRNi0kMrIipR0NBCxJ4sbXTSL3/6G1hyJg65k+TIXorItaDTqkfaou7tFR/HmHv2zl
+         We0PSSIqe4tQAwLWG/XQ2IdZEdK5g4DiJft7pd7rgiuecpAS/7Ra0oqPuhKxQ/XNfz5u
+         muXPVpi8rf3qPQKWvKaSelJ859YVSuMZdrvPJiUoJzp4zWJ2AHO7PhcNCZvCs8n5nZ9+
+         xXARqE0/jj7Pp9LmI0f+BC8kpYKmc18yfikgePMf0vf4SaFte6Qbq/arCKdfxNvFLGXO
+         S96g==
+X-Gm-Message-State: AOAM531o+GG4qtHcYVq/T0Lox2Bws/xbdA1HkW4n9IXJ6Teaa4eh/B6p
+        9zNCk1Flt1gL+h509Tp1vdp97A==
+X-Google-Smtp-Source: ABdhPJz6bo5skYn6n6IU9DPSu+uSaHq70zWMOCxNpyUILydINIqb1PzqfwTHtoG8Ps83diFXVzV6Rw==
+X-Received: by 2002:a92:7f07:: with SMTP id a7mr14607133ild.202.1625588995298;
+        Tue, 06 Jul 2021 09:29:55 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id r16sm8512490ilj.4.2021.07.06.09.29.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 09:29:54 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1m0nxJ-004TiJ-I6; Tue, 06 Jul 2021 13:29:53 -0300
+Date:   Tue, 6 Jul 2021 13:29:53 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
+Message-ID: <20210706162953.GQ4604@ziepe.ca>
+References: <20210705130314.11519-1-ogabbay@kernel.org>
+ <YOQXBWpo3whVjOyh@phenom.ffwll.local>
+ <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
+ <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
+ <20210706142357.GN4604@ziepe.ca>
+ <CAKMK7uELNzwUe+hhVWRg=Pk5Wt_vOOX922H48Kd6dTyO2PeBbg@mail.gmail.com>
+ <20210706152542.GP4604@ziepe.ca>
+ <CAKMK7uH7Ar6+uAOU_Sj-mf89V9WCru+66CV5bO9h-WAAv7Mgdg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uH7Ar6+uAOU_Sj-mf89V9WCru+66CV5bO9h-WAAv7Mgdg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+On Tue, Jul 06, 2021 at 05:49:01PM +0200, Daniel Vetter wrote:
 
-Guenter Roeck <linux@roeck-us.net> wrote on Sat, 3 Jul 2021 10:26:06
--0700:
+> The other thing to keep in mind is that one of these drivers supports
+> 25 years of product generations, and the other one doesn't. 
 
-> On 7/3/21 9:42 AM, Tudor.Ambarus@microchip.com wrote:
-> > On 7/3/21 7:08 PM, Michael Walle wrote:  
-> >> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >>
-> >> Am 3. Juli 2021 11:56:14 MESZ schrieb Tudor.Ambarus@microchip.com:  
-> >>> On 7/2/21 12:38 PM, Michael Walle wrote:  
-> >>>> EXTERNAL EMAIL: Do not click links or open attachments unless you  
-> >>> know the content is safe  
-> >>>>
-> >>>> There are flash drivers which registers the OTP callbacks although  
-> >>> the  
-> >>>> flash doesn't support OTP regions and return -ENODATA for these
-> >>>> callbacks if there is no OTP. If this happens, the probe of the whole  
-> >>>
-> >>> why do they register the OTP callback if they don't support OTP?  
-> >>
-> >> I don't know. But I certainly won't touch that code :p  
-> > 
-> > why? :D
-> >   
-> >>
-> >>  
-> >>>> flash will fail. Fix it by handling the ENODATA return code and skip
-> >>>> the OTP region nvmem setup.
-> >>>>
-> >>>> Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
-> >>>> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> >>>> Signed-off-by: Michael Walle <michael@walle.cc>
-> >>>> ---
-> >>>>   drivers/mtd/mtdcore.c | 10 ++++++++--
-> >>>>   1 file changed, 8 insertions(+), 2 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> >>>> index b5ccd3037788..6881d1423dd6 100644
-> >>>> --- a/drivers/mtd/mtdcore.c
-> >>>> +++ b/drivers/mtd/mtdcore.c
-> >>>> @@ -880,7 +880,10 @@ static int mtd_otp_nvmem_add(struct mtd_info  
-> >>> *mtd)  
-> >>>>
-> >>>>          if (mtd->_get_user_prot_info && mtd->_read_user_prot_reg) {
-> >>>>                  size = mtd_otp_size(mtd, true);
-> >>>> -               if (size < 0)
-> >>>> +               /* ENODATA means there is no OTP region */
-> >>>> +               if (size == -ENODATA)  
-> >>>
-> >>> If no OTP data, maybe it's more appropriate for the clients to just
-> >>> return a retlen of 0.  
-> >>
-> >> you mean already checking ENODATA in mtd_otp_size() and return 0. That would also make the hunk below unnecessary. I'll change it.  
-> > 
-> > I've thought about:
-> > 
-> > diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> > index 54f92d09d9cf..9419b33d7238 100644
-> > --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> > +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> > @@ -2314,7 +2314,7 @@ static int cfi_intelext_otp_walk(struct mtd_info *mtd, loff_t from, size_t len,  
-> >   >          /* Check that we actually have some OTP registers */  
-> >          if (!extp || !(extp->FeatureSupport & 64) || !extp->NumProtectionFields)
-> > -               return -ENODATA;
-> > +               return 0;
-> >   
+Sure, but that is the point, isn't it? To have an actually useful
+thing you need all of this mess
+
+> > My argument is that an in-tree open kernel driver is a big help to
+> > reverse engineering an open userspace. Having the vendors
+> > collaboration to build that monstrous thing can only help the end goal
+> > of an end to end open stack.
 > 
-> There are various places where this is called, including code returning information
-> to userspace. That means you'd be changing the ABI to userspace which would now suddenly
-> return 0 instead of -ENODATA.
+> Not sure where this got lost, but we're totally fine with vendors
+> using the upstream driver together with their closed stack. And most
+> of the drivers we do have in upstream are actually, at least in parts,
+> supported by the vendor. E.g. if you'd have looked the drm/arm driver
+> you picked is actually 100% written by ARM engineers. So kinda
+> unfitting example.
 
-Yeah let's avoid this if possible, even though I liked Tudor's approach.
+So the argument with Habana really boils down to how much do they need
+to show in the open source space to get a kernel driver? You want to
+see the ISA or compiler at least?
 
-Would Michael proposal of checking it in mtd_otp_size() still affect
-userspace? If not, having a single check over the -ENODATA return code
-seems attractive.
+That at least doesn't seem "extreme" to me.
 
-Thanks,
-Miquèl
+> > For instance a vendor with an in-tree driver has a strong incentive to
+> > sort out their FW licensing issues so it can be redistributed.
+> 
+> Nvidia has been claiming to try and sort out the FW problem for years.
+> They even managed to release a few things, but I think the last one is
+> 2-3 years late now. Partially the reason is that there don't have a
+> stable api between the firmware and driver, it's all internal from the
+> same source tree, and they don't really want to change that.
+
+Right, companies have no incentive to work in a sane way if they have
+their own parallel world. I think drawing them part by part into the
+standard open workflows and expectations is actually helpful to
+everyone.
+
+> > > I don't think the facts on the ground support your claim here, aside
+> > > from the practical problem that nvidia is unwilling to even create an
+> > > open driver to begin with. So there isn't anything to merge.
+> >
+> > The internet tells me there is nvgpu, it doesn't seem to have helped.
+> 
+> Not sure which one you mean, but every once in a while they open up a
+> few headers, or a few programming specs, or a small driver somewhere
+> for a very specific thing, and then it dies again or gets obfuscated
+> for the next platform, or just never updated. I've never seen anything
+> that comes remotely to something complete, aside from tegra socs,
+> which are fully supported in upstream afaik.
+
+I understand nvgpu is the tegra driver that people actualy
+use. nouveau may have good tegra support but is it used in any actual
+commercial product?
+
+Jason
