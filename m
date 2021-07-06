@@ -2,95 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A1B3BC4C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 04:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944223BC4C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 04:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhGFCgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 22:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229807AbhGFCgM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 22:36:12 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8DC2C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 19:33:33 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id p9so79842pjl.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 19:33:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=06i5KGWmwHVBZFXYJ48PBysuLwO0G27A0FsQXG6hKSc=;
-        b=dUKmO6vGEOG98B79jPaqZClgRBc20In6/36jh08wa7rT55304A7Q8dsLlL3LBbkdSq
-         6XOKiGrmfL0p2BCZVfPwYnAAZHCWDWpNwn8dYqUQfm88WgGSwsuIw7ofkLe5t2hjNf/U
-         N3Kr8NZmXAWzIUGgschfvMo/iGstzUtrzXgk1Fv1Z98Zei2HxIwb6hK/shiG2BzFHTj7
-         llI5FAHA7t7BNcKw7dlSoemhF315xKBQTL0IjagVeHemQFKmnCs18DObcQDiVT2coVi/
-         r78nzglAl6YLxQtKrjNGJ3E8pVgadzBcWUns80KAwKKXiEhjjJ+agZel2J1wdN4EqJbO
-         hUEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=06i5KGWmwHVBZFXYJ48PBysuLwO0G27A0FsQXG6hKSc=;
-        b=LzdoASOji+k/Lc4ZtjvGLOBn8fJ2RAyfpd6/FGJ9OZ3ClnYrPjq5ITqB8rLdKV6EmX
-         uMMIb4aioZ2uKtNLLQLif6S8bqqrWXDPH1TKNY6eaE9NPNuBRGrw0862vQPbgfNTHL3g
-         kVRvStcGP7GAxDHntxh+SjWRvcxIKIXCu8uD4IshhswCdpDgiOKIw1wdfD6MTvBOnjL0
-         TFMiM/sCLIqk9CnE7Khwr4yr1nw0p0ymjqEQu6UNTl7BpkD446g0lclcuspQNnbSzAra
-         1VPi1x8tCMnjrclQ7y+L6daMpA0F1d8drar/erOAZ0FgiITub4rNSFvmMK/QVL+pKPih
-         OF7A==
-X-Gm-Message-State: AOAM5316YQWuMIYBZsZkRI/NSga+o7Rcq2sipKIhjlcuhKBFMKQGNF5s
-        FpdYuE/8jTpSLDka7XRLsXCQKlDtCW6N1+CUaDP4T0kmsrxljkfQ
-X-Google-Smtp-Source: ABdhPJzassG1l/bv5iP47zIeIbJ7LnhwZwautzwNcbF85KFmqLIn1KNN+Ph1/5NVHNrWrQIadTsIVk9B1T5p1N/N67M=
-X-Received: by 2002:a17:90b:19cd:: with SMTP id nm13mr1994265pjb.147.1625538813383;
- Mon, 05 Jul 2021 19:33:33 -0700 (PDT)
+        id S229910AbhGFCfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 22:35:40 -0400
+Received: from mga04.intel.com ([192.55.52.120]:40537 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229807AbhGFCfj (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 5 Jul 2021 22:35:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10036"; a="207218099"
+X-IronPort-AV: E=Sophos;i="5.83,327,1616482800"; 
+   d="scan'208";a="207218099"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 19:33:01 -0700
+X-IronPort-AV: E=Sophos;i="5.83,327,1616482800"; 
+   d="scan'208";a="456900822"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2021 19:32:59 -0700
+Subject: Re: [PATCH] perf stat: Merge uncore events by default for hybrid
+ platform
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210616063004.2824-1-yao.jin@linux.intel.com>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <ac00637c-af58-6dba-67b7-95887bae3b99@linux.intel.com>
+Date:   Tue, 6 Jul 2021 10:32:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <1625493432-9945-1-git-send-email-wangqing@vivo.com>
-In-Reply-To: <1625493432-9945-1-git-send-email-wangqing@vivo.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 6 Jul 2021 10:32:56 +0800
-Message-ID: <CAMZfGtUbX+TAx-7RJ4ZpoNLHDa9mp6k+DBqHaYiLjhSJokh3Sw@mail.gmail.com>
-Subject: Re: [Phishing Risk] [External] [PATCH] mm: add GFP_ATOMIC flag after local_lock_irqsave
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210616063004.2824-1-yao.jin@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 9:57 PM Wang Qing <wangqing@vivo.com> wrote:
->
-> Use GFP_ATOMIC when local_lock_irqsave in __alloc_pages_bulk
->
-> Reported-by: syzbot+e45919db2eab5e837646@syzkaller.appspotmail.com
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
+Hi,
+
+On 6/16/2021 2:30 PM, Jin Yao wrote:
+> On hybrid platform, by default stat aggregates and reports the event counts
+> per pmu. For example,
+> 
+>    # perf stat -e cycles -a true
+> 
+>     Performance counter stats for 'system wide':
+> 
+>             1,400,445      cpu_core/cycles/
+>               680,881      cpu_atom/cycles/
+> 
+>           0.001770773 seconds time elapsed
+> 
+> While for uncore events, that's not a suitable method. Uncore has nothing
+> to do with hybrid. So for uncore events, we aggregate event counts from all
+> PMUs and report the counts without PMUs.
+> 
+> Before:
+> 
+>    # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
+> 
+>     Performance counter stats for 'system wide':
+> 
+>                 2,058      uncore_arb_0/event=0x81,umask=0x1/
+>                 2,028      uncore_arb_1/event=0x81,umask=0x1/
+>                     0      uncore_arb_0/event=0x84,umask=0x1/
+>                     0      uncore_arb_1/event=0x84,umask=0x1/
+> 
+>           0.000614498 seconds time elapsed
+> 
+> After:
+> 
+>    # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
+> 
+>     Performance counter stats for 'system wide':
+> 
+>                 3,996      arb/event=0x81,umask=0x1/
+>                     0      arb/event=0x84,umask=0x1/
+> 
+>           0.000630046 seconds time elapsed
+> 
+> Of course, we also keep the '--no-merge' still works for uncore events.
+> 
+>    # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ --no-merge true
+> 
+>     Performance counter stats for 'system wide':
+> 
+>                 1,952      uncore_arb_0/event=0x81,umask=0x1/
+>                 1,921      uncore_arb_1/event=0x81,umask=0x1/
+>                     0      uncore_arb_0/event=0x84,umask=0x1/
+>                     0      uncore_arb_1/event=0x84,umask=0x1/
+> 
+>           0.000575536 seconds time elapsed
+> 
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 > ---
->  mm/page_alloc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index d6e94cc..3016ba5
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5309,7 +5309,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->                 }
->                 nr_account++;
->
-> -               prep_new_page(page, 0, gfp, 0);
-> +               prep_new_page(page, 0, gfp | GFP_ATOMIC, 0);
+>   tools/perf/builtin-stat.c      |  3 ---
+>   tools/perf/util/stat-display.c | 29 +++++++++++++++++++++++++----
+>   2 files changed, 25 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index f9f74a514315..b67a44982b61 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -2442,9 +2442,6 @@ int cmd_stat(int argc, const char **argv)
+>   
+>   	evlist__check_cpu_maps(evsel_list);
+>   
+> -	if (perf_pmu__has_hybrid())
+> -		stat_config.no_merge = true;
+> -
+>   	/*
+>   	 * Initialize thread_map with comm names,
+>   	 * so we could print it out on output.
+> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+> index b759dfd633b4..c6070f4684ca 100644
+> --- a/tools/perf/util/stat-display.c
+> +++ b/tools/perf/util/stat-display.c
+> @@ -595,6 +595,19 @@ static void collect_all_aliases(struct perf_stat_config *config, struct evsel *c
+>   	}
+>   }
+>   
+> +static bool is_uncore(struct evsel *evsel)
+> +{
+> +	struct perf_pmu *pmu;
+> +
+> +	if (evsel->pmu_name) {
+> +		pmu = perf_pmu__find(evsel->pmu_name);
+> +		if (pmu)
+> +			return pmu->is_uncore;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>   static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
+>   			    void (*cb)(struct perf_stat_config *config, struct evsel *counter, void *data,
+>   				       bool first),
+> @@ -603,10 +616,18 @@ static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
+>   	if (counter->merged_stat)
+>   		return false;
+>   	cb(config, counter, data, true);
+> -	if (config->no_merge)
+> -		uniquify_event_name(counter);
+> -	else if (counter->auto_merge_stats)
+> -		collect_all_aliases(config, counter, cb, data);
+> +	if (perf_pmu__has_hybrid()) {
+> +		if (config->no_merge || !is_uncore(counter))
+> +			uniquify_event_name(counter);
+> +		else if (counter->auto_merge_stats)
+> +			collect_all_aliases(config, counter, cb, data);
+> +	} else {
+> +		if (config->no_merge)
+> +			uniquify_event_name(counter);
+> +		else if (counter->auto_merge_stats)
+> +			collect_all_aliases(config, counter, cb, data);
+> +	}
+> +
+>   	return true;
+>   }
+>   
+> 
 
-Hi Wang Qing,
+Any comments for this patch? :)
 
-I didn't get the point here. IIUC, prep_new_page() will not allocate
-memory. So why do we need GFP_ATOMIC? What I missed here?
-
-Thanks.
-
->                 if (page_list)
->                         list_add(&page->lru, page_list);
->                 else
-> --
-> 2.7.4
->
+Thanks
+Jin Yao
