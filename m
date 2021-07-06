@@ -2,67 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9671D3BD948
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA003BD884
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbhGFPAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232107AbhGFPAc (ORCPT
+        id S232580AbhGFOmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:42:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54118 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232600AbhGFOmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:00:32 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57446C06178C;
-        Tue,  6 Jul 2021 07:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=j8Y5c0H33Ia3JLD8S4h0ACVfAmyfFdJe7qBjkxt1vcE=;
-        t=1625580555; x=1626790155; b=OCb18fdbY/uMjS4/Us1oyaU+Npg3O2wO2kSFWbCc2jkZiXa
-        DuQ3g5QdbuM5Taktowuuysft+YS5Hv8z/IwwJUGUjTP851vjBJe+k1O+uczMwKflKrbhhsjWGKFyS
-        LsntSypW/BuOViQAirTvDItnM5dUWPQ2GFR2QTgDhJxgHfMhBLwWlK3TBWgV/YqtGfDqrB1FYSjU9
-        15VhGi/ZVRbelXq4GvzFKjnvAskya2n7UDwXkcvs+9702jaMc4wQwHYS4dM5vs+8YYVVPYXxa5v6B
-        8FLj5O6lXuI7TkIQ9YMSCAUJNZwPBeHZpOkSsuvSQ0quMfQVn2r3tgLF8Oy2ayoA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94.2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1m0ll8-00GFJQ-WD; Tue, 06 Jul 2021 16:09:11 +0200
-Message-ID: <d1ee65748d6ee788c1f882b2f73dddaf7eb191e6.camel@sipsolutions.net>
-Subject: Re: [PATCH AUTOSEL 5.13 152/189] iwlwifi: mvm: support LONG_GROUP
- for WOWLAN_GET_STATUSES version
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Date:   Tue, 06 Jul 2021 16:09:10 +0200
-In-Reply-To: <20210706111409.2058071-152-sashal@kernel.org>
-References: <20210706111409.2058071-1-sashal@kernel.org>
-         <20210706111409.2058071-152-sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Tue, 6 Jul 2021 10:42:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625582407;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1f7UONqM89FkJImoQjQslwhMUM1DR3oNSRiU3y3RxGU=;
+        b=VjTk1r/A3m/zGEoL7ZrqbcRuS4usQ/kWARR+KYP6+LXLMVToXbyAzmtOw6JA+TAqwc0duT
+        ne2Z4PNs2FvgdmrqbxW+mFTMKGF+Wi+lAJSQMDftV+jXaWnL/0Lwh4NGulJvRQfX2YSh6x
+        Umk7T6aNaqX1MQpY/OIwZnGuSU5WHAY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-6-3RjgmylcOHeQDcT89JEE1Q-1; Tue, 06 Jul 2021 10:09:42 -0400
+X-MC-Unique: 3RjgmylcOHeQDcT89JEE1Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 961F61023F47;
+        Tue,  6 Jul 2021 14:09:41 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6177A6E0B6;
+        Tue,  6 Jul 2021 14:09:37 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 34E02416F5D2; Tue,  6 Jul 2021 11:09:20 -0300 (-03)
+Date:   Tue, 6 Jul 2021 11:09:20 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Nitesh Lal <nilal@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [patch 0/5] optionally sync per-CPU vmstats counter on return to
+ userspace
+Message-ID: <20210706140920.GA68399@fuller.cnet>
+References: <20210701210336.358118649@fuller.cnet>
+ <20210702123032.GA72061@lothringen>
+ <20210702152816.GA4122@fuller.cnet>
+ <20210706130925.GC107277@lothringen>
+ <20210706140550.GA64308@fuller.cnet>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210706140550.GA64308@fuller.cnet>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-07-06 at 07:13 -0400, Sasha Levin wrote:
-> From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+On Tue, Jul 06, 2021 at 11:05:50AM -0300, Marcelo Tosatti wrote:
+> On Tue, Jul 06, 2021 at 03:09:25PM +0200, Frederic Weisbecker wrote:
+> > On Fri, Jul 02, 2021 at 12:28:16PM -0300, Marcelo Tosatti wrote:
+> > > 
+> > > Hi Frederic,
+> > > 
+> > > On Fri, Jul 02, 2021 at 02:30:32PM +0200, Frederic Weisbecker wrote:
+> > > > On Thu, Jul 01, 2021 at 06:03:36PM -0300, Marcelo Tosatti wrote:
+> > > > > The logic to disable vmstat worker thread, when entering
+> > > > > nohz full, does not cover all scenarios. For example, it is possible
+> > > > > for the following to happen:
+> > > > > 
+> > > > > 1) enter nohz_full, which calls refresh_cpu_vm_stats, syncing the stats.
+> > > > > 2) app runs mlock, which increases counters for mlock'ed pages.
+> > > > > 3) start -RT loop
+> > > > > 
+> > > > > Since refresh_cpu_vm_stats from nohz_full logic can happen _before_
+> > > > > the mlock, vmstat shepherd can restart vmstat worker thread on
+> > > > > the CPU in question.
+> > > > >  
+> > > > > To fix this, optionally sync the vmstat counters when returning
+> > > > > from userspace, controllable by a new "vmstat_sync" isolcpus
+> > > > > flags (default off).
+> > > > 
+> > > > Wasn't the plan for such finegrained isolation features to do it at
+> > > > the per task level using prctl()?
+> > > 
+> > > Yes, but its orthogonal: when we integrate the finegrained isolation
+> > > interface, will be able to use this code (to sync vmstat counters
+> > > on return to userspace) only when userspace informs that it has entered
+> > > isolated mode, so you don't incur the performance penalty of frequent
+> > > vmstat counter writes when not using isolated apps.
+> > > 
+> > > This is what the full task isolation task patchset mode is doing
+> > > as well (CC'ing Alex BTW).
+> > 
+> > Right there can be two ways:
 > 
-> [ Upstream commit d65ab7c0e0b92056754185d3f6925d7318730e94 ]
 > 
-> It's been a while that the firmware uses LONG_GROUP by default
-> and not LEGACY_GROUP.
-> Until now the firmware wrongly advertise the WOWLAN_GET_STATUS
-> command's version with LEGACY_GROUP, but it is now being fixed.
+>   * An isolcpus flag to request sync of vmstat on all exits
+>     to userspace.
+> > * A prctl request to sync vmstat only on exit from that prctl
+> > * A prctl request to sync vmstat on all subsequent exit from
+> >   kernel space.
+> 
+> * A prctl to expose "vmstat is out of sync" information 
+> to userspace, so that it can be queried and flushed
+> (Christoph's suggestion:
+> https://www.spinics.net/lists/linux-mm/msg243788.html).
+> 
+> > > This will require modifying applications (and the new kernel with the
+> > > exposed interface).
+> > > 
+> > > But there is demand for fixing this now, for currently existing
+> > > binary only applications.
+> > 
+> > I would agree if it were a regression but it's not. It's merely
+> > a new feature and we don't want to rush on a broken interface.
+> 
+> Well, people out there need it in some form (vmstat sync).
+> Can we please agree on an acceptable way to allow this.
+> 
+> Why its a broken interface? It has good qualities IMO:
+> 
+> - Its well contained (if you don't need, don't use it).
+> - Does not require modifying -RT applications.
+> - Works well for a set of applications (where the overhead of
+> syncing vmstat is largely irrelevant, but the vmstat_worker 
+> interruption is).
+> 
+> And its patchset integrates part another piece of full task isolation.
+> 
+> > And I suspect some other people won't like much a new extension
+> > to isolcpus.
+> 
+> Why is that so? 
 
-"Being fixed" here is the key - this will affect only firmware versions
-that the older drivers in stable won't load. No need to backport this.
+Ah, yes, that would be PeterZ.
 
-johannes
+IIRC his main point was that its not runtime changeable.
+We can (partially fix that), if that is the case.
+
+Peter, was that the only problem you saw with isolcpus interface?
 
