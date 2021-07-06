@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8387A3BDE48
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 22:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 576903BDE50
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 22:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhGFUPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 16:15:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229781AbhGFUPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 16:15:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DA3861C30;
-        Tue,  6 Jul 2021 20:12:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625602362;
-        bh=dMozURTgCDtE/nqPAO74mQrk2jYpZIJHRjna9oZLlBU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Db9XAFhBa72OXFLdJe6GXAe/gZDR5QG+hGO3+xDnHonYYM+FlgwPWSvgSrm3bQusq
-         osIxRYJYffsfg/KpY4b0tIRSr6pZqEjha6bo02sIuLPPIJBvj647EIJ+DXg0wl5v35
-         qLWfmZPBhiuDvHy5bu8WAfzk1WV9DgRLVUGWwoHSLto66tapyWeaSr6hz7Fu+SK5VH
-         GlqYDmEAtWv9gkTKACbrruIxwI01aGoGf17XGYPVMKysWaM2E+bcJdhXhL1iK/J0Ro
-         W0UCW+oKJri7o2LOVn5bjsEo0uukvIzqnFCIPE6d1Kfvy8V5I1GeFZKiGxbXDdg/Hj
-         sAiqAbLwoPEFQ==
-Date:   Tue, 6 Jul 2021 15:12:41 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Aaron Ma <aaron.ma@canonical.com>
-Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/2] igc: don't rd/wr iomem when PCI is removed
-Message-ID: <20210706201241.GA820992@bjorn-Precision-5520>
+        id S230154AbhGFUTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 16:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229935AbhGFUTw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 16:19:52 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7302C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 13:17:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=24DiGvb3bNj3woHW5ajaP60VvbnhCq7gaBZxkab0T04=; b=FPS4kdnpn+Rd0yLKaMmPxepqVe
+        NyT2S/XG+z4aMKBrL5SadlsofjlATPJSOZgYs14XxTsOMBbKcqMjoJFB56khuz7r3Dcjo6XEQ3ZFm
+        0dV7KquK+8epmZ/IPhdpBzeT7wSXxu9rSRE3JP8h7zKN/eXGSLll0fIhbchaEkTLvH9G8/9ce7Wof
+        cPQu97QJvwZ0+ukfLcp4WIv3VMtCjcdNqX8titQnZxgn5eVeACwy3YlVwuno6XcBwg0HQFhfpofZE
+        m6a5T+92B9x9tb0gHv8JETAX09gko+mhT2+ct0+rlkPGmF9lMVsd2kPhu23DE7A7z/TaBj6AD7RNw
+        WTlr5QBg==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m0rVH-00Ckxk-Ve; Tue, 06 Jul 2021 20:17:12 +0000
+Subject: Re: Char Driver for Silicon Labs Si446x Transceivers
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Sunip Mukherjee <sunipkmukherjee@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+References: <CADLJR24hQya0MkJhdDAJ0KO4MG+Fj4tRU5dNrbNdD9DMG_gLHg@mail.gmail.com>
+ <YOPl3dXamM3FERYT@kroah.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fe95e46b-fbc9-6411-0e4c-7b72040cddc5@infradead.org>
+Date:   Tue, 6 Jul 2021 13:17:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210702045120.22855-1-aaron.ma@canonical.com>
+In-Reply-To: <YOPl3dXamM3FERYT@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 12:51:19PM +0800, Aaron Ma wrote:
-> Check PCI state when rd/wr iomem.
-> Implement wr32 function as rd32 too.
+On 7/5/21 10:10 PM, Greg KH wrote:
+> On Mon, Jul 05, 2021 at 06:09:28PM -0400, Sunip Mukherjee wrote:
+>> Hi,
+>>
+>> I am very new to the kernel community; this is my first message in the
+>> LKML so my apologies if I am doing things wrong.
+>>
+>> I have been using an Si4463 transceiver for UHF communication with a
+>> cubesat I developed. I could not find any code to control the
+>> transceiver on Linux. The closest thing I could find was an AVR
+>> implementation by Zak Kemble
+>> (https://blog.zakkemble.net/si4463-radio-library-avr-arduino/).
+>> I followed the API docs and rewrote the whole thing at first for
+>> userland only (can be found here:
+>> https://github.com/SPACE-HAUC/si446x_linux/releases/tag/v3.1), and
+>> then I decided it would be a great learning opportunity for me to port
+>> it to the kernel.
+>>
+>> The kernel port has gone mostly smoothly. The transceiver communicates
+>> with the host MCU over SPI, and requires a pin for RESET, and another
+>> pin for IRQ.
+>> I have implemented the driver to provide a char device (/dev/si446x#)
+>> to the userland for open, read, write, poll and ioctl.
+>> I had initially set up a pull request for the driver and the device
+>> tree overlay to the Raspberry Pi kernel community. They have agreed to
+>> accept the device tree overlay for the device, however the driver
+>> needs to be included by the Linux Kernel community. I want to use this
+>> opportunity to find some people who have access to a Si446x
+>> transceiver and a Raspberry Pi, so that the code I have can be tested,
+>> and if deemed worthy, included in the kernel tree.
+>>
+>> My code is hosted here: https://github.com/sunipkmukherjee/silabs.git
+>>
+>> Any suggestions/criticisms are welcome.
 > 
-> When unplug TBT dock with i225, rd/wr PCI iomem will cause error log:
-> Trace:
-> BUG: unable to handle page fault for address: 000000000000b604
-> Oops: 0000 [#1] SMP NOPTI
-> RIP: 0010:igc_rd32+0x1c/0x90 [igc]
-> Call Trace:
-> igc_ptp_suspend+0x6c/0xa0 [igc]
-> igc_ptp_stop+0x12/0x50 [igc]
-> igc_remove+0x7f/0x1c0 [igc]
-> pci_device_remove+0x3e/0xb0
-> __device_release_driver+0x181/0x240
+> If you post it in a patch form, as described in our documentation, I
+> will be glad to review it.  Otherwise just looking at a random github
+> repo is quite difficult and provides no way to give proper feedback.
 > 
-> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
-> ---
->  drivers/net/ethernet/intel/igc/igc_main.c | 16 ++++++++++++++++
->  drivers/net/ethernet/intel/igc/igc_regs.h |  7 ++-----
->  2 files changed, 18 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-> index f1adf154ec4a..606b72cb6193 100644
-> --- a/drivers/net/ethernet/intel/igc/igc_main.c
-> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
-> @@ -5292,6 +5292,10 @@ u32 igc_rd32(struct igc_hw *hw, u32 reg)
->  	u8 __iomem *hw_addr = READ_ONCE(hw->hw_addr);
->  	u32 value = 0;
->  
-> +	if (igc->pdev &&
-> +		igc->pdev->error_state == pci_channel_io_perm_failure)
-> +		return 0;
+> Instructions on how to make a patch and submit it and the proper format
+> for everything can be found in the Documentation/SubmittingPatches file.
 
-I don't think this solves the problem.
+which is now known as Documentation/process/submitting-patches.rst
 
-  - Driver calls igc_rd32().
 
-  - "if (pci_channel_io_perm_failure)" evaluates to false (error_state
-    does not indicate an error).
+-- 
+~Randy
 
-  - Device is unplugged.
-
-  - igc_rd32() calls readl(), which performs MMIO read, which fails
-    because the device is no longer present.  readl() returns ~0 on
-    most platforms.
-
-  - Same page fault occurs.
-
-The only way is to check *after* the MMIO read to see whether an error
-occurred.  On most platforms that means checking for ~0 data.  If you
-see that, a PCI error *may* have occurred.
-
-If you know that ~0 can never be valid, e.g., if you're reading a
-register where ~0 is not a valid value, you know for sure that an
-error has occurred.
-
-If ~0 might be a valid value, e.g., if you're reading a buffer that
-contains arbitrary data, you have to look harder.   You might read a
-register than cannot contain ~0, and see if you get the data you
-expect.  Or you might read the Vendor ID or something from config
-space.
-
->  	value = readl(&hw_addr[reg]);
->  
->  	/* reads should not return all F's */
-> @@ -5308,6 +5312,18 @@ u32 igc_rd32(struct igc_hw *hw, u32 reg)
->  	return value;
->  }
->  
-> +void igc_wr32(struct igc_hw *hw, u32 reg, u32 val)
-> +{
-> +	struct igc_adapter *igc = container_of(hw, struct igc_adapter, hw);
-> +	u8 __iomem *hw_addr = READ_ONCE(hw->hw_addr);
-> +
-> +	if (igc->pdev &&
-> +		igc->pdev->error_state == pci_channel_io_perm_failure)
-> +		return;
-> +
-> +	writel((val), &hw_addr[(reg)]);
-> +}
-> +
->  int igc_set_spd_dplx(struct igc_adapter *adapter, u32 spd, u8 dplx)
->  {
->  	struct igc_mac_info *mac = &adapter->hw.mac;
-> diff --git a/drivers/net/ethernet/intel/igc/igc_regs.h b/drivers/net/ethernet/intel/igc/igc_regs.h
-> index cc174853554b..eb4be87d0e8b 100644
-> --- a/drivers/net/ethernet/intel/igc/igc_regs.h
-> +++ b/drivers/net/ethernet/intel/igc/igc_regs.h
-> @@ -260,13 +260,10 @@ struct igc_hw;
->  u32 igc_rd32(struct igc_hw *hw, u32 reg);
->  
->  /* write operations, indexed using DWORDS */
-> -#define wr32(reg, val) \
-> -do { \
-> -	u8 __iomem *hw_addr = READ_ONCE((hw)->hw_addr); \
-> -	writel((val), &hw_addr[(reg)]); \
-> -} while (0)
-> +void igc_wr32(struct igc_hw *hw, u32 reg, u32 val);
->  
->  #define rd32(reg) (igc_rd32(hw, reg))
-> +#define wr32(reg, val) (igc_wr32(hw, reg, val))
->  
->  #define wrfl() ((void)rd32(IGC_STATUS))
->  
-> -- 
-> 2.30.2
-> 
