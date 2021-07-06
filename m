@@ -2,201 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328923BD9FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 388FF3BDA0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbhGFPU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:20:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48557 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232754AbhGFPUk (ORCPT
+        id S232674AbhGFPUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 11:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232632AbhGFPUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:20:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625584681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BHU8f2icdK+j46ssBwyIWeDWF8/W9yG0Xo/wNsnnNmg=;
-        b=bZSQXJ1ZCxa0gEBCceoTSi+mSPo7WuLn5QzyjmFQzilyo/KxDiH3fZhq2HAxJtKuyHP56a
-        DdMxeJMu+3Qj1qu2tsgUtRutCQdMuRR4m4xoxBNICfLSTxpW8Q+1BRCDc/12/MKAwxDElZ
-        NhJR1P0theNBisqXwvE8/gllpAaNlSQ=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-556-merRXaD2Mbmb-t3cR1AZBA-1; Tue, 06 Jul 2021 11:18:00 -0400
-X-MC-Unique: merRXaD2Mbmb-t3cR1AZBA-1
-Received: by mail-wr1-f69.google.com with SMTP id p4-20020a5d63840000b0290126f2836a61so7300517wru.6
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 08:18:00 -0700 (PDT)
+        Tue, 6 Jul 2021 11:20:01 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F6CC0613E0;
+        Tue,  6 Jul 2021 08:17:23 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id l26so22298467oic.7;
+        Tue, 06 Jul 2021 08:17:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FwaqWZ2gM7ETfNHaJFAqbQre0tedwT8ScYbGRh8Cbj8=;
+        b=po09UcPqPUGTT3Ljzu6EyVVa2dGi0koL5gBUA7/Udu8Q8QUVocjo+71HHAr2UJVdoe
+         +/XySKVgn+quf+PcI5LZe6PDb4PC1nj6ObHgZDxeYDK99/vRpJDEhXxCqpsyKezGuOh2
+         SiTmIylHMow5BpLR/9fFJSFJEnBjkgjlW4fOQXYbslvJR5yTd6QMLSkIUYlv6Oin0JiL
+         UpBTfsTJNcUtwp8W1vZw3u76+oD5dvV4bZoN6Du3Sy/S0Hh0DIHr7eXg6dRxzy9+I65D
+         MGQAh71shEDxseAHis676rpRCIT1Ys9hx7vTdSo6KpQw0LREFFNsRZBwFi646wfzDCKm
+         1tyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BHU8f2icdK+j46ssBwyIWeDWF8/W9yG0Xo/wNsnnNmg=;
-        b=emfGBpBdApw4w+DadLHmOWrZlsc656XswbGzqepuyMTMR8pKPRB0bd5T4h5zH0QEkt
-         kJudKEP6znOqXNu6y+T07J7VBKNWsEBzu4mg3jNZ40T41td62rwdYcakuB6BsP2TmvEP
-         cUBSPkgj6eKV/1vBS9H4gjAXOIkU7lj9cD6Gp3hnxgAppdXsahKEuovB7kMY9TVIARb3
-         TS6RPkVEqpssvmN75LOo1ERDutb08LnU9xMEfkC8y6r/aRKbnI1hIVn3PusvP89tMEuN
-         UztL60c2OL/c+36gd/lOnaZ/x7JtD2BGU5bPbIEKFOK32CWtyf21looiURESS6flS5jM
-         /hzg==
-X-Gm-Message-State: AOAM532//WE6KBoXIhZVVOtNU83TlEXnlCGpHYzmgHkCntCblYBDZkv5
-        tdrC7p5ERzQCcy1DYlDUkq5YsUb7yv08GHIuEYwn6fzBzr1PdE3PCBbZxFlkSbQoAMyk7qwqcmc
-        lVB0JbSxKHmkKEl+VcNONzRdu
-X-Received: by 2002:a7b:c449:: with SMTP id l9mr1427006wmi.98.1625584679241;
-        Tue, 06 Jul 2021 08:17:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz0kDQxyTU40RhSOP4XdynNUVKVspoVcd0adKoz+VHvkWSxUG7AOUL3eWDR0YFZt/bXmjmybg==
-X-Received: by 2002:a7b:c449:: with SMTP id l9mr1426990wmi.98.1625584679129;
-        Tue, 06 Jul 2021 08:17:59 -0700 (PDT)
-Received: from krava.redhat.com ([185.153.78.55])
-        by smtp.gmail.com with ESMTPSA id t16sm17028123wrp.44.2021.07.06.08.17.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 08:17:58 -0700 (PDT)
-From:   Jiri Olsa <jolsa@redhat.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>, nakamura.shun@fujitsu.com,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH 7/7] libperf: Add tests for perf_evlist__set_leader function
-Date:   Tue,  6 Jul 2021 17:17:04 +0200
-Message-Id: <20210706151704.73662-8-jolsa@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210706151704.73662-1-jolsa@kernel.org>
-References: <20210706151704.73662-1-jolsa@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FwaqWZ2gM7ETfNHaJFAqbQre0tedwT8ScYbGRh8Cbj8=;
+        b=Qt5R6i2i91bhsM8ryeIZRqxScslrPs8W4PZgY2PvXN65fyv1g3slGOvsq29tcLH5sA
+         cAZ2z3D6GxEE6mRfdXux876+Kr8vmZhsHRt0aYvDvIfedN3HzB6FdpK7XC7mrP2G/RLE
+         rg0wlOQWM04QztIJYaRCp4GMv43UGTgSZdiJq1qqJFyLykVdF8Nzew8co5IeAq0gsL2Z
+         VF5Z9Aijmc8/ccPilIA8LhJdUSEMgLhu7dyTZE8p70Yb1ANg+ecFCunwhi2d+p4qaGC7
+         rDGp0CXYsLKaTogXic0nE88x8pheECjJ9muLHQXYbgR08+dLpCQ7IklnNqzeAZQZv/EQ
+         yeuw==
+X-Gm-Message-State: AOAM532Yeep4iahVCTIgaoXVZm4J52nxr7Y3Uc7ET7DU3E2kwtLyBrFB
+        /bp6pz5GpGE/dNYFLcisn3qbIPTbA5qvrOs7ob4=
+X-Google-Smtp-Source: ABdhPJymL0sA+uyY2bY0Taf/qcTN+2FeV8VkDm0yVBABAYSlAHE/SPKfz1qUNtsLf6yjsu/TmxVUzJfvXQAW7RQ/wrA=
+X-Received: by 2002:aca:3904:: with SMTP id g4mr790145oia.129.1625584642630;
+ Tue, 06 Jul 2021 08:17:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210519143011.1175546-1-acourbot@chromium.org>
+ <20210519143011.1175546-6-acourbot@chromium.org> <9b37044d-f909-9169-3d22-fa6c5f788822@collabora.com>
+ <CAPBb6MV35sJ-LY8w-nhpnndRHtJXapSN63xFzUiAbYQFLvm1dQ@mail.gmail.com>
+In-Reply-To: <CAPBb6MV35sJ-LY8w-nhpnndRHtJXapSN63xFzUiAbYQFLvm1dQ@mail.gmail.com>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Tue, 6 Jul 2021 17:17:10 +0200
+Message-ID: <CAFqH_50PAEzH5_LT+aQusGUos7BGYATjx1qYVq2O5UYYkkNW2A@mail.gmail.com>
+Subject: Re: [PATCH v5 05/14] media: mtk-vcodec: venc: support START and STOP commands
+To:     Alexandre Courbot <acourbot@chromium.org>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding test for newly added perf_evlist__set_leader function.
+Hi Dafna and Alex,
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/lib/perf/tests/test-evlist.c | 27 +++++++++++++++++++++------
- 1 file changed, 21 insertions(+), 6 deletions(-)
+Now in text format, sorry for the noise.
 
-diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
-index 7435529fb21c..c67c83399170 100644
---- a/tools/lib/perf/tests/test-evlist.c
-+++ b/tools/lib/perf/tests/test-evlist.c
-@@ -19,6 +19,7 @@
- #include <internal/tests.h>
- #include <api/fs/fs.h>
- #include "tests.h"
-+#include <internal/evsel.h>
- 
- static int libperf_print(enum libperf_print_level level,
- 			 const char *fmt, va_list ap)
-@@ -30,7 +31,7 @@ static int test_stat_cpu(void)
+Missatge de Alexandre Courbot <acourbot@chromium.org> del dia dl., 5
+de jul. 2021 a les 7:05:
+>
+> Hi Dafna, sorry for (again) taking so long to come back to this! >_<
+>
+> On Fri, May 28, 2021 at 4:03 PM Dafna Hirschfeld
+> <dafna.hirschfeld@collabora.com> wrote:
+> >
+> > Hi,
+> >
+> > I applied this patchset and tested the stateful encoder on debian with the command:
+> >
+> > [gst-master] root@debian:~/gst-build# gst-launch-1.0 filesrc location=images/jelly-800-640.YU12 ! rawvideoparse width=800 height=640 format=i420 ! videoconvert ! v4l2h264enc ! h264parse ! mp4mux ! filesink location=jelly-800-640.mp4
+> >
+> > I get:
+> >
+> > Setting pipeline[   79.703879] [MTK_V4L2] level=0 fops_vcodec_open(),190: encoder capability 10000000
+> >   to PAUSED ...
+> > Pipeline is PREROLLING ...
+> > Redistribute latency...
+> > [   80.621076] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> > [   80.631232] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> > [   80.640878] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> > [   80.650766] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> > [   80.660430] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> > [   80.670194] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> > [   80.680967] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> > [   80.691376] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> > [   80.701718] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> > [   80.712106] mtk-iommu 10205000.iommu: Partial TLB flush timed out, falling back to full flush
+> > [   80.722272] [MTK_V4L2] level=0 mtk_venc_set_param(),371: fmt 0x3, P/L 0/0, w/h 800/640, buf 800/640, fps/bps 25/4000000, gop 0, i_period 0
+> > Pipeline is PREROLLED ...
+> > Setting pipeline to PLAYING ...
+> > New clock: GstSystemClock
+> > [   81.918747] [MTK_V4L2][ERROR] mtk_vcodec_wait_for_done_ctx:32: [3] ctx->type=1, cmd=1, wait_event_interruptible_timeout time=1000ms out 0 0!
+> > [   81.931392] [MTK_VCODEC][ERROR][3]: h264_encode_frame() irq_status=0 failed
+> > [   81.938470] [MTK_V4L2][ERROR] mtk_venc_worker:1219: venc_if_encode failed=-5
+> > [   82.974746] [MTK_V4L2][ERROR] mtk_vcodec_wait_for_done_ctx:32: [3] ctx->type=1, cmd=1, wait_event_interruptible_timeout time=1000ms out 0 0!
+> > [   82.987392] [MTK_VCODEC][ERROR][3]: h264_encode_frame() irq_status=0 failed
+> > [   82.994471] [MTK_V4L2][ERROR] mtk_venc_worker:1219: venc_if_encode failed=-5
+> > [  104.163977] cros-ec-dev cros-ec-dev.2.auto: Some logs may have been dropped...
+> > 0:00:00.4 / 99:99:99.
+> > 0:00:00.4 / 99:99:99.
+> > 0:00:00.4 / 99:99:99.
+> > 0:00:00.4 / 99:99:99.
+> > 0:00:00.4 / 99:99:99.
+> > 0:00:00.4 / 99:99:99.
+> > 0:00:00.4 / 99:99:99.
+> > 0:00:00.4 / 99:99:99.
+> > 0:00:00.4 / 99:99:99.
+> > 0:00:00.4 / 99:99:99.
+> > ^Chandling interrupt.
+> >
+> > And then the streaming hangs. The same error happens without this patchset, but without
+> > this patchset the statful encoder does not support V4L2_ENC_CMD_STOP/START needed by the spec.
+> > I am not sure what cause the error and wether those mtk-iommu erros has to do with that. The issue
+> > could also come from the mtk-vpu used by the encoder.
+> > Do you have any idea where this can come from?
+>
+> Mmm, this looks like the firmware is unhappy about something and
+> hangs. I wonder if the IOMMU messages above could not be linked to
+> that, I remember seeing similar problems when the buffers were not
+> properly synced on the device side.
+>
+> I'll try and see if I can deploy gstreamer on the old MT8173
+> Chromebook I am using to see if I have more success here, but no
+> guarantee I can test in the same conditions as you unfortunately. :/
+>
+> The MTK folks are the most qualified to look into this issue though.
+> Yunfei, do you have any idea about why this is happening?
+>
+
+Pending to test with the Dafna's environment. but looks like this
+draft fix [1] (already under discussion in gerrit) needs to be applied
+to mainline in order to have vcodec working. At least I am able to use
+it now.
+
+See https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2251840
+
+diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c
+b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+index c8a56271b259..af71fcf6fbae 100644
+--- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
++++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+@@ -316,6 +316,7 @@ int vpu_ipi_send(struct platform_device *pdev,
  {
- 	struct perf_cpu_map *cpus;
- 	struct perf_evlist *evlist;
--	struct perf_evsel *evsel;
-+	struct perf_evsel *evsel, *leader;
- 	struct perf_event_attr attr1 = {
- 		.type	= PERF_TYPE_SOFTWARE,
- 		.config	= PERF_COUNT_SW_CPU_CLOCK,
-@@ -47,7 +48,7 @@ static int test_stat_cpu(void)
- 	evlist = perf_evlist__new();
- 	__T("failed to create evlist", evlist);
- 
--	evsel = perf_evsel__new(&attr1);
-+	evsel = leader = perf_evsel__new(&attr1);
- 	__T("failed to create evsel1", evsel);
- 
- 	perf_evlist__add(evlist, evsel);
-@@ -57,6 +58,10 @@ static int test_stat_cpu(void)
- 
- 	perf_evlist__add(evlist, evsel);
- 
-+	perf_evlist__set_leader(evlist);
-+	__T("failed to set leader", leader->leader == leader);
-+	__T("failed to set leader", evsel->leader  == leader);
-+
- 	perf_evlist__set_maps(evlist, cpus, NULL);
- 
- 	err = perf_evlist__open(evlist);
-@@ -85,7 +90,7 @@ static int test_stat_thread(void)
- 	struct perf_counts_values counts = { .val = 0 };
- 	struct perf_thread_map *threads;
- 	struct perf_evlist *evlist;
--	struct perf_evsel *evsel;
-+	struct perf_evsel *evsel, *leader;
- 	struct perf_event_attr attr1 = {
- 		.type	= PERF_TYPE_SOFTWARE,
- 		.config	= PERF_COUNT_SW_CPU_CLOCK,
-@@ -104,7 +109,7 @@ static int test_stat_thread(void)
- 	evlist = perf_evlist__new();
- 	__T("failed to create evlist", evlist);
- 
--	evsel = perf_evsel__new(&attr1);
-+	evsel = leader = perf_evsel__new(&attr1);
- 	__T("failed to create evsel1", evsel);
- 
- 	perf_evlist__add(evlist, evsel);
-@@ -114,6 +119,10 @@ static int test_stat_thread(void)
- 
- 	perf_evlist__add(evlist, evsel);
- 
-+	perf_evlist__set_leader(evlist);
-+	__T("failed to set leader", leader->leader == leader);
-+	__T("failed to set leader", evsel->leader  == leader);
-+
- 	perf_evlist__set_maps(evlist, NULL, threads);
- 
- 	err = perf_evlist__open(evlist);
-@@ -136,7 +145,7 @@ static int test_stat_thread_enable(void)
- 	struct perf_counts_values counts = { .val = 0 };
- 	struct perf_thread_map *threads;
- 	struct perf_evlist *evlist;
--	struct perf_evsel *evsel;
-+	struct perf_evsel *evsel, *leader;
- 	struct perf_event_attr attr1 = {
- 		.type	  = PERF_TYPE_SOFTWARE,
- 		.config	  = PERF_COUNT_SW_CPU_CLOCK,
-@@ -157,7 +166,7 @@ static int test_stat_thread_enable(void)
- 	evlist = perf_evlist__new();
- 	__T("failed to create evlist", evlist);
- 
--	evsel = perf_evsel__new(&attr1);
-+	evsel = leader = perf_evsel__new(&attr1);
- 	__T("failed to create evsel1", evsel);
- 
- 	perf_evlist__add(evlist, evsel);
-@@ -167,6 +176,10 @@ static int test_stat_thread_enable(void)
- 
- 	perf_evlist__add(evlist, evsel);
- 
-+	perf_evlist__set_leader(evlist);
-+	__T("failed to set leader", leader->leader == leader);
-+	__T("failed to set leader", evsel->leader  == leader);
-+
- 	perf_evlist__set_maps(evlist, NULL, threads);
- 
- 	err = perf_evlist__open(evlist);
-@@ -254,6 +267,7 @@ static int test_mmap_thread(void)
- 
- 	evsel = perf_evsel__new(&attr);
- 	__T("failed to create evsel1", evsel);
-+	__T("failed to set leader", evsel->leader == evsel);
- 
- 	perf_evlist__add(evlist, evsel);
- 
-@@ -339,6 +353,7 @@ static int test_mmap_cpus(void)
- 
- 	evsel = perf_evsel__new(&attr);
- 	__T("failed to create evsel1", evsel);
-+	__T("failed to set leader", evsel->leader == evsel);
- 
- 	perf_evlist__add(evlist, evsel);
- 
--- 
-2.31.1
+        struct mtk_vpu *vpu = platform_get_drvdata(pdev);
+        struct share_obj __iomem *send_obj = vpu->send_buf;
++       unsigned char data[SHARE_BUF_SIZE];
+        unsigned long timeout;
+        int ret = 0;
 
+@@ -349,7 +350,10 @@ int vpu_ipi_send(struct platform_device *pdev,
+                }
+        } while (vpu_cfg_readl(vpu, HOST_TO_VPU));
+
+-       memcpy_toio(send_obj->share_buf, buf, len);
++       //memcpy_toio(send_obj->share_buf, buf, len);
++       memset(data, 0, sizeof(data));
++       memcpy(data, buf, len);
++       memcpy_toio(send_obj->share_buf, data, sizeof(data));
+        writel(len, &send_obj->len);
+        writel(id, &send_obj->id);
+
+Thanks,
+  Enric
+
+
+
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
