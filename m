@@ -2,218 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62003BDE22
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2B63BDE24
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 21:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhGFTqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 15:46:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27357 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229781AbhGFTqw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 15:46:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625600653;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=grnweRCrAnKu5258EtepKVmdnjwsuQOcn5Qb0Uhq04g=;
-        b=NIKByt2bzb0iwUc2Dk3PNSa23BTAPxTfrr3Jqu3kpftKNEqI6wCCJQlKZzyJr4/YR1kCxl
-        CB84LqKdiH76JynUcM5ysf5oqquDq/6KjblRZJrDfibSROU9k9rq9JPxkggoFjg+63HZd6
-        7i/8LO8Z9aalKwDtoDtpSwjckrwPE6s=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-508-C2tYM5czPReBH-nWhX5dwQ-1; Tue, 06 Jul 2021 15:44:12 -0400
-X-MC-Unique: C2tYM5czPReBH-nWhX5dwQ-1
-Received: by mail-wm1-f70.google.com with SMTP id t12-20020a7bc3cc0000b02901f290c9c44eso55118wmj.7
-        for <Linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 12:44:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=grnweRCrAnKu5258EtepKVmdnjwsuQOcn5Qb0Uhq04g=;
-        b=Vub0MtzTrFF+dTBqpZYlk1Jtq/kZTLt4UTZ+oC6DLapvu6yDpeIhl7REYnXWdQVDbZ
-         43YjjT9brA3nv2PUhTkIyGY/WBK9fR7JOCVsnkguagqKaiJGJ5jlm0hRQK2G6Xy4sm4w
-         SyXAN2D6N7JTg6ggbNN+XX8POgO1b4PFg+WW0frUYpV5bNAGD8jchcytkNjZ5o35hbgj
-         6wdq3SBkQYskhk0wKFVZmwk3ycKKcAkbfGX1NiWqea90ZTRE9+uMj4LXqAVaNSjmT9Lv
-         tbA5gtcgxSWYUK0tEGKxaQo8rADuregxdfnA9fUh/96OHrsW3BLjl1X5HiNbdBTyyvtE
-         Kq2A==
-X-Gm-Message-State: AOAM531mg79ZN+vvhoIL56owRAh6fj1KAiERUHaQ5MaufoKa7eGv7+YH
-        Rm8MshMe7etdNVK8Ar2X3J4dbWfmrHOeeNFUysYB/whFJI8ivjPqQ3S88SFo6do4+yhVj3C7QrJ
-        TeY+ecQ/j2LwR4hKtQjlDS3ug
-X-Received: by 2002:a5d:508e:: with SMTP id a14mr24241657wrt.92.1625600650880;
-        Tue, 06 Jul 2021 12:44:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxRW0eLRNwcOb+WSN8/WHmoDuDZWg39hGqKXbgphGqcY2IllRyxkqiGwn47qS/L62M8FNDoHw==
-X-Received: by 2002:a5d:508e:: with SMTP id a14mr24241631wrt.92.1625600650655;
-        Tue, 06 Jul 2021 12:44:10 -0700 (PDT)
-Received: from krava ([185.153.78.55])
-        by smtp.gmail.com with ESMTPSA id d24sm3817009wmb.42.2021.07.06.12.44.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 12:44:10 -0700 (PDT)
-Date:   Tue, 6 Jul 2021 21:44:07 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v3] perf tools: Fix pattern matching for same substring
- in different pmu type
-Message-ID: <YOSyhwJ/E0JoeWOS@krava>
-References: <20210701064253.1175-1-yao.jin@linux.intel.com>
+        id S229992AbhGFTrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 15:47:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:48994 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229781AbhGFTrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 15:47:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D6301042;
+        Tue,  6 Jul 2021 12:44:43 -0700 (PDT)
+Received: from [10.57.7.228] (unknown [10.57.7.228])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2253A3F5A1;
+        Tue,  6 Jul 2021 12:44:39 -0700 (PDT)
+Subject: Re: [PATCH 2/3] PM: EM: Make em_cpu_energy() able to return bigger
+ values
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     linux-kernel@vger.kernel.org, Chris.Redpath@arm.com,
+        morten.rasmussen@arm.com, qperret@google.com,
+        linux-pm@vger.kernel.org, peterz@infradead.org, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, vincent.guittot@linaro.org,
+        mingo@redhat.com, juri.lelli@redhat.com, rostedt@goodmis.org,
+        segall@google.com, mgorman@suse.de, bristot@redhat.com,
+        CCj.Yeh@mediatek.com
+References: <20210625152603.25960-1-lukasz.luba@arm.com>
+ <20210625152603.25960-3-lukasz.luba@arm.com>
+ <266f4b52-62c5-48bc-2680-1f09b6eb90cc@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <5c6a952e-b274-2b62-4008-5eadec64ac76@arm.com>
+Date:   Tue, 6 Jul 2021 20:44:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210701064253.1175-1-yao.jin@linux.intel.com>
+In-Reply-To: <266f4b52-62c5-48bc-2680-1f09b6eb90cc@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 02:42:53PM +0800, Jin Yao wrote:
-> Some different pmu types may have same substring. For example,
-> on Icelake server, we have pmu types "uncore_imc" and
-> "uncore_imc_free_running". Both pmu types have substring "uncore_imc".
-> But the parser would wrongly think they are the same pmu type.
-> 
-> We enable an imc event,
-> perf stat -e uncore_imc/event=0xe3/ -a -- sleep 1
-> 
-> Perf actually expands the event to:
-> uncore_imc_0/event=0xe3/
-> uncore_imc_1/event=0xe3/
-> uncore_imc_2/event=0xe3/
-> uncore_imc_3/event=0xe3/
-> uncore_imc_4/event=0xe3/
-> uncore_imc_5/event=0xe3/
-> uncore_imc_6/event=0xe3/
-> uncore_imc_7/event=0xe3/
-> uncore_imc_free_running_0/event=0xe3/
-> uncore_imc_free_running_1/event=0xe3/
-> uncore_imc_free_running_3/event=0xe3/
-> uncore_imc_free_running_4/event=0xe3/
-> 
-> That's because the "uncore_imc_free_running" matches the
-> pattern "uncore_imc*".
-> 
-> Now we check that the last characters of pmu name is
-> '_<digit>'.
-> 
-> For example, for pattern "uncore_imc*", "uncore_imc_0" is parsed ok,
-> but "uncore_imc_free_running_0" would be failed.
-> 
-> Fixes: b2b9d3a3f021 ("perf pmu: Support wildcards on pmu name in dynamic pmu events")
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 
-looks good to me, Kan, Andi?
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-
-thanks,
-jirka
-
-> ---
->  tools/perf/util/parse-events.y |  2 +-
->  tools/perf/util/pmu.c          | 36 +++++++++++++++++++++++++++++++++-
->  tools/perf/util/pmu.h          |  1 +
->  3 files changed, 37 insertions(+), 2 deletions(-)
+On 7/5/21 1:44 PM, Dietmar Eggemann wrote:
+> On 25/06/2021 17:26, Lukasz Luba wrote:
+>> The Energy Model (EM) em_cpu_energy() is responsible for providing good
+>> estimation regarding CPUs energy. It contains proper data structures which
+>> are then used during calculation. The values stored in there are in
+>> milli-Watts precision (or in abstract scale) smaller that 0xffff, which use
 > 
-> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-> index aba12a4d488e..9321bd0e2f76 100644
-> --- a/tools/perf/util/parse-events.y
-> +++ b/tools/perf/util/parse-events.y
-> @@ -316,7 +316,7 @@ event_pmu_name opt_pmu_config
->  			if (!strncmp(name, "uncore_", 7) &&
->  			    strncmp($1, "uncore_", 7))
->  				name += 7;
-> -			if (!fnmatch(pattern, name, 0)) {
-> +			if (!perf_pmu__match(pattern, name, $1)) {
->  				if (parse_events_copy_term_list(orig_terms, &terms))
->  					CLEANUP_YYABORT;
->  				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index 88c8ecdc60b0..44b90d638ad5 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -3,6 +3,7 @@
->  #include <linux/compiler.h>
->  #include <linux/string.h>
->  #include <linux/zalloc.h>
-> +#include <linux/ctype.h>
->  #include <subcmd/pager.h>
->  #include <sys/types.h>
->  #include <errno.h>
-> @@ -17,6 +18,7 @@
->  #include <locale.h>
->  #include <regex.h>
->  #include <perf/cpumap.h>
-> +#include <fnmatch.h>
->  #include "debug.h"
->  #include "evsel.h"
->  #include "pmu.h"
-> @@ -740,6 +742,27 @@ struct pmu_events_map *__weak pmu_events_map__find(void)
->  	return perf_pmu__find_map(NULL);
->  }
->  
-> +static bool perf_pmu__valid_suffix(char *pmu_name, char *tok)
-> +{
-> +	char *p;
-> +
-> +	if (strncmp(pmu_name, tok, strlen(tok)))
-> +		return false;
-> +
-> +	p = pmu_name + strlen(tok);
-> +	if (*p == 0)
-> +		return true;
-> +
-> +	if (*p != '_')
-> +		return false;
-> +
-> +	++p;
-> +	if (*p == 0 || !isdigit(*p))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
->  {
->  	char *tmp = NULL, *tok, *str;
-> @@ -768,7 +791,7 @@ bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
->  	 */
->  	for (; tok; name += strlen(tok), tok = strtok_r(NULL, ",", &tmp)) {
->  		name = strstr(name, tok);
-> -		if (!name) {
-> +		if (!name || !perf_pmu__valid_suffix((char *)name, tok)) {
->  			res = false;
->  			goto out;
->  		}
-> @@ -1872,3 +1895,14 @@ bool perf_pmu__has_hybrid(void)
->  
->  	return !list_empty(&perf_pmu__hybrid_pmus);
->  }
-> +
-> +int perf_pmu__match(char *pattern, char *name, char *tok)
-> +{
-> +	if (fnmatch(pattern, name, 0))
-> +		return -1;
-> +
-> +	if (tok && !perf_pmu__valid_suffix(name, tok))
-> +		return -1;
-> +
-> +	return 0;
-> +}
-> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-> index a790ef758171..926da483a141 100644
-> --- a/tools/perf/util/pmu.h
-> +++ b/tools/perf/util/pmu.h
-> @@ -133,5 +133,6 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
->  				   char *name);
->  
->  bool perf_pmu__has_hybrid(void);
-> +int perf_pmu__match(char *pattern, char *name, char *tok);
->  
->  #endif /* __PMU_H */
-> -- 
-> 2.17.1
+> I guess you refer to 'if (... || power > EM_MAX_POWER)' check in
+> em_create_perf_table() [kernel/power/energy_model.c].
+
+Correct
+
 > 
+>> sufficient unsigned long even on 32-bit machines. There are scenarios where
+>                                                                ^^^^^^^^^
+> 
+> Can you describe these scenarios better with one example (EAS placement
+> of an example task on a 2 PD system) which highlights the issue and how
+> it this patch-set solves it?
+
+There are two places in the code where it makes a difference:
+
+1. In the find_energy_efficient_cpu() where we are searching for
+best_delta. We might suffer there when two PDs return the same result,
+like in the example below.
+
+Scenario:
+Low utilized system e.g. ~200 sum_util for PD0 and ~220 for PD1. There
+are quite a few small tasks ~10-15 util. These tasks would suffer for
+the rounding error. Such system utilization has been seen while playing
+some simple games. In such condition our partner reported 5..10mA less
+battery drain.
+
+Some details:
+We have two Perf Domains (PDs): PD0 (big) and PD1 (little)
+Let's compare w/o patch set ('old') and w/ patch set ('new')
+We are comparing energy w/ task and w/o task placed in the PDs
+
+a) 'old' w/o patch set, PD0
+task_util = 13
+cost = 480
+sum_util_w/o_task = 215
+sum_util_w_task = 228
+scale_cpu = 1024
+energy_w/o_task = 480 * 215 / 1024 = 100.78 => 100
+energy_w_task = 480 * 228 / 1024 = 106.87 => 106
+energy_diff = 106 - 100 = 6 (this is equal to 'old' PD1's energy_diff in 
+'c)')
+
+b) 'new' w/ patch set, PD0
+task_util = 13
+cost = 480 * 10000 = 4800000
+sum_util_w/o_task = 215
+sum_util_w_task = 228
+energy_w/o_task = 4800000 * 215 / 1024 = 1007812
+energy_w_task = 4800000 * 228 / 1024  = 1068750
+energy_diff = 1068750 - 1007812 = 60938 (this is not equal to 'new' 
+PD1's energy_diff in 'd)')
+
+c) 'old' w/o patch set, PD1
+task_util = 13
+cost = 160
+sum_util_w/o_task = 283
+sum_util_w_task = 293
+scale_cpu = 355
+energy_w/o_task = 160 * 283 / 355 = 127.55 => 127
+energy_w_task = 160 * 296 / 355 = 133.41 => 133
+energy_diff = 133 - 127 = 6 (this is equal to 'old' PD0's energy_diff in 
+'a)')
+
+d) 'new' w/ patch set, PD1
+task_util = 13
+cost = 160 * 10000 = 1600000
+sum_util_w/o_task = 283
+sum_util_w_task = 293
+scale_cpu = 355
+(no '/ scale_cpu' needed here)
+energy_w/o_task = 1600000 * 283 / 355 = 1275492
+energy_w_task = 1600000 * 296 / 355 =   1334084
+energy_diff = 1334084 - 1275492 = 58592 (this is not equal to 'new' 
+PD0's energy_diff in 'b)')
+
+2. Difference in the the last feec() step: margin filter
+With the patch set the margin comparison also has better resolution,
+so it's possible to hit better placement thanks to that.
+
+Please see the traces below.
+How to interpret these values:
+In the first trace below, there is diff=124964 and margin=123381
+the EM 'cost' is multiplied by 10000, so we we divide these two,
+it will be '12 > 12', so it won't be placed into the better PD
+with lower best delta.
+
+In the last 2 examples you would see close values in the
+prev_delta=49390 best_delta=43945
+Without the patch they would be rounded to
+prev_delta=4 best_delta=4
+and the task might be placed wrongly.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   systemd-logind-440     [000] d..5    82.164218: compute_energy: 
+energy=43945, sum_util=9 cpu=4
+   systemd-logind-440     [000] d..5    82.164232: compute_energy: 
+energy=766601, sum_util=157 cpu=4
+   systemd-logind-440     [000] d..5    82.164242: compute_energy: 
+energy=766601, sum_util=157 cpu=4
+   systemd-logind-440     [000] d..5    82.164253: compute_energy: 
+energy=1207500, sum_util=299 cpu=0
+   systemd-logind-440     [000] d..5    82.164263: compute_energy: 
+energy=1805192, sum_util=447 cpu=0
+   systemd-logind-440     [000] d..5    82.164273: select_task_rq_fair: 
+EAS: prev_delta=722656 best_delta=597692 diff=124964 margin=123381
+   systemd-logind-440     [000] d..5    82.164278: select_task_rq_fair: 
+EAS: hit!!!
+
+
+   systemd-logind-440     [000] d.h4   134.954038: compute_energy: 
+energy=366210, sum_util=75 cpu=4
+   systemd-logind-440     [000] d.h4   134.954067: compute_energy: 
+energy=463867, sum_util=95 cpu=4
+   systemd-logind-440     [000] d.h4   134.954090: compute_energy: 
+energy=463867, sum_util=95 cpu=4
+   systemd-logind-440     [000] d.h4   134.954117: compute_energy: 
+energy=257347, sum_util=99 cpu=0
+   systemd-logind-440     [000] d.h4   134.954137: compute_energy: 
+energy=309336, sum_util=119 cpu=0
+   systemd-logind-440     [000] d.h4   134.954160: select_task_rq_fair: 
+EAS: prev_delta=97657 best_delta=51989 diff=45668 margin=45075
+   systemd-logind-440     [000] d.h4   134.954171: select_task_rq_fair: 
+EAS: hit!!!
+
+
+           <idle>-0       [001] d.s4   226.019763: compute_energy: 
+energy=0, sum_util=0 cpu=4
+           <idle>-0       [001] d.s4   226.019790: compute_energy: 
+energy=43945, sum_util=9 cpu=4
+           <idle>-0       [001] d.s4   226.019817: compute_energy: 
+energy=5198, sum_util=2 cpu=0
+           <idle>-0       [001] d.s4   226.019838: compute_energy: 
+energy=54588, sum_util=21 cpu=0
+           <idle>-0       [001] d.s4   226.019858: compute_energy: 
+energy=54588, sum_util=21 cpu=0
+           <idle>-0       [001] d.s4   226.019881: select_task_rq_fair: 
+EAS: prev_delta=49390 best_delta=43945 diff=5445 margin=3411
+           <idle>-0       [001] d.s4   226.019891: select_task_rq_fair: 
+EAS: hit!!!
+
+
+           <idle>-0       [001] d.s4   270.019780: compute_energy: 
+energy=0, sum_util=0 cpu=4
+           <idle>-0       [001] d.s4   270.019807: compute_energy: 
+energy=43945, sum_util=9 cpu=4
+           <idle>-0       [001] d.s4   270.019833: compute_energy: 
+energy=5198, sum_util=2 cpu=0
+           <idle>-0       [001] d.s4   270.019854: compute_energy: 
+energy=54588, sum_util=21 cpu=0
+           <idle>-0       [001] d.s4   270.019874: compute_energy: 
+energy=54588, sum_util=21 cpu=0
+           <idle>-0       [001] d.s4   270.019897: select_task_rq_fair: 
+EAS: prev_delta=49390 best_delta=43945 diff=5445 margin=3411
+           <idle>-0       [001] d.s4   270.019908: select_task_rq_fair: 
+EAS: hit!!!
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+> 
+> In this example you can list all the things which must be there to
+> create a situation in EAS in which the patch-set helps.
+
+I hope the description above now add more light into this issue.
+
+> 
+>> we would like to provide calculated estimations in a better precision and
+>> the values might be 1000 times bigger. This patch makes possible to use
+> 
+> Where is this `1000` coming from?
+
+It's just a statement that in the next patches we would increase the
+resolution by a few orders of magnitude. In patch 3/3 it's 10000.
+I can align with that value also in this statement.
+
+Thank you Dietmar for having a look at this!
+
+Regards,
+Lukasz
 
