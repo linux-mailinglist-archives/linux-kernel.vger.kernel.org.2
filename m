@@ -2,126 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6183BC708
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 09:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B6A3BC711
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 09:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhGFHYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 03:24:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62554 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230164AbhGFHYE (ORCPT
+        id S230238AbhGFH07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 03:26:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230214AbhGFH06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 03:24:04 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16673LW4038582;
-        Tue, 6 Jul 2021 03:20:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=+tSYXNITpqcsEbNO1EVl+iFKtHcq1jgb/+boOFMvQC0=;
- b=r+qCSw9HWqt5CsplJnfNdMBfy0TWePM6XL5Heac1XDWTDHv7/jl/EPPC3lqW8bs7Hq75
- W82RwgyLs7mlEU8Md60unyWdOWkbgd3QOMtnm6vSo2ssx6WRQM26awI1QfVRU3WXE8KA
- dnI8QIA/2btfO2eOkbuSKi44EjAg9l7hlQ0AZX/CJrby475X/nJXbxwr/zt9DSZOn2+S
- fqBM+Hwuv1TXWmNJ9J+Bke2e0rF8jTMWYKocy2e+hO1//gs6vOZJ+PYOxvzn4hSxC+tN
- v21KuHHp8HVOS2ylwdl8dC3CI8STnbLST4HL8fOqxd5PXijJgLr74oy6XH+yQ8Ci8lXO NQ== 
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39mbkdrtkk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 03:20:47 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1667D0lA027420;
-        Tue, 6 Jul 2021 07:20:46 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma01wdc.us.ibm.com with ESMTP id 39jfhae369-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 07:20:46 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1667Kk6N6292072
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 6 Jul 2021 07:20:46 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D5748AE068;
-        Tue,  6 Jul 2021 07:20:45 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4314AAE062;
-        Tue,  6 Jul 2021 07:20:40 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.34.44])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue,  6 Jul 2021 07:20:39 +0000 (GMT)
-Subject: Re: [PATCH v3 0/4] Add perf interface to expose nvdimm
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, nvdimm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, maddy@linux.vnet.ibm.com,
-        santosh@fossix.org, aneesh.kumar@linux.ibm.com,
-        vaibhav@linux.ibm.com, ira.weiny@intel.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        rnsastry@linux.ibm.com
-References: <20210617132617.99529-1-kjain@linux.ibm.com>
- <YNHiRO11E9yYS6mv@hirez.programming.kicks-ass.net>
- <cea827fe-62d4-95fe-b81f-5c7bebe4a6f0@linux.ibm.com>
- <YNLxRz1w9IeatIKW@hirez.programming.kicks-ass.net>
- <87fsx825lj.fsf@mpe.ellerman.id.au>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <96e9fa2e-fd8a-dc1a-9cbb-b515b8468867@linux.ibm.com>
-Date:   Tue, 6 Jul 2021 12:50:36 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 6 Jul 2021 03:26:58 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EB5C061762
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 00:24:20 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id i14so4276833vkd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 00:24:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BXh3LzMCPP9L3ynAA0aGj0fxSvyTuYRtJFcDwUyQ7PM=;
+        b=ZIphNHFNEE+seeFzTENuNO09jbaTUpM+qAatBWg9z0OBgpHgSDgYdxW/N8q56+yYjC
+         uFfkpNkI5HG0/PJylwJ99SjyHOUMS7/0SNzBdfl+5gxYPRY5LZu9wDrC/DrNrxI8oHYk
+         h9YxZ4nWUZcRKcPPdkO+43Z3EaDuswEjNlmgrDAZp2h6jPXSVfLLsnQxmaGSN5BxM8dS
+         9dPZPCGZ4SHklmfPXQRNDi2qGu5GVV+icfOyhgKcIk3E/5LFYYekvWLRh/ylqotC+lSw
+         m/oiXlzuHBBJIokhaULIVJnKw64+77TX5fY18Gx014ybnp4b/q7iwFHjLN7we8/jn6ER
+         /t2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BXh3LzMCPP9L3ynAA0aGj0fxSvyTuYRtJFcDwUyQ7PM=;
+        b=KVXPvG09+lCGx7GfHnSCBDrau8a9gm0RMyHKRsuTmSD8NjHR9a8Q6235sgIl2GK+cN
+         AmSp89vZ1jawbO/QaSFKugQOqbVq69/nP17lR7mMy2epdXWmCqMHO+k1ucczAKJHLmvl
+         uwmWv4sg4QRlprwRDRFqENtQ4GC88O5a7MFladDaWA7yQ7czVwwIO5TkQCz++CjI31Ug
+         g3zKzkjUrEsXe3ObAdvT4aR0NC00HQiKonXkkn8Sdv2Yhv1a6+KKB2cj2BRUiAROZ5Uk
+         DyOwqXlkTg/Xb3nNSU2FldVkWXXd/5faq/xvcW7iFSDKxGzkknsySGRALARB3lODP0DZ
+         gB1g==
+X-Gm-Message-State: AOAM530EOxvzE1JpoQjaSlT6pPkDkZX/s8GeWsxJxPe08Ldc9cYzsHQT
+        RyQ13vxdWTl3gDLSPReD3LwclUEPQLUrMGF5KRv3FA==
+X-Google-Smtp-Source: ABdhPJyZeMUXryowDLyT5UVj1MHKnIf7P7os2mdRoNlHRDoSTvU/zN5waPK5F8cB2dqXSY/D/fBD96r1SW3yJTF2u+U=
+X-Received: by 2002:a05:6122:588:: with SMTP id i8mr1747116vko.6.1625556259411;
+ Tue, 06 Jul 2021 00:24:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87fsx825lj.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ZTZGICHiuoHhKfhxOni8w9McQi0WG8ZU
-X-Proofpoint-ORIG-GUID: ZTZGICHiuoHhKfhxOni8w9McQi0WG8ZU
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-06_02:2021-07-02,2021-07-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- lowpriorityscore=0 clxscore=1015 mlxlogscore=999 phishscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 adultscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107060035
+References: <20210630133149.3204290-1-dmitry.baryshkov@linaro.org>
+ <20210630133149.3204290-2-dmitry.baryshkov@linaro.org> <CAPDyKFpXD3rCmp53LFFYky_xQv9ucofvTezG5qWyDZt427chNQ@mail.gmail.com>
+ <CAA8EJpob=TpXiJozac-5sKJzE71ddWRFDj7D2-F=W=a2mgKvxA@mail.gmail.com>
+ <CAPDyKFq-vwMchLFb3JvK7B9ZQ9=z-TXzGHUij6CocTR+VmAOqQ@mail.gmail.com> <YN4W7vd3Yep+DX3N@yoga>
+In-Reply-To: <YN4W7vd3Yep+DX3N@yoga>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 6 Jul 2021 09:23:42 +0200
+Message-ID: <CAPDyKFrPyu6dT_+G3-ivPTLGS0G1kd9Tph_Pi2VP7ycEn3R5AQ@mail.gmail.com>
+Subject: Re: [PATCH 1/6] dt-bindings: clock: qcom,dispcc-sm8x50: add mmcx
+ power domain
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 1 Jul 2021 at 21:26, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
+>
+> On Thu 01 Jul 11:58 CDT 2021, Ulf Hansson wrote:
+>
+> > On Thu, 1 Jul 2021 at 18:39, Dmitry Baryshkov
+> > <dmitry.baryshkov@linaro.org> wrote:
+> > >
+> > > On Thu, 1 Jul 2021 at 19:17, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > >
+> > > > On Wed, 30 Jun 2021 at 15:31, Dmitry Baryshkov
+> > > > <dmitry.baryshkov@linaro.org> wrote:
+> > > > >
+> > > > > On sm8250 dispcc requires MMCX power domain to be powered up before
+> > > > > clock controller's registers become available. For now sm8250 was using
+> > > > > external regulator driven by the power domain to describe this
+> > > > > relationship. Switch into specifying power-domain and required opp-state
+> > > > > directly.
+> > > > >
+> > > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > > > ---
+> > > > >  .../bindings/clock/qcom,dispcc-sm8x50.yaml    | 19 +++++++++++++++++++
+> > > > >  1 file changed, 19 insertions(+)
+> > > > >
+> > > > > diff --git a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+> > > > > index 0cdf53f41f84..48d86fb34fa7 100644
+> > > > > --- a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+> > > > > +++ b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+> > > > > @@ -55,6 +55,16 @@ properties:
+> > > > >    reg:
+> > > > >      maxItems: 1
+> > > > >
+> > > > > +  power-domains:
+> > > > > +    description:
+> > > > > +      A phandle and PM domain specifier for the MMCX power domain.
+> > > > > +    maxItems: 1
+> > > > > +
+> > > >
+> > > > Should you perhaps state that this is a parent domain? Or it isn't?
+> > > >
+> > > > Related to this and because this is a power domain provider, you
+> > > > should probably reference the common power-domain bindings somewhere
+> > > > here. Along the lines of this:
+> > > >
+> > > > - $ref: power-domain.yaml#
+> > > >
+> > > > As an example, you could have a look at
+> > > > Documentation/devicetree/bindings/power/pd-samsung.yaml.
+> > >
+> > > I'll take a look.
+> > >
+> > > >
+> > > > > +  required-opps:
+> > > > > +    description:
+> > > > > +      Performance state to use for MMCX to enable register access.
+> > > > > +    maxItems: 1
+> > > >
+> > > > According to the previous discussions, I was under the assumption that
+> > > > this property belongs to a consumer node rather than in the provider
+> > > > node, no?
+> > >
+> > > It is both a consumer and a provider. It consumes SM8250_MMCX from
+> > > rpmhpd and provides MMSC_GDSC.
+> >
+> > That sounds a bit weird to me.
+> >
+>
+> dispcc is a hardware block powered by MMCX, so it is a consumer of it
+> and needs to control MMCX.
 
+Right, that sounds reasonable.
 
-On 6/23/21 4:46 PM, Michael Ellerman wrote:
-> Peter Zijlstra <peterz@infradead.org> writes:
->> On Wed, Jun 23, 2021 at 01:40:38PM +0530, kajoljain wrote:
->>>
->>> On 6/22/21 6:44 PM, Peter Zijlstra wrote:
->>>> On Thu, Jun 17, 2021 at 06:56:13PM +0530, Kajol Jain wrote:
->>>>> ---
->>>>> Kajol Jain (4):
->>>>>   drivers/nvdimm: Add nvdimm pmu structure
->>>>>   drivers/nvdimm: Add perf interface to expose nvdimm performance stats
->>>>>   powerpc/papr_scm: Add perf interface support
->>>>>   powerpc/papr_scm: Document papr_scm sysfs event format entries
->>>>
->>>> Don't see anything obviously wrong with this one.
->>>>
->>>> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->>>>
->>>
->>> Hi Peter,
->>>     Thanks for reviewing the patch. Can you help me on how to take 
->>> these patches to linus tree or can you take it?
->>
->> I would expect either the NVDIMM or PPC maintainers to take this. Dan,
->> Michael ?
-> 
-> I can take it but would need Acks from nvdimm folks.
+>
+> > In my view and per the common power domain bindings (as pointed to
+> > above): If a power domain provider is a consumer of another power
+> > domain, that per definition means that there is a parent domain
+> > specified.
+> >
+>
+> And in addition to needing MMCX to access the dispcc, the exposed
+> power-domain "MDSS_GDSC" is powered by the same MMCX and as such
+> MDSS_GDSC should be a subdomain of MMCX.
 
-Hi Dan,
-    Do you have any comments on this patchset. Please let me know.
+What do you mean by "exposed"? It sounds like you are saying that
+"MDSS_GDSC" is an artificial power domain, no?
 
-Thanks,
-Kajol jain
+If that's the case, more exactly, why is it like this?
 
-> 
-> cheers
-> 
+My apologies if I bother you with details, but as a maintainer of
+genpd, it is very useful to me to have the complete picture.
+
+>
+>
+> But what I was trying to say yesterday is that the power-domain property
+> should be sufficient and that we shouldn't need to drive MMCX to a
+> particular performance_state in order to access the registers.
+>
+> Then as clients make votes on clock rates that requires higher
+> performance_state, they would describe this in their opp-tables etc.
+>
+>
+> But without any performance_state requests, pd->corner will in
+> rpmhpd_power_on() be 0 and as such powering on the power-domain won't
+> actually do anything. Similarly dev_pm_genpd_set_performance_state(dev,
+> 0) on an active power-domain from rpmhpd will turn it off.
+
+Yes, I noticed the patches you posted. Thanks for helping out here!
+
+>
+>
+> So the reason why Dmitry is adding the required-opps to the binding is
+> to get rpmhpd to actually tell the hardware to turn on the power domain.
+> And I don't think this is in accordance with the framework's
+> expectations.
+
+I agree!
+
+>
+> Regards,
+> Bjorn
+
+Kind regards
+Uffe
