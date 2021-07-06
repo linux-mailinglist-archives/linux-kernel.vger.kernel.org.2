@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107243BD08C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4373BD094
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235544AbhGFLeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:34:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35348 "EHLO mail.kernel.org"
+        id S235699AbhGFLeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:34:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234349AbhGFLYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:24:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7892561C99;
-        Tue,  6 Jul 2021 11:18:20 +0000 (UTC)
+        id S234473AbhGFLYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:24:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABB9161CD2;
+        Tue,  6 Jul 2021 11:18:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570301;
-        bh=gHjxUE6q5q2kLdGweCLT5/Xb1aBBzr5wP0DdDKZxUEg=;
+        s=k20201202; t=1625570310;
+        bh=8zY8dRMfQiVYsok90pcHhDj8dcATD+Fzm7MWBbgQjNk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C9XbrFloB7j+Y25D+d8GsO2QdGxS5DDx1ThRs2uDaRtKcS4YDSMEL/Z7x5y6Qi/u+
-         Nq2orGo+KK+otr8a/DAND7Qa1UO33zK6Lj3bysdc5/IRw1rqLzyx91fBkBfqNchVpW
-         JdKdmRsf6fOaByY2/pCLRCkRtY0rd3sNqhflc4j7H0/QHc+Wmbw32o27PaaSlgqJTC
-         enyuI5a++D9MFo8lOt4L0IyOelzRhm+44u2otApe1WYc4Kx263438QxGuMAXv740Sa
-         MxNUWv2J9BLQkTOXkwDOmzhcaBVNvIOfYgj28bI3cPfJ5F/RcjcL/Znl9NyYomjLeR
-         1yyVqCyJBpCXw==
+        b=IQG54Ngrqdby+BGhfmS87/wptvwXnS/n+/Uro8aFgArALTnuCQAb3nAxE/omTQd8U
+         VMHIieVmLBxbEV/3mt7ledKA+Q6HJwDshfBUt+lysUs5StwWusUBK2eheh1D/uMZ3o
+         v8H8zDjECiIv0lu/F2HBmtuFrzoNMKYoCfZenseDe1vzQUP3GYVYcfzmRIvujPY8mb
+         D7m7I/cpe1Cx1G85u9c1r5gQQEONeDP6FL2DdYKWp+beq55Rm5Fmk5IjqOQI/0UJ/I
+         OAQBiBwGyq+nlpRIy7b3PbY+rZLeBY6R6PcKbZ0iL6fehlmsQ0f+f4zXLIMqlV3iLq
+         D58lG6xRpZGuA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.13 188/189] MIPS: set mips32r5 for virt extensions
-Date:   Tue,  6 Jul 2021 07:14:08 -0400
-Message-Id: <20210706111409.2058071-188-sashal@kernel.org>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Stefan Agner <stefan@agner.ch>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.12 002/160] drm/mxsfb: Don't select DRM_KMS_FB_HELPER
+Date:   Tue,  6 Jul 2021 07:15:48 -0400
+Message-Id: <20210706111827.2060499-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210706111409.2058071-1-sashal@kernel.org>
-References: <20210706111409.2058071-1-sashal@kernel.org>
+In-Reply-To: <20210706111827.2060499-1-sashal@kernel.org>
+References: <20210706111827.2060499-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,63 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Thomas Zimmermann <tzimmermann@suse.de>
 
-[ Upstream commit c994a3ec7ecc8bd2a837b2061e8a76eb8efc082b ]
+[ Upstream commit 13b29cc3a722c2c0bc9ab9f72f9047d55d08a2f9 ]
 
-Clang's integrated assembler only accepts these instructions when the
-cpu is set to mips32r5. With this change, we can assemble
-malta_defconfig with Clang via `make LLVM_IAS=1`.
+Selecting DRM_FBDEV_EMULATION will include the correct settings for
+fbdev emulation. Drivers should not override this.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/763
-Reported-by: Dmitry Golovin <dima@golovin.in>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Acked-by: Stefan Agner <stefan@agner.ch>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210415110040.23525-3-tzimmermann@suse.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/mipsregs.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/mxsfb/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index 9c8099a6ffed..acdf8c69220b 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -2077,7 +2077,7 @@ _ASM_MACRO_0(tlbginvf, _ASM_INSN_IF_MIPS(0x4200000c)
- ({ int __res;								\
- 	__asm__ __volatile__(						\
- 		".set\tpush\n\t"					\
--		".set\tmips32r2\n\t"					\
-+		".set\tmips32r5\n\t"					\
- 		_ASM_SET_VIRT						\
- 		"mfgc0\t%0, " #source ", %1\n\t"			\
- 		".set\tpop"						\
-@@ -2090,7 +2090,7 @@ _ASM_MACRO_0(tlbginvf, _ASM_INSN_IF_MIPS(0x4200000c)
- ({ unsigned long long __res;						\
- 	__asm__ __volatile__(						\
- 		".set\tpush\n\t"					\
--		".set\tmips64r2\n\t"					\
-+		".set\tmips64r5\n\t"					\
- 		_ASM_SET_VIRT						\
- 		"dmfgc0\t%0, " #source ", %1\n\t"			\
- 		".set\tpop"						\
-@@ -2103,7 +2103,7 @@ _ASM_MACRO_0(tlbginvf, _ASM_INSN_IF_MIPS(0x4200000c)
- do {									\
- 	__asm__ __volatile__(						\
- 		".set\tpush\n\t"					\
--		".set\tmips32r2\n\t"					\
-+		".set\tmips32r5\n\t"					\
- 		_ASM_SET_VIRT						\
- 		"mtgc0\t%z0, " #register ", %1\n\t"			\
- 		".set\tpop"						\
-@@ -2115,7 +2115,7 @@ do {									\
- do {									\
- 	__asm__ __volatile__(						\
- 		".set\tpush\n\t"					\
--		".set\tmips64r2\n\t"					\
-+		".set\tmips64r5\n\t"					\
- 		_ASM_SET_VIRT						\
- 		"dmtgc0\t%z0, " #register ", %1\n\t"			\
- 		".set\tpop"						\
+diff --git a/drivers/gpu/drm/mxsfb/Kconfig b/drivers/gpu/drm/mxsfb/Kconfig
+index 0143d539f8f8..ee22cd25d3e3 100644
+--- a/drivers/gpu/drm/mxsfb/Kconfig
++++ b/drivers/gpu/drm/mxsfb/Kconfig
+@@ -10,7 +10,6 @@ config DRM_MXSFB
+ 	depends on COMMON_CLK
+ 	select DRM_MXS
+ 	select DRM_KMS_HELPER
+-	select DRM_KMS_FB_HELPER
+ 	select DRM_KMS_CMA_HELPER
+ 	select DRM_PANEL
+ 	select DRM_PANEL_BRIDGE
 -- 
 2.30.2
 
