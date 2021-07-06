@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2DF3BDBE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 19:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52CC3BDBEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 19:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbhGFRFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 13:05:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48000 "EHLO mail.kernel.org"
+        id S230299AbhGFRJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 13:09:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230282AbhGFRFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 13:05:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BB3C619B6;
-        Tue,  6 Jul 2021 17:03:13 +0000 (UTC)
+        id S229956AbhGFRJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 13:09:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8BEB61C3B;
+        Tue,  6 Jul 2021 17:07:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625590993;
-        bh=tkJ1rHdvM80Gb8kEGPp6CCoPCgRCkm25KpJf42ZG7NA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=RGfxJeWV0boJA0jwsuNrwzBEHeiwJh2+4fkzQk+Giw+M4YHEO+ogQrDb+3Os6bjb/
-         wxnwADfHBBiHIj6E+ctw/7uZfkIFJy1Cwfs4BIpIiWlRKbVfKlVeHU7AEwByG8xO/O
-         RGZzIphA495mLWis3a+FZyW7aBsOEu4YoGrZy9jUKtSHrh17lu7ZnzjoMmCb5kGQpV
-         VluIiGj4l4ctozeuumFo4Rm8Jrz7dkrtfg83erq+sT6E8UnERyLm1IVYEwlvdQ7PGF
-         Vdh3KVB3awoMJybnaz24stG39TjCiSkVkp6hmWvtxhH3KxW+VrQiClvIBly6/J4KtY
-         kEINhHzwEptgg==
-Message-ID: <287160b0eba2b2c5e7fe8e1df95ed2ddf077311c.camel@kernel.org>
-Subject: Re: [PATCH v3 0/2] ceph_check_delayed_caps() softlockup
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Luis Henriques <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 06 Jul 2021 13:03:12 -0400
-In-Reply-To: <20210706135242.9978-1-lhenriques@suse.de>
-References: <20210706135242.9978-1-lhenriques@suse.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+        s=k20201202; t=1625591229;
+        bh=VhhzIH6gzRT8gtRsisto5IDFaHK+/13p4/dNI43mqXQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hl0xCyjFbo3wnMVlDA8LcQL8eHToHXmUMr23zuNOTdipVfwNhivzNpi8rpTly6eYi
+         yPd2oC5omfpzshqqnFMLEQGIyy9TAQeSgCgSvFYmHpKLsM30eMNC98TPrdW8hja8Kb
+         4m1fjoFjCWorTG/lEoPVyDyK3SJHLMjyzybho2CdMauS/azg7sMbNbYLaDlqMOER13
+         ALFzRBBx8Uq7Drdf4gPPQLMEsDVKJLDGxMmwxLH7I7ZcRSFV8ffeda6f2WQMZefhG6
+         DGh52bATmGicYuUcNyMSkAeHgzE8e4+s/u25yglW+hkrikwQu6kPAYHnUHYwEX7ru4
+         L8ww7+blLmJBA==
+Date:   Tue, 6 Jul 2021 18:06:58 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Christoph Hellwig <hch@lst.de>, heikki.krogerus@linux.intel.com,
+        thomas.hellstrom@linux.intel.com, peterz@infradead.org,
+        benh@kernel.crashing.org, joonas.lahtinen@linux.intel.com,
+        dri-devel@lists.freedesktop.org, chris@chris-wilson.co.uk,
+        grant.likely@arm.com, paulus@samba.org,
+        Frank Rowand <frowand.list@gmail.com>, mingo@kernel.org,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Saravana Kannan <saravanak@google.com>, mpe@ellerman.id.au,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bskeggs@redhat.com, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Thierry Reding <treding@nvidia.com>,
+        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        Jianxiong Gao <jxgao@google.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        maarten.lankhorst@linux.intel.com, airlied@linux.ie,
+        Dan Williams <dan.j.williams@intel.com>,
+        linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, rodrigo.vivi@intel.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Claire Chang <tientzu@chromium.org>,
+        boris.ostrovsky@oracle.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        jgross@suse.com, Nicolas Boichat <drinkcat@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, xypron.glpk@gmx.de,
+        Tom Lendacky <thomas.lendacky@amd.com>, bauerman@linux.ibm.com
+Subject: Re: [PATCH v15 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+Message-ID: <20210706170657.GD20750@willie-the-truck>
+References: <ea28db1f-846e-4f0a-4f13-beb67e66bbca@kernel.org>
+ <20210702135856.GB11132@willie-the-truck>
+ <0f7bd903-e309-94a0-21d7-f0e8e9546018@arm.com>
+ <YN/7xcxt/XGAKceZ@Ryzen-9-3900X.localdomain>
+ <20210705190352.GA19461@willie-the-truck>
+ <20210706044848.GA13640@lst.de>
+ <20210706132422.GA20327@willie-the-truck>
+ <a59f771f-3289-62f0-ca50-8f3675d9b166@arm.com>
+ <20210706140513.GA26498@lst.de>
+ <bb32d5a6-2b34-4524-e171-3e9f5f4d3a94@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bb32d5a6-2b34-4524-e171-3e9f5f4d3a94@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-07-06 at 14:52 +0100, Luis Henriques wrote:
-> * changes since v3:
->   - always round the delay with round_jiffies_relative() in function
->     schedule_delayed() (patch 0001)
+On Tue, Jul 06, 2021 at 04:39:11PM +0100, Robin Murphy wrote:
+> On 2021-07-06 15:05, Christoph Hellwig wrote:
+> > On Tue, Jul 06, 2021 at 03:01:04PM +0100, Robin Murphy wrote:
+> > > FWIW I was pondering the question of whether to do something along those
+> > > lines or just scrap the default assignment entirely, so since I hadn't got
+> > > round to saying that I've gone ahead and hacked up the alternative
+> > > (similarly untested) for comparison :)
+> > > 
+> > > TBH I'm still not sure which one I prefer...
+> > 
+> > Claire did implement something like your suggestion originally, but
+> > I don't really like it as it doesn't scale for adding multiple global
+> > pools, e.g. for the 64-bit addressable one for the various encrypted
+> > secure guest schemes.
 > 
-> This is an attempt to fix the softlock on the delayed_work workqueue.  As
-> stated in 0002 patch:
-> 
->   Function ceph_check_delayed_caps() is called from the mdsc->delayed_work
->   workqueue and it can be kept looping for quite some time if caps keep being
->   added back to the mdsc->cap_delay_list.  This may result in the watchdog
->   tainting the kernel with the softlockup flag.
-> 
-> v2 of this fix modifies the approach by time-bounding the loop in this
-> function, so that any caps added to the list *after* the loop starts will
-> be postponed to the next wq run.
-> 
-> An extra change in 0001 (suggested by Jeff) allows scheduling runs for
-> periods smaller than the default (5 secs) period.  This way,
-> delayed_work() can have the next run scheduled for the next list element
-> ci->i_hold_caps_max instead of 5 secs.
-> 
-> This patchset should fix the issue reported here [1], although a quick
-> search for "ceph_check_delayed_caps" in the tracker returns a few more
-> bugs, possibly duplicates.
-> 
-> [1] https://tracker.ceph.com/issues/46284
-> 
-> Luis Henriques (2):
->   ceph: allow schedule_delayed() callers to set delay for workqueue
->   ceph: reduce contention in ceph_check_delayed_caps()
-> 
->  fs/ceph/caps.c       | 17 ++++++++++++++++-
->  fs/ceph/mds_client.c | 25 ++++++++++++++++---------
->  fs/ceph/super.h      |  2 +-
->  3 files changed, 33 insertions(+), 11 deletions(-)
-> 
+> Ah yes, that had slipped my mind, and it's a fair point indeed. Since we're
+> not concerned with a minimal fix for backports anyway I'm more than happy to
+> focus on Will's approach. Another thing is that that looks to take us a
+> quiet step closer to the possibility of dynamically resizing a SWIOTLB pool,
+> which is something that some of the hypervisor protection schemes looking to
+> build on top of this series may want to explore at some point.
 
-Looks good. I'll do some testing with this today and will merge into
-testing branch if all goes well.
+Ok, I'll split that nasty diff I posted up into a reviewable series and we
+can take it from there.
 
-Thanks!
--- 
-Jeff Layton <jlayton@kernel.org>
-
+Will
