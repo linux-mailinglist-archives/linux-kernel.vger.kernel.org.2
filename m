@@ -2,209 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A143BC94D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DB13BC94E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 12:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231328AbhGFKRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 06:17:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59665 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231225AbhGFKRn (ORCPT
+        id S231362AbhGFKRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 06:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231225AbhGFKRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 06:17:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625566504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EbtKyQLHeXyAf7XTeEVWB1Q3nM607AfNrt9n7XkxYzw=;
-        b=Zz4UfAMQ766Ca1sIZINYeSVLYO2VXBiSVrCvyFTSOJkyUgDW45pV4Qt8If+osxx6CmnB0Z
-        fOwB69wgHRzkH+8qs9cBy78ojawA7ZDI1hC45hD9UC0hnXeGioPPfX19W1X80E+sc4ucWA
-        EkNLW5vScyooLEZ1nHDD+ukeJrl1nfA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-441-McPLJZCxOI-QDg_bHt4FDw-1; Tue, 06 Jul 2021 06:15:00 -0400
-X-MC-Unique: McPLJZCxOI-QDg_bHt4FDw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECA2F9126B;
-        Tue,  6 Jul 2021 10:14:56 +0000 (UTC)
-Received: from localhost (ovpn-115-23.ams2.redhat.com [10.36.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F76610074F8;
-        Tue,  6 Jul 2021 10:14:51 +0000 (UTC)
-Date:   Tue, 6 Jul 2021 11:14:51 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Yongji Xie <xieyongji@bytedance.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika =?iso-8859-1?Q?Penttil=E4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 10/10] Documentation: Add documentation for VDUSE
-Message-ID: <YOQtG3gDOhHDO5CQ@stefanha-x1.localdomain>
-References: <20210615141331.407-11-xieyongji@bytedance.com>
- <YNSCH6l31zwPxBjL@stefanha-x1.localdomain>
- <CACycT3uxnQmXWsgmNVxQtiRhz1UXXTAJFY3OiAJqokbJH6ifMA@mail.gmail.com>
- <YNxCDpM3bO5cPjqi@stefanha-x1.localdomain>
- <CACycT3taKhf1cWp3Jd0aSVekAZvpbR-_fkyPLQ=B+jZBB5H=8Q@mail.gmail.com>
- <YN3ABqCMLQf7ejOm@stefanha-x1.localdomain>
- <CACycT3vo-diHgTSLw_FS2E+5ia5VjihE3qw7JmZR7JT55P-wQA@mail.gmail.com>
- <8320d26d-6637-85c6-8773-49553dfa502d@redhat.com>
- <YOL/9mxkJaokKDHc@stefanha-x1.localdomain>
- <5b5107fa-3b32-8a3b-720d-eee6b2a84ace@redhat.com>
+        Tue, 6 Jul 2021 06:17:51 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2137C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 03:15:11 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id i94so25432406wri.4
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 03:15:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=2y61eIOXeRoS1J9Ah3VdS858qMxJwWTMN0TN21jX/as=;
+        b=p0owoCIm/1D1Bn0eTvL99Bxxwva6n+a38rPHcVMtZw6d6dYx0sYie63u+NxBV7lzQi
+         y+xHnWpwfXWpI/05pDcRse84P0lKjyUQRW7k9enkV8m2MwZt1le5zS0GPxt34Utq64t8
+         7vbC5d59QoqNbLEXA7iSG5nc9bzdjqEwyHFglRmLbttucjbPzhNpl3WyzGz+hTNJ72r5
+         1n4tBV7+vr1PBvDWxF1gYcL24BS3KrW0hK+grwVg1vrsg+dRkYdjWFETa/uqwTVXfLDx
+         oyctNcHSKQ2o4aO106IHzCTPXRVhECtNKnsArv31pFkosn2DZg/3iSg5QndSGYFsb6Qi
+         4vpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=2y61eIOXeRoS1J9Ah3VdS858qMxJwWTMN0TN21jX/as=;
+        b=KLOFjaVvuFCA46qNXIZx4Ia0nAKb14xYzzGqeyUP3GbLMd/BGMNXwGPfq0xD5FtYgh
+         wCNiyBBhFiz1QeWrRGavps2tJoG/2/6cS7lAdjtQYXQmpKEkrtCuJh9hTUKoXuJw8ydO
+         lbep88DudZVoNErPrhWcbnqaxKTFG5oeZMBBMndloy0R+X3yvlxmRkVT7NsIoXuqwjG3
+         U3sVinFWiO3jubPiuu5isC6DThTpiUCWOxKcmUXb8h2gFMiJX557h5UDcxMDvXKsixPp
+         bpvogQVcw3e7qrP8txwO7mFZ++cbtXsV0PypMXv9Mek9qq9TNYA8pgndcaeb0e94BMts
+         uAqw==
+X-Gm-Message-State: AOAM532cVxJwiNWxO+5PjcWNPpveO0GdNHkfrc/BR1mmW9O6xMJz/NLT
+        IYDguQ3ufJ+5X3llbykSQ70lgQ==
+X-Google-Smtp-Source: ABdhPJyhoBLX9YpczREivBIqkjXikuPUmLPhwlmXcBfMnD5Zk+VhqM4LkYkC3rCJFCXTwc7Q4mserA==
+X-Received: by 2002:adf:d214:: with SMTP id j20mr16335482wrh.392.1625566510485;
+        Tue, 06 Jul 2021 03:15:10 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id e9sm1931168wra.15.2021.07.06.03.15.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 03:15:09 -0700 (PDT)
+Date:   Tue, 6 Jul 2021 11:15:08 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [GIT PULL] kgdb changes for v5.14
+Message-ID: <20210706101508.4jha4mm6kbcdpvdt@maple.lan>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bGDTE9bI8S9vsB/T"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5b5107fa-3b32-8a3b-720d-eee6b2a84ace@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following changes since commit 8124c8a6b35386f73523d27eacb71b5364a68c4c:
 
---bGDTE9bI8S9vsB/T
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  Linux 5.13-rc4 (2021-05-30 11:58:25 -1000)
 
-On Tue, Jul 06, 2021 at 10:34:33AM +0800, Jason Wang wrote:
->=20
-> =E5=9C=A8 2021/7/5 =E4=B8=8B=E5=8D=888:49, Stefan Hajnoczi =E5=86=99=E9=
-=81=93:
-> > On Mon, Jul 05, 2021 at 11:36:15AM +0800, Jason Wang wrote:
-> > > =E5=9C=A8 2021/7/4 =E4=B8=8B=E5=8D=885:49, Yongji Xie =E5=86=99=E9=81=
-=93:
-> > > > > > OK, I get you now. Since the VIRTIO specification says "Device
-> > > > > > configuration space is generally used for rarely-changing or
-> > > > > > initialization-time parameters". I assume the VDUSE_DEV_SET_CON=
-FIG
-> > > > > > ioctl should not be called frequently.
-> > > > > The spec uses MUST and other terms to define the precise requirem=
-ents.
-> > > > > Here the language (especially the word "generally") is weaker and=
- means
-> > > > > there may be exceptions.
-> > > > >=20
-> > > > > Another type of access that doesn't work with the VDUSE_DEV_SET_C=
-ONFIG
-> > > > > approach is reads that have side-effects. For example, imagine a =
-field
-> > > > > containing an error code if the device encounters a problem unrel=
-ated to
-> > > > > a specific virtqueue request. Reading from this field resets the =
-error
-> > > > > code to 0, saving the driver an extra configuration space write a=
-ccess
-> > > > > and possibly race conditions. It isn't possible to implement those
-> > > > > semantics suing VDUSE_DEV_SET_CONFIG. It's another corner case, b=
-ut it
-> > > > > makes me think that the interface does not allow full VIRTIO sema=
-ntics.
-> > >=20
-> > > Note that though you're correct, my understanding is that config spac=
-e is
-> > > not suitable for this kind of error propagating. And it would be very=
- hard
-> > > to implement such kind of semantic in some transports.=C2=A0 Virtqueu=
-e should be
-> > > much better. As Yong Ji quoted, the config space is used for
-> > > "rarely-changing or intialization-time parameters".
-> > >=20
-> > >=20
-> > > > Agreed. I will use VDUSE_DEV_GET_CONFIG in the next version. And to
-> > > > handle the message failure, I'm going to add a return value to
-> > > > virtio_config_ops.get() and virtio_cread_* API so that the error can
-> > > > be propagated to the virtio device driver. Then the virtio-blk devi=
-ce
-> > > > driver can be modified to handle that.
-> > > >=20
-> > > > Jason and Stefan, what do you think of this way?
-> > Why does VDUSE_DEV_GET_CONFIG need to support an error return value?
-> >=20
-> > The VIRTIO spec provides no way for the device to report errors from
-> > config space accesses.
-> >=20
-> > The QEMU virtio-pci implementation returns -1 from invalid
-> > virtio_config_read*() and silently discards virtio_config_write*()
-> > accesses.
-> >=20
-> > VDUSE can take the same approach with
-> > VDUSE_DEV_GET_CONFIG/VDUSE_DEV_SET_CONFIG.
-> >=20
-> > > I'd like to stick to the current assumption thich get_config won't fa=
-il.
-> > > That is to say,
-> > >=20
-> > > 1) maintain a config in the kernel, make sure the config space read c=
-an
-> > > always succeed
-> > > 2) introduce an ioctl for the vduse usersapce to update the config sp=
-ace.
-> > > 3) we can synchronize with the vduse userspace during set_config
-> > >=20
-> > > Does this work?
-> > I noticed that caching is also allowed by the vhost-user protocol
-> > messages (QEMU's docs/interop/vhost-user.rst), but the device doesn't
-> > know whether or not caching is in effect. The interface you outlined
-> > above requires caching.
-> >=20
-> > Is there a reason why the host kernel vDPA code needs to cache the
-> > configuration space?
->=20
->=20
-> Because:
->=20
-> 1) Kernel can not wait forever in get_config(), this is the major differe=
-nce
-> with vhost-user.
+are available in the Git repository at:
 
-virtio_cread() can sleep:
+  git://git.kernel.org/pub/scm/linux/kernel/git/danielt/linux.git/ tags/kgdb-5.14-rc1
 
-  #define virtio_cread(vdev, structname, member, ptr)                     \
-          do {                                                            \
-                  typeof(((structname*)0)->member) virtio_cread_v;        \
-                                                                          \
-                  might_sleep();                                          \
-                  ^^^^^^^^^^^^^^
+for you to fetch changes up to c8daba4640ac9619f9cb34ca7c314ff1eaff5f33:
 
-Which code path cannot sleep?
+  kgdb: Fix fall-through warning for Clang (2021-06-01 10:34:35 +0100)
 
-> 2) Stick to the current assumption that virtio_cread() should always
-> succeed.
+----------------------------------------------------------------
+kgdb patches for 5.14
 
-That can be done by reading -1 (like QEMU does) when the read fails.
+This was a extremely quiet cycle for kgdb. This PR consists of two
+patches that between them address spelling errors and a switch
+fallthrough warning.
 
-Stefan
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 
---bGDTE9bI8S9vsB/T
-Content-Type: application/pgp-signature; name="signature.asc"
+----------------------------------------------------------------
+Gustavo A. R. Silva (1):
+      kgdb: Fix fall-through warning for Clang
 
------BEGIN PGP SIGNATURE-----
+Zhen Lei (1):
+      kgdb: Fix spelling mistakes
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDkLRoACgkQnKSrs4Gr
-c8g5rQf/dEn1vwdw9gb5jvAShRGnaCqMAiYL94qRkH44VSSYFNUpuWuei42cVzk5
-PXleyCcoPY4o1g1xBwL6ddvi0qziAyjlTDw4BkflDiLyDqRk4cryoGSdxBe9mNoq
-mOiwWONGbv2EHefjW2PLq5MpuVf2XYEJlSyIpJPSfEpaClH8tF16GhcHofMePvnS
-d4etvc/M6x7ZiX8mV+lTVK/+5VRYPpcBTmLLkHObS0Dk4utsosMBRj0n+26ZsLCu
-O7Hifgw0DrW0IQCYB5GNnKNYYPdeSNvXv7I6mqaI9W/xLPsP5Ze2IPDITeMmAtWS
-ppMaw40ExhBaIt4ViPFG//Va5Me2rQ==
-=TOAU
------END PGP SIGNATURE-----
-
---bGDTE9bI8S9vsB/T--
-
+ include/linux/kgdb.h           | 8 ++++----
+ kernel/debug/debug_core.c      | 3 ++-
+ kernel/debug/kdb/kdb_main.c    | 8 ++++----
+ kernel/debug/kdb/kdb_private.h | 2 +-
+ 4 files changed, 11 insertions(+), 10 deletions(-)
