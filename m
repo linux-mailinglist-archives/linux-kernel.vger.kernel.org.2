@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F633BD846
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 277B63BD86B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbhGFOgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:36:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28411 "EHLO
+        id S232426AbhGFOlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:41:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30979 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232212AbhGFOfr (ORCPT
+        by vger.kernel.org with ESMTP id S232305AbhGFOkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:35:47 -0400
+        Tue, 6 Jul 2021 10:40:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625581693;
+        s=mimecast20190719; t=1625582284;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3GEYToz9UGkj5qm0ImJKs8heV1zy8ZipitXq+LmQpYg=;
-        b=WMYOqxdPlT1ilxIBj5HaoCO58ptSkA7zTwUUyNBGupE+z0llsTxvDbObIA6v47G92n85xb
-        51Y510MyxgPs9nqxH/q7hroHiSukTKaAiJh5A91a8EXjufw97fmKdd8YJ1CP4IGdeuzRZe
-        BkLUGZFmxWLRl2MOknNnUJfUQUm2agM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-368-iZBdcUsKNc-XJSOiAUDomQ-1; Tue, 06 Jul 2021 10:22:08 -0400
-X-MC-Unique: iZBdcUsKNc-XJSOiAUDomQ-1
-Received: by mail-ed1-f72.google.com with SMTP id i8-20020a50fc080000b02903989feb4920so5420304edr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:22:07 -0700 (PDT)
+        bh=gGUA9Bem+CP6UqPyM4MAk1m839vi5F4hWGOT4QjcGOw=;
+        b=Fv55SXt1JwnFSW3TbCrzIwSam3PTyX95HIx01N6DGvTDRmQmEx+PIpJuW58OkS5ySmM95f
+        aiRDZ6Q7djligCKUbCw24nMeMu1lRZeYLbZM6vwY4iuArS/Pd7kOGsUzQ7bt4Ep6CkURR8
+        msQCfDZPzak4kiEqKPY7Dcx3REiKakM=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-jgk33YG8MjuEFx7hc3ABVg-1; Tue, 06 Jul 2021 10:23:08 -0400
+X-MC-Unique: jgk33YG8MjuEFx7hc3ABVg-1
+Received: by mail-ej1-f69.google.com with SMTP id hy7-20020a1709068a67b02904cdf8737a75so5053995ejc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 07:23:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=3GEYToz9UGkj5qm0ImJKs8heV1zy8ZipitXq+LmQpYg=;
-        b=YiJmcG32xsWJLTGiG67VENmKbP1/2j0LA/F5VVZrwBPTEvNJ0CDIpW5Hj37z4qB/o1
-         5uq4ij75uUXNZNWNSw1A6NWuoyUeJG06P+7tsAOSrRtvMJNmJSvUlhgNakzldKtGuiTg
-         rPwGae7bwBNi4UzsiNchmxlain6RSmx/JdgxYlb+x8TsI1DJ3gswSPCIOCo60uaR/O9O
-         y5hLkxhYEAWp85utC5UQHkB94EotcPiSUhAFjvTMP5QzKyG7InoP2Xr/xyzL7pPVIgRq
-         9dmHu/fkPNQy0x+/Ns0JcaLfrypl5xKW19sJ9vHmJnvbeIrXI9oPdnuJcL30vvbqVZjN
-         YU1Q==
-X-Gm-Message-State: AOAM532xZgWetsH/9DEFGuwcPtwJECtVu59XmSKCilBEf7wlguvdasrm
-        oamNmDNJGUp1Cg8XGlaMUydAK5zzsgqBEE9A3EL3xs/LBhxFb5dUq5gj6DmP4p2mXMJO5dtoCPg
-        tDuCJ9gxn1KNmjdl/UxssMkjY
-X-Received: by 2002:a17:906:4fce:: with SMTP id i14mr8816391ejw.231.1625581326916;
-        Tue, 06 Jul 2021 07:22:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyPVTyy71iN1zsNglx8JRKhOkl4/84YFu6o8CZLhwV75mwOcTtwqWL/Rh/ITsWYsdP7hQ/jBQ==
-X-Received: by 2002:a17:906:4fce:: with SMTP id i14mr8816367ejw.231.1625581326738;
-        Tue, 06 Jul 2021 07:22:06 -0700 (PDT)
+        bh=gGUA9Bem+CP6UqPyM4MAk1m839vi5F4hWGOT4QjcGOw=;
+        b=mjido2J2ayWBTh5MNIPbwFa6srrZ1ErfG3vGgm449l6W7YWFePGVTeAwxRLBL4Y0ej
+         xZyzMMFfW9GW25goCu0Bgmjwv3vQQTV7A4s2P/PAgQwX1OzIza2CCh4S5xPL1HF6CEPu
+         yOgHZMQ8q0UFVa+VmTaaFe/PWJpYMamEUVLpVqx8KIbS8rsmCuwhx8/Ty9Z8YxXDPBNB
+         H95uiT5Lfl9skQpj4RwD+B7jvE00LfrBRoQsIH5TNVSLcPdT543s92UkaNCsHZDaONwU
+         WEAU0dYSW7jgQ5+mU8Mqmu/+BCaEkcNJkDcA0fcBhw+Mkk9smn1OSHmSmHGm4b2+ULEi
+         xzng==
+X-Gm-Message-State: AOAM530bdoArA7WWqwTn2KuE6N9igYpnfhtwelT6eD5W+7oCs+K4bhdI
+        yE28iOCZ4KYPxmeDGA6UHA12T/75s7XyUS3B+UdgJaZc3CBRfWgxB0sveo91o4HaT/XF9vCuKZ5
+        T/VZR7rIvFZ9ACKAh4124G5Oi
+X-Received: by 2002:aa7:cd13:: with SMTP id b19mr23682240edw.45.1625581386971;
+        Tue, 06 Jul 2021 07:23:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwLZHCy7hLZCTczthuSgXTPHxkcjRMRN9zxpC3mlWZzL3CM3AnAT+KRqWjk2LeTRTbqi49NmA==
+X-Received: by 2002:aa7:cd13:: with SMTP id b19mr23682206edw.45.1625581386778;
+        Tue, 06 Jul 2021 07:23:06 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id s3sm5816276ejm.49.2021.07.06.07.22.05
+        by smtp.gmail.com with ESMTPSA id e16sm7404844edr.86.2021.07.06.07.23.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 07:22:05 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 65/69] KVM: X86: Introduce initial_tsc_khz in
- struct kvm_arch
+        Tue, 06 Jul 2021 07:23:06 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 67/69] KVM: TDX: add trace point for TDVMCALL and
+ SEPT operation
 To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H . Peter Anvin" <hpa@zytor.com>,
@@ -64,16 +64,16 @@ To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
         Connor Kuehl <ckuehl@redhat.com>,
         Sean Christopherson <seanjc@google.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com, Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     isaku.yamahata@gmail.com, Yuan Yao <yuan.yao@intel.com>
 References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <5f87f0b888555b52041a0fe32280adee0d563e63.1625186503.git.isaku.yamahata@intel.com>
+ <0fc6ab7acf3ac2e764ada5abd76500ce8adb3d33.1625186503.git.isaku.yamahata@intel.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <792040b0-4463-d805-d14e-ba264a3f8bbf@redhat.com>
-Date:   Tue, 6 Jul 2021 16:22:04 +0200
+Message-ID: <b0457d38-33ab-4402-afea-e06a91c87ea1@redhat.com>
+Date:   Tue, 6 Jul 2021 16:23:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <5f87f0b888555b52041a0fe32280adee0d563e63.1625186503.git.isaku.yamahata@intel.com>
+In-Reply-To: <0fc6ab7acf3ac2e764ada5abd76500ce8adb3d33.1625186503.git.isaku.yamahata@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -82,59 +82,190 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 03/07/21 00:05, isaku.yamahata@intel.com wrote:
-> From: Xiaoyao Li <xiaoyao.li@intel.com>
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
 > 
-> Introduce a per-vm variable initial_tsc_khz to hold the default tsc_khz
-> for kvm_arch_vcpu_create().
-> 
-> This field is going to be used by TDX since TSC frequency for TD guest
-> is configured at TD VM initialization phase.
-> 
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> Signed-off-by: Yuan Yao <yuan.yao@intel.com>
 > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 > ---
->   arch/x86/include/asm/kvm_host.h | 1 +
->   arch/x86/kvm/x86.c              | 3 ++-
->   2 files changed, 3 insertions(+), 1 deletion(-)
-
-So this means disabling TSC frequency scaling on TDX.  Would it make 
-sense to delay VM creation to a separate ioctl, similar to 
-KVM_ARM_VCPU_FINALIZE (KVM_VM_FINALIZE)?
-
-Paolo
-
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index a47e17892258..ae8b96e15e71 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1030,6 +1030,7 @@ struct kvm_arch {
->   	u64 last_tsc_nsec;
->   	u64 last_tsc_write;
->   	u32 last_tsc_khz;
-> +	u32 initial_tsc_khz;
->   	u64 cur_tsc_nsec;
->   	u64 cur_tsc_write;
->   	u64 cur_tsc_offset;
+>   arch/x86/kvm/trace.h        | 58 +++++++++++++++++++++++++++++++++++++
+>   arch/x86/kvm/vmx/tdx.c      | 16 ++++++++++
+>   arch/x86/kvm/vmx/tdx_arch.h |  9 ++++++
+>   arch/x86/kvm/x86.c          |  2 ++
+>   4 files changed, 85 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
+> index c3398d0de9a7..58631124f08d 100644
+> --- a/arch/x86/kvm/trace.h
+> +++ b/arch/x86/kvm/trace.h
+> @@ -739,6 +739,64 @@ TRACE_EVENT(kvm_tdx_seamcall_exit,
+>   		  __entry->r9, __entry->r10, __entry->r11)
+>   );
+>   
+> +/*
+> + * Tracepoint for TDVMCALL from a TDX guest
+> + */
+> +TRACE_EVENT(kvm_tdvmcall,
+> +	TP_PROTO(struct kvm_vcpu *vcpu, __u32 exit_reason,
+> +		 __u64 p1, __u64 p2, __u64 p3, __u64 p4),
+> +	TP_ARGS(vcpu, exit_reason, p1, p2, p3, p4),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(	__u64,		rip		)
+> +		__field(	__u32,		exit_reason	)
+> +		__field(	__u64,		p1		)
+> +		__field(	__u64,		p2		)
+> +		__field(	__u64,		p3		)
+> +		__field(	__u64,		p4		)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->rip			= kvm_rip_read(vcpu);
+> +		__entry->exit_reason		= exit_reason;
+> +		__entry->p1			= p1;
+> +		__entry->p2			= p2;
+> +		__entry->p3			= p3;
+> +		__entry->p4			= p4;
+> +	),
+> +
+> +	TP_printk("rip: %llx reason: %s p1: %llx p2: %llx p3: %llx p4: %llx",
+> +		  __entry->rip,
+> +		  __print_symbolic(__entry->exit_reason,
+> +				   TDG_VP_VMCALL_EXIT_REASONS),
+> +		  __entry->p1, __entry->p2, __entry->p3, __entry->p4)
+> +);
+> +
+> +/*
+> + * Tracepoint for SEPT related SEAMCALLs.
+> + */
+> +TRACE_EVENT(kvm_sept_seamcall,
+> +	TP_PROTO(__u64 op, __u64 gpa, __u64 hpa, int level),
+> +	TP_ARGS(op, gpa, hpa, level),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(	__u64,		op	)
+> +		__field(	__u64,		gpa	)
+> +		__field(	__u64,		hpa	)
+> +		__field(	int,		level	)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->op			= op;
+> +		__entry->gpa			= gpa;
+> +		__entry->hpa			= hpa;
+> +		__entry->level			= level;
+> +	),
+> +
+> +	TP_printk("op: %llu gpa: 0x%llx hpa: 0x%llx level: %u",
+> +		  __entry->op, __entry->gpa, __entry->hpa, __entry->level)
+> +);
+> +
+>   /*
+>    * Tracepoint for nested #vmexit because of interrupt pending
+>    */
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 1aed4286ce0c..63130fb5a003 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -934,6 +934,10 @@ static int handle_tdvmcall(struct kvm_vcpu *vcpu)
+>   
+>   	exit_reason = tdvmcall_exit_reason(vcpu);
+>   
+> +	trace_kvm_tdvmcall(vcpu, exit_reason,
+> +			   tdvmcall_p1_read(vcpu), tdvmcall_p2_read(vcpu),
+> +			   tdvmcall_p3_read(vcpu), tdvmcall_p4_read(vcpu));
+> +
+>   	switch (exit_reason) {
+>   	case EXIT_REASON_CPUID:
+>   		return tdx_emulate_cpuid(vcpu);
+> @@ -1011,11 +1015,15 @@ static void tdx_sept_set_private_spte(struct kvm_vcpu *vcpu, gfn_t gfn,
+>   
+>   	/* Build-time faults are induced and handled via TDH_MEM_PAGE_ADD. */
+>   	if (is_td_finalized(kvm_tdx)) {
+> +		trace_kvm_sept_seamcall(SEAMCALL_TDH_MEM_PAGE_AUG, gpa, hpa, level);
+> +
+>   		err = tdh_mem_page_aug(kvm_tdx->tdr.pa, gpa, hpa, &ex_ret);
+>   		SEPT_ERR(err, &ex_ret, TDH_MEM_PAGE_AUG, vcpu->kvm);
+>   		return;
+>   	}
+>   
+> +	trace_kvm_sept_seamcall(SEAMCALL_TDH_MEM_PAGE_ADD, gpa, hpa, level);
+> +
+>   	source_pa = kvm_tdx->source_pa & ~KVM_TDX_MEASURE_MEMORY_REGION;
+>   
+>   	err = tdh_mem_page_add(kvm_tdx->tdr.pa,  gpa, hpa, source_pa, &ex_ret);
+> @@ -1039,6 +1047,8 @@ static void tdx_sept_drop_private_spte(struct kvm *kvm, gfn_t gfn, int level,
+>   		return;
+>   
+>   	if (is_hkid_assigned(kvm_tdx)) {
+> +		trace_kvm_sept_seamcall(SEAMCALL_TDH_MEM_PAGE_REMOVE, gpa, hpa, level);
+> +
+>   		err = tdh_mem_page_remove(kvm_tdx->tdr.pa, gpa, level, &ex_ret);
+>   		if (SEPT_ERR(err, &ex_ret, TDH_MEM_PAGE_REMOVE, kvm))
+>   			return;
+> @@ -1063,6 +1073,8 @@ static int tdx_sept_link_private_sp(struct kvm_vcpu *vcpu, gfn_t gfn,
+>   	struct tdx_ex_ret ex_ret;
+>   	u64 err;
+>   
+> +	trace_kvm_sept_seamcall(SEAMCALL_TDH_MEM_SEPT_ADD, gpa, hpa, level);
+> +
+>   	err = tdh_mem_spet_add(kvm_tdx->tdr.pa, gpa, level, hpa, &ex_ret);
+>   	if (SEPT_ERR(err, &ex_ret, TDH_MEM_SEPT_ADD, vcpu->kvm))
+>   		return -EIO;
+> @@ -1077,6 +1089,8 @@ static void tdx_sept_zap_private_spte(struct kvm *kvm, gfn_t gfn, int level)
+>   	struct tdx_ex_ret ex_ret;
+>   	u64 err;
+>   
+> +	trace_kvm_sept_seamcall(SEAMCALL_TDH_MEM_RANGE_BLOCK, gpa, -1ull, level);
+> +
+>   	err = tdh_mem_range_block(kvm_tdx->tdr.pa, gpa, level, &ex_ret);
+>   	SEPT_ERR(err, &ex_ret, TDH_MEM_RANGE_BLOCK, kvm);
+>   }
+> @@ -1088,6 +1102,8 @@ static void tdx_sept_unzap_private_spte(struct kvm *kvm, gfn_t gfn, int level)
+>   	struct tdx_ex_ret ex_ret;
+>   	u64 err;
+>   
+> +	trace_kvm_sept_seamcall(SEAMCALL_TDH_MEM_RANGE_UNBLOCK, gpa, -1ull, level);
+> +
+>   	err = tdh_mem_range_unblock(kvm_tdx->tdr.pa, gpa, level, &ex_ret);
+>   	SEPT_ERR(err, &ex_ret, TDH_MEM_RANGE_UNBLOCK, kvm);
+>   }
+> diff --git a/arch/x86/kvm/vmx/tdx_arch.h b/arch/x86/kvm/vmx/tdx_arch.h
+> index 7258825b1e02..414b933a3b03 100644
+> --- a/arch/x86/kvm/vmx/tdx_arch.h
+> +++ b/arch/x86/kvm/vmx/tdx_arch.h
+> @@ -104,6 +104,15 @@
+>   #define TDG_VP_VMCALL_REPORT_FATAL_ERROR		0x10003
+>   #define TDG_VP_VMCALL_SETUP_EVENT_NOTIFY_INTERRUPT	0x10004
+>   
+> +#define TDG_VP_VMCALL_EXIT_REASONS				\
+> +	{ TDG_VP_VMCALL_GET_TD_VM_CALL_INFO,			\
+> +			"GET_TD_VM_CALL_INFO" },		\
+> +	{ TDG_VP_VMCALL_MAP_GPA,	"MAP_GPA" },		\
+> +	{ TDG_VP_VMCALL_GET_QUOTE,	"GET_QUOTE" },		\
+> +	{ TDG_VP_VMCALL_SETUP_EVENT_NOTIFY_INTERRUPT,		\
+> +			"SETUP_EVENT_NOTIFY_INTERRUPT" },	\
+> +	VMX_EXIT_REASONS
+> +
+>   /* TDX control structure (TDR/TDCS/TDVPS) field access codes */
+>   #define TDX_CLASS_SHIFT		56
+>   #define TDX_FIELD_MASK		GENMASK_ULL(31, 0)
 > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index a8299add443f..d3ebed784eac 100644
+> index ba69abcc663a..ad619c1b2a88 100644
 > --- a/arch/x86/kvm/x86.c
 > +++ b/arch/x86/kvm/x86.c
-> @@ -10441,7 +10441,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
->   	else
->   		vcpu->arch.mp_state = KVM_MP_STATE_UNINITIALIZED;
->   
-> -	kvm_set_tsc_khz(vcpu, max_tsc_khz);
-> +	kvm_set_tsc_khz(vcpu, vcpu->kvm->arch.initial_tsc_khz);
->   
->   	r = kvm_mmu_create(vcpu);
->   	if (r < 0)
-> @@ -10894,6 +10894,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->   	pvclock_update_vm_gtod_copy(kvm);
->   
->   	kvm->arch.guest_can_read_msr_platform_info = true;
-> +	kvm->arch.initial_tsc_khz = max_tsc_khz;
->   
->   	INIT_DELAYED_WORK(&kvm->arch.kvmclock_update_work, kvmclock_update_fn);
->   	INIT_DELAYED_WORK(&kvm->arch.kvmclock_sync_work, kvmclock_sync_fn);
+> @@ -12104,6 +12104,8 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_cr);
+>   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmrun);
+>   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmexit);
+>   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmexit_inject);
+> +EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_tdvmcall);
+> +EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_sept_seamcall);
+>   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_intr_vmexit);
+>   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmenter_failed);
+>   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_invlpga);
 > 
+
+Please split this in two parts for each tracepoint, and squash it in the 
+earlier patches that introduced handle_tdvmcall and tdx_sept_*.
+
+Paolo
 
