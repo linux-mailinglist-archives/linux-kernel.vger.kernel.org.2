@@ -2,81 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08813BC878
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EE83BC87A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 11:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhGFJ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 05:27:56 -0400
-Received: from mail-m17639.qiye.163.com ([59.111.176.39]:49200 "EHLO
-        mail-m17639.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbhGFJ1z (ORCPT
+        id S231196AbhGFJ21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 05:28:27 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:37785 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230515AbhGFJ20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 05:27:55 -0400
-DKIM-Signature: a=rsa-sha256;
-        b=fsB1TXyBUOJ/Qaqv5mSIpYKgYP1FhlOkIsPrAn/yCH53IKhgeTAvjgVjHCgbNIgAPmA/BmNbf92Jn7LQXmoummyEH4utQxFDwcK9dw21mlmh+jNLuJZgxzcQC+0y0EMjQ+vK0HIEFjy6TwWZnhOTGxd4NMRsN8iCHm0tX5czu5E=;
-        s=default; c=relaxed/relaxed; d=vivo.com; v=1;
-        bh=bOc4pvtcNfvNmA+UO/ZMqZD/nzwNN8K7zpJtMiW/zWY=;
-        h=date:mime-version:subject:message-id:from;
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
-        by mail-m17639.qiye.163.com (Hmail) with ESMTPA id 7E28D38018B;
-        Tue,  6 Jul 2021 17:25:15 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm@kvack.org (open list:MEMORY MANAGEMENT),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     mgorman@techsingularity.net, Qiang.Zhang@windriver.com,
-        Wang Qing <wangqing@vivo.com>
-Subject: [PATCH V2] mm: add GFP_ATOMIC flag after local_lock_irqsave
-Date:   Tue,  6 Jul 2021 17:24:31 +0800
-Message-Id: <1625563471-3873-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQxlPSFZOQx9NSx9KHUMaH05VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KzY6LBw4Aj9PLh8rE0oBDhIw
-        PxoKCRFVSlVKTUlOTk1ITkpNS05KVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISVlXWQgBWUFJSkxINwY+
-X-HM-Tid: 0a7a7b22cb46d994kuws7e28d38018b
+        Tue, 6 Jul 2021 05:28:26 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id F3AE2580643;
+        Tue,  6 Jul 2021 05:25:47 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 06 Jul 2021 05:25:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=RYFK3uCIujEv/Omrcqdc0v+UNeD
+        +JKOwGd/0E/VyQU0=; b=oYQ67i1GUdsIuy+ixvHZuCFmIQgsKX1uYJMW5bYOmVx
+        pa40wfpOy+Ramx6TdveFQ4aV5+baLZack23w5Tb/+BV3DOU3U9oEoKKaQNj+czf6
+        zeDTQeIWgDzNfcd7jNKpNf0T7BHcvijCHgPTC3+l7Bhaq//uaDohx/ZyhpMpAu+T
+        WsZjTYZq+zf4GOLKjdVa5NOEGAOHjeG/hHnOAxHeEfTRpGLe+OUeSNPutsfh6kUT
+        DJyQXU2a6EqHSOk9GgeVeaahxng7FeAZjr8onY8YqQdKl0St7MZ0udBfqQPAi0oj
+        u6RshDsmmCIN3OelwrhFA2dzd3hsJkW/MINkShBqEmw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=RYFK3u
+        CIujEv/Omrcqdc0v+UNeD+JKOwGd/0E/VyQU0=; b=pI3t0Dhy8ZLRdX1SOnf4vu
+        HQvBZGHxELLTWsdIc1rTblVBAeS2d/pZ5nTQXzefMkRXjzprqg8+X0JablzhU79/
+        PEt0MZL6giANwMURDhnYL9xNWATUi6Rk9nHziP8UftMiFzgxRhnA+YbsiCuSFxs7
+        G7z7gjH5R+PLKehi9jwl+uU4agNOkYM0zobwTs3SH29AbPnvmK+ywAbiiZINYeqa
+        3EJDvz7Xmb/yKvFXn3AG9TShWaqnO70Pm9ilc2u5fvpAfGYgarvibLJVCR5vCgqS
+        3a5l8wvd6qME1BJ+JsdcuuOWvuZWw6gdgXZvX+7t1Fc9dEAZoq8HfZBRK4aEfRkA
+        ==
+X-ME-Sender: <xms:miHkYFoWiiST6153DgPO_6z2OY3GTbQoBqOZ8hWF6K0Nb5uNEXotdw>
+    <xme:miHkYHp8zo12v2b_EFSf39UqzGaTvPH09M_jT8Xx5-GsvUHTR_zKnQ99xjniJTt6r
+    Qc2YmHm8IuzCQQog6Y>
+X-ME-Received: <xmr:miHkYCP0mGizCKwljLKbabZ3EearEw3K0toi3qFj9r2IwV2YRkckveH2XDZQI6haFXVf4erVJUf1oBu2DpaeO0D0jR1odpOkt5CA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeejiedguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:miHkYA7RnqMLq-DA7SioIvXwWP1RzuRMOHSc4HuQBt_ztYzOUEMMYQ>
+    <xmx:miHkYE5bnXMJfB0y7-toAM3yVaWhg8MhbVzNLiLmt172hWxVN80NYA>
+    <xmx:miHkYIiQ1upEtMsJAi9oueDaR0XXbMPgVMGOYs-Wa2gl6R3FJD-UYw>
+    <xmx:myHkYPIqduI6ijFReLDNLKKo-3CpTZApzS0vaPf8U2AmmKMtR5ENjQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 6 Jul 2021 05:25:45 -0400 (EDT)
+Date:   Tue, 6 Jul 2021 11:25:43 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Emma Anholt <emma@anholt.net>, Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>
+Subject: Re: [PATCH] drm: vc4: Fix pixel-wrap issue with DVP teardown
+Message-ID: <20210706092543.ek2by2utlc75bhl5@gilmour>
+References: <20210628130533.144617-1-maxime@cerno.tech>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="syhha5txe3pcjom5"
+Content-Disposition: inline
+In-Reply-To: <20210628130533.144617-1-maxime@cerno.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-prep_new_page() will allocate memory in some scenarios. 
 
-Call Trace:
-__dump_stack lib/dump_stack.c:79 [inline]
-dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
-___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
-prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
-__alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
-alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
-stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
-save_stack+0x15e/0x1e0 mm/page_owner.c:120
-__set_page_owner+0x50/0x290 mm/page_owner.c:181
-prep_new_page mm/page_alloc.c:2445 [inline]
-__alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
+--syhha5txe3pcjom5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So we add GFP_ATOMIC and remove GFP_KERNEL flag.
+On Mon, Jun 28, 2021 at 03:05:33PM +0200, Maxime Ripard wrote:
+> From: Tim Gover <tim.gover@raspberrypi.com>
+>=20
+> Adjust the DVP enable/disable sequence to avoid a pixel getting stuck
+> in an internal, non resettable FIFO within PixelValve when changing
+> HDMI resolution.
+>=20
+> The blank pixels features of the DVP can prevent signals back to
+> pixelvalve causing it to not clear the FIFO. Adjust the ordering
+> and timing of operations to ensure the clear signal makes it through to
+> pixelvalve.
+>=20
+> Signed-off-by: Tim Gover <tim.gover@raspberrypi.com>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-Reported-and-tested-by: syzbot+b07d8440edb5f8988eea@syzkaller.appspotmail.com
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- mm/page_alloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d6e94cc..3016ba5
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5309,7 +5309,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		}
- 		nr_account++;
- 
--		prep_new_page(page, 0, gfp, 0);
-+		prep_new_page(page, 0, gfp | GFP_ATOMIC & ~GFP_KERNEL, 0);
- 		if (page_list)
- 			list_add(&page->lru, page_list);
- 		else
--- 
-2.7.4
+Maxime
 
+--syhha5txe3pcjom5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYOQhlwAKCRDj7w1vZxhR
+xao8AP9+kYodDYwWLfugATpx8VVY3PsupvsBakFbW5ld3V/tuAEAyfAh/FA8fkKm
+feVkdag9TFy5cwdssnuGqcGo32zZ5wA=
+=eRuZ
+-----END PGP SIGNATURE-----
+
+--syhha5txe3pcjom5--
