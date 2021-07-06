@@ -2,61 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32CE3BD77D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE283BD77E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 15:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbhGFNPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 09:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231504AbhGFNPe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 09:15:34 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC676C061574;
-        Tue,  6 Jul 2021 06:12:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DoleCSfXZRqJqk+8Uus+H8azrh/FQtHo5miIEnjjZSE=; b=EhoTFI5CbB/P8N7Dc8uFqRWzCK
-        gnYUF+iYbO6MPeKxzO5mZyoPBEyoRpfNY5V7lq0v3z2QguWbw30Oke6lU/uZA9eANFMgUOelZomLb
-        Rt/XTW7qVdErspi/WFYhJ30GxgeE794ywKB++UedGSZSdUQtTPV1wUxiagUdEz9+gNbSvFO1LVhN1
-        j4J39adBwAqE1GdfpolRzeZiwSXxR+hAuo2y+wOOc6uQIV7842cfO6BPCr8I5h8gN94ZCaohQHeCs
-        pUE02BPSajTIUEaM/TiJijEuaSzwsDqxrBotZaOPys4+l+SWnswAcJRbditL2wXFZdpfGbnRPzsNe
-        +bUeXNuA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0ksM-00F32U-FR; Tue, 06 Jul 2021 13:12:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 64A87300056;
-        Tue,  6 Jul 2021 15:12:32 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 315C1201C57F9; Tue,  6 Jul 2021 15:12:32 +0200 (CEST)
-Date:   Tue, 6 Jul 2021 15:12:32 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     rjw@rjwysocki.net, oleg@redhat.com, mingo@kernel.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, mgorman@suse.de, Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, tj@kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] Freezer rewrite
-Message-ID: <YORWwNwIFqMmiGXz@hirez.programming.kicks-ass.net>
-References: <20210624092156.332208049@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624092156.332208049@infradead.org>
+        id S231504AbhGFNQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 09:16:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231490AbhGFNQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 09:16:35 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40A9561C82;
+        Tue,  6 Jul 2021 13:13:57 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m0ktf-00Bjhx-Cr; Tue, 06 Jul 2021 14:13:55 +0100
+Date:   Tue, 06 Jul 2021 14:13:55 +0100
+Message-ID: <874kd78u0c.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH 5/9] irqchip/loongson-htvec: Add ACPI init support
+In-Reply-To: <20210706030904.1411775-6-chenhuacai@loongson.cn>
+References: <20210706030904.1411775-1-chenhuacai@loongson.cn>
+        <20210706030904.1411775-6-chenhuacai@loongson.cn>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: chenhuacai@loongson.cn, tglx@linutronix.de, linux-kernel@vger.kernel.org, lixuefeng@loongson.cn, chenhuacai@gmail.com, jiaxun.yang@flygoat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 11:21:56AM +0200, Peter Zijlstra wrote:
-> Hi all,
+On Tue, 06 Jul 2021 04:09:00 +0100,
+Huacai Chen <chenhuacai@loongson.cn> wrote:
 > 
-> Now with a completely different approach to freezing the special states.
+> We are preparing to add new Loongson (based on LoongArch, not MIPS)
+> support. LoongArch use ACPI other than DT as its boot protocol, so
+> add ACPI init support.
+> 
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> ---
+>  drivers/irqchip/irq-loongson-htvec.c | 102 ++++++++++++++++++++++++++-
+>  1 file changed, 101 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loongson-htvec.c
+> index 60a335d7e64e..69452d4a33c0 100644
+> --- a/drivers/irqchip/irq-loongson-htvec.c
+> +++ b/drivers/irqchip/irq-loongson-htvec.c
+> @@ -1,6 +1,8 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+>   *  Copyright (C) 2020, Jiaxun Yang <jiaxun.yang@flygoat.com>
+> + *			Jianmin Lv <lvjianmin@loongson.cn>
+> + *			Huacai Chen <chenhuacai@loongson.cn>
 
-Oleg, could you please have a look at this?
+Drop this, move the suspend/resume code to its own patch, de-duplicate
+the probing code.
+
+Do I sound like a stuck record?
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
