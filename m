@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0703BD04A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DCC3BD044
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbhGFLd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:33:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55966 "EHLO mail.kernel.org"
+        id S234071AbhGFLdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:33:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233027AbhGFLTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:19:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9C1A61CA2;
-        Tue,  6 Jul 2021 11:16:58 +0000 (UTC)
+        id S233770AbhGFLWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:22:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 741C761C96;
+        Tue,  6 Jul 2021 11:17:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570219;
-        bh=QUvN+qREW2qmUAiRphV02G9Yj2oxJVfc6d6/h1ouvag=;
+        s=k20201202; t=1625570278;
+        bh=i+v0LyqW/GMJfqirG5xhb6SPG5Y0ig7AwKIuaVGnbvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HlJgvmk6dOzBfsOf2Vvn2Vmneb6HWxe+jYDmDXScCOKTXRshLaEIUTmo3xfclrYhH
-         fCi0wj1Fh4StH3IJf0YblgWpu+pRrBqfcoi2PSOO7NzrIMElMBSH1kdsimj83MwnM4
-         nGFRkdKQ0Im9qCz/gSEu7fvx/isQo4/pSAYmOpwVq7PGxQk+eHrQChkd4UJQq/CVE/
-         f4f7G6u96YVMeOG8zk43EgNje5ikxDX2L/9XLibhWHA7BwEnzecxTp1YPXM9abu67M
-         yEvRdvSZJ9jqdIMDIEwUzbGODUf5W39WV548MQ4eTg40AWszcKMlzYuAooutxpCOyi
-         19xcwxDPX0Qmg==
+        b=S3ad2FVb2T1+vi+Sv5ULRyjnygx0I9cxYx+j3fS8qMvRztqsYm0XwHxrpFCPE6lPK
+         Iw1wYqCUrxG7DUPf7/iMu4NbcP6bGoidMOnab814AYkEKpIMYT5JunsJ5PN/QQ9ccM
+         Wn4OaaEjPNvCQ4oVd6shGdfsVZLeWeiagX+w5HZxnTefMdBabZX98UndMe7NHpF9tc
+         AzxuebEHLocMumCN4yM/vd/aNETg8fgWNaz38UHY3zLassu2a/JY3iVaIgMunATm7q
+         ppgcSb065TAb2V7GQ/75RS/b9t3XrFLHSpIlDQQAtLXTe65tRx8zdy389FetDIg2hY
+         9gg3lfOHsaTEg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pavel Begunkov <asml.silence@gmail.com>,
-        syzbot+ea2f1484cffe5109dc10@syzkaller.appspotmail.com,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        io-uring@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 127/189] io_uring: fix false WARN_ONCE
-Date:   Tue,  6 Jul 2021 07:13:07 -0400
-Message-Id: <20210706111409.2058071-127-sashal@kernel.org>
+Cc:     "mark-yw.chen" <mark-yw.chen@mediatek.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-bluetooth@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.13 170/189] Bluetooth: btusb: Fixed too many in-token issue for Mediatek Chip.
+Date:   Tue,  6 Jul 2021 07:13:50 -0400
+Message-Id: <20210706111409.2058071-170-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111409.2058071-1-sashal@kernel.org>
 References: <20210706111409.2058071-1-sashal@kernel.org>
@@ -43,48 +45,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: "mark-yw.chen" <mark-yw.chen@mediatek.com>
 
-[ Upstream commit e6ab8991c5d0b0deae0961dc22c0edd1dee328f5 ]
+[ Upstream commit 8454ed9ff9647e31e061fb5eb2e39ce79bc5e960 ]
 
-WARNING: CPU: 1 PID: 11749 at fs/io-wq.c:244 io_wqe_wake_worker fs/io-wq.c:244 [inline]
-WARNING: CPU: 1 PID: 11749 at fs/io-wq.c:244 io_wqe_enqueue+0x7f6/0x910 fs/io-wq.c:751
+This patch reduce in-token during download patch procedure.
+Don't submit urb for polling event before sending hci command.
 
-A WARN_ON_ONCE() in io_wqe_wake_worker() can be triggered by a valid
-userspace setup. Replace it with pr_warn.
-
-Reported-by: syzbot+ea2f1484cffe5109dc10@syzkaller.appspotmail.com
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Link: https://lore.kernel.org/r/f7ede342c3342c4c26668f5168e2993e38bbd99c.1623949695.git.asml.silence@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io-wq.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/bluetooth/btusb.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index b3e8624a37d0..60f58efdb5f4 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -241,7 +241,8 @@ static void io_wqe_wake_worker(struct io_wqe *wqe, struct io_wqe_acct *acct)
- 	 * Most likely an attempt to queue unbounded work on an io_wq that
- 	 * wasn't setup with any unbounded workers.
- 	 */
--	WARN_ON_ONCE(!acct->max_workers);
-+	if (unlikely(!acct->max_workers))
-+		pr_warn_once("io-wq is not configured for unbound workers");
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 7f6ba2c975ed..99fd88f7653d 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3312,11 +3312,6 @@ static int btusb_mtk_hci_wmt_sync(struct hci_dev *hdev,
+ 	struct btmtk_wmt_hdr *hdr;
+ 	int err;
  
- 	rcu_read_lock();
- 	ret = io_wqe_activate_free_worker(wqe);
-@@ -906,6 +907,8 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
+-	/* Submit control IN URB on demand to process the WMT event */
+-	err = btusb_mtk_submit_wmt_recv_urb(hdev);
+-	if (err < 0)
+-		return err;
+-
+ 	/* Send the WMT command and wait until the WMT event returns */
+ 	hlen = sizeof(*hdr) + wmt_params->dlen;
+ 	if (hlen > 255)
+@@ -3342,6 +3337,11 @@ static int btusb_mtk_hci_wmt_sync(struct hci_dev *hdev,
+ 		goto err_free_wc;
+ 	}
  
- 	if (WARN_ON_ONCE(!data->free_work || !data->do_work))
- 		return ERR_PTR(-EINVAL);
-+	if (WARN_ON_ONCE(!bounded))
-+		return ERR_PTR(-EINVAL);
- 
- 	wq = kzalloc(sizeof(*wq), GFP_KERNEL);
- 	if (!wq)
++	/* Submit control IN URB on demand to process the WMT event */
++	err = btusb_mtk_submit_wmt_recv_urb(hdev);
++	if (err < 0)
++		return err;
++
+ 	/* The vendor specific WMT commands are all answered by a vendor
+ 	 * specific event and will have the Command Status or Command
+ 	 * Complete as with usual HCI command flow control.
 -- 
 2.30.2
 
