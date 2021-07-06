@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E813BDA8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411B53BDA8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbhGFPz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:55:26 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:40385 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbhGFPzZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232690AbhGFPzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 6 Jul 2021 11:55:25 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:38095 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232458AbhGFPzX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 11:55:23 -0400
 Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1m0nL8-0007mP-BH; Tue, 06 Jul 2021 17:50:26 +0200
+        id 1m0nL8-0007mS-BC; Tue, 06 Jul 2021 17:50:26 +0200
 Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1m0nL6-0005Sp-Bm; Tue, 06 Jul 2021 17:50:24 +0200
+        id 1m0nL6-0005Ss-Hp; Tue, 06 Jul 2021 17:50:24 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     kernel@pengutronix.de, Cornelia Huck <cohuck@redhat.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
         Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
         linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/4] s390/ccwgroup: Drop if with an always false condition
-Date:   Tue,  6 Jul 2021 17:48:01 +0200
-Message-Id: <20210706154803.1631813-3-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH v2 3/4] s390/scm: Make struct scm_driver::remove return void
+Date:   Tue,  6 Jul 2021 17:48:02 +0200
+Message-Id: <20210706154803.1631813-4-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706154803.1631813-1-u.kleine-koenig@pengutronix.de>
 References: <20210706154803.1631813-1-u.kleine-koenig@pengutronix.de>
@@ -47,27 +47,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver core only calls a bus remove callback when there is a driver.
-So dev->driver is never NULL and the check can safely be removed.
+The driver core ignores the return value of scmdev_remove()
+(because there is only little it can do when a device disappears).
+
+So make it impossible for future drivers to return an unused error code
+by changing the remove prototype to return void.
+
+The real motivation for this change is the quest to make struct
+bus_type::remove return void, too.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/s390/cio/ccwgroup.c | 2 --
- 1 file changed, 2 deletions(-)
+ arch/s390/include/asm/eadm.h | 2 +-
+ drivers/s390/block/scm_drv.c | 4 +---
+ drivers/s390/cio/scm.c       | 5 ++++-
+ 3 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/s390/cio/ccwgroup.c b/drivers/s390/cio/ccwgroup.c
-index 9748165e08e9..a6aeab1ea0ae 100644
---- a/drivers/s390/cio/ccwgroup.c
-+++ b/drivers/s390/cio/ccwgroup.c
-@@ -444,8 +444,6 @@ static int ccwgroup_remove(struct device *dev)
- 	struct ccwgroup_device *gdev = to_ccwgroupdev(dev);
- 	struct ccwgroup_driver *gdrv = to_ccwgroupdrv(dev->driver);
+diff --git a/arch/s390/include/asm/eadm.h b/arch/s390/include/asm/eadm.h
+index bb63b2afdf6f..445fe4c8184a 100644
+--- a/arch/s390/include/asm/eadm.h
++++ b/arch/s390/include/asm/eadm.h
+@@ -105,7 +105,7 @@ enum scm_event {SCM_CHANGE, SCM_AVAIL};
+ struct scm_driver {
+ 	struct device_driver drv;
+ 	int (*probe) (struct scm_device *scmdev);
+-	int (*remove) (struct scm_device *scmdev);
++	void (*remove) (struct scm_device *scmdev);
+ 	void (*notify) (struct scm_device *scmdev, enum scm_event event);
+ 	void (*handler) (struct scm_device *scmdev, void *data,
+ 			blk_status_t error);
+diff --git a/drivers/s390/block/scm_drv.c b/drivers/s390/block/scm_drv.c
+index 3134fd6e058e..69a845eb8b1f 100644
+--- a/drivers/s390/block/scm_drv.c
++++ b/drivers/s390/block/scm_drv.c
+@@ -60,15 +60,13 @@ static int scm_probe(struct scm_device *scmdev)
+ 	return ret;
+ }
  
--	if (!dev->driver)
--		return 0;
- 	if (gdrv->remove)
- 		gdrv->remove(gdev);
+-static int scm_remove(struct scm_device *scmdev)
++static void scm_remove(struct scm_device *scmdev)
+ {
+ 	struct scm_blk_dev *bdev = dev_get_drvdata(&scmdev->dev);
  
+ 	scm_blk_dev_cleanup(bdev);
+ 	dev_set_drvdata(&scmdev->dev, NULL);
+ 	kfree(bdev);
+-
+-	return 0;
+ }
+ 
+ static struct scm_driver scm_drv = {
+diff --git a/drivers/s390/cio/scm.c b/drivers/s390/cio/scm.c
+index 9f26d4310bb3..b31711307e5a 100644
+--- a/drivers/s390/cio/scm.c
++++ b/drivers/s390/cio/scm.c
+@@ -33,7 +33,10 @@ static int scmdev_remove(struct device *dev)
+ 	struct scm_device *scmdev = to_scm_dev(dev);
+ 	struct scm_driver *scmdrv = to_scm_drv(dev->driver);
+ 
+-	return scmdrv->remove ? scmdrv->remove(scmdev) : -ENODEV;
++	if (scmdrv->remove)
++		scmdrv->remove(scmdev);
++
++	return 0;
+ }
+ 
+ static int scmdev_uevent(struct device *dev, struct kobj_uevent_env *env)
 -- 
 2.30.2
 
