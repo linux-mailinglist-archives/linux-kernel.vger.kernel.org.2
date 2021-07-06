@@ -2,276 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F543BD956
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 659D43BD95E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 17:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbhGFPHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 11:07:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46066 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231755AbhGFPHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 11:07:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A601561983;
-        Tue,  6 Jul 2021 15:04:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625583881;
-        bh=OF2g3m43CxpV5pj7a3ZU8xGpNHxu6gviZN+9c7qpubg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=dZdQdIfntAcsVvJMl7kyPVDDrtSpv3NoNgh3+ekYZkVNHM8qC6FxgN2NzpnqHei8K
-         6vBePOObaqmmHtlyGttczNo5Tdg0GTHfdGWOF5hRAVkpXf9/I1Zp14Ydj3uXxyFs5O
-         BeZ/E/3Qv0dF1ebFIBt2cEX2oiiormnqUFYmeirIVHTHz3Gouq7petRdBdLRdMsP4w
-         QyYkq1KlhDbWA4s8wyOCqahc5VrGjGkqdoZQB4SSApFVXLY7Nwh2HwVrLh+A6K3MDW
-         57imm6RgInkOcVs/zScI53dP5l53U0LQYbu5ZEmLvp+XCYsjvehMnehGE30ZIDEsO8
-         sSZeWW9d3YOdA==
-Message-ID: <7b7d447e9c7d2f0eaa63b66eca023944d23dcf96.camel@kernel.org>
-Subject: Re: [PATCH] tracing: Add "grouping" to histogram logic
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Date:   Tue, 06 Jul 2021 10:04:39 -0500
-In-Reply-To: <20210702175648.1172476c@gandalf.local.home>
-References: <20210702175648.1172476c@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
+        id S232108AbhGFPHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 11:07:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53270 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232118AbhGFPHo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 11:07:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625583904;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q2uDQFfbEEnoXVD07oyEydX792HJ7X0nk2qGNk3vVko=;
+        b=QCyFKiWDfYXMtHO7p+babVcsidcXWwcW7gcJh0fVaYxEDO5QliVvBuw7y2BSz3NXK8awoX
+        q+tu7iNfdjr0uUgSkcl2GM1jAarmNkqsyQLo554pCXXpivnjBeE7MulsH0wJaA+BmZw+qN
+        CezOT0hzWTWIkRTE5kxtv3/oXtUzDps=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-119-SewjmqIeO3ODXRS1M5F3wA-1; Tue, 06 Jul 2021 11:05:03 -0400
+X-MC-Unique: SewjmqIeO3ODXRS1M5F3wA-1
+Received: by mail-ed1-f72.google.com with SMTP id m21-20020a50ef150000b029039c013d5b80so815035eds.7
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 08:05:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=q2uDQFfbEEnoXVD07oyEydX792HJ7X0nk2qGNk3vVko=;
+        b=SkJ8DWBWlZdi9F4U0pT7/Zzc1OQboRdNobPy+Dzh7l+BGbZIrpRnEEz6u6RgHzB1NW
+         A0mcWw4Ne37kjAUVuntQXsBu/aTxzV50jnxwx4srYXXoZwHF6Plb2D43eDKzsPRXQLgo
+         XjZ12OIMzBa2wP2qB7pxAOBMQO1GM9TUGT08DjTAq9eeCmNLK5gXWFzUgJ8moQ+JbIIV
+         iPOP8k6hM2QBChoDrw26EgTDNv/X59K1lRB/u50lwk+gbzrRvDGDvFW31xK+4nTCkNXM
+         HvfWdWSOZSDXzOkfr/pb54Tb5bP+M3f2cVX08UYDrLo4SPKHgca/VoNW1a15jjkNMxJa
+         yY9w==
+X-Gm-Message-State: AOAM531Qo9z95ncypRzVhGtrOumeCpBhIm8mdyEp4dVzH0R4DqCyCPtW
+        XIHOzYMQBr/FcYekZCbOIXjYnmnkpHRbbF5BwlhF5RZzFSM+gvgEFBy3hgyeSHR/gZxJmB40pFi
+        bXXsxU9JZ1fZzbRA9qbsM2Yhb
+X-Received: by 2002:a50:f0cf:: with SMTP id a15mr23385494edm.347.1625583901923;
+        Tue, 06 Jul 2021 08:05:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx4JZdaoLVBIs59oV7XxVix+8w+NQtA7nL8i3Dt7I2MXGAg2Ez37F+DmFIWNBHLnqqCa/+jJQ==
+X-Received: by 2002:a50:f0cf:: with SMTP id a15mr23385458edm.347.1625583901736;
+        Tue, 06 Jul 2021 08:05:01 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n11sm6026214ejg.43.2021.07.06.08.05.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 08:05:01 -0700 (PDT)
+Subject: Re: [PATCH v4 0/4] Add support for XMM fast hypercalls
+To:     Siddharth Chandrasekaran <sidcha@amazon.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Siddharth Chandrasekaran <sidcha.dev@gmail.com>,
+        Alexander Graf <graf@amazon.com>,
+        Evgeny Iakovlev <eyakovl@amazon.de>,
+        Liran Alon <liran@amazon.com>,
+        Ioannis Aslanidis <iaslan@amazon.de>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <cover.1622019133.git.sidcha@amazon.de>
+ <20210630115559.GA32360@u366d62d47e3651.ant.amazon.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f318fd42-6b98-1a82-f334-d05f4e6cb715@redhat.com>
+Date:   Tue, 6 Jul 2021 17:04:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210630115559.GA32360@u366d62d47e3651.ant.amazon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
-
-On Fri, 2021-07-02 at 17:56 -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On 30/06/21 13:56, Siddharth Chandrasekaran wrote:
+> On Wed, May 26, 2021 at 10:56:07AM +0200, Siddharth Chandrasekaran wrote:
+>> Hyper-V supports the use of XMM registers to perform fast hypercalls.
+>> This allows guests to take advantage of the improved performance of the
+>> fast hypercall interface even though a hypercall may require more than
+>> (the current maximum of) two general purpose registers.
+>>
+>> The XMM fast hypercall interface uses an additional six XMM registers
+>> (XMM0 to XMM5) to allow the caller to pass an input parameter block of
+>> up to 112 bytes. Hyper-V can also return data back to the guest in the
+>> remaining XMM registers that are not used by the current hypercall.
+>>
+>> Although the Hyper-v TLFS mentions that a guest cannot use this feature
+>> unless the hypervisor advertises support for it, some hypercalls which
+>> we plan on upstreaming in future uses them anyway. This patchset adds
+>> necessary infrastructure for handling input/output via XMM registers and
+>> patches kvm_hv_flush_tlb() to use xmm input arguments.
 > 
-> There's been several times I wished the histogram logic had a
-> "grouping"
-> feature for the buckets. Currently, each bucket has a size of one.
-> That
-> is, if you trace the amount of requested allocations, each allocation
-> is
-> its own bucket, even if you are interested in what allocates 100
-> bytes or
-> less, 100 to 200, 200 to 300, etc.
+> Hi Paolo,
 > 
-> Also, without grouping, it fills up the allocated histogram buckets
-> quickly. If you are tracking latency, and don't care if something is
-> 200
-> microseconds off, or 201 microseconds off, but want to track them by
-> say
-> 10 microseconds each. This can not currently be done.
-> 
-> Introduce a "grouping" command to each field where it will record in
-> a
-> rounded number. For example:
-> 
->  ># echo 'hist:keys=bytes_req-100:sort=bytes_req' > events/kmem/kmalloc/trigger
+> Are you expecting more reviews on these patches?
 
-Very nice idea, makes a lot of sense to add this.
+They are part of 5.14 already. :)
 
-As for the syntax, it kinds of reads to me like subtraction.  If it
-were possible to change it to 'x100' that would seem more like what
-it's getting at - grouping things 'by 100'.  But since that would be
-indistinguishable as to whether or not the 'x' was part of the variable
-name, how about using '*100'?
-
->  ># cat events/kmem/kmalloc/hist
->  # event histogram
->  #
->  # trigger info:
->  hist:keys=bytes_req-100:vals=hitcount:sort=bytes_req-100:size=2048
->  [active]
->  #
-> 
->  { bytes_req:          0-99 } hitcount:       7207
->  { bytes_req:        100-199 } hitcount:       1030
->  { bytes_req:        200-299 } hitcount:        602
->  { bytes_req:        300-399 } hitcount:        414
->  { bytes_req:        400-499 } hitcount:        584
->  { bytes_req:        500-599 } hitcount:         35
->  { bytes_req:        600-699 } hitcount:        361
->  { bytes_req:        700-799 } hitcount:         37
->  { bytes_req:        800-899 } hitcount:         26
->  { bytes_req:        900-999 } hitcount:         15
->  { bytes_req:       1100-1199 } hitcount:          4
->  { bytes_req:       1200-1299 } hitcount:        102
->  { bytes_req:       1300-1399 } hitcount:          2
->  { bytes_req:       1400-1499 } hitcount:         15
->  { bytes_req:       1500-1599 } hitcount:        100
->  { bytes_req:       1600-1699 } hitcount:          1
->  { bytes_req:       1700-1799 } hitcount:          3
->  { bytes_req:       1800-1899 } hitcount:         10
->  { bytes_req:       2000-2099 } hitcount:         19
->  { bytes_req:       2100-2199 } hitcount:          3
->  { bytes_req:       2500-2599 } hitcount:         72
->  { bytes_req:       2900-2999 } hitcount:          1
->  { bytes_req:       3300-3399 } hitcount:          4
->  { bytes_req:       3900-3999 } hitcount:          2
->  { bytes_req:       4000-4099 } hitcount:       1761
->  { bytes_req:       4600-4699 } hitcount:         65
->  { bytes_req:       5000-5099 } hitcount:          3
->  { bytes_req:       6500-6599 } hitcount:          1
->  { bytes_req:       8100-8199 } hitcount:          1
->  { bytes_req:       9800-9899 } hitcount:          1
-> 
->  Totals:
->      Hits: 12481
->      Entries: 30
->      Dropped: 0
-> 
-> This finally makes the histograms actual histograms!
-> 
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  kernel/trace/trace_events_hist.c | 34 ++++++++++++++++++++++++++++
-> ----
->  1 file changed, 30 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_events_hist.c
-> b/kernel/trace/trace_events_hist.c
-> index ba03b7d84fc2..d6e644df9506 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -120,6 +120,7 @@ struct hist_field {
->  	unsigned int			size;
->  	unsigned int			offset;
->  	unsigned int                    is_signed;
-> +	unsigned long			grouping;
->  	const char			*type;
->  	struct hist_field		*operands[HIST_FIELD_OPERANDS_MAX];
->  	struct hist_trigger_data	*hist_data;
-> @@ -3761,6 +3762,7 @@ static int create_key_field(struct
-> hist_trigger_data *hist_data,
->  {
->  	struct trace_array *tr = hist_data->event_file->tr;
->  	struct hist_field *hist_field = NULL;
-> +	char *field;
->  	unsigned long flags = 0;
->  	unsigned int key_size;
->  	int ret = 0;
-> @@ -3768,14 +3770,16 @@ static int create_key_field(struct
-> hist_trigger_data *hist_data,
->  	if (WARN_ON(key_idx >= HIST_FIELDS_MAX))
->  		return -EINVAL;
->  
-> +	field = strsep(&field_str, "-");
-> +
->  	flags |= HIST_FIELD_FL_KEY;
->  
-> -	if (strcmp(field_str, "stacktrace") == 0) {
-> +	if (strcmp(field, "stacktrace") == 0) {
->  		flags |= HIST_FIELD_FL_STACKTRACE;
->  		key_size = sizeof(unsigned long) *
-> HIST_STACKTRACE_DEPTH;
->  		hist_field = create_hist_field(hist_data, NULL, flags,
-> NULL);
->  	} else {
-> -		hist_field = parse_expr(hist_data, file, field_str,
-> flags,
-> +		hist_field = parse_expr(hist_data, file, field, flags,
->  					NULL, 0);
->  		if (IS_ERR(hist_field)) {
->  			ret = PTR_ERR(hist_field);
-> @@ -3783,7 +3787,7 @@ static int create_key_field(struct
-> hist_trigger_data *hist_data,
->  		}
->  
->  		if (field_has_hist_vars(hist_field, 0))	{
-> -			hist_err(tr, HIST_ERR_INVALID_REF_KEY,
-> errpos(field_str));
-> +			hist_err(tr, HIST_ERR_INVALID_REF_KEY,
-> errpos(field));
->  			destroy_hist_field(hist_field, 0);
->  			ret = -EINVAL;
->  			goto out;
-> @@ -3792,6 +3796,14 @@ static int create_key_field(struct
-> hist_trigger_data *hist_data,
->  		key_size = hist_field->size;
->  	}
->  
-> +	if (field_str) {
-> +		unsigned long grouping;
-> +
-> +		ret = kstrtoul(field_str, 0, &grouping);
-> +		if (!ret)
-> +			hist_field->grouping = grouping;
-> +	}
-> +
->  	hist_data->fields[key_idx] = hist_field;
->  
->  	key_size = ALIGN(key_size, sizeof(u64));
-> @@ -4548,8 +4560,18 @@ static void event_hist_trigger(struct
-> event_trigger_data *data,
->  			if (key_field->flags & HIST_FIELD_FL_STRING) {
->  				key = (void *)(unsigned
-> long)field_contents;
->  				use_compound_key = true;
-> -			} else
-> +			} else {
-> +				if (key_field->grouping) {
-> +					unsigned long grouping =
-> key_field->grouping;
-> +
-> +					if (field_contents >= LONG_MAX)
-> +						field_contents =
-> div64_ul(field_contents, grouping);
-> +					else
-> +						field_contents =
-> (u64)((unsigned long)field_contents / grouping);
-> +					field_contents *= grouping;
-> +				}
->  				key = (void *)&field_contents;
-> +			}
-
-
-As far as implementation, there's already something similar to how it
-could operate, the log2 modifier.  If you followed that example, you
-could put the above code into a hist_field_fn_t:
-
-static u64 hist_field_grouped(struct hist_field *hist_field,
-                              struct tracing_map_elt *elt,
-                              struct ring_buffer_event *rbe,
-                              void *event)
-{
-  ..
-}
-
-and also add a new HIST_FIELD_FL_GROUPED flag to enum hist_field_flags.
-
-I know the code handling all this is kind of complicated - if you want
-I can rework the patch to do this, just let me know if so.
-
-Thanks,
-
-Tom
-
->  		}
->  
->  		if (use_compound_key)
-> @@ -4663,6 +4685,8 @@ static void hist_trigger_print_key(struct
-> seq_file *m,
->  		} else {
->  			uval = *(u64 *)(key + key_field->offset);
->  			seq_printf(m, "%s: %10llu", field_name, uval);
-> +			if (key_field->grouping)
-> +				seq_printf(m, "-%llu", uval +
-> key_field->grouping - 1);
->  		}
->  	}
->  
-> @@ -5096,6 +5120,8 @@ static void hist_field_print(struct seq_file
-> *m, struct hist_field *hist_field)
->  				seq_printf(m, ".%s", flags);
->  		}
->  	}
-> +	if (hist_field->grouping)
-> +		seq_printf(m, "-%ld", hist_field->grouping);
->  }
->  
->  static int event_hist_trigger_print(struct seq_file *m,
+Paolo
 
