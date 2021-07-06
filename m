@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EA03BCB6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D02D3BCB73
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhGFLLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbhGFLLV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:11:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBEDC061574;
-        Tue,  6 Jul 2021 04:08:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ujhsZIEffiBU8YDQW2JxEemVJB22hCG0N5jEdqMO6sY=; b=oHTNsFlvR32AIvh3SJZS+oIKYM
-        N/D7UTCrnz4Efptg6IgjxFJNuVX2VsZi7A3VcMx6bXy0bebWiNRzvO2KaS90p4FO1Qo6X+pCW1pRi
-        DX9Uk+MWeLXpIIYqyAr7Id0a5+LVsVefLII4v9w8UX7eQfXKW4LOr+R5/Zgh8CtO3R7LyiZJruzhq
-        fTaDV4JxeCigEKhsRnIA9gGuZmhICV/SRALP2ToY3GPALHUI7tZaVCoNvPeFPY5q1sPYom1YyjUK3
-        yAYq8hLUFi0BP7Oox2P6guqXozOFtzV/yaLDhqYbKtXBZM1RgraQ7udD/VaRolaydb40+hbAFZvd6
-        f2Y9xEWg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0iw2-00BAUP-KO; Tue, 06 Jul 2021 11:08:17 +0000
-Date:   Tue, 6 Jul 2021 12:08:14 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next 1/1] iomap: Fix a false positive of UBSAN in
- iomap_seek_data()
-Message-ID: <YOQ5nuuoBVHABK1C@casper.infradead.org>
-References: <20210702092109.2601-1-thunder.leizhen@huawei.com>
- <YN9vZfo+84gizjtf@casper.infradead.org>
- <492c7a7b-6f2e-de45-c733-51c80422305e@huawei.com>
+        id S231774AbhGFLQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:16:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229834AbhGFLQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:16:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45C8D61C1E;
+        Tue,  6 Jul 2021 11:14:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625570052;
+        bh=LfGM5sFaMdk8HgCqOUksC356f/Tvj0fPbKK+2H6H4OY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=udB2BiYeeuPBYFvopPi3SjmV5RJadqewGndph8PqjBiOMyHHw1EWSGk8CPOUezsnY
+         qQ7iu5/0tn9h/VJpM0IP1w8+yiUjm2ue2Ecxg907YzELGsqznKfNvkeHqPQTfCOjJd
+         ZBbKQIu3R0wnS99fnQjDCXUv9M2x8dUwbohfcV6TPjVIU7oKo8FcRLUaX6IaOEJ/Yt
+         iaNGsXEP92+4lHyhfSmO7ZpITrYCpeHgZWS4816XaXmdrDLqdxFF1hYb1FMqQGrPLM
+         5oD/oPYvyJH0hn1a+Fq/WfriGyG1RYXwfAx/uEDr5TUNCE3+sthj4qoNzeUG5aZiRm
+         FJJ7i17XV2OqA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Tian Tao <tiantao6@hisilicon.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.13 001/189] drm/etnaviv: fix NULL check before some freeing functions is not needed
+Date:   Tue,  6 Jul 2021 07:11:01 -0400
+Message-Id: <20210706111409.2058071-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <492c7a7b-6f2e-de45-c733-51c80422305e@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 11:35:08AM +0800, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2021/7/3 3:56, Matthew Wilcox wrote:
-> > On Fri, Jul 02, 2021 at 05:21:09PM +0800, Zhen Lei wrote:
-> >> Move the evaluation expression "size - offset" after the "if (offset < 0)"
-> >> judgment statement to eliminate a false positive produced by the UBSAN.
-> >>
-> >> No functional changes.
-> >>
-> >> ==========================================================================
-> >> UBSAN: Undefined behaviour in fs/iomap.c:1435:9
-> >> signed integer overflow:
-> >> 0 - -9223372036854775808 cannot be represented in type 'long long int'
-> > 
-> > I don't understand.  I thought we defined the behaviour of signed
-> > integer overflow in the kernel with whatever-the-gcc-flag-is?
-> 
-> -9223372036854775808 ==> 0x8000000000000000 ==> -0
-> 
-> I don't fully understand what you mean. This is triggered by explicit error
-> injection '-0' at runtime, which should not be detected by compilation options.
+From: Tian Tao <tiantao6@hisilicon.com>
 
-We use -fwrapv on the gcc command line:
+[ Upstream commit 7d614ab2f20503ed8766363d41f8607337571adf ]
 
-'-fwrapv'
-     This option instructs the compiler to assume that signed arithmetic
-     overflow of addition, subtraction and multiplication wraps around
-     using twos-complement representation.  This flag enables some
-     optimizations and disables others.
+fixed the below warning:
+drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c:84:2-8: WARNING: NULL check
+before some freeing functions is not needed.
 
-> lseek(r1, 0x8000000000000000, 0x3)
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Acked-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-I'll see about adding this to xfstests ...
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+index b390dd4d60b7..d741b1d735f7 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+@@ -80,8 +80,7 @@ static void etnaviv_gem_prime_release(struct etnaviv_gem_object *etnaviv_obj)
+ 	/* Don't drop the pages for imported dmabuf, as they are not
+ 	 * ours, just free the array we allocated:
+ 	 */
+-	if (etnaviv_obj->pages)
+-		kvfree(etnaviv_obj->pages);
++	kvfree(etnaviv_obj->pages);
+ 
+ 	drm_prime_gem_destroy(&etnaviv_obj->base, etnaviv_obj->sgt);
+ }
+-- 
+2.30.2
+
