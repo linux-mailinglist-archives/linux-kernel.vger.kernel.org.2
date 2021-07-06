@@ -2,397 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B480C3BD8E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E1D3BD887
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbhGFOuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:50:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35344 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232245AbhGFOuo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:50:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625582885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DC4qArPASg9VKe/un6fGGrjiEAFkjhgzz208Ggs2Zt8=;
-        b=K/LjYp/QslPw2BYEzxo/Px+QjqiOfldDuX0Hvn0DeuXzFddeG1M8NUFGApPhe2VXHPuiXE
-        aWi46D05ZnW55LxKuLEaiTDuTfGbke5kCMJG2JjhGm5LA2ndoN4YNpeJc5GA6xFdPDd7BH
-        ZOKuhFcB0pO/ktzm2JXete9FwRKzoSc=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-531-Cj_P_FNcOPuce0NSazWjng-1; Tue, 06 Jul 2021 09:59:51 -0400
-X-MC-Unique: Cj_P_FNcOPuce0NSazWjng-1
-Received: by mail-ej1-f72.google.com with SMTP id jx16-20020a1709077610b02904e0a2912b46so1267976ejc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 06:59:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DC4qArPASg9VKe/un6fGGrjiEAFkjhgzz208Ggs2Zt8=;
-        b=H2msHeeA56Dee80s2So8Z0LC1bk8VkHB9l3pHiIRC7DskY9MUQiYeN4M2GNk3Z53zv
-         IqQwukZE4aucRHcbxOCrqNMFRXP+gCVCT+ygHS0BwPOp7TvVsPHLObzIARvQlkcfJ1Fg
-         JunzAOEcyJi9U3wGLxVJ2QtoCv7Dg373r1vvEoG4yjWUDXntBsJlYgsMNkCysBH9OcZB
-         FxdOPUpKwK9qrcT72DLnQ68rSX/f1FMcvrzoUL4En1py/t95OU5I00VGVkyQQvZLF5Cc
-         Lwb5SOIuaf/NoKjzjZUrfWj8AJM0mRWioRzkel1elkhuPB6nRWncEyxvAEYW4U3VHxq1
-         C4lA==
-X-Gm-Message-State: AOAM530wwfsCWHoif/f7c7oWitJQM86ej8jjm+4esUKZJFeeIb4uOt9P
-        aHCgYW9C7f+d8iecQMe+xm2xJ44IWYiLzId0vfI8SPA+ZvoekeTUlD+p2GVvgcKRm70RJvIQEnG
-        FlVVO1Pd4rE42ny/Zy+d2hemF
-X-Received: by 2002:aa7:c352:: with SMTP id j18mr23100559edr.67.1625579990485;
-        Tue, 06 Jul 2021 06:59:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzIj6sUllk9u6M/SAYOyBw7nitq/5JOxZVLumgjOJCSGZY9J4l2m5goh4vbsDX1jaJ5QffMUg==
-X-Received: by 2002:aa7:c352:: with SMTP id j18mr23100534edr.67.1625579990306;
-        Tue, 06 Jul 2021 06:59:50 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id qp2sm5748027ejb.91.2021.07.06.06.59.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 06:59:49 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 24/69] KVM: x86: Introduce "protected guest"
- concept and block disallowed ioctls
-To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <482264f17fa0652faad9bd5364d652d11cb2ecb8.1625186503.git.isaku.yamahata@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <02ca73b2-7f04-813d-5bb7-649c0edafa06@redhat.com>
-Date:   Tue, 6 Jul 2021 15:59:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S232602AbhGFOm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:42:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:43808 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232527AbhGFOmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 10:42:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E5E031B;
+        Tue,  6 Jul 2021 07:01:18 -0700 (PDT)
+Received: from [10.57.40.45] (unknown [10.57.40.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 461163F73B;
+        Tue,  6 Jul 2021 07:01:11 -0700 (PDT)
+Subject: Re: [PATCH v15 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+To:     Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>
+Cc:     heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
+        peterz@infradead.org, benh@kernel.crashing.org,
+        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
+        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
+        Frank Rowand <frowand.list@gmail.com>, mingo@kernel.org,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Saravana Kannan <saravanak@google.com>, mpe@ellerman.id.au,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bskeggs@redhat.com, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Thierry Reding <treding@nvidia.com>,
+        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        Jianxiong Gao <jxgao@google.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        maarten.lankhorst@linux.intel.com, airlied@linux.ie,
+        Dan Williams <dan.j.williams@intel.com>,
+        linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, rodrigo.vivi@intel.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Claire Chang <tientzu@chromium.org>,
+        boris.ostrovsky@oracle.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        jgross@suse.com, Nicolas Boichat <drinkcat@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, xypron.glpk@gmx.de,
+        Tom Lendacky <thomas.lendacky@amd.com>, bauerman@linux.ibm.com
+References: <CALiNf2-a-haQN0-4+gX8+wa++52-0CnO2O4BEkxrQCxoTa_47w@mail.gmail.com>
+ <20210630114348.GA8383@willie-the-truck>
+ <YNyUQwiagNeZ9YeJ@Ryzen-9-3900X.localdomain>
+ <20210701074045.GA9436@willie-the-truck>
+ <ea28db1f-846e-4f0a-4f13-beb67e66bbca@kernel.org>
+ <20210702135856.GB11132@willie-the-truck>
+ <0f7bd903-e309-94a0-21d7-f0e8e9546018@arm.com>
+ <YN/7xcxt/XGAKceZ@Ryzen-9-3900X.localdomain>
+ <20210705190352.GA19461@willie-the-truck> <20210706044848.GA13640@lst.de>
+ <20210706132422.GA20327@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <a59f771f-3289-62f0-ca50-8f3675d9b166@arm.com>
+Date:   Tue, 6 Jul 2021 15:01:04 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <482264f17fa0652faad9bd5364d652d11cb2ecb8.1625186503.git.isaku.yamahata@intel.com>
+In-Reply-To: <20210706132422.GA20327@willie-the-truck>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
+On 2021-07-06 14:24, Will Deacon wrote:
+> On Tue, Jul 06, 2021 at 06:48:48AM +0200, Christoph Hellwig wrote:
+>> On Mon, Jul 05, 2021 at 08:03:52PM +0100, Will Deacon wrote:
+>>> So at this point, the AMD IOMMU driver does:
+>>>
+>>> 	swiotlb        = (iommu_default_passthrough() || sme_me_mask) ? 1 : 0;
+>>>
+>>> where 'swiotlb' is a global variable indicating whether or not swiotlb
+>>> is in use. It's picked up a bit later on by pci_swiotlb_late_init(), which
+>>> will call swiotlb_exit() if 'swiotlb' is false.
+>>>
+>>> Now, that used to work fine, because swiotlb_exit() clears
+>>> 'io_tlb_default_mem' to NULL, but now with the restricted DMA changes, I
+>>> think that all the devices which have successfully probed beforehand will
+>>> have stale pointers to the freed structure in their 'dev->dma_io_tlb_mem'
+>>> field.
+>>
+>> Yeah.  I don't think we can do that anymore, and I also think it is
+>> a bad idea to start with.
 > 
-> Add 'guest_state_protected' to mark a VM's state as being protected by
-> hardware/firmware, e.g. SEV-ES or TDX-SEAM.  Use the flag to disallow
-> ioctls() and/or flows that attempt to access protected state.
+> I've had a crack at reworking things along the following lines:
 > 
-> Return an error if userspace attempts to get/set register state for a
-> protected VM, e.g. a non-debug TDX guest.  KVM can't provide sane data,
-> it's userspace's responsibility to avoid attempting to read guest state
-> when it's known to be inaccessible.
+>    - io_tlb_default_mem now lives in the BSS, the flexible array member
+>      is now a pointer and that part is allocated dynamically (downside of
+>      this is an extra indirection to get at the slots).
 > 
-> Retrieving vCPU events is the one exception, as the userspace VMM is
-> allowed to inject NMIs.
+>    - io_tlb_default_mem.nslabs tells you whether the thing is valid
 > 
-> Co-developed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/x86.c | 104 +++++++++++++++++++++++++++++++++++++--------
->   1 file changed, 86 insertions(+), 18 deletions(-)
+>    - swiotlb_exit() frees the slots array and clears the rest of the
+>      structure to 0. I also extended it to free the actual slabs, but I'm
+>      not sure why it wasn't doing that before.
+> 
+> So a non-NULL dev->dma_io_tlb_mem should always be valid to follow.
 
-Looks good, but it should be checked whether it breaks QEMU for SEV-ES. 
-  Tom, can you help?
+FWIW I was pondering the question of whether to do something along those 
+lines or just scrap the default assignment entirely, so since I hadn't 
+got round to saying that I've gone ahead and hacked up the alternative 
+(similarly untested) for comparison :)
 
-Paolo
+TBH I'm still not sure which one I prefer...
 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 271245ffc67c..b89845dfb679 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4297,6 +4297,10 @@ static int kvm_vcpu_ioctl_nmi(struct kvm_vcpu *vcpu)
->   
->   static int kvm_vcpu_ioctl_smi(struct kvm_vcpu *vcpu)
->   {
-> +	/* TODO: use more precise flag */
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	kvm_make_request(KVM_REQ_SMI, vcpu);
->   
->   	return 0;
-> @@ -4343,6 +4347,10 @@ static int kvm_vcpu_ioctl_x86_set_mce(struct kvm_vcpu *vcpu,
->   	unsigned bank_num = mcg_cap & 0xff;
->   	u64 *banks = vcpu->arch.mce_banks;
->   
-> +	/* TODO: use more precise flag */
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	if (mce->bank >= bank_num || !(mce->status & MCI_STATUS_VAL))
->   		return -EINVAL;
->   	/*
-> @@ -4438,7 +4446,8 @@ static void kvm_vcpu_ioctl_x86_get_vcpu_events(struct kvm_vcpu *vcpu,
->   		vcpu->arch.interrupt.injected && !vcpu->arch.interrupt.soft;
->   	events->interrupt.nr = vcpu->arch.interrupt.nr;
->   	events->interrupt.soft = 0;
-> -	events->interrupt.shadow = static_call(kvm_x86_get_interrupt_shadow)(vcpu);
-> +	if (!vcpu->arch.guest_state_protected)
-> +		events->interrupt.shadow = static_call(kvm_x86_get_interrupt_shadow)(vcpu);
->   
->   	events->nmi.injected = vcpu->arch.nmi_injected;
->   	events->nmi.pending = vcpu->arch.nmi_pending != 0;
-> @@ -4467,11 +4476,17 @@ static void kvm_smm_changed(struct kvm_vcpu *vcpu);
->   static int kvm_vcpu_ioctl_x86_set_vcpu_events(struct kvm_vcpu *vcpu,
->   					      struct kvm_vcpu_events *events)
->   {
-> -	if (events->flags & ~(KVM_VCPUEVENT_VALID_NMI_PENDING
-> -			      | KVM_VCPUEVENT_VALID_SIPI_VECTOR
-> -			      | KVM_VCPUEVENT_VALID_SHADOW
-> -			      | KVM_VCPUEVENT_VALID_SMM
-> -			      | KVM_VCPUEVENT_VALID_PAYLOAD))
-> +	u32 allowed_flags = KVM_VCPUEVENT_VALID_NMI_PENDING |
-> +			    KVM_VCPUEVENT_VALID_SIPI_VECTOR |
-> +			    KVM_VCPUEVENT_VALID_SHADOW |
-> +			    KVM_VCPUEVENT_VALID_SMM |
-> +			    KVM_VCPUEVENT_VALID_PAYLOAD;
-> +
-> +	/* TODO: introduce more precise flag */
-> +	if (vcpu->arch.guest_state_protected)
-> +		allowed_flags = KVM_VCPUEVENT_VALID_NMI_PENDING;
-> +
-> +	if (events->flags & ~allowed_flags)
->   		return -EINVAL;
->   
->   	if (events->flags & KVM_VCPUEVENT_VALID_PAYLOAD) {
-> @@ -4552,17 +4567,22 @@ static int kvm_vcpu_ioctl_x86_set_vcpu_events(struct kvm_vcpu *vcpu,
->   	return 0;
->   }
->   
-> -static void kvm_vcpu_ioctl_x86_get_debugregs(struct kvm_vcpu *vcpu,
-> -					     struct kvm_debugregs *dbgregs)
-> +static int kvm_vcpu_ioctl_x86_get_debugregs(struct kvm_vcpu *vcpu,
-> +					    struct kvm_debugregs *dbgregs)
->   {
->   	unsigned long val;
->   
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	memcpy(dbgregs->db, vcpu->arch.db, sizeof(vcpu->arch.db));
->   	kvm_get_dr(vcpu, 6, &val);
->   	dbgregs->dr6 = val;
->   	dbgregs->dr7 = vcpu->arch.dr7;
->   	dbgregs->flags = 0;
->   	memset(&dbgregs->reserved, 0, sizeof(dbgregs->reserved));
-> +
-> +	return 0;
->   }
->   
->   static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
-> @@ -4576,6 +4596,9 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
->   	if (!kvm_dr7_valid(dbgregs->dr7))
->   		return -EINVAL;
->   
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	memcpy(vcpu->arch.db, dbgregs->db, sizeof(vcpu->arch.db));
->   	kvm_update_dr0123(vcpu);
->   	vcpu->arch.dr6 = dbgregs->dr6;
-> @@ -4671,11 +4694,14 @@ static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
->   	}
->   }
->   
-> -static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
-> -					 struct kvm_xsave *guest_xsave)
-> +static int kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
-> +					struct kvm_xsave *guest_xsave)
->   {
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	if (!vcpu->arch.guest_fpu)
-> -		return;
-> +		return 0;
->   
->   	if (boot_cpu_has(X86_FEATURE_XSAVE)) {
->   		memset(guest_xsave, 0, sizeof(struct kvm_xsave));
-> @@ -4687,6 +4713,8 @@ static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
->   		*(u64 *)&guest_xsave->region[XSAVE_HDR_OFFSET / sizeof(u32)] =
->   			XFEATURE_MASK_FPSSE;
->   	}
-> +
-> +	return 0;
->   }
->   
->   #define XSAVE_MXCSR_OFFSET 24
-> @@ -4697,6 +4725,9 @@ static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
->   	u64 xstate_bv;
->   	u32 mxcsr;
->   
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	if (!vcpu->arch.guest_fpu)
->   		return 0;
->   
-> @@ -4722,18 +4753,22 @@ static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
->   	return 0;
->   }
->   
-> -static void kvm_vcpu_ioctl_x86_get_xcrs(struct kvm_vcpu *vcpu,
-> -					struct kvm_xcrs *guest_xcrs)
-> +static int kvm_vcpu_ioctl_x86_get_xcrs(struct kvm_vcpu *vcpu,
-> +				       struct kvm_xcrs *guest_xcrs)
->   {
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	if (!boot_cpu_has(X86_FEATURE_XSAVE)) {
->   		guest_xcrs->nr_xcrs = 0;
-> -		return;
-> +		return 0;
->   	}
->   
->   	guest_xcrs->nr_xcrs = 1;
->   	guest_xcrs->flags = 0;
->   	guest_xcrs->xcrs[0].xcr = XCR_XFEATURE_ENABLED_MASK;
->   	guest_xcrs->xcrs[0].value = vcpu->arch.xcr0;
-> +	return 0;
->   }
->   
->   static int kvm_vcpu_ioctl_x86_set_xcrs(struct kvm_vcpu *vcpu,
-> @@ -4741,6 +4776,9 @@ static int kvm_vcpu_ioctl_x86_set_xcrs(struct kvm_vcpu *vcpu,
->   {
->   	int i, r = 0;
->   
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	if (!boot_cpu_has(X86_FEATURE_XSAVE))
->   		return -EINVAL;
->   
-> @@ -5011,7 +5049,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->   	case KVM_GET_DEBUGREGS: {
->   		struct kvm_debugregs dbgregs;
->   
-> -		kvm_vcpu_ioctl_x86_get_debugregs(vcpu, &dbgregs);
-> +		r = kvm_vcpu_ioctl_x86_get_debugregs(vcpu, &dbgregs);
-> +		if (r)
-> +			break;
->   
->   		r = -EFAULT;
->   		if (copy_to_user(argp, &dbgregs,
-> @@ -5037,7 +5077,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->   		if (!u.xsave)
->   			break;
->   
-> -		kvm_vcpu_ioctl_x86_get_xsave(vcpu, u.xsave);
-> +		r = kvm_vcpu_ioctl_x86_get_xsave(vcpu, u.xsave);
-> +		if (r)
-> +			break;
->   
->   		r = -EFAULT;
->   		if (copy_to_user(argp, u.xsave, sizeof(struct kvm_xsave)))
-> @@ -5061,7 +5103,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->   		if (!u.xcrs)
->   			break;
->   
-> -		kvm_vcpu_ioctl_x86_get_xcrs(vcpu, u.xcrs);
-> +		r = kvm_vcpu_ioctl_x86_get_xcrs(vcpu, u.xcrs);
-> +		if (r)
-> +			break;
->   
->   		r = -EFAULT;
->   		if (copy_to_user(argp, u.xcrs,
-> @@ -9735,6 +9779,12 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
->   		goto out;
->   	}
->   
-> +	if (vcpu->arch.guest_state_protected &&
-> +	    (kvm_run->kvm_valid_regs || kvm_run->kvm_dirty_regs)) {
-> +		r = -EINVAL;
-> +		goto out;
-> +	}
-> +
->   	if (kvm_run->kvm_dirty_regs) {
->   		r = sync_regs(vcpu);
->   		if (r != 0)
-> @@ -9765,7 +9815,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
->   
->   out:
->   	kvm_put_guest_fpu(vcpu);
-> -	if (kvm_run->kvm_valid_regs)
-> +	if (kvm_run->kvm_valid_regs && !vcpu->arch.guest_state_protected)
->   		store_regs(vcpu);
->   	post_kvm_run_save(vcpu);
->   	kvm_sigset_deactivate(vcpu);
-> @@ -9812,6 +9862,9 @@ static void __get_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
->   
->   int kvm_arch_vcpu_ioctl_get_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
->   {
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	vcpu_load(vcpu);
->   	__get_regs(vcpu, regs);
->   	vcpu_put(vcpu);
-> @@ -9852,6 +9905,9 @@ static void __set_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
->   
->   int kvm_arch_vcpu_ioctl_set_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
->   {
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	vcpu_load(vcpu);
->   	__set_regs(vcpu, regs);
->   	vcpu_put(vcpu);
-> @@ -9912,6 +9968,9 @@ static void __get_sregs(struct kvm_vcpu *vcpu, struct kvm_sregs *sregs)
->   int kvm_arch_vcpu_ioctl_get_sregs(struct kvm_vcpu *vcpu,
->   				  struct kvm_sregs *sregs)
->   {
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	vcpu_load(vcpu);
->   	__get_sregs(vcpu, sregs);
->   	vcpu_put(vcpu);
-> @@ -10112,6 +10171,9 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu *vcpu,
->   {
->   	int ret;
->   
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	vcpu_load(vcpu);
->   	ret = __set_sregs(vcpu, sregs);
->   	vcpu_put(vcpu);
-> @@ -10205,6 +10267,9 @@ int kvm_arch_vcpu_ioctl_get_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
->   {
->   	struct fxregs_state *fxsave;
->   
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	if (!vcpu->arch.guest_fpu)
->   		return 0;
->   
-> @@ -10228,6 +10293,9 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
->   {
->   	struct fxregs_state *fxsave;
->   
-> +	if (vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->   	if (!vcpu->arch.guest_fpu)
->   		return 0;
->   
-> 
+Robin.
 
+----->8-----
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index ea5b85354526..394abf184c1a 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -2847,9 +2847,6 @@ void device_initialize(struct device *dev)
+      defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
+  	dev->dma_coherent = dma_default_coherent;
+  #endif
+-#ifdef CONFIG_SWIOTLB
+-	dev->dma_io_tlb_mem = io_tlb_default_mem;
+-#endif
+  }
+  EXPORT_SYMBOL_GPL(device_initialize);
+
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index 39284ff2a6cd..620f16d89a98 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -107,16 +107,21 @@ struct io_tlb_mem {
+  };
+  extern struct io_tlb_mem *io_tlb_default_mem;
+
++static inline struct io_tlb_mem *dev_iotlb_mem(struct device *dev)
++{
++	return dev->dma_io_tlb_mem ?: io_tlb_default_mem;
++}
++
+  static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t 
+paddr)
+  {
+-	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
++	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
+
+  	return mem && paddr >= mem->start && paddr < mem->end;
+  }
+
+  static inline bool is_swiotlb_force_bounce(struct device *dev)
+  {
+-	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
++	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
+
+  	return mem && mem->force_bounce;
+  }
+@@ -167,7 +172,7 @@ bool swiotlb_free(struct device *dev, struct page 
+*page, size_t size);
+
+  static inline bool is_swiotlb_for_alloc(struct device *dev)
+  {
+-	return dev->dma_io_tlb_mem->for_alloc;
++	return dev_iotlb_mem(dev)->for_alloc;
+  }
+  #else
+  static inline struct page *swiotlb_alloc(struct device *dev, size_t size)
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index b7f76bca89bf..f4942149f87d 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -359,7 +359,7 @@ static unsigned int swiotlb_align_offset(struct 
+device *dev, u64 addr)
+  static void swiotlb_bounce(struct device *dev, phys_addr_t tlb_addr, 
+size_t size,
+  			   enum dma_data_direction dir)
+  {
+-	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
++	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
+  	int index = (tlb_addr - mem->start) >> IO_TLB_SHIFT;
+  	phys_addr_t orig_addr = mem->slots[index].orig_addr;
+  	size_t alloc_size = mem->slots[index].alloc_size;
+@@ -440,7 +440,7 @@ static unsigned int wrap_index(struct io_tlb_mem 
+*mem, unsigned int index)
+  static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+  			      size_t alloc_size)
+  {
+-	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
++	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
+  	unsigned long boundary_mask = dma_get_seg_boundary(dev);
+  	dma_addr_t tbl_dma_addr =
+  		phys_to_dma_unencrypted(dev, mem->start) & boundary_mask;
+@@ -522,7 +522,7 @@ phys_addr_t swiotlb_tbl_map_single(struct device 
+*dev, phys_addr_t orig_addr,
+  		size_t mapping_size, size_t alloc_size,
+  		enum dma_data_direction dir, unsigned long attrs)
+  {
+-	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
++	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
+  	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
+  	unsigned int i;
+  	int index;
+@@ -565,7 +565,7 @@ phys_addr_t swiotlb_tbl_map_single(struct device 
+*dev, phys_addr_t orig_addr,
+
+  static void swiotlb_release_slots(struct device *dev, phys_addr_t 
+tlb_addr)
+  {
+-	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
++	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
+  	unsigned long flags;
+  	unsigned int offset = swiotlb_align_offset(dev, tlb_addr);
+  	int index = (tlb_addr - offset - mem->start) >> IO_TLB_SHIFT;
+@@ -682,7 +682,7 @@ size_t swiotlb_max_mapping_size(struct device *dev)
+
+  bool is_swiotlb_active(struct device *dev)
+  {
+-	return dev->dma_io_tlb_mem != NULL;
++	return dev_iotlb_mem(dev) != NULL;
+  }
+  EXPORT_SYMBOL_GPL(is_swiotlb_active);
+
+@@ -729,7 +729,7 @@ static void rmem_swiotlb_debugfs_init(struct 
+reserved_mem *rmem)
+
+  struct page *swiotlb_alloc(struct device *dev, size_t size)
+  {
+-	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
++	struct io_tlb_mem *mem = dev_iotlb_mem(dev);
+  	phys_addr_t tlb_addr;
+  	int index;
+
+@@ -792,7 +792,7 @@ static int rmem_swiotlb_device_init(struct 
+reserved_mem *rmem,
+  static void rmem_swiotlb_device_release(struct reserved_mem *rmem,
+  					struct device *dev)
+  {
+-	dev->dma_io_tlb_mem = io_tlb_default_mem;
++	dev->dma_io_tlb_mem = NULL;
+  }
+
+  static const struct reserved_mem_ops rmem_swiotlb_ops = {
