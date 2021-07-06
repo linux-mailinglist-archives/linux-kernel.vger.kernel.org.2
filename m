@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F753BD40F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452733BD3E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241653AbhGFMBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:01:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47624 "EHLO mail.kernel.org"
+        id S241789AbhGFMBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:01:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237537AbhGFLgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237541AbhGFLgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Jul 2021 07:36:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3650E61F39;
-        Tue,  6 Jul 2021 11:28:25 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B841A61F2D;
+        Tue,  6 Jul 2021 11:28:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570906;
-        bh=DLMSh4j0AnmTMlzgxM/VboZ7+8wm4ULFHQ39d2I+ppE=;
+        s=k20201202; t=1625570908;
+        bh=YLXnt5wG5jvESbfEUk+/masoINAD5jvQEUvbk327gPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QoChxxQr31TNsuzXgYzHvlF4SfSJi1Dg/lIA5eDfIJ72LPwTGtGNSLiUTZZ3LgEPm
-         GTapixDmRFjrDkpHOq0zvgKeyWu9OJkTNJ628jT0b9HldZ2V3z49pYaEXqZptucUsd
-         l3omELla9OyWPF2tVZxUduNKxPQ2CEXuYxBUK1h6MCB7cr9X6/QzRASDZOe0Gu7kVU
-         R9jfxNTOnrCdi93G0k16nQ2P89ncfrY5if43u/xa+t/VtVXOOZy2YzXJbp0/7HzaiO
-         0sArSQt+PmMBP/07X5tv2XWylGZBnLj66VC4S8PfNLiaAftdKAJVYNzaspAcyhoqtE
-         aQMYuH0IoM2RA==
+        b=n8N1ynfrX6bM+0kW9bc8cwsUsLU9Y+YQPodxr4FCJap0gP7WBUUzv7Z4N4v817/tr
+         qjR4lzOY0kLNAI01B+lgAGZY91z5VPL4FWXw6+JJQ9qJdwT2oYhl2gxxO7mxXrvzxG
+         PIoYqoc9HkL44/De3xFgRgduvSQmS5JCFZo7Km9unyuPMwizqgAzucKiWcIXyXPPoi
+         MKVID5rQUkB/lcfFEQG0ClN212IA3comQKma2bSNHC1Yg3oLh20RXAcCHskq2e4f9X
+         pKLhtuw02fTd+7aZCWaX2X08A+44lXQbGzCpESlOGasju2dVJK/5f+DNB97+faEtOf
+         8uMz9Yn2WkmQw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lee Gibson <leegib@gmail.com>, Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 29/45] wl1251: Fix possible buffer overflow in wl1251_cmd_scan
-Date:   Tue,  6 Jul 2021 07:27:33 -0400
-Message-Id: <20210706112749.2065541-29-sashal@kernel.org>
+Cc:     Huang Pei <huangpei@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 31/45] MIPS: add PMD table accounting into MIPS'pmd_alloc_one
+Date:   Tue,  6 Jul 2021 07:27:35 -0400
+Message-Id: <20210706112749.2065541-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112749.2065541-1-sashal@kernel.org>
 References: <20210706112749.2065541-1-sashal@kernel.org>
@@ -42,41 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Gibson <leegib@gmail.com>
+From: Huang Pei <huangpei@loongson.cn>
 
-[ Upstream commit d10a87a3535cce2b890897914f5d0d83df669c63 ]
+[ Upstream commit ed914d48b6a1040d1039d371b56273d422c0081e ]
 
-Function wl1251_cmd_scan calls memcpy without checking the length.
-Harden by checking the length is within the maximum allowed size.
+This fixes Page Table accounting bug.
 
-Signed-off-by: Lee Gibson <leegib@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210428115508.25624-1-leegib@gmail.com
+MIPS is the ONLY arch just defining __HAVE_ARCH_PMD_ALLOC_ONE alone.
+Since commit b2b29d6d011944 (mm: account PMD tables like PTE tables),
+"pmd_free" in asm-generic with PMD table accounting and "pmd_alloc_one"
+in MIPS without PMD table accounting causes PageTable accounting number
+negative, which read by global_zone_page_state(), always returns 0.
+
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ti/wl1251/cmd.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ arch/mips/include/asm/pgalloc.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ti/wl1251/cmd.c b/drivers/net/wireless/ti/wl1251/cmd.c
-index 9547aea01b0f..ea0215246c5c 100644
---- a/drivers/net/wireless/ti/wl1251/cmd.c
-+++ b/drivers/net/wireless/ti/wl1251/cmd.c
-@@ -466,9 +466,12 @@ int wl1251_cmd_scan(struct wl1251 *wl, u8 *ssid, size_t ssid_len,
- 		cmd->channels[i].channel = channels[i]->hw_value;
- 	}
+diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
+index 39b9f311c4ef..f800872f867b 100644
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -93,11 +93,15 @@ do {							\
  
--	cmd->params.ssid_len = ssid_len;
--	if (ssid)
--		memcpy(cmd->params.ssid, ssid, ssid_len);
-+	if (ssid) {
-+		int len = clamp_val(ssid_len, 0, IEEE80211_MAX_SSID_LEN);
-+
-+		cmd->params.ssid_len = len;
-+		memcpy(cmd->params.ssid, ssid, len);
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ {
+-	pmd_t *pmd;
++	pmd_t *pmd = NULL;
++	struct page *pg;
+ 
+-	pmd = (pmd_t *) __get_free_pages(GFP_KERNEL, PMD_ORDER);
+-	if (pmd)
++	pg = alloc_pages(GFP_KERNEL | __GFP_ACCOUNT, PMD_ORDER);
++	if (pg) {
++		pgtable_pmd_page_ctor(pg);
++		pmd = (pmd_t *)page_address(pg);
+ 		pmd_init((unsigned long)pmd, (unsigned long)invalid_pte_table);
 +	}
+ 	return pmd;
+ }
  
- 	ret = wl1251_cmd_send(wl, CMD_SCAN, cmd, sizeof(*cmd));
- 	if (ret < 0) {
 -- 
 2.30.2
 
