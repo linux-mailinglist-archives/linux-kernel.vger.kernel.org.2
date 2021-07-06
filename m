@@ -2,80 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2CC3BC7D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFD73BC7C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbhGFI3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 04:29:53 -0400
-Received: from us-smtp-delivery-115.mimecast.com ([216.205.24.115]:24947 "EHLO
-        us-smtp-delivery-115.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230400AbhGFI3w (ORCPT
+        id S230478AbhGFI1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 04:27:10 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47304 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230426AbhGFI1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 04:29:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maxlinear.com;
-        s=selector; t=1625560033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=6Wz7hn9Kd3NoSNljmyCys5rwpfM2MRQrFBRp50KmUpA=;
-        b=jJqoJhkYd4Tcg6ODNcZoVpfIKCUKVfV55qDXIXMeCB/KhbHqmHRfc7yaNGs6HOYLfT7iTJ
-        slrmY36UH4yUrs7/0N5Si317O00Pct1buYMyF0FYTJ0DHxAj8++Ym1NKaxejJBDP36tUlR
-        Oek/WkNtao6EyMiX0BjbB1n4vILJ0X8=
-Received: from mail.maxlinear.com (174-47-1-83.static.ctl.one [174.47.1.83])
- (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-dAQF_euGM-652Mnpd8YqHg-1; Tue, 06 Jul 2021 04:21:06 -0400
-X-MC-Unique: dAQF_euGM-652Mnpd8YqHg-1
-Received: from sgsxdev001.isng.phoenix.local (10.226.81.111) by
- mail.maxlinear.com (10.23.38.120) with Microsoft SMTP Server id 15.1.2242.4;
- Tue, 6 Jul 2021 01:21:02 -0700
-From:   Rahul Tanwar <rtanwar@maxlinear.com>
-To:     <lorenzo.pieralisi@arm.com>, <robh@kernel.org>,
-        <bhelgaas@google.com>, <kw@linux.com>, <jingoohan1@gmail.com>,
-        <gustavo.pimentel@synopsys.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <ckim@maxlinear.com>, <qwu@maxlinear.com>,
-        <rahul.tanwar.linux@gmail.com>,
-        Rahul Tanwar <rtanwar@maxlinear.com>
-Subject: [PATCH] PCI: dwc/intel-gw: Update MAINTAINERS file
-Date:   Tue, 6 Jul 2021 16:20:59 +0800
-Message-ID: <b3249e08155e04ac08d820be3b8da29a913c472a.1625559158.git.rtanwar@maxlinear.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 6 Jul 2021 04:27:07 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1668ENxI149563;
+        Tue, 6 Jul 2021 04:24:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=AwsERaTRxjQmoeKPAsWodLLOWJyX2tGAN2F2fumdq4w=;
+ b=rLW5Jp8gVVhuAz0ftNbH1asH7WIrp+srW2Wk/PDx1sXIrCmJ9764isrnEN7Y9Z6qcDAe
+ 8JyLIA28qDnfrhvCK8ZgCUWHaq8+dziamSFyTX/oe5AQ/NnIsONCXiYAHylHD6PyCumf
+ IFFDMrxdnYTKOR1KU2UIdvvJ0S4Q96AZ9rW1ka7UC0gQ2xSUJYMML4mS46HmyYtswo5b
+ HDWB5mEHbtK0fhWIkaAMZuRR4F8eoCM4TiM9qPiDVwmPo3lSckRH+j24Y0Jj/6BOVoRl
+ xaDOVoKd8llYjrr6DxxcWa5F94N/u2YwyRdLvyetJxMkx1l2I6uA1lMJTDu+VNLzmJNr cw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39mkg008dh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Jul 2021 04:24:08 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1668EUk1149700;
+        Tue, 6 Jul 2021 04:24:07 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39mkg008cg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Jul 2021 04:24:07 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1668GmFI018976;
+        Tue, 6 Jul 2021 08:24:05 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 39jfh8s4vr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Jul 2021 08:24:05 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1668O22D5767628
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 6 Jul 2021 08:24:02 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AC6DF11C069;
+        Tue,  6 Jul 2021 08:24:02 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CD0D111C05C;
+        Tue,  6 Jul 2021 08:24:00 +0000 (GMT)
+Received: from pratiks-thinkpad.ibmuc.com (unknown [9.85.94.236])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  6 Jul 2021 08:24:00 +0000 (GMT)
+From:   "Pratik R. Sampat" <psampat@linux.ibm.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, psampat@linux.ibm.com,
+        pratik.r.sampat@gmail.com
+Subject: [PATCH v2 0/1] Interface to represent PAPR firmware attributes
+Date:   Tue,  6 Jul 2021 13:53:59 +0530
+Message-Id: <20210706082400.36996-1-psampat@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: FpVTxjBd_ApVS67fG2KE8fEf3OHqDF-Z
+X-Proofpoint-ORIG-GUID: VoeuzEC_mmFBwqNs1uz_U5bw5GyR6EeR
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA115A51 smtp.mailfrom=rtanwar@maxlinear.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: maxlinear.com
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-06_02:2021-07-02,2021-07-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 adultscore=0 impostorscore=0 clxscore=1011
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107060040
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainer for PCIe RC controller driver for Intel LGM gateway SoC.
+RFC: https://lkml.org/lkml/2021/6/4/791
+PATCH v1: https://lkml.org/lkml/2021/6/16/805
 
-Signed-off-by: Rahul Tanwar <rtanwar@maxlinear.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+Changelog v1 --> v2
+Based on comments from Fabiano and Gautham, the following changes
+were made:
+1. Added flag attributes to fetch either single or all attributes from
+   the H_GET_ENERGY_SCALE_INFO HCALL
+2. Seperated the header and the attribute structs, therfore allocating
+   for them through a single abstract buffer and later parsing them
+   into their own structures based on the offset
+3. Renamed Energy Management(em) prefixed variables to energy scale
+   attributes(esi) prefixed variables to maintain consistency.
+4. Removed bailing on version checks as to avoid faliure in future
+   versions which can be backwards compatible
+5. Moved check for FW_FEATURE_LPAR before the HCALL is made to save
+   cycles and allocations on an event of faliure
+6. Updated descriptions and comments
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3298f4592ce7..61c1cfcc453b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14392,6 +14392,13 @@ S:=09Maintained
- F:=09Documentation/devicetree/bindings/pci/hisilicon-histb-pcie.txt
- F:=09drivers/pci/controller/dwc/pcie-histb.c
-=20
-+PCIE DRIVER FOR INTEL LGM GW SOC
-+M:=09Rahul Tanwar <rtanwar@maxlinear.com>
-+L:=09linux-pci@vger.kernel.org
-+S:=09Maintained
-+F:=09Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
-+F:=09drivers/pci/controller/dwc/pcie-intel-gw.c
-+
- PCIE DRIVER FOR MEDIATEK
- M:=09Ryder Lee <ryder.lee@mediatek.com>
- M:=09Jianjun Wang <jianjun.wang@mediatek.com>
---=20
-2.17.1
+Also, have implemented a POC using this interface for the powerpc-utils'
+ppc64_cpu --frequency command-line tool to utilize this information
+in userspace.
+The POC for the new interface has been hosted here:
+https://github.com/pratiksampat/powerpc-utils/tree/H_GET_ENERGY_SCALE_INFO_v2
+
+Sample output from the powerpc-utils tool is as follows:
+
+# ppc64_cpu --frequency
+Power and Performance Mode: XXXX
+Idle Power Saver Status   : XXXX
+Processor Folding Status  : XXXX --> Printed if Idle power save status is supported
+
+Platform reported frequencies --> Frequencies reported from the platform's H_CALL i.e PAPR interface
+min        :    NNNN GHz
+max        :    NNNN GHz
+static     :    NNNN GHz
+
+Tool Computed frequencies
+min        :    NNNN GHz (cpu XX)
+max        :    NNNN GHz (cpu XX)
+avg        :    NNNN GHz
+
+Pratik R. Sampat (1):
+  powerpc/pseries: Interface to represent PAPR firmware attributes
+
+ .../sysfs-firmware-papr-energy-scale-info     |  26 ++
+ arch/powerpc/include/asm/hvcall.h             |  23 +-
+ arch/powerpc/kvm/trace_hv.h                   |   1 +
+ arch/powerpc/platforms/pseries/Makefile       |   3 +-
+ .../pseries/papr_platform_attributes.c        | 320 ++++++++++++++++++
+ 5 files changed, 371 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
+ create mode 100644 arch/powerpc/platforms/pseries/papr_platform_attributes.c
+
+-- 
+2.31.1
 
