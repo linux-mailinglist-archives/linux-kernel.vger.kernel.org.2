@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABD53BD05E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132E43BD06D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 13:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234807AbhGFLdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 07:33:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55764 "EHLO mail.kernel.org"
+        id S234970AbhGFLdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 07:33:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233911AbhGFLXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:23:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBC9161CF5;
-        Tue,  6 Jul 2021 11:18:07 +0000 (UTC)
+        id S233204AbhGFLXf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:23:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A30961CF0;
+        Tue,  6 Jul 2021 11:18:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570288;
-        bh=eKX49emukDMwE44pP/xuqP89fE1fH4GYou94kjiKakc=;
+        s=k20201202; t=1625570291;
+        bh=1BuftYxYlodzTTWsccJ8mb6qMW4RWaRgd+qRmstKHp0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I+BnkE0R+N0eQKZAfv446Qyttf9ONnp+ZoCfVVsNK7ii5XJpEDf4ZZ6b2rA5fiaPA
-         lTdYPk9BOHEU/D3OIlR6jCqFb+g4C0CsN2MeHS5v7aSdWGpgOBneHuRGohg2WmMYiB
-         lChgugUOb9vEXr+tfoueXxBd/WnQIBTE5K1m5i/l+MF11+Ewnhc2jKIYmMT74DUwJG
-         /4Sg9j2bWj//nLM9roDt2jtGqNU8xZVXroAu3dz6cMKOAtSv7EnjgoSEQvm9sC5gFo
-         Ne/ZaJXmq2Xnr/AM01Oz1GFwC8OM+22MRg/wpqMQKyV/AwrdzoQDcjSKQSHu6YzzO1
-         EElfSFZ/xPBCw==
+        b=QGEgwba3Va+gk81pNqR13zE49FwsrLkacowwel5I7JpU2pfiM2hTuC3yJo5YMTKmR
+         xNgaQOc091BYdw5AubERb8VqArvkk7xgIVNaynOeu/48YASd7d3CBhP3Z+boClEbS5
+         FNkuTYvYg9d7vcuhrYPcZkH7Aq3M6KB3IIDWEaXC8BUwHvJUc38RcSu+xWubWe0c0Y
+         GA4tNkYQFBTMfyv9NarquvS6+hMCtkdIJxicxrBBh8cfvdFa4IDP+fmVEC4f/lqhbz
+         N5RMoBi3i1KwaCS85URSylmHjZ6P6bH5Sks7wtxG6N6+NvSCC9BzmZlC/wTc8CLHEv
+         /WkRDBVFGHbaQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hilda Wu <hildawu@realtek.com>,
+Cc:     Tim Jiang <tjiang@codeaurora.org>,
         Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-bluetooth@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 178/189] Bluetooth: btusb: Add support USB ALT 3 for WBS
-Date:   Tue,  6 Jul 2021 07:13:58 -0400
-Message-Id: <20210706111409.2058071-178-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.13 180/189] Bluetooth: btusb: use default nvm if boardID is 0 for wcn6855.
+Date:   Tue,  6 Jul 2021 07:14:00 -0400
+Message-Id: <20210706111409.2058071-180-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111409.2058071-1-sashal@kernel.org>
 References: <20210706111409.2058071-1-sashal@kernel.org>
@@ -43,42 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hilda Wu <hildawu@realtek.com>
+From: Tim Jiang <tjiang@codeaurora.org>
 
-[ Upstream commit e848dbd364aca44c9d23c04bef964fab79e2b34f ]
+[ Upstream commit ca17a5cccf8b6d35dab4729bea8f4350bc0b4caf ]
 
-Because mSBC frames do not need to be aligned to the SCO packet
-boundary. Using USB ALT 3 let HCI payload >= 60 bytes, let mSBC
-data satisfy 60 Bytes avoid payload unaligned situation and fixed
-some headset no voise issue.
+if boardID is 0, will use the default nvm file without surfix.
 
-USB Alt 3 supported also need HFP support transparent MTU in 72 Bytes.
-
-Signed-off-by: Hilda Wu <hildawu@realtek.com>
+Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
 Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/btusb.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/bluetooth/btusb.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 90872099d9c3..4c18a85a1070 100644
+index 4c18a85a1070..1cec9b2353c6 100644
 --- a/drivers/bluetooth/btusb.c
 +++ b/drivers/bluetooth/btusb.c
-@@ -1751,6 +1751,13 @@ static void btusb_work(struct work_struct *work)
- 			 * which work with WBS at all.
- 			 */
- 			new_alts = btusb_find_altsetting(data, 6) ? 6 : 1;
-+			/* Because mSBC frames do not need to be aligned to the
-+			 * SCO packet boundary. If support the Alt 3, use the
-+			 * Alt 3 for HCI payload >= 60 Bytes let air packet
-+			 * data satisfy 60 bytes.
-+			 */
-+			if (new_alts == 1 && btusb_find_altsetting(data, 3))
-+				new_alts = 3;
- 		}
+@@ -4163,9 +4163,15 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+ 	int err;
  
- 		if (btusb_switch_alt_setting(hdev, new_alts) < 0)
+ 	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+-		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+-			 le32_to_cpu(ver->rom_version),
+-			 le16_to_cpu(ver->board_id));
++		/* if boardid equal 0, use default nvm without surfix */
++		if (le16_to_cpu(ver->board_id) == 0x0) {
++			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
++				 le32_to_cpu(ver->rom_version));
++		} else {
++			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
++				le32_to_cpu(ver->rom_version),
++				le16_to_cpu(ver->board_id));
++		}
+ 	} else {
+ 		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+ 			 le32_to_cpu(ver->rom_version));
 -- 
 2.30.2
 
