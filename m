@@ -2,180 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C143BC7BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446F93BC7BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 10:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbhGFIVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 04:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbhGFIU6 (ORCPT
+        id S230462AbhGFIVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 04:21:46 -0400
+Received: from outbound-smtp10.blacknight.com ([46.22.139.15]:58691 "EHLO
+        outbound-smtp10.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230257AbhGFIVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 04:20:58 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7306C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 01:18:19 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id g10so7105555wmh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 01:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3mgnx8fEegD/aQ9zqBoBzzOqjAcJdnecr5X8UBCh88A=;
-        b=jCtVYDlvBHH3GlSQUuqptLNQoADj8E6pFWpmgL1Or65pa8VgkFEwlKQz+Zy50buntc
-         1nXamWlS/PQVS/aK7+Q/p0wsC7O54/u3cjI7mRNz9oaiT5YjVbK8dhHZMxPRxotu43oF
-         shzv1ow2Fda7OXIQZ9qxe40tW1SS7DWp4D0t0P1LBT9ZCQ+VOMwI/d35WdrCZ8II0DP5
-         anwOy0CkQp+4q4RGCYoxoUe2gppifBs8Ic/KLbTXuyrK0cx5zAPtIXE46eNnPJgHUxFq
-         9+BEil0tPu6G0o3NnhY5Ioc49EO7vFdHqxmuWtvxc1NnlHrnGEGTam4NFPi1EfcpVZEb
-         bLdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3mgnx8fEegD/aQ9zqBoBzzOqjAcJdnecr5X8UBCh88A=;
-        b=qw4il60dWY00NJFCTQ3ooM/ETWrZnUl/0YyfIF9ZVpyO41MGIDuTxAFZ+B+/BunuLw
-         O2Zi1JUPhGbKRvY4ljzFWXOtF+0aqqJeki0KzSMV9fuxFU5mp82FNnzCaqLmcqnZztwI
-         iS9c4lWg4nPwiLKc9uG8msjuW9uLHWZdHWzACNM8IrYROEL/QyBZizqv9yJ/2Ndxih8i
-         FuTz9LMONL8dol/k33Zr2F81Leg1sSKTNp2fW7gxunXX4E17MSg+YlNsWtnbIh5S7LI1
-         sLGDhljM3SAjFc7Rbbf9SdIUFPXEOzukHGpY0nLSSEXVgSUNkNy+U4LrhrWXtTW+29LL
-         UzpA==
-X-Gm-Message-State: AOAM531zGsJ/oV068QB84XD0OzvUioNCJSs1caPQBq+rK63RBb9/JWsr
-        u8QaNLNHlIctphNcEF+oQuKn8w==
-X-Google-Smtp-Source: ABdhPJzCkfz/lF+lODYpP9glLgYUjtgw7C2saATpfh0DjO+CQKgR8u8ve5k+pbfxMTn5z4kxfFlMXg==
-X-Received: by 2002:a05:600c:4843:: with SMTP id j3mr19554366wmo.73.1625559498313;
-        Tue, 06 Jul 2021 01:18:18 -0700 (PDT)
-Received: from enceladus (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
-        by smtp.gmail.com with ESMTPSA id a22sm13783534wrc.66.2021.07.06.01.18.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 01:18:17 -0700 (PDT)
-Date:   Tue, 6 Jul 2021 11:18:13 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>, davem@davemloft.net,
-        kuba@kernel.org, linuxarm@openeuler.org, yisen.zhuang@huawei.com,
-        salil.mehta@huawei.com, thomas.petazzoni@bootlin.com,
-        mw@semihalf.com, linux@armlinux.org.uk, hawk@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        akpm@linux-foundation.org, peterz@infradead.org, will@kernel.org,
-        willy@infradead.org, vbabka@suse.cz, fenghua.yu@intel.com,
-        guro@fb.com, peterx@redhat.com, feng.tang@intel.com, jgg@ziepe.ca,
-        mcroce@microsoft.com, hughd@google.com, jonathan.lemon@gmail.com,
-        alobakin@pm.me, willemb@google.com, wenxu@ucloud.cn,
-        cong.wang@bytedance.com, haokexin@gmail.com, nogikh@google.com,
-        elver@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
- based on elevated refcnt
-Message-ID: <YOQRxS+MUFIRubsf@enceladus>
-References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
- <1625044676-12441-2-git-send-email-linyunsheng@huawei.com>
- <6c2d76e2-30ce-5c0f-9d71-f6b71f9ad34f@redhat.com>
- <ec994486-b385-0597-39f7-128092cba0ce@huawei.com>
- <YOPiHzVkKhdHmxLB@enceladus>
- <33aee58e-b1d5-ce7b-1576-556d0da28560@huawei.com>
+        Tue, 6 Jul 2021 04:21:45 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp10.blacknight.com (Postfix) with ESMTPS id 541521C3F97
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 09:19:06 +0100 (IST)
+Received: (qmail 21240 invoked from network); 6 Jul 2021 08:19:06 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Jul 2021 08:19:06 -0000
+Date:   Tue, 6 Jul 2021 09:19:04 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     qiang.zhang@windriver.com
+Cc:     akpm@linux-foundation.org, alobakin@pm.me,
+        songmuchun@bytedance.com, wangqing@vivo.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/page_alloc: Fix sleeping function called in case of
+ irqsdisable.
+Message-ID: <20210706081904.GP3840@techsingularity.net>
+References: <20210706032907.1276-1-qiang.zhang@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <33aee58e-b1d5-ce7b-1576-556d0da28560@huawei.com>
+In-Reply-To: <20210706032907.1276-1-qiang.zhang@windriver.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >>
-
-[...]
-
-> >>>
-> >>>
-> >>>> So add elevated refcnt support in page pool, and support
-> >>>> allocating page frag to enable multi-frames-per-page based
-> >>>> on the elevated refcnt support.
-> >>>>
-> >>>> As the elevated refcnt is per page, and there is no space
-> >>>> for that in "struct page" now, so add a dynamically allocated
-> >>>> "struct page_pool_info" to record page pool ptr and refcnt
-> >>>> corrsponding to a page for now. Later, we can recycle the
-> >>>> "struct page_pool_info" too, or use part of page memory to
-> >>>> record pp_info.
-> >>>
-> >>> I'm not happy with allocating a memory (slab) object "struct page_pool_info" per page.
-> >>>
-> >>> This also gives us an extra level of indirection.
-> >>
-> >> I'm not happy with that either, if there is better way to
-> >> avoid that, I will be happy to change it:)
-> > 
-> > I think what we have to answer here is, do we want and does it make sense
-> > for page_pool to do the housekeeping of the buffer splitting or are we
-> > better of having each driver do that.  IIRC your previous patch on top of
-> > the original recycling patchset was just 'atomic' refcnts on top of page pool.
+On Tue, Jul 06, 2021 at 11:29:07AM +0800, qiang.zhang@windriver.com wrote:
+> From: Zqiang <qiang.zhang@windriver.com>
 > 
-> You are right that driver was doing the the buffer splitting in previous
-> patch.
+> BUG: sleeping function called from invalid context at mm/page_alloc.c:5179
+> in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
+> .....
+> __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
+>  ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
+>  prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
+>  __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
+>  alloc_page_interleave+0x1e/0x200 mm/mempolicy.c:2147
+>  alloc_pages+0x238/0x2a0 mm/mempolicy.c:2270
+>  stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
+>  save_stack+0x15e/0x1e0 mm/page_owner.c:120
+>  __set_page_owner+0x50/0x290 mm/page_owner.c:181
+>  prep_new_page mm/page_alloc.c:2445 [inline]
+>  __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
+>  alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
+>  vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
+>  __vmalloc_area_node mm/vmalloc.c:2845 [inline]
+>  __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
+>  __vmalloc_node mm/vmalloc.c:2996 [inline]
+>  vzalloc+0x67/0x80 mm/vmalloc.c:3066
 > 
-> The reason why I abandoned that is:
-> 1. Currently the meta-data of page in the driver is per desc, which means
->    it might not be able to use first half of a page for a desc, and the
->    second half of the same page for another desc, this ping-pong way of
->    reusing the whole page for only one desc in the driver seems unnecessary
->    and waste a lot of memory when there is already reusing in the page pool.
+> If the PAGE_OWNER is enabled, in __set_page_owner(), the pages will be
+> allocated to save calltrace info, due to the allocated action is executed
+> under irq disable(pagesets.lock be held), if the gfp variable contains
+> the flag that causes sleep, will trigger above information. the
+> prep_new_page() is not need to disable irq for protection, fix it through
+> enable irq before call prep_new_page().
 > 
-> 2. Easy use of API for the driver too, which means the driver uses
->    page_pool_dev_alloc_frag() and page_pool_put_full_page() for elevated
->    refcnt case, corresponding to page_pool_dev_alloc_pages() and
->    page_pool_put_full_page() for non-elevated refcnt case, the driver does
->    not need to worry about the meta-data of a page.
-> 
+> Fixes: 0f87d9d30f21 ("mm/page_alloc: add an array-based interface to the bulk page allocator")
+> Reported-by: syzbot+0123a2b8f9e623d5b443@syzkaller.appspotmail.com
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 
-Ok that makes sense.  We'll need the complexity anyway and I said I don't
-have any strong opinions yet, we might as well make page_pool responsible
-for it.
-What we need to keep in mind is that page_pool was primarily used for XDP
-packets.  We need to make sure we have no performance regressions there.
-However I don't have access to > 10gbit NICs with XDP support. Can anyone
-apply the patchset and check the performance?
+This will hurt the performance of the bulk allocator a lot because it'll
+no longer batch the IRQ disable/enabling and be similar to simply using
+the single page allocator. It also impacts the performance even if page
+owner tracking is off or disabled in kconfig
 
-> > 
-> >>
+Given that this is related to page owner tracking, a more straight
+forward basic fix is the following untested patch
 
-[...]
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3b97e17806be..4f96081727f2 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5224,6 +5224,18 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	if (unlikely(nr_pages <= 0))
+ 		return 0;
+ 
++#ifdef CONFIG_PAGE_OWNER
++	/*
++	 * If page owner tracking is enabled then prep_new_page may need to
++	 * allocate space and then sleep with the pagesets.lock lock held.
++	 * Releasing/reacquiring the lock on each page would offset much
++	 * of the benefit of bulk page allocation so simply return 1 page
++	 * when tracking page owners.
++	 */
++	if (static_branch_unlikely(&page_owner_inited))
++		goto failed;
++#endif
++
+ 	/*
+ 	 * Skip populated array elements to determine if any pages need
+ 	 * to be allocated before disabling IRQs.
 
-> >> Aside from the performance improvement, there is memory usage
-> >> decrease for 64K page size kernel, which means a 64K page can
-> >> be used by 32 description with 2k buffer size, and that is a
-> >> lot of memory saving for 64 page size kernel comparing to the
-> >> current split page reusing implemented in the driver.
-> >>
-> > 
-> > Whether the driver or page_pool itself keeps the meta-data, the outcome
-> > here won't change.  We'll still be able to use page frags.
-> 
-> As above, it is the ping-pong way of reusing when the driver keeps the
-> meta-data, and it is page-frag way of reusing when the page pool keeps
-> the meta-data.
-> 
-> I am not sure if the page-frag way of reusing is possible when we still
-> keep the meta-data in the driver, which seems very complex at the initial
-> thinking.
-> 
+There are other ways it could be done. Given it's struct page pointers,
+the least significant bit could be used to track pages that need to be
+prepped and then iterate through the list/array to prep newly allocated
+pages. It's not clear it's worth the complexity though unless there are
+really interesting use cases where page owner is enabled in production.
 
-Fair enough. It's complex in both scenarios so if people think it's useful
-I am not against adding it in the API.
-
-
-Thanks
-/Ilias
-> > 
-> > 
-> > Cheers
-> > /Ilias
-> >>
-> >>>
-> >>>  __page_frag_cache_refill() + __page_frag_cache_drain() + page_frag_alloc_align()
-> >>>
-> >>>
-> >>
-> >> [...]
-> > .
-> > 
+-- 
+Mel Gorman
+SUSE Labs
