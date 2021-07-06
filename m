@@ -2,157 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C930C3BC4F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 05:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06983BC4FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 05:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhGFDHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Jul 2021 23:07:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
+        id S229997AbhGFDI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Jul 2021 23:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbhGFDHJ (ORCPT
+        with ESMTP id S229998AbhGFDI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Jul 2021 23:07:09 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A2CC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 20:04:30 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id m1so25945156edq.8
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 20:04:30 -0700 (PDT)
+        Mon, 5 Jul 2021 23:08:27 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CFCC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 20:05:49 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id a6so292246plh.11
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 20:05:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=LCgUQ9YXkJh4ceT+VmUThz5I8QlmLbs1I7Jug0v7X9c=;
-        b=AniVf1hg8E84bf88GbqvkjR+BefQ1f0lgfPF37iHtxf/YNkU0AyXPnMQYAxXb02mbo
-         G48TrGfyovbNsFXOaWMWb/wyYJ2otEbO4ALwFWjEp+ou6S1UnsrushF1eZx06kGNzJN8
-         ZE+sG3ukhj23G3+11XF15U8C53r0c8X3EEc4Ok4kOBRxqvzy8189Ucu76sgW34Wbm8+X
-         cTKFYWmWxoprLOtkLuVBPTW79tw5zhQYEEPwKl+lmcbOagdDirWCGWdkJ6EIa0dQXVy8
-         dgnLZv4WULOteK3YLraIZY9wXPfWdUjgUnwLaGWun0yx5ionzoeg2EP/vsiH019ipKeh
-         +bSw==
+        bh=rpUK1zI8UPtbL2LMVzlMcPFji8pVRHI1RGFSCzgONU8=;
+        b=DSHKoKfnm93GVE8ZuctQLNVdcgeu75jZ/9RQPyHmmM8+BPtVIVOY02Q1hZst/N26PE
+         mG2VbBif93O0lmkH8xUDtGXevKPItODW1rOeaIrHwq3W1R2Ea8/Sl43y2/MoA7OUD6ey
+         fwSvZdk0GnX1VdVh+/RJQxq2dgctYl35UtFwJIHfskVC1u2JmEFgjYZ/yoldz/0iHVob
+         PWiOZePHh2Vj+bz1Ve4ob/XOfstOlqMau7JFUwFJB2AwWZSOIp1XLJphEW12yO5Ykelp
+         kuXFTaoAL81epwvcrXTpIGQAuPiQ7BdgeZbTGHEmxBw7rbeimgb9bs2OOlAJDpdOb/xC
+         58kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LCgUQ9YXkJh4ceT+VmUThz5I8QlmLbs1I7Jug0v7X9c=;
-        b=NFHd997BWKS+RPIyG1UxTnzVghik1umXanTHtcK/wUlF9b0WPJ5LfFLAIqhMI/Gbdt
-         tgjWKvHkSf8pArb31OjWu2PGjTRs8RsKXqBXqExJdkcA2+y4pJLC6iSMnWsToOj8WBaT
-         QdslswWKkTMPW5/RBwy9nZ3bZ1FciT60MSIBXKj2rDhkDX0GyxeXBeiijQuc5clJPu4T
-         YEM5vCzhkAObzXAamyehjZm1rIaypFsrr7APLlhloJyNk850VC8/+DL6Ei9F0xSstndU
-         Uv3wtmIjKETN5sIyjLdXWjxcF9uqT6XLeFs7SO0bDHvrCnCrl+7q6Cvdgfy6SiDD6V+A
-         Vlyg==
-X-Gm-Message-State: AOAM533apUaIOvtcTAJAt+rtdwk9BE+bY2QTZn8+rME9NspSMtWt5kZn
-        4ziJbeO0porLzw5wAKyBC7pM8VEpS0mdPcQi+3ZK
-X-Google-Smtp-Source: ABdhPJxK8aaodUmVuDEfTR7oD0ZVR0H0WNfCSx96KkTtw1Uj+YwvZnEo/lcejGfXLnkvlfTU0w/nA3UorXy0nyt0lC8=
-X-Received: by 2002:a50:ff01:: with SMTP id a1mr19688860edu.253.1625540668739;
- Mon, 05 Jul 2021 20:04:28 -0700 (PDT)
+        bh=rpUK1zI8UPtbL2LMVzlMcPFji8pVRHI1RGFSCzgONU8=;
+        b=CMb6Zk8SO/HYUBLJpk8WSMdtSWBuy1xbYbbBNIW8SUxR48eSYBDk1QNMH/oKBFWqvf
+         4LKkg9+/r7Z4kseDJ3ulbSDO4DUcHcqCZbPNSHvUkxgi7FjulObullfzTJp44Agj5uGZ
+         TjbLJO2ywgMhH7TVzHZsSUA5xvOv7z4fPM7147YMQcOQaRHUp7N8vTYcjQkpaS/PYriD
+         PSaMi9wxjjclOJUagv2dqMCkh/26l0UEyNFhzKo+VluYaUPcYZSp9ID6GpHUWxLbYnAY
+         zBdkq7NiTHYYJBIVP2r0U7k7nbk+iY60V+QwNnPlWW+Hdg7CcscOXsXZgVTatCw4u7u4
+         KfIQ==
+X-Gm-Message-State: AOAM530Z9y+P4LPns3VyEaTwu5lvno6HPBohjN9GxQAmdU3Kg8BeV+2N
+        1M0C4J4Evk6DN29Qpit4r5WuHM+4k/40vwT80yUkhg==
+X-Google-Smtp-Source: ABdhPJxUU9XQAaovl9e0hbF8KcHLRYwOOG2KjjzoCq+t34MXba2anIJH/oCbOuuw7LOx9m3EN42Tdcid2qTpocZ1Mgs=
+X-Received: by 2002:a17:902:e2d3:b029:129:70aa:990 with SMTP id
+ l19-20020a170902e2d3b029012970aa0990mr11886309plc.34.1625540748048; Mon, 05
+ Jul 2021 20:05:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210615141331.407-1-xieyongji@bytedance.com> <20210615141331.407-11-xieyongji@bytedance.com>
- <YNSCH6l31zwPxBjL@stefanha-x1.localdomain> <CACycT3uxnQmXWsgmNVxQtiRhz1UXXTAJFY3OiAJqokbJH6ifMA@mail.gmail.com>
- <YNxCDpM3bO5cPjqi@stefanha-x1.localdomain> <CACycT3taKhf1cWp3Jd0aSVekAZvpbR-_fkyPLQ=B+jZBB5H=8Q@mail.gmail.com>
- <YN3ABqCMLQf7ejOm@stefanha-x1.localdomain> <CACycT3vo-diHgTSLw_FS2E+5ia5VjihE3qw7JmZR7JT55P-wQA@mail.gmail.com>
- <8320d26d-6637-85c6-8773-49553dfa502d@redhat.com> <YOL/9mxkJaokKDHc@stefanha-x1.localdomain>
-In-Reply-To: <YOL/9mxkJaokKDHc@stefanha-x1.localdomain>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Tue, 6 Jul 2021 11:04:18 +0800
-Message-ID: <CACycT3t-BTMrpNTwBUfbvaxTh6tLthxbo3OJwMk_iuiSpMuZPg@mail.gmail.com>
-Subject: Re: [PATCH v8 10/10] Documentation: Add documentation for VDUSE
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <CAMZfGtUbX+TAx-7RJ4ZpoNLHDa9mp6k+DBqHaYiLjhSJokh3Sw@mail.gmail.com>
+ <AEsAOwC*DyQcdDctDg-oWKqc.3.1625539281909.Hmail.wangqing@vivo.com>
+In-Reply-To: <AEsAOwC*DyQcdDctDg-oWKqc.3.1625539281909.Hmail.wangqing@vivo.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 6 Jul 2021 11:05:11 +0800
+Message-ID: <CAMZfGtXSg8YbNDFQ8xtvYd-5aDf3g255Pxo+fKSS_YME11dMaQ@mail.gmail.com>
+Subject: Re: Re: [Phishing Risk] [External] [PATCH] mm: add GFP_ATOMIC flag
+ after local_lock_irqsave
+To:     =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 8:50 PM Stefan Hajnoczi <stefanha@redhat.com> wrote:
+On Tue, Jul 6, 2021 at 10:41 AM =E7=8E=8B=E6=93=8E <wangqing@vivo.com> wrot=
+e:
 >
-> On Mon, Jul 05, 2021 at 11:36:15AM +0800, Jason Wang wrote:
-> >
-> > =E5=9C=A8 2021/7/4 =E4=B8=8B=E5=8D=885:49, Yongji Xie =E5=86=99=E9=81=
-=93:
-> > > > > OK, I get you now. Since the VIRTIO specification says "Device
-> > > > > configuration space is generally used for rarely-changing or
-> > > > > initialization-time parameters". I assume the VDUSE_DEV_SET_CONFI=
-G
-> > > > > ioctl should not be called frequently.
-> > > > The spec uses MUST and other terms to define the precise requiremen=
-ts.
-> > > > Here the language (especially the word "generally") is weaker and m=
-eans
-> > > > there may be exceptions.
-> > > >
-> > > > Another type of access that doesn't work with the VDUSE_DEV_SET_CON=
-FIG
-> > > > approach is reads that have side-effects. For example, imagine a fi=
-eld
-> > > > containing an error code if the device encounters a problem unrelat=
-ed to
-> > > > a specific virtqueue request. Reading from this field resets the er=
-ror
-> > > > code to 0, saving the driver an extra configuration space write acc=
-ess
-> > > > and possibly race conditions. It isn't possible to implement those
-> > > > semantics suing VDUSE_DEV_SET_CONFIG. It's another corner case, but=
- it
-> > > > makes me think that the interface does not allow full VIRTIO semant=
-ics.
-> >
-> >
-> > Note that though you're correct, my understanding is that config space =
-is
-> > not suitable for this kind of error propagating. And it would be very h=
-ard
-> > to implement such kind of semantic in some transports.  Virtqueue shoul=
-d be
-> > much better. As Yong Ji quoted, the config space is used for
-> > "rarely-changing or intialization-time parameters".
-> >
-> >
-> > > Agreed. I will use VDUSE_DEV_GET_CONFIG in the next version. And to
-> > > handle the message failure, I'm going to add a return value to
-> > > virtio_config_ops.get() and virtio_cread_* API so that the error can
-> > > be propagated to the virtio device driver. Then the virtio-blk device
-> > > driver can be modified to handle that.
-> > >
-> > > Jason and Stefan, what do you think of this way?
 >
-> Why does VDUSE_DEV_GET_CONFIG need to support an error return value?
+> >On Mon, Jul 5, 2021 at 9:57 PM Wang Qing <wangqing@vivo.com> wrote:
+> >>
+> >> Use GFP_ATOMIC when local_lock_irqsave in __alloc_pages_bulk
+> >>
+> >> Reported-by: syzbot+e45919db2eab5e837646@syzkaller.appspotmail.com
+> >> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> >> ---
+> >>  mm/page_alloc.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> >> index d6e94cc..3016ba5
+> >> --- a/mm/page_alloc.c
+> >> +++ b/mm/page_alloc.c
+> >> @@ -5309,7 +5309,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int =
+preferred_nid,
+> >>                 }
+> >>                 nr_account++;
+> >>
+> >> -               prep_new_page(page, 0, gfp, 0);
+> >> +               prep_new_page(page, 0, gfp | GFP_ATOMIC, 0);
+> >
+> >Hi Wang Qing,
+> >
+> >I didn't get the point here. IIUC, prep_new_page() will not allocate
+> >memory. So why do we need GFP_ATOMIC? What I missed here?
+> >
+> >Thanks.
 >
+> prep_new_page() will allocate memory in some scenarios. For details,
+> you can check the bugs detected by syzkaller:
+> https://syzkaller.appspot.com/bug?id=3D91c2030241ada0e5d21877f8f2f44c98cf=
+fc04bb
+>
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
+>  ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
+>  prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
+>  __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
+>  alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+>  stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
+>  save_stack+0x15e/0x1e0 mm/page_owner.c:120
+>  __set_page_owner+0x50/0x290 mm/page_owner.c:181
+>  prep_new_page mm/page_alloc.c:2445 [inline]
+>  __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
 
-We add a timeout and return error in case userspace never replies to
-the message.
+Got it. But I don't think the fix you mentioned above was
+appropriate. What if GFP_KERNEL | GFP_ATOMIC?
 
-> The VIRTIO spec provides no way for the device to report errors from
-> config space accesses.
->
-> The QEMU virtio-pci implementation returns -1 from invalid
-> virtio_config_read*() and silently discards virtio_config_write*()
-> accesses.
->
-> VDUSE can take the same approach with
-> VDUSE_DEV_GET_CONFIG/VDUSE_DEV_SET_CONFIG.
->
+Thanks.
 
-I noticed that virtio_config_read*() only returns -1 when we access a
-invalid field. But in the VDUSE case, VDUSE_DEV_GET_CONFIG might fail
-when we access a valid field. Not sure if it's ok to silently ignore
-this kind of error.
-
-Thanks,
-Yongji
+>
+> Thanks.
+>
+> Qing
+>
+> >
+> >>                 if (page_list)
+> >>                         list_add(&page->lru, page_list);
+> >>                 else
+> >> --
+> >> 2.7.4
+> >>
+>
+>
