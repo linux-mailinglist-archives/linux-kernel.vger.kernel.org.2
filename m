@@ -2,58 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E184E3BD479
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5DB3BD553
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 14:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243915AbhGFMKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 08:10:12 -0400
-Received: from angie.orcam.me.uk ([78.133.224.34]:60388 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238015AbhGFLiT (ORCPT
+        id S238071AbhGFMTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 08:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242825AbhGFMDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:38:19 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 0B6BD920110; Tue,  6 Jul 2021 13:35:40 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 08FB69200CE;
-        Tue,  6 Jul 2021 13:35:40 +0200 (CEST)
-Date:   Tue, 6 Jul 2021 13:35:39 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Nikolai Zhubr <zhubr.2@gmail.com>
-cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@kernel.org>,
-        x86@kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/PCI: Handle PIRQ routing tables with no router device
- given
-In-Reply-To: <60E43052.8040802@gmail.com>
-Message-ID: <alpine.DEB.2.21.2107061330490.1711@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2107051133010.33206@angie.orcam.me.uk> <60E43052.8040802@gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Tue, 6 Jul 2021 08:03:00 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE49C0A8886
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 04:38:35 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1m0jOz-0004xP-Sv; Tue, 06 Jul 2021 13:38:09 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1m0jOw-0008Aw-5G; Tue, 06 Jul 2021 13:38:06 +0200
+Date:   Tue, 6 Jul 2021 13:38:06 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Oleksij Rempel <linux@rempel-privat.de>, kernel@pengutronix.de,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
+        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-can@vger.kernel.org
+Subject: Re: [PATCH net] can: j1939: j1939_xtp_rx_dat_one(): fix rxtimer
+ value between consecutive TP.DT to 750ms
+Message-ID: <20210706113806.tgcijzi5z7kxhiw2@pengutronix.de>
+References: <1625569210-47506-1-git-send-email-zhangchangzhong@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1625569210-47506-1-git-send-email-zhangchangzhong@huawei.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 13:35:02 up 216 days,  1:41, 45 users,  load average: 0.01, 0.04,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nikolai,
-
-> > PIRQ routing tables provided by the PCI BIOS usually specify the PCI
-> > vendor:device ID as well as the bus address of the device implementing
-> > the PIRQ router, e.g.:
-> [...]
-> > linux-x86-pirq-router-nodev.diff
+On Tue, Jul 06, 2021 at 07:00:08PM +0800, Zhang Changzhong wrote:
+> For receive side, the max time interval between two consecutive TP.DT
+> should be 750ms.
 > 
-> This one throws a panic in bus_find_device() here.
-> I can not yet get a good printout because scrollback does not work.
-> Maybe it is because of 4.14 kernel, and in order to apply it I had to change
-> pci_get_domain_bus_and_slot back to pci_get_bus_and_slot.
-> I'll try to also test with 5.x kernel later today.
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 
- Umm, my bad; I missed the initialisation of `dev' for `for_each_pci_dev'.  
-I have posted v2, with another `dev'-related fix as well.  Please try that 
-instead, and sorry for the mess-up.
+ACK,
+according to: SAE-J1939-21: T1 time is 750ms
+according to: ISO 11783-3: T1 time is <=750ms
 
-  Maciej
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+
+> ---
+>  net/can/j1939/transport.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index c3946c3..4113229 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -1869,7 +1869,7 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+>  		if (!session->transmission)
+>  			j1939_tp_schedule_txtimer(session, 0);
+>  	} else {
+> -		j1939_tp_set_rxtimeout(session, 250);
+> +		j1939_tp_set_rxtimeout(session, 750);
+>  	}
+>  	session->last_cmd = 0xff;
+>  	consume_skb(se_skb);
+> -- 
+> 2.9.5
+> 
+> 
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
