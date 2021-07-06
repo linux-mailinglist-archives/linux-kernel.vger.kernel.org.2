@@ -2,155 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963383BC5D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 06:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57ECD3BC5D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 07:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbhGFE5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 00:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
+        id S230019AbhGFFC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 01:02:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhGFE5j (ORCPT
+        with ESMTP id S229963AbhGFFC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 00:57:39 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3124C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 21:55:01 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id p8so24451932wrr.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 21:55:01 -0700 (PDT)
+        Tue, 6 Jul 2021 01:02:57 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBDBC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Jul 2021 22:00:15 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id t3so26189125edt.12
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Jul 2021 22:00:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1hc5y9q+TR2gB81GfeKnlJ2OJ7hAe1yiB6F6WVE1b04=;
-        b=Vo0NvDOtXpZqpu8HwooztgFhqnXwtxxCN/pfxoWQhRpoFnaXyd8bBD4VhDN1wpPgUR
-         hDqOXAW5qJI1qgQIG7ShqKgUkrn34D7naCbNl2V5M32IXqSxkiYmSSFbhQdb9ighGiw8
-         dofPpqPJakmJqkk9skT+jCXel1SgfIXK8WIa3DnsR/6fK0Xk7JiZq9eDO6zDfb/gK7Mv
-         IGNGQYXysjvbRMzP0BKnJXFMmxO5Kc0rsh00/m+YUQkZclCW4jNtvjEl2hv5M8kf4zap
-         6bJBVExOR/7dUP+YgKPXAgymJVECIjpVgEMwLJkHx3uUFfXRsHh1WgwxTuSzPb7+MTsj
-         y5fw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OWON0C/Or9+ya+RE2j2G77Yk1T2sTxIEFoSDvz8HHlc=;
+        b=JpRj/5h6fARkqrrr6mIFZMkl8QpkKtlwVKK0Q0vmlZTCKEJTsUoM3cF4I0pdxfVCB0
+         PUnlRtZ/KaARZTXIki2AT72PDW7J7Ahx6xHoMnQ8PgFMqrbgsvGFe1WNTJ6KFAY5HgO0
+         63cSvL78tydN5b2xrQJoX12JA3k2sdqDoFGbp5rKj6RiEcCaIlPfygULw9p9Gs1DR3Wr
+         /M+9c2/BpOGUEmxAijdUCtLaLm4T0zFHDMl3F3fzeIBvxH5ZlTWm46YO8Ok+9ResQb0R
+         hOIRfskCgRezNZYoc70p5DLiiH4nH5z2jYHp2BTNdW/vwypFgW+NaHj0BT20k1nXZiPx
+         0NMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1hc5y9q+TR2gB81GfeKnlJ2OJ7hAe1yiB6F6WVE1b04=;
-        b=t3Rp8XSaQgf3QcZatyzWCaGuR3eJzbXmdrMzgAWwsb0nRYg8Ci257brC8ktOW5n/pt
-         6hLAMSyiE3DeJP0dNVfuoh8nQ6ltbLnQ91YUOi6P8YyVcEuoSZMrGq+elUyjxQBOaIIB
-         RD4t4kuzJWhN9w68f8JzlEbDxtgqfBHcKKdrHwHnPHIniItAU93o9fEggsH2xy5Nkw0B
-         P46Afd87WS3RX4wJdAkml/mLAgqyJcvDsmOzZcscJLEByG08Jmo9NKWrF2JbLm5WNvdq
-         8wT8ZC5oAA27LZELP1ceGDSL2RJmKWndaCq9gZY5jYcJhO5o8bVH8nQ+vaWBpX0oriXv
-         xbYA==
-X-Gm-Message-State: AOAM531yumaMydahDocMEmNooiIc6iR6W7eH4h7Zcb3qUej0KdYPjkoG
-        HHDI7RbzTdjkFkiXfDoJHBktJQ==
-X-Google-Smtp-Source: ABdhPJw+P21r6CvwrBZSNQgijgok+s56/uFzstudBtkwxQf8+GJWobkbF+8fRoQ/Wy1n/zJPpx10YA==
-X-Received: by 2002:adf:a41e:: with SMTP id d30mr1078685wra.10.1625547300130;
-        Mon, 05 Jul 2021 21:55:00 -0700 (PDT)
-Received: from enceladus (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
-        by smtp.gmail.com with ESMTPSA id s17sm14919717wrt.58.2021.07.05.21.54.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 21:54:59 -0700 (PDT)
-Date:   Tue, 6 Jul 2021 07:54:55 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>, davem@davemloft.net,
-        kuba@kernel.org, linuxarm@openeuler.org, yisen.zhuang@huawei.com,
-        salil.mehta@huawei.com, thomas.petazzoni@bootlin.com,
-        mw@semihalf.com, linux@armlinux.org.uk, hawk@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        akpm@linux-foundation.org, peterz@infradead.org, will@kernel.org,
-        willy@infradead.org, vbabka@suse.cz, fenghua.yu@intel.com,
-        guro@fb.com, peterx@redhat.com, feng.tang@intel.com, jgg@ziepe.ca,
-        mcroce@microsoft.com, hughd@google.com, jonathan.lemon@gmail.com,
-        alobakin@pm.me, willemb@google.com, wenxu@ucloud.cn,
-        cong.wang@bytedance.com, haokexin@gmail.com, nogikh@google.com,
-        elver@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
- based on elevated refcnt
-Message-ID: <YOPiHzVkKhdHmxLB@enceladus>
-References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
- <1625044676-12441-2-git-send-email-linyunsheng@huawei.com>
- <6c2d76e2-30ce-5c0f-9d71-f6b71f9ad34f@redhat.com>
- <ec994486-b385-0597-39f7-128092cba0ce@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OWON0C/Or9+ya+RE2j2G77Yk1T2sTxIEFoSDvz8HHlc=;
+        b=tYv9taJ2KX7+LWkVscpO/WRv6k4nXEnmzprsUsxh4zKnhSNXbxkRGzQdyja+td+FCw
+         oL5aYH160lOrxWH6ca/fw43j2KpiXOL+XlNIqKx4YrBAUdMkze9HT2WAqmgHk89GqRx9
+         uE2GjAXLDXzCtNETv4vnquSFDq3/igsbFuWqqVC5Vrhdx5q7zBjGD/FdGeNirSuhheZG
+         qXNb3s8cJoQBO+m+/u/OnBTrfy2Kf2Et5zNLKis+jiq2fLCFrDqP0qHTilEFmHaH6svf
+         aoqR1N1RXTTh2i4AvHudINXU1lXOFQbXoI4RFzF0nzVAozw+drYpTw1sXOtDE7tiePug
+         KgWw==
+X-Gm-Message-State: AOAM531RJWaEyfGB9p+MLqpJv7Hpge84H1tUA4vuDsV/bSTur2b7ngef
+        6/AzEgTiWwCwfHbKCKzuUFayfav+OWsca5KoQzX4yw==
+X-Google-Smtp-Source: ABdhPJw7UEQyBkUGIFi2G7BgcRszfz18UpwSuERJan/FflE7hoF3u6D8KFDIzZCB0VVHm2mrEfjZaWn81gJg1BKS9WQ=
+X-Received: by 2002:a05:6402:90a:: with SMTP id g10mr20295492edz.365.1625547613531;
+ Mon, 05 Jul 2021 22:00:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ec994486-b385-0597-39f7-128092cba0ce@huawei.com>
+References: <20210705105957.1513284-1-sashal@kernel.org>
+In-Reply-To: <20210705105957.1513284-1-sashal@kernel.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 6 Jul 2021 10:30:02 +0530
+Message-ID: <CA+G9fYvL5tPNNhpjrSFio84kLd_m9sriTobo3Lpwc7E6innDPQ@mail.gmail.com>
+Subject: Re: [PATCH 5.10 0/7] 5.10.48-rc1 review
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yunsheng,
+On Mon, 5 Jul 2021 at 16:30, Sasha Levin <sashal@kernel.org> wrote:
+>
+>
+> This is the start of the stable review cycle for the 5.10.48 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed 07 Jul 2021 10:59:49 AM UTC.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git/patch/?id=3Dlinux-5.10.y&id2=3Dv5.10.47
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> Thanks,
+> Sasha
+>
 
-Thanks for having a look!
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-On Fri, Jul 02, 2021 at 06:15:13PM +0800, Yunsheng Lin wrote:
-> On 2021/7/2 17:42, Jesper Dangaard Brouer wrote:
-> > 
-> > On 30/06/2021 11.17, Yunsheng Lin wrote:
-> >> Currently page pool only support page recycling only when
-> >> refcnt of page is one, which means it can not support the
-> >> split page recycling implemented in the most ethernet driver.
-> > 
-> > Cc. Alex Duyck as I consider him an expert in this area.
-> 
-> Thanks.
-> 
-> > 
-> > 
-> >> So add elevated refcnt support in page pool, and support
-> >> allocating page frag to enable multi-frames-per-page based
-> >> on the elevated refcnt support.
-> >>
-> >> As the elevated refcnt is per page, and there is no space
-> >> for that in "struct page" now, so add a dynamically allocated
-> >> "struct page_pool_info" to record page pool ptr and refcnt
-> >> corrsponding to a page for now. Later, we can recycle the
-> >> "struct page_pool_info" too, or use part of page memory to
-> >> record pp_info.
-> > 
-> > I'm not happy with allocating a memory (slab) object "struct page_pool_info" per page.
-> > 
-> > This also gives us an extra level of indirection.
-> 
-> I'm not happy with that either, if there is better way to
-> avoid that, I will be happy to change it:)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-I think what we have to answer here is, do we want and does it make sense
-for page_pool to do the housekeeping of the buffer splitting or are we
-better of having each driver do that.  IIRC your previous patch on top of
-the original recycling patchset was just 'atomic' refcnts on top of page pool.
+## Build
+* kernel: 5.10.48-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.10.y
+* git commit: dd50b7327ff62c603651aef64089569dd293b34d
+* git describe: v5.10.47-7-gdd50b7327ff6
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.47-7-gdd50b7327ff6
 
-I think I'd prefer each driver having it's own meta-data of how he splits
-the page, mostly due to hardware diversity, but tbh I don't have any
-strong preference atm.
+## No regressions (compared to v5.10.47)
 
-> 
-> > 
-> > 
-> > You are also adding a page "frag" API inside page pool, which I'm not 100% convinced belongs inside page_pool APIs.
-> > 
-> > Please notice the APIs that Alex Duyck added in mm/page_alloc.c:
-> 
-> Actually, that is where the idea of using "page frag" come from.
-> 
-> Aside from the performance improvement, there is memory usage
-> decrease for 64K page size kernel, which means a 64K page can
-> be used by 32 description with 2k buffer size, and that is a
-> lot of memory saving for 64 page size kernel comparing to the
-> current split page reusing implemented in the driver.
-> 
-
-Whether the driver or page_pool itself keeps the meta-data, the outcome
-here won't change.  We'll still be able to use page frags.
+## No fixes (compared to v5.10.47)
 
 
-Cheers
-/Ilias
-> 
-> > 
-> >  __page_frag_cache_refill() + __page_frag_cache_drain() + page_frag_alloc_align()
-> > 
-> > 
-> 
-> [...]
+## Test result summary
+ total: 76152, pass: 63402, fail: 1638, skip: 10082, xfail: 1030,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
