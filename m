@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF8B3BD8DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C39DC3BD849
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Jul 2021 16:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbhGFOt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 10:49:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40690 "EHLO
+        id S232287AbhGFOgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 10:36:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46302 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232134AbhGFOtz (ORCPT
+        by vger.kernel.org with ESMTP id S232321AbhGFOfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:49:55 -0400
+        Tue, 6 Jul 2021 10:35:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625582835;
+        s=mimecast20190719; t=1625581683;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cn4J7G4tuvS6OiK2L10T2Hq0RndQq16jPtOwTvn2o60=;
-        b=T7l6yaEMKKvY/ZiQ7ROXYVROT4fk2lPpCh0U+/l3zsR9GyTWF2lELq2x1laZ1nyhhtykYu
-        8kiDSuumKqfTgZWm1Z1buAzY6dxpimsdW38tBOgzveImFeAlmAbcaC8k9VRvsM5jSXn3Lj
-        9mkFOt9POm2upXCGqonBDSHaqJYzRuY=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-489-HLr9QX-RNeKVDcQLh62_Mw-1; Tue, 06 Jul 2021 09:56:58 -0400
-X-MC-Unique: HLr9QX-RNeKVDcQLh62_Mw-1
-Received: by mail-ed1-f70.google.com with SMTP id n13-20020a05640206cdb029039589a2a771so2907857edy.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 06:56:58 -0700 (PDT)
+        bh=EKUrcUoZRPh3vlCTbwVSchVaWqNiyUJJrYB0Hptcx60=;
+        b=iLjVK9pg/pofYIDtYNLWFRGQH77l0jAh9Y6dHcMyQcGWQcLRxH4gI748oy3k+vvOU4X+IC
+        fRLnuuM6YrifbXuJqk0r84xr5jYDrbApvUdhPjTq2ecEuaM+hloxt5xRCpj3AlVr6jUrg0
+        Xrawqf2Z0EXLIH8UiObnL8m0ZWD44qI=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-595-4-DZ0fhBNV2muJXKt-ZfXg-1; Tue, 06 Jul 2021 09:57:51 -0400
+X-MC-Unique: 4-DZ0fhBNV2muJXKt-ZfXg-1
+Received: by mail-ej1-f72.google.com with SMTP id f1-20020a1709064941b02903f6b5ef17bfso5827343ejt.20
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 06:57:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=cn4J7G4tuvS6OiK2L10T2Hq0RndQq16jPtOwTvn2o60=;
-        b=kXNSaS/zHjacl/dj/BTxqGQ2tm2+fkEKTG9p9fga4ATpW9TykvRpiI/YZ9xrUsLebM
-         9JvmNQ59s4UMiSNblg0oiWYBfbguqs2vKpn7B5bSN3DeVIee1j0xOtzmp7/H9jl5CuMC
-         ujUnqnlWVGPJ1kmACA2F3hdSBGEEwH6pAAWob8yjCnX98oSs3k+UuPcUqa/9bOUUVKsF
-         OJV0CFnd4FCSOx/AaO2AGsHwb6ttgjV9Q3wLRXsISH+wsYB0/2ExLn3niBH3mbNvsyKX
-         sHc7XBFDq4ok2PuBUXJmHJDgVeQLdJO2vuiB8BuL/lmISTF5ciQ2+9YnSKSimVaBobmr
-         lbgw==
-X-Gm-Message-State: AOAM532Br3Axag1ip4QKtARuwaFEx/nIFwsz/Hr3kg1UtxNTNDDF/Cz4
-        QfZ4IYp1yZIjyV/0H0XD0fZyO5I78I9/mEOIA3z40Znf8V7xCLVLiHpPWWOIscJMXEZc3kjDV/w
-        y0Kj+zOFNBqivsasxyg8ij3HA
-X-Received: by 2002:a05:6402:10cc:: with SMTP id p12mr23684322edu.328.1625579817781;
-        Tue, 06 Jul 2021 06:56:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzBEjrKLA2on/19nD0Yrx16CtK6qfZTo+SZiIj4Qb4FDWHAn0TYddMFnDv/qyTK4JPOFjaIjA==
-X-Received: by 2002:a05:6402:10cc:: with SMTP id p12mr23684293edu.328.1625579817648;
-        Tue, 06 Jul 2021 06:56:57 -0700 (PDT)
+        bh=EKUrcUoZRPh3vlCTbwVSchVaWqNiyUJJrYB0Hptcx60=;
+        b=grHqQ4mpqwG5d3jrkeqB3LC8JQEWTBLstwsWeNmhgf+BApvHM/to4Y+rKXoyzeVC2+
+         ScHW7AZ94oDvJ+LhMa/dEujbKtlC9BmHx61fdOkxNQJCoeVJXtM/bmbh9/uHeexF6Xun
+         0ujtD6zsk4voCvH6vJjTC1B6SiwwfkDL7lnWw8G5wXz9PlJsN9WecIdjVo20Hl02zEQF
+         NRyLmX4EX3IDVlI3g7D5Ljs0Za4rO4UdGoq3i6UzocbQgk33TB7vg5qop5PbbEcqg2n4
+         LovaadLrPYYC/Te77HFnR0+ZY2xIKLiPWDBRYwvdsb9J5dHRJyErY20/D8OymOVukGp9
+         W99A==
+X-Gm-Message-State: AOAM532bX1+ZkfOc4W118FbkX1QRDQzB6/1fCZk8YwpAtmuXVGVlWIEd
+        eg6CUIL/mhubQX+AiBgAYAehTDuED+2EWE2z6vhfTHDv+ilyMU1nRNJx3rarMSBye8gcpj0XNch
+        fb70Tco+IKR0gRXWAU4h7szrd
+X-Received: by 2002:a05:6402:270e:: with SMTP id y14mr23712400edd.124.1625579869842;
+        Tue, 06 Jul 2021 06:57:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxAJ2tJamj+uOohOlQ6tz0WpswCJAoTzbdSOGDk+teLqVwo1R0UQ6ELupJ0rPb2msysmGXkrQ==
+X-Received: by 2002:a05:6402:270e:: with SMTP id y14mr23712370edd.124.1625579869708;
+        Tue, 06 Jul 2021 06:57:49 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id ec40sm7301496edb.57.2021.07.06.06.56.56
+        by smtp.gmail.com with ESMTPSA id q23sm1720075edt.22.2021.07.06.06.57.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 06:56:57 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 22/69] KVM: x86: Add vm_type to differentiate
- legacy VMs from protected VMs
+        Tue, 06 Jul 2021 06:57:48 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 23/69] KVM: x86: Hoist kvm_dirty_regs check out of
+ sync_regs()
 To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H . Peter Anvin" <hpa@zytor.com>,
@@ -65,17 +65,16 @@ To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
         Sean Christopherson <seanjc@google.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
+        Sean Christopherson <sean.j.christopherson@intel.com>
 References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <8eb87cd52a89d957af03f93a9ece5634426a7757.1625186503.git.isaku.yamahata@intel.com>
+ <889017a8d31cea46472e0c64b234ef5919278ed9.1625186503.git.isaku.yamahata@intel.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <e2270f66-abd8-db17-c3bd-b6d9459624ec@redhat.com>
-Date:   Tue, 6 Jul 2021 15:56:55 +0200
+Message-ID: <98f9f005-67c5-39ba-0be8-8a752604fdd1@redhat.com>
+Date:   Tue, 6 Jul 2021 15:57:46 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <8eb87cd52a89d957af03f93a9ece5634426a7757.1625186503.git.isaku.yamahata@intel.com>
+In-Reply-To: <889017a8d31cea46472e0c64b234ef5919278ed9.1625186503.git.isaku.yamahata@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -84,11 +83,44 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+> 
+> Move the kvm_dirty_regs vs. KVM_SYNC_X86_VALID_FIELDS check out of
+> sync_regs() and into its sole caller, kvm_arch_vcpu_ioctl_run().  This
+> allows a future patch to allow synchronizing select state for protected
+> VMs.
+> 
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>   arch/x86/kvm/x86.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index d7110d48cbc1..271245ffc67c 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9729,7 +9729,8 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>   		goto out;
+>   	}
 >   
->   struct kvm_arch {
-> +	unsigned long vm_type;
+> -	if (kvm_run->kvm_valid_regs & ~KVM_SYNC_X86_VALID_FIELDS) {
+> +	if ((kvm_run->kvm_valid_regs & ~KVM_SYNC_X86_VALID_FIELDS) ||
+> +	    (kvm_run->kvm_dirty_regs & ~KVM_SYNC_X86_VALID_FIELDS)) {
+>   		r = -EINVAL;
+>   		goto out;
+>   	}
+> @@ -10264,9 +10265,6 @@ static void store_regs(struct kvm_vcpu *vcpu)
+>   
+>   static int sync_regs(struct kvm_vcpu *vcpu)
+>   {
+> -	if (vcpu->run->kvm_dirty_regs & ~KVM_SYNC_X86_VALID_FIELDS)
+> -		return -EINVAL;
+> -
+>   	if (vcpu->run->kvm_dirty_regs & KVM_SYNC_X86_REGS) {
+>   		__set_regs(vcpu, &vcpu->run->s.regs.regs);
+>   		vcpu->run->kvm_dirty_regs &= ~KVM_SYNC_X86_REGS;
+> 
 
-Also why not just int or u8?
-
-Paolo
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
