@@ -2,51 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AAF3BF09A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729DF3BF09D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233100AbhGGUJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 16:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60154 "EHLO
+        id S233114AbhGGULk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 16:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbhGGUJS (ORCPT
+        with ESMTP id S230296AbhGGULj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 16:09:18 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C268C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 13:06:36 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id 128-20020a4a11860000b029024b19a4d98eso801926ooc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 13:06:36 -0700 (PDT)
+        Wed, 7 Jul 2021 16:11:39 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9998C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 13:08:57 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id s24so4882544oiw.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 13:08:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version;
-        bh=6qeso0vnhBwFs3iCYpWzxPK0i6KQqKKfr8ULWEkbKXE=;
-        b=E4XHqX1GTIF3abK36LazO2Q/rAwhiw0uDpwxHRBjNPI0ptyVYh43DYr17icgNSzNtB
-         0/l/8Pqy8JjsnqgavgUC69qzF0JNtN+UGO1Hb1cDGMQOkF2hSSx6+RbyIHdblu2e26dB
-         3ObW5x1VTMLukGemHCj8VN/+JPYeOwwkBEnNJZKDlQPpkB+2g4uHfB+yRj19WmejuxrQ
-         C1NyxojgX1ducwOiw4uUespqSgx8+tGJSDH8u5fhcG1l/EcTS3AudTXMYxx3bgpMmFZq
-         WlTEGxCDfxB9UXGyu0goYz33hEhKhJYCWR04ludzqgYKCiID6ohesXIVBi22LvODtxZU
-         6woQ==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=AEUjbJEHgjwZH84O8/yOmL96IkupdJt703GIG/Lw/Sw=;
+        b=aIfEXDg7X8c6i6RMt2XjPCogxnvkLnZWUZiLZ79qAP2eZuzQiThqTe/Wt23LFK/d7N
+         k5hF8xQNkmVcxNu3wCGxN8L3VJungjMW9tWj0G+iUEcY6hZlHdjRSKfQzIIf+z+y9Jzh
+         QNficFcQho0jB2dIVnAssiHtmbwVSgh8cAQI56fRqelW/syOtyiwPFHRwF9M86BFkIFW
+         QvQXm/BAjmg/ClC5HPMT/QsmFc1D5/6INGIn9IUq4Yq2yLZOr+9X116mQy+W8Hzar+qh
+         QieIJ96JHJlqH6Wnxd7BDUWPkIvipTfS9+3awv6YTUQ438T23gxjXb/F2y3VlzRa5z/j
+         ZgGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version;
-        bh=6qeso0vnhBwFs3iCYpWzxPK0i6KQqKKfr8ULWEkbKXE=;
-        b=R+4hRt8RZbRIc9+IfkSXBqOVuGK+8NYrAq58ZZyqDJDJpmfD/Mn2tt8nFJR7frxJGT
-         +MyBstMRcNkbbRqktt5D+yhPuuIcU94O95sWKTW9KVqjkunDqI/gmXpr/6KIIobON/WF
-         LYEL2J4AdYPh5HyLaSonfN+A07zEJNw6PwagExXieQAwhSOyyAkb/sCHT9tpBgdONGAE
-         k8XxNYjoZpvHrg8QD/my5urY+wb4YihfZaskZXZcDmb5RHsBSwwKX+uIc7buXmMrJfKl
-         cXMbkm+IFXyrzaahDhE4UYr+JXjgMgifIQLNP+jUVuEVx6gimxybXRkpwQVRFjM6N4lV
-         yGng==
-X-Gm-Message-State: AOAM530mfgJ1g/zuD8GtWBA+JgWDym+MUOEv1HWTpi4aIuYf3uvxpqKW
-        Pkx9soLffSaZwZgtxt6815phXQ==
-X-Google-Smtp-Source: ABdhPJyi4Lm5LdstNhafbuakxVCafg4zCdocLCQA6UnRmid6Qr2q0/4YqFwgBUmok/SVzq5TKaqulg==
-X-Received: by 2002:a4a:9e02:: with SMTP id t2mr19518865ook.73.1625688395773;
-        Wed, 07 Jul 2021 13:06:35 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=AEUjbJEHgjwZH84O8/yOmL96IkupdJt703GIG/Lw/Sw=;
+        b=YTqV+CcJbmtsh4bF0atJgLtOFU7e5YaOy+td7AfhRnpkf3KVkL4n65n3dO37WFccun
+         EnNMWfE5k7tUQ50rYl/UzzMjMIXfsSDW2WJB58vOZgQrrN78s3iAHIbcLUca/bmTWwX3
+         OAWNjI7p7XfVcQ0ZuYezXu7PmYGNqZ7DBQkhpxPztOACWvWXPknXFF/QkL/S+JvWCrDk
+         3q/zpMyNhK6TuSCJe2QTo+vsQUq0XIc8+me2nnLzbGe2cHHSDI0SeKoOdt8U1SAg8/f+
+         R5LGn2XRpoBmsGx+S6VxAOPiJDR1AHLNL0ibc4wEGD4iZIObOvp2CBHFvbcOPssck9zE
+         KBIg==
+X-Gm-Message-State: AOAM533VBe7vXgihSC3cJ9oiPQ3RIDnd86sh86zqMwUJNT/50Hop/ot7
+        mjsH9tDRnb6AntMq+z+v0XMoOQ==
+X-Google-Smtp-Source: ABdhPJwtImQxt1QzEcdZdsVyVe8aD+gMiqiWoksjK7o9JOc9vBTzXLdVlrO6UFB4z710wRyFTr0zXQ==
+X-Received: by 2002:aca:db44:: with SMTP id s65mr11399367oig.139.1625688536945;
+        Wed, 07 Jul 2021 13:08:56 -0700 (PDT)
 Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id x29sm3635856ooj.10.2021.07.07.13.06.34
+        by smtp.gmail.com with ESMTPSA id 25sm3729500oir.58.2021.07.07.13.08.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 13:06:35 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 13:06:17 -0700 (PDT)
+        Wed, 07 Jul 2021 13:08:56 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 13:08:53 -0700 (PDT)
 From:   Hugh Dickins <hughd@google.com>
 X-X-Sender: hugh@ripple.anvils
 To:     Andrew Morton <akpm@linux-foundation.org>
@@ -58,74 +60,70 @@ cc:     Hugh Dickins <hughd@google.com>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         Shakeel Butt <shakeelb@google.com>,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 1/4] mm/rmap: fix comments left over from recent changes
-Message-ID: <563ce5b2-7a44-5b4d-1dfd-59a0e65932a9@google.com>
+Subject: [PATCH 2/4] mm/rmap: fix old bug: munlocking THP missed other
+ mlocks
+In-Reply-To: <563ce5b2-7a44-5b4d-1dfd-59a0e65932a9@google.com>
+Message-ID: <cfa154c-d595-406-eb7d-eb9df730f944@google.com>
+References: <563ce5b2-7a44-5b4d-1dfd-59a0e65932a9@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Parallel developments in mm/rmap.c have left behind some out-of-date
-comments: try_to_migrate_one() also accepts TTU_SYNC (already commented
-in try_to_migrate() itself), and try_to_migrate() returns nothing at all.
+The kernel recovers in due course from missing Mlocked pages: but there
+was no point in calling page_mlock() (formerly known as try_to_munlock())
+on a THP, because nothing got done even when it was found to be mapped in
+another VM_LOCKED vma.
 
-TTU_SPLIT_FREEZE has just been deleted, so reword the comment about it in
-mm/huge_memory.c; and TTU_IGNORE_ACCESS was removed in 5.11, so delete
-the "recently referenced" comment from try_to_unmap_one() (once upon a
-time the comment was near the removed codeblock, but they drifted apart).
+It's true that we need to be careful: Mlocked accounting of pte-mapped
+THPs is too difficult (so consistently avoided); but Mlocked accounting
+of only-pmd-mapped THPs is supposed to work, even when multiple mappings
+are mlocked and munlocked or munmapped.  Refine the tests.
 
+There is already a VM_BUG_ON_PAGE(PageDoubleMap) in page_mlock(), so
+page_mlock_one() does not even have to worry about that complication.
+
+(I said the kernel recovers: but would page reclaim be likely to split
+THP before rediscovering that it's VM_LOCKED? I've not followed that up.)
+
+Fixes: 9a73f61bdb8a ("thp, mlock: do not mlock PTE-mapped file huge pages")
 Signed-off-by: Hugh Dickins <hughd@google.com>
 ---
- mm/huge_memory.c | 2 +-
- mm/rmap.c        | 7 +------
- 2 files changed, 2 insertions(+), 7 deletions(-)
+ mm/rmap.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 8b731d53e9f4..afff3ac87067 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2331,7 +2331,7 @@ static void remap_page(struct page *page, unsigned int nr)
- {
- 	int i;
- 
--	/* If TTU_SPLIT_FREEZE is ever extended to file, remove this check */
-+	/* If unmap_page() uses try_to_migrate() on file, remove this check */
- 	if (!PageAnon(page))
- 		return;
- 	if (PageTransHuge(page)) {
 diff --git a/mm/rmap.c b/mm/rmap.c
-index 37c24672125c..746013e282c3 100644
+index 746013e282c3..0e83c3be8568 100644
 --- a/mm/rmap.c
 +++ b/mm/rmap.c
-@@ -1439,8 +1439,6 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
- 	while (page_vma_mapped_walk(&pvmw)) {
- 		/*
- 		 * If the page is mlock()d, we cannot swap it out.
--		 * If it's recently referenced (perhaps page_referenced
--		 * skipped over this mm) then we should reactivate it.
+@@ -1442,8 +1442,9 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
  		 */
  		if (!(flags & TTU_IGNORE_MLOCK)) {
  			if (vma->vm_flags & VM_LOCKED) {
-@@ -1687,8 +1685,7 @@ void try_to_unmap(struct page *page, enum ttu_flags flags)
-  * @arg: enum ttu_flags will be passed to this argument.
-  *
-  * If TTU_SPLIT_HUGE_PMD is specified any PMD mappings will be split into PTEs
-- * containing migration entries. This and TTU_RMAP_LOCKED are the only supported
-- * flags.
-+ * containing migration entries.
-  */
- static bool try_to_migrate_one(struct page *page, struct vm_area_struct *vma,
- 		     unsigned long address, void *arg)
-@@ -1928,8 +1925,6 @@ static bool try_to_migrate_one(struct page *page, struct vm_area_struct *vma,
-  *
-  * Tries to remove all the page table entries which are mapping this page and
-  * replace them with special swap entries. Caller must hold the page lock.
-- *
-- * If is successful, return true. Otherwise, false.
-  */
- void try_to_migrate(struct page *page, enum ttu_flags flags)
- {
+-				/* PTE-mapped THP are never mlocked */
+-				if (!PageTransCompound(page)) {
++				/* PTE-mapped THP are never marked as mlocked */
++				if (!PageTransCompound(page) ||
++				    (PageHead(page) && !PageDoubleMap(page))) {
+ 					/*
+ 					 * Holding pte lock, we do *not* need
+ 					 * mmap_lock here
+@@ -1984,9 +1985,11 @@ static bool page_mlock_one(struct page *page, struct vm_area_struct *vma,
+ 		 * munlock_vma_pages_range().
+ 		 */
+ 		if (vma->vm_flags & VM_LOCKED) {
+-			/* PTE-mapped THP are never mlocked */
+-			if (!PageTransCompound(page))
+-				mlock_vma_page(page);
++			/*
++			 * PTE-mapped THP are never marked as mlocked, but
++			 * this function is never called when PageDoubleMap().
++			 */
++			mlock_vma_page(page);
+ 			page_vma_mapped_walk_done(&pvmw);
+ 		}
+ 
 -- 
 2.26.2
 
