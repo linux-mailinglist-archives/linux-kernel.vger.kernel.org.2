@@ -2,120 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B58D3BE5F7
+	by mail.lfdr.de (Postfix) with ESMTP id B4C3F3BE5F8
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhGGJyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:54:16 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:52237 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231382AbhGGJyL (ORCPT
+        id S231383AbhGGJyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:54:19 -0400
+Received: from mail-m118208.qiye.163.com ([115.236.118.208]:35846 "EHLO
+        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231362AbhGGJyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:54:11 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 3761E2B007A7;
-        Wed,  7 Jul 2021 05:51:30 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 07 Jul 2021 05:51:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=WSJ1elncdkKB2
-        GBmNc1T6E2h3Za7yGocjy6KSumGTP0=; b=efJGcFmzfYygmNAM2kqwTx/9GfdHF
-        J72RLIIeJ4vGeloz+k2nZriDw6EZ/DZraKjYYe26zo501Nh4D3+6ifgj76CjF+VF
-        ZVPXOXsHXYegi7MA4vW1Q0W+QQdfIt3d4P1qFZJogvOm20Z9QmhJ+pU1yziy6NBv
-        ZfvFHh6qQHkZ3Nn7XtDsksYJtKonwAySs1OnFieNH63aF8qpYljatH6zC1Y2oDGW
-        3n2tmFkQ+BqLO8BiPk1HpulqgqQQYUqrJCf7AQBKmFB4YfyIrLwIjbZOI4yN+Unt
-        rVgMKc0luA5HZVl5z5A9KiJWyK+4eMcdMT0JlVJbn/a6gxT5F/60PDuLw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=WSJ1elncdkKB2GBmNc1T6E2h3Za7yGocjy6KSumGTP0=; b=lJP04q6A
-        +CmAFBgm2kHOeYttMEB9NCarU460yg5ha8jK7Q70egtMQPlVvq+czSZA10mlD9pg
-        AKiZn7zP2T5VHPHsI8tox0XjnFuT4XnviO7+41ZoKGHLacjynLCg+4sORYv2QXql
-        RX3P62JJaWMgyyPgToZzojR+T+2hJuj7FWGo8ppX9Z660B28lN9FXy0GtXWhIGpn
-        zaahWjvMo+2W7Y9taRo+I0T5Hi7+Q14rEHzQqX8Nbj+RMyz6rq9wClAHK8BRQChF
-        9ZYmjW2ClIcD4GaxGj3LT/qfqf8gp09ULy7vdAA46lympZSiQ6q7Mn3WFVKHR2WD
-        rSaXyfaWAeoQnQ==
-X-ME-Sender: <xms:IXnlYK9imcCzMzfKEw8mqFvGOcB0keMm-fuh_-785aQOIE46mRQxyA>
-    <xme:IXnlYKtaQtM59F-1v-icuQXpU2EFXVOdLLKt0iHRhCZ_4OE3pqJ4SYDxIMe1QViW-
-    Ll7oOljm7UVZgvPyoc>
-X-ME-Received: <xmr:IXnlYACVumf2Vx-glZ0mCZts0UpkB-pgwHItFzFrp64BEPAWCuxvtAULtB7RYejgV7IiOh1pHE6sTYjiYvIKOW4U8KCtNwkZGKrq>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtddvgddvtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveevheeh
-    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:IXnlYCfdMm1WL6S6WuKxnksoQ4lFHlLWWtGHjJJVUq2hBGho4yCung>
-    <xmx:IXnlYPP3kB-y2Lpr-CRn8DBQ-DSYDgq43zhfaTZBaKYCud6iTzHxcQ>
-    <xmx:IXnlYMmAaH7s_DzqPYeVTLs_7rFzEXqo12pwmTinwb42xwMYIzhu7A>
-    <xmx:IXnlYMdQVupziuaTq1P7DGngWPVIxZGOf_-K55kJRGIGGBCJFfH5z2M8mKk>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 7 Jul 2021 05:51:29 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Emma Anholt <emma@anholt.net>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>
-Subject: [PATCH 3/3] drm/vc4: hdmi: Only call into DRM framework if registered
-Date:   Wed,  7 Jul 2021 11:51:12 +0200
-Message-Id: <20210707095112.1469670-4-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210707095112.1469670-1-maxime@cerno.tech>
-References: <20210707095112.1469670-1-maxime@cerno.tech>
+        Wed, 7 Jul 2021 05:54:13 -0400
+Received: from [0.0.0.0] (unknown [113.118.122.203])
+        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 0C072E0335;
+        Wed,  7 Jul 2021 17:51:28 +0800 (CST)
+Subject: Re: [PATCH v2] x86/mce: Fix endless loop when run task works after
+ #MC
+From:   Ding Hui <dinghui@sangfor.com.cn>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     bp@alien8.de, bp@suse.de, naoya.horiguchi@nec.com,
+        osalvador@suse.de, peterz@infradead.org,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        hpa@zytor.com, youquan.song@intel.com, huangcun@sangfor.com.cn,
+        stable@vger.kernel.org
+References: <20210706121606.15864-1-dinghui@sangfor.com.cn>
+ <20210706164451.GA1289248@agluck-desk2.amr.corp.intel.com>
+ <6a1b1371-50e4-f0f6-1ebd-0a91fc9d7bcc@sangfor.com.cn>
+Message-ID: <fffec03b-2601-a0c0-5954-ee05fe046ba1@sangfor.com.cn>
+Date:   Wed, 7 Jul 2021 17:51:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <6a1b1371-50e4-f0f6-1ebd-0a91fc9d7bcc@sangfor.com.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGU9LTFYZQk1OGRpPTUJNHkJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PRQ6Pxw4ND9RKh08ORg6Fks5
+        MjMaCUpVSlVKTUlOTU5KT0NDQkNPVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
+        QVlKSkhVSkpDVUpJSVVJS0hZV1kIAVlBT05ISTcG
+X-HM-Tid: 0a7a806127a32c17kusn0c072e0335
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Our hotplug handler will currently call the drm_kms_helper_hotplug_event
-every time a hotplug interrupt is called.
+On 2021/7/7 11:39, Ding Hui wrote:
+> On 2021/7/7 0:44, Luck, Tony wrote:
+>> On Tue, Jul 06, 2021 at 08:16:06PM +0800, Ding Hui wrote:
+>>> Recently we encounter multi #MC on the same task when it's
+>>> task_work_run() has not been called, current->mce_kill_me was
+>>> added to task_works list more than once, that make a circular
+>>> linked task_works, so task_work_run() will do a endless loop.
+>>
+>> I saw the same and posted a similar fix a while back:
+>>
+>> https://www.spinics.net/lists/linux-mm/msg251006.html
+>>
+>> It didn't get merged because some validation tests began failing
+>> around the same time.  I'm now pretty sure I understand what happened
+>> with those other tests.
+>>
+>> I'll post my updated version (second patch in a three part series)
+>> later today.
+>>
+> 
+> Thanks for your fixes.
+> 
+> After digging my original problem, maybe I find out why I met #MC flood.
+> 
+> My test case:
+> 1. run qemu-kvm guest VM, OS is memtest86+.iso
+> 2. inject SRAR UE to VM memory and wait #MC
+> When VM trigger #MC, I expect that qemu will receive SIGBUS signal ASAP, 
+> and with the modifed qemu, I will kill VM.
+> 
+> In this case, do_machine_check() maybe called by kvm_machine_check() in 
+> vmx.c.
+> 
+> Before [1], memory_failure() is called in do_machine_check(), so 
+> TIF_SIGPENDING is set on due to SIGBUS signal, vcpu_run() checked the 
+> pending singal, so return to qemu to handle SIGBUS.
+> 
+> After [1], do_machine_check() only add task work but not send SIGBUS 
+> directly, vcpu_run() will not break the for-loop because 
+> vcpu_enter_guest() return 1 and not set TIF_SIGPENDING on, task works 
+> never executed until sth else happen. So the kvm enter guest repeatedly 
+> and the #MC is triggered repeatedly.
+> 
 
-However, since the device is registered after all the drivers have
-finished their bind callback, we have a window between when we install
-our interrupt handler and when drm_dev_register() is eventually called
-where our handler can run and call drm_kms_helper_hotplug_event but the
-device hasn't been registered yet, causing a null pointer dereference.
+Sorry for my incorrect description.
 
-Fix this by making sure we only call drm_kms_helper_hotplug_event if our
-device has been properly registered.
+I figure out that my test kernel is not the lastest, it's without [2] 
+commit 72c3c0fe54a3 （"x86/kvm: Use generic xfer to guest work 
+function"), so vcpu_run() only care about signal_pending but not 
+TIF_NOTIFY_RESUME which set on in task_work_add().
 
-Fixes: f4790083c7c2 ("drm/vc4: hdmi: Rely on interrupts to handle hotplug")
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/gpu/drm/vc4/vc4_hdmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+After [2], #MC flood should not exist.
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 50393a8a42b3..31c28252c5f5 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -1580,7 +1580,7 @@ static irqreturn_t vc4_hdmi_hpd_irq_thread(int irq, void *priv)
- 	struct vc4_hdmi *vc4_hdmi = priv;
- 	struct drm_device *dev = vc4_hdmi->connector.dev;
- 
--	if (dev)
-+	if (dev && dev->registered)
- 		drm_kms_helper_hotplug_event(dev);
- 
- 	return IRQ_HANDLED;
+Also thank Thomas Gleixner.
+
+> Can you consider to fix cases like this?
+> 
+> And do you mind to give me some advice for my temporary workaround about 
+> this #MC flood:
+> I want to check the context of do_machine_check() is exception or kvm, 
+> and fallback to call kill_me_xxx directly when in kvm context. (I 
+> already tested simply and met my expection)
+> 
+
+So ignore my ask, please.
+
+> [1]: commit 5567d11c21a1 ("x86/mce: Send #MC singal from task work")
+
+
 -- 
-2.31.1
-
+Thanks,
+- Ding Hui
