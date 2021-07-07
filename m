@@ -2,99 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F473BF006
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7613BF009
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhGGTIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 15:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230326AbhGGTIe (ORCPT
+        id S231185AbhGGTKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 15:10:21 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:42702 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230326AbhGGTKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 15:08:34 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02511C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 12:05:53 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id u18so6748939lff.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 12:05:52 -0700 (PDT)
+        Wed, 7 Jul 2021 15:10:19 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 167J2K1b002984;
+        Wed, 7 Jul 2021 19:07:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : references : date : in-reply-to : message-id : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=vbEfcgTJK8pLJYBE8vsKH85e2xK8mRGTphAFvlqnK/M=;
+ b=cqRUW6SwOn5BvNOeCKD3aVjrlH9inM/K1uE2jxJfFBt+sPvB9gQ56NkFdBVxTs52rzRK
+ MBVii1U6TYHDhoHbwGajQsSS98ZJvhof1o1jvS3fNWKd4/SarXabWElTWID/u2R16Oy5
+ JgkIsSG5ADoe87j5/uCPKkkRkLeom2yQMXfEGof51rQt+zk6dPFGwxt3p6v6lXo8bFXG
+ NlTRhM3mOC8BDkzex+K2LlJcHowBpZ6e3AxuBmPcvdcEbDE7iUg8LiZH9z5i7SYYn/L/
+ 3KB6mLJh8zEj9m/xoNIcZ77lhXYgG8pcj9s6PqigtRcXaLQ5KZ2cpt7BZTzb0OWCjQQO FQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39n4yd1md8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Jul 2021 19:07:36 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 167J6YNb127797;
+        Wed, 7 Jul 2021 19:07:34 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2173.outbound.protection.outlook.com [104.47.57.173])
+        by userp3020.oracle.com with ESMTP id 39k1nxr1bm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Jul 2021 19:07:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h3larW12Kxts0vhOEgH6G4pRvYmVo32mTCqOxo2/A8L7oiNB/sraKMjr/b7NZBsxihi7UAQr3ITKRLztv1nzPnPJyHRD9RRuEsUVFfpMEojAMKzYQ3cbNB42ZvVJgWgE4LNc1AAYQGlsKlYiqYSV5oiql/TVcaZlSRkbVauiJCv6lhzR/RkTIgTxIvlP48JoSJjHY2NOUzGdGCEkZDOL7pqE+lJnc0wevk0V48BYqMBftk42mQkXpDi8RSuxrCMKx4itnWDhr3Yx9mzE7DeJptsrUb1ve+W6DAkxLBFuz0krhcx2ss4ZDyUOgf4jxL6NwchuwLJisIi+MpK0DwJt5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vbEfcgTJK8pLJYBE8vsKH85e2xK8mRGTphAFvlqnK/M=;
+ b=e8+SL6bby5DFlrymq46KEWEHkbRYVe6j7OfJawzRQH5t+0iYsicpgaYCuB2dbEmI0lhZqTgI4ATkkmvWgBwRvyh5mcbXa/lfWSWVSiYG7CK2KPadw7uieQ9V6WSwFSQwDBYadQiE8o58Ht+2oe8x3pDSE2Npnf+S5DyZg4K81+BgaDiC1uoJ1cQ8qUPl7gpj46MxMtNoV40BTnhH1RSsE6rWczUEw3NzggCnBiFI1Aj0OlmLc1wMPd4U6h77ziGIq9UQCp+ak8atHrjtxxEnaleDrOE4I8XP57xmtxPVEcMWrr/hOv9ZjjDsEchVry8orobqxQNCBUTnncmLi0dQIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EXPbH/M4GYoZ6FhrrR5MYlyYSD6/NgfgonH38mq87Gc=;
-        b=KU426vk0FJciJbxXpjIi+w7PbOZYM3CgwOJXR+Ek7FnEKtgID/4F2U161uPJT3xVVT
-         lZ1ZxdgXTYAQYkqWO1y6TlgNYgmsQnvcVY+UCj3RJhKHOyU1CKfl1VYJslwJjECWB1xW
-         BLYFXnOx82VFpwgKnloCd733FB6T6jcMY3lJc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EXPbH/M4GYoZ6FhrrR5MYlyYSD6/NgfgonH38mq87Gc=;
-        b=NpijqXN/4eyMU3MSjDaEAvHtYpSGt/1x0wA1mIBZasd9uk0z9CskCcY/wlO9U77K5d
-         Tbjm+sa1Z2GOP2V8w2fa9rPoVC7s2bLCKTNJ8wLQMEqj7l55hPKyKCnskWalFGUbIKkQ
-         dEBBkqUNW3ZGm5+DhYyuwhFsB8dYM8VJbHEF5q4WySeu9WljSG4selYKLS4AavFlORQL
-         7URoDvkJdaFtS4F+2hTOJM3icx10OEVnoNZEhbopjEfrftQ2FQmjeqp7dQbAdlWuQH+P
-         uv3q9hOpVSWDBodQeqwo+P1zn2Y1BOsDaTxlh1AMvFmcEIEglBFRYH/hCJarRsSsceut
-         E2HA==
-X-Gm-Message-State: AOAM530ZZNfCPCwSYYl8dwlUbYjvsIwT5kG6WhEwZ61OAZKZT0DQr1ux
-        eIlORrhHd5U5WyEqdkRheqR/1aDkYGJFRXVdNVk=
-X-Google-Smtp-Source: ABdhPJwMXMF2wptiqlMsi3ILL0s27VQKPGVaxj1nP+bAoKJbJjGbULMKbqn4MiLk8lo3VTti32xu2w==
-X-Received: by 2002:a05:6512:c13:: with SMTP id z19mr18686090lfu.616.1625684751173;
-        Wed, 07 Jul 2021 12:05:51 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id o7sm1786111lfo.196.2021.07.07.12.05.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 12:05:50 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id a18so6706601lfs.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 12:05:50 -0700 (PDT)
-X-Received: by 2002:a2e:9f11:: with SMTP id u17mr19734994ljk.48.1625684750030;
- Wed, 07 Jul 2021 12:05:50 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vbEfcgTJK8pLJYBE8vsKH85e2xK8mRGTphAFvlqnK/M=;
+ b=eddFZghqA6cfDF1itdpoASUq7En5TbJ34X/ZuyVH72EQNN7KQ9Sw+UEOtib1PmcPcDQ6yQ/jJUDYs1NrT+v+g8FnKu5WFbfeKxR861zJS9CCCYETC7A9g5fbKuvLbvWrcysTM0bmDX4SwA2fz3lWWYsEtPQT4qOdkT/gEQqe3FI=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=oracle.com;
+Received: from SA2PR10MB4715.namprd10.prod.outlook.com (2603:10b6:806:fb::10)
+ by SA2PR10MB4409.namprd10.prod.outlook.com (2603:10b6:806:11a::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.31; Wed, 7 Jul
+ 2021 19:07:33 +0000
+Received: from SA2PR10MB4715.namprd10.prod.outlook.com
+ ([fe80::956e:3ceb:9de9:8854]) by SA2PR10MB4715.namprd10.prod.outlook.com
+ ([fe80::956e:3ceb:9de9:8854%3]) with mapi id 15.20.4308.021; Wed, 7 Jul 2021
+ 19:07:33 +0000
+From:   Nick Alcock <nick.alcock@oracle.com>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     masahiroy@kernel.org, linux-modules@vger.kernel.org,
+        linux-kernel@vger.kernel.org, arnd@arndb.de,
+        Eugene Loh <eugene.loh@oracle.com>,
+        Kris Van Hees <kris.van.hees@oracle.com>
+Subject: Re: [PATCH v2 PING] kallsyms: new /proc/kallmodsyms with builtin
+ modules and symbol sizes
+References: <20210629221542.93728-1-nick.alcock@oracle.com>
+        <20210706193334.474270-1-nick.alcock@oracle.com>
+        <YOXAjHC9RPAI5QwO@p200300cbcf044300404ca642de146c7c.dip0.t-ipconnect.de>
+Emacs:  an inspiring example of form following function... to Hell.
+Date:   Wed, 07 Jul 2021 20:07:26 +0100
+In-Reply-To: <YOXAjHC9RPAI5QwO@p200300cbcf044300404ca642de146c7c.dip0.t-ipconnect.de>
+        (Jessica Yu's message of "Wed, 7 Jul 2021 16:56:12 +0200")
+Message-ID: <87lf6ic58x.fsf@esperi.org.uk>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2.50 (gnu/linux)
+Content-Type: text/plain
+X-ClientProxiedBy: LO4P123CA0189.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1a4::14) To SA2PR10MB4715.namprd10.prod.outlook.com
+ (2603:10b6:806:fb::10)
 MIME-Version: 1.0
-References: <20210704150025.GC21572@xsang-OptiPlex-9020> <20210705125756.GA25141@lst.de>
- <CAHk-=wj_Gfqkdp+K3iCiqMjAZQK_BrRWDs2eOS_BAw=bB=CdRw@mail.gmail.com>
- <20210706143647.GA28289@lst.de> <CAHk-=wgPyx7tHFNaO2N6bsaB_E6gL+t1uDAmrD91jJw+hiTvrQ@mail.gmail.com>
- <20210707081220.GA31179@lst.de> <20210707083528.GA353@lst.de>
-In-Reply-To: <20210707083528.GA353@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 7 Jul 2021 12:05:34 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgEM5VcCEtOyCqLnWAXdAumqnAR077Nv5Q_eG+ZDd+owA@mail.gmail.com>
-Message-ID: <CAHk-=wgEM5VcCEtOyCqLnWAXdAumqnAR077Nv5Q_eG+ZDd+owA@mail.gmail.com>
-Subject: Re: [ide] b7fb14d3ac: EIP:ioread32_rep
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from loom (2001:8b0:1101:10::2) by LO4P123CA0189.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:1a4::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19 via Frontend Transport; Wed, 7 Jul 2021 19:07:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 45c60250-b903-4068-322c-08d9417a797b
+X-MS-TrafficTypeDiagnostic: SA2PR10MB4409:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA2PR10MB4409184DBA2F1E2DCB540B638B1A9@SA2PR10MB4409.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:330;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9ScrgmxDTQSKsOE0K+LsOeKDiypP5ap4SKC0rivBl7jS6Je+mC+g4eonzr4MKBeaYzTRd5SsK+iCQJk7D7Rx6D9gz+OWd66WZXWerkJ+NJVQntfNV+kPjAioimq6yiAcdmrRtLytms6c1qsKhArryXDzQQeCl89Pk08XHJpjEbKj8s9G/9j72RBHn7Q8omQ7Hux8UWHkIr9aOrN1CrH9pYCntpj+JAs6YC4m+tEh/t2jbwVUaRybhqGytolJp1izp2eEfK/DZnMF9wN0esfBlSzgGC0pmma80sv7MQJKfGYBOaq836AbmwUFozMJY987yYWWWpejsOUqZI3h5esJ5r4e0nUtU/MCTZC9MxkBOGfKinkWb4X/dpandfqDaKNLS/YwnJ5lSWLQQblyzJIgxkugzOwksi5GvIFD0wFvzGq9d8LC9AHMDSOBXJUbrde/8Ls9JIcLycKtJmnE1p79MOWEne4EgB6/fbeufL9HfftiuIJ6Gp1bhik7Ck+7IhnLDd5EJxCGFVz0Aev/zKRKfIdGZWPDkTCF63bUkinK0QiiV1yWEbjyYb2DgA0Hp2iZd9srugK5k1ghsgcIf+D3erOHdUelkwQRRgAGeHLisrH5t9KFKjOXjCqBQJlIxOQjzE9rM5kkkYAO5vXrbQxR/A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR10MB4715.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(376002)(346002)(39860400002)(366004)(38100700002)(6486002)(6666004)(6496006)(8676002)(6916009)(86362001)(107886003)(4326008)(2906002)(83380400001)(54906003)(52116002)(36756003)(66946007)(66556008)(9686003)(478600001)(44832011)(66476007)(8936002)(5660300002)(4744005)(316002)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wfY5RKDc4aFCmfoqt9PpBFr8R1Q9zOh+BOjU50Kk9+H2gqaCUsNTdCj9LslL?=
+ =?us-ascii?Q?RYHMmnRieTNBfz0k+vTWNBonwGO0YhyGscAIO7DRyhKCaUSezyjJfA03XcKp?=
+ =?us-ascii?Q?ggeHHCv/Kq/Jv8Vs1eN4s4Ee0PFvmaasxMv8cxtBMMBBe20Tz7HyWqMJRnYu?=
+ =?us-ascii?Q?Q4isNnntu9s1T0mJeOeH6RZ/Tk7DmXUgbm96q7zqt/iEtdaUdezSSMU+PlUk?=
+ =?us-ascii?Q?PHCFIsf7iiDYdOlgIOTKvryXl9jzdWLjab9JTlRdJQldOibVYuScfLyyRov9?=
+ =?us-ascii?Q?elDaYPLaIFDqqFRAEDOjLpR1guj/CA+gzg/voKkar8N4MZhVJFiF5RGQdoxv?=
+ =?us-ascii?Q?6UliGZnhQoIKChjQEwIQuTO/LpR0ugZj39VROwO9/ZtRkX9VQTJUMKTDm5cb?=
+ =?us-ascii?Q?nxZv1TmASj5m+vB/fifP7Nb4JoNY7yYPH1K3qEpld1+EXqTRpdXga+87upW4?=
+ =?us-ascii?Q?C142IjPmkzKw7f0KsKqUod3+kQ5CpDyqb5sfllefhI8iLx2AcgFIGXqVWJCQ?=
+ =?us-ascii?Q?36NphltFNZubqqVQswbIg7rDzRoW2YFDxgIHtwE38DEi6AnI4kySqxM+URpP?=
+ =?us-ascii?Q?dTzeCtGGSiYP6RQfHQg23PTwTmLBeb1/qtu4Bn09g2dSw5nlIkiYlpQrq4oi?=
+ =?us-ascii?Q?+WnyU3Kad12F4mMupn6NMWQGY4Yp9SvWqphmeYXUPu+0fCKmpK0mK6TYbXYH?=
+ =?us-ascii?Q?/LyfYlN3JeURycqzJwtpjy9iB/55AyaeJpfM7Ipj6Y4feqbUEICrGqRWtaPq?=
+ =?us-ascii?Q?OBPT/9K2makcJVQrwPjg97vr3NJNmEbkqxzbl3gro34z1At1Ygsvt2SDL05W?=
+ =?us-ascii?Q?qwurleLfXfQ3rSycIbqmRGscvm3Ubhftvya8/G3dofDN+1nmih6J53Hex34l?=
+ =?us-ascii?Q?9mD65z4I5mRGnKVyeQJ4I+fAl+SpDLvGPd8XWsGN9b+rKDEinX16n9g6Z8Xh?=
+ =?us-ascii?Q?HAzqclElCzcA3E6iyyQ3g9I1EW62DqIe50SWTZR/TeDEvvea6fTyKUpD6mfB?=
+ =?us-ascii?Q?87aS3zoxsKFXGoEUi8YbVjCMXJ/hF6G9N7iMv6lix9Xp2qwD/73UtHg+9RP7?=
+ =?us-ascii?Q?IP+V38BiolznTnAZMMNNSaqT4jMBCoKMCT4/ysxqoUDLSWkV9Otk9tqXHg1b?=
+ =?us-ascii?Q?msUWQ9+OkaMThFFY2CnTqKAo5/DI6m6LGvQ7/46BtUgk872qmj7J6WAShPP/?=
+ =?us-ascii?Q?INcbZvcg8dE49G2EenvPkFpJsZFf1YfTsDW4A3xG230rCdnchN5O5P+dNCJs?=
+ =?us-ascii?Q?24xWPrZLcxiwpTveEUI9+4rUbevke4adPi0WPxktSbJZ7BEn90s7gi0ZY0aT?=
+ =?us-ascii?Q?QrlHTOZevmLjkv8rYD4wr9+79tMCR84XbqOe5f9pZeb4uA=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45c60250-b903-4068-322c-08d9417a797b
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR10MB4715.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2021 19:07:33.1330
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: V8DzRBvCYKiWHFjUoJFJP5bWddjnHCKeXtUWzMrq25KSkDC6VpNEkQz4ATGw0S4kajy4ndo1YFUhBDbOQCu5BA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4409
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10037 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 phishscore=0
+ adultscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107070110
+X-Proofpoint-GUID: 8WTKdxlFs0wRhYdP6C5L7_3_himUUh6x
+X-Proofpoint-ORIG-GUID: 8WTKdxlFs0wRhYdP6C5L7_3_himUUh6x
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 1:35 AM Christoph Hellwig <hch@lst.de> wrote:
+On 7 Jul 2021, Jessica Yu uttered the following:
+
+> +++ Nick Alcock [06/07/21 20:33 +0100]:
+>> 15 files changed, 1309 insertions(+), 67 deletions(-)
 >
-> Actually, not it doesn't. Sorry.  So for a non-aligned large request
-> this won't work.  So we'll need to actually loop here.
->
-> This is probably better and fixes the issue as well (and ATAPI
-> probably needs the same treatment):
+> This diffstat is seriously _enormous_. Please don't send patches of
+> this size and expect people to be willing to review :-(. Please break
+> this up into a logical sequence of smaller patches to help your
+> potential reviewers and resend with a cover letter.
 
-Thanks, this looks sane and correct to me.
+Heh, this is very project-dependent it seems. I've been told not to
+split up things so finely when sending series containing 3000+-line
+commits to various toolchain projects before :)
 
-But please do add a comment (or perhaps even better - an actual check)
-that the offset is at least 4-byte aligned. Because this splitting of
-the buffer at page boundaries can only work if you still have at least
-that 32-bit alignment.
+Since you are in the "slice finely" camp, I'll split it up a bunch and
+resend. (This will necessarily involve adding things in one commit to
+no obvious purpose in that commit, but I'll keep the intermediate stages
+building and booting, of course.)
 
-At least that's the case for ata_sff_data_xfer32() (which was what
-triggered that original oops). I did not really check the other
-data_xfer functions, although I did look at a couple of them. At least
-vlb32_data_xfer() has the exact same issue.
-
-A couple of others would be ok with just 16-byte aligned splits. But I
-*hope* nobody needs more than 32-bit alignment (and considering the
-legacy status of this model, I'd be surprised if they need more, but
-who knows..).
-
-              Linus
+-- 
+NULL && (void)
