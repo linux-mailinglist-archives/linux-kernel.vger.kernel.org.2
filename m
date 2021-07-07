@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6343BF0B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BCB3BF0B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhGGUZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 16:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35332 "EHLO
+        id S231356AbhGGUZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 16:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbhGGUZD (ORCPT
+        with ESMTP id S230120AbhGGUZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 16:25:03 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6495C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 13:22:21 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id c28so7405373lfp.11
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 13:22:21 -0700 (PDT)
+        Wed, 7 Jul 2021 16:25:22 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BBAC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 13:22:40 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id f13so7447446lfh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 13:22:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zMZjIRwNGBTcmBaDjaDTIcE/+ESvd0yHScJIZfRhmRY=;
-        b=XoGbXnrt2rSUgGiqSBd0+7Hv2ga602pEquNuyDtc82Q43CE4P4MFWL0EOTW+b8RfCc
-         VhhEV1PFIxBZMVV3PpI+e94VGk9Hn4dQwLF5ZKxBbbPm+SwxAAncSIYwmHgaz868PtEU
-         qUNs2hzLuukpSusfK7kVLSKzQzmP2IB/sCq+gAQJRjX4Wmett98cbg6A2iuPXsLyDhpx
-         sV67WWpOKZgVUYIZvI71hYG85X5QImJ9F3IcLmrkViH52Gew08lc+VoEkAutVlkAPYan
-         z+iByA9/ouV9tPZdasi1Z2u518puoIegI5cqDV8ifX2u+bGyM92nF+xLJ9xegJ02IK8p
-         QXJA==
+        bh=hi3ITr6SouGSQjeuqThC33/t9lBaQSut2Lh+7accmC8=;
+        b=WvflrsatifR0C1QAecIJeGdbr6flHM6sV2cF8SX6cRCr+xI0NrDl5WsaWCEb4VpLrZ
+         38+7Vsmi6Pjyw0lxSXilNET19LVUzwO2/jVE62gY6Bbd0OW6EDyW1Lipy0R+9QMKGum3
+         lsiDIvqM4gC9VIQlZx4s7xrzGk14kRIncraWnY7fnzY6Fel954Tnjy+7QNZkn2Nrrogw
+         UiDvj3BeLLGBmjdshySJvN1FV6pUSiUJ/PEQKyPRR7vcdKDMstFoUfsdpMfaBIRj8uOk
+         LGBW/q5bcK389MmrwxihaFmjbLNidJFRBssHJoYxAGwjdx/yg0cL8i0dYf3iklYIPgML
+         eT/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zMZjIRwNGBTcmBaDjaDTIcE/+ESvd0yHScJIZfRhmRY=;
-        b=lnhaRtK8W2nNFG5Ivw/bgT/culaPE4PGzCMvNPKX4rU1q6zu8U6zLWvnhcMBjSZxjf
-         pP3wAxCN5Qjpry1Og7hUK1Bjho6btNoDMO6E2ODcH/rJr/F7S3FMuLAC8JRjf80/fOXg
-         5c+78q9Lcp5N6VQ8XJNTP/oKRCy02ZdMpN4OgCKJ+1+DDNpu0w8zNlOUzG3TF5gUwLbL
-         213jLH68aYQOO/fKHAA1vFL+o59lYXLoIsAh/jD/l7Hk+bNvXiv26fSQA+ZO6eNvESk+
-         DZXLH8fI9BqSObtd0Az0PCLgu/ZI1SnSOMS2tk7RFS6i2D2zCFk6no5apPcd2EZOQoPI
-         DDYA==
-X-Gm-Message-State: AOAM532cfx8ZwCUuw1wtKy8iJX9NWhYKkOAv/2bGJiNQfCcwfdY0AOGd
-        ASF/LZffFehQ0Jue7kcXUONI7K9Mj5duQqcXGwq3pg==
-X-Google-Smtp-Source: ABdhPJw5CFgnUoZ8OVZt6kqTwXENxQxQzBoRTuafQDIqikZS/299FK1fHjud/10xn99u575DWL5ZUyKvIzqZy9nXMKs=
-X-Received: by 2002:a2e:8215:: with SMTP id w21mr20276932ljg.160.1625689339809;
- Wed, 07 Jul 2021 13:22:19 -0700 (PDT)
+        bh=hi3ITr6SouGSQjeuqThC33/t9lBaQSut2Lh+7accmC8=;
+        b=p6HDP7mRPAqu3KquDaBzRQgkKXIW6UF8VXEvDKRBV+QO8Ql1PPLoKEn81mgYiLLekD
+         V3D4izsKxnTk7c+Jo7dqJuz0zY6JHfcn1FNDIjqxhR1RPHNWQ+fuGwyLvrnkWrAdg/Ke
+         5YBddirXuJhxGFnj6F+Kj5jX80APxLgUw5V9oPnLNfMjU/BmjfqodvCNV5VG9gxQiWiK
+         VIIGAs/aWTaEY4OTCjTPW8SQD1ff+g5w0+H16BhgFlfJ8i5VoYWQx5gQp307sZgvJi1v
+         1eOBThVFd3SE0P/0tznRt66D9/k/FaDMpyFCzP3Yle/y7UQBLue9IZioYOaJaUz4PW7Y
+         FXxw==
+X-Gm-Message-State: AOAM533zI/6MjpeKeQpYFPaQ4qXshk8inskr9vb0eK1yjOKP7d0LpWwy
+        RDpV8mK8PhMVG1ilTw9fdFGOuNOBQsBbDmFK/3p+uw==
+X-Google-Smtp-Source: ABdhPJwF0fIfrpNN3MSAzhfkvbnU1hEac5p+VXT1iV3T/45FpdBLs0uMyCX5Yh8u2dv0LP2eGplEzO9btiLnEAMd7GE=
+X-Received: by 2002:a19:7418:: with SMTP id v24mr20712677lfe.117.1625689358863;
+ Wed, 07 Jul 2021 13:22:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <563ce5b2-7a44-5b4d-1dfd-59a0e65932a9@google.com>
-In-Reply-To: <563ce5b2-7a44-5b4d-1dfd-59a0e65932a9@google.com>
+References: <563ce5b2-7a44-5b4d-1dfd-59a0e65932a9@google.com> <f71f8523-cba7-3342-40a7-114abc5d1f51@google.com>
+In-Reply-To: <f71f8523-cba7-3342-40a7-114abc5d1f51@google.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 7 Jul 2021 13:22:08 -0700
-Message-ID: <CALvZod4T1FRy2smMm9LU+VAo=A4Dcb749k9PZCBhFypHvAxBVw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mm/rmap: fix comments left over from recent changes
+Date:   Wed, 7 Jul 2021 13:22:27 -0700
+Message-ID: <CALvZod4Tm_4mmNPW-5yfDPdOdukEmmZ1sqYpL9qUbiEXTms2dw@mail.gmail.com>
+Subject: Re: [PATCH 3/4] mm/rmap: fix new bug: premature return from page_mlock_one()
 To:     Hugh Dickins <hughd@google.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Alistair Popple <apopple@nvidia.com>,
@@ -65,17 +65,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 1:06 PM Hugh Dickins <hughd@google.com> wrote:
+On Wed, Jul 7, 2021 at 1:11 PM Hugh Dickins <hughd@google.com> wrote:
 >
-> Parallel developments in mm/rmap.c have left behind some out-of-date
-> comments: try_to_migrate_one() also accepts TTU_SYNC (already commented
-> in try_to_migrate() itself), and try_to_migrate() returns nothing at all.
+> In the unlikely race case that page_mlock_one() finds VM_LOCKED has been
+> cleared by the time it got page table lock, page_vma_mapped_walk_done()
+> must be called before returning, either explicitly, or by a final call
+> to page_vma_mapped_walk() - otherwise the page table remains locked.
 >
-> TTU_SPLIT_FREEZE has just been deleted, so reword the comment about it in
-> mm/huge_memory.c; and TTU_IGNORE_ACCESS was removed in 5.11, so delete
-> the "recently referenced" comment from try_to_unmap_one() (once upon a
-> time the comment was near the removed codeblock, but they drifted apart).
->
+> Fixes: cd62734ca60d ("mm/rmap: split try_to_munlock from try_to_unmap")
 > Signed-off-by: Hugh Dickins <hughd@google.com>
 
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
