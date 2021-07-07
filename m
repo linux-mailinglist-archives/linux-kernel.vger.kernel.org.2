@@ -2,165 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF173BE72E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F7A3BE73B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbhGGLfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 07:35:02 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7112 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230354AbhGGLfB (ORCPT
+        id S231391AbhGGLlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 07:41:40 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59430 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231358AbhGGLlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 07:35:01 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 167B5aLW186267;
-        Wed, 7 Jul 2021 07:32:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=NJ8tcuv5l8JY0wkLfzi5PvGflZ2VNsIY+jVzHpsSsuk=;
- b=H8Hg+y54g6DMoU61Cz9nORnHlhOAxK1ar+1eV93VDfErRDytq73mcYalfnPGP2+l7S3/
- mmYlRN18tlm+s5j/Z/hAgatN9ovrv9QFzbXGEZ5206cn7R37UZ6wJo6NiGTQvk5KLk0P
- Nnm/zz0ziAuRHHYdJrWzuAJIuZ9Jv4CeZ8qzVoneksWavdQVD6TTVvHc5hisJdiVwrrS
- VB5Ed/Q8WeiF9gZROgwOivaGTl0+bBNhqi3z0asoLEjJy8ysaTXYop8OgLu9wgijg+1C
- VhCjOVZer1+Xf+/WxL6lOIxes9Wu0kjwYL0OlbWPlGYUmHDWRCtQhn65E2s2v/7YIOyb tQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39naym8ur1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 07:32:17 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 167B5acp186285;
-        Wed, 7 Jul 2021 07:32:17 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39naym8uq3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 07:32:16 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 167BPHe6012699;
-        Wed, 7 Jul 2021 11:32:14 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 39jf5h9qau-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 11:32:14 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 167BUHKl31326678
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Jul 2021 11:30:17 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AE2644C046;
-        Wed,  7 Jul 2021 11:32:11 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 55D794C052;
-        Wed,  7 Jul 2021 11:32:11 +0000 (GMT)
-Received: from oc6887364776.ibm.com (unknown [9.152.212.90])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  7 Jul 2021 11:32:11 +0000 (GMT)
-Subject: Re: [PATCH v2 3/4] s390/scm: Make struct scm_driver::remove return
- void
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     kernel@pengutronix.de, Cornelia Huck <cohuck@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210706154803.1631813-1-u.kleine-koenig@pengutronix.de>
- <20210706154803.1631813-4-u.kleine-koenig@pengutronix.de>
-From:   Vineeth Vijayan <vneethv@linux.ibm.com>
-Message-ID: <b023ee41-3b86-bbe2-ac62-6cbf37992947@linux.ibm.com>
-Date:   Wed, 7 Jul 2021 13:32:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210706154803.1631813-4-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: VaGoYi_8ePeZi5eS8Nw4ewNQgdDDAWEs
-X-Proofpoint-GUID: ZoIRRP4qg58y_lpe_ZsHi6cqeKEMJHlo
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-07_06:2021-07-06,2021-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 phishscore=0 spamscore=0 mlxlogscore=999 impostorscore=0
- mlxscore=0 clxscore=1015 adultscore=0 priorityscore=1501 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107070067
+        Wed, 7 Jul 2021 07:41:39 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0685222058;
+        Wed,  7 Jul 2021 11:38:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625657939; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=izSVaruZZK1uuDh40h+Wau6dNLjAVEv1QpDRBpfpZsc=;
+        b=SZBk6UtMcM26ce3cTDoruC+UIpTuNcjFwYV0bqn0jw5j44VeEod9iDt+EFJ1kCsogdV/Fr
+        kD/MreAz974RrgC2TVT6ngdbh3GE7xUtJpI2Oth9MIIVbEVysg5uDgwMEcJWQ1sesJCupN
+        3QyRfB4RIL1FdyB1KUH3NWKiUE0vTg0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625657939;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=izSVaruZZK1uuDh40h+Wau6dNLjAVEv1QpDRBpfpZsc=;
+        b=qw6vy09zlRBA+OKwTwQYSQIJTcNhAF2Z/k0tzUEuOV57YCE9N7TwORASZ1x7+N2S9iDKnH
+        zKsoFwiuHCets9Aw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id E4EC0A3BA4;
+        Wed,  7 Jul 2021 11:38:58 +0000 (UTC)
+Date:   Wed, 07 Jul 2021 13:38:58 +0200
+Message-ID: <s5hbl7e8ib1.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Robert Lee <lerobert@google.com>
+Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        carterhsu@google.com, zxinhui@google.com, bubblefang@google.com
+Subject: Re: [PATCH] ALSA: compress: allow to leave draining state when pausing in draining
+In-Reply-To: <20210706124440.3247283-1-lerobert@google.com>
+References: <20210706124440.3247283-1-lerobert@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks sane to me.
-Acked-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+On Tue, 06 Jul 2021 14:44:40 +0200,
+Robert Lee wrote:
+> 
+> When compress offload pauses in draining state, not all platforms
+> need to keep in draining state. Some platforms may call drain or
+> partial drain again when resume from pause in draining, so it needs
+> to wake up from snd_compress_wait_for_drain() in this case.
+> 
+> Call API snd_compr_leave_draining_in_pause(), if the platform
+> doesn't need to keep in draining state when pause in draining
+> state.
+> 
+> Signed-off-by: Robert Lee <lerobert@google.com>
 
-Vasily/Heiko will pick this up for the next-s390-tree.
+Well, the logic is a bit confusing (hard to understand what really
+"leave-draining-in-pause" actually means) but also error-prone;
+e.g. you left pause_in_draining flag set while changing the state to
+SNDRV_PCM_STATE_PAUSED.  This will keep the pause_in_draining flag
+even after snd_compr_resume() call.
 
 
-On 7/6/21 5:48 PM, Uwe Kleine-König wrote:
-> The driver core ignores the return value of scmdev_remove()
-> (because there is only little it can do when a device disappears).
->
-> So make it impossible for future drivers to return an unused error code
-> by changing the remove prototype to return void.
->
-> The real motivation for this change is the quest to make struct
-> bus_type::remove return void, too.
->
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+thanks,
+
+Takashi
+
 > ---
->   arch/s390/include/asm/eadm.h | 2 +-
->   drivers/s390/block/scm_drv.c | 4 +---
->   drivers/s390/cio/scm.c       | 5 ++++-
->   3 files changed, 6 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/s390/include/asm/eadm.h b/arch/s390/include/asm/eadm.h
-> index bb63b2afdf6f..445fe4c8184a 100644
-> --- a/arch/s390/include/asm/eadm.h
-> +++ b/arch/s390/include/asm/eadm.h
-> @@ -105,7 +105,7 @@ enum scm_event {SCM_CHANGE, SCM_AVAIL};
->   struct scm_driver {
->   	struct device_driver drv;
->   	int (*probe) (struct scm_device *scmdev);
-> -	int (*remove) (struct scm_device *scmdev);
-> +	void (*remove) (struct scm_device *scmdev);
->   	void (*notify) (struct scm_device *scmdev, enum scm_event event);
->   	void (*handler) (struct scm_device *scmdev, void *data,
->   			blk_status_t error);
-> diff --git a/drivers/s390/block/scm_drv.c b/drivers/s390/block/scm_drv.c
-> index 3134fd6e058e..69a845eb8b1f 100644
-> --- a/drivers/s390/block/scm_drv.c
-> +++ b/drivers/s390/block/scm_drv.c
-> @@ -60,15 +60,13 @@ static int scm_probe(struct scm_device *scmdev)
->   	return ret;
->   }
->   
-> -static int scm_remove(struct scm_device *scmdev)
-> +static void scm_remove(struct scm_device *scmdev)
->   {
->   	struct scm_blk_dev *bdev = dev_get_drvdata(&scmdev->dev);
->   
->   	scm_blk_dev_cleanup(bdev);
->   	dev_set_drvdata(&scmdev->dev, NULL);
->   	kfree(bdev);
-> -
-> -	return 0;
->   }
->   
->   static struct scm_driver scm_drv = {
-> diff --git a/drivers/s390/cio/scm.c b/drivers/s390/cio/scm.c
-> index 9f26d4310bb3..b31711307e5a 100644
-> --- a/drivers/s390/cio/scm.c
-> +++ b/drivers/s390/cio/scm.c
-> @@ -33,7 +33,10 @@ static int scmdev_remove(struct device *dev)
->   	struct scm_device *scmdev = to_scm_dev(dev);
->   	struct scm_driver *scmdrv = to_scm_drv(dev->driver);
->   
-> -	return scmdrv->remove ? scmdrv->remove(scmdev) : -ENODEV;
-> +	if (scmdrv->remove)
-> +		scmdrv->remove(scmdev);
+>  include/sound/compress_driver.h | 14 ++++++++++++++
+>  sound/core/compress_offload.c   |  7 ++++++-
+>  2 files changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+> index 277087f635f3..e16524a93a14 100644
+> --- a/include/sound/compress_driver.h
+> +++ b/include/sound/compress_driver.h
+> @@ -145,6 +145,7 @@ struct snd_compr_ops {
+>   * @lock: device lock
+>   * @device: device id
+>   * @use_pause_in_draining: allow pause in draining, true when set
+> + * @leave_draining_in_pause: leave draining state when pausing in draining
+>   */
+>  struct snd_compr {
+>  	const char *name;
+> @@ -156,6 +157,7 @@ struct snd_compr {
+>  	struct mutex lock;
+>  	int device;
+>  	bool use_pause_in_draining;
+> +	bool leave_draining_in_pause;
+>  #ifdef CONFIG_SND_VERBOSE_PROCFS
+>  	/* private: */
+>  	char id[64];
+> @@ -182,6 +184,18 @@ static inline void snd_compr_use_pause_in_draining(struct snd_compr_stream *subs
+>  	substream->device->use_pause_in_draining = true;
+>  }
+>  
+> +/**
+> + * snd_compr_leave_draining_in_pause - Leave draining state when pause in draining
+> + * @substream: compress substream to set
+> + *
+> + * In some platform, we need to leave draining state when we use pause in draining.
+> + * Add API to allow leave draining state.
+> + */
+> +static inline void snd_compr_leave_draining_in_pause(struct snd_compr_stream *substream)
+> +{
+> +	substream->device->leave_draining_in_pause = true;
+> +}
 > +
-> +	return 0;
->   }
->   
->   static int scmdev_uevent(struct device *dev, struct kobj_uevent_env *env)
+>  /* dsp driver callback apis
+>   * For playback: driver should call snd_compress_fragment_elapsed() to let the
+>   * framework know that a fragment has been consumed from the ring buffer
+> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+> index 21ce4c056a92..9c7bd4db6ecd 100644
+> --- a/sound/core/compress_offload.c
+> +++ b/sound/core/compress_offload.c
+> @@ -719,8 +719,13 @@ static int snd_compr_pause(struct snd_compr_stream *stream)
+>  		if (!stream->device->use_pause_in_draining)
+>  			return -EPERM;
+>  		retval = stream->ops->trigger(stream, SNDRV_PCM_TRIGGER_PAUSE_PUSH);
+> -		if (!retval)
+> +		if (!retval) {
+>  			stream->pause_in_draining = true;
+> +			if (stream->device->leave_draining_in_pause) {
+> +				stream->runtime->state = SNDRV_PCM_STATE_PAUSED;
+> +				wake_up(&stream->runtime->sleep);
+> +			}
+> +		}
+>  		break;
+>  	default:
+>  		return -EPERM;
+> -- 
+> 2.32.0.93.g670b81a890-goog
+> 
