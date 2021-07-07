@@ -2,133 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BF73BE762
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0D13BE767
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhGGLtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 07:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231358AbhGGLtA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 07:49:00 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEAEC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 04:46:19 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id g22so1942860pgl.7
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 04:46:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=/W6wqXaIDmqrBkdIRlzAJMgAoGBgy04IRL+F1Bx61lE=;
-        b=zBj/27dHcc7lvTGWG7MHS/bpuQQu4WGZXv1+uKjRYpaBpre8T2ztMgPfIb3vPof+2i
-         tXhIc6zXMCOAUO5sZUYKJlL5Z8XGJtftx8N54xLBdyHGe+4SoLYV5KRs4cxHbgzi1NGV
-         FAaqJGEI0ipCRBJbY1G8NvKTD5YRE89qF3JHd4vk3QIU6jrCoIhopbqDzc6VAHplVRmz
-         wl0E1ypuKckYKmSxLclQ8Mg3QSrvl1sBTUoHnOL3LX3xlkswb8Q6A6kMipHL68auwHLd
-         QVSRvKiKd+BG66XUsWmEuvT9QrgAEdsRLcgqk/ileTiIoHo2fgKE3DGcZ5SYa8147rzf
-         rDeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=/W6wqXaIDmqrBkdIRlzAJMgAoGBgy04IRL+F1Bx61lE=;
-        b=Kx18ek+Wh4Xrp/JlvyR1aX2Xu6sPgTEhO7b44FlmsYCozsllJBukuJ2Bciek3h2xAX
-         OIvAUu+4yRmTyYpftjPw04w+i8XFzorDa6IdYO4URUfmwUHHB6lriwcBaxULB+JWwzpi
-         O4W1L6c67uW4DecUfWyPNHWgb8aJn/QpSGVJyb5PvEoLqpO6le+Hj7aKR26oGuDfMQmY
-         VitRrtsUDT5iTV3QQ7rSOB1rErew5FbKZqjL7/nVNgq1xxF/nwRxkjrZfJ04A2bs94AI
-         BGRJg5SEa6+7wr1iptlLIYFQrFSlke1P3fJrWxEg/28Rrb8fa2JG4jK7P0wDbSZiD21T
-         jV/g==
-X-Gm-Message-State: AOAM533lv+dmeNbPT6EqNBwJMBCEb/DZF4ltCIS5qcqNkYNtaDlo0tP1
-        +aARZsFSqFEhBgj31SfvAzrQ5w==
-X-Google-Smtp-Source: ABdhPJwgGEEt6VotvPf9NUkaZjJ15bm060VFu0d7noueCvci++I4MwyP4m9S9LVfLHW+/PInXprkCQ==
-X-Received: by 2002:aa7:8543:0:b029:31c:85d:60fe with SMTP id y3-20020aa785430000b029031c085d60femr19643168pfn.44.1625658378656;
-        Wed, 07 Jul 2021 04:46:18 -0700 (PDT)
-Received: from anisinha-lenovo ([115.96.127.142])
-        by smtp.googlemail.com with ESMTPSA id i24sm17773958pfr.56.2021.07.07.04.46.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 04:46:18 -0700 (PDT)
-From:   Ani Sinha <ani@anisinha.ca>
-X-Google-Original-From: Ani Sinha <anisinha@anisinha.ca>
-Date:   Wed, 7 Jul 2021 17:15:53 +0530 (IST)
-X-X-Sender: anisinha@anisinha-lenovo
-To:     Peter Zijlstra <peterz@infradead.org>
-cc:     Ani Sinha <ani@anisinha.ca>, linux-kernel@vger.kernel.org,
-        anirban.sinha@nokia.com, tglx@linutronix.de,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v2] sched/clock: print a log when the sched clock is
- marked unstable
-In-Reply-To: <YOWNWq0IHHP3Fdhz@hirez.programming.kicks-ass.net>
-Message-ID: <alpine.DEB.2.22.394.2107071714060.196080@anisinha-lenovo>
-References: <20210707105659.194171-1-ani@anisinha.ca> <YOWNWq0IHHP3Fdhz@hirez.programming.kicks-ass.net>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S231474AbhGGLty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 07:49:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:35296 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231358AbhGGLtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 07:49:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0300C1042;
+        Wed,  7 Jul 2021 04:47:13 -0700 (PDT)
+Received: from [10.57.35.192] (unknown [10.57.35.192])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EABE63F73B;
+        Wed,  7 Jul 2021 04:47:11 -0700 (PDT)
+Subject: Re: [RFC PATCH 1/1] dma-debug: fix check_for_illegal_area() in
+ debug_dma_map_sg()
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+References: <20210705185252.4074653-1-gerald.schaefer@linux.ibm.com>
+ <20210705185252.4074653-2-gerald.schaefer@linux.ibm.com>
+ <3bb87b4c-f646-20fe-7cc5-c7449432811e@arm.com>
+ <20210706211207.48f15496@thinkpad>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <ae61c67a-6735-ed72-adf3-56570c9b7251@arm.com>
+Date:   Wed, 7 Jul 2021 12:47:07 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210706211207.48f15496@thinkpad>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-07-06 20:12, Gerald Schaefer wrote:
+> On Tue, 6 Jul 2021 10:22:40 +0100
+> Robin Murphy <robin.murphy@arm.com> wrote:
+> 
+>> On 2021-07-05 19:52, Gerald Schaefer wrote:
+>>> The following warning occurred sporadically on s390:
+>>> DMA-API: nvme 0006:00:00.0: device driver maps memory from kernel text or rodata [addr=0000000048cc5e2f] [len=131072]
+>>> WARNING: CPU: 4 PID: 825 at kernel/dma/debug.c:1083 check_for_illegal_area+0xa8/0x138
+>>>
+>>> It is a false-positive warning, due to a broken logic in debug_dma_map_sg().
+>>> check_for_illegal_area() should check for overlay of sg elements with kernel
+>>> text or rodata. It is called with sg_dma_len(s) instead of s->length as
+>>> parameter. After the call to ->map_sg(), sg_dma_len() contains the length
+>>> of possibly combined sg elements in the DMA address space, and not the
+>>> individual sg element length, which would be s->length.
+>>>
+>>> The check will then use the kernel start address of an sg element, and add
+>>> the DMA length for overlap check, which can result in the false-positive
+>>> warning because the DMA length can be larger than the actual single sg
+>>> element length in kernel address space.
+>>>
+>>> In addition, the call to check_for_illegal_area() happens in the iteration
+>>> over mapped_ents, which will not include all individual sg elements if
+>>> any of them were combined in ->map_sg().
+>>>
+>>> Fix this by using s->length instead of sg_dma_len(s). Also put the call to
+>>> check_for_illegal_area() in a separate loop, iterating over all the
+>>> individual sg elements ("nents" instead of "mapped_ents").
+>>>
+>>> Fixes: 884d05970bfb ("dma-debug: use sg_dma_len accessor")
+>>> Tested-by: Niklas Schnelle <schnelle@linux.ibm.com>
+>>> Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+>>> ---
+>>>    kernel/dma/debug.c | 10 ++++++----
+>>>    1 file changed, 6 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+>>> index 14de1271463f..d7d44b7fe7e2 100644
+>>> --- a/kernel/dma/debug.c
+>>> +++ b/kernel/dma/debug.c
+>>> @@ -1299,6 +1299,12 @@ void debug_dma_map_sg(struct device *dev, struct scatterlist *sg,
+>>>    	if (unlikely(dma_debug_disabled()))
+>>>    		return;
+>>>    
+>>> +	for_each_sg(sg, s, nents, i) {
+>>> +		if (!PageHighMem(sg_page(s))) {
+>>> +			check_for_illegal_area(dev, sg_virt(s), s->length);
+>>> +		}
+>>> +	}
+>>> +
+>>>    	for_each_sg(sg, s, mapped_ents, i) {
+>>>    		entry = dma_entry_alloc();
+>>>    		if (!entry)
+>>> @@ -1316,10 +1322,6 @@ void debug_dma_map_sg(struct device *dev, struct scatterlist *sg,
+>>>    
+>>>    		check_for_stack(dev, sg_page(s), s->offset);
+>>
+>> Strictly this should probably be moved to the new loop as well, as it is
+>> similarly concerned with validating the source segments rather than the
+>> DMA mappings - I think with virtually-mapped stacks it might technically
+>> be possible for a stack page to be physically adjacent to a "valid" page
+>> such that it could get merged and overlooked if it were near the end of
+>> the list, although in fairness that would probably be indicative of
+>> something having gone far more fundamentally wrong. Otherwise, the
+>> overall reasoning looks sound to me.
+> 
+> I see, good point. I think I can add this to my patch, and a different
+> subject like "dma-debug: fix sg checks in debug_dma_map_sg()".
 
+TBH it's more of a conceptual cleanliness thing than a significant 
+practical concern, but if we *are* breaking out a separate "validate the 
+source elements" step then it does seem logical to capture everything 
+relevant at once.
 
-On Wed, 7 Jul 2021, Peter Zijlstra wrote:
+> However, I do not quite understand why check_for_stack() does not also
+> consider s->length. It seems to check only the first page of an sg
+> element.
+> 
+> So, shouldn't check_for_stack() behave similar to check_for_illegal_area(),
+> i.e. check all source sg elements for overlap with the task stack area?
 
-> On Wed, Jul 07, 2021 at 04:26:59PM +0530, Ani Sinha wrote:
-> > When the sched clock transitions from stable to unstable and
-> > vice versa, a kernel log is printed. When the sched clock
-> > is marked explicitly as unstable, make __clear_sched_clock_stable()
-> > emit a warning log. It is useful for example in understanding
-> > why a certain feature like NOHZ that depends on availability of a
-> > stable sched clock, is not available.
-> >
-> > Signed-off-by: Ani Sinha <ani@anisinha.ca>
-> > ---
-> >  kernel/sched/clock.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > Changelog:
-> > V1: original patch
-> > v2: print pr_warn from __clear_sched_clock_stable instead. Commit log
-> >     updated with proper prefix and wording.
-> >
-> > diff --git a/kernel/sched/clock.c b/kernel/sched/clock.c
-> > index c2b2859ddd82..99484fec0335 100644
-> > --- a/kernel/sched/clock.c
-> > +++ b/kernel/sched/clock.c
-> > @@ -183,6 +183,7 @@ static void __clear_sched_clock_stable(void)
-> >  		return;
-> >
-> >  	tick_dep_set(TICK_DEP_BIT_CLOCK_UNSTABLE);
-> > +	pr_warn("sched_clock: Marking unstable.\n");
-> >  	schedule_work(&sched_clock_work);
-> >  }
->
-> I'm confused... that work has a ton of printk()s in, what is this
-> pr_warn() adding?
->
+Realistically, creating a scatterlist segment pointing to the stack at 
+all would already be quite an audacious feat of brokenness, but getting 
+a random stack page in the middle of a segment would seem to imply 
+something having gone so catastrophically wrong that it's destined to 
+end very badly whether or not dma-debug squawks about it - not to 
+mention getting lucky enough for said random stack page to actually 
+belong to the current task stack in the first place :)
 
-Right, but for whatever reason, on latest version of Ubuntu (21.04)
-running on hyperV, I do not see those logs:
+Robin.
 
-azureuser@CentOS:~$ uname -a
-Linux CentOS 5.11.0-1009-azure #9-Ubuntu SMP Thu Jun 17 02:20:07 UTC 2021
-x86_64 x86_64 x86_64 GNU/Linux
-azureuser@CentOS:~$ dmesg | grep unstable
-dmesg: read kernel buffer failed: Operation not permitted
-azureuser@CentOS:~$ sudo su
-root@CentOS:/home/azureuser# dmesg | grep unstable
-[    0.000000] tsc: Marking TSC unstable due to running on Hyper-V
-root@CentOS:/home/azureuser# dmesg | grep sched
-[    0.384656] rcu: RCU calculated value of scheduler-enlistment delay is
-25 jiffies.
-[    1.122977] io scheduler mq-deadline registered
-root@CentOS:/home/azureuser# exit
-
-Hence, I was trying the patch.
-
-A
+> If yes, then this probably should be a separate patch, but I can try
+> to come up with something and send a new RFC with two patches. Maybe
+> check_for_stack() can also be integrated into check_for_illegal_area(),
+> they are both called at the same places. And mapping memory from the
+> stack also sounds rather illegal.
+> 
