@@ -2,84 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B505D3BE483
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425593BE489
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhGGIje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbhGGIjc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:39:32 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC697C061574;
-        Wed,  7 Jul 2021 01:36:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JBNHLBALM9UU1Je7M8kW2VY0g6MP+oLBuN5BGCPLZEc=; b=BAfWSkBhcBARgj6LUYUIuZnc7R
-        60ifflEb+GoYtSGsar1MTPhtOfdoBzWxJkNijyLGQpLeUEUCazc0Z/Mru4EGHlnPvbSa6QNtN30X7
-        k4VK9ELPgT68yILG3m8O9xtj2a7gxkNd2zIHovu51PfRAXlmPdNMFUb68RMem8+Mb/cp30YX/rRYs
-        cMpwSgZC2fhdb1eNQ1M7tuFCpW5h2HsvkuAWv5wx6c3C5VRgK4ejjlEQOGT0WhbPY7eA4hC761PQE
-        3NY1vZj8a07PyqikHL5MQVqMexh7xOqy42nC3vr1JGzdyRg5J0gMtBRvIKh6ZxGi2RSVWRYSgceQy
-        O0oZJGuw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m132j-00FIcj-MI; Wed, 07 Jul 2021 08:36:29 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B630F30007E;
-        Wed,  7 Jul 2021 10:36:28 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A17A12CB20D82; Wed,  7 Jul 2021 10:36:28 +0200 (CEST)
-Date:   Wed, 7 Jul 2021 10:36:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        wuqiang.matt@bytedance.com
-Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
- entry
-Message-ID: <YOVnjCxOORB4epjr@hirez.programming.kicks-ass.net>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
- <162400002631.506599.2413605639666466945.stgit@devnote2>
- <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
- <20210706004257.9e282b98f447251a380f658f@kernel.org>
- <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
- <20210706111136.7c5e9843@oasis.local.home>
- <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
+        id S230507AbhGGIkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:40:17 -0400
+Received: from mga07.intel.com ([134.134.136.100]:16689 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230109AbhGGIkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 04:40:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="273108676"
+X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
+   d="scan'208";a="273108676"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 01:37:31 -0700
+X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
+   d="scan'208";a="486732508"
+Received: from rvanakke-mobl.ger.corp.intel.com (HELO localhost) ([10.249.40.173])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 01:37:24 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, lyude@redhat.com
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, rsubbia@codeaurora.org,
+        rnayak@codeaurora.org, freedreno@lists.freedesktop.org,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drm/dp_mst: Fix return code on sideband message failure
+In-Reply-To: <1625585434-9562-1-git-send-email-khsieh@codeaurora.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <1625585434-9562-1-git-send-email-khsieh@codeaurora.org>
+Date:   Wed, 07 Jul 2021 11:37:21 +0300
+Message-ID: <87zguy7c5a.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 10:20:41AM +0200, Peter Zijlstra wrote:
+On Tue, 06 Jul 2021, Kuogee Hsieh <khsieh@codeaurora.org> wrote:
+> From: Rajkumar Subbiah <rsubbia@codeaurora.org>
+>
+> Commit 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing +
+> selftests") added some debug code for sideband message tracing. But
+> it seems to have unintentionally changed the behavior on sideband message
+> failure. It catches and returns failure only if DRM_UT_DP is enabled.
+> Otherwise it ignores the error code and returns success. So on an MST
+> unplug, the caller is unaware that the clear payload message failed and
+> ends up waiting for 4 seconds for the response. Fixes the issue by
+> returning the proper error code.
+>
+> Changes in V2:
+> -- Revise commit text as review comment
+> -- add Fixes text
+>
+> Changes in V3:
+> -- remove "unlikely" optimization
+>
+> Fixes: 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing + selftests")
+>
+> Signed-off-by: Rajkumar Subbiah <rsubbia@codeaurora.org>
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-> > > Steve, can you clarify the ftrace side here? Afaict return_to_handler()
-> > > is similarly affected.
-> > 
-> > I'm not exactly sure what the issue is. As Masami stated, kretprobe
-> > uses a ret to return to the calling function, but ftrace uses a jmp.
-> 
-> I'll have to re-read the ftrace bits, but from the top of my head you
-> cannot do an indirect jump and preserve all registers at the same time,
-> so a return stub must use jump from stack aka. ret.
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 
-Hmm... there's callee clobbered regs ofcourse, which don't need to be
-preserved. And that's exactly what ftrace seems to be doing, and I don't
-think there's any reason why kretprobe cannot do the same. Lemme try.
+
+> ---
+>  drivers/gpu/drm/drm_dp_mst_topology.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> index 1590144..df91110 100644
+> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> @@ -2887,11 +2887,13 @@ static int process_single_tx_qlock(struct drm_dp_mst_topology_mgr *mgr,
+>  	idx += tosend + 1;
+>  
+>  	ret = drm_dp_send_sideband_msg(mgr, up, chunk, idx);
+> -	if (unlikely(ret) && drm_debug_enabled(DRM_UT_DP)) {
+> -		struct drm_printer p = drm_debug_printer(DBG_PREFIX);
+> +	if (ret) {
+> +		if (drm_debug_enabled(DRM_UT_DP)) {
+> +			struct drm_printer p = drm_debug_printer(DBG_PREFIX);
+>  
+> -		drm_printf(&p, "sideband msg failed to send\n");
+> -		drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
+> +			drm_printf(&p, "sideband msg failed to send\n");
+> +			drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
+> +		}
+>  		return ret;
+>  	}
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
