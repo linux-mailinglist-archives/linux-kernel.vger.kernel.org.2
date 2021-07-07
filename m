@@ -2,137 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 916793BE9FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 887643BE9F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbhGGOpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 10:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbhGGOpo (ORCPT
+        id S232017AbhGGOpm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 7 Jul 2021 10:45:42 -0400
+Received: from de-smtp-delivery-105.mimecast.com ([194.104.109.105]:43343 "EHLO
+        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232115AbhGGOpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:45:44 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20ADBC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 07:43:04 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id fs7so1685158pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 07:43:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DnHcmdXOtXxSHt5VDmjCHahDFwLNZGsXgX+YAyZDBEc=;
-        b=dyqaCx/N48KX4H1SOiYEJ7PlH2DgZrxPddiT51efORM4VAeAPXJo6nIOFtiJU6o4Xo
-         Q8Of1CEYQvU+AsfeTu5VY27yUy/Ljf4M6WY/RHH66dXl+0+77p8g8vsAUl73GqPvDKDp
-         Xhy+MdUZxOAN6OgTanjuLdYyUbAOX78rwvghAXf7vMqrsTypIKiI5Z1lubDyzs0wuurA
-         g/MqSFlCo+N7J1KU3aXhEpjlWOkkJMUQS6QXzEEm0SlgZpWu0nCJT+aIdA3vLXGfpG0W
-         Xd8wK6kTedeHZcNm7w5Xba0HN3GRaIqaWW2quXXEo6hC30uhDwY3tc4zeA0ZfYN+61xn
-         C74w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DnHcmdXOtXxSHt5VDmjCHahDFwLNZGsXgX+YAyZDBEc=;
-        b=aTOxof9OfmlC2KCSVZxuWqlMrmUFY2i+U0OKjlnLv6EfI0yWe8ifELPbJFMlIkCcJL
-         QepBR/zLpBnVP7b0tKLQkMjJJIXTKY8AjwPFNyVg1PQ9fEt1dc1pQ6xhmyc7Ev6+pJI6
-         pWkJ4sqDQYjnWHx+wyWPMy4fNJ72o5/Q/HUJFugk0vcSMG1vKSvcs0IFp5vOo9/sigKs
-         MqBW6kf3zU4ZqTEM/uxr95ZNOizXL/51ohT9uLS8Z1aSE0zh9c0XGf6jCxGMFOU1YtzL
-         ++Ah1+q46kADelZKpGsbZDPVOQOxiqe6JgGxLjYE9WkgSEdyN0vobScKd1YOF1cXCJBo
-         t18Q==
-X-Gm-Message-State: AOAM5336E7XNx6hEpEeeUkvVt9Dt3RX9kEepsGIn3pcqPNRbCd1Sb54h
-        9jPt77qBRJI6OM2TTvhXIfZWsg==
-X-Google-Smtp-Source: ABdhPJz4cLmXypP8N6Xga5x368CM+hcB4Kd43JDg63IlBF7D576Gx/qo/nrb/bYGDZHIoeMTXBp3RA==
-X-Received: by 2002:a17:902:6904:b029:fb:42b6:e952 with SMTP id j4-20020a1709026904b02900fb42b6e952mr21656710plk.16.1625668983573;
-        Wed, 07 Jul 2021 07:43:03 -0700 (PDT)
-Received: from ?IPv6:240e:38a:3604:2400:7485:644e:8f74:dc56? ([240e:38a:3604:2400:7485:644e:8f74:dc56])
-        by smtp.gmail.com with ESMTPSA id q17sm12610916pfh.30.2021.07.07.07.42.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 07:43:02 -0700 (PDT)
-Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
- entry
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
- <162400002631.506599.2413605639666466945.stgit@devnote2>
- <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
- <20210706004257.9e282b98f447251a380f658f@kernel.org>
- <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
- <20210706111136.7c5e9843@oasis.local.home>
- <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
- <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
- <YOWACec65qVdTD1y@hirez.programming.kicks-ass.net>
- <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
- <20210707222925.87ecc1391d0ab61db3d8398e@kernel.org>
-From:   Matt Wu <wuqiang.matt@bytedance.com>
-Message-ID: <3fc578e0-5b26-6067-d026-5b5d230d6720@bytedance.com>
-Date:   Wed, 7 Jul 2021 22:42:47 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Wed, 7 Jul 2021 10:45:40 -0400
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com
+ (mail-lo2gbr01lp2052.outbound.protection.outlook.com [104.47.21.52]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-21-6MCvNPenNc-j11BEiKL7Ew-1; Wed, 07 Jul 2021 16:42:58 +0200
+X-MC-Unique: 6MCvNPenNc-j11BEiKL7Ew-1
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
+ by CWXP265MB2485.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:4c::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Wed, 7 Jul
+ 2021 14:42:57 +0000
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d%9]) with mapi id 15.20.4287.033; Wed, 7 Jul 2021
+ 14:42:57 +0000
+From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>
+Subject: Re: [PATCH] mmc: block: Differentiate busy and non-TRAN state
+Thread-Topic: [PATCH] mmc: block: Differentiate busy and non-TRAN state
+Thread-Index: AQHXbl0Q77+Qfc7HWE6ez2HIF5qrJas1omGlgAAGD4CAAADv5IABbwLggAAg/s6AABt2cIAASmAI
+Date:   Wed, 7 Jul 2021 14:42:57 +0000
+Message-ID: <CWXP265MB268016982B4DEE728E60AC45C41A9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+References: <CWXP265MB268049D9AB181062DA7F6DDBC4009@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+ <CWXP265MB26807AC3C130772D789D0AABC41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<CAPDyKFq44ZuXXUDQV34NSW-ixB9GAZfDx+dx-Kb8O7=LQ1TSHQ@mail.gmail.com>
+ <CWXP265MB26803EFAC659676EC0914F97C41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<DM6PR04MB6575B0049B98254E77BA447EFC1A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <CWXP265MB2680AE8D71546A5656B410DCC41A9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<DM6PR04MB65751AF67891F655ABBAA7C6FC1A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+In-Reply-To: <DM6PR04MB65751AF67891F655ABBAA7C6FC1A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ecd81556-6325-41d2-9f48-08d9415582e3
+x-ms-traffictypediagnostic: CWXP265MB2485:
+x-microsoft-antispam-prvs: <CWXP265MB24850AD16FC63920BD53568BC41A9@CWXP265MB2485.GBRP265.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: KYSjURUvUwpfuwEsH838byXZbxCYQBj+vLYvy71/Xt3Y6euJPa8P2MLhyqPLXpSqNwxh04ygaXkpbN4mNL0s8V2NAt/MHlIfL5XthaRIyXHxZVT8SQO9p3BNqDCraSVT5KfC1OWc/R+TxypIAkCcyy+Lr+3ihLv6Uo6ST0WnisSSkRKkePyqbF1KRAHBAIizwjNQKvuIHA2QzQxSbAJpzD69gQLCEX4EUkZePiHav370zjmG5b4gHWpbescN1yGgfeL7h1PBoW1SCKW3AI5PxCnZDjKK1eTTfkVKKKc1fKBgqizqnRh3Zl0jFgLp/Z8P1B36Jh3vI86bKxlpV7by0QOp1roKKTPMBFUzcwEHipcNyAZAJ6jn89b7SKTazMcJnLojT6YL7EIekTGtZYEEvVJLt7K4whL6R1kJEpGkANYKqium5rQUGCjzALAamx2FVbt6axYW+aBCoQ0PC6GLYwzkNUzLPv+rsgOU6ANgnQYRvb3x7k4n8lj4kQeYvnd2VWzV6oqEWdLsDr+kkQCm2CS4ER87RiEmA/443foRqG3pcgtxGY9nurdCp93RHuHcTRGubBQtfxfFo4UWUJ5qblj1mj0GlOu8JJ1+2q6+FgHJlusReeStE26wYa3EHV/2rhFAiajuzQviI68D824L7g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(39830400003)(376002)(366004)(136003)(396003)(5660300002)(4326008)(6506007)(54906003)(316002)(38100700002)(7696005)(110136005)(2906002)(66446008)(122000001)(76116006)(66946007)(66556008)(83380400001)(91956017)(66476007)(8676002)(33656002)(55016002)(8936002)(26005)(86362001)(186003)(52536014)(9686003)(71200400001)(64756008)(478600001);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?5/VLQhnOqsD7NBIgAXJSvo0Le61Fl26hpEg68al/mDbx3agnMPXxeMOiPd?=
+ =?iso-8859-1?Q?FsOvIfeWQU0NT+1LkmaJ+S2kTm//TT9TxqVGuJnK4/ErRgOZYaSDKc52dj?=
+ =?iso-8859-1?Q?c6lASTT1wqiX4HPJYY1CAfn1srliBKZh3P9twQMHctQJ81gARjQ8a2TPwP?=
+ =?iso-8859-1?Q?kWDRUUhD+rIezfIfymV4TawO3za0YVkBUFxJ2Htu3gq9E5mf9U7M2PKWyl?=
+ =?iso-8859-1?Q?vOV/WeK4lLZo2PLYrCLCoVVO//Uw0LyALwbHdOFLCxXDshdBBSVxrUeKpW?=
+ =?iso-8859-1?Q?EDa53GeBJe+ArLnVEcf65iQgmrHTYCcM0dqXmWi4pHjd+TfjBO9jj+Li0E?=
+ =?iso-8859-1?Q?OQyFmIcQjLuyu0ivL17yX8uOrY89pbGmevFuQmT3tnY/CBKXcpwzL05Q78?=
+ =?iso-8859-1?Q?MTpKVPWyQ2PTaXg9FG8fyOlA2bKxGOfnBaIicl79IufoFyZG3Lisy7nle8?=
+ =?iso-8859-1?Q?PnpN7WmwaWJhWJKAPC9U4c5MCLqOLFEGFm1uBdS4OfbPXf60Bhku5iMXQ3?=
+ =?iso-8859-1?Q?PZUPTiZZdHCHlI+LBrw/gVCBdRir0tEFEhBBn+ftpNbUqQXYZYSpNz4gEY?=
+ =?iso-8859-1?Q?KfYms6f/kCpoiwF2ImPTwJMwUEP528lqMYC8tFNucbA0wTlNAj9/u7PKJe?=
+ =?iso-8859-1?Q?79EF0AdGtsvxNSkKomzM/u8Szl3/u5wDjs+/daXKHu3n3TGDw0jCqn3iF0?=
+ =?iso-8859-1?Q?7AhVIATzTKsTMRcKVEq3E5tO2bhWpYX6djbw9r2h7x3lxwc8NUQ5vy3pom?=
+ =?iso-8859-1?Q?UNXWqgnsIE8Bm3OTEe9DkPUcNSaa+LrUbcE2wBqOpyT9ABSsxpMO2O1T5y?=
+ =?iso-8859-1?Q?ujdVAQQTVRS5/jOOEg6ScwYAKa5bu5ZbKRHwk8HGnyvCApTzGKSk0n9W0I?=
+ =?iso-8859-1?Q?+XxFM2mtMjKkXMAzpgyyhf/Vr6ngQpeV11Df54bhXnSSmwBEekZ9oz70hb?=
+ =?iso-8859-1?Q?eOkPqpiPGfWUalLkWMm3AASPXK/OVpXlFRxBwvbhjNwXhMjLCpJrPzZmNt?=
+ =?iso-8859-1?Q?/inn3/nmIKGWVXK1oc/4PnA8fKnPasN9uRab0F8jbNWnatDkELIPeH4ByU?=
+ =?iso-8859-1?Q?yknDhYh1qcqEyCpym8sGPt+ihFuRJ1TjFINsQwz4aaW+kMGZ9oTot5AVg3?=
+ =?iso-8859-1?Q?5uV2r0mMMjtK6hWgzubIdKJxl6ZPKRmtopa3cK3nS8veIX7X+Txcw6bGRu?=
+ =?iso-8859-1?Q?ZgTcR49Dt/2KBBQ4EqMjevhbaH97USDiZtglsX8urQ/Dnd+/WYoIr7HHqg?=
+ =?iso-8859-1?Q?FacLxsAkymgpHD2quTYtRuQQ4rKUCerBGYIMpv5eWbPo9NSf735ACzv+1X?=
+ =?iso-8859-1?Q?QAQf/4ua7sTfVxXQcVhO+XFUTvNsO0MQ27F006rdREqvUpQ=3D?=
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
-In-Reply-To: <20210707222925.87ecc1391d0ab61db3d8398e@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+X-OriginatorOrg: hyperstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: ecd81556-6325-41d2-9f48-08d9415582e3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jul 2021 14:42:57.2581
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /0hzvasNRXj5Dravg9ZIVl4jTd2jnbw/fw5fOVQBP9kdz8LvAdguSkgCOA3y03EesQHENrydNq+Rf2EMWapFEg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB2485
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hyperstone.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/7 PM9:29, Masami Hiramatsu wrote:
-> On Wed, 7 Jul 2021 19:45:30 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
->> On Wed, 7 Jul 2021 12:20:57 +0200
->> Peter Zijlstra <peterz@infradead.org> wrote:
->>
->>> On Wed, Jul 07, 2021 at 07:15:10PM +0900, Masami Hiramatsu wrote:
->>>
->>>> I actually don't want to keep this feature because no one use it.
->>>> (only systemtap needs it?)
->>>
->>> Yeah, you mentioned systemtap, but since that's out-of-tree I don't
->>> care. Their problem.
-> 
-> Yeah, maybe it is not hard to update.
-> 
->>>
->>>> Anyway, if we keep the idea-level compatibility (not code level),
->>>> what we need is 'void *data' in the struct kretprobe_instance.
->>>> User who needs it can allocate their own instance data for their
->>>> kretprobes when initialising it and sets in their entry handler.
->>>>
->>>> Then we can have a simple kretprobe_instance.
->>>
->>> When would you do the alloc? When installing the retprobe, but that
->>> might be inside the allocator, which means you can't call the allocator
->>> etc.. :-)
->>
->> Yes, so the user may need to allocate a pool right before register_kretprobe().
->> (whether per-kretprobe or per-task or global pool, that is user's choice.)
->>
->>>
->>> If we look at struct ftrace_ret_stack, it has a few fixed function
->>> fields. The calltime one is all that is needed for the kretprobe
->>> example code.
->>
->> kretprobe consumes 3 fields, a pointer to 'struct kretprobe' (which
->> stores callee function address in 'kretprobe::kp.addr'), a return
->> address and a frame pointer (*).
->  > Oops, I forgot to add "void *data" for storing user data.
-> 
+>> CMD16 - CMD42 Set PW - (CMD16)* - CMD42 Unlock Force Erase - (CMD42
+>> Set PW)+
+>> * May be omitted if you craft the CMD42 carefully (i.e. equal data size)
+>> + is pretty much irrelevant, can be replaced with anything that is illegal in
+>> PROG.
+>Oh, OK.  Interesting.
+>This functionality is missing in mmc-utils.
+>While at it, I encourage you to consider adding it.
+>
+>Thanks,
+>Avri
 
-Should use "struct kretprobe_holder *rph", since "struct kretprobe" belongs
-to 3rd-party module (which might be unloaded any time).
+That is true and I have thought about it. Unfortunately a locked card currently will not initalize, so not be open to the ioctl interface.
+So in fear of doing more harm than good I would first change that.
+(One thing is reading of SCR is required by linux-mmc but locked cards must not respond to it).
+Something I'm working on on the side but don't expect anything very soon.
 
-User's own pool might not work if the module can be unloaded. Better manage
-the pool in kretprobe_holder, which needs no changes from user side.
+Kind Regards,
+Christian
+
+> 
+> >Again, can you share the sequence of the commands you are using?
+> >
+> >Thanks,
+> >Avri
+> Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+> Managing Directors: Dr. Jan Peter Berns.
+> Commercial register of local courts: Freiburg HRB381782
+
+Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+Managing Directors: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
+
