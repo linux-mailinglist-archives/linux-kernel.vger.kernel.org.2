@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0067B3BE5F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B58D3BE5F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhGGJyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:54:13 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:48731 "EHLO
+        id S231153AbhGGJyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:54:16 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:52237 "EHLO
         wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231173AbhGGJyH (ORCPT
+        by vger.kernel.org with ESMTP id S231382AbhGGJyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:54:07 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.west.internal (Postfix) with ESMTP id 8A5B02B007A1;
-        Wed,  7 Jul 2021 05:51:26 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 07 Jul 2021 05:51:27 -0400
+        Wed, 7 Jul 2021 05:54:11 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 3761E2B007A7;
+        Wed,  7 Jul 2021 05:51:30 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 07 Jul 2021 05:51:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=AP/I8rxrmE9Ml
-        RDmDxJIy4tqdiKllNYXAEVIGV9L3GI=; b=g8C+NgNuTUqc8w4R12gc57tLUAN8A
-        H90sc6rEChB5iWGD1xPpTKRa7Jsga+lA1erKdI/pSzanlpQtgH7KlXqHbLKuxewy
-        R4l8Qzuw9VGPnHm7C2cOC2FVCuudKNWy08NWGDUAODJ+bKvrn8u78kK2IOUds2tt
-        CAZBLwGT+3yL+tNydQLRs+a0cvIgnkpJa/WrHs/ZPL8jPBQpOv9sRMsTlUQeEDuA
-        yxtTGnFeOicgLRihcJJ/Cify411XF1BWjeTC+k3qb/JFifYh+UAm6ASNNUSaAKTG
-        NUlqZ5lDqcVoanOULZWHbXC0mLs4tVk8JZOuVGS4GdNqnmUG+7BExnnlg==
+        :mime-version:content-transfer-encoding; s=fm3; bh=WSJ1elncdkKB2
+        GBmNc1T6E2h3Za7yGocjy6KSumGTP0=; b=efJGcFmzfYygmNAM2kqwTx/9GfdHF
+        J72RLIIeJ4vGeloz+k2nZriDw6EZ/DZraKjYYe26zo501Nh4D3+6ifgj76CjF+VF
+        ZVPXOXsHXYegi7MA4vW1Q0W+QQdfIt3d4P1qFZJogvOm20Z9QmhJ+pU1yziy6NBv
+        ZfvFHh6qQHkZ3Nn7XtDsksYJtKonwAySs1OnFieNH63aF8qpYljatH6zC1Y2oDGW
+        3n2tmFkQ+BqLO8BiPk1HpulqgqQQYUqrJCf7AQBKmFB4YfyIrLwIjbZOI4yN+Unt
+        rVgMKc0luA5HZVl5z5A9KiJWyK+4eMcdMT0JlVJbn/a6gxT5F/60PDuLw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=AP/I8rxrmE9MlRDmDxJIy4tqdiKllNYXAEVIGV9L3GI=; b=ksdUKZT1
-        gCC2cs1svaMtcvWYJV8ZfB1bcjwqAtY4Hpqq0mW3ZReppRbnA0jj0gQkt3L8GaKy
-        3rZZoM8Si6iKSVwUnBe6qFucNzCiEJYvQZk79m7eVgd/XLaXVqcQs9qdN9mhLPr0
-        RKcTUhuJp6mIiTH0skZ9Wjgrr/zzdqtI8fIjvuh523xxvfB+K1eAjzA/cGIM09l/
-        D6HNfGVugXJGCqKacF9HE7jA16k+m0qlSB1lWlqZ+0WdZk+hUUCiGNtsowwbP3lP
-        HLM+x2XgIZa2C/4xMWWMpxXBVUPVDyCdiKEZBFuxYz6hhq6dy0kPY6TIF+ri+e5c
-        RlRDJyjsyrm3XA==
-X-ME-Sender: <xms:HXnlYJ7SKHuLlJBaFptxWDIPxO94zyQc7yOGOzflkpWB1Vq3uVL6fg>
-    <xme:HXnlYG69OZN5vj3nhmnuFgCRfgGc3Yk2JjA0Wow378Q5ZttXTDRpVxRW3sxbN_Tga
-    KLxl0pNC0LYwL1lEek>
-X-ME-Received: <xmr:HXnlYAfUjoyKWf_LxMw9ii7REV4mUkShVsWh04fbPCdQAK6gjLnm629t89yna7FUYkvGyqiKxuN8LKr78Ge3SVaeIKWvf3EKY1Q6>
+        fm3; bh=WSJ1elncdkKB2GBmNc1T6E2h3Za7yGocjy6KSumGTP0=; b=lJP04q6A
+        +CmAFBgm2kHOeYttMEB9NCarU460yg5ha8jK7Q70egtMQPlVvq+czSZA10mlD9pg
+        AKiZn7zP2T5VHPHsI8tox0XjnFuT4XnviO7+41ZoKGHLacjynLCg+4sORYv2QXql
+        RX3P62JJaWMgyyPgToZzojR+T+2hJuj7FWGo8ppX9Z660B28lN9FXy0GtXWhIGpn
+        zaahWjvMo+2W7Y9taRo+I0T5Hi7+Q14rEHzQqX8Nbj+RMyz6rq9wClAHK8BRQChF
+        9ZYmjW2ClIcD4GaxGj3LT/qfqf8gp09ULy7vdAA46lympZSiQ6q7Mn3WFVKHR2WD
+        rSaXyfaWAeoQnQ==
+X-ME-Sender: <xms:IXnlYK9imcCzMzfKEw8mqFvGOcB0keMm-fuh_-785aQOIE46mRQxyA>
+    <xme:IXnlYKtaQtM59F-1v-icuQXpU2EFXVOdLLKt0iHRhCZ_4OE3pqJ4SYDxIMe1QViW-
+    Ll7oOljm7UVZgvPyoc>
+X-ME-Received: <xmr:IXnlYACVumf2Vx-glZ0mCZts0UpkB-pgwHItFzFrp64BEPAWCuxvtAULtB7RYejgV7IiOh1pHE6sTYjiYvIKOW4U8KCtNwkZGKrq>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtddvgddvtdcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -49,12 +49,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtddvgddvtdcutefuodetggdote
     gvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveevheeh
     vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
     igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:HXnlYCL9pfhIlAqt-L_gXJz-TXEOu1N_XJyTEcGuEjmZFyK6WMVwhg>
-    <xmx:HXnlYNIXtRMsH3X8bUz1dt2F_TapoLya1xgYwIwzJOwUpL9LfNyD8Q>
-    <xmx:HXnlYLxsAKoEXVe7C8bjo2p3GB4TpEy_SEkwdus_7HhCM04bc0Jb_w>
-    <xmx:HnnlYG7RlkQJ9B9UFFrhDfmd8OJ8e6CbXZOwrndIgSYW7I4rklyq-Do0htI>
+X-ME-Proxy: <xmx:IXnlYCfdMm1WL6S6WuKxnksoQ4lFHlLWWtGHjJJVUq2hBGho4yCung>
+    <xmx:IXnlYPP3kB-y2Lpr-CRn8DBQ-DSYDgq43zhfaTZBaKYCud6iTzHxcQ>
+    <xmx:IXnlYMmAaH7s_DzqPYeVTLs_7rFzEXqo12pwmTinwb42xwMYIzhu7A>
+    <xmx:IXnlYMdQVupziuaTq1P7DGngWPVIxZGOf_-K55kJRGIGGBCJFfH5z2M8mKk>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 7 Jul 2021 05:51:25 -0400 (EDT)
+ 7 Jul 2021 05:51:29 -0400 (EDT)
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     dri-devel@lists.freedesktop.org,
         Daniel Vetter <daniel.vetter@intel.com>,
@@ -73,9 +73,9 @@ Cc:     Emma Anholt <emma@anholt.net>,
         Dom Cobley <dom@raspberrypi.com>,
         Maxime Ripard <mripard@kernel.org>,
         Nicolas Saenz Julienne <nsaenz@kernel.org>
-Subject: [PATCH 2/3] drm/vc4: hdmi: Drop devm interrupt handler for hotplug interrupts
-Date:   Wed,  7 Jul 2021 11:51:11 +0200
-Message-Id: <20210707095112.1469670-3-maxime@cerno.tech>
+Subject: [PATCH 3/3] drm/vc4: hdmi: Only call into DRM framework if registered
+Date:   Wed,  7 Jul 2021 11:51:12 +0200
+Message-Id: <20210707095112.1469670-4-maxime@cerno.tech>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210707095112.1469670-1-maxime@cerno.tech>
 References: <20210707095112.1469670-1-maxime@cerno.tech>
@@ -85,112 +85,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hotplugs interrupt handlers are registered through the
-devm_request_threaded_irq function. However, while free_irq is indeed
-called properly when the device is unbound or bind fails, it's called
-after unbind or bind is done.
+Our hotplug handler will currently call the drm_kms_helper_hotplug_event
+every time a hotplug interrupt is called.
 
-In our particular case, it means that on failure it creates a window
-where our interrupt handler can be called, but we're freeing every
-resource (CEC adapter, DRM objects, etc.) it might need.
+However, since the device is registered after all the drivers have
+finished their bind callback, we have a window between when we install
+our interrupt handler and when drm_dev_register() is eventually called
+where our handler can run and call drm_kms_helper_hotplug_event but the
+device hasn't been registered yet, causing a null pointer dereference.
 
-In order to address this, let's switch to the non-devm variant to
-control better when the handler will be unregistered and allow us to
-make it safe.
+Fix this by making sure we only call drm_kms_helper_hotplug_event if our
+device has been properly registered.
 
 Fixes: f4790083c7c2 ("drm/vc4: hdmi: Rely on interrupts to handle hotplug")
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 41 +++++++++++++++++++++++-----------
- 1 file changed, 28 insertions(+), 13 deletions(-)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index d966f61966c6..50393a8a42b3 100644
+index 50393a8a42b3..31c28252c5f5 100644
 --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
 +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -1590,25 +1590,27 @@ static int vc4_hdmi_hotplug_init(struct vc4_hdmi *vc4_hdmi)
- {
- 	struct drm_connector *connector = &vc4_hdmi->connector;
- 	struct platform_device *pdev = vc4_hdmi->pdev;
--	struct device *dev = &pdev->dev;
- 	int ret;
+@@ -1580,7 +1580,7 @@ static irqreturn_t vc4_hdmi_hpd_irq_thread(int irq, void *priv)
+ 	struct vc4_hdmi *vc4_hdmi = priv;
+ 	struct drm_device *dev = vc4_hdmi->connector.dev;
  
- 	if (vc4_hdmi->variant->external_irq_controller) {
--		ret = devm_request_threaded_irq(dev,
--						platform_get_irq_byname(pdev, "hpd-connected"),
--						NULL,
--						vc4_hdmi_hpd_irq_thread, IRQF_ONESHOT,
--						"vc4 hdmi hpd connected", vc4_hdmi);
-+		unsigned int hpd_con = platform_get_irq_byname(pdev, "hpd-connected");
-+		unsigned int hpd_rm = platform_get_irq_byname(pdev, "hpd-removed");
-+
-+		ret = request_threaded_irq(hpd_con,
-+					   NULL,
-+					   vc4_hdmi_hpd_irq_thread, IRQF_ONESHOT,
-+					   "vc4 hdmi hpd connected", vc4_hdmi);
- 		if (ret)
- 			return ret;
+-	if (dev)
++	if (dev && dev->registered)
+ 		drm_kms_helper_hotplug_event(dev);
  
--		ret = devm_request_threaded_irq(dev,
--						platform_get_irq_byname(pdev, "hpd-removed"),
--						NULL,
--						vc4_hdmi_hpd_irq_thread, IRQF_ONESHOT,
--						"vc4 hdmi hpd disconnected", vc4_hdmi);
--		if (ret)
-+		ret = request_threaded_irq(hpd_rm,
-+					   NULL,
-+					   vc4_hdmi_hpd_irq_thread, IRQF_ONESHOT,
-+					   "vc4 hdmi hpd disconnected", vc4_hdmi);
-+		if (ret) {
-+			free_irq(hpd_con, vc4_hdmi);
- 			return ret;
-+		}
- 
- 		connector->polled = DRM_CONNECTOR_POLL_HPD;
- 	}
-@@ -1616,6 +1618,16 @@ static int vc4_hdmi_hotplug_init(struct vc4_hdmi *vc4_hdmi)
- 	return 0;
- }
- 
-+static void vc4_hdmi_hotplug_exit(struct vc4_hdmi *vc4_hdmi)
-+{
-+	struct platform_device *pdev = vc4_hdmi->pdev;
-+
-+	if (vc4_hdmi->variant->external_irq_controller) {
-+		free_irq(platform_get_irq_byname(pdev, "hpd-connected"), vc4_hdmi);
-+		free_irq(platform_get_irq_byname(pdev, "hpd-removed"), vc4_hdmi);
-+	}
-+}
-+
- #ifdef CONFIG_DRM_VC4_HDMI_CEC
- static irqreturn_t vc4_cec_irq_handler_rx_thread(int irq, void *priv)
- {
-@@ -2197,7 +2209,7 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
- 
- 	ret = vc4_hdmi_cec_init(vc4_hdmi);
- 	if (ret)
--		goto err_destroy_conn;
-+		goto err_free_hotplug;
- 
- 	ret = vc4_hdmi_audio_init(vc4_hdmi);
- 	if (ret)
-@@ -2211,6 +2223,8 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
- 
- err_free_cec:
- 	vc4_hdmi_cec_exit(vc4_hdmi);
-+err_free_hotplug:
-+	vc4_hdmi_hotplug_exit(vc4_hdmi);
- err_destroy_conn:
- 	vc4_hdmi_connector_destroy(&vc4_hdmi->connector);
- err_destroy_encoder:
-@@ -2252,6 +2266,7 @@ static void vc4_hdmi_unbind(struct device *dev, struct device *master,
- 	kfree(vc4_hdmi->hd_regset.regs);
- 
- 	vc4_hdmi_cec_exit(vc4_hdmi);
-+	vc4_hdmi_hotplug_exit(vc4_hdmi);
- 	vc4_hdmi_connector_destroy(&vc4_hdmi->connector);
- 	drm_encoder_cleanup(&vc4_hdmi->encoder.base.base);
- 
+ 	return IRQ_HANDLED;
 -- 
 2.31.1
 
