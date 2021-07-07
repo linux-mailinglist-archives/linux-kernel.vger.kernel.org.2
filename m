@@ -2,163 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89933BF232
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 00:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0EB3BF233
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 00:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhGGWqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 18:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38178 "EHLO
+        id S231285AbhGGWqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 18:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhGGWqA (ORCPT
+        with ESMTP id S231317AbhGGWqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 18:46:00 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BCAC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 15:43:19 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id f16-20020ad442d00000b029028c5121bf35so2654563qvr.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 15:43:19 -0700 (PDT)
+        Wed, 7 Jul 2021 18:46:42 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D53FC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 15:44:00 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id g19so5705625ybe.11
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 15:44:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/85l2E8K+20QVvNNb2KxNFZMM43rwvEksKDAAvMmyxw=;
-        b=aMgaH0f60ri4+7q3inDHhAzPnvNA8hvYOKgJ9NqPtv+6JhaqB+ORX55cfzdeRuc9+Z
-         2YA1ByZYy8zsokIagV+qVw247owxNutuGtky3IjJzAobpcTE0+UiYO/i3y1VLfu8AwLx
-         PxV3YbDoi7UG3RwYwob47yzZs2nd4823aAb/F+nb8Y/H3txTg74ZcfDwVqqEtTLHz7i6
-         1zBQfvhkXUiD5Kq6CNIuoZglsK1TS/taTEvbbCja5z/0raBo9mTY22/N44nC4KLhvpDg
-         ah7OERSNSuM0WBC9u4QIJZOiG557syp5PDMPgpbINv5eiCs3tjLJ9uRFc7dngP2qNO/Q
-         uGbA==
+        bh=JzJsy1Gwb/DpffhxPKiomTMCjSp1XUEhZNn7jP3X0B8=;
+        b=fuza8TZG/+wORlx+skCd5tjI1UPpjBQQUA2jFWQg/Oh7e01Dp71R2yZOxJvJLhUGAp
+         IglrsozoUeOmc5G9oOAbtLOxiCVc9ofA7T9xmP1zQqUKEuI50+yIsXkqoLyFMYjfLFYu
+         vm2JylA/vj+/dNWLUu/XXVy/1e6zIR4xYl48x9A9LkonYmYqw05SB8T6U3RoCfdVAOR6
+         Kg4q4L4UkKszzidWs+1OUtf3oEkSWWUIpimNRSDBu8dSid7zqxDgroM7XpjFpI/jhecd
+         kIJIRSU43TwvStlVOCs4j837YU79qT1l6Vxix0jq3//bNzfFucfr8h7fuJQjUERfKKD2
+         hsXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=/85l2E8K+20QVvNNb2KxNFZMM43rwvEksKDAAvMmyxw=;
-        b=QBtybMbBZUnsrb8zLtjCh9TQmKrMO7klg2v5a2tihnDeMrVvAAGxULuxQKWm3fzbEU
-         uFBl0B/P2o6Rablrcq+xdwDdxaaumc2tFQ+bQMBjUDGNNxguvds4rWWm8jAbdkPE6313
-         PG4e3r6fi88w2DvPgBFb82O0gbvJYciPG0INsyPMMiToAhL5SzdLCm8goVSTkxeJEzXN
-         EV1248Gvl+xtYDr1tBkke0FULGfKDbzF8KaZHW/0kUFd0MHnnS2eWAUchHJFJTms6gk1
-         aeOGIC25M+PUIeS+BAsBAe35zqpAUO+6R3Q2rG/tiaO+N0svNmle6zDuD5IH4s2gXjDf
-         m+FA==
-X-Gm-Message-State: AOAM531VZQmEOqMaKe6AionXHn/6TSElGl+sW06E1fkyYZCWDUZXhDzc
-        yukpn5gC4/MDEtpppK6F6DIledxJM3ObFmIeX2U=
-X-Google-Smtp-Source: ABdhPJxItucFemx8YM3vONxVgiXV68A9Y6Uq5ZiQ3ccTpoCn7Jqfyh8C8HwRkUeIOlNw44d+dcOXVnrlV3US2kUCHb0=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:d417:6e24:4a54:1792])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6214:1a0a:: with SMTP id
- fh10mr26007149qvb.59.1625697798784; Wed, 07 Jul 2021 15:43:18 -0700 (PDT)
-Date:   Wed,  7 Jul 2021 15:43:10 -0700
-In-Reply-To: <20210707224310.1403944-1-ndesaulniers@google.com>
-Message-Id: <20210707224310.1403944-3-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20210707224310.1403944-1-ndesaulniers@google.com>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH 2/2] Makefile: drop CROSS_COMPILE for LLVM=1 LLVM_IAS=1
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JzJsy1Gwb/DpffhxPKiomTMCjSp1XUEhZNn7jP3X0B8=;
+        b=WDIQ/5kM4/pol85LEZJv94StCoD/J4B+SLhO99HQtH4Ggc6lPowOX49ywQNIJPcEsb
+         nG4uH95LNJNvolpN117rpDhXDr3yFAMtQ8BhWxzn/2VkdJLLQtpNSjOYVkvapxUTDjv3
+         Y4Ln3e2DFpy7gKLm3KthWpZtsER1ehuQ9fWM37FOXXyR748+W1xsKrusFUhxh5/1S443
+         AOExDK+FodmDOjxggWnKkKvsfmQ7BCbfOiYQ+cfXOwMAuXCeU3yL+mnxOw+dvyYZTWTF
+         x9SbDT++7gbJXFvwXL9xWepo2k2kL6w4QC2P3unrAR9YUmd/ib+7T4XuE6L55GBNIEzo
+         RK6Q==
+X-Gm-Message-State: AOAM5316A77VHO1Z26HF9vtHSU3jgGbCr0C4GBSuhMk5GYm4xRurYmFf
+        OtoGSCWcWd55XhSYVjO4wOZIwiEjMN0arWlplyE2qLSkR1gbYjZ+
+X-Google-Smtp-Source: ABdhPJzjWRdscMuHWjaEPoeIecZQx43oo8ZD+Vf/VQroZQghr+QBugm9G0OPkAw3ywmF0ah7ilDJM/3M9Wex+Mcoki8=
+X-Received: by 2002:a25:4102:: with SMTP id o2mr33355128yba.23.1625697839576;
+ Wed, 07 Jul 2021 15:43:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210707023933.1691149-1-surenb@google.com> <YOWugYxQ9Yfsqba2@cmpxchg.org>
+In-Reply-To: <YOWugYxQ9Yfsqba2@cmpxchg.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 7 Jul 2021 15:43:48 -0700
+Message-ID: <CAJuCfpGx22iTaDGCfOrM_pD6PYZqQrni2+u5jQy+NpNeNg7B9w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] psi: stop relying on timer_pending for poll_work rescheduling
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        matthias.bgg@gmail.com, Minchan Kim <minchan@google.com>,
+        Tim Murray <timmurray@google.com>,
+        YT Chang <yt.chang@mediatek.com>,
+        =?UTF-8?B?V2VuanUgWHUgKOiuuOaWh+S4vik=?= <wenju.xu@mediatek.com>,
+        =?UTF-8?B?Sm9uYXRoYW4gSk1DaGVuICjpmbPlrrbmmI4p?= 
+        <jonathan.jmchen@mediatek.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        kernel-team <kernel-team@android.com>,
+        SH Chen <show-hong.chen@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We get constant feedback that the command line invocation of make is too
-long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
-target triple, or is an absolute path outside of $PATH, but it's mostly
-redundant for a given ARCH.
+On Wed, Jul 7, 2021 at 6:39 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> This looks good to me now code wise. Just a comment on the comments:
+>
+> On Tue, Jul 06, 2021 at 07:39:33PM -0700, Suren Baghdasaryan wrote:
+> > @@ -559,18 +560,14 @@ static u64 update_triggers(struct psi_group *group, u64 now)
+> >       return now + group->poll_min_period;
+> >  }
+> >
+> > -/* Schedule polling if it's not already scheduled. */
+> > -static void psi_schedule_poll_work(struct psi_group *group, unsigned long delay)
+> > +/* Schedule polling if it's not already scheduled or forced. */
+> > +static void psi_schedule_poll_work(struct psi_group *group, unsigned long delay,
+> > +                                bool force)
+> >  {
+> >       struct task_struct *task;
+> >
+> > -     /*
+> > -      * Do not reschedule if already scheduled.
+> > -      * Possible race with a timer scheduled after this check but before
+> > -      * mod_timer below can be tolerated because group->polling_next_update
+> > -      * will keep updates on schedule.
+> > -      */
+> > -     if (timer_pending(&group->poll_timer))
+> > +     /* xchg should be called even when !force to set poll_scheduled */
+> > +     if (atomic_xchg(&group->poll_scheduled, 1) && !force)
+> >               return;
+>
+> This explains what the code does, but not why. It would be good to
+> explain the ordering with poll_work, here or there. But both sides
+> should mention each other.
 
-If CROSS_COMPILE is not set, simply set --target= for CLANG_FLAGS,
-KBUILD_CFLAGS, and KBUILD_AFLAGS based on $ARCH.
+How about this:
 
-Previously, we'd cross compile via:
-$ ARCH=arm64 CROSS_COMPILE=aarch64-linxu-gnu make LLVM=1 LLVM_IAS=1
-Now:
-$ ARCH=arm64 make LLVM=1 LLVM_IAS=1
+/*
+ * atomic_xchg should be called even when !force to always set poll_scheduled
+ * and to provide a memory barrier (see the comment inside psi_poll_work).
+ */
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1399
-Suggested-by: Arnd Bergmann <arnd@kernel.org>
-Suggested-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes RFC -> v1:
-* Rebase onto linux-kbuild/for-next
-* Keep full target triples since missing the gnueabi suffix messes up
-  32b ARM. Drop Fangrui's sugguested by tag. Update commit message to
-  drop references to arm64.
-* Flush out TODOS.
-* Add note about -EL/-EB, -m32/-m64.
-* Add note to Documentation/.
+>
+> > @@ -595,6 +595,28 @@ static void psi_poll_work(struct psi_group *group)
+> >
+> >       now = sched_clock();
+> >
+> > +     if (now > group->polling_until) {
+> > +             /*
+> > +              * We are either about to start or might stop polling if no
+> > +              * state change was recorded. Resetting poll_scheduled leaves
+> > +              * a small window for psi_group_change to sneak in and schedule
+> > +              * an immegiate poll_work before we get to rescheduling. One
+> > +              * potential extra wakeup at the end of the polling window
+> > +              * should be negligible and polling_next_update still keeps
+> > +              * updates correctly on schedule.
+> > +              */
+> > +             atomic_set(&group->poll_scheduled, 0);
+> > +             /*
+> > +              * Ensure that operations of clearing group->poll_scheduled and
+> > +              * obtaining changed_states are not reordered.
+> > +              */
+> > +             smp_mb();
+>
+> Same here, it would be good to explain that this is ordering the
+> scheduler with the timer such that no events are missed. Feel free to
+> reuse my race diagram from the other thread - those are better at
+> conveying the situation than freeform text.
 
- Documentation/kbuild/llvm.rst |  5 +++++
- scripts/Makefile.clang        | 38 +++++++++++++++++++++++++++++++++--
- 2 files changed, 41 insertions(+), 2 deletions(-)
+I tried to make your diagram a bit less abstract by using the actual
+names. How about this?
 
-diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-index b18401d2ba82..80c63dd9a6d1 100644
---- a/Documentation/kbuild/llvm.rst
-+++ b/Documentation/kbuild/llvm.rst
-@@ -46,6 +46,11 @@ example: ::
- 
- 	clang --target=aarch64-linux-gnu foo.c
- 
-+When both ``LLVM=1`` and ``LLVM_IAS=1`` are used, ``CROSS_COMPILE`` becomes
-+unnecessary and can be inferred from ``ARCH``. Example: ::
-+
-+	ARCH=arm64 make LLVM=1 LLVM_IAS=1
-+
- LLVM Utilities
- --------------
- 
-diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-index 297932e973d4..a79088797a50 100644
---- a/scripts/Makefile.clang
-+++ b/scripts/Makefile.clang
-@@ -1,6 +1,40 @@
--ifneq ($(CROSS_COMPILE),)
-+# Individual arch/{arch}/Makfiles should use -EL/-EB to set intended endianness
-+# and -m32/-m64 to set word size based on Kconfigs instead of relying on the
-+# target triple.
-+ifeq ($(CROSS_COMPILE),)
-+ifneq ($(LLVM),)
-+ifeq ($(LLVM_IAS),1)
-+ifeq ($(ARCH),arm)
-+CLANG_FLAGS	+= --target=arm-linux-gnueabi
-+else ifeq ($(ARCH),arm64)
-+CLANG_FLAGS	+= --target=aarch64-linux-gnu
-+else ifeq ($(ARCH),hexagon)
-+CLANG_FLAGS	+= --target=hexagon-linux-gnu
-+else ifeq ($(ARCH),i386)
-+CLANG_FLAGS	+= --target=i686-linux-gnu
-+else ifeq ($(ARCH),m68k)
-+CLANG_FLAGS	+= --target=m68k-linux-gnu
-+else ifeq ($(ARCH),mips)
-+CLANG_FLAGS	+= --target=mipsel-linux-gnu
-+else ifeq ($(ARCH),powerpc)
-+CLANG_FLAGS	+= --target=powerpc64le-linux-gnu
-+else ifeq ($(ARCH),riscv)
-+CLANG_FLAGS	+= --target=riscv64-linux-gnu
-+else ifeq ($(ARCH),s390)
-+CLANG_FLAGS	+= --target=s390x-linux-gnu
-+else ifeq ($(ARCH),x86)
-+CLANG_FLAGS	+= --target=x86_64-linux-gnu
-+else ifeq ($(ARCH),x86_64)
-+CLANG_FLAGS	+= --target=x86_64-linux-gnu
-+else
-+$(error Specify CROSS_COMPILE or add '--target=' option to scripts/Makefile.clang)
-+endif # ARCH
-+endif # LLVM_IAS
-+endif # LLVM
-+else
- CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
--endif
-+endif # CROSS_COMPILE
-+
- ifeq ($(LLVM_IAS),1)
- CLANG_FLAGS	+= -integrated-as
- else
--- 
-2.32.0.93.g670b81a890-goog
+/*
+ * We need to enforce ordering between poll_scheduled and psi_group_cpu.times
+ * reads and writes in psi_poll_work and psi_group_change functions.
+Otherwise we
+ * might fail to reschedule the timer when monitored states change:
+ *
+ * psi_poll_work:
+ *     poll_scheduled = 0
+ *     smp_mb()
+ *     changed_states = collect_percpu_times()
+ *     if changed_states && xchg(poll_scheduled, 1) == 0
+ *         mod_timer()
+ *
+ * psi_group_change:
+ *     record_times()
+ *     smp_mb()
+ *     if xchg(poll_scheduled, 1) == 0
+ *         mod_timer()
+ *
+ * atomic_xchg in psi_schedule_poll_work implements an implicit memory
+barrier but
+ * we need an explicit one here.
+ */
 
+If we remove smp_mb barriers then there are the following possible
+reordering cases:
+
+Case1: reordering in psi_poll_work
+psi_poll_work                    psi_group_change
+  changed_states = collect_percpu_times()
+                                              record_times()
+                                              if xchg(poll_scheduled,
+1) == 0 <-- false
+                                                  mod_timer()
+  poll_scheduled = 0
+  if changed_states && xchg(poll_scheduled, 1) == 0 <-- changed_states is false
+      mod_timer()
+
+Case2: reordering in psi_group_change
+psi_poll_work                    psi_group_change
+                                              if xchg(poll_scheduled,
+1) == 0 <-- false
+                                                  mod_timer()
+  poll_scheduled = 0
+  changed_states = collect_percpu_times()
+                                                  record_times()
+  if changed_states && xchg(poll_scheduled, 1) == 0 <-- changed_states is false
+      mod_timer()
+
+In both cases mod_timer() is not called, poll update is missed. But
+describing this all in the comments would be an overkill IMHO.
+WDYT?
+
+>
+> Thanks
