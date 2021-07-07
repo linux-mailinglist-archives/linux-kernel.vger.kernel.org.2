@@ -2,76 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203A23BE359
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 09:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AAF3BE35B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 09:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhGGHEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 03:04:22 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45426 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbhGGHEV (ORCPT
+        id S230361AbhGGHFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 03:05:06 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59530 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230312AbhGGHFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 03:04:21 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8ED6D2001A;
-        Wed,  7 Jul 2021 07:01:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625641300; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=Z/e1G+gloDaAJuCz1ic3rY8b4Q6mwDzhQzHZUcYRM20=;
-        b=EDS83y1O8+1gXi+Y6G9NBCc00pHQ33+jQ/Yt+dj1A18BKAHI/ThqLjlCMlGeQocmRg+/5v
-        +NgnPQSLq0Yo6nQ2aSEEaDwzhTj0ItTlAQQy0OIwKorBcpfgcrgiOA7mXY+35/TVU8GNmC
-        ynosbRpR++FY2H6x3nHmn3WMH497pDk=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 619F013768;
-        Wed,  7 Jul 2021 07:01:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id BjeeFlRR5WAkDwAAGKfGzw
-        (envelope-from <jgross@suse.com>); Wed, 07 Jul 2021 07:01:40 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        boris.ostrovsky@oracle.com
-Subject: [GIT PULL] xen: branch for v5.14-rc1
-Date:   Wed,  7 Jul 2021 09:01:39 +0200
-Message-Id: <20210707070139.27901-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 7 Jul 2021 03:05:05 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8EC652256E;
+        Wed,  7 Jul 2021 07:02:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625641344; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Op8kaXWmQZkP/t6/Ou7GdSs3p7QU40ls+HE/eSEJmzE=;
+        b=qUT+LTJk6hK1jroj3RseadRL2UFbUWUm6vbxoHNviHXnJKWvnAr0jSOQ70ZM/M3XwuRKG1
+        F6GNPSbtsubJQ7WcSTF7vb/N4V+EBrzAvHKiUOMVtA8vK5qbwGE571iLf1BARsPRa69FQ6
+        pQ7OSntYWTDQLoPcqX9M4Rt7tnzyp6o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625641344;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Op8kaXWmQZkP/t6/Ou7GdSs3p7QU40ls+HE/eSEJmzE=;
+        b=XNhXEDwCYFKryqq6ypDCSUMWq3feyFuI+Cx97Kgj8tzhZjl1/X6TNxfMDtWjGXPNngKezM
+        AaRn6o8XbZfc3/BA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 81D95A3B8A;
+        Wed,  7 Jul 2021 07:02:24 +0000 (UTC)
+Date:   Wed, 07 Jul 2021 09:02:24 +0200
+Message-ID: <s5ho8be8v3z.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Max Filippov <jcmvbkbc@gmail.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        alsa-devel@alsa-project.org, Leon Romanovsky <leon@kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: ALSA: intel8x0: div by zero in snd_intel8x0_update()
+In-Reply-To: <CAMo8BfKKMQkcsbOQaeEjq_FsJhdK=fn598dvh7YOcZshUSOH=g@mail.gmail.com>
+References: <YJ4yBmIV6RJCo42U@google.com>
+        <s5hk0o18tio.wl-tiwai@suse.de>
+        <YJ5cHdv6MVmAKD3b@google.com>
+        <YKDYQfDf7GiMfGCN@google.com>
+        <YKDYbaprE3K2QpCe@google.com>
+        <s5hbl9b6mah.wl-tiwai@suse.de>
+        <CAMo8BfKKMQkcsbOQaeEjq_FsJhdK=fn598dvh7YOcZshUSOH=g@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Tue, 06 Jul 2021 19:50:08 +0200,
+Max Filippov wrote:
+> 
+> Hello,
+> 
+> On Sun, May 16, 2021 at 2:50 AM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > On Sun, 16 May 2021 10:31:41 +0200,
+> > Sergey Senozhatsky wrote:
+> > >
+> > > On (21/05/16 17:30), Sergey Senozhatsky wrote:
+> > > > On (21/05/14 20:16), Sergey Senozhatsky wrote:
+> > > > > > --- a/sound/pci/intel8x0.c
+> > > > > > +++ b/sound/pci/intel8x0.c
+> > > > > > @@ -691,6 +691,9 @@ static inline void snd_intel8x0_update(struct intel8x0 *chip, struct ichdev *ich
+> > > > > >         int status, civ, i, step;
+> > > > > >         int ack = 0;
+> > > > > >
+> > > > > > +       if (!ichdev->substream || ichdev->suspended)
+> > > > > > +               return;
+> > > > > > +
+> > > > > >         spin_lock_irqsave(&chip->reg_lock, flags);
+> > > > > >         status = igetbyte(chip, port + ichdev->roff_sr);
+> > > > > >         civ = igetbyte(chip, port + ICH_REG_OFF_CIV);
+> > > >
+> > > > This does the problem for me.
+> > >
+> > >        ^^^ does fix
+> >
+> > OK, thanks for confirmation.  So this looks like some spurious
+> > interrupt with the unexpected hardware bits.
+> >
+> > However, the suggested check doesn't seem covering enough, and it
+> > might still hit if the suspend/resume happens before the device is
+> > opened but not set up (and such a spurious irq is triggered).
+> >
+> > Below is more comprehensive fix.  Let me know if this works, too.
+> >
+> >
+> > thanks,
+> >
+> > Takashi
+> >
+> > -- 8< --
+> > Subject: [PATCH] ALSA: intel8x0: Don't update period unless prepared
+> >
+> > The interrupt handler of intel8x0 calls snd_intel8x0_update() whenever
+> > the hardware sets the corresponding status bit for each stream.  This
+> > works fine for most cases as long as the hardware behaves properly.
+> > But when the hardware gives a wrong bit set, this leads to a NULL
+> > dereference Oops, and reportedly, this seems what happened on a VM.
+> >
+> > For fixing the crash, this patch adds a internal flag indicating that
+> > the stream is ready to be updated, and check it (as well as the flag
+> > being in suspended) to ignore such spurious update.
+> >
+> > Cc: <stable@vger.kernel.org>
+> > Reported-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > ---
+> >  sound/pci/intel8x0.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> 
+> linux v5.13 booting on qemu-system-xtensa virt board gets stuck inside
+> snd_intel8x0_probe -> intel8x0_measure_ac97_clock with this patch.
+> Prior to it it boots successfully for me.
+> I'm curious if this issue has been reported yet.
+> 
+> What I see is an IRQ flood, at some point snd_intel8x0_interrupt
+> and timer ISR  are called in loop and execution never returns to
+> the interrupted function intel8x0_measure_ac97_clock.
+> 
+> Any idea what it could be?
 
-Please git pull the following tag:
+That's something odd with the VM.  As the chip itself has never shown
+such a problem on real systems, maybe the best action would be to just
+skip the clock measurement on VM.  The measurement itself is
+unreliable on VM, so it makes more sense.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.14-rc1-tag
+That said, something like below would work?
 
-xen: branch for v5.14-rc1
 
-It contains only two minor patches this time: one cleanup patch and
-one patch refreshing a Xen header.
+thanks,
 
-Thanks.
+Takashi
 
-Juergen
-
- drivers/xen/pcpu.c                |   6 +-
- drivers/xen/xen-balloon.c         |  28 ++--
- drivers/xen/xenbus/xenbus_probe.c |  15 +-
- include/xen/interface/io/ring.h   | 278 +++++++++++++++++++++-----------------
- 4 files changed, 177 insertions(+), 150 deletions(-)
-
-Juergen Gross (1):
-      xen: sync include/xen/interface/io/ring.h with Xen's newest version
-
-YueHaibing (1):
-      xen: Use DEVICE_ATTR_*() macro
+---
+diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
+index 2d1bfbcba933..b75f832d7777 100644
+--- a/sound/pci/intel8x0.c
++++ b/sound/pci/intel8x0.c
+@@ -2199,6 +2199,9 @@ static int snd_intel8x0_mixer(struct intel8x0 *chip, int ac97_clock,
+ 	pbus->private_free = snd_intel8x0_mixer_free_ac97_bus;
+ 	if (ac97_clock >= 8000 && ac97_clock <= 48000)
+ 		pbus->clock = ac97_clock;
++	else if (chip->inside_vm)
++		pbus->clock = 48000;
++
+ 	/* FIXME: my test board doesn't work well with VRA... */
+ 	if (chip->device_type == DEVICE_ALI)
+ 		pbus->no_vra = 1;
