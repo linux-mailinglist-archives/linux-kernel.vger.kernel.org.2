@@ -2,134 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BC23BEFE4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A8A3BEFE7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhGGS5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44276 "EHLO
+        id S230222AbhGGS6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:58:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhGGS5W (ORCPT
+        with ESMTP id S230032AbhGGS6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:57:22 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521F8C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 11:54:41 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id m1so4754833edq.8
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 11:54:41 -0700 (PDT)
+        Wed, 7 Jul 2021 14:58:12 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53DCFC061574;
+        Wed,  7 Jul 2021 11:55:31 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id q17so4264876wrv.2;
+        Wed, 07 Jul 2021 11:55:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ugbA+4JXRP1mJwLMiXh8sHPiNT5dm+iRolBoqcwvGKM=;
-        b=UWmdMoSC6n6QgehfuVD18jZrfRnAzOQu/YMvpyvP1FIKUp3BE0/9X7ze+Nr5kV6fzs
-         fNG/XxtM+aTtgosF3KIaFgB2xxVqlo9KjZhsZj0LNmOs535WsATvLMEWrkA9+uzQO5WZ
-         hLiWBNIXX8dW1gOk3PDCbjhD0UJtDraRimRZCedJTnw3SJSubzpyzBsQQ5Wv9JFk5w9O
-         GBs4V4067U1+f0SXZxlAq6cHUbn52Syibvd60smJNE8lDop7PUDEiluj0fntQJZjlrMo
-         xKy7+LSHA87ej/o1Qc6q7QbrTtWd4fsCMB8GTFTwATdAR+b/yqrELwX8SDK/L3lq2V/B
-         UuEQ==
+        bh=rIcObNLd7s+FRLMO3PqqfpFjzPcy3noifal9uAYzz3s=;
+        b=SX2BtohmVhe1TwjMyy09EFvKYANQWJ7vJvkRHa2ychxQg6KlVchjeRXYnmbY4Uk0sP
+         JqSGn1LLQxzNgZyKmV45cGPp7p2Ve2blMq4bfXdQ+RDUuXSoF5hrAy/LZOFvrJ92QVEw
+         QXSkQU20dPElQHddSarmRcENaR8LxJH54sSF4HYrV8NEYSE2XlgmGZEWqhimBxrwNLK6
+         h1Nz6e3jR5CyM86p1MpOJG+VLqreWTk0HiFbh/W0stqTGSxCAgttVkgbv6p+DZV4lgqY
+         QNoBro+P+/OlQBUPhG5tCKL20wbJl3YQ9dYveMa+paZRyDjuAFLClnLbgO03oYaniUQf
+         Y/mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ugbA+4JXRP1mJwLMiXh8sHPiNT5dm+iRolBoqcwvGKM=;
-        b=l8T4hoOQyassmJtWfSmE+bCE06UOU7hqLXz+p61KIZG4LnS/llzOK3BukB3HX1uuyh
-         zCbgmws6HhtN/8cUYioeAsAtaOCdi5J4O5xFwccwiAvvt3t6SgAC1mqHjt0di1LlxLv9
-         24oCzSfsBdPJT/9UWnIyrEB7wityQD4aHIt79+7EWdOP2m1AfGMR+U3bqoHKPAkMigMF
-         ynvA+Xaq2uRKjWBbgDNjxCgZnTLz6N2mUEFvJEnXL1p1drNy6buRcP2bu0vIPewSXNbi
-         Ysvm+rsyuq78VdfW7kpIB38WHNL7f/02uAMhjcQToiJETawSe3370YS2NRMs8a8iSVFE
-         OQIw==
-X-Gm-Message-State: AOAM531it9TaVTZnA0DW9+YbDNb44jS2MLHHP/3b7FJJ02ToZNzrLJk6
-        gRsr5G+YZHcpiZzoR/eEUGV01tSIcBJlP5cxRMpg
-X-Google-Smtp-Source: ABdhPJzwqV7FHm5eRzTwBwwPAUceWy+Y8yEhnDSBxTccP6bRO19RRdsI4wJHLd3uGtrVGw7qkCnAGwX2QsTdxop5hlo=
-X-Received: by 2002:a05:6402:2681:: with SMTP id w1mr31964013edd.275.1625684079863;
- Wed, 07 Jul 2021 11:54:39 -0700 (PDT)
+        bh=rIcObNLd7s+FRLMO3PqqfpFjzPcy3noifal9uAYzz3s=;
+        b=U08ZaaFgNV/+cpOliRrUwGc6Ns9g53Jis782743+DSfi+K4ls18+Zv9dwfMKPMgs4w
+         f8tiX+nYKMlmRjZWJEoj3SJaTenSRT24xS+LqZdkd3kCCpTKnipoG45Yh46awuIWM/Mo
+         iigfGkMdnIhyBBkcQx0xOFfNdhF/Xc4NhQ1dqCtyqmeM4WKQCylMtsKxcikywJbMJID+
+         TdpKQ9INZ69wW5FFDESZUtJX4qMv4mFbhrcUo6RN/ewzOiQYxP6iD2gFJvScaLmdu8om
+         3VXwAIyKDWW9HrDAGi7zLXkvoEXeLvvdkGbCIGRpKnTFMg3BGey3a4NUyOFs4yM5sGcw
+         gmOg==
+X-Gm-Message-State: AOAM532gOW/YzEwktWsQ/JbGV1QIUolhnNUcAILDbRdHcer2RNF9U5UZ
+        CUEIi55H4wnj2E8kPCzKd+zy1Ch0QWdVAi9NfXY=
+X-Google-Smtp-Source: ABdhPJx8wQid8fHVIWF+ZlF3WzAhn+fV1ZO3bF07jpFGw2e2rMN6C/6Z9wPp+bmaQ0Zj0tpLVzcbHd0PEuxRcifDdPc=
+X-Received: by 2002:a5d:46c8:: with SMTP id g8mr5129560wrs.341.1625684129925;
+ Wed, 07 Jul 2021 11:55:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <linux-audit/audit-kernel/issues/131@github.com>
- <linux-audit/audit-kernel/issues/131/872191450@github.com>
- <YN9V/qM0mxIYXt3h@yury-ThinkPad> <mvm7di59gtx.fsf@suse.de> <YOX2HBSoltXDGuu+@yury-ThinkPad>
-In-Reply-To: <YOX2HBSoltXDGuu+@yury-ThinkPad>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 7 Jul 2021 14:54:28 -0400
-Message-ID: <CAHC9VhTbYk14D1ZaUOfafcEtQgnPPF=ySpNYrsO+VD+W7PcYXQ@mail.gmail.com>
-Subject: Re: [linux-audit/audit-kernel] BUG: audit_classify_syscall() fails to
- properly handle 64-bit syscalls when executing as 32-bit application on ARM (#131)
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andreas Schwab <schwab@suse.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-audit/audit-kernel" 
-        <reply+ADSN7RXLQ62LNLD2MK5HFHF65GIU3EVBNHHDPMBXHU@reply.github.com>,
-        "linux-audit/audit-kernel" <audit-kernel@noreply.github.com>,
-        Mention <mention@noreply.github.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        bobo.shaobowang@huawei.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Alexander Graf <agraf@suse.de>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        Andrew Pinski <pinskia@gmail.com>,
-        Bamvor Zhangjian <bamv2005@gmail.com>,
-        Chris Metcalf <cmetcalf@mellanox.com>,
-        Christoph Muellner <christoph.muellner@theobroma-systems.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Florian Weimer <fweimer@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        James Hogan <james.hogan@imgtec.com>,
-        James Morse <james.morse@arm.com>,
-        Joseph Myers <joseph@codesourcery.com>,
-        Lin Yongting <linyongting@huawei.com>,
-        Manuel Montezelo <manuel.montezelo@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Nathan_Lynch <Nathan_Lynch@mentor.com>,
-        Philipp Tomsich <philipp.tomsich@theobroma-systems.com>,
-        Prasun Kapoor <Prasun.Kapoor@caviumnetworks.com>,
-        Ramana Radhakrishnan <ramana.gcc@googlemail.com>,
-        Steve Ellcey <sellcey@caviumnetworks.com>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>
+References: <20210707155633.1486603-1-mudongliangabcd@gmail.com> <CAD-N9QWZTRWv0HYX9EpYCiGjeCPkiRP1SLn+ObW8zK=s4DTrhQ@mail.gmail.com>
+In-Reply-To: <CAD-N9QWZTRWv0HYX9EpYCiGjeCPkiRP1SLn+ObW8zK=s4DTrhQ@mail.gmail.com>
+From:   Alexander Aring <alex.aring@gmail.com>
+Date:   Wed, 7 Jul 2021 14:55:18 -0400
+Message-ID: <CAB_54W6VkOQ+Cf4gmwzJyQpjyK5MRqsGXkQD3fPa2UC2iLudtQ@mail.gmail.com>
+Subject: Re: [PATCH] ieee802154: hwsim: fix GPF in hwsim_new_edge_nl
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Stefan Schmidt <stefan@datenfreihafen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Aring <aring@mojatatu.com>,
+        linux-wpan - ML <linux-wpan@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 2:44 PM Yury Norov <yury.norov@gmail.com> wrote:
-> On Mon, Jul 05, 2021 at 12:48:42PM +0200, Andreas Schwab wrote:
-> > On Jul 02 2021, Yury Norov wrote:
-> >
-> > > At least Marvell, Samsung, Huawei, Cisco and Weiyuchen's employer
-> > > actively use and develop arm64/ilp32.
-> >
-> > This is good to know.  Where can I get the uptodate kernel patches for
-> > ILP32?
-> >
-> > Andreas.
->
-> The latest kernel supported by me is 5.2:
-> https://github.com/norov/linux/commits/ilp32-5.2
->
-> I know about working ports of ILP32 on 5.7 and 5.10, but didn't see
-> the code and testing results. Hopefully Paul Moore and Weiyuchen will
-> share more details.
+Hi,
 
-To be clear, I have not done any work with ILP32 nor do I have any
-immediate plans to do so (other tasks are higher priority).  I am not
-sure what details you are looking for, but there are several
-arches/ABIs in the kernel, including regular aarch64, that can serve
-as examples on how to enable syscall auditing (presumably that is what
-you are interested in with this thread).  There may be some
-interesting challenges with ILP32 due to overlap with aarch64
-syscalls, but I haven't looked closely enough at ILP32 to say that
-with any certainty.
+On Wed, 7 Jul 2021 at 12:11, Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>
+> On Wed, Jul 7, 2021 at 11:56 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> >
+> > Both MAC802154_HWSIM_ATTR_RADIO_ID and MAC802154_HWSIM_ATTR_RADIO_EDGE
+> > must be present to fix GPF.
+>
+> I double-check the whole file, and there is only one similar issue
+> left in Line 421.
+>
 
--- 
-paul moore
-www.paul-moore.com
+What about "hwsim_del_edge_nl()" line 483, I think it has the same issue?
+
+- Alex
