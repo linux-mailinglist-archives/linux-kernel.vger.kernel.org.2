@@ -2,137 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CD03BE604
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A803BE605
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbhGGJ6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:58:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11194 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230150AbhGGJ6F (ORCPT
+        id S231276AbhGGJ6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:58:21 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:34602 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230150AbhGGJ6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:58:05 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1679ZCtk189338;
-        Wed, 7 Jul 2021 05:55:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=jDXQsTaa+lxcNJEXAJ8od+lGjnZDTHZfKWbXITHOyPI=;
- b=TYTIOcKcPYsspDqZCVOLHwzSUOe2rSHoG+xYt6dpWKFDVsu/Cn8/q7pnZ/0WgEXhIT1r
- fti+FEcNep76korOdGvLQF7zuQrUw3hNmGR6TTb2SEWoDaZ+nTTbEA6D3T9K4dOIWkt4
- xYpR8Moac6t+3l2pQjhFKNfcuiDcp++iQ9fWlBpUJGRnyreA5qz5/6zIgjVLRG3Syb03
- co9n1uPPjTIMgZ9z3WP4izKKOocuuLQjUQXOl8ER42d1D/34jXK6ppJ0u92TYXpDHdaZ
- c+KKJ9gDnOLcXeiMxY3uAH4ClhlF5VWduYj4nIEpLIlw/7egAVKIR1qQg5K418ZcdN0j 1g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39mm669hb2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 05:55:24 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1679aa6p193816;
-        Wed, 7 Jul 2021 05:55:23 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39mm669haj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 05:55:23 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1679rSKV011996;
-        Wed, 7 Jul 2021 09:55:22 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 39jfh8sp73-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 09:55:21 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1679rODZ12124602
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Jul 2021 09:53:24 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4DF9AE05A;
-        Wed,  7 Jul 2021 09:55:18 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 51BECAE053;
-        Wed,  7 Jul 2021 09:55:18 +0000 (GMT)
-Received: from li-7e0de7cc-2d9d-11b2-a85c-de26c016e5ad.ibm.com (unknown [9.171.25.185])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  7 Jul 2021 09:55:18 +0000 (GMT)
-Subject: Re: [PATCH] KVM: s390: Enable specification exception interpretation
-To:     Cornelia Huck <cohuck@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        "open list:KERNEL VIRTUAL MACHINE for s390 (KVM/s390)" 
-        <kvm@vger.kernel.org>,
-        "open list:S390" <linux-s390@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210706114714.3936825-1-scgl@linux.ibm.com>
- <05430c91-6a84-0fc9-0af4-89f408eb691f@de.ibm.com> <87lf6ifqs5.fsf@redhat.com>
-From:   Janis Schoetterl-Glausch <scgl@linux.vnet.ibm.com>
-Message-ID: <243a5476-153f-8d4b-7e0a-bb291010a3bd@linux.vnet.ibm.com>
-Date:   Wed, 7 Jul 2021 11:55:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 7 Jul 2021 05:58:19 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-168-w7_5D2ULM7Sj_pMeGe5qtA-1; Wed, 07 Jul 2021 10:55:36 +0100
+X-MC-Unique: w7_5D2ULM7Sj_pMeGe5qtA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.18; Wed, 7 Jul 2021 10:55:35 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Wed, 7 Jul 2021 10:55:35 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Robin Murphy' <robin.murphy@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+CC:     Chen Huang <chenhuang5@huawei.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        "open list" <linux-kernel@vger.kernel.org>
+Subject: RE: [BUG] arm64: an infinite loop in generic_perform_write()
+Thread-Topic: [BUG] arm64: an infinite loop in generic_perform_write()
+Thread-Index: AQHXcpt1OwfjX4VCyEKfx+OvZYZ3DKs3RYEQ
+Date:   Wed, 7 Jul 2021 09:55:35 +0000
+Message-ID: <4a1473fc5af9496e9c8ed02c7f631d72@AcuMS.aculab.com>
+References: <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
+ <YNP6/p/yJzLLr8M8@casper.infradead.org> <YNQuZ8ykN7aR+1MP@infradead.org>
+ <YNRpYli/5/GWvaTT@casper.infradead.org>
+ <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
+ <YNSyZaZtPTmTa5P8@zeniv-ca.linux.org.uk> <20210624185554.GC25097@arm.com>
+ <e8e87aba-22f7-d039-ceaa-a93591b04b1e@arm.com>
+ <20210625103905.GA20835@arm.com>
+ <7f14271a-9b2f-1afc-3caf-c4e5b36efa73@arm.com>
+ <20210706175052.GD15218@arm.com>
+ <dd30df30-5271-2724-48eb-9f47c5f3e1aa@arm.com>
+In-Reply-To: <dd30df30-5271-2724-48eb-9f47c5f3e1aa@arm.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <87lf6ifqs5.fsf@redhat.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: uX1jevWFui0MdAnn8XqlFxNbqbqOAZ8E
-X-Proofpoint-ORIG-GUID: y_RZqFGtdW5l7W9Dhia6sOx50M6SrVrE
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-07_05:2021-07-06,2021-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- lowpriorityscore=0 spamscore=0 mlxscore=0 priorityscore=1501 phishscore=0
- clxscore=1015 mlxlogscore=999 malwarescore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107070056
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/21 10:54 AM, Cornelia Huck wrote:
-
-[...]
-
-> 
->>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
->>> index b655a7d82bf0..aadd589a3755 100644
->>> --- a/arch/s390/kvm/kvm-s390.c
->>> +++ b/arch/s390/kvm/kvm-s390.c
->>> @@ -3200,6 +3200,8 @@ static int kvm_s390_vcpu_setup(struct kvm_vcpu *vcpu)
->>>   		vcpu->arch.sie_block->ecb |= ECB_SRSI;
->>>   	if (test_kvm_facility(vcpu->kvm, 73))
->>>   		vcpu->arch.sie_block->ecb |= ECB_TE;
-> 
-> Maybe add
-> 
-> /* no facility bit, but safe as the hardware may ignore it */
-> 
-> or something like that, so that we don't stumble over that in the future?
-
-Well, the hardware being allowed to ignore the bit makes its introduction
-without an indication forward compatible because it does not require vSIE to be adapted.
-The reserved bits are implicitly set to 0 which means new features are disabled
-by default and one observes all the interception one expects.
-
-Maybe this:
-
-/* no facility bit, can opt in because we do not need
-   to observe specification exception intercepts */
-
-?
-
-> 
->>> +	if (!kvm_is_ucontrol(vcpu->kvm))
->>> +		vcpu->arch.sie_block->ecb |= ECB_SPECI;
->>>
->>>   	if (test_kvm_facility(vcpu->kvm, 8) && vcpu->kvm->arch.use_pfmfi)
->>>   		vcpu->arch.sie_block->ecb2 |= ECB2_PFMFI;
-> 
-> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-> 
+PiA+IEkgdGhpbmsgaXQncyB3b3J0aCBkb2luZyB0aGUgY29weV90b191c2VyKCkgZmFsbGJhY2sg
+aW4gYSBsb29wIHVudGlsIGl0DQo+ID4gZmF1bHRzIG9yIGhpdHMgdGhlIGVuZCBvZiB0aGUgYnVm
+ZmVyLiBUaGlzIHdvdWxkIHNvbHZlIHRoZSBwcm9ibGVtIHdlDQo+ID4gY3VycmVudGx5IGhhdmUg
+d2l0aCB3cml0aW5nIG1vcmUgYnl0ZXMgdGhhbiBhY3R1YWxseSByZXBvcnRlZC4gVGhlDQo+ID4g
+Y29weV9mcm9tX3VzZXIoKSBpcyBub3QgbmVjZXNzYXJ5LCBhIGJ5dGUgd291bGQgc3VmZmljZS4N
+Cj4gDQo+IFRoZSB0aGluZyBpcywgd2UgZG9uJ3QgcmVhbGx5IGhhdmUgdGhhdCBwcm9ibGVtIHNp
+bmNlIHRoZSBzZXRfZnMgY2xlYW51cA0KPiByZW1vdmVkIElNUC1ERUYgU1RQIGJlaGF2aW91ciBm
+cm9tIHRoZSBwaWN0dXJlIC0gZXZlbiB3aXRoIHRoZSBjdXJyZW50DQo+IG1lc3Mgd2UgY291bGQg
+cGVyZmVjdGx5IHdlbGwga25vdyB3aGljaCBvZiB0aGUgdHdvIFNUVFJzIGZhdWx0ZWQgaWYgd2UN
+Ci4uLg0KDQpUaGVyZSBpcyBhIG11Y2ggbW9yZSBpbnRlcmVzdGluZyBjYXNlIHRob3VnaC4NCkl0
+IGlzIHBvc3NpYmxlIGZvciB1c2Vyc3BhY2UgdG8gaGF2ZSBzdXBwbGllZCBhIG1pc2FsaWduZWQN
+CmJ1ZmZlciB0aGF0IGlzIG1tYXBwZWQgdG8gYW4gSU8gYWRkcmVzcyB0aGF0IGRvZXNuJ3Qgc3Vw
+cG9ydA0KbWlzYWxpZ25lZCBhY2Nlc3NlcyBldmVuIHRob3VnaCBub3JtYWwgbWVtb3J5IGRvZXMg
+c3VwcG9ydCB0aGVtLg0KDQpTbyB0aGUgJ2J5dGUgcmV0cnknIGxvb3Agd291bGQgd29yayBmb3Ig
+dGhlIGVudGlyZSBidWZmZXIuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFr
+ZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwg
+VUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
