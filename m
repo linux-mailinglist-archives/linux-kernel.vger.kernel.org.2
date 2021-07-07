@@ -2,233 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953D93BE671
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDD13BE673
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhGGKnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:43:37 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45028 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbhGGKng (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:43:36 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 23C782266A;
-        Wed,  7 Jul 2021 10:40:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625654455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N11h7ouUFr3DAUuHEdSGvJoajgCZswBXRGsMpwGbDbA=;
-        b=XpSIH/dwC0N6Cqx3dG9AWgmfbTjKk1JKRC3HBaKVQE9EmrJKF2OKyjqyVs3cFukgw/eeBZ
-        QjFG3JbAuqq5OcFKCZaeE2O3wF5cDehmrvqQgIZuZGGkwVszQL1ZPJ9pf3dHy0IzgFQ1PI
-        O+wCoNRZkUzdTt7XmLJDTCBP27Q3deg=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id E7DCB13966;
-        Wed,  7 Jul 2021 10:40:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id YmzbNraE5WCKVgAAGKfGzw
-        (envelope-from <jgross@suse.com>); Wed, 07 Jul 2021 10:40:54 +0000
-Subject: Re: [PATCH v2] xen/hvc: replace BUG_ON() with negative return value
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210707091045.460-1-jgross@suse.com>
- <9e45c5f8-0ac0-e1bb-4703-838679285e80@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <dd32b09b-7345-664b-165d-dfb30c285448@suse.com>
-Date:   Wed, 7 Jul 2021 12:40:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231383AbhGGKoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:44:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:34192 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230354AbhGGKoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 06:44:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DFA161063;
+        Wed,  7 Jul 2021 03:41:22 -0700 (PDT)
+Received: from [10.57.1.129] (unknown [10.57.1.129])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EBE5F3F694;
+        Wed,  7 Jul 2021 03:41:19 -0700 (PDT)
+Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
+ of EAS estimated energy
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Chris Redpath <Chris.Redpath@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        CCj.Yeh@mediatek.com
+References: <20210625152603.25960-1-lukasz.luba@arm.com>
+ <20210625152603.25960-2-lukasz.luba@arm.com>
+ <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
+ <a6a49480-7d5d-fd0e-3940-0b6baac5acc0@arm.com>
+ <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
+ <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com>
+ <CAKfTPtDk1ANfjR5h_EjErVfQ7=is3n9QOaKKxz81tMHtqUM7jA@mail.gmail.com>
+ <297df159-1681-f0a7-843d-f34d86e51d4c@arm.com>
+ <CAKfTPtCEo+gkV2TMhOHSnuUyu5BC54o-B4Hb=QbzgT6Dft-PhQ@mail.gmail.com>
+ <27916860-33b1-f0a0-acff-4722a733c81b@arm.com>
+ <CAKfTPtB2ogGbGBjJNRBB5jvN24q-tXFR+BpJ31fzsTd2=pDTHQ@mail.gmail.com>
+ <ee3ebbaa-7b6d-416d-2caa-197c2713dd4e@arm.com>
+ <CAKfTPtAN6-ytxa2Qj3=z27e8ZBoqGrWAZce9CojL3wbZSotUsQ@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <58cb7ad3-ffff-8940-4c8e-2c46dcc86d54@arm.com>
+Date:   Wed, 7 Jul 2021 11:41:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <9e45c5f8-0ac0-e1bb-4703-838679285e80@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="EaXVOFEGH7qawZGUIhRcY8ubI1x9QO3nU"
+In-Reply-To: <CAKfTPtAN6-ytxa2Qj3=z27e8ZBoqGrWAZce9CojL3wbZSotUsQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---EaXVOFEGH7qawZGUIhRcY8ubI1x9QO3nU
-Content-Type: multipart/mixed; boundary="9rpfACyjVhmGUQOwL4hqApmFGAJalcBco";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>, xen-devel@lists.xenproject.org,
- linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Message-ID: <dd32b09b-7345-664b-165d-dfb30c285448@suse.com>
-Subject: Re: [PATCH v2] xen/hvc: replace BUG_ON() with negative return value
-References: <20210707091045.460-1-jgross@suse.com>
- <9e45c5f8-0ac0-e1bb-4703-838679285e80@suse.com>
-In-Reply-To: <9e45c5f8-0ac0-e1bb-4703-838679285e80@suse.com>
 
---9rpfACyjVhmGUQOwL4hqApmFGAJalcBco
-Content-Type: multipart/mixed;
- boundary="------------41A7E563365649DB0BFE43DE"
-Content-Language: en-US
 
-This is a multi-part message in MIME format.
---------------41A7E563365649DB0BFE43DE
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 07.07.21 11:57, Jan Beulich wrote:
-> On 07.07.2021 11:10, Juergen Gross wrote:
->> Xen frontends shouldn't BUG() in case of illegal data received from
->> their backends. So replace the BUG_ON()s when reading illegal data fro=
-m
->> the ring page with negative return values.
+On 7/7/21 11:32 AM, Vincent Guittot wrote:
+> On Wed, 7 Jul 2021 at 12:29, Lukasz Luba <lukasz.luba@arm.com> wrote:
 >>
->> Signed-off-by: Juergen Gross <jgross@suse.com>
->=20
-> Reviewed-by: Jan Beulich <jbeulich@suse.com>
->=20
->> --- a/drivers/tty/hvc/hvc_xen.c
->> +++ b/drivers/tty/hvc/hvc_xen.c
->> @@ -86,7 +86,11 @@ static int __write_console(struct xencons_info *xen=
-cons,
->>   	cons =3D intf->out_cons;
->>   	prod =3D intf->out_prod;
->>   	mb();			/* update queue values before going on */
->=20
-> Largely unrelated note: While in general the barriers here may want
-> switching to virt_*mb(), this particular one looks to be too heavy
-> anyway: a read barrier is all that's needed here afaict, just like
-> there's only a write barrier between ring contents and producer
-> writing in __write_console().
+>>
+>>
+>> On 7/7/21 11:11 AM, Vincent Guittot wrote:
+>>> On Wed, 7 Jul 2021 at 12:06, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>
+>>
+>> [snip]
+>>
+>>>> No. It's in 0.1uW scale, so 800Watts. Which is 16 CPUs * 64Watts
+>>>
+>>> Oh! you want 0.1uW precision .... This doesn't seem realistic at all.
+>>> I'm not even sure that the power model can even reach an accuracy of
+>>> 1mW
+>>>
+>>
+>> True, the EM is registering platform with 1mW precision, but 1uW
+> 
+> Do you mean 1uW or 0.1uW ?
 
-I agree.
-
-> And btw, since I've got puzzled by the linuxppc-dev@ in the recipients
-> list, I did look up relevant entries in ./MAINTAINERS. Shouldn't the
-> file be part of "XEN HYPERVISOR INTERFACE"?
-
-I wouldn't mind. Greg, Jiri, what do you think?
-
-
-Juergen
-
---------------41A7E563365649DB0BFE43DE
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------41A7E563365649DB0BFE43DE--
-
---9rpfACyjVhmGUQOwL4hqApmFGAJalcBco--
-
---EaXVOFEGH7qawZGUIhRcY8ubI1x9QO3nU
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmDlhLYFAwAAAAAACgkQsN6d1ii/Ey+h
-nQf6Am00Vqi/6Jzpyxf14vmtTaZqJJyMAr8bZlczlxZd4ym8ttPZ+0X4jC1Qhj95xncLLcRPD48n
-zjXrUXqgw243BwaSFx1VjnFxbvVIwhQ4/xQcxhj2ccJlliUXdd0h0ebveKgE5TL30jtmPJdrcUJH
-JHvDivp5gzcRmVVqRAJ007+8Ug0HEnWpPoHcOrTn7ot2/lYye/wEkIrDF4pri2JGN9A2lQ+NefgT
-iN8vVD/skh5e0wQ8JLD/7jM5r1kO4Z2lls19/f/78jX9RKs5qVjKGBCYlsTrx27NQl+4Enjw7Aap
-U+NwoaH2WO02AP0QOSWmerIH0liA1Y4hfdePbRYFdA==
-=4Hku
------END PGP SIGNATURE-----
-
---EaXVOFEGH7qawZGUIhRcY8ubI1x9QO3nU--
+In this patch set I've proposed 0.1uW, but I'm open to drop one
+order of magnitude. The 1uW still be good.
