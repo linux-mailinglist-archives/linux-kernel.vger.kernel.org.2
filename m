@@ -2,101 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB153BE72B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF173BE72E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhGGLed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 07:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbhGGLed (ORCPT
+        id S231415AbhGGLfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 07:35:02 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7112 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230354AbhGGLfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 07:34:33 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C90C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 04:31:52 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id B2D4122239;
-        Wed,  7 Jul 2021 13:31:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1625657510;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2ZkSO/jnFm2eNMsJZIihGEEoHvApT4t/5TAFIaDlWPQ=;
-        b=QRICd7/tEKMmnydSGrR3nOBZsajiArNaSdb+ANhmm3P6QJoCrgiVjSIKB2VBy8EnSTgXSJ
-        um/frCtugGLFzBvaoTTS1ypxYq12O0iEtpVmEycrtRvzAzrEvV2jPpeF1iApW37hwGqn30
-        lW+L5arCklnx1bIr+mk35vPiA0gSuOg=
+        Wed, 7 Jul 2021 07:35:01 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 167B5aLW186267;
+        Wed, 7 Jul 2021 07:32:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=NJ8tcuv5l8JY0wkLfzi5PvGflZ2VNsIY+jVzHpsSsuk=;
+ b=H8Hg+y54g6DMoU61Cz9nORnHlhOAxK1ar+1eV93VDfErRDytq73mcYalfnPGP2+l7S3/
+ mmYlRN18tlm+s5j/Z/hAgatN9ovrv9QFzbXGEZ5206cn7R37UZ6wJo6NiGTQvk5KLk0P
+ Nnm/zz0ziAuRHHYdJrWzuAJIuZ9Jv4CeZ8qzVoneksWavdQVD6TTVvHc5hisJdiVwrrS
+ VB5Ed/Q8WeiF9gZROgwOivaGTl0+bBNhqi3z0asoLEjJy8ysaTXYop8OgLu9wgijg+1C
+ VhCjOVZer1+Xf+/WxL6lOIxes9Wu0kjwYL0OlbWPlGYUmHDWRCtQhn65E2s2v/7YIOyb tQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39naym8ur1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 07:32:17 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 167B5acp186285;
+        Wed, 7 Jul 2021 07:32:17 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39naym8uq3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 07:32:16 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 167BPHe6012699;
+        Wed, 7 Jul 2021 11:32:14 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 39jf5h9qau-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 11:32:14 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 167BUHKl31326678
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Jul 2021 11:30:17 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AE2644C046;
+        Wed,  7 Jul 2021 11:32:11 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 55D794C052;
+        Wed,  7 Jul 2021 11:32:11 +0000 (GMT)
+Received: from oc6887364776.ibm.com (unknown [9.152.212.90])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Jul 2021 11:32:11 +0000 (GMT)
+Subject: Re: [PATCH v2 3/4] s390/scm: Make struct scm_driver::remove return
+ void
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     kernel@pengutronix.de, Cornelia Huck <cohuck@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210706154803.1631813-1-u.kleine-koenig@pengutronix.de>
+ <20210706154803.1631813-4-u.kleine-koenig@pengutronix.de>
+From:   Vineeth Vijayan <vneethv@linux.ibm.com>
+Message-ID: <b023ee41-3b86-bbe2-ac62-6cbf37992947@linux.ibm.com>
+Date:   Wed, 7 Jul 2021 13:32:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 07 Jul 2021 13:31:49 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Steam Lin <lstfazz@gmail.com>
-Cc:     tudor.ambarus@microchip.com, p.yadav@ti.com,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd:spi-nor:Update Winbond SPI NOR Flash device ID
-In-Reply-To: <20210707101628.GA27472@pn10-Veriton-X4610>
-References: <20210707101628.GA27472@pn10-Veriton-X4610>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <35c2e5faa770e228bd16a2186c8caf78@walle.cc>
-X-Sender: michael@walle.cc
+In-Reply-To: <20210706154803.1631813-4-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: VaGoYi_8ePeZi5eS8Nw4ewNQgdDDAWEs
+X-Proofpoint-GUID: ZoIRRP4qg58y_lpe_ZsHi6cqeKEMJHlo
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-07_06:2021-07-06,2021-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 phishscore=0 spamscore=0 mlxlogscore=999 impostorscore=0
+ mlxscore=0 clxscore=1015 adultscore=0 priorityscore=1501 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107070067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Looks sane to me.
+Acked-by: Vineeth Vijayan <vneethv@linux.ibm.com>
 
-Am 2021-07-07 12:16, schrieb Steam Lin:
-> This patch is to update Winbond SPI NOR device
-> ID information.
-> Add new 3.3V and 1.8V device in the ID table.
-> 
-> Signed-off-by: Steam Lin <Stlin2@winbond.com>
+Vasily/Heiko will pick this up for the next-s390-tree.
+
+
+On 7/6/21 5:48 PM, Uwe Kleine-König wrote:
+> The driver core ignores the return value of scmdev_remove()
+> (because there is only little it can do when a device disappears).
+>
+> So make it impossible for future drivers to return an unused error code
+> by changing the remove prototype to return void.
+>
+> The real motivation for this change is the quest to make struct
+> bus_type::remove return void, too.
+>
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 > ---
->  drivers/mtd/spi-nor/winbond.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/winbond.c 
-> b/drivers/mtd/spi-nor/winbond.c
-> index 9a81c67a60c6..01aa49954793 100644
-> --- a/drivers/mtd/spi-nor/winbond.c
-> +++ b/drivers/mtd/spi-nor/winbond.c
-> @@ -102,6 +102,20 @@ static const struct flash_info winbond_parts[] = {
->  			    SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
->  	{ "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024,
->  			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +	{ "w25h512jvm", INFO(0xef9020, 0, 64 * 1024, 1024,
-> +			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +	{ "w25q01jvq", INFO(0xef4021, 0, 64 * 1024, 2048,
-> +			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +	{ "w25q02jvq", INFO(0xef4022, 0, 64 * 1024, 4096,
-> +			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +	{ "w25h01jvm", INFO(0xef9021, 0, 64 * 1024, 2048,
-> +			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +	{ "w25h02jvm", INFO(0xef9022, 0, 64 * 1024, 4096,
-> +			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +	{ "w25q512nwq", INFO(0xef6020, 0, 64 * 1024, 1024,
-> +			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +	{ "w25q512nwm", INFO(0xef8020, 0, 64 * 1024, 1024,
-> +			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  };
-
-Nice to see patches from the vendor! Did you test these devices? We
-only accept new IDs which are actually tested. And are you aware of any
-ID collisions of these chips? Eg. sometimes the JWM reused the ID of the
-FW variant. How can we distinguish these?
-
-Also, you will have to supply SFDP data for all these chips, please have
-a look at [1] how to do that.
-
-[1] 
-https://lore.kernel.org/linux-mtd/7038f037de3e224016d269324517400d@walle.cc/
-
-
--michael
+>   arch/s390/include/asm/eadm.h | 2 +-
+>   drivers/s390/block/scm_drv.c | 4 +---
+>   drivers/s390/cio/scm.c       | 5 ++++-
+>   3 files changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/s390/include/asm/eadm.h b/arch/s390/include/asm/eadm.h
+> index bb63b2afdf6f..445fe4c8184a 100644
+> --- a/arch/s390/include/asm/eadm.h
+> +++ b/arch/s390/include/asm/eadm.h
+> @@ -105,7 +105,7 @@ enum scm_event {SCM_CHANGE, SCM_AVAIL};
+>   struct scm_driver {
+>   	struct device_driver drv;
+>   	int (*probe) (struct scm_device *scmdev);
+> -	int (*remove) (struct scm_device *scmdev);
+> +	void (*remove) (struct scm_device *scmdev);
+>   	void (*notify) (struct scm_device *scmdev, enum scm_event event);
+>   	void (*handler) (struct scm_device *scmdev, void *data,
+>   			blk_status_t error);
+> diff --git a/drivers/s390/block/scm_drv.c b/drivers/s390/block/scm_drv.c
+> index 3134fd6e058e..69a845eb8b1f 100644
+> --- a/drivers/s390/block/scm_drv.c
+> +++ b/drivers/s390/block/scm_drv.c
+> @@ -60,15 +60,13 @@ static int scm_probe(struct scm_device *scmdev)
+>   	return ret;
+>   }
+>   
+> -static int scm_remove(struct scm_device *scmdev)
+> +static void scm_remove(struct scm_device *scmdev)
+>   {
+>   	struct scm_blk_dev *bdev = dev_get_drvdata(&scmdev->dev);
+>   
+>   	scm_blk_dev_cleanup(bdev);
+>   	dev_set_drvdata(&scmdev->dev, NULL);
+>   	kfree(bdev);
+> -
+> -	return 0;
+>   }
+>   
+>   static struct scm_driver scm_drv = {
+> diff --git a/drivers/s390/cio/scm.c b/drivers/s390/cio/scm.c
+> index 9f26d4310bb3..b31711307e5a 100644
+> --- a/drivers/s390/cio/scm.c
+> +++ b/drivers/s390/cio/scm.c
+> @@ -33,7 +33,10 @@ static int scmdev_remove(struct device *dev)
+>   	struct scm_device *scmdev = to_scm_dev(dev);
+>   	struct scm_driver *scmdrv = to_scm_drv(dev->driver);
+>   
+> -	return scmdrv->remove ? scmdrv->remove(scmdev) : -ENODEV;
+> +	if (scmdrv->remove)
+> +		scmdrv->remove(scmdev);
+> +
+> +	return 0;
+>   }
+>   
+>   static int scmdev_uevent(struct device *dev, struct kobj_uevent_env *env)
