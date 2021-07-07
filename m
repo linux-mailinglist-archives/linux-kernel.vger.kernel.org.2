@@ -2,143 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 595043BEC7B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8503BEC79
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhGGQqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 12:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230327AbhGGQp6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229542AbhGGQp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 7 Jul 2021 12:45:58 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A8FC061574
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230239AbhGGQp5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 12:45:57 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2EAC061760
         for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 09:43:16 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id h18-20020a05600c3512b029020e4ceb9588so4763665wmq.5
+Received: by mail-wr1-x42d.google.com with SMTP id l7so2877324wrv.7
         for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 09:43:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N1jcO0yI6pPJfzDKfj/96aZNPkzpA0/0vrFttiKfOXA=;
-        b=HDl8nggq4jDLWfJVaXoLXI/XGpjg42wmsm+lscbHy6pywD9OsuSlUU2o4MTcvDEcpx
-         cbErC3do9h7aOzQGK34uVcpgujTryhxd2V7ir+rKQOIMJO0b3+QhwRtK48bXTSQauWYy
-         Dx+TwiTMO1mP8nLA+VAWcnBW+5NqGxa7pyMduyqIObWXu+3a4+E9chHaIUZ62Bm7Xk43
-         HlxKyjExZmvO/D6kSbAP0Mm/ueEBmxBh1U5UpJ3ozdnH04G6hXBtCAvnrLlDOZNZQXeP
-         DEgg/9ZkBMuvVESagNWQWbBzaTYvz0W28MntvUDeAertPvsyeTjRJxnNM4W12tG4IhVm
-         KuLg==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iGAqdezK2vHGAQ68dZd/ZC/J1Kp8ZpS6hRcaEAVA45M=;
+        b=gjQPOAOhCm7H78f15yDmge4+B3Lml1OZV2BqBTx1bzrBFZarbGDKyvpUXWm00zD6AT
+         yYgcN0AH7xQrg1mg9/hi/JePEd5X6zlrY6gwMai6ZKLZ+AjHENeNSjvm2pdmP2UxYqgz
+         vAJtwTN+F7O5DRvPv/ch+pY6p6yNXtXealbnxpglX/6bfvhzr3GXGZWJPoJ/iQf3SETs
+         9roTlfqsXpizY9pqnN473fCK+4Yt1oDrM+nvotru/AKUwrvBYUi5NjP4azj+1kwIO/8K
+         bXi1hEKLXLBNcjU2PUD4jqDdqOfg60nJCFS0krIG8/NYO/UNHBwkaSzXLB1y0uyQm1FV
+         mlUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N1jcO0yI6pPJfzDKfj/96aZNPkzpA0/0vrFttiKfOXA=;
-        b=GOTWh4E0DtF7I5VdcDpVz7N/yk6ygwsg617Mgnp05AKBjxzAbETMyTAiA1jfq3bWV9
-         8AVvTyhUW/EPeDgXhaE4gpIUPRnX4ii2uyma8lflcfcK8+loA0uSpikJlGj/0Nwj1npn
-         w+IU22kZ6TjXtx18hKlBsaEn14/bPe+KH+ZwJufgZjqaeOZ1o74hokF2AbVHAI6DEAYW
-         PIyTDc+nnEU+rFMjStrRCNIjx0MYkAbUqm9XmzsCNsJZiXdKPDYHXNBSHyfVRlozpbF0
-         QoNE84PSvAk4GqUovnnvbvCEcvRPn0l2HzoznAAYmQ9vCAigfNkRQTZ9X6LKtuci82xu
-         SAPA==
-X-Gm-Message-State: AOAM531SNSE5rTCt005kZK1AfB1N6J+eQA9Rm+FH4w+s22prFZXXC1BE
-        sHu5rx9NJXCCClKK+xSm/X8=
-X-Google-Smtp-Source: ABdhPJzFJteyECZADdOlPal4VNNMEErlmEmuOKU6GXF0Wkq5u+/+j2Nfx+9GJyf1xeL60s+aZhTUVg==
-X-Received: by 2002:a1c:7314:: with SMTP id d20mr556224wmb.156.1625676195123;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=iGAqdezK2vHGAQ68dZd/ZC/J1Kp8ZpS6hRcaEAVA45M=;
+        b=hHBLyf4LGi+K2sC4AAM7/dxGjvzvEvjaPkbE3qjIzNr840hakRflaSOFyKYF3nnrGr
+         66Fca5sBjut+D07dXm7lOPZibDke16yhk0+kQcRoF/vEyGEpztBaIxYGXju95xUleO4q
+         bRCdmMNqWIQ/+z42O10npF67m7nIAOZNJpXGdoxCIpj3LuPau8KkHEKdcPtonqJg0iSI
+         TxgU5Hu4PiOo7ohQk7mm1zxxZ08pl+5E5Ils02tt0UGwpMHWDJQqqCTsU0ghMVEVQk5x
+         MlpMwApRSaPbvgUqGzDfvd+eYFCc+oDPbBIK7eqbEw3DVzY++A7NAmK4CvCqKtlLUG2w
+         8xVg==
+X-Gm-Message-State: AOAM532Tpt5tuFpz9/6tc9hEaUVcld9v5mfhdB5e1uWzEeyULCC0yBWS
+        pMGy+j3jy6Lwq5AJ4CJ6IcKdxg==
+X-Google-Smtp-Source: ABdhPJxeijjxwxWfBuEFBQBDYFnxi3/lFyZFlY15NyHqu1q8O5dEzP3hK206AlbuCAurYbj9ViOigw==
+X-Received: by 2002:a5d:4f10:: with SMTP id c16mr28985295wru.3.1625676195470;
         Wed, 07 Jul 2021 09:43:15 -0700 (PDT)
-Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
-        by smtp.gmail.com with ESMTPSA id d8sm652693wra.41.2021.07.07.09.43.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+Received: from ?IPv6:2001:861:44c0:66c0:59ba:fed7:14a3:f22f? ([2001:861:44c0:66c0:59ba:fed7:14a3:f22f])
+        by smtp.gmail.com with ESMTPSA id t11sm21281369wrz.7.2021.07.07.09.43.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Wed, 07 Jul 2021 09:43:14 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 17:43:05 +0100
-From:   Melissa Wen <melissa.srw@gmail.com>
-To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-Cc:     daniel@ffwll.ch, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm/vkms: Create vkms_config_debufs in vkms_drv.c
-Message-ID: <20210707164244.ktmizbd6gbuifu73@smtp.gmail.com>
-References: <20210707092927.336244-1-martinsdecarvalhobeatriz@gmail.com>
+Subject: Re: [PATCH 0/4] PCI: replace dublicated MRRS limit quirks
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Art Nikpal <email2tema@gmail.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        =?UTF-8?B?6ZmI5Y2O5omN?= <chenhuacai@loongson.cn>,
+        Yue Wang <yue.wang@amlogic.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Artem Lapkin <art@khadas.com>, Nick Xie <nick@khadas.com>,
+        Gouwa Wang <gouwa@khadas.com>
+References: <20210707155418.GA897940@bjorn-Precision-5520>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <aab7db4a-df1f-280b-73d7-799161528fa2@baylibre.com>
+Date:   Wed, 7 Jul 2021 18:43:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707092927.336244-1-martinsdecarvalhobeatriz@gmail.com>
+In-Reply-To: <20210707155418.GA897940@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/07, Beatriz Martins de Carvalho wrote:
-> Development vkms_config_debufs in vkms_drv.c for the long term plan of
-> making vkms configurable and have multiple different instances it's
-> useful to be able to get at the config of each instance in debugfs
-Hi Beatriz,
+Hi,
 
-Thanks for your patch.
+On 07/07/2021 17:54, Bjorn Helgaas wrote:
+> On Tue, Jul 06, 2021 at 11:54:05AM +0200, Neil Armstrong wrote:
+>> In their Designware PCIe controller driver, amlogic sets the
+>> Max_Payload_Size & Max_Read_Request_Size to 256:
+>> https://elixir.bootlin.com/linux/latest/source/drivers/pci/controller/dwc/pci-meson.c#L260
+>> https://elixir.bootlin.com/linux/latest/source/drivers/pci/controller/dwc/pci-meson.c#L276
+>> in their root port PCIe Express Device Control Register.
+>>
+>> Looking at the Synopsys DW-PCIe Databook, Max_Payload_Size &
+>> Max_Read_Request_Size are used to decompose into AXI burst, but it
+>> seems the Max_Payload_Size & Max_Read_Request_Size are set by
+>> default to 512 but the internal Max_Payload_Size_Supported is set to
+>> 256, thus changing these values to 256 at runtime to match and
+>> optimize bandwidth.
+>>
+>> It's said, "Reducing Outbound Decomposition" :
+>>  - "Ensure that your application master does not generate bursts of
+>>    size greater than or equal to Max_Payload_Size"
+>>
+>>  - "Program your PCIe system with a larger value of Max_Payload_Size
+>>    without exceeding Max_Payload_Size_Supported"
+>>
+>>  - "Program your PCIe system with a larger value of Max_Read_Request
+>>    without exceeding Max_Payload_Size_Supported:
+>>
+>> So leaving 512 in Max_Payload_Size & Max_Read_Request leads to
+>> Outbound Decomposition which decreases PCIe link and degrades the
+>> AXI bus by doubling the bursts, leading to this fix to avoid
+>> overflowing the AXI bus.
+>>
+>> So it seems to be still needed, I assume this *should* be handled in
+>> the core somehow to propagate these settings to child endpoints to
+>> match the root port Max_Payload_Size & Max_Read_Request sizes.
+>>
+>> Maybe by adding a core function to set these values instead of using
+>> the dw_pcie_find_capability() & dw_pcie_write/readl_dbi() helpers
+>> and set a state on the root port to propagate the value ?
+> 
+> I don't have the Synopsys DW-PCIe Databook, so I'm lacking any
+> context.  The above *seems* to say that MPS/MRRS settings affect AXI
+> bus usage.
 
-Changes lgtm.
-
-However commit message needs small improvements. Besides typo, it would
-be good to make the subject clearer in terms of its purpose (creating
-a debugfs file to get/track vkms config data).
-
-Please, address these minor things and add my r-b.
-Reviewed-by: Melissa Wen <melissa.srw@gmail.com>
+It does when the TLPs are directed to the RC.
 
 > 
-> Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-> ---
->  drivers/gpu/drm/vkms/vkms_drv.c | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
+> The MPS and MRRS registers are defined to affect traffic on *PCIe*.  If
+> a platform uses MPS and MRRS values to optimize transfers on non-PCIe
+> links, that's a problem because the PCI core code that manages MPS and
+> MRRS has no knowledge of those non-PCIe parts of the system.
+
+Yes and no, it only affects PCIe in P2P, in non-P2P is will certainly affect
+transfers on the internal SoC/Processor/Chip internal bus/fabric.
+
+> You might be able to deal with this in Synopsys-specific code somehow,
+> but it's going to be a bit of a hassle because I don't want it to make
+> maintenance of the generic MPS/MRRS code harder.
+
+I understand, but this is why these quirks are currently implemented in the
+controller driver and only applies when the controller has been probed
+and to each endpoint detected on this particular controller.
+
+So we may continue having separate quirks for each controller if the core
+isn't the right place to handle MPS/MRRS.
+
+Neil
+
+> Bjorn
 > 
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
-> index 027ffe759440..c81fba6c72f0 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.c
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
-> @@ -28,6 +28,9 @@
->  
->  #include "vkms_drv.h"
->  
-> +#include <drm/drm_print.h>
-> +#include <drm/drm_debugfs.h>
-> +
->  #define DRIVER_NAME	"vkms"
->  #define DRIVER_DESC	"Virtual Kernel Mode Setting"
->  #define DRIVER_DATE	"20180514"
-> @@ -86,12 +89,37 @@ static void vkms_atomic_commit_tail(struct drm_atomic_state *old_state)
->  	drm_atomic_helper_cleanup_planes(dev, old_state);
->  }
->  
-> +static int vkms_config_show(struct seq_file *m, void *data)
-> +{
-> +	struct drm_info_node *node = (struct drm_info_node *)m->private;
-> +	struct drm_device *dev = node->minor->dev;
-> +	struct vkms_device *vkmsdev = drm_device_to_vkms_device(dev);
-> +
-> +	seq_printf(m, "writeback=%d\n", vkmsdev->config->writeback);
-> +	seq_printf(m, "cursor=%d\n", vkmsdev->config->cursor);
-> +	seq_printf(m, "overlay=%d\n", vkmsdev->config->overlay);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct drm_info_list vkms_config_debugfs_list[] = {
-> +	{ "vkms_config", vkms_config_show, 0 },
-> +};
-> +
-> +static void vkms_config_debugfs_init(struct drm_minor *minor)
-> +{
-> +	drm_debugfs_create_files(vkms_config_debugfs_list, ARRAY_SIZE(vkms_config_debugfs_list),
-> +				 minor->debugfs_root, minor);
-> +}
-> +
->  static const struct drm_driver vkms_driver = {
->  	.driver_features	= DRIVER_MODESET | DRIVER_ATOMIC | DRIVER_GEM,
->  	.release		= vkms_release,
->  	.fops			= &vkms_driver_fops,
->  	DRM_GEM_SHMEM_DRIVER_OPS,
->  
-> +	.debugfs_init           = vkms_config_debugfs_init,
-> +
->  	.name			= DRIVER_NAME,
->  	.desc			= DRIVER_DESC,
->  	.date			= DRIVER_DATE,
-> -- 
-> 2.25.1
-> 
+
