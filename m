@@ -2,159 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF883BE8AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 15:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77133BE8B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 15:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbhGGNV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 09:21:29 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:58315 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhGGNVZ (ORCPT
+        id S231720AbhGGNZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 09:25:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhGGNZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 09:21:25 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210707131843epoutp0339df8c440207f141b58e0ae8b6355e2a~PhLm8jLe51030710307epoutp031
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 13:18:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210707131843epoutp0339df8c440207f141b58e0ae8b6355e2a~PhLm8jLe51030710307epoutp031
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1625663923;
-        bh=rjLVc5Pk7mEfS5QJsbX09lDUXd0mFsvlZisGIyejgVQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=laCqJy/7OOmoasl+F2BV5g9Mesa48lbVO1D7ZC/Gj4XaWUY2nsi6gKgwWAL8bEuef
-         CfG6pgoA2ACs9voy2kH482URfHqVecc0SqQWMUNUEkctoZwPQQ+Uo2bQwab86TZI19
-         41jBl3aoMheKfBRkA+scqj+P2qLSfVPcz1L2G0Qs=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210707131843epcas1p4c49d010c9b1244e466218b1c655343b7~PhLmZx1QF0134701347epcas1p4B;
-        Wed,  7 Jul 2021 13:18:43 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.161]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4GKg3k1r9pz4x9Pv; Wed,  7 Jul
-        2021 13:18:42 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C4.D8.10119.2B9A5E06; Wed,  7 Jul 2021 22:18:42 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210707131841epcas1p129d1c10efdbbe403e80f45245b0b5afd~PhLlJjxy21869818698epcas1p1k;
-        Wed,  7 Jul 2021 13:18:41 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210707131841epsmtrp1a4aa7983947469a7278fbf25f01564dd~PhLlIydgd1302713027epsmtrp1B;
-        Wed,  7 Jul 2021 13:18:41 +0000 (GMT)
-X-AuditID: b6c32a38-965ff70000002787-3d-60e5a9b28c8d
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        AF.36.08289.1B9A5E06; Wed,  7 Jul 2021 22:18:41 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.98.78]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210707131841epsmtip2f9cf584be63033435fbada1bdfede54a~PhLk6i74G2143921439epsmtip29;
-        Wed,  7 Jul 2021 13:18:41 +0000 (GMT)
-From:   Ohhoon Kwon <ohoono.kwon@samsung.com>
-To:     david@redhat.com, ohoono.kwon@samsung.com,
-        akpm@linux-foundation.org, mhocko@suse.com
-Cc:     bhe@redhat.com, rppt@linux.ibm.com, ohkwon1043@gmail.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/1] mm: sparse: pass section_nr to section_mark_present
-Date:   Wed,  7 Jul 2021 22:14:43 +0900
-Message-Id: <20210707131443.6242-2-ohoono.kwon@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210707131443.6242-1-ohoono.kwon@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCKsWRmVeSWpSXmKPExsWy7bCmvu6mlU8TDBasZreYs34Nm8X5B7/Y
-        LL6u/8VscXnXHDaLe2v+s1rc73Ow2Lvf12LXzxXMFjemNLA5cHrsnHWX3WPTp0nsHidm/Gbx
-        mLDoAKPH+31X2Tz6tqxi9Fi/5SqLx+dNcgEcUTk2GamJKalFCql5yfkpmXnptkrewfHO8aZm
-        Boa6hpYW5koKeYm5qbZKLj4Bum6ZOUDXKSmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVIL
-        UnIKDA0K9IoTc4tL89L1kvNzrQwNDIxMgSoTcjI2vZ/IVHCZr2Lj+XbmBsY5PF2MnBwSAiYS
-        03ofMHUxcnEICexglFjQtZUdwvnEKDGldQmU85lR4u6Wc0wwLddW7YZK7GKUWH5lBULLob7D
-        bCBVbALaEvt7TzCD2CIC0RKzr3aAdTMLFEg09H9iAbGFBbwlNm/aA1TDwcEioCox66oHSJhX
-        wFri1sSf7BDL5CVWbzgANoZTwEbi1b4LLCC7JATeskt8mNzOCFHkIjF302So64QlXh3fAtUs
-        JfGyv40doqEf5LjtrBDOBEaJ9V2N7CCbJQTsJd5fsgAxmQU0Jdbv0ofoVZTY+XsuI8TNfBLv
-        vvawQlTzSnS0CUGYqhLLfntAVEtL9E2/zAZhe0isPfYKGqRAWy9Nfs02gVFuFsKCBYyMqxjF
-        UguKc9NTiw0LTJBjbBMjOPlpWexgnPv2g94hRiYOxkOMEhzMSiK8jA5PE4R4UxIrq1KL8uOL
-        SnNSiw8xmgLDbiKzlGhyPjD95pXEG5oaGRsbW5iYmZuZGiuJ8+5kO5QgJJCeWJKanZpakFoE
-        08fEwSnVwKSwVn3dZKarIdYnGmueMX8+X73xrFrAc+e2qPsz+UzYDebNUc9+//F8pEXbvdY4
-        A9NVl+54d32ffTzoZMr2TYxHY25vqG55vlnN6LLtw0lat2KK2ALnGJRIu7Vu/34vrmZKqsuE
-        Z37Ma3J/TVyq+2CSRfe1KEWN00mnxYNPvHy1dIPKy9dqnREL3x5zFNzEeeBMx7w7M+Yf8ZC4
-        3muwffq9nogHO8vmHfTs7L/7bcbGJSseCZ4JbJv5x4nBVOB56Hulid+FvAS2rvN5wSn/a5lS
-        vfBCpTt9U5295vHIWDz9uEyacSrXB/Fg8Z+RKu3LZ1wsKl42ya97MnNopvPLY4+n5JxffDbm
-        goZA7sEVj0t7lFiKMxINtZiLihMBs0TNFQcEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNLMWRmVeSWpSXmKPExsWy7bCSvO7GlU8TDO6+1rSYs34Nm8X5B7/Y
-        LL6u/8VscXnXHDaLe2v+s1rc73Ow2Lvf12LXzxXMFjemNLA5cHrsnHWX3WPTp0nsHidm/Gbx
-        mLDoAKPH+31X2Tz6tqxi9Fi/5SqLx+dNcgEcUVw2Kak5mWWpRfp2CVwZm95PZCq4zFex8Xw7
-        cwPjHJ4uRk4OCQETiWurdrN3MXJxCAnsYJT4/Gs/C0RCWuLpi11ANgeQLSxx+HAxRM0HRol7
-        h9czgtSwCWhL7O89wQxSIyIQLzH/GjtImFmgTOLqyr+sILawgLfE5k17wEpYBFQlZl31AAnz
-        ClhL3Jr4kx1ik7zE6g0HmEFsTgEbiVf7LoBdIARU8+P9ZvYJjHwLGBlWMUqmFhTnpucWGxYY
-        5aWW6xUn5haX5qXrJefnbmIEh6eW1g7GPas+6B1iZOJgPMQowcGsJMLL6PA0QYg3JbGyKrUo
-        P76oNCe1+BCjNAeLkjjvha6T8UIC6YklqdmpqQWpRTBZJg5OqQamq061trJGdx6eq1Pa+3XK
-        MV7p9ujHClvnLpmlWv9jrWtozAyL/du8uueGxgvqSG36sPOm9tTZEzZH79xToujOtGHBnGPG
-        25nSRReVcZ19etjC6ONFvprEye/uMgtdfcsfyfFF28HqyuRpe7a0X3U/e/a6y6pXfsejbz1d
-        YB9yT/D25bC11z4pJNzyEPJZrC7oXB/ifXbliVuvHx5jzvXNmvEr+aWzu0XZtNDY8869k+rv
-        //vBtYG1trTXxfSU8GJt8ZrvMQvPTL7LN8f65A7R7FP/8sO2mU9Mu6fLpSnG9W72Xc1jkapV
-        HP0HDveUf/z1Zp3I260lM36xNKy1Zwu4n13blClvcHStx/dm8/+2aUosxRmJhlrMRcWJABtZ
-        CbK+AgAA
-X-CMS-MailID: 20210707131841epcas1p129d1c10efdbbe403e80f45245b0b5afd
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210707131841epcas1p129d1c10efdbbe403e80f45245b0b5afd
-References: <20210707131443.6242-1-ohoono.kwon@samsung.com>
-        <CGME20210707131841epcas1p129d1c10efdbbe403e80f45245b0b5afd@epcas1p1.samsung.com>
+        Wed, 7 Jul 2021 09:25:29 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93D2C061574;
+        Wed,  7 Jul 2021 06:22:48 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id bu12so3318516ejb.0;
+        Wed, 07 Jul 2021 06:22:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NX1ZKDJsQuuJjvtcyvAtIrLYE2dDnJwtrH+INwBVKA0=;
+        b=Pky5EfyGnHFuWzU1VkHcjQ5Cd8ZLb9e7Uz+KHY6CdD1szPAz44F8DrmZTNfTlSV+JY
+         yuCGcmuIBaW7Gafdc6xRhySf2F/+kyK8hzz5r7FmXwrp72ZPm/8sdiP1bkIznNH8rW44
+         XZY5w4bF4H3e6nirQrVAf+0FXlhFjKzX5IUgcGvXJqdZsufT4t7gkX6qasBgRlUTiSsf
+         tWcPdSdY3TVq1yZq7NGY5lhYMhxCGqqVPycCBJQZfdOU8qEocmyUBJ4L3ijx/HDHnH55
+         zHMX6hxWXFy9MDSacDZ0w1y82iE6pd5n2mXs26DuBeibWtFi/bPLMq4rLab19NVI8rql
+         x9cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NX1ZKDJsQuuJjvtcyvAtIrLYE2dDnJwtrH+INwBVKA0=;
+        b=KWCZAtzlKbH5+CnLyvCRWmE9sGAPKwe6Crn0pMIrItpKlfW6FuqywertwDFX6uuCcO
+         LEjC2rWON8RoIW4/TnKK/yAnBkkhE3wdYqfI8FB57bfZG6YBW/j4VNnh4kYAlrTsuB3/
+         qNjQdLAXluL3++qOB6Cq7gAg+ttbGZEfcM24W1sUMgU7xAbQzvKXe85uJ8ocFD6djzfj
+         3OJw2FsUKfQzhzLKdlayCpj4zkjSq/rxn9Cw29bP2QK5MqoVhFQp2g3Hg861y7mUIpwo
+         PS0zJl7Bg0OXsHnA5Si0+g5djDXpvVd2zVEdkHZVmX5G6Yyo34zpapeuTgqJiS9AQW0z
+         OShw==
+X-Gm-Message-State: AOAM531LsAbXSk5Jsij1f7OIf1X9O74vo24ga1hvtTtZn97Dg2LtN3HZ
+        wu58zA1OzDzyZujQO9TsW4pu+QpBYAS22Myv/HqiNTmc58IR4Xxg
+X-Google-Smtp-Source: ABdhPJyxIR7UkT66xJvNSNwNAdxLITultz32qew0PD2PJgaP6iPMpohAS1uS911QvIXI301VO5e/scNfzte2g3xukxQ=
+X-Received: by 2002:a17:906:3699:: with SMTP id a25mr17995642ejc.452.1625664167340;
+ Wed, 07 Jul 2021 06:22:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <CABv53a97_5iaAdOcoVdQDxNyyTxgXHx=mHm0Sfo4UJVLHoxosg@mail.gmail.com>
+ <20210707091807.GA16039@salvia>
+In-Reply-To: <20210707091807.GA16039@salvia>
+From:   iLifetruth <yixiaonn@gmail.com>
+Date:   Wed, 7 Jul 2021 21:22:12 +0800
+Message-ID: <CABv53a_3sQmRzCfybo1s0EkNnFyaehx-E0WvBALe34XsXggpJg@mail.gmail.com>
+Subject: Re: netfilter: Use netlink_ns_capable to verify the permisions of
+ netlink messages
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Qiang Liu <cyruscyliu@gmail.com>, yajin@vm-kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_SPARSEMEM_EXTREME enabled, __section_nr() which converts
-mem_section to section_nr could be costly since it iterates all
-section roots to check if the given mem_section is in its range.
+I see.
+There is no need to check the capability again in the
+nfnetlink_cthelper and nfnetlink_osf now.
 
-Since both callers of section_mark_present already know section_nr,
-let's also pass section_nr as well as mem_section in order to reduce
-costly translation.
+Regards and thanks for your analyze,
+- iLifetruth
 
-Signed-off-by: Ohhoon Kwon <ohoono.kwon@samsung.com>
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
----
- mm/sparse.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/mm/sparse.c b/mm/sparse.c
-index 6326cdf36c4f..8018ee7fcda5 100644
---- a/mm/sparse.c
-+++ b/mm/sparse.c
-@@ -187,10 +187,9 @@ void __meminit mminit_validate_memmodel_limits(unsigned long *start_pfn,
-  * those loops early.
-  */
- unsigned long __highest_present_section_nr;
--static void section_mark_present(struct mem_section *ms)
-+static void __section_mark_present(struct mem_section *ms,
-+		unsigned long section_nr)
- {
--	unsigned long section_nr = __section_nr(ms);
--
- 	if (section_nr > __highest_present_section_nr)
- 		__highest_present_section_nr = section_nr;
- 
-@@ -280,7 +279,7 @@ static void __init memory_present(int nid, unsigned long start, unsigned long en
- 		if (!ms->section_mem_map) {
- 			ms->section_mem_map = sparse_encode_early_nid(nid) |
- 							SECTION_IS_ONLINE;
--			section_mark_present(ms);
-+			__section_mark_present(ms, section);
- 		}
- 	}
- }
-@@ -934,7 +933,7 @@ int __meminit sparse_add_section(int nid, unsigned long start_pfn,
- 
- 	ms = __nr_to_section(section_nr);
- 	set_section_nid(section_nr, nid);
--	section_mark_present(ms);
-+	__section_mark_present(ms, section_nr);
- 
- 	/* Align memmap to section boundary in the subsection case */
- 	if (section_nr_to_pfn(section_nr) != start_pfn)
--- 
-2.17.1
 
+
+On Wed, Jul 7, 2021 at 5:18 PM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>
+> On Wed, Jul 07, 2021 at 04:05:33PM +0800, iLifetruth wrote:
+> > Hi, we have found that the same fix pattern of CVE-2014-0181 may not
+> > forward ported to some netlink-related places in the latest linux
+> > kernel(v5.13)
+> >
+> > =============
+> > Here is the description of CVE-2014-0181:
+> >
+> > The Netlink implementation in the Linux kernel through 3.14.1 does not
+> > provide a mechanism for authorizing socket operations based on the opener
+> > of a socket, which allows local users to bypass intended access
+> > restrictions and modify network configurations by using a Netlink socket
+> > for the (1) stdout or (2) stderr of a setuid program.
+> >
+> > ==========
+> > And here is the solution to CVE-2014-0181:
+> >
+> > To keep this from happening, replace bare capable and ns_capable calls with
+> > netlink_capable, netlink_net_calls and netlink_ns_capable calls. Which act
+> > the same as the previous calls *except they verify that the opener of the
+> > socket had the desired permissions as well.*
+> >
+> > ==========
+> > The upstream patch commit of this vulnerability described in CVE-2014-0181
+> > is:
+> >     90f62cf30a78721641e08737bda787552428061e (committed about 7 years ago)
+> >
+> > =========
+> > Capable() checks were added to these netlink-related places listed below
+> > in netfilter by another upstream commit:
+> > 4b380c42f7d00a395feede754f0bc2292eebe6e5(committed about 4 years ago)
+> >
+> > In kernel v5.13:
+> >     File_1: linux/net/netfilter/nfnetlink_cthelper.c
+> >                        in line 424, line 623 and line 691
+> >     File_2: linux/net/netfilter/nfnetlink_osf.c
+> >                        in line 305 and line 351
+>
+> These subsystems depend on nfnetlink.
+>
+> nfnetlink_rcv() is called before passing the message to the
+> corresponding backend, e.g. nfnetlink_osf.
+>
+> static void nfnetlink_rcv(struct sk_buff *skb)
+> {
+>         struct nlmsghdr *nlh = nlmsg_hdr(skb);
+>
+>         if (skb->len < NLMSG_HDRLEN ||
+>             nlh->nlmsg_len < NLMSG_HDRLEN ||
+>             skb->len < nlh->nlmsg_len)
+>                 return;
+>
+>         if (!netlink_net_capable(skb, CAP_NET_ADMIN)) {
+>                 netlink_ack(skb, nlh, -EPERM, NULL);
+>                 return;
+>         }
+>         [...]
+>
+> which is calling netlink_net_capable().
+>
+> > But these checkers are still using bare capable instead of netlink_capable
+> > calls. So this is likely to trigger the vulnerability described in the
+> > CVE-2014-0181 without checking the desired permissions of the socket
+> > opener. Now, shall we forward port the fix pattern from the patch of
+> > CVE-2014-0181?
+> >
+> > We would like to contact you to confirm this problem.
+>
+> I think these capable() calls in nfnetlink_cthelper and nfnetlink_osf
+> are dead code that can be removed. As I explained these subsystems
+> stay behind nfnetlink.
