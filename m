@@ -2,505 +2,603 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56BE3BEF6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0213BEEC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbhGGSme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:42:34 -0400
-Received: from mail-dm6nam10on2050.outbound.protection.outlook.com ([40.107.93.50]:27105
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232785AbhGGSla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:41:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=crfrcjP0H2V3FOXRs/4AINL6i6x/uJ60HJ+1+kWFHhD5Z1t3XzVavwcK8RY5OK8b6NivLt83pShURGoA+HvxzkfLFhHSNCBoPi4BErhcmncPY0MYIrB7V75x8JJSMM6UoPXvq5J/5H8+P2Vx85mhjh+W3YLKWxF/nleHfMgAJYvbp8qHqslVvkDu3nyXD41HdL2okqEOBoiYhmku84DJy7ESCjUJrHTWqkDQBpPQP0knR4byHLGn48VtiCxDUrfkd+2a+MmQ70hk6FsbeD42hw4Z3yVivUz9F9/LgUUpXhjZbHdfAO6hx5+G2lWLfzMlb29HlNUn463EA0OzZNC7MA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RvpP4vcirFtMs9ICGVRbYBHwDS3HlfuiklBI1T5rs6I=;
- b=fifQuJhjUCO1GnYafySkV8Q/G2/tE+r8ve3GHvNst/ny9TADPTilhMNYXV1WYsklIN0ZHijdZeMA4ohdEQUwef4a1wwW5vqlY6buW+lkZrHFsGTo7RA0ATyY4gpt348lyGopcgUDhWXiJ53BXLJff30+E7FqchTPD67MLlPj+6CIYkWT+eTRH2VMYhM7NQ+9VJr+0GfzaBP28/dvq2Uj4iXhH5tPzvO9a/0fYmutEHi3BVoXPKDIntFzKJrjB9Sage+ovQTT2H+vwkqM/gwbOr1ZOUR6N0TBZNdroX5z41yBgShVkSuceXb2ljMU1OLr9Tk7eFOvdanLwqLLVMe+dg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RvpP4vcirFtMs9ICGVRbYBHwDS3HlfuiklBI1T5rs6I=;
- b=ewBdY0dY90lRxBYtMeqz+8BAkCcnUwG/idiLlLhLJyXs8cCgEqn6SzO2Gy7wWHuMz5/ikY1xUX21qTIGPnCE8mbbgvK2sRpJdURrlgHbiuIYJm40aMq7QnwORu+P0Jdc7q1H4WEmq+j/kKrKvTDdDmqi0k9ojnWCt+hHTV9CxQI=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB2711.namprd12.prod.outlook.com (2603:10b6:a03:63::10)
- by BYAPR12MB2630.namprd12.prod.outlook.com (2603:10b6:a03:67::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.33; Wed, 7 Jul
- 2021 18:38:39 +0000
-Received: from BYAPR12MB2711.namprd12.prod.outlook.com
- ([fe80::40e3:aade:9549:4bed]) by BYAPR12MB2711.namprd12.prod.outlook.com
- ([fe80::40e3:aade:9549:4bed%7]) with mapi id 15.20.4287.033; Wed, 7 Jul 2021
- 18:38:39 +0000
-From:   Brijesh Singh <brijesh.singh@amd.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: [PATCH Part2 RFC v4 40/40] KVM: SVM: Support SEV-SNP AP Creation NAE event
-Date:   Wed,  7 Jul 2021 13:36:16 -0500
-Message-Id: <20210707183616.5620-41-brijesh.singh@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210707183616.5620-1-brijesh.singh@amd.com>
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SN6PR04CA0078.namprd04.prod.outlook.com
- (2603:10b6:805:f2::19) To BYAPR12MB2711.namprd12.prod.outlook.com
- (2603:10b6:a03:63::10)
+        id S231464AbhGGSjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:39:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230288AbhGGSjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 14:39:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D75B260C41;
+        Wed,  7 Jul 2021 18:36:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625682986;
+        bh=UN0w/YhTH21J72WVX+RtEUhcyAWr61BBJx7vzPVxw/Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s9IX/EjPfMZNi18MzcG/qTZnq3LLi29e8Ie+dSca5q8cAJQhqoOFB6XFEsehpVski
+         T6uizxGxRJuCZxK0X1b7lZAmfnc47KvZSgkszMAenDZuQis1ZvlVoOqufFB73kIErv
+         rGKUTt4sdkUs2wp6IIntSe3BPGKHrw1qAcqm+0TxFdTJrxAIF7depR8Col+ruaMIjS
+         zIJCc+DDjwCGECjv/llOQqNp+EK2aexP641Tg3wYpRYNx383nxKMmLE4CTUdnFeVOy
+         qA7DslR0NwVQJ/nBcKhSnAXncB5Cg/BaeBR3SseaAhULA0MbgZJswTBH+KdV9qD+81
+         OjeVhH1kKNVGA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 52AB040B1A; Wed,  7 Jul 2021 15:36:23 -0300 (-03)
+Date:   Wed, 7 Jul 2021 15:36:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>, nakamura.shun@fujitsu.com,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 2/7] libperf: Move idx to perf_evsel::idx
+Message-ID: <YOX0J6Ix6KZgLT0U@kernel.org>
+References: <20210706151704.73662-1-jolsa@kernel.org>
+ <20210706151704.73662-3-jolsa@kernel.org>
+ <YOW+ALqodLvVWqJ+@kernel.org>
+ <YOXvn0SjkPinizWp@krava>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from sbrijesh-desktop.amd.com (165.204.77.1) by SN6PR04CA0078.namprd04.prod.outlook.com (2603:10b6:805:f2::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Wed, 7 Jul 2021 18:38:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 14625f28-3a81-4518-aa8b-08d941766fc2
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2630:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR12MB263064CEB8C54A7CEEA8C41BE51A9@BYAPR12MB2630.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4IcTrbCux5fcfNeEmGe4Cx0AMqcuYfurJdsjWTwqn3vbd/qt1Gbvn/bcgDNNFKCjxzmqjM5xP8CvQtIIXS6UyE11pP9jG4bhkK9MNMeBfoAS0phbPxgqDhGbSUs82x9vp2nXGyHcQhdwrM8Snw4sK5G1j4ryJH05w+I3GZ/yWCmw81w+n9Iz5J/l1sgt7Yj4XF8YePFufgZR+tn29x2Dxec/pKdh/DpAq2g6SPB1k5hMXcv85Ko6IiH32BHPbPE1wxcZd07QyVKmJutBUy+k4UNhB2fRVV3Q6ZZ4U/W4aMYKJBkvYIryYsdKmizxlLQ0pxUgE0cVAf9izjUvFfbrazVtraH+qBZFVvG881DZRLxHyWbmRrfdSYjblrrddg3pPJAhpVZbqhcg9belRBii5NSDg/aflQkmEd71/TJfpRyJ9ze1SJXGvzouRHHee9Y9yovRIbqn/3PYqzdOZltA4qZCBbAIbO6ZBMAFp14Sh7W4h4FxeXzrR40U0oPN2TD6Ahb/WeiB7Lj5gYAwL5pJb4F7/D+y1WzUya5EPToAruM9/0bAzVQ/dy9ljFtWPwDKLFU7B5etlxlJ2H6+8Vu0ZD2Q7qtm/Cm/YpTULd0BYYxIQ3uZqNiEGepuiL//OqEtaYldaAcIj0eCal0eadkY2g76UAOm2Uw8+rYoW7tAxB7fbcFMd0jnRhPGKxm6mzcUB25uaoxhMu3WpwGZvRnuKg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2711.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(366004)(376002)(396003)(8676002)(4326008)(86362001)(2906002)(5660300002)(7696005)(956004)(316002)(66946007)(52116002)(1076003)(66556008)(6666004)(26005)(66476007)(2616005)(44832011)(186003)(83380400001)(478600001)(54906003)(8936002)(7416002)(6486002)(7406005)(36756003)(38100700002)(38350700002)(30864003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qGLLXU+yOnOXpPLsfvABqzqJHyLMKLr7L11XGrHWkL5PP2byTscsJo/8QBRR?=
- =?us-ascii?Q?RcADwGe8sfqmTDwME3Pb8T/ToQlF7waWwNbCEqHHQr3yf/NByt/411kYMs2y?=
- =?us-ascii?Q?dw9yMfryy71hiIFsMr1Fs9hv5ltswsG00xueBGOAUopNGDegUHtNd+N2YbW5?=
- =?us-ascii?Q?dX5v6KyJYU4Aku5+vuIKiCqmPZtIHVnLJ2/tc+maDs0n1O2uBZgmWfti1onu?=
- =?us-ascii?Q?gYF0fzNpoW+ujuyO9E1mQ5EBbgRaCKLsMFUEMnefjsV6udPXjqmxS7KuZ8Wo?=
- =?us-ascii?Q?fyfo0qu3BtJiZgHVpjn4JFmqqUBbuqK+fEEh7MQE3lixmzBLr4P4v0piVtT0?=
- =?us-ascii?Q?lL2JlCz7cnG11AiFMtz9cRj+odcNDMjCte29xSAipIGybbjATXVXmUxKLHol?=
- =?us-ascii?Q?H+5AdPd7Sp/4LS8Jyc8zm4zqlf2XCiz4RJ2iqHsqR96RGPSRiwzdTVte8lyj?=
- =?us-ascii?Q?YVsIci3AiMhqGJ61ibgfPIyxNS22+9LzlKwOBeiMrq9mFKt2cLIln2/aQIeB?=
- =?us-ascii?Q?ixaHYszsJHq//OjxMYMVzesU7eGbH2e6P7D+B388TzhP+Wg6DuifW0nLFEs4?=
- =?us-ascii?Q?wGfOKRo8GK8ltsg2nEzyilcxg+dna84QdpcDKOjgxeoe8UuNa3TbSbs/nN/C?=
- =?us-ascii?Q?NksPug/0X+zf+ULAKC6G3+5+fLXxCFumU5FK+D6QYNujFGMe0m2a3/WKz4eQ?=
- =?us-ascii?Q?F0gndl4srJ1cojZl7BIdzHrtslSAi6Vvn0VbzImPWrnI/MaszWw3/JIsN5LC?=
- =?us-ascii?Q?/moke79zHNzvdriWLDXRyAOzyYLde7OpnO5pMMWXXsX65aWtL+Ne2YGTBs6D?=
- =?us-ascii?Q?riGqc+z5uu41GfX9g/UV+3CxKRjAxBCBmedaxaSD0PExpcBh+Bq+NsnFxcrU?=
- =?us-ascii?Q?y+W9mLCUzeBrn5XFf4WSkUjEC6A4ACrs351PegCaRWW/XputXApfyaCtVaWv?=
- =?us-ascii?Q?cmd/g4t5ocJAYUqdU7/bcQKeBA77kfq/Z+xWiGm7LdruBaLZNHBHRXplo49O?=
- =?us-ascii?Q?ZcQUKigHEekx1czHb2/nVARFNzm+C7P4b1pOEJHzUIHRNasnAayE2dPx2kw3?=
- =?us-ascii?Q?sX+funsyKK31Ur4ho/TjFGeyf10/baet8uRoDqNEdeMHUQLZRHdzCph4HDvm?=
- =?us-ascii?Q?rD5lvQ2C2yyjNVbM/mX3j4s8Q6kdum/Vj/S3EYDKl9q89EBONv4bbNaeSnIp?=
- =?us-ascii?Q?tiIaImnpy4uPti3xMePAAPymZRQ2oRbLgPiKrP/jHf1YW3avTJhycIKTgwLe?=
- =?us-ascii?Q?FuFRGGbokn3aA0+Wr7u0vLmtfRyPjQHYRxV4/NZGyPI2ZijishwPT/cEy6Lt?=
- =?us-ascii?Q?DS/TpPrcjs/CbgJQQG4ya6OH?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 14625f28-3a81-4518-aa8b-08d941766fc2
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2711.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2021 18:38:38.9289
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: v0ZsoLS0KnUi34U7PftgbaHgcfOrGb97QSPAtEI2KKJpCEh142CG4+qqAhWqIPyPayuny2IHyL787cFBgXBodw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2630
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOXvn0SjkPinizWp@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Lendacky <thomas.lendacky@amd.com>
+Em Wed, Jul 07, 2021 at 08:17:03PM +0200, Jiri Olsa escreveu:
+> On Wed, Jul 07, 2021 at 11:45:20AM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Jul 06, 2021 at 05:16:59PM +0200, Jiri Olsa escreveu:
+> > > Moving evsel::idx to perf_evsel::idx, so we can move
+> > > the group interface to libperf.
+> > 
+> > So perf_evsel__init() isn't static but also isn't in
+> > tools/lib/perf/libperf.map so we're free to change its function
+> > signature, right?
+> 
+> right.. also I think we stated somewhere we can change also
+> libperf.map functions ;-) it's still 0.0.1
 
-Add support for the SEV-SNP AP Creation NAE event. This allows SEV-SNP
-guests to create and start APs on their own.
+Ok, but I think the spirit should be of being overly cautious with this
+and check all the time if we are breaking it.
 
-A new event, KVM_REQ_UPDATE_PROTECTED_GUEST_STATE, is created and used
-so as to avoid updating the VMSA pointer while the vCPU is running.
+We need some tests for that, BTW, i.e. if something changes the function
+signature, then the version should be bumped, etc.
 
-For CREATE
-  The guest supplies the GPA of the VMSA to be used for the vCPU with the
-  specified APIC ID. The GPA is saved in the svm struct of the target
-  vCPU, the KVM_REQ_UPDATE_PROTECTED_GUEST_STATE event is added to the
-  vCPU and then the vCPU is kicked.
+Perhaps we build a binary that links to libperf and leave it there in
+the sources, so that a 'perf test' shell can try to run it to get some
+expected result only to catch that the ABI broke?
 
-For CREATE_ON_INIT:
-  The guest supplies the GPA of the VMSA to be used for the vCPU with the
-  specified APIC ID the next time an INIT is performed. The GPA is saved
-  in the svm struct of the target vCPU.
+- Arnaldo
+ 
+> jirka
+> 
+> > 
+> > - Arnaldo
+> >  
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/lib/perf/evlist.c                 |  1 +
+> > >  tools/lib/perf/evsel.c                  |  6 ++++--
+> > >  tools/lib/perf/include/internal/evsel.h |  4 +++-
+> > >  tools/perf/arch/x86/util/iostat.c       |  4 ++--
+> > >  tools/perf/builtin-diff.c               |  4 ++--
+> > >  tools/perf/builtin-report.c             |  4 ++--
+> > >  tools/perf/builtin-top.c                |  8 ++++----
+> > >  tools/perf/tests/evsel-roundtrip-name.c |  6 +++---
+> > >  tools/perf/tests/mmap-basic.c           |  8 ++++----
+> > >  tools/perf/ui/browsers/annotate.c       |  2 +-
+> > >  tools/perf/util/annotate.c              |  8 ++++----
+> > >  tools/perf/util/evlist.c                | 10 ++++------
+> > >  tools/perf/util/evsel.c                 |  3 +--
+> > >  tools/perf/util/evsel.h                 |  3 +--
+> > >  tools/perf/util/header.c                | 10 +++++-----
+> > >  tools/perf/util/metricgroup.c           | 14 +++++++-------
+> > >  tools/perf/util/parse-events.c          |  2 +-
+> > >  tools/perf/util/python.c                |  2 +-
+> > >  tools/perf/util/stream.c                |  2 +-
+> > >  19 files changed, 51 insertions(+), 50 deletions(-)
+> > > 
+> > > diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
+> > > index a0aaf385cbb5..68b90bbf0ffb 100644
+> > > --- a/tools/lib/perf/evlist.c
+> > > +++ b/tools/lib/perf/evlist.c
+> > > @@ -66,6 +66,7 @@ static void perf_evlist__propagate_maps(struct perf_evlist *evlist)
+> > >  void perf_evlist__add(struct perf_evlist *evlist,
+> > >  		      struct perf_evsel *evsel)
+> > >  {
+> > > +	evsel->idx = evlist->nr_entries;
+> > >  	list_add_tail(&evsel->node, &evlist->entries);
+> > >  	evlist->nr_entries += 1;
+> > >  	__perf_evlist__propagate_maps(evlist, evsel);
+> > > diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+> > > index bd8c2f19ef74..dccdc3456b23 100644
+> > > --- a/tools/lib/perf/evsel.c
+> > > +++ b/tools/lib/perf/evsel.c
+> > > @@ -18,10 +18,12 @@
+> > >  #include <sys/ioctl.h>
+> > >  #include <sys/mman.h>
+> > >  
+> > > -void perf_evsel__init(struct perf_evsel *evsel, struct perf_event_attr *attr)
+> > > +void perf_evsel__init(struct perf_evsel *evsel, struct perf_event_attr *attr,
+> > > +		      int idx)
+> > >  {
+> > >  	INIT_LIST_HEAD(&evsel->node);
+> > >  	evsel->attr = *attr;
+> > > +	evsel->idx  = idx;
+> > >  }
+> > >  
+> > >  struct perf_evsel *perf_evsel__new(struct perf_event_attr *attr)
+> > > @@ -29,7 +31,7 @@ struct perf_evsel *perf_evsel__new(struct perf_event_attr *attr)
+> > >  	struct perf_evsel *evsel = zalloc(sizeof(*evsel));
+> > >  
+> > >  	if (evsel != NULL)
+> > > -		perf_evsel__init(evsel, attr);
+> > > +		perf_evsel__init(evsel, attr, 0);
+> > >  
+> > >  	return evsel;
+> > >  }
+> > > diff --git a/tools/lib/perf/include/internal/evsel.h b/tools/lib/perf/include/internal/evsel.h
+> > > index 1c067d088bc6..86f674e36f62 100644
+> > > --- a/tools/lib/perf/include/internal/evsel.h
+> > > +++ b/tools/lib/perf/include/internal/evsel.h
+> > > @@ -49,9 +49,11 @@ struct perf_evsel {
+> > >  	/* parse modifier helper */
+> > >  	int			 nr_members;
+> > >  	bool			 system_wide;
+> > > +	int			 idx;
+> > >  };
+> > >  
+> > > -void perf_evsel__init(struct perf_evsel *evsel, struct perf_event_attr *attr);
+> > > +void perf_evsel__init(struct perf_evsel *evsel, struct perf_event_attr *attr,
+> > > +		      int idx);
+> > >  int perf_evsel__alloc_fd(struct perf_evsel *evsel, int ncpus, int nthreads);
+> > >  void perf_evsel__close_fd(struct perf_evsel *evsel);
+> > >  void perf_evsel__free_fd(struct perf_evsel *evsel);
+> > > diff --git a/tools/perf/arch/x86/util/iostat.c b/tools/perf/arch/x86/util/iostat.c
+> > > index d63acb782b63..eeafe97b8105 100644
+> > > --- a/tools/perf/arch/x86/util/iostat.c
+> > > +++ b/tools/perf/arch/x86/util/iostat.c
+> > > @@ -322,7 +322,7 @@ static int iostat_event_group(struct evlist *evl,
+> > >  	}
+> > >  
+> > >  	evlist__for_each_entry(evl, evsel) {
+> > > -		evsel->priv = list->rps[evsel->idx / metrics_count];
+> > > +		evsel->priv = list->rps[evsel->core.idx / metrics_count];
+> > >  	}
+> > >  	list->nr_entries = 0;
+> > >  err:
+> > > @@ -428,7 +428,7 @@ void iostat_print_metric(struct perf_stat_config *config, struct evsel *evsel,
+> > >  {
+> > >  	double iostat_value = 0;
+> > >  	u64 prev_count_val = 0;
+> > > -	const char *iostat_metric = iostat_metric_by_idx(evsel->idx);
+> > > +	const char *iostat_metric = iostat_metric_by_idx(evsel->core.idx);
+> > >  	u8 die = ((struct iio_root_port *)evsel->priv)->die;
+> > >  	struct perf_counts_values *count = perf_counts(evsel->counts, die, 0);
+> > >  
+> > > diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
+> > > index f52b3a799e76..80450c0e8f36 100644
+> > > --- a/tools/perf/builtin-diff.c
+> > > +++ b/tools/perf/builtin-diff.c
+> > > @@ -1031,12 +1031,12 @@ static int process_base_stream(struct data__file *data_base,
+> > >  			continue;
+> > >  
+> > >  		es_base = evsel_streams__entry(data_base->evlist_streams,
+> > > -					       evsel_base->idx);
+> > > +					       evsel_base->core.idx);
+> > >  		if (!es_base)
+> > >  			return -1;
+> > >  
+> > >  		es_pair = evsel_streams__entry(data_pair->evlist_streams,
+> > > -					       evsel_pair->idx);
+> > > +					       evsel_pair->core.idx);
+> > >  		if (!es_pair)
+> > >  			return -1;
+> > >  
+> > > diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+> > > index bc5c393021dc..4014de4da33b 100644
+> > > --- a/tools/perf/builtin-report.c
+> > > +++ b/tools/perf/builtin-report.c
+> > > @@ -332,7 +332,7 @@ static int process_read_event(struct perf_tool *tool,
+> > >  		const char *name = evsel__name(evsel);
+> > >  		int err = perf_read_values_add_value(&rep->show_threads_values,
+> > >  					   event->read.pid, event->read.tid,
+> > > -					   evsel->idx,
+> > > +					   evsel->core.idx,
+> > >  					   name,
+> > >  					   event->read.value);
+> > >  
+> > > @@ -666,7 +666,7 @@ static int report__collapse_hists(struct report *rep)
+> > >  	evlist__for_each_entry(rep->session->evlist, pos) {
+> > >  		struct hists *hists = evsel__hists(pos);
+> > >  
+> > > -		if (pos->idx == 0)
+> > > +		if (pos->core.idx == 0)
+> > >  			hists->symbol_filter_str = rep->symbol_filter_str;
+> > >  
+> > >  		hists->socket_filter = rep->socket_filter;
+> > > diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+> > > index 2d570bfe7a56..76343a418e67 100644
+> > > --- a/tools/perf/builtin-top.c
+> > > +++ b/tools/perf/builtin-top.c
+> > > @@ -264,9 +264,9 @@ static void perf_top__show_details(struct perf_top *top)
+> > >  
+> > >  	if (top->evlist->enabled) {
+> > >  		if (top->zero)
+> > > -			symbol__annotate_zero_histogram(symbol, top->sym_evsel->idx);
+> > > +			symbol__annotate_zero_histogram(symbol, top->sym_evsel->core.idx);
+> > >  		else
+> > > -			symbol__annotate_decay_histogram(symbol, top->sym_evsel->idx);
+> > > +			symbol__annotate_decay_histogram(symbol, top->sym_evsel->core.idx);
+> > >  	}
+> > >  	if (more != 0)
+> > >  		printf("%d lines not displayed, maybe increase display entries [e]\n", more);
+> > > @@ -530,7 +530,7 @@ static bool perf_top__handle_keypress(struct perf_top *top, int c)
+> > >  				fprintf(stderr, "\nAvailable events:");
+> > >  
+> > >  				evlist__for_each_entry(top->evlist, top->sym_evsel)
+> > > -					fprintf(stderr, "\n\t%d %s", top->sym_evsel->idx, evsel__name(top->sym_evsel));
+> > > +					fprintf(stderr, "\n\t%d %s", top->sym_evsel->core.idx, evsel__name(top->sym_evsel));
+> > >  
+> > >  				prompt_integer(&counter, "Enter details event counter");
+> > >  
+> > > @@ -541,7 +541,7 @@ static bool perf_top__handle_keypress(struct perf_top *top, int c)
+> > >  					break;
+> > >  				}
+> > >  				evlist__for_each_entry(top->evlist, top->sym_evsel)
+> > > -					if (top->sym_evsel->idx == counter)
+> > > +					if (top->sym_evsel->core.idx == counter)
+> > >  						break;
+> > >  			} else
+> > >  				top->sym_evsel = evlist__first(top->evlist);
+> > > diff --git a/tools/perf/tests/evsel-roundtrip-name.c b/tools/perf/tests/evsel-roundtrip-name.c
+> > > index b74cf80d1f10..5ebf56331904 100644
+> > > --- a/tools/perf/tests/evsel-roundtrip-name.c
+> > > +++ b/tools/perf/tests/evsel-roundtrip-name.c
+> > > @@ -44,7 +44,7 @@ static int perf_evsel__roundtrip_cache_name_test(void)
+> > >  
+> > >  			for (i = 0; i < PERF_COUNT_HW_CACHE_RESULT_MAX; i++) {
+> > >  				__evsel__hw_cache_type_op_res_name(type, op, i, name, sizeof(name));
+> > > -				if (evsel->idx != idx)
+> > > +				if (evsel->core.idx != idx)
+> > >  					continue;
+> > >  
+> > >  				++idx;
+> > > @@ -84,9 +84,9 @@ static int __perf_evsel__name_array_test(const char *names[], int nr_names,
+> > >  
+> > >  	err = 0;
+> > >  	evlist__for_each_entry(evlist, evsel) {
+> > > -		if (strcmp(evsel__name(evsel), names[evsel->idx / distance])) {
+> > > +		if (strcmp(evsel__name(evsel), names[evsel->core.idx / distance])) {
+> > >  			--err;
+> > > -			pr_debug("%s != %s\n", evsel__name(evsel), names[evsel->idx / distance]);
+> > > +			pr_debug("%s != %s\n", evsel__name(evsel), names[evsel->core.idx / distance]);
+> > >  		}
+> > >  	}
+> > >  
+> > > diff --git a/tools/perf/tests/mmap-basic.c b/tools/perf/tests/mmap-basic.c
+> > > index 73ae8f7aa066..d38757db2dc2 100644
+> > > --- a/tools/perf/tests/mmap-basic.c
+> > > +++ b/tools/perf/tests/mmap-basic.c
+> > > @@ -139,7 +139,7 @@ int test__basic_mmap(struct test *test __maybe_unused, int subtest __maybe_unuse
+> > >  				 " doesn't map to an evsel\n", sample.id);
+> > >  			goto out_delete_evlist;
+> > >  		}
+> > > -		nr_events[evsel->idx]++;
+> > > +		nr_events[evsel->core.idx]++;
+> > >  		perf_mmap__consume(&md->core);
+> > >  	}
+> > >  	perf_mmap__read_done(&md->core);
+> > > @@ -147,10 +147,10 @@ int test__basic_mmap(struct test *test __maybe_unused, int subtest __maybe_unuse
+> > >  out_init:
+> > >  	err = 0;
+> > >  	evlist__for_each_entry(evlist, evsel) {
+> > > -		if (nr_events[evsel->idx] != expected_nr_events[evsel->idx]) {
+> > > +		if (nr_events[evsel->core.idx] != expected_nr_events[evsel->core.idx]) {
+> > >  			pr_debug("expected %d %s events, got %d\n",
+> > > -				 expected_nr_events[evsel->idx],
+> > > -				 evsel__name(evsel), nr_events[evsel->idx]);
+> > > +				 expected_nr_events[evsel->core.idx],
+> > > +				 evsel__name(evsel), nr_events[evsel->core.idx]);
+> > >  			err = -1;
+> > >  			goto out_delete_evlist;
+> > >  		}
+> > > diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+> > > index f5509a958e38..cd2ef8f3b474 100644
+> > > --- a/tools/perf/ui/browsers/annotate.c
+> > > +++ b/tools/perf/ui/browsers/annotate.c
+> > > @@ -749,7 +749,7 @@ static int annotate_browser__run(struct annotate_browser *browser,
+> > >  				hbt->timer(hbt->arg);
+> > >  
+> > >  			if (delay_secs != 0) {
+> > > -				symbol__annotate_decay_histogram(sym, evsel->idx);
+> > > +				symbol__annotate_decay_histogram(sym, evsel->core.idx);
+> > >  				hists__scnprintf_title(hists, title, sizeof(title));
+> > >  				annotate_browser__show(&browser->b, title, help);
+> > >  			}
+> > > diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> > > index abe1499a9164..aa04a3655236 100644
+> > > --- a/tools/perf/util/annotate.c
+> > > +++ b/tools/perf/util/annotate.c
+> > > @@ -961,7 +961,7 @@ static int symbol__inc_addr_samples(struct map_symbol *ms,
+> > >  	if (sym == NULL)
+> > >  		return 0;
+> > >  	src = symbol__hists(sym, evsel->evlist->core.nr_entries);
+> > > -	return src ? __symbol__inc_addr_samples(ms, src, evsel->idx, addr, sample) : 0;
+> > > +	return src ? __symbol__inc_addr_samples(ms, src, evsel->core.idx, addr, sample) : 0;
+> > >  }
+> > >  
+> > >  static int symbol__account_cycles(u64 addr, u64 start,
+> > > @@ -2159,7 +2159,7 @@ static void annotation__calc_percent(struct annotation *notes,
+> > >  
+> > >  			BUG_ON(i >= al->data_nr);
+> > >  
+> > > -			sym_hist = annotation__histogram(notes, evsel->idx);
+> > > +			sym_hist = annotation__histogram(notes, evsel->core.idx);
+> > >  			data = &al->data[i++];
+> > >  
+> > >  			calc_percent(sym_hist, hists, data, al->offset, end);
+> > > @@ -2340,7 +2340,7 @@ static void print_summary(struct rb_root *root, const char *filename)
+> > >  static void symbol__annotate_hits(struct symbol *sym, struct evsel *evsel)
+> > >  {
+> > >  	struct annotation *notes = symbol__annotation(sym);
+> > > -	struct sym_hist *h = annotation__histogram(notes, evsel->idx);
+> > > +	struct sym_hist *h = annotation__histogram(notes, evsel->core.idx);
+> > >  	u64 len = symbol__size(sym), offset;
+> > >  
+> > >  	for (offset = 0; offset < len; ++offset)
+> > > @@ -2373,7 +2373,7 @@ int symbol__annotate_printf(struct map_symbol *ms, struct evsel *evsel,
+> > >  	const char *d_filename;
+> > >  	const char *evsel_name = evsel__name(evsel);
+> > >  	struct annotation *notes = symbol__annotation(sym);
+> > > -	struct sym_hist *h = annotation__histogram(notes, evsel->idx);
+> > > +	struct sym_hist *h = annotation__histogram(notes, evsel->core.idx);
+> > >  	struct annotation_line *pos, *queue = NULL;
+> > >  	u64 start = map__rip_2objdump(map, sym->start);
+> > >  	int printed = 2, queue_len = 0, addr_fmt_width;
+> > > diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> > > index 6ba9664089bd..6563ce3b9541 100644
+> > > --- a/tools/perf/util/evlist.c
+> > > +++ b/tools/perf/util/evlist.c
+> > > @@ -165,11 +165,9 @@ void evlist__delete(struct evlist *evlist)
+> > >  
+> > >  void evlist__add(struct evlist *evlist, struct evsel *entry)
+> > >  {
+> > > -	entry->evlist = evlist;
+> > > -	entry->idx = evlist->core.nr_entries;
+> > > -	entry->tracking = !entry->idx;
+> > > -
+> > >  	perf_evlist__add(&evlist->core, &entry->core);
+> > > +	entry->evlist = evlist;
+> > > +	entry->tracking = !entry->core.idx;
+> > >  
+> > >  	if (evlist->core.nr_entries == 1)
+> > >  		evlist__set_id_pos(evlist);
+> > > @@ -232,7 +230,7 @@ void __evlist__set_leader(struct list_head *list)
+> > >  	leader = list_entry(list->next, struct evsel, core.node);
+> > >  	evsel = list_entry(list->prev, struct evsel, core.node);
+> > >  
+> > > -	leader->core.nr_members = evsel->idx - leader->idx + 1;
+> > > +	leader->core.nr_members = evsel->core.idx - leader->core.idx + 1;
+> > >  
+> > >  	__evlist__for_each_entry(list, evsel) {
+> > >  		evsel->leader = leader;
+> > > @@ -2137,7 +2135,7 @@ struct evsel *evlist__find_evsel(struct evlist *evlist, int idx)
+> > >  	struct evsel *evsel;
+> > >  
+> > >  	evlist__for_each_entry(evlist, evsel) {
+> > > -		if (evsel->idx == idx)
+> > > +		if (evsel->core.idx == idx)
+> > >  			return evsel;
+> > >  	}
+> > >  	return NULL;
+> > > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> > > index b1c930eca40f..cce16814dc2c 100644
+> > > --- a/tools/perf/util/evsel.c
+> > > +++ b/tools/perf/util/evsel.c
+> > > @@ -239,8 +239,7 @@ bool evsel__is_function_event(struct evsel *evsel)
+> > >  void evsel__init(struct evsel *evsel,
+> > >  		 struct perf_event_attr *attr, int idx)
+> > >  {
+> > > -	perf_evsel__init(&evsel->core, attr);
+> > > -	evsel->idx	   = idx;
+> > > +	perf_evsel__init(&evsel->core, attr, idx);
+> > >  	evsel->tracking	   = !idx;
+> > >  	evsel->leader	   = evsel;
+> > >  	evsel->unit	   = "";
+> > > diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> > > index bdad52a06438..09c290bce3cc 100644
+> > > --- a/tools/perf/util/evsel.h
+> > > +++ b/tools/perf/util/evsel.h
+> > > @@ -49,7 +49,6 @@ struct evsel {
+> > >  	struct perf_evsel	core;
+> > >  	struct evlist		*evlist;
+> > >  	off_t			id_offset;
+> > > -	int			idx;
+> > >  	int			id_pos;
+> > >  	int			is_pos;
+> > >  	unsigned int		sample_size;
+> > > @@ -406,7 +405,7 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
+> > >  
+> > >  static inline int evsel__group_idx(struct evsel *evsel)
+> > >  {
+> > > -	return evsel->idx - evsel->leader->idx;
+> > > +	return evsel->core.idx - evsel->leader->core.idx;
+> > >  }
+> > >  
+> > >  /* Iterates group WITHOUT the leader. */
+> > > diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> > > index 0158d2945bab..9c8efb1898a0 100644
+> > > --- a/tools/perf/util/header.c
+> > > +++ b/tools/perf/util/header.c
+> > > @@ -789,7 +789,7 @@ static int write_group_desc(struct feat_fd *ff,
+> > >  	evlist__for_each_entry(evlist, evsel) {
+> > >  		if (evsel__is_group_leader(evsel) && evsel->core.nr_members > 1) {
+> > >  			const char *name = evsel->group_name ?: "{anon_group}";
+> > > -			u32 leader_idx = evsel->idx;
+> > > +			u32 leader_idx = evsel->core.idx;
+> > >  			u32 nr_members = evsel->core.nr_members;
+> > >  
+> > >  			ret = do_write_string(ff, name);
+> > > @@ -1844,7 +1844,7 @@ static struct evsel *read_event_desc(struct feat_fd *ff)
+> > >  		msz = sz;
+> > >  
+> > >  	for (i = 0, evsel = events; i < nre; evsel++, i++) {
+> > > -		evsel->idx = i;
+> > > +		evsel->core.idx = i;
+> > >  
+> > >  		/*
+> > >  		 * must read entire on-file attr struct to
+> > > @@ -2379,7 +2379,7 @@ static struct evsel *evlist__find_by_index(struct evlist *evlist, int idx)
+> > >  	struct evsel *evsel;
+> > >  
+> > >  	evlist__for_each_entry(evlist, evsel) {
+> > > -		if (evsel->idx == idx)
+> > > +		if (evsel->core.idx == idx)
+> > >  			return evsel;
+> > >  	}
+> > >  
+> > > @@ -2393,7 +2393,7 @@ static void evlist__set_event_name(struct evlist *evlist, struct evsel *event)
+> > >  	if (!event->name)
+> > >  		return;
+> > >  
+> > > -	evsel = evlist__find_by_index(evlist, event->idx);
+> > > +	evsel = evlist__find_by_index(evlist, event->core.idx);
+> > >  	if (!evsel)
+> > >  		return;
+> > >  
+> > > @@ -2739,7 +2739,7 @@ static int process_group_desc(struct feat_fd *ff, void *data __maybe_unused)
+> > >  
+> > >  	i = nr = 0;
+> > >  	evlist__for_each_entry(session->evlist, evsel) {
+> > > -		if (evsel->idx == (int) desc[i].leader_idx) {
+> > > +		if (evsel->core.idx == (int) desc[i].leader_idx) {
+> > >  			evsel->leader = evsel;
+> > >  			/* {anon_group} is a dummy name */
+> > >  			if (strcmp(desc[i].name, "{anon_group}")) {
+> > > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> > > index d3cf2dee36c8..d956d9cf73f7 100644
+> > > --- a/tools/perf/util/metricgroup.c
+> > > +++ b/tools/perf/util/metricgroup.c
+> > > @@ -219,7 +219,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> > >  		if (has_constraint && ev->weak_group)
+> > >  			continue;
+> > >  		/* Ignore event if already used and merging is disabled. */
+> > > -		if (metric_no_merge && test_bit(ev->idx, evlist_used))
+> > > +		if (metric_no_merge && test_bit(ev->core.idx, evlist_used))
+> > >  			continue;
+> > >  		if (!has_constraint && ev->leader != current_leader) {
+> > >  			/*
+> > > @@ -269,7 +269,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> > >  	for (i = 0; i < idnum; i++) {
+> > >  		ev = metric_events[i];
+> > >  		/* Don't free the used events. */
+> > > -		set_bit(ev->idx, evlist_used);
+> > > +		set_bit(ev->core.idx, evlist_used);
+> > >  		/*
+> > >  		 * The metric leader points to the identically named event in
+> > >  		 * metric_events.
+> > > @@ -291,7 +291,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> > >  			    evsel_same_pmu_or_none(ev->leader, metric_events[i]->leader))
+> > >  				break;
+> > >  			if (!strcmp(metric_events[i]->name, ev->name)) {
+> > > -				set_bit(ev->idx, evlist_used);
+> > > +				set_bit(ev->core.idx, evlist_used);
+> > >  				ev->metric_leader = metric_events[i];
+> > >  			}
+> > >  		}
+> > > @@ -391,7 +391,7 @@ static int metricgroup__setup_events(struct list_head *groups,
+> > >  	}
+> > >  
+> > >  	evlist__for_each_entry_safe(perf_evlist, tmp, evsel) {
+> > > -		if (!test_bit(evsel->idx, evlist_used)) {
+> > > +		if (!test_bit(evsel->core.idx, evlist_used)) {
+> > >  			evlist__remove(perf_evlist, evsel);
+> > >  			evsel__delete(evsel);
+> > >  		}
+> > > @@ -1312,7 +1312,7 @@ int metricgroup__copy_metric_events(struct evlist *evlist, struct cgroup *cgrp,
+> > >  		nd = rblist__entry(old_metric_events, i);
+> > >  		old_me = container_of(nd, struct metric_event, nd);
+> > >  
+> > > -		evsel = evlist__find_evsel(evlist, old_me->evsel->idx);
+> > > +		evsel = evlist__find_evsel(evlist, old_me->evsel->core.idx);
+> > >  		if (!evsel)
+> > >  			return -EINVAL;
+> > >  		new_me = metricgroup__lookup(new_metric_events, evsel, true);
+> > > @@ -1320,7 +1320,7 @@ int metricgroup__copy_metric_events(struct evlist *evlist, struct cgroup *cgrp,
+> > >  			return -ENOMEM;
+> > >  
+> > >  		pr_debug("copying metric event for cgroup '%s': %s (idx=%d)\n",
+> > > -			 cgrp ? cgrp->name : "root", evsel->name, evsel->idx);
+> > > +			 cgrp ? cgrp->name : "root", evsel->name, evsel->core.idx);
+> > >  
+> > >  		list_for_each_entry(old_expr, &old_me->head, nd) {
+> > >  			new_expr = malloc(sizeof(*new_expr));
+> > > @@ -1363,7 +1363,7 @@ int metricgroup__copy_metric_events(struct evlist *evlist, struct cgroup *cgrp,
+> > >  			/* copy evsel in the same position */
+> > >  			for (idx = 0; idx < nr; idx++) {
+> > >  				evsel = old_expr->metric_events[idx];
+> > > -				evsel = evlist__find_evsel(evlist, evsel->idx);
+> > > +				evsel = evlist__find_evsel(evlist, evsel->core.idx);
+> > >  				if (evsel == NULL) {
+> > >  					free(new_expr->metric_events);
+> > >  					free(new_expr->metric_refs);
+> > > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> > > index 84108c17f48d..e936c7c02d14 100644
+> > > --- a/tools/perf/util/parse-events.c
+> > > +++ b/tools/perf/util/parse-events.c
+> > > @@ -1740,7 +1740,7 @@ parse_events__set_leader_for_uncore_aliase(char *name, struct list_head *list,
+> > >  
+> > >  	leader = list_first_entry(list, struct evsel, core.node);
+> > >  	evsel = list_last_entry(list, struct evsel, core.node);
+> > > -	total_members = evsel->idx - leader->idx + 1;
+> > > +	total_members = evsel->core.idx - leader->core.idx + 1;
+> > >  
+> > >  	leaders = calloc(total_members, sizeof(uintptr_t));
+> > >  	if (WARN_ON(!leaders))
+> > > diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
+> > > index 412f8e79e409..8feef3a05af7 100644
+> > > --- a/tools/perf/util/python.c
+> > > +++ b/tools/perf/util/python.c
+> > > @@ -1032,7 +1032,7 @@ static PyObject *pyrf_evlist__add(struct pyrf_evlist *pevlist,
+> > >  
+> > >  	Py_INCREF(pevsel);
+> > >  	evsel = &((struct pyrf_evsel *)pevsel)->evsel;
+> > > -	evsel->idx = evlist->core.nr_entries;
+> > > +	evsel->core.idx = evlist->core.nr_entries;
+> > >  	evlist__add(evlist, evsel);
+> > >  
+> > >  	return Py_BuildValue("i", evlist->core.nr_entries);
+> > > diff --git a/tools/perf/util/stream.c b/tools/perf/util/stream.c
+> > > index 4bd5e5a00aa5..545e44981a27 100644
+> > > --- a/tools/perf/util/stream.c
+> > > +++ b/tools/perf/util/stream.c
+> > > @@ -139,7 +139,7 @@ static int evlist__init_callchain_streams(struct evlist *evlist,
+> > >  
+> > >  		hists__output_resort(hists, NULL);
+> > >  		init_hot_callchain(hists, &es[i]);
+> > > -		es[i].evsel_idx = pos->idx;
+> > > +		es[i].evsel_idx = pos->core.idx;
+> > >  		i++;
+> > >  	}
+> > >  
+> > > -- 
+> > > 2.31.1
+> > > 
+> > 
+> > -- 
+> > 
+> > - Arnaldo
+> > 
+> 
 
-For DESTROY:
-  The guest indicates it wishes to stop the vCPU. The GPA is cleared from
-  the svm struct, the KVM_REQ_UPDATE_PROTECTED_GUEST_STATE event is added
-  to vCPU and then the vCPU is kicked.
-
-
-The KVM_REQ_UPDATE_PROTECTED_GUEST_STATE event handler will be invoked as
-a result of the event or as a result of an INIT. The handler sets the vCPU
-to the KVM_MP_STATE_UNINITIALIZED state, so that any errors will leave the
-vCPU as not runnable. Any previous VMSA pages that were installed as
-part of an SEV-SNP AP Creation NAE event are un-pinned. If a new VMSA is
-to be installed, the VMSA guest page is pinned and set as the VMSA in the
-vCPU VMCB and the vCPU state is set to KVM_MP_STATE_RUNNABLE. If a new
-VMSA is not to be installed, the VMSA is cleared in the vCPU VMCB and the
-vCPU state is left as KVM_MP_STATE_UNINITIALIZED to prevent it from being
-run.
-
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
----
- arch/x86/include/asm/kvm_host.h |   3 +
- arch/x86/include/asm/svm.h      |   3 +
- arch/x86/kvm/svm/sev.c          | 133 ++++++++++++++++++++++++++++++++
- arch/x86/kvm/svm/svm.c          |   7 +-
- arch/x86/kvm/svm/svm.h          |  16 +++-
- arch/x86/kvm/x86.c              |  11 ++-
- 6 files changed, 170 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 117e2e08d7ed..881e05b3f74e 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -91,6 +91,7 @@
- #define KVM_REQ_MSR_FILTER_CHANGED	KVM_ARCH_REQ(29)
- #define KVM_REQ_UPDATE_CPU_DIRTY_LOGGING \
- 	KVM_ARCH_REQ_FLAGS(30, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
-+#define KVM_REQ_UPDATE_PROTECTED_GUEST_STATE	KVM_ARCH_REQ(31)
- 
- #define CR0_RESERVED_BITS                                               \
- 	(~(unsigned long)(X86_CR0_PE | X86_CR0_MP | X86_CR0_EM | X86_CR0_TS \
-@@ -1402,6 +1403,8 @@ struct kvm_x86_ops {
- 
- 	int (*handle_rmp_page_fault)(struct kvm_vcpu *vcpu, gpa_t gpa, kvm_pfn_t pfn,
- 			int level, u64 error_code);
-+
-+	void (*update_protected_guest_state)(struct kvm_vcpu *vcpu);
- };
- 
- struct kvm_x86_nested_ops {
-diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-index 5e72faa00cf2..6634a952563e 100644
---- a/arch/x86/include/asm/svm.h
-+++ b/arch/x86/include/asm/svm.h
-@@ -220,6 +220,9 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
- #define SVM_SEV_FEATURES_DEBUG_SWAP		BIT(5)
- #define SVM_SEV_FEATURES_PREVENT_HOST_IBS	BIT(6)
- #define SVM_SEV_FEATURES_BTB_ISOLATION		BIT(7)
-+#define SVM_SEV_FEATURES_INT_INJ_MODES			\
-+	(SVM_SEV_FEATURES_RESTRICTED_INJECTION |	\
-+	 SVM_SEV_FEATURES_ALTERNATE_INJECTION)
- 
- struct vmcb_seg {
- 	u16 selector;
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index d8ad6dd58c87..95f5d25b4f08 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -582,6 +582,7 @@ static int sev_launch_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 
- static int sev_es_sync_vmsa(struct vcpu_svm *svm)
- {
-+	struct kvm_sev_info *sev = &to_kvm_svm(svm->vcpu.kvm)->sev_info;
- 	struct sev_es_save_area *save = svm->vmsa;
- 
- 	/* Check some debug related fields before encrypting the VMSA */
-@@ -625,6 +626,12 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
- 	if (sev_snp_guest(svm->vcpu.kvm))
- 		save->sev_features |= SVM_SEV_FEATURES_SNP_ACTIVE;
- 
-+	/*
-+	 * Save the VMSA synced SEV features. For now, they are the same for
-+	 * all vCPUs, so just save each time.
-+	 */
-+	sev->sev_features = save->sev_features;
-+
- 	return 0;
- }
- 
-@@ -2682,6 +2689,10 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
- 		if (!ghcb_sw_scratch_is_valid(ghcb))
- 			goto vmgexit_err;
- 		break;
-+	case SVM_VMGEXIT_AP_CREATION:
-+		if (!ghcb_rax_is_valid(ghcb))
-+			goto vmgexit_err;
-+		break;
- 	case SVM_VMGEXIT_NMI_COMPLETE:
- 	case SVM_VMGEXIT_AP_HLT_LOOP:
- 	case SVM_VMGEXIT_AP_JUMP_TABLE:
-@@ -3395,6 +3406,121 @@ static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
- 	return ret;
- }
- 
-+void sev_snp_update_protected_guest_state(struct kvm_vcpu *vcpu)
-+{
-+	struct vcpu_svm *svm = to_svm(vcpu);
-+	kvm_pfn_t pfn;
-+
-+	mutex_lock(&svm->snp_vmsa_mutex);
-+
-+	vcpu->arch.mp_state = KVM_MP_STATE_UNINITIALIZED;
-+
-+	/* Clear use of the VMSA in the sev_es_init_vmcb() path */
-+	svm->vmsa_pa = 0;
-+
-+	/* Clear use of the VMSA from the VMCB */
-+	svm->vmcb->control.vmsa_pa = 0;
-+
-+	/* Un-pin previous VMSA */
-+	if (svm->snp_vmsa_pfn) {
-+		kvm_release_pfn_dirty(svm->snp_vmsa_pfn);
-+		svm->snp_vmsa_pfn = 0;
-+	}
-+
-+	if (svm->snp_vmsa_gpa) {
-+		/* Validate that the GPA is page aligned */
-+		if (!PAGE_ALIGNED(svm->snp_vmsa_gpa))
-+			goto e_unlock;
-+
-+		/*
-+		 * The VMSA is referenced by thy hypervisor physical address,
-+		 * so retrieve the PFN and pin it.
-+		 */
-+		pfn = gfn_to_pfn(vcpu->kvm, gpa_to_gfn(svm->snp_vmsa_gpa));
-+		if (is_error_pfn(pfn))
-+			goto e_unlock;
-+
-+		svm->snp_vmsa_pfn = pfn;
-+
-+		/* Use the new VMSA in the sev_es_init_vmcb() path */
-+		svm->vmsa_pa = pfn_to_hpa(pfn);
-+		svm->vmcb->control.vmsa_pa = svm->vmsa_pa;
-+
-+		vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
-+	} else {
-+		vcpu->arch.pv.pv_unhalted = false;
-+		vcpu->arch.mp_state = KVM_MP_STATE_UNINITIALIZED;
-+	}
-+
-+e_unlock:
-+	mutex_unlock(&svm->snp_vmsa_mutex);
-+}
-+
-+static void sev_snp_ap_creation(struct vcpu_svm *svm)
-+{
-+	struct kvm_sev_info *sev = &to_kvm_svm(svm->vcpu.kvm)->sev_info;
-+	struct kvm_vcpu *vcpu = &svm->vcpu;
-+	struct kvm_vcpu *target_vcpu;
-+	struct vcpu_svm *target_svm;
-+	unsigned int request;
-+	unsigned int apic_id;
-+	bool kick;
-+
-+	request = lower_32_bits(svm->vmcb->control.exit_info_1);
-+	apic_id = upper_32_bits(svm->vmcb->control.exit_info_1);
-+
-+	/* Validate the APIC ID */
-+	target_vcpu = kvm_get_vcpu_by_id(vcpu->kvm, apic_id);
-+	if (!target_vcpu)
-+		return;
-+
-+	target_svm = to_svm(target_vcpu);
-+
-+	kick = true;
-+
-+	mutex_lock(&target_svm->snp_vmsa_mutex);
-+
-+	target_svm->snp_vmsa_gpa = 0;
-+	target_svm->snp_vmsa_update_on_init = false;
-+
-+	/* Interrupt injection mode shouldn't change for AP creation */
-+	if (request < SVM_VMGEXIT_AP_DESTROY) {
-+		u64 sev_features;
-+
-+		sev_features = vcpu->arch.regs[VCPU_REGS_RAX];
-+		sev_features ^= sev->sev_features;
-+		if (sev_features & SVM_SEV_FEATURES_INT_INJ_MODES) {
-+			vcpu_unimpl(vcpu, "vmgexit: invalid AP injection mode [%#lx] from guest\n",
-+				    vcpu->arch.regs[VCPU_REGS_RAX]);
-+			goto out;
-+		}
-+	}
-+
-+	switch (request) {
-+	case SVM_VMGEXIT_AP_CREATE_ON_INIT:
-+		kick = false;
-+		target_svm->snp_vmsa_update_on_init = true;
-+		fallthrough;
-+	case SVM_VMGEXIT_AP_CREATE:
-+		target_svm->snp_vmsa_gpa = svm->vmcb->control.exit_info_2;
-+		break;
-+	case SVM_VMGEXIT_AP_DESTROY:
-+		break;
-+	default:
-+		vcpu_unimpl(vcpu, "vmgexit: invalid AP creation request [%#x] from guest\n",
-+			    request);
-+		break;
-+	}
-+
-+out:
-+	mutex_unlock(&target_svm->snp_vmsa_mutex);
-+
-+	if (kick) {
-+		kvm_make_request(KVM_REQ_UPDATE_PROTECTED_GUEST_STATE, target_vcpu);
-+		kvm_vcpu_kick(target_vcpu);
-+	}
-+}
-+
- int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
-@@ -3523,6 +3649,11 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
- 		ret = 1;
- 		break;
- 	}
-+	case SVM_VMGEXIT_AP_CREATION:
-+		sev_snp_ap_creation(svm);
-+
-+		ret = 1;
-+		break;
- 	case SVM_VMGEXIT_UNSUPPORTED_EVENT:
- 		vcpu_unimpl(vcpu,
- 			    "vmgexit: unsupported event - exit_info_1=%#llx, exit_info_2=%#llx\n",
-@@ -3597,6 +3728,8 @@ void sev_es_create_vcpu(struct vcpu_svm *svm)
- 	set_ghcb_msr(svm, GHCB_MSR_SEV_INFO(GHCB_VERSION_MAX,
- 					    GHCB_VERSION_MIN,
- 					    sev_enc_bit));
-+
-+	mutex_init(&svm->snp_vmsa_mutex);
- }
- 
- void sev_es_prepare_guest_switch(struct vcpu_svm *svm, unsigned int cpu)
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 74bc635c9608..078a569c85a8 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1304,7 +1304,10 @@ static void svm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
- 	svm->spec_ctrl = 0;
- 	svm->virt_spec_ctrl = 0;
- 
--	if (!init_event) {
-+	if (init_event && svm->snp_vmsa_update_on_init) {
-+		svm->snp_vmsa_update_on_init = false;
-+		sev_snp_update_protected_guest_state(vcpu);
-+	} else {
- 		vcpu->arch.apic_base = APIC_DEFAULT_PHYS_BASE |
- 				       MSR_IA32_APICBASE_ENABLE;
- 		if (kvm_vcpu_is_reset_bsp(vcpu))
-@@ -4588,6 +4591,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
- 	.write_page_begin = sev_snp_write_page_begin,
- 
- 	.handle_rmp_page_fault = snp_handle_rmp_page_fault,
-+
-+	.update_protected_guest_state = sev_snp_update_protected_guest_state,
- };
- 
- static struct kvm_x86_init_ops svm_init_ops __initdata = {
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 285d9b97b4d2..f9d25d944f26 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -60,18 +60,26 @@ struct kvm_sev_info {
- 	bool active;		/* SEV enabled guest */
- 	bool es_active;		/* SEV-ES enabled guest */
- 	bool snp_active;	/* SEV-SNP enabled guest */
-+
- 	unsigned int asid;	/* ASID used for this guest */
- 	unsigned int handle;	/* SEV firmware handle */
- 	int fd;			/* SEV device fd */
-+
- 	unsigned long pages_locked; /* Number of pages locked */
- 	struct list_head regions_list;  /* List of registered regions */
-+
- 	u64 ap_jump_table;	/* SEV-ES AP Jump Table address */
-+
- 	struct kvm *enc_context_owner; /* Owner of copied encryption context */
-+
- 	struct misc_cg *misc_cg; /* For misc cgroup accounting */
-+
- 	void *snp_context;      /* SNP guest context page */
- 	void *snp_resp_page;	/* SNP guest response page */
- 	struct ratelimit_state snp_guest_msg_rs; /* Rate limit the SNP guest message */
- 	void *snp_certs_data;
-+
-+	u64 sev_features;	/* Features set at VMSA creation */
- };
- 
- struct kvm_svm {
-@@ -192,6 +200,11 @@ struct vcpu_svm {
- 	bool guest_state_loaded;
- 
- 	u64 ghcb_registered_gpa;
-+
-+	struct mutex snp_vmsa_mutex;
-+	gpa_t snp_vmsa_gpa;
-+	kvm_pfn_t snp_vmsa_pfn;
-+	bool snp_vmsa_update_on_init;	/* SEV-SNP AP Creation on INIT-SIPI */
- };
- 
- struct svm_cpu_data {
-@@ -555,7 +568,7 @@ void svm_vcpu_unblocking(struct kvm_vcpu *vcpu);
- #define GHCB_VERSION_MAX	2ULL
- #define GHCB_VERSION_MIN	1ULL
- 
--#define GHCB_HV_FT_SUPPORTED	GHCB_HV_FT_SNP
-+#define GHCB_HV_FT_SUPPORTED	(GHCB_HV_FT_SNP | GHCB_HV_FT_SNP_AP_CREATION)
- 
- extern unsigned int max_sev_asid;
- 
-@@ -584,6 +597,7 @@ int sev_get_tdp_max_page_level(struct kvm_vcpu *vcpu, gpa_t gpa, int max_level);
- void sev_snp_write_page_begin(struct kvm *kvm, struct kvm_memory_slot *slot, gfn_t gfn);
- int snp_handle_rmp_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, kvm_pfn_t pfn,
- 			      int level, u64 error_code);
-+void sev_snp_update_protected_guest_state(struct kvm_vcpu *vcpu);
- 
- /* vmenter.S */
- 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 1398b8021982..e9fd59913bc2 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9279,6 +9279,14 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 
- 		if (kvm_check_request(KVM_REQ_UPDATE_CPU_DIRTY_LOGGING, vcpu))
- 			static_call(kvm_x86_update_cpu_dirty_logging)(vcpu);
-+
-+		if (kvm_check_request(KVM_REQ_UPDATE_PROTECTED_GUEST_STATE, vcpu)) {
-+			kvm_x86_ops.update_protected_guest_state(vcpu);
-+			if (vcpu->arch.mp_state != KVM_MP_STATE_RUNNABLE) {
-+				r = 1;
-+				goto out;
-+			}
-+		}
- 	}
- 
- 	if (kvm_check_request(KVM_REQ_EVENT, vcpu) || req_int_win ||
-@@ -11236,7 +11244,8 @@ static inline bool kvm_vcpu_has_events(struct kvm_vcpu *vcpu)
- 	if (!list_empty_careful(&vcpu->async_pf.done))
- 		return true;
- 
--	if (kvm_apic_has_events(vcpu))
-+	if (kvm_apic_has_events(vcpu) ||
-+	    kvm_test_request(KVM_REQ_UPDATE_PROTECTED_GUEST_STATE, vcpu))
- 		return true;
- 
- 	if (vcpu->arch.pv.pv_unhalted)
 -- 
-2.17.1
 
+- Arnaldo
