@@ -2,83 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF99F3BED81
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0043BED83
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhGGRz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 13:55:59 -0400
-Received: from relay.sw.ru ([185.231.240.75]:54002 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231266AbhGGRzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:55:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=tEfE2VqgpC/vOu1Jn+j+qL1K3BXCnedDnYWrh/++J28=; b=sp3HgHSRcUfD2vxCg
-        UJ5/t+ohIGa2sOMALHumKn8NfRb/h+A5LRjO77nQmXR7tHH9iHb9y/F1W0tiACw75ZE2rfQ1G/J3Z
-        v9zgGeL2AgYYAUlOnk1h58VB68c4SVa5kmwLI0+PDR0HMY6tgWnESYSakWqBc2iRXYCpCUp3X6jjw
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m1BjQ-003ERE-RJ; Wed, 07 Jul 2021 20:53:08 +0300
-Subject: Re: [PATCH IPV6 1/1] ipv6: allocate enough headroom in
- ip6_finish_output2()
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Ahern <dsahern@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1625665132.git.vvs@virtuozzo.com>
- <3cb5a2e5-4e4c-728a-252d-4757b6c9612d@virtuozzo.com>
- <8996db63-5554-d3dc-cd36-94570ade6d18@gmail.com>
- <20210707094218.0e9b6ffc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <1cbf3c7b-455e-f3a5-cc2c-c18ce8be4ce1@gmail.com>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <85c06696-eb66-3beb-e576-9f6ba0611d11@virtuozzo.com>
-Date:   Wed, 7 Jul 2021 20:53:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231162AbhGGR4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 13:56:33 -0400
+Received: from smtprelay0098.hostedemail.com ([216.40.44.98]:49510 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230089AbhGGR4c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 13:56:32 -0400
+Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 7F992182251CC;
+        Wed,  7 Jul 2021 17:53:51 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id 826DFD1517;
+        Wed,  7 Jul 2021 17:53:50 +0000 (UTC)
+Message-ID: <5e5eaf6773a0dad42cd59e89f8e710666373f8f1.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: Add check for common mailing list helper
+ checks
+From:   Joe Perches <joe@perches.com>
+To:     John 'Warthog9' Hawley <warthog9@eaglescrag.net>,
+        linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Wed, 07 Jul 2021 10:53:49 -0700
+In-Reply-To: <506ec749-63dc-3a08-48e7-5179c3df9a42@eaglescrag.net>
+References: <20210702223743.1240694-1-warthog9@eaglescrag.net>
+         <b1592f359a7e68704c0faac77015b9b2aa8e4073.camel@perches.com>
+         <506ec749-63dc-3a08-48e7-5179c3df9a42@eaglescrag.net>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-In-Reply-To: <1cbf3c7b-455e-f3a5-cc2c-c18ce8be4ce1@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.40
+X-Stat-Signature: 8c7465bx8k57gsohsk7q1mb97qse3ays
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 826DFD1517
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/DliC2RVn4bA5ocEuPRNRxF9Zk1c7Gy2g=
+X-HE-Tag: 1625680430-61890
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/21 8:41 PM, Eric Dumazet wrote:
-> On 7/7/21 6:42 PM, Jakub Kicinski wrote:
->> On Wed, 7 Jul 2021 08:45:13 -0600 David Ahern wrote:
->>> On 7/7/21 8:04 AM, Vasily Averin wrote:
->>>> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
->>>> index ff4f9eb..e5af740 100644
->>>> --- a/net/ipv6/ip6_output.c
->>>> +++ b/net/ipv6/ip6_output.c
->>>> @@ -61,9 +61,24 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
->>>>  	struct dst_entry *dst = skb_dst(skb);
->>>>  	struct net_device *dev = dst->dev;
->>>>  	const struct in6_addr *nexthop;
->>>> +	unsigned int hh_len = LL_RESERVED_SPACE(dev);
->>>>  	struct neighbour *neigh;
->>>>  	int ret;
->>>>  
->>>> +	/* Be paranoid, rather than too clever. */
->>>> +	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
->>>> +		struct sk_buff *skb2;
->>>> +
->>>> +		skb2 = skb_realloc_headroom(skb, LL_RESERVED_SPACE(dev));  
->>>
->>> why not use hh_len here?
->>
->> Is there a reason for the new skb? Why not pskb_expand_head()?
+On Tue, 2021-07-06 at 12:31 -0700, John 'Warthog9' Hawley wrote:
+> On 7/3/21 11:39 AM, Joe Perches wrote:
+> > On Fri, 2021-07-02 at 15:37 -0700, John 'Warthog9' Hawley (VMware)
+> > wrote:
+> > > From: John 'Warthog9' Hawley <warthog9@eaglescrag.net>
+> > > 
+> > > Mailing lists in an attempt to try and avoid sending certain
+> > > administrative e-mails to the list, will check the first few lines
+> > > (usually ~10) looking for keywords.  If those key words are found it
+> > > shunts the e-mail to the list admin contact instead of potentially
+> > > passing it through to the list.
+> > 
+> > Perhaps the below is a bit better, but I believe a few of the tests
+> > are going to be tripped a bit too often.
+> > 
+> > Especially "cancel", "config" and maybe "subscribe" too.
+> > 
+> > For instance:
+> > 
+> > $ git log --grep='\bcancel\b' -P -i --pretty=oneline -10000 | wc -l
+> > 1693
+> > 
+> > $ git log --grep='^config\b' -P -i --pretty=oneline -10000 | wc -l
+> > 890
+> > 
+> > $ git log --grep='\bsubscribe\b' -P -i --pretty=oneline -10000 | wc -l
+> > 123
 > 
-> pskb_expand_head() might crash, if skb is shared.
-> 
-> We possibly can add a helper, factorizing all this,
-> and eventually use pskb_expand_head() if safe.
+> A part of getting this into checkpatch.pl is getting some better
+> feedback mechanisms for why patches may not be passing through the list
+> correctly with regexes that have been in place for at least 14 years.
+> These, aren't tripped over often,
 
-Thank you for feedback, I'll do it in 2nd version.
-	Vasily Averin
+3000+ commits with regex matches seem rather a lot to me.
+
+> but have run into a instance at least
+> recently that triggered me trying to get at least some self check, and
+> notification, pieces in place.
+
+No worries, but perhaps the message might be reworded to
+say something about possible mailing list moderation rather
+than imply rejection.
+
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> > @@ -865,6 +865,37 @@ our $allowed_asm_includes = qr{(?x:
+> >  )};
+> >  # memory.h: ARM has a custom one
+> > 
+> > +our $mailing_list_phrases = qr{(?xi:
+> > +	\bcancel\b |
+
+Mere use of the word "cancel" in the commit description seems undesirable to me.
+
+> > +# check if words in the commit message may trip up common mailing list helpers
+> > +# to redirect email to the admin contact
+> > +		if ($in_commit_log && $commit_log_lines < 10 &&
+> > +		    $line =~ /($mailing_list_phrases)/) {
+> > +			WARN("MAILING_LIST_HELPER",
+> > +			     "Line matches common mailing list helpers and may not be delivered correctly - consider rewording '$1'\n" . $herecurr);
+
+Maybe FILTERS for phrases and helpers
+
+Maybe something like:
+
+"Use of '$1' in this patch's commit description might cause mailing list moderation or rejection\n"
+
+
