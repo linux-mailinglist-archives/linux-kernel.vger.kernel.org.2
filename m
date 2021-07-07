@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7296D3BF005
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F473BF006
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhGGTHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 15:07:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40238 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230500AbhGGTHv (ORCPT
+        id S231178AbhGGTIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 15:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230326AbhGGTIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 15:07:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625684709;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Q4SO5ZfrTWxlwKe3MYbD+wDiZHgLaanRMH/JOhXsvA8=;
-        b=Jb6d5xUy1W2QFFBwdyWAmk7h6by845oWA3YuGvrofLawyafhgUl0EiOZR92PtMcyAbXBgi
-        vB0FsdB85qxuy7HdB7ms/56iUslU7NZ1i9EZ6SubRKq9F68HR6xfVXt9n0rSX1g42DcVW+
-        lKejUYT3Du2ziulhYv/DAM7TofbwC1I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-wOkl9LZTOaaT6-PggZHJgA-1; Wed, 07 Jul 2021 15:05:08 -0400
-X-MC-Unique: wOkl9LZTOaaT6-PggZHJgA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0925556B43;
-        Wed,  7 Jul 2021 19:05:07 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (ovpn-116-12.rdu2.redhat.com [10.10.116.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 472A760843;
-        Wed,  7 Jul 2021 19:04:58 +0000 (UTC)
-From:   Phil Auld <pauld@redhat.com>
-To:     linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        stable@vger.kernel.org, Phil Auld <pauld@redhat.com>
-Subject: [PATCH] sched: Fix nr_uninterruptible race causing increasing load average
-Date:   Wed,  7 Jul 2021 15:04:57 -0400
-Message-Id: <20210707190457.60521-1-pauld@redhat.com>
+        Wed, 7 Jul 2021 15:08:34 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02511C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 12:05:53 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id u18so6748939lff.9
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 12:05:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EXPbH/M4GYoZ6FhrrR5MYlyYSD6/NgfgonH38mq87Gc=;
+        b=KU426vk0FJciJbxXpjIi+w7PbOZYM3CgwOJXR+Ek7FnEKtgID/4F2U161uPJT3xVVT
+         lZ1ZxdgXTYAQYkqWO1y6TlgNYgmsQnvcVY+UCj3RJhKHOyU1CKfl1VYJslwJjECWB1xW
+         BLYFXnOx82VFpwgKnloCd733FB6T6jcMY3lJc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EXPbH/M4GYoZ6FhrrR5MYlyYSD6/NgfgonH38mq87Gc=;
+        b=NpijqXN/4eyMU3MSjDaEAvHtYpSGt/1x0wA1mIBZasd9uk0z9CskCcY/wlO9U77K5d
+         Tbjm+sa1Z2GOP2V8w2fa9rPoVC7s2bLCKTNJ8wLQMEqj7l55hPKyKCnskWalFGUbIKkQ
+         dEBBkqUNW3ZGm5+DhYyuwhFsB8dYM8VJbHEF5q4WySeu9WljSG4selYKLS4AavFlORQL
+         7URoDvkJdaFtS4F+2hTOJM3icx10OEVnoNZEhbopjEfrftQ2FQmjeqp7dQbAdlWuQH+P
+         uv3q9hOpVSWDBodQeqwo+P1zn2Y1BOsDaTxlh1AMvFmcEIEglBFRYH/hCJarRsSsceut
+         E2HA==
+X-Gm-Message-State: AOAM530ZZNfCPCwSYYl8dwlUbYjvsIwT5kG6WhEwZ61OAZKZT0DQr1ux
+        eIlORrhHd5U5WyEqdkRheqR/1aDkYGJFRXVdNVk=
+X-Google-Smtp-Source: ABdhPJwMXMF2wptiqlMsi3ILL0s27VQKPGVaxj1nP+bAoKJbJjGbULMKbqn4MiLk8lo3VTti32xu2w==
+X-Received: by 2002:a05:6512:c13:: with SMTP id z19mr18686090lfu.616.1625684751173;
+        Wed, 07 Jul 2021 12:05:51 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id o7sm1786111lfo.196.2021.07.07.12.05.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Jul 2021 12:05:50 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id a18so6706601lfs.10
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 12:05:50 -0700 (PDT)
+X-Received: by 2002:a2e:9f11:: with SMTP id u17mr19734994ljk.48.1625684750030;
+ Wed, 07 Jul 2021 12:05:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210704150025.GC21572@xsang-OptiPlex-9020> <20210705125756.GA25141@lst.de>
+ <CAHk-=wj_Gfqkdp+K3iCiqMjAZQK_BrRWDs2eOS_BAw=bB=CdRw@mail.gmail.com>
+ <20210706143647.GA28289@lst.de> <CAHk-=wgPyx7tHFNaO2N6bsaB_E6gL+t1uDAmrD91jJw+hiTvrQ@mail.gmail.com>
+ <20210707081220.GA31179@lst.de> <20210707083528.GA353@lst.de>
+In-Reply-To: <20210707083528.GA353@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 7 Jul 2021 12:05:34 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgEM5VcCEtOyCqLnWAXdAumqnAR077Nv5Q_eG+ZDd+owA@mail.gmail.com>
+Message-ID: <CAHk-=wgEM5VcCEtOyCqLnWAXdAumqnAR077Nv5Q_eG+ZDd+owA@mail.gmail.com>
+Subject: Re: [ide] b7fb14d3ac: EIP:ioread32_rep
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On systems with weaker memory ordering (e.g. power) commit dbfb089d360b
-("sched: Fix loadavg accounting race") causes increasing values of load
-average (via rq->calc_load_active and calc_load_tasks) due to the wakeup
-CPU not always seeing the write to task->sched_contributes_to_load in
-__schedule(). Missing that we fail to decrement nr_uninterruptible when
-waking up a task which incremented nr_uninterruptible when it slept.
+On Wed, Jul 7, 2021 at 1:35 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Actually, not it doesn't. Sorry.  So for a non-aligned large request
+> this won't work.  So we'll need to actually loop here.
+>
+> This is probably better and fixes the issue as well (and ATAPI
+> probably needs the same treatment):
 
-The rq->lock serialization is insufficient across different rq->locks.
+Thanks, this looks sane and correct to me.
 
-Add smp_wmb() to schedule and smp_rmb() before the read in
-ttwu_do_activate().
+But please do add a comment (or perhaps even better - an actual check)
+that the offset is at least 4-byte aligned. Because this splitting of
+the buffer at page boundaries can only work if you still have at least
+that 32-bit alignment.
 
-Fixes: dbfb089d360b ("sched: Fix loadavg accounting race")
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Phil Auld <pauld@redhat.com>
----
- kernel/sched/core.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+At least that's the case for ata_sff_data_xfer32() (which was what
+triggered that original oops). I did not really check the other
+data_xfer functions, although I did look at a couple of them. At least
+vlb32_data_xfer() has the exact same issue.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 4ca80df205ce..ced7074716eb 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2992,6 +2992,8 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
- 
- 	lockdep_assert_held(&rq->lock);
- 
-+	/* Pairs with smp_wmb in __schedule() */
-+	smp_rmb();
- 	if (p->sched_contributes_to_load)
- 		rq->nr_uninterruptible--;
- 
-@@ -5084,6 +5086,11 @@ static void __sched notrace __schedule(bool preempt)
- 				!(prev_state & TASK_NOLOAD) &&
- 				!(prev->flags & PF_FROZEN);
- 
-+			/*
-+			 * Make sure the previous write is ordered before p->on_rq etc so
-+			 * that it is visible to other cpus in the wakeup path (ttwu_do_activate()).
-+			 */
-+			smp_wmb();
- 			if (prev->sched_contributes_to_load)
- 				rq->nr_uninterruptible++;
- 
--- 
-2.18.0
+A couple of others would be ok with just 16-byte aligned splits. But I
+*hope* nobody needs more than 32-bit alignment (and considering the
+legacy status of this model, I'd be surprised if they need more, but
+who knows..).
 
+              Linus
