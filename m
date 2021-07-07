@@ -2,171 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0053BEC74
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 595043BEC7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhGGQp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 12:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
+        id S230389AbhGGQqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 12:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbhGGQp0 (ORCPT
+        with ESMTP id S230327AbhGGQp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 12:45:26 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7D3C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 09:42:44 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso2809273otu.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 09:42:44 -0700 (PDT)
+        Wed, 7 Jul 2021 12:45:58 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A8FC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 09:43:16 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id h18-20020a05600c3512b029020e4ceb9588so4763665wmq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 09:43:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GGs8qC7yLeuU76aGHT+b9/9uNPRLJI8gTxSyotZUZjQ=;
-        b=ulqDE9XePT0F3X1rxoUkPWYmj/cjMwrSpkBWRNe6WgiTfaJW/vXMef8qiVm4PydT4M
-         jbH39id9qamVcenVkkU3LeJWCriDFwFdPEDgjjS/jH8FbNRapZZOavwTz+8vjvPMKYai
-         ee5TcQDOeoV2RAyE0sTUpqCNMFI7LpO7vyQ5DPYWTmFw6BehRCEknNp3jMKpUG3He1wY
-         z0yGFQC4J0szM/5KLyN1KSfwvCe7YC6gYJBOLqpqf64LE3MwloxNKpcNkr+oVpFYFmMA
-         mtFZxq6hgdQaQaKQKoy+QB5/J2IKaJvcDNPOESZeLDQXVmPo39QEhvj5Vlm3UZG80JcE
-         Ejow==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=N1jcO0yI6pPJfzDKfj/96aZNPkzpA0/0vrFttiKfOXA=;
+        b=HDl8nggq4jDLWfJVaXoLXI/XGpjg42wmsm+lscbHy6pywD9OsuSlUU2o4MTcvDEcpx
+         cbErC3do9h7aOzQGK34uVcpgujTryhxd2V7ir+rKQOIMJO0b3+QhwRtK48bXTSQauWYy
+         Dx+TwiTMO1mP8nLA+VAWcnBW+5NqGxa7pyMduyqIObWXu+3a4+E9chHaIUZ62Bm7Xk43
+         HlxKyjExZmvO/D6kSbAP0Mm/ueEBmxBh1U5UpJ3ozdnH04G6hXBtCAvnrLlDOZNZQXeP
+         DEgg/9ZkBMuvVESagNWQWbBzaTYvz0W28MntvUDeAertPvsyeTjRJxnNM4W12tG4IhVm
+         KuLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GGs8qC7yLeuU76aGHT+b9/9uNPRLJI8gTxSyotZUZjQ=;
-        b=FAKe5TuMvi9BlFr3pW55gCuJc63qdry++hu/7eB/5xpqadnhQkcrdqU5iGBX42fFYH
-         JOCNkrgcfYXyFRDve7Jzg2t1zNmOfL+6xHdv6CmQXXKQDQyn0nrlZApmzd+fr6C+zxht
-         GKIjfurAcvwJl/vFAifkcex7EvtH2G60VVH/mYqMt7VoiPNQEUdHpykUCrgI+My8YxP1
-         q7j/3Fu0UfQNcT7vM29RC8kUEa0GRTJqhvFpwRIW3ZX7IxNfg6uHWOVadQQTlutpB9sh
-         YJVE2x873h2DlKIP8dn86O7B7YLtN6/alP8PVlRhDg94sfNZF/p92oB0GP73BkY7weL2
-         ob+g==
-X-Gm-Message-State: AOAM532VyjNcB0HR+8yBJnKlO75P4MPt2/Qo/zKt+pJVaP0fufiKedwm
-        oe0o+SNUSklerxS88jwCMAzZeV1a5K8ZMj3BLgvFVQ==
-X-Google-Smtp-Source: ABdhPJxV/BWpTieutmD1GHOrCDI3SB0Memv132JxXJ8jgEqQapcXhpkMcicwRomyQ3PoTY61I19Y36tPpb8y777naR4=
-X-Received: by 2002:a9d:550e:: with SMTP id l14mr20870914oth.241.1625676163750;
- Wed, 07 Jul 2021 09:42:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N1jcO0yI6pPJfzDKfj/96aZNPkzpA0/0vrFttiKfOXA=;
+        b=GOTWh4E0DtF7I5VdcDpVz7N/yk6ygwsg617Mgnp05AKBjxzAbETMyTAiA1jfq3bWV9
+         8AVvTyhUW/EPeDgXhaE4gpIUPRnX4ii2uyma8lflcfcK8+loA0uSpikJlGj/0Nwj1npn
+         w+IU22kZ6TjXtx18hKlBsaEn14/bPe+KH+ZwJufgZjqaeOZ1o74hokF2AbVHAI6DEAYW
+         PIyTDc+nnEU+rFMjStrRCNIjx0MYkAbUqm9XmzsCNsJZiXdKPDYHXNBSHyfVRlozpbF0
+         QoNE84PSvAk4GqUovnnvbvCEcvRPn0l2HzoznAAYmQ9vCAigfNkRQTZ9X6LKtuci82xu
+         SAPA==
+X-Gm-Message-State: AOAM531SNSE5rTCt005kZK1AfB1N6J+eQA9Rm+FH4w+s22prFZXXC1BE
+        sHu5rx9NJXCCClKK+xSm/X8=
+X-Google-Smtp-Source: ABdhPJzFJteyECZADdOlPal4VNNMEErlmEmuOKU6GXF0Wkq5u+/+j2Nfx+9GJyf1xeL60s+aZhTUVg==
+X-Received: by 2002:a1c:7314:: with SMTP id d20mr556224wmb.156.1625676195123;
+        Wed, 07 Jul 2021 09:43:15 -0700 (PDT)
+Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
+        by smtp.gmail.com with ESMTPSA id d8sm652693wra.41.2021.07.07.09.43.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 09:43:14 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 17:43:05 +0100
+From:   Melissa Wen <melissa.srw@gmail.com>
+To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+Cc:     daniel@ffwll.ch, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/vkms: Create vkms_config_debufs in vkms_drv.c
+Message-ID: <20210707164244.ktmizbd6gbuifu73@smtp.gmail.com>
+References: <20210707092927.336244-1-martinsdecarvalhobeatriz@gmail.com>
 MIME-Version: 1.0
-References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
- <de6b97a567e273adff1f5268998692bad548aa10.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
- <20210706195233.h6w4cm73oktfqpgz@habkost.net> <4cc2c5fe-2153-05c5-dedd-8cb650753740@redhat.com>
- <CAOpTY_qdbbnauTkbjkz+cZmo8=Hz6qqLNY6i6uamqhcty=Q1sw@mail.gmail.com>
- <671be35f-220a-f583-aa31-3a2da7dae93a@redhat.com> <CAOpTY_paTO=xqfGXPCC2Paty5ptJ6Dqpo4Tzb4C2hrO_t=vS8w@mail.gmail.com>
-In-Reply-To: <CAOpTY_paTO=xqfGXPCC2Paty5ptJ6Dqpo4Tzb4C2hrO_t=vS8w@mail.gmail.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 7 Jul 2021 09:42:26 -0700
-Message-ID: <CALMp9eSJyvU1=FndZyR+hZMtKPWwgibKisBqp0Xcx4jxjrWn2w@mail.gmail.com>
-Subject: Re: [PATCH 4/4] x86/tsx: Add cmdline tsx=fake to not clear CPUID bits
- RTM and HLE
-To:     Eduardo Habkost <ehabkost@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tony Luck <tony.luck@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Victor Ding <victording@google.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Anand K Mistry <amistry@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org, Jiri Denemark <jdenemar@redhat.com>,
-        "libvir-list@redhat.com" <libvir-list@redhat.com>,
-        Michal Privoznik <mprivozn@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707092927.336244-1-martinsdecarvalhobeatriz@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 8:09 AM Eduardo Habkost <ehabkost@redhat.com> wrote:
->
-> CCing libvir-list, Jiri Denemark, Michal Privoznik, so they are aware
-> that the definition of "supported CPU features" will probably become a
-> bit more complex in the future.
+On 07/07, Beatriz Martins de Carvalho wrote:
+> Development vkms_config_debufs in vkms_drv.c for the long term plan of
+> making vkms configurable and have multiple different instances it's
+> useful to be able to get at the config of each instance in debugfs
+Hi Beatriz,
 
-Has there ever been a clear definition? Family, model, and stepping,
-for instance: are these the only values supported? That would make
-cross-platform migration impossible. What about the vendor string? Is
-that the only value supported? That would make cross-vendor migration
-impossible. For the maximum input value for basic CPUID information
-(CPUID.0H:EAX), is that the only value supported, or is it the maximum
-value supported? On the various individual feature bits, does a '1'
-imply that '0' is also supported, or is '1' the only value supported?
-What about the feature bits with reversed polarity (e.g.
-CPUID.(EAX=07H,ECX=0):EBX.FDP_EXCPTN_ONLY[bit 6])?
+Thanks for your patch.
 
-This API has never made sense to me. I have no idea how to interpret
-what it is telling me.
+Changes lgtm.
 
-> On Tue, Jul 6, 2021 at 5:58 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
-> >
-> > On 06/07/21 23:33, Eduardo Habkost wrote:
-> > > On Tue, Jul 6, 2021 at 5:05 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
-> > >> It's a bit tricky, because HLE and RTM won't really behave well.  An old
-> > >> guest that sees RTM=1 might end up retrying and aborting transactions
-> > >> too much.  So I'm not sure that a QEMU "-cpu host" guest should have HLE
-> > >> and RTM enabled.
-> > >
-> > > Is the purpose of GET_SUPPORTED_CPUID to return what is supported by
-> > > KVM, or to return what "-cpu host" should enable by default? They are
-> > > conflicting requirements in this case.
-> >
-> > In theory there is GET_EMULATED_CPUID for the former, so it should be
-> > the latter.  In practice neither QEMU nor Libvirt use it; maybe now we
-> > have a good reason to add it, but note that userspace could also check
-> > host RTM_ALWAYS_ABORT.
-> >
-> > > Returning HLE=1,RTM=1 in GET_SUPPORTED_CPUID makes existing userspace
-> > > take bad decisions until it's updated.
-> > >
-> > > Returning HLE=0,RTM=0 in GET_SUPPORTED_CPUID prevents existing
-> > > userspace from resuming existing VMs (despite being technically
-> > > possible).
-> > >
-> > > The first option has an easy workaround that doesn't require a
-> > > software update (disabling HLE/RTM in the VM configuration). The
-> > > second option doesn't have a workaround. I'm inclined towards the
-> > > first option.
-> >
-> > The default has already been tsx=off for a while though, so checking
-> > either GET_EMULATED_CPUID or host RTM_ALWAYS_ABORT in userspace might
-> > also be feasible for those that are still on tsx=on.
->
-> This sounds like a perfect use case for GET_EMULATED_CPUID. My only
-> concern is breaking existing userspace.
->
-> But if this was already broken for a few kernel releases due to
-> tsx=off being the default, maybe GET_EMULATED_CPUID will be a
-> reasonable approach.
->
-> --
-> Eduardo
->
+However commit message needs small improvements. Besides typo, it would
+be good to make the subject clearer in terms of its purpose (creating
+a debugfs file to get/track vkms config data).
+
+Please, address these minor things and add my r-b.
+Reviewed-by: Melissa Wen <melissa.srw@gmail.com>
+
+> 
+> Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+> ---
+>  drivers/gpu/drm/vkms/vkms_drv.c | 28 ++++++++++++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
+> index 027ffe759440..c81fba6c72f0 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.c
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
+> @@ -28,6 +28,9 @@
+>  
+>  #include "vkms_drv.h"
+>  
+> +#include <drm/drm_print.h>
+> +#include <drm/drm_debugfs.h>
+> +
+>  #define DRIVER_NAME	"vkms"
+>  #define DRIVER_DESC	"Virtual Kernel Mode Setting"
+>  #define DRIVER_DATE	"20180514"
+> @@ -86,12 +89,37 @@ static void vkms_atomic_commit_tail(struct drm_atomic_state *old_state)
+>  	drm_atomic_helper_cleanup_planes(dev, old_state);
+>  }
+>  
+> +static int vkms_config_show(struct seq_file *m, void *data)
+> +{
+> +	struct drm_info_node *node = (struct drm_info_node *)m->private;
+> +	struct drm_device *dev = node->minor->dev;
+> +	struct vkms_device *vkmsdev = drm_device_to_vkms_device(dev);
+> +
+> +	seq_printf(m, "writeback=%d\n", vkmsdev->config->writeback);
+> +	seq_printf(m, "cursor=%d\n", vkmsdev->config->cursor);
+> +	seq_printf(m, "overlay=%d\n", vkmsdev->config->overlay);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct drm_info_list vkms_config_debugfs_list[] = {
+> +	{ "vkms_config", vkms_config_show, 0 },
+> +};
+> +
+> +static void vkms_config_debugfs_init(struct drm_minor *minor)
+> +{
+> +	drm_debugfs_create_files(vkms_config_debugfs_list, ARRAY_SIZE(vkms_config_debugfs_list),
+> +				 minor->debugfs_root, minor);
+> +}
+> +
+>  static const struct drm_driver vkms_driver = {
+>  	.driver_features	= DRIVER_MODESET | DRIVER_ATOMIC | DRIVER_GEM,
+>  	.release		= vkms_release,
+>  	.fops			= &vkms_driver_fops,
+>  	DRM_GEM_SHMEM_DRIVER_OPS,
+>  
+> +	.debugfs_init           = vkms_config_debugfs_init,
+> +
+>  	.name			= DRIVER_NAME,
+>  	.desc			= DRIVER_DESC,
+>  	.date			= DRIVER_DATE,
+> -- 
+> 2.25.1
+> 
