@@ -2,108 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4433BE633
+	by mail.lfdr.de (Postfix) with ESMTP id 763433BE634
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhGGKPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39530 "EHLO
+        id S231274AbhGGKPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:15:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhGGKPe (ORCPT
+        with ESMTP id S231245AbhGGKPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:15:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19788C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 03:12:54 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625652767;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e3T0vy5Ozkp7gou1cPpGjvAJK9fzQXPbfdcBROxPKxA=;
-        b=xXYMVZfGgYYm7sqnyWibSfkPVgm1DANzxwcOLpugxB/GY+Q1GABWzyviykSFP672W2BYmU
-        s7xPaWJAmy9uSE3weKTJgEm0VVoxo7JdMOkvpFr3c56lTWiiA6PcjZYXJmiO8WGMhrk3+M
-        guaroZJKOLY/wsJ2m95h2wto2ngBDhL1upmaXpbZWkJ6LmuW+ECAzNwyLNvKNBgOMv0IK4
-        Ee6hcr0oe4OAvnMb6dhLK2/wjZoGqzMqwiHpVt0Ef0APOuqZ92vuV9RFSrJfNXmpJ1ZXWJ
-        AJTjfQEaOXSdvXQPC7nHFlKTNXLsoFOZfg+RCwSarBh/W/S3uZTTeThUkPCzMw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625652767;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e3T0vy5Ozkp7gou1cPpGjvAJK9fzQXPbfdcBROxPKxA=;
-        b=h8ucLeinHi6MttnAUyjFlvOqy7IfC6AM3/dvSrT6twTqmOiJHgwBx6VfKwuRlqAUyXK7cb
-        dWg3jY5nk8YCpyDg==
-To:     Ani Sinha <ani@anisinha.ca>, linux-kernel@vger.kernel.org
-Cc:     anirban.sinha@nokia.com, Ani Sinha <ani@anisinha.ca>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v1] Print a log when the sched clock is marked unstable
-In-Reply-To: <20210627064911.2179786-1-ani@anisinha.ca>
-References: <20210627064911.2179786-1-ani@anisinha.ca>
-Date:   Wed, 07 Jul 2021 12:12:46 +0200
-Message-ID: <8735sqqvoh.ffs@nanos.tec.linutronix.de>
+        Wed, 7 Jul 2021 06:15:35 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77675C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 03:12:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UgjsPSucTzTH0A+UmBwxWmqQFqZt+Rk91IrthgYtDSE=; b=m00D8DO4GNRBLgrjKK2YKQYfF0
+        O13wofFYkmdrOkLKIaA/w7Gg2nNfhEQQxqetMe0ZDWoOQozfSB/ZVM8kKd2Fgvriqou/vv2vbDF6K
+        ZwnHWxV6cJ+ZLg+ex0er7kPmscUwRivnYWQOtHokufAIiY9LzFkd9M1jBUyHCE2IJSghaw7V+Wtm6
+        0e9UiD0UF+AsxNIzOS01/5A7gZE33q/YJJ+32t0SA/tSLSjTEKsWz203PR32tnbQmHqkVzk9EXJQf
+        1638Zchwbqv6mXnGHrgOMeGj/zbWPp+O7j666VwUoDn70b6dZc2u3+FOhSkCKx1HqzOOK2eFBFH0a
+        WuPCrmfw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m14Xx-00FK5o-1e; Wed, 07 Jul 2021 10:12:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E5267300233;
+        Wed,  7 Jul 2021 12:12:47 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CF6C22018A6F5; Wed,  7 Jul 2021 12:12:47 +0200 (CEST)
+Date:   Wed, 7 Jul 2021 12:12:47 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     alexander.antonov@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        kan.liang@linux.intel.com, ak@linux.intel.com,
+        alexey.v.bayduraev@linux.intel.com
+Subject: Re: [RESEND PATCH] perf/x86/intel/uncore: Fix IIO cleanup mapping
+ procedure for SNR/ICX
+Message-ID: <YOV+H56LLiLQWmi5@hirez.programming.kicks-ass.net>
+References: <20210707065455.10271-1-alexander.antonov@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707065455.10271-1-alexander.antonov@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ani,
+On Wed, Jul 07, 2021 at 09:54:55AM +0300, alexander.antonov@linux.intel.com wrote:
+> From: Alexander Antonov <alexander.antonov@linux.intel.com>
+> 
+> Cleanup mapping procedure for IIO PMU is needed to free memory which was
+> allocated for topology data and for attributes in IIO mapping
+> attribute_group.
+> Current implementation of this procedure for Snowridge and Icelake Server
+> platforms doesn't free allocated memory that can be a reason for memory
+> leak issue.
+> Fix the issue with IIO cleanup mapping procedure for these platforms
+> to release allocated memory.
+> 
+> Fixes: 10337e95e04c ("perf/x86/intel/uncore: Enable I/O stacks to IIO PMON mapping on ICX")
+> 
 
-On Sun, Jun 27 2021 at 12:19, Ani Sinha wrote:
+This whitespace is wrong.
 
-I asked you to read Documentation/process carefully and I told you:
+> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+> Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
 
-        Also your subject line want's a proper prefix.
-
-Your patch is missing a prefix again. Hint:
-
-  git log kernel/sched/clock.c
-
-> In other parts of the kernel when the sched clock transitions from
-> stable to unstable and vice versa, a kernel info log is printed.  When
-> the sched clock is marked explicitly as unstable, we should print an
-> information log as well. This patch addresses this. It is useful in
-
-git grep 'This patch' Documentation/process/
-
-Also please avoid the 'we' wording. 'We should print' does not make
-sense if you really think about it.
-
-> cases where for example, we want to understand why a certain feature
-> like NOHZ, which depends on a stable sched clock, is not available.
->
-> Signed-off-by: Ani Sinha <ani@anisinha.ca>
-> ---
->  kernel/sched/clock.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> See also thread
-> https://lkml.org/lkml/2021/6/20/32
->
-> diff --git a/kernel/sched/clock.c b/kernel/sched/clock.c
-> index c2b2859ddd82..5a403b2c9b3f 100644
-> --- a/kernel/sched/clock.c
-> +++ b/kernel/sched/clock.c
-> @@ -192,8 +192,10 @@ void clear_sched_clock_stable(void)
->  
->  	smp_mb(); /* matches sched_clock_init_late() */
->  
-> -	if (static_key_count(&sched_clock_running.key) == 2)
-> +	if (static_key_count(&sched_clock_running.key) == 2) {
-> +		pr_info("sched_clock: Marking unstable.\n");
->  		__clear_sched_clock_stable();
-
-Why isn't that in __clear_sched_clock_stable() ?
-
-Thanks,
-
-        tglx
+Why am I getting a resend of this? Kan replied only yesterday.. folding
+tags isn't a reason to resend, we have scripts for that. At the very
+least you could've tried making the Changelog readable /
