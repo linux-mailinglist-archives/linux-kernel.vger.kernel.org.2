@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA773BED14
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B3E3BED1A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhGGRc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 13:32:28 -0400
-Received: from mga02.intel.com ([134.134.136.20]:29423 "EHLO mga02.intel.com"
+        id S230288AbhGGRen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 13:34:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:41552 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230518AbhGGRcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:32:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="196517867"
-X-IronPort-AV: E=Sophos;i="5.84,220,1620716400"; 
-   d="scan'208";a="196517867"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 10:29:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,220,1620716400"; 
-   d="scan'208";a="563990009"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.79])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Jul 2021 10:29:40 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RFC 2/2] scsi: ufshcd: Fix device links when BOOT WLUN fails to probe
-Date:   Wed,  7 Jul 2021 20:29:48 +0300
-Message-Id: <20210707172948.1025-3-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210707172948.1025-1-adrian.hunter@intel.com>
-References: <20210707172948.1025-1-adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S230111AbhGGRem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 13:34:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 352871042;
+        Wed,  7 Jul 2021 10:32:01 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 15E4D3F694;
+        Wed,  7 Jul 2021 10:31:59 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+Subject: Re: [tip: sched/core] sched/core: Initialize the idle task with preemption disabled
+In-Reply-To: <c9bd8db3-60ae-1dbe-aa2f-f2fe3d5fe2d9@roeck-us.net>
+References: <20210512094636.2958515-1-valentin.schneider@arm.com> <162081815405.29796.14574924529325899839.tip-bot2@tip-bot2> <20210706194456.GA1823793@roeck-us.net> <87fswr6lqv.mognet@arm.com> <20210707120305.GB115752@lothringen> <87czru727k.mognet@arm.com> <c30097f3-63b4-6fa0-a369-8f4e20ee1040@roeck-us.net> <de7b1d0f-8767-1b33-2950-576029c0d9f7@ozlabs.ru> <878s2i6uk2.mognet@arm.com> <c9bd8db3-60ae-1dbe-aa2f-f2fe3d5fe2d9@roeck-us.net>
+Date:   Wed, 07 Jul 2021 18:31:55 +0100
+Message-ID: <875yxm6nec.mognet@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a LUN fails to probe (e.g. absent BOOT WLUN), the device will not have
-been registered but can still have a device link holding a reference to the
-device. The unwanted device link will prevent runtime suspend indefinitely,
-and cause some warnings if the supplier is ever deleted (e.g. by unbinding
-the UFS host controller). Fix by explicitly deleting the device link when
-SCSI destroys the SCSI device.
+On 07/07/21 09:35, Guenter Roeck wrote:
+> I think I have it. pseries_defconfig, and pseries emulation,
+> started with "-smp 2" and qemu-system-ppc64:
+>
+> [    0.731644][    T1] smp: Bringing up secondary CPUs ...^M
+> [    0.750546][    T0] BUG: scheduling while atomic: swapper/1/0/0x00000000^M
+> [    0.752119][    T0] no locks held by swapper/1/0.^M
+> [    0.752309][    T0] Modules linked in:^M
+> [    0.752684][    T0] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.13.0-11855-g77d34a4683b0 #1^M
+> [    0.753197][    T0] Call Trace:^M
+> [    0.753334][    T0] [c000000008737b20] [c0000000009f9b18] .dump_stack_lvl+0xa4/0x100 (unreliable)^M
+> [    0.754224][    T0] [c000000008737bb0] [c000000000190ed0] .__schedule_bug+0xa0/0xe0^M
+> [    0.754459][    T0] [c000000008737c30] [c000000001182518] .__schedule+0xc08/0xd90^M
+> [    0.754738][    T0] [c000000008737d20] [c000000001182b8c] .schedule_idle+0x2c/0x60^M
+> [    0.754945][    T0] [c000000008737d90] [c0000000001a48ec] .do_idle+0x29c/0x3c0^M
+> [    0.755145][    T0] [c000000008737e60] [c0000000001a4df0] .cpu_startup_entry+0x30/0x40^M
+> [    0.755403][    T0] [c000000008737ee0] [c00000000005ef10] .start_secondary+0x2c0/0x300^M
+> [    0.755621][    T0] [c000000008737f90] [c00000000000d254] start_secondary_prolog+0x10/0x14^M
+> [    0.764164][    T1] smp: Brought up 1 node, 2 CPUs^M
+>
+> Guenter
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- drivers/scsi/ufs/ufshcd.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Hmph, I was about to say I couldn't get that, but after cycling between
+different PREEMPT options I finally triggered it, so thanks for that!
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 708b3b62fc4d..483aa74fe2c8 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -5029,6 +5029,13 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
- 		spin_lock_irqsave(hba->host->host_lock, flags);
- 		hba->sdev_ufs_device = NULL;
- 		spin_unlock_irqrestore(hba->host->host_lock, flags);
-+	} else {
-+		/*
-+		 * If a LUN fails to probe (e.g. absent BOOT WLUN), the device
-+		 * will not have been registered but can still have a device
-+		 * link holding a reference to the device.
-+		 */
-+		device_links_scrap(&sdev->sdev_gendev);
- 	}
- }
- 
--- 
-2.17.1
+Same sha1 as yours, invocation is:
 
+  qemu-system-ppc64 vmlinux -smp 2 -nographic -m 1024 -machine pseries,usb=off
+
+with pseries_defconfig + CONFIG_DEBUG_ATOMIC_SLEEP + CONFIG_PREEMPT_VOLUNTARY
+
+Now to dig!
