@@ -2,114 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0043BED83
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970003BED84
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhGGR4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 13:56:33 -0400
-Received: from smtprelay0098.hostedemail.com ([216.40.44.98]:49510 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230089AbhGGR4c (ORCPT
+        id S231266AbhGGR46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 13:56:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230089AbhGGR44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:56:32 -0400
-Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 7F992182251CC;
-        Wed,  7 Jul 2021 17:53:51 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id 826DFD1517;
-        Wed,  7 Jul 2021 17:53:50 +0000 (UTC)
-Message-ID: <5e5eaf6773a0dad42cd59e89f8e710666373f8f1.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Add check for common mailing list helper
- checks
-From:   Joe Perches <joe@perches.com>
-To:     John 'Warthog9' Hawley <warthog9@eaglescrag.net>,
-        linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Wed, 07 Jul 2021 10:53:49 -0700
-In-Reply-To: <506ec749-63dc-3a08-48e7-5179c3df9a42@eaglescrag.net>
-References: <20210702223743.1240694-1-warthog9@eaglescrag.net>
-         <b1592f359a7e68704c0faac77015b9b2aa8e4073.camel@perches.com>
-         <506ec749-63dc-3a08-48e7-5179c3df9a42@eaglescrag.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Wed, 7 Jul 2021 13:56:56 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C8CC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 10:54:16 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id g8so2646387qth.10
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 10:54:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:organization:mime-version
+         :content-transfer-encoding;
+        bh=bfM1wAOaWaUzrRzrQoIIgI8cYWuLRVyNlVdaNaynf5c=;
+        b=AUdBuVukHCW5c2WRatnWjnKha7SPBvFp7Y6XtSyAguOZskLwXmIVfvutKR+wg7PiaM
+         xnLbzFh1fG//F3kArbu07njdW33ZQi/YoZDXUfXtl2AcgGR0Sq0ITZizNnb6aYxaYARX
+         nGAK+FF0wMVKogZGrnnME3lm6M4XabE99wuPXC0nQS4vVcdy68o7SQpXSY+OAYa5jqUF
+         Ufgubzt71DyQ+Ichj7niN2jp/rcoDErbDc4Wm6PLEfpqygYZhfQQOOAg2v+XNh6mJxk5
+         oX9xn7F0zYANKZAAn9O3Rm9dnf1YIG7l5Lg/hqFY4PQn0MoPtwhbOTXIzodheGQ7Ug8e
+         QxOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:organization
+         :mime-version:content-transfer-encoding;
+        bh=bfM1wAOaWaUzrRzrQoIIgI8cYWuLRVyNlVdaNaynf5c=;
+        b=T+n5/JiNcw+E4lC3DTt02hKQeA0N/bRUN06c8gaFRDPhEcz/xR+oCgvTYikfdR5CNt
+         1wjhSkFzgFhCpu9dqUPxJqQLMbTsPqLlhYzdWLkJYQPtWayw3J5i2B9shH3QjH9KUhHT
+         W7nisPO3q2C9ZWBEaD/ytjzI9fo40IQF7IIIKLpFby4V5l9SGuU9FkFRk4welyWZ//hM
+         UL2Gmm8HGUoPZD2hvXcTNjQLM15BEB590msaUKUEs0CR87ctGk6LtColYbuPGPV+dVZ7
+         qb0IJxxVYy54vZgzgLmi6mDkEvgasWgKcJca7+J+fzxVf2qEZxFbKZzKtAh/IbMhZrZZ
+         HtWA==
+X-Gm-Message-State: AOAM530NY8DMiOT30g014XhvhclnzFnPDhwp9OiGwB3FyoPyDJX+VFXC
+        nrlMfPFPILTmOI8w3vg6uoDrBw==
+X-Google-Smtp-Source: ABdhPJzm1RqPFFxAQZhA0tdMO/9/W3qTtC+1uyS6SacxScxtziWny/MZsP7+y7CMBzp1AIHE2iRAeQ==
+X-Received: by 2002:aed:2162:: with SMTP id 89mr23781485qtc.182.1625680455081;
+        Wed, 07 Jul 2021 10:54:15 -0700 (PDT)
+Received: from iron-maiden.localnet (50-200-151-121-static.hfc.comcastbusiness.net. [50.200.151.121])
+        by smtp.gmail.com with ESMTPSA id a66sm438286qkg.73.2021.07.07.10.54.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 10:54:14 -0700 (PDT)
+From:   Carlos Bilbao <bilbao@vt.edu>
+To:     mark.rutland@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        maz@kernel.org, linux-arm-kernel@lits.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: Add missing header <asm/smp.h> in two files
+Date:   Wed, 07 Jul 2021 13:54:13 -0400
+Message-ID: <5726396.lOV4Wx5bFT@iron-maiden>
+Organization: Virginia Tech
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.40
-X-Stat-Signature: 8c7465bx8k57gsohsk7q1mb97qse3ays
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 826DFD1517
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/DliC2RVn4bA5ocEuPRNRxF9Zk1c7Gy2g=
-X-HE-Tag: 1625680430-61890
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-07-06 at 12:31 -0700, John 'Warthog9' Hawley wrote:
-> On 7/3/21 11:39 AM, Joe Perches wrote:
-> > On Fri, 2021-07-02 at 15:37 -0700, John 'Warthog9' Hawley (VMware)
-> > wrote:
-> > > From: John 'Warthog9' Hawley <warthog9@eaglescrag.net>
-> > > 
-> > > Mailing lists in an attempt to try and avoid sending certain
-> > > administrative e-mails to the list, will check the first few lines
-> > > (usually ~10) looking for keywords.  If those key words are found it
-> > > shunts the e-mail to the list admin contact instead of potentially
-> > > passing it through to the list.
-> > 
-> > Perhaps the below is a bit better, but I believe a few of the tests
-> > are going to be tripped a bit too often.
-> > 
-> > Especially "cancel", "config" and maybe "subscribe" too.
-> > 
-> > For instance:
-> > 
-> > $ git log --grep='\bcancel\b' -P -i --pretty=oneline -10000 | wc -l
-> > 1693
-> > 
-> > $ git log --grep='^config\b' -P -i --pretty=oneline -10000 | wc -l
-> > 890
-> > 
-> > $ git log --grep='\bsubscribe\b' -P -i --pretty=oneline -10000 | wc -l
-> > 123
-> 
-> A part of getting this into checkpatch.pl is getting some better
-> feedback mechanisms for why patches may not be passing through the list
-> correctly with regexes that have been in place for at least 14 years.
-> These, aren't tripped over often,
+Add missing header <asm/smp.h> on include/asm/smp_plat.h, as it calls function
+cpu_logical_map(). Also include it on kernel/cpufeature.c since it has calls to
+functions cpu_panic_kernel() and cpu_die_early().
+ 
+Both files call functions defined on this header, make the header dependencies 
+less fragile.
 
-3000+ commits with regex matches seem rather a lot to me.
+Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
+---
+ arch/arm64/include/asm/smp_plat.h | 1 +
+ arch/arm64/kernel/cpufeature.c    | 1 +
+ 2 files changed, 2 insertions(+)
 
-> but have run into a instance at least
-> recently that triggered me trying to get at least some self check, and
-> notification, pieces in place.
+diff --git a/arch/arm64/include/asm/smp_plat.h b/arch/arm64/include/asm/smp_plat.h
+index 99ad77df8f52..140c7a03a901 100644
+--- a/arch/arm64/include/asm/smp_plat.h
++++ b/arch/arm64/include/asm/smp_plat.h
+@@ -11,6 +11,7 @@
+ #include <linux/cpumask.h>
+ 
+ #include <asm/types.h>
++#include <asm/smp.h>
+ 
+ struct mpidr_hash {
+        u64     mask;
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 125d5c9471ac..350d8601ff28 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -84,6 +84,7 @@
+ #include <asm/sysreg.h>
+ #include <asm/traps.h>
+ #include <asm/virt.h>
++#include <asm/smp.h>
+ 
+ /* Kernel representation of AT_HWCAP and AT_HWCAP2 */
+ static unsigned long elf_hwcap __read_mostly;
+-- 
+2.25.1
 
-No worries, but perhaps the message might be reworded to
-say something about possible mailing list moderation rather
-than imply rejection.
-
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> > @@ -865,6 +865,37 @@ our $allowed_asm_includes = qr{(?x:
-> >  )};
-> >  # memory.h: ARM has a custom one
-> > 
-> > +our $mailing_list_phrases = qr{(?xi:
-> > +	\bcancel\b |
-
-Mere use of the word "cancel" in the commit description seems undesirable to me.
-
-> > +# check if words in the commit message may trip up common mailing list helpers
-> > +# to redirect email to the admin contact
-> > +		if ($in_commit_log && $commit_log_lines < 10 &&
-> > +		    $line =~ /($mailing_list_phrases)/) {
-> > +			WARN("MAILING_LIST_HELPER",
-> > +			     "Line matches common mailing list helpers and may not be delivered correctly - consider rewording '$1'\n" . $herecurr);
-
-Maybe FILTERS for phrases and helpers
-
-Maybe something like:
-
-"Use of '$1' in this patch's commit description might cause mailing list moderation or rejection\n"
 
 
