@@ -2,132 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 618D33BE44C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D803BE450
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230181AbhGGI0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:26:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:59560 "EHLO foss.arm.com"
+        id S230145AbhGGI3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:29:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:59624 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230086AbhGGI0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:26:39 -0400
+        id S230073AbhGGI3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 04:29:38 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15C98ED1;
-        Wed,  7 Jul 2021 01:23:59 -0700 (PDT)
-Received: from [10.57.1.129] (unknown [10.57.1.129])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3CA3B3F694;
-        Wed,  7 Jul 2021 01:23:56 -0700 (PDT)
-Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
- of EAS estimated energy
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Chris Redpath <Chris.Redpath@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        CCj.Yeh@mediatek.com
-References: <20210625152603.25960-1-lukasz.luba@arm.com>
- <20210625152603.25960-2-lukasz.luba@arm.com>
- <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
- <a6a49480-7d5d-fd0e-3940-0b6baac5acc0@arm.com>
- <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com>
-Date:   Wed, 7 Jul 2021 09:23:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 66B82ED1;
+        Wed,  7 Jul 2021 01:26:58 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.2.215])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB7C43F694;
+        Wed,  7 Jul 2021 01:26:56 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 09:26:47 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Anatoly Pugachev <matorola@gmail.com>
+Cc:     Peter Zijlstra <peterz@lists.infradead.org>,
+        Linux Kernel list <linux-kernel@vger.kernel.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        debian-sparc <debian-sparc@lists.debian.org>
+Subject: Re: [sparc64] locking/atomic, kernel OOPS on running stress-ng
+Message-ID: <20210707082636.GA94463@C02TD0UTHF1T.local>
+References: <CADxRZqzcrnSMzy50T+kWb_mQVguWDCMu6RoXsCc+-fNDPYXbaw@mail.gmail.com>
+ <20210705195638.GA53988@C02TD0UTHF1T.local>
+ <20210706091104.GA69200@C02TD0UTHF1T.local>
+ <CADxRZqxNdYBAs1daPJTAPKGeJx30D+v7xz87K2sB_dXYKdTrVg@mail.gmail.com>
+ <20210706120030.GB69200@C02TD0UTHF1T.local>
+ <CADxRZqyQq4X-p=BpkpwcKUnLJAeZBLBLZ1u9fOkp74URR4Nb0Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADxRZqyQq4X-p=BpkpwcKUnLJAeZBLBLZ1u9fOkp74URR4Nb0Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/7/21 9:00 AM, Vincent Guittot wrote:
-> On Wed, 7 Jul 2021 at 09:49, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->>
->>
->> On 7/7/21 8:07 AM, Vincent Guittot wrote:
->>> On Fri, 25 Jun 2021 at 17:26, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>
->>>> The Energy Aware Scheduler (EAS) tries to find best CPU for a waking up
->>>> task. It probes many possibilities and compares the estimated energy values
->>>> for different scenarios. For calculating those energy values it relies on
->>>> Energy Model (EM) data and em_cpu_energy(). The precision which is used in
->>>> EM data is in milli-Watts (or abstract scale), which sometimes is not
->>>> sufficient. In some cases it might happen that two CPUs from different
->>>> Performance Domains (PDs) get the same calculated value for a given task
->>>> placement, but in more precised scale, they might differ. This rounding
->>>> error has to be addressed. This patch prepares EAS code for better
->>>> precision in the coming EM improvements.
->>>
->>> Could you explain why 32bits results are not enough and you need to
->>> move to 64bits ?
->>>
->>> Right now the result is in the range [0..2^32[ mW. If you need more
->>> precision and you want to return uW instead, you will have a result in
->>> the range  [0..4kW[ which seems to be still enough
->>>
->>
->> Currently we have the max value limit for 'power' in EM which is
->> EM_MAX_POWER 0xffff (64k - 1). We allow to register such big power
->> values ~64k mW (~64Watts) for an OPP. Then based on 'power' we
->> pre-calculate 'cost' fields:
->> cost[i] = power[i] * freq_max / freq[i]
->> So, for max freq the cost == power. Let's use that in the example.
->>
->> Then the em_cpu_energy() calculates as follow:
->> cost * sum_util / scale_cpu
->> We are interested in the first part - the value of multiplication.
+On Wed, Jul 07, 2021 at 10:47:06AM +0300, Anatoly Pugachev wrote:
+> On Tue, Jul 6, 2021 at 3:00 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> > On Tue, Jul 06, 2021 at 02:51:06PM +0300, Anatoly Pugachev wrote:
+> > > On Tue, Jul 6, 2021 at 12:11 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > Fixes: ff5b4f1ed580c59d ("locking/atomic: sparc: move to ARCH_ATOMIC")
+> > > > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> > > > Reported-by: Anatoly Pugachev <matorola@gmail.com>
+> > > > Cc: "David S. Miller" <davem@davemloft.net>
+> > > > Cc: Peter Zijlstra <peterz@lists.infradead.org>
+> > > > ---
+> > > >  arch/sparc/include/asm/cmpxchg_64.h | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/arch/sparc/include/asm/cmpxchg_64.h b/arch/sparc/include/asm/cmpxchg_64.h
+> > > > index 8c39a9981187..12d00a42c0a3 100644
+> > > > --- a/arch/sparc/include/asm/cmpxchg_64.h
+> > > > +++ b/arch/sparc/include/asm/cmpxchg_64.h
+> > > > @@ -201,7 +201,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
+> > > >  #define arch_cmpxchg64_local(ptr, o, n)                                        \
+> > > >    ({                                                                   \
+> > > >         BUILD_BUG_ON(sizeof(*(ptr)) != 8);                              \
+> > > > -       cmpxchg_local((ptr), (o), (n));                                 \
+> > > > +       arch_cmpxchg_local((ptr), (o), (n));                                    \
+> > > >    })
+> > > >  #define arch_cmpxchg64(ptr, o, n)      arch_cmpxchg64_local((ptr), (o), (n))
+> > >
+> > >
+> > > Mark, thanks, fixed...
+> > > tested on git kernel 5.13.0-11788-g79160a603bdb-dirty (dirty - cause
+> > > patch has been applied).
+> >
+> > Great! Thanks for confirming.
+> >
+> > Peter, are you happy to pick that (full commit in last mail), or should
+> > I send a new copy?
 > 
-> But all these are internal computations of the energy model. At the
-> end, the computed energy that is returned by compute_energy() and
-> em_cpu_energy(), fits in a long
+> It would be nice if patch could hit the kernel before v5.14-rc1
 
-Let's take a look at existing *10000 precision for x CPUs:
-cost * sum_util / scale_cpu =
-(64k *10000) * (x * 800) / 1024
-which is:
-x * ~500mln
+Absolutely; I'll resend this on it's own so that it's easier for folk to
+pick, and I'll poke people about picking it.
 
-So to be close to overflowing u32 the 'x' has to be > (?=) 8
-(depends on sum_util).
-
-> 
->>
->> The sum_util values that we can see for x CPUs which have scale_cap=1024
->> can be close to 800, let's use it in the example:
->> cost * sum_util = 64k * (x * 800), where
->> x=4: ~200mln
->> x=8: ~400mln
->> x=16: ~800mln
->> x=64: ~3200mln (last one which would fit in u32)
->>
->> When we increase the precision by even 100, then the above values won't
->> fit in the u32. Even a max cost of e.g. 10k mW and 100 precision has
->> issues:
->> cost * sum_util = (10k *100) * (x * 800), where
->> x=4: ~3200mln
->> x=8: ~6400mln
->>
->> For *1000 precision even a power of 1Watt becomes an issue:
->> cost * sum_util = (1k *1000) * (x * 800), where
->> x=4: ~3200mln
->> x=8: ~6400mln
->>
->> That's why to make the code safe for bigger power values, I had to use
->> the u64 on 32bit machines.
+Mark.
