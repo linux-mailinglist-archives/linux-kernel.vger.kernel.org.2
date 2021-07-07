@@ -2,114 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898723BE69E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352E23BE6A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhGGKxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
+        id S231406AbhGGKyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbhGGKxJ (ORCPT
+        with ESMTP id S231371AbhGGKyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:53:09 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37443C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 03:50:28 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id r16so2109633ljk.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 03:50:28 -0700 (PDT)
+        Wed, 7 Jul 2021 06:54:00 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39220C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 03:51:20 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id q17so2541869wrv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 03:51:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aqinmbsgubdY1rzngMj67q1SA/uOa/OYEUMRA9Sn7zM=;
-        b=zZAvq1+uOQ6bNKl+wJAG++GGLSuAKMOx6EKxjUj89CNG1IU9b0hdHuii4FZLAkGRbI
-         B4zLefFoYRgzpIB/tPlw7lOn/0qM7UwkWLgCDPny1Ze+MavjjQZRggk/CXrRatNxsFJ/
-         A2bU/QqengHTt0gMO5FRku5XiliA+rIlA+SfzKCgLrW44zOvE+bkXBHcugTITBwe/qqF
-         DKmbu/S4B18FuzNybygbphmD8UuJq/JoztU5dZK1T1F8aZr0Fmgw/5WV8FYahKcoxKMu
-         MjLUeHeuKJHIutx+2CCUoVU3QVH3D4jhxv7kAXu7h9E7KnmbDBFQK3kP6mkYDDxGt7XH
-         U4fw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/aoTDXlXnALJMl9Wxd7xok1/Pwgg+4ujvLSoM7V+DME=;
+        b=Mf4Rc4fSaIhy7Eb7pDQ7YGLzqNkfmoralCbm7Zj2Azo8hiYiZE6FuOpz79xUx991ss
+         tFhmgWuP5R4VCalxaY8czCxgSE6mosNbW+b4fPjNUCY7jY7ILgAtzAJgQS11IXC3ndlz
+         3mDUbW1IRvu3GVUIVPk077DLMLOX/x+udOCmRi00Eq9lTB88tNC6q6Wk/q+qRw4oCwQW
+         MCm50XprqalFbKMZQTNlm9yDy+wDjHUn4SLPFZTHsdBD3vIvAWKUvM2Sep06DVYowuLK
+         xyqfBPN3EAhwegTVObXFr2Z/51eaeSjMJRKFzyUCxaD0sxgxIHBMD+YFQPKeE5lgnrZk
+         0LWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aqinmbsgubdY1rzngMj67q1SA/uOa/OYEUMRA9Sn7zM=;
-        b=ubhvNLnmWUBF5jkYA/yqRr7B2//46BFxnDGOqcejLuzcgNi63s6CMhBOVpTiT+iFfR
-         oxUNSvzyxfJthyZiZhmqT4fq9Oiin7ycyU0tOhTFPZbAd0p4xzSRipBOrBrAVC1KFu5X
-         J02d41Oclg8XTr1TzcmyOTabViGkygVMj09WmPwDB1StKsk+4vjiwD8osJKQzSdyB2RY
-         FaDxJqmpqmHkhD9U5jfxws3UFz/F0tTZ7MK6UIAJFH9pgrQSvjeGQB7Rud6vv155/1kP
-         DQgUDxW5EWFoN1RKiYrTkwVzJwiiF1UPfDq61zaX2EScRxMJMWBBl+u5TOZP31rb8mpn
-         hjDw==
-X-Gm-Message-State: AOAM5315tZZ6jv0sui3u7viYOq74C408t4s1WfK6Xg9z7BcLiLDIY6+y
-        Q75lzJt0hQAz43+Z/A4TGgldfCTmDzMyHJFD5X+owg==
-X-Google-Smtp-Source: ABdhPJxVRUeGnfZJPEnXHmMhgLj82FF2HHUpDNW3RN06EBLqkeabaYDKOo+eGmrC8O6BFp0Sr+DXBI98Y/oTYH2DDUU=
-X-Received: by 2002:a05:651c:1422:: with SMTP id u34mr5040776lje.221.1625655026585;
- Wed, 07 Jul 2021 03:50:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/aoTDXlXnALJMl9Wxd7xok1/Pwgg+4ujvLSoM7V+DME=;
+        b=GFz5FcrHACDQyGN5JcCVijxLKtVXqUQL49/dQZnZCuLrUHBkzutd6A2Ssc9sPS57ez
+         P/qU2WdPBuoXvcT9fLVFOcPj7dc1UKQQLSEUqDE91tMr4eFe1iqs7Ea3LRfn4na2x6t0
+         F/seAugiDQReqhrFHshjXI5sxBN2zH32NznTLYeqI2WK4yzecqukHj1dZ6Hhu55pCV99
+         MBdGsEOZEQ+4HWflfJ/ESfX8kvXCnSx3KbgUDwP823dxcCs9TkbY7LpgNq3inepS/zB0
+         QlrtC+6gB2Ieb/wRfshSI5eoXv55V0tylZV0/KGxq5+tmsLPlUGlAEjlhAEi3Y/y+8Ig
+         SQ6w==
+X-Gm-Message-State: AOAM5325PV+1J3ZGYgngedeRcPt4rzyunldEORa1s0ALaxCeFHFAtp/9
+        9B5NXb8jQ9TjH8+LECiqCSPRmA==
+X-Google-Smtp-Source: ABdhPJw+vX2jEX6fI6DaJdUd0kdnpZdFibOW5bG0fWz9BRXFsHJ7OuCBi0RFXanBw4KcvNhXi9jVrw==
+X-Received: by 2002:a5d:6dd1:: with SMTP id d17mr27175199wrz.344.1625655078685;
+        Wed, 07 Jul 2021 03:51:18 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:396a:6bf2:9c33:26ce])
+        by smtp.gmail.com with ESMTPSA id s17sm19500078wrt.58.2021.07.07.03.51.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 03:51:17 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 12:51:12 +0200
+From:   Marco Elver <elver@google.com>
+To:     ojeda@kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/17] Rust support
+Message-ID: <YOWHIHcs5/sYr/Vr@elver.google.com>
+References: <20210704202756.29107-1-ojeda@kernel.org>
 MIME-Version: 1.0
-References: <20210625152603.25960-1-lukasz.luba@arm.com> <20210625152603.25960-2-lukasz.luba@arm.com>
- <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
- <a6a49480-7d5d-fd0e-3940-0b6baac5acc0@arm.com> <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
- <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com> <CAKfTPtDk1ANfjR5h_EjErVfQ7=is3n9QOaKKxz81tMHtqUM7jA@mail.gmail.com>
- <297df159-1681-f0a7-843d-f34d86e51d4c@arm.com> <CAKfTPtCEo+gkV2TMhOHSnuUyu5BC54o-B4Hb=QbzgT6Dft-PhQ@mail.gmail.com>
- <27916860-33b1-f0a0-acff-4722a733c81b@arm.com> <CAKfTPtB2ogGbGBjJNRBB5jvN24q-tXFR+BpJ31fzsTd2=pDTHQ@mail.gmail.com>
- <ee3ebbaa-7b6d-416d-2caa-197c2713dd4e@arm.com> <CAKfTPtAN6-ytxa2Qj3=z27e8ZBoqGrWAZce9CojL3wbZSotUsQ@mail.gmail.com>
- <58cb7ad3-ffff-8940-4c8e-2c46dcc86d54@arm.com>
-In-Reply-To: <58cb7ad3-ffff-8940-4c8e-2c46dcc86d54@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 7 Jul 2021 12:50:15 +0200
-Message-ID: <CAKfTPtCy-dbo0xnW8iKaQy94_iV=JYbMU-X4qanzL6RXcL7xEw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
- of EAS estimated energy
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Chris Redpath <Chris.Redpath@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        CCj.Yeh@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210704202756.29107-1-ojeda@kernel.org>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Jul 2021 at 12:41, Lukasz Luba <lukasz.luba@arm.com> wrote:
->
->
->
-> On 7/7/21 11:32 AM, Vincent Guittot wrote:
-> > On Wed, 7 Jul 2021 at 12:29, Lukasz Luba <lukasz.luba@arm.com> wrote:
-> >>
-> >>
-> >>
-> >> On 7/7/21 11:11 AM, Vincent Guittot wrote:
-> >>> On Wed, 7 Jul 2021 at 12:06, Lukasz Luba <lukasz.luba@arm.com> wrote:
-> >>>>
-> >>
-> >> [snip]
-> >>
-> >>>> No. It's in 0.1uW scale, so 800Watts. Which is 16 CPUs * 64Watts
-> >>>
-> >>> Oh! you want 0.1uW precision .... This doesn't seem realistic at all.
-> >>> I'm not even sure that the power model can even reach an accuracy of
-> >>> 1mW
-> >>>
-> >>
-> >> True, the EM is registering platform with 1mW precision, but 1uW
-> >
-> > Do you mean 1uW or 0.1uW ?
->
-> In this patch set I've proposed 0.1uW, but I'm open to drop one
-> order of magnitude. The 1uW still be good.
+On Sun, Jul 04, 2021 at 10:27PM +0200, ojeda@kernel.org wrote:
+[...]
+>   rust: add `alloc` crate
+[...]
 
-I don't want to underestimate the capabilities of the power model but
-I don't see which benefit you will get with 0.1uW precision
-With a 1uW precision the long type currently used for the returned
-value is fine for 32bits machine AFAICT
+I think this patch never made it to the mailing list. b4 also doesn't
+find it:
+
+	ERROR: missing [7/17]
