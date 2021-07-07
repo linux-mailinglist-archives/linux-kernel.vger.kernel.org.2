@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB2E3BE3E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 09:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D6E3BE3E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 09:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhGGHt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 03:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230356AbhGGHt6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 03:49:58 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB250C061574;
-        Wed,  7 Jul 2021 00:47:17 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id p22so1751129yba.7;
-        Wed, 07 Jul 2021 00:47:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4TPOrmLvXTK/lOyUIguBrYsawf0hzfPaU/71ZDPhFBY=;
-        b=oF4suRKDgbX4F6O7jTJ4r9d+PDoMMhY/Z6W3uZLsXiZNVuvutzTwcHojXUaT+2R8T/
-         rSronkfAeygaL6UbidUXFMGOEoXnhfW1Rxc14eiMSRQZ3e22h+NiNB49biKkqQ/nC8xU
-         vI7XVV5lzNvQicOReiYxkjfOevvjKkNnQhpjzCoJFaAse0fit9eq8UKULK4jW13O5yWc
-         RxipySbYRXe9+RgE1/dBHPCDkZjR5mJYcMFrf1wIHR1W9f9yYx/v0mfStfs7tBcdi5MC
-         MiUhS3hZSp0/d+hTatWE0BQeSt4J+teh9p8dCXkOfkJGtSLBaGgwCsR1kYUcr35PRxb4
-         bc0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4TPOrmLvXTK/lOyUIguBrYsawf0hzfPaU/71ZDPhFBY=;
-        b=kGitEyvyXVMD5EQ59J9G8m5L8sguZDDEHBgnm1WrcAZxwkbRPAwctUZg/BDzKne6dk
-         tf3gOps6vtlitmWx1NoCuXq2fdBRYkzc0LBTzyZZNOeUESYaKhgWjRVwtRHNDiBusgaM
-         C/R811/HzELE1lh6AlOKfi4o4yE/hHRFdTGHHqA1nzqTa2WBgO8gVKwhRf0Vzx1FvEHO
-         NGCkmzGEf3t2UB2FEvAR21rT2izK0RxTNU9Zri8MTyB0Z+1WJd3gqqMUjhJOP2iDGPp/
-         WbELQTznpCB6F+QPCdBM0A+1lWLVelXYdCBBcMryCp/pPHTNq0yWW3FJiKLECOp3Huu/
-         JI8A==
-X-Gm-Message-State: AOAM530dgF0Jab6israx8XYRaq7VRSxO9xsgkpVOlvXB8yQr5ZBkQd46
-        Iedor7y7u2/lYkIM/Efk/iI4zJZGGy7t43BL4Fg=
-X-Google-Smtp-Source: ABdhPJxyut9g/FWzn2WJEwmrKOWmZrHqkw5OlBr5bfdsVXbwDLAuqFtbYVAYbv284vuzM83CPfKQR7ubJp1qqqUujR8=
-X-Received: by 2002:a25:4109:: with SMTP id o9mr30719793yba.353.1625644036957;
- Wed, 07 Jul 2021 00:47:16 -0700 (PDT)
+        id S230467AbhGGHut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 03:50:49 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:44187 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230389AbhGGHus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 03:50:48 -0400
+Received: from [192.168.0.3] (ip5f5aedf7.dynamic.kabel-deutschland.de [95.90.237.247])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id C661961E64860;
+        Wed,  7 Jul 2021 09:48:07 +0200 (CEST)
+Subject: Re: [smartpqi updates PATCH 8/9] smartpqi: fix isr accessing null
+ structure member
+To:     Don Brace <don.brace@microchip.com>,
+        Mike McGowen <mike.mcgowen@microchip.com>
+Cc:     Kevin.Barnett@microchip.com, scott.teel@microchip.com,
+        Justin.Lindley@microchip.com, scott.benesh@microchip.com,
+        gerry.morong@microchip.com, mahesh.rajashekhara@microchip.com,
+        murthy.bhat@microchip.com, balsundar.p@microchip.com,
+        joseph.szczypek@hpe.com, jeff@canonical.com, POSWALD@suse.com,
+        john.p.donnelly@oracle.com, mwilck@suse.com,
+        linux-kernel@vger.kernel.org, hch@infradead.org,
+        martin.peterson@oracle.com, jejb@linux.vnet.ibm.com,
+        linux-scsi@vger.kernel.org
+References: <20210706181618.27960-1-don.brace@microchip.com>
+ <20210706181618.27960-9-don.brace@microchip.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <fa3b5d5a-fdd3-48c7-b8d5-1a732b09bf68@molgen.mpg.de>
+Date:   Wed, 7 Jul 2021 09:48:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <CADxRZqzcrnSMzy50T+kWb_mQVguWDCMu6RoXsCc+-fNDPYXbaw@mail.gmail.com>
- <20210705195638.GA53988@C02TD0UTHF1T.local> <20210706091104.GA69200@C02TD0UTHF1T.local>
- <CADxRZqxNdYBAs1daPJTAPKGeJx30D+v7xz87K2sB_dXYKdTrVg@mail.gmail.com> <20210706120030.GB69200@C02TD0UTHF1T.local>
-In-Reply-To: <20210706120030.GB69200@C02TD0UTHF1T.local>
-From:   Anatoly Pugachev <matorola@gmail.com>
-Date:   Wed, 7 Jul 2021 10:47:06 +0300
-Message-ID: <CADxRZqyQq4X-p=BpkpwcKUnLJAeZBLBLZ1u9fOkp74URR4Nb0Q@mail.gmail.com>
-Subject: Re: [sparc64] locking/atomic, kernel OOPS on running stress-ng
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Peter Zijlstra <peterz@lists.infradead.org>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        debian-sparc <debian-sparc@lists.debian.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210706181618.27960-9-don.brace@microchip.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 3:00 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> On Tue, Jul 06, 2021 at 02:51:06PM +0300, Anatoly Pugachev wrote:
-> > On Tue, Jul 6, 2021 at 12:11 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> > > Fixes: ff5b4f1ed580c59d ("locking/atomic: sparc: move to ARCH_ATOMIC")
-> > > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > > Reported-by: Anatoly Pugachev <matorola@gmail.com>
-> > > Cc: "David S. Miller" <davem@davemloft.net>
-> > > Cc: Peter Zijlstra <peterz@lists.infradead.org>
-> > > ---
-> > >  arch/sparc/include/asm/cmpxchg_64.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/arch/sparc/include/asm/cmpxchg_64.h b/arch/sparc/include/asm/cmpxchg_64.h
-> > > index 8c39a9981187..12d00a42c0a3 100644
-> > > --- a/arch/sparc/include/asm/cmpxchg_64.h
-> > > +++ b/arch/sparc/include/asm/cmpxchg_64.h
-> > > @@ -201,7 +201,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
-> > >  #define arch_cmpxchg64_local(ptr, o, n)                                        \
-> > >    ({                                                                   \
-> > >         BUILD_BUG_ON(sizeof(*(ptr)) != 8);                              \
-> > > -       cmpxchg_local((ptr), (o), (n));                                 \
-> > > +       arch_cmpxchg_local((ptr), (o), (n));                                    \
-> > >    })
-> > >  #define arch_cmpxchg64(ptr, o, n)      arch_cmpxchg64_local((ptr), (o), (n))
-> >
-> >
-> > Mark, thanks, fixed...
-> > tested on git kernel 5.13.0-11788-g79160a603bdb-dirty (dirty - cause
-> > patch has been applied).
->
-> Great! Thanks for confirming.
->
-> Peter, are you happy to pick that (full commit in last mail), or should
-> I send a new copy?
+Dear Don, dear Mike,
 
-It would be nice if patch could hit the kernel before v5.14-rc1
 
-Thanks.
+Am 06.07.21 um 20:16 schrieb Don Brace:
+> From: Mike McGowen <mike.mcgowen@microchip.com>
+> 
+> Correct driver's ISR accessing a data structure member
+> that has not been fully initialized during driver init.
+
+Does that crash the Linux kernel?
+
+>    - The pqi queue groups can be null when an interrupt fires.
+
+If it fixes a crash(?), please add a Fixes: tag so it can be backported 
+to the stable series.
+
+> Reviewed-by: Kevin Barnett <kevin.barnett@microchip.com>
+> Reviewed-by: Scott Benesh <scott.benesh@microchip.com>
+> Reviewed-by: Scott Teel <scott.teel@microchip.com>
+> Signed-off-by: Mike McGowen <mike.mcgowen@microchip.com>
+> Signed-off-by: Don Brace <don.brace@microchip.com>
+> ---
+>   drivers/scsi/smartpqi/smartpqi_init.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
+> index 6f2263abaa8c..eeaf0568b5e3 100644
+> --- a/drivers/scsi/smartpqi/smartpqi_init.c
+> +++ b/drivers/scsi/smartpqi/smartpqi_init.c
+> @@ -7757,11 +7757,11 @@ static int pqi_ctrl_init(struct pqi_ctrl_info *ctrl_info)
+>   
+>   	pqi_init_operational_queues(ctrl_info);
+>   
+> -	rc = pqi_request_irqs(ctrl_info);
+> +	rc = pqi_create_queues(ctrl_info);
+
+ From a quick look, these two functions are quite different. It’d be 
+great if you elaborated a bit in the commit message, what else the new 
+function does.
+
+Also, with this change, `pqi_request_irqs()` does not seem to have any 
+users anymore. Without your patch:
+
+     $ git grep pqi_request_irqs
+     drivers/scsi/smartpqi/smartpqi_init.c:static int 
+pqi_request_irqs(struct pqi_ctrl_info *ctrl_info)
+     drivers/scsi/smartpqi/smartpqi_init.c:  rc = 
+pqi_request_irqs(ctrl_info);
+
+>   	if (rc)
+>   		return rc;
+>   
+> -	rc = pqi_create_queues(ctrl_info);
+> +	rc = pqi_request_irqs(ctrl_info);
+>   	if (rc)
+>   		return rc;
+> 
+
+
+Kind regards,
+
+Paul
