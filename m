@@ -2,146 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AC03BF104
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24DA53BF106
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhGGUv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 16:51:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhGGUv0 (ORCPT
+        id S230457AbhGGUvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 16:51:38 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59232 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhGGUvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 16:51:26 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B888C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 13:48:45 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id f12so2099075qtf.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 13:48:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version;
-        bh=zBNfbXpBNmhb98xHVWiDj3Sr7g66ZNi5yrexACG3dvg=;
-        b=jCJGhylBGo9mRXeanuHxRZhhCCj3FSkm/awSCUEKQKqMx9tVfHNnBrsbeHDlwt/nmi
-         E68+XL2JLUjHozPXu3hkUm4K88OTTEtvtr0xDMn7cXcBK8ubwJyUUgN9VaE5kh7FdYi4
-         nzsGwi8A+4ipjXOujnZToWdksv5Nsji/eT12341ovf7AtqB369rG+kRIrMhAgM1qdaIz
-         vg0bWF4bKZbsGvU5fOgpRcHEnTHA3tvREGHW+Dz04OGfdMD1ty6N7RkiLpP7L6rh9RG0
-         gUBjj7exxUDQvJpp7TMC65MsqL8IgpxhQK7eLnwshBcl5SdrzMPjPoxyeyvxXbozjTv4
-         KXlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version;
-        bh=zBNfbXpBNmhb98xHVWiDj3Sr7g66ZNi5yrexACG3dvg=;
-        b=sv47obnm0K3fbXXlJLxs4XucDJM9vOwxmCN8v1Ph7pKNfrOTjKgPJqR7QK6h+93GVx
-         6wCxmrL3P4ITxGi+phwb/tinhBN+m4WUIjJdmaKeYGuHJeIPH6zQdvkZL24da+5Emf7u
-         qeFIIWLIauWVVcT1nXQnUC9Pq8GAmYzp7bwvbLsw+vxGo28tjXWwAe/JEvTcZfqZBv+g
-         C4tcHq9Mide6r0Eh1+tLw80FoP50Q1z74cL0gfsvGNi+0fLE7PBf4hLgH/II9jwH6nBv
-         hikQ9XnfLPMxRkw4qVNv5HztR9Y++lF3K9GIYpwJVnIWnBPvwnNWAtAc5yubFsRWVpB6
-         eqfw==
-X-Gm-Message-State: AOAM5314hd0DdL7lLp+RCZ8aIg6xoXwcw4ia7u33hS7b3cG/zjN8wYFE
-        zhcpgkk4a3xxxz/Tk04uCKiLRQ==
-X-Google-Smtp-Source: ABdhPJx4A07Csj2ry9jMLONbnNINO+ORK8G+nJ7+AShhJQcQbVe8WLzFRsKq468qlWKfpXJrK2VaDQ==
-X-Received: by 2002:ac8:59d5:: with SMTP id f21mr24231595qtf.126.1625690924098;
-        Wed, 07 Jul 2021 13:48:44 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 6sm34991qkn.83.2021.07.07.13.48.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 13:48:43 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 13:48:31 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, Willy Tarreau <w@1wt.eu>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH] fs, mm: fix race in unlinking swapfile
-Message-ID: <e17b91ad-a578-9a15-5e3-4989e0f999b5@google.com>
+        Wed, 7 Jul 2021 16:51:37 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 167KmgXF117595;
+        Wed, 7 Jul 2021 15:48:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1625690922;
+        bh=6HPmRna3waQ2ClqP2nauya0jag1AjaDVOXfeFC0wbWc=;
+        h=From:To:CC:Subject:Date;
+        b=YklCtSerr2qyb05xEtsc1ES/XxEXfDcE8Pqbmr0D29tWei73gFdTuvQ8w5kDxwBI8
+         Tce1wDq1pQIHG+sTMb7pNDOUELS7p6Jz1CpZK/AiZu8VAvpObZkIzlOXiMDAlI0spc
+         jFVjy+DsxsviqYdaMpoVtmvLzKt/DvrtYwZctDdA=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 167Kmgk0089987
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 7 Jul 2021 15:48:42 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 7 Jul
+ 2021 15:48:41 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 7 Jul 2021 15:48:41 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 167Kmfmh015408;
+        Wed, 7 Jul 2021 15:48:41 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>
+CC:     "Ravikumar, Rahul" <r-ravikumar@ti.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-spdx <linux-spdx@vger.kernel.org>,
+        Nishanth Menon <nm@ti.com>
+Subject: [PATCH V2] scripts/spdxcheck.py: Strictly read license files in utf-8
+Date:   Wed, 7 Jul 2021 15:48:40 -0500
+Message-ID: <20210707204840.30891-1-nm@ti.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We had a recurring situation in which admin procedures setting up
-swapfiles would race with test preparation clearing away swapfiles;
-and just occasionally that got stuck on a swapfile "(deleted)" which
-could never be swapped off.  That is not supposed to be possible.
+Commit bc41a7f36469 ("LICENSES: Add the CC-BY-4.0 license")
+unfortunately introduced LICENSES/dual/CC-BY-4.0 in UTF-8 Unicode text
+While python will barf at it with:
 
-2.6.28 commit f9454548e17c ("don't unlink an active swapfile") admitted
-that it was leaving a race window open: now close it.
+FAIL: 'ascii' codec can't decode byte 0xe2 in position 2109: ordinal not in range(128)
+Traceback (most recent call last):
+  File "scripts/spdxcheck.py", line 244, in <module>
+    spdx = read_spdxdata(repo)
+  File "scripts/spdxcheck.py", line 47, in read_spdxdata
+    for l in open(el.path).readlines():
+  File "/usr/lib/python3.6/encodings/ascii.py", line 26, in decode
+    return codecs.ascii_decode(input, self.errors)[0]
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xe2 in position 2109: ordinal not in range(128)
 
-may_delete() makes the IS_SWAPFILE check (amongst many others) before
-inode_lock has been taken on target: now repeat just that simple check
-in vfs_unlink() and vfs_rename(), after taking inode_lock.
+While it is indeed debatable if 'Licensor.' used in the license file
+needs unicode quotes, instead, force spdxcheck to read utf-8.
 
-Which goes most of the way to fixing the race, but swapon() must also
-check after it acquires inode_lock, that the file just opened has not
-already been unlinked.
-
-Fixes: f9454548e17c ("don't unlink an active swapfile")
-Signed-off-by: Hugh Dickins <hughd@google.com>
+Reported-by: Rahul T R <r-ravikumar@ti.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- fs/namei.c    | 8 +++++++-
- mm/swapfile.c | 6 ++++++
- 2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/fs/namei.c b/fs/namei.c
-index bf6d8a738c59..ff866c07f4d2 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -4024,7 +4024,9 @@ int vfs_unlink(struct user_namespace *mnt_userns, struct inode *dir,
- 		return -EPERM;
+Changes since V1:
+* Commit message update to drop "Let's" "Let us".
+* Picked up Thomas' Reviewed-by
+
+V1: https://lore.kernel.org/linux-spdx/20210703012128.27946-1-nm@ti.com/
+
+ scripts/spdxcheck.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/spdxcheck.py b/scripts/spdxcheck.py
+index 3e784cf9f401..ebd06ae642c9 100755
+--- a/scripts/spdxcheck.py
++++ b/scripts/spdxcheck.py
+@@ -44,7 +44,7 @@ def read_spdxdata(repo):
+                 continue
  
- 	inode_lock(target);
--	if (is_local_mountpoint(dentry))
-+	if (IS_SWAPFILE(target))
-+		error = -EPERM;
-+	else if (is_local_mountpoint(dentry))
- 		error = -EBUSY;
- 	else {
- 		error = security_inode_unlink(dir, dentry);
-@@ -4526,6 +4528,10 @@ int vfs_rename(struct renamedata *rd)
- 	else if (target)
- 		inode_lock(target);
- 
-+	error = -EPERM;
-+	if (IS_SWAPFILE(source) || (target && IS_SWAPFILE(target)))
-+		goto out;
-+
- 	error = -EBUSY;
- 	if (is_local_mountpoint(old_dentry) || is_local_mountpoint(new_dentry))
- 		goto out;
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 1e07d1c776f2..7527afd95284 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -3130,6 +3130,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	struct filename *name;
- 	struct file *swap_file = NULL;
- 	struct address_space *mapping;
-+	struct dentry *dentry;
- 	int prio;
- 	int error;
- 	union swap_header *swap_header;
-@@ -3173,6 +3174,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 
- 	p->swap_file = swap_file;
- 	mapping = swap_file->f_mapping;
-+	dentry = swap_file->f_path.dentry;
- 	inode = mapping->host;
- 
- 	error = claim_swapfile(p, inode);
-@@ -3180,6 +3182,10 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 		goto bad_swap;
- 
- 	inode_lock(inode);
-+	if (d_unlinked(dentry) || cant_mount(dentry)) {
-+		error = -ENOENT;
-+		goto bad_swap_unlock_inode;
-+	}
- 	if (IS_SWAPFILE(inode)) {
- 		error = -EBUSY;
- 		goto bad_swap_unlock_inode;
+             exception = None
+-            for l in open(el.path).readlines():
++            for l in open(el.path, encoding="utf-8").readlines():
+                 if l.startswith('Valid-License-Identifier:'):
+                     lid = l.split(':')[1].strip().upper()
+                     if lid in spdx.licenses:
 -- 
-2.26.2
+2.32.0
 
