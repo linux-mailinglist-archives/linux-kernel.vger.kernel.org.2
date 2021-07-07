@@ -2,139 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80FF3BE4B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7E63BE4B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbhGGIxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:53:34 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43430 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbhGGIxd (ORCPT
+        id S231245AbhGGIyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:54:04 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52266 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231185AbhGGIyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:53:33 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625647852;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 7 Jul 2021 04:54:04 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 749EC225C9;
+        Wed,  7 Jul 2021 08:51:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625647883; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=s9L+NhrAVyih3jbZMP9vTTphcf3rwJymWrt3VSsoaNI=;
-        b=GMSJvpeP32mWrQFfvpc0lQIBgOB7/zTTl4wPG9hGJqi3nypg4B42eH9WU6GX8PtDkQ6LS1
-        urNezaLlW/cuUba8xtnz9yEXYmd6b9Sg9lzk9W6KKzclgcHVrjVHgMElh7XZpAM8eRTcKA
-        zqFgTfVzH11hCTRPd3xFTmzJXQgqxNY4nv4Aq0T4Ih1CeXQthZzRHyyB+isyM6TDepXrzY
-        KkdEfz2zPKq0gbQEA/mqf3fxRkXo6HkWsxGYZmrok/uw34rdTYSVGJgUDJtf+qLnpE758a
-        T5BOZEOQElnHOsvLXyrmEnNddRAqtr1g72T3FKSX2rgVM9VTGVVo0eCYTBbmow==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625647852;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=s9L+NhrAVyih3jbZMP9vTTphcf3rwJymWrt3VSsoaNI=;
-        b=wUa/ve+UavwLOtzOPXMQ+CoR7aT4ibRaKid85YzCWQWU3UK9Pdo1DfIEwgvcLS7dsI8WRi
-        OaFbH2JGv1oPhMAA==
-To:     "Dey\, Megha" <megha.dey@intel.com>
-Cc:     linux-kernel@vger.kernel.org, "Raj\, Ashok" <ashok.raj@intel.com>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        "Tian\, Kevin" <kevin.tian@intel.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>, jgg@mellanox.com,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Van De Ven\, Arjan" <arjan.van.de.ven@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "Shankar\, Ravi V" <ravi.v.shankar@intel.com>
-Subject: Re: Programming PASID in IMS entries
-In-Reply-To: <bd509e3d-f59d-1200-44ce-93cf9132bd8c@intel.com>
-References: <bd509e3d-f59d-1200-44ce-93cf9132bd8c@intel.com>
-Date:   Wed, 07 Jul 2021 10:50:52 +0200
-Message-ID: <87k0m2qzgz.ffs@nanos.tec.linutronix.de>
+        bh=Na5evhOsPxdyk72/iMdkQgvxgJL+H66b/attKNc3EDA=;
+        b=MgtFim01IVbQXdnFPyFxUGGjIy5X8tThXCwGmxd/3aH5jzoQCkgj9zlFPa5l1xQD0rIba2
+        /R3+FBCiv5ZlQpNzbPM2TdtlJnuGxxYnkrYs5gddR7bdB6JUIq1bAy1go1tkryf1+bP7fy
+        oborxHQ6IgFSKtyAN/6ZneEuKFxFhHo=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 3765BA3B9C;
+        Wed,  7 Jul 2021 08:51:23 +0000 (UTC)
+Date:   Wed, 7 Jul 2021 10:51:22 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2 2/2] mm/vmalloc: Remove gfpflags_allow_blocking() check
+Message-ID: <YOVrCs9Uxt8zcHgR@dhcp22.suse.cz>
+References: <20210705170537.43060-1-urezki@gmail.com>
+ <20210705170537.43060-2-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705170537.43060-2-urezki@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Megha,
+On Mon 05-07-21 19:05:37, Uladzislau Rezki (Sony) wrote:
+> Get rid of gfpflags_allow_blocking() check from the vmalloc() path
+> as it is supposed to be sleepable anyway. Thus remove it from the
+> alloc_vmap_area() as well as from the vm_area_alloc_pages().
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-On Wed, Jul 07 2021 at 09:49, Megha Dey wrote:
-> Per your suggestions during the last meeting, we wanted to confirm the 
-> sequence to program the PASID into the IMS entries:
->
-> 1. Add a PASID member to struct msi_desc (Add as part of a union. Other 
-> source-id's such as Jason's vm-id can be added to it)
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Yes. Though we also discussed storing the default PASID in struct device
-to begin with which is then copied to the msi_desc entries during
-allocation.
+> ---
+>  mm/vmalloc.c | 18 ++++++++----------
+>  1 file changed, 8 insertions(+), 10 deletions(-)
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 5297958ac7c5..93a9cbdba905 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -1479,6 +1479,7 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+>  				int node, gfp_t gfp_mask)
+>  {
+>  	struct vmap_area *va;
+> +	unsigned long freed;
+>  	unsigned long addr;
+>  	int purged = 0;
+>  	int ret;
+> @@ -1542,13 +1543,12 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+>  		goto retry;
+>  	}
+>  
+> -	if (gfpflags_allow_blocking(gfp_mask)) {
+> -		unsigned long freed = 0;
+> -		blocking_notifier_call_chain(&vmap_notify_list, 0, &freed);
+> -		if (freed > 0) {
+> -			purged = 0;
+> -			goto retry;
+> -		}
+> +	freed = 0;
+> +	blocking_notifier_call_chain(&vmap_notify_list, 0, &freed);
+> +
+> +	if (freed > 0) {
+> +		purged = 0;
+> +		goto retry;
+>  	}
+>  
+>  	if (!(gfp_mask & __GFP_NOWARN) && printk_ratelimit())
+> @@ -2834,9 +2834,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+>  		for (i = 0; i < (1U << order); i++)
+>  			pages[nr_allocated + i] = page + i;
+>  
+> -		if (gfpflags_allow_blocking(gfp))
+> -			cond_resched();
+> -
+> +		cond_resched();
+>  		nr_allocated += 1U << order;
+>  	}
+>  
+> -- 
+> 2.20.1
 
-> 2. Create an API which device drivers can call, to program the PASID 
-> (PASID provided by the driver) on a per-irq basis. This API is to be 
-> called after msi_domain_alloc_irqs and will write to the corresponding 
-> msi_desc->pasid entry. (Assumption: For now, all devices will have the 
-> same IMS format). for e.g:
->
-> msi_desc_set_pasid (irq, pasid) {
->
-> struct msi_desc *desc = irq_get_msi_desc(irq);
->
-> desc->pasid = pasid;
->
-> }
-
-That interface should be opaque probably with an u64 argument so it can
-be reused for Jason's VM-id. Jason?
-
-> 3. In request_irq, add a irq_chip callback (in __setup_irq maybe??) to 
-> automatically write the pasid into the corresponding IMS entry:
-
-Why? There is no need for yet another callback. The PASID or whatever ID
-is required can be written as part of e.g. irq_unmask().
-
-> Is this the correct approach?
-
-No.
-
-> Also, from a previous discussion [1], we want to make IMS more dynamic:
->
-> Given the QEMU behavior it doesn't ask for all IRQs upfront. It only 
-> allocates 1, and when it unmasks the 2nd, it wants to dynamically add a 
-> second. This will allow adding a second IRQ without having to free all 
-> the old irqs and reacquire the new number (as it is done today).
->
-> This dynamic behavior is only for MSIx/IMS backed entries. For legacy
-> MSI, QEMU will allocate everything upfront. Since it has a
-> "num_vectors" enabled, nothing can be dynamically done for MSI. Kevin
-> is looking to have this fixed for legacy to stop the dynamic part for
-> MSI. We are pursuing this change just for IMS first, and once it
-> works, we can replicate the same for MSIx too.
-
-No. Fix the existing stuff first and then IMS just works.
-
-> In order to make IMS dynamic, we were thinking of the following 
-> enhancements to the IMS core:
->
-> 1. Device Driver specifies maximum number of interrupts the sub device 
-> is allowed to request, while creating the dev-msi domain. E.g. in the 
-> case of DSA, Driver can specify that each mdev created can have upto X
-
-Why would this be mdev specific? IIRC the sub devices can be used on
-bare metal as well.
-
-> number of IMS interrupts. If device asks for more than this number,it 
-> will behave like how current IRQ allocation works i.e. give what is 
-> available.
->
-> 2. Driver can ask for more interrupts after probe as well as long as the 
-> request has not exceeded the maximum permitted for it and the physical 
-> device has the requested number available.
-
-Ok.
-
-> We are still working on the virtualization flows: when guest updates 
-> PASID, and how it flows to host IMS update. But we will come to that 
-> once the above pieces are agreed upon.
-
-Hypercall?
-
-Thanks,
-
-        tglx
+-- 
+Michal Hocko
+SUSE Labs
