@@ -2,120 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA743BE4C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0303BE4C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbhGGIzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:55:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49795 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230446AbhGGIzo (ORCPT
+        id S231243AbhGGI4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230446AbhGGI4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:55:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625647984;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 7 Jul 2021 04:56:09 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FC7C061574;
+        Wed,  7 Jul 2021 01:53:29 -0700 (PDT)
+Date:   Wed, 07 Jul 2021 08:53:22 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1625648003;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RSGta0qNpB6QcJ/llRMjKtAhvAPIvAnC+iGh3rJx/qg=;
-        b=hJtnXPMJIcE5o8NZgK0nnNYUwrB/6eLhIX1CQcKNw/EZqNPt4cXqHG8in8yY7OfXwdXMBD
-        EFxLHaFVFpjcbkSXbtajKDTSiRScTnwz4QbCpTZiB2IlygToNIGPMsyN7ChEM7ITdTNSGy
-        r1dwppbklqiEsBN/O6dKbYXg1Yvoo4w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-68-v1nUrO-5Ov24IW-5AspE9w-1; Wed, 07 Jul 2021 04:53:03 -0400
-X-MC-Unique: v1nUrO-5Ov24IW-5AspE9w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4831F1800D41;
-        Wed,  7 Jul 2021 08:53:00 +0000 (UTC)
-Received: from localhost (ovpn-114-152.ams2.redhat.com [10.36.114.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A3E7719C44;
-        Wed,  7 Jul 2021 08:52:55 +0000 (UTC)
-Date:   Wed, 7 Jul 2021 09:52:54 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Xie Yongji <xieyongji@bytedance.com>
-Cc:     mst@redhat.com, jasowang@redhat.com, sgarzare@redhat.com,
-        parav@nvidia.com, hch@infradead.org,
-        christian.brauner@canonical.com, rdunlap@infradead.org,
-        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
-        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, joro@8bytes.org,
-        gregkh@linuxfoundation.org, songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 09/10] vduse: Introduce VDUSE - vDPA Device in
- Userspace
-Message-ID: <YOVrZtGIEjZZSSoU@stefanha-x1.localdomain>
-References: <20210615141331.407-1-xieyongji@bytedance.com>
- <20210615141331.407-10-xieyongji@bytedance.com>
+        bh=uCHCWp8ndiR6lOv98SSA62tiZhc4JfuP0/2leH5eEtw=;
+        b=rAaisTgJhJqgj2qjA0O6nWzA4nVGtiM/u7YN3G/68GpBzC+TOAssTTEjmYg98Mgmevhb6B
+        6tRiLvHjuccnZdg4UPqpuXeK3zeVRiN6gppWyNhkQdpuRX1mQcUV+WA1JDuKMPM/IVWU8K
+        pwkmoaPMITzV7qK1xHZti2K+4vYM24TNyargaAoCb+ngk8CqShFEATcFqdbHTWvWPYvwlI
+        MgfKm/xCeNSJ/hSEbVzMwq6OkJvf1p2Vw+pVdSv1PQSNCti8DlHIX5oNBRKY1vdXpCXEoa
+        7BHu0H1+3md0ufj1M06bXwYRPaZX/aahjM+bBXHWH7bxKJAwYJSK3NBv0E77xg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1625648003;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uCHCWp8ndiR6lOv98SSA62tiZhc4JfuP0/2leH5eEtw=;
+        b=o0dghBrpePW7Sbd3aTpBjENR64n5Zb2aeyx16FanTV4dTEou3YjLPa900M2iItuyTYq+hC
+        pw1VOd0DY/6R1HDQ==
+From:   "tip-bot2 for Mark Rutland" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] locking/atomic: sparc: Fix arch_cmpxchg64_local()
+Cc:     Anatoly Pugachev <matorola@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210707083032.567-1-mark.rutland@arm.com>
+References: <20210707083032.567-1-mark.rutland@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FCq4Eu07/ej1hAmI"
-Content-Disposition: inline
-In-Reply-To: <20210615141331.407-10-xieyongji@bytedance.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Message-ID: <162564800212.395.6261331440225066736.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the locking/urgent branch of tip:
 
---FCq4Eu07/ej1hAmI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Commit-ID:     7e1088760cfe0bb1fdb1f0bd155bfd52f080683a
+Gitweb:        https://git.kernel.org/tip/7e1088760cfe0bb1fdb1f0bd155bfd52f080683a
+Author:        Mark Rutland <mark.rutland@arm.com>
+AuthorDate:    Wed, 07 Jul 2021 09:30:32 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 07 Jul 2021 10:47:21 +02:00
 
-On Tue, Jun 15, 2021 at 10:13:30PM +0800, Xie Yongji wrote:
-> +static bool vduse_validate_config(struct vduse_dev_config *config)
-> +{
+locking/atomic: sparc: Fix arch_cmpxchg64_local()
 
-The name field needs to be NUL terminated?
+Anatoly reports that since commit:
 
-> +	case VDUSE_CREATE_DEV: {
-> +		struct vduse_dev_config config;
-> +		unsigned long size = offsetof(struct vduse_dev_config, config);
-> +		void *buf;
-> +
-> +		ret = -EFAULT;
-> +		if (copy_from_user(&config, argp, size))
-> +			break;
-> +
-> +		ret = -EINVAL;
-> +		if (vduse_validate_config(&config) == false)
-> +			break;
-> +
-> +		buf = vmemdup_user(argp + size, config.config_size);
-> +		if (IS_ERR(buf)) {
-> +			ret = PTR_ERR(buf);
-> +			break;
-> +		}
-> +		ret = vduse_create_dev(&config, buf, control->api_version);
-> +		break;
-> +	}
-> +	case VDUSE_DESTROY_DEV: {
-> +		char name[VDUSE_NAME_MAX];
-> +
-> +		ret = -EFAULT;
-> +		if (copy_from_user(name, argp, VDUSE_NAME_MAX))
-> +			break;
+  ff5b4f1ed580c59d ("locking/atomic: sparc: move to ARCH_ATOMIC")
 
-Is this missing a NUL terminator?
+... it's possible to reliably trigger an oops by running:
 
---FCq4Eu07/ej1hAmI
-Content-Type: application/pgp-signature; name="signature.asc"
+  stress-ng -v --mmap 1 -t 30s
 
------BEGIN PGP SIGNATURE-----
+... which results in a NULL pointer dereference in
+__split_huge_pmd_locked().
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDla2YACgkQnKSrs4Gr
-c8iwDwgAklDinwoNdcTKlrJAeuzd7lkg6g0pp6GgPOoSoPbIEzizyjezLIi98oHV
-vF5TkSJ9SmhwrTkrfniJQf7czNd+oWvB/PeLW+YOTNYnHkS4AlS4z4/Z48sAiees
-bjx0y6rK8AKEd1d2F5lOEbHr1hyPAEuA5j1trgrHzaUhKLKiRfCYQI0mJIaWYUTT
-5AJ6lKidGWNOayzU4/GQ+PfEPahMie3/T2g+ivR4j0E6YLNvJs7CFFerZYRNGLXQ
-D5MqzXxvgHF75J7QuXmOOYTRhRMzWoYI4K6EfwzZJHWIJrBhVeXogKJ0Z4tnp82W
-f66VauRbMPZNCJ5g0gXGzczBzlXh0A==
-=aR1n
------END PGP SIGNATURE-----
+The underlying problem is that commit ff5b4f1ed580c59d left
+arch_cmpxchg64_local() defined in terms of cmpxchg_local() rather than
+arch_cmpxchg_local(). In <asm-generic/atomic-instrumented.h> we wrap
+these with macros which use identically-named variables. When
+cmpxchg_local() nests inside cmpxchg64_local(), this casues it to use an
+unitialized variable as the pointer, which can be NULL.
 
---FCq4Eu07/ej1hAmI--
+This can also be seen in pmdp_establish(), where the compiler can
+generate the pointer with a `clr` instruction:
 
+0000000000000360 <pmdp_establish>:
+ 360:   9d e3 bf 50     save  %sp, -176, %sp
+ 364:   fa 5e 80 00     ldx  [ %i2 ], %i5
+ 368:   82 10 00 1b     mov  %i3, %g1
+ 36c:   84 10 20 00     clr  %g2
+ 370:   c3 f0 90 1d     casx  [ %g2 ], %i5, %g1
+ 374:   80 a7 40 01     cmp  %i5, %g1
+ 378:   32 6f ff fc     bne,a   %xcc, 368 <pmdp_establish+0x8>
+ 37c:   fa 5e 80 00     ldx  [ %i2 ], %i5
+ 380:   d0 5e 20 40     ldx  [ %i0 + 0x40 ], %o0
+ 384:   96 10 00 1b     mov  %i3, %o3
+ 388:   94 10 00 1d     mov  %i5, %o2
+ 38c:   92 10 00 19     mov  %i1, %o1
+ 390:   7f ff ff 84     call  1a0 <__set_pmd_acct>
+ 394:   b0 10 00 1d     mov  %i5, %i0
+ 398:   81 cf e0 08     return  %i7 + 8
+ 39c:   01 00 00 00     nop
+
+This patch fixes the problem by defining arch_cmpxchg64_local() in terms
+of arch_cmpxchg_local(), avoiding potential shadowing, and resulting in
+working cmpxchg64_local() and variants, e.g.
+
+0000000000000360 <pmdp_establish>:
+ 360:   9d e3 bf 50     save  %sp, -176, %sp
+ 364:   fa 5e 80 00     ldx  [ %i2 ], %i5
+ 368:   82 10 00 1b     mov  %i3, %g1
+ 36c:   c3 f6 90 1d     casx  [ %i2 ], %i5, %g1
+ 370:   80 a7 40 01     cmp  %i5, %g1
+ 374:   32 6f ff fd     bne,a   %xcc, 368 <pmdp_establish+0x8>
+ 378:   fa 5e 80 00     ldx  [ %i2 ], %i5
+ 37c:   d0 5e 20 40     ldx  [ %i0 + 0x40 ], %o0
+ 380:   96 10 00 1b     mov  %i3, %o3
+ 384:   94 10 00 1d     mov  %i5, %o2
+ 388:   92 10 00 19     mov  %i1, %o1
+ 38c:   7f ff ff 85     call  1a0 <__set_pmd_acct>
+ 390:   b0 10 00 1d     mov  %i5, %i0
+ 394:   81 cf e0 08     return  %i7 + 8
+ 398:   01 00 00 00     nop
+ 39c:   01 00 00 00     nop
+
+Fixes: ff5b4f1ed580c59d ("locking/atomic: sparc: move to ARCH_ATOMIC")
+Reported-by: Anatoly Pugachev <matorola@gmail.com>
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Tested-by: Anatoly Pugachev <matorola@gmail.com>
+Link: https://lore.kernel.org/r/20210707083032.567-1-mark.rutland@arm.com
+---
+ arch/sparc/include/asm/cmpxchg_64.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/sparc/include/asm/cmpxchg_64.h b/arch/sparc/include/asm/cmpxchg_64.h
+index 8c39a99..12d00a4 100644
+--- a/arch/sparc/include/asm/cmpxchg_64.h
++++ b/arch/sparc/include/asm/cmpxchg_64.h
+@@ -201,7 +201,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
+ #define arch_cmpxchg64_local(ptr, o, n)					\
+   ({									\
+ 	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
+-	cmpxchg_local((ptr), (o), (n));					\
++	arch_cmpxchg_local((ptr), (o), (n));					\
+   })
+ #define arch_cmpxchg64(ptr, o, n)	arch_cmpxchg64_local((ptr), (o), (n))
+ 
