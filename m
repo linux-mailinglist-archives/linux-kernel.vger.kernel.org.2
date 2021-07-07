@@ -2,141 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC713BE2F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 08:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8AC3BE2FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 08:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbhGGGP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 02:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhGGGPz (ORCPT
+        id S230314AbhGGGZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 02:25:02 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:49382 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230263AbhGGGY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 02:15:55 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6EDC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 23:13:14 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id u11so2200956oiv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 23:13:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rhjFQjqsGps5ZLlP2FObo/mUu7sdKPBCFwRRv8flp0I=;
-        b=fFV29eXG/dIcXGPg5Ky+Joyl3xNLOkue/i5/K2twzWb8FCmN6jU6Z3MF/9IStQ2rKi
-         rEMLvPqdaE+hDYdb/rMTNx7EX1N+iCkx9Tqc8Y0Xbb3FGcZBTEkUsoOYs1+HZDj2Bug4
-         DtOzOsJWtsn+avPzTdwEUgCQhjqQQGEihfx5MQlTTlPm4eek+NYft0Q4nMjI5kBAbMyI
-         C+/C6IrxoK/doS4HgexKloO2rwHOWZcQllIuJ9ldLA5KAiPjRkuXivur3Kxl8SuvKDCl
-         hvUMx1+nB76UDTe7DxlG+QOlxEKUNjlqNKnFirs1eGSRfKUAknosA1UVGnt6zO9/xONL
-         4+kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rhjFQjqsGps5ZLlP2FObo/mUu7sdKPBCFwRRv8flp0I=;
-        b=lzds6q3woGOTR3lhqHsMudP7qnf91Dl8z7Cths0htRA3JNKSExxN46bmJzu8kfXpjz
-         BSRTeZzDLvAFahHRywtJV+FbbreZRz72UeUrdrZATB9LQxL7avnhCyEts94QOlPBydVN
-         mWLDrn+nGRQxX6zcL4DULCbVspVvc6/mMLKN4hgtOWTTtKHC4DEiZvYY968MfWkE+rVb
-         qSpP2sFU2w1o+6AqetQ0jKySJVXvvx42610luWG0Qw9KXAjVEzNybh6hRYevv/c6QQVL
-         ll8WVc0PgZNf3IakKR8wM1PWJGO8eRGhvBs4V07aVTw4H49JrMfvD5W6Ujbh+5OIKoha
-         N9vw==
-X-Gm-Message-State: AOAM533OWfRZxwyDoj6Vuvt/obDrcML+yVRXfDdJ/efkcUzVJ4EjfG5z
-        qxuSxz9yi4ppBdABgdGyA41FjxovlI3F5O9T8RQ=
-X-Google-Smtp-Source: ABdhPJxhrqzyLUN1NRFFGZauYnCUCsa8+xyKxE745rIfQ4ZKljhKA4AyenC/0jjN5wzH+JnzbGHVYs/q+oRixSae1vU=
-X-Received: by 2002:aca:47c9:: with SMTP id u192mr3587121oia.63.1625638394221;
- Tue, 06 Jul 2021 23:13:14 -0700 (PDT)
+        Wed, 7 Jul 2021 02:24:59 -0400
+X-UUID: 87359ab336e54140974126ad410e9b71-20210707
+X-UUID: 87359ab336e54140974126ad410e9b71-20210707
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1821048477; Wed, 07 Jul 2021 14:22:17 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 7 Jul 2021 14:22:15 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 7 Jul 2021 14:22:14 +0800
+From:   Yunfei Dong <yunfei.dong@mediatek.com>
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH v1, 00/14] Using component framework to support multi hardware decode
+Date:   Wed, 7 Jul 2021 14:21:43 +0800
+Message-ID: <20210707062157.21176-1-yunfei.dong@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <1623844402-4731-1-git-send-email-zhenguo6858@gmail.com>
-In-Reply-To: <1623844402-4731-1-git-send-email-zhenguo6858@gmail.com>
-From:   =?UTF-8?B?6LW15oyv5Zu9?= <zhenguo6858@gmail.com>
-Date:   Wed, 7 Jul 2021 14:12:55 +0800
-Message-ID: <CAGGV+3+5g_DbBvjT+EqEGaaLv2-50hrpr5dZSF+SyH8gvzs6RQ@mail.gmail.com>
-Subject: Re: [PATCH v2] tty: n_gsm: CR bit value should be 0 when config "initiator=0"
-To:     =?UTF-8?B?6LW15oyv5Zu9?= <zhenguo6858@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Jiri,Greg
+This series adds support for multi hardware decode into mtk-vcodec, by first
+adding component framework to manage each hardware information: interrupt,
+clock, register bases and power. Secondly add core thread to deal with core
+hardware message, at the same time, add msg queue for different hardware
+share messages. Lastly, the architecture of different specs are not the same,
+using specs type to separate them.
 
- 1:   our development board uses linux kernel , uart dev node is "/dev/ttyGS2"
- 2:   config uart "/dev/ttyGS2" ,we use ngsm ldisc,and config
-"c.initiator = 0;" code is as follows
+This series has been tested with both MT8183 and MT8173. Decoding was working
+for both chips.
 
-  #include <stdio.h>
-  #include <stdint.h>
-  #include <linux/gsmmux.h>
-  #include <linux/tty.h>
-  #define DEFAULT_SPEED      B115200
-  #define SERIAL_PORT        /dev/ttyGS2
+Patches 1,2 rewrite get register bases and power on/off interface.
 
-     int ldisc = N_GSM0710;
-     struct gsm_config c;
-     struct termios configuration;
-     uint32_t first;
+Patch 3-5 add component framework to support multi hardware.
 
-     /* open the serial port */
-     fd = open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY);
+Patches 6-14 add interfaces to support core hardware.
+----
+This patch dependents on "media: mtk-vcodec: support for MT8183 decoder"[1].
 
-     /* configure the serial port : speed, flow control ... */
+Multi hardware decode is based on stateless decoder, MT8183 is the first
+time to add stateless decoder. Otherwise it will cause conflict.
+Please also accept this patch together with [1].
 
-     /* use n_gsm line discipline */
-     ioctl(fd, TIOCSETD, &ldisc);
+[1]https://lore.kernel.org/patchwork/project/lkml/list/?series=507084
+----
 
-     /* get n_gsm configuration */
-     ioctl(fd, GSMIOC_GETCONF, &c);
-     /* we are responter and need encoding 0 (basic) */
-     c.initiator = 0;
-     c.encapsulation = 0;
-     /* our modem defaults to a maximum size of 127 bytes */
-     c.mru = 127;
-     c.mtu = 127;
-    /* set the new configuration */
-     ioctl(fd, GSMIOC_SETCONF, &c);
-     /* get first gsmtty device node */
-     ioctl(fd, GSMIOC_GETFIRST, &first);
-     printf("first muxed line: /dev/gsmtty%i\n", first);
+Yunfei Dong (14):
+  media: mtk-vcodec: Get numbers of register bases from DT
+  media: mtk-vcodec: Refactor vcodec pm interface
+  media: mtk-vcodec: Use component framework to manage each hardware
+    information
+  dt-bindings: media: mtk-vcodec: Separate video encoder and decoder
+    dt-bindings
+  media: mtk-vcodec: Use pure single core for MT8183
+  media: mtk-vcodec: Add irq interface for core hardware
+  media: mtk-vcodec: Add msg queue feature for lat and core architecture
+  media: mtk-vcodec: Generalize power and clock on/off interfaces
+  media: mtk-vcodec: Add new interface to lock different hardware
+  media: mtk-vcodec: Add core thread
+  media: mtk-vcodec: Support 34bits dma address for vdec
+  dt-bindings: media: mtk-vcodec: Adds decoder dt-bindings for mt8192
+  media: mtk-vcodec: Add core dec and dec end ipi msg
+  media: mtk-vcodec: Use codec type to separate different hardware
 
-     /* and wait for ever to keep the line discipline enabled */
-     daemon(0,0);
-     pause();
+ .../media/mediatek-vcodec-comp-decoder.txt    |  93 ++++++
+ .../media/mediatek-vcodec-decoder.txt         | 169 +++++++++++
+ .../media/mediatek-vcodec-encoder.txt         |  73 +++++
+ drivers/media/platform/mtk-vcodec/Makefile    |   2 +
+ .../platform/mtk-vcodec/mtk_vcodec_dec.c      |   4 +-
+ .../platform/mtk-vcodec/mtk_vcodec_dec.h      |   4 +
+ .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  | 286 +++++++++++++++---
+ .../platform/mtk-vcodec/mtk_vcodec_dec_hw.c   | 193 ++++++++++++
+ .../platform/mtk-vcodec/mtk_vcodec_dec_hw.h   |  51 ++++
+ .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c   |  98 ++++--
+ .../platform/mtk-vcodec/mtk_vcodec_dec_pm.h   |  13 +-
+ .../mtk-vcodec/mtk_vcodec_dec_stateful.c      |   1 +
+ .../mtk-vcodec/mtk_vcodec_dec_stateless.c     |   1 +
+ .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  69 ++++-
+ .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   |   1 -
+ .../platform/mtk-vcodec/mtk_vcodec_intr.c     |  30 ++
+ .../platform/mtk-vcodec/mtk_vcodec_intr.h     |   2 +
+ .../platform/mtk-vcodec/mtk_vcodec_util.c     |  87 +++++-
+ .../platform/mtk-vcodec/mtk_vcodec_util.h     |   8 +-
+ .../media/platform/mtk-vcodec/vdec_drv_if.c   |  21 +-
+ .../media/platform/mtk-vcodec/vdec_ipi_msg.h  |  16 +-
+ .../platform/mtk-vcodec/vdec_msg_queue.c      | 266 ++++++++++++++++
+ .../platform/mtk-vcodec/vdec_msg_queue.h      | 136 +++++++++
+ .../media/platform/mtk-vcodec/vdec_vpu_if.c   |  46 ++-
+ .../media/platform/mtk-vcodec/vdec_vpu_if.h   |  22 ++
+ 25 files changed, 1582 insertions(+), 110 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek-vcodec-comp-decoder.txt
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek-vcodec-decoder.txt
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek-vcodec-encoder.txt
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.h
+ create mode 100644 drivers/media/platform/mtk-vcodec/vdec_msg_queue.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/vdec_msg_queue.h
 
-3:  connect to ubuntu by uart serial port cable,ubuntu uart dev node
-is /"dev/ttyUSB0"
-send  DLC0 SABM command by "/dev/ttyUSB0",but linux development board
-can't response,code is as follows
+-- 
+2.18.0
 
-int main(int argc, char **argv)
-{
-    int fd;
-fd = open("/dev/ttyUSB0,O_RDWR | O_NOCTTY | O_NDELAY);
-char buf[256]={0xf9,0x03,0x3f,0x01,0x1c,0xf9};
-write(fd,buf,6);
-close(fd);
-}
-
-4:  linux development board receive data,by uart,gsm_queue will check
-CR,find CR=1.so go to invalid,pls check again.
-static void gsm_queue(struct gsm_mux *gsm)
-{
-cr ^= 1 - gsm->initiator; /* Flip so 1 always means command */
-dlci = gsm->dlci[address];
-
-switch (gsm->control) {
-case SABM|PF:
-if (cr == 0)
-goto invalid;
-if (dlci == NULL)
-dlci = gsm_dlci_alloc(gsm, address);
-if (dlci == NULL)
-return;
-if (dlci->dead)
-gsm_response(gsm, address, DM);
-else {
-gsm_response(gsm, address, UA);
-gsm_dlci_open(dlci);
-}
-break;
