@@ -2,187 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822FB3BE51C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84773BE520
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhGGJJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:09:29 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58067 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231192AbhGGJJ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:09:28 -0400
-Received: from mail-ed1-f72.google.com ([209.85.208.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1m13W3-0003gL-Hy
-        for linux-kernel@vger.kernel.org; Wed, 07 Jul 2021 09:06:47 +0000
-Received: by mail-ed1-f72.google.com with SMTP id d17-20020a05640208d1b0290399de3a0eecso1113471edz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 02:06:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0necEU8e5FhQWXyC3Rvz4/BXveBFcPGobL6M/DCru1A=;
-        b=TbGoaOOx8A5P1RYfDYF/RA1aeV1XcBZISrB8i9IyIFXbXzN1s1iILiLHgYAeXC3Jiy
-         5n9g8QeiRLR2wn7wurjxNxRt0aJcCjNK6PLiuXVYSC40kFkc/zSDfnT2IMZN+jxMoMtA
-         PcR22d98/+aErAle/eKIbgyD8hPB7Tq5P4gBbianRvb9inUPGTjCInIETsoD7NhLuCiM
-         RYd3HOSRyzvUTF2tH82waaEGgMrAN9AtTbLxSIlZTJ0wsOBnW+7wvg01KlNfo2rXXV8m
-         pti2ar4bcNub7GZPv4/LIV1fsYVOVzprSZywraCSaKZ/seBZ3/xqjHwcYRxz6hC4/FJT
-         UT+g==
-X-Gm-Message-State: AOAM532U5FmUWl5ucxTZxEp3jiIpO26wvRSg7s1zmbf4/oKQ801Fx8Ed
-        fSb609963l8QQAhncoPTbSoI34AuJk6ySrf7CSD0NvwKBhCB1MZ9gOYahwhXomvpl4IZyX3nWoU
-        woT6xntj0T788O7/YNi/It+BoaWnSrApwvw8s7ArYehpxvn0Tl2epI+T+cg==
-X-Received: by 2002:aa7:c9d8:: with SMTP id i24mr28839312edt.79.1625648807165;
-        Wed, 07 Jul 2021 02:06:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy8wi+Ed3XHH16Z0vLCEVgGT/EtJ6LgPi+mEC/E+N+VrH4ACMMcZRhglG4+UWYvA8Ujq43rSYhWiKIIZ1O08kA=
-X-Received: by 2002:aa7:c9d8:: with SMTP id i24mr28839293edt.79.1625648806897;
- Wed, 07 Jul 2021 02:06:46 -0700 (PDT)
+        id S231270AbhGGJKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:10:17 -0400
+Received: from mga02.intel.com ([134.134.136.20]:43997 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230166AbhGGJKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 05:10:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="196435148"
+X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
+   d="scan'208";a="196435148"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 02:07:29 -0700
+X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
+   d="scan'208";a="486741150"
+Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.11])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 02:07:25 -0700
+Date:   Wed, 7 Jul 2021 17:07:22 +0800
+From:   kernel test robot <rong.a.chen@intel.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Odin Ugedal <odin@uged.al>, Peter Zijlstra <peterz@infradead.org>,
+        Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kbuild test robot <lkp@intel.com>, ltp@lists.linux.it,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Chen Yu <yu.c.chen@intel.com>
+Subject: Re: [sched/fair] 1c35b07e6d: RIP:native_queued_spin_lock_slowpath
+Message-ID: <20210707090722.GH2022171@shao2-debian>
+References: <20210706085652.GF2022171@shao2-debian>
+ <CAKfTPtBnEmMFwCWD3sGP=vrbG8tkLncKbjStYLN+od3z0K=RrA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210706065106.271765-1-kai.heng.feng@canonical.com>
- <d9fa9a62-6522-7d26-0cca-16f6886136ec@arm.com> <CAAd53p7ZXWkD8DiL0kMP8dZA5qFGRcdAMizv3THgo2XABPe25g@mail.gmail.com>
- <55a31c97-a3f4-97d7-0663-13c15b68d5c0@arm.com>
-In-Reply-To: <55a31c97-a3f4-97d7-0663-13c15b68d5c0@arm.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Wed, 7 Jul 2021 17:06:35 +0800
-Message-ID: <CAAd53p4e0_Doj3JGU6wU_C6QxQatb=p5N=sGoqAx+yQowJiERA@mail.gmail.com>
-Subject: Re: [PATCH] iommu: Fallback to default setting when def_domain_type()
- callback returns 0
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, will@kernel.org,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtBnEmMFwCWD3sGP=vrbG8tkLncKbjStYLN+od3z0K=RrA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 2:03 AM Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2021-07-06 17:21, Kai-Heng Feng wrote:
-> > On Tue, Jul 6, 2021 at 5:27 PM Robin Murphy <robin.murphy@arm.com> wrote:
-> >>
-> >> On 2021-07-06 07:51, Kai-Heng Feng wrote:
-> >>> Commit 28b41e2c6aeb ("iommu: Move def_domain type check for untrusted
-> >>> device into core") not only moved the check for untrusted device to
-> >>> IOMMU core, it also introduced a behavioral change by returning
-> >>> def_domain_type() directly without checking its return value. That makes
-> >>> many devices no longer use the default IOMMU setting.
-> >>>
-> >>> So revert back to the old behavior which defaults to
-> >>> iommu_def_domain_type when driver callback returns 0.
-> >>>
-> >>> Fixes: 28b41e2c6aeb ("iommu: Move def_domain type check for untrusted device into core")
-> >>
-> >> Are you sure about that? From that same commit:
-> >>
-> >> @@ -1507,7 +1509,7 @@ static int iommu_alloc_default_domain(struct
-> >> iommu_group *group,
-> >>           if (group->default_domain)
-> >>                   return 0;
-> >>
-> >> -       type = iommu_get_def_domain_type(dev);
-> >> +       type = iommu_get_def_domain_type(dev) ? : iommu_def_domain_type;
-> >>
-> >>           return iommu_group_alloc_default_domain(dev->bus, group, type);
-> >>    }
-> >>
-> >> AFAICS the other two callers should also handle 0 correctly. Have you
-> >> seen a problem in practice?
+On Tue, Jul 06, 2021 at 11:08:54AM +0200, Vincent Guittot wrote:
+> Hi Rong
+> 
+> On Tue, 6 Jul 2021 at 10:56, kernel test robot <rong.a.chen@intel.com> wrote:
 > >
-> > Thanks for pointing out how the return value is being handled by the callers.
-> > However, the same check is missing in probe_get_default_domain_type():
-> > static int probe_get_default_domain_type(struct device *dev, void *data)
-> > {
-> >          struct __group_domain_type *gtype = data;
-> >          unsigned int type = iommu_get_def_domain_type(dev);
-> > ...
-> > }
->
-> I'm still not following - the next line right after that is "if (type)",
-> which means it won't touch gtype, and if that happens for every
-> iteration, probe_alloc_default_domain() subsequently hits its "if
-> (!gtype.type)" condition and still ends up with iommu_def_domain_type.
-> This *was* one of the other two callers I was talking about (the second
-> being iommu_change_dev_def_domain()), and in fact on second look I think
-> your proposed change will actually break this logic, since it's
-> necessary to differentiate between a specific type being requested for
-> the given device, and a "don't care" response which only implies to use
-> the global default type if it's still standing after *all* the
-> appropriate devices have been queried.
-
-You are right, what I am seeing here is that the AMD GFX is using
-IOMMU_DOMAIN_IDENTITY, and makes other devices in the same group,
-including the Realtek WiFi, to use IOMMU_DOMAIN_IDENTITY as well.
-
->
-> > I personally prefer the old way instead of open coding with ternary
-> > operator, so I'll do that in v2.
+> > Greeting,
 > >
-> > In practice, this causes a kernel panic when probing Realtek WiFi.
-> > Because of the bug, dma_ops isn't set by probe_finalize(),
-> > dma_map_single() falls back to swiotlb which isn't set and caused a
-> > kernel panic.
->
-> Hmm, but if that's the case, wouldn't it still be a problem anyway if
-> the end result was IOMMU_DOMAIN_IDENTITY? I can't claim to fully
-> understand the x86 swiotlb and no_iommu dance, but nothing really stands
-> out to give me confidence that it handles the passthrough options correctly.
-
-Yes, I think AMD IOMMU driver needs more thourough check on
-static void __init amd_iommu_init_dma_ops(void)
-{
-        swiotlb = (iommu_default_passthrough() || sme_me_mask) ? 1 : 0;
-...
-}
-
-Since swiotlb gets disabled by the check, but the Realtek WiFi is only
-capable of doing 32bit DMA, the kernel panics because
-io_tlb_default_mem is NULL.
-
-Thanks again for pointing to the right direction, this patch is indeed
-incorrect.
-
-Kai-Heng
-
->
-> Robin.
->
-> > I didn't attach the panic log because the system simply is frozen at
-> > that point so the message is not logged to the storage.
-> > I'll see if I can find another way to collect the log and attach it in v2.
+> > FYI, we noticed the following commit (built with gcc-9):
 > >
-> > Kai-Heng
+> > commit: 1c35b07e6d3986474e5635be566e7bc79d97c64d ("sched/fair: Ensure _sum and _avg values stay consistent")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> I don't think this commit is the real culprit as it mainly replaces a
+> sub by a mul whereas the dmesg mentioned spinlock deadlock . Have you
+> bisect the problem down to this commit or you faced the problem while
+> testing latest master branch ?
+
+Hi Vincent,
+
+It's bisected by 0day-CI, I tried to run more times and found the issue is not
+first introduced by this commit, but boot always failed with this commit.
+
+adf3c31e18b765ea 1c35b07e6d3986474e5635be566
+---------------- ---------------------------
+       fail:runs  %reproduction    fail:runs
+           |             |             |
+          7:15         -47%            :12    last_state.booting
+          2:15          67%          12:12    dmesg.Kernel_panic-not_syncing:Hard_LOCKUP                                                                                    
+           :15           7%           1:12    dmesg.RIP:cpuidle_enter_state
+          2:15          67%          12:12    dmesg.RIP:native_queued_spin_lock_slowpath                                                                                    
+           :15           7%           1:12    dmesg.RIP:sd_init_command[sd_mod]
+          1:15          -7%            :12    dmesg.RIP:update_blocked_averages
+          1:15          -7%            :12    dmesg.WARNING:at_kernel/sched/fair.c:#update_blocked_averages                                                                 
+          3:15          60%          12:12    dmesg.boot_failures
+
+Best Regards,
+Rong Chen
+
+> 
 > >
-> >>
-> >> Robin.
-> >>
-> >>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> >>> ---
-> >>>    drivers/iommu/iommu.c | 5 +++--
-> >>>    1 file changed, 3 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> >>> index 5419c4b9f27a..faac4f795025 100644
-> >>> --- a/drivers/iommu/iommu.c
-> >>> +++ b/drivers/iommu/iommu.c
-> >>> @@ -1507,14 +1507,15 @@ EXPORT_SYMBOL_GPL(fsl_mc_device_group);
-> >>>    static int iommu_get_def_domain_type(struct device *dev)
-> >>>    {
-> >>>        const struct iommu_ops *ops = dev->bus->iommu_ops;
-> >>> +     unsigned int type = 0;
-> >>>
-> >>>        if (dev_is_pci(dev) && to_pci_dev(dev)->untrusted)
-> >>>                return IOMMU_DOMAIN_DMA;
-> >>>
-> >>>        if (ops->def_domain_type)
-> >>> -             return ops->def_domain_type(dev);
-> >>> +             type = ops->def_domain_type(dev);
-> >>>
-> >>> -     return 0;
-> >>> +     return (type == 0) ? iommu_def_domain_type : type;
-> >>>    }
-> >>>
-> >>>    static int iommu_group_alloc_default_domain(struct bus_type *bus,
-> >>>
+> >
+> > in testcase: ltp
+> > version: ltp-x86_64-14c1f76-1_20210703
+> > with following parameters:
+> >
+> >         disk: 1HDD
+> >         fs: ext4
+> >         test: dio-01
+> >         ucode: 0xe2
+> >
+> > test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+> > test-url: http://linux-test-project.github.io/
+> >
+> >
+> > on test machine: 8 threads Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz with 28G memory
+> >
+> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> >
+> >
+> >
+> > If you fix the issue, kindly add following tag
+> > Reported-by: kernel test robot <rong.a.chen@intel.com>
+> >
+> >
+> > [  160.446205]
+> > [  160.451594] <<<test_output>>>
+> > [  160.451595]
+> > [  178.116525] ------------[ cut here ]------------
+> > [  203.592757] NMI watchdog: Watchdog detected hard LOCKUP on cpu 3
+> > [  203.592758] Modules linked in: dm_mod btrfs blake2b_generic xor zstd_compress raid6_pq libcrc32c ipmi_devintf ipmi_msghandler sd_mod t10_pi sg intel_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerclamp coretemp i915 kvm_intel kvm irqbypass crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel mei_wdt intel_gtt drm_kms_helper ahci rapl syscopyarea libahci sysfillrect intel_cstate sysimgblt mei_me fb_sys_fops wmi_bmof drm intel_uncore libata mei joydev intel_pch_thermal wmi video intel_pmc_core acpi_pad ip_tables
+> > [  203.592770] CPU: 3 PID: 3103 Comm: diotest6 Tainted: G          I       5.13.0-rc6-00076-g1c35b07e6d39 #1
+> > [  203.592770] Hardware name: Dell Inc. OptiPlex 7040/0Y7WYT, BIOS 1.2.8 01/26/2016
+> > [  203.592771] RIP: 0010:native_queued_spin_lock_slowpath (kbuild/src/consumer/kernel/locking/qspinlock.c:382 kbuild/src/consumer/kernel/locking/qspinlock.c:315)
+> > [ 203.592771] Code: 6c f0 0f ba 2f 08 0f 92 c0 0f b6 c0 c1 e0 08 89 c2 8b 07 30 e4 09 d0 a9 00 01 ff ff 75 46 85 c0 74 0e 8b 07 84 c0 74 08 f3 90 <8b> 07 84 c0 75 f8 b8 01 00 00 00 66 89 07 c3 8b 37 b8 00 02 00 00
+> > All code
+> > ========
+> >    0:   6c                      insb   (%dx),%es:(%rdi)
+> >    1:   f0 0f ba 2f 08          lock btsl $0x8,(%rdi)
+> >    6:   0f 92 c0                setb   %al
+> >    9:   0f b6 c0                movzbl %al,%eax
+> >    c:   c1 e0 08                shl    $0x8,%eax
+> >    f:   89 c2                   mov    %eax,%edx
+> >   11:   8b 07                   mov    (%rdi),%eax
+> >   13:   30 e4                   xor    %ah,%ah
+> >   15:   09 d0                   or     %edx,%eax
+> >   17:   a9 00 01 ff ff          test   $0xffff0100,%eax
+> >   1c:   75 46                   jne    0x64
+> >   1e:   85 c0                   test   %eax,%eax
+> >   20:   74 0e                   je     0x30
+> >   22:   8b 07                   mov    (%rdi),%eax
+> >   24:   84 c0                   test   %al,%al
+> >   26:   74 08                   je     0x30
+> >   28:   f3 90                   pause
+> >   2a:*  8b 07                   mov    (%rdi),%eax              <-- trapping instruction
+> >   2c:   84 c0                   test   %al,%al
+> >   2e:   75 f8                   jne    0x28
+> >   30:   b8 01 00 00 00          mov    $0x1,%eax
+> >   35:   66 89 07                mov    %ax,(%rdi)
+> >   38:   c3                      retq
+> >   39:   8b 37                   mov    (%rdi),%esi
+> >   3b:   b8 00 02 00 00          mov    $0x200,%eax
+> >
+> > Code starting with the faulting instruction
+> > ===========================================
+> >    0:   8b 07                   mov    (%rdi),%eax
+> >    2:   84 c0                   test   %al,%al
+> >    4:   75 f8                   jne    0xfffffffffffffffe
+> >    6:   b8 01 00 00 00          mov    $0x1,%eax
+> >    b:   66 89 07                mov    %ax,(%rdi)
+> >    e:   c3                      retq
+> >    f:   8b 37                   mov    (%rdi),%esi
+> >   11:   b8 00 02 00 00          mov    $0x200,%eax
+> > [  203.592772] RSP: 0018:ffffc90001f032d8 EFLAGS: 00000002
+> > [  203.592773] RAX: 0000000000000101 RBX: ffff88810d4a0000 RCX: ffff888759cc0000
+> > [  203.592773] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888759ceba80
+> > [  203.592774] RBP: ffffc90001f032e8 R08: ffff888759ceb420 R09: ffff888759ceb420
+> > [  203.592774] R10: ffff88810cc01500 R11: 0000000000000000 R12: ffff888759ceba80
+> > [  203.592774] R13: 0000000000000000 R14: 0000000000000087 R15: ffff88810d4a0c8c
+> > [  203.592775] FS:  00007fc252ae2740(0000) GS:ffff888759cc0000(0000) knlGS:0000000000000000
+> > [  203.592775] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [  203.592776] CR2: 00007fa0a4d577f8 CR3: 000000074d22a005 CR4: 00000000003706e0
+> > [  203.592776] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [  203.592776] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [  203.592777] Call Trace:
+> > [  203.592777] _raw_spin_lock (kbuild/src/consumer/arch/x86/include/asm/paravirt.h:585 kbuild/src/consumer/arch/x86/include/asm/qspinlock.h:51 kbuild/src/consumer/include/asm-generic/qspinlock.h:85 kbuild/src/consumer/include/linux/spinlock.h:183 kbuild/src/consumer/include/linux/spinlock_api_smp.h:143 kbuild/src/consumer/kernel/locking/spinlock.c:151)
+> > [  203.592777] raw_spin_rq_lock_nested (kbuild/src/consumer/arch/x86/include/asm/preempt.h:85 kbuild/src/consumer/kernel/sched/core.c:462)
+> > [  203.592778] try_to_wake_up (kbuild/src/consumer/kernel/sched/sched.h:1536 kbuild/src/consumer/kernel/sched/sched.h:1611 kbuild/src/consumer/kernel/sched/core.c:3555 kbuild/src/consumer/kernel/sched/core.c:3835)
+> > [  203.592778] __queue_work (kbuild/src/consumer/arch/x86/include/asm/paravirt.h:590 kbuild/src/consumer/arch/x86/include/asm/qspinlock.h:56 kbuild/src/consumer/include/linux/spinlock.h:212 kbuild/src/consumer/include/linux/spinlock_api_smp.h:151 kbuild/src/consumer/kernel/workqueue.c:1501)
+> > [  203.592778] queue_work_on (kbuild/src/consumer/kernel/workqueue.c:1526)
+> >
+> >
+> > To reproduce:
+> >
+> >         git clone https://github.com/intel/lkp-tests.git
+> >         cd lkp-tests
+> >         bin/lkp install                job.yaml  # job file is attached in this email
+> >         bin/lkp split-job --compatible job.yaml  # generate the yaml file for lkp run
+> >         bin/lkp run                    generated-yaml-file
+> >
+> >
+> >
+> > ---
+> > 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
+> > https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
+> >
+> > Thanks,
+> > Rong Chen
+> >
