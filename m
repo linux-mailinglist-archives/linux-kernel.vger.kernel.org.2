@@ -2,96 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF883BE905
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 15:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56C33BE902
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 15:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231787AbhGGNw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 09:52:59 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42522 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbhGGNw7 (ORCPT
+        id S231753AbhGGNwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 09:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230509AbhGGNwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 09:52:59 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id ED1282008E;
-        Wed,  7 Jul 2021 13:50:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625665817;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F3hqrp2GHOyCnrbSK1ZKKcNjEVAJHLGCnMDVMhF4+ww=;
-        b=jJ5I5nA7EPgGPWHkC36kiHzL/lvqYWHLQamWpsODPg1A2GXwSnUHL5i03Xsll43HzWu5xI
-        pSsDLQKs5UW+fi1NCMUbWwuN3UUOaDeAkv/tvWewiRhryeOwAmTRJcuyrwejq58mS+W7L9
-        cQt0e3IEJFUboOgu2Z0DTv5FGVBNeZw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625665817;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F3hqrp2GHOyCnrbSK1ZKKcNjEVAJHLGCnMDVMhF4+ww=;
-        b=Qs0Pf/G2xf6Nt34KVoP8INoCyvW+rqxCL99GZ+uWobnQHQE7QX4uMMOyJDZ9Dkm9nZmtbA
-        4a29fNKb6CuUq9CQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id BD4FFA3D1F;
-        Wed,  7 Jul 2021 13:50:17 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 18908DA6FD; Wed,  7 Jul 2021 15:47:43 +0200 (CEST)
-Date:   Wed, 7 Jul 2021 15:47:43 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     kernel test robot <lkp@intel.com>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: Re: super.c:undefined reference to `__umoddi3'
-Message-ID: <20210707134743.GJ2610@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, kernel test robot <lkp@intel.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <202107061952.nZ61qqwh-lkp@intel.com>
+        Wed, 7 Jul 2021 09:52:38 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E86C061574;
+        Wed,  7 Jul 2021 06:49:57 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id s4so1934084qkm.13;
+        Wed, 07 Jul 2021 06:49:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xM/HXB6EZ/kjhqMXjRqn3qykSAZCYos8ehhLN3+dqMw=;
+        b=r7KTDuXU6VaXhTMjpH4J0bEEV5/S+w5Jf/K3fOExF6GWFS4BObJ6P3qUWutP93lWO4
+         74OnjHLrjsLztkS8+zPIq7RVg9EAmy+5qKCbnoFA1Gz7uuVHsrbPv/zqozo6fPO1+hyU
+         QX39Xnr5vVk9DRgG2y3ub+t9p2xKONBNgOWfuDHaCxLxjVq/EBvKPf7GFqZeCfCzwxXj
+         Pg4QwKRZnXZhbezwuAT2U+YOKW4dNfEWJkZNTP1aIkc7VXumCcMD8Kn7n75CcXYUkflL
+         tv3WOq9Tdt8W019UYt6xWY/Ssa4pydqGdnQ89yyDNY+wFyDhBmxVLalXheL1tuLTg+s7
+         6wRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xM/HXB6EZ/kjhqMXjRqn3qykSAZCYos8ehhLN3+dqMw=;
+        b=mroY6AySYZ+a69b9x0tFQJyWT+gk1qHX2NZv2O0J04mT83Bahfjp9uwoJEmHc8xyeE
+         0gPyXgH/ibzbWe21qwhlGP8zP3RFhOY1KnM0zyYKx72VeK+/HYdBoPbAK2O0nowQHxju
+         seKncH2opPzmPp7NOGwVT/PxNXrkA5cgdCqbhNlezb0NmFocET6BXSraEFqBSM9qe8Ic
+         MrQdwQgfVLCtb/HQ4sMXKdii9t6z0UypXfesw36I2Dd4Q45fM338f/ghvShxuoVGgTph
+         FLcuvNYRdXuYYyKCAo9cNiFHpY/MI8yRK7XUE3z1Zb47txUCV4F9CaIFsGiKpsCxHe4q
+         eVbg==
+X-Gm-Message-State: AOAM533hxIYrwwp2Qe4h9beTWUCyKrVVXlMVV2dctrwwXejn1G4+TqZ9
+        BEnbPxx1kLBhSSUFF1zY1qgSg9kWngE3fyGQATs=
+X-Google-Smtp-Source: ABdhPJyMPgR14Ps1NHWI9dQrwjkry7w+R2XGt2J19etYiWw1kINueBUM3kk1n/jXWfdzY+Yjp6x3QpjUn122tsIfV7s=
+X-Received: by 2002:a05:620a:13ec:: with SMTP id h12mr9480677qkl.217.1625665796840;
+ Wed, 07 Jul 2021 06:49:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202107061952.nZ61qqwh-lkp@intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20210705090050.15077-1-reniuschengl@gmail.com>
+ <CAPDyKFotmw-HQpZKCOD_8kThEa0_KSPnn36FNFLKRyUHYRHQjQ@mail.gmail.com>
+ <CAJU4x8u8JPBJ3V6MCi1XcO4Qim-COPuxOhTdUnor7JdNCUFb=w@mail.gmail.com>
+ <CAPDyKFqXsn91BvkJXMYSnc7X=RP9DXxXp2nKMmv+aMPoNdK2Tw@mail.gmail.com>
+ <CAJU4x8srB7skGFVcj1SPrzEZSnVkwKiW3OPN0GQxvgtRG7GAAQ@mail.gmail.com>
+ <CAPDyKFq0yHxX7wb4XGeiMiSGGiOf8RKJ5ahhFQ+_vodqnyPV9Q@mail.gmail.com>
+ <CAJU4x8uGxb5VD1WVV5-QeLkVzuuR09-NacL-9nuXe8Zofzb2=w@mail.gmail.com>
+ <CAPDyKFpvCFYQVEp77hiRHY6CVDej-ffF5UE=LH=HSGcqMZA02w@mail.gmail.com>
+ <CAJU4x8t+aOqq82EJMUNDpWiE3GPeyZkjFhy=AkmctcDE3mx6fA@mail.gmail.com> <CAPDyKFoSOk+4pmW60uGzKaYw3XOXshx+NSNqF_po=VLkK1-7Qw@mail.gmail.com>
+In-Reply-To: <CAPDyKFoSOk+4pmW60uGzKaYw3XOXshx+NSNqF_po=VLkK1-7Qw@mail.gmail.com>
+From:   Renius Chen <reniuschengl@gmail.com>
+Date:   Wed, 7 Jul 2021 21:49:45 +0800
+Message-ID: <CAJU4x8sMJSOnfBwDq7tVygRGFRw-SyrM1z8GBsF_Mur64-Y3_g@mail.gmail.com>
+Subject: Re: [PATCH] [v2] mmc: sdhci-pci-gli: Improve Random 4K Read
+ Performance of GL9763E
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <Ben.Chuang@genesyslogic.com.tw>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 07:54:13PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   79160a603bdb51916226caf4a6616cc4e1c58a58
-> commit: c49f71f60754acbff37505e1d16ca796bf8a8140 MIPS: Reinstate platform `__div64_32' handler
+Ulf Hansson <ulf.hansson@linaro.org> =E6=96=BC 2021=E5=B9=B47=E6=9C=887=E6=
+=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=888:16=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> [...]
+>
+> >
+> > Thanks, I understand what you mean.
+> >
+> > I simply searched for the keyword "MMC_READ_MULTIPLE_BLOCK" in the
+> > drivers/mmc/host folder, and found that in some SD/MMC host controller
+> > driver codes such as alcor.c, cavium.c, ...etc, there are also
+> > behaviors for monitoring the request in their driver. What's the
+> > difference between theirs and ours?
+>
+> Those checks are there to allow the HWs to be supported properly.
+>
+> >
+> > And if the code that monitors the requstes does not belong the driver,
+> > where should I implement the code and how to add some functions only
+> > for GL9763e in that place, in your opinion?
+>
+> Honestly, I am not sure what suits your use case best.
+>
+> So far we have used runtime PM with a default auto suspend timeout, in
+> combination with dev PM Qos. In other words, run as fast as possible
+> to complete the requests in the queue then go back to idle and enter a
+> low power state. Clearly, that seems not to be sufficient for your use
+> case, sorry.
+>
+Yes, the runtime PM, auto suspend, and PM Qos are all about the
+suspend/resume behaviors of the system or related to power states such
+as D0/D3 of the device. But these are totally different from the ASPM
+L0s/L1 for link states. Entering/exiting the ASPM is pure hardware
+behavior on the link layer and is not handled by any codes in
+drivers/mmc/core or drivers/mmc/host. We'd like to try to modify the
+patch by your opinions, but we are also confused about what or where
+suits our use case best. So we wonder how to start the modification
+and may need some suggestions to deal with the work, sorry.
 
-Is it caused by this patch? It seems to be only MIPS-related, otherwise
-we'd get reports from other 32bit arches in case of the emulated 64bit
-division.
+Thank you.
 
-> date:   3 months ago
-> config: mips-randconfig-r036-20210706 (attached as .config)
-> compiler: mipsel-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c49f71f60754acbff37505e1d16ca796bf8a8140
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout c49f71f60754acbff37505e1d16ca796bf8a8140
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=mips SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    mipsel-linux-ld: fs/btrfs/super.o: in function `btrfs_statfs':
->    super.c:(.text+0xed4): undefined reference to `__udivdi3'
->    mipsel-linux-ld: super.c:(.text+0xf14): undefined reference to `__umoddi3'
->    mipsel-linux-ld: super.c:(.text+0xf6c): undefined reference to `__udivdi3'
 
-If you'd like to get that analyzed in the sources, please post the
-snippet related to the binary address .text+0xf14 or .text+0xf6c .
+Best regards,
+
+Renius
+
+
+> Kind regards
+> Uffe
