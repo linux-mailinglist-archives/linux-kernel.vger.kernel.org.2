@@ -2,107 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BADFE3BF189
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E293BF19E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhGGVug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 17:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54216 "EHLO
+        id S233140AbhGGVwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 17:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhGGVuf (ORCPT
+        with ESMTP id S230378AbhGGVwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 17:50:35 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FA4C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 14:47:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=Qgkwypb70T+eS59xZSvofGDWn5evTaTDueGhuXuDsuI=; b=AWc9AsqfxwD9/Bn5gK+oeWQ2no
-        DZiicQAHnjHLJniTbTIYE5N+UXH9gDQy968QD3VxpplISVFG2R0UryHa21gEfKbWh+qDGMQpk0aba
-        +aFMqB2kgCH6xs0BlVZzS0Le/n1EW9uQe2diKVvFOmeixrI7StfYcBxE7YeBFzP/Te49R/1JWnZD8
-        x0LGC0o3A4DfFOYsGYKQCZsqTHVdfjhzYS9RmI6uURU7ZOT5MKvESjOQQV8UyxJKJGq6TdwvC6I+X
-        yWzgLo8cAscbDB3glYIp7DoNIvCTJyZTm5KiCk9CYpZGURlCrfCZvYCO0IQnR1xB7vKYLri3M0Mtq
-        zulAz5JQ==;
-Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1FOb-00Fmic-QB; Wed, 07 Jul 2021 21:47:53 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: [PATCH v3] ASoC: atmel: ATMEL drivers don't need HAS_DMA
-Date:   Wed,  7 Jul 2021 14:47:52 -0700
-Message-Id: <20210707214752.3831-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Wed, 7 Jul 2021 17:52:24 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEEAC061574;
+        Wed,  7 Jul 2021 14:49:43 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id x12so5407200eds.5;
+        Wed, 07 Jul 2021 14:49:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EC7Oxd/vO2OVP/AyHel/8QwWNlF+f8KQWxcNn5v/QIg=;
+        b=bf08DKO7WidCKLhtYEXmq9hkS+bWYFYTaN2cR0BuzAsUE3HZRGnbAvkhBStB/2dEOT
+         zFqphAiqGKr1391YXtObX/le70QGoIHxoGX8b6L1oFQLp3DUD8dw2H0q7zPVIDZCxN1o
+         0htDi3ynruDbd3ydFFJQOtYUN15LulASv3aOSAQcx5AXZ0oDRfOS03XYWM1lOe2wyjml
+         99gPCEvCVPIWymioY9Fn412OkqDyHgc7/KAxtCAdfrG1LuO7NBvk9yU8XDvaAwAqCOoo
+         Truv0kgDSX3eTVAv+Tfr34Ax+UHRFXTyNhRXqtpDbSxzwx6P0wgYSQpjmg1KPBhc5CzY
+         o3CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EC7Oxd/vO2OVP/AyHel/8QwWNlF+f8KQWxcNn5v/QIg=;
+        b=tFDZLWN4u4xbUNcFhEf1yG+B8eRIXycujC2gzJJFeHcNttX73dsMcvYFLrf4ZfC8A1
+         6L2niVWIPc9TSdzvHWTDdz4E9/qiGleZYEC58zTTHh4RGUcx9NVzLZqGGQdzVB31YtK8
+         62uqi0qYoXlczYDnhplwRzCZzXrlYejRMSv0LU7fKAPM7aj/CEVn/0JoJR2Q2346/Ob4
+         iZwjRZKhTMIcTdx/7HFzNkwtHS7suRMLgvsB1h4pA1bdyGxi71Be7EtNF+AQy9XVMRcN
+         neW9FOJo2Fqp6ECcpL3L9jovTM7gADo3ITEIMt2+4ZaPZ6L3D2SAWKBItZS0Ah1b2EuX
+         WiDQ==
+X-Gm-Message-State: AOAM533DZTbUfsjnc2vmu0r+QwYAF65PHDqNyACb2XTDbhFppiWrt3aO
+        3b7N4svtw0hEkM2e3Hils4EygZGdMXZW/PajoeY=
+X-Google-Smtp-Source: ABdhPJz0LiNNZrV+3ai0Fy2+Z6dmL3EBrWrl6GZcDSdTMVXxGtN7BNLXcShNlewnvCgiI1BLrSDRypHGrz6srfGFkJo=
+X-Received: by 2002:aa7:d483:: with SMTP id b3mr33423329edr.282.1625694581635;
+ Wed, 07 Jul 2021 14:49:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
+ <1625044676-12441-2-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Ueyc8BqjkdTVC_c-Upn-ghNeahYQrWJtQSqxoqN7VvMWA@mail.gmail.com>
+ <29403911-bc26-dd86-83b8-da3c1784d087@huawei.com> <CAKgT0UcGDYcuZRXX1MaFAzzBySu3R4_TSdC6S0cyS7Ppt_dNng@mail.gmail.com>
+ <YOX6bPEL0cq8CgPG@enceladus>
+In-Reply-To: <YOX6bPEL0cq8CgPG@enceladus>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Wed, 7 Jul 2021 14:49:30 -0700
+Message-ID: <CAKgT0UfPFbAptXMJ4BQyeAadaxyHfkKRfeiwhrVMwafNEM_0cw@mail.gmail.com>
+Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
+ based on elevated refcnt
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, Marcin Wojtas <mw@semihalf.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        hawk@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, peterx@redhat.com, Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, mcroce@microsoft.com,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        cong.wang@bytedance.com, Kevin Hao <haokexin@gmail.com>,
+        nogikh@google.com, Marco Elver <elver@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a config (such as arch/sh/) which does not set HAS_DMA when MMU
-is not set, several ATMEL ASoC drivers select symbols that cause
-kconfig warnings. There is one "depends on HAS_DMA" which is no longer
-needed. Dropping it eliminates the kconfig warnings and still builds
-with no problems reported.
+On Wed, Jul 7, 2021 at 12:03 PM Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+> > > Hi, Alexander
+> > >
+> > > Thanks for detailed reviewing.
+> > >
+>
+> Likewise!
+> I'll have a look on the entire conversation in a few days...
+>
+> > > >
+> > > > So this isn't going to work with the current recycling logic. The
+> > > > expectation there is that we can safely unmap the entire page as soon
+> > > > as the reference count is greater than 1.
+> > >
+> > > Yes, the expectation is changed to we can always recycle the page
+> > > when the last user has dropped the refcnt that has given to it when
+> > > the page is not pfmemalloced.
+> > >
+> > > The above expectation is based on that the last user will always
+> > > call page_pool_put_full_page() in order to do the recycling or do
+> > > the resource cleanup(dma unmaping..etc).
+> > >
+> > > As the skb_free_head() and skb_release_data() have both checked the
+> > > skb->pp_recycle to call the page_pool_put_full_page() if needed, I
+> > > think we are safe for most case, the one case I am not so sure above
+> > > is the rx zero copy, which seems to also bump up the refcnt before
+> > > mapping the page to user space, we might need to ensure rx zero copy
+> > > is not the last user of the page or if it is the last user, make sure
+> > > it calls page_pool_put_full_page() too.
+> >
+> > Yes, but the skb->pp_recycle value is per skb, not per page. So my
+> > concern is that carrying around that value can be problematic as there
+> > are a number of possible cases where the pages might be
+> > unintentionally recycled. All it would take is for a packet to get
+> > cloned a few times and then somebody starts using pskb_expand_head and
+> > you would have multiple cases, possibly simultaneously, of entities
+> > trying to free the page. I just worry it opens us up to a number of
+> > possible races.
+>
+> Maybe I missde something, but I thought the cloned SKBs would never trigger
+> the recycling path, since they are protected by the atomic dataref check in
+> skb_release_data(). What am I missing?
 
-Fix the following kconfig warnings:
+Are you talking about the head frag? So normally a clone wouldn't
+cause an issue because the head isn't changed. In the case of the
+head_frag we should be safe since pskb_expand_head will just kmalloc
+the new head and clears head_frag so it won't trigger
+page_pool_return_skb_page on the head_frag since the dataref just goes
+from 2 to 1.
 
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
-  - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+The problem is that pskb_expand_head memcopies the page frags over and
+takes a reference on the pages. At that point you would have two skbs
+both pointing to the same set of pages and each one ready to call
+page_pool_return_skb_page on the pages at any time and possibly racing
+with the other.
 
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
-  - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-
-Fixes: 3951e4aae2ce ("ASoC: atmel-pcm: dma support based on pcm dmaengine")
-Fixes: 18291410557f ("ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA in Kconfig")
-Fixes: 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>
----
-v2: rebase & resend;
-    drop Cc: to Bo Shen <voice.shen@atmel.com> # bounced
-v3: drop "depends on HAS_DMA" (as suggested by Codrin; Thanks)
-
----
- sound/soc/atmel/Kconfig |    1 -
- 1 file changed, 1 deletion(-)
-
---- linux-next-20210707.orig/sound/soc/atmel/Kconfig
-+++ linux-next-20210707/sound/soc/atmel/Kconfig
-@@ -11,7 +11,6 @@ if SND_ATMEL_SOC
- 
- config SND_ATMEL_SOC_PDC
- 	bool
--	depends on HAS_DMA
- 
- config SND_ATMEL_SOC_DMA
- 	bool
+I suspect if they both called it at roughly the same time one of them
+would trigger a NULL pointer dereference since they would both check
+pp_magic first, and then both set pp to NULL. If run on a system where
+dma_unmap_page_attrs takes a while it would be very likely to race
+since pp_magic doesn't get cleared until after the page is unmapped.
