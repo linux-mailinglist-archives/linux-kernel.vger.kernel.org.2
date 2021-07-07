@@ -2,163 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C582D3BE6FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 937493BE702
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231392AbhGGLVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 07:21:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231220AbhGGLVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 07:21:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4904261C88;
-        Wed,  7 Jul 2021 11:18:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625656733;
-        bh=WFxE9mATNj48CuNnGhTUn+U9RiyA/laRYp2AbugPi+Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ixQqGZTBpI5YHaidaB8LZKWBGxJsZzdxuyO7anyAwFNlJ7W9TnxJD80EYZL/JzcQE
-         5qbBCahgc2QxALqeibiN54mDobbIBnTxsAybGPUgXwS1nE/BPF65DiyXU9k3cwKdQw
-         wdQTEg5wfJzFe/fVak/97npmFR/WnfdYPhJVXODoBidr1ls+CoKfTFhKbCRH3IKBnn
-         vfzuqZPAUDISFu3EPo8/gSJ4IViMN3uaeIDK94FWpwrdkfpukwjJdkttYdqc5fVh43
-         kIWgmKBZ17HctAG5wCG3ZVutz/8hiB7+pjDN8wtgtVd0U/VOGcGe9eiZ41eVA8Tk0K
-         DN4C8v5KqGTvw==
-Date:   Wed, 7 Jul 2021 13:18:48 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Xiaowei Song <songxiaowei@hisilicon.com>,
-        Dejin Zheng <zhengdejin5@gmail.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>, linuxarm@huawei.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mauro.chehab@huawei.com
-Subject: Re: Possible issue at the kirin-pcie driver
-Message-ID: <20210707131848.597bdfe8@coco.lan>
-In-Reply-To: <20210707105425.GA10578@workstation>
-References: <20210706113503.66091e94@coco.lan>
-        <20210707105425.GA10578@workstation>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S231405AbhGGLZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 07:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231321AbhGGLZv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 07:25:51 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE88C061574;
+        Wed,  7 Jul 2021 04:23:11 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id d12so2018482wre.13;
+        Wed, 07 Jul 2021 04:23:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gL5cUtdK5EGXi3fNGr0vY1hkj2DgJe4bNJxdsRkWjQI=;
+        b=pu005n7D9Hzp0ESMBU4UbTTUrbwJdrFNObu8W61tGdzJ8i+mhD9n9yhtQ8v6Zy2jce
+         AtFLI7Q0FGIB7auttSYxyvyYxwhK3nMBRiLXJ9CGdL4LKiPhJgdhqiIwf/nsC82Uz4Om
+         T81QcOgWUG7aVGq9nH+Nth1sXqtpYRlApanG2XsrxGrikO31V6SQsjMmoPT4SK7rUfCX
+         NhfzVX2GryNT8+LdqB3cc5PNjbBvz3QRYvCFF89LDEzA+WEau7MK1pVenLI03j/VY79g
+         jaqzmHJveX7tFsL2pnP0/fNecw+x6+lBtY9xsCxkgsCSuPdu4FflL3cyX7QrcmhmPXe/
+         UmNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gL5cUtdK5EGXi3fNGr0vY1hkj2DgJe4bNJxdsRkWjQI=;
+        b=kdRbRTVWcqVSGuqp+IcYN4ckuCuHuJuO+UqauUhbrZK9Z+Mm9smFWTvqR8YZ9CQSKM
+         PAKoYbL249ho+Z60c4VDcF8qKLRpyKudjIx1I6/yG5DvkTCKYB4aGPliarNg8BxCpttY
+         /gG+uuVwlkxBgl/ZZMGxjv0E5HsPqez/zlMtSFgkfrMHqXLWyIRu60GkpbYzIShJ2bUI
+         vPnYKteTuGfbzs80m4+fEN79o8ZZUlyanyny0o74tuzAjlFb3QhMmhcFNMY7WIgU0upT
+         4c8QZTee+OdJbHFNhrCVayyAVfqecaYAtaUWceIgaeIqUXXSoeF7LOmbtpWTsRdsR7Sl
+         Fexg==
+X-Gm-Message-State: AOAM530R4irClYqJOBuQsb43fPADxbxG295r03tMWjjyCT4TSeHeVNaM
+        VCv+QxbXyD+Nz60gFA5o6j1uFCOaWHsTbQ==
+X-Google-Smtp-Source: ABdhPJyI5fd9lLZ2Wv5DFMZCxe3Cw4BYc40SBq+RDenkiFtVt/eZPSf+7VxhuoNqOk39HOKV9BzYQg==
+X-Received: by 2002:a5d:6a0b:: with SMTP id m11mr27381626wru.240.1625656989856;
+        Wed, 07 Jul 2021 04:23:09 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
+        by smtp.gmail.com with ESMTPSA id z7sm5947120wmi.1.2021.07.07.04.23.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Jul 2021 04:23:09 -0700 (PDT)
+Subject: Re: [PATCH 1/3] sfc: revert "reduce the number of requested xdp ev
+ queues"
+To:     =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>,
+        habetsm.xilinx@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        ivan@cloudflare.com
+Cc:     ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210707081642.95365-1-ihuguet@redhat.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <0e6a7c74-96f6-686f-5cf5-cd30e6ca25f8@gmail.com>
+Date:   Wed, 7 Jul 2021 12:23:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210707081642.95365-1-ihuguet@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 7 Jul 2021 16:24:25 +0530
-Manivannan Sadhasivam <mani@kernel.org> escreveu:
-
-> Hi Mauro,
+On 07/07/2021 09:16, Íñigo Huguet wrote:
+> The problem is that the TX queues are also contained inside the channel
+> structs, and there are only 4 queues per channel. Reducing the number of
+> channels means also reducing the number of queues, resulting in not
+> having the desired number of 1 queue per CPU.
 > 
-> On Tue, Jul 06, 2021 at 11:35:03AM +0200, Mauro Carvalho Chehab wrote:
-> > Hi,
-> > 
-> > I was asked by Rob Herring to convert the kiring-pcie driver on two parts,
-> > splitting the PHY logic from it, in order to be able to add PHY support 
-> > for Hikey 970 at drivers/pci/controller/dwc/pcie-kirin.c.
-> > 
-> > While doing so, I noticed something weird issue at the driver, with regards
-> > to a certain register (PCIE_APB_PHY_STATUS0), as shown below:
-> > 
-> > ...
-> > 
-> > 	#define PCIE_APB_PHY_STATUS0	0x400
-> > ...
-> > 	static inline u32 kirin_apb_ctrl_readl(struct kirin_pcie *kirin_pcie, u32 reg)
-> > 	{
-> > 		return readl(kirin_pcie->apb_base + reg);
-> > 	}
-> > ...
-> > 	static inline u32 kirin_apb_phy_readl(struct kirin_pcie *kirin_pcie, u32 reg)
-> > 	{
-> > 		return readl(kirin_pcie->phy_base + reg);
-> > 	}
-> > ...
-> > 	static int kirin_pcie_phy_init(struct kirin_pcie *kirin_pcie)
-> > 	{
-> > ...
-> > 		reg_val = kirin_apb_phy_readl(kirin_pcie, PCIE_APB_PHY_STATUS0);
-> > 		if (reg_val & PIPE_CLK_STABLE) {
-> >                 	dev_err(dev, "PIPE clk is not stable\n");
-> > 			return -EINVAL;
-> > 		}
-> > 	}
-> > ...
-> > 	static int kirin_pcie_link_up(struct dw_pcie *pci)
-> > 	{
-> > 		struct kirin_pcie *kirin_pcie = to_kirin_pcie(pci);
-> > 		u32 val = kirin_apb_ctrl_readl(kirin_pcie, PCIE_APB_PHY_STATUS0);
-> > 	
-> > 		if ((val & PCIE_LINKUP_ENABLE) == PCIE_LINKUP_ENABLE)
-> > 			return 1;
-> > 
-> > 		return 0;
-> > 
-> > 		u32 val = kirin_apb_ctrl_readl(kirin_pcie, PCIE_APB_PHY_STATUS0);
-> > 
-> > 		if ((val & PCIE_LINKUP_ENABLE) == PCIE_LINKUP_ENABLE)
-> > 			return 1;
-> > 
-> > Basically, the code at kirin_pcie_phy_init() use this register as if it is 
-> > part of the PHY memory region (0xf3f20000 + 0x400), while the code at 
-> > kirin_pcie_link_up() considers is as belonging to the APB memory
-> > region (0xff3fe000 + 0x400).
-> > 
-> > It sounds to me that there's a mistake somewhere. I mean, either:
-> > 
-> > 1. there is a cut-and-paste error, caused it to access the wrong memory
-> >    region, e.g. at kirin_pcie_link_up() the logic should be:
-> > 
-> > 	u32 val = kirin_apb_phy_readl(kirin_pcie, PCIE_APB_PHY_STATUS0);
-> > 
-> >    instead of:
-> > 
-> > 	u32 val = kirin_apb_ctrl_readl(kirin_pcie, PCIE_APB_PHY_STATUS0);
-> > 
-> >    (or the reverse)
-> > 
-> > 2. Both memory regions have a register at address 0x400 with similar
-> >    names that ended being merged into the same macro;
-> > 
-> > 3. the register for APB PHY status0 is duplicated on both regions and,
-> >    on both, they are at region_base + 0x400.
-> >  
-> 
-> I don't have the datasheet for Kirin970 but...
-> 
-> I think 2 & 3 are the possible ones as I've seen register duplications
-> across multiple vendors.
+> This leads to getting errors on XDP_TX and XDP_REDIRECT if they're
+> executed from a high numbered CPU, because there only exist queues for
+> the low half of CPUs, actually.
 
-Yeah, it is possible that the register is duplicated on different
-regions.
+Should we then be using min(tx_per_ev, EFX_MAX_TXQ_PER_CHANNEL) in the
+ DIV_ROUND_UP?
+And on line 184 probably we need to set efx->xdp_tx_per_channel to the
+ same thing, rather than blindly to EFX_MAX_TXQ_PER_CHANNEL as at
+ present — I suspect the issue you mention in patch #2 stemmed from
+ that.
+Note that if we are in fact hitting this limitation (i.e. if
+ tx_per_ev > EFX_MAX_TXQ_PER_CHANNEL), we could readily increase
+ EFX_MAX_TXQ_PER_CHANNEL at the cost of a little host memory, enabling
+ us to make more efficient use of our EVQs and thus retain XDP TX
+ support up to a higher number of CPUs.
 
-> > I suspect that it is (1), but, as I don't have any datasheets or
-> > register map, I can't tell for sure.
-> >   
-> 
-> If it is 1, then I don't think the driver can work reliably.
-
-Looking at discuss.96boards.org, I saw some comments that seem
-to indicate that the M.2 slot with NVMe devices is not reliable:
-it sounds that it works with some models only, but this could
-be due to an old PCIe driver, or to some other problem.
-
-Hard to tell without the datasheets. I'll need to wait for a
-NVMe card to arrive here in order to test. It will take a couple
-of weeks.
-
-> Anyway, I think you can still move forward with the splitting provided
-> that you can access this register in both drivers.
-
-I'm working right now on moving Hikey 970 to PHY as well. It seems
-it is doable, although it is trickier, as both the PHY and the PCIe
-driver need to access the APB memory region[1]. I'll probably need to
-use a named regmap, in order to allow both to access the same
-memory region.
-
-[1] kirin970_pcie_natural_cfg() needs that at the PHY driver, while
-    kirin_pcie_read_dbi() and kirin_pcie_write_dbi() needs it at the
-    PCIe side.
-
-Thanks,
-Mauro
+-ed
