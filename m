@@ -2,156 +2,515 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBDED3BE611
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D762F3BE614
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhGGKAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:00:24 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:48600 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230408AbhGGKAX (ORCPT
+        id S231210AbhGGKBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230408AbhGGKBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:00:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1625651863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/QhUKPoOttNGnhHG+0R6LnihQok9X9UZmTs7NpNGzM8=;
-        b=Umzt66ITCMdDBOvOtTyaS8JvSSHV7RQ3TpwAX4khnPYaOeoXLCMQW0euJNyfCxALbXUOJz
-        auFS0Mfi4ietwKlHtn/NTCmIO4Wb+TPCTFTuX71YW+XjKK2fZPJtqlNKCL7DKDy/pnpiyb
-        +O5zRwuRJeDnxEhxJlU7tXy5Bd11fas=
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur05lp2171.outbound.protection.outlook.com [104.47.17.171])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-26-xM7cClxzPNu2EzeolSEwew-2; Wed, 07 Jul 2021 11:57:42 +0200
-X-MC-Unique: xM7cClxzPNu2EzeolSEwew-2
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N6qD7UvxaMW9plEvoLeXQXV9Qk6g/PlkLVuhOJslST+QHbdAhU6UDHdxMXVZ3SqXMxWcAzCjMreEH4NvGRAeMRzjIVcYg2SZoo1MynJYRPHAGakQb9+rlPtwuFd7wHBfg+5J38INEvRkYo5tw4GjEax7HmzH5k0Wj0OdQnszJjJG0LfJUQfyCmzZl4xVM9zooXUww0aJFzUI5Asf4h8/LJCIY8qyRF1Bu7FIYCZYJjCBAV+BeYimcH+0TgtAlRhj5ZueQSCIEHMQ3qm6am5xocgKj4GL4ONm7hPzyNVntuOojlxUXiKtPUfqwpV2xGQV/8CgJMiQkxOwZsE4E2/xzQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/QhUKPoOttNGnhHG+0R6LnihQok9X9UZmTs7NpNGzM8=;
- b=U8/62VVADpf0LfitwADzbvwq8uo78ALyfCQyLVg+JfHlxkoxqPjMDlZ1ZFfSrEf5urLLg+XbaCWcCw3toCGjqOSj7EBqntc2vPDAn8D5DZj6ODRxCgpEABV7d5+xHRRzMrGZUuRICyEnpMwy2gRw9jkFiWFifdpnR7B1Sapg5HLXOk8sCCq7aUw62Cht/IxJKcTCN8t01ekPigmypJ9bpO88gfmtr595xFLs/rpiPeJ4owdGGXPhABUQrc3lnH+XTbLTyp9qhBD62fuY03Z765D4RJ7Q1KrTp3GKa9X8i0LkGnj/9+IeXnkVRjIhRqut3MRVMkRzkyvr21cfPXeA9w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: lists.ozlabs.org; dkim=none (message not signed)
- header.d=none;lists.ozlabs.org; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR0401MB2448.eurprd04.prod.outlook.com (2603:10a6:800:52::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22; Wed, 7 Jul
- 2021 09:57:39 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::99d3:99cd:8adf:3eea]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::99d3:99cd:8adf:3eea%5]) with mapi id 15.20.4287.033; Wed, 7 Jul 2021
- 09:57:39 +0000
-Subject: Re: [PATCH v2] xen/hvc: replace BUG_ON() with negative return value
-To:     Juergen Gross <jgross@suse.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210707091045.460-1-jgross@suse.com>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <9e45c5f8-0ac0-e1bb-4703-838679285e80@suse.com>
-Date:   Wed, 7 Jul 2021 11:57:37 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210707091045.460-1-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR0P264CA0153.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1b::21) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        Wed, 7 Jul 2021 06:01:45 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A67C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 02:59:04 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id t3so2619106edc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 02:59:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=HXHhLUAYHSlnS4egLGPEtK04ta403eLG2544Cf/wzCM=;
+        b=en6KkDpxssvBaP7cSVO+y+faYxLA+daS5aqwTX7/unkOJG7K6oSsIGuPMYN0tMSVpn
+         YGRk5JbE1EmTpXS+a1pcLfHS2yqlhhZFzBE14DJyjo16D9C7VTZvDjSYoyrYw9zBmUPs
+         fAi7EOavAMvbNDdZflzVLv3PEsjaJbxLUjZGFJW6PhVDkpeWue8ShKV1rGYdJlg/3V+S
+         T0kfpP3OuKJoGP6vL7EJt+6JEmMXZG8rRznlL/z6yXeUL31WwXyC571491i0ARDOHnle
+         J8gw/i/GNmdSQG9zOX5GKcU+I4WO4YS3o39ce1uUwnZcdjWP+RV16EkiZGzv00/FgAzk
+         e0dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=HXHhLUAYHSlnS4egLGPEtK04ta403eLG2544Cf/wzCM=;
+        b=cSAVhX0i83SiNjSzCHAN6i29hhnCdAAp/HToCJ1sqwJWv5fVdJfxwDc4Z2/rwR9a37
+         nW3ToydKzkx4J4Rtaw/gW6rz6xpDtUkGw6Cfv7lKP910suEXPmwr2ink2CBE3K+bDIui
+         IMigGPxaulZDZHWSpVS97a07ShJWsOydgyjt9zGB56hm7rsYaYAF3TqGqNtlwkX1iK3M
+         Chr3dwQVKMitaSvO1XyzaU+oAMdoawj1jNHBsAIytR+vbQG8DIQIgezvr3VgIKTaQ54U
+         7ClVlie6rSKeMRvfZpCm144mk6s9/SVBJkR4fe2pTWdykYQ/srxLGYmy3LAgHY05eACe
+         501w==
+X-Gm-Message-State: AOAM533vEtkXapzSdHJauDWyO2Dc+fgEAo9w14opp8teWhYxpZrLJGuh
+        9ATV5zlAPBR+jYDv0SXKATqKd5NVMlULi/px/z9OCTXr5oHBLeTd
+X-Google-Smtp-Source: ABdhPJwxIGwRWXhmk4ftUkLhcLdadMrqcs0/e1zmRK4u0ceWkmlbyhsGZeJViKD6fCp4GbqOyP4ucekC8Nn3vBek9WM=
+X-Received: by 2002:aa7:db45:: with SMTP id n5mr23539967edt.188.1625651940058;
+ Wed, 07 Jul 2021 02:59:00 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.156.60.236] (37.24.206.209) by PR0P264CA0153.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1b::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Wed, 7 Jul 2021 09:57:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 939c54ca-18a3-4e5c-163a-08d9412da79f
-X-MS-TrafficTypeDiagnostic: VI1PR0401MB2448:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0401MB244804EBAAC01ACCA3353D45B31A9@VI1PR0401MB2448.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jMpEYsEqbfyztJr6u9sSmdDWhvBVW67kWtTJRDs4f2xGBRJti5F92TedJR5ABrdUvA6AYHPfhT4CtY5AdhaQJ2mfCLQdGSyEgK1XTJTjZEVEEe+QAddw7EzOP34boaPWnHV/Wlw3JEz536mcmKdHNoKRQrU8xEcUK46njot0iD57DqjYmR2lgbBPYPP+TFtVrHmbN6r1ZUlnglCdJz7xuQCsWIoWjD4doMqWfc3s4FkXLNMWU9WQt1rjt/KJA2RBpJC7jE1zScBJpq94TMuDSEKrTMpClXXTBQ+zR/bO5fKpv9AgNz9zUH0ookAXMuDl40CdhIZYcPpSwcxw7p4u1xMM7ASjQDaz0QpZmW160bxzg358pLmIWS4ZVRVmzzDGcKmTZPJj8g94OXHg5P8h4nEAdC2xPF4vDlJqeZ2wez/6yepJgdMoVMfULqKefOc5A761Xsb/I6pSTzEUnUgqtAJT9EFFWO7srWA3X/pxh9pgfvyi7eIi7/JJCJgbrV2sfEQsv9At+U5Q0ZAC1cMUDiF4BZi55jAKBVlcYVmr4IFZNUM8dZQGp9nO2qd8Wh/iZnHvFuD7gp7xwXGhbRkYj/xxHZdCKGn//lah0L9cEMh7FvfZZhxKjcJn+8CxBpr5eVPLTsV7QH0xtw+aoKde7f2H5PJee9q4VYhkRZNZ5tww80iaeMBeYpcpHCDHvHrGS2wvgkfFm8HsSJNInERdZ7pE8OlgcfYC5xE4ggym5ds=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(346002)(366004)(136003)(39850400004)(5660300002)(54906003)(16576012)(8936002)(8676002)(66946007)(66476007)(6636002)(83380400001)(2616005)(956004)(6862004)(37006003)(316002)(66556008)(36756003)(38100700002)(31686004)(86362001)(26005)(186003)(2906002)(6486002)(53546011)(4326008)(31696002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q3ZpVXF1RFo4Z2Y4SytGcGwrSjJaN3lvak1kSHZHZkFVeTZpc1Y5SWV5S0o3?=
- =?utf-8?B?N2drTUVqZTI5T2tNR1E4dVNacW0rQmREY0VQRDZDdzVLRnRuM3dnTGp3MnlP?=
- =?utf-8?B?d3ZYN0x3dnNtaFcrOU1nREJoZFhGamVSak4vV1pzOHMyeWdqeGhRT05Ud3Qr?=
- =?utf-8?B?U3U3UU9BM3VsaERoRGxlSVhPVms0b1cyTU85ekRvOEZGY1RhYkIwL29MZWpk?=
- =?utf-8?B?TndLTzh3Nkh2M2ZvZlp4K0g4OGxUZ3h3ZE5TS2l3L0tqQXJHaXlCaFY5eGxm?=
- =?utf-8?B?V210clRKVGxYZE5YRDRYcXpzYVlac3lMYmtJd2lkTjFvL09YSkNJSjFobnIz?=
- =?utf-8?B?Nk1ydWxhay82SHR5d3Z5WW1VaXFvazFsWkJrVm9ma2VncThlMTVJOE40NWgz?=
- =?utf-8?B?UkVzOW5Ndm1HZWNDRkFuWk5zdCtzYzUvdUVhOEFnT3dObmtsYzlxb2tBN2lZ?=
- =?utf-8?B?WFliVVQwOVg4OTBTWGJNWnV5RlJzRGhtd3luRUxZZ25SazJ0dWcyV3hPaXNI?=
- =?utf-8?B?TjV1NExmNVhMdC9xaW50S2tSbnhGN2ZCMEgvWC8vRkE1TklScDQyWEx5YnpN?=
- =?utf-8?B?VnFWR2R1OUFmeHRMaVJjTDhubVRCN0dtSzdJYU95N0F5S3BBUm8xZjQ0MEU2?=
- =?utf-8?B?WklkcWh1c2grTW5qNGx3TWtOblU5OVc2M09vTVNrTExnaEtOSWJ6MmtRK1R3?=
- =?utf-8?B?Yi9MMmltalZFcVoyYmpPbmFBK3hLUGRMaVIwMjFnNjlxcC8zSVV5cFAzcC93?=
- =?utf-8?B?RGlpWU02VzBhamNUVTFlMjVrTmhodWlQNHNRZERwWkUxM0p1TldmUDdDY3pZ?=
- =?utf-8?B?eEo1NDc0RUhlVlBOaTF5Tlh5YzB4dFBUUHhVWFpNQmpFcU5jckVySEFHdXZh?=
- =?utf-8?B?czVVeElTT0taeVowRUcyNDJkZWlvaDZMYlNoenlGNHY4cTVuSnpXRXRKSFd3?=
- =?utf-8?B?a2J4UE92L0pWOTRwSUc1SWNqd3Q4V1B5d3h0V1lNUDBQZ3l6V2dBNEpyRnFt?=
- =?utf-8?B?eEpjQlpTd01rd1hFSlhGbFdDSjN1Yjc0aG1NM3Y1UEpiY3REazhyM3NEb3NF?=
- =?utf-8?B?bFpsbHZKc0NkSVVDVm5Lc0lFOERwdlREdzh6QXZWTUxTblVIYWh5QmpYQmRz?=
- =?utf-8?B?MW00djA4TnNOUVNyWUVsNmJtTkZnTHBkMVZ3Q1ZxRzdiUGdjUmdUTDVZbG9R?=
- =?utf-8?B?WXVRTGpkUENUNVhpbHZVU1Ruc285OGFJSE9ERXF3NHFLSUJlNmlLOTlNUWg3?=
- =?utf-8?B?S1RVUW91SlRPY21uYnZXOWw3TU1TVnQvaXorTS94WENoWFNkNmxWWGszQnl1?=
- =?utf-8?B?bmFGTjErZ3FiYXRDN3dhc3pJcEpDY0ZBUjMvTnNWM2JGdGIrV05ZNFpXdE1C?=
- =?utf-8?B?U0tnVDMzaG5ZZkRET2FGOGlkbEg1TmxHRWlLejFhWnUvN1dxT0NYQ2hFekVM?=
- =?utf-8?B?ODRzem9acU9TS1JlNmZVSFFyQWRNWGIraVE2M1p6c0g3NWZIbjJKUXpJR1Nj?=
- =?utf-8?B?TVZlOGs4dnljSE5KOVZJSVlMOXJadlplcHZSMWpwNFMyQlJmUzk2QWEwblM3?=
- =?utf-8?B?eGdRTHJ4Q1JVVnVVOFJDTGlNMEcyNzZFVkhlWGxWcU9aSm53aDYvQ3dvU3V3?=
- =?utf-8?B?OVFQNEJmcytIL01GWDBUVkdHZGRuTlc3Q1Ywdi9YWUpPanM0YjFsbUtMYzY4?=
- =?utf-8?B?L1FoWXJ1NE90ZmNHM3UvcWZWZithQWxRb2czREhQMmdSMElTM1h6blRBNXpD?=
- =?utf-8?Q?37uOsDpU6yaHEnN+uFZjm0Km+2CDQG7lX7sze+b?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 939c54ca-18a3-4e5c-163a-08d9412da79f
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2021 09:57:39.2809
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QGSajIpUmZPMWXne6Q7M0IlmEQ+/Z+QWjzbaRGg7W0ydTROPfjo5Bq/AXPCWZnOraGB4jz2E2qJIOvrcLhLVAA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2448
+From:   yong w <yongw.pur@gmail.com>
+Date:   Wed, 7 Jul 2021 17:58:48 +0800
+Message-ID: <CAOH5QeChR8s6vENfRdGtUeeqKsSSbeFkY9TArmOyDcUvgAgU7Q@mail.gmail.com>
+Subject: [BUG] ramfs system panic when using dd to create files
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, nico@fluxnic.net, wang.yong12@zte.com.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.07.2021 11:10, Juergen Gross wrote:
-> Xen frontends shouldn't BUG() in case of illegal data received from
-> their backends. So replace the BUG_ON()s when reading illegal data from
-> the ring page with negative return values.
-> 
-> Signed-off-by: Juergen Gross <jgross@suse.com>
+When I  use dd to create files multiple times under the ramfs file
+system=EF=BC=8CPanic appears, indicating that there is no process to kill.
+I learn that ramfs will automatically grow space due to data writing,
+causing all the system memory to run out,  but i think it shouldn't
+cause the system to panic.
+Is there any solution, or how to avoid this problem when using ramfs?
 
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
-
-> --- a/drivers/tty/hvc/hvc_xen.c
-> +++ b/drivers/tty/hvc/hvc_xen.c
-> @@ -86,7 +86,11 @@ static int __write_console(struct xencons_info *xencons,
->  	cons = intf->out_cons;
->  	prod = intf->out_prod;
->  	mb();			/* update queue values before going on */
-
-Largely unrelated note: While in general the barriers here may want
-switching to virt_*mb(), this particular one looks to be too heavy
-anyway: a read barrier is all that's needed here afaict, just like
-there's only a write barrier between ring contents and producer
-writing in __write_console().
-
-And btw, since I've got puzzled by the linuxppc-dev@ in the recipients
-list, I did look up relevant entries in ./MAINTAINERS. Shouldn't the
-file be part of "XEN HYPERVISOR INTERFACE"?
-
-Jan
-
+I use the qemu tool to reproduce this problem, The steps are as follows:
+1. Use qemu to start the kernel using the ramfs file system
+qemu-system-x86_64  -smp 2 -m 1024M -kernel bzImage -initrd
+initramfs.cpio.gz -append "rdinit=3D/linuxrc console=3DttyS0  loglevel=3D8
+rootfstype=3Dramfs" -nographic
+2.Check the file system type, as shown below
+/ # stat -f .
+  File: "."
+    ID: 0        Namelen: 255     Type: romfs
+Block size: 4096
+Blocks: Total: 0          Free: 0          Available: 0
+Inodes: Total: 0          Free: 0
+3.Use dd multiple times to create large files, and the results
+obtained are as follows:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+/ #  dd if=3D/dev/zero of=3D/bigfile  bs=3D1M count=3D1024
+[ 1647.230012] dd invoked oom-killer: gfp_mask=3D0x100cc2(GFP_HIGHUSER),
+order=3D0, oom_score_adj=3D0
+[ 1647.232632] CPU: 0 PID: 99 Comm: dd Not tainted 5.13.0-rc4-next-20210604=
++ #3
+[ 1647.233060] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
+[ 1647.233060] Call Trace:
+[ 1647.233060]  dump_stack_lvl+0x58/0x71
+[ 1647.233060]  dump_header+0x4f/0x300
+[ 1647.233060]  oom_kill_process+0x2de/0x3a0
+[ 1647.233060]  ? find_lock_task_mm+0x3b/0x70
+[ 1647.233060]  out_of_memory+0xe9/0x6d0
+[ 1647.233060]  __alloc_pages_slowpath.constprop.134+0xa84/0xcb0
+[ 1647.233060]  __alloc_pages+0x2b9/0x2f0
+[ 1647.233060]  pagecache_get_page+0x164/0x3a0
+[ 1647.233060]  grab_cache_page_write_begin+0x17/0x30
+[ 1647.233060]  simple_write_begin+0x1e/0x1e0
+[ 1647.233060]  generic_perform_write+0xba/0x1c0
+[ 1647.233060]  __generic_file_write_iter+0x16b/0x1c0
+[ 1647.233060]  ? sysvec_apic_timer_interrupt+0x5b/0x80
+[ 1647.233060]  generic_file_write_iter+0x43/0xb0
+[ 1647.233060]  new_sync_write+0x10a/0x1a0
+[ 1647.233060]  vfs_write+0x153/0x230
+[ 1647.233060]  ksys_write+0x57/0xd0
+[ 1647.233060]  do_syscall_64+0x3a/0x90
+[ 1647.233060]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[ 1647.233060] RIP: 0033:0x556cc0
+[ 1647.233060] Code: 01 f0 ff ff 0f 83 60 df 01 00 c3 66 2e 0f 1f 84
+00 00 00 00 00 0f 1f 44 00 00 83 3d c9 e5 32 00 00 75 14 b8 01 00 00
+00 0f 05 <48> 3d 01 f0 ff ff 0f 83 34 df 01 00 c3 48 83 ec 08 e8 0a 82
+00 00
+[ 1647.233060] RSP: 002b:00007ffd22b93bf8 EFLAGS: 00000246 ORIG_RAX:
+0000000000000001
+[ 1647.233060] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00000000005=
+56cc0
+[ 1647.233060] RDX: 0000000000100000 RSI: 00007f87a86a3010 RDI: 00000000000=
+00001
+[ 1647.233060] RBP: 00007f87a86a3010 R08: 0000000000000000 R09: 00000000000=
+00000
+[ 1647.233060] R10: 0000000000000008 R11: 0000000000000246 R12: 00000000001=
+00000
+[ 1647.233060] R13: 0000000000000001 R14: 00007f87a86a3010 R15: 00007f87a86=
+a3010
+[ 1647.244474] Mem-Info:
+[ 1647.244663] active_anon:3 inactive_anon:298 isolated_anon:0
+[ 1647.244663]  active_file:0 inactive_file:0 isolated_file:0
+[ 1647.244663]  unevictable:239648 dirty:0 writeback:0
+[ 1647.244663]  slab_reclaimable:2755 slab_unreclaimable:1689
+[ 1647.244663]  mapped:433 shmem:0 pagetables:27 bounce:0
+[ 1647.244663]  free:2908 free_pcp:241 free_cma:0
+[ 1647.247244] Node 0 active_anon:12kB inactive_anon:1192kB
+active_file:0kB inactive_file:0kB unevictable:958592kB
+isolated(anon):0kB isolated(file):0kB mapped:1732kB dirty:0kB
+writeback:0kB shmem:0kB writeback_tmp:0kB kernel_stack:768kB
+pagetables:108kB all_unreclaimable? no
+[ 1647.248762] Node 0 DMA free:3860kB min:60kB low:72kB high:84kB
+reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
+active_file:0kB inactive_file:0kB unevictable:11992kB writepending:0kB
+present:15992kB managed:15908kB mlocked:0kB bounce:0kB free_pcp:12kB
+local_pcp:4kB free_cma:0kB
+[ 1647.250808] lowmem_reserve[]: 0 950 950 950
+[ 1647.251262] Node 0 DMA32 free:7772kB min:8008kB low:8984kB
+high:9960kB reserved_highatomic:0KB active_anon:12kB
+inactive_anon:1192kB active_file:0kB inactive_file:0kB
+unevictable:946620kB writepending:0kB present:1032064kB
+managed:978680kB mlocked:0kB bounce:0kB free_pcp:952kB local_pcp:600kB
+free_cma:0kB
+[ 1647.253540] lowmem_reserve[]: 0 0 0 0
+[ 1647.254260] Node 0 DMA: 1*4kB (U) 0*8kB 1*16kB (U) 2*32kB (UE)
+1*64kB (E) 1*128kB (E) 2*256kB (UE) 2*512kB (UE) 2*1024kB (UE)
+0*2048kB 0*4096kB =3D 3860kB
+[ 1647.255533] Node 0 DMA32: 65*4kB (UME) 61*8kB (UME) 40*16kB (UME)
+33*32kB (UME) 18*64kB (UME) 10*128kB (ME) 7*256kB (UM) 1*512kB (E)
+1*1024kB (U) 0*2048kB 0*4096kB =3D 8204kB
+[ 1647.267374] Node 0 hugepages_total=3D0 hugepages_free=3D0
+hugepages_surp=3D0 hugepages_size=3D2048kB
+[ 1647.271471] 239652 total pagecache pages
+[ 1647.273281] 0 pages in swap cache
+[ 1647.273709] Swap cache stats: add 0, delete 0, find 0/0
+[ 1647.273991] Free swap  =3D 0kB
+[ 1647.276895] Total swap =3D 0kB
+[ 1647.277779] 262014 pages RAM
+[ 1647.277982] 0 pages HighMem/MovableOnly
+[ 1647.278187] 13367 pages reserved
+[ 1647.281882] Tasks state (memory values in pages):
+[ 1647.281882] [  pid  ]   uid  tgid total_vm      rss pgtables_bytes
+swapents oom_score_adj name
+[ 1647.285417] [     83]     0    83      720      455    36864
+0             0 sh
+[ 1647.285703] [     99]     0    99      977      594    45056
+0             0 dd
+[ 1647.287121] oom-kill:constraint=3DCONSTRAINT_NONE,nodemask=3D(null),cpus=
+et=3D/,mems_allowed=3D0,task=3Ddd,pid=3D99,uid=3D0
+[ 1647.289756] Out of memory: Killed process 99 (dd) total-vm:3908kB,
+anon-rss:964kB, file-rss:1412kB, shmem-rss:0kB, UID:0 pgtables:44kB
+oom_score_adj:0
+[ 1647.303507] dd (99) used greatest stack depth: 12872 bytes left
+Killed
+/ #  dd if=3D/dev/zero of=3D/bigfile  bs=3D1M count=3D1024
+[ 1655.481958] dd invoked oom-killer: gfp_mask=3D0x100cc2(GFP_HIGHUSER),
+order=3D0, oom_score_adj=3D0
+[ 1655.486633] CPU: 1 PID: 100 Comm: dd Not tainted 5.13.0-rc4-next-2021060=
+4+ #3
+[ 1655.487568] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
+[ 1655.487568] Call Trace:
+[ 1655.487568]  dump_stack_lvl+0x58/0x71
+[ 1655.487568]  dump_header+0x4f/0x300
+[ 1655.487568]  ? do_try_to_free_pages+0x214/0x310
+[ 1655.487568]  ? get_page_from_freelist+0x1d1/0xc40
+[ 1655.487568]  oom_kill_process+0x2de/0x3a0
+[ 1655.487568]  ? find_lock_task_mm+0x3b/0x70
+[ 1655.487568]  out_of_memory+0xe9/0x6d0
+[ 1655.487568]  __alloc_pages_slowpath.constprop.134+0xa84/0xcb0
+[ 1655.487568]  __alloc_pages+0x2b9/0x2f0
+[ 1655.487568]  pagecache_get_page+0x164/0x3a0
+[ 1655.487568]  grab_cache_page_write_begin+0x17/0x30
+[ 1655.487568]  simple_write_begin+0x1e/0x1e0
+[ 1655.487568]  generic_perform_write+0xba/0x1c0
+[ 1655.487568]  __generic_file_write_iter+0x16b/0x1c0
+[ 1655.487568]  ? sysvec_apic_timer_interrupt+0x5b/0x80
+[ 1655.487568]  generic_file_write_iter+0x43/0xb0
+[ 1655.487568]  new_sync_write+0x10a/0x1a0
+[ 1655.487568]  vfs_write+0x153/0x230
+[ 1655.487568]  ksys_write+0x57/0xd0
+[ 1655.487568]  do_syscall_64+0x3a/0x90
+[ 1655.487568]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[ 1655.487568] RIP: 0033:0x556cc0
+[ 1655.487568] Code: 01 f0 ff ff 0f 83 60 df 01 00 c3 66 2e 0f 1f 84
+00 00 00 00 00 0f 1f 44 00 00 83 3d c9 e5 32 00 00 75 14 b8 01 00 00
+00 0f 05 <48> 3d 01 f0 ff ff 0f 83 34 df 01 00 c3 48 83 ec 08 e8 0a 82
+00 00
+[ 1655.487568] RSP: 002b:00007fffafec7878 EFLAGS: 00000246 ORIG_RAX:
+0000000000000001
+[ 1655.487568] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00000000005=
+56cc0
+[ 1655.487568] RDX: 0000000000100000 RSI: 00007f66bc740010 RDI: 00000000000=
+00001
+[ 1655.487568] RBP: 00007f66bc740010 R08: 0000000000000000 R09: 00000000000=
+00000
+[ 1655.487568] R10: 0000000000000008 R11: 0000000000000246 R12: 00000000001=
+00000
+[ 1655.487568] R13: 0000000000000001 R14: 00007f66bc740010 R15: 00007f66bc7=
+40010
+[ 1655.519386] Mem-Info:
+[ 1655.519585] active_anon:3 inactive_anon:297 isolated_anon:0
+[ 1655.519585]  active_file:0 inactive_file:0 isolated_file:0
+[ 1655.519585]  unevictable:240802 dirty:0 writeback:0
+[ 1655.519585]  slab_reclaimable:2580 slab_unreclaimable:1655
+[ 1655.519585]  mapped:433 shmem:0 pagetables:28 bounce:0
+[ 1655.519585]  free:2033 free_pcp:414 free_cma:0
+[ 1655.522018] Node 0 active_anon:12kB inactive_anon:1188kB
+active_file:0kB inactive_file:0kB unevictable:963208kB
+isolated(anon):0kB isolated(file):0kB mapped:1732kB dirty:0kB
+writeback:0kB shmem:0kB writeback_tmp:0kB kernel_stack:768kB
+pagetables:112kB all_unreclaimable? yes
+[ 1655.522748] Node 0 DMA free:3860kB min:60kB low:72kB high:84kB
+reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
+active_file:0kB inactive_file:0kB unevictable:11968kB writepending:0kB
+present:15992kB managed:15908kB mlocked:0kB bounce:0kB free_pcp:16kB
+local_pcp:12kB free_cma:0kB
+[ 1655.523733] lowmem_reserve[]: 0 950 950 950
+[ 1655.524090] Node 0 DMA32 free:4272kB min:5960kB low:6936kB
+high:7912kB reserved_highatomic:0KB active_anon:12kB
+inactive_anon:1188kB active_file:0kB inactive_file:0kB
+unevictable:951008kB writepending:0kB present:1032064kB
+managed:978680kB mlocked:0kB bounce:0kB free_pcp:1640kB
+local_pcp:952kB free_cma:0kB
+[ 1655.525042] lowmem_reserve[]: 0 0 0 0
+[ 1655.525200] Node 0 DMA: 1*4kB (U) 0*8kB 1*16kB (U) 0*32kB 2*64kB
+(UE) 1*128kB (E) 2*256kB (UE) 2*512kB (UE) 2*1024kB (UE) 0*2048kB
+0*4096kB =3D 3860kB
+[ 1655.525702] Node 0 DMA32: 17*4kB (E) 2*8kB (UM) 2*16kB (UM) 2*32kB
+(UM) 8*64kB (UME) 6*128kB (ME) 10*256kB (UME) 0*512kB 0*1024kB
+0*2048kB 0*4096kB =3D 4020kB
+[ 1655.526607] Node 0 hugepages_total=3D0 hugepages_free=3D0
+hugepages_surp=3D0 hugepages_size=3D2048kB
+[ 1655.527078] 240804 total pagecache pages
+[ 1655.527219] 0 pages in swap cache
+[ 1655.527326] Swap cache stats: add 0, delete 0, find 0/0
+[ 1655.527472] Free swap  =3D 0kB
+[ 1655.527563] Total swap =3D 0kB
+[ 1655.527657] 262014 pages RAM
+[ 1655.527741] 0 pages HighMem/MovableOnly
+[ 1655.528052] 13367 pages reserved
+[ 1655.528168] Tasks state (memory values in pages):
+[ 1655.528313] [  pid  ]   uid  tgid total_vm      rss pgtables_bytes
+swapents oom_score_adj name
+[ 1655.528564] [     83]     0    83      720      455    36864
+0             0 sh
+[ 1655.529287] [    100]     0   100      977      594    53248
+0             0 dd
+[ 1655.529565] oom-kill:constraint=3DCONSTRAINT_NONE,nodemask=3D(null),cpus=
+et=3D/,mems_allowed=3D0,task=3Ddd,pid=3D100,uid=3D0
+[ 1655.530157] Out of memory: Killed process 100 (dd) total-vm:3908kB,
+anon-rss:964kB, file-rss:1412kB, shmem-rss:0kB, UID:0 pgtables:52kB
+oom_score_adj:0
+[ 1655.532126] oom_reaper: reaped process 100 (dd), now anon-rss:0kB,
+file-rss:0kB, shmem-rss:0kB
+Killed
+/ #  dd if=3D/dev/zero of=3D/bigfile  bs=3D1M count=3D1024
+[ 1656.785189] sh invoked oom-killer:
+gfp_mask=3D0x2dc2(GFP_KERNEL|__GFP_HIGHMEM|__GFP_NOWARN|__GFP_ZERO),
+order=3D0, oom_score_adj=3D0
+[ 1656.786309] CPU: 0 PID: 83 Comm: sh Not tainted 5.13.0-rc4-next-20210604=
++ #3
+[ 1656.786655] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
+[ 1656.787037] Call Trace:
+[ 1656.787177]  dump_stack_lvl+0x58/0x71
+[ 1656.787226]  dump_header+0x4f/0x300
+[ 1656.787226]  ? do_try_to_free_pages+0x214/0x310
+[ 1656.787226]  ? get_page_from_freelist+0x1d1/0xc40
+[ 1656.787226]  oom_kill_process+0x2de/0x3a0
+[ 1656.787226]  ? find_lock_task_mm+0x3b/0x70
+[ 1656.787226]  out_of_memory+0xe9/0x6d0
+[ 1656.787226]  __alloc_pages_slowpath.constprop.134+0xa84/0xcb0
+[ 1656.787226]  __alloc_pages+0x2b9/0x2f0
+[ 1656.787226]  __alloc_pages_bulk+0x462/0x680
+[ 1656.787226]  ? __cond_resched+0x11/0x40
+[ 1656.787226]  ? __kmalloc_node+0x10d/0x270
+[ 1656.787226]  ? __vmalloc_node_range+0x211/0x300
+[ 1656.787226]  __vmalloc_node_range+0x122/0x300
+[ 1656.787226]  ? __cond_resched+0x11/0x40
+[ 1656.787226]  copy_process+0x780/0x1950
+[ 1656.787226]  ? kernel_clone+0x96/0x3e0
+[ 1656.787226]  ? __cond_resched+0x11/0x40
+[ 1656.787226]  ? down_read+0x9/0xa0
+[ 1656.787226]  ? _copy_to_user+0x1c/0x30
+[ 1656.787226]  kernel_clone+0x96/0x3e0
+[ 1656.787226]  ? tty_ioctl+0x148/0x890
+[ 1656.787226]  __do_sys_clone+0x5e/0x80
+[ 1656.787226]  do_syscall_64+0x3a/0x90
+[ 1656.787226]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[ 1656.787226] RIP: 0033:0x534a4a
+[ 1656.787226] Code: f7 d8 64 89 04 25 d4 02 00 00 64 4c 8b 0c 25 10
+00 00 00 31 d2 4d 8d 91 d0 02 00 00 31 f6 bf 11 00 20 01 b8 38 00 00
+00 0f 05 <48> 3d 00 f0 ff ff 0f 87 f5 00 00 00 85 c0 41 89 c5 0f 85 fc
+00 00
+[ 1656.787226] RSP: 002b:00007ffe6e976910 EFLAGS: 00000246 ORIG_RAX:
+0000000000000038
+[ 1656.787226] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000005=
+34a4a
+[ 1656.787226] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000012=
+00011
+[ 1656.787226] RBP: 00007ffe6e976930 R08: 0000000000000000 R09: 00000000012=
+8f880
+[ 1656.787226] R10: 000000000128fb50 R11: 0000000000000246 R12: 00000000000=
+00053
+[ 1656.787226] R13: 0000000001290c98 R14: 0000000000000000 R15: 00000000000=
+00000
+[ 1656.794113] Mem-Info:
+[ 1656.794222] active_anon:2 inactive_anon:29 isolated_anon:0
+[ 1656.794222]  active_file:0 inactive_file:0 isolated_file:0
+[ 1656.794222]  unevictable:240817 dirty:0 writeback:0
+[ 1656.794222]  slab_reclaimable:2588 slab_unreclaimable:1655
+[ 1656.794222]  mapped:433 shmem:0 pagetables:18 bounce:0
+[ 1656.794222]  free:1970 free_pcp:699 free_cma:0
+[ 1656.795238] Node 0 active_anon:8kB inactive_anon:116kB
+active_file:0kB inactive_file:0kB unevictable:963268kB
+isolated(anon):0kB isolated(file):0kB mapped:1732kB dirty:0kB
+writeback:0kB shmem:0kB writeback_tmp:0kB kernel_stack:752kB
+pagetables:72kB all_unreclaimable? yes
+[ 1656.796010] Node 0 DMA free:3860kB min:60kB low:72kB high:84kB
+reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
+active_file:0kB inactive_file:0kB unevictable:11968kB writepending:0kB
+present:15992kB managed:15908kB mlocked:0kB bounce:0kB free_pcp:16kB
+local_pcp:4kB free_cma:0kB
+[ 1656.797721] lowmem_reserve[]: 0 950 950 950
+[ 1656.797967] Node 0 DMA32 free:4020kB min:5960kB low:6936kB
+high:7912kB reserved_highatomic:0KB active_anon:8kB
+inactive_anon:116kB active_file:0kB inactive_file:0kB
+unevictable:951300kB writepending:0kB present:1032064kB
+managed:978680kB mlocked:0kB bounce:0kB free_pcp:2780kB
+local_pcp:688kB free_cma:0kB
+[ 1656.798578] lowmem_reserve[]: 0 0 0 0
+[ 1656.798775] Node 0 DMA: 1*4kB (U) 0*8kB 1*16kB (U) 0*32kB 2*64kB
+(UE) 1*128kB (E) 2*256kB (UE) 2*512kB (UE) 2*1024kB (UE) 0*2048kB
+0*4096kB =3D 3860kB
+[ 1656.801548] Node 0 DMA32: 17*4kB (E) 2*8kB (UM) 2*16kB (UM) 2*32kB
+(UM) 8*64kB (UME) 6*128kB (ME) 10*256kB (UME) 0*512kB 0*1024kB
+0*2048kB 0*4096kB =3D 4020kB
+[ 1656.802683] Node 0 hugepages_total=3D0 hugepages_free=3D0
+hugepages_surp=3D0 hugepages_size=3D2048kB
+[ 1656.803319] 240817 total pagecache pages
+[ 1656.803534] 0 pages in swap cache
+[ 1656.803717] Swap cache stats: add 0, delete 0, find 0/0
+[ 1656.804122] Free swap  =3D 0kB
+[ 1656.804286] Total swap =3D 0kB
+[ 1656.804426] 262014 pages RAM
+[ 1656.804565] 0 pages HighMem/MovableOnly
+[ 1656.804748] 13367 pages reserved
+[ 1656.805060] Tasks state (memory values in pages):
+[ 1656.805374] [  pid  ]   uid  tgid total_vm      rss pgtables_bytes
+swapents oom_score_adj name
+[ 1656.806160] [     83]     0    83      720      455    36864
+0             0 sh
+[ 1656.806677] oom-kill:constraint=3DCONSTRAINT_NONE,nodemask=3D(null),cpus=
+et=3D/,mems_allowed=3D0,task=3Dsh,pid=3D83,uid=3D0
+[ 1656.807762] Out of memory: Killed process 83 (sh) total-vm:2880kB,
+anon-rss:88kB, file-rss:1732kB, shmem-rss:0kB, UID:0 pgtables:36kB
+oom_score_adj:0
+[ 1656.824587] linuxrc invoked oom-killer:
+gfp_mask=3D0x400dc0(GFP_KERNEL_ACCOUNT|__GFP_ZERO), order=3D1,
+oom_score_adj=3D0
+[ 1656.825261] CPU: 1 PID: 1 Comm: linuxrc Not tainted
+5.13.0-rc4-next-20210604+ #3
+[ 1656.825508] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
+[ 1656.825784] Call Trace:
+[ 1656.826015]  dump_stack_lvl+0x58/0x71
+[ 1656.826086]  dump_header+0x4f/0x300
+[ 1656.826086]  out_of_memory+0x67c/0x6d0
+[ 1656.826086]  __alloc_pages_slowpath.constprop.134+0xa84/0xcb0
+[ 1656.826086]  __alloc_pages+0x2b9/0x2f0
+[ 1656.826086]  __get_free_pages+0x8/0x30
+[ 1656.826086]  pgd_alloc+0x2a/0x1c0
+[ 1656.826086]  ? kmem_cache_alloc+0x31/0x1c0
+[ 1656.826086]  mm_init.isra.61+0x172/0x240
+[ 1656.826086]  dup_mm.isra.63+0x54/0x540
+[ 1656.826086]  copy_process+0x18b6/0x1950
+[ 1656.826086]  kernel_clone+0x96/0x3e0
+[ 1656.826086]  __do_sys_clone+0x5e/0x80
+[ 1656.826086]  do_syscall_64+0x3a/0x90
+[ 1656.826086]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[ 1656.826086] RIP: 0033:0x534a4a
+[ 1656.826086] Code: f7 d8 64 89 04 25 d4 02 00 00 64 4c 8b 0c 25 10
+00 00 00 31 d2 4d 8d 91 d0 02 00 00 31 f6 bf 11 00 20 01 b8 38 00 00
+00 0f 05 <48> 3d 00 f0 ff ff 0f 87 f5 00 00 00 85 c0 41 89 c5 0f 85 fc
+00 00
+[ 1656.826086] RSP: 002b:00007ffea9111680 EFLAGS: 00000246 ORIG_RAX:
+0000000000000038
+[ 1656.826086] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000005=
+34a4a
+[ 1656.826086] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000012=
+00011
+[ 1656.826086] RBP: 00007ffea91116a0 R08: 0000000000000000 R09: 0000000000e=
+71880
+[ 1656.826086] R10: 0000000000e71b50 R11: 0000000000000246 R12: 00000000000=
+00001
+[ 1656.826086] R13: 00007ffea91119c8 R14: 0000000000000000 R15: 00000000000=
+00095
+[ 1656.831099] Mem-Info:
+[ 1656.831211] active_anon:2 inactive_anon:29 isolated_anon:0
+[ 1656.831211]  active_file:0 inactive_file:0 isolated_file:0
+[ 1656.831211]  unevictable:240817 dirty:0 writeback:0
+[ 1656.831211]  slab_reclaimable:2588 slab_unreclaimable:1655
+[ 1656.831211]  mapped:382 shmem:0 pagetables:18 bounce:0
+[ 1656.831211]  free:1970 free_pcp:728 free_cma:0
+[ 1656.832252] Node 0 active_anon:8kB inactive_anon:116kB
+active_file:0kB inactive_file:0kB unevictable:963268kB
+isolated(anon):0kB isolated(file):0kB mapped:1528kB dirty:0kB
+writeback:0kB shmem:0kB writeback_tmp:0kB kernel_stack:752kB
+pagetables:72kB all_unreclaimable? yes
+[ 1656.833095] Node 0 DMA free:3860kB min:60kB low:72kB high:84kB
+reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
+active_file:0kB inactive_file:0kB unevictable:11968kB writepending:0kB
+present:15992kB managed:15908kB mlocked:0kB bounce:0kB free_pcp:16kB
+local_pcp:12kB free_cma:0kB
+[ 1656.834023] lowmem_reserve[]: 0 950 950 950
+[ 1656.834191] Node 0 DMA32 free:4020kB min:5960kB low:6936kB
+high:7912kB reserved_highatomic:0KB active_anon:8kB
+inactive_anon:116kB active_file:0kB inactive_file:0kB
+unevictable:951300kB writepending:0kB present:1032064kB
+managed:978680kB mlocked:0kB bounce:0kB free_pcp:2896kB
+local_pcp:2100kB free_cma:0kB
+[ 1656.835186] lowmem_reserve[]: 0 0 0 0
+[ 1656.835344] Node 0 DMA: 1*4kB (U) 0*8kB 1*16kB (U) 0*32kB 2*64kB
+(UE) 1*128kB (E) 2*256kB (UE) 2*512kB (UE) 2*1024kB (UE) 0*2048kB
+0*4096kB =3D 3860kB
+[ 1656.835831] Node 0 DMA32: 17*4kB (E) 2*8kB (UM) 2*16kB (UM) 2*32kB
+(UM) 8*64kB (UME) 6*128kB (ME) 10*256kB (UME) 0*512kB 0*1024kB
+0*2048kB 0*4096kB =3D 4020kB
+[ 1656.836493] Node 0 hugepages_total=3D0 hugepages_free=3D0
+hugepages_surp=3D0 hugepages_size=3D2048kB
+[ 1656.836734] 240817 total pagecache pages
+[ 1656.837020] 0 pages in swap cache
+[ 1656.837119] Swap cache stats: add 0, delete 0, find 0/0
+[ 1656.837268] Free swap  =3D 0kB
+[ 1656.837359] Total swap =3D 0kB
+[ 1656.837452] 262014 pages RAM
+[ 1656.837533] 0 pages HighMem/MovableOnly
+[ 1656.837648] 13367 pages reserved
+[ 1656.837747] Tasks state (memory values in pages):
+[ 1656.838049] [  pid  ]   uid  tgid total_vm      rss pgtables_bytes
+swapents oom_score_adj name
+[ 1656.838340] Out of memory and no killable processes...
+[ 1656.838682] Kernel panic - not syncing: System is deadlocked on memory
+[ 1656.838990] CPU: 1 PID: 1 Comm: linuxrc Not tainted
+5.13.0-rc4-next-20210604+ #3
+[ 1656.838990] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
+[ 1656.838990] Call Trace:
+[ 1656.838990]  dump_stack_lvl+0x58/0x71
+[ 1656.838990]  panic+0xf3/0x2b4
+[ 1656.838990]  out_of_memory+0x6c1/0x6d0
+[ 1656.838990]  __alloc_pages_slowpath.constprop.134+0xa84/0xcb0
+[ 1656.838990]  __alloc_pages+0x2b9/0x2f0
+[ 1656.838990]  __get_free_pages+0x8/0x30
+[ 1656.838990]  pgd_alloc+0x2a/0x1c0
+[ 1656.838990]  ? kmem_cache_alloc+0x31/0x1c0
+[ 1656.838990]  mm_init.isra.61+0x172/0x240
+[ 1656.838990]  dup_mm.isra.63+0x54/0x540
+[ 1656.838990]  copy_process+0x18b6/0x1950
+[ 1656.838990]  kernel_clone+0x96/0x3e0
+[ 1656.838990]  __do_sys_clone+0x5e/0x80
+[ 1656.838990]  do_syscall_64+0x3a/0x90
+[ 1656.838990]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[ 1656.838990] RIP: 0033:0x534a4a
+[ 1656.838990] Code: f7 d8 64 89 04 25 d4 02 00 00 64 4c 8b 0c 25 10
+00 00 00 31 d2 4d 8d 91 d0 02 00 00 31 f6 bf 11 00 20 01 b8 38 00 00
+00 0f 05 <48> 3d 00 f0 ff ff 0f 87 f5 00 00 00 85 c0 41 89 c5 0f 85 fc
+00 00
+[ 1656.838990] RSP: 002b:00007ffea9111680 EFLAGS: 00000246 ORIG_RAX:
+0000000000000038
+[ 1656.838990] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000005=
+34a4a
+[ 1656.838990] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000012=
+00011
+[ 1656.838990] RBP: 00007ffea91116a0 R08: 0000000000000000 R09: 0000000000e=
+71880
+[ 1656.838990] R10: 0000000000e71b50 R11: 0000000000000246 R12: 00000000000=
+00001
+[ 1656.838990] R13: 00007ffea91119c8 R14: 0000000000000000 R15: 00000000000=
+00095
+[ 1656.838990] Kernel Offset: 0x31600000 from 0xffffffff81000000
+(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+[ 1656.838990] ---[ end Kernel panic - not syncing: System is
+deadlocked on memory ]---
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
