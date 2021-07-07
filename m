@@ -2,114 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98CD3BEA0C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B732B3BEA15
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbhGGOuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 10:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
+        id S232183AbhGGOxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 10:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbhGGOuh (ORCPT
+        with ESMTP id S232186AbhGGOwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:50:37 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC09C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 07:47:55 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id u25so2988566ljj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 07:47:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YvjmMvDpczJUOj6MRPrVMSwe4+RsIZimfDsJ8UxpWfc=;
-        b=tvInKCoNOpOC+YvG2+0TqVANv95mKzSnq6V9suFz+Hd4UqEU4Ys7itHxue76ks7obE
-         UQqE9/+t1X5EBUkcL84GPLoNftEHdiqJjdDuPItFLRdl35x6aShvoicRmIUv0Hnzx5EI
-         NDLNWeWNUm65CJIygNHNOIt7foAlYvkDXrPVJGLhrlWJgj+9qfS7oIITinxrL5K4Ft7Z
-         ZCruFz1qX3x0eN+yBY63CeTioG7vQWSNWoJhUT2ERP5KnHmZQEItUcSf0RMgKYVgtmjJ
-         Ol4gTTHGSVyjT6a6rv0XBIS5CZnrlWvP44/qXnqvbqufQVrzzDVWGiK+AJSk9jkQr1a8
-         kd0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YvjmMvDpczJUOj6MRPrVMSwe4+RsIZimfDsJ8UxpWfc=;
-        b=fxRx7ztzLsEklZHUDjMn6O3Y6E4Znc8qPqKJbKj3Ufb6M+qZR6w9es9stdVuH4P39g
-         +fVDkf2wYqOMYDmnImMh92gTdCHoJNns+GP5oYKO9Jcf6+jnTkOEKPZjbvqSH56BUI9+
-         l8tO7E5VHHK+HjECSiH/P0VGOYFmLvbPbLN7z5yTjfWeWu+RA5Kc8wzVcoXb74Q85Hr2
-         2RbGNm5GUFrlhHorgcKvYW/1TkJh6A1LngAqUsoDyKJV+jTBykMMKkAu3lDIIGTWzeS6
-         Yen6sX7AJgaymJR/EZaf3JC4YYJhh6fAnfQRH/wC/n6LT1/IDNATPIHtWO6kq4X7So8f
-         6XPg==
-X-Gm-Message-State: AOAM531/1sFEf/wjyouDisdzbLls6x/bDA8XxTnlxgq5Jyw0V6jCcjgE
-        +zTfOnmYUHYG6Juy/06yWEo=
-X-Google-Smtp-Source: ABdhPJwarOPGDwnlHyB+XJypRB7sAaEv/wMWsX8dJkaqDxDZ4K2YzM0B3HgD6E6EnzgCbTE6FcYKhQ==
-X-Received: by 2002:a2e:9e1a:: with SMTP id e26mr19810601ljk.265.1625669274105;
-        Wed, 07 Jul 2021 07:47:54 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id 70sm1352466ljj.81.2021.07.07.07.47.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 07:47:53 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 7 Jul 2021 16:47:51 +0200
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2 1/2] mm/vmalloc: Use batched page requests in
- bulk-allocator
-Message-ID: <20210707144751.GB1863@pc638.lan>
-References: <20210705170537.43060-1-urezki@gmail.com>
- <20210706132653.8374852963b25989e360d599@linux-foundation.org>
- <YOVo9bBtncG3/uLi@dhcp22.suse.cz>
+        Wed, 7 Jul 2021 10:52:22 -0400
+Received: from proxima.lasnet.de (proxima.lasnet.de [IPv6:2a01:4f8:121:31eb:3::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DAFC06175F;
+        Wed,  7 Jul 2021 07:48:56 -0700 (PDT)
+Received: from [IPv6:2003:e9:d72a:e927:359b:e3fc:a5d5:7a7a] (p200300e9d72ae927359be3fca5d57a7a.dip0.t-ipconnect.de [IPv6:2003:e9:d72a:e927:359b:e3fc:a5d5:7a7a])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: stefan@datenfreihafen.org)
+        by proxima.lasnet.de (Postfix) with ESMTPSA id 51686C03B9;
+        Wed,  7 Jul 2021 16:48:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=datenfreihafen.org;
+        s=2021; t=1625669334;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PrWjspjGSf78DOHcyaZo3I5nvBgwDD7uu1bHzO/WReI=;
+        b=c17Ms0AfLq3GTWECPGNJJ1C2EZBIwiuHjHO/FNfx8xZ6emMr2JwbzYdd9451DZBsXlN+hI
+        BWMTfyilNlsDTkYdmzHif8xc3ExwPNfv7zL472lthci1QIbreJPQpAUX9NGm9id4gA8g6q
+        kBZKLJOokUB0u7CMdJ0f1N7mrixl7aVXnoesQ62XUq7kifyzfgX/pccTY7uX8ds5G/dkl2
+        0D3d81lCAq+XQ2e8BBAMG9opsSzmgSJBPAaXftXGHn/tCv6RaRYrbyH7rdRfWPwz/oouCc
+        1Hb2Hpj1jbZyw4pvL1LHMDVQqspVSsji3jDxDxyWN9MRtSgr4I189OljRlAHyA==
+Subject: Re: [PATCH] ieee802154: hwsim: fix GPF in hwsim_set_edge_lqi
+To:     Alexander Aring <alex.aring@gmail.com>,
+        Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Aring <aring@mojatatu.com>,
+        linux-wpan - ML <linux-wpan@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+References: <20210705131321.217111-1-mudongliangabcd@gmail.com>
+ <CAB_54W5ceXFPaYGs0T4pVq8AzRqUSvaBDWdBjvRurBYyihqfVg@mail.gmail.com>
+From:   Stefan Schmidt <stefan@datenfreihafen.org>
+Message-ID: <68815e29-88f0-b37d-5e71-687d738f0db5@datenfreihafen.org>
+Date:   Wed, 7 Jul 2021 16:48:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOVo9bBtncG3/uLi@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAB_54W5ceXFPaYGs0T4pVq8AzRqUSvaBDWdBjvRurBYyihqfVg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 10:42:29AM +0200, Michal Hocko wrote:
-> On Tue 06-07-21 13:26:53, Andrew Morton wrote:
-> > On Mon,  5 Jul 2021 19:05:36 +0200 "Uladzislau Rezki (Sony)" <urezki@gmail.com> wrote:
-> > 
-> > > In case of simultaneous vmalloc allocations, for example it is 1GB and
-> > > 12 CPUs my system is able to hit "BUG: soft lockup" for !CONFIG_PREEMPT
-> > > kernel.
-> > > 
-> > > <snip>
-> > > ...
-> > >
-> > > are obtained, i.e. do batched page requests adding cond_resched() meanwhile
-> > > to reschedule. Batched value is hard-coded and is 100 pages per call.
-> > > 
-> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > 
-> > Can we please have a Fixes: for this?
-> 
-> Is this a fix for any actual real life problem? I mean allocating 1GB of
-> vmalloc space back and forth sounds like a stretch to me.
->  
-It is not a real scenario. I simulated it by the stress-suite tests. So the
-Fixes tag is not needed, IMHO.
+Hello.
 
-> > Is this fix important enough for 4.14-rcx?  I think so...
+On 07.07.21 15:44, Alexander Aring wrote:
+> Hi,
 > 
-> I do not think so. This is an improvement so that vmalloc behaves more
-> sanely for those abusers...
->
-A bulk-allocator has recently been introduced, so 4.x does not have it,
-i.e. this change is not applicable and 4.x kernel does not suffer from
-it.
+> On Mon, 5 Jul 2021 at 09:13, Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>>
+>> Both MAC802154_HWSIM_ATTR_RADIO_ID and MAC802154_HWSIM_ATTR_RADIO_EDGE,
+>> MAC802154_HWSIM_EDGE_ATTR_ENDPOINT_ID and MAC802154_HWSIM_EDGE_ATTR_LQI
+>> must be present to fix GPF.
+>>
+>> Fixes: f25da51fdc38 ("ieee802154: hwsim: add replacement for fakelb")
+>> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> 
+> Acked-by: Alexander Aring <aahringo@redhat.com>
 
---
-Vlad Rezki
+
+This patch has been applied to the wpan tree and will be
+part of the next pull request to net. Thanks!
+
+regards
+Stefan Schmidt
