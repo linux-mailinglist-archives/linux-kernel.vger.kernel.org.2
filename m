@@ -2,209 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF7C3BE23D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 06:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A66593BE240
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 06:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhGGE4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 00:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
+        id S230192AbhGGE5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 00:57:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230157AbhGGE4E (ORCPT
+        with ESMTP id S229883AbhGGE5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 00:56:04 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C18C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 21:53:25 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id g24so799389pji.4
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 21:53:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b7KlGzb3TmhwFXRRdHyMSPZ+oFfClo2RvfzkKVOqRIE=;
-        b=MR+Kh5re0say7uKj97Qo57vfgE0O45SK2VtGHoqBLcjZIoJBtIbISX5W5hIIx8H3lY
-         dRn/Ne8zsaSC/gcCsbbERFe8wzQD84ABydKcNPOFSql3Wfutz7zQ85mpl8GvGTNBwSPf
-         uHZL72RK2shnnvQo8K9MQ4qZuPG2WtZylcn8e7yPND67iLpwMUs2LXLeHjRq/2A9k/xv
-         5nErrKmdNJsJUPZSR1DBJbsSRGzw1FkPNAuXMtPGP0fS5dseuE+wu6fif8M7QiBgb8J/
-         S1D1B4piuUY3yvWjqnNhLTpGVsKZ1utJ7FhmlIhwcWHZIhwWDctcaEuH2CFcqLUBaNFF
-         SnyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b7KlGzb3TmhwFXRRdHyMSPZ+oFfClo2RvfzkKVOqRIE=;
-        b=QVCMj7qxdUueLHSs/YQBE4jZu4gRySEQHFcKOKoGntorq/ldHOrcgEqI5/4p4RycI1
-         jwScJw+jjHr4Om4INhbyEIId5OlBcaqUEmnHbBBRNW00mCKHr3TGG6YC26PdHHSjuRLn
-         /DbdHcl5Wpmt9HbCbCoD9pvkuUlABTZ5FEi7GNdFipEbI47GmJ3iFNGfaUE2l1gZIpvE
-         ZYk4XfAxR/GYFah8LW8IuCCwmdO1CUyDhbQRyw+DRBE4TDMJ5DoJhy5zsBlPDEH0ol2O
-         qKHk3S9AbHwKOEm7FWNUbPWenHdgWVeY8OVSPa/fszLeG6qrSC6QEZPNcVuPbdiFMAq4
-         mchg==
-X-Gm-Message-State: AOAM531SzgzksarVB4/QZKZOtiIBkk1KAW4boZtzjCMRVk2iaxFnV5Kp
-        OydR8f6iJtOAMtMEREa+tYaSTZBblzHsNA==
-X-Google-Smtp-Source: ABdhPJxmfXN0Zq6/BLURJHxCQrZ6A0dwbe0zi7IiRX2YuJNASsDDixB+OSWdXdmuZwA0cc4XIX+mgQ==
-X-Received: by 2002:a17:90b:1403:: with SMTP id jo3mr4164988pjb.160.1625633604031;
-        Tue, 06 Jul 2021 21:53:24 -0700 (PDT)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id t185sm14007101pfc.1.2021.07.06.21.53.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 21:53:23 -0700 (PDT)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-gpio@vger.kernel.org
-Subject: [PATCH] firmware: QCOM_SCM: Allow qcom_scm driver to be loadable as a permenent module
-Date:   Wed,  7 Jul 2021 04:53:20 +0000
-Message-Id: <20210707045320.529186-1-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 7 Jul 2021 00:57:03 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5390C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 21:54:22 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 13:54:12 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1625633660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=39kI7Yc9OgSpz5lPE3O2Efw5i4i4OxelZLRem/Qx8qU=;
+        b=J2a+wKEWxNM6SM7qAg3p5DdwoxsE7Lj8ahppGZHexf7Lx0SlTp4upCDdgztewFVHCaJGSY
+        2jAA6cbPgV7nr/Bl5BavqTVfshr52/lQWg63ZTC+OLXYclARtKi7wyiaFkntJWAU/EllxB
+        timwrwdcT8jku1UFWdbD1LNReK3+T3I=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Wang Wensheng <wangwensheng4@huawei.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rui.xiang@huawei.com" <rui.xiang@huawei.com>,
+        HAGIO =?utf-8?B?S0FaVUhJVE8o6JCp5bC+IOS4gOS7gSk=?= 
+        <k-hagio-ab@nec.com>, naoya.horiguchi@nec.com
+Subject: Re: [PATCH] mm/sparse: set SECTION_NID_SHIFT to 6
+Message-ID: <20210707045412.GA809950@u2004>
+References: <20210427083019.110184-1-wangwensheng4@huawei.com>
+ <e838d8b5-84f1-5532-6f22-e4b729124e1c@redhat.com>
+ <20210623230939.GA2963480@hori.linux.bs1.fc.nec.co.jp>
+ <CAPcyv4h5a5AYscsyC40_5bc6j1kmjMFWJ_0MFAGEx1EPS9Tmrw@mail.gmail.com>
+ <20210628070601.GB418318@u2004>
+ <10142860-06b2-df68-c283-64560f31fb44@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <10142860-06b2-df68-c283-64560f31fb44@redhat.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: naoya.horiguchi@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow the qcom_scm driver to be loadable as a permenent module.
+On Tue, Jul 06, 2021 at 10:36:36AM +0200, David Hildenbrand wrote:
+> > Sounds nice to me, so here's a patch. Could you review this?
+> > 
+> 
+> Hi,
+> 
+> sorry for the late reply, I was on vacation. Please send it as a proper
+> stand-alone patch next time, such that it
+> 
+> 1. won't get silently ignored by reviewers/maintainers within a thread
+> 2. Can easily get picked up/tested
 
-This still uses the "depends on QCOM_SCM || !QCOM_SCM" bit to
-ensure that drivers that call into the qcom_scm driver are
-also built as modules. While not ideal in some cases its the
-only safe way I can find to avoid build errors without having
-those drivers select QCOM_SCM and have to force it on (as
-QCOM_SCM=n can be valid for those drivers).
+Sorry, I'll send in a separate thread next time.
 
-Reviving this now that Saravana's fw_devlink defaults to on,
-which should avoid loading troubles seen before.
+> 
+> Some minor comments below.
+> 
+> > Thanks,
+> > Naoya Horiguchi
+> > ---
+> >  From a146c9f12ae8985c8985a5861330f7528cd14fe8 Mon Sep 17 00:00:00 2001
+> > From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> > Date: Mon, 28 Jun 2021 15:50:37 +0900
+> > Subject: [PATCH] mm/sparse: set SECTION_NID_SHIFT to 6
+> > 
+> > Hagio-san reported that crash utility can see bit 4 in section_mem_map
+> > (SECTION_TAINT_ZONE_DEVICE) to be set, even if we do not use any
+> > ZONE_DEVICE ilke pmem or HMM.  This problem could break crash-related
+> 
+> s/ilke/like/
+> 
+> > toolsets and/or other memory analysis tools.
+> > 
+> 
+> I'd rephrase this to "Having SECTION_TAINT_ZONE_DEVICE set for wrong
+> sections forces pfn_to_online_page() through the slow path, but doesn't
+> actually break the kernel. However, it can break crash-related toolsets."
+>
+> However, I am not sure why it actually breaks crash? crash would have to
+> implement the same slow-path check and would have to double-check the
+> sub-section present map. Then, it should just work like pfn_to_online_page()
+> and not have a real issue. What am I missing?
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Maulik Shah <mkshah@codeaurora.org>
-Cc: Saravana Kannan <saravanak@google.com>
-Cc: Todd Kjos <tkjos@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-arm-msm@vger.kernel.org
-Cc: iommu@lists.linux-foundation.org
-Cc: linux-gpio@vger.kernel.org
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Acked-by: Will Deacon <will@kernel.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
-v3:
-* Fix __arm_smccc_smc build issue reported by
-  kernel test robot <lkp@intel.com>
-v4:
-* Add "depends on QCOM_SCM || !QCOM_SCM" bit to ath10k
-  config that requires it.
-v5:
-* Fix QCOM_QCM typo in Kconfig, it should be QCOM_SCM
----
- drivers/firmware/Kconfig                | 2 +-
- drivers/firmware/Makefile               | 3 ++-
- drivers/firmware/qcom_scm.c             | 4 ++++
- drivers/iommu/Kconfig                   | 2 ++
- drivers/net/wireless/ath/ath10k/Kconfig | 1 +
- 5 files changed, 10 insertions(+), 2 deletions(-)
+Because a kdump generation tool (makedumpfile in my mind) uses this field
+to calculate the physical address to read.  So wrong bits mean wrong address,
+so kdump generation can fail.  We already avoid this by fixing makedumpfile not
+to check lower 5 bits, so it's not critial for us.
 
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index db0ea2d2d75a..af53778edc7e 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -235,7 +235,7 @@ config INTEL_STRATIX10_RSU
- 	  Say Y here if you want Intel RSU support.
- 
- config QCOM_SCM
--	bool
-+	tristate "Qcom SCM driver"
- 	depends on ARM || ARM64
- 	depends on HAVE_ARM_SMCCC
- 	select RESET_CONTROLLER
-diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-index 5e013b6a3692..523173cbff33 100644
---- a/drivers/firmware/Makefile
-+++ b/drivers/firmware/Makefile
-@@ -17,7 +17,8 @@ obj-$(CONFIG_ISCSI_IBFT)	+= iscsi_ibft.o
- obj-$(CONFIG_FIRMWARE_MEMMAP)	+= memmap.o
- obj-$(CONFIG_RASPBERRYPI_FIRMWARE) += raspberrypi.o
- obj-$(CONFIG_FW_CFG_SYSFS)	+= qemu_fw_cfg.o
--obj-$(CONFIG_QCOM_SCM)		+= qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
-+obj-$(CONFIG_QCOM_SCM)		+= qcom-scm.o
-+qcom-scm-objs += qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
- obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
- obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
- obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
-diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index ee9cb545e73b..bb9ce3f92931 100644
---- a/drivers/firmware/qcom_scm.c
-+++ b/drivers/firmware/qcom_scm.c
-@@ -1296,6 +1296,7 @@ static const struct of_device_id qcom_scm_dt_match[] = {
- 	{ .compatible = "qcom,scm" },
- 	{}
- };
-+MODULE_DEVICE_TABLE(of, qcom_scm_dt_match);
- 
- static struct platform_driver qcom_scm_driver = {
- 	.driver = {
-@@ -1312,3 +1313,6 @@ static int __init qcom_scm_init(void)
- 	return platform_driver_register(&qcom_scm_driver);
- }
- subsys_initcall(qcom_scm_init);
-+
-+MODULE_DESCRIPTION("Qualcomm Technologies, Inc. SCM driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-index 07b7c25cbed8..f61516c17589 100644
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@ -253,6 +253,7 @@ config SPAPR_TCE_IOMMU
- config ARM_SMMU
- 	tristate "ARM Ltd. System MMU (SMMU) Support"
- 	depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-+	depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
- 	select IOMMU_API
- 	select IOMMU_IO_PGTABLE_LPAE
- 	select ARM_DMA_USE_IOMMU if ARM
-@@ -382,6 +383,7 @@ config QCOM_IOMMU
- 	# Note: iommu drivers cannot (yet?) be built as modules
- 	bool "Qualcomm IOMMU Support"
- 	depends on ARCH_QCOM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-+	depends on QCOM_SCM=y
- 	select IOMMU_API
- 	select IOMMU_IO_PGTABLE_LPAE
- 	select ARM_DMA_USE_IOMMU
-diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
-index 40f91bc8514d..741289e385d5 100644
---- a/drivers/net/wireless/ath/ath10k/Kconfig
-+++ b/drivers/net/wireless/ath/ath10k/Kconfig
-@@ -44,6 +44,7 @@ config ATH10K_SNOC
- 	tristate "Qualcomm ath10k SNOC support"
- 	depends on ATH10K
- 	depends on ARCH_QCOM || COMPILE_TEST
-+	depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
- 	select QCOM_QMI_HELPERS
- 	help
- 	  This module adds support for integrated WCN3990 chip connected
--- 
-2.25.1
+> > The root cause is that SECTION_NID_SHIFT is incorrectly set to 3,
+> > while we use lower 5 bits for SECTION_* flags.  So bit 3 and 4 can be
+> > overlapped by sub-field for early NID, and bit 4 is unexpectedly set
+> > on (for example) NUMA node id is 2 or 3.
+> > 
+> > To fix it, set SECTION_NID_SHIFT to 6 which is the minimum number of
+> > available bits of section flag field.
+> > 
+> > [1]: https://github.com/crash-utility/crash/commit/0b5435e10161345cf713ed447a155a611a1b408b
+> 
+> [1] is never referenced
 
+I dropped this.
+
+> 
+> > 
+> > Fixes: 1f90a3477df3 ("mm: teach pfn_to_online_page() about ZONE_DEVICE section collisions")
+> > Cc: stable@vger.kernel.org # v5.12+
+> 
+> ^ I am not really convinced that this is a stable fix. It forces something
+> through the slow path, but the kernel itself is not broken, no?
+
+No, it's not broken, but just suboptimal.
+So I drop the CC to stable.
+
+> > Reported-by: Kazuhito Hagio <k-hagio-ab@nec.com>
+> > Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> > ---
+> >   include/linux/mmzone.h | 3 ++-
+> >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> > index fcb535560028..d6aa2a196aeb 100644
+> > --- a/include/linux/mmzone.h
+> > +++ b/include/linux/mmzone.h
+> > @@ -1357,6 +1357,7 @@ extern size_t mem_section_usage_size(void);
+> >    *      worst combination is powerpc with 256k pages,
+> >    *      which results in PFN_SECTION_SHIFT equal 6.
+> >    * To sum it up, at least 6 bits are available.
+> > + * SECTION_NID_SHIFT is set to 6 based on this fact.
+> 
+> I'd drop that comment or rephrase to ("once this changes, don't forget to
+> adjust SECTION_NID_SHIFT")
+
+OK, I drop the comment.
+
+> >    */
+> >   #define SECTION_MARKED_PRESENT		(1UL<<0)
+> >   #define SECTION_HAS_MEM_MAP		(1UL<<1)
+> > @@ -1365,7 +1366,7 @@ extern size_t mem_section_usage_size(void);
+> >   #define SECTION_TAINT_ZONE_DEVICE	(1UL<<4)
+> >   #define SECTION_MAP_LAST_BIT		(1UL<<5)
+> >   #define SECTION_MAP_MASK		(~(SECTION_MAP_LAST_BIT-1))
+> > -#define SECTION_NID_SHIFT		3
+> > +#define SECTION_NID_SHIFT		6
+> >   static inline struct page *__section_mem_map_addr(struct mem_section *section)
+> >   {
+> > 
+> 
+> Change itself looks correct to me.
+> 
+> Acked-by: David Hildenbrand <david@redhat.com>
+
+Thank you, I'll post the update soon.
+
+- Naoya Horiguchi
