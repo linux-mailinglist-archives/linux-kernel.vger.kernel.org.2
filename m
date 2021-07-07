@@ -2,147 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B303BE623
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3723BE624
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhGGKJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:09:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:33500 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229949AbhGGKJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:09:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5FE45ED1;
-        Wed,  7 Jul 2021 03:06:33 -0700 (PDT)
-Received: from [10.57.1.129] (unknown [10.57.1.129])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4108B3F694;
-        Wed,  7 Jul 2021 03:06:30 -0700 (PDT)
-Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
- of EAS estimated energy
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Chris Redpath <Chris.Redpath@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        CCj.Yeh@mediatek.com
-References: <20210625152603.25960-1-lukasz.luba@arm.com>
- <20210625152603.25960-2-lukasz.luba@arm.com>
- <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
- <a6a49480-7d5d-fd0e-3940-0b6baac5acc0@arm.com>
- <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
- <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com>
- <CAKfTPtDk1ANfjR5h_EjErVfQ7=is3n9QOaKKxz81tMHtqUM7jA@mail.gmail.com>
- <297df159-1681-f0a7-843d-f34d86e51d4c@arm.com>
- <CAKfTPtCEo+gkV2TMhOHSnuUyu5BC54o-B4Hb=QbzgT6Dft-PhQ@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <27916860-33b1-f0a0-acff-4722a733c81b@arm.com>
-Date:   Wed, 7 Jul 2021 11:06:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S231258AbhGGKKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:10:01 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:35949 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229949AbhGGKKA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 06:10:00 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-6-g79YA_UqNSq2doqSydWg2A-1; Wed, 07 Jul 2021 11:07:17 +0100
+X-MC-Unique: g79YA_UqNSq2doqSydWg2A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.18; Wed, 7 Jul 2021 11:07:16 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Wed, 7 Jul 2021 11:07:16 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Palmer Dabbelt' <palmer@dabbelt.com>,
+        "akira.tsukamoto@gmail.com" <akira.tsukamoto@gmail.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 1/1] riscv: __asm_copy_to-from_user: Optimize unaligned
+ memory access and pipeline stall
+Thread-Topic: [PATCH v3 1/1] riscv: __asm_copy_to-from_user: Optimize
+ unaligned memory access and pipeline stall
+Thread-Index: AQHXcr0E9zBxyMGA8EqGz08GSOYzlas3R1qQ
+Date:   Wed, 7 Jul 2021 10:07:16 +0000
+Message-ID: <7f6e56390954403fb07a1c606fbc7e6d@AcuMS.aculab.com>
+References: <60c1f087-1e8b-8f22-7d25-86f5f3dcee3f@gmail.com>
+ <mhng-f4c7d64b-f4e9-491a-8868-bc1baa7a72a7@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-f4c7d64b-f4e9-491a-8868-bc1baa7a72a7@palmerdabbelt-glaptop>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtCEo+gkV2TMhOHSnuUyu5BC54o-B4Hb=QbzgT6Dft-PhQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/7/21 10:56 AM, Vincent Guittot wrote:
-> On Wed, 7 Jul 2021 at 11:48, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->>
->>
->> On 7/7/21 10:37 AM, Vincent Guittot wrote:
->>> On Wed, 7 Jul 2021 at 10:23, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>
->>>>
->>>>
->>>> On 7/7/21 9:00 AM, Vincent Guittot wrote:
->>>>> On Wed, 7 Jul 2021 at 09:49, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>>>
->>>>>>
->>>>>>
->>>>>> On 7/7/21 8:07 AM, Vincent Guittot wrote:
->>>>>>> On Fri, 25 Jun 2021 at 17:26, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>>>>>
->>>>>>>> The Energy Aware Scheduler (EAS) tries to find best CPU for a waking up
->>>>>>>> task. It probes many possibilities and compares the estimated energy values
->>>>>>>> for different scenarios. For calculating those energy values it relies on
->>>>>>>> Energy Model (EM) data and em_cpu_energy(). The precision which is used in
->>>>>>>> EM data is in milli-Watts (or abstract scale), which sometimes is not
->>>>>>>> sufficient. In some cases it might happen that two CPUs from different
->>>>>>>> Performance Domains (PDs) get the same calculated value for a given task
->>>>>>>> placement, but in more precised scale, they might differ. This rounding
->>>>>>>> error has to be addressed. This patch prepares EAS code for better
->>>>>>>> precision in the coming EM improvements.
->>>>>>>
->>>>>>> Could you explain why 32bits results are not enough and you need to
->>>>>>> move to 64bits ?
->>>>>>>
->>>>>>> Right now the result is in the range [0..2^32[ mW. If you need more
->>>>>>> precision and you want to return uW instead, you will have a result in
->>>>>>> the range  [0..4kW[ which seems to be still enough
->>>>>>>
->>>>>>
->>>>>> Currently we have the max value limit for 'power' in EM which is
->>>>>> EM_MAX_POWER 0xffff (64k - 1). We allow to register such big power
->>>>>> values ~64k mW (~64Watts) for an OPP. Then based on 'power' we
->>>>>> pre-calculate 'cost' fields:
->>>>>> cost[i] = power[i] * freq_max / freq[i]
->>>>>> So, for max freq the cost == power. Let's use that in the example.
->>>>>>
->>>>>> Then the em_cpu_energy() calculates as follow:
->>>>>> cost * sum_util / scale_cpu
->>>>>> We are interested in the first part - the value of multiplication.
->>>>>
->>>>> But all these are internal computations of the energy model. At the
->>>>> end, the computed energy that is returned by compute_energy() and
->>>>> em_cpu_energy(), fits in a long
->>>>
->>>> Let's take a look at existing *10000 precision for x CPUs:
->>>> cost * sum_util / scale_cpu =
->>>> (64k *10000) * (x * 800) / 1024
->>>> which is:
->>>> x * ~500mln
->>>>
->>>> So to be close to overflowing u32 the 'x' has to be > (?=) 8
->>>> (depends on sum_util).
->>>
->>> Sorry but I don't get your point.
->>> This patch is about the return type of compute_energy() and
->>> em_cpu_energy(). And even if we decide to return uW instead of mW,
->>> there is still a lot of margin.
->>>
->>> It's not because you need u64 for computing intermediate value that
->>> you must returns u64
->>
->> The example above shows the need of u64 return value for platforms
->> which are:
->> - 32bit
->> - have e.g. 16 CPUs
->> - has big power value e.g. ~64k mW
->> Then let's to the calc:
->> (64k * 10000) * (16 * 800) / 1024 = ~8000mln = ~8bln
-> 
-> so you return a power consumption of 8kW !!!
-> 
-
-No. It's in 0.1uW scale, so 800Watts. Which is 16 CPUs * 64Watts
-each at max freq and 80% load.
-
-Max power can be < 64Watts, which is 64k milli-Watts (< EM_MAX_POWER)
-64k mW * 10000 --> is the 0.1uW precision
+Li4uDQo+ID4gKwlmaXh1cCBSRUdfTCAgIGE0LCAgICAgICAgMChhMSksIDEwZg0KPiA+ICsJZml4
+dXAgUkVHX0wgICBhNSwgICAgU1pSRUcoYTEpLCAxMGYNCj4gPiArCWZpeHVwIFJFR19MICAgYTYs
+ICAyKlNaUkVHKGExKSwgMTBmDQo+ID4gKwlmaXh1cCBSRUdfTCAgIGE3LCAgMypTWlJFRyhhMSks
+IDEwZg0KPiA+ICsJZml4dXAgUkVHX0wgICB0MSwgIDQqU1pSRUcoYTEpLCAxMGYNCj4gPiArCWZp
+eHVwIFJFR19MICAgdDIsICA1KlNaUkVHKGExKSwgMTBmDQo+ID4gKwlmaXh1cCBSRUdfTCAgIHQz
+LCAgNipTWlJFRyhhMSksIDEwZg0KPiA+ICsJZml4dXAgUkVHX0wgICB0NCwgIDcqU1pSRUcoYTEp
+LCAxMGYNCj4gPiArCWZpeHVwIFJFR19TICAgYTQsICAgICAgICAwKGEwKSwgMTBmDQo+ID4gKwlm
+aXh1cCBSRUdfUyAgIGE1LCAgICBTWlJFRyhhMCksIDEwZg0KPiA+ICsJZml4dXAgUkVHX1MgICBh
+NiwgIDIqU1pSRUcoYTApLCAxMGYNCj4gPiArCWZpeHVwIFJFR19TICAgYTcsICAzKlNaUkVHKGEw
+KSwgMTBmDQo+ID4gKwlmaXh1cCBSRUdfUyAgIHQxLCAgNCpTWlJFRyhhMCksIDEwZg0KPiA+ICsJ
+Zml4dXAgUkVHX1MgICB0MiwgIDUqU1pSRUcoYTApLCAxMGYNCj4gPiArCWZpeHVwIFJFR19TICAg
+dDMsICA2KlNaUkVHKGEwKSwgMTBmDQo+ID4gKwlmaXh1cCBSRUdfUyAgIHQ0LCAgNypTWlJFRyhh
+MCksIDEwZg0KPiANCj4gVGhpcyBzZWVtcyBsaWtlIGEgc3VzcGljaW91c2x5IGxhcmdlIHVucm9s
+bGluZyBmYWN0b3IsIGF0IGxlYXN0IHdpdGhvdXQNCj4gYSBmYWxsYmFjay4gIE15IGd1ZXNzIGlz
+IHRoYXQgc29tZSB3b3JrbG9hZHMgd2lsbCB3YW50IHNvbWUgc21hbGxlcg0KPiB1bnJvbGxpbmcg
+ZmFjdG9ycywgYnV0IGdpdmVuIHRoYXQgd2UgcnVuIG9uIHRoZXNlIHNpbmdsZS1pc3N1ZSBpbi1v
+cmRlcg0KPiBwcm9jZXNzb3JzIGl0J3MgcHJvYmFibHkgYmVzdCB0byBoYXZlIHNvbWUgYmlnIHVu
+cm9sbGluZyBmYWN0b3JzIGFzIHdlbGwNCj4gc2luY2UgdGhleSdyZSBwcmV0dHkgbGltaXRlZCBX
+UlQgaW50ZWdlciBiYW5kd2lkdGguDQoNCkJ1dCBhIHNpbmdsZS1pc3N1ZSBjcHUgaXMgdW5saWtl
+bHkgdG8gaGF2ZSBhbiA4IGNsb2NrIGRhdGEgZGVsYXkuDQpPVE9IIGEgY3B1IHRoYW4gY2FuIGRv
+IGNvbmN1cnJlbnQgbWVtb3J5IHJlYWQgYW5kIHdyaXRlIG1pZ2h0DQpub3QgaGF2ZSBlbm91Z2gg
+J291dCBvZiBvcmRlcicgY2FwYWJpbGl0eSB0byBkbyBzbyB3aXRoIHRoZSBhYm92ZSBsb29wLg0K
+DQpZb3UgbWF5IHdhbnQgdG8gaW50ZXJsZWF2ZSB0aGUgcmVhZHMgYW5kIHdyaXRlcyAtIHN0YXJ0
+aW5nIHdpdGgNCnR3byBvciB0aHJlZSByZWFkcyAocG9zc2libHkgd2l0aCB0aGUgZXh0cmEgb25l
+cyBvdXRzaWRlIHRoZSBsb29wKS4NCg0KSSBkb24ndCBrbm93IHRoZSBtaWNyb2FyY2hpdGVjdHVy
+ZXMgd2VsbCBlbm91Z2ggKHdlbGwgYXQgYWxsKQ0KdG8ga25vdyB0aGUgZXhhY3QgcGl0ZmFsbHMu
+DQoNClRoZSB2ZXJ5IHNpbXBsZSBjcHUgbWlnaHQgaGF2ZSB0aGUgc2FtZSAnaXNzdWUnIHRoZSBO
+aW9zMiBoYXMNCihhbm90aGVyIE1JUFMgY2xvbmUgZnBnYSBzb2Z0IGNwdSkgd2hlcmUgdGhlcmUg
+Y2FuIGJlIGEgcGlwZWxpbmUNCnN0YWxsIGJldHdlZW4gYSB3cml0ZSBhbmQgcmVhZC4NCkkgZG91
+YnQgdGhlIG5vbi10cml2aWFsIHJpc2N2IGhhdmUgdGhhdCBpc3N1ZSB0aG91Z2guDQoNCj4gPiAr
+CWFkZGkJYTAsIGEwLCA4KlNaUkVHDQo+ID4gKwlhZGRpCWExLCBhMSwgOCpTWlJFRw0KPiA+ICsJ
+Ymx0dQlhMCwgdDAsIDJiDQoNCkZvciBhIGR1YWwtaXNzdWUgY3B1IHlvdSB3YW50IHRvIG1vdmUg
+dGhlIHR3byAnYWRkaScgaGlnaGVyDQp1cCB0aGUgbG9vcCBzbyB0aGF0IHRoZXkgYXJlICdmcmVl
+Jy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBS
+b2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9u
+IE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
