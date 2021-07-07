@@ -2,125 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C53533BEDA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BA03BEDAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhGGSFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:05:35 -0400
-Received: from mga04.intel.com ([192.55.52.120]:29716 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhGGSFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:05:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="207529865"
-X-IronPort-AV: E=Sophos;i="5.84,221,1620716400"; 
-   d="scan'208";a="207529865"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 11:02:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,221,1620716400"; 
-   d="scan'208";a="628102843"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by orsmga005.jf.intel.com with ESMTP; 07 Jul 2021 11:02:48 -0700
-Subject: Re: [PATCH V2] mmc: sdhci: Update the software timeout value for sdhc
-To:     sbhanu@codeaurora.org
-Cc:     ulf.hansson@linaro.org, asutoshd@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        rampraka@codeaurora.org, sayalil@codeaurora.org,
-        sartgarg@codeaurora.org, rnayak@codeaurora.org,
-        cang@codeaurora.org, pragalla@codeaurora.org,
-        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
-References: <1624804840-3479-1-git-send-email-sbhanu@codeaurora.org>
- <3217c101-534b-bfcb-7ba9-5749d73cf242@intel.com>
- <467960e793b39ffd13e8d5c5c3b87057@codeaurora.org>
- <1d574e4cfc4c793166027d008948a0a5@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <e68593c2-bd4f-b4e6-e562-fc10223c750a@intel.com>
-Date:   Wed, 7 Jul 2021 21:03:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231190AbhGGSIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhGGSIU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 14:08:20 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7EFCC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 11:05:39 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id v7so3138492pgl.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 11:05:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ixlD3mmJY3rOK6gSWbHkyf00NzYTwViXv8dwsVfEcag=;
+        b=E3GAZMKdt/3MFOnIFKk9c/aT20QrnVlK+fQv1FfwNAw/VZDlg2SUiUkGGFyXlocEDp
+         Q+SgAqm1xEnuUcQqL6j/apVpQwJ7HMzs+vPFv6dgXQigHJsLDVP9hMkzTReRNNYb/cmO
+         nalEVKv9oo2HMp2YigcnvavTq3H/TMf/C1X7p7tEbbdizeax/LS8oWAD1AVTppTakvG/
+         dMv+ehwD8Mqr61NfTvdLNAq4yFq8ygsHmnAt13uNrgAxHx8ekEvnE1LR7Ugw34EeSh43
+         8LNd7DhC1lQm6d5Es7tg8PDziwcfYQjqxBmWkjmBxiOvhqHk7gHtnBrl1qwzBoAvhI1p
+         yGVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ixlD3mmJY3rOK6gSWbHkyf00NzYTwViXv8dwsVfEcag=;
+        b=X9ui9RmAN9EcOI/TAMIhSeaSZGkxbgLJggdHS3RbJQoyGxjB4+HhSYSuUMI72lDPU0
+         WSIALLPLrtnMVpfnsFIaaZG/19fbgkUVeuVRG0OYmZs4xIrkZdCqigvkI4y+DfmHJu1K
+         K8GoD0c9OzZRk0j+f0Nhd0S9Sms9g+mSUMCuKmEBdFllcSyyv1CLGsZqCl8XNONtaUev
+         uhn9xBSQ2QVt4B5/qHcBQIb7n+bSn8yRKHmOpNU+3H0JIMLme/S5N6tPrF6aQuPl164I
+         tjyKOgK6nX6CWQ4bbzWAGjMv3f9K5NyLwez//CcuR9231L7R09ko1nsw4u+3dQIZ0YoX
+         2uDg==
+X-Gm-Message-State: AOAM533SVm6HxWBkD9S1b/D4524zu6jd9d2TYjktvmiD57rag1UzrI9z
+        OQRMxDylk5uk1hvYOyPELa4=
+X-Google-Smtp-Source: ABdhPJyfHVNJbMIuU2IIKR62N7jYsSkd91DpVUH7//kw/ywrO77De8xNbyycR1iQ2uISUNn0v4Bgdw==
+X-Received: by 2002:a62:7e42:0:b029:325:6b42:609f with SMTP id z63-20020a627e420000b02903256b42609fmr5146135pfc.37.1625681139264;
+        Wed, 07 Jul 2021 11:05:39 -0700 (PDT)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:4801:c8d0:8e3d:643a:56fb:b045])
+        by smtp.gmail.com with ESMTPSA id 1sm9379711pfm.123.2021.07.07.11.05.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 11:05:38 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCHSET 0/4] perf inject: Fix broken data with mixed input/output
+Date:   Wed,  7 Jul 2021 11:05:32 -0700
+Message-Id: <20210707180536.72175-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
 MIME-Version: 1.0
-In-Reply-To: <1d574e4cfc4c793166027d008948a0a5@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/07/21 5:09 pm, sbhanu@codeaurora.org wrote:
-> On 2021-07-01 22:28, sbhanu@codeaurora.org wrote:
->> On 2021-06-30 19:38, Adrian Hunter wrote:
->>> On 27/06/21 5:40 pm, Shaik Sajida Bhanu wrote:
->>>> Whenever SDHC run at clock rate 50MHZ or below, the hardware data
->>>> timeout value will be 21.47secs, which is approx. 22secs and we have
->>>> a current software timeout value as 10secs. We have to set software
->>>> timeout value more than the hardware data timeout value to avioid seeing
->>>> the below register dumps.
->>>>
->>>> [  332.953670] mmc2: Timeout waiting for hardware interrupt.
->>>> [  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP ===========
->>>> [  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  0x00007202
->>>> [  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  0x00000001
->>>> [  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 0x00000027
->>>> [  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 0x0000001f
->>>> [  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  0x00000000
->>>> [  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
->>>> [  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 0x00000000
->>>> [  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 0x03ff100b
->>>> [  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
->>>> [  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x0000808f
->>>> [  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 0x00000000
->>>> [  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0x00000000
->>>> [  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
->>>> [  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
->>>> [  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
->>>> 0x0000000ffffff218
->>>> [  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
->>>> -----------
->>>> [  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
->>>> 0x6000642c | DLL cfg2: 0x0020a000
->>>> [  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
->>>> 0x00000000 | DDR cfg: 0x80040873
->>>> [  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
->>>> 0xf88218a8 Vndr func3: 0x02626040
->>>> [  333.102371] mmc2: sdhci: ============================================
->>>>
->>>> So, set software timeout value more than hardware timeout value.
->>>>
->>>> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
->>>> ---
->>>>
->>>> Changes since V1:
->>>>     - Moved software data timeout update part to qcom specific file as
->>>>       suggested by Veerabhadrarao Badiganti.
->>>> ---
->>>>  drivers/mmc/host/sdhci-msm.c | 9 +++++++++
->>>>  1 file changed, 9 insertions(+)
->>>>
->>>> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
->>>> index e44b7a6..58e651e 100644
->>>> --- a/drivers/mmc/host/sdhci-msm.c
->>>> +++ b/drivers/mmc/host/sdhci-msm.c
->>>> @@ -2089,6 +2089,14 @@ static void sdhci_msm_cqe_disable(struct mmc_host *mmc, bool recovery)
->>>>      sdhci_cqe_disable(mmc, recovery);
->>>>  }
->>>>
->>>> +static void sdhci_msm_set_timeout(struct sdhci_host *host, struct mmc_command *cmd)
->>>> +{
->>>> +
->>>> +    __sdhci_set_timeout(host, cmd);
->>>> +    if (cmd && (cmd->data) && (host->clock > 400000) && (host->clock <= 50000000))
->>>
->>> There are some redundant parenthesis there and cmd is never NULL i.e. could be:
->>>
->>>     if (cmd->data && host->clock > 400000 && host->clock <= 50000000)
->> Sure
-> Hi,
-> 
-> We are passing cmd as NULL in sdhci_cqe_enable( ) for eMMC so, i think we should check cmd.
+Hello,
 
-Very true.
+The perf inject processes the input data and produces an output with
+injected data according to the given options.  During the work, it
+assumes the input and output files have the same format - either a
+regular file or a pipe.  This works for the obvious cases, but
+sometimes makes a trouble when input and output have different
+formats (like for debugging).
+
+For example, this patchset fixed the following cases
+
+ 1. input: pipe, output: file
+
+  # perf record -a -o - sleep 1 | perf inject -b -o perf-pipe.data
+  # perf report -i perf-pipe.data
+
+ 2. input: file, output: pipe
+
+  # perf record -a -B sleep 1
+  # perf inject -b -i perf.data | perf report -i -
+
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (4):
+  perf tools: Remove repipe argument from perf_session__new()
+  perf tools: Pass a fd to perf_file_header__read_pipe()
+  perf inject: Fix output from a pipe to a file
+  perf inject: Fix output from a file to a pipe
+
+ tools/perf/bench/synthesize.c       |  4 +-
+ tools/perf/builtin-annotate.c       |  2 +-
+ tools/perf/builtin-buildid-cache.c  |  2 +-
+ tools/perf/builtin-buildid-list.c   |  2 +-
+ tools/perf/builtin-c2c.c            |  2 +-
+ tools/perf/builtin-diff.c           |  4 +-
+ tools/perf/builtin-evlist.c         |  2 +-
+ tools/perf/builtin-inject.c         | 67 +++++++++++++++++++++++++++--
+ tools/perf/builtin-kmem.c           |  2 +-
+ tools/perf/builtin-kvm.c            |  4 +-
+ tools/perf/builtin-lock.c           |  2 +-
+ tools/perf/builtin-mem.c            |  3 +-
+ tools/perf/builtin-record.c         |  2 +-
+ tools/perf/builtin-report.c         |  2 +-
+ tools/perf/builtin-sched.c          |  4 +-
+ tools/perf/builtin-script.c         |  4 +-
+ tools/perf/builtin-stat.c           |  4 +-
+ tools/perf/builtin-timechart.c      |  3 +-
+ tools/perf/builtin-top.c            |  2 +-
+ tools/perf/builtin-trace.c          |  2 +-
+ tools/perf/tests/topology.c         |  4 +-
+ tools/perf/util/data-convert-bt.c   |  2 +-
+ tools/perf/util/data-convert-json.c |  2 +-
+ tools/perf/util/header.c            | 12 +++---
+ tools/perf/util/header.h            |  2 +-
+ tools/perf/util/session.c           | 11 ++---
+ tools/perf/util/session.h           | 12 +++++-
+ 27 files changed, 115 insertions(+), 49 deletions(-)
+
+-- 
+2.32.0.93.g670b81a890-goog
+
