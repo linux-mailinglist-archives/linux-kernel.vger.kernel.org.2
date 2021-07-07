@@ -2,129 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB1B3BEEA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59333BEEAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbhGGS3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231407AbhGGS3d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:29:33 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0247C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 11:26:51 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id n14so6374026lfu.8
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 11:26:51 -0700 (PDT)
+        id S231443AbhGGSa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:30:57 -0400
+Received: from mail-eopbgr1400133.outbound.protection.outlook.com ([40.107.140.133]:57956
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229975AbhGGSaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 14:30:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L0hgaZXV/OG10XkhC4M1Q7aoHkEGT0BkJrNmb3lw1HNsjAGGxzBZCmsqBATCLV8hcwS0Cibbx8PYa1KITVRcAj5qy4IpOkLqqCiD+qoKA+rTeMLxTAnigEJO0h+qNfRrePOxSkU9G90EezY01L0Fod0TvnuKKr78UeIBRiug7AlfqLGC+RAoHDWE+fv1sSq4GaTaMVP00XuWioO16mvxmu4he7f6l6xwZbqs3k9eXX4Gsj9DJdzlyMvJdoUw85izdvEUqasI0OBjuiZUOPO7ZrLkzGi1KlV48EABEYEjxW802u3zqMGraC1XAAlY08Jj/QGk1Lq89weUq8p4xjeo8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=83DuPl+Vw64/H0k+34TTo5j1OKwgdXK0IVwA5B9QAUQ=;
+ b=Fsgk7u+hoJv9uNbnE31TBuXjSL0GvAJRAvpz0CqEi6RVFBHCadg7GlkokrptB0z+qzUni5ySU93+dGde9Y1Sd10VuDgkyouuD44k8coC/WiJKIxECb8rwJ1VIBli5KeRHC8iMiVSLhX0O6BLyHgmAONPHiaBNb22pZABDxOJpO3LCPhHm2Q+nQJ0y5PhkV/gQCURihUqPn0EQqgLuFz9rOkuMlMtU42QHdL4WA0mJKd+2lTEhDEyJMfX7r1rhjpCBXCF1qe9iniDmio1/atz1us1BZFNEVGnrlumV4fsm81vkGMg5nnv3PKoetyMfacBYtnLowM9drkIeIJE3IUDNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=g6Vax0DZu9/zEQ4mflRZs+GdOJbUoHKXVBfPpmObW7I=;
-        b=YIFRQ16FXMx0sQBcdwP32kzHeP0LQNsMfY8IGc97+L4Y+m1GDhg1ri8h0SdC++tr7o
-         Ui8VC7iKByCW95AM/dNs014Al/3sjoCpavddUwBWRHws7s2DbDBjfMkEQ4PcEt2YtcaZ
-         BFSioQbqrPYX6gbbzCAqaT2B5hOCfb68Zp2T79/xKZPDp5h7rklJlompyZvqIM/cCu8v
-         SE/aSZf7mhYvCOEgFXxR9L3VZfPMnuNESoKv10cPb4oMYGp5aTvXFQAbavnd95UB0iUV
-         9qWGg/GIeeIyggjI+Bk6QYjt5bNfxxQs0W2ehzjRlz5d+Vkurs36sHhC/lul6eKe4LVv
-         s7fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=g6Vax0DZu9/zEQ4mflRZs+GdOJbUoHKXVBfPpmObW7I=;
-        b=jloBfPxsaxCIRhjfgGLljQFP/G2Hrm9cS1PrIS4Q5HDqRiOfLPJXZY7OIxFtLIW6x8
-         4l2ppZzcqyZdeTOoP9IZ6TN0thIkRZZmgY2ABbGDuWd96kbJ0+qym/YPWdZOQSuiaIAH
-         jlTKIPfrYieHtnla+iA+/DyU2nsnA+5AcBgGWiSSyd+GHRKeVudAYS8nZSmilfNEo4yu
-         RSUCUYA80rCTyUCBL68mfDKXLCoRswQZDmQ8NABtSCmtfTzF+hxfTzYkh3qzYAyI8V5D
-         nQVzsrAwg+C1yiWSiDPxVMdRR2J55rmold8aKcgPnR9alS6B9ZlGJoiHyb9c9sWxBrnt
-         1VZQ==
-X-Gm-Message-State: AOAM533V1InjPW6eEC59TBomG/KRhk9u6RnU0X/HnBdsm20IsSXQPbZS
-        URwmyggo6k9/YkIkqutFx7c=
-X-Google-Smtp-Source: ABdhPJx9hsrdrNlNEmLWV6Fz2OG1hxARu0l4TtmFtTJMTyEIgiF9MFsRvCKK/sE784T3sMhyBOgT3A==
-X-Received: by 2002:a05:6512:2629:: with SMTP id bt41mr19591460lfb.95.1625682410291;
-        Wed, 07 Jul 2021 11:26:50 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id o15sm1767963lfu.134.2021.07.07.11.26.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 11:26:49 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH v3 2/2] mm/vmalloc: Remove gfpflags_allow_blocking() check
-Date:   Wed,  7 Jul 2021 20:26:39 +0200
-Message-Id: <20210707182639.31282-2-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210707182639.31282-1-urezki@gmail.com>
-References: <20210707182639.31282-1-urezki@gmail.com>
-MIME-Version: 1.0
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=83DuPl+Vw64/H0k+34TTo5j1OKwgdXK0IVwA5B9QAUQ=;
+ b=l2Edbx85+rtCQdB9GSRtKHMVC0TpI6kX1+EIp9Oyep+Zs8RPXEBUmd3vooj313hpqLLFMpO5iy32fT2IoKVdzwHwzb+eJ9FSwfvjtBOEM5dZbQfx5H8QJEaF9eimjX3tllM0rsiR+2uc1pHHeo/mOUNuhk/CRPHUaXYahN3yhkk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=renesas.com;
+Received: from OSAPR01MB3892.jpnprd01.prod.outlook.com (2603:1096:604:5b::23)
+ by OS3PR01MB5847.jpnprd01.prod.outlook.com (2603:1096:604:b5::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Wed, 7 Jul
+ 2021 18:28:12 +0000
+Received: from OSAPR01MB3892.jpnprd01.prod.outlook.com
+ ([fe80::e1ee:a98a:2ba3:aee4]) by OSAPR01MB3892.jpnprd01.prod.outlook.com
+ ([fe80::e1ee:a98a:2ba3:aee4%7]) with mapi id 15.20.4308.021; Wed, 7 Jul 2021
+ 18:28:11 +0000
+From:   Alex Helms <alexander.helms.jy@renesas.com>
+To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Cc:     robh+dt@kernel.org, sboyd@kernel.org, mturquette@baylibre.com,
+        geert+renesas@glider.be, alexander.helms.jy@renesas.com,
+        david.cater.jc@renesas.com, michal.simek@xilinx.com
+Subject: [PATCH v3 0/2] Renesas 8T49N241 device driver
+Date:   Wed,  7 Jul 2021 11:26:57 -0700
+Message-Id: <20210707182659.20548-1-alexander.helms.jy@renesas.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR06CA0045.namprd06.prod.outlook.com
+ (2603:10b6:a03:14b::22) To OSAPR01MB3892.jpnprd01.prod.outlook.com
+ (2603:1096:604:5b::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from az-ahelms.na.ads.idt.com (68.225.135.226) by BYAPR06CA0045.namprd06.prod.outlook.com (2603:10b6:a03:14b::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Wed, 7 Jul 2021 18:28:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d93afdc9-aadf-4120-e79b-08d94174f982
+X-MS-TrafficTypeDiagnostic: OS3PR01MB5847:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <OS3PR01MB58473727CD041F04FD4C26A8C81A9@OS3PR01MB5847.jpnprd01.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:369;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cz1UMab0QPDBtp844vUBdEf+skdNbEpPur3kgTE+5RKd/1sgNyZ0+qs1swnvKWl71gO66yJzKZeW5oPuH4q5m5NFlHVsjPWWAuABBgSzz1mf7JAkBB6n7sBqxPIQjIyFAW+0T2rZ2pVj5aJ6NWqHgzNa7c27s5nwwLJ3qjM0AiNoXFcPnA1yBQ+mb+s2lmCLyu+uBUCdXwfhDj0lbiID8m1t8/XWSzYGKQhoErFZiM9pGLXAzJAxp3s8CcxxdbRSfA3kD4EFljaN4dFcKVW78UFi9VyMJwv19tEvbRLj57e7/B+qenCwFp6BbD8ZkbSHBCWVimab0U2KcsD+EiIXGBx4My3039rUSuO/OIdaafRMi1kSsSS/45mBqiA6FIIidza8v5KCN5JqI4mefE6F1KY4sege/qiwcDyTyNDDEqbXD7bxjw1fmK120Lx+8zrIfqfbIonBZ0VOhEUSD8IZRgwgSQB6Cf1GLV/9QD0wBSdxKwPgtX2UWZtYRT4J2xVAqJKKfdXG/Zxhhu/4sbHe6JqZpcABaLPlH6nv7R3f1VWXUWwYt8API9Bsef0vVnlTPdwNqH+eKphcXog7Lo+EMxXzheq/+jVxA73Luls9/YTEFzPRz4Br23fDE6STCrRHNaHXNupHUnMnc2udJcMCeXKEAe2AeRT+5XfOorZj8u80iAEQj/rpgZvJsGslIQQy
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB3892.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(136003)(39830400003)(396003)(6506007)(66476007)(2616005)(103116003)(8676002)(186003)(86362001)(36756003)(4744005)(6666004)(26005)(4326008)(83380400001)(956004)(52116002)(8936002)(1076003)(478600001)(66946007)(6486002)(38100700002)(2906002)(5660300002)(66556008)(316002)(38350700002)(6512007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?m7xD+HXT514wVLUMSLNDsmGCJDq2XTKfM9M6YeYa6F8jThlRaFgh2oeC6VeT?=
+ =?us-ascii?Q?xKUMoCRHn77t4cbko3rz3H67nHi/WTERWuy0naT8JW8E9Vb3A47UJ8sFIaDG?=
+ =?us-ascii?Q?0KlSyadvxyziOpadIQb2tzo1VioFMTVHwyxQcqx5LURIQ27XTTn2C5K91nUz?=
+ =?us-ascii?Q?P1orB6EjzP73tSiyoFXDGozGLUTZEPx32ZP2MnoDUIwVh8eWIh2kHnOQJVVp?=
+ =?us-ascii?Q?qMbrZs48S95FWRhvjhCeD07YNYmFfv1cKWGJkY7sj9qCu30R7yrcUllZqbjx?=
+ =?us-ascii?Q?XYUJProWvp25OUdH/Z6NDllzd6nNY2TrwSzqyGu5FszklmWdgJunG86ks3ih?=
+ =?us-ascii?Q?90P6B0IQdjOxaUnioMcozaNDCgrea2BBWAvB32hQ+QfsvXtQwl3Xv754Z/am?=
+ =?us-ascii?Q?YHfXItioeskvZ7oSfkR3zB5QMAaUUaLuXLwheLt1b9qoR4kd76STx3KwyDIi?=
+ =?us-ascii?Q?LDIdtdH23fouy/qSWg8BL6PQzTIoN8azCCVO8Rqz4Ffo/kgNloIw9soVFVor?=
+ =?us-ascii?Q?/fqmtgzU8Im2M6J4QXOfNp8OIK0YFRYEcbdMb3zq7oBu7DmZ/sTyON/OEyMO?=
+ =?us-ascii?Q?DSaA3n+trKFIFQLpyfc9Ner33dWKhE1yB1jnkwBd7OHUTy8EZABZb7HmCgsI?=
+ =?us-ascii?Q?iFfX8RcncfgPnuXA61smT0Crd5Dji/4eCx2SzYL5K6VcMVQsBHWgyod/LBOU?=
+ =?us-ascii?Q?WxMUOJbFat/A3VTOktkuRnrmz8sYLsHnpATH2O6y0u++sRCqW7FGQHB84utv?=
+ =?us-ascii?Q?fQDcH1aO6Xm49qmQ1CVA9ziV9zemaShGSoV7rn1XuBm5IA+3EZOD7dc/a2Qw?=
+ =?us-ascii?Q?kGGFCbu8dU6/3fYTpQu7usjl8uh532zRZqukSVZ6pZkfD2rUMg++hFMG9KQU?=
+ =?us-ascii?Q?NMY0mB1yoMzeZPvsyMR9asiYtrwXor8ejuebJ+BP2oGs9WDimnBjrm2u7QI0?=
+ =?us-ascii?Q?lf1kJLWiorDKxtMGH4jiUGC/PJ6YTLIIzoHqRwBIP4Lp3Kj/q6L52nuZse9W?=
+ =?us-ascii?Q?m1DbfLbNoGfJMj8OeBWj3RR78H1s0SbSR9bPkmzfRCDrm51aYo6Vrf1jq0XH?=
+ =?us-ascii?Q?uyT5nqIJIQYYRkouKAYsIiw5PztEJ+/ucbDjDoxNfnkG00tEeQz+5ZWq4qIx?=
+ =?us-ascii?Q?YJzGv5dqIETc0SsLg5Vf8OxFHuU/TVCVR7TxNqf6s/HSkYZd0xbfHiS8+00a?=
+ =?us-ascii?Q?amvit5wvb5h582C7li60C6PEb88E/E6Zsc6Z8rCss58msQnZ9KIXrxzUy5WW?=
+ =?us-ascii?Q?3+eQyCWFYPoux8233txjrD/c0yRnDNVpGnPvcIGa2o8/LH9GirOPc5XItPnK?=
+ =?us-ascii?Q?ktsqY/nt+OYHVaVoldd/iszk?=
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d93afdc9-aadf-4120-e79b-08d94174f982
+X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB3892.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2021 18:28:11.1241
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ruNVoIAp9VGdJj9bokB3r2pwKT6qHpOymWdlrvMfWSsdzWP1iRJMGCRWAfyGbiBkS0r3nSM7psvCdgcwuXefZGq+/Mbj4oXWxR3KLRJCdr8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB5847
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get rid of gfpflags_allow_blocking() check from the vmalloc() path
-as it is supposed to be sleepable anyway. Thus remove it from the
-alloc_vmap_area() as well as from the vm_area_alloc_pages().
+A common clock framework device driver for the Renesas 8T49N241 universal
+frequency translator.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- mm/vmalloc.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+Changes in v3:
+ * Clarify settings property in device tree bindings schema is optional
+Changes in v2:
+ * Correct missing semicolon in 8t49n24x-core.c
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index a9a6d28c8baa..24a3955d5a36 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -1479,6 +1479,7 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
- 				int node, gfp_t gfp_mask)
- {
- 	struct vmap_area *va;
-+	unsigned long freed;
- 	unsigned long addr;
- 	int purged = 0;
- 	int ret;
-@@ -1542,13 +1543,12 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
- 		goto retry;
- 	}
- 
--	if (gfpflags_allow_blocking(gfp_mask)) {
--		unsigned long freed = 0;
--		blocking_notifier_call_chain(&vmap_notify_list, 0, &freed);
--		if (freed > 0) {
--			purged = 0;
--			goto retry;
--		}
-+	freed = 0;
-+	blocking_notifier_call_chain(&vmap_notify_list, 0, &freed);
-+
-+	if (freed > 0) {
-+		purged = 0;
-+		goto retry;
- 	}
- 
- 	if (!(gfp_mask & __GFP_NOWARN) && printk_ratelimit())
-@@ -2834,9 +2834,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
- 		for (i = 0; i < (1U << order); i++)
- 			pages[nr_allocated + i] = page + i;
- 
--		if (gfpflags_allow_blocking(gfp))
--			cond_resched();
--
-+		cond_resched();
- 		nr_allocated += 1U << order;
- 	}
- 
+Alex Helms (2):
+  dt-bindings: Add binding for Renesas 8T49N241
+  clk: Add ccf driver for Renesas 8T49N241
+
+ .../bindings/clock/renesas,8t49n241.yaml      | 188 ++++
+ MAINTAINERS                                   |   7 +
+ drivers/clk/Kconfig                           |  21 +
+ drivers/clk/renesas/8t49n24x-core.c           | 836 ++++++++++++++++++
+ drivers/clk/renesas/8t49n24x-core.h           | 251 ++++++
+ drivers/clk/renesas/8t49n24x.c                | 573 ++++++++++++
+ drivers/clk/renesas/Makefile                  |   4 +
+ 7 files changed, 1880 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
+ create mode 100644 drivers/clk/renesas/8t49n24x-core.c
+ create mode 100644 drivers/clk/renesas/8t49n24x-core.h
+ create mode 100644 drivers/clk/renesas/8t49n24x.c
+
+
+base-commit: 62fb9874f5da54fdb243003b386128037319b219
 -- 
-2.20.1
+2.30.2
 
