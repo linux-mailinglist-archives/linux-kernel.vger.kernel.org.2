@@ -2,90 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19183BE6DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5B33BE6DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231392AbhGGLHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 07:07:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:34628 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230354AbhGGLHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 07:07:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4FCB1042;
-        Wed,  7 Jul 2021 04:04:31 -0700 (PDT)
-Received: from [10.57.35.192] (unknown [10.57.35.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A85FD3F5A1;
-        Wed,  7 Jul 2021 04:04:29 -0700 (PDT)
-Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Chen Huang <chenhuang5@huawei.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
- <YNP6/p/yJzLLr8M8@casper.infradead.org> <YNQuZ8ykN7aR+1MP@infradead.org>
- <YNRpYli/5/GWvaTT@casper.infradead.org>
- <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
- <YNSyZaZtPTmTa5P8@zeniv-ca.linux.org.uk> <20210624185554.GC25097@arm.com>
- <e8e87aba-22f7-d039-ceaa-a93591b04b1e@arm.com>
- <20210625103905.GA20835@arm.com>
- <7f14271a-9b2f-1afc-3caf-c4e5b36efa73@arm.com>
- <20210706175052.GD15218@arm.com>
- <dd30df30-5271-2724-48eb-9f47c5f3e1aa@arm.com>
- <4a1473fc5af9496e9c8ed02c7f631d72@AcuMS.aculab.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <9bda45b9-5384-fc14-1bc5-be00d07d4350@arm.com>
-Date:   Wed, 7 Jul 2021 12:04:25 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231405AbhGGLIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 07:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230354AbhGGLII (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 07:08:08 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A62B2C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 04:05:28 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id j199so1781664pfd.7
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 04:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=4kTl0PGqTmSM/vcOdTLIDqeuriihxTsqaNVsQc07grU=;
+        b=Bwhf8xhbHyJyqtm4LVlsXUTEBtOv5Vgg7kD+bxs9Bs1+vQIORtgOpWqY7NXUzGfkRH
+         Y5bP9ePf0oGgrkUCYpVfgf/EjyHNFFeoSpiCqskZKjv4QeUB+r01jCssN16CR16fKsuh
+         AX91QCh436gJXQIeNvBr/zZxKsf529boRi8LgLwwraiafi4xAeEj8XlHHx6bmpUT6FaA
+         OOEVKuAN+X6bnPzIGwcr4XLtwr9yLKwRmV6IDyCKSw3dRp40+Q/O0AfN6z3vTS3C4hn5
+         CptRlttUzk1SAGqjR1NWzRmjz5eGSn9dXaCK2BC6B72aKN94A5+IDTPFzqQWLE3Qtf0J
+         Fskw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=4kTl0PGqTmSM/vcOdTLIDqeuriihxTsqaNVsQc07grU=;
+        b=N2NXzTefmvfSnhsNI4hCQ8jqQd6lmcUgivbBAr+Xuo165cvroLH3JHgNEQ3yNb5w4h
+         Mz2MOMrCOYSX0mT6onogD6bwltVMGYXKs2XiVr+PKQB7/Q+XmCsiK7s+rMV3Wh/7g/WN
+         7XMVhCNL2b0x9TItTlSBrje1h9d19HzaGDV+HLnkzpgQicyw1DFd7Y6IY8krprqoc/eT
+         ZvFJqxJ98EtedpMtM7noa2sZ95VfjD3LqfN4RnS10EUzCFU5f1WXEjnVlmv8gIo38BLE
+         8RI4artpHr0zULkn4lgdK+QLduEViSoopKd0c5oWKDNyB97jkTqjmtY4uk3Rc84K9ZD2
+         Y+zw==
+X-Gm-Message-State: AOAM532qJxCr9GUgT/JGmC8z1ZoUG4obcczbU2f88ftwtIeOzGgNfaBe
+        odpi/zjXuYaUp9yXa6//xQht6g==
+X-Google-Smtp-Source: ABdhPJz3PjdRDmZzI0XYTQQ4WmTSvBzHfz+rLXybFS8EFTkekYOUVt9V2Q7eMhqYfM4CAazBA0dAvw==
+X-Received: by 2002:a63:471b:: with SMTP id u27mr26183969pga.301.1625655928056;
+        Wed, 07 Jul 2021 04:05:28 -0700 (PDT)
+Received: from 192.168.1.6 ([115.96.127.142])
+        by smtp.googlemail.com with ESMTPSA id n23sm22275564pgv.76.2021.07.07.04.05.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 04:05:27 -0700 (PDT)
+From:   Ani Sinha <ani@anisinha.ca>
+X-Google-Original-From: Ani Sinha <anisinha@anisinha.ca>
+Date:   Wed, 7 Jul 2021 16:35:07 +0530 (IST)
+X-X-Sender: anisinha@anisinha-lenovo
+To:     Thomas Gleixner <tglx@linutronix.de>
+cc:     Ani Sinha <ani@anisinha.ca>, linux-kernel@vger.kernel.org,
+        anirban.sinha@nokia.com, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH v1] Print a log when the sched clock is marked unstable
+In-Reply-To: <8735sqqvoh.ffs@nanos.tec.linutronix.de>
+Message-ID: <alpine.DEB.2.22.394.2107071629490.194292@anisinha-lenovo>
+References: <20210627064911.2179786-1-ani@anisinha.ca> <8735sqqvoh.ffs@nanos.tec.linutronix.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <4a1473fc5af9496e9c8ed02c7f631d72@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-07 10:55, David Laight wrote:
->>> I think it's worth doing the copy_to_user() fallback in a loop until it
->>> faults or hits the end of the buffer. This would solve the problem we
->>> currently have with writing more bytes than actually reported. The
->>> copy_from_user() is not necessary, a byte would suffice.
->>
->> The thing is, we don't really have that problem since the set_fs cleanup
->> removed IMP-DEF STP behaviour from the picture - even with the current
->> mess we could perfectly well know which of the two STTRs faulted if we
-> ...
-> 
-> There is a much more interesting case though.
-> It is possible for userspace to have supplied a misaligned
-> buffer that is mmapped to an IO address that doesn't support
-> misaligned accesses even though normal memory does support them.
 
-Er, yes, that's where this whole thing started - don't worry, I haven't 
-forgotten.
+Tglx,
 
-> So the 'byte retry' loop would work for the entire buffer.
+On Wed, 7 Jul 2021, Thomas Gleixner wrote:
 
-Indeed it might in certain cases, but is that (unlikely) possibility 
-worth our while? What it boils down to is maintaining complexity in the 
-kernel purely to humour broken userspace doing a nonsensical thing, when 
-it's equally valid to just return a short read/write and let said broken 
-userspace take responsibility for retrying the remainder of said 
-nonsensical thing by itself. If userspace has managed to get its hands 
-on an mmap of something without Normal memory semantics, I would expect 
-it to know what it's doing...
+> Ani,
+>
+> On Sun, Jun 27 2021 at 12:19, Ani Sinha wrote:
+>
+> I asked you to read Documentation/process carefully and I told you:
+>
+>         Also your subject line want's a proper prefix.
+>
+> Your patch is missing a prefix again. Hint:
+>
+>   git log kernel/sched/clock.c
+>
 
-Thanks,
-Robin.
+OK thanks for the pointer. Its my bad that staring at the computer for so
+many hours stuck at home makes me read "prefix" as "fix". So I read
+
+Also your subject line want's a proper fix
+
+
+> > In other parts of the kernel when the sched clock transitions from
+> > stable to unstable and vice versa, a kernel info log is printed.  When
+> > the sched clock is marked explicitly as unstable, we should print an
+> > information log as well. This patch addresses this. It is useful in
+>
+> git grep 'This patch' Documentation/process/
+>
+> Also please avoid the 'we' wording. 'We should print' does not make
+> sense if you really think about it.
+
+Please understand that Linux kernel is not the only upstream software
+where I am contrinuting. Each community has their own rules. Maybe add a
+check in checkpatch.pl in the kernel so that these things maybe caught
+automatically?
+
+>
+> > cases where for example, we want to understand why a certain feature
+> > like NOHZ, which depends on a stable sched clock, is not available.
+> >
+> > Signed-off-by: Ani Sinha <ani@anisinha.ca>
+> > ---
+> >  kernel/sched/clock.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > See also thread
+> > https://lkml.org/lkml/2021/6/20/32
+> >
+> > diff --git a/kernel/sched/clock.c b/kernel/sched/clock.c
+> > index c2b2859ddd82..5a403b2c9b3f 100644
+> > --- a/kernel/sched/clock.c
+> > +++ b/kernel/sched/clock.c
+> > @@ -192,8 +192,10 @@ void clear_sched_clock_stable(void)
+> >
+> >  	smp_mb(); /* matches sched_clock_init_late() */
+> >
+> > -	if (static_key_count(&sched_clock_running.key) == 2)
+> > +	if (static_key_count(&sched_clock_running.key) == 2) {
+> > +		pr_info("sched_clock: Marking unstable.\n");
+> >  		__clear_sched_clock_stable();
+>
+> Why isn't that in __clear_sched_clock_stable() ?
+>
+
+updated in v2. Makes sense do emit the log at the lowest level of
+abstraction so that all code paths are potentially caught.
+
+Ani
+
