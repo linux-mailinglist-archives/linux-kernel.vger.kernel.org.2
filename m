@@ -2,107 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C6C3BEFD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394B43BEFD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232478AbhGGSxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43324 "EHLO
+        id S233051AbhGGSyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232267AbhGGSxH (ORCPT
+        with ESMTP id S229949AbhGGSx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:53:07 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7A4C061574;
-        Wed,  7 Jul 2021 11:50:25 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id q18-20020a1ce9120000b02901f259f3a250so2353438wmc.2;
-        Wed, 07 Jul 2021 11:50:25 -0700 (PDT)
+        Wed, 7 Jul 2021 14:53:58 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C916C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 11:51:18 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id z1-20020a17090a1701b0290172f4a773b4so2222576pjd.8
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 11:51:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Q6LzrfY7vgLbFhj6JNyuBgQmAYgd/L18gqM5n+AEigc=;
-        b=LkJ7eob4UWs6iWo0boqTZ7QHYJtgkk5K2inIOu7dCQeigRhfgxQEs2Uhf8DJOUVkEP
-         WS2pgdGL3dkIx76zOX7qe5sTvdDwpRrYit6B/HIeP+KoPcT59Nv/jG7Uqmb26cQZ9QkN
-         en2T9gxld8aN0FWhAUw0B2j6lGySi5j3i/JttgLZIaUeRvpMFw37exvHE1A7ArK1m5dr
-         WpR7ivkx/a0cK9QuyEbuIs/8PJxtwCjz75Iae3ffDFKKC+aMXXFuvQO8W48Xbwi+rlPs
-         GEPX+5mgyA1uQqhnKEYxc1VJUdx4cPDEolkEuxSSLHjA3v0P1KODAemFsYZXhO5zKTr2
-         SwhA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=cTXCexUCBYLjSq8WLV6y4Psori5M9mLAKAHZFzbkUxE=;
+        b=OrPI9jXSGASdQUDl6kI263sh5Mio1Rf8HCJNzHaY7NR6DEFJ3YeuqF5/9uDfdzGfZa
+         pDvpAF5aTDBe+jxgDpRWBf2K+TI2SEjDxQWIuy2I5oHyieVUyk15cYxdQYG/R4YCHSmb
+         XjZALcdD2m4k09rgUsNoE90XsHZvm7TMgxJJ0AVOwh8lBK84XKfrlyqYhxLCfGn2PvXd
+         RYskLuggttGWUJ8KhjZYewVj4x/iz0m6/zxgKFlefBhb0SiXC/5KrwByKDVdk9cCf+ye
+         y41AbslvwMS/8IIUmDhuV6iutMgcqYP55AX5dZ2TI91UAtQlfHMF2PR7kK6eLsG1FZ6K
+         ulEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Q6LzrfY7vgLbFhj6JNyuBgQmAYgd/L18gqM5n+AEigc=;
-        b=SPLVTfLX7uLnrjUoyjO+oD1spvMWZAVo7W/elnQMoUHffGb9+I2HHp8cnP1pdbyvhT
-         vNw3jm8dLsDeUVCsEvSnHCAex/i/utCX/GNyTLlEAExi1ONTCLyI9ygssAtd0sys0ig2
-         NoookDJQYrjWw7+A/2sJS2O6xjUX7oJGCiZW3Le26Cd/JEejesUwQFy7T6KLE3eufJkq
-         8CUlealNFtApGyi0P/jQEudC6iP0BZI+4w183hVeHmshOhUvhryhdkHAE/3rB1zdzA7e
-         7v8DkDJ2j5upqeG03JnrMxRkvHZ241FES+3c5QZA3dAxdnBBk9WV51bSf94io6tL2pcw
-         XkBA==
-X-Gm-Message-State: AOAM5321WUT7jpKTGmiRI5aKAJ0VUJxa9SKYQ0x4C289HqazM/TcHyhv
-        fbtMheLHlB/IBsAJAs5xHLCFLzNvKco=
-X-Google-Smtp-Source: ABdhPJz8TPmkumyEp5GhrB1ukjEtnHAXwfEcq/CdpAf1WHrmD0ezuUb4nO0EOuA2k6yGsDTcNIzrOw==
-X-Received: by 2002:a05:600c:2197:: with SMTP id e23mr3078630wme.101.1625683824258;
-        Wed, 07 Jul 2021 11:50:24 -0700 (PDT)
-Received: from [192.168.98.98] (162.199.23.93.rev.sfr.net. [93.23.199.162])
-        by smtp.gmail.com with ESMTPSA id n13sm12792360wms.4.2021.07.07.11.50.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 11:50:23 -0700 (PDT)
-Subject: Re: [PATCH IPV6 1/1] ipv6: allocate enough headroom in
- ip6_finish_output2()
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     David Ahern <dsahern@gmail.com>, Vasily Averin <vvs@virtuozzo.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1625665132.git.vvs@virtuozzo.com>
- <3cb5a2e5-4e4c-728a-252d-4757b6c9612d@virtuozzo.com>
- <8996db63-5554-d3dc-cd36-94570ade6d18@gmail.com>
- <20210707094218.0e9b6ffc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <1cbf3c7b-455e-f3a5-cc2c-c18ce8be4ce1@gmail.com>
- <20210707113027.4077e544@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <0f2c9281-a5fa-f129-ffef-7add5b1d7d02@gmail.com>
-Date:   Wed, 7 Jul 2021 20:50:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210707113027.4077e544@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=cTXCexUCBYLjSq8WLV6y4Psori5M9mLAKAHZFzbkUxE=;
+        b=JCnYJg9TmGtxq95YIWVhSB2DD96Bn4Z7QpK/Sn4kW35M/EPRcCiPTN1ShZVmgFsNm/
+         2P8H3NRQ4sbVvSkojG+iz4b1s4aUgwCqM46QuSEks7+ykXzA5X6BWUlop9d+AGqOJFSk
+         kmOY3E//2xQtFdnkIvdiZaQ7NHKS070aRtWHiCGyMCs5SOb6JVqb7gMEOh1MUODnpa43
+         r0jZGnEofCQ8aVFENhHSLhZjSUs7Oy/yKJzB52iVUqSvUy94EpJfRvPapVfOlmnLFaLw
+         4JF6aBFCcezljppKtUk3cmN6FjbkeJo+fN9zrQ/LOncSPstW/P6xFLBSFgmyc6kuuQRq
+         ouzQ==
+X-Gm-Message-State: AOAM532dSV17LuDAVMDeA/DQXD185aasFeau/CxWITE4sl2CiXRwb45Y
+        VzwCUXz659IOyWZa9+hqOcfec8qVnHLJpw==
+X-Google-Smtp-Source: ABdhPJykBvcRyNzdtBhE2SdtWe6ckhl0TLkLvtHmT/DPg7RRqbFnKZnyUzQuLHzYvDOrJcuyKi49Nvn4teXU6w==
+X-Received: from abdulras.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:41e1])
+ (user=abdulras job=sendgmr) by 2002:a05:6a00:2145:b029:30b:127:e0a3 with SMTP
+ id o5-20020a056a002145b029030b0127e0a3mr26856522pfk.34.1625683877901; Wed, 07
+ Jul 2021 11:51:17 -0700 (PDT)
+Date:   Wed,  7 Jul 2021 18:51:05 +0000
+Message-Id: <20210707185105.1180526-1-abdulras@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH] riscv: explicitly use symbol offsets for VDSO
+From:   Saleem Abdulrasool <abdulras@google.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Bill Wendling <morbo@google.com>, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Saleem Abdulrasool <abdulras@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The current implementation of the `__rt_sigaction` reference computed an
+absolute offset relative to the mapped base of the VDSO.  While this can
+be handled in the medlow model, the medany model cannot handle this as
+it is meant to be position independent.  The current implementation
+relied on the BFD linker relaxing the PC-relative relocation into an
+absolute relocation as it was a near-zero address allowing it to be
+referenced relative to `zero`.
 
+We now extract the offsets and create a generated header allowing the
+build with LLVM and lld to succeed as we no longer depend on the linker
+rewriting address references near zero.  This change was largely
+modelled after the ARM64 target which does something similar.
 
-On 7/7/21 8:30 PM, Jakub Kicinski wrote:
-> On Wed, 7 Jul 2021 19:41:44 +0200 Eric Dumazet wrote:
->> On 7/7/21 6:42 PM, Jakub Kicinski wrote:
->>> On Wed, 7 Jul 2021 08:45:13 -0600 David Ahern wrote:  
->>>> why not use hh_len here?  
->>>
->>> Is there a reason for the new skb? Why not pskb_expand_head()?  
->>
->>
->> pskb_expand_head() might crash, if skb is shared.
->>
->> We possibly can add a helper, factorizing all this,
->> and eventually use pskb_expand_head() if safe.
-> 
-> Is there a strategically placed skb_share_check() somewhere further
-> down? Otherwise there seems to be a lot of questionable skb_cow*()
-> calls, also __skb_linearize() and skb_pad() are risky, no?
-> Or is it that shared skbs are uncommon and syzbot doesn't hit them?
-> 
+Signed-off-by: Saleem Abdulrasool <abdulras@google.com>
+---
+ arch/riscv/Makefile                        |  4 ++++
+ arch/riscv/include/asm/vdso.h              | 11 ++---------
+ arch/riscv/kernel/vdso/Makefile            | 21 +++++++++------------
+ arch/riscv/kernel/vdso/gen_vdso_offsets.sh |  5 +++++
+ arch/riscv/kernel/vdso/so2s.sh             |  6 ------
+ 5 files changed, 20 insertions(+), 27 deletions(-)
+ create mode 100755 arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+ delete mode 100755 arch/riscv/kernel/vdso/so2s.sh
 
-Some of us try hard to remove skb_get() occurrences,
-but they tend to re-appear fast :/
-
-Refs: commit a516993f0ac1694673412eb2d16a091eafa77d2a
-("net: fix wrong skb_get() usage / crash in IGMP/MLD parsing code") 
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index e241e0e85ac8..f2beaa3c9fcb 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -92,6 +92,10 @@ PHONY += vdso_install
+ vdso_install:
+ 	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso $@
+ 
++prepare: vdso_prepare
++vdso_prepare: prepare0
++	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso include/generated/vdso-offsets.h
++
+ ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_KENDRYTE),yy)
+ KBUILD_IMAGE := $(boot)/loader.bin
+ else
+diff --git a/arch/riscv/include/asm/vdso.h b/arch/riscv/include/asm/vdso.h
+index 8454f746bbfd..a72c4093d1c7 100644
+--- a/arch/riscv/include/asm/vdso.h
++++ b/arch/riscv/include/asm/vdso.h
+@@ -9,24 +9,17 @@
+ #define _ASM_RISCV_VDSO_H
+ 
+ #include <linux/types.h>
++#include <generated/vdso-offsets.h>
+ 
+ #ifndef GENERIC_TIME_VSYSCALL
+ struct vdso_data {
+ };
+ #endif
+ 
+-/*
+- * The VDSO symbols are mapped into Linux so we can just use regular symbol
+- * addressing to get their offsets in userspace.  The symbols are mapped at an
+- * offset of 0, but since the linker must support setting weak undefined
+- * symbols to the absolute address 0 it also happens to support other low
+- * addresses even when the code model suggests those low addresses would not
+- * otherwise be availiable.
+- */
+ #define VDSO_SYMBOL(base, name)							\
+ ({										\
+ 	extern const char __vdso_##name[];					\
+-	(void __user *)((unsigned long)(base) + __vdso_##name);			\
++	(void __user *)((unsigned long)(base) + __vdso_##name##_offset);	\
+ })
+ 
+ asmlinkage long sys_riscv_flush_icache(uintptr_t, uintptr_t, uintptr_t);
+diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+index f001ae91ef46..17cb755cf282 100644
+--- a/arch/riscv/kernel/vdso/Makefile
++++ b/arch/riscv/kernel/vdso/Makefile
+@@ -42,20 +42,22 @@ $(obj)/vdso.o: $(obj)/vdso.so
+ # link rule for the .so file, .lds has to be first
+ $(obj)/vdso.so.dbg: $(src)/vdso.lds $(obj-vdso) FORCE
+ 	$(call if_changed,vdsold)
+-LDFLAGS_vdso.so.dbg = -shared -s -soname=linux-vdso.so.1 \
++LDFLAGS_vdso.so.dbg = -shared -S -soname=linux-vdso.so.1 \
+ 	--build-id=sha1 --hash-style=both --eh-frame-hdr
+ 
+-# We also create a special relocatable object that should mirror the symbol
+-# table and layout of the linked DSO. With ld --just-symbols we can then
+-# refer to these symbols in the kernel code rather than hand-coded addresses.
+-$(obj)/vdso-syms.S: $(obj)/vdso.so FORCE
+-	$(call if_changed,so2s)
+-
+ # strip rule for the .so file
+ $(obj)/%.so: OBJCOPYFLAGS := -S
+ $(obj)/%.so: $(obj)/%.so.dbg FORCE
+ 	$(call if_changed,objcopy)
+ 
++# Generate VDSO offsets using helper script
++gen-vdsosym := $(srctree)/$(src)/gen_vdso_offsets.sh
++quiet_cmd_vdsosym = VDSOSYM $@
++	cmd_vdsosym = $(NM) $< | $(gen-vdsosym) | LC_ALL=C sort > $@
++
++include/generated/vdso-offsets.h: $(obj)/vdso.so.dbg FORCE
++	$(call if_changed,vdsosym)
++
+ # actual build commands
+ # The DSO images are built using a special linker script
+ # Make sure only to export the intended __vdso_xxx symbol offsets.
+@@ -64,11 +66,6 @@ quiet_cmd_vdsold = VDSOLD  $@
+                    $(OBJCOPY) $(patsubst %, -G __vdso_%, $(vdso-syms)) $@.tmp $@ && \
+                    rm $@.tmp
+ 
+-# Extracts symbol offsets from the VDSO, converting them into an assembly file
+-# that contains the same symbols at the same offsets.
+-quiet_cmd_so2s = SO2S    $@
+-      cmd_so2s = $(NM) -D $< | $(srctree)/$(src)/so2s.sh > $@
+-
+ # install commands for the unstripped file
+ quiet_cmd_vdso_install = INSTALL $@
+       cmd_vdso_install = cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
+diff --git a/arch/riscv/kernel/vdso/gen_vdso_offsets.sh b/arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+new file mode 100755
+index 000000000000..c2e5613f3495
+--- /dev/null
++++ b/arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+@@ -0,0 +1,5 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++
++LC_ALL=C
++sed -n -e 's/^[0]\+\(0[0-9a-fA-F]*\) . \(__vdso_[a-zA-Z0-9_]*\)$/\#define \2_offset\t0x\1/p'
+diff --git a/arch/riscv/kernel/vdso/so2s.sh b/arch/riscv/kernel/vdso/so2s.sh
+deleted file mode 100755
+index e64cb6d9440e..000000000000
+--- a/arch/riscv/kernel/vdso/so2s.sh
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0+
+-# Copyright 2020 Palmer Dabbelt <palmerdabbelt@google.com>
+-
+-sed 's!\([0-9a-f]*\) T \([a-z0-9_]*\)\(@@LINUX_4.15\)*!.global \2\n.set \2,0x\1!' \
+-| grep '^\.'
+-- 
+2.32.0.93.g670b81a890-goog
 
