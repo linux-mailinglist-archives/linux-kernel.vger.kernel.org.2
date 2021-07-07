@@ -2,129 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7748F3BE4ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 801753BE4F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbhGGJDt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 7 Jul 2021 05:03:49 -0400
-Received: from de-smtp-delivery-105.mimecast.com ([194.104.109.105]:51511 "EHLO
-        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231204AbhGGJDr (ORCPT
+        id S231359AbhGGJE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:04:26 -0400
+Received: from lucky1.263xmail.com ([211.157.147.132]:49190 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231218AbhGGJEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:03:47 -0400
-Received: from GBR01-CWL-obe.outbound.protection.outlook.com
- (mail-cwlgbr01lp2051.outbound.protection.outlook.com [104.47.20.51]) (Using
- TLS) by relay.mimecast.com with ESMTP id de-mta-7-XoIVZwVgPlOg0s9j-Rf5vA-1;
- Wed, 07 Jul 2021 11:01:05 +0200
-X-MC-Unique: XoIVZwVgPlOg0s9j-Rf5vA-1
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
- by CWXP265MB1813.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:3f::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19; Wed, 7 Jul
- 2021 09:01:00 +0000
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::259d:65ac:ae6d:409d]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::259d:65ac:ae6d:409d%9]) with mapi id 15.20.4287.033; Wed, 7 Jul 2021
- 09:01:00 +0000
-From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hch@infradead.org" <hch@infradead.org>
-Subject: Re: [PATCH] mmc: block: Differentiate busy and non-TRAN state
-Thread-Topic: [PATCH] mmc: block: Differentiate busy and non-TRAN state
-Thread-Index: AQHXbl0Q77+Qfc7HWE6ez2HIF5qrJas1omGlgAAGD4CAAADv5IABbwLggAAg/s4=
-Date:   Wed, 7 Jul 2021 09:01:00 +0000
-Message-ID: <CWXP265MB2680AE8D71546A5656B410DCC41A9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-References: <CWXP265MB268049D9AB181062DA7F6DDBC4009@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <CWXP265MB26807AC3C130772D789D0AABC41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<CAPDyKFq44ZuXXUDQV34NSW-ixB9GAZfDx+dx-Kb8O7=LQ1TSHQ@mail.gmail.com>
- <CWXP265MB26803EFAC659676EC0914F97C41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<DM6PR04MB6575B0049B98254E77BA447EFC1A9@DM6PR04MB6575.namprd04.prod.outlook.com>
-In-Reply-To: <DM6PR04MB6575B0049B98254E77BA447EFC1A9@DM6PR04MB6575.namprd04.prod.outlook.com>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 08530566-c672-40fc-fb42-08d94125bdb6
-x-ms-traffictypediagnostic: CWXP265MB1813:
-x-microsoft-antispam-prvs: <CWXP265MB1813944B0CAAC11AE2F4BB50C41A9@CWXP265MB1813.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:8882
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0
-x-microsoft-antispam-message-info: OiB8PJIvXK2UpKory9g9cpNYAUNN+H8m5RPmjx3DCG7Z67upFDMzg8R21eiwXI4PROLGJnGBJMEgyQRrW0NMryVgfDiYmwwqK7GWalWjbv7ZXRf3rz+yWj1ZRWmgHwepdYIdMtc4efO/IgKbg0Mf0SaasYHiv0LdB2lrPSYYGQ1hFbwfVKyDi6FTY5s0x+l+jjnQlD1yZF+MWIB9wG1x5ujGCOaCgJuMe1L39eq8hbkRLxxhmlCMlFVhgT6eaBr6Ncm6DehnS5VI/h796hAZ1ckXFnKK5G9xeUlVjog/qhanl6qC4HqJijH61XFKjAXZWL8RtC6Whh7J2OG+7EVd5CRcBndA0qcPHNGlgd/52T+ShWFB8tlxWPzVTjkVtGLAepZSO75u2VKrGuQKbZ1xiDXEwa3wYQ8h1BPU2LS9S5kRdFwY1KQl6entI7+zBdj0PFFk8/dSMulX9VOW1l5+IetJ9ALtMJloyEnhxiQdNV5aOvsdvTqr9JevpoUrPn9BCASYsZJOpDwfZcA9yEQu+g7B+ay+3yFKLVUbwDolw2KOUXPP+D4Lhss5dV4XytIdyZ2urglBsl58P4msxytsGXcpeeP6xqZmmaGSEvpLFPNx6T7ACzIFrF+rjcUu3zkwPBawNwsoep8S2SuLoTbNcg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39840400004)(346002)(376002)(396003)(136003)(366004)(71200400001)(54906003)(33656002)(8936002)(122000001)(110136005)(66476007)(6506007)(186003)(8676002)(55016002)(38100700002)(83380400001)(9686003)(478600001)(4326008)(2906002)(5660300002)(26005)(86362001)(316002)(7696005)(66556008)(52536014)(91956017)(64756008)(66946007)(76116006)(66446008);DIR:OUT;SFP:1101
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?mf4G8Ve+OEmjjmHlvTB0+2vHzE4WI+ZDGwYfIhdAQpqCNcbHSlHRgRjXpt?=
- =?iso-8859-1?Q?i71jxlGB41k87alsA0RFnUUvrttGFF229acGGmfedVTAXcADub4g+VKuBy?=
- =?iso-8859-1?Q?R/zNNn5VuqKCrUPet5n1MYCPIG23aV1jJ9MNyHBi+10XJAEX5jiRoEXdWw?=
- =?iso-8859-1?Q?5JjL3xv5mzlQqDLjSMNhtwIw0oJjGe9ENhF+eRTiimzuAyuo0LKtyA5U4U?=
- =?iso-8859-1?Q?MJJ3VMD7a2L2TrWCYkm4pOTSbwujpoJo1gQb+pbHlp7+tA9xJTck9Ic8QX?=
- =?iso-8859-1?Q?B441GTc6wld6JRwMeJBmDVbCM/dTk9+x/fXX6E6iWwQ0hrp0LQFE3GUoBb?=
- =?iso-8859-1?Q?hYHqlyLQmvI+/8MM0LUhkOZw6nYNlYPEsSZYJ51/K2EfRnB6VuI5RyO8hb?=
- =?iso-8859-1?Q?g5VPQaWVhoIkLi7iXlzVMXKhpVgzAyp2OulcJxf6S0kRh+AydGdQAP6irE?=
- =?iso-8859-1?Q?p8gJLdjnNE1D4WzSgX2iiAkNcWf8iqxr4HLUymdFap9wA04m3f2U0AjxPq?=
- =?iso-8859-1?Q?+3EUWYorvyqom6hYYTZqt4lMn40Fe5+d42dNwEkGr+Uj0zS3MUZCZduKVS?=
- =?iso-8859-1?Q?i8DGvpwndmgF50JBNgskafWv2UVaU9+I6AZiAUUxYZC/GN7az7QerE3qg3?=
- =?iso-8859-1?Q?n6tZySYQ0KASfNEFxtklX+UluwOWQJlB6Jlog18NAkbpWzC4hYakhmQYHI?=
- =?iso-8859-1?Q?iAxDM8TSLejB+kgfV3+X7kJmckf2sgk+Zsqn+koMn8n+6tZl3JInhMrq0Y?=
- =?iso-8859-1?Q?5P01OjQx6uiC0BuC1b00WnMmBxd058ZOavXmHR3JW90Xikfqbf9O/HmoJi?=
- =?iso-8859-1?Q?adadZsEtRzkX9+iTAzCXX1GzvSwpkOCQSu5q4pPT6ItI3FEMmGz6dAV0dn?=
- =?iso-8859-1?Q?k89/oN76w5xMANltw7CeCG91+YEH6PhwSJSEluxCYr9GmwAmEeqFRoqUgM?=
- =?iso-8859-1?Q?VbU4oaq+L1BRrAmGl4VuUdPKLHJVB9rEZks7U83QPkt4xwjvHYch/UsRcl?=
- =?iso-8859-1?Q?5DTU04KpigKBzmssA/TGEasgDSM6kirKvneg7rc1INf0ZT5yZ/NStOmeYX?=
- =?iso-8859-1?Q?7TD6JsVuGMCT/kq6ZHwP06DjXBqxQcmprFedRB2Ws/Vge7RdmOKPzR54JO?=
- =?iso-8859-1?Q?a+ZN58yqbCNMC4to5CUlnesQ6ZkYTFn+hYAdOXZciFbYwrFVGE4mjofNj6?=
- =?iso-8859-1?Q?BO3d2b9i84dVNBdjZ9i8a6IJJpz6fsVizRWi91vRsDqWDP4rcNG/qYhJrY?=
- =?iso-8859-1?Q?Y08wR1cYJATQq0/oRsrkJE8mjFYAUf7k0OALOHziZ2HvuRZ+KJKNWEo/bc?=
- =?iso-8859-1?Q?UWWhzulaZzCc0y1bQkoMjrV+OL3sMY0yq4OhJHdpdcrbC88=3D?=
-x-ms-exchange-transport-forked: True
-MIME-Version: 1.0
-X-OriginatorOrg: hyperstone.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08530566-c672-40fc-fb42-08d94125bdb6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jul 2021 09:01:00.1390
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sWT7hYK8uyX7KW4Q4f1gNeeLcYDXAT5P5k6JIqS7Gsq1whaM8Jm6jUL927hDIomopzQ0Pa+KWfprzq8QQmQY6g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB1813
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: hyperstone.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Wed, 7 Jul 2021 05:04:24 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 768A6FAD8B;
+        Wed,  7 Jul 2021 17:00:30 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P12363T139710634645248S1625648429145477_;
+        Wed, 07 Jul 2021 17:00:30 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <01898e879f6db8513d41e037c7703048>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 19
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     linux-spi@vger.kernel.org
+Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [PATCH v11 00/10] Add Rockchip SFC(serial flash controller) support
+Date:   Wed,  7 Jul 2021 17:00:17 +0800
+Message-Id: <20210707090027.32608-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Avri,
 
->Are you using mmc-utils?
-No, Im accessing the ioctl interface with my own application.
 
->Can you share exactly the sequence of commands you are sending?
+Changes in v11:
+- The tx is set to 1 for Odroid Go Advance device
 
-The one I initially encountered was, as stated earlier, a Unlock-Force Erase
-into a new Lock with set password. Basically any R1 (no b) command that
-transitions to PROG, so behaves like a write command, could trigger this.
-But obviously Unlock force erase is the best example, as a full erase will
-take quite some time and many (all?) cards will not accept new commands
-(i.e. stay in PROG) until the erase has actually completed. The current
-code will not check anything for CMD42 after the response.
-I have not hit the race condition with anything but CMD42.
+Changes in v10:
+- Fix dma transfer logic
 
-So to be verbose:
-CMD16 - CMD42 Set PW - (CMD16)* - CMD42 Unlock Force Erase - (CMD42 Set PW)+
-* May be omitted if you craft the CMD42 carefully (i.e. equal data size)
-+ is pretty much irrelevant, can be replaced with anything that is illegal in PROG.
+Changes in v9:
+- Separate DMA IRQ setting and wait_completion from DMA fifo transfer
+  function to make dma_status_poll be possible(Which I will implement
+  in u-boot)
+- Add SFC Kconfig detail comment
+- Separate FDT binding docs and includes from rk3036 sfc_hclk patch
+- Separate FDT binding docs and includes from rk3036 sfc_hclk patch
 
->Again, can you share the sequence of the commands you are using?
->
->Thanks,
->Avri
-Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-Managing Directors: Dr. Jan Peter Berns.
-Commercial register of local courts: Freiburg HRB381782
+Changes in v8:
+- Fix indent 4 to 2 in yaml
+
+Changes in v7:
+- Fix up the sclk_sfc parent error in rk3036
+- Unify to "rockchip,sfc" compatible id because all the feature update
+  will have a new IP version, so the driver is used for the SFC IP in
+  all SoCs
+- Change to use node "sfc" to name the SFC pinctrl group
+- Add subnode reg property check
+- Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
+- Limit max_iosize to 32KB
+
+Changes in v6:
+- Add support in device trees for rv1126(Declared in series 5 but not
+  submitted)
+- Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
+  affect interpretation and has been widely used
+- Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
+- Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
+  in series 5 but not submitted)
+- Support SFC ver4 ver5(Declared in series 5 but not submitted)
+- Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
+- Change to use devm_spi_alloc_master and spi_unregister_master
+
+Changes in v5:
+- Add support in device trees for rv1126
+- Support sfc tx_dual, tx_quad
+- Simplify the code, such as remove "rockchip_sfc_register_all"
+- Support SFC ver4 ver5
+
+Changes in v4:
+- Changing patch back to an "RFC". An engineer from Rockchip
+  reached out to me to let me know they are working on this patch for
+  upstream, I am submitting this v4 for the community to see however
+  I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
+  soon and these are the ones we should pursue for mainlining. Jon's
+  patch series should include support for more hardware than this
+  series.
+- Clean up documentation more and ensure it is correct per
+  make dt_binding_check.
+- Add support in device trees for rk3036, rk3308, and rv1108.
+- Add ahb clock (hclk_sfc) support for rk3036.
+- Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
+- Change IRQ code to only mark IRQ as handled if it handles the
+  specific IRQ (DMA transfer finish) it is supposed to handle.
+
+Changes in v3:
+- Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
+- Changed the compatible string from rockchip,sfc to
+  rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
+  driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
+  RV1108 SoCs, and possibly more. However, I am currently only able
+  to test this on a PX30 (an RK3326). The technical reference manuals
+  appear to list the same registers for each device.
+- Corrected devicetree documentation for formatting and to note these
+  changes.
+- Replaced the maintainer with Heiko Stuebner and myself, as we will
+  take ownership of this going forward.
+- Noted that the device (per the reference manual) supports 4 CS, but
+  I am only able to test a single CS (CS 0).
+- Reordered patches to comply with upstream rules.
+
+Changes in v2:
+- Reimplemented driver using spi-mem subsystem.
+- Removed power management code as I couldn't get it working properly.
+- Added device tree bindings for Odroid Go Advance.
+
+Changes in v1:
+hanges made in this new series versus the v8 of the old series:
+- Added function to read spi-rx-bus-width from device tree, in the
+  event that the SPI chip supports 4x mode but only has 2 pins
+  wired (such as the Odroid Go Advance).
+- Changed device tree documentation from txt to yaml format.
+- Made "reset" message a dev_dbg from a dev_info.
+- Changed read and write fifo functions to remove redundant checks.
+- Changed the write and read from relaxed to non-relaxed when
+  starting the DMA transfer or reading the DMA IRQ.
+- Changed from dma_coerce_mask_and_coherent to just
+  dma_set_mask_and_coherent.
+- Changed name of get_if_type to rockchip_sfc_get_if_type.
+
+Chris Morgan (8):
+  dt-bindings: rockchip-sfc: Bindings for Rockchip serial flash
+    controller
+  spi: rockchip-sfc: add rockchip serial flash controller
+  arm64: dts: rockchip: Add SFC to PX30
+  clk: rockchip:  add dt-binding for hclk_sfc on rk3036
+  arm: dts: rockchip: Add SFC to RK3036
+  arm: dts: rockchip: Add SFC to RV1108
+  arm64: dts: rockchip: Add SFC to RK3308
+  arm64: dts: rockchip: Enable SFC for Odroid Go Advance
+
+Jon Lin (2):
+  clk: rockchip: rk3036: fix up the sclk_sfc parent error
+  clk: rockchip: Add support for hclk_sfc on rk3036
+
+ .../devicetree/bindings/spi/rockchip-sfc.yaml |  88 +++
+ arch/arm/boot/dts/rk3036.dtsi                 |  42 ++
+ arch/arm/boot/dts/rv1108.dtsi                 |  37 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |  38 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      |  37 +
+ .../boot/dts/rockchip/rk3326-odroid-go2.dts   |  16 +
+ drivers/clk/rockchip/clk-rk3036.c             |   5 +-
+ drivers/spi/Kconfig                           |  12 +
+ drivers/spi/Makefile                          |   1 +
+ drivers/spi/spi-rockchip-sfc.c                | 681 ++++++++++++++++++
+ include/dt-bindings/clock/rk3036-cru.h        |   1 +
+ 11 files changed, 956 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+ create mode 100644 drivers/spi/spi-rockchip-sfc.c
+
+-- 
+2.17.1
+
+
 
