@@ -2,94 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A3D3BE56C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CF43BE56F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbhGGJUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:20:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230166AbhGGJUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:20:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 746DA61CB9;
-        Wed,  7 Jul 2021 09:17:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625649459;
-        bh=Hs06sVQKYjVO+YnaiWfyv/Cxu/1sf138i7r7Y5bwk5w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PloM3b8JEWOD92WjjhSxjU4JfWwnVXFdOaOQzKPKpv4vr1MvTlZpQQmphfCUHYb/J
-         E2nFHUzbqyX5MYr+0eU6iz8JO721cZ+pXWyViekcIxyoLAkl4QD1DH47idabUCvu91
-         ks3HLhmZjTSRPQxeRDLVSVl+Pvo/xfFtRVtgdYyayiz+Cl5kwp9tDjFMfe9TWZQnLK
-         jlUmDVCLM5KT9hxYu7DDUD1azW5fSyNOs22oH7AzdIRGZbxgOzZFpPXVy9R57cPMGo
-         uZVJI9SkqAu+AX0VSOI6cLpuWWxPFIUIOHacb6OEX2l/A6AVHvhSYEakOLsphBDBqj
-         ZkWhTpMeCzP9Q==
-Date:   Wed, 7 Jul 2021 12:17:36 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-sgx@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] selftests/sgx: Trigger the reclaimer and #PF handler
-Message-ID: <20210707091736.6wzemgmtzuegk3uf@kernel.org>
-References: <20210705143652.116125-1-jarkko@kernel.org>
- <20210705143652.116125-5-jarkko@kernel.org>
- <715ed555-5044-6fee-1d09-1c4cfa827af3@intel.com>
- <20210706235016.uucukyrr3ckk57pi@kernel.org>
- <16505466-e001-c4b0-ec41-5384ddcf194b@intel.com>
+        id S231316AbhGGJUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:20:51 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:53930 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230166AbhGGJUu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 05:20:50 -0400
+Received: from netfilter.org (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 29B716165A;
+        Wed,  7 Jul 2021 11:17:58 +0200 (CEST)
+Date:   Wed, 7 Jul 2021 11:18:07 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     iLifetruth <yixiaonn@gmail.com>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Qiang Liu <cyruscyliu@gmail.com>, yajin@vm-kernel.org
+Subject: Re: netfilter: Use netlink_ns_capable to verify the permisions of
+ netlink messages
+Message-ID: <20210707091807.GA16039@salvia>
+References: <CABv53a97_5iaAdOcoVdQDxNyyTxgXHx=mHm0Sfo4UJVLHoxosg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <16505466-e001-c4b0-ec41-5384ddcf194b@intel.com>
+In-Reply-To: <CABv53a97_5iaAdOcoVdQDxNyyTxgXHx=mHm0Sfo4UJVLHoxosg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 05:10:38PM -0700, Reinette Chatre wrote:
-> Hi Jarkko,
+On Wed, Jul 07, 2021 at 04:05:33PM +0800, iLifetruth wrote:
+> Hi, we have found that the same fix pattern of CVE-2014-0181 may not
+> forward ported to some netlink-related places in the latest linux
+> kernel(v5.13)
 > 
-> On 7/6/2021 4:50 PM, Jarkko Sakkinen wrote:
-> > On Tue, Jul 06, 2021 at 11:34:54AM -0700, Reinette Chatre wrote:
-> > > Hi Jarkko,
-> > > 
-> > > On 7/5/2021 7:36 AM, Jarkko Sakkinen wrote:
-> > > > Create a heap for the test enclave, which has the same size as all
-> > > > available Enclave Page Cache (EPC) pages in the system. This will guarantee
-> > > > that all test_encl.elf pages *and* SGX Enclave Control Structure (SECS)
-> > > > have been swapped out by the page reclaimer during the load time. Actually,
-> > > > this adds a bit more stress than that since part of the EPC gets reserved
-> > > > for the Version Array (VA) pages.
-> > > > 
-> > > > For each test, the page fault handler gets triggered in two occasions:
-> > > > 
-> > > > - When SGX_IOC_ENCLAVE_INIT is performed, SECS gets swapped in by the
-> > > >     page fault handler.
-> > > > - During the execution, each page that is referenced gets swapped in
-> > > >     by the page fault handler.
-> > > > 
-> > > 
-> > > If I understand this correctly, all EPC pages are now being consumed during
-> > > fixture setup and thus every SGX test, no matter how big or small, now
-> > > becomes a stress test of the reclaimer instead of there being a unique
-> > > reclaimer test. Since an enclave is set up and torn down for every test this
-> > > seems like a significant addition. It also seems like this would impact
-> > > future tests of dynamic page addition where not all scenarios could be
-> > > tested with all EPC pages already consumed.
-> > > 
-> > > Reinette
-> > 
-> > Re-initializing the test enclave is mandatory thing to do for all tests
-> > because it has an internals state.
-> > 
+> =============
+> Here is the description of CVE-2014-0181:
 > 
-> Right, but not all tests require the same enclave. In kselftest terminology
-> I think you are attempting to force all tests to depend on the same test
-> fixture. Is it not possible to have a separate "reclaimer" test fixture that
-> would build an enclave with a large heap and then have reclaimer tests that
-> exercise it by being tests that are specific to this "reclaimer fixture"?
+> The Netlink implementation in the Linux kernel through 3.14.1 does not
+> provide a mechanism for authorizing socket operations based on the opener
+> of a socket, which allows local users to bypass intended access
+> restrictions and modify network configurations by using a Netlink socket
+> for the (1) stdout or (2) stderr of a setuid program.
 > 
-> Reinette
+> ==========
+> And here is the solution to CVE-2014-0181:
+> 
+> To keep this from happening, replace bare capable and ns_capable calls with
+> netlink_capable, netlink_net_calls and netlink_ns_capable calls. Which act
+> the same as the previous calls *except they verify that the opener of the
+> socket had the desired permissions as well.*
+> 
+> ==========
+> The upstream patch commit of this vulnerability described in CVE-2014-0181
+> is:
+>     90f62cf30a78721641e08737bda787552428061e (committed about 7 years ago)
+> 
+> =========
+> Capable() checks were added to these netlink-related places listed below
+> in netfilter by another upstream commit:
+> 4b380c42f7d00a395feede754f0bc2292eebe6e5(committed about 4 years ago)
+> 
+> In kernel v5.13:
+>     File_1: linux/net/netfilter/nfnetlink_cthelper.c
+>                        in line 424, line 623 and line 691
+>     File_2: linux/net/netfilter/nfnetlink_osf.c
+>                        in line 305 and line 351
 
-Why add that complexity?
+These subsystems depend on nfnetlink.
 
-/Jarkko
+nfnetlink_rcv() is called before passing the message to the
+corresponding backend, e.g. nfnetlink_osf.
+
+static void nfnetlink_rcv(struct sk_buff *skb)
+{
+        struct nlmsghdr *nlh = nlmsg_hdr(skb);
+
+        if (skb->len < NLMSG_HDRLEN ||
+            nlh->nlmsg_len < NLMSG_HDRLEN ||
+            skb->len < nlh->nlmsg_len)
+                return;
+
+        if (!netlink_net_capable(skb, CAP_NET_ADMIN)) {
+                netlink_ack(skb, nlh, -EPERM, NULL);
+                return;
+        }
+        [...]
+
+which is calling netlink_net_capable().
+
+> But these checkers are still using bare capable instead of netlink_capable
+> calls. So this is likely to trigger the vulnerability described in the
+> CVE-2014-0181 without checking the desired permissions of the socket
+> opener. Now, shall we forward port the fix pattern from the patch of
+> CVE-2014-0181?
+> 
+> We would like to contact you to confirm this problem.
+
+I think these capable() calls in nfnetlink_cthelper and nfnetlink_osf
+are dead code that can be removed. As I explained these subsystems
+stay behind nfnetlink.
