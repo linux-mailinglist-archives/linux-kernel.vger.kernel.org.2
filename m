@@ -2,158 +2,653 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B255E3BE9E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1556A3BE9E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbhGGOmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 10:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42826 "EHLO
+        id S232078AbhGGOmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 10:42:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231737AbhGGOmV (ORCPT
+        with ESMTP id S232022AbhGGOmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:42:21 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2EC5C061574;
-        Wed,  7 Jul 2021 07:39:41 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id h9so3619979oih.4;
-        Wed, 07 Jul 2021 07:39:41 -0700 (PDT)
+        Wed, 7 Jul 2021 10:42:47 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A775CC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 07:40:06 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id v14so4485022lfb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 07:40:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7gNQ41svyZKSD+ZfD8X+CqWoSx+Yg2oHnylVZwRWNDo=;
-        b=L/ODocFurzt1NRPzGA5lgvAU0Xmmy6nYMfX0rEkugKDENAYJ69ezTbt8anW8TZ+T+u
-         OzeGilDz9B/JAI2WE2AsyQ0R/RiYlZcGxRjh2Qv1GWl2GbjuhDCttSmjDvgJQQWGoojE
-         Lhntd2uV1C9hC6WSHTM90CyXMeChw+jTvKV2gpw+vYF/5xBfckF7ru6KFnUaIi5owd0p
-         hTUSjX0gYLF+OpN3LbIl6OCtL4cpOw5SryYqFwCBEAa+6lBf/I+j9INxwAky9TuUSZAs
-         cbnLBtzF+U8ZYA30fYne+K+igNpQ9qw7tsuG1RChPgxPDa/kxT9ddftNe0TQARiDR2Lh
-         2Q/g==
+        d=phystech-edu.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=6SD5S7xD8ZFPk89JuMGEj50tLo2xQAhtbknVG+FHz/U=;
+        b=MtipCrvvyStIvY447o1tFDcFNqHv6ly3KRRfDpvIuphOlykGgObJe7KB3XY0dynufk
+         zazq20mxXhrVebAREvf+tqm9O7Wx9dVkKMZcbdJ9rf1JCRE0JPsfcCuPFtnB4KIwqyAg
+         tz1wKiYisv+LFIISXvfS56pMRrT8Mam0EP/MZcTlR2oSWW8modSHbYrHqjeF8WYe3H6A
+         FRjumnZfWxxwUPeq+k/XkUnyygErhYz0yN6vUn6Bv0VX3fcTz85a9/+1zyaTVIpm2Dgd
+         tN+8AqOyVaqjkudO1Mds/2qojCPA9dkTQZofXGRNjsX127D8k6ctUNQ3rFdaKbol1fX/
+         Gbrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7gNQ41svyZKSD+ZfD8X+CqWoSx+Yg2oHnylVZwRWNDo=;
-        b=lhoAOl6B1X7sbrRyaRsiooeBr12RYEODjI2ZtrP87FL7wt496ondPos6NFZf6rzhc4
-         PyIj6B3V3QZLhWlQP+mnAedDAxpNLIZB7OT4/ArWWd8V1QM6hKcSwTkiM/lP2RQw+RvH
-         QiiNnV+kXYyO5Rgv0bhQgqHeOacBRpnpWJ5/OzrLq/CmX9AcEyzENFa11soNR4HLaHfo
-         i7DI9Wlsq9qyQPT3TyYmGBIrRniIWAdH7S7eeFxrtKcDjoRlC90u+kcxWXikydhQnpJd
-         7Fm7sXI8yyMypIxnxnwJSH0Bv0K0I/96K5I4Vzjue+Nu9OESLe4IwylP/1czXJz6sA9I
-         5seA==
-X-Gm-Message-State: AOAM533Aj+QcKMC8bbB6jzfHB2RVjX1xfW/q9SQWolfKDWaqZ+bKutYZ
-        wLItgmgoDh7Qq7MRM1omODI=
-X-Google-Smtp-Source: ABdhPJzZM+I+Wr1D4VNlEvutVIoJ2NobSdnA50lqeXIa+sMuqMrBynrLi64o20n/N+Pb4v6xX7/w4g==
-X-Received: by 2002:a05:6808:d54:: with SMTP id w20mr5167481oik.175.1625668781164;
-        Wed, 07 Jul 2021 07:39:41 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.38])
-        by smtp.googlemail.com with ESMTPSA id v2sm901050ots.8.2021.07.07.07.39.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 07:39:40 -0700 (PDT)
-Subject: Re: [PATCH] net: ipv6: don't generate link-local address in any
- addr_gen_mode
-To:     Rocco Yue <rocco.yue@mediatek.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=6SD5S7xD8ZFPk89JuMGEj50tLo2xQAhtbknVG+FHz/U=;
+        b=U9MtLOw0oWiSDgMe0oFko4PMjUCHrbZDaXTJmlpOXxsSiKc8xq1baQyNZvXckQ9Lc4
+         RpvqxR8XC3rwg6NB6rBe0dvNSJAqWomako4iOTIsWfRScMso7414EixiurPAYIxflcX0
+         jaCTozsJxO3CA+dJaFHs/N4QKrvSlwkKZvP8Hha1smX50E0tzhRLCaKFFkQIBKENfylf
+         BiP+Rqcfd5rGt5KOz20jrB2k9Thd9Vzls5JK+Wgn8Y5PoqUlyds6jj1/yPKMReS3Wspt
+         JsfaAlHPqnvxlXHIWUTc7LRmrpd7n0ReXNPyFq5NSq1/dpc1o0CL0ln2Vwcap/cIfaM2
+         zYiQ==
+X-Gm-Message-State: AOAM532RG9h575J2035eded9Q4mYO/u9UtZsJsu/AYAPXmpShvEaCS/h
+        Q3zJlK14+asxILURacVrOvYpiw==
+X-Google-Smtp-Source: ABdhPJw0FMWcRjfZUGLyYvzqIhPBlX4nt4HzFImYJ/i/DwWEmQdHDLCamwUBfCXjdtGPP7bWYaB96w==
+X-Received: by 2002:ac2:5fed:: with SMTP id s13mr19488341lfg.579.1625668805001;
+        Wed, 07 Jul 2021 07:40:05 -0700 (PDT)
+Received: from 192.168.1.3 ([2a00:1370:810e:abfe:9c62:44e3:b0ab:76fd])
+        by smtp.gmail.com with ESMTPSA id n15sm1723626lft.169.2021.07.07.07.40.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 07:40:04 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 17:40:01 +0300
+From:   Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+To:     Sean Young <sean@mess.org>
+Cc:     mchehab@kernel.org, robh+dt@kernel.org, khilman@baylibre.com,
+        narmstrong@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        rocco.yue@gmail.com, chao.song@mediatek.com,
-        kuohong.wang@mediatek.com, zhuoliang.zhang@mediatek.com
-References: <62c9f5b7-84bd-d809-4e33-39fed7a9d780@gmail.com>
- <20210706123702.29375-1-rocco.yue@mediatek.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <40951584-8f53-4e95-4a6b-14ae1cf7f011@gmail.com>
-Date:   Wed, 7 Jul 2021 08:39:36 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        linux-amlogic@lists.infradead.org, rockosov@gmail.com
+Subject: Re: [PATCH 2/2] media: rc: introduce Meson IR blaster driver
+Message-ID: <20210707174001.369c0d1a@192.168.1.3>
+In-Reply-To: <20210701224646.GA18540@gofer.mess.org>
+References: <20210701215132.16317-1-viktor.prutyanov@phystech.edu>
+        <20210701215132.16317-3-viktor.prutyanov@phystech.edu>
+        <20210701224646.GA18540@gofer.mess.org>
+Organization: MIPT
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210706123702.29375-1-rocco.yue@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/6/21 6:37 AM, Rocco Yue wrote:
-> On Mon, 2021-07-05 at 10:35 -0600, David Ahern wrote:
->> On 7/1/21 2:51 AM, Rocco Yue wrote:
->>> On Wed, 2021-06-30 at 22:41 -0600, David Ahern wrote:
->>>
->>> For mobile operators that don't need to support RFC7217, setting
->>> addr_gen_mode == 1 is sufficient;
->>>
->>> But for some other mobile operators that need to support RFC7217, such as AT&T,
->>> the mobile device's addr_gen_mode will be switched to the
->>> IN6_ADDR_GEN_MODE_STABLE_PRIVACY, instead of using IN6_ADDR_GEN_MODE_NONE.
->>> The purpose is: in the IN6_ADDR_GEN_MODE_STABLE_PRIVACY mode, kernel can
->>> gererate a stable privacy global ipv6 address after receiveing RA, and
->>> network processes can use this global address to communicate with the
->>> outside network.
->>>
->>> Of course, mobile operators that need to support RFC7217 should also meet
->>> the requirement of 3GPP TS 29.061, that is, MT should use IID assigned by
->>> the GGSN to build its ipv6 link-local address and use this address to send RS.
->>> We don't want the kernel to automatically generate an ipv6 link-local address
->>> when addr_gen_mode == 2. Otherwise, using the stable privacy ipv6 link-local
->>> address automatically generated by the kernel to send RS message, GGSN will
->>> not be able to respond to the RS and reply a RA message.
->>>
->>> Therefore, after this patch, kernel will not generate ipv6 link-local address
->>> for the corresponding device when addr_gen_mode == 1 or addr_gen_mode == 2.
->>>
->>
->> I think another addr_gen_mode is better than a separate sysctl. It looks
->> like IN6_ADDR_GEN_MODE_STABLE_PRIVACY and IN6_ADDR_GEN_MODE_RANDOM are
->> the ones used for RAs, so add something like:
->>
->> IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA,
->> IN6_ADDR_GEN_MODE_RANDOM_NO_LLA,
->>
->> to in6_addr_gen_mode.
->>
-> 
-> Hi David,
-> 
-> Thanks for your reply.
-> 
-> According to your suggestion, I checked the ipv6 code again. In my
-> opinion, adding another addr_gen_mode may not be suitable.
-> 
-> (1)
-> In the user space, the process enable the ipv6 stable privacy mode by
-> setting the "/proc/sys/net/ipv6/conf/<iface>/stable_secret".
-> 
-> In the kernel, the addr_gen_mode of a networking device is switched to
-> IN6_ADDR_GEN_MODE_STABLE_PRIVACY by judging the bool value of
-> "cnf.stable_secret.initialized".
+Hi Sean,
 
-and that can be updated. If the default (inherited) setting is
-IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA, then do not change to
-IN6_ADDR_GEN_MODE_STABLE_PRIVACY.
+Thank you for the review, I tried to fix issues your found in the 2nd
+version, FIFO watermark parameter. Explanation is below.
+
+On Thu, 1 Jul 2021 23:46:46 +0100
+Sean Young <sean@mess.org> wrote:
+
+> Hi Viktor,
+> 
+> Thank you for your driver. Is there a datasheet available for this
+> hardware?
+> 
+> On Fri, Jul 02, 2021 at 12:51:32AM +0300, Viktor Prutyanov wrote:
+> > This patch adds the driver for Amlogic Meson IR blaster.
+> > 
+> > Some Amlogic SoCs such as A311D and T950D4 have IR transmitter
+> > (blaster) controller onboard. It is capable of sending IR
+> > signals with arbitrary carrier frequency and duty cycle.
+> > 
+> > The driver supports 3 modulation clock sources:
+> >  - sysclk
+> >  - xtal3 clock (xtal divided by 3)
+> >  - 1us clock
+> > 
+> > Signed-off-by: Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+> > ---
+> >  drivers/media/rc/Kconfig           |  10 +
+> >  drivers/media/rc/Makefile          |   1 +
+> >  drivers/media/rc/meson-irblaster.c | 433
+> > +++++++++++++++++++++++++++++ 3 files changed, 444 insertions(+)
+> >  create mode 100644 drivers/media/rc/meson-irblaster.c
+> > 
+> > diff --git a/drivers/media/rc/Kconfig b/drivers/media/rc/Kconfig
+> > index d0a8326b75c2..6e60348e1bcf 100644
+> > --- a/drivers/media/rc/Kconfig
+> > +++ b/drivers/media/rc/Kconfig
+> > @@ -246,6 +246,16 @@ config IR_MESON
+> >  	   To compile this driver as a module, choose M here: the
+> >  	   module will be called meson-ir.
+> >  
+> > +config IR_MESON_IRBLASTER
+> > +	tristate "Amlogic Meson IR blaster"
+> > +	depends on ARCH_MESON || COMPILE_TEST
+> > +	help
+> > +	   Say Y if you want to use the IR blaster available on
+> > +	   Amlogic Meson SoCs.
+> > +
+> > +	   To compile this driver as a module, choose M here: the
+> > +	   module will be called meson-irblaster.
+> > +
+> >  config IR_MTK
+> >  	tristate "Mediatek IR remote receiver"
+> >  	depends on ARCH_MEDIATEK || COMPILE_TEST
+> > diff --git a/drivers/media/rc/Makefile b/drivers/media/rc/Makefile
+> > index 692e9b6b203f..b108f2b0420c 100644
+> > --- a/drivers/media/rc/Makefile
+> > +++ b/drivers/media/rc/Makefile
+> > @@ -28,6 +28,7 @@ obj-$(CONFIG_IR_ITE_CIR) += ite-cir.o
+> >  obj-$(CONFIG_IR_MCEUSB) += mceusb.o
+> >  obj-$(CONFIG_IR_FINTEK) += fintek-cir.o
+> >  obj-$(CONFIG_IR_MESON) += meson-ir.o
+> > +obj-$(CONFIG_IR_MESON_IRBLASTER) += meson-irblaster.o
+> >  obj-$(CONFIG_IR_NUVOTON) += nuvoton-cir.o
+> >  obj-$(CONFIG_IR_ENE) += ene_ir.o
+> >  obj-$(CONFIG_IR_REDRAT3) += redrat3.o
+> > diff --git a/drivers/media/rc/meson-irblaster.c
+> > b/drivers/media/rc/meson-irblaster.c new file mode 100644
+> > index 000000000000..ef60c8d3dc3e
+> > --- /dev/null
+> > +++ b/drivers/media/rc/meson-irblaster.c
+> > @@ -0,0 +1,433 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/**
+> > + * meson-irblaster.c - Amlogic Meson IR blaster driver
+> > + *
+> > + * Copyright (c) 2021, SberDevices. All Rights Reserved.
+> > + *
+> > + * Author: Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+> > + *  
+> 
+> No need to include the gpl boilerplate as you already have:
+> // SPDX-License-Identifier: GPL-2.0-only
+>
+> > + * This program is free software; you can redistribute it and/or
+> > modify it
+> > + * under the terms of the GNU General Public License as published
+> > by the
+> > + * Free Software Foundation; version 2 of the License and no later
+> > version.
+> > + *
+> > + * This program is distributed in the hope that it will be useful,
+> > but
+> > + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> > + * MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE, GOOD TITLE
+> > or
+> > + * NON INFRINGEMENT. See the GNU General Public License for more
+> > + * details.
+> > + *
+> > + * The full GNU General Public License is included in this
+> > distribution in
+> > + * the file called "COPYING".
+> > + */
+> > +
+> > +#include <linux/device.h>
+> > +#include <linux/module.h>
+> > +#include <linux/sched.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/of.h>
+> > +#include <linux/interrupt.h>
+> > +#include <linux/spinlock.h>
+> > +#include <linux/of_irq.h>
+> > +#include <linux/clk.h>
+> > +#include <media/rc-core.h>
+> > +
+> > +#define DRIVER_NAME	"meson-irblaster"
+> > +
+> > +#define dprintk(x...)	{ if (debug) pr_info(DRIVER_NAME ": "
+> > x); }  
+> 
+> Please use dev_dbg().
+> 
+> > +#define IRB_DEFAULT_CARRIER	38000
+> > +#define IRB_DEFAULT_DUTY_CYCLE	50
+> > +
+> > +#define IRB_FIFO_LEN			128
+> > +#define IRB_DEFAULT_MAX_FIFO_LEVEL	96
+> > +
+> > +#define IRB_ADDR0	0x0
+> > +#define IRB_ADDR1	0x4
+> > +#define IRB_ADDR2	0x8
+> > +#define IRB_ADDR3	0xc
+> > +
+> > +#define IRB_MAX_DELAY	(1 << 10)
+> > +#define IRB_DELAY_MASK	(IRB_MAX_DELAY - 1)
+> > +
+> > +/* IRCTRL_IR_BLASTER_ADDR0 */
+> > +#define IRB_MOD_CLK(x)		((x) << 12)
+> > +#define IRB_MOD_SYS_CLK		0
+> > +#define IRB_MOD_XTAL3_CLK	1
+> > +#define IRB_MOD_1US_CLK		2
+> > +#define IRB_MOD_10US_CLK	3
+> > +#define IRB_INIT_HIGH		BIT(2)
+> > +#define IRB_ENABLE		BIT(0)
+> > +
+> > +/* IRCTRL_IR_BLASTER_ADDR2 */
+> > +#define IRB_MOD_COUNT(lo, hi)	((((lo) - 1) << 16) | ((hi) -
+> > 1)) +
+> > +/* IRCTRL_IR_BLASTER_ADDR2 */
+> > +#define IRB_WRITE_FIFO	BIT(16)
+> > +#define IRB_MOD_ENABLE	BIT(12)
+> > +#define IRB_TB_1US	(0x0 << 10)
+> > +#define IRB_TB_10US	(0x1 << 10)
+> > +#define IRB_TB_100US	(0x2 << 10)
+> > +#define IRB_TB_MOD_CLK	(0x3 << 10)
+> > +
+> > +/* IRCTRL_IR_BLASTER_ADDR3 */
+> > +#define IRB_FIFO_THD_PENDING	BIT(16)
+> > +#define IRB_FIFO_IRQ_ENABLE	BIT(8)
+> > +
+> > +static bool debug;
+> > +module_param(debug, bool, 0644);
+> > +MODULE_PARM_DESC(debug, "Enable debug messages");  
+> 
+> With dynamic debug, you don't need this module option.
+> 
+> > +static unsigned int max_fifo_level = IRB_DEFAULT_MAX_FIFO_LEVEL;
+> > +module_param(max_fifo_level, uint, 0444);
+> > +MODULE_PARM_DESC(max_fifo_level, "Max blaster FIFO filling
+> > level");  
+> 
+> Why would you want to lower the fifo size? Is this module parameter
+> ever needed?
+
+The idea is following. FIFO size is 128 entries. Interrupt appears when
+FIFO IRQ threshold is passed. If we set the threshold to 0, IRQ appears
+right after the FIFO becomes empty. It means that IR blaster do nothing
+while we pushing next entries. But for example if we set threshold to 24
+= 128 - 96, IRQ appears when 24 entries are about to transmit and we
+have enough time to push new entries. 
+
+Of course, it has more sense in previous version with threaded IRQ, but
+I think it still OK to have time reserve to push entries with a large
+number.
 
 > 
-> So, although adding an additional IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA,
-> user space process has some trouble to let kernel switch the iface's
-> addr_gen_mode to the IN6_ADDR_GEN_MODE_STABLE_PRIVACY_NO_LLA.
+> > +
+> > +struct irblaster_dev {
+> > +	unsigned int irq;
+> > +	void __iomem *reg_base;
+> > +	unsigned int *buf;
+> > +	unsigned int buf_len;
+> > +	unsigned int buf_head;
+> > +	unsigned int carrier;
+> > +	unsigned int duty_cycle;
+> > +	spinlock_t lock;
+> > +	struct completion completion;
+> > +	unsigned int max_fifo_level;
+> > +	unsigned int clk_nr;
+> > +	unsigned long clk_rate;
+> > +};
+> > +
+> > +static void irb_set_mod(struct irblaster_dev *irb)
+> > +{
+> > +	unsigned int cnt = irb->clk_rate / irb->carrier;
+> > +	unsigned int pulse_cnt = cnt * irb->duty_cycle / 100;
+> > +	unsigned int space_cnt = cnt - pulse_cnt;
+> > +
+> > +	dprintk("F_mod = %uHz, T_mod = %luns, duty_cycle = %u%%\n",
+> > +		irb->carrier, NSEC_PER_SEC / irb->clk_rate * cnt,
+> > +		100 * pulse_cnt / cnt);  
 > 
-> This is not as flexible as adding a separate sysctl.
+> dev_dbg()
 > 
-> (2)
-> After adding "proc/sys/net/ipv6/<iface>/disable_gen_linklocal_addr",
-> so that kernel can keep the original code logic of the stable_secret
-> proc file, and expand when the subsequent kernel adds a new add_gen_mode
-> more flexibility and applicability.
+> > +
+> > +	writel(IRB_MOD_COUNT(pulse_cnt, space_cnt),
+> > +	       irb->reg_base + IRB_ADDR1);
+> > +}
+> > +
+> > +static void irb_setup(struct irblaster_dev *irb)
+> > +{
+> > +	unsigned int fifo_irq_threshold = IRB_FIFO_LEN -
+> > irb->max_fifo_level; +
+> > +	/*
+> > +	 * Disable the blaster, set modulator clock tick and set
+> > initialize
+> > +	 * output to be high. Set up carrier frequency and duty
+> > cycle. Then
+> > +	 * unset initialize output. Enable FIFO interrupt, set
+> > FIFO interrupt
+> > +	 * threshold. Finally, enable the blaster back.
+> > +	 */
+> > +	writel(~IRB_ENABLE & (IRB_MOD_CLK(irb->clk_nr) |
+> > IRB_INIT_HIGH),
+> > +	       irb->reg_base + IRB_ADDR0);
+> > +	irb_set_mod(irb);
+> > +	writel(readl(irb->reg_base + IRB_ADDR0) & ~IRB_INIT_HIGH,
+> > +	       irb->reg_base + IRB_ADDR0);
+> > +	writel(IRB_FIFO_IRQ_ENABLE | fifo_irq_threshold,
+> > +	       irb->reg_base + IRB_ADDR3);
+> > +	writel(readl(irb->reg_base + IRB_ADDR0) | IRB_ENABLE,
+> > +	       irb->reg_base + IRB_ADDR0);
+> > +}
+> > +
+> > +static void irb_fifo_push_pulse(struct irblaster_dev *irb,
+> > unsigned int time) +{
+> > +	unsigned int delay;
+> > +	unsigned int tb = IRB_TB_MOD_CLK;
+> > +	unsigned int tb_us = USEC_PER_SEC / irb->carrier;
+> > +
+> > +	delay = (DIV_ROUND_CLOSEST_ULL(time, tb_us) - 1) &
+> > IRB_DELAY_MASK;
+> > +	writel((IRB_WRITE_FIFO | IRB_MOD_ENABLE) | tb | delay,
+> > +	       irb->reg_base + IRB_ADDR2);
+> > +}
+> > +
+> > +static void irb_fifo_push_space(struct irblaster_dev *irb,
+> > unsigned int time) +{
+> > +	unsigned int delay;
+> > +	unsigned int tb = IRB_TB_100US;
+> > +	unsigned int tb_us = 100;
+> > +
+> > +	if (time <= IRB_MAX_DELAY) {
+> > +		tb = IRB_TB_1US;
+> > +		tb_us = 1;
+> > +	} else if (time <= 10 * IRB_MAX_DELAY) {
+> > +		tb = IRB_TB_10US;
+> > +		tb_us = 10;
+> > +	} else if (time <= 100 * IRB_MAX_DELAY) {
+> > +		tb = IRB_TB_100US;
+> > +		tb_us = 100;
+> > +	}
+> > +
+> > +	delay = (DIV_ROUND_CLOSEST_ULL(time, tb_us) - 1) &
+> > IRB_DELAY_MASK;
+> > +	writel((IRB_WRITE_FIFO & ~IRB_MOD_ENABLE) | tb | delay,
+> > +	       irb->reg_base + IRB_ADDR2);
+> > +}
+> > +
+> > +static void irb_send_buffer(struct irblaster_dev *irb)
+> > +{
+> > +	unsigned long flags;
+> > +	unsigned int nr = 0;
+> > +
+> > +	spin_lock_irqsave(&irb->lock, flags);
+> > +	while (irb->buf_head < irb->buf_len && nr <
+> > irb->max_fifo_level) {
+> > +		if (irb->buf_head % 2 == 0)
+> > +			irb_fifo_push_pulse(irb,
+> > irb->buf[irb->buf_head]);
+> > +		else
+> > +			irb_fifo_push_space(irb,
+> > irb->buf[irb->buf_head]); +
+> > +		irb->buf_head++;
+> > +		nr++;
+> > +	}
+> > +	spin_unlock_irqrestore(&irb->lock, flags);
+> > +}
+> > +
+> > +static bool irb_check_buf(struct irblaster_dev *irb,
+> > +			  unsigned int *buf, unsigned int len)
+> > +{
+> > +	unsigned int i;
+> > +
+> > +	for (i = 0; i < len; i++) {
+> > +		unsigned int max_tb_us;
+> > +		/*
+> > +		 * Max space timebase is 100 us.
+> > +		 * Pulse timebase equals to carrier period.
+> > +		 */
+> > +		if (i % 2 == 0)
+> > +			max_tb_us = USEC_PER_SEC / irb->carrier;
+> > +		else
+> > +			max_tb_us = 100;
+> > +
+> > +		if (buf[i] >= max_tb_us * IRB_MAX_DELAY)
+> > +			return false;
+> > +	}
+> > +
+> > +	return true;
+> > +}
+> > +
+> > +static void irb_send(struct irblaster_dev *irb,
+> > +		     unsigned int *buf, unsigned int len)
+> > +{
+> > +	reinit_completion(&irb->completion);
+> > +
+> > +	irb->buf = buf;
+> > +	irb->buf_len = len;
+> > +	irb->buf_head = 0;
+> > +
+> > +	dprintk("tx started, buffer length = %u\n", len);
+> > +	irb_send_buffer(irb);
+> > +	wait_for_completion_interruptible(&irb->completion);
+> > +	dprintk("tx completed\n");
+> > +}
+> > +
+> > +static irqreturn_t irb_irqhandler(int irq, void *data)
+> > +{
+> > +	struct irblaster_dev *irb = data;
+> > +
+> > +	writel(readl(irb->reg_base + IRB_ADDR3) &
+> > ~IRB_FIFO_THD_PENDING,
+> > +	       irb->reg_base + IRB_ADDR3);
+> > +
+> > +	if (irb->buf_head < irb->buf_len)
+> > +		return IRQ_WAKE_THREAD;
+> > +
+> > +	complete(&irb->completion);
+> > +
+> > +	return IRQ_HANDLED;
+> > +}
+> > +
+> > +static irqreturn_t irb_thread_irqhandler(int irq, void *data)
+> > +{
+> > +	struct irblaster_dev *irb = data;
+> > +
+> > +	irb_send_buffer(irb);
+> > +
+> > +	return IRQ_HANDLED;
+> > +}
+> > +
+> > +static int irb_set_tx_carrier(struct rc_dev *rc, u32 carrier)
+> > +{
+> > +	struct irblaster_dev *irb = rc->priv;
+> > +
+> > +	irb->carrier = carrier;  
 > 
-> And we only need to care about the networking device that do not
-> generate an ipv6 link-local address, and not the addr_gen_mode that
-> this device is using.
+> carrier might be 0 for unmodulated IR. This will make irb_set_mod()
+> do a division by zero.
 > 
-> Maybe adding a separate sysctl is a better choice.
-> Looking forward to your professional reply again.
+> Please check appropriate range for carrier and support unmodulated IR
+> (carrier = 0) if possible.
+> 
+> > +	irb_set_mod(irb);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int irb_set_tx_duty_cycle(struct rc_dev *rc, u32 duty_cycle)
+> > +{
+> > +	struct irblaster_dev *irb = rc->priv;
+> > +
+> > +	irb->duty_cycle = duty_cycle;
+> > +	irb_set_mod(irb);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int irb_tx_ir(struct rc_dev *rc, unsigned int *buf,
+> > unsigned int len) +{
+> > +	struct irblaster_dev *irb = rc->priv;
+> > +
+> > +	if (!irb_check_buf(irb, buf, len))
+> > +		return -EINVAL;
+> > +
+> > +	irb_send(irb, buf, len);
+> > +
+> > +	return len;
+> > +}
+> > +
+> > +static int irb_mod_clock_probe(struct irblaster_dev *irb, struct
+> > device *dev) +{
+> > +	struct device_node *np = dev->of_node;
+> > +	struct clk *clock;
+> > +	const char *clock_name;
+> > +
+> > +	if (!np)
+> > +		return -ENODEV;
+> > +
+> > +	if (!of_property_read_string(np, "mod-clock",
+> > &clock_name)) {
+> > +		if (!strcmp(clock_name, "sysclk"))
+> > +			irb->clk_nr = IRB_MOD_SYS_CLK;
+> > +		else if (!strcmp(clock_name, "xtal"))
+> > +			irb->clk_nr = IRB_MOD_XTAL3_CLK;
+> > +		else
+> > +			return -EINVAL;
+> > +
+> > +		clock = devm_clk_get(dev, clock_name);
+> > +		if (IS_ERR(clock) || clk_prepare_enable(clock))
+> > +			return -ENODEV;
+> > +	} else {
+> > +		irb->clk_nr = IRB_MOD_1US_CLK;
+> > +	}
+> > +
+> > +	switch (irb->clk_nr) {
+> > +	case IRB_MOD_SYS_CLK:
+> > +		irb->clk_rate = clk_get_rate(clock);
+> > +		break;
+> > +	case IRB_MOD_XTAL3_CLK:
+> > +		irb->clk_rate = clk_get_rate(clock) / 3;
+> > +		break;
+> > +	case IRB_MOD_1US_CLK:
+> > +		irb->clk_rate = 1000000;
+> > +		break;
+> > +	}
+> > +
+> > +	dprintk("F_clk = %luHz\n", irb->clk_rate);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int __init irblaster_probe(struct platform_device *pdev)
+> > +{
+> > +	struct device *dev = &pdev->dev;
+> > +	struct irblaster_dev *irb;
+> > +	struct rc_dev *rc;
+> > +	struct resource *range;
+> > +	int ret;
+> > +
+> > +	irb = devm_kzalloc(dev, sizeof(*irb), GFP_KERNEL);
+> > +	if (!irb)
+> > +		return -ENOMEM;
+> > +
+> > +	range = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +	if (!range) {
+> > +		dev_err(dev, "no memory resource found\n");
+> > +		return -ENODEV;
+> > +	}
+> > +
+> > +	irb->reg_base = devm_ioremap_resource(dev, range);
+> > +	if (IS_ERR(irb->reg_base)) {
+> > +		dev_err(dev, "ioremap failed\n");
+> > +		return PTR_ERR(irb->reg_base);
+> > +	}
+> > +
+> > +	irb->irq = platform_get_irq(pdev, 0);
+> > +	if (irb->irq < 0) {
+> > +		dev_err(dev, "no irq resource found\n");
+> > +		return -ENODEV;
+> > +	}
+> > +
+> > +	if (max_fifo_level <= IRB_FIFO_LEN)
+> > +		irb->max_fifo_level = max_fifo_level;
+> > +	else {
+> > +		irb->max_fifo_level = IRB_FIFO_LEN;
+> > +		dev_warn(dev, "max FIFO level param truncated to
+> > %u",
+> > +			 IRB_FIFO_LEN);
+> > +	}
+> > +
+> > +	irb->carrier = IRB_DEFAULT_CARRIER;
+> > +	irb->duty_cycle = IRB_DEFAULT_DUTY_CYCLE;
+> > +	init_completion(&irb->completion);
+> > +	spin_lock_init(&irb->lock);
+> > +
+> > +	ret = irb_mod_clock_probe(irb, dev);
+> > +	if (ret) {
+> > +		dev_err(dev, "modulator clock setup failed\n");
+> > +		return ret;
+> > +	}
+> > +	irb_setup(irb);
+> > +
+> > +	ret = devm_request_threaded_irq(dev, irb->irq,
+> > +					irb_irqhandler,
+> > +					irb_thread_irqhandler,
+> > +					IRQF_TRIGGER_RISING,
+> > +					DRIVER_NAME, irb);  
+> 
+> Rather than using threaded irqs, would it make more sense to convert
+> the tx data to the right format before starting tx, thus avoiding
+> doing expensive(ish) conversions during interrupt handling.
+> 
+> Then the interrupt handler would just need to feed the fifo from a
+> buffer, which can be done without a threaded irq. Threaded irq might
+> be an issue if the thread handler does not get called in time and the
+> hardware runs out of tx data.
+> 
+> > +	if (ret) {
+> > +		dev_err(dev, "irq request failed\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	rc = rc_allocate_device(RC_DRIVER_IR_RAW_TX);
+> > +	if (!rc)
+> > +		return -ENOMEM;
+> > +
+> > +	rc->driver_name = DRIVER_NAME;  
+> 
+> Please set rc->device_name as well.
+> 
+> > +	rc->priv = irb;
+> > +
+> > +	rc->tx_ir = irb_tx_ir;
+> > +	rc->s_tx_carrier = irb_set_tx_carrier;
+> > +	rc->s_tx_duty_cycle = irb_set_tx_duty_cycle;
+> > +
+> > +	ret = rc_register_device(rc);
+> > +	if (ret < 0) {
+> > +		dev_err(dev, "rc_dev registration failed\n");
+> > +		rc_free_device(rc);
+> > +		return ret;
+> > +	}
+> > +
+> > +	platform_set_drvdata(pdev, rc);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int irblaster_remove(struct platform_device *pdev)
+> > +{
+> > +	struct rc_dev *rc = platform_get_drvdata(pdev);
+> > +
+> > +	rc_unregister_device(rc);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct of_device_id irblaster_dt_match[] = {
+> > +	{
+> > +		.compatible = "amlogic,meson-irblaster",
+> > +	},
+> > +	{},
+> > +};
+> > +MODULE_DEVICE_TABLE(of, irblaster_dt_match);
+> > +
+> > +static struct platform_driver irblaster_pd = {
+> > +	.remove = irblaster_remove,
+> > +	.driver = {
+> > +		.name = DRIVER_NAME,
+> > +		.owner  = THIS_MODULE,
+> > +		.of_match_table = irblaster_dt_match,
+> > +	},
+> > +};
+> > +
+> > +module_platform_driver_probe(irblaster_pd, irblaster_probe);
+> > +
+> > +MODULE_DESCRIPTION("Meson IR blaster driver");
+> > +MODULE_AUTHOR("Viktor Prutyanov <viktor.prutyanov@phystech.edu>");
+> > +MODULE_LICENSE("GPL");
+> > -- 
+> > 2.21.0  
+> 
+> Thanks,
+> 
+> Sean
 
-per device sysctl's are not free. I do not see a valid reason for a
-separate disable knob.
+Best regards,
+Viktor Prutyanov
