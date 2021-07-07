@@ -2,135 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDB93BE64B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FA83BE64E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhGGKWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
+        id S231300AbhGGKYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhGGKWE (ORCPT
+        with ESMTP id S231137AbhGGKX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:22:04 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D95C061762
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 03:19:23 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id f17so2416115wrt.6
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 03:19:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5/41QsdtJR+pnNTqK6DmTCH5qChei4s6l1r+fcxa5os=;
-        b=m6Prb02gepak06rbGn1SOrXDszjWMsxxbLOuQ1T6C+rzgmxTzsqqEQkeZE4kusgddO
-         SGCxMk0aV+EwydOfmYm3fU7Po9TzMU8N7feUairqdef9ja/9b4wUZE5XyuLGHqSVDFbE
-         5uQpdqFIsY0AeIOTObvhB6t5ezeyTOwPs3igLCx0dKLf8Fh63Y4JrldkXKCea+Di2Bdq
-         RC8h9B/KV9jhodxWABOSR+1NGb0bp7rbEsoj9xW9Bvrrqt7WPodxMa+shw1yrTAqmqfU
-         k01SEnk5bdBE3FBTBDpc0tZwzjD4ZoM0bJ9IS40mZ77XZZZPI79GAnodT1lDIfFpLmSd
-         sHGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5/41QsdtJR+pnNTqK6DmTCH5qChei4s6l1r+fcxa5os=;
-        b=mR7Lgwu2hvX1dYaaqf59RPev3fJnYC5n45++7KPsjKWXsVhxEItYUJLpPpQzCoNXo+
-         BeXrS0yiNAL+YtR/YA80L7WYy8GREozU3P1HEMUfvUrUGQg5Cla3UYZUKP8ohY9+JT1j
-         jAyTjrqKmhAjVvkLgf0pyvV1hEr+4gFYP8/Z2XgAb2wQhT1Iz4tkLEc96nWV2iFqUWzo
-         1DBWQR/qeJDSdeS7RXbCzn4vE8wW4yw65RyyeLnqQ2imxGrRqoKhFHR4B1urfApt2c2L
-         NxYZkJVDWaSdcaUWTxCApivpPXeUcXaHTlJaGaIhX56nwh/FD+nZvLcmZq7xyW/qtcxq
-         csxQ==
-X-Gm-Message-State: AOAM533pUg/p9b/3KDDlAswVMG4V9YOlV9fYvuFHlRrFuScvDYaH21qu
-        sFVUYXNEI9XEu+0fHuRHPbOLSw==
-X-Google-Smtp-Source: ABdhPJxi44xOdVggHQ7xvzV/UDlXK4xISLN+bIyKXNcKKYKwMkN8sY23lSG5BmRl84eNr3fQUnEecA==
-X-Received: by 2002:a5d:680b:: with SMTP id w11mr14879170wru.426.1625653161522;
-        Wed, 07 Jul 2021 03:19:21 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:396a:6bf2:9c33:26ce])
-        by smtp.gmail.com with ESMTPSA id c125sm2543281wme.36.2021.07.07.03.19.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 03:19:20 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 12:19:14 +0200
-From:   Marco Elver <elver@google.com>
-To:     ojeda@kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        Boris-Chengbiao Zhou <bobo1239@web.de>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
-        Douglas Su <d0u9.su@outlook.com>,
-        Yuki Okushi <jtitor@2k36.org>,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 05/17] rust: add C helpers
-Message-ID: <YOV/oj0rjHhzluH2@elver.google.com>
-References: <20210704202756.29107-1-ojeda@kernel.org>
- <20210704202756.29107-6-ojeda@kernel.org>
+        Wed, 7 Jul 2021 06:23:59 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60956C061574;
+        Wed,  7 Jul 2021 03:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8Bz/yO9KCbr0wl/w1meI8HRfwaKExJhduf42tQGjlNY=; b=jsE0yDDvkwoazgfq0gwSY0ybBX
+        8ZHB+cTjzhjEmQyInW9YCXgIC7AQ+7hnqZddXthRy2GooOIpqHFsWrPeLTHxQg5W4LQMDcE02gSxg
+        2LE4g0KH4/48rnFVv80EIo9JjyBZ8cc+xSyoRQognTwFFn4l+Q0levcQOtvtcTGVlefWFRnFWu2nq
+        geNts06LEyQIpsV4BrUhgewFI88lKAjZ9PPyDqL3epENQQojKi+hS9KeK+xBBR2ltDwjogRK8+6LE
+        jOCHSJr90fuK4hwu8OkkMAzFuIu9kEmBK1i2JfM1biT4c0MtL/jY9wDNa8WPfTaVL/r/QBA2Czr8i
+        wdesLoEg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m14fq-00FKCQ-Sm; Wed, 07 Jul 2021 10:20:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CBD2530007E;
+        Wed,  7 Jul 2021 12:20:57 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B66D82019D9F8; Wed,  7 Jul 2021 12:20:57 +0200 (CEST)
+Date:   Wed, 7 Jul 2021 12:20:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        wuqiang.matt@bytedance.com
+Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
+ entry
+Message-ID: <YOWACec65qVdTD1y@hirez.programming.kicks-ass.net>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+ <162400002631.506599.2413605639666466945.stgit@devnote2>
+ <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
+ <20210706004257.9e282b98f447251a380f658f@kernel.org>
+ <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
+ <20210706111136.7c5e9843@oasis.local.home>
+ <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
+ <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210704202756.29107-6-ojeda@kernel.org>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 04, 2021 at 10:27PM +0200, ojeda@kernel.org wrote:
-> From: Miguel Ojeda <ojeda@kernel.org>
+On Wed, Jul 07, 2021 at 07:15:10PM +0900, Masami Hiramatsu wrote:
+
+> I actually don't want to keep this feature because no one use it.
+> (only systemtap needs it?)
+
+Yeah, you mentioned systemtap, but since that's out-of-tree I don't
+care. Their problem.
+
+> Anyway, if we keep the idea-level compatibility (not code level),
+> what we need is 'void *data' in the struct kretprobe_instance.
+> User who needs it can allocate their own instance data for their
+> kretprobes when initialising it and sets in their entry handler.
 > 
-> This source file contains forwarders to C macros and inlined
-> functions.
+> Then we can have a simple kretprobe_instance.
 
-What is the story with Rust and LTO? Intuitively, I would expect Rust
-code to only perform optimally if the kernel is built with LTO
-(currently only supported via Clang).
+When would you do the alloc? When installing the retprobe, but that
+might be inside the allocator, which means you can't call the allocator
+etc.. :-)
 
-Because if calls to every one of these helpers are real calls, I would
-expect performance to be pretty poor. There's probably a reason these
-are macros or inlinable functions.
+If we look at struct ftrace_ret_stack, it has a few fixed function
+fields. The calltime one is all that is needed for the kretprobe
+example code.
 
-I would almost go so far and suggest that CONFIG_RUST be modified as
-follows:
-
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -2028,6 +2028,7 @@ config RUST
- 	depends on HAS_RUST
- 	depends on !COMPILE_TEST
- 	depends on !MODVERSIONS
-+	depends on LTO || EXPERT
- 	default n
- 	help
- 	  Enables Rust support in the kernel.
-
-[ I'm sure there are configs that don't yet work with LTO, but could be
-  useful to enable for debugging or testing purposes, and therefore would
-  make it conditional on CONFIG_EXPERT as well. ]
-
-[...]
-> +unsigned long rust_helper_copy_from_user(void *to, const void __user *from, unsigned long n)
-> +{
-> +	return copy_from_user(to, from, n);
-> +}
-> +
-[...]
-
-From some local tests, it looks like simply attaching
-__attribute__((always_inline)) will do what one would expect when
-compiling with Clang LTO (I checked -flto=thin).
-
-If you confirm this also works across C and Rust TUs when enabling LTO,
-I would then suggested adding __attribute__((always_inline)) to all
-these helpers.
-
-Thanks,
--- Marco
