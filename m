@@ -2,107 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01FA3BE8C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 15:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A773BE8CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 15:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhGGNcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231642AbhGGNcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 09:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231357AbhGGNcL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Jul 2021 09:32:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231357AbhGGNcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 09:32:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C59160D07;
-        Wed,  7 Jul 2021 13:29:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625664569;
-        bh=5r0H24J6y+tSw0QazP/TcXzQ2gQzcMt1BZjeoEwGo2Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Qim8foHGFlqwraQb2h1SwhnqBL0PrPz55T05poQFYYFfBWDm8Efi/22zvSvzea3WI
-         mh7aCRtegrQ2kX0MAvHRbRmXWif3E6OPX4ju1ugXLfrAembNgxRnsgTPQ+b7TarGsG
-         W++BfjV0kgY2VFOapCrQWfg/FkRCa0HTi7Cki9cB5gNtJMJAipww8FVXsKu3bJVhUG
-         2siWtnfFxS7a7XZhpvdbbWiySiCac1MWWALto4kNGm3Q7+3UQdSMnFpuSBJatrFHLV
-         w52vBtWrhpdQPokt+sbWSYtNlEpgMKdMpbrw4sUB0hZP6rySvZXX9GpFjjaikLsDp+
-         3vzC7Uv/8ChCQ==
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DD1C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 06:29:31 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id 21so2144092pfp.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 06:29:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DeW6DbiYghSlxomX+caI9XRifamSis00WC1H6FJu5kk=;
+        b=QhXiF/J0Q3F3Qlrk8aWOhHXGkKG2T44fAMUZg4ZJCQeaR/yUjjR2BQhReMoBQDOK/T
+         t0EZbWNDUK26wZE9ofjAf/4w7qR6/cgogjqUNM19xNTi/gKCotl9IRWwn2aFVIT7KdIP
+         eocA2u39SsrGDxBMSeuseqm/uhqB1mT9y6OZ4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DeW6DbiYghSlxomX+caI9XRifamSis00WC1H6FJu5kk=;
+        b=nuWwjoccV6AJJCjPGXezJPQ5GEUza3B0oOtcCT5NyziMkYHsqt6FewuYBwX6yZ7qFK
+         +5jxjqDpWwfvSOF2Fp4g69i3Yi6PhaQ5IVRd06VFlEy+J1Tks87agTMOsX/hycmcX7F9
+         qcDlesre0eehHrGBm3vt99oJ5Fu2aIi4uYiFnot39Vnlk9enEXt/Ceco5sUogfy3Brmu
+         TQIYIkNiezvnLNd6iFt6klUvWoTUViDHDjG836aHNOQc9kRDwgi4ZRhBl/K4rg40Ahz1
+         N1WW8swjps3XFcxqbO87CAoiqePXkl1yDwELrp55afVtzCKhNyiNj4kOlxjijJ6DyTpj
+         7C8w==
+X-Gm-Message-State: AOAM530zY8OB6iTVPLt51+ka3vfooSdb1IYvHZnUOUn5kFLOcIZsB2Nx
+        cK5eRAdvAMR6hBvv1Rz0YNBrUA==
+X-Google-Smtp-Source: ABdhPJykwLstUY9Yw43K2Xhayc49jcusse3Sp+zs0d31icobxLcbYQg3iBhMaYcMzYoyGCoE5e72PA==
+X-Received: by 2002:a63:4415:: with SMTP id r21mr26464104pga.296.1625664570978;
+        Wed, 07 Jul 2021 06:29:30 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:832:2137:f7c8:b53f])
+        by smtp.gmail.com with ESMTPSA id t17sm22363749pgl.93.2021.07.07.06.29.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 06:29:30 -0700 (PDT)
 Date:   Wed, 7 Jul 2021 22:29:25 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        wuqiang.matt@bytedance.com
-Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
- entry
-Message-Id: <20210707222925.87ecc1391d0ab61db3d8398e@kernel.org>
-In-Reply-To: <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
-        <162400002631.506599.2413605639666466945.stgit@devnote2>
-        <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
-        <20210706004257.9e282b98f447251a380f658f@kernel.org>
-        <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
-        <20210706111136.7c5e9843@oasis.local.home>
-        <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
-        <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
-        <YOWACec65qVdTD1y@hirez.programming.kicks-ass.net>
-        <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 8/8] videobuf2: handle non-contiguous DMA allocations
+Message-ID: <YOWsNa0Zaf9UuGWH@google.com>
+References: <20210427131344.139443-1-senozhatsky@chromium.org>
+ <20210427131344.139443-9-senozhatsky@chromium.org>
+ <10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl>
+ <YMsAIVs7G2hUDR2F@google.com>
+ <YNVJJhP69KPJ+DHv@google.com>
+ <CAAFQd5BB6JghdgGf9SjAWYuZFsZaAeU11rV1a1xrwws=w7j7_w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAFQd5BB6JghdgGf9SjAWYuZFsZaAeU11rV1a1xrwws=w7j7_w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Jul 2021 19:45:30 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> On Wed, 7 Jul 2021 12:20:57 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
+On (21/07/07 21:48), Tomasz Figa wrote:
+> > [..]
+> > > static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
+> > > {
+> > >         struct vb2_dc_buf *buf = buf_priv;
+> > >
+> > >         if (buf->vaddr)
+> > >                 return buf->vaddr;
+> > >
+> > >         if (buf->db_attach) {
+> > >                 struct dma_buf_map map;
+> > >
+> > >                 if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
+> > >                         buf->vaddr = map.vaddr;
+> > >
+> > >                 return buf->vaddr;
+> > >         }
+> > >
+> > >         if (!buf->coherent_mem)
+> > >                 buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size,
+> > >                                                     buf->dma_sgt);
+> > >         return buf->vaddr;
+> > > }
+> > >
+> > > And in vb2_dc_alloc functions set vaddr for !DMA_ATTR_NO_KERNEL_MAPPING
+> > > in both coherent and non-coherent. So that we probably can have less
+> > > branches when ->vaddr is NULL for one type of allocations, and is not
+> > > NULL for another.
 > 
-> > On Wed, Jul 07, 2021 at 07:15:10PM +0900, Masami Hiramatsu wrote:
-> > 
-> > > I actually don't want to keep this feature because no one use it.
-> > > (only systemtap needs it?)
-> > 
-> > Yeah, you mentioned systemtap, but since that's out-of-tree I don't
-> > care. Their problem.
+> I'd prefer if it stayed as is. This opportunistic mapping as in the
+> current revision is quite nice, because most of the drivers don't
+> bother to set DMA_ATTR_NO_KERNEL_MAPPING even if they don't need the
+> kernel mapping. Also, even if the driver itself doesn't need the
+> kernel mapping, we can still create one on demand if the DMA-buf
+> importer demands it from us.
 
-Yeah, maybe it is not hard to update.
+[..]
 
-> > 
-> > > Anyway, if we keep the idea-level compatibility (not code level),
-> > > what we need is 'void *data' in the struct kretprobe_instance.
-> > > User who needs it can allocate their own instance data for their
-> > > kretprobes when initialising it and sets in their entry handler.
-> > > 
-> > > Then we can have a simple kretprobe_instance.
-> > 
-> > When would you do the alloc? When installing the retprobe, but that
-> > might be inside the allocator, which means you can't call the allocator
-> > etc.. :-)
+> > > static int vb2_dc_alloc_coherent(struct vb2_dc_buf *buf)
+> > > {
+> > >         struct vb2_queue *q = buf->vb->vb2_queue;
+> > >
+> > >         buf->cookie = dma_alloc_attrs(buf->dev,
+> > >                                       buf->size,
+> > >                                       &buf->dma_addr,
+> > >                                       GFP_KERNEL | q->gfp_flags,
+> > >                                       buf->attrs);
+> > >         if (!buf->cookie)
+> > >                 return -ENOMEM;
+> > >
+> > >         if (q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING)
+> > >                 return 0;
+> > >
+> > >         buf->vaddr = buf->cookie;
+> > >         return 0;
+> > > }
+> > >
+> > > static int vb2_dc_alloc_non_coherent(struct vb2_dc_buf *buf)
+> > > {
+> > >         struct vb2_queue *q = buf->vb->vb2_queue;
+> > >
+> > >         buf->dma_sgt = dma_alloc_noncontiguous(buf->dev,
+> > >                                                buf->size,
+> > >                                                buf->dma_dir,
+> > >                                                GFP_KERNEL | q->gfp_flags,
+> > >                                                buf->attrs);
+> > >         if (!buf->dma_sgt)
+> > >                 return -ENOMEM;
+> > >
+> > >         if (q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING)
+> > >                 return 0;
+> > >
+> > >         buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size, buf->dma_sgt);
+> > >         if (!buf->vaddr) {
+> > >                 dma_free_noncontiguous(buf->dev, buf->size,
+> > >                                        buf->dma_sgt, buf->dma_addr);
+> > >                 return -ENOMEM;
+> > >         }
+> > >         return 0;
+> > > }
+> >
+> > I guess this should address the case when
+> >
+> > "after allocating the buffer, the buffer is exported as a dma_buf and
+> > another device calls dma_buf_ops vb2_dc_dmabuf_ops_vmap, which in turn
+> > calls dma_buf_map_set_vaddr(map, buf->vaddr); with a NULL buf->vaddr"
 > 
-> Yes, so the user may need to allocate a pool right before register_kretprobe().
-> (whether per-kretprobe or per-task or global pool, that is user's choice.)
-> 
-> > 
-> > If we look at struct ftrace_ret_stack, it has a few fixed function
-> > fields. The calltime one is all that is needed for the kretprobe
-> > example code.
-> 
-> kretprobe consumes 3 fields, a pointer to 'struct kretprobe' (which
-> stores callee function address in 'kretprobe::kp.addr'), a return
-> address and a frame pointer (*).
+> Sorry, I fail to get what this is about. Where does this quote come from?
 
-Oops, I forgot to add "void *data" for storing user data.
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Bottom half of https://lore.kernel.org/lkml/10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl/
