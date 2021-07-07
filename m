@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820513BE8CF
+	by mail.lfdr.de (Postfix) with ESMTP id CBA053BE8D0
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 15:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbhGGNdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 09:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
+        id S231817AbhGGNdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 09:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbhGGNct (ORCPT
+        with ESMTP id S231790AbhGGNct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Jul 2021 09:32:49 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0EEC061574
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6967C061760
         for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 06:30:08 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id i8so3031633wrp.12
+Received: by mail-wr1-x434.google.com with SMTP id t6so3050567wrm.9
         for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 06:30:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=TjWiubZBIfIwgFtA5W74Acb1O19B1jAB2ivyefjNtTs=;
-        b=ZnnDXQM7SkYcFRswZTnJ82RFGiNIC6G3awooPXGicgmjYRupkanjRHRWDDOOscBb1P
-         AYaRoGul11hu3uLxaoowG2LJ3iBc+y/gWHTujuOPh+mNDVGoSWBfLW/KUcfrjbq/9ljX
-         yfOze/crTVXUlyJfSR6qPYRXCW9Ieb/LuSXS8Pc2nfyIkQuTys/coHNyZewSsKYLX/K4
-         3GjZYHU/fGSArx7UNXH6RnIbaQ4RYyL6R2B7yE3YdG9+z1limPxh5CzwccMk/zY6ihs5
-         DbgBLilaA34RA9W0Id7y1BMo++0gCLS4fzPTrnZPLYdqTtjc4UqVht90INhrZBeQb+3h
-         sKmQ==
+        bh=cp/dfAQVNNmBlPPUMVPXictnY9caP2NUppLJXpvXG7w=;
+        b=FUE11MNpi8U55EFiNvd4sxTbxZ8zxHIzYXaavge6A93iGC95MDG9LqDRUPi0uhCb+O
+         5+IgP9P88aJkz6Amofe6MrxWlGDMmf1h4D5hVr1RJcOOFMTwxyf8x5w/7bNpQ8B9PVxn
+         oAySYmRqYjDkJEfU7bwwHgz2CHeuJqZzWUUAdKoCdUTcPpD8jkR3w2eWG82FAN+RaUhU
+         wH/vnOlEzT8rMbb4eyajQkfXFGlzBIjuqZ5xFU9wW08W59RI9pJC6uZGnFgr2pCbT1TI
+         odoeNvSHB+aRikMRRdkMTEW4g4yrTK37Cp4ydXj+GvlXHlc4fOxpmsJZH256m0FGXU0M
+         Ni5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=TjWiubZBIfIwgFtA5W74Acb1O19B1jAB2ivyefjNtTs=;
-        b=N59dFD4+Cjab96n4G78bKMSDtHf6X4sh0eAMFaZFxwcohkY3IbgOsBPy73HqwnTCTM
-         9LC0vb93i59plMBc3HT4epLvKtPclNgcOYm8aX0nL4syjyHGJQ+9qTCXJX4XoOsj0S4l
-         Z+FqtyqEkGjgaIrEXZ3S6R49sQcQCJ6bDqS23QPJzwO0+0Ne44SuBFYAWXk62Gq/u/8r
-         11gx7iG684US2QAIpqJie/OxCkXXWX+ewdXapRAdQnvVlVb28Uz4A/j2izF7ufqK8ui5
-         1A/tlLVRZqkwlLBcEfNOgu1jP4KAvq7+53afLUYF3BxV+ynM0BKwzJXXqEjXBwnNnUC2
-         mTuw==
-X-Gm-Message-State: AOAM530xHufzr1hDhtjt17NrmLzm5cSrxIC8ol6kGKUhI4NdLxX4P0a8
-        aZ863cpbR82YuHcqqkIOGkvq4Q==
-X-Google-Smtp-Source: ABdhPJzoSqFuR75248q5ap6BPHkmtDG1oOZklpctKaqdnqAkS0sXeE01cAqAe2O1rkXwQhi1oZFyqQ==
-X-Received: by 2002:adf:f642:: with SMTP id x2mr24375346wrp.37.1625664606924;
-        Wed, 07 Jul 2021 06:30:06 -0700 (PDT)
+        bh=cp/dfAQVNNmBlPPUMVPXictnY9caP2NUppLJXpvXG7w=;
+        b=CQVf29xfqPRdfEb1CtVc/Hz+4mtVfFXtIyozRyX4Y9R4ekqIjQVDr69FliR6ZXO+Lb
+         Hy8Re9ctP6mSZIvIyfAgPLel4lTuhuqIGyW+yX58SqrbtMwy6gUZsQuyxfdBiNXFDyM7
+         sFrwbnnVvwvCBldHcM2WVuKADyqzzXZ9fd/D7zBf1kShdMjjEV/c6PW0D+kEHLet3JSM
+         LlVIkpIJyU+/I1rb7QUxQzXoI1CVQa5EKBbHtR+exA9rsTU4pLcB6tKJM8E+NwBmh0gD
+         Cag6TfXsiwgD5CNV3qnnPj7apV+Mq1J/h2wzOftXpzg7dvAzTKAjhE4iPuoG8KJION5/
+         G6KA==
+X-Gm-Message-State: AOAM531YDqc049h6xNm2JXUu157moC6bCC19CM3amryly8XbYKF9tiUN
+        tYDoqWa0tQdUDRPKzgWGLzx59x6cYAhK2w==
+X-Google-Smtp-Source: ABdhPJyULUoPr5ZpWbBWe7SSKSiYKItn+qbx7Q36UugubSpn7tIz5Jol1TEphzR3ce6T9yKE6+4Cqw==
+X-Received: by 2002:adf:ef50:: with SMTP id c16mr27877739wrp.137.1625664607522;
+        Wed, 07 Jul 2021 06:30:07 -0700 (PDT)
 Received: from linaro.org ([2a00:23c5:6809:2201:546d:7d59:1703:bf96])
         by smtp.gmail.com with ESMTPSA id l16sm6632403wmj.47.2021.07.07.06.30.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 06:30:06 -0700 (PDT)
+        Wed, 07 Jul 2021 06:30:07 -0700 (PDT)
 From:   Mike Leach <mike.leach@linaro.org>
 To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
         mathieu.poirier@linaro.org, suzuki.poulose@arm.com
 Cc:     leo.yan@linaro.org, alexander.shishkin@linux.intel.com,
         gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
         Mike Leach <mike.leach@linaro.org>
-Subject: [PATCH v8 02/10] coresight: syscfg: Add registration and feature loading for cs devices
-Date:   Wed,  7 Jul 2021 14:29:55 +0100
-Message-Id: <20210707133003.5414-3-mike.leach@linaro.org>
+Subject: [PATCH v8 03/10] coresight: config: Add configuration and feature generic functions
+Date:   Wed,  7 Jul 2021 14:29:56 +0100
+Message-Id: <20210707133003.5414-4-mike.leach@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210707133003.5414-1-mike.leach@linaro.org>
 References: <20210707133003.5414-1-mike.leach@linaro.org>
@@ -63,564 +63,348 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-API for individual devices to register with the syscfg management
-system is added.
+Adds a set of generic support functions that allow devices to set and save
+features values on the device, and enable and disable configurations.
 
-Devices register with matching information, and any features or
-configurations that match will be loaded into the device.
-
-The feature and configuration loading is extended so that on load these
-are loaded into any currently registered devices. This allows
-configuration loading after devices have been registered.
+Additional functions for other common operations including feature
+reset.
 
 Signed-off-by: Mike Leach <mike.leach@linaro.org>
 Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- .../hwtracing/coresight/coresight-config.h    |  98 +++++
- .../hwtracing/coresight/coresight-syscfg.c    | 338 +++++++++++++++++-
- .../hwtracing/coresight/coresight-syscfg.h    |  19 +
- include/linux/coresight.h                     |   7 +
- 4 files changed, 461 insertions(+), 1 deletion(-)
+ drivers/hwtracing/coresight/Makefile          |   2 +-
+ .../hwtracing/coresight/coresight-config.c    | 275 ++++++++++++++++++
+ .../hwtracing/coresight/coresight-config.h    |   9 +
+ .../hwtracing/coresight/coresight-syscfg.c    |   3 +-
+ 4 files changed, 287 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/hwtracing/coresight/coresight-config.c
 
+diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
+index 3d037f17aade..63ecfc3cf66d 100644
+--- a/drivers/hwtracing/coresight/Makefile
++++ b/drivers/hwtracing/coresight/Makefile
+@@ -4,7 +4,7 @@
+ #
+ obj-$(CONFIG_CORESIGHT) += coresight.o
+ coresight-y := coresight-core.o  coresight-etm-perf.o coresight-platform.o \
+-		coresight-sysfs.o coresight-syscfg.o
++		coresight-sysfs.o coresight-syscfg.o coresight-config.o
+ obj-$(CONFIG_CORESIGHT_LINK_AND_SINK_TMC) += coresight-tmc.o
+ coresight-tmc-y := coresight-tmc-core.o coresight-tmc-etf.o \
+ 		      coresight-tmc-etr.o
+diff --git a/drivers/hwtracing/coresight/coresight-config.c b/drivers/hwtracing/coresight/coresight-config.c
+new file mode 100644
+index 000000000000..3c501e027bc0
+--- /dev/null
++++ b/drivers/hwtracing/coresight/coresight-config.c
+@@ -0,0 +1,275 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright(C) 2020 Linaro Limited. All rights reserved.
++ * Author: Mike Leach <mike.leach@linaro.org>
++ */
++
++#include <linux/sysfs.h>
++#include "coresight-config.h"
++#include "coresight-priv.h"
++
++/*
++ * This provides a set of generic functions that operate on configurations
++ * and features to manage the handling of parameters, the programming and
++ * saving of registers used by features on devices.
++ */
++
++/*
++ * Write the value held in the register structure into the driver internal memory
++ * location.
++ */
++static void cscfg_set_reg(struct cscfg_regval_csdev *reg_csdev)
++{
++	u32 *p_val32 = (u32 *)reg_csdev->driver_regval;
++	u32 tmp32 = reg_csdev->reg_desc.val32;
++
++	if (reg_csdev->reg_desc.type & CS_CFG_REG_TYPE_VAL_64BIT) {
++		*((u64 *)reg_csdev->driver_regval) = reg_csdev->reg_desc.val64;
++		return;
++	}
++
++	if (reg_csdev->reg_desc.type & CS_CFG_REG_TYPE_VAL_MASK) {
++		tmp32 = *p_val32;
++		tmp32 &= ~reg_csdev->reg_desc.mask32;
++		tmp32 |= reg_csdev->reg_desc.val32 & reg_csdev->reg_desc.mask32;
++	}
++	*p_val32 = tmp32;
++}
++
++/*
++ * Read the driver value into the reg if this is marked as one we want to save.
++ */
++static void cscfg_save_reg(struct cscfg_regval_csdev *reg_csdev)
++{
++	if (!(reg_csdev->reg_desc.type & CS_CFG_REG_TYPE_VAL_SAVE))
++		return;
++	if (reg_csdev->reg_desc.type & CS_CFG_REG_TYPE_VAL_64BIT)
++		reg_csdev->reg_desc.val64 = *(u64 *)(reg_csdev->driver_regval);
++	else
++		reg_csdev->reg_desc.val32 = *(u32 *)(reg_csdev->driver_regval);
++}
++
++/*
++ * Some register values are set from parameters. Initialise these registers
++ * from the current parameter values.
++ */
++static void cscfg_init_reg_param(struct cscfg_feature_csdev *feat_csdev,
++				 struct cscfg_regval_desc *reg_desc,
++				 struct cscfg_regval_csdev *reg_csdev)
++{
++	struct cscfg_parameter_csdev *param_csdev;
++
++	/* for param, load routines have validated the index */
++	param_csdev = &feat_csdev->params_csdev[reg_desc->param_idx];
++	param_csdev->reg_csdev = reg_csdev;
++	param_csdev->val64 = reg_csdev->reg_desc.type & CS_CFG_REG_TYPE_VAL_64BIT;
++
++	if (param_csdev->val64)
++		reg_csdev->reg_desc.val64 = param_csdev->current_value;
++	else
++		reg_csdev->reg_desc.val32 = (u32)param_csdev->current_value;
++}
++
++/* set values into the driver locations referenced in cscfg_reg_csdev */
++static int cscfg_set_on_enable(struct cscfg_feature_csdev *feat_csdev)
++{
++	int i;
++
++	spin_lock(feat_csdev->drv_spinlock);
++	for (i = 0; i < feat_csdev->nr_regs; i++)
++		cscfg_set_reg(&feat_csdev->regs_csdev[i]);
++	spin_unlock(feat_csdev->drv_spinlock);
++	dev_dbg(&feat_csdev->csdev->dev, "Feature %s: %s",
++		feat_csdev->feat_desc->name, "set on enable");
++	return 0;
++}
++
++/* copy back values from the driver locations referenced in cscfg_reg_csdev */
++static void cscfg_save_on_disable(struct cscfg_feature_csdev *feat_csdev)
++{
++	int i;
++
++	spin_lock(feat_csdev->drv_spinlock);
++	for (i = 0; i < feat_csdev->nr_regs; i++)
++		cscfg_save_reg(&feat_csdev->regs_csdev[i]);
++	spin_unlock(feat_csdev->drv_spinlock);
++	dev_dbg(&feat_csdev->csdev->dev, "Feature %s: %s",
++		feat_csdev->feat_desc->name, "save on disable");
++}
++
++/* default reset - restore default values */
++void cscfg_reset_feat(struct cscfg_feature_csdev *feat_csdev)
++{
++	struct cscfg_regval_desc *reg_desc;
++	struct cscfg_regval_csdev *reg_csdev;
++	int i;
++
++	/*
++	 * set the default values for all parameters and regs from the
++	 * relevant static descriptors.
++	 */
++	for (i = 0; i < feat_csdev->nr_params; i++)
++		feat_csdev->params_csdev[i].current_value =
++			feat_csdev->feat_desc->params_desc[i].value;
++
++	for (i = 0; i < feat_csdev->nr_regs; i++) {
++		reg_desc = &feat_csdev->feat_desc->regs_desc[i];
++		reg_csdev = &feat_csdev->regs_csdev[i];
++		reg_csdev->reg_desc.type = reg_desc->type;
++
++		/* check if reg set from a parameter otherwise desc default */
++		if (reg_desc->type & CS_CFG_REG_TYPE_VAL_PARAM)
++			cscfg_init_reg_param(feat_csdev, reg_desc, reg_csdev);
++		else
++			/*
++			 * for normal values the union between val64 & val32 + mask32
++			 * allows us to init using the 64 bit value
++			 */
++			reg_csdev->reg_desc.val64 = reg_desc->val64;
++	}
++}
++
++/*
++ * For the selected presets, we set the register associated with the parameter, to
++ * the value of the preset index associated with the parameter.
++ */
++static int cscfg_update_presets(struct cscfg_config_csdev *config_csdev, int preset)
++{
++	int i, j, val_idx = 0, nr_cfg_params;
++	struct cscfg_parameter_csdev *param_csdev;
++	struct cscfg_feature_csdev *feat_csdev;
++	const struct cscfg_config_desc *config_desc = config_csdev->config_desc;
++	const char *name;
++	const u64 *preset_base;
++	u64 val;
++
++	/* preset in range 1 to nr_presets */
++	if (preset < 1 || preset > config_desc->nr_presets)
++		return -EINVAL;
++	/*
++	 * Go through the array of features, assigning preset values to
++	 * feature parameters in the order they appear.
++	 * There should be precisely the same number of preset values as the
++	 * sum of number of parameters over all the features - but we will
++	 * ensure there is no overrun.
++	 */
++	nr_cfg_params = config_desc->nr_total_params;
++	preset_base = &config_desc->presets[(preset - 1) * nr_cfg_params];
++	for (i = 0; i < config_csdev->nr_feat; i++) {
++		feat_csdev = config_csdev->feats_csdev[i];
++		if (!feat_csdev->nr_params)
++			continue;
++
++		for (j = 0; j < feat_csdev->nr_params; j++) {
++			param_csdev = &feat_csdev->params_csdev[j];
++			name = feat_csdev->feat_desc->params_desc[j].name;
++			val = preset_base[val_idx++];
++			if (param_csdev->val64) {
++				dev_dbg(&config_csdev->csdev->dev,
++					"set param %s (%lld)", name, val);
++				param_csdev->reg_csdev->reg_desc.val64 = val;
++			} else {
++				param_csdev->reg_csdev->reg_desc.val32 = (u32)val;
++				dev_dbg(&config_csdev->csdev->dev,
++					"set param %s (%d)", name, (u32)val);
++			}
++		}
++
++		/* exit early if all params filled */
++		if (val_idx >= nr_cfg_params)
++			break;
++	}
++	return 0;
++}
++
++/*
++ * if we are not using a preset, then need to update the feature params
++ * with current values. This sets the register associated with the parameter
++ * with the current value of that parameter.
++ */
++static int cscfg_update_curr_params(struct cscfg_config_csdev *config_csdev)
++{
++	int i, j;
++	struct cscfg_feature_csdev *feat_csdev;
++	struct cscfg_parameter_csdev *param_csdev;
++	const char *name;
++	u64 val;
++
++	for (i = 0; i < config_csdev->nr_feat; i++) {
++		feat_csdev = config_csdev->feats_csdev[i];
++		if (!feat_csdev->nr_params)
++			continue;
++		for (j = 0; j < feat_csdev->nr_params; j++) {
++			param_csdev = &feat_csdev->params_csdev[j];
++			name = feat_csdev->feat_desc->params_desc[j].name;
++			val = param_csdev->current_value;
++			if (param_csdev->val64) {
++				dev_dbg(&config_csdev->csdev->dev,
++					"set param %s (%lld)", name, val);
++				param_csdev->reg_csdev->reg_desc.val64 = val;
++			} else {
++				param_csdev->reg_csdev->reg_desc.val32 = (u32)val;
++				dev_dbg(&config_csdev->csdev->dev,
++					"set param %s (%d)", name, (u32)val);
++			}
++		}
++	}
++	return 0;
++}
++
++/*
++ * Configuration values will be programmed into the driver locations if enabling, or read
++ * from relevant locations on disable.
++ */
++static int cscfg_prog_config(struct cscfg_config_csdev *config_csdev, bool enable)
++{
++	int i, err = 0;
++	struct cscfg_feature_csdev *feat_csdev;
++	struct coresight_device *csdev;
++
++	for (i = 0; i < config_csdev->nr_feat; i++) {
++		feat_csdev = config_csdev->feats_csdev[i];
++		csdev = feat_csdev->csdev;
++		dev_dbg(&csdev->dev, "cfg %s;  %s feature:%s", config_csdev->config_desc->name,
++			enable ? "enable" : "disable", feat_csdev->feat_desc->name);
++
++		if (enable)
++			err = cscfg_set_on_enable(feat_csdev);
++		else
++			cscfg_save_on_disable(feat_csdev);
++
++		if (err)
++			break;
++	}
++	return err;
++}
++
++/*
++ * Enable configuration for the device. Will result in the internal driver data
++ * being updated ready for programming into the device.
++ *
++ * @config_csdev:	config_csdev to set.
++ * @preset:		preset values to use - 0 for default.
++ */
++int cscfg_csdev_enable_config(struct cscfg_config_csdev *config_csdev, int preset)
++{
++	int err = 0;
++
++	if (preset)
++		err = cscfg_update_presets(config_csdev, preset);
++	else
++		err = cscfg_update_curr_params(config_csdev);
++	if (!err)
++		err = cscfg_prog_config(config_csdev, true);
++	if (!err)
++		config_csdev->enabled = true;
++	return err;
++}
++
++void cscfg_csdev_disable_config(struct cscfg_config_csdev *config_csdev)
++{
++	if (config_csdev->enabled) {
++		cscfg_prog_config(config_csdev, false);
++		config_csdev->enabled = false;
++	}
++}
 diff --git a/drivers/hwtracing/coresight/coresight-config.h b/drivers/hwtracing/coresight/coresight-config.h
-index 21aa7464dcdc..685fb46ce893 100644
+index 685fb46ce893..5a39cbbc38a4 100644
 --- a/drivers/hwtracing/coresight/coresight-config.h
 +++ b/drivers/hwtracing/coresight/coresight-config.h
-@@ -139,4 +139,102 @@ struct cscfg_config_desc {
- 	const u64 *presets; /* nr_presets * nr_total_params */
+@@ -237,4 +237,13 @@ struct cscfg_csdev_feat_ops {
+ 			 struct cscfg_feature_csdev *feat_csdev);
  };
  
-+/**
-+ * config register instance - part of a loaded feature.
-+ *                            maps register values to csdev driver structures
-+ *
-+ * @reg_desc:		value to use when setting feature on device / store for
-+ *			readback of volatile values.
-+ * @driver_regval:	pointer to internal driver element used to set the value
-+ *			in hardware.
-+ */
-+struct cscfg_regval_csdev {
-+	struct cscfg_regval_desc reg_desc;
-+	void *driver_regval;
-+};
++/* coresight config helper functions*/
 +
-+/**
-+ * config parameter instance - part of a loaded feature.
-+ *
-+ * @feat_csdev:		parent feature
-+ * @reg_csdev:		register value updated by this parameter.
-+ * @current_value:	current value of parameter - may be set by user via
-+ *			sysfs, or modified during device operation.
-+ * @val64:		true if 64 bit value
-+ */
-+struct cscfg_parameter_csdev {
-+	struct cscfg_feature_csdev *feat_csdev;
-+	struct cscfg_regval_csdev *reg_csdev;
-+	u64 current_value;
-+	bool val64;
-+};
++/* enable / disable config on a device - called with appropriate locks set.*/
++int cscfg_csdev_enable_config(struct cscfg_config_csdev *config_csdev, int preset);
++void cscfg_csdev_disable_config(struct cscfg_config_csdev *config_csdev);
 +
-+/**
-+ * Feature instance loaded into a CoreSight device.
-+ *
-+ * When a feature is loaded into a specific device, then this structure holds
-+ * the connections between the register / parameter values used and the
-+ * internal data structures that are written when the feature is enabled.
-+ *
-+ * Since applying a feature modifies internal data structures in the device,
-+ * then we have a reference to the device spinlock to protect access to these
-+ * structures (@drv_spinlock).
-+ *
-+ * @feat_desc:		pointer to the static descriptor for this feature.
-+ * @csdev:		parent CoreSight device instance.
-+ * @node:		list entry into feature list for this device.
-+ * @drv_spinlock:	device spinlock for access to driver register data.
-+ * @nr_params:		number of parameters.
-+ * @params_csdev:	current parameter values on this device
-+ * @nr_regs:		number of registers to be programmed.
-+ * @regs_csdev:		Programming details for the registers
-+ */
-+struct cscfg_feature_csdev {
-+	const struct cscfg_feature_desc *feat_desc;
-+	struct coresight_device *csdev;
-+	struct list_head node;
-+	spinlock_t *drv_spinlock;
-+	int nr_params;
-+	struct cscfg_parameter_csdev *params_csdev;
-+	int nr_regs;
-+	struct cscfg_regval_csdev *regs_csdev;
-+};
-+
-+/**
-+ * Configuration instance when loaded into a CoreSight device.
-+ *
-+ * The instance contains references to loaded features on this device that are
-+ * used by the configuration.
-+ *
-+ * @config_desc:reference to the descriptor for this configuration
-+ * @csdev:	parent coresight device for this configuration instance.
-+ * @enabled:	true if configuration is enabled on this device.
-+ * @node:	list entry within the coresight device
-+ * @nr_feat:	Number of features on this device that are used in the
-+ *		configuration.
-+ * @feats_csdev:references to the device features to enable.
-+ */
-+struct cscfg_config_csdev {
-+	const struct cscfg_config_desc *config_desc;
-+	struct coresight_device *csdev;
-+	bool enabled;
-+	struct list_head node;
-+	int nr_feat;
-+	struct cscfg_feature_csdev *feats_csdev[0];
-+};
-+
-+/**
-+ * Coresight device operations.
-+ *
-+ * Registered coresight devices provide these operations to manage feature
-+ * instances compatible with the device hardware and drivers
-+ *
-+ * @load_feat:	Pass a feature descriptor into the device and create the
-+ *		loaded feature instance (struct cscfg_feature_csdev).
-+ */
-+struct cscfg_csdev_feat_ops {
-+	int (*load_feat)(struct coresight_device *csdev,
-+			 struct cscfg_feature_csdev *feat_csdev);
-+};
++/* reset a feature to default values */
++void cscfg_reset_feat(struct cscfg_feature_csdev *feat_csdev);
 +
  #endif /* _CORESIGHT_CORESIGHT_CONFIG_H */
 diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
-index 417db3f92c2f..2c0d4906e226 100644
+index 2c0d4906e226..5e4bd86f369e 100644
 --- a/drivers/hwtracing/coresight/coresight-syscfg.c
 +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
-@@ -25,6 +25,198 @@ static struct cscfg_manager *cscfg_mgr;
- 
- /* load features and configuations into the lists */
- 
-+/* get name feature instance from a coresight device list of features */
-+static struct cscfg_feature_csdev *
-+cscfg_get_feat_csdev(struct coresight_device *csdev, const char *name)
-+{
-+	struct cscfg_feature_csdev *feat_csdev = NULL;
-+
-+	list_for_each_entry(feat_csdev, &csdev->feature_csdev_list, node) {
-+		if (strcmp(feat_csdev->feat_desc->name, name) == 0)
-+			return feat_csdev;
-+	}
-+	return NULL;
-+}
-+
-+/* allocate the device config instance - with max number of used features */
-+static struct cscfg_config_csdev *
-+cscfg_alloc_csdev_cfg(struct coresight_device *csdev, int nr_feats)
-+{
-+	struct cscfg_config_csdev *config_csdev = NULL;
-+	struct device *dev = csdev->dev.parent;
-+
-+	/* this is being allocated using the devm for the coresight device */
-+	config_csdev = devm_kzalloc(dev,
-+				    offsetof(struct cscfg_config_csdev, feats_csdev[nr_feats]),
-+				    GFP_KERNEL);
-+	if (!config_csdev)
-+		return NULL;
-+
-+	config_csdev->csdev = csdev;
-+	return config_csdev;
-+}
-+
-+/* Load a config into a device if there are any feature matches between config and device */
-+static int cscfg_add_csdev_cfg(struct coresight_device *csdev,
-+			       struct cscfg_config_desc *config_desc)
-+{
-+	struct cscfg_config_csdev *config_csdev = NULL;
-+	struct cscfg_feature_csdev *feat_csdev;
-+	unsigned long flags;
-+	int i;
-+
-+	/* look at each required feature and see if it matches any feature on the device */
-+	for (i = 0; i < config_desc->nr_feat_refs; i++) {
-+		/* look for a matching name */
-+		feat_csdev = cscfg_get_feat_csdev(csdev, config_desc->feat_ref_names[i]);
-+		if (feat_csdev) {
-+			/*
-+			 * At least one feature on this device matches the config
-+			 * add a config instance to the device and a reference to the feature.
-+			 */
-+			if (!config_csdev) {
-+				config_csdev = cscfg_alloc_csdev_cfg(csdev,
-+								     config_desc->nr_feat_refs);
-+				if (!config_csdev)
-+					return -ENOMEM;
-+				config_csdev->config_desc = config_desc;
-+			}
-+			config_csdev->feats_csdev[config_csdev->nr_feat++] = feat_csdev;
-+		}
-+	}
-+	/* if matched features, add config to device.*/
-+	if (config_csdev) {
-+		spin_lock_irqsave(&csdev->cscfg_csdev_lock, flags);
-+		list_add(&config_csdev->node, &csdev->config_csdev_list);
-+		spin_unlock_irqrestore(&csdev->cscfg_csdev_lock, flags);
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * Add the config to the set of registered devices - call with mutex locked.
-+ * Iterates through devices - any device that matches one or more of the
-+ * configuration features will load it, the others will ignore it.
-+ */
-+static int cscfg_add_cfg_to_csdevs(struct cscfg_config_desc *config_desc)
-+{
-+	struct cscfg_registered_csdev *csdev_item;
-+	int err;
-+
-+	list_for_each_entry(csdev_item, &cscfg_mgr->csdev_desc_list, item) {
-+		err = cscfg_add_csdev_cfg(csdev_item->csdev, config_desc);
-+		if (err)
-+			return err;
-+	}
-+	return 0;
-+}
-+
-+/*
-+ * Allocate a feature object for load into a csdev.
-+ * memory allocated using the csdev->dev object using devm managed allocator.
-+ */
-+static struct cscfg_feature_csdev *
-+cscfg_alloc_csdev_feat(struct coresight_device *csdev, struct cscfg_feature_desc *feat_desc)
-+{
-+	struct cscfg_feature_csdev *feat_csdev = NULL;
-+	struct device *dev = csdev->dev.parent;
-+	int i;
-+
-+	feat_csdev = devm_kzalloc(dev, sizeof(struct cscfg_feature_csdev), GFP_KERNEL);
-+	if (!feat_csdev)
-+		return NULL;
-+
-+	/* parameters are optional - could be 0 */
-+	feat_csdev->nr_params = feat_desc->nr_params;
-+
-+	/*
-+	 * if we need parameters, zero alloc the space here, the load routine in
-+	 * the csdev device driver will fill out some information according to
-+	 * feature descriptor.
-+	 */
-+	if (feat_csdev->nr_params) {
-+		feat_csdev->params_csdev = devm_kcalloc(dev, feat_csdev->nr_params,
-+							sizeof(struct cscfg_parameter_csdev),
-+							GFP_KERNEL);
-+		if (!feat_csdev->params_csdev)
-+			return NULL;
-+
-+		/*
-+		 * fill in the feature reference in the param - other fields
-+		 * handled by loader in csdev.
-+		 */
-+		for (i = 0; i < feat_csdev->nr_params; i++)
-+			feat_csdev->params_csdev[i].feat_csdev = feat_csdev;
-+	}
-+
-+	/*
-+	 * Always have registers to program - again the load routine in csdev device
-+	 * will fill out according to feature descriptor and device requirements.
-+	 */
-+	feat_csdev->nr_regs = feat_desc->nr_regs;
-+	feat_csdev->regs_csdev = devm_kcalloc(dev, feat_csdev->nr_regs,
-+					      sizeof(struct cscfg_regval_csdev),
-+					      GFP_KERNEL);
-+	if (!feat_csdev->regs_csdev)
-+		return NULL;
-+
-+	/* load the feature default values */
-+	feat_csdev->feat_desc = feat_desc;
-+	feat_csdev->csdev = csdev;
-+
-+	return feat_csdev;
-+}
-+
-+/* load one feature into one coresight device */
-+static int cscfg_load_feat_csdev(struct coresight_device *csdev,
-+				 struct cscfg_feature_desc *feat_desc,
-+				 struct cscfg_csdev_feat_ops *ops)
-+{
-+	struct cscfg_feature_csdev *feat_csdev;
-+	unsigned long flags;
-+	int err;
-+
-+	if (!ops->load_feat)
-+		return -EINVAL;
-+
-+	feat_csdev = cscfg_alloc_csdev_feat(csdev, feat_desc);
-+	if (!feat_csdev)
-+		return -ENOMEM;
-+
-+	/* load the feature into the device */
-+	err = ops->load_feat(csdev, feat_csdev);
-+	if (err)
-+		return err;
-+
-+	/* add to internal csdev feature list */
-+	spin_lock_irqsave(&csdev->cscfg_csdev_lock, flags);
-+	list_add(&feat_csdev->node, &csdev->feature_csdev_list);
-+	spin_unlock_irqrestore(&csdev->cscfg_csdev_lock, flags);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Add feature to any matching devices - call with mutex locked.
-+ * Iterates through devices - any device that matches the feature will be
-+ * called to load it.
-+ */
-+static int cscfg_add_feat_to_csdevs(struct cscfg_feature_desc *feat_desc)
-+{
-+	struct cscfg_registered_csdev *csdev_item;
-+	int err;
-+
-+	list_for_each_entry(csdev_item, &cscfg_mgr->csdev_desc_list, item) {
-+		if (csdev_item->match_flags & feat_desc->match_flags) {
-+			err = cscfg_load_feat_csdev(csdev_item->csdev, feat_desc, &csdev_item->ops);
-+			if (err)
-+				return err;
-+		}
-+	}
-+	return 0;
-+}
-+
- /* check feature list for a named feature - call with mutex locked. */
- static bool cscfg_match_list_feat(const char *name)
- {
-@@ -53,8 +245,14 @@ static int cscfg_check_feat_for_cfg(struct cscfg_config_desc *config_desc)
-  */
- static int cscfg_load_feat(struct cscfg_feature_desc *feat_desc)
- {
--	list_add(&feat_desc->item, &cscfg_mgr->feat_desc_list);
-+	int err;
-+
-+	/* add feature to any matching registered devices */
-+	err = cscfg_add_feat_to_csdevs(feat_desc);
-+	if (err)
-+		return err;
- 
-+	list_add(&feat_desc->item, &cscfg_mgr->feat_desc_list);
- 	return 0;
- }
- 
-@@ -71,6 +269,11 @@ static int cscfg_load_config(struct cscfg_config_desc *config_desc)
+@@ -189,7 +189,8 @@ static int cscfg_load_feat_csdev(struct coresight_device *csdev,
  	if (err)
  		return err;
  
-+	/* add config to any matching registered device */
-+	err = cscfg_add_cfg_to_csdevs(config_desc);
-+	if (err)
-+		return err;
-+
- 	list_add(&config_desc->item, &cscfg_mgr->config_desc_list);
- 	return 0;
- }
-@@ -125,6 +328,139 @@ int cscfg_load_config_sets(struct cscfg_config_desc **config_descs,
- }
- EXPORT_SYMBOL_GPL(cscfg_load_config_sets);
- 
-+/* Handle coresight device registration and add configs and features to devices */
-+
-+/* iterate through config lists and load matching configs to device */
-+static int cscfg_add_cfgs_csdev(struct coresight_device *csdev)
-+{
-+	struct cscfg_config_desc *config_desc;
-+	int err = 0;
-+
-+	list_for_each_entry(config_desc, &cscfg_mgr->config_desc_list, item) {
-+		err = cscfg_add_csdev_cfg(csdev, config_desc);
-+		if (err)
-+			break;
-+	}
-+	return err;
-+}
-+
-+/* iterate through feature lists and load matching features to device */
-+static int cscfg_add_feats_csdev(struct coresight_device *csdev,
-+				 u32 match_flags,
-+				 struct cscfg_csdev_feat_ops *ops)
-+{
-+	struct cscfg_feature_desc *feat_desc;
-+	int err = 0;
-+
-+	if (!ops->load_feat)
-+		return -EINVAL;
-+
-+	list_for_each_entry(feat_desc, &cscfg_mgr->feat_desc_list, item) {
-+		if (feat_desc->match_flags & match_flags) {
-+			err = cscfg_load_feat_csdev(csdev, feat_desc, ops);
-+			if (err)
-+				break;
-+		}
-+	}
-+	return err;
-+}
-+
-+/* Add coresight device to list and copy its matching info */
-+static int cscfg_list_add_csdev(struct coresight_device *csdev,
-+				u32 match_flags,
-+				struct cscfg_csdev_feat_ops *ops)
-+{
-+	struct cscfg_registered_csdev *csdev_item;
-+
-+	/* allocate the list entry structure */
-+	csdev_item = kzalloc(sizeof(struct cscfg_registered_csdev), GFP_KERNEL);
-+	if (!csdev_item)
-+		return -ENOMEM;
-+
-+	csdev_item->csdev = csdev;
-+	csdev_item->match_flags = match_flags;
-+	csdev_item->ops.load_feat = ops->load_feat;
-+	list_add(&csdev_item->item, &cscfg_mgr->csdev_desc_list);
-+
-+	INIT_LIST_HEAD(&csdev->feature_csdev_list);
-+	INIT_LIST_HEAD(&csdev->config_csdev_list);
-+	spin_lock_init(&csdev->cscfg_csdev_lock);
-+
-+	return 0;
-+}
-+
-+/* remove a coresight device from the list and free data */
-+static void cscfg_list_remove_csdev(struct coresight_device *csdev)
-+{
-+	struct cscfg_registered_csdev *csdev_item, *tmp;
-+
-+	list_for_each_entry_safe(csdev_item, tmp, &cscfg_mgr->csdev_desc_list, item) {
-+		if (csdev_item->csdev == csdev) {
-+			list_del(&csdev_item->item);
-+			kfree(csdev_item);
-+			break;
-+		}
-+	}
-+}
-+
-+/**
-+ * cscfg_register_csdev - register a coresight device with the syscfg manager.
-+ *
-+ * Registers the coresight device with the system. @match_flags used to check
-+ * if the device is a match for registered features. Any currently registered
-+ * configurations and features that match the device will be loaded onto it.
-+ *
-+ * @csdev:		The coresight device to register.
-+ * @match_flags:	Matching information to load features.
-+ * @ops:		Standard operations supported by the device.
-+ */
-+int cscfg_register_csdev(struct coresight_device *csdev,
-+			 u32 match_flags,
-+			 struct cscfg_csdev_feat_ops *ops)
-+{
-+	int ret = 0;
-+
-+	mutex_lock(&cscfg_mutex);
-+
-+	/* add device to list of registered devices  */
-+	ret = cscfg_list_add_csdev(csdev, match_flags, ops);
-+	if (ret)
-+		goto reg_csdev_unlock;
-+
-+	/* now load any registered features and configs matching the device. */
-+	ret = cscfg_add_feats_csdev(csdev, match_flags, ops);
-+	if (ret) {
-+		cscfg_list_remove_csdev(csdev);
-+		goto reg_csdev_unlock;
-+	}
-+
-+	ret = cscfg_add_cfgs_csdev(csdev);
-+	if (ret) {
-+		cscfg_list_remove_csdev(csdev);
-+		goto reg_csdev_unlock;
-+	}
-+
-+	pr_info("CSCFG registered %s", dev_name(&csdev->dev));
-+
-+reg_csdev_unlock:
-+	mutex_unlock(&cscfg_mutex);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(cscfg_register_csdev);
-+
-+/**
-+ * cscfg_unregister_csdev - remove coresight device from syscfg manager.
-+ *
-+ * @csdev: Device to remove.
-+ */
-+void cscfg_unregister_csdev(struct coresight_device *csdev)
-+{
-+	mutex_lock(&cscfg_mutex);
-+	cscfg_list_remove_csdev(csdev);
-+	mutex_unlock(&cscfg_mutex);
-+}
-+EXPORT_SYMBOL_GPL(cscfg_unregister_csdev);
-+
- /* Initialise system configuration management device. */
- 
- struct device *cscfg_device(void)
-diff --git a/drivers/hwtracing/coresight/coresight-syscfg.h b/drivers/hwtracing/coresight/coresight-syscfg.h
-index 18be9b58cd0b..5bcae3b374c6 100644
---- a/drivers/hwtracing/coresight/coresight-syscfg.h
-+++ b/drivers/hwtracing/coresight/coresight-syscfg.h
-@@ -35,6 +35,22 @@ struct cscfg_manager {
- /* get reference to dev in cscfg_manager */
- struct device *cscfg_device(void);
- 
-+/**
-+ * List entry for Coresight devices that are registered as supporting complex
-+ * config operations.
-+ *
-+ * @csdev:	 The registered device.
-+ * @match_flags: The matching type information for adding features.
-+ * @ops:	 Operations supported by the registered device.
-+ * @item:	 list entry.
-+ */
-+struct cscfg_registered_csdev {
-+	struct coresight_device *csdev;
-+	u32 match_flags;
-+	struct cscfg_csdev_feat_ops ops;
-+	struct list_head item;
-+};
-+
- /* internal core operations for cscfg */
- int __init cscfg_init(void);
- void cscfg_exit(void);
-@@ -42,5 +58,8 @@ void cscfg_exit(void);
- /* syscfg manager external API */
- int cscfg_load_config_sets(struct cscfg_config_desc **cfg_descs,
- 			   struct cscfg_feature_desc **feat_descs);
-+int cscfg_register_csdev(struct coresight_device *csdev, u32 match_flags,
-+			 struct cscfg_csdev_feat_ops *ops);
-+void cscfg_unregister_csdev(struct coresight_device *csdev);
- 
- #endif /* CORESIGHT_SYSCFG_H */
-diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-index 85008a65e21f..16544ae2b532 100644
---- a/include/linux/coresight.h
-+++ b/include/linux/coresight.h
-@@ -220,6 +220,9 @@ struct coresight_sysfs_link {
-  * @nr_links:   number of sysfs links created to other components from this
-  *		device. These will appear in the "connections" group.
-  * @has_conns_grp: Have added a "connections" group for sysfs links.
-+ * @feature_csdev_list: List of complex feature programming added to the device.
-+ * @config_csdev_list:  List of system configurations added to the device.
-+ * @cscfg_csdev_lock:	Protect the lists of configurations and features.
-  */
- struct coresight_device {
- 	struct coresight_platform_data *pdata;
-@@ -241,6 +244,10 @@ struct coresight_device {
- 	int nr_links;
- 	bool has_conns_grp;
- 	bool ect_enabled; /* true only if associated ect device is enabled */
-+	/* system configuration and feature lists */
-+	struct list_head feature_csdev_list;
-+	struct list_head config_csdev_list;
-+	spinlock_t cscfg_csdev_lock;
- };
- 
- /*
+-	/* add to internal csdev feature list */
++	/* add to internal csdev feature list & initialise using reset call */
++	cscfg_reset_feat(feat_csdev);
+ 	spin_lock_irqsave(&csdev->cscfg_csdev_lock, flags);
+ 	list_add(&feat_csdev->node, &csdev->feature_csdev_list);
+ 	spin_unlock_irqrestore(&csdev->cscfg_csdev_lock, flags);
 -- 
 2.17.1
 
