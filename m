@@ -2,106 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F91B3BE47A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E40C3BE47F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhGGIgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:36:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57473 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230109AbhGGIgS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:36:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625646817;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gsCgBjZOBNs8GkUNl/mNs2MJS9/AFWcuZUWnlsWxVR0=;
-        b=ZyGCjClW+8dfsG1T1FLKIOUzLAjmoL8H0HVwZoYm/UNlk9+wzhm8eujOIip6xoq/noPawD
-        YKcqVOVnI39rqVqJLKtOGfQ/RR0KBC4t762pJCW6xorTWCsUjJPfDZI098mUGTflXHkx5q
-        2lJFNe1UeKVQkk8sWZ5FZ6dDxO9LWAU=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-420-ySNjkmSeNQCaegY7JV5IyQ-1; Wed, 07 Jul 2021 04:33:36 -0400
-X-MC-Unique: ySNjkmSeNQCaegY7JV5IyQ-1
-Received: by mail-io1-f71.google.com with SMTP id p7-20020a6b63070000b029050017e563a6so1179393iog.4
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 01:33:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gsCgBjZOBNs8GkUNl/mNs2MJS9/AFWcuZUWnlsWxVR0=;
-        b=dQhjpwfeCb5ID8sXhzLc4z/LjSJdtf5ckiCuJP1Yinq4Efn4/bOyxxIXK8quyvVmbI
-         OoWqnfXEuGOqC5Do0rmnLkrWR5TWUl8LV9PtQ7hGd/8XnO1pJ/f2/O7cF4XynXACakon
-         ahUlSMeq4mLVLcc6V3nIz5optVDJjB7XHrtGLazYyAvOAo55GXAZ2Zvvg+W3y731QvE7
-         e+b1H8WPkVZCCy29XU8buEu/Kl9J4OK70VMXfAaK0S/c0fnkkTZAq76369W4x4YYVpSW
-         ME5QiwaD5O9V74KQ0duNZcq2JcgKiPi3QW6cO21kbH3Tw8Q/yQLzSfi5A58mqKcg97RZ
-         eyqQ==
-X-Gm-Message-State: AOAM533d221B1P7anml6yvuh18hv0R6zHQiyXCLQ+VTad5BJbF4F3/Zn
-        LK5feIxT91NSdmQVNraA12GrsU7c6Y9xN89PYGMuWs+5XPBNk2aYV1S1YsTkCAKDUbyDW5e850O
-        WSWu30tbPQfIlPXF86Kr0yQKyGEGV2BcVdPT+1bpr
-X-Received: by 2002:a05:6e02:921:: with SMTP id o1mr18424297ilt.57.1625646813916;
-        Wed, 07 Jul 2021 01:33:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxjADIFFE8x66m44Qg1NdRzaMJgQ7eb1Hz+C+bh0cFgtAJbVgNwE4FSxW0Kh29twnqMKUFm/lNIaXceqGkzzWQ=
-X-Received: by 2002:a05:6e02:921:: with SMTP id o1mr18424282ilt.57.1625646813772;
- Wed, 07 Jul 2021 01:33:33 -0700 (PDT)
+        id S230431AbhGGIiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:38:13 -0400
+Received: from verein.lst.de ([213.95.11.211]:36073 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230109AbhGGIiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 04:38:10 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A40D268BEB; Wed,  7 Jul 2021 10:35:28 +0200 (CEST)
+Date:   Wed, 7 Jul 2021 10:35:28 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        kernel test robot <oliver.sang@intel.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>
+Subject: Re: [ide] b7fb14d3ac: EIP:ioread32_rep
+Message-ID: <20210707083528.GA353@lst.de>
+References: <20210704150025.GC21572@xsang-OptiPlex-9020> <20210705125756.GA25141@lst.de> <CAHk-=wj_Gfqkdp+K3iCiqMjAZQK_BrRWDs2eOS_BAw=bB=CdRw@mail.gmail.com> <20210706143647.GA28289@lst.de> <CAHk-=wgPyx7tHFNaO2N6bsaB_E6gL+t1uDAmrD91jJw+hiTvrQ@mail.gmail.com> <20210707081220.GA31179@lst.de>
 MIME-Version: 1.0
-References: <202107070458.FO35EqwU-lkp@intel.com>
-In-Reply-To: <202107070458.FO35EqwU-lkp@intel.com>
-From:   =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>
-Date:   Wed, 7 Jul 2021 10:33:22 +0200
-Message-ID: <CACT4ouf-v+G7oCAFRqZWYQUqs8o1GdSKRbqJwjjP_cNuPFKvgA@mail.gmail.com>
-Subject: Re: drivers/net/ethernet/chelsio/cxgb4/sge.c:2571 cxgb4_ethofld_send_flowc()
- warn: missing error code 'ret'
-To:     Dan Carpenter <dan.carpenter@oracle.com>, rajur@chelsio.com
-Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707081220.GA31179@lst.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 9:37 AM Dan Carpenter <dan.carpenter@oracle.com> wro=
-te:
-> 0e395b3cb1fb82 Rahul Lakkireddy    2019-11-07  2564     if (tc !=3D FW_SC=
-HED_CLS_NONE) {
-> 0e395b3cb1fb82 Rahul Lakkireddy    2019-11-07  2565             if (eosw_=
-txq->state !=3D CXGB4_EO_STATE_CLOSED)
-> 52bfcdd87e83d9 =C3=8D=C3=B1igo Huguet        2021-05-05  2566            =
-         goto out_free_skb;
->                                                                         ^=
-^^^^^^^^^^^^^^^^
->
-> Are these error paths?
->
-> 0e395b3cb1fb82 Rahul Lakkireddy    2019-11-07  2567
-> 0e395b3cb1fb82 Rahul Lakkireddy    2019-11-07  2568             next_stat=
-e =3D CXGB4_EO_STATE_FLOWC_OPEN_SEND;
-> 0e395b3cb1fb82 Rahul Lakkireddy    2019-11-07  2569     } else {
-> 0e395b3cb1fb82 Rahul Lakkireddy    2019-11-07  2570             if (eosw_=
-txq->state !=3D CXGB4_EO_STATE_ACTIVE)
-> 52bfcdd87e83d9 =C3=8D=C3=B1igo Huguet        2021-05-05 @2571            =
-         goto out_free_skb;
->
-> Here too
->
-> 0e395b3cb1fb82 Rahul Lakkireddy    2019-11-07  2572
-> 0e395b3cb1fb82 Rahul Lakkireddy    2019-11-07  2573             next_stat=
-e =3D CXGB4_EO_STATE_FLOWC_CLOSE_SEND;
-> 0e395b3cb1fb82 Rahul Lakkireddy    2019-11-07  2574     }
+On Wed, Jul 07, 2021 at 10:12:20AM +0200, Christoph Hellwig wrote:
+> On Tue, Jul 06, 2021 at 12:08:42PM -0700, Linus Torvalds wrote:
+> > On Tue, Jul 6, 2021 at 7:36 AM Christoph Hellwig <hch@lst.de> wrote:
+> > >
+> > > Yeah, there's usually a huge offset into the page.  The otherwise
+> > > similar ATAPI code actually has checks to chunk it up and not cross
+> > > page boundaries, and copying that over fixes the problem.
+> > 
+> > Ok.
+> > 
+> > Your patch made me go "I think it should loop until it has transferred
+> > the full 512 bytes", but maybe the caller loops properly?
+> 
+> Yes, the callers (ata_read_pio_sectors) does).
 
-I'm not really sure, I just added the skb release in the exit path to
-fix a memory leak.
+Actually, not it doesn't. Sorry.  So for a non-aligned large request
+this won't work.  So we'll need to actually loop here.
 
-I think it might not be an error path in this case, maybe just no
-actions must be done in this specific cases. CCing Raju Rangoju from
-Chelsio to see if he can confirm.
+This is probably better and fixes the issue as well (and ATAPI
+probably needs the same treatment):
 
---=20
-=C3=8D=C3=B1igo Huguet
 
+diff --git a/drivers/ata/libata-sff.c b/drivers/ata/libata-sff.c
+index ae7189d1a568..40d2dc3b2989 100644
+--- a/drivers/ata/libata-sff.c
++++ b/drivers/ata/libata-sff.c
+@@ -637,6 +637,20 @@ unsigned int ata_sff_data_xfer32(struct ata_queued_cmd *qc, unsigned char *buf,
+ }
+ EXPORT_SYMBOL_GPL(ata_sff_data_xfer32);
+ 
++static void ata_pio_xfer(struct ata_queued_cmd *qc, struct page *page,
++		unsigned int offset, size_t xfer_size)
++{
++	bool do_write = (qc->tf.flags & ATA_TFLAG_WRITE);
++	unsigned char *buf;
++
++	buf = kmap_atomic(page);
++	qc->ap->ops->sff_data_xfer(qc, buf + offset, xfer_size, do_write);
++	kunmap_atomic(buf);
++
++	if (!do_write && !PageSlab(page))
++		flush_dcache_page(page);
++}
++
+ /**
+  *	ata_pio_sector - Transfer a sector of data.
+  *	@qc: Command on going
+@@ -648,11 +662,9 @@ EXPORT_SYMBOL_GPL(ata_sff_data_xfer32);
+  */
+ static void ata_pio_sector(struct ata_queued_cmd *qc)
+ {
+-	int do_write = (qc->tf.flags & ATA_TFLAG_WRITE);
+ 	struct ata_port *ap = qc->ap;
+ 	struct page *page;
+ 	unsigned int offset;
+-	unsigned char *buf;
+ 
+ 	if (!qc->cursg) {
+ 		qc->curbytes = qc->nbytes;
+@@ -670,13 +682,15 @@ static void ata_pio_sector(struct ata_queued_cmd *qc)
+ 
+ 	DPRINTK("data %s\n", qc->tf.flags & ATA_TFLAG_WRITE ? "write" : "read");
+ 
+-	/* do the actual data transfer */
+-	buf = kmap_atomic(page);
+-	ap->ops->sff_data_xfer(qc, buf + offset, qc->sect_size, do_write);
+-	kunmap_atomic(buf);
++	if (offset + qc->sect_size > PAGE_SIZE) {
++		unsigned int split_len = PAGE_SIZE - offset;
+ 
+-	if (!do_write && !PageSlab(page))
+-		flush_dcache_page(page);
++		ata_pio_xfer(qc, page, offset, split_len);
++		ata_pio_xfer(qc, nth_page(page, 1), 0,
++			     qc->sect_size - split_len);
++	} else {
++		ata_pio_xfer(qc, page, offset, qc->sect_size);
++	}
+ 
+ 	qc->curbytes += qc->sect_size;
+ 	qc->cursg_ofs += qc->sect_size;
