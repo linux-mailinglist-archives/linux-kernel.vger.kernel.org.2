@@ -2,172 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E483BEF17
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D033BEF5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232563AbhGGSks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:40:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44924 "EHLO mail.kernel.org"
+        id S232691AbhGGSmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:42:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:42912 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232241AbhGGSkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:40:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CE4660C41;
-        Wed,  7 Jul 2021 18:37:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625683056;
-        bh=cToattK8KRagMqTO0iZ6wFbDJffmktvYxLuVFg8PCUQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pqF8ksrbYuXv3WYpPqW/bDg774MjR8RJjDVUiE9ln3C1zQ6ZP24OTOW2ZFV1dLdLW
-         dwnKdRAyrYaRJHjJtbBMTE48+RMR0GUrYt2ZuxVUuQGzzuNdQ0Lgi5PU+4iWLrspyS
-         2CIFI+mfbpRlr9fEBGddx7Tss8mTSHUjUAhjW0WtV6jPt8CssuPuH7zwaSbnnMyHo1
-         w8rKyQnqcMAUOKJ0DFKRehFpUh6UUSjnKedVgT6/g5hQVk+h94OgMZN5itTylUtJUi
-         28ZiZCsCIWPz3fX9NeADHhii1xjaIPSVRzs5SP7GZeiWgcWx0aNPKqxK1mczA6jPC+
-         E3iihYXOjloCw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 27BF740B1A; Wed,  7 Jul 2021 15:37:34 -0300 (-03)
-Date:   Wed, 7 Jul 2021 15:37:34 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        id S232460AbhGGSlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 14:41:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E7CE11042;
+        Wed,  7 Jul 2021 11:38:38 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5F5F93F694;
+        Wed,  7 Jul 2021 11:38:37 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>, nakamura.shun@fujitsu.com,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [RFCv2 0/7] libperf: Add leader/group info to perf_evsel
-Message-ID: <YOX0bpjlr/Xqlbk0@kernel.org>
-References: <20210706151704.73662-1-jolsa@kernel.org>
- <YOW+eyxYtPhc2hSf@kernel.org>
- <YOXwVPS6zIyw0C/k@krava>
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Subject: [PATCH] powerpc: preempt: Don't touch the idle task's preempt_count during hotplug
+Date:   Wed,  7 Jul 2021 19:38:31 +0100
+Message-Id: <20210707183831.2106509-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOXwVPS6zIyw0C/k@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jul 07, 2021 at 08:20:04PM +0200, Jiri Olsa escreveu:
-> On Wed, Jul 07, 2021 at 11:47:23AM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Tue, Jul 06, 2021 at 05:16:57PM +0200, Jiri Olsa escreveu:
-> > > hi,
-> > > moving leader/group info to libperf's perf_evsel.
-> > > 
-> > > This was asked for by Shunsuke [1] and is on my list
-> > > as a prereq for event parsing move to libperf.
-> > 
-> > So I'll add a:
-> > 
-> > Requested-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
-> 
-> yep, but let's hear from him first if that's the case actualy ;-)
-> 
-> he did not mention any specific interface.. so I wonder
-> what we have is ok with him
+Powerpc currently resets a CPU's idle task preempt_count to 0 before said
+task starts executing the secondary startup routine (and becomes an idle
+task proper).
 
-Its all in tmp.perf/core, but from what I saw, yeah, he requested being
-able to have a group leader.
+This conflicts with commit
 
-Nakamura-san, isn't that the case?
+  f1a0a376ca0c ("sched/core: Initialize the idle task with preemption disabled")
 
-- Arnaldo
+which initializes all of the idle tasks' preempt_count to PREEMPT_DISABLED
+during smp_init(). Note that this was superfluous before said commit, as
+back then the hotplug machinery would invoke init_idle() via
+idle_thread_get(), which would have already reset the CPU's idle task's
+preempt_count to PREEMPT_ENABLED.
+
+Get rid of this preempt_count write.
+
+Cc: Guenter Roeck <linux@roeck-us.net>
+Fixes: f1a0a376ca0c ("sched/core: Initialize the idle task with preemption disabled")
+Reported-by: Bharata B Rao <bharata@linux.ibm.com>
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+---
+ arch/powerpc/platforms/cell/smp.c    | 3 ---
+ arch/powerpc/platforms/pseries/smp.c | 5 +----
+ 2 files changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/arch/powerpc/platforms/cell/smp.c b/arch/powerpc/platforms/cell/smp.c
+index c855a0aeb49c..d7ab868aab54 100644
+--- a/arch/powerpc/platforms/cell/smp.c
++++ b/arch/powerpc/platforms/cell/smp.c
+@@ -78,9 +78,6 @@ static inline int smp_startup_cpu(unsigned int lcpu)
  
-> thanks,
-> jirka
-> 
-> > 
-> > - Arnaldo
-> >  
-> > > I still need to do more tests, but I'd like to check
-> > > with you guys if there's any feedback on this first.
-> > > 
-> > > Also available in:
-> > >   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-> > >   libperf/groups
-> > > 
-> > > v2 change:
-> > >   - repost due to smtp failures, no changes
-> > > 
-> > > thanks,
-> > > jirka
-> > > 
-> > > 
-> > > [1] https://lore.kernel.org/linux-perf-users/OSBPR01MB46005B38568E90509946ECA9F7319@OSBPR01MB4600.jpnprd01.prod.outlook.com/
-> > > 
-> > > 
-> > > ---
-> > > Jiri Olsa (7):
-> > >       libperf: Change tests to single static and shared binaries
-> > >       libperf: Move idx to perf_evsel::idx
-> > >       libperf: Move leader to perf_evsel::leader
-> > >       libperf: Move nr_groups to evlist::nr_groups
-> > >       libperf: Add perf_evlist__set_leader function
-> > >       libperF: Add group support to perf_evsel__open
-> > >       libperf: Add tests for perf_evlist__set_leader function
-> > > 
-> > >  tools/lib/perf/Build                     |  2 ++
-> > >  tools/lib/perf/Makefile                  | 30 +++++++++++++++++++++++++-----
-> > >  tools/lib/perf/evlist.c                  | 22 ++++++++++++++++++++++
-> > >  tools/lib/perf/evsel.c                   | 33 +++++++++++++++++++++++++++++----
-> > >  tools/lib/perf/include/internal/evlist.h |  2 ++
-> > >  tools/lib/perf/include/internal/evsel.h  |  5 ++++-
-> > >  tools/lib/perf/include/internal/tests.h  |  4 ++--
-> > >  tools/lib/perf/include/perf/evlist.h     |  1 +
-> > >  tools/lib/perf/libperf.map               |  1 +
-> > >  tools/lib/perf/tests/Build               |  5 +++++
-> > >  tools/lib/perf/tests/Makefile            | 40 ----------------------------------------
-> > >  tools/lib/perf/tests/main.c              | 15 +++++++++++++++
-> > >  tools/lib/perf/tests/test-cpumap.c       |  3 ++-
-> > >  tools/lib/perf/tests/test-evlist.c       | 30 +++++++++++++++++++++++-------
-> > >  tools/lib/perf/tests/test-evsel.c        |  3 ++-
-> > >  tools/lib/perf/tests/test-threadmap.c    |  3 ++-
-> > >  tools/lib/perf/tests/tests.h             | 10 ++++++++++
-> > >  tools/perf/arch/x86/util/iostat.c        |  4 ++--
-> > >  tools/perf/builtin-diff.c                |  4 ++--
-> > >  tools/perf/builtin-record.c              |  4 ++--
-> > >  tools/perf/builtin-report.c              |  8 ++++----
-> > >  tools/perf/builtin-script.c              |  9 +++++----
-> > >  tools/perf/builtin-stat.c                | 12 ++++++------
-> > >  tools/perf/builtin-top.c                 | 10 +++++-----
-> > >  tools/perf/tests/bpf.c                   |  2 +-
-> > >  tools/perf/tests/evsel-roundtrip-name.c  |  6 +++---
-> > >  tools/perf/tests/mmap-basic.c            |  8 ++++----
-> > >  tools/perf/tests/parse-events.c          | 74 +++++++++++++++++++++++++++++++++++++-------------------------------------
-> > >  tools/perf/tests/pfm.c                   |  4 ++--
-> > >  tools/perf/ui/browsers/annotate.c        |  2 +-
-> > >  tools/perf/util/annotate.c               |  8 ++++----
-> > >  tools/perf/util/auxtrace.c               | 12 ++++++------
-> > >  tools/perf/util/cgroup.c                 |  2 +-
-> > >  tools/perf/util/evlist.c                 | 44 +++++++++++++-------------------------------
-> > >  tools/perf/util/evlist.h                 |  2 --
-> > >  tools/perf/util/evsel.c                  | 32 +++++++++++++++++++++++++-------
-> > >  tools/perf/util/evsel.h                  | 14 ++++++++------
-> > >  tools/perf/util/header.c                 | 18 +++++++++---------
-> > >  tools/perf/util/metricgroup.c            | 22 +++++++++++-----------
-> > >  tools/perf/util/parse-events.c           |  8 ++++----
-> > >  tools/perf/util/pfm.c                    |  2 +-
-> > >  tools/perf/util/python.c                 |  2 +-
-> > >  tools/perf/util/record.c                 |  6 +++---
-> > >  tools/perf/util/stat-shadow.c            |  2 +-
-> > >  tools/perf/util/stat.c                   |  2 +-
-> > >  tools/perf/util/stream.c                 |  2 +-
-> > >  46 files changed, 310 insertions(+), 224 deletions(-)
-> > >  create mode 100644 tools/lib/perf/tests/Build
-> > >  delete mode 100644 tools/lib/perf/tests/Makefile
-> > >  create mode 100644 tools/lib/perf/tests/main.c
-> > >  create mode 100644 tools/lib/perf/tests/tests.h
-> > > 
-> > 
-> > -- 
-> > 
-> > - Arnaldo
-> > 
-> 
-
+ 	pcpu = get_hard_smp_processor_id(lcpu);
+ 
+-	/* Fixup atomic count: it exited inside IRQ handler. */
+-	task_thread_info(paca_ptrs[lcpu]->__current)->preempt_count	= 0;
+-
+ 	/*
+ 	 * If the RTAS start-cpu token does not exist then presume the
+ 	 * cpu is already spinning.
+diff --git a/arch/powerpc/platforms/pseries/smp.c b/arch/powerpc/platforms/pseries/smp.c
+index 096629f54576..7ebf3382816a 100644
+--- a/arch/powerpc/platforms/pseries/smp.c
++++ b/arch/powerpc/platforms/pseries/smp.c
+@@ -105,10 +105,7 @@ static inline int smp_startup_cpu(unsigned int lcpu)
+ 		return 1;
+ 	}
+ 
+-	/* Fixup atomic count: it exited inside IRQ handler. */
+-	task_thread_info(paca_ptrs[lcpu]->__current)->preempt_count	= 0;
+-
+-	/* 
++	/*
+ 	 * If the RTAS start-cpu token does not exist then presume the
+ 	 * cpu is already spinning.
+ 	 */
 -- 
+2.25.1
 
-- Arnaldo
