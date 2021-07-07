@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDD13BE673
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B693BE678
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhGGKoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:44:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:34192 "EHLO foss.arm.com"
+        id S231316AbhGGKqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:46:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230354AbhGGKoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:44:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DFA161063;
-        Wed,  7 Jul 2021 03:41:22 -0700 (PDT)
-Received: from [10.57.1.129] (unknown [10.57.1.129])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EBE5F3F694;
-        Wed,  7 Jul 2021 03:41:19 -0700 (PDT)
-Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
- of EAS estimated energy
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Chris Redpath <Chris.Redpath@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        CCj.Yeh@mediatek.com
-References: <20210625152603.25960-1-lukasz.luba@arm.com>
- <20210625152603.25960-2-lukasz.luba@arm.com>
- <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
- <a6a49480-7d5d-fd0e-3940-0b6baac5acc0@arm.com>
- <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
- <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com>
- <CAKfTPtDk1ANfjR5h_EjErVfQ7=is3n9QOaKKxz81tMHtqUM7jA@mail.gmail.com>
- <297df159-1681-f0a7-843d-f34d86e51d4c@arm.com>
- <CAKfTPtCEo+gkV2TMhOHSnuUyu5BC54o-B4Hb=QbzgT6Dft-PhQ@mail.gmail.com>
- <27916860-33b1-f0a0-acff-4722a733c81b@arm.com>
- <CAKfTPtB2ogGbGBjJNRBB5jvN24q-tXFR+BpJ31fzsTd2=pDTHQ@mail.gmail.com>
- <ee3ebbaa-7b6d-416d-2caa-197c2713dd4e@arm.com>
- <CAKfTPtAN6-ytxa2Qj3=z27e8ZBoqGrWAZce9CojL3wbZSotUsQ@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <58cb7ad3-ffff-8940-4c8e-2c46dcc86d54@arm.com>
-Date:   Wed, 7 Jul 2021 11:41:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S230354AbhGGKqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 06:46:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A697C61C99;
+        Wed,  7 Jul 2021 10:43:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625654636;
+        bh=v/Id4xESUyVn7Okazo3/CpOE9/KzPJJ/ubAqgJSHNVU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZUrNlD26Mo/6gf8K9+HTJEKFhaupnbQ1PtnmcoSrUK7gqJXzmyQefbHDeFDw3Nkry
+         tKURG69432uWPoJEWfV/+QUuDL+Sm/qKB0gVVN8vabMu3gvilTxG7/bls7btf3QRi/
+         NHs+JmFt0pyvSTQMyUZ/gYIHUfBGtv0eTRb2PQo/PXG0YO6CY7dayvP9x2aBIaSemx
+         Iea4YH6oKrd7A2szHKMTrpHGbGiznjcYzxRQJXPvCaw0SfoN8/y2iXPz6g8UlgNDAF
+         eR9rQ9saUaw7gxNMpsoEwiegPF5+xHegmUqabsyXLKNTz7XYAOrRMLZLcKR/gQAdKa
+         h1pWacd94A5sg==
+Date:   Wed, 7 Jul 2021 12:43:53 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ani Sinha <ani@anisinha.ca>, linux-kernel@vger.kernel.org,
+        anirban.sinha@nokia.com, Frederic Weisbecker <fweisbec@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v1] Add info log when user enables NOHZ in commandline
+ but NOHZ is not possible
+Message-ID: <20210707104353.GA115752@lothringen>
+References: <20210627072833.2199463-1-ani@anisinha.ca>
+ <87zguypgy8.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtAN6-ytxa2Qj3=z27e8ZBoqGrWAZce9CojL3wbZSotUsQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zguypgy8.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/7/21 11:32 AM, Vincent Guittot wrote:
-> On Wed, 7 Jul 2021 at 12:29, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->>
->>
->> On 7/7/21 11:11 AM, Vincent Guittot wrote:
->>> On Wed, 7 Jul 2021 at 12:06, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>
->>
->> [snip]
->>
->>>> No. It's in 0.1uW scale, so 800Watts. Which is 16 CPUs * 64Watts
->>>
->>> Oh! you want 0.1uW precision .... This doesn't seem realistic at all.
->>> I'm not even sure that the power model can even reach an accuracy of
->>> 1mW
->>>
->>
->> True, the EM is registering platform with 1mW precision, but 1uW
+On Wed, Jul 07, 2021 at 12:16:15PM +0200, Thomas Gleixner wrote:
+> Ani,
 > 
-> Do you mean 1uW or 0.1uW ?
+> On Sun, Jun 27 2021 at 12:58, Ani Sinha wrote:
+> 
+> same comment vs. Subject, 'this patch' and 'we'
+> 
+> > @@ -930,6 +930,7 @@ static void tick_nohz_full_update_tick(struct tick_sched *ts)
+> >  {
+> >  #ifdef CONFIG_NO_HZ_FULL
+> >  	int cpu = smp_processor_id();
+> > +	static bool no_tick_warned;
+> >  
+> >  	if (!tick_nohz_full_cpu(cpu))
+> >  		return;
+> > @@ -937,10 +938,24 @@ static void tick_nohz_full_update_tick(struct tick_sched *ts)
+> >  	if (!ts->tick_stopped && ts->nohz_mode == NOHZ_MODE_INACTIVE)
+> >  		return;
+> >  
+> > -	if (can_stop_full_tick(cpu, ts))
+> > +	if (can_stop_full_tick(cpu, ts)) {
+> >  		tick_nohz_stop_sched_tick(ts, cpu);
+> > -	else if (ts->tick_stopped)
+> > -		tick_nohz_restart_sched_tick(ts, ktime_get());
+> > +		if (no_tick_warned) {
+> > +			pr_info("NO_HZ_FULL is now enabled in the system.\n");
+> > +			no_tick_warned = false;
+> > +		}
+> > +	} else {
+> > +		/*
+> > +		 * Don't allow the user to think they can get
+> > +		 * full NO_HZ with this machine.
+> > +		 */
+> > +		if (!no_tick_warned && tick_nohz_full_running) {
+> > +			pr_info("NO_HZ_FULL has been disabled in the system.");
+> > +			no_tick_warned = true;
+> > +		}
+> 
+> So this is going to emit this message everytime the NOHZ state of a CPU
+> changes, which is an easy to trigger dmesg flooding from unpriviledged
+> user space.
+> 
+> Also the message is misleading because this is a per CPU condition and
+> not a system wide condition.
 
-In this patch set I've proposed 0.1uW, but I'm open to drop one
-order of magnitude. The 1uW still be good.
+IIUC, the clock can be marked unstable anytime before or after nohz_full
+is initialized.
+
+So we can do two things:
+
+* If tick_nohz_init() is called after the clock has been marked unstable,
+  just don't initialize nohz_full.
+
+* If the clock is marked unstable after tick_nohz_init(), issue a pr_warn()
+  from __clear_sched_clock_stable().
+
+Thanks.
