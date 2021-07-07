@@ -2,528 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7373BE5AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195CF3BE5B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhGGJho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbhGGJhn (ORCPT
+        id S231340AbhGGJjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:39:18 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:40051 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230497AbhGGJjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:37:43 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550F1C061574;
-        Wed,  7 Jul 2021 02:35:02 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id d2so2344953wrn.0;
-        Wed, 07 Jul 2021 02:35:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=51nqz499qj7OdgkKJqTCMVKJh08sJPjtE60np3MpqKE=;
-        b=A5mfD+gIiZXj9K85m38aFXInKB/4WSr0rs29V5qxbk18NpzgdQLUZk4jeUBqWMFmev
-         ZojEeZ0J6yLooyEvWXS4axAkbqDpJHhT4pigFj+oA8o1eLQ4yWUeFuKAXEmvy9NL41Ms
-         5rBIqbEtkZAtifIIDM4B5i1ZjgttZ9NNv0h2AHj8Ms54/wXzkhVCpa6dC3lINmq2/3uF
-         Hjxr+Obq1OfccIiFtwVVFJ9byYko5nP4PF9yVf3LqAhT7+23blEFFKsbuoUyZCkRBZ5Z
-         C4f5JAuaDNo9/7c4Kcor4fbm6TsnXJz826WO6DpDyStKykwgFeb/ZmTdZxGztiCwWH+v
-         iLVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=51nqz499qj7OdgkKJqTCMVKJh08sJPjtE60np3MpqKE=;
-        b=hW3I9niV26Uk5HMlUHhYofxMJyYZ2l8l9n863IwtrHDnJltGtkOv1MhvU7Ku56lyf6
-         fO0SfwbRXeEu1YfsCqJGoIo7t9afnh9eSPEoha2f+mnpb1s2Wz3Cju93fHTVhSmv3Sxw
-         oQfizb3F2bqsSE0F1hPZ/EPU+eDVyY2rLa31MF5yPLGU8EJETxDcD6B2uvJKfUXmErJX
-         YryC4EzEUoSHme7blBx2PtBJ8O8aAimkfnrp2RCeAgLmSlD15aND+eoSTbfTgtunCTLH
-         Jy2Ee4+h2m4CvSa54TGov1XYq2k96cFQFnuHCsrSmQjzoyPTjJmKqsWCa9zE0+Kfv8dD
-         qGvQ==
-X-Gm-Message-State: AOAM533enbkRuqX01nigASbqxa70yooEahlhLaIpDq0prop5n3MXOme0
-        suEeNELxUyPjeuthsG/W7nqJtVOfyvDYbJPRNJc=
-X-Google-Smtp-Source: ABdhPJzt7iMXSnpPWz6KYB5PPybMHHYf+qmRub3ssoU24yDYac7mFPh8wLEm+eabVbJSy6rs9du28ZqIMwmoU73Hdqg=
-X-Received: by 2002:adf:b307:: with SMTP id j7mr3087950wrd.243.1625650500945;
- Wed, 07 Jul 2021 02:35:00 -0700 (PDT)
+        Wed, 7 Jul 2021 05:39:17 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id 514F92B007EB;
+        Wed,  7 Jul 2021 05:36:36 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 07 Jul 2021 05:36:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=BB1WLfccIT/pYvMjl/3Jvk+n/Q
+        /wQoR9zSWQeO9lpRw=; b=wANs8FTqWQrokayuqCGed85Abc80o1m326Tkx8eZeM
+        Gg0X+vlImDTMv5tobRnN3DSvEHgOvCC+4UTyVZFy86N1DGBPfd48znN/stjvtGfq
+        mFKhuYfozmx8dluqNw/TDoe4v41VswsXzsXG04qQYrkWe4UFkeTDGjf8sWjzA1NE
+        9JSS97o4/mf9x5tKLS7AiNdrzCy6qZjhXKns1r5iY3FWW3CuxZEmGaC+bG3nLB8M
+        5BfkCG+8FvqtJa7VSAkzhaMTkdW869PPrEZLsmv/DsPG4xsSNAwJRNhzWakzEG1j
+        m77av62Patqqk2CWQ0DZLaEyHi3gLzR8TK1YRrYBKFPQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=BB1WLfccIT/pYvMjl
+        /3Jvk+n/Q/wQoR9zSWQeO9lpRw=; b=bif4o1DWiJy5+z/CHBtEnB5FpwHGryvtT
+        wUOSe2R0tzYMnKFrVsOKQ+35SIzy5L+UhWSyuNnvcqo+flKbDT8klI7r//6Jcmp6
+        L8dlZCPT9U3SH73BV9dsUaXJMyha9nwLV+rctOYnbrf2DB8B58rMXxox/Xb3v8vT
+        GnB5uy/IOA3+StwbEgm78n5tJ4/5JRzAyzKRoFQQiBFqyFhdBR9geOoxfYjp2OdZ
+        ORi8tfCCw9IBwBF2TccaC+wV94SHjoBh++0Wp1xWOlCJPeFqJBKYXaInlXCfkLS3
+        2kg7m5kqiiKoO71cWKzij3AMSSUQYxY1ufK4wIkhkXD83S/dDcmyw==
+X-ME-Sender: <xms:oXXlYLd679MHJQFQ7UAWxpnlyzMGLhFyPg2qRoyjqyMyf_S5tHRqyg>
+    <xme:oXXlYBPG4X9u_hyd-MeHdn34P8UEPhzD3SRl2Nu2rZOdE6WR-LaojHJ-ZdYambMle
+    _Od9GazmD9xQyGKfcU>
+X-ME-Received: <xmr:oXXlYEjA-lVlUqjMl3DwJgAhyB-qY73DZOWEX2zWO-tMotZCgWxXZf5DrPv_cvrsBCyAtIiw7p170j-HMwEafoC4RpVXRvKO6aZA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtddvgddujecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepofgrgihimhgvucft
+    ihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtthgvrh
+    hnpeejffehuddvvddvlefhgeelleffgfeijedvhefgieejtdeiueetjeetfeeukeejgeen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
+    hmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:oXXlYM_6x9vweyT-avO8tXEcyxHSA8k1C7mPRTNh3yiZIFUfexzdbA>
+    <xmx:oXXlYHuIkzSbKizdyl_vSdFP0zQ-cDCqZPyj_gEv08K_miPi6Wt_Zw>
+    <xmx:oXXlYLE6uuvkTpAEJOBU9z5j5ukUdXqQs2qe0P8uRIOcwrw58Ls2Kw>
+    <xmx:o3XlYPO5e8XEZH8oUolOdD-5_qGJMbcXOVwUM-IOOG9JNnh9FqyPwDnkHtk>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 7 Jul 2021 05:36:33 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        Emma Anholt <emma@anholt.net>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        Maxime Ripard <mripard@kernel.org>
+Subject: [PATCH 1/2] drm/vc4: hdmi: Remove redundant variables
+Date:   Wed,  7 Jul 2021 11:36:31 +0200
+Message-Id: <20210707093632.1468127-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-From:   jafar akhondali <jafar.akhoondali@gmail.com>
-Date:   Wed, 7 Jul 2021 14:04:50 +0430
-Message-ID: <CAE+bDgcEo-SSwVUQX=9RsdEvV3TrdGQ3fJT5=JM0e-3Z4CUs=w@mail.gmail.com>
-Subject: [PATCH] platform/x86: acer-wmi: Add Turbo Mode support for Acer PH315-53
-To:     jlee@suse.com, hdegoede@redhat.com, mgross@linux.intel.com,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From 84e23bc477c0bc15ac9a3536b46d1a77ea73ecad Mon Sep 17 00:00:00 2001
-From: JafarAkhondali <jafar.akhondali@yahoo.com>
-Date: Wed, 7 Jul 2021 12:59:16 +0430
-Subject: [PATCH] platform/x86: acer-wmi: Add Turbo Mode support for
-Acer PH315-53
+The vc4_hdmi_audio_prepare function and the functions it's calling have
+in several occurences multiple dereferences of either the sample rate or
+the number of channels.
 
-The Acer Predator Helios series (usually denoted by PHxxx-yy) features
-a special key above the keyboard named "TURBO". The turbo key does 3
-things:
-1. Set all fan's speeds to TURBO mode
-2. Overclocks the CPU and GPU in the safe range
-3. Turn on an LED just below the turbo button
+It turns out that these variables are also passed through the hdmi codec
+parameters structure. Convert all the users to use this structure, and
+if it's used multiple times use a variable to store it instead of
+dereferencing it every time.
 
-All of these actions are done by WMI function calls, and there is no
-custom OC level for turbo. It acts as a flag for enabling turbo
-mode instead of telling processors to use 1.3x of power.
-
-I've run some benchmark tests and it worked fine:
-
-GpuTest 0.7.0
-http://www.geeks3d.com
-
-Module: FurMark
-Normal mode Score: 7289 points (FPS: 121)
-Turbo mode Score: 7675 points (FPS: 127)
-Settings:
-- 1920x1080 fullscreen
-- antialiasing: Off
-- duration: 60000 ms
-
-Renderer:
-- GeForce RTX 2060/PCIe/SSE2
-- OpenGL: 4.6.0 NVIDIA 460.32.03
-
-This feature is presented by Acer officially and should not harm
-hardware in any case.
-
-A challenging part of implementing this feature is that calling overclocking
-the function requires knowing the exact count of fans for CPU and GPU
-for each model, which to the best of my knowledge is not available in
-the kernel.
-
-So I've checked the official PredatorSense application methods and it
-turned out they have provided the software the list of fans in each model.
-I have access to the mentioned list, and all similar PH-iii-jj can be
-added easily
-by matching "DMI_PRODUCT_NAME".
-
-Creating a separate file for the gaming interface was not possible because
-the current WMI event GUID is needed for the turbo button, and it's not possible
-to register multiple functions on the same event GUID.
-
-
-Some small indent problems have been also fixed.
-
-Signed-off-by: JafarAkhondali <jafar.akhoondali@gmail.com>
+Reviewed-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
-drivers/platform/x86/acer-wmi.c | 243 ++++++++++++++++++++++++++++++--
-1 file changed, 231 insertions(+), 12 deletions(-)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 26 ++++++++++++--------------
+ drivers/gpu/drm/vc4/vc4_hdmi.h |  2 --
+ 2 files changed, 12 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-index 85db9403cc14..06b25ddf04ee 100644
---- a/drivers/platform/x86/acer-wmi.c
-+++ b/drivers/platform/x86/acer-wmi.c
-@@ -30,10 +30,12 @@
-#include <linux/input/sparse-keymap.h>
-#include <acpi/video.h>
-+
-MODULE_AUTHOR("Carlos Corbacho");
-MODULE_DESCRIPTION("Acer Laptop WMI Extras Driver");
-MODULE_LICENSE("GPL");
-+
-/*
-* Magic Number
-* Meaning is unknown - this number is required for writing to ACPI for AMW0
-@@ -59,7 +61,10 @@ MODULE_LICENSE("GPL");
-#define ACER_WMID_SET_BRIGHTNESS_METHODID 6
-#define ACER_WMID_GET_THREEG_METHODID 10
-#define ACER_WMID_SET_THREEG_METHODID 11
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index cbeec6a5cb90..3165f39a4557 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -1176,12 +1176,13 @@ static u32 vc5_hdmi_channel_map(struct vc4_hdmi *vc4_hdmi, u32 channel_mask)
+ }
+ 
+ /* HDMI audio codec callbacks */
+-static void vc4_hdmi_audio_set_mai_clock(struct vc4_hdmi *vc4_hdmi)
++static void vc4_hdmi_audio_set_mai_clock(struct vc4_hdmi *vc4_hdmi,
++					 unsigned int samplerate)
+ {
+ 	u32 hsm_clock = clk_get_rate(vc4_hdmi->audio_clock);
+ 	unsigned long n, m;
+ 
+-	rational_best_approximation(hsm_clock, vc4_hdmi->audio.samplerate,
++	rational_best_approximation(hsm_clock, samplerate,
+ 				    VC4_HD_MAI_SMP_N_MASK >>
+ 				    VC4_HD_MAI_SMP_N_SHIFT,
+ 				    (VC4_HD_MAI_SMP_M_MASK >>
+@@ -1193,12 +1194,11 @@ static void vc4_hdmi_audio_set_mai_clock(struct vc4_hdmi *vc4_hdmi)
+ 		   VC4_SET_FIELD(m - 1, VC4_HD_MAI_SMP_M));
+ }
+ 
+-static void vc4_hdmi_set_n_cts(struct vc4_hdmi *vc4_hdmi)
++static void vc4_hdmi_set_n_cts(struct vc4_hdmi *vc4_hdmi, unsigned int samplerate)
+ {
+ 	struct drm_encoder *encoder = &vc4_hdmi->encoder.base.base;
+ 	struct drm_crtc *crtc = encoder->crtc;
+ 	const struct drm_display_mode *mode = &crtc->state->adjusted_mode;
+-	u32 samplerate = vc4_hdmi->audio.samplerate;
+ 	u32 n, cts;
+ 	u64 tmp;
+ 
+@@ -1332,27 +1332,25 @@ static int vc4_hdmi_audio_prepare(struct device *dev, void *data,
+ {
+ 	struct vc4_hdmi *vc4_hdmi = dev_get_drvdata(dev);
+ 	struct drm_encoder *encoder = &vc4_hdmi->encoder.base.base;
++	unsigned int sample_rate = params->sample_rate;
++	unsigned int channels = params->channels;
+ 	u32 audio_packet_config, channel_mask;
+ 	u32 channel_map;
+ 	u32 mai_audio_format;
+ 	u32 mai_sample_rate;
+ 
+ 	dev_dbg(dev, "%s: %u Hz, %d bit, %d channels\n", __func__,
+-		params->sample_rate, params->sample_width,
+-		params->channels);
 -
-+#define ACER_WMID_SET_GAMING_LED_METHODID 2
-+#define ACER_WMID_GET_GAMING_LED_METHODID 4
-+#define ACER_WMID_SET_GAMING_FAN_BEHAVIOR 14
-+#define ACER_WMID_SET_GAMING_MISC_SETTING_METHODID 22
-/*
-* Acer ACPI method GUIDs
-*/
-@@ -68,6 +73,7 @@ MODULE_LICENSE("GPL");
-#define WMID_GUID1 "6AF4F258-B401-42FD-BE91-3D4AC2D7C0D3"
-#define WMID_GUID2 "95764E09-FB56-4E83-B31A-37761F60994A"
-#define WMID_GUID3 "61EF69EA-865C-4BC3-A502-A0DEBA0CB531"
-+#define WMID_GUID4 "7A4DDFE7-5B5D-40B4-8595-4408E0CC7F56"
-/*
-* Acer ACPI event GUIDs
-@@ -81,6 +87,7 @@ MODULE_ALIAS("wmi:676AA15E-6A47-4D9F-A2CC-1E6D18D14026");
-enum acer_wmi_event_ids {
-WMID_HOTKEY_EVENT = 0x1,
-WMID_ACCEL_OR_KBD_DOCK_EVENT = 0x5,
-+ WMID_GAMING_TURBO_KEY_EVENT = 0x7,
-};
-static const struct key_entry acer_wmi_keymap[] __initconst = {
-@@ -144,6 +151,7 @@ struct event_return_value {
-#define ACER_WMID3_GDS_TOUCHPAD (1<<1) /* Touchpad */
-+
-/* Hotkey Customized Setting and Acer Application Status.
-* Set Device Default Value and Report Acer Application Status.
-* When Acer Application starts, it will run this method to inform
-@@ -215,6 +223,9 @@ struct hotkey_function_type_aa {
-#define ACER_CAP_THREEG BIT(4)
-#define ACER_CAP_SET_FUNCTION_MODE BIT(5)
-#define ACER_CAP_KBD_DOCK BIT(6)
-+#define ACER_CAP_TURBO_OC BIT(7)
-+#define ACER_CAP_TURBO_LED BIT(8)
-+#define ACER_CAP_TURBO_FAN BIT(9)
-/*
-* Interface type flags
-@@ -224,6 +235,7 @@ enum interface_flags {
-ACER_AMW0_V2,
-ACER_WMID,
-ACER_WMID_v2,
-+ ACER_WMID_GAMING,
-};
-#define ACER_DEFAULT_WIRELESS 0
-@@ -290,6 +302,9 @@ struct wmi_interface {
-/* The static interface pointer, points to the currently detected interface */
-static struct wmi_interface *interface;
-+/* The static gaming interface pointer, points to the currently
-detected gaming interface */
-+static struct wmi_interface *gaming_interface;
-+
-/*
-* Embedded Controller quirks
-* Some laptops require us to directly access the EC to either enable or query
-@@ -301,6 +316,9 @@ struct quirk_entry {
-u8 mailled;
-s8 brightness;
-u8 bluetooth;
-+ u8 turbo;
-+ u8 cpu_fans;
-+ u8 gpu_fans;
-};
-static struct quirk_entry *quirks;
-@@ -312,6 +330,10 @@ static void __init set_quirks(void)
-if (quirks->brightness)
-interface->capability |= ACER_CAP_BRIGHTNESS;
-+
-+ if (quirks->turbo)
-+ gaming_interface->capability |= ACER_CAP_TURBO_OC | ACER_CAP_TURBO_LED
-+ | ACER_CAP_TURBO_FAN;
-}
-static int __init dmi_matched(const struct dmi_system_id *dmi)
-@@ -340,6 +362,12 @@ static struct quirk_entry quirk_acer_travelmate_2490 = {
-.mailled = 1,
-};
-+static struct quirk_entry quirk_acer_predator_ph315_53 = {
-+ .turbo = 1,
-+ .cpu_fans = 1,
-+ .gpu_fans = 1,
-+};
-+
-/* This AMW0 laptop has no bluetooth */
-static struct quirk_entry quirk_medion_md_98300 = {
-.wireless = 1,
-@@ -507,6 +535,15 @@ static const struct dmi_system_id acer_quirks[]
-__initconst = {
-},
-.driver_data = &quirk_acer_travelmate_2490,
-},
-+ {
-+ .callback = dmi_matched,
-+ .ident = "Acer Predator PH315-53",
-+ .matches = {
-+ DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+ DMI_MATCH(DMI_PRODUCT_NAME, "Predator PH315-53"),
-+ },
-+ .driver_data = &quirk_acer_predator_ph315_53,
-+ },
-{
-.callback = set_force_caps,
-.ident = "Acer Aspire Switch 10E SW3-016",
-@@ -903,7 +940,7 @@ static acpi_status __init AMW0_set_capabilities(void)
-*/
-if (wmi_has_guid(AMW0_GUID2)) {
-if ((quirks != &quirk_unknown) ||
-- !AMW0_set_cap_acpi_check_device())
-+ !AMW0_set_cap_acpi_check_device())
-interface->capability |= ACER_CAP_WIRELESS;
-return AE_OK;
-}
-@@ -1344,6 +1381,93 @@ static struct wmi_interface wmid_v2_interface = {
-.type = ACER_WMID_v2,
-};
-+
-+/*
-+ * WMID Gaming interface
-+ */
-+
-+static struct wmi_interface wmid_gaming_interface = {
-+ .type = ACER_WMID_GAMING
-+};
-+
-+static acpi_status
-+WMI_gaming_execute_u64(u32 method_id, u64 in, u64 *out)
-+{
-+ struct acpi_buffer input = { (acpi_size) sizeof(u64), (void *)(&in) };
-+ struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };
-+ union acpi_object *obj;
-+ u32 tmp = 0;
-+ acpi_status status;
-+
-+ status = wmi_evaluate_method(WMID_GUID4, 0, method_id, &input, &result);
-+
-+ if (ACPI_FAILURE(status))
-+ return status;
-+ obj = (union acpi_object *) result.pointer;
-+
-+ if (obj) {
-+ if (obj->type == ACPI_TYPE_BUFFER &&
-+ (obj->buffer.length == sizeof(u32) ||
-+ obj->buffer.length == sizeof(u64))) {
-+ tmp = *((u64 *) obj->buffer.pointer);
-+ } else if (obj->type == ACPI_TYPE_INTEGER) {
-+ tmp = (u64) obj->integer.value;
-+ }
-+ }
-+
-+ if (out)
-+ *out = tmp;
-+
-+ kfree(result.pointer);
-+
-+ return status;
-+}
-+
-+static acpi_status WMID_gaming_set_u64(u64 value, u32 cap)
-+{
-+ u32 method_id = 0;
-+
-+ switch (cap) {
-+ case ACER_CAP_TURBO_LED:
-+ method_id = ACER_WMID_SET_GAMING_LED_METHODID;
-+ break;
-+ case ACER_CAP_TURBO_FAN:
-+ method_id = ACER_WMID_SET_GAMING_FAN_BEHAVIOR;
-+ break;
-+ case ACER_CAP_TURBO_OC:
-+ method_id = ACER_WMID_SET_GAMING_MISC_SETTING_METHODID;
-+ break;
-+ default:
-+ return AE_ERROR;
-+ }
-+ return WMI_gaming_execute_u64(method_id, value, NULL);
-+}
-+
-+static acpi_status WMID_gaming_get_u64(u64 *value, u32 cap)
-+{
-+ acpi_status status;
-+ u64 result;
-+ u64 input;
-+ u32 method_id;
-+
-+
-+ switch (cap) {
-+ case ACER_CAP_TURBO_LED:
-+ method_id = ACER_WMID_GET_GAMING_LED_METHODID;
-+ input = 0x1;
-+ break;
-+ default:
-+ return AE_ERROR;
-+ }
-+
-+ status = WMI_gaming_execute_u64(method_id, input, &result);
-+ if (ACPI_SUCCESS(status))
-+ *value = (u64) result;
-+
-+ return status;
-+}
-+
-+
-/*
-* Generic Device (interface-independent)
-*/
-@@ -1374,7 +1498,6 @@ static acpi_status get_u32(u32 *value, u32 cap)
-status = WMID_get_u32(value, cap);
-break;
-}
--
-return status;
-}
-@@ -1422,6 +1545,34 @@ static acpi_status set_u32(u32 value, u32 cap)
-return AE_BAD_PARAMETER;
-}
-+static acpi_status set_u64(u64 value, u32 cap)
-+{
-+ if (gaming_interface->capability & cap) {
-+ switch (gaming_interface->type) {
-+ case ACER_WMID_GAMING:
-+ return WMID_gaming_set_u64(value, cap);
-+ default:
-+ return AE_BAD_PARAMETER;
-+ }
-+ }
-+ return AE_BAD_PARAMETER;
-+}
-+
-+
-+static acpi_status get_u64(u64 *value, u32 cap)
-+{
-+ acpi_status status = AE_ERROR;
-+
-+ if (gaming_interface->capability & cap) {
-+ switch (gaming_interface->type) {
-+ case ACER_WMID_GAMING:
-+ status = WMID_gaming_get_u64(value, cap);
-+ break;
-+ }
-+ }
-+ return status;
-+}
-+
-static void __init acer_commandline_init(void)
-{
-/*
-@@ -1501,7 +1652,7 @@ static int acer_backlight_init(struct device *dev)
-props.type = BACKLIGHT_PLATFORM;
-props.max_brightness = max_brightness;
-bd = backlight_device_register("acer-wmi", dev, NULL, &acer_bl_ops,
-- &props);
-+ &props);
-if (IS_ERR(bd)) {
-pr_err("Could not register Acer backlight device\n");
-acer_backlight_device = NULL;
-@@ -1575,6 +1726,67 @@ static int acer_gsensor_event(void)
-return 0;
-}
-+/*
-+ * Predator series turbo button
-+ */
-+static int acer_toggle_turbo(void)
-+{
-+ /* Get current state from turbo button */
-+ u64 turbo_led_state, gpu_fan_config1, gpu_fan_config2;
-+ u8 i;
-+
-+ if (ACPI_FAILURE(get_u64(&turbo_led_state, ACER_CAP_TURBO_LED)))
-+ return -1;
-+
-+ if (turbo_led_state) {
-+ // turns off turbo led
-+ set_u64(0x1, ACER_CAP_TURBO_LED);
-+
-+ // set FAN mode to auto
-+ if (quirks->cpu_fans > 0)
-+ gpu_fan_config2 |= 1;
-+ for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
-+ gpu_fan_config2 |= 1 << (i + 1);
-+ for (i = 0; i < quirks->gpu_fans; ++i)
-+ gpu_fan_config2 |= 1 << (i + 3);
-+ if (quirks->cpu_fans > 0)
-+ gpu_fan_config1 |= 1;
-+ for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
-+ gpu_fan_config1 |= 1 << (2 * i + 2);
-+ for (i = 0; i < quirks->gpu_fans; ++i)
-+ gpu_fan_config1 |= 1 << (2 * i + 6);
-+ set_u64(gpu_fan_config2 | gpu_fan_config1 << 16, ACER_CAP_TURBO_FAN);
-+
-+ // set OC to normal
-+ set_u64(0x5, ACER_CAP_TURBO_OC);
-+ set_u64(0x7, ACER_CAP_TURBO_OC);
-+ } else {
-+ // turn on turbo led
-+ set_u64(0x10001, ACER_CAP_TURBO_LED);
-+
-+ // set FAN to turbo mode
-+ if (quirks->cpu_fans > 0)
-+ gpu_fan_config2 |= 1;
-+ for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
-+ gpu_fan_config2 |= 1 << (i + 1);
-+ for (i = 0; i < quirks->gpu_fans; ++i)
-+ gpu_fan_config2 |= 1 << (i + 3);
-+ if (quirks->cpu_fans > 0)
-+ gpu_fan_config1 |= 2;
-+ for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
-+ gpu_fan_config1 |= 2 << (2 * i + 2);
-+ for (i = 0; i < quirks->gpu_fans; ++i)
-+ gpu_fan_config1 |= 2 << (2 * i + 6);
-+ set_u64(gpu_fan_config2 | gpu_fan_config1 << 16, ACER_CAP_TURBO_FAN);
-+
-+ // set OC to turbo mode
-+ set_u64(0x205, ACER_CAP_TURBO_OC);
-+ set_u64(0x207, ACER_CAP_TURBO_OC);
-+ }
-+ return turbo_led_state;
-+}
-+
-+
-/*
-* Switch series keyboard dock status
-*/
-@@ -1605,7 +1817,7 @@ static void acer_kbd_dock_get_initial_state(void)
-status = wmi_evaluate_method(WMID_GUID3, 0, 0x2, &input_buf, &output_buf);
-if (ACPI_FAILURE(status)) {
-pr_err("Error getting keyboard-dock initial status: %s\n",
-- acpi_format_exception(status));
-+ acpi_format_exception(status));
-return;
-}
-@@ -1618,7 +1830,7 @@ static void acer_kbd_dock_get_initial_state(void)
-output = obj->buffer.pointer;
-if (output[0] != 0x00 || (output[3] != 0x05 && output[3] != 0x45)) {
-pr_err("Unexpected output [0]=0x%02x [3]=0x%02x getting keyboard-dock
-initial status\n",
-- output[0], output[3]);
-+ output[0], output[3]);
-goto out_free_obj;
-}
-@@ -1759,7 +1971,7 @@ static int acer_rfkill_init(struct device *dev)
-rfkill_inited = true;
-if ((ec_raw_mode || !wmi_has_guid(ACERWMID_EVENT_GUID)) &&
-- has_cap(ACER_CAP_WIRELESS | ACER_CAP_BLUETOOTH | ACER_CAP_THREEG))
-+ has_cap(ACER_CAP_WIRELESS | ACER_CAP_BLUETOOTH | ACER_CAP_THREEG))
-schedule_delayed_work(&acer_rfkill_work,
-round_jiffies_relative(HZ));
-@@ -1782,7 +1994,7 @@ static int acer_rfkill_init(struct device *dev)
-static void acer_rfkill_exit(void)
-{
-if ((ec_raw_mode || !wmi_has_guid(ACERWMID_EVENT_GUID)) &&
-- has_cap(ACER_CAP_WIRELESS | ACER_CAP_BLUETOOTH | ACER_CAP_THREEG))
-+ has_cap(ACER_CAP_WIRELESS | ACER_CAP_BLUETOOTH | ACER_CAP_THREEG))
-cancel_delayed_work_sync(&acer_rfkill_work);
-if (has_cap(ACER_CAP_WIRELESS)) {
-@@ -1872,6 +2084,10 @@ static void acer_wmi_notify(u32 value, void *context)
-acer_gsensor_event();
-acer_kbd_dock_event(&return_value);
-break;
-+ case WMID_GAMING_TURBO_KEY_EVENT:
-+ if (return_value.key_num == 0x4)
-+ acer_toggle_turbo();
-+ break;
-default:
-pr_warn("Unknown function number - %d - %d\n",
-return_value.function, return_value.key_num);
-@@ -2251,8 +2467,8 @@ static int __init acer_wmi_init(void)
-* in the past quirk list.
-*/
-if (wmi_has_guid(AMW0_GUID1) &&
-- !dmi_check_system(amw0_whitelist) &&
-- quirks == &quirk_unknown) {
-+ !dmi_check_system(amw0_whitelist) &&
-+ quirks == &quirk_unknown) {
-pr_debug("Unsupported machine has AMW0_GUID1, unable to load\n");
-return -ENODEV;
-}
-@@ -2266,8 +2482,11 @@ static int __init acer_wmi_init(void)
-if (!wmi_has_guid(AMW0_GUID1) && wmi_has_guid(WMID_GUID1))
-interface = &wmid_interface;
-- if (wmi_has_guid(WMID_GUID3))
-+ if (wmi_has_guid(WMID_GUID3)) {
-interface = &wmid_v2_interface;
-+ if (wmi_has_guid(WMID_GUID4))
-+ gaming_interface = &wmid_gaming_interface;
-+ }
-if (interface)
-dmi_walk(type_aa_dmi_decode, NULL);
-@@ -2316,7 +2535,7 @@ static int __init acer_wmi_init(void)
-interface->capability = force_caps;
-if (wmi_has_guid(WMID_GUID3) &&
-- (interface->capability & ACER_CAP_SET_FUNCTION_MODE)) {
-+ (interface->capability & ACER_CAP_SET_FUNCTION_MODE)) {
-if (ACPI_FAILURE(acer_wmi_enable_rf_button()))
-pr_warn("Cannot enable RF Button Driver\n");
+-	vc4_hdmi->audio.channels = params->channels;
+-	vc4_hdmi->audio.samplerate = params->sample_rate;
++		sample_rate, params->sample_width, channels);
+ 
+ 	HDMI_WRITE(HDMI_MAI_CTL,
+-		   VC4_SET_FIELD(params->channels, VC4_HD_MAI_CTL_CHNUM) |
++		   VC4_SET_FIELD(channels, VC4_HD_MAI_CTL_CHNUM) |
+ 		   VC4_HD_MAI_CTL_WHOLSMP |
+ 		   VC4_HD_MAI_CTL_CHALIGN |
+ 		   VC4_HD_MAI_CTL_ENABLE);
+ 
+-	vc4_hdmi_audio_set_mai_clock(vc4_hdmi);
++	vc4_hdmi_audio_set_mai_clock(vc4_hdmi, sample_rate);
+ 
+-	mai_sample_rate = sample_rate_to_mai_fmt(vc4_hdmi->audio.samplerate);
++	mai_sample_rate = sample_rate_to_mai_fmt(sample_rate);
+ 	if (params->iec.status[0] & IEC958_AES0_NONAUDIO &&
+ 	    params->channels == 8)
+ 		mai_audio_format = VC4_HDMI_MAI_FORMAT_HBR;
+@@ -1370,7 +1368,7 @@ static int vc4_hdmi_audio_prepare(struct device *dev, void *data,
+ 		VC4_HDMI_AUDIO_PACKET_ZERO_DATA_ON_INACTIVE_CHANNELS |
+ 		VC4_SET_FIELD(0x8, VC4_HDMI_AUDIO_PACKET_B_FRAME_IDENTIFIER);
+ 
+-	channel_mask = GENMASK(vc4_hdmi->audio.channels - 1, 0);
++	channel_mask = GENMASK(channels - 1, 0);
+ 	audio_packet_config |= VC4_SET_FIELD(channel_mask,
+ 					     VC4_HDMI_AUDIO_PACKET_CEA_MASK);
+ 
+@@ -1389,7 +1387,7 @@ static int vc4_hdmi_audio_prepare(struct device *dev, void *data,
+ 	channel_map = vc4_hdmi->variant->channel_map(vc4_hdmi, channel_mask);
+ 	HDMI_WRITE(HDMI_MAI_CHANNEL_MAP, channel_map);
+ 	HDMI_WRITE(HDMI_AUDIO_PACKET_CONFIG, audio_packet_config);
+-	vc4_hdmi_set_n_cts(vc4_hdmi);
++	vc4_hdmi_set_n_cts(vc4_hdmi, sample_rate);
+ 
+ 	memcpy(&vc4_hdmi->audio.infoframe, &params->cea, sizeof(params->cea));
+ 	vc4_hdmi_set_audio_infoframe(encoder);
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
+index b6697b695f71..33e9f665ab8e 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.h
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
+@@ -111,8 +111,6 @@ struct vc4_hdmi_audio {
+ 	struct snd_soc_dai_link_component cpu;
+ 	struct snd_soc_dai_link_component codec;
+ 	struct snd_soc_dai_link_component platform;
+-	int samplerate;
+-	int channels;
+ 	struct snd_dmaengine_dai_dma_data dma_data;
+ 	struct hdmi_audio_infoframe infoframe;
+ 	bool streaming;
 -- 
-2.27.0
+2.31.1
+
