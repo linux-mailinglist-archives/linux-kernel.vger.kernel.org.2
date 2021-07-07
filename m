@@ -2,83 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6953BE43B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E835E3BE443
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhGGIU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:20:59 -0400
-Received: from lucky1.263xmail.com ([211.157.147.132]:60844 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbhGGIU6 (ORCPT
+        id S230150AbhGGIYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229975AbhGGIYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:20:58 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 8DF12FB0CF;
-        Wed,  7 Jul 2021 16:17:59 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [113.57.152.160])
-        by smtp.263.net (postfix) whith ESMTP id P5175T139827079014144S1625645873824660_;
-        Wed, 07 Jul 2021 16:18:00 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <90a70faef2d71da9e8ee3658958bed4f>
-X-RL-SENDER: zhuguanghong@uniontech.com
-X-SENDER: zhuguanghong@uniontech.com
-X-LOGIN-NAME: zhuguanghong@uniontech.com
-X-FST-TO: sre@kernel.org
-X-RCPT-COUNT: 4
-X-SENDER-IP: 113.57.152.160
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   zhuguanghong <zhuguanghong@uniontech.com>
-To:     sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhuguanghong <zhuguanghong@uniontech.com>
-Subject: [PATCH] POWER SUPPLY CLASS/SUBSYSTEM : add new status 'Full charging' can show that the battery is fully charged but still charging
-Date:   Wed,  7 Jul 2021 16:17:51 +0800
-Message-Id: <20210707081751.17021-1-zhuguanghong@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 7 Jul 2021 04:24:00 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47849C061574;
+        Wed,  7 Jul 2021 01:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1MtL1A9VbWDqAz9G+RKHDgKdomGvf9eXlb2nS700iHw=; b=eSm04NKEp6I0tmZtveeceH8Ryg
+        Nk3SyJa0tT8CfCPqA6lqlYh0EHGqaUqKOHFpqYl8lCTU1duc8FMfcPhUr2p5HbEtjrnB2yctxoV/5
+        x+WNkYOSPsmqWPG9ZMu3I3ldtj7y+I3Q7RX45vYzUCf8N7papwDuZawcYsZv0BYUDp7oXSPZ3AYTf
+        5Q/3UANpxb1QrFu7Lgjeu1Q6haTklGogNFQWzvKh1LBhLnZn3M+wPY0LvHrls0xb+ZLRMEzSLJFYu
+        gkPZOYtk9SqoMpmKdeVlmMPldv/nkOYfhVD5cyWn0lD1Ghqr6lXxVj1TZrdDgMa4i3PRs0bGy5unx
+        HbGZEAYw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m12nT-00FIQU-Uz; Wed, 07 Jul 2021 08:20:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A7F35300233;
+        Wed,  7 Jul 2021 10:20:41 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4BBEC236676E9; Wed,  7 Jul 2021 10:20:41 +0200 (CEST)
+Date:   Wed, 7 Jul 2021 10:20:41 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        wuqiang.matt@bytedance.com
+Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
+ entry
+Message-ID: <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+ <162400002631.506599.2413605639666466945.stgit@devnote2>
+ <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
+ <20210706004257.9e282b98f447251a380f658f@kernel.org>
+ <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
+ <20210706111136.7c5e9843@oasis.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210706111136.7c5e9843@oasis.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: zhuguanghong <zhuguanghong@uniontech.com>
----
- drivers/power/supply/power_supply_sysfs.c | 1 +
- include/linux/power_supply.h              | 1 +
- 2 files changed, 2 insertions(+)
+On Tue, Jul 06, 2021 at 11:11:36AM -0400, Steven Rostedt wrote:
+> On Tue, 6 Jul 2021 09:55:03 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > > But I'm not so sure how ftrace treat it. It seems that the return_to_handler()
+> > > doesn't care such case. (anyway, return_to_handler() does not return but jump
+> > > to the original call-site, in that case, the information will be lost.)  
+> > 
+> > I find it bothersome (OCD, sorry :-) that both return trampolines behave
+> > differently. Doubly so because I know people (Steve in particular) have
+> > been talking about unifying them.
+> 
+> They were developed separately, and designed differently with different
+> goals in mind. Yes, I want to unify them, but trying to get the
+> different goals together, compounded by the fact that almost every arch
+> also implemented them differently (in which case, we need to find a way
+> to do it one arch at a time), makes the process extremely frustrating.
 
-diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
-index c3d7cbcd4fad..0ddb84b7637f 100644
---- a/drivers/power/supply/power_supply_sysfs.c
-+++ b/drivers/power/supply/power_supply_sysfs.c
-@@ -78,6 +78,7 @@ static const char * const POWER_SUPPLY_STATUS_TEXT[] = {
- 	[POWER_SUPPLY_STATUS_DISCHARGING]	= "Discharging",
- 	[POWER_SUPPLY_STATUS_NOT_CHARGING]	= "Not charging",
- 	[POWER_SUPPLY_STATUS_FULL]		= "Full",
-+	[POWER_SUPPLY_STATUS_FULL_CHARGING]	= "Full charging",
- };
- 
- static const char * const POWER_SUPPLY_CHARGE_TYPE_TEXT[] = {
-diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-index be203985ecdd..04844dbb18c4 100644
---- a/include/linux/power_supply.h
-+++ b/include/linux/power_supply.h
-@@ -37,6 +37,7 @@ enum {
- 	POWER_SUPPLY_STATUS_DISCHARGING,
- 	POWER_SUPPLY_STATUS_NOT_CHARGING,
- 	POWER_SUPPLY_STATUS_FULL,
-+	POWER_SUPPLY_STATUS_FULL_CHARGING,
- };
- 
- /* What algorithm is the charger using? */
--- 
-2.20.1
+Yeah.. that's going to be somewhat painful.
 
+> > Steve, can you clarify the ftrace side here? Afaict return_to_handler()
+> > is similarly affected.
+> 
+> I'm not exactly sure what the issue is. As Masami stated, kretprobe
+> uses a ret to return to the calling function, but ftrace uses a jmp.
 
+I'll have to re-read the ftrace bits, but from the top of my head you
+cannot do an indirect jump and preserve all registers at the same time,
+so a return stub must use jump from stack aka. ret.
+
+> kretprobe return tracing is more complex than the function graph return
+> tracing is (which is one of the issues I need to overcome to unify
+> them),
+
+I'm not sure it is. IIRC the biggest pain point with kretprobe is that
+'silly' property that the kretprobe_instance are not the same between
+kretprobes. Luckily, that's not actually used anywhere, so we can simply
+rip that out.
+
+That should also help Matt make the whole freelist thing faster, because
+now the kretprobe instances are global.
+
+> and when the function graph return trampoline was created, it
+> did things as simple as possible (and before ORC existed).
+> 
+> Is this something to worry about now, or should we look to fix his in
+> the unifying process?
+
+There seems to be a lot of kretprobe activity now; so I figured we ought
+to at least consider where we want to go so we don't make it harder
+still.
 
