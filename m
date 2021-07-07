@@ -2,175 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C123BE84A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DEE53BE84E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhGGMvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 08:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231726AbhGGMvp (ORCPT
+        id S231585AbhGGMwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 08:52:33 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1596 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231383AbhGGMwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 08:51:45 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4A7C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 05:49:05 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id h2so3233797edt.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 05:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AWfBTNR+7qXXmfyz0hwbeeOHPZvd/rdFeAqJwOu0Eek=;
-        b=gs9Uh0+IX75An6xhR1AwTXnBIpGA7+nYA10/RA3Oo1dUIloN8ATCPG8c9UWDzpfMiC
-         U6Fg0rc+8NpCeuEEEE13vaZDW8zOJ3t2XDlSWjjtEuaJUxr/stPDOD89GYUDH8vSAIdZ
-         ETd6vo7YS49ihPdMHsyKty78mAKG4lQknRCkQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AWfBTNR+7qXXmfyz0hwbeeOHPZvd/rdFeAqJwOu0Eek=;
-        b=p5pDq4XhUqrkjIqC5HCc0YAtKbhKRQNTZWh/qEwLfODG406+tUwoidO+GaAyxR4aJy
-         9JJbgeAyVZBoJfuiZuq8Ib5Oxd5K4CC9c5FUTdaSXvNfAuQNNJbC4/MOT15KfB7cqjhF
-         aZx/kSNr7qIhzm4a4OBd55Mv9AAAPlrRqj8SUOxMvz8khlWV2H4eekLWYA14DwXkExNP
-         HktwggKx1u6JGvhYXnMaetWkDvAE8o/fZz+HVSAztd1vfcUqUDi3xYw2iMLzbvEduBz2
-         ZmHEzOBWE8+ud9FJYPTFuihxY9E6/f7ZnQyzqTZ6qhrfFhVGGn/WidtQAcXZ7B5cKU3O
-         Pyuw==
-X-Gm-Message-State: AOAM5324k380V+K7z2C8n5AbW0XEDzuwvjVttWlVk951VJluUASQKe0q
-        MN+D2CTN0tbVsRc0oZK/KE3rqvlc+akDFg==
-X-Google-Smtp-Source: ABdhPJx8pZiKeXxbvNxiZWHgCMP81k8ZyzoDm5GnGNEjvFaK8oVwSMG3kvRrvGqOun8YW9URIb0+SQ==
-X-Received: by 2002:a05:6402:1655:: with SMTP id s21mr29996951edx.295.1625662143300;
-        Wed, 07 Jul 2021 05:49:03 -0700 (PDT)
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com. [209.85.221.51])
-        by smtp.gmail.com with ESMTPSA id k25sm7373691eds.77.2021.07.07.05.49.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 05:49:02 -0700 (PDT)
-Received: by mail-wr1-f51.google.com with SMTP id f17so2911750wrt.6
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 05:49:02 -0700 (PDT)
-X-Received: by 2002:adf:c448:: with SMTP id a8mr7784112wrg.103.1625662141974;
- Wed, 07 Jul 2021 05:49:01 -0700 (PDT)
+        Wed, 7 Jul 2021 08:52:32 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 167CXKro084140;
+        Wed, 7 Jul 2021 08:49:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : mime-version : content-type; s=pp1;
+ bh=tVWoMSw7Z3rinGR6jRf8OexhqSTeaz+VwKHwlKOzR5U=;
+ b=Dmed/uRGrl+MyQKnSDr2fDKFWYwatvySzrwXj6UvPORp5gQO+uZHSHGy15NOZCLt6ywY
+ 9TRugI4XP5H2J/wMGZC194SFjJ6YjL/+6BNEE35vbKQcB+fTcq5OZ/e8hFOr604lcnLC
+ ls87bI6K6ca5u0TA/szGkJgWSPCpF7B0Vk22wOZAMypW95R45gqP74BzkS5dovT1lMOU
+ zoyly+XfBjJywDI6tu6+zfZSNjbqMeOxztatc6Uh9zy6t44cyoaUMDcd/tNYlpluDf9P
+ zrcDL7fLgQdgxbr+9h1S+YuD6/hChNh7evlczU8o47BlxeKGi7iCJOzYCV518I3173r9 7Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39m8bn6q8v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 08:49:46 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 167CYNdH087053;
+        Wed, 7 Jul 2021 08:49:46 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39m8bn6q7a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 08:49:45 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 167Cl7Go029407;
+        Wed, 7 Jul 2021 12:49:43 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 39jfh8srpp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 12:49:43 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 167ClkIU35979612
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Jul 2021 12:47:46 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 68B6911C05E;
+        Wed,  7 Jul 2021 12:49:40 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D3EDF11C04C;
+        Wed,  7 Jul 2021 12:49:39 +0000 (GMT)
+Received: from localhost (unknown [9.171.25.238])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  7 Jul 2021 12:49:39 +0000 (GMT)
+Date:   Wed, 7 Jul 2021 14:49:38 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>
+Cc:     Joe Lawrence <joe.lawrence@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] livepatch: Kick idle cpu's tasks to perform transition
+Message-ID: <patch.git-b76842ceb035.your-ad-here.call-01625661932-ext-1304@work.hours>
 MIME-Version: 1.0
-References: <20210427131344.139443-1-senozhatsky@chromium.org>
- <20210427131344.139443-9-senozhatsky@chromium.org> <10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl>
- <YMsAIVs7G2hUDR2F@google.com> <YNVJJhP69KPJ+DHv@google.com>
-In-Reply-To: <YNVJJhP69KPJ+DHv@google.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Wed, 7 Jul 2021 21:48:49 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5BB6JghdgGf9SjAWYuZFsZaAeU11rV1a1xrwws=w7j7_w@mail.gmail.com>
-Message-ID: <CAAFQd5BB6JghdgGf9SjAWYuZFsZaAeU11rV1a1xrwws=w7j7_w@mail.gmail.com>
-Subject: Re: [PATCHv2 8/8] videobuf2: handle non-contiguous DMA allocations
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Patchwork-Bot: notify
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: BkZPJO9lRca1XsVBvO4WsAwnB84hjX0e
+X-Proofpoint-ORIG-GUID: C7L4CMZg83D7QkaK-DJTK9w0tA0Nza_n
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-07_06:2021-07-06,2021-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 impostorscore=0 clxscore=1011 spamscore=0 mlxscore=0
+ bulkscore=0 malwarescore=0 suspectscore=0 mlxlogscore=999 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107070075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 12:10 PM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
->
-> Hi Hans,
->
-> On (21/06/17 16:56), Sergey Senozhatsky wrote:
-> [..]
-> > static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
-> > {
-> >         struct vb2_dc_buf *buf = buf_priv;
-> >
-> >         if (buf->vaddr)
-> >                 return buf->vaddr;
-> >
-> >         if (buf->db_attach) {
-> >                 struct dma_buf_map map;
-> >
-> >                 if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
-> >                         buf->vaddr = map.vaddr;
-> >
-> >                 return buf->vaddr;
-> >         }
-> >
-> >         if (!buf->coherent_mem)
-> >                 buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size,
-> >                                                     buf->dma_sgt);
-> >         return buf->vaddr;
-> > }
-> >
-> > And in vb2_dc_alloc functions set vaddr for !DMA_ATTR_NO_KERNEL_MAPPING
-> > in both coherent and non-coherent. So that we probably can have less
-> > branches when ->vaddr is NULL for one type of allocations, and is not
-> > NULL for another.
+On an idle system with large amount of cpus it might happen that
+klp_update_patch_state() is not reached in do_idle() for a long periods
+of time. With debug messages enabled log is filled with:
+[  499.442643] livepatch: klp_try_switch_task: swapper/63:0 is running
 
-I'd prefer if it stayed as is. This opportunistic mapping as in the
-current revision is quite nice, because most of the drivers don't
-bother to set DMA_ATTR_NO_KERNEL_MAPPING even if they don't need the
-kernel mapping. Also, even if the driver itself doesn't need the
-kernel mapping, we can still create one on demand if the DMA-buf
-importer demands it from us.
+without any signs of progress. Ending up with "failed to complete
+transition".
 
-> >
-> > static int vb2_dc_alloc_coherent(struct vb2_dc_buf *buf)
-> > {
-> >         struct vb2_queue *q = buf->vb->vb2_queue;
-> >
-> >         buf->cookie = dma_alloc_attrs(buf->dev,
-> >                                       buf->size,
-> >                                       &buf->dma_addr,
-> >                                       GFP_KERNEL | q->gfp_flags,
-> >                                       buf->attrs);
-> >         if (!buf->cookie)
-> >                 return -ENOMEM;
-> >
-> >         if (q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING)
-> >                 return 0;
-> >
-> >         buf->vaddr = buf->cookie;
-> >         return 0;
-> > }
-> >
-> > static int vb2_dc_alloc_non_coherent(struct vb2_dc_buf *buf)
-> > {
-> >         struct vb2_queue *q = buf->vb->vb2_queue;
-> >
-> >         buf->dma_sgt = dma_alloc_noncontiguous(buf->dev,
-> >                                                buf->size,
-> >                                                buf->dma_dir,
-> >                                                GFP_KERNEL | q->gfp_flags,
-> >                                                buf->attrs);
-> >         if (!buf->dma_sgt)
-> >                 return -ENOMEM;
-> >
-> >         if (q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING)
-> >                 return 0;
-> >
-> >         buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size, buf->dma_sgt);
-> >         if (!buf->vaddr) {
-> >                 dma_free_noncontiguous(buf->dev, buf->size,
-> >                                        buf->dma_sgt, buf->dma_addr);
-> >                 return -ENOMEM;
-> >         }
-> >         return 0;
-> > }
->
-> I guess this should address the case when
->
-> "after allocating the buffer, the buffer is exported as a dma_buf and
-> another device calls dma_buf_ops vb2_dc_dmabuf_ops_vmap, which in turn
-> calls dma_buf_map_set_vaddr(map, buf->vaddr); with a NULL buf->vaddr"
+On s390 LPAR with 128 cpus not a single transition is able to complete
+and livepatch kselftests fail.
 
-Sorry, I fail to get what this is about. Where does this quote come from?
+To deal with that, make sure we break out of do_idle() inner loop to
+reach klp_update_patch_state() by marking idle tasks as NEED_RESCHED
+as well as kick cpus out of idle state.
 
->
-> Because ->vaddr will not be NULL now after allocation for both coherent
-> and non-coherent buffers (modulo DMA_ATTR_NO_KERNEL_MAPPING requests).
->
-> What do you think?
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+---
+ kernel/livepatch/transition.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Hans, any feedback on this? Thanks.
-
-Best regards,
-Tomasz
+diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
+index 3a4beb9395c4..793eba46e970 100644
+--- a/kernel/livepatch/transition.c
++++ b/kernel/livepatch/transition.c
+@@ -415,8 +415,11 @@ void klp_try_complete_transition(void)
+ 	for_each_possible_cpu(cpu) {
+ 		task = idle_task(cpu);
+ 		if (cpu_online(cpu)) {
+-			if (!klp_try_switch_task(task))
++			if (!klp_try_switch_task(task)) {
+ 				complete = false;
++				set_tsk_need_resched(task);
++				kick_process(task);
++			}
+ 		} else if (task->patch_state != klp_target_state) {
+ 			/* offline idle tasks can be switched immediately */
+ 			clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
+-- 
+2.25.4
