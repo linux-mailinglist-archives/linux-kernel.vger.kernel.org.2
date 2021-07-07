@@ -2,71 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E683BE61A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8A13BE61E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhGGKFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37278 "EHLO
+        id S231176AbhGGKG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhGGKFQ (ORCPT
+        with ESMTP id S229949AbhGGKG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:05:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18587C061574;
-        Wed,  7 Jul 2021 03:02:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lcapCN48fsJkIvRKO2zKEWUzLtifLzkbUYXcK15Ll0M=; b=X/TzKhIOPpGn7DHzSiGl+I8O5C
-        hxl/Y9N1th1qdP/9wfBI/pElj+XP6RIq+tNliaWhM057QqKxVntqMkWGbBMyl85aN8NUsbxuUNcLd
-        QT+ukRXHxsNrTxyQ2+RfiKOhu2ZeFP7GB+zqo3/vCJIFeqZCaVtppfxbK5U1kXH62AbCu7DtZRwYL
-        iR7X+1UGo+Z04ILwdvkXyr09dc4mZcvbIqkcLgF3Yz7sO/yt+C1GSAIzEp5cL2ynF5VDuXtrm1j9u
-        fwSA/YBLnqpG+HonLWltKfP6cBhF8VyNnCgkxRUFTOoGJDY87eC3UCsmZFtzHirNpZj7qQrutm++Z
-        ai0p29Lw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m14NA-00CHg5-8U; Wed, 07 Jul 2021 10:01:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD73230007E;
-        Wed,  7 Jul 2021 12:01:38 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 77E6F2CAC4F58; Wed,  7 Jul 2021 12:01:38 +0200 (CEST)
-Date:   Wed, 7 Jul 2021 12:01:38 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, Chris.Redpath@arm.com,
-        dietmar.eggemann@arm.com, morten.rasmussen@arm.com,
-        qperret@google.com, linux-pm@vger.kernel.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, vincent.guittot@linaro.org,
-        mingo@redhat.com, juri.lelli@redhat.com, rostedt@goodmis.org,
-        segall@google.com, mgorman@suse.de, bristot@redhat.com,
-        CCj.Yeh@mediatek.com
-Subject: Re: [PATCH 2/3] PM: EM: Make em_cpu_energy() able to return bigger
- values
-Message-ID: <YOV7gt67DyYXtBkF@hirez.programming.kicks-ass.net>
-References: <20210625152603.25960-1-lukasz.luba@arm.com>
- <20210625152603.25960-3-lukasz.luba@arm.com>
- <YOVSu08LpHX5cx/+@hirez.programming.kicks-ass.net>
- <ca9853d1-5ff2-bdac-7581-61bffa3fdaaa@arm.com>
+        Wed, 7 Jul 2021 06:06:56 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618A5C061574;
+        Wed,  7 Jul 2021 03:04:16 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1625652251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l4d+X+0oh7pLRmIT4Tm+7PRFWAQYzplz4q7LBd0lrGI=;
+        b=sL98hjZqm+h0kRcLs1YYzAgxBwL8RHynHt5cJpwBWwaKK1YyqOJleoTKS6QdlYQKJyvoDo
+        OVMeBZv2CFLQdCnRaXOoPa9+Idpx5wH5T9RWrsPg9QSyKsJgiVriudjCOrpwaTULTHUVvK
+        BrtqDXVHikDeh7oc27vBXsf4hSS9pLEJmQ7vutzfn8UXKsupH0VrrE3rVvUEzUdF1M+F24
+        jlQ2QNX28gYx+EzLeokz9C9P5pkGzQtP+b4kiq8BZvYPjEvSBxnpxe2rFoHJCOOrTgHJJd
+        /AeGfCO34SyxRe2SXtvgNUrzle0UjQ6t5SBGMnPKJPAvsDv4gAxwgI38zVplrg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1625652251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l4d+X+0oh7pLRmIT4Tm+7PRFWAQYzplz4q7LBd0lrGI=;
+        b=yCcETyJtZUh7eHrpcXLzRjuIs+A5rrhW8VNZjstKw/MkjiDicrP9QvRmIISczVjY+OOEnm
+        QjkQxuds7kQTUbDQ==
+To:     "zhaoyan.liao" <zhaoyan.liao@linux.alibaba.com>, mingo@redhat.com,
+        hpa@zytor.com, dwmw@amazon.co.uk
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        songmuchun@bytedance.com, likunkun@bytedance.com,
+        guancheng.rjk@alibaba-inc.com,
+        "zhaoyan.liao" <zhaoyan.liao@linux.alibaba.com>
+Subject: Re: [PATCH] use 64bit timer for hpet
+In-Reply-To: <1625213625-25745-1-git-send-email-zhaoyan.liao@linux.alibaba.com>
+References: <1625213625-25745-1-git-send-email-zhaoyan.liao@linux.alibaba.com>
+Date:   Wed, 07 Jul 2021 12:04:11 +0200
+Message-ID: <875yxmqw2s.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca9853d1-5ff2-bdac-7581-61bffa3fdaaa@arm.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 09:09:08AM +0100, Lukasz Luba wrote:
-> For now we would live with this simple code which improves
-> all recent 64bit platforms and is easy to take it into Android
-> common kernel. The next step would be more scattered across
-> other subsystems, so harder to backport to Android 5.4 and others.
+Liao,
 
-Ah, you *do* only care about 64bit :-) So one option is to only increase
-precision for 64BIT builds, just like we do for scale_load() and
-friends.
+On Fri, Jul 02 2021 at 16:13, zhaoyan liao wrote:
+> The kernel judges whether the tsc clock is accurate in the
+> clocksource_watchdog background thread function. The hpet clock source
+> is 32-bit, but tsc is 64-bit. Therefore, when the system is busy and the
+> clocksource_watchdog cannot be scheduled in time, the hpet clock may
+> overflow and cause the system to misjudge tsc as unreliable.
+
+Seriously? The wrap-around time for 32bit HPET @24MHz is ~3 minutes.
+
+> In this case, we recommend that the kernel adopts the 64-bit hpet clock
+> by default to keep the width of the two clock sources the same to reduce
+> misjudgment. Some CPU models may not support 64-bit hpet, but according
+> to the description of the CPU's register manual, it does not affect our
+> reading action.
+
+So much for the theory.
+
+> -#define HPET_MASK			CLOCKSOURCE_MASK(32)
+> +#define HPET_MASK			CLOCKSOURCE_MASK(64)
+
+How is that valid for a 32bit HPET? This breaks the clocksource.
+ 
+> +inline unsigned long hpet_readq(unsigned int a)
+> +{
+> +	return readq(hpet_virt_address + a);
+
+Breaks 32bit build immediately.
+
+Aside of that the reason why the kernel does not support 64bit HPET is
+that there are HPETs which advertise 64bit support, but the
+implementation is buggy.
+
+IOW, while this works for your hardware this breaks quite some parts of
+the universe. Not really a good approach.
+
+Thanks,
+
+        tglx
