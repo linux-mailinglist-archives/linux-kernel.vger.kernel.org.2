@@ -2,74 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F94C3BEAB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9803BEAB0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhGGPec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 11:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54542 "EHLO
+        id S232266AbhGGPdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 11:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232211AbhGGPeb (ORCPT
+        with ESMTP id S231721AbhGGPdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 11:34:31 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7DFC061574;
-        Wed,  7 Jul 2021 08:31:50 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id w13so2125610wmc.3;
-        Wed, 07 Jul 2021 08:31:50 -0700 (PDT)
+        Wed, 7 Jul 2021 11:33:46 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2E8C061574;
+        Wed,  7 Jul 2021 08:31:05 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id w74so3775726oiw.8;
+        Wed, 07 Jul 2021 08:31:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BQn9a4zjHHkcyd8nWBIk09uRnMx2xEYAXpXVNFTpdbA=;
-        b=FywxYZ0w7PhbZPy1z43/Z/FLPkbHVBVsZu/4+U+T+ZpeEOaC5cJnIIczucsqHHX+dV
-         jTu8LDX7kJdN5fiqEId9ExAklTEFb1GUGKifRGmvaP2vwhfp7yM1Snv8dqU2fAzEsp9m
-         t3mNgD2ksPAVYw0aT6Oc1gLHoukmAhBf4vui5DBFMd0ujxN2+yNEYERUKMJaC+i3rSO0
-         q4X7wbJel6JA1YSkeSzSHAOLjI5fHhIYEL+xfmrQ5XvlcRyQ60TWZ5TLNcYt5LAFkxac
-         IYAqzbk2fsCz/15pW/eaIhAobTpAqj10f2iJ8C085iyou6Gn3Of5yRu2l/eHbnbh+DAv
-         Z0JQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wu589UyEpwCPZKdfA998XhHvrfJeA61TDfTMoVhy+pk=;
+        b=bHrhj8aFx9B845mrCCqVMvwm56Xreg7IIlcIRbUH0VAR4z3eKoxxUyXhnstq2YBIdt
+         m0V6pO6Rnkyk0cOfuYOj7xOySa6e8MGWKsYewPlEU4XR0ASg0P9T33R6T/ff/Oo21684
+         qq8d94XC0Uzsj362ZpknoiBN5nj2mzBcE/ttEspCRQFLJl6vKKyaZv85bMHEz11u1Ztr
+         Qb0fMjepKZvRsQV1Mugu8B4JGQY7efw7KXstRDM9zQGqPznOdKuYMyf+oY0QTn8Lsroh
+         dZJR2CPELJRpYIPVsgSyNBJGDQb5SjRLsUgwgxpi1CU4M/fJQLHz7x4pvUXOVkBoX2zR
+         6r6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BQn9a4zjHHkcyd8nWBIk09uRnMx2xEYAXpXVNFTpdbA=;
-        b=HtULEtMGLJ9tFaqgvcxzUDGn1FNvpB0jpu6lv2ZhqDlBuFhvFB4OW+bo6h+Xy+8Uwh
-         /YbvQ3k8+qs6FitLFDAQ3wW+QtidRStcYNx0l4EThUhcUQggN1234jYTxMH7Tnjl4xa3
-         UwO1ow1uzjY0L6LH1LMA1X5o+5L8NAj/P0Ii4N8C9nvZ5bpk6dx/S9MK2HHcD0bGwI4k
-         tT1ZzsUvyrHeAsYcnGRik74oIptYcXJ2qR6Ws+tOS1+ugo3d/5+4vo7OLb5Sddl1DlNN
-         ZaDqoqBb351w8M248Mx6GNEIhKB/lGcgHlKJKM2LZTW+dCAeqCKYM5h4TgVeua9UjoXE
-         8/7w==
-X-Gm-Message-State: AOAM5329eeKz8Xd8e0sp+cXIMvDqikANoGEnSbUYeZJ9GJHQiTN6arWr
-        lj/ju+cS2DSodItnIOLoLkA=
-X-Google-Smtp-Source: ABdhPJw1Vcl8Qu3j3vcqh7x0hGEs+y8bp1eskE1vLjJ0m2ypT/PAEsFSOOECDxtDNjAMNRedjrZTbA==
-X-Received: by 2002:a05:600c:206:: with SMTP id 6mr185653wmi.139.1625671909447;
-        Wed, 07 Jul 2021 08:31:49 -0700 (PDT)
-Received: from masalkhi.fritz.box (dslb-178-005-073-162.178.005.pools.vodafone-ip.de. [178.5.73.162])
-        by smtp.gmail.com with ESMTPSA id o3sm20847579wrw.56.2021.07.07.08.31.47
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=wu589UyEpwCPZKdfA998XhHvrfJeA61TDfTMoVhy+pk=;
+        b=jDg4In1ox6r2MmeRaVDOIF8588NmBigt+Ck0r04afEjcP4XN+MA4CUXbExeeocjFT4
+         wJW1DfP7abxn5r3jw3F/etX3sjy3vNFOXXZE+6hrDxazaPZ7hPMgZ3PBhI2q3LKYwgSg
+         eOvuGIsD7serPjgndgxvv39VpXgzwomLgsVnNZsVDhMZxD/JJoK9ts1rVpCIxaMJMcbv
+         rs/YXXEPQRXKqe2DllBNVKOqioXKOCUAJ0IIQjaqzM26WH7ZEPitobzjys7Rsm3NdNhT
+         qFWRx7soV+gZO0G/90Urmar56Uj+vZPKGfLlHaFHY4c7ZXLexwN0z7TmfGhYZyscRqYs
+         P9FQ==
+X-Gm-Message-State: AOAM533320q8QD6q4kqDiMSUfXzvYTcilpz05y/ZlGMPvflQjNFwy31X
+        jGpoBS+JlyiJlMGieBkuf58=
+X-Google-Smtp-Source: ABdhPJyoBc3Zr0VgUI8Aq6qjdaQ1z5XORqMS6vMI3+Oopvw0S7h+Hp71EWwKOIwftVjKxVjKBJaWBA==
+X-Received: by 2002:aca:534b:: with SMTP id h72mr7724461oib.21.1625671865355;
+        Wed, 07 Jul 2021 08:31:05 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a7sm3555730ooo.9.2021.07.07.08.31.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 08:31:48 -0700 (PDT)
-From:   Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-To:     arnd@arndb.de
-Cc:     hch@infradead.org, deller@gmx.de, dave.anglin@bell.net,
-        axboe@kernel.dk, bernie@develer.com, linux-parisc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com
-Subject: Re: div_u64/do_div stack size usage, was Re: [v3] block: Removed a warning while compiling with a cross compiler for parisc
-Date:   Wed,  7 Jul 2021 17:30:53 +0200
-Message-Id: <20210707153053.62237-1-abd.masalkhi@gmail.com>
-X-Mailer: git-send-email 2.29.0.rc1.dirty
-In-Reply-To: <CAK8P3a23=tcWx8iWNAKXcT9TRgPrZbEVVy9a_ad29hSde_jkKg@mail.gmail.com>
-References: <CAK8P3a23=tcWx8iWNAKXcT9TRgPrZbEVVy9a_ad29hSde_jkKg@mail.gmail.com>
+        Wed, 07 Jul 2021 08:31:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 7 Jul 2021 08:31:02 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+Subject: Re: [tip: sched/core] sched/core: Initialize the idle task with
+ preemption disabled
+Message-ID: <20210707153102.GA1243141@roeck-us.net>
+References: <20210512094636.2958515-1-valentin.schneider@arm.com>
+ <162081815405.29796.14574924529325899839.tip-bot2@tip-bot2>
+ <20210706194456.GA1823793@roeck-us.net>
+ <87fswr6lqv.mognet@arm.com>
+ <20210707120305.GB115752@lothringen>
+ <87czru727k.mognet@arm.com>
+ <c30097f3-63b4-6fa0-a369-8f4e20ee1040@roeck-us.net>
+ <de7b1d0f-8767-1b33-2950-576029c0d9f7@ozlabs.ru>
+ <878s2i6uk2.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878s2i6uk2.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for late respond, I was at work. The problem was solved for me too,
-after setting the CONFIG_CC_OPTIMIZE_FOR_SIZE, and I have went through the
-gcc 9.4 manual to look for the -f option for -O2, it seems that all -f option
-that we would not specify is already excluded with -Os. changing defconfig, it
-seems for me a good idea.
+On Wed, Jul 07, 2021 at 03:57:17PM +0100, Valentin Schneider wrote:
+> On 08/07/21 00:35, Alexey Kardashevskiy wrote:
+> > On 08/07/2021 00:14, Guenter Roeck wrote:
+> >>
+> >> Can you reproduce the problem with a powerpc qemu emulation ?
+> >> If so, how do you reproduce it there ? Reason for asking is that I don't
+> >> see
+> >> the problem with any of my powerpc emulations, and I would like to add test
+> >> case(s) if possible.
+> >
+> > I can reproduce the problem on powerpc easily - qemu with "-smp 2" does it.
+> >
+> 
+> So on powerpc I'm chasing a slightly different problem, reported at
+> [1]. I couldn't get it to trigger on qemu for powerpc64, and I'm still
+> struggling with powerpc. Could you please share you qemu invocation &
+> kernel .config? Thanks.
+> 
+Same here. Actually, worse: All 32-bit ppc emulations I tried to
+run with more than 1 CPU crash when bringing up the 2nd CPU,
+and that even happens with 5.13.
 
-Abd-Alrhman
+So, yes, please share your qemu command line and the kernel
+configuration.
+
+Thanks,
+Guenter
