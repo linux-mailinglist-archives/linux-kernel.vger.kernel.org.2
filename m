@@ -2,54 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911F73BE2D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 07:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DBE3BE2D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 07:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhGGF4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 01:56:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36616 "EHLO mail.kernel.org"
+        id S230273AbhGGF5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 01:57:49 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:30827 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230120AbhGGF4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 01:56:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D163561CB6;
-        Wed,  7 Jul 2021 05:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625637214;
-        bh=KU7Lld3FrpURemteJNLQ8G3R5klJrF5KbTxbRQslhTc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kq7CbNLCgoNZ7nLNfBkUW4Uhot50Pm+EaQKiirdCzaK2Zunz5mHDSsukLcDHnIqnx
-         6T+lG3H2UpNKBT1u59p3ujrf7crYWu2V6d4y96GKc8SBh8sv7PgcC+uxsxE/9UXhkF
-         Zy2p6rJt62MMiNFIcyavChUag5NmJ3S9na5qsN2U=
-Date:   Wed, 7 Jul 2021 07:53:30 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?6LW15oyv5Zu9?= <zhenguo6858@gmail.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: n_gsm: delete SABM command frame as requester
-Message-ID: <YOVBWuDDbd/eoeak@kroah.com>
-References: <1625108078-16491-1-git-send-email-zhenguo6858@gmail.com>
- <695b2537-28e0-90c4-d516-727dfeead12d@kernel.org>
- <5cb496dc-eac1-124e-397d-0c58f5d4a7a1@kernel.org>
- <CAGGV+3+Oc415RJGueGHdYnDGWFqyuD_6ehBWybhR=6bDoFE9Wg@mail.gmail.com>
- <CAGGV+3J9Kj-GoiCBYNN=JLx=Jj02yMkpdg5E_+3W-tvQ_jESyQ@mail.gmail.com>
- <CAGGV+3JT6P=tM3_t045FfJtZQ_diPv2_qmnE1LHYvkQo7J7MAw@mail.gmail.com>
- <CAGGV+3LHqgpuvWC_WpkqYnk=U_1vaCReEMrYkenDSAi95740hQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGGV+3LHqgpuvWC_WpkqYnk=U_1vaCReEMrYkenDSAi95740hQ@mail.gmail.com>
+        id S230120AbhGGF5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 01:57:49 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GKTCw1yKhzBDR7;
+        Wed,  7 Jul 2021 07:55:08 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 0MMGcGT251sf; Wed,  7 Jul 2021 07:55:08 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GKTCv4qjCzBDPg;
+        Wed,  7 Jul 2021 07:55:07 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 975948B7B9;
+        Wed,  7 Jul 2021 07:55:07 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id EmTIZnrzb-sY; Wed,  7 Jul 2021 07:55:07 +0200 (CEST)
+Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4DAE38B76E;
+        Wed,  7 Jul 2021 07:55:07 +0200 (CEST)
+Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 169F266408; Wed,  7 Jul 2021 05:55:07 +0000 (UTC)
+Message-Id: <028d5483b4851b01ea4334d0751e7f260419092b.1625637264.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/32: Fix critical and debug interrupts on BOOKE
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, radu.rendec@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed,  7 Jul 2021 05:55:07 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 01:31:41PM +0800, 赵振国 wrote:
-> Dear Jiri,Greg
+32 bits BOOKE have special interrupts for debug and other
+critical events.
 
-<snip>
+When handling those interrupts, dedicated registers are saved
+in the stack frame in addition to the standard registers, leading
+to a shift of the pt_regs struct.
 
-Please do not send html email, it is rejected by the mailing lists so no
-one else can see it to respond.
+Since commit db297c3b07af ("powerpc/32: Don't save thread.regs on
+interrupt entry"), the pt_regs struct is expected to be at the
+same place all the time.
 
-thanks,
+Instead of handling a special struct in addition to pt_regs, just
+add those special registers to struct pt_regs.
 
-greg k-h
+Reported-by: Radu Rendec <radu.rendec@gmail.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Fixes: db297c3b07af ("powerpc/32: Don't save thread.regs on interrupt entry")
+Cc: stable@vger.kernel.org
+---
+ arch/powerpc/include/asm/ptrace.h | 16 ++++++++++++++++
+ arch/powerpc/kernel/asm-offsets.c | 31 ++++++++++++++-----------------
+ arch/powerpc/kernel/head_booke.h  | 27 +++------------------------
+ 3 files changed, 33 insertions(+), 41 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
+index 3e5d470a6155..14422e851494 100644
+--- a/arch/powerpc/include/asm/ptrace.h
++++ b/arch/powerpc/include/asm/ptrace.h
+@@ -70,6 +70,22 @@ struct pt_regs
+ 		unsigned long __pad[4];	/* Maintain 16 byte interrupt stack alignment */
+ 	};
+ #endif
++#if defined(CONFIG_PPC32) && defined(CONFIG_BOOKE)
++	struct { /* Must be a multiple of 16 bytes */
++		unsigned long mas0;
++		unsigned long mas1;
++		unsigned long mas2;
++		unsigned long mas3;
++		unsigned long mas6;
++		unsigned long mas7;
++		unsigned long srr0;
++		unsigned long srr1;
++		unsigned long csrr0;
++		unsigned long csrr1;
++		unsigned long dsrr0;
++		unsigned long dsrr1;
++	};
++#endif
+ };
+ #endif
+ 
+diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
+index a47eefa09bcb..5bee245d832b 100644
+--- a/arch/powerpc/kernel/asm-offsets.c
++++ b/arch/powerpc/kernel/asm-offsets.c
+@@ -309,24 +309,21 @@ int main(void)
+ 	STACK_PT_REGS_OFFSET(STACK_REGS_IAMR, iamr);
+ #endif
+ 
+-#if defined(CONFIG_PPC32)
+-#if defined(CONFIG_BOOKE) || defined(CONFIG_40x)
+-	DEFINE(EXC_LVL_SIZE, STACK_EXC_LVL_FRAME_SIZE);
+-	DEFINE(MAS0, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas0));
++#if defined(CONFIG_PPC32) && defined(CONFIG_BOOKE)
++	STACK_PT_REGS_OFFSET(MAS0, mas0);
+ 	/* we overload MMUCR for 44x on MAS0 since they are mutually exclusive */
+-	DEFINE(MMUCR, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas0));
+-	DEFINE(MAS1, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas1));
+-	DEFINE(MAS2, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas2));
+-	DEFINE(MAS3, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas3));
+-	DEFINE(MAS6, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas6));
+-	DEFINE(MAS7, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, mas7));
+-	DEFINE(_SRR0, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, srr0));
+-	DEFINE(_SRR1, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, srr1));
+-	DEFINE(_CSRR0, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, csrr0));
+-	DEFINE(_CSRR1, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, csrr1));
+-	DEFINE(_DSRR0, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, dsrr0));
+-	DEFINE(_DSRR1, STACK_INT_FRAME_SIZE+offsetof(struct exception_regs, dsrr1));
+-#endif
++	STACK_PT_REGS_OFFSET(MMUCR, mas0);
++	STACK_PT_REGS_OFFSET(MAS1, mas1);
++	STACK_PT_REGS_OFFSET(MAS2, mas2);
++	STACK_PT_REGS_OFFSET(MAS3, mas3);
++	STACK_PT_REGS_OFFSET(MAS6, mas6);
++	STACK_PT_REGS_OFFSET(MAS7, mas7);
++	STACK_PT_REGS_OFFSET(_SRR0, srr0);
++	STACK_PT_REGS_OFFSET(_SRR1, srr1);
++	STACK_PT_REGS_OFFSET(_CSRR0, csrr0);
++	STACK_PT_REGS_OFFSET(_CSRR1, csrr1);
++	STACK_PT_REGS_OFFSET(_DSRR0, dsrr0);
++	STACK_PT_REGS_OFFSET(_DSRR1, dsrr1);
+ #endif
+ 
+ 	/* About the CPU features table */
+diff --git a/arch/powerpc/kernel/head_booke.h b/arch/powerpc/kernel/head_booke.h
+index 87b806e8eded..e5503420b6c6 100644
+--- a/arch/powerpc/kernel/head_booke.h
++++ b/arch/powerpc/kernel/head_booke.h
+@@ -168,20 +168,18 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
+ /* only on e500mc */
+ #define DBG_STACK_BASE		dbgirq_ctx
+ 
+-#define EXC_LVL_FRAME_OVERHEAD	(THREAD_SIZE - INT_FRAME_SIZE - EXC_LVL_SIZE)
+-
+ #ifdef CONFIG_SMP
+ #define BOOKE_LOAD_EXC_LEVEL_STACK(level)		\
+ 	mfspr	r8,SPRN_PIR;				\
+ 	slwi	r8,r8,2;				\
+ 	addis	r8,r8,level##_STACK_BASE@ha;		\
+ 	lwz	r8,level##_STACK_BASE@l(r8);		\
+-	addi	r8,r8,EXC_LVL_FRAME_OVERHEAD;
++	addi	r8,r8,THREAD_SIZE - INT_FRAME_SIZE;
+ #else
+ #define BOOKE_LOAD_EXC_LEVEL_STACK(level)		\
+ 	lis	r8,level##_STACK_BASE@ha;		\
+ 	lwz	r8,level##_STACK_BASE@l(r8);		\
+-	addi	r8,r8,EXC_LVL_FRAME_OVERHEAD;
++	addi	r8,r8,THREAD_SIZE - INT_FRAME_SIZE;
+ #endif
+ 
+ /*
+@@ -208,7 +206,7 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
+ 	mtmsr	r11;							\
+ 	mfspr	r11,SPRN_SPRG_THREAD;	/* if from user, start at top of   */\
+ 	lwz	r11, TASK_STACK - THREAD(r11); /* this thread's kernel stack */\
+-	addi	r11,r11,EXC_LVL_FRAME_OVERHEAD;	/* allocate stack frame    */\
++	addi	r11,r11,THREAD_SIZE - INT_FRAME_SIZE;	/* allocate stack frame    */\
+ 	beq	1f;							     \
+ 	/* COMING FROM USER MODE */					     \
+ 	stw	r9,_CCR(r11);		/* save CR			   */\
+@@ -516,24 +514,5 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
+ 	bl	kernel_fp_unavailable_exception;			      \
+ 	b	interrupt_return
+ 
+-#else /* __ASSEMBLY__ */
+-struct exception_regs {
+-	unsigned long mas0;
+-	unsigned long mas1;
+-	unsigned long mas2;
+-	unsigned long mas3;
+-	unsigned long mas6;
+-	unsigned long mas7;
+-	unsigned long srr0;
+-	unsigned long srr1;
+-	unsigned long csrr0;
+-	unsigned long csrr1;
+-	unsigned long dsrr0;
+-	unsigned long dsrr1;
+-};
+-
+-/* ensure this structure is always sized to a multiple of the stack alignment */
+-#define STACK_EXC_LVL_FRAME_SIZE	ALIGN(sizeof (struct exception_regs), 16)
+-
+ #endif /* __ASSEMBLY__ */
+ #endif /* __HEAD_BOOKE_H__ */
+-- 
+2.25.0
+
