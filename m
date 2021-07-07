@@ -2,147 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319463BE02A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 02:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44E33BE048
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 02:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbhGGAXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 20:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
+        id S230048AbhGGAbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 20:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbhGGAX3 (ORCPT
+        with ESMTP id S229834AbhGGAbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 20:23:29 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C10CC061574;
-        Tue,  6 Jul 2021 17:20:50 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id y17so433494pgf.12;
-        Tue, 06 Jul 2021 17:20:50 -0700 (PDT)
+        Tue, 6 Jul 2021 20:31:23 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6201C061574;
+        Tue,  6 Jul 2021 17:28:43 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id mn20-20020a17090b1894b02901707fc074e8so2532876pjb.0;
+        Tue, 06 Jul 2021 17:28:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fZN70fL0pQwXaj4RrpR87vleSRuBw7yD/HYXaGqinIg=;
-        b=ehXnstYyxnDRIYXvGMz//BmQ+uGIu41Ku+Ysc+8QxvwIEtp4AoVFYhBDJ2PvZdxwiw
-         3EoCgMt6T13tiJ1dzGQd4F1kQ+Bxvu8s5/PAqJkdv+FpBRwABVdmXGe1FuvWkQiwMz71
-         3nkwN+xja8X1OIt+rWxCMsA5pfXIhEjG1h5egx8idbCPgH3Rnb8RMSTaH77brNgi2BgB
-         H4R44a9Z9cRnMLC/68CsYkcfo0HoD9TzGVY/ef/C5HqALkf8R7UYf6fImshW9Na3mLUc
-         +E/NxvWKE56f5Gyyj5CgRcOFY9IGw+slIR5vIYtt7kPyDjIW/d8inbipprE0zXFapA6b
-         /mXw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wgMqBY62hL/9zc2/Y9RJScdFpoJ7MDAsy5QSUueWpmQ=;
+        b=cDMJD5q1dceLz4P4a4N1PWPbj3mpKCyHl+kpmuFvBSFCLjxJhTu83hIsv9j0g7WNjt
+         Ha5rraiLkj9M2ZepNiX9oUxJ7OcOz0tSY00XoutscCtagvsbYk6MI5/YILSNojz/bqF2
+         1Qrsm4Kj0OnJpFvdCLLfxL1LDXLpu5ximyhL/IgMUmUrLn70Di23tlAKRml1sYMZlnWG
+         oUcvZ4oRK2y0K8XEg509UdXAZftNPlIGd3cFjof+q3/5KnF1Htm88ueE4LAzrq8uhPYW
+         4vfFEidyMKlJ3qumCNjW62GIxYmZ5ECj+csgHpDGiadmWY3zozzKRWRT7xOqxj/7NVQ0
+         ko3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fZN70fL0pQwXaj4RrpR87vleSRuBw7yD/HYXaGqinIg=;
-        b=GsLdwZjYNvNv0jLl0I9p+YZrpXbXQG8tqmKVfI/1lOpPEymZ2xh8sLL82wTDFT0feY
-         Fk85RadDe5X59ZylCVQvbO9fBq4kQYGc+S7Ez12LLAg/mtChe6JYlytnsbGtBYjW7NJe
-         /kWMN4QctTwLhaSTeaje1hyL4abid1/aVc2E+cDBSycCpdRXnJsoUJFAMEpO6geYVBPD
-         lJ3B1MTCTOwz+QxUEAiIrAXX/dDRAv5jF0OLtnXj0yHh7eSXNSzVd/AuVcJ5FqXdSG3i
-         h5HnGlp3YRkGOQymsC+fER/degeSWdfLorqNGxhqhkaOGYxTHP/UU/gPDUb4skkGbjIq
-         iANQ==
-X-Gm-Message-State: AOAM5336wt9V2oW/ohU+6GE7IAgbN84iWCgFFljermhfRB8Jjy4TWAJj
-        5hre5wFeqH/PeUO8nHb9gHQ=
-X-Google-Smtp-Source: ABdhPJxC2liW9eMKer0esVHcTo05zB2Zwy67Z3H7o2SjWyGBgYyrBOBRmqIW+nkfxR8mLiqwfIjt9Q==
-X-Received: by 2002:a63:d0d:: with SMTP id c13mr23746299pgl.384.1625617249533;
-        Tue, 06 Jul 2021 17:20:49 -0700 (PDT)
-Received: from localhost.lan (p1284205-ipngn14601marunouchi.tokyo.ocn.ne.jp. [153.205.193.205])
-        by smtp.gmail.com with ESMTPSA id co12sm3987821pjb.33.2021.07.06.17.20.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wgMqBY62hL/9zc2/Y9RJScdFpoJ7MDAsy5QSUueWpmQ=;
+        b=M71qsPpVmmBIPDPE6eieRAQ1r3vcSRv8P5//CZMPjtKSfkV+EPoMZvIPHfhPERDEVK
+         VeF8FEg6vKF7a8xl0+0iZBxIwLolMa9y7SNWYb+sbukiBcB4nBhJ1iD5ZASIMASRwdZu
+         E/mm44VzqkzmcAMQ+Z94MVobOGwROnViva52rOyN/6iF3jEm9In1Szzv1/PxQ5MyM1Fx
+         jUKP+LuJkrAY3VsuiIy00S6Tfcc4xNphH+x0xr2ljtyyuC5nA24C3jD2z49i9v9H9cZ/
+         lTouQ+RmUHkGRKmlqmrMpUqZC5/iAlwT51JpKmuO8XU4fXd/BNNpydS2Evr37oIZBPiW
+         Qdfg==
+X-Gm-Message-State: AOAM5326MfEQA1MyU4QG2NTKCxftiqaiYopH5/kajr88TmM9K31aCO4W
+        d72Fjb60jPDCmYU66fp4aqM=
+X-Google-Smtp-Source: ABdhPJwyOfj2zNPpVkjW7izeLTHLXWRgoCKm6b8nqpc4pgmLX5lWGHIprfF5CJaY5N2CsLka8JsAxw==
+X-Received: by 2002:a17:90a:e7c4:: with SMTP id kb4mr2943529pjb.43.1625617723085;
+        Tue, 06 Jul 2021 17:28:43 -0700 (PDT)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id j6sm16042192pji.23.2021.07.06.17.28.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 17:20:48 -0700 (PDT)
-Received: from localhost (localhost [IPv6:::1])
-        by localhost.lan (Postfix) with ESMTPSA id EF707900853;
-        Wed,  7 Jul 2021 00:20:45 +0000 (GMT)
-Date:   Wed, 7 Jul 2021 00:20:45 +0000
-From:   Vincent Pelletier <plr.vincent@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Opensource [Steve Twiss]" <stwiss.opensource@diasemi.com>
-Subject: Re: [PATCH 2/3] hwmon: da9063: HWMON driver
-Message-ID: <20210707002045.571694b2@gmail.com>
-In-Reply-To: <20210706174201.GC943349@roeck-us.net>
-References: <850a353432cd676f96889cede291232abf58918d.1625581991.git.plr.vincent@gmail.com>
-        <dff04323fc1b0177c1c08d3670333a839af4c268.1625581991.git.plr.vincent@gmail.com>
-        <20210706174201.GC943349@roeck-us.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 06 Jul 2021 17:28:42 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 09:28:35 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc:     jic23@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        kernel@pengutronix.de, a.fatoum@pengutronix.de,
+        kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, david@lechnology.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        o.rempel@pengutronix.de
+Subject: Re: [PATCH v12 00/17] Introduce the Counter character device
+ interface
+Message-ID: <YOT1M1qcfHC2PpuF@shinobu>
+References: <cover.1625471640.git.vilhelm.gray@gmail.com>
+ <5bdd9ee6-86af-3bcc-43ff-418fd1a2e3e8@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9KoXz8sgYVDVTxwl"
+Content-Disposition: inline
+In-Reply-To: <5bdd9ee6-86af-3bcc-43ff-418fd1a2e3e8@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-Thanks a lot for your reviews.
+--9KoXz8sgYVDVTxwl
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 6 Jul 2021 10:42:01 -0700, Guenter Roeck <linux@roeck-us.net> wrote:
-> -EINVAL seems wrong. Maybe -EIO or -ETIMEDOUT.
+On Tue, Jul 06, 2021 at 02:40:01PM +0300, Jarkko Nikula wrote:
+> Hi
+>=20
+> On 7/5/21 11:18 AM, William Breathitt Gray wrote:
+> > To summarize the main points of this patchset: there are no changes to
+> > the existing Counter sysfs userspace interface; a Counter character
+> > device interface is introduced that allows Counter events and associated
+> > data to be read() by userspace; the events_configure() and
+> > watch_validate() driver callbacks are introduced to support Counter
+> > events; and IRQ support is added to the 104-QUAD-8 driver, serving as an
+> > example of how to support the new Counter events functionality.
+> >=20
+> I quickly tested this set on top of linux-next next-20210706 and didn't=
+=20
+> see any issue with intel-qep.c. However I noticed two mutex issues in=20
+> patch 15/17. Perhaps visible due the CONFIG_DEBUG_MUTEXES=3Dy etc. I have=
+ on.
+>=20
+> I'll be out of office next few weeks so cannot test if you have a new=20
+> version meanwhile but wanted to share no show stopper from intel-qep.c=20
+> and those two mutex warnings.
+>=20
+> Jarkko
 
-On this topic, I've been hesitating to change this code to the
-following. Would it be acceptable ?
+Thanks, these seem pretty straightforward to fix so I'll wait a week or
+so to see if any other issues pop up before making a v13 submission.
 
-  ret = wait_for_completion_timeout(...)
-  if (ret == 0)
-    warn[_once](...)
-  ...
-  if (adc_man & DA9063_ADC_MAN) {
-    ret = -ETIMEDOUT;
-    goto err_mread;
-  }
+William Breathitt Gray
 
-The warn is to make it easier to debug in case of IRQ issue. The reason
-I'm caring is that I happen to have triggered such issue while testing
-this driver, as the GPIO and PLIC on the hifive-unmatched seem to
-disagree with each other. I debugged this and reported to linux-riscv,
-and I believe the issue is not in da9063-hwmon: it also affects
-da9063-onkey, and my GPIO-level workaround fixes both.
+--9KoXz8sgYVDVTxwl
+Content-Type: application/pgp-signature; name="signature.asc"
 
-On a tangential topic: this chip is supposed to complete an ADC cycle
-in 10ms, so 1s timeout seems a lot to me. On the one hand it made the
-IRQ issue obvious, but on the other hand a safety factor of 100 seems
-enormous to me. What would be a usual/reasonable safety factor ? 10 ?
-2 ?
+-----BEGIN PGP SIGNATURE-----
 
-> > +	ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
-> > +					da9063_hwmon_irq_handler,
-> > +					IRQF_TRIGGER_LOW | IRQF_ONESHOT,  
-> 
-> Is that correct ? The trigger condition is normally provided by
-> devicetree.
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmDk9TMACgkQhvpINdm7
+VJL/+A/8DfP+wFOuOhzB4lVMNXXWQgDSk/bZskGmbS2ZZLobkAQ260t+W1F8L7vj
+q9ghHKWyLScDZ6EnRxY+1CdtT4eYXUcDeqJ0H0uLROcluzVYgBw7ZiJdt1nrEjmz
+abeflZ2T0hz1/fsX5zfUDRE2gdjjhdK/92iMmdiYXhOav8y3LyaAhmlN6d5Vqob4
+NwPZlf46LbvG3N0ExnT0ZP2B8q0LDJBXdxJbe4QoHY8239xFfins+2AhdhHAGfE6
+nAszv/Bq1igVzQ04M+MbvMbVf6zPlyphAudOa9pi5+up2fB/dBGVIE5hrZ4LHlQn
+chEpoCZ5/ZI3ZuEN3OoFuiiCDdbT06Pvn71x7Fm5Oio51JkFa8AysnEbGTr9k/NX
+9/FERGf+fQBSGou1XO1ujPFLtZxwYyvUE/a/Kw2AdLDVLBoQ6AqF3m6s/wP/vGlE
+tbrqdNkucZ9tMWJQGCM/528XztqDayILvKSkTS+RwkoBdv9G3HzKejW8EOkneTEp
+/5QAODb+TuvGMtvFyDuKxHkbZ1WA3ps6mgwguS5BaUkcnatur8s8JBT/IRR9WUxn
+5PLXV6+HGVoTu6Z179l2D7msc2iXwiETZEZjdVkMIrmQ+xgb+MhUUHeyZX4FLD+s
+pYmZ10G+ccSpXQucUP0hKygdkXjX7ZwTB1oT+9EG4t5aYu3e/FY=
+=xXkJ
+-----END PGP SIGNATURE-----
 
-At least it is consistent with the existing and related da9063-onkey:
-
-	irq = platform_get_irq_byname(pdev, "ONKEY");
-	if (irq < 0)
-		return irq;
-
-	error = devm_request_threaded_irq(&pdev->dev, irq,
-					  NULL, da9063_onkey_irq_handler,
-					  IRQF_TRIGGER_LOW | IRQF_ONESHOT,
-					  "ONKEY", onkey);
-
-I am not familiar enough with IRQ handling to tell if IRQF_TRIGGER_LOW
-has an actual meaning here: in my understanding the regmap handler
-decides how to clear an interrupt based on regmap_irq_chip content, and
-this is coming from mfd/da9063-irq.c .
-
-Are both devm_request_threaded_irq() equally wrong ?
-
-> > +	/* set trim temperature offset to value read at startup */
-> > +	hwmon->tjunc_offset = (signed char)hwmon->da9063->t_offset;  
-> 
-> Can you explain why this is read in and passed from the mfd driver
-> and not here ?
-
-I cannot, at least not with something other than "this is how I found
-the code", which I realise is not satisfactory.
-I've been holding back on changes as I felt constrained by preserving
-the original author's name on the changes (both Author and
-Signed-off-by), but this split was indeed bothering me.
-
-Regards,
--- 
-Vincent Pelletier
-GPG fingerprint 983A E8B7 3B91 1598 7A92 3845 CAC9 3691 4257 B0C1
+--9KoXz8sgYVDVTxwl--
