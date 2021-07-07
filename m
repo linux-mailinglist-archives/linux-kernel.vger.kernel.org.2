@@ -2,192 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C84773BE520
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFC23BE524
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhGGJKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:10:17 -0400
-Received: from mga02.intel.com ([134.134.136.20]:43997 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230166AbhGGJKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:10:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="196435148"
-X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
-   d="scan'208";a="196435148"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 02:07:29 -0700
-X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
-   d="scan'208";a="486741150"
-Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.11])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 02:07:25 -0700
-Date:   Wed, 7 Jul 2021 17:07:22 +0800
-From:   kernel test robot <rong.a.chen@intel.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Odin Ugedal <odin@uged.al>, Peter Zijlstra <peterz@infradead.org>,
-        Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kbuild test robot <lkp@intel.com>, ltp@lists.linux.it,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Chen Yu <yu.c.chen@intel.com>
-Subject: Re: [sched/fair] 1c35b07e6d: RIP:native_queued_spin_lock_slowpath
-Message-ID: <20210707090722.GH2022171@shao2-debian>
-References: <20210706085652.GF2022171@shao2-debian>
- <CAKfTPtBnEmMFwCWD3sGP=vrbG8tkLncKbjStYLN+od3z0K=RrA@mail.gmail.com>
+        id S231290AbhGGJKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230166AbhGGJKq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 05:10:46 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F9EC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 02:08:05 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id h6so2172851iok.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 02:08:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CnKJjWlAOjx/YkfP3quSm2ywcz7d6vwbVV4Qg9uF+uc=;
+        b=haG0AVzpMeoLRA/3dkgSFKs2/Gz9UcUB0LVhU12BunlLtgji0taA4dKqudG8n6/SEL
+         I3/pntrqN2ZjBha48b8Jne/qt+t7jKbc2P3n9TOzSKZo9EJc22mPwkIFOU6nrwnUwWre
+         KoMwXx38l671w2BbhWixw5/i6R4wUWhtPppLY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CnKJjWlAOjx/YkfP3quSm2ywcz7d6vwbVV4Qg9uF+uc=;
+        b=NxG9uS2NbWJ6FBIa4t7omUlbnn42yq9XoC/evMknLc8uz0id1ubBJVDp6XUWaHLGwS
+         4x+KBDnse5FvMqh2OBLoIhlQMwjmczDQoy5ude25RbyYZYj7Cu89ukFyJgbgvmOh/p0Y
+         HwrKSTPWil3K8+hzUsc8C2SW87yQdQjWtEo4Tg6eNoqSHMcP6CDpu8zuYVkqKHq6zFy3
+         lAjAo1BJfRr3+pCYjwr6VEd2/sz1QvzMrFzB8Qrz+Ph/vGWuM36INekN9WARnNgz0siC
+         Y30ASbyA5cziLq6K1zRz9wiZHk7/VM7lvQzJk0Byt9tHpxMKN1Y8j+tXXx5Q4fMxnYUk
+         CL7w==
+X-Gm-Message-State: AOAM531rSaPre/j0oahndgIrTKmIMElONy1EF+NIAA5SNj2moVnInkiB
+        qNd7elnMG4FOqT4D11YcWT3E4lBiSxAEog==
+X-Google-Smtp-Source: ABdhPJxQeUiCj28WdJZG8mLrOtdm07pUIAEDztLhRm9Bu/oqs9WcHtshJN3dlc7miGPT651TYlp6HA==
+X-Received: by 2002:a6b:760e:: with SMTP id g14mr19083073iom.119.1625648884698;
+        Wed, 07 Jul 2021 02:08:04 -0700 (PDT)
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com. [209.85.166.48])
+        by smtp.gmail.com with ESMTPSA id n13sm1201715ilq.5.2021.07.07.02.08.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Jul 2021 02:08:03 -0700 (PDT)
+Received: by mail-io1-f48.google.com with SMTP id k16so2141154ios.10
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 02:08:03 -0700 (PDT)
+X-Received: by 2002:a05:6638:1301:: with SMTP id r1mr20786728jad.29.1625648883214;
+ Wed, 07 Jul 2021 02:08:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtBnEmMFwCWD3sGP=vrbG8tkLncKbjStYLN+od3z0K=RrA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210618122923.385938-1-ribalda@chromium.org> <20210618122923.385938-22-ribalda@chromium.org>
+ <CANiDSCvNvJ_xyuqgvvFv6aZGSm=H-9=SeV6wp5C_0-acm+wC=A@mail.gmail.com>
+ <820809c2-a564-8a79-c279-7570c3bcc801@xs4all.nl> <CANiDSCvwQvDYKNqxAZjtAKY6CGNrnn21LMoNnsg7FrrDiooi-A@mail.gmail.com>
+ <d65ab386-370e-b2e9-dbac-a981993d9da7@xs4all.nl> <CANiDSCv=FMy6g1aQhVRxH1tADSyLAOAY7csMwPFtXZVMU8N6VA@mail.gmail.com>
+ <1157542d-7088-fe70-965a-cfa128090bb3@xs4all.nl>
+In-Reply-To: <1157542d-7088-fe70-965a-cfa128090bb3@xs4all.nl>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Wed, 7 Jul 2021 11:07:52 +0200
+X-Gmail-Original-Message-ID: <CANiDSCt7juDYXQiWn4sD+4HH05TgzGCKxa3e99WTgwRqqckh_w@mail.gmail.com>
+Message-ID: <CANiDSCt7juDYXQiWn4sD+4HH05TgzGCKxa3e99WTgwRqqckh_w@mail.gmail.com>
+Subject: Re: [PATCH v10 21/21] media: uvcvideo: Return -EACCES to inactive controls
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, tfiga@chromium.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 11:08:54AM +0200, Vincent Guittot wrote:
-> Hi Rong
-> 
-> On Tue, 6 Jul 2021 at 10:56, kernel test robot <rong.a.chen@intel.com> wrote:
-> >
-> > Greeting,
-> >
-> > FYI, we noticed the following commit (built with gcc-9):
-> >
-> > commit: 1c35b07e6d3986474e5635be566e7bc79d97c64d ("sched/fair: Ensure _sum and _avg values stay consistent")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> I don't think this commit is the real culprit as it mainly replaces a
-> sub by a mul whereas the dmesg mentioned spinlock deadlock . Have you
-> bisect the problem down to this commit or you faced the problem while
-> testing latest master branch ?
+Hi Hans
 
-Hi Vincent,
+On Tue, 6 Jul 2021 at 16:19, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+>
+> On 30/06/2021 14:51, Ricardo Ribalda wrote:
+> > Hi Hans
+> >
+> >
+> > On Wed, 30 Jun 2021 at 11:03, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+> >>
+> >> Hi Ricardo,
+> >>
+> >> On 25/06/2021 15:55, Ricardo Ribalda wrote:
+> >>> Hi Hans
+> >>>
+> >>> On Fri, 25 Jun 2021 at 13:07, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+> >>>>
+> >>>> On 25/06/2021 12:29, Ricardo Ribalda wrote:
+> >>>>> Hi Hans
+> >>>>>
+> >>>>> Did you have some hardware that did not work fine without this patch?
+> >>>>> Am I remembering correctly?
+> >>>>
+> >>>> Yes, that's correct. It's one of my webcams, but I can't remember which one
+> >>>> it is. You probably want me to test this v10?
+> >>>>
+> >>>> Regards,
+> >>>
+> >>> That would be awesome. Thanks!
+> >>
+> >> You can add my:
+> >>
+> >> Tested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> >
+> > Thanks a lot for testing it!
+> >
+> > Sorry to bother you, but could I ask you to try again, but with this
+> > patch reverted? This is v10 1-20, without 21/21
+>
+> I tried with and without this patch and I didn't see any difference. Unfortunately,
+> I don't remember the exact details of what I tested last time and with which hardware.
+>
+> I would drop this patch, it can always be added later.
 
-It's bisected by 0day-CI, I tried to run more times and found the issue is not
-first introduced by this commit, but boot always failed with this commit.
+Thank you very much for testing.  I think there were no more comments
+in this set.
 
-adf3c31e18b765ea 1c35b07e6d3986474e5635be566
----------------- ---------------------------
-       fail:runs  %reproduction    fail:runs
-           |             |             |
-          7:15         -47%            :12    last_state.booting
-          2:15          67%          12:12    dmesg.Kernel_panic-not_syncing:Hard_LOCKUP                                                                                    
-           :15           7%           1:12    dmesg.RIP:cpuidle_enter_state
-          2:15          67%          12:12    dmesg.RIP:native_queued_spin_lock_slowpath                                                                                    
-           :15           7%           1:12    dmesg.RIP:sd_init_command[sd_mod]
-          1:15          -7%            :12    dmesg.RIP:update_blocked_averages
-          1:15          -7%            :12    dmesg.WARNING:at_kernel/sched/fair.c:#update_blocked_averages                                                                 
-          3:15          60%          12:12    dmesg.boot_failures
+Laurent: Shall I resend the series without this last patch, or can you
+take it as is ignoring the last one?
 
-Best Regards,
-Rong Chen
+Thanks!
 
-> 
+>
+> Regards,
+>
+>         Hans
+>
 > >
 > >
-> > in testcase: ltp
-> > version: ltp-x86_64-14c1f76-1_20210703
-> > with following parameters:
+> > Thanks!
+> >>
+> >> to this series.
+> >>
+> >> I do get these warnings (depends on the webcam model, though, some do, some don't):
+> >>
+> >> Streaming ioctls:
+> >>         test read/write: OK (Not Supported)
+> >>         test blocking wait: OK
+> >>                 warn: v4l2-test-buffers.cpp(438): got sequence number 1, expected 0
+> >>         test MMAP (no poll): OK
+> >>                 warn: v4l2-test-buffers.cpp(438): got sequence number 1, expected 0
+> >>         test MMAP (select): OK
+> >>                 warn: v4l2-test-buffers.cpp(438): got sequence number 1, expected 0
+> >>         test MMAP (epoll): OK
+> >>                 warn: v4l2-test-buffers.cpp(438): got sequence number 1, expected 0
+> >>         test USERPTR (no poll): OK
+> >>                 warn: v4l2-test-buffers.cpp(438): got sequence number 1, expected 0
+> >>         test USERPTR (select): OK
+> >>         test DMABUF: Cannot test, specify --expbuf-device
+> >>
+> >> It's something to do with the Field ID, but I'm not sure if this is really correctly
+> >> reporting a dropped frame, or if it is a false report and the sequence counter was
+> >> wrongly incremented.
+> >>
+> >> This is a separate issue, though, and doesn't block this series.
+> >>
+> >> Regards,
+> >>
+> >>         Hans
+> >>
+> >>>
+> >>>>
+> >>>>         Hans
+> >>>>
+> >>>>>
+> >>>>> Thanks!
+> >>>>>
+> >>>>> On Fri, 18 Jun 2021 at 14:29, Ricardo Ribalda <ribalda@chromium.org> wrote:
+> >>>>>>
+> >>>>>> If a control is inactive return -EACCES to let the userspace know that
+> >>>>>> the value will not be applied automatically when the control is active
+> >>>>>> again.
+> >>>>>>
+> >>>>>> Also make sure that query_v4l2_ctrl doesn't return an error.
+> >>>>>>
+> >>>>>> Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> >>>>>> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> >>>>>> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> >>>>>> ---
+> >>>>>>  drivers/media/usb/uvc/uvc_ctrl.c | 73 +++++++++++++++++++++-----------
+> >>>>>>  1 file changed, 49 insertions(+), 24 deletions(-)
+> >>>>>>
+> >>>>>> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> >>>>>> index da44d5c0b9ad..4f80c06d3c43 100644
+> >>>>>> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> >>>>>> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> >>>>>> @@ -1104,13 +1104,36 @@ static const char *uvc_map_get_name(const struct uvc_control_mapping *map)
+> >>>>>>         return "Unknown Control";
+> >>>>>>  }
+> >>>>>>
+> >>>>>> +static bool uvc_ctrl_is_inactive(struct uvc_video_chain *chain,
+> >>>>>> +                                struct uvc_control *ctrl,
+> >>>>>> +                                struct uvc_control_mapping *mapping)
+> >>>>>> +{
+> >>>>>> +       struct uvc_control_mapping *master_map = NULL;
+> >>>>>> +       struct uvc_control *master_ctrl = NULL;
+> >>>>>> +       s32 val;
+> >>>>>> +       int ret;
+> >>>>>> +
+> >>>>>> +       if (!mapping->master_id)
+> >>>>>> +               return false;
+> >>>>>> +
+> >>>>>> +       __uvc_find_control(ctrl->entity, mapping->master_id, &master_map,
+> >>>>>> +                          &master_ctrl, 0);
+> >>>>>> +
+> >>>>>> +       if (!master_ctrl || !(master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR))
+> >>>>>> +               return false;
+> >>>>>> +
+> >>>>>> +       ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
+> >>>>>> +       if (ret < 0 || val == mapping->master_manual)
+> >>>>>> +               return false;
+> >>>>>> +
+> >>>>>> +       return true;
+> >>>>>> +}
+> >>>>>> +
+> >>>>>>  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+> >>>>>>         struct uvc_control *ctrl,
+> >>>>>>         struct uvc_control_mapping *mapping,
+> >>>>>>         struct v4l2_queryctrl *v4l2_ctrl)
+> >>>>>>  {
+> >>>>>> -       struct uvc_control_mapping *master_map = NULL;
+> >>>>>> -       struct uvc_control *master_ctrl = NULL;
+> >>>>>>         const struct uvc_menu_info *menu;
+> >>>>>>         unsigned int i;
+> >>>>>>
+> >>>>>> @@ -1126,18 +1149,8 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+> >>>>>>         if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR))
+> >>>>>>                 v4l2_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
+> >>>>>>
+> >>>>>> -       if (mapping->master_id)
+> >>>>>> -               __uvc_find_control(ctrl->entity, mapping->master_id,
+> >>>>>> -                                  &master_map, &master_ctrl, 0);
+> >>>>>> -       if (master_ctrl && (master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR)) {
+> >>>>>> -               s32 val;
+> >>>>>> -               int ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
+> >>>>>> -               if (ret < 0)
+> >>>>>> -                       return ret;
+> >>>>>> -
+> >>>>>> -               if (val != mapping->master_manual)
+> >>>>>> -                               v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
+> >>>>>> -       }
+> >>>>>> +       if (uvc_ctrl_is_inactive(chain, ctrl, mapping))
+> >>>>>> +               v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
+> >>>>>>
+> >>>>>>         if (!ctrl->cached) {
+> >>>>>>                 int ret = uvc_ctrl_populate_cache(chain, ctrl);
+> >>>>>> @@ -1660,25 +1673,37 @@ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
+> >>>>>>         return 0;
+> >>>>>>  }
+> >>>>>>
+> >>>>>> -static int uvc_ctrl_find_ctrl_idx(struct uvc_entity *entity,
+> >>>>>> -                                 struct v4l2_ext_controls *ctrls,
+> >>>>>> -                                 struct uvc_control *uvc_control)
+> >>>>>> +static int uvc_ctrl_commit_error(struct uvc_video_chain *chain,
+> >>>>>> +                                struct uvc_entity *entity,
+> >>>>>> +                                struct v4l2_ext_controls *ctrls,
+> >>>>>> +                                struct uvc_control *err_control,
+> >>>>>> +                                int ret)
+> >>>>>>  {
+> >>>>>>         struct uvc_control_mapping *mapping;
+> >>>>>>         struct uvc_control *ctrl_found;
+> >>>>>>         unsigned int i;
+> >>>>>>
+> >>>>>> -       if (!entity)
+> >>>>>> -               return ctrls->count;
+> >>>>>> +       if (!entity) {
+> >>>>>> +               ctrls->error_idx = ctrls->count;
+> >>>>>> +               return ret;
+> >>>>>> +       }
+> >>>>>>
+> >>>>>>         for (i = 0; i < ctrls->count; i++) {
+> >>>>>>                 __uvc_find_control(entity, ctrls->controls[i].id, &mapping,
+> >>>>>>                                    &ctrl_found, 0);
+> >>>>>> -               if (uvc_control == ctrl_found)
+> >>>>>> -                       return i;
+> >>>>>> +               if (err_control == ctrl_found)
+> >>>>>> +                       break;
+> >>>>>>         }
+> >>>>>> +       ctrls->error_idx = i;
+> >>>>>> +
+> >>>>>> +       /* We could not find the control that failed. */
+> >>>>>> +       if (i == ctrls->count)
+> >>>>>> +               return ret;
+> >>>>>> +
+> >>>>>> +       if (uvc_ctrl_is_inactive(chain, err_control, mapping))
+> >>>>>> +               return -EACCES;
+> >>>>>>
+> >>>>>> -       return ctrls->count;
+> >>>>>> +       return ret;
+> >>>>>>  }
+> >>>>>>
+> >>>>>>  int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+> >>>>>> @@ -1701,8 +1726,8 @@ int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+> >>>>>>                 uvc_ctrl_send_events(handle, ctrls->controls, ctrls->count);
+> >>>>>>  done:
+> >>>>>>         if (ret < 0 && ctrls)
+> >>>>>> -               ctrls->error_idx = uvc_ctrl_find_ctrl_idx(entity, ctrls,
+> >>>>>> -                                                         err_ctrl);
+> >>>>>> +               ret = uvc_ctrl_commit_error(chain, entity, ctrls, err_ctrl,
+> >>>>>> +                                           ret);
+> >>>>>>         mutex_unlock(&chain->ctrl_mutex);
+> >>>>>>         return ret;
+> >>>>>>  }
+> >>>>>> --
+> >>>>>> 2.32.0.288.g62a8d224e6-goog
+> >>>>>>
+> >>>>>
+> >>>>>
+> >>>>
+> >>>
+> >>>
+> >>
 > >
-> >         disk: 1HDD
-> >         fs: ext4
-> >         test: dio-01
-> >         ucode: 0xe2
 > >
-> > test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
-> > test-url: http://linux-test-project.github.io/
-> >
-> >
-> > on test machine: 8 threads Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz with 28G memory
-> >
-> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> >
-> >
-> >
-> > If you fix the issue, kindly add following tag
-> > Reported-by: kernel test robot <rong.a.chen@intel.com>
-> >
-> >
-> > [  160.446205]
-> > [  160.451594] <<<test_output>>>
-> > [  160.451595]
-> > [  178.116525] ------------[ cut here ]------------
-> > [  203.592757] NMI watchdog: Watchdog detected hard LOCKUP on cpu 3
-> > [  203.592758] Modules linked in: dm_mod btrfs blake2b_generic xor zstd_compress raid6_pq libcrc32c ipmi_devintf ipmi_msghandler sd_mod t10_pi sg intel_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerclamp coretemp i915 kvm_intel kvm irqbypass crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel mei_wdt intel_gtt drm_kms_helper ahci rapl syscopyarea libahci sysfillrect intel_cstate sysimgblt mei_me fb_sys_fops wmi_bmof drm intel_uncore libata mei joydev intel_pch_thermal wmi video intel_pmc_core acpi_pad ip_tables
-> > [  203.592770] CPU: 3 PID: 3103 Comm: diotest6 Tainted: G          I       5.13.0-rc6-00076-g1c35b07e6d39 #1
-> > [  203.592770] Hardware name: Dell Inc. OptiPlex 7040/0Y7WYT, BIOS 1.2.8 01/26/2016
-> > [  203.592771] RIP: 0010:native_queued_spin_lock_slowpath (kbuild/src/consumer/kernel/locking/qspinlock.c:382 kbuild/src/consumer/kernel/locking/qspinlock.c:315)
-> > [ 203.592771] Code: 6c f0 0f ba 2f 08 0f 92 c0 0f b6 c0 c1 e0 08 89 c2 8b 07 30 e4 09 d0 a9 00 01 ff ff 75 46 85 c0 74 0e 8b 07 84 c0 74 08 f3 90 <8b> 07 84 c0 75 f8 b8 01 00 00 00 66 89 07 c3 8b 37 b8 00 02 00 00
-> > All code
-> > ========
-> >    0:   6c                      insb   (%dx),%es:(%rdi)
-> >    1:   f0 0f ba 2f 08          lock btsl $0x8,(%rdi)
-> >    6:   0f 92 c0                setb   %al
-> >    9:   0f b6 c0                movzbl %al,%eax
-> >    c:   c1 e0 08                shl    $0x8,%eax
-> >    f:   89 c2                   mov    %eax,%edx
-> >   11:   8b 07                   mov    (%rdi),%eax
-> >   13:   30 e4                   xor    %ah,%ah
-> >   15:   09 d0                   or     %edx,%eax
-> >   17:   a9 00 01 ff ff          test   $0xffff0100,%eax
-> >   1c:   75 46                   jne    0x64
-> >   1e:   85 c0                   test   %eax,%eax
-> >   20:   74 0e                   je     0x30
-> >   22:   8b 07                   mov    (%rdi),%eax
-> >   24:   84 c0                   test   %al,%al
-> >   26:   74 08                   je     0x30
-> >   28:   f3 90                   pause
-> >   2a:*  8b 07                   mov    (%rdi),%eax              <-- trapping instruction
-> >   2c:   84 c0                   test   %al,%al
-> >   2e:   75 f8                   jne    0x28
-> >   30:   b8 01 00 00 00          mov    $0x1,%eax
-> >   35:   66 89 07                mov    %ax,(%rdi)
-> >   38:   c3                      retq
-> >   39:   8b 37                   mov    (%rdi),%esi
-> >   3b:   b8 00 02 00 00          mov    $0x200,%eax
-> >
-> > Code starting with the faulting instruction
-> > ===========================================
-> >    0:   8b 07                   mov    (%rdi),%eax
-> >    2:   84 c0                   test   %al,%al
-> >    4:   75 f8                   jne    0xfffffffffffffffe
-> >    6:   b8 01 00 00 00          mov    $0x1,%eax
-> >    b:   66 89 07                mov    %ax,(%rdi)
-> >    e:   c3                      retq
-> >    f:   8b 37                   mov    (%rdi),%esi
-> >   11:   b8 00 02 00 00          mov    $0x200,%eax
-> > [  203.592772] RSP: 0018:ffffc90001f032d8 EFLAGS: 00000002
-> > [  203.592773] RAX: 0000000000000101 RBX: ffff88810d4a0000 RCX: ffff888759cc0000
-> > [  203.592773] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888759ceba80
-> > [  203.592774] RBP: ffffc90001f032e8 R08: ffff888759ceb420 R09: ffff888759ceb420
-> > [  203.592774] R10: ffff88810cc01500 R11: 0000000000000000 R12: ffff888759ceba80
-> > [  203.592774] R13: 0000000000000000 R14: 0000000000000087 R15: ffff88810d4a0c8c
-> > [  203.592775] FS:  00007fc252ae2740(0000) GS:ffff888759cc0000(0000) knlGS:0000000000000000
-> > [  203.592775] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  203.592776] CR2: 00007fa0a4d577f8 CR3: 000000074d22a005 CR4: 00000000003706e0
-> > [  203.592776] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [  203.592776] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > [  203.592777] Call Trace:
-> > [  203.592777] _raw_spin_lock (kbuild/src/consumer/arch/x86/include/asm/paravirt.h:585 kbuild/src/consumer/arch/x86/include/asm/qspinlock.h:51 kbuild/src/consumer/include/asm-generic/qspinlock.h:85 kbuild/src/consumer/include/linux/spinlock.h:183 kbuild/src/consumer/include/linux/spinlock_api_smp.h:143 kbuild/src/consumer/kernel/locking/spinlock.c:151)
-> > [  203.592777] raw_spin_rq_lock_nested (kbuild/src/consumer/arch/x86/include/asm/preempt.h:85 kbuild/src/consumer/kernel/sched/core.c:462)
-> > [  203.592778] try_to_wake_up (kbuild/src/consumer/kernel/sched/sched.h:1536 kbuild/src/consumer/kernel/sched/sched.h:1611 kbuild/src/consumer/kernel/sched/core.c:3555 kbuild/src/consumer/kernel/sched/core.c:3835)
-> > [  203.592778] __queue_work (kbuild/src/consumer/arch/x86/include/asm/paravirt.h:590 kbuild/src/consumer/arch/x86/include/asm/qspinlock.h:56 kbuild/src/consumer/include/linux/spinlock.h:212 kbuild/src/consumer/include/linux/spinlock_api_smp.h:151 kbuild/src/consumer/kernel/workqueue.c:1501)
-> > [  203.592778] queue_work_on (kbuild/src/consumer/kernel/workqueue.c:1526)
-> >
-> >
-> > To reproduce:
-> >
-> >         git clone https://github.com/intel/lkp-tests.git
-> >         cd lkp-tests
-> >         bin/lkp install                job.yaml  # job file is attached in this email
-> >         bin/lkp split-job --compatible job.yaml  # generate the yaml file for lkp run
-> >         bin/lkp run                    generated-yaml-file
-> >
-> >
-> >
-> > ---
-> > 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
-> > https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
-> >
-> > Thanks,
-> > Rong Chen
-> >
+>
+
+
+-- 
+Ricardo Ribalda
