@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC703BECE4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7618A3BECF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbhGGRTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 13:19:47 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34490 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229519AbhGGRTp (ORCPT
+        id S230513AbhGGRVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 13:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230089AbhGGRVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:19:45 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 167H5Cp2001712;
-        Wed, 7 Jul 2021 13:17:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=iTPIlJcDi+QcKrtPLGq5b7lyXQ7r/sjKRcBvPlCojjs=;
- b=TOv2bwc4q+rjLPbUmLbfD+I0Qo+0qV+5jkPcGhgm/1opytKmXUSmM+NS8uyNpptw7vbf
- UsABF79iEzopa1/KyQj8mj5N62inziOgTvKXgw/Ep8jDu+Kneej/oRPI/2eVa7w8mMCd
- WUwcbbhOJw/Yr6HVECNneL4wRrDI3UhKEEm1VSNvpESMRgfsd3BHNNl1ZLuJ/3167Qj8
- XVQS9ckneQtb2XYeNdv2GqybZtSNEMOShP8ZxpyquEyeUpn4zcPnYWGpq5UheCMTQsJP
- ovjrn7Op2aYSwL0cIHIi2hsxWJ9b1tKG2zr23BKm5Bti4Ft8S6ierBkGVq/+H4fOMvAa gQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39nc7xg3m5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 13:17:04 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 167H5JQU002357;
-        Wed, 7 Jul 2021 13:17:03 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39nc7xg3km-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 13:17:03 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 167HC6DZ012056;
-        Wed, 7 Jul 2021 17:17:02 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma02wdc.us.ibm.com with ESMTP id 39jfhc16s1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 17:17:02 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 167HH13T24117622
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Jul 2021 17:17:01 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 110B86A04D;
-        Wed,  7 Jul 2021 17:17:01 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EC5ED6A054;
-        Wed,  7 Jul 2021 17:16:59 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.163.230])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  7 Jul 2021 17:16:59 +0000 (GMT)
-Subject: Re: [PATCH v6 2/2] s390/vfio-ap: r/w lock for PQAP interception
- handler function pointer
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210621155714.1198545-1-akrowiak@linux.ibm.com>
- <20210621155714.1198545-3-akrowiak@linux.ibm.com>
- <8936a637-68cd-91f0-85da-f0fce99315cf@linux.ibm.com>
- <53181dcb-cabc-d6a1-3bbe-7eba298f06fe@de.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <d6389aab-f6ad-1f48-5997-783c57201f3d@linux.ibm.com>
-Date:   Wed, 7 Jul 2021 13:16:59 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 7 Jul 2021 13:21:33 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46F7C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 10:18:52 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id p1so5715298lfr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 10:18:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=phystech-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ypxDnWif+H1Ur0uToOJNpXylwlZDL/gdovpiZt5z82o=;
+        b=IC5AgO9ygAj8ApySXTjmmQ1KSRN0cdqozzHfdj+K2tcM8hm0jOqYro9VjT7rBDRTuG
+         vq96jbhyu3H0Guey3tXVh2+IDVFs5M/aOsu0/rfVbG+21L/qlTgU4I9U46fPByKW8Z1A
+         YSIzGUUAZik7JSRdzuYfI72eXdMQZNJ/V7EUYDenIDFA/A//+T2mgyV55iCj7mBd0qyL
+         kAFVP8K4L5rCkyJJ3dYeFk3J3rdnHGDI5UaNh8w76d4ErteHIqVGV5cTGkBaGG0IJsSn
+         ebBCdUf6GuHyd8JUGxxSD+0ZrrEzX+HxaIz/Spjeq0R+bbGQdev5Ew7FeD4yLgwYv9vz
+         YRVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ypxDnWif+H1Ur0uToOJNpXylwlZDL/gdovpiZt5z82o=;
+        b=shsrIdVC0LwOhpgmmTkDB1G/SHucYKxwsvYiAISiKuv8F7nLkpoN7C90ge9aqR5vSz
+         u0AQstxkin5QIzJ7dFK/GXg00Ttju+fsw44SJA9RXmMz5J33i5VCQFLl5JdmBAKZNaIE
+         Vc6R+cN3kIw7uI8hDOlNeyeh6aZEs6MDJrNGvZ1lhdsxnYGxK5iFnvPC8dRZIxHcNDqR
+         BDYruOJSIPcH5P7BfuM2v/A5MmPxyNhzWhC6IT6iuSDR5qN4nsaX5Tu1mNYZmB1cvnk3
+         8gr6iDrnTVJhHx+5eF0/LmPLxKJOmUK76UHbBbZTL1Ylm+x7JVcg/9iWnFcCTjAujbqx
+         5BrQ==
+X-Gm-Message-State: AOAM530DWdnYfimbUZ4CDxXwWb6Qx6paA6IzvibemTW+R/IJyeC/vjbg
+        byns26YerjgrnO6CqV6yHBr2pw==
+X-Google-Smtp-Source: ABdhPJz8VSZiE1GbRIW2zEZJUmJvzpwEzRHId//RA7YGJlorwou9uYQ720aDMZGQWPSk0jqptMEGCA==
+X-Received: by 2002:ac2:4191:: with SMTP id z17mr19059617lfh.457.1625678331172;
+        Wed, 07 Jul 2021 10:18:51 -0700 (PDT)
+Received: from 192.168.1.3 ([2a00:1370:810e:abfe:9c62:44e3:b0ab:76fd])
+        by smtp.gmail.com with ESMTPSA id z9sm1652235lfu.120.2021.07.07.10.18.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 10:18:50 -0700 (PDT)
+From:   Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+To:     sean@mess.org, mchehab@kernel.org, robh+dt@kernel.org,
+        khilman@baylibre.com, narmstrong@baylibre.com
+Cc:     jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, rockosov@gmail.com,
+        Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+Subject: [PATCH] fixup! media: rc: introduce Meson IR blaster driver
+Date:   Wed,  7 Jul 2021 20:18:28 +0300
+Message-Id: <20210707171828.6967-1-viktor.prutyanov@phystech.edu>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210707141323.20757-3-viktor.prutyanov@phystech.edu>
+References: <20210707141323.20757-3-viktor.prutyanov@phystech.edu>
 MIME-Version: 1.0
-In-Reply-To: <53181dcb-cabc-d6a1-3bbe-7eba298f06fe@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: -rnAUq6t2YNOnvue8oV47CsWLoA9zhPh
-X-Proofpoint-ORIG-GUID: i9FPZsDxryJ_R4FmNm533GzyPdTKD4jw
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-07_08:2021-07-06,2021-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
- phishscore=0 spamscore=0 suspectscore=0 impostorscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107070099
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix building error. I mistakenly sent the patch from dirty git tree.
 
+Signed-off-by: Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+---
+ drivers/media/rc/meson-irblaster.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 7/1/21 11:25 AM, Christian Borntraeger wrote:
-> On 30.06.21 17:18, Tony Krowiak wrote:
->> I assumed that this patch would get queued along with the other one 
->> in this series,
->> but it looks like that was an erroneous assumption. Should this also 
->> be queued?
->
-> Sorry, this is on my todo list.
-
-
-I rolled this up into the patch I posted today:
-Message ID: <20210707154156.297139-1-akrowiak@linux.ibm.com>
-s390/vfio-ap: do not open code locks for VFIO_GROUP_NOTIFY_SET_KVM 
-notification
+diff --git a/drivers/media/rc/meson-irblaster.c b/drivers/media/rc/meson-irblaster.c
+index bfcdf47e2100..f6cb47593392 100644
+--- a/drivers/media/rc/meson-irblaster.c
++++ b/drivers/media/rc/meson-irblaster.c
+@@ -215,7 +215,7 @@ static void irb_send(struct irblaster_dev *irb)
+ {
+ 	reinit_completion(&irb->completion);
+ 
+-	dev_dbg(irb->dev, "tx started, buffer length = %u\n", len);
++	dev_dbg(irb->dev, "tx started, buffer length = %u\n", irb->buf_len);
+ 	irb_send_buffer(irb);
+ 	wait_for_completion_interruptible(&irb->completion);
+ 	dev_dbg(irb->dev, "tx completed\n");
+-- 
+2.21.0
 
