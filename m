@@ -2,96 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD803BE2EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 08:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1D03BE2EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 08:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhGGGGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 02:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbhGGGGX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 02:06:23 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E29C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 23:03:42 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id n14so2033913lfu.8
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 23:03:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bsNR85tqDq0Nnn+qEiX/ciVIvYBVMUZ7RHqxFZuZ7ac=;
-        b=blo9Hicsv9504zHLVbxs8UBByiL7wgPHsEGttVgdYefQyIWPkuDVrZRisx9joq7Mz/
-         Qu7N4YHMeiKdJl/rnFaBwKd+y7LtyFKFzqX6DyGXHJnw5la3DS32G1qr9LtwDltkCqZb
-         HynWKzVzkf73s9lm/k5Gtb+2rFR0Nje3miol3zMdoTAGvyiHr/S0E47EZ2bnhDcfRlUF
-         Cs37svVCH+kFq9isxxHAZ/w9flWKtpeMSapTxG+U5/MLRWNr4G9vidfiBnFXeXciMd/o
-         SAliSgQrhlxOZd5x8LHWOrXkONosjNtuUGODCTc2u6TS8mEhENJItDcu8OnxOCUfdZ5T
-         QmWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bsNR85tqDq0Nnn+qEiX/ciVIvYBVMUZ7RHqxFZuZ7ac=;
-        b=rQqnHtvNe/pXZLu1wmpkELKcqfnSJFvu2Y7EJk8v7WJId856DPpTAM+dU8GeNsCKC9
-         weRuCGOx6gSx+Bs0xZZ6+0cVz/y0lzCHnvsSbFA71ELWYg4uSsikdjygWI5kvQaYz5yz
-         GO5/Iza02niV3BFuis6CVbrtAo1thiZUJSBndXBC67qWJcpQIsxSHMsdZvrwAKpRWXdT
-         v0YDTivK0jL8hX0wNT7dzVRzUrc8jebPyQRf0AusPBQpNknO2KBLvx/w7KWhYespZ39T
-         RZwbUvIVs6z+deHmn234SoARz4s58AZagYIs7K0deT15dO5nbG5Stg3g26eN/4sM4ROY
-         zdsw==
-X-Gm-Message-State: AOAM533Ge0jL9RIsQ7VfcmEenaHza2QaCW+I0QqRK7Hb1AJH9fTw75s8
-        INnQUpe4dhDVdUafcRkdeN+0BAhNfXgNXkz+cVDTlw==
-X-Google-Smtp-Source: ABdhPJwuDZGs0hKLyoVnwNvI32TWwNFM1Ftg1kj8S0JdGejmefRNqnJcECXZmHEq2+4WMvIsxFQsowp575HfDWJxKa8=
-X-Received: by 2002:a19:e002:: with SMTP id x2mr17608887lfg.84.1625637821291;
- Tue, 06 Jul 2021 23:03:41 -0700 (PDT)
+        id S230299AbhGGGI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 02:08:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230235AbhGGGI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 02:08:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 823E661C84;
+        Wed,  7 Jul 2021 06:05:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625637946;
+        bh=YuttRsFslnO6zMeDLZoiEywP0tDcwd9vflEFA2RQoTQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rxHRds6kXesSsBVKJ9st+0mm8fSfwZ/EtjqyU6dX4trTAUZAqWEIlMtj5qEig6PMm
+         2QQhAuno+AkuY9JrLCcNwKP5bRKNxg/4+/MqUu02s3zSDMYjRX8NghaULMSKmq4UuG
+         7o8MNlQ+1pK+tcs93pUBS//rCg3uCKLxmu1mq3hw=
+Date:   Wed, 7 Jul 2021 08:05:41 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     jlayton@kernel.org, bfields@fieldses.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2 1/2] fcntl: fix potential deadlocks for
+ &fown_struct.lock
+Message-ID: <YOVENb3X/m/pNrYt@kroah.com>
+References: <20210707023548.15872-1-desmondcheongzx@gmail.com>
+ <20210707023548.15872-2-desmondcheongzx@gmail.com>
 MIME-Version: 1.0
-References: <1604317487-14543-1-git-send-email-sumit.garg@linaro.org>
- <CAFA6WYNn0+yxntkebqDVnOoq50gxY4Zvi1wGLAZTJyWGc7VLkw@mail.gmail.com> <f1aae58230a81e63cd380d1a45d5a2ee@kernel.org>
-In-Reply-To: <f1aae58230a81e63cd380d1a45d5a2ee@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Wed, 7 Jul 2021 11:33:29 +0530
-Message-ID: <CAFA6WYN3CvdP0DMMq3WBMGNju7h2tpMidFaTOvghLdxhWh+7Sg@mail.gmail.com>
-Subject: Re: [PATCH v7 0/7] arm64: Add framework to turn an IPI as NMI
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        tsbogend@alpha.franken.de, mpe@ellerman.id.au,
-        "David S. Miller" <davem@davemloft.net>,
-        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        julien.thierry.kdev@gmail.com,
-        Douglas Anderson <dianders@chromium.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>, wens@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707023548.15872-2-desmondcheongzx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Jan 2021 at 16:13, Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2021-01-05 10:34, Sumit Garg wrote:
->
-> > Do you have any further feedback on this patch-set?
->
-> None at the moment. We have tons of issues to solve with the arm64
-> interrupt entry code vs instrumentation at the moment, so it is
-> pretty much at the bottom of the priority list for now.
->
+On Wed, Jul 07, 2021 at 10:35:47AM +0800, Desmond Cheong Zhi Xi wrote:
+> Syzbot reports a potential deadlock in do_fcntl:
+> 
+> ========================================================
+> WARNING: possible irq lock inversion dependency detected
+> 5.12.0-syzkaller #0 Not tainted
+> --------------------------------------------------------
+> syz-executor132/8391 just changed the state of lock:
+> ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: f_getown_ex fs/fcntl.c:211 [inline]
+> ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: do_fcntl+0x8b4/0x1200 fs/fcntl.c:395
+> but this lock was taken by another, HARDIRQ-safe lock in the past:
+>  (&dev->event_lock){-...}-{2:2}
+> 
+> and interrupts could create inverse lock ordering between them.
+> 
+> other info that might help us debug this:
+> Chain exists of:
+>   &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
+> 
+>  Possible interrupt unsafe locking scenario:
+> 
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(&f->f_owner.lock);
+>                                local_irq_disable();
+>                                lock(&dev->event_lock);
+>                                lock(&new->fa_lock);
+>   <Interrupt>
+>     lock(&dev->event_lock);
+> 
+>  *** DEADLOCK ***
+> 
+> This happens because there is a lock hierarchy of
+> &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
+> from the following call chain:
+> 
+>   input_inject_event():
+>     spin_lock_irqsave(&dev->event_lock,...);
+>     input_handle_event():
+>       input_pass_values():
+>         input_to_handler():
+>           evdev_events():
+>             evdev_pass_values():
+>               spin_lock(&client->buffer_lock);
+>               __pass_event():
+>                 kill_fasync():
+>                   kill_fasync_rcu():
+>                     read_lock(&fa->fa_lock);
+>                     send_sigio():
+>                       read_lock_irqsave(&fown->lock,...);
+> 
+> However, since &dev->event_lock is HARDIRQ-safe, interrupts have to be
+> disabled while grabbing &f->f_owner.lock, otherwise we invert the lock
+> hierarchy.
+> 
+> Hence, we replace calls to read_lock/read_unlock on &f->f_owner.lock,
+> with read_lock_irq/read_unlock_irq.
+> 
+> Here read_lock_irq/read_unlock_irq should be safe to use because the
+> functions f_getown_ex and f_getowner_uids are only called from
+> do_fcntl, and f_getown is only called from do_fnctl and
+> sock_ioctl. do_fnctl itself is only called from syscalls.
+> 
+> For sock_ioctl, the chain is
+>   compat_sock_ioctl():
+>     compat_sock_ioctl_trans():
+>       sock_ioctl()
+> 
+> And interrupts are not disabled on either path. We assert this
+> assumption with WARN_ON_ONCE(irqs_disabled()). This check is also
+> inserted into another use of write_lock_irq in f_modown.
+> 
+> Reported-and-tested-by: syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
+> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> ---
+>  fs/fcntl.c | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/fcntl.c b/fs/fcntl.c
+> index dfc72f15be7f..262235e02c4b 100644
+> --- a/fs/fcntl.c
+> +++ b/fs/fcntl.c
+> @@ -88,6 +88,7 @@ static int setfl(int fd, struct file * filp, unsigned long arg)
+>  static void f_modown(struct file *filp, struct pid *pid, enum pid_type type,
+>                       int force)
+>  {
+> +	WARN_ON_ONCE(irqs_disabled());
 
-I hope you were able to resolve most of the issues. Is it an
-appropriate time to have a relook at this pseudo NMI feature?
+If this triggers, you just rebooted the box :(
 
--Sumit
+Please never do this, either properly handle the problem and return an
+error, or do not check for this.  It is not any type of "fix" at all,
+and at most, a debugging aid while you work on the root problem.
 
-> Thanks,
->
->          M.
-> --
-> Jazz is not dead. It just smells funny...
+thanks,
+
+greg k-h
