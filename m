@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33A33BE511
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B54E3BE514
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbhGGJGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:06:20 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:36949 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231146AbhGGJGS (ORCPT
+        id S231234AbhGGJH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230517AbhGGJH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:06:18 -0400
-Date:   Wed, 07 Jul 2021 09:03:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail3; t=1625648585;
-        bh=FfzoFy/JPOfylMDSWf+V05WzCz+VvbqhnbLqlhgFSx8=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=ljxtuZM65q38o0IdXEGPYwe0aG0xa7D7WyJPn6tKjLJFJcC7flV2mmW5khXcCFex1
-         vJSgPp2kAjkSWyHproJkq38PP4V41BvS2OJOomjwzB4nOW7/MLiATIOeTE2TMftSaE
-         bJRLsG3u2x7GXLdYRKNztRATQbXOBvSiWZOtwbewcfevcpT1cqFeaKzy8LVKif4YCp
-         moZ3dYYdMly+OCsY7mTIMk/+in8WBZi3sHl+fPl7cvXvsv2aCItmE36TaUhLI3jfV6
-         ug5cPO1ShVIjtXioziDpaXn77Z+tBfIdHCHxaodC7rIqA9b9YI0OzIomC73J/kln/a
-         rsg0ooJaaismQ==
-To:     Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
-        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Yannick FERTRE <yannick.fertre@st.com>,
-        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-Reply-To: Simon Ser <contact@emersion.fr>
-Subject: Re: [PATCH 0/2] Add "BACKGROUND_COLOR" drm property
-Message-ID: <31K3xupK1-7HNWorHqIwGwgEJl-1XdFjUQEoNYm6yB-lRoZ8kq5quRji_r3mzPZ0bUayLef6xPfQDiETgZp9lR7vUpDn2nB_37ncSd-J0Wc=@emersion.fr>
-In-Reply-To: <20210707084557.22443-1-raphael.gallais-pou@foss.st.com>
-References: <20210707084557.22443-1-raphael.gallais-pou@foss.st.com>
+        Wed, 7 Jul 2021 05:07:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31364C061574;
+        Wed,  7 Jul 2021 02:04:48 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1625648685;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6KA4zh50Vy7cN7XMqgCrDYfFsQROF3Kqzlq265H9GB0=;
+        b=oPUgyfZHilFAm6ZfWHTKY2nS6zXnCCjYWSz/LDGhjnkzdiUq1UQ4A1JUCl4N5Kinp4GYpF
+        Uj31JiWkSEJcSL07x9VisLOwEu0p7hFeYk3MhFyxafFPPESQ4rI49Mb5FHqj3jrOYurf7h
+        WWNaDDDc0/AKisCLQ8+YV7L5I97XJW0h6ES4vBepI4IEfK+rXbTPjk/iatb4gL8LUGX2+P
+        vKTyz7FTxrVTXrCm9ECFdnJt00hjVNbNQk3NCNx2M/7JSWXLrgwfFNQKzVXkLlp5FP1Dj7
+        BljZdhJ4ln3/SroJGM2dfLV24GET4lrujwDizv7v/aZ1LAO6wkGLBi/Asc5Uzg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1625648685;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6KA4zh50Vy7cN7XMqgCrDYfFsQROF3Kqzlq265H9GB0=;
+        b=npDBNOM+rafYFMXRExrTYurWwUsiaKyaolwufsCCiTkDtOvpvREd4+aA8UJSEAjHANjlxM
+        ZypW2UMjP9VRMWAQ==
+To:     Nishanth Menon <nm@ti.com>,
+        Thorsten Leemhuis <linux@leemhuis.info>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-spdx@vger.kernel.org,
+        Nishanth Menon <nm@ti.com>, Christoph Hellwig <hch@lst.de>,
+        Rahul T R <r-ravikumar@ti.com>
+Subject: Re: [PATCH] LICENSES/dual/CC-BY-4.0: Lets switch to utf-8
+In-Reply-To: <20210703012931.30604-1-nm@ti.com>
+References: <20210703012931.30604-1-nm@ti.com>
+Date:   Wed, 07 Jul 2021 11:04:45 +0200
+Message-ID: <87eecaqytu.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Nishanth,
 
-Thanks for working on this. Do you have plans for user-space
-implementations and IGT?
+On Fri, Jul 02 2021 at 20:29, Nishanth Menon wrote:
+> Lets drop the unicode characters that peeped in and replace with
 
-Thanks,
+Again: s/Lets//=20
 
-Simon
+> equivalent utf-8 characters. This makes the CC-BY-4.0 file inline with
+> rest of license files.
+
+>  Creative Commons is not a party to its public
+>  licenses. Notwithstanding, Creative Commons may elect to apply one of
+>  its public licenses to material it publishes and in those instances
+> -will be considered the =E2=80=9CLicensor.=E2=80=9D The text of the Creat=
+ive Commons
+> +will be considered the "Licensor." The text of the Creative Commons
+
+In theory the License text should be a verbatim copy. But yes, this
+unicode stuff is a pain.
+
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
