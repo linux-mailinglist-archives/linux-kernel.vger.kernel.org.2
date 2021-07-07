@@ -2,53 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F763BECCA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E499A3BECCC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhGGRIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 13:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbhGGRIn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:08:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9111C061574;
-        Wed,  7 Jul 2021 10:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=d3VM6WT6D5YL/WJ5V7RszIEGS7pxSO5TS9NGv7itCmU=; b=gPlz2ujtqcODOZy73CeHy4SqNb
-        pEeMt2zOH/pBPwn43VYADVC5ffumABTnaxNJFHq7Rbqqs8WsM3xtimmi5bVvpouDVdyF0JMDxnDnR
-        pKnDbtzl28dWqF8iNqZNjHJqlyQ3aHnJoWoywLAK/i/TxK9+V2aJemZjNx20YlhvseFxN4Vjimrqz
-        u+Fd8Cdeu8/8lrMaaUnbCclH9/soUbf+n741MsHiofGmkodZ/LJA79HepwZ8VUtb3WSpua5fa2OiK
-        xwZy9qrmpyyv3XbE0WzFmmdhQNKY7VK5zyIvYuobRjaW7BJbkLOuHIzLclTONAzeHVPWmB4m4l4uv
-        +1HXYCwg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1Azi-00CcFj-GQ; Wed, 07 Jul 2021 17:05:56 +0000
-Date:   Wed, 7 Jul 2021 18:05:54 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Yang Shi <shy828301@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org
-Subject: Re: [PATCH] mm: try_to_unmap() is now void
-Message-ID: <YOXe8jb3uOXFq0j7@casper.infradead.org>
-References: <20210707161614.13001-1-rdunlap@infradead.org>
+        id S230439AbhGGRIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 13:08:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230109AbhGGRIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 13:08:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A06A61C7F;
+        Wed,  7 Jul 2021 17:06:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625677569;
+        bh=Q3PwKU2MWriiez/7uEGY76FwByXF51elK2MPyqH+BDw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=aJxD8e5bZAU/ArkUH8mQlC6pi/cl6Ipfk4qd3l960Fvc9I+ZdcvoFvwuOCeyMZZO5
+         0P2YAlLy5+acaD1nXZWuFQpZaBhWkISZq5DILzu3pClnr1OzG78QZxvARoWltS23A6
+         PV5m/dgpvj5cndgNGYFPIJVcYgJjuvoKn2zj3m0wtVV+oxkxwCteNRDTOK6KH8GejO
+         kgO/OweukSzwSFYYyA6AUrfR6Pub0zht27FcD5NVnxoUkUsXE/OS9zw5ne4eTAZBxm
+         P7ZJOa6oz6WJHk4i63O+pM0jeQGz94g9CvbHUFpLqDcTENi6b1B/WnHMLSJ96r3KrV
+         FvK5oT8v5eg2g==
+Message-ID: <15fbc55a3b983c4962e9ad2d96eeebd77aad3be6.camel@kernel.org>
+Subject: Re: [PATCH v3 0/2] fcntl: fix potential deadlocks
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        bfields@fieldses.org, viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Date:   Wed, 07 Jul 2021 13:06:07 -0400
+In-Reply-To: <20210707074401.447952-1-desmondcheongzx@gmail.com>
+References: <20210707074401.447952-1-desmondcheongzx@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707161614.13001-1-rdunlap@infradead.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 09:16:14AM -0700, Randy Dunlap wrote:
-> Fix the "CONFIG_MMU is not set" case of converting
-> try_to_unmap() from bool to void.
-> (as seen on m68k/coldfire)
+On Wed, 2021-07-07 at 15:43 +0800, Desmond Cheong Zhi Xi wrote:
+> Hi,
+> 
+> Sorry for the delay between v1 and v2, there was an unrelated issue with Syzbot testing.
+> 
+> Syzbot reports a possible irq lock inversion dependency:
+> https://syzkaller.appspot.com/bug?id=923cfc6c6348963f99886a0176ef11dcc429547b
+> 
+> While investigating this error, I discovered that multiple similar lock inversion scenarios can occur. Hence, this series addresses potential deadlocks for two classes of locks, one in each patch:
+> 
+> 1. Fix potential deadlocks for &fown_struct.lock
+> 
+> 2. Fix potential deadlock for &fasync_struct.fa_lock
+> 
+> v2 -> v3:
+> - Removed WARN_ON_ONCE, keeping elaboration for why read_lock_irq is safe to use in the commit message. As suggested by Greg KH.
+> 
+> v1 -> v2:
+> - Added WARN_ON_ONCE(irqs_disabled()) before calls to read_lock_irq, and added elaboration in the commit message. As suggested by Jeff Layton.
+> 
+> Best wishes,
+> Desmond
+> 
+> Desmond Cheong Zhi Xi (2):
+>   fcntl: fix potential deadlocks for &fown_struct.lock
+>   fcntl: fix potential deadlock for &fasync_struct.fa_lock
+> 
+>  fs/fcntl.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
+> 
 
-hch sent basically the same patch on Monday
+Looks like these patches are identical to the v1 set, so I'm just going
+to leave those in place since linux-next already has them. Let me know
+if I've missed something though.
+
+Thanks!
+-- 
+Jeff Layton <jlayton@kernel.org>
+
