@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F12B3BEBD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B8C3BEBDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbhGGQRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 12:17:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229475AbhGGQRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 12:17:39 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 722C861C99;
-        Wed,  7 Jul 2021 16:14:58 +0000 (UTC)
-Date:   Wed, 7 Jul 2021 12:14:51 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH] tracing/selftests: Add tests to test histogram sym and
- sym-offset modifiers
-Message-ID: <20210707121451.101a1002@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230081AbhGGQTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 12:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhGGQTE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 12:19:04 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F44C061574;
+        Wed,  7 Jul 2021 09:16:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=8vx2MlWUn5LIhwKdzrV6SOg1W/EZtZtrXCT9CRbQ+0g=; b=FV3ssxZghmBYayxtp6VYSP6mZJ
+        ornbpTVgIMpLa550CiIgjKoj8bx72CdZ6pYZ+ZNVQ20OhUwrGy8visAobOoNpHlSVngpCldM5SLYw
+        o85Tz9QpNRBpHI4zUIBLX6RnKFyzsacv8sZ0sDjdO9nbLGQDa9MmZ53XR73AZVAc4PQ8BFMUL6kKI
+        3RSLD7xjprLfKTs3bN4nCp03Jd5xgj0fOHsZRkqiRRLcK5RLCtwYeN327IVH35SFSnOiXBoxbQoAl
+        LriR/x3fEMEGh6T/nxU8m68kdGPKrmaAV1U9PCZbHV8TrgOTTtgKHA6nwbTGVC+gCFR7liaLvPBdd
+        jH6J6LwQ==;
+Received: from [2601:1c0:6280:3f0::a22f] (helo=smtpauth.infradead.org)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1ADk-00FP2Q-8B; Wed, 07 Jul 2021 16:16:20 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org
+Subject: [PATCH] mm: try_to_unmap() is now void
+Date:   Wed,  7 Jul 2021 09:16:14 -0700
+Message-Id: <20210707161614.13001-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Fix the "CONFIG_MMU is not set" case of converting
+try_to_unmap() from bool to void.
+(as seen on m68k/coldfire)
 
-Add a test to the tracing selftests that will catch if the .sym or
-.sym-offset modifiers break in the future.
+In file included from ../mm/vmscan.c:33:
+../mm/vmscan.c: In function 'shrink_page_list':
+../include/linux/rmap.h:294:34: warning: statement with no effect [-Wunused-value]
+  294 | #define try_to_unmap(page, refs) false
+      |                                  ^~~~~
+../mm/vmscan.c:1508:4: note: in expansion of macro 'try_to_unmap'
+ 1508 |    try_to_unmap(page, flags);
+      |    ^~~~~~~~~~~~
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: 1fb08ac63bee ("mm: rmap: make try_to_unmap() void function")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: uclinux-dev@uclinux.org
 ---
- .../ftrace/test.d/trigger/trigger-hist.tc      | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+v2: add linux-mm m.l.
+    add M68K/Coldfire Cc's
+    change to static inline function.
 
-diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
-index 2950bfbc6fce..adae72665500 100644
---- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
-+++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
-@@ -39,6 +39,24 @@ grep "parent_comm: $COMM" events/sched/sched_process_fork/hist > /dev/null || \
- 
- reset_trigger
- 
-+echo "Test histogram with sym modifier"
-+
-+echo 'hist:keys=call_site.sym' > events/kmem/kmalloc/trigger
-+for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
-+grep '{ call_site: \[[0-9a-f][0-9a-f]*\] [_a-zA-Z][_a-zA-Z]* *}' events/kmem/kmalloc/hist > /dev/null || \
-+    fail "sym modifier on kmalloc call_site did not work"
-+
-+reset_trigger
-+
-+echo "Test histogram with sym-offset modifier"
-+
-+echo 'hist:keys=call_site.sym-offset' > events/kmem/kmalloc/trigger
-+for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
-+grep '{ call_site: \[[0-9a-f][0-9a-f]*\] [_a-zA-Z][_a-zA-Z]*+0x[0-9a-f][0-9a-f]*' events/kmem/kmalloc/hist > /dev/null || \
-+    fail "sym-offset modifier on kmalloc call_site did not work"
-+
-+reset_trigger
-+
- echo "Test histogram with sort key"
- 
- echo 'hist:keys=parent_pid,child_pid:sort=child_pid.ascending' > events/sched/sched_process_fork/trigger
--- 
-2.31.1
+ include/linux/rmap.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+--- linux-next-20210701.orig/include/linux/rmap.h
++++ linux-next-20210701/include/linux/rmap.h
+@@ -291,7 +291,8 @@ static inline int page_referenced(struct
+ 	return 0;
+ }
+ 
+-#define try_to_unmap(page, refs) false
++static inline void try_to_unmap(struct page *page, enum ttu_flags flags)
++{}
+ 
+ static inline int page_mkclean(struct page *page)
+ {
