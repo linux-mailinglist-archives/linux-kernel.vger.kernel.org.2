@@ -2,390 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F943BF128
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E733BF12F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbhGGVE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 17:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbhGGVEZ (ORCPT
+        id S232492AbhGGVHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 17:07:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55028 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230033AbhGGVG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 17:04:25 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBAEC061574;
-        Wed,  7 Jul 2021 14:01:44 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9F41ACC;
-        Wed,  7 Jul 2021 23:01:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1625691701;
-        bh=lK0wy3hsQ1hszD22uK/s6pIIo/ArEb7Oz1D3HD4v1Co=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V4kcEZ9DF663CeuPW1XUlsXvMwN7HHfdCkYSiyjC4C8vIeHm6w6AZSdpVO2DNWz9v
-         0wfcDpt2QFnuggTIkADY+avGMUZFgVMYVfN6e/D4IRvTt+qh4CVySsn1SBmQat4z3b
-         5BMFGH4Up2yni1COfoG8A+B2KPox8+pQisyfBkZc=
-Date:   Thu, 8 Jul 2021 00:00:57 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Pratyush Yadav <p.yadav@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Martina Krasteva <martinax.krasteva@intel.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Raag Jadav <raagjadav@gmail.com>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v3 01/11] media: ov5640: Use runtime PM to control sensor
- power
-Message-ID: <YOYWCRg0P65U41Fg@pendragon.ideasonboard.com>
-References: <20210624192200.22559-1-p.yadav@ti.com>
- <20210624192200.22559-2-p.yadav@ti.com>
- <20210707203718.GX3@paasikivi.fi.intel.com>
+        Wed, 7 Jul 2021 17:06:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625691855;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YrJy4UHSk+c2CDfCsqdlIfZ8qHIfqAAEAO452kGCeq0=;
+        b=RYI6zDKLczO9+R0c5cUqcbksFMn/SwykI4EjeAfUvIULYj8y44SAz9ijwQB0dVzHF+wItL
+        G/2X0DBcsipaIs6TNDrQpXJfs8EXg5juRuM/DD2SyUixzyky+3zoZpmSUD+3S/6a3mb2/k
+        qfWx6LFF7LqMk0/LqOIr7VFXqjmkZNU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-2RYEWKD7PJ-d3UPp1Ipz5Q-1; Wed, 07 Jul 2021 17:04:13 -0400
+X-MC-Unique: 2RYEWKD7PJ-d3UPp1Ipz5Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82AB61005E46;
+        Wed,  7 Jul 2021 21:04:12 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-221.rdu2.redhat.com [10.10.115.221])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5CA79189C7;
+        Wed,  7 Jul 2021 21:04:05 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id E65F822054F; Wed,  7 Jul 2021 17:04:04 -0400 (EDT)
+Date:   Wed, 7 Jul 2021 17:04:04 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Virtio-fs] [PATCH 3/2] fs: simplify get_filesystem_list /
+ get_all_fs_names
+Message-ID: <20210707210404.GB244500@redhat.com>
+References: <20210621062657.3641879-1-hch@lst.de>
+ <20210622081217.GA2975@lst.de>
+ <YNGhERcnLuzjn8j9@stefanha-x1.localdomain>
+ <20210629205048.GE5231@redhat.com>
+ <20210630053601.GA29241@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210707203718.GX3@paasikivi.fi.intel.com>
+In-Reply-To: <20210630053601.GA29241@lst.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+On Wed, Jun 30, 2021 at 07:36:01AM +0200, Christoph Hellwig wrote:
+> On Tue, Jun 29, 2021 at 04:50:48PM -0400, Vivek Goyal wrote:
+> > May be we should modify mount_block_root() code so that it does not
+> > require that extra "\0". Possibly zero initialize page and that should
+> > make sure list_bdev_fs_names() does not have to worry about it.
+> > 
+> > It is possible that a page gets full from the list of filesystems, and
+> > last byte on page is terminating null. In that case just zeroing page
+> > will not help. We can keep track of some sort of end pointer and make
+> > sure we are not searching beyond that for valid filesystem types.
+> > 
+> > end = page + PAGE_SIZE - 1;
+> > 
+> > mount_block_root()
+> > {
+> > 	for (p = fs_names; p < end && *p; p += strlen(p)+1) {
+> > 	}
+> > }
+> 
+> Maybe.  To honest I'd prefer to not even touch this unrelated code given
+> how full of landmines it is :)
 
-On Wed, Jul 07, 2021 at 11:37:18PM +0300, Sakari Ailus wrote:
-> On Fri, Jun 25, 2021 at 12:51:50AM +0530, Pratyush Yadav wrote:
-> > Calling s_power subdev callback is discouraged. Instead, the subdevs
-> > should use runtime PM to control its power. Use runtime PM callbacks to
-> > control sensor power. The pm counter is incremented when the stream is
-> > started and decremented when the stream is stopped.
-> > 
-> > Refactor s_stream() a bit to make this new control flow easier. Add a
-> > helper to choose whether mipi or dvp set_stream needs to be called. The
-> > logic flow is also changed to make it a bit clearer.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > 
-> > ---
-> > 
-> > Changes in v3:
-> > - Clean up the logic in ov5640_s_stream() a bit.
-> > - Use pm_runtime_resume_and_get() instead of pm_runtime_get_sync().
-> > - Rename the label error_pm to disable_pm.
-> > 
-> > Changes in v2:
-> > - New in v2.
-> > 
-> >  drivers/media/i2c/Kconfig  |   2 +-
-> >  drivers/media/i2c/ov5640.c | 127 +++++++++++++++++++++++--------------
-> >  2 files changed, 79 insertions(+), 50 deletions(-)
-> > 
-> > diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-> > index 588f8eb95984..8f43a4d7bcc1 100644
-> > --- a/drivers/media/i2c/Kconfig
-> > +++ b/drivers/media/i2c/Kconfig
-> > @@ -929,7 +929,7 @@ config VIDEO_OV2740
-> >  
-> >  config VIDEO_OV5640
-> >  	tristate "OmniVision OV5640 sensor support"
-> > -	depends on OF
-> > +	depends on OF && PM
-> 
-> Could you add support for runtime PM without requiring CONFIG_PM?
-> 
-> Essentially you'll need to power on the device in probe and power it off in
-> probe, and make sure the runtime PM nop variant functions return the value
-> you'd expect.
+Hi Christoph,
 
-I've gone through that in several sensor drivers, and it really
-increases the complexity to get it right, to a point where I'm not
-comfortable asking someone to do the same (not to mention the very, very
-high chance that it won't be done correctly). What's the practical
-drawback in requiring CONFIG_PM ?
+How about following patch. This applies on top of your patches. I noticed
+that Al had suggested to return number of filesystems from helper
+functions. I just did that and used that to iterate in the loop.
 
-> The ov5640_check_chip_id() function also calls ov5640_set_power() directly.
-> That needs to be changed, too.
-> 
-> >  	depends on GPIOLIB && VIDEO_V4L2 && I2C
-> >  	select MEDIA_CONTROLLER
-> >  	select VIDEO_V4L2_SUBDEV_API
-> > diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
-> > index f6e1e51e0375..2b7fd8631ad1 100644
-> > --- a/drivers/media/i2c/ov5640.c
-> > +++ b/drivers/media/i2c/ov5640.c
-> > @@ -15,6 +15,7 @@
-> >  #include <linux/init.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of_device.h>
-> > +#include <linux/pm_runtime.h>
-> >  #include <linux/regulator/consumer.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/types.h>
-> > @@ -238,8 +239,6 @@ struct ov5640_dev {
-> >  	/* lock to protect all members below */
-> >  	struct mutex lock;
-> >  
-> > -	int power_count;
-> > -
-> >  	struct v4l2_mbus_framefmt fmt;
-> >  	bool pending_fmt_change;
-> >  
-> > @@ -1277,6 +1276,14 @@ static int ov5640_set_stream_mipi(struct ov5640_dev *sensor, bool on)
-> >  				on ? 0x00 : 0x0f);
-> >  }
-> >  
-> > +static int ov5640_set_stream(struct ov5640_dev *sensor, bool on)
-> > +{
-> > +	if (sensor->ep.bus_type == V4L2_MBUS_CSI2_DPHY)
-> > +		return ov5640_set_stream_mipi(sensor, on);
-> > +	else
-> > +		return ov5640_set_stream_dvp(sensor, on);
-> > +}
-> > +
-> >  static int ov5640_get_sysclk(struct ov5640_dev *sensor)
-> >  {
-> >  	 /* calculate sysclk */
-> > @@ -2155,37 +2162,6 @@ static int ov5640_set_power(struct ov5640_dev *sensor, bool on)
-> >  
-> >  /* --------------- Subdev Operations --------------- */
-> >  
-> > -static int ov5640_s_power(struct v4l2_subdev *sd, int on)
-> > -{
-> > -	struct ov5640_dev *sensor = to_ov5640_dev(sd);
-> > -	int ret = 0;
-> > -
-> > -	mutex_lock(&sensor->lock);
-> > -
-> > -	/*
-> > -	 * If the power count is modified from 0 to != 0 or from != 0 to 0,
-> > -	 * update the power state.
-> > -	 */
-> > -	if (sensor->power_count == !on) {
-> > -		ret = ov5640_set_power(sensor, !!on);
-> > -		if (ret)
-> > -			goto out;
-> > -	}
-> > -
-> > -	/* Update the power count. */
-> > -	sensor->power_count += on ? 1 : -1;
-> > -	WARN_ON(sensor->power_count < 0);
-> > -out:
-> > -	mutex_unlock(&sensor->lock);
-> > -
-> > -	if (on && !ret && sensor->power_count == 1) {
-> > -		/* restore controls */
-> > -		ret = v4l2_ctrl_handler_setup(&sensor->ctrls.handler);
-> > -	}
-> > -
-> > -	return ret;
-> > -}
-> > -
-> >  static int ov5640_try_frame_interval(struct ov5640_dev *sensor,
-> >  				     struct v4l2_fract *fi,
-> >  				     u32 width, u32 height)
-> > @@ -2681,6 +2657,7 @@ static int ov5640_s_ctrl(struct v4l2_ctrl *ctrl)
-> >  {
-> >  	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
-> >  	struct ov5640_dev *sensor = to_ov5640_dev(sd);
-> > +	struct device *dev = &sensor->i2c_client->dev;
-> >  	int ret;
-> >  
-> >  	/* v4l2_ctrl_lock() locks our own mutex */
-> > @@ -2690,7 +2667,7 @@ static int ov5640_s_ctrl(struct v4l2_ctrl *ctrl)
-> >  	 * not apply any controls to H/W at this time. Instead
-> >  	 * the controls will be restored right after power-up.
-> >  	 */
-> > -	if (sensor->power_count == 0)
-> > +	if (pm_runtime_suspended(dev))
-> 
-> The problem with this is that it does not prevent powering the device off
-> while you're here. Please use pm_runtime_get_if_active() instead (see other
-> drivers for examples).
-> 
-> >  		return 0;
-> >  
-> >  	switch (ctrl->id) {
-> > @@ -2939,39 +2916,57 @@ static int ov5640_enum_mbus_code(struct v4l2_subdev *sd,
-> >  static int ov5640_s_stream(struct v4l2_subdev *sd, int enable)
-> >  {
-> >  	struct ov5640_dev *sensor = to_ov5640_dev(sd);
-> > +	struct device *dev = &sensor->i2c_client->dev;
-> >  	int ret = 0;
-> >  
-> >  	mutex_lock(&sensor->lock);
-> >  
-> > -	if (sensor->streaming == !enable) {
-> > -		if (enable && sensor->pending_mode_change) {
-> > +	if (sensor->streaming == enable) {
-> > +		mutex_unlock(&sensor->lock);
-> > +		return 0;
-> > +	}
-> > +
-> > +	if (enable) {
-> > +		ret = pm_runtime_resume_and_get(dev);
-> > +		if (ret < 0)
-> > +			goto err;
-> > +
-> > +		if (sensor->pending_mode_change) {
-> >  			ret = ov5640_set_mode(sensor);
-> >  			if (ret)
-> > -				goto out;
-> > +				goto put_pm;
-> >  		}
-> >  
-> > -		if (enable && sensor->pending_fmt_change) {
-> > +		if (sensor->pending_fmt_change) {
-> >  			ret = ov5640_set_framefmt(sensor, &sensor->fmt);
-> >  			if (ret)
-> > -				goto out;
-> > +				goto put_pm;
-> >  			sensor->pending_fmt_change = false;
-> >  		}
-> >  
-> > -		if (sensor->ep.bus_type == V4L2_MBUS_CSI2_DPHY)
-> > -			ret = ov5640_set_stream_mipi(sensor, enable);
-> > -		else
-> > -			ret = ov5640_set_stream_dvp(sensor, enable);
-> > +		ret = ov5640_set_stream(sensor, true);
-> > +		if (ret)
-> > +			goto put_pm;
-> > +	} else {
-> > +		ret = ov5640_set_stream(sensor, false);
-> > +		if (ret)
-> > +			goto err;
-> >  
-> > -		if (!ret)
-> > -			sensor->streaming = enable;
-> > +		pm_runtime_put(dev);
-> >  	}
-> > -out:
-> > +
-> > +	sensor->streaming = enable;
-> > +	mutex_unlock(&sensor->lock);
-> > +	return 0;
-> > +
-> > +put_pm:
-> > +	pm_runtime_put(dev);
-> > +err:
-> >  	mutex_unlock(&sensor->lock);
-> >  	return ret;
-> >  }
-> >  
-> >  static const struct v4l2_subdev_core_ops ov5640_core_ops = {
-> > -	.s_power = ov5640_s_power,
-> 
-> Nice!
-> 
-> >  	.log_status = v4l2_ctrl_subdev_log_status,
-> >  	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
-> >  	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
-> > @@ -3037,6 +3032,29 @@ static int ov5640_check_chip_id(struct ov5640_dev *sensor)
-> >  	return ret;
-> >  }
-> >  
-> > +static int ov5640_suspend(struct device *dev)
-> > +{
-> > +	struct i2c_client *client = to_i2c_client(dev);
-> > +	struct v4l2_subdev *subdev = i2c_get_clientdata(client);
-> > +	struct ov5640_dev *sensor = to_ov5640_dev(subdev);
-> > +
-> > +	return ov5640_set_power(sensor, false);
-> > +}
-> > +
-> > +static int ov5640_resume(struct device *dev)
-> > +{
-> > +	struct i2c_client *client = to_i2c_client(dev);
-> > +	struct v4l2_subdev *subdev = i2c_get_clientdata(client);
-> > +	struct ov5640_dev *sensor = to_ov5640_dev(subdev);
-> > +	int ret = 0;
-> > +
-> > +	ret = ov5640_set_power(sensor, true);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	return __v4l2_ctrl_handler_setup(&sensor->ctrls.handler);
-> 
-> This should be done by the ov5640_set_power() function --- there's no
-> guarantee the sensor will be powered off after probe before someone tries
-> to use it.
-> 
-> In fact, it would be nicer to split ov5640_set_power() in two. There's
-> little need for the convoluted calling of power management functions in
-> this driver. (Almost all sensor drivers have one to power the sensor off
-> and another to power it on.)
-> 
-> > +}
-> > +
-> >  static int ov5640_probe(struct i2c_client *client)
-> >  {
-> >  	struct device *dev = &client->dev;
-> > @@ -3162,13 +3180,17 @@ static int ov5640_probe(struct i2c_client *client)
-> >  	if (ret)
-> >  		goto entity_cleanup;
-> >  
-> > +	pm_runtime_enable(dev);
-> > +	pm_runtime_set_suspended(dev);
-> 
-> You could also do this after registering the subdev below --- less error
-> handling that way.
-> 
-> See e.g. the imx355 driver for an example in what to do at the end of
-> probe. The idea is runtime PM is used to turn the sensor off if it's
-> enabled while the driver turns it on independently of runtime PM.
-> 
-> > +
-> >  	ret = v4l2_async_register_subdev_sensor(&sensor->sd);
-> >  	if (ret)
-> > -		goto free_ctrls;
-> > +		goto pm_disable;
-> >  
-> >  	return 0;
-> >  
-> > -free_ctrls:
-> > +pm_disable:
-> > +	pm_runtime_disable(dev);
-> >  	v4l2_ctrl_handler_free(&sensor->ctrls.handler);
-> >  entity_cleanup:
-> >  	media_entity_cleanup(&sensor->sd.entity);
-> > @@ -3178,17 +3200,23 @@ static int ov5640_probe(struct i2c_client *client)
-> >  
-> >  static int ov5640_remove(struct i2c_client *client)
-> >  {
-> > +	struct device *dev = &client->dev;
-> >  	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> >  	struct ov5640_dev *sensor = to_ov5640_dev(sd);
-> >  
-> >  	v4l2_async_unregister_subdev(&sensor->sd);
-> >  	media_entity_cleanup(&sensor->sd.entity);
-> > +	pm_runtime_disable(dev);
-> >  	v4l2_ctrl_handler_free(&sensor->ctrls.handler);
-> >  	mutex_destroy(&sensor->lock);
-> >  
-> >  	return 0;
-> >  }
-> >  
-> > +static const struct dev_pm_ops ov5640_pm_ops = {
-> > +	SET_RUNTIME_PM_OPS(ov5640_suspend, ov5640_resume, NULL)
-> > +};
-> > +
-> >  static const struct i2c_device_id ov5640_id[] = {
-> >  	{"ov5640", 0},
-> >  	{},
-> > @@ -3205,6 +3233,7 @@ static struct i2c_driver ov5640_i2c_driver = {
-> >  	.driver = {
-> >  		.name  = "ov5640",
-> >  		.of_match_table	= ov5640_dt_ids,
-> > +		.pm = &ov5640_pm_ops,
-> >  	},
-> >  	.id_table = ov5640_id,
-> >  	.probe_new = ov5640_probe,
+I tested it with a virtual block device (root=/dev/vda1) and it works.
+I also filled page with garbage after allocation to make sure natually
+occurring null is not there in the middle of page to terminate string.
 
--- 
-Regards,
+If you like it, can you please incorporate it in your patches.
 
-Laurent Pinchart
+Thanks
+Vivek
+
+---
+ fs/filesystems.c   |    5 ++++-
+ include/linux/fs.h |    2 +-
+ init/do_mounts.c   |    7 ++++---
+ 3 files changed, 9 insertions(+), 5 deletions(-)
+
+Index: redhat-linux/fs/filesystems.c
+===================================================================
+--- redhat-linux.orig/fs/filesystems.c	2021-07-07 16:12:08.890562576 -0400
++++ redhat-linux/fs/filesystems.c	2021-07-07 16:27:51.197620063 -0400
+@@ -209,10 +209,11 @@ SYSCALL_DEFINE3(sysfs, int, option, unsi
+ }
+ #endif
+ 
+-void __init list_bdev_fs_names(char *buf, size_t size)
++int __init list_bdev_fs_names(char *buf, size_t size)
+ {
+ 	struct file_system_type *p;
+ 	size_t len;
++	int count = 0;
+ 
+ 	read_lock(&file_systems_lock);
+ 	for (p = file_systems; p; p = p->next) {
+@@ -226,8 +227,10 @@ void __init list_bdev_fs_names(char *buf
+ 		memcpy(buf, p->name, len);
+ 		buf += len;
+ 		size -= len;
++		count++;
+ 	}
+ 	read_unlock(&file_systems_lock);
++	return count;
+ }
+ 
+ #ifdef CONFIG_PROC_FS
+Index: redhat-linux/include/linux/fs.h
+===================================================================
+--- redhat-linux.orig/include/linux/fs.h	2021-07-07 15:36:43.224418935 -0400
++++ redhat-linux/include/linux/fs.h	2021-07-07 16:12:18.232949807 -0400
+@@ -3622,7 +3622,7 @@ int proc_nr_dentry(struct ctl_table *tab
+ 		  void *buffer, size_t *lenp, loff_t *ppos);
+ int proc_nr_inodes(struct ctl_table *table, int write,
+ 		   void *buffer, size_t *lenp, loff_t *ppos);
+-void __init list_bdev_fs_names(char *buf, size_t size);
++int __init list_bdev_fs_names(char *buf, size_t size);
+ 
+ #define __FMODE_EXEC		((__force int) FMODE_EXEC)
+ #define __FMODE_NONOTIFY	((__force int) FMODE_NONOTIFY)
+Index: redhat-linux/init/do_mounts.c
+===================================================================
+--- redhat-linux.orig/init/do_mounts.c	2021-07-07 16:12:08.890562576 -0400
++++ redhat-linux/init/do_mounts.c	2021-07-07 16:23:32.308889444 -0400
+@@ -391,15 +391,16 @@ void __init mount_block_root(char *name,
+ 	char *fs_names = page_address(page);
+ 	char *p;
+ 	char b[BDEVNAME_SIZE];
++	int num_fs, i;
+ 
+ 	scnprintf(b, BDEVNAME_SIZE, "unknown-block(%u,%u)",
+ 		  MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
+ 	if (root_fs_names)
+ 		split_fs_names(fs_names, root_fs_names);
+ 	else
+-		list_bdev_fs_names(fs_names, PAGE_SIZE);
++		num_fs = list_bdev_fs_names(fs_names, PAGE_SIZE);
+ retry:
+-	for (p = fs_names; *p; p += strlen(p)+1) {
++	for (p = fs_names, i = 0; i < num_fs; p += strlen(p)+1, i++) {
+ 		int err = do_mount_root(name, p, flags, root_mount_data);
+ 		switch (err) {
+ 			case 0:
+@@ -432,7 +433,7 @@ retry:
+ 	printk("List of all partitions:\n");
+ 	printk_all_partitions();
+ 	printk("No filesystem could mount root, tried: ");
+-	for (p = fs_names; *p; p += strlen(p)+1)
++	for (p = fs_names, i = 0; i < num_fs; p += strlen(p)+1, i++)
+ 		printk(" %s", p);
+ 	printk("\n");
+ 	panic("VFS: Unable to mount root fs on %s", b);
+
+
