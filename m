@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF273BEAAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F94C3BEAB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbhGGPcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 11:32:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232050AbhGGPcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 11:32:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43BF261CBE;
-        Wed,  7 Jul 2021 15:30:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625671814;
-        bh=EvKCrrNYIqUwqp4azeFISHn9XNSNveAjy9rdEMTGYR0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LYnH9IxZJjFxq1nDZVDCSEthpAIx09mYpmIPQrIzKCyStC+DsKCE1uqF+m1eUbd4G
-         Iogm6tivT9KQ8b5JpWmpvrLapSchQ6KKh5u2ifzYZiZD/o68KOaiY7dixtj3rqeK8T
-         nsGHrWKMk0izLdtiw12EapJmkC+pyrrl2xdjwLf9NlQGdqVvkLxH+Mk9eo5iwDlV1I
-         Thp8tfCmgxZuFb5Zq791erHRPJUwmNmqfHZONQWuCBRF8j0fF/KcmkR2unTN/YOfHh
-         RYPNlWUlBLM/jZhTgkGqwm29ScFNXIsR9LIDh5VCbiC2xz8HM9qe6A7W2CfxmGaTOa
-         LgMi604/wrLlQ==
-Date:   Wed, 7 Jul 2021 16:29:42 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "embedded (VIVAVIS AG)" <embedded@vivavis.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Voltage and current regulator: usage of 'regulators' parent node
- in device tree
-Message-ID: <20210707152942.GD4394@sirena.org.uk>
-References: <a8700cd3e056423cac4e209b8f740595@vivavis.com>
+        id S232323AbhGGPec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 11:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232211AbhGGPeb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 11:34:31 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7DFC061574;
+        Wed,  7 Jul 2021 08:31:50 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id w13so2125610wmc.3;
+        Wed, 07 Jul 2021 08:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BQn9a4zjHHkcyd8nWBIk09uRnMx2xEYAXpXVNFTpdbA=;
+        b=FywxYZ0w7PhbZPy1z43/Z/FLPkbHVBVsZu/4+U+T+ZpeEOaC5cJnIIczucsqHHX+dV
+         jTu8LDX7kJdN5fiqEId9ExAklTEFb1GUGKifRGmvaP2vwhfp7yM1Snv8dqU2fAzEsp9m
+         t3mNgD2ksPAVYw0aT6Oc1gLHoukmAhBf4vui5DBFMd0ujxN2+yNEYERUKMJaC+i3rSO0
+         q4X7wbJel6JA1YSkeSzSHAOLjI5fHhIYEL+xfmrQ5XvlcRyQ60TWZ5TLNcYt5LAFkxac
+         IYAqzbk2fsCz/15pW/eaIhAobTpAqj10f2iJ8C085iyou6Gn3Of5yRu2l/eHbnbh+DAv
+         Z0JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BQn9a4zjHHkcyd8nWBIk09uRnMx2xEYAXpXVNFTpdbA=;
+        b=HtULEtMGLJ9tFaqgvcxzUDGn1FNvpB0jpu6lv2ZhqDlBuFhvFB4OW+bo6h+Xy+8Uwh
+         /YbvQ3k8+qs6FitLFDAQ3wW+QtidRStcYNx0l4EThUhcUQggN1234jYTxMH7Tnjl4xa3
+         UwO1ow1uzjY0L6LH1LMA1X5o+5L8NAj/P0Ii4N8C9nvZ5bpk6dx/S9MK2HHcD0bGwI4k
+         tT1ZzsUvyrHeAsYcnGRik74oIptYcXJ2qR6Ws+tOS1+ugo3d/5+4vo7OLb5Sddl1DlNN
+         ZaDqoqBb351w8M248Mx6GNEIhKB/lGcgHlKJKM2LZTW+dCAeqCKYM5h4TgVeua9UjoXE
+         8/7w==
+X-Gm-Message-State: AOAM5329eeKz8Xd8e0sp+cXIMvDqikANoGEnSbUYeZJ9GJHQiTN6arWr
+        lj/ju+cS2DSodItnIOLoLkA=
+X-Google-Smtp-Source: ABdhPJw1Vcl8Qu3j3vcqh7x0hGEs+y8bp1eskE1vLjJ0m2ypT/PAEsFSOOECDxtDNjAMNRedjrZTbA==
+X-Received: by 2002:a05:600c:206:: with SMTP id 6mr185653wmi.139.1625671909447;
+        Wed, 07 Jul 2021 08:31:49 -0700 (PDT)
+Received: from masalkhi.fritz.box (dslb-178-005-073-162.178.005.pools.vodafone-ip.de. [178.5.73.162])
+        by smtp.gmail.com with ESMTPSA id o3sm20847579wrw.56.2021.07.07.08.31.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 08:31:48 -0700 (PDT)
+From:   Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
+To:     arnd@arndb.de
+Cc:     hch@infradead.org, deller@gmx.de, dave.anglin@bell.net,
+        axboe@kernel.dk, bernie@develer.com, linux-parisc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+Subject: Re: div_u64/do_div stack size usage, was Re: [v3] block: Removed a warning while compiling with a cross compiler for parisc
+Date:   Wed,  7 Jul 2021 17:30:53 +0200
+Message-Id: <20210707153053.62237-1-abd.masalkhi@gmail.com>
+X-Mailer: git-send-email 2.29.0.rc1.dirty
+In-Reply-To: <CAK8P3a23=tcWx8iWNAKXcT9TRgPrZbEVVy9a_ad29hSde_jkKg@mail.gmail.com>
+References: <CAK8P3a23=tcWx8iWNAKXcT9TRgPrZbEVVy9a_ad29hSde_jkKg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tMbDGjvJuJijemkf"
-Content-Disposition: inline
-In-Reply-To: <a8700cd3e056423cac4e209b8f740595@vivavis.com>
-X-Cookie: I will never lie to you.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sorry for late respond, I was at work. The problem was solved for me too,
+after setting the CONFIG_CC_OPTIMIZE_FOR_SIZE, and I have went through the
+gcc 9.4 manual to look for the -f option for -O2, it seems that all -f option
+that we would not specify is already excluded with -Os. changing defconfig, it
+seems for me a good idea.
 
---tMbDGjvJuJijemkf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jul 07, 2021 at 01:09:25PM +0000, embedded (VIVAVIS AG) wrote:
-
-> Should I avoid the parent 'regulators' node?
-
-You should ask the DT maintainers, I don't really mind either way TBH.
-My understanding was to avoid the parent node but can't remember why or
-if it was important.
-
---tMbDGjvJuJijemkf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDlyGUACgkQJNaLcl1U
-h9Ax8Af/QBgIHdTGVnECno3tH0X7GfNqamMKqRJwaEJkHhd10BLBUG7fu3tlxF5S
-vMbGThZDcf/CKWLwgXMPY9IOo8jxnNqYW0n7nmKAKAk4YefreGxMpcEW/6joxJKG
-XQKK7mrnJodm9jO3sPkukQPC4eFOq6XLc1Xc3Ek48JklMmEUD82AqIIeJGzuVxxX
-gOsBmZI4OqWSKQlbeoll3c3Gh1P+Z7PsV7tSwIlQX2nKslRkpZXgq35aSqduQGeG
-tzkoGbPSS03tTV+YMFeexhTxvDV8+nr90nouw7t6IcywcynXGAp11H1QE+xFM/nH
-moVVqN6psz3BYJFISFeLpClUpmKVMA==
-=vEbh
------END PGP SIGNATURE-----
-
---tMbDGjvJuJijemkf--
+Abd-Alrhman
