@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF5F3BE637
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C169B3BE63A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhGGKR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhGGKRZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:17:25 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D689C061574;
-        Wed,  7 Jul 2021 03:14:45 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso1309439pjp.5;
-        Wed, 07 Jul 2021 03:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/v1v63E0rW3Sz0wWz+xxvrNljXSoGIcWgLgvmV340X0=;
-        b=r/ffmgD5xpCW0UJzyqwV9Mx7X8KN1SMy7aB/k3mI0d4pAONd+gY31jASH6L9nCcTaS
-         0MGJ+jU9vM3u7wCsppsvc+O/NXDbBEBpGChF78KO1cOMV8SGs04rTTxf+0MXZ1BS25qE
-         3vws7QMETu80NK3u9QrnmfahUigoLLj/mIx1Uc4aN+rPQfPh2cN+FZ0QXktseSVfddkr
-         YyfX+lliHgO1yyz7n+bHbn5NpbFgOIGVJp+UqXnEMM3f+0TZ0brlXLV+a3hl7MZq8m36
-         Khh1g4Yt/r+keuwQzUcS3SsaMW7xCmKo3wGcYogaHhfUkEhUa4qCltalihP+/7/uZh4M
-         twyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/v1v63E0rW3Sz0wWz+xxvrNljXSoGIcWgLgvmV340X0=;
-        b=eTRHR/quupv60CXAliiUSGpFOVx+abhYh596jJ6YsERiznYugo/jHLEVk8Fa1SISwC
-         7dPZU09lDwaA9vOxQzOMA8xycn2qrObO1M4PGGCzdlQRHN2txdfjrG+fQZetfyzNLzVI
-         ARU73iHpmUGGBd16qy4YUe53dlqvFOzoJlBxo3NiI2xl46Qtx8BNzQRlF9uI0i2QjCSN
-         xzqS7uD9gsx1qXq3CydoPCNpURsaU/++OnlYJFtvqRq+r3ertxABD4smdRlHZSb83E/g
-         NntJhAd5LBBXp618NulDGnXSMArxU9XPbZltjl8/06QcIJr0z4A1G4izVFn7gr4UVdGo
-         rYcA==
-X-Gm-Message-State: AOAM5333phzNkl4QenboEASl3XZQBAPc3QUPMdTsHVTovS0zl6x7vAdw
-        NeuWNmqkitsq+suHZoW0JKCaWR67CuwU0PvEQnumoSKSfzg=
-X-Google-Smtp-Source: ABdhPJzpnGJQbb/lAV153VUGKVOlFScbGXYNHs+4YUpNuPaJ2LzDco2arjS97UhJIDDiS5YwLG1j3xr4wfUyHbJ41NM=
-X-Received: by 2002:a17:903:31c3:b029:ed:6f74:49c7 with SMTP id
- v3-20020a17090331c3b02900ed6f7449c7mr20212312ple.12.1625652885021; Wed, 07
- Jul 2021 03:14:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210629134144.GA1168@raspberrypi>
-In-Reply-To: <20210629134144.GA1168@raspberrypi>
-From:   Austin Kim <austindh.kim@gmail.com>
-Date:   Wed, 7 Jul 2021 19:14:33 +0900
-Message-ID: <CADLLry4_qB607aC2WdjvH6+QWijPNU4cQNhacr-mLOBN-heZAA@mail.gmail.com>
-Subject: Re: [PATCH] smack: mark 'smack_enabled' global variable as __initdata
-To:     casey@schaufler-ca.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     linux-security-module <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-team@lge.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S231281AbhGGKRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:17:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231137AbhGGKRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 06:17:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40D1961C99;
+        Wed,  7 Jul 2021 10:15:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625652914;
+        bh=WoOLCe/573KQNlOrEEqMXmu+eiiCZloj8cqFm7v8pTg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hDoYXpKtBEZ6RTCdoT1foEgQNZLF/DXPZA94tU6t7o7UVFjk4J9VllvYY+3Hjh90m
+         PrPyRVe7Ej7L/zrv6J8l4f5g12jAqhs+oqnTkA6lxXHfDaoE8yhgAxXim3IFTkkWB1
+         Eq0ptKEhYDxpvwf3De4k02ADOcxfgp69ExdK4GI0etFfPK8psWGKJDVkF+gZoJInSd
+         37iqG/hWz4zXLuTPSdfwEvrppigj7dmBwxPhEFg9Lf2xUXQdKwpVZm4mqPkHMlqey5
+         PuptKA042B2c0l1UceV5ALGegOvafz69i1ml+dcDHWmmgueFsyiswj7JyK+DVGk+aD
+         k1GfH0q+xDApg==
+Date:   Wed, 7 Jul 2021 19:15:10 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        wuqiang.matt@bytedance.com
+Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
+ entry
+Message-Id: <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
+In-Reply-To: <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+        <162400002631.506599.2413605639666466945.stgit@devnote2>
+        <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
+        <20210706004257.9e282b98f447251a380f658f@kernel.org>
+        <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
+        <20210706111136.7c5e9843@oasis.local.home>
+        <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 6=EC=9B=94 29=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 10:41, =
-Austin Kim <austindh.kim@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> From: Austin Kim <austin.kim@lge.com>
->
-> Mark 'smack_enabled' as __initdata
-> since it is only used during initialization code.
->
-> Signed-off-by: Austin Kim <austin.kim@lge.com>
-> ---
->  security/smack/smack.h     | 2 +-
->  security/smack/smack_lsm.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/security/smack/smack.h b/security/smack/smack.h
-> index c3cfbdf4944a..99c3422596ab 100644
-> --- a/security/smack/smack.h
-> +++ b/security/smack/smack.h
-> @@ -302,7 +302,7 @@ int smack_populate_secattr(struct smack_known *skp);
->  /*
->   * Shared data.
->   */
-> -extern int smack_enabled;
-> +extern int smack_enabled __initdata;
->  extern int smack_cipso_direct;
->  extern int smack_cipso_mapped;
->  extern struct smack_known *smack_net_ambient;
-> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-> index 223a6da0e6dc..cacbe7518519 100644
-> --- a/security/smack/smack_lsm.c
-> +++ b/security/smack/smack_lsm.c
-> @@ -54,7 +54,7 @@
->  static DEFINE_MUTEX(smack_ipv6_lock);
->  static LIST_HEAD(smk_ipv6_port_list);
->  struct kmem_cache *smack_rule_cache;
-> -int smack_enabled;
-> +int smack_enabled __initdata;
->
->  #define A(s) {"smack"#s, sizeof("smack"#s) - 1, Opt_##s}
->  static struct {
-> --
-> 2.20.1
->
+On Wed, 7 Jul 2021 10:20:41 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Dear Maintainers
+> > > Steve, can you clarify the ftrace side here? Afaict return_to_handler()
+> > > is similarly affected.
+> > 
+> > I'm not exactly sure what the issue is. As Masami stated, kretprobe
+> > uses a ret to return to the calling function, but ftrace uses a jmp.
+> 
+> I'll have to re-read the ftrace bits, but from the top of my head you
+> cannot do an indirect jump and preserve all registers at the same time,
+> so a return stub must use jump from stack aka. ret.
+> 
+> > kretprobe return tracing is more complex than the function graph return
+> > tracing is (which is one of the issues I need to overcome to unify
+> > them),
+> 
+> I'm not sure it is. IIRC the biggest pain point with kretprobe is that
+> 'silly' property that the kretprobe_instance are not the same between
+> kretprobes. Luckily, that's not actually used anywhere, so we can simply
+> rip that out.
 
-Would you please review the above patch if you are available?
-It might not take long.
+I actually don't want to keep this feature because no one use it.
+(only systemtap needs it?)
 
-Thanks.
-Austin Kim
+Anyway, if we keep the idea-level compatibility (not code level),
+what we need is 'void *data' in the struct kretprobe_instance.
+User who needs it can allocate their own instance data for their
+kretprobes when initialising it and sets in their entry handler.
+
+Then we can have a simple kretprobe_instance.
+
+Thank you,
+
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
