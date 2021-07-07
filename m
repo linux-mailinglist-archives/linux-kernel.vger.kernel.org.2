@@ -2,192 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3363BF177
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E333BF17D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbhGGVmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 17:42:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45758 "EHLO mail.kernel.org"
+        id S231309AbhGGVpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 17:45:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233020AbhGGVmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 17:42:04 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43E7861CB9;
-        Wed,  7 Jul 2021 21:39:23 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1m1FGM-001744-Af; Wed, 07 Jul 2021 17:39:22 -0400
-Message-ID: <20210707213922.167218794@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Wed, 07 Jul 2021 17:36:25 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [PATCH 2/2 v3] tracing/histogram: Update the documentation for the buckets modifier
-References: <20210707213623.250212325@goodmis.org>
+        id S230048AbhGGVpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 17:45:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D414961C94;
+        Wed,  7 Jul 2021 21:42:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625694162;
+        bh=+Q+mYhXOJkdvBhONPOGw0MrCiDQXHRW5YTw/H/s6sxs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lDYeiGm9BRypGOQTRMyWXxTPLpwbp/iUSb658mrkfYmiVyGXivceUDv31M+8qKxtY
+         HaSgOxwCgeqKipGy4KWNoVHUa8QsW6w7tkecIcdHrqk6y4SzTn1zOh0dp6IDPgnRFi
+         H81HG1+uIUxsyVPhr22GijVjgJq/G17UheU2CeXtWZyCDvFmvA8Hf+AlWr/LQmL820
+         7X+/zF4/bcMLfU6sbzkq+oL8hxHohZEtZm7t5x8nslYdun3Ukwitipdf4nmkA8R1e7
+         d4WDu97eM2F9Zxkmm7EuT+5FozRdHL9OSgEvewFHdEBJEJ8LoCfrjM7gaVd+9vE/cq
+         5czmZ9hkdkLjA==
+Date:   Wed, 7 Jul 2021 16:42:40 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [GIT PULL] PCI changes for v5.14
+Message-ID: <20210707214240.GA937039@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-Update both the tracefs README file as well as the histogram.rst to
-include an explanation of what the buckets modifier is and how to use it.
-Include an example with the wakeup_latency example for both log2 and the
-buckets modifiers as there was no existing log2 example.
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- Documentation/trace/histogram.rst | 92 +++++++++++++++++++++++++++++--
- kernel/trace/trace.c              |  1 +
- 2 files changed, 87 insertions(+), 6 deletions(-)
+are available in the Git repository at:
 
-diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
-index b71e09f745c3..11094ec6e52e 100644
---- a/Documentation/trace/histogram.rst
-+++ b/Documentation/trace/histogram.rst
-@@ -77,6 +77,7 @@ Documentation written by Tom Zanussi
- 	.syscall    display a syscall id as a system call name
- 	.execname   display a common_pid as a program name
- 	.log2       display log2 value rather than raw number
-+	.buckets=size  display grouping of values rather than raw number
- 	.usecs      display a common_timestamp in microseconds
- 	=========== ==========================================
- 
-@@ -228,7 +229,7 @@ Extended error information
-   that lists the total number of bytes requested for each function in
-   the kernel that made one or more calls to kmalloc::
- 
--    # echo 'hist:key=call_site:val=bytes_req' > \
-+    # echo 'hist:key=call_site:val=bytes_req.buckets=32' > \
-             /sys/kernel/debug/tracing/events/kmem/kmalloc/trigger
- 
-   This tells the tracing system to create a 'hist' trigger using the
-@@ -1823,20 +1824,99 @@ and variables defined on other events (see Section 2.2.3 below on
- how that is done using hist trigger 'onmatch' action). Once that is
- done, the 'wakeup_latency' synthetic event instance is created.
- 
--A histogram can now be defined for the new synthetic event::
--
--  # echo 'hist:keys=pid,prio,lat.log2:sort=pid,lat' >> \
--        /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
--
- The new event is created under the tracing/events/synthetic/ directory
- and looks and behaves just like any other event::
- 
-   # ls /sys/kernel/debug/tracing/events/synthetic/wakeup_latency
-         enable  filter  format  hist  id  trigger
- 
-+A histogram can now be defined for the new synthetic event::
-+
-+  # echo 'hist:keys=pid,prio,lat.log2:sort=lat' >> \
-+        /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
-+
-+The above shows the latency "lat" in a power of 2 grouping.
-+
- Like any other event, once a histogram is enabled for the event, the
- output can be displayed by reading the event's 'hist' file.
- 
-+  # cat /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/hist
-+
-+  # event histogram
-+  #
-+  # trigger info: hist:keys=pid,prio,lat.log2:vals=hitcount:sort=lat.log2:size=2048 [active]
-+  #
-+
-+  { pid:       2035, prio:          9, lat: ~ 2^2  } hitcount:         43
-+  { pid:       2034, prio:          9, lat: ~ 2^2  } hitcount:         60
-+  { pid:       2029, prio:          9, lat: ~ 2^2  } hitcount:        965
-+  { pid:       2034, prio:        120, lat: ~ 2^2  } hitcount:          9
-+  { pid:       2033, prio:        120, lat: ~ 2^2  } hitcount:          5
-+  { pid:       2030, prio:          9, lat: ~ 2^2  } hitcount:        335
-+  { pid:       2030, prio:        120, lat: ~ 2^2  } hitcount:         10
-+  { pid:       2032, prio:        120, lat: ~ 2^2  } hitcount:          1
-+  { pid:       2035, prio:        120, lat: ~ 2^2  } hitcount:          2
-+  { pid:       2031, prio:          9, lat: ~ 2^2  } hitcount:        176
-+  { pid:       2028, prio:        120, lat: ~ 2^2  } hitcount:         15
-+  { pid:       2033, prio:          9, lat: ~ 2^2  } hitcount:         91
-+  { pid:       2032, prio:          9, lat: ~ 2^2  } hitcount:        125
-+  { pid:       2029, prio:        120, lat: ~ 2^2  } hitcount:          4
-+  { pid:       2031, prio:        120, lat: ~ 2^2  } hitcount:          3
-+  { pid:       2029, prio:        120, lat: ~ 2^3  } hitcount:          2
-+  { pid:       2035, prio:          9, lat: ~ 2^3  } hitcount:         41
-+  { pid:       2030, prio:        120, lat: ~ 2^3  } hitcount:          1
-+  { pid:       2032, prio:          9, lat: ~ 2^3  } hitcount:         32
-+  { pid:       2031, prio:          9, lat: ~ 2^3  } hitcount:         44
-+  { pid:       2034, prio:          9, lat: ~ 2^3  } hitcount:         40
-+  { pid:       2030, prio:          9, lat: ~ 2^3  } hitcount:         29
-+  { pid:       2033, prio:          9, lat: ~ 2^3  } hitcount:         31
-+  { pid:       2029, prio:          9, lat: ~ 2^3  } hitcount:         31
-+  { pid:       2028, prio:        120, lat: ~ 2^3  } hitcount:         18
-+  { pid:       2031, prio:        120, lat: ~ 2^3  } hitcount:          2
-+  { pid:       2028, prio:        120, lat: ~ 2^4  } hitcount:          1
-+  { pid:       2029, prio:          9, lat: ~ 2^4  } hitcount:          4
-+  { pid:       2031, prio:        120, lat: ~ 2^7  } hitcount:          1
-+  { pid:       2032, prio:        120, lat: ~ 2^7  } hitcount:          1
-+
-+  Totals:
-+      Hits: 2122
-+      Entries: 30
-+      Dropped: 0
-+
-+
-+The latency values can also be grouped linearly by a given size with
-+the ".buckets" modifier and specify a size (in this case groups of 10).
-+
-+  # echo 'hist:keys=pid,prio,lat.buckets=10:sort=lat' >> \
-+        /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
-+
-+  # event histogram
-+  #
-+  # trigger info: hist:keys=pid,prio,lat.buckets=10:vals=hitcount:sort=lat.buckets=10:size=2048 [active]
-+  #
-+
-+  { pid:       2067, prio:          9, lat: ~ 0-9 } hitcount:        220
-+  { pid:       2068, prio:          9, lat: ~ 0-9 } hitcount:        157
-+  { pid:       2070, prio:          9, lat: ~ 0-9 } hitcount:        100
-+  { pid:       2067, prio:        120, lat: ~ 0-9 } hitcount:          6
-+  { pid:       2065, prio:        120, lat: ~ 0-9 } hitcount:          2
-+  { pid:       2066, prio:        120, lat: ~ 0-9 } hitcount:          2
-+  { pid:       2069, prio:          9, lat: ~ 0-9 } hitcount:        122
-+  { pid:       2069, prio:        120, lat: ~ 0-9 } hitcount:          8
-+  { pid:       2070, prio:        120, lat: ~ 0-9 } hitcount:          1
-+  { pid:       2068, prio:        120, lat: ~ 0-9 } hitcount:          7
-+  { pid:       2066, prio:          9, lat: ~ 0-9 } hitcount:        365
-+  { pid:       2064, prio:        120, lat: ~ 0-9 } hitcount:         35
-+  { pid:       2065, prio:          9, lat: ~ 0-9 } hitcount:        998
-+  { pid:       2071, prio:          9, lat: ~ 0-9 } hitcount:         85
-+  { pid:       2065, prio:          9, lat: ~ 10-19 } hitcount:          2
-+  { pid:       2064, prio:        120, lat: ~ 10-19 } hitcount:          2
-+
-+  Totals:
-+      Hits: 2112
-+      Entries: 16
-+      Dropped: 0
-+
- 2.2.3 Hist trigger 'handlers' and 'actions'
- -------------------------------------------
- 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 14f56e9fa001..8097d5aa8627 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -5648,6 +5648,7 @@ static const char readme_msg[] =
- 	"\t            .execname   display a common_pid as a program name\n"
- 	"\t            .syscall    display a syscall id as a syscall name\n"
- 	"\t            .log2       display log2 value rather than raw number\n"
-+	"\t            .buckets=size  display values in groups of size rather than raw number\n"
- 	"\t            .usecs      display a common_timestamp in microseconds\n\n"
- 	"\t    The 'pause' parameter can be used to pause an existing hist\n"
- 	"\t    trigger or to start a hist trigger but not log any events\n"
--- 
-2.30.2
+  git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.14-changes
+
+for you to fetch changes up to d58b2061105956f6e69691bf0259b1dd1e9fb601:
+
+  Merge branch 'remotes/lorenzo/pci/mobiveil' (2021-07-06 10:56:32 -0500)
+
+----------------------------------------------------------------
+
+Enumeration:
+  - Fix dsm_label_utf16s_to_utf8s() buffer overrun (Krzysztof Wilczyński)
+  - Rely on lengths from scnprintf(), dsm_label_utf16s_to_utf8s()
+    (Krzysztof Wilczyński)
+  - Use sysfs_emit() and sysfs_emit_at() in "show" functions (Krzysztof
+    Wilczyński)
+  - Fix 'resource_alignment' newline issues (Krzysztof Wilczyński)
+  - Add 'devspec' newline (Krzysztof Wilczyński)
+  - Dynamically map ECAM regions (Russell King)
+
+Resource management:
+  - Coalesce host bridge contiguous apertures (Kai-Heng Feng)
+
+PCIe native device hotplug:
+  - Ignore Link Down/Up caused by DPC (Lukas Wunner)
+
+Power management:
+  - Leave Apple Thunderbolt controllers on for s2idle or standby
+    (Konstantin Kharlamov)
+
+Virtualization:
+  - Work around Huawei Intelligent NIC VF FLR erratum (Chiqijun)
+  - Clarify error message for unbound IOV devices (Moritz Fischer)
+  - Add pci_reset_bus_function() Secondary Bus Reset interface (Raphael
+    Norwitz)
+
+Peer-to-peer DMA:
+  - Simplify distance calculation (Christoph Hellwig)
+  - Finish RCU conversion of pdev->p2pdma (Eric Dumazet)
+  - Rename upstream_bridge_distance() and rework doc (Logan Gunthorpe)
+  - Collect acs list in stack buffer to avoid sleeping (Logan Gunthorpe)
+  - Use correct calc_map_type_and_dist() return type (Logan Gunthorpe)
+  - Warn if host bridge not in whitelist (Logan Gunthorpe)
+  - Refactor pci_p2pdma_map_type() (Logan Gunthorpe)
+  - Avoid pci_get_slot(), which may sleep (Logan Gunthorpe)
+
+Altera PCIe controller driver:
+  - Add Joyce Ooi as Altera PCIe maintainer (Joyce Ooi)
+
+Broadcom iProc PCIe controller driver:
+  - Fix multi-MSI base vector number allocation (Sandor Bodo-Merle)
+  - Support multi-MSI only on uniprocessor kernel (Sandor Bodo-Merle)
+
+Freescale i.MX6 PCIe controller driver:
+  - Limit DBI register length for imx6qp PCIe (Richard Zhu)
+  - Add "vph-supply" for PHY supply voltage (Richard Zhu)
+  - Enable PHY internal regulator when supplied >3V (Richard Zhu)
+  - Remove imx6_pcie_probe() redundant error message (Zhen Lei)
+
+Intel Gateway PCIe controller driver:
+  - Fix INTx enable (Martin Blumenstingl)
+
+Marvell Aardvark PCIe controller driver:
+  - Fix checking for PIO Non-posted Request (Pali Rohár)
+  - Implement workaround for the readback value of VEND_ID (Pali Rohár)
+
+MediaTek PCIe controller driver:
+  - Remove redundant error printing in mtk_pcie_subsys_powerup() (Zhen Lei)
+
+MediaTek PCIe Gen3 controller driver:
+  - Add missing MODULE_DEVICE_TABLE (Zou Wei)
+
+Microchip PolarFlare PCIe controller driver:
+  - Make struct event_descs static (Krzysztof Wilczyński)
+
+Microsoft Hyper-V host bridge driver:
+  - Fix race condition when removing the device (Long Li)
+  - Remove bus device removal unused refcount/functions (Long Li)
+
+Mobiveil PCIe controller driver:
+  - Remove unused readl and writel functions (Krzysztof Wilczyński)
+
+NVIDIA Tegra PCIe controller driver:
+  - Add missing MODULE_DEVICE_TABLE (Zou Wei)
+
+NVIDIA Tegra194 PCIe controller driver:
+  - Fix tegra_pcie_ep_raise_msi_irq() ill-defined shift (Jon Hunter)
+  - Fix host initialization during resume (Vidya Sagar)
+
+Rockchip PCIe controller driver:
+  - Register IRQ handlers after device and data are ready (Javier Martinez
+    Canillas)
+
+----------------------------------------------------------------
+Bjorn Helgaas (26):
+      PCI: xgene: Annotate __iomem pointer
+      Merge branch 'pci/enumeration'
+      Merge branch 'pci/error'
+      Merge branch 'pci/hotplug'
+      Merge branch 'pci/misc'
+      Merge branch 'pci/p2pdma'
+      Merge branch 'pci/pm'
+      Merge branch 'pci/reset'
+      Merge branch 'pci/resource'
+      Merge branch 'pci/sysfs'
+      Merge branch 'pci/virtualization'
+      Merge branch 'pci/host/imx6'
+      Merge branch 'pci/host/intel-gw'
+      Merge branch 'pci/host/rockchip'
+      Merge branch 'pci/host/tegra'
+      Merge branch 'pci/host/tegra194'
+      Merge branch 'pci/host/xgene'
+      Merge branch 'pci/kernel-doc'
+      Merge branch 'remotes/lorenzo/pci/aardvark'
+      Merge branch 'remotes/lorenzo/pci/ftpci100'
+      Merge branch 'remotes/lorenzo/pci/hv'
+      Merge branch 'remotes/lorenzo/pci/iproc'
+      Merge branch 'remotes/lorenzo/pci/mediatek'
+      Merge branch 'remotes/lorenzo/pci/mediatek-gen3'
+      Merge branch 'remotes/lorenzo/pci/microchip'
+      Merge branch 'remotes/lorenzo/pci/mobiveil'
+
+Chiqijun (1):
+      PCI: Work around Huawei Intelligent NIC VF FLR erratum
+
+Christoph Hellwig (1):
+      PCI/P2PDMA: Simplify distance calculation
+
+Eric Dumazet (1):
+      PCI/P2PDMA: Finish RCU conversion of pdev->p2pdma
+
+Javier Martinez Canillas (1):
+      PCI: rockchip: Register IRQ handlers after device and data are ready
+
+Jon Hunter (1):
+      PCI: tegra194: Fix tegra_pcie_ep_raise_msi_irq() ill-defined shift
+
+Joyce Ooi (1):
+      MAINTAINERS: Add Joyce Ooi as Altera PCIe maintainer
+
+Kai-Heng Feng (1):
+      PCI: Coalesce host bridge contiguous apertures
+
+Konstantin Kharlamov (1):
+      PCI: Leave Apple Thunderbolt controllers on for s2idle or standby
+
+Krzysztof Wilczyński (9):
+      PCI: microchip: Make the struct event_descs static
+      PCI: mobiveil: Remove unused readl and writel functions
+      PCI/sysfs: Fix dsm_label_utf16s_to_utf8s() buffer overrun
+      PCI/sysfs: Rely on lengths from scnprintf(), dsm_label_utf16s_to_utf8s()
+      PCI/sysfs: Use sysfs_emit() and sysfs_emit_at() in "show" functions
+      PCI/sysfs: Fix 'resource_alignment' newline issues
+      PCI/sysfs: Add 'devspec' newline
+      PCI: cpcihp: Declare cpci_debug in header file
+      PCI: Fix kernel-doc formatting
+
+Logan Gunthorpe (6):
+      PCI/P2PDMA: Rename upstream_bridge_distance() and rework doc
+      PCI/P2PDMA: Collect acs list in stack buffer to avoid sleeping
+      PCI/P2PDMA: Use correct calc_map_type_and_dist() return type
+      PCI/P2PDMA: Warn if host bridge not in whitelist
+      PCI/P2PDMA: Refactor pci_p2pdma_map_type()
+      PCI/P2PDMA: Avoid pci_get_slot(), which may sleep
+
+Long Li (2):
+      PCI: hv: Fix a race condition when removing the device
+      PCI: hv: Remove bus device removal unused refcount/functions
+
+Lukas Wunner (1):
+      PCI: pciehp: Ignore Link Down/Up caused by DPC
+
+Martin Blumenstingl (1):
+      PCI: intel-gw: Fix INTx enable
+
+Moritz Fischer (1):
+      PCI/IOV: Clarify error message for unbound devices
+
+Niklas Schnelle (1):
+      PCI: Print a debug message on PCI device release
+
+Pali Rohár (2):
+      PCI: aardvark: Fix checking for PIO Non-posted Request
+      PCI: aardvark: Implement workaround for the readback value of VEND_ID
+
+Randy Dunlap (1):
+      PCI: ftpci100: Rename macro name collision
+
+Raphael Norwitz (1):
+      PCI: Add pci_reset_bus_function() Secondary Bus Reset interface
+
+Richard Zhu (3):
+      PCI: imx6: Limit DBI register length for imx6qp PCIe
+      dt-bindings: imx6q-pcie: Add "vph-supply" for PHY supply voltage
+      PCI: imx6: Enable PHY internal regulator when supplied >3V
+
+Russell King (1):
+      PCI: Dynamically map ECAM regions
+
+Sandor Bodo-Merle (2):
+      PCI: iproc: Fix multi-MSI base vector number allocation
+      PCI: iproc: Support multi-MSI only on uniprocessor kernel
+
+Vidya Sagar (1):
+      PCI: tegra194: Fix host initialization during resume
+
+Wesley Sheng (1):
+      Documentation: PCI: Fix typo in pci-error-recovery.rst
+
+Yang Li (1):
+      x86/pci: Return true/false (not 1/0) from bool functions
+
+Yicong Yang (1):
+      PCI/AER: Use consistent format when printing PCI device
+
+Zhen Lei (2):
+      PCI: mediatek: Remove redundant error printing in mtk_pcie_subsys_powerup()
+      PCI: imx6: Remove imx6_pcie_probe() redundant error message
+
+Zou Wei (2):
+      PCI: mediatek-gen3: Add missing MODULE_DEVICE_TABLE
+      PCI: tegra: Add missing MODULE_DEVICE_TABLE
+
+ Documentation/PCI/pci-error-recovery.rst           |   2 +-
+ .../devicetree/bindings/pci/fsl,imx6q-pcie.txt     |   3 +
+ MAINTAINERS                                        |   6 +-
+ arch/x86/pci/mmconfig-shared.c                     |  10 +-
+ drivers/pci/controller/cadence/pcie-cadence.h      |   7 +-
+ drivers/pci/controller/dwc/pci-imx6.c              |  25 +-
+ drivers/pci/controller/dwc/pcie-intel-gw.c         |  10 +-
+ drivers/pci/controller/dwc/pcie-tegra194.c         |   4 +-
+ .../pci/controller/mobiveil/pcie-layerscape-gen4.c |  11 -
+ drivers/pci/controller/pci-aardvark.c              |  13 +-
+ drivers/pci/controller/pci-ftpci100.c              |  30 +-
+ drivers/pci/controller/pci-hyperv.c                |  64 ++--
+ drivers/pci/controller/pci-tegra.c                 |   1 +
+ drivers/pci/controller/pci-xgene.c                 |   4 +-
+ drivers/pci/controller/pcie-iproc-msi.c            |  35 +-
+ drivers/pci/controller/pcie-iproc.c                |  24 +-
+ drivers/pci/controller/pcie-iproc.h                |  16 +-
+ drivers/pci/controller/pcie-mediatek-gen3.c        |   1 +
+ drivers/pci/controller/pcie-mediatek.c             |   4 +-
+ drivers/pci/controller/pcie-microchip-host.c       |   2 +-
+ drivers/pci/controller/pcie-rockchip-host.c        |  12 +-
+ drivers/pci/ecam.c                                 |  54 ++-
+ drivers/pci/hotplug/cpci_hotplug.h                 |   3 +
+ drivers/pci/hotplug/cpci_hotplug_pci.c             |   2 -
+ drivers/pci/hotplug/cpqphp_core.c                  |   7 +-
+ drivers/pci/hotplug/cpqphp_ctrl.c                  |   2 +-
+ drivers/pci/hotplug/pci_hotplug_core.c             |   8 +-
+ drivers/pci/hotplug/pciehp.h                       |   3 +
+ drivers/pci/hotplug/pciehp_hpc.c                   |  36 ++
+ drivers/pci/hotplug/rpadlpar_sysfs.c               |   4 +-
+ drivers/pci/hotplug/shpchp_sysfs.c                 |  38 ++-
+ drivers/pci/iov.c                                  |  23 +-
+ drivers/pci/msi.c                                  |   8 +-
+ drivers/pci/p2pdma.c                               | 376 +++++++++++----------
+ drivers/pci/pci-label.c                            |  22 +-
+ drivers/pci/pci-sysfs.c                            |   2 +-
+ drivers/pci/pci.c                                  |  54 +--
+ drivers/pci/pci.h                                  |   8 +-
+ drivers/pci/pcie/aer.c                             |  24 +-
+ drivers/pci/pcie/aspm.c                            |   4 +-
+ drivers/pci/pcie/dpc.c                             |  74 +++-
+ drivers/pci/probe.c                                |  53 ++-
+ drivers/pci/quirks.c                               |  76 +++++
+ drivers/pci/slot.c                                 |  18 +-
+ drivers/pci/switch/switchtec.c                     |  18 +-
+ include/linux/pci-ecam.h                           |   1 +
+ include/linux/pci-ep-cfs.h                         |   2 +-
+ include/linux/pci-epc.h                            |   5 +-
+ include/linux/pci-epf.h                            |   5 +-
+ include/linux/pci.h                                |   2 +-
+ include/linux/pci_hotplug.h                        |   2 +
+ include/uapi/linux/pcitest.h                       |   2 +-
+ 52 files changed, 789 insertions(+), 431 deletions(-)
