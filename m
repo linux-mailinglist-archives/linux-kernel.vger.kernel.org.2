@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893743BED4D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6FB3BED4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbhGGRpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 13:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231165AbhGGRpH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:45:07 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECD7C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 10:42:27 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id g19so4378499ybe.11
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 10:42:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=67r38bE7gQFQq3QdwWGtHId+Jukj2mvNHeTDPSYrtoQ=;
-        b=PiICEgwc7suyXxN0mAopoGLe6qStu8w216bkY7ntbFJES64gkKAVvNRXyVO1GFHbgC
-         l9k1jMUt3w3jw3TBaa55TTLeqvXmKjFlQV19yvAV97K/xigbpxsUIsifvWN7LxvoXoAs
-         fFHHN17hY2dGumqaplrWaYI2uedjSijA70my9t9Nx0mZIuhWwHQ6UMsv+PVFsWQtI/1S
-         Qkoj6ZtER+1olb/t7PvFV/X5wVqfllmBXnWc5GERs6mAjs+ZkAW8grwinee3GZDlHqGz
-         +ZPUO2slLAckkd7WtWORZHyQREJLk+EpS1RLHxfCtC3g2Tc5JRSDNaGyWOfzs3bUhz4K
-         tExQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=67r38bE7gQFQq3QdwWGtHId+Jukj2mvNHeTDPSYrtoQ=;
-        b=gmHYu64MBRGNlFxgcLNjbLo6klmXGaf2NDDox7eyBXXWd0K6uVQwpSuoIz0oFXAba8
-         NDVnXsW57ZeKCTOGOpQjQ/wo1MRRhNOyhtn5QVQcmy3yKeeUNniQVijH5u+0+xpdOk4l
-         Bec08I+VaY6M6uF07MbjCsQSUdyIBtf4e63uQ7OTMDEhCw5rT9H2BrC0ZM+z5bNcADh2
-         NilZW2JtAdV5cjCEu4u1HsBEdhJaZwfYQtU/prHyJ8Ip0khoY/nZ0UOgvIKvZops6/st
-         NXTXMIquhyW9Sf1EE75qxPu9xPZEK8FZIqCKTpQt+tz55j9ARxCGQWCGx85xlmhRn7k+
-         LoEQ==
-X-Gm-Message-State: AOAM530yMCJqCGPqnl7HLoIp33b9xUb6bEQpajm9A2pKlxd3UKwHIS+/
-        t3zFYQRnLMNKVkYBrbp6PfHLGnd/JmvsLHnuSwVyIw==
-X-Google-Smtp-Source: ABdhPJwFttiWi7Jgj1I6L5f60b/n53pkLOBE3RjrV8WhESNsOLc+ROGmWITcmAdN6pWWu9sBPobsQik3WKj/TFI/JsQ=
-X-Received: by 2002:a25:bb46:: with SMTP id b6mr31453156ybk.346.1625679746076;
- Wed, 07 Jul 2021 10:42:26 -0700 (PDT)
+        id S231222AbhGGRpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 13:45:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231193AbhGGRpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 13:45:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A55B61CC9;
+        Wed,  7 Jul 2021 17:42:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625679750;
+        bh=Tf1JbiTjBYSqr3fsXG06VqkmXcrZq/92XkeTceZpn5M=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=hMbfu1g6APDl53Tn9rXQc5wtA1iNOivGcl10HL4v7YRByVgCxyh0xvlSWSpgWdqYr
+         CMCYMbZV47X57YXuIcZgzSKPchRe1TMdCdsSlawD+U/vdY3abWvsV0TGF0f0XAm3K+
+         2AQKV1DX96tVCcg2ddXua6HfhpBDx7YzKcOkBIKyjl+vG0o4GR+4Kic7izBfyCY01T
+         5UBoXc4DhRmBA6UFN7qiCrkjycxFMK9Gzi+vCwbmI9M9TnXGZsV8ZxwTL82mszW6vl
+         kEIN2t1tnLYOTfrC+LfeJ7jXxkvVcWkplDF3YyygPYbFtCLXq5TtySCOnXiA9hj95s
+         DQiDNDUdJAwSQ==
+Subject: Re: how can we test the hexagon port in mainline
+To:     Christoph Hellwig <hch@lst.de>, Brian Cain <bcain@codeaurora.org>,
+        Sid Manning <sidneym@codeaurora.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-hexagon@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com
+References: <20210623141854.GA32155@lst.de>
+ <08df01d7683d$8f5b7b70$ae127250$@codeaurora.org>
+ <CAK8P3a28_0KJpcLRQrDhFk8-ndxmfk7-Q2_qcRRiYkyh-NNZUQ@mail.gmail.com>
+ <08e101d76842$94f78a60$bee69f20$@codeaurora.org>
+ <20210623151746.GA4247@lst.de>
+ <CAK8P3a2bG64ARjpwQ0ZhQ9P0g8B-=AwcHHAbYBXBS4B6Fy9pQw@mail.gmail.com>
+ <YNQE0YJzC2xmWg+2@Ryzen-9-3900X.localdomain> <20210707141054.GA24828@lst.de>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <1ee8fc44-3e8c-91c0-7909-a636757dbda4@kernel.org>
+Date:   Wed, 7 Jul 2021 10:42:27 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210707172948.1025-1-adrian.hunter@intel.com> <YOXnF4BBPeBEMB38@kroah.com>
-In-Reply-To: <YOXnF4BBPeBEMB38@kroah.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 7 Jul 2021 10:41:48 -0700
-Message-ID: <CAGETcx-Sjo3scN-ZK-aqRCKi-6+1y_KXOuCqK97YgJS32u6tbg@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/2] driver core: Add ability to delete device links
- of unregistered devices
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210707141054.GA24828@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 10:40 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jul 07, 2021 at 08:29:46PM +0300, Adrian Hunter wrote:
-> > Hi
-> >
-> > There is an issue with the SCSI UFS driver when the optional
-> > BOOT well-known LUN fails to probe, which is not a fatal error.
-> > The issue is that the device and its "managed" device link do not
-> > then get deleted.  The device because the device link has a
-> > reference to it.  The device link because it can only be deleted
-> > by device_del(), but device_add() was never called, so device_del()
-> > never will be either.
->
-> How was a link created for something that never had device_add() called
-> on it?  Who is doing that?
->
+Hi Christoph,
 
-Greg responded as I was typing :)
+On 7/7/2021 7:10 AM, Christoph Hellwig wrote:
+> On Wed, Jun 23, 2021 at 09:06:41PM -0700, Nathan Chancellor wrote:
+>> I've reported this upstream with you on CC:
+>>
+>> https://bugs.llvm.org/show_bug.cgi?id=50838
+> 
+> I've not actually got any mail from that Cc..
 
-Nak for the series. I don't like mixing and matching the control of
-managed device links like this.
+Sorry, I directed that at Arnd. I should have kept you in the loop too.
 
-Can I get more details please. How is the device link added in the first place?
+>> Christoph, that toolchain should work (I had to install libtinfo5 and
+>> libc++1-7 on Debian Buster):
+>>
+>> $ export PATH=$HOME/tmp/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin:$PATH
+>>
+>> $ make -skj"$(nproc)" ARCH=hexagon CROSS_COMPILE=hexagon-unknown-linux-musl LLVM=1 LLVM_IAS=1 defconfig all
+> 
+> hch@brick:~/work/linux$ make -j4 ARCH=hexagon
+> CROSS_COMPILE=hexagon-unknown-linux-musl LLVM=1 LLVM_IAS=1 defconfig all
+> HOSTCC  scripts/basic/fixdep
+> clang: error while loading shared libraries: libtinfo.so.5: cannot open shared object file: No such file or directory
 
--Saravana
+Hmmm, is that with libtinfo5 installed (or whatever the ncurses-compat 
+equivalent is on your distribution installed)? I had that problem on 
+Debian until I insta
+
+Brian/Sid, it might be worth flipping LLVM_ENABLE_TERMINFO to OFF during 
+your cmake configuration so that there are less dynamic dependencies and 
+it is easier for more people to run the toolchain. Android's clang team 
+did the same thing:
+
+https://github.com/android/ndk/issues/574
+
+With https://reviews.llvm.org/D42055, there should not be too much of a 
+sacrifice.
+
+Cheers,
+Nathan
