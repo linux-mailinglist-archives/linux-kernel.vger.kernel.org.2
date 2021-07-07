@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9803BEAB0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA9A3BEAB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232266AbhGGPdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 11:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231721AbhGGPdq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 11:33:46 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2E8C061574;
-        Wed,  7 Jul 2021 08:31:05 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id w74so3775726oiw.8;
-        Wed, 07 Jul 2021 08:31:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wu589UyEpwCPZKdfA998XhHvrfJeA61TDfTMoVhy+pk=;
-        b=bHrhj8aFx9B845mrCCqVMvwm56Xreg7IIlcIRbUH0VAR4z3eKoxxUyXhnstq2YBIdt
-         m0V6pO6Rnkyk0cOfuYOj7xOySa6e8MGWKsYewPlEU4XR0ASg0P9T33R6T/ff/Oo21684
-         qq8d94XC0Uzsj362ZpknoiBN5nj2mzBcE/ttEspCRQFLJl6vKKyaZv85bMHEz11u1Ztr
-         Qb0fMjepKZvRsQV1Mugu8B4JGQY7efw7KXstRDM9zQGqPznOdKuYMyf+oY0QTn8Lsroh
-         dZJR2CPELJRpYIPVsgSyNBJGDQb5SjRLsUgwgxpi1CU4M/fJQLHz7x4pvUXOVkBoX2zR
-         6r6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=wu589UyEpwCPZKdfA998XhHvrfJeA61TDfTMoVhy+pk=;
-        b=jDg4In1ox6r2MmeRaVDOIF8588NmBigt+Ck0r04afEjcP4XN+MA4CUXbExeeocjFT4
-         wJW1DfP7abxn5r3jw3F/etX3sjy3vNFOXXZE+6hrDxazaPZ7hPMgZ3PBhI2q3LKYwgSg
-         eOvuGIsD7serPjgndgxvv39VpXgzwomLgsVnNZsVDhMZxD/JJoK9ts1rVpCIxaMJMcbv
-         rs/YXXEPQRXKqe2DllBNVKOqioXKOCUAJ0IIQjaqzM26WH7ZEPitobzjys7Rsm3NdNhT
-         qFWRx7soV+gZO0G/90Urmar56Uj+vZPKGfLlHaFHY4c7ZXLexwN0z7TmfGhYZyscRqYs
-         P9FQ==
-X-Gm-Message-State: AOAM533320q8QD6q4kqDiMSUfXzvYTcilpz05y/ZlGMPvflQjNFwy31X
-        jGpoBS+JlyiJlMGieBkuf58=
-X-Google-Smtp-Source: ABdhPJyoBc3Zr0VgUI8Aq6qjdaQ1z5XORqMS6vMI3+Oopvw0S7h+Hp71EWwKOIwftVjKxVjKBJaWBA==
-X-Received: by 2002:aca:534b:: with SMTP id h72mr7724461oib.21.1625671865355;
-        Wed, 07 Jul 2021 08:31:05 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a7sm3555730ooo.9.2021.07.07.08.31.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 08:31:04 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 7 Jul 2021 08:31:02 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Subject: Re: [tip: sched/core] sched/core: Initialize the idle task with
- preemption disabled
-Message-ID: <20210707153102.GA1243141@roeck-us.net>
-References: <20210512094636.2958515-1-valentin.schneider@arm.com>
- <162081815405.29796.14574924529325899839.tip-bot2@tip-bot2>
- <20210706194456.GA1823793@roeck-us.net>
- <87fswr6lqv.mognet@arm.com>
- <20210707120305.GB115752@lothringen>
- <87czru727k.mognet@arm.com>
- <c30097f3-63b4-6fa0-a369-8f4e20ee1040@roeck-us.net>
- <de7b1d0f-8767-1b33-2950-576029c0d9f7@ozlabs.ru>
- <878s2i6uk2.mognet@arm.com>
+        id S232298AbhGGPdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 11:33:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232288AbhGGPdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 11:33:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC09561CBE;
+        Wed,  7 Jul 2021 15:31:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625671869;
+        bh=FHvqrT07eXAHKMOJRtl9t2v4q2jbVubqFMhBm8EIjJg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MR0yDNpPbquIEQRg98cu1mJvMD+3kYTsrGc6BSkAw13hhJDQUQdD6RI7sg7TxANRN
+         vV/ETPfoi+kvM/fhFlL5Us9nEbgB4DPCNcZLVzr+6XGYxS8t7gf+EPCZbP4j9GtSnr
+         GgvPuJdRi+PmYruuNm32rwRgJGoVINgbzERayF7w=
+Date:   Wed, 7 Jul 2021 17:31:06 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2 1/2] fcntl: fix potential deadlocks for
+ &fown_struct.lock
+Message-ID: <YOXIuhma++oMbbiH@kroah.com>
+References: <20210707023548.15872-1-desmondcheongzx@gmail.com>
+ <20210707023548.15872-2-desmondcheongzx@gmail.com>
+ <YOVENb3X/m/pNrYt@kroah.com>
+ <14633c3be87286d811263892375f2dfa9a8ed40a.camel@kernel.org>
+ <YOWHKk6Nq8bazYjB@kroah.com>
+ <4dda1cad6348fced5fcfcb6140186795ed07d948.camel@kernel.org>
+ <20210707135129.GA9446@fieldses.org>
+ <YOXDBZR2RSfiM+A3@kroah.com>
+ <20210707151936.GB9911@fieldses.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <878s2i6uk2.mognet@arm.com>
+In-Reply-To: <20210707151936.GB9911@fieldses.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 03:57:17PM +0100, Valentin Schneider wrote:
-> On 08/07/21 00:35, Alexey Kardashevskiy wrote:
-> > On 08/07/2021 00:14, Guenter Roeck wrote:
-> >>
-> >> Can you reproduce the problem with a powerpc qemu emulation ?
-> >> If so, how do you reproduce it there ? Reason for asking is that I don't
-> >> see
-> >> the problem with any of my powerpc emulations, and I would like to add test
-> >> case(s) if possible.
-> >
-> > I can reproduce the problem on powerpc easily - qemu with "-smp 2" does it.
-> >
+On Wed, Jul 07, 2021 at 11:19:36AM -0400, J. Bruce Fields wrote:
+> On Wed, Jul 07, 2021 at 05:06:45PM +0200, Greg KH wrote:
+> > On Wed, Jul 07, 2021 at 09:51:29AM -0400, J. Bruce Fields wrote:
+> > > On Wed, Jul 07, 2021 at 07:40:47AM -0400, Jeff Layton wrote:
+> > > > On Wed, 2021-07-07 at 12:51 +0200, Greg KH wrote:
+> > > > > On Wed, Jul 07, 2021 at 06:44:42AM -0400, Jeff Layton wrote:
+> > > > > > On Wed, 2021-07-07 at 08:05 +0200, Greg KH wrote:
+> > > > > > > On Wed, Jul 07, 2021 at 10:35:47AM +0800, Desmond Cheong Zhi Xi wrote:
+> > > > > > > > +	WARN_ON_ONCE(irqs_disabled());
+> > > > > > > 
+> > > > > > > If this triggers, you just rebooted the box :(
+> > > > > > > 
+> > > > > > > Please never do this, either properly handle the problem and return an
+> > > > > > > error, or do not check for this.  It is not any type of "fix" at all,
+> > > > > > > and at most, a debugging aid while you work on the root problem.
+> > > > > > > 
+> > > > > > > thanks,
+> > > > > > > 
+> > > > > > > greg k-h
+> > > > > > 
+> > > > > > Wait, what? Why would testing for irqs being disabled and throwing a
+> > > > > > WARN_ON in that case crash the box?
+> > > > > 
+> > > > > If panic-on-warn is enabled, which is a common setting for systems these
+> > > > > days.
+> > > > 
+> > > > Ok, that makes some sense.
+> > > 
+> > > Wait, I don't get it.
+> > > 
+> > > How are we supposed to decide when to use WARN, when to use BUG, and
+> > > when to panic?  Do we really want to treat them all as equivalent?  And
+> > > who exactly is turning on panic-on-warn?
+> > 
+> > You never use WARN or BUG, unless the system is so messed up that you
+> > can not possibly recover from the issue.
 > 
-> So on powerpc I'm chasing a slightly different problem, reported at
-> [1]. I couldn't get it to trigger on qemu for powerpc64, and I'm still
-> struggling with powerpc. Could you please share you qemu invocation &
-> kernel .config? Thanks.
-> 
-Same here. Actually, worse: All 32-bit ppc emulations I tried to
-run with more than 1 CPU crash when bringing up the 2nd CPU,
-and that even happens with 5.13.
+> I've heard similar advice for BUG before, but this is the first I've
+> heard it for WARN.  Do we have any guidelines for how to choose between
+> WARN and BUG?
 
-So, yes, please share your qemu command line and the kernel
-configuration.
-
-Thanks,
-Guenter
+Never use either :)
