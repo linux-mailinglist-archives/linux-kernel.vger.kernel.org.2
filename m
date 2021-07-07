@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BA03BEDAE
+	by mail.lfdr.de (Postfix) with ESMTP id E06103BEDAF
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbhGGSIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60986 "EHLO
+        id S231266AbhGGSIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbhGGSIU (ORCPT
+        with ESMTP id S229956AbhGGSIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:08:20 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7EFCC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 11:05:39 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id v7so3138492pgl.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 11:05:39 -0700 (PDT)
+        Wed, 7 Jul 2021 14:08:21 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA52C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 11:05:41 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id f17so2940557pfj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 11:05:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ixlD3mmJY3rOK6gSWbHkyf00NzYTwViXv8dwsVfEcag=;
-        b=E3GAZMKdt/3MFOnIFKk9c/aT20QrnVlK+fQv1FfwNAw/VZDlg2SUiUkGGFyXlocEDp
-         Q+SgAqm1xEnuUcQqL6j/apVpQwJ7HMzs+vPFv6dgXQigHJsLDVP9hMkzTReRNNYb/cmO
-         nalEVKv9oo2HMp2YigcnvavTq3H/TMf/C1X7p7tEbbdizeax/LS8oWAD1AVTppTakvG/
-         dMv+ehwD8Mqr61NfTvdLNAq4yFq8ygsHmnAt13uNrgAxHx8ekEvnE1LR7Ugw34EeSh43
-         8LNd7DhC1lQm6d5Es7tg8PDziwcfYQjqxBmWkjmBxiOvhqHk7gHtnBrl1qwzBoAvhI1p
-         yGVg==
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=G3roj1EC4qpr9ubLbYqBZ55rCLeLxtOcHYp0RzeBE8Q=;
+        b=iX2I3yK1dgtoIAowUJ476kBPr6hL0yL4JDX+RIfrMIknVsBgXKf77Q0jRBZ8FMu5U5
+         g8FueVawvsm8a8U5mZ/ZlbguSzoSU0xgfNtv3C08Q4ZVMfuAU9osaMfjGbBFKFluxULm
+         O69jYjsW3l4nR9SMJNnCV6pZyV2CGgjpeE65scRFXBggHzEl8ZY+mE/7NVsfmF/LOGMl
+         O/IdicK0/ByweN9JBmtvtkzu+A4lNVnpopuDlVZlLzElMQWu3wHEUghm98GC7GiIUEqz
+         tl5uNYvBd9bpCd6wOH/PvhUu1K15Um1gHVAE0X7fJF4xUeU1Bpb5Qt9qNE9rSgQmdX5H
+         +VOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=ixlD3mmJY3rOK6gSWbHkyf00NzYTwViXv8dwsVfEcag=;
-        b=X9ui9RmAN9EcOI/TAMIhSeaSZGkxbgLJggdHS3RbJQoyGxjB4+HhSYSuUMI72lDPU0
-         WSIALLPLrtnMVpfnsFIaaZG/19fbgkUVeuVRG0OYmZs4xIrkZdCqigvkI4y+DfmHJu1K
-         K8GoD0c9OzZRk0j+f0Nhd0S9Sms9g+mSUMCuKmEBdFllcSyyv1CLGsZqCl8XNONtaUev
-         uhn9xBSQ2QVt4B5/qHcBQIb7n+bSn8yRKHmOpNU+3H0JIMLme/S5N6tPrF6aQuPl164I
-         tjyKOgK6nX6CWQ4bbzWAGjMv3f9K5NyLwez//CcuR9231L7R09ko1nsw4u+3dQIZ0YoX
-         2uDg==
-X-Gm-Message-State: AOAM533SVm6HxWBkD9S1b/D4524zu6jd9d2TYjktvmiD57rag1UzrI9z
-        OQRMxDylk5uk1hvYOyPELa4=
-X-Google-Smtp-Source: ABdhPJyfHVNJbMIuU2IIKR62N7jYsSkd91DpVUH7//kw/ywrO77De8xNbyycR1iQ2uISUNn0v4Bgdw==
-X-Received: by 2002:a62:7e42:0:b029:325:6b42:609f with SMTP id z63-20020a627e420000b02903256b42609fmr5146135pfc.37.1625681139264;
-        Wed, 07 Jul 2021 11:05:39 -0700 (PDT)
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=G3roj1EC4qpr9ubLbYqBZ55rCLeLxtOcHYp0RzeBE8Q=;
+        b=OvSCqhQAYg7DrVv/umuIH2BUHqHfdz+PjUlHHqEVjRkTwphadqkwUuj84cdEfUv3lB
+         lpfGZO0/pmxW9MRSbU4JXlJeTafamiHmeLtFlt1AJ5CAimdM/KNzWazhk4F/DReuEWvA
+         aBABiUh9PaXhar7ie4IHiox5/dwPwAxJz9z//ko0k3b+Z7wF2lF9ugMTyuWmUlBrMNmc
+         OF8L749MR3FDIhbZ6hhUpGDtc8gpCDJQPnmUaV1ImI3f5JmSp8iVLtNA7dqNPQJYwT/i
+         2hHK6qLHdTmUXeOZUpYEpQXWEHd6JGmRzaSFgQy/IoexLB1E2mSc0iIJJUJu0EtLkhp3
+         OmJg==
+X-Gm-Message-State: AOAM533OvRjfCpSYdfrPXgvOLRBvjABEA/JaXt9+oGRR3Bl1wFwZWWOa
+        SgacAt8w8JG5MaL/uL97i+8mkwB9W0o=
+X-Google-Smtp-Source: ABdhPJzdz5dsomXUgUmgujP6blItsW4KOLHDbrbTxjpDNoqdOt7ul97M7YTOk8ZLehC3N/OnP3oD2A==
+X-Received: by 2002:a05:6a00:b4b:b029:31d:c915:181f with SMTP id p11-20020a056a000b4bb029031dc915181fmr18956498pfo.13.1625681141038;
+        Wed, 07 Jul 2021 11:05:41 -0700 (PDT)
 Received: from balhae.hsd1.ca.comcast.net ([2601:647:4801:c8d0:8e3d:643a:56fb:b045])
-        by smtp.gmail.com with ESMTPSA id 1sm9379711pfm.123.2021.07.07.11.05.37
+        by smtp.gmail.com with ESMTPSA id 1sm9379711pfm.123.2021.07.07.11.05.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 11:05:38 -0700 (PDT)
+        Wed, 07 Jul 2021 11:05:40 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -58,77 +58,457 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Andi Kleen <ak@linux.intel.com>,
         Ian Rogers <irogers@google.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCHSET 0/4] perf inject: Fix broken data with mixed input/output
-Date:   Wed,  7 Jul 2021 11:05:32 -0700
-Message-Id: <20210707180536.72175-1-namhyung@kernel.org>
+Subject: [PATCH 1/4] perf tools: Remove repipe argument from perf_session__new()
+Date:   Wed,  7 Jul 2021 11:05:33 -0700
+Message-Id: <20210707180536.72175-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+In-Reply-To: <20210707180536.72175-1-namhyung@kernel.org>
+References: <20210707180536.72175-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The repipe argument is only used by perf inject and the all others
+passes 'false'.  Let's remove it from the function signature and add
+__perf_session__new() to be called from perf inject directly.
 
-The perf inject processes the input data and produces an output with
-injected data according to the given options.  During the work, it
-assumes the input and output files have the same format - either a
-regular file or a pipe.  This works for the obvious cases, but
-sometimes makes a trouble when input and output have different
-formats (like for debugging).
+This is a preparation of the change the pipe input/output.
 
-For example, this patchset fixed the following cases
-
- 1. input: pipe, output: file
-
-  # perf record -a -o - sleep 1 | perf inject -b -o perf-pipe.data
-  # perf report -i perf-pipe.data
-
- 2. input: file, output: pipe
-
-  # perf record -a -B sleep 1
-  # perf inject -b -i perf.data | perf report -i -
-
-
-Thanks,
-Namhyung
-
-
-Namhyung Kim (4):
-  perf tools: Remove repipe argument from perf_session__new()
-  perf tools: Pass a fd to perf_file_header__read_pipe()
-  perf inject: Fix output from a pipe to a file
-  perf inject: Fix output from a file to a pipe
-
- tools/perf/bench/synthesize.c       |  4 +-
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/bench/synthesize.c       |  4 ++--
  tools/perf/builtin-annotate.c       |  2 +-
  tools/perf/builtin-buildid-cache.c  |  2 +-
  tools/perf/builtin-buildid-list.c   |  2 +-
  tools/perf/builtin-c2c.c            |  2 +-
- tools/perf/builtin-diff.c           |  4 +-
+ tools/perf/builtin-diff.c           |  4 ++--
  tools/perf/builtin-evlist.c         |  2 +-
- tools/perf/builtin-inject.c         | 67 +++++++++++++++++++++++++++--
+ tools/perf/builtin-inject.c         |  3 ++-
  tools/perf/builtin-kmem.c           |  2 +-
- tools/perf/builtin-kvm.c            |  4 +-
+ tools/perf/builtin-kvm.c            |  4 ++--
  tools/perf/builtin-lock.c           |  2 +-
- tools/perf/builtin-mem.c            |  3 +-
+ tools/perf/builtin-mem.c            |  3 +--
  tools/perf/builtin-record.c         |  2 +-
  tools/perf/builtin-report.c         |  2 +-
- tools/perf/builtin-sched.c          |  4 +-
- tools/perf/builtin-script.c         |  4 +-
- tools/perf/builtin-stat.c           |  4 +-
- tools/perf/builtin-timechart.c      |  3 +-
+ tools/perf/builtin-sched.c          |  4 ++--
+ tools/perf/builtin-script.c         |  4 ++--
+ tools/perf/builtin-stat.c           |  4 ++--
+ tools/perf/builtin-timechart.c      |  3 +--
  tools/perf/builtin-top.c            |  2 +-
  tools/perf/builtin-trace.c          |  2 +-
- tools/perf/tests/topology.c         |  4 +-
+ tools/perf/tests/topology.c         |  4 ++--
  tools/perf/util/data-convert-bt.c   |  2 +-
  tools/perf/util/data-convert-json.c |  2 +-
- tools/perf/util/header.c            | 12 +++---
- tools/perf/util/header.h            |  2 +-
- tools/perf/util/session.c           | 11 ++---
- tools/perf/util/session.h           | 12 +++++-
- 27 files changed, 115 insertions(+), 49 deletions(-)
+ tools/perf/util/session.c           |  5 +++--
+ tools/perf/util/session.h           | 12 ++++++++++--
+ 25 files changed, 44 insertions(+), 36 deletions(-)
 
+diff --git a/tools/perf/bench/synthesize.c b/tools/perf/bench/synthesize.c
+index b2924e3181dc..05f7c923c745 100644
+--- a/tools/perf/bench/synthesize.c
++++ b/tools/perf/bench/synthesize.c
+@@ -117,7 +117,7 @@ static int run_single_threaded(void)
+ 	int err;
+ 
+ 	perf_set_singlethreaded();
+-	session = perf_session__new(NULL, false, NULL);
++	session = perf_session__new(NULL, NULL);
+ 	if (IS_ERR(session)) {
+ 		pr_err("Session creation failed.\n");
+ 		return PTR_ERR(session);
+@@ -161,7 +161,7 @@ static int do_run_multi_threaded(struct target *target,
+ 	init_stats(&time_stats);
+ 	init_stats(&event_stats);
+ 	for (i = 0; i < multi_iterations; i++) {
+-		session = perf_session__new(NULL, false, NULL);
++		session = perf_session__new(NULL, NULL);
+ 		if (IS_ERR(session))
+ 			return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+index cebb861be3e3..05eb098cb0e3 100644
+--- a/tools/perf/builtin-annotate.c
++++ b/tools/perf/builtin-annotate.c
+@@ -596,7 +596,7 @@ int cmd_annotate(int argc, const char **argv)
+ 
+ 	data.path = input_name;
+ 
+-	annotate.session = perf_session__new(&data, false, &annotate.tool);
++	annotate.session = perf_session__new(&data, &annotate.tool);
+ 	if (IS_ERR(annotate.session))
+ 		return PTR_ERR(annotate.session);
+ 
+diff --git a/tools/perf/builtin-buildid-cache.c b/tools/perf/builtin-buildid-cache.c
+index ecd0d3cb6f5c..0db3cfc04c47 100644
+--- a/tools/perf/builtin-buildid-cache.c
++++ b/tools/perf/builtin-buildid-cache.c
+@@ -443,7 +443,7 @@ int cmd_buildid_cache(int argc, const char **argv)
+ 		data.path  = missing_filename;
+ 		data.force = force;
+ 
+-		session = perf_session__new(&data, false, NULL);
++		session = perf_session__new(&data, NULL);
+ 		if (IS_ERR(session))
+ 			return PTR_ERR(session);
+ 	}
+diff --git a/tools/perf/builtin-buildid-list.c b/tools/perf/builtin-buildid-list.c
+index 833405c27dae..cebadd632234 100644
+--- a/tools/perf/builtin-buildid-list.c
++++ b/tools/perf/builtin-buildid-list.c
+@@ -65,7 +65,7 @@ static int perf_session__list_build_ids(bool force, bool with_hits)
+ 	if (filename__fprintf_build_id(input_name, stdout) > 0)
+ 		goto out;
+ 
+-	session = perf_session__new(&data, false, &build_id__mark_dso_hit_ops);
++	session = perf_session__new(&data, &build_id__mark_dso_hit_ops);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+index 6dea37f141b2..a812f32cf5d9 100644
+--- a/tools/perf/builtin-c2c.c
++++ b/tools/perf/builtin-c2c.c
+@@ -2790,7 +2790,7 @@ static int perf_c2c__report(int argc, const char **argv)
+ 		goto out;
+ 	}
+ 
+-	session = perf_session__new(&data, 0, &c2c.tool);
++	session = perf_session__new(&data, &c2c.tool);
+ 	if (IS_ERR(session)) {
+ 		err = PTR_ERR(session);
+ 		pr_debug("Error creating perf session\n");
+diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
+index f52b3a799e76..612060c53bd6 100644
+--- a/tools/perf/builtin-diff.c
++++ b/tools/perf/builtin-diff.c
+@@ -1156,7 +1156,7 @@ static int check_file_brstack(void)
+ 	int i;
+ 
+ 	data__for_each_file(i, d) {
+-		d->session = perf_session__new(&d->data, false, &pdiff.tool);
++		d->session = perf_session__new(&d->data, &pdiff.tool);
+ 		if (IS_ERR(d->session)) {
+ 			pr_err("Failed to open %s\n", d->data.path);
+ 			return PTR_ERR(d->session);
+@@ -1188,7 +1188,7 @@ static int __cmd_diff(void)
+ 	ret = -EINVAL;
+ 
+ 	data__for_each_file(i, d) {
+-		d->session = perf_session__new(&d->data, false, &pdiff.tool);
++		d->session = perf_session__new(&d->data, &pdiff.tool);
+ 		if (IS_ERR(d->session)) {
+ 			ret = PTR_ERR(d->session);
+ 			pr_err("Failed to open %s\n", d->data.path);
+diff --git a/tools/perf/builtin-evlist.c b/tools/perf/builtin-evlist.c
+index 4617b32c9c97..b1076177c37f 100644
+--- a/tools/perf/builtin-evlist.c
++++ b/tools/perf/builtin-evlist.c
+@@ -42,7 +42,7 @@ static int __cmd_evlist(const char *file_name, struct perf_attr_details *details
+ 	};
+ 	bool has_tracepoint = false;
+ 
+-	session = perf_session__new(&data, 0, &tool);
++	session = perf_session__new(&data, &tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+index 5d6f583e2cd3..3cffb12f01be 100644
+--- a/tools/perf/builtin-inject.c
++++ b/tools/perf/builtin-inject.c
+@@ -991,7 +991,8 @@ int cmd_inject(int argc, const char **argv)
+ 	}
+ 
+ 	data.path = inject.input_name;
+-	inject.session = perf_session__new(&data, inject.output.is_pipe, &inject.tool);
++	inject.session = __perf_session__new(&data, inject.output.is_pipe,
++					     &inject.tool);
+ 	if (IS_ERR(inject.session))
+ 		return PTR_ERR(inject.session);
+ 
+diff --git a/tools/perf/builtin-kmem.c b/tools/perf/builtin-kmem.c
+index 0062445e8ead..da03a341c63c 100644
+--- a/tools/perf/builtin-kmem.c
++++ b/tools/perf/builtin-kmem.c
+@@ -1953,7 +1953,7 @@ int cmd_kmem(int argc, const char **argv)
+ 
+ 	data.path = input_name;
+ 
+-	kmem_session = session = perf_session__new(&data, false, &perf_kmem);
++	kmem_session = session = perf_session__new(&data, &perf_kmem);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-kvm.c b/tools/perf/builtin-kvm.c
+index 1105c9e40a80..aa1b127ffb5b 100644
+--- a/tools/perf/builtin-kvm.c
++++ b/tools/perf/builtin-kvm.c
+@@ -1093,7 +1093,7 @@ static int read_events(struct perf_kvm_stat *kvm)
+ 	};
+ 
+ 	kvm->tool = eops;
+-	kvm->session = perf_session__new(&file, false, &kvm->tool);
++	kvm->session = perf_session__new(&file, &kvm->tool);
+ 	if (IS_ERR(kvm->session)) {
+ 		pr_err("Initializing perf session failed\n");
+ 		return PTR_ERR(kvm->session);
+@@ -1447,7 +1447,7 @@ static int kvm_events_live(struct perf_kvm_stat *kvm,
+ 	/*
+ 	 * perf session
+ 	 */
+-	kvm->session = perf_session__new(&data, false, &kvm->tool);
++	kvm->session = perf_session__new(&data, &kvm->tool);
+ 	if (IS_ERR(kvm->session)) {
+ 		err = PTR_ERR(kvm->session);
+ 		goto out;
+diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+index 01326e370009..d70131b7b1b1 100644
+--- a/tools/perf/builtin-lock.c
++++ b/tools/perf/builtin-lock.c
+@@ -868,7 +868,7 @@ static int __cmd_report(bool display_info)
+ 		.force = force,
+ 	};
+ 
+-	session = perf_session__new(&data, false, &eops);
++	session = perf_session__new(&data, &eops);
+ 	if (IS_ERR(session)) {
+ 		pr_err("Initializing perf session failed\n");
+ 		return PTR_ERR(session);
+diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
+index 0fd2a74dbaca..fcf65a59bea2 100644
+--- a/tools/perf/builtin-mem.c
++++ b/tools/perf/builtin-mem.c
+@@ -271,8 +271,7 @@ static int report_raw_events(struct perf_mem *mem)
+ 		.force = mem->force,
+ 	};
+ 	int ret;
+-	struct perf_session *session = perf_session__new(&data, false,
+-							 &mem->tool);
++	struct perf_session *session = perf_session__new(&data, &mem->tool);
+ 
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 71efe6573ee7..199320046fff 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -1680,7 +1680,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		signal(SIGUSR2, SIG_IGN);
+ 	}
+ 
+-	session = perf_session__new(data, false, tool);
++	session = perf_session__new(data, tool);
+ 	if (IS_ERR(session)) {
+ 		pr_err("Perf session creation failed.\n");
+ 		return PTR_ERR(session);
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index 8639bbe0969d..21cfa3a96ee8 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -1405,7 +1405,7 @@ int cmd_report(int argc, const char **argv)
+ 	data.force = symbol_conf.force;
+ 
+ repeat:
+-	session = perf_session__new(&data, false, &report.tool);
++	session = perf_session__new(&data, &report.tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+index 954ce2f594e9..d4ffc331aacb 100644
+--- a/tools/perf/builtin-sched.c
++++ b/tools/perf/builtin-sched.c
+@@ -1804,7 +1804,7 @@ static int perf_sched__read_events(struct perf_sched *sched)
+ 	};
+ 	int rc = -1;
+ 
+-	session = perf_session__new(&data, false, &sched->tool);
++	session = perf_session__new(&data, &sched->tool);
+ 	if (IS_ERR(session)) {
+ 		pr_debug("Error creating perf session");
+ 		return PTR_ERR(session);
+@@ -3011,7 +3011,7 @@ static int perf_sched__timehist(struct perf_sched *sched)
+ 
+ 	symbol_conf.use_callchain = sched->show_callchain;
+ 
+-	session = perf_session__new(&data, false, &sched->tool);
++	session = perf_session__new(&data, &sched->tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 2030936cc891..52cdb8c76ec8 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -3287,7 +3287,7 @@ int find_scripts(char **scripts_array, char **scripts_path_array, int num,
+ 	char *temp;
+ 	int i = 0;
+ 
+-	session = perf_session__new(&data, false, NULL);
++	session = perf_session__new(&data, NULL);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+@@ -4000,7 +4000,7 @@ int cmd_script(int argc, const char **argv)
+ 		use_browser = 0;
+ 	}
+ 
+-	session = perf_session__new(&data, false, &script.tool);
++	session = perf_session__new(&data, &script.tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index f9f74a514315..014afffa7e72 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -1993,7 +1993,7 @@ static int __cmd_record(int argc, const char **argv)
+ 		return -1;
+ 	}
+ 
+-	session = perf_session__new(data, false, NULL);
++	session = perf_session__new(data, NULL);
+ 	if (IS_ERR(session)) {
+ 		pr_err("Perf session creation failed\n");
+ 		return PTR_ERR(session);
+@@ -2165,7 +2165,7 @@ static int __cmd_report(int argc, const char **argv)
+ 	perf_stat.data.path = input_name;
+ 	perf_stat.data.mode = PERF_DATA_MODE_READ;
+ 
+-	session = perf_session__new(&perf_stat.data, false, &perf_stat.tool);
++	session = perf_session__new(&perf_stat.data, &perf_stat.tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/builtin-timechart.c b/tools/perf/builtin-timechart.c
+index 4e380e7b5230..43bf4d67edb0 100644
+--- a/tools/perf/builtin-timechart.c
++++ b/tools/perf/builtin-timechart.c
+@@ -1598,8 +1598,7 @@ static int __cmd_timechart(struct timechart *tchart, const char *output_name)
+ 		.force = tchart->force,
+ 	};
+ 
+-	struct perf_session *session = perf_session__new(&data, false,
+-							 &tchart->tool);
++	struct perf_session *session = perf_session__new(&data, &tchart->tool);
+ 	int ret = -EINVAL;
+ 
+ 	if (IS_ERR(session))
+diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+index 2d570bfe7a56..30e4cba80b33 100644
+--- a/tools/perf/builtin-top.c
++++ b/tools/perf/builtin-top.c
+@@ -1740,7 +1740,7 @@ int cmd_top(int argc, const char **argv)
+ 		signal(SIGWINCH, winch_sig);
+ 	}
+ 
+-	top.session = perf_session__new(NULL, false, NULL);
++	top.session = perf_session__new(NULL, NULL);
+ 	if (IS_ERR(top.session)) {
+ 		status = PTR_ERR(top.session);
+ 		goto out_delete_evlist;
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index 7ec18ff57fc4..f963bd61de36 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -4205,7 +4205,7 @@ static int trace__replay(struct trace *trace)
+ 	/* add tid to output */
+ 	trace->multiple_threads = true;
+ 
+-	session = perf_session__new(&data, false, &trace->tool);
++	session = perf_session__new(&data, &trace->tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
+index ec4e3b21b831..870bcc03e977 100644
+--- a/tools/perf/tests/topology.c
++++ b/tools/perf/tests/topology.c
+@@ -38,7 +38,7 @@ static int session_write_header(char *path)
+ 		.mode = PERF_DATA_MODE_WRITE,
+ 	};
+ 
+-	session = perf_session__new(&data, false, NULL);
++	session = perf_session__new(&data, NULL);
+ 	TEST_ASSERT_VAL("can't get session", !IS_ERR(session));
+ 
+ 	if (!perf_pmu__has_hybrid()) {
+@@ -76,7 +76,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+ 	int i;
+ 	struct aggr_cpu_id id;
+ 
+-	session = perf_session__new(&data, false, NULL);
++	session = perf_session__new(&data, NULL);
+ 	TEST_ASSERT_VAL("can't get session", !IS_ERR(session));
+ 	cpu__setup_cpunode_map();
+ 
+diff --git a/tools/perf/util/data-convert-bt.c b/tools/perf/util/data-convert-bt.c
+index cace349fb700..aa862a26d95c 100644
+--- a/tools/perf/util/data-convert-bt.c
++++ b/tools/perf/util/data-convert-bt.c
+@@ -1634,7 +1634,7 @@ int bt_convert__perf2ctf(const char *input, const char *path,
+ 
+ 	err = -1;
+ 	/* perf.data session */
+-	session = perf_session__new(&data, 0, &c.tool);
++	session = perf_session__new(&data, &c.tool);
+ 	if (IS_ERR(session))
+ 		return PTR_ERR(session);
+ 
+diff --git a/tools/perf/util/data-convert-json.c b/tools/perf/util/data-convert-json.c
+index 355cd1948bdf..f1ab6edba446 100644
+--- a/tools/perf/util/data-convert-json.c
++++ b/tools/perf/util/data-convert-json.c
+@@ -334,7 +334,7 @@ int bt_convert__perf2json(const char *input_name, const char *output_name,
+ 		goto err;
+ 	}
+ 
+-	session = perf_session__new(&data, false, &c.tool);
++	session = perf_session__new(&data, &c.tool);
+ 	if (IS_ERR(session)) {
+ 		fprintf(stderr, "Error creating perf session!\n");
+ 		goto err_fclose;
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index e9c929a39973..f76b18e3c061 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -185,8 +185,9 @@ static int ordered_events__deliver_event(struct ordered_events *oe,
+ 					   session->tool, event->file_offset);
+ }
+ 
+-struct perf_session *perf_session__new(struct perf_data *data,
+-				       bool repipe, struct perf_tool *tool)
++struct perf_session *__perf_session__new(struct perf_data *data,
++					 bool repipe,
++					 struct perf_tool *tool)
+ {
+ 	int ret = -ENOMEM;
+ 	struct perf_session *session = zalloc(sizeof(*session));
+diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
+index e31ba4c92a6c..9d19d2a918c6 100644
+--- a/tools/perf/util/session.h
++++ b/tools/perf/util/session.h
+@@ -54,8 +54,16 @@ struct decomp {
+ 
+ struct perf_tool;
+ 
+-struct perf_session *perf_session__new(struct perf_data *data,
+-				       bool repipe, struct perf_tool *tool);
++struct perf_session *__perf_session__new(struct perf_data *data,
++					 bool repipe,
++					 struct perf_tool *tool);
++
++static inline struct perf_session *perf_session__new(struct perf_data *data,
++						     struct perf_tool *tool)
++{
++	return __perf_session__new(data, false, tool);
++}
++
+ void perf_session__delete(struct perf_session *session);
+ 
+ void perf_event_header__bswap(struct perf_event_header *hdr);
 -- 
 2.32.0.93.g670b81a890-goog
 
