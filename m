@@ -2,80 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D613BE423
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71973BE42B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhGGIPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:15:04 -0400
-Received: from verein.lst.de ([213.95.11.211]:35995 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230408AbhGGIPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:15:02 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5A9E468BEB; Wed,  7 Jul 2021 10:12:20 +0200 (CEST)
-Date:   Wed, 7 Jul 2021 10:12:20 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        kernel test robot <oliver.sang@intel.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>
-Subject: Re: [ide] b7fb14d3ac: EIP:ioread32_rep
-Message-ID: <20210707081220.GA31179@lst.de>
-References: <20210704150025.GC21572@xsang-OptiPlex-9020> <20210705125756.GA25141@lst.de> <CAHk-=wj_Gfqkdp+K3iCiqMjAZQK_BrRWDs2eOS_BAw=bB=CdRw@mail.gmail.com> <20210706143647.GA28289@lst.de> <CAHk-=wgPyx7tHFNaO2N6bsaB_E6gL+t1uDAmrD91jJw+hiTvrQ@mail.gmail.com>
+        id S230492AbhGGIRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:17:32 -0400
+Received: from mail-ej1-f41.google.com ([209.85.218.41]:43852 "EHLO
+        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230408AbhGGIRa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 04:17:30 -0400
+Received: by mail-ej1-f41.google.com with SMTP id v20so1899887eji.10;
+        Wed, 07 Jul 2021 01:14:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+2MNimaauPaNrsY3vPRiVIDMQ03C2JCgLIEB0YIu1KU=;
+        b=Z669qlilwMK9Rn5xp5MzHE7MravKO0sZrAib5bjDN2Z3NvBIlQS/lJy8cg/U1jw42F
+         YYTxxarZj0O7/XQCuF4WHEIlRX+2DZAuC6jvnRnNx+1c9w0iWn/jnG/P0FzDKGMyq/cv
+         Ku6N4s8vsmzkabAi8Gde1RPAhR31QpX1Rw03n+7aImylHnAo+Af87tEq1I9wodEaP/uY
+         UPx7U8AKENeMWYk+18/dDoOXqVdmbuybh1nIqd+vmg+uJ8CfruR57VfqXVaAjFhY67s/
+         wkbp/NAjRFlAWNKuvtwlukT0ELu7yhhcpUsY+HT77bU1XCVxeI8ImfqFZ7u0nQIQVdYg
+         X/Cg==
+X-Gm-Message-State: AOAM530jONs68LdFMV37H1JoFYQlF/QyOU3ArlhNTwsIyjiB3XxIztAT
+        MXKRi+geQLbdQr09RwEIiAA=
+X-Google-Smtp-Source: ABdhPJxiqN7daDyQlYICmA9BxaNp0xaXshE2pXZxJvZ0UXtQ4eYa+3XShodrgWyGyoJ2UIAWleo8SQ==
+X-Received: by 2002:a17:906:9c84:: with SMTP id fj4mr16808991ejc.274.1625645689863;
+        Wed, 07 Jul 2021 01:14:49 -0700 (PDT)
+Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id f6sm6552343ejx.124.2021.07.07.01.14.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Jul 2021 01:14:49 -0700 (PDT)
+Subject: Re: [PATCH v3] serial: samsung: Checks the return value of function
+To:     Tamseel Shams <m.shams@samsung.com>,
+        krzysztof.kozlowski@canonical.com, gregkh@linuxfoundation.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com
+References: <CGME20210706061710epcas5p2c11d1bf5afb14774c4d4db93f2b83b33@epcas5p2.samsung.com>
+ <20210706061909.17555-1-m.shams@samsung.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <9fedfbde-64e3-7ebf-576a-056819a0c1e0@kernel.org>
+Date:   Wed, 7 Jul 2021 10:14:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgPyx7tHFNaO2N6bsaB_E6gL+t1uDAmrD91jJw+hiTvrQ@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210706061909.17555-1-m.shams@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 12:08:42PM -0700, Linus Torvalds wrote:
-> On Tue, Jul 6, 2021 at 7:36 AM Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > Yeah, there's usually a huge offset into the page.  The otherwise
-> > similar ATAPI code actually has checks to chunk it up and not cross
-> > page boundaries, and copying that over fixes the problem.
+On 06. 07. 21, 8:19, Tamseel Shams wrote:
+> "uart_add_one_port" function call may fail and return
+> some error code, so adding a check for return value.
+> If it is returning some error code, then displaying the
+> result, unregistering the driver and then returning from
+> probe function with error code.
 > 
-> Ok.
+> Signed-off-by: Tamseel Shams <m.shams@samsung.com>
+> ---
+> Changes since v1:
+> 1. Added support to unregister driver on failure of "uart_add_one_port"
+> function call.
+> 2. Commit message updated.
 > 
-> Your patch made me go "I think it should loop until it has transferred
-> the full 512 bytes", but maybe the caller loops properly?
+> Changes since v2:
+> 1. Added support to unwind clocks on failure of "uart_add_one_port"
+> function call.
+> 
+>   drivers/tty/serial/samsung_tty.c | 17 ++++++++++++++++-
+>   1 file changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+> index 9fbc61151c2e..a3f3a17fb54b 100644
+> --- a/drivers/tty/serial/samsung_tty.c
+> +++ b/drivers/tty/serial/samsung_tty.c
+> @@ -2253,7 +2253,11 @@ static int s3c24xx_serial_probe(struct platform_device *pdev)
+>   	}
+>   
+>   	dev_dbg(&pdev->dev, "%s: adding port\n", __func__);
+> -	uart_add_one_port(&s3c24xx_uart_drv, &ourport->port);
+> +	ret = uart_add_one_port(&s3c24xx_uart_drv, &ourport->port);
+> +	if (ret < 0) {
+> +		dev_err(&pdev->dev, "Failed to add uart port, err %d\n", ret);
+> +		goto add_port_error;
+> +	}
+>   	platform_set_drvdata(pdev, &ourport->port);
+>   
+>   	/*
+> @@ -2272,6 +2276,17 @@ static int s3c24xx_serial_probe(struct platform_device *pdev)
+>   	probe_index++;
+>   
+>   	return 0;
+> +
+> +add_port_error:
+> +	ourport->port.mapbase = 0;
+> +	clk_disable_unprepare(ourport->clk);
+> +	clk_put(ourport->clk);
+> +	if (!IS_ERR(ourport->baudclk)) {
+> +		clk_disable_unprepare(ourport->baudclk);
+> +		clk_put(ourport->baudclk);
+> +	}
 
-Yes, the callers (ata_read_pio_sectors) does).
 
-> Because I'm looking at ata_sff_data_xfer32(), and I think it
-> fundamentally would fail the "retry after partial 4-byte transfer".
-> 
-> Let's imagine that "offset" is 511 bytes off the end of the page, and
-> so you'd first do a 511-byte transfer, and then a 1-byte transfer.
-> 
-> That's not how ata_sff_data_xfer32() works. It would actually first do
-> a 508-byte transfer (using that "rep insl" to do 4 bytes at a time),
-> and then it would do a 4-byte transfer into a temporary buffer, and
-> copy the first three bytes to fill out the 511 bytes in the first
-> page.
-> 
-> If you then loop back to do the last byte, it would do another 4-byte
-> transfer into a temporary buffer, and copy the remaining byte - ending
-> up with 512 bytes result as asked for.
-> 
-> Except they wouldn't be the *RIGHT* 512 bytes. It would have done 516
-> bytes worth of "inl", and from those 516 bytes it would have filled
-> the last 4 bytes with basically random garbage (ok, the first three
-> bytes would be ok, but the last byte would not be).
-> 
-> So I think that ap->ops->sff_data_xfer fundamentally cannot handle a
-> page crosser correctly - at least not if it's not 4-byte aligned.
-> 
-> How does IO to a non-sector-aligned buffer eevr happen? Because I
-> think that's broken, and your patch is only hiding further bugs.
+LGTM, now I only wonder why s3c24xx_serial_remove() does not put clocks?
 
-Note that in this case this is not an I/O command, but an internal
-command.  Either way libata allows the buffers to be dword (4 byte)
-aligned, and in this case the internal users relies on that.  Userspace
-passthrough could also reproduce this limited alignment.
+> +	uart_unregister_driver(&s3c24xx_uart_drv);
+> +	return ret;
+>   }
+>   
+>   static int s3c24xx_serial_remove(struct platform_device *dev)
+> 
+
+
+-- 
+js
+suse labs
