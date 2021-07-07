@@ -2,74 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4303BED7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD043BED79
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbhGGRz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 13:55:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52226 "EHLO mail.kernel.org"
+        id S230521AbhGGRzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 13:55:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230196AbhGGRzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:55:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EC9461CC1;
-        Wed,  7 Jul 2021 17:53:09 +0000 (UTC)
+        id S230273AbhGGRzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 13:55:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13F9C61CC9;
+        Wed,  7 Jul 2021 17:52:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625680390;
-        bh=4QIY8b1Mxzaig/m/1fus9m0xcXRpDY8JJoStIDqVbhs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CasGi0DZBuZ8p2LPBFLNOPi7syiS56fJXu+BK7AULDJKZ0HXzrWd80uQy8Gsh/eAy
-         c7qnJcOl01WhiIwC2dj/tzHJBgd3qbmL9f4DO4DS4z/Xj+XOJAAh8l4IimEDFfVmpm
-         2q182yP9nvUqm8K+e3zRoypDJZuWPJSM0KkDwicyDoIOPS5QmrUA2yqlWMwziP1NRx
-         q3NSQJW7qt1gJ/Z6igjc0Sfv/hvh7Kwmnx+G60W9VotsNVfBlDlVvo9enMVCnRZ1n+
-         QoYduqAzyr/t//tSxoSiRlS7PYspChrVECpwDkRaJ2o19zON46HmyuLY6l0sxEkMBp
-         D7hneoM6ZGemA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        Henry Chen <henryc.chen@mediatek.com>
-Subject: Re: [PATCH RFT] regulator: mtk-dvfsrc: Fix wrong dev pointer for devm_regulator_register
-Date:   Wed,  7 Jul 2021 18:52:33 +0100
-Message-Id: <162567917758.18771.9497444375435982346.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210702142140.2678130-1-axel.lin@ingics.com>
-References: <20210702142140.2678130-1-axel.lin@ingics.com>
+        s=k20201202; t=1625680361;
+        bh=0lR4729f9P/882zNtreLofGnn2m3FKaP0j19x9aMerQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=BSdQ8upaUDekKIhSIHJwTcAOONN3U4vZZrEUYCupt3+Fma4HpY3bM7WZ24BPSJVkw
+         wEtMlfNN3/J29vyoOvTFSC7zQvDHkoKqIkry/t+vic1tjC4Q2MK723m+U/vYTS06aD
+         ozzInOEQBjeV7dcrGLkLaFPwpib2tf4a06KgE6FgvoAtcUb4EHKHMK6D0fsfXptrc0
+         HUiH5rvfip2yd51SK3CQ2HbHMMonmCvY3udbRcJwDaeZ006egNxiC1uk2AGznSCZaM
+         1KwRKXQySqgbT+ahoWpodEm1WKGnesxKuWZHodPN0ShmrJc3fG46+kvrTrVpaKPVPG
+         IvmaK8TIXLg1Q==
+Message-ID: <9da1ba4e8fa2fc86ebb8676bbe7e68e4008476c5.camel@kernel.org>
+Subject: Re: [PATCH v2 1/2] fcntl: fix potential deadlocks for
+ &fown_struct.lock
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
+Date:   Wed, 07 Jul 2021 13:52:40 -0400
+In-Reply-To: <YOXVb5z3W+T9El+g@casper.infradead.org>
+References: <14633c3be87286d811263892375f2dfa9a8ed40a.camel@kernel.org>
+         <YOWHKk6Nq8bazYjB@kroah.com>
+         <4dda1cad6348fced5fcfcb6140186795ed07d948.camel@kernel.org>
+         <20210707135129.GA9446@fieldses.org> <YOXDBZR2RSfiM+A3@kroah.com>
+         <20210707151936.GB9911@fieldses.org> <YOXIuhma++oMbbiH@kroah.com>
+         <20210707153417.GA10570@fieldses.org> <YOXMcJAZPms7Gp8a@kroah.com>
+         <03748f0bf038826f879b4429441d5a0fa8331969.camel@kernel.org>
+         <YOXVb5z3W+T9El+g@casper.infradead.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Jul 2021 22:21:40 +0800, Axel Lin wrote:
-> If use dev->parent, the regulator_unregister will not be called when this
-> driver is unloaded. Fix it by using dev instead.
+On Wed, 2021-07-07 at 17:25 +0100, Matthew Wilcox wrote:
+> On Wed, Jul 07, 2021 at 12:18:45PM -0400, Jeff Layton wrote:
+> > On Wed, 2021-07-07 at 17:46 +0200, Greg KH wrote:
+> > > On Wed, Jul 07, 2021 at 11:34:17AM -0400, J. Bruce Fields wrote:
+> > > > On Wed, Jul 07, 2021 at 05:31:06PM +0200, Greg KH wrote:
+> > > > > On Wed, Jul 07, 2021 at 11:19:36AM -0400, J. Bruce Fields wrote:
+> > > > > > On Wed, Jul 07, 2021 at 05:06:45PM +0200, Greg KH wrote:
+> > > > > > > On Wed, Jul 07, 2021 at 09:51:29AM -0400, J. Bruce Fields wrote:
+> > > > > > > > On Wed, Jul 07, 2021 at 07:40:47AM -0400, Jeff Layton wrote:
+> > > > > > > > > On Wed, 2021-07-07 at 12:51 +0200, Greg KH wrote:
+> > > > > > > > > > On Wed, Jul 07, 2021 at 06:44:42AM -0400, Jeff Layton wrote:
+> > > > > > > > > > > On Wed, 2021-07-07 at 08:05 +0200, Greg KH wrote:
+> > > > > > > > > > > > On Wed, Jul 07, 2021 at 10:35:47AM +0800, Desmond Cheong Zhi Xi wrote:
+> > > > > > > > > > > > > +	WARN_ON_ONCE(irqs_disabled());
+> > > > > > > > > > > > 
+> > > > > > > > > > > > If this triggers, you just rebooted the box :(
+> > > > > > > > > > > > 
+> > > > > > > > > > > > Please never do this, either properly handle the problem and return an
+> > > > > > > > > > > > error, or do not check for this.  It is not any type of "fix" at all,
+> > > > > > > > > > > > and at most, a debugging aid while you work on the root problem.
+> > > > > > > > > > > > 
+> > > > > > > > > > > > thanks,
+> > > > > > > > > > > > 
+> > > > > > > > > > > > greg k-h
+> > > > > > > > > > > 
+> > > > > > > > > > > Wait, what? Why would testing for irqs being disabled and throwing a
+> > > > > > > > > > > WARN_ON in that case crash the box?
+> > > > > > > > > > 
+> > > > > > > > > > If panic-on-warn is enabled, which is a common setting for systems these
+> > > > > > > > > > days.
+> > > > > > > > > 
+> > > > > > > > > Ok, that makes some sense.
+> > > > > > > > 
+> > > > > > > > Wait, I don't get it.
+> > > > > > > > 
+> > > > > > > > How are we supposed to decide when to use WARN, when to use BUG, and
+> > > > > > > > when to panic?  Do we really want to treat them all as equivalent?  And
+> > > > > > > > who exactly is turning on panic-on-warn?
+> > > > > > > 
+> > > > > > > You never use WARN or BUG, unless the system is so messed up that you
+> > > > > > > can not possibly recover from the issue.
+> > > > > > 
+> > > > > > I've heard similar advice for BUG before, but this is the first I've
+> > > > > > heard it for WARN.  Do we have any guidelines for how to choose between
+> > > > > > WARN and BUG?
+> > > > > 
+> > > > > Never use either :)
+> > > > 
+> > > > I can't tell if you're kidding.
+> > > 
+> > > I am not.
+> > > 
+> > > > Is there some plan to remove them?
+> > > 
+> > > Over time, yes.  And any WARN that userspace can ever hit should be
+> > > removed today.
+> > > 
+> > > > There are definitely cases where I've been able to resolve a problem
+> > > > more quickly because I got a backtrace from a WARN.
+> > > 
+> > > If you want a backtrace, ask for that, recover from the error, and move
+> > > on.  Do not allow userspace to reboot a machine for no good reason as
+> > > again, panic-on-warn is a common setting that people use now.
+> > > 
+> > > This is what all of the syzbot work has been doing, it triggers things
+> > > that cause WARN() to be hit and so we have to fix them.
+> > > 
+> > 
+> > This seems really draconian. Clearly we do want to fix things that show
+> > a WARN (otherwise we wouldn't bother warning about it), but I don't
+> > think that's a reason to completely avoid them. My understanding has
+> > always been:
+> > 
+> > BUG: for when you reach some condition where the kernel (probably) can't
+> > carry on
+> > 
+> > WARN: for when you reach some condition that is problematic but where
+> > the machine can probably soldier on. 
+> > 
+> > Over the last several years, I've changed a lot of BUGs into WARNs to
+> > avoid crashing the box unnecessarily. If someone is setting
+> > panic_on_warn, then aren't they just getting what they asked for?
+> > 
+> > While I don't feel that strongly about this particular WARN in this
+> > patch, it seems like a reasonable thing to do. If someone calls these
+> > functions with IRQs disabled, then they might end up with some subtle
+> > problems that could be hard to detect otherwise.
+> 
+> Don't we already have a debugging option that would catch this?
+> 
+> config DEBUG_IRQFLAGS
+>         bool "Debug IRQ flag manipulation"
+>         help
+>           Enables checks for potentially unsafe enabling or disabling of
+>           interrupts, such as calling raw_local_irq_restore() when interrupts
+>           are enabled.
+> 
+> so I think this particular warn is unnecessary.
+> 
 
-Applied to
+Good to know. I'm just going to leave Desmond's v1 patch (which didn't
+have this WARN_ON) in linux-next for now.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+> But I also disagree with Greg.  Normal users aren't setting panic-on-warn.
+> Various build bots are setting panic-on-warn -- and they should -- because
+> we shouldn't be able to trigger these kinds of warnings from userspace.
+> Those are bugs that should be fixed.  But there's no reason to shy away
+> from using a WARN when it's the right thing to do.
 
-Thanks!
+Agreed.
+-- 
+Jeff Layton <jlayton@kernel.org>
 
-[1/1] regulator: mtk-dvfsrc: Fix wrong dev pointer for devm_regulator_register
-      commit: ea986908ccfcc53204a03bb0841227e1b26578c4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
