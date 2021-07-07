@@ -2,157 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818B53BE816
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553D43BE81A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbhGGMhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 08:37:38 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17220 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231487AbhGGMha (ORCPT
+        id S231512AbhGGMlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 08:41:24 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41440 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231452AbhGGMlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 08:37:30 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 167CY0n8065487;
-        Wed, 7 Jul 2021 08:34:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=qUBomOGMkaPz4mUsHgGsmORJDgTsyhMG8t1InoNsxBg=;
- b=SdyVfYdWlGqPnqic97Ab45vLW0NXGOzJMOxz9y7tL13ukx34Gs9h3gm2Dp9xyJqGiFDr
- Cr5K8IoovCF1RiN8RY6b9hoffFtdS0cY8uQvPJPjQGGbY8KztvXWYWifXwWdJNRKWn8q
- B4MJdiDfYt2wwPbcIBKpalxzVLvl6fLx43enBhw54fLMhR9O8SAkkD2/+qIkcC27peUp
- IKMiIPB4OW3urMsoF+IctVxJ/Fdl5CSYhLbNctgZieTtDodZl8RzZqZoucHZeJdCzgfs
- WLEhtam+CVK1K2lLLR8FmZGq8DfnUJT4R6BpUAS4te/N2pgYvuJ5zk0AR4ZcTnqhHD2P Mw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39n28675yu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 08:34:09 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 167CY9EM066215;
-        Wed, 7 Jul 2021 08:34:09 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39n28675xj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 08:34:09 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 167CIqQN000323;
-        Wed, 7 Jul 2021 12:34:06 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06fra.de.ibm.com with ESMTP id 39jf5hgxpr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 12:34:06 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 167CY4IR21758424
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Jul 2021 12:34:04 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F1598AE056;
-        Wed,  7 Jul 2021 12:34:03 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DCEADAE045;
-        Wed,  7 Jul 2021 12:34:03 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  7 Jul 2021 12:34:03 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 25651)
-        id 8E6BEE07F6; Wed,  7 Jul 2021 14:34:03 +0200 (CEST)
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-To:     peterz@infradead.org
-Cc:     borntraeger@de.ibm.com, bristot@redhat.com, bsegall@google.com,
-        dietmar.eggemann@arm.com, joshdon@google.com,
-        juri.lelli@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
-        rostedt@goodmis.org, valentin.schneider@arm.com,
-        vincent.guittot@linaro.org
-Subject: [PATCH 1/1] sched/fair: improve yield_to vs fairness
-Date:   Wed,  7 Jul 2021 14:34:02 +0200
-Message-Id: <20210707123402.13999-2-borntraeger@de.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210707123402.13999-1-borntraeger@de.ibm.com>
-References: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
- <20210707123402.13999-1-borntraeger@de.ibm.com>
+        Wed, 7 Jul 2021 08:41:23 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 240DA22420;
+        Wed,  7 Jul 2021 12:38:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625661522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wtj4oqJE3RiN5VpO28h+0U6s0vV8LrwsND4LhinfUSo=;
+        b=AGrjPda2dkldufEtWLLsXeP5nO0ItjRm+3IxvNNgLrIvm4nmzr8qB7Rs1jBYQAQmbtB2eB
+        cNNHS8Ec+oK6JaWxToEy+d3SO1eChhxXobVV5PVdF0ZqT91UnOwuIs3Ejh11tiE0laYf/j
+        Uh6xJXRuUCZVfC0fZKQIPwtjb00Ya0c=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 7E6BDA3C27;
+        Wed,  7 Jul 2021 12:38:41 +0000 (UTC)
+Date:   Wed, 7 Jul 2021 14:38:40 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
+Message-ID: <YOWcj0+P238W1y+t@dhcp22.suse.cz>
+References: <20210623192822.3072029-1-surenb@google.com>
+ <CALCETrU577MD59P-+9sMYtS3t2sZYx-zi=VirhQpZLnhEck1vg@mail.gmail.com>
+ <CAJuCfpFMTP-g9CFELMqNawX0FhF4vBNtRDP_R=WAi_RiuGW8-Q@mail.gmail.com>
+ <YNzl6XNu2vxyCJu8@cmpxchg.org>
+ <CALCETrWsVw4+jT_Z1uxidRAZ0SQbngYe7E2m-8iyX6qRbug6zA@mail.gmail.com>
+ <CAJuCfpG5Ua7C4usJGEqTm6_UUd6VyRd0BsPgT97LWOzjb4Ry+g@mail.gmail.com>
+ <20210702152724.7fv5tnik4qlap6do@wittgenstein>
+ <af8e76f1-6625-25d1-98d2-a3c8a9bf2fd6@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: xCn7DVbx7ijO_S1xkjxATaN1uHKmeASW
-X-Proofpoint-ORIG-GUID: SMYdEvRWwpuQpkQSdYpaTGcfax00DCxe
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-07_06:2021-07-06,2021-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- mlxscore=0 priorityscore=1501 malwarescore=0 suspectscore=0 spamscore=0
- phishscore=0 lowpriorityscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107070075
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af8e76f1-6625-25d1-98d2-a3c8a9bf2fd6@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After some debugging in situations where a smaller sched_latency_ns and
-smaller sched_migration_cost settings helped for KVM host, I was able to
-come up with a reduced testcase.
-This testcase has 2 vcpus working on a shared memory location and
-waiting for mem % 2 == cpu number to then do an add on the shared
-memory.
-To start simple I pinned all vcpus to one host CPU. Without the
-yield_to in KVM the testcase was horribly slow. This is expected as each
-vcpu will spin a whole time slice. With the yield_to from KVM things are
-much better, but I was still seeing yields being ignored.
-In the end pick_next_entity decided to keep the current process running
-due to fairness reasons.  On this path we really know that there is no
-point in continuing current. So let us make things a bit unfairer to
-current.
-This makes the reduced testcase noticeable faster. It improved a more
-realistic test case (many guests on some host CPUs with overcomitment)
-even more.
-In the end this is similar to the old compat_sched_yield approach with
-an important difference:
-Instead of doing it for all yields we now only do it for yield_to
-a place where we really know that current it waiting for the target.
+On Mon 05-07-21 09:41:54, David Hildenbrand wrote:
+> On 02.07.21 17:27, Christian Brauner wrote:
+[...]
+> > That one was my favorite from the list I gave too but maybe we can
+> > satisfy Andy too if we use one of:
+> > - process_mfree()
+> > - process_mrelease()
+> > 
+> 
+> FWIW, I tend to like process_mrelease(), due to the implied "release" ("free
+> the memory if there are no other references") semantics.
 
-What are alternative implementations for this patch
-- do the same as the old compat_sched_yield:
-  current->vruntime = rightmost->vruntime+1
-- provide a new tunable sched_ns_yield_penalty: how much vruntime to add
-  (could be per architecture)
-- also fiddle with the vruntime of the target
-  e.g. subtract from the target what we add to the source
+Agreed.
 
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
----
- kernel/sched/fair.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+> Further, a new
+> syscall feels cleaner than some magic sysfs/procfs toggle. Just my 2 cents.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 23663318fb81..4f661a9ed3ba 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7337,6 +7337,7 @@ static void yield_task_fair(struct rq *rq)
- static bool yield_to_task_fair(struct rq *rq, struct task_struct *p)
- {
- 	struct sched_entity *se = &p->se;
-+	struct sched_entity *curr = &rq->curr->se;
- 
- 	/* throttled hierarchies are not runnable */
- 	if (!se->on_rq || throttled_hierarchy(cfs_rq_of(se)))
-@@ -7347,6 +7348,16 @@ static bool yield_to_task_fair(struct rq *rq, struct task_struct *p)
- 
- 	yield_task_fair(rq);
- 
-+	/*
-+	 * This path is special and only called from KVM. In contrast to yield,
-+	 * in yield_to we really know that current is spinning and we know
-+	 * (s390) or have good heuristics whom are we waiting for. There is
-+	 * absolutely no point in continuing the current task, even if this
-+	 * means to become unfairer. Let us give the current process some
-+	 * "fake" penalty.
-+	 */
-+	curr->vruntime += sched_slice(cfs_rq_of(curr), curr);
-+
- 	return true;
- }
- 
+Yeah, proc based interface is both tricky to use and kinda ugly now that
+pidfd can solve all at in once.
+
+My original preference was a more generic kill syscall to allow flags
+but a dedicated syscall doesn't look really bad either.
 -- 
-2.31.1
-
+Michal Hocko
+SUSE Labs
