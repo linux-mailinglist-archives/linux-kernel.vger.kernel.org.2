@@ -2,54 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0917E3BE6C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DA43BE6CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhGGLA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 07:00:58 -0400
-Received: from mail-ed1-f42.google.com ([209.85.208.42]:33445 "EHLO
-        mail-ed1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbhGGLA5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 07:00:57 -0400
-Received: by mail-ed1-f42.google.com with SMTP id eb14so2892896edb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 03:58:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6zKc5bM/j/Saim3WcJ7XMsv777ylB6DzjZT8Xkvqlo8=;
-        b=YBlY3OA1w08YgEmpoKyAq+3r1IVUPvQV/nZpGveTbCN7X3dTfTXCgdulxDOouWDNtz
-         ttqw5zkSDlW5w1xK49GC0+lG1u3Pcmj4yH/VjsQgIPqafMfqjwr+mU4OtVItvj7DZmEo
-         JPsRrusjIGXlWGyfNvPtqHTmuiKHrOvVSWGjA1i1yL00cmd1L0+Ko8LyVj6WVIFSCPzM
-         8ZpvcdcOmsOtSYVY2VEEq0bj7ceaKU1McIA5tozxJoreQfaTMEdFWhzbGX4jLv4QTk8E
-         RaHolZY9gHdB9GxS0RAs2pAl8S213URciOVvT6cYmUl3d8pJlPjEEpdmf90IFmci/orJ
-         FpOA==
-X-Gm-Message-State: AOAM533FzsMqye1YMQ0vOupzcfNHSyA1s115mjh7hQwZAnbN+MDEOlCJ
-        EL0IWgrLGxPo91o3FCdselam8ixIZuprVQ==
-X-Google-Smtp-Source: ABdhPJw9AWx/zVkQP7+TWOppO1SN41FBH7XT10N9Y4mW5X2FTCcM1e3yMvvdcWiMqnnW+M23v3zplQ==
-X-Received: by 2002:a05:6402:1001:: with SMTP id c1mr29109250edu.26.1625655495857;
-        Wed, 07 Jul 2021 03:58:15 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id h8sm7057430ejj.22.2021.07.07.03.58.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 03:58:15 -0700 (PDT)
-Subject: Re: [PATCH v2] xen/hvc: replace BUG_ON() with negative return value
-To:     Juergen Gross <jgross@suse.com>, Jan Beulich <jbeulich@suse.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210707091045.460-1-jgross@suse.com>
- <9e45c5f8-0ac0-e1bb-4703-838679285e80@suse.com>
- <dd32b09b-7345-664b-165d-dfb30c285448@suse.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <b38eddf2-52af-3fa1-9cc0-681c094e327f@kernel.org>
-Date:   Wed, 7 Jul 2021 12:58:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231359AbhGGLFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 07:05:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:34584 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231220AbhGGLFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 07:05:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 674A11042;
+        Wed,  7 Jul 2021 04:02:24 -0700 (PDT)
+Received: from [10.57.1.129] (unknown [10.57.1.129])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 757693F5A1;
+        Wed,  7 Jul 2021 04:02:21 -0700 (PDT)
+Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
+ of EAS estimated energy
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Chris Redpath <Chris.Redpath@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        CCj.Yeh@mediatek.com
+References: <20210625152603.25960-1-lukasz.luba@arm.com>
+ <20210625152603.25960-2-lukasz.luba@arm.com>
+ <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
+ <a6a49480-7d5d-fd0e-3940-0b6baac5acc0@arm.com>
+ <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
+ <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com>
+ <CAKfTPtDk1ANfjR5h_EjErVfQ7=is3n9QOaKKxz81tMHtqUM7jA@mail.gmail.com>
+ <297df159-1681-f0a7-843d-f34d86e51d4c@arm.com>
+ <CAKfTPtCEo+gkV2TMhOHSnuUyu5BC54o-B4Hb=QbzgT6Dft-PhQ@mail.gmail.com>
+ <27916860-33b1-f0a0-acff-4722a733c81b@arm.com>
+ <CAKfTPtB2ogGbGBjJNRBB5jvN24q-tXFR+BpJ31fzsTd2=pDTHQ@mail.gmail.com>
+ <ee3ebbaa-7b6d-416d-2caa-197c2713dd4e@arm.com>
+ <CAKfTPtAN6-ytxa2Qj3=z27e8ZBoqGrWAZce9CojL3wbZSotUsQ@mail.gmail.com>
+ <58cb7ad3-ffff-8940-4c8e-2c46dcc86d54@arm.com>
+ <CAKfTPtCy-dbo0xnW8iKaQy94_iV=JYbMU-X4qanzL6RXcL7xEw@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <e3b11a84-9a26-9a7d-cf90-12a7a8fbcc3f@arm.com>
+Date:   Wed, 7 Jul 2021 12:02:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <dd32b09b-7345-664b-165d-dfb30c285448@suse.com>
+In-Reply-To: <CAKfTPtCy-dbo0xnW8iKaQy94_iV=JYbMU-X4qanzL6RXcL7xEw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -57,16 +64,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07. 07. 21, 12:40, Juergen Gross wrote:
->> And btw, since I've got puzzled by the linuxppc-dev@ in the recipients
->> list, I did look up relevant entries in ./MAINTAINERS. Shouldn't the
->> file be part of "XEN HYPERVISOR INTERFACE"?
+
+
+On 7/7/21 11:50 AM, Vincent Guittot wrote:
+> On Wed, 7 Jul 2021 at 12:41, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>>
+>>
+>> On 7/7/21 11:32 AM, Vincent Guittot wrote:
+>>> On Wed, 7 Jul 2021 at 12:29, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 7/7/21 11:11 AM, Vincent Guittot wrote:
+>>>>> On Wed, 7 Jul 2021 at 12:06, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>>>
+>>>>
+>>>> [snip]
+>>>>
+>>>>>> No. It's in 0.1uW scale, so 800Watts. Which is 16 CPUs * 64Watts
+>>>>>
+>>>>> Oh! you want 0.1uW precision .... This doesn't seem realistic at all.
+>>>>> I'm not even sure that the power model can even reach an accuracy of
+>>>>> 1mW
+>>>>>
+>>>>
+>>>> True, the EM is registering platform with 1mW precision, but 1uW
+>>>
+>>> Do you mean 1uW or 0.1uW ?
+>>
+>> In this patch set I've proposed 0.1uW, but I'm open to drop one
+>> order of magnitude. The 1uW still be good.
 > 
-> I wouldn't mind. Greg, Jiri, what do you think?
+> I don't want to underestimate the capabilities of the power model but
+> I don't see which benefit you will get with 0.1uW precision
+> With a 1uW precision the long type currently used for the returned
+> value is fine for 32bits machine AFAICT
+> 
 
-/me concurs.
-
-thanks,
--- 
-js
-suse labs
+For 1uW and 1.2Watts for one core, 4 CPUs in cluster we get:
+(1200 * 1000) * (4 * 1024) = ~4.9bln
+so it would need div 64 version
