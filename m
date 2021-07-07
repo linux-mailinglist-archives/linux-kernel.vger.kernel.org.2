@@ -2,141 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2173BE74D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3FBD3BE751
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbhGGLnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 07:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbhGGLnB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 07:43:01 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BBEFC061574;
-        Wed,  7 Jul 2021 04:40:20 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id t6so2667467wrm.9;
-        Wed, 07 Jul 2021 04:40:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SjCPjtxsD7x8AhV/ce/R0ldaWbBbErIon5fucvDcAwE=;
-        b=ueaVWLeB2tT5vn1d5Ycrggbk01HiU0EeCp6+WRfAFR7CbfGVsoNdg5qMI2/xxukzdt
-         taZcicT/jA6fWn5me8Q3RODQyvPB3Mdiv3umhpbQ42sTlzvVJaPkBs56xJ1ESCKrAAMO
-         b2++HLpJaEv4hflgKY8Z9YUp6QVZWXys6qssFIF6d1o/u8i3lH20zcEboBWc8MnVfSLa
-         XBYx1KC50Zq0JeZic+F1OiVzv5eX6TkDNluBBz/VDavmu7XHDr4I63klnQ2D/JCmzzlS
-         VTdsvhjMdCC6UQPEyirHcKuTlU9xXN7WHO/D5dM0fFxbxKL7f+qoEV8V//+wT0rmwQgw
-         EKaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SjCPjtxsD7x8AhV/ce/R0ldaWbBbErIon5fucvDcAwE=;
-        b=qrmrxnHNeJPv9hRF5ziS4rh1g9e+FrKIdr8gIZBM8Xf//G49zUi9y4cdiKJxzoI5X9
-         0GO0027K0E0aciq9mmGZnZs7XTi2xT6RTHz6QOTlnvyQXFcJBFJg5D7tLNmnDetXpyaQ
-         IT6bBKkvp9bFe9Z0V2XUyBADsgrXlQA8mx2YU9o0WQfWGW/U+uVZVt/RXVGi1t/eQCpa
-         kFPNxVZzLxtMY7vEZ00p5cHZVt4OVPt4XtKVZjwXLFhNbsmox3OHRRjjOR/eKBEn/mUn
-         ydXZqVLTwZ2DBurb+yr0AobJjmUKfypEGa0lgBsV8wL20LVQcLTyNVTHAM2QwdC38lLi
-         Qxlg==
-X-Gm-Message-State: AOAM531ZTLNoOLmzwF4RlDT8N+sRS2cT7X/2KXz6/JhKLM/Q10ojlJtM
-        csHdSDBVmt6T4VDIDZKYPjU=
-X-Google-Smtp-Source: ABdhPJw5kfrSS+ALXPvamQOvU6udjvmtDg48XjGbJbXG1PnD7ThQuRncHqaYXRdUk4VU2ZO3yKwJqQ==
-X-Received: by 2002:a5d:4001:: with SMTP id n1mr27826764wrp.159.1625658019235;
-        Wed, 07 Jul 2021 04:40:19 -0700 (PDT)
-Received: from localhost.localdomain ([85.255.234.206])
-        by smtp.gmail.com with ESMTPSA id p9sm18415790wmm.17.2021.07.07.04.40.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 04:40:18 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH 4/4] io_uring: accept directly into fixed file table
-Date:   Wed,  7 Jul 2021 12:39:46 +0100
-Message-Id: <1a57d821f6f3c35aef26316febe70e16f39f7c7d.1625657451.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1625657451.git.asml.silence@gmail.com>
-References: <cover.1625657451.git.asml.silence@gmail.com>
+        id S231585AbhGGLnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 07:43:37 -0400
+Received: from mga06.intel.com ([134.134.136.31]:41278 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231546AbhGGLnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 07:43:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="270404633"
+X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
+   d="scan'208";a="270404633"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 04:40:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
+   d="scan'208";a="645356607"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 07 Jul 2021 04:40:48 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m15v5-000DZ6-Kc; Wed, 07 Jul 2021 11:40:47 +0000
+Date:   Wed, 07 Jul 2021 19:39:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.07.06a] BUILD SUCCESS
+ 41a95363ac9f020cc0e4fcc4b73015c60b6620f0
+Message-ID: <60e59286.NqcpU3HZ2or1xgFr%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As done with open opcodes, allow accept to skip installing fd into
-processes' file tables and put it directly into io_uring's fixed file
-table. Same restrictions and design as for open.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.07.06a
+branch HEAD: 41a95363ac9f020cc0e4fcc4b73015c60b6620f0  rcu: Explain why rcu_all_qs() is a stub in preemptible TREE RCU
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+i386-tinyconfig vmlinux size:
+
++-------+-----------------------------------+------------------------------------------+
+| DELTA |              SYMBOL               |                  COMMIT                  |
++-------+-----------------------------------+------------------------------------------+
+| +2931 | TOTAL                             | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+| +2566 | TEXT                              | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|  +285 | DATA                              | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|  +565 | init.text                         | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|  +206 | __get_vm_area_node.isra()         | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|  +201 | clocksource_watchdog()            | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|  +154 | alloc_ucounts()                   | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|  +150 | perf_clear_dirty_counters()       | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|  +140 | page_vma_mapped_walk()            | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|  +113 | sld_setup()                       | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|  +100 | inc_rlimit_ucounts()              | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   +97 | unmap_mapping_range_tree()        | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   +96 | vma_address()                     | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   +88 | fork_init()                       | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   +83 | user_namespace_sysctl_init()      | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   +81 | set_cred_ucounts()                | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   +79 | vmalloc_no_huge()                 | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   +74 | amd_get_highest_perf()            | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   +70 | force_sig_perf()                  | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   +68 | clocksource_verify_percpu()       | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   +68 | init_ucounts                      | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   +66 | __clocksource_update_freq_scale() | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   +66 | unmap_mapping_page()              | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   +64 | intel_spr_extra_regs              | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   -64 | __kthread_cancel_work()           | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   -69 | parse_reservelow()                | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|   -89 | unmap_mapping_pages()             | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|  -166 | inc_ucount()                      | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
+|  -206 | __get_vm_area_node()              | 6efb943b8616..41a95363ac9f (ALL COMMITS) |
++-------+-----------------------------------+------------------------------------------+
+
+elapsed time: 726m
+
+configs tested: 107
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                       maple_defconfig
+mips                        omega2p_defconfig
+arm                            hisi_defconfig
+xtensa                           alldefconfig
+sh                           se7721_defconfig
+s390                       zfcpdump_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                     tqm5200_defconfig
+mips                          ath25_defconfig
+sh                           se7619_defconfig
+arm                          pxa168_defconfig
+powerpc                    ge_imp3a_defconfig
+sh                           se7206_defconfig
+xtensa                       common_defconfig
+arm                      jornada720_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                      bamboo_defconfig
+arc                        nsim_700_defconfig
+mips                         tb0226_defconfig
+powerpc                   motionpro_defconfig
+sh                           se7750_defconfig
+ia64                      gensparse_defconfig
+microblaze                      mmu_defconfig
+m68k                        stmark2_defconfig
+mips                      fuloong2e_defconfig
+arm                          pcm027_defconfig
+mips                          rb532_defconfig
+arm                         lpc32xx_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20210706
+i386                 randconfig-a006-20210706
+i386                 randconfig-a001-20210706
+i386                 randconfig-a003-20210706
+i386                 randconfig-a005-20210706
+i386                 randconfig-a002-20210706
+x86_64               randconfig-a015-20210706
+x86_64               randconfig-a014-20210706
+x86_64               randconfig-a012-20210706
+x86_64               randconfig-a011-20210706
+x86_64               randconfig-a016-20210706
+x86_64               randconfig-a013-20210706
+i386                 randconfig-a015-20210706
+i386                 randconfig-a016-20210706
+i386                 randconfig-a012-20210706
+i386                 randconfig-a011-20210706
+i386                 randconfig-a014-20210706
+i386                 randconfig-a013-20210706
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210706
+x86_64               randconfig-a004-20210706
+x86_64               randconfig-a002-20210706
+x86_64               randconfig-a005-20210706
+x86_64               randconfig-a006-20210706
+x86_64               randconfig-a003-20210706
+x86_64               randconfig-a001-20210706
+
 ---
- fs/io_uring.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index fd0dcee251b0..f7db43bf7dad 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -4675,14 +4675,17 @@ static int io_accept_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
- 
- 	if (unlikely(req->ctx->flags & IORING_SETUP_IOPOLL))
- 		return -EINVAL;
--	if (sqe->ioprio || sqe->len || sqe->buf_index)
-+	if (sqe->ioprio || sqe->len)
- 		return -EINVAL;
- 
- 	accept->addr = u64_to_user_ptr(READ_ONCE(sqe->addr));
- 	accept->addr_len = u64_to_user_ptr(READ_ONCE(sqe->addr2));
- 	accept->flags = READ_ONCE(sqe->accept_flags);
- 	accept->nofile = rlimit(RLIMIT_NOFILE);
-+	req->buf_index = READ_ONCE(sqe->file_index);
- 
-+	if (req->buf_index && (accept->flags & SOCK_CLOEXEC))
-+		return -EINVAL;
- 	if (accept->flags & ~(SOCK_CLOEXEC | SOCK_NONBLOCK))
- 		return -EINVAL;
- 	if (SOCK_NONBLOCK != O_NONBLOCK && (accept->flags & SOCK_NONBLOCK))
-@@ -4695,28 +4698,34 @@ static int io_accept(struct io_kiocb *req, unsigned int issue_flags)
- 	struct io_accept *accept = &req->accept;
- 	bool force_nonblock = issue_flags & IO_URING_F_NONBLOCK;
- 	unsigned int file_flags = force_nonblock ? O_NONBLOCK : 0;
-+	bool fixed = !!req->buf_index;
- 	struct file *file;
- 	int ret, fd;
- 
- 	if (req->file->f_flags & O_NONBLOCK)
- 		req->flags |= REQ_F_NOWAIT;
- 
--	fd = __get_unused_fd_flags(accept->flags, accept->nofile);
--	if (unlikely(fd < 0))
--		return fd;
--
-+	if (!fixed) {
-+		fd = __get_unused_fd_flags(accept->flags, accept->nofile);
-+		if (unlikely(fd < 0))
-+			return fd;
-+	}
- 	file = do_accept(req->file, file_flags, accept->addr, accept->addr_len,
- 			 accept->flags);
- 	if (IS_ERR(file)) {
-+		if (!fixed)
-+			put_unused_fd(fd);
- 		ret = PTR_ERR(file);
- 		if (ret == -EAGAIN && force_nonblock)
- 			return -EAGAIN;
- 		if (ret == -ERESTARTSYS)
- 			ret = -EINTR;
- 		req_set_fail(req);
--	} else {
-+	} else if (!fixed) {
- 		fd_install(fd, file);
- 		ret = fd;
-+	} else {
-+		ret = io_install_fixed_file(req, file, issue_flags);
- 	}
- 	__io_req_complete(req, issue_flags, ret, 0);
- 	return 0;
--- 
-2.32.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
