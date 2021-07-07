@@ -2,148 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8DB3BE2DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 07:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 746193BE2D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 07:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbhGGGAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 02:00:51 -0400
-Received: from mga11.intel.com ([192.55.52.93]:58040 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230157AbhGGGAu (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 02:00:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="206231714"
-X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
-   d="scan'208";a="206231714"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 22:58:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
-   d="scan'208";a="461240118"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga008.fm.intel.com with ESMTP; 06 Jul 2021 22:58:07 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2] perf stat: Merge uncore events by default for hybrid platform
-Date:   Wed,  7 Jul 2021 13:56:52 +0800
-Message-Id: <20210707055652.962-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S230247AbhGGGAN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 7 Jul 2021 02:00:13 -0400
+Received: from einhorn.in-berlin.de ([192.109.42.8]:34309 "EHLO
+        einhorn-mail-out.in-berlin.de" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230192AbhGGGAN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 02:00:13 -0400
+X-Envelope-From: stefanr@s5r6.in-berlin.de
+Received: from authenticated.user (localhost [127.0.0.1]) by einhorn.in-berlin.de  with ESMTPSA id 1675v4nD012588
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Wed, 7 Jul 2021 07:57:04 +0200
+Date:   Wed, 7 Jul 2021 07:57:03 +0200
+From:   Stefan Richter <stefanr@s5r6.in-berlin.de>
+To:     Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux1394-devel@lists.sourceforge.net
+Subject: Re: [PATCH v2 4/4] bus: Make remove callback return void
+Message-ID: <20210707075703.32908b84@kant>
+In-Reply-To: <20210706154803.1631813-5-u.kleine-koenig@pengutronix.de>
+References: <20210706154803.1631813-1-u.kleine-koenig@pengutronix.de>
+        <20210706154803.1631813-5-u.kleine-koenig@pengutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On hybrid platform, by default stat aggregates and reports the event counts
-per pmu. For example,
+On Jul 06 Uwe Kleine-König wrote:
+> The driver core ignores the return value of this callback because there
+> is only little it can do when a device disappears.
+> 
+> This is the final bit of a long lasting cleanup quest where several
+> buses were converted to also return void from their remove callback.
+> Additionally some resource leaks were fixed that were caused by drivers
+> returning an error code in the expectation that the driver won't go
+> away.
+> 
+> With struct bus_type::remove returning void it's prevented that newly
+> implemented buses return an ignored error code and so don't anticipate
+> wrong expectations for driver authors.
 
-  # perf stat -e cycles -a true
+Acked-by: Stefan Richter <stefanr@s5r6.in-berlin.de> (for drivers/firewire)
 
-   Performance counter stats for 'system wide':
-
-           1,400,445      cpu_core/cycles/
-             680,881      cpu_atom/cycles/
-
-         0.001770773 seconds time elapsed
-
-While for uncore events, that's not a suitable method. Uncore has nothing
-to do with hybrid. So for uncore events, we aggregate event counts from all
-PMUs and report the counts without PMUs.
-
-Before:
-
-  # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
-
-   Performance counter stats for 'system wide':
-
-               2,058      uncore_arb_0/event=0x81,umask=0x1/
-               2,028      uncore_arb_1/event=0x81,umask=0x1/
-                   0      uncore_arb_0/event=0x84,umask=0x1/
-                   0      uncore_arb_1/event=0x84,umask=0x1/
-
-         0.000614498 seconds time elapsed
-
-After:
-
-  # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
-
-   Performance counter stats for 'system wide':
-
-               3,996      arb/event=0x81,umask=0x1/
-                   0      arb/event=0x84,umask=0x1/
-
-         0.000630046 seconds time elapsed
-
-Of course, we also keep the '--no-merge' working for uncore events.
-
-  # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ --no-merge true
-
-   Performance counter stats for 'system wide':
-
-               1,952      uncore_arb_0/event=0x81,umask=0x1/
-               1,921      uncore_arb_1/event=0x81,umask=0x1/
-                   0      uncore_arb_0/event=0x84,umask=0x1/
-                   0      uncore_arb_1/event=0x84,umask=0x1/
-
-         0.000575536 seconds time elapsed
-
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
-v2:
- - Use evsel__find_pmu() to find uncore pmu.
- - Create hybrid_uniquify() to check if uniquify the event name for hybrid.
-
- tools/perf/builtin-stat.c      |  3 ---
- tools/perf/util/stat-display.c | 14 +++++++++++++-
- 2 files changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index f9f74a514315..b67a44982b61 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -2442,9 +2442,6 @@ int cmd_stat(int argc, const char **argv)
- 
- 	evlist__check_cpu_maps(evsel_list);
- 
--	if (perf_pmu__has_hybrid())
--		stat_config.no_merge = true;
--
- 	/*
- 	 * Initialize thread_map with comm names,
- 	 * so we could print it out on output.
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index c588a6b7a8db..87f77016b9cc 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -593,6 +593,18 @@ static void collect_all_aliases(struct perf_stat_config *config, struct evsel *c
- 	}
- }
- 
-+static bool is_uncore(struct evsel *evsel)
-+{
-+	struct perf_pmu *pmu = evsel__find_pmu(evsel);
-+
-+	return pmu && pmu->is_uncore;
-+}
-+
-+static bool hybrid_uniquify(struct evsel *evsel)
-+{
-+	return perf_pmu__has_hybrid() && !is_uncore(evsel);
-+}
-+
- static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
- 			    void (*cb)(struct perf_stat_config *config, struct evsel *counter, void *data,
- 				       bool first),
-@@ -601,7 +613,7 @@ static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
- 	if (counter->merged_stat)
- 		return false;
- 	cb(config, counter, data, true);
--	if (config->no_merge)
-+	if (config->no_merge || hybrid_uniquify(counter))
- 		uniquify_event_name(counter);
- 	else if (counter->auto_merge_stats)
- 		collect_all_aliases(config, counter, cb, data);
+[...]
+>  drivers/firewire/core-device.c            | 4 +---
+[...]
+> diff --git a/drivers/firewire/core-device.c b/drivers/firewire/core-device.c
+> index 68216988391f..90ed8fdaba75 100644
+> --- a/drivers/firewire/core-device.c
+> +++ b/drivers/firewire/core-device.c
+> @@ -187,14 +187,12 @@ static int fw_unit_probe(struct device *dev)
+>  	return driver->probe(fw_unit(dev), unit_match(dev, dev->driver));
+>  }
+>  
+> -static int fw_unit_remove(struct device *dev)
+> +static void fw_unit_remove(struct device *dev)
+>  {
+>  	struct fw_driver *driver =
+>  			container_of(dev->driver, struct fw_driver, driver);
+>  
+>  	driver->remove(fw_unit(dev));
+> -
+> -	return 0;
+>  }
+>  
+>  static int get_modalias(struct fw_unit *unit, char *buffer, size_t buffer_size)
+[...]
 -- 
-2.27.0
-
+Stefan Richter
+-======--=-= -=== --===
+http://arcgraph.de/sr/
