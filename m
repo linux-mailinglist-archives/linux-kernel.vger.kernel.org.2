@@ -2,169 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8C43BF003
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC073BF001
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhGGTHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 15:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbhGGTG7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 15:06:59 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D07DC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 12:04:18 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id r26so6776094lfp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 12:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z/sINFkidd4wbdannETMgW4bElM0CKhLWIVOtap5WLM=;
-        b=SORU3JdYg0sCHUPztl5Sml1zZLI4bEsIExEkumwT+4AQKUur+pkRMK1BnvW1ONXbtZ
-         0JzEmU1KTlaFatTgJ2vPGUxRkVucKmsp/J2D4T/ZZSpSg8TH0kb6bVZpH1hdU3BCe4XC
-         5ojVf2YiAaP69x0d8mlP1aCaCc74oxVkaFMQgc0SAoUVhqoOG1IAeVtKYkAcU8p5JKM2
-         4McElwBzpbXd6Hlmcnzk5MO7+3quCv+izlM/4M4qiPG8lGW6wgnzbtYPxp/d8cRBevUv
-         pQPxZqg524zAEYBuw+P2u1/ew3cyz89dSbil2YS3V6u0ZUBnZWw1bHWSqcbHJHdaVygb
-         CfaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z/sINFkidd4wbdannETMgW4bElM0CKhLWIVOtap5WLM=;
-        b=ntUo/qqxFm/rK7NoN8gLaSL45vFfiCe3Be0/1yraL/xYKJ3agiMzTZALq09t6mDMF7
-         uIJIrzbpsA67OQquJ0jvYDPE2Fvbtr5VWNeUNOSb1Ec2McT0GD9OoKdbIVSqQOcgjeHX
-         ACnDIupGVHGPEninRE+sUg0EKe5RnWVagjIMB/JQIl3ze5Hvttz2UJJl4TlV3PGrw988
-         DLYvNSR/qX6S7TCT7hcD+icIR469VQ2fo3dXwkcNrG7zW5jxK5G6sGtNmPQJmOHPULhQ
-         3VyrWCxkbVVerJ8kX1T7OFnqXcWDHKngRV/bOQKMPkTX+l+iCg0ZgV9+35xHo5RruM9M
-         nJbA==
-X-Gm-Message-State: AOAM5306RroOhf2nSEooLBGkNNpP/k5a4CwyF23PLJohVkkgB8xbHBVy
-        ZXByxUvJINSMaAAZ8G1A8K+jn8PGMvjlyL/X+THpSA==
-X-Google-Smtp-Source: ABdhPJwj8v/8k4dMJbEgclPT/e1K0md1TTfEAQogXLRbuui63uNa2Vfq2tb92w4GYHM9APLPcHe15RYkcfDfDYGcUKg=
-X-Received: by 2002:a2e:b5b5:: with SMTP id f21mr20457637ljn.479.1625684656197;
- Wed, 07 Jul 2021 12:04:16 -0700 (PDT)
+        id S230465AbhGGTGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 15:06:39 -0400
+Received: from mga11.intel.com ([192.55.52.93]:10328 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230004AbhGGTGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 15:06:37 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="206354197"
+X-IronPort-AV: E=Sophos;i="5.84,221,1620716400"; 
+   d="scan'208";a="206354197"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 12:03:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,221,1620716400"; 
+   d="scan'208";a="628119658"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
+  by orsmga005.jf.intel.com with ESMTP; 07 Jul 2021 12:03:52 -0700
+Subject: Re: [PATCH v4 06/10] scsi: ufs: Remove host_sem used in
+ suspend/resume
+To:     Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-8-git-send-email-cang@codeaurora.org>
+ <ed59d61a-6951-2acd-4f89-40f8dc5015e1@intel.com>
+ <9105f328ee6ce916a7f01027b0d28332@codeaurora.org>
+ <a87e5ca5-390f-8ca0-41bf-27cdc70e3316@intel.com>
+ <1b351766a6e40d0df90b3adec964eb33@codeaurora.org>
+ <a654d2ef-b333-1c56-42c6-3d69e9f44bd0@intel.com>
+ <3970b015e444c1f1714c7e7bd4c44651@codeaurora.org>
+ <f1c997f3-66e4-3f1f-08f5-83449b65c397@intel.com>
+ <7c6e2baa3578eb30f2d4bd1696e800eb@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <bd464b9f-b6d5-cd52-7377-c64c0cf933ff@intel.com>
+Date:   Wed, 7 Jul 2021 22:04:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210701235505.1792711-1-ndesaulniers@google.com>
- <CAK8P3a1EfBNxaMbsp+s2BiYHGKPK4NeRR+ugM82jfY43Pq7-Uw@mail.gmail.com>
- <CAKwvOdkgEeQktLgEN7CAh7bTjTN+TQNE27aETgvbXep9=xb1DQ@mail.gmail.com> <YOEFGcTJC6AWFgs1@Ryzen-9-3900X.localdomain>
-In-Reply-To: <YOEFGcTJC6AWFgs1@Ryzen-9-3900X.localdomain>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 7 Jul 2021 12:04:04 -0700
-Message-ID: <CAKwvOdnNWKDGOEqCg5g0GX=zPJce9gBoCLcYs8nayLA7ud2XPQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: drop CROSS_COMPILE for LLVM=1 LLVM_IAS=1
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <7c6e2baa3578eb30f2d4bd1696e800eb@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 3, 2021 at 5:47 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On Fri, Jul 02, 2021 at 11:29:31AM -0700, Nick Desaulniers wrote:
-> > On Fri, Jul 2, 2021 at 4:59 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> > >
-> > > On Fri, Jul 2, 2021 at 1:55 AM 'Nick Desaulniers' via Clang Built
-> > > Linux <clang-built-linux@googlegroups.com> wrote:
-> > > >
-> > > > +ifneq ($(LLVM),)
-> > > > +ifneq ($(LLVM_IAS),)
-> > > > +ifeq ($(CROSS_COMPILE),)
-> > > > +CLANG_TARGET   :=--target=aarch64-linux
-> > > > +CLANG_FLAGS    += $(CLANG_TARGET)
-> > > > +KBUILD_CFLAGS  += $(CLANG_TARGET)
-> > > > +KBUILD_AFLAGS  += $(CLANG_TARGET)
-> > > > +endif
-> > > > +endif
-> > > > +endif
-> > >
-> > > I think only the "CLANG_TARGET   :=--target=aarch64-linux" line should
-> > > go into the
-> > > per-architecture Makefile. It doesn't hurt to just set that
-> > > unconditionally here,
-> > > and then change the CLANG_FLAGS logic in the top-level Makefile to use this
-> > > in place of $(notdir $(CROSS_COMPILE:%-=%)).
-> >
-> > I don't think we can do that. Based on the order the arch/ specific
-> > Makefiles are included, if we don't eagerly add --target to the
-> > KBUILD_{C|A}FLAGS, then cc-option, as-option, and as-instr macros
-> > (defined in scripts/Makefile.compiler) checks in per arch/ Makefiles
-> > may fail erroneously because --target was not set for
-> > KBUILD_{C|A}FLAGS yet.
-> >
-> > Another issue is the order of operations between the top level
-> > Makefile and the per arch/ Makefiles.  The `notdir` block you
-> > reference occurs earlier than the per-arch includes:
-> >
-> >  609 TENTATIVE_CLANG_FLAGS += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> > ...
-> >  648 include $(srctree)/arch/$(SRCARCH)/Makefile
-> >
-> > We would need the opposite order to do what you describe. Reordering
-> > these would effectively be a revert of
-> > commit ae6b289a3789 ("kbuild: Set KBUILD_CFLAGS before incl. arch Makefile")
-> > which I'm not sure we want to do.  But maybe there's another way I'm
-> > not seeing yet?
->
-> Is there any reason we cannot just add this sort of logic to the main
-> Makefile?
->
-> Such as (indentation to emphasis diff):
->
-> ifeq ($(CROSS_COMPILE),)
-> ifneq ($(LLVM),)
-> ifeq ($(LLVM_IAS),1)
->         ifeq ($(ARCH),arm64)
->                 TENTATIVE_CLANG_FLAGS   += --target=aarch64-linux
->         else ifeq ($(ARCH),s390)
->                 TENTATIVE_CLANG_FLAGS   += --target=s390x-linux
->         else ifeq ($(ARCH),x86_64)
->                 TENTATIVE_CLANG_FLAGS   += --target=x86_64-linux
->         else
->                 $(error Specify CROSS_COMPILE or add '--target=' option to Makefile)
->         endif
-> endif
-> endif
-> else
-> TENTATIVE_CLANG_FLAGS   += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> ifeq ($(LLVM_IAS),1)
-> TENTATIVE_CLANG_FLAGS   += -integrated-as
-> else
-> TENTATIVE_CLANG_FLAGS   += -no-integrated-as
-> GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
-> TENTATIVE_CLANG_FLAGS   += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> endif
-> endif
->
-> I know this looks a little cumbersome but it does help us avoid
-> duplication across architecture Makefiles and ordering dependencies.
+On 28/06/21 10:26 am, Can Guo wrote:
+> On 2021-06-24 18:04, Adrian Hunter wrote:
+>> On 24/06/21 9:31 am, Can Guo wrote:
+>>> On 2021-06-24 14:23, Adrian Hunter wrote:
+>>>> On 24/06/21 9:12 am, Can Guo wrote:
+>>>>> On 2021-06-24 13:52, Adrian Hunter wrote:
+>>>>>> On 24/06/21 5:16 am, Can Guo wrote:
+>>>>>>> On 2021-06-23 22:30, Adrian Hunter wrote:
+>>>>>>>> On 23/06/21 10:35 am, Can Guo wrote:
+>>>>>>>>> To protect system suspend/resume from being disturbed by error handling,
+>>>>>>>>> instead of using host_sem, let error handler call lock_system_sleep() and
+>>>>>>>>> unlock_system_sleep() which achieve the same purpose. Remove the host_sem
+>>>>>>>>> used in suspend/resume paths to make the code more readable.
+>>>>>>>>>
+>>>>>>>>> Suggested-by: Bart Van Assche <bvanassche@acm.org>
+>>>>>>>>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>>>>>>>>> ---
+>>>>>>>>>  drivers/scsi/ufs/ufshcd.c | 12 +++++++-----
+>>>>>>>>>  1 file changed, 7 insertions(+), 5 deletions(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>>>>>>>>> index 3695dd2..a09e4a2 100644
+>>>>>>>>> --- a/drivers/scsi/ufs/ufshcd.c
+>>>>>>>>> +++ b/drivers/scsi/ufs/ufshcd.c
+>>>>>>>>> @@ -5907,6 +5907,11 @@ static void ufshcd_clk_scaling_suspend(struct ufs_hba *hba, bool suspend)
+>>>>>>>>>
+>>>>>>>>>  static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+>>>>>>>>>  {
+>>>>>>>>> +    /*
+>>>>>>>>> +     * It is not safe to perform error handling while suspend or resume is
+>>>>>>>>> +     * in progress. Hence the lock_system_sleep() call.
+>>>>>>>>> +     */
+>>>>>>>>> +    lock_system_sleep();
+>>>>>>>>
+>>>>>>>> It looks to me like the system takes this lock quite early, even before
+>>>>>>>> freezing tasks, so if anything needs the error handler to run it will
+>>>>>>>> deadlock.
+>>>>>>>
+>>>>>>> Hi Adrian,
+>>>>>>>
+>>>>>>> UFS/hba system suspend/resume does not invoke or call error handling in a
+>>>>>>> synchronous way. So, whatever UFS errors (which schedules the error handler)
+>>>>>>> happens during suspend/resume, error handler will just wait here till system
+>>>>>>> suspend/resume release the lock. Hence no worries of deadlock here.
+>>>>>>
+>>>>>> It looks to me like the state can change to UFSHCD_STATE_EH_SCHEDULED_FATAL
+>>>>>> and since user processes are not frozen, nor file systems sync'ed, everything
+>>>>>> is going to deadlock.
+>>>>>> i.e.
+>>>>>> I/O is blocked waiting on error handling
+>>>>>> error handling is blocked waiting on lock_system_sleep()
+>>>>>> suspend is blocked waiting on I/O
+>>>>>>
+>>>>>
+>>>>> Hi Adrian,
+>>>>>
+>>>>> First of all, enter_state(suspend_state_t state) uses mutex_trylock(&system_transition_mutex).
+>>>>
+>>>> Yes, in the case I am outlining it gets the mutex.
+>>>>
+>>>>> Second, even that happens, in ufshcd_queuecommand(), below logic will break the cycle, by
+>>>>> fast failing the PM request (below codes are from the code tip with this whole series applied).
+>>>>
+>>>> It won't get that far because the suspend will be waiting to sync filesystems.
+>>>> Filesystems will be waiting on I/O.
+>>>> I/O will be waiting on the error handler.
+>>>> The error handler will be waiting on system_transition_mutex.
+>>>> But system_transition_mutex is already held by PM core.
+>>>
+>>> Hi Adrian,
+>>>
+>>> You are right.... I missed the action of syncing filesystems...
+>>>
+>>> Using back host_sem in suspend_prepare()/resume_complete() won't have this
+>>> problem of deadlock, right?
+>>
+>> I am not sure, but what was problem that the V3 patch was fixing?
+>> Can you give an example?
+> 
+> V3 was moving host_sem from wl_system_suspend/resume() to
+> ufshcd_suspend_prepare()/ufshcd_resume_complete(). It is to
+> make sure error handling does not run concurrenly with system
+> PM, since error handling is recovering/clearing runtime PM
+> errors of all the scsi devices under hba (in patch #8). Having the
+> error handling doing so (in patch 8) is because runtime PM framework
+> may save the runtime errors of the supplier to one or more consumers (
+> unlike the children - parent relationship), for example if wlu resume
+> fails, sda and/or other scsi devices may save the resume error, then
+> they will be left runtime suspended permanently.
 
-Yeah, ok.
+Sorry for the slow reply.  I was going to do some more investigation but
+never found time.
 
-I like the use of `include` to compartmentalize the top level Makefile
-further.  We can move this whole block of LLVM related flag handling
-into something under scripts, then add this block and it doesn't look
-too bad IMO.  Masahiro, are you ok with that?  If so, I'd break this
-into 2 patches:
-1. moving this block of existing code into a new file.
-2. adding the CROSS_COMPILE functionality.
+I was wondering if it would be simpler to do the error recovery for
+wl_system_suspend/resume() before exiting wl_system_suspend/resume().
 
-See https://groups.google.com/g/clang-built-linux/c/s-voh6WQFxM for
-the gist of what I was thinking (though not broken into 2 patches yet,
-just testing that it works; it does).
-
-This approach will collide with Miguel's series in -next.  Should I
-base the patches on mainline, or linux-kbuild, then have Miguel rebase
-his patches on that or what?
--- 
-Thanks,
-~Nick Desaulniers
+Then it would be possible to do something along the lines:
+	- prevent runtime suspend while the error handler is outstanding
+	- at suspend, block queuing of the error handler work and flush it
+	- at resume, allow queuing of the error handler work
