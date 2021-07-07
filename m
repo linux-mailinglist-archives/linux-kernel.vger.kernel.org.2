@@ -2,72 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A8B3BE989
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDCC3BE98B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhGGORh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 10:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231724AbhGGORg (ORCPT
+        id S231975AbhGGOSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 10:18:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26998 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231809AbhGGOSe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:17:36 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DF8C061574;
-        Wed,  7 Jul 2021 07:14:54 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so2359296oti.2;
-        Wed, 07 Jul 2021 07:14:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VYHMBVTtZYFBd/135j2lN/KDcFhv4G/4LIniAenzAK4=;
-        b=Q4AfkH51ZhrG1cQIo/cRVPTlOKmEtQuI+N9g21IyleEslFmnLBU003OxU+PxBhpJER
-         eF7NGn5JG2nGEeVSpVYnsek6sIygk9FY6Kg+4PC951Ab8XBTw+R36z4kNlwNDp1MNCt1
-         ZHH47w2nEKLVkktCgIBsmGxZktdeFhl41PRjBadTf2ckb/DX7T2TBgKh7WEJ/oonqw44
-         1Uk0UPv9wSc2Eg0nf6Xyp/K/c7N1Sfq2vbna2jYcNzoQYL6M52dEPcUF7NIz+1Eo/D2D
-         uCrzIMToxjaiJEDObup7F3ZP060shAZ0t3xMEze6H++DAwOkVVET2cTT7Cnp8B2vg4Ib
-         qgPg==
+        Wed, 7 Jul 2021 10:18:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625667354;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v7TkRYJsDfarqXSn4EBmx0Hd12Melpzh3GqncamrRv0=;
+        b=eL78irsKPKOtKpi7eK3/ww4MDKFXjWxdCvd61LfSaS6Bp05l497zI+5SMUVGG5/wkGaThi
+        J6CyvTXtdehEfcFb3j9rwkS7TDV2V7h2v2E/bZDSGyDUu2IOojS2kGhaONjp2sI/G729nb
+        lTjSPjMJUPjwl4hmMQNpCeNLxDpNvsA=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-586-xO1yG2wHN1aZAaRZ-wNq0A-1; Wed, 07 Jul 2021 10:15:52 -0400
+X-MC-Unique: xO1yG2wHN1aZAaRZ-wNq0A-1
+Received: by mail-ej1-f70.google.com with SMTP id gz14-20020a170907a04eb02904d8b261b40bso612919ejc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 07:15:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=VYHMBVTtZYFBd/135j2lN/KDcFhv4G/4LIniAenzAK4=;
-        b=M2POPUYA8hp+DPuvrj7gNUixEb0votkIiAXEd/KpXxf63lPnW5rqC/MjAVaPhTHOvp
-         u4J7MYfCICKO90vwnjlK7mdNaDiXjS5JWDSjdFHWgjXqSMAkBnTG6pNKcWCjEr8yaNXd
-         Ji/lUWXSUhiPS+xOPfw7mGSJi2zVxrEylKzxCMVWWP5/UAOn27ZAALN2B3VnxBr4KDKB
-         nPo8qm+hUZtIfkcK4i2CsgP0ntNSoXGmuhjMDcsFMzxSk/yeJ+PGJtKTqtJhm9MHFoqv
-         v+nByyi5DXI721x4ntEbS/+h1qZGEY4wqVLHaYXcbLFLL7SDhF5HIaCnBCYVbl7qhPIk
-         Scag==
-X-Gm-Message-State: AOAM531bEppVskNMKZMHZRkpfTZnDLHEKDVpX/gGS/ykPmPyyPwyOOmA
-        CvfqkBVH5/O1ff4r+NerdLY=
-X-Google-Smtp-Source: ABdhPJwALQ5t6M/bvhaaGP9ThhVgUYTCYrXCYj+u53vggFNRliXGNh2rQDBI3wogrSTMMryuwSRLBg==
-X-Received: by 2002:a9d:7ad7:: with SMTP id m23mr20455538otn.138.1625667293468;
-        Wed, 07 Jul 2021 07:14:53 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j11sm85286otr.6.2021.07.07.07.14.51
+        bh=v7TkRYJsDfarqXSn4EBmx0Hd12Melpzh3GqncamrRv0=;
+        b=O61XtTrFAWrjsySZ+qxArt4h2MCPsEcAet96F+QOOjijciJIaokb26MtKteii0fWCL
+         +5XPUm7Adj7rWvtiHe9IMgUCFJ+8PqHmns0Keyf3+UvesF1I30SBtoSOnzjRrCyKW2A0
+         jX2e9JHkti+h91fACVVdy6OapjmyX2y+fJgA0BVwThKidw6e6OCVK6gbv46DE9c6oRE7
+         sv9KHrQREe0X4DUhj8TgOXDmKTAj1lFx4Wmf9OqcyimlqqPxL05aTpcJRtfAmmUeSIVJ
+         qPn3anjg38r1xOUpQN7wTjvX/MOyygkWe2NA0E++ZQGR7+tGUwbLAfCX0dDSH9U36CLv
+         JwTQ==
+X-Gm-Message-State: AOAM5309SEXm02XwtLOJHQ+4fqnnNd/hjn5+WVfCbmExKxj5/orZ+pCI
+        6GyeI4L4xKQAVW4djOb8k6Ei9By/03RJsNyHpgAuKzB+QBjpQVI3v/SPrAIHlIZnnopYHr9xxpr
+        C5co7/+nDtJraDxrzbACeEP/W
+X-Received: by 2002:a17:906:842:: with SMTP id f2mr24646141ejd.460.1625667351672;
+        Wed, 07 Jul 2021 07:15:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxogJG5EZkoMMu8maydXHcDJhSX3aRBwefzb6CXUOxZgETiNeOxmsHGUhIROgdGHhgQ760dLw==
+X-Received: by 2002:a17:906:842:: with SMTP id f2mr24646105ejd.460.1625667351434;
+        Wed, 07 Jul 2021 07:15:51 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id zp1sm6983114ejb.92.2021.07.07.07.15.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 07:14:52 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [tip: sched/core] sched/core: Initialize the idle task with
- preemption disabled
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-References: <20210512094636.2958515-1-valentin.schneider@arm.com>
- <162081815405.29796.14574924529325899839.tip-bot2@tip-bot2>
- <20210706194456.GA1823793@roeck-us.net> <87fswr6lqv.mognet@arm.com>
- <20210707120305.GB115752@lothringen> <87czru727k.mognet@arm.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <c30097f3-63b4-6fa0-a369-8f4e20ee1040@roeck-us.net>
-Date:   Wed, 7 Jul 2021 07:14:45 -0700
+        Wed, 07 Jul 2021 07:15:50 -0700 (PDT)
+Subject: Re: [PATCH 3/4] KVM: x86: WARN and reject loading KVM if NX is
+ supported but not enabled
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, regressions@lists.linux.dev
+References: <20210615164535.2146172-1-seanjc@google.com>
+ <20210615164535.2146172-4-seanjc@google.com> <YNUITW5fsaQe4JSo@google.com>
+ <ad85c5db-c780-bd13-c6ce-e3478838acbe@redhat.com>
+ <CA+G9fYsrQo3FvtW1VhXocY2xkaPLNADA4S5f=fBM5uqa=C5LYg@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <40623553-310a-68f7-2981-f8ea9c7bd5b0@redhat.com>
+Date:   Wed, 7 Jul 2021 16:15:49 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <87czru727k.mognet@arm.com>
+In-Reply-To: <CA+G9fYsrQo3FvtW1VhXocY2xkaPLNADA4S5f=fBM5uqa=C5LYg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -75,38 +80,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/21 5:11 AM, Valentin Schneider wrote:
-> On 07/07/21 14:03, Frederic Weisbecker wrote:
->> On Wed, Jul 07, 2021 at 12:55:20AM +0100, Valentin Schneider wrote:
->>> Thanks for the report.
->>>
->>> So somehow the init task ends up with a non-zero preempt_count()? Per
->>> FORK_PREEMPT_COUNT we should exit __ret_from_fork() with a zero count, are
->>> you hitting the WARN_ONCE() in finish_task_switch()?
->>>
->>> Does CONFIG_DEBUG_PREEMPT=y yield anything interesting?
->>>
->>> I can't make sense of this right now, but it's a bit late :) I'll grab some
->>> toolchain+qemu tomorrow and go poke at it (and while at it I need to do the
->>> same with powerpc).
+On 07/07/21 14:09, Naresh Kamboju wrote:
+> On Fri, 25 Jun 2021 at 14:35, Paolo Bonzini <pbonzini@redhat.com> wrote:
 >>
->> One possible issue is that s390's init_idle_preempt_count() doesn't apply on the
->> target idle task but on the _current_ CPU. And since smp_init() ->
->> idle_threads_init() is actually called remotely, we are overwriting the current
->> CPU preempt_count() instead of the target one.
+>> On 25/06/21 00:33, Sean Christopherson wrote:
+>>> On Tue, Jun 15, 2021, Sean Christopherson wrote:
+>>>> WARN if NX is reported as supported but not enabled in EFER.  All flavors
+>>>> of the kernel, including non-PAE 32-bit kernels, set EFER.NX=1 if NX is
+>>>> supported, even if NX usage is disable via kernel command line.
+>>>
+>>> Ugh, I misread .Ldefault_entry in head_32.S, it skips over the entire EFER code
+>>> if PAE=0.  Apparently I didn't test this with non-PAE paging and EPT?
+>>>
+>>> Paolo, I'll send a revert since it's in kvm/next, but even better would be if
+>>> you can drop the patch :-)  Lucky for me you didn't pick up patch 4/4 that
+>>> depends on this...
+>>>
+>>> I'll revisit this mess in a few weeks.
+>>
+>> Rather, let's keep this, see if anyone complains and possibly add a
+>> "depends on X86_PAE || X86_64" to KVM.
 > 
-> Indeed, this becomes quite obvious when tracing the preemption count
-> changes. This also means that s390 relied on the idle_thread_get() from the
-> hotplug machinery to properly setup the preempt count, rather than
-> init_idle_preempt_count() - which is quite yuck.
+> [ please ignore if this is already reported ]
 > 
-> I'll write a patch for that and likely one for powerpc.
-> 
+> The following kernel warning noticed while booting linus master branch and
+> Linux next 20210707 tag on i386 kernel booting on x86_64 machine.
 
-Can you reproduce the problem with a powerpc qemu emulation ?
-If so, how do you reproduce it there ? Reason for asking is that I don't see
-the problem with any of my powerpc emulations, and I would like to add test
-case(s) if possible.
+Ok, so the "depends on" is needed.  Let's add it, I'm getting back to 
+KVM work and will send the patch today or tomorrow.
 
-Thanks,
-Guenter
+Paolo
+
