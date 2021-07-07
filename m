@@ -2,77 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4DE3BE0C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 04:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4243BE0C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 04:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhGGCLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 22:11:15 -0400
-Received: from mga09.intel.com ([134.134.136.24]:53335 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229949AbhGGCLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 22:11:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="209182628"
-X-IronPort-AV: E=Sophos;i="5.83,330,1616482800"; 
-   d="scan'208";a="209182628"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 19:08:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,330,1616482800"; 
-   d="scan'208";a="497468422"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by fmsmga002.fm.intel.com with ESMTP; 06 Jul 2021 19:08:33 -0700
-Date:   Wed, 7 Jul 2021 10:03:09 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] FPGA Manager address unused variable warnings
-Message-ID: <20210707020309.GA12358@yilunxu-OptiPlex-7050>
-References: <20210702035404.397853-1-mdf@kernel.org>
- <d0088161-ec7f-4ff4-d5c1-c0746ca17283@redhat.com>
+        id S230048AbhGGCG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 22:06:28 -0400
+Received: from smtprelay0165.hostedemail.com ([216.40.44.165]:56482 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229949AbhGGCG2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 22:06:28 -0400
+Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id D7924837F24F;
+        Wed,  7 Jul 2021 02:03:47 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id A57C5D1519;
+        Wed,  7 Jul 2021 02:03:46 +0000 (UTC)
+Message-ID: <b1b103f7ede65a2a31054bba817fec858d749129.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: Don't show signatures in git-log
+From:   Joe Perches <joe@perches.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>, linux-kernel@vger.kernel.org
+Cc:     apw@canonical.com, dwaipayanray1@gmail.com,
+        lukas.bulwahn@gmail.com, kernel-team@android.com,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Date:   Tue, 06 Jul 2021 19:03:45 -0700
+In-Reply-To: <20210706223029.2377293-1-palmer@dabbelt.com>
+References: <20210706223029.2377293-1-palmer@dabbelt.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d0088161-ec7f-4ff4-d5c1-c0746ca17283@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.40
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: A57C5D1519
+X-Stat-Signature: r5wzhgqp5fjt4pef8sxim16xw8f8sasj
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/E9W/apzvJshL5TtOqRHykwe+qdVhVILA=
+X-HE-Tag: 1625623426-211901
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 09:28:37AM -0700, Tom Rix wrote:
+On Tue, 2021-07-06 at 15:30 -0700, Palmer Dabbelt wrote:
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
 > 
-> On 7/1/21 8:54 PM, Moritz Fischer wrote:
-> > This patchset addresses a handful of warnings as result of_match_ids
-> > being not properly wrapped in #ifdef CONFIG_OF.
-> > 
-> > Moritz Fischer (4):
-> >    fpga: altera-freeze-bridge: Address warning about unused variable
-> >    fpga: xiilnx-spi: Address warning about unused variable
-> >    fpga: xilinx-pr-decoupler: Address warning about unused variable
-> >    fpga: zynqmp-fpga: Address warning about unused variable
-> > 
-> >   drivers/fpga/altera-freeze-bridge.c | 2 ++
-> >   drivers/fpga/xilinx-pr-decoupler.c  | 2 ++
-> >   drivers/fpga/xilinx-spi.c           | 2 ++
-> >   drivers/fpga/zynqmp-fpga.c          | 3 ++-
-> >   4 files changed, 8 insertions(+), 1 deletion(-)
+> I have git-log setup to show signatures.  I've recently noticed this
+> breaking checkpatch error messages, which show something like
 > 
-> I am not seeing these warnings, but it is still worth doing.
+>     ERROR: Please use git commit description style 'commit <12+ chars of sha1> ("<title line>")' - ie: 'commit gpg: Signatu (":05 PM PDT")'
+>     #8:
+>     the module region by 3a02764c372c ("riscv: Ensure BPF_JIT_REGION_START
 > 
-> I think a few more files need this change.
+> instead of something more helpful, like
 > 
-> altera-ps-spi.c, dfl-n3000-nios.c, altera-hps2fpga.c, stratix10-soc.c,
-> socfpga-a10.c, altera-fpga2sdram.c
+>     ERROR: Please use git commit description style 'commit <12+ chars of sha1> ("<title line>")' - ie: 'commit 3a02764c372c ("riscv: Ensure BPF_JIT_REGION_START aligned with PMD size")'
+>     #8:
+>     the module region by 3a02764c372c ("riscv: Ensure BPF_JIT_REGION_START
+> 
+> which shows up with this patch.  I'm not sure if these just started
+> showing up for if I just noticed them or if they've been around forever.
+> 
+> I've only found it necessary to add --no-show-signature to the git-log
+> invocation in git_commit_info(), but a cursory glance indicates that the
+> other two invocations may suffer from similar problems so I've just
+> added it everywhere.
 
-dfl-n3000-nios is not using of_device_id, and doesn't need the change.
+Perhaps this should be in some standardized $git_log_options argument
+so that if there are more of these no-<foo> that need to be added, like
+for instance, --no-notes, it'd be easier to add everywhere.
 
-Thanks,
-Yilun
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -1103,7 +1103,7 @@ sub seed_camelcase_includes {
+>  	$camelcase_seeded = 1;
+
+somwhere above:
+
+our $git_log_no_opts = '--no-show-signature --no-color"
 
 > 
-> Not needed for
+>  	if (-e "$gitroot") {
+> -		my $git_last_include_commit = `${git_command} log --no-merges --pretty=format:"%h%n" -1 -- include`;
+> +		my $git_last_include_commit = `${git_command} log --no-show-signature --no-merges --pretty=format:"%h%n" -1 -- include`;
+
+So this could be:
+
+		my $git_last_include_commit = `${git_command} log $git_log_no_opts --no-merges --pretty=format:"%h%n" -1 -- include`;
+
+>  		chomp $git_last_include_commit;
+>  		$camelcase_cache = ".checkpatch-camelcase.git.$git_last_include_commit";
+>  	} else {
+> @@ -1165,7 +1165,7 @@ sub git_commit_info {
+>  
+>  	return ($id, $desc) if ((which("git") eq "") || !(-e "$gitroot"));
+>  
 > 
-> altera-pr-ip-core-plat.c and ice40-spi.c
+> -	my $output = `${git_command} log --no-color --format='%H %s' -1 $commit 2>&1`;
+> +	my $output = `${git_command} log --no-color --no-show-signature --format='%H %s' -1 $commit 2>&1`;
+
+	my $output = `${git_command} log $git_log_no_opts --format='%H %s' -1 $commit 2>&1`;
+
+etc...
+
+>  	$output =~ s/^\s*//gm;
+>  	my @lines = split("\n", $output);
 > 
-> These have depends on OF in Kconfig.
-> 
-> Tom
+> @@ -1215,7 +1215,7 @@ if ($git) {
+>  		} else {
+>  			$git_range = "-1 $commit_expr";
+>  		}
+> -		my $lines = `${git_command} log --no-color --no-merges --pretty=format:'%H %s' $git_range`;
+> +		my $lines = `${git_command} log --no-show-signature --no-color --no-merges --pretty=format:'%H %s' $git_range`;
+
+		my $lines = `${git_command} log $git_log_no_opts --no-merges --pretty=format:'%H %s' $git_range`;
+
+>  		foreach my $line (split(/\n/, $lines)) {
+>  			$line =~ /^([0-9a-fA-F]{40,40}) (.*)$/;
+>  			next if (!defined($1) || !defined($2));
+
+
