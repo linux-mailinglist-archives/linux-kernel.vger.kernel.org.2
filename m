@@ -2,186 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBCE3BEFA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185C13BEFC2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbhGGSqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:46:07 -0400
-Received: from mail-pf1-f172.google.com ([209.85.210.172]:33762 "EHLO
-        mail-pf1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbhGGSqG (ORCPT
+        id S232666AbhGGSr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230431AbhGGSr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:46:06 -0400
-Received: by mail-pf1-f172.google.com with SMTP id 145so3080782pfv.0;
-        Wed, 07 Jul 2021 11:43:25 -0700 (PDT)
+        Wed, 7 Jul 2021 14:47:27 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F37CC061574;
+        Wed,  7 Jul 2021 11:44:46 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id s6so166104qkc.8;
+        Wed, 07 Jul 2021 11:44:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=K9NP7NLwWkcfALoFIYmgROqgWj6k4wQiI1w4X/3676E=;
+        b=qC6cTiUNt4PvLCjzZUC7QC6IC7L+DJAXF5je2GSApBEjhocKpQ0oVD+MNGxfa4ftwS
+         02Wk54BymQcPUi/4myEhTbYW4MKlv5vk/DOT3ZP5wfzcTyz9kaIb572KOHmoSPj3oFbk
+         zZTpKvURz/5BzV7T64Fhc+i5Izgs0QhwEkJQIFfRXUj0oAO43ZvAi/LZbQQCCnByzfH8
+         lbbFbCevoVsobUoDGl4ECgKEFXKRDEA2m6MC+WNUnLLTdyQqqfWvp+p1JY0ljwauSR8K
+         Xb5gFqVUg8xblpgk5IevMfky4mVtH1e2snFkAZpmCk2o/AXLfkp4k31DrscLeNjujJuE
+         vN4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/pbkoTI7CwQStSb9kTtVA+aCTwErRXZb2NE0miM8f/c=;
-        b=ll8VXd1P9p4hbpFyE02hVISGaIwTmq0OjTuYVy5N7EfotYcdvjI315U2Gx3eCeYq46
-         rG+cKp+tnpr66mTqJ4feJ1cD2HcwDsn3n2vFT5N5X6MrpxjM1IX2AZE4vvN0Qgw7ihul
-         vOCL5hll4l19ryCXCkD87K+D88FsIMw83DfCSvG9nCpmPr3jw3X1Sx0lI3KoiI8vk0i+
-         vvHKyL3CQD+MmcysN1QmEaBF7ZsYnZ3NiVDrh6nQiqQMb6VgpxuRAHgLgoj1HNpnUDiV
-         +zkb/X68SyXjxTRmKY9W5EI7XuJNpL5L0t9bcmWO6lTMOB+XU9npTiVRKECls1RZVO8j
-         /KIw==
-X-Gm-Message-State: AOAM530Yj1OceSTE4cT6qznF2xXb89bW5dAVu1/xSPzkHYnHIMBoBFEh
-        VcJIcvLvZn+/3dkyFbpcQ6I=
-X-Google-Smtp-Source: ABdhPJxH2e3S6YzGnWMt5ZZhyuhsb6pGf9a09rRfHIk4m3v8/OZ5x66UyovLLi+S3iSyvkveUyL5/Q==
-X-Received: by 2002:aa7:84cb:0:b029:312:bd08:246f with SMTP id x11-20020aa784cb0000b0290312bd08246fmr26598502pfn.13.1625683404969;
-        Wed, 07 Jul 2021 11:43:24 -0700 (PDT)
-Received: from localhost ([191.96.120.45])
-        by smtp.gmail.com with ESMTPSA id j4sm7292297pjv.7.2021.07.07.11.43.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 11:43:24 -0700 (PDT)
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     gregkh@linuxfoundation.org, tglx@linutronix.de,
-        akpm@linux-foundation.org, shuah@kernel.org
-Cc:     rafael@kernel.org, rgoldwyn@suse.com, kuno@frob.nl,
-        fontana@sharpeleven.org, Ciaran.Farrell@suse.com,
-        Christopher.DeNicolo@suse.com, hch@lst.de, corbet@lwn.net,
-        linux@leemhuis.info, ast@kernel.org, andriin@fb.com,
-        daniel@iogearbox.net, atenart@kernel.org, alobakin@pm.me,
-        weiwan@google.com, ap420073@gmail.com, tj@kernel.org,
-        jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
-        mcgrof@kernel.org, axboe@kernel.dk, mbenes@suse.com,
-        jpoimboe@redhat.com, keescook@chromium.org, jikos@kernel.org,
-        rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, linux-spdx@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        copyleft-next@lists.fedorahosted.org
-Subject: [PATCH 2/2] testing: use the copyleft-next-0.3.1 SPDX tag
-Date:   Wed,  7 Jul 2021 11:43:10 -0700
-Message-Id: <20210707184310.3624761-3-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210707184310.3624761-1-mcgrof@kernel.org>
-References: <20210707184310.3624761-1-mcgrof@kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=K9NP7NLwWkcfALoFIYmgROqgWj6k4wQiI1w4X/3676E=;
+        b=nJgr6SbeXnqYIWLzeDWCRJD6mRA/IY16OTVmnllmxbP9CTsfMf1h8zkNfESjY9ubXq
+         0gHvXmZYu0PA+e6tC/CENqgCjnRQYGKhXVQX8nR12JfJyRG/pxyh/pdMIC+l41EGqkI6
+         OQNzJZQxoioBkE31Zl3XOjFnkEQOQmJO1dredNO167CJi8Iql/WZXPMLByX3WUOEVNLc
+         moOdD3ltmDLhqs+9p3kdscJIkAFH0L5c8+zPUgJOcIIwCxcADYvdN43YGdnkQ3nYu8Dc
+         cyrknWMQpVUyYeZl9JQ1zmEl3pXP5+a8g90AO1qOg0bbgf4pC5lvFGmXqi8kl6VfwcZp
+         WKRQ==
+X-Gm-Message-State: AOAM530CmPeNvwi43IO1rUEpJ5P9T9xlyIA7N/hX0pbiYe5d3WIoLJqN
+        /c0RmGOEj05K4IZzkowsOGQ=
+X-Google-Smtp-Source: ABdhPJzjmkHNTPtRsEoRcvvh1kDxyaX4Rte6zSR7Famg52nqIPyXOBPMfXU+DhOr8BTyTIn3DjRmdA==
+X-Received: by 2002:a05:620a:1aa5:: with SMTP id bl37mr15895887qkb.200.1625683485662;
+        Wed, 07 Jul 2021 11:44:45 -0700 (PDT)
+Received: from localhost ([207.98.216.60])
+        by smtp.gmail.com with ESMTPSA id j141sm3789725qke.33.2021.07.07.11.44.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 11:44:45 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 11:44:44 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andreas Schwab <schwab@suse.de>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-audit/audit-kernel 
+        <reply+ADSN7RXLQ62LNLD2MK5HFHF65GIU3EVBNHHDPMBXHU@reply.github.com>,
+        linux-audit/audit-kernel <audit-kernel@noreply.github.com>,
+        Mention <mention@noreply.github.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        bobo.shaobowang@huawei.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Alexander Graf <agraf@suse.de>,
+        Alexey Klimov <klimov.linux@gmail.com>,
+        Andrew Pinski <pinskia@gmail.com>,
+        Bamvor Zhangjian <bamv2005@gmail.com>,
+        Chris Metcalf <cmetcalf@mellanox.com>,
+        Christoph Muellner <christoph.muellner@theobroma-systems.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Florian Weimer <fweimer@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        James Hogan <james.hogan@imgtec.com>,
+        James Morse <james.morse@arm.com>,
+        Joseph Myers <joseph@codesourcery.com>,
+        Lin Yongting <linyongting@huawei.com>,
+        Manuel Montezelo <manuel.montezelo@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Nathan_Lynch <Nathan_Lynch@mentor.com>,
+        Philipp Tomsich <philipp.tomsich@theobroma-systems.com>,
+        Prasun Kapoor <Prasun.Kapoor@caviumnetworks.com>,
+        Ramana Radhakrishnan <ramana.gcc@googlemail.com>,
+        Steve Ellcey <sellcey@caviumnetworks.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        Paul Moore <paul@paul-moore.com>
+Subject: Re: [linux-audit/audit-kernel] BUG: audit_classify_syscall() fails
+ to properly handle 64-bit syscalls when executing as 32-bit application on
+ ARM (#131)
+Message-ID: <YOX2HBSoltXDGuu+@yury-ThinkPad>
+References: <linux-audit/audit-kernel/issues/131@github.com>
+ <linux-audit/audit-kernel/issues/131/872191450@github.com>
+ <YN9V/qM0mxIYXt3h@yury-ThinkPad>
+ <mvm7di59gtx.fsf@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <mvm7di59gtx.fsf@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Two selftests drivers exist under the copyleft-next license.
-These drivers were added prior to SPDX practice taking full swing
-in the kernel. Now that we have an SPDX tag for copylef-next-0.3.1
-documented, embrace it and remove the boiler plate.
+On Mon, Jul 05, 2021 at 12:48:42PM +0200, Andreas Schwab wrote:
+> On Jul 02 2021, Yury Norov wrote:
+> 
+> > At least Marvell, Samsung, Huawei, Cisco and Weiyuchen's employer
+> > actively use and develop arm64/ilp32.
+> 
+> This is good to know.  Where can I get the uptodate kernel patches for
+> ILP32?
+> 
+> Andreas.
 
-Cc: Goldwyn Rodrigues <rgoldwyn@suse.com>
-Cc: Kuno Woudt <kuno@frob.nl>
-Cc: Richard Fontana <fontana@sharpeleven.org>
-Cc: copyleft-next@lists.fedorahosted.org
-Cc: Ciaran Farrell <Ciaran.Farrell@suse.com>
-Cc: Christopher De Nicolo <Christopher.DeNicolo@suse.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Thorsten Leemhuis <linux@leemhuis.info>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- lib/test_kmod.c                          | 12 +-----------
- lib/test_sysctl.c                        | 12 +-----------
- tools/testing/selftests/kmod/kmod.sh     | 13 +------------
- tools/testing/selftests/sysctl/sysctl.sh | 12 +-----------
- 4 files changed, 4 insertions(+), 45 deletions(-)
+The latest kernel supported by me is 5.2:
+https://github.com/norov/linux/commits/ilp32-5.2
 
-diff --git a/lib/test_kmod.c b/lib/test_kmod.c
-index ce1589391413..d62afd89dc63 100644
---- a/lib/test_kmod.c
-+++ b/lib/test_kmod.c
-@@ -1,18 +1,8 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR copyleft-next-0.3.1
- /*
-  * kmod stress test driver
-  *
-  * Copyright (C) 2017 Luis R. Rodriguez <mcgrof@kernel.org>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of the GNU General Public License as published by the Free
-- * Software Foundation; either version 2 of the License, or at your option any
-- * later version; or, when distributed separately from the Linux kernel or
-- * when incorporated into other software packages, subject to the following
-- * license:
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of copyleft-next (version 0.3.1 or later) as published
-- * at http://copyleft-next.org/.
-  */
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
-diff --git a/lib/test_sysctl.c b/lib/test_sysctl.c
-index 3750323973f4..9e5bd10a930a 100644
---- a/lib/test_sysctl.c
-+++ b/lib/test_sysctl.c
-@@ -1,18 +1,8 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR copyleft-next-0.3.1
- /*
-  * proc sysctl test driver
-  *
-  * Copyright (C) 2017 Luis R. Rodriguez <mcgrof@kernel.org>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of the GNU General Public License as published by the Free
-- * Software Foundation; either version 2 of the License, or at your option any
-- * later version; or, when distributed separately from the Linux kernel or
-- * when incorporated into other software packages, subject to the following
-- * license:
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of copyleft-next (version 0.3.1 or later) as published
-- * at http://copyleft-next.org/.
-  */
- 
- /*
-diff --git a/tools/testing/selftests/kmod/kmod.sh b/tools/testing/selftests/kmod/kmod.sh
-index afd42387e8b2..7189715d7960 100755
---- a/tools/testing/selftests/kmod/kmod.sh
-+++ b/tools/testing/selftests/kmod/kmod.sh
-@@ -1,18 +1,7 @@
- #!/bin/bash
--#
-+# SPDX-License-Identifier: GPL-2.0-or-later OR copyleft-next-0.3.1
- # Copyright (C) 2017 Luis R. Rodriguez <mcgrof@kernel.org>
- #
--# This program is free software; you can redistribute it and/or modify it
--# under the terms of the GNU General Public License as published by the Free
--# Software Foundation; either version 2 of the License, or at your option any
--# later version; or, when distributed separately from the Linux kernel or
--# when incorporated into other software packages, subject to the following
--# license:
--#
--# This program is free software; you can redistribute it and/or modify it
--# under the terms of copyleft-next (version 0.3.1 or later) as published
--# at http://copyleft-next.org/.
--
- # This is a stress test script for kmod, the kernel module loader. It uses
- # test_kmod which exposes a series of knobs for the API for us so we can
- # tweak each test in userspace rather than in kernelspace.
-diff --git a/tools/testing/selftests/sysctl/sysctl.sh b/tools/testing/selftests/sysctl/sysctl.sh
-index 19515dcb7d04..2046c603a4d4 100755
---- a/tools/testing/selftests/sysctl/sysctl.sh
-+++ b/tools/testing/selftests/sysctl/sysctl.sh
-@@ -1,16 +1,6 @@
- #!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0-or-later OR copyleft-next-0.3.1
- # Copyright (C) 2017 Luis R. Rodriguez <mcgrof@kernel.org>
--#
--# This program is free software; you can redistribute it and/or modify it
--# under the terms of the GNU General Public License as published by the Free
--# Software Foundation; either version 2 of the License, or at your option any
--# later version; or, when distributed separately from the Linux kernel or
--# when incorporated into other software packages, subject to the following
--# license:
--#
--# This program is free software; you can redistribute it and/or modify it
--# under the terms of copyleft-next (version 0.3.1 or later) as published
--# at http://copyleft-next.org/.
- 
- # This performs a series tests against the proc sysctl interface.
- 
--- 
-2.27.0
+I know about working ports of ILP32 on 5.7 and 5.10, but didn't see
+the code and testing results. Hopefully Paul Moore and Weiyuchen will
+share more details.
 
+Yury
