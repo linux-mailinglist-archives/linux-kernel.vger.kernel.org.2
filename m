@@ -2,154 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B4C3BF08F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9043BF095
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233094AbhGGUBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 16:01:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230296AbhGGUBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 16:01:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0DE261CC2;
-        Wed,  7 Jul 2021 19:58:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625687931;
-        bh=K6SJBq8axw4PnEQMuifWYXHlsiKcVtzF3zIRp1rgNiM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Q1Qnn5WVNaZpO3l9oefa9G1ot72DNnltpLUhpi2fdbixeTcQXeCg2XzPmWeBP75GP
-         1uRGeCCdbFPa2Q0Qlst2T0g0RTyv42B+AS3Xm2v7ZDaT7J+XdX7qFFwFivmk2ZHGoN
-         xhqpnbcEpnabqjt7j9aJPTtWcMs0yFv1/Gi/pwv8cw1KwtvQ9CpPO9yocflVEJyIIL
-         6UZytxxVIOPirul/3pZPgKxSgYpLA/iiqHRycCZ0XyNqQ/Z8/IeuV0/wbn1tKgirvi
-         fMBNDJjDR1Fn5jq/i9ZTdiCMRyqpCnkcLoCc50ink5JfJE60kE3yHhiImu2bKysq/u
-         IPi4OLUpFHLZQ==
-Date:   Wed, 7 Jul 2021 12:58:50 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux F2FS Dev Mailing List 
-        <linux-f2fs-devel@lists.sourceforge.net>
-Subject: [GIT PULL] f2fs for 5.14-rc1
-Message-ID: <YOYHejl3CgABOnhP@google.com>
+        id S232366AbhGGUDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 16:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230296AbhGGUDU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 16:03:20 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27FEC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 13:00:37 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id z12so2999534qtj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 13:00:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=96jWry9WOsdwKu+G0dTVRx+JdimFiJ2QAYFEbiH3H34=;
+        b=RGANX0PGc0mFZu9cqrNOVbTfGn0v+kokDFQAPwfrxJwtPODfB/7BgVckPJVrWeW3aX
+         Zq/e9LoJ0785EJh+wDzA6h31JQ0sQKhf5OC8+6825AOXSTrCQRvNmjr00Qv4QYBChNR1
+         yEToxoe8pidstwnQJpDD7tRYOzkEa8SGd8UWQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=96jWry9WOsdwKu+G0dTVRx+JdimFiJ2QAYFEbiH3H34=;
+        b=kWEDbJ9BBixVk2HVtSMBij44tyotsRcxRNkMK7sZq/u73nAakFE7U+6fK1iqRtsBe8
+         CozCJz6P1MawgqRG0qcngPJMU4V0XxAQ9L+6C2bq2qzfhiitmo42O7RFErVICgsD2E5C
+         V82NzLDmDBbY7MMcYsKghUsuBCiHsABFLFizK3xGHbKzNqkFobnhqvY7chspg+rIEemf
+         tQAvImdaXNqdJi8iHEvOqoXdu1u9oLh1EZIWKXjHMJsOPHlGG6G222gTCTkk/GND9ivw
+         N2owsXSq7SmLL5a9nu6IHChfZpTR+HKbhLP0b289h5Wq1FsHFcwtsaGz5SaFxqvmwqZU
+         WD6g==
+X-Gm-Message-State: AOAM531wfuZhWbcuBYzXlkw4EvRWpGJqMXoT71g9VaYVbCU7blTJIOTg
+        MGn8PHRn9Wgb1jS2OBH0VqOYJDRx6xf2wA==
+X-Google-Smtp-Source: ABdhPJy9djPYZMbOdyrD0iNBG49tcpPYpDxoDMwZtVaanMUMUZDdZY3hznl877EZoJFEz1S/HCAuIw==
+X-Received: by 2002:ac8:734b:: with SMTP id q11mr21139698qtp.105.1625688036344;
+        Wed, 07 Jul 2021 13:00:36 -0700 (PDT)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id w2sm6332325qkm.65.2021.07.07.13.00.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Jul 2021 13:00:36 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id p22so5068599yba.7
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 13:00:36 -0700 (PDT)
+X-Received: by 2002:a25:d97:: with SMTP id 145mr35869561ybn.276.1625688024885;
+ Wed, 07 Jul 2021 13:00:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210624171759.4125094-1-dianders@chromium.org>
+ <YNXXwvuErVnlHt+s@8bytes.org> <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
+In-Reply-To: <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 7 Jul 2021 13:00:13 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
+Message-ID: <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Rob Clark <robdclark@chromium.org>, quic_c_gdjako@quicinc.com,
+        Saravana Kannan <saravanak@google.com>,
+        Rajat Jain <rajatja@google.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-pci@vger.kernel.org,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Sonny Rao <sonnyrao@chromium.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi,
 
-Could you please consider this pull request?
+On Fri, Jun 25, 2021 at 7:42 AM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Fri, Jun 25, 2021 at 6:19 AM Joerg Roedel <joro@8bytes.org> wrote:
+> >
+> > Hi Douglas,
+> >
+> > On Thu, Jun 24, 2021 at 10:17:56AM -0700, Douglas Anderson wrote:
+> > > The goal of this patch series is to get better SD/MMC performance on
+> > > Qualcomm eMMC controllers and in generally nudge us forward on the
+> > > path of allowing some devices to be in strict mode and others to be in
+> > > non-strict mode.
+> >
+> > So if I understand it right, this patch-set wants a per-device decision
+> > about setting dma-mode to strict vs. non-strict.
+> >
+> > I think we should get to the reason why strict mode is used by default
+> > first. Is the default on ARM platforms to use iommu-strict mode by
+> > default and if so, why?
+> >
+> > The x86 IOMMUs use non-strict mode by default (yes, it is a security
+> > trade-off).
+>
+> It is certainly a good question. I will say that, as per usual, I'm
+> fumbling around trying to solve problems in subsystems I'm not an
+> expert at, so if something I'm saying sounds like nonsense it probably
+> is. Please correct me.
+>
+> I guess I'd start out by thinking about what devices I think need to
+> be in "strict" mode. Most of my thoughts on this are in the 3rd patch
+> in the series. I think devices where it's important to be in strict
+> mode fall into "Case 1" from that patch description, copied here:
+>
+> Case 1: IOMMUs prevent malicious code running on the peripheral (maybe
+> a malicious peripheral or maybe someone exploited a benign peripheral)
+> from turning into an exploit of the Linux kernel. This is particularly
+> important if the peripheral has loadable / updatable firmware or if
+> the peripheral has some type of general purpose processor and is
+> processing untrusted inputs. It's also important if the device is
+> something that can be easily plugged into the host and the device has
+> direct DMA access itself, like a PCIe device.
+>
+>
+> Using sc7180 as an example (searching for iommus in sc7180.dtsi), I'd
+> expect these peripherals to be in strict mode:
+>
+> * WiFi / LTE - I'm almost certain we want this in "strict" mode. Both
+> have loadable / updatable firmware and both do complex processing on
+> untrusted inputs. Both have a history of being compromised over the
+> air just by being near an attacker. Note that on sc7180 these are
+> _not_ connected over PCI so we can't leverage any PCI mechanism for
+> deciding strict / non-strict.
+>
+> * Video decode / encode - pretty sure we want this in strict. It's got
+> loadable / updatable firmware and processing complex / untrusted
+> inputs.
+>
+> * LPASS (low power audio subsystem) - I don't know a ton and I think
+> we don't use this much on our designs, but I believe it meets the
+> definitions for needing "strict".
+>
+> * The QUPs (handles UART, SPI, and i2c) - I'm not as sure here. These
+> are much "smarter" than you'd expect. They have loadable / updatable
+> firmware and certainly have a sort of general purpose processor in
+> them. They also might be processing untrusted inputs, but presumably
+> in a pretty simple way. At the moment we don't use a ton of DMA here
+> anyway and these are pretty low speed, so I would tend to leave them
+> as strict just to be on the safe side.
+>
+>
+> I'd expect these to be non-strict:
+>
+> * SD/MMC - as described in this patch series.
+>
+> * USB - As far as I know firmware isn't updatable and has no history
+> of being compromised.
+>
+>
+> Special:
+>
+> * GPU - This already has a bunch of special cases, so we probably
+> don't need to discuss here.
+>
+>
+> As far as I can tell everything in sc7180.dtsi that has an "iommus"
+> property is classified above. So, unless I'm wrong and it's totally
+> fine to run LTE / WiFi / Video / LPASS in non-strict mode then:
+>
+> * We still need some way to pick strict vs. non-strict.
+>
+> * Since I've only identified two peripherals that I think should be
+> non-strict, having "strict" the default seems like fewer special
+> cases. It's also safer.
+>
+>
+> In terms of thinking about x86 / AMD where the default is non-strict,
+> I don't have any historical knowledge there. I guess the use of PCI
+> for connecting WiFi is more common (so you can use the PCI special
+> cases) and I'd sorta hope that WiFi is running in strict mode. For
+> video encode / decode, perhaps x86 / AMD are just accepting the risk
+> here because there was no kernel infrastructure for doing better? I'd
+> also expect that x86/AMD don't have something quite as crazy as the
+> QUPs for UART/I2C/SPI, but even if they do I wouldn't be terribly
+> upset if they were in non-strict mode.
+>
+> ...so I guess maybe the super short answer to everything above is that
+> I believe that at least WiFi ought to be in "strict" mode and it's not
+> on PCI so we need to come up with some type of per-device solution.
 
-Thanks,
+I guess this thread has been silent for a bit of time now. Given that
+my previous version generated a whole bunch of traffic, I guess I'm
+assuming this:
 
-The following changes since commit bd3c9cdb21a2674dd0db70199df884828e37abd4:
+a) Nothing is inherently broken with my current approach.
 
-  Merge tag 'arm64-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux (2021-05-14 10:52:47 -0700)
+b) My current approach doesn't make anybody terribly upset even if
+nobody is totally in love with it.
 
-are available in the Git repository at:
+c) Nobody has any other bright ideas for ways to solve this that would
+make my patch series obsolete.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.14-rc1
+I guess I'll take that as a good sign and hope that it means that this
+approach has a path forward. I suppose it could just be that everyone
+is busy and/or on vacation, but I've always been an optimist!
 
-for you to fetch changes up to 28607bf3aa6f9762b32dc7f1ed0488823c0651b8:
+My plan continues to be to send a v3 of my patch series atop Sai's
+patch [1] and John's series [2]. I'll plan to wait a bit longer before
+posting my v3 to allow for more feedback/thoughts and also to see if
+either Sai's patches or John's patches land and/or have newer versions
+posted. :-)
 
-  f2fs: drop dirty node pages when cp is in error status (2021-07-06 22:05:06 -0700)
+-Doug
 
-----------------------------------------------------------------
-f2fs-for-5.14-rc1
-
-In this round, we've improved the compression support especially for Android
-such as allowing compression for mmap files, replacing the immutable bit with
-internal bit to prohibits data writes explicitly, and adding a mount option,
-"compress_cache", to improve random reads. And, we added "readonly" feature to
-compact the partition w/ compression enabled, which will be useful for Android
-RO partitions.
-
-Enhancement:
- - support compression for mmap file
- - use an f2fs flag instead of IMMUTABLE bit for compression
- - support RO feature w/ extent_cache
- - fully support swapfile with file pinning
- - improve atgc tunability
- - add nocompress extensions to unselect files for compression
-
-Bug fix:
- - fix false alaram on iget failure during GC
- - fix race condition on global pointers when there are multiple f2fs instances
- - add MODULE_SOFTDEP for initramfs
-
-As usual, we've also cleaned up some places for better code readability.
-(e.g., sysfs/feature, debugging messages, slab cache name, and docs)
-
-----------------------------------------------------------------
-Chao Yu (17):
-      f2fs: compress: rename __cluster_may_compress
-      f2fs: add cp_error check in f2fs_write_compressed_pages
-      f2fs: restructure f2fs page.private layout
-      f2fs: fix to avoid racing on fsync_entry_slab by multi filesystem instances
-      f2fs: atgc: fix to set default age threshold
-      f2fs: compress: remove unneeded f2fs_put_dnode()
-      f2fs: compress: clean up parameter of __f2fs_cluster_blocks()
-      f2fs: add MODULE_SOFTDEP to ensure crc32 is included in the initramfs
-      f2fs: compress: fix to disallow temp extension
-      f2fs: atgc: export entries for better tunability via sysfs
-      f2fs: compress: remove unneeded preallocation
-      f2fs: compress: add compress_inode to cache compressed blocks
-      f2fs: swap: remove dead codes
-      f2fs: swap: support migrating swapfile in aligned write mode
-      f2fs: introduce f2fs_casefolded_name slab cache
-      f2fs: fix to avoid adding tab before doc section
-      MAINTAINERS: f2fs: update my email address
-
-Daeho Jeong (1):
-      f2fs: enable extent cache for compression files in read-only
-
-Daniel Rosenberg (2):
-      f2fs: Show casefolding support only when supported
-      f2fs: Advertise encrypted casefolding in sysfs
-
-Fengnan Chang (1):
-      f2fs: compress: add nocompress extensions support
-
-Jaegeuk Kim (8):
-      f2fs: let's allow compression for mmap files
-      f2fs: introduce FI_COMPRESS_RELEASED instead of using IMMUTABLE bit
-      f2fs: support RO feature
-      f2fs: add pin_file in feature list
-      f2fs: clean up /sys/fs/f2fs/<disk>/features
-      f2fs: remove false alarm on iget failure during GC
-      f2fs: initialize page->private when using for our internal use
-      f2fs: drop dirty node pages when cp is in error status
-
-Joe Perches (1):
-      f2fs: logging neatening
-
-Shin'ichiro Kawasaki (1):
-      f2fs: Prevent swap file in LFS mode
-
-Tom Rix (1):
-      f2fs: return success if there is no work to do
-
- Documentation/ABI/testing/sysfs-fs-f2fs |  57 ++++-
- Documentation/filesystems/f2fs.rst      |  50 ++++-
- MAINTAINERS                             |   2 +-
- fs/f2fs/checkpoint.c                    |   4 +-
- fs/f2fs/compress.c                      | 255 +++++++++++++++++-----
- fs/f2fs/data.c                          | 360 ++++++++++++++------------------
- fs/f2fs/debug.c                         |  13 ++
- fs/f2fs/dir.c                           |  25 ++-
- fs/f2fs/f2fs.h                          | 228 ++++++++++++++++----
- fs/f2fs/file.c                          |  37 ++--
- fs/f2fs/gc.c                            |  16 +-
- fs/f2fs/inline.c                        |   4 +-
- fs/f2fs/inode.c                         |  23 +-
- fs/f2fs/namei.c                         |  36 +++-
- fs/f2fs/node.c                          |  35 ++--
- fs/f2fs/node.h                          |  33 +--
- fs/f2fs/recovery.c                      |  29 ++-
- fs/f2fs/segment.c                       |  34 ++-
- fs/f2fs/super.c                         | 188 ++++++++++++++++-
- fs/f2fs/sysfs.c                         | 232 +++++++++++++++-----
- include/linux/f2fs_fs.h                 |   2 +
- 21 files changed, 1168 insertions(+), 495 deletions(-)
+[1] https://lore.kernel.org/r/20210623134201.16140-1-saiprakash.ranjan@codeaurora.org
+[2] https://lore.kernel.org/linux-doc/1624016058-189713-1-git-send-email-john.garry@huawei.com
