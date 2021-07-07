@@ -2,60 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDC73BE7D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 661433BE7D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbhGGM33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 08:29:29 -0400
-Received: from mail-lj1-f182.google.com ([209.85.208.182]:46887 "EHLO
-        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231628AbhGGM32 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 08:29:28 -0400
-Received: by mail-lj1-f182.google.com with SMTP id q4so2422969ljp.13
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 05:26:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:subject:to:in-reply-to
-         :references;
-        bh=zfK5nIKvqhQEsSUONceEfuKD/z7zuTiP8KIzwk65vxk=;
-        b=TD476vd/wTuu7X9+0pHVJ8bxDUew+ueRXKpnt+mhTeZ89DgHTsHilyHXCWhVwLtDn8
-         EOUq1DCkn+FiIHkYbRImfjkfK2r5sv63Eg47M7k6Y097/hTuGQn24fbQG0TvVvt9YO2E
-         4G+PxnPKtUXc4i4QVs6M1dxEAS8OeVvSBzaN6Sco+koBSKLCLxHRZrqO4ecPaqHdQME4
-         o13nDHautpAsi5b0XD2j1R1ICkkZs9e7RNIje1Z7WmEVxiIumgKSFxzA9Y6hCKWmXAd6
-         MqV90n63ll5QuC1jy6EmhhP92SEESsbWrgPYBYSYHiv82xEfi/JAZEMP/DIJKotwL+tt
-         9h0Q==
-X-Gm-Message-State: AOAM531LMxfH5ZfQ6Etf0cdoVAbEv7z5CL3szOZXI2VTby5T/R8DXL4+
-        OCuUVLPCHQbjR2/Lt+uiSEYUWP+YKjy8gBkp
-X-Google-Smtp-Source: ABdhPJxIrWgEtpgEupFokecChm2ltIRw/0mHgfopr6oXzzhP7gru45c4olz2EyNJX8x47zeXHVZvXA==
-X-Received: by 2002:a2e:8612:: with SMTP id a18mr17182132lji.121.1625660806972;
-        Wed, 07 Jul 2021 05:26:46 -0700 (PDT)
-Received: from localhost (88-112-11-80.elisa-laajakaista.fi. [88.112.11.80])
-        by smtp.gmail.com with ESMTPSA id t12sm1686725lfg.148.2021.07.07.05.26.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 05:26:46 -0700 (PDT)
-Message-ID: <60e59d86.1c69fb81.e047d.93c3@mx.google.com>
-Date:   Wed, 07 Jul 2021 15:26:45 +0300
-From:   Hannu Hartikainen <hannu@hrtk.in>
-Subject: Re: [PATCH] get_maintainer: only show lkml as last resort
-To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <19a701a8d5837088aa7d8ba594c228c0e040e747.camel@perches.com>
-References: <20210706083354.214826-1-hannu@hrtk.in>
-        <19a701a8d5837088aa7d8ba594c228c0e040e747.camel@perches.com>
+        id S231545AbhGGMaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 08:30:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231683AbhGGM3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 08:29:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1569861C82;
+        Wed,  7 Jul 2021 12:27:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625660834;
+        bh=eh7CePvQmxyFz8jXmVrTvteJpXfCq8titXSEHEgtFTs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BWGSsE5kFJGUojHjZuAX5HdDNcZUkPbkAMibsJe0NVhM6bBFSDqJeX0j8Nat5vqQj
+         LyHiTM9cFv1DTpJwiWjs/dU0MVluvB5u1KZ9sF1o/x7fvw+r0ianoy/uUpqjRsZIBk
+         udT0OxJvyCQST4sC010unPw4jW3blec+uZNeHK3sT33d/evwhYGdRo3xspKTOW3eCP
+         8E4Ne4Jq0h2lGES4+YOSK/wN8+IHhOq5BioMgqu6RM35b2uJlhIPVgtO9sR23sgbce
+         wIYmRSot6QihoHcj6Ukv32SomYCdsL0PSfu1iXcot5IZqjYZji2/49Stmo+/egd018
+         sQnQ4PllPI68g==
+Date:   Wed, 7 Jul 2021 08:27:13 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Justin Forbes <jmforbes@linuxtx.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de
+Subject: Re: [PATCH 5.12 0/7] 5.12.15-rc1 review
+Message-ID: <YOWdoZ4CmVwCPN1K@sashalap>
+References: <20210705105934.1513188-1-sashal@kernel.org>
+ <YOTWGzxh0XpYLlmT@fedora64.linuxtx.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YOTWGzxh0XpYLlmT@fedora64.linuxtx.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, and thanks for the review!
+On Tue, Jul 06, 2021 at 05:15:55PM -0500, Justin Forbes wrote:
+>On Mon, Jul 05, 2021 at 06:59:27AM -0400, Sasha Levin wrote:
+>>
+>> This is the start of the stable review cycle for the 5.12.15 release.
+>> There are 7 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
+>>
+>> Responses should be made by Wed 07 Jul 2021 10:59:20 AM UTC.
+>> Anything received after that time might be too late.
+>>
+>> The whole patch series can be found in one patch at:
+>>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.12.y&id2=v5.12.14
+>> or in the git tree and branch at:
+>>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+>> and the diffstat can be found below.
+>>
+>> Thanks,
+>> Sasha
+>>
+>
+>Tested rc1 against the Fedora build system (aarch64, armv7, ppc64le,
+>s390x, x86_64), and boot tested x86_64. No regressions noted.
+>
+>Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
 
-On Tue, 06 Jul 2021 09:00:42 -0700, Joe Perches <joe@perches.com> wrote:
-> Almost no one reads lkml directly anyway and I rather like that lkml
-> gets all copies.
-> 
-> This allows lore.kernel.org/lkml to have a relatively complete searchable
-> database of all kernel related patch submissions.
+Thanks for testing Justin!
 
-I hadn't considered that and the documentation gave me the wrong idea.
-I'll submit a patch that clarifies the documentation instead. Thanks!
-
-Hannu
+-- 
+Thanks,
+Sasha
