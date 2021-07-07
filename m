@@ -2,96 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D573BE29C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 07:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E293BE2A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 07:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhGGFcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 01:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbhGGFcl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 01:32:41 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E896C061760;
-        Tue,  6 Jul 2021 22:30:01 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id l17-20020a9d6a910000b029048a51f0bc3cso1114326otq.13;
-        Tue, 06 Jul 2021 22:30:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GUtu6qPrt9CdnsRN6tfeZYE0y1TuRMKLEMOtOSTruJY=;
-        b=F06mQqx24VR82ubSqMr70LXkWrojQ2fAgEEriUfQhVIL5gkXPeibuMGe/8tMcuRIPb
-         632eJPDaifcKxAwzYs40NCwfFaOu/z98z/d4LcjeTmpyHgxpUP5+FyeT4SqSg5FdO/u5
-         J7pfVZKU1EsJtW62JoMp/7eKRvapOr7a+fRtPySMNDU3abOzclvWQMboc+xHZsO9IHs2
-         B2ENfiF7bNV5SH7Lq8w+9p5WFLw9uZN7PfbljRxl+F9xEQg/DU9PTzEQKwdazC+GomVq
-         UwiTPRCA+iU+z5p8q+QQ6XzGAZ1UIuVWk9EMVcEYa9fjU8mo9GA213i4vf9JjbTF2cZr
-         eZxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GUtu6qPrt9CdnsRN6tfeZYE0y1TuRMKLEMOtOSTruJY=;
-        b=en8f22dPoFLgm8j6OQe+1eeAFvW7pg3FT/xs+6EtvmHFIlXLXVjTZxaREy9ZJNF0EP
-         1uWp4azhKYZOprZMrS2JqNJ2/52Hkk6H3HSmTYfzMMW74wN4+sWxn+UHgyWCw/1NVipn
-         DEayX5SqqWs2vXjdxTEUH+exzQ3xSDneRS136GKP6vDs4hQLRrNNMliDUCz/fDjo0v62
-         plkU9RBXI3fOh5+N1Yd1fKfINr9JC0mcKYLHcYUI6LDww2y9gZP+dTgU1p0c8TUEw5lh
-         aZ4qmcGW27jXSoVnqpxX+JeWA23i13FTD61p9+8jQERg+Ir05TKdmmj2WF2IlBhnDDD1
-         NO/A==
-X-Gm-Message-State: AOAM531pome2++CdozX1kAaxFkMuyiP7H+KyurrF+rvZN9CkPYmz+Mlc
-        LkHkhh0q4tmjhP4VagbFyG1ykLFiXrU=
-X-Google-Smtp-Source: ABdhPJwRIztdZpECFdRXqSfmD9731oTE0Bqq3ahr4H0r1uAH/ZlPm3mY7WfUxJMU9+epYWRz3mp0pA==
-X-Received: by 2002:a9d:2781:: with SMTP id c1mr17536139otb.34.1625635800420;
-        Tue, 06 Jul 2021 22:30:00 -0700 (PDT)
-Received: from fractal.attlocal.net ([2600:1700:1151:2380:3ec5:124:b596:7a55])
-        by smtp.googlemail.com with ESMTPSA id l11sm3284843oou.0.2021.07.06.22.29.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 22:30:00 -0700 (PDT)
-From:   Satya Tangirala <satyaprateek2357@gmail.com>
-To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>, Eric Biggers <ebiggers@google.com>,
-        Satya Tangirala <satyaprateek2357@gmail.com>,
-        Satya Tangirala <satyat@google.com>
-Subject: [PATCH v4 9/9] block: add WARN_ON_ONCE() to bio_split() for sector alignment
-Date:   Tue,  6 Jul 2021 22:29:43 -0700
-Message-Id: <20210707052943.3960-10-satyaprateek2357@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210707052943.3960-1-satyaprateek2357@gmail.com>
-References: <20210707052943.3960-1-satyaprateek2357@gmail.com>
+        id S230203AbhGGFgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 01:36:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229717AbhGGFgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 01:36:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 993AA61CB2;
+        Wed,  7 Jul 2021 05:33:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625636002;
+        bh=KFF9XhfYMcQdezNbI8jrfO+gkJEQeYaMCo1RJKgwsnA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uTNJH2+/iXm43q2Fi3l8eOsrnqV/F2/4QMKZ5AlDP41fK1Rub9G7wASZ5wRtTHH1x
+         lehtHJs31E3tkeJV7vXiOlwI2peIt93vzLXHODf4n2STR2B87w43Pdswhc2kBFjr1M
+         rqcJgXw9Uwv5O2XgJy/vRiII3+nFUSel7Kc1WPe4lI/1Ejh0W5L0kXywXtsYHJR92L
+         A2KVjHC+7UWxPiwneMNIQas6fJzuGs3vjZwBls2IroY7GRE9bD+ARtY9FaqVx1lt8Q
+         o32WaFZgGcYwCv/7W1fJl+Mp1NkXBPPS76ZzJKFqGrjZHaKVcKv5qqi40l4QvfAAD0
+         qvRfquUuYRk9Q==
+Date:   Tue, 6 Jul 2021 22:33:21 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: add sysfs nodes to get GC info for each
+ GC urgent mode
+Message-ID: <YOU8ofmEpCcQcmmY@google.com>
+References: <20210702214458.3876398-1-daeho43@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210702214458.3876398-1-daeho43@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Satya Tangirala <satyat@google.com>
+On 07/02, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> Added gc_urgent_dirty_segs and gc_urgent_dirty_segs_mode sysfs nodes.
+> 1) "gc_urgent_dirty_segs" shows how many dirty segments have been
+> reclaimed by GC during a specific GC urgent mode.
+> 2) "gc_urgent_dirty_segs_mode" is used to control for which gc urgent
+> mode the "gc_urgent_dirty_segs" node shows.
+> (1: GC urgent high, 2: GC urgent low)
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> ---
+>  Documentation/ABI/testing/sysfs-fs-f2fs | 14 ++++++++
+>  fs/f2fs/f2fs.h                          |  5 +++
+>  fs/f2fs/gc.c                            |  4 +++
+>  fs/f2fs/sysfs.c                         | 46 +++++++++++++++++++++++++
+>  4 files changed, 69 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+> index 95155e4ec7fe..9851c3f2efad 100644
+> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+> @@ -493,3 +493,17 @@ Contact:	"Chao Yu" <yuchao0@huawei.com>
+>  Description:	When ATGC is on, it controls age threshold to bypass GCing young
+>  		candidates whose age is not beyond the threshold, by default it was
+>  		initialized as 604800 seconds (equals to 7 days).
+> +
+> +What:		/sys/fs/f2fs/<disk>/gc_urgent_dirty_segs
+> +Date:		July 2021
+> +Contact:	"Daeho Jeong" <daehojeong@google.com>
+> +Description:	Show how many dirty segments have been reclaimed by GC during
+> +		a specific GC urgent mode (1: GC urgent high, 2: GC urgent low)
+> +		You can re-initialize this value to "0".
+> +
+> +What:		/sys/fs/f2fs/<disk>/gc_urgent_dirty_segs_mode
+> +Date:		July 2021
+> +Contact:	"Daeho Jeong" <daehojeong@google.com>
+> +Description:	You can control for which gc urgent mode the "gc_urgent_dirty_segs"
+> +		node shows (1: GC urgent high, 2: GC urgent low). You can set the
+> +		value to "0" when you want not to select one of them.
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 16ce1ade9fa6..d838c373f188 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -1728,6 +1728,11 @@ struct f2fs_sb_info {
+>  	struct kmem_cache *inline_xattr_slab;	/* inline xattr entry */
+>  	unsigned int inline_xattr_slab_size;	/* default inline xattr slab size */
+>  
+> +	/* For reclaimed dirty segs statistics per each GC urgent mode */
+> +	unsigned int gc_dirty_segs_mode;	/* GC state for reclaimed dirty segments */
+> +	u64 gc_urgent_high_dirty_segs;		/* Reclaimed dirty segs in GC_URGENT_HIGH */
+> +	u64 gc_urgent_low_dirty_segs;		/* Reclaimed dirty segs in GC_URGENT_LOW */
 
-The number of sectors passed to bio_split() must be aligned to
-bio_required_sector_alignment(). All callers (other than bounce.c) have
-been updated to ensure this, so add a WARN_ON_ONCE() if the number of
-sectors is not aligned. (bounce.c was not updated since it's legacy code
-- any device that enables bounce buffering won't declare inline
-encryption support, so bounce.c will never see a bio with an encryption
-context).
+How about modifying like this? And, can we add this in debug/f2fs/status?
 
-Signed-off-by: Satya Tangirala <satyat@google.com>
----
- block/bio.c | 1 +
- 1 file changed, 1 insertion(+)
+enum {
+	GC_NORMAL,
+	GC_URGENT_HIGH,
+	GC_URGENT_LOW,
+	GC_IDLE_CB,
+	GC_IDLE_GREEDY,
+	GC_IDLE_AT,
+};
 
-diff --git a/block/bio.c b/block/bio.c
-index 1fab762e079b..4c7bfdeefe76 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -1435,6 +1435,7 @@ struct bio *bio_split(struct bio *bio, int sectors,
- 
- 	BUG_ON(sectors <= 0);
- 	BUG_ON(sectors >= bio_sectors(bio));
-+	WARN_ON_ONCE(!IS_ALIGNED(sectors, bio_required_sector_alignment(bio)));
- 
- 	/* Zone append commands cannot be split */
- 	if (WARN_ON_ONCE(bio_op(bio) == REQ_OP_ZONE_APPEND))
--- 
-2.25.1
+#define GC_URGENT_MAX	(GC_URGENT_LOW + 1)
+unsigned int reclaimed_segs[GC_URGENT_MAX];
 
+> +
+>  #ifdef CONFIG_F2FS_FS_COMPRESSION
+>  	struct kmem_cache *page_array_slab;	/* page array entry */
+>  	unsigned int page_array_slab_size;	/* default page array slab size */
+> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+> index da5947b30142..233e2a500379 100644
+> --- a/fs/f2fs/gc.c
+> +++ b/fs/f2fs/gc.c
+> @@ -1648,6 +1648,10 @@ static int do_garbage_collect(struct f2fs_sb_info *sbi,
+>  							force_migrate);
+>  
+>  		stat_inc_seg_count(sbi, type, gc_type);
+> +		if (sbi->gc_dirty_segs_mode == GC_URGENT_HIGH)
+
+		if (sbi->gc_mode < GC_URGENT_MAX)
+			sbi->gc_reclaimed_segs[sbi->gc_mode]++;
+
+> +			sbi->gc_urgent_high_dirty_segs++;
+> +		else if (sbi->gc_dirty_segs_mode == GC_URGENT_LOW)
+> +			sbi->gc_urgent_low_dirty_segs++;
+>  		migrated++;
+>  
+>  freed:
+> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> index 6642246206bd..9ede97fe12cf 100644
+> --- a/fs/f2fs/sysfs.c
+> +++ b/fs/f2fs/sysfs.c
+> @@ -307,6 +307,25 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
+>  		return sysfs_emit(buf, "%u\n", sbi->compr_new_inode);
+>  #endif
+>  
+> +	if (!strcmp(a->attr.name, "gc_urgent_dirty_segs_mode")) {
+> +		if (sbi->gc_dirty_segs_mode == GC_NORMAL)
+> +			return sysfs_emit(buf, "0\n");
+
+						"0:gc_normal"?
+
+> +		else if (sbi->gc_dirty_segs_mode == GC_URGENT_HIGH)
+> +			return sysfs_emit(buf, "1\n");
+
+						"1:gc_urgent_high"?
+
+> +		else if (sbi->gc_dirty_segs_mode == GC_URGENT_LOW)
+> +			return sysfs_emit(buf, "2\n");
+
+						"2:gc_urgent_low"?
+
+> +	}
+> +
+> +	if (!strcmp(a->attr.name, "gc_urgent_dirty_segs")) {
+> +		if (sbi->gc_dirty_segs_mode == GC_URGENT_HIGH)
+> +			return sysfs_emit(buf, "%llu\n",
+> +					sbi->gc_urgent_high_dirty_segs);
+> +		if (sbi->gc_dirty_segs_mode == GC_URGENT_LOW)
+> +			return sysfs_emit(buf, "%llu\n",
+> +					sbi->gc_urgent_low_dirty_segs);
+> +		return sysfs_emit(buf, "0\n");
+> +	}
+> +
+>  	ui = (unsigned int *)(ptr + a->offset);
+>  
+>  	return sprintf(buf, "%u\n", *ui);
+> @@ -515,6 +534,28 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+>  		return count;
+>  	}
+>  
+> +	if (!strcmp(a->attr.name, "gc_urgent_dirty_segs_mode")) {
+> +		if (t == 0)
+> +			sbi->gc_dirty_segs_mode = GC_NORMAL;
+> +		else if (t == 1)
+> +			sbi->gc_dirty_segs_mode = GC_URGENT_HIGH;
+> +		else if (t == 2)
+> +			sbi->gc_dirty_segs_mode = GC_URGENT_LOW;
+> +		else
+> +			return -EINVAL;
+> +		return count;
+> +	}
+> +
+> +	if (!strcmp(a->attr.name, "gc_urgent_dirty_segs")) {
+> +		if (t != 0 || sbi->gc_dirty_segs_mode == GC_NORMAL)
+> +			return -EINVAL;
+> +		if (sbi->gc_dirty_segs_mode == GC_URGENT_HIGH)
+> +			sbi->gc_urgent_high_dirty_segs = 0;
+> +		else if (sbi->gc_dirty_segs_mode == GC_URGENT_LOW)
+> +			sbi->gc_urgent_low_dirty_segs = 0;
+> +		return count;
+> +	}
+> +
+>  	*ui = (unsigned int)t;
+>  
+>  	return count;
+> @@ -740,6 +781,9 @@ F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_count, max_candidate_cou
+>  F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_weight, age_weight);
+>  F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_threshold, age_threshold);
+>  
+> +F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_urgent_dirty_segs_mode, gc_dirty_segs_mode);
+> +F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_urgent_dirty_segs, gc_urgent_high_dirty_segs);
+> +
+>  #define ATTR_LIST(name) (&f2fs_attr_##name.attr)
+>  static struct attribute *f2fs_attrs[] = {
+>  	ATTR_LIST(gc_urgent_sleep_time),
+> @@ -812,6 +856,8 @@ static struct attribute *f2fs_attrs[] = {
+>  	ATTR_LIST(atgc_candidate_count),
+>  	ATTR_LIST(atgc_age_weight),
+>  	ATTR_LIST(atgc_age_threshold),
+> +	ATTR_LIST(gc_urgent_dirty_segs_mode),
+> +	ATTR_LIST(gc_urgent_dirty_segs),
+>  	NULL,
+>  };
+>  ATTRIBUTE_GROUPS(f2fs);
+> -- 
+> 2.32.0.93.g670b81a890-goog
+> 
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
