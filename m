@@ -2,117 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD5D3BE963
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 199893BE96B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231917AbhGGOKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 10:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbhGGOKg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:10:36 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC4DC061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 07:07:56 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id d12so2603955wre.13
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 07:07:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kWyuGMwX+ZNUDXD7vDpVa4A2OyqG/8p+xZdri8V20uc=;
-        b=T2dqzRwPotD5ZOjn6JCz0tkAm6jUi7jcBoxaUMn0E8tLfrXB0oQe6az48pOSGJeQOW
-         178QgAoV2QSn0YP58N1pUNvWbviBPoa+YmpgoiPa7onI0WpIAZ/dSIQv5hS1gUaaqREJ
-         kO32XVR27MdLkzkZJa2JQSqI1EUnfYR+YjUuoTJ+uqmoTBXGwuX7DQmCaNhLiYoVAXow
-         cPcp1zIGaVOyt8InKS58l8xUrIOs8k9obW3pQvApQNh1DwtllPUndcl/wrN9CHKK7mi5
-         cfWBeLOO6jBVnT6Q9OuOnZap2IOh2UbzlIS20nbxa4Z+4d7oFG7B1ozeGTdk3YJ3FTjA
-         QkJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kWyuGMwX+ZNUDXD7vDpVa4A2OyqG/8p+xZdri8V20uc=;
-        b=XyquIJVHr2G0WNYTyhwjqTgPBhWg4B1/VmosKTxu7EF3wOd+3ybmA0CrvQ0mzPd4wV
-         5syQbbwDAd7+7Bpcnvcryb76XwEsyy0bWrpVrcBUtTT3wG8wyiTqM1tsXOYnaVkBnHgm
-         HYUO6SIY9FVWL/BOdlZWAh0fO7X6bl7zcN1byvHnRMEjdsB4xvghgLGMutxE8hVhonG6
-         EQ9+9Du46JSXb86YhVj8qHFXXNoLk5Qh+D5W0drjbtLwn3db7CtA/4lk2uaRc1JakYMV
-         S4zdEHjlS68yI3eO2zzE4mRzMk0B+/xIBhLkqdvh6qCeO9pbDLC2zLNtAZEZjZpEnnyi
-         2qgQ==
-X-Gm-Message-State: AOAM533hoLYhZo6ktCpLiGHmzCPmuBb4w779jVLtLxBbK1aFNsd7qbei
-        qpKAyJGbei9oFVPvB0gh8r0x
-X-Google-Smtp-Source: ABdhPJy4pvViQLXcf5CZiXO9ylISZ7qhOwfU2XWINGPk2cDzGLvvCqrd+9hRWF0xZknrQrz1n7ZNEQ==
-X-Received: by 2002:a05:6000:1867:: with SMTP id d7mr21264188wri.263.1625666874582;
-        Wed, 07 Jul 2021 07:07:54 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:209:860d:625a:fd59:d699])
-        by smtp.gmail.com with ESMTPSA id u9sm21396849wmq.41.2021.07.07.07.07.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 07:07:54 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 15:07:50 +0100
-From:   Wedson Almeida Filho <wedsonaf@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/17] Rust support
-Message-ID: <YOW1Nj8+a2Yth2++@google.com>
-References: <20210704202756.29107-1-ojeda@kernel.org>
- <YOVNJuA0ojmeLvKa@infradead.org>
- <CANiq72mKPFtB4CtHcc94a_y1V4bEOXXN2CwttQFvyzwXJv62kw@mail.gmail.com>
- <YOWjLmg/Z7kr2+tx@kroah.com>
+        id S231877AbhGGOLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 10:11:40 -0400
+Received: from mga01.intel.com ([192.55.52.88]:36218 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231472AbhGGOLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 10:11:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="231049368"
+X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
+   d="scan'208";a="231049368"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 07:08:59 -0700
+X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
+   d="scan'208";a="427950393"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 07:08:57 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1m18EO-009pXG-5J; Wed, 07 Jul 2021 17:08:52 +0300
+Date:   Wed, 7 Jul 2021 17:08:52 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bgolaszewski@baylibre.com, linus.walleij@linaro.org,
+        sathyanarayanan.kuppuswamy@linux.intel.com, andy@kernel.org
+Subject: Re: [PATCH] gpio: wcove: remove platform_set_drvdata() + cleanup
+ probe
+Message-ID: <YOW1dKIpXa1GXyXh@smile.fi.intel.com>
+References: <20210707135226.191988-1-aardelean@deviqon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YOWjLmg/Z7kr2+tx@kroah.com>
+In-Reply-To: <20210707135226.191988-1-aardelean@deviqon.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 02:50:54PM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Jul 07, 2021 at 02:33:57PM +0200, Miguel Ojeda wrote:
-> > Now, if you are OK with non-hardware modules, you can take a look at
-> > Rust Binder (last patch in the series) which is a non-trivial module
-> > and it is already working.
+On Wed, Jul 07, 2021 at 04:52:26PM +0300, Alexandru Ardelean wrote:
+> The platform_set_drvdata() call is only useful if we need to retrieve back
+> the private information.
+> Since the driver doesn't do that, it's not useful to have it.
+
+This is fine.
+
+> This change also changes the probe order a bit, moving the
+> devm_gpiochip_add_data() as the last call. This means that when the
+> gpiochip is registered [and available to consumers], it should be
+> initialized.
 > 
-> Cool, does it actually pass the binder self-tests that the Android
-> systems have for the codebase?
+> It's still possible that the devm_gpiochip_add_data() call could fail,
+> leaving the chip in a partially initialized state, but that was possible
+> even before this change; it was just some other partially initialized
+> state.
 
-We haven't run the Android tests yet because they depend on an Android-specific
-service (servicemanager) running and other Android-specific libraries. What we
-are doing instead is adding binder tests that don't depend on anything
-Android-specific; in fact, we are putting them in tools/testing/selftests/binder
-so that they can run on any vanilla system.
+...
 
-The commit is available here:
-https://github.com/wedsonaf/linux/commit/f90ec49be9207fa765f07ad1071210ad871712ac
+>  	/* Enable GPIO0 interrupts */
 
-The tests are written in C and run successfully against both C and Rust drivers.
-I still have another ~20 tests that I wrote in another harness that I will
-convert to selftests soon, but the two together I believe have more coverage
-than the ones in Android.
+^^^^^
 
-We also have a trivial latency benchmark (ping with no payload) where the Rust
-version performs better than the C one.
+> +	return devm_gpiochip_add_data(dev, &wg->chip, wg);
 
-The benchmark is available here: https://github.com/wedsonaf/linux/commits/ping
+This is dangerous change. How did you test it?
 
-> Last I looked at this thing, it was not
-> feature-complete compared to the in-kernel binder code, has that been
-> resolved and the needed filesystem changes added?
+The handler now can be called before chip and actual handling code is
+registered. It means at least two possible (bad) scenarios:
+ 1) the handler may dereference dangling or NULL pointer;
+ 2) the IRQ may be level interrupt and we may got 100000 IRQs and
+    IRQ core will disable it leaving device completely unfunctional.
 
-It is not feature-complete in comparison to the C one just yet, it is missing a
-few things but not for any fundamental reason -- we were mostly focusing on the
-kernel crate and tests.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Miguel's point is that it does implement the vast majority of binder features
-and is non-trivial, so it could be used as evidence that useful kernel drivers
-can be built with Rust; not just "transpiled" from C, but written with the Rust
-safety guarantees.
 
-Cheers,
--Wedson
