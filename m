@@ -2,79 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13063BE5D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82353BE5D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbhGGJud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231252AbhGGJuc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:50:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B84C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 02:47:52 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625651268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mfWgJW7OBjkWrCCfQOJpHn9zaDjfJNraAT0ZOEnusZg=;
-        b=RnxvCzd9Pd2rztCWzGG1sD9+uVKgt9xm72WEz9FiDMqmbvW08zhVUq9G4pv6LWh818qjGw
-        ZA4dxVi0OVIoPUtUufPifEVsjx4pBzxW7V/30q+ogBmd0IGUmG/bcNHhJuGBALckoX+7gj
-        y3xv/6qa/WzJ4lfadRjl4wGZAlgSFkETJVt/SXPcs7zRFRw6uNYaLGHiVuBmWlocKGcMvD
-        oVc1PuNTEXjWDl4CDxUvXZNLQv5JAADF01jIahZyoaAAMVNkjhddhknpbtQB/0luPOMydy
-        82fNPhLiA3RKpbXNxpZvkzeSeeAOfMTmpNN8YTyneGEYAA+wghDGZ1dCsk7vOQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625651268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mfWgJW7OBjkWrCCfQOJpHn9zaDjfJNraAT0ZOEnusZg=;
-        b=eQMs9j0BXXvD8+TOq33EC4Iz7VQdtuowVl4CSgyoimECraqt80T6ZSpWbrHxGL01J699Mi
-        HC8E7W/Iz5Bn2tAQ==
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        id S231320AbhGGJux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:50:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:33092 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230498AbhGGJuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 05:50:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12945ED1;
+        Wed,  7 Jul 2021 02:48:11 -0700 (PDT)
+Received: from [10.57.1.129] (unknown [10.57.1.129])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 35E7F3F694;
+        Wed,  7 Jul 2021 02:48:08 -0700 (PDT)
+Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
+ of EAS estimated energy
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Chris Redpath <Chris.Redpath@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] sigqueue cache fix
-In-Reply-To: <CAHk-=wjrd6-ZHyQGznpM+O0CtTHjzZ5P2Ozddh68WmDH9c+hBg@mail.gmail.com>
-References: <YNQwgTR3n3mSO9+3@gmail.com> <CAHk-=wiebYt6ZG4Cp8fWqVnNqxMN4pybDZQ6gwsTWFc0XP=XPw@mail.gmail.com> <CAHk-=wgEyk9X5NefUL7gaqXOSDkdzCEDi6RafxGvG+Uq8rGrgA@mail.gmail.com> <CAHk-=wiJq0Ns7_AFRW+rvZcD_m+1t5cYgvQRO-Gbp8TEK1x1bQ@mail.gmail.com> <YNlapAKObfeVPoQO@gmail.com> <CAHk-=wjLNCm5kNnbHkw38c1t80FAPVYmNOOiTvdqedNm1SQRZg@mail.gmail.com> <YNoZIVgboj6YKo3V@gmail.com> <CAHk-=wjrd6-ZHyQGznpM+O0CtTHjzZ5P2Ozddh68WmDH9c+hBg@mail.gmail.com>
-Date:   Wed, 07 Jul 2021 11:47:47 +0200
-Message-ID: <878s2iqwu4.ffs@nanos.tec.linutronix.de>
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        CCj.Yeh@mediatek.com
+References: <20210625152603.25960-1-lukasz.luba@arm.com>
+ <20210625152603.25960-2-lukasz.luba@arm.com>
+ <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
+ <a6a49480-7d5d-fd0e-3940-0b6baac5acc0@arm.com>
+ <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
+ <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com>
+ <CAKfTPtDk1ANfjR5h_EjErVfQ7=is3n9QOaKKxz81tMHtqUM7jA@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <297df159-1681-f0a7-843d-f34d86e51d4c@arm.com>
+Date:   Wed, 7 Jul 2021 10:48:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAKfTPtDk1ANfjR5h_EjErVfQ7=is3n9QOaKKxz81tMHtqUM7jA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
 
-On Mon, Jun 28 2021 at 12:02, Linus Torvalds wrote:
-> And as the whole - and only - point of the sigqueue cache was a very
-> subtle performance and latency issue, I don't think we want to use
-> locks or atomics. It's why my revert commit suggests re-purposing the
-> "percpu_cmpxchg()" functionality: that would likely be a good model at
-> least for x86 and arm.
->
-> But while we have "percpu_cmpxchg()", I don't think we currently don't
-> really have that kind of operation where it
->
->  (a) works on a non-percpu variable (but we can force casts, I guess)
->
->  (b) has "acquire" semantics
->
-> We do have the *atomic* cmpxchg with acquire semantics, but atomics
-> are rather more expensive than we'd probably really want.
 
-first of all, sorry for being non-responsive on this. I'll have a fresh
-look at this with your comments in mind and be more careful.
+On 7/7/21 10:37 AM, Vincent Guittot wrote:
+> On Wed, 7 Jul 2021 at 10:23, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>>
+>>
+>> On 7/7/21 9:00 AM, Vincent Guittot wrote:
+>>> On Wed, 7 Jul 2021 at 09:49, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 7/7/21 8:07 AM, Vincent Guittot wrote:
+>>>>> On Fri, 25 Jun 2021 at 17:26, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>>>
+>>>>>> The Energy Aware Scheduler (EAS) tries to find best CPU for a waking up
+>>>>>> task. It probes many possibilities and compares the estimated energy values
+>>>>>> for different scenarios. For calculating those energy values it relies on
+>>>>>> Energy Model (EM) data and em_cpu_energy(). The precision which is used in
+>>>>>> EM data is in milli-Watts (or abstract scale), which sometimes is not
+>>>>>> sufficient. In some cases it might happen that two CPUs from different
+>>>>>> Performance Domains (PDs) get the same calculated value for a given task
+>>>>>> placement, but in more precised scale, they might differ. This rounding
+>>>>>> error has to be addressed. This patch prepares EAS code for better
+>>>>>> precision in the coming EM improvements.
+>>>>>
+>>>>> Could you explain why 32bits results are not enough and you need to
+>>>>> move to 64bits ?
+>>>>>
+>>>>> Right now the result is in the range [0..2^32[ mW. If you need more
+>>>>> precision and you want to return uW instead, you will have a result in
+>>>>> the range  [0..4kW[ which seems to be still enough
+>>>>>
+>>>>
+>>>> Currently we have the max value limit for 'power' in EM which is
+>>>> EM_MAX_POWER 0xffff (64k - 1). We allow to register such big power
+>>>> values ~64k mW (~64Watts) for an OPP. Then based on 'power' we
+>>>> pre-calculate 'cost' fields:
+>>>> cost[i] = power[i] * freq_max / freq[i]
+>>>> So, for max freq the cost == power. Let's use that in the example.
+>>>>
+>>>> Then the em_cpu_energy() calculates as follow:
+>>>> cost * sum_util / scale_cpu
+>>>> We are interested in the first part - the value of multiplication.
+>>>
+>>> But all these are internal computations of the energy model. At the
+>>> end, the computed energy that is returned by compute_energy() and
+>>> em_cpu_energy(), fits in a long
+>>
+>> Let's take a look at existing *10000 precision for x CPUs:
+>> cost * sum_util / scale_cpu =
+>> (64k *10000) * (x * 800) / 1024
+>> which is:
+>> x * ~500mln
+>>
+>> So to be close to overflowing u32 the 'x' has to be > (?=) 8
+>> (depends on sum_util).
+> 
+> Sorry but I don't get your point.
+> This patch is about the return type of compute_energy() and
+> em_cpu_energy(). And even if we decide to return uW instead of mW,
+> there is still a lot of margin.
+> 
+> It's not because you need u64 for computing intermediate value that
+> you must returns u64
 
-Thanks,
+The example above shows the need of u64 return value for platforms
+which are:
+- 32bit
+- have e.g. 16 CPUs
+- has big power value e.g. ~64k mW
+Then let's to the calc:
+(64k * 10000) * (16 * 800) / 1024 = ~8000mln = ~8bln
 
-        tglx
+The returned value after applying the whole patch set
+won't fit in u32 for such cluster.
+
+We might make *assumption* that the 32bit platforms will not
+have bigger number of CPUs in the cluster or won't report
+big power values. But I didn't wanted to make such assumption.
+
+
