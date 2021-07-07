@@ -2,319 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E333BF17D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B10D3BF17F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhGGVpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 17:45:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230048AbhGGVpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 17:45:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D414961C94;
-        Wed,  7 Jul 2021 21:42:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625694162;
-        bh=+Q+mYhXOJkdvBhONPOGw0MrCiDQXHRW5YTw/H/s6sxs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lDYeiGm9BRypGOQTRMyWXxTPLpwbp/iUSb658mrkfYmiVyGXivceUDv31M+8qKxtY
-         HaSgOxwCgeqKipGy4KWNoVHUa8QsW6w7tkecIcdHrqk6y4SzTn1zOh0dp6IDPgnRFi
-         H81HG1+uIUxsyVPhr22GijVjgJq/G17UheU2CeXtWZyCDvFmvA8Hf+AlWr/LQmL820
-         7X+/zF4/bcMLfU6sbzkq+oL8hxHohZEtZm7t5x8nslYdun3Ukwitipdf4nmkA8R1e7
-         d4WDu97eM2F9Zxkmm7EuT+5FozRdHL9OSgEvewFHdEBJEJ8LoCfrjM7gaVd+9vE/cq
-         5czmZ9hkdkLjA==
-Date:   Wed, 7 Jul 2021 16:42:40 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [GIT PULL] PCI changes for v5.14
-Message-ID: <20210707214240.GA937039@bjorn-Precision-5520>
+        id S231126AbhGGVqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 17:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229717AbhGGVqY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 17:46:24 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6074BC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 14:43:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=YNgeYfPK9ovjzJBwdzS6vQtuS1rTuTNOeG0uEP7N+Hs=; b=XUMof7cikcltAkqq+p07WegWcy
+        V1qVaWoe+R1LEbgOqNC0dhBbawBP+h4WUf7SdbOtF9Eeeg5rPS9EyFoTbwElisx8l8tmmEbHkpStd
+        4vZ5+Kyj/VGfHZ9GJG9/bRHgQpTgWiXTyhyMzMf/ylGbwAdVeeTL7glQJUy0HbvTOZhAetJZMuXdg
+        xB9YVmZnn+qGgOgBVLJXwD1omedUOHAh9N30BcAVjZo7nLYNgnBq8+j+iIQ6sjx7WLKzPvIXXprBU
+        twhJg6qSx13Gp6RyO9aqP2Oq/GlxQBt26LUuVAgQak75dl+WbwwH0i9iO5+BiWNjaab6Nnt0sj0C5
+        vu4W4cWg==;
+Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.82])
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1FKP-00FmXL-GY; Wed, 07 Jul 2021 21:43:33 +0000
+Subject: Re: [PATCH v2] ASoC: atmel: ATMEL drivers depend on HAS_DMA
+To:     Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+        Codrin.Ciubotariu@microchip.com
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        lgirdwood@gmail.com, broonie@kernel.org, mirq-linux@rere.qmqm.pl
+References: <20210628211158.30273-1-rdunlap@infradead.org>
+ <5613542b-a530-ebd8-11c6-ea515cb3f8a9@microchip.com>
+ <YOYDjtStnw9CO5dR@piout.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fb33b720-14c1-9346-82ac-0da2e8fd0584@infradead.org>
+Date:   Wed, 7 Jul 2021 14:43:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <YOYDjtStnw9CO5dR@piout.net>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+On 7/7/21 12:42 PM, Alexandre Belloni wrote:
+> On 07/07/2021 16:40:34+0000, Codrin.Ciubotariu@microchip.com wrote:
+>> On 29.06.2021 00:11, Randy Dunlap wrote:
+>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>>
+>>> On a config (such as arch/sh/) which does not set HAS_DMA when MMU
+>>> is not set, several ATMEL ASoC drivers select symbols that cause
+>>> kconfig warnings. There is one "depends on HAS_DMA" here but several
+>>> more are needed to prevent kconfig warnings since 'select' does not
+>>> recognize any dependencies.
+>>>
+>>> Fix the following kconfig warnings:
+>>>
+>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
+>>>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
+>>>    Selected by [m]:
+>>>    - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
+>>>    - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+>>>
+>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
+>>>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
+>>>    Selected by [m]:
+>>>    - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
+>>>
+>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
+>>>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
+>>>    Selected by [m]:
+>>>    - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+>>>
+>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
+>>>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
+>>>    Selected by [m]:
+>>>    - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
+>>>    - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
+>>
+>> Hi Randy,
+>>
+>> Sorry about my delayed response. I think it would be better to just 
+>> remove HAS_DMA from SND_ATMEL_SOC_PDC, since it seems to compile fine 
+>> without it. This should fix all the problems...
+>>
+> 
+> I bet this is correct since m32r is gone.
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+Yes, that builds for me with no problems.
+I'll submit that patch soon.
 
-are available in the Git repository at:
+Thanks.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.14-changes
-
-for you to fetch changes up to d58b2061105956f6e69691bf0259b1dd1e9fb601:
-
-  Merge branch 'remotes/lorenzo/pci/mobiveil' (2021-07-06 10:56:32 -0500)
-
-----------------------------------------------------------------
-
-Enumeration:
-  - Fix dsm_label_utf16s_to_utf8s() buffer overrun (Krzysztof Wilczyński)
-  - Rely on lengths from scnprintf(), dsm_label_utf16s_to_utf8s()
-    (Krzysztof Wilczyński)
-  - Use sysfs_emit() and sysfs_emit_at() in "show" functions (Krzysztof
-    Wilczyński)
-  - Fix 'resource_alignment' newline issues (Krzysztof Wilczyński)
-  - Add 'devspec' newline (Krzysztof Wilczyński)
-  - Dynamically map ECAM regions (Russell King)
-
-Resource management:
-  - Coalesce host bridge contiguous apertures (Kai-Heng Feng)
-
-PCIe native device hotplug:
-  - Ignore Link Down/Up caused by DPC (Lukas Wunner)
-
-Power management:
-  - Leave Apple Thunderbolt controllers on for s2idle or standby
-    (Konstantin Kharlamov)
-
-Virtualization:
-  - Work around Huawei Intelligent NIC VF FLR erratum (Chiqijun)
-  - Clarify error message for unbound IOV devices (Moritz Fischer)
-  - Add pci_reset_bus_function() Secondary Bus Reset interface (Raphael
-    Norwitz)
-
-Peer-to-peer DMA:
-  - Simplify distance calculation (Christoph Hellwig)
-  - Finish RCU conversion of pdev->p2pdma (Eric Dumazet)
-  - Rename upstream_bridge_distance() and rework doc (Logan Gunthorpe)
-  - Collect acs list in stack buffer to avoid sleeping (Logan Gunthorpe)
-  - Use correct calc_map_type_and_dist() return type (Logan Gunthorpe)
-  - Warn if host bridge not in whitelist (Logan Gunthorpe)
-  - Refactor pci_p2pdma_map_type() (Logan Gunthorpe)
-  - Avoid pci_get_slot(), which may sleep (Logan Gunthorpe)
-
-Altera PCIe controller driver:
-  - Add Joyce Ooi as Altera PCIe maintainer (Joyce Ooi)
-
-Broadcom iProc PCIe controller driver:
-  - Fix multi-MSI base vector number allocation (Sandor Bodo-Merle)
-  - Support multi-MSI only on uniprocessor kernel (Sandor Bodo-Merle)
-
-Freescale i.MX6 PCIe controller driver:
-  - Limit DBI register length for imx6qp PCIe (Richard Zhu)
-  - Add "vph-supply" for PHY supply voltage (Richard Zhu)
-  - Enable PHY internal regulator when supplied >3V (Richard Zhu)
-  - Remove imx6_pcie_probe() redundant error message (Zhen Lei)
-
-Intel Gateway PCIe controller driver:
-  - Fix INTx enable (Martin Blumenstingl)
-
-Marvell Aardvark PCIe controller driver:
-  - Fix checking for PIO Non-posted Request (Pali Rohár)
-  - Implement workaround for the readback value of VEND_ID (Pali Rohár)
-
-MediaTek PCIe controller driver:
-  - Remove redundant error printing in mtk_pcie_subsys_powerup() (Zhen Lei)
-
-MediaTek PCIe Gen3 controller driver:
-  - Add missing MODULE_DEVICE_TABLE (Zou Wei)
-
-Microchip PolarFlare PCIe controller driver:
-  - Make struct event_descs static (Krzysztof Wilczyński)
-
-Microsoft Hyper-V host bridge driver:
-  - Fix race condition when removing the device (Long Li)
-  - Remove bus device removal unused refcount/functions (Long Li)
-
-Mobiveil PCIe controller driver:
-  - Remove unused readl and writel functions (Krzysztof Wilczyński)
-
-NVIDIA Tegra PCIe controller driver:
-  - Add missing MODULE_DEVICE_TABLE (Zou Wei)
-
-NVIDIA Tegra194 PCIe controller driver:
-  - Fix tegra_pcie_ep_raise_msi_irq() ill-defined shift (Jon Hunter)
-  - Fix host initialization during resume (Vidya Sagar)
-
-Rockchip PCIe controller driver:
-  - Register IRQ handlers after device and data are ready (Javier Martinez
-    Canillas)
-
-----------------------------------------------------------------
-Bjorn Helgaas (26):
-      PCI: xgene: Annotate __iomem pointer
-      Merge branch 'pci/enumeration'
-      Merge branch 'pci/error'
-      Merge branch 'pci/hotplug'
-      Merge branch 'pci/misc'
-      Merge branch 'pci/p2pdma'
-      Merge branch 'pci/pm'
-      Merge branch 'pci/reset'
-      Merge branch 'pci/resource'
-      Merge branch 'pci/sysfs'
-      Merge branch 'pci/virtualization'
-      Merge branch 'pci/host/imx6'
-      Merge branch 'pci/host/intel-gw'
-      Merge branch 'pci/host/rockchip'
-      Merge branch 'pci/host/tegra'
-      Merge branch 'pci/host/tegra194'
-      Merge branch 'pci/host/xgene'
-      Merge branch 'pci/kernel-doc'
-      Merge branch 'remotes/lorenzo/pci/aardvark'
-      Merge branch 'remotes/lorenzo/pci/ftpci100'
-      Merge branch 'remotes/lorenzo/pci/hv'
-      Merge branch 'remotes/lorenzo/pci/iproc'
-      Merge branch 'remotes/lorenzo/pci/mediatek'
-      Merge branch 'remotes/lorenzo/pci/mediatek-gen3'
-      Merge branch 'remotes/lorenzo/pci/microchip'
-      Merge branch 'remotes/lorenzo/pci/mobiveil'
-
-Chiqijun (1):
-      PCI: Work around Huawei Intelligent NIC VF FLR erratum
-
-Christoph Hellwig (1):
-      PCI/P2PDMA: Simplify distance calculation
-
-Eric Dumazet (1):
-      PCI/P2PDMA: Finish RCU conversion of pdev->p2pdma
-
-Javier Martinez Canillas (1):
-      PCI: rockchip: Register IRQ handlers after device and data are ready
-
-Jon Hunter (1):
-      PCI: tegra194: Fix tegra_pcie_ep_raise_msi_irq() ill-defined shift
-
-Joyce Ooi (1):
-      MAINTAINERS: Add Joyce Ooi as Altera PCIe maintainer
-
-Kai-Heng Feng (1):
-      PCI: Coalesce host bridge contiguous apertures
-
-Konstantin Kharlamov (1):
-      PCI: Leave Apple Thunderbolt controllers on for s2idle or standby
-
-Krzysztof Wilczyński (9):
-      PCI: microchip: Make the struct event_descs static
-      PCI: mobiveil: Remove unused readl and writel functions
-      PCI/sysfs: Fix dsm_label_utf16s_to_utf8s() buffer overrun
-      PCI/sysfs: Rely on lengths from scnprintf(), dsm_label_utf16s_to_utf8s()
-      PCI/sysfs: Use sysfs_emit() and sysfs_emit_at() in "show" functions
-      PCI/sysfs: Fix 'resource_alignment' newline issues
-      PCI/sysfs: Add 'devspec' newline
-      PCI: cpcihp: Declare cpci_debug in header file
-      PCI: Fix kernel-doc formatting
-
-Logan Gunthorpe (6):
-      PCI/P2PDMA: Rename upstream_bridge_distance() and rework doc
-      PCI/P2PDMA: Collect acs list in stack buffer to avoid sleeping
-      PCI/P2PDMA: Use correct calc_map_type_and_dist() return type
-      PCI/P2PDMA: Warn if host bridge not in whitelist
-      PCI/P2PDMA: Refactor pci_p2pdma_map_type()
-      PCI/P2PDMA: Avoid pci_get_slot(), which may sleep
-
-Long Li (2):
-      PCI: hv: Fix a race condition when removing the device
-      PCI: hv: Remove bus device removal unused refcount/functions
-
-Lukas Wunner (1):
-      PCI: pciehp: Ignore Link Down/Up caused by DPC
-
-Martin Blumenstingl (1):
-      PCI: intel-gw: Fix INTx enable
-
-Moritz Fischer (1):
-      PCI/IOV: Clarify error message for unbound devices
-
-Niklas Schnelle (1):
-      PCI: Print a debug message on PCI device release
-
-Pali Rohár (2):
-      PCI: aardvark: Fix checking for PIO Non-posted Request
-      PCI: aardvark: Implement workaround for the readback value of VEND_ID
-
-Randy Dunlap (1):
-      PCI: ftpci100: Rename macro name collision
-
-Raphael Norwitz (1):
-      PCI: Add pci_reset_bus_function() Secondary Bus Reset interface
-
-Richard Zhu (3):
-      PCI: imx6: Limit DBI register length for imx6qp PCIe
-      dt-bindings: imx6q-pcie: Add "vph-supply" for PHY supply voltage
-      PCI: imx6: Enable PHY internal regulator when supplied >3V
-
-Russell King (1):
-      PCI: Dynamically map ECAM regions
-
-Sandor Bodo-Merle (2):
-      PCI: iproc: Fix multi-MSI base vector number allocation
-      PCI: iproc: Support multi-MSI only on uniprocessor kernel
-
-Vidya Sagar (1):
-      PCI: tegra194: Fix host initialization during resume
-
-Wesley Sheng (1):
-      Documentation: PCI: Fix typo in pci-error-recovery.rst
-
-Yang Li (1):
-      x86/pci: Return true/false (not 1/0) from bool functions
-
-Yicong Yang (1):
-      PCI/AER: Use consistent format when printing PCI device
-
-Zhen Lei (2):
-      PCI: mediatek: Remove redundant error printing in mtk_pcie_subsys_powerup()
-      PCI: imx6: Remove imx6_pcie_probe() redundant error message
-
-Zou Wei (2):
-      PCI: mediatek-gen3: Add missing MODULE_DEVICE_TABLE
-      PCI: tegra: Add missing MODULE_DEVICE_TABLE
-
- Documentation/PCI/pci-error-recovery.rst           |   2 +-
- .../devicetree/bindings/pci/fsl,imx6q-pcie.txt     |   3 +
- MAINTAINERS                                        |   6 +-
- arch/x86/pci/mmconfig-shared.c                     |  10 +-
- drivers/pci/controller/cadence/pcie-cadence.h      |   7 +-
- drivers/pci/controller/dwc/pci-imx6.c              |  25 +-
- drivers/pci/controller/dwc/pcie-intel-gw.c         |  10 +-
- drivers/pci/controller/dwc/pcie-tegra194.c         |   4 +-
- .../pci/controller/mobiveil/pcie-layerscape-gen4.c |  11 -
- drivers/pci/controller/pci-aardvark.c              |  13 +-
- drivers/pci/controller/pci-ftpci100.c              |  30 +-
- drivers/pci/controller/pci-hyperv.c                |  64 ++--
- drivers/pci/controller/pci-tegra.c                 |   1 +
- drivers/pci/controller/pci-xgene.c                 |   4 +-
- drivers/pci/controller/pcie-iproc-msi.c            |  35 +-
- drivers/pci/controller/pcie-iproc.c                |  24 +-
- drivers/pci/controller/pcie-iproc.h                |  16 +-
- drivers/pci/controller/pcie-mediatek-gen3.c        |   1 +
- drivers/pci/controller/pcie-mediatek.c             |   4 +-
- drivers/pci/controller/pcie-microchip-host.c       |   2 +-
- drivers/pci/controller/pcie-rockchip-host.c        |  12 +-
- drivers/pci/ecam.c                                 |  54 ++-
- drivers/pci/hotplug/cpci_hotplug.h                 |   3 +
- drivers/pci/hotplug/cpci_hotplug_pci.c             |   2 -
- drivers/pci/hotplug/cpqphp_core.c                  |   7 +-
- drivers/pci/hotplug/cpqphp_ctrl.c                  |   2 +-
- drivers/pci/hotplug/pci_hotplug_core.c             |   8 +-
- drivers/pci/hotplug/pciehp.h                       |   3 +
- drivers/pci/hotplug/pciehp_hpc.c                   |  36 ++
- drivers/pci/hotplug/rpadlpar_sysfs.c               |   4 +-
- drivers/pci/hotplug/shpchp_sysfs.c                 |  38 ++-
- drivers/pci/iov.c                                  |  23 +-
- drivers/pci/msi.c                                  |   8 +-
- drivers/pci/p2pdma.c                               | 376 +++++++++++----------
- drivers/pci/pci-label.c                            |  22 +-
- drivers/pci/pci-sysfs.c                            |   2 +-
- drivers/pci/pci.c                                  |  54 +--
- drivers/pci/pci.h                                  |   8 +-
- drivers/pci/pcie/aer.c                             |  24 +-
- drivers/pci/pcie/aspm.c                            |   4 +-
- drivers/pci/pcie/dpc.c                             |  74 +++-
- drivers/pci/probe.c                                |  53 ++-
- drivers/pci/quirks.c                               |  76 +++++
- drivers/pci/slot.c                                 |  18 +-
- drivers/pci/switch/switchtec.c                     |  18 +-
- include/linux/pci-ecam.h                           |   1 +
- include/linux/pci-ep-cfs.h                         |   2 +-
- include/linux/pci-epc.h                            |   5 +-
- include/linux/pci-epf.h                            |   5 +-
- include/linux/pci.h                                |   2 +-
- include/linux/pci_hotplug.h                        |   2 +
- include/uapi/linux/pcitest.h                       |   2 +-
- 52 files changed, 789 insertions(+), 431 deletions(-)
