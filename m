@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7593BE859
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11AEA3BE85C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbhGGMyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 08:54:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52582 "EHLO
+        id S231809AbhGGMyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 08:54:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31232 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231785AbhGGMx7 (ORCPT
+        by vger.kernel.org with ESMTP id S231802AbhGGMyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 08:53:59 -0400
+        Wed, 7 Jul 2021 08:54:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625662279;
+        s=mimecast20190719; t=1625662281;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=A8m8l1YMhMNGREC6OerrdIRk3bJP0sjtmzeEBrv8jIk=;
-        b=hEIqYXjdPsIto4mlyWpj7uxusfFyxF0KFEjSFSw4rLF5JMwnUPqibDIgfMHHwWaXqXLJEF
-        mnNNKYEke34aXABvqdIiVMyjoFyoRpHeb7qiD9dX26yLF8ZFoag0oILmfMU+r01BmVHENH
-        umQZ1N/O2JSmGaU3IHzg51xNRYsITbk=
+        bh=wW8WDkxvAoGkbHm52MpQ2Ci/IJt/l/ylZkv+vEZTLXY=;
+        b=LkNd7X/lnwxnk575yt3iHr39hxBUPGmrjRRz4y3golVDjw0P6hu2MyT0NSxjE8LzDMmfWd
+        BmrQ+ZyeYLS5ryw4AZOi1tq6uPKr/01owFq4dyCszloLgjGjxYx0r7s3HDSabS+vGuXN24
+        UWXCDDFm+Tywpni/W7/X4j/hFp14OUU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-315-UCTgX0DgMQiH11zDhpjE4g-1; Wed, 07 Jul 2021 08:51:16 -0400
-X-MC-Unique: UCTgX0DgMQiH11zDhpjE4g-1
+ us-mta-269-EEWS1rxfOqmTR5ku8A83-w-1; Wed, 07 Jul 2021 08:51:20 -0400
+X-MC-Unique: EEWS1rxfOqmTR5ku8A83-w-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37BD4343D2;
-        Wed,  7 Jul 2021 12:51:14 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92EC9343CF;
+        Wed,  7 Jul 2021 12:51:18 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.40.192.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0958C19C45;
-        Wed,  7 Jul 2021 12:51:07 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A94C219C45;
+        Wed,  7 Jul 2021 12:51:14 +0000 (UTC)
 From:   Maxim Levitsky <mlevitsk@redhat.com>
 To:     kvm@vger.kernel.org
 Cc:     Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
@@ -47,9 +47,9 @@ Cc:     Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
         Wanpeng Li <wanpengli@tencent.com>,
         Ingo Molnar <mingo@redhat.com>,
         Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 1/3] KVM: SVM: #SMI interception must not skip the instruction
-Date:   Wed,  7 Jul 2021 15:50:58 +0300
-Message-Id: <20210707125100.677203-2-mlevitsk@redhat.com>
+Subject: [PATCH 2/3] KVM: SVM: remove INIT intercept handler
+Date:   Wed,  7 Jul 2021 15:50:59 +0300
+Message-Id: <20210707125100.677203-3-mlevitsk@redhat.com>
 In-Reply-To: <20210707125100.677203-1-mlevitsk@redhat.com>
 References: <20210707125100.677203-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
@@ -59,46 +59,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 5ff3a351f687 ("KVM: x86: Move trivial instruction-based
-exit handlers to common code"), unfortunately made a mistake of
-treating nop_on_interception and nop_interception in the same way.
+Kernel never sends real INIT even to CPUs, other than on boot.
 
-Former does truly nothing while the latter skips the instruction.
+Thus INIT interception is an error which should be caught
+by a check for an unknown VMexit reason.
 
-SMI VM exit handler should do nothing.
-(SMI itself is handled by the host when we do STGI)
+On top of that, the current INIT VM exit handler skips
+the current instruction which is wrong.
+That was added in commit 5ff3a351f687 ("KVM: x86: Move trivial
+instruction-based exit handlers to common code").
 
 Fixes: 5ff3a351f687 ("KVM: x86: Move trivial instruction-based exit handlers to common code")
 Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 ---
- arch/x86/kvm/svm/svm.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/x86/kvm/svm/svm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 616b9679ddcc..41d0a589c578 100644
+index 41d0a589c578..a3aad97fa427 100644
 --- a/arch/x86/kvm/svm/svm.c
 +++ b/arch/x86/kvm/svm/svm.c
-@@ -2127,6 +2127,11 @@ static int nmi_interception(struct kvm_vcpu *vcpu)
- 	return 1;
- }
- 
-+static int smi_interception(struct kvm_vcpu *vcpu)
-+{
-+	return 1;
-+}
-+
- static int intr_interception(struct kvm_vcpu *vcpu)
- {
- 	++vcpu->stat.irq_exits;
-@@ -3101,7 +3106,7 @@ static int (*const svm_exit_handlers[])(struct kvm_vcpu *vcpu) = {
- 	[SVM_EXIT_EXCP_BASE + GP_VECTOR]	= gp_interception,
+@@ -3107,7 +3107,6 @@ static int (*const svm_exit_handlers[])(struct kvm_vcpu *vcpu) = {
  	[SVM_EXIT_INTR]				= intr_interception,
  	[SVM_EXIT_NMI]				= nmi_interception,
--	[SVM_EXIT_SMI]				= kvm_emulate_as_nop,
-+	[SVM_EXIT_SMI]				= smi_interception,
- 	[SVM_EXIT_INIT]				= kvm_emulate_as_nop,
+ 	[SVM_EXIT_SMI]				= smi_interception,
+-	[SVM_EXIT_INIT]				= kvm_emulate_as_nop,
  	[SVM_EXIT_VINTR]			= interrupt_window_interception,
  	[SVM_EXIT_RDPMC]			= kvm_emulate_rdpmc,
+ 	[SVM_EXIT_CPUID]			= kvm_emulate_cpuid,
 -- 
 2.26.3
 
