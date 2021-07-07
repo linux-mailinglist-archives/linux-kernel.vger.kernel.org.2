@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83813BEA8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4FC3BEA9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbhGGPVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 11:21:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232050AbhGGPVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 11:21:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C72E561CC1;
-        Wed,  7 Jul 2021 15:18:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625671138;
-        bh=OBMw3GXF4Vb3gXXLiv+kzTAMUuODEO//MtnyB18PNc4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=MUSigRRJvw14/mnyWUa9pfCMe/83mAM5ISzVn/YbIKJzK9v0/1H0wgCJbsJfHiAG6
-         VJn1TRSJaTInKLLDC3TMBsLxUzQOLWBp5oa79uNRVlshzzo5cWUHAcVt14rrSenfoC
-         cBJ5xR4On9dDuyPkvOYtE1/vn0k/8TOC9HctNGoEXMHEgaNVdRMc01quNj7JXHRhEC
-         7nimwcjJXamQP7/QB3xw8G/PYzArxoCjEzNt5PLkCiptOBMzW3buUBwKTpm4xN1eKM
-         R9aVYg0Yz+umg+dqRKMzLl93NKdTaTs8ZEKf6vSpScTyTWGt8mPzK3lXNEP5pUmQQV
-         8HFXQrVVpiQNw==
-Message-ID: <bd70fa726aa681e3a36840d54a81ec59d2cc78b5.camel@kernel.org>
-Subject: Re: [PATCH v2] tracing: Add linear buckets to histogram logic
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Daniel Bristot de Oliveira Subject: [PATCH] tracing:" 
-        <bristot@redhat.com>
-Date:   Wed, 07 Jul 2021 10:18:56 -0500
-In-Reply-To: <20210707111102.749d1fbc@oasis.local.home>
-References: <20210706154315.3567166e@gandalf.local.home>
-         <CAM9d7chmHmm3tjJik5EQDOJOdn7G0D3W9EJUogf_POnyTe6tcA@mail.gmail.com>
-         <20210706205039.64182493@rorschach.local.home>
-         <CAM9d7chF1Qnch5PmhfAWbTPcN5ocgVEvNKqFYsLxWOiaZPdYgQ@mail.gmail.com>
-         <20210707111102.749d1fbc@oasis.local.home>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S232310AbhGGPWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 11:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232273AbhGGPWR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 11:22:17 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46083C061574;
+        Wed,  7 Jul 2021 08:19:37 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id C57DB581C; Wed,  7 Jul 2021 11:19:36 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org C57DB581C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1625671176;
+        bh=6dAsIZ5lza0rz/s9WS3udlrYH4HxjUOA7/i1ESqKdT4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vY+gZbtFbrXsjt2QtKn/H3Gv+61kOYspLJ6bwHNpeK332pXhZqRFEXPjZ5XVnjiab
+         YS7owiZJt/DEcx/8cfet87riJHlkLUu1tVZj9R2vZhPKQ2+NdcZnLkj9xO8NGXKMBb
+         GMHFqJKEgHpOxmJ6Nu24KgOdlNVyTkSYSdqCbgjk=
+Date:   Wed, 7 Jul 2021 11:19:36 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2 1/2] fcntl: fix potential deadlocks for
+ &fown_struct.lock
+Message-ID: <20210707151936.GB9911@fieldses.org>
+References: <20210707023548.15872-1-desmondcheongzx@gmail.com>
+ <20210707023548.15872-2-desmondcheongzx@gmail.com>
+ <YOVENb3X/m/pNrYt@kroah.com>
+ <14633c3be87286d811263892375f2dfa9a8ed40a.camel@kernel.org>
+ <YOWHKk6Nq8bazYjB@kroah.com>
+ <4dda1cad6348fced5fcfcb6140186795ed07d948.camel@kernel.org>
+ <20210707135129.GA9446@fieldses.org>
+ <YOXDBZR2RSfiM+A3@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOXDBZR2RSfiM+A3@kroah.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-07-07 at 11:11 -0400, Steven Rostedt wrote:
-> On Wed, 7 Jul 2021 07:00:32 -0700
-> Namhyung Kim <namhyung@kernel.org> wrote:
-> 
-> > > I feel is farther from log2 than my version. Stating that "~"
-> > > means
-> > > approximation, what does "0 ~ 99" really mean?  
+On Wed, Jul 07, 2021 at 05:06:45PM +0200, Greg KH wrote:
+> On Wed, Jul 07, 2021 at 09:51:29AM -0400, J. Bruce Fields wrote:
+> > On Wed, Jul 07, 2021 at 07:40:47AM -0400, Jeff Layton wrote:
+> > > On Wed, 2021-07-07 at 12:51 +0200, Greg KH wrote:
+> > > > On Wed, Jul 07, 2021 at 06:44:42AM -0400, Jeff Layton wrote:
+> > > > > On Wed, 2021-07-07 at 08:05 +0200, Greg KH wrote:
+> > > > > > On Wed, Jul 07, 2021 at 10:35:47AM +0800, Desmond Cheong Zhi Xi wrote:
+> > > > > > > +	WARN_ON_ONCE(irqs_disabled());
+> > > > > > 
+> > > > > > If this triggers, you just rebooted the box :(
+> > > > > > 
+> > > > > > Please never do this, either properly handle the problem and return an
+> > > > > > error, or do not check for this.  It is not any type of "fix" at all,
+> > > > > > and at most, a debugging aid while you work on the root problem.
+> > > > > > 
+> > > > > > thanks,
+> > > > > > 
+> > > > > > greg k-h
+> > > > > 
+> > > > > Wait, what? Why would testing for irqs being disabled and throwing a
+> > > > > WARN_ON in that case crash the box?
+> > > > 
+> > > > If panic-on-warn is enabled, which is a common setting for systems these
+> > > > days.
+> > > 
+> > > Ok, that makes some sense.
 > > 
-> > To me, it means "range".  The original intention was to
-> > express [FROM, TO) and I thought we can omit the FROM
-> > since it's same as TO of the previous line.  But we can use
-> > inclusive ranges with FROM and TO for clarity.
+> > Wait, I don't get it.
 > > 
-> > But it's up to you.  I don't object to your change.
+> > How are we supposed to decide when to use WARN, when to use BUG, and
+> > when to panic?  Do we really want to treat them all as equivalent?  And
+> > who exactly is turning on panic-on-warn?
 > 
-> Thanks, I'd like to keep it as is. Unless Tom has any issues with it.
-> 
-> Tom?
+> You never use WARN or BUG, unless the system is so messed up that you
+> can not possibly recover from the issue.
 
-Yeah, I prefer the explicit ranges too - it leaves nothing open to
-interpretation.
+I've heard similar advice for BUG before, but this is the first I've
+heard it for WARN.  Do we have any guidelines for how to choose between
+WARN and BUG?
 
-Tom
-
-> 
-> -- Steve
-
+--b.
