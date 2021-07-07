@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BC63BED8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8EF3BED90
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhGGR56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 13:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58654 "EHLO
+        id S231160AbhGGR6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 13:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbhGGR5v (ORCPT
+        with ESMTP id S230139AbhGGR6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:57:51 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD18C061574;
-        Wed,  7 Jul 2021 10:55:10 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id r26so6126098lfp.2;
-        Wed, 07 Jul 2021 10:55:10 -0700 (PDT)
+        Wed, 7 Jul 2021 13:58:23 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9974C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 10:55:41 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id c28so6065931lfp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 10:55:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zQxdG9I9Woa7S81uA0jzyR2yog0q49/Cb6/kJl+fdKw=;
-        b=DPrgZiDxLxxXsaeiP6iCEpP5oqHrr32wA0cgJIU4nTet5CoaGBrMeLBSTguCnSMbsf
-         gZSBa6ckD574dcRSLXAaPOlgMNbtP5ibJLmgmaQs3IZbdYdaZNtkt8ORDtjofcwHrpeo
-         X0pDJA+cYDO1swW6g2Q2kqyKOTO8fpwcrGsKNfFX/veaD7X5aR4tyN0UwJxW0cVdsaAG
-         wlWHp1S8Dy3fnognXmJmrEUuiv9qpsJ8J1pNRtCaj4AIEeFfDE7oFqSg21b7NKdpOwWN
-         XML0iqOjspip/aEkvl7rbFttEMF9B2+b9l4hm+y9A0hch9vub5tdcE9jmGOqsqC3kS/C
-         qxzA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=myWem3gj5bW37MhHpnhzxGgmeTIT4Kkz6D1nIRabDn0=;
+        b=DXGPF2TFMsvSQq0ntWuzUOHIBPJp3QRnEtFsVeaIclMv3ZA9GvuApeEj+dgcic88K5
+         eWEvHC/h9/HamFDX4w3DdQUWP1agT7itBBVXbIWwVxwhOUx6q7LQGPviiBigvG4HoXPQ
+         kOMSLfcfS3PvB44BReVGVxSIITsfad+UnKbmk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zQxdG9I9Woa7S81uA0jzyR2yog0q49/Cb6/kJl+fdKw=;
-        b=SIllCcHpYNOh3tkuYWBZBkuoWgBvxQZyTM2WPLeqas7xaY6r6Jp5pGNpHjzcS5ydhu
-         1e8Y5NfrdVDDiVWYJ7p0GMJDK97/W7HRqwFJOREKVpxmoTwq1c9SsaPHEDgVZMXsr6CE
-         fG861IzeMxIM+IaH7ReKg3ug4Klma3aBLY9IHyZac/xYXZqC6HZtvNCfryot6a0j7Tzv
-         OvmRzr10mxy5M9OL0zE76g7clMAy1vj6WA1L1wMr2zqf2oQR2pzLo6sZcga2UwVQE778
-         uX2fnNaTvf827Hh96ekki0+34M8j592Gu3GPh2QCbN64v9L/yooG8waCsWW2n+pkY4dC
-         xWEw==
-X-Gm-Message-State: AOAM532YfHHC6+Sac5KqK109SIuzShlDaMd+n6jYbDyq0oPLTz7aiHf9
-        wJUpWrf6n2PKp92W+yI2zq8u6Zs0akg=
-X-Google-Smtp-Source: ABdhPJwyOvh7JP+XAqY+4wG4EDAsP16uap1AjswsK9fEtNc3A6WHJwpiIM6SORNrG7sPVt+w1f6m0Q==
-X-Received: by 2002:ac2:5189:: with SMTP id u9mr4551247lfi.161.1625680508344;
-        Wed, 07 Jul 2021 10:55:08 -0700 (PDT)
-Received: from [192.168.1.102] ([178.176.76.61])
-        by smtp.gmail.com with ESMTPSA id i6sm1761452lfe.164.2021.07.07.10.55.07
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=myWem3gj5bW37MhHpnhzxGgmeTIT4Kkz6D1nIRabDn0=;
+        b=E66LQ60FF9Qi6e00cc3z5B2EYT4ktLnj6QNo084R+38eTq5J5YXpx5Dp64pVlW3vzW
+         ntZVbcen5oJZ/5hliRrW9qmOcCCfUcEhJkUqzRSeAZo9Q/yeU/F8dleBUHyOgI9H4tgQ
+         bqzGePLRmtweZIvSFtSvvLviDhTncEcatNCBzX3euvrjIEnXKwf9OZ7Wc2kvACyzTESJ
+         aHJHJVSbNsZAY7yNWFrtPwy7M2mQUM21MGyVYIlpnzh61dT3IE1WGMZjmI/w0khVWRD9
+         1k+WJiI6o3Lt0/RineubHQvEQS1/+Dn0JKmFGwIpRRVzgN3CtTvowCIiKU9KNF1paRgd
+         q8KA==
+X-Gm-Message-State: AOAM530HDuvo3TDS7GNtgOxS2qkYUPRR7i37MTx/IpAsC++E0YgZAU2S
+        Hmr5e9Rf4GN1i0hlU9LI0lVSH5pjXT6mlESv
+X-Google-Smtp-Source: ABdhPJzWgZmIgj8lsSShocbE7MAgF2Gw78VP8iSGRVkAfg0ynG5LznHo8KI9Vu+oScjDMbKOtcRoJQ==
+X-Received: by 2002:a2e:95c9:: with SMTP id y9mr20004154ljh.401.1625680539688;
+        Wed, 07 Jul 2021 10:55:39 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id k21sm2046396lji.107.2021.07.07.10.55.38
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 10:55:08 -0700 (PDT)
-Subject: Re: [PATCH v2 4/9] clocksource/drivers/pistachio: Make it seletable
- for MIPS
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
-Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
-        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
-        vkoul@kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org
-References: <20210707031552.20166-1-jiaxun.yang@flygoat.com>
- <20210707031552.20166-5-jiaxun.yang@flygoat.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <99803248-0a48-c4a8-e278-47e0794dbc48@gmail.com>
-Date:   Wed, 7 Jul 2021 20:55:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 07 Jul 2021 10:55:38 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id p21so6049035lfj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 10:55:38 -0700 (PDT)
+X-Received: by 2002:ac2:4903:: with SMTP id n3mr19512860lfi.487.1625680538298;
+ Wed, 07 Jul 2021 10:55:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210707031552.20166-5-jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210706210228.1229484-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20210706210228.1229484-1-bjorn.andersson@linaro.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 7 Jul 2021 10:55:22 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiXHZ=v4_HVL5TyP9DaHDd7Xxb8hiXjTQi1eDXOA_XRMw@mail.gmail.com>
+Message-ID: <CAHk-=wiXHZ=v4_HVL5TyP9DaHDd7Xxb8hiXjTQi1eDXOA_XRMw@mail.gmail.com>
+Subject: Re: [GIT PULL] remoteproc updates for v5.14
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>, linux-remoteproc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peng Fan <peng.fan@nxp.com>, Suman Anna <s-anna@ti.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Yassine Oudjana <y.oudjana@protonmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Tue, Jul 6, 2021 at 2:02 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> Suman Anna (6):
+>       remoteproc: Add kernel-doc comment for is_iomem
+>       remoteproc: Fix various kernel-doc warnings
+>       remoteproc: k3-r5: Extend support to R5F clusters on AM64x SoCs
+>       dt-bindings: remoteproc: qcom: pas: Fix indentation warnings
+>       dt-bindings: remoteproc: pru: Update bindings for K3 AM64x SoCs
+>       remoteproc: pru: Add support for various PRU cores on K3 AM64x SoCs
 
-   "Selectable" in the subject.
+Hmm. I see an additional commit
 
-On 7/7/21 6:15 AM, Jiaxun Yang wrote:
+      dt-bindings: remoteproc: k3-r5f: Update bindings for AM64x SoCs
 
-> So it will be avilable for generic MIPS kenrel.
+and the diffstat I see differs by that extra DT binding too.
 
-   "Kernel" here. :-)
+If you end up adding commits to the end and updating the tag, please
+just let me know, so that I don't go "Hmm, this doesn't match the pull
+request" and have to go dig around what the difference is.
 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-[...]
-
-MBR, Sergei
+              Linus
