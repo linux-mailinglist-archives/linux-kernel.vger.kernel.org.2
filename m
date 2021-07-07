@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E5A3BE888
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 15:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5B33BE8A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 15:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbhGGNKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 09:10:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231551AbhGGNKK (ORCPT
+        id S231682AbhGGNRs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 7 Jul 2021 09:17:48 -0400
+Received: from mx-relay36-hz1.antispameurope.com ([94.100.133.212]:36463 "EHLO
+        mx-relay36-hz1.antispameurope.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229829AbhGGNRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 09:10:10 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A904C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 06:07:30 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id b15so3267085iow.4
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 06:07:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=P+p8MlTL+Ugums2wbllEtPvV46qbJoRofLeQP5kxHz8=;
-        b=RBCF38Z9BoIserbyrC2TIsU2UE0NmC2IMtmcDMWweo1/VZHNzkNynCJ6a/aTwq7D1A
-         86wGe/YtWI8g/kLI08XlN/BxFvFg7OTNWsi08T5jN1OtvJv3BHfiEjd1MlMt3vIGfeMJ
-         QX/GJ1vGnCVesF/Yxlk3KFjyX0HkdqGFDY3HC4ifgaUYvZNAiIDnjCpPNSIbs6mvHCQk
-         TxMeqtR+OWObrDfkxK4YvAiqsufT/9sBPWH8mzJJQMVZgUZY4HaWy5RgY+VTDTDyNuRh
-         qZXpZ588E23ITPB60cJFLgVsHXTSe5pUtedACOZpMf63hOcBb8wRsoIpBr9Cmc6zWOIt
-         NbJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=P+p8MlTL+Ugums2wbllEtPvV46qbJoRofLeQP5kxHz8=;
-        b=QNdOr21An9o8UDnvL7n0xbTB6V73IXg1uFZfWcK6VmXOElJW6h0Dokunqv+kOlgCgX
-         96e2VCmAaO+BX2T2+Ir9dmZ1KX449hgcoDDGjCRungnsHKD7owbqu3c7XGOCOlShNqQQ
-         GsvILP9ZaelL99Zt2ZC//GWrpT5s6Xm9R20pvqKH2aUnupOPyABkkisk8PV/y7RGMd5K
-         mXSF/tW0Buoal7QvMjZHl7F5v79WJT5D66YPpKOJNmAMljM8eGE4uVAr1SNwbEvXLlBT
-         Z97KF81kjSj1n2PHMsYc3HzMelucJvFEAQKS0LBTbRYVuA6eeoYB4p1TC1mlbxvwWnRl
-         Kn1g==
-X-Gm-Message-State: AOAM533iGpgl/lhbZWhYhTHFFyJs7Ig6iFHzeahDx7r+ThoQcL2Kz5T3
-        lwQBwSIW/Vp1frPls7oDytwfqw==
-X-Google-Smtp-Source: ABdhPJwQrf13ubadfe5m9Byloeyk5PEWe2nQLXJo8nOhxYt22e5MGCQqWrUAJuTIBVz6gl5pYt8zZg==
-X-Received: by 2002:a6b:760e:: with SMTP id g14mr19857660iom.119.1625663249772;
-        Wed, 07 Jul 2021 06:07:29 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id m13sm10321697ila.80.2021.07.07.06.07.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 06:07:29 -0700 (PDT)
-Subject: Re: [RFC 0/4] open/accept directly into io_uring fixed file table
-To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>
-References: <cover.1625657451.git.asml.silence@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <48bd91bc-ba1a-1e69-03a1-3d6f913f96c3@kernel.dk>
-Date:   Wed, 7 Jul 2021 07:07:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 7 Jul 2021 09:17:47 -0400
+X-Greylist: delayed 332 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Jul 2021 09:17:46 EDT
+Received: from unknown ([185.80.187.2]) by mx-relay36-hz1.antispameurope.com;
+ Wed, 07 Jul 2021 15:09:33 +0200
+Received: from grp-ex01.Vivavis.int (192.168.17.53) by grp-ex01.Vivavis.int
+ (192.168.17.53) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.12; Wed, 7 Jul 2021
+ 15:09:25 +0200
+Received: from grp-ex01.Vivavis.int ([fe80::b524:e95:f072:33b7]) by
+ grp-ex01.Vivavis.int ([fe80::b524:e95:f072:33b7%9]) with mapi id
+ 15.02.0858.012; Wed, 7 Jul 2021 15:09:25 +0200
+From:   "embedded (VIVAVIS AG)" <embedded@vivavis.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "broonie@kernel.org" <broonie@kernel.org>
+Subject: Voltage and current regulator: usage of 'regulators' parent node in
+ device tree
+Thread-Topic: Voltage and current regulator: usage of 'regulators' parent node
+ in device tree
+Thread-Index: AddzLeJh24+ag2vTQDK05eDkXARutw==
+Date:   Wed, 7 Jul 2021 13:09:25 +0000
+Message-ID: <a8700cd3e056423cac4e209b8f740595@vivavis.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.16.7.31]
+x-g-data-mailsecurity-for-exchange-state: 0
+x-g-data-mailsecurity-for-exchange-error: 0
+x-g-data-mailsecurity-for-exchange-sender: 23
+x-g-data-mailsecurity-for-exchange-server: 61419075-592b-4c8d-b7a0-bf1d145a8b8e
+x-c2processedorg: 2f045ba3-9b34-4118-a5bd-6c10d5957477
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <cover.1625657451.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-cloud-security-sender: embedded@vivavis.com
+X-cloud-security-recipient: linux-kernel@vger.kernel.org
+X-cloud-security-crypt: load encryption module
+X-cloud-security-Virusscan: CLEAN
+X-cloud-security-disclaimer: This E-Mail was scanned by E-Mailservice on mx-relay36-hz1.antispameurope.com with 9E5E28AAEBC
+X-cloud-security-connect: unknown[185.80.187.2], TLS=1, IP=185.80.187.2
+X-cloud-security-Digest: 966d240c89d870d849cb0391ebe0f129
+X-cloud-security: scantime:2.299
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/21 5:39 AM, Pavel Begunkov wrote:
-> Implement an old idea allowing open/accept io_uring requests to register
-> a newly created file as a io_uring's fixed file instead of placing it
-> into a task's file table. The switching is encoded in io_uring's SQEs
-> by setting sqe->buf_index/file_index, so restricted to 2^16-1. Don't
-> think we need more, but may be a good idea to scrap u32 somewhere
-> instead.
-> 
-> From the net side only needs a function doing __sys_accept4_file()
-> but not installing fd, see 2/4.
-> 
-> Only RFC for now, the new functionality is tested only for open yet.
-> I hope we can remember the author of the idea to add attribution.
+I see a lot of Devicetrees wrapping the regulator nodes within a parent node
+like this
 
-Pretty sure the original suggester of this as Josh, CC'ed.
+regulators {
+    compatible = "simple-bus";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    reg_p3v3: regulator@0 {
+        compatible = "regulator-fixed";
+        [...]
+        regulator-always-on;
+    };
+    [...]
 
--- 
-Jens Axboe
+Contrary to that, patches exist removing the 'regulators' node, because the 'simple-bus'
+doesn't really exist in hardware. Unfortunately, the documentation is unclear about
+wrapping regulator nodes like shown above.
+
+Should I avoid the parent 'regulators' node?
+
+Is the given naming schema in fixed-regulator.yaml best practice to follow?
+
+    reg_xyz: regulator-xyz {
+      compatible = "regulator-fixed";
+      regulator-name = "xyz";
+
+Thank you for clarification.
+
+Carsten Stelling
 
