@@ -2,324 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFC23BE524
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187613BE530
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbhGGJKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbhGGJKq (ORCPT
+        id S231371AbhGGJLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:11:01 -0400
+Received: from lucky1.263xmail.com ([211.157.147.134]:59264 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230166AbhGGJK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:10:46 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F9EC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 02:08:05 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id h6so2172851iok.6
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 02:08:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CnKJjWlAOjx/YkfP3quSm2ywcz7d6vwbVV4Qg9uF+uc=;
-        b=haG0AVzpMeoLRA/3dkgSFKs2/Gz9UcUB0LVhU12BunlLtgji0taA4dKqudG8n6/SEL
-         I3/pntrqN2ZjBha48b8Jne/qt+t7jKbc2P3n9TOzSKZo9EJc22mPwkIFOU6nrwnUwWre
-         KoMwXx38l671w2BbhWixw5/i6R4wUWhtPppLY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CnKJjWlAOjx/YkfP3quSm2ywcz7d6vwbVV4Qg9uF+uc=;
-        b=NxG9uS2NbWJ6FBIa4t7omUlbnn42yq9XoC/evMknLc8uz0id1ubBJVDp6XUWaHLGwS
-         4x+KBDnse5FvMqh2OBLoIhlQMwjmczDQoy5ude25RbyYZYj7Cu89ukFyJgbgvmOh/p0Y
-         HwrKSTPWil3K8+hzUsc8C2SW87yQdQjWtEo4Tg6eNoqSHMcP6CDpu8zuYVkqKHq6zFy3
-         lAjAo1BJfRr3+pCYjwr6VEd2/sz1QvzMrFzB8Qrz+Ph/vGWuM36INekN9WARnNgz0siC
-         Y30ASbyA5cziLq6K1zRz9wiZHk7/VM7lvQzJk0Byt9tHpxMKN1Y8j+tXXx5Q4fMxnYUk
-         CL7w==
-X-Gm-Message-State: AOAM531rSaPre/j0oahndgIrTKmIMElONy1EF+NIAA5SNj2moVnInkiB
-        qNd7elnMG4FOqT4D11YcWT3E4lBiSxAEog==
-X-Google-Smtp-Source: ABdhPJxQeUiCj28WdJZG8mLrOtdm07pUIAEDztLhRm9Bu/oqs9WcHtshJN3dlc7miGPT651TYlp6HA==
-X-Received: by 2002:a6b:760e:: with SMTP id g14mr19083073iom.119.1625648884698;
-        Wed, 07 Jul 2021 02:08:04 -0700 (PDT)
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com. [209.85.166.48])
-        by smtp.gmail.com with ESMTPSA id n13sm1201715ilq.5.2021.07.07.02.08.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 02:08:03 -0700 (PDT)
-Received: by mail-io1-f48.google.com with SMTP id k16so2141154ios.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 02:08:03 -0700 (PDT)
-X-Received: by 2002:a05:6638:1301:: with SMTP id r1mr20786728jad.29.1625648883214;
- Wed, 07 Jul 2021 02:08:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210618122923.385938-1-ribalda@chromium.org> <20210618122923.385938-22-ribalda@chromium.org>
- <CANiDSCvNvJ_xyuqgvvFv6aZGSm=H-9=SeV6wp5C_0-acm+wC=A@mail.gmail.com>
- <820809c2-a564-8a79-c279-7570c3bcc801@xs4all.nl> <CANiDSCvwQvDYKNqxAZjtAKY6CGNrnn21LMoNnsg7FrrDiooi-A@mail.gmail.com>
- <d65ab386-370e-b2e9-dbac-a981993d9da7@xs4all.nl> <CANiDSCv=FMy6g1aQhVRxH1tADSyLAOAY7csMwPFtXZVMU8N6VA@mail.gmail.com>
- <1157542d-7088-fe70-965a-cfa128090bb3@xs4all.nl>
-In-Reply-To: <1157542d-7088-fe70-965a-cfa128090bb3@xs4all.nl>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Wed, 7 Jul 2021 11:07:52 +0200
-X-Gmail-Original-Message-ID: <CANiDSCt7juDYXQiWn4sD+4HH05TgzGCKxa3e99WTgwRqqckh_w@mail.gmail.com>
-Message-ID: <CANiDSCt7juDYXQiWn4sD+4HH05TgzGCKxa3e99WTgwRqqckh_w@mail.gmail.com>
-Subject: Re: [PATCH v10 21/21] media: uvcvideo: Return -EACCES to inactive controls
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, tfiga@chromium.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 7 Jul 2021 05:10:59 -0400
+Received: from localhost (unknown [192.168.167.70])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 8A7FACF123;
+        Wed,  7 Jul 2021 17:08:15 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P13447T140124675356416S1625648890906508_;
+        Wed, 07 Jul 2021 17:08:12 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <ba94c03d7984718457deefe972b5ed9c>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 19
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     linux-spi@vger.kernel.org
+Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [RFC PATCH v11 00/10] Add Rockchip SFC(serial flash controller) support
+Date:   Wed,  7 Jul 2021 17:08:00 +0800
+Message-Id: <20210707090810.5717-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans
 
-On Tue, 6 Jul 2021 at 16:19, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->
-> On 30/06/2021 14:51, Ricardo Ribalda wrote:
-> > Hi Hans
-> >
-> >
-> > On Wed, 30 Jun 2021 at 11:03, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
-> >>
-> >> Hi Ricardo,
-> >>
-> >> On 25/06/2021 15:55, Ricardo Ribalda wrote:
-> >>> Hi Hans
-> >>>
-> >>> On Fri, 25 Jun 2021 at 13:07, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
-> >>>>
-> >>>> On 25/06/2021 12:29, Ricardo Ribalda wrote:
-> >>>>> Hi Hans
-> >>>>>
-> >>>>> Did you have some hardware that did not work fine without this patch?
-> >>>>> Am I remembering correctly?
-> >>>>
-> >>>> Yes, that's correct. It's one of my webcams, but I can't remember which one
-> >>>> it is. You probably want me to test this v10?
-> >>>>
-> >>>> Regards,
-> >>>
-> >>> That would be awesome. Thanks!
-> >>
-> >> You can add my:
-> >>
-> >> Tested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> >
-> > Thanks a lot for testing it!
-> >
-> > Sorry to bother you, but could I ask you to try again, but with this
-> > patch reverted? This is v10 1-20, without 21/21
->
-> I tried with and without this patch and I didn't see any difference. Unfortunately,
-> I don't remember the exact details of what I tested last time and with which hardware.
->
-> I would drop this patch, it can always be added later.
 
-Thank you very much for testing.  I think there were no more comments
-in this set.
+Changes in v11:
+- The tx is set to 1 for Odroid Go Advance device
 
-Laurent: Shall I resend the series without this last patch, or can you
-take it as is ignoring the last one?
+Changes in v10:
+- Fix dma transfer logic
 
-Thanks!
+Changes in v9:
+- Separate DMA IRQ setting and wait_completion from DMA fifo transfer
+  function to make dma_status_poll be possible(Which I will implement
+  in u-boot)
+- Add SFC Kconfig detail comment
+- Separate FDT binding docs and includes from rk3036 sfc_hclk patch
+- Separate FDT binding docs and includes from rk3036 sfc_hclk patch
 
->
-> Regards,
->
->         Hans
->
-> >
-> >
-> > Thanks!
-> >>
-> >> to this series.
-> >>
-> >> I do get these warnings (depends on the webcam model, though, some do, some don't):
-> >>
-> >> Streaming ioctls:
-> >>         test read/write: OK (Not Supported)
-> >>         test blocking wait: OK
-> >>                 warn: v4l2-test-buffers.cpp(438): got sequence number 1, expected 0
-> >>         test MMAP (no poll): OK
-> >>                 warn: v4l2-test-buffers.cpp(438): got sequence number 1, expected 0
-> >>         test MMAP (select): OK
-> >>                 warn: v4l2-test-buffers.cpp(438): got sequence number 1, expected 0
-> >>         test MMAP (epoll): OK
-> >>                 warn: v4l2-test-buffers.cpp(438): got sequence number 1, expected 0
-> >>         test USERPTR (no poll): OK
-> >>                 warn: v4l2-test-buffers.cpp(438): got sequence number 1, expected 0
-> >>         test USERPTR (select): OK
-> >>         test DMABUF: Cannot test, specify --expbuf-device
-> >>
-> >> It's something to do with the Field ID, but I'm not sure if this is really correctly
-> >> reporting a dropped frame, or if it is a false report and the sequence counter was
-> >> wrongly incremented.
-> >>
-> >> This is a separate issue, though, and doesn't block this series.
-> >>
-> >> Regards,
-> >>
-> >>         Hans
-> >>
-> >>>
-> >>>>
-> >>>>         Hans
-> >>>>
-> >>>>>
-> >>>>> Thanks!
-> >>>>>
-> >>>>> On Fri, 18 Jun 2021 at 14:29, Ricardo Ribalda <ribalda@chromium.org> wrote:
-> >>>>>>
-> >>>>>> If a control is inactive return -EACCES to let the userspace know that
-> >>>>>> the value will not be applied automatically when the control is active
-> >>>>>> again.
-> >>>>>>
-> >>>>>> Also make sure that query_v4l2_ctrl doesn't return an error.
-> >>>>>>
-> >>>>>> Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> >>>>>> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> >>>>>> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> >>>>>> ---
-> >>>>>>  drivers/media/usb/uvc/uvc_ctrl.c | 73 +++++++++++++++++++++-----------
-> >>>>>>  1 file changed, 49 insertions(+), 24 deletions(-)
-> >>>>>>
-> >>>>>> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> >>>>>> index da44d5c0b9ad..4f80c06d3c43 100644
-> >>>>>> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> >>>>>> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> >>>>>> @@ -1104,13 +1104,36 @@ static const char *uvc_map_get_name(const struct uvc_control_mapping *map)
-> >>>>>>         return "Unknown Control";
-> >>>>>>  }
-> >>>>>>
-> >>>>>> +static bool uvc_ctrl_is_inactive(struct uvc_video_chain *chain,
-> >>>>>> +                                struct uvc_control *ctrl,
-> >>>>>> +                                struct uvc_control_mapping *mapping)
-> >>>>>> +{
-> >>>>>> +       struct uvc_control_mapping *master_map = NULL;
-> >>>>>> +       struct uvc_control *master_ctrl = NULL;
-> >>>>>> +       s32 val;
-> >>>>>> +       int ret;
-> >>>>>> +
-> >>>>>> +       if (!mapping->master_id)
-> >>>>>> +               return false;
-> >>>>>> +
-> >>>>>> +       __uvc_find_control(ctrl->entity, mapping->master_id, &master_map,
-> >>>>>> +                          &master_ctrl, 0);
-> >>>>>> +
-> >>>>>> +       if (!master_ctrl || !(master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR))
-> >>>>>> +               return false;
-> >>>>>> +
-> >>>>>> +       ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
-> >>>>>> +       if (ret < 0 || val == mapping->master_manual)
-> >>>>>> +               return false;
-> >>>>>> +
-> >>>>>> +       return true;
-> >>>>>> +}
-> >>>>>> +
-> >>>>>>  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
-> >>>>>>         struct uvc_control *ctrl,
-> >>>>>>         struct uvc_control_mapping *mapping,
-> >>>>>>         struct v4l2_queryctrl *v4l2_ctrl)
-> >>>>>>  {
-> >>>>>> -       struct uvc_control_mapping *master_map = NULL;
-> >>>>>> -       struct uvc_control *master_ctrl = NULL;
-> >>>>>>         const struct uvc_menu_info *menu;
-> >>>>>>         unsigned int i;
-> >>>>>>
-> >>>>>> @@ -1126,18 +1149,8 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
-> >>>>>>         if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR))
-> >>>>>>                 v4l2_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
-> >>>>>>
-> >>>>>> -       if (mapping->master_id)
-> >>>>>> -               __uvc_find_control(ctrl->entity, mapping->master_id,
-> >>>>>> -                                  &master_map, &master_ctrl, 0);
-> >>>>>> -       if (master_ctrl && (master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR)) {
-> >>>>>> -               s32 val;
-> >>>>>> -               int ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
-> >>>>>> -               if (ret < 0)
-> >>>>>> -                       return ret;
-> >>>>>> -
-> >>>>>> -               if (val != mapping->master_manual)
-> >>>>>> -                               v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
-> >>>>>> -       }
-> >>>>>> +       if (uvc_ctrl_is_inactive(chain, ctrl, mapping))
-> >>>>>> +               v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
-> >>>>>>
-> >>>>>>         if (!ctrl->cached) {
-> >>>>>>                 int ret = uvc_ctrl_populate_cache(chain, ctrl);
-> >>>>>> @@ -1660,25 +1673,37 @@ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
-> >>>>>>         return 0;
-> >>>>>>  }
-> >>>>>>
-> >>>>>> -static int uvc_ctrl_find_ctrl_idx(struct uvc_entity *entity,
-> >>>>>> -                                 struct v4l2_ext_controls *ctrls,
-> >>>>>> -                                 struct uvc_control *uvc_control)
-> >>>>>> +static int uvc_ctrl_commit_error(struct uvc_video_chain *chain,
-> >>>>>> +                                struct uvc_entity *entity,
-> >>>>>> +                                struct v4l2_ext_controls *ctrls,
-> >>>>>> +                                struct uvc_control *err_control,
-> >>>>>> +                                int ret)
-> >>>>>>  {
-> >>>>>>         struct uvc_control_mapping *mapping;
-> >>>>>>         struct uvc_control *ctrl_found;
-> >>>>>>         unsigned int i;
-> >>>>>>
-> >>>>>> -       if (!entity)
-> >>>>>> -               return ctrls->count;
-> >>>>>> +       if (!entity) {
-> >>>>>> +               ctrls->error_idx = ctrls->count;
-> >>>>>> +               return ret;
-> >>>>>> +       }
-> >>>>>>
-> >>>>>>         for (i = 0; i < ctrls->count; i++) {
-> >>>>>>                 __uvc_find_control(entity, ctrls->controls[i].id, &mapping,
-> >>>>>>                                    &ctrl_found, 0);
-> >>>>>> -               if (uvc_control == ctrl_found)
-> >>>>>> -                       return i;
-> >>>>>> +               if (err_control == ctrl_found)
-> >>>>>> +                       break;
-> >>>>>>         }
-> >>>>>> +       ctrls->error_idx = i;
-> >>>>>> +
-> >>>>>> +       /* We could not find the control that failed. */
-> >>>>>> +       if (i == ctrls->count)
-> >>>>>> +               return ret;
-> >>>>>> +
-> >>>>>> +       if (uvc_ctrl_is_inactive(chain, err_control, mapping))
-> >>>>>> +               return -EACCES;
-> >>>>>>
-> >>>>>> -       return ctrls->count;
-> >>>>>> +       return ret;
-> >>>>>>  }
-> >>>>>>
-> >>>>>>  int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
-> >>>>>> @@ -1701,8 +1726,8 @@ int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
-> >>>>>>                 uvc_ctrl_send_events(handle, ctrls->controls, ctrls->count);
-> >>>>>>  done:
-> >>>>>>         if (ret < 0 && ctrls)
-> >>>>>> -               ctrls->error_idx = uvc_ctrl_find_ctrl_idx(entity, ctrls,
-> >>>>>> -                                                         err_ctrl);
-> >>>>>> +               ret = uvc_ctrl_commit_error(chain, entity, ctrls, err_ctrl,
-> >>>>>> +                                           ret);
-> >>>>>>         mutex_unlock(&chain->ctrl_mutex);
-> >>>>>>         return ret;
-> >>>>>>  }
-> >>>>>> --
-> >>>>>> 2.32.0.288.g62a8d224e6-goog
-> >>>>>>
-> >>>>>
-> >>>>>
-> >>>>
-> >>>
-> >>>
-> >>
-> >
-> >
->
+Changes in v8:
+- Fix indent 4 to 2 in yaml
 
+Changes in v7:
+- Fix up the sclk_sfc parent error in rk3036
+- Unify to "rockchip,sfc" compatible id because all the feature update
+  will have a new IP version, so the driver is used for the SFC IP in
+  all SoCs
+- Change to use node "sfc" to name the SFC pinctrl group
+- Add subnode reg property check
+- Add rockchip_sfc_adjust_op_size to workaround in CMD + DUMMY case
+- Limit max_iosize to 32KB
+
+Changes in v6:
+- Add support in device trees for rv1126(Declared in series 5 but not
+  submitted)
+- Change to use "clk_sfc" "hclk_sfc" as clock lable, since it does not
+  affect interpretation and has been widely used
+- Support sfc tx_dual, tx_quad(Declared in series 5 but not submitted)
+- Simplify the code, such as remove "rockchip_sfc_register_all"(Declared
+  in series 5 but not submitted)
+- Support SFC ver4 ver5(Declared in series 5 but not submitted)
+- Add author Chris Morgan and Jon Lin to spi-rockchip-sfc.c
+- Change to use devm_spi_alloc_master and spi_unregister_master
+
+Changes in v5:
+- Add support in device trees for rv1126
+- Support sfc tx_dual, tx_quad
+- Simplify the code, such as remove "rockchip_sfc_register_all"
+- Support SFC ver4 ver5
+
+Changes in v4:
+- Changing patch back to an "RFC". An engineer from Rockchip
+  reached out to me to let me know they are working on this patch for
+  upstream, I am submitting this v4 for the community to see however
+  I expect Jon Lin (jon.lin@rock-chips.com) will submit new patches
+  soon and these are the ones we should pursue for mainlining. Jon's
+  patch series should include support for more hardware than this
+  series.
+- Clean up documentation more and ensure it is correct per
+  make dt_binding_check.
+- Add support in device trees for rk3036, rk3308, and rv1108.
+- Add ahb clock (hclk_sfc) support for rk3036.
+- Change rockchip_sfc_wait_fifo_ready() to use a switch statement.
+- Change IRQ code to only mark IRQ as handled if it handles the
+  specific IRQ (DMA transfer finish) it is supposed to handle.
+
+Changes in v3:
+- Changed the name of the clocks to sfc/ahb (from clk-sfc/clk-hsfc).
+- Changed the compatible string from rockchip,sfc to
+  rockchip,rk3036-sfc. A quick glance at the datasheets suggests this
+  driver should work for the PX30, RK180x, RK3036, RK312x, RK3308 and
+  RV1108 SoCs, and possibly more. However, I am currently only able
+  to test this on a PX30 (an RK3326). The technical reference manuals
+  appear to list the same registers for each device.
+- Corrected devicetree documentation for formatting and to note these
+  changes.
+- Replaced the maintainer with Heiko Stuebner and myself, as we will
+  take ownership of this going forward.
+- Noted that the device (per the reference manual) supports 4 CS, but
+  I am only able to test a single CS (CS 0).
+- Reordered patches to comply with upstream rules.
+
+Changes in v2:
+- Reimplemented driver using spi-mem subsystem.
+- Removed power management code as I couldn't get it working properly.
+- Added device tree bindings for Odroid Go Advance.
+
+Changes in v1:
+hanges made in this new series versus the v8 of the old series:
+- Added function to read spi-rx-bus-width from device tree, in the
+  event that the SPI chip supports 4x mode but only has 2 pins
+  wired (such as the Odroid Go Advance).
+- Changed device tree documentation from txt to yaml format.
+- Made "reset" message a dev_dbg from a dev_info.
+- Changed read and write fifo functions to remove redundant checks.
+- Changed the write and read from relaxed to non-relaxed when
+  starting the DMA transfer or reading the DMA IRQ.
+- Changed from dma_coerce_mask_and_coherent to just
+  dma_set_mask_and_coherent.
+- Changed name of get_if_type to rockchip_sfc_get_if_type.
+
+Chris Morgan (8):
+  dt-bindings: rockchip-sfc: Bindings for Rockchip serial flash
+    controller
+  spi: rockchip-sfc: add rockchip serial flash controller
+  arm64: dts: rockchip: Add SFC to PX30
+  clk: rockchip:  add dt-binding for hclk_sfc on rk3036
+  arm: dts: rockchip: Add SFC to RK3036
+  arm: dts: rockchip: Add SFC to RV1108
+  arm64: dts: rockchip: Add SFC to RK3308
+  arm64: dts: rockchip: Enable SFC for Odroid Go Advance
+
+Jon Lin (2):
+  clk: rockchip: rk3036: fix up the sclk_sfc parent error
+  clk: rockchip: Add support for hclk_sfc on rk3036
+
+ .../devicetree/bindings/spi/rockchip-sfc.yaml |  88 +++
+ arch/arm/boot/dts/rk3036.dtsi                 |  42 ++
+ arch/arm/boot/dts/rv1108.dtsi                 |  37 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |  38 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      |  37 +
+ .../boot/dts/rockchip/rk3326-odroid-go2.dts   |  16 +
+ drivers/clk/rockchip/clk-rk3036.c             |   5 +-
+ drivers/spi/Kconfig                           |  12 +
+ drivers/spi/Makefile                          |   1 +
+ drivers/spi/spi-rockchip-sfc.c                | 681 ++++++++++++++++++
+ include/dt-bindings/clock/rk3036-cru.h        |   1 +
+ 11 files changed, 956 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+ create mode 100644 drivers/spi/spi-rockchip-sfc.c
 
 -- 
-Ricardo Ribalda
+2.17.1
+
+
+
