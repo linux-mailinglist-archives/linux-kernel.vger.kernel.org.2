@@ -2,361 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECFC3BE655
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A0E3BE626
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbhGGK0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:26:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:33842 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231397AbhGGK0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:26:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D3E4ED1;
-        Wed,  7 Jul 2021 03:24:12 -0700 (PDT)
-Received: from localhost (unknown [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1DCCE3F694;
-        Wed,  7 Jul 2021 03:24:12 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 11:24:10 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>, zhongkaihua@huawei.com
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 03/13] opp: Keep track of currently programmed OPP
-Message-ID: <20210707102410.GA4357@arm.com>
-References: <cover.1611227342.git.viresh.kumar@linaro.org>
- <96b57316a2a307a5cc5ff7302b3cd0084123a2ed.1611227342.git.viresh.kumar@linaro.org>
+        id S231270AbhGGKKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:10:45 -0400
+Received: from mail-dm6nam10on2081.outbound.protection.outlook.com ([40.107.93.81]:11873
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229949AbhGGKKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 06:10:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kTflFzmxFQKVoJtWhl6YZFLJdRgxPsTkVIvfMWx0QKihGDNV5YcqNboERqRDWz3P2ktOovHhEHHSjxSnwIRX/S6S4m+KXKLlOX9Vb5HGNtewfsyM3drElWuY+PiTKbf6QHWfomOScjTJ9W6I6vHcy0e+UfYp9pO/4bdy4CmosnWA6Wj0nYPI+AfN7zdhtdW4z13C8AL510iCQL56gNjV4Y/daboUprEfSQI1BaR51jfSJBKuFBLTyqi3KEB9UBa5bsBG3JGbGErLtBaDKud1gR9BqYwKg1vYQIulgfV2gNWxZvvF3LcrsqOYv+eM+WhKDq9sze4GGhaKYkIvvAvYpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FDb+bG9eOhCv7P3JJoAjmhw70PW5zDkR5sZxGuDDT30=;
+ b=Z0xsLIP0oXARm+m5wXx4EdhS7UvucXtLNWPsElmbv9wG7yFbVDzTbwVIilsigN3J/Yk88pZu8NJUhBNddikqkGqmQaNwc2tpKS3j6XY0/qgyMybqQekx2qfiglHPueyu7KzonHHLfjZPJt9TctsR+4APCp+M4oYQ+KnaUpKYhmAxrtFTpHaEiUpmNSUVopuQY8LqSkeFVlH3Ztdee2jrfEMikURvfWE9t+20LV444MjNzv0sSN66D28uNyENWaejcYFkrmWs5Ha4rZlID/snfBAkWEMnrsd1rBpexcACyxXeg/Hv2Pw2vqMorv9cg2WKd6xD3u9Kileyj8NvV6jikA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FDb+bG9eOhCv7P3JJoAjmhw70PW5zDkR5sZxGuDDT30=;
+ b=cKwdqF6XNcUbQdZDqQbajVpcR79Fl8+hSsF9vQRl4fTFrjTAHXYjTbntrvaszQv8USRu3p62vYCCn4dlrtaB5DrH+0ckpo+dsjsLbLo6w5Ro6Jwif6A4pFDYkwH/SpQUJ4kbWWNy5TqQeLvDIkPy72EERfM8lP5nEvj28vzmcMM=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23) by MW2PR12MB2570.namprd12.prod.outlook.com
+ (2603:10b6:907:a::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.33; Wed, 7 Jul
+ 2021 10:08:01 +0000
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::d0a9:a5f1:ca5a:b439]) by MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::d0a9:a5f1:ca5a:b439%11]) with mapi id 15.20.4308.021; Wed, 7 Jul 2021
+ 10:08:01 +0000
+Subject: Re: [PATCH v2] ASoC: add stop_dma_first flag to reverse the stop
+ sequence
+To:     Mark Brown <broonie@kernel.org>
+Cc:     peter.ujfalusi@ti.com, alsa-devel@alsa-project.org,
+        amistry@google.com, nartemiev@google.com,
+        Alexander.Deucher@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210705193620.1144-1-vijendar.mukunda@amd.com>
+ <20210706122844.GD4529@sirena.org.uk>
+From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Message-ID: <07047388-6570-6501-abfd-f940777ad5cc@amd.com>
+Date:   Wed, 7 Jul 2021 15:55:31 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210706122844.GD4529@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BM1PR0101CA0003.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:18::13) To MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <96b57316a2a307a5cc5ff7302b3cd0084123a2ed.1611227342.git.viresh.kumar@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.93.39] (165.204.159.242) by BM1PR0101CA0003.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:18::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Wed, 7 Jul 2021 10:07:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0b5da8b3-bd49-4d7f-9510-08d9412f1a69
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2570:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW2PR12MB2570A340E53ACCF2FDB467BC971A9@MW2PR12MB2570.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GoToXm3RDo6i7ExqnYdlZwFKOmuBbdcZM89ZKjDtjnW3sq3cX1ZWVaBKSjYNPv0XHjBLpcCjBoEFqogD2mo80qBBzeJVEGJ/tzWwA10iw9icRFif/OVdUGS+SxkOK+G8cz9d/zR1U0twUz3f9YvNLBK9SKHzcaDl5UaGNIW5hhVznXulbbbRp0oTwGgMnCFuklZHnNKxTkW+PMyVDfcpFretNnKhmZPkgL8xYU3HDlm6wk+8D+pcJv1fNR+gs0OxkDfvuNfHOLN/4naA++UggFbl0dtAecE4tfJmCC4lA3r1C1glZ7zTJGeCgu6MiiauAf0D2okbQOnKUiFf4iNhn5Ik4bgCV7p6OzYpjS74Ai/dq5rXZabX4sZb9MWMHfjn3Nwqsab5r849hCvTxkclngHShefyyoU9FFu1a6u0SnPe0obV1hFqSFwQEImKTFfDRkeuDpaOWXz6AQIPSCxV/48AumI3KfBQ9RwNDzA8guu64NYAYFM64c6PnCP8AqNERycpRKp51YMCESET5/8boWz2uZSp0v+qBPTiU5CCRJhDLkWYfVkWVMZkpc7UTSqS1ri8q0BJB/OngvLJ+IfdHlqFrEnLsG8tTpWLPvHy4MCBnzxT47HfVCX0jTLWh0xFkcxp9MotzSjxNuvMg8idMPjWel1BF+lKO/puXiwPCuwYPl+GKfsLiy4bBf7BwCME3UCr+WZoAWxLPQ3Dwx5kHpkaaoA+T5sTbeAvWKBSqjk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(366004)(136003)(396003)(8676002)(31686004)(38100700002)(6916009)(956004)(2616005)(4744005)(6666004)(66476007)(478600001)(36756003)(66556008)(316002)(8936002)(16576012)(31696002)(4326008)(2906002)(186003)(53546011)(5660300002)(26005)(54906003)(6486002)(86362001)(66946007)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?5q5Nnc7nHflas1e4DICMLCcWCn+xmnwkoTI+vWAPrZNugxh5XuGJkclk?=
+ =?Windows-1252?Q?aDpwoyNRuOdTmkrGc4sXwxzwF6gabKoZYO9rNfF9ge6NEa7zRvcQtube?=
+ =?Windows-1252?Q?NSqNVUvx83j9UyopIufk8ZDrfco7Ky2eU7Vo95Mtlud7+ldyGmShMavv?=
+ =?Windows-1252?Q?p1nTkhHfVKFuEhd/iiJba1M2bTYEykF/EIDY9aZZFAu6m2UAwQkKXaSg?=
+ =?Windows-1252?Q?wtHjEFN/82qVoK/nkHVS7okHqWS44HOdRZw6oaYlIwVJrQCU3LZCkRbQ?=
+ =?Windows-1252?Q?MW3H9IL1yjgHkmAdJka+CnAhtcWQnc6H/ds21GSNHzY0z6Zt/UokgXwH?=
+ =?Windows-1252?Q?pB7y76vpqoBh4nHRWoVKMN0cBVKKQYPLT5zXDM/Cn20rYT17Spz3tGbF?=
+ =?Windows-1252?Q?qGY/yKs1z0gmXf6RQhXVFEc4Y5I1Vygir9OJiHkwi2EhoiAROXkDZmEy?=
+ =?Windows-1252?Q?Guheess1NkGqWXXpYrGu1AZQggcqEPNMJ5MCQ27BlNoSPvhbuPKlv9WD?=
+ =?Windows-1252?Q?9r/dTtNbsDUi5h5WgIgFxhcdwTlUeMH+JeVlTaiB7tubNUg2RRx2ypeV?=
+ =?Windows-1252?Q?cZ6XtgccyGPH6D/qmpjJFZzceEOxBOoHK5f1iqDyIid9MxiHSG6CDh7c?=
+ =?Windows-1252?Q?Y64BRf3n9MqcJplZbCDP/RlN+Vr9e5599vKkTAP1hWEbvHv+pr36k8Zf?=
+ =?Windows-1252?Q?RB0toPa3xoh15yWV79Ja2iTpuK+KvpGiOS+QpedWfWXEFCTrv7v2g87x?=
+ =?Windows-1252?Q?XrAvVanFqPWZtn7WFi14PV5wEFhG9BrMJeugKk2Gu+boicVdiLyDp2Z6?=
+ =?Windows-1252?Q?IkobY7Pvj5/FY9gMCZ3CSA+AP8jCS1siwbWZsKcBJoH10Zwh41mKbyXm?=
+ =?Windows-1252?Q?vPS2xJNV53zBX8Lzfer5CFChHp0n8ypwjhN4sIaPTRX9OdLLchTUKvxV?=
+ =?Windows-1252?Q?Che72nabR63vFSk9CixyYvqel+fJjdep9f4GxOEsbi6lCd2//PTYa6m6?=
+ =?Windows-1252?Q?fD2KBV9VeXO7nkznxadOS7bBL8eR4qefmFIAi0vMKXKY3eEcT4qstH0k?=
+ =?Windows-1252?Q?TgDKHFtHUJDzBfQEPmi2relG0LWviq/7xs429JPy22nNewxuEOU35p9q?=
+ =?Windows-1252?Q?Z86D4gCQuKWC6D87m4deixZ2njClDdOfZgo6vHSbQGsvoapbWLbGMZm1?=
+ =?Windows-1252?Q?IhfG3uyhn09mgopgfRIjlpmfQOh7l5yCB81/R4aCPxLdcgzjvs9Bz+nG?=
+ =?Windows-1252?Q?jB/RZhStqwV77e2PniiqDf9Jih19K4/LfHNFC6Ad7m5zPCgv5U99bI8i?=
+ =?Windows-1252?Q?z7QMzyPJW6pNyQhVXE3tDBHY7D57lHiVKZg1Tp7oHZ0+dCCv2jxv9BZo?=
+ =?Windows-1252?Q?erGPHImWNAQx7RrRfJPjiJZJRN6iu/jclFGTEHQ25dTTjTkfO6iGuF6Y?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b5da8b3-bd49-4d7f-9510-08d9412f1a69
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2021 10:08:01.7278
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Hz5hFAxWGVN6eUWax2G4BE9+uaimvlL/eMMcoSSTRyjQgy7vH9x89jPDwJNnS3ReRS3BsXDa/LZ8BXzZWsQ3pg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2570
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thursday 21 Jan 2021 at 16:47:43 (+0530), Viresh Kumar wrote:
-> The dev_pm_opp_set_rate() helper needs to know the currently programmed
-> OPP to make few decisions and currently we try to find it on every
-> invocation of this routine.
+On 7/6/21 5:58 PM, Mark Brown wrote:
+> On Tue, Jul 06, 2021 at 01:06:17AM +0530, Vijendar Mukunda wrote:
 > 
-> Lets start keeping track of the current_opp programmed for the devices
-> of the opp table, that will be quite useful going forward.
+>> @@ -982,6 +982,7 @@ struct snd_soc_card {
+>>  	unsigned int disable_route_checks:1;
+>>  	unsigned int probed:1;
+>>  	unsigned int component_chaining:1;
+>> +	unsigned int stop_dma_first:1;
+>>  
+>>  	void *drvdata;
+>>  };
 > 
-> If we fail to find the current OPP, we pick the first one available in
-> the list, as the list is in ascending order of frequencies, level, or
-> bandwidth and that's the best guess we can make anyway.
+> This still doesn't seem like something which should be controlled at the
+> card level, I'd expect it to be configured at the dai_link level.
 > 
-> Note that we used to do the frequency comparison a bit early in
-> dev_pm_opp_set_rate() previously, and now instead we check the target
-> opp, which shall be more accurate anyway.
-> 
-> We need to make sure that current_opp's memory doesn't get freed while
-> it is being used and so we keep a reference of it until the time it is
-> used.
-> 
-> Now that current_opp will always be set, we can drop some unnecessary
-> checks as well.
-> 
-
-I'm seeing some intermittent issues on Hikey960 after this patch,
-which reproduces as follows. I've used v5.13 for my testing.
-
-
-root@buildroot:~# while true; do \
->     cd /sys/devices/system/cpu/cpufreq/; \
->     for policy in policy*; do \
->            cd /sys/devices/system/cpu/cpufreq/$policy; \
->            for freq in $(cat scaling_available_frequencies); do \
->                 echo "userspace" > scaling_governor; \
->                 sleep 1; \
->                 echo $freq > scaling_setspeed; \
->                 sleep 1; \
->                 cpu="${policy: -1}"; \
->                 mask="0x$(printf '%x\n' $((1 << $cpu)))"; \
->                 sysev=$(~/taskset $mask ~/sysbench run --test=cpu --max-time=1 | grep "total number of events"); \
->                 delivered=$(cat cpuinfo_cur_freq); \
->                 if [ "$freq" != "$delivered" ]; then \
->                         echo "CPU$cpu - $freq setting failed: delivered $delivered, sysevents: $sysev"; \
->                 else \
->                         echo "CPU$cpu - $freq setting succeeded: delivered $delivered, sysevents: $sysev"; \
->                 fi; \
->                 echo "schedutil" > scaling_governor; \
->                 sleep 1; \
->                 done; done; done;
-
-CPU0 - 533000 setting succeeded: delivered 533000, sysevents:     total number of events:              112
-CPU0 - 999000 setting succeeded: delivered 999000, sysevents:     total number of events:              209
-CPU0 - 1402000 setting succeeded: delivered 1402000, sysevents:     total number of events:              293
-CPU0 - 1709000 setting succeeded: delivered 1709000, sysevents:     total number of events:              357
-CPU0 - 1844000 setting succeeded: delivered 1844000, sysevents:     total number of events:              385
-CPU4 - 903000 setting succeeded: delivered 903000, sysevents:     total number of events:              249
-CPU4 - 1421000 setting succeeded: delivered 1421000, sysevents:     total number of events:              395
-CPU4 - 1805000 setting succeeded: delivered 1805000, sysevents:     total number of events:              502
-CPU4 - 2112000 setting succeeded: delivered 2112000, sysevents:     total number of events:              588
-CPU4 - 2362000 setting succeeded: delivered 2362000, sysevents:     total number of events:              657
-
-This is an example of good behavior of changing frequencies. I'm putting
-this here first to show the sysbench results for each frequency, which is
-helping me make sure that the performance matches the new set frequency.
-
-Notes: the change to the schedutil governor after each userspace driven
-frequency change was added because if the change is always to higher
-frequencies, the issue does not reproduce as easily; the sleep commands
-are added just to make sure the change gets the time to take effect.
-
-From time to time (7/400 fail rate), I get the following failures:
-
-CPU0 - 533000 setting failed: delivered 1402000, sysevents:     total number of events:              293
-CPU0 - 1402000 setting failed: delivered 533000, sysevents:     total number of events:              112
-CPU0 - 1402000 setting failed: delivered 533000, sysevents:     total number of events:              112
-CPU4 - 903000 setting failed: delivered 1421000, sysevents:     total number of events:              394
-CPU4 - 1805000 setting failed: delivered 903000, sysevents:     total number of events:              249
-CPU0 - 533000 setting failed: delivered 1402000, sysevents:     total number of events:              293
-CPU4 - 1805000 setting failed: delivered 903000, sysevents:     total number of events:              251
-
-Now comes the interesting part: what seems to fix it is a call to
-clk_get_rate(opp_table->clk) in _set_opp(), which is what basically
-happened before this patch, as _find_current_opp() was always called.
-I do not need to do anything with the returned frequency.
-
-Therefore, by adding:
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index e366218d6736..2fdaf97f7ded 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -987,6 +987,7 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
- {
-        struct dev_pm_opp *old_opp;
-        int scaling_down, ret;
-+       unsigned long cur_freq;
-
-        if (unlikely(!opp))
-                return _disable_opp_table(dev, opp_table);
-@@ -994,6 +995,13 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
-        /* Find the currently set OPP if we don't know already */
-        if (unlikely(!opp_table->current_opp))
-                _find_current_opp(dev, opp_table);
-+       else if (!IS_ERR(opp_table->clk)) {
-+                       cur_freq = clk_get_rate(opp_table->clk);
-+                       if (opp_table->current_rate != cur_freq)
-+                               pr_err("OPP mismatch: %lu vs %lu!",
-+                                      opp_table->current_rate,
-+                                      cur_freq);
-+               }
-
-        old_opp = opp_table->current_opp;
-
-.. it does seem to solve the problem (no failures in 1000 frequency changes),
-although I do get a few OPP mismatch logs:
-
-[  667.495112] core: OPP mismatch: 1709000000 vs 1402000000!
-[ 7260.656154] core: OPP mismatch: 1421000000 vs 903000000!
-[ 7260.727717] core: OPP mismatch: 903000000 vs 1421000000!
-[ 8847.304323] core: OPP mismatch: 1709000000 vs 1402000000!
-
-
-I'm not sure what is happening here so I'm hoping you guys have more
-knowledge to steer debugging in the right direction.
-
-To be noted that I'm running an equivalent variant of this test on
-multiple boards, and none of them have issues, except for Hikey960.
-
-Thanks,
-Ionela.
-
-
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  drivers/opp/core.c | 83 +++++++++++++++++++++++++++++-----------------
->  drivers/opp/opp.h  |  2 ++
->  2 files changed, 55 insertions(+), 30 deletions(-)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index cb5b67ccf5cf..4ee598344e6a 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -788,8 +788,7 @@ static int _generic_set_opp_regulator(struct opp_table *opp_table,
->  			__func__, old_freq);
->  restore_voltage:
->  	/* This shouldn't harm even if the voltages weren't updated earlier */
-> -	if (old_supply)
-> -		_set_opp_voltage(dev, reg, old_supply);
-> +	_set_opp_voltage(dev, reg, old_supply);
->  
->  	return ret;
->  }
-> @@ -839,10 +838,7 @@ static int _set_opp_custom(const struct opp_table *opp_table,
->  
->  	data->old_opp.rate = old_freq;
->  	size = sizeof(*old_supply) * opp_table->regulator_count;
-> -	if (!old_supply)
-> -		memset(data->old_opp.supplies, 0, size);
-> -	else
-> -		memcpy(data->old_opp.supplies, old_supply, size);
-> +	memcpy(data->old_opp.supplies, old_supply, size);
->  
->  	data->new_opp.rate = freq;
->  	memcpy(data->new_opp.supplies, new_supply, size);
-> @@ -943,6 +939,31 @@ int dev_pm_opp_set_bw(struct device *dev, struct dev_pm_opp *opp)
->  }
->  EXPORT_SYMBOL_GPL(dev_pm_opp_set_bw);
->  
-> +static void _find_current_opp(struct device *dev, struct opp_table *opp_table)
-> +{
-> +	struct dev_pm_opp *opp = ERR_PTR(-ENODEV);
-> +	unsigned long freq;
-> +
-> +	if (!IS_ERR(opp_table->clk)) {
-> +		freq = clk_get_rate(opp_table->clk);
-> +		opp = _find_freq_ceil(opp_table, &freq);
-> +	}
-> +
-> +	/*
-> +	 * Unable to find the current OPP ? Pick the first from the list since
-> +	 * it is in ascending order, otherwise rest of the code will need to
-> +	 * make special checks to validate current_opp.
-> +	 */
-> +	if (IS_ERR(opp)) {
-> +		mutex_lock(&opp_table->lock);
-> +		opp = list_first_entry(&opp_table->opp_list, struct dev_pm_opp, node);
-> +		dev_pm_opp_get(opp);
-> +		mutex_unlock(&opp_table->lock);
-> +	}
-> +
-> +	opp_table->current_opp = opp;
-> +}
-> +
->  static int _disable_opp_table(struct device *dev, struct opp_table *opp_table)
->  {
->  	int ret;
-> @@ -1004,16 +1025,6 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
->  	if ((long)freq <= 0)
->  		freq = target_freq;
->  
-> -	old_freq = clk_get_rate(opp_table->clk);
-> -
-> -	/* Return early if nothing to do */
-> -	if (opp_table->enabled && old_freq == freq) {
-> -		dev_dbg(dev, "%s: old/new frequencies (%lu Hz) are same, nothing to do\n",
-> -			__func__, freq);
-> -		ret = 0;
-> -		goto put_opp_table;
-> -	}
-> -
->  	/*
->  	 * For IO devices which require an OPP on some platforms/SoCs
->  	 * while just needing to scale the clock on some others
-> @@ -1026,12 +1037,9 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
->  		goto put_opp_table;
->  	}
->  
-> -	temp_freq = old_freq;
-> -	old_opp = _find_freq_ceil(opp_table, &temp_freq);
-> -	if (IS_ERR(old_opp)) {
-> -		dev_err(dev, "%s: failed to find current OPP for freq %lu (%ld)\n",
-> -			__func__, old_freq, PTR_ERR(old_opp));
-> -	}
-> +	/* Find the currently set OPP if we don't know already */
-> +	if (unlikely(!opp_table->current_opp))
-> +		_find_current_opp(dev, opp_table);
->  
->  	temp_freq = freq;
->  	opp = _find_freq_ceil(opp_table, &temp_freq);
-> @@ -1039,7 +1047,17 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
->  		ret = PTR_ERR(opp);
->  		dev_err(dev, "%s: failed to find OPP for freq %lu (%d)\n",
->  			__func__, freq, ret);
-> -		goto put_old_opp;
-> +		goto put_opp_table;
-> +	}
-> +
-> +	old_opp = opp_table->current_opp;
-> +	old_freq = old_opp->rate;
-> +
-> +	/* Return early if nothing to do */
-> +	if (opp_table->enabled && old_opp == opp) {
-> +		dev_dbg(dev, "%s: OPPs are same, nothing to do\n", __func__);
-> +		ret = 0;
-> +		goto put_opp;
->  	}
->  
->  	dev_dbg(dev, "%s: switching OPP: %lu Hz --> %lu Hz\n", __func__,
-> @@ -1054,11 +1072,10 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
->  
->  	if (opp_table->set_opp) {
->  		ret = _set_opp_custom(opp_table, dev, old_freq, freq,
-> -				      IS_ERR(old_opp) ? NULL : old_opp->supplies,
-> -				      opp->supplies);
-> +				      old_opp->supplies, opp->supplies);
->  	} else if (opp_table->regulators) {
->  		ret = _generic_set_opp_regulator(opp_table, dev, old_freq, freq,
-> -						 IS_ERR(old_opp) ? NULL : old_opp->supplies,
-> +						 old_opp->supplies,
->  						 opp->supplies);
->  	} else {
->  		/* Only frequency scaling */
-> @@ -1074,15 +1091,18 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
->  
->  	if (!ret) {
->  		ret = _set_opp_bw(opp_table, opp, dev, false);
-> -		if (!ret)
-> +		if (!ret) {
->  			opp_table->enabled = true;
-> +			dev_pm_opp_put(old_opp);
-> +
-> +			/* Make sure current_opp doesn't get freed */
-> +			dev_pm_opp_get(opp);
-> +			opp_table->current_opp = opp;
-> +		}
->  	}
->  
->  put_opp:
->  	dev_pm_opp_put(opp);
-> -put_old_opp:
-> -	if (!IS_ERR(old_opp))
-> -		dev_pm_opp_put(old_opp);
->  put_opp_table:
->  	dev_pm_opp_put_opp_table(opp_table);
->  	return ret;
-> @@ -1276,6 +1296,9 @@ static void _opp_table_kref_release(struct kref *kref)
->  	list_del(&opp_table->node);
->  	mutex_unlock(&opp_table_lock);
->  
-> +	if (opp_table->current_opp)
-> +		dev_pm_opp_put(opp_table->current_opp);
-> +
->  	_of_clear_opp_table(opp_table);
->  
->  	/* Release clk */
-> diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
-> index 4408cfcb0f31..359fd89d5770 100644
-> --- a/drivers/opp/opp.h
-> +++ b/drivers/opp/opp.h
-> @@ -135,6 +135,7 @@ enum opp_table_access {
->   * @clock_latency_ns_max: Max clock latency in nanoseconds.
->   * @parsed_static_opps: Count of devices for which OPPs are initialized from DT.
->   * @shared_opp: OPP is shared between multiple devices.
-> + * @current_opp: Currently configured OPP for the table.
->   * @suspend_opp: Pointer to OPP to be used during device suspend.
->   * @genpd_virt_dev_lock: Mutex protecting the genpd virtual device pointers.
->   * @genpd_virt_devs: List of virtual devices for multiple genpd support.
-> @@ -183,6 +184,7 @@ struct opp_table {
->  
->  	unsigned int parsed_static_opps;
->  	enum opp_table_access shared_opp;
-> +	struct dev_pm_opp *current_opp;
->  	struct dev_pm_opp *suspend_opp;
->  
->  	struct mutex genpd_virt_dev_lock;
-> -- 
-> 2.25.0.rc1.19.g042ed3e048af
-> 
-> 
+will make changes by adding flag in dai_link and will post the new version
