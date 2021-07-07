@@ -2,198 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC05D3BE2C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 07:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060133BE2CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 07:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhGGFq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 01:46:59 -0400
-Received: from mga09.intel.com ([134.134.136.24]:14139 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230160AbhGGFq6 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 01:46:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="209199421"
+        id S230299AbhGGFtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 01:49:06 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:50792 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230160AbhGGFtF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 01:49:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1625636785; x=1657172785;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cmqsEodKms/fD10AxGX4BEvfRnUcTVNo5CDdJElY9+g=;
+  b=PnsqgDPfbo1wPLUsHGslPLD5oW/dUNkCMgEfjE0QV8T3hFIxetU//FCl
+   T3oCzp9E6Y7t8zsvX3ODIf6pcF3bkqhR+VxzK3QYvrW9EK9YxL5eQsouj
+   m+lOPOP7EbIJ25QQNQOa5HY4NSweusO9XdJc4Bfattg8AzKXNX7yrnQfi
+   2zOAmtZGH+rL1kaU5uZXp8Myc1bVP+OJgJpL90e4VI0IJPGl1Ye5FYcxu
+   l2ilpoGxok/moMDrvkEpkLDAi+vKE67IH0AmPwVH8Xe5xxgy1kZdKIT1W
+   tbSNrrpRdfNh79X4jLwYFvBt1lLQbFs0sFDbrlcBnaKOSRm4ojMqfYIuW
+   g==;
+IronPort-SDR: Cva3iMmADSFcEUepES8UdB5bL7CnEuei2J9O7sGFKKVjZf6JfbluIVneUsV2F5SI7b8PA6Yw7s
+ OyUYnheg7EOXqyMK79sCO5M8hy7xN7Y7WJBIYAOMc9vsRA+W3kJBdQWPDTip3/qkP9SREoJFis
+ XAHMxnf5gvgQ4fNvZGSnfRRK0tO03VzAfX/KXUJ4YDgxslMFGVX5AZkYIYSbYWmJGnZ6VxS4fy
+ qvPB1+NSvDAtFf5uylP37Fx3TCVL73u87ZbmbtyVnAHcXyuaaIq3Wca37jwIlA7Q4VVWtD7ae1
+ 5wM=
 X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
-   d="scan'208";a="209199421"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 22:44:17 -0700
-X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
-   d="scan'208";a="497618791"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 22:44:15 -0700
-Subject: Re: [PATCH] perf stat: Merge uncore events by default for hybrid
- platform
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210616063004.2824-1-yao.jin@linux.intel.com>
- <ac00637c-af58-6dba-67b7-95887bae3b99@linux.intel.com>
- <YOS0K0f+cAKdCHe+@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <c3c1b7db-0986-0030-5d12-8e1ffe62fa37@linux.intel.com>
-Date:   Wed, 7 Jul 2021 13:44:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+   d="scan'208";a="134861712"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Jul 2021 22:46:25 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 6 Jul 2021 22:46:24 -0700
+Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 6 Jul 2021 22:46:22 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <daniel.lezcano@linaro.org>, <tglx@linutronix.de>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH 1/2] clocksource/drivers/timer-microchip-pit64b: remove mmio selection
+Date:   Wed, 7 Jul 2021 08:44:14 +0300
+Message-ID: <20210707054415.92832-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YOS0K0f+cAKdCHe+@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+PIT64B timer driver doesn't depend on CLKSRC_MMIO since
+commit e85c1d21b16b ("clocksource/drivers/timer-microchip-pit64b:
+Add clocksource suspend/resume"). Remove the selection.
 
-On 7/7/2021 3:51 AM, Jiri Olsa wrote:
-> On Tue, Jul 06, 2021 at 10:32:57AM +0800, Jin, Yao wrote:
->> Hi,
->>
->> On 6/16/2021 2:30 PM, Jin Yao wrote:
->>> On hybrid platform, by default stat aggregates and reports the event counts
->>> per pmu. For example,
->>>
->>>     # perf stat -e cycles -a true
->>>
->>>      Performance counter stats for 'system wide':
->>>
->>>              1,400,445      cpu_core/cycles/
->>>                680,881      cpu_atom/cycles/
->>>
->>>            0.001770773 seconds time elapsed
->>>
->>> While for uncore events, that's not a suitable method. Uncore has nothing
->>> to do with hybrid. So for uncore events, we aggregate event counts from all
->>> PMUs and report the counts without PMUs.
->>>
->>> Before:
->>>
->>>     # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
->>>
->>>      Performance counter stats for 'system wide':
->>>
->>>                  2,058      uncore_arb_0/event=0x81,umask=0x1/
->>>                  2,028      uncore_arb_1/event=0x81,umask=0x1/
->>>                      0      uncore_arb_0/event=0x84,umask=0x1/
->>>                      0      uncore_arb_1/event=0x84,umask=0x1/
->>>
->>>            0.000614498 seconds time elapsed
->>>
->>> After:
->>>
->>>     # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
->>>
->>>      Performance counter stats for 'system wide':
->>>
->>>                  3,996      arb/event=0x81,umask=0x1/
->>>                      0      arb/event=0x84,umask=0x1/
->>>
->>>            0.000630046 seconds time elapsed
->>>
->>> Of course, we also keep the '--no-merge' still works for uncore events.
->>>
->>>     # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ --no-merge true
->>>
->>>      Performance counter stats for 'system wide':
->>>
->>>                  1,952      uncore_arb_0/event=0x81,umask=0x1/
->>>                  1,921      uncore_arb_1/event=0x81,umask=0x1/
->>>                      0      uncore_arb_0/event=0x84,umask=0x1/
->>>                      0      uncore_arb_1/event=0x84,umask=0x1/
->>>
->>>            0.000575536 seconds time elapsed
->>>
->>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->>> ---
->>>    tools/perf/builtin-stat.c      |  3 ---
->>>    tools/perf/util/stat-display.c | 29 +++++++++++++++++++++++++----
->>>    2 files changed, 25 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
->>> index f9f74a514315..b67a44982b61 100644
->>> --- a/tools/perf/builtin-stat.c
->>> +++ b/tools/perf/builtin-stat.c
->>> @@ -2442,9 +2442,6 @@ int cmd_stat(int argc, const char **argv)
->>>    	evlist__check_cpu_maps(evsel_list);
->>> -	if (perf_pmu__has_hybrid())
->>> -		stat_config.no_merge = true;
->>> -
->>>    	/*
->>>    	 * Initialize thread_map with comm names,
->>>    	 * so we could print it out on output.
->>> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
->>> index b759dfd633b4..c6070f4684ca 100644
->>> --- a/tools/perf/util/stat-display.c
->>> +++ b/tools/perf/util/stat-display.c
->>> @@ -595,6 +595,19 @@ static void collect_all_aliases(struct perf_stat_config *config, struct evsel *c
->>>    	}
->>>    }
->>> +static bool is_uncore(struct evsel *evsel)
->>> +{
->>> +	struct perf_pmu *pmu;
->>> +
->>> +	if (evsel->pmu_name) {
->>> +		pmu = perf_pmu__find(evsel->pmu_name);
-> 
-> evsel__find_pmu might be one line shorter? ;-)
-> 
+Fixes: e85c1d21b16b ("clocksource/drivers/timer-microchip-pit64b: Add clocksource suspend/resume")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
 
-Yes, this is a better method, thanks!
+Hi Daniel,
 
-> 
->>> +		if (pmu)
->>> +			return pmu->is_uncore;
->>> +	}
->>> +
->>> +	return false;
->>> +}
->>> +
->>>    static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
->>>    			    void (*cb)(struct perf_stat_config *config, struct evsel *counter, void *data,
->>>    				       bool first),
->>> @@ -603,10 +616,18 @@ static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
->>>    	if (counter->merged_stat)
->>>    		return false;
->>>    	cb(config, counter, data, true);
->>> -	if (config->no_merge)
->>> -		uniquify_event_name(counter);
->>> -	else if (counter->auto_merge_stats)
->>> -		collect_all_aliases(config, counter, cb, data);
->>> +	if (perf_pmu__has_hybrid()) {
->>> +		if (config->no_merge || !is_uncore(counter))
-> 
-> hum, this is all the same except for the !is_uncore condition, right?
-> 
-> could we just add 'config->no_merge || hybrid_uniquify(count)'
-> 
-> that would cover both perf_pmu__has_hybrid and !is_uncore conditions?
-> 
+Please let me know if you want to squash these 2 patches together.
 
-Yes, I will create a new function 'hybrid_uniquify' to check if uniquify event name for hybrid.
+Thank you,
+Claudiu Beznea
 
-Thanks
-Jin Yao
+ drivers/clocksource/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-> jirka
-> 
->>> +			uniquify_event_name(counter);
->>> +		else if (counter->auto_merge_stats)
->>> +			collect_all_aliases(config, counter, cb, data);
->>> +	} else {
->>> +		if (config->no_merge)
->>> +			uniquify_event_name(counter);
->>> +		else if (counter->auto_merge_stats)
->>> +			collect_all_aliases(config, counter, cb, data);
->>> +	}
->>> +
->>>    	return true;
->>>    }
->>>
->>
->> Any comments for this patch? :)
->>
->> Thanks
->> Jin Yao
->>
-> 
+diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+index 9fa28237715a..bddeb664e517 100644
+--- a/drivers/clocksource/Kconfig
++++ b/drivers/clocksource/Kconfig
+@@ -699,7 +699,6 @@ config INGENIC_OST
+ config MICROCHIP_PIT64B
+ 	bool "Microchip PIT64B support"
+ 	depends on OF || COMPILE_TEST
+-	select CLKSRC_MMIO
+ 	select TIMER_OF
+ 	help
+ 	  This option enables Microchip PIT64B timer for Atmel
+-- 
+2.25.1
+
