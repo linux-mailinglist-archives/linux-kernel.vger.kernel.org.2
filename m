@@ -2,82 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B732B3BEA15
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 573093BEA11
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbhGGOxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 10:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232186AbhGGOwW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:52:22 -0400
-Received: from proxima.lasnet.de (proxima.lasnet.de [IPv6:2a01:4f8:121:31eb:3::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DAFC06175F;
-        Wed,  7 Jul 2021 07:48:56 -0700 (PDT)
-Received: from [IPv6:2003:e9:d72a:e927:359b:e3fc:a5d5:7a7a] (p200300e9d72ae927359be3fca5d57a7a.dip0.t-ipconnect.de [IPv6:2003:e9:d72a:e927:359b:e3fc:a5d5:7a7a])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: stefan@datenfreihafen.org)
-        by proxima.lasnet.de (Postfix) with ESMTPSA id 51686C03B9;
-        Wed,  7 Jul 2021 16:48:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=datenfreihafen.org;
-        s=2021; t=1625669334;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PrWjspjGSf78DOHcyaZo3I5nvBgwDD7uu1bHzO/WReI=;
-        b=c17Ms0AfLq3GTWECPGNJJ1C2EZBIwiuHjHO/FNfx8xZ6emMr2JwbzYdd9451DZBsXlN+hI
-        BWMTfyilNlsDTkYdmzHif8xc3ExwPNfv7zL472lthci1QIbreJPQpAUX9NGm9id4gA8g6q
-        kBZKLJOokUB0u7CMdJ0f1N7mrixl7aVXnoesQ62XUq7kifyzfgX/pccTY7uX8ds5G/dkl2
-        0D3d81lCAq+XQ2e8BBAMG9opsSzmgSJBPAaXftXGHn/tCv6RaRYrbyH7rdRfWPwz/oouCc
-        1Hb2Hpj1jbZyw4pvL1LHMDVQqspVSsji3jDxDxyWN9MRtSgr4I189OljRlAHyA==
-Subject: Re: [PATCH] ieee802154: hwsim: fix GPF in hwsim_set_edge_lqi
-To:     Alexander Aring <alex.aring@gmail.com>,
-        Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Aring <aring@mojatatu.com>,
-        linux-wpan - ML <linux-wpan@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-References: <20210705131321.217111-1-mudongliangabcd@gmail.com>
- <CAB_54W5ceXFPaYGs0T4pVq8AzRqUSvaBDWdBjvRurBYyihqfVg@mail.gmail.com>
-From:   Stefan Schmidt <stefan@datenfreihafen.org>
-Message-ID: <68815e29-88f0-b37d-5e71-687d738f0db5@datenfreihafen.org>
-Date:   Wed, 7 Jul 2021 16:48:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232210AbhGGOxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 10:53:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232173AbhGGOwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 10:52:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0194561130;
+        Wed,  7 Jul 2021 14:49:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625669346;
+        bh=2l1DsW7j//O3bGpUL301v9hbe8B6HM3Efos7O31i39o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gq5ACYBGMma7Lb74GDWvKTCL21pqYIezTZRs7rBbfwd9CHM0HHz457obLrobmC6Vp
+         /T3/j0vqiqUowMmPDjlsOSkuH/QYZUtI6T4UVaP9doQrUmuJWNwl0iqTPIe2HiyYnR
+         tspGBLy7vfddKCw3cv6iyth47hlVbNzJhJiTOVSXGTIkiME8mOs/HlsINYnCy5qEvN
+         ScDrk5Zhe6ffrQhyj8Hwf5nS3OnzCi2yHuuJI3oT9Lg4kpxS9GgOq/sFKOAKEbvdyO
+         bshke1mu7EyDrwDTP88BAMuvScthrshhRGeD/6N8dkCm6fUDnm22OqhRrizw8grcsJ
+         kQkSBr54ztfvQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D213C40B1A; Wed,  7 Jul 2021 11:49:03 -0300 (-03)
+Date:   Wed, 7 Jul 2021 11:49:03 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>, nakamura.shun@fujitsu.com,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 2/7] libperf: Move idx to perf_evsel::idx
+Message-ID: <YOW+3yhgNgMOrE99@kernel.org>
+References: <20210706151704.73662-1-jolsa@kernel.org>
+ <20210706151704.73662-3-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAB_54W5ceXFPaYGs0T4pVq8AzRqUSvaBDWdBjvRurBYyihqfVg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210706151704.73662-3-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+Em Tue, Jul 06, 2021 at 05:16:59PM +0200, Jiri Olsa escreveu:
+> Moving evsel::idx to perf_evsel::idx, so we can move
+> the group interface to libperf.
 
-On 07.07.21 15:44, Alexander Aring wrote:
-> Hi,
-> 
-> On Mon, 5 Jul 2021 at 09:13, Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->>
->> Both MAC802154_HWSIM_ATTR_RADIO_ID and MAC802154_HWSIM_ATTR_RADIO_EDGE,
->> MAC802154_HWSIM_EDGE_ATTR_ENDPOINT_ID and MAC802154_HWSIM_EDGE_ATTR_LQI
->> must be present to fix GPF.
->>
->> Fixes: f25da51fdc38 ("ieee802154: hwsim: add replacement for fakelb")
->> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> 
-> Acked-by: Alexander Aring <aahringo@redhat.com>
+I fixed up this, that appearead on my tree after you cooked up this
+patch:
 
+diff --git a/tools/perf/util/bpf_counter_cgroup.c b/tools/perf/util/bpf_counter_cgroup.c
+index 21261f1a05011d62..89aa5e71db1a9a23 100644
+--- a/tools/perf/util/bpf_counter_cgroup.c
++++ b/tools/perf/util/bpf_counter_cgroup.c
+@@ -124,7 +124,7 @@ static int bperf_load_program(struct evlist *evlist)
+ 			map_fd = bpf_map__fd(skel->maps.events);
+ 			for (cpu = 0; cpu < nr_cpus; cpu++) {
+ 				int fd = FD(evsel, cpu);
+-				__u32 idx = evsel->idx * total_cpus +
++				__u32 idx = evsel->core.idx * total_cpus +
+ 					evlist->core.all_cpus->map[cpu];
+ 
+ 				err = bpf_map_update_elem(map_fd, &idx, &fd,
+@@ -221,7 +221,7 @@ static int bperf_cgrp__sync_counters(struct evlist *evlist)
+ 
+ static int bperf_cgrp__enable(struct evsel *evsel)
+ {
+-	if (evsel->idx)
++	if (evsel->core.idx)
+ 		return 0;
+ 
+ 	bperf_cgrp__sync_counters(evsel->evlist);
+@@ -232,7 +232,7 @@ static int bperf_cgrp__enable(struct evsel *evsel)
+ 
+ static int bperf_cgrp__disable(struct evsel *evsel)
+ {
+-	if (evsel->idx)
++	if (evsel->core.idx)
+ 		return 0;
+ 
+ 	bperf_cgrp__sync_counters(evsel->evlist);
+@@ -251,7 +251,7 @@ static int bperf_cgrp__read(struct evsel *evsel)
+ 	int reading_map_fd, err = 0;
+ 	__u32 idx;
+ 
+-	if (evsel->idx)
++	if (evsel->core.idx)
+ 		return 0;
+ 
+ 	bperf_cgrp__sync_counters(evsel->evlist);
+@@ -263,7 +263,7 @@ static int bperf_cgrp__read(struct evsel *evsel)
+ 	reading_map_fd = bpf_map__fd(skel->maps.cgrp_readings);
+ 
+ 	evlist__for_each_entry(evlist, evsel) {
+-		idx = evsel->idx;
++		idx = evsel->core.idx;
+ 		err = bpf_map_lookup_elem(reading_map_fd, &idx, values);
+ 		if (err) {
+ 			pr_err("bpf map lookup falied: idx=%u, event=%s, cgrp=%s\n",
+@@ -288,7 +288,7 @@ static int bperf_cgrp__read(struct evsel *evsel)
+ 
+ static int bperf_cgrp__destroy(struct evsel *evsel)
+ {
+-	if (evsel->idx)
++	if (evsel->core.idx)
+ 		return 0;
+ 
+ 	bperf_cgroup_bpf__destroy(skel);
 
-This patch has been applied to the wpan tree and will be
-part of the next pull request to net. Thanks!
-
-regards
-Stefan Schmidt
