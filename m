@@ -2,145 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E94893BE92D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7DF3BE948
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhGGOD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 10:03:27 -0400
-Received: from mail-lf1-f43.google.com ([209.85.167.43]:42891 "EHLO
-        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbhGGOD0 (ORCPT
+        id S231992AbhGGOGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 10:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231978AbhGGOGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:03:26 -0400
-Received: by mail-lf1-f43.google.com with SMTP id u18so4221086lff.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 07:00:45 -0700 (PDT)
+        Wed, 7 Jul 2021 10:06:37 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0DDC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 07:03:56 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id fs7so1616576pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 07:03:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lucidpixels.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kWNFrdwm6dcxTY21QGy8ATtNEyVg7/urw+nLZear+zs=;
+        b=o4LRhO72WAxkjFpfvMzD3o/1FAAsCDu5aCw510DNs2eBNaSjlYrIpkFykrCVLDKL1U
+         s59iySE/2R0meVkyYsRh5/aDMK2bs5d4t0ndd2qReWnaVYQegobQk7Cl2U686PIlSYjm
+         pdbAwpEjOIaO8QJgjaarjHwHNjQdodwuy5TII=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cr+5wo3WdSoAEHGmbrh0ZPwPCRii+HYvMNAQfwiCqAA=;
-        b=OH7ByA4SLC4dBwoTQJT79JhpdmFxqR7O8l04O3G3Rqx5E5bsPUDnLEQ93e2hK45ys/
-         hzIheAJxYgTm9ZH0K3eEJvcQuQYnhKMc/pMoXj206vXuW590ptbc6pkgC1vXfeHJzhrm
-         0Zo/7lpvVtlAI4qHg8OR8aZQvAAVkN6T+eE1xOzOJPTZ2Lvkz3L56e3kZ9c/SsaoBVOR
-         0kahnhRhdcbDowSOKgUjuLGs3duGGnOdGsNtZf4U472m//hgX5AC5KEX1A5iPTeGMnm1
-         e9/D2hDTAsGycMLrY1pIOzGZgzd+naEjuovbWCP0LFsAe50FFchmp86SCIa+WIsF8kLq
-         3zMQ==
-X-Gm-Message-State: AOAM532pL7Vp0FuDS8QVDfYakJP9VQTskOGQnUb51jbhZnvPJg4JzVd+
-        x9k5ho1wNpBf1GhpWMNQIycFsN5x69lKJB3QTJM=
-X-Google-Smtp-Source: ABdhPJwk/6ok/k3U1oaTW5RJ+E6lavIUwoGpyftMjnrv6SyW+AfCjyzmZkrm7LA/suJmVL+7WWBGdwWAGwdhxixE6C8=
-X-Received: by 2002:a19:4916:: with SMTP id w22mr19840934lfa.374.1625666443533;
- Wed, 07 Jul 2021 07:00:43 -0700 (PDT)
+        bh=kWNFrdwm6dcxTY21QGy8ATtNEyVg7/urw+nLZear+zs=;
+        b=T8WH6XjliYnicPTbAKNPWHg02NTKf/uWq4pMYH1Zs+FHKMO8kvnJPk40+GHpzHIiGx
+         ZxptFXQk+9mMYU4pMz0uq4D0M3hFzHxmd0kkiRmFBGFW+lGcEBz6nLyfoI01qI+oMDOo
+         8zeE0IQdtT2kdPImQHWz6SEHMj71mejhSJ+yUy09hHMH4hXqpVpPGnj9/nHCPdBmPCXs
+         b+AqfgF2/HETr0eFP/ONgCnKlgOHsCZUdQBs9pjKVaS0Mvz02Wo/g8TKbn//dXlsS+Uh
+         aurqEtuThJAU5Gv6WhzTE2dD6gUdb97acv6vow7pIUoibp0pBUFo6YCWnwN+RLJUHd4I
+         AigA==
+X-Gm-Message-State: AOAM530EfLJDdJHdrZ/14WmPhVYvEFry3ttDBjXmZDQQFMUwl7Xb3UKd
+        j1WBaTbKtmMuO4b8Cg/8qlkhH71Ehta0AM64qYR7eQ==
+X-Google-Smtp-Source: ABdhPJzYp4Rxfp2XxhR8boKcjXa39jZOtwTV1136/jM2Fr+/Zu+vKcUvF1dLgCaH0tcVOYCbMrw1b4sciZnGYydNn9s=
+X-Received: by 2002:a17:902:7b8c:b029:129:5733:2e3b with SMTP id
+ w12-20020a1709027b8cb029012957332e3bmr21491990pll.4.1625666636278; Wed, 07
+ Jul 2021 07:03:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210706154315.3567166e@gandalf.local.home> <CAM9d7chmHmm3tjJik5EQDOJOdn7G0D3W9EJUogf_POnyTe6tcA@mail.gmail.com>
- <20210706205039.64182493@rorschach.local.home>
-In-Reply-To: <20210706205039.64182493@rorschach.local.home>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 7 Jul 2021 07:00:32 -0700
-Message-ID: <CAM9d7chF1Qnch5PmhfAWbTPcN5ocgVEvNKqFYsLxWOiaZPdYgQ@mail.gmail.com>
-Subject: Re: [PATCH v2] tracing: Add linear buckets to histogram logic
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Daniel Bristot de Oliveira Subject: [PATCH] tracing:" 
-        <bristot@redhat.com>
+References: <004d01d76cd3$18db1830$4a914890$@lucidpixels.com> <CB1159AE-7C7F-402C-9F52-954FFAEAAEE8@oracle.com>
+In-Reply-To: <CB1159AE-7C7F-402C-9F52-954FFAEAAEE8@oracle.com>
+From:   Justin Piszcz <jpiszcz@lucidpixels.com>
+Date:   Wed, 7 Jul 2021 10:03:44 -0400
+Message-ID: <CAO9zADz9S1MhnWbA3OA5hJ6vkbu3-2Hakk86orR=92AWBvkQnQ@mail.gmail.com>
+Subject: Re: linux 5.13 kernel regression for NFS server
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 5:50 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Jun 29, 2021 at 9:01 AM Chuck Lever III <chuck.lever@oracle.com> wrote:
 >
-> On Tue, 6 Jul 2021 16:20:07 -0700
-> Namhyung Kim <namhyung@kernel.org> wrote:
+> Hi Justin-
+..
+> > --- config-20210628.1624867695  2021-06-28 04:08:15.152781940 -0400
+> > +++ config-20210628.1624867962  2021-06-28 04:12:42.591981706 -0400
+> > @@ -1,6 +1,6 @@
+> > #
+> > # Automatically generated file; DO NOT EDIT.
+> > -# Linux/x86 5.13.0-rc7 Kernel Configuration
+> > +# Linux/x86 5.13.0 Kernel Configuration
+> > #
+> > CONFIG_CC_VERSION_TEXT="gcc (Debian 10.2.1-6) 10.2.1 20210110"
+> > CONFIG_CC_IS_GCC=y
 >
-> > >  { bytes_req: ~ 1400-1499 } hitcount:         30
-> > >  { bytes_req: ~ 2000-2099 } hitcount:          6
-> > >  { bytes_req: ~ 4000-4099 } hitcount:       2168
-> > >  { bytes_req: ~ 5000-5099 } hitcount:          6
-> >
-> > For consistency with the log2 histogram, I'd like to see
-> >
-> >   { bytes_req: ~ 100 } hitcount:  3149
-> >   { bytes_req: ~ 200 } hitcount:  1468
-> >   { bytes_req: ~ 300 } hitcount:    39
-> >   ...
-> >
-> > Or, if you really care about the value range
-> >
-> >   { bytes_req: 0 ~ 99 } hitcount:  3149
-> >   { bytes_req: 100 ~ 199 } hitcount:  1468
-> >   { bytes_req: 200 ~ 299 } hitcount:    39
+> It's likely this regression is due to a last minute change to
+> alloc_pages_bulk_array() done just before v5.13. See:
 >
-> (Let the bike-shedding begin! ;-)
+> https://lore.kernel.org/linux-nfs/20210629081432.GE3840@techsingularity.net/T/#t
+>
+> for details.
+>
+> --
+> Chuck Lever
 
-Sorry about that!  :)
+Hello, thank you!  Confirmed that 5.13.1 includes the fix and it is working.
 
->
-> I actually dislike the log2 notation. For example, I just ran it with
-> this:
->
->  ># echo 'hist:keys=bytes_req.log2:sort=bytes_req' > events/kmem/kmalloc/trigger
->  ># cat events/kmem/kmalloc/hist
->  # event histogram
->  #
->  # trigger info: hist:keys=bytes_req.log2:vals=hitcount:sort=bytes_req.log2:size=2048 [active]
->  #
->
->  { bytes_req: ~ 2^5  } hitcount:          8
->  { bytes_req: ~ 2^6  } hitcount:          2
->  { bytes_req: ~ 2^7  } hitcount:          4
->  { bytes_req: ~ 2^8  } hitcount:          2
->  { bytes_req: ~ 2^9  } hitcount:          2
->  { bytes_req: ~ 2^10 } hitcount:          3
->
->  Totals:
->      Hits: 21
->      Entries: 6
->      Dropped: 0
->
-> And I don't know if that first entry is: 2^4 - 2^5 or if it is 2^5 - 2^6.
->
-> And to me '~' means "approximately", but I also took it as "not exactly".
-> I used it as:
->
->   { bytes_req: ~ 1400-1499 } hitcount:         30
->
-> To mean, it's "approximately somewhere between 1400 and 1499" so, I kept the "~".
->
-> Now for your suggestions:
->
-> >   { bytes_req: ~ 100 } hitcount:  3149
-> >   { bytes_req: ~ 200 } hitcount:  1468
-> >   { bytes_req: ~ 300 } hitcount:    39
->
-> Suffers the same fate as I dislike in log2. Is " ~ 100" 0-100 or 100-200?
->
-> >   { bytes_req: 0 ~ 99 } hitcount:  3149
-> >   { bytes_req: 100 ~ 199 } hitcount:  1468
-> >   { bytes_req: 200 ~ 299 } hitcount:    39
->
-> I feel is farther from log2 than my version. Stating that "~" means
-> approximation, what does "0 ~ 99" really mean?
-
-To me, it means "range".  The original intention was to
-express [FROM, TO) and I thought we can omit the FROM
-since it's same as TO of the previous line.  But we can use
-inclusive ranges with FROM and TO for clarity.
-
-But it's up to you.  I don't object to your change.
-
->
-> So far I prefer my original version.
->
-> BTW, we are also working on a user space parser for this, thus the
-> output format of all hist logic is going to be a user space API (if it
-> hasn't already become one.)
->
-> So we do need to get this correct for the long haul.
-
-Agreed.
-
-Namhyung
+Justin.
