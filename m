@@ -2,125 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8A63BE9B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DCD63BE9BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232055AbhGGO2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 10:28:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:38128 "EHLO foss.arm.com"
+        id S231889AbhGGOaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 10:30:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232023AbhGGO2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:28:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 560A8D6E;
-        Wed,  7 Jul 2021 07:25:32 -0700 (PDT)
-Received: from [10.57.1.129] (unknown [10.57.1.129])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B35323F73B;
-        Wed,  7 Jul 2021 07:25:28 -0700 (PDT)
-Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
- of EAS estimated energy
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Chris Redpath <Chris.Redpath@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        CCj.Yeh@mediatek.com
-References: <20210625152603.25960-1-lukasz.luba@arm.com>
- <20210625152603.25960-2-lukasz.luba@arm.com>
- <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
- <a6a49480-7d5d-fd0e-3940-0b6baac5acc0@arm.com>
- <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
- <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com>
- <CAKfTPtDk1ANfjR5h_EjErVfQ7=is3n9QOaKKxz81tMHtqUM7jA@mail.gmail.com>
- <297df159-1681-f0a7-843d-f34d86e51d4c@arm.com>
- <CAKfTPtCEo+gkV2TMhOHSnuUyu5BC54o-B4Hb=QbzgT6Dft-PhQ@mail.gmail.com>
- <27916860-33b1-f0a0-acff-4722a733c81b@arm.com>
- <CAKfTPtB2ogGbGBjJNRBB5jvN24q-tXFR+BpJ31fzsTd2=pDTHQ@mail.gmail.com>
- <ee3ebbaa-7b6d-416d-2caa-197c2713dd4e@arm.com>
- <CAKfTPtAN6-ytxa2Qj3=z27e8ZBoqGrWAZce9CojL3wbZSotUsQ@mail.gmail.com>
- <58cb7ad3-ffff-8940-4c8e-2c46dcc86d54@arm.com>
- <CAKfTPtCy-dbo0xnW8iKaQy94_iV=JYbMU-X4qanzL6RXcL7xEw@mail.gmail.com>
- <e3b11a84-9a26-9a7d-cf90-12a7a8fbcc3f@arm.com>
- <CAKfTPtD-i0K=ofKEekoCzAm2eXR+vVzFxR-uc6Em4LMO8W=RFA@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <d6e3cc2a-c942-5d6c-a55d-e7c24c8c1a80@arm.com>
-Date:   Wed, 7 Jul 2021 15:25:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S231737AbhGGO37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 10:29:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0A9D6199E;
+        Wed,  7 Jul 2021 14:27:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625668039;
+        bh=xwY0q1sjDuTRqB0UdUtznz1KoGnX54Ytx1rs+CyjLs8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=TwVHyfS0KwM++DxyMITgbhz5gkWIbeCTAxwKoTDwysAn5L3KiS6aOlpyzgGXw5YMO
+         uuYCxSq55EMSVy8rolycFxaJ/IhM6uT21l8jWjeNWdE3ngPzsm3J/S+S8AuPv4G9Cf
+         Wp6y9QYh86NimqrReJJS9og0ITEZq+cf24bCnxkUR6hqYDUCA88yI7gbh36JtNB3kX
+         fmacGXjrUxaIrUD6Sawi3ZEAsKRGg44qitp5rPqHFCClfwRESdnx0hyCXG6S8qxoT1
+         nOzARHtqRLnzsmT0mne/9ZwnP2ENaFqlvEw7vATjcETvT4ugYnNY4DOIDmLdDMh8pv
+         825u255LpDmfQ==
+Date:   Wed, 7 Jul 2021 16:27:15 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Modules updates for v5.14
+Message-ID: <YOW5w/4Gr3IPHj8c@p200300cbcf044300404ca642de146c7c.dip0.t-ipconnect.de>
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtD-i0K=ofKEekoCzAm2eXR+vVzFxR-uc6Em4LMO8W=RFA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
+Please pull below to receive modules updates for the v5.14 merge window.
+Only two minor patches this time, one cleanup patch and one kallsyms fix.
 
-On 7/7/21 2:53 PM, Vincent Guittot wrote:
-> On Wed, 7 Jul 2021 at 13:02, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->>
->>
->> On 7/7/21 11:50 AM, Vincent Guittot wrote:
->>> On Wed, 7 Jul 2021 at 12:41, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>
->>>>
->>>>
->>>> On 7/7/21 11:32 AM, Vincent Guittot wrote:
->>>>> On Wed, 7 Jul 2021 at 12:29, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>>>
->>>>>>
->>>>>>
->>>>>> On 7/7/21 11:11 AM, Vincent Guittot wrote:
->>>>>>> On Wed, 7 Jul 2021 at 12:06, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>>>>>
->>>>>>
->>>>>> [snip]
->>>>>>
->>>>>>>> No. It's in 0.1uW scale, so 800Watts. Which is 16 CPUs * 64Watts
->>>>>>>
->>>>>>> Oh! you want 0.1uW precision .... This doesn't seem realistic at all.
->>>>>>> I'm not even sure that the power model can even reach an accuracy of
->>>>>>> 1mW
->>>>>>>
->>>>>>
->>>>>> True, the EM is registering platform with 1mW precision, but 1uW
->>>>>
->>>>> Do you mean 1uW or 0.1uW ?
->>>>
->>>> In this patch set I've proposed 0.1uW, but I'm open to drop one
->>>> order of magnitude. The 1uW still be good.
->>>
->>> I don't want to underestimate the capabilities of the power model but
->>> I don't see which benefit you will get with 0.1uW precision
->>> With a 1uW precision the long type currently used for the returned
->>> value is fine for 32bits machine AFAICT
->>>
->>
->> For 1uW and 1.2Watts for one core, 4 CPUs in cluster we get:
->> (1200 * 1000) * (4 * 1024) = ~4.9bln
->> so it would need div 64 version
-> 
-> But as stated before, this is an internal computation step and doesn't
-> have to be reflected in the returned value which can stay a long
-> 
+Thank you,
 
-I agree, we might scale down the result if it's too big, before the
-return. We could figure this out at the EM registration point, so a
-proper shift might be applied for such platform. It might enable both
-32bit and 64bit platforms to avoid the rounding error. Let me experiment
-with some code to check all the cases.
-Thank you for the comments!
+Jessica
 
+---
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+
+   Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/jeyu/linux.git tags/modules-for-v5.14
+
+for you to fetch changes up to 2c0f0f3639562d6e38ee9705303c6457c4936eac:
+
+   module: correctly exit module_kallsyms_on_each_symbol when fn() != 0 (2021-05-26 14:55:45 +0200)
+
+----------------------------------------------------------------
+Modules updates for v5.14
+
+Summary of modules changes for the 5.14 merge window:
+
+- Fix incorrect logic in module_kallsyms_on_each_symbol()
+
+- Fix for a Coccinelle warning
+
+Signed-off-by: Jessica Yu <jeyu@kernel.org>
+
+----------------------------------------------------------------
+Jon Mediero (1):
+       module: correctly exit module_kallsyms_on_each_symbol when fn() != 0
+
+zhouchuangao (1):
+       kernel/module: Use BUG_ON instead of if condition followed by BUG
+
+  kernel/module.c | 6 +++---
+  1 file changed, 3 insertions(+), 3 deletions(-)
