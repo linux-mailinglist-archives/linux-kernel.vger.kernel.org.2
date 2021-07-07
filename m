@@ -2,119 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956343BE41C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FAC3BE41E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhGGILz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:11:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:59318 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230398AbhGGILy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:11:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99274ED1;
-        Wed,  7 Jul 2021 01:09:14 -0700 (PDT)
-Received: from [10.57.1.129] (unknown [10.57.1.129])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B20833F694;
-        Wed,  7 Jul 2021 01:09:11 -0700 (PDT)
-Subject: Re: [PATCH 2/3] PM: EM: Make em_cpu_energy() able to return bigger
- values
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Chris.Redpath@arm.com,
-        dietmar.eggemann@arm.com, morten.rasmussen@arm.com,
-        qperret@google.com, linux-pm@vger.kernel.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, vincent.guittot@linaro.org,
-        mingo@redhat.com, juri.lelli@redhat.com, rostedt@goodmis.org,
-        segall@google.com, mgorman@suse.de, bristot@redhat.com,
-        CCj.Yeh@mediatek.com
-References: <20210625152603.25960-1-lukasz.luba@arm.com>
- <20210625152603.25960-3-lukasz.luba@arm.com>
- <YOVSu08LpHX5cx/+@hirez.programming.kicks-ass.net>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <ca9853d1-5ff2-bdac-7581-61bffa3fdaaa@arm.com>
-Date:   Wed, 7 Jul 2021 09:09:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S230470AbhGGINZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230408AbhGGINY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 04:13:24 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3978C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 01:10:44 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id d2so2050453wrn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 01:10:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gHdncZ3P6g+2TaLtcRB/ZmZ7HXwhAytQ4tmQta2m+MU=;
+        b=MvO+u35OJmERKJ4gc+iV4WAlyRMoy478j0l8ySQomx+lEB8AwVW1YMgq/zNC1rQwA7
+         vjJPwDurT2RK/xUMSu08apSf6kY/hkFFhKshJ8R6jsnk7mrTAdvJEaLcVSTohmrUAC8g
+         0sO21eDU6P98sh9p9Wu8xl78g51IEMUST4t8oCn+HcrzPN8ZDUk13FU8A3yaLiFliuNf
+         gc15nKZ5NwyB8aQAMac3LojbUDZEgqDkA0csi/oe65QbPs9BOEfAgMooFFB9/1Y1r3wH
+         h5/cpOsodj3ErYkfXSN/QFv+gJ2bQpgLvWTZ2865ZPNksK5aPsOY6TM7g6UhjZV9sF3C
+         e9NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=gHdncZ3P6g+2TaLtcRB/ZmZ7HXwhAytQ4tmQta2m+MU=;
+        b=XmP0hxF/AD0iRhMu05KdryqS6AoqedQMN4M5wO5m7s6rPNdTq0Nyl37a1zNenY4lVE
+         AotAvUzP1i2sAAhR4MiM8ppkc0rIx2nX8BlfZ8SSqlXi50dlWMSAgjTHuDnYCA2HtMFe
+         mEnR+JGsDrRYPt5PIfR4CcFBk8Y+ftrZDaod3uYE6odFufzgecL8AderF2LDJ1pJUXZs
+         RMmYGul+W62sDUAeSf7jt8EFVL/gV1/uoUlqPayUmhkMX/dcF7hUHRYOqYM89YdUovoe
+         txpCZsoWIgvUTrC2D0t8IEm5fAlSmr4em6mqYJP8e+5KWV1xHyMmCRqg9mf+yXNerLvn
+         z6zA==
+X-Gm-Message-State: AOAM533nQFzYrk6sm6PqGzbClPVBsRI9VdSTLfVeKtzNiJdsVNGO8Hcn
+        c/pVvyc469LAM3zhdp6pjXoNopMBXAg=
+X-Google-Smtp-Source: ABdhPJzMYUG12wdghVjhXd0fZicDKq0UvJWHRzrB/+FckHEeGScLJ4/rUcg0m5tacWWG+WP1RcIhVg==
+X-Received: by 2002:a5d:6e81:: with SMTP id k1mr26452325wrz.144.1625645443442;
+        Wed, 07 Jul 2021 01:10:43 -0700 (PDT)
+Received: from gmail.com (178-164-188-14.pool.digikabel.hu. [178.164.188.14])
+        by smtp.gmail.com with ESMTPSA id w9sm18616575wmc.19.2021.07.07.01.10.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 01:10:42 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 7 Jul 2021 10:10:40 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        Bill Wendling <wcw@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Jarmo Tiitto <jarmo.tiitto@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [GIT PULL] Clang feature updates for v5.14-rc1
+Message-ID: <YOVhgNRjEWSnjfcg@gmail.com>
+References: <202106281231.E99B92BB13@keescook>
+ <CAHk-=whqCT0BeqBQhW8D-YoLLgp_eFY=8Y=9ieREM5xx0ef08w@mail.gmail.com>
+ <202106291311.20AB10D04@keescook>
+ <CAHk-=wg8M2DyA=bWtnGsAOVqYU-AusxYcpXubUO2htb6qPU9dg@mail.gmail.com>
+ <CAKwvOdkcKU4K9LWTymmzi_c0wKPTQjWEbNu04WOd6D-EcnWDSg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YOVSu08LpHX5cx/+@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdkcKU4K9LWTymmzi_c0wKPTQjWEbNu04WOd6D-EcnWDSg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+* Nick Desaulniers <ndesaulniers@google.com> wrote:
 
-On 7/7/21 8:07 AM, Peter Zijlstra wrote:
-> On Fri, Jun 25, 2021 at 04:26:02PM +0100, Lukasz Luba wrote:
->> The Energy Model (EM) em_cpu_energy() is responsible for providing good
->> estimation regarding CPUs energy. It contains proper data structures which
->> are then used during calculation. The values stored in there are in
->> milli-Watts precision (or in abstract scale) smaller that 0xffff, which use
->> sufficient unsigned long even on 32-bit machines. There are scenarios where
->> we would like to provide calculated estimations in a better precision and
->> the values might be 1000 times bigger. This patch makes possible to use
->> quite big values for also 32-bit machines.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   include/linux/energy_model.h | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
->> index 3f221dbf5f95..2016f5a706e0 100644
->> --- a/include/linux/energy_model.h
->> +++ b/include/linux/energy_model.h
->> @@ -101,7 +101,7 @@ void em_dev_unregister_perf_domain(struct device *dev);
->>    * Return: the sum of the energy consumed by the CPUs of the domain assuming
->>    * a capacity state satisfying the max utilization of the domain.
->>    */
->> -static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
->> +static inline u64 em_cpu_energy(struct em_perf_domain *pd,
->>   				unsigned long max_util, unsigned long sum_util,
->>   				unsigned long allowed_cpu_cap)
->>   {
->> @@ -180,7 +180,7 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
->>   	 *   pd_nrg = ------------------------                       (4)
->>   	 *                  scale_cpu
->>   	 */
->> -	return ps->cost * sum_util / scale_cpu;
->> +	return div_u64((u64)ps->cost * sum_util, scale_cpu);
+> > And I really hate how pretty much all of the PGO support seems to be 
+> > just about this inferior method of getting the data.
 > 
-> So these patches are all rather straight forward, however.. the above is
-> pretty horrific on a 32bit box, and we do quite a few of them per
-> wakeup. Is this really worth the performance penalty on 32bit CPUs?
-
-True, for 2 cluster SoC we might do this 5 times (or less, depends on
-system state). We don't have new 32bit big.LITTLE platforms, the newest
-is ~7years old and is actually the only one using EAS. It's not put
-into new devices AFAIK.
-
+> Right now we're having trouble with hardware performance counters on 
+> non-intel chips; I don't think we have working LBR equivalents on AMD 
+> until zen3, and our ETM based samples on ARM are hung up on a few last 
+> minute issues requiring new hardware (from multiple different chipset 
+> vendors).
 > 
-> Do you really still care about 32bit CPUs, or is this mostly an artifact
-> of wanting to unconditionally increase the precision?
-> 
+> It would be good to have some form profile based optimizations that 
+> aren't architecture or microarchitecture dependent.
 
-We discussed this internally and weighted the 32bit old big.little.
+That doesn't excuse using an inferior tooling ABI design though. By your 
+own description proper hardware LBR support on the platforms you care most 
+about is either there or close - yet the whole Clang PGO feature is 
+designed around software based compiler instrumentation? That's backwards.
 
-There is a solution, but needs more work and a lot of changes in the
-whole kernel due to modified EM (affects IPA, DTPM, registration, ...).
+The right technical solution to integrate the clang-pgo software 
+instrumetnation would be to implement a minimal software-LBR PMU 
+functionality on top of the clang-pgo engine, and use unified perf tooling 
+to process the branch tracing/profiling information.
 
-I have been working on a next step for code that you've pointed:
-get rid of this runtime division.
-It would be possible to pre-calculate the:
-'ps->cost / scale_cpu' at the moment when EM is registered and store
-it in the ps->cost. So we would have just:
-return ps->cost * sum_util
+In the main PGO thread PeterZ made a couple of technical suggestions about 
+how this can be done using the existing hardware LBR interfaces of perf, 
+but we are flexible if the design is sane and are open to improvements.
 
-The only issue is a late boot of biggest cores, which would destroy
-the old scale_cpu values for other PDs. I need to probably add
-RCU locking into the EM and update the other PDs' EMs when
-the last biggest CPU boots after a few second and registers its
-EM.
+I.e. try to commonalize the tooling data as soon as possible - not very 
+late as in the current proposal, exposing a whole stack of APIs and ABIs to 
+clang-pgo specific interfaces.
 
-For now we would live with this simple code which improves
-all recent 64bit platforms and is easy to take it into Android
-common kernel. The next step would be more scattered across
-other subsystems, so harder to backport to Android 5.4 and others.
+The "LBR data unification" approach has numerous short term and long term 
+advantages:
+
+ - Hardware assisted LBR tracing support out of the box on two major 
+   hardware platforms (Power and x86), and on some ARM platforms "soon", 
+   maybe sooner than this feature trickles down to distributions to begin 
+   with.
+
+ - GCC won't have to reinvent the wheel - they only need to make sure they 
+   can generate the minimal LBR data. In that sense perf is an 
+   'independent' tooling facility they might be more comfortable working 
+   with as well, than a 'competing' compiler project.
+
+ - There's even a chance that existing instrumentation can be reused - or a 
+   relatively self-contained compiler plugin can generate it.
+
+ - Lower maintenance overhead, lower risk of subsystem obsolescence.
+
+Binding this feature to clang-pgo on the ABI level is not a good move for 
+the Linux kernel IMO.
+
+So until this is implemented properly, or adequate explanation is given why 
+I'm wrong:
+
+   NACKED-by: Ingo Molnar <mingo@kernel.org>
+
+Both for the core kernel and x86 bits.
+
+Please preserve this NAK and mention it prominently in future iterations of 
+this feature. Please Cc: me on future postings.
+
+Thanks,
+
+	Ingo
