@@ -2,123 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280773BEBAD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3059E3BEBB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbhGGP6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 11:58:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231533AbhGGP6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 11:58:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 737E961CC2;
-        Wed,  7 Jul 2021 15:55:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625673352;
-        bh=yA2T6Ajlz9ePfRZThDw90HuzdId+jf7AX43qfgOKHTs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b1VgVbYfP1P8zPrj7ztAaO7xEBFuprX8wUVfKMvPuqxMlFaYpFJxn3RXJJs5EaXEc
-         Ofss8SqqrkMTjndLvpp/JRbty2Meg3qv+t/jf/BevrRsqvakGH0VIg/foSdzQwWa/L
-         JtG1Y6hVooYntuhL4mxfV7e1ouQEA7bbQ483akv/ZAfUtF0onbgZm85of5GV+ylB6g
-         QWLBpJ2v3TXdw8vF/gATvIk+zz2vWxXoPd1OfYbXbBiFEOYJk8XKbvGvZkfo4QQJhV
-         RtzaVvz3/0uzw3oegVA53KgjYA3TxdJ7LlQeXX/UZaRpT8ApWfUi+YlPu1PYmwK6aT
-         qy4cHmZgjGLAA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1m19tn-0000vy-4v; Wed, 07 Jul 2021 17:55:43 +0200
-Date:   Wed, 7 Jul 2021 17:55:43 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Tamseel Shams <m.shams@samsung.com>
-Cc:     krzysztof.kozlowski@canonical.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com
-Subject: Re: [PATCH v3] serial: samsung: Checks the return value of function
-Message-ID: <YOXOfyPa6aoy5mC8@hovoldconsulting.com>
-References: <CGME20210706061710epcas5p2c11d1bf5afb14774c4d4db93f2b83b33@epcas5p2.samsung.com>
- <20210706061909.17555-1-m.shams@samsung.com>
+        id S232134AbhGGP71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 11:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231533AbhGGP70 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 11:59:26 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47EE3C061574;
+        Wed,  7 Jul 2021 08:56:46 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id f20so2585037pfa.1;
+        Wed, 07 Jul 2021 08:56:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zjs60eTmFylT6zlXhuolFL93YMY2z/i7m9j2AIBEDZA=;
+        b=BO/yGi0dKV1ujG/AidQDFg1jrW4oL8Krq+3DlvsnIdI0YPafwXTEE+2jftQFPA3VP3
+         y0AEvf/ySQUxFWF0Tup2njvy0LPYVWEP8BlwJkzKu7viFhOkhvVByeLTpGfIPdPZ+4SC
+         3xmkdcDh1FsviVX8DnF851C3cRpa10WkahClM+M5BIlGJy6FAC3RFEfr4qJgPThK/w1Y
+         5hwRC6/QYkKHIDr3ihkv8FHSB/Lf9GA3Tu2xIqRMEHrXGSY+a3fDv+lzxpYS/aTuhOzn
+         1JEzcpf+SxN7xZ4S2+te9CpmIfPQ340m+6n/clvvuobIsB21dN1QyoIqFR0rJRhklBvj
+         r88w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zjs60eTmFylT6zlXhuolFL93YMY2z/i7m9j2AIBEDZA=;
+        b=GU/q2YnjruNJYhHV+g1Vbgo8PocRFkdI6Xo1FnV77JO2e/7erENXucqGFltr8gVB8Z
+         zjngfYvUWEdYzs8KX9TGujZj/m3CEUFpgtSEICHH9USbtpvV2gIY55mybwRXDHjTADe4
+         6U9D3JY0SVy3JdX253OL5V1yqQXUoeGJmoSwcG8OH5J5vxrmMyZsOZUVpaqBSaYGY4kN
+         HxoUCqX8hFEVbuH9dBad51GUKMSZXZIQ8YJziw3BOwbxgqp51vvtAC50ovfhSbhkdnX1
+         mESKHi3ik0vl2cg0ZHkMHlW8VPkhnKjyyswCu/SVaAvhoWpRlkyLiuPItVlxUasZcnpm
+         G6EQ==
+X-Gm-Message-State: AOAM532ESJQDCKJ9djxr36U7pYhdwL76mqc5Qe8oI9BFQmvCYG5TQKZJ
+        B7bUWGtvQyKCb7+GT5GRqMg=
+X-Google-Smtp-Source: ABdhPJxwF72LgxLgSJA0rkc1Cc9HEyrpZjUwEI9uIJ98YFPNtUGgcUqJOh5Q4W8ULiCVKlo/d8JBFA==
+X-Received: by 2002:a63:b303:: with SMTP id i3mr27053915pgf.25.1625673405675;
+        Wed, 07 Jul 2021 08:56:45 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.27])
+        by smtp.gmail.com with ESMTPSA id gi20sm6865823pjb.20.2021.07.07.08.56.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 08:56:45 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Alexander Aring <alex.aring@gmail.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        Alexander Aring <aring@mojatatu.com>,
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ieee802154: hwsim: fix GPF in hwsim_new_edge_nl
+Date:   Wed,  7 Jul 2021 23:56:32 +0800
+Message-Id: <20210707155633.1486603-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210706061909.17555-1-m.shams@samsung.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 11:49:09AM +0530, Tamseel Shams wrote:
+Both MAC802154_HWSIM_ATTR_RADIO_ID and MAC802154_HWSIM_ATTR_RADIO_EDGE
+must be present to fix GPF.
 
-Please provide a better commit summary; "Checks the return value of
-function" is too vague.
+Fixes: f25da51fdc38 ("ieee802154: hwsim: add replacement for fakelb")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ drivers/net/ieee802154/mac802154_hwsim.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> "uart_add_one_port" function call may fail and return
-> some error code, so adding a check for return value.
-> If it is returning some error code, then displaying the
-> result, unregistering the driver and then returning from
-> probe function with error code.
-> 
-> Signed-off-by: Tamseel Shams <m.shams@samsung.com>
-> ---
-> Changes since v1:
-> 1. Added support to unregister driver on failure of "uart_add_one_port"
-> function call.
-> 2. Commit message updated.
-> 
-> Changes since v2:
-> 1. Added support to unwind clocks on failure of "uart_add_one_port"
-> function call.
-> 
->  drivers/tty/serial/samsung_tty.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-> index 9fbc61151c2e..a3f3a17fb54b 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> @@ -2253,7 +2253,11 @@ static int s3c24xx_serial_probe(struct platform_device *pdev)
->  	}
->  
->  	dev_dbg(&pdev->dev, "%s: adding port\n", __func__);
-> -	uart_add_one_port(&s3c24xx_uart_drv, &ourport->port);
-> +	ret = uart_add_one_port(&s3c24xx_uart_drv, &ourport->port);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "Failed to add uart port, err %d\n", ret);
-> +		goto add_port_error;
-> +	}
->  	platform_set_drvdata(pdev, &ourport->port);
->  
->  	/*
-> @@ -2272,6 +2276,17 @@ static int s3c24xx_serial_probe(struct platform_device *pdev)
->  	probe_index++;
->  
->  	return 0;
-> +
-> +add_port_error:
+diff --git a/drivers/net/ieee802154/mac802154_hwsim.c b/drivers/net/ieee802154/mac802154_hwsim.c
+index cae52bfb871e..8caa61ec718f 100644
+--- a/drivers/net/ieee802154/mac802154_hwsim.c
++++ b/drivers/net/ieee802154/mac802154_hwsim.c
+@@ -418,7 +418,7 @@ static int hwsim_new_edge_nl(struct sk_buff *msg, struct genl_info *info)
+ 	struct hwsim_edge *e;
+ 	u32 v0, v1;
+ 
+-	if (!info->attrs[MAC802154_HWSIM_ATTR_RADIO_ID] &&
++	if (!info->attrs[MAC802154_HWSIM_ATTR_RADIO_ID] ||
+ 	    !info->attrs[MAC802154_HWSIM_ATTR_RADIO_EDGE])
+ 		return -EINVAL;
+ 
+-- 
+2.25.1
 
-Name error labels after what they do, not where jump from (e.g.
-"err_disable_clk").
-
-> +	ourport->port.mapbase = 0;
-> +	clk_disable_unprepare(ourport->clk);
-> +	clk_put(ourport->clk);
-> +	if (!IS_ERR(ourport->baudclk)) {
-> +		clk_disable_unprepare(ourport->baudclk);
-> +		clk_put(ourport->baudclk);
-> +	}
-> +	uart_unregister_driver(&s3c24xx_uart_drv);
-
-You can't just deregister the serial driver if probe of a single port
-fails. What if there are more than one port?
-
-Looks like the driver has the same bug in remove(). What a mess... Added
-by 6f134c3c7703 ("serial: samsung: Move uart_register_driver call to
-device probe") in 2014.
-
-And the clocks are never disabled and released in case
-uart_register_driver() fails above either.
-
-> +	return ret;
->  }
->  
->  static int s3c24xx_serial_remove(struct platform_device *dev)
-
-Johan
