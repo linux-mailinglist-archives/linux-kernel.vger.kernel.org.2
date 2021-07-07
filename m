@@ -2,507 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C74D3BE4D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52653BE4D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhGGI7f convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 7 Jul 2021 04:59:35 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3371 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhGGI7e (ORCPT
+        id S231293AbhGGI7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231216AbhGGI7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:59:34 -0400
-Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GKY1474CLz6J68Z;
-        Wed,  7 Jul 2021 16:46:00 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 7 Jul 2021 10:56:47 +0200
-Received: from localhost (10.47.89.60) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 7 Jul 2021
- 09:56:46 +0100
-Date:   Wed, 7 Jul 2021 09:56:29 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 1/2] iio: frequency: adrf6780: add support for
- ADRF6780
-Message-ID: <20210707095629.00004bb8@Huawei.com>
-In-Reply-To: <PH0PR03MB6366BC5E806B18A8889EDDE9991A9@PH0PR03MB6366.namprd03.prod.outlook.com>
-References: <20210702111239.174189-1-antoniu.miclaus@analog.com>
-        <20210703175716.7864358a@jic23-huawei>
-        <PH0PR03MB63667CCA2691D4A43F28041E991C9@PH0PR03MB6366.namprd03.prod.outlook.com>
-        <20210706100405.00001507@Huawei.com>
-        <PH0PR03MB6366190FBDC12B1AD1CCBC43991B9@PH0PR03MB6366.namprd03.prod.outlook.com>
-        <PH0PR03MB6366BC5E806B18A8889EDDE9991A9@PH0PR03MB6366.namprd03.prod.outlook.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Wed, 7 Jul 2021 04:59:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCB7C061574;
+        Wed,  7 Jul 2021 01:57:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=MWrityohNuEWkJE2rGPEDtPEPbcWb3iMvUvhJ/UoPDM=; b=Svm8P0TWiGRuGyDIL1qa99qXCj
+        gVcHUNRLON+iHulZ0p/rd1ca/w1dTJ+8quUR/8TLYeGG2jl3y0nBgeJQfBxbpUJ23rra8koK/yC1u
+        ne9D1qGbp2/OzC9cmh9nA+A00/Ru1+ttdSGAQd54RjeYMf/JmujWVTFQI7W2IN/yqNjAuhp8AAEji
+        CyVsDlAVEEoVtPgo6YNf+bL7ecPda1Ml/Noc+83fvC3Q49TQP5D0DsQxvBbC6xxw6HpC1VR/auYf2
+        E7KC9Fesz9VmplPIgF9IcbGPv9NKEq7KAhfxHteOIAPOnwiBDF0OOY/YOKNiLfn/s/CaCZNQf55FK
+        ivUyVpQQ==;
+Received: from p4fdb05cb.dip0.t-ipconnect.de ([79.219.5.203] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m13MO-00CEHi-Kb; Wed, 07 Jul 2021 08:56:51 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     tytso@mit.edu, leah.rumancik@gmail.com
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org
+Subject: [PATCH] ext4: fix EXT4_IOC_CHECKPOINT
+Date:   Wed,  7 Jul 2021 10:56:44 +0200
+Message-Id: <20210707085644.3041867-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.47.89.60]
-X-ClientProxiedBy: lhreml742-chm.china.huawei.com (10.201.108.192) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Jul 2021 08:26:59 +0000
-"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+Issuing a discard for any kind of "contention deletion SLO" is highly
+dangerous as discard as defined by Linux (as well the underlying NVMe,
+SCSI, ATA, eMMC and virtio primitivies) are defined to not guarantee
+erasing of data but just allow optional and nondeterministic reclamation
+of space.  Instead issuing write zeroes is the only think to perform
+such an operation.  Remove the highly dangerous and misleading discard
+mode for EXT4_IOC_CHECKPOINT and only support the write zeroes based
+on, and clean up the resulting mess including the dry run mode.
 
-> > From: Sa, Nuno <Nuno.Sa@analog.com>
-> > Sent: Tuesday, July 6, 2021 12:23 PM
-> > To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-> > Cc: Jonathan Cameron <jic23@kernel.org>; Miclaus, Antoniu
-> > <Antoniu.Miclaus@analog.com>; linux-iio@vger.kernel.org; linux-
-> > kernel@vger.kernel.org; devicetree@vger.kernel.org;
-> > robh+dt@kernel.org
-> > Subject: RE: [PATCH v4 1/2] iio: frequency: adrf6780: add support for
-> > ADRF6780
-> > 
-> > 
-> >   
-> > > From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-> > > Sent: Tuesday, July 6, 2021 11:04 AM
-> > > To: Sa, Nuno <Nuno.Sa@analog.com>
-> > > Cc: Jonathan Cameron <jic23@kernel.org>; Miclaus, Antoniu
-> > > <Antoniu.Miclaus@analog.com>; linux-iio@vger.kernel.org; linux-
-> > > kernel@vger.kernel.org; devicetree@vger.kernel.org;
-> > > robh+dt@kernel.org
-> > > Subject: Re: [PATCH v4 1/2] iio: frequency: adrf6780: add support for
-> > > ADRF6780
-> > >
-> > > On Mon, 5 Jul 2021 10:18:51 +0000
-> > > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
-> > >  
-> > > > > -----Original Message-----
-> > > > > From: Jonathan Cameron <jic23@kernel.org>
-> > > > > Sent: Saturday, July 3, 2021 6:57 PM
-> > > > > To: Miclaus, Antoniu <Antoniu.Miclaus@analog.com>
-> > > > > Cc: linux-iio@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > > > > devicetree@vger.kernel.org; robh+dt@kernel.org
-> > > > > Subject: Re: [PATCH v4 1/2] iio: frequency: adrf6780: add support  
-> > > for  
-> > > > > ADRF6780
-> > > > >
-> > > > > On Fri, 2 Jul 2021 14:12:38 +0300
-> > > > > Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
-> > > > >  
-> > > > > > The ADRF6780 is a silicon germanium (SiGe) design, wideband,
-> > > > > > microwave upconverter optimized for point to point microwave
-> > > > > > radio designs operating in the 5.9 GHz to 23.6 GHz frequency
-> > > > > > range.
-> > > > > >
-> > > > > > Datasheet:
-> > > > > > https://www.analog.com/media/en/technical-  
-> > > documentation/data-  
-> > > > > sheets/ADRF6780.pdf  
-> > > > > >
-> > > > > > Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>  
-> > > > >
-> > > > > Hi Antoniu,
-> > > > >
-> > > > > Frequency drivers are fairly unusual so if you could add a listing of
-> > > > > the attributes in sysfs that would be great (it's nice practice  
-> > anyway  
-> > > but  
-> > > > > I don't insist on it!)
-> > > > >
-> > > > > Various fairly minor comments inline.
-> > > > >
-> > > > > Thanks,
-> > > > >
-> > > > > Jonathan
-> > > > >
-> > > > >  
-> > > > > > ---
-> > > > > >  changes in v4:
-> > > > > >   - change license to: GPL-2.0-only
-> > > > > >  drivers/iio/frequency/Kconfig    |  13 +
-> > > > > >  drivers/iio/frequency/Makefile   |   1 +
-> > > > > >  drivers/iio/frequency/adrf6780.c | 498  
-> > > > > +++++++++++++++++++++++++++++++  
-> > > > > >  3 files changed, 512 insertions(+)
-> > > > > >  create mode 100644 drivers/iio/frequency/adrf6780.c
-> > > > > >
-> > > > > > diff --git a/drivers/iio/frequency/Kconfig  
-> > > > > b/drivers/iio/frequency/Kconfig  
-> > > > > > index 240b81502512..fc9751c48f59 100644
-> > > > > > --- a/drivers/iio/frequency/Kconfig
-> > > > > > +++ b/drivers/iio/frequency/Kconfig
-> > > > > > @@ -49,5 +49,18 @@ config ADF4371
-> > > > > >
-> > > > > >  	  To compile this driver as a module, choose M here:  
-> > the  
-> > > > > >  	  module will be called adf4371.
-> > > > > > +
-> > > > > > +config ADRF6780
-> > > > > > +        tristate "Analog Devices ADRF6780 Microwave  
-> > Upconverter"  
-> > > > > > +        depends on SPI
-> > > > > > +        depends on COMMON_CLK
-> > > > > > +        depends on OF  
-> > > > >
-> > > > > Why?  Pretty much everything seems to have defaults if not  
-> > > provided  
-> > > > > via OF.
-> > > > > I've asked for the generic firmware functions anyway, so you can  
-> > > drop  
-> > > > > this
-> > > > > for that reason if nothing else!
-> > > > >  
-> > > > > > +        help
-> > > > > > +          Say yes here to build support for Analog Devices  
-> > ADRF6780  
-> > > > > > +          5.9 GHz to 23.6 GHz, Wideband, Microwave Upconverter.
-> > > > > > +
-> > > > > > +          To compile this driver as a module, choose M here: the
-> > > > > > +          module will be called adrf6780.
-> > > > > > +
-> > > > > >  endmenu
-> > > > > >  endmenu
-> > > > > > diff --git a/drivers/iio/frequency/Makefile  
-> > > > > b/drivers/iio/frequency/Makefile  
-> > > > > > index 518b1e50caef..ae3136c79202 100644
-> > > > > > --- a/drivers/iio/frequency/Makefile
-> > > > > > +++ b/drivers/iio/frequency/Makefile
-> > > > > > @@ -7,3 +7,4 @@
-> > > > > >  obj-$(CONFIG_AD9523) += ad9523.o
-> > > > > >  obj-$(CONFIG_ADF4350) += adf4350.o
-> > > > > >  obj-$(CONFIG_ADF4371) += adf4371.o
-> > > > > > +obj-$(CONFIG_ADRF6780) += adrf6780.o
-> > > > > > diff --git a/drivers/iio/frequency/adrf6780.c  
-> > > > > b/drivers/iio/frequency/adrf6780.c  
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..472a66f90c7f
-> > > > > > --- /dev/null
-> > > > > > +++ b/drivers/iio/frequency/adrf6780.c
-> > > > > > @@ -0,0 +1,498 @@
-> > > > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > > > +/*
-> > > > > > + * ADRF6780 driver
-> > > > > > + *
-> > > > > > + * Copyright 2021 Analog Devices Inc.
-> > > > > > + */
-> > > > > > +
-> > > > > > +#include <linux/bitfield.h>
-> > > > > > +#include <linux/bits.h>
-> > > > > > +#include <linux/clk.h>
-> > > > > > +#include <linux/clkdev.h>
-> > > > > > +#include <linux/clk-provider.h>
-> > > > > > +#include <linux/delay.h>
-> > > > > > +#include <linux/device.h>
-> > > > > > +#include <linux/iio/iio.h>
-> > > > > > +#include <linux/module.h>  
-> > > > >
-> > > > > #include <linux/mod_devicetable.h>
-> > > > >  
-> > > > > > +#include <linux/spi/spi.h>
-> > > > > > +
-> > > > > > +/* ADRF6780 Register Map */
-> > > > > > +#define ADRF6780_REG_CONTROL			0x00
-> > > > > > +#define ADRF6780_REG_ALARM_READBACK		0x01
-> > > > > > +#define ADRF6780_REG_ALARM_MASKS		0x02
-> > > > > > +#define ADRF6780_REG_ENABLE			0x03
-> > > > > > +#define ADRF6780_REG_LINEARIZE			0x04
-> > > > > > +#define ADRF6780_REG_LO_PATH			0x05
-> > > > > > +#define ADRF6780_REG_ADC_CONTROL		0x06
-> > > > > > +#define ADRF6780_REG_ADC_OUTPUT  
-> > 	0x0C  
-> > > > > > +
-> > > > > > +/* ADRF6780_REG_CONTROL Map */
-> > > > > > +#define ADRF6780_PARITY_EN_MSK			BIT(15)
-> > > > > > +#define ADRF6780_PARITY_EN(x)  
-> > > > > 	FIELD_PREP(ADRF6780_PARITY_EN_MSK, x)  
-> > > > > > +#define ADRF6780_SOFT_RESET_MSK  
-> > 	BIT(14)  
-> > > > > > +#define ADRF6780_SOFT_RESET(x)  
-> > > > > 	FIELD_PREP(ADRF6780_SOFT_RESET_MSK, x)  
-> > > > > > +#define ADRF6780_CHIP_ID_MSK  
-> > > 	GENMASK(11, 4)  
-> > > > > > +#define ADRF6780_CHIP_ID			0xA
-> > > > > > +#define ADRF6780_CHIP_REVISION_MSK  
-> > > 	GENMASK(3, 0)  
-> > > > > > +#define ADRF6780_CHIP_REVISION(x)  
-> > > > > 	FIELD_PREP(ADRF6780_CHIP_REVISION_MSK, x)  
-> > > > > > +
-> > > > > > +/* ADRF6780_REG_ALARM_READBACK Map */
-> > > > > > +#define ADRF6780_PARITY_ERROR_MSK		BIT(15)
-> > > > > > +#define ADRF6780_PARITY_ERROR(x)  
-> > > > > 	FIELD_PREP(ADRF6780_PARITY_ERROR_MSK, x)  
-> > > > > > +#define ADRF6780_TOO_FEW_ERRORS_MSK		BIT(14)
-> > > > > > +#define ADRF6780_TOO_FEW_ERRORS(x)  
-> > > > > 	FIELD_PREP(ADRF6780_TOO_FEW_ERRORS_MSK, x)  
-> > > > > > +#define ADRF6780_TOO_MANY_ERRORS_MSK  
-> > 	BIT(13)  
-> > > > > > +#define ADRF6780_TOO_MANY_ERRORS(x)  
-> > > > > 	FIELD_PREP(ADRF6780_TOO_MANY_ERRORS_MSK, x)  
-> > > > > > +#define ADRF6780_ADDRESS_RANGE_ERROR_MSK	BIT(12)
-> > > > > > +#define ADRF6780_ADDRESS_RANGE_ERROR(x)  
-> > > > > 	FIELD_PREP(ADRF6780_ADDRESS_RANGE_ERROR_MSK, x)  
-> > > > > > +
-> > > > > > +/* ADRF6780_REG_ENABLE Map */
-> > > > > > +#define ADRF6780_VGA_BUFFER_EN_MSK		BIT(8)
-> > > > > > +#define ADRF6780_VGA_BUFFER_EN(x)  
-> > > > > 	FIELD_PREP(ADRF6780_VGA_BUFFER_EN_MSK, x)  
-> > > > > > +#define ADRF6780_DETECTOR_EN_MSK		BIT(7)
-> > > > > > +#define ADRF6780_DETECTOR_EN(x)  
-> > > > > 	FIELD_PREP(ADRF6780_DETECTOR_EN_MSK, x)  
-> > > > > > +#define ADRF6780_LO_BUFFER_EN_MSK		BIT(6)
-> > > > > > +#define ADRF6780_LO_BUFFER_EN(x)  
-> > > > > 	FIELD_PREP(ADRF6780_LO_BUFFER_EN_MSK, x)  
-> > > > > > +#define ADRF6780_IF_MODE_EN_MSK  
-> > 	BIT(5)  
-> > > > > > +#define ADRF6780_IF_MODE_EN(x)  
-> > > > > 	FIELD_PREP(ADRF6780_IF_MODE_EN_MSK, x)  
-> > > > > > +#define ADRF6780_IQ_MODE_EN_MSK  
-> > > 	BIT(4)  
-> > > > > > +#define ADRF6780_IQ_MODE_EN(x)  
-> > > > > 	FIELD_PREP(ADRF6780_IQ_MODE_EN_MSK, x)  
-> > > > > > +#define ADRF6780_LO_X2_EN_MSK			BIT(3)
-> > > > > > +#define ADRF6780_LO_X2_EN(x)  
-> > > > > 	FIELD_PREP(ADRF6780_LO_X2_EN_MSK, x)  
-> > > > > > +#define ADRF6780_LO_PPF_EN_MSK			BIT(2)
-> > > > > > +#define ADRF6780_LO_PPF_EN(x)  
-> > > > > 	FIELD_PREP(ADRF6780_LO_PPF_EN_MSK, x)  
-> > > > > > +#define ADRF6780_LO_EN_MSK			BIT(1)
-> > > > > > +#define ADRF6780_LO_EN(x)  
-> > > > > 	FIELD_PREP(ADRF6780_LO_EN_MSK, x)  
-> > > > > > +#define ADRF6780_UC_BIAS_EN_MSK  
-> > 	BIT(0)  
-> > > > > > +#define ADRF6780_UC_BIAS_EN(x)  
-> > > > > 	FIELD_PREP(ADRF6780_UC_BIAS_EN_MSK, x)  
-> > > > > > +
-> > > > > > +/* ADRF6780_REG_LINEARIZE Map */
-> > > > > > +#define ADRF6780_RDAC_LINEARIZE_MSK  
-> > > 	GENMASK(7, 0)  
-> > > > > > +#define ADRF6780_RDAC_LINEARIZE(x)  
-> > > > > 	FIELD_PREP(ADRF6780_RDAC_LINEARIZE_MSK, x)  
-> > > > > > +
-> > > > > > +/* ADRF6780_REG_LO_PATH Map */
-> > > > > > +#define ADRF6780_LO_SIDEBAND_MSK		BIT(10)
-> > > > > > +#define ADRF6780_LO_SIDEBAND(x)  
-> > > > > 	FIELD_PREP(ADRF6780_LO_SIDEBAND_MSK, x)  
-> > > > > > +#define ADRF6780_Q_PATH_PHASE_ACCURACY_MSK  
-> > > > > 	GENMASK(7, 4)  
-> > > > > > +#define ADRF6780_Q_PATH_PHASE_ACCURACY(x)  
-> > > > > 	FIELD_PREP(ADRF6780_Q_PATH_PHASE_ACCURACY_MSK, x)  
-> > > > > > +#define ADRF6780_I_PATH_PHASE_ACCURACY_MSK  
-> > > > > 	GENMASK(3, 0)  
-> > > > > > +#define ADRF6780_I_PATH_PHASE_ACCURACY(x)  
-> > > > > 	FIELD_PREP(ADRF6780_I_PATH_PHASE_ACCURACY_MSK, x)  
-> > > > > > +
-> > > > > > +/* ADRF6780_REG_ADC_CONTROL Map */
-> > > > > > +#define ADRF6780_VDET_OUTPUT_SELECT_MSK  
-> > > 	BIT(3)  
-> > > > > > +#define ADRF6780_VDET_OUTPUT_SELECT(x)  
-> > > > > 	FIELD_PREP(ADRF6780_VDET_OUTPUT_SELECT_MSK, x)  
-> > > > > > +#define ADRF6780_ADC_START_MSK			BIT(2)
-> > > > > > +#define ADRF6780_ADC_START(x)  
-> > > > > 	FIELD_PREP(ADRF6780_ADC_START_MSK, x)  
-> > > > > > +#define ADRF6780_ADC_EN_MSK			BIT(1)
-> > > > > > +#define ADRF6780_ADC_EN(x)  
-> > > > > 	FIELD_PREP(ADRF6780_ADC_EN_MSK, x)  
-> > > > > > +#define ADRF6780_ADC_CLOCK_EN_MSK		BIT(0)
-> > > > > > +#define ADRF6780_ADC_CLOCK_EN(x)  
-> > > > > 	FIELD_PREP(ADRF6780_ADC_CLOCK_EN_MSK, x)  
-> > > > > > +
-> > > > > > +/* ADRF6780_REG_ADC_OUTPUT Map */
-> > > > > > +#define ADRF6780_ADC_STATUS_MSK  
-> > 	BIT(8)  
-> > > > > > +#define ADRF6780_ADC_STATUS(x)  
-> > > > > 	FIELD_PREP(ADRF6780_ADC_STATUS_MSK, x)  
-> > > > > > +#define ADRF6780_ADC_VALUE_MSK  
-> > > > > 	GENMASK(7, 0)  
-> > > > > > +#define ADRF6780_ADC_VALUE(x)  
-> > > > > 	FIELD_PREP(ADRF6780_ADC_VALUE_MSK, x)
-> > > > >
-> > > > > Not used.  In general, just use FIELD_PREP / FIELD_GET inline  
-> > > rather  
-> > > > > than having extra
-> > > > > macros like these. That approach is simpler for reviewers to  
-> > follow.  
-> > > > >  
-> > > > > > +
-> > > > > > +struct adrf6780_dev {
-> > > > > > +	struct spi_device	*spi;
-> > > > > > +	struct clk		*clkin;
-> > > > > > +	/* Protect against concurrent accesses to the device */
-> > > > > > +	struct mutex		lock;
-> > > > > > +	bool			vga_buff_en;
-> > > > > > +	bool			lo_buff_en;
-> > > > > > +	bool			if_mode_en;
-> > > > > > +	bool			iq_mode_en;
-> > > > > > +	bool			lo_x2_en;
-> > > > > > +	bool			lo_ppf_en;
-> > > > > > +	bool			lo_en;
-> > > > > > +	bool			uc_bias_en;
-> > > > > > +	bool			lo_sideband;
-> > > > > > +	bool			vdet_out_en;
-> > > > > > +};
-> > > > > > +
-> > > > > > +static int adrf6780_spi_read(struct adrf6780_dev *dev,  
-> > > unsigned int  
-> > > > > reg,  
-> > > > > > +			      unsigned int *val)
-> > > > > > +{
-> > > > > > +	int ret;
-> > > > > > +	unsigned int temp;
-> > > > > > +	struct spi_transfer t = {0};
-> > > > > > +	u8 data[3];
-> > > > > > +
-> > > > > > +	data[0] = 0x80 | (reg << 1);
-> > > > > > +	data[1] = 0x0;
-> > > > > > +	data[2] = 0x0;
-> > > > > > +
-> > > > > > +	t.rx_buf = &data[0];
-> > > > > > +	t.tx_buf = &data[0];
-> > > > > > +	t.len = 3;
-> > > > > > +
-> > > > > > +	ret = spi_sync_transfer(dev->spi, &t, 1);  
-> > > > >
-> > > > > data needs to be dma safe.
-> > > > >  
-> > > > > > +	if (ret < 0)
-> > > > > > +		return ret;
-> > > > > > +
-> > > > > > +	temp = ((data[0] | 0x80 | (reg << 1)) << 16) |
-> > > > > > +		(data[1] << 8) | data[2];  
-> > > > >
-> > > > > Ouch. That's a bit nasty, but why are you writing the reg into
-> > > > > it?  Looks like a get_unaligned_be24() >> 1 and a 16bit mask.
-> > > > > (use GENMASK(15, 0) for that to make it apparent what is  
-> > > happening.  
-> > > > >  
-> > > > > > +
-> > > > > > +	*val = (temp >> 1) & 0xFFFF;
-> > > > > > +
-> > > > > > +	return ret;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int adrf6780_spi_write(struct adrf6780_dev *dev,
-> > > > > > +				      unsigned int reg,
-> > > > > > +				      unsigned int val)
-> > > > > > +{
-> > > > > > +	u8 data[3];
-> > > > > > +
-> > > > > > +	val = (val << 1);
-> > > > > > +
-> > > > > > +	data[0] = (reg << 1) | (val >> 16);
-> > > > > > +	data[1] = val >> 8;
-> > > > > > +	data[2] = val;  
-> > > > >
-> > > > > An opportunity for
-> > > > > put_unaligned_be24() with a value of (I think)
-> > > > >
-> > > > > (val << 1) | (reg << 17)
-> > > > >
-> > > > >  
-> > > > > > +
-> > > > > > +	return spi_write(dev->spi, &data[0], 3);  
-> > > > >
-> > > > > Needs a dma safe buffer, which basically means it can't be on the
-> > > > > stack.
-> > > > > Lots of ways of handling that, but look for __cacheline_aligned in  
-> > > IIO  
-> > > > > drivers
-> > > > > to see the one we probably use mostly commonly in IIO drivers.  
-> > > >
-> > > > Hi Jonathan,
-> > > >
-> > > > This is something I wanted to ask for some time so I will take the  
-> > > opportunity here :).  
-> > > > Is this something you prefer just not to risk at all and make it an  
-> > hard  
-> > > requirement  
-> > > > (which is fair)? ...  
-> > >
-> > > Yes, I think we need to keep this as a hard requirement.
-> > > There are drivers out there which we missed this on in the past, and
-> > > I'm not necessarily
-> > > going to take the time to go through them all as this can be hard to
-> > > spot, but lets not
-> > > introduce any more potential problems.
-> > >  
-> > 
-> > I see. That makes sense and it's fair :). The only annoying (but not too
-> > annoying :)) is that
-> > making the data/buffer global forces you to use a lock in cases you
-> > potentially would
-> > not have too (just using local buffers). But that's life, better play safe :)
-> >   
-> > > >
-> > > > I'm asking this because, tbh, I would be very surprised if any spi/i2c  
-> > > controller out there  
-> > > > is using dma for a 3byte transfer. I guess the overhead of setting it  
-> > up  
-> > > is probably not  
-> > > > worth it...  
-> > >
-> > > There are (I believe) a few i2c and spi controllers out there that don't
-> > > do anything other
-> > > than DMA.  Wolfram mentioned one of those in his talk on adding
-> > > DMA support to i2c.  
-> > 
-> > Hmm, I see...
-> >   
-> > > Also, the reference in the file below to the wonderful case of USB to
-> > > i2c bridges that always
-> > > require DMA safe buffers.  
-> > 
-> > Indeed it does.
-> >   
-> 
-> Hi Jonathan,
-> 
-> Just for closure, I also realized that the pattern in IIO looks to be to use
-> DMA safe buffers only on the tx side. For instance in the IMU lib [1],
-> only the tx buffer is safe (well, I think there's problem with this as
-> I believe all spi transfers buffers should be properly aligned which won't
-> be the case in the IMU lib). Is there any reason for this? AFAICT, we should
-> also take care with rx buffers or am I missing something?
-Ah.  So this is a fun corner :)
+This is an ABI change and must go into Linus' tree before 5.14 is
+released or the offending commits need to be reverted.
 
-The reason cache line corruption can occur is as follows.
-1. DMA starts, typically involving some tx and rx usage by the device.
-   This flushes the CPU caches for the relevant lines. 
-... whilst DMA is not completed ...
-2. The host software pulls the line into it's cache and updates something (say a flag
-   elsewhere in that cacheline).
-3. Cacheline is evicted from the CPU cache causing a write back.
-4. Device then writes back the stuff it had cached locally which is allowed to include data
-   it wasn't accessing in the same cache line.  Boom, it just overwrote the flag we updated
-   with an older value.  Basically this is a performance optimization / simplification
-   the DMA engine is allowed to make.  Note I believe they are 'technically' allowed to
-   write back to the RX buffers as well, though not sure what devices do this for i2c/spi.
+Fixes: 351a0a3fbc35 ("ext4: add ioctl EXT4_IOC_CHECKPOINT")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ Documentation/filesystems/ext4/journal.rst | 17 +++-----
+ fs/ext4/ext4.h                             |  7 +---
+ fs/ext4/ioctl.c                            | 26 ++----------
+ fs/jbd2/journal.c                          | 47 +++++-----------------
+ include/linux/jbd2.h                       |  6 +--
+ 5 files changed, 22 insertions(+), 81 deletions(-)
 
-So, why do we only need to force one of the buffers to the start of a cacheline?
-
-What we are actually doing, is not keeping the buffer in it's own cacheline, but rather
-making sure nothing else is in the same cacheline (so there is no race as above).
-(it's easier to move the buffer, than to ensure everything else is moved out of the cache
-line it happens to be in!)
-There is a safe assumption here that the DMA device can't corrupt it's own data as that
-would be crazy :)
-
-Hence, pushing the first buffer to the start of a line, allows the second one to be
-after it in the same line (it's not a problem if it takes multiple lines)
-
-One more subtlety is why we can be sure nothing else ends up after the buffers.
-That's by construction.  The allocations IIO does for those iio_priv structures should
-always get padded out to at least the end of the cacheline.
-(IIRC, not looked at this code for many years!)
-
-> 
-> [1]: https://elixir.bootlin.com/linux/latest/source/include/linux/iio/imu/adis.h#L129
-> 
-> - Nuno Sá
+diff --git a/Documentation/filesystems/ext4/journal.rst b/Documentation/filesystems/ext4/journal.rst
+index 5fad38860f17..d18b18f9e053 100644
+--- a/Documentation/filesystems/ext4/journal.rst
++++ b/Documentation/filesystems/ext4/journal.rst
+@@ -742,15 +742,8 @@ the filesystem including journal recovery, filesystem resizing, and freeing of
+ the journal_t structure.
+ 
+ A journal checkpoint can be triggered from userspace via the ioctl
+-EXT4_IOC_CHECKPOINT. This ioctl takes a single, u64 argument for flags.
+-Currently, three flags are supported. First, EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN
+-can be used to verify input to the ioctl. It returns error if there is any
+-invalid input, otherwise it returns success without performing
+-any checkpointing. This can be used to check whether the ioctl exists on a
+-system and to verify there are no issues with arguments or flags. The
+-other two flags are EXT4_IOC_CHECKPOINT_FLAG_DISCARD and
+-EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT. These flags cause the journal blocks to be
+-discarded or zero-filled, respectively, after the journal checkpoint is
+-complete. EXT4_IOC_CHECKPOINT_FLAG_DISCARD and EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT
+-cannot both be set. The ioctl may be useful when snapshotting a system or for
+-complying with content deletion SLOs.
++EXT4_IOC_CHECKPOINT. This ioctl takes a u64 argument for flags.
++The only supported flags is EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT. This flag cause
++the journal blocks to be zero-filled after the journal checkpoint is complete.
++The ioctl may be useful when snapshotting a system or for complying with
++content deletion SLOs.
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 3c51e243450d..c2650b31bed2 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -743,12 +743,7 @@ enum {
+ #define EXT4_STATE_FLAG_DA_ALLOC_CLOSE	0x00000008
+ 
+ /* flags for ioctl EXT4_IOC_CHECKPOINT */
+-#define EXT4_IOC_CHECKPOINT_FLAG_DISCARD	0x1
+-#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT	0x2
+-#define EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN	0x4
+-#define EXT4_IOC_CHECKPOINT_FLAG_VALID		(EXT4_IOC_CHECKPOINT_FLAG_DISCARD | \
+-						EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT | \
+-						EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN)
++#define EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT	0x1
+ 
+ #if defined(__KERNEL__) && defined(CONFIG_COMPAT)
+ /*
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index e27f34bceb8d..981670303733 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -798,42 +798,24 @@ static int ext4_ioctl_checkpoint(struct file *filp, unsigned long arg)
+ 	__u32 flags = 0;
+ 	unsigned int flush_flags = 0;
+ 	struct super_block *sb = file_inode(filp)->i_sb;
+-	struct request_queue *q;
+ 
+-	if (copy_from_user(&flags, (__u32 __user *)arg,
+-				sizeof(__u32)))
++	if (copy_from_user(&flags, (__u32 __user *)arg, sizeof(__u32)))
+ 		return -EFAULT;
+ 
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
+ 	/* check for invalid bits set */
+-	if ((flags & ~EXT4_IOC_CHECKPOINT_FLAG_VALID) ||
+-				((flags & JBD2_JOURNAL_FLUSH_DISCARD) &&
+-				(flags & JBD2_JOURNAL_FLUSH_ZEROOUT)))
++	if (flags & ~EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT)
+ 		return -EINVAL;
+ 
+ 	if (!EXT4_SB(sb)->s_journal)
+ 		return -ENODEV;
+ 
+-	if (flags & ~JBD2_JOURNAL_FLUSH_VALID)
+-		return -EINVAL;
+-
+-	q = bdev_get_queue(EXT4_SB(sb)->s_journal->j_dev);
+-	if (!q)
+-		return -ENXIO;
+-	if ((flags & JBD2_JOURNAL_FLUSH_DISCARD) && !blk_queue_discard(q))
+-		return -EOPNOTSUPP;
+-
+-	if (flags & EXT4_IOC_CHECKPOINT_FLAG_DRY_RUN)
+-		return 0;
+-
+-	if (flags & EXT4_IOC_CHECKPOINT_FLAG_DISCARD)
+-		flush_flags |= JBD2_JOURNAL_FLUSH_DISCARD;
+-
+ 	if (flags & EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT) {
+ 		flush_flags |= JBD2_JOURNAL_FLUSH_ZEROOUT;
+-		pr_info_ratelimited("warning: checkpointing journal with EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT can be slow");
++		if (!bdev_write_zeroes_sectors(EXT4_SB(sb)->s_journal->j_dev))
++			pr_info_ratelimited("warning: checkpointing journal with EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT can be slow");
+ 	}
+ 
+ 	jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 152880c298ca..3256d8528c43 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1685,34 +1685,16 @@ static void jbd2_mark_journal_empty(journal_t *journal, int write_op)
+ /**
+  * __jbd2_journal_erase() - Discard or zeroout journal blocks (excluding superblock)
+  * @journal: The journal to erase.
+- * @flags: A discard/zeroout request is sent for each physically contigous
+- *	region of the journal. Either JBD2_JOURNAL_FLUSH_DISCARD or
+- *	JBD2_JOURNAL_FLUSH_ZEROOUT must be set to determine which operation
+- *	to perform.
+- *
+- * Note: JBD2_JOURNAL_FLUSH_ZEROOUT attempts to use hardware offload. Zeroes
+- * will be explicitly written if no hardware offload is available, see
+- * blkdev_issue_zeroout for more details.
++ *
++ * Note: Attempts to use hardware offload. Zeroes will be explicitly written if
++ * no hardware offload is available, see blkdev_issue_zeroout for more details.
+  */
+-static int __jbd2_journal_erase(journal_t *journal, unsigned int flags)
++static int __jbd2_journal_erase(journal_t *journal)
+ {
+ 	int err = 0;
+ 	unsigned long block, log_offset; /* logical */
+ 	unsigned long long phys_block, block_start, block_stop; /* physical */
+ 	loff_t byte_start, byte_stop, byte_count;
+-	struct request_queue *q = bdev_get_queue(journal->j_dev);
+-
+-	/* flags must be set to either discard or zeroout */
+-	if ((flags & ~JBD2_JOURNAL_FLUSH_VALID) || !flags ||
+-			((flags & JBD2_JOURNAL_FLUSH_DISCARD) &&
+-			(flags & JBD2_JOURNAL_FLUSH_ZEROOUT)))
+-		return -EINVAL;
+-
+-	if (!q)
+-		return -ENXIO;
+-
+-	if ((flags & JBD2_JOURNAL_FLUSH_DISCARD) && !blk_queue_discard(q))
+-		return -EOPNOTSUPP;
+ 
+ 	/*
+ 	 * lookup block mapping and issue discard/zeroout for each
+@@ -1762,18 +1744,10 @@ static int __jbd2_journal_erase(journal_t *journal, unsigned int flags)
+ 		truncate_inode_pages_range(journal->j_dev->bd_inode->i_mapping,
+ 				byte_start, byte_stop);
+ 
+-		if (flags & JBD2_JOURNAL_FLUSH_DISCARD) {
+-			err = blkdev_issue_discard(journal->j_dev,
+-					byte_start >> SECTOR_SHIFT,
+-					byte_count >> SECTOR_SHIFT,
+-					GFP_NOFS, 0);
+-		} else if (flags & JBD2_JOURNAL_FLUSH_ZEROOUT) {
+-			err = blkdev_issue_zeroout(journal->j_dev,
+-					byte_start >> SECTOR_SHIFT,
+-					byte_count >> SECTOR_SHIFT,
+-					GFP_NOFS, 0);
+-		}
+-
++		err = blkdev_issue_zeroout(journal->j_dev,
++				byte_start >> SECTOR_SHIFT,
++				byte_count >> SECTOR_SHIFT,
++				GFP_NOFS, 0);
+ 		if (unlikely(err != 0)) {
+ 			pr_err("JBD2: (error %d) unable to wipe journal at physical blocks %llu - %llu",
+ 					err, block_start, block_stop);
+@@ -2453,7 +2427,6 @@ EXPORT_SYMBOL(jbd2_journal_clear_features);
+  * can be issued on the journal blocks after flushing.
+  *
+  * flags:
+- *	JBD2_JOURNAL_FLUSH_DISCARD: issues discards for the journal blocks
+  *	JBD2_JOURNAL_FLUSH_ZEROOUT: issues zeroouts for the journal blocks
+  */
+ int jbd2_journal_flush(journal_t *journal, unsigned int flags)
+@@ -2511,8 +2484,8 @@ int jbd2_journal_flush(journal_t *journal, unsigned int flags)
+ 	 * s_start value. */
+ 	jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
+ 
+-	if (flags)
+-		err = __jbd2_journal_erase(journal, flags);
++	if (flags & JBD2_JOURNAL_FLUSH_ZEROOUT)
++		err = __jbd2_journal_erase(journal);
+ 
+ 	mutex_unlock(&journal->j_checkpoint_mutex);
+ 	write_lock(&journal->j_state_lock);
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 6cc035321562..ad7f2defbc8f 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1398,10 +1398,8 @@ JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
+ 						 * mode */
+ #define JBD2_FAST_COMMIT_ONGOING	0x100	/* Fast commit is ongoing */
+ #define JBD2_FULL_COMMIT_ONGOING	0x200	/* Full commit is ongoing */
+-#define JBD2_JOURNAL_FLUSH_DISCARD	0x0001
+-#define JBD2_JOURNAL_FLUSH_ZEROOUT	0x0002
+-#define JBD2_JOURNAL_FLUSH_VALID	(JBD2_JOURNAL_FLUSH_DISCARD | \
+-					JBD2_JOURNAL_FLUSH_ZEROOUT)
++
++#define JBD2_JOURNAL_FLUSH_ZEROOUT	0x0001	/* Zero log on flush */
+ 
+ /*
+  * Journal atomic flag definitions
+-- 
+2.30.2
 
