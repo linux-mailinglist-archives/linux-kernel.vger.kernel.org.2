@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2103BEB90
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F2F3BEB77
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231915AbhGGPuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 11:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232586AbhGGPt5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 11:49:57 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FE1C061760;
-        Wed,  7 Jul 2021 08:47:16 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id 17so2553873pfz.4;
-        Wed, 07 Jul 2021 08:47:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=84IEbLNgJNomBqMgxBtrETy72H72EvXAGdQ00eQF2Mc=;
-        b=YNnohj4Chb9T3B9ZYxiBv9YVqoi0X5lB74SQ7L1EnVYnuQ7j+Sylm+oTEpclLAr4Rp
-         QMdcSRfsEpsNu8h57gAfWgW+S7FmRK+lRz16mOIVQB9v19q7vKIS/3imFU7L8I+a+CoW
-         4CZ1ji2QtUkrwbieeV7oza4eciyEFAW2B4m/iegyGFZxo9emMHECDfkYKuchj9BUm6ka
-         +lt0qfR+AlSO/jWbQhKgOe0W6mJ6vX8d+oS1VyY2+/m2yXPG+YkyAhEMSZLvHoK3AYA2
-         aynhmc1FnAYYAolwJfs0NpD2mwngTXdQQx4mA0KgjhyurE1FSWmq2vOFbfaVKW7EnbvH
-         tEwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=84IEbLNgJNomBqMgxBtrETy72H72EvXAGdQ00eQF2Mc=;
-        b=RBOipSOSv5tIz/Gk4W4BIiEyQA4EiqvYo/gVVveJuzu8R9RDP3wx8KJPcpbKuiiAfM
-         gO8K5Ro1IYr7jTxj62Iq1FAztX/uvA5750N0s1zFvd6lENAlPPOn5kIwkLuU+yELgw5S
-         Q20p+9hifAIUT0dpaFEU2HsZHxt8j5uDN8e5jR3nFZgN5N6EZBtDFGIHfmMKG3nquHjc
-         yQVJP4Kd53851+ZlvnNv//3pk86x8txsubzprzhmUoL3FXicHuDJ7OJxUH6G7Fc0jlmB
-         MfFvxk4enYduZY2FhR8TFQ4Swx1B2gSJJWJvqR2c3jXR9Md7dnlBxfQrwnYs3M4hgGzn
-         4Xhw==
-X-Gm-Message-State: AOAM5339SOa3QKlYkPCSk7/8tJblfX2Nh34Q5hBNpJDzzgnfejXMwVRX
-        aNTDoH0mr1CESg11D+BePXc=
-X-Google-Smtp-Source: ABdhPJwc0xo238tlV5y9FHemJmnwVdI1QKXmzxerVDS/ZE3a5qm/V6a2aCdYF88RGalmD6tecULCLg==
-X-Received: by 2002:a63:1601:: with SMTP id w1mr26556927pgl.116.1625672836292;
-        Wed, 07 Jul 2021 08:47:16 -0700 (PDT)
-Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:38:6b47:cf3e:bbf2:d229])
-        by smtp.gmail.com with ESMTPSA id q18sm23093560pgj.8.2021.07.07.08.47.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 08:47:15 -0700 (PDT)
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        kirill.shutemov@linux.intel.com, akpm@linux-foundation.org,
-        rppt@kernel.org, Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
-        ardb@kernel.org, robh@kernel.org, nramas@linux.microsoft.com,
-        pgonda@google.com, martin.b.radev@gmail.com, david@redhat.com,
-        krish.sadhukhan@oracle.com, saravanand@fb.com,
-        xen-devel@lists.xenproject.org, keescook@chromium.org,
-        rientjes@google.com, hannes@cmpxchg.org,
-        michael.h.kelley@microsoft.com
-Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, brijesh.singh@amd.com, anparri@microsoft.com
-Subject: [Resend RFC PATCH V4 13/13] x86/HV: Not set memory decrypted/encrypted during kexec alloc/free page in IVM
-Date:   Wed,  7 Jul 2021 11:46:27 -0400
-Message-Id: <20210707154629.3977369-14-ltykernel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210707154629.3977369-1-ltykernel@gmail.com>
-References: <20210707154629.3977369-1-ltykernel@gmail.com>
+        id S232238AbhGGPuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 11:50:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232295AbhGGPtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 11:49:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C02D561CBF;
+        Wed,  7 Jul 2021 15:46:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625672819;
+        bh=Y7ZD3HpwgKdJAhH7VqKAYoRj+2bXkgou/pC/tB/BHBw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ASr0NS4CZg0c0eGN/Pf9i3JGSNhun6iQU8pg8YCH+KT1ls3UFQQkT+MAdCWmagDtH
+         P1UL7+FylG/ndkN5Peyt8ec1DwrTqaSFzSyzxwo5POGR4xeMU9yTDXhmuhaqtlxh7R
+         v827qdjfkKfAN3KCRTHcutZG2t2cVSxVo+U3sbQo=
+Date:   Wed, 7 Jul 2021 17:46:56 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2 1/2] fcntl: fix potential deadlocks for
+ &fown_struct.lock
+Message-ID: <YOXMcJAZPms7Gp8a@kroah.com>
+References: <20210707023548.15872-2-desmondcheongzx@gmail.com>
+ <YOVENb3X/m/pNrYt@kroah.com>
+ <14633c3be87286d811263892375f2dfa9a8ed40a.camel@kernel.org>
+ <YOWHKk6Nq8bazYjB@kroah.com>
+ <4dda1cad6348fced5fcfcb6140186795ed07d948.camel@kernel.org>
+ <20210707135129.GA9446@fieldses.org>
+ <YOXDBZR2RSfiM+A3@kroah.com>
+ <20210707151936.GB9911@fieldses.org>
+ <YOXIuhma++oMbbiH@kroah.com>
+ <20210707153417.GA10570@fieldses.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707153417.GA10570@fieldses.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+On Wed, Jul 07, 2021 at 11:34:17AM -0400, J. Bruce Fields wrote:
+> On Wed, Jul 07, 2021 at 05:31:06PM +0200, Greg KH wrote:
+> > On Wed, Jul 07, 2021 at 11:19:36AM -0400, J. Bruce Fields wrote:
+> > > On Wed, Jul 07, 2021 at 05:06:45PM +0200, Greg KH wrote:
+> > > > On Wed, Jul 07, 2021 at 09:51:29AM -0400, J. Bruce Fields wrote:
+> > > > > On Wed, Jul 07, 2021 at 07:40:47AM -0400, Jeff Layton wrote:
+> > > > > > On Wed, 2021-07-07 at 12:51 +0200, Greg KH wrote:
+> > > > > > > On Wed, Jul 07, 2021 at 06:44:42AM -0400, Jeff Layton wrote:
+> > > > > > > > On Wed, 2021-07-07 at 08:05 +0200, Greg KH wrote:
+> > > > > > > > > On Wed, Jul 07, 2021 at 10:35:47AM +0800, Desmond Cheong Zhi Xi wrote:
+> > > > > > > > > > +	WARN_ON_ONCE(irqs_disabled());
+> > > > > > > > > 
+> > > > > > > > > If this triggers, you just rebooted the box :(
+> > > > > > > > > 
+> > > > > > > > > Please never do this, either properly handle the problem and return an
+> > > > > > > > > error, or do not check for this.  It is not any type of "fix" at all,
+> > > > > > > > > and at most, a debugging aid while you work on the root problem.
+> > > > > > > > > 
+> > > > > > > > > thanks,
+> > > > > > > > > 
+> > > > > > > > > greg k-h
+> > > > > > > > 
+> > > > > > > > Wait, what? Why would testing for irqs being disabled and throwing a
+> > > > > > > > WARN_ON in that case crash the box?
+> > > > > > > 
+> > > > > > > If panic-on-warn is enabled, which is a common setting for systems these
+> > > > > > > days.
+> > > > > > 
+> > > > > > Ok, that makes some sense.
+> > > > > 
+> > > > > Wait, I don't get it.
+> > > > > 
+> > > > > How are we supposed to decide when to use WARN, when to use BUG, and
+> > > > > when to panic?  Do we really want to treat them all as equivalent?  And
+> > > > > who exactly is turning on panic-on-warn?
+> > > > 
+> > > > You never use WARN or BUG, unless the system is so messed up that you
+> > > > can not possibly recover from the issue.
+> > > 
+> > > I've heard similar advice for BUG before, but this is the first I've
+> > > heard it for WARN.  Do we have any guidelines for how to choose between
+> > > WARN and BUG?
+> > 
+> > Never use either :)
+> 
+> I can't tell if you're kidding.
 
-Hyper-V Isolation VM reuses set_memory_decrypted/encrypted function
-and not needs to decrypted/encrypted in arch_kexec_post_alloc(pre_free)
-_pages just likes AMD SEV VM. So skip them.
+I am not.
 
-Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
----
- arch/x86/kernel/machine_kexec_64.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> Is there some plan to remove them?
 
-diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
-index c078b0d3ab0e..0cadc64b6873 100644
---- a/arch/x86/kernel/machine_kexec_64.c
-+++ b/arch/x86/kernel/machine_kexec_64.c
-@@ -26,6 +26,7 @@
- #include <asm/kexec-bzimage64.h>
- #include <asm/setup.h>
- #include <asm/set_memory.h>
-+#include <asm/mshyperv.h>
- 
- #ifdef CONFIG_ACPI
- /*
-@@ -598,7 +599,7 @@ void arch_kexec_unprotect_crashkres(void)
-  */
- int arch_kexec_post_alloc_pages(void *vaddr, unsigned int pages, gfp_t gfp)
- {
--	if (sev_active())
-+	if (sev_active() || hv_is_isolation_supported())
- 		return 0;
- 
- 	/*
-@@ -611,7 +612,7 @@ int arch_kexec_post_alloc_pages(void *vaddr, unsigned int pages, gfp_t gfp)
- 
- void arch_kexec_pre_free_pages(void *vaddr, unsigned int pages)
- {
--	if (sev_active())
-+	if (sev_active() || hv_is_isolation_supported())
- 		return;
- 
- 	/*
--- 
-2.25.1
+Over time, yes.  And any WARN that userspace can ever hit should be
+removed today.
 
+> There are definitely cases where I've been able to resolve a problem
+> more quickly because I got a backtrace from a WARN.
+
+If you want a backtrace, ask for that, recover from the error, and move
+on.  Do not allow userspace to reboot a machine for no good reason as
+again, panic-on-warn is a common setting that people use now.
+
+This is what all of the syzbot work has been doing, it triggers things
+that cause WARN() to be hit and so we have to fix them.
+
+thanks,
+
+greg k-h
