@@ -2,105 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DA53BF106
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DFD3BF108
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhGGUvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 16:51:38 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:59232 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhGGUvh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 16:51:37 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 167KmgXF117595;
-        Wed, 7 Jul 2021 15:48:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1625690922;
-        bh=6HPmRna3waQ2ClqP2nauya0jag1AjaDVOXfeFC0wbWc=;
-        h=From:To:CC:Subject:Date;
-        b=YklCtSerr2qyb05xEtsc1ES/XxEXfDcE8Pqbmr0D29tWei73gFdTuvQ8w5kDxwBI8
-         Tce1wDq1pQIHG+sTMb7pNDOUELS7p6Jz1CpZK/AiZu8VAvpObZkIzlOXiMDAlI0spc
-         jFVjy+DsxsviqYdaMpoVtmvLzKt/DvrtYwZctDdA=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 167Kmgk0089987
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 7 Jul 2021 15:48:42 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 7 Jul
- 2021 15:48:41 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 7 Jul 2021 15:48:41 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 167Kmfmh015408;
-        Wed, 7 Jul 2021 15:48:41 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan Corbet <corbet@lwn.net>
-CC:     "Ravikumar, Rahul" <r-ravikumar@ti.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-spdx <linux-spdx@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>
-Subject: [PATCH V2] scripts/spdxcheck.py: Strictly read license files in utf-8
-Date:   Wed, 7 Jul 2021 15:48:40 -0500
-Message-ID: <20210707204840.30891-1-nm@ti.com>
-X-Mailer: git-send-email 2.32.0
+        id S231132AbhGGUxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 16:53:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230127AbhGGUxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 16:53:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D259B61CB0;
+        Wed,  7 Jul 2021 20:50:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625691022;
+        bh=9zDDWkBWSm0T5z6aXmZqdehpL2Wuu1uLQ4ONnfG8f/g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i3mCVC2zi7QCTtx99z0UQWcvt4aCEkN1puxnjBGJdQs0UMM0755abE3ReSXyDIQcl
+         Yg2z0C8BrDrelfrId+E2cCfC13p5KUtC8tgbVpEDUYxbpQDki5kqS7ICgcajQumIhY
+         vjRGWXC1KvskFm2sfwduOuoDx0gQVT4vicEhCVTbGXB6CuNH+WwVsL9VApc7s+qZ4E
+         b+1gjmtlVFtxizvI5Z8vwq3NjsfAPTHXGnSpMRjeZx6G33qsebGNy9hf7iMlUYG0yb
+         LxA4WbeZX+eE+4MAowwBvyTz9k+CbmYLqcfd1r5dd+KPB6Sob3HeJWVDoRvmLsFysl
+         rlfdUeYIArguQ==
+Date:   Wed, 7 Jul 2021 23:50:19 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-sgx@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] selftests/sgx: Trigger the reclaimer and #PF handler
+Message-ID: <20210707205019.6jy64s4uqcw65q4h@kernel.org>
+References: <20210705143652.116125-1-jarkko@kernel.org>
+ <20210705143652.116125-5-jarkko@kernel.org>
+ <715ed555-5044-6fee-1d09-1c4cfa827af3@intel.com>
+ <20210706235016.uucukyrr3ckk57pi@kernel.org>
+ <16505466-e001-c4b0-ec41-5384ddcf194b@intel.com>
+ <20210707091736.6wzemgmtzuegk3uf@kernel.org>
+ <10664754-7e53-d9d1-f00c-f9dbd4a2d877@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10664754-7e53-d9d1-f00c-f9dbd4a2d877@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit bc41a7f36469 ("LICENSES: Add the CC-BY-4.0 license")
-unfortunately introduced LICENSES/dual/CC-BY-4.0 in UTF-8 Unicode text
-While python will barf at it with:
+On Wed, Jul 07, 2021 at 08:02:42AM -0700, Reinette Chatre wrote:
+> Hi Jarkko,
+> 
+> On 7/7/2021 2:17 AM, Jarkko Sakkinen wrote:
+> > On Tue, Jul 06, 2021 at 05:10:38PM -0700, Reinette Chatre wrote:
+> > > Hi Jarkko,
+> > > 
+> > > On 7/6/2021 4:50 PM, Jarkko Sakkinen wrote:
+> > > > On Tue, Jul 06, 2021 at 11:34:54AM -0700, Reinette Chatre wrote:
+> > > > > Hi Jarkko,
+> > > > > 
+> > > > > On 7/5/2021 7:36 AM, Jarkko Sakkinen wrote:
+> > > > > > Create a heap for the test enclave, which has the same size as all
+> > > > > > available Enclave Page Cache (EPC) pages in the system. This will guarantee
+> > > > > > that all test_encl.elf pages *and* SGX Enclave Control Structure (SECS)
+> > > > > > have been swapped out by the page reclaimer during the load time. Actually,
+> > > > > > this adds a bit more stress than that since part of the EPC gets reserved
+> > > > > > for the Version Array (VA) pages.
+> > > > > > 
+> > > > > > For each test, the page fault handler gets triggered in two occasions:
+> > > > > > 
+> > > > > > - When SGX_IOC_ENCLAVE_INIT is performed, SECS gets swapped in by the
+> > > > > >      page fault handler.
+> > > > > > - During the execution, each page that is referenced gets swapped in
+> > > > > >      by the page fault handler.
+> > > > > > 
+> > > > > 
+> > > > > If I understand this correctly, all EPC pages are now being consumed during
+> > > > > fixture setup and thus every SGX test, no matter how big or small, now
+> > > > > becomes a stress test of the reclaimer instead of there being a unique
+> > > > > reclaimer test. Since an enclave is set up and torn down for every test this
+> > > > > seems like a significant addition. It also seems like this would impact
+> > > > > future tests of dynamic page addition where not all scenarios could be
+> > > > > tested with all EPC pages already consumed.
+> > > > > 
+> > > > > Reinette
+> > > > 
+> > > > Re-initializing the test enclave is mandatory thing to do for all tests
+> > > > because it has an internals state.
+> > > > 
+> > > 
+> > > Right, but not all tests require the same enclave. In kselftest terminology
+> > > I think you are attempting to force all tests to depend on the same test
+> > > fixture. Is it not possible to have a separate "reclaimer" test fixture that
+> > > would build an enclave with a large heap and then have reclaimer tests that
+> > > exercise it by being tests that are specific to this "reclaimer fixture"?
+> > > 
+> > > Reinette
+> > 
+> > Why add that complexity?
+> > 
+> 
+> With this change every test is turned into a pseudo reclaimer test without
+> there being any explicit testing (with pass/fail criteria) of reclaimer
+> behavior. This is an expensive addition and reduces the scenarios that the
+> tests can exercise.
+> 
+> Reinette
 
-FAIL: 'ascii' codec can't decode byte 0xe2 in position 2109: ordinal not in range(128)
-Traceback (most recent call last):
-  File "scripts/spdxcheck.py", line 244, in <module>
-    spdx = read_spdxdata(repo)
-  File "scripts/spdxcheck.py", line 47, in read_spdxdata
-    for l in open(el.path).readlines():
-  File "/usr/lib/python3.6/encodings/ascii.py", line 26, in decode
-    return codecs.ascii_decode(input, self.errors)[0]
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xe2 in position 2109: ordinal not in range(128)
+There is consistent known behaviour how reclaimer and also the page fault
+are exercised for each test. I think that is what matters most right now
+that the basic behaviour of both the page reclaimer and page fault handler
+gets exercised.
 
-While it is indeed debatable if 'Licensor.' used in the license file
-needs unicode quotes, instead, force spdxcheck to read utf-8.
+I don't understand the real-world gain of doing something factors more
+complex than necessary at a particular point of time,  when you don't
+really need to hang yourself into it forever.
 
-Reported-by: Rahul T R <r-ravikumar@ti.com>
-Signed-off-by: Nishanth Menon <nm@ti.com>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
----
+This patch does increase the coverage in a deterministic manner to the code
+paths that were not previously exercised, i.e. we know the code paths, and
+could even calculate the exact number of times that they are triggered. And
+without doing anything obscure. That's what matters to me.
 
-Changes since V1:
-* Commit message update to drop "Let's" "Let us".
-* Picked up Thomas' Reviewed-by
+/Jarkko
 
-V1: https://lore.kernel.org/linux-spdx/20210703012128.27946-1-nm@ti.com/
-
- scripts/spdxcheck.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/spdxcheck.py b/scripts/spdxcheck.py
-index 3e784cf9f401..ebd06ae642c9 100755
---- a/scripts/spdxcheck.py
-+++ b/scripts/spdxcheck.py
-@@ -44,7 +44,7 @@ def read_spdxdata(repo):
-                 continue
- 
-             exception = None
--            for l in open(el.path).readlines():
-+            for l in open(el.path, encoding="utf-8").readlines():
-                 if l.startswith('Valid-License-Identifier:'):
-                     lid = l.split(':')[1].strip().upper()
-                     if lid in spdx.licenses:
--- 
-2.32.0
-
+/Jarkko
