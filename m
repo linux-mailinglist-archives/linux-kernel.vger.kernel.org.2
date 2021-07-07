@@ -2,78 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763433BE634
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF5F3BE637
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbhGGKPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39536 "EHLO
+        id S231267AbhGGKR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbhGGKPf (ORCPT
+        with ESMTP id S231137AbhGGKRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:15:35 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77675C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 03:12:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UgjsPSucTzTH0A+UmBwxWmqQFqZt+Rk91IrthgYtDSE=; b=m00D8DO4GNRBLgrjKK2YKQYfF0
-        O13wofFYkmdrOkLKIaA/w7Gg2nNfhEQQxqetMe0ZDWoOQozfSB/ZVM8kKd2Fgvriqou/vv2vbDF6K
-        ZwnHWxV6cJ+ZLg+ex0er7kPmscUwRivnYWQOtHokufAIiY9LzFkd9M1jBUyHCE2IJSghaw7V+Wtm6
-        0e9UiD0UF+AsxNIzOS01/5A7gZE33q/YJJ+32t0SA/tSLSjTEKsWz203PR32tnbQmHqkVzk9EXJQf
-        1638Zchwbqv6mXnGHrgOMeGj/zbWPp+O7j666VwUoDn70b6dZc2u3+FOhSkCKx1HqzOOK2eFBFH0a
-        WuPCrmfw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m14Xx-00FK5o-1e; Wed, 07 Jul 2021 10:12:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E5267300233;
-        Wed,  7 Jul 2021 12:12:47 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CF6C22018A6F5; Wed,  7 Jul 2021 12:12:47 +0200 (CEST)
-Date:   Wed, 7 Jul 2021 12:12:47 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     alexander.antonov@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        kan.liang@linux.intel.com, ak@linux.intel.com,
-        alexey.v.bayduraev@linux.intel.com
-Subject: Re: [RESEND PATCH] perf/x86/intel/uncore: Fix IIO cleanup mapping
- procedure for SNR/ICX
-Message-ID: <YOV+H56LLiLQWmi5@hirez.programming.kicks-ass.net>
-References: <20210707065455.10271-1-alexander.antonov@linux.intel.com>
+        Wed, 7 Jul 2021 06:17:25 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D689C061574;
+        Wed,  7 Jul 2021 03:14:45 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso1309439pjp.5;
+        Wed, 07 Jul 2021 03:14:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/v1v63E0rW3Sz0wWz+xxvrNljXSoGIcWgLgvmV340X0=;
+        b=r/ffmgD5xpCW0UJzyqwV9Mx7X8KN1SMy7aB/k3mI0d4pAONd+gY31jASH6L9nCcTaS
+         0MGJ+jU9vM3u7wCsppsvc+O/NXDbBEBpGChF78KO1cOMV8SGs04rTTxf+0MXZ1BS25qE
+         3vws7QMETu80NK3u9QrnmfahUigoLLj/mIx1Uc4aN+rPQfPh2cN+FZ0QXktseSVfddkr
+         YyfX+lliHgO1yyz7n+bHbn5NpbFgOIGVJp+UqXnEMM3f+0TZ0brlXLV+a3hl7MZq8m36
+         Khh1g4Yt/r+keuwQzUcS3SsaMW7xCmKo3wGcYogaHhfUkEhUa4qCltalihP+/7/uZh4M
+         twyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/v1v63E0rW3Sz0wWz+xxvrNljXSoGIcWgLgvmV340X0=;
+        b=eTRHR/quupv60CXAliiUSGpFOVx+abhYh596jJ6YsERiznYugo/jHLEVk8Fa1SISwC
+         7dPZU09lDwaA9vOxQzOMA8xycn2qrObO1M4PGGCzdlQRHN2txdfjrG+fQZetfyzNLzVI
+         ARU73iHpmUGGBd16qy4YUe53dlqvFOzoJlBxo3NiI2xl46Qtx8BNzQRlF9uI0i2QjCSN
+         xzqS7uD9gsx1qXq3CydoPCNpURsaU/++OnlYJFtvqRq+r3ertxABD4smdRlHZSb83E/g
+         NntJhAd5LBBXp618NulDGnXSMArxU9XPbZltjl8/06QcIJr0z4A1G4izVFn7gr4UVdGo
+         rYcA==
+X-Gm-Message-State: AOAM5333phzNkl4QenboEASl3XZQBAPc3QUPMdTsHVTovS0zl6x7vAdw
+        NeuWNmqkitsq+suHZoW0JKCaWR67CuwU0PvEQnumoSKSfzg=
+X-Google-Smtp-Source: ABdhPJzpnGJQbb/lAV153VUGKVOlFScbGXYNHs+4YUpNuPaJ2LzDco2arjS97UhJIDDiS5YwLG1j3xr4wfUyHbJ41NM=
+X-Received: by 2002:a17:903:31c3:b029:ed:6f74:49c7 with SMTP id
+ v3-20020a17090331c3b02900ed6f7449c7mr20212312ple.12.1625652885021; Wed, 07
+ Jul 2021 03:14:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707065455.10271-1-alexander.antonov@linux.intel.com>
+References: <20210629134144.GA1168@raspberrypi>
+In-Reply-To: <20210629134144.GA1168@raspberrypi>
+From:   Austin Kim <austindh.kim@gmail.com>
+Date:   Wed, 7 Jul 2021 19:14:33 +0900
+Message-ID: <CADLLry4_qB607aC2WdjvH6+QWijPNU4cQNhacr-mLOBN-heZAA@mail.gmail.com>
+Subject: Re: [PATCH] smack: mark 'smack_enabled' global variable as __initdata
+To:     casey@schaufler-ca.com, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     linux-security-module <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-team@lge.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 09:54:55AM +0300, alexander.antonov@linux.intel.com wrote:
-> From: Alexander Antonov <alexander.antonov@linux.intel.com>
-> 
-> Cleanup mapping procedure for IIO PMU is needed to free memory which was
-> allocated for topology data and for attributes in IIO mapping
-> attribute_group.
-> Current implementation of this procedure for Snowridge and Icelake Server
-> platforms doesn't free allocated memory that can be a reason for memory
-> leak issue.
-> Fix the issue with IIO cleanup mapping procedure for these platforms
-> to release allocated memory.
-> 
-> Fixes: 10337e95e04c ("perf/x86/intel/uncore: Enable I/O stacks to IIO PMON mapping on ICX")
-> 
+2021=EB=85=84 6=EC=9B=94 29=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 10:41, =
+Austin Kim <austindh.kim@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> From: Austin Kim <austin.kim@lge.com>
+>
+> Mark 'smack_enabled' as __initdata
+> since it is only used during initialization code.
+>
+> Signed-off-by: Austin Kim <austin.kim@lge.com>
+> ---
+>  security/smack/smack.h     | 2 +-
+>  security/smack/smack_lsm.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/security/smack/smack.h b/security/smack/smack.h
+> index c3cfbdf4944a..99c3422596ab 100644
+> --- a/security/smack/smack.h
+> +++ b/security/smack/smack.h
+> @@ -302,7 +302,7 @@ int smack_populate_secattr(struct smack_known *skp);
+>  /*
+>   * Shared data.
+>   */
+> -extern int smack_enabled;
+> +extern int smack_enabled __initdata;
+>  extern int smack_cipso_direct;
+>  extern int smack_cipso_mapped;
+>  extern struct smack_known *smack_net_ambient;
+> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+> index 223a6da0e6dc..cacbe7518519 100644
+> --- a/security/smack/smack_lsm.c
+> +++ b/security/smack/smack_lsm.c
+> @@ -54,7 +54,7 @@
+>  static DEFINE_MUTEX(smack_ipv6_lock);
+>  static LIST_HEAD(smk_ipv6_port_list);
+>  struct kmem_cache *smack_rule_cache;
+> -int smack_enabled;
+> +int smack_enabled __initdata;
+>
+>  #define A(s) {"smack"#s, sizeof("smack"#s) - 1, Opt_##s}
+>  static struct {
+> --
+> 2.20.1
+>
 
-This whitespace is wrong.
+Dear Maintainers
 
-> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-> Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
+Would you please review the above patch if you are available?
+It might not take long.
 
-Why am I getting a resend of this? Kan replied only yesterday.. folding
-tags isn't a reason to resend, we have scripts for that. At the very
-least you could've tried making the Changelog readable /
+Thanks.
+Austin Kim
