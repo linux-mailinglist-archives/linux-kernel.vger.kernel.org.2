@@ -2,154 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363D33BED56
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 031D83BED7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbhGGRsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 13:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhGGRsm (ORCPT
+        id S231215AbhGGRzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 13:55:25 -0400
+Received: from esa.hc503-62.ca.iphmx.com ([216.71.131.47]:61214 "EHLO
+        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230196AbhGGRzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:48:42 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3712C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 10:46:00 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id i4so4467960ybe.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 10:46:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e8u4xPlHjWE3z1kPd6+no/nJC4zF/v0dweDYhSivEqc=;
-        b=TSEoUqXjzQlZ1Tdwv7QhxMkGP9zH5n2C9gszCR0sWSXEiZ7R0Dp8hUweTqFEvZmG3n
-         Ku2Ngd1rEAr27dfYNytr59XXAzhJlCXr1KOC7IdUj0VJgU2u3X5uyjtDFttcaHhQHHVc
-         NmITJl4eQw0Rta8GApIvrL0hWBdKqImiu4b+iVo7OKI//SWMuk+mvwhnpAEZ7S8s5pfF
-         WV7tcJfwxmf5LD6p8+95YJhVAY9fjTWM/ZcsYkmQFQWJBJXy93UKSMofoj5dWEJpE5HX
-         +njNJV0Z97G4Or40cJK/kpAh0c9lFZkGhyX7lUCCGPgxBB8SgXSwZqmuEX1So8Q9kX/6
-         NZLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e8u4xPlHjWE3z1kPd6+no/nJC4zF/v0dweDYhSivEqc=;
-        b=MUJyyTGMe+S0OXhlEDl7nQUD9E4FxUn1u92hUV+3DxoZwwS5R8h8rSFlwPHvgE/2l7
-         EdNey1QI6ZclFDVdHrDelFh+24cMR+iih4+gw0V63y7GrFw34GCNPUtaX/vxBNlPw3Cj
-         z1ltT8Onz/usfo/brVv0URghHN/9UrbIxDpHYK5KWz2adzf61G72csBB93Abp3Pu59MU
-         3JKO03vXVKx9I73aYO8/tPKsGV/bXHa+WUEkiL323qcz1miL4SaU/N7TF/kjn3pCyjlW
-         KT2phl54xT0fh9WDRVKKAfj5OTErvSsU00AB5HhB8sih+JUpOfuI9h7RVw8Vi3TSTXuk
-         ZlNg==
-X-Gm-Message-State: AOAM530aUvPDFWt3DCmTdmUtbXsk7/RpUgFlq/TTo57fhowa+RWtnWQW
-        VbE1vFpv6zzCGE0hAWL82j66Q6yn3wFdP/67raBp1A==
-X-Google-Smtp-Source: ABdhPJzmx/HlIIbVoAc8l6n7zgX7lerHnshEOCN2SPRgRxNaoFTKkGu2EyNFZmnE/3izjkwcRXMEBOehDCbokg1BvhY=
-X-Received: by 2002:a25:b3c8:: with SMTP id x8mr33888178ybf.466.1625679959923;
- Wed, 07 Jul 2021 10:45:59 -0700 (PDT)
+        Wed, 7 Jul 2021 13:55:22 -0400
+X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Jul 2021 13:55:22 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
+  t=1625680362; x=1657216362;
+  h=to:cc:references:subject:in-reply-to:from:message-id:
+   date:mime-version:content-transfer-encoding;
+  bh=mejge8f99UcFMQhRJaVzjkTNPr7rJMW1K2b4GV5Rlkk=;
+  b=up0sGsm0IIVyupykV4Z87IsGQdd6cI2hE5a9gczAyCkfjOXPEYPy7i1q
+   uRkpgAfHImzd6vl0+3Ws3bUu3hOvm3ymhLouMx6S52X3vX/+qeRN5gH0r
+   sLZVH1/WxTS/tbS8XcnVwMKdNHL19w2khAK6NJZPBKvitSFTdpzzTFvFY
+   M=;
+Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
+  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Jul 2021 13:45:30 -0400
+Received: from [10.42.0.123] (10.32.139.159) by connhm04.connect.uwaterloo.ca
+ (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 7 Jul
+ 2021 13:45:29 -0400
+To:     <peterz@infradead.org>
+CC:     <akpm@linux-foundation.org>, <avagin@google.com>,
+        <bsegall@google.com>, <jnewsome@torproject.org>,
+        <joel@joelfernandes.org>, <linux-api@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <mingo@redhat.com>,
+        <pjt@google.com>, <posk@google.com>, <posk@posk.io>,
+        <tglx@linutronix.de>, Peter Buhr <pabuhr@uwaterloo.ca>,
+        Martin Karsten <mkarsten@uwaterloo.ca>
+References: <YMJTyVVdylyHtkeW@hirez.programming.kicks-ass.net>
+Subject: Re: [RFC PATCH v0.1 0/9] UMCG early preview/RFC patchset
+In-Reply-To: <YMJTyVVdylyHtkeW@hirez.programming.kicks-ass.net>
+From:   Thierry Delisle <tdelisle@uwaterloo.ca>
+Message-ID: <96842d90-7d3b-efac-fe1f-6e90b6a83ee5@uwaterloo.ca>
+Date:   Wed, 7 Jul 2021 13:45:28 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210215111619.2385030-1-geert+renesas@glider.be>
- <CAJZ5v0ikVbMX0R9e_=wOxKfJX5X322AipmpWy-7wVnWE7Ogc9A@mail.gmail.com>
- <CAGETcx94nNjduOuYKVBZOC9Gm4yfyb9x92ddznyxK4BnDby4PA@mail.gmail.com>
- <CAMuHMdWm9FiJHWTzGqqNa-ggt9WTpS6Hg2WthNW86p_WpvPUtw@mail.gmail.com>
- <CAGETcx8N5QmR5V_mrv5tHmARsnWrLbH+N_Ay_pBqV9HJkpHJzQ@mail.gmail.com>
- <CAGETcx8nD7Ak8z7JEM1jUVdRRpUt=8BwGMix0ghv1QeDBLaGwA@mail.gmail.com> <CAMuHMdX-cZO-tsj6T9av79d_bELihBfFGmB1=F+6YRNmUBWs9g@mail.gmail.com>
-In-Reply-To: <CAMuHMdX-cZO-tsj6T9av79d_bELihBfFGmB1=F+6YRNmUBWs9g@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 7 Jul 2021 10:45:24 -0700
-Message-ID: <CAGETcx9JUqiA26-SdwCbnyj+w2FM648YmeJwMPZeX_5NCgdmfg@mail.gmail.com>
-Subject: Re: [PATCH] driver core: Fix double failed probing with fw_devlink=on
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.32.139.159]
+X-ClientProxiedBy: connhm04.connect.uwaterloo.ca (172.16.137.68) To
+ connhm04.connect.uwaterloo.ca (172.16.137.68)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 1:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> (going over old patch I still have in my local tree)
->
-> On Tue, Feb 16, 2021 at 6:08 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Mon, Feb 15, 2021 at 12:59 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > On Mon, Feb 15, 2021 at 11:08 AM Geert Uytterhoeven
-> > > <geert@linux-m68k.org> wrote:
-> > > > On Mon, Feb 15, 2021 at 7:27 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > > On Mon, Feb 15, 2021 at 6:59 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > > > > > On Mon, Feb 15, 2021 at 12:16 PM Geert Uytterhoeven
-> > > > > > <geert+renesas@glider.be> wrote:
-> > > > > > > With fw_devlink=permissive, devices are added to the deferred probe
-> > > > > > > pending list if their driver's .probe() method returns -EPROBE_DEFER.
-> > > > > > >
-> > > > > > > With fw_devlink=on, devices are added to the deferred probe pending list
-> > > > > > > if they are determined to be a consumer,
-> > > > >
-> > > > > If they are determined to be a consumer or if they are determined to
-> > > > > have a supplier that hasn't probed yet?
-> > > >
-> > > > When the supplier has probed:
-> > > >
-> > > >     bus: 'platform': driver_probe_device: matched device
-> > > > e6150000.clock-controller with driver renesas-cpg-mssr
-> > > >     bus: 'platform': really_probe: probing driver renesas-cpg-mssr
-> > > > with device e6150000.clock-controller
-> > > >     PM: Added domain provider from /soc/clock-controller@e6150000
-> > > >     driver: 'renesas-cpg-mssr': driver_bound: bound to device
-> > > > 'e6150000.clock-controller'
-> > > >     platform e6055800.gpio: Added to deferred list
-> > > >     [...]
-> > > >     platform e6020000.watchdog: Added to deferred list
-> > > >     [...]
-> > > >     platform fe000000.pcie: Added to deferred list
-> > > >
-> > > > > > > which happens before their
-> > > > > > > driver's .probe() method is called.  If the actual probe fails later
-> > > > > > > (real failure, not -EPROBE_DEFER), the device will still be on the
-> > > > > > > deferred probe pending list, and it will be probed again when deferred
-> > > > > > > probing kicks in, which is futile.
-> > > > > > >
-> > > > > > > Fix this by explicitly removing the device from the deferred probe
-> > > > > > > pending list in case of probe failures.
-> > > > > > >
-> > > > > > > Fixes: e590474768f1cc04 ("driver core: Set fw_devlink=on by default")
-> > > > > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > > > >
-> > > > > > Good catch:
-> > > > > >
-> > > > > > Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > > >
-> > > > > The issue is real and needs to be fixed. But I'm confused how this can
-> > > > > happen. We won't even enter really_probe() if the driver isn't ready.
-> > > > > We also won't get to run the driver's .probe() if the suppliers aren't
-> > > > > ready. So how does the device get added to the deferred probe list
-> > > > > before the driver is ready? Is this due to device_links_driver_bound()
-> > > > > on the supplier?
-> > > > >
-> > > > > Can you give a more detailed step by step on the case you are hitting?
-> > > >
-> > > > The device is added to the list due to device_links_driver_bound()
-> > > > calling driver_deferred_probe_add() on all consumer devices.
-> > >
-> > > Thanks for the explanation. Maybe add more details like this to the
-> > > commit text or in the code?
-> > >
-> > > For the code:
-> > > Reviewed-by: Saravana Kanna <saravanak@google.com>
-> >
-> > Ugh... I just realized that I might have to give this a Nak because of
-> > bad locking in deferred_probe_work_func(). The unlock/lock inside the
-> > loop is a terrible hack. If we add this patch, we can end up modifying
-> > a linked list while it's being traversed and cause a crash or busy
-> > loop (you'll accidentally end up on an "empty list"). I ran into a
-> > similar issue during one of my unrelated refactors.
->
-> Turns out the issue I was seeing went away due to commit
-> f2db85b64f0af141 ("driver core: Avoid pointless deferred probe
-> attempts"), so there is no need to apply this patch.
->
+Hi,
+I wanted to way-in on this. I am one of the main developer's on the Cforall
+programming language (https://cforall.uwaterloo.ca), which implements 
+its own
+M:N user-threading runtime. I want to state that this RFC is an interesting
+feature, which we would be able to take advantage of immediately, assuming
+performance and flexibility closely match state-of-the-art implementations.
 
-Yay! That was the goal :) I'm assuming it wasn't ever applied.
+Precisely, we would benefit from two aspects of User Managed Control Groups:
 
--Saravana
+1. user-level threads would become regular pthreads, so that gdb, valgrind,
+    ptrace and TLS works normally, etc.
+
+2. The user-space scheduler can react on user-threads blocking in the 
+kernel.
+
+However, we would need to look at performance issues like thread 
+creation and
+context switch to know if your scheme is performant with user-level 
+threading.
+We are also conscious about use cases that involve a very high (100Ks to 
+1Ms)
+number of concurrent sessions and thus threads.
+
+Note, our team published a comprehensive look at M:N threading in ACM
+Sigmetrics 2020: https://doi.org/10.1145/3379483, which highlights the
+expected performance of M:N threading, and another look at high-performance
+control flow in SP&E 2021: 
+https://onlinelibrary.wiley.com/doi/10.1002/spe.2925
+
+
+  > > Yes, UNBLOCKED it a transitory state meaning the worker's blocking
+  > > operation has completed, but the wake event hasn't been delivered to
+  > > the userspace yet (and so the worker it not yet RUNNABLE)
+  >
+  > So if I understand the proposal correctly the only possible option is
+  > something like:
+  >
+  >     for (;;) {
+  >         next = user_sched_pick();
+  >         if (next) {
+  >             sys_umcg_run(next);
+  >             continue;
+  >         }
+  >
+  >         sys_umcg_poll(&next);
+  >         if (next) {
+  >             next->state = RUNNABLE;
+  >             user_sched_enqueue(next);
+  >         }
+  >     }
+  >
+  > This seems incapable of implementing generic scheduling policies and has
+  > a hard-coded FIFO policy.
+  >
+  > The poll() thing cannot differentiate between: 'find new task' and 'go
+  > idle'. So you cannot keep running it until all new tasks are found.
+  >
+  > But you basically get to do a syscall to discover every new task, while
+  > the other proposal gets you a user visible list of new tasks, no
+  > syscalls needed at all.
+
+I agree strongly with this comment, sys_umcg_poll() does not appear to be
+flexible enough for generic policies. I also suspect it would become a
+bottleneck in any SMP scheduler due to this central serial data-structure.
+
+
+  > But you basically get to do a syscall to discover every new task, while
+  > the other proposal gets you a user visible list of new tasks, no
+  > syscalls needed at all.
+  >
+  > It's also not quite clear to me what you do about RUNNING->BLOCKED, how
+  > does the userspace scheduler know to dequeue a task?
+
+In the schedulers we have implemented, threads are dequeued *before* being
+run. That is, the head of the queue is not the currently running thread.
+
+If the currently running threads need to be in the scheduler data-structure,
+I believe it can be dequeued immediately after sys_umcg_run() has returned.
+More on this below.
+
+
+  > My proposal gets you something like:
+  >
+  > [...]
+  >
+  > struct umcg_task {
+  >    u32 umcg_status;            /* r/w */
+  >    u32 umcg_server_tid;        /* r   */
+  >    u32 umcg_next_tid;          /* r   */
+  >    u32 umcg_tid;               /* r   */
+  >    u64 umcg_blocked_ptr;       /*   w */
+  >    u64 umcg_runnable_ptr;      /*   w */
+  > };
+
+I believe this approach may work, but could you elaborate on it? I 
+wasn't able
+to find a more complete description.
+
+For example, I fail to see what purpose the umcg_blocked_ptr serves. 
+When could
+it contain anything other then a single element that is already pointed
+to by "n" in the proposed loop? The only case I can come up with, is if a
+worker thread tries to context switch directly to another worker thread. 
+But in
+that case, I do not know what state that second worker would need to be 
+in for
+this operation to be correct. Is the objective to allow the scheduler to be
+invoked from worker threads?
+
+Also, what is the purpose of umcg_status being writable by the user-space?
+(I'm assuming status == state)? The code in sys_umcg_wait suggests it is for
+managing potential out-of-order wakes and waits, but the kernel should 
+be able
+to handle them already, the same way FUTEX_WAKE and FUTEX_WAIT are handled.
+When would these state transition not be handled by the kernel?
+
+I would also point out that creating worker threads as regular pthreads and
+then converting them to worker threads sounds less then ideal. It would
+probably be preferable directly appended new worker threads to the
+umcg_runnable_ptr list without scheduling them in the kernel. It makes the
+placement of the umcg_task trickier but maintains a stronger M:N model.
+
+Finally, I would recommend adding a 64-bit user pointer to umcg_task that is
+neither read nor written from the kernel. These kind of fields are always
+useful for implementers.
+
+Thank you for your time,
+
+Thierry
+
