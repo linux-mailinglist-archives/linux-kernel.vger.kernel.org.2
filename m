@@ -2,258 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5EA3BEEA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA0B3BEEA6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbhGGS31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:29:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231646AbhGGS3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:29:16 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 960FE61C72;
-        Wed,  7 Jul 2021 18:26:28 +0000 (UTC)
-Date:   Wed, 7 Jul 2021 14:26:21 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [PATCH v2] tracing: Add linear buckets to histogram logic
-Message-ID: <20210707142621.25ac0bd3@oasis.local.home>
-In-Reply-To: <20210706154315.3567166e@gandalf.local.home>
-References: <20210706154315.3567166e@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231258AbhGGS3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231338AbhGGS3c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 14:29:32 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F787C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 11:26:51 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id p21so6346067lfj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 11:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X9TBuegD3B8qucF5fQVx/8HA6uQKRVlnWctSN0STdHk=;
+        b=JHEoDNgJuf5pJ2G2aUS03u3QUdpMCJqs9w8aNqoS6YXXnRGc5XhbrWkq9jMLotAm7R
+         MMIDxiThgDZch9j27k6rvk+khZIPCemFQhs5ih2dPYdSwp0KAdATaOFNfT8RF+OEZ8qp
+         2wBGe9lfLFnzzU8t0XjAm5CeHgru39N+7umFWE4iGmzYkWsbYy87npM+N2FSlzBEDRIz
+         6VzE12KUiSnA4FWj3q0FOh6oqoDm+r4erlymqF8pBGHoO20xi9SQD4Hziw81o/ATLmud
+         ASX+zrIxXWyF7SZL1v+sBs1WQv21VZPsYjOEf29M6s1B2erCxlYxo7tPChw2hvom0I+2
+         LqkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X9TBuegD3B8qucF5fQVx/8HA6uQKRVlnWctSN0STdHk=;
+        b=PGZpCZw9Hub7UtcXTic3BSsYOcanrDG+KFAdPhC7jMuTuNSbgfcR6EFZ3iCGYHNeRN
+         c+VZGQuW7hitq0w+AMjLF1r+DTNx9jH3lJcH+VvL/2Z7Z+qQbJL9pOhwt1LAyhtkPy5z
+         tu27YZvSachFHOjmEwbFN2vsW/94Z7yy36RwSgT+CT/6MXJ/Dtn1QBnrXBEzfA8rmYmc
+         EVAX25y89BVrXoHX2fjD2RIVLqAq2bcArCLDTC7qitwrcZ3UimQuCFSWLRkXhMGz1l5Z
+         Y4DaA4DULdcUSRH0vHpwOMGfuPwhm3+JEp/LMOYqmH5eEmuJ56DLXNQr20MZdzkAGnHw
+         0b/g==
+X-Gm-Message-State: AOAM531sbsEYg2z9tBSPE3YNwjO2rManNBCtPdm0IipCoRg3ezFYegsY
+        VlkNBbE5/iESor0kLeGejEA=
+X-Google-Smtp-Source: ABdhPJwUMf4mL5nr2U320liK2/RWgXfPEJwTir2Q26O50gs74+t7zhK6gprreeCiE8yAV57csSuDHg==
+X-Received: by 2002:a2e:3505:: with SMTP id z5mr20238108ljz.308.1625682409508;
+        Wed, 07 Jul 2021 11:26:49 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id o15sm1767963lfu.134.2021.07.07.11.26.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 11:26:49 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH v3 1/2] mm/vmalloc: Use batched page requests in bulk-allocator
+Date:   Wed,  7 Jul 2021 20:26:38 +0200
+Message-Id: <20210707182639.31282-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Due to a cut and paste error, I messed up the To: line, and LKML
-  rejected the patch. Resending for archival ]
+In case of simultaneous vmalloc allocations, for example it is 1GB and
+12 CPUs my system is able to hit "BUG: soft lockup" for !CONFIG_PREEMPT
+kernel.
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+<snip>
+[   62.512621] RIP: 0010:__alloc_pages_bulk+0xa9f/0xbb0
+[   62.512628] Code: ff 8b 44 24 48 44 29 f8 83 f8 01 0f 84 ea fe ff ff e9 07 f6 ff ff 48 8b 44 24 60 48 89 28 e9 00 f9 ff ff fb 66 0f 1f 44 00 00 <e9> e8 fd ff ff 65 48 01 51 10 e9 3e fe ff ff 48 8b 44 24 78 4d 89
+[   62.512629] RSP: 0018:ffffa7bfc29ffd20 EFLAGS: 00000206
+[   62.512631] RAX: 0000000000000200 RBX: ffffcd5405421888 RCX: ffff8c36ffdeb928
+[   62.512632] RDX: 0000000000040000 RSI: ffffa896f06b2ff8 RDI: ffffcd5405421880
+[   62.512633] RBP: ffffcd5405421880 R08: 000000000000007d R09: ffffffffffffffff
+[   62.512634] R10: ffffffff9d63c084 R11: 00000000ffffffff R12: ffff8c373ffaeb80
+[   62.512635] R13: ffff8c36ffdf65f8 R14: ffff8c373ffaeb80 R15: 0000000000040000
+[   62.512637] FS:  0000000000000000(0000) GS:ffff8c36ffdc0000(0000) knlGS:0000000000000000
+[   62.512638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   62.512639] CR2: 000055c8e2fe8610 CR3: 0000000c13e10000 CR4: 00000000000006e0
+[   62.512641] Call Trace:
+[   62.512646]  __vmalloc_node_range+0x11c/0x2d0
+[   62.512649]  ? full_fit_alloc_test+0x140/0x140 [test_vmalloc]
+[   62.512654]  __vmalloc_node+0x4b/0x70
+[   62.512656]  ? fix_size_alloc_test+0x44/0x60 [test_vmalloc]
+[   62.512659]  fix_size_alloc_test+0x44/0x60 [test_vmalloc]
+[   62.512662]  test_func+0xe7/0x1f0 [test_vmalloc]
+[   62.512666]  ? fix_align_alloc_test+0x50/0x50 [test_vmalloc]
+[   62.512668]  kthread+0x11a/0x140
+[   62.512671]  ? set_kthread_struct+0x40/0x40
+[   62.512672]  ret_from_fork+0x22/0x30
+<snip>
 
-There's been several times I wished the histogram logic had a "grouping"
-feature for the buckets. Currently, each bucket has a size of one. That
-is, if you trace the amount of requested allocations, each allocation is
-its own bucket, even if you are interested in what allocates 100 bytes or
-less, 100 to 200, 200 to 300, etc.
+To address this issue invoke a bulk-allocator many times until all pages
+are obtained, i.e. do batched page requests adding cond_resched() meanwhile
+to reschedule. Batched value is hard-coded and is 100 pages per call.
 
-Also, without grouping, it fills up the allocated histogram buckets
-quickly. If you are tracking latency, and don't care if something is 200
-microseconds off, or 201 microseconds off, but want to track them by say
-10 microseconds each. This can not currently be done.
-
-There is a log2 but that grouping get's too big too fast for a lot of
-cases.
-
-Introduce a "buckets=SIZE" command to each field where it will record in a
-rounded number. For example:
-
- ># echo 'hist:keys=bytes_req.buckets=100:sort=bytes_req' > events/kmem/kmalloc/trigger
- ># cat events/kmem/kmalloc/hist
- # event histogram
- #
- # trigger info:
- hist:keys=bytes_req.buckets=100:vals=hitcount:sort=bytes_req.buckets=100:size=2048
- [active]
- #
-
- { bytes_req: ~ 0-99 } hitcount:       3149
- { bytes_req: ~ 100-199 } hitcount:       1468
- { bytes_req: ~ 200-299 } hitcount:         39
- { bytes_req: ~ 300-399 } hitcount:        306
- { bytes_req: ~ 400-499 } hitcount:        364
- { bytes_req: ~ 500-599 } hitcount:         32
- { bytes_req: ~ 600-699 } hitcount:         69
- { bytes_req: ~ 700-799 } hitcount:         37
- { bytes_req: ~ 1200-1299 } hitcount:         16
- { bytes_req: ~ 1400-1499 } hitcount:         30
- { bytes_req: ~ 2000-2099 } hitcount:          6
- { bytes_req: ~ 4000-4099 } hitcount:       2168
- { bytes_req: ~ 5000-5099 } hitcount:          6
-
- Totals:
-     Hits: 7690
-     Entries: 13
-     Dropped: 0
-
-Reviewed-by: Tom Zanussi <zanussi@kernel.org>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/trace/trace_events_hist.c | 65 ++++++++++++++++++++++++++++----
- 1 file changed, 58 insertions(+), 7 deletions(-)
+ mm/vmalloc.c | 32 +++++++++++++++++++++++++++-----
+ 1 file changed, 27 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 0207aeed31e6..8facef163f2d 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -120,6 +120,7 @@ struct hist_field {
- 	unsigned int			size;
- 	unsigned int			offset;
- 	unsigned int                    is_signed;
-+	unsigned long			grouping;
- 	const char			*type;
- 	struct hist_field		*operands[HIST_FIELD_OPERANDS_MAX];
- 	struct hist_trigger_data	*hist_data;
-@@ -218,6 +219,27 @@ static u64 hist_field_log2(struct hist_field *hist_field,
- 	return (u64) ilog2(roundup_pow_of_two(val));
- }
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index aaad569e8963..a9a6d28c8baa 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2775,7 +2775,7 @@ EXPORT_SYMBOL_GPL(vmap_pfn);
  
-+static u64 hist_field_bucket(struct hist_field *hist_field,
-+			     struct tracing_map_elt *elt,
-+			     struct trace_buffer *buffer,
-+			     struct ring_buffer_event *rbe,
-+			     void *event)
-+{
-+	struct hist_field *operand = hist_field->operands[0];
-+	unsigned long grouping = hist_field->grouping;
-+
-+	u64 val = operand->fn(operand, elt, buffer, rbe, event);
-+
-+	if (WARN_ON_ONCE(!grouping))
-+		return val;
-+
-+	if (val >= LONG_MAX)
-+		val = div64_ul(val, grouping);
-+	else
-+		val = (u64)((unsigned long)val / grouping);
-+	return val * grouping;
-+}
-+
- static u64 hist_field_plus(struct hist_field *hist_field,
- 			   struct tracing_map_elt *elt,
- 			   struct trace_buffer *buffer,
-@@ -317,6 +339,7 @@ enum hist_field_flags {
- 	HIST_FIELD_FL_VAR_REF		= 1 << 14,
- 	HIST_FIELD_FL_CPU		= 1 << 15,
- 	HIST_FIELD_FL_ALIAS		= 1 << 16,
-+	HIST_FIELD_FL_BUCKET		= 1 << 17,
- };
- 
- struct var_defs {
-@@ -1108,7 +1131,8 @@ static const char *hist_field_name(struct hist_field *field,
- 	if (field->field)
- 		field_name = field->field->name;
- 	else if (field->flags & HIST_FIELD_FL_LOG2 ||
--		 field->flags & HIST_FIELD_FL_ALIAS)
-+		 field->flags & HIST_FIELD_FL_ALIAS ||
-+		 field->flags & HIST_FIELD_FL_BUCKET)
- 		field_name = hist_field_name(field->operands[0], ++level);
- 	else if (field->flags & HIST_FIELD_FL_CPU)
- 		field_name = "cpu";
-@@ -1469,6 +1493,8 @@ static const char *get_hist_field_flags(struct hist_field *hist_field)
- 		flags_str = "syscall";
- 	else if (hist_field->flags & HIST_FIELD_FL_LOG2)
- 		flags_str = "log2";
-+	else if (hist_field->flags & HIST_FIELD_FL_BUCKET)
-+		flags_str = "buckets";
- 	else if (hist_field->flags & HIST_FIELD_FL_TIMESTAMP_USECS)
- 		flags_str = "usecs";
- 
-@@ -1657,9 +1683,10 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
- 		goto out;
- 	}
- 
--	if (flags & HIST_FIELD_FL_LOG2) {
--		unsigned long fl = flags & ~HIST_FIELD_FL_LOG2;
--		hist_field->fn = hist_field_log2;
-+	if (flags & (HIST_FIELD_FL_LOG2 | HIST_FIELD_FL_BUCKET)) {
-+		unsigned long fl = flags & ~(HIST_FIELD_FL_LOG2 | HIST_FIELD_FL_BUCKET);
-+		hist_field->fn = flags & HIST_FIELD_FL_LOG2 ? hist_field_log2 :
-+			hist_field_bucket;
- 		hist_field->operands[0] = create_hist_field(hist_data, field, fl, NULL);
- 		hist_field->size = hist_field->operands[0]->size;
- 		hist_field->type = kstrdup(hist_field->operands[0]->type, GFP_KERNEL);
-@@ -1950,7 +1977,7 @@ static struct hist_field *parse_var_ref(struct hist_trigger_data *hist_data,
- 
- static struct ftrace_event_field *
- parse_field(struct hist_trigger_data *hist_data, struct trace_event_file *file,
--	    char *field_str, unsigned long *flags)
-+	    char *field_str, unsigned long *flags, unsigned long *grouping)
+ static inline unsigned int
+ vm_area_alloc_pages(gfp_t gfp, int nid,
+-		unsigned int order, unsigned long nr_pages, struct page **pages)
++		unsigned int order, unsigned int nr_pages, struct page **pages)
  {
- 	struct ftrace_event_field *field = NULL;
- 	char *field_name, *modifier, *str;
-@@ -1977,7 +2004,22 @@ parse_field(struct hist_trigger_data *hist_data, struct trace_event_file *file,
- 			*flags |= HIST_FIELD_FL_LOG2;
- 		else if (strcmp(modifier, "usecs") == 0)
- 			*flags |= HIST_FIELD_FL_TIMESTAMP_USECS;
--		else {
-+		else if (strncmp(modifier, "bucket", 6) == 0) {
-+			int ret;
+ 	unsigned int nr_allocated = 0;
+ 
+@@ -2785,10 +2785,32 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+ 	 * to fails, fallback to a single page allocator that is
+ 	 * more permissive.
+ 	 */
+-	if (!order)
+-		nr_allocated = alloc_pages_bulk_array_node(
+-			gfp, nid, nr_pages, pages);
+-	else
++	if (!order) {
++		while (nr_allocated < nr_pages) {
++			unsigned int nr, nr_pages_request;
 +
-+			modifier += 6;
++			/*
++			 * A maximum allowed request is hard-coded and is 100
++			 * pages per call. That is done in order to prevent a
++			 * long preemption off scenario in the bulk-allocator
++			 * so the range is [1:100].
++			 */
++			nr_pages_request = min(100U, nr_pages - nr_allocated);
 +
-+			if (*modifier == 's')
-+				modifier++;
-+			if (*modifier != '=')
-+				goto error;
-+			modifier++;
-+			ret = kstrtoul(modifier, 0, grouping);
-+			if (ret || !(*grouping))
-+				goto error;
-+			*flags |= HIST_FIELD_FL_BUCKET;
-+		} else {
-+ error:
- 			hist_err(tr, HIST_ERR_BAD_FIELD_MODIFIER, errpos(modifier));
- 			field = ERR_PTR(-EINVAL);
- 			goto out;
-@@ -2036,6 +2078,7 @@ static struct hist_field *parse_atom(struct hist_trigger_data *hist_data,
- 	char *s, *ref_system = NULL, *ref_event = NULL, *ref_var = str;
- 	struct ftrace_event_field *field = NULL;
- 	struct hist_field *hist_field = NULL;
-+	unsigned long grouping = 0;
- 	int ret = 0;
- 
- 	s = strchr(str, '.');
-@@ -2073,7 +2116,7 @@ static struct hist_field *parse_atom(struct hist_trigger_data *hist_data,
- 	} else
- 		str = s;
- 
--	field = parse_field(hist_data, file, str, flags);
-+	field = parse_field(hist_data, file, str, flags, &grouping);
- 	if (IS_ERR(field)) {
- 		ret = PTR_ERR(field);
- 		goto out;
-@@ -2084,6 +2127,7 @@ static struct hist_field *parse_atom(struct hist_trigger_data *hist_data,
- 		ret = -ENOMEM;
- 		goto out;
- 	}
-+	hist_field->grouping = grouping;
- 
- 	return hist_field;
-  out:
-@@ -4664,6 +4708,11 @@ static void hist_trigger_print_key(struct seq_file *m,
- 		} else if (key_field->flags & HIST_FIELD_FL_LOG2) {
- 			seq_printf(m, "%s: ~ 2^%-2llu", field_name,
- 				   *(u64 *)(key + key_field->offset));
-+		} else if (key_field->flags & HIST_FIELD_FL_BUCKET) {
-+			unsigned long grouping = key_field->grouping;
-+			uval = *(u64 *)(key + key_field->offset);
-+			seq_printf(m, "%s: ~ %llu-%llu", field_name,
-+				   uval, uval + grouping -1);
- 		} else if (key_field->flags & HIST_FIELD_FL_STRING) {
- 			seq_printf(m, "%s: %-50s", field_name,
- 				   (char *)(key + key_field->offset));
-@@ -5103,6 +5152,8 @@ static void hist_field_print(struct seq_file *m, struct hist_field *hist_field)
- 				seq_printf(m, ".%s", flags);
- 		}
- 	}
-+	if (hist_field->grouping)
-+		seq_printf(m, "=%ld", hist_field->grouping);
- }
- 
- static int event_hist_trigger_print(struct seq_file *m,
++			nr = alloc_pages_bulk_array_node(gfp, nid,
++				nr_pages_request, pages + nr_allocated);
++
++			nr_allocated += nr;
++			cond_resched();
++
++			/*
++			 * If zero or pages were obtained partly,
++			 * fallback to a single page allocator.
++			 */
++			if (nr != nr_pages_request)
++				break;
++		}
++	} else
+ 		/*
+ 		 * Compound pages required for remap_vmalloc_page if
+ 		 * high-order pages.
 -- 
-2.31.1
+2.20.1
 
