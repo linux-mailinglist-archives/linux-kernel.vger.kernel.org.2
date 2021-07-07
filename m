@@ -2,157 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D043BE6F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98263BE6FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231392AbhGGLQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 07:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbhGGLQQ (ORCPT
+        id S231371AbhGGLS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 07:18:27 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46192 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231220AbhGGLS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 07:16:16 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D76CC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 04:13:36 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id w15so1835629pgk.13
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 04:13:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZdzfnR4j5eQS/lxbgzCM8QfZTWzUyhCC6sdEedhtEac=;
-        b=l5qvT9pK4sLGvXuFFcV6Xw0M5gy0owqlmoKq5yUKAd6+LmwxFt8cfQYuxsKzbXGTdf
-         f836Fm5gfNv1ml0LuQ1yH3ewcDtCD2w2tqm1QNX1iUGsjXm7KC5dK/wHq0c1mX4AmXXM
-         TldtoS2fNCFNgY+rVrVTB3Z74ZZUnKHAb2q2465brs3iENz8716C5cBrNYN7VJUQNirK
-         aBJdEcaTydHg5fqSeVLCfQSLy1hEztU2idlcRwzTfieccA/qk/Lqr3ZGLJgfdsc9L7zQ
-         d63pu8Ae5moDd04el4WrVyrMa8v70EdVKsLR26jLvOFSCJ2lRuGeO8iyMNkj2QxJinz7
-         yIeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZdzfnR4j5eQS/lxbgzCM8QfZTWzUyhCC6sdEedhtEac=;
-        b=ELyRGFzSw6YavDWliSJcvDgadoic4iztgLDih0T96YPpDSS3DnCDkO1b5u4YqpaXLq
-         V9DHcXqKEVf5JKECZ3gM/cleNKMcUSrRnKsYvQY8bqpF6oXnuT7KkSKpoQQGcAXOZbiP
-         6YK+JkgWhnzYFBELh4hazWKvHO21S2Jf+xq9sPBgQrtaO3qwQBxdTVsot4R7Ak5NXJ7I
-         T7woAKahwXXGpzjVTaL4y1i5RjwfRCmS8j/wDXfQk4mPiGoxxloKz2uSqlEG+M/veo9l
-         LmZEkrHdFXYfrZCO9HhW9YrRlsu8R4/Zok7D5sd4jr0myaNXFrytmTfG/U30iP8rccCX
-         WSlA==
-X-Gm-Message-State: AOAM533d5KlHWks1DF8q08IyM+M52dk9+5xQV4zmXkUgi7e263vDJzzb
-        Bg5P8+DAWmEM/AsuJxnkJh13LUutsET/w97J094=
-X-Google-Smtp-Source: ABdhPJxBfBQ8Wo2ahM2ctn4u10fcGSESS6ZBw/A8VV8R4TJQJBRDdFLtmUkeJFchBFHaUWGBBSd6Gg==
-X-Received: by 2002:a63:4201:: with SMTP id p1mr25888381pga.386.1625656415995;
-        Wed, 07 Jul 2021 04:13:35 -0700 (PDT)
-Received: from localhost.localdomain ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id k189sm18896577pgk.14.2021.07.07.04.13.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 04:13:35 -0700 (PDT)
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+127fd7828d6eeb611703@syzkaller.appspotmail.com
-Subject: [PATCH] mm/page_alloc: avoid deadlocks for &pagesets.lock
-Date:   Wed,  7 Jul 2021 19:12:45 +0800
-Message-Id: <20210707111245.625374-1-desmondcheongzx@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 7 Jul 2021 07:18:26 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 167B5XQ6099634;
+        Wed, 7 Jul 2021 07:15:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=YTpvN3xMP4VN03q+XIheFnsjHQA+EPlNiyfOw7DVRBw=;
+ b=G8byYwsirQXWa+0YXSum/4A6llk2IREO9F+E81K+Nekk6mhWcp9nDIA6kqHEP0E80p/w
+ UKhZCCTsNtD0KC2C5NIIpIBVNEPJFpU5juiq7uphpYQD0D0HJwcwrkdhFxLBNtuBBN2r
+ HFssp6xLHfuLq6RiJasIAfpPObgK7RNs2eToUrzYowQ/iw8CK65giYRj/7PtgFDlpAty
+ xEH14bwWcKjsLQrVShPnmBglJ4sB0CHNJDrsk6isMUntAKdhOy14z0cghIjjkm7QbdhC
+ k5JH19eUBWWtjLqecGB5au8kIgGEZmzuyAJzO4BQhxsdgAi/i7YOWXm9JTDalDd6ogOh oA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39n28jcy5k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 07:15:38 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 167B5snn100480;
+        Wed, 7 Jul 2021 07:15:38 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39n28jcy52-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 07:15:38 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 167B8aKm010362;
+        Wed, 7 Jul 2021 11:15:36 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 39jfh8sq5a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 11:15:36 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 167BFXjJ30736642
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Jul 2021 11:15:33 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E7C1C4C06A;
+        Wed,  7 Jul 2021 11:15:32 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 847EB4C058;
+        Wed,  7 Jul 2021 11:15:32 +0000 (GMT)
+Received: from oc6887364776.ibm.com (unknown [9.152.212.90])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Jul 2021 11:15:32 +0000 (GMT)
+Subject: Re: [PATCH v2 2/4] s390/ccwgroup: Drop if with an always false
+ condition
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     kernel@pengutronix.de, Cornelia Huck <cohuck@redhat.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210706154803.1631813-1-u.kleine-koenig@pengutronix.de>
+ <20210706154803.1631813-3-u.kleine-koenig@pengutronix.de>
+From:   Vineeth Vijayan <vneethv@linux.ibm.com>
+Message-ID: <d2a0875f-f6e5-e3e7-82d6-032bc1c431f4@linux.ibm.com>
+Date:   Wed, 7 Jul 2021 13:15:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210706154803.1631813-3-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Ll1391y-NxNWkLTq1m5PjyE09BjY5P9f
+X-Proofpoint-ORIG-GUID: e279E6yT3-ghrhk8eTmtJqrfvqZSZ-VP
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-07_06:2021-07-06,2021-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 spamscore=0 adultscore=0 priorityscore=1501 impostorscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 clxscore=1011 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107070067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reports a number of potential deadlocks for &pagesets.lock. It
-seems that this new lock is being used as both an inner and outer
-lock, which makes it prone to creating circular dependencies.
+Thank you. Looks good to me.
+Heiko/Vasily will pick this up and will be part of the next s390-tree 
+patchset.
 
-For example, one such call trace goes as follows:
-  __alloc_pages_bulk()
-    local_lock_irqsave(&pagesets.lock, flags) <---- outer lock here
-    prep_new_page():
-      post_alloc_hook():
-        set_page_owner():
-          __set_page_owner():
-            save_stack():
-              stack_depot_save():
-                alloc_pages():
-                  alloc_page_interleave():
-                    __alloc_pages():
-                      get_page_from_freelist():
-                        rm_queue():
-                          rm_queue_pcplist():
-                            local_lock_irqsave(&pagesets.lock, flags);
-                            *** DEADLOCK ***
+Also,
 
-The common culprit for the lockdep splats seems to be the call to
-local_lock_irqsave(&pagesets.lock, flags) inside
-__alloc_pages_bulk(). &pagesets.lock becomes an outer lock if it's
-held during the call to prep_new_page().
+Acked-by: Vineeth Vijayan <vneethv@linux.ibm.com>
 
-As the local lock is used to protect the PCP structure, we adjust the
-locking in __alloc_pages_bulk so that only the necessary structures
-are protected.
 
-Fixes: dbbee9d5cd83 ("mm/page_alloc: convert per-cpu list protection to local_lock")
-Reported-and-tested-by: syzbot+127fd7828d6eeb611703@syzkaller.appspotmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
----
- mm/page_alloc.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 0817d88383d5..0e005b1a60e3 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5288,10 +5288,6 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		goto failed;
- 
- 	/* Attempt the batch allocation */
--	local_lock_irqsave(&pagesets.lock, flags);
--	pcp = this_cpu_ptr(zone->per_cpu_pageset);
--	pcp_list = &pcp->lists[order_to_pindex(ac.migratetype, 0)];
--
- 	while (nr_populated < nr_pages) {
- 
- 		/* Skip existing pages */
-@@ -5300,12 +5296,16 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 			continue;
- 		}
- 
-+		local_lock_irqsave(&pagesets.lock, flags);
-+		pcp = this_cpu_ptr(zone->per_cpu_pageset);
-+		pcp_list = &pcp->lists[order_to_pindex(ac.migratetype, 0)];
- 		page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
- 								pcp, pcp_list);
-+		local_unlock_irqrestore(&pagesets.lock, flags);
- 		if (unlikely(!page)) {
- 			/* Try and get at least one page */
- 			if (!nr_populated)
--				goto failed_irq;
-+				goto failed;
- 			break;
- 		}
- 		nr_account++;
-@@ -5318,16 +5318,11 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		nr_populated++;
- 	}
- 
--	local_unlock_irqrestore(&pagesets.lock, flags);
--
- 	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
- 	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
- 
- 	return nr_populated;
- 
--failed_irq:
--	local_unlock_irqrestore(&pagesets.lock, flags);
--
- failed:
- 	page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
- 	if (page) {
--- 
-2.25.1
-
+On 7/6/21 5:48 PM, Uwe Kleine-König wrote:
+> The driver core only calls a bus remove callback when there is a driver.
+> So dev->driver is never NULL and the check can safely be removed.
+>
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
+>   drivers/s390/cio/ccwgroup.c | 2 --
+>   1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/s390/cio/ccwgroup.c b/drivers/s390/cio/ccwgroup.c
+> index 9748165e08e9..a6aeab1ea0ae 100644
+> --- a/drivers/s390/cio/ccwgroup.c
+> +++ b/drivers/s390/cio/ccwgroup.c
+> @@ -444,8 +444,6 @@ static int ccwgroup_remove(struct device *dev)
+>   	struct ccwgroup_device *gdev = to_ccwgroupdev(dev);
+>   	struct ccwgroup_driver *gdrv = to_ccwgroupdrv(dev->driver);
+>   
+> -	if (!dev->driver)
+> -		return 0;
+>   	if (gdrv->remove)
+>   		gdrv->remove(gdev);
+>   
