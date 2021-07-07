@@ -2,114 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777DF3BF06B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9C23BF08A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232635AbhGGTpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 15:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhGGTpd (ORCPT
+        id S232712AbhGGTyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 15:54:50 -0400
+Received: from mail-ed1-f46.google.com ([209.85.208.46]:46000 "EHLO
+        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230359AbhGGTyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 15:45:33 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB511C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 12:42:52 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id r26so7131092lfp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 12:42:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LRtFQfyk5rkHzCvBDJ7m/53ib3pszFLVwjo8wznH6UE=;
-        b=yFcO6aCHT5Wp8XcHLs3x7QjI1v+tekgMJbmj6pPFaNrWmUZ3yjUxexHb2wvivrLnvk
-         wpPtu8QUxvDBn0Z7SDU7DAa/e8ONb2256TAahLeb4MKewzgad9koVgCZx/tc9KSYH8Nk
-         MkMQmMz/XSiGUA513D3Y2WGA7AY6rnls41T6Neg+NDC2MyS5DPdVLd+letBRoFYEz5Vy
-         XFdsxz/8jbYQwq88kH3vktlGJdUyOxN5GUjfgp9sXS9tdux2jP8qSeBbCa+7nhGIfXzW
-         xW3bjO1Su9ioQZNguLLj3A4OlCZGjhI9jOoxP0iPSTjeO0IWgWxPafFneFHgMuxtuEMJ
-         nsnA==
+        Wed, 7 Jul 2021 15:54:49 -0400
+Received: by mail-ed1-f46.google.com with SMTP id t3so4952192edt.12;
+        Wed, 07 Jul 2021 12:52:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LRtFQfyk5rkHzCvBDJ7m/53ib3pszFLVwjo8wznH6UE=;
-        b=gZXA5hqMOInovZx08afERa+74QD8ELAOqkfXfdoebG395UZStiC2eLp2ZeuQTC+29j
-         CRjYGzYk5BLUnPuBd3OilQEGf1hFu9euFjD2CtyJJrHiqvjwUnA0eOJeuI2fMJBDpQwu
-         McQ1aDk+cUwYx7eVIUw0mpw1qhG+9sY8orXPZYt2KJrmnhz3o+GVakN7hd14Zyodx36M
-         WzXpcNYL1AV8yUZ9FuA3vYB5aqfEbmiGm7oM5vJul8z/YAGN33nyDM2WWHcQGZQuY8dq
-         hkYNBdh9Q7kC06i/ayb4I84BnFHNwZilFN1qzHvaEuehpruXPLSqGZz91EDhS3ieRvMU
-         kHZQ==
-X-Gm-Message-State: AOAM532BcDKVMPxycy6ybemDxyQJX8DGlxEbqv7VN7TxQQbQ/iiwWjB5
-        DEemaB0W7Dxy0KNEK9EiBYB+cLM1JovjmDNLdQgGfw==
-X-Google-Smtp-Source: ABdhPJwxhl4aUAm4oVA+H8xrPvcXq5kElGbA8grQFD3N2KD69Hh/pYn0WdVnS32vEA1aPDwawe5JdRzQHP5s+cnOh2Y=
-X-Received: by 2002:a05:651c:102c:: with SMTP id w12mr10051224ljm.170.1625686971167;
- Wed, 07 Jul 2021 12:42:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=URduaW50lsVABZMTcWqniUjdimmoK+Mx3tzbD4O0S0c=;
+        b=tp7LDq7q84kwrouqsTlh5IG8bskNwTRRGMlKD+B86oeVds6X8Rta0STLCkCzVP7rlH
+         rZT/B696cba7p3B3lbQXTxopJY6V7EHKSxxIVm+q6V+KTXblUn++jjswea1nvYlWQiGg
+         CEA57KAG+c+XPKUkJkiZFOJiDFMIfoO9nreVHeL3jE02sZMy/5mqI8FDI7xNQGOOWpDj
+         V03tGmlM2M2NW9beIuMTsjriqHruAzzb8jn92HBLqvUd9c84W9pxvqfLT4NBm5PL+Bji
+         0LFPe1Z8LKBNwJq096yZnDseesKeC/XrjL8CI9kM1K947+2JrcuUmVHw6wMRnsXSmMTv
+         cLaw==
+X-Gm-Message-State: AOAM5306xeZqKoa8pZ0kdpzS4A4fnuIgOi0aJa+Esadwxp7+1u6+rn7c
+        r46j6lzPrnAFUb4SOE92kts=
+X-Google-Smtp-Source: ABdhPJwczzpgZW/l6CYw6xMSEcrMRQzjEX1rXbOx0YnkNsKZDpnFuKYfvJLKK5FguvXS8xtQAKUuUQ==
+X-Received: by 2002:a05:6402:30af:: with SMTP id df15mr3080906edb.19.1625687527405;
+        Wed, 07 Jul 2021 12:52:07 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id f9sm24949edw.88.2021.07.07.12.52.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 12:52:06 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 21:52:05 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     thierry.reding@gmail.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, bhelgaas@google.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 3/3] PCI: tegra: make const array err_msg static
+Message-ID: <20210707195205.GA6952@rocinante>
+References: <55b11e9a7fa2987fbc0869d68ae59888954d65e2.1620148539.git.christophe.jaillet@wanadoo.fr>
+ <5f3f35296b944b94546cc7d1e9cc6186484620d8.1620148539.git.christophe.jaillet@wanadoo.fr>
+ <20210705223152.GA142312@rocinante>
+ <a3d48884-9e47-8623-6fc5-6c52f4ca0568@wanadoo.fr>
 MIME-Version: 1.0
-References: <20210630013421.735092-1-john.stultz@linaro.org>
- <20210630013421.735092-2-john.stultz@linaro.org> <YOVL1f4m+8ly9fyM@infradead.org>
- <afea8c13-ef8d-7eb1-c362-8d6d1649751d@amd.com> <YOVUX1ZmZ3YZpjic@infradead.org>
-In-Reply-To: <YOVUX1ZmZ3YZpjic@infradead.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Wed, 7 Jul 2021 12:42:40 -0700
-Message-ID: <CALAqxLXEcRufetNJo6ZETs4OyFWdWE3uU7_zOzVVcRtkkhYiyA@mail.gmail.com>
-Subject: Re: page pools, was Re: [PATCH v9 1/5] drm: Add a sharable drm
- page-pool implementation
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Christian K??nig" <christian.koenig@amd.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        "??rjan Eide" <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Mel Gorman <mgorman@suse.de>, linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a3d48884-9e47-8623-6fc5-6c52f4ca0568@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 12:15 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Wed, Jul 07, 2021 at 09:10:26AM +0200, Christian K??nig wrote:
-> > Well, the original code all this is based on already had the comment that
-> > this really belong into the page allocator.
-> >
-> > The key point is traditionally only GPUs used uncached and write-combined
-> > memory in such large quantities that having a pool for them makes sense.
-> >
-> > Because of this we had this separately to reduce the complexity in the page
-> > allocator to handle another set of complexity of allocation types.
-> >
-> > For the upside, for those use cases it means huge performance improvements
-> > for those drivers. See the numbers John provided in the cover letter.
-> >
-> > But essentially at least I would be totally fine moving this into the page
-> > allocator, but moving it outside of TTM already helps with this goal. So
-> > this patch set is certainly a step into the right direction.
->
-> Unless I'm badly misreading the patch and this series there is nothing
-> about cache attributes in this code.  It just allocates pages, zeroes
-> them, eventually hands them out to a consumer and registers a shrinker
-> for its freelist.
->
-> If OTOH it actually dealt with cachability that should be documented
-> in the commit log and probably also the naming of the implementation.
+Hi Christophe,
 
-So the cache attributes are still managed in the tmm_pool code. This
-series just pulls the pool/shrinker management out into common code so
-we can use it in the dmabuf heap code without duplicating things.
+[...]
+> > These should be trivial to fix.  The two pertaining to "quoted string
+> > split across lines" would be something that we might or might not decide
+> > to do anything about this - technically, as per the Linux kernel coding
+> > style [1], we ought to fix this... but, this particular case is not
+> > a terrible example, so I will leave this at your discretion.
+> > 
+> > What do you think?
+> 
+> Hi,
+> I don't think it worth it.
+> 
+> Even for patch 2/3 about 'seq_printf' --> 'seq_puts' conversion, I'm not
+> fully convinced myself that is useful.
 
-thanks
--john
+I personally believe it's a good change.
+
+For a literal string without any formatting using the seq_printf() is
+much more involved for no reason, but aside of this small performance
+improvement, it also has some value in demonstrating the correct usage
+patterns - people spent more time reading kernel code and looking at how
+to do things and use things to base their work on, so setting some
+example is not a bad idea.
+
+Albeit, it's a matter of point of view too, I suppose.
+
+> Too trivial clean-ups only mess-up 'git blame' for no real added value.
+
+Yes, there is a fine line with these.
+
+> If you want these clean-ups, I can send a patch for it, but checkpatch
+> output need sometimes to be ignored on files already in the tree. At least,
+> this is my point of view.
+
+No worries!  Thank you for giving it some thought!  I appreciate it. :)
+
+	Krzysztof
