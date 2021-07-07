@@ -2,152 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A6B3BE67A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C6D3BE682
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbhGGKrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:47:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33492 "EHLO mail.kernel.org"
+        id S231438AbhGGKsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:48:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231293AbhGGKrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:47:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C775C61C73;
-        Wed,  7 Jul 2021 10:44:43 +0000 (UTC)
+        id S230354AbhGGKsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 06:48:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB93661C73;
+        Wed,  7 Jul 2021 10:45:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625654684;
-        bh=7f9dZVhWz4se7QaY6DgXUfM9sIf/lWr1syPBf9l2uDQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=hgVGouA9JG5lxQBoMcH9bvjeep23ujsB7djODoFVdIuEgKzRdfQ9tbll/Pxh0D28f
-         P+64IeA7RqnylzMbruOUZrNz3gc6/VUrs9LzSX/yyEn3lossOGIVmiRCqSdewV9Jv6
-         sC30BRmvwWQdNHMwfd3NGSnG9ZiSBe8qeL/sW2FkYdRdcvzeLM6cQ7sVAgobYIMUEa
-         l1LISOcUYRNDgCvUhaNnNMX5adNwld/FxJ1VfBNxTsFSuMUp3V4TIy/tiEiJXtwnbe
-         aw7oS2AkSjzxk1e2he8X/Y1uPWIwWizNfHZXMKgljrmrX602owjreyOSDUqQpbfitE
-         T0jjbvxsNmz9g==
-Message-ID: <14633c3be87286d811263892375f2dfa9a8ed40a.camel@kernel.org>
-Subject: Re: [PATCH v2 1/2] fcntl: fix potential deadlocks for
- &fown_struct.lock
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     bfields@fieldses.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
-Date:   Wed, 07 Jul 2021 06:44:42 -0400
-In-Reply-To: <YOVENb3X/m/pNrYt@kroah.com>
-References: <20210707023548.15872-1-desmondcheongzx@gmail.com>
-         <20210707023548.15872-2-desmondcheongzx@gmail.com>
-         <YOVENb3X/m/pNrYt@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
-MIME-Version: 1.0
+        s=k20201202; t=1625654734;
+        bh=8aOJz6m5RJlTXs6gh0uc/O0I73BykATmNxUl6cB0w3w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MhrN/1tlrnCGavOeEq49Qur6+PSu6kg6J7gm7/e2okTmQNBoTXp0PLI9KFjtWKTPA
+         1QZPIC7znIe+kzZ8FLmTkHZyc6JWs8/HNOOjD0zrh7jNm87gSy3mTyw8lKcfpcVbWu
+         4/z5YHEng+CYOkg8GS+AsqR/1w+eTseE7YfUnr3SCQHvFC/g78yvLrhuVlEyyVnZvR
+         ykdZYGLKMEpykcsGTpj6fyPSNkY0aLpDhZhuoQHACwX8TuInO2O99+F+7gNu8zvT8X
+         N/pgISSE5SIUgg2cPuMz0HAofJOcoOfoudYr8g8hx5IU8wgR6TsfDA++IfPnCCwwwW
+         NzwRfBd3elcYg==
+Date:   Wed, 7 Jul 2021 19:45:30 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        wuqiang.matt@bytedance.com
+Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
+ entry
+Message-Id: <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
+In-Reply-To: <YOWACec65qVdTD1y@hirez.programming.kicks-ass.net>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+        <162400002631.506599.2413605639666466945.stgit@devnote2>
+        <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
+        <20210706004257.9e282b98f447251a380f658f@kernel.org>
+        <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
+        <20210706111136.7c5e9843@oasis.local.home>
+        <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
+        <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
+        <YOWACec65qVdTD1y@hirez.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-07-07 at 08:05 +0200, Greg KH wrote:
-> On Wed, Jul 07, 2021 at 10:35:47AM +0800, Desmond Cheong Zhi Xi wrote:
-> > Syzbot reports a potential deadlock in do_fcntl:
-> > 
-> > ========================================================
-> > WARNING: possible irq lock inversion dependency detected
-> > 5.12.0-syzkaller #0 Not tainted
-> > --------------------------------------------------------
-> > syz-executor132/8391 just changed the state of lock:
-> > ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: f_getown_ex fs/fcntl.c:211 [inline]
-> > ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: do_fcntl+0x8b4/0x1200 fs/fcntl.c:395
-> > but this lock was taken by another, HARDIRQ-safe lock in the past:
-> >  (&dev->event_lock){-...}-{2:2}
-> > 
-> > and interrupts could create inverse lock ordering between them.
-> > 
-> > other info that might help us debug this:
-> > Chain exists of:
-> >   &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
-> > 
-> >  Possible interrupt unsafe locking scenario:
-> > 
-> >        CPU0                    CPU1
-> >        ----                    ----
-> >   lock(&f->f_owner.lock);
-> >                                local_irq_disable();
-> >                                lock(&dev->event_lock);
-> >                                lock(&new->fa_lock);
-> >   <Interrupt>
-> >     lock(&dev->event_lock);
-> > 
-> >  *** DEADLOCK ***
-> > 
-> > This happens because there is a lock hierarchy of
-> > &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
-> > from the following call chain:
-> > 
-> >   input_inject_event():
-> >     spin_lock_irqsave(&dev->event_lock,...);
-> >     input_handle_event():
-> >       input_pass_values():
-> >         input_to_handler():
-> >           evdev_events():
-> >             evdev_pass_values():
-> >               spin_lock(&client->buffer_lock);
-> >               __pass_event():
-> >                 kill_fasync():
-> >                   kill_fasync_rcu():
-> >                     read_lock(&fa->fa_lock);
-> >                     send_sigio():
-> >                       read_lock_irqsave(&fown->lock,...);
-> > 
-> > However, since &dev->event_lock is HARDIRQ-safe, interrupts have to be
-> > disabled while grabbing &f->f_owner.lock, otherwise we invert the lock
-> > hierarchy.
-> > 
-> > Hence, we replace calls to read_lock/read_unlock on &f->f_owner.lock,
-> > with read_lock_irq/read_unlock_irq.
-> > 
-> > Here read_lock_irq/read_unlock_irq should be safe to use because the
-> > functions f_getown_ex and f_getowner_uids are only called from
-> > do_fcntl, and f_getown is only called from do_fnctl and
-> > sock_ioctl. do_fnctl itself is only called from syscalls.
-> > 
-> > For sock_ioctl, the chain is
-> >   compat_sock_ioctl():
-> >     compat_sock_ioctl_trans():
-> >       sock_ioctl()
-> > 
-> > And interrupts are not disabled on either path. We assert this
-> > assumption with WARN_ON_ONCE(irqs_disabled()). This check is also
-> > inserted into another use of write_lock_irq in f_modown.
-> > 
-> > Reported-and-tested-by: syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
-> > Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> > ---
-> >  fs/fcntl.c | 17 +++++++++++------
-> >  1 file changed, 11 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/fs/fcntl.c b/fs/fcntl.c
-> > index dfc72f15be7f..262235e02c4b 100644
-> > --- a/fs/fcntl.c
-> > +++ b/fs/fcntl.c
-> > @@ -88,6 +88,7 @@ static int setfl(int fd, struct file * filp, unsigned long arg)
-> >  static void f_modown(struct file *filp, struct pid *pid, enum pid_type type,
-> >                       int force)
-> >  {
-> > +	WARN_ON_ONCE(irqs_disabled());
-> 
-> If this triggers, you just rebooted the box :(
-> 
-> Please never do this, either properly handle the problem and return an
-> error, or do not check for this.  It is not any type of "fix" at all,
-> and at most, a debugging aid while you work on the root problem.
-> 
-> thanks,
-> 
-> greg k-h
+On Wed, 7 Jul 2021 12:20:57 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Wait, what? Why would testing for irqs being disabled and throwing a
-WARN_ON in that case crash the box?
+> On Wed, Jul 07, 2021 at 07:15:10PM +0900, Masami Hiramatsu wrote:
+> 
+> > I actually don't want to keep this feature because no one use it.
+> > (only systemtap needs it?)
+> 
+> Yeah, you mentioned systemtap, but since that's out-of-tree I don't
+> care. Their problem.
+> 
+> > Anyway, if we keep the idea-level compatibility (not code level),
+> > what we need is 'void *data' in the struct kretprobe_instance.
+> > User who needs it can allocate their own instance data for their
+> > kretprobes when initialising it and sets in their entry handler.
+> > 
+> > Then we can have a simple kretprobe_instance.
+> 
+> When would you do the alloc? When installing the retprobe, but that
+> might be inside the allocator, which means you can't call the allocator
+> etc.. :-)
+
+Yes, so the user may need to allocate a pool right before register_kretprobe().
+(whether per-kretprobe or per-task or global pool, that is user's choice.)
+
+> 
+> If we look at struct ftrace_ret_stack, it has a few fixed function
+> fields. The calltime one is all that is needed for the kretprobe
+> example code.
+
+kretprobe consumes 3 fields, a pointer to 'struct kretprobe' (which
+stores callee function address in 'kretprobe::kp.addr'), a return
+address and a frame pointer (*).
+
+* note that this frame pointer might be used for fixing up the
+stack trace, but the fixup method depends on the architecture.
+
+Thank you,
+
 -- 
-Jeff Layton <jlayton@kernel.org>
-
+Masami Hiramatsu <mhiramat@kernel.org>
