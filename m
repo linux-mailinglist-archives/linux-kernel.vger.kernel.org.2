@@ -2,108 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFB53BF0A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4907D3BF0AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233113AbhGGUQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 16:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33466 "EHLO
+        id S233169AbhGGUSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 16:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbhGGUQT (ORCPT
+        with ESMTP id S230296AbhGGUSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 16:16:19 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660B6C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 13:13:38 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id l17-20020a9d6a910000b029048a51f0bc3cso3472323otq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 13:13:38 -0700 (PDT)
+        Wed, 7 Jul 2021 16:18:12 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C1DC061574;
+        Wed,  7 Jul 2021 13:15:31 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id m15so1708321plx.7;
+        Wed, 07 Jul 2021 13:15:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=G6BcXcovuKQX32KS++TwaxPjbkiZXZqUSnhVU2rIm8s=;
-        b=tEoOzZ1g/YIreTbMKj6zR9yAyFeSivYOPq+hYIi/iDVJTtoF1Dx2vOc1HmT845PkjJ
-         HVFDPmHUa2mnIjl65c316SoGWqSvWJyUHmTIFEBuFA9EJB8y0j54IiKnPm46oqAmE0UJ
-         7nb+3RnYxAKvlpIYin4xVMD9zayJEep6XK6OrCbBURG2UgCrgXWfTkIknWqG6TRl3mcC
-         DMTgMDTNtXYMBJt8thR1IXs+E4mZBLCQi4Wn9mz6hGrj6++7FlJYZnTtX9bliBmrxNu4
-         yueKDYwBhsRbwMj3G9SUSZIz5rJ+f+UnY3xAfh9my7EdN+KYkS6Fy5LgRQqbgnWjDNjx
-         kd6A==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J5bVls/bzRwx/bNfNfg5c0XL0O9QYtXihq0kYsdOhqo=;
+        b=H61osoDMyySy9Yka9hgPq6vxgZgB0Jm5CDTcCisQwL3trjFhLlSYlSNNH9dbL1sEtD
+         Tj82OrmpvsSPy2oyUDHRLplagDeN/k4yv/gsh2K836brbYtkAczttuI/C+d+XCmQVDq6
+         h5M2g1an9Pxq83w2GcWg2YsOCZextnO9P8UHrSVyMX+0EzCQ7XMTA7UFaFKNH0Pcq2HY
+         M8VRQB/SYmbRsdL5qzwUJkXPU9WDgXvBpDuAjU95FkjAyofBQhpx3i+WrZiEbmgMUCTY
+         i72xlQ+KOsZiybQ62TDrgkYpc3et+6JkvA3S2vftcAoErU4cbZhSFsweJRR/o/qRoQsA
+         Au2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=G6BcXcovuKQX32KS++TwaxPjbkiZXZqUSnhVU2rIm8s=;
-        b=LCDMOdwnyRu4ZhNqYmSeoQJV3jfQwuCN7wd9ClZlsy/1qC6WpnAC3kM7sYk+wwCV1D
-         JzVkzF+aFiPyC03uWrS32zjgdX5KfwhwPS+KddFU5k4TSINECMKyAOwcUZrldU3/6e2I
-         DtfeFmIZAudRGZq3sfqR9/Aar+uNZSgBhdkJIrqst4GjlWpJa4sU4L7xWFGSYavyMjaN
-         nNwtw2UFtsi4dgoXIi9mlnrWdYLJdx982ygfuo+avKBmR8vPKELBsGAPjabzanCMEq3S
-         fmT6SmI+008WuO/Fl65answoHyeb/9mS2YB0b9mb01qb5gKOBBaCRfJ+qsCMRF8zbMhN
-         rH0w==
-X-Gm-Message-State: AOAM5320ci5O4J0MF2yczNGTK6HWXeMwI+SmcQesQ9jjs0uaKfogJxEM
-        YLQ7TdfQuAGg+iFnUNOOY0x9NQ==
-X-Google-Smtp-Source: ABdhPJy9GtfO7ixk82n+CnnqjqGznRdZMsyMi+BKZGN7Xsa/CU+WOyCKUSI8ZFeoVZcOXySTcqI/AQ==
-X-Received: by 2002:a9d:6a81:: with SMTP id l1mr12953964otq.239.1625688817503;
-        Wed, 07 Jul 2021 13:13:37 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id s131sm4318378oib.52.2021.07.07.13.13.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J5bVls/bzRwx/bNfNfg5c0XL0O9QYtXihq0kYsdOhqo=;
+        b=beMP/jbxXoH3yZXCkpChpAxM8BaN50eS6BVuHuJnBHO1H4zE8JVYA0B3nhoI32Eo2q
+         8OsjkaNdkPmz29AyTLgOWQmO1QXPF3YmlUXwsO3Q480mqqs7Zwe3FYyqn2PHiSLggmFt
+         StF6LIz4D68upedUi7fkselye3S0t6Or3rhbxpXxBahUOBGTS1dfoRDWmZnnzVnH+rXy
+         jf6eNZmcOzgY4KiNYD9fsfPuX+iSLGfG7BTpQI2MH9VbVdIr0KenoJJLBUHScZZFiIV7
+         31GlS7AaB/1eHGFcQz1Df7wF+D5X1PjQw+E/UFzTt/d+8UGxwceZiTplryUIkVE7xgAY
+         iJFw==
+X-Gm-Message-State: AOAM5327oEH42egsGnTB1q9+5HvaK8ZtTopz6AfPone3qKpYNAHpKEP4
+        GozsbBWUrb+iiKEl0xofba8=
+X-Google-Smtp-Source: ABdhPJwjwmIbGNwxL3stnJ0DxKeCsYMp7s9ZoDHa4BTY6Bx7UEOqwLB8UmedomFBn4AbmR3/bGk71w==
+X-Received: by 2002:a17:902:8302:b029:128:c73b:1695 with SMTP id bd2-20020a1709028302b0290128c73b1695mr22703404plb.47.1625688931258;
+        Wed, 07 Jul 2021 13:15:31 -0700 (PDT)
+Received: from lappy.local (061092194121.ctinets.com. [61.92.194.121])
+        by smtp.gmail.com with ESMTPSA id q5sm58939pgt.46.2021.07.07.13.15.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 13:13:37 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 13:13:33 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>, Yang Shi <shy828301@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 4/4] mm/rmap: try_to_migrate() skip zone_device
- !device_private
-In-Reply-To: <563ce5b2-7a44-5b4d-1dfd-59a0e65932a9@google.com>
-Message-ID: <1241d356-8ec9-f47b-a5ec-9b2bf66d242@google.com>
-References: <563ce5b2-7a44-5b4d-1dfd-59a0e65932a9@google.com>
+        Wed, 07 Jul 2021 13:15:30 -0700 (PDT)
+From:   waicool20@gmail.com
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     Wai Paulo Valerio Wang <waicool20@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Bluetooth: btusb: Add support for IMC Networks Mediatek Chip
+Date:   Thu,  8 Jul 2021 04:14:08 +0800
+Message-Id: <20210707201409.33622-1-waicool20@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I know nothing about zone_device pages and !device_private pages; but
-if try_to_migrate_one() will do nothing for them, then it's better that
-try_to_migrate() filter them first, than trawl through all their vmas.
+From: Wai Paulo Valerio Wang <waicool20@gmail.com>
 
-Signed-off-by: Hugh Dickins <hughd@google.com>
+This add supports for IMC Networks Wireless_Device Media Chip
+which contains the MT7921 chipset.
+
+$ lsusb
+
+Bus 001 Device 004: ID 13d3:3563 IMC Networks Wireless_Device
+
+$ cat /sys/kernel/debug/usb/devices
+
+T:  Bus=01 Lev=01 Prnt=01 Port=03 Cnt=03 Dev#=  4 Spd=480  MxCh= 0
+D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=13d3 ProdID=3563 Rev= 1.00
+S:  Manufacturer=MediaTek Inc.
+S:  Product=Wireless_Device
+S:  SerialNumber=000000000
+C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
+A:  FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
+E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
+E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
+E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
+I:  If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
+E:  Ad=8a(I) Atr=03(Int.) MxPS= 512 Ivl=125us
+E:  Ad=0a(O) Atr=03(Int.) MxPS= 512 Ivl=125us
+
+Signed-off-by: Wai Paulo Valerio Wang <waicool20@gmail.com>
 ---
- mm/rmap.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/bluetooth/btusb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 1235368f0628..795f9d5f8386 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1703,9 +1703,6 @@ static bool try_to_migrate_one(struct page *page, struct vm_area_struct *vma,
- 	struct mmu_notifier_range range;
- 	enum ttu_flags flags = (enum ttu_flags)(long)arg;
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index a9855a2dd561..edfa5a31a529 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -414,6 +414,9 @@ static const struct usb_device_id blacklist_table[] = {
+ 	{ USB_DEVICE(0x04ca, 0x3802), .driver_info = BTUSB_MEDIATEK |
+ 						     BTUSB_WIDEBAND_SPEECH |
+ 						     BTUSB_VALID_LE_STATES },
++	{ USB_DEVICE(0x13d3, 0x3563), .driver_info = BTUSB_MEDIATEK |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
  
--	if (is_zone_device_page(page) && !is_device_private_page(page))
--		return true;
--
- 	/*
- 	 * When racing against e.g. zap_pte_range() on another cpu,
- 	 * in between its ptep_get_and_clear_full() and page_remove_rmap(),
-@@ -1944,6 +1941,9 @@ void try_to_migrate(struct page *page, enum ttu_flags flags)
- 					TTU_SYNC)))
- 		return;
- 
-+	if (is_zone_device_page(page) && !is_device_private_page(page))
-+		return;
-+
- 	/*
- 	 * During exec, a temporary VMA is setup and later moved.
- 	 * The VMA is moved under the anon_vma lock but not the
+ 	/* Additional Realtek 8723AE Bluetooth devices */
+ 	{ USB_DEVICE(0x0930, 0x021d), .driver_info = BTUSB_REALTEK },
 -- 
-2.26.2
+2.32.0
 
