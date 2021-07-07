@@ -2,118 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF903BF0DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5597F3BF0D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232972AbhGGUm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 16:42:57 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:43209 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232893AbhGGUmx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 16:42:53 -0400
-Received: from mail-wm1-f50.google.com ([209.85.128.50]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N5FxN-1l13Og0AFR-0118yd; Wed, 07 Jul 2021 22:40:11 +0200
-Received: by mail-wm1-f50.google.com with SMTP id u8-20020a7bcb080000b02901e44e9caa2aso2527548wmj.4;
-        Wed, 07 Jul 2021 13:40:10 -0700 (PDT)
-X-Gm-Message-State: AOAM530U7WKuuH7jtqH1QT94meDJldyPPnBEuko0ZP796ICuFNSCPCZV
-        MWO+9nXvtZgkPnsweyMOb+KrY16wkPYtnZj0X20=
-X-Google-Smtp-Source: ABdhPJxVhxtjWfZENqb3qvXdchtUZVs1vrewX7U1cQSc9Fj2KhtkQ4WGJ9YiQMCY07djksJd1iz9gKY3FqcUV7dSneo=
-X-Received: by 2002:a1c:c90f:: with SMTP id f15mr1030507wmb.142.1625690410658;
- Wed, 07 Jul 2021 13:40:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAK8P3a2mAQOnTxBhVzVA8q8O-uVrdidCN5h5-T2dc0=Wet2uPQ@mail.gmail.com>
- <20210706205927.4407-1-abd.masalkhi@gmail.com> <CAK8P3a23=tcWx8iWNAKXcT9TRgPrZbEVVy9a_ad29hSde_jkKg@mail.gmail.com>
- <YOWt2swxONAvhesH@ls3530>
-In-Reply-To: <YOWt2swxONAvhesH@ls3530>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 7 Jul 2021 22:39:54 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1EFuqgZGdpWzib3RxFf6TXCy_CUTZx2ekd0wTbdNdoxg@mail.gmail.com>
-Message-ID: <CAK8P3a1EFuqgZGdpWzib3RxFf6TXCy_CUTZx2ekd0wTbdNdoxg@mail.gmail.com>
-Subject: Re: div_u64/do_div stack size usage, was Re: [v3] block: Removed a
- warning while compiling with a cross compiler for parisc
-To:     Helge Deller <deller@gmx.de>
-Cc:     Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Bernardo Innocenti <bernie@develer.com>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:YjQw2VVw6gmdv/M8o6CCNhN/4FZCpRizx+SBpO+cI4W9e51x779
- j1Uz3KIdiVzD2/tMF+POr8Le36PzJijuOp+YlZx5X0Pci5LqDDubQu2hsX+Hmq4b0eNs1RU
- KpnWNzsF+isGDaV8ux7vNb3IgIU3OFWmEYI5UaBk99xLf0JyPUA+4onytNqm6C99R+E+Z97
- 8mLWPqcfXJLdQL2/O2H9Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:pYDxCV0MjDg=:aPOinCfYTKz16Qxj89APz1
- 2k/Ag0pfhxWd8/klk/zD3jTzJtvutll7rohtWwmVLvl9vc2ecLKORjo4MWKph/ntF/DGeiTKl
- /1+wGPjRNA7t+EBN/J5W8PWXunMkTIvtCna8KglfBYVb9yKQUeQWFCLoagK5sSD8FgsEO5H9h
- NMu3Zkhe4Mesyr/NksCikiSK9Ro1Xp99CQtaPcgEeFGbGl07hBoduuvF6Yofodi9wCiKuTqHg
- J1qHNWd0Q+HzudrXWBZfWr+8rUTVWHQwVtw69ddlEOMdC60ZZFrnLOtiIswYTIvkkYSpZp9l3
- 468lMFVooEn8DrQpIYDkuLDRQsUhcADhhmTduXfMkYGv2AuH2WQ8TNqtj4HtcvwVmTy0zQE2+
- GqrUqkQpej+Zq09Q/CuHQrW/YsuuAjkAgrckYYkb/icjya8X1MPBdBkeUXtqyVe55mqXdji2k
- IYocjwFJzC88xN+a8SJW8JJ8tdlZzQhlQGroPsR8x5D5uiAIUgbBtbu6yGA192Zoa0Q0CEyHc
- +dieaIhOo15a4GFZRSWi2Y/fJI8QNRofdZyofhUY+wLrz10XdZf64UudX96r/b1qVbDJXwGci
- njZouAYfWDjTcBwXJxGq6BTr9lcI/vUZs8vrHeVc098Zxfw4RBOUTnvNnY6P2qEGyXD6b3KSL
- 8AdPlAoqIke9ChnobmAQMGErHq9qwKm+POYMiUe4OumgV+s4l+MgC9EJW8YzcF/NKJYuRSWUR
- qLsCpUCOHVwUm5O7q84P2rQ1MqTiDzWmMODxiODqduZUL0kqWtbdtlo2NWkigZOnWEhZ23Qzr
- S6VkHaNCHvCV3EKSFX6OQ1PY1r+ULJdUPhuw18KK8f/OKTuJOFveMWLLANOR1xIded/3f0/LB
- b/a+tK85FYEH+xYQ4X2vicBo5wjRIXOR7wIaAH7ZSqOy8Br3kxt/Ri9Dyv81qd2tTH/e95gr7
- xnGKB4yoxb2piw+i3VRbKBO27k4M/xNSALkbMHxS64aDKum+AIjnb
+        id S232694AbhGGUmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 16:42:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230497AbhGGUms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 16:42:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AA09D61C53;
+        Wed,  7 Jul 2021 20:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625690407;
+        bh=EvPfewQ3bogl0nmQe5DXceBHzrsx18RNDyqSrI77E3E=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=eGwNO4SNAE5IEP9mOEXYuiFcWmTvgCvQ0FHsZHwQ1kCVDcwTlg9Ah80SsooOfmn9q
+         TRBybF+PJPlF97ZhdAAiZK7Fu4Ld7JUhnMoCqoQP88Vqnz0cnN0haoGDqZKG2HRxrl
+         0utynQHeCTcv+4Nxe1kQ9bedL95RBNwkL4hb/Lw420PFqHVzT2iCdWl6ROBInwrwWv
+         gmSAfZHfCcneQyCX5eWSRie//hVC70u4MPbWsy7TOO9LdiU6xC0QhL6WsKetqkghaj
+         68lUVw8scx+KXIEMLFOe8J7Shw+qXeBC33MyZWC4e6CjPh6OtNAnykDvoMP5meaNh1
+         F+dUWAkVUDxnw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 96E7A609BA;
+        Wed,  7 Jul 2021 20:40:07 +0000 (UTC)
+Subject: Re: [GIT PULL] nfsd changes for 5.14
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210707150445.GA9911@fieldses.org>
+References: <20210707150445.GA9911@fieldses.org>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210707150445.GA9911@fieldses.org>
+X-PR-Tracked-Remote: git://linux-nfs.org/~bfields/linux.git tags/nfsd-5.14
+X-PR-Tracked-Commit-Id: ab1016d39cc052064e32f25ad18ef8767a0ee3b8
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 0cc2ea8cebe909203f994e9113dc1f1b3907d03c
+Message-Id: <162569040755.28460.3385871028017375381.pr-tracker-bot@kernel.org>
+Date:   Wed, 07 Jul 2021 20:40:07 +0000
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 3:36 PM Helge Deller <deller@gmx.de> wrote:
-> * Arnd Bergmann <arnd@arndb.de>:
-> > My first thought was this was a result of -finline-functions getting
-> > enabled by default in gcc-10, but enabling it on gcc-9 did not
-> > help here. It's likely that the gcc behavior was fixed in the process
-> > of enabling the more aggressive inliner by default though.
-> >
-> > I also tried building genhd.o for every architecture that has
-> > gcc-9.4 support and did not find the problem anywhere except
-> > on parisc.
-> >
-> > Using CONFIG_CC_OPTIMIZE_FOR_SIZE did solve the
-> > problem for me (frame size down to 164 bytes), but I could not
-> > pinpoint a specific -f option that fixes it for -O2. Maybe we can
-> > simply change the defconfig here? 32-bit parisc systems are
-> > probably memory limited enough that building a -Os kernel
-> > is a good idea anyway. 64-bit parisc already builds with -Os
-> > but does not see the warning with -O2 either.
->
-> I agree that the simplest solution is to increase the default value for
-> parisc here.
-> On parisc we have a 32k stack (either 1x32k or 2x16k when using IRQ
-> stacks). I increased the default value to 1280 in 2017, but as can be
-> seen here this isn't sufficient. Either way, we have an active runtime
-> check for stack overflows which has never triggered yet, so let's just
-> remove the compiler warning by increasing the value to 2048. Patch is
-> below.
->
-> [PATCH] parisc: Increase gcc stack frame check to 2048 for 32- and 64-bit
->
-> parisc uses much bigger frames than other architectures, so increase the
-> stack frame check value to 2048 to avoid compiler warnings.
+The pull request you sent on Wed, 7 Jul 2021 11:04:45 -0400:
 
-I think setting it to 2048 is rather excessive, and it would make you miss
-other real bugs. What I suggested was to change the defconfig to use
-CONFIG_CC_OPTIMIZE_FOR_SIZE instead.
+> git://linux-nfs.org/~bfields/linux.git tags/nfsd-5.14
 
-The reasoning for the 1280 byte limit on parisc is that it needs a few extra
-bytes for its larger stack frames, and 1024 for the other 32-bit architectures
-is only there because anything smaller warns for a handful of functions
-that are fine-tuned to need slightly less than that, when the call chain
-is predictable and using less would impact performance.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/0cc2ea8cebe909203f994e9113dc1f1b3907d03c
 
-I actually think we should reduce the warning limit for 64-bit architectures
-to 1280 bytes as well, but that triggers a couple of warnings that still
-need to be resolved first. In almost all cases, a kernel function needing
-more than 512 bytes is an indication of either a bug in the kernel, or
-(rarely) in the compiler.
+Thank you!
 
-        Arnd
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
