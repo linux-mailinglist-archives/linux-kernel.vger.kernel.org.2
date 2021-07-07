@@ -2,223 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D323BE4B3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2233BE4B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhGGIvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:51:53 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:5574 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231209AbhGGIvw (ORCPT
+        id S231126AbhGGIx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:53:27 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:40484 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230310AbhGGIx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:51:52 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1678anIb000467;
-        Wed, 7 Jul 2021 10:48:56 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=selector1;
- bh=+UHKiuimh8eGcdGlwiV/tjsefnaHThxouA+MIurBhCk=;
- b=xXLhM1iuO/fkOho6EetbmJpYk9bWVj+574460Ba99eAcXuZI2zDjrKzD6hrMeP9OAcII
- mys7N2c3np3okzuFPasf1LZUBXsJwc6jTqPTCH0b+ox+WNT0Vaf7wycAlbIDCRPCJjQ4
- ytAXwIm5VXf3bFrEquoE9SRauDCx/ZpQH5sOLarVZ48BxXBINaBwwOkmLLJtixedjvd6
- DMypjp0wUBu50BeOu5QVDSBtaUUNSEwRCejtOp6rkJQQCMtcbNjKjf4Y3Hks+SUdaBe2
- aBgOTUQjxkKFCFbZVA+JtH8m4syotz95wWSr9WGk3iTV6EwJj7V9BIa8J9cUokGCi31s Rg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39mxgxjw08-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 10:48:56 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EAAC510002A;
-        Wed,  7 Jul 2021 10:48:55 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D1B462171D3;
-        Wed,  7 Jul 2021 10:48:55 +0200 (CEST)
-Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Jul
- 2021 10:48:55 +0200
-Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
- SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
- 15.00.1497.015; Wed, 7 Jul 2021 10:48:55 +0200
-From:   Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
-        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Yannick FERTRE <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>,
-        Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>,
-        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>
-Subject: [PATCH 2/2] drm/stm: ltdc: add crtc background color property support
-Thread-Topic: [PATCH 2/2] drm/stm: ltdc: add crtc background color property
- support
-Thread-Index: AQHXcwzrULWoh8jFv0qA90zmnYXzxA==
-Date:   Wed, 7 Jul 2021 08:48:55 +0000
-Message-ID: <20210707084557.22443-3-raphael.gallais-pou@foss.st.com>
-References: <20210707084557.22443-1-raphael.gallais-pou@foss.st.com>
-In-Reply-To: <20210707084557.22443-1-raphael.gallais-pou@foss.st.com>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.47]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 7 Jul 2021 04:53:26 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B6B732003F;
+        Wed,  7 Jul 2021 08:50:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625647845; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CjPSVe+JcATwl+mTh/cMUbmmA1jVuqsHEJ4EAY3GkiA=;
+        b=XMQs/DbKNkbKMcxhmLfss1zUa8YfEzWzVpaNPi7qSx8Dih7G0NRpDUx35I7gbXiuTBFqb1
+        xilQjZarez3shhtEJ1psvee8XY7guo+ujiDKIi/S7Sb6QLM7uDaMz5kXESsUJO46kobrRo
+        TOx7J2jHfZlQ1Rus80MeoSInJY4oNzo=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4B308A3B8A;
+        Wed,  7 Jul 2021 08:50:45 +0000 (UTC)
+Date:   Wed, 7 Jul 2021 10:50:44 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2 1/2] mm/vmalloc: Use batched page requests in
+ bulk-allocator
+Message-ID: <YOVq5EEOEemvZiOi@dhcp22.suse.cz>
+References: <20210705170537.43060-1-urezki@gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-07_05:2021-07-06,2021-07-07 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705170537.43060-1-urezki@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch comes from the need to display small resolution pictures with
-very few DDR usage. In practice, using a background color, produced by the
-drm CRTC, around this picture allows to fetch less data in memory than
-setting a full frame picture. And therefore the picture in DDR is smaller
-than the size of the screen.
+On Mon 05-07-21 19:05:36, Uladzislau Rezki (Sony) wrote:
+> In case of simultaneous vmalloc allocations, for example it is 1GB and
+> 12 CPUs my system is able to hit "BUG: soft lockup" for !CONFIG_PREEMPT
+> kernel.
+> 
+> <snip>
+> [   62.512621] RIP: 0010:__alloc_pages_bulk+0xa9f/0xbb0
+> [   62.512628] Code: ff 8b 44 24 48 44 29 f8 83 f8 01 0f 84 ea fe ff ff e9 07 f6 ff ff 48 8b 44 24 60 48 89 28 e9 00 f9 ff ff fb 66 0f 1f 44 00 00 <e9> e8 fd ff ff 65 48 01 51 10 e9 3e fe ff ff 48 8b 44 24 78 4d 89
+> [   62.512629] RSP: 0018:ffffa7bfc29ffd20 EFLAGS: 00000206
+> [   62.512631] RAX: 0000000000000200 RBX: ffffcd5405421888 RCX: ffff8c36ffdeb928
+> [   62.512632] RDX: 0000000000040000 RSI: ffffa896f06b2ff8 RDI: ffffcd5405421880
+> [   62.512633] RBP: ffffcd5405421880 R08: 000000000000007d R09: ffffffffffffffff
+> [   62.512634] R10: ffffffff9d63c084 R11: 00000000ffffffff R12: ffff8c373ffaeb80
+> [   62.512635] R13: ffff8c36ffdf65f8 R14: ffff8c373ffaeb80 R15: 0000000000040000
+> [   62.512637] FS:  0000000000000000(0000) GS:ffff8c36ffdc0000(0000) knlGS:0000000000000000
+> [   62.512638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   62.512639] CR2: 000055c8e2fe8610 CR3: 0000000c13e10000 CR4: 00000000000006e0
+> [   62.512641] Call Trace:
+> [   62.512646]  __vmalloc_node_range+0x11c/0x2d0
+> [   62.512649]  ? full_fit_alloc_test+0x140/0x140 [test_vmalloc]
+> [   62.512654]  __vmalloc_node+0x4b/0x70
+> [   62.512656]  ? fix_size_alloc_test+0x44/0x60 [test_vmalloc]
+> [   62.512659]  fix_size_alloc_test+0x44/0x60 [test_vmalloc]
+> [   62.512662]  test_func+0xe7/0x1f0 [test_vmalloc]
+> [   62.512666]  ? fix_align_alloc_test+0x50/0x50 [test_vmalloc]
+> [   62.512668]  kthread+0x11a/0x140
+> [   62.512671]  ? set_kthread_struct+0x40/0x40
+> [   62.512672]  ret_from_fork+0x22/0x30
+> <snip>
+> 
+> To address this issue invoke a bulk-allocator many times until all pages
+> are obtained, i.e. do batched page requests adding cond_resched() meanwhile
+> to reschedule. Batched value is hard-coded and is 100 pages per call.
 
-It uses the DRM framework background color property and modifies the
-color to any value between 0x000000 and 0xFFFFFF from userland with a
-RGB24 value (0x00RRGGBB).
+Yes, this makes perfect sense to me. I would just be more explicit that
+this is an artificially created problem likely not being a problem at
+the moment but why not to prepare for a future.
 
-Using this feature is observable only if layers are not full screen
-or if layers use color formats with alpha and are "transparent" at
-least on some pixels.
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Depending on the hardware version, the background color can not be
-properly displayed with non-alpha color formats derived from native
-alpha color formats (such as XR24 or XR15) since the use of this
-pixel format generates a non transparent layer. As a workaround,
-the stage background color of the layer and the general background
-color need to be synced.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
----
- drivers/gpu/drm/stm/ltdc.c | 48 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 43 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 1f9392fb58e1..0aca245288cc 100644
---- a/drivers/gpu/drm/stm/ltdc.c
-+++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -196,6 +196,11 @@
-=20
- #define NB_PF		8		/* Max nb of HW pixel format */
-=20
-+#define DRM_ARGB_TO_LTDC_RGB24(bgcolor) \
-+	((u32)(DRM_ARGB_RED(bgcolor, 8) << 16	\
-+	| DRM_ARGB_GREEN(bgcolor, 8) << 8	\
-+	| DRM_ARGB_BLUE(bgcolor, 8)))
-+
- enum ltdc_pix_fmt {
- 	PF_NONE,
- 	/* RGB formats */
-@@ -364,6 +369,15 @@ static inline u32 get_pixelformat_without_alpha(u32 dr=
-m)
- 	}
- }
-=20
-+/*
-+ * All non-alpha color formats derived from native alpha color formats are
-+ * either characterized by a FourCC format code (such as XR24, RX24, BX24.=
-..)
-+ */
-+static inline u32 is_xrgb(u32 drm)
-+{
-+	return ((drm & 'X') =3D=3D 'X' || (drm & ('X' << 8)) =3D=3D ('X' << 8));
-+}
-+
- static irqreturn_t ltdc_irq_thread(int irq, void *arg)
- {
- 	struct drm_device *ddev =3D arg;
-@@ -431,7 +445,8 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *cr=
-tc,
- 	pm_runtime_get_sync(ddev->dev);
-=20
- 	/* Sets the background color value */
--	reg_write(ldev->regs, LTDC_BCCR, BCCR_BCBLACK);
-+	reg_write(ldev->regs, LTDC_BCCR,
-+		  DRM_ARGB_TO_LTDC_RGB24(crtc->state->bgcolor));
-=20
- 	/* Enable IRQ */
- 	reg_set(ldev->regs, LTDC_IER, IER_RRIE | IER_FUIE | IER_TERRIE);
-@@ -452,6 +467,9 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc *c=
-rtc,
-=20
- 	drm_crtc_vblank_off(crtc);
-=20
-+	/* Reset background color */
-+	reg_write(ldev->regs, LTDC_BCCR, BCCR_BCBLACK);
-+
- 	/* disable IRQ */
- 	reg_clear(ldev->regs, LTDC_IER, IER_RRIE | IER_FUIE | IER_TERRIE);
-=20
-@@ -790,6 +808,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *=
-plane,
- 	u32 y1 =3D newstate->crtc_y + newstate->crtc_h - 1;
- 	u32 src_x, src_y, src_w, src_h;
- 	u32 val, pitch_in_bytes, line_length, paddr, ahbp, avbp, bpcr;
-+	u32 bgcolor =3D DRM_ARGB_TO_LTDC_RGB24(newstate->crtc->state->bgcolor);
- 	enum ltdc_pix_fmt pf;
-=20
- 	if (!newstate->crtc || !fb) {
-@@ -853,10 +872,28 @@ static void ltdc_plane_atomic_update(struct drm_plane=
- *plane,
- 	if (!fb->format->has_alpha)
- 		val =3D BF1_CA | BF2_1CA;
-=20
--	/* Manage hw-specific capabilities */
--	if (ldev->caps.non_alpha_only_l1 &&
--	    plane->type !=3D DRM_PLANE_TYPE_PRIMARY)
--		val =3D BF1_PAXCA | BF2_1PAXCA;
-+	/*
-+	 * Manage hw-specific capabilities
-+	 *
-+	 * Depending on the hardware version, the background color can not be
-+	 * properly displayed with non-alpha color formats derived from native
-+	 * alpha color formats (such as XR24 or XR15) since the use of this
-+	 * pixel format generates a non transparent layer. As a workaround,
-+	 * the stage background color of the layer and the general background
-+	 * color need to be synced.
-+	 *
-+	 * This is done by activating for all XRGB color format the default
-+	 * color as the background color and then setting blending factor
-+	 * accordingly.
-+	 */
-+	if (ldev->caps.non_alpha_only_l1) {
-+		if (is_xrgb(fb->format->format)) {
-+			val =3D BF1_CA | BF2_1CA;
-+			reg_write(ldev->regs, LTDC_L1DCCR + lofs, bgcolor);
-+		} else {
-+			val =3D BF1_PAXCA | BF2_1PAXCA;
-+		}
-+	}
-=20
- 	reg_update_bits(ldev->regs, LTDC_L1BFCR + lofs,
- 			LXBFCR_BF2 | LXBFCR_BF1, val);
-@@ -1033,6 +1070,7 @@ static int ltdc_crtc_init(struct drm_device *ddev, st=
-ruct drm_crtc *crtc)
-=20
- 	drm_crtc_helper_add(crtc, &ltdc_crtc_helper_funcs);
-=20
-+	drm_crtc_add_bgcolor_property(crtc);
- 	drm_mode_crtc_set_gamma_size(crtc, CLUT_SIZE);
- 	drm_crtc_enable_color_mgmt(crtc, 0, false, CLUT_SIZE);
-=20
---=20
-2.17.1
+Thanks!
+> ---
+>  mm/vmalloc.c | 30 ++++++++++++++++++++++++++----
+>  1 file changed, 26 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index aaad569e8963..5297958ac7c5 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2785,10 +2785,32 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+>  	 * to fails, fallback to a single page allocator that is
+>  	 * more permissive.
+>  	 */
+> -	if (!order)
+> -		nr_allocated = alloc_pages_bulk_array_node(
+> -			gfp, nid, nr_pages, pages);
+> -	else
+> +	if (!order) {
+> +		while (nr_allocated < nr_pages) {
+> +			int nr, nr_pages_request;
+> +
+> +			/*
+> +			 * A maximum allowed request is hard-coded and is 100
+> +			 * pages per call. That is done in order to prevent a
+> +			 * long preemption off scenario in the bulk-allocator
+> +			 * so the range is [1:100].
+> +			 */
+> +			nr_pages_request = min(100, (int)(nr_pages - nr_allocated));
+> +
+> +			nr = alloc_pages_bulk_array_node(gfp, nid,
+> +				nr_pages_request, pages + nr_allocated);
+> +
+> +			nr_allocated += nr;
+> +			cond_resched();
+> +
+> +			/*
+> +			 * If zero or pages were obtained partly,
+> +			 * fallback to a single page allocator.
+> +			 */
+> +			if (nr != nr_pages_request)
+> +				break;
+> +		}
+> +	} else
+>  		/*
+>  		 * Compound pages required for remap_vmalloc_page if
+>  		 * high-order pages.
+> -- 
+> 2.20.1
+
+-- 
+Michal Hocko
+SUSE Labs
