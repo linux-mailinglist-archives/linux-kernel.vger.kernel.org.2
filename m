@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970003BED84
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8FF3BED88
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhGGR46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 13:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58438 "EHLO
+        id S231287AbhGGR5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 13:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbhGGR44 (ORCPT
+        with ESMTP id S230089AbhGGR5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:56:56 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C8CC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 10:54:16 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id g8so2646387qth.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 10:54:15 -0700 (PDT)
+        Wed, 7 Jul 2021 13:57:15 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0815BC061574;
+        Wed,  7 Jul 2021 10:54:35 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id v14so6118049lfb.4;
+        Wed, 07 Jul 2021 10:54:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:organization:mime-version
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bfM1wAOaWaUzrRzrQoIIgI8cYWuLRVyNlVdaNaynf5c=;
-        b=AUdBuVukHCW5c2WRatnWjnKha7SPBvFp7Y6XtSyAguOZskLwXmIVfvutKR+wg7PiaM
-         xnLbzFh1fG//F3kArbu07njdW33ZQi/YoZDXUfXtl2AcgGR0Sq0ITZizNnb6aYxaYARX
-         nGAK+FF0wMVKogZGrnnME3lm6M4XabE99wuPXC0nQS4vVcdy68o7SQpXSY+OAYa5jqUF
-         Ufgubzt71DyQ+Ichj7niN2jp/rcoDErbDc4Wm6PLEfpqygYZhfQQOOAg2v+XNh6mJxk5
-         oX9xn7F0zYANKZAAn9O3Rm9dnf1YIG7l5Lg/hqFY4PQn0MoPtwhbOTXIzodheGQ7Ug8e
-         QxOQ==
+        bh=HZpmDCIz0rIGK47pS6w8JzmqA/aA+YixYTwCoaSlrnc=;
+        b=E0/p0hqryKCZWz6zf9caFhG/blb0UAzoveQkdWBy7FIUcKFy3D5ouO0goA1YwclnLT
+         c9QI56auMm2qY1kpTMWZkAJCmbyIJCrNWrMWe6R+LxNJkLoYPcp2e/J5oMUiytDg2N0e
+         i8eHoecUlFMpUToxFScDHPG79t78rEIozbDtRthX3fXJD78UwDZQKUvMA5ZjiC3mHl8J
+         cyDQjtletcnCmz/b6T0dPyGgvkOEiAHY5IyZaIHsmGKAboDbLXdriPz/7YNNvWjhm7Nb
+         xGz34JHZem3RskTxCB18SRMNXll+sSnWBapsazWqhv3UqFIVejXWhphQo/yTY7JCdTMD
+         sMug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:organization
-         :mime-version:content-transfer-encoding;
-        bh=bfM1wAOaWaUzrRzrQoIIgI8cYWuLRVyNlVdaNaynf5c=;
-        b=T+n5/JiNcw+E4lC3DTt02hKQeA0N/bRUN06c8gaFRDPhEcz/xR+oCgvTYikfdR5CNt
-         1wjhSkFzgFhCpu9dqUPxJqQLMbTsPqLlhYzdWLkJYQPtWayw3J5i2B9shH3QjH9KUhHT
-         W7nisPO3q2C9ZWBEaD/ytjzI9fo40IQF7IIIKLpFby4V5l9SGuU9FkFRk4welyWZ//hM
-         UL2Gmm8HGUoPZD2hvXcTNjQLM15BEB590msaUKUEs0CR87ctGk6LtColYbuPGPV+dVZ7
-         qb0IJxxVYy54vZgzgLmi6mDkEvgasWgKcJca7+J+fzxVf2qEZxFbKZzKtAh/IbMhZrZZ
-         HtWA==
-X-Gm-Message-State: AOAM530NY8DMiOT30g014XhvhclnzFnPDhwp9OiGwB3FyoPyDJX+VFXC
-        nrlMfPFPILTmOI8w3vg6uoDrBw==
-X-Google-Smtp-Source: ABdhPJzm1RqPFFxAQZhA0tdMO/9/W3qTtC+1uyS6SacxScxtziWny/MZsP7+y7CMBzp1AIHE2iRAeQ==
-X-Received: by 2002:aed:2162:: with SMTP id 89mr23781485qtc.182.1625680455081;
-        Wed, 07 Jul 2021 10:54:15 -0700 (PDT)
-Received: from iron-maiden.localnet (50-200-151-121-static.hfc.comcastbusiness.net. [50.200.151.121])
-        by smtp.gmail.com with ESMTPSA id a66sm438286qkg.73.2021.07.07.10.54.14
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HZpmDCIz0rIGK47pS6w8JzmqA/aA+YixYTwCoaSlrnc=;
+        b=iMaN2ala6H25XI9+lWbAjy5A4ZoEEJ2Tg3h3IkK57GRUSzqlf0dWqUrtPxjliYIORz
+         gn3ddnY40ibVTIj/yNvQUgGGBzDta+XniJskcfZ2C4tc3vUJG4x1ShX8flAfc8YhXtms
+         RHhXAGkhoS55qDsqygpZFnzSxbbUwES4PauDF5nTUw6olpUw0RTzdp+LnU/K5TdqJtsT
+         snrse8Dig1l7YXDG6UqbckNQKn1MN9E527zj9viMbKmgybcvIavD9qbNsCEUgtikf9B/
+         YGy6oZQvMmlqEs8PELCm5mR8ooxtZ6RrLAsRGUWQCU0wSGantlzChW61XE1pd7zdwtBg
+         8mUw==
+X-Gm-Message-State: AOAM530SPfYzcgshCKka0MIlUMKiesJoLmQodduEHFuFm282LwRwifC3
+        7cuWlLIdthNvdVVvzhDd3N4Ur/4a+J9RPA==
+X-Google-Smtp-Source: ABdhPJz5CVwGGqWzlzZS4on1/Hstress7Qt0eaxM5wrDBX+jviNc+ukzcaFHNystsXA4dTL1Dc9TeA==
+X-Received: by 2002:ac2:4345:: with SMTP id o5mr19628396lfl.599.1625680473222;
+        Wed, 07 Jul 2021 10:54:33 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.225.155])
+        by smtp.gmail.com with ESMTPSA id f19sm1252303lfs.133.2021.07.07.10.54.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 10:54:14 -0700 (PDT)
-From:   Carlos Bilbao <bilbao@vt.edu>
-To:     mark.rutland@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        maz@kernel.org, linux-arm-kernel@lits.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: Add missing header <asm/smp.h> in two files
-Date:   Wed, 07 Jul 2021 13:54:13 -0400
-Message-ID: <5726396.lOV4Wx5bFT@iron-maiden>
-Organization: Virginia Tech
+        Wed, 07 Jul 2021 10:54:32 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     mchehab@kernel.org, jsagarribay@gmail.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH] media: stkwebcam: fix memory leak in stk_camera_probe
+Date:   Wed,  7 Jul 2021 20:54:30 +0300
+Message-Id: <20210707175430.23204-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing header <asm/smp.h> on include/asm/smp_plat.h, as it calls function
-cpu_logical_map(). Also include it on kernel/cpufeature.c since it has calls to
-functions cpu_panic_kernel() and cpu_die_early().
- 
-Both files call functions defined on this header, make the header dependencies 
-less fragile.
+My local syzbot instance hit memory leak in usb_set_configuration().
+The problem was in unputted usb interface. In case of errors after
+usb_get_intf() the reference should be putted to correclty free memory
+allocated for this interface.
 
-Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
+Fixes: ec16dae5453e ("V4L/DVB (7019): V4L: add support for Syntek DC1125 webcams")
+Cc: stable@vger.kernel.org
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
- arch/arm64/include/asm/smp_plat.h | 1 +
- arch/arm64/kernel/cpufeature.c    | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/media/usb/stkwebcam/stk-webcam.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/include/asm/smp_plat.h b/arch/arm64/include/asm/smp_plat.h
-index 99ad77df8f52..140c7a03a901 100644
---- a/arch/arm64/include/asm/smp_plat.h
-+++ b/arch/arm64/include/asm/smp_plat.h
-@@ -11,6 +11,7 @@
- #include <linux/cpumask.h>
+diff --git a/drivers/media/usb/stkwebcam/stk-webcam.c b/drivers/media/usb/stkwebcam/stk-webcam.c
+index a45d464427c4..0e231e576dc3 100644
+--- a/drivers/media/usb/stkwebcam/stk-webcam.c
++++ b/drivers/media/usb/stkwebcam/stk-webcam.c
+@@ -1346,7 +1346,7 @@ static int stk_camera_probe(struct usb_interface *interface,
+ 	if (!dev->isoc_ep) {
+ 		pr_err("Could not find isoc-in endpoint\n");
+ 		err = -ENODEV;
+-		goto error;
++		goto error_put;
+ 	}
+ 	dev->vsettings.palette = V4L2_PIX_FMT_RGB565;
+ 	dev->vsettings.mode = MODE_VGA;
+@@ -1359,10 +1359,12 @@ static int stk_camera_probe(struct usb_interface *interface,
  
- #include <asm/types.h>
-+#include <asm/smp.h>
+ 	err = stk_register_video_device(dev);
+ 	if (err)
+-		goto error;
++		goto error_put;
  
- struct mpidr_hash {
-        u64     mask;
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 125d5c9471ac..350d8601ff28 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -84,6 +84,7 @@
- #include <asm/sysreg.h>
- #include <asm/traps.h>
- #include <asm/virt.h>
-+#include <asm/smp.h>
+ 	return 0;
  
- /* Kernel representation of AT_HWCAP and AT_HWCAP2 */
- static unsigned long elf_hwcap __read_mostly;
++error_put:
++	usb_put_intf(interface);
+ error:
+ 	v4l2_ctrl_handler_free(hdl);
+ 	v4l2_device_unregister(&dev->v4l2_dev);
 -- 
-2.25.1
-
-
+2.32.0
 
