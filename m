@@ -2,237 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF1C3BF15E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395C33BF160
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbhGGV01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 17:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230432AbhGGV00 (ORCPT
+        id S232782AbhGGV2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 17:28:05 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:54040 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232603AbhGGV2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 17:26:26 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5ED3BC061574;
-        Wed,  7 Jul 2021 14:23:45 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id AA3C392009C; Wed,  7 Jul 2021 23:23:43 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id A294892009B;
-        Wed,  7 Jul 2021 23:23:43 +0200 (CEST)
-Date:   Wed, 7 Jul 2021 23:23:43 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH] PCI: Do not restore firmware BAR assignments behind a PCI-PCI
- bridge
-Message-ID: <alpine.DEB.2.21.2104211620400.44318@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Wed, 7 Jul 2021 17:28:04 -0400
+Received: by mail-il1-f199.google.com with SMTP id j6-20020a926e060000b02901f2f7ba704aso2211779ilc.20
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 14:25:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=cxeYjJOcGKZ3Ilg0y/wGG0iG5oaNEsfRZrcenrSywx0=;
+        b=rAfUcfPRJ7TLWAlgh3Xvvbcen+c2XmfoIAcvqUrce/gT5LkXF02mnIEOzalmdywR2B
+         Tp9bx0auORaaN8s7qLM9i0Tyo2IUkMnqEKhmOTiEcFcQAiMk30uLx1+lzr26b92YZItF
+         0eLlFy7Nqi32j4X8ZIdEXFdkw9fNBnFI9mnl3/Sp2amcek27oY6DirtyxoSm7dCO/Dfq
+         bRssYBMXU15WTgEWlf94B+4oz6zxk2Ph0R72J1eh5YAPJ171mrj70PWld4Cmx8n9Tnoo
+         doubnfc3qnqA/Rf2dffsfqyW+88FUMyvwLh/E8GfZ5GrbqmC5DvMqksi3NueU0md72rn
+         fmpQ==
+X-Gm-Message-State: AOAM5320au8gDK74xp+PFJcHjlFuhqcY5a0qouQ4Adl/zQve4me/S4GJ
+        T0I9Z4vwKNGthv/AtUfDBm8pUIMuzOqNsHSCq4eFnAyvynvL
+X-Google-Smtp-Source: ABdhPJweavEUv1o7B0dzQOSdY1m51vITRIW/yHxRBE7JiMl8YlM7YrxD8D+qhR45MBXDdhkY8/4etJdME0TF6n5xsUgWX3H/WGy4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-Received: by 2002:a05:6638:1606:: with SMTP id x6mr14928032jas.98.1625693123157;
+ Wed, 07 Jul 2021 14:25:23 -0700 (PDT)
+Date:   Wed, 07 Jul 2021 14:25:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001ea57305c68f2db6@google.com>
+Subject: [syzbot] WARNING in dec_ucount
+From:   syzbot <syzbot+493df5f976efd79b9b66@syzkaller.appspotmail.com>
+To:     ebiederm@xmission.com, legion@kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix an issue with the Tyan Tomcat IV S1564D system, the BIOS of which 
-does not assign PCI buses beyond #2, where our resource reallocation 
-code preserves the reset default of an I/O BAR assignment outside its 
-upstream PCI-to-PCI bridge's I/O forwarding range for device 06:08.0 in 
-this log:
+Hello,
 
-pci_bus 0000:00: max bus depth: 4 pci_try_num: 5
-[...]
-pci 0000:06:08.0: BAR 4: no space for [io  size 0x0020]
-pci 0000:06:08.0: BAR 4: trying firmware assignment [io  0xfce0-0xfcff]
-pci 0000:06:08.0: BAR 4: assigned [io  0xfce0-0xfcff]
-pci 0000:06:08.1: BAR 4: no space for [io  size 0x0020]
-pci 0000:06:08.1: BAR 4: trying firmware assignment [io  0xfce0-0xfcff]
-pci 0000:06:08.1: BAR 4: [io  0xfce0-0xfcff] conflicts with 0000:06:08.0 [io  0xfce0-0xfcff]
-pci 0000:06:08.1: BAR 4: failed to assign [io  size 0x0020]
-pci 0000:05:00.0: PCI bridge to [bus 06]
-pci 0000:05:00.0:   bridge window [mem 0xd8000000-0xd85fffff]
-[...]
-pci 0000:00:11.0: PCI bridge to [bus 01-06]
-pci 0000:00:11.0:   bridge window [io  0xe000-0xefff]
-pci 0000:00:11.0:   bridge window [mem 0xd8000000-0xdfffffff]
-pci 0000:00:11.0:   bridge window [mem 0xa8000000-0xafffffff 64bit pref]
-pci_bus 0000:00: No. 2 try to assign unassigned res
-[...]
-pci 0000:06:08.1: BAR 4: no space for [io  size 0x0020]
-pci 0000:06:08.1: BAR 4: trying firmware assignment [io  0xfce0-0xfcff]
-pci 0000:06:08.1: BAR 4: [io  0xfce0-0xfcff] conflicts with 0000:06:08.0 [io  0xfce0-0xfcff]
-pci 0000:06:08.1: BAR 4: failed to assign [io  size 0x0020]
-pci 0000:05:00.0: PCI bridge to [bus 06]
-pci 0000:05:00.0:   bridge window [mem 0xd8000000-0xd85fffff]
-[...]
-pci 0000:00:11.0: PCI bridge to [bus 01-06]
-pci 0000:00:11.0:   bridge window [io  0xe000-0xefff]
-pci 0000:00:11.0:   bridge window [mem 0xd8000000-0xdfffffff]
-pci 0000:00:11.0:   bridge window [mem 0xa8000000-0xafffffff 64bit pref]
-pci_bus 0000:00: No. 3 try to assign unassigned res
-pci 0000:00:11.0: resource 7 [io  0xe000-0xefff] released
-[...]
-pci 0000:06:08.1: BAR 4: assigned [io  0x2000-0x201f]
-pci 0000:05:00.0: PCI bridge to [bus 06]
-pci 0000:05:00.0:   bridge window [io  0x2000-0x2fff]
-pci 0000:05:00.0:   bridge window [mem 0xd8000000-0xd85fffff]
-[...]
-pci 0000:00:11.0: PCI bridge to [bus 01-06]
-pci 0000:00:11.0:   bridge window [io  0x1000-0x2fff]
-pci 0000:00:11.0:   bridge window [mem 0xd8000000-0xdfffffff]
-pci 0000:00:11.0:   bridge window [mem 0xa8000000-0xafffffff 64bit pref]
-pci_bus 0000:00: resource 4 [io  0x0000-0xffff]
-pci_bus 0000:00: resource 5 [mem 0x00000000-0xffffffff]
-pci_bus 0000:01: resource 0 [io  0x1000-0x2fff]
-pci_bus 0000:01: resource 1 [mem 0xd8000000-0xdfffffff]
-pci_bus 0000:01: resource 2 [mem 0xa8000000-0xafffffff 64bit pref]
-pci_bus 0000:02: resource 0 [io  0x1000-0x2fff]
-pci_bus 0000:02: resource 1 [mem 0xd8000000-0xd8bfffff]
-pci_bus 0000:04: resource 0 [io  0x1000-0x1fff]
-pci_bus 0000:04: resource 1 [mem 0xd8600000-0xd8afffff]
-pci_bus 0000:05: resource 0 [io  0x2000-0x2fff]
-pci_bus 0000:05: resource 1 [mem 0xd8000000-0xd85fffff]
-pci_bus 0000:06: resource 0 [io  0x2000-0x2fff]
-pci_bus 0000:06: resource 1 [mem 0xd8000000-0xd85fffff]
+syzbot found the following issue on:
 
--- note that the assignment of 0xfce0-0xfcff is outside the range of 
-0x2000-0x2fff assigned to bus #6:
+HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1023db52300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
+dashboard link: https://syzkaller.appspot.com/bug?extid=493df5f976efd79b9b66
 
-05:00.0 PCI bridge: Texas Instruments XIO2000(A)/XIO2200A PCI Express-to-PCI Bridge (rev 03) (prog-if 00 [Normal decode])
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=05, secondary=06, subordinate=06, sec-latency=0
-        I/O behind bridge: 00002000-00002fff
-        Memory behind bridge: d8000000-d85fffff
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/4 Enable-
-        Capabilities: [80] #0d [0000]
-        Capabilities: [90] Express PCI/PCI-X Bridge IRQ 0
+Unfortunately, I don't have any reproducer for this issue yet.
 
-06:08.0 USB controller: VIA Technologies, Inc. VT82xx/62xx/VX700/8x0/900 UHCI USB 1.1 Controller (rev 61) (prog-if 00 [UHCI])
-	Subsystem: VIA Technologies, Inc. VT82xx/62xx/VX700/8x0/900 UHCI USB 1.1 Controller
-        Flags: bus master, medium devsel, latency 22, IRQ 5
-        I/O ports at fce0 [size=32]
-        Capabilities: [80] Power Management version 2
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+493df5f976efd79b9b66@syzkaller.appspotmail.com
 
-06:08.1 USB controller: VIA Technologies, Inc. VT82xx/62xx/VX700/8x0/900 UHCI USB 1.1 Controller (rev 61) (prog-if 00 [UHCI])
-	Subsystem: VIA Technologies, Inc. VT82xx/62xx/VX700/8x0/900 UHCI USB 1.1 Controller
-        Flags: bus master, medium devsel, latency 22, IRQ 5
-        I/O ports at 2000 [size=32]
-        Capabilities: [80] Power Management version 2
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 22176 at kernel/ucount.c:246 dec_ucount+0x10d/0x130 kernel/ucount.c:246
+Modules linked in:
+CPU: 1 PID: 22176 Comm: kworker/u4:3 Tainted: G        W         5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: netns cleanup_net
+RIP: 0010:dec_ucount+0x10d/0x130 kernel/ucount.c:246
+Code: 4d 85 e4 0f 85 52 ff ff ff e8 0f f7 26 00 48 8b 3c 24 48 83 c4 08 5b 5d 41 5c 41 5d 41 5e 41 5f e9 28 f5 ff ff e8 f3 f6 26 00 <0f> 0b eb 99 48 89 ef e8 97 b4 6c 00 e9 48 ff ff ff e8 8d b4 6c 00
+RSP: 0018:ffffc90023a1fc38 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff8881626354c0 RSI: ffffffff814e933d RDI: 0000000000000003
+RBP: ffff8880192d3240 R08: 0000000000000000 R09: ffff8880192d3247
+R10: ffffffff814e92ad R11: 0000000000000000 R12: ffff8880192d3200
+R13: dffffc0000000000 R14: 0000000000000040 R15: ffffffffffffffff
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000014a401000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ dec_net_namespaces net/core/net_namespace.c:394 [inline]
+ cleanup_net+0x6f3/0xb10 net/core/net_namespace.c:611
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-Since both 06:08.0 and 06:08.1 have the same reset defaults the latter 
-device escapes its fate and gets a good assignment owing to an address 
-conflict with the former device.
 
-Consequently when the device driver tries to access 06:08.0 according to 
-its designated address range it pokes at an unassigned I/O location, 
-likely subtractively decoded by the southbridge and forwarded to ISA, 
-causing the driver to become confused and bail out:
-
-uhci_hcd 0000:06:08.0: host system error, PCI problems?
-uhci_hcd 0000:06:08.0: host controller process error, something bad happened!
-uhci_hcd 0000:06:08.0: host controller halted, very bad!
-uhci_hcd 0000:06:08.0: HCRESET not completed yet!
-uhci_hcd 0000:06:08.0: HC died; cleaning up
-
-if good luck happens or if bad luck does, an infinite flood of messages:
-
-uhci_hcd 0000:06:08.0: host system error, PCI problems?
-uhci_hcd 0000:06:08.0: host controller process error, something bad happened!
-uhci_hcd 0000:06:08.0: host system error, PCI problems?
-uhci_hcd 0000:06:08.0: host controller process error, something bad happened!
-uhci_hcd 0000:06:08.0: host system error, PCI problems?
-uhci_hcd 0000:06:08.0: host controller process error, something bad happened!
-[...]
-
-making the system virtually unusuable.
-
-This is because we have code to deal with a situation from PR #16263, 
-where broken ACPI firmware reports the wrong address range for the host 
-bridge's decoding window and trying to adjust to the window causes more 
-breakage than leaving the BIOS assignments intact.
-
-This may work for a device directly on the root bus decoded by the host 
-bridge only, but for a device behind one or more PCI-to-PCI (or CardBus) 
-bridges those bridges' forwarding windows have been standardised and 
-need to be respected, or leaving whatever has been there in a downstream 
-device's BAR will have no effect as cycles for the addresses recorded 
-there will have no chance to appear on the bus the device has been 
-immediately attached to.
-
-Do not restore the firmware assignment for a device behind a PCI-to-PCI 
-bridge then, fixing the system concerned as follows:
-
-pci_bus 0000:00: max bus depth: 4 pci_try_num: 5
-[...]
-pci 0000:06:08.0: BAR 4: no space for [io  size 0x0020]
-pci 0000:06:08.0: BAR 4: failed to assign [io  size 0x0020]
-pci 0000:06:08.1: BAR 4: no space for [io  size 0x0020]
-pci 0000:06:08.1: BAR 4: failed to assign [io  size 0x0020]
-[...]
-pci_bus 0000:00: No. 2 try to assign unassigned res
-[...]
-pci 0000:06:08.0: BAR 4: no space for [io  size 0x0020]
-pci 0000:06:08.0: BAR 4: failed to assign [io  size 0x0020]
-pci 0000:06:08.1: BAR 4: no space for [io  size 0x0020]
-pci 0000:06:08.1: BAR 4: failed to assign [io  size 0x0020]
-[...]
-pci_bus 0000:00: No. 3 try to assign unassigned res
-[...]
-pci 0000:06:08.0: BAR 4: assigned [io  0x2000-0x201f]
-pci 0000:06:08.1: BAR 4: assigned [io  0x2020-0x203f]
-
-and making device 06:08.0 work correctly.
-
-Cf. <https://bugzilla.kernel.org/show_bug.cgi?id=16263>
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Fixes: 58c84eda0756 ("PCI: fall back to original BIOS BAR addresses")
-Cc: stable@vger.kernel.org # v2.6.35+
 ---
-For the record the system's bus topology is as follows:
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
--[0000:00]-+-00.0
-           +-07.0
-           +-07.1
-           +-07.2
-           +-11.0-[0000:01-06]----00.0-[0000:02-06]--+-00.0-[0000:03]--
-           |                                         +-01.0-[0000:04]--+-00.0
-           |                                         |                 \-00.3
-           |                                         \-02.0-[0000:05-06]----00.0-[0000:06]--+-05.0
-           |                                                                                +-08.0
-           |                                                                                +-08.1
-           |                                                                                \-08.2
-           +-12.0
-           +-13.0
-           \-14.0
----
- drivers/pci/setup-res.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-linux-pci-setup-res-fw-address-nobridge.diff
-Index: linux-macro-ide-tty/drivers/pci/setup-res.c
-===================================================================
---- linux-macro-ide-tty.orig/drivers/pci/setup-res.c
-+++ linux-macro-ide-tty/drivers/pci/setup-res.c
-@@ -328,13 +328,15 @@ int pci_assign_resource(struct pci_dev *
- 	ret = _pci_assign_resource(dev, resno, size, align);
- 
- 	/*
--	 * If we failed to assign anything, let's try the address
--	 * where firmware left it.  That at least has a chance of
--	 * working, which is better than just leaving it disabled.
-+	 * If we failed to assign anything and we're not behind a P2P
-+	 * or CardBus bridge, let's try the address where firmware
-+	 * left it.  That at least has a chance of working, which is
-+	 * better than just leaving it disabled.
- 	 */
- 	if (ret < 0) {
- 		pci_info(dev, "BAR %d: no space for %pR\n", resno, res);
--		ret = pci_revert_fw_address(res, dev, resno, size);
-+		if (!dev->bus->parent)
-+			ret = pci_revert_fw_address(res, dev, resno, size);
- 	}
- 
- 	if (ret < 0) {
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
