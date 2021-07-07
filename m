@@ -2,111 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB77D3BE446
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618D33BE44C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhGGIZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:25:18 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:62412 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbhGGIZQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:25:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1625646155; x=1628238155;
-        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=TaHQKkZoKqqFdK7Q1tZHDcJT6AzhHXDxyqv0IQazNlY=;
-        b=s1B0PmV1XJbdVRdQzk7MVTXiwUKLE3RFoUR9pXYfKm8I/zrqFeMXSVb4U5gyABbL
-        9bd/Z8I0kaiozmbTCfdzCHlXeu/fpPZREVmu3qd1qS+G8bw5SfSatxsRGgt1qW7y
-        p700adAAGycqh1qg/4T1sgTHgfLKd5MFZanzGMHBvoo=;
-X-AuditID: c39127d2-a9fbd70000001c5e-9c-60e5644b39aa
-Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id E8.9F.07262.B4465E06; Wed,  7 Jul 2021 10:22:35 +0200 (CEST)
-Received: from lws-riedmueller.phytec.de ([172.16.23.108])
-          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
-          with ESMTP id 2021070710223480-1106131 ;
-          Wed, 7 Jul 2021 10:22:34 +0200 
-From:   Stefan Riedmueller <s.riedmueller@phytec.de>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Dan Brown <dan_brown@ieee.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Stefan Riedmueller <s.riedmueller@phytec.de>
-Subject: [PATCH] fixup! mtd: rawnand: nand_bbt: Skip bad blocks when searching for the BBT in NAND
-Date:   Wed, 7 Jul 2021 10:22:34 +0200
-Message-Id: <20210707082234.4917-1-s.riedmueller@phytec.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210706181308.1aa21d00@xps13>
-References: <20210706181308.1aa21d00@xps13>
+        id S230181AbhGGI0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:26:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:59560 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230086AbhGGI0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 04:26:39 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15C98ED1;
+        Wed,  7 Jul 2021 01:23:59 -0700 (PDT)
+Received: from [10.57.1.129] (unknown [10.57.1.129])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3CA3B3F694;
+        Wed,  7 Jul 2021 01:23:56 -0700 (PDT)
+Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
+ of EAS estimated energy
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Chris Redpath <Chris.Redpath@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        CCj.Yeh@mediatek.com
+References: <20210625152603.25960-1-lukasz.luba@arm.com>
+ <20210625152603.25960-2-lukasz.luba@arm.com>
+ <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
+ <a6a49480-7d5d-fd0e-3940-0b6baac5acc0@arm.com>
+ <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com>
+Date:   Wed, 7 Jul 2021 09:23:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 07.07.2021 10:22:35,
-        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 07.07.2021 10:22:35
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrFLMWRmVeSWpSXmKPExsWyRoCBS9c75WmCwYJmQYvTZ04xWRzp28xs
-        MXHlZGaLh1f9LVZN3cli8elaN6PF5V1z2Cx2Ny1jt3g4+yqjxeH2fawWk3e+YbT4u30Ti8X/
-        sx/YHXg95q2p9thxdwmjx85Zd9k9ZnfMZPV4OuEgk8fmFVoem1Z1snlsXlLvcXNeoUf/XwOP
-        4ze2M3l83iQXwBPFZZOSmpNZllqkb5fAlTF12262guMcFVeffGNsYGxh72Lk5JAQMJFYNakf
-        yObiEBLYxihxs2kdE4RzjVHi948vYFVsAkYSC6Y1MoHYIgIhEv3vz7CAFDELfGaWeHq2hQ0k
-        ISyQJHH8OkQRi4CKxPvTN8CaeQWsJV4/3sAEsU5eYual70BxDg5OAR2Jl8etQUwhAW2JVb9y
-        IKoFJU7OfAI2XkLgCqNE94TJUK1CEqcXn2UGsZmB6pctfM08gVFgFpKeWUhSCxiZVjEK5WYm
-        Z6cWZWbrFWRUlqQm66WkbmIExs/hieqXdjD2zfE4xMjEwXiIUYKDWUmEl9HhaYIQb0piZVVq
-        UX58UWlOavEhRmkOFiVx3g28JWFCAumJJanZqakFqUUwWSYOTqkGRlenLxu7JRa7XtTmeKRk
-        FeJsc2P2j7VRxhP/p7NfmFRky5S3tPyFsNEGv1J/ly15Ii6ssx9LvV68TraVuXbba4YXeqkZ
-        DOKvzlh7dn94M0VMfJ5c+oJtjZuFC1sClVoy1O4Iz9B3kGDn3tN0+uNSHmc2F9U98U+sNklM
-        rztnvNAuROvkoX3rlFiKMxINtZiLihMB4yr7Jo0CAAA=
+In-Reply-To: <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix helper parameter alignment.
 
-Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
----
-Hi Miquel,
 
-sorry, I forgot to realign the parameters. Here's a fixup for that. Hope
-it's ok this way.
+On 7/7/21 9:00 AM, Vincent Guittot wrote:
+> On Wed, 7 Jul 2021 at 09:49, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>>
+>>
+>> On 7/7/21 8:07 AM, Vincent Guittot wrote:
+>>> On Fri, 25 Jun 2021 at 17:26, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>
+>>>> The Energy Aware Scheduler (EAS) tries to find best CPU for a waking up
+>>>> task. It probes many possibilities and compares the estimated energy values
+>>>> for different scenarios. For calculating those energy values it relies on
+>>>> Energy Model (EM) data and em_cpu_energy(). The precision which is used in
+>>>> EM data is in milli-Watts (or abstract scale), which sometimes is not
+>>>> sufficient. In some cases it might happen that two CPUs from different
+>>>> Performance Domains (PDs) get the same calculated value for a given task
+>>>> placement, but in more precised scale, they might differ. This rounding
+>>>> error has to be addressed. This patch prepares EAS code for better
+>>>> precision in the coming EM improvements.
+>>>
+>>> Could you explain why 32bits results are not enough and you need to
+>>> move to 64bits ?
+>>>
+>>> Right now the result is in the range [0..2^32[ mW. If you need more
+>>> precision and you want to return uW instead, you will have a result in
+>>> the range  [0..4kW[ which seems to be still enough
+>>>
+>>
+>> Currently we have the max value limit for 'power' in EM which is
+>> EM_MAX_POWER 0xffff (64k - 1). We allow to register such big power
+>> values ~64k mW (~64Watts) for an OPP. Then based on 'power' we
+>> pre-calculate 'cost' fields:
+>> cost[i] = power[i] * freq_max / freq[i]
+>> So, for max freq the cost == power. Let's use that in the example.
+>>
+>> Then the em_cpu_energy() calculates as follow:
+>> cost * sum_util / scale_cpu
+>> We are interested in the first part - the value of multiplication.
+> 
+> But all these are internal computations of the energy model. At the
+> end, the computed energy that is returned by compute_energy() and
+> em_cpu_energy(), fits in a long
 
-Regards,
-Stefan
+Let's take a look at existing *10000 precision for x CPUs:
+cost * sum_util / scale_cpu =
+(64k *10000) * (x * 800) / 1024
+which is:
+x * ~500mln
 
----
- drivers/mtd/nand/raw/nand=5Fbbt.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+So to be close to overflowing u32 the 'x' has to be > (?=) 8
+(depends on sum_util).
 
-diff --git a/drivers/mtd/nand/raw/nand=5Fbbt.c b/drivers/mtd/nand/raw/nand=
-=5Fbbt.c
-index 2a30714350ee..b7ad030225f8 100644
---- a/drivers/mtd/nand/raw/nand=5Fbbt.c
-+++ b/drivers/mtd/nand/raw/nand=5Fbbt.c
-@@ -448,9 +448,8 @@ static int scan=5Fblock=5Ffast(struct nand=5Fchip *this=
-, struct nand=5Fbbt=5Fdescr *bd,
- }
-=20
- /* Check if a potential BBT block is marked as bad */
--static int bbt=5Fblock=5Fcheckbad(struct nand=5Fchip *this,
--				      struct nand=5Fbbt=5Fdescr *td,
--				      loff=5Ft offs, uint8=5Ft *buf)
-+static int bbt=5Fblock=5Fcheckbad(struct nand=5Fchip *this, struct nand=5F=
-bbt=5Fdescr *td,
-+			      loff=5Ft offs, uint8=5Ft *buf)
- {
- 	struct nand=5Fbbt=5Fdescr *bd =3D this->badblock=5Fpattern;
-=20
---=20
-2.25.1
-
+> 
+>>
+>> The sum_util values that we can see for x CPUs which have scale_cap=1024
+>> can be close to 800, let's use it in the example:
+>> cost * sum_util = 64k * (x * 800), where
+>> x=4: ~200mln
+>> x=8: ~400mln
+>> x=16: ~800mln
+>> x=64: ~3200mln (last one which would fit in u32)
+>>
+>> When we increase the precision by even 100, then the above values won't
+>> fit in the u32. Even a max cost of e.g. 10k mW and 100 precision has
+>> issues:
+>> cost * sum_util = (10k *100) * (x * 800), where
+>> x=4: ~3200mln
+>> x=8: ~6400mln
+>>
+>> For *1000 precision even a power of 1Watt becomes an issue:
+>> cost * sum_util = (1k *1000) * (x * 800), where
+>> x=4: ~3200mln
+>> x=8: ~6400mln
+>>
+>> That's why to make the code safe for bigger power values, I had to use
+>> the u64 on 32bit machines.
