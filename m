@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B8C3BEBDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AF93BEBE0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhGGQTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 12:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhGGQTE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 12:19:04 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F44C061574;
-        Wed,  7 Jul 2021 09:16:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=8vx2MlWUn5LIhwKdzrV6SOg1W/EZtZtrXCT9CRbQ+0g=; b=FV3ssxZghmBYayxtp6VYSP6mZJ
-        ornbpTVgIMpLa550CiIgjKoj8bx72CdZ6pYZ+ZNVQ20OhUwrGy8visAobOoNpHlSVngpCldM5SLYw
-        o85Tz9QpNRBpHI4zUIBLX6RnKFyzsacv8sZ0sDjdO9nbLGQDa9MmZ53XR73AZVAc4PQ8BFMUL6kKI
-        3RSLD7xjprLfKTs3bN4nCp03Jd5xgj0fOHsZRkqiRRLcK5RLCtwYeN327IVH35SFSnOiXBoxbQoAl
-        LriR/x3fEMEGh6T/nxU8m68kdGPKrmaAV1U9PCZbHV8TrgOTTtgKHA6nwbTGVC+gCFR7liaLvPBdd
-        jH6J6LwQ==;
-Received: from [2601:1c0:6280:3f0::a22f] (helo=smtpauth.infradead.org)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1ADk-00FP2Q-8B; Wed, 07 Jul 2021 16:16:20 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org
-Subject: [PATCH] mm: try_to_unmap() is now void
-Date:   Wed,  7 Jul 2021 09:16:14 -0700
-Message-Id: <20210707161614.13001-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S230121AbhGGQUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 12:20:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58194 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230070AbhGGQUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 12:20:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2240461CC2;
+        Wed,  7 Jul 2021 16:18:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625674682;
+        bh=3CVrcJTXPYuxSS/j2wHuKVTsifDFv5fStRhTCq4ZIIo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nz2KU2Jb2fjznSkmLR8T9eDTn35e8u1QGCxa+EVbAOiZiF6mNLovNDfRyF2Aki1zL
+         4Ea9K2/HwQupgDchxi7HyO9FwwaC8bhFJtKlmQx4OjetRf5hzv9AFcQbh/wULVMp79
+         3xoXc+DBmO7qv3lT041wIZ3ZwyOReyC2UabOq3CRqV2tAM7QSRvAgZZ8bU/LcnS/Xx
+         3C+sXLNRFwEchBJSPxkhtBlIsuVBMmnLdf2KcKwoWBntnqR326JTgp9buT2Zrg4Qqw
+         5I+XqcmTUKLXBpINc8xY1mN2DDJCZ6VBp6sr8Z6w20QsW6+xaBcXZXjoXyM8Yuvdgk
+         hYlTm3mW27Rag==
+Date:   Wed, 7 Jul 2021 17:17:30 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Vijendar Mukunda <vijendar.mukunda@amd.com>
+Cc:     alsa-devel@alsa-project.org, Alexander.Deucher@amd.com,
+        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 02/12] ASoC: amd: add Vangogh ACP PCI driver
+Message-ID: <20210707161730.GE4394@sirena.org.uk>
+References: <20210707055623.27371-1-vijendar.mukunda@amd.com>
+ <20210707055623.27371-3-vijendar.mukunda@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RE3pQJLXZi4fr8Xo"
+Content-Disposition: inline
+In-Reply-To: <20210707055623.27371-3-vijendar.mukunda@amd.com>
+X-Cookie: I will never lie to you.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the "CONFIG_MMU is not set" case of converting
-try_to_unmap() from bool to void.
-(as seen on m68k/coldfire)
 
-In file included from ../mm/vmscan.c:33:
-../mm/vmscan.c: In function 'shrink_page_list':
-../include/linux/rmap.h:294:34: warning: statement with no effect [-Wunused-value]
-  294 | #define try_to_unmap(page, refs) false
-      |                                  ^~~~~
-../mm/vmscan.c:1508:4: note: in expansion of macro 'try_to_unmap'
- 1508 |    try_to_unmap(page, flags);
-      |    ^~~~~~~~~~~~
+--RE3pQJLXZi4fr8Xo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: 1fb08ac63bee ("mm: rmap: make try_to_unmap() void function")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Yang Shi <shy828301@gmail.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: uclinux-dev@uclinux.org
----
-v2: add linux-mm m.l.
-    add M68K/Coldfire Cc's
-    change to static inline function.
+On Wed, Jul 07, 2021 at 11:26:13AM +0530, Vijendar Mukunda wrote:
 
- include/linux/rmap.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> +static inline u32 acp_readl(void __iomem *base_addr)
+> +{
+> +	return readl(base_addr - ACP5x_PHY_BASE_ADDRESS);
+> +}
 
---- linux-next-20210701.orig/include/linux/rmap.h
-+++ linux-next-20210701/include/linux/rmap.h
-@@ -291,7 +291,8 @@ static inline int page_referenced(struct
- 	return 0;
- }
- 
--#define try_to_unmap(page, refs) false
-+static inline void try_to_unmap(struct page *page, enum ttu_flags flags)
-+{}
- 
- static inline int page_mkclean(struct page *page)
- {
+I see this was the same for Renoir but it's weird that the read and
+write functions are substracting rather than adding the base address
+here.  A comment might be good.
+
+--RE3pQJLXZi4fr8Xo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDl05oACgkQJNaLcl1U
+h9BQ/Qf+I44B9D46yvA5DrXifzyD6B4n/K2QaDtHbog1HFtL1zbtiiATxdhLtYIS
+yXeKEGxzcSmW+DgUaIMLf8kYbnoVTv1CIuAb6EpYWUVKIWlGHQ3n9QPoYuYIutvl
+itaiB/rrOuisxmm1W8IQb0XL3DKywXFFRjnfqiC4d0z88U90gh58Ox3P8NgWMAsY
+m84CWKyIJTagN7j0SXN8YizkoD/yBIS6eXa5l/jZ5lw9LlF2EqwBqEB7JegjnyqB
+7Pf8CArQHsjn4+4IaPBVga6RmVukipqH4N+CfaXmOV8GbhvGnLEyvk7thJ4MbmvY
+5BeHPpwe/hgvPfHZqDSFVOL84r7wsg==
+=m2hI
+-----END PGP SIGNATURE-----
+
+--RE3pQJLXZi4fr8Xo--
