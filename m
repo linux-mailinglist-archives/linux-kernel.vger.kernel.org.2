@@ -2,113 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578E13BE35E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 09:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838E43BE361
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 09:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhGGHFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 03:05:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230312AbhGGHFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 03:05:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEBB461C82;
-        Wed,  7 Jul 2021 07:03:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625641384;
-        bh=7tAg32fZBNuoC3CL6Ig9nwQmfyHrXRZJzl9msb7tNXU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Opw0/Qnf0maQx5i0xrXCvxYz4iruyv0anc2s2/Yi8j2FibTvuZd72eSwqyzlwgv5c
-         3uvuNYklFsC/cmGR1ir7xHpgCugutKIj7FOFYu+/ocnEdRJfZutXprzzgG6Tvk6nQa
-         628ybg+RSg1CRj4bOIujhUob5TVhHdMYUDkr9fjB9KjywTHzkLf4YUjF//nNNZLwP2
-         hQuoSkeAUvTIVPfWtR7WCrvG5luMiDhE54qyFiHCviLOnq/ZvfATTc0/P3WEc3I6IB
-         /LL4EF/hv4Qc5ESJpS0USl3BU++e31Q8EzUfzeEvgOycU7EwguC8XsmRHEGjvf4QJZ
-         jE7zrpcBTUkkw==
-Received: by mail-lf1-f52.google.com with SMTP id f30so2318795lfj.1;
-        Wed, 07 Jul 2021 00:03:04 -0700 (PDT)
-X-Gm-Message-State: AOAM5300V/ChYahK3dtqfz/IxOoI9WDhjuUoLTLpDa+VtpSQWWTAfL+3
-        GLUSE7D0NM8B6PbH1Rbu6oOilo/5FXzUzOC8Fpc=
-X-Google-Smtp-Source: ABdhPJxbN4bL0q+HrIKopleZYUj1uHSBnNBtvm0u6Qu+/u/6iUE+OcL4H6ha/sp7iRUw6S8of6WjFEGj1+DtoUGNd6Q=
-X-Received: by 2002:ac2:42cb:: with SMTP id n11mr14678250lfl.160.1625641383121;
- Wed, 07 Jul 2021 00:03:03 -0700 (PDT)
+        id S230345AbhGGHK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 03:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230312AbhGGHK1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 03:10:27 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA56CC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 00:07:47 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id f30so2340601lfj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 00:07:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BHnTE/QFYQZHh20pE9wE1rlUNOipEknvqGx1MJV4EDE=;
+        b=gs9kCQhOSLJ7qweK7CEP5kSHCQcxtUbFKdWoAB3SCPw8fQDOldqWIYIsph9MyJCxdk
+         lk+x/3lq7bhMqp3IjfTeDaKfWOoFn0jQdp1CTFV2qt8Fj3CaaXW6ql1MzOTHma+2bKEK
+         EkjtBhX9mNd2bX7sVgoC8b7GQ76lMRakD2Idq4kIE3ewy9j6oauIao4vTNw1pX/0/el8
+         j/mA9dKCdWH/RhUriG33dlyLqYWIIseZ5m7H4Xx0CdJidQrGbBam7quLzQZYt5FCR7du
+         wH3Vq5p6RIV1xPblhxECw0BrcPgr2p3t83y80uwlW3BuOyhT4PKr+Wr5J+oB8ps1hm5P
+         PVSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BHnTE/QFYQZHh20pE9wE1rlUNOipEknvqGx1MJV4EDE=;
+        b=E8vRPMADwUdU/ek9T7QZFQBNpkMfOdmc5iOGYiN2HUXYfOTzGlFuAkVKRlAgEgxyai
+         diCuDrmy7Zjmoovz8hBTBiffthF/nrBJlfrrc8/PHWqTsFSy0y2ky3+v7miL+8FqSJbY
+         3IccWNM+bcs0whyUIAZCfbpSnDE1g+6jRXI/J/UXyYJvJ+RJrQ7YULrPWFEsYT1VIn/5
+         Hf+49oXgrf2Gr1ZC4W7iPCqxCfMny2FtB2mNhaUI3JMGCsK1gXil4sSZy651oRH/hYSN
+         py3lUvHh2tQj6debGhGQEf5ZYBNgvKZmxpy0J6agBwseU9+HuBqrYIeiA18Q/PgaC2BH
+         W0OA==
+X-Gm-Message-State: AOAM531r63t6uiCL0IwRJjSj5eRTtgyHBXYrRkGYM0nVSNjEuWAPAyAn
+        KhBgBjFNw0uFw09OgmHuee+UHdQMS596L5WJBCQ/DQ==
+X-Google-Smtp-Source: ABdhPJzeLrNZscHzD67zgs/F4p/lOcTNmR0qpjNQdj0k8V66CDTTyDxlU1kFNJbRWHdsIrF/23LK0VeARXwLUQdXn8w=
+X-Received: by 2002:a05:6512:50e:: with SMTP id o14mr16490498lfb.286.1625641666115;
+ Wed, 07 Jul 2021 00:07:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210707043811.5349-1-hefengqing@huawei.com> <20210707043811.5349-2-hefengqing@huawei.com>
-In-Reply-To: <20210707043811.5349-2-hefengqing@huawei.com>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 7 Jul 2021 00:02:52 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4RNWsOH5-NDiOF5RNgejsadrkqUbqN9Mh+fxWHQZOCMQ@mail.gmail.com>
-Message-ID: <CAPhsuW4RNWsOH5-NDiOF5RNgejsadrkqUbqN9Mh+fxWHQZOCMQ@mail.gmail.com>
-Subject: Re: [bpf-next 1/3] bpf: Move bpf_prog_clone_free into filter.h file
-To:     He Fengqing <hefengqing@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210625152603.25960-1-lukasz.luba@arm.com> <20210625152603.25960-2-lukasz.luba@arm.com>
+In-Reply-To: <20210625152603.25960-2-lukasz.luba@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 7 Jul 2021 09:07:35 +0200
+Message-ID: <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
+ of EAS estimated energy
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Chris Redpath <Chris.Redpath@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        CCj.Yeh@mediatek.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 8:53 PM He Fengqing <hefengqing@huawei.com> wrote:
+On Fri, 25 Jun 2021 at 17:26, Lukasz Luba <lukasz.luba@arm.com> wrote:
 >
-> Move bpf_prog_clone_free function into filter.h, so we can use
-> it in other file.
+> The Energy Aware Scheduler (EAS) tries to find best CPU for a waking up
+> task. It probes many possibilities and compares the estimated energy values
+> for different scenarios. For calculating those energy values it relies on
+> Energy Model (EM) data and em_cpu_energy(). The precision which is used in
+> EM data is in milli-Watts (or abstract scale), which sometimes is not
+> sufficient. In some cases it might happen that two CPUs from different
+> Performance Domains (PDs) get the same calculated value for a given task
+> placement, but in more precised scale, they might differ. This rounding
+> error has to be addressed. This patch prepares EAS code for better
+> precision in the coming EM improvements.
+
+Could you explain why 32bits results are not enough and you need to
+move to 64bits ?
+
+Right now the result is in the range [0..2^32[ mW. If you need more
+precision and you want to return uW instead, you will have a result in
+the range  [0..4kW[ which seems to be still enough
+
 >
-> Signed-off-by: He Fengqing <hefengqing@huawei.com>
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 > ---
->  include/linux/filter.h | 15 +++++++++++++++
->  kernel/bpf/core.c      | 20 +-------------------
->  2 files changed, 16 insertions(+), 19 deletions(-)
+>  kernel/sched/fair.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
 >
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index 472f97074da0..f39e008a377d 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -884,6 +884,21 @@ struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
->                                   gfp_t gfp_extra_flags);
->  void __bpf_prog_free(struct bpf_prog *fp);
->
-> +static inline void bpf_prog_clone_free(struct bpf_prog *fp)
-> +{
-> +       /* aux was stolen by the other clone, so we cannot free
-> +        * it from this path! It will be freed eventually by the
-> +        * other program on release.
-> +        *
-> +        * At this point, we don't need a deferred release since
-> +        * clone is guaranteed to not be locked.
-> +        */
-> +       fp->aux = NULL;
-> +       fp->stats = NULL;
-> +       fp->active = NULL;
-> +       __bpf_prog_free(fp);
-> +}
-> +
->  static inline void bpf_prog_unlock_free(struct bpf_prog *fp)
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 7b8990fd4896..b517c9e79768 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6582,7 +6582,7 @@ static unsigned long cpu_util_next(int cpu, struct task_struct *p, int dst_cpu)
+>   * to compute what would be the energy if we decided to actually migrate that
+>   * task.
+>   */
+> -static long
+> +static u64
+>  compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
 >  {
->         __bpf_prog_free(fp);
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 034ad93a1ad7..49b0311f48c1 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -238,10 +238,7 @@ struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
->                 /* We keep fp->aux from fp_old around in the new
->                  * reallocated structure.
->                  */
-After the change, we can remove the comment above.
-
-> -               fp_old->aux = NULL;
-> -               fp_old->stats = NULL;
-> -               fp_old->active = NULL;
-> -               __bpf_prog_free(fp_old);
-> +               bpf_prog_clone_free(fp_old);
-
-Please add a couple sentences in the commit log about this chanage.
-
-Thanks,
-Song
+>         struct cpumask *pd_mask = perf_domain_span(pd);
+> @@ -6689,12 +6689,13 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+>   */
+>  static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+>  {
+> -       unsigned long prev_delta = ULONG_MAX, best_delta = ULONG_MAX;
+>         struct root_domain *rd = cpu_rq(smp_processor_id())->rd;
+> +       u64 prev_delta = ULLONG_MAX, best_delta = ULLONG_MAX;
+>         int cpu, best_energy_cpu = prev_cpu, target = -1;
+> -       unsigned long cpu_cap, util, base_energy = 0;
+> +       unsigned long cpu_cap, util;
+>         struct sched_domain *sd;
+>         struct perf_domain *pd;
+> +       u64 base_energy = 0;
+>
+>         rcu_read_lock();
+>         pd = rcu_dereference(rd->pd);
+> @@ -6718,9 +6719,9 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+>                 goto unlock;
+>
+>         for (; pd; pd = pd->next) {
+> -               unsigned long cur_delta, spare_cap, max_spare_cap = 0;
+> +               unsigned long spare_cap, max_spare_cap = 0;
+>                 bool compute_prev_delta = false;
+> -               unsigned long base_energy_pd;
+> +               u64 base_energy_pd, cur_delta;
+>                 int max_spare_cap_cpu = -1;
+>
+>                 for_each_cpu_and(cpu, perf_domain_span(pd), sched_domain_span(sd)) {
+> @@ -6790,7 +6791,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+>          * Pick the best CPU if prev_cpu cannot be used, or if it saves at
+>          * least 6% of the energy used by prev_cpu.
+>          */
+> -       if ((prev_delta == ULONG_MAX) ||
+> +       if ((prev_delta == ULLONG_MAX) ||
+>             (prev_delta - best_delta) > ((prev_delta + base_energy) >> 4))
+>                 target = best_energy_cpu;
+>
+> --
+> 2.17.1
+>
