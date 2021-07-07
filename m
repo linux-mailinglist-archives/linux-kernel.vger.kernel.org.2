@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170553BE0C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 04:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4DE3BE0C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 04:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhGGCDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 22:03:14 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:34376 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhGGCDN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 22:03:13 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id C85B0806B7;
-        Wed,  7 Jul 2021 14:00:30 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1625623230;
-        bh=wbNUmW5Ow/K4QAgFRW8QpAkGSlNHX8Qm9KlkXp2gcjk=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=IR/srLTGnmCt24o2dxOW6Fk9kQB1NRxsZT40/lbzrTGB++b2itthdzKa5DW19XPyh
-         /h06GnQgpaxSHrjuBwNcWc2XZWJJW+wz13M5et/2qjVU5S40YOQjTq8GSRRGzNCWOM
-         iTASILHgiOw0aweOhdyGQaOIb0O3AEfOmFfc5Cr3diHXoSYmDpcOM0q7kMjJbJCRvp
-         Q4S9ocUioVxXX8yl1QVEzkqlZ8xSbIpsk8Lgnz2vp2BL8CV3PcVftRrgccCwUupGh4
-         /ONlG/8KMOTr4quqxtEvg0EbVrpqN+2NbMCjT7XB97bp+sFxFUsLI+9C9mf/HYsnMP
-         kEXUWN1Qgs/5w==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60e50abe0001>; Wed, 07 Jul 2021 14:00:30 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.18; Wed, 7 Jul 2021 14:00:30 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.018; Wed, 7 Jul 2021 14:00:30 +1200
-From:   Callum Sinclair <Callum.Sinclair@alliedtelesis.co.nz>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "dsahern@kernel.org" <dsahern@kernel.org>,
-        "nikolay@nvidia.com" <nikolay@nvidia.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linus.luessing@c0d3.blue" <linus.luessing@c0d3.blue>
-Subject: Re: [PATCH] net: Allow any address multicast join for IP sockets
-Thread-Topic: [PATCH] net: Allow any address multicast join for IP sockets
-Thread-Index: AQHXcgR3BnwxqirtmESI1bbFp3V9F6s1KEqAgAGaTzw=
-Date:   Wed, 7 Jul 2021 02:00:29 +0000
-Message-ID: <1625623229789.98509@alliedtelesis.co.nz>
-References: <20210706011548.2201-1-callum.sinclair@alliedtelesis.co.nz>,<YORaY83GiD56/su0@lunn.ch>
-In-Reply-To: <YORaY83GiD56/su0@lunn.ch>
-Accept-Language: en-US, en-NZ
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S230002AbhGGCLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 22:11:15 -0400
+Received: from mga09.intel.com ([134.134.136.24]:53335 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229949AbhGGCLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Jul 2021 22:11:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="209182628"
+X-IronPort-AV: E=Sophos;i="5.83,330,1616482800"; 
+   d="scan'208";a="209182628"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 19:08:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,330,1616482800"; 
+   d="scan'208";a="497468422"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
+  by fmsmga002.fm.intel.com with ESMTP; 06 Jul 2021 19:08:33 -0700
+Date:   Wed, 7 Jul 2021 10:03:09 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] FPGA Manager address unused variable warnings
+Message-ID: <20210707020309.GA12358@yilunxu-OptiPlex-7050>
+References: <20210702035404.397853-1-mdf@kernel.org>
+ <d0088161-ec7f-4ff4-d5c1-c0746ca17283@redhat.com>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=IOh89TnG c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=8nJEP1OIZ-IA:10 a=e_q4qTt1xDgA:10 a=VwQbUJbxAAAA:8 a=Ikd4Dj_1AAAA:8 a=7e5MesHCkfqdYGZJdl8A:9 a=wPNLvfGTeEIA:10 a=AjGcO6oz07-iQ99wixmX:22
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d0088161-ec7f-4ff4-d5c1-c0746ca17283@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew=0A=
-=0A=
-Yes I want to receive all multicast frames.This is to configure=0A=
-a userspace switch driver to prevent unknown multicast=0A=
-routes being flooded unexpectedly to all switch ports.=0A=
-=0A=
-The advantage of using IP sockets over a pcap on raw sockets=0A=
-is I can still use the Linux routing stack for sending and receiving=0A=
-packets.=0A=
-=0A=
-Cheers=0A=
-Callum=0A=
-________________________________________=0A=
-From: Andrew Lunn <andrew@lunn.ch>=0A=
-Sent: Wednesday, July 7, 2021 1:28 AM=0A=
-To: Callum Sinclair=0A=
-Cc: dsahern@kernel.org; nikolay@nvidia.com; netdev@vger.kernel.org; linux-k=
-ernel@vger.kernel.org; linus.luessing@c0d3.blue=0A=
-Subject: Re: [PATCH] net: Allow any address multicast join for IP sockets=
-=0A=
-=0A=
-On Tue, Jul 06, 2021 at 01:15:47PM +1200, Callum Sinclair wrote:=0A=
-> For an application to receive all multicast packets in a range such as=0A=
-> 224.0.0.1 - 239.255.255.255 each multicast IP address has to be joined=0A=
-> explicitly one at a time.=0A=
->=0A=
-> Allow the any address to be passed to the IP_ADD_MEMBERSHIP and=0A=
-> IPV6_ADD_MEMBERSHIP socket option per interface. By joining the any=0A=
-> address the socket will receive all multicast packets that are received=
-=0A=
-> on the interface.=0A=
->=0A=
-> This allows any IP socket to be used for IGMP or MLD snooping.=0A=
-=0A=
-Do you really want all multicast frames, or just IGMP and MLD=0A=
-messages?=0A=
-=0A=
-What is the advantage of this solution over using pcap with a filter=0A=
-which matches on multicast?=0A=
-=0A=
-      Andrew=0A=
+On Tue, Jul 06, 2021 at 09:28:37AM -0700, Tom Rix wrote:
+> 
+> On 7/1/21 8:54 PM, Moritz Fischer wrote:
+> > This patchset addresses a handful of warnings as result of_match_ids
+> > being not properly wrapped in #ifdef CONFIG_OF.
+> > 
+> > Moritz Fischer (4):
+> >    fpga: altera-freeze-bridge: Address warning about unused variable
+> >    fpga: xiilnx-spi: Address warning about unused variable
+> >    fpga: xilinx-pr-decoupler: Address warning about unused variable
+> >    fpga: zynqmp-fpga: Address warning about unused variable
+> > 
+> >   drivers/fpga/altera-freeze-bridge.c | 2 ++
+> >   drivers/fpga/xilinx-pr-decoupler.c  | 2 ++
+> >   drivers/fpga/xilinx-spi.c           | 2 ++
+> >   drivers/fpga/zynqmp-fpga.c          | 3 ++-
+> >   4 files changed, 8 insertions(+), 1 deletion(-)
+> 
+> I am not seeing these warnings, but it is still worth doing.
+> 
+> I think a few more files need this change.
+> 
+> altera-ps-spi.c, dfl-n3000-nios.c, altera-hps2fpga.c, stratix10-soc.c,
+> socfpga-a10.c, altera-fpga2sdram.c
+
+dfl-n3000-nios is not using of_device_id, and doesn't need the change.
+
+Thanks,
+Yilun
+
+> 
+> Not needed for
+> 
+> altera-pr-ip-core-plat.c and ice40-spi.c
+> 
+> These have depends on OF in Kconfig.
+> 
+> Tom
