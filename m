@@ -2,187 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367763BEFF8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC843BEFFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhGGTCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 15:02:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45498 "EHLO
+        id S230458AbhGGTF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 15:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbhGGTCt (ORCPT
+        with ESMTP id S230390AbhGGTFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 15:02:49 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FC4C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 12:00:08 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id i4so4828474ybe.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 12:00:08 -0700 (PDT)
+        Wed, 7 Jul 2021 15:05:55 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7D9C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 12:03:14 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id d12so3667179wre.13
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 12:03:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M6yCm28WnoyNx3nRePoJett8yHbUw3QYAhUOWEwm4lQ=;
-        b=hH6hFm63vuMyFoK8+hGoqoFO8Fh65M3Klc2NWtTh1joNH7eb4tJE3iBw/mwSt1cEYc
-         PZ2HlWDO6gyMhGh6seGHoHog/c+KYZ2N4LvUOT4UQF2eljgD2EOE96jbjJvJplh3sC4q
-         7x2+GYNtMCJADpdoVqcCSA45UjfeZrq1c/0qXNOrjVrY9XnxwlmpB1YZGAAgzAEeGhsS
-         7FuiSIFIFwKAIhLh1E+YuRHwdzSpU/PXISM6wuPnItxKC//+Qdmhs4CyjjRZWvUCWfQk
-         k7GDLcQdhNq6USeQR3dxL8S8XqKNPu/I+oAt8D1ZTpd/+qfbZHBfYvR5eh5QD0WuyTvW
-         c8mA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gEyVsUHVabbCcurt1vqr+nKmr7tjD0Zle1ugJOsxNk8=;
+        b=uQahgciwZnRHDS26dth70zA8+WBNEzYXuwzc5GVRJBSrJhp07jCDpwzSWiUiptb2xj
+         7cdrZCMoJaRDHDN5jl+6M3lZynZVuiOBQkMz4ZFxna6AQ2fmmt3NoX2BtkPno285C5Qw
+         02Rsz/SXQFpkQsz5wvsk6J2s8UlXFa3qb6dsebpiSGYpSXMfyI0NScRUnMx3wA5+3Wlc
+         CP9d3VQn8Zie43uo08Vg+N4sjAXt4UjVIUwqUSt0L6kfkiHBqSF9XtEn/ueEmIsCh9Xi
+         8XFnLAamPMICjrEtTWKoHF0iJRdn1t7BJmVvRBDpJW01CQqYM8C6/WMnpEUZ+9E3RpOY
+         fBYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M6yCm28WnoyNx3nRePoJett8yHbUw3QYAhUOWEwm4lQ=;
-        b=R42Jxz4/5f4PZbvgLSlkyJ6uSCPpfjJEHYBY6YdySAPjb434mw0f4ePZV8rkIqeN5c
-         5suXM6x+aDPXO4FCB/P9bK3mAL6lPMQYozqtpKUcEq0ZO7rvFVMraVPV5Yjj4lO6wugJ
-         +GmjW/F+nVg41EyKRRuLVpp0Skg9a4EZcLPHUwqS9z/4+cQjpziF+Zhc6WyAnAoOHZFY
-         kkelBZ0VXLcaY+p3XFPMrAOmfuEgzfrg5gRhQxVAuTgaaJgmZCerfXX79KQv8ab9h514
-         NS483AVkX5TgbHP8dMusJKtQ4wTKillsMXCTR2RZHXbOUyN+qfp8HIlRWM6FjG5tpfR/
-         4zXw==
-X-Gm-Message-State: AOAM530yzPXv9E3u0MF6pnsSgkPTW4gjVKQBfxm6gwAFA+og1VBrSP2h
-        /yzlKPmzo2DytxWaUc9Ha+DEQMK6shycOdnQppdJrg==
-X-Google-Smtp-Source: ABdhPJz26e2d1GkKb+V/LipLsD34ksQ67tXuNj+Cw74H7aKUj0SO3u3W3fk5wwDo+99vRvw0Yt+7Az4BWRx6nTCspcE=
-X-Received: by 2002:a25:abcd:: with SMTP id v71mr32563199ybi.322.1625684407063;
- Wed, 07 Jul 2021 12:00:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <08a2e179-3f5f-639e-946f-54cd07ae12fa@kernel.org>
- <20210707181814.365496-1-ndesaulniers@google.com> <1fd40e80-283f-62e9-a0fa-84ad68047a23@kernel.org>
-In-Reply-To: <1fd40e80-283f-62e9-a0fa-84ad68047a23@kernel.org>
-From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Date:   Wed, 7 Jul 2021 11:59:55 -0700
-Message-ID: <CAFP8O3JvFO-T1z94Y6271gKW111oFg45+F0u4TChDpxdh3Gg2Q@mail.gmail.com>
-Subject: Re: [PATCH v4] kallsyms: strip LTO suffixes from static functions
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "KE . LI" <like1@oppo.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gEyVsUHVabbCcurt1vqr+nKmr7tjD0Zle1ugJOsxNk8=;
+        b=OypUGGwx+iZv7CcERiFQZBmmvSner47fIl8xtEcTjpoVPqqsK0dVpUU1fqGNBdMYaB
+         YsFxOTZ77UMS24NS5ocZyDPwC8r63q0RY/MrbxpknSFhOtyjJhGmtZd4wVy7QF5K0J44
+         9yN8hfxpF2UQKF2g6We4kw3zNaMqTeacnyVWn1zQj8VmzQNw/225xl6QbLfsoKMoV8U2
+         NuwRBAmlVJD2EX2/m2pgvLyd7+lBU+gulWZzDkyn8hT0FO/Cv2Z7Vl4g7mi0Nub8njC/
+         c6uNadEbMgozoh6Q7rcCV1Ni5JTtsSQa2zU3caxpJsAaxSHQRrAs76Gn3oOptsT+44nC
+         hCJA==
+X-Gm-Message-State: AOAM530tXQb8mayTmMQ1GdSbV1y57fulbD8Tv2sTGUMZ5juDcu8bM0BM
+        rtVbArwA7vyIH3WI4owVlGDvBQ==
+X-Google-Smtp-Source: ABdhPJySfCSiQ5cTbbS6d9OTSSfjP3HkNHiqbjLKAzqbl35lVyffDcd81DxCDMSy6xGV26L8R9f8Pg==
+X-Received: by 2002:a5d:61d1:: with SMTP id q17mr30439214wrv.162.1625684592806;
+        Wed, 07 Jul 2021 12:03:12 -0700 (PDT)
+Received: from enceladus (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
+        by smtp.gmail.com with ESMTPSA id c12sm23742825wrr.90.2021.07.07.12.03.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 12:03:12 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 22:03:08 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, Marcin Wojtas <mw@semihalf.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        hawk@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, peterx@redhat.com, Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, mcroce@microsoft.com,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        cong.wang@bytedance.com, Kevin Hao <haokexin@gmail.com>,
+        nogikh@google.com, Marco Elver <elver@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
+ based on elevated refcnt
+Message-ID: <YOX6bPEL0cq8CgPG@enceladus>
+References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
+ <1625044676-12441-2-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Ueyc8BqjkdTVC_c-Upn-ghNeahYQrWJtQSqxoqN7VvMWA@mail.gmail.com>
+ <29403911-bc26-dd86-83b8-da3c1784d087@huawei.com>
+ <CAKgT0UcGDYcuZRXX1MaFAzzBySu3R4_TSdC6S0cyS7Ppt_dNng@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKgT0UcGDYcuZRXX1MaFAzzBySu3R4_TSdC6S0cyS7Ppt_dNng@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 11:34 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On 7/7/2021 11:18 AM, Nick Desaulniers wrote:
-> > Similar to:
-> > commit 8b8e6b5d3b01 ("kallsyms: strip ThinLTO hashes from static
-> > functions")
+> > Hi, Alexander
 > >
-> > It's very common for compilers to modify the symbol name for static
-> > functions as part of optimizing transformations. That makes hooking
-> > static functions (that weren't inlined or DCE'd) with kprobes difficult.
+> > Thanks for detailed reviewing.
 > >
-> > LLVM has yet another name mangling scheme used by thin LTO.  Strip off
-> > these suffixes so that we can continue to hook such static functions.
-> >
-> > Reported-by: KE.LI(Lieke) <like1@oppo.com>
-> > Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> Code looks fine, small comment about a comment below.
->
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
->
-> > ---
-> > Changes v3 -> v4:
-> > * Convert this function to use IS_ENABLED rather than provide multiple
-> >    definitions based on preprocessor checks.
-> > * Add Nathan's suggested-by.
-> >
-> > Changes v2 -> v3:
-> > * Un-nest preprocessor checks, as per Nathan.
-> >
-> > Changes v1 -> v2:
-> > * Both mangling schemes can occur for thinLTO + CFI, this new scheme can
-> >    also occur for thinLTO without CFI. Split cleanup_symbol_name() into
-> >    two function calls.
-> > * Drop KE.LI's tested by tag.
-> > * Do not carry Fangrui's Reviewed by tag.
-> > * Drop the inline keyword; it is meaningless.
-> >
-> >   kernel/kallsyms.c | 43 ++++++++++++++++++++++++++++++-------------
-> >   1 file changed, 30 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> > index 4067564ec59f..a10dab216f4f 100644
-> > --- a/kernel/kallsyms.c
-> > +++ b/kernel/kallsyms.c
-> > @@ -171,26 +171,43 @@ static unsigned long kallsyms_sym_address(int idx)
-> >       return kallsyms_relative_base - 1 - kallsyms_offsets[idx];
-> >   }
-> >
-> > -#if defined(CONFIG_CFI_CLANG) && defined(CONFIG_LTO_CLANG_THIN)
-> > -/*
-> > - * LLVM appends a hash to static function names when ThinLTO and CFI are
-> > - * both enabled, i.e. foo() becomes foo$707af9a22804d33c81801f27dcfe489b.
-> > - * This causes confusion and potentially breaks user space tools, so we
-> > - * strip the suffix from expanded symbol names.
-> > - */
-> > -static inline bool cleanup_symbol_name(char *s)
-> > +static bool cleanup_symbol_name(char *s)
-> >   {
-> >       char *res;
-> >
-> > +     /*
-> > +      * LLVM appends a suffix for local variables that must be promoted to
->
-> This says local variables but the example uses a function? Is that correct?
 
-local functions/variables.
+Likewise!
+I'll have a look on the entire conversation in a few days...
 
-Both functions and variables can have a .llvm.[0-9]+ suffix.
-
-
-Aside from this, the updated description looks good to me
-
-Reviewed-by: Fangrui Song <maskray@google.com>
-
-> > +      * global scope as part of ThinLTO. foo() becomes
-> > +      * foo.llvm.974640843467629774. This can break hooking of static
-> > +      * functions with kprobes.
-> > +      */
-> > +     if (!IS_ENABLED(CONFIG_LTO_CLANG_THIN))
-> > +             return false;
-> > +
-> > +     res = strstr(s, ".llvm.");
-> > +     if (res) {
-> > +             *res = '\0';
-> > +             return true;
-> > +     }
-> > +
-> > +     /*
-> > +      * LLVM appends a hash to static function names when ThinLTO and CFI
-> > +      * are both enabled, i.e. foo() becomes
-> > +      * foo$707af9a22804d33c81801f27dcfe489b. This causes confusion and
-> > +      * potentially breaks user space tools, so we strip the suffix from
-> > +      * expanded symbol names.
-> > +      */
-> > +     if (!IS_ENABLED(CONFIG_CFI_CLANG))
-> > +             return false;
-> > +
-> >       res = strrchr(s, '$');
-> > -     if (res)
-> > +     if (res) {
-> >               *res = '\0';
-> > +             return true;
-> > +     }
+> > >
+> > > So this isn't going to work with the current recycling logic. The
+> > > expectation there is that we can safely unmap the entire page as soon
+> > > as the reference count is greater than 1.
 > >
-> > -     return res != NULL;
-> > +     return false;
-> >   }
-> > -#else
-> > -static inline bool cleanup_symbol_name(char *s) { return false; }
-> > -#endif
+> > Yes, the expectation is changed to we can always recycle the page
+> > when the last user has dropped the refcnt that has given to it when
+> > the page is not pfmemalloced.
 > >
-> >   /* Lookup the address for this symbol. Returns 0 if not found. */
-> >   unsigned long kallsyms_lookup_name(const char *name)
+> > The above expectation is based on that the last user will always
+> > call page_pool_put_full_page() in order to do the recycling or do
+> > the resource cleanup(dma unmaping..etc).
 > >
+> > As the skb_free_head() and skb_release_data() have both checked the
+> > skb->pp_recycle to call the page_pool_put_full_page() if needed, I
+> > think we are safe for most case, the one case I am not so sure above
+> > is the rx zero copy, which seems to also bump up the refcnt before
+> > mapping the page to user space, we might need to ensure rx zero copy
+> > is not the last user of the page or if it is the last user, make sure
+> > it calls page_pool_put_full_page() too.
+> 
+> Yes, but the skb->pp_recycle value is per skb, not per page. So my
+> concern is that carrying around that value can be problematic as there
+> are a number of possible cases where the pages might be
+> unintentionally recycled. All it would take is for a packet to get
+> cloned a few times and then somebody starts using pskb_expand_head and
+> you would have multiple cases, possibly simultaneously, of entities
+> trying to free the page. I just worry it opens us up to a number of
+> possible races.
+
+Maybe I missde something, but I thought the cloned SKBs would never trigger
+the recycling path, since they are protected by the atomic dataref check in
+skb_release_data(). What am I missing?
+
+[...]
+
+Thanks
+/Ilias
