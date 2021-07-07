@@ -2,98 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B173BEC46
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BA93BEBDF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhGGQd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 12:33:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33780 "EHLO mail.kernel.org"
+        id S230110AbhGGQTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 12:19:53 -0400
+Received: from mga05.intel.com ([192.55.52.43]:21268 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhGGQd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 12:33:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3B2D61CAC;
-        Wed,  7 Jul 2021 16:30:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625675448;
-        bh=hFQSmO9JZuU7PCl2e+L0oHy7wyT+9t8i3+Qu5Qji0m0=;
-        h=Subject:From:To:Date:In-Reply-To:References:From;
-        b=dkncukvVxdLVbUB/3nlKeFY/kQGT4V3/rQZ7wcMxI5PX1KTpSOZUNNqZXZ1Azf4q3
-         0qdWwA3alXlmqklyHXekIUM2c2/s/QZqO9FsohRsyE03YY53lcZB1Jv4dJOoMyINS8
-         QUvZL0MKmjom4lqUl6+3TpoSVdWxfbj0yaX0QRAAjMdskNvN0oXQHAbnXHNZfzqOmT
-         GjCHT0a4FkvTik31uWBZOYUxNXahl2rBkcSPY9IQ84I8xdG3RbA3pdU0H281NvcvYn
-         XNW4HH/4sUM+LNoCL1oWykNt4vG9SSbUE1CGXYbwh9NeLfDy55Hb6nYH766Jp1Zv1a
-         ovyUV6GRZk7dA==
-Message-ID: <9769cf1a02fae0be892d6b69cc624eb2b41c1d4d.camel@kernel.org>
-Subject: Re: [PATCH] tracing/histograms: Fix parsing of "sym-offset" modifier
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Date:   Wed, 07 Jul 2021 11:30:46 -0500
-In-Reply-To: <20210707110821.188ae255@oasis.local.home>
-References: <20210707110821.188ae255@oasis.local.home>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S230082AbhGGQTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 12:19:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="294976392"
+X-IronPort-AV: E=Sophos;i="5.84,220,1620716400"; 
+   d="scan'208";a="294976392"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 09:17:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,220,1620716400"; 
+   d="scan'208";a="487019568"
+Received: from zhangyu-optiplex-7040.bj.intel.com ([10.238.154.154])
+  by FMSMGA003.fm.intel.com with ESMTP; 07 Jul 2021 09:17:08 -0700
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     pbonzini@redhat.com
+Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: VMX: Remove vmx_msr_index from vmx.h
+Date:   Thu,  8 Jul 2021 07:57:02 +0800
+Message-Id: <20210707235702.31595-1-yu.c.zhang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
+vmx_msr_index was used to record the list of MSRs which can be lazily
+restored when kvm returns to userspace. It is now reimplemented as
+kvm_uret_msrs_list, a common x86 list which is only used inside x86.c.
+So just remove the obsolete declaration in vmx.h.
 
-On Wed, 2021-07-07 at 11:08 -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> With the addition of simple mathematical operations (plus and minus),
-> the
-> parsing of the "sym-offset" modifier broke, as it took the '-' part
-> of the
-> "sym-offset" as a minus, and tried to break it up into a mathematical
-> operation of "field.sym - offset", in which case it failed to parse
-> (unless the event had a field called "offset").
-> 
-> Both .sym and .sym-offset modifiers should not be entered into
-> mathematical calculations anyway. If ".sym-offset" is found in the
-> modifier, then simply make it not an operation that can be calculated
-> on.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 100719dcef447 ("tracing: Add simple expression support to hist
-> triggers")
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  kernel/trace/trace_events_hist.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/kernel/trace/trace_events_hist.c
-> b/kernel/trace/trace_events_hist.c
-> index ba03b7d84fc2..0207aeed31e6 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -1555,6 +1555,13 @@ static int contains_operator(char *str)
->  
->  	switch (*op) {
->  	case '-':
-> +		/*
-> +		 * Unfortunately, the modifier ".sym-offset"
-> +		 * can confuse things.
-> +		 */
+Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+---
+ arch/x86/kvm/vmx/vmx.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-Good catch.
-
-> +		if (op - str >= 4 && !strncmp(op - 4, ".sym-offset",
-> 11))
-> +			return FIELD_OP_NONE;
-> +
->  		if (*str == '-')
->  			field_op = FIELD_OP_UNARY_MINUS;
->  		else
-
-Reviewed-by: Tom Zanussi <zanussi@kernel.org>
-
+diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+index 3979a947933a..db88ed4f2121 100644
+--- a/arch/x86/kvm/vmx/vmx.h
++++ b/arch/x86/kvm/vmx/vmx.h
+@@ -14,8 +14,6 @@
+ #include "vmx_ops.h"
+ #include "cpuid.h"
+ 
+-extern const u32 vmx_msr_index[];
+-
+ #define MSR_TYPE_R	1
+ #define MSR_TYPE_W	2
+ #define MSR_TYPE_RW	3
+-- 
+2.17.1
 
