@@ -2,104 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5073BE268
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 07:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3572D3BE269
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 07:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhGGFPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 01:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230108AbhGGFPh (ORCPT
+        id S230217AbhGGFQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 01:16:00 -0400
+Received: from gw2.atmark-techno.com ([35.74.137.57]:55138 "EHLO
+        gw2.atmark-techno.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230108AbhGGFP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 01:15:37 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73D3C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 22:12:57 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id r16so1060888ljk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 22:12:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tbekPJYhk51AiCb/jp2mDu1SGe+rJ18xe7z1A6805jM=;
-        b=fe4Ocl93rz7pECRQ1CotlTG3DMZJWB6KbfvEAGDDz0pOLoDd2Czs1C0Q4gG/WnxjWt
-         Ha8o6slBnBLB7Qo6BIky+i7Zh+Q0BxgBpPGfZogc4KGXDNwc1AkFN4hh6k8V/l704Dw7
-         VRjZ8Ju1F//y4ZLQyIKuT5gvxcdgpp117aEO/EzjqJDt968i7gZdxIZ3x7gtgnhffLQW
-         vEwORBnDSzBQHh8yo4L+R4a1uV43BNTtsgrIDsCumj1nGDqr5juzpDznHSwSYOWhQjKM
-         Cd+wjmNzLuYNzLJznG0bn+vtfDqtg0IKN56SXueZKGTMkAsKYLVfANKfcE0CXCTJbLHp
-         h7Bw==
+        Wed, 7 Jul 2021 01:15:59 -0400
+Received: from gw2.atmark-techno.com (localhost [127.0.0.1])
+        by gw2.atmark-techno.com (Postfix) with ESMTP id 2314F20D27
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 14:13:18 +0900 (JST)
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
+        by gw2.atmark-techno.com (Postfix) with ESMTPS id 7422120D27
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 14:13:17 +0900 (JST)
+Received: by mail-pf1-f199.google.com with SMTP id 11-20020a62150b0000b029031c6298f275so768126pfv.14
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 22:13:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tbekPJYhk51AiCb/jp2mDu1SGe+rJ18xe7z1A6805jM=;
-        b=AmmfQEzzVMo8GFZkTa1fx5H14jJBu/qOohtzylD8LJ5rGwzzKeX9nFlDlKTjiyUrWh
-         +9s4j4VUzAXtUH+dwF4i2rbJX1vbatrJ6wevgTJ9y8qVQ3GlWjb9y5r+Lz95cQzvUD9e
-         PNYLHjstKJ7aSk5V8tMPG0n2nRM8qEg9NMABX85InRWFpa0qFZ/P/ibCPtrVesh6bm9S
-         r/R/zJrR5okgs3pW+iGwTYoSzS30csGcagCjLw6OWDWf/8vpIYS4kAiDJNxzwDM2x2MN
-         GwoImx8Fyl+uWXHkheOj6WkJ0hfoHWUuCt8xd4865iVRPzYRLLmLEEqZ1VsBwUk3BfFe
-         UNmg==
-X-Gm-Message-State: AOAM5304tfJYlN8/b2OcOt6He2iq2A3/O3f5O1xLXKDtBjgGBe6iylDv
-        YK4fhDj5zrwm/ErNwYpPmP9riPWZaRHfFY1XbD6LEw==
-X-Google-Smtp-Source: ABdhPJxbc3+AxHLhFeAT5cU6slD5V2CJU2jO01d5xbmQ1yKB7QPxdlU4achffWzuXV4bC2pvaZA0xymSpnPwlr5oNvE=
-X-Received: by 2002:a05:651c:2c1:: with SMTP id f1mr3244451ljo.128.1625634775403;
- Tue, 06 Jul 2021 22:12:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210610214431.539029-1-robdclark@gmail.com> <2016473f-2b38-f049-1e8d-04bdf5af6cea@linaro.org>
- <CAF6AEGu6Wt+FDh_Kp8GrZB9TV7ufTuidmqBfkzA9rcCJc7zSQQ@mail.gmail.com>
-In-Reply-To: <CAF6AEGu6Wt+FDh_Kp8GrZB9TV7ufTuidmqBfkzA9rcCJc7zSQQ@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Tue, 6 Jul 2021 22:12:47 -0700
-Message-ID: <CALAqxLWDqQeD-eieHXtePuXpxN1s3=jCNJP2pJD-YswsLP-mJw@mail.gmail.com>
-Subject: Re: [PATCH v5 0/5] iommu/arm-smmu: adreno-smmu page fault handling
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Rob Clark <robdclark@chromium.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Eric Anholt <eric@anholt.net>,
-        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        "Kristian H. Kristensen" <hoegsberg@google.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "moderated list:ARM SMMU DRIVERS" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3/lUbYTDaeXrb/TOvjVfoe26NBjr4owCaAB/8eFrqFc=;
+        b=lEAlqmJ/uvQqnmUl/laTjdFA9+/EFIhD8PzOTNrVhS5L+T+S8SRsix4yLLhYFRWfo+
+         Qb/ZiZHC3Ptv91+MFgN3nihmrC7919l6wotKIONQco+EN4YQ3iJxwCxyI4vl4M4nJA5q
+         1gZooJIchPX/Ybnvqv3eaJtFtLmUpkMrCsH6iElGzWcpM3jYEt2p7JbpqVuWur9c1W1x
+         Py+VgHJVaJtYg41C1RnqD3Crsv+mSVOJoPoaqljZkP3VWghZL5g1A2j19qU9AWWIwMJr
+         682sIpGfyU0cC7r5kK6seqHhx4eqYmXbYGIvCQldNg24WFeZvOHrKRbVHQQQvp72Ad2D
+         YdTQ==
+X-Gm-Message-State: AOAM531rrZk6J5G5iRn2rOsSt3ouwG8wNxCrLg836LPXMW1namiBrRRi
+        8oOe6uTh53zosVWoBeUJE2LCQLIGXRUYWDe1pqI+7BqAuLU+IKjk6RaxC52Bv4fPQmwvCtnIe5b
+        hzjP6BFvp/6UQio0rs1FSvIN8Lg==
+X-Received: by 2002:a65:62d3:: with SMTP id m19mr24728281pgv.225.1625634796521;
+        Tue, 06 Jul 2021 22:13:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyWE9lqwa5L5juVNgKdjfPF7Uy1NnEZfGHcsPDXkkvUuTeooGFCmbsKgaK9nG/PZvdNhTwfQA==
+X-Received: by 2002:a65:62d3:: with SMTP id m19mr24728260pgv.225.1625634796228;
+        Tue, 06 Jul 2021 22:13:16 -0700 (PDT)
+Received: from pc-0115 (162.198.187.35.bc.googleusercontent.com. [35.187.198.162])
+        by smtp.gmail.com with ESMTPSA id h9sm11555634pgi.43.2021.07.06.22.13.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 06 Jul 2021 22:13:15 -0700 (PDT)
+Received: from martinet by pc-0115 with local (Exim 4.94.2)
+        (envelope-from <martinet@pc-0115>)
+        id 1m0zs2-008twv-8v; Wed, 07 Jul 2021 14:13:14 +0900
+From:   Dominique Martinet <dominique.martinet@atmark-techno.com>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Robin Murphy <robin.murphy@arm.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Will Deacon <will@kernel.org>,
-        Zhenzhong Duan <zhenzhong.duan@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Dominique Martinet <dominique.martinet@atmark-techno.com>,
+        Bumyong Lee <bumyong.lee@samsung.com>,
+        Chanho Park <chanho61.park@samsung.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH] swiotlb: add overflow checks to swiotlb_bounce
+Date:   Wed,  7 Jul 2021 14:12:54 +0900
+Message-Id: <20210707051254.2121603-1-dominique.martinet@atmark-techno.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 11:16 AM Rob Clark <robdclark@gmail.com> wrote:
->
-> I suspect you are getting a dpu fault, and need:
->
-> https://lore.kernel.org/linux-arm-msm/CAF6AEGvTjTUQXqom-xhdh456tdLscbVFPQ+iud1H1gHc8A2=hA@mail.gmail.com/
->
-> I suppose Bjorn was expecting me to send that patch
+This is a follow-up on 5f89468e2f06 ("swiotlb: manipulate orig_addr
+when tlb_addr has offset") which fixed unaligned dma mappings,
+making sure the following overflows are caught:
 
-If it's helpful, I applied that and it got the db845c booting mainline
-again for me (along with some reverts for a separate ext4 shrinker
-crash).
-Tested-by: John Stultz <john.stultz@linaro.org>
+- offset of the start of the slot within the device bigger than
+requested address' offset, in other words if the base address
+given in swiotlb_tbl_map_single to create the mapping (orig_addr)
+was after the requested address for the sync (tlb_offset) in the
+same block:
 
-thanks
--john
+ |------------------------------------------| block
+              <----------------------------> mapped part of the block
+              ^
+              orig_addr
+       ^
+       invalid tlb_addr for sync
+
+- if the resulting offset was bigger than the allocation size
+this one could happen if the mapping was not until the end. e.g.
+
+ |------------------------------------------| block
+      <---------------------> mapped part of the block
+      ^                               ^
+      orig_addr                       invalid tlb_addr
+
+Both should never happen so print a warning and bail out without trying
+to adjust the sizes/offsets: the first one could try to sync from
+orig_addr to whatever is left of the requested size, but the later
+really has nothing to sync there...
+
+Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Bumyong Lee <bumyong.lee@samsung.com>
+Cc: Chanho Park <chanho61.park@samsung.com>
+Cc: Christoph Hellwig <hch@lst.de>
+---
+
+Hi Konrad,
+
+here's the follow up for the swiotlb/caamjr regression I had promissed.
+It doesn't really change anything, and I confirmed I don't hit either of
+the warnings on our board, but it's probably best to have as either
+could really happen.
+
+
+ kernel/dma/swiotlb.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index e50df8d8f87e..23f8d0b168c5 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -354,13 +354,27 @@ static void swiotlb_bounce(struct device *dev, phys_addr_t tlb_addr, size_t size
+ 	size_t alloc_size = mem->slots[index].alloc_size;
+ 	unsigned long pfn = PFN_DOWN(orig_addr);
+ 	unsigned char *vaddr = phys_to_virt(tlb_addr);
+-	unsigned int tlb_offset;
++	unsigned int tlb_offset, orig_addr_offset;
+ 
+ 	if (orig_addr == INVALID_PHYS_ADDR)
+ 		return;
+ 
+-	tlb_offset = (tlb_addr & (IO_TLB_SIZE - 1)) -
+-		     swiotlb_align_offset(dev, orig_addr);
++	tlb_offset = tlb_addr & (IO_TLB_SIZE - 1);
++	orig_addr_offset = swiotlb_align_offset(dev, orig_addr);
++	if (tlb_offset < orig_addr_offset) {
++		dev_WARN_ONCE(dev, 1,
++			"Access before mapping start detected. orig offset %u, requested offset %u.\n",
++			orig_addr_offset, tlb_offset);
++		return;
++	}
++
++	tlb_offset -= orig_addr_offset;
++	if (tlb_offset > alloc_size) {
++		dev_WARN_ONCE(dev, 1,
++			"Buffer overflow detected. Allocation size: %zu. Mapping size: %zu+%u.\n",
++			alloc_size, size, tlb_offset);
++		return;
++	}
+ 
+ 	orig_addr += tlb_offset;
+ 	alloc_size -= tlb_offset;
+-- 
+2.30.2
+
