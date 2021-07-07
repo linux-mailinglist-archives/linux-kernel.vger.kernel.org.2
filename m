@@ -2,150 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF963BE847
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C123BE84A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbhGGMvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 08:51:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231726AbhGGMvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 08:51:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03F8B61CBB;
-        Wed,  7 Jul 2021 12:48:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625662111;
-        bh=4Kmbl1dRIujhdHBNzYtzlaxq5FxRltkeR/6mA5mgnn4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ECDMWf9ibOwJ6ZbSCODiMz1JhIfIdu7TH27hY18QsWg3IVFNBkXhJ81F53bpabgXi
-         MpyboTXmNmaLfgv8rG1l6YkJSMxbwsXn5WZ7sLiFP+qYfcgwyjqnb7XfgCjrAVdoXd
-         1ZkFeXWI6GIxJaGvsoTzE3gF/w2VGqCCZiouAc6LMCspCpeAzHGSZzLEhhr88TvWSs
-         b2KcUPEjElTtN9N1n0kAKMIXpH7qfAxoXL9+bXkdApjZgvlwe8jO/QKpqvKNrTni1R
-         Ubmfg7sZQ4ILzHRhlJztQ9bcKSc0FtM7BB9sY3H0ZKX2msAyZBpQepTE5w4PFSw14H
-         wyP2BAqawVxmg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        akpm@linux-foundation.org, torvalds@linux-foundation.org
-Cc:     lwn@lwn.net, jslaby@suse.cz, gregkh@linuxfoundation.org
-Subject: Re: Linux 5.4.130
-Date:   Wed,  7 Jul 2021 08:48:28 -0400
-Message-Id: <20210707124828.2443579-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210707124828.2443579-1-sashal@kernel.org>
-References: <20210707124828.2443579-1-sashal@kernel.org>
+        id S231753AbhGGMvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 08:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231726AbhGGMvp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 08:51:45 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4A7C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 05:49:05 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id h2so3233797edt.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 05:49:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AWfBTNR+7qXXmfyz0hwbeeOHPZvd/rdFeAqJwOu0Eek=;
+        b=gs9Uh0+IX75An6xhR1AwTXnBIpGA7+nYA10/RA3Oo1dUIloN8ATCPG8c9UWDzpfMiC
+         U6Fg0rc+8NpCeuEEEE13vaZDW8zOJ3t2XDlSWjjtEuaJUxr/stPDOD89GYUDH8vSAIdZ
+         ETd6vo7YS49ihPdMHsyKty78mAKG4lQknRCkQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AWfBTNR+7qXXmfyz0hwbeeOHPZvd/rdFeAqJwOu0Eek=;
+        b=p5pDq4XhUqrkjIqC5HCc0YAtKbhKRQNTZWh/qEwLfODG406+tUwoidO+GaAyxR4aJy
+         9JJbgeAyVZBoJfuiZuq8Ib5Oxd5K4CC9c5FUTdaSXvNfAuQNNJbC4/MOT15KfB7cqjhF
+         aZx/kSNr7qIhzm4a4OBd55Mv9AAAPlrRqj8SUOxMvz8khlWV2H4eekLWYA14DwXkExNP
+         HktwggKx1u6JGvhYXnMaetWkDvAE8o/fZz+HVSAztd1vfcUqUDi3xYw2iMLzbvEduBz2
+         ZmHEzOBWE8+ud9FJYPTFuihxY9E6/f7ZnQyzqTZ6qhrfFhVGGn/WidtQAcXZ7B5cKU3O
+         Pyuw==
+X-Gm-Message-State: AOAM5324k380V+K7z2C8n5AbW0XEDzuwvjVttWlVk951VJluUASQKe0q
+        MN+D2CTN0tbVsRc0oZK/KE3rqvlc+akDFg==
+X-Google-Smtp-Source: ABdhPJx8pZiKeXxbvNxiZWHgCMP81k8ZyzoDm5GnGNEjvFaK8oVwSMG3kvRrvGqOun8YW9URIb0+SQ==
+X-Received: by 2002:a05:6402:1655:: with SMTP id s21mr29996951edx.295.1625662143300;
+        Wed, 07 Jul 2021 05:49:03 -0700 (PDT)
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com. [209.85.221.51])
+        by smtp.gmail.com with ESMTPSA id k25sm7373691eds.77.2021.07.07.05.49.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Jul 2021 05:49:02 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id f17so2911750wrt.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 05:49:02 -0700 (PDT)
+X-Received: by 2002:adf:c448:: with SMTP id a8mr7784112wrg.103.1625662141974;
+ Wed, 07 Jul 2021 05:49:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210427131344.139443-1-senozhatsky@chromium.org>
+ <20210427131344.139443-9-senozhatsky@chromium.org> <10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl>
+ <YMsAIVs7G2hUDR2F@google.com> <YNVJJhP69KPJ+DHv@google.com>
+In-Reply-To: <YNVJJhP69KPJ+DHv@google.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Wed, 7 Jul 2021 21:48:49 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5BB6JghdgGf9SjAWYuZFsZaAeU11rV1a1xrwws=w7j7_w@mail.gmail.com>
+Message-ID: <CAAFQd5BB6JghdgGf9SjAWYuZFsZaAeU11rV1a1xrwws=w7j7_w@mail.gmail.com>
+Subject: Re: [PATCHv2 8/8] videobuf2: handle non-contiguous DMA allocations
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index 802520ad08cc..4256dd594d18 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 5
- PATCHLEVEL = 4
--SUBLEVEL = 129
-+SUBLEVEL = 130
- EXTRAVERSION =
- NAME = Kleptomaniac Octopus
- 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index f9263426af03..ae414045a750 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -1232,6 +1232,7 @@ config GPIO_TPS68470
- config GPIO_TQMX86
- 	tristate "TQ-Systems QTMX86 GPIO"
- 	depends on MFD_TQMX86 || COMPILE_TEST
-+	depends on HAS_IOPORT_MAP
- 	select GPIOLIB_IRQCHIP
- 	help
- 	  This driver supports GPIO on the TQMX86 IO controller.
-@@ -1299,6 +1300,7 @@ menu "PCI GPIO expanders"
- config GPIO_AMD8111
- 	tristate "AMD 8111 GPIO driver"
- 	depends on X86 || COMPILE_TEST
-+	depends on HAS_IOPORT_MAP
- 	help
- 	  The AMD 8111 south bridge contains 32 GPIO pins which can be used.
- 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
-index f8015e0318d7..f7603be569fc 100644
---- a/drivers/gpu/drm/nouveau/nouveau_bo.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
-@@ -542,7 +542,7 @@ nouveau_bo_sync_for_device(struct nouveau_bo *nvbo)
- 	struct ttm_dma_tt *ttm_dma = (struct ttm_dma_tt *)nvbo->bo.ttm;
- 	int i;
- 
--	if (!ttm_dma)
-+	if (!ttm_dma || !ttm_dma->dma_address)
- 		return;
- 
- 	/* Don't waste time looping if the object is coherent */
-@@ -562,7 +562,7 @@ nouveau_bo_sync_for_cpu(struct nouveau_bo *nvbo)
- 	struct ttm_dma_tt *ttm_dma = (struct ttm_dma_tt *)nvbo->bo.ttm;
- 	int i;
- 
--	if (!ttm_dma)
-+	if (!ttm_dma || !ttm_dma->dma_address)
- 		return;
- 
- 	/* Don't waste time looping if the object is coherent */
-diff --git a/drivers/infiniband/hw/mlx5/flow.c b/drivers/infiniband/hw/mlx5/flow.c
-index b198ff10cde9..fddefb29efd7 100644
---- a/drivers/infiniband/hw/mlx5/flow.c
-+++ b/drivers/infiniband/hw/mlx5/flow.c
-@@ -13,6 +13,7 @@
- #include <rdma/ib_umem.h>
- #include <linux/mlx5/driver.h>
- #include <linux/mlx5/fs.h>
-+#include <linux/mlx5/eswitch.h>
- #include "mlx5_ib.h"
- 
- #define UVERBS_MODULE_NAME mlx5_ib
-@@ -316,6 +317,13 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_FLOW_MATCHER_CREATE)(
- 	if (err)
- 		goto end;
- 
-+	if (obj->ns_type == MLX5_FLOW_NAMESPACE_FDB &&
-+	    mlx5_eswitch_mode(dev->mdev->priv.eswitch) !=
-+			      MLX5_ESWITCH_OFFLOADS) {
-+		err = -EINVAL;
-+		goto end;
-+	}
-+
- 	uobj->object = obj;
- 	obj->mdev = dev->mdev;
- 	atomic_set(&obj->usecnt, 0);
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index 70a28f6fb1d0..2332b245b182 100644
---- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -218,6 +218,8 @@ static unsigned int sr_get_events(struct scsi_device *sdev)
- 		return DISK_EVENT_EJECT_REQUEST;
- 	else if (med->media_event_code == 2)
- 		return DISK_EVENT_MEDIA_CHANGE;
-+	else if (med->media_event_code == 3)
-+		return DISK_EVENT_EJECT_REQUEST;
- 	return 0;
- }
- 
-diff --git a/security/integrity/platform_certs/load_uefi.c b/security/integrity/platform_certs/load_uefi.c
-index aa874d84e413..f0c908241966 100644
---- a/security/integrity/platform_certs/load_uefi.c
-+++ b/security/integrity/platform_certs/load_uefi.c
-@@ -11,11 +11,6 @@
- #include "../integrity.h"
- #include "keyring_handler.h"
- 
--static efi_guid_t efi_cert_x509_guid __initdata = EFI_CERT_X509_GUID;
--static efi_guid_t efi_cert_x509_sha256_guid __initdata =
--	EFI_CERT_X509_SHA256_GUID;
--static efi_guid_t efi_cert_sha256_guid __initdata = EFI_CERT_SHA256_GUID;
--
- /*
-  * Look to see if a UEFI variable called MokIgnoreDB exists and return true if
-  * it does.
+On Fri, Jun 25, 2021 at 12:10 PM Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
+>
+> Hi Hans,
+>
+> On (21/06/17 16:56), Sergey Senozhatsky wrote:
+> [..]
+> > static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
+> > {
+> >         struct vb2_dc_buf *buf = buf_priv;
+> >
+> >         if (buf->vaddr)
+> >                 return buf->vaddr;
+> >
+> >         if (buf->db_attach) {
+> >                 struct dma_buf_map map;
+> >
+> >                 if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
+> >                         buf->vaddr = map.vaddr;
+> >
+> >                 return buf->vaddr;
+> >         }
+> >
+> >         if (!buf->coherent_mem)
+> >                 buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size,
+> >                                                     buf->dma_sgt);
+> >         return buf->vaddr;
+> > }
+> >
+> > And in vb2_dc_alloc functions set vaddr for !DMA_ATTR_NO_KERNEL_MAPPING
+> > in both coherent and non-coherent. So that we probably can have less
+> > branches when ->vaddr is NULL for one type of allocations, and is not
+> > NULL for another.
+
+I'd prefer if it stayed as is. This opportunistic mapping as in the
+current revision is quite nice, because most of the drivers don't
+bother to set DMA_ATTR_NO_KERNEL_MAPPING even if they don't need the
+kernel mapping. Also, even if the driver itself doesn't need the
+kernel mapping, we can still create one on demand if the DMA-buf
+importer demands it from us.
+
+> >
+> > static int vb2_dc_alloc_coherent(struct vb2_dc_buf *buf)
+> > {
+> >         struct vb2_queue *q = buf->vb->vb2_queue;
+> >
+> >         buf->cookie = dma_alloc_attrs(buf->dev,
+> >                                       buf->size,
+> >                                       &buf->dma_addr,
+> >                                       GFP_KERNEL | q->gfp_flags,
+> >                                       buf->attrs);
+> >         if (!buf->cookie)
+> >                 return -ENOMEM;
+> >
+> >         if (q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING)
+> >                 return 0;
+> >
+> >         buf->vaddr = buf->cookie;
+> >         return 0;
+> > }
+> >
+> > static int vb2_dc_alloc_non_coherent(struct vb2_dc_buf *buf)
+> > {
+> >         struct vb2_queue *q = buf->vb->vb2_queue;
+> >
+> >         buf->dma_sgt = dma_alloc_noncontiguous(buf->dev,
+> >                                                buf->size,
+> >                                                buf->dma_dir,
+> >                                                GFP_KERNEL | q->gfp_flags,
+> >                                                buf->attrs);
+> >         if (!buf->dma_sgt)
+> >                 return -ENOMEM;
+> >
+> >         if (q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING)
+> >                 return 0;
+> >
+> >         buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size, buf->dma_sgt);
+> >         if (!buf->vaddr) {
+> >                 dma_free_noncontiguous(buf->dev, buf->size,
+> >                                        buf->dma_sgt, buf->dma_addr);
+> >                 return -ENOMEM;
+> >         }
+> >         return 0;
+> > }
+>
+> I guess this should address the case when
+>
+> "after allocating the buffer, the buffer is exported as a dma_buf and
+> another device calls dma_buf_ops vb2_dc_dmabuf_ops_vmap, which in turn
+> calls dma_buf_map_set_vaddr(map, buf->vaddr); with a NULL buf->vaddr"
+
+Sorry, I fail to get what this is about. Where does this quote come from?
+
+>
+> Because ->vaddr will not be NULL now after allocation for both coherent
+> and non-coherent buffers (modulo DMA_ATTR_NO_KERNEL_MAPPING requests).
+>
+> What do you think?
+
+Hans, any feedback on this? Thanks.
+
+Best regards,
+Tomasz
