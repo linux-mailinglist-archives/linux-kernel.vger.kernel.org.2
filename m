@@ -2,238 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9043BF095
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66AAF3BF09A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbhGGUDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 16:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
+        id S233100AbhGGUJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 16:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbhGGUDU (ORCPT
+        with ESMTP id S230296AbhGGUJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 16:03:20 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27FEC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 13:00:37 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id z12so2999534qtj.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 13:00:37 -0700 (PDT)
+        Wed, 7 Jul 2021 16:09:18 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C268C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 13:06:36 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 128-20020a4a11860000b029024b19a4d98eso801926ooc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 13:06:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=96jWry9WOsdwKu+G0dTVRx+JdimFiJ2QAYFEbiH3H34=;
-        b=RGANX0PGc0mFZu9cqrNOVbTfGn0v+kokDFQAPwfrxJwtPODfB/7BgVckPJVrWeW3aX
-         Zq/e9LoJ0785EJh+wDzA6h31JQ0sQKhf5OC8+6825AOXSTrCQRvNmjr00Qv4QYBChNR1
-         yEToxoe8pidstwnQJpDD7tRYOzkEa8SGd8UWQ=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version;
+        bh=6qeso0vnhBwFs3iCYpWzxPK0i6KQqKKfr8ULWEkbKXE=;
+        b=E4XHqX1GTIF3abK36LazO2Q/rAwhiw0uDpwxHRBjNPI0ptyVYh43DYr17icgNSzNtB
+         0/l/8Pqy8JjsnqgavgUC69qzF0JNtN+UGO1Hb1cDGMQOkF2hSSx6+RbyIHdblu2e26dB
+         3ObW5x1VTMLukGemHCj8VN/+JPYeOwwkBEnNJZKDlQPpkB+2g4uHfB+yRj19WmejuxrQ
+         C1NyxojgX1ducwOiw4uUespqSgx8+tGJSDH8u5fhcG1l/EcTS3AudTXMYxx3bgpMmFZq
+         WlTEGxCDfxB9UXGyu0goYz33hEhKhJYCWR04ludzqgYKCiID6ohesXIVBi22LvODtxZU
+         6woQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=96jWry9WOsdwKu+G0dTVRx+JdimFiJ2QAYFEbiH3H34=;
-        b=kWEDbJ9BBixVk2HVtSMBij44tyotsRcxRNkMK7sZq/u73nAakFE7U+6fK1iqRtsBe8
-         CozCJz6P1MawgqRG0qcngPJMU4V0XxAQ9L+6C2bq2qzfhiitmo42O7RFErVICgsD2E5C
-         V82NzLDmDBbY7MMcYsKghUsuBCiHsABFLFizK3xGHbKzNqkFobnhqvY7chspg+rIEemf
-         tQAvImdaXNqdJi8iHEvOqoXdu1u9oLh1EZIWKXjHMJsOPHlGG6G222gTCTkk/GND9ivw
-         N2owsXSq7SmLL5a9nu6IHChfZpTR+HKbhLP0b289h5Wq1FsHFcwtsaGz5SaFxqvmwqZU
-         WD6g==
-X-Gm-Message-State: AOAM531wfuZhWbcuBYzXlkw4EvRWpGJqMXoT71g9VaYVbCU7blTJIOTg
-        MGn8PHRn9Wgb1jS2OBH0VqOYJDRx6xf2wA==
-X-Google-Smtp-Source: ABdhPJy9djPYZMbOdyrD0iNBG49tcpPYpDxoDMwZtVaanMUMUZDdZY3hznl877EZoJFEz1S/HCAuIw==
-X-Received: by 2002:ac8:734b:: with SMTP id q11mr21139698qtp.105.1625688036344;
-        Wed, 07 Jul 2021 13:00:36 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id w2sm6332325qkm.65.2021.07.07.13.00.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 13:00:36 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id p22so5068599yba.7
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 13:00:36 -0700 (PDT)
-X-Received: by 2002:a25:d97:: with SMTP id 145mr35869561ybn.276.1625688024885;
- Wed, 07 Jul 2021 13:00:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version;
+        bh=6qeso0vnhBwFs3iCYpWzxPK0i6KQqKKfr8ULWEkbKXE=;
+        b=R+4hRt8RZbRIc9+IfkSXBqOVuGK+8NYrAq58ZZyqDJDJpmfD/Mn2tt8nFJR7frxJGT
+         +MyBstMRcNkbbRqktt5D+yhPuuIcU94O95sWKTW9KVqjkunDqI/gmXpr/6KIIobON/WF
+         LYEL2J4AdYPh5HyLaSonfN+A07zEJNw6PwagExXieQAwhSOyyAkb/sCHT9tpBgdONGAE
+         k8XxNYjoZpvHrg8QD/my5urY+wb4YihfZaskZXZcDmb5RHsBSwwKX+uIc7buXmMrJfKl
+         cXMbkm+IFXyrzaahDhE4UYr+JXjgMgifIQLNP+jUVuEVx6gimxybXRkpwQVRFjM6N4lV
+         yGng==
+X-Gm-Message-State: AOAM530mfgJ1g/zuD8GtWBA+JgWDym+MUOEv1HWTpi4aIuYf3uvxpqKW
+        Pkx9soLffSaZwZgtxt6815phXQ==
+X-Google-Smtp-Source: ABdhPJyi4Lm5LdstNhafbuakxVCafg4zCdocLCQA6UnRmid6Qr2q0/4YqFwgBUmok/SVzq5TKaqulg==
+X-Received: by 2002:a4a:9e02:: with SMTP id t2mr19518865ook.73.1625688395773;
+        Wed, 07 Jul 2021 13:06:35 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x29sm3635856ooj.10.2021.07.07.13.06.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 13:06:35 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 13:06:17 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>, Yang Shi <shy828301@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH 1/4] mm/rmap: fix comments left over from recent changes
+Message-ID: <563ce5b2-7a44-5b4d-1dfd-59a0e65932a9@google.com>
 MIME-Version: 1.0
-References: <20210624171759.4125094-1-dianders@chromium.org>
- <YNXXwvuErVnlHt+s@8bytes.org> <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 7 Jul 2021 13:00:13 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
-Message-ID: <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Rob Clark <robdclark@chromium.org>, quic_c_gdjako@quicinc.com,
-        Saravana Kannan <saravanak@google.com>,
-        Rajat Jain <rajatja@google.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-pci@vger.kernel.org,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Sonny Rao <sonnyrao@chromium.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Parallel developments in mm/rmap.c have left behind some out-of-date
+comments: try_to_migrate_one() also accepts TTU_SYNC (already commented
+in try_to_migrate() itself), and try_to_migrate() returns nothing at all.
 
-On Fri, Jun 25, 2021 at 7:42 AM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Fri, Jun 25, 2021 at 6:19 AM Joerg Roedel <joro@8bytes.org> wrote:
-> >
-> > Hi Douglas,
-> >
-> > On Thu, Jun 24, 2021 at 10:17:56AM -0700, Douglas Anderson wrote:
-> > > The goal of this patch series is to get better SD/MMC performance on
-> > > Qualcomm eMMC controllers and in generally nudge us forward on the
-> > > path of allowing some devices to be in strict mode and others to be in
-> > > non-strict mode.
-> >
-> > So if I understand it right, this patch-set wants a per-device decision
-> > about setting dma-mode to strict vs. non-strict.
-> >
-> > I think we should get to the reason why strict mode is used by default
-> > first. Is the default on ARM platforms to use iommu-strict mode by
-> > default and if so, why?
-> >
-> > The x86 IOMMUs use non-strict mode by default (yes, it is a security
-> > trade-off).
->
-> It is certainly a good question. I will say that, as per usual, I'm
-> fumbling around trying to solve problems in subsystems I'm not an
-> expert at, so if something I'm saying sounds like nonsense it probably
-> is. Please correct me.
->
-> I guess I'd start out by thinking about what devices I think need to
-> be in "strict" mode. Most of my thoughts on this are in the 3rd patch
-> in the series. I think devices where it's important to be in strict
-> mode fall into "Case 1" from that patch description, copied here:
->
-> Case 1: IOMMUs prevent malicious code running on the peripheral (maybe
-> a malicious peripheral or maybe someone exploited a benign peripheral)
-> from turning into an exploit of the Linux kernel. This is particularly
-> important if the peripheral has loadable / updatable firmware or if
-> the peripheral has some type of general purpose processor and is
-> processing untrusted inputs. It's also important if the device is
-> something that can be easily plugged into the host and the device has
-> direct DMA access itself, like a PCIe device.
->
->
-> Using sc7180 as an example (searching for iommus in sc7180.dtsi), I'd
-> expect these peripherals to be in strict mode:
->
-> * WiFi / LTE - I'm almost certain we want this in "strict" mode. Both
-> have loadable / updatable firmware and both do complex processing on
-> untrusted inputs. Both have a history of being compromised over the
-> air just by being near an attacker. Note that on sc7180 these are
-> _not_ connected over PCI so we can't leverage any PCI mechanism for
-> deciding strict / non-strict.
->
-> * Video decode / encode - pretty sure we want this in strict. It's got
-> loadable / updatable firmware and processing complex / untrusted
-> inputs.
->
-> * LPASS (low power audio subsystem) - I don't know a ton and I think
-> we don't use this much on our designs, but I believe it meets the
-> definitions for needing "strict".
->
-> * The QUPs (handles UART, SPI, and i2c) - I'm not as sure here. These
-> are much "smarter" than you'd expect. They have loadable / updatable
-> firmware and certainly have a sort of general purpose processor in
-> them. They also might be processing untrusted inputs, but presumably
-> in a pretty simple way. At the moment we don't use a ton of DMA here
-> anyway and these are pretty low speed, so I would tend to leave them
-> as strict just to be on the safe side.
->
->
-> I'd expect these to be non-strict:
->
-> * SD/MMC - as described in this patch series.
->
-> * USB - As far as I know firmware isn't updatable and has no history
-> of being compromised.
->
->
-> Special:
->
-> * GPU - This already has a bunch of special cases, so we probably
-> don't need to discuss here.
->
->
-> As far as I can tell everything in sc7180.dtsi that has an "iommus"
-> property is classified above. So, unless I'm wrong and it's totally
-> fine to run LTE / WiFi / Video / LPASS in non-strict mode then:
->
-> * We still need some way to pick strict vs. non-strict.
->
-> * Since I've only identified two peripherals that I think should be
-> non-strict, having "strict" the default seems like fewer special
-> cases. It's also safer.
->
->
-> In terms of thinking about x86 / AMD where the default is non-strict,
-> I don't have any historical knowledge there. I guess the use of PCI
-> for connecting WiFi is more common (so you can use the PCI special
-> cases) and I'd sorta hope that WiFi is running in strict mode. For
-> video encode / decode, perhaps x86 / AMD are just accepting the risk
-> here because there was no kernel infrastructure for doing better? I'd
-> also expect that x86/AMD don't have something quite as crazy as the
-> QUPs for UART/I2C/SPI, but even if they do I wouldn't be terribly
-> upset if they were in non-strict mode.
->
-> ...so I guess maybe the super short answer to everything above is that
-> I believe that at least WiFi ought to be in "strict" mode and it's not
-> on PCI so we need to come up with some type of per-device solution.
+TTU_SPLIT_FREEZE has just been deleted, so reword the comment about it in
+mm/huge_memory.c; and TTU_IGNORE_ACCESS was removed in 5.11, so delete
+the "recently referenced" comment from try_to_unmap_one() (once upon a
+time the comment was near the removed codeblock, but they drifted apart).
 
-I guess this thread has been silent for a bit of time now. Given that
-my previous version generated a whole bunch of traffic, I guess I'm
-assuming this:
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+ mm/huge_memory.c | 2 +-
+ mm/rmap.c        | 7 +------
+ 2 files changed, 2 insertions(+), 7 deletions(-)
 
-a) Nothing is inherently broken with my current approach.
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 8b731d53e9f4..afff3ac87067 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2331,7 +2331,7 @@ static void remap_page(struct page *page, unsigned int nr)
+ {
+ 	int i;
+ 
+-	/* If TTU_SPLIT_FREEZE is ever extended to file, remove this check */
++	/* If unmap_page() uses try_to_migrate() on file, remove this check */
+ 	if (!PageAnon(page))
+ 		return;
+ 	if (PageTransHuge(page)) {
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 37c24672125c..746013e282c3 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1439,8 +1439,6 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
+ 	while (page_vma_mapped_walk(&pvmw)) {
+ 		/*
+ 		 * If the page is mlock()d, we cannot swap it out.
+-		 * If it's recently referenced (perhaps page_referenced
+-		 * skipped over this mm) then we should reactivate it.
+ 		 */
+ 		if (!(flags & TTU_IGNORE_MLOCK)) {
+ 			if (vma->vm_flags & VM_LOCKED) {
+@@ -1687,8 +1685,7 @@ void try_to_unmap(struct page *page, enum ttu_flags flags)
+  * @arg: enum ttu_flags will be passed to this argument.
+  *
+  * If TTU_SPLIT_HUGE_PMD is specified any PMD mappings will be split into PTEs
+- * containing migration entries. This and TTU_RMAP_LOCKED are the only supported
+- * flags.
++ * containing migration entries.
+  */
+ static bool try_to_migrate_one(struct page *page, struct vm_area_struct *vma,
+ 		     unsigned long address, void *arg)
+@@ -1928,8 +1925,6 @@ static bool try_to_migrate_one(struct page *page, struct vm_area_struct *vma,
+  *
+  * Tries to remove all the page table entries which are mapping this page and
+  * replace them with special swap entries. Caller must hold the page lock.
+- *
+- * If is successful, return true. Otherwise, false.
+  */
+ void try_to_migrate(struct page *page, enum ttu_flags flags)
+ {
+-- 
+2.26.2
 
-b) My current approach doesn't make anybody terribly upset even if
-nobody is totally in love with it.
-
-c) Nobody has any other bright ideas for ways to solve this that would
-make my patch series obsolete.
-
-I guess I'll take that as a good sign and hope that it means that this
-approach has a path forward. I suppose it could just be that everyone
-is busy and/or on vacation, but I've always been an optimist!
-
-My plan continues to be to send a v3 of my patch series atop Sai's
-patch [1] and John's series [2]. I'll plan to wait a bit longer before
-posting my v3 to allow for more feedback/thoughts and also to see if
-either Sai's patches or John's patches land and/or have newer versions
-posted. :-)
-
--Doug
-
-[1] https://lore.kernel.org/r/20210623134201.16140-1-saiprakash.ranjan@codeaurora.org
-[2] https://lore.kernel.org/linux-doc/1624016058-189713-1-git-send-email-john.garry@huawei.com
