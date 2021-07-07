@@ -2,105 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8FF3BED88
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BC63BED8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbhGGR5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 13:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
+        id S231310AbhGGR56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 13:57:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbhGGR5P (ORCPT
+        with ESMTP id S230164AbhGGR5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:57:15 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0815BC061574;
-        Wed,  7 Jul 2021 10:54:35 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id v14so6118049lfb.4;
-        Wed, 07 Jul 2021 10:54:34 -0700 (PDT)
+        Wed, 7 Jul 2021 13:57:51 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD18C061574;
+        Wed,  7 Jul 2021 10:55:10 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id r26so6126098lfp.2;
+        Wed, 07 Jul 2021 10:55:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HZpmDCIz0rIGK47pS6w8JzmqA/aA+YixYTwCoaSlrnc=;
-        b=E0/p0hqryKCZWz6zf9caFhG/blb0UAzoveQkdWBy7FIUcKFy3D5ouO0goA1YwclnLT
-         c9QI56auMm2qY1kpTMWZkAJCmbyIJCrNWrMWe6R+LxNJkLoYPcp2e/J5oMUiytDg2N0e
-         i8eHoecUlFMpUToxFScDHPG79t78rEIozbDtRthX3fXJD78UwDZQKUvMA5ZjiC3mHl8J
-         cyDQjtletcnCmz/b6T0dPyGgvkOEiAHY5IyZaIHsmGKAboDbLXdriPz/7YNNvWjhm7Nb
-         xGz34JHZem3RskTxCB18SRMNXll+sSnWBapsazWqhv3UqFIVejXWhphQo/yTY7JCdTMD
-         sMug==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zQxdG9I9Woa7S81uA0jzyR2yog0q49/Cb6/kJl+fdKw=;
+        b=DPrgZiDxLxxXsaeiP6iCEpP5oqHrr32wA0cgJIU4nTet5CoaGBrMeLBSTguCnSMbsf
+         gZSBa6ckD574dcRSLXAaPOlgMNbtP5ibJLmgmaQs3IZbdYdaZNtkt8ORDtjofcwHrpeo
+         X0pDJA+cYDO1swW6g2Q2kqyKOTO8fpwcrGsKNfFX/veaD7X5aR4tyN0UwJxW0cVdsaAG
+         wlWHp1S8Dy3fnognXmJmrEUuiv9qpsJ8J1pNRtCaj4AIEeFfDE7oFqSg21b7NKdpOwWN
+         XML0iqOjspip/aEkvl7rbFttEMF9B2+b9l4hm+y9A0hch9vub5tdcE9jmGOqsqC3kS/C
+         qxzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=HZpmDCIz0rIGK47pS6w8JzmqA/aA+YixYTwCoaSlrnc=;
-        b=iMaN2ala6H25XI9+lWbAjy5A4ZoEEJ2Tg3h3IkK57GRUSzqlf0dWqUrtPxjliYIORz
-         gn3ddnY40ibVTIj/yNvQUgGGBzDta+XniJskcfZ2C4tc3vUJG4x1ShX8flAfc8YhXtms
-         RHhXAGkhoS55qDsqygpZFnzSxbbUwES4PauDF5nTUw6olpUw0RTzdp+LnU/K5TdqJtsT
-         snrse8Dig1l7YXDG6UqbckNQKn1MN9E527zj9viMbKmgybcvIavD9qbNsCEUgtikf9B/
-         YGy6oZQvMmlqEs8PELCm5mR8ooxtZ6RrLAsRGUWQCU0wSGantlzChW61XE1pd7zdwtBg
-         8mUw==
-X-Gm-Message-State: AOAM530SPfYzcgshCKka0MIlUMKiesJoLmQodduEHFuFm282LwRwifC3
-        7cuWlLIdthNvdVVvzhDd3N4Ur/4a+J9RPA==
-X-Google-Smtp-Source: ABdhPJz5CVwGGqWzlzZS4on1/Hstress7Qt0eaxM5wrDBX+jviNc+ukzcaFHNystsXA4dTL1Dc9TeA==
-X-Received: by 2002:ac2:4345:: with SMTP id o5mr19628396lfl.599.1625680473222;
-        Wed, 07 Jul 2021 10:54:33 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.225.155])
-        by smtp.gmail.com with ESMTPSA id f19sm1252303lfs.133.2021.07.07.10.54.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 10:54:32 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     mchehab@kernel.org, jsagarribay@gmail.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH] media: stkwebcam: fix memory leak in stk_camera_probe
-Date:   Wed,  7 Jul 2021 20:54:30 +0300
-Message-Id: <20210707175430.23204-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        bh=zQxdG9I9Woa7S81uA0jzyR2yog0q49/Cb6/kJl+fdKw=;
+        b=SIllCcHpYNOh3tkuYWBZBkuoWgBvxQZyTM2WPLeqas7xaY6r6Jp5pGNpHjzcS5ydhu
+         1e8Y5NfrdVDDiVWYJ7p0GMJDK97/W7HRqwFJOREKVpxmoTwq1c9SsaPHEDgVZMXsr6CE
+         fG861IzeMxIM+IaH7ReKg3ug4Klma3aBLY9IHyZac/xYXZqC6HZtvNCfryot6a0j7Tzv
+         OvmRzr10mxy5M9OL0zE76g7clMAy1vj6WA1L1wMr2zqf2oQR2pzLo6sZcga2UwVQE778
+         uX2fnNaTvf827Hh96ekki0+34M8j592Gu3GPh2QCbN64v9L/yooG8waCsWW2n+pkY4dC
+         xWEw==
+X-Gm-Message-State: AOAM532YfHHC6+Sac5KqK109SIuzShlDaMd+n6jYbDyq0oPLTz7aiHf9
+        wJUpWrf6n2PKp92W+yI2zq8u6Zs0akg=
+X-Google-Smtp-Source: ABdhPJwyOvh7JP+XAqY+4wG4EDAsP16uap1AjswsK9fEtNc3A6WHJwpiIM6SORNrG7sPVt+w1f6m0Q==
+X-Received: by 2002:ac2:5189:: with SMTP id u9mr4551247lfi.161.1625680508344;
+        Wed, 07 Jul 2021 10:55:08 -0700 (PDT)
+Received: from [192.168.1.102] ([178.176.76.61])
+        by smtp.gmail.com with ESMTPSA id i6sm1761452lfe.164.2021.07.07.10.55.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Jul 2021 10:55:08 -0700 (PDT)
+Subject: Re: [PATCH v2 4/9] clocksource/drivers/pistachio: Make it seletable
+ for MIPS
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
+Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
+        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
+        vkoul@kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org
+References: <20210707031552.20166-1-jiaxun.yang@flygoat.com>
+ <20210707031552.20166-5-jiaxun.yang@flygoat.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <99803248-0a48-c4a8-e278-47e0794dbc48@gmail.com>
+Date:   Wed, 7 Jul 2021 20:55:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210707031552.20166-5-jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My local syzbot instance hit memory leak in usb_set_configuration().
-The problem was in unputted usb interface. In case of errors after
-usb_get_intf() the reference should be putted to correclty free memory
-allocated for this interface.
+Hello!
 
-Fixes: ec16dae5453e ("V4L/DVB (7019): V4L: add support for Syntek DC1125 webcams")
-Cc: stable@vger.kernel.org
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/media/usb/stkwebcam/stk-webcam.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+   "Selectable" in the subject.
 
-diff --git a/drivers/media/usb/stkwebcam/stk-webcam.c b/drivers/media/usb/stkwebcam/stk-webcam.c
-index a45d464427c4..0e231e576dc3 100644
---- a/drivers/media/usb/stkwebcam/stk-webcam.c
-+++ b/drivers/media/usb/stkwebcam/stk-webcam.c
-@@ -1346,7 +1346,7 @@ static int stk_camera_probe(struct usb_interface *interface,
- 	if (!dev->isoc_ep) {
- 		pr_err("Could not find isoc-in endpoint\n");
- 		err = -ENODEV;
--		goto error;
-+		goto error_put;
- 	}
- 	dev->vsettings.palette = V4L2_PIX_FMT_RGB565;
- 	dev->vsettings.mode = MODE_VGA;
-@@ -1359,10 +1359,12 @@ static int stk_camera_probe(struct usb_interface *interface,
- 
- 	err = stk_register_video_device(dev);
- 	if (err)
--		goto error;
-+		goto error_put;
- 
- 	return 0;
- 
-+error_put:
-+	usb_put_intf(interface);
- error:
- 	v4l2_ctrl_handler_free(hdl);
- 	v4l2_device_unregister(&dev->v4l2_dev);
--- 
-2.32.0
+On 7/7/21 6:15 AM, Jiaxun Yang wrote:
 
+> So it will be avilable for generic MIPS kenrel.
+
+   "Kernel" here. :-)
+
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+[...]
+
+MBR, Sergei
