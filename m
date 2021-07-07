@@ -2,121 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B631C3BE910
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 15:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1933C3BE915
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 15:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbhGGNzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 09:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60418 "EHLO
+        id S231836AbhGGN4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 09:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231785AbhGGNzP (ORCPT
+        with ESMTP id S231472AbhGGN4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 09:55:15 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CD7C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 06:52:35 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id t3so3479450edc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 06:52:35 -0700 (PDT)
+        Wed, 7 Jul 2021 09:56:42 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC22C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 06:54:00 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id f30so4244501lfj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 06:54:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xzn5beMRwlDU7RiGDi7KQ0mh5zrErFCKdJw7ho9vOWU=;
-        b=DO5zWxxqUTFRrmFdJlISl3mEcuyUikO9XunHpeA6kcEzHtor88k+QHlQk/BAyTnUsG
-         ZRvYAc6KKCozox1khD75UNGQTivBgJo4Ge79I5O1hbv4s8ZTrR9q6sS4UdIY8ssMVvB0
-         /S9VschAc8MdVsFZXNXBqD+vPzbojMzDL1M+Cw34Q71c8BhWwnf/n2AtjCeULXRvmLT+
-         uGR5vx/BJcjuQTLVDSPQdq5aLmIdgHns6qlJuNtYHjWp1joimCZvsQ0zIkxFY7PU4MaL
-         BXiqAzTVoTzktl+rBAvjTsLvMgyWT6SIDNHVCXgJLHDEcONBBjYnYSWfsi15Dw/j+gEi
-         QE2A==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QcEZkwLs+Fpl1nceNhi+IHsXytH/BS7pSdCOP46nwS8=;
+        b=J9l+mpUMTfvqLDmLvM31KUzyWqn+aq4ujZ6cHj2NZYTanNHIyhxkbIPp9I5M2um5dp
+         jl1a4d/W+zh/syUSDqZjU5/U6kVIbodiqpGXOU7IjWI2k5Y7MD6N5qiNePj9pCihw7kN
+         jHul16Ap7QaZrHNkM7GEPRtJjAnWR4YtHwVGj7rA5G7WoLYmFlSCqlGRV2EeHcgGigk4
+         JOgmf/bg6nkQM3Qj1HGrpY6wuUqz4RujD9vzN+5gFGujq1UEpxVpQyGGpcf1nm8boQZV
+         1pKwikP/goLJ/yeQOTuDfMAo4DDOYo333jmUEgWMzpqxPsks/qWOKc1iG/sxQRXeUHki
+         uZuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xzn5beMRwlDU7RiGDi7KQ0mh5zrErFCKdJw7ho9vOWU=;
-        b=Cjth6CA6Kcie+ljppivWZl2kyP6zft7NWM0N4HPBzbibIOozLKVvB5PyU8GCSY0IEo
-         JnGvEk04dnRfVZJI3k2IEl31S7aI4xXIo+NLfjaJ5oHPxz933ZHs4Yrp4sft73sbRPL4
-         FQVMSETRevCN1gcz0/TXFDfXH22nyAhxKI8PP6k/uNHll1VfeJHRrC8NTLodYt8dfVtg
-         UEwRxpZpqr2ONCwhiJKHXtP/tnyhyMhRqeT+bsUSVgTbN0Saw74UtQbCr/xuYSsd5WmW
-         IdK/inl2Lzeo7ZDLM0dwHalQ/DbvJ3XpqdWwyd8n+g/gMzVGrcMlvRqsSgcSSV52MFsR
-         E36A==
-X-Gm-Message-State: AOAM530AYAJ1AQbiDYJKyMe+yYP97inpuzVA1gNrQoRnnh2xP2hx8LEa
-        arp5HxLsO9BkKTY0HXJHQxYYlQ==
-X-Google-Smtp-Source: ABdhPJwv41T+C++xFliVuTZ7mCoQvhWC5JAnPtsodz1EvhPcqsGeDZdY63krJOrGgd1K05k5qepecg==
-X-Received: by 2002:a05:6402:2552:: with SMTP id l18mr30620995edb.363.1625665953808;
-        Wed, 07 Jul 2021 06:52:33 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id bm1sm2588576ejb.38.2021.07.07.06.52.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 06:52:33 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     bgolaszewski@baylibre.com, linus.walleij@linaro.org,
-        sathyanarayanan.kuppuswamy@linux.intel.com, andy@kernel.org,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH] gpio: wcove: remove platform_set_drvdata() + cleanup probe
-Date:   Wed,  7 Jul 2021 16:52:26 +0300
-Message-Id: <20210707135226.191988-1-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QcEZkwLs+Fpl1nceNhi+IHsXytH/BS7pSdCOP46nwS8=;
+        b=dg97j2msk3pS6rSsN9CsBByq7DdYY+GYKBSWdtXKl43x+ho76m/NcTODYQbAfCPHuj
+         Y8kWcr0L0OZRKV/jSIq1KJ6m3MStIeNR+VeWPophnd1ynpHdt5XU00tA19+OhyKMu697
+         8gBzxFSEMxUUbBm1+vOU/CmmbAVX1jCev7HZI4xWBRDfh3hoBRKlKYj2ltWE+hzH1T2z
+         OCrWhH0QrgbE9MMQAdO+kOCM8yf1kSwKuEtofozf5yLxiQ3sQDYGyAa8GXdT7qcupNW0
+         HmNPnb1Q4XK27GkPjXfaWQaEOqyc+KHMbY/he7D38AqldcuhcqLAgek32ENfWCEpZirT
+         rH0Q==
+X-Gm-Message-State: AOAM533lRQpXuP9PF+50VMBDz4pmP181QxLMhy+7Uum0z/V4LkbdrAvb
+        8OgR+MEYbeZ0v4KJyfox/1zvqWmjkhM/0Yi9NSbTDQ==
+X-Google-Smtp-Source: ABdhPJziIHuDk3QTEhNkB8QyPJVN8Tj7rlHy8SnXjNs5Bc05mgG+iHNERzVY//0Dd0SbxT4DXAD+Bsn5Qo7oEv4rbh4=
+X-Received: by 2002:a05:6512:3c99:: with SMTP id h25mr7823582lfv.277.1625666039231;
+ Wed, 07 Jul 2021 06:53:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210625152603.25960-1-lukasz.luba@arm.com> <20210625152603.25960-2-lukasz.luba@arm.com>
+ <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
+ <a6a49480-7d5d-fd0e-3940-0b6baac5acc0@arm.com> <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
+ <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com> <CAKfTPtDk1ANfjR5h_EjErVfQ7=is3n9QOaKKxz81tMHtqUM7jA@mail.gmail.com>
+ <297df159-1681-f0a7-843d-f34d86e51d4c@arm.com> <CAKfTPtCEo+gkV2TMhOHSnuUyu5BC54o-B4Hb=QbzgT6Dft-PhQ@mail.gmail.com>
+ <27916860-33b1-f0a0-acff-4722a733c81b@arm.com> <CAKfTPtB2ogGbGBjJNRBB5jvN24q-tXFR+BpJ31fzsTd2=pDTHQ@mail.gmail.com>
+ <ee3ebbaa-7b6d-416d-2caa-197c2713dd4e@arm.com> <CAKfTPtAN6-ytxa2Qj3=z27e8ZBoqGrWAZce9CojL3wbZSotUsQ@mail.gmail.com>
+ <58cb7ad3-ffff-8940-4c8e-2c46dcc86d54@arm.com> <CAKfTPtCy-dbo0xnW8iKaQy94_iV=JYbMU-X4qanzL6RXcL7xEw@mail.gmail.com>
+ <e3b11a84-9a26-9a7d-cf90-12a7a8fbcc3f@arm.com>
+In-Reply-To: <e3b11a84-9a26-9a7d-cf90-12a7a8fbcc3f@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 7 Jul 2021 15:53:48 +0200
+Message-ID: <CAKfTPtD-i0K=ofKEekoCzAm2eXR+vVzFxR-uc6Em4LMO8W=RFA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
+ of EAS estimated energy
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Chris Redpath <Chris.Redpath@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        CCj.Yeh@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The platform_set_drvdata() call is only useful if we need to retrieve back
-the private information.
-Since the driver doesn't do that, it's not useful to have it.
+On Wed, 7 Jul 2021 at 13:02, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+>
+>
+> On 7/7/21 11:50 AM, Vincent Guittot wrote:
+> > On Wed, 7 Jul 2021 at 12:41, Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>
+> >>
+> >>
+> >> On 7/7/21 11:32 AM, Vincent Guittot wrote:
+> >>> On Wed, 7 Jul 2021 at 12:29, Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 7/7/21 11:11 AM, Vincent Guittot wrote:
+> >>>>> On Wed, 7 Jul 2021 at 12:06, Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>>>>>
+> >>>>
+> >>>> [snip]
+> >>>>
+> >>>>>> No. It's in 0.1uW scale, so 800Watts. Which is 16 CPUs * 64Watts
+> >>>>>
+> >>>>> Oh! you want 0.1uW precision .... This doesn't seem realistic at all.
+> >>>>> I'm not even sure that the power model can even reach an accuracy of
+> >>>>> 1mW
+> >>>>>
+> >>>>
+> >>>> True, the EM is registering platform with 1mW precision, but 1uW
+> >>>
+> >>> Do you mean 1uW or 0.1uW ?
+> >>
+> >> In this patch set I've proposed 0.1uW, but I'm open to drop one
+> >> order of magnitude. The 1uW still be good.
+> >
+> > I don't want to underestimate the capabilities of the power model but
+> > I don't see which benefit you will get with 0.1uW precision
+> > With a 1uW precision the long type currently used for the returned
+> > value is fine for 32bits machine AFAICT
+> >
+>
+> For 1uW and 1.2Watts for one core, 4 CPUs in cluster we get:
+> (1200 * 1000) * (4 * 1024) = ~4.9bln
+> so it would need div 64 version
 
-This change also changes the probe order a bit, moving the
-devm_gpiochip_add_data() as the last call. This means that when the
-gpiochip is registered [and available to consumers], it should be
-initialized.
-
-It's still possible that the devm_gpiochip_add_data() call could fail,
-leaving the chip in a partially initialized state, but that was possible
-even before this change; it was just some other partially initialized
-state.
-
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/gpio/gpio-wcove.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
-
-diff --git a/drivers/gpio/gpio-wcove.c b/drivers/gpio/gpio-wcove.c
-index a19eeef6cf1e..2109610f5dad 100644
---- a/drivers/gpio/gpio-wcove.c
-+++ b/drivers/gpio/gpio-wcove.c
-@@ -428,8 +428,6 @@ static int wcove_gpio_probe(struct platform_device *pdev)
- 
- 	wg->regmap_irq_chip = pmic->irq_chip_data;
- 
--	platform_set_drvdata(pdev, wg);
--
- 	mutex_init(&wg->buslock);
- 	wg->chip.label = KBUILD_MODNAME;
- 	wg->chip.direction_input = wcove_gpio_dir_in;
-@@ -469,12 +467,6 @@ static int wcove_gpio_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	ret = devm_gpiochip_add_data(dev, &wg->chip, wg);
--	if (ret) {
--		dev_err(dev, "Failed to add gpiochip: %d\n", ret);
--		return ret;
--	}
--
- 	/* Enable GPIO0 interrupts */
- 	ret = regmap_clear_bits(wg->regmap, IRQ_MASK_BASE + 0, GPIO_IRQ0_MASK);
- 	if (ret)
-@@ -485,7 +477,7 @@ static int wcove_gpio_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	return 0;
-+	return devm_gpiochip_add_data(dev, &wg->chip, wg);
- }
- 
- /*
--- 
-2.31.1
-
+But as stated before, this is an internal computation step and doesn't
+have to be reflected in the returned value which can stay a long
