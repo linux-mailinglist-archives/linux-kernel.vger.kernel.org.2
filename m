@@ -2,131 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B953BEFD8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BC23BEFE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhGGSx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
+        id S230187AbhGGS5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhGGSx4 (ORCPT
+        with ESMTP id S230032AbhGGS5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:53:56 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501DBC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 11:51:15 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id u18so6610957lff.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 11:51:15 -0700 (PDT)
+        Wed, 7 Jul 2021 14:57:22 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521F8C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 11:54:41 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id m1so4754833edq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 11:54:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JUWgrVFh2/qFHv+c7cx9WrsAZfLxb2SYVIzx1ikmyn4=;
-        b=XttfrQzllZ5hfvz+r8DOgpYrpWtvyB5t0PHEX1Y2eNOFgk5dUY3OuvXI0CqDFd/pgI
-         A+N9rMBzTUNYTkONuNy9MPqR+5kve6+bLqTDIaqBl7rsEvwwWqE6ExgQ8cBU3khvcl/e
-         +/3nzatZ9yAdZ2XqcA9KwWC10g+fcc8ThxqtUVC7DNCMNKlhCaIg30MVE1dnpapPxHCL
-         sTzVs/nE0VCBbZcpxwwveFhqivFSVMiy1OzhvYAGX7nApIOBMfoM6aRlb9loMSSy2cga
-         b0n+QYDRmWy5/CqVjVUb+UlAoYhKUWSo+uqmXKIvCut32wSjXRQEgPg/Wl338+C1ChUn
-         64aQ==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ugbA+4JXRP1mJwLMiXh8sHPiNT5dm+iRolBoqcwvGKM=;
+        b=UWmdMoSC6n6QgehfuVD18jZrfRnAzOQu/YMvpyvP1FIKUp3BE0/9X7ze+Nr5kV6fzs
+         fNG/XxtM+aTtgosF3KIaFgB2xxVqlo9KjZhsZj0LNmOs535WsATvLMEWrkA9+uzQO5WZ
+         hLiWBNIXX8dW1gOk3PDCbjhD0UJtDraRimRZCedJTnw3SJSubzpyzBsQQ5Wv9JFk5w9O
+         GBs4V4067U1+f0SXZxlAq6cHUbn52Syibvd60smJNE8lDop7PUDEiluj0fntQJZjlrMo
+         xKy7+LSHA87ej/o1Qc6q7QbrTtWd4fsCMB8GTFTwATdAR+b/yqrELwX8SDK/L3lq2V/B
+         UuEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JUWgrVFh2/qFHv+c7cx9WrsAZfLxb2SYVIzx1ikmyn4=;
-        b=IyTDn+OWWLf1lU29m+k50T2vpjU5LvdkeDuiv9hwMcKEfSL7v5ZUljbvh26/KRUadC
-         fU1XfX0a5rpDei5xFG+emR4wuczKm5vg6kjovITv2eHgfDHefuhZzXWsUrTliTaSFl1X
-         K/47zHuTwlz17XPaeHEkqbdSDxu7uqv+0g95Ej1z0A1FCgGG2bs3WDml8hB2/eMR5NFs
-         eSNjKFavKWgob74bLFeryGgDDfV6RqRs0PN+S8cMnf41PCbtutSMl5z5e83hzgemPNEt
-         0WJbyaGIaV0+GF8YHY+LRzdBxpPo65BdwSB3KC9ceuOLIGmxbJGE6nqy+7pfuIZr/TZ1
-         ld5g==
-X-Gm-Message-State: AOAM533xzZlVJFoJ3c0WLKqnw/K7+0LNVf1d8L6VK5a5AiZv5iHnKA0u
-        eZcEsQ0u1O1TgPKOsTZ4vMEUbwVfAoVZwQ==
-X-Google-Smtp-Source: ABdhPJyY0sPA6voeOdJpmUyMRS+n1X52MH+w/yjUa9d9/HKQaGQd3HPJAjrNlVGOH8HfguGmgEMwfQ==
-X-Received: by 2002:ac2:4191:: with SMTP id z17mr19370786lfh.457.1625683873605;
-        Wed, 07 Jul 2021 11:51:13 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.225.155])
-        by smtp.gmail.com with ESMTPSA id w21sm1919021lfu.80.2021.07.07.11.51.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 11:51:13 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     christian.koenig@amd.com, ray.huang@amd.com, airlied@linux.ie
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH] gpu: ttm: fix GPF in ttm_bo_release
-Date:   Wed,  7 Jul 2021 21:51:08 +0300
-Message-Id: <20210707185108.3798-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ugbA+4JXRP1mJwLMiXh8sHPiNT5dm+iRolBoqcwvGKM=;
+        b=l8T4hoOQyassmJtWfSmE+bCE06UOU7hqLXz+p61KIZG4LnS/llzOK3BukB3HX1uuyh
+         zCbgmws6HhtN/8cUYioeAsAtaOCdi5J4O5xFwccwiAvvt3t6SgAC1mqHjt0di1LlxLv9
+         24oCzSfsBdPJT/9UWnIyrEB7wityQD4aHIt79+7EWdOP2m1AfGMR+U3bqoHKPAkMigMF
+         ynvA+Xaq2uRKjWBbgDNjxCgZnTLz6N2mUEFvJEnXL1p1drNy6buRcP2bu0vIPewSXNbi
+         Ysvm+rsyuq78VdfW7kpIB38WHNL7f/02uAMhjcQToiJETawSe3370YS2NRMs8a8iSVFE
+         OQIw==
+X-Gm-Message-State: AOAM531it9TaVTZnA0DW9+YbDNb44jS2MLHHP/3b7FJJ02ToZNzrLJk6
+        gRsr5G+YZHcpiZzoR/eEUGV01tSIcBJlP5cxRMpg
+X-Google-Smtp-Source: ABdhPJzwqV7FHm5eRzTwBwwPAUceWy+Y8yEhnDSBxTccP6bRO19RRdsI4wJHLd3uGtrVGw7qkCnAGwX2QsTdxop5hlo=
+X-Received: by 2002:a05:6402:2681:: with SMTP id w1mr31964013edd.275.1625684079863;
+ Wed, 07 Jul 2021 11:54:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <linux-audit/audit-kernel/issues/131@github.com>
+ <linux-audit/audit-kernel/issues/131/872191450@github.com>
+ <YN9V/qM0mxIYXt3h@yury-ThinkPad> <mvm7di59gtx.fsf@suse.de> <YOX2HBSoltXDGuu+@yury-ThinkPad>
+In-Reply-To: <YOX2HBSoltXDGuu+@yury-ThinkPad>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 7 Jul 2021 14:54:28 -0400
+Message-ID: <CAHC9VhTbYk14D1ZaUOfafcEtQgnPPF=ySpNYrsO+VD+W7PcYXQ@mail.gmail.com>
+Subject: Re: [linux-audit/audit-kernel] BUG: audit_classify_syscall() fails to
+ properly handle 64-bit syscalls when executing as 32-bit application on ARM (#131)
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Andreas Schwab <schwab@suse.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-audit/audit-kernel" 
+        <reply+ADSN7RXLQ62LNLD2MK5HFHF65GIU3EVBNHHDPMBXHU@reply.github.com>,
+        "linux-audit/audit-kernel" <audit-kernel@noreply.github.com>,
+        Mention <mention@noreply.github.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        bobo.shaobowang@huawei.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Alexander Graf <agraf@suse.de>,
+        Alexey Klimov <klimov.linux@gmail.com>,
+        Andrew Pinski <pinskia@gmail.com>,
+        Bamvor Zhangjian <bamv2005@gmail.com>,
+        Chris Metcalf <cmetcalf@mellanox.com>,
+        Christoph Muellner <christoph.muellner@theobroma-systems.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Florian Weimer <fweimer@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        James Hogan <james.hogan@imgtec.com>,
+        James Morse <james.morse@arm.com>,
+        Joseph Myers <joseph@codesourcery.com>,
+        Lin Yongting <linyongting@huawei.com>,
+        Manuel Montezelo <manuel.montezelo@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Nathan_Lynch <Nathan_Lynch@mentor.com>,
+        Philipp Tomsich <philipp.tomsich@theobroma-systems.com>,
+        Prasun Kapoor <Prasun.Kapoor@caviumnetworks.com>,
+        Ramana Radhakrishnan <ramana.gcc@googlemail.com>,
+        Steve Ellcey <sellcey@caviumnetworks.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My local syzbot instance hit GPF in ttm_bo_release().
-Unfortunately, syzbot didn't produce a reproducer for this, but I
-found out possible scenario:
+On Wed, Jul 7, 2021 at 2:44 PM Yury Norov <yury.norov@gmail.com> wrote:
+> On Mon, Jul 05, 2021 at 12:48:42PM +0200, Andreas Schwab wrote:
+> > On Jul 02 2021, Yury Norov wrote:
+> >
+> > > At least Marvell, Samsung, Huawei, Cisco and Weiyuchen's employer
+> > > actively use and develop arm64/ilp32.
+> >
+> > This is good to know.  Where can I get the uptodate kernel patches for
+> > ILP32?
+> >
+> > Andreas.
+>
+> The latest kernel supported by me is 5.2:
+> https://github.com/norov/linux/commits/ilp32-5.2
+>
+> I know about working ports of ILP32 on 5.7 and 5.10, but didn't see
+> the code and testing results. Hopefully Paul Moore and Weiyuchen will
+> share more details.
 
-drm_gem_vram_create()            <-- drm_gem_vram_object kzalloced
-				     (bo embedded in this object)
-  ttm_bo_init()
-    ttm_bo_init_reserved()
-      ttm_resource_alloc()
-        man->func->alloc()       <-- allocation failure
-      ttm_bo_put()
-	ttm_bo_release()
-	  ttm_mem_io_free()      <-- bo->resource == NULL passed
-				     as second argument
-	     *GPF*
+To be clear, I have not done any work with ILP32 nor do I have any
+immediate plans to do so (other tasks are higher priority).  I am not
+sure what details you are looking for, but there are several
+arches/ABIs in the kernel, including regular aarch64, that can serve
+as examples on how to enable syscall auditing (presumably that is what
+you are interested in with this thread).  There may be some
+interesting challenges with ILP32 due to overlap with aarch64
+syscalls, but I haven't looked closely enough at ILP32 to say that
+with any certainty.
 
-So, I've added check in ttm_bo_release() to avoid passing
-NULL as second argument to ttm_mem_io_free().
-
-Fail log:
-
-KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-CPU: 1 PID: 10419 Comm: syz-executor.3 Not tainted 5.13.0-rc7-next-20210625 #7
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-RIP: 0010:ttm_mem_io_free+0x28/0x170 drivers/gpu/drm/ttm/ttm_bo_util.c:66
-Code: b1 90 41 56 41 55 41 54 55 48 89 fd 53 48 89 f3 e8 cd 19 24 fd 4c 8d 6b 20 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 2a 01 00 00 4c 8b 63 20 31 ff 4c 89 e6 e8 00 1f
-RSP: 0018:ffffc900141df968 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90010da0000
-RDX: 0000000000000004 RSI: ffffffff84513ea3 RDI: ffff888041fbc010
-RBP: ffff888041fbc010 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000020 R14: ffff88806b258800 R15: ffff88806b258a38
-FS:  00007fa6e9845640(0000) GS:ffff88807ec00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fad61265e18 CR3: 000000005ad79000 CR4: 0000000000350ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ttm_bo_release+0xd94/0x10a0 drivers/gpu/drm/ttm/ttm_bo.c:422
- kref_put include/linux/kref.h:65 [inline]
- ttm_bo_put drivers/gpu/drm/ttm/ttm_bo.c:470 [inline]
- ttm_bo_init_reserved+0x7cb/0x960 drivers/gpu/drm/ttm/ttm_bo.c:1050
- ttm_bo_init+0x105/0x270 drivers/gpu/drm/ttm/ttm_bo.c:1074
- drm_gem_vram_create+0x332/0x4c0 drivers/gpu/drm/drm_gem_vram_helper.c:228
-
-Fixes: d3116756a710 ("drm/ttm: rename bo->mem and make it a pointer")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/gpu/drm/ttm/ttm_bo.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-index 1b950b45cf4b..15eb97459eab 100644
---- a/drivers/gpu/drm/ttm/ttm_bo.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo.c
-@@ -419,7 +419,8 @@ static void ttm_bo_release(struct kref *kref)
- 			bo->bdev->funcs->release_notify(bo);
- 
- 		drm_vma_offset_remove(bdev->vma_manager, &bo->base.vma_node);
--		ttm_mem_io_free(bdev, bo->resource);
-+		if (bo->resource)
-+			ttm_mem_io_free(bdev, bo->resource);
- 	}
- 
- 	if (!dma_resv_test_signaled(bo->base.resv, true) ||
 -- 
-2.32.0
-
+paul moore
+www.paul-moore.com
