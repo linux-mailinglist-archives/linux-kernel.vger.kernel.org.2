@@ -2,85 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC45F3BE65B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CCA3BE65C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhGGKcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:32:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:33952 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231137AbhGGKcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:32:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 70EC1ED1;
-        Wed,  7 Jul 2021 03:29:37 -0700 (PDT)
-Received: from [10.57.1.129] (unknown [10.57.1.129])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 64A7C3F694;
-        Wed,  7 Jul 2021 03:29:34 -0700 (PDT)
-Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
- of EAS estimated energy
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Chris Redpath <Chris.Redpath@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        CCj.Yeh@mediatek.com
-References: <20210625152603.25960-1-lukasz.luba@arm.com>
- <20210625152603.25960-2-lukasz.luba@arm.com>
- <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
- <a6a49480-7d5d-fd0e-3940-0b6baac5acc0@arm.com>
- <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
- <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com>
- <CAKfTPtDk1ANfjR5h_EjErVfQ7=is3n9QOaKKxz81tMHtqUM7jA@mail.gmail.com>
- <297df159-1681-f0a7-843d-f34d86e51d4c@arm.com>
- <CAKfTPtCEo+gkV2TMhOHSnuUyu5BC54o-B4Hb=QbzgT6Dft-PhQ@mail.gmail.com>
- <27916860-33b1-f0a0-acff-4722a733c81b@arm.com>
- <CAKfTPtB2ogGbGBjJNRBB5jvN24q-tXFR+BpJ31fzsTd2=pDTHQ@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <ee3ebbaa-7b6d-416d-2caa-197c2713dd4e@arm.com>
-Date:   Wed, 7 Jul 2021 11:29:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S231401AbhGGKcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:32:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37340 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231137AbhGGKcT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 06:32:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625653779;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=36gdxuMNrjjiJ1bvDB0qOJiSWaHh3s756RYVqBBMqgs=;
+        b=MJEDuKL96vewZU0/k9XnnbsWLDToiqFrFCAeaa+UfaRRd3EHuejCrT5zseZ1bHdhLHclEH
+        SOa3g5eS19SvGvr0w3MyZ651frxJzNi8OUo2gnS7CbqoedBfUrmFKQW1o0Df4akvFrRASs
+        HqdZaU5P/s4aEkQSNqqniIxwunhaMNc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-252-eSoWamQsPlGUT9V5d_oqyg-1; Wed, 07 Jul 2021 06:29:38 -0400
+X-MC-Unique: eSoWamQsPlGUT9V5d_oqyg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DAFB25074B;
+        Wed,  7 Jul 2021 10:29:36 +0000 (UTC)
+Received: from starship (unknown [10.40.192.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A9155D6A8;
+        Wed,  7 Jul 2021 10:29:33 +0000 (UTC)
+Message-ID: <f6f4e6e26a33809bef8c4f799e9871027c613cb2.camel@redhat.com>
+Subject: Re: [PATCH 3/6] KVM: nSVM: Introduce svm_copy_nonvmloadsave_state()
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Cathy Avery <cavery@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Michael Roth <mdroth@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 07 Jul 2021 13:29:32 +0300
+In-Reply-To: <2c79e83c-376f-0e60-f089-84eae7e91f49@redhat.com>
+References: <20210628104425.391276-1-vkuznets@redhat.com>
+         <20210628104425.391276-4-vkuznets@redhat.com>
+         <2c79e83c-376f-0e60-f089-84eae7e91f49@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtB2ogGbGBjJNRBB5jvN24q-tXFR+BpJ31fzsTd2=pDTHQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/7/21 11:11 AM, Vincent Guittot wrote:
-> On Wed, 7 Jul 2021 at 12:06, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
-
-[snip]
-
->> No. It's in 0.1uW scale, so 800Watts. Which is 16 CPUs * 64Watts
+On Mon, 2021-07-05 at 14:08 +0200, Paolo Bonzini wrote:
+> On 28/06/21 12:44, Vitaly Kuznetsov wrote:
+> > Separate the code setting non-VMLOAD-VMSAVE state from
+> > svm_set_nested_state() into its own function. This is going to be
+> > re-used from svm_enter_smm()/svm_leave_smm().
+> > 
+> > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> > ---
+> >   arch/x86/kvm/svm/nested.c | 36 +++++++++++++++++++++---------------
+> >   arch/x86/kvm/svm/svm.h    |  2 ++
+> >   2 files changed, 23 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> > index 1c6b0698b52e..a1dec2c40181 100644
+> > --- a/arch/x86/kvm/svm/nested.c
+> > +++ b/arch/x86/kvm/svm/nested.c
+> > @@ -697,6 +697,26 @@ int nested_svm_vmrun(struct kvm_vcpu *vcpu)
+> >   	return ret;
+> >   }
+> >   
+> > +void svm_copy_nonvmloadsave_state(struct vmcb_save_area *from_save,
+> > +				  struct vmcb_save_area *to_save)
 > 
-> Oh! you want 0.1uW precision .... This doesn't seem realistic at all.
-> I'm not even sure that the power model can even reach an accuracy of
-> 1mW
+> Probably best to name this svm_copy_vmrun_state and perhaps (as a 
+> cleanup) change nested_svm_vmloadsave to svm_copy_vmloadsave_state.
+
+I agree with that. I would also add a comment to both 
+svm_copy_vmloadsave_state and svm_copy_vmrun_state stating what they
+are doing, like "this function copies state save area fields which
+are used by vmrun"
+
+Best regards,
+	Maxim Levitsky
+
+
 > 
+> Paolo
+> 
+> > +{
+> > +	to_save->es = from_save->es;
+> > +	to_save->cs = from_save->cs;
+> > +	to_save->ss = from_save->ss;
+> > +	to_save->ds = from_save->ds;
+> > +	to_save->gdtr = from_save->gdtr;
+> > +	to_save->idtr = from_save->idtr;
+> > +	to_save->rflags = from_save->rflags | X86_EFLAGS_FIXED;
+> > +	to_save->efer = from_save->efer;
+> > +	to_save->cr0 = from_save->cr0;
+> > +	to_save->cr3 = from_save->cr3;
+> > +	to_save->cr4 = from_save->cr4;
+> > +	to_save->rax = from_save->rax;
+> > +	to_save->rsp = from_save->rsp;
+> > +	to_save->rip = from_save->rip;
+> > +	to_save->cpl = 0;
+> > +}
+> > +
+> >   void nested_svm_vmloadsave(struct vmcb *from_vmcb, struct vmcb *to_vmcb)
+> >   {
+> >   	to_vmcb->save.fs = from_vmcb->save.fs;
+> > @@ -1360,21 +1380,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+> >   
+> >   	svm->nested.vmcb12_gpa = kvm_state->hdr.svm.vmcb_pa;
+> >   
+> > -	svm->vmcb01.ptr->save.es = save->es;
+> > -	svm->vmcb01.ptr->save.cs = save->cs;
+> > -	svm->vmcb01.ptr->save.ss = save->ss;
+> > -	svm->vmcb01.ptr->save.ds = save->ds;
+> > -	svm->vmcb01.ptr->save.gdtr = save->gdtr;
+> > -	svm->vmcb01.ptr->save.idtr = save->idtr;
+> > -	svm->vmcb01.ptr->save.rflags = save->rflags | X86_EFLAGS_FIXED;
+> > -	svm->vmcb01.ptr->save.efer = save->efer;
+> > -	svm->vmcb01.ptr->save.cr0 = save->cr0;
+> > -	svm->vmcb01.ptr->save.cr3 = save->cr3;
+> > -	svm->vmcb01.ptr->save.cr4 = save->cr4;
+> > -	svm->vmcb01.ptr->save.rax = save->rax;
+> > -	svm->vmcb01.ptr->save.rsp = save->rsp;
+> > -	svm->vmcb01.ptr->save.rip = save->rip;
+> > -	svm->vmcb01.ptr->save.cpl = 0;
+> > +	svm_copy_nonvmloadsave_state(save, &svm->vmcb01.ptr->save);
+> >   
+> >   	nested_load_control_from_vmcb12(svm, ctl);
+> >   
+> > diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> > index f89b623bb591..ff2dac2b23b6 100644
+> > --- a/arch/x86/kvm/svm/svm.h
+> > +++ b/arch/x86/kvm/svm/svm.h
+> > @@ -463,6 +463,8 @@ void svm_leave_nested(struct vcpu_svm *svm);
+> >   void svm_free_nested(struct vcpu_svm *svm);
+> >   int svm_allocate_nested(struct vcpu_svm *svm);
+> >   int nested_svm_vmrun(struct kvm_vcpu *vcpu);
+> > +void svm_copy_nonvmloadsave_state(struct vmcb_save_area *from_save,
+> > +				  struct vmcb_save_area *to_save);
+> >   void nested_svm_vmloadsave(struct vmcb *from_vmcb, struct vmcb *to_vmcb);
+> >   int nested_svm_vmexit(struct vcpu_svm *svm);
+> >   
+> > 
 
-True, the EM is registering platform with 1mW precision, but 1uW
-precision makes more sense for internal EAS calculation. I don't
-force platforms to report 1uW power, I just want to operate on
-it internally. PowerCap and DTPM also operate internally on 1uW,
-so it's not that unrealistic that some kernel components want
-better resolution.
 
-But as Peter suggested, we might skip 32bit platforms for this issue.
-I have to discussed this internally.
