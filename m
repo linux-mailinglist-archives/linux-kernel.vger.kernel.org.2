@@ -2,73 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F313BE7D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDC73BE7D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhGGM3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 08:29:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231544AbhGGM3C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 08:29:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57B2761C9A;
-        Wed,  7 Jul 2021 12:26:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625660772;
-        bh=11lOiGzZ8MMp6UljGklTfsKhM+XQRYH5sXa9bM4YRZ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J5Qg7qpuviwAH+mgYeKrwrIYLIc7i3BuzSv1U3Vcu15ygHw8XaQbswqAB7/44JD5G
-         mk/7Kx0naFUiIUzA3MniJUJgbP6nMncesippZytXKC+f0N8h7xoQarUEbeUBgQcXJg
-         +wlFTJnprlBmZWGsgb/T096vT1mdWOHUm+l7Ud6fRWN4oLRemJ3KhbOh98RjXeFtJ7
-         a4xTPpVOPkxeY9RW5pxd35KDk+g3Y2zK3fC7mSjGFLQKU/t+4aDB0RdLPKy0PAotK4
-         pQsgdkl55x/AqNjuHG/c+If3mdhc0suXceu6hU+TeRFl3EOyR18KqiJeG97P6kKo9U
-         agJjNJUQ4ZzCw==
-Date:   Wed, 7 Jul 2021 08:26:11 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de
-Subject: Re: [PATCH 5.13 0/2] 5.13.1-rc1 review
-Message-ID: <YOWdY5d1s71ytyEm@sashalap>
-References: <20210705105656.1512997-1-sashal@kernel.org>
- <41c9c1e8-f151-a8c4-2681-f8700aa6a9a5@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <41c9c1e8-f151-a8c4-2681-f8700aa6a9a5@linuxfoundation.org>
+        id S231643AbhGGM33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 08:29:29 -0400
+Received: from mail-lj1-f182.google.com ([209.85.208.182]:46887 "EHLO
+        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231628AbhGGM32 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 08:29:28 -0400
+Received: by mail-lj1-f182.google.com with SMTP id q4so2422969ljp.13
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 05:26:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:subject:to:in-reply-to
+         :references;
+        bh=zfK5nIKvqhQEsSUONceEfuKD/z7zuTiP8KIzwk65vxk=;
+        b=TD476vd/wTuu7X9+0pHVJ8bxDUew+ueRXKpnt+mhTeZ89DgHTsHilyHXCWhVwLtDn8
+         EOUq1DCkn+FiIHkYbRImfjkfK2r5sv63Eg47M7k6Y097/hTuGQn24fbQG0TvVvt9YO2E
+         4G+PxnPKtUXc4i4QVs6M1dxEAS8OeVvSBzaN6Sco+koBSKLCLxHRZrqO4ecPaqHdQME4
+         o13nDHautpAsi5b0XD2j1R1ICkkZs9e7RNIje1Z7WmEVxiIumgKSFxzA9Y6hCKWmXAd6
+         MqV90n63ll5QuC1jy6EmhhP92SEESsbWrgPYBYSYHiv82xEfi/JAZEMP/DIJKotwL+tt
+         9h0Q==
+X-Gm-Message-State: AOAM531LMxfH5ZfQ6Etf0cdoVAbEv7z5CL3szOZXI2VTby5T/R8DXL4+
+        OCuUVLPCHQbjR2/Lt+uiSEYUWP+YKjy8gBkp
+X-Google-Smtp-Source: ABdhPJxIrWgEtpgEupFokecChm2ltIRw/0mHgfopr6oXzzhP7gru45c4olz2EyNJX8x47zeXHVZvXA==
+X-Received: by 2002:a2e:8612:: with SMTP id a18mr17182132lji.121.1625660806972;
+        Wed, 07 Jul 2021 05:26:46 -0700 (PDT)
+Received: from localhost (88-112-11-80.elisa-laajakaista.fi. [88.112.11.80])
+        by smtp.gmail.com with ESMTPSA id t12sm1686725lfg.148.2021.07.07.05.26.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 05:26:46 -0700 (PDT)
+Message-ID: <60e59d86.1c69fb81.e047d.93c3@mx.google.com>
+Date:   Wed, 07 Jul 2021 15:26:45 +0300
+From:   Hannu Hartikainen <hannu@hrtk.in>
+Subject: Re: [PATCH] get_maintainer: only show lkml as last resort
+To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
+In-Reply-To: <19a701a8d5837088aa7d8ba594c228c0e040e747.camel@perches.com>
+References: <20210706083354.214826-1-hannu@hrtk.in>
+        <19a701a8d5837088aa7d8ba594c228c0e040e747.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 04:43:30PM -0600, Shuah Khan wrote:
->On 7/5/21 4:56 AM, Sasha Levin wrote:
->>
->>This is the start of the stable review cycle for the 5.13.1 release.
->>There are 2 patches in this series, all will be posted as a response
->>to this one.  If anyone has any issues with these being applied, please
->>let me know.
->>
->>Responses should be made by Wed 07 Jul 2021 10:49:46 AM UTC.
->>Anything received after that time might be too late.
->>
->>The whole patch series can be found in one patch at:
->>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.13.y&id2=v5.13
->>or in the git tree and branch at:
->>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
->>and the diffstat can be found below.
->>
->>Thanks,
->>Sasha
->>
->
->Compiled and booted on my test system. No dmesg regressions.
->
->Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Hi, and thanks for the review!
 
-Thanks for testing Shuah!
+On Tue, 06 Jul 2021 09:00:42 -0700, Joe Perches <joe@perches.com> wrote:
+> Almost no one reads lkml directly anyway and I rather like that lkml
+> gets all copies.
+> 
+> This allows lore.kernel.org/lkml to have a relatively complete searchable
+> database of all kernel related patch submissions.
 
--- 
-Thanks,
-Sasha
+I hadn't considered that and the documentation gave me the wrong idea.
+I'll submit a patch that clarifies the documentation instead. Thanks!
+
+Hannu
