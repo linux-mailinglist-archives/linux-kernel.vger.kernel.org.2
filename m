@@ -2,190 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10F73BEB93
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F973BEBA2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbhGGPvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 11:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231771AbhGGPvn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 11:51:43 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D518AC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 08:49:01 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id p22-20020a4a3c560000b0290256475d95fbso598554oof.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 08:49:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TRjwdSb4Zqrnk9xOXwD41+qNRE3CXecz0OfnXbeAS58=;
-        b=RlxKToVJlQHGox7LiMYJ/J5S2rsQpAtoZzbwH3VdDiieI2G5jdTAe2OABpXhcrSQBe
-         5rAw5cSFy+pbQ66jGlIboASoKg/94B39xmKg/+JvEU7EMk9lwzijritJ566nGWZeR5Dk
-         Scq3ogMBtiIXvAvE6hzhr+j0bYF2Ci7DOmi7g/zePXFzl1eHUqi6xH2OpsyBOZ3QYSEb
-         dPQViJkpQs03q59hJGEKm4acRcBH9DefUzFZe8Knnz0A62JyGrD7pgRNx32PHkNr9HHt
-         4ibqYrEmdqqTYmcNJT12s19EDbfmyR6aOH5BQbuRb32aSNOZmNSNWfycu83Yi9usWjfp
-         4BsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TRjwdSb4Zqrnk9xOXwD41+qNRE3CXecz0OfnXbeAS58=;
-        b=tNAmFgp7fv9gW+eP94RCiV9Roo7Me5UDLjd8hAbqNrqTUqWEJmGqa+E6qF4PI4j6KB
-         M764Xwg+E2dRzGW05BYy1pEcei8UCWuwTNiO094oL52TIEA524xxLaodk1PCqXV0Bm5l
-         D6s9DVwL7TbDlebpl2JbToQuxFlX3YcUWp4/Y9ZmhO+MVx4gQdQjI4oVWva5nBlVuhv9
-         x0asbSKKLglXbAMm6vSRPdGyqL/fpIUa8IansXoK+DPflzu3hum+6cyprEGVfKNmFnmg
-         4ekdbCQ50UsgRFYYvaEH5VxEYbvu09G9bxRD3GVJLO3iw7j1jYiFu8abYm/ZJyFFtGed
-         MQWQ==
-X-Gm-Message-State: AOAM5327XujNiTI2IcEs49lkLYATp6svFP+d7Me7XJJdhVYt5BsiMb5w
-        +B4e9yX0NbZce/a2gbTqGRNCzQ==
-X-Google-Smtp-Source: ABdhPJykJA4pq2CnNOGWottG6Gryv3lJXePlFoXG+hYkMXyop2gLq+jBTQ9RFWuTu8wN22KVv5ByQQ==
-X-Received: by 2002:a4a:ae8c:: with SMTP id u12mr18699977oon.3.1625672940853;
-        Wed, 07 Jul 2021 08:49:00 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c14sm4254420oic.50.2021.07.07.08.49.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 08:49:00 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 10:48:58 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] soc: qcom: rpmhpd: Use corner in power_off
-Message-ID: <YOXM6l0oRhpMKr+9@builder.lan>
-References: <20210703005416.2668319-1-bjorn.andersson@linaro.org>
- <20210703005416.2668319-2-bjorn.andersson@linaro.org>
- <cacd1a1f-01c8-b913-23e5-538a772cd118@codeaurora.org>
- <CAOCOHw4sufqC3=ixNud8Oz7vO0_ZcO8u5mqNQTKLZX4LGe9aow@mail.gmail.com>
- <c4440f5e-592c-b849-3ca7-57e812de2df5@codeaurora.org>
- <YOUyRrvdPLkbTqUp@yoga>
- <534fca70-d277-4154-b932-a4d6ab3b0b66@codeaurora.org>
+        id S231863AbhGGP5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 11:57:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231533AbhGGP47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 11:56:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 477B561CBF;
+        Wed,  7 Jul 2021 15:54:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625673259;
+        bh=jBYB8E2kxgHKI+p6Ge17CrAqEwZGHZvxadKDfFVaIpg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=i2oNik5do5AHOLInc4OUUnh1F5HFHYK0kr4sWV3miNytCJw7/lDxUrFNZc8zt+nVY
+         OiD9V2ljFumrYj8FRbVYSSjxPfzFDRrGLSj6Wx3m5uQA2m8CZtbkBk/RKXZ+aWJb2E
+         SmHiGI0lmJLrmjHxBW1okpUEq0lX4ITih1OyeYBigaiJ2xoKatvbZdQ2hBOYN8FPYD
+         10AdgnOw8vzYCVq5JVfO5sByQHdJvhvdYC2IBE/4TnEELQcKv8QoPSP7J9TBO3vLyg
+         T+hSNeXjX71oyYS4rQ5JrGBRvKfteyyO2NwNv3nYVTt1O1mfPW6tTySCVYE1nJY/w3
+         rXj5dhh7qvz2Q==
+Date:   Wed, 7 Jul 2021 10:54:18 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Art Nikpal <email2tema@gmail.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        =?utf-8?B?6ZmI5Y2O5omN?= <chenhuacai@loongson.cn>,
+        Yue Wang <yue.wang@amlogic.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Artem Lapkin <art@khadas.com>, Nick Xie <nick@khadas.com>,
+        Gouwa Wang <gouwa@khadas.com>
+Subject: Re: [PATCH 0/4] PCI: replace dublicated MRRS limit quirks
+Message-ID: <20210707155418.GA897940@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <534fca70-d277-4154-b932-a4d6ab3b0b66@codeaurora.org>
+In-Reply-To: <1271fa28-dddd-01a3-5ad5-e3b4898f5482@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 07 Jul 01:31 CDT 2021, Rajendra Nayak wrote:
-
+On Tue, Jul 06, 2021 at 11:54:05AM +0200, Neil Armstrong wrote:
+> In their Designware PCIe controller driver, amlogic sets the
+> Max_Payload_Size & Max_Read_Request_Size to 256:
+> https://elixir.bootlin.com/linux/latest/source/drivers/pci/controller/dwc/pci-meson.c#L260
+> https://elixir.bootlin.com/linux/latest/source/drivers/pci/controller/dwc/pci-meson.c#L276
+> in their root port PCIe Express Device Control Register.
 > 
+> Looking at the Synopsys DW-PCIe Databook, Max_Payload_Size &
+> Max_Read_Request_Size are used to decompose into AXI burst, but it
+> seems the Max_Payload_Size & Max_Read_Request_Size are set by
+> default to 512 but the internal Max_Payload_Size_Supported is set to
+> 256, thus changing these values to 256 at runtime to match and
+> optimize bandwidth.
 > 
-> On 7/7/2021 10:19 AM, Bjorn Andersson wrote:
-> > On Mon 05 Jul 00:40 CDT 2021, Rajendra Nayak wrote:
-> > > On 7/5/2021 10:36 AM, Bjorn Andersson wrote:
-> > > > On Sun, Jul 4, 2021 at 11:27 PM Rajendra Nayak <rnayak@codeaurora.org> wrote:
-> > > > > 
-> > > > > 
-> > > > > 
-> > > > > On 7/3/2021 6:24 AM, Bjorn Andersson wrote:
-> > > > > > rpmhpd_aggregate_corner() takes a corner as parameter, but in
-> > > > > > rpmhpd_power_off() the code requests the level of the first corner
-> > > > > > instead.
-> > > > > > 
-> > > > > > In all (known) current cases the first corner has level 0, so this
-> > > > > > change should be a nop, but in case that there's a power domain with a
-> > > > > > non-zero lowest level this makes sure that rpmhpd_power_off() actually
-> > > > > > requests the lowest level - which is the closest to "power off" we can
-> > > > > > get.
-> > > > > > 
-> > > > > > While touching the code, also skip the unnecessary zero-initialization
-> > > > > > of "ret".
-> > > > > > 
-> > > > > > Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
-> > > > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > > > > ---
-> > > > > >     drivers/soc/qcom/rpmhpd.c | 5 ++---
-> > > > > >     1 file changed, 2 insertions(+), 3 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
-> > > > > > index 2daa17ba54a3..fa209b479ab3 100644
-> > > > > > --- a/drivers/soc/qcom/rpmhpd.c
-> > > > > > +++ b/drivers/soc/qcom/rpmhpd.c
-> > > > > > @@ -403,12 +403,11 @@ static int rpmhpd_power_on(struct generic_pm_domain *domain)
-> > > > > >     static int rpmhpd_power_off(struct generic_pm_domain *domain)
-> > > > > >     {
-> > > > > >         struct rpmhpd *pd = domain_to_rpmhpd(domain);
-> > > > > > -     int ret = 0;
-> > > > > > +     int ret;
-> > > > > > 
-> > > > > >         mutex_lock(&rpmhpd_lock);
-> > > > > > 
-> > > > > > -     ret = rpmhpd_aggregate_corner(pd, pd->level[0]);
-> > > > > > -
-> > > > > > +     ret = rpmhpd_aggregate_corner(pd, 0);
-> > > > > 
-> > > > > This won't work for cases where pd->level[0] != 0, rpmh would just ignore this and keep the
-> > > > > resource at whatever corner it was previously at.
-> > > > > (unless command DB tells you a 0 is 'valid' for a resource, sending a 0 is a nop)
-> > > > > The right thing to do is to send in whatever command DB tells you is the lowest level that's valid,
-> > > > > which is pd->level[0].
-> > > > > 
-> > > > 
-> > > > I'm afraid this doesn't make sense to me.
-> > > > 
-> > > > In rpmh_power_on() if cmd-db tells us that we have [0, 64, ...] and we
-> > > > request 64 we rpmhpd_aggregate_corner(pd, 1); but in power off, if
-> > > > cmd-db would provide [64, ...] we would end up sending
-> > > > rpmhpd_aggregate_corner(pd, 64);
-> > > > So in power_on we request the corner (i.e. index in the array provided
-> > > > in cmd-db) and in power-off the same function takes the level?
-> > > 
-> > > ah that's right, I did not read the commit log properly and got confused.
-> > 
-> > Thanks for confirming my understanding.
-> > 
-> > > Looks like this bug existed from the day this driver for merged :/, thanks
-> > > for catching it.
-> > > Does it make sense to also mark this fix for stable?
-> > > 
-> > 
-> > I can certainly add a Cc: stable@ as I'm applying this.
+> It's said, "Reducing Outbound Decomposition" :
+>  - "Ensure that your application master does not generate bursts of
+>    size greater than or equal to Max_Payload_Size"
+>
+>  - "Program your PCIe system with a larger value of Max_Payload_Size
+>    without exceeding Max_Payload_Size_Supported"
+>
+>  - "Program your PCIe system with a larger value of Max_Read_Request
+>    without exceeding Max_Payload_Size_Supported:
 > 
-> sure, sounds good
-> > May I have your R-b?
+> So leaving 512 in Max_Payload_Size & Max_Read_Request leads to
+> Outbound Decomposition which decreases PCIe link and degrades the
+> AXI bus by doubling the bursts, leading to this fix to avoid
+> overflowing the AXI bus.
 > 
-> Reviewed-by: Rajendra Nayak <rnayak@codeaurora.org>
+> So it seems to be still needed, I assume this *should* be handled in
+> the core somehow to propagate these settings to child endpoints to
+> match the root port Max_Payload_Size & Max_Read_Request sizes.
 > 
+> Maybe by adding a core function to set these values instead of using
+> the dw_pcie_find_capability() & dw_pcie_write/readl_dbi() helpers
+> and set a state on the root port to propagate the value ?
 
-Thank you.
+I don't have the Synopsys DW-PCIe Databook, so I'm lacking any
+context.  The above *seems* to say that MPS/MRRS settings affect AXI
+bus usage.
 
-> > 
-> > PS. Do you have any input on patch 2/2? That actually solves a practical
-> > problem we're seeing. Would it perhaps aid in your need for the new
-> > "assigned-opp-level" property?
-> 
-> We would perhaps still need the 'assigned-opp-level' or equivalent since
-> the default requirement of devices is not always the least level supported,
-> in some cases it might be slightly higher corner which would then need to
-> be set explicitly.
-> 
+The MPS and MRRS registers are defined to affect traffic on *PCIe*.  If
+a platform uses MPS and MRRS values to optimize transfers on non-PCIe
+links, that's a problem because the PCI core code that manages MPS and
+MRRS has no knowledge of those non-PCIe parts of the system.
 
-Right, for situations where we use assign-clock-rates to drive up the
-clock rate this mechanism might be needed in order to keep things
-stable.
+You might be able to deal with this in Synopsys-specific code somehow,
+but it's going to be a bit of a hassle because I don't want it to make
+maintenance of the generic MPS/MRRS code harder.
 
-But I presume as soon as you have some sort of dynamic nature to that
-you'll be back to an opp-table and the means we already have.
-
-> I was hoping on getting some more testing done with that patch especially for
-> any regression on the sc7180 and sc7280 devices, which I haven't got to yet.
-> Are you getting these patches ready for merge for the -rc cycle or for the
-> next merge window?
-> 
-
-That would be much appreciated, I've not done extensive testing myself,
-mostly just booted a few different boards.
-
-But I would like to see us correct the MDSS_GDSC->MMCX setup in time for
-v5.15, in particular since we have a few new users of the mmcx
-power-domain-regulator arriving in this cycle.
-
-Regards,
 Bjorn
