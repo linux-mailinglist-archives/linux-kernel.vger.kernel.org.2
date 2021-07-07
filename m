@@ -2,77 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352E23BE6A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F5B3BE6AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 12:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbhGGKyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 06:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhGGKyA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 06:54:00 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39220C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 03:51:20 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id q17so2541869wrv.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 03:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/aoTDXlXnALJMl9Wxd7xok1/Pwgg+4ujvLSoM7V+DME=;
-        b=Mf4Rc4fSaIhy7Eb7pDQ7YGLzqNkfmoralCbm7Zj2Azo8hiYiZE6FuOpz79xUx991ss
-         tFhmgWuP5R4VCalxaY8czCxgSE6mosNbW+b4fPjNUCY7jY7ILgAtzAJgQS11IXC3ndlz
-         3mDUbW1IRvu3GVUIVPk077DLMLOX/x+udOCmRi00Eq9lTB88tNC6q6Wk/q+qRw4oCwQW
-         MCm50XprqalFbKMZQTNlm9yDy+wDjHUn4SLPFZTHsdBD3vIvAWKUvM2Sep06DVYowuLK
-         xyqfBPN3EAhwegTVObXFr2Z/51eaeSjMJRKFzyUCxaD0sxgxIHBMD+YFQPKeE5lgnrZk
-         0LWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/aoTDXlXnALJMl9Wxd7xok1/Pwgg+4ujvLSoM7V+DME=;
-        b=GFz5FcrHACDQyGN5JcCVijxLKtVXqUQL49/dQZnZCuLrUHBkzutd6A2Ssc9sPS57ez
-         P/qU2WdPBuoXvcT9fLVFOcPj7dc1UKQQLSEUqDE91tMr4eFe1iqs7Ea3LRfn4na2x6t0
-         F/seAugiDQReqhrFHshjXI5sxBN2zH32NznTLYeqI2WK4yzecqukHj1dZ6Hhu55pCV99
-         MBdGsEOZEQ+4HWflfJ/ESfX8kvXCnSx3KbgUDwP823dxcCs9TkbY7LpgNq3inepS/zB0
-         QlrtC+6gB2Ieb/wRfshSI5eoXv55V0tylZV0/KGxq5+tmsLPlUGlAEjlhAEi3Y/y+8Ig
-         SQ6w==
-X-Gm-Message-State: AOAM5325PV+1J3ZGYgngedeRcPt4rzyunldEORa1s0ALaxCeFHFAtp/9
-        9B5NXb8jQ9TjH8+LECiqCSPRmA==
-X-Google-Smtp-Source: ABdhPJw+vX2jEX6fI6DaJdUd0kdnpZdFibOW5bG0fWz9BRXFsHJ7OuCBi0RFXanBw4KcvNhXi9jVrw==
-X-Received: by 2002:a5d:6dd1:: with SMTP id d17mr27175199wrz.344.1625655078685;
-        Wed, 07 Jul 2021 03:51:18 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:396a:6bf2:9c33:26ce])
-        by smtp.gmail.com with ESMTPSA id s17sm19500078wrt.58.2021.07.07.03.51.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 03:51:17 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 12:51:12 +0200
-From:   Marco Elver <elver@google.com>
-To:     ojeda@kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/17] Rust support
-Message-ID: <YOWHIHcs5/sYr/Vr@elver.google.com>
-References: <20210704202756.29107-1-ojeda@kernel.org>
+        id S231469AbhGGKyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 06:54:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231407AbhGGKyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 06:54:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E58661A25;
+        Wed,  7 Jul 2021 10:51:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625655085;
+        bh=5tv33vbesA5XsXJmvcXF6XM5sIZTb6hOhIY0nvhVBcM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Oug4EGmUF/JnhCZvrfevMpU5rUC/EUY0vsuPedqFh8dXk6jNyYSRwWluMiNlvriua
+         I2tX6nGQsjlkwTdrrqZ9lGntA68ZdldQIiteUcIiP1e9LjoqEkRLW5JXzXvkJ5guHo
+         70gJb/f0P48nUOmFFvkrajDKvXBDdtUIdk8qeOTE=
+Date:   Wed, 7 Jul 2021 12:51:22 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        bfields@fieldses.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2 1/2] fcntl: fix potential deadlocks for
+ &fown_struct.lock
+Message-ID: <YOWHKk6Nq8bazYjB@kroah.com>
+References: <20210707023548.15872-1-desmondcheongzx@gmail.com>
+ <20210707023548.15872-2-desmondcheongzx@gmail.com>
+ <YOVENb3X/m/pNrYt@kroah.com>
+ <14633c3be87286d811263892375f2dfa9a8ed40a.camel@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210704202756.29107-1-ojeda@kernel.org>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <14633c3be87286d811263892375f2dfa9a8ed40a.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 04, 2021 at 10:27PM +0200, ojeda@kernel.org wrote:
-[...]
->   rust: add `alloc` crate
-[...]
+On Wed, Jul 07, 2021 at 06:44:42AM -0400, Jeff Layton wrote:
+> On Wed, 2021-07-07 at 08:05 +0200, Greg KH wrote:
+> > On Wed, Jul 07, 2021 at 10:35:47AM +0800, Desmond Cheong Zhi Xi wrote:
+> > > Syzbot reports a potential deadlock in do_fcntl:
+> > > 
+> > > ========================================================
+> > > WARNING: possible irq lock inversion dependency detected
+> > > 5.12.0-syzkaller #0 Not tainted
+> > > --------------------------------------------------------
+> > > syz-executor132/8391 just changed the state of lock:
+> > > ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: f_getown_ex fs/fcntl.c:211 [inline]
+> > > ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: do_fcntl+0x8b4/0x1200 fs/fcntl.c:395
+> > > but this lock was taken by another, HARDIRQ-safe lock in the past:
+> > >  (&dev->event_lock){-...}-{2:2}
+> > > 
+> > > and interrupts could create inverse lock ordering between them.
+> > > 
+> > > other info that might help us debug this:
+> > > Chain exists of:
+> > >   &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
+> > > 
+> > >  Possible interrupt unsafe locking scenario:
+> > > 
+> > >        CPU0                    CPU1
+> > >        ----                    ----
+> > >   lock(&f->f_owner.lock);
+> > >                                local_irq_disable();
+> > >                                lock(&dev->event_lock);
+> > >                                lock(&new->fa_lock);
+> > >   <Interrupt>
+> > >     lock(&dev->event_lock);
+> > > 
+> > >  *** DEADLOCK ***
+> > > 
+> > > This happens because there is a lock hierarchy of
+> > > &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
+> > > from the following call chain:
+> > > 
+> > >   input_inject_event():
+> > >     spin_lock_irqsave(&dev->event_lock,...);
+> > >     input_handle_event():
+> > >       input_pass_values():
+> > >         input_to_handler():
+> > >           evdev_events():
+> > >             evdev_pass_values():
+> > >               spin_lock(&client->buffer_lock);
+> > >               __pass_event():
+> > >                 kill_fasync():
+> > >                   kill_fasync_rcu():
+> > >                     read_lock(&fa->fa_lock);
+> > >                     send_sigio():
+> > >                       read_lock_irqsave(&fown->lock,...);
+> > > 
+> > > However, since &dev->event_lock is HARDIRQ-safe, interrupts have to be
+> > > disabled while grabbing &f->f_owner.lock, otherwise we invert the lock
+> > > hierarchy.
+> > > 
+> > > Hence, we replace calls to read_lock/read_unlock on &f->f_owner.lock,
+> > > with read_lock_irq/read_unlock_irq.
+> > > 
+> > > Here read_lock_irq/read_unlock_irq should be safe to use because the
+> > > functions f_getown_ex and f_getowner_uids are only called from
+> > > do_fcntl, and f_getown is only called from do_fnctl and
+> > > sock_ioctl. do_fnctl itself is only called from syscalls.
+> > > 
+> > > For sock_ioctl, the chain is
+> > >   compat_sock_ioctl():
+> > >     compat_sock_ioctl_trans():
+> > >       sock_ioctl()
+> > > 
+> > > And interrupts are not disabled on either path. We assert this
+> > > assumption with WARN_ON_ONCE(irqs_disabled()). This check is also
+> > > inserted into another use of write_lock_irq in f_modown.
+> > > 
+> > > Reported-and-tested-by: syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
+> > > Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> > > ---
+> > >  fs/fcntl.c | 17 +++++++++++------
+> > >  1 file changed, 11 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/fs/fcntl.c b/fs/fcntl.c
+> > > index dfc72f15be7f..262235e02c4b 100644
+> > > --- a/fs/fcntl.c
+> > > +++ b/fs/fcntl.c
+> > > @@ -88,6 +88,7 @@ static int setfl(int fd, struct file * filp, unsigned long arg)
+> > >  static void f_modown(struct file *filp, struct pid *pid, enum pid_type type,
+> > >                       int force)
+> > >  {
+> > > +	WARN_ON_ONCE(irqs_disabled());
+> > 
+> > If this triggers, you just rebooted the box :(
+> > 
+> > Please never do this, either properly handle the problem and return an
+> > error, or do not check for this.  It is not any type of "fix" at all,
+> > and at most, a debugging aid while you work on the root problem.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> Wait, what? Why would testing for irqs being disabled and throwing a
+> WARN_ON in that case crash the box?
 
-I think this patch never made it to the mailing list. b4 also doesn't
-find it:
-
-	ERROR: missing [7/17]
+If panic-on-warn is enabled, which is a common setting for systems these
+days.
