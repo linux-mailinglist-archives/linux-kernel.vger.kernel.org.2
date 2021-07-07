@@ -2,131 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DCC3BE826
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCCC3BE828
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhGGMpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 08:45:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbhGGMpO (ORCPT
+        id S231586AbhGGMpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 08:45:44 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41946 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231534AbhGGMpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 08:45:14 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C9BC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 05:42:34 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id v20so3018802eji.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 05:42:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1r1cMb5IuUabwy6ufnOUx/1ARsY6RZ8tdA97vkp9E0A=;
-        b=jlsNoDpvpRCWC7QypzC3JPWQcjf8ZHOhkIKeaatKYesEPW3wWTNizbkKYxd4y/tVg3
-         kVVSZDCmtCeGugvyv4otWf7HJYbtWj3dOzbTzlGnMXgAsgAtq14+dvRPtYs8hVHgtEr/
-         j764X5VIu9mhAFK3+BrNo1Qkv4m/tude+exeA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1r1cMb5IuUabwy6ufnOUx/1ARsY6RZ8tdA97vkp9E0A=;
-        b=EeiP8HpxlHXUbS8g9U2UXXgLdsm3YDUsGxsy4cZplEy3Ev13G4rA+13L0z/3uDEMOS
-         7BpEcGU4gPaeltkYbj4xRbihutlKRvhXojZ4ntlM3K92j9XKIkZKbuxKM6N3Y8vsneE9
-         +adJb6rCL308Txia7dcCoelUcxokane/REUszb8/Slz6J4yIPkIatecbPDn50EwGq8xG
-         s1rlflw8ZrL8Zogtk4zlVmaYWGxV8P9FCo5eHwJc/vJugM8+zONw1bpGYQ9AQ2J6ChHR
-         bpV7TBblmZRGUqy0Z8Kpkz/yb4E1nzXtuVoCFCHEfkjT3dzTNqVjcMXDYnP9G+iZP2vT
-         OD0Q==
-X-Gm-Message-State: AOAM5331TyQiDI+JSqmLt/FX3oOBOu09FOsqZfqQYcTAb2NSsUws6Ejg
-        wGAj9A4VyaXGlJEmC/nXrv4a3fp55EqHRg==
-X-Google-Smtp-Source: ABdhPJw/2WFxQ8+vMCz9r87vQ0TlGETUCam3qnMHsTnrPR3XMQj4AuhppmqSJLgWjVcqeIJgZWCvqw==
-X-Received: by 2002:a17:906:8584:: with SMTP id v4mr23654756ejx.301.1625661752563;
-        Wed, 07 Jul 2021 05:42:32 -0700 (PDT)
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
-        by smtp.gmail.com with ESMTPSA id s4sm8907292edu.49.2021.07.07.05.42.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 05:42:31 -0700 (PDT)
-Received: by mail-wr1-f41.google.com with SMTP id v5so2917560wrt.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 05:42:31 -0700 (PDT)
-X-Received: by 2002:a5d:4001:: with SMTP id n1mr28151059wrp.159.1625661751106;
- Wed, 07 Jul 2021 05:42:31 -0700 (PDT)
+        Wed, 7 Jul 2021 08:45:43 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0D07D223DD;
+        Wed,  7 Jul 2021 12:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625661782; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7e/V26zjWSQZD4CXv1EiNsTo6/Z5qJ2tHTwoPa+mcvg=;
+        b=ZuF0O3JFWlK9/1PLIueOIhY5LpS2HaHUtldnpEObkRncg95v7rIPLnX8FeGZectYtbqDfA
+        uxhgxdtZ8ybdLTbXqwHpFpzTziz6kiYy0Q6skdJtIxmM40C2zh51laJ9BlStlDtou85yA2
+        e781mqV+jpmkoP0xxVwFPsJeu/QXS4g=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id EAF01A3C75;
+        Wed,  7 Jul 2021 12:43:00 +0000 (UTC)
+Date:   Wed, 7 Jul 2021 14:43:00 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: Re: [PATCH 2/9] kallsyms: Fix address-checks for kernel related range
+Message-ID: <YOWhVPvglf6FTZgD@alley>
+References: <20210626073439.150586-1-wangkefeng.wang@huawei.com>
+ <20210626073439.150586-3-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-References: <10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl>
- <YMsAIVs7G2hUDR2F@google.com> <20210617080107.GA1422@lst.de>
- <CAAFQd5DiPstn-s+yQM3iMd=G9oaag39qCyX483a7-Jrn=gxWCA@mail.gmail.com>
- <20210617085233.GA4702@lst.de> <CAAFQd5DqK2gSTGjfo-vahXwMzzO9gv26cY=vV6urn3viDLPE7g@mail.gmail.com>
- <20210617100656.GA11107@lst.de> <CAAFQd5CgLDkJ3t1aU2PRcGu6cGFjLXOnvMqDg62Z7Zuc8ABVHg@mail.gmail.com>
- <20210618042526.GA17794@lst.de> <CAAFQd5Bt9TJ87Yk5ZpqTqrX9rmP0Uq8VNwx_rwFHakWP850Axw@mail.gmail.com>
- <20210622073308.GA32231@lst.de>
-In-Reply-To: <20210622073308.GA32231@lst.de>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Wed, 7 Jul 2021 21:42:19 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5AARvjrxh962oVKM7OGLvVtvs0iea_2QAWGZ2K4HQe5qA@mail.gmail.com>
-Message-ID: <CAAFQd5AARvjrxh962oVKM7OGLvVtvs0iea_2QAWGZ2K4HQe5qA@mail.gmail.com>
-Subject: Re: [PATCHv2 8/8] videobuf2: handle non-contiguous DMA allocations
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210626073439.150586-3-wangkefeng.wang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 4:33 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Fri, Jun 18, 2021 at 01:44:08PM +0900, Tomasz Figa wrote:
-> > > Well, dma_alloc_coherent users want a non-cached mapping.  And while
-> > > some architectures provide that using a vmap with "uncached" bits in the
-> > > PTE to provide that, this:
-> > >
-> > >  a) is not possibly everywhere
-> > >  b) even where possible is not always the best idea as it creates mappings
-> > >     with differnet cachability bets
-> >
-> > I think this could be addressed by having a dma_vmap() helper that
-> > does the right thing, whether it's vmap() or dma_common_pages_remap()
-> > as appropriate. Or would be this still insufficient for some
-> > architectures?
->
-> It can't always do the right thing.  E.g. for the case where uncached
-> memory needs to be allocated from a special boot time fixed pool.
->
+On Sat 2021-06-26 15:34:32, Kefeng Wang wrote:
+> The is_kernel_inittext/is_kernel_text/is_kernel function should not
+> include the end address(the labels _einittext, _etext and _end) when
+> check the address range.
 
-Fair enough. Thanks for elaborating.
+Great catch!
 
-> > > And even without that dma_alloc_noncoherent causes less overhead than
-> > > dma_alloc_noncontigious if you only need a single contiguous range.
-> > >
-> >
-> > Given that behind the scenes dma_alloc_noncontiguous() would also just
-> > call __dma_alloc_pages() for devices that need contiguous pages, would
-> > the overhead be basically the creation of a single-entry sgtable?
->
-> In the best case: yes.
->
-> > > So while I'm happy we have something useful for more complex drivers like
-> > > v4l I think the simple dma_alloc_coherent API, including some of the less
-> > > crazy flags for dma_alloc_attrs is the right thing to use for more than
-> > > 90% of the use cases.
-> >
-> > One thing to take into account here is that many drivers use the
-> > existing "simple" way, just because there wasn't a viable alternative
-> > to do something better. Agreed, though, that we shouldn't optimize for
-> > the rare cases.
->
-> While that might be true for a few drivers, it is absolutely not true
-> for the wide majority.  I think you media people are a little special,
-> with only the GPU folks contending for "specialness" :)  (although
-> media handles it way better, gpu folks just create local hacks that
-> can't work portably).
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> Cc: Petr Mladek <pmladek@suse.com>
+> Fixes: 04b8eb7a4ccd ("symbol lookup: introduce dereference_symbol_descriptor()")
 
-I don't have the evidence to argue, so let's just leave it at "time
-will tell". I think it's great that we have the possibility to do the
-more special things and we can see where it goes from now on. :)
+This commit just moved the code from kernel/kallsyms.c. It was broken
+even before the git history ;-)
 
-Best regards,
-Tomasz
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
