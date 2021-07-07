@@ -2,146 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42EF43BEA0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98CD3BEA0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhGGOuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 10:50:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232050AbhGGOuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:50:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE00F61CC1;
-        Wed,  7 Jul 2021 14:47:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625669245;
-        bh=rVyXTr/H4kPIthUl9Fp6sw9E9LOv7RqtGRY8URy8Qqs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S2Is5yM96GpKa1aTLrbCsa0JGq72fWl8mIi73dsPZIdyVDgIk5dSMOgQ1T+jk98AI
-         yPA+r9eacNzD+KIQL6ufs2SGirzsdPprp1SrCYhPgaQfkcFOI9SAKjgLWGjebbdibE
-         bCUNFcgGj8OKXiND9PiRyIb5CDl55r9RCV0aPwvB5gYyCPSYVmkVmJw2qb777Kb4Zd
-         DAGS8aK6xkU7oHlqPfaJ5sGHtSAaOdcDmVU//bA7PdqSvoXY8bmCQQiCPEU9booXW+
-         sQ9khB1cHHAj+fiap9Zq7KyNi+sNSzDPwVbz9otb8BKVzUmITdP6vzlBEHlNuwy0yc
-         ccoXoAbwInxNw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6231640B1A; Wed,  7 Jul 2021 11:47:23 -0300 (-03)
-Date:   Wed, 7 Jul 2021 11:47:23 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>, nakamura.shun@fujitsu.com,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [RFCv2 0/7] libperf: Add leader/group info to perf_evsel
-Message-ID: <YOW+eyxYtPhc2hSf@kernel.org>
-References: <20210706151704.73662-1-jolsa@kernel.org>
+        id S232161AbhGGOuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 10:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232050AbhGGOuh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 10:50:37 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC09C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 07:47:55 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id u25so2988566ljj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 07:47:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YvjmMvDpczJUOj6MRPrVMSwe4+RsIZimfDsJ8UxpWfc=;
+        b=tvInKCoNOpOC+YvG2+0TqVANv95mKzSnq6V9suFz+Hd4UqEU4Ys7itHxue76ks7obE
+         UQqE9/+t1X5EBUkcL84GPLoNftEHdiqJjdDuPItFLRdl35x6aShvoicRmIUv0Hnzx5EI
+         NDLNWeWNUm65CJIygNHNOIt7foAlYvkDXrPVJGLhrlWJgj+9qfS7oIITinxrL5K4Ft7Z
+         ZCruFz1qX3x0eN+yBY63CeTioG7vQWSNWoJhUT2ERP5KnHmZQEItUcSf0RMgKYVgtmjJ
+         Ol4gTTHGSVyjT6a6rv0XBIS5CZnrlWvP44/qXnqvbqufQVrzzDVWGiK+AJSk9jkQr1a8
+         kd0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YvjmMvDpczJUOj6MRPrVMSwe4+RsIZimfDsJ8UxpWfc=;
+        b=fxRx7ztzLsEklZHUDjMn6O3Y6E4Znc8qPqKJbKj3Ufb6M+qZR6w9es9stdVuH4P39g
+         +fVDkf2wYqOMYDmnImMh92gTdCHoJNns+GP5oYKO9Jcf6+jnTkOEKPZjbvqSH56BUI9+
+         l8tO7E5VHHK+HjECSiH/P0VGOYFmLvbPbLN7z5yTjfWeWu+RA5Kc8wzVcoXb74Q85Hr2
+         2RbGNm5GUFrlhHorgcKvYW/1TkJh6A1LngAqUsoDyKJV+jTBykMMKkAu3lDIIGTWzeS6
+         Yen6sX7AJgaymJR/EZaf3JC4YYJhh6fAnfQRH/wC/n6LT1/IDNATPIHtWO6kq4X7So8f
+         6XPg==
+X-Gm-Message-State: AOAM531/1sFEf/wjyouDisdzbLls6x/bDA8XxTnlxgq5Jyw0V6jCcjgE
+        +zTfOnmYUHYG6Juy/06yWEo=
+X-Google-Smtp-Source: ABdhPJwarOPGDwnlHyB+XJypRB7sAaEv/wMWsX8dJkaqDxDZ4K2YzM0B3HgD6E6EnzgCbTE6FcYKhQ==
+X-Received: by 2002:a2e:9e1a:: with SMTP id e26mr19810601ljk.265.1625669274105;
+        Wed, 07 Jul 2021 07:47:54 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id 70sm1352466ljj.81.2021.07.07.07.47.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 07:47:53 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Wed, 7 Jul 2021 16:47:51 +0200
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2 1/2] mm/vmalloc: Use batched page requests in
+ bulk-allocator
+Message-ID: <20210707144751.GB1863@pc638.lan>
+References: <20210705170537.43060-1-urezki@gmail.com>
+ <20210706132653.8374852963b25989e360d599@linux-foundation.org>
+ <YOVo9bBtncG3/uLi@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210706151704.73662-1-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <YOVo9bBtncG3/uLi@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jul 06, 2021 at 05:16:57PM +0200, Jiri Olsa escreveu:
-> hi,
-> moving leader/group info to libperf's perf_evsel.
+On Wed, Jul 07, 2021 at 10:42:29AM +0200, Michal Hocko wrote:
+> On Tue 06-07-21 13:26:53, Andrew Morton wrote:
+> > On Mon,  5 Jul 2021 19:05:36 +0200 "Uladzislau Rezki (Sony)" <urezki@gmail.com> wrote:
+> > 
+> > > In case of simultaneous vmalloc allocations, for example it is 1GB and
+> > > 12 CPUs my system is able to hit "BUG: soft lockup" for !CONFIG_PREEMPT
+> > > kernel.
+> > > 
+> > > <snip>
+> > > ...
+> > >
+> > > are obtained, i.e. do batched page requests adding cond_resched() meanwhile
+> > > to reschedule. Batched value is hard-coded and is 100 pages per call.
+> > > 
+> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > 
+> > Can we please have a Fixes: for this?
 > 
-> This was asked for by Shunsuke [1] and is on my list
-> as a prereq for event parsing move to libperf.
+> Is this a fix for any actual real life problem? I mean allocating 1GB of
+> vmalloc space back and forth sounds like a stretch to me.
+>  
+It is not a real scenario. I simulated it by the stress-suite tests. So the
+Fixes tag is not needed, IMHO.
 
-So I'll add a:
+> > Is this fix important enough for 4.14-rcx?  I think so...
+> 
+> I do not think so. This is an improvement so that vmalloc behaves more
+> sanely for those abusers...
+>
+A bulk-allocator has recently been introduced, so 4.x does not have it,
+i.e. this change is not applicable and 4.x kernel does not suffer from
+it.
 
-Requested-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
-
-- Arnaldo
- 
-> I still need to do more tests, but I'd like to check
-> with you guys if there's any feedback on this first.
-> 
-> Also available in:
->   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
->   libperf/groups
-> 
-> v2 change:
->   - repost due to smtp failures, no changes
-> 
-> thanks,
-> jirka
-> 
-> 
-> [1] https://lore.kernel.org/linux-perf-users/OSBPR01MB46005B38568E90509946ECA9F7319@OSBPR01MB4600.jpnprd01.prod.outlook.com/
-> 
-> 
-> ---
-> Jiri Olsa (7):
->       libperf: Change tests to single static and shared binaries
->       libperf: Move idx to perf_evsel::idx
->       libperf: Move leader to perf_evsel::leader
->       libperf: Move nr_groups to evlist::nr_groups
->       libperf: Add perf_evlist__set_leader function
->       libperF: Add group support to perf_evsel__open
->       libperf: Add tests for perf_evlist__set_leader function
-> 
->  tools/lib/perf/Build                     |  2 ++
->  tools/lib/perf/Makefile                  | 30 +++++++++++++++++++++++++-----
->  tools/lib/perf/evlist.c                  | 22 ++++++++++++++++++++++
->  tools/lib/perf/evsel.c                   | 33 +++++++++++++++++++++++++++++----
->  tools/lib/perf/include/internal/evlist.h |  2 ++
->  tools/lib/perf/include/internal/evsel.h  |  5 ++++-
->  tools/lib/perf/include/internal/tests.h  |  4 ++--
->  tools/lib/perf/include/perf/evlist.h     |  1 +
->  tools/lib/perf/libperf.map               |  1 +
->  tools/lib/perf/tests/Build               |  5 +++++
->  tools/lib/perf/tests/Makefile            | 40 ----------------------------------------
->  tools/lib/perf/tests/main.c              | 15 +++++++++++++++
->  tools/lib/perf/tests/test-cpumap.c       |  3 ++-
->  tools/lib/perf/tests/test-evlist.c       | 30 +++++++++++++++++++++++-------
->  tools/lib/perf/tests/test-evsel.c        |  3 ++-
->  tools/lib/perf/tests/test-threadmap.c    |  3 ++-
->  tools/lib/perf/tests/tests.h             | 10 ++++++++++
->  tools/perf/arch/x86/util/iostat.c        |  4 ++--
->  tools/perf/builtin-diff.c                |  4 ++--
->  tools/perf/builtin-record.c              |  4 ++--
->  tools/perf/builtin-report.c              |  8 ++++----
->  tools/perf/builtin-script.c              |  9 +++++----
->  tools/perf/builtin-stat.c                | 12 ++++++------
->  tools/perf/builtin-top.c                 | 10 +++++-----
->  tools/perf/tests/bpf.c                   |  2 +-
->  tools/perf/tests/evsel-roundtrip-name.c  |  6 +++---
->  tools/perf/tests/mmap-basic.c            |  8 ++++----
->  tools/perf/tests/parse-events.c          | 74 +++++++++++++++++++++++++++++++++++++-------------------------------------
->  tools/perf/tests/pfm.c                   |  4 ++--
->  tools/perf/ui/browsers/annotate.c        |  2 +-
->  tools/perf/util/annotate.c               |  8 ++++----
->  tools/perf/util/auxtrace.c               | 12 ++++++------
->  tools/perf/util/cgroup.c                 |  2 +-
->  tools/perf/util/evlist.c                 | 44 +++++++++++++-------------------------------
->  tools/perf/util/evlist.h                 |  2 --
->  tools/perf/util/evsel.c                  | 32 +++++++++++++++++++++++++-------
->  tools/perf/util/evsel.h                  | 14 ++++++++------
->  tools/perf/util/header.c                 | 18 +++++++++---------
->  tools/perf/util/metricgroup.c            | 22 +++++++++++-----------
->  tools/perf/util/parse-events.c           |  8 ++++----
->  tools/perf/util/pfm.c                    |  2 +-
->  tools/perf/util/python.c                 |  2 +-
->  tools/perf/util/record.c                 |  6 +++---
->  tools/perf/util/stat-shadow.c            |  2 +-
->  tools/perf/util/stat.c                   |  2 +-
->  tools/perf/util/stream.c                 |  2 +-
->  46 files changed, 310 insertions(+), 224 deletions(-)
->  create mode 100644 tools/lib/perf/tests/Build
->  delete mode 100644 tools/lib/perf/tests/Makefile
->  create mode 100644 tools/lib/perf/tests/main.c
->  create mode 100644 tools/lib/perf/tests/tests.h
-> 
-
--- 
-
-- Arnaldo
+--
+Vlad Rezki
