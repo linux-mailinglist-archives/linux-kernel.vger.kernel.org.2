@@ -2,112 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDCC3BE98B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C353BE993
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbhGGOSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 10:18:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26998 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231809AbhGGOSe (ORCPT
+        id S231889AbhGGOWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 10:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231639AbhGGOWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:18:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625667354;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v7TkRYJsDfarqXSn4EBmx0Hd12Melpzh3GqncamrRv0=;
-        b=eL78irsKPKOtKpi7eK3/ww4MDKFXjWxdCvd61LfSaS6Bp05l497zI+5SMUVGG5/wkGaThi
-        J6CyvTXtdehEfcFb3j9rwkS7TDV2V7h2v2E/bZDSGyDUu2IOojS2kGhaONjp2sI/G729nb
-        lTjSPjMJUPjwl4hmMQNpCeNLxDpNvsA=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-xO1yG2wHN1aZAaRZ-wNq0A-1; Wed, 07 Jul 2021 10:15:52 -0400
-X-MC-Unique: xO1yG2wHN1aZAaRZ-wNq0A-1
-Received: by mail-ej1-f70.google.com with SMTP id gz14-20020a170907a04eb02904d8b261b40bso612919ejc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 07:15:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v7TkRYJsDfarqXSn4EBmx0Hd12Melpzh3GqncamrRv0=;
-        b=O61XtTrFAWrjsySZ+qxArt4h2MCPsEcAet96F+QOOjijciJIaokb26MtKteii0fWCL
-         +5XPUm7Adj7rWvtiHe9IMgUCFJ+8PqHmns0Keyf3+UvesF1I30SBtoSOnzjRrCyKW2A0
-         jX2e9JHkti+h91fACVVdy6OapjmyX2y+fJgA0BVwThKidw6e6OCVK6gbv46DE9c6oRE7
-         sv9KHrQREe0X4DUhj8TgOXDmKTAj1lFx4Wmf9OqcyimlqqPxL05aTpcJRtfAmmUeSIVJ
-         qPn3anjg38r1xOUpQN7wTjvX/MOyygkWe2NA0E++ZQGR7+tGUwbLAfCX0dDSH9U36CLv
-         JwTQ==
-X-Gm-Message-State: AOAM5309SEXm02XwtLOJHQ+4fqnnNd/hjn5+WVfCbmExKxj5/orZ+pCI
-        6GyeI4L4xKQAVW4djOb8k6Ei9By/03RJsNyHpgAuKzB+QBjpQVI3v/SPrAIHlIZnnopYHr9xxpr
-        C5co7/+nDtJraDxrzbACeEP/W
-X-Received: by 2002:a17:906:842:: with SMTP id f2mr24646141ejd.460.1625667351672;
-        Wed, 07 Jul 2021 07:15:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxogJG5EZkoMMu8maydXHcDJhSX3aRBwefzb6CXUOxZgETiNeOxmsHGUhIROgdGHhgQ760dLw==
-X-Received: by 2002:a17:906:842:: with SMTP id f2mr24646105ejd.460.1625667351434;
-        Wed, 07 Jul 2021 07:15:51 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id zp1sm6983114ejb.92.2021.07.07.07.15.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 07:15:50 -0700 (PDT)
-Subject: Re: [PATCH 3/4] KVM: x86: WARN and reject loading KVM if NX is
- supported but not enabled
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, regressions@lists.linux.dev
-References: <20210615164535.2146172-1-seanjc@google.com>
- <20210615164535.2146172-4-seanjc@google.com> <YNUITW5fsaQe4JSo@google.com>
- <ad85c5db-c780-bd13-c6ce-e3478838acbe@redhat.com>
- <CA+G9fYsrQo3FvtW1VhXocY2xkaPLNADA4S5f=fBM5uqa=C5LYg@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <40623553-310a-68f7-2981-f8ea9c7bd5b0@redhat.com>
-Date:   Wed, 7 Jul 2021 16:15:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 7 Jul 2021 10:22:45 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E0348C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 07:20:04 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 7BF0D92009C; Wed,  7 Jul 2021 16:20:03 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 6D06B92009B;
+        Wed,  7 Jul 2021 16:20:03 +0200 (CEST)
+Date:   Wed, 7 Jul 2021 16:20:03 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     David Sterba <dsterba@suse.cz>
+cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: super.c:undefined reference to `__umoddi3'
+In-Reply-To: <20210707134743.GJ2610@twin.jikos.cz>
+Message-ID: <alpine.DEB.2.21.2107071613010.1711@angie.orcam.me.uk>
+References: <202107061952.nZ61qqwh-lkp@intel.com> <20210707134743.GJ2610@twin.jikos.cz>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <CA+G9fYsrQo3FvtW1VhXocY2xkaPLNADA4S5f=fBM5uqa=C5LYg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/07/21 14:09, Naresh Kamboju wrote:
-> On Fri, 25 Jun 2021 at 14:35, Paolo Bonzini <pbonzini@redhat.com> wrote:
->>
->> On 25/06/21 00:33, Sean Christopherson wrote:
->>> On Tue, Jun 15, 2021, Sean Christopherson wrote:
->>>> WARN if NX is reported as supported but not enabled in EFER.  All flavors
->>>> of the kernel, including non-PAE 32-bit kernels, set EFER.NX=1 if NX is
->>>> supported, even if NX usage is disable via kernel command line.
->>>
->>> Ugh, I misread .Ldefault_entry in head_32.S, it skips over the entire EFER code
->>> if PAE=0.  Apparently I didn't test this with non-PAE paging and EPT?
->>>
->>> Paolo, I'll send a revert since it's in kvm/next, but even better would be if
->>> you can drop the patch :-)  Lucky for me you didn't pick up patch 4/4 that
->>> depends on this...
->>>
->>> I'll revisit this mess in a few weeks.
->>
->> Rather, let's keep this, see if anyone complains and possibly add a
->> "depends on X86_PAE || X86_64" to KVM.
+On Wed, 7 Jul 2021, David Sterba wrote:
+
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   79160a603bdb51916226caf4a6616cc4e1c58a58
+> > commit: c49f71f60754acbff37505e1d16ca796bf8a8140 MIPS: Reinstate platform `__div64_32' handler
 > 
-> [ please ignore if this is already reported ]
-> 
-> The following kernel warning noticed while booting linus master branch and
-> Linux next 20210707 tag on i386 kernel booting on x86_64 machine.
+> Is it caused by this patch? It seems to be only MIPS-related, otherwise
+> we'd get reports from other 32bit arches in case of the emulated 64bit
+> division.
 
-Ok, so the "depends on" is needed.  Let's add it, I'm getting back to 
-KVM work and will send the patch today or tomorrow.
+ Not really, cf. 
+<https://lore.kernel.org/lkml/alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg/>.
 
-Paolo
+ I've seen an earlier report already and will do a test build as a matter 
+of interest to see why it triggered around the MIPS change only, once I'm 
+done with the current stuff.
 
+  Maciej
