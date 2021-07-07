@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF813BE953
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD5D3BE963
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231702AbhGGOHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 10:07:36 -0400
-Received: from relay.sw.ru ([185.231.240.75]:57012 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231877AbhGGOHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:07:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=UA4eL064EWjYVJxhdfiFHZrrUTsuuc3X79KNj3RlB34=; b=mbqTa1AZhorrLPl+by3
-        0sC3kglVlC5BOS/53A7iEG3tVvLuPQYHZiPxaOcB+dpJOtPRqdPm70KyjTwm2ioYkDSO6m8Hu7lIM
-        CEoVucmPvAT0pfRAUzonf62MhYkYFIk7BE9qvxy/K7AJrapvd9JzFjGbPvDnGw60Bj7r8rzteXc=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m18AW-003ClR-Ck; Wed, 07 Jul 2021 17:04:52 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH IPV6 1/1] ipv6: allocate enough headroom in
- ip6_finish_output2()
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1625665132.git.vvs@virtuozzo.com>
-Message-ID: <3cb5a2e5-4e4c-728a-252d-4757b6c9612d@virtuozzo.com>
-Date:   Wed, 7 Jul 2021 17:04:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231917AbhGGOKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 10:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231865AbhGGOKg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 10:10:36 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC4DC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 07:07:56 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id d12so2603955wre.13
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 07:07:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kWyuGMwX+ZNUDXD7vDpVa4A2OyqG/8p+xZdri8V20uc=;
+        b=T2dqzRwPotD5ZOjn6JCz0tkAm6jUi7jcBoxaUMn0E8tLfrXB0oQe6az48pOSGJeQOW
+         178QgAoV2QSn0YP58N1pUNvWbviBPoa+YmpgoiPa7onI0WpIAZ/dSIQv5hS1gUaaqREJ
+         kO32XVR27MdLkzkZJa2JQSqI1EUnfYR+YjUuoTJ+uqmoTBXGwuX7DQmCaNhLiYoVAXow
+         cPcp1zIGaVOyt8InKS58l8xUrIOs8k9obW3pQvApQNh1DwtllPUndcl/wrN9CHKK7mi5
+         cfWBeLOO6jBVnT6Q9OuOnZap2IOh2UbzlIS20nbxa4Z+4d7oFG7B1ozeGTdk3YJ3FTjA
+         QkJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kWyuGMwX+ZNUDXD7vDpVa4A2OyqG/8p+xZdri8V20uc=;
+        b=XyquIJVHr2G0WNYTyhwjqTgPBhWg4B1/VmosKTxu7EF3wOd+3ybmA0CrvQ0mzPd4wV
+         5syQbbwDAd7+7Bpcnvcryb76XwEsyy0bWrpVrcBUtTT3wG8wyiTqM1tsXOYnaVkBnHgm
+         HYUO6SIY9FVWL/BOdlZWAh0fO7X6bl7zcN1byvHnRMEjdsB4xvghgLGMutxE8hVhonG6
+         EQ9+9Du46JSXb86YhVj8qHFXXNoLk5Qh+D5W0drjbtLwn3db7CtA/4lk2uaRc1JakYMV
+         S4zdEHjlS68yI3eO2zzE4mRzMk0B+/xIBhLkqdvh6qCeO9pbDLC2zLNtAZEZjZpEnnyi
+         2qgQ==
+X-Gm-Message-State: AOAM533hoLYhZo6ktCpLiGHmzCPmuBb4w779jVLtLxBbK1aFNsd7qbei
+        qpKAyJGbei9oFVPvB0gh8r0x
+X-Google-Smtp-Source: ABdhPJy4pvViQLXcf5CZiXO9ylISZ7qhOwfU2XWINGPk2cDzGLvvCqrd+9hRWF0xZknrQrz1n7ZNEQ==
+X-Received: by 2002:a05:6000:1867:: with SMTP id d7mr21264188wri.263.1625666874582;
+        Wed, 07 Jul 2021 07:07:54 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:209:860d:625a:fd59:d699])
+        by smtp.gmail.com with ESMTPSA id u9sm21396849wmq.41.2021.07.07.07.07.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 07:07:54 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 15:07:50 +0100
+From:   Wedson Almeida Filho <wedsonaf@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/17] Rust support
+Message-ID: <YOW1Nj8+a2Yth2++@google.com>
+References: <20210704202756.29107-1-ojeda@kernel.org>
+ <YOVNJuA0ojmeLvKa@infradead.org>
+ <CANiq72mKPFtB4CtHcc94a_y1V4bEOXXN2CwttQFvyzwXJv62kw@mail.gmail.com>
+ <YOWjLmg/Z7kr2+tx@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.1625665132.git.vvs@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOWjLmg/Z7kr2+tx@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When TEE target mirrors traffic to another interface, sk_buff may
-not have enough headroom to be processed correctly.
-ip_finish_output2() detect this situation for ipv4 and allocates
-new skb with enogh headroom. However ipv6 lacks this logic in
-ip_finish_output2 and it leads to skb_under_panic:
+On Wed, Jul 07, 2021 at 02:50:54PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Jul 07, 2021 at 02:33:57PM +0200, Miguel Ojeda wrote:
+> > Now, if you are OK with non-hardware modules, you can take a look at
+> > Rust Binder (last patch in the series) which is a non-trivial module
+> > and it is already working.
+> 
+> Cool, does it actually pass the binder self-tests that the Android
+> systems have for the codebase?
 
- skbuff: skb_under_panic: text:ffffffffc0866ad4 len:96 put:24
- head:ffff97be85e31800 data:ffff97be85e317f8 tail:0x58 end:0xc0 dev:gre0
- ------------[ cut here ]------------
- kernel BUG at net/core/skbuff.c:110!
- invalid opcode: 0000 [#1] SMP PTI
- CPU: 2 PID: 393 Comm: kworker/2:2 Tainted: G           OE     5.13.0 #13
- Hardware name: Virtuozzo KVM, BIOS 1.11.0-2.vz7.4 04/01/2014
- Workqueue: ipv6_addrconf addrconf_dad_work
- RIP: 0010:skb_panic+0x48/0x4a
- Call Trace:
-  skb_push.cold.111+0x10/0x10
-  ipgre_header+0x24/0xf0 [ip_gre]
-  neigh_connected_output+0xae/0xf0
-  ip6_finish_output2+0x1a8/0x5a0
-  ip6_output+0x5c/0x110
-  nf_dup_ipv6+0x158/0x1000 [nf_dup_ipv6]
-  tee_tg6+0x2e/0x40 [xt_TEE]
-  ip6t_do_table+0x294/0x470 [ip6_tables]
-  nf_hook_slow+0x44/0xc0
-  nf_hook.constprop.34+0x72/0xe0
-  ndisc_send_skb+0x20d/0x2e0
-  ndisc_send_ns+0xd1/0x210
-  addrconf_dad_work+0x3c8/0x540
-  process_one_work+0x1d1/0x370
-  worker_thread+0x30/0x390
-  kthread+0x116/0x130
-  ret_from_fork+0x22/0x30
+We haven't run the Android tests yet because they depend on an Android-specific
+service (servicemanager) running and other Android-specific libraries. What we
+are doing instead is adding binder tests that don't depend on anything
+Android-specific; in fact, we are putting them in tools/testing/selftests/binder
+so that they can run on any vanilla system.
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
- net/ipv6/ip6_output.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+The commit is available here:
+https://github.com/wedsonaf/linux/commit/f90ec49be9207fa765f07ad1071210ad871712ac
 
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index ff4f9eb..e5af740 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -61,9 +61,24 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
- 	struct dst_entry *dst = skb_dst(skb);
- 	struct net_device *dev = dst->dev;
- 	const struct in6_addr *nexthop;
-+	unsigned int hh_len = LL_RESERVED_SPACE(dev);
- 	struct neighbour *neigh;
- 	int ret;
- 
-+	/* Be paranoid, rather than too clever. */
-+	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
-+		struct sk_buff *skb2;
-+
-+		skb2 = skb_realloc_headroom(skb, LL_RESERVED_SPACE(dev));
-+		if (!skb2) {
-+			kfree_skb(skb);
-+			return -ENOMEM;
-+		}
-+		if (skb->sk)
-+			skb_set_owner_w(skb2, skb->sk);
-+		consume_skb(skb);
-+		skb = skb2;
-+	}
- 	if (ipv6_addr_is_multicast(&ipv6_hdr(skb)->daddr)) {
- 		struct inet6_dev *idev = ip6_dst_idev(skb_dst(skb));
- 
--- 
-1.8.3.1
+The tests are written in C and run successfully against both C and Rust drivers.
+I still have another ~20 tests that I wrote in another harness that I will
+convert to selftests soon, but the two together I believe have more coverage
+than the ones in Android.
 
+We also have a trivial latency benchmark (ping with no payload) where the Rust
+version performs better than the C one.
+
+The benchmark is available here: https://github.com/wedsonaf/linux/commits/ping
+
+> Last I looked at this thing, it was not
+> feature-complete compared to the in-kernel binder code, has that been
+> resolved and the needed filesystem changes added?
+
+It is not feature-complete in comparison to the C one just yet, it is missing a
+few things but not for any fundamental reason -- we were mostly focusing on the
+kernel crate and tests.
+
+Miguel's point is that it does implement the vast majority of binder features
+and is non-trivial, so it could be used as evidence that useful kernel drivers
+can be built with Rust; not just "transpiled" from C, but written with the Rust
+safety guarantees.
+
+Cheers,
+-Wedson
