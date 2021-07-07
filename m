@@ -2,115 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736EC3BE50E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33A33BE511
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhGGJFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:05:38 -0400
-Received: from lucky1.263xmail.com ([211.157.147.135]:54134 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231146AbhGGJFh (ORCPT
+        id S231302AbhGGJGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:06:20 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:36949 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231146AbhGGJGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:05:37 -0400
-Received: from localhost (unknown [192.168.167.13])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 115E9B1CD2;
-        Wed,  7 Jul 2021 17:02:55 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P30158T139874111837952S1625648562578421_;
-        Wed, 07 Jul 2021 17:02:49 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <b6e02c0708f781fcf83385e79ab6c10f>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: linux-spi@vger.kernel.org
-X-RCPT-COUNT: 20
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     linux-spi@vger.kernel.org
-Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
-        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
-        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
-        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
-        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH v11 10/10] arm64: dts: rockchip: Enable SFC for Odroid Go Advance
-Date:   Wed,  7 Jul 2021 17:02:40 +0800
-Message-Id: <20210707090240.1140-1-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210707090158.711-1-jon.lin@rock-chips.com>
-References: <20210707090158.711-1-jon.lin@rock-chips.com>
+        Wed, 7 Jul 2021 05:06:18 -0400
+Date:   Wed, 07 Jul 2021 09:03:03 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1625648585;
+        bh=FfzoFy/JPOfylMDSWf+V05WzCz+VvbqhnbLqlhgFSx8=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=ljxtuZM65q38o0IdXEGPYwe0aG0xa7D7WyJPn6tKjLJFJcC7flV2mmW5khXcCFex1
+         vJSgPp2kAjkSWyHproJkq38PP4V41BvS2OJOomjwzB4nOW7/MLiATIOeTE2TMftSaE
+         bJRLsG3u2x7GXLdYRKNztRATQbXOBvSiWZOtwbewcfevcpT1cqFeaKzy8LVKif4YCp
+         moZ3dYYdMly+OCsY7mTIMk/+in8WBZi3sHl+fPl7cvXvsv2aCItmE36TaUhLI3jfV6
+         ug5cPO1ShVIjtXioziDpaXn77Z+tBfIdHCHxaodC7rIqA9b9YI0OzIomC73J/kln/a
+         rsg0ooJaaismQ==
+To:     Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
+        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Yannick FERTRE <yannick.fertre@st.com>,
+        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
+        Philippe CORNU <philippe.cornu@st.com>
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH 0/2] Add "BACKGROUND_COLOR" drm property
+Message-ID: <31K3xupK1-7HNWorHqIwGwgEJl-1XdFjUQEoNYm6yB-lRoZ8kq5quRji_r3mzPZ0bUayLef6xPfQDiETgZp9lR7vUpDn2nB_37ncSd-J0Wc=@emersion.fr>
+In-Reply-To: <20210707084557.22443-1-raphael.gallais-pou@foss.st.com>
+References: <20210707084557.22443-1-raphael.gallais-pou@foss.st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Morgan <macromorgan@hotmail.com>
+Hi,
 
-This enables the Rockchip Serial Flash Controller for the Odroid Go
-Advance. Note that while the attached SPI NOR flash and the controller
-both support quad read mode, only 2 of the required 4 pins are present.
-The rx bus width is set to 2 for this reason, and tx bus width is set
-to 1 for compatibility reasons.
+Thanks for working on this. Do you have plans for user-space
+implementations and IGT?
 
-Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
----
+Thanks,
 
-Changes in v11:
-- The tx is set to 1 for Odroid Go Advance device
-
-Changes in v10: None
-Changes in v9: None
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-Changes in v1: None
-
- .../boot/dts/rockchip/rk3326-odroid-go2.dts      | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-index 49c97f76df77..f78e11dd8447 100644
---- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-@@ -484,6 +484,22 @@
- 	status = "okay";
- };
- 
-+&sfc {
-+	pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus2>;
-+	pinctrl-names = "default";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <108000000>;
-+		spi-rx-bus-width = <2>;
-+		spi-tx-bus-width = <2>;
-+	};
-+};
-+
- &tsadc {
- 	status = "okay";
- };
--- 
-2.17.1
-
-
-
+Simon
